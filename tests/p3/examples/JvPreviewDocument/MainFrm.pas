@@ -108,13 +108,13 @@ var
 
 implementation
 uses
-  Printers, Math;
+  Printers;
 
 {$R *.dfm}
 
 
 procedure TfrmMain.Print1Click(Sender: TObject);
-var jp: TJvPrinter;
+var jp: TJvPreviewPrinter;
 begin
   PrintDialog1.PrintRange := prAllPages;
   if pd.PageCount < 1 then
@@ -127,13 +127,12 @@ begin
   end;
   if PrintDialog1.Execute then
   begin
-    jp := TJvPrinter.Create(nil);
+    jp := TJvPreviewPrinter.Create(nil);
     try
+      jp.Assign(PrintDialog1);
       jp.Printer := Printer;
-      if PrintDialog1.PrintRange = prPageNums then
-        pd.PrintRange(jp, PrintDialog1.FromPage - 1, PrintDialog1.ToPage - 1, PrintDialog1.Copies, PrintDialog1.Collate)
-      else
-        pd.PrintRange(jp, 0, -1, PrintDialog1.Copies, PrintDialog1.Collate)
+      jp.PrintPreview := pd;
+      jp.Print;
     finally
       jp.Free;
     end;
@@ -174,7 +173,7 @@ begin
     cbPreview.ItemIndex := 1; // printer
     cbPreviewChange(nil);
     cbScaleMode.ItemIndex := 0; // full page
-//    cbScaleModeChange(nil);
+    cbScaleModeChange(nil);
 
   finally
     pd.EndUpdate;
@@ -384,6 +383,8 @@ begin
   begin
     PrintPreview := pd;
     Strings := reOriginal.Lines;
+    Font := reOriginal.Font;
+    Font.Size := 12;
     CreatePreview(false);
   end;
 end;

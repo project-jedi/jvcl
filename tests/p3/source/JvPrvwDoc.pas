@@ -31,8 +31,8 @@ unit JvPrvwDoc;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Dialogs;
+
 const
   WM_PREVIEWADDPAGE = WM_USER + 1001;
 
@@ -205,6 +205,8 @@ type
       FTotalCols, FTotalRows, FVisibleRows: integer;
     FOnHorzScroll: TNotifyEvent;
     FOnVertScroll: TNotifyEvent;
+    FScrollBars: TScrollStyle;
+    FHideScrollBars: boolean;
     procedure DoOptionsChange(Sender: TObject);
     procedure DoDeviceInfoChange(Sender: TObject);
     procedure DoScaleModeChange(Sender: TObject);
@@ -232,7 +234,13 @@ type
     procedure Change; dynamic;
     procedure UpdateSizes;
     function GetTopRow: integer;
+    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetHideScrollBars(const Value: boolean);
   protected
+
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      MousePos: TPoint): Boolean; override;
+
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawPages(ACanvas: TCanvas);
     procedure DrawPages2(ACanvas: TCanvas; Offset: TPoint);
@@ -246,6 +254,8 @@ type
     property Color default clAppWorkSpace;
 
     property DeviceInfo: TJvDeviceInfo read FDeviceInfo write SetDeviceInfo;
+    property ScrollBars:TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
+    property HideScrollBars:boolean read FHideScrollBars write SetHideScrollBars default false;
 
     property Options: TJvPreviewPageOptions read FOptions write SetOptions;
     property OnAddPage: TJvDrawPageEvent read FOnAddPage write FOnAddPage;
@@ -254,6 +264,8 @@ type
     property OnDrawPreviewPage: TJvDrawPreviewEvent read FOnDrawPreviewPage write FOnDrawPreviewPage;
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -318,7 +330,7 @@ type
     property PopupMenu;
     property ShowHint;
     property TabOrder;
-    property TabStop;
+    property TabStop default true;
     property Visible;
     property OnCanResize;
     property OnClick;
@@ -759,26 +771,30 @@ begin
   // HORIZONTAL SCROLLBAR
   FillChar(si, sizeof(TScrollInfo), 0);
   si.cbSize := sizeof(TScrollInfo);
-  si.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+  si.fMask := SIF_ALL;
+  if not HideScrollBars then
+    Inc(si.fMask, SIF_DISABLENOSCROLL);
 
   si.nMin := 0;
-  if FPageWidth >= ClientWidth then
+  if (FPageWidth >= ClientWidth) or ((Options.ScaleMode = smScale) and (FPageWidth * TotalCols >= ClientWidth - Options.HorzSpacing * 2)) then
   begin
     si.nMax := FMaxWidth - ClientWidth;
-    si.nPage := si.nMax div 10; // TODO!
+    si.nPage := si.nMax div 3; // TODO!
   end
   else
     si.nMax := 0;
   si.nPos := FScrollPos.X;
   if si.nPos > si.nMax then
     si.nPos := si.nMax;
-  ShowScrollbar(Handle, SB_HORZ, true {(FPageWidth > ClientWidth)});
-  SetScrollInfo(Handle, SB_HORZ, si, True);
+  ShowScrollbar(Handle, SB_HORZ, ScrollBars in [ssHorizontal,ssBoth]{(FPageWidth > ClientWidth)});
+  SetScrollInfo(Handle, SB_HORZ, si, true);
 
   // VERTICAL SCROLLBAR
   FillChar(si, sizeof(TScrollInfo), 0);
   si.cbSize := sizeof(TScrollInfo);
-  si.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+  si.fMask := SIF_ALL;
+  if not HideScrollBars then
+    Inc(si.fMask, SIF_DISABLENOSCROLL);
   GetScrollInfo(Handle, SB_VERT, si);
   // store current relative position
   if si.nMax <> 0 then
@@ -788,14 +804,15 @@ begin
 
   // TODO: this just isn't right...
   if (FPageHeight >= ClientHeight) then
-    si.nPage := (FPageHeight + Options.VertSpacing) div 10
+    si.nPage := (FPageHeight + Options.VertSpacing) div 3
   else
     si.nPage := FPageHeight + Options.VertSpacing;
   si.nPage := Max(si.nPage, 1);
+
   if (PageCount = 0) or (FMaxHeight <= ClientHeight) then
     si.nMax := 0
   else
-    si.nMax := FMaxHeight - Options.VertSpacing;
+    si.nMax := (FMaxHeight - Options.VertSpacing);
 
   // DONE: if scale or cols changes, ScrollPos should be adjusted to match new settings
   si.nPos := round(factor * si.nMax);
@@ -804,8 +821,8 @@ begin
   if si.nPos <> FScrollPos.Y then
     ScrollBy(0, -FScrollPos.Y + si.nPos);
   FScrollPos.Y := si.nPos;
-  ShowScrollbar(Handle, SB_VERT, true {(FPageHeight > ClientHeight) or (FMaxHeight > ClientHeight)});
-  SetScrollInfo(Handle, SB_VERT, si, True);
+  ShowScrollbar(Handle, SB_VERT, ScrollBars in [ssVertical,ssBoth]);
+  SetScrollInfo(Handle, SB_VERT, si, true);
 end;
 
 procedure TJvCustomPreviewDoc.Clear;
@@ -841,10 +858,12 @@ begin
   FDeviceInfo.OnChange := DoDeviceInfoChange;
 
   Color := clAppWorkSpace;
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  ControlStyle := [csOpaque, csAcceptsControls, csCaptureMouse, csClickEvents, csDoubleClicks];
   Width := 150;
   Height := 250;
   FBorderStyle := bsSingle;
+  FScrollBars := ssBoth;
+  FHideScrollBars := false;
 end;
 
 procedure TJvCustomPreviewDoc.CreateParams(var Params: TCreateParams);
@@ -885,9 +904,13 @@ var ACanvas: TMetaFileCanvas;
 begin
   Result := false;
   ACanvas := TMetaFileCanvas.Create(AMetaFile, DeviceInfo.ReferenceHandle);
-  SetMapMode(ACanvas.Handle, MM_ISOTROPIC);
-  SetWindowExtEx(ACanvas.Handle, DeviceInfo.PhysicalWidth, DeviceInfo.PhysicalHeight, nil);
-  SetViewportExtEx(ACanvas.Handle, DeviceInfo.PhysicalWidth, DeviceInfo.PhysicalHeight, nil);
+  SetMapMode(ACanvas.Handle, MM_ANISOTROPIC);
+  with DeviceInfo do
+  begin
+    SetWindowOrgEx(ACanvas.Handle, 0, 0, nil);
+    SetWindowExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
+    SetViewportExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
+  end;
   // NB! Font.Size is changed when PPI is changed, so store and reset
   i := ACanvas.Font.Size;
   ACanvas.Font.PixelsPerInch := DeviceInfo.LogPixelsY;
@@ -898,10 +921,10 @@ begin
     begin
       APageRect := Rect(0, 0, PhysicalWidth, PhysicalHeight);
       APrintRect := APageRect;
-      Inc(APrintRect.Left, OffsetLeft);
-      Inc(APrintRect.Top, OffsetTop);
-      Dec(APrintRect.Right, OffsetRight);
-      Dec(APrintRect.Bottom, OffsetBottom);
+      Dec(APageRect.Left, OffsetLeft);
+      Dec(APageRect.Top, OffsetTop);
+      Inc(APageRect.Right, OffsetRight);
+      Inc(APageRect.Bottom, OffsetBottom);
       FOnAddPage(self, PageIndex, ACanvas, APageRect, APrintRect, Result);
     end;
   // spool canvas to metafile
@@ -1001,7 +1024,7 @@ begin
 end;
 
 procedure TJvCustomPreviewDoc.DrawPages2(ACanvas: TCanvas; Offset: TPoint);
-var i, j, k, AOffsetX, AOffsetY, APageIndex: integer;
+var i, j, k, m, AOffsetX, AOffsetY, APageIndex: integer;
   APageRect, APrintRect: TRect;
   si: TScrollInfo;
   // use our own InRange since D5 doesn't have it
@@ -1021,12 +1044,20 @@ var i, j, k, AOffsetX, AOffsetY, APageIndex: integer;
   function PartialInRect(Inner, Outer: TRect): boolean;
   begin
     Result :=
-      InRange(Inner.Left, Outer.Left, Outer.Right)
-      or InRange(Inner.Top, Outer.Top, Outer.Bottom)
-      or InRange(Inner.Right, Outer.Left, Outer.Right)
-      or InRange(Inner.Bottom, Outer.Top, Outer.Bottom);
+          (Inner.Left < Outer.Right)
+      and (Inner.Top < Outer.Bottom)
+      and (Inner.Right > Outer.Left)
+      and (Inner.Bottom > Outer.Top);
   end;
-
+  function CanDrawPage(APageIndex:integer;APageRect:TRect):boolean;
+  begin
+     Result := (APageIndex < PageCount) or (PageCount = 0);
+     if not Result then Exit;
+     Result := (FPageHeight >= ClientHeight - Options.VertSpacing * 2)
+          or (FPageWidth >= ClientWidth - Options.HorzSpacing * 2);
+     if not Result then
+       Result := RectInRect(APageRect, ClientRect);
+  end;
 begin
   APageRect := FPreviewRect;
   APrintRect := FPrintRect;
@@ -1039,7 +1070,8 @@ begin
     Brush.Color := Color;
     FillRect(ClipRect);
     APageIndex := k * TotalCols;
-    for i := k to k + VisibleRows - 1 do
+    m := k + VisibleRows-1 + Ord((FPageHeight >= ClientHeight - Options.VertSpacing * 2));
+    for i := k to m do
     begin
       APrintRect := FPrintRect;
       APageRect := FPreviewRect;
@@ -1048,11 +1080,7 @@ begin
       for j := 0 to TotalCols - 1 do
       begin
         // avoid drawing partial pages when previewrect < clientrect
-        if ((((FPageHeight >= ClientHeight - Options.VertSpacing * 2)
-          or (FPageWidth >= ClientWidth - Options.HorzSpacing * 2)) and
-          PartialInRect(APageRect, ClientRect))
-          or RectInRect(APageRect, ClientRect))
-          and ((APageIndex < PageCount) or (PageCount = 0)) then
+        if CanDrawPage(APageIndex,APageRect) then
         begin
           if (Options.Shadow.Offset <> 0) then
           begin
@@ -1145,25 +1173,14 @@ begin
 end;
 
 procedure TJvCustomPreviewDoc.Paint;
-var sih, siv: TScrollInfo;
 begin
   if IsUpdating then
     Exit;
-  FillChar(sih, sizeof(sih), 0);
-  sih.cbSize := sizeof(sih);
-  sih.fMask := SIF_ALL;
-  GetScrollInfo(Handle, SB_HORZ, sih);
-
-  FillChar(siv, sizeof(siv), 0);
-  siv.cbSize := sizeof(siv);
-  siv.fMask := SIF_ALL;
-  GetScrollInfo(Handle, SB_VERT, siv);
-
   FBuffer.Width := ClientWidth;
   FBuffer.Height := ClientHeight;
   //  Canvas.Brush.Color := Color;
   //  Canvas.FillRect(ClientRect);
-  DrawPages2(FBuffer.Canvas, Point(sih.nPos, siv.nPos));
+  DrawPages2(FBuffer.Canvas, Point(FScrollPos.X,FScrollPos.Y));
   BitBlt(Canvas.Handle, 0, 0, FBuffer.Width, FBuffer.Height, FBuffer.Canvas.Handle,
     0, 0, SRCCOPY);
 end;
@@ -1259,14 +1276,16 @@ begin
         // use cbSize as temp variable
         si.cbSize := si.nTrackPos - si.nTrackPos mod si.nPage;
         ScrollBy(-si.nPos - si.cbSize, 0);
-        SetScrollPos(Handle, SB_HORZ, si.cbSize, true);
+//        SetScrollPos(Handle, SB_HORZ, si.cbSize, true);
         FScrollPos.X := si.cbSize;
       end;
   end;
+  si.nPos := FScrollPos.X;
+  SetScrollInfo(Handle,SB_VERT,si,true);
   if Assigned(FOnHorzScroll) then
     FOnHorzScroll(self);
-  CalcScrollRange;
-  Invalidate;
+//  CalcScrollRange;
+  Refresh;
 end;
 
 procedure TJvCustomPreviewDoc.WMVScroll(var Msg: TWMVScroll);
@@ -1279,9 +1298,9 @@ begin
   case Msg.ScrollCode of
     SB_TOP:
       begin
-        TopRow := 0;
-        // ScrollBy(0, -si.nPos);
-        // FScrollPos.Y := 0;
+//        TopRow := 0;
+        ScrollBy(0, -si.nPos);
+        FScrollPos.Y := 0;
       end;
     SB_BOTTOM:
       begin
@@ -1291,43 +1310,53 @@ begin
       end;
     SB_LINEDOWN, SB_PAGEDOWN:
       begin
-        if si.nPos + si.nPage < si.nMax - GetSystemMetrics(SM_CYHSCROLL) then
+        if FScrollPos.Y + si.nPage <= si.nMax then
         begin
           ScrollBy(0, si.nPage);
-          FScrollPos.Y := FScrollPos.Y + si.nPage;
+          Inc(FScrollPos.Y,si.nPage);
         end
         else
         begin
-          ScrollBy(0, -si.nPos + si.nMax + GetSystemMetrics(SM_CYHSCROLL));
+          ScrollBy(0, -FScrollPos.Y + si.nMax);
           FScrollPos.Y := si.nMax;
         end;
       end;
     SB_LINEUP, SB_PAGEUP:
       begin
-        if si.nPos - si.nPage >= 0 then
+        if FScrollPos.Y >= si.nPage then
         begin
           ScrollBy(0, -si.nPage);
-          FScrollPos.Y := FScrollPos.Y - si.nPage;
+          Dec(FScrollPos.Y,si.nPage);
         end
         else
         begin
-          ScrollBy(0, -si.nPos);
+          ScrollBy(0, -FScrollPos.Y);
           FScrollPos.Y := 0;
         end;
       end;
     SB_THUMBPOSITION, SB_THUMBTRACK:
       begin
         // use cbSize as temp variable
-        si.cbSize := si.nTrackPos - si.nTrackPos mod si.nPage;
-        ScrollBy(0, si.nPos - si.cbSize);
-        SetScrollPos(Handle, SB_VERT, si.cbSize, true);
-        FScrollPos.Y := si.cbSize;
+        if si.nPos <> si.nTrackPos then
+        begin
+          si.cbSize := si.nTrackPos - si.nTrackPos mod si.nPage;
+          if si.nTrackPos >= si.nMax - si.nPage then
+            Inc(si.cbSize,si.nPage);
+          if si.nPos <> si.cbSize then
+          begin
+            ScrollBy(0, si.nPos - si.cbSize);
+//        SetScrollPos(Handle, SB_VERT, si.cbSize, true);
+            FScrollPos.Y := si.cbSize;
+          end;
+        end;
       end;
   end;
+  si.nPos := FScrollPos.Y;
+  SetScrollInfo(Handle,SB_VERT,si,true);
   if Assigned(FOnVertScroll) then
     FOnVertScroll(self);
-  CalcScrollRange;
-  Invalidate;
+//  CalcScrollRange;
+  Refresh;
 end;
 
 procedure TJvCustomPreviewDoc.WMGetDlgCode(var Message: TMessage);
@@ -1343,7 +1372,11 @@ begin
     Exit;
   if StartPage < 0 then
     StartPage := PageCount - 1;
+  if StartPage >= PageCount then
+    StartPage := PageCount - 1;
   if EndPage < 0 then
+    EndPage := PageCount - 1;
+  if EndPage >= PageCount then
     EndPage := PageCount - 1;
   if Copies < 1 then
     Copies := 1;
@@ -1430,13 +1463,14 @@ end;
 function TJvCustomPreviewDoc.GetOptimalScale: Cardinal;
 var Val1, Val2: integer;
 begin
-  Val1 := (ClientHeight - Options.VertSpacing * 2) div VisibleRows - Options.VertSpacing;
-  Val2 := (ClientWidth - Options.HorzSpacing * 2) div TotalCols - Options.HorzSpacing;
+  Val1 := (ClientHeight - Options.VertSpacing * 2) div VisibleRows - Options.VertSpacing * 2;
+  Val2 := (ClientWidth - Options.HorzSpacing * 2) div TotalCols - Options.HorzSpacing * 2;
   Result := GetLesserScale(Val1, Val2);
 end;
 
 procedure TJvCustomPreviewDoc.Change;
 begin
+  TopRow := 0; // TODO: make this unnecessary...
   UpdateSizes;
   case Options.ScaleMode of
     smFullPage:
@@ -1473,7 +1507,7 @@ begin
   CalcScrollRange;
   if Assigned(FOnChange) then
     FOnChange(self);
-  Invalidate;
+  Refresh;
 end;
 
 procedure TJvCustomPreviewDoc.BeginUpdate;
@@ -1523,18 +1557,18 @@ procedure TJvCustomPreviewDoc.SetTopRow(Value: integer);
 var ARow, tmp: integer;
   si: TScrollInfo;
 begin
-  ARow := Min(Value, TotalRows);
-  FillChar(si, sizeof(si), 0);
-  si.cbSize := sizeof(si);
-  si.fMask := SIF_ALL;
-  GetScrollInfo(Handle, SB_VERT, si);
-  ScrollBy(0, -FScrollPos.Y);
+  ARow := Max(Min(Value, TotalRows-1),0);
   tmp := (FPageHeight + Options.VertSpacing) * ARow;
   ScrollBy(0, -FScrollPos.Y + tmp);
   FScrollPos.Y := tmp;
+  SetScrollPos(Handle,SB_VERT,FScrollPos.Y,true);
+{  FillChar(si, sizeof(si), 0);
+  si.cbSize := sizeof(si);
+  si.fMask := SIF_ALL;
   si.nPos := tmp;
-  SetScrollInfo(Handle, SB_VERT, si, true);
-  Invalidate;
+  SetScrollInfo(Handle, SB_VERT, si, true); }
+//  CalcScrollRange;
+  Refresh;
 end;
 
 procedure TJvCustomPreviewDoc.UpdateSizes;
@@ -1584,29 +1618,26 @@ begin
           end
       else
         begin
-          FTotalCols := Max(Min(PageCount, Options.Cols), 1);
-          FVisibleRows := Max(Min(PageCount, Options.Rows), 1);
+          FTotalCols := Max(Min(PageCount-1, Options.Cols), 1);
+          FVisibleRows := Max(Min(PageCount div Options.Cols + Ord(PageCount mod Options.Cols <> 0), Options.Rows), 1);
         end;
       end;
 
     FTotalRows := Max((PageCount div TotalCols) + Ord(PageCount mod TotalCols <> 0), 1);
 
     // TODO: this just isn't right...
-    FMaxHeight := TotalRows * (FPageHeight + Options.VertSpacing) + Options.VertSpacing;
-    FMaxWidth := TotalCols * (FPageWidth + Options.HorzSpacing) + Options.HorzSpacing;
+    FMaxHeight := TotalRows * (FPageHeight + Options.VertSpacing) - Options.VertSpacing;
+    FMaxWidth := TotalCols * (FPageWidth + Options.HorzSpacing) - Options.HorzSpacing;
   finally
     ReleaseDC(0, DC);
   end;
 end;
 
 function TJvCustomPreviewDoc.GetTopRow: integer;
-var si: TScrollInfo;
 begin
-  FillChar(si, sizeof(si), 0);
-  si.cbSize := sizeof(si);
-  si.fMask := SIF_ALL;
-  GetScrollInfo(Handle, SB_VERT, si);
-  Result := (si.nPos div (FPageHeight + Options.VertSpacing) + Ord(si.nPos mod (FPageHeight + Options.VertSpacing) <> 0));
+  Result := FScrollPos.Y div (FPageHeight + Options.VertSpacing);
+  if FPageHeight < ClientHeight - Options.VertSpacing * 2 then
+    Inc(Result,Ord(FScrollPos.Y mod (FPageHeight + Options.VertSpacing) <> 0));
 end;
 
 procedure TJvCustomPreviewDoc.First;
@@ -1634,6 +1665,51 @@ function TJvCustomPreviewDoc.ItemAtPos(Pos: TPoint;
 begin
   // TODO: return the page at Pos or -1 if no page or outside range 
   // if Existing is false, returns the page that should have been at Pos 
+end;
+
+procedure TJvCustomPreviewDoc.SetScrollBars(const Value: TScrollStyle);
+begin
+  if FScrollBars <> Value then
+  begin
+    FScrollBars := Value;
+    Change;
+  end;
+end;
+
+procedure TJvCustomPreviewDoc.SetHideScrollBars(const Value: boolean);
+begin
+  if FHideScrollBars <> Value then
+  begin
+    FHideScrollBars := Value;
+    Change;
+  end;
+end;
+
+function TJvCustomPreviewDoc.DoMouseWheel(Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint): Boolean;
+var Msg:TWMScroll;
+begin
+  Result := inherited DoMouseWheel(Shift,WheelDelta,MousePos);
+  if not Result then
+  begin
+    Msg.Msg := WM_VSCROLL;
+    if WheelDelta > 0 then
+      Msg.ScrollCode := SB_PAGEUP
+    else
+      Msg.ScrollCode := SB_PAGEDOWN;
+    Msg.Pos := FScrollPos.Y;
+    Msg.Result := 0;
+    WMVScroll(Msg);
+    Refresh;
+    Result := true;
+  end;
+end;
+
+procedure TJvCustomPreviewDoc.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  if CanFocus then SetFocus;
 end;
 
 end.

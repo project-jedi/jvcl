@@ -46,7 +46,9 @@ type
     FFinished: boolean;
     FCurrentRow: integer;
     FStrings: TStrings;
+    FFont: TFont;
     procedure SetStrings(const Value: TStrings);
+    procedure SetFont(const Value: TFont);
   protected
     procedure DoAddPage(Sender: TObject; PageIndex: integer;
       Canvas: TCanvas; PageRect, PrintRect: TRect; var NeedMorePages: boolean); override;
@@ -57,6 +59,7 @@ type
   published
     property PrintPreview;
     property Strings: TStrings read FStrings write SetStrings;
+    property Font:TFont read FFont write SetFont;
   end;
 
   TJvPreviewGraphicItem = class(TCollectionItem)
@@ -125,7 +128,7 @@ type
   end;
 
     // a class that implements the IJvPrinter interface
-  TJvPrinter = class(TComponent, IUnknown, IJvPrinter)
+  TJvPreviewPrinter = class(TComponent, IUnknown, IJvPrinter)
   private
     FPrinter: TPrinter;
     FPrintPreview: TJvCustomPreviewDoc;
@@ -368,6 +371,7 @@ constructor TJvPreviewStringsRender.Create(AOwner: TComponent);
 begin
   inherited;
   FStrings := TStringlist.Create;
+  FFont := TFont.Create;
 
 end;
 
@@ -383,6 +387,7 @@ end;
 destructor TJvPreviewStringsRender.Destroy;
 begin
   FStrings.Free;
+  FFont.Free;
   inherited;
 end;
 
@@ -396,8 +401,7 @@ var i, IncValue: integer;
 begin
   if not FFinished then
   begin
-    Canvas.Font.Name := 'Verdana';
-    Canvas.Font.Size := 10;
+    Canvas.Font  := Font;
     ARect := PrintRect;
 
     GetTextMetrics(Canvas.Handle, tm);
@@ -426,6 +430,11 @@ begin
     end;
   end;
   FFinished := true;
+end;
+
+procedure TJvPreviewStringsRender.SetFont(const Value: TFont);
+begin
+  FFont.Assign(Value);
 end;
 
 procedure TJvPreviewStringsRender.SetStrings(const Value: TStrings);
@@ -628,20 +637,20 @@ begin
   FImages.Assign(Value);
 end;
 
-{ TJvPrinter }
+{ TJvPreviewPrinter }
 
-procedure TJvPrinter.Assign(Source: TPersistent);
+procedure TJvPreviewPrinter.Assign(Source: TPersistent);
 begin
   CheckActive;
-  if Source is TJvPrinter then
+  if Source is TJvPreviewPrinter then
   begin
-    Collate     := TJvPrinter(Source).Collate;
-    Copies      := TJvPrinter(Source).Copies;
-    FromPage    := TJvPrinter(Source).FromPage;
-    Options     := TJvPrinter(Source).Options;
-    PrintRange  := TJvPrinter(Source).PrintRange;
-    ToPage      := TJvPrinter(Source).ToPage;
-    Title       := TJvPrinter(Source).Title;
+    Collate     := TJvPreviewPrinter(Source).Collate;
+    Copies      := TJvPreviewPrinter(Source).Copies;
+    FromPage    := TJvPreviewPrinter(Source).FromPage;
+    Options     := TJvPreviewPrinter(Source).Options;
+    PrintRange  := TJvPreviewPrinter(Source).PrintRange;
+    ToPage      := TJvPreviewPrinter(Source).ToPage;
+    Title       := TJvPreviewPrinter(Source).Title;
   end
   else if Source is TPrintDialog then
   begin
@@ -656,73 +665,73 @@ begin
     inherited;
 end;
 
-procedure TJvPrinter.BeginDoc;
+procedure TJvPreviewPrinter.BeginDoc;
 begin
   CheckPrinter;
   FPrinter.BeginDoc;
 end;
 
-procedure TJvPrinter.CheckActive;
+procedure TJvPreviewPrinter.CheckActive;
 begin
   if (Printer <> nil) and GetPrinting then
     raise EPrintPreviewError.Create('Cannot perfrom this operation while printing!');
 end;
 
-procedure TJvPrinter.CheckPrinter;
+procedure TJvPreviewPrinter.CheckPrinter;
 begin
   if Printer = nil then
     raise EPrintPreviewError.Create('Printer not assigned!');
 end;
 
-procedure TJvPrinter.EndDoc;
+procedure TJvPreviewPrinter.EndDoc;
 begin
   CheckPrinter;
   FPrinter.EndDoc;
 end;
 
-function TJvPrinter.GetAborted: Boolean;
+function TJvPreviewPrinter.GetAborted: Boolean;
 begin
   CheckPrinter;
   Result := FPrinter.Aborted;
 end;
 
-function TJvPrinter.GetCanvas: TCanvas;
+function TJvPreviewPrinter.GetCanvas: TCanvas;
 begin
   CheckPrinter;
   Result := FPrinter.Canvas;
 end;
 
-function TJvPrinter.GetPageHeight: Integer;
+function TJvPreviewPrinter.GetPageHeight: Integer;
 begin
   CheckPrinter;
   Result := FPrinter.PageHeight;
 end;
 
-function TJvPrinter.GetPageWidth: Integer;
+function TJvPreviewPrinter.GetPageWidth: Integer;
 begin
   CheckPrinter;
   Result := FPrinter.PageWidth;
 end;
 
-function TJvPrinter.GetPrinting: Boolean;
+function TJvPreviewPrinter.GetPrinting: Boolean;
 begin
   CheckPrinter;
   Result := FPrinter.Printing;
 end;
 
-function TJvPrinter.GetTitle: string;
+function TJvPreviewPrinter.GetTitle: string;
 begin
   CheckPrinter;
   Result := FPrinter.Title;
 end;
 
-procedure TJvPrinter.NewPage;
+procedure TJvPreviewPrinter.NewPage;
 begin
   CheckPrinter;
   FPrinter.NewPage;
 end;
 
-procedure TJvPrinter.Notification(AComponent: TComponent;
+procedure TJvPreviewPrinter.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
@@ -730,7 +739,7 @@ begin
     PrintPreview := nil;
 end;
 
-procedure TJvPrinter.Print;
+procedure TJvPreviewPrinter.Print;
 var AMin,AMax:integer;
 begin
   if PrintPreview = nil then
@@ -742,26 +751,26 @@ begin
   end
   else
   begin
-    AMin := FromPage;
-    AMax := ToPage;
+    AMin := FromPage-1;
+    AMax := ToPage-1;
   end;
   PrintPreview.PrintRange(self,AMin,AMax,Copies,Collate);
 end;
 
-procedure TJvPrinter.SetNumCopies(const Value: Integer);
+procedure TJvPreviewPrinter.SetNumCopies(const Value: Integer);
 begin
   FCopies := Value;
   if FCopies < 1 then
     FCopies := 1;
 end;
 
-procedure TJvPrinter.SetPrinter(const Value: TPrinter);
+procedure TJvPreviewPrinter.SetPrinter(const Value: TPrinter);
 begin
   CheckActive;
   FPrinter := Value;
 end;
 
-procedure TJvPrinter.SetPrintPreview(const Value: TJvCustomPreviewDoc);
+procedure TJvPreviewPrinter.SetPrintPreview(const Value: TJvCustomPreviewDoc);
 begin
   CheckActive;
   if FPrintPreview <> Value then
@@ -774,7 +783,7 @@ begin
   end;
 end;
 
-procedure TJvPrinter.SetTitle(const Value: string);
+procedure TJvPreviewPrinter.SetTitle(const Value: string);
 begin
   CheckPrinter;
   FPrinter.Title := Value;

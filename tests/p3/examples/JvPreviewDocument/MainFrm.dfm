@@ -153,7 +153,7 @@ object frmMain: TfrmMain
       Width = 16
       Height = 21
       Associate = Edit4
-      Min = 10
+      Min = 1
       Max = 500
       Position = 100
       TabOrder = 7
