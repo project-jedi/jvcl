@@ -98,17 +98,23 @@ type
   {$IFDEF VisualCLX}
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
   protected
     WindowProc: TClxWindowProc;
     procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    FDoubleBuffered: Boolean;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    function GetDoubleBuffered: Boolean;
+  public
+    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -206,17 +212,23 @@ type
   {$IFDEF VisualCLX}
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
   protected
     WindowProc: TClxWindowProc;
     procedure WndProc(var Msg: TMessage); virtual;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
+  private
+    FDoubleBuffered: Boolean;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    function GetDoubleBuffered: Boolean;
+  public
+    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -340,28 +352,13 @@ end;
 
 procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
+    FOnMouseEnter);
 end;
 
 procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
 end;
 
 procedure TJvExCustomDBGrid.ParentColorChanged;
@@ -422,13 +419,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExCustomDBGrid.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
+  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -438,11 +429,7 @@ end;
 
 procedure TJvExCustomDBGrid.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
+  Control_MouseLeave(FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -476,13 +463,23 @@ procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
 begin
   Dispatch(Msg);
 end;
+
+function TJvExCustomDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
 procedure TJvExCustomDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin // returns an interface
-    DoPaintBackground(Canvas, 0);
-    Paint;
+  begin
+    WidgetControl_PaintBackground(Self, Canvas);
+     Paint;
   end;
+end;
+
+function TJvExCustomDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
 end;
 
 function TJvExCustomDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -525,7 +522,7 @@ end;
 
 function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   JvExDoPaintBackground
+  JMP   DefaultDoPaintBackground
 end;
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
 begin
@@ -611,28 +608,13 @@ end;
 
 procedure TJvExDBGrid.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
+    FOnMouseEnter);
 end;
 
 procedure TJvExDBGrid.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
 end;
 
 procedure TJvExDBGrid.ParentColorChanged;
@@ -693,13 +675,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvExDBGrid.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
+  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -709,11 +685,7 @@ end;
 
 procedure TJvExDBGrid.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
+  Control_MouseLeave(FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -747,13 +719,23 @@ procedure TJvExDBGrid.WndProc(var Msg: TMessage);
 begin
   Dispatch(Msg);
 end;
+
+function TJvExDBGrid.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
 procedure TJvExDBGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin // returns an interface
-    DoPaintBackground(Canvas, 0);
-    Paint;
+  begin
+    WidgetControl_PaintBackground(Self, Canvas);
+     Paint;
   end;
+end;
+
+function TJvExDBGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
 end;
 
 function TJvExDBGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -796,7 +778,7 @@ end;
 
 function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   JvExDoPaintBackground
+  JMP   DefaultDoPaintBackground
 end;
 constructor TJvExDBGrid.Create(AOwner: TComponent);
 begin
