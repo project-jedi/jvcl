@@ -33,13 +33,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  EditIntf, ToolIntf, TypInfo,
+  {$IFNDEF COMPILER7_UP}EditIntf, ToolIntf, {$ENDIF}TypInfo,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  ExptIntf,
+  {$IFNDEF COMPILER7_UP}ExptIntf,{$ENDIF}
   JvBaseDlg;
 
 type
