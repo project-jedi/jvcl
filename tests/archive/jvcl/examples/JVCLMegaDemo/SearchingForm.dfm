@@ -1,6 +1,6 @@
 object SearchingFormMain: TSearchingFormMain
-  Left = 278
-  Top = 231
+  Left = 164
+  Top = 142
   Width = 556
   Height = 318
   Caption = 'SearchingFormMain'
@@ -11,7 +11,7 @@ object SearchingFormMain: TSearchingFormMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -56,16 +56,14 @@ object SearchingFormMain: TSearchingFormMain
   object StatusLabel: TJvLabel
     Left = 8
     Top = 264
-    Width = 375
+    Width = 6
     Height = 20
-    Caption = 'This search can take some time. Please, wait...'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMaroon
     Font.Height = -16
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
-    Visible = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -75,7 +73,7 @@ object SearchingFormMain: TSearchingFormMain
   object ComponentEdit: TEdit
     Left = 138
     Top = 52
-    Width = 303
+    Width = 318
     Height = 24
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -84,6 +82,7 @@ object SearchingFormMain: TSearchingFormMain
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
+    OnChange = ComponentEditChange
   end
   object SearchButton: TJvBitBtn
     Left = 460
@@ -121,12 +120,17 @@ object SearchingFormMain: TSearchingFormMain
     Height = 150
     Columns = <
       item
-        Caption = 'Form'
-        Width = 300
+        Caption = 'ID'
+        Width = 30
       end
       item
+        Caption = 'Form'
+        Width = 400
       end>
+    GridLines = True
+    RowSelect = True
     TabOrder = 2
     ViewStyle = vsReport
+    OnDblClick = ResultListViewDblClick
   end
 end

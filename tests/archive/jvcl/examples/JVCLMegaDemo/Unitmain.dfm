@@ -1,12 +1,12 @@
 object Mainform: TMainform
-  Left = 277
-  Top = 55
-  Width = 965
-  Height = 652
+  Left = 44
+  Top = 10
+  Width = 812
+  Height = 612
   Caption = 'JVCL- MegaDemo'
   Color = clBtnFace
   Constraints.MinHeight = 517
-  Constraints.MinWidth = 865
+  Constraints.MinWidth = 812
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -39,7 +39,7 @@ object Mainform: TMainform
     Left = 0
     Top = 0
     Width = 201
-    Height = 627
+    Height = 593
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
@@ -48,7 +48,7 @@ object Mainform: TMainform
       Left = 0
       Top = 0
       Width = 201
-      Height = 596
+      Height = 562
       Align = alClient
       Pages = <
         item
@@ -464,6 +464,7 @@ object Mainform: TMainform
           ParentColor = True
           TopButtonIndex = 0
         end>
+      ActivePageIndex = 5
       OnButtonClick = JvOutlookBar1ButtonClick
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -474,7 +475,7 @@ object Mainform: TMainform
     end
     object Panel2: TPanel
       Left = 0
-      Top = 596
+      Top = 562
       Width = 201
       Height = 31
       Align = alBottom
