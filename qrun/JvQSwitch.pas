@@ -69,7 +69,7 @@ type
     procedure WriteBinaryData(Stream: TStream);
   protected
     procedure FocusChanged; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
@@ -170,6 +170,7 @@ begin
   FBorderStyle := bsNone;
   FToggleKey := Ord(' ');
   TabStop := True;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvSwitch.Destroy;
@@ -291,10 +292,12 @@ begin
     SetFocus;
 end;
 
+(*
 function TJvSwitch.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True; // the component paints the background in Paint
 end;
+*)
 
 procedure TJvSwitch.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);

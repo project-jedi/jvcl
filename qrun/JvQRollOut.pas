@@ -57,7 +57,7 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QGraphics, QImgList, QExtCtrls, QActnList,
+  Qt, QWindows, QMessages, QControls, QGraphics, QImgList, QExtCtrls, QActnList,
   JvQComponent, JvQThemes;
 
 const
@@ -188,7 +188,6 @@ type
 
     procedure DoExit; override;
     procedure DoEnter; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -528,6 +527,7 @@ begin
   FCWidth := 22;
   FCHeight := 22;
   FShowFocus := True;
+  QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground);
 end;
 
 destructor TJvCustomRollOut.Destroy;
@@ -845,11 +845,6 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  //  inherited DoPaintBackground(Canvas, Param);
-  Result := False;
-end;
 
 procedure TJvCustomRollOut.DrawButtonFrame;
 var
