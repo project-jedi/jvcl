@@ -1,5 +1,5 @@
 ##Package: Dlgs
-##Status: Locked by Ignacio Vazquez
+##Status: Completed by Ignacio Vazquez
 ----------------------------------------------------------------------------------------------------
 @@JvCommonDialogD.pas
 Summary
@@ -10,35 +10,27 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogD
 Summary
-  Write here a summary (1 line)
+  Base component for SetupApi wrapper components
 Description
-  Write here a description
+  This component is the base of all components that act as wrappers for the dialog box API calls
+  contained in setupapi.dll. It should never be instantiated.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogD.Execute
 Summary
-  Write here a summary (1 line)
+  Abstract placeholder for showing the dialog box
 Description
-  Write here a description
+  This function is abstract and should never be called.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  In derived components, this function should return the result of the dialog box.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogD.OwnerWindow
 Summary
-  Write here a summary (1 line)
+  Handle of the parent window of the dialog box
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This property contains the Windows handle of the window that the dialog box appears over.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogD.Title
 Summary
-  Write here a summary (1 line)
+  Title of the dialog box
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This property holds the text that will be shown in the caption bar of the dialog box.
