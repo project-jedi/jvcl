@@ -83,7 +83,7 @@ type
     procedure LoadData(Node: TTreeNode);
     function GetResponseValue(item: IJvSurveyItem; Index: integer): integer;
     function AddItem(Parent: TTreeNode; item: IJvSurveyItem): TTreeNode;
-    procedure AddResponses(item: IJvSurveyItem; Index: integer;const SurveyTaker:IJvSurveyTaker);
+    procedure AddResponses(item: IJvSurveyItem; Index: integer; const SurveyTaker: IJvSurveyTaker);
     procedure LoadFromFile(const Filename: string; ClearResponses: boolean);
     procedure LoadFromResponse(const Filename: string);
     procedure SaveReport(const Filename: string; Format: TJvSurveyFileFormat);
@@ -107,7 +107,8 @@ uses
 
 {$R *.DFM}
 resourcestring
-  SFmtInvalidResponseFile = 'The file (%s) is not compatible with the currently loaded survey: please select another response file.';
+  SFmtInvalidResponseFile =
+    'The file (%s) is not compatible with the currently loaded survey: please select another response file.';
   SFmtResponseAlreadyLoaded = 'Responses from this file (%s) or user (%s) has already been added to the report.';
   SFmtUnmatchedSurveyType = 'SurveyTypes does not match (index %d)';
   SFmtResponse = '%0:s\nResponse from %1:s:\n%0:s\n\n%2:s\n\n';
@@ -131,14 +132,14 @@ resourcestring
     '<tr class="TRSurveyItemHeader"><td class="TDSurveyItemHeader">%s&nbsp;</td>' +
     '<td class="TDSurveyItemHeader">%s&nbsp;</td><td class="TDSurveyItemHeader">%s&nbsp;</td></tr></table>';
   SFmtHTMLTableSurveyItemDetail =
-          '<table class="TableSurveyItemDetail">' +
-          '<tr class="TRSurveyItemDetail"><th  class="THSurveyItemDetail">Responses</th></tr>' +
-          '<tr class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s&nbsp;</td></tr></table>';
+    '<table class="TableSurveyItemDetail">' +
+    '<tr class="TRSurveyItemDetail"><th  class="THSurveyItemDetail">Responses</th></tr>' +
+    '<tr class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s&nbsp;</td></tr></table>';
   STableSurveyItemDetail =
     '<table class="TableSurveyItemDetail"><tr class="TRSurveyItemDetail">' +
     '<th class="THSurveyItemDetail">Choices</th><th class="THSurveyItemDetail">Responses</th></tr>';
   SFmtHTMLTRSurveyItemDetail = '<tr  class="TRSurveyItemDetail"><td  class="TDSurveyItemDetail">%s&nbsp;</td>' +
-            '<td  class="TDSurveyItemDetail">%s&nbsp;</td></tr>';
+    '<td  class="TDSurveyItemDetail">%s&nbsp;</td></tr>';
   SHTMLSpacer = '&nbsp;';
   SHTMLTableEnd = '</table>';
 const
@@ -149,12 +150,11 @@ const
   cPrintReportExt = '.htm';
   cPrintTemplate = 'SurveyTemplate.htt';
 
-
-function MakeString(Ch:char;Count:integer):String;
+function MakeString(Ch: char; Count: integer): string;
 begin
-  SetLength(Result,Count);
+  SetLength(Result, Count);
   if Count > 0 then
-    FillChar(Result[1],Count,Ch);
+    FillChar(Result[1], Count, Ch);
 end;
 
 procedure TfrmMain.LoadFromFile(const Filename: string; ClearResponses: boolean);
@@ -338,9 +338,10 @@ begin
     AddResponses(ASurvey.Items[i], i, ASurvey.SurveyTaker);
 end;
 
-procedure TfrmMain.AddResponses(item: IJvSurveyItem; Index: integer;const SurveyTaker:IJvSurveyTaker);
+procedure TfrmMain.AddResponses(item: IJvSurveyItem; Index: integer; const SurveyTaker: IJvSurveyTaker);
 var
-  S,tmp: string;
+  S, tmp: string;
+
 
   function Decode(S: WideString): TList;
   var
@@ -386,8 +387,8 @@ begin
   if FSurvey.Items[Index].SurveyType = stFreeForm then
   begin
     S := trim(FSurvey.Items[Index].Responses);
-    tmp := Format(SFmtResponse, [MakeString(cDelimChar,cDelimLength),SurveyTaker.UserName,trim(item.Responses)]);
-    if (S = '') and (trim(item.Comments) <> '')  then
+    tmp := Format(SFmtResponse, [MakeString(cDelimChar, cDelimLength), SurveyTaker.UserName, trim(item.Responses)]);
+    if (S = '') and (trim(item.Comments) <> '') then
       S := tmp
     else if trim(item.Responses) <> '' then
       S := S + tmp;
@@ -397,9 +398,8 @@ begin
     MergeResponses(FSurvey.Items[Index], item);
   //add comments
   S := trim(FSurvey.Items[Index].Comments);
-  tmp := Format(SFmtComment,
-      [MakeString(cDelimChar,cDelimLength),SurveyTaker.UserName,trim(item.Comments)]);
-  if (S = '') and (trim(item.Comments) <> '')  then
+  tmp := Format(SFmtComment, [MakeString(cDelimChar, cDelimLength), SurveyTaker.UserName, trim(item.Comments)]);
+  if (S = '') and (trim(item.Comments) <> '') then
     S := tmp
   else if trim(item.Comments) <> '' then
     S := S + tmp;
@@ -430,7 +430,6 @@ begin
   finally
     Free;
   end;
-
 end;
 
 procedure TfrmMain.acAboutExecute(Sender: TObject);
@@ -469,8 +468,7 @@ end;
 
 function TfrmMain.GetReportHTMLSummary: string;
 begin
-  Result := Format(
-    SFmtHTMLTableSurveySummary,
+  Result := Format(SFmtHTMLTableSurveySummary,
     [FSurvey.Title, DateToStr(FSurvey.ReleaseDate), DateToStr(FSurvey.ExpiryDate),
     FResponses.Count, FSurvey.Items.Count]);
 end;
@@ -479,6 +477,11 @@ function TfrmMain.GetReportHTMLContent: string;
 var
   i, j: integer;
   C, R: TStringlist;
+  function ConvertCRLFToBR(const S: string): string;
+  begin
+    Result := StringReplace(S, '\n', '<br>', [rfReplaceAll]);
+    Result := StringReplace(Result,MakeString(cDelimChar, cDelimLength),'<hr>',[rfReplaceAll]);
+  end;
 begin
   if FSurvey.Items.Count = 0 then
   begin
@@ -491,14 +494,14 @@ begin
     for i := 0 to FSurvey.Items.Count - 1 do
     begin
       FSurvey.Items[i].SortResponses;
-      // TODO: add comments 
+      // TODO: add comments
       Result := Result + Format(
         SFmtHTMLTableSurveyItemHeader,
         [i + 1, FSurvey.Items[i].Title, FSurvey.Items[i].Description, EncodeType(FSurvey.Items[i].SurveyType)]);
       C.Text := DecodeChoice(FSurvey.Items[i].Choices, FSurvey.Items[i].SurveyType);
       R.Text := DecodeResponse(FSurvey.Items[i].Responses, FSurvey.Items[i].SurveyType);
       if FSurvey.Items[i].SurveyType = stFreeForm then
-        Result := Result + Format(SFmtHTMLTableSurveyItemDetail,[trim(R.Text)])
+        Result := Result + Format(SFmtHTMLTableSurveyItemDetail, [ConvertCRLFToBR(R.Text)])
       else
       begin
         while C.Count > R.Count do
@@ -518,7 +521,7 @@ end;
 procedure TfrmMain.ppPrintPreviewHTMLTag(Sender: TObject; Tag: TTag;
   const TagString: string; TagParams: TStrings; var ReplaceText: string);
 begin
-  if AnsiSameText(TagString, 'SURVEYTITLE') then  // DO NOT LOCALIZE
+  if AnsiSameText(TagString, 'SURVEYTITLE') then // DO NOT LOCALIZE
     ReplaceText := FSurvey.Title
   else if AnsiSameText(TagString, 'SURVEYSUMMARY') then // DO NOT LOCALIZE
     ReplaceText := GetReportHTMLSummary
@@ -558,7 +561,7 @@ end;
 
 procedure TfrmMain.acCommentsExecute(Sender: TObject);
 begin
-  TfrmComments.Comments(FCurrentItem.Title,FCurrentItem.Comments);
+  TfrmComments.Comments(FCurrentItem.Title, FCurrentItem.Comments);
 end;
 
 end.
