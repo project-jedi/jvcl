@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-06-26:
+- Removed JvAutoSave and JvRegAutoSave. From now on, use JvFormStorage instead.
+
 2003-06-23:
 - Readded old TJvGradientCaption as TJvGradientHeaderPanel. Unit renamed from JvGradientCaption.pas to JvGradientHeaderPanel.pas
 - Added JvDBGroupPanel.pas from Steve Paris
