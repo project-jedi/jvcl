@@ -222,9 +222,8 @@ destructor TJvWaitingGradient.Destroy;
 begin
   FBitmap.Free;
   FBitmap := nil;
+  FScroll.FOnDraw := nil;
   FScroll.Terminate;
-  while not FScroll.Terminated do
-    Application.ProcessMessages;
   FScroll.Free;
   inherited;
 end;
@@ -324,7 +323,7 @@ end;
 
 procedure TJvWaitingThread.Execute;
 begin
-  while not Terminated do
+  while not Terminated and Assigned(FOnDraw) do
   begin
     Synchronize(Draw);
     Sleep(FDelay);
