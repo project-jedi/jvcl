@@ -1,5 +1,6 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed
+##Skip: TJvCheckBox.ReadOnly
 ----------------------------------------------------------------------------------------------------
 @@JvCheckBox.pas
 Summary
@@ -42,12 +43,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.Alignment
 Summary
-  Write here a summary (1 line)
+  Controls the horizontal placement of the text.
 Description
-  Write here a description
+  Set Alignment to specify how the text of the check box is justified within the ClientRect of the 
+  check box control.
+
+  The effect of the Alignment property is more obvious if the WordWrap property is true and the 
+  check box includes more than one line of text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Layout
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.Associated
 Summary
@@ -61,7 +65,7 @@ Summary
   Determines whether control automatically resizes to accommodate the Caption.
 Description
   Use AutoSize to make the control adjust its size automatically so the client area accommodates
-  the height and width of the captionj. When AutoSize is False, the label is fixed in size.
+  the height and width of the captionj. When AutoSize is False, the check box is fixed in size.
   When AutoSize is True, the client size readjusts whenever the caption changes. The client size
   of the control is also readjusted when the Font property changes.
   By default, AutoSize is False.
@@ -71,12 +75,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.Canvas
 Summary
-  Write here a summary (1 line)
+  Provides runtime access to the check box’s drawing surface.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The read-only Canvas property provides access to the check box’s drawing surface.
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.HintColor
 Summary
@@ -128,64 +129,35 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.Layout
 Summary
-  Write here a summary (1 line)
+  Specifies the vertical placement of the text.
 Description
-  Write here a description
+  Set Layout to specify how the text of the check box is placed within the ClientRect of the check box 
+  control. Layout is the vertical analog to the Alignment property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.LeftText
 Summary
-  Write here a summary (1 line)
+  Specifies whether to show the text on the left or the right of the check box.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.OnMouseEnter
-Summary
-  Custom event triggered when the enters the component.
-Description
-  The event occurs whenever the mouse pointer is moved into the region defined by the component.
-  The default action changes the <LINK HintColor, HintColor> to the color assigned.
-See Also
-  OnMouseLeave
-----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.OnMouseLeave
-Summary
-  Custom event triggered when the mouse leaves the area delimited by the component.
-Description
-  The event occurs whenever the mouse pointer is moved into the region defined by the component.
-  The default action restores the <LINK HintColor, HintColor> to the Windows defaultHintColor
-  (Delphi Color: clInfoBlk).
-See Also
-  OnMouseEnter
+  Set LeftText to false (the default) to show the text on the right of the check box.
+  Set LeftText to true to show the text on the left of the check box.
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.OnParentColorChange
 Summary
-  Write here a summary (1 line)
+  Occurs when the color of the parent control changes.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCheckBox.ReadOnly
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write an OnParentColorChange event handler to take specific action when the parent's Color
+  property changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckBox.WordWrap
 Summary
-  Write here a summary (1 line)
+  Specifies whether the check box text wraps when it is too long for the width of the check box.
 Description
-  Write here a description
+  Set WordWrap to true to allow the check box to display multiple line of text. When WordWrap is true, 
+  text that is too wide for the check box control wraps at the right margin and continues in additional lines.
+
+  Set WordWrap to false to limit the check box to a single line. When WordWrap is false, text that is too
+  wide for the check box appears truncated.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment
