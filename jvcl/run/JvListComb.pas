@@ -40,6 +40,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, StdCtrls, ImgList,
+  {$IFDEF VCL}
+  JvJCLUtils,
+  {$ENDIF VCL}
   JvComponent, JvComboBox, JvExControls, JvExStdCtrls;
 
 type
@@ -737,7 +740,7 @@ begin
       Inc(R.Right,2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1118,7 +1121,7 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       FillRect(R);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_CENTER or DT_BOTTOM);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1192,7 +1195,7 @@ begin
       Inc(R.Right, 2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1268,7 +1271,7 @@ begin
     begin
       Dec(R.Right, 2);
       FillRect(R);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+      DrawText(FCanvas, Items[Index].Text, Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then

@@ -34,12 +34,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Controls, StdCtrls, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, Types, QGraphics, QControls, QStdCtrls, QImgList,
-  {$ENDIF VisualCLX}
   JvInspector;
 
 type

@@ -300,7 +300,9 @@ begin
   R := ClientRect;
   P := ClientToScreen(Point(0,0));
   OffsetRect(R, P.X, P.Y);
+  {$IFDEF VCL}
   ClipCursor(@R);
+  {$ENDIF VCL}
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -321,7 +323,9 @@ var
 begin
   FTracking := False;
   FChanging := False;
+  {$IFDEF VCL}
   ClipCursor(nil);
+  {$ENDIF VCL}
   if FChanged then
   begin
     Tmp := TBitmap.Create;

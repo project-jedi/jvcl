@@ -31,16 +31,10 @@ unit JvXPCore;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, Forms,
   {$IFDEF USEJVCL}
   JvComponent,
   {$ENDIF USEJVCL}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QControls, QGraphics, QForms, Qt, QWindows,
-  JvQComponent,
-  {$ENDIF VisualCLX}
   Classes;
 
 const
@@ -216,7 +210,6 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-//    function WidgetFlags: integer; override;
     procedure Loaded; override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -571,13 +564,6 @@ begin
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-(*
-function TJvXPCustomControl.WidgetFlags: integer;
-begin
-  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
-end;
-*)
-
 procedure TJvXPCustomControl.Loaded;
 begin
   inherited Loaded;
@@ -653,6 +639,7 @@ begin
   inherited AdjustSize;
   HookResized;
 end;
+
 (*
 procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin

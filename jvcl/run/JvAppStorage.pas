@@ -86,7 +86,7 @@ interface
 uses
   SysUtils, Classes, TypInfo,
   {$IFDEF LINUX}
-  JvJCLUtils,
+  JvQJCLUtils,
   {$ENDIF LINUX}
   JvComponent, JvTypes;
 

@@ -742,7 +742,7 @@ begin
         Bottom - Top, SrcRect, FGlyph, FTransparentColor);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Bmp := THackBitmap.Create;
+    Bmp := TBitmap.Create;
     try
       Bmp.Width := SrcRect.Right - SrcRect.Left;
       Bmp.Height := SrcRect.Bottom - SrcRect.Top;
