@@ -9,12 +9,15 @@
 |   |- Check=Check boxes=JVCL provides a number of enhanced check box controls.
 |   |- Push=Push buttons=JVCL provides a number of enhanced push buttons and speed buttons.
 |   |- Radio=Radio buttons=JVCL provides a number of enhanced radio buttons.
-|- CommCtrl=Common controls=JVCL provides a number of wrappes for common controls.
+|- CommCtrl=Common controls=JVCL provides a number of wrappers for common controls.
 |- Inspector=Data Inspector=JVCL provides a Object Inspector like control. The control has the ability to inspect various types of data sources (such as published properties, variables, INI-files, dataset fields and more).
 |- DBAware=Data aware components=JVCL provides a number of database aware components and controls (both visual as well as non visual).
 |   |- Providers=Datasets and DataSources=JVCL provides a number of data source and dataset derivatives.
 |   |   |- Datasets=Datasets=JVCL provides a number of dataset derivatives to retrieve data from other sources than databases.
 |   |   |- DataSources=DataSources=JVCL provides a number of TDataSources like components.
+|   |- DateTime=Date and time controls=JVCL provides a number of controls to work with dates and times in databases.
+|   |   |- EditsCombos=Date and time edit and comboboxes=JVCL provides a number of data-aware date and time edit controls and combo boxes.
+|   |   |- Other=Other date and time controls=This group contains data-aware datetime controls that do not fit in the other sub categories.
 |   |- EditsMemosAndCombos=Edits, memos and comboboxes=JVCL provides a number of data-aware controls that allow values to be changed.
 |   |   |- Combos=Comboboxes / lookups=JVCL provides a number of data aware comboboxes and lookup controls.
 |   |   |- Edits=Edits=JVCL provides a number of data aware edit controls.
@@ -29,6 +32,9 @@
 |   |- NavAndStatus=Navigational and status management=JVCL provides a number of navigational and status management controls.
 |   |   |- Navigational=Navigational controls=JVCL provides a number of navigational controls.
 |   |   |- Status=Status management=JVCL provides a number of dataset status displaying/controlling components and controls.
+|- DateTime=Date and time controls=JVCL provides a number of controls to work with dates and times.
+|   |- EditsCombos=Date and time edit and comboboxes=JVCL provides a number of date and time edit controls and combo boxes.
+|   |- Other=Other date and time controls=This group contains datetime controls that do not fit in the other sub categories.
 |- Dialogs=Dialogs=JVCL provides a number of dialog controls and components.
 |   |- Common=Common dialogs (Windows dialogs)=JVCL provides a number of components to display and controls common windows dialogs.
 |   |- Custom=Custom dialogs=JVCL provides a number of components that display and control custom dialogs.
