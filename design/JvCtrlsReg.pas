@@ -92,6 +92,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
+  RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
   RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);

@@ -139,6 +139,7 @@ type
     FImageOptions: TJvRollOutImageOptions;
     FToggleAnywhere: boolean;
     FShowFocus: boolean;
+    FTabStops: TStringlist;
 
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
@@ -158,12 +159,14 @@ type
     procedure DrawButtonFrame;
     procedure UpdateGroup;
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
-    procedure WMSetFocus(var Msg:TMessage); message WM_SETFOCUS;
-    procedure WMKillFocus(var Msg:TMessage);  message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure ChangeHeight(NewHeight: Integer);
     procedure ChangeWidth(NewWidth: Integer);
     procedure SetShowFocus(const Value: boolean);
+
   protected
+    procedure DoChildTabStop;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -183,23 +186,24 @@ type
     procedure Click; override;
     procedure DoImageOptionsChange(Sender: TObject);
     procedure DoColorsChange(Sender: TObject);
-    function MouseIsOnButton: boolean;
-
-    property ShowFocus:boolean read FShowFocus write SetShowFocus default true;
-    property ToggleAnywhere: boolean read FToggleAnywhere write FToggleAnywhere default true;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
     property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
-    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
     property Colors: TJvRollOutColors read FColors write FColors;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property ImageOptions: TJvRollOutImageOptions read FImageOptions write FImageOptions;
+    property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
+    property ShowFocus: boolean read FShowFocus write SetShowFocus default true;
+    property ToggleAnywhere: boolean read FToggleAnywhere write FToggleAnywhere default true;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
     property Caption: TCaption read FCaption write SetCaption;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function MouseIsOnButton: boolean;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure Collapse; virtual;
     procedure Expand; virtual;
@@ -245,9 +249,9 @@ type
     property OnExpand;
     property OnCollapse;
 
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
   end;
 
 implementation
@@ -267,6 +271,45 @@ begin
   FntLogRec.lfEscapement := Angle * 10;
   FntLogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
+end;
+
+procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
+  procedure DoRect;
+  var
+    TopRight, BottomLeft: TPoint;
+  begin
+    with Canvas, Rect do
+    begin
+      TopRight.X := Right;
+      TopRight.Y := Top;
+      BottomLeft.X := Left;
+      BottomLeft.Y := Bottom;
+      if TopColor <> clNone then
+      begin
+        Pen.Color := TopColor;
+        PolyLine([BottomLeft, TopLeft, TopRight]);
+      end;
+      if BottomColor <> clNone then
+      begin
+        Pen.Color := BottomColor;
+        Dec(BottomLeft.X);
+        PolyLine([TopRight, BottomRight, BottomLeft]);
+      end;
+    end;
+  end;
+
+begin
+  Canvas.Pen.Width := 1;
+  Dec(Rect.Bottom);
+  Dec(Rect.Right);
+  while Width > 0 do
+  begin
+    Dec(Width);
+    DoRect;
+    InflateRect(Rect, -1, -1);
+  end;
+  Inc(Rect.Bottom);
+  Inc(Rect.Right);
 end;
 
 { TJvRollOutImageOptions }
@@ -311,6 +354,7 @@ begin
     FImages.RegisterChanges(FChangeLink);
     FImages.FreeNotification(FOwner);
   end;
+  Change;
 end;
 
 procedure TJvRollOutImageOptions.SetIndexCollapsed(const Value: TImageIndex);
@@ -371,7 +415,11 @@ end;
 
 procedure TJvRollOutColors.SetButtonColor(const Value: TColor);
 begin
-  FButtonColor := Value;
+  if FButtonColor <> Value then
+  begin
+    FButtonColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvRollOutColors.SetButtonTop(const Value: TColor);
@@ -480,7 +528,8 @@ begin
   begin
     FMouseDown := True;
     RedrawControl(False);
-    if CanFocus then SetFocus;
+    if CanFocus {and not (csDesigning in ComponentState)} then
+      SetFocus;
   end;
 end;
 
@@ -573,6 +622,7 @@ begin
       DoExpand;
       UpdateGroup;
     end;
+    DoChildTabStop;
   end;
 end;
 
@@ -602,7 +652,7 @@ begin
   try
     OldWidth := Width;
     Width := NewWidth;
-    if Align  = alRight then
+    if Align = alRight then
       Left := Left + (OldWidth - NewWidth);
   finally
     EnableAlign;
@@ -765,6 +815,7 @@ var
   TopC, BottomC: TColor;
   FIndex: Integer;
 begin
+
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
   else
@@ -772,7 +823,8 @@ begin
 
   R := FButtonRect;
   Canvas.Brush.Color := Colors.ButtonColor;
-  Canvas.FillRect(R);
+  if Canvas.Brush.Color <> clNone then
+    Canvas.FillRect(R);
 
   if FMouseDown and FInsideButton then
   begin
@@ -794,8 +846,8 @@ begin
     TopC := Colors.Color;
     BottomC := Colors.Color;
   end;
-
-  Frame3D(Canvas, R, TopC, BottomC, 1);
+//  if not (csDesigning in ComponentState) then
+    InternalFrame3D(Canvas, R, TopC, BottomC, 1);
   if Collapsed then
     FIndex := ImageOptions.IndexCollapsed
   else
@@ -844,7 +896,7 @@ begin
   if ShowFocus and Focused then
   begin
     R := FButtonRect;
-    InflateRect(R,-2,-2);
+    InflateRect(R, -2, -2);
     Canvas.DrawFocusRect(R);
   end;
 end;
@@ -854,9 +906,22 @@ var
   R: TRect;
 begin
   R := ClientRect;
-  Canvas.Brush.Color := Colors.Color;
-  DrawThemedBackground(Self, Canvas, R);
-  Frame3D(Canvas, R, Colors.FrameTop, Colors.FrameBottom, BevelWidth);
+  if Colors.Color <> clNone then
+  begin
+    Canvas.Brush.Color := Colors.Color;
+    DrawThemedBackground(Self, Canvas, R);
+  end;
+  InternalFrame3D(Canvas, R, Colors.FrameTop, Colors.FrameBottom, BevelWidth);
+  if Colors.FrameTop = clNone then
+  begin
+    Dec(R.Left);
+    Dec(R.Top);
+  end;
+  if Colors.FrameBottom = clNone then
+  begin
+    Inc(R.Right);
+    Inc(R.Bottom);
+  end;
   DrawButtonFrame;
 end;
 
@@ -901,6 +966,7 @@ begin
           Top := Top + Msg.Result;
       end;}
       SetCollapsed(True);
+      DoChildTabStop;
       Invalidate;
     end;
   end;
@@ -922,7 +988,11 @@ function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState;
 begin
   Result := Enabled and (IsAccel(Key, FCaption) and (ssAlt in Shift)) or ((Key = VK_SPACE) and Focused);
   if Result then
-    SetCollapsed(not FCollapsed)
+  begin
+    SetCollapsed(not FCollapsed);
+    if CanFocus {and not (csDesigning in ComponentState)} then
+      SetFocus;
+  end
   else
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
@@ -954,24 +1024,26 @@ end;
 function TJvCustomRollOut.MouseIsOnButton: boolean;
 var
   P: TPoint;
-  R:TRect;
+  R: TRect;
 begin
   GetCursorPos(P);
   P := ScreenToClient(P);
   R := FButtonRect;
   // (p3) include edges in hit test
-  InflateRect(R,1,1);
+  InflateRect(R, 1, 1);
   Result := PtInRect(R, P);
 end;
 
 procedure TJvCustomRollOut.WmKillFocus(var Msg: TMessage);
 begin
+  DoChildTabStop;
   inherited;
   Invalidate;
 end;
 
 procedure TJvCustomRollOut.WmSetFocus(var Msg: TMessage);
 begin
+  DoChildTabStop;
   inherited;
   Invalidate;
 end;
@@ -984,6 +1056,42 @@ begin
     if Focused then
       Invalidate;
   end;
+end;
+
+procedure TJvCustomRollOut.DoChildTabStop;
+var
+  i: integer;
+begin
+  if csDesigning in ComponentState then Exit;
+  if Collapsed {and Focused} then
+  begin
+    if FTabStops = nil then
+    begin
+      FTabStops := TStringList.Create;
+      FTabStops.Sorted := true;
+    end;
+//    else
+//      FTabStops.Clear;
+    for i := 0 to ControlCount - 1 do
+      if (Controls[i] is TWinControl) and (TWinControl(Controls[i]).TabStop) then
+      begin
+        FTabStops.AddObject(Controls[i].Name, Controls[i]);
+        TWinControl(Controls[i]).TabStop := false;
+      end;
+  end
+  else if not Collapsed and (FTabStops <> nil) then
+  begin
+    for i := 0 to FTabStops.Count - 1 do
+      if FindChildControl(FTabStops[i]) <> nil then
+        TWinControl(FTabStops.Objects[i]).TabStop := true;
+    FreeAndNil(FTabStops);
+  end;
+end;
+
+destructor TJvCustomRollOut.Destroy;
+begin
+  FreeAndNil(FTabStops);
+  inherited;
 end;
 
 end.

@@ -3,7 +3,7 @@ unit JvRollOutEditor;
 interface
 uses
   {$IFDEF COMPILER6_UP}
-  DesignIntf,  
+  DesignIntf, DesignEditors,   
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -18,6 +18,10 @@ type
     function ImageList: TCustomImageList; override;
   public
     function GetAttributes: TPropertyAttributes; override;
+  end;
+  TJvRollOutDefaultEditor = class(TDefaultEditor)
+  public
+    procedure Edit; override;
   end;
 
 implementation
@@ -34,6 +38,23 @@ end;
 function TJvRollOutOptionsImagesProperty.ImageList: TCustomImageList;
 begin
   Result := TJvRollOutImageOptions(GetComponent(0)).Images;
+end;
+
+{ TJvRollOutDefaultEditor }
+
+procedure TJvRollOutDefaultEditor.Edit;
+var R:TJvRollOut;
+begin
+  if (GetComponent is TJvRollOut) then
+  begin
+    R := TJvRollOut(GetComponent);
+    if R.MouseIsOnButton then
+    begin
+      R.Collapsed := not R.Collapsed;
+      Designer.Modified;
+    end;
+  end;
+
 end;
 
 end.
