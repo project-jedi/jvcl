@@ -618,10 +618,10 @@ begin
     SetLength(FItems, FSelections^.cItems);
     for I := 0 to FSelections^.cItems - 1 do
     begin
-      {$R-}
+      {$RANGECHECKS OFF}
       Selection := @FSelections^.aDsSelection[I];
       {$IFDEF RANGECHECKS_ON}
-      {$R+}
+      {$RANGECHECKS ON}
       {$ENDIF RANGECHECKS_ON}
       FItems[I] := TObjectPickerSelection.Create(Selection,
         FSelections^.cFetchedAttributes);

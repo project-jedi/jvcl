@@ -32,7 +32,7 @@ unit JvAddPrinter;
 interface
 
 uses
-  Windows, ActiveX, ShlObj, ShellApi, SysUtils, Classes,
+  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes,
   JvBaseDlg;
 
 type
