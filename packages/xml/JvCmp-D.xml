@@ -7,9 +7,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCmp-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
+    <Package Name="JvCmp-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -22,9 +22,9 @@
   </Requires>
   <Contains>
     <File Name="..\..\design\JvPageManagerForm.pas" Targets="allbutclx" Formname="JvProxyEditor" Condition=""/>
-    <File Name="..\..\design\JvPatcherEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCmpReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPatchForm.pas" Targets="allbutclx" Formname="FoPatch" Condition=""/>
+    <File Name="..\..\design\JvPatcherEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCmpReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPatchForm.pas" Targets="all" Formname="FoPatch" Condition=""/>
   </Contains>
 </Package>

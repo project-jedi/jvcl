@@ -25,34 +25,34 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvDualListForm.pas" Targets="allbutclx" Formname="JvDualListForm" Condition=""/>
+    <File Name="..\..\run\JvDualListForm.pas" Targets="all" Formname="JvDualListForm" Condition=""/>
     <File Name="..\..\run\JvExceptionForm.pas" Targets="allbutclx" Formname="JvErrorDialog" Condition=""/>
     <File Name="..\..\run\JvFindFiles.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFindReplace.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFindReplace.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageDlg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvLoginForm.pas" Targets="allbutclx" Formname="JvLoginForm" Condition=""/>
     <File Name="..\..\run\JvObjectPickerDialog.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetup.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetupTitled.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvParameterList.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvParameterListParameter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProgressComponent.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProgressDialog.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProgressForm.pas" Targets="allbutclx" Formname="frmProgress" Condition=""/>
+    <File Name="..\..\run\JvParameterList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvParameterListParameter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgressComponent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgressDialog.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgressForm.pas" Targets="all" Formname="frmProgress" Condition=""/>
     <File Name="..\..\run\JvRenameError.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSelectDirectory.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTipOfDay.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTipOfDay.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWinDialogs.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAddPrinter.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCommonDialogD.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCommonDialogD.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCommonExecDlg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvConnectNetwork.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCopyError.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDeleteError.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDialogs.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDiskPrompt.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDSADialogs.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDualList.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDSADialogs.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDualList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDialogActns.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlert.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlertForm.pas" Targets="allbutclx" Formname="" Condition=""/>

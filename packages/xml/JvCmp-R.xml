@@ -8,7 +8,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvSystem-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -22,21 +22,21 @@
   <Contains>
     <File Name="..\..\run\JvMouseGesture.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageManager.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPatchFile.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPrint.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProfilerForm.pas" Targets="allbutclx" Formname="ProfReport" Condition=""/>
-    <File Name="..\..\run\JvStringHolder.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTimeLimit.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTranslator.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWinHelp.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAlarms.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvConverter.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPatchFile.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPrint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProfilerForm.pas" Targets="all" Formname="ProfReport" Condition=""/>
+    <File Name="..\..\run\JvStringHolder.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimeLimit.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTranslator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWinHelp.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAlarms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvConverter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCreateProcess.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDataEmbedded.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataEmbedded.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEasterEgg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvEnterTab.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvLogFile.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvLogForm.pas" Targets="allbutclx" Formname="FoLog" Condition=""/>
-    <File Name="..\..\run\JvMergeManager.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLogFile.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
+    <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

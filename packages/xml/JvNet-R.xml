@@ -12,21 +12,19 @@
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D7clx" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D7clx" Condition=""/>
-    <Package Name="DJCL" Targets="D7clx" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
-    <Package Name="visualclx" Targets="D7clx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMail.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
