@@ -14,9 +14,9 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): _________________________________.
+Contributor(s): Christophe Paris.
 
-Last Modified: 2002-06-03
+Last Modified: 2002-10-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -283,6 +283,12 @@ type
     procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXml = nil);override;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXml = nil);override;
   end;
+
+  TJvSimpleXmlElemSheet = class(TJvSimpleXmlElem)
+  public
+    procedure LoadFromStream(const Stream: TStream; Parent: TJvSimpleXml = nil);override;
+    procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXml = nil);override;
+  end;
   
   TJvSimpleXml = class(TJvComponent)
   private
@@ -360,6 +366,7 @@ resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
 {$IFNDEF COMPILER6_UP}
   SInvalidBoolean = '''%s'' is not a valid boolean value';
+  SLineBreak      = #13#10; 
 {$ENDIF COMPILER6_UP}
 
 implementation
@@ -2313,6 +2320,99 @@ begin
 end;
 {*************************************************}
 
+{ TJvSimpleXmlElemSheet }
+
+{*************************************************}
+procedure TJvSimpleXmlElemSheet.LoadFromStream(const Stream: TStream;
+  Parent: TJvSimpleXml);
+//<?xml-stylesheet alternate="yes" type="text/xsl" href="sheet.xsl"?>
+const
+  CS_START_PI   =   '<?xml-stylesheet';
+  CS_STOP_PI    =   '                ?>';
+var
+ i, lStreamPos, count, lPos: Integer;
+ lBuf: array[0..1024] of char;
+ lOk: Boolean;
+begin
+  lStreamPos := Stream.Position;
+  lPos := 1;
+  lOk := false;
+
+  repeat
+    count := Stream.Read(lBuf,SizeOf(lBuf));
+    if Parent<>nil then
+      Parent.DoLoadProgress(Stream.Position,Stream.Size);
+    for i:=0 to count-1 do
+    begin
+      //Increment stream pos for after comment
+      inc(lStreamPos);
+
+      case lPos of
+        1..15: //<?xml-stylesheet
+          if lBuf[i] = CS_START_PI[lPos] then
+            inc(lPos)
+          else
+            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_START_PI[lPos] +
+              ' Found ' + lBuf[i]);
+
+        16: //l
+          if lBuf[i] = CS_START_PI[lPos] then
+          begin
+            Stream.Seek(lStreamPos, soFromBeginning);
+            Properties.LoadFromStream(Stream);
+            lStreamPos := Stream.Position;
+            inc(lPos);
+            Break; //Re read buffer
+          end
+          else
+            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_START_PI[lPos] +
+              ' Found ' + lBuf[i]);
+
+        17: //?
+          if lBuf[i] = CS_STOP_PI[lPos] then
+            inc(lPos)
+          else
+            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_STOP_PI[lPos] +
+              ' Found ' + lBuf[i]);
+
+        18: //>
+          if lBuf[i] = CS_STOP_PI[lPos] then
+          begin
+            Count := 0; //End repeat
+            lOk := true;
+            Break; //End if
+          end
+          else
+            raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Expected ' + CS_STOP_PI[lPos] +
+              ' Found ' + lBuf[i]);
+      end;
+    end;
+  until count=0;
+
+  if not lOk then
+    raise TJvSimpleXmlInvalid.Create('Invalid Stylesheet: Unexpected end of data');
+
+  Name := '';
+
+  Stream.Seek(lStreamPos,soFromBeginning);
+end;
+{*************************************************}
+procedure TJvSimpleXmlElemSheet.SaveToStream(const Stream: TStream;
+  const Level: string; Parent: TJvSimpleXml);
+var
+ i : integer;
+ st: string;
+begin
+  st := Level + '<?xml-stylesheet';
+  for i:=0 to Properties.GetCount-1 do
+    st := st + Properties.Item[i].SaveToString;
+  st := st + '?>' + sLineBreak;
+  Stream.Write(st[1],Length(st));
+  if Parent<>nil then
+    Parent.DoSaveProgress;
+end;
+{*************************************************}
+
 { TJvSimpleXmlElemsProlog }
 
 {*************************************************}
@@ -2407,6 +2507,8 @@ begin
               lEnd := true
             else if st='<!--' then
               lElem := TJvSimpleXmlElemComment.Create(nil)
+            else if st='<?xml-stylesheet' then
+              lElem := TJvSimpleXmlElemSheet.Create(nil)
             else if st='<?' then
               lElem := TJvSimpleXmlElemHeader.Create
             else if st='<!DOCTYPE' then
