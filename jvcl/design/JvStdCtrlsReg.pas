@@ -92,9 +92,8 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [
     {$IFDEF VCL}
-    TJvMainMenu, TJvPopupMenu,
-    TJvOfficeMenuItemPainter,TJvBtnMenuItemPainter, TJvStandardMenuItemPainter,
-    TJvOwnerDrawMenuItemPainter, TJvXPMenuItemPainter,
+    TJvMainMenu, TJvPopupMenu, TJvOfficeMenuItemPainter,TJvBtnMenuItemPainter,
+    TJvStandardMenuItemPainter, TJvOwnerDrawMenuItemPainter, TJvXPMenuItemPainter,
     TJvSystemPopup,
     {$ENDIF VCL}
     TJvCalculator]);
@@ -111,15 +110,12 @@ begin
     TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     {$IFDEF VCL}
-    TJvMemo,
-    TJvRichEdit,
+    TJvMemo, TJvRichEdit,
     {$ENDIF VCL}
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
     {$IFDEF VCL}
-    TJvHotKey,
-    TJvIPAddress,
-    TJvDatePickerEdit,
+    TJvHotKey, TJvIPAddress, TJvDatePickerEdit,
     {$ENDIF VCL}
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
@@ -132,9 +128,8 @@ begin
     {$IFDEF VCL}
     TJvToolBar, TJvCoolBar,
     {$ENDIF VCL}
-    TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
-    TJvSecretPanel {, TJvTransparentPanel}]);
+    TJvControlBar, TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
+    TJvSecretPanel]);
   RegisterComponents(RsPaletteLabel, [
     {$IFDEF VCL}
     TJvStaticText,
@@ -151,8 +146,7 @@ begin
     TJvColorComboBox,
     {$IFDEF VCL}
     TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
-    TJvDateTimePicker,
-    TJvMonthCalendar, TJvMonthCalendar2,
+    TJvDateTimePicker, TJvMonthCalendar, TJvMonthCalendar2,
     {$ENDIF VCL}
     TJvDrawGrid, TJvStringGrid]);
   RegisterComponents(RsPaletteScrollerTracker, [

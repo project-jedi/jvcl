@@ -395,7 +395,7 @@ var
   ParentPath: string;
   ValueName: string;
   ANode: TJvSimpleXmlElem;
-  Buffer: Extended;
+  //Buffer: Extended;
 begin
   if AutoReload and not IsUpdating then
     Reload;
