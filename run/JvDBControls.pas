@@ -947,11 +947,7 @@ begin
   FDataLink.OnActiveChange := ActiveChange;
   // new stuff that isn't in the VCL version.
   FBeepOnError  := true;
-{$IFDEF DELPHI7_UP}
-  inherited SetReadOnly(True);
-{$ELSE}
   inherited ReadOnly := True;
-{$ENDIF}
 end;
 
 destructor TJvDBMaskEdit.Destroy;
