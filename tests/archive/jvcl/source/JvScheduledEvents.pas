@@ -501,7 +501,6 @@ var
   SubKey: string;
   EventNames: TStrings;
   I: Integer;
-  IEvents: Integer;
   EventKey: string;
   Stamp: TTimeStamp;
   TriggerCount: Integer;
@@ -517,7 +516,6 @@ begin
       RegGetKeyNames(FSaveKey, SubKey, EventNames);
       for I := 0 to EventNames.Count - 1 do
       begin
-        IEvents := StrToInt(EventNames[I]);
         EventKey := SubKey + '\' + EventNames[I];
         Stamp.Date := RegReadInteger(FSaveKey, EventKey, 'Stamp.Date');
         Stamp.Time := RegReadInteger(FSaveKey, EventKey, 'Stamp.Time');
@@ -532,7 +530,7 @@ begin
         SnoozeInterval.wMinute := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute');
         SnoozeInterval.wSecond := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond');
         SnoozeInterval.wMilliseconds := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds');
-        FEvents[IEvents].LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
+        FEvents.Add.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
       end;
     finally
       EventNames.Free;
