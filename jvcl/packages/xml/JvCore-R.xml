@@ -4,20 +4,20 @@
   <C5PFlags/>
   <C6PFlags/>
   <Requires>
-    <Package Name="CJCL50" Targets="C5" Design="" Condition=""/>
-    <Package Name="CJCL60" Targets="C6,C6p" Design="" Condition=""/>
-    <Package Name="DJCL50" Targets="D5,D5s" Design="" Condition=""/>
-    <Package Name="DJCL60" Targets="D6,D6p" Design="" Condition=""/>
-    <Package Name="DJCL70" Targets="D7,D7p" Design="" Condition=""/>
-    <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Design="" Condition=""/>
-    <Package Name="vcl" Targets="D7,D7p,C6,C6p,K2,K3" Design="" Condition=""/>
-    <Package Name="rtl" Targets="D7,D7p,C6,C6p,K2,K3" Design="" Condition=""/>
-    <Package Name="bcbsmp" Targets="C6,C6p" Design="" Condition=""/>
-    <Package Name="vcljpg" Targets="C6,C6p" Design="" Condition=""/>
-    <Package Name="vcl50" Targets="C5" Design="" Condition=""/>
-    <Package Name="vcljpg50" Targets="C5" Design="" Condition=""/>
-    <Package Name="vclx50" Targets="D5,D5s,C5" Design="" Condition=""/>
-    <Package Name="bcbsmp50" Targets="C5" Design="" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
+    <Package Name="DJCL60" Targets="D6,D6p" Condition=""/>
+    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
+    <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/>
+    <Package Name="vcl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
+    <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
+    <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
+    <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="vcljpg50" Targets="C5" Condition=""/>
+    <Package Name="vclx50" Targets="D5,D5s,C5" Condition=""/>
+    <Package Name="bcbsmp50" Targets="C5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\common\JvConsts.pas" Targets="all" Formname="" Condition=""/>
