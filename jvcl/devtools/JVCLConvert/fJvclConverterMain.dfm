@@ -2675,4 +2675,19 @@ object frmMain: TfrmMain
     Left = 312
     Top = 88
   end
+  object JvAppIniFileStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Buffered = False
+    SubStorages = <>
+    Left = 120
+    Top = 220
+  end
+  object JvFormStorage: TJvFormStorage
+    AppStorage = JvAppIniFileStorage
+    AppStoragePath = 'MainForm\'
+    StoredValues = <>
+    Left = 50
+    Top = 240
+  end
 end
