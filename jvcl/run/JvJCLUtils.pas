@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvJCLUtils.PAS, released on 2002-07-04.
+The Original Code is: JvJCLUtils.pas, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
 Copyright (c) 1999, 2002 Andrei Prygounkov
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-24
+Last Modified: 2003-11-05
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -895,7 +895,7 @@ procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
 procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-{$IFDEF COMPLIB_VCL}
+{$IFDEF MSWINDOWS}
 function WindowClassName(Wnd: HWND): string;
 procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
 procedure ActivateWindow(Wnd: HWND);
@@ -904,7 +904,7 @@ procedure CenterWindow(Wnd: HWND);
 procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 { SetWindowTop put window to top without recreating window }
 procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
-{$ENDIF COMPLIB_VCL}
+{$ENDIF MSWINDOWS}
 function MakeVariant(const Values: array of Variant): Variant;
 
 
@@ -920,7 +920,7 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF COMPLIB_VCL}
 {$IFDEF CBUILDER}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
@@ -933,7 +933,7 @@ function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 function IsForegroundTask: Boolean;
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
-{$ENDIF MSWINDOWS}
+{$ENDIF COMLIB_VCL}
 
 implementation
 uses
@@ -7619,7 +7619,7 @@ begin
     Result := S;
 end;
 
-{$IFDEF COMPLIB_VCL}
+{$IFDEF MSWINDOWS}
 function WindowClassName(Wnd: HWND): string;
 var
   Buffer: array[0..255] of Char;
@@ -7777,7 +7777,7 @@ begin
     Result := True;
   end;
 end;
-{$ENDIF COMPLIB_VCL}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
 { Check if this is the active Windows task }
@@ -7834,20 +7834,6 @@ begin
   end;
 end;
 
-{$ENDIF MSWINDOWS}
-
-function MakeVariant(const Values: array of Variant): Variant;
-begin
-  if High(Values) - Low(Values) > 1 then
-    Result := VarArrayOf(Values)
-  else
-  if High(Values) - Low(Values) = 1 then
-    Result := Values[Low(Values)]
-  else
-    Result := Null;
-end;
-
-{$IFDEF COMPLIB_VCL}
 procedure FitRectToScreen(var Rect: TRect);
 var
   X, Y, Delta: Integer;
@@ -7916,7 +7902,20 @@ begin
     SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
-{$ENDIF COMPLIB_VCL}
+{$ENDIF MSWINDOWS}
+
+function MakeVariant(const Values: array of Variant): Variant;
+begin
+  if High(Values) - Low(Values) > 1 then
+    Result := VarArrayOf(Values)
+  else
+  if High(Values) - Low(Values) = 1 then
+    Result := Values[Low(Values)]
+  else
+    Result := Null;
+end;
+
+
 {$IFDEF MSWINDOWS}
 { Dialog units }
 

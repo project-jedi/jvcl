@@ -82,13 +82,15 @@ type
   TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
 
 // set the background wallpaper (two versions)
-procedure SetWallpaper(Path: string); overload;
-procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle); overload;
+procedure SetWallpaper(const Path: string); overload;
+procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
 
+{$IFDEF COMPLIB_VCL}
 // screen capture functions
 function CaptureScreen(IncludeTaskBar:boolean=true): TBitmap;overload;
 function CaptureScreen(Rec: TRect): TBitmap; overload;
 function CaptureScreen(WndHandle: LongWord): TBitmap; overload;
+{$ENDIF COMPLIB_VCL}
 
 {$ENDIF MSWINDOWS}
 //Convert RGB Values to HSV
@@ -290,7 +292,7 @@ type
     procedure SetOrigin(X, Y: Integer);
     procedure FreeHandle;
   end;
-{$ENDIF COMPLIB_VCL}  
+{$ENDIF COMPLIB_VCL}
 
 { end from JvVCLUtils }
 
@@ -324,9 +326,6 @@ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Control: TWinControl): Integer;
 {**** Windows routines }
 
-{$ENDIF COMPLIB_VCL}
-
-{$IFDEF COMPLIB_VCL}
 { LoadIcoToImage loads two icons from resource named NameRes,
   into two image lists ALarge and ASmall}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
@@ -782,7 +781,6 @@ begin
     SystemParametersInfo(SPI_GETWORKAREA,0,Pointer(@R),0);
   Result := CaptureScreen(R);
 end;
-{$ENDIF COMPLIB_VCL}
 
 function CaptureScreen(WndHandle: LongWord): TBitmap;
 var
@@ -791,7 +789,7 @@ var
 begin
   if GetWindowRect(WndHandle, R) then
   begin
-    GetWindowPlacement(WndHandle,@WP);
+    GetWindowPlacement(WndHandle, WP);
     if IsIconic(WndHandle) then
       ShowWindow(WndHandle, SW_RESTORE);
     BringWindowToTop(WndHandle);
@@ -801,15 +799,14 @@ begin
   else
     Result := nil;
 end;
-{ (rb) Duplicate of JclMultimedia.OpenCloseCdDrive ?? }
+{$ENDIF COMPLIB_VCL}
 
-procedure SetWallpaper(Path: string);
+procedure SetWallpaper(const Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
 
-
-procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle);
+procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle);
 begin
   with TRegistry.Create do
   begin
@@ -2922,9 +2919,7 @@ function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType;
 begin
   Result := MsgDlgDef1(Msg, ACaption, DlgType, Buttons, mbHelp, False, HelpContext, Control);
 end;
-{$ENDIF COMPLIB_VCL}
 
-{$IFDEF COMPLIB_VCL}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 var
   Ico: TIcon;
@@ -3158,20 +3153,20 @@ begin
       Break;
     end;
   if Num <> -1 then
-{$IFDEF COMPLIB_VCL}
+ {$IFDEF COMPLIB_VCL}
     KillTimer(Application.Handle, Num)
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+ {$ENDIF}
+ {$IFDEF COMPLIB_CLX}
     KillTimer(QWidget_winId(Application.AppWidget), Num)
-{$ENDIF}
+ {$ENDIF}
   else
     Num := ProcList.Add(TJvProcItem.Create(Proc));
-{$IFDEF COMPLIB_VCL}
+ {$IFDEF COMPLIB_VCL}
   SetTimer(Application.Handle, Num, Pause, @TmrProc);
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+ {$ENDIF}
+ {$IFDEF COMPLIB_CLX}
   SetTimer(QWidget_winId(Application.AppWidget), Num, Pause, @TmrProc);
-{$ENDIF}
+ {$ENDIF}
 end;
 {$ENDIF MSWINDOWS}
 
