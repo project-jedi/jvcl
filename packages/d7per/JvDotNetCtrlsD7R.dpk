@@ -45,9 +45,6 @@ requires
 {$IFDEF USEJVCL}
   JvStdCtrlsD7R,
 {$ENDIF}
-{$IFDEF USEJVCL}
-  JvDBD7R,
-{$ENDIF}
   vcl,
   rtl,
   vclx

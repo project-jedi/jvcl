@@ -8,7 +8,7 @@
   <Requires>
     <Package Name="JvCore-R" Targets="allbutclx" Condition="USEJVCL"/>
     <Package Name="JvStdCtrls-R" Targets="allbutclx" Condition="USEJVCL"/>
-    <Package Name="JvDB-R" Targets="allbutclx" Condition="USEJVCL"/>
+    <Package Name="JvDB-R" Targets="allbutperso" Condition="USEJVCL"/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
