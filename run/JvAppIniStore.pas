@@ -64,7 +64,7 @@ type
   private
     FBuffered: Boolean;
     FHasWritten: Boolean;
-    FIdleDelay: Longint;
+//    FIdleDelay: Longint;                                          TIdleThread disabled for now
     FIniFile: TCustomIniFile;
     FLastUserAct: Longint;
   protected
@@ -73,7 +73,7 @@ type
     procedure SetBuffered(Value: Boolean);
     function GetFileName: TFileName;
     procedure SetFileName(Value: TFileName);
-    function AppWindowMsg(var Msg: TMessage): Boolean;
+//    function AppWindowMsg(var Msg: TMessage): Boolean;            TIdleThread disabled for now
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -85,7 +85,7 @@ type
 
     property HasWritten: Boolean read FHasWritten;
     property IniFile: TCustomIniFile read FIniFile;
-    property LastUserAct: Longint read FLastUserAct;
+//    property LastUserAct: Longint read FLastUserAct;              TIdleThread disabled for now
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,7 +94,7 @@ type
   published
     property Buffered: Boolean read FBuffered write SetBuffered;
     property FileName: TFileName read GetFileName write SetFileName;
-    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100;
+//    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100; TIdleThread disabled for now
   end;
 
   { In memory INI file. The contents is not backed by a file at all, but descendants may be written
@@ -173,6 +173,8 @@ begin
   end;
 end;
 
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
 type
   TIdleThread = class(TThread)
   protected
@@ -221,7 +223,7 @@ constructor TIdleThread.Create;
 begin
   inherited Create(False);
 end;
-
+*)
 //===TJvAppINIStore=================================================================================
 
 function TJvAppINIStore.ValueStored(const Path: string): Boolean;
@@ -356,11 +358,13 @@ begin
   if Buffered then
   begin
     FIniFile := TMemIniFile.Create(Name);
+(*    This idle thread business is a death-trap at the moment. Commented out for now, maybe
+      reimplemented later
     if not (csDesigning in ComponentState) then
     begin
       StoresList.Add(Self);
       Application.HookMainWindow(AppWindowMsg);
-    end;
+    end;*)
   end
   else
     FIniFile := TIniFile.Create(Name);
@@ -368,11 +372,13 @@ end;
 
 procedure TJvAppINIFileStore.DestroyIniFile;
 begin
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
   if not (csDesigning in ComponentState) then
   begin
     StoresList.Remove(Self);
     Application.UnhookMainWindow(AppWindowMsg);
-  end;
+  end;*)
   Flush;
   FreeAndNil(FIniFile);
 end;
@@ -411,13 +417,15 @@ begin
   end;
 end;
 
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
 function TJvAppINIFileStore.AppWindowMsg(var Msg: TMessage): Boolean;
 begin
   if ((Msg.Msg >= WM_MOUSEFIRST) and (Msg.Msg <= WM_MOUSELAST)) or
      ((Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST)) then
     FLastUserAct := GetTickCount;
   Result := False;
-end;
+end;*)
 
 procedure TJvAppINIFileStore.EnumFolders(const Path: string; const Strings: TStrings;
   const ReportListAsValue: Boolean);
@@ -510,14 +518,16 @@ end;
 constructor TJvAppINIFileStore.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FIdleDelay := 100;
+//  FIdleDelay := 100; TIdleThread death-trap
 end;
 
 destructor TJvAppINIFileStore.Destroy;
 begin
   Flush;
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
   FreeAndNil(FIniFile);
-  StoresList.Remove(Self);
+  StoresList.Remove(Self); *)
   inherited Destroy;
 end;
 
@@ -701,11 +711,15 @@ begin
 end;
 
 initialization
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
   StoresList := TThreadList.Create;
-  FIdleThread := TIdleThread.Create;
+  FIdleThread := TIdleThread.Create;*)
 
 finalization
+(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+    reimplemented later
   FIdleThread.Terminate;
   FIdleThread.WaitFor;
-  FreeAndNil(StoresList);
+  FreeAndNil(StoresList);*)
 end.
