@@ -1,15 +1,15 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvGradientCaptionForm.pas", Jvgradientcaptionform, GradCaptionsEditor);
-USEFORMNS("..\..\run\JvWallpaperEditForm.pas", Jvwallpapereditform, FoWallpaperChooser);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvAppFrmC5D.res");
+USEUNIT("..\..\design\JvGradientCaptionForm.pas");
+USEUNIT("..\..\design\JvAppFrmReg.pas");
+USEUNIT("..\..\design\JvFormWallpaperEditor.pas");
+USEUNIT("..\..\run\JvWallpaperEditForm.pas");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("JvAppFrmC5R.bpi");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("JvStdCtrlsC5R.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)

@@ -4,41 +4,52 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvCoreC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvJVCLAboutForm.obj ..\..\dcu\JvActnResForm.obj 
-      ..\..\dcu\JvCoreC5R.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvConsts.obj ..\..\dcu\JVCLVer.obj ..\..\dcu\JvComponent.obj 
+      ..\..\dcu\JvVersionInfo.obj ..\..\dcu\JvTypes.obj ..\..\dcu\JvJCLUtils.obj 
+      ..\..\dcu\JvMaxPixel.obj ..\..\dcu\JvProgressUtils.obj 
+      ..\..\dcu\JvBaseDlg.obj ..\..\dcu\JvActions.obj ..\..\dcu\JvMouseTimer.obj 
+      ..\..\dcu\JvDsgnIntf.obj ..\..\dcu\JvDataProvider.obj 
+      ..\..\dcu\JvDataProviderImpl.obj ..\..\dcu\JvContextProvider.obj 
+      ..\..\dcu\JvAppStore.obj ..\..\dcu\JvAppRegistryStore.obj 
+      ..\..\dcu\JvAppIniStore.obj ..\..\dcu\JvJVCLAboutForm.obj 
+      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj 
+      ..\..\dcu\JvThemes.obj ..\..\dcu\JvColorProvider.obj 
+      ..\..\dcu\JvClxUtils.obj ..\..\dcu\JvCoreC5R.obj"/>
+    <RESFILES value="JvCoreC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvJVCLAboutForm.dfm ..\..\design\JvActnResForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="vcljpg50.lib"/>
-    <SPARELIBS value="Vcl50.lib vcljpg50.lib"/>
-    <PACKAGES value="vcl50.bpi vclx50.bpi CJCL50.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="cjcl50.bpi bcbsmp50.bpi Vcl50.bpi vcljpg50.bpi Vclx50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\run;..\..\design"/>
+    <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="JvCoreC5R.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run"/>
-    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\design;..\..\run"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\BCB5\Libraries;..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
+      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c -tWM"/>
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp -Gpr -x -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj Memmgr.Lib sysinit.obj $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
@@ -70,36 +81,28 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+
 [HistoryLists\hlIncludePath]
-Count=5
-Item0=..\..\run;
-Item1=..\..\design;..\..\run;
-Item2=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
-Item3=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
-Item4=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
+Count=0
 
 [HistoryLists\hlLibraryPath]
-Count=8
-Item0=$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\design;..\..\run;
-Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
-Item2=C:\Prog\Delphi5\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
-Item3=C:\Prog\Delphi5\Lib\JCL\dcu;c:\prog\CBuilder5\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
-Item5=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item7=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+Count=0
 
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
+Count=0
 
 [HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
+Count=0
 
 [HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\dcu
+Count=0
+
+[HistoryLists\hlFinalOutputDir]
+Count=0
+
+[HistoryLists\hIBPIOutputDir]
+Count=0
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
@@ -115,11 +118,6 @@ RemoteDebug=0
 ShowInfoMsgs=0
 LinkDebugVcl=0
 LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
 
 [Language]
 ActiveLang=

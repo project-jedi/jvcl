@@ -4,18 +4,21 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvUIBC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvUIBC5R.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvUIB.obj ..\..\dcu\JvUIBase.obj ..\..\dcu\JvUIBConst.obj 
+      ..\..\dcu\JvUIBDataSet.obj ..\..\dcu\JvUIBError.obj ..\..\dcu\JvUIBLib.obj 
+      ..\..\dcu\JvUIBMetaData.obj ..\..\dcu\JvUIBSQLParser.obj 
+      ..\..\dcu\JvUIBC5R.obj"/>
+    <RESFILES value="JvUIBC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="JvCoreC5R.bpi vcl50.bpi vclx50.bpi CJCL50.bpi db"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="JvCoreC5R.bpi vcl50.bpi CJCL50.bpi vcldb50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;"/>
+    <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -24,19 +27,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvUIBC5R.cpp"/>
-    <INCLUDEPATH value=""/>
-    <LIBPATH value="$(BCB)\Projects\Lib;"/>
+    <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+      -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;UIB - Unified Interbase Components&quot; -aa -Tpp -Gpr -x -Gn 
-      -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;UIB - Unified Interbase Components&quot; 
+      -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
@@ -56,7 +61,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1035
 CodePage=1252
 
 [Version Info Keys]
@@ -79,7 +84,7 @@ Item2=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=4
-Item0=C:\Prog\Delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
+Item0=C:\Prog\delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item1=..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item2=..\..\run;C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
 Item3=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
@@ -101,9 +106,14 @@ DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
 RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
 HostApplication=
 RemoteHost=
 RemotePath=
+RemoteLauncher=
+RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
@@ -120,5 +130,10 @@ PrecompiledHeaders=1
 ActiveLang=
 ProjectLang=
 RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
   </IDEOPTIONS>
 </PROJECT>

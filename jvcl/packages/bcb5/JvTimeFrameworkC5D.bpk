@@ -4,18 +4,18 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvTimeFrameworkC5D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvTimeFrameworkC5D.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvTimeFrameworkReg.obj ..\..\dcu\JvTimeFrameworkC5D.obj"/>
+    <RESFILES value="JvTimeFrameworkC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="dsnide50.bpi vcl50.bpi JvTimeFrameworkC5R.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl50.bpi dsnide50.bpi JvTimeFrameworkC5R.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;"/>
+    <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -24,18 +24,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvTimeFrameworkC5D.cpp"/>
-    <INCLUDEPATH value=""/>
-    <LIBPATH value="$(BCB)\Lib;"/>
+    <INCLUDEPATH value="..\..\resources;..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\design -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+      -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde"/>
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Time Framework&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Time Framework&quot; -aa -Tpp -Gpd 
+      -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
@@ -55,7 +58,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1035
 CodePage=1252
 
 [Version Info Keys]
@@ -97,9 +100,14 @@ DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
 RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
 HostApplication=
 RemoteHost=
 RemotePath=
+RemoteLauncher=
+RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
@@ -116,5 +124,10 @@ PrecompiledHeaders=1
 ActiveLang=
 ProjectLang=
 RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
   </IDEOPTIONS>
 </PROJECT>

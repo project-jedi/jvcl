@@ -1,13 +1,15 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvSpeedbarForm.pas", Jvspeedbarform, JvSpeedbarEditor);
-USEFORMNS("..\..\design\JvHTHintForm.pas", Jvhthintform, JvHintEditor);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvCtrlsC5D.res");
+USEUNIT("..\..\design\JvSpeedbarForm.pas");
+USEUNIT("..\..\design\JvBehaviorLabelEditor.pas");
+USEUNIT("..\..\design\JvCtrlsReg.pas");
+USEUNIT("..\..\design\JvFooterEditor.pas");
+USEUNIT("..\..\design\JvHTHintForm.pas");
+USEUNIT("..\..\design\JvScrollMaxEditor.pas");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("JvCtrlsC5R.bpi");
 USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("CJCL50.bpi");

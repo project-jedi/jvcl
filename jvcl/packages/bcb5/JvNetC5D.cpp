@@ -1,13 +1,15 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\run\JvParserForm.pas", Jvparserform, FormParsers);
-USEPACKAGE("dsnide50.bpi");
+USERES("JvNetC5D.res");
+USEUNIT("..\..\design\JvNetReg.pas");
+USEUNIT("..\..\design\JvHtmlParserEditor.pas");
+USEUNIT("..\..\design\JvMailEditor.pas");
+USEUNIT("..\..\run\JvParserForm.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("JvNetC5R.bpi");
-USEPACKAGE("");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

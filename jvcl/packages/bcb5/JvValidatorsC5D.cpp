@@ -1,16 +1,15 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvValidatorsEditorForm.pas", Jvvalidatorseditorform, frmValidatorsEditor);
-USEPACKAGE("JvCoreC5R.bpi");
+USERES("JvValidatorsC5D.res");
+USEUNIT("..\..\design\JvValidatorsReg.pas");
+USEUNIT("..\..\design\JvValidatorsEditorForm.pas");
+USEPACKAGE("JvCoreC5D.bpi");
+USEPACKAGE("JvValidatorsC5R.bpi");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
 USEPACKAGE("dclstd50.bpi");
-USEPACKAGE("JvCoreC5D.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

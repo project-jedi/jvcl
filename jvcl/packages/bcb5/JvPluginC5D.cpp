@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvPluginParamsForm.pas", Jvpluginparamsform, frmPluginParams);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvPluginC5D.res");
+USEUNIT("..\..\design\JvPluginWizard.pas");
+USEUNIT("..\..\design\JvPluginParamsForm.pas");
+USEUNIT("..\..\design\JvPluginReg.pas");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("JvPluginC5R.bpi");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("JvCoreC5R.bpi");

@@ -1,16 +1,8 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
-USEPACKAGE("CJCL50.bpi");
-USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("JvDlgsC5R.bpi");
-USEPACKAGE("bcbsmp50.bpi");
-USEPACKAGE("bcbie50.bpi");
-USEPACKAGE("JvCoreC5D.bpi");
+USEPACKAGE("Vcl50.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

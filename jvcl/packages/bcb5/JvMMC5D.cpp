@@ -1,15 +1,19 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvVirtualKeyEditorForm.pas", Jvvirtualkeyeditorform, frmJvVirtualKeyEditor);
-USEFORMNS("..\..\design\JvDirectoryListForm.pas", Jvdirectorylistform, JvDirectoryListDialog);
-USEFORMNS("..\..\design\JvIconListForm.pas", Jviconlistform, IconListDialog);
-USEFORMNS("..\..\design\JvID3v2DefineForm.pas", Jvid3v2defineform, JvID3DefineDlg);
-USEFORMNS("..\..\design\JvID3v2EditorForm.pas", Jvid3v2editorform, JvID3FramesEditor);
-USEFORMNS("..\..\design\JvImagePreviewForm.pas", Jvimagepreviewform, ImageForm);
-USEFORMNS("..\..\design\JvPictureEditForm.pas", Jvpictureeditform, PictureEditDialog);
-USEPACKAGE("");
+USERES("JvMMC5D.res");
+USEUNIT("..\..\design\JvVirtualKeyEditorForm.pas");
+USEUNIT("..\..\design\JvAnimatedEditor.pas");
+USEUNIT("..\..\design\JvAVICaptureEditors.pas");
+USEUNIT("..\..\design\JvDirectoryListForm.pas");
+USEUNIT("..\..\design\JvIconListForm.pas");
+USEUNIT("..\..\design\JvID3v2DefineForm.pas");
+USEUNIT("..\..\design\JvID3v2EditorForm.pas");
+USEUNIT("..\..\design\JvImagePreviewForm.pas");
+USEUNIT("..\..\design\JvMMReg.pas");
+USEUNIT("..\..\design\JvPictureEditForm.pas");
+USEUNIT("..\..\design\JvPictureEditors.pas");
 USEPACKAGE("dsnide50.bpi");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("vclx50.bpi");

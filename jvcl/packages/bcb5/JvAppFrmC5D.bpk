@@ -4,19 +4,18 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvAppFrmC5D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvGradientCaptionForm.obj ..\..\dcu\JvWallpaperEditForm.obj 
+    <OBJFILES value="..\..\dcu\JvGradientCaptionForm.obj ..\..\dcu\JvAppFrmReg.obj 
+      ..\..\dcu\JvFormWallpaperEditor.obj ..\..\dcu\JvWallpaperEditForm.obj 
       ..\..\dcu\JvAppFrmC5D.obj"/>
-    <RESFILES value=""/>
+    <RESFILES value="JvAppFrmC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\design\JvGradientCaptionForm.dfm 
-      ..\..\run\JvWallpaperEditForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="dsnide50.bpi CJCL50.bpi JvAppFrmC5R.bpi vcl50.bpi vclx50.bpi 
-      JvStdCtrlsC5R.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="CJCL50.bpi JvAppFrmC5R.bpi vcl50.bpi JvStdCtrlsC5R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design;..\..\run"/>
     <PATHRC value=".;"/>
@@ -27,15 +26,17 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvAppFrmC5D.cpp"/>
-    <INCLUDEPATH value="..\..\run;..\..\design;"/>
-    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\run;..\..\design;"/>
+    <INCLUDEPATH value="..\..\run;..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I..\..\run -I..\..\design -boa"/>
+    <IDLCFLAGS value="-I..\..\run -I..\..\design -I..\..\common -I$(BCB)\include 
+      -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -LUvcl50 -LUdclstd50 -LUdsnide50 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\dcu -D&quot;JVCL Application and Form Components&quot; -aa -Tpp -Gpd -x -Gn 
@@ -74,16 +75,32 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+F:\Borland\3rdParty\DevExpress\ExpressInspector\BCB5\Lib\dcldxExRwC5.bpl=ExpressInspector Extended Rows
+F:\Borland\3rdParty\DevExpress\ExpressLayoutControl\BCB5\Lib\dxLayoutControldxEditAdaptersC5.bpl=ExpressLayoutControl Adapters for ExpressEditors Library by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressLayoutControl\BCB5\Lib\dxLayoutControlcxEditAdaptersC5.bpl=ExpressLayoutControl Adapters for ExpressEditors Library 4 by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSTLLnkc5.bpl=ExpressPrinting System ReportLink for ExpressQuantumTreeList by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSdxDBTLLnkc5.bpl=ExpressPrinting System ReportLink for ExpressQuantumDBTreeList by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSdxDBGrLnkc5.bpl=ExpressPrinting System ReportLink for ExpressQuantumGrid by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSTeeChartc5.bpl=ExpressPrinting System ReportLink for TeeChart by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSDBTeeChartc5.bpl=ExpressPrinting System ReportLink for DBTeeChart by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSdxDBTVLnkc5.bpl=ExpressPrinting System ReportLink for ExpressDBTree by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPSdxMVLnkc5.bpl=ExpressPrinting System ReportLink for ExpressMasterView by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPScxSSLnkc5.bpl=ExpressPrinting System ReportLink for ExpressSpreadSheet by Developer Express Inc.
+F:\Borland\3rdParty\DevExpress\ExpressPrintingSystem\BCB5\Lib\dxPScxGridLnkC5.bpl=ExpressPrinting System ReportLink for ExpressQuantumGrid 4 by Developer Express Inc.
+
 [HistoryLists\hlIncludePath]
-Count=2
-Item0=..\..\run;..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl
-Item1=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
+Count=3
+Item0=..\..\run;..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\run;..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item2=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=3
-Item0=..\..\run;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
-Item1=$(BCB)\Projects\Lib;C:\Prog\Delphi5\Lib\JCL\dcu;$(BCB)\lib\debug;..\..\run;..\..\design;..\..\dcu;..\..\resouces;$(BCB)\lib\obj;$(BCB)\lib
-Item2=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=4
+Item0=..\..\design;..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\..\run;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
+Item2=$(BCB)\Projects\Lib;C:\Prog\delphi5\Lib\JCL\dcu;$(BCB)\lib\debug;..\..\run;..\..\design;..\..\dcu;..\..\resouces;$(BCB)\lib\obj;$(BCB)\lib
+Item3=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -96,6 +113,14 @@ Item0=_DEBUG
 [HistoryLists\hlIntOutputDir]
 Count=1
 Item0=..\..\dcu
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=..\..\BCB5\Libraries
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
@@ -111,11 +136,6 @@ RemoteDebug=0
 ShowInfoMsgs=0
 LinkDebugVcl=0
 LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
 
 [Language]
 ActiveLang=

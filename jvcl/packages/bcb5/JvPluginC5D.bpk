@@ -4,16 +4,17 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvPluginC5D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvPluginParamsForm.obj ..\..\dcu\JvPluginC5D.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvPluginWizard.obj ..\..\dcu\JvPluginParamsForm.obj 
+      ..\..\dcu\JvPluginReg.obj ..\..\dcu\JvPluginC5D.obj"/>
+    <RESFILES value="JvPluginC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\design\JvPluginParamsForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="dsnide50.bpi vcl50.bpi vclx50.bpi JvPluginC5R.bpi CJCL50.bpi JvCoreC5R.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl50.bpi JvPluginC5R.bpi CJCL50.bpi JvCoreC5R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -24,19 +25,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvPluginC5D.cpp"/>
-    <INCLUDEPATH value="..\..\design;"/>
-    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\design;"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I..\..\design -boa"/>
+    <IDLCFLAGS value="-I..\..\design -I$(BCB)\include -I$(BCB)\include\vcl -I..\..\common 
+      -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde 
-      -LUdclstd.dcp"/>
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Plugin Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Plugin Components&quot; -aa -Tpp 
+      -Gpd -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
@@ -56,7 +59,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1035
 CodePage=1252
 
 [Version Info Keys]
@@ -81,7 +84,7 @@ Item3=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
 [HistoryLists\hlLibraryPath]
 Count=4
 Item0=$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources
-Item1=C:\Prog\Delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu
+Item1=C:\Prog\delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu
 Item2=$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu
 Item3=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
@@ -102,9 +105,14 @@ DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
 RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
 HostApplication=
 RemoteHost=
 RemotePath=
+RemoteLauncher=
+RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
@@ -121,5 +129,10 @@ PrecompiledHeaders=1
 ActiveLang=
 ProjectLang=
 RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
   </IDEOPTIONS>
 </PROJECT>

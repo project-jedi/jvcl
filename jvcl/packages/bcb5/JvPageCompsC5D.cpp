@@ -1,13 +1,12 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvTreeItemsEditorForm.pas", Jvtreeitemseditorform, frmTreeViewItems);
-USEFORMNS("..\..\design\JvPageLinkEditorForm.pas", Jvpagelinkeditorform, frmJvTreeViewLinksEditor);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvPageCompsC5D.res");
+USEUNIT("..\..\design\JvTreeItemsEditorForm.pas");
+USEUNIT("..\..\design\JvPageLinkEditorForm.pas");
+USEUNIT("..\..\design\JvPageListTreeViewReg.pas");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("JvPageCompsC5R.bpi");

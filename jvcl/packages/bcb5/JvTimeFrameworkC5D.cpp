@@ -1,12 +1,13 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvTimeFrameworkC5D.res");
+USEUNIT("..\..\design\JvTimeFrameworkReg.pas");
 USEPACKAGE("vcl50.bpi");
+USEPACKAGE("dsnide50.bpi");
 USEPACKAGE("JvTimeFrameworkC5R.bpi");
-//---------------------------------------------------------------------------
+
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 
@@ -19,4 +20,4 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
         return 1;
 }
 //---------------------------------------------------------------------------
- 
+
