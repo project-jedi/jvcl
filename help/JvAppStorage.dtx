@@ -554,12 +554,17 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.Location
 Summary
-  Write here a summary (1 line)
+  Root folder for storage file
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The "root" folder within the storage file will be created.
+
+  Remember that members of the "User" group may not have write permissions to the Windows and Program
+  Files folders. Windows Programming Guidelines require that "per user" application data have to be
+  written to \<document and settings\>\\\<user\>\\\<application data\>\\\<company\>\\\<application\> ,
+  while "generic" data should be written to \<document and settings\>\\\<All users\>\\\<application
+  data\>\\\<company\>\\\<application\>. Remember also that \<document and settings\> , \<All users\>
+  and \<application data\> actual names are operating system language specific, therefore do not hard
+  encode them but use operating system APIs or JCL functions to obtain actual names.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppMemoryFileStorage.OnGetFileName
@@ -1876,6 +1881,19 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@UnregisterAppStoragePropertyEngine
+<TITLE UnregisterAppStoragePropertyEngine procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AEngineClass - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

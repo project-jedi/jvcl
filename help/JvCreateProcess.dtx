@@ -529,7 +529,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.ConsoleOutput
 Summary
-  Returns a list of the found directory names.
+  Returns a string list that contains the output of the console process.
 Description
   ConsoleOutput is a string list that contains the output of console processes created with the
   TJvCreateProcess component, which standard input and output is redirected.
@@ -674,7 +674,8 @@ Summary
 Description
   Priority controls the new process's priority class, which is used to determine the scheduling
   priorities of the process's threads. The system schedules CPU cycles to each process based on a
-  priority scale; the Priority property adjusts a process's priority higher or lower on the scale.
+  priority scale; the Priority property adjusts a process's priority higher or lower on the scale. Note
+  that setting priority higher than normal is discouraged and may starve other applications in system.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.ProcessInfo

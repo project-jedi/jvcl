@@ -3,7 +3,9 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBActions.pas
 Summary
-  Contains the TJvDBActions component.
+  This unit contains a list of TAction-Components for work with Database-Objects. There is also a
+  TJvDatabaseActionsList components which has the ability to change the Connection of all included
+  TJvDatabaseAction Components with one call.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Jens Fudickar
@@ -17,6 +19,17 @@ Description
   Write here a description
 Parameters
   AEngineClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RegisteredDatabaseActionEngineList
+<TITLE RegisteredDatabaseActionEngineList function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -315,6 +328,53 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionEngineList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionEngineList.GetEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionEngineList.RegisterEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AEngineClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionEngineList.Supports
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDatabaseActionList
 <TITLEIMG TJvDatabaseActionList>
 JVCLInfo
@@ -357,9 +417,19 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDatabaseBaseAction
 Summary
-  Write here a summary (1 line)
+  Base Component for all TJvDatabaseAction Components
 Description
-  Write here a description
+  This is an enhanced Action Class.
+
+  It supports different actions on database objects.
+
+  The main difference is, that this component have the possibilites not only to connect to a
+  TDatasource Component. The DataComponent can connect to any type of component. The idea that it could
+  also connect to a TDBGrid and that the actions then are depending on the Grid and not on the
+  datasource.
+
+  The connection is handled through a TJvDatabaseActionBaseEngine. There are default engines for
+  TDatasource and TDBGrid Components.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDatabaseBaseAction.DataComponent
