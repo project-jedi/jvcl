@@ -12,14 +12,15 @@ SRC = ..\..\Source
 ARCH = ..\..\Archive
 COM = ..\..\Common
 BIN = ..\..\Bin
+DCU = ..\..\Dcu
 JCL = ..\..\..\JCL\source
 DRC = $&.drc
-SRCP = $(SRC);$(COM);$(JCL);$(ARCH)
-SRCH = ..\$(SRC);..\$(COM);..\$(JCL);$..\(ARCH)
+SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
+SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -r$(SRCP) -u$(SRCP) -q -w -m
-DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -r$(SRCH) -u$(SRCH) -q -w -m
+DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
+DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -85,7 +86,19 @@ JvOutlookPanelProj.exe \
 RunDLL32Demo.exe \
 SpecialProgressTestPrj.exe \
 SystemPopupTest.exe \
-ShFileOpDemo.exe
+ShFileOpDemo.exe \
+RAControls.exe \
+DBMove.exe \
+DBTree.exe \
+RAEditorTest.exe \
+LineNumbers.exe \
+ColorHintsTest.exe \
+JvInterpreterTest.exe \
+JvInterpreterEndUser.exe \
+MDIapp.exe \
+RANotepad.exe \
+JVCLDemo.exe 
+
  
 #---------------------------------------------------------------------------------------------------
 
@@ -404,7 +417,70 @@ SystemPopupTest.exe: JvSystemPopUp2\SystemPopupTest.dpr
   $(DCC) $&.dpr
   cd ..
 
-ShFileOpDemo.exe: JvShFileOperation\SystemPopupTest.dpr
+ShFileOpDemo.exe: JvShFileOperation\ShFileOpDemo.dpr
   cd JvShFileOperation
   $(DCC) $&.dpr
   cd ..
+
+RAControls.exe: RaLib\RaControls\RAControls.dpr
+  cd RaLib\RaControls
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DBMove.exe: RaLib\RaDBMove\DBMove.dpr
+  cd RaLib\RaDBMove
+  $(DCCH) $&.dpr
+  cd ..\..
+  
+DBTree.exe: RaLib\RaDBTreeView\DBTree.dpr
+  cd RaLib\RaDBTreeView
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RAEditorTest.exe: RaLib\RaEditor\RAEditorTest.dpr
+  cd RaLib\RaEditor
+  $(DCCH) $&.dpr
+  cd ..\..
+
+LineNumbers.exe: RaLib\RaEditor\LineNumbers.dpr
+  cd RaLib\RaEditor
+  $(DCCH) $&.dpr
+  cd ..\..
+  
+ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
+  cd RaLib\RaHtHints
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
+  cd RaLib\RaInterpreter
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DynamicLoad.exe: RaLib\RaInterpreterDynamicLoad\DynamicLoad.dpr
+  cd RaLib\RaInterpreterDynamicLoad
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JvInterpreterEndUser.exe: RaLib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
+  cd RaLib\RaInterpreterEndUser
+  $(DCCH) $&.dpr
+  cd ..\..
+
+MDIapp.exe: RaLib\RaInterpreterMDI\MDIapp.dpr
+  cd RaLib\RaInterpreterMDI
+  $(DCCH) $&.dpr
+  cd ..\..
+
+RANotepad.exe: RaLib\RaInterpreterNotepad\RANotepad.dpr
+  cd RaLib\RaInterpreterNotepad
+  $(DCCH) $&.dpr
+  cd ..\..
+
+JVCLDemo.exe: JVCLMegaDemo\JVCLDemo.dpr
+  cd JVCLMegaDemo
+  $(DCC) $&.dpr
+  cd ..
+  
+  
+  

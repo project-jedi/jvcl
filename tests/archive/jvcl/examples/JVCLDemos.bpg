@@ -9,66 +9,18 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = TimeLineDemo.exe \
-AppDdeCmdExample.exe \
-ArrowButtonDemo.exe \
-BmpAnimDemo.exe \
-CaptionButtonDemo.exe \
-ChangeNotifyDemo.exe \
-ColorButtonDemo.exe \
-ContentScrollerDemo.exe \
-ControlsExample.exe \
-CreateProcessExample.exe \
-WebMapper.exe \
-UseCase.exe \
-EvnironmentList.exe \
-FileDirDemo.exe \
-FindReplaceDemo.exe \
-BasicDemo.exe \
-CollectionDemo.exe \
-SimpleHIDWrite.exe \
-GreyMouser.exe \
-ImageWindowDemo.exe \
-Install2LabelDemo.exe \
-JvAniProj.exe \
-JvBrowserFolder.exe \
-JvClipboardViewerProj.exe \
-JvDataEmbeddedProj.exe \
-DBDTPDemo.exe \
-JvDialogs.exe \
-JvEdits.exe \
-JvHtmlParserProj.exe \
-InspectorDBExample.exe \
-InspExample.exe \
-JvLinkLabelDemo.exe \
-JvMousePositionnerProj.exe \
-JvMruList.exe \
-JvPlayListProj.exe \
-JvScreenCaptureProj.exe \
-JvSearchFileProj.exe \
-SpecialProgressTestPrj.exe \
-JvSystemPopupProj.exe \
-SystemPopupTest.exe \
-JvThreadProj.exe \
-JvTranslatorProj.exe \
-JvTreeViewAsMenu.exe \
-JvWinDialogsDemo.exe \
-JvWindowsTitleProj.exe \
-JvZoomProj.exe \
-ListCombDemo.exe \
-MailExample.exe \
-MonthCalendarDemo.exe \
-JvObjPickerDemo.exe \
-OLBarDemo.exe \
-ProfilerDemo.exe \
-RegEditDemo.exe \
-RunDLL32Demo.exe \
-ScrollWinDemo.exe \
-TipsDemo.exe \
-SimpleTLTest1.exe \
-TransparentButtonDemo.exe \
-ShFileOpDemo.exe
-
+PROJECTS = TimeLineDemo.exe AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe CaptionButtonDemo.exe \
+  ChangeNotifyDemo.exe ColorButtonDemo.exe ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe \
+  WebMapper.exe UseCase.exe EvnironmentList.exe FileDirDemo.exe FindReplaceDemo.exe BasicDemo.exe CollectionDemo.exe \
+  SimpleHIDWrite.exe GreyMouser.exe ImageWindowDemo.exe Install2LabelDemo.exe JvAniProj.exe JvBrowserFolder.exe \
+  JvClipboardViewerProj.exe JvDataEmbeddedProj.exe DBDTPDemo.exe JvDialogs.exe JvEdits.exe JvHtmlParserProj.exe \
+  InspectorDBExample.exe InspExample.exe JvLinkLabelDemo.exe JvMousePositionnerProj.exe JvMruList.exe JvPlayListProj.exe \
+  JvScreenCaptureProj.exe JvSearchFileProj.exe SpecialProgressTestPrj.exe JvSystemPopupProj.exe SystemPopupTest.exe \
+  JvThreadProj.exe JvTranslatorProj.exe JvTreeViewAsMenu.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe JvZoomProj.exe \
+  ListCombDemo.exe MailExample.exe MonthCalendarDemo.exe JvObjPickerDemo.exe OLBarDemo.exe ProfilerDemo.exe \
+  RegEditDemo.exe RunDLL32Demo.exe ScrollWinDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
+  ShFileOpDemo.exe JVCLDemo.exe RANotepad.exe MDIapp.exe JvInterpreterEndUser.exe DynamicLoad.exe JvInterpreterTest.exe \
+  ColorHintsTest.exe LineNumbers.exe RAEditorTest.exe RAHLEdPropDlgTest.exe DBTree.exe DBMove.exe RAControls.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -249,4 +201,47 @@ TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
 
 ShFileOpDemo.exe: JvShFileOperation\ShFileOpDemo.dpr
   $(DCC)
+
+JVCLDemo.exe: MegaDemo\JVCLDemo.dpr
+  $(DCC)
+
+RANotepad.exe: RALib\RaInterpreterNotepad\RANotepad.dpr
+  $(DCC)
+
+MDIapp.exe: RALib\RaInterpreterMDI\MDIapp.dpr
+  $(DCC)
+
+JvInterpreterEndUser.exe: RALib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
+  $(DCC)
+
+DynamicLoad.exe: RALib\RaInterpreterDynamicLoad\DynamicLoad.dpr
+  $(DCC)
+
+: RALib\RaInterpreter\samples\project1\project1.dpr
+  $(DCC)
+
+JvInterpreterTest.exe: RALib\RaInterpreter\JvInterpreterTest.dpr
+  $(DCC)
+
+ColorHintsTest.exe: RALib\RaHtHints\ColorHintsTest.dpr
+  $(DCC)
+
+LineNumbers.exe: RALib\RaEditor\LineNumbers.dpr
+  $(DCC)
+
+RAEditorTest.exe: RALib\RaEditor\RAEditorTest.dpr
+  $(DCC)
+
+RAHLEdPropDlgTest.exe: RALib\RaEditor\RAHLEdPropDlgTest.dpr
+  $(DCC)
+
+DBTree.exe: RALib\RaDBTreeView\DBTree.dpr
+  $(DCC)
+
+DBMove.exe: RALib\RaDBMove\DBMove.dpr
+  $(DCC)
+
+RAControls.exe: RALib\RaControls\RAControls.dpr
+  $(DCC)
+
 
