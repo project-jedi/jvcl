@@ -27,20 +27,9 @@ package JvCoreD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
   designide,
-  vcl,
-  vclactnband,
-  vclx,
-  dclstd,
-  vclie,
-  vcljpg,
-  qrpt,
-  bdertl,
-  dbrtl,
-  VclSmp,
-  vcldb;
+  dclstd;
 
 contains
   JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',

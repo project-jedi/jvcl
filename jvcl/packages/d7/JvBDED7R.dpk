@@ -27,13 +27,9 @@ package JvBDED7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
   JvDBD7R,
-  bdertl,
-  vcl,
-  dbrtl,
-  vcldb;
+  bdertl;
 
 contains
   JvBdeUtils in '..\..\run\JvBdeUtils.pas',

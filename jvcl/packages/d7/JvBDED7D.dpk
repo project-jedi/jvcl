@@ -28,13 +28,7 @@ package JvBDED7D;
 
 requires
   JvBDED7R,
-  vcl,
-  rtl,
-  dbrtl,
-  designide,
-  vclactnband,
-  vclx,
-  bdertl;
+  designide;
 
 contains
   JvBDEReg in '..\..\design\JvBDEReg.pas';

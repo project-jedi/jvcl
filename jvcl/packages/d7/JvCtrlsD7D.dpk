@@ -28,8 +28,7 @@ package JvCtrlsD7D;
 
 requires
   JvCtrlsD7R,
-  designide,
-  rtl;
+  designide;
 
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',

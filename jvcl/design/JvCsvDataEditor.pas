@@ -97,8 +97,8 @@ var
 begin
   WindowList := DisableTaskWindows(0);
   Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
+  dlgResult := idCancel;
   try
-    dlgResult := idCancel;
     Dialog.SetCsvStr(OldValue);
     dlgResult := Dialog.ShowModal;
     if dlgResult = idOk then

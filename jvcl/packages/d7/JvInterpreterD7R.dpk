@@ -27,16 +27,14 @@ package JvInterpreterD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcl,
+  JvCoreD7R,
+  JvCtrlsD7R,
+  JvCustomD7R,
   dbrtl,
   inet,
-  vcldb,
   bdertl,
-  JvCoreD7R,
-  qrpt,
-  JvCtrlsD7R,
-  JvCustomD7R;
+  vcldb,
+  qrpt;
 
 contains
   JvInterpreterParser in '..\..\run\JvInterpreterParser.pas',

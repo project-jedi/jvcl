@@ -27,14 +27,10 @@ package JvDlgsD7D;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
   JvCoreD7D,
   JvDlgsD7R,
-  designide,
-  vclactnband,
-  vclx,
-  vcl;
+  designide;
 
 contains
   JvDlgsReg in '..\..\design\JvDlgsReg.pas',

@@ -27,10 +27,8 @@ package JvStdCtrlsD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
   JvCoreD7R,
-  JvSystemD7R,
-  vcl;
+  JvSystemD7R;
 
 contains
   JvSpin in '..\..\run\JvSpin.pas',

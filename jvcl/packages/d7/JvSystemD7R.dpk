@@ -27,10 +27,6 @@ package JvSystemD7R;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  vcl,
-  vclx,
-  vcljpg,
   JvCoreD7R,
   DJCL70;
 
