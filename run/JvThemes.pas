@@ -714,7 +714,13 @@ type
 
 function ThemeServices: TThemeServicesEx;
 
-procedure PaintControlBorder(Control: TControl);
+{ PaintControlBorder paints the themed border for WinControls only when they
+  have the WS_EX_CLIENTEDGE. }
+procedure PaintControlBorder(Control: TWinControl);
+
+{ DrawThemedBorder draws a teEditTextNormal element (border) to the DC. It uses
+  the Control's BoundsRect. DrawThemedBorder forces border painting. }
+procedure DrawThemedBorder(Control: TControl);
 
 {$ENDIF JVCLThemesEnabled}
 
@@ -822,6 +828,53 @@ end;
 
 {$IFDEF MSWINDOWS}
 
+procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
+var
+  WindowOrg: TPoint;
+  OrgRgn, Rgn: THandle;
+begin
+  if Control.Parent <> nil then
+  begin
+    if (Offset.X <> 0) and (Offset.Y <> 0) then
+    begin
+      GetWindowOrgEx(DC, WindowOrg);
+      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
+    end;
+
+    OrgRgn := 0;
+    if R <> nil then
+    begin
+      OrgRgn := CreateRectRgn(0, 0, 1, 1);
+      if GetClipRgn(DC, OrgRgn) = 0 then
+      begin
+        DeleteObject(OrgRgn);
+        OrgRgn := 0;
+      end;
+      Rgn := CreateRectRgnIndirect(R^);
+      SelectClipRgn(DC, Rgn);
+      DeleteObject(Rgn);
+    end;
+
+    try
+      Control.Parent.Perform(WM_ERASEBKGND, DC, DC); // force redraw
+    finally
+      if (Offset.X <> 0) and (Offset.Y <> 0) then
+        SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
+
+      if OrgRgn <> 0 then
+      begin
+        SelectClipRgn(DC, OrgRgn);
+        DeleteObject(OrgRgn);
+      end;
+    end;
+  end;
+end;
+
+procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
+begin
+  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
+end;
+
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True);
 {$IFDEF JVCLThemesEnabled}
@@ -860,6 +913,7 @@ const
 var
   Btn: TThemedButton;
   ComboBox: TThemedComboBox;
+  ScrollBar: TThemedScrollBar;
   R: TRect;
   Details: TThemedElementDetails;
 {$ENDIF}
@@ -909,6 +963,34 @@ begin
                 ThemeServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
+            DFCS_SCROLLUP:
+              begin
+                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                begin
+                  if uState and DFCS_INACTIVE <> 0 then ScrollBar := tsArrowBtnUpDisabled
+                  else if uState and DFCS_PUSHED <> 0 then ScrollBar := tsArrowBtnUpPressed
+                  else if uState and DFCS_HOT <> 0 then ScrollBar := tsArrowBtnUpHot
+                  else ScrollBar := tsArrowBtnUpNormal;
+
+                  Details := ThemeServices.GetElementDetails(ScrollBar);
+                  ThemeServices.DrawElement(DC, Details, R);
+                  Result := True;
+                end;
+              end;
+            DFCS_SCROLLDOWN:
+              begin
+                if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
+                begin
+                  if uState and DFCS_INACTIVE <> 0 then ScrollBar := tsArrowBtnDownDisabled
+                  else if uState and DFCS_PUSHED <> 0 then ScrollBar := tsArrowBtnDownPressed
+                  else if uState and DFCS_HOT <> 0 then ScrollBar := tsArrowBtnDownHot
+                  else ScrollBar := tsArrowBtnDownNormal;
+
+                  Details := ThemeServices.GetElementDetails(ScrollBar);
+                  ThemeServices.DrawElement(DC, Details, R);
+                  Result := True;
+                end;
+              end;
           end; // clase
         end;
 
@@ -918,53 +1000,6 @@ begin
 
   if not Result then
     Result := DrawFrameControl(DC, Rect, uType, uState);
-end;
-
-procedure PerformEraseBackground(Control: TControl; DC: HDC; Offset: TPoint; R: PRect = nil);
-var
-  WindowOrg: TPoint;
-  OrgRgn, Rgn: THandle;
-begin
-  if Control.Parent <> nil then
-  begin
-    if (Offset.X <> 0) and (Offset.Y <> 0) then
-    begin
-      GetWindowOrgEx(DC, WindowOrg);
-      SetWindowOrgEx(DC, WindowOrg.X + Offset.X, WindowOrg.Y + Offset.Y, nil);
-    end;
-
-    OrgRgn := 0;
-    if R <> nil then
-    begin
-      OrgRgn := CreateRectRgn(0, 0, 1, 1);
-      if GetClipRgn(DC, OrgRgn) = 0 then
-      begin
-        DeleteObject(OrgRgn);
-        OrgRgn := 0;
-      end;
-      Rgn := CreateRectRgnIndirect(R^);
-      SelectClipRgn(DC, Rgn);
-      DeleteObject(Rgn);
-    end;
-
-    try
-      Control.Parent.Perform(WM_ERASEBKGND, DC, DC); // force redraw
-    finally
-      if (Offset.X <> 0) and (Offset.Y <> 0) then
-        SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
-
-      if OrgRgn <> 0 then
-      begin
-        SelectClipRgn(DC, OrgRgn);
-        DeleteObject(OrgRgn);
-      end;
-    end;
-  end;
-end;
-
-procedure PerformEraseBackground(Control: TControl; DC: HDC; R: PRect = nil);
-begin
-  PerformEraseBackground(Control, DC, Point(Control.Left, Control.Top), R);
 end;
 
 {$ENDIF MSWINDOWS}
@@ -1029,12 +1064,15 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 {$IFNDEF COMPILER7_UP}
+
 procedure TThemeServicesEx.ApplyThemeChange;
 begin
   ThemeServices.UpdateThemes;
   ThemeServices.DoOnThemeChange;
 end;
+
 {$ENDIF}
 
 function ThemeServices: TThemeServicesEx;
@@ -1044,28 +1082,40 @@ begin
   );
 end;
 
-procedure PaintControlBorder(Control: TControl);
+procedure PaintControlBorder(Control: TWinControl);
+begin
+  ThemeServices.PaintBorder(TWinControl(Control), False)
+end;
+
+procedure DrawThemedBorder(Control: TControl);
 var
+  Details: TThemedElementDetails;
   DrawRect: TRect;
   DC: HDC;
-  Details: TThemedElementDetails;
+  Handle: THandle;
 begin
   if Control is TWinControl then
-    ThemeServices.PaintBorder(TWinControl(Control), False)
+  begin
+    Handle := TWinControl(Control).Handle;
+    DC := GetWindowDC(Handle);
+    GetWindowRect(Handle, DrawRect);
+    OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
+  end
   else
   begin
-    if Control.Parent = nil then Exit;
+    if Control.Parent = nil then
+      Exit;
+    Handle := Control.Parent.Handle;
+    DC := GetDC(Handle);
     DrawRect := Control.BoundsRect;
-    DC := GetDC(Control.Parent.Handle);
-    try
-      with DrawRect do
-        ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
-      Details := ThemeServices.GetElementDetails(teEditTextNormal);
-      ThemeServices.DrawElement(DC, Details, DrawRect);
-    finally
-      ReleaseDC(Control.Parent.Handle, DC);
-    end;
   end;
+
+  with DrawRect do
+    ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
+  Details := ThemeServices.GetElementDetails(teEditTextNormal);
+  ThemeServices.DrawElement(DC, Details, DrawRect);
+
+  ReleaseDC(Handle, DC);
 end;
 
 {$IFDEF COMPILER7_UP}
