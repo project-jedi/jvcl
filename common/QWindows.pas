@@ -388,6 +388,33 @@ type
   TLogPen = tagLOGPEN;
   LOGPEN = tagLOGPEN;
 
+  { Logical Palette }
+  PPaletteEntry = ^TPaletteEntry;
+  tagPALETTEENTRY = packed record
+    peRed: Byte;
+    peGreen: Byte;
+    peBlue: Byte;
+    peFlags: Byte;
+  end;
+  TPaletteEntry = tagPALETTEENTRY;
+  PALETTEENTRY = tagPALETTEENTRY;
+
+  PLogPalette = ^TLogPalette;
+  tagLOGPALETTE = packed record
+    palVersion: Word;
+    palNumEntries: Word;
+    palPalEntry: array[0..0] of TPaletteEntry;
+  end;
+  TLogPalette = tagLOGPALETTE;
+  LOGPALETTE = tagLOGPALETTE;
+
+  PMaxLogPalette = ^TMaxLogPalette;
+  TMaxLogPalette = packed record
+    palVersion: Word;
+    palNumEntries: Word;
+    palPalEntry: array[Byte] of TPaletteEntry;
+  end;
+
   PtagBITMAP = ^tagBITMAP;
   tagBITMAP = packed record
     //bmType: Longint;
