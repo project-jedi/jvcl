@@ -14,26 +14,26 @@ object FindAndReplaceForm: TFindAndReplaceForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnCreate = FormCreate
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object LookInLabel: TLabel
-    Left = 120
-    Top = 79
-    Width = 56
-    Height = 12
+    Left = 150
+    Top = 99
+    Width = 70
+    Height = 15
     AutoSize = False
     Caption = '&Look In:'
   end
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 407
+    Width = 475
     Height = 25
     ButtonHeight = 23
     ButtonWidth = 24
@@ -102,90 +102,90 @@ object FindAndReplaceForm: TFindAndReplaceForm
     end
   end
   object Find: TButton
-    Left = 5
-    Top = 28
-    Width = 108
-    Height = 20
+    Left = 6
+    Top = 35
+    Width = 135
+    Height = 25
     Caption = '&Find'
     TabOrder = 1
   end
   object ReplaceButton: TButton
-    Left = 5
-    Top = 52
-    Width = 108
-    Height = 20
+    Left = 6
+    Top = 65
+    Width = 135
+    Height = 25
     Caption = '&Replace'
     TabOrder = 2
   end
   object ReplaceAllButton: TButton
-    Left = 5
-    Top = 76
-    Width = 108
-    Height = 20
+    Left = 6
+    Top = 95
+    Width = 135
+    Height = 25
     Caption = 'Replace &All'
     TabOrder = 3
   end
   object FindComboBox: TComboBox
-    Left = 120
-    Top = 28
-    Width = 145
-    Height = 20
-    ItemHeight = 12
+    Left = 150
+    Top = 35
+    Width = 181
+    Height = 23
+    ItemHeight = 15
     TabOrder = 4
   end
   object ReplaceComboBox: TComboBox
-    Left = 120
-    Top = 52
-    Width = 145
-    Height = 20
-    ItemHeight = 12
+    Left = 150
+    Top = 65
+    Width = 181
+    Height = 23
+    ItemHeight = 15
     TabOrder = 5
   end
   object LookInComboBox: TComboBox
-    Left = 176
-    Top = 76
-    Width = 89
-    Height = 20
-    ItemHeight = 12
+    Left = 220
+    Top = 95
+    Width = 111
+    Height = 23
+    ItemHeight = 15
     TabOrder = 6
   end
   object SubfoldersCheckBox: TCheckBox
-    Left = 176
-    Top = 100
-    Width = 97
-    Height = 17
+    Left = 220
+    Top = 125
+    Width = 121
+    Height = 21
     Caption = 'Subfolders'
     TabOrder = 7
   end
   object BrowseButton: TButton
-    Left = 272
-    Top = 100
-    Width = 108
-    Height = 20
+    Left = 340
+    Top = 125
+    Width = 135
+    Height = 25
     Caption = 'Browse...'
     TabOrder = 8
   end
   object ListView: TListView
-    Left = 5
-    Top = 125
-    Width = 372
-    Height = 177
+    Left = 6
+    Top = 156
+    Width = 465
+    Height = 222
     Columns = <
       item
         Caption = 'Name'
-        Width = 60
+        Width = 75
       end
       item
         Caption = 'Folder'
-        Width = 95
+        Width = 119
       end
       item
         Caption = 'Line'
-        Width = 52
+        Width = 65
       end
       item
         Caption = 'Text'
-        Width = 120
+        Width = 150
       end>
     TabOrder = 9
     ViewStyle = vsReport
@@ -195,7 +195,7 @@ object FindAndReplaceForm: TFindAndReplaceForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    DockStyle = MainForm.JvDockVIDStyle1
+    EnableCloseButton = True
     Left = 304
     Top = 64
   end

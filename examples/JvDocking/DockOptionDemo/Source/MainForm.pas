@@ -1,3 +1,18 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 unit MainForm;
 
 interface
@@ -5,7 +20,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, JvDockControlForm, JvDockVIDStyle, StdCtrls, Spin, ComCtrls,
-  ImgList;
+  ImgList, JvComponent;
 
 type
   TMain_Form = class(TForm)
@@ -73,7 +88,7 @@ type
     procedure DoReadTabOption;
   public
     { Public declarations }
-    procedure CreateDockWidnow;
+    procedure CreateDockWindow;
   end;
 
 var
@@ -280,7 +295,7 @@ begin
     TabOption.HotTrackColor := ColorDialog1.Color;
 end;
 
-procedure TMain_Form.CreateDockWidnow;
+procedure TMain_Form.CreateDockWindow;
 var i: Integer;
 begin
   for i := 0 to DockFormCount - 1 do
@@ -290,13 +305,13 @@ begin
     { 为每一个窗体设置不同的图标 }
     ImageList1.GetIcon(i, DockForms[i].Icon);
   end;
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
   DoReadOption;
 end;
 
 procedure TMain_Form.FormCreate(Sender: TObject);
 begin
-  CreateDockWidnow;
+  CreateDockWindow;
 end;
 
 end.

@@ -12,17 +12,17 @@ object ImmediateForm: TImmediateForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 239
-    Height = 232
+    Height = 233
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -32,13 +32,13 @@ object ImmediateForm: TImmediateForm
       Left = 2
       Top = 2
       Width = 235
-      Height = 228
+      Height = 229
       Align = alClient
       BorderStyle = bsNone
       Font.Charset = GB2312_CHARSET
       Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'ËÎÌו'
+      Font.Height = -15
+      Font.Name = #203#206#204#229
       Font.Style = []
       ParentFont = False
       TabOrder = 0
@@ -49,7 +49,7 @@ object ImmediateForm: TImmediateForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    DockStyle = MainForm.JvDockVIDStyle1
+    EnableCloseButton = True
     Left = 64
     Top = 88
   end

@@ -105,11 +105,9 @@ object Form4: TForm4
     OnFormHide = lbDockClient1FormHide
     LRDockWidth = 100
     TBDockHeight = 100
-    NCPopupMenu = MainForm.PopupMenu2
     DirectDrag = False
     ShowHint = True
-    EnableCloseBtn = True
-    DockStyle = MainForm.JvDockVSNetStyle1
+    EnableCloseButton = True
     Left = 32
     Top = 40
   end

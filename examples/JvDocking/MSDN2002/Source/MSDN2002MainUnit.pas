@@ -1,23 +1,31 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
-{*******************************************************}
-{                                                       }
-{                                                       }
-{       MSDN2002MainUnit Unit                           }
-{                                                       }
-{       Copyright (C) 2002,2002 luxiaoban               }
-{                                                       }
-{*******************************************************}
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
 
 
 unit MSDN2002MainUnit;
-
+{$I jvcl.inc}
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle,
-  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw,
-  JvComponent, JvAppStorage, JvAppRegistryStorage;
+  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw
+  {$IFDEF USEJVCL}
+  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  {$ENDIF};
 
 type
   TMSDN2002 = class(TForm)
@@ -197,7 +205,6 @@ type
     Float_Item: TMenuItem;
     AutoHide_Item: TMenuItem;
     JvDockVSNetStyle1: TJvDockVSNetStyle;
-    JvAppStorage: TJvAppRegistryStorage;
     procedure File_Print_ActionExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -215,6 +222,9 @@ type
     procedure Dockable_ItemClick(Sender: TObject);
   private
     { Private declarations }
+    {$IFDEF USEJVCL}
+    JvAppStorage:TJvAppRegistryStorage;
+    {$ENDIF}
     procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
     procedure LoadDockInfo;
@@ -269,14 +279,20 @@ end;
 
 procedure TMSDN2002.LoadToolFormLayout;
 begin
-//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  {$IFDEF USEJVCL}
   LoadDockTreeFromAppStorage(JvAppStorage);
+  {$ELSE}
+  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  {$ENDIF}
 end;
 
 procedure TMSDN2002.SaveToolFormLayout;
 begin
-//  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(JvAppStorage);
+  {$ELSE}
+  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  {$ENDIF}
 end;
 
 procedure TMSDN2002.File_Print_ActionExecute(Sender: TObject);
@@ -293,6 +309,12 @@ end;
 
 procedure TMSDN2002.FormCreate(Sender: TObject);
 begin
+  {$IFDEF USEJVCL}
+  JvAppStorage := TJvAppRegistryStorage.Create(self);
+  with JvAppStorage do
+    Root := 'Software\JVCL\Examples\JvDocking\MSDN2002Pro';
+  {$ENDIF}
+  
   CreateVSNETPageControl;
   LoadDockInfo;
 end;

@@ -1,23 +1,31 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
-{*******************************************************}
-{                                                       }
-{                                                       }
-{       MainFormUnit Unit                               }
-{                                                       }
-{       Copyright (C) 2002,2003 luxiaoban               }
-{                                                       }
-{*******************************************************}
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
 
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$I jvcl.inc}
 unit Main;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, ImgList, ExtCtrls, StdCtrls, Menus, ActnList,
-  JvDockControlForm, JvDockVCStyle, Grids{, ValEdit}, StdActns, JVHLEditor,
-  JvDockDelphiStyle, JvDockVIDStyle, JvComponent, JvAppStorage,
-  JvAppRegistryStorage;
+  JvDockControlForm, JvDockVCStyle, Grids, StdActns, JVHLEditor,
+  JvDockDelphiStyle, JvDockVIDStyle
+  {$IFDEF USEJVCL}
+  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  {$ENDIF};
 
 type
   TMainForm = class(TForm)
@@ -410,7 +418,6 @@ type
     ToolButton51: TToolButton;
     ToolButton52: TToolButton;
     ToolButton53: TToolButton;
-    JvAppStorage: TJvAppRegistryStorage;
     procedure View_Workspace_ActionExecute(Sender: TObject);
     procedure View_OutPut_ActionExecute(Sender: TObject);
     procedure MainControlBarBandMove(Sender: TObject; Control: TControl;
@@ -462,6 +469,9 @@ type
     procedure View_CallStack_ActionExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    {$IFDEF USEJVCL}
+    JvAppStorage:TJvAppRegistryStorage;
+    {$ENDIF}
     procedure GetToolbarWidthArr;
     function GetCloseButtonRect: TRect;
     function ActionEnable: Boolean;
@@ -626,8 +636,11 @@ var i: Integer;
 begin
   for i := MDIChildCount - 1 downto 0 do
     MDIChildren[i].Close;
-//  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(JvAppStorage);
+  {$ELSE}
+  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
 end;
 
 procedure TMainForm.MainControlBarResize(Sender: TObject);
@@ -948,16 +961,23 @@ end;
 
 procedure TMainForm.LoadDockInfo;
 begin
+
   CreateDockableForm;
   GetToolbarWidthArr;
-//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$IFDEF USEJVCL}
+  JvAppStorage := TJvAppRegistryStorage.Create(self);
+  with JvAppStorage do
+    Root := 'Software\JVCL\Examples\JvDocking\MSDN2002Pro';
   LoadDockTreeFromAppStorage(JvAppStorage);
+  {$ELSE}
+  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  {$ENDIF}
   SetToolButtonDownAndActionCheck;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-//  LoadDockInfo;
+  LoadDockInfo;
 end;
 
 end.

@@ -1113,7 +1113,7 @@ procedure TXPBarMenu.ToolBarDrawButton(Sender: TToolBar;
 var
   ACanvas           : TCanvas;
 
-  ARect, HoldRect   : TRect;
+  ARect, HPreviousRect   : TRect;
   B                 : TBitmap;
   HasBitmap         : boolean;
   BitmapWidth       : integer;
@@ -1139,7 +1139,7 @@ var
     end;
 
   begin
-    BRect := HoldRect;
+    BRect := HPreviousRect;
     Dec(BRect.Bottom, 1);
     Inc(BRect.Top, 1);
     Dec(BRect.Right, 1);
@@ -1180,9 +1180,9 @@ begin
   else
     FBSelectColor := FFSelectColor;
 
-  HoldRect := Button.BoundsRect;
+  HPreviousRect := Button.BoundsRect;
 
-  ARect := HoldRect;
+  ARect := HPreviousRect;
 
   {Causing problem when activiting the component at run time
   if FUseSystemColors then
@@ -1257,7 +1257,7 @@ begin
     DefaultDraw := false;
   end;
 
-  ARect := HoldRect;
+  ARect := HPreviousRect;
   DefaultDraw := false;
 
   if Button.Style = tbsDropDown then
@@ -1314,7 +1314,7 @@ begin
     finally
       B.Free;
     end;
-    ARect := HoldRect;
+    ARect := HPreviousRect;
     DefaultDraw := false;
   end;
 //-----------
@@ -1360,7 +1360,7 @@ begin
       (Button.MenuItem <> nil),
       (Button.BidiMode = bdRightToLeft), TextFormat);
 
-    ARect := HoldRect;
+    ARect := HPreviousRect;
     DefaultDraw := false;
   end;
 

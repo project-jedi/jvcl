@@ -3494,12 +3494,4 @@ object MainForm: TMainForm
     Left = 160
     Top = 56
   end
-  object JvAppStorage: TJvAppRegistryStorage
-    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    Root = 'Software\JVCL\Examples\JvDocking\VIDDemoPro'
-    SubStorages = <>
-    Left = 170
-    Top = 180
-  end
 end

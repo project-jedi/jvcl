@@ -86,7 +86,7 @@ object WatchForm: TWatchForm
     TBDockHeight = 100
     DirectDrag = True
     ShowHint = True
-    EnableCloseBtn = True
+    EnableCloseButton = True
     EachOtherDock = False
     DockStyle = MainForm.JvDockVCStyle1
     Left = 104

@@ -1031,7 +1031,7 @@ procedure TXPMenu.ToolBarDrawButton(Sender: TToolBar;
 var
   ACanvas: TCanvas;
 
-  ARect, HoldRect: TRect;
+  ARect, HPreviousRect: TRect;
   B: TBitmap;
   HasBitmap: boolean;
   {Sylvain ...}
@@ -1062,7 +1062,7 @@ var
     end;
 
   begin
-    BRect := HoldRect;
+    BRect := HPreviousRect;
     Dec(BRect.Bottom, 1);
     Inc(BRect.Top, 1);
     Dec(BRect.Right, 1);
@@ -1116,9 +1116,9 @@ begin
     FBSelectColor := FFSelectColor;
 
 
-  HoldRect := Button.BoundsRect;
+  HPreviousRect := Button.BoundsRect;
 
-  ARect := HoldRect;
+  ARect := HPreviousRect;
 
   if Is16Bit then
     ACanvas.brush.color := NewColor(ACanvas, Sender.Color, 16)
@@ -1181,7 +1181,7 @@ begin
     DefaultDraw := false;
   end;
 
-  ARect := HoldRect;
+  ARect := HPreviousRect;
   DefaultDraw := false;
 
 
@@ -1266,7 +1266,7 @@ begin
     finally
       B.Free;
     end;
-    ARect := HoldRect;
+    ARect := HPreviousRect;
     DefaultDraw := false;
 {rem by sylvain ...
   end;
@@ -1317,7 +1317,7 @@ begin
       (Button.MenuItem <> nil),
       (Button.BidiMode = bdRightToLeft), FFont, TextFormat);
 
-    ARect := HoldRect;
+    ARect := HPreviousRect;
     DefaultDraw := false;
   end;
 
