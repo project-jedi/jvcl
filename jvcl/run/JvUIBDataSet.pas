@@ -71,6 +71,7 @@ type
     function GetInternalFields: TSQLResult;
     function GetBufferChunks: Cardinal;
     procedure SetBufferChunks(const Value: Cardinal);
+    function GetRowsAffected: Cardinal;
   protected
     property BufferChunks: Cardinal read GetBufferChunks write SetBufferChunks default 1000;
     procedure InternalOpen; override;
@@ -104,7 +105,7 @@ type
     {$IFNDEF FPC}
     procedure SetActive(Value: Boolean); override;
     {$ENDIF}
-    
+
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
     property Database: TJvUIBDataBase read GetDatabase write SetDatabase;
     property UniDirectional: boolean read  GetUniDirectional write SetUniDirectional default False;
@@ -113,6 +114,7 @@ type
     property SQL: TStrings read GetSQL write SetSQL;
     property FetchBlobs: boolean read GetFetchBlobs write SetFetchBlobs default False;
     property Params: TSQLParams read GetParams;
+    property RowsAffected: Cardinal read GetRowsAffected;
 
 {$IFNDEF COMPILER5_UP}
     function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; {$IFNDEF FPC}override;{$ENDIF}
@@ -149,6 +151,7 @@ type
   public
     property Params;
   published
+    property RowsAffected;
     property BufferChunks;
     property Transaction;
     property Database;
@@ -834,6 +837,11 @@ end;
 procedure TJvUIBCustomDataSet.SetBufferChunks(const Value: Cardinal);
 begin
   FStatement.BufferChunks := Value;
+end;
+
+function TJvUIBCustomDataSet.GetRowsAffected: Cardinal;
+begin
+  Result := FStatement.RowsAffected;
 end;
 
 end.

@@ -45,40 +45,40 @@ const
   isc_factor   = 1;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_factor}{$ENDIF}
 
-  isc_arg_end           = 0;  (* end of argument list *)
+  isc_arg_end          = 0;  (* end of argument list *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_end} {$ENDIF}
-  isc_arg_gds           = 1;  (* generic DSRI status value *)
+  isc_arg_gds          = 1;  (* generic DSRI status value *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_gds} {$ENDIF}
-  isc_arg_string        = 2;  (* string argument *)
+  isc_arg_string       = 2;  (* string argument *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_string} {$ENDIF}
-  isc_arg_cstring       = 3;  (* count & string argument *)
+  isc_arg_cstring      = 3;  (* count & string argument *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_cstring} {$ENDIF}
-  isc_arg_number        = 4;  (* numeric argument (long) *)
+  isc_arg_number       = 4;  (* numeric argument (long) *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_number} {$ENDIF}
-  isc_arg_interpreted   = 5;  (* interpreted status code (string) *)
+  isc_arg_interpreted  = 5;  (* interpreted status code (string) *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_interpreted} {$ENDIF}
-  isc_arg_vms           = 6;  (* VAX/VMS status code (long) *)
+  isc_arg_vms          = 6;  (* VAX/VMS status code (long) *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_vms} {$ENDIF}
-  isc_arg_unix          = 7;  (* UNIX error code *)
+  isc_arg_unix         = 7;  (* UNIX error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_unix} {$ENDIF}
-  isc_arg_domain        = 8;  (* Apollo/Domain error code *)
+  isc_arg_domain       = 8;  (* Apollo/Domain error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_domain} {$ENDIF}
-  isc_arg_dos           = 9;  (* MSDOS/OS2 error code *)
+  isc_arg_dos          = 9;  (* MSDOS/OS2 error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_dos}{$ENDIF}
-  isc_arg_mpexl         = 10; (* HP MPE/XL error code *)
+  isc_arg_mpexl        = 10; (* HP MPE/XL error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_mpexl} {$ENDIF}
-  isc_arg_mpexl_ipc     = 11; (* HP MPE/XL IPC error code *)
+  isc_arg_mpexl_ipc    = 11; (* HP MPE/XL IPC error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_mpexl_ipc} {$ENDIF}
-  isc_arg_next_mach     = 15; (* NeXT/Mach error code *)
+  isc_arg_next_mach    = 15; (* NeXT/Mach error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_next_mach} {$ENDIF}
-  isc_arg_netware       = 16; (* NetWare error code *)
+  isc_arg_netware      = 16; (* NetWare error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_netware} {$ENDIF}
-  isc_arg_win32         = 17; (* Win32 error code *)
+  isc_arg_win32        = 17; (* Win32 error code *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_win32} {$ENDIF}
-  isc_arg_warning       = 18; (* warning argument *)
+  isc_arg_warning      = 18; (* warning argument *)
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_warning} {$ENDIF}
 {$IFDEF IB7_UP}
-  isc_arg_sql           = 19;
+  isc_arg_sql          = 19;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_arg_sql} {$ENDIF}
 {$ENDIF IB7_UP}
 
@@ -974,7 +974,7 @@ const
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_read_only_database} {$ENDIF}
   isc_must_be_dialect_2_and_up          = 335544766;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_must_be_dialect_2_and_up} {$ENDIF}
-  isc_blob_filter_exception             = 335544767; 
+  isc_blob_filter_exception             = 335544767;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_blob_filter_exception} {$ENDIF}
   isc_exception_access_violation        = 335544768;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_exception_access_violation} {$ENDIF}

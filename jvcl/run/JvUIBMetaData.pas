@@ -101,14 +101,23 @@ const
     'AND (RC.RDB$RELATION_NAME = ?) '+
     'ORDER BY RC.RDB$RELATION_NAME, IDX.RDB$FIELD_POSITION';
 
+//  QRYIndex =
+//    'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
+//    'IDX.RDB$INDEX_INACTIVE FROM RDB$INDICES IDX '+
+//    'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
+//    'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
+//    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND ((IDX.RDB$INDEX_TYPE = 0) OR (IDX.RDB$INDEX_TYPE IS NULL)) AND '+
+//    '(IDX.RDB$RELATION_NAME = ?) ORDER BY IDX.RDB$RELATION_NAME, '+
+//    'IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
+
   QRYIndex =
     'SELECT IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_NAME, IDX.RDB$UNIQUE_FLAG, '+
-    'IDX.RDB$INDEX_INACTIVE FROM RDB$INDICES IDX '+
+    'IDX.RDB$INDEX_INACTIVE, IDX.RDB$INDEX_TYPE FROM RDB$INDICES IDX '+
     'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
     'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
-    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND ((IDX.RDB$INDEX_TYPE = 0) OR (IDX.RDB$INDEX_TYPE IS NULL)) AND '+
-    '(IDX.RDB$RELATION_NAME = ?) ORDER BY IDX.RDB$RELATION_NAME, '+
-    'IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
+    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND (IDX.RDB$RELATION_NAME = ?) '+
+    'ORDER BY IDX.RDB$RELATION_NAME, IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
+
 
   QRYForeign =
     'SELECT A.RDB$CONSTRAINT_NAME, B.RDB$UPDATE_RULE, B.RDB$DELETE_RULE, '+
@@ -414,10 +423,15 @@ type
     property Constraint: string read FConstraint;
   end;
 
+
+
+  TIndexOrder = (IoDescending, IoAscending);
+
   TMetaIndex = class(TMetaConstraint)
   private
     FUnique: boolean;
     FActive: boolean;
+    FOrder: TIndexOrder;
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
@@ -426,6 +440,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     property Unique: boolean read FUnique;
     property Active: boolean read FActive;
+    property Order: TIndexOrder read FOrder;
   end;
 
   TMetaTrigger = class(TMetaNode)
@@ -777,11 +792,6 @@ end;
 constructor TMetaNode.CreateFromStream(AOwner: TMetaNode; ClassIndex: Integer; Stream: TStream);
 var i, j: Integer;
 begin
-  {$IFDEF DEBUG}
-    if AOwner = nil then
-      writeln(debugfile, format('AOwner: nil, ClassIndex: %d', [ClassIndex])) else
-      writeln(debugfile, format('AOwner: %s, ClassIndex: %d', [AOwner.ClassName, ClassIndex]));
-  {$ENDIF}
   Create(AOwner, ClassIndex);
   LoadFromStream(Stream);
   for j := 0 to FNodeItemsCount - 1 do
@@ -1025,7 +1035,9 @@ begin
         FFields[0] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
         FUnique := QIndex.Fields.AsSingle[2] = 1;
         FActive := QIndex.Fields.AsSingle[3] = 0;
-
+        if QIndex.Fields.AsSingle[4] = 0 then
+          FOrder := IoAscending else
+          FOrder := IoDescending;
         unk := FName;
       end else
       with Indices[IndicesCount-1] do
@@ -1451,7 +1463,7 @@ begin
         begin
           SetLength(FFields, Length(FFields)+1);
           FFields[FieldsCount-1] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
-          include(Tables[i].Fields[FieldsCount-1].FInfos, fForeign);
+          include(Tables[i].Fields[FFields[FieldsCount-1]].FInfos, fForeign);
           SetLength(FForFields, Length(FForFields)+1);
           FForFields[ForFieldsCount-1] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
         end;
@@ -1863,16 +1875,20 @@ begin
   inherited;
   Stream.Read(FUnique, SizeOf(FUnique));
   Stream.Read(FActive, SizeOf(FActive));
+  Stream.Read(FOrder, SizeOf(FOrder));
 end;
 
 procedure TMetaIndex.SaveToDDLNode(Stream: TStringStream);
-var i: Integer;
+var
+  i: Integer;
+  UNIQUE, ORDER: string;
 begin
-  if FUnique then
-    Stream.WriteString(Format('CREATE UNIQUE INDEX %s ON %s (',
-      [FName, TMetaTable(FOwner).FName])) else
-    Stream.WriteString(Format('CREATE INDEX %s ON %s (',
-      [FName, TMetaTable(FOwner).FName]));
+  if FUnique then UNIQUE := ' UNIQUE';
+  if (FOrder = IoDescending) then ORDER := ' DESCENDING';
+
+  Stream.WriteString(Format('CREATE%s%s INDEX %s ON %s (',
+    [ORDER, UNIQUE, FName, TMetaTable(FOwner).FName]));
+
   for i := 0 to FieldsCount - 1 do
   begin
     Stream.WriteString(Fields[i].Name);
@@ -1889,6 +1905,7 @@ begin
   inherited;
   Stream.Write(FUnique, SizeOf(FUnique));
   Stream.Write(FActive, SizeOf(FActive));
+  Stream.Write(FOrder, SizeOf(FOrder));
 end;
 
 class function TMetaIndex.NodeType: TMetaNodeType;
