@@ -175,6 +175,9 @@ type
     FOnEnabledChanged: TNotifyEvent;
     { Check still necessary }
     FHold: Boolean;
+    { We hide the button by setting its width to 0, thus we have to store the
+      width the button should have when shown again in FSavedButtonWidth: }
+    FSavedButtonWidth: Integer;
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
@@ -185,6 +188,7 @@ type
     function GetMinHeight: Integer;
     function GetNumGlyphs: TNumGlyphs;
     function GetPopupVisible: Boolean;
+    function GetShowButton: Boolean;
     function GetTextHeight: Integer;
     function IsImageIndexStored: Boolean;
     function IsCustomGlyph: Boolean;
@@ -201,6 +205,7 @@ type
     procedure SetImageKind(const Value: TJvImageKind);
     procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(const Value: TNumGlyphs);
+    procedure SetShowButton(const Value: Boolean);
     procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; // RDB
@@ -248,8 +253,6 @@ type
     procedure DoFlatChanged; override;
     procedure Paint; override;
     {$ENDIF VisualCLX}
-    class function DefaultImageIndex: TImageIndex; virtual;
-    class function DefaultImages: TCustomImageList; virtual;
     function AcceptPopup(var Value: Variant): Boolean; virtual;
     function EditCanModify: Boolean; override;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -311,11 +314,14 @@ type
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowButton: Boolean read GetShowButton write SetShowButton default True;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    class function DefaultImageIndex: TImageIndex; virtual;
+    class function DefaultImages: TCustomImageList; virtual;
     procedure DoClick;
     procedure SelectAll;
     { Backwards compatibility; moved to public&published; eventually remove }
@@ -374,6 +380,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property ShowButton;
     property TabOrder;
     property TabStop;
     property Text;
@@ -513,9 +520,9 @@ type
     procedure ClearFileList; override;
     function GetLongName: string; override;
     function GetShortName: string; override;
-    class function DefaultImageIndex: TImageIndex; override;
   public
     constructor Create(AOwner: TComponent); override;
+    class function DefaultImageIndex: TImageIndex; override;
     property Dialog: TOpenDialog read FDialog;
     property DialogFiles: TStrings read GetDialogFiles;
   published
@@ -582,6 +589,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property ShowButton;
     property TabOrder;
     property TabStop;
     property Text;
@@ -622,9 +630,9 @@ type
     procedure ReceptFileDir(const AFileName: string); override;
     function GetLongName: string; override;
     function GetShortName: string; override;
-    class function DefaultImageIndex: TImageIndex; override;
   public
     constructor Create(AOwner: TComponent); override;
+    class function DefaultImageIndex: TImageIndex; override;
   published
     //Polaris
     property Action;
@@ -678,6 +686,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property ShowButton;
     property TabOrder;
     property TabStop;
     property Text;
@@ -788,7 +797,6 @@ type
     procedure SetPopupValue(const Value: Variant); override;
     function GetDateFormat: string;
     procedure ApplyDate(Value: TDateTime); virtual;
-    class function DefaultImageIndex: TImageIndex; override;
     procedure UpdateFormat;
     procedure UpdatePopup;
     procedure ButtonClick; override;
@@ -819,6 +827,7 @@ type
     procedure ValidateEdit; override;
     // Polaris
     constructor Create(AOwner: TComponent); override;
+    class function DefaultImageIndex: TImageIndex; override;
     destructor Destroy; override;
     procedure CheckValidDate;
     function GetDateMask: string;
@@ -886,6 +895,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property ShowButton;
     property CalendarStyle;
     property StartOfWeek;
     property Weekends;
@@ -2073,7 +2083,10 @@ end;
 
 function TJvCustomComboEdit.GetButtonWidth: Integer;
 begin
-  Result := FButton.Width;
+  if ShowButton then
+    Result := FButton.Width
+  else
+    Result := FSavedButtonWidth;
 end;
 
 function TJvCustomComboEdit.GetDirectInput: Boolean;
@@ -2133,6 +2146,11 @@ end;
 function TJvCustomComboEdit.GetReadOnly: Boolean;
 begin
   Result := FReadOnly;
+end;
+
+function TJvCustomComboEdit.GetShowButton: Boolean;
+begin
+  Result := FBtnControl.Visible;
 end;
 
 function TJvCustomComboEdit.GetTextHeight: Integer;
@@ -2452,6 +2470,10 @@ var
   end;
 
 begin
+  { Delay until button is shown }
+  if not ShowButton then
+    Exit;
+
   if FImageKind in [ikDropDown, ikEllipsis] then
   begin
     FButton.ImageIndex := -1;
@@ -2544,16 +2566,24 @@ begin
     FStreamedButtonWidth := Value;
     FStreamedFixedWidth := False;
   end
-  else
-  if ButtonWidth <> Value then
+  else if not ShowButton then
+    FSavedButtonWidth := Value
+  else if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
   begin
-    FBtnControl.Visible := Value > 1;
+    if Value > 1 then
+      FBtnControl.Visible := True
+    else
+    begin
+      FSavedButtonWidth := ButtonWidth;
+      FBtnControl.Visible := False;
+    end;
     if csCreating in ControlState then
     begin
       FBtnControl.Width := Value;
       FButton.Width := Value;
       with FButton do
         ControlStyle := ControlStyle - [csFixedWidth];
+      { Some glyphs are size dependant (ellipses), thus recreate on size changes }
       RecreateGlyph;
     end
       //else
@@ -2576,6 +2606,7 @@ begin
         {$IFDEF VisualCLX}
         Invalidate;
         {$ENDIF VisualCLX}
+      { Some glyphs are size dependant (ellipses), thus recreate on size changes }
       RecreateGlyph;
     end;
   end;
@@ -2731,6 +2762,22 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.SetShowButton(const Value: Boolean);
+begin
+  if ShowButton <> Value then
+  begin
+    if Value then
+    begin
+      { FBtnControl needs to be visible first, otherwise only FSavedButtonWidth
+        is changed when setting ButtonWidth }
+      FBtnControl.Visible := True;
+      ButtonWidth := FSavedButtonWidth
+    end
+    else
+      ButtonWidth := 0;
+  end;
+end;
+
 procedure TJvCustomComboEdit.SetShowCaret;
 const
   CaretWidth: array [Boolean] of Byte = (1, 2);
@@ -2817,8 +2864,8 @@ var
   LLeft, LRight, LTop: Integer;
   Loc: TRect;
 begin
-  { delay until Loaded }
-  if csLoading in ComponentState then
+  { Delay until Loaded and Handle is created }
+  if (csLoading in ComponentState) or not HandleAllocated then
     Exit;
 
   {UpdateMargins gets called whenever the layout of child controls changes.
@@ -2899,7 +2946,7 @@ var
   P: TPoint;
 begin
   inherited;
-  if (Msg.Result = HTCLIENT) and not (csDesigning in ComponentState) then
+  if (Msg.Result = HTCLIENT) and not (csDesigning in ComponentState) and ShowButton then
   begin
     P := Point(FBtnControl.Left, FBtnControl.Top);
     Windows.ClientToScreen(Handle, P);

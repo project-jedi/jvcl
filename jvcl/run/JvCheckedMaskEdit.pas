@@ -50,6 +50,7 @@ type
   {$ENDIF VisualCLX}
   private
     FCheck: TCheckBox;
+    { (rb) JvBaseEdits.pas name: FFormatting }
     FInternalChange: Boolean;
     FOnCheckClick: TNotifyEvent;
     {$IFDEF VisualCLX}
@@ -360,6 +361,7 @@ begin
         TabStop := False;
         OnClick := CheckClick;
         Visible := True;
+        Enabled := Self.Enabled;
       end;
     end
     else

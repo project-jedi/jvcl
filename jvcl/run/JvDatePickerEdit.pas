@@ -65,7 +65,7 @@ interface
 uses
   Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
   JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton,
-  JvToolEdit;
+  JvToolEdit, ImgList;
 
 type
   {Types used to handle and convert between date format strings and EditMasks:}
@@ -169,7 +169,7 @@ type
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure GetInternalMargins(var ALeft, ARight: Integer); override;
+//    procedure GetInternalMargins(var ALeft, ARight: Integer); override;
     procedure DoCtl3DChanged; override;
     procedure EnabledChanged; override;
     function GetChecked: Boolean; override;
@@ -197,11 +197,13 @@ type
     //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
+    property ShowButton default True;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     property StoreDateFormat: Boolean read FStoreDateFormat write FStoreDateFormat default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    class function DefaultImageIndex: TImageIndex; override;
     procedure Clear; override;
     function IsEmpty: Boolean; virtual;
     property EditMask: string read GetEditMask write SetEditMask;
@@ -213,7 +215,7 @@ type
     property Dropped;
   published
     property Action;
-    property Align; 
+    property Align;
     property AllowNoDate;
     property AlwaysReturnEditDate;
     property Anchors;
@@ -273,6 +275,7 @@ type
     property ReadOnly;
     property ShowCheckBox;
     property ShowHint;
+    property ShowButton;
     property StoreDate;
     property StoreDateFormat;
     property TabOrder;
@@ -321,7 +324,8 @@ var
   I: Integer;
 begin
   for I := 2 downto 0 do
-    if SelStart >= FDateFigures[I].Start then
+    { SelStart is 0-based, FDateFigures[i].Start is 1-based }
+    if SelStart + 1 >= FDateFigures[I].Start then
     begin
       Result := FDateFigures[I];
       Exit;
@@ -543,6 +547,7 @@ begin
   ControlState := ControlState + [csCreating];
   try
     ImageKind := ikDropDown; { force update }
+    ShowButton := True;
   finally
     ControlState := ControlState - [csCreating];
   end;
@@ -551,6 +556,7 @@ end;
 procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
   inherited CreateWnd;
+  { (rb) Should be DateFormat? }
   SetDateFormat(ShortDateFormat);
 end;
 
@@ -586,6 +592,11 @@ begin
   finally
     SysUtils.DateSeparator := OldSep;
   end;
+end;
+
+class function TJvCustomDatePickerEdit.DefaultImageIndex: TImageIndex;
+begin
+  Result := TJvDateEdit.DefaultImageIndex;
 end;
 
 destructor TJvCustomDatePickerEdit.Destroy;
@@ -721,11 +732,11 @@ begin
   Result := FEnableValidation;
 end;
 
-procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
-begin
-  inherited GetInternalMargins(ALeft, ARight);
-  ARight := ARight + Button.Width;
-end;
+//procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
+//begin
+//  inherited GetInternalMargins(ALeft, ARight);
+//  ARight := ARight + Button.Width;
+//end;
 
 function TJvCustomDatePickerEdit.GetText: TCaption;
 var
@@ -792,8 +803,8 @@ procedure TJvCustomDatePickerEdit.KeyPress(var Key: Char);
 var
   OldSep: Char;
 begin
-  { this makes the transition easier for users used to non-mask-aware edit controls 
-    as they could continue typing the separator character without the cursor 
+  { this makes the transition easier for users used to non-mask-aware edit controls
+    as they could continue typing the separator character without the cursor
     auto-advancing to the next figure when they don't expect it : }
   if (Key = Self.DateSeparator) and (Text[SelStart] = Self.DateSeparator) then
   begin
@@ -985,7 +996,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
 begin
-  if InternalChanging then
+  if InternalChanging or (csLoading in ComponentState) then
     Exit;
 
   BeginInternalChange;
