@@ -63,7 +63,7 @@ unit JvUIB;
 interface
 uses
   {$IFDEF MSWINDOWS} Windows, {$ENDIF}
-  {$IFDEF UIBJVCL} jvComponent, {$ENDIF}
+  {$IFDEF UIBJVCL} JvComponent, {$ENDIF}
   Classes, SysUtils, JvUIBLib, JvUIBase, SyncObjs;
 
 type
@@ -98,7 +98,11 @@ type
 {$IFDEF UIBNOCOMPONENT}
   TJvUIBComponent = class(TObject)
 {$ELSE}
+  {$IFDEF UIBJVCL}
+  TJvUIBComponent = class(TJvComponent)
+  {$ELSE}
   TJvUIBComponent = class(TComponent)
+  {$ENDIF}
 {$ENDIF}
   private
     FCriticalsection: TCriticalSection;
