@@ -49,12 +49,6 @@ type
   public
     procedure Synchronize(Method: TThreadMethod);
   end;
-{$ENDIF}
-{$IFDEF COMPILER7}
-  TIntThread = class(Classes.TThread)
-  protected
-    procedure DoTerminate; override;
-  end;
 {$ELSE}
   TIntThread = TThread;
 {$ENDIF}
@@ -242,37 +236,6 @@ begin
 end;
 
 {$ENDIF COMPILER5}
-
-{$IFDEF COMPILER7}
- { Delphi 7's ThreadProc sets FFinished after calling DoTerminate. This may
-   cause a deadlock because DoTerminate calls Synchronize and if the thread is
-   released in OnTerminate the WaitFor method that is called by Destroy will
-   wait for ever. }
-  TOpenClassesThread = class
-  protected // private
-{$IFDEF MSWINDOWS}
-    FHandle: THandle;
-    FThreadID: THandle;
-{$ENDIF}
-{$IFDEF LINUX}
-    FThreadID: Cardinal;
-    FCreateSuspendedSem: TSemaphore;
-    FInitialSuspendDone: Boolean;
-{$ENDIF}
-    FCreateSuspended: Boolean;
-    FTerminated: Boolean;
-    FSuspended: Boolean;
-    FFreeOnTerminate: Boolean;
-    FFinished: Boolean;
-  end;
-
-procedure TIntThread.DoTerminate;
-begin
-  TOpenClassesThread(Self).FFinished := True;
-  inherited DoTerminate;
-end;
-{$ENDIF COMPILER7}
-
 
 { TMTInternalThread }
 
