@@ -161,8 +161,8 @@ end;
 
 procedure TJvSearchFileMainForm.OptionsChange(Sender: TObject);
 begin
-  rbInclude.Enabled := cbContainText.Text <> '';
-  rbExclude.Enabled := rbInclude.Enabled;
+//  rbInclude.Enabled := cbContainText.Text <> '';
+//  rbExclude.Enabled := rbInclude.Enabled;
   StatusBar1.Panels[0].Text := 'Ready';
   StatusBar1.Update;
 end;

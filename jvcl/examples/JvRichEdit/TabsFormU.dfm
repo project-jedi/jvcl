@@ -56,11 +56,11 @@ object TabsForm: TTabsForm
     Width = 129
     Height = 69
     TabStop = False
-    Style = lbVirtual
     ItemHeight = 16
+    Style = lbOwnerDrawFixed
     TabOrder = 1
     OnClick = lsbTabStopPositionsClick
-    OnData = lsbTabStopPositionsData
+    OnDrawItem = lsbTabStopPositionsDrawItem
   end
   object pnlLeader: TPanel
     Left = 2

@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ToolWin, StdCtrls, ComCtrls, Menus, ExtCtrls, ImgList, JvScrollPanel, JvLookOut,
-  JvComponent, JvExControls;
+  JvComponent, JvExControls, JvExForms;
 
 type
   TJvScrollingWindowMainForm = class(TForm)

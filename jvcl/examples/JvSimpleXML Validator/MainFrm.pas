@@ -67,12 +67,19 @@ end;
 
 procedure TForm1.btnValidateClick(Sender: TObject);
 begin
+  sbResults.Panels[0].Text := 'Validating...';
+  sbResults.Update;
+  Screen.Cursor := crHourGlass;
   try
-    JvSimpleXML1.LoadFromString(reXML.Lines.Text);
-    sbResults.Panels[0].Text := 'No errors encountered in XML';
-  except
-    on E:Exception do
-      sbResults.Panels[0].Text := E.Message;
+    try
+      JvSimpleXML1.LoadFromString(reXML.Lines.Text);
+      sbResults.Panels[0].Text := 'No errors encountered in XML';
+    except
+      on E: Exception do
+        sbResults.Panels[0].Text := E.Message;
+    end;
+  finally
+    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -82,3 +89,4 @@ begin
 end;
 
 end.
+

@@ -228,6 +228,7 @@ begin
 {$IFDEF WIN32}
   if NewStyleControls then DirectoryEdit1.DialogKind := dkWin32;
 {$ENDIF}
+
 end;
 
 procedure TControlsForm.FormClose(Sender: TObject;

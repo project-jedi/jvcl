@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvLabel, StdCtrls, JvCombobox, JvColorProvider,
-  JvDataProviderImpl, JvDataProvider, JvExStdCtrls, JvExControls;
+  JvDataProvider, JvExStdCtrls, JvExControls;
 
 type
   TForm2 = class(TForm)

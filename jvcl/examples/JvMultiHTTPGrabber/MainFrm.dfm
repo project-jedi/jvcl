@@ -134,6 +134,7 @@ object Form1: TForm1
       ScrollBars = ssBoth
       TabOrder = 0
       WantReturns = False
+      WordWrap = False
     end
   end
   object gnLog: TGroupBox
@@ -173,8 +174,8 @@ object Form1: TForm1
     OnResize = sbMainResize
   end
   object pbProgress: TProgressBar
-    Left = 66
-    Top = 186
+    Left = 34
+    Top = 322
     Width = 108
     Height = 13
     Min = 0
@@ -237,7 +238,6 @@ object Form1: TForm1
       OnExecute = acClearContentExecute
     end
     object acSaveToFile: TAction
-      AutoCheck = True
       Caption = 'Save To File'
       OnExecute = acSaveToFileExecute
     end
@@ -276,7 +276,6 @@ object Form1: TForm1
       Caption = 'Options'
       object acSaveToFile1: TMenuItem
         Action = acSaveToFile
-        AutoCheck = True
       end
     end
   end

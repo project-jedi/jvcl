@@ -307,6 +307,7 @@ end;
 
 procedure TForm1.acDownloadExecute(Sender: TObject);
 begin
+  reContent.WordWrap := false;
   pbProgress.Position := 0;
   sbMain.Panels[1].Text := '';
   acURLAdd.Execute;
@@ -322,6 +323,7 @@ end;
 procedure TForm1.acDownloadAllExecute(Sender: TObject);
 var i:integer;
 begin
+  reContent.WordWrap := false;
   acClearContent.Execute;
   acURLAdd.Execute;
   if acSaveToFile.Checked then
@@ -407,7 +409,7 @@ end;
 
 procedure TForm1.acSaveToFileExecute(Sender: TObject);
 begin
-//
+  acSaveToFile.Checked := not acSaveToFile.Checked;
 end;
 
 end.

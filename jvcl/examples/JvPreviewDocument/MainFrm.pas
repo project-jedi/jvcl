@@ -289,6 +289,11 @@ procedure TfrmMain.OpenTxtFile(const Filename: string);
 begin
   Screen.Cursor := crHourGlass;
   try
+    reOriginal.Lines.Clear;
+    reOriginal.Font.Name := 'Courier New';
+    reOriginal.Font.Size := 10;
+    reOriginal.Font.Color := clWindowText;
+    reOriginal.DefAttributes.Assign(reOriginal.Font);
     reOriginal.Lines.LoadFromFile(OpenDialog1.Filename);
     BuildTxtPreview;
   finally

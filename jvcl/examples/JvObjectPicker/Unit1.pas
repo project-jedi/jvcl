@@ -177,7 +177,7 @@ begin
       else if HR = S_FALSE then
       begin
         // user cancelled the dialog, no selection
-        ShowMessage('Dialog cancelled');
+        ShowMessage('This system cannot display the object picker dialog');
       end
       else
       begin
@@ -186,6 +186,7 @@ begin
       end;
     end;
   end;
+
   // 12. uninitialize COM
   ObjPicker := nil;
   DataObj := nil;

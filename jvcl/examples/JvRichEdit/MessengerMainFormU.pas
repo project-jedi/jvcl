@@ -23,13 +23,13 @@
  rights and limitations under the License.
 
 ******************************************************************}
-
+{$I jvcl.inc}
 unit MessengerMainFormU;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ImgList, ComCtrls, ToolWin, StdCtrls, JvRichEdit,
   ExtCtrls, JvExStdCtrls;
 
@@ -122,7 +122,10 @@ var
 implementation
 
 uses
-  RichEdit, DateUtils;
+  RichEdit
+  {$IFDEF COMPILER6_UP}
+  , DateUtils
+  {$ENDIF};
 
 {$R *.dfm}
 

@@ -78,12 +78,12 @@ type
     procedure edtTabStopPositionKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure lsbTabStopPositionsEnter(Sender: TObject);
-    procedure lsbTabStopPositionsData(Control: TWinControl; Index: Integer;
-      var Data: string);
     procedure lsbTabStopPositionsClick(Sender: TObject);
     procedure cmbMeasurementUnitsChange(Sender: TObject);
     procedure AlignmentClick(Sender: TObject);
     procedure IsTabStopFilled(Sender: TObject);
+    procedure lsbTabStopPositionsDrawItem(Control: TWinControl;
+      Index: Integer; Rect: TRect; State: TOwnerDrawState);
   private
     FTabs: TObjectList;
     FLeaderObjs: array [TJvTabLeader] of TRadioButton;
@@ -123,6 +123,16 @@ uses
   Math;
 
 {$R *.dfm}
+
+function TryStrToFloat(const S:string; Var Value:Extended):boolean;
+begin
+  try
+    Result := true;
+    Value := StrToFloat(S);
+  except
+    Result := false;
+  end;
+end;
 
 type
   TTabObj = class(TObject)
@@ -299,7 +309,8 @@ end;
 procedure TTabsForm.ClearAllTabStops;
 begin
   FTabs.Clear;
-  lsbTabStopPositions.Count := FTabs.Count;
+  lsbTabStopPositions.Items.Clear;
+//  lsbTabStopPositions.Count := FTabs.Count;
   GotoTab(-1);
 end;
 
@@ -311,7 +322,7 @@ begin
   if (Index >= 0) and (Index < FTabs.Count) then
   begin
     FTabs.Delete(Index);
-    lsbTabStopPositions.Count := FTabs.Count;
+    lsbTabStopPositions.Items.Delete(Index);
   end;
   GotoTab(Min(Index, FTabs.Count - 1));
 end;
@@ -491,13 +502,6 @@ begin
   SelectTab(lsbTabStopPositions.ItemIndex);
 end;
 
-procedure TTabsForm.lsbTabStopPositionsData(Control: TWinControl;
-  Index: Integer; var Data: string);
-begin
-  if (Index >= 0) and (Index < FTabs.Count) then
-    Data := PositionToText(TTabObj(FTabs[Index]).Position, FMeasurementUnit);
-end;
-
 procedure TTabsForm.lsbTabStopPositionsEnter(Sender: TObject);
 begin
   edtTabStopPosition.SetFocus;
@@ -546,11 +550,11 @@ var
   I: Integer;
 begin
   for I := 0 to Paragraph.TabCount - 1 do
+  begin
     FTabs.Add(TTabObj.Create(Paragraph.Tab[i], Paragraph.TabAlignment[i], Paragraph.TabLeader[i]));
-
-  lsbTabStopPositions.Count := FTabs.Count;
-
-  if lsbTabStopPositions.Count > 0 then
+    lsbTabStopPositions.Items.Add('');
+  end;
+  if lsbTabStopPositions.Items.Count > 0 then
   begin
     lsbTabStopPositions.ItemIndex := 0;
     SelectTab(0);
@@ -578,7 +582,7 @@ begin
   else
   begin
     FTabs.Insert(Index, TTabObj.Create(Position, TabAlignment, TabLeader));
-    lsbTabStopPositions.Count := FTabs.Count;
+    lsbTabStopPositions.Items.Add('');
   end;
   GotoTab(Index);
 end;
@@ -609,6 +613,20 @@ begin
   FMeasurementUnit := TMeasurementUnit(Index);
   lsbTabStopPositions.Refresh;
   GotoTab(lsbTabStopPositions.ItemIndex);
+end;
+
+procedure TTabsForm.lsbTabStopPositionsDrawItem(Control: TWinControl;
+  Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var S:String;
+begin
+  if (Index >= 0) and (Index < FTabs.Count) then
+  begin
+    S := PositionToText(TTabObj(FTabs[Index]).Position, FMeasurementUnit);
+    lsbTabStopPositions.Canvas.FillRect(Rect);
+    lsbTabStopPositions.Canvas.TextRect(Rect, Rect.Left + 2, Rect.Top + 2, S);
+  end;
+
+
 end;
 
 end.

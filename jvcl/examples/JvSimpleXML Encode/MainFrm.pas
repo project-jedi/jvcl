@@ -23,13 +23,13 @@
  rights and limitations under the License.
 
 ******************************************************************}
-
+{$I jvcl.inc}
 unit MainFrm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvSimpleXML, StdCtrls, ComCtrls, ExtCtrls;
 
 type
@@ -45,7 +45,7 @@ type
     btnEncode: TButton;
     btnDecode: TButton;
     Bevel1: TBevel;
-    chkAlternate: TCheckBox;
+    chkUseUTF8: TCheckBox;
     StatusBar1: TStatusBar;
     chkUseClipboard: TCheckBox;
     procedure btnEncodeClick(Sender: TObject);
@@ -63,7 +63,7 @@ var
 
 implementation
 uses
-  ShellAPI, JvJVCLUtils, Clipbrd;
+  ShellAPI, JvJCLUtils, JvJVCLUtils, Clipbrd;
 
 {$R *.dfm}
 
@@ -77,7 +77,8 @@ begin
   reResult.Lines.BeginUpdate;
   try
   // assign to S to take the visual control out of the equation
-    if chkAlternate.Checked then
+    {$IFDEF COMPILER6_UP}
+    if chkUseUTF8.Checked then
     begin
       if chkUseClipboard.Checked then
       begin
@@ -98,6 +99,7 @@ begin
         reResult.Lines.Text := S;
     end
     else
+   {$ENDIF}
     begin
       if chkUseClipboard.Checked then
       begin
@@ -107,7 +109,7 @@ begin
       else
         S := reSource.Lines.Text;
       FStartValue := GetTickCount;
-      S := SimpleXMLEncode(S);
+      S := XMLEncode(S);
       FStartValue := GetTickCount - FStartValue;
       if chkUseClipboard.Checked then
       begin
@@ -134,7 +136,8 @@ begin
   reSource.Lines.BeginUpdate;
   reResult.Lines.BeginUpdate;
   try
-    if chkAlternate.Checked then
+    {$IFDEF COMPILER6_UP}
+    if chkUseUTF8.Checked then
     begin
       S := reSource.Lines.Text;
       FStartValue := GetTickCount;
@@ -143,6 +146,7 @@ begin
       reResult.Lines.Text := S;
     end
     else
+    {$ENDIF}
     begin
       S := reSource.Lines.Text;
       FStartValue := GetTickCount;
@@ -165,6 +169,9 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   DragAcceptFiles(Handle, true);
+  {$IFNDEF COMPILER6_UP}
+  chkUseUTF8.Enabled := false;
+  {$ENDIF}
 end;
 
 procedure TForm1.WMDropFiles(var Message: TWMDropFiles);

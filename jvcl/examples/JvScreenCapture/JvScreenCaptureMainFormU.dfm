@@ -3,7 +3,7 @@ object JvScreenCaptureMainForm: TJvScreenCaptureMainForm
   Top = 78
   Width = 584
   Height = 499
-  Caption = 'screen capture using JvFunctions unit'
+  Caption = 'Screen Capture using JclGraphics unit'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object JvScreenCaptureMainForm: TJvScreenCaptureMainForm
     Stretch = True
   end
   object Button1: TButton
-    Left = 84
+    Left = 28
     Top = 26
     Width = 75
     Height = 25

@@ -113,7 +113,7 @@ var
 implementation
 uses
   TypInfo,
-  JvJVCLUtils; // for D5
+  JvJCLUtils, JvJVCLUtils; // for D5
   
 {$R *.DFM}
 
