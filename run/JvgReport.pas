@@ -653,7 +653,7 @@ end;
 procedure TJvgReportItem.WMSize(var Message: TWMSize);
 begin
   inherited;
-  // if Assigned(OnResize) then OnResize(self);
+  // if Assigned(OnResize) then OnResize(Self);
 end;
 
 {$IFNDEF USEJVCL}
@@ -963,7 +963,7 @@ var
   HS, WS, HP, WP: Integer;
 begin
   if Assigned(BeforePrint) then
-    BeforePrint(self);
+    BeforePrint(Self);
   OwnerWnd := TForm.Create(nil);
   TForm(OwnerWnd).WindowState := wsMaximized;
   ParentWnd := OwnerWnd;
@@ -1046,7 +1046,7 @@ var
     if sClassName = 'TJvgReportItem' then //...process only TJvgReportItem class
     begin
       B := TJvgReportItem.Create(OwnerWnd);
-      B.Report := self;
+      B.Report := Self;
     end;
     if B = nil then
       Exit;
@@ -1264,7 +1264,7 @@ begin
   //AnalyzeParams( ReportComponent );
   ValidateWnds;
   Result := TJvgReportItem.Create(OwnerWnd);
-  Result.Report := self;
+  Result.Report := Self;
   SetUnicalName(Result);
   Result.Parent := ParentWnd;
   ComponentList.Add(Result);

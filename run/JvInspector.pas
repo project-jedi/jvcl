@@ -2070,100 +2070,100 @@ var
 {$IFDEF VisualCLX}
 procedure TOpenEdit.SetModified(Value: boolean);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).Modified := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).Modified := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).Modified := Value;
+    TMemo(Self).Modified := Value;
 end;
 
 function TOpenEdit.GetModified: boolean;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).Modified
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).Modified
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).Modified
+    Result := TMemo(Self).Modified
   else
     Result := false;
 end;
 
 procedure TOpenEdit.SetOnChange(Value: TNotifyEvent);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).OnChange := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).OnChange := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).OnChange := Value;
+    TMemo(Self).OnChange := Value;
 end;
 
 function TOpenEdit.GetOnChange: TNotifyEvent;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).OnChange
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).OnChange
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).OnChange
+    Result := TMemo(Self).OnChange
   else
     Result := nil;
 end;
 
 procedure TOpenEdit.SetReadOnly(Value: boolean);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).ReadOnly := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).ReadOnly := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).ReadOnly := Value;
+    TMemo(Self).ReadOnly := Value;
 end;
 
 function TOpenEdit.GetReadOnly: boolean;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).ReadOnly
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).ReadOnly
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).ReadOnly
+    Result := TMemo(Self).ReadOnly
   else
     Result := false;
 end;
 
 procedure TOpenEdit.SetBorderStyle(Value: TBorderStyle);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).BorderStyle := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).BorderStyle := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).BorderStyle := Value;
+    TMemo(Self).BorderStyle := Value;
 end;
 
 function TOpenEdit.GetBorderStyle: TBorderStyle;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TBorderStyle(TEdit(self).BorderStyle)
-  else if self.InheritsFrom(TMemo)
+    Result := TBorderStyle(TEdit(Self).BorderStyle)
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).BorderStyle
+    Result := TMemo(Self).BorderStyle
   else
     Result := bsNone;
 end;
 
 procedure TOpenEdit.SelectAll;
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if Self.InheritsFrom(TCustomEdit)
   then
-    TCustomEdit(self).SelectAll
-  else if self.InheritsFrom(TCustomMemo)
+    TCustomEdit(Self).SelectAll
+  else if Self.InheritsFrom(TCustomMemo)
   then
-    TCustomMemo(self).SelectAll;
+    TCustomMemo(Self).SelectAll;
 end;
 {$ENDIF VisualCLX}
 
@@ -8625,7 +8625,7 @@ begin
         else
           PrefixWithOwner := '';
         for J := 0 to CurOwner.ComponentCount - 1 do
-          // don't allow setting self as property
+          // don't allow setting Self as property
           if (CurOwner.Components[J] is MinClass) and (not (Parent.Data is TJvInspectorPropData) or
               (CurOwner.Components[J] <> TJvInspectorPropData(Parent.Data).Instance)) then
             SL.AddObject(PrefixWithOwner + CurOwner.Components[J].Name, CurOwner.Components[J]);

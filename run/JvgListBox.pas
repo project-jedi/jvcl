@@ -219,7 +219,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csDisplayDragImage];
   Style := lbOwnerDrawVariable;
-  ThreeDColors := TJvg3DLocalColors.Create(self);
+  ThreeDColors := TJvg3DLocalColors.Create(Self);
   FWallpaper := TBitmap.Create;
   TmpBitmap := TBitmap.Create;
   FGlyphsAlign := TJvg2DAlign.Create;
@@ -290,7 +290,7 @@ begin
       FWallpaper := TBitmap.Create;
     FWallpaper.Width := Width;
     FWallpaper.Height := Height;
-    GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+    GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
       FWallpaper.Canvas.Handle);
     WallpaperBmp := FWallpaper;
     fUseWallpaper := True;
@@ -574,7 +574,7 @@ begin
   dec(R.bottom);
   ItemColor := ItemStyle.Color;
   if Assigned(OnGetItemColor) then
-    OnGetItemColor(self, Index, ItemColor);
+    OnGetItemColor(Self, Index, ItemColor);
   if fboAutoCtl3DColors in Options then
   begin
     ThreeDColors.CreateAuto3DColors(ItemColor);
@@ -630,7 +630,7 @@ begin
     if Assigned(OnGetItemFontColor) then
     begin
       ItemColor := ItemStyle.Font.Color;
-      OnGetItemFontColor(self, Index, ItemColor);
+      OnGetItemFontColor(Self, Index, ItemColor);
       ItemStyle.Font.Color := ItemColor;
     end;
     FontColor := ItemStyle.Font.Color;
@@ -655,13 +655,13 @@ begin
   if Assigned(Image) then
     Image.Free;
   if Assigned(FOnDrawItem) then
-    FOnDrawItem(self, Message);
+    FOnDrawItem(Self, Message);
   if Assigned(FOnChange) then
   begin
     OldSelItemIndex := SelItemIndex;
     SelItemIndex := ItemIndex;
     if OldSelItemIndex <> SelItemIndex then
-      FOnChange(self, OldSelItemIndex, SelItemIndex);
+      FOnChange(Self, OldSelItemIndex, SelItemIndex);
   end;
 end;
 
@@ -696,7 +696,7 @@ begin
 
   if fboHotTrackSelect in Options then
   begin
-    self.ItemIndex := itemIndex;
+    Self.ItemIndex := itemIndex;
     InvalidateRect(Handle, nil, False);
     exit;
   end;
@@ -745,7 +745,7 @@ begin
       HotSpotY := Y - R.Top
     end;
     if Assigned(OnGetDragImage) then
-      OnGetDragImage(self, Bmp, TranspColor, HotSpotX, HotSpotY)
+      OnGetDragImage(Self, Bmp, TranspColor, HotSpotX, HotSpotY)
     else
     begin
       Width := R.Right - R.Left;
@@ -875,7 +875,7 @@ begin
     {  if (fboTransparent in Value) and not (fboTransparent in FOptions)then
       begin
         FWallpaper.Width := Width; FWallpaper.Height := Height;
-        GetParentImageRect( self, Bounds(Left,Top,Width,Height),
+        GetParentImageRect( Self, Bounds(Left,Top,Width,Height),
                      FWallpaper.Canvas.Handle );
         WallpaperBmp := FWallpaper;
         fUseWallpaper := True;

@@ -66,7 +66,7 @@ uses
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
   Types, QWindows,
   {$ENDIF VisualCLX}
-  JvComponent, JvJCLUtils;
+  JvComponent, JvJCLUtils, JvResources;
 
 const
   JvChartVersion = 300; // ie, version 3.00
@@ -86,9 +86,6 @@ const
   jvChartPaperColorIndex = -1;
 
   JvChartDefaultMarkerSize = 3;
-
-resourcestring
-  JvChartDesigntimeLabel = ': JEDI JVCL Charting Component';
 
 type
   { CHART TYPES }
@@ -577,7 +574,7 @@ uses
   {$IFDEF COMPILER5}
   JclMath, // function isNan for Delphi 5  (ahuser)
   {$ENDIF COMPILER5}
-  JvJVCLUtils, JvConsts, JvResources;
+  JvJVCLUtils, JvConsts;
 
 const
   CHART_SANITY_LIMIT = 30000;
@@ -1347,7 +1344,7 @@ begin
   ChartCanvas.Brush.Color := Options.PaperColor;
   ChartCanvas.Rectangle(0, 0, Width, Height);
 
-  DesignStr := ClassName + JvChartDesigntimeLabel;
+  DesignStr := ClassName + RsChartDesigntimeLabel;
 
   if (Abs(Options.PrimaryYAxis.YMax) < 0.000001) and (Abs(Options.PrimaryYAxis.YMin) < 0.000001) then
     Options.PrimaryYAxis.YMax := 10.0; // Reasonable non-zero default, so that charting works!

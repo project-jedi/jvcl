@@ -839,14 +839,14 @@ var
   lBar: TJvXPCustomWinXPBar;
 begin
   lBar := (AWinXPBar as TJvXPCustomWinXPBar);
-  HasImages := self.Images <> nil;
+  HasImages := Self.Images <> nil;
   with ACanvas do
   begin
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
       FillRect(Rect);
-    if not self.Enabled then
+    if not Self.Enabled then
       Font.Color := clGray
     else
     begin
@@ -890,7 +890,7 @@ begin
     end;
     if HasImages then
       Draw(Rect.Left, Rect.Top + (lBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
-    ItemCaption := self.Caption;
+    ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
@@ -948,7 +948,7 @@ begin
   Result := (ActionLink = nil) or not FActionLink.IsAutoCheckLinked;
 end;
 {$ENDIF COMPILER6_UP}
-{$ENDIF}
+{$ENDIF VCL}
 
 function TJvXPBarItem.IsCaptionStored: Boolean;
 begin

@@ -158,20 +158,17 @@ procedure UnregisterGraphicSignature(ASignature: array of byte;
 
 function GetGraphicClass(Stream: TStream): TGraphicClass;
 
-resourcestring
-  RsErrorBadGraphicSignature = 'Bad graphic signature';
-
 implementation
 
 uses
   Contnrs, // (p3) NB! This might not be available in all SKU's
-  DBConsts,
-  jpeg,
-  SysUtils;
+  DBConsts, jpeg, SysUtils,
+  JvResources;
 
-// Code to manage graphic's signatures. Should be public?
+// Code to manage graphic's signatures.
 type
-  TGraphicSignature = class
+  TGraphicSignature = class(TObject)
+  public
     Signature: string;
     Offset: Integer;
     GraphicClass: TGraphicClass;
@@ -217,7 +214,7 @@ var
 begin
   // Avoid bad signatures
   if (ASignature = '') or (AOffset < 0) or (AGraphicClass = nil) then
-    raise Exception.Create(RsErrorBadGraphicSignature);
+    raise Exception.Create(RsEBadGraphicSignature);
   // Should raise an exception if empty signature, negative offset or null class.
   GraphicSignature := TGraphicSignature.Create(ASignature, AOffset, AGraphicClass);
   try

@@ -309,9 +309,9 @@ begin
   if Source is TJvOfficeColorPanelProperties then
     with TJvOfficeColorPanelProperties(Source) do
     begin
-      self.FShowAutoButton := ShowAutoButton;
-      self.FShowOtherButton := ShowOtherButton;
-      self.FShowColorHint := ShowColorHint;
+      Self.FShowAutoButton := ShowAutoButton;
+      Self.FShowOtherButton := ShowOtherButton;
+      Self.FShowColorHint := ShowColorHint;
       Self.FTopMargin := TopMargin;
       Self.FColorSpaceBottom := ColorSpaceBottom;
       Self.FHoriMargin := HoriMargin;
@@ -325,7 +325,7 @@ begin
       Self.FOtherCaption := OtherCaption;
       Self.FAutoHint := AutoHint;
       Self.FOtherHint := OtherHint;
-      self.FAutoColor := AutoColor;
+      Self.FAutoColor := AutoColor;
 
     end;
 end;
@@ -333,7 +333,7 @@ end;
 procedure TJvOfficeColorPanelProperties.Changed(PropName: string);
 begin
   if Assigned(FOnPropertiesChanged) then
-    FOnPropertiesChanged(self, PropName);
+    FOnPropertiesChanged(Self, PropName);
 end;
 
 constructor TJvOfficeColorPanelProperties.Create;
@@ -605,11 +605,11 @@ begin
   FProperties := TJvOfficeColorPanelProperties.Create;
   FProperties.OnPropertiesChanged := PropertiesChanged;
 
-  FAutoButton := TJvSubColorButton.Create(self);
+  FAutoButton := TJvSubColorButton.Create(Self);
 
   with FAutoButton do
   begin
-    Parent := self;
+    Parent := Self;
     GroupIndex := 1;
     Tag := MaxColorButtonNumber + 1;
     Down := true;
@@ -620,10 +620,10 @@ begin
     OnClick := ColorButtonClick;
   end;
 
-  FOtherButton := TJvSubColorButton.Create(self);
+  FOtherButton := TJvSubColorButton.Create(Self);
   with FOtherButton do
   begin
-    Parent := self;
+    Parent := Self;
     GroupIndex := 1;
     Tag := MaxColorButtonNumber + 2;
     Color := clDefault;
@@ -669,10 +669,10 @@ begin
   begin
     if FColorButtons[I] <> nil then
       FColorButtons[I].Free;
-    FColorButtons[I] := TJvSubColorButton.Create(self);
+    FColorButtons[I] := TJvSubColorButton.Create(Self);
     with FColorButtons[I] do
     begin
-      Parent := self;
+      Parent := Self;
       GroupIndex := 1;
       AllowAllUp := true;
       Color := SubColorButtonColors[I];

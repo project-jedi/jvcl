@@ -542,6 +542,11 @@ resourcestring
   RsProxyName = 'Page Proxy Name';
   RsPageName = 'Page Name';
 
+//=== JvPatcherEditor.pas ====================================================
+resourcestring
+  RsDiff = '(diff)';
+  RsEqual = '(equal)';
+
 //=== JvPictureEditForm.pas ==================================================
 resourcestring
   RsLoadPicture = 'Load picture';

@@ -243,6 +243,7 @@ procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
 implementation
 
 uses
+  StdCtrls, CommCtrl, ComCtrls, Dialogs,
   {$IFDEF USE_AM_GIF}
   GIFImage,
   {$DEFINE RECOGNIZE_GIF}
@@ -251,7 +252,7 @@ uses
   JvGIF,
   {$DEFINE RECOGNIZE_GIF}
   {$ENDIF USE_JvGIF}
-  StdCtrls, CommCtrl, ComCtrls, Dialogs;
+  JvResources;
 
 type
   TWinControlAccess = class(TWinControl);
@@ -260,11 +261,6 @@ type
   // make TJvGIFImage's Bitmap property visible
   TGIFImage = class(TJvGIFImage);
   {$ENDIF USE_JvGIF}
-
-resourcestring
-  SChainError = 'Message from %s.%s:'#13#10#13#10'Oops... Messing up %s''s window procedure chain.%s';
-  SWorkaround = #13#10#13#10'To avoid this, $DEFINE the NO_DESIGNHOOK '
-    + 'conditional compilation symbol and rebuild.';
 
 const
   ScrollLineSize = 3;

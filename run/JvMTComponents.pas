@@ -54,14 +54,14 @@ type
   TJvMTThreadEvent = procedure (Sender: TJvMTThread;
     MTThread: TJvMTSingleThread) of object;
 
-  TJvMTManager = class (TJvMTComponent)
+  TJvMTManager = class(TJvMTComponent)
   private
     FManager: TMTManager;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); 
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function AcquireNewThread: TJvMTSingleThread;
     function AcquireThread(Ticket: TMTTicket;
@@ -248,6 +248,7 @@ type
   end;
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvResources;
@@ -261,7 +262,7 @@ resourcestring
   RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
 {$ENDIF USEJVCL}
 
-constructor TJvMTManager.Create(aOwner: TComponent);
+constructor TJvMTManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 

@@ -956,26 +956,26 @@ begin
   BorderStyle := bsNone;
   BevelInner := bvNone;
   BevelOuter := bvNone;
-  FDatePicker := TDateTimePicker.Create(self);
-  FDatePicker.Parent := self;
+  FDatePicker := TDateTimePicker.Create(Self);
+  FDatePicker.Parent := Self;
   FDatePicker.Align := alLeft;
   FDatePicker.Top := 0;
   FDatePicker.Left := 0;
-  FTimePicker := TDateTimePicker.Create(self);
+  FTimePicker := TDateTimePicker.Create(Self);
   FTimePicker.Align := alClient;
-  FTimePicker.Parent := self;
+  FTimePicker.Parent := Self;
   FTimePicker.Top := 0;
   FTimePicker.Left := 0;
-  Height   := FDatePicker.Height;
-  Width    := FDatePicker.Width + FTimePicker.Width;
+  Height := FDatePicker.Height;
+  Width := FDatePicker.Width + FTimePicker.Width;
   OnResize := ControlResize;
   ControlResize(nil);
   FDatePicker.DateFormat := dfShort;
   FDatePicker.DateMode := dmComboBox;
-  FDatePicker.Kind     := dtkDate;
+  FDatePicker.Kind := dtkDate;
   FTimePicker.DateFormat := dfShort;
   FTimePicker.DateMode := dmUpDown;
-  FTimePicker.Kind     := dtkTime;
+  FTimePicker.Kind := dtkTime;
 end;
 
 destructor TJvDynControlVCLDateTimeEdit.Destroy;
@@ -987,9 +987,9 @@ end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlResize(Sender: TObject);
 begin
-  FDatePicker.Height := round(Height / 2);
+  FDatePicker.Height := Round(Height / 2);
   FTimePicker.Height := Height;
-  FDatePicker.Width  := round(Width / 2);
+  FDatePicker.Width  := Round(Width / 2);
 end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetDefaultProperties;

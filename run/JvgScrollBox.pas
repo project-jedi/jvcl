@@ -118,7 +118,7 @@ begin
         end
     else
     begin
-      //  Sendmessage(self.Handle, WM_SETREDRAW, 0, 0);
+      //  SendMessage(Self.Handle, WM_SETREDRAW, 0, 0);
       //    BitBlt( Msg.DC, x_, y_, 100, 100, FBackground.Canvas.Handle, 0, 0, SRCCOPY);
       R := ClientRect;
       x_ := R.Left;

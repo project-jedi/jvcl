@@ -56,13 +56,13 @@ type
     FAfterPaint: TNotifyEvent;
     FOnCollapsed: TNotifyEvent;
     FOnExpanded: TNotifyEvent;
-    FGroupIndex: integer;
+    FGroupIndex: Integer;
     FGlyphCollapsed: TBitmap;
     FGlyphExpanded: TBitmap;
 
     ChildFocusedControl: TWinControl;
     Image: TBitmap;
-    FullHeight: integer;
+    FullHeight: Integer;
     CaptionRect: TRect;
     ptScroll: TPoint;
     fScrolling: boolean;
@@ -74,7 +74,7 @@ type
     procedure SetOptions(Value: TglGroupBoxOptions);
     procedure SetTransparent(Value: boolean);
     procedure SetTransparentCaption(Value: boolean);
-    procedure SetGroupIndex(Value: integer);
+    procedure SetGroupIndex(Value: Integer);
     function GetGlyphCollapsed: TBitmap;
     procedure SetGlyphCollapsed(Value: TBitmap);
     function GetGlyphExpanded: TBitmap;
@@ -158,7 +158,7 @@ type
       read FTransparent write SetTransparent default false;
     property TransparentCaption: boolean
       read FTransparentCaption write SetTransparentCaption default false;
-    property GroupIndex: integer read FGroupIndex write SetGroupIndex default
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default
       0;
     property GlyphCollapsed: TBitmap read GetGlyphCollapsed write
       SetGlyphCollapsed;
@@ -292,7 +292,7 @@ end;
 
 procedure TJvgGroupBox.CMEnabledchanged(var Message: TMessage);
 var
-  i: integer;
+  i: Integer;
 begin
   for i := 0 to ControlCount - 1 do
     Controls[i].Enabled := Enabled;
@@ -318,7 +318,7 @@ var
   R, NewR: TRect;
   Glyph: TBitmap;
   DrawState: TglDrawState;
-  Interspace: integer;
+  Interspace: Integer;
   Color: TgbColor;
 begin
   //inherited;
@@ -343,7 +343,7 @@ begin
 
   with Canvas do
   begin
-    Canvas.Font.Assign(self.Font);
+    Canvas.Font.Assign(Self.Font);
     r := GetClientRect;
     //Font := Self.Font;
 //    if CaptionHeight = 0 then H := TextHeight('0') - FCaptionShift.y
@@ -389,7 +389,7 @@ begin
         TransparentCaption or not (fgoFilledCaption in Options));
       //      Brush.Color := Color;
 
-      SetBkMode(Handle, integer(TRANSPARENT));
+      SetBkMode(Handle, Integer(TRANSPARENT));
 
       if Assigned(Glyph) then
       begin
@@ -418,12 +418,12 @@ begin
   //  if Transparent then for i:=0 to ComponentCount-1 do
   //    TControl(Components[i]).Repaint;
   if Assigned(AfterPaint) then
-    AfterPaint(self);
+    AfterPaint(Self);
 end;
 
 procedure TJvgGroupBox.Collapse(fCollapse: boolean);
 var
-  i: integer;
+  i: Integer;
   fAnotherExpandedWasFound: boolean;
 begin
   if csLoading in ComponentState then
@@ -442,7 +442,7 @@ begin
             (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) then
             if
               (not TJvgGroupBox(Components[i]).Collapsed) and
-              (Components[i] <> self) then
+              (Components[i] <> Self) then
             begin
               fAnotherExpandedWasFound := true;
               break;
@@ -456,27 +456,27 @@ begin
       with TControl(Owner) do
         if (Components[i] is TJvgGroupBox) and
           (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) and
-          (Components[i] <> self) then
+          (Components[i] <> Self) then
           TJvgGroupBox(Components[i]).Collapsed := true;
 
   Collapse_(fCollapse);
   if fCollapse and Assigned(FOnCollapsed) then
-    FOnCollapsed(self);
+    FOnCollapsed(Self);
   if not fCollapse and Assigned(FOnExpanded) then
-    FOnExpanded(self);
+    FOnExpanded(Self);
 
 end;
 
 procedure TJvgGroupBox.Collapse_(fCollapse: boolean);
 var
-  i {, Step}: integer;
+  i {, Step}: Integer;
   {  DC: HDC;
     pt: TPoint;
     R, CR: TRect;
     Scroll: HRGN;
     SpaceBrush: HBRUSH;
     fFirst: boolean;
-    LastTickCount: integer;}
+    LastTickCount: Integer;}
 begin
   if Align = alClient then
     exit;
@@ -494,8 +494,8 @@ begin
       Options) then
       for i := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
-          if (Components[i] is TControl) and (TControl(Components[i]).Parent
-            = self) then
+          if (Components[i] is TControl) and
+            (TControl(Components[i]).Parent = Self) then
           begin
             if (fgoSaveChildFocus in Options) and (Components[i] is
               TWinControl)
@@ -516,8 +516,8 @@ begin
     if fgoHideChildrenWhenCollapsed in Options then
       for i := 0 to Owner.ComponentCount - 1 do
         with TControl(Owner) do
-          if (Components[i] is TControl) and (TControl(Components[i]).Parent
-            = self) then
+          if (Components[i] is TControl) and
+            (TControl(Components[i]).Parent = Self) then
             TControl(Components[i]).Visible := true;
 
     if ChildFocusedControl <> nil then
@@ -538,7 +538,7 @@ begin
     if Image=nil then Image := TBitmap.Create;
     Image.Height := Height;
     Image.Width := Width;
-    GetWindowImage( self, true{fDrawSelf}, true{fDrawChildWindows}, Image.Canvas.Handle );
+    GetWindowImage( Self, true{fDrawSelf}, true{fDrawChildWindows}, Image.Canvas.Handle );
 
     DC := GetDC(0);
     CR := ClientRect; dec(CR.Bottom,CaptionRect.Bottom);
@@ -655,9 +655,9 @@ begin
   RecreateWnd;
 end;
 
-procedure TJvgGroupBox.SetGroupIndex(Value: integer);
+procedure TJvgGroupBox.SetGroupIndex(Value: Integer);
 var
-  i: integer;
+  i: Integer;
 begin
   if FGroupIndex = Value then
     exit;
@@ -669,7 +669,7 @@ begin
       with TControl(Owner) do
         if (Components[i] is TJvgGroupBox) and
           (TJvgGroupBox(Components[i]).GroupIndex = FGroupIndex) and
-          (Components[i] <> self) then
+          (Components[i] <> Self) then
           TJvgGroupBox(Components[i]).Collapsed := true;
 end;
 
@@ -722,9 +722,9 @@ procedure TJvgGroupBox.ComputeCaptionRect;
 var
   R : TRect;
   i, RW, GlyphWidth: Integer;
-  Interspace: integer;
+  Interspace: Integer;
 begin
-  Canvas.Font.Assign(self.Font);
+  Canvas.Font.Assign(Self.Font);
   
   Interspace := 2;
   R := Rect(FCaptionShift.x, 0, 0, Canvas.TextHeight(Text) - FCaptionShift.y);

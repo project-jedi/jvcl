@@ -1591,11 +1591,11 @@ begin
     if ZoneSizeStyle in [zssMaximum, zssMinimum] then
     begin
       if ZoneSizeStyle = zssMinimum then
-        TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssMaximum, self)
+        TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssMaximum, Self)
       else
       if ZoneSizeStyle = zssMaximum then
       begin
-        TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssNormal, self);
+        TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssNormal, Self);
         TJvDockVCZone(ParentZone).DoSetChildSizeStyle(zssNormal);
       end;
       Visibled := False;
@@ -1740,11 +1740,11 @@ begin
       else
       begin
         if ZoneSizeStyle = zssMinimum then
-          TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssMaximum, self)
+          TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssMaximum, Self)
         else
         if ZoneSizeStyle = zssMaximum then
         begin
-          TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssNormal, self);
+          TJvDockVCTree(Tree).ResetDockZoneSizeStyle(ParentZone, zssNormal, Self);
           TJvDockVCZone(ParentZone).DoSetChildSizeStyle(zssNormal);
         end;
       end;

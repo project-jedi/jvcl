@@ -864,7 +864,7 @@ begin
         incScript := '';
         if not assigned(oninclude) then
           raise EJvjanScriptError.CreateFmt(RsEOnIncludeHandlerNotAssignedCanNotHa, [Copy(s, p, Length(s))]);
-        oninclude(self, incfile, incScript, Handled, errStr);
+        oninclude(Self, incfile, incScript, Handled, errStr);
         if not Handled then
           raise EJvjanScriptError.Create(errStr);
         Delete(s, p, p2 - p + 1);
@@ -1322,7 +1322,7 @@ begin
   err := Format(RsECanNotAssignVariables, [CurrentSymbol]);
   if assigned(onSetVariable) then
   begin
-    onSetVariable(self, CurrentSymbol, Value, Handled, Err);
+    onSetVariable(Self, CurrentSymbol, Value, Handled, Err);
     if not Handled then
       raise EJvjanScriptError.Create(err);
   end;
@@ -1572,7 +1572,7 @@ begin
   Handled := False;
   err := Format(RsEVariablesNotDefined, [CurrentSymbol]);
   if assigned(onGetVariable) then
-    onGetVariable(self, CurrentSymbol, Value, Handled, Err);
+    onGetVariable(Self, CurrentSymbol, Value, Handled, Err);
   if not Handled then
     raise EJvjanScriptError.Create(err)
   else
@@ -1753,7 +1753,7 @@ begin
   Handled := False;
   err := Format(RsESystemsNotDefined, [CurrentSymbol]);
   if assigned(onGetSystem) then
-    onGetSystem(self, CurrentSymbol, prompt, Value, Handled, Err);
+    onGetSystem(Self, CurrentSymbol, prompt, Value, Handled, Err);
   if not Handled then
     raise EJvjanScriptError.Create(err)
   else
@@ -1772,7 +1772,7 @@ begin
   err := Format(RsECanNotAssignSystems, [CurrentSymbol]);
   if assigned(onSetSystem) then
   begin
-    onSetSystem(self, CurrentSymbol, Value, Handled, Err);
+    onSetSystem(Self, CurrentSymbol, Value, Handled, Err);
     if not Handled then
       raise EJvjanScriptError.Create(err);
   end;

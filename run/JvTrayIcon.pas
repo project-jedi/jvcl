@@ -1188,7 +1188,7 @@ begin
                   { (rb) Double try..except }
                   try
                     if Assigned(FOnBalloonHide) then
-                      FOnBalloonHide(self);
+                      FOnBalloonHide(Self);
                   except
                   end;
                   Result := Ord(True);
@@ -1205,7 +1205,7 @@ begin
                   { (rb) Double try..except }
                   try
                     if Assigned(FOnBalloonClick) then
-                      FOnBalloonClick(self);
+                      FOnBalloonClick(Self);
                   except
                   end;
                   Result := Ord(True);

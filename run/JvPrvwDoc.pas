@@ -483,7 +483,7 @@ end;
 procedure TJvPreviewPageOptions.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 constructor TJvPreviewPageOptions.Create;
@@ -615,7 +615,7 @@ end;
 procedure TJvPreviewPageOptions.ScaleModeChange;
 begin
   if Assigned(FOnScaleModeChange) then
-    FOnScaleModeChange(self)
+    FOnScaleModeChange(Self)
   else
     Change;
 end;
@@ -625,7 +625,7 @@ end;
 procedure TJvPageShadow.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 constructor TJvPageShadow.Create;
@@ -658,7 +658,7 @@ end;
 procedure TJvDeviceInfo.Change;
 begin
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 constructor TJvDeviceInfo.Create;
@@ -1027,7 +1027,7 @@ begin
       Dec(APageRect.Top, OffsetTop);
       Inc(APageRect.Right, OffsetRight);
       Inc(APageRect.Bottom, OffsetBottom);
-      FOnAddPage(self, PageIndex, ACanvas, APageRect, APrintRect, Result);
+      FOnAddPage(Self, PageIndex, ACanvas, APageRect, APrintRect, Result);
     end;
   // spool canvas to metafile
   ACanvas.Free;
@@ -1037,28 +1037,28 @@ procedure TJvCustomPreviewControl.DoDrawPreviewPage(PageIndex: Integer;
   Canvas: TCanvas; PageRect, PrintRect: TRect);
 begin
   if Assigned(FOnDrawPreviewPage) then
-    FOnDrawPreviewPage(self, PageIndex, Canvas, PageRect, PrintRect);
+    FOnDrawPreviewPage(Self, PageIndex, Canvas, PageRect, PrintRect);
 end;
 
 procedure TJvCustomPreviewControl.DoOptionsChange(Sender: TObject);
 begin
   Change;
   if Assigned(FOnOptionsChange) then
-    FOnOptionsChange(self);
+    FOnOptionsChange(Self);
 end;
 
 procedure TJvCustomPreviewControl.DoScaleModeChange(Sender: TObject);
 begin
   Change;
   if Assigned(FOnScaleModeChange) then
-    FOnScaleModeChange(self);
+    FOnScaleModeChange(Self);
 end;
 
 procedure TJvCustomPreviewControl.DoDeviceInfoChange(Sender: TObject);
 begin
   Change;
   if Assigned(FOnDeviceInfoChange) then
-    FOnDeviceInfoChange(self);
+    FOnDeviceInfoChange(Self);
 end;
 
 procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
@@ -1270,14 +1270,14 @@ begin
   end;
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   if Assigned(FOnHorzScroll) then
-    FOnHorzScroll(self, TScrollCode(Msg.ScrollCode), NewPos);
+    FOnHorzScroll(Self, TScrollCode(Msg.ScrollCode), NewPos);
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   ScrollBy(-FScrollPos.X + NewPos, 0);
   FScrollPos.X := NewPos;
   si.nPos := NewPos;
   SetScrollInfo(Handle, SB_HORZ, si, True);
   if Assigned(FOnAfterScroll) then
-    FOnAfterScroll(self);
+    FOnAfterScroll(Self);
   Refresh;
 end;
 
@@ -1322,7 +1322,7 @@ begin
   end;
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   if Assigned(FOnVertScroll) then
-    FOnVertScroll(self, TScrollCode(Msg.ScrollCode), NewPos);
+    FOnVertScroll(Self, TScrollCode(Msg.ScrollCode), NewPos);
   NewPos := EnsureRange(NewPos, si.nMin, si.nMax);
   ScrollBy(0, -FScrollPos.Y + NewPos);
   FScrollPos.Y := NewPos;
@@ -1330,7 +1330,7 @@ begin
   SetScrollInfo(Handle, SB_VERT, si, True);
   DoScrollHint(NewPos);
   if Assigned(FOnAfterScroll) then
-    FOnAfterScroll(self);
+    FOnAfterScroll(Self);
   Refresh;
 end;
 
@@ -1459,7 +1459,7 @@ begin
   UpdateSizes;
   CalcScrollRange;
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
   Refresh;
 end;
 
@@ -1725,7 +1725,7 @@ begin
   if Assigned(FOnScrollHint) then
   begin
     S := '';
-    FOnScrollHint(self, NewPos, S);
+    FOnScrollHint(Self, NewPos, S);
     if S <> '' then
     begin
       HW := GetHintWindow;

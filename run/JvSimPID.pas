@@ -305,7 +305,7 @@ begin
   begin
     FSource := Value;
     if FSource <> nil then
-      FSource.FreeNotification(self);
+      FSource.FreeNotification(Self);
   end;
 end;
 

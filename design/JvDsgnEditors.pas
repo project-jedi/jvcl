@@ -32,6 +32,7 @@ unit JvDsgnEditors;
 { Various property editors }
 
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Forms, Controls, Graphics, ExtCtrls, Tabs, Dialogs,
@@ -181,6 +182,7 @@ type
   end;
 
   {$IFDEF VCL}
+
   TJvDateTimeExProperty = class(TDateTimeProperty)
   public
     procedure Edit; override;
@@ -198,6 +200,7 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
+
   {$ENDIF VCL}
 
   TJvShortCutProperty = class(TIntegerProperty)
@@ -267,7 +270,6 @@ type
     procedure SetValue(const Value: string); override;
   end;
                   
-type
   TJvImageListEditor = class(TComponentEditor)
   private
     procedure SaveAsBitmap(ImageList: TImageList);
@@ -561,6 +563,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 //=== TJvDateTimeExProperty ==================================================
 
 procedure TJvDateTimeExProperty.Edit;
@@ -625,6 +628,7 @@ function TJvTimeExProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog];
 end;
+
 {$ENDIF VCL}
 
 //=== TJvDefaultImageIndexProperty ===========================================
@@ -1082,9 +1086,10 @@ begin
     inherited SetValue(Value);
 end;
 
-{ TJvPersistentProperty }
+//=== TJvPersistentProperty ==================================================
 
 {$IFNDEF COMPILER6_UP}
+
 function TJvPersistentProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paSubProperties, paReadOnly];
@@ -1111,7 +1116,10 @@ begin
   if JvPersistents.Count > 0 then
     GetComponentProperties(JvPersistents, tkAny, Designer, Proc);
 end;
+
 {$ENDIF COMPILER6_UP}
+
+//=== TJvQColorProperty ======================================================
 
 {$IFDEF VisualCLX}
 
@@ -1159,7 +1167,8 @@ begin
     ColorDialog.Color := GetOrdValue;
     ColorDialog.HelpContext := hcDColorEditor;
     ColorDialog.Options := [cdShowHelp];
-    if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
+    if ColorDialog.Execute then
+      SetOrdValue(ColorDialog.Color);
     SaveCustomColors;
   finally
     IniFile.Free;
@@ -1186,27 +1195,29 @@ procedure TJvQColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
   ASelected: Boolean);
 begin
   if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, ACanvas, ARect, True{ASelected})
+    ListDrawValue(GetVisualValue, ACanvas, ARect, True) // ASelected
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 
 procedure TJvQColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
+
   function ColorToBorderColor(AColor: TColor): TColor;
   type
     TColorQuad = record
-      Red,
-      Green,
-      Blue,
+      Red: Byte;
+      Green: Byte;
+      Blue: Byte;
       Alpha: Byte;
     end;
   begin
     if (TColorQuad(AColor).Red > 192) or
-       (TColorQuad(AColor).Green > 192) or
-       (TColorQuad(AColor).Blue > 192) then
+      (TColorQuad(AColor).Green > 192) or
+      (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if ASelected then
+    else
+    if ASelected then
       Result := clWhite
     else
       Result := AColor;

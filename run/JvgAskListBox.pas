@@ -887,7 +887,7 @@ end;
 procedure TJvgAskListBox.ButtonClicked;
 begin
   if Assigned(FOnButtonClicked) then
-    FOnButtonClicked(self);
+    FOnButtonClicked(Self);
 end;
 
 procedure TJvgAskListBox.RecalcHeights;

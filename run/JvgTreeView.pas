@@ -404,7 +404,7 @@ begin
     begin
       inherited;
       if Assigned(FOnDraw) then
-        FOnDraw(self, Message);
+        FOnDraw(Self, Message);
       exit;
     end;
 
@@ -443,7 +443,7 @@ begin
       //InvalidateRect(handle,@r,false);
     //  inherited;
     //  bmp2.Width := Width; bmp2.Height := Height;
-    //  self.PaintWindow(bmp2.Canvas.Handle);
+    //  Self.PaintWindow(bmp2.Canvas.Handle);
     //exit;
     BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, FCanvas.handle, 0, 0,
       SRCCOPY);
@@ -472,7 +472,7 @@ begin
     Bmp2.free;
     fPaintingNow := false;
     if Assigned(FOnDraw) then
-      FOnDraw(self, Message);
+      FOnDraw(Self, Message);
 
   finally
     if (ftvFlatScroll in Options) and not IsEditing_ then
@@ -487,7 +487,7 @@ begin
       TVN_ENDLABELEDIT:
         begin
           if Assigned(OnEndEdit) then
-            OnEndEdit(self);
+            OnEndEdit(Self);
           isEditing_ := false;
         end;
       TVN_SELCHANGING:
@@ -586,7 +586,7 @@ begin
   FGlyphChecked := TBitmap.Create;
   FGlyphUnChecked := TBitmap.Create;
   FGlyphSemiChecked := TBitmap.Create;
-  FCheckImageList := TImageList.Create(self);
+  FCheckImageList := TImageList.Create(Self);
   StateImages := FCheckImageList;
   if csDesigning in ComponentState then
     ChecksScheme := 2; //...not FChecksScheme!
@@ -671,7 +671,7 @@ begin
       SetStateIndex(Selected, ncsChecked);
 
     if Assigned(FOnChangeCheck) then
-      FOnChangeCheck(self, Selected);
+      FOnChangeCheck(Self, Selected);
     if FCheckStateInheritance then
     begin
       if Assigned(Selected.Parent) then
@@ -686,7 +686,7 @@ begin
           break;
         SetStateIndex(Node, Selected.StateIndex);
         if Assigned(FOnChangeCheck) then
-          FOnChangeCheck(self, Node);
+          FOnChangeCheck(Self, Node);
       until Node = nil;
     end;
   end;
@@ -793,7 +793,7 @@ begin
     exit;
   SetStateIndex(Node, integer(Value) + 1);
   if Assigned(FOnChangeCheck) then
-    FOnChangeCheck(self, Node);
+    FOnChangeCheck(Self, Node);
 end;
 
 procedure TJvgCheckTreeView.SetStateIndex(Node: TTreeNode; StateIndex: integer);

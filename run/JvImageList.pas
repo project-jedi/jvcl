@@ -67,7 +67,7 @@ type
     procedure SetTransparentColor(AColor: TColor);
     procedure UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
   protected
-    function GetDisplayName: string; override;  
+    function GetDisplayName: string; override;
     procedure SetIndex(Value: Integer); override;
   public
     constructor Create(Collection: TCollection); override;
@@ -200,7 +200,8 @@ type
       // pfCustom are not supported.
       // WARNING: pf32bit works under Windows XP only.
     {$ENDIF VCL}
-    property TransparentMode: TJvImageListTransparentMode read FTransparentMode write SetTransparentMode default tmColor;
+    property TransparentMode: TJvImageListTransparentMode read FTransparentMode write SetTransparentMode default
+      tmColor;
       // TransparentMode is used for adding the bitmaps from Picture or
       // ResourceIds.
       //   tmNone: no mask
@@ -247,17 +248,12 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  TypInfo, JvJVCLUtils;
+  TypInfo, JvJVCLUtils, JvResources;
 
 const
   sUnitName = 'JvImageList';
 
 resourcestring
-  RsResource = 'Resource %s';
-  RsMappedResource = 'Mapped Resource %s';
-  RsBitmap = 'Bitmap %s';
-  RsWrongImageListMode = 'Wrong image list mode. For this function the mode' +
-    'must be %s';
   // (usc) there is no real need to move this string to JvResource.pas because
   //       hopefully ikMappedResourceBitmap will be supported soon
   RsNotSupportedItemKind = 'The item kind %s is not supported so far.';
@@ -266,7 +262,6 @@ resourcestring
 const
   RT_RCDATA = PChar(1);
 {$ENDIF LINUX}
-
 
 {$IFDEF VCL}
 
@@ -343,7 +338,7 @@ begin
     OrgProc := @TCustomImageListHack.HandleNeeded;
     NewProc := @HandleNeededHook;
 
-    Code.Jump := $e9;
+    Code.Jump := $E9;
     Code.Offset := Integer(NewProc) - Integer(OrgProc) - SizeOf(Code);
 
     if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
@@ -442,8 +437,8 @@ begin
     ikInlineBitmap:
       Result := Format(RsBitmap,
         [GetEnumName(TypeInfo(TPixelFormat), Ord(FBitmap.PixelFormat))]);
-    else
-      inherited GetDisplayName;
+  else
+    inherited GetDisplayName;
   end;
 end;
 
@@ -590,7 +585,7 @@ var
 begin
   Result := 0;
   if (ImgList = nil) or (ImgList.Width = 0) or (ImgList.Height = 0) or
-     (Bitmap = nil) then
+    (Bitmap = nil) then
     Exit;
 
   Width := ImgList.Width;
@@ -645,7 +640,7 @@ var
 begin
   Result := 0;
   if (ImgList = nil) or (ImgList.Width = 0) or (ImgList.Height = 0) or
-     (Bitmap = nil) or (MaskBitmap = nil) then
+    (Bitmap = nil) or (MaskBitmap = nil) then
     Exit;
 
   Width := ImgList.Width;
@@ -740,7 +735,8 @@ begin
 end;
 
 procedure TJvImageList.Assign(Source: TPersistent);
-var ImageList: TJvImageList;
+var
+  ImageList: TJvImageList;
 begin
   ImageList := TJvImageList(Source);
 
@@ -844,7 +840,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFileName)
-   {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
+    {$IFDEF LINUX} and not DirectoryExists(FFileName){$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except
@@ -930,7 +926,7 @@ begin
             ResStream.Free;
           end;
 
-         // add bitmap 
+         // add bitmap
           if not Bmp.Empty and (Bmp.Width > 0) and (Bmp.Height > 0) then
           begin
             case TransparentMode of
@@ -982,7 +978,8 @@ end;
 
 {$IFDEF VCL}
 procedure TJvImageList.SetPixelFormat(const Value: TPixelFormat);
-var ImgList: TJvImageList;
+var
+  ImgList: TJvImageList;
 begin
   if (Value <> FPixelFormat) and not (Value in [pf1bit, pfCustom]) then
   begin
@@ -993,9 +990,9 @@ begin
        // convert image list
         ImgList := TJvImageList.CreateSize(Width, Height);
         try
-          ImgList.Assign(Self);   // copy imagelist with old pixelformat
-          FPixelFormat := Value;  // set new pixelformat
-          CreateImageList;        // create new image list handle
+          ImgList.Assign(Self); // copy imagelist with old pixelformat
+          FPixelFormat := Value; // set new pixelformat
+          CreateImageList; // create new image list handle
           AddImages(ImgList);
         finally
           ImgList.Free;
@@ -1089,7 +1086,7 @@ procedure TJvImageList.UpdateImageList;
 begin
   case FMode of
     imClassic:
-       ; // do nothing
+      ; // do nothing
 
     imPicture:
       SlicePictureToImageList;
@@ -1103,6 +1100,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvImageList.SetInternalHandle(Value: THandle);
 begin
   if not HandleAllocated or (Handle <> Value) then
@@ -1140,7 +1138,8 @@ end;
 
 function TJvImageList.Merge(Index1: Integer; ImageList: TImageList; Index2,
   dx, dy: Integer): TImageList;
-var h: THandle;
+var
+  h: THandle;
 begin
   h := ImageList_Merge(Handle, Index1, ImageList.Handle, Index2, dx, dy);
   if h = 0 then
@@ -1151,10 +1150,12 @@ begin
     Result.Handle := h;
   end;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvImageList.LoadFromFile(const Filename: string);
-var Stream: TStream;
+var
+  Stream: TStream;
 begin
   Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
   try
@@ -1165,7 +1166,8 @@ begin
 end;
 
 procedure TJvImageList.SaveToFile(const Filename: string);
-var Stream: TStream;
+var
+  Stream: TStream;
 begin
   Stream := TFileStream.Create(Filename, fmCreate);
   try
@@ -1184,7 +1186,8 @@ begin
 end;
 
 procedure TJvImageList.LoadFromStream(Stream: TStream);
-var Adapter: IStream;
+var
+  Adapter: IStream;
 begin
   Adapter := TStreamAdapter.Create(Stream);
   Handle := ImageList_Read(Adapter);
@@ -1238,7 +1241,7 @@ end;
 
 procedure TJvImageList.ItemListError;
 begin
-  raise EJvImageListError.CreateFmt(RsWrongImageListMode, ['imItemList']);
+  raise EJvImageListError.CreateFmt(RsEWrongImageListMode, ['imItemList']);
 end;
 
 {$IFDEF VCL}
@@ -1251,3 +1254,4 @@ finalization
 {$ENDIF VCL}
 
 end.
+

@@ -57,12 +57,12 @@ uses
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardRouteMapList,
   JvWizardEditorForm;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvWizardReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -30,12 +30,12 @@ unit JvXPCtrlsReg;
 
 interface
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPCtrlsReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPCtrlsReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 

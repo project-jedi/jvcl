@@ -379,20 +379,23 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
+  JvResources,
+  {$ENDIF USEJVCL}
   JvXPCoreUtils;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPCore.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPCore.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring
-  SCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
-  SCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
-  SVersion = '2.0.1'; // always increase version number on new releases!
+  RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
+  RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
+  RsVersion = '2.0.1'; // always increase version number on new releases!
 {$ENDIF USEJVCL}
 
 //=== TJvXPCustomComponent ===================================================
@@ -401,7 +404,7 @@ constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   {$IFNDEF USEJVCL}
-  FVersion := SCopyright + SVersion;
+  FVersion := RsCopyright + RsVersion;
   {$ENDIF USEJVCL}
 end;
 
@@ -428,7 +431,7 @@ begin
   FIsSibling := False;
   FModalResult := 0;
   {$IFNDEF USEJVCL}
-  FVersion := SCopyright2 + SVersion;
+  FVersion := RsCopyright2 + RsVersion;
   {$ENDIF USEJVCL}
 end;
 
@@ -463,6 +466,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvXPCustomControl.CMDialogChar(var Msg: TCMDialogChar);
 begin
   with Msg do
@@ -552,9 +556,11 @@ begin
   inherited;
   HookPosChanged;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 function TJvXPCustomControl.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -574,87 +580,88 @@ end;
 
 procedure TJvXPCustomControl.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   AdjustSize;
 end;
 
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  inherited;
+  inherited BorderChanged;
   HookBorderChanged;
 end;
 
 procedure TJvXPCustomControl.EnabledChanged;
 begin
   // delegate message "EnabledChanged" to hook.
-  inherited;
+  inherited EnabledChanged;
   HookEnabledChanged;
 end;
 
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-  inherited;
+  inherited FocusChanged;
   HookFocusedChanged;
 end;
 
 procedure TJvXPCustomControl.MouseEnter(AControl: TControl);
 begin
   // delegate message "MouseEnter" to hook.
-  inherited;
+  inherited MouseEnter(AControl);
   HookMouseEnter;
 end;
 
 procedure TJvXPCustomControl.MouseLeave(AControl: TControl);
 begin
   // delegate message "MouseLeave" to hook.
-  inherited;
+  inherited MouseLeave(AControl);
   HookMouseLeave;
 end;
 
 procedure TJvXPCustomControl.ParentColorChanged;
 begin
   // delegate message "ParentColorChanged" to hook.
-  inherited;
+  inherited ParentColorChanged;
   HookParentColorChanged;
 end;
 
 procedure TJvXPCustomControl.ParentFontChanged;
 begin
   // delegate message "ParentFontChanged" to hook.
-  inherited;
+  inherited ParentFontChanged;
   HookParentFontChanged;
 end;
 
 procedure TJvXPCustomControl.TextChanged;
 begin
   // delegate message "TextChanged" to hook.
-  inherited;
+  inherited TextChanged;
   HookTextChanged;
 end;
 
 procedure TJvXPCustomControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   // delegate message "MouseMove" to hook.
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   HookMouseMove(X, Y);
 end;
 
 procedure TJvXPCustomControl.AdjustSize;
 begin
   // delegate message "Size" to hook.
-  inherited;
+  inherited AdjustSize;
   HookResized;
 end;
-(*)
+(*
 procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin
   // delegate message "WindowPosChanged" to hook.
   inherited;
   HookPosChanged;
 end;
-(*)
+*)
+
 {$ENDIF VisualCLX}
 
 procedure TJvXPCustomControl.MouseDown(Button: TMouseButton;

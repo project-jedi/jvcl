@@ -415,7 +415,8 @@ end;
 
 procedure TJvPanel.DoAfterMove;
 begin
-  if Assigned(FOnAfterMove) then FOnAfterMove(self);
+  if Assigned(FOnAfterMove) then
+    FOnAfterMove(Self);
 end;
 
 procedure TJvPanel.WMExitSizeMove(var Msg: TMessage);

@@ -118,12 +118,12 @@ type
 
 implementation
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvComponentPanel.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvComponentPanel.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
@@ -308,6 +308,7 @@ begin
   Caption := '';
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvComponentPanel.SetText(const Value: TCaption);
 begin
@@ -322,7 +323,8 @@ var
   I: Integer;
 begin
   Height := FButtonHeight;
-  if FButtonPointer = nil then exit; // asn: for visualclx
+  if FButtonPointer = nil then
+    Exit; // asn: for visualclx
   FButtonPointer.Height := FButtonHeight;
   FButtonPointer.Width := FButtonWidth;
   FButtonLeft.Height := FButtonHeight;

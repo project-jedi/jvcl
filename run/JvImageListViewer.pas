@@ -222,7 +222,7 @@ var
   DrawStyle, Flags: Cardinal;
 begin
   Canvas.Brush.Color := Color;
-  Canvas.Font := self.Font;
+  Canvas.Font := Self.Font;
   if Images <> nil then
   begin
     Flags := DT_END_ELLIPSIS or DT_EDITCONTROL;

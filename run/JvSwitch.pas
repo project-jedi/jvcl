@@ -146,12 +146,12 @@ implementation
 uses
   JvJVCLUtils, JvThemes;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSwitch.Res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvSwitch.Res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');

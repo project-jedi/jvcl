@@ -122,7 +122,7 @@ type
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF VCL} ): TWinControl;
+  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF VCL}): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -132,12 +132,12 @@ uses
   Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCalc.res}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCalc.res}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 type
   TCalcBtnKind =
@@ -949,7 +949,7 @@ type
   end;
 
 function CreatePopupCalculator(AOwner: TComponent
-  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight{$ENDIF VCL}): TWinControl;
+  {$IFDEF VCL}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF VCL}): TWinControl;
 begin
   Result := TJvPopupCalculator.Create(AOwner);
   {$IFDEF VCL}

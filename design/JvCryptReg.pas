@@ -45,12 +45,12 @@ uses
   JvVigenereCipher, JvCaesarCipher, JvGenetic,
   JvSerialMaker, JvXorCipher;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCryptReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCryptReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

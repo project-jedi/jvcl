@@ -382,7 +382,7 @@ begin
   ControlToValidate := nil;
   if FValidator <> nil then
   begin
-    FValidator.Remove(self);
+    FValidator.Remove(Self);
     FValidator := nil;
   end;
   inherited Destroy; ;
@@ -448,11 +448,11 @@ begin
   if FControlToValidate <> Value then
   begin
     if FControlToValidate <> nil then
-      FControlToValidate.RemoveFreeNotification(self);
+      FControlToValidate.RemoveFreeNotification(Self);
     FControlToValidate := Value;
     if FControlToValidate <> nil then
     begin
-      FControlToValidate.FreeNotification(self);
+      FControlToValidate.FreeNotification(Self);
       if Supports(FControlToValidate, IJvValidationProperty, obj) then
         PropertyToValidate := obj.GetValidationPropertyName;
     end;
@@ -468,12 +468,12 @@ begin
     if FValidator <> nil then
     begin
       Debug('FValidator.Remove');
-      FValidator.Remove(self);
+      FValidator.Remove(Self);
     end;
     if (Value <> nil) and (Value is TJvValidators) then
     begin
       Debug('FValidator.Insert');
-      TJvValidators(Value).Insert(self);
+      TJvValidators(Value).Insert(Self);
     end;
   end;
 end;
@@ -485,16 +485,16 @@ begin
   if Reader.Parent is TJvValidators then
   begin
     if FValidator <> nil then
-      FValidator.Remove(self);
+      FValidator.Remove(Self);
     FValidator := TJvValidators(Reader.Parent);
-    FValidator.Insert(self);
+    FValidator.Insert(Self);
   end;
 end;
 
 procedure TJvBaseValidator.DoValidateFailed;
 begin
   if Assigned(FOnValidateFailed) then
-    FOnValidateFailed(self);
+    FOnValidateFailed(Self);
 end;
 
 { TJvRequiredFieldValidator }
@@ -513,7 +513,7 @@ function TJvCustomValidator.DoValidate: boolean;
 begin
   Result := Valid;
   if Assigned(FOnValidate) then
-    FOnValidate(self, GetValidationPropertyValue, Result);
+    FOnValidate(Self, GetValidationPropertyValue, Result);
 end;
 
 procedure TJvCustomValidator.Validate;
@@ -682,7 +682,7 @@ function TJvValidators.DoValidateFailed(
 begin
   Result := true;
   if Assigned(FOnValidateFailed) then
-    FOnValidateFailed(self, ABaseValidator, Result);
+    FOnValidateFailed(Self, ABaseValidator, Result);
   
 end;
 
@@ -766,7 +766,7 @@ begin
   if Value <> FValidationSummaryComponent then
   begin
     if FValidationSummaryComponent <> nil then
-      FValidationSummaryComponent.RemoveFreeNotification(self);
+      FValidationSummaryComponent.RemoveFreeNotification(Self);
     if Value = nil then
     begin
       FValidationSummaryComponent := nil;
@@ -775,11 +775,11 @@ begin
     end;
     if not Supports(Value, IJvValidationSummary, obj) then
       raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
-    if Value = self then
+    if Value = Self then
       raise EValidatorError.Create(RsECircularReference);
     SetValidationSummary(obj);
     FValidationSummaryComponent := Value;
-    FValidationSummaryComponent.FreeNotification(self);
+    FValidationSummaryComponent.FreeNotification(Self);
   end;
 end;
 
@@ -789,7 +789,7 @@ begin
   if Value <> FErrorIndicatorComponent then
   begin
     if FErrorIndicatorComponent <> nil then
-      FErrorIndicatorComponent.RemoveFreeNotification(self);
+      FErrorIndicatorComponent.RemoveFreeNotification(Self);
     if Value = nil then
     begin
       FErrorIndicatorComponent := nil;
@@ -798,11 +798,11 @@ begin
     end;
     if not Supports(Value, IJvErrorIndicator, obj) then
       raise EValidatorError.CreateFmt(RsEInterfaceNotSupported, [Value.Name, 'IJvErrorIndicator']);
-    if Value = self then
+    if Value = Self then
       raise EValidatorError.Create(RsECircularReference);
     SetErrorIndicator(obj);
     FErrorIndicatorComponent := Value;
-    FErrorIndicatorComponent.FreeNotification(self);
+    FErrorIndicatorComponent.FreeNotification(Self);
   end;
 end;
 
@@ -812,7 +812,7 @@ procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
 begin
   Debug('TJvValidators.Insert: inserting %s', [ComponentName(AValidator)]);
   Assert(AValidator <> nil, RsEInsertNilValidator);
-  AValidator.FValidator := self;
+  AValidator.FValidator := Self;
   if FItems.IndexOf(AValidator) < 0 then
     FItems.Add(AValidator);
 end;
@@ -821,7 +821,7 @@ procedure TJvValidators.Remove(AValidator: TJvBaseValidator);
 begin
   Debug('TJvValidators.Remove: removing %s', [ComponentName(AValidator)]);
   Assert(AValidator <> nil, RsERemoveNilValidator);
-  Assert(AValidator.FValidator = self, RsEValidatorNotChild);
+  Assert(AValidator.FValidator = Self, RsEValidatorNotChild);
   AValidator.FValidator := nil;
   FItems.Remove(AValidator);
 end;
@@ -860,7 +860,7 @@ begin
   begin
     Summaries.Add(ErrorMessage);
     if (FUpdateCount = 0) and Assigned(FOnAddError) then
-      FOnAddError(self);
+      FOnAddError(Self);
     Change;
   end;
 end;
@@ -873,7 +873,7 @@ begin
   begin
     Summaries.Delete(i);
     if (FUpdateCount = 0) and Assigned(FOnRemoveError) then
-      FOnRemoveError(self);
+      FOnRemoveError(Self);
     Change;
   end;
 end;
@@ -899,7 +899,7 @@ begin
     Exit;
   end;
   if Assigned(FOnChange) then
-    FOnChange(self);
+    FOnChange(Self);
 end;
 
 procedure TJvValidationSummary.BeginUpdate;

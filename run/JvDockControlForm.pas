@@ -3467,7 +3467,7 @@ constructor TJvDockableForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DragKind := dkDock;
-  FDockClient := TJvDockClient.Create(self);
+  FDockClient := TJvDockClient.Create(Self);
   JvGlobalDockManager.DockableFormList.Add(Self);
   FFloatingChild := nil;
   TBDockHeight := FDockClient.TBDockHeight;

@@ -192,7 +192,7 @@ begin
   FScaledTxtBitmap := TBitmap.create;
   FPartTxtBitmap := TBitmap.create;
   FResultFont := TFont.Create;
-  FTimer := TTimer.Create(self);
+  FTimer := TTimer.Create(Self);
   FGradient := TJvgGradient.Create;
   FThreeDGradient := TJvg3DGradient.Create;
   FText := TStringList.Create;
@@ -460,7 +460,7 @@ begin
     or (FScaledHeight > FTxtBitmap.Height) then
   begin
     if Assigned(FOnTextLineChanging) then
-      FOnTextLineChanging(self, uCurTextLine);
+      FOnTextLineChanging(Self, uCurTextLine);
     if uCurTextLine < FText.Count - 1 then
       inc(uCurTextLine)
     else
@@ -617,7 +617,7 @@ begin
   if fNeedRemakeBackground then
   begin
     //________________________________PrepareBackground____begin
-//    BringParentWindowToTop(self);
+//    BringParentWindowToTop(Self);
     FBackgrBitmap.Width := Width;
     FBackgrBitmap.Height := Height;
 
@@ -630,7 +630,7 @@ begin
     FBackgrBitmap.Canvas.FillRect(ClientRect);
 
     if FTransparent then
-      GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+      GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
         FBackgrBitmap.Canvas.Handle);
     //________________________________PrepareBackground____end
   //    if (FResBitmap.Width or FResBitmap.Height)<>0 then

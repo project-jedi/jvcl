@@ -224,7 +224,7 @@ begin
   SetupKeyMappings;
   FColorFormulas := true;
   FKeyMappingsEnabled := true;
-  FParser := TJvMathParser.create(self);
+  FParser := TJvMathParser.create(Self);
   FParser.ongetVar := ParserGetVar;
   FParser.onparseError := ParserParseError;
   FVarList := TStringList.Create;
@@ -259,7 +259,7 @@ begin
       ShellExecute(handle, 'open', @s[1], nil, nil, SW_SHOWNORMAL);
   end;
   if assigned(onDblClick) then
-    onDblClick(self);
+    onDblClick(Self);
 end;
 
 procedure TJvJanTreeView.DoAddChildNode;
@@ -323,27 +323,27 @@ var
   n: ttreenode;
 begin
   inherited;
-  MyHitTest := self.GetHitTestInfoAt(X, Y);
+  MyHitTest := Self.GetHitTestInfoAt(X, Y);
   if htOnLabel in MyHitTest then
   begin
-    n := self.GetNodeAt(x, y);
-    if source = self then
+    n := Self.GetNodeAt(x, y);
+    if source = Self then
     begin
       if Selected = nil then exit;
       selected.MoveTo(n, nainsert);
     end;
   end;
   if assigned(ondragdrop) then
-    ondragdrop(self, source, x, y);
+    ondragdrop(Self, source, x, y);
 end;
 
 procedure TJvJanTreeView.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   inherited;
-  Accept := (source = self);
+  Accept := (source = Self);
   if assigned(ondragover) then
-    ondragover(self, source, x, y, state, accept);
+    ondragover(Self, source, x, y, state, accept);
 end;
 
 procedure TJvJanTreeView.DuplicateNode;
@@ -354,7 +354,7 @@ begin
   begin
     mynode := selected;
     mynewnode := items.add(mynode, mynode.text);
-    nodeduplicate(self, mynode, mynewnode);
+    nodeduplicate(Self, mynode, mynewnode);
   end;
 end;
 
@@ -457,7 +457,7 @@ begin
       DoCloseTree;
   end;
   if assigned(onKeyDown) then
-    onkeyDown(self, key, shift);
+    onkeyDown(Self, key, shift);
 end;
 
 procedure TJvJanTreeView.SetKeyMappings(const Value: TTreeKeyMappings);
@@ -489,7 +489,7 @@ begin
   else
     cursor := crdefault;
   if assigned(onmousemove) then
-    onmousemove(self, shift, x, y);
+    onmousemove(Self, shift, x, y);
 end;
 
 procedure TJvJanTreeView.nodeduplicate(mytree: TJvJanTreeView; fromnode,
@@ -1211,7 +1211,7 @@ begin
   if key = char(vk_return) then
     recalculate;
   if assigned(onkeyPress) then
-    onkeyPress(self, key);
+    onkeyPress(Self, key);
 end;
 
 procedure TJvJanTreeView.ParseVariables;
@@ -1250,7 +1250,7 @@ begin
     with Canvas do
     begin
       dr := node.displayrect(true);
-      font := self.Font;
+      font := Self.Font;
       font.Style := font.style + [fsunderline];
       font.Color := clblue;
       textrect(dr, dr.left, dr.Top, s);
@@ -1260,7 +1260,7 @@ begin
     with canvas do
     begin
       dr := node.displayrect(true);
-      font := self.Font;
+      font := Self.Font;
       font.color := FFormuleColor;
       textrect(dr, dr.left, dr.top, s);
       defaultdraw := false;
@@ -1294,7 +1294,7 @@ var
   dlg: TOpenDialog;
   s: string;
 begin
-  dlg := TOpendialog.Create(self);
+  dlg := TOpendialog.Create(Self);
   try
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;
@@ -1316,7 +1316,7 @@ var
   dlg: TSaveDialog;
   s: string;
 begin
-  dlg := TSavedialog.Create(self);
+  dlg := TSavedialog.Create(Self);
   try
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;

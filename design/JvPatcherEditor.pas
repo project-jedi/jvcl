@@ -48,11 +48,9 @@ type
   TJvPatcherEditor = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
-
     procedure Edit; override;
-    procedure SetValue(const Value: String); override;
-    function GetValue: String; override;
-
+    procedure SetValue(const Value: string); override;
+    function GetValue: string; override;
   end;
 
 implementation
@@ -84,21 +82,22 @@ begin
   end;
 end;
 
-procedure TJvPatcherEditor.SetValue(const Value: String);
+procedure TJvPatcherEditor.SetValue(const Value: string);
 begin
-  inherited;
+  inherited SetValue(Value);
   if Value = '' then
     TStrings(GetOrdValue).Clear;
 end;
 
-function TJvPatcherEditor.GetValue: String;
+function TJvPatcherEditor.GetValue: string;
 begin
   if TStrings(GetOrdValue).Count = 0 then
-    Result := '(none)'
-  else if TStrings(GetOrdValue).Count > 4 then // first four items are filenames and file sizes
-    Result := '(diff)'
+    Result := RsNone
   else
-    Result := '(equal)';
+  if TStrings(GetOrdValue).Count > 4 then // first four items are filenames and file sizes
+    Result := RsDiff
+  else
+    Result := RsEqual;
 end;
 
 end.

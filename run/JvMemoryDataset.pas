@@ -286,22 +286,6 @@ uses
   Forms, Dialogs, DbConsts, Math,
   JvResources;
 
-resourcestring
-  //-------------------- Added by CFZ 2004/03/03 ----------------------
-  // 'Los registros aplicados, difieren de los cambiados.';
-  //SNoExactApply = 'The applied records differs from the changed records.';
-  // 'Record already exists.Registro ya existente.';
-  SRecordDuplicate = 'Record already exists.';
-  // 'Registro no encontrado.';
-  SRecordInexistent = 'Record not found.'; //
-  // 'No se pudo agregar el registro.';
-  SInsertError = 'Impossible append the record.';
-  // 'No se pudo modificar el registro.';
-  SUpdateError = 'Impossible modify the record.';
-  // 'No se pudo eliminar el registro.';
-  SDeleteError = 'Impossible erase the record.';
-  //--------------------------------------------------------------------
-
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
     ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob];
@@ -1572,7 +1556,7 @@ begin
   SB := Source.GetBookmark;
   try
     if DisableAllControls then
-      self.DisableControls;
+      Self.DisableControls;
     DB := GetBookMark;
     try
       Filtered := False;

@@ -775,7 +775,7 @@ begin
     lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
-      raise EWinDialogError.Create(RsENotSupported);
+      raise EWinDialogError.Create(RsEFunctionNotSupported);
     lpfnDoOrganizeFavDlg(GetForegroundWindow, PChar(Path));
   finally
     FreeLibrary(SHModule);

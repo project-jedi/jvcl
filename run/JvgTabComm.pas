@@ -254,7 +254,7 @@ end;
 
 {procedure TJvgTabStyle.SetFillBackgr( Value:Boolean );
 begin if FFillBackgr=Value then exit;
-  FFillBackgr:=Value; if Assigned(OnChanged) then OnChanged(self);
+  FFillBackgr:=Value; if Assigned(OnChanged) then OnChanged(Self);
 end;
 }
 

@@ -812,7 +812,8 @@ end;
 procedure TJvCustomItemViewer.OptionsChanged;
 begin
   Changed;
-  if Assigned(FOnOptionsChanged) then FOnOptionsChanged(self);
+  if Assigned(FOnOptionsChanged) then
+    FOnOptionsChanged(Self);
 end;
 
 procedure TJvCustomItemViewer.CheckHotTrack;
@@ -884,13 +885,13 @@ procedure TJvCustomItemViewer.CMUnselectItem(var Message: TMessage);
 var
   I: Integer;
 begin
-  if (Message.WParam = Integer(self)) then
+  if Message.WParam = Integer(Self) then
   begin
     BeginUpdate;
     try
       for I := 0 to Count - 1 do
-        if (Integer(Items[I]) <> Message.LParam) and (cdsSelected in
-          Items[I].State) then
+        if (Integer(Items[I]) <> Message.LParam) and
+          (cdsSelected in Items[I].State) then
           Items[I].State := Items[I].State - [cdsSelected];
     finally
       EndUpdate;
@@ -909,9 +910,9 @@ begin
   ParentColor := False;
   ControlStyle := [csCaptureMouse, csDisplayDragImage, csClickEvents, csOpaque, csDoubleClicks];
   FItems := TList.Create;
-  FOptions := GetOptionsClass.Create(self);
+  FOptions := GetOptionsClass.Create(Self);
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  TControlCanvas(FCanvas).Control := Self;
   FSelectedIndex := -1;
   FLastHotTrack := -1;
   AutoScroll := False;
@@ -1052,7 +1053,7 @@ begin
   if I >= 0 then
   begin
     if FDragImages = nil then
-      FDragImages := TViewerDrawImageList.Create(self);
+      FDragImages := TViewerDrawImageList.Create(Self);
     FDragImages.Clear;
     ItemRect := Rect(0, 0, ItemSize.cx, ItemSize.cy);
     InflateRect(ItemRect, -Options.HorzSpacing, -Options.VertSpacing);
@@ -1072,7 +1073,7 @@ begin
       B.Free;
     end;
     //    FDragImages.SetDragImage(0, 0, 0);
-    ItemRect := self.ItemRect(I, True);
+    ItemRect := Self.ItemRect(I, True);
     FDragImages.SetDragImage(0, P.X - ItemRect.Left, P.Y - ItemRect.Top);
     Result := FDragImages;
     SelectedIndex := I;
@@ -1216,7 +1217,7 @@ begin
   else
     Changed;
   if Assigned(FOnItemChanged) then
-    FOnItemChanged(self, Item);
+    FOnItemChanged(Self, Item);
 end;
 
 procedure TJvCustomItemViewer.ItemChanging(Item: TJvViewerItem;
@@ -1224,7 +1225,7 @@ procedure TJvCustomItemViewer.ItemChanging(Item: TJvViewerItem;
 begin
   AllowChange := True;
   if Assigned(FOnItemChanging) then
-    FOnItemChanging(self, Item, AllowChange);
+    FOnItemChanging(Self, Item, AllowChange);
 end;
 
 function TJvCustomItemViewer.ItemRect(Index: Integer; IncludeSpacing: Boolean): TRect;
@@ -1539,7 +1540,7 @@ begin
     Item := Items[ExcludeIndex]
   else
     Item := nil;
-  PostMessage(Handle, CM_UNSELECTITEMS, Integer(self), Integer(Item));
+  PostMessage(Handle, CM_UNSELECTITEMS, Integer(Self), Integer(Item));
 end;
 
 procedure TJvCustomItemViewer.UpdateAll;
@@ -1632,7 +1633,8 @@ begin
   inherited;
   UpdateAll;
   InvalidateClipRect(ClientRect);
-  if Assigned(FOnScroll) then FOnScroll(self);
+  if Assigned(FOnScroll) then
+    FOnScroll(Self);
 end;
 
 procedure TJvCustomItemViewer.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1714,7 +1716,8 @@ begin
   inherited;
   UpdateAll;
   InvalidateClipRect(ClientRect);
-  if Assigned(FOnScroll) then FOnScroll(self);
+  if Assigned(FOnScroll) then
+    FOnScroll(Self);
 end;
 
 procedure TJvCustomItemViewer.WMCancelMode(var Message: TWMCancelMode);

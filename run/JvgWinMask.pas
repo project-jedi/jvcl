@@ -97,7 +97,7 @@ var
     Msg.Msg := WM_PAINT;
     SendMessage(Control.Handle, WM_PAINT, FMaskBuff.Canvas.Handle, 0);
     //    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
-    //    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
+    //    GetParentImageRect( Self, Bounds(Left,Top,Width,Height),
     //      FMaskBuff.Canvas.Handle );
 
     //    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
@@ -121,7 +121,7 @@ begin
     //    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
     //            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
   end;
-  //  if Assigned(FAfterPaint) then FAfterPaint(self);
+  //  if Assigned(FAfterPaint) then FAfterPaint(Self);
   FIgnorePaint := False;
 end;
 
