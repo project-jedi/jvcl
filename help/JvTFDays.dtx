@@ -1,169 +1,77 @@
-##Package: ??
+##Package: TimeFramework
 ##Status: Locked by peter3
+##TODO: insert links for "Batch Loading", "Welcome", "Refresh Reconciliation", "Using TJvTFPrinter", "JvTFDays Keyboard Assignments"
 ----------------------------------------------------------------------------------------------------
 @@JvTFDays.pas
 Summary
   Contains the TJvTFDays component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Unlimited Intelligence Limited.
+  Mike Kolter, Unlimited Intelligence Limited
 ----------------------------------------------------------------------------------------------------
 @@EJvTFDaysError
 Summary
-  Write here a summary (1 line)
+  Exception raised by the TJvTFDays component.
 Description
-  Write here a description
+  An EJvTFDaysError exception is used for various error conditions, such as passing an invalid row
+  or column to a method.
 ----------------------------------------------------------------------------------------------------
 @@TDynIntArray
 <TITLE TDynIntArray type>
 Summary
-  Write here a summary (1 line)
+  Dynamic array type.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array of Integer ; - for reference)
+  This type defines a dynamic integer array which is used for several methods, including TJvTFDays.EnumSelCols
+  and TJvTFDays.EnumSelRows.
+
+  This type is not available in the Delphi 3 version of JTF.
 ----------------------------------------------------------------------------------------------------
 @@TDynPointArray
 <TITLE TDynPointArray type>
 Summary
-  Write here a summary (1 line)
+  Dynamic point array.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array of TPoint ; - for reference)
+  This type defines a dynamic TPoint array which is used for the TJvTFDays.EnumSelCells method.
+
+  This type is not available in the Delphi 3 version of JTF.
 ----------------------------------------------------------------------------------------------------
-@@TGetJvTFDaysApptDrawInfoEvent
-<TITLE TGetJvTFDaysApptDrawInfoEvent type>
+@@TJvTFGetDaysApptDrawInfoEvent
+<TITLE TJvTFGetDaysApptDrawInfoEvent type>
 Summary
-  Write here a summary (1 line)
+  Event type used to custom draw an appointment. 
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvTFDays.OnGetApptDrawInfo
-    TJvTFDaysPrinter.OnGetApptDrawInfo
+  This type is used for the TJvTFDays.OnGetApptDrawInfo event. You can change the properties of the
+  DrawInfo object in order to customize the appearance of the appointment. Please see
+  TJvTFDaysApptDrawInfo for a list of properties that you can change.
 Parameters
-  Sender   - Description for this parameter
-  Appt     - Description for this parameter
-  DrawInfo - Description for this parameter
+  Sender   - The TJvTFdays control that called the event.
+  Appt     - The appointment that is to be drawn.
+  DrawInfo - Specifies the default appearance of the appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFDaysApptDrawInfo
 ----------------------------------------------------------------------------------------------------
 @@TJvTFApptMap
 Summary
-  Write here a summary (1 line)
+  Provides a sparse matrix implementation for the appointments in a TJvTFDays component.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.ColCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Row - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.Dump
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  fname - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.GetAppts
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  StartRow - Description for this parameter
-  EndRow   - Description for this parameter
-  ApptList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.HasAppt
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Appt - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.LocateMapCol
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Appt         - Description for this parameter
-  MapSearchRow - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.Location
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFApptMap.Refresh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
+  This class is for internal use only.
 @@TJvTFAutoScrollDir
 <TITLE TJvTFAutoScrollDir type>
 Summary
-  Write here a summary (1 line)
+  Defines a type used to determine the current auto-scroll direction.
 Description
-  Write here a description
+  This type is used internally by the TJvTFDays component to determine the auto-scroll to perform when
+  an item is dragged beyond any of the edges of the control.
 @@TJvTFAutoScrollDir.asdUp
-  Description for asdUp
+  Control should scroll up.
 @@TJvTFAutoScrollDir.asdDown
-  Description for asdDown
+  Control should scroll down.
 @@TJvTFAutoScrollDir.asdLeft
-  Description for asdLeft
+  Control should scroll to the left.
 @@TJvTFAutoScrollDir.asdRight
-  Description for asdRight
+  Control should scroll to the right.
 @@TJvTFAutoScrollDir.asdNowhere
-  Description for asdNowhere
+  Control should not scroll.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFBeginEditEvent
 <TITLE TJvTFBeginEditEvent type>
@@ -171,36 +79,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCompNamesList
 Summary
-  Write here a summary (1 line)
+  String list class used internally.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvTFCompNamesList.Move
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  CurIndex - Description for this parameter
-  NewIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvTFCompNamesList.OnMove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender   - Description for this parameter
-  CurIndex - Description for this parameter
-  NewIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Extended TStringList that has an OnMove event that is triggered when the Move procedure is called.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFCreateQuickEntryEvent
 <TITLE TJvTFCreateQuickEntryEvent type>
@@ -212,206 +93,242 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays
 Summary
-  Write here a summary (1 line)
+  Control that can display appointments on a day by day basis.
 Description
-  Write here a description
+  The TJvTFDays component displays appointments by the day. It has group scheduling features and
+  appointments can be viewed at different levels of detail. This component has many properties,
+  methods, and events that will allow you to configure and display the grid however you would like.
+
+  TJvTFDays is derived from TJvTFControl and integrates seamlessly with a TJvTFScheduleManager.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.AdjustEndTime
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This method is primarily for internal use but you may find it handy from time to time. The only
+  thing it does is subtract one second from the time given. This is used internally to temporarily
+  adjust the ending time of appointments so that they do not fall exactly on the beginning of one
+  of the time blocks that is displaying in the grid.
+
+Example:
+  Granularity = 60
+  Appt end time = 11:00am
+
+  Without adjusting the end time, the grid would display the appointment in the 11:00
+  time block (i.e. 11:00am - 12:00pm). This is clearly incorrect and misleading. By subtracting one
+  second from the end time of the appointment (so that it ends at 10:59:59), the grid will correctly
+  draw the appointment as ending in the 10:00am time block.
+
+  You need to be careful when working with appointment end times. To ensure the integrity of your data,
+  the grid does not actually change the EndTime property of an appointment by applying AdjustEndTime.
+  An example is if you would write something like:
+  <CODE>
+    MyEndRow := TimeToRow(anAppt.EndTime);
+  </CODE>
+  This may return an incorrect result as shown above. However, if you write:
+  <CODE>
+    MyEndRow := TimeToRow(AdjustEndTime(anAppt.EndTime));
+  </CODE>
+  you can be assured that MyEndRow will accurately reflect what the grid is displaying.
+
+  In fact, if you do need to find the start and/or end rows for an appointment you should use the
+  CalcStartEndRows method as that method applies AdjustEndTime.
+
 Parameters
-  aTime - Description for this parameter
+  aTime - The time to adjust
 Return value
-  Describe here what the function returns
+  The adjusted time.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CalcStartEndRows
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ApptAttr
 Summary
-  Write here a summary (1 line)
+  Specifies the default apperance of appointments.
 Description
-  Write here a description
+  Allows you to change the appearance of non-selected appointments in the grid. See TJvTFDaysApptAttr for more information.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFDaysApptAttr
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ApptBar
 Summary
-  Write here a summary (1 line)
+  Specifies the appearance of the appointment bar.
 Description
-  Write here a description
+  Use this property to specify how the appointment bars should appear. See TJvTFDaysApptBar for more info.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvTFDaysApptBar
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ApptBuffer
 Summary
-  Write here a summary (1 line)
+  Specifies the gap between appointments.
 Description
-  Write here a description
+  Use this property to specify the margin (or gap) (in pixels) from the right side of one appointment to
+  another (or the right side of the column). The default is 5.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ApptInView
 Summary
-  Write here a summary (1 line)
+  Scrolls an appointment into view.
 Description
-  Write here a description
+  Calling this method ensures that the appointment specified by anAppt is at least partially visible.
+  Since an appointment may be found in more then one column you must also specify the column (aCol).
 Parameters
-  anAppt - Description for this parameter
-  aCol   - Description for this parameter
+  anAppt - The appointment to make visible.
+  aCol   - The column of the appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.AutoSizeCols
 Summary
-  Write here a summary (1 line)
+  Specifies how columns are sized.
 Description
-  Write here a description
+  When true, the grid will automatically size its columns so that all of the columns fit into and completely
+  fill the visible area within the grid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.BorderStyle
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control has a border.
 Description
-  Write here a description
+  If BorderStyle is set to the default bsSingle, the control has a single-line border. If BorderStyle is
+  set to bsNone, no border appears around the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.BottomRow
 Summary
-  Write here a summary (1 line)
+  Returns the bottommost visible row.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  This method will return the index of the row that appears at the bottom of the visible area of the grid.
+  (This row is not guaranteed to be fully visible.)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CalcGroupColHdrsHeight
 Summary
-  Write here a summary (1 line)
+  Returns the height of the headers.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  This method returns the calculated sum of the heights of the group header and column header, which
+  may or may not be equal to the sum of the GroupHdrHeight and ColHdrHeight properties.
+
+  If Grouping <> grNone, CalcGroupHdrHeight will return the sum of the GroupHdrHeight and ColHdrHeight
+  properties. If Grouping = grNone, CalcGroupHdrHeight will return the value of the ColHdrHeight property only.
+
+Examples:
+  GroupHdrHeight = 25
+  ColHdrHeight = 30
+  Grouping = grName
+  CalcGroupColHdrsHeight returns 55
+
+  GroupHdrHeight = 25
+  ColHdrHeight = 30
+  Grouping = grNone
+  CalcGroupHdrHeight returns 30
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CalcGroupHdrHeight, GroupHdrHeight, ColHdrHeight, Grouping
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CalcGroupHdrHeight
 Summary
-  Write here a summary (1 line)
+  Returns the height of the headers.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  This method returns the calculated height of the group header, which may or may not be equal to the
+  GroupHdrHeight property. If Grouping <> grNone, CalcGroupHdrHeight will return the value of the
+  GroupHdrHeight property. If Grouping = grNone, CalcGroupHdrHeight will return 0.
+
+Examples:
+  GroupHdrHeight = 25
+  Grouping = grName
+  CalcGroupHdrHeight returns 25
+
+  GroupHdrHeight = 25
+  Grouping = grNone
+  CalcGroupHdrHeight returns 0
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CalcGroupColHdrsHeight, GroupHdrHeight, ColHdrHeight, Grouping
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CalcStartEndRows
 Summary
-  Write here a summary (1 line)
+  Caclulates the start and end rows for an appointment.
 Description
-  Write here a description
-Parameters
-  anAppt    - Description for this parameter
-  SchedDate - Description for this parameter
-  StartRow  - Description for this parameter
-  EndRow    - Description for this parameter
+  This method will calculate the start and end rows for the given appointment on the given date. If
+  the appointment begins on an earlier date, StartRow will be set to zero. If the appointment ends
+  on a later date, EndRow will be set to RowCount - 1.
+
+  Since this method applies the AdjustEndTime method, you should always use this method if you need
+  to find the start and/or end rows for an appointment. See AdjustEndTime for more information.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AdjustEndTime
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CanEdit
 Summary
-  Write here a summary (1 line)
+  Specifies if editing is possible.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  CanEdit will return True if grid conditions permit the in-place editing of appointment text.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CellIsSelected
 Summary
-  Write here a summary (1 line)
+  Specifies if a cell is selected.
 Description
-  Write here a description
+  Use this method to determine if a given cell is selected.
 Parameters
-  aCell - Description for this parameter
+  aCell - The cell to check for selection.
 Return value
-  Describe here what the function returns
+  True if aCell is selected, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.CellRect
 Summary
-  Write here a summary (1 line)
+  Calculates the visible bounding rect of a cell.
 Description
-  Write here a description
+  This method will return the bounding rectangle for the cell located at (Col, Row). The coordinates
+  returned are relative to the control. Col and Row may be set -1 (gcHdr) to retrieve header information
+  or to -2 (gcGroupHdr) to retrieve group header information . Any cells that do not fully appear
+  in the grid are clipped so that all points within the resultant rectangle fall within the
+  visible area of the grid.
+
+  Use VirtualCellRect to return a rectangle that is not clipped by the visible area of the grid.
 Parameters
-  Col - Description for this parameter
-  Row - Description for this parameter
+  Col - Column of cell.
+  Row - Row of cell.
 Return value
-  Describe here what the function returns
+  The visible bounding rect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  VirtualCellRect
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ClearSelection
 Summary
-  Write here a summary (1 line)
+  Clears the current selection.
 Description
-  Write here a description
+  After this method is invoked, SelStart and SelEnd will be set to (-1, -1) and ValidSelection will return False.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelStart, SelEnd, ValidSelection
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ColHdrHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the column headers.
 Description
-  Write here a description
+  \Read ColHdrHeight to get the height of the column headers in pixels. Set ColHdrHeight to change the height of
+  the column headers. The default height is 25 pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ColInView
 Summary
-  Write here a summary (1 line)
+  Scrolls a column into view.
 Description
-  Write here a description
+  Use the ColInView method to scroll a column into view. The column is not guaranteed to be fully visible.
 Parameters
-  aCol - Description for this parameter
+  aCol - The column to make visible.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.ColIsSelected
 Summary
-  Write here a summary (1 line)
+  Determines if a specific column is selected.
 Description
-  Write here a description
+  Use this method to determine if a given column is selected.
 Parameters
-  aCol - Description for this parameter
+  aCol - Index of the column to investigate.
 Return value
-  Describe here what the function returns
+  True if aCol is selected, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.Cols
 Summary
@@ -897,14 +814,13 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This event is fired immediately before an appointment is about to be edited with the in-place editor.
+  You can set the AllowEdit parameter to False to prevent the appointment from being edited.
 Parameters
-  Sender    - Description for this parameter
-  Appt      - Description for this parameter
-  AllowEdit - Description for this parameter
+  Sender    - The TJvTFDays component that called the event.
+  Appt      - The appointment that is about to be edited.
+  AllowEdit - Change to false to prevent the editing of the appointment.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTFDays.OnCreateQuickEntry
 Summary
