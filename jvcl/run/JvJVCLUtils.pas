@@ -625,6 +625,7 @@ function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 
 function GetAppHandle: HWND;
 
+procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
 implementation
 
@@ -6604,6 +6605,53 @@ begin
   end;
 end;
 
+procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
+var
+  i,Size: integer;
+begin
+  Size := Rect.Right - Rect.Left;
+  if Odd(Size) then
+  begin
+    Dec(Size);
+    Dec(Rect.Right);
+  end;
+  Rect.Bottom := Rect.Top + Size;
+  Canvas.Pen.Color := Color;
+  case Direction of
+    akLeft:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Right - i, Rect.Top + i);
+          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+        end;
+      end;
+    akRight:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
+          Canvas.LineTo(Rect.Left + i, Rect.Bottom - i);
+        end;
+      end;
+    akTop:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Bottom - i);
+          Canvas.LineTo(Rect.Right - i, Rect.Bottom - i);
+        end;
+      end;
+    akBottom:
+      begin
+        for i := 0 to Size div 2 do
+        begin
+          Canvas.MoveTo(Rect.Left + i, Rect.Top + i);
+          Canvas.LineTo(Rect.Right - i, Rect.Top + i);
+        end;
+      end;
+  end;
+end;
 
 initialization
   InitScreenCursors;

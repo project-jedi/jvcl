@@ -379,7 +379,7 @@ begin
     if Section = '' then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
     IniFile.WriteString(Section, Key, Value);
-    if AutoFlush and not Updating then Flush;
+    if AutoFlush and not IsUpdating then Flush;
   end;
 end;
 
@@ -415,12 +415,12 @@ begin
     if IniFile.ValueExists(Section, Key) then
     begin
       IniFile.DeleteKey(Section, Key);
-      if AutoFlush and not Updating then Flush;
+      if AutoFlush and not IsUpdating then Flush;
     end
     else if IniFile.SectionExists(Section + '\' + Key) then
     begin
       IniFile.EraseSection(Section + '\' + Key);
-      if AutoFlush and not Updating then Flush;
+      if AutoFlush and not IsUpdating then Flush;
     end;
   end;
 end;
@@ -515,7 +515,7 @@ end;
 
 procedure TJvAppIniFileStorage.Reload;
 begin
-  if FileExists(FullFileName) and not Updating then
+  if FileExists(FullFileName) and not IsUpdating then
     IniFile.Rename(FullFileName, True);
 end;
 

@@ -603,48 +603,48 @@ end;
 procedure TJvAppXMLFileStorage.DeleteSubTreeInt(const Path: string);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DeleteValueInt(const Path: string);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DoWriteBinary(const Path: string; const Buf;
   BufSize: Integer);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DoWriteBoolean(const Path: string;
   Value: Boolean);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DoWriteFloat(const Path: string;
   Value: Extended);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DoWriteInteger(const Path: string;
   Value: Integer);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.DoWriteString(const Path: string;
   Value: string);
 begin
   inherited;
-  if AutoFlush and not Updating then Flush;
+  if AutoFlush and not IsUpdating then Flush;
 end;
 
 procedure TJvAppXMLFileStorage.Flush;
@@ -655,7 +655,7 @@ end;
 
 procedure TJvAppXMLFileStorage.Reload;
 begin
-  if FileExists(FullFileName) and not Updating then
+  if FileExists(FullFileName) and not IsUpdating then
     FXml.LoadFromFile(FullFileName);
 end;
 
