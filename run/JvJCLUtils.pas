@@ -52,8 +52,7 @@ uses
   {$IFDEF LINUX}
   Libc, Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
-  SysUtils, Classes,
-  Graphics, Clipbrd,
+  SysUtils, Classes, Graphics, Clipbrd,
   {$IFDEF VisualCLX}
   Qt, QWindows,
   {$ENDIF VisualCLX}

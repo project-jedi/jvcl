@@ -506,8 +506,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvDynControlEngineVCL,
-  JvJCLUtils;
+  JvDynControlEngineVCL, JvJCLUtils;
 
 var
   IntDynControlEngineJVCL: TJvDynControlEngine = nil;
@@ -580,11 +579,11 @@ begin
   inherited Create(AOwner);
   FEditControl := TJvMaskEdit.Create(AOwner);
   FEditControl.Parent := Self;
-  FButton     := TJvBitBtn.Create(AOwner);
+  FButton := TJvBitBtn.Create(AOwner);
   FButton.Parent := Self;
   FButton.Align := alRight;
   FButton.Caption := '...';
-  Height      := FEditControl.Height;
+  Height := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
   BevelInner  := bvNone;
@@ -681,7 +680,6 @@ procedure TJvDynControlJVCLButtonEdit.ControlSetLayout(Value: TButtonLayout);
 begin
   FButton.Layout := Value;
 end;
-
 
 //=== { TJvDynControlJVCLCalcEdit } ==========================================
 
@@ -1022,7 +1020,6 @@ procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
 begin
 end;
 
-
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetCaption(const Value: string);
 begin
   //Caption := Value;
@@ -1085,7 +1082,6 @@ begin
   FTimePicker.Format := Value;
   {$ENDIF COMPILER6_UP}
 end;
-
 
 //=== { TJvDynControlJVCLDateEdit } ==========================================
 
@@ -1618,10 +1614,10 @@ procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
 begin
 end;
 
- //procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: Boolean);
- //begin
- //  ReadOnly := Value;
- //end;
+//procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: Boolean);
+//begin
+//  ReadOnly := Value;
+//end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetCaption(const Value: string);
 begin
@@ -1976,15 +1972,18 @@ begin
   Layout := Value;
 end;
 
+//=== { TJvDynControlEngineJVCL } ============================================
+
+type
+  TJvDynControlEngineJVCL = class(TJvDynControlEngine)
+  public
+    procedure RegisterControls; override;
+  end;
+
 function DynControlEngineJVCL: TJvDynControlEngine;
 begin
   Result := IntDynControlEngineJVCL;
 end;
-
-type
-  TJvDynControlEngineJVCL = class(TJvDynControlEngine)
-    procedure RegisterControls; override;
-  end;
 
 procedure TJvDynControlEngineJVCL.RegisterControls;
 begin
