@@ -2694,6 +2694,9 @@ begin
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2916,6 +2919,9 @@ begin
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}
+      {$IFDEF VisualCLX}
+      QWindows.
+      {$ENDIF VisualCLX}
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else
