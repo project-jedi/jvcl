@@ -22,6 +22,12 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+
+  * Only dropdown shadow for windows xp systems.
+  * Only custom animation for windows xp systems, because of use of window region.
+  * Setting ParentWindow causes flickering.
+  * Close button doesn't look the same as the windows shell balloon.
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -173,7 +179,7 @@ type
   protected
     function HookProc(var Message: TMessage): Boolean;
     procedure Hook;
-    procedure Unhook;
+    procedure UnHook;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
@@ -217,6 +223,7 @@ implementation
 
 uses
   SysUtils, CommCtrl, Registry, JvMaxMin, JvWndProcHook, JvFunctions,
+  ComCtrls, // needed for GetComCtlVersion
   MMSystem; // needed for sndPlaySound
 
 const
@@ -233,6 +240,7 @@ type
     FMainCtrl: TJvBalloonHint;
     FDefaultImages: TImageList;
     FSounds: array[TJvIconKind] of string;
+    FNeedUpdateBkColor: Boolean;
     FBkColor: TColor;
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultSounds;
@@ -292,7 +300,7 @@ var
   AnimateWindowProc: TAnimateWindowProc = nil;
 {$ENDIF}
 
-function IsWinXP: Boolean;
+function IsWinXP_UP: Boolean;
 begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
     ((Win32MajorVersion > 5) or
@@ -363,7 +371,6 @@ var
   ScreenRect: TRect;
   LStemPointPosition: TPoint;
 begin
-
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
   FCurrentPosition := bpLeftDown;
@@ -590,9 +597,11 @@ end;
 
 procedure TJvBalloonWindow.CMShowingChanged(var Message: TMessage);
 begin
+  { In response of RecreateWnd, SetParentWindow calls, only respond when visible }
+  if Showing then
+    UpdateRegion;
+
   inherited;
-  { In response of RecreateWnd, SetParentWindow calls }
-  UpdateRegion;
 end;
 
 procedure TJvBalloonWindow.CMTextChanged(var Message: TMessage);
@@ -609,7 +618,7 @@ begin
   { Drop shadow in combination with custom animation may cause blurry effect,
     no solution.
   }
-  if IsWinXP then
+  if IsWinXP_UP then
     Params.WindowClass.Style := Params.WindowClass.Style or CS_DROPSHADOW;
 end;
 
@@ -926,7 +935,7 @@ destructor TJvBalloonHint.Destroy;
 begin
   CancelHint;
   StopHintTimer;
-  { This will implicity reset the global HintWindowClass var.: }
+  { This will implicitly reset the global HintWindowClass var.: }
   ApplicationHintOptions := [];
   inherited;
 end;
@@ -993,7 +1002,7 @@ begin
       RImageIndex := DefaultImageIndex;
     RShowCloseBtn := boShowCloseBtn in Options;
 
-    if not IsWinXP then
+    if not IsWinXP_UP then
       RAnimationStyle := atNone
     else if boCustomAnimation in Options then
     begin
@@ -1127,7 +1136,7 @@ begin
   end;
 end;
 
-procedure TJvBalloonHint.Unhook;
+procedure TJvBalloonHint.UnHook;
 begin
   if Assigned(FData.RAnchorWindow) then
     UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
@@ -1139,21 +1148,25 @@ constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
   inherited;
 
-  if IsWinXP then
+  if IsWinXP_UP then
   begin
     FDefaultImages := TImageList.Create(nil);
-    FDefaultImages.BkColor := clNone;
     { According to MSDN flag ILC_COLOR32 needs to be included (?) }
-    FDefaultImages.Handle := ImageList_Create(16, 16, ILC_COLORDDB or ILC_COLOR32 or ILC_MASK,
-      4, 4);
+    FDefaultImages.Handle := ImageList_Create(16, 16, ILC_COLOR32 or ILC_MASK, 4, 4);
   end
   else
     FDefaultImages := TImageList.CreateSize(16, 16);
 
-  FDefaultImages.BkColor := Application.HintColor;
-  FDefaultImages.Masked := True;
+  { Only need to update the background color in XP when using pre v6.0 ComCtl32.dll
+    image lists }
+  FNeedUpdateBkColor := IsWinXP_UP and (GetComCtlVersion < $00060000);
 
-  FBkColor := FDefaultImages.BkColor;
+  if FNeedUpdateBkColor then
+    FDefaultImages.BkColor := Application.HintColor
+  else
+    FDefaultImages.BkColor := clNone;
+
+  FBkColor := Application.HintColor;
 
   GetDefaultImages;
   GetDefaultSounds;
@@ -1310,19 +1323,16 @@ end;
 
 procedure TGlobalCtrl.SetBkColor(const Value: TColor);
 begin
-  if FBkColor <> Value then
+  if FNeedUpdateBkColor and (FBkColor <> Value) then
   begin
-    FBkColor := Value;
     { Icons in windows XP use an alpha channel to 'blend' with the background.
-      If the background color changes, then the images must be redrawn - that is
-      I don't know an other solution :)
+      If the background color changes, then the images must be redrawn,
+      when using pre v6.0 ComCtl32.dll image lists
     }
-    if IsWinXP then
-    begin
-      FDefaultImages.Clear;
-      FDefaultImages.BkColor := FBkColor;
-      GetDefaultImages;
-    end;
+    FBkColor := Value;
+    FDefaultImages.Clear;
+    FDefaultImages.BkColor := FBkColor;
+    GetDefaultImages;
   end;
 end;
 
@@ -1425,7 +1435,7 @@ begin
     Rect.Bottom := Screen.DesktopTop;
   SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height,
     SWP_NOACTIVATE);
-  if (FAnimationStyle <> atNone) and IsWinXP and Assigned(AnimateWindowProc) then
+  if (FAnimationStyle <> atNone) and IsWinXP_UP and Assigned(AnimateWindowProc) then
   begin
     if FAnimationStyle in [atSlide, atRoll] then
       case FCurrentPosition of
@@ -1440,6 +1450,16 @@ begin
       because of use of the window region: }
     AnimateWindowProc(Handle, FAnimationTime, CAnimationStyle[FAnimationStyle] or AutoValue);
   end;
+  { This will prevent focusing/unfocusing of the application button on the
+    taskbar when clicking on the balloon window, but will cause flickering
+    when for the first time called because the window will be recreated.
+    Maybe move to TJvBalloonHint.Create although it will implicitly show
+    the window (but with no effect (?) because the size of the window is
+    then 0): }
+  if FIsAnchored then
+    ParentWindow := Application.Handle
+  else
+    ParentWindow := 0;
   ShowWindow(Handle, SW_SHOWNOACTIVATE);
   //Invalidate;
 end;
