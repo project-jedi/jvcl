@@ -15,9 +15,8 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-Maciej Kaczkowski
 
-Last Modified: 2003-09-16
+Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,7 +28,6 @@ located at http://jvcl.sourceforge.net
        description : Buttons
 
 Known Issues:
-=============
 Maciej Kaczkowski:
   [X] Height of JvHTComboBox - on design time you cannot use mouse for resize
   [X] alignment not work correctly on JvHTButtonGlyph
@@ -451,6 +449,7 @@ begin
 end;
 
 {O}
+
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
   if FBiDiMode <> Value then
@@ -858,9 +857,9 @@ end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
-var Cap: String;
+var cap: String;
 begin
-  Cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
+cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -868,20 +867,20 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      ItemHtDraw(Canvas, TextBounds, [odSelected], Cap, False);
+      ItemHtDraw(Canvas, TextBounds, [], Cap);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      ItemHtDraw(Canvas, TextBounds, [odSelected], Cap, False);
+      ItemHtDraw(Canvas, TextBounds, [], Cap);
     end
     else
-      ItemHtDraw(Canvas, TextBounds, [], Cap, False);
+      ItemHtDraw(Canvas, TextBounds, [], Cap);
   end;
 end;
 
 procedure TJvHTButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
-TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption, False),
+TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption),
     ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
@@ -905,7 +904,7 @@ constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
 begin
   if not (AOwner is TForm) then
-    raise Exception.Create('JvaCaptionButton owner must be a TForm');
+    raise Exception.CreateFmt('%s owner must be a TForm',[ClassName]);
   inherited Create(AOwner);
 
   FGlyph := TJvButtonGlyph.Create;
