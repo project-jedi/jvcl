@@ -192,16 +192,29 @@ type
     FStyleManager: TJvNavPaneStyleManager;
     FStyleLink: TJvNavStyleLink;
     FParentStyleManager: Boolean;
+    {$IFDEF VCL}
+    FDragZone: integer;
+    FOldCursor: TCursor;
+    {$ENDIF VCL}
     procedure SetColorFrom(const Value: TColor);
     procedure SetColorTo(const Value: TColor);
     procedure SetStyleManager(const Value: TJvNavPaneStyleManager);
     procedure DoStyleChange(Sender: TObject);
     procedure ParentStyleManagerChanged(var Msg: TMsgStyleManagerChange); message CM_PARENTSTYLEMANAGERCHANGED;
     procedure SetParentStyleManager(const Value: Boolean);
+    {$IFDEF VCL}
+    procedure SetCursor(const Value: TCursor);
+    function GetDragZoneRect: TRect;
+    function MouseInDragZone(X, Y: Integer): boolean;
+    {$ENDIF VCL}
   protected
     procedure Paint; override;
     procedure EnabledChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    {$IFDEF VCL}
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMMouseMove(var Message: TWMMouseMove); message WM_MOUSEMOVE;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -209,15 +222,29 @@ type
     // NB! Color is published but not used
     property Align default alBottom;
     property AutoSnap default False;
+    property Cursor {$IFDEF VCL}write SetCursor{$ENDIF VCL} default crSizeNS;
+    {$IFDEF VCL}
+    // DragZone is the number of pixels in the center of the control that constitutes the draggable area.
+    // For example, with a left/right aligned splitter and a DragZone of 100, 50 pixels above and 50 pixels below
+    // the vertical midpoint can be clicked to start the sizing. Any clicks outside this area will not start a sizing operation
+    // If DragZone <= 0, the entire control is a drag zone
+    property DragZone: integer read FDragZone write FDragZone default 0;
+    {$ENDIF VCL}
     property ResizeStyle default rsUpdate;
     property ColorFrom: TColor read FColorFrom write SetColorFrom default $B78676;
     property ColorTo: TColor read FColorTo write SetColorTo default $A03D09;
     property Height default 7;
-    property Cursor default crSizeNS;
     property Enabled;
     property StyleManager: TJvNavPaneStyleManager read FStyleManager write SetStyleManager;
     // (p3) must be published after StyleManager
     property ParentStyleManager: Boolean read FParentStyleManager write SetParentStyleManager default True;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnDblClick;
+    property OnMouseUp;
+    property OnMouseMove;
   end;
 
   TJvNavPanelColors = class(TPersistent)
@@ -692,7 +719,7 @@ type
 
   TJvNavPaneToolButton = class(TCollectionItem)
   private
-    FRealButton:TJvNavPanelToolButton;
+    FRealButton: TJvNavPanelToolButton;
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetEnabled(const Value: Boolean);
     procedure SetAction(const Value: TBasicAction);
@@ -704,7 +731,7 @@ type
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-    property Button:TJvNavPanelToolButton read FRealButton;
+    property Button: TJvNavPanelToolButton read FRealButton;
   published
     property Action: TBasicAction read GetAction write SetAction;
     property Hint: string read GetHint write SetHint;
@@ -3237,6 +3264,66 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
+function TJvOutlookSplitter.GetDragZoneRect:TRect;
+begin
+  Result := ClientRect;
+  if DragZone <> 0 then
+  begin
+    if (Align in [alLeft, alRight]) then
+    begin
+      if DragZone < RectHeight(Result) then
+      begin
+        Result.Top := (RectHeight(Result) - DragZone) div 2;
+        Result.Bottom := Result.Top + DragZone;
+      end;
+    end
+    else if (Align in [alTop, alBottom]) then
+    begin
+      if DragZone < RectWidth(Result) then
+      begin
+        Result.Left := (RectWidth(Result) - DragZone) div 2;
+        Result.Right := Result.Left + DragZone;
+      end;
+    end;
+  end;
+end;
+
+function TJvOutlookSplitter.MouseInDragZone(X, Y: Integer): boolean;
+begin
+  Result := (DragZone <= 0) or PtInRect(GetDragZoneRect, Point(X, Y));
+end;
+
+procedure TJvOutlookSplitter.WMLButtonDown(var Message: TWMLButtonDown);
+begin
+  if MouseInDragZone(Message.XPos, Message.YPos) then
+    inherited;
+end;
+
+procedure TJvOutlookSplitter.WMMouseMove(var Message: TWMMouseMove);
+begin
+  inherited;
+  if MouseInDragZone(Message.XPos, Message.YPos) then
+  begin
+    if Cursor <> FOldCursor then
+      inherited Cursor := FOldCursor;
+  end
+  else
+  begin
+    if Cursor <> crDefault then
+    begin
+      FOldCursor := Cursor;
+      inherited Cursor := crDefault;
+    end;
+  end;
+end;
+
+procedure TJvOutlookSplitter.SetCursor(const Value: TCursor);
+begin
+  inherited Cursor := Value;
+  FOldCursor := Value;
+end;
+{$ENDIF VCL}
 //=== TJvNavPanelHeader ======================================================
 
 constructor TJvNavPanelHeader.Create(AOwner: TComponent);
@@ -4125,7 +4212,6 @@ begin
   end;
 end;
 
-
 procedure TJvNavPaneToolPanel.Paint;
 var
   R, R2: TRect;
@@ -4280,8 +4366,8 @@ begin
   end
   else
   begin
-    FCloseButton.SetBounds(0,0,0,0);
-    FDropDown.SetBounds(0,0,0,0);
+    FCloseButton.SetBounds(0, 0, 0, 0);
+    FDropDown.SetBounds(0, 0, 0, 0);
   end;
 end;
 
@@ -4938,6 +5024,8 @@ begin
     PictureChanged(Self)
   end;
 end;
+
+
 
 initialization
   RegisterClasses([TJvNavPanelPage]);
