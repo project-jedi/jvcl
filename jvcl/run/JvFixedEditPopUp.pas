@@ -18,7 +18,7 @@ Contributor(s):
 Steve Magruder
 Remko Bonte
 
-Last Modified: 2003-07-14
+Last Modified: 2003-09-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -73,6 +73,13 @@ Description:
 
 
 -----------------------------------------------------------------------------}
+{histroy
+3.0:
+  2003-09-19:
+    - introduced IFixedPopupIntf
+    - speed optimation in THiddenPopupObject.GetPopUpMenu
+
+}
 
 unit JvFixedEditPopUp;
 
@@ -80,13 +87,39 @@ interface
 uses
   Controls, Menus;
 
+type
+  { IFixedPopupIntf is implemented by a component that supports the
+    FixedPopupMenu. }
+  IFixedPopupIntf = interface
+    ['{2ECA1438-EFA5-460A-B586-C30C04B85FF3}']
+    function CanUndo: Boolean;
+    function CanRedo: Boolean; // unused
+    function CanCut: Boolean;
+    function CanCopy: Boolean;
+    function CanPaste: Boolean;
+    function CanSelectAll: Boolean;
+    function HasSelection: Boolean;
+    procedure Undo;
+    procedure Redo; // unused
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
+    { Delete() deletes the selected text without storing the content to the
+      clipboard. It's enabled/disabled in the same way as Cut. }
+    procedure Delete;
+    procedure SelectAll;
+  end;
+
 // Returns a popup menu with the standard actions associated with edit controls (Undo, Cut, Copy, Paste, Delete, Select All).
 // The actions are handled autmatically by sending messages (WM_COPY, WM_CUT etc) to the control
-function FixedDefaultEditPopUp(AEdit:TWinControl):TPopUpMenu;
+function FixedDefaultEditPopup(AEdit:TWinControl; Update: Boolean = true): TPopupMenu;
 // Call with Value set to true to use the internal resourcestrings instead of those
 // provided by Windows. These strings can subsequently be translated using the ITE.
 // By default, the Windows provided strings are used.
-procedure FixedDefaultEditPopUseResourceString(Value:boolean);
+procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
+
+// Updates the menu items enabled property
+procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
 implementation
 uses
@@ -109,47 +142,63 @@ resourcestring
   SDefaultPopUpDelete = '&Ta bort';
   SDefaultPopUpSelAll = '&Markera allt';
 
+  GERMAN:
+  SDefaultPopUpUndo = '&Rückgängig';
+  SDefaultPopUpCut  = '&Ausschneiden';
+  SDefaultPopUpCopy = '&Kopieren';
+  SDefaultPopUpPaste = '&Einfügen';
+  SDefaultPopUpDelete = '&Löschen';
+  SDefaultPopUpSelAll = '&Alles markieren';
+
   --add other languages here--
 }
 type
   THiddenPopupObject = class(TComponent)
   private
     FEdit: TWinControl;
-    FPopUpMenu:TPopUpMenu;
+    FPopupMenu: TPopupMenu;
     procedure GetDefaultMenuCaptions;
-    procedure DoSelectAll(Sender:TObject);
-    procedure DoUndo(Sender:TObject);
-    procedure DoDelete(Sender:TObject);
-    procedure DoPaste(Sender:TObject);
-    procedure DoCut(Sender:TObject);
-    procedure DoCopy(Sender:TObject);
-    function CanUndo:boolean;
-    function ReadOnly:boolean;
-    function GetTextLen:integer;
-    function SelLength:integer;
-    function GetPopUpMenu: TPopUpMenu;
+    procedure DoSelectAll(Sender: TObject);
+    procedure DoUndo(Sender: TObject);
+    procedure DoDelete(Sender: TObject);
+    procedure DoPaste(Sender: TObject);
+    procedure DoCut(Sender: TObject);
+    procedure DoCopy(Sender: TObject);
+    function CanUndo: Boolean;
+    function ReadOnly: Boolean;
+    function GetTextLen: Integer;
+    function SelLength: Integer;
+    function GetPopupMenu: TPopupMenu;
+    function GetPopupMenuEx(Update: Boolean): TPopupMenu;
     procedure SetEdit(const Value: TWinControl);
-    function GetClipboardCommands:TJvClipboardCommands;
+    function GetClipboardCommands: TJvClipboardCommands;
+    procedure UpdateItems;
   public
-    property Edit:TWinControl read FEdit write SetEdit;
-    property PopUpMenu:TPopUpMenu read GetPopUpMenu;
+    property Edit: TWinControl read FEdit write SetEdit;
+    property PopupMenu: TPopupMenu read GetPopupMenu;
   end;
 
 var
-  FHiddenPopup:THiddenPopupObject = nil;
-  FUseResourceStrings:boolean = false;
+  FHiddenPopup: THiddenPopupObject = nil;
+  FUseResourceStrings: Boolean = False;
 
-function FixedDefaultEditPopUp(AEdit:TWinControl):TPopUpMenu;
+function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = true): TPopupMenu;
 begin
   if FHiddenPopup = nil then
     FHiddenPopup := THiddenPopupObject.Create(nil);
   FHiddenPopup.Edit := AEdit;
-  Result := FHiddenPopup.PopUpMenu;
+  Result := FHiddenPopup.GetPopupMenuEx(Update);
 end;
 
 procedure FixedDefaultEditPopUseResourceString(Value:boolean);
 begin
   FUseResourceStrings := Value;
+end;
+
+procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
+begin
+  if (FHiddenPopup <> nil) and (FHiddenPopup.Edit = AEdit) then
+    FHiddenPopup.UpdateItems;
 end;
 
 { THiddenPopupObject }
@@ -163,86 +212,115 @@ begin
 end;
 
 procedure THiddenPopupObject.DoCopy(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(WM_COPY,0,0);
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.Copy
+    else
+      Edit.Perform(WM_COPY, 0, 0);
 end;
 
 procedure THiddenPopupObject.DoCut(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(WM_CUT, 0, 0);
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.Cut
+    else
+      Edit.Perform(WM_CUT, 0, 0);
 end;
 
 procedure THiddenPopupObject.DoDelete(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(WM_CLEAR, 0, 0);
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.Delete
+    else
+      Edit.Perform(WM_CLEAR, 0, 0);
 end;
 
 procedure THiddenPopupObject.DoPaste(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(WM_PASTE,0,0);
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.Paste
+    else
+      Edit.Perform(WM_PASTE,0,0);
 end;
 
 procedure THiddenPopupObject.DoSelectAll(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(EM_SETSEL, 0, -1);
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.SelectAll
+    else
+      Edit.Perform(EM_SETSEL, 0, -1);
 end;
 
 procedure THiddenPopupObject.DoUndo(Sender: TObject);
+var PopupIntf: IFixedPopupIntf;
 begin
   if Assigned(Edit) and Edit.HandleAllocated then
-    Edit.Perform(WM_UNDO, 0, 0);
+  begin
+    if Supports(Edit, IFixedPopupIntf, PopupIntf) then
+      PopupIntf.Undo
+    else
+      Edit.Perform(WM_UNDO, 0, 0);
+  end;
 end;
 
 type
-  TIntegerSet = set of 0..sizeof(integer) * 8 - 1;
-  
+  TIntegerSet = Set of 0..SizeOf(Integer) * 8 - 1;
+
 function THiddenPopupObject.GetClipboardCommands: TJvClipboardCommands;
-var Value:TIntegerSet;i:integer;
+var
+  Value: TIntegerSet;
+  i: integer;
 begin
   if IsPublishedProp(Edit,'ClipboardCommands') then
   begin
     Result := [];
     // does it really have to be this complicated ?!
-    integer(Value) := GetOrdProp(Edit,'ClipboardCommands');
-    for i := 0 to sizeof(integer) * 8 - 1 do
+    Integer(Value) := GetOrdProp(Edit, 'ClipboardCommands');
+    for i := 0 to SizeOf(Integer) * 8 - 1 do
       if i in Value then
-        Include(Result,TJvClipboardCommand(i));
+        Include(Result, TJvClipboardCommand(i));
   end
   else
     Result := [caCopy, caCut, caPaste, caUndo];
 end;
 
 procedure THiddenPopupObject.GetDefaultMenuCaptions;
-var H:HMODULE;
-  hMenu,hSubMenu:THandle;
-  buf:array[0..255] of char;
+var
+  H: HMODULE;
+  hMenu, hSubMenu: THandle;
+  buf: array[0..255] of Char;
 begin
   // get the translated captions from Windows' own default popup:
   H := GetModuleHandle('user32.dll');
-  hMenu := LoadMenu(H,MakeIntResource(1));
+  hMenu := LoadMenu(H, MakeIntResource(1));
   if hMenu = 0 then Exit;
   try
     hSubMenu := GetSubMenu(hMenu,0);
     if hSubMenu = 0 then Exit;
 
-    if GetMenuString(hSubMenu,WM_UNDO,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, WM_UNDO, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[0].Caption := buf;
 
-    if GetMenuString(hSubMenu,WM_CUT,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, WM_CUT, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[2].Caption := buf;
-    if GetMenuString(hSubMenu,WM_COPY,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, WM_COPY, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[3].Caption := buf;
-    if GetMenuString(hSubMenu,WM_PASTE,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, WM_PASTE, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[4].Caption := buf;
-    if GetMenuString(hSubMenu,WM_CLEAR,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, WM_CLEAR, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[5].Caption := buf;
 
-    if GetMenuString(hSubMenu,EM_SETSEL,buf,sizeof(buf),MF_BYCOMMAND) <> 0 then
+    if GetMenuString(hSubMenu, EM_SETSEL, buf, SizeOf(buf), MF_BYCOMMAND) <> 0 then
       FPopUpMenu.Items[7].Caption := buf;
 
   finally
@@ -250,9 +328,14 @@ begin
   end;
 end;
 
-function THiddenPopupObject.GetPopUpMenu: TPopUpMenu;
-var m:TMenuItem;
-    cc:TJvClipboardCommands;
+function THiddenPopupObject.GetPopupMenu: TPopupMenu;
+begin
+  Result := GetPopupMenuEx(true);
+end;
+
+function THiddenPopupObject.GetPopupMenuEx(Update: Boolean): TPopupMenu;
+var
+  m: TMenuItem;
 begin
   if FPopUpMenu = nil then
   begin
@@ -267,6 +350,7 @@ begin
       -
       Select All
     }
+
     // start off with resourcestrings (in case GetDefaultMenuCaptions fails)
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpUndo;
@@ -300,33 +384,68 @@ begin
     m := TMenuItem.Create(self);
     m.Caption := '-';
     FPopUpMenu.Items.Add(m);
+
     m := TMenuItem.Create(self);
     m.Caption := SDefaultPopUpSelAll;
     m.OnClick := DoSelectAll;
     FPopUpMenu.Items.Add(m);
+
     if not FUseResourceStrings then
       GetDefaultMenuCaptions;
   end;
+  if Update then
+    UpdateItems;
+  Result := FPopUpMenu;
+end;
+
+procedure THiddenPopupObject.UpdateItems;
+var
+  cc: TJvClipboardCommands;
+  ASelLength: Integer;
+  AReadOnly: Boolean;
+  ATextLen: Integer;
+  PopupIntf: IFixedPopupIntf;
+begin
   if (Edit <> nil) and Edit.HandleAllocated then
   begin
     cc := GetClipboardCommands;
+    FPopupMenu.PopupComponent := Edit;
 
-    FPopUpMenu.PopupComponent := Edit;
-    // undo
-    FPopUpMenu.Items[0].Enabled := CanUndo and (caUndo in cc);
-    // cut
-    FPopUpMenu.Items[2].Enabled := (SelLength > 0) and not ReadOnly and (caCut in cc);
-    // copy
-    FPopUpMenu.Items[3].Enabled := (SelLength > 0) and (caCopy in cc);
-    // paste
-    FPopUpMenu.Items[4].Enabled := not ReadOnly and (caPaste in cc);
-    // delete
-    FPopUpMenu.Items[5].Enabled := (SelLength > 0) and not ReadOnly { and (caCut in cc)};
-    // select all
-    FPopUpMenu.Items[7].Enabled := (GetTextLen > 0) and (SelLength <> GetTextLen);
+    if Edit.GetInterface(IFixedPopupIntf, PopupIntf) then
+    begin
+      // undo
+      FPopUpMenu.Items[0].Enabled := (caUndo in cc) and PopupIntf.CanUndo;
+      // cut
+      FPopUpMenu.Items[2].Enabled := (caCut in cc) and PopupIntf.HasSelection and PopupIntf.CanCut;
+      // copy
+      FPopUpMenu.Items[3].Enabled := (caCopy in cc) and PopupIntf.HasSelection and PopupIntf.CanCopy;
+      // paste
+      FPopUpMenu.Items[4].Enabled := (caPaste in cc) and PopupIntf.CanPaste;
+      // delete
+      FPopUpMenu.Items[5].Enabled := PopupIntf.HasSelection and PopupIntf.CanCut;
+      // select all
+      FPopUpMenu.Items[7].Enabled := PopupIntf.CanSelectAll;
+    end
+    else
+    begin
+      ASelLength := SelLength;
+      AReadOnly := ReadOnly;
+      ATextLen := GetTextLen;
+
+      // undo
+      FPopUpMenu.Items[0].Enabled := (caUndo in cc) and CanUndo;
+      // cut
+      FPopUpMenu.Items[2].Enabled := (ASelLength > 0) and not AReadOnly and (caCut in cc);
+      // copy
+      FPopUpMenu.Items[3].Enabled := (ASelLength > 0) and (caCopy in cc);
+      // paste
+      FPopUpMenu.Items[4].Enabled := not AReadOnly and (caPaste in cc);
+      // delete
+      FPopUpMenu.Items[5].Enabled := (ASelLength > 0) and not AReadOnly { and (caCut in cc)};
+      // select all
+      FPopUpMenu.Items[7].Enabled := (ATextLen > 0) and (ASelLength <> ATextLen);
+    end;
   end;
-
-  Result := FPopUpMenu;
 end;
 
 function THiddenPopupObject.GetTextLen: integer;
@@ -353,7 +472,7 @@ type
 function THiddenPopupObject.SelLength: integer;
 var
   Selection: TSelection;
-  MsgResult:Longint;
+  MsgResult: Longint;
 begin
   Result := 0;
   if (Edit <> nil) and Edit.HandleAllocated then
@@ -384,4 +503,5 @@ initialization
 
 finalization
   FHiddenPopup.Free;
+
 end.

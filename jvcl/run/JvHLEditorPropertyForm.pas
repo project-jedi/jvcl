@@ -28,7 +28,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$DEFINE HL_NOT_QUITE_C}
 
 unit JvHLEditorPropertyForm;
 
@@ -174,9 +173,7 @@ const
   HighLighters: array[THighLighter] of string =
   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
     'Perl', 'Ini', 'CocoR', 'Php'
-    {$IFDEF HL_NOT_QUITE_C}
-    , 'NQC'
-    {$ENDIF HL_NOT_QUITE_C}
+    {$IFDEF HL_NOT_QUITE_C}, 'NQC'{$ENDIF HL_NOT_QUITE_C}, 'User Defined'
     );
 
 implementation
@@ -236,7 +233,7 @@ procedure TJvSampleViewer.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   XX, YY: Integer;
   F: Integer;
-  Str: string;
+  Str: WideString;
 begin
   { also prevent user interact }
   { detect symbol type }

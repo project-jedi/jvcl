@@ -1,5 +1,41 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-20:
+- NB! JvCustomC?R packages not updated!
+- Added new JvUnicodeCanvas.pas to JvCustomD?R package  // peter3
+- NB! Andreas also provided a fixed JclUnicode.pas but this has yet to be updated in JCL // peter3
+- Added {$DEFINE HL_NOT_QUITE_C} (used by JvEditor) to JVCL.INC. Defined by default. // peter3
+- Updated JvInterpreter_JvEditor.pas to reflect changes in JvEditor // peter3
+- Added UseFixedPopup property to JvEditor // peter3
+- Changed GetPopupMenuEx to use a positive ("Update") instead of a negative ("NoUpdate") boolean. I never could get my head around double negatives <g> // peter3
+- Fixes for the HL_NOT_QUITE_C defines + the new hlHiglighter define in JvEditor // peter3
+- Changes to JvEditor from Andreas Hausladen:
+=============================================
+  JvEditor.pas
+    - The unicode editor with some minor bugfixes and further speed optimations
+    - The AnsiString editor no more exists.
+    - added WM_GETTEXT message handler
+  JvFixedEditPopup.pas
+    - added IFixedPopupIntf interface. For Delphi 5 the old SendMessage function is used
+    - speed optimations for the SendMessage method
+  JvHLEditor.pas
+    - adjusted for unicode JvEditor
+    - added TJvEditorHighlighter component for external highlighters
+  JvHLParser.pas
+    - added unicode version TJvHLParserW of the parser
+    - added unicode versions of the functions
+  JvJCLUtils.pas
+    - added unicode versions of some functions used by JvEditor
+    - added MoveWideChar and FillWideChar
+    - speed optimation for Spaces, AddSpaces, MakeStr
+  JvUnicodeCanvas.pas
+    - new unit that contains a TCanvas derived class TUnicodeCanvas that can be type casted from any TCanvas derived class. It supports TextRectW, TextOutW, TextExtentW, TextWidthW and TextHeigthW.
+  "- The AnsiString editor no more exists."
+    I have a backup with all bug fixes and speed optimations of the AnsiString JvEditor.
+    The unicode JvEditor has a "LinesANSI" property. This property is only for the object inspector.
+=============================================
+2003-09-20:
+- Added AutoSize and WordWrap properties to JvCheckBox and JvRadioButton // peter3
 2003-09-18:
 - added new methods to TJvStringGrid: AutoSizeCol, InsertRow, InsertCol, RemoveRow, RemoveCol, HideRow, ShowRow, HideCol, ShowCol and Clear and a new FixedFont property // peter3
 2003-09-16:

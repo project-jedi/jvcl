@@ -59,6 +59,7 @@ contains
   JvHLEditor in '..\..\run\JvHLEditor.pas',
   JvHLParser in '..\..\run\JvHLParser.pas',
   JvValidateEdit in '..\..\run\JvValidateEdit.pas',
-  JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm};
+  JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm},
+  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas';
 
 end.
