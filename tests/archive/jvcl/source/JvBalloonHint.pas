@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-12-21
+Last Modified: 2002-12-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -93,9 +93,11 @@ type
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-
+    {$IFNDEF COMPILER6_UP}
+    procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
+    {$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure NCPaint(DC: HDC); override;
+    procedure NCPaint(DC: HDC); {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
     procedure Paint; override;
 
     function CreateRegion: HRGN;
@@ -163,6 +165,7 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetApplicationHintOptions(const Value: TJvApplicationHintOptions);
   protected
+
     function HookProc(var Message: TMessage): Boolean;
     procedure Hook;
     procedure Unhook;
@@ -262,6 +265,66 @@ begin
   end;
 end;
 
+function WorkAreaRect:TRect;
+begin
+  SystemParametersInfo(SPI_GETWORKAREA,0,@Result,0);
+end;
+
+{$IFNDEF COMPILER6_UP}
+resourcestring
+  SParentRequired = 'Control ''%s'' has no parent window';
+  SParentGivenNotAParent = 'Parent given is not a parent of ''%s''';
+
+const
+  SPI_GETTOOLTIPANIMATION = $1016;
+  {$EXTERNALSYM SPI_GETTOOLTIPANIMATION}
+  SPI_GETTOOLTIPFADE = $1018;
+  {$EXTERNALSYM SPI_GETTOOLTIPFADE}
+
+type
+  TAnimateWindowProc = function(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
+var
+  AnimateWindowProc:TAnimateWindowProc = nil;
+{$ENDIF}
+
+
+function InternalClientToParent(AControl:TControl;const Point: TPoint;
+  AParent: TWinControl): TPoint;
+
+{$IFDEF COMPILER6_UP}
+begin
+  Result := AControl.ClientToParent(Point,AParent);
+end;
+{$ELSE}
+
+var
+  LParent: TWinControl;
+begin
+  if AParent = nil then
+    AParent := AControl.Parent;
+  if AParent = nil then
+    raise EInvalidOperation.CreateFmt(SParentRequired, [AControl.Name]);
+  Result := Point;
+  Inc(Result.X, AControl.Left);
+  Inc(Result.Y, AControl.Top);
+  LParent := AControl.Parent;
+  while LParent <> nil do
+  begin
+    if LParent.Parent <> nil then
+    begin
+      Inc(Result.X, LParent.Left);
+      Inc(Result.Y, LParent.Top);
+    end;
+    if LParent = AParent then
+      Break
+    else
+      LParent := LParent.Parent;
+  end;
+  if LParent = nil then
+    raise EInvalidOperation.CreateFmt(SParentGivenNotAParent, [AControl.Name]);
+end;
+{$ENDIF}
+
 { TJvBalloonWindow }
 
 procedure TJvBalloonWindow.ActivateHint(Rect: TRect; const AHint: string);
@@ -293,7 +356,7 @@ begin
   { bpAuto returns the same value as bpLeftDown; bpLeftDown is choosen
     arbitrary }
   FCurrentPosition := bpLeftDown;
-  ScreenRect := Screen.WorkAreaRect;
+  ScreenRect := WorkAreaRect;
 
   { Note: 2*(Left + Width div 2) = 2*(Left + (Right-Left) div 2) ~=
           2*Left + (Right-Left) = Left + Right;
@@ -471,7 +534,7 @@ begin
     CalcAutoPosition(ARect);
 
   NewPosition := FCurrentPosition;
-  ScreenRect := Screen.WorkAreaRect;
+  ScreenRect := WorkAreaRect;
 
   if ARect.Bottom > ScreenRect.Bottom - ScreenRect.Top then
   begin
@@ -727,6 +790,19 @@ begin
   end;
   Message.Result := 1;
 end;
+{$IFNDEF COMPILER6_UP}
+procedure TJvBalloonWindow.WMNCPaint(var Message: TMessage);
+var
+  DC: HDC;
+begin
+  DC := GetWindowDC(Handle);
+  try
+    NCPaint(DC);
+  finally
+    ReleaseDC(Handle, DC);
+  end;
+end;
+{$ENDIF}
 
 { TJvBalloonHint }
 
@@ -900,7 +976,7 @@ begin
     end
     else
     begin
-      RAnchorPosition := ClientToParent(Point(Width div 2, Height), LParentForm);
+      RAnchorPosition := InternalClientToParent(ACtrl,Point(Width div 2, Height), LParentForm);
       case FDefaultBalloonPosition of
         bpLeftDown, bpRightDown:
           RSwitchHeight := 0;
@@ -1040,6 +1116,7 @@ procedure TJvBalloonHint.Unhook;
 begin
   UnRegisterWndProcHook(FData.RAnchorWindow, HookProc, hoBeforeMsg);
 end;
+
 
 { TGlobalCtrl }
 
@@ -1469,8 +1546,25 @@ begin
     inherited;
 end;
 
+procedure InitD5Controls;
+var UserHandle:HMODULE;
+begin
+  UserHandle := GetModuleHandle('USER32');
+  if UserHandle <> 0 then
+    @AnimateWindowProc := GetProcAddress(UserHandle, 'AnimateWindow');
+end;
+
 initialization
+  {$IFNDEF COMPILER6_UP}
+  InitD5Controls;
+  {$ENDIF}
 finalization
   FreeAndNil(GGlobalCtrl);
 end.
+
+
+
+
+
+
 
