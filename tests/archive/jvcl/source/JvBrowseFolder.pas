@@ -120,7 +120,7 @@ type
     property OnChange: TJvDirChange read FOnChange write FOnChange;
   end;
 
-function BrowseForFolder(const ATitle:string; AllowCreate:boolean;var ADirectory:string):boolean;
+function BrowseForFolder(const ATitle: string; AllowCreate: Boolean; var ADirectory: string): Boolean;
 
 implementation
 
@@ -136,7 +136,7 @@ const
   BIF_VALIDATE           = $0020;
   BIF_NEWDIALOGSTYLE     = $0040;
 
-function BrowseForFolder(const ATitle:string; AllowCreate:boolean;var ADirectory:string):boolean;
+function BrowseForFolder(const ATitle: string; AllowCreate: Boolean; var ADirectory: string): Boolean;
 begin
   with TJvBrowseFolder.Create(nil) do
   try
@@ -154,8 +154,6 @@ begin
     Free;
   end;
 end;
-
-{**************************************************}
 
 constructor TJvBrowseFolder.Create(AOwner: TComponent);
 begin
