@@ -1,20 +1,35 @@
 @echo off
+
+SET OUTDIR=..\..\..\run
+
 cd src
-..\..\JvExVCL\src\dpp.exe .\qbuild.pas -I..\..\..\common;.
 
-SET OUTDIR=..\..\..\qrun
+SET FILE=.\build
+if NOT "-%1" == "-" SET FILE=%1
+echo Preprocessing template: %FILE%.pas
+..\..\JvExVCL\src\dpp.exe .\%FILE%.pas -I..\..\..\common >NUL
 
-move JvQExButtons.i.pas %OUTDIR%\JvQExButtons.pas
-move JvQExCheckLst.i.pas %OUTDIR%\JvQExCheckLst.pas
-move JvQExComboEdits.i.pas %OUTDIR%\JvQExComboEdits.pas
-move JvQExComCtrls.i.pas %OUTDIR%\JvQExComCtrls.pas
-move JvQExControls.i.pas %OUTDIR%\JvQExControls.pas
-move JvQExDBGrids.i.pas %OUTDIR%\JvQExDBGrids.pas
-move JvQExExtCtrls.i.pas %OUTDIR%\JvQExExtCtrls.pas
-move JvQExForms.i.pas %OUTDIR%\JvQExForms.pas
-move JvQExGrids.i.pas %OUTDIR%\JvQExGrids.pas
-move JvQExMask.i.pas %OUTDIR%\JvQExMask.pas
-move JvQExStdCtrls.i.pas %OUTDIR%\JvQExStdCtrls.pas
+if "%FILE%" == ".\build" GOTO ALL
 
+move %FILE%.i.pas %OUTDIR%\%FILE%.pas
+
+goto LEAVE
+:ALL
+
+move JvExButtons.i.pas %OUTDIR%\JvExButtons.pas
+move JvExCheckLst.i.pas %OUTDIR%\JvExCheckLst.pas
+move JvExComCtrls.i.pas %OUTDIR%\JvExComCtrls.pas
+move JvExControls.i.pas %OUTDIR%\JvExControls.pas
+move JvExDBCtrls.i.pas %OUTDIR%\JvExDBCtrls.pas
+move JvExDBGrids.i.pas %OUTDIR%\JvExDBGrids.pas
+move JvExExtCtrls.i.pas %OUTDIR%\JvExExtCtrls.pas
+move JvExForms.i.pas %OUTDIR%\JvExForms.pas
+move JvExGrids.i.pas %OUTDIR%\JvExGrids.pas
+move JvExMask.i.pas %OUTDIR%\JvExMask.pas
+move JvExStdCtrls.i.pas %OUTDIR%\JvExStdCtrls.pas
+
+:LEAVE
 cd ..
 
+SET FILE=
+SET OUTDIR=
