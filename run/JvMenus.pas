@@ -2980,7 +2980,6 @@ begin
 end;
 
 initialization
-  PopupList := nil;
 
 finalization
   FreeAndNil(PopupList);

@@ -1558,7 +1558,7 @@ begin
   for I := 0 to ScheduleCount - 1 do
   begin
     ADate := StartDate;
-    while trunc(ADate) <= trunc(EndDate) do
+    while Trunc(ADate) <= Trunc(EndDate) do
     begin
       Schedule := ScheduleManager.FindSchedule(Schedules[I], ADate);
       if Assigned(Schedule) and (FConnections.IndexOfObject(Schedule) = -1) then
@@ -1576,8 +1576,8 @@ begin
     begin
       Schedule := TJvTFSched(Temp.Objects[I]);
       if (FSchedules.IndexOf(Schedule.SchedName) = -1) or
-        ((trunc(Schedule.SchedDate) < trunc(StartDate)) or
-        (trunc(Schedule.SchedDate) > trunc(EndDate))) then
+        ((Trunc(Schedule.SchedDate) < Trunc(StartDate)) or
+        (Trunc(Schedule.SchedDate) > Trunc(EndDate))) then
         Disconnect(Schedule);
     end;
   finally
@@ -1664,9 +1664,9 @@ begin
   if Frac(NewEndTime) <= EncodeTime(0, 0, 0, 999) then
     NewEndTime := EncodeTime(23, 59, 59, 0);
 
-  if trunc(NewStartDate) <= trunc(NewEndDate) then
+  if Trunc(NewStartDate) <= Trunc(NewEndDate) then
   begin
-    if trunc(NewStartDate) = trunc(NewEndDate) then
+    if Trunc(NewStartDate) = Trunc(NewEndDate) then
       if Frac(NewStartTime) >= Frac(NewEndTime) then
         raise EJvTFScheduleManagerError.Create(RsEInvalidStartAndEndTimes);
 
@@ -1732,7 +1732,7 @@ begin
   // Check for needed connections
   //  (Only connects to currently loaded schedules.  Will not load a schedule.)
   ADate := StartDate;
-  while trunc(ADate) <= trunc(EndDate) do
+  while Trunc(ADate) <= Trunc(EndDate) do
   begin
     Schedule := ScheduleManager.FindSchedule(SchedName, ADate);
     if Assigned(Schedule) then
@@ -1771,7 +1771,7 @@ begin
 
   // Check for invalid connections and disconnect
   ADate := StartDate;
-  while trunc(ADate) <= trunc(EndDate) do
+  while Trunc(ADate) <= Trunc(EndDate) do
   begin
     Schedule := ScheduleManager.FindSchedule(SchedName, ADate);
     if Assigned(Schedule) then
@@ -1846,12 +1846,12 @@ end;
 
 function TJvTFAppt.GetEndDateTime: TDateTime;
 begin
-  Result := trunc(EndDate) + Frac(EndTime);
+  Result := Trunc(EndDate) + Frac(EndTime);
 end;
 
 function TJvTFAppt.GetStartDateTime: TDateTime;
 begin
-  Result := trunc(StartDate) + Frac(StartTime);
+  Result := Trunc(StartDate) + Frac(StartTime);
 end;
 
 function TJvTFAppt.GetEndDate: TDate;
@@ -2077,8 +2077,8 @@ begin
   for I := 0 to ScheduleManager.ApptCount - 1 do
   begin
     Appt := ScheduleManager.Appts[I];
-    DateHit := (trunc(SchedDate) >= trunc(Appt.StartDate)) and
-      (trunc(SchedDate) <= trunc(Appt.EndDate));
+    DateHit := (Trunc(SchedDate) >= Trunc(Appt.StartDate)) and
+      (Trunc(SchedDate) <= Trunc(Appt.EndDate));
     NameMatch := Appt.IndexOfSchedule(SchedName) > -1;
     NotConnected := ApptByID(Appt.ID) = nil;
     if DateHit and NameMatch and NotConnected then
@@ -2415,7 +2415,7 @@ begin
   while (I < ApptCount) do
   begin
     anAppt := Appts[I];
-    if trunc(anAppt.StartDate) < trunc(SchedDate) then
+    if Trunc(anAppt.StartDate) < Trunc(SchedDate) then
     begin
       Result := anAppt;
       break; // APPOINTMENT STARTS AT 0:00 (12:00am) SO LEAVE LOOP
@@ -2438,7 +2438,7 @@ begin
   while (I < ApptCount) do
   begin
     anAppt := Appts[I];
-    if trunc(anAppt.EndDate) > trunc(SchedDate) then
+    if Trunc(anAppt.EndDate) > Trunc(SchedDate) then
     begin
       Result := anAppt;
       break; // APPOINTMENT ENDS AT 23:59 (11:59pm) SO LEAVE LOOP
@@ -2562,7 +2562,7 @@ end;
 class function TJvTFScheduleManager.GetScheduleID(const SchedName: string;
   SchedDate: TDate): string;
 begin
-  Result := SchedName + IntToStr(trunc(SchedDate));
+  Result := SchedName + IntToStr(Trunc(SchedDate));
 end;
 
 class function TJvTFScheduleManager.GenerateApptID: string;
@@ -2570,6 +2570,7 @@ var
   I: Integer;
 begin
   Result := FloatToStr(Now);
+  Randomize;
   for I := 1 to 5 do
     Result := Result + Chr(Random(25) + 65);
 end;
@@ -3500,7 +3501,7 @@ begin
       aSched := TJvTFSched(FSchedBatch.Objects[I]);
 
       if (aSched.SchedName <> CompName) or
-        (trunc(aSched.SchedDate) - 1 <> trunc(CompDate)) then
+        (Trunc(aSched.SchedDate) - 1 <> Trunc(CompDate)) then
       begin
             // Hit new batch.  Load the current batch and then
             // set batch info to new batch.
@@ -3682,7 +3683,7 @@ begin
   begin
     DFormat := FApptCtrl.DateFormat;
     TFormat := FApptCtrl.TimeFormat;
-    ShowDates := trunc(StartDate) <> trunc(EndDate);
+    ShowDates := Trunc(StartDate) <> Trunc(EndDate);
 
     if ShowDates then
       HintText := FormatDateTime(DFormat, StartDate) + ' ';
@@ -4762,7 +4763,7 @@ begin
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
 
-  Result := trunc(ScreenPPI / PrinterPPI * Value);
+  Result := Trunc(ScreenPPI / PrinterPPI * Value);
 end;
 
 procedure TJvTFPrinter.SaveDocToFiles(BaseFileName: TFileName);
@@ -4792,7 +4793,7 @@ begin
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
   end;
 
-  Result := trunc(PrinterPPI / ScreenPPI * Value);
+  Result := Trunc(PrinterPPI / ScreenPPI * Value);
 end;
 
 procedure TJvTFPrinter.SetDirectPrint(Value: Boolean);
@@ -5221,7 +5222,7 @@ end;
 
 function TJvTFDateList.Add(ADate: TDate): Integer;
 begin
-  Result := FList.Add(IntToStr(trunc(ADate)));
+  Result := FList.Add(IntToStr(Trunc(ADate)));
   Change;
 end;
 
@@ -5269,7 +5270,7 @@ end;
 
 function TJvTFDateList.IndexOf(ADate: TDate): Integer;
 begin
-  Result := FList.IndexOf(IntToStr(trunc(ADate)));
+  Result := FList.IndexOf(IntToStr(Trunc(ADate)));
 end;
 
 { TJvTFNavigator }
@@ -5345,9 +5346,6 @@ end;
 //  If I > -1 Then
 //    FControls.Delete(I);
 //end;
-
-initialization
-  Randomize;
 
 end.
 

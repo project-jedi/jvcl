@@ -230,7 +230,7 @@ type
 var
   CreateMruList: TCreateMruList;
   FreeMruList: TFreeMruList;
-  AddMruString: TAddMrustring;
+  AddMruString: TAddMruString;
   AddMruData: TAddMruData;
   DelMruString: TDelMruString;
   EnumMruList: TEnumMruList;
@@ -250,7 +250,7 @@ begin
   FMax := 10;
   FType := dtString;
   FKey := hkCurrentUser;
-  FUnicodeAvailable := Win32Platform = VER_PLATFORM_Win32_NT;
+  FUnicodeAvailable := Win32Platform = VER_PLATFORM_WIN32_NT;
   FDelayedWrite := False;
   SetWantUnicode(False);
   FItemData.P := nil;
@@ -281,7 +281,7 @@ begin
     Result := AddMruString(FList, PChar(Value)) <> -1;
     // (p3) call EnumText here ?
     //  Arioch: Why? What for?
-    //  Whether You want them - make a special sepearate set of events
+    //  Whether You want them - make a special separate set of events
     //  And there's danger that eventHandler tries to get a list of items,
     //  thus, killing current section!
   end;
@@ -363,7 +363,7 @@ end;
 
 function TJvMRUList.InternalGetItem(Index: Integer; FireEvent: Boolean): Boolean;
 var
-  i: Integer;
+  I: Integer;
   P: Pointer;
   EnP: TEnumMruList;
 begin
@@ -377,13 +377,13 @@ begin
     if not UseUnicode then
     begin
       ReAllocMem(P, 256);
-      i := EnumMruList(FList, Index, P, 256);
-      if i > 255 then
+      I := EnumMruList(FList, Index, P, 256);
+      if I > 255 then
       begin
-        ReAllocMem(P, i + 1);
-        i := EnumMruList(FList, Index, P, i + 1);
+        ReAllocMem(P, I + 1);
+        I := EnumMruList(FList, Index, P, I + 1);
       end;
-      if i <> -1 then
+      if I <> -1 then
       begin
         Result := True;
         SetItemData(P);
@@ -395,13 +395,13 @@ begin
     else
     begin // Unicode
       ReAllocMem(P, 512);
-      i := EnumMruListW(FList, Index, P, 256);
-      if i > 255 then
+      I := EnumMruListW(FList, Index, P, 256);
+      if I > 255 then
       begin
-        ReAllocMem(P, (i + 1) * 2);
-        i := EnumMruListW(FList, Index, P, i + 1);
+        ReAllocMem(P, (I + 1) * 2);
+        I := EnumMruListW(FList, Index, P, I + 1);
       end;
-      if i <> -1 then
+      if I <> -1 then
       begin
         Result := True;
         SetItemData(P);
@@ -421,34 +421,35 @@ begin
       EnP := EnumMruList;
     //Arioch: work-around MS bug
 
-    i := EnP(FList, Index, P, 1024);
+    I := EnP(FList, Index, P, 1024);
 
-    if i >= 1024 then
+    if I >= 1024 then
     begin
       ReAllocMem(P, 64000); // Arioch: Hmmm We'll never guess how much may there appear :)
-      i := EnP(FList, 0, P, 64000);
+      I := EnP(FList, 0, P, 64000);
     end;
 
-    if i <> -1 then
+    if I <> -1 then
     begin
       Result := True;
-      ReAllocMem(P, i);
+      ReAllocMem(P, I);
       // Arioch: should we waste more memory than we need?
       // and we can know the size of memory allocated
       // with GetMem and ReAllocMem, so we know how big Data was
       SetItemData(P);
       FItemIndex := Index;
       if FireEvent then
-        DoEnumData(i);
+        DoEnumData(I);
     end;
   end;
 end;
 
 function TJvMRUList.GetItemsCount: Integer;
 begin
-  Result := 0;
   if FList <> 0 then
-    Result := EnumMruList(FList, -1, nil, 0);
+    Result := EnumMruList(FList, -1, nil, 0)
+  else
+    Result := 0;
 end;
 
 function TJvMRUList.GetMostRecentItem: Boolean;
@@ -463,22 +464,22 @@ end;
 
 procedure TJvMRUList.MoveToTop(const Index: Integer);
 var
-  b: Boolean;
+  B: Boolean;
 begin
-  b := False;
+  B := False;
   if InternalGetItem(Index, False) then
   begin
     if FType = dtString then
     begin
       if UseUnicode then
-        b := AddUnicodePChar(ItemDataAsPWideChar)
+        B := AddUnicodePChar(ItemDataAsPWideChar)
       else
-        b := AddPChar(ItemDataAsPChar);
+        B := AddPChar(ItemDataAsPChar);
     end
     else
-      b := AddData(ItemDataAsPointer, ItemDataSize);
+      B := AddData(ItemDataAsPointer, ItemDataSize);
   end;
-  if b then
+  if B then
     FItemIndex := 0;
 end;
 
@@ -630,7 +631,7 @@ begin
 end;
 
 function TJvMRUList.ItemDataSize: Integer;
-// Arioch: Here we rely on undocumemted internal structure
+// Arioch: Here we rely on undocumented internal structure
 // that has been used by GetMem/FreeMem for ages!
 // for example see sources for GetMem.Inc in VCL sources
 //
@@ -638,10 +639,10 @@ function TJvMRUList.ItemDataSize: Integer;
 //  Windows, etc..., so when new version of D,Win,... is realeased we could
 //  check the list instead of hunting for misty bug;
 begin
-  Result := 0;
-  if ItemDataAsPointer = nil then
-    Exit;
-  Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^);
+  if ItemDataAsPointer <> nil then
+    Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^)
+  else
+    Result := 0;
 end;
 
 procedure TJvMRUList.DoEnumText;
@@ -672,7 +673,7 @@ begin
     if (FList = 0) and (SubKey <> '') and KeyExists(SubKey) then
       Result := DeleteKey(SubKey);
   finally
-    free;
+    Free;
   end;
 end;
 
@@ -702,7 +703,8 @@ begin
   Result := FItemData.Ws;
 end;
 
-initialization
+procedure InitializeDLL;
+begin
   hComCtlDll := LoadLibrary(DllComCtlName);
   if hComCtlDll > 0 then
   begin
@@ -733,13 +735,22 @@ initialization
   end
   else
     PError('MRU');
+end;
 
-finalization
+procedure FinalizeDLL;
+begin
   if hComCtlDll > 0 then
   begin
     FreeLibrary(hComCtlDll);
     hComCtlDll := 0;
   end;
+end;
+
+initialization
+  InitializeDLL;
+
+finalization
+  FinalizeDLL;
 
 end.
 

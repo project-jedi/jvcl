@@ -734,7 +734,7 @@ initialization
   TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
 finalization
-  TPicture.UnRegisterGraphicClass(TJvPcx);
+  TPicture.UnregisterGraphicClass(TJvPcx);
 
 end.
 
