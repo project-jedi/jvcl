@@ -65,7 +65,7 @@ type
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
-  TUnlitColorProperty = class(TColorProperty , ICustomPropertyDrawing, ICustomPropertyListDrawing ) 
+  TUnlitColorProperty = class(TColorPropertyEx , ICustomPropertyDrawing, ICustomPropertyListDrawing ) 
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
     procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue; 
   public
