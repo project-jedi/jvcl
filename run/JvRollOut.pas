@@ -109,7 +109,7 @@ type
     procedure DoChangeLink(Sender:TObject);
   public
     constructor Create;
-    destructor Destroy;override;
+    destructor Destroy; override;
   published
     property IndexCollapsed: TImageIndex read FIndexCollapsed write SetIndexCollapsed default 1;
     property IndexExpanded: TImageIndex read FIndexExpanded write SetIndexExpanded  default 0;
@@ -137,6 +137,7 @@ type
     FOnCollapse: TNotifyEvent;
     FColors: TJvRollOutColors;
     FImageOptions: TJvRollOutImageOptions;
+    FToggleAnywhere: boolean;
 
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
@@ -160,8 +161,7 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    function GetParentColor: boolean;
-    procedure SetParentColor(const Value: boolean);
+    procedure CMParentColorChanged(var Message:TMessage); message CM_PARENTCOLORCHANGED;
   protected
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -177,7 +177,9 @@ type
     procedure Click; override;
     procedure DoImageOptionsChange(Sender:TObject);
     procedure DoColorsChange(Sender:TObject);
+    function MouseIsOnButton:boolean;
 
+    property ToggleAnywhere:boolean read FToggleAnywhere write FToggleAnywhere default true;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
     property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
@@ -188,11 +190,9 @@ type
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
-    property ParentColor:boolean read GetParentColor write SetParentColor;
     property Caption: TCaption read FCaption write SetCaption;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure Collapse; virtual;
     procedure Expand; virtual;
@@ -223,6 +223,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property ToggleAnywhere;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -469,7 +470,7 @@ begin
 
   FColors := TJvRollOutColors.Create;
   FColors.OnChange := DoColorsChange;
-
+  FToggleAnywhere := true;
   FGroupIndex := 0;
   Caption := 'Rollout';
   FCollapsed := False;
@@ -485,14 +486,10 @@ begin
   FCHeight := 22;
 end;
 
-destructor TJvCustomRollOut.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TJvCustomRollOut.Click;
 begin
-  SetCollapsed(not FCollapsed);
+  if MouseIsOnButton or ToggleAnywhere then
+    SetCollapsed(not FCollapsed);
   inherited Click;
   RedrawControl(False);
 end;
@@ -923,24 +920,25 @@ begin
   RedrawControl(true);
 end;
 
-function TJvCustomRollOut.GetParentColor: boolean;
-begin
-  Result := inherited ParentColor;
-end;
-
-procedure TJvCustomRollOut.SetParentColor(const Value: boolean);
-begin
-  inherited ParentColor := Value;
-  if Value then
-    Colors.Color := self.Color;
-end;
-
 procedure TJvCustomRollOut.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
   if (Operation = opRemove) and (AComponent = ImageOptions.Images) then
     ImageOptions.Images := nil;
+end;
+
+procedure TJvCustomRollOut.CMParentColorChanged(var Message: TMessage);
+begin
+  Colors.Color := Color;
+end;
+
+function TJvCustomRollOut.MouseIsOnButton: boolean;
+var p:TPoint;
+begin
+  GetCursorPos(P);
+  P := ScreenToClient(P);
+  Result := PtInRect(FButtonRect, P);
 end;
 
 end.
