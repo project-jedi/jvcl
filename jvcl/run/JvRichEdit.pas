@@ -557,6 +557,7 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FOnConversionProgress: TRichEditProgressEvent;
+    FForceUndo:boolean;
 
     function GetAdvancedTypography: Boolean;
     function GetAutoURLDetect: Boolean;
@@ -690,6 +691,7 @@ type
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
+    property ForceUndo:boolean read FForceUndo write FForceUndo default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -767,6 +769,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property ForceUndo;
     property HideSelection;
     property HideScrollBars;
     property HintColor;
@@ -2478,6 +2481,7 @@ begin
     cpMin := -1;
     cpMax := -1;
   end;
+  FForceUndo := True;
   FCallback := TRichEditOleCallback.Create(Self);
   Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
 end;
@@ -2650,7 +2654,7 @@ begin
   Perform(EM_EXGETSEL, 0, Longint(@CharRange));
   with CharRange do
     cpMax := cpMin + Integer(StrLen(PChar(Msg.LParam)));
-  if (FUndoLimit > 1) and (RichEditVersion >= 2) and not FLinesUpdating then
+  if (FUndoLimit > 1) and (RichEditVersion >= 2) and (not FLinesUpdating or ForceUndo) then
     Msg.WParam := 1; { allow Undo }
   inherited;
   if FLinesUpdating then
@@ -4837,7 +4841,7 @@ begin
 
     }
     GetAttributes(Paragraph);
-    Paragraph.sStyle := -Paragraph.sStyle + 1;
+    Paragraph.sStyle := -(Paragraph.sStyle + 1);
     if (Paragraph.sStyle >= Low(THeadingStyle)) and (Paragraph.sStyle <= Low(THeadingStyle)) then
       Result := THeadingStyle(Paragraph.sStyle)
     else
