@@ -183,6 +183,7 @@ const
   Backspace = #8;
   Tab = #9;
   Esc = #27;
+  Del = #127;
   CtrlC = ^C;
   CtrlH = ^H;
   CtrlI = ^I;
