@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-03-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -32,7 +32,13 @@ unit JvJoystick;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, MMSystem, Forms,
+  Windows, Messages, SysUtils, Classes, MMSystem,
+  {$IFDEF VCL}
+  Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms,
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
