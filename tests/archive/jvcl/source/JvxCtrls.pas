@@ -429,7 +429,6 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
-    procedure DoDrawText(var Rect: TRect; Flags: Word);
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -458,6 +457,7 @@ type
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
   protected
+    procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
     {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); override;
