@@ -103,11 +103,12 @@ type
     property ValueField: string read GetValueField write SetValueField;
     property OnRead: TJvDBStorageReadEvent read FOnRead write FOnRead;
     property OnWrite: TJvDBStorageWriteEvent read FOnWrite write FOnWrite;
-    property ReadOnly;
   end;
 
   TJvAppDBStorage = class(TJvCustomAppDBStorage)
   published
+    property ReadOnly;
+
     property DataSource;
     property KeyField;
     property SectionField;
