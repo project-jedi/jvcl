@@ -203,9 +203,9 @@ begin
   Icon.Handle := LoadIcon(0, IDI_EXCLAMATION);
   IconImage.Picture.Icon := Icon;
   { Load string resources }
-  Caption := SDBExceptCaption;
-  BDELabel.Caption := SBDEErrorLabel;
-  NativeLabel.Caption := SServerErrorLabel;
+  Caption := RsDBExceptCaption;
+  BDELabel.Caption := RsBDEErrorLabel;
+  NativeLabel.Caption := RsServerErrorLabel;
   Next.Caption := RsNextButtonCaption;
   Back.Caption := RsPrevButtonCaption;
   OKBtn.Caption := SOKButton;

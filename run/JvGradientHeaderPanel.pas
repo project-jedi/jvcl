@@ -180,7 +180,7 @@ begin
   FOldLabelFontChange := FLabel.Font.OnChange;
   FLabel.Font.OnChange := DoLabelFontChange;
   FLabel.Font.Color := clWhite;
-  FLabel.Caption := RC_YourTextHere;
+  FLabel.Caption := RsYourTextHereCaption;
   FHint := False;
 end;
 

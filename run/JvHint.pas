@@ -172,7 +172,7 @@ begin
             ShowWindow(HintWindow.Handle, SW_HIDE);
           FDelay := 0;
           if bPoint then
-            HintWindow.Caption := SHint;
+            HintWindow.Caption := RsHintCaption;
           State := tmStopped;
         end
         else
@@ -187,7 +187,7 @@ begin
           ShowWindow(HintWindow.Handle, SW_HIDE);
         if bPoint then
         begin
-          HintWindow.Caption := SHint;
+          HintWindow.Caption := RsHintCaption;
           TimerHint.Enabled := False;
         end;
       end;

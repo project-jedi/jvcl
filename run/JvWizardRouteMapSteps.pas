@@ -83,8 +83,8 @@ begin
   FIndent := 5;
   Color := clBackground;
   Font.Color := clWhite;
-  FPreviousStepText := rsBackTo;
-  FNextStepText := rsNextStep;
+  FPreviousStepText := RsBackTo;
+  FNextStepText := RsNextStep;
   FShowNavigators := True;
   FShowDivider := True;
 end;
@@ -186,7 +186,7 @@ begin
   Canvas.Font.Style:= [fsBold];
   Canvas.Brush.Style:= bsClear;
 
-  StepHeight := DrawText(Canvas.Handle, PChar(Format(rsActiveStepFormat,
+  StepHeight := DrawText(Canvas.Handle, PChar(Format(RsActiveStepFormat,
      [ActivePageIndex, TotalPageCount])), -1, TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
 

@@ -60,7 +60,7 @@ constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPicture := TPicture.Create;
-  FTitle := RC_ImageTitle;
+  FTitle := RsImageTitle;
 end;
 
 destructor TJvImageDialog.Destroy;

@@ -185,7 +185,7 @@ implementation
 
 uses
   Math,
-  JvJVCLUtils, JvJCLUtils, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
 {$R *.dfm}
 
@@ -450,7 +450,7 @@ var
   Form: TJvHLEditorParamsForm;
 begin
   if FJvHLEditor = nil then
-    raise Exception.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
+    raise EJVCLException.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
   Form := TJvHLEditorParamsForm.Create(Application);
   Form.ColorSamples.Assign(FColorSamples);
   with Form do
@@ -604,7 +604,7 @@ function TJvHLEditorParamsForm.GetCell(const Index: integer): TPanel;
 begin
   Result := FindComponent('Cell' + IntToStr(Index)) as TPanel;
   if Result = nil then
-    raise Exception.Create(RsEHLEdPropDlg_GridCellNotFound);
+    raise EJVCLException.Create(RsEHLEdPropDlg_GridCellNotFound);
 end;
 
 function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): integer;

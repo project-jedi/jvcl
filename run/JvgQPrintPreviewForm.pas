@@ -116,7 +116,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sPagedOfd = 'Page %d of %d';
+  RsPageOfPages = 'Page %d of %d';
 {$ENDIF USEJVCL}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
@@ -179,7 +179,7 @@ end;
 
 procedure TJvgfPrintPreview.UpdateStatus;
 begin
-  SB.Panels[0].Text := Format(sPagedOfd, [QRPreview1.PageNumber, QRPreview1.QRPrinter.PageCount]);
+  SB.Panels[0].Text := Format(RsPageOfPages, [QRPreview1.PageNumber, QRPreview1.QRPrinter.PageCount]);
   try
     PB.Max := QRPreview1.QRPrinter.PageCount;
     PB.Min := QRPreview1.PageNumber;

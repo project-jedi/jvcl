@@ -137,7 +137,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
+  RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
 {$ENDIF USEJVCL}
 
 //==============================================================
@@ -210,10 +210,8 @@ end;
 procedure TJvgCaption.Notification(Component: TComponent; Operation:
   TOperation);
 begin
-  if (Component <> Self) and (Operation = opInsert) and (Component is
-    TJvgCaption) then
-    raise
-      Exception.Create(sOnlyOneInstanceOfTJvgCaption);
+  if (Component <> Self) and (Operation = opInsert) and (Component is TJvgCaption) then
+    raise Exception.Create(RsEOnlyOneInstanceOfTJvgCaption);
 end;
 //=========================================================.special procs.
 

@@ -214,7 +214,7 @@ type
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 constructor TJvJanTreeView.Create(AOwner: Tcomponent);
 begin
@@ -947,7 +947,7 @@ begin
           end; { else }
         end; { case of }
       17: Reduce(9);
-      18: raise Exception.Create(RsEBadTokenState);
+      18: raise EJVCLException.Create(RsEBadTokenState);
       19:
         begin
           if TokenType = PLUS then
@@ -1088,8 +1088,8 @@ begin
         Pop(Token2);
         CurrToken.Value := -Token1.Value;
       end;
-    11: raise Exception.Create(RsEInvalidReduction);
-    13: raise Exception.Create(RsEInvalidReduction);
+    11: raise EJVCLException.Create(RsEInvalidReduction);
+    13: raise EJVCLException.Create(RsEInvalidReduction);
     14:
       begin
         Pop(Token1);

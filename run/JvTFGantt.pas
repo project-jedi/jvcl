@@ -117,20 +117,20 @@ uses
 
 procedure TJvTFGantt.DrawMajor(ACanvas: TCanvas);
 var
-  ACaption: string;
+  Caption: string;
 begin
   ACanvas.Font.Assign(FMajorScale.Font);
-  ACaption := sThisIsTheMajorScale;
-  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), 2, ACaption);
+  Caption := RsThisIsTheMajorScale;
+  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(Caption) div 2), 2, Caption);
 end;
 
 procedure TJvTFGantt.DrawMinor(ACanvas: TCanvas);
 var
-  ACaption: string;
+  Caption: string;
 begin
   ACanvas.Font.Assign(FMinorScale.Font);
-  ACaption := sThisIsTheMinorScale;
-  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), (CalcHeaderHeight div 2) + 2, ACaption);
+  Caption := RsThisIsTheMinorScale;
+  ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(Caption) div 2), (CalcHeaderHeight div 2) + 2, Caption);
 end;
 
 function TJvTFGantt.CalcHeaderHeight: integer;

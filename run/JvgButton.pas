@@ -221,7 +221,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
+  RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
 {$ENDIF USEJVCL}
 
 constructor TJvgBtnGlyphs.Create;
@@ -1161,7 +1161,7 @@ begin
       Bmp.Assign(Glyph);
     end;
   except
-    MessageDlg(sErrorDuringAccessGlyphsListOrGlyphP, mtError, [mbOk], 0);
+    MessageDlg(RsEErrorDuringAccessGlyphsListOrGlyphP, mtError, [mbOk], 0);
     raise;
   end;
 end;

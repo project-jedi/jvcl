@@ -968,7 +968,7 @@ begin
     SetBounds(0 - HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
-    Hint := SPrevYear;
+    Hint := RsPrevYearHint;
   end;
 
   FBtns[1] := TJvTimerSpeedButton.Create(Self);
@@ -978,7 +978,7 @@ begin
     SetBounds(BtnSide - 1 - HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
-    Hint := SPrevMonth;
+    Hint := RsPrevMonthHint;
   end;
 
   FTitleLabel := TLabel.Create(Self);
@@ -1000,7 +1000,7 @@ begin
     SetBounds(Control.Width - 2 * BtnSide + 1 + HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
-    Hint := SNextMonth;
+    Hint := RsNextMonthHint;
   end;
 
   FBtns[3] := TJvTimerSpeedButton.Create(Self);
@@ -1010,7 +1010,7 @@ begin
     SetBounds(Control.Width - BtnSide + HorzOffset, VertOffset, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
-    Hint := SNextYear;
+    Hint := RsNextYearHint;
   end;
   //Polaris
   CheckButton;
@@ -1260,7 +1260,7 @@ begin
     SetBounds(3, 3, 16, 16);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
-    Hint := SPrevYear;
+    Hint := RsPrevYearHint;
   end;
 
   FBtns[1] := TJvTimerSpeedButton.Create(Self);
@@ -1270,7 +1270,7 @@ begin
     SetBounds(18, 3, 16, 16);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
-    Hint := SPrevMonth;
+    Hint := RsPrevMonthHint;
   end;
 
   FBtns[2] := TJvTimerSpeedButton.Create(Self);
@@ -1280,7 +1280,7 @@ begin
     SetBounds(188, 3, 16, 16);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
-    Hint := SNextMonth;
+    Hint := RsNextMonthHint;
   end;
 
   FBtns[3] := TJvTimerSpeedButton.Create(Self);
@@ -1290,7 +1290,7 @@ begin
     SetBounds(203, 3, 16, 16);
     Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
-    Hint := SNextYear;
+    Hint := RsNextYearHint;
   end;
 
   Control := TPanel.Create(Self);

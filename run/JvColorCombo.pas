@@ -381,8 +381,8 @@ begin
   Style := csOwnerDrawFixed;
   FColorValue := clBlack;
   FColWidth := 21;
-  FPrefix := SNewColorPrefix;
-  FOther := SCustomCaption;
+  FPrefix := RsNewColorPrefix;
+  FOther := RsCustomCaption;
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;

@@ -439,7 +439,7 @@ function JvMouseGestureHook(code: integer; wParam: word; lParam: longword): long
 implementation
 
 uses
-  JvResources;
+  JvResources, JvTypes;
 
 const
   JVMG_LEFT = 0;
@@ -811,7 +811,6 @@ begin
         if Assigned(FOnJvMouseGestureRightUpperEdge) then FOnJvMouseGestureRightUpperEdge;
       end;
   end; // case
-
 end;
 
 //******************************************************************************
@@ -829,7 +828,7 @@ procedure TJvMouseGestureHook.CreateForThreadOrSystem(aOwner: TComponent; aDwThr
 begin
   if JvMouseGestureHookAlreadyInstalled then
   begin
-    raise Exception.Create(RsECannotHookTwice);
+    raise EJVCLException.Create(RsECannotHookTwice);
     halt;
   end;
 

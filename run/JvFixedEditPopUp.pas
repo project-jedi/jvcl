@@ -329,7 +329,7 @@ begin
 
     // start off with resourcestrings (in case GetDefaultMenuCaptions fails)
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpUndo;
+    m.Caption := RsDefaultPopUpUndo;
     m.OnClick := DoUndo;
     FPopupMenu.Items.Add(m);
 
@@ -338,22 +338,22 @@ begin
     FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpCut;
+    m.Caption := RsDefaultPopUpCut;
     m.OnClick := DoCut;
     FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpCopy;
+    m.Caption := RsDefaultPopUpCopy;
     m.OnClick := DoCopy;
     FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpPaste;
+    m.Caption := RsDefaultPopUpPaste;
     m.OnClick := DoPaste;
     FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpDelete;
+    m.Caption := RsDefaultPopUpDelete;
     m.OnClick := DoDelete;
     FPopupMenu.Items.Add(m);
 
@@ -362,7 +362,7 @@ begin
     FPopupMenu.Items.Add(m);
 
     m := TMenuItem.Create(self);
-    m.Caption := SDefaultPopUpSelAll;
+    m.Caption := RsDefaultPopUpSelAll;
     m.OnClick := DoSelectAll;
     FPopupMenu.Items.Add(m);
 

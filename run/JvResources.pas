@@ -41,11 +41,12 @@ resourcestring
   RsButtonOKCaption = '&OK';
   RsButtonCancelCaption = 'Cancel';
   RsDateDlgCaption = 'Select a Date';
-  RC_EmptyItem = '<Empty>';
+  RsEmptyItem = '<Empty>';
   RsDetailsLeft = '<< &Details';
   RsDetailsRight = '&Details >>';
   RsDatabaseName = 'Database name: %s';
   RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
+  RsError = 'Error';
 
   RsBackButtonCaption = '< &Back';
   RsPrevButtonCaption = '< &Prev';
@@ -139,10 +140,10 @@ resourcestring
 
 //=== JvBDEExceptionForm.pas =================================================
 resourcestring
-  SDBExceptCaption = 'Database Engine Error';
-  SBDEErrorLabel = 'BDE Error';
-  SServerErrorLabel = 'Server Error';
-  SErrorMsgLabel = 'Error message';
+  RsDBExceptCaption = 'Database Engine Error';
+  RsBDEErrorLabel = 'BDE Error';
+  RsServerErrorLabel = 'Server Error';
+  RsErrorMsgLabel = 'Error message';
 
 //=== JvBDELoginDialog.pas ===================================================
 resourcestring
@@ -175,10 +176,9 @@ resourcestring
 resourcestring
   RsEOwnerMustBeForm = '%s owner must be a TForm';
 
-//=== JvCalculator.pas =======================================================
+//=== JvCalc.pas =============================================================
 resourcestring
   RsCalculatorCaption = 'Calculator';
-  RsError = 'Error';
   RsCopyItem = '&Copy';
   RsPasteItem = '&Paste';
 
@@ -209,6 +209,7 @@ resourcestring
   RsEFmtInvalidPath = 'Invalid or empty path (%s)';
   RsEFmtMaxCountExceeded = 'Maximum of %d items exceeded';
   RsEFmtInvalidPathAtIndex = 'Invalid or empty path ("%s") at index %d';
+  RsENotifyErrorFmt = '%s:' + sLineBreak + '%s';
 
 //=== JvChart.pas ============================================================
 resourcestring
@@ -242,12 +243,12 @@ resourcestring
 
 //=== JvColorButton.pas ======================================================
 resourcestring
-  SOtherCaption = '&Other...';
+  RsOtherCaption = '&Other...';
 
 //=== JvColorCombo.pas =======================================================
 resourcestring
-  SCustomCaption = 'Custom...';
-  SNewColorPrefix = 'Custom';
+  RsCustomCaption = 'Custom...';
+  RsNewColorPrefix = 'Custom';
 
 //=== JvColorProvider.pas ====================================================
 resourcestring
@@ -256,7 +257,7 @@ resourcestring
   RsCustomColors = 'Custom colors';
   RsStandardColors = 'Standard colors';
   RsSystemColors = 'System colors';
-  SNoSettings = '(no settings)';
+  RsNoSettings = '(no settings)';
   RsESpecifiedMappingError = 'Specified mapping does not belong to the current provider';
   RsEAlreadyRegistered = '''%s'' is already registered';
   RsENoICR = 'Component does not support IInterfaceComponentReference';
@@ -291,19 +292,19 @@ resourcestring
 
 //=== JvCSVBaseControls.pas ==================================================
 resourcestring
-  sReplaceExistingDatabase = 'Replace existing database?';
-  sNoFieldsDefined = 'no fields defined';
-  sCVSDatabase = 'CSV DataBase';
-  sFindText = 'Find Text:';
-  sFirst = 'First';
-  sPrevious = 'Previous';
-  sFind = 'Find';
-  sNext = 'Next';
-  sLast = 'Last';
-  sAdd = 'Add';
-  sDelete = 'Delete';
-  sPost = 'Post';
-  sRefresh = 'Refresh';
+  RsReplaceExistingDatabase = 'Replace existing database?';
+  RsNoFieldsDefined = 'no fields defined';
+  RsCVSDatabase = 'CSV DataBase';
+  RsFindText = 'Find Text:';
+  RsFirstHint = 'First';
+  RsPreviousHint = 'Previous';
+  RsFindHint = 'Find';
+  RsNextHint = 'Next';
+  RsLastHint = 'Last';
+  RsAddHint = 'Add';
+  RsDeleteHint = 'Delete';
+  RsPostHint = 'Post';
+  RsRefreshHint = 'Refresh';
 
 //=== JvCsvData.pas ==========================================================
 resourcestring
@@ -387,7 +388,7 @@ resourcestring
 
 //=== JvDateTimePicker.pas ===================================================
 resourcestring
-  SNullText = '(none)';
+  RsNullText = '(none)';
 
 //=== JvDBControls.pas =======================================================
 resourcestring
@@ -413,8 +414,8 @@ resourcestring
 
 //=== JvDBRemoteLogin.pas ====================================================
 resourcestring
-  SKeyLoginSection = 'Remote Login';
-  SKeyLastLoginUserName = 'Last User';
+  RsKeyLoginSection = 'Remote Login';
+  RsKeyLastLoginUserName = 'Last User';
 
 //=== JvDBTreeView.pas =======================================================
 resourcestring
@@ -443,9 +444,9 @@ resourcestring
 
 //=== JvDrawImage.pas ========================================================
 resourcestring
-  sImageMustBeSquare = 'image must be square for Spirographs';
-  sSumOfRadiTolarge = 'sum of radi too large';
-  sBothRadiMustBeGr = 'both radi must be >%d';
+  RsImageMustBeSquare = 'image must be square for Spirographs';
+  RsSumOfRadiTolarge = 'sum of radi too large';
+  RsBothRadiMustBeGr = 'both radi must be >%d';
 
 //=== JvDropDownForm.pas =====================================================
 resourcestring
@@ -510,24 +511,24 @@ resourcestring
 
 //=== JvExceptionForm.pas ====================================================
 resourcestring
-  SCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';
-  SModuleError = 'Exception in module %s.' + sLineBreak + '%s';
+  RsCodeError = '%s.' + sLineBreak + 'Error Code: %.8x (%1:d).';
+  RsModuleError = 'Exception in module %s.' + sLineBreak + '%s';
 
 //=== JvFindReplace.pas ======================================================
 resourcestring
-  SNotFound = 'Search string ''%s'' not found';
-  SReplaceCap = 'Replace';
-  SFindCap = 'Find';
-  SNoEditAssigned = 'No edit control assigned!';
+  RsNotFound = 'Search string ''%s'' not found';
+  RsReplaceCaption = 'Replace';
+  RsFindCaption = 'Find';
+  RsENoEditAssigned = 'No edit control assigned!';
 
 //=== JvFixedEditPopUp.pas ===================================================
 resourcestring
-  SDefaultPopUpUndo = '&Undo';
-  SDefaultPopUpCut = 'Cu&t';
-  SDefaultPopUpCopy = '&Copy';
-  SDefaultPopUpPaste = '&Paste';
-  SDefaultPopUpDelete = '&Delete';
-  SDefaultPopUpSelAll = 'Select &All';
+  RsDefaultPopUpUndo = '&Undo';
+  RsDefaultPopUpCut = 'Cu&t';
+  RsDefaultPopUpCopy = '&Copy';
+  RsDefaultPopUpPaste = '&Paste';
+  RsDefaultPopUpDelete = '&Delete';
+  RsDefaultPopUpSelAll = 'Select &All';
 
 {
   SWEDISH:
@@ -549,7 +550,7 @@ resourcestring
 
 //=== JvFooter.pas ===========================================================
 resourcestring
-  sTJvFooterBtnCanOnlyBePlacedOnATJvFo = 'TJvFooterBtn can only be placed on a TJvFooter';
+  RsETJvFooterBtnCanOnlyBePlacedOnATJvFo = 'TJvFooterBtn can only be placed on a TJvFooter';
 
 //=== JvForth.pas ============================================================
 resourcestring
@@ -591,100 +592,100 @@ resourcestring
   RsEDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
-  RC_RedFormat = 'R : %3D';
-  RC_GreenFormat = 'G : %3D';
-  RC_BlueFormat = 'B : %3D';
+  RsRedFormat = 'R : %3D';
+  RsGreenFormat = 'G : %3D';
+  RsBlueFormat = 'B : %3D';
 
-  RC_Hint1 = 'Background Color';
-  RC_Hint2 = 'Foreground Color';
-  RC_LabelCaption = 'X';
-  RC_LabelHint = 'Exchange colors';
+  RsHint1 = 'Background Color';
+  RsHint2 = 'Foreground Color';
+  RsLabelCaption = 'X';
+  RsLabelHint = 'Exchange colors';
 
-  RC_DefaultB = 'B : ---';
-  RC_DefaultG = 'G : ---';
-  RC_DefaultR = 'R : ---';
+  RsDefaultB = 'B : ---';
+  RsDefaultG = 'G : ---';
+  RsDefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sYes = 'yes';
-  sNo = 'no';
-  {$ENDIF USEJVCL}
+  RsYes = 'yes';
+  RsNo = 'no';
+{$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-  {$ENDIF USEJVCL}
+  RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
+{$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-  {$ENDIF USEJVCL}
+  RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
+{$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-  {$ENDIF USEJVCL}
+  RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
+{$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
 (* RUSSIAN
-  ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
-  ERR_GraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
-  ERR_ColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
-  ERR_SystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
-  ERR_OSPlatform = 'Для работы программы необходима операционная система %s.';
+  RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
+  RsGraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
+  RsColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
+  RsSystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
+  RsOSPlatform = 'Для работы программы необходима операционная система %s.';
 *)
-  ERR_VideoVRefreshRate =
+  RsVideoVRefreshRate =
     'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
-  ERR_GraphicResolution =
+  RsGraphicResolution =
     'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
-  ERR_ColorDepth =
+  RsColorDepth =
     'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
-  ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
-  ERR_OSPlatform = 'The program requires %s or better.';
-  {$ENDIF USEJVCL}
+  RsSystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
+  RsOSPlatform = 'The program requires %s or better.';
+{$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEDataSetIsUnassigned = 'DataSet is unassigned';
   RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  SHelp = ' help ';
-  SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-  {$ENDIF USEJVCL}
+  RsHelp = ' help ';
+  RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
+{$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGIF.pas ==============================================================
 resourcestring
@@ -700,78 +701,78 @@ resourcestring
   RsEGIFVersion = 'Unknown GIF version';
 
 //=== JvgLogics.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sEqualTo = 'equal to';
-  sStartingWith = 'starting with';
-  sEndsWith = 'ends with';
-  sContains = 'contains';
-  sIsContainedWithin = 'is contained within';
-  sNotEmpty = 'not empty';
-  sStep = 'Step ';
-  sComments = 'Comments';
-  {$ENDIF USEJVCL}
+  RsEqualTo = 'equal to';
+  RsStartingWith = 'starting with';
+  RsEndsWith = 'ends with';
+  RsContains = 'contains';
+  RsIsContainedWithin = 'is contained within';
+  RsNotEmpty = 'not empty';
+  RsStep = 'Step ';
+  RsComments = 'Comments';
+{$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
   RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
   RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sProgressd = 'progress...[%d%%]';
-  {$ENDIF USEJVCL}
+  RsProgressCaption = 'Progress...[%d%%]';
+{$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sPagedOfd = 'Page %d of %d';
-  {$ENDIF USEJVCL}
+  RsPageOfPages = 'Page %d of %d';
+{$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
-  RC_YourTextHere = 'Put your text here ...';
+  RsYourTextHereCaption = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
-  sError = 'Error';
-  sErrorReadingComponent = 'Error reading component.';
-  {$ENDIF USEJVCL}
+  RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
+  RsErrorText = 'Error';
+  RsErrorReadingComponent = 'Error reading component.';
+{$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
-  sOfd = 'of %d';
-  sPaged = 'Page %d';
-  sNoPrinterIsInstalled = 'No Printer is installed';
+  RsOfd = 'of %d';
+  RsPaged = 'Page %d';
+  RsNoPrinterIsInstalled = 'No Printer is installed';
 
 //=== JvGridPrinter.pas ======================================================
 resourcestring
-  SPrintOptionsPageFooter = 'date|time|page';
-  SPrintOptionsDateFormat = 'd-mmm-yyyy';
-  SPrintOptionsTimeFormat = 'h:nn am/pm';
+  RsPrintOptionsPageFooter = 'date|time|page';
+  RsPrintOptionsDateFormat = 'd-mmm-yyyy';
+  RsPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsOneInstanceOfThisProgramIsAlreadyRu =
     'One instance of this program is already running. A second instance launch is not allowed.';
   RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-  {$ENDIF USEJVCL}
+  RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+{$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   RsERightBracketsNotFound = 'Right brackets not found';
   RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
@@ -779,24 +780,24 @@ resourcestring
   RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
   RsEExpressionStringIsEmpty = 'Expression string is empty.';
   RsEObjectMemoryLeak = 'object memory leak';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   (*
-  ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
-  ERR_CloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
-  ERR_UncknownProperty = 'Uncknown property: %s'
+  RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
+  RsCloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
+  RsUncknownProperty = 'Uncknown property: %s'
   *)
-  ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
-  ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
-  ERR_UnknownProperty = 'Unknown property: %s';
-  {$ENDIF USEJVCL}
+  RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
+  RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
+  RsUnknownProperty = 'Unknown property: %s';
+{$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
-  SHint = 'Hint';
+  RsHintCaption = 'Hint';
 
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring
@@ -889,11 +890,11 @@ resourcestring
 
 //=== JvImageDlg.pas =========================================================
 resourcestring
-  RC_ImageTitle = 'Image Viewer';
+  RsImageTitle = 'Image Viewer';
 
 //=== JvImageWindow.pas ======================================================
 resourcestring
-  sImagesNotAssigned = 'Images not Assigned!';
+  RsEImagesNotAssigned = 'Images not Assigned!';
 
 //=== JvInspector.pas ========================================================
 resourcestring
@@ -1057,7 +1058,7 @@ resourcestring
 
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
-  SMemNoRecords = 'No data found';
+  RsEMemNoRecords = 'No data found';
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
@@ -1099,8 +1100,8 @@ resourcestring
 
 //=== JvMultiHttpGrabber.pas =================================================
 resourcestring
-  RES_ErrorConnection = 'Unable to connect';
-  RES_Agent = 'TJvMultiHTTPGrabber Delphi Component';
+  RsErrorConnection = 'Unable to connect';
+  RsAgent = 'TJvMultiHTTPGrabber Delphi Component';
 
 //=== JvObjectPickerDialog.pas ===============================================
 resourcestring
@@ -1108,12 +1109,12 @@ resourcestring
   RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageListTreeView.pas =================================================
-  {$IFNDEF COMPILER6_UP}
-{ (ahuser) redefined in JvValidaters.pas }
+{$IFNDEF COMPILER6_UP}
+{ (ahuser) redefined in JvValidators.pas }
 { resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
 }
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
@@ -1121,15 +1122,15 @@ resourcestring
 
 //=== JvPainterQBForm.pas ====================================================
 resourcestring
-  sPainterQuickBackdrops = 'Painter Quick Backdrops';
-  sEnterName = 'Enter Name:';
-  sNoItemSelected = 'No item selected!';
-  sErrorInPresets = 'Error in Presets';
+  RsPainterQuickBackdrops = 'Painter Quick Backdrops';
+  RsEnterName = 'Enter Name:';
+  RsNoItemSelected = 'No item selected!';
+  RsErrorInPresets = 'Error in Presets';
 
 //=== JvPatchForm.pas ========================================================
 resourcestring
-  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
-  sJvPatcherEditorEndStep = 'Jv - Patcher Editor: end step ...';
+  RsJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';
+  RsJvPatcherEditorEndStep = 'Jv - Patcher Editor: end step ...';
 
 //=== JvPcx.pas ==============================================================
 resourcestring
@@ -1150,10 +1151,10 @@ resourcestring
 
 //=== JvPickDate.pas =========================================================
 resourcestring
-  SNextYear = 'Next Year|';
-  SNextMonth = 'Next Month|';
-  SPrevYear = 'Previous Year|';
-  SPrevMonth = 'Previous Month|';
+  RsNextYearHint = 'Next Year|';
+  RsNextMonthHint = 'Next Month|';
+  RsPrevYearHint = 'Previous Year|';
+  RsPrevMonthHint = 'Previous Month|';
 
 //=== JvPlugin.pas ===========================================================
 resourcestring
@@ -1190,10 +1191,10 @@ resourcestring
 
 //=== JvRegistryTreeview.pas =================================================
 resourcestring
-  SDefaultCaption = '(Default)';
-  SMyComputer = 'My Computer';
-  SDefaultNoValue = '(value not set)';
-  SUnknownCaption = '(Unknown)';
+  RsDefaultCaption = '(Default)';
+  RsMyComputer = 'My Computer';
+  RsDefaultNoValue = '(value not set)';
+  RsUnknownCaption = '(Unknown)';
 
 //=== JvResample.pas =========================================================
 resourcestring
@@ -1201,8 +1202,8 @@ resourcestring
 
 //=== JvRichEdit.pas =========================================================
 resourcestring
-  RsRTFFilter = 'Rich Text Format (*.rtf)|*.RTF';
-  RsTextFilter = 'Plain text (*.txt)|*.TXT';
+  RsRTFFilter = 'Rich Text Format (*.rtf)|*.rtf';
+  RsTextFilter = 'Plain text (*.txt)|*.txt';
 
   RsEConversionError = 'Conversion error %.8x';
   RsEConversionBusy = 'Cannot execute multiple conversions';
@@ -1271,10 +1272,6 @@ resourcestring
   RsEControlsNotAChildOfs = 'Control %s not a child of %s';
   RsRightClickAndChooseAddBand = 'Right click and choose "Add band"';
 
-//=== JvScrollText.pas =======================================================
-resourcestring
-  RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 //=== JvSegmentedLEDDisplay.pas ==============================================
 resourcestring
   RsEInvalidClass = 'Invalid class.';
@@ -1283,15 +1280,15 @@ resourcestring
 
 //=== JvSegmentedLEDDisplayMapperFrame.pas ===================================
 resourcestring
-  sTheCurrentCharacterHasBeenModifiedA = 'The current character has been modified. Apply changes?';
-  sTheCurrentMappingHasBeenModifiedSav = 'The current mapping has been modified. Save changes to file?';
-  sSegmentedLEDDisplayMappingFilessdms = 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
-  sSelectCharacter = 'Select character...';
-  sSpecifyANewCharacter = 'Specify a new character';
+  RsTheCurrentCharacterHasBeenModifiedA = 'The current character has been modified. Apply changes?';
+  RsTheCurrentMappingHasBeenModifiedSav = 'The current mapping has been modified. Save changes to file?';
+  RsSegmentedLEDDisplayMappingFilessdms = 'Segmented LED display mapping files (*.sdm)|*.sdm|All files (*.*)|*.*';
+  RsSelectCharacter = 'Select character...';
+  RsSpecifyANewCharacter = 'Specify a new character';
 
 //=== JvSHFileOperation.pas ==================================================
 resourcestring
-  SNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
+  RsENoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
 
 //=== JvSimpleXml.pas ========================================================
 resourcestring
@@ -1348,7 +1345,7 @@ resourcestring
 
 //=== JvSticker.pas ==========================================================
 resourcestring
-  SEditSticker = 'Edit sticker';
+  RsEditStickerCaption = 'Edit sticker';
 
 //=== JvStrings.pas ==========================================================
 resourcestring
@@ -1390,23 +1387,23 @@ resourcestring
 
 //=== JvTFGantt.pas ==========================================================
 resourcestring
-  sThisIsTheMajorScale = 'This is the Major Scale';
-  sThisIsTheMinorScale = 'This is the Minor Scale';
+  RsThisIsTheMajorScale = 'This is the Major Scale';
+  RsThisIsTheMinorScale = 'This is the Minor Scale';
 
 //=== JvTFGlance.pas =========================================================
 resourcestring
-  sCellDatesCannotBeChanged = 'Cell Dates cannot be changed';
-  sCellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
-  sCellObjectNotAssigned = 'Cell object not assigned';
-  sInvalidColIndexd = 'Invalid col index (%d)';
-  sInvalidRowIndexd = 'Invalid row index (%d)';
-  sApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
-  sCellCannotBeSplit = 'Cell cannot be split';
-  sASubcellCannotBeSplit = 'A subcell cannot be split';
+  RsECellDatesCannotBeChanged = 'Cell Dates cannot be changed';
+  RsECellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
+  RsECellObjectNotAssigned = 'Cell object not assigned';
+  RsEInvalidColIndexd = 'Invalid col index (%d)';
+  RsEInvalidRowIndexd = 'Invalid row index (%d)';
+  RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
+  RsECellCannotBeSplit = 'Cell cannot be split';
+  RsEASubcellCannotBeSplit = 'A subcell cannot be split';
 
 //=== JvTFGlanceTextViewer.pas ===============================================
 resourcestring
-  sGlanceControlNotAssigned = 'GlanceControl not assigned';
+  RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
 
 //=== JvTFManager.pas ========================================================
 resourcestring
@@ -1456,13 +1453,13 @@ resourcestring
 
 //=== JvTFUtils.pas ==========================================================
 resourcestring
-  sResultDoesNotFallInMonth = 'Result does not fall in given month';
-  sInvalidMonthValue = 'Invalid Month Value (%d)';
-  sInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
+  RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
+  RsEInvalidMonthValue = 'Invalid Month Value (%d)';
+  RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
 
 //=== JvTFWeeks.pas ==========================================================
 resourcestring
-  sWeekOf = 'Week of %s';
+  RsWeekOf = 'Week of %s';
 
 //=== JvThumbImage.pas =======================================================
 resourcestring
@@ -1472,11 +1469,11 @@ resourcestring
 
 //=== JvThumbnails.pas =======================================================
 resourcestring
-  sUnknown = 'Unknown';
+  RsUnknown = 'Unknown';
 
 //=== JvTimeLimit.pas ========================================================
 resourcestring
-  RC_Expired = 'The test period has expired, please register this application';
+  RsExpired = 'The test period has expired, please register this application';
 
 //=== JvTimeList.pas =========================================================
 resourcestring
@@ -1484,11 +1481,11 @@ resourcestring
 
 //=== JvTipOfDay.pas =========================================================
 resourcestring
-  RC_CloseCaption = '&Close';
-  RC_NextCaption = '&Next Tip';
-  RC_TipsTitle = 'Tips and Tricks';
-  RC_TipsHeaderText = 'Did you know...';
-  RC_TipsCheckBoxText = '&Show Tips on Startup';
+  RsCloseCaption = '&Close';
+  RsNextCaption = '&Next Tip';
+  RsTipsTitle = 'Tips and Tricks';
+  RsTipsHeaderText = 'Did you know...';
+  RsTipsCheckBoxText = '&Show Tips on Startup';
 
 //=== JvToolEdit.pas =========================================================
 resourcestring
@@ -1505,32 +1502,32 @@ resourcestring
 
 //=== JvTurtle.pas ===========================================================
 resourcestring
-  sErrorCanvasNotAssigned = '#Error: Canvas not assigned';
-  sEmptyScript = 'empty script';
-  sInvalidIntegerIns = 'invalid integer in %s';
-  sInvalidColorIns = 'invalid color in %s';
-  sInvalidCopyMode = 'invalid copy mode';
-  sInvalidPenMode = 'invalid pen mode';
-  sInvalidTextIns = 'invalid text in %s';
-  sMissingFontname = 'missing fontname';
-  sNumberExpectedIns = 'number expected in %s';
-  sNumberStackUnderflow = 'number stack underflow';
-  sNumberStackOverflow = 'number stack overflow';
-  sMissingAfterComment = 'missing } after comment';
-  sErrorIns = 'error in %s';
-  sDivisionByZero = 'division by zero';
-  sInvalidParameterIns = 'invalid parameter in %s';
-  sSymbolsIsNotDefined = 'symbol %s is not defined';
-  sMissingAfterBlock = 'missing ] after block';
-  sStackUnderflowIns = 'stack underflow in %s';
-  sSymbolExpectedAfterIf = 'symbol expected after if';
-  sCanNotTakeSqrtOf = 'can not take sqrt of 0';
-  sNotAllowedIns = '0 not allowed in %s';
-  sNeedMinimumOfSidesIns = 'need minimum of 3 sides in %s';
-  sMaximumSidesExceededIns = 'maximum 12 sides exceeded in %s';
-  sTokenExpected = 'token expected';
-  ssDoesNotExist = '%s does not exist';
-  sDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
+  RsErrorCanvasNotAssigned = '#Error: Canvas not assigned';
+  RsEmptyScript = 'empty script';
+  RsInvalidIntegerIns = 'invalid integer in %s';
+  RsInvalidColorIns = 'invalid color in %s';
+  RsInvalidCopyMode = 'invalid copy mode';
+  RsInvalidPenMode = 'invalid pen mode';
+  RsInvalidTextIns = 'invalid text in %s';
+  RsMissingFontname = 'missing fontname';
+  RsNumberExpectedIns = 'number expected in %s';
+  RsNumberStackUnderflow = 'number stack underflow';
+  RsNumberStackOverflow = 'number stack overflow';
+  RsMissingAfterComment = 'missing } after comment';
+  RsErrorIns = 'error in %s';
+  RsDivisionByZero = 'division by zero';
+  RsInvalidParameterIns = 'invalid parameter in %s';
+  RsSymbolsIsNotDefined = 'symbol %s is not defined';
+  RsMissingAfterBlock = 'missing ] after block';
+  RsStackUnderflowIns = 'stack underflow in %s';
+  RsSymbolExpectedAfterIf = 'symbol expected after if';
+  RsCanNotTakeSqrtOf = 'can not take sqrt of 0';
+  RsNotAllowedIns = '0 not allowed in %s';
+  RsNeedMinimumOfSidesIns = 'need minimum of 3 sides in %s';
+  RsMaximumSidesExceededIns = 'maximum 12 sides exceeded in %s';
+  RsTokenExpected = 'token expected';
+  RssDoesNotExist = '%s does not exist';
+  RsDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
   RsStackOverflow = 'stack overflow';
   RsStackUnderflow = 'stack underflow';
 
@@ -1549,8 +1546,8 @@ resourcestring
 
 //=== JvVirtualKeySelectionFrame.pas =========================================
 resourcestring
-  sNoValidKeyCode = 'This is not a valid key code';
-  sInvalidKeyCode = 'Invalid key code';
+  RsNoValidKeyCode = 'This is not a valid key code';
+  RsInvalidKeyCode = 'Invalid key code';
 
 //=== JvWinampLabel.pas ======================================================
 resourcestring
@@ -1587,9 +1584,9 @@ resourcestring
 
 //=== JvWizardRouteMapSteps.pas ==============================================
 resourcestring
-  rsActiveStepFormat = 'Step %d of %d';
-  rsBackTo = 'Back to';
-  rsNextStep = 'Next Step';
+  RsActiveStepFormat = 'Step %d of %d';
+  RsBackTo = 'Back to';
+  RsNextStep = 'Next Step';
 
 //=== JvXmlDatabase.pas ======================================================
 resourcestring
@@ -1599,26 +1596,26 @@ resourcestring
 
 //=== JvYearGrid.pas =========================================================
 resourcestring
-  sYearGrid = 'YearGrid';
-  sEnterYear = 'Enter year (1999-2050):';
-  sInvalidYear = 'invalid year';
-  sYear = '&Year...';
-  sEdit = '&Edit';
-  sColor = '&Color...';
-  sNoColor = '&No Color';
-  sCopy = '&Copy';
-  sCut = 'Cu&t';
-  sPaste = '&Paste';
-  sDeleteItem = '&Delete';
-  sSaveAllInfo = '&Save All Info';
-  sSaveFoundInfo = 'Save Found Info';
-  sBorderColor = '&Border Color...';
-  sBookMarkColor = 'Book&Mark Color...';
-  sFindItem = '&Find...';
-  sClearFind = 'Clear Find';
-  sYearGridFind = 'YearGrid Find';
-  sEnterSeachText = 'Enter seach text:';
-  sFounds = 'Found %s';
+  RsYearGrid = 'YearGrid';
+  RsEnterYear = 'Enter year (1999-2050):';
+  RsInvalidYear = 'invalid year';
+  RsYear = '&Year...';
+  RsEdit = '&Edit';
+  RsColor = '&Color...';
+  RsNoColor = '&No Color';
+  RsCopy = '&Copy';
+  RsCut = 'Cu&t';
+  RsPaste = '&Paste';
+  RsDeleteItem = '&Delete';
+  RsSaveAllInfo = '&Save All Info';
+  RsSaveFoundInfo = 'Save Found Info';
+  RsBorderColor = '&Border Color...';
+  RsBookMarkColor = 'Book&Mark Color...';
+  RsFindItem = '&Find...';
+  RsClearFind = 'Clear Find';
+  RsYearGridFind = 'YearGrid Find';
+  RsEnterSeachText = 'Enter seach text:';
+  RsFounds = 'Found %s';
 
 //=== not taken into JVCL ====================================================
 {
@@ -1643,7 +1640,6 @@ resourcestring
   SExprNoRParen = ''')'' expected but %s found';
   SExprExpected = 'Expression expected but %s found';
   SExprBadCompare = 'Relational operators require a field and a constant';
-
 }
 
 implementation

@@ -78,7 +78,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
+  RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
 {$ENDIF USEJVCL}
 
 procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
@@ -103,7 +103,7 @@ begin
     end
     else
     begin
-      S := sNoNewerVersionOfProgramAvailable;
+      S := RsNoNewerVersionOfProgramAvailable;
       Application.MessageBox(PChar(S), 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
     end;
   finally

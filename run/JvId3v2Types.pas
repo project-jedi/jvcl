@@ -256,7 +256,7 @@ implementation
 
 uses
   Math, SysUtils,
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvTypes;
 
 type
   TJvListType =
@@ -1203,7 +1203,7 @@ begin
     4:
       Result := CID3FrameDefs[ID].LongTextID;
   else
-    raise Exception.Create(RsEFrameIDSizeCanOnlyBe34);
+    raise EJVCLException.Create(RsEFrameIDSizeCanOnlyBe34);
   end;
 end;
 

@@ -209,7 +209,7 @@ begin
   if cmbVirtualKey.ItemIndex = -1 then
   begin
     // Signal an error, but not sure how...
-    Application.MessageBox(PChar(sNoValidKeyCode), PChar(sInvalidKeyCode), MB_ICONERROR);
+    Application.MessageBox(PChar(RsNoValidKeyCode), PChar(RsInvalidKeyCode), MB_ICONERROR);
 
     // in any case, return 0
     Result := 0;

@@ -398,21 +398,21 @@ begin
     try
       FDFileAccessed := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileAccessed := sUnknown;
+      FDFileAccessed := RsUnknown;
     end;
     FileTimeToLocalFileTime(FileInfo.ftLastwriteTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     try
       FDFileChanged := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileChanged := sUnknown;
+      FDFileChanged := RsUnknown;
     end;
     FileTimeToLocalFileTime(FileInfo.ftCreationTime, Lft);
     FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
     try
       FDFileCreated := DateTimeToStr(FileDateToDateTime(Dft));
     except
-      FDFileCreated := sUnknown;
+      FDFileCreated := RsUnknown;
     end;
     FDFileSize := (FileInfo.nFileSizeHigh * MAXDWORD) + FileInfo.nFileSizeLow;
   end;

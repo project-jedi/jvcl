@@ -154,7 +154,7 @@ uses
 
 const
   // (rom) Jedi registry keys need rework
-  RC_KeyStartup = 'Software\JEDI-VCL\TipsStartup';
+  RsKeyStartup = 'Software\JEDI-VCL\TipsStartup';
 
 type
   TControlAccess = class(TControl);
@@ -172,18 +172,18 @@ begin
   FHeaderFont.OnChange := FontChanged;
 
   FButtonNext := TJvButtonPersistent.Create;
-  FButtonNext.Caption := RC_NextCaption;
+  FButtonNext.Caption := RsNextCaption;
   FButtonNext.Flat := False;
   FButtonNext.HotTrack := False;
 
   FButtonClose := TJvButtonPersistent.Create;
-  FButtonClose.Caption := RC_CloseCaption;
+  FButtonClose.Caption := RsCloseCaption;
   FButtonClose.Flat := False;
   FButtonClose.HotTrack := False;
 
-  FHeaderText := RC_TipsHeaderText;
-  FTitle := RC_TipsTitle;
-  FCheckBoxText := RC_TipsCheckBoxText;
+  FHeaderText := RsTipsHeaderText;
+  FTitle := RsTipsTitle;
+  FCheckBoxText := RsTipsCheckBoxText;
 
   FColor := clWhite;
   FStyle := tsVC;
@@ -603,7 +603,7 @@ function TJvTipOfDay.ReadRegistry: Boolean;
 begin
   with TRegistry.Create do
   try
-    OpenKey(RC_KeyStartup, True);
+    OpenKey(RsKeyStartup, True);
     Result := not ValueExists(GetRegKey) or ReadBool(GetRegKey);
   finally
     Free;
@@ -724,7 +724,7 @@ procedure TJvTipOfDay.WriteRegistry(DoShowOnStartUp: Boolean);
 begin
   with TRegistry.Create do
   try
-    OpenKey(RC_KeyStartup, True);
+    OpenKey(RsKeyStartup, True);
     WriteBool(GetRegKey, DoShowOnStartUp);
   finally
     Free;

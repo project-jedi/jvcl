@@ -717,7 +717,7 @@ begin
     RecordToBuffer(Records[FRecordPos], Buffer)
   else
   if (Result = grError) and DoCheck then
-    Error(SMemNoRecords);
+    Error(RsEMemNoRecords);
 end;
 
 function TJvMemoryData.GetRecordSize: Word;

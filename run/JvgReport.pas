@@ -230,8 +230,8 @@ const
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
-  sError = 'Error';
+  RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
+  RsErrorText = 'Error';
   sErrorReadingComponent = 'Error reading component.';
 {$ENDIF USEJVCL}
 
@@ -1156,8 +1156,8 @@ var
     try
       B.ContainOLE := B.OLELinkToFile <> '';
     except
-      S1 := sOLELinkedObjectNotFound;
-      S2 := sError;
+      S1 := RsOLELinkedObjectNotFound;
+      S2 := RsErrorText;
       Application.MessageBox(PChar(S1), PChar(S2),
         MB_APPLMODAL or MB_OK or MB_ICONSTOP);
     end;
@@ -1215,8 +1215,8 @@ begin
         try
           Create_Object(sClassName, sName);
         except
-          S1 := sErrorReadingComponent;
-          S2 := sError;
+          S1 := RsErrorReadingComponent;
+          S2 := RsErrorText;
           Application.MessageBox(PChar(S1), PChar(S2),
             MB_APPLMODAL or MB_OK or MB_ICONSTOP);
         end;

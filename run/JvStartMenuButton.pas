@@ -83,7 +83,7 @@ begin
   with It do
   begin
     Enabled := False;
-    Caption := RC_EmptyItem;
+    Caption := RsEmptyItem;
     Tag := 1;
   end;
   FPopup.Items.Add(It);
@@ -208,7 +208,7 @@ begin
         It2 := TMenuItem.Create(It);
         with It2 do
         begin
-          Caption := RC_EmptyItem;
+          Caption := RsEmptyItem;
           Enabled := False;
           Tag := 1;
         end;

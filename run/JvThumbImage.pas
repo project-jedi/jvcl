@@ -409,7 +409,7 @@ begin
     Gr.SaveToFile(AFile);
   end
   else
-    raise Exception.CreateFmt(RsEUnknownFileExtension, [Ext]);
+    raise EJVCLException.CreateFmt(RsEUnknownFileExtension, [Ext]);
 end;
 
 procedure TJvThumbImage.Save;

@@ -511,7 +511,7 @@ procedure TJvTFWeeks.UpdateTitle;
 var
   NewTitle: string;
 begin
-  NewTitle := Format(sWeekOf, [FormatDateTime('mmm d, yyyy', OriginDate)]);
+  NewTitle := Format(RsWeekOf, [FormatDateTime('mmm d, yyyy', OriginDate)]);
   if NewTitle <> TitleAttr.Title then
   begin
     if Assigned(FOnUpdateTitle) then

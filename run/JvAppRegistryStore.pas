@@ -125,7 +125,7 @@ begin
     if Windows.RegCreateKey(FRegHKEY, PChar(Key), ResKey) = ERROR_SUCCESS then
       RegCloseKey(ResKey)
     else
-      raise Exception.CreateFmt(RsEUnableToCreateKey, [Key]);
+      raise EJVCLException.CreateFmt(RsEUnableToCreateKey, [Key]);
 end;
 
 procedure TJvAppRegistryStore.EnumFolders(const Path: string; const Strings: TStrings;

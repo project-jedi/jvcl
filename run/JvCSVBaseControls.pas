@@ -23,7 +23,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvCSVBaseControls;
 
 interface
@@ -51,10 +53,8 @@ type
     procedure SetCSVFieldNames(const Value: TStringlist);
     procedure DisPlayFields(NameValues: TStringlist);
   protected
-    { Protected declarations }
     procedure CursorChanged(NameValues: TStringList; FieldCount: integer);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DataBaseCreate(aFile: string; FieldNames: TStringList);
@@ -73,7 +73,6 @@ type
     function RecordFind(Atext: string): boolean;
     procedure DisPlay;
   published
-    { Published declarations }
     property CSVFileName: string read FCSVFileName write SetCSVFileName;
     property CSVFieldNames: TStringlist read FCSVFieldNames write SetCSVFieldNames;
     property OnCursorChanged: TOnCursorChanged read FonCursorChanged write SetonCursorChanged;
@@ -190,7 +189,7 @@ var
 begin
   newfile := changefileext(aFile, '.csv');
   if fileexists(newfile) then
-    if messagedlg(sReplaceExistingDatabase, mtconfirmation, [mbyes, mbno], 0) = mrno then exit;
+    if messagedlg(RsReplaceExistingDatabase, mtconfirmation, [mbyes, mbno], 0) = mrno then exit;
   alist := tstringlist.create;
   if (FieldNames <> nil) then
     if FieldNames.count > 0 then
@@ -234,7 +233,7 @@ begin
   DataBaseClose;
   if Fieldnames.count = 0 then
   begin
-    showmessage(sNoFieldsDefined);
+    showmessage(RsNoFieldsDefined);
     exit;
   end;
   OldBase := tstringlist.create;
@@ -649,7 +648,7 @@ var
 begin
   if assigned(FCSVDataBase) then
   begin
-    Atext := inputbox(sCVSDatabase, sFindText, '');
+    Atext := inputbox(RsCVSDatabase, RsFindText, '');
     if Atext <> '' then
       CSVDataBase.RecordFind(Atext);
   end;
@@ -727,7 +726,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'FIRST');
     Left := 1;
     OnClick := BtnFirstClick;
-    hint := sFirst;
+    hint := RsFirstHint;
   end;
 
   FbtnPrevious := TSpeedButton.Create(Self);
@@ -737,7 +736,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'PREVIOUS');
     Left := 25;
     OnClick := BtnPreviousClick;
-    hint := sPrevious;
+    hint := RsPreviousHint;
   end;
 
   FbtnFind := TSpeedButton.Create(Self);
@@ -747,7 +746,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'FIND');
     Left := 49;
     OnClick := BtnFindClick;
-    hint := sFind;
+    hint := RsFindHint;
   end;
 
   FbtnNext := TSpeedButton.Create(Self);
@@ -757,7 +756,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'NEXT');
     Left := 73;
     OnClick := BtnNextClick;
-    hint := sNext;
+    hint := RsNextHint;
   end;
 
   FbtnLast := TSpeedButton.Create(Self);
@@ -767,7 +766,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'LAST');
     Left := 97;
     OnClick := BtnLastClick;
-    hint := sLast;
+    hint := RsLastHint;
   end;
 
   FbtnAdd := TSpeedButton.Create(Self);
@@ -777,7 +776,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'ADD');
     Left := 121;
     OnClick := BtnAddClick;
-    hint := sAdd;
+    hint := RsAddHint;
   end;
 
   FbtnDelete := TSpeedButton.Create(Self);
@@ -787,7 +786,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'DELETE');
     Left := 145;
     OnClick := BtnDeleteClick;
-    hint := sDelete;
+    hint := RsDeleteHint;
   end;
 
   FbtnPost := TSpeedButton.Create(Self);
@@ -797,7 +796,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'POST');
     Left := 169;
     OnClick := BtnPostClick;
-    hint := sPost;
+    hint := RsPostHint;
   end;
 
   FbtnRefresh := TSpeedButton.Create(Self);
@@ -807,7 +806,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'REFRESH');
     Left := 193;
     OnClick := BtnRefreshClick;
-    hint := sRefresh;
+    hint := RsRefreshHint;
   end;
 
 end;

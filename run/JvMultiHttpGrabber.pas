@@ -176,7 +176,7 @@ constructor TJvMultiHTTPGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOutputMode := omStream;
-  FAgent := RES_Agent;
+  FAgent := RsAgent;
   FCount := 0;
 end;
 
@@ -429,7 +429,7 @@ var
 begin
   Infos := PRequestInfos(FInfos)^;
   if Assigned(Infos.Grabber.FOnError) then
-    Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RES_ErrorConnection);
+    Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RsErrorConnection);
 end;
 
 procedure TJvMultiHttpThread.Execute;
@@ -505,7 +505,7 @@ var
 begin
   Infos := PRequestInfos(FInfos)^;
   if Assigned(Infos.Grabber.FOnError) then
-    Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RES_ErrorConnection);
+    Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RsErrorConnection);
 end;
 
 procedure TJvMultiDateHttpThread.Execute;
