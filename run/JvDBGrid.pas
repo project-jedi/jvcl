@@ -39,7 +39,7 @@ uses
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
-  JvJCLUtils, JvMaskEdit, JvBaseEdits, JvDBLookup;
+  JvJCLUtils, JvMaskEdit, JvBaseEdits, JvDBLookup, JvExDBGrids;
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -74,7 +74,7 @@ type
     var aHint: string) of object;
   // End Lionel
 
-  TJvDBGrid = class(TDBGrid)
+  TJvDBGrid = class(TJvExDBGrid)
   private
     FBeepOnError: Boolean; // WAP
     FAutoAppend: Boolean; // Polaris
@@ -147,7 +147,6 @@ type
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
     // Lionel
     procedure DoHint(X, Y: Integer);
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure HintTimerTimer(Sender: TObject);
     procedure GetBtnParams(Sender: TObject; Field: TField; AFont: TFont;
       var Background: TColor; var SortMarker: TSortMarker;
@@ -157,6 +156,7 @@ type
     procedure ShowSelectColumnClick;
     // End Lionel
   protected
+    procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
     function CreateEditor: TInplaceEdit; override; // Modified by Lionel
@@ -202,6 +202,9 @@ type
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     // End Lionel
+    {$IFNDEF COMPILER6_UP}
+    procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
+    {$ENDIF !COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override; // Modified by Lionel
     destructor Destroy; override; // Modified by Lionel
@@ -2079,10 +2082,19 @@ begin
   end;
 end;
 
+{$IFNDEF COMPOILER6_UP}
+procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
+begin
+  MoveColRow(ACol, ARow, MoveAnchor, True);
+  InvalidateEditor; 
+  Click;
+end;
+{$ENDIF !COMPILER6_UP}
+
 procedure TJvDBGrid.EditButtonClick;
 begin
 // Just to have it here for the call in TJvDBInplaceEdit
-  inherited;
+  inherited EditButtonClick;
 end;
 
 procedure TJvDBGrid.DoHint(X, Y: Integer);
@@ -2148,12 +2160,14 @@ begin
     FHintWnd.ReleaseHandle;
 end;
 
-procedure TJvDBGrid.CMMouseLeave(var Msg: TMessage);
+procedure TJvDBGrid.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FShowTitleHint and Assigned(FHintWnd) then
     FHintWnd.ReleaseHandle;
   FHintTimer.Enabled := false;
-  inherited;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvDBGrid.HintTimerTimer(Sender: TObject);
@@ -2173,7 +2187,7 @@ end;
 procedure TJvDBGrid.ColEnter;
 begin
   FWord := '';
-  inherited;
+  inherited ColEnter;
 end;
 
 procedure TJvDBGrid.DoExit;
@@ -2181,7 +2195,7 @@ begin
   if FShowTitleHint and Assigned(FHintWnd) then
     FHintWnd.ReleaseHandle;
   FHintTimer.Enabled := false;
-  inherited;
+  inherited DoExit;
 end;
 
 function TJvDBGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
