@@ -44,7 +44,6 @@ Known Issues:
     at HandleNCPaintBefore.
   * Buttons on small caption (BorderStyle in [bsSizeToolWin, bsToolWin]) looks
     ugly.
-  * If Standard = tsbNone, and themed, buttons looks not really good.
   * Only tested on XP.
 
 
@@ -158,7 +157,9 @@ type
 
     {$IFDEF JVCLThemesEnabled}
     FCaptionActive: Boolean;
+    FForceDrawSimple: Boolean;
     function GetIsThemed: Boolean;
+    procedure SetForceDrawSimple(const Value: Boolean);
     {$ENDIF JVCLThemesEnabled}
     function GetAction: TBasicAction;
     function GetIsImageVisible: Boolean;
@@ -245,6 +246,7 @@ type
     property ActionLink: TJvCaptionButtonActionLink read FActionLink write FActionLink;
     property IsImageVisible: Boolean read GetIsImageVisible;
     {$IFDEF JVCLThemesEnabled}
+    // The value of IsThemed stays the same until a WM_THEMECHANGED is received.
     property IsThemed: Boolean read GetIsThemed;
     {$ENDIF JVCLThemesEnabled}
     property MouseInControl: Boolean read FMouseInControl;
@@ -265,7 +267,10 @@ type
     property ButtonTop: Integer read FTop write SetTop default 0;
     property ButtonWidth: Integer read FWidth write SetWidth default 0;
     property Caption: string read FCaption write SetCaption stored IsCaptionStored;
-    property Down: Boolean read FDown write SetDown;
+    property Down: Boolean read FDown write SetDown default False;
+    {$IFDEF JVCLThemesEnabled}
+    property ForceDrawSimple: Boolean read FForceDrawSimple write SetForceDrawSimple default False;
+    {$ENDIF JVCLThemesEnabled}
     property ShowHint: Boolean read FShowHint write SetShowHint default False;
     property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
     property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
@@ -297,9 +302,203 @@ uses
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvTypes, JvResources;
 
+{$IFDEF JVCLThemesEnabled}
+
+type
+  TGlobalXPData = class
+  private
+    FButtons: TBitmap;
+    FButtonWidth: Integer;
+    FButtonHeight: Integer;
+    FIsThemed: Boolean;
+    FBitmapValid: Boolean;
+    FClientCount: Integer;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+
+    procedure AddClient;
+    procedure RemoveClient;
+
+    procedure Update;
+    procedure DrawSimple(HDC: HDC; State: Integer; const DrawRect: TRect);
+    procedure Draw(HDC: HDC; State: Integer; const DrawRect: TRect);
+    property IsThemed: Boolean read FIsThemed;
+  end;
+
+{$ENDIF JVCLThemesEnabled}
+
 const
   htCaptionButton = HTSIZELAST + 1;
+
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+
+{$IFDEF JVCLThemesEnabled}
+
+var
+  GGlobalXPData: TGlobalXPData;
+
+//=== Local procedures =======================================================
+
+function GlobalXPData: TGlobalXPData;
+begin
+  if not Assigned(GGlobalXPData) then
+    GGlobalXPData := TGlobalXPData.Create;
+
+  Result := GGlobalXPData;
+end;
+
+function StrArrayIndex(const S: string; const SS: array of string): Integer;
+begin
+  Result := Low(SS);
+  while (Result <= High(SS)) and not SameText(S, SS[Result]) do
+    Inc(Result);
+  if Result > High(SS) then
+    Result := -1;
+end;
+
+function GetXPCaptionButtonBitmap(ABitmap: TBitmap): Boolean;
+type
+  TXPStyle = (xpBlue, xpMetallic, xpGreen);
+const
+  cDefaultFileName = 'Luna.msstyles';
+  cStyleNames: array [TXPStyle] of string =
+    ('NormalColor', 'Metallic', 'HomeStead');
+  cResName: array [TXPStyle] of string =
+    ('BLUE_CAPTIONBUTTON_BMP', 'METALLIC_CAPTIONBUTTON_BMP', 'HOMESTEAD_CAPTIONBUTTON_BMP');
+var
+  Handle: THandle;
+  ThemeFileNameW, ColorBuffW: array [0..MAX_PATH] of WideChar;
+  Style: Integer;
+  OldError: Longint;
+begin
+  ThemeFileNameW[MAX_PATH] := #0;
+  ColorBuffW[MAX_PATH] := #0;
+
+  Result := UxTheme.GetCurrentThemeName(ThemeFileNameW, MAX_PATH, ColorBuffW, MAX_PATH, nil, 0) = S_OK;
+  if not Result then
+    Exit;
+
+  Result := SameText(ExtractFileName(string(ThemeFileNameW)), cDefaultFileName);
+  if not Result then
+    Exit;
+
+  Style := StrArrayIndex(string(ColorBuffW), cStyleNames);
+  Result := Style >= 0;
+  if not Result then
+    Exit;
+
+  OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
+  try
+    Handle := LoadLibraryW(ThemeFileNameW);
+    Result := Handle <> 0;
+    if Result then
+    try
+      ABitmap.LoadFromResourceName(Handle, cResName[TXPStyle(Style)]);
+      Result := (ABitmap.Width > 0) and (ABitmap.Height > 0);
+    finally
+      FreeLibrary(Handle);
+    end;
+  finally
+    SetErrorMode(OldError);
+  end;
+end;
+
+//=== TGlobalXPData ==========================================================
+
+procedure TGlobalXPData.AddClient;
+begin
+  Inc(FClientCount);
+end;
+
+constructor TGlobalXPData.Create;
+begin
+  inherited Create;
+  FButtons := TBitmap.Create;
+  Update;
+end;
+
+destructor TGlobalXPData.Destroy;
+begin
+  FButtons.Free;
+  inherited Destroy;
+end;
+
+procedure TGlobalXPData.Draw(HDC: HDC; State: Integer;
+  const DrawRect: TRect);
+begin
+  if FBitmapValid then
+    // We could call TransparentBlt() for windows systems >= 98
+    StretchBltTransparent(HDC, DrawRect.Left, DrawRect.Top, DrawRect.Right - DrawRect.Left, DrawRect.Bottom -
+      DrawRect.Top,
+      FButtons.Canvas.Handle, 0, FButtonHeight * (State - 1),
+      FButtonWidth, FButtonHeight, FButtons.Palette, clFuchsia)
+  else
+    DrawSimple(HDC, State, DrawRect);
+end;
+
+procedure TGlobalXPData.DrawSimple(HDC: HDC; State: Integer;
+  const DrawRect: TRect);
+const
+  // Normal, Hot, Pushed, Disabled,
+  cCaptionButton: array [0..3] of TThemedWindow = (twMinButtonNormal, twMinButtonHot,
+    twMinButtonPushed, twMinButtonDisabled);
+  cNormalButton: array [0..3] of TThemedButton = (tbPushButtonNormal, tbPushButtonHot,
+    tbPushButtonPressed, tbPushButtonDisabled);
+var
+  Details: TThemedElementDetails;
+  DrawRgn: HRGN;
+begin
+  { Draw the button in 2 pieces, draw the edge of a caption button, and the
+    inner of a normal button, because drawing a normal button looks ugly }
+
+  // State = 1..8 -> State = 0..3
+  State := (State - 1) mod 4;
+
+  { 1a. Draw the outer bit as a caption button }
+  Details := ThemeServices.GetElementDetails(cCaptionButton[State]);
+  ThemeServices.DrawElement(HDC, Details, DrawRect);
+
+  { 1b. Draw the inner bit as a normal button }
+  with DrawRect do
+    DrawRgn := CreateRectRgn(Left + 1, Top + 1, Right - 1, Bottom - 1);
+  try
+    Details := ThemeServices.GetElementDetails(cNormalButton[State]);
+    SelectClipRgn(HDC, DrawRgn);
+    ThemeServices.DrawElement(HDC, Details, DrawRect);
+    SelectClipRgn(HDC, 0);
+  finally
+    DeleteObject(DrawRgn);
+  end;
+end;
+
+procedure TGlobalXPData.RemoveClient;
+begin
+  Dec(FClientCount);
+  if FClientCount = 0 then
+  begin
+    if Self = GGlobalXPData then
+      GGlobalXPData := nil;
+    Self.Free;
+  end;
+end;
+
+procedure TGlobalXPData.Update;
+begin
+  FIsThemed := ThemeServices.ThemesAvailable and IsThemeActive and IsAppThemed;
+  if not FIsThemed then
+    Exit;
+
+  FBitmapValid := GetXPCaptionButtonBitmap(FButtons);
+
+  if FBitmapValid then
+  begin
+    FButtonWidth := FButtons.Width;
+    FButtonHeight := FButtons.Height div 8;
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
 
 //=== TJvCaptionButton =======================================================
 
@@ -338,6 +537,10 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   FParentShowHint := True;
 
+  {$IFDEF JVCLThemesEnabled}
+  GlobalXPData.AddClient;
+  {$ENDIF}
+
   Hook;
 end;
 
@@ -353,6 +556,10 @@ begin
 
   FreeAndNil(FActionLink);
   FreeAndNil(FImageChangeLink);
+
+  {$IFDEF JVCLThemesEnabled}
+  GlobalXPData.RemoveClient;
+  {$ENDIF}
 
   inherited Destroy;
 end;
@@ -474,9 +681,6 @@ procedure TJvCaptionButton.CalcDefaultButtonRect(Wnd: THandle);
 const
   CSpaceBetweenButtons = 2;
 var
-  {$IFDEF JVCLThemesEnabled}
-  DoThemed: Boolean;
-  {$ENDIF JVCLThemesEnabled}
   Style: DWORD;
   ExStyle: DWORD;
   FrameSize: TSize;
@@ -495,7 +699,6 @@ begin
   FHasSmallCaption := ExStyle and WS_EX_TOOLWINDOW = WS_EX_TOOLWINDOW;
   {$IFDEF JVCLThemesEnabled}
   FCaptionActive := (GetActiveWindow = Wnd) and IsForegroundTask;
-  DoThemed := IsThemed;
   {$ENDIF JVCLThemesEnabled}
 
   if Style and WS_THICKFRAME = WS_THICKFRAME then
@@ -521,7 +724,7 @@ begin
 
   { 3. Calc FDefaultButtonWidth }
   {$IFDEF JVCLThemesEnabled}
-  if DoThemed then
+  if IsThemed then
     FDefaultButtonWidth := FDefaultButtonHeight
   else
   {$ENDIF JVCLThemesEnabled}
@@ -545,7 +748,7 @@ begin
         (Style and WS_MINIMIZEBOX = WS_MINIMIZEBOX) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if DoThemed then
+        if IsThemed then
           { 4b. If it have Max or Min button, both are visible. When themed
                 the CONTEXTHELP button is then never visible }
           Inc(FDefaultButtonLeft, 2 * (FDefaultButtonWidth + CSpaceBetweenButtons))
@@ -749,14 +952,18 @@ begin
 end;
 
 procedure TJvCaptionButton.DrawNonStandardButton(ACanvas: TCanvas);
+{$IFDEF JVCLThemesEnabled}
+const
+  cState_Normal = 1;
+  cState_Hot = 2;
+  cState_Pushed = 3;
+  cState_Disabled = 4;
+{$ENDIF JVCLThemesEnabled}
 var
   DrawRect: TRect;
   RectText, RectImage: TRect;
   {$IFDEF JVCLThemesEnabled}
-  Details: TThemedElementDetails;
-  CaptionButton: TThemedWindow;
-  NormalButton: TThemedButton;
-  DoThemed: Boolean;
+  State: Integer;
   DrawRgn: HRGN;
   {$ENDIF JVCLThemesEnabled}
 begin
@@ -770,56 +977,27 @@ begin
   DrawRgn := 0;
 
   { 1. Draw the button }
-  DoThemed := IsThemed;
-
-  if DoThemed then
+  if IsThemed then
   begin
     if not Enabled then
-    begin
-      CaptionButton := twMinButtonDisabled;
-      NormalButton := tbPushButtonDisabled;
-    end
+      State := 4
     else
     if FDown then
-    begin
-      CaptionButton := twMinButtonPushed;
-      NormalButton := tbPushButtonPressed;
-    end
+      State := 3
     else
     if FMouseInControl then
-    begin
-      CaptionButton := twMinButtonHot;
-      NormalButton := tbPushButtonHot;
-    end
+      State := 2
     else
-    begin
-      CaptionButton := twMinButtonNormal;
-      NormalButton := tbPushButtonNormal;
-    end;
-
-    { Draw the button in 2 pieces, draw the edge of a caption button, and the
-      inner of a normal button, because drawing a normal button looks ugly }
-
-    { 1a. Draw the outer bit as a caption button }
-    Details := ThemeServices.GetElementDetails(CaptionButton);
+      State := 1;
 
     { Special state for buttons drawn on a not active caption }
-    if not FCaptionActive and (Details.State = 1) then
-      Details.State := 5;
-    ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
+    if not FCaptionActive then
+      Inc(State, 4);
 
-    { 1b. Draw the inner bit as a normal button }
-    with DrawRect do
-      DrawRgn := CreateRectRgn(Left + 1, Top + 1, Right - 1, Bottom - 1);
-    try
-      Details := ThemeServices.GetElementDetails(NormalButton);
-      SelectClipRgn(ACanvas.Handle, DrawRgn);
-      with FButtonRect do
-        ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
-      SelectClipRgn(ACanvas.Handle, 0);
-    finally
-      DeleteObject(DrawRgn);
-    end;
+    if ForceDrawSimple then
+      GlobalXPData.DrawSimple(ACanvas.Handle, State, DrawRect)
+    else
+      GlobalXPData.Draw(ACanvas.Handle, State, DrawRect);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -827,7 +1005,7 @@ begin
 
   { 2. Draw the text & picture }
   {$IFDEF JVCLThemesEnabled}
-  if DoThemed then
+  if IsThemed then
   begin
     { 2a. If themed, only draw in the inner bit of the button using a clip region }
     with DrawRect do
@@ -840,7 +1018,7 @@ begin
   if FDown then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if DoThemed then
+    if IsThemed then
       OffsetRect(DrawRect, 1, 0)
     else
     {$ENDIF JVCLThemesEnabled}
@@ -852,7 +1030,7 @@ begin
   DrawButtonImage(ACanvas, RectImage);
   { 2c. Clean up }
   {$IFDEF JVCLThemesEnabled}
-  if DoThemed then
+  if IsThemed then
   begin
     SelectClipRgn(ACanvas.Handle, 0);
     DeleteObject(DrawRgn);
@@ -967,13 +1145,6 @@ begin
   Result := Assigned(Images) and (ImageIndex > -1) and (ImageIndex < Images.Count);
 end;
 
-{$IFDEF JVCLThemesEnabled}
-function TJvCaptionButton.GetIsThemed: Boolean;
-begin
-  Result := ThemeServices.ThemesAvailable and IsThemeActive;
-end;
-{$ENDIF JVCLThemesEnabled}
-
 function TJvCaptionButton.GetParentForm: TCustomForm;
 begin
   if Owner is TControl then
@@ -1061,6 +1232,8 @@ begin
 end;
 
 function TJvCaptionButton.HandleHitTest(var Msg: TWMNCHitTest): Boolean;
+var
+  CurPos: TPoint;
 begin
   Result := Visible and MouseOnButton(Msg.XPos, Msg.YPos, False);
   if Result then
@@ -1068,8 +1241,16 @@ begin
 
   if not Result and Visible and MouseInControl then
   begin
-    SetMouseInControl(False);
-    Redraw(rkIndirect);
+    // We can get weird hittest values (probably from the hint window) so
+    // double check that the mouse is not on the button.
+    // Actually we wrongfully assumed that Msg represents the current mouse
+    // position so we have to double check.
+    GetCursorPos(CurPos);
+    if not MouseOnButton(CurPos.X, CurPos.Y, False) then
+    begin
+      SetMouseInControl(False);
+      Redraw(rkIndirect);
+    end;
   end;
 
   //Result := False;
@@ -1088,9 +1269,9 @@ begin
     SetMouseInControl(MouseOnButton(Msg.XCursor, Msg.YCursor, Msg.Msg = WM_MOUSEMOVE));
     DoRedraw := (FMouseInControl <> MouseWasInControl) or
       // User presses mouse button, but left the caption button
-    (FDown and not Toggle and not FMouseInControl) or
+      (FDown and not Toggle and not FMouseInControl) or
       // User presses mouse button, and enters the caption button
-    (not FDown and not Toggle and FMouseInControl);
+      (not FDown and not Toggle and FMouseInControl);
 
     FDown := (FDown and Toggle) or
       (FMouseButtonDown and not Toggle and FMouseInControl);
@@ -1459,6 +1640,18 @@ begin
   end;
 end;
 
+{$IFDEF JVCLThemesEnabled}
+procedure TJvCaptionButton.SetForceDrawSimple(const Value: Boolean);
+begin
+  if FForceDrawSimple <> Value then
+  begin
+    FForceDrawSimple := Value;
+    if IsThemed then
+      Redraw(rkDirect);
+  end;
+end;
+{$ENDIF JVCLThemesEnabled}
+
 procedure TJvCaptionButton.SetHeight(Value: Integer);
 begin
   if FHeight <> Value then
@@ -1715,6 +1908,7 @@ begin
           * Switching from 'windows classic' style to 'windows XP' style
             ( delphi 7 bug) }
         ThemeServices.ApplyThemeChange;
+        GlobalXPData.Update;
         {$ENDIF JVCLThemesEnabled}
       end;
     CM_SYSFONTCHANGED:
@@ -1809,6 +2003,13 @@ begin
     Result := False;
   end;
 end;
+
+{$IFDEF JVCLThemesEnabled}
+function TJvCaptionButton.GetIsThemed: Boolean;
+begin
+  Result := GlobalXPData.IsThemed;
+end;
+{$ENDIF JVCLThemesEnabled}
 
 //=== TJvCaptionButtonActionLink =============================================
 
