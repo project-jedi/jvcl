@@ -234,12 +234,13 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  try
-    FDataLink.UpdateRecord;
-  except
-    SetFocus;
-    raise;
-  end;
+  if(FDataLink.Editing) then
+    try
+      FDataLink.UpdateRecord;
+    except
+      SetFocus;
+      raise;
+    end;
   inherited DoKillFocus(ANextControl);
 end;
 
@@ -310,7 +311,7 @@ begin
   {if we enabled validation for an unlinked control, we'd have validation errors
    pop up just from tabbing over the control, therefore we temporary disable it}
   if InternalChanging or Leaving then
-    Result := Result and IsLinked;
+    Result := Result and IsLinked and FDataLink.Editing;
 end;
 
 function TJvCustomDBDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
