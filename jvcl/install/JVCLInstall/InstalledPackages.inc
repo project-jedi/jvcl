@@ -1,5 +1,8 @@
+{ included in JVCLData.inc (at the bottom) }
+// $Id$
 
-// quickreport
+{------------------------------------------------------------------------------}
+{ QuickReport }
 function Opt_QuickReport4(Target: TCompileTarget): Boolean;
 begin
   Result := FileExists(Target.RootDir + Format('\bin\qr4run%s%d.bpl', [LowerCase(TargetTypes[Target.IsBCB]), Target.Version]));
@@ -10,12 +13,16 @@ begin
   Result := FileExists(Target.RootDir + Target.VersionedPackage('\lib\qrpt.dcp')) or Opt_QuickReport4(Target);
 end;
 
-// internet components
+{------------------------------------------------------------------------------}
+{ Internet Components }
 function Opt_InternetComponents(Target: TCompileTarget): Boolean;
 begin
   Result := FileExists(Target.RootDir + Target.VersionedPackage('\lib\vclie.dcp'));
 end;
 
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------}
 
 procedure TTargetConfig.UpdateJVCLConfig;
 begin
@@ -26,3 +33,4 @@ begin
   // internet components
   JVCLConfig.Enabled['INTERNET_COMPONENTS'] := JVCLConfig.Enabled['INTERNET_COMPONENTS'] and Opt_InternetComponents(Target);
 end;
+
