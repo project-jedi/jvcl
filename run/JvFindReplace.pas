@@ -15,6 +15,7 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
+  Olivier Sannier
 
 Last Modified: 2002-05-26
 
@@ -48,13 +49,13 @@ uses
 type
   TJvReplaceProgressEvent = procedure(Sender: TObject; Position: Integer;
     var Terminate: Boolean) of object;
-
+  TJvReplaceAllEvent = procedure (Sender:TObject; ReplaceCount:integer) of object;
   TJvFindReplace = class(TJvComponent)
   private
     FOnFind: TNotifyEvent;
     FOnReplace: TNotifyEvent;
     FOnReplacingAll: TNotifyEvent;
-    FOnReplacedAll: TNotifyEvent;
+    FOnReplacedAll: TJvReplaceAllEvent;
     FOnShow: TNotifyEvent;
     FOnClose: TNotifyEvent;
     FOnNotFound: TNotifyEvent;
@@ -125,7 +126,7 @@ type
     property OnFind: TNotifyEvent read FOnFind write FOnFind;
     property OnReplace: TNotifyEvent read FOnReplace write FOnReplace;
     property OnReplacingAll: TNotifyEvent read FOnReplacingAll write FOnReplacingAll;
-    property OnReplacedAll: TNotifyEvent read FOnReplacedAll write FOnReplacedAll;
+    property OnReplacedAll: TJvReplaceAllEvent read FOnReplacedAll write FOnReplacedAll;
     property OnNotFound: TNotifyEvent read FOnNotFound write FOnNotFound;
     property OnProgress: TJvReplaceProgressEvent read FOnProgress write FOnProgress;
   end;
@@ -152,7 +153,7 @@ end;
 
 function IsValidWholeWord(S: string): Boolean;
 begin
-  Result := not ((S[1] in IdentifierSymbols) or (S[Length(S)] in IdentifierSymbols));
+  Result := (Length(S) > 0) and not ((S[1] in IdentifierSymbols) or (S[Length(S)] in IdentifierSymbols));
 end;
 
 { invert string }
@@ -509,13 +510,16 @@ begin
     SetFindText(FReplaceDialog.FindText);
     SetReplaceText(FReplaceDialog.ReplaceText);
     ReplaceAll(FFindText, FReplaceText);
-    {    while ReplaceOne(Sender) do
-          DoOnFind(Sender);}
+    if Assigned(FOnReplace) then
+      FOnReplace(Self);
   end
   else
+  begin
     ReplaceOne(Sender);
-  if Assigned(FOnReplace) then
-    FOnReplace(Self);
+    if Assigned(FOnReplace) then
+      FOnReplace(Self);
+    DoOnFind(Sender);
+  end;
 end;
 
 procedure TJvFindReplace.DoOnShow(Sender: TObject);
@@ -571,7 +575,7 @@ begin
   end;
 
   if Assigned(FOnReplacedAll) then
-    FOnReplacedAll(Self);
+    FOnReplacedAll(Self, FNumberReplaced);
 end;
 
 procedure TJvFindReplace.DoProgress(Position: Integer; var Terminate: Boolean);
