@@ -158,7 +158,7 @@ uses
   //Editors
   JvDataEmbeddedEditor, JvFormWallpaperEditor, JvPatcherEditor,
   JvHtmlParserEditor, JvAlarmsEditor,
-  JvBaseDlgEditor, JvCommonDialogDEditor,
+  JvBaseDlgEditor, JvCommonDialogDEditor, JvAppletProperty,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
 {$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
@@ -210,7 +210,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
   RegisterPropertyEditor(typeinfo(integer), TJvCustomOutlookBar, 'ActivePageIndex', TOLBarActivePageEditor);
     {Thumbview.filter editor}
-  RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
+  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
 
 //JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
@@ -223,9 +224,9 @@ begin
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   RegisterComponentEditor(TCommonDialog, TJvOpenDialogEditor);
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
-  //  RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditorP);
+  RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
-  //  RegisterComponentEditor(TCommonDialog, TJvBrowseDialogEditor);
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
 
   RegisterComponentEditor(TJvTipWindow, TJvTipPropertyEditor);
