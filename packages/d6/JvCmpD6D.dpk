@@ -1,6 +1,6 @@
 package JvCmpD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,17 +27,19 @@ package JvCmpD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCmpD6R,
-  designide,
-  dclstd,
   JvCoreD6D,
-  JvStdCtrlsD6R;
+  JvCmpD6R,
+  JvStdCtrlsD6R,
+  DesignIde,
+  dclstd
+  ;
 
 contains
-  JvCmpReg in '..\..\design\JvCmpReg.pas',
-  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
-  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
-  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch},
-  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor};
+  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor},
+  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas' ,
+  JvCmpReg in '..\..\design\JvCmpReg.pas' ,
+  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas' ,
+  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch}
+  ;
 
 end.

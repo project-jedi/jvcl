@@ -1,6 +1,6 @@
 package JvStdCtrlsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,16 @@ package JvStdCtrlsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD6D,
   JvStdCtrlsD6R,
   designide,
-  JvCoreD6D,
-  dclstd;
+  dclstd
+  ;
 
 contains
-  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
-  JvProgressEditor in '..\..\design\JvProgressEditor.pas',
-  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvTimerItemsEditor};
+  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvCheckItemsEditor},
+  JvProgressEditor in '..\..\design\JvProgressEditor.pas' ,
+  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas' 
+  ;
 
 end.

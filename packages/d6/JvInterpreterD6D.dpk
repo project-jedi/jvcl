@@ -1,6 +1,6 @@
 package JvInterpreterD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -30,9 +30,11 @@ requires
   JvInterpreterD6R,
   JvCoreD6D,
   designide,
-  dclstd;
+  dclstd
+  ;
 
 contains
-  JvInterpreterReg in '..\..\design\JvInterpreterReg.pas';
+  JvInterpreterReg in '..\..\design\JvInterpreterReg.pas' 
+  ;
 
 end.

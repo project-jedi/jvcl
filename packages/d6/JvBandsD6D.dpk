@@ -1,22 +1,22 @@
 package JvBandsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
@@ -27,14 +27,16 @@ package JvBandsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvBandsD6R,
   JvCoreD6R,
   JvCoreD6D,
-  designide,
-  JvBandsD6R;
+  designide
+  ;
 
 contains
-  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm},
-  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas',
-  JvBandsReg in '..\..\design\JvBandsReg.pas';
+  JvBandsReg in '..\..\design\JvBandsReg.pas' ,
+  JvBandObjectDLLWizard in '..\..\design\JvBandObjectDLLWizard.pas' ,
+  JvBandObjectDLLWizardForm in '..\..\design\JvBandObjectDLLWizardForm.pas' {zWizardForm}
+  ;
 
 end.

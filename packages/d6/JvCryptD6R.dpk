@@ -1,6 +1,6 @@
 package JvCryptD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,15 +27,17 @@ package JvCryptD6R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD6R;
+  JvCoreD6R
+  ;
 
 contains
-  JvVigenereCipher in '..\..\run\JvVigenereCipher.pas',
-  JvCabFile in '..\..\run\JvCabFile.pas',
-  JvCaesarCipher in '..\..\run\JvCaesarCipher.pas',
-  JvGenetic in '..\..\run\JvGenetic.pas',
-  JvSerialMaker in '..\..\run\JvSerialMaker.pas',
-  JvXorCipher in '..\..\run\JvXorCipher.pas',
-  JvZlibMultiple in '..\..\run\JvZlibMultiple.pas';
+  JvZlibMultiple in '..\..\run\JvZlibMultiple.pas' ,
+  JvCabFile in '..\..\run\JvCabFile.pas' ,
+  JvCaesarCipher in '..\..\run\JvCaesarCipher.pas' ,
+  JvGenetic in '..\..\run\JvGenetic.pas' ,
+  JvSerialMaker in '..\..\run\JvSerialMaker.pas' ,
+  JvVigenereCipher in '..\..\run\JvVigenereCipher.pas' ,
+  JvXorCipher in '..\..\run\JvXorCipher.pas' 
+  ;
 
 end.

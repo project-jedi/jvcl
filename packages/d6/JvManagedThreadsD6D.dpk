@@ -1,19 +1,19 @@
 package JvManagedThreadsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
@@ -24,13 +24,15 @@ package JvManagedThreadsD6D;
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Managed Threads'}
 {$DESIGNONLY}
-{$IMPLICITBUILD ON}
+{$IMPLICITBUILD OFF}
 
 requires
-  vcl,
-  JvManagedThreadsD6R;
+  JvManagedThreadsD6R,
+  vcl
+  ;
 
 contains
-  JvManagedThreadsReg in '..\..\design\JvManagedThreadsReg.pas';
+  JvManagedThreadsReg in '..\..\design\JvManagedThreadsReg.pas' 
+  ;
 
 end.

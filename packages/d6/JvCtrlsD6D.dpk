@@ -1,6 +1,6 @@
 package JvCtrlsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,18 +27,20 @@ package JvCtrlsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  designide,
-  dclstd,
   JvCoreD6D,
-  JvCtrlsD6R;
+  JvCtrlsD6R,
+  designide,
+  dclstd
+  ;
 
 contains
-  JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
-  JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas',
-  JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
-  JvFooterEditor in '..\..\design\JvFooterEditor.pas',
-  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
+  JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor},
+  JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas' ,
   JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor},
-  JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor};
+  JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas' ,
+  JvCtrlsReg in '..\..\design\JvCtrlsReg.pas' ,
+  JvFooterEditor in '..\..\design\JvFooterEditor.pas' ,
+  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas' 
+  ;
 
 end.

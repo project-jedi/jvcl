@@ -1,25 +1,25 @@
 package JvWizardD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Wizard Design Time Package'}
@@ -27,14 +27,16 @@ package JvWizardD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  designide,
   JvWizardD6R,
-  JvCoreD6D;
+  JvCoreD6D,
+  rtl,
+  designide
+  ;
 
 contains
-  JvWizardReg in '..\..\design\JvWizardReg.pas',
-  JvWizardAboutInfoForm in '..\..\design\JvWizardAboutInfoForm.pas' {JvWizardAboutDialog},
-  JvWizardEditorForm in '..\..\design\JvWizardEditorForm.pas' {JvWizardPageListEditor};
+  JvWizardEditorForm in '..\..\design\JvWizardEditorForm.pas' {JvWizardPageListEditor},
+  JvWizardReg in '..\..\design\JvWizardReg.pas' ,
+  JvWizardAboutInfoForm in '..\..\design\JvWizardAboutInfoForm.pas' {JvWizardAboutDialog}
+  ;
 
 end.

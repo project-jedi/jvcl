@@ -1,20 +1,20 @@
 package JvGlobusD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -27,95 +27,96 @@ package JvGlobusD6R;
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl,
-  Vclx,
-  Vcldb,
-  VclSmp,
-  Qrpt,
-  vcljpg,
-  vclie,
   JvCoreD6R,
-  DJCL60,
+  JvSystemD6R,
   JvStdCtrlsD6R,
-  JvSystemD6R;
+  vcl,
+  vcljpg,
+  vcldb,
+  vclx,
+  qrpt,
+  vclie,
+  DJCL60,
+  vclsmp
+  ;
 
 contains
+  JvgReportParamsEditor in '..\..\run\JvgReportParamsEditor.pas' ,
+  JvgRichEditUtils in '..\..\run\JvgRichEditUtils.pas' ,
+  JvgRttiUtils in '..\..\run\JvgRttiUtils.pas' ,
+  JvgRuler in '..\..\run\JvgRuler.pas' ,
+  JvgScrollBox in '..\..\run\JvgScrollBox.pas' ,
+  JvgShade in '..\..\run\JvgShade.pas' ,
+  JvgShadow in '..\..\run\JvgShadow.pas' ,
+  JvgShape in '..\..\run\JvgShape.pas' ,
+  JvgSingleInstance in '..\..\run\JvgSingleInstance.pas' ,
+  JvgSmallFontsDefense in '..\..\run\JvgSmallFontsDefense.pas' ,
+  JvgSpeedButton in '..\..\run\JvgSpeedButton.pas' ,
+  JvgSplit in '..\..\run\JvgSplit.pas' ,
+  JvgStaticText in '..\..\run\JvgStaticText.pas' ,
+  JvgStringContainer in '..\..\run\JvgStringContainer.pas' ,
+  JvgStringGrid in '..\..\run\JvgStringGrid.pas' ,
+  JvgSysInf in '..\..\run\JvgSysInf.pas' ,
+  JvgSysRequirements in '..\..\run\JvgSysRequirements.pas' ,
+  JvgTab in '..\..\run\JvgTab.pas' ,
+  JvgTabComm in '..\..\run\JvgTabComm.pas' ,
+  JvgTransparentMemo in '..\..\run\JvgTransparentMemo.pas' ,
+  JvgTreeView in '..\..\run\JvgTreeView.pas' ,
+  JvgTypes in '..\..\run\JvgTypes.pas' ,
+  JvgUtils in '..\..\run\JvgUtils.pas' ,
+  JvgVertDBGrid in '..\..\run\JvgVertDBGrid.pas' ,
+  JvgWebDocumentIterator in '..\..\run\JvgWebDocumentIterator.pas' ,
+  JvgWizardHeader in '..\..\run\JvgWizardHeader.pas' ,
+  Jvg3DColors in '..\..\run\Jvg3DColors.pas' ,
   JvgAlignForm in '..\..\run\JvgAlignForm.pas' {AlignForm},
-  JvgAlignFunction in '..\..\run\JvgAlignFunction.pas',
-  JvgBitBtn in '..\..\run\JvgBitBtn.pas',
-  JvgRuler in '..\..\run\JvgRuler.pas',
-  JvgCaption in '..\..\run\JvgCaption.pas',
-  JvgCGI in '..\..\run\JvgCGI.pas',
-  JvgRichEditUtils in '..\..\run\JvgRichEditUtils.pas',
-  JvgCommClasses in '..\..\run\JvgCommClasses.pas',
-  JvgRttiUtils in '..\..\run\JvgRttiUtils.pas',
-  JvgScrollBox in '..\..\run\JvgScrollBox.pas',
-  JvgConstSysRequirements in '..\..\run\JvgConstSysRequirements.pas',
-  JvgCrossTable in '..\..\run\JvgCrossTable.pas',
-  JvgShade in '..\..\run\JvgShade.pas',
-  JvgDBNav in '..\..\run\JvgDBNav.pas',
-  JvgDigits in '..\..\run\JvgDigits.pas',
-  JvgDrawTab in '..\..\run\JvgDrawTab.pas',
-  JvgEdit in '..\..\run\JvgEdit.pas',
-  JvgExceptionHandler in '..\..\run\JvgExceptionHandler.pas',
-  JvgExport in '..\..\run\JvgExport.pas',
-  JvgFileIterator in '..\..\run\JvgFileIterator.pas',
-  JvgFileUtils in '..\..\run\JvgFileUtils.pas',
-  JvgFixFont in '..\..\run\JvgFixFont.pas',
-  JvgShadow in '..\..\run\JvgShadow.pas',
-  JvgGraphicButton in '..\..\run\JvgGraphicButton.pas',
-  JvgGridHeaderControl in '..\..\run\JvgGridHeaderControl.pas',
-  JvgSingleInstance in '..\..\run\JvgSingleInstance.pas',
-  JvgShape in '..\..\run\JvgShape.pas',
-  JvgSpeedButton in '..\..\run\JvgSpeedButton.pas',
-  JvgStaticText in '..\..\run\JvgStaticText.pas',
-  JvgHoleShape in '..\..\run\JvgHoleShape.pas',
-  JvgHTTPVersionInfo in '..\..\run\JvgHTTPVersionInfo.pas',
-  JvgSplit in '..\..\run\JvgSplit.pas',
-  JvgInspectorGrid in '..\..\run\JvgInspectorGrid.pas',
-  JvgJump in '..\..\run\JvgJump.pas',
-  JvgSmallFontsDefense in '..\..\run\JvgSmallFontsDefense.pas',
-  JvgSysInf in '..\..\run\JvgSysInf.pas',
-  JvgLogics in '..\..\run\JvgLogics.pas',
-  JvgStringContainer in '..\..\run\JvgStringContainer.pas',
-  JvgMailSlots in '..\..\run\JvgMailSlots.pas',
-  JvgStringGrid in '..\..\run\JvgStringGrid.pas',
-  JvgTabComm in '..\..\run\JvgTabComm.pas',
-  JvgTab in '..\..\run\JvgTab.pas',
-  JvgSysRequirements in '..\..\run\JvgSysRequirements.pas',
-  JvgProcess in '..\..\run\JvgProcess.pas',
-  JvgProcessUtils in '..\..\run\JvgProcessUtils.pas',
-  JvgQPrintPreviewForm in '..\..\run\JvgQPrintPreviewForm.pas' {fPrintPreview},
+  JvgAlignFunction in '..\..\run\JvgAlignFunction.pas' ,
+  JvgAskListBox in '..\..\run\JvgAskListBox.pas' ,
+  JvgBevel in '..\..\run\JvgBevel.pas' ,
+  JvgBitBtn in '..\..\run\JvgBitBtn.pas' ,
+  JvgButton in '..\..\run\JvgButton.pas' ,
+  JvgCaption in '..\..\run\JvgCaption.pas' ,
+  JvgCGI in '..\..\run\JvgCGI.pas' ,
+  JvgCheckBox in '..\..\run\JvgCheckBox.pas' ,
+  JvgCheckVersionInfoForm in '..\..\run\JvgCheckVersionInfoForm.pas' {JvgfCheckVersionInfo},
+  JvgCommClasses in '..\..\run\JvgCommClasses.pas' ,
+  JvgConstSysRequirements in '..\..\run\JvgConstSysRequirements.pas' ,
+  JvgCrossTable in '..\..\run\JvgCrossTable.pas' ,
+  JvgDBGrid in '..\..\run\JvgDBGrid.pas' ,
+  JvgDBNav in '..\..\run\JvgDBNav.pas' ,
+  JvgDigits in '..\..\run\JvgDigits.pas' ,
+  JvgDrawTab in '..\..\run\JvgDrawTab.pas' ,
+  JvgEdit in '..\..\run\JvgEdit.pas' ,
+  JvgExceptionHandler in '..\..\run\JvgExceptionHandler.pas' ,
+  JvgExport in '..\..\run\JvgExport.pas' ,
+  JvgExportComponents in '..\..\run\JvgExportComponents.pas' ,
+  JvgFileIterator in '..\..\run\JvgFileIterator.pas' ,
+  JvgFileUtils in '..\..\run\JvgFileUtils.pas' ,
+  JvgFlyingText in '..\..\run\JvgFlyingText.pas' ,
+  JvgGraphicButton in '..\..\run\JvgGraphicButton.pas' ,
+  JvgGridHeaderControl in '..\..\run\JvgGridHeaderControl.pas' ,
+  JvgGroupBox in '..\..\run\JvgGroupBox.pas' ,
+  JvgHelpPanel in '..\..\run\JvgHelpPanel.pas' ,
+  JvgHint in '..\..\run\JvgHint.pas' ,
+  JvgHoleShape in '..\..\run\JvgHoleShape.pas' ,
+  JvgHTTPVersionInfo in '..\..\run\JvgHTTPVersionInfo.pas' ,
+  JvgImage in '..\..\run\JvgImage.pas' ,
+  JvgInspectorGrid in '..\..\run\JvgInspectorGrid.pas' ,
+  JvgJump in '..\..\run\JvgJump.pas' ,
+  JvgLabel in '..\..\run\JvgLabel.pas' ,
+  JvgLanguageLoader in '..\..\run\JvgLanguageLoader.pas' ,
+  JvgListBox in '..\..\run\JvgListBox.pas' ,
+  JvgLogics in '..\..\run\JvgLogics.pas' ,
+  JvgMailSlots in '..\..\run\JvgMailSlots.pas' ,
+  JvgPage in '..\..\run\JvgPage.pas' ,
+  JvgProcess in '..\..\run\JvgProcess.pas' ,
+  JvgProcessUtils in '..\..\run\JvgProcessUtils.pas' ,
+  JvgProgress in '..\..\run\JvgProgress.pas' ,
+  JvgQPrintPreviewForm in '..\..\run\JvgQPrintPreviewForm.pas' {JvgfPrintPreview},
   JvgQPrintSetupForm in '..\..\run\JvgQPrintSetupForm.pas' {JvgPrintSetup},
-  JvgQRLabel in '..\..\run\JvgQRLabel.pas',
-  JvgTransparentMemo in '..\..\run\JvgTransparentMemo.pas',
-  JvgTreeView in '..\..\run\JvgTreeView.pas',
-  JvgTypes in '..\..\run\JvgTypes.pas',
-  JvgVertDBGrid in '..\..\run\JvgVertDBGrid.pas',
-  JvgUtils in '..\..\run\JvgUtils.pas',
-  JvgWebDocumentIterator in '..\..\run\JvgWebDocumentIterator.pas',
-  JvgWizardHeader in '..\..\run\JvgWizardHeader.pas',
-  JvgXMLSerializer in '..\..\run\JvgXMLSerializer.pas',
-  Jvg3DColors in '..\..\run\Jvg3DColors.pas',
-  JvgAskListBox in '..\..\run\JvgAskListBox.pas',
-  JvgBevel in '..\..\run\JvgBevel.pas',
-  JvgButton in '..\..\run\JvgButton.pas',
-  JvgCheckBox in '..\..\run\JvgCheckBox.pas',
-  JvgCheckVersionInfoForm in '..\..\run\JvgCheckVersionInfoForm.pas' {fCheckVersionInfo},
-  JvgDBGrid in '..\..\run\JvgDBGrid.pas',
-  JvgExportComponents in '..\..\run\JvgExportComponents.pas',
-  JvgFlyingText in '..\..\run\JvgFlyingText.pas',
-  JvgGroupBox in '..\..\run\JvgGroupBox.pas',
-  JvgHelpPanel in '..\..\run\JvgHelpPanel.pas',
-  JvgHint in '..\..\run\JvgHint.pas',
-  JvgImage in '..\..\run\JvgImage.pas',
-  JvgLabel in '..\..\run\JvgLabel.pas',
-  JvgLanguageLoader in '..\..\run\JvgLanguageLoader.pas',
-  JvgListBox in '..\..\run\JvgListBox.pas',
-  JvgPage in '..\..\run\JvgPage.pas',
-  JvgProgress in '..\..\run\JvgProgress.pas',
-  JvgReport in '..\..\run\JvgReport.pas',
-  JvgReportParamsEditor in '..\..\run\JvgReportParamsEditor.pas';
+  JvgQRLabel in '..\..\run\JvgQRLabel.pas' ,
+  JvgReport in '..\..\run\JvgReport.pas' ,
+  JvgXMLSerializer in '..\..\run\JvgXMLSerializer.pas' ,
+  JvgFixFont in '..\..\run\JvgFixFont.pas' 
+  ;
 
 end.
-

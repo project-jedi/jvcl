@@ -1,6 +1,6 @@
 package JvCmpD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,27 +28,29 @@ package JvCmpD6R;
 
 requires
   JvCoreD6R,
-  DJCL60,
-  JvSystemD6R;
+  JvSystemD6R,
+  DJCL60
+  ;
 
 contains
-  JvAlarms in '..\..\run\JvAlarms.pas',
-  JvConverter in '..\..\run\JvConverter.pas',
-  JvDataEmbedded in '..\..\run\JvDataEmbedded.pas',
-  JvEnterTab in '..\..\run\JvEnterTab.pas',
-  JvMergeManager in '..\..\run\JvMergeManager.pas',
-  JvPageManager in '..\..\run\JvPageManager.pas',
-  JvPatchFile in '..\..\run\JvPatchFile.pas',
-  JvStringHolder in '..\..\run\JvStringHolder.pas',
-  JvTimeLimit in '..\..\run\JvTimeLimit.pas',
-  JvWinHelp in '..\..\run\JvWinHelp.pas',
-  JvTranslator in '..\..\run\JvTranslator.pas',
-  JvPrint in '..\..\run\JvPrint.pas',
-  JvCreateProcess in '..\..\run\JvCreateProcess.pas',
-  JvEasterEgg in '..\..\run\JvEasterEgg.pas',
+  JvMouseGesture in '..\..\run\JvMouseGesture.pas' ,
+  JvPageManager in '..\..\run\JvPageManager.pas' ,
+  JvPatchFile in '..\..\run\JvPatchFile.pas' ,
+  JvPrint in '..\..\run\JvPrint.pas' ,
   JvProfilerForm in '..\..\run\JvProfilerForm.pas' {ProfReport},
-  JvLogFile in '..\..\run\JvLogFile.pas',
+  JvStringHolder in '..\..\run\JvStringHolder.pas' ,
+  JvTimeLimit in '..\..\run\JvTimeLimit.pas' ,
+  JvTranslator in '..\..\run\JvTranslator.pas' ,
+  JvWinHelp in '..\..\run\JvWinHelp.pas' ,
+  JvAlarms in '..\..\run\JvAlarms.pas' ,
+  JvConverter in '..\..\run\JvConverter.pas' ,
+  JvCreateProcess in '..\..\run\JvCreateProcess.pas' ,
+  JvDataEmbedded in '..\..\run\JvDataEmbedded.pas' ,
+  JvEasterEgg in '..\..\run\JvEasterEgg.pas' ,
+  JvEnterTab in '..\..\run\JvEnterTab.pas' ,
+  JvLogFile in '..\..\run\JvLogFile.pas' ,
   JvLogForm in '..\..\run\JvLogForm.pas' {FoLog},
-  JvMouseGesture in '..\..\run\JvMouseGesture.pas';
+  JvMergeManager in '..\..\run\JvMergeManager.pas' 
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvPluginD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,15 @@ package JvPluginD6D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvPluginD6R,
   JvCoreD6R,
-  JvCoreD6D,
-  designide,
-  JvPluginD6R;
+  JvCoreD6D
+  ;
 
 contains
-  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas' {frmPluginParams},
-  JvPluginWizard in '..\..\design\JvPluginWizard.pas',
-  JvPluginReg in '..\..\design\JvPluginReg.pas';
+  JvPluginReg in '..\..\design\JvPluginReg.pas' ,
+  JvPluginWizard in '..\..\design\JvPluginWizard.pas' ,
+  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas' {frmPluginParams}
+  ;
 
 end.

@@ -1,25 +1,25 @@
 package JvPrintPreviewD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Print Preview Components'}
@@ -27,13 +27,15 @@ package JvPrintPreviewD6R;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD6R,
   rtl,
   vcl,
-  vclx,
-  JvCoreD6R;
+  vclx
+  ;
 
 contains
-  JvPrvwRender in '..\..\run\JvPrvwRender.pas',
-  JvPrvwDoc in '..\..\run\JvPrvwDoc.pas';
+  JvPrvwRender in '..\..\run\JvPrvwRender.pas' ,
+  JvPrvwDoc in '..\..\run\JvPrvwDoc.pas' 
+  ;
 
 end.
