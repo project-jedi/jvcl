@@ -212,9 +212,14 @@ var
   P: Pointer;
 begin
   P := GetTranslation;
-  for Result := vlArabic to vlUnknown do
-    if LoWord(Longint(P^)) = LanguageValues[Result] then
-      Break;
+  if P <> nil then
+  begin
+    for Result := vlArabic to vlUnknown do
+      if LoWord(Longint(P^)) = LanguageValues[Result] then
+        Break;
+  end
+  else
+    Result := vlUnknown;
 end;
 
 function TJvVersionInfo.GetVersionCharSet: TVersionCharSet;
@@ -222,9 +227,14 @@ var
   P: Pointer;
 begin
   P := GetTranslation;
-  for Result := vcsASCII to vcsUnknown do
-    if HiWord(Longint(P^)) = CharacterSetValues[Result] then
-      Break;
+  if P <> nil then
+  begin
+    for Result := vcsASCII to vcsUnknown do
+      if HiWord(Longint(P^)) = CharacterSetValues[Result] then
+       Break;
+  end
+  else
+    Result := vcsUnknown;
 end;
 
 function TJvVersionInfo.GetFixedFileInfo: PVSFixedFileInfo;
@@ -239,14 +249,24 @@ end;
 
 function TJvVersionInfo.GetProductLongVersion: TLongVersion;
 begin
-  Result.MS := FixedFileInfo^.dwProductVersionMS;
-  Result.LS := FixedFileInfo^.dwProductVersionLS;
+  if Valid then
+  begin
+    Result.MS := FixedFileInfo^.dwProductVersionMS;
+    Result.LS := FixedFileInfo^.dwProductVersionLS;
+  end
+  else
+    FillChar(Result, sizeof(Result), 0);
 end;
 
 function TJvVersionInfo.GetFileLongVersion: TLongVersion;
 begin
-  Result.MS := FixedFileInfo^.dwFileVersionMS;
-  Result.LS := FixedFileInfo^.dwFileVersionLS;
+  if Valid then
+  begin
+    Result.MS := FixedFileInfo^.dwFileVersionMS;
+    Result.LS := FixedFileInfo^.dwFileVersionLS;
+  end
+  else
+    FillChar(Result, sizeof(Result), 0);
 end;
 
 function TJvVersionInfo.GetVersionNum: Longint;
