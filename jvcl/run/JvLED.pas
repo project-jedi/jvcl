@@ -35,21 +35,19 @@ unit JvLED;
 interface
 
 uses
-  Windows, Classes, Graphics, JvComponent;
+  Windows, Messages, Controls, Classes, Graphics, JvComponent;
 
 type
   TJvCustomLED = class(TJvGraphicControl)
   private
     FImgPict: TBitmap;
     FImgMask: TBitmap;
-    FColor: TColor;
     FThread: TThread;
     FColorOn: TColor;
     FColorOff: TColor;
     FStatus: Boolean;
     FOnChange: TNotifyEvent;
     FInterval: Cardinal;
-    procedure SetColor(Value: TColor);
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
@@ -58,10 +56,11 @@ type
     procedure SetStatus(Value: Boolean);
     function GetStatus: Boolean;
     procedure DoBlink(Sender: Tobject; BlinkOn: Boolean);
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure Paint; override;
     property Active: Boolean read GetActive write SetActive default False;
-    property Color: TColor read FColor write SetColor default clLime;
+    property Color default clLime;
     property ColorOn: TColor read FColorOn write SetColorOn default clLime;
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
@@ -71,7 +70,7 @@ type
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
-  
+
   TJvLED = class(TJvCustomLED)
   published
     property Active;
@@ -107,9 +106,8 @@ type
   end;
 
 implementation
-
 uses
-  Controls, SysUtils;
+  SysUtils;
 
 {$R ..\resources\JvLED.res}
 
@@ -177,23 +175,6 @@ begin
   Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
   Canvas.CopyMode := cmSrcPaint;
   Canvas.CopyRect(DestRect, FImgPict.Canvas, SrcRect);
-end;
-
-procedure TJvCustomLED.SetColor(Value: TColor);
-var
-  X, Y: Integer;
-begin
-  if Value <> FColor then
-  begin
-    FColor := Value;
-    FImgPict.LoadFromResourceName(HInstance, cGreenLEDName);
-    FImgPict.PixelFormat := pf24bit;
-    for X := 0 to FImgPict.Width-1 do
-      for Y := 0 to FImgPict.Height-1 do
-        if FImgPict.Canvas.Pixels[X, Y] = clLime then
-          FImgPict.Canvas.Pixels[X, Y] := Color;
-    Repaint;
-  end;
 end;
 
 procedure TJvCustomLED.SetColorOn(Value: TColor);
@@ -267,11 +248,11 @@ end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   if AutoSize and (Align in [alNone, alCustom]) then
-  {$ELSE}
+{$ELSE}
   if AutoSize and (Align = alNone) then
-  {$ENDIF}
+{$ENDIF}
     inherited SetBounds(ALeft, ATop, FImgPict.Width, FImgPict.Height)
   else
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
@@ -300,6 +281,20 @@ begin
     Synchronize(DoBlink);
     Sleep(FInterval);
   end;
+end;
+
+procedure TJvCustomLED.CMColorChanged(var Message: TMessage);
+var
+  X, Y: Integer;
+begin
+  inherited;
+  FImgPict.LoadFromResourceName(HInstance, cGreenLEDName);
+  FImgPict.PixelFormat := pf24bit;
+  for X := 0 to FImgPict.Width - 1 do
+    for Y := 0 to FImgPict.Height - 1 do
+      if FImgPict.Canvas.Pixels[X, Y] = clLime then
+        FImgPict.Canvas.Pixels[X, Y] := Color;
+  Repaint;
 end;
 
 end.

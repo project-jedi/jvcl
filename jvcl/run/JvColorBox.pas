@@ -64,15 +64,15 @@ type
 
   TJvColorSquare = class(TJvGraphicControl)
   private
-    FColor: TColor;
     FInside: Boolean;
     FBorderStyle: TBorderStyle;
     FOnChange: TNotifyEvent;
     FColorClick: TJvColorClickEvent;
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure SetColor(Value: TColor);
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
@@ -81,7 +81,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Color: TColor read FColor write SetColor default clWhite;
+    property Color default clWhite;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnColorClick: TJvColorClickEvent read FColorClick write FColorClick;
@@ -97,7 +97,7 @@ type
   private
     FColorClick: TJvColorClickEvent;
     FBorderStyle: TBorderStyle;
-    FSquares: array [1..20] of TJvColorSquare;
+    FSquares: array[1..20] of TJvColorSquare;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure DrawColorBoxes;
   protected
@@ -171,12 +171,12 @@ const
   clSky = TColor($F7CEA5);
   clCream = TColor($F7FFFF);
 
-  Colors: array [1..20] of TColor =
-    (clWhite, clBlack, clSilver, clDkGray,
-     clRed, clMaroon, clYellow, clOlive,
-     clLime, clGreen, clAqua, clTeal,
-     clBlue, clNavy, clFuchsia, clPurple,
-     clBeige, clSky, clCream, clGray);
+  Colors: array[1..20] of TColor =
+  (clWhite, clBlack, clSilver, clDkGray,
+    clRed, clMaroon, clYellow, clOlive,
+    clLime, clGreen, clAqua, clTeal,
+    clBlue, clNavy, clFuchsia, clPurple,
+    clBeige, clSky, clCream, clGray);
 
 procedure DrawLine(Canvas: TCanvas; X, Y, X2, Y2: Integer);
 begin
@@ -190,7 +190,7 @@ constructor TJvColorSquare.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBorderStyle := bsSingle;
-  FColor := clWhite;
+  Color := clWhite;
   Width := 18;
   Height := 18;
   FInside := False;
@@ -210,17 +210,6 @@ begin
   end;
 end;
 
-procedure TJvColorSquare.SetColor(Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-    if Assigned(FOnChange) then
-      FOnChange(Self);
-    Repaint;
-  end;
-end;
-
 procedure TJvColorSquare.Paint;
 var
   Rect: TRect;
@@ -235,7 +224,7 @@ begin
 
   with Canvas do
   begin
-    Brush.Color := FColor;
+    Brush.Color := self.Color;
     Brush.Style := bsSolid;
     FillRect(Rect);
   end;
@@ -499,6 +488,14 @@ procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
 begin
   inherited;
   Invalidate;
+end;
+
+procedure TJvColorSquare.CMColorChanged(var Message: TMessage);
+begin
+  inherited;
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+  Repaint;
 end;
 
 end.

@@ -44,19 +44,19 @@ type
   private
     FColorForm: TForm;
     FIsDown: Boolean;
-    FColor: TColor;
     FOtherCaption: string;
     FOnChange: TNotifyEvent;
     FOptions: TColorDialogOptions;
     FCustomColors: TStrings;
     FEdgeWidth: Integer;
+    FColor: TColor;
     procedure SetEdgeWidth(Value: Integer);
     procedure SetOptions(Value: TColorDialogOptions);
     procedure SetCustomColors(Value: TStrings);
-    procedure SetColor(Value: TColor);
     procedure SetOtherCaption(Value: string);
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -74,7 +74,7 @@ type
     property EdgeWidth: Integer read FEdgeWidth write SetEdgeWidth default 4;
     property Options: TColorDialogOptions read FOptions write SetOptions;
     property CustomColors: TStrings read FCustomColors write SetCustomColors;
-    property Color: TColor read FColor write SetColor default clBlack;
+    property Color default clBlack;
     property Enabled;
     property Hint;
     property Height default 21;
@@ -106,7 +106,7 @@ begin
   TabStop := False;
   FOptions := [];
   FCustomColors := TStringList.Create;
-  FColor := clBlack;
+  Color := clBlack;
   FEdgeWidth := 4;
   Width := 42;
   Height := 21;
@@ -209,17 +209,6 @@ begin
   FCustomColors.Assign(Value);
 end;
 
-procedure TJvColorButton.SetColor(Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-    if Assigned(FOnChange) then
-      FOnChange(Self);
-    Repaint;
-  end;
-end;
-
 procedure TJvColorButton.SetOtherCaption(Value: string);
 begin
   FOtherCaption := Value;
@@ -259,6 +248,13 @@ end;
 procedure TJvColorButton.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
+end;
+
+procedure TJvColorButton.CMColorChanged(var Message: TMessage);
+begin
+  inherited;
+  if Assigned(FOnChange) then FOnChange(self);
+  Repaint;
 end;
 
 end.
