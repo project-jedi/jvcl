@@ -414,7 +414,7 @@ type
     function GetActiveSheetColor: TColor;
     function GetActiveFont: TFont;
     function GetInactiveFont: TFont;
-    function GetVisibleTheetCount: Integer;
+    function GetVisibleSheetCount: Integer;
     function GetHotTrackColor: TColor;
     function GetShowTabImages: Boolean;
     procedure SetShowTabImages(const Value: Boolean);
@@ -455,7 +455,7 @@ type
     property Pages[Index: Integer]: TJvDockVIDTabSheet read GetPage;
     property Panel: TJvDockTabPanel read FPanel;
     property TempSheet: TJvDockVIDTabSheet read FTempSheet write FTempSheet;
-    property VisibleTheetCount: Integer read GetVisibleTheetCount;
+    property VisibleSheetCount: Integer read GetVisibleSheetCount;
   published
     property ActiveSheetColor: TColor read GetActiveSheetColor write SetActiveSheetColor;
     property InactiveSheetColor: TColor read GetInactiveSheetColor write SetInactiveSheetColor;
@@ -2838,7 +2838,7 @@ begin
   DropAlign := ComputeVIDDockingRect(Self, Source.Control, ARect, MousePos);
 end;
 
-function TJvDockVIDTabPageControl.GetVisibleTheetCount: Integer;
+function TJvDockVIDTabPageControl.GetVisibleSheetCount: Integer;
 var
   I: Integer;
 begin
@@ -3575,7 +3575,7 @@ begin
     ImageWidth := Page.Images.Width + FCaptionLeftOffset
   else
     ImageWidth := 0;
-  VisibleCount := Page.VisibleTheetCount;
+  VisibleCount := Page.VisibleSheetCount;
   J := 0;
   for I := 0 to FSortList.Count - 1 do
   begin
