@@ -13,7 +13,7 @@ procedure Register;
 implementation
 
 uses
-  ColnEdit, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors{$ELSE}DsgnIntf{$ENDIF},
+  ColnEdit, Controls, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors{$ELSE}DsgnIntf{$ENDIF},  
   JclSchedule;
 
 type
@@ -42,7 +42,8 @@ begin
   with TfrmScheduleEditor.Create(nil) do
   try
     Schedule := IJclSchedule({TEventSchedule(}GetOrdValue){.Schedule};
-    ShowModal;
+    if ShowModal = mrOk then
+      Self.Modified;
   finally
     Free;
   end;
