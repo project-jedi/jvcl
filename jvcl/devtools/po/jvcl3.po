@@ -1243,9 +1243,6 @@ msgstr ""
 msgid "Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*"
 msgstr ""
 
-msgid "TJvAnimatedCursorImage.WriteStream not implemented"
-msgstr ""
-
 msgid "TJvAppIniFileStorage.ReadValue: Section undefined"
 msgstr ""
 

@@ -1,4 +1,4 @@
-ANIFILE=JvAniFile
+ANIFILE=JvAni
 Animate=JvxAnimate
 APPEVENT=JvAppEvent
 APPUTILS=JvAppUtils

@@ -213,7 +213,7 @@ procedure TIconListDialog.LoadAniFile;
 var
   AniCursor: TJvAni;
 begin
-  AniCursor := LoadJvAnimatedCursorImageDialog;
+  AniCursor := LoadJvAniDialog;
   try
     FIcons.Assign(AniCursor);
   finally

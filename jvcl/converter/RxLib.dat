@@ -1,4 +1,4 @@
-ANIFILE=JvAniFile
+ANIFILE=JvAni
 Animate=JvxAnimate
 APPEVENT=JvAppEvent
 APPUTILS=JvAppUtils
@@ -114,7 +114,7 @@ EPropReadOnly=EJvPropReadOnly
 EPropWriteOnly=EJvPropWriteOnly
 ERxParserError=EJvParserError
 ESpeedbarError=EJvSpeedbarError
-TAnimatedCursorImage=TJvAnimatedCursorImage
+TAnimatedCursorImage=TJvAni
 TAnimatedEditor=TJvAnimatedEditor
 TAnimatedImage=TJvAnimatedImage
 TAppEventList=TJvAppEventList

@@ -29,18 +29,25 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, FileCtrl, ExtCtrls,
-  JvAni, JvCombobox, JvDriveCtrls, JvListBox, JvExStdCtrls;
+  JvAni, JvCombobox, JvDriveCtrls, JvListBox, JvExStdCtrls, JvExControls,
+  JvComponent, JvAnimatedImage;
 
 type
   TJvAniMainForm = class(TForm)
-    Image1: TImage;
     FileListBox1: TJvFileListBox;
     DirectoryListBox1: TJvDirectoryListBox;
     DriveComboBox1: TJvDriveCombo;
     Memo1: TMemo;
-    Image2: TImage;
     SaveDialog1: TSaveDialog;
     Save: TButton;
+    Panel1: TPanel;
+    Image1: TImage;
+    Panel2: TPanel;
+    ImageIcons: TImage;
+    Panel3: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    ImageFrames: TImage;
     procedure FileListBox1Click(Sender: TObject);
     procedure SaveClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
@@ -59,16 +66,19 @@ procedure TJvAniMainForm.FileListBox1Click(Sender: TObject);
 begin
   Image1.Picture.LoadFromFile(FileListBox1.FileName);
 
-  with TJvAni(Image1.Picture.Graphic) do
-  begin
-    Animated := True;
-    AssignToBitmap(Image2.Picture.Bitmap, clBtnFace, False, False);
-    Memo1.Clear;
-    Memo1.Lines.Add('Author: ' + Author);
-    Memo1.Lines.Add('Title: ' + Title);
-    Memo1.Lines.Add('Icons: ' + IntToStr(IconCount));
-    Memo1.Lines.Add('Frames: ' + IntToStr(FrameCount));
-  end;
+  if Assigned(Image1.Picture) and Assigned(Image1.Picture.Graphic) and
+    (Image1.Picture.Graphic is TJvAni) then
+    with TJvAni(Image1.Picture.Graphic) do
+    begin
+      Animated := True;
+      AssignIconsToBitmap(ImageIcons.Picture.Bitmap, clBtnFace, False, False);
+      AssignToBitmap(ImageFrames.Picture.Bitmap, clBtnFace, False, False);
+      Memo1.Clear;
+      Memo1.Lines.Add('Author: ' + Author);
+      Memo1.Lines.Add('Title: ' + Title);
+      Memo1.Lines.Add('Icons: ' + IntToStr(IconCount));
+      Memo1.Lines.Add('Frames: ' + IntToStr(FrameCount));
+    end;
 end;
 
 procedure TJvAniMainForm.SaveClick(Sender: TObject);

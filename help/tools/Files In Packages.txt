@@ -5,7 +5,6 @@ JvAddPrinter=Dlgs
 JvAirBrush=Jans
 JvAlarms=Cmp
 JvAni=MM
-JvAniFile=MM
 JvAnimate=MM
 JvAnimatedImage=MM
 JvAnimTitle=AppFrm

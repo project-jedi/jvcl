@@ -221,7 +221,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JvAniFile, JvJVCLUtils, JvJCLUtils, JvPickDate, Main;
+  JvAni, JvJVCLUtils, JvJCLUtils, JvPickDate, Main;
 
 procedure TControlsForm.FormCreate(Sender: TObject);
 begin

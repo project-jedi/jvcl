@@ -6,7 +6,7 @@ object JvAniMainForm: TJvAniMainForm
   Caption = 'ANI Viewer'
   Color = clBtnFace
   Constraints.MinHeight = 350
-  Constraints.MinWidth = 300
+  Constraints.MinWidth = 450
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,27 +20,25 @@ object JvAniMainForm: TJvAniMainForm
     320)
   PixelsPerInch = 96
   TextHeight = 13
-  object Image1: TImage
-    Left = 254
-    Top = 8
-    Width = 116
-    Height = 73
-    Anchors = [akLeft, akTop, akRight]
-    Center = True
-    Transparent = True
-  end
-  object Image2: TImage
+  object Label1: TLabel
     Left = 160
-    Top = 96
-    Width = 320
-    Height = 105
-    Anchors = [akLeft, akTop, akRight]
+    Top = 72
+    Width = 29
+    Height = 13
+    Caption = 'Icons:'
+  end
+  object Label2: TLabel
+    Left = 160
+    Top = 139
+    Width = 37
+    Height = 13
+    Caption = 'Frames:'
   end
   object FileListBox1: TJvFileListBox
     Left = 0
-    Top = 137
+    Top = 191
     Width = 145
-    Height = 177
+    Height = 115
     Anchors = [akLeft, akBottom]
     ItemHeight = 13
     Mask = '*.ani'
@@ -52,7 +50,7 @@ object JvAniMainForm: TJvAniMainForm
     Left = 0
     Top = 34
     Width = 145
-    Height = 100
+    Height = 155
     Directory = 'E:\Daten\dev\JVCL3\examples\JvAni'
     FileList = FileListBox1
     DriveCombo = DriveComboBox1
@@ -74,25 +72,75 @@ object JvAniMainForm: TJvAniMainForm
   end
   object Memo1: TMemo
     Left = 160
-    Top = 218
+    Top = 209
     Width = 320
-    Height = 89
+    Height = 97
     Anchors = [akLeft, akRight, akBottom]
     Color = clBtnFace
     TabOrder = 3
   end
   object Save: TButton
     Left = 160
-    Top = 8
+    Top = 12
     Width = 75
     Height = 25
     Caption = 'Save'
     TabOrder = 4
     OnClick = SaveClick
   end
+  object Panel1: TPanel
+    Left = 272
+    Top = 16
+    Width = 97
+    Height = 57
+    Anchors = [akLeft, akTop, akRight]
+    BevelOuter = bvLowered
+    TabOrder = 5
+    object Image1: TImage
+      Left = 1
+      Top = 1
+      Width = 95
+      Height = 55
+      Align = alClient
+      Center = True
+      Transparent = True
+    end
+  end
+  object Panel2: TPanel
+    Left = 160
+    Top = 85
+    Width = 320
+    Height = 49
+    Anchors = [akLeft, akTop, akRight]
+    BevelOuter = bvLowered
+    TabOrder = 6
+    object ImageIcons: TImage
+      Left = 1
+      Top = 1
+      Width = 318
+      Height = 47
+      Align = alClient
+    end
+  end
+  object Panel3: TPanel
+    Left = 160
+    Top = 152
+    Width = 320
+    Height = 49
+    Anchors = [akLeft, akTop, akRight]
+    BevelOuter = bvLowered
+    TabOrder = 7
+    object ImageFrames: TImage
+      Left = 1
+      Top = 1
+      Width = 318
+      Height = 47
+      Align = alClient
+    end
+  end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'ani'
-    Left = 448
-    Top = 8
+    Left = 440
+    Top = 16
   end
 end

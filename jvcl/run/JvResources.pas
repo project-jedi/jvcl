@@ -108,12 +108,9 @@ resourcestring
 resourcestring
   RsAniExtension = 'ani';
   RsAniFilterName = 'ANI Image';
+  RsAniCurFilter = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
 
   RsEInvalidAnimatedIconImage = 'Invalid animated icon image';
-
-//=== JvAniFile.pas ==========================================================
-resourcestring
-  RsAniCurFilter = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
 
 //=== JvAppIniStorage.pas ======================================================
 resourcestring
