@@ -28,7 +28,7 @@ Known Issues:
 unit BuildHelpers;
 interface
 uses
-  Windows, SysUtils, Classes, Contnrs, CoreData;
+  Windows, SysUtils, Classes, Contnrs, CoreData, CapExec;
 
 type
   TMakeTarget = class(TObject)
@@ -88,7 +88,7 @@ function PrepareDcpBpg(const MakeFilename: string; Files: TStrings;
 procedure CreateDelphiPackageForBCB(Package: TPackageInfo; Files: TStrings; IsJcl: Boolean);
 procedure MoveBCBFiles(const Dir: string; Target: TTargetInfo);
 procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
-procedure DeleteDcuFiles(const Directory, StartDir: string);
+procedure DeleteJclDcuFiles(const Directory, StartDir: string);
 
 const
   JclIncludePaths = '..\..\source\common';
@@ -327,7 +327,7 @@ begin
       Lines.Add(#9'@cd ..\..\packages');
       Lines.Add('');
       Lines.Add('..\devtools\bin\pg.exe: ');
-      Lines.Add(#9'@echo Compiling package: Packages Generator');
+      Lines.Add(#9'@echo ** Generating packages...');
       Lines.Add(#9'@cd ..\devtools');
       Lines.Add(#9'@make pg.exe');
       Lines.Add(#9'@cd ..\packages');
@@ -650,7 +650,7 @@ begin
   end;
 end;
 
-procedure DeleteDcuFiles(const Directory, StartDir: string);
+procedure DeleteJclDcuFiles(const Directory, StartDir: string);
 var
   sr: TSearchRec;
   Dir: string;

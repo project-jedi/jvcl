@@ -296,6 +296,7 @@ function MoveFile(const Source, Dest: string): Boolean;
 {$IFNDEF COMPILER6_UP}
 function DirectoryExists(const Dir: string): Boolean;
 {$ENDIF}
+procedure DeleteFilesEx(const Dir, Mask: string);
 
 function CreateJclPackageList(Target: TTargetInfo): TPackageList;
 
@@ -465,6 +466,21 @@ begin
   Result := (Attr <> -1) and (Attr and FILE_ATTRIBUTE_DIRECTORY <> 0);
 end;
 {$ENDIF}
+
+procedure DeleteFilesEx(const Dir, Mask: string);
+var
+  sr: TSearchRec;
+begin
+  if FindFirst(Dir + '\' + Mask, faAnyFile and not faDirectory, sr) = 0 then
+  try
+    repeat
+      DeleteFile(Dir + '\' + sr.Name);
+    until FindNext(sr) <> 0;
+  finally
+    FindClose(sr);
+  end;
+end;
+
 
 function IsVersionNumber(const S: string): Boolean;
 var
