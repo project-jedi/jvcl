@@ -114,6 +114,8 @@ Summary
 Description
   Write an OnConfigure event handler to provide a means of configuring the plugin. The host
   application will call the Configure method of the plugin, which in turn will trigger this event.
+Parameters
+  Sender -  Reference to the plugin.
 See Also
   Configure, OnInitialize
 ----------------------------------------------------------------------------------------------------
@@ -127,6 +129,10 @@ Description
 
   The event is called in response to a call to Initialize, which is usually done by the host
   application as soon as the plugin is loaded.
+Parameters
+  Sender -    Reference to the plugin.
+  AllowLoad - Flag to indicate if the plugin may load. Set this parameter to False to prevent the
+              plugin from being loaded.
 See Also
   Initialize, OnConfigure
 ----------------------------------------------------------------------------------------------------
@@ -142,6 +148,12 @@ Description
 
   * <LINK TJvPluginManager.SendMessage, send a message to all loaded plugins>.
   * <LINK TJvPlugin.SendPluginMessage, send a message to a specific plugin>.
+Parameters
+  Sender -          Reference to the plugin.
+  APluginMessage -  ID of the message. See the host application's documentation of available
+                    messages.
+  AMessageText -    Additional paramters for the message. See the host application's documentation
+                    for the meaning of this string for the message.
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugin.Configure
 Summary
@@ -159,10 +171,17 @@ Description
   Initialize is called by the host application to initialize the plugin.
 
   As a plugin developer you could override this method, but it's better to just assign a handler to
-  the OnInitialize event.
+  the OnInitialize event. The returned value will be that of the event's AllowLoad parameter.
 
   As a host application developer you will generally not call this method yourself. Initialize is
   called automatically when the plugin manager loads the plugin.
+Parameters
+  Manager -         Reference to the host application's plugin manager component.
+  HostApplication - Reference to the Application variable of the host.
+  Filename -        Name of the DLL or package the plugin is loaded from. This may contain
+                    <B>CustomPlugin</B> if the plugin is loaded as a custom plugin.
+See Also
+  OnInitialize
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugin.SendPluginMessage
 Summary
@@ -178,6 +197,11 @@ Description
   As a host application developer you can either call this method for a specific plugin or you could
   <LINK TJvPluginManager.SendMessage, broadcast> the message to all loaded plugins. You are
   responsible of defining and documenting the meaning of the various message IDs you support.
+Parameters
+  APluginMessage -  ID of the message. See the host application's documentation of available
+                    messages.
+  AMessageText -    Additional paramters for the message. See the host application's documentation
+                    for the meaning of this string for the message.
 See Also
   OnPluginMessage
 ----------------------------------------------------------------------------------------------------
@@ -188,7 +212,7 @@ Description
   HostApplication is a reference to the TApplication object of the host. You can both read and write
   to properties (including the MainForm) as well as call methods on this object.
 
-  If you write a plugin to store an MDI child for the host application, you should assing the value
+  If you write a plugin to store an MDI child for the host application, you should assign the value
   of this property to your own Application variable and restore your Application variable before you
   destroy the plugin.
 ----------------------------------------------------------------------------------------------------
@@ -273,6 +297,9 @@ Summary
 Description
   Write an OnExecute event hander to perform the command the user selects the menu item or button in
   the host application.
+Parameters
+  Sender -  Reference to the sender of the request (usually a menu item or button from the host
+            application.
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommands
 ----------------------------------------------------------------------------------------------------
