@@ -114,7 +114,6 @@ resourcestring
 //=== JvAniFile.pas ==========================================================
 resourcestring
   RsAniCurFilter = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
-  RsEWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
 
 //=== JvAppIniStorage.pas ======================================================
 resourcestring

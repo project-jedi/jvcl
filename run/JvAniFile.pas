@@ -63,6 +63,7 @@ type
 
   TJvAnimatedCursorImage = class(TPersistent)
   private
+    FData: TMemoryStream;
     FHeader: TJvAniHeader;
     FTitle: TAniName;
     FCreator: TAniName;
@@ -103,6 +104,7 @@ type
     property Title: string read GetTitle;
     property Creator: string read GetCreator;
     property OriginalColors: Word read FOriginalColors;
+    property Header: TJvAniHeader read FHeader;
   end;
 
 function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
@@ -288,12 +290,14 @@ constructor TJvAnimatedCursorImage.Create;
 begin
   inherited Create;
   FIcons := TList.Create;
+  FData := TMemoryStream.Create;
 end;
 
 destructor TJvAnimatedCursorImage.Destroy;
 begin
   NewImage;
   FIcons.Free;
+  FData.Free;
   inherited Destroy;
 end;
 
@@ -670,26 +674,21 @@ begin
 end;
 
 procedure TJvAnimatedCursorImage.ReadStream(Size: Longint; Stream: TStream);
-var
-  Data: TMemoryStream;
 begin
-  Data := TMemoryStream.Create;
-  try
-    Data.SetSize(Size);
-    Stream.ReadBuffer(Data.Memory^, Size);
-    if Size > 0 then
-    begin
-      Data.Position := 0;
-      ReadAniStream(Data);
-    end;
-  finally
-    Data.Free;
+  FData.SetSize(Size);
+  Stream.ReadBuffer(FData.Memory^, Size);
+  if Size > 0 then
+  begin
+    FData.Position := 0;
+    ReadAniStream(FData);
   end;
 end;
 
 procedure TJvAnimatedCursorImage.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-  raise EJVCLException.Create(RsEWriteStreamNotImplemented);
+  if IconCount = 0 then
+    raise EInvalidGraphicOperation.Create(SInvalidImage);
+  Stream.Write(FData.Memory^, FData.Size)
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);
