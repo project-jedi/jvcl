@@ -33,45 +33,43 @@ unit JvgSysRequirements;
 interface
 
 uses
-  Windows,  Messages,  SysUtils,  Classes,  Graphics,  Controls,  Forms,
-  JvComponent,  Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvComponent;
 
 type
   TglMinVideoVRefreshRate = (frrIgnore, frr70Hertz, frr75Hertz, frr85Hertz);
   TglMinGraphicResolution = (fgrIgnore, fgr800x600, fgr1024x768);
   TglMinColorDepth = (fcdIgnore, fcd16BitColor, fcd32BitColor);
   TglSystemFont = (fsfIgnore, fsfSmallFont, fsfBigFont);
-  //  TglProcessor                  = (fsrPentium, fsrMMX);
-  TglOS_ = (fosWindowsNT, fosWindows95);
-  TglOS = set of TglOS_;
+  //  TglProcessor = (fsrPentium, fsrMMX);
+  TglOS = (fosWindowsNT, fosWindows95);
+  TglOSSet = set of TglOS;
 
-  TglRequirements_ = (fsrVideoVRefreshRate, fsrGraphicResolution,
+  TglRequirement = (fsrVideoVRefreshRate, fsrGraphicResolution,
     fsrColorDepth, fsrSystemFont, {fsrProcessor, } fsrOSPlatform);
-  TglRequirements = set of TglRequirements_;
+  TglRequirements = set of TglRequirement;
 
   TglSysReqBehavior = (fsbHalt, fsbWarning);
-  OnWarningEvent = procedure(Sender: TObject; var ReportMessage: string; var
-    doShowWarning, doHalt: boolean) of object;
+  TglWarningEvent = procedure(Sender: TObject; var ReportMessage: string;
+    var DoShowWarning, DoHalt: Boolean) of object;
 
   TJvgSysRequirements = class(TJvComponent)
   private
-    FEnabled: boolean;
+    FEnabled: Boolean;
     FMinColorDepth: TglMinColorDepth;
     FMinGraphicResolution: TglMinGraphicResolution;
-    FOSPlatform: TglOS;
+    FOSPlatform: TglOSSet;
     FSystemFont: TglSystemFont;
     FMinVideoVRefreshRate: TglMinVideoVRefreshRate;
     FBehavior: TglSysReqBehavior;
-    FOnWarning: OnWarningEvent;
-    { Private declarations }
+    FOnWarning: TglWarningEvent;
   protected
-
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function TestRequirements(var ReportMessage: string): boolean;
+    function TestRequirements(var ReportMessage: string): Boolean;
   published
-    property Enabled: boolean read FEnabled write FEnabled default true;
+    property Enabled: Boolean read FEnabled write FEnabled default True;
     property MinVideoVRefreshRate: TglMinVideoVRefreshRate read
       FMinVideoVRefreshRate write FMinVideoVRefreshRate;
     property MinGraphicResolution: TglMinGraphicResolution read
@@ -80,55 +78,49 @@ type
       FMinColorDepth;
     property SystemFont: TglSystemFont read FSystemFont write FSystemFont;
     //    property Processor: TglProcessor;
-    property OSPlatform: TglOS read FOSPlatform write FOSPlatform;
+    property OSPlatform: TglOSSet read FOSPlatform write FOSPlatform;
     property Behavior: TglSysReqBehavior read FBehavior write FBehavior;
-    property OnWarning: OnWarningEvent read FOnWarning write FOnWarning;
+    property OnWarning: TglWarningEvent read FOnWarning write FOnWarning;
   end;
 
 implementation
+
 uses
   JvgConstSysRequirements;
 
-{ TJvgSysRequirements }
-
 constructor TJvgSysRequirements.Create(AOwner: TComponent);
 begin
-  inherited;
-  //... defaults
-  FEnabled := true;
+  inherited Create(AOwner);
+  FEnabled := True;
 end;
 
 procedure TJvgSysRequirements.Loaded;
 var
   ReportMessage: string;
-  doShowWarning, doHalt: boolean;
+  DoShowWarning, DoHalt: Boolean;
 begin
-  inherited;
+  inherited Loaded;
   if not (csDesigning in ComponentState) then
     if not TestRequirements(ReportMessage) then
     begin
-
-      doShowWarning := true;
-      doHalt := Behavior = fsbHalt;
-
-      if Assigned(OnWarning) then
-        OnWarning(Self, ReportMessage, doShowWarning, doHalt);
-
-      if doShowWarning then
+      DoShowWarning := True;
+      DoHalt := Behavior = fsbHalt;
+      if Assigned(FOnWarning) then
+        FOnWarning(Self, ReportMessage,DoShowWarning, DoHalt);
+      if DoShowWarning then
         Application.MessageBox(PChar(ReportMessage),
           PChar(ExtractFilename(ParamStr(0))), MB_OK + MB_ICONINFORMATION);
-      if doHalt then
+      if DoHalt then
         Application.Terminate;
     end;
 end;
 
-function TJvgSysRequirements.TestRequirements(var ReportMessage: string):
-  boolean;
+function TJvgSysRequirements.TestRequirements(var ReportMessage: string): Boolean;
 var
   DC: HDC;
   OSVersionInfo: TOSVersionInfo;
 
-  procedure Test(Value: boolean; const ErrMsg: string);
+  procedure Test(Value: Boolean; const ErrMsg: string);
   begin
     Result := Result and Value;
     if not Value then
@@ -138,44 +130,45 @@ var
       ReportMessage := ReportMessage + ErrMsg;
     end;
   end;
+
 begin
   ReportMessage := '';
-  Result := true;
-  DC := GetDC(0);
+  Result := True;
+  DC := GetDC(HWND_DESKTOP);
 
   case MinVideoVRefreshRate of
-    frr70Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 70,
-        Format(ERR_VideoVRefreshRate, [70]));
-    frr75Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 75,
-        Format(ERR_VideoVRefreshRate, [75]));
-    frr85Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 85,
-        Format(ERR_VideoVRefreshRate, [85]));
+    frr70Hertz:
+      Test(GetDeviceCaps(DC, VREFRESH) >= 70, Format(ERR_VideoVRefreshRate, [70]));
+    frr75Hertz:
+      Test(GetDeviceCaps(DC, VREFRESH) >= 75, Format(ERR_VideoVRefreshRate, [75]));
+    frr85Hertz:
+      Test(GetDeviceCaps(DC, VREFRESH) >= 85, Format(ERR_VideoVRefreshRate, [85]));
   end;
 
   case MinGraphicResolution of
-    fgr800x600: Test((GetDeviceCaps(DC, HORZRES) >= 800) and
-        (GetDeviceCaps(DC, VERTRES) >= 600), Format(ERR_GraphicResolution,
-        ['800x600']));
-    fgr1024x768: Test((GetDeviceCaps(DC, HORZRES) >= 1024) and
-        (GetDeviceCaps(DC, VERTRES) >= 768), Format(ERR_GraphicResolution,
-        ['1024x768']));
+    fgr800x600:
+      Test((GetDeviceCaps(DC, HORZRES) >= 800) and
+        (GetDeviceCaps(DC, VERTRES) >= 600), Format(ERR_GraphicResolution, ['800x600']));
+    fgr1024x768:
+      Test((GetDeviceCaps(DC, HORZRES) >= 1024) and
+        (GetDeviceCaps(DC, VERTRES) >= 768), Format(ERR_GraphicResolution, ['1024x768']));
   end;
 
   case MinColorDepth of
-    fcd16BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 16,
-        Format(ERR_ColorDepth, ['65 536 (hi color)']));
+    fcd16BitColor:
+      Test(GetDeviceCaps(DC, BITSPIXEL) >= 16, Format(ERR_ColorDepth, ['65.536 (hi color)']));
     fcd32BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 32,
-        Format(ERR_ColorDepth, ['4 294 967 296 (true color)']));
+        Format(ERR_ColorDepth, ['4.294.967.296 (true color)']));
   end;
 
   case SystemFont of
-    fsfSmallFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 96,
-        Format(ERR_SystemFont, ['small']));
-    fsfBigFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 120,
-        Format(ERR_SystemFont, ['large']));
+    fsfSmallFont:
+      Test(GetDeviceCaps(DC, LOGPIXELSX) = 96, Format(ERR_SystemFont, ['small']));
+    fsfBigFont:
+      Test(GetDeviceCaps(DC, LOGPIXELSX) = 120, Format(ERR_SystemFont, ['large']));
   end;
 
-  OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
+  OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
 
   GetVersionEx(OSVersionInfo);
 
@@ -194,7 +187,7 @@ begin
   }
   //  IsProcessorFeaturePresent(PF_MMX_INSTRUCTIONS_AVAILABLE	)
 
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 end;
 
 end.

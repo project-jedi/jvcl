@@ -37,7 +37,7 @@ interface
 
 function GetValueFromPropertyName(Component: TObject; PropertyName: string): string;
 procedure SetValueByPropertyName(Component: TObject; const PropertyName, PropertyValue: string);
-procedure Assign(Source, Target: TObject; fRecurcive: boolean);
+procedure Assign(Source, Target: TObject; Recursive: Boolean);
 
 implementation
 
@@ -49,10 +49,10 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i: integer;
+  I: Integer;
   AName, PropName: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
   PropObject: TObject;
 begin
   { Playing with RTTI }
@@ -68,11 +68,11 @@ begin
     { Retrieving list of properties [translated] }
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[i]^.Name;
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+      PropName := PropList^[I]^.Name;
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
 
       if PropTypeInf^.Kind = tkClass then
       begin
@@ -89,7 +89,7 @@ begin
 
     end;
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList);
   end;
 end;
 
@@ -98,10 +98,10 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i: integer;
+  I: Integer;
   AName, PropName: string;
   PropList: PPropList;
-  NumProps: word;
+  NumProps: Word;
   PropObject: TObject;
 begin
   { Playing with RTTI }
@@ -110,104 +110,106 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps * sizeof(pointer));
+  GetMem(PropList, NumProps * SizeOf(Pointer));
   try
     //{ ѕолучаем список свойств }
     { Retrieving list of properties [translated] }
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps - 1 do
+    for I := 0 to NumProps - 1 do
     begin
-      PropName := PropList^[i]^.Name;
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
+      PropName := PropList^[I]^.Name;
+      PropTypeInf := PropList^[I]^.PropType^;
+      PropInfo := PropList^[I];
 
       if PropTypeInf^.Kind = tkClass then
       begin
         PropObject := GetObjectProp(Component, PropInfo);
         SetValueByPropertyName(PropObject, PropertyName, PropertyValue);
       end
-      else if CompareText(PropName, PropertyName) = 0 then
+      else
+      if CompareText(PropName, PropertyName) = 0 then
       begin
         SetPropValue(Component, PropName, PropertyValue);
-        exit;
+        Break;
       end;
-
     end;
   finally
-    FreeMem(PropList, NumProps * sizeof(pointer));
+    FreeMem(PropList);
   end;
 end;
 
-procedure Assign(Source, Target: TObject; fRecurcive: boolean);
+procedure Assign(Source, Target: TObject; Recursive: Boolean);
 var
   {TypeInf, } PropTypeInf: PTypeInfo;
-  i, Index: integer;
+  I, Index: Integer;
   PropName: string;
   Source_PropList, Target_PropList: PPropList;
-  Source_NumProps, Target_NumProps: word;
+  Source_NumProps, Target_NumProps: Word;
   Source_PropObject, Target_PropObject: TObject;
 
   //{ ѕоиск в списке свойства с заданным именем }
   { Searching for given name in the list of properties [translated] }
 
-  function FindProperty(const PropName: string; PropList: PPropList; NumProps: word): integer;
+  function FindProperty(const PropName: string; PropList: PPropList; NumProps: Word): Integer;
   var
-    i: integer;
+    I: Integer;
   begin
     Result := -1;
-    for i := 0 to NumProps - 1 do
-      if CompareStr(PropList^[i]^.Name, PropName) = 0 then
+    for I := 0 to NumProps - 1 do
+      if CompareStr(PropList^[I]^.Name, PropName) = 0 then
       begin
-        Result := i;
-        break;
+        Result := I;
+        Break;
       end;
   end;
 
 begin
-  if not Assigned(Source) or not Assigned(Target) then exit;
+  if not Assigned(Source) or not Assigned(Target) then
+    Exit;
 
   { Playing with RTTI }
   Source_NumProps := GetTypeData(Source.ClassInfo)^.PropCount;
   Target_NumProps := GetTypeData(Target.ClassInfo)^.PropCount;
 
-  GetMem(Source_PropList, Source_NumProps * sizeof(pointer));
-  GetMem(Target_PropList, Target_NumProps * sizeof(pointer));
+  GetMem(Source_PropList, Source_NumProps * SizeOf(Pointer));
+  GetMem(Target_PropList, Target_NumProps * SizeOf(Pointer));
   try
     //{ ѕолучаем список свойств }
     { Retrieving list of properties [translated] }
     GetPropInfos(Source.ClassInfo, Source_PropList);
     GetPropInfos(Target.ClassInfo, Target_PropList);
 
-    for i := 0 to Source_NumProps - 1 do
+    for I := 0 to Source_NumProps - 1 do
     begin
-      PropName := Source_PropList^[i]^.Name;
+      PropName := Source_PropList^[I]^.Name;
 
       Index := FindProperty(PropName, Target_PropList, Target_NumProps);
-      if Index = -1 then continue; // не нашли, Not found [translated]
+      if Index = -1 then
+        Continue; // не нашли, Not found [translated]
 
       //{ проверить совпадение типов }
       { check whether the types do match }
-      if Source_PropList^[i]^.PropType^.Kind <> Target_PropList^[i]^.PropType^.Kind then continue;
+      if Source_PropList^[I]^.PropType^.Kind <> Target_PropList^[I]^.PropType^.Kind then
+        Continue;
 
-      PropTypeInf := Source_PropList^[i]^.PropType^;
-      //      PropInfo := PropList^[i];
-      if (PropTypeInf^.Kind = tkClass) then
+      PropTypeInf := Source_PropList^[I]^.PropType^;
+      //      PropInfo := PropList^[I];
+      if PropTypeInf^.Kind = tkClass then
       begin
-        if fRecurcive then
+        if Recursive then
         begin
           Source_PropObject := GetObjectProp(Source, Source.ClassInfo);
           Target_PropObject := GetObjectProp(Target, Target.ClassInfo);
-          Assign(Source_PropObject, Target_PropObject, fRecurcive);
+          Assign(Source_PropObject, Target_PropObject, Recursive);
         end;
       end
       else
         SetPropValue(Target, PropName, GetPropValue(Source, PropName));
-
     end;
   finally
-    FreeMem(Source_PropList, Source_NumProps * sizeof(pointer));
-    FreeMem(Target_PropList, Target_NumProps * sizeof(pointer));
+    FreeMem(Source_PropList);
+    FreeMem(Target_PropList);
   end;
 end;
 

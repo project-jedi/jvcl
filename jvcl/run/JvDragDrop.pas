@@ -174,8 +174,8 @@ begin
 
     if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
     begin
-      { If the component is being destroyed, we don't want to call it's Handle
-        property, which will implicitly re-create it's already destroyed handle }
+      { If the component is being destroyed, we don't want to call its Handle
+        property, which will implicitly re-create its already destroyed handle }
       if not (csDestroying in FDropTarget.ComponentState) then
         DragAcceptFiles(FDropTarget.Handle, FAcceptDrag);
 

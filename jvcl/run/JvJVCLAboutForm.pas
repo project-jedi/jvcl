@@ -31,17 +31,19 @@ unit JvJVCLAboutForm;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
-  Windows, Messages, JclWin32,
-{$ENDIF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  JclWin32,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Controls, Forms, StdCtrls, ExtCtrls, Dialogs, Buttons, Jpeg,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, {Jpeg,}
-{$ENDIF VisualCLX}
-  JclSysInfo, JVCLVer, JvBaseDlg, JvComponent;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons,
+  {$ENDIF VisualCLX}
+  JclSysInfo, JVCLVer,
+  JvBaseDlg, JvComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)
@@ -121,7 +123,7 @@ var
 {$ENDIF MSWINDOWS}
 begin
   lblVersion.Caption := 'Version: ' + JVCL_VERSIONSTRING;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   FillChar(VersionInfo, SizeOf(TOSVersionInfoEx), #0);
   VersionInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfoEx);
   JclWin32.GetVersionEx(@VersionInfo);
@@ -131,10 +133,10 @@ begin
   else
     lblWindowsVersion.Caption := Format('%s (Build %u: %s)',
       [GetWindowsVersionString, VersionInfo.dwBuildNumber, GetWindowsServicePackVersionString]);
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   lblWindowsVersion.Caption := GetOSVersionString;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 //  LoadOptions;
@@ -145,9 +147,9 @@ procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   ReleaseCapture;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
-{$ENDIF VCL}
+  {$ENDIF VCL}
 end;
 
 procedure TJvJVCLAboutForm.btnHelpClick(Sender: TObject);
@@ -169,12 +171,12 @@ end;
 
 procedure TJvJVCLAboutForm.LoadOptions;
 var
-  l, t: Integer;
+  L, T: Integer;
 begin
   with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
   try
-    l := ReadInteger(cOptions, cBoundsLeft, -1);
-    t := ReadInteger(cOptions, cBoundsTop, -1);
+    L := ReadInteger(cOptions, cBoundsLeft, -1);
+    T := ReadInteger(cOptions, cBoundsTop, -1);
 
     FHelpFile := ReadString(cOptions, cHelpFile, '');
     FHelpDirectory := ReadString(cOptions, cHelpDirectory, '');
@@ -184,10 +186,10 @@ begin
 
   //make sure the form is positioned on screen ...
   //(ie make sure nobody's fiddled with the INI file!)
-  if (l >= 0) and (t >= 0) and (l < Screen.Width) and (t < Screen.Height) then
+  if (L >= 0) and (T >= 0) and (L < Screen.Width) and (T < Screen.Height) then
   begin
-    Left := l;
-    Top := t;
+    Left := L;
+    Top := T;
   end;
 end;
 
@@ -200,7 +202,6 @@ begin
       WriteInteger(cOptions, cBoundsLeft, Left);
       WriteInteger(cOptions, cBoundsTop, Top);
     end;
-
     WriteString(cOptions, cHelpFile, FHelpFile);
     WriteString(cOptions, cHelpDirectory, FHelpDirectory);
   finally
@@ -225,7 +226,7 @@ end;
 
 class procedure TJvJVCLAboutForm.Execute(StoreSettings: Boolean);
 begin
-  with self.Create(Application) do
+  with Self.Create(Application) do
   try
     if StoreSettings then
       LoadOptions;
