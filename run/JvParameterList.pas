@@ -1118,13 +1118,13 @@ end;
 
 procedure TJvParameterList.StoreData;
 begin
-  if AppStoragePath <> '' then
+  if (AppStoragePath <> '') and Assigned(AppStorage) then
     FParameterListPropertyStore.StoreData;
 end;
 
 procedure TJvParameterList.LoadData;
 begin
-  if AppStoragePath <> '' then
+  if (AppStoragePath <> '') and Assigned(AppStorage) then
     FParameterListPropertyStore.LoadData;
 end;
 
@@ -1714,44 +1714,46 @@ procedure TJvParameterListPropertyStore.LoadData;
 var
   I: Integer;
 begin
-  with ParameterList do
-    for I := 0 to ParameterList.Count - 1 do
-      if not (Parameters[I] is TJvNoDataParameter) then
-        with Parameters[I] do
-          if StoreValueToAppStorage then
-          begin
-            if StoreValueCrypted then
-              AppStorage.EnablePropertyValueCrypt;
-            if Parameters[I] is TJvListParameter then
-              with TJvListParameter(Parameters[I]) do
-                ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
-            else
-              AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
-            if StoreValueCrypted then
-              AppStorage.DisablePropertyValueCrypt;
-          end;
+  if Assigned(AppStorage) then
+    with ParameterList do
+      for I := 0 to ParameterList.Count - 1 do
+        if not (Parameters[I] is TJvNoDataParameter) then
+          with Parameters[I] do
+            if StoreValueToAppStorage then
+            begin
+              if StoreValueCrypted then
+                AppStorage.EnablePropertyValueCrypt;
+              if Parameters[I] is TJvListParameter then
+                with TJvListParameter(Parameters[I]) do
+                  ItemIndex := AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
+              else
+                AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+              if StoreValueCrypted then
+                AppStorage.DisablePropertyValueCrypt;
+            end;
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
 var
   I: Integer;
 begin
-  with ParameterList do
-    for I := 0 to ParameterList.Count - 1 do
-      if not (Parameters[I] is TJvNoDataParameter) then
-        with Parameters[I] do
-          if StoreValueToAppStorage then
-          begin
-            if StoreValueCrypted then
-              AppStorage.EnablePropertyValueCrypt;
-            if Parameters[I] is TJvListParameter then
-              with TJvListParameter(Parameters[I]) do
-                AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
-            else
-              AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
-            if StoreValueCrypted then
-              AppStorage.DisablePropertyValueCrypt;
-          end;
+  if Assigned(AppStorage) then
+    with ParameterList do
+      for I := 0 to ParameterList.Count - 1 do
+        if not (Parameters[I] is TJvNoDataParameter) then
+          with Parameters[I] do
+            if StoreValueToAppStorage then
+            begin
+              if StoreValueCrypted then
+                AppStorage.EnablePropertyValueCrypt;
+              if Parameters[I] is TJvListParameter then
+                with TJvListParameter(Parameters[I]) do
+                  AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, SearchName]), ItemIndex)
+              else
+                AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, SearchName]), AsString);
+              if StoreValueCrypted then
+                AppStorage.DisablePropertyValueCrypt;
+            end;
 end;
 
 //=== { TJvParameterListPropertyStore } ======================================
