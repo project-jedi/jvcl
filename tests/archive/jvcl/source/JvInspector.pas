@@ -3034,12 +3034,12 @@ end;
 
 procedure TJvCustomInspector.BeforeDestruction;
 begin
+  Painter := nil;
   FRoot.Free;
   FBandStartsSB.Free;
   FBandStartsNoSB.Free;
   FSortNotificationList.Free;
   FVisible.Free;
-  Painter := nil;
 end;
  
 function TJvCustomInspector.BeginUpdate: Integer;
