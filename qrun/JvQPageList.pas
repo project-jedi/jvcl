@@ -68,9 +68,10 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-  protected  
+  protected
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;  
     function WidgetFlags: Integer; override; 
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
@@ -410,7 +411,7 @@ begin
   end;
 end;
 
-function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin 
   Result := True;
 end;
@@ -452,7 +453,10 @@ begin
     end;
 end;
 
-
+procedure TJvCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  Msg.Result := 1;
+end;
 
 
 function TJvCustomPage.WidgetFlags: Integer;

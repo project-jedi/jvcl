@@ -433,10 +433,15 @@ begin
 end;
 
 procedure TJvPropertyStorage.ReadProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);
+var nPath : String;
 begin
   if Assigned(AppStorage) then
     With AppStorage Do
-      ReadProperty(ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]), PersObj, PropName, True, True);
+    begin
+      nPath := ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]);
+      if ValueStored (nPath) or ListStored (nPath) then
+        ReadProperty(nPath, PersObj, PropName, True, True);
+    end;
 end;
 
 procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName : string);

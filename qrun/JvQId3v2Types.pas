@@ -263,10 +263,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Math, SysUtils,
-  JvQFinalize, JvQConsts, JvQResources, JvQTypes;
-
-const
-  sUnitName = 'JvId3v2Types';
+  JvQConsts, JvQResources, JvQTypes;
 
 type
   TJvListType =
@@ -1548,10 +1545,7 @@ end;
 class function TJvID3TermFinder.Instance: TJvID3TermFinder;
 begin
   if not Assigned(GInstance) then
-  begin
     GInstance := TJvID3TermFinder.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GInstance));
-  end;
   Result := GInstance;
 end;
 
@@ -1611,11 +1605,10 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GInstance);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

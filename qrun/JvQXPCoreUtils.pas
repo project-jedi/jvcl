@@ -344,7 +344,7 @@ begin
     with ColorMap.Canvas do
     begin
       Brush.Color := AColor;
-      BrushCopy(ColorMap.Canvas, Rect, Bitmap, Rect, clBlack);
+      BrushCopy( ColorMap.Canvas,  Rect, Bitmap, Rect, clBlack);
     end; 
     Bitmap.FreeImage;
     Bitmap.Assign(ColorMap);

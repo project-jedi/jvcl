@@ -457,7 +457,7 @@ type
     procedure SetWordWrap(Value: Boolean);
   protected 
     procedure Paint; override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3029,10 +3029,10 @@ begin
   FImage.Alignment := Value;
 end;
 
-procedure TJvBtnControl.DoBoundsChanged;
+procedure TJvBtnControl.BoundsChanged;
 begin
   FImage.ButtonSize := Point(ClientWidth, ClientHeight);
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 procedure TJvBtnControl.Paint;

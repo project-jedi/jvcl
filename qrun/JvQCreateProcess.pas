@@ -42,8 +42,8 @@ uses
   Windows, SysUtils, Classes, 
   ShellAPI, SyncObjs,
   JvQComponent, 
-  Messages, // (asn) Messges after Jv(Q)Component for VisualCLX
-  JvQTypes;
+  JvQTypes,
+  Messages; // (asn) Messges after Jv(Q)Component for VisualCLX
 
 const
   CCPS_BufferSize = 1024;

@@ -36,7 +36,8 @@ interface
 uses
   Classes, QWindows, QMessages, QControls, QGraphics, QStdCtrls, QForms, QGrids, 
   Qt, 
-  JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids;
+  JvQConsts, JvQAppStorage, JvQFormPlacement, JvQComponent, JvQExGrids,
+  JvQTypes;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -99,9 +100,7 @@ type
     procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-
+    procedure FocusChanged; override;
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
     function GetEditLimit: Integer; override;
@@ -216,7 +215,7 @@ type
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer); 
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override; 
+    procedure DoExit; override;
     procedure BoundsChanged; override;
     procedure CloseUp(Accept: Boolean);
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState);
@@ -549,14 +548,8 @@ end;
 
 
 
-procedure TJvInplaceEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvInplaceEdit.DoExit;
 begin
-  if not SysLocale.FarEast then
-    inherited DoKillFocus(FocusedWnd)
-  else
-  begin 
-    inherited DoKillFocus(FocusedWnd); 
-  end;
   CloseUp(False);
 end;
 
@@ -1128,16 +1121,9 @@ end;
 
 
 
-procedure TJvDrawGrid.DoKillFocus(FocusedWnd: HWND);
+procedure TJvDrawGrid.FocusChanged;
 begin
-  inherited DoKillFocus(FocusedWnd);
-  if Assigned(FOnChangeFocus) then
-    FOnChangeFocus(Self);
-end;
-
-procedure TJvDrawGrid.DoSetFocus(FocusedWnd: HWND);
-begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited FocusChanged;
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;

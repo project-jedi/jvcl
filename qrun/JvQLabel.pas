@@ -61,7 +61,7 @@ interface
 
 uses
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList, 
-  JvQTypes, JvQComponent, JvQDataProvider;
+  JvQTypes, JvQComponent, JvQDataProvider, JvQExControls;
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
@@ -131,7 +131,7 @@ type
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
-    procedure DoFocusChanged(Control: TWinControl); override;
+    procedure FocusChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -140,7 +140,7 @@ type
     procedure VisibleChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
-    procedure AdjustBounds;  
+    procedure AdjustBounds;virtual;  
     procedure SetAutoSize(Value: Boolean); virtual; 
 
     // MarginXxx do not update the control.
@@ -484,7 +484,7 @@ begin
     end;
     if Y < MarginTop then
       Y := MarginTop;
-    Images.Draw(Canvas, X, Y, ImageIndex,itImage, Enabled);
+    Images.Draw(Canvas, X, Y, ImageIndex,  itImage,  Enabled);
   end;
 end;
 
@@ -895,18 +895,18 @@ begin
       MouseLeave(Self);
 end;
 
-procedure TJvCustomLabel.DoFocusChanged(Control: TWinControl);
+procedure TJvCustomLabel.FocusChanged;
 var
   Active: Boolean;
 begin
-  Active := Assigned(FFocusControl) and (Control = FFocusControl);
+  Active := Assigned(FFocusControl) and (GetFocusedControl(Self) = FFocusControl);
   if FFocused <> Active then
   begin
     FFocused := Active;
     if FShowFocus then
       Invalidate;
   end;
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged;
 end;
 
 procedure TJvCustomLabel.TextChanged;

@@ -79,7 +79,7 @@ type
     procedure AdjustLabelWidth; 
   protected 
     procedure AdjustSize; override; 
-//    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -401,7 +401,7 @@ begin
 end;
 
 (*
-function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvGradientHeaderPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
   Result := True;

@@ -526,7 +526,9 @@ begin
   S := Item.GetID;
   Result := Copy(S, 1, 7) = cColorItemIDPrefix;
   if Result then
+  begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
+  end;
 end;
 
 function GetUniqueMappingName(Mappings: TJvColorProviderNameMappings; Prefix: string): string;
@@ -1595,7 +1597,9 @@ begin
     end;
   end;
   if ColorFound then
-    SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8))
+  begin
+    SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8));
+  end
   else
     SetID('Item' + IntToStr(ListNumber) + '.' + IntToStr(ListIndex));
 end;

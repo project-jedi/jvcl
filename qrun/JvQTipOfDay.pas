@@ -38,8 +38,9 @@ unit JvQTipOfDay;
 interface
 
 uses
-  Classes, QWindows, QGraphics, QControls, QMessages, QForms, QStdCtrls,
-  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes, JvQConsts;
+  Classes, QGraphics, QControls, QMessages, QForms, QStdCtrls,
+  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton,
+  JvQTypes, JvQConsts;
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -78,7 +79,7 @@ type
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;  
-    procedure FormHide(Sender : TObject);
+    procedure FormHide(Sender : TObject); 
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -157,7 +158,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, QExtCtrls, QDialogs,
+  SysUtils, QWindows, QExtCtrls, QDialogs, 
   JvQButton, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -689,14 +690,14 @@ begin
   }
   SavedDefaultFonts := FDefaultFonts;
 
-  FTipFont.Charset := DEFAULT_CHARSET;
+//  FTipFont.Charset := DEFAULT_CHARSET;
   FTipFont.Color := clWindowText;
   FTipFont.Name := 'MS Sans Serif';
   FTipFont.Pitch := fpDefault;
   FTipFont.Size := 8;
   FTipFont.Style := [];
 
-  FHeaderFont.Charset := DEFAULT_CHARSET;
+//  FHeaderFont.Charset := DEFAULT_CHARSET;
   FHeaderFont.Color := clWindowText;
   FHeaderFont.Pitch := fpDefault;
   FHeaderFont.Style := [fsBold];

@@ -142,7 +142,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvQResources, JvQFinalize;
+  JvQResources;
 
 
 
@@ -178,12 +178,10 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-  {$IFDEF MSWINDOWS}
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword),
       @ThreadNameInfo);
-  {$ENDIF MSWINDOWS}
   except
-  end;
+  end; 
 end;
 
 //=== { TMTThread } ==========================================================
@@ -660,9 +658,10 @@ initialization
   {$ENDIF UNITVERSIONING}
  
 
-finalization
+finalization 
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
 
 end.

@@ -2,8 +2,8 @@
  QWindows.pas
 
  Copyright (c) 2003,2004, Andre Snepvangers (asn att xs4all dott nl),
-                          Andreas Hausladen (Andreas dott Hausladen att gmx dott de)
- All rights reserved.    
+
+ All rights reserved.
 
  Version 1.0
  Description: Qt based wrappers for common MS Windows API's
@@ -55,25 +55,500 @@ uses
   Libc, DateUtils,
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
-  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons,
-  QImgList;
+  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls,
+  QButtons, QImgList;
 
 type
   IPerformControl = interface
     ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function Perform(Msg: Cardinal; WPar, LPar: Longint): Longint;
   end;
 
+{$IFDEF LINUX}
+resourcestring
+  SFCreateError = 'Unable to create file %s';
+  SFOpenError = 'Unable to open file %s';
+  SReadError = 'Error reading file';
+  SWriteError = 'Error writing file';
+  SQThreadError = 'Thread Error in QWindows: %s (%d)';
+{$ENDIF LINUX}
+
+var
+  NewStyleControls: Boolean = True;
+
 const
+  { SetBkMode: background modes }
+  TRANSPARENT = 1; // BGMode_TransparentMode
+  OPAQUE      = 2; // BGMode_OpaqueMode
+
+{ constants for CreateDIBitmap }
+  CBM_INIT = 4;     { initialize bitmap  }
+  DIB_RGB_COLORS = 0;
+//  DIB_PAL_COLORS = 1; // not supported by CreateDIBitmap
+
+  { windows symbolic colors }         { mapping VisualCLX Symbolic colors}
+  COLOR_SCROLLBAR = 0;                // clNormalButton
+  COLOR_BACKGROUND = 1;               // clNormalBackground
+  COLOR_ACTIVECAPTION = 2;            // clActiveHighlightedText
+  COLOR_INACTIVECAPTION = 3;          // clDisabledHighlightedText
+  COLOR_MENU = 4;                     // clNormalMid
+  COLOR_WINDOW = 5;                   // clNormalBase
+  COLOR_WINDOWFRAME = 6;              // clNormalHighlight
+  COLOR_MENUTEXT = 7;                 // clNormalButtonText
+  COLOR_WINDOWTEXT = 8;               // clNormalText
+  COLOR_CAPTIONTEXT = 9;              // clNormalHighlightedText
+  COLOR_ACTIVEBORDER = 10;            // clActiveHighlight
+  COLOR_INACTIVEBORDER = 11;          // clDisabledHighlight
+  COLOR_APPWORKSPACE = 12;            // clNormalMid
+  COLOR_HIGHLIGHT = 13;               // clNormalHighlight
+  COLOR_HIGHLIGHTTEXT = 14;           // clNormalHighlightedText
+  COLOR_BTNFACE = 15;                 // clNormalButton
+  COLOR_BTNSHADOW = $10;              // clNormalDark
+  COLOR_GRAYTEXT = 17;                // clNormalDisabledText
+  COLOR_BTNTEXT = 18;                 // clNormalButtonText
+  COLOR_INACTIVECAPTIONTEXT = 19;     // clDisabledHighlightedText
+  COLOR_BTNHIGHLIGHT = 20;            // clActiveLight
+  COLOR_3DDKSHADOW = 21;              // clNormalMid
+  COLOR_3DLIGHT = 22;                 // clNormalMidLight
+  COLOR_INFOTEXT = 23;                // clNormalText
+  COLOR_INFOBK = 24;                  // TColor($E1FFFF)
+//             = 25;                  // ?? (asn: defined as clBlack for now)
+  COLOR_HOTLIGHT = 26;                // clActiveHighlight (asn: ??)
+  COLOR_GRADIENTACTIVECAPTION = 27;   // clActiveHighLight (asn: ??)
+  COLOR_GRADIENTINACTIVECAPTION = 28; // clDisabledHighlight (asn: ??)
+
+  COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
+(*
+  COLOR_MENUHILIGHT = 29;
+  COLOR_MENUBAR = 30;
+  COLOR_ENDCOLORS = COLOR_MENUBAR;
+*)
+
+  COLOR_DESKTOP     = COLOR_BACKGROUND;
+  COLOR_3DFACE      = COLOR_BTNFACE;
+  COLOR_3DSHADOW    = COLOR_BTNSHADOW;
+  COLOR_3DHIGHLIGHT = COLOR_BTNHIGHLIGHT;
+  COLOR_3DHILIGHT   = COLOR_BTNHIGHLIGHT;
+  COLOR_BTNHILIGHT  = COLOR_BTNHIGHLIGHT;
+
+  { CombineRgn return values }
+  NULLREGION    = 1;     // Region is empty
+  SIMPLEREGION  = 2;     // Region is a rectangle
+  COMPLEXREGION = 3;     // Region is not a rectangle
+  ERROR         = 0;     // Region error
+  RGN_ERROR     = ERROR;
+
+  { constants for CreatePolygon  }
+  ALTERNATE     = 1;
+  WINDING       = 2;
+
+  { flags for DrawFrameControl }
+  DFC_CAPTION   = 1;
+  DFC_MENU      = 2;
+  DFC_SCROLL    = 3;
+  DFC_BUTTON    = 4;
+  DFC_POPUPMENU = 5;
+
+  DFCS_CAPTIONCLOSE   = 0;
+  DFCS_CAPTIONMIN     = 1;
+  DFCS_CAPTIONMAX     = 2;
+  DFCS_CAPTIONRESTORE = 3;
+  DFCS_CAPTIONHELP    = 4;
+
+  DFCS_MENUARROW      = 0;
+  DFCS_MENUCHECK      = 1;
+  DFCS_MENUBULLET     = 2;
+  DFCS_MENUARROWRIGHT = 4;
+
+  DFCS_SCROLLUP            = 0;
+  DFCS_SCROLLDOWN          = 1;
+  DFCS_SCROLLLEFT          = 2;
+  DFCS_SCROLLRIGHT         = 3;
+  DFCS_SCROLLCOMBOBOX      = 5;
+  DFCS_SCROLLSIZEGRIP      = 8;
+  DFCS_SCROLLSIZEGRIPRIGHT = $10;
+
+  DFCS_BUTTONCHECK      = 0;
+  DFCS_BUTTONRADIOIMAGE = 1;
+  DFCS_BUTTONRADIOMASK  = 2;
+  DFCS_BUTTONRADIO      = 4;
+  DFCS_BUTTON3STATE     = 8;
+  DFCS_BUTTONPUSH       = $10;
+
+  DFCS_INACTIVE    = $100;
+  DFCS_PUSHED      = $200;
+  DFCS_CHECKED     = $400;
+  DFCS_TRANSPARENT = $800;
+  DFCS_HOT         = $1000;
+  DFCS_ADJUSTRECT  = $2000;
+  DFCS_FLAT        = $4000;
+  DFCS_MONO        = $8000;
+
+  { 3D border styles }
+  BDR_RAISEDOUTER = 1;
+  BDR_SUNKENOUTER = 2;
+  BDR_RAISEDINNER = 4;
+  BDR_SUNKENINNER = 8;
+
+  BDR_OUTER   = BDR_SUNKENOUTER or BDR_RAISEDOUTER;
+  BDR_INNER   = BDR_SUNKENINNER or BDR_SUNKENOUTER;
+  BDR_RAISED  = BDR_RAISEDINNER or BDR_RAISEDOUTER;
+  BDR_SUNKEN  = BDR_SUNKENINNER or BDR_SUNKENOUTER;
+
+  EDGE_RAISED = BDR_RAISEDOUTER or BDR_RAISEDINNER;
+  EDGE_SUNKEN = BDR_SUNKENOUTER or BDR_SUNKENINNER;
+  EDGE_ETCHED = BDR_SUNKENOUTER or BDR_RAISEDINNER;
+  EDGE_BUMP   = BDR_RAISEDOUTER or BDR_SUNKENINNER;
+
+  { Border flags }
+  BF_LEFT     = 1;
+  BF_TOP      = 2;
+  BF_RIGHT    = 4;
+  BF_BOTTOM   = 8;
+  BF_DIAGONAL = $10;
+
+  BF_TOPLEFT     = BF_TOP or BF_LEFT;
+  BF_TOPRIGHT    = BF_TOP or BF_RIGHT;
+  BF_BOTTOMLEFT  = BF_BOTTOM or BF_LEFT;
+  BF_BOTTOMRIGHT = BF_BOTTOM or BF_RIGHT;
+  BF_RECT        = BF_TOPLEFT or BF_BOTTOMRIGHT;
+
+  { For diagonal lines, the BF_RECT flags specify the end point of the}
+  { vector bounded by the rectangle parameter.}
+  BF_DIAGONAL_ENDTOPRIGHT    = BF_DIAGONAL or BF_TOP or BF_RIGHT;
+  BF_DIAGONAL_ENDTOPLEFT     = BF_DIAGONAL or BF_TOP or BF_LEFT;
+  BF_DIAGONAL_ENDBOTTOMLEFT  = BF_DIAGONAL or BF_BOTTOM or BF_LEFT;
+  BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL or BF_BOTTOM or BF_RIGHT;
+
+  BF_MIDDLE = $800;   { Fill in the middle }
+  BF_SOFT   = $1000;  { For softer buttons }
+  BF_ADJUST = $2000;  { Calculate the space left over }
+  BF_FLAT   = $4000;  { For flat rather than 3D borders }
+  BF_MONO   = $8000;  { For monochrome borders }
+
+  { DrawIconEx diFlags }
+  DI_MASK        = 1;
+  DI_IMAGE       = 2;
+  DI_NORMAL      = 3;
+//  DI_COMPAT    = 4;   not supported
+  DI_DEFAULTSIZE = 8;
+
+  { DrawText format (windows) flags }
+  DT_TOP           = 0;
+  DT_LEFT          = 0;
+  DT_CENTER        = 1;
+  DT_RIGHT         = 2;
+  DT_VCENTER       = 4;
+  DT_BOTTOM        = 8;
+  DT_WORDBREAK     = $10;
+  DT_SINGLELINE    = $20;
+  DT_EXPANDTABS    = $40;
+  DT_TABSTOP       = $80;
+  DT_NOCLIP        = $100;
+(* DT_EXTERNALLEADING = $200;  // not supported *)
+  DT_CALCRECT      = $400;
+  DT_NOPREFIX      = $800;
+  DT_INTERNAL      = $1000;  // Uses the system font to calculate text metrics.
+  DT_EDITCONTROL   = $2000;  // ignored
+  DT_PATH_ELLIPSIS = $4000;
+  DT_ELLIPSIS      = $8000;
+  DT_END_ELLIPSIS  = DT_ELLIPSIS;
+  DT_MODIFYSTRING  = $10000;
+  DT_RTLREADING    = $20000; // ignored
+  DT_WORD_ELLIPSIS = $40000;
+  DT_HIDEPREFIX    = $100000;
+  DT_PREFIXONLY    = $200000;
+
+  { ExtTextOut format flags }
+  ETO_OPAQUE     = 2;
+  ETO_CLIPPED    = 4;
+  ETO_RTLREADING = $80; // ignored
+
+  { font metrics }
+  DEFAULT_PITCH   = 0;
+  FIXED_PITCH     = 1;
+  VARIABLE_PITCH  = 2;
+  DEFAULT_CHARSET = 1;
+
+  {$IFDEF LINUX}
+  HINSTANCE_ERROR = 0;
+  HINSTANCE_OK    = HINSTANCE_ERROR + 1;
+  {$ENDIF LINUX}
+
+  { BrushStyle mappings}
+  HS_BDIAGONAL  = BrushStyle_BDiagPattern;    // 45-degree downward left-to-right hatch
+  HS_CROSS      = BrushStyle_CrossPattern;    // Hor. and vertical crosshatch
+  HS_DIAGCROSS  = BrushStyle_DiagCrossPattern;// 45-degree crosshatch
+  HS_FDIAGONAL  = BrushStyle_FDiagPattern;    // 45-degree upward left-to-right hatch
+  HS_HORIZONTAL = BrushStyle_HorPattern;      // Horizontal hatch
+  HS_VERTICAL   = BrushStyle_VerPattern;      // Vertical hatch
+
+  HWND_TOP       = Cardinal(0);
+  HWND_BOTTOM    = Cardinal(1);
+  HWND_TOPMOST   = Cardinal(-1);
+  HWND_NOTOPMOST = Cardinal(-2);
+
+{$IFDEF LINUX}
+  { GlobalMemory }
+  GMEM_FIXED          = 0;
+  GMEM_MOVEABLE       = 2;
+  GMEM_NOCOMPACT      = $10;
+  GMEM_NODISCARD      = $20;
+  GMEM_ZEROINIT       = $40; // only supported flag
+  GMEM_MODIFY         = $80;
+  GMEM_DISCARDABLE    = $100;
+  GMEM_NOT_BANKED     = $1000;
+  GMEM_SHARE          = $2000;
+  GMEM_DDESHARE       = $2000;
+  GMEM_NOTIFY         = $4000;
+  GMEM_LOWER          = GMEM_NOT_BANKED;
+  GMEM_VALID_FLAGS    = 32626;
+  GMEM_INVALID_HANDLE = $8000;
+
+  GHND = GMEM_MOVEABLE or GMEM_ZEROINIT;
+  GPTR = GMEM_FIXED or GMEM_ZEROINIT;
+
+{$ENDIF LINUX}
+
+
+  INFINITE = Longword($FFFFFFFF); // Infinite timeout
+  INVALID_HANDLE_VALUE = DWORD(-1);
+  MaxWord = High(Cardinal);
+
+  { MessageBox() return values }
+  IDCLOSE    = 0;
+  IDOK       = 1;
+  IDCANCEL   = 2;
+  IDYES      = 3;
+  IDNO       = 4;
+  IDABORT    = 5;
+  IDRETRY    = 6;
+  IDIGNORE   = 7;
+  { aliases }
+  ID_OK      = IDOK;
+  ID_CANCEL  = IDCANCEL;
+  ID_ABORT   = IDABORT;
+  ID_RETRY   = IDRETRY;
+  ID_IGNORE  = IDIGNORE;
+  ID_YES     = IDYES;
+  ID_NO      = IDNO;
+  ID_CLOSE   = IDCLOSE;
+  IDHELP     = 9;        //  not supported
+  ID_HELP    = IDHELP;  //  not supported
+  IDTRYAGAIN = IDRETRY;
+  IDCONTINUE = IDIGNORE;
+
+  {$EXTERNALSYM LB_OKAY}
+  LB_OKAY     = 0;
+  {$EXTERNALSYM LB_ERR}
+  LB_ERR      = -1;
+  {$EXTERNALSYM LB_ERRSPACE}
+  LB_ERRSPACE = -2;
+  {$EXTERNALSYM CB_OKAY}
+  CB_OKAY = 0;
+  {$EXTERNALSYM CB_ERR}
+  CB_ERR = -1;
+  {$EXTERNALSYM CB_ERRSPACE}
+  CB_ERRSPACE = -2;
+
+
+  MAX_COMPUTERNAME_LENGTH = 15;
+
+  { MessageBox() WinFlags }
+  MB_OK               = $0000;
+  MB_OKCANCEL         = $0001;
+  MB_ABORTRETRYIGNORE = $0002;
+  MB_YESNOCANCEL      = $0003;
+  MB_YESNO            = $0004;
+  MB_RETRYCANCEL      = $0005;
+  MB_HELP             = $4000; { Help Button not supported}
+  MB_ICONHAND         = $0010;
+  MB_ICONQUESTION     = $0020;
+  MB_ICONEXCLAMATION  = $0030;
+  MB_ICONASTERISK     = $0040;
+  MB_USERICON         = $0080;
+  MB_DEFBUTTON1       = $0000;
+  MB_DEFBUTTON2       = $0100;
+  MB_DEFBUTTON3       = $0200;
+  MB_DEFBUTTON4       = $0300;
+  MB_ICONWARNING      = MB_ICONEXCLAMATION;
+  MB_ICONERROR        = MB_ICONHAND;
+  MB_ICONINFORMATION  = MB_ICONASTERISK;
+  MB_ICONSTOP         = MB_ICONHAND;
+
+  { MouseKeys }
+  MK_LBUTTON   = 1;
+  MK_RBUTTON   = 2;
+  MK_SHIFT     = 4;
+  MK_CONTROL   = 8;
+  MK_MBUTTON   = $10;
+
+  { TDrawItemStruct itemstate }
+  ODS_DISABLED = 1;
+  ODS_SELECTED = 2;
+  ODS_FOCUS    = 4;
+
+  { Pen Styles }
+  PS_NULL          = 0;   // PenStyle_NoPen
+  PS_SOLID         = 1;   // PenStyle_SolidLine
+  PS_DASH          = 2;   // PenStyle_DashLine
+  PS_DOT           = 3;   // PenStyle_DotLine
+  PS_DASHDOT       = 4;   // PenStyle_DashDotLine
+  PS_DASHDOTDOT    = 5;   // PenStyle_DashDotDotLine
+  PS_STYLE_MASK    = 15;  // PenStyle_MPenStyle
+  {caps}
+  PS_ENDCAP_FLAT   = 0;   // PenCapStyle_FlatCap
+  PS_ENDCAP_SQUARE = 16;  // PenCapStyle_SquareCap
+  PS_ENDCAP_ROUND  = 32;  // PenCapStyle_RoundCap
+  PS_ENDCAP_MASK   = 48;  // PenCapStyle_MPenCapStyle
+  {join}
+  PS_JOIN_MITER    = 0;   // PenJoinStyle_MiterJoin
+  PS_JOIN_BEVEL    = 64;  // PenJoinStyle_BevelJoin
+  PS_JOIN_ROUND    = 128; // PenJoinStyle_RoundJoin
+  PS_JOIN_MASK     = $C0; // PenCapStyle_MPenCapStyle
+
+  { BitBlt/StretchBlt: supported  windows dwRop Raster OPerations }
+  BLACKNESS   = $00000042;   // RasterOp_ClearROP
+  DSTINVERT   = $00550009;   // RasterOp_NotROP
+  MERGECOPY   = $00C000CA;   // RasterOp_OrROP
+  MERGEPAINT  = $00BB0226;   // RasterOp_NotOrRop
+  NOTSRCCOPY  = $00330008;   // RasterOp_NotCopyROP
+  NOTSRCERASE = $001100A6;   // RasterOp_NorROP
+  SRCAND      = $008800C6;   // RasterOp_AndROP
+  SRCCOPY     = $00CC0020;   // RasterOp_CopyROP
+  SRCERASE    = $00440328;   // RasterOp_AndNotROP
+  SRCINVERT   = $00660046;   // RasterOp_XorROP
+  SRCPAINT    = $00EE0086;   // RasterOp_OrROP;
+  WHITENESS   = $00FF0062;   // RasterOp_SetROP
+  PATCOPY     = $00F00021;   // dest = pattern
+  PATPAINT    = $00FB0A09;   // dest = DPSnoo = PDSnoo
+  PATINVERT   = $005A0049;   // dest = pattern XOR dest
+  ROP_DSPDxax = $00E20746;   // dest = ((pattern XOR dest) AND source) XOR Dest
+  ROP_DSna    = $00220326;   // RasterOp_NotAndROP
+  ROP_DSno    = MERGEPAINT;
+  ROP_DPSnoo  = PATPAINT;
+  ROP_D       = $00AA0029;   // RasterOp_NopROP
+  ROP_Dn      = DSTINVERT;   // DSTINVERT
+  ROP_SDna    = SRCERASE;    // SRCERASE
+  ROP_SDno    = $00DD0228;   // RasterOp_OrNotROP
+  ROP_DSan    = $007700E6;   // RasterOp_NandROP
+  ROP_DSon    = $001100A6;   // NOTSRCERASE
+//ROP_Pn      = $000F0001;   //
+
+ { SetROP2:  windows ROP2 values }
+  R2_BLACK       = 9;  // RasterOp_ClearROP:  Pixel is always 0.
+  R2_WHITE       = 10; // RasterOp_SetROP:Pixel is always 1.
+  R2_NOP         = 11; // RasterOp_NopROP: Pixel remains unchanged.
+  R2_NOT         = 8;  // RasterOp_NotROP:      inverse of the screen color.
+  R2_COPYPEN     = 0;  // RasterOp_CopyROP: Pixel is the pen color.
+  R2_NOTCOPYPEN  = 4;  // RasterOp_NotCopyROP; inverse of the pen color.
+  R2_MERGEPENNOT = 13; // RasterOp_OrNotROP: combination of the pen color and the inverse of the screen color.
+  R2_MASKPENNOT  = 12; // RasterOp_AndNotROP: combination of the colors common to both the pen and the inverse of the screen.
+  R2_MERGEPEN    = 1;  // RasterOp_OrROP: combination of the pen color and the screen color.
+  R2_NOTMERGEPEN = 15; // RasterOp_NorROP:  inverse of the R2_MERGEPEN color.
+  R2_MASKPEN     = 7;  // RasterOp_AndROP: combination of the colors common to both the pen and the screen.
+  R2_NOTMASKPEN  = 14; // RasterOp_NandROP: inverse of the R2_MASKPEN color.
+  R2_XORPEN      = 2;  // RasterOp_XorROP: combination of the colors in the pen and in the screen, but not in both.
+  R2_NOTXORPEN   = 6;  // RasterOp_NotXorROP: inverse of the R2_XORPEN color.
+  R2_MASKNOTPEN  = 3;  // RasterOp_NotAndROP: combination of the colors common to both the screen and the inverse of the pen.
+  R2_MERGENOTPEN = 5;  // RasterOp_NotOrROP: combination of the screen color and the inverse of the pen color.
+
+  RT_RCDATA = Types.RT_RCDATA;
+  RT_BITMAP = PChar(2);
+
+  { WM_xSCROLL ScrollCodes }
+  SB_BOTTOM        = 1;
+  SB_ENDSCROLL     = 2;
+  SB_LINEDOWN      = 3;
+  SB_LINEUP        = 4;
+  SB_PAGEDOWN      = 5;
+  SB_PAGEUP        = 6;
+  SB_THUMBPOSITION = 7;
+  SB_THUMBTRACK    = 8;
+  SB_TOP           = 9;
+
+  SB_HORZ          = 1;
+  SB_VERT          = 2;
+  SB_BOTH          = SB_HORZ or SB_VERT;
+
+
+  { semaphores }
+  STATUS_WAIT_0           = $00000000;
+  STATUS_ABANDONED_WAIT_0 = $00000080;
+  STATUS_TIMEOUT          = $00000102;
+  WAIT_FAILED             = Longword($FFFFFFFF);
+  WAIT_OBJECT_0           = STATUS_WAIT_0;
+  WAIT_ABANDONED          = STATUS_ABANDONED_WAIT_0;
+  WAIT_ABANDONED_0        = STATUS_ABANDONED_WAIT_0;
+  WAIT_TIMEOUT            = STATUS_TIMEOUT;
+  MAXIMUM_WAIT_OBJECTS    = 64;
+
+  { ShowWindow() Commands }
+  SW_HIDE            = 0;
+  SW_SHOWNORMAL      = 1;
+  SW_NORMAL          = 1;
+  SW_SHOWMINIMIZED   = 2;
+  SW_SHOWMAXIMIZED   = 3;
+  SW_MAXIMIZE        = 3;
+  SW_SHOWNOACTIVATE  = 4;
+  SW_SHOW            = 5;
+  SW_MINIMIZE        = 6;
+  SW_SHOWMINNOACTIVE = 7;
+  SW_SHOWNA          = 8;
+  SW_RESTORE         = 9;
+  SW_SHOWDEFAULT     = 10;
+  SW_MAX             = 10;
+
+  { SetWindowPos Flags }
+  SWP_NOSIZE         = 1;
+  SWP_NOMOVE         = 2;
+  SWP_NOZORDER       = 4;
+  SWP_NOREDRAW       = 8;
+  SWP_NOACTIVATE     = $10;
+  SWP_FRAMECHANGED   = $20;  { The frame changed: send WM_NCCALCSIZE }
+  SWP_SHOWWINDOW     = $40;
+  SWP_HIDEWINDOW     = $80;
+  SWP_NOCOPYBITS     = $100; // ignored
+  SWP_NOOWNERZORDER  = $200; { Don't do owner Z ordering }
+  SWP_NOSENDCHANGING = $400; // ignores
+  SWP_DRAWFRAME      = SWP_FRAMECHANGED;
+  SWP_NOREPOSITION   = SWP_NOOWNERZORDER;
+  SWP_DEFERERASE     = $2000;
+  SWP_ASYNCWINDOWPOS = $4000; // ignored
+
+  TA_LEFT       = Integer(AlignmentFlags_AlignLeft);
+  TA_RIGHT      = Integer(AlignmentFlags_AlignRight);
+  TA_CENTER     = Integer(AlignmentFlags_AlignHCenter);
+  TA_TOP        = Integer(AlignmentFlags_AlignTop);
+  TA_BOTTOM     = Integer(AlignmentFlags_AlignBottom);
+  VTA_CENTER    = Integer(AlignmentFlags_AlignVCenter);
+  TA_NOUPDATECP = 0;
+  TA_UPDATECP   = $8000;
+  TA_BASELINE   = $4000;
+  VTA_BASELINE  = TA_BASELINE;
+
+  {$IFDEF LINUX}
+  {virtual memory handling}
+  PAGE_NOACCESS          = 0;
+  PAGE_READONLY          = PROT_READ;
+  PAGE_READWRITE         = PROT_READ or PROT_WRITE;
+//PAGE_WRITECOPY         = PROT_ ; // not implemented
+  PAGE_EXECUTE           = PROT_EXEC;
+  PAGE_EXECUTE_READ      = PAGE_EXECUTE or PAGE_READONLY;
+  PAGE_EXECUTE_READWRITE = PAGE_EXECUTE or PAGE_READWRITE;
+//PAGE_EXECUTE_WRITECOPY = PAGE_EXECUTE or PAGE_WRITECOPY;
+  {$ENDIF LINUX}
+
+
   { Windows VK_ keycodes to Qt key }
   VK_BACK     = Key_Backspace;
   VK_TAB      = Key_Tab;
-  VK_RETURN   = 4100;  // Enter key from keypad
+  VK_RETURN   = Key_Enter; //Key_Return = Enter key from keypad
   VK_SHIFT    = Key_Shift;
   VK_CONTROL  = Key_Control;
   VK_MENU     = Key_Alt;
   VK_PAUSE    = Key_Pause;
-  VK_CAPITAL  =  Key_CapsLock;
+  VK_CAPITAL  = Key_CapsLock;
   VK_ESCAPE   = 4096;
   VK_SPACE    = Key_Space;
   VK_PRIOR    = Key_Prior;
@@ -144,8 +619,6 @@ const
   VK_LMENU    = Key_Alt;
   VK_RMENU    = Key_Alt;
 
-
-
   { Qt alignment flags, (as used by Canvas.TextRect) }
   AlignLeft     = $1;
   AlignRight    = $2;
@@ -160,242 +633,35 @@ const
   ShowPrefix    = $200;
   WordBreak     = $400;
   BreakAnywhere = $800;
-  {
-  DontPrint = $1000; not used
-
-  Additional constanst for Qt text alignments
-  used by DrawText
-  }
-  QtAlignMask   = $FFFF;
+//  DontPrint = $1000; not used
+  { Additional constanst for Qt text alignments used by DrawText }
+  QtAlignMask   = $FFF;
   CalcRect      = $10000;
   ClipPath      = $20000;
   ClipName      = $40000;
   ClipToWord    = $100000;
   ModifyString  = $200000;
 
-  TA_LEFT = Integer(AlignmentFlags_AlignLeft);
-  TA_RIGHT = Integer(AlignmentFlags_AlignRight);
-  TA_CENTER = Integer(AlignmentFlags_AlignHCenter);
-  TA_TOP = Integer(AlignmentFlags_AlignTop);
-  TA_BOTTOM = Integer(AlignmentFlags_AlignBottom);
-  VTA_CENTER = Integer(AlignmentFlags_AlignVCenter);
-  TA_NOUPDATECP = 0;
-  TA_UPDATECP = $8000;
-  TA_BASELINE = $4000;
-  VTA_BASELINE = TA_BASELINE;
-
-  pf24bit = pf32bit;
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
+  pf24bit       = pf32bit;
+  clMoneyGreen  = TColor($C0DCC0);
+  clSkyBlue     = TColor($F0CAA6);
+  clCream       = TColor($F0FBFF);
+  clMedGray     = TColor($A4A0A0);
   clWindowFrame = cl3DDkShadow;
 
-  crColorTo = crNoRole;
-  clColorTo = TColor(-15);
-  clNormalColorTo = TColor(clColorTo - cloNormal);
-  clActiveColorTo = TColor(clColorTo - cloActive);
+  crColorTo         = crNoRole;
+  clColorTo         = TColor(-15);
+  clNormalColorTo   = TColor(clColorTo - cloNormal);
+  clActiveColorTo   = TColor(clColorTo - cloActive);
   clDisabledColorTo = TColor(clColorTo - cloDisabled);
 
-  INFINITE = Longword($FFFFFFFF); // Infinite timeout
-  INVALID_HANDLE_VALUE = DWORD(-1);
-  MaxWord = High(Cardinal);
-
-  RT_RCDATA = Types.RT_RCDATA;
-  RT_BITMAP = PChar(2);
-
-  WM_HSCROLL = 101;
-  WM_VSCROLL = 102;
-  CM_DEACTIVATE = 100;
-
-  // WM_xSCROLL ScrollCodes
-  SB_BOTTOM = 1;
-  SB_ENDSCROLL = 2;
-  SB_LINEDOWN = 3;
-  SB_LINEUP = 4;
-  SB_PAGEDOWN = 5;
-  SB_PAGEUP = 6;
-  SB_THUMBPOSITION = 7;
-  SB_THUMBTRACK = 8;
-  SB_TOP = 9;
-
-  SB_HORZ = 1;
-  SB_VERT = 2;
-  SB_BOTH = SB_HORZ or SB_VERT;
-
-type
-  HWND = QWidgetH;
-  HCURSOR = QCursorH;
-  HRGN = QRegionH;
-  HBRUSH = QBrushH;
-  HBITMAP = QPixmapH;
-  HDC = QPainterH;
-  HFONT = QFontH;
-  UINT = Cardinal;
-  DWORD = Cardinal;
-  BOOL = LongBool;
-  COLORREF = TColorRef;
-  TWinControlActionLink = TWidgetControlActionLink;
-  TControlClass = class of TControl;
-  TColorRef = Integer;    // real colors
-  TPointL = record
-    X: Longint;
-    Y: Longint;
-  end;
-
-  TCaption = QTypes.TCaption;
-  {$NODEFINE TCaption}
-  PPoint = Types.PPoint;
-  {$NODEFINE PPoint}
-  TPoint = Types.TPoint;
-  {$NODEFINE TPoint}
-  PRect = Types.PRect;
-  {$NODEFINE PRect}
-  TRect = Types.TRect;
-  {$NODEFINE TRect}
-  TSize = Types.TSize;
-  {$NODEFINE TSize}
-  PSize = Types.PSize;
-  {$NODEFINE PSize}
-  PSmallPoint = Types.PSmallPoint;
-  {$NODEFINE PSmallPoint}
-  TSmallPoint = Types.TSmallPoint;
-  {$NODEFINE TSmallPoint}
-
-  TTime = TDateTime;
-  TDate = TDateTime;
-
-  PMessage = ^TMessage;
-  TMessage = packed record
-    Msg: Integer;
-    WParam: Longint;
-    LParam: Longint;
-    Result: Integer;
-  end;
-
-  TMsg = packed record
-    hwnd: QWidgetH;
-    message: Cardinal;
-    wParam: Longint;
-    lParam: Longint;
-    time: Cardinal;
-    pt: TPoint;
-  end;
-(*
-  TWMScroll = packed record
-    Msg: Cardinal;
-    Pos: Integer;
-    ScrollCode: Integer;
-    Result: Integer;
-  end;
-
-  TWMTimer = packed record
-    Msg: Cardinal;
-    TimerID: Longint;
-    TimerProc: Pointer;
-    Result: Longint;
-  end;
-
-  TCMActivate = packed record
-    Msg: Cardinal;
-    WParam: Integer;
-    LParam: Longint;
-    Result: Integer;
-  end;
-*)
-
-procedure WakeUpGuiThread;
-{
-  Dummies for ... VCL
- asn: AFAIK use of RightToLeft or LeftToRight is automatic
-}
-const
-  BiDiMode: TBiDiMode = bdLeftToRight; // asn: var?
-function DrawTextBiDiModeFlagsReadingOnly: Longint;
-function DrawTextBiDiModeFlags(Flags: Longint): Longint;
-procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
-function UseRightToLeftAlignment: Boolean;
-var
-  NewStyleControls: Boolean = True;
-
-{ Palette colors }
-function GetSysColor(SysColor: Integer): TColorRef;  // windows SysColor !!
-function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
-function SetSysColors(Elements: Integer; const lpaElements;
-  const lpaRgbValues): LongBool;
-
-{
- QGraphics.ColorToRGB supports only
- TMappedColor = clActiveHighlightedText..clNormalForeground
- Returns clBlack for any other color !
-
-  This implementation uses Instance.Palette and supports all colors
-  if Instance = nil then it will use Application.MainForm, in that
-  case clHighlightedText..clForeground is mapped to clNormalHighlightedText..clNormalForeground
-  if the Color is not in [clActiveHighlightedText..clForeground] it will
-  return the Color itself.
-}
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-
-function RGB(Red, Green, Blue: Integer): TColorRef;
-function GetBValue(Col: TColorRef): Byte;
-function GetGValue(Col: TColorRef): Byte;
-function GetRValue(Col: TColorRef): Byte;
-function pfDevice: TPixelFormat;
-
-const
-  { windows symbolic colors }         { mapping VisualCLX Symbolic colors}
-  COLOR_SCROLLBAR = 0;                // clNormalButton
-  COLOR_BACKGROUND = 1;               // clNormalBackground
-  COLOR_ACTIVECAPTION = 2;            // clActiveHighlightedText
-  COLOR_INACTIVECAPTION = 3;          // clDisabledHighlightedText
-  COLOR_MENU = 4;                     // clNormalMid
-  COLOR_WINDOW = 5;                   // clNormalBase
-  COLOR_WINDOWFRAME = 6;              // clNormalHighlight
-  COLOR_MENUTEXT = 7;                 // clNormalButtonText
-  COLOR_WINDOWTEXT = 8;               // clNormalText
-  COLOR_CAPTIONTEXT = 9;              // clNormalHighlightedText
-  COLOR_ACTIVEBORDER = 10;            // clActiveHighlight
-  COLOR_INACTIVEBORDER = 11;          // clDisabledHighlight
-  COLOR_APPWORKSPACE = 12;            // clNormalMid
-  COLOR_HIGHLIGHT = 13;               // clNormalHighlight
-  COLOR_HIGHLIGHTTEXT = 14;           // clNormalHighlightedText
-  COLOR_BTNFACE = 15;                 // clNormalButton
-  COLOR_BTNSHADOW = $10;              // clNormalDark
-  COLOR_GRAYTEXT = 17;                // clNormalDisabledText
-  COLOR_BTNTEXT = 18;                 // clNormalButtonText
-  COLOR_INACTIVECAPTIONTEXT = 19;     // clDisabledHighlightedText
-  COLOR_BTNHIGHLIGHT = 20;            // clActiveLight
-  COLOR_3DDKSHADOW = 21;              // clNormalMid
-  COLOR_3DLIGHT = 22;                 // clNormalMidLight
-  COLOR_INFOTEXT = 23;                // clNormalText
-  COLOR_INFOBK = 24;                  // TColor($E1FFFF)
-//             = 25;                  // ?? (asn: defined as clBlack for now)
-  COLOR_HOTLIGHT = 26;                // clActiveHighlight (asn: ??)
-  COLOR_GRADIENTACTIVECAPTION = 27;   // clActiveHighLight (asn: ??)
-  COLOR_GRADIENTINACTIVECAPTION = 28; // clDisabledHighlight (asn: ??)
-
-  COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
-(*
-  COLOR_MENUHILIGHT = 29;
-  COLOR_MENUBAR = 30;
-  COLOR_ENDCOLORS = COLOR_MENUBAR;
-*)
-
-  COLOR_DESKTOP = COLOR_BACKGROUND;
-  COLOR_3DFACE = COLOR_BTNFACE;
-  COLOR_3DSHADOW = COLOR_BTNSHADOW;
-  COLOR_3DHIGHLIGHT = COLOR_BTNHIGHLIGHT;
-  COLOR_3DHILIGHT = COLOR_BTNHIGHLIGHT;
-  COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
-
-  clNoRole = TColor(-15);
-  clNormalNoRole = TColor(clNoRole - cloNormal);
+  clNoRole         = TColor(-15);
+  clNormalNoRole   = TColor(clNoRole - cloNormal);
   clDisabledNoRole = TColor(clNoRole - cloDisabled);
-  clActiveNoRole = TColor(clNoRole - cloActive);
-  clDesktop = clDisabledNoRole;
-  clColor0 = clMask;
-  clColor1 = clDontMask;
+  clActiveNoRole   = TColor(clNoRole - cloActive);
+  clDesktop        = clDisabledNoRole;
+  clColor0         = clMask;
+  clColor1         = clDontMask;
 
   // Windows symbolic colors to mapping VisualCLX symbolic colors
   Win2TColor: array [0..COLOR_ENDCOLORS] of TColor = (
@@ -411,35 +677,111 @@ const
     clActiveHighLight, clDisabledHighlight                           // 27
   );
 
-function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
-function IsRectEmpty(R: TRect): LongBool;
-function EqualRect(R1, R2: TRect): LongBool;
-function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
-function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
-function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
-function CenterRect(InnerRect, OuterRect: TRect): TRect;
-function PtInRect(const R: TRect; pt: TPoint): LongBool; overload;
-function PtInRect(const R: TRect; X, Y: integer): LongBool; overload;
-function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
+  { SendMessage / PostMessage }
+  QEventType_Message = QEventType(2105);
+  { Timer message id}
+  WM_TIMER = $0113;  { 275 }
 
 type
+  TMsg = packed record
+    hwnd: QWidgetH;
+    message: Integer;
+    wParam: Integer;
+    lParam: Integer;
+    case integer of
+      0:
+      (
+        time: Cardinal;
+        pt: TPoint;
+      );
+      1: ( Result: Integer);
+      2: ( Handled: LongBool);
+  end;
+  PMsg = ^TMsg;
+
+  TMessage = packed record
+    Msg: Cardinal;
+    case Integer of
+      0:
+      (
+        WParam: Longint;
+        LParam: Longint;
+        Result: Longint;
+      );
+      1:
+      (
+        WParamLo: Word;
+        WParamHi: Word;
+        LParamLo: Word;
+        LParamHi: Word;
+        ResultLo: Word;
+        ResultHi: Word
+      );
+  end;
+  PMessage = ^TMessage;
+
+  { Provided to simplify VCL source sharing }
+  HWND        = QWidgetH;
+  HCURSOR     = QCursorH;
+  HRGN        = QRegionH;
+  HBRUSH      = QBrushH;
+  HBITMAP     = QPixmapH;
+  HDC         = QPainterH;
+  HFONT       = QFontH;
+  UINT        = Cardinal;
+  DWORD       = Cardinal;
+  BOOL        = LongBool;
+  WPARAM      = Integer;
+  LPARAM      = Integer;
+  LRESULT     = Integer;
+  TPointL     = TPoint;
+  COLORREF    = Integer;
+  TColorRef   = COLORREF;
+
+  TWinControlActionLink = TWidgetControlActionLink;
+  TControlClass = class of TControl;
+
+  {$EXTERNALSYM TCaption}
+  TCaption    = QTypes.TCaption;
+
+  {$EXTERNALSYM TOwnerDrawState}
+  TOwnerDrawState = QStdCtrls.TOwnerDrawState;
+
+  {$EXTERNALSYM PPoint}
+  {$EXTERNALSYM TPoint}
+  PPoint      = Types.PPoint;
+  TPoint      = Types.TPoint;
+
+  {$EXTERNALSYM PRect}
+  {$EXTERNALSYM TRect}
+  PRect       = Types.PRect;
+  TRect       = Types.TRect;
+
+  {$EXTERNALSYM PSize}
+  {$EXTERNALSYM TSize}
+  TSize       = Types.TSize;
+  PSize       = Types.PSize;
+
+  PSmallPoint = Types.PSmallPoint;
+  TSmallPoint = Types.TSmallPoint;
+  {$EXTERNALSYM PSmallPoint}
+  {$EXTERNALSYM TSmallPoint}
+
+  TTime       = type TDateTime;
+  TDate       = type TDateTime;
+  {$EXTERNALSYM TDate}
+  {$EXTERNALSYM TTime}
+
+  { colors }
   TRGBQuad = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
     rgbReserved: Byte;
   end;
+  TRGBTriple  = TRGBQuad; // Qt does not support 24 bit pixmaps
 
-  TRGBTriple = TRGBQuad; // Qt does not support 24 bit pixmaps
-
-const
-  DEFAULT_PITCH = 0;
-  FIXED_PITCH = 1;
-  VARIABLE_PITCH = 2;
-
-  DEFAULT_CHARSET = 1;
-
-type
+  { fonts }
   tagTEXTMETRICA = record
     tmHeight: Longint;
     tmAscent: Longint;
@@ -463,7 +805,7 @@ type
     tmCharSet: Byte;
   end;
   TTextMetric = tagTEXTMETRICA;
-  TEXTMETRIC = TTextMetric;
+  TEXTMETRIC  = TTextMetric;
 
   { Logical Pen }
   PLogPen = ^TLogPen;
@@ -472,8 +814,8 @@ type
     lopnWidth: TPoint;
     lopnColor: COLORREF;
   end;
-  TLogPen = tagLOGPEN;
-  LOGPEN = tagLOGPEN;
+  TLogPen     = tagLOGPEN;
+  LOGPEN      = tagLOGPEN;
 
   { Logical Palette }
   PPaletteEntry = ^TPaletteEntry;
@@ -493,7 +835,7 @@ type
     palPalEntry: array[0..0] of TPaletteEntry;
   end;
   TLogPalette = tagLOGPALETTE;
-  LOGPALETTE = tagLOGPALETTE;
+  LOGPALETTE  = tagLOGPALETTE;
 
   PMaxLogPalette = ^TMaxLogPalette;
   TMaxLogPalette = packed record
@@ -502,7 +844,7 @@ type
     palPalEntry: array[Byte] of TPaletteEntry;
   end;
 
-  PtagBITMAP = ^tagBITMAP;
+  PtagBITMAP  = ^tagBITMAP;
   tagBITMAP = packed record
     //bmType: Longint;
     bmWidth: Longint;
@@ -528,7 +870,7 @@ type
     biClrImportant: DWORD;
   end;
   TBitmapInfoHeader = tagBITMAPINFOHEADER;
-  BITMAPINFOHEADER = tagBITMAPINFOHEADER;
+  BITMAPINFOHEADER  = tagBITMAPINFOHEADER;
 
   PBitmapInfo = ^TBitmapInfo;
   tagBITMAPINFO = packed record
@@ -547,7 +889,7 @@ type
     bfOffBits: DWORD;
   end;
   TBitmapFileHeader = tagBITMAPFILEHEADER;
-  BITMAPFILEHEADER = tagBITMAPFILEHEADER;
+  BITMAPFILEHEADER  = tagBITMAPFILEHEADER;
 
   tagDRAWITEMSTRUCT = packed record
     CtlType: Cardinal;
@@ -560,51 +902,237 @@ type
     rcItem: TRect;
     itemData: Cardinal;
   end;
-  TDrawItemStruct = tagDRAWITEMSTRUCT;
-  DRAWITEMSTRUCT = tagDRAWITEMSTRUCT;
+  TDrawItemStruct   = tagDRAWITEMSTRUCT;
+  DRAWITEMSTRUCT    = tagDRAWITEMSTRUCT;
 
-{ TDrawItemStruct itemstate }
+type
+  TDeviceCap = (
+    HORZSIZE,        {Horizontal size in millimeters}
+    VERTSIZE,        {Vertical size in millimeters}
+    HORZRES,         {Horizontal width in pixels}
+    VERTRES,         {Vertical height in pixels}
+    BITSPIXEL,       {Number of bits per pixel}
+    PLANES,          {Number of planes}
+    NUMCOLORS,
+    LOGPIXELSX,      {Logical pixelsinch in X}
+    LOGPIXELSY,      {Logical pixelsinch in Y}
+    PHYSICALWIDTH,   {Physical Width in device units}
+    PHYSICALHEIGHT,  {Physical Height in device units}
+    PHYSICALOFFSETX, {Physical Printable Area X margin}
+    PHYSICALOFFSETY  {Physical Printable Area Y margin}
+  );
+
+  { Mapping Modes }
+  TMapMode = (
+    MM_TEXT        = 1,
+    MM_LOMETRIC    = 2,
+    MM_HIMETRIC    = 3,
+    MM_LOENGLISH   = 4,
+    MM_HIENGLISH   = 5,
+    MM_TWIPS       = 6,
+    MM_ISOTROPIC   = 7,
+    MM_ANISOTROPIC = 8
+  );
+
 const
-  ODS_DISABLED = 1;
-  ODS_SELECTED = 2;
-  ODS_FOCUS    = 4;
+  { Min and Max Mapping Mode values }
+  MM_MIN = MM_TEXT;
+  MM_MAX = MM_ANISOTROPIC;
+  MM_MAX_FIXEDSCALE = MM_TWIPS;
+
+type
+  TMinMaxInfo = packed record
+    ptReserved: TPoint;
+    ptMaxSize: TPoint;
+    ptMaxPosition: TPoint;
+    ptMinTrackSize: TPoint;
+    ptMaxTrackSize: TPoint;
+  end;
+
+(*)
+  PPaintStruct = ^TPaintStruct;
+  tagPAINTSTRUCT = packed record
+    hdc: HDC;
+    fErase: BOOL;
+    rcPaint: TRect;
+    fRestore: BOOL;
+    fIncUpdate: BOOL;
+    rgbReserved: array[0..31] of Byte;
+  end;
+  TPaintStruct = tagPAINTSTRUCT;
+  PAINTSTRUCT = tagPAINTSTRUCT;
+(*)
+
+{ regions }
+type
+  TCombineMode = (
+    RGN_AND,   // Creates the intersection of the two combined regions.
+    RGN_COPY,  // Creates a copy of the region identified by hrgnSrc1.
+    RGN_DIFF,  // Combines the parts of hrgnSrc1 that are not part of hrgnSrc2.
+    RGN_OR,    // Creates the union of two combined regions.
+    RGN_XOR    // Creates the union of two combined regions except for any overlapping areas.
+  );
+
+  PSecurityAttributes = Pointer;
+
+{ StretchBlt() Modes }
+  TStretchMode = (
+    BLACKONWHITE = 1,
+    WHITEONBLACK = 2,
+    COLORONCOLOR = 3,
+    HALFTONE     = 4
+  );
+
+const
+  MAXSTRETCHBLTMODE   = 4;
+  STRETCH_ANDSCANS    = BLACKONWHITE;
+  STRETCH_ORSCANS     = WHITEONBLACK;
+  STRETCH_DELETESCANS = COLORONCOLOR;
+  STRETCH_HALFTONE    = HALFTONE;
+
+{ Stock Logical Objects }
+type
+  TStockObjectBrush = (
+    WHITE_BRUSH  = 0,
+    LTGRAY_BRUSH = 1,
+    GRAY_BRUSH   = 2,
+    DKGRAY_BRUSH = 3,
+    BLACK_BRUSH  = 4,
+    NULL_BRUSH   = 5,
+    DC_BRUSH     = 18
+  );
+
+  TStockObjectPen = (
+    WHITE_PEN = 6,
+    BLACK_PEN = 7,
+    NULL_PEN  = 8,
+    DC_PEN    = 19
+  );
+
+  TStockObjectFont = (
+    OEM_FIXED_FONT      = 10,
+    ANSI_FIXED_FONT     = 11,
+    ANSI_VAR_FONT       = 12,
+    SYSTEM_FONT         = 13,
+    DEVICE_DEFAULT_FONT = 14,
+    DEFAULT_PALETTE     = 15,
+    SYSTEM_FIXED_FONT   = $10,
+    DEFAULT_GUI_FONT    = 17
+  );
+
+const
+  HOLLOW_BRUSH = NULL_BRUSH;
+  STOCK_LAST   = DC_PEN;
+
+type
+  TSysMetrics = (
+    SM_CXSCREEN,  SM_CYSCREEN,
+    SM_CXVSCROLL, SM_CYVSCROLL,
+    SM_CXHSCROLL, SM_CYHSCROLL,
+    SM_CXSMICON,  SM_CYSMICON,
+    SM_CXICON,    SM_CYICON,
+    SM_CXBORDER,  SM_CYBORDER,
+    SM_CXFRAME,   SM_CYFRAME,
+    SM_CYCAPTION, SM_CXDLGFRAME,
+    SM_CYDLGFRAME
+  );
+
+{$IFDEF LINUX}
+  TSystemTime = record
+    wYear: Word;
+    wMonth: Word;
+    wDayOfWeek: Word;
+    wDay: Word;
+    wHour: Word;
+    wMinute: Word;
+    wSecond: Word;
+    wMilliseconds: Word;
+  end;
+{$ENDIF LINUX}
+
+  { threads }
+type
+  TThreadPriority = Integer;
+const
+  tpIdle: TThreadPriority = 0;
+  THREAD_PRIORITY_ERROR_RETURN = 255;
+
+type { wait for object}
+  TWOHandleArray = array[0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
+  PWOHandleArray = ^TWOHandleArray;
+
+  TWindowPlacement = packed record
+    length: Cardinal;
+    flags: Integer;
+    showCmd: UInt;
+    ptMinPosition: TPoint;
+    ptMaxPosition: TPoint;
+    rcNormalPosition: TRect;
+  end;
+  PWindowPlacement = ^TWindowPlacement;
+
+type
+  TTimerProc = procedure(Widget: QWidgetH; Msg: Cardinal; WMTimerId: Cardinal;  TickCount: Cardinal);
+  TAppEventFilter = function(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+  PAppEventFilter = ^TAppEventFilter;
+
+function InstallApplicationEventHook(EventFilter: PAppEventFilter): QObject_hookH;
+
+procedure WakeUpGuiThread;
+{
+  Dummies for ... VCL
+ asn: AFAIK use of RightToLeft or LeftToRight is automatic
+}
+const
+  BiDiMode: TBiDiMode = bdLeftToRight; // asn: var?
+
+function DrawTextBiDiModeFlagsReadingOnly: Longint;
+function DrawTextBiDiModeFlags(Flags: Longint): Longint;
+procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
+function UseRightToLeftAlignment: Boolean;
+
+{ Palette colors }
+function GetSysColor(SysColor: Integer): TColorRef;  // windows SysColor !!
+function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
+function SetSysColors(Elements: Integer; const lpaElements;
+  const lpaRgbValues): LongBool;
+
+{
+ QGraphics.ColorToRGB supports only
+ TMappedColor = clActiveHighlightedText..clNormalForeground
+ Returns clBlack for any other color !
+
+  This implementation uses Instance.Palette and supports all colors
+  if Instance = nil then it will use Application.MainForm, in that
+  case clHighlightedText..clForeground is mapped to clNormalHighlightedText..clNormalForeground
+  If the Color is an RGB value, clDefault, clNone,  it returns the Color itself.
+}
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+
+function RGB(Red, Green, Blue: Integer): TColorRef;
+function GetBValue(Col: TColorRef): Byte;
+function GetGValue(Col: TColorRef): Byte;
+function GetRValue(Col: TColorRef): Byte;
+function pfDevice: TPixelFormat;
+
+function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
+function IsRectEmpty(R: TRect): LongBool;
+function EqualRect(R1, R2: TRect): LongBool;
+function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
+function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
+function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
+function CenterRect(InnerRect, OuterRect: TRect): TRect;
+function PtInRect(const R: TRect; pt: TPoint): LongBool; overload;
+function PtInRect(const R: TRect; X, Y: integer): LongBool; overload;
+function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
 
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
 function CreateHatchBrush(bStyle: BrushStyle; Color: TColor): QBrushH;
 function DeleteObject(Handle: QBrushH): LongBool; overload;
 
-const
-  { BrushStyle mappings}
-  HS_BDIAGONAL  = BrushStyle_BDiagPattern;    // 45-degree downward left-to-right hatch
-  HS_CROSS      = BrushStyle_CrossPattern;    // Hor. and vertical crosshatch
-  HS_DIAGCROSS  = BrushStyle_DiagCrossPattern;// 45-degree crosshatch
-  HS_FDIAGONAL  = BrushStyle_FDiagPattern;    // 45-degree upward left-to-right hatch
-  HS_HORIZONTAL = BrushStyle_HorPattern;      // Horizontal hatch
-  HS_VERTICAL   = BrushStyle_VerPattern;      // Vertical hatch
-
 function CreatePen(Style, Width: Integer; Color: TColor): QPenH;
 function DeleteObject(Handle: QPenH): LongBool; overload;
-
-const
-  { Pen Styles }
-  PS_NULL          = 0;   // PenStyle_NoPen
-  PS_SOLID         = 1;   // PenStyle_SolidLine
-  PS_DASH          = 2;   // PenStyle_DashLine
-  PS_DOT           = 3;   // PenStyle_DotLine
-  PS_DASHDOT       = 4;   // PenStyle_DashDotLine
-  PS_DASHDOTDOT    = 5;   // PenStyle_DashDotDotLine
-  PS_STYLE_MASK    = 15;  // PenStyle_MPenStyle
-  {caps}
-  PS_ENDCAP_FLAT   = 0;   // PenCapStyle_FlatCap
-  PS_ENDCAP_SQUARE = 16;  // PenCapStyle_SquareCap
-  PS_ENDCAP_ROUND  = 32;  // PenCapStyle_RoundCap
-  PS_ENDCAP_MASK   = 48;  // PenCapStyle_MPenCapStyle
-  {join}
-  PS_JOIN_MITER    = 0;   // PenJoinStyle_MiterJoin
-  PS_JOIN_BEVEL    = 64;  // PenJoinStyle_BevelJoin
-  PS_JOIN_ROUND    = 128; // PenJoinStyle_RoundJoin
-  PS_JOIN_MASK     = $C0; // PenCapStyle_MPenCapStyle
 
 function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
@@ -648,87 +1176,15 @@ function StretchBlt(DestDC: QPainterH; dx, dy, dw, dh: Integer;
 function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
   SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal;
   IgnoreMask: Boolean = True): LongBool; overload;
-
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
   Rgn: QRegionH; Update: PRect): LongBool;
-
-{ StretchBlt() Modes }
-type
-  TStretchMode = (
-    BLACKONWHITE = 1,
-    WHITEONBLACK = 2,
-    COLORONCOLOR = 3,
-    HALFTONE = 4
-  );
-
-const
-  MAXSTRETCHBLTMODE = 4;
-  STRETCH_ANDSCANS = BLACKONWHITE;
-  STRETCH_ORSCANS = WHITEONBLACK;
-  STRETCH_DELETESCANS = COLORONCOLOR;
-  STRETCH_HALFTONE = HALFTONE;
 
 { TODO -oahuser : StretchBlt function should use the flag }
 function GetStretchBltMode(DC: QPainterH): TStretchMode;
 function SetStretchBltMode(DC: QPainterH; StretchMode: TStretchMode): TStretchMode;
 
-const
-  { BitBlt:  windows dwRop values
-    asn: limited implementation, possible to extend }
-  BLACKNESS   = $00000042;   // RasterOp_ClearROP
-  DSTINVERT   = $00550009;   // RasterOp_NotROP
-  MERGECOPY   = $00C000CA;   // RasterOp_OrROP
-  MERGEPAINT  = $00BB0226;   // RasterOp_NotOrRop
-  NOTSRCCOPY  = $00330008;   // RasterOp_NotCopyROP
-  NOTSRCERASE = $001100A6;   // RasterOp_NorROP
-  SRCAND      = $008800C6;   // RasterOp_AndROP
-  SRCCOPY     = $00CC0020;   // RasterOp_CopyROP
-  SRCERASE    = $00440328;   // RasterOp_AndNotROP
-  SRCINVERT   = $00660046;   // RasterOp_XorROP
-  SRCPAINT    = $00EE0086;   // RasterOp_OrROP;
-  WHITENESS   = $00FF0062;   // RasterOp_SetROP
-  PATCOPY     = $00F00021;   // dest = pattern
-  PATPAINT    = $00FB0A09;   // dest = DPSnoo = PDSnoo
-  PATINVERT   = $005A0049;   // dest = pattern XOR dest
-  ROP_DSPDxax = $00E20746;   // dest = ((pattern XOR dest) AND source) XOR Dest
-  ROP_DSna    = $00220326;   // RasterOp_NotAndROP
-  ROP_DSno    = MERGEPAINT;
-  ROP_DPSnoo  = PATPAINT;
-  ROP_D       = $00AA0029;   // RasterOp_NopROP
-  ROP_Dn      = DSTINVERT;   // DSTINVERT
-  ROP_SDna    = SRCERASE;    // SRCERASE
-  ROP_SDno    = $00DD0228;   // RasterOp_OrNotROP
-  ROP_DSan    = $007700E6;   // RasterOp_NandROP
-  ROP_DSon    = $001100A6;   // NOTSRCERASE
-  //ROP_Pn      = $000F0001;   //
-
-const
- { SetROP2:  windows ROP2 values }
-  R2_BLACK       = 9;  // RasterOp_ClearROP:  Pixel is always 0.
-  R2_WHITE       = 10; // RasterOp_SetROP:Pixel is always 1.
-  R2_NOP         = 11; // RasterOp_NopROP: Pixel remains unchanged.
-  R2_NOT         = 8;  // RasterOp_NotROP:      inverse of the screen color.
-  R2_COPYPEN     = 0;  // RasterOp_CopyROP: Pixel is the pen color.
-  R2_NOTCOPYPEN  = 4;  // RasterOp_NotCopyROP; inverse of the pen color.
-  R2_MERGEPENNOT = 13; // RasterOp_OrNotROP: combination of the pen color and the inverse of the screen color.
-  R2_MASKPENNOT  = 12; // RasterOp_AndNotROP: combination of the colors common to both the pen and the inverse of the screen.
-  R2_MERGEPEN    = 1;  // RasterOp_OrROP: combination of the pen color and the screen color.
-  R2_NOTMERGEPEN = 15; // RasterOp_NorROP:  inverse of the R2_MERGEPEN color.
-  R2_MASKPEN     = 7;  // RasterOp_AndROP: combination of the colors common to both the pen and the screen.
-  R2_NOTMASKPEN  = 14; // RasterOp_NandROP: inverse of the R2_MASKPEN color.
-  R2_XORPEN      = 2;  // RasterOp_XorROP: combination of the colors in the pen and in the screen, but not in both.
-  R2_NOTXORPEN   = 6;  // RasterOp_NotXorROP: inverse of the R2_XORPEN color.
-  R2_MASKNOTPEN  = 3;  // RasterOp_NotAndROP: combination of the colors common to both the screen and the inverse of the pen.
-  R2_MERGENOTPEN = 5;  // RasterOp_NotOrROP: combination of the screen color and the inverse of the pen color.
-
 function SetROP2(Handle: QPainterH; Rop: Integer): Integer; overload;
 function GetROP2(Handle: QPainterH): Integer; overload;
-
-const
-  { SetBkMode: background mode }
-  TRANSPARENT = 1; // BGMode_TransparentMode
-  OPAQUE      = 2; // BGMode_OpaqueMode
-
 function GetPixel(Handle: QPainterH; X, Y: Integer): TColorRef;
 function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColor): TColorRef;
 function SetTextColor(Handle: QPainterH; color: TColor): TColorRef;
@@ -738,9 +1194,7 @@ function SetBkMode(Handle: QPainterH; BkMode: Integer): Integer;
 function SetDCBrushColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetDCPenColor(Handle: QPainterH; Color: TColor): TColorRef;
 function SetPenColor(Handle: QPainterH; Color: TColor): TColorRef;
-
 procedure SetPainterFont(Handle: QPainterH; Font: TFont);
-
 
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
@@ -748,75 +1202,15 @@ function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: P
 function CreateDIBitmap(Handle: QPainterH; var InfoHeader: TBitmapInfoHeader;
   dwUsage: Longword; InitBits: PChar; var InitInfo: TBitmapInfo; wUsage: Cardinal): QPixmapH;
 
-{ constants for CreateDIBitmap }
-const
-  CBM_INIT = 4;     { initialize bitmap  }
-
-  DIB_RGB_COLORS = 0;
-  // DIB_PAL_COLORS = 1; // not supported by CreateDIBitmap
-
 function GetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
 function SetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
 
 function GetObject(Handle: QPixmapH; Size: Cardinal; Data: PtagBITMAP): Boolean; overload;
 function GetObject(Handle: QPenH; Size: Cardinal; Data: PLogPen): Boolean; overload;
 
-{ Stock Logical Objects }
-type
-  TStockObjectBrush = (
-    WHITE_BRUSH = 0,
-    LTGRAY_BRUSH = 1,
-    GRAY_BRUSH = 2,
-    DKGRAY_BRUSH = 3,
-    BLACK_BRUSH = 4,
-    NULL_BRUSH = 5,
-    DC_BRUSH = 18
-  );
-
-  TStockObjectPen = (
-    WHITE_PEN = 6,
-    BLACK_PEN = 7,
-    NULL_PEN = 8,
-    DC_PEN = 19
-  );
-
-  TStockObjectFont = (
-    OEM_FIXED_FONT = 10,
-    ANSI_FIXED_FONT = 11,
-    ANSI_VAR_FONT = 12,
-    SYSTEM_FONT = 13,
-    DEVICE_DEFAULT_FONT = 14,
-    DEFAULT_PALETTE = 15,
-    SYSTEM_FIXED_FONT = $10,
-    DEFAULT_GUI_FONT = 17
-  );
-
-const
-  HOLLOW_BRUSH = NULL_BRUSH;
-  STOCK_LAST = DC_PEN;
-
 function GetStockObject(fnObject: TStockObjectBrush): QBrushH; overload;
 function GetStockObject(fnObject: TStockObjectPen): QPenH; overload;
 function GetStockObject(fnObject: TStockObjectFont): QFontH; overload;
-
-type
-  { Mapping Modes }
-  TMapMode = (
-    MM_TEXT = 1,
-    MM_LOMETRIC = 2,
-    MM_HIMETRIC = 3,
-    MM_LOENGLISH = 4,
-    MM_HIENGLISH = 5,
-    MM_TWIPS = 6,
-    MM_ISOTROPIC = 7,
-    MM_ANISOTROPIC = 8
-  );
-  
-const
-  { Min and Max Mapping Mode values }
-  MM_MIN = MM_TEXT;
-  MM_MAX = MM_ANISOTROPIC;
-  MM_MAX_FIXEDSCALE = MM_TWIPS;
 
 function GetMapMode(Handle: QPainterH): TMapMode;
 function SetMapMode(Handle: QPainterH; MapMode: TMapMode): TMapMode;
@@ -848,12 +1242,6 @@ function ExtTextOutW(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
 function SetTextAlign(Handle: QPainterH; Mode: Cardinal): Cardinal;
 function GetTextAlign(Handle: QPainterH): Cardinal;
 
-const
-  { ExtTextOut format flags }
-  ETO_OPAQUE     = 2;
-  ETO_CLIPPED    = 4;
-  ETO_RTLREADING = $80; // ignored
-
 function FillRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool;
 
 function GetCurrentPositionEx(Handle: QPainterH; pos: PPoint): LongBool;
@@ -865,7 +1253,6 @@ function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer
   var Size: TSize): LongBool;
 function GetTextExtentPoint32(Canvas: TCanvas; const Text: WideString; Len: Integer;
   var Size: TSize): LongBool; overload;
-
 
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
@@ -883,14 +1270,6 @@ function DrawIconEx(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH;
   W, H: Integer; istepIfAniCur: Integer; hbrFlickerFreeDraw: QBrushH;
   diFlags: Cardinal): LongBool;
 
-const
-{ DrawIconEx diFlags }
-  DI_MASK        = 1;
-  DI_IMAGE       = 2;
-  DI_NORMAL      = 3;
-//  DI_COMPAT    = 4;   not supported
-  DI_DEFAULTSIZE = 8;
-
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
   uState: Longword): LongBool; overload;
   { missing DrawFrameControl flags:
@@ -899,117 +1278,22 @@ function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
       DFC_POPUPMENU: all }
 function DrawFrameControl(Canvas: TCanvas; const Rect: TRect; uType,
   uState: Longword): LongBool; overload;
-
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
-
-const
-  { flags for DrawFrameControl }
-  DFC_CAPTION = 1;
-  DFC_MENU = 2;
-  DFC_SCROLL = 3;
-  DFC_BUTTON = 4;
-  DFC_POPUPMENU = 5;
-
-  DFCS_CAPTIONCLOSE = 0;
-  DFCS_CAPTIONMIN = 1;
-  DFCS_CAPTIONMAX = 2;
-  DFCS_CAPTIONRESTORE = 3;
-  DFCS_CAPTIONHELP = 4;
-
-  DFCS_MENUARROW = 0;
-  DFCS_MENUCHECK = 1;
-  DFCS_MENUBULLET = 2;
-  DFCS_MENUARROWRIGHT = 4;
-
-  DFCS_SCROLLUP = 0;
-  DFCS_SCROLLDOWN = 1;
-  DFCS_SCROLLLEFT = 2;
-  DFCS_SCROLLRIGHT = 3;
-  DFCS_SCROLLCOMBOBOX = 5;
-  DFCS_SCROLLSIZEGRIP = 8;
-  DFCS_SCROLLSIZEGRIPRIGHT = $10;
-
-  DFCS_BUTTONCHECK = 0;
-  DFCS_BUTTONRADIOIMAGE = 1;
-  DFCS_BUTTONRADIOMASK = 2;
-  DFCS_BUTTONRADIO = 4;
-  DFCS_BUTTON3STATE = 8;
-  DFCS_BUTTONPUSH = $10;
-
-  DFCS_INACTIVE = $100;
-  DFCS_PUSHED = $200;
-  DFCS_CHECKED = $400;
-  DFCS_TRANSPARENT = $800;
-  DFCS_HOT = $1000;
-  DFCS_ADJUSTRECT = $2000;
-  DFCS_FLAT = $4000;
-  DFCS_MONO = $8000;
-
-  { 3D border styles }
-  BDR_RAISEDOUTER = 1;
-  BDR_SUNKENOUTER = 2;
-  BDR_RAISEDINNER = 4;
-  BDR_SUNKENINNER = 8;
-
-  BDR_OUTER = BDR_SUNKENOUTER or BDR_RAISEDOUTER;
-  BDR_INNER = BDR_SUNKENINNER or BDR_SUNKENOUTER;
-  BDR_RAISED = BDR_RAISEDINNER or BDR_RAISEDOUTER;
-  BDR_SUNKEN = BDR_SUNKENINNER or BDR_SUNKENOUTER;
-
-  EDGE_RAISED = BDR_RAISEDOUTER or BDR_RAISEDINNER;
-  EDGE_SUNKEN = BDR_SUNKENOUTER or BDR_SUNKENINNER;
-  EDGE_ETCHED = BDR_SUNKENOUTER or BDR_RAISEDINNER;
-  EDGE_BUMP = BDR_RAISEDOUTER or BDR_SUNKENINNER;
-
-  { Border flags }
-  BF_LEFT = 1;
-  BF_TOP = 2;
-  BF_RIGHT = 4;
-  BF_BOTTOM = 8;
-
-  BF_TOPLEFT = BF_TOP or BF_LEFT;
-  BF_TOPRIGHT = BF_TOP or BF_RIGHT;
-  BF_BOTTOMLEFT = BF_BOTTOM or BF_LEFT;
-  BF_BOTTOMRIGHT = BF_BOTTOM or BF_RIGHT;
-  BF_RECT = BF_TOPLEFT or BF_BOTTOMRIGHT;
-
-  BF_DIAGONAL = $10;
-
-  { For diagonal lines, the BF_RECT flags specify the end point of the}
-  { vector bounded by the rectangle parameter.}
-  BF_DIAGONAL_ENDTOPRIGHT = BF_DIAGONAL or BF_TOP or BF_RIGHT;
-  BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL or BF_TOP or BF_LEFT;
-  BF_DIAGONAL_ENDBOTTOMLEFT = BF_DIAGONAL or BF_BOTTOM or BF_LEFT;
-  BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL or BF_BOTTOM or BF_RIGHT;
-
-  BF_MIDDLE = $800;   { Fill in the middle }
-  BF_SOFT = $1000;    { For softer buttons }
-  BF_ADJUST = $2000;  { Calculate the space left over }
-  BF_FLAT = $4000;    { For flat rather than 3D borders }
-  BF_MONO = $8000;    { For monochrome borders }
-
-type
-  THackCanvas = class(TCanvas);
 
 procedure RequiredState(ACanvas: TCanvas; State: TCanvasState);
 
 { limited implementation of }
 function DrawText2(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
-
 function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
-
 function DrawText(Handle: QPainterH; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
-
 function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
-
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   x,y, w, h: Integer; WinFlags: Integer; Angle: Integer = 0): Integer;  overload;
-
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 {
@@ -1019,116 +1303,23 @@ function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
 }
 function DrawText(Canvas :TCanvas; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer; overload;
-
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
-
 function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
 
-const
-  { DrawText format (windows) flags }
-  DT_TOP           = 0;
-  DT_LEFT          = 0;
-  DT_CENTER        = 1;
-  DT_RIGHT         = 2;
-  DT_VCENTER       = 4;
-  DT_BOTTOM        = 8;
-  DT_WORDBREAK     = $10;
-  DT_SINGLELINE    = $20;
-  DT_EXPANDTABS    = $40;
-  DT_TABSTOP       = $80;
-  DT_NOCLIP        = $100;
-(* DT_EXTERNALLEADING = $200;  // not supported *)
-  DT_CALCRECT      = $400;
-  DT_NOPREFIX      = $800;
-  DT_INTERNAL      = $1000;  // Uses the system font to calculate text metrics.
-  DT_EDITCONTROL   = $2000;  // ignored
-  DT_PATH_ELLIPSIS = $4000;
-  DT_ELLIPSIS      = $8000;
-  DT_END_ELLIPSIS  = DT_ELLIPSIS;
-  DT_MODIFYSTRING  = $10000;
-  DT_RTLREADING    = $20000; // ignored
-  DT_WORD_ELLIPSIS = $40000;
-  DT_HIDEPREFIX    = $100000;
-  DT_PREFIXONLY    = $200000;
-
-type
-  TSysMetrics = (
-    SM_CXSCREEN,  SM_CYSCREEN,
-    SM_CXVSCROLL, SM_CYVSCROLL,
-    SM_CXHSCROLL, SM_CYHSCROLL,
-    SM_CXSMICON,  SM_CYSMICON,
-    SM_CXICON,    SM_CYICON,
-    SM_CXBORDER,  SM_CYBORDER,
-    SM_CXFRAME,   SM_CYFRAME,
-    SM_CYCAPTION, SM_CXDLGFRAME,
-    SM_CYDLGFRAME
-  );
-
 { limited implementation of }
 function GetSystemMetrics(PropItem: TSysMetrics): Integer;
-
-type
-  TDeviceCap = (
-    HORZSIZE,        {Horizontal size in millimeters}
-    VERTSIZE,        {Vertical size in millimeters}
-    HORZRES,         {Horizontal width in pixels}
-    VERTRES,         {Vertical height in pixels}
-    BITSPIXEL,       {Number of bits per pixel}
-    PLANES,          {Number of planes}
-    NUMCOLORS,
-    LOGPIXELSX,      {Logical pixelsinch in X}
-    LOGPIXELSY,      {Logical pixelsinch in Y}
-    PHYSICALWIDTH,   {Physical Width in device units}
-    PHYSICALHEIGHT,  {Physical Height in device units}
-    PHYSICALOFFSETX, {Physical Printable Area X margin}
-    PHYSICALOFFSETY  {Physical Printable Area Y margin}
-  );
 
 { (very) limited implementations of }
 function GetDeviceCaps(Handle: QPainterH; devcap: TDeviceCap): Integer; overload;
 function GetDeviceCaps(Handle: QPaintDeviceH; devcap: TDeviceCap): Integer; overload;
 
 function GetTextMetrics(Handle: QPainterH; var tt: TTextMetric): Integer;
-
-type
-  TMinMaxInfo = packed record
-    ptReserved: TPoint;
-    ptMaxSize: TPoint;
-    ptMaxPosition: TPoint;
-    ptMinTrackSize: TPoint;
-    ptMaxTrackSize: TPoint;
-  end;
-
-(*)
-  PPaintStruct = ^TPaintStruct;
-  tagPAINTSTRUCT = packed record
-    hdc: HDC;
-    fErase: BOOL;
-    rcPaint: TRect;
-    fRestore: BOOL;
-    fIncUpdate: BOOL;
-    rgbReserved: array[0..31] of Byte;
-  end;
-  TPaintStruct = tagPAINTSTRUCT;
-  PAINTSTRUCT = tagPAINTSTRUCT;
-(*)
-  TWindowPlacement = packed record
-    length: Cardinal;
-    flags: Integer;
-    showCmd: UInt;
-    ptMinPosition: TPoint;
-    ptMaxPosition: TPoint;
-    rcNormalPosition: TRect;
-  end;
-  PWindowPlacement = ^TWindowPlacement;
-
-
 // widget related  function
 function BringWindowToTop(Handle: QWidgetH): LongBool;
 function CloseWindow(Handle: QWidgetH): LongBool;
@@ -1140,7 +1331,8 @@ function GetParent(Handle: QWidgetH): QWidgetH;
 function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
-function WindowFromDC(Handle: QPainterH): QWidgetH;
+function WindowFromDC(Handle: QPainterH): QWidgetH; overload;
+function WindowFromDC(Handle: QPaintDeviceH): QWidgetH; overload;
 
 { hWndParent is ignored under Linux }
 function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
@@ -1180,119 +1372,21 @@ function SetWindowPos(Wnd, WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
 function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Integer;
   uFlags: Longword): LongBool; overload;
 
-
 { Controls.pas implements, so we need it, too }
 procedure MoveWindowOrg(DC: QPainterH; DX, DY: Integer);
 
-const
-  { SetWindowPos Flags }
-  SWP_NOSIZE = 1;
-  SWP_NOMOVE = 2;
-  SWP_NOZORDER = 4;
-  SWP_NOREDRAW = 8;
-  SWP_NOACTIVATE = $10;
-  SWP_FRAMECHANGED = $20;    { The frame changed: send WM_NCCALCSIZE }
-  SWP_SHOWWINDOW = $40;
-  SWP_HIDEWINDOW = $80;
-  SWP_NOCOPYBITS = $100; // ignored
-  SWP_NOOWNERZORDER = $200;  { Don't do owner Z ordering }
-  SWP_NOSENDCHANGING = $400;  // ignores
-  SWP_DRAWFRAME = SWP_FRAMECHANGED;
-  SWP_NOREPOSITION = SWP_NOOWNERZORDER;
-  SWP_DEFERERASE = $2000;
-  SWP_ASYNCWINDOWPOS = $4000; // ignored
-
-  HWND_TOP = Cardinal(0);
-  HWND_BOTTOM = Cardinal(1);
-  HWND_TOPMOST = Cardinal(-1);
-  HWND_NOTOPMOST = Cardinal(-2);
-
 function ShowWindow(Handle: QWidgetH; showCmd: UInt): LongBool;
-
-const
-  { ShowWindow() Commands }
-  SW_HIDE = 0;
-  SW_SHOWNORMAL = 1;
-  SW_NORMAL = 1;
-  SW_SHOWMINIMIZED = 2;
-  SW_SHOWMAXIMIZED = 3;
-  SW_MAXIMIZE = 3;
-  SW_SHOWNOACTIVATE = 4;
-  SW_SHOW = 5;
-  SW_MINIMIZE = 6;
-  SW_SHOWMINNOACTIVE = 7;
-  SW_SHOWNA = 8;
-  SW_RESTORE = 9;
-  SW_SHOWDEFAULT = 10;
-  SW_MAX = 10;
 
 function MessageBox(parent: QWidgetH; Text, Caption: string; WinFlags: Cardinal): Integer; overload;
 function MessageBox(parent: QWidgetH; Text, Caption: WideString; WinFlags: Cardinal): Integer; overload;
 function MessageBox(parent: QWidgetH; pText, pCaption: PChar; WinFlags: Cardinal): Integer; overload;
 //function MessageBoxW(parent: QWidgetH; pText, pCaption: PWideChar; WinFlags: Cardinal): Integer;
 
-const
-  { MessageBox() WinFlags }
-  MB_OK              = $0000;
-  MB_OKCANCEL        = $0001;
-  MB_ABORTRETRYIGNORE= $0002;
-  MB_YESNOCANCEL     = $0003;
-  MB_YESNO           = $0004;
-  MB_RETRYCANCEL     = $0005;
-  MB_HELP            = $4000; { Help Button not supported}
-  MB_ICONHAND        = $0010;
-  MB_ICONQUESTION    = $0020;
-  MB_ICONEXCLAMATION = $0030;
-  MB_ICONASTERISK    = $0040;
-  MB_USERICON        = $0080;
-  MB_DEFBUTTON1      = $0000;
-  MB_DEFBUTTON2      = $0100;
-  MB_DEFBUTTON3      = $0200;
-  MB_DEFBUTTON4      = $0300;
-  MB_ICONWARNING     = MB_ICONEXCLAMATION;
-  MB_ICONERROR       = MB_ICONHAND;
-  MB_ICONINFORMATION = MB_ICONASTERISK;
-  MB_ICONSTOP        = MB_ICONHAND;
-
-  { MessageBox() return values }
-  IDCLOSE  = 0;
-  IDOK     = 1;
-  IDCANCEL = 2;
-  IDYES    = 3;
-  IDNO     = 4;
-  IDABORT  = 5;
-  IDRETRY  = 6;
-  IDIGNORE = 7;
-  { aliases }
-  ID_OK      = IDOK;
-  ID_CANCEL  = IDCANCEL;
-  ID_ABORT   = IDABORT;
-  ID_RETRY   = IDRETRY;
-  ID_IGNORE  = IDIGNORE;
-  ID_YES     = IDYES;
-  ID_NO      = IDNO;
-  ID_CLOSE   = IDCLOSE;
-  IDHELP     = 9;        //  not supported
-  ID_HELP    = IDHELP;  //  not supported
-  IDTRYAGAIN = IDRETRY;
-  IDCONTINUE = IDIGNORE;
-
 function SelectObject(Handle: QPainterH; Font: QFontH): QFontH; overload;
 function SelectObject(Handle: QPainterH; Brush: QBrushH): QBrushH; overload;
 function SelectObject(Handle: QPainterH; Pen: QPenH): QPenH; overload;
-
 // limited to CreateCompatibleDC Handles.
 function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH; overload;
-
-// region related API's
-type
-  TCombineMode = (
-    RGN_AND,   // Creates the intersection of the two combined regions.
-    RGN_COPY,  // Creates a copy of the region identified by hrgnSrc1.
-    RGN_DIFF,  // Combines the parts of hrgnSrc1 that are not part of hrgnSrc2.
-    RGN_OR,    // Creates the union of two combined regions.
-    RGN_XOR    // Creates the union of two combined regions except for any overlapping areas.
-  );
 
 function CombineRgn(DestRgn, Source1, Source2: QRegionH; Operation: TCombineMode): Integer;
 function CreateEllipticRgn(Left, Top, Right, Bottom: Integer): QRegionH;
@@ -1324,17 +1418,6 @@ function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Int
   { asn: Qt operates on the client rectangle of the form: windows/x11 titlebar
          and windows/x11 borders are not included, hence the negative values }
 function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
-
-const
-  { constants for CreatePolygon  }
-  ALTERNATE     = 1;
-  WINDING       = 2;
-  { CombineRgn return values }
-  NULLREGION    = 1;     // Region is empty
-  SIMPLEREGION  = 2;     // Region is a rectangle
-  COMPLEXREGION = 3;     // Region is not a rectangle
-  ERROR         = 0;     // Region error
-  RGN_ERROR     = ERROR;
 
 { viewports }
 function SetViewportExtEx(Handle: QPainterH; XExt, YExt: Integer; Size: PSize): LongBool;
@@ -1376,59 +1459,38 @@ function QtStdAlign(Flags: Integer): Word;
 function IsCharAlpha(Ch: Char): LongBool;
 function IsCharAlphaNumeric(Ch: Char): LongBool;
 
-{ Message }
-
-{ AllocateMessageWidget allocates a new QObjectH that redirects any
-  Send/PostMessage command to the assigned object via Dispatch(). }
-function AllocateMessageObject(Obj: TObject): QObjectH;
-procedure DeallocateMessageObject(Handle: QObjectH);
-
-function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
- { Limitation: Handle must be a TWidgetControl derived class handle or a
-   MessageObject handle. }
-function PostMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
-function PostMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
+{ Messaging }
+function Perform(Control: TControl; Msg: Cardinal; WPar, LPar: Longint): Longint;
+function PostMessage(Receiver: QWidgetH; MsgId: Integer; WPar, LPar: Longint): LongBool; overload;
+function PostMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): LongBool; overload;
 { SendMessage synchronizes with the main (event handling) thread. }
-function SendMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+function SendMessage(Receiver: QWidgetH; MsgId: Integer; WPar, LPar: Longint): Integer; overload;
+function SendMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): Integer; overload;
 
-type
-  TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
-
-procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
-procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
-procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
+// procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
 { equivalent to "while PeekMessage(h, evstart, evend, PM_REMOVE" }
-procedure IgnoreMouseEvents(Handle: QObjectH);
+//procedure IgnoreMouseEvents(Handle: QObjectH);
+function IgnoreMouseEvents(Handle: QObjectH; Event: QEventH): boolean;
 
-function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
-  TimerFunc: Pointer): Cardinal; overload;
-function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
-  TimerFunc: Pointer): Cardinal; overload;
-function KillTimer(Wnd: QWidgetH; IDEvent: Cardinal): LongBool; overload;
-function KillTimer(Wnd: Cardinal; IDEvent: Cardinal): LongBool; overload;
+function SetTimer(Wnd: QWidgetH; WMTimerID, Elapse: Cardinal;
+  TimerFunc: TTimerProc): Cardinal; overload;
+function SetTimer(Instance: TWidgetControl; WMTimerID, Elapse: Cardinal;
+  TimerFunc: TTimerProc): Cardinal; overload;
+function KillTimer(Wnd: QWidgetH; WMTimerId: Cardinal): LongBool; overload;
+function KillTimer(Instance: TWidgetControl; WMTimerId: Cardinal): LongBool; overload;
 
-const
-  WM_USER             = $0400;
-  WM_TIMER            = $0113;
-  WM_NCPAINT          = $0085;
+function MAKEIPRANGE(low, high: Byte): integer;
+function MAKEIPADDRESS(b1, b2, b3, b4: cardinal): integer;
+function FIRST_IPADDRESS(x: cardinal): cardinal;
+function SECOND_IPADDRESS(x: cardinal): cardinal;
+function THIRD_IPADDRESS(x: cardinal): cardinal;
+function FOURTH_IPADDRESS(x: cardinal): cardinal;
 
-  EM_GETRECT          = $00B2;
-  EM_SETRECT          = $00B3;
-
-  {$IFDEF LINUX}
-  HINSTANCE_ERROR = 0;
-  HINSTANCE_OK    = HINSTANCE_ERROR + 1;
-  {$ENDIF LINUX}
-
-{ wrappers for Windows, implemantations for Linux}
-
+{ wrappers for Windows, implementations for Linux}
 function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
-
 function ShellExecute(Handle: QWidgetH; const Operation, FileName, Parameters,
   Directory: string; ShowCmd: Integer): THandle; overload;
-
 function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
@@ -1441,34 +1503,19 @@ function InterlockedIncrement(var I: Integer): Integer;
 function InterlockedDecrement(var I: Integer): Integer;
 function InterlockedExchange(var A: Integer; B: Integer): Integer;
 function InterlockedExchangeAdd(var A: Integer; B: Integer): Integer;
+function QueryPerformanceCounter(var PerformanceCount: int64): LongBool;
+function QueryPerformanceFrequency(var Frequency: int64): LongBool;
 
-function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
 {$IFDEF MSWINDOWS}
-{
- Taken from QDialogs, (public with VCL)
-}
+function GetKeyState(nVirtKey: Integer): SmallInt;
+//
+// Taken from QDialogs
+//
 procedure EnableTaskWindows(WindowList: Pointer);
 function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
-//
-function GetKeyState(nVirtKey: Integer): SmallInt;
 {$ENDIF MSWINDOWS}
 
-{  ====================== IP Address edit control ============================= }
-function MAKEIPRANGE(low, high: Byte): integer;
-function MAKEIPADDRESS(b1, b2, b3, b4: cardinal): integer;
-function FIRST_IPADDRESS(x: cardinal): cardinal;
-function SECOND_IPADDRESS(x: cardinal): cardinal;
-function THIRD_IPADDRESS(x: cardinal): cardinal;
-function FOURTH_IPADDRESS(x: cardinal): cardinal;
-{ ============================================================================== }
 {$IFDEF LINUX}
-resourcestring
-  SFCreateError = 'Unable to create file %s';
-  SFOpenError = 'Unable to open file %s';
-  SReadError = 'Error reading file';
-  SWriteError = 'Error writing file';
-  SQThreadError = 'Thread Error in QWindows: %s (%d)';
-
 function CopyFile(lpExistingFileName, lpNewFileName: PChar;
   bFailIfExists: LongBool): LongBool; overload;
 function CopyFileA(lpExistingFileName, lpNewFileName: PAnsiChar;
@@ -1485,18 +1532,6 @@ function MakeWord(A, B: Byte): Word;
 function MakeLong(A, B: Word): Longint;
 function HiWord(L: DWORD): Word;
 function HiByte(W: Word): Byte;
-
-type
-  TSystemTime = record
-    wYear: Word;
-    wMonth: Word;
-    wDayOfWeek: Word;
-    wDay: Word;
-    wHour: Word;
-    wMinute: Word;
-    wSecond: Word;
-    wMilliseconds: Word;
-  end;
 
 procedure GetLocalTime(var st: TSystemTime);
 
@@ -1523,24 +1558,6 @@ procedure SetThreadPolicy(ThreadID: TThreadID; value: Integer);
 function GetThreadPriority(ThreadID: TThreadID): Integer;
 function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool;
 
-type
-  TThreadPriority = Integer;
-
-const
-  tpIdle: TThreadPriority = 0;
-  THREAD_PRIORITY_ERROR_RETURN = 255;
-
-// virtual memory handling
-const
-  PAGE_NOACCESS = 0;
-  PAGE_READONLY = PROT_READ;
-  PAGE_READWRITE = PROT_READ or PROT_WRITE;
-  //PAGE_WRITECOPY = PROT_ ; // not implemented
-  PAGE_EXECUTE = PROT_EXEC;
-  PAGE_EXECUTE_READ = PAGE_EXECUTE or PAGE_READONLY;
-  PAGE_EXECUTE_READWRITE = PAGE_EXECUTE or PAGE_READWRITE;
-  // PAGE_EXECUTE_WRITECOPY = PAGE_EXECUTE or PAGE_WRITECOPY;
-
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
   lpflOldProtect: Pointer): LongBool; overload;
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
@@ -1558,21 +1575,17 @@ procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: Intege
 function GetKeyState(nVirtKey: Integer): SmallInt;
 function GetAsyncKeyState(vKey: Integer): SmallInt;
 
-const
-  MAX_COMPUTERNAME_LENGTH = 15;
-
-type
-  PSecurityAttributes = Pointer;
-
 // events are limited to the process
 function CreateEvent(EventAttributes: PSecurityAttributes;
   ManualReset, InitialState: LongBool; Name: PChar): THandle;
 function OpenEvent(DesiredAccess: Longword; InheritHandle: LongBool;
   Name: PChar): THandle;
+{$ENDIF LINUX}
 function SetEvent(Event: THandle): LongBool;
 function ResetEvent(Event: THandle): LongBool;
 function PulseEvent(Event: THandle): LongBool; // calls SetEvent()
 
+{$IFDEF LINUX}
 function CreateMutex(MutexAttributes: PSecurityAttributes; InitialOwner: LongBool;
   Name: PChar): THandle;
 function OpenMutex(DesiredAccess: Longword; InheritHandle: Boolean;
@@ -1587,26 +1600,11 @@ function ReleaseSemaphore(Semaphore: THandle; ReleaseCount: Longint;
   PreviousCount: PInteger): LongBool;
 
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
-  nsops: size_t; timeout: PTimeSpec): Integer; {$IFDEF DEBUG} cdecl; {$ENDIF}
+  nsops: size_t; timeout: PTimeSpec): Integer; {$IFDEF DEBUG}cdecl;{$ENDIF}
 
 function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 
 { Operate on semaphore.  }
-
-const
-  STATUS_WAIT_0           = $00000000;
-  STATUS_ABANDONED_WAIT_0 = $00000080;
-  STATUS_TIMEOUT          = $00000102;
-  WAIT_FAILED             = Longword($FFFFFFFF);
-  WAIT_OBJECT_0           = STATUS_WAIT_0;
-  WAIT_ABANDONED          = STATUS_ABANDONED_WAIT_0;
-  WAIT_ABANDONED_0        = STATUS_ABANDONED_WAIT_0;
-  WAIT_TIMEOUT            = STATUS_TIMEOUT;
-  MAXIMUM_WAIT_OBJECTS    = 64;
-
-type
-  TWOHandleArray = array[0..MAXIMUM_WAIT_OBJECTS - 1] of THandle;
-  PWOHandleArray = ^TWOHandleArray;
 
 function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
   WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
@@ -1627,51 +1625,9 @@ function GlobalLock(hMem: Cardinal): Pointer;
 function GlobalHandle(Mem: Pointer): Cardinal;
 function GlobalUnlock(hMem: Cardinal): LongBool;
 function GlobalFree(hMem: Cardinal): Cardinal;
-
-const
-  GMEM_FIXED = 0;
-  GMEM_MOVEABLE = 2;
-  GMEM_NOCOMPACT = $10;
-  GMEM_NODISCARD = $20;
-  GMEM_ZEROINIT = $40; // only supported flag
-  GMEM_MODIFY = $80;
-  GMEM_DISCARDABLE = $100;
-  GMEM_NOT_BANKED = $1000;
-  GMEM_SHARE = $2000;
-  GMEM_DDESHARE = $2000;
-  GMEM_NOTIFY = $4000;
-  GMEM_LOWER = GMEM_NOT_BANKED;
-  GMEM_VALID_FLAGS = 32626;
-  GMEM_INVALID_HANDLE = $8000;
-
-  GHND = GMEM_MOVEABLE or GMEM_ZEROINIT;
-  GPTR = GMEM_FIXED or GMEM_ZEROINIT;
-
 {$ENDIF LINUX}
 
-// easier QColor handling that prevents memory leaks
-type
-  IQColorGuard = interface
-    function Handle: QColorH;
-  end;
 
-function QColorEx(Color: TColor): IQColorGuard;
-
-type
-  { TQtObject creates a new QObjectH and installs a eventfilter hook. }
-  TQtObject = class(TObject)
-  private
-    FHandle: QObjectH;
-    FHooks: QObject_hookH;
-  protected
-    function MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; virtual;
-  public
-    constructor Create(const AName: string = '');
-    destructor Destroy; override;
-    property Handle: QObjectH read FHandle;
-    property Hooks: QObject_hookH read FHooks;
-  end;
 {$IFDEF LINUX}
 var
   Shell: string = 'kfmclient exec'; // KDE. Gnome equivalent ?
@@ -1682,48 +1638,19 @@ implementation
 
 {$IFDEF MSWINDOWS}
 uses
-  ShellAPI, DateUtils;
+  ShellAPI, DateUtils,
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-uses
-  Xlib;
+  Xlib,
 {$ENDIF LINUX}
+  QMessages;
 
-{---------------------------------------}
-// easier QColor handling that prevents memory leaks
+const
+  VersionInfo = '$RCSfile$' + #13 + '$Revision$' + #13 + '$Date$' + #13;
+
 type
-  TQColorGuard = class(TInterfacedObject, IQColorGuard)
-  private
-    FHandle: QColorH;
-  public
-    constructor Create(AColor: TColor);
-    destructor Destroy; override;
-    function Handle: QColorH;
-  end;
-
-{ TQColorGuard }
-constructor TQColorGuard.Create(AColor: TColor);
-begin
-  inherited Create;
-  FHandle := QColor(AColor);
-end;
-
-destructor TQColorGuard.Destroy;
-begin
-  QColor_destroy(FHandle);
-  inherited Destroy;
-end;
-
-function TQColorGuard.Handle: QColorH;
-begin
-  Result := FHandle;
-end;
-
-function QColorEx(Color: TColor): IQColorGuard;
-begin
-  Result := TQColorGuard.Create(Color);
-end;
-{---------------------------------------}
+  THackCanvas = class(TCanvas);
+  TOpenWidgetControl = class(TWidgetControl);
 
 { used internally }
 
@@ -1868,7 +1795,7 @@ begin
   Result^.TextAlignment := TA_LEFT or TA_TOP;
   Result^.StetchBltMode := STRETCH_DELETESCANS;
   Result^.MapMode := MM_TEXT;
-  
+
   if PainterInfos = nil then
     PainterInfos := TList.Create;
   PainterInfos.Add(Result);
@@ -1944,6 +1871,7 @@ begin
 end;
 
 function GetSysColor(SysColor: Integer): TColorRef;
+// VCL / windows colors
 begin
   if (SysColor >= 0) and (SysColor <= COLOR_ENDCOLORS) then
     SysColor := GetSysColor( Win2TColor[SysColor] );
@@ -1976,20 +1904,6 @@ begin
           SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
         clActiveNoRole..clActiveForeground:
           SetColor(cgActive, ColorRoles[-(RefColor+cloActive)], TrueColor);
-        (*
-        clInfoBk:
-          begin
-            Application.HintColor := TrueColor;
-            SetColor(cgInactive, ColorRoles[-(RefColor+cloNormal)], TrueColor);
-          end;
-        clDeskTop:
-          begin
-            QC := QColor(TrueColor);
-            QWidget_setBackGroundColor(QApplication_desktop, QC);
-            QColor_destroy(QC);
-            SetColor(cgDisabled, ColorRoles[-(RefColor+cloDisabled)], TrueColor);
-          end;
-        *)
       else
         Result := False
       end;
@@ -2132,9 +2046,9 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SystemFont: WideString = 'Fixed';   // asn: is not always True
-  //GuiFont: array [Boolean] of WideString = ('Verdana', 'Verdana');
-  //asn:  in JVCL units Helvetica is used. Why introduce another?
-  GuiFont: array [Boolean] of WideString = ('Helvetica', 'Helvetica');
+//  GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
+//asn:  in JVCL units Helvetica is used. Why introduce another?
+  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
   {$ENDIF LINUX}
 type
   Int = Integer;
@@ -2144,10 +2058,9 @@ var
 begin
   {$IFDEF MSWINDOWS}
   GuiFontSelector := Win32MajorVersion >= 5;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$ELSE}
   GuiFontSelector := True;
-  {$ENDIF LINUX}
+  {$ENDIF MSWINDOWS}
   EnterCriticalSection(StockObjectListCritSect);
   try
     if not Assigned(StockObjectList) then
@@ -2164,7 +2077,6 @@ begin
           Result := QBrush_create(BrushStyle_NoBrush);
         Int(DC_BRUSH):
           Result := CreateSolidBrush(clWhite);
-
         Int(WHITE_PEN):
           Result := CreatePen(PS_SOLID, 1, clWhite);
         Int(BLACK_PEN):
@@ -2173,7 +2085,6 @@ begin
           Result := CreatePen(PS_NULL, 1, clWhite);
         Int(DC_PEN):
           Result := CreatePen(PS_SOLID, 1, clWhite);
-
         Int(OEM_FIXED_FONT), Int(ANSI_FIXED_FONT), Int(SYSTEM_FONT), Int(SYSTEM_FIXED_FONT):
           Result := QFont_create(@SystemFont, 8, 1, False);
         Int(ANSI_VAR_FONT), Int(DEVICE_DEFAULT_FONT), Int(DEFAULT_GUI_FONT):
@@ -2418,14 +2329,14 @@ begin
 end;
 
 type
-  TOpenWidgetControl = class(TWidgetControl);
+  THackedWidgetControl = class(TWidgetControl);
 
 function SetWindowPos(Wnd, WndInsertAfter: QWidgetH; X, Y, cx, cy: Integer;
   uFlags: Longword): LongBool;
 var
   R, Geometry: TRect;
   WidgetFlags: Cardinal;
-  Control: TOpenWidgetControl;
+  Control: THackedWidgetControl;
   LastActiveWidget: QWidgetH;
   LastActiveWinId: Cardinal;
 begin
@@ -2440,7 +2351,7 @@ begin
       LastActiveWinId := 0;
 
     // we must use CLX methods or CLX will be a pain.
-    Control := TOpenWidgetControl(FindControl(Wnd));
+    Control := THackedWidgetControl(FindControl(Wnd));
 
     if Control <> nil then
       Geometry := Control.BoundsRect
@@ -2653,7 +2564,6 @@ begin
   Result := SetPenColor(Handle, Color);
 end;
 
-//procedure SetQPainterFont(Handle: QPainterH; Font: TFont);
 procedure SetPainterFont(Handle: QPainterH; Font: QGraphics.TFont);
 begin
   QPainter_setFont(Handle, Font.Handle);
@@ -3206,68 +3116,38 @@ begin
   end;
 end;
 
-function WindowFromDC(Handle: QPainterH): QWidgetH;
+function WindowFromDC(Handle: QPaintDeviceH): QWidgetH;
 var
-  WinId: Cardinal;
-  {$IFDEF MSWINDOWS}
-  WinDC: Windows.HDC;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  dev: QPaintDeviceH;
-  {$ENDIF LINUX}
+  WidgetList: QObjectListH;
+  Widget: QWidgetH;
+  I: integer;
 begin
   Result := nil;
-  try
-    WinId := 0;
-    {$IFDEF MSWINDOWS}
-    WinDC := QPainter_handle(Handle);
-    if WinDC <> 0 then
-      WinId := Cardinal(Windows.WindowFromDC(WinDC));
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    dev := QPainter_device(Handle);
-    if dev <> nil then
-      WinId := Cardinal(QPaintDevice_handle(dev));
-    {$ENDIF LINUX}
-    if WinId <> 0 then
-      Result := QWidget_find(WinId);
-  except
-    Result := nil;
+  WidgetList := QObject_queryList(Application.AppWidget, 'QWidget','*', true, true);
+  for I := 0 to QObjectList_count(WidgetList) - 1  do
+  begin
+    Widget := QWidgetH(QObjectList_at(WidgetList, I));
+    if QWidget_isVisible(Widget) and (QWidget_to_QPaintDevice(Widget) = Handle) then
+    begin
+      Result := Widget;
+      break;
+    end;
   end;
+  QObjectList_destroy(WidgetList);
 end;
 
-function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
-{$IFDEF MSWINDOWS}
-var
-  WinId, ChildWinId: Cardinal;
-  Widget: QWidgetH;
-  Pt: TPoint;
-{$ENDIF MSWINDOWS}
+function WindowFromDC(Handle: QPainterH): QWidgetH;
 begin
   Result := nil;
-  if hWndParent = nil then
-    Exit;
+  if QPainter_isActive(Handle) then
+    Result := WindowFromDC(QPainter_device(Handle));
+end;
+
+
+function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
+begin
   try
-    {$IFDEF MSWINDOWS}
-    WinId := QWidget_winId(hWndParent);
-    if WinId <> 0 then
-    begin
-      Widget := QWidget_find(WinId);
-      if Widget <> nil then
-      begin
-        Pt := Point;
-        QWidget_mapFromGlobal(Widget, @Pt, @Pt); // missing in QApplicatin::WidgetAt() Windows implementation
-        ChildWinId := Cardinal(Windows.ChildWindowFromPoint(WinId, Pt));
-        if (ChildWinId <> 0) and (ChildWinId <> WinId) then
-          Result := QWidget_find(ChildWinId)
-        else
-          Result := Widget;
-      end;
-    end;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
     Result := QApplication_widgetAt(@Point, True);
-    {$ENDIF LINUX}
   except
     Result := nil;
   end;
@@ -3368,8 +3248,8 @@ begin
     if (IsChild(WidgetTo, WidgetFrom)) and (nr > 0) then
     begin
       QWidget_mapTo(WidgetFrom, p1, WidgetTo, @p2);
-      Result := (((p2.Y - p1.Y) shl 16) {and Integer($FFFF0000)}) +
-                ((p2.X - p1.X) and $0000FFFF);
+      TSmallPoint(Result).x := p2.X - p1.X;
+      TSmallPoint(Result).y := p2.Y - p1.Y;
       for i:= 0 to nr - 1 do
       begin
         QWidget_mapTo(WidgetFrom, p1, WidgetTo, p1);
@@ -3401,9 +3281,15 @@ begin
 end;
 
 function ValidateRect(hWnd: QWidgetH; R: PRect): LongBool;
+var
+  Event: QPaintEventH;
 begin
-  // not implemented
-  Result := True;
+  Event := QPaintEvent_create(R, false);
+  try
+    Result := QApplication_sendEvent(hWnd, QEventH(Event));
+  finally
+    QPaintEvent_destroy(Event);
+  end;
 end;
 
 function UpdateWindow(Handle: QWidgetH): LongBool;
@@ -3585,8 +3471,6 @@ begin
     Result := RGN_ERROR;
   end;
 end;
-
-
 
 function CreateEllipticRgn(Left, Top, Right, Bottom: Integer): QRegionH;
 begin
@@ -3883,7 +3767,7 @@ var
           If not PtInRegion(Region, X + I , Y + J) then
           begin
             Inc(K);
-            if K > 1 then
+            if K > 1 then  // 2 points required windows requires 1 point
             begin
               Result := True;
               exit;
@@ -4124,12 +4008,7 @@ end;
 
 function GetDoubleClickTime: Cardinal;
 begin
-  {$IFDEF MSWINDOWS}
-  Result := Windows.GetDoubleClickTime;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
   Result := QApplication_doubleClickInterval;
-  {$ENDIF LINUX}
 end;
 
 function SetDoubleClickTime(Interval: Cardinal): LongBool;
@@ -4255,7 +4134,7 @@ begin
         PHYSICALHEIGHT, VERTRES:
           Result := QPaintDeviceMetrics_height(pdm); // Vertical height in pixels
       else
-        raise Exception.Create('GetDeviceCaps: unsupported capability');
+        raise Exception.Create('QWindows.GetDeviceCaps: unsupported capability');
       end;
     finally
       QPaintDeviceMetrics_destroy(pdm);
@@ -4334,9 +4213,6 @@ begin
   end;
   Result := 0;
 end;
-
-type
-  THackedWidgetControl = class(TWidgetControl);
 
 function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
 var
@@ -4515,7 +4391,7 @@ begin
           dR.Bottom := R3.Top;
       end;
     end;
-    Result := True; // asn: return value ?
+    Result := True;
   except
     Result := False;
   end;
@@ -4539,6 +4415,7 @@ begin
 end;
 
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
+{ deprecated use DrawText instead }
 begin
   try
     QPainter_save(Handle);
@@ -4556,6 +4433,7 @@ begin
 end;
 
 procedure TextOutAngle(ACanvas: TCanvas; Angle, Left, Top: Integer; Text: WideString);
+{ deprecated use DrawText instead }
 begin
   ACanvas.Start;
   RequiredState(ACanvas, [csHandleValid, csFontValid, csBrushValid]);
@@ -5483,7 +5361,6 @@ begin
                   end;
                 DFCS_CAPTIONRESTORE:
                   begin
-                    {$IFDEF MSWINDOWS}
                     QPainter_save(Handle);
                     SetRect(R, 0, 0, 6, 6);
                     R := CenterRect(R, Rect);
@@ -5502,18 +5379,6 @@ begin
                     QPainter_moveTo(Handle, R.Left + 1, R.Top + 1);
                     QPainter_lineTo(Handle, R.Right - 1, R.Top + 1);
                     QPainter_restore(Handle);
-                    {$ENDIF MSWINDOWS}
-
-                    {$IFDEF LINUX}
-                    SetRect(R, R.Left + 5, R.Top + 5, R.Right - 2, R.Bottom - 2);
-                    QPainter_drawRect(Handle, @R);
-                    QPainter_moveTo(Handle, R.Left, R.Top - 1);
-                    QPainter_lineTo(Handle, R.Right - 1, R.Top - 1);
-                    OffsetRect(R, -3, -3);
-                    QPainter_drawRect(Handle, @R);
-                    QPainter_moveTo(Handle, R.Left, R.Top - 1);
-                    QPainter_lineTo(Handle, R.Right - 1, R.Top - 1);
-                    {$ENDIF LINUX}
                   end;
                 DFCS_CAPTIONHELP:
                   begin
@@ -5564,10 +5429,11 @@ begin
                 begin
                   QPainter_fillRect(Handle, @R, QPainter_brush(Handle));
                   QStyle_drawCheckMark(Application.Style.Handle, Handle,
-                    R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                    GetColorGroup(uState),
-                    uState and DFCS_CHECKED <> 0,
-                    uState and DFCS_INACTIVE <> 0);
+                                       R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                                       GetColorGroup(uState),
+                                       uState and DFCS_CHECKED <> 0,
+                                       uState and DFCS_INACTIVE <> 0
+                                       );
                   Result := True;
                 end;
               DFCS_MENUBULLET:
@@ -5575,8 +5441,8 @@ begin
                   QPainter_fillRect(Handle, @R, QPainter_brush(Handle));
                   R := Types.Rect(0, 0, 7, 7);
                   OffsetRect(R,
-                    ((Rect.Right - Rect.Left) - R.Right) div 2 + Rect.Left,
-                    ((Rect.Bottom - Rect.Top) - R.Bottom) div 2 + Rect.Top);
+                       ((Rect.Right - Rect.Left) - R.Right) div 2 + Rect.Left,
+                       ((Rect.Bottom - Rect.Top) - R.Bottom) div 2 + Rect.Top);
                   SetDCBrushColor(Handle, clBlack);
                   SetDCPenColor(Handle, clBlack);
                   QPainter_drawEllipse(Handle, @R);
@@ -5697,7 +5563,7 @@ begin
                      Application.Palette.ColorGroup(cgActive), //GetColorGroup(cgInActive),
                      0, True, True);
                 InflateRect(R, -2, -2);
-                if uState and DFCS_CHECKED <> 0 then
+                if uState and DFCS_CHECKED	<> 0 then
                   DrawFrameControl(Handle, R, DFC_MENU, DFCS_MENUCHECK or (uState and not Mask));
                 Result := True;
               end;
@@ -5713,10 +5579,11 @@ begin
                   if uState and (DFCS_PUSHED or DFCS_HOT) <> 0 then
                   begin
                     QStyle_drawButton(Application.Style.Handle, Handle,
-                      R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                      GetColorGroup(uState),
-                      uState and DFCS_PUSHED <> 0,
-                      Brush);
+                        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                        GetColorGroup(uState),
+                        uState and DFCS_PUSHED <> 0,
+                        Brush
+                        );
                    {QStyle_drawPanel(Application.Style.Handle, Handle,
                         R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
                         GetColorGroup(uState),
@@ -5730,10 +5597,10 @@ begin
                 else if uState and DFCS_MONO = 0 then
                 begin
                   QStyle_drawButton(Application.Style.Handle, Handle,
-                    R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-                    GetColorGroup(uState),
-                    uState and DFCS_PUSHED <> 0,
-                    Brush);
+                      R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+                      GetColorGroup(uState),
+                      uState and DFCS_PUSHED <> 0,
+                      Brush);
                   InflateRect(R, -2, -2);
                   Result := True;
                 end
@@ -5746,14 +5613,14 @@ begin
                 end;
               end;
           else
-            // not implemented
-            raise Exception.Create('DrawFrameControl: not implemented');
+              // not implemented
+            raise Exception.Create('QWindows.DrawFrameControl: not implemented');
           end;
 
         DFC_POPUPMENU:
           begin
             // not implemented
-            raise Exception.Create('DrawFrameControl: DFC_POPUPMENU not implemented');
+            raise Exception.Create('QWindows.DrawFrameControl: DFC_POPUPMENU not implemented');
           end;
       end;
     finally
@@ -6304,21 +6171,14 @@ begin
 end;
 
 function GetPixel(Handle: QPainterH; X, Y: Integer): TColorRef;
-{$IFDEF LINUX}
 var
   depth: Integer;
   pixmap: QPixmapH;
   pdm: QPaintDeviceMetricsH;
   tempDC: QPainterH;
   img: QImageH;
-{$ENDIF LINUX}
 begin
   try
-    {$IFDEF MSWINDOWS}
-    MapPainterLP(Handle, X, Y); // GetPixel does not know about the world matrix
-    Result := Windows.GetPixel(QPainter_handle(Handle), X, Y);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
     pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
     depth := QPaintDeviceMetrics_depth(pdm);
     QPaintDeviceMetrics_destroy(pdm);
@@ -6340,7 +6200,6 @@ begin
       if Assigned(pixmap) then
         QPixmap_destroy(pixmap);
     end;
-    {$ENDIF LINUX}
   except
     Result := 0;
   end;
@@ -6544,7 +6403,6 @@ begin
 end;
 
 {$IFDEF LINUX}
-
 function FileGetAttr(const FileName: string): Integer;
 var
   sr: TSearchRec;
@@ -6799,7 +6657,7 @@ begin
     Result := SP.sched_priority;
 end;
 
-function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool;  // handle to the thread
+function SetThreadPriority(ThreadID: TThreadID; priority: Integer): LongBool; 	// handle to the thread
 var
   SP: TSchedParam;
   P: Integer;
@@ -7108,10 +6966,9 @@ end;
 
 { TSemaphoreWaitObject }
 
-{$IFDEF DEBUG}
 // asn: documented, but (afaics) not in libc.so.6
-function semtimedop; external libcmodulename name 'semtimedop';
-{$ELSE}
+//function semtimedop; external libcmodulename name 'semtimedop';
+
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
   nsops: size_t;timeout: PTimeSpec): Integer;
 var
@@ -7162,7 +7019,6 @@ begin
     end;
   end;
 end;
-{$ENDIF DEBUG}
 
 function GetIPCKey(const AName: string; What: Integer): Integer;
 var
@@ -7251,7 +7107,6 @@ begin
   else
   begin
     timespec.tv_sec := Timeout div 1000;
-//    timespec.tv_nsec := (Timeout mod 1000) * 1000;
     timespec.tv_nsec := (Timeout mod 1000) * 1000000;
     RetValue := semtimedop(FSemId, @Buf, 1, @timespec); // Timeout=0 -> INFINTE
   end;
@@ -7703,8 +7558,8 @@ end;
 
 // The WaitForMultipleObjects function returns when one of the following occurs:
 //
-// -  Either any one or all of the specified objects are in the signaled state.
-// -  The time-out interval elapses.
+// ·	Either any one or all of the specified objects are in the signaled state.
+// ·	The time-out interval elapses.
 function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
   WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
 var
@@ -7933,6 +7788,21 @@ begin
   gettimeofday(StartTimeVal, nil);
 end;
 
+function QueryPerformanceCounter(var PerformanceCount: int64): LongBool;
+var
+  TimeVal: TTimeVal;
+begin
+  gettimeofday(TimeVal, nil);
+  Performance := CLOCKS_PER_SEC * TimeVal.tv_sec + Timeval.tv_usec;
+  Result := true;
+end;
+
+function QueryPerformanceFrequency(var Frequency: int64): LongBool;
+begin
+  Frequency := CLOCKS_PER_SEC; // 1 Mhz resolution gettimeofday
+  Result := True;
+end;
+
 procedure GetLocalTime(var st: TSystemTime);
 var
   dt: TDateTime;
@@ -8007,7 +7877,8 @@ begin
   else
     WinId := QWidget_winID(Handle);
   Result := ShellAPI.ShellExecute(WinId, PChar(Operation),
-    PChar(FileName), PChar(Parameters), PChar(Directory), ShowCmd);
+                         PChar(FileName), PChar(Parameters),
+                         PChar(Directory), ShowCmd);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   if (Operation = 'open') or (Operation = '') then
@@ -8029,37 +7900,6 @@ begin
   else
     Result := THandle(HINSTANCE_ERROR)
   {$ENDIF LINUX}
-end;
-
-function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
-var
-  SysPageSize, PageSize, AlignedAddr: Integer;
-  {$IFDEF MSWINDOWS}
-  P: Cardinal;
-  {$ENDIF MSWINDOWS}
-begin
-  Result := False;
-  {$IFDEF MSWINDOWS}
-  SysPageSize := 4096;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  SysPageSize := getpagesize;
-  {$ENDIF LINUX}
-  PageSize := SysPageSize;
-  AlignedAddr := Integer(Addr) and not (PageSize - 1);
-  while Integer(Addr) + Size >= AlignedAddr + PageSize do
-    Inc(PageSize, SysPageSize);
-  {$IFDEF MSWINDOWS}
-  if VirtualProtect(Pointer(AlignedAddr), PageSize, PAGE_EXECUTE_READWRITE, @P) then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  if mprotect(Pointer(AlignedAddr), PageSize, PROT_READ or PROT_WRITE or PROT_EXEC) = 0 then
-  {$ENDIF LINUX}
-    try
-      Move(Code^, Addr^, Size);
-      Result := True;
-    except
-    end;
 end;
 
 function InterlockedIncrement(var I: Integer): Integer;
@@ -8103,8 +7943,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-
-{ windows wrappers }
+{ wrappers to windows}
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 begin
   Result := Windows.GetUserName(Buffer,Size);
@@ -8120,20 +7959,44 @@ begin
   Result := Windows.GetTickCount;
 end;
 
+function QueryPerformanceCounter(var PerformanceCount: int64): LongBool;
+begin
+  Result := Windows.QueryPerformanceCounter(PerformanceCount);
+end;
+
+function QueryPerformanceFrequency(var Frequency: int64): LongBool;
+begin
+  Result := Windows.QueryPerformanceFrequency(Frequency);
+end;
+
+function SetEvent(Event: THandle): LongBool;
+begin
+  Result := Windows.SetEvent(Event);
+end;
+
+function ResetEvent(Event: THandle): LongBool;
+begin
+  Result := Windows.ResetEvent(Event);
+end;
+
+function PulseEvent(Event: THandle): LongBool;
+begin
+  Result := Windows.PulseEvent(Event);
+end;
+
 procedure OutputDebugString(lpOutputString: PChar);
 begin
   Windows.OutputDebugString(lpOutputString);
 end;
 
-{ ----------- }
-
 function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
-  Result := Windows.GetTickCount;
+  Result := Windows.GetKeyState(nVirtKey);
 end;
-{
- Taken from QDialogs,
-}
+
+//
+// Taken from QDialogs.
+//
 type
   PTaskWindow = ^TTaskWindow;
   TTaskWindow = record
@@ -8199,629 +8062,27 @@ begin
     TaskActiveWindow := SaveActiveWindow;
   end;
 end;
-
 {$ENDIF MSWINDOWS}
 
-constructor TQtObject.Create(const AName: string = '');
-var
-  Method: TMethod;
+function IgnoreMouseEvents(Handle: QObjectH; Event: QEventH): boolean;
 begin
-  inherited Create;
-  FHandle := QObject_create(nil, Pointer(AName));
-  FHooks := QObject_hook_create(FHandle);
-  TEventFilterMethod(Method) := MainEventFilter;
-  Qt_hook_hook_events(FHooks, Method);
-end;
-
-destructor TQtObject.Destroy;
-begin
-  QObject_hook_destroy(FHooks);
-  QObject_destroy(FHandle);
-  inherited Destroy;
-end;
-
-function TQtObject.MainEventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  try
-    Result := EventFilter(Sender, Event);
-  except
-    on E: Exception do
-    begin
-      Application.ShowException(E);
-      Result := False;
-    end;
-  end;
-end;
-
-function TQtObject.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := False; // default handling
-end;
-
-const
-  QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
-  QEventType_CMDispatchMessageSend = QEventType(Integer(QEventType_ClxUser) - 2);
-
-type
-  PMessageData = ^TMessageData;
-  TMessageData = record
-    Obj: TObject;
-    Event: TEvent;
-    Msg: TMessage;
-  end;
-
-  PApplicationHookItem = ^TApplicationHookItem;
-  TApplicationHookItem = record
-    Proc: TApplicationHook;
-  end;
-
-  PMessageObjectItem = ^TMessageObjectItem;
-  TMessageObjectItem = record
-    p: QObjectH;
-    Obj: TObject;
-  end;
-
-var
-  AppHookList: TList = nil;
-  AppEventFilterHook: QObject_hookH = nil;
-  MessageObjectList: TThreadList = nil;
-
-function FindMessageObject(p: QObjectH): TObject;
-var
-  i: Integer;
-  List: TList;
-begin
-  Result := nil;
-  List := MessageObjectList.LockList;
-  try
-    for i := 0 to List.Count - 1 do
-      if PMessageObjectItem(List[i]).p = p then
-      begin
-        Result := PMessageObjectItem(List[i]).Obj;
-        Exit;
-      end;
-  finally
-    MessageObjectList.UnlockList;
-  end;
-end;
-
-function AllocateMessageObject(Obj: TObject): QObjectH;
-var
-  List: TList;
-  Item: PMessageObjectItem;
-begin
-  List := MessageObjectList.LockList;
-  try
-    New(Item);
-    try
-      Item.Obj := Obj;
-      Item.p := QObject_create(nil, PChar('MessageObject_' + Obj.ClassName));;
-      Result := Item.p;
-      List.Add(Item);
-    except
-      Dispose(Item);
-      Result := nil;
-    end;
-  finally
-    MessageObjectList.UnlockList;
-  end;
-end;
-
-procedure DeallocateMessageObject(Handle: QObjectH);
-var
-  List: TList;
-  i: Integer;
-  Item: PMessageObjectItem;
-begin
-  List := MessageObjectList.LockList;
-  try
-    for i := List.Count - 1 downto 0 do
-    begin
-      Item := List[i];
-      if Item.p = Handle then
-      begin
-        Dispose(Item);
-        List.Delete(i);
-        Exit;
-      end;
-    end;
-  finally
-    MessageObjectList.UnlockList;
-  end;
-end;
-
-procedure FinalizeMessageObjectList;
-var
-  i: Integer;
-  Item: PMessageObjectItem;
-  List: TList;
-begin
-  List := MessageObjectList.LockList;
-  try
-    for i := 0 to List.Count - 1 do
-    begin
-      Item := List[i];
-      Dispose(Item);
-    end;
-  finally
-    MessageObjectList.UnlockList;
-  end;
-  FreeAndNil(MessageObjectList);
-end;
-
-{---------------------------------------}
-
-function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  Msg: PMessageData;
-  i: Integer;
-begin
-  try
-    Result := False;
-    if QEvent_isQCustomEvent(Event) then
-    begin
-      Msg := QCustomEvent_data(QCustomEventH(Event));
-      case QEvent_type(Event) of
-        QEventType_CMDispatchMessagePost:
-          begin
-            Result := True;
-            if Msg <> nil then
-              try
-                Msg^.Obj.Dispatch(Msg^.Msg);
-              finally
-                Dispose(Msg);
-              end;
-            Exit;
-          end;
-        QEventType_CMDispatchMessageSend:
-          begin
-            Result := True;
-            try
-              if Msg <> nil then
-                Msg^.Obj.Dispatch(Msg^.Msg);
-            finally
-              if Msg^.Event <> nil then
-                Msg^.Event.SetEvent;
-            end;
-            Exit;
-          end;
-      end;
-    end;
-
-    if Assigned(AppHookList) then
-    begin
-      Result := True;
-      for i := AppHookList.Count - 1 downto 0 do
-        if PApplicationHookItem(AppHookList[i]).Proc(Sender, Event) then
-          Exit;
-      Result := False;
-    end;
-  except
-    on E: Exception do
-    begin
-      Application.ShowException(E);
-      Result := False;
-    end;
-  end;
-end;
-
-procedure InstallAppEventFilter;
-var
-  Method: TMethod;
-begin
-  if AppEventFilterHook <> nil then
-    Exit;
-
-  Method.Code := @AppEventFilter;
-  Method.Data := Application;
-
-  AppEventFilterHook := QObject_hook_create(Application.Handle);
-  Qt_hook_hook_events(AppEventFilterHook, Method);
-end;
-
-function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  M: TMessage;
-  P: IPerformControl;
-begin
-  if Supports(Control, IPerformControl, P) then
-    Result := P.Perform(Msg, WParam, LParam)
-  else
-  begin
-    M.Msg := Msg;
-    M.WParam := WParam;
-    M.LParam := LParam;
-    M.Result := 0;
-    Control.Dispatch(M);
-    Result := M.Result;
-  end;
-end;
-
-function PostMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): LongBool;
-var
-  M: PMessageData;
-  Obj: TObject;
-begin
-  Result := False;
-  if Handle = nil then
-    Exit;
-  Obj := nil;
-  if QObject_isWidgetType(Handle) then
-    Obj := FindControl(QWidgetH(Handle));
-  if Obj= nil then
-    Obj := FindMessageObject(Handle);
-  if Obj = nil then
-    Exit;
-  try
-    New(M);
-    M^.Obj := Obj;
-    M.Event := nil;
-    M^.Msg.Msg := Msg;
-    M^.Msg.WParam := WParam;
-    M^.Msg.LParam := LParam;
-    M^.Msg.Result := 0;
-
-    InstallAppEventFilter;
-    QApplication_postEvent(Handle, QCustomEvent_create(QEventType_CMDispatchMessagePost, M));
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-function PostMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): LongBool;
-begin
-  Result := PostMessage(AControl.Handle, Msg, WParam, LParam);
-end;
-
-function SendMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): Integer;
-var
-  Event: QCustomEventH;
-  M: TMessageData;
-  Obj: TObject;
-begin
-  Result := 0;
-  if Handle = nil then
-    Exit;
-  Obj := nil;
-  if QObject_isWidgetType(Handle) then
-    Obj := FindControl(QWidgetH(Handle));
-  if Obj= nil then
-    Obj := FindMessageObject(Handle);
-  if Obj = nil then
-    Exit;
-  try
-    M.Obj := Obj;
-    M.Event := nil;
-    M.Msg.Msg := Msg;
-    M.Msg.WParam := WParam;
-    M.Msg.LParam := LParam;
-    M.Msg.Result := 0;
-
-    InstallAppEventFilter;
-    Event := QCustomEvent_create(QEventType_CMDispatchMessageSend, @M);
-    try
-      if GetCurrentThreadId = MainThreadID then
-        QApplication_sendEvent(Handle, Event)
-      else
-      begin
-       // synchronize with main thread
-        M.Event := TSimpleEvent.Create;
-        try
-          QApplication_postEvent(Handle, Event);
-          M.Event.WaitFor(INFINITE);
-        finally
-          M.Event.Free;
-          M.Event := nil;
-        end;
-      end;
-      Result := M.Msg.Result;
-    finally
-      if GetCurrentThreadId = MainThreadID then
-        QCustomEvent_destroy(Event);
-    end;
-  except
-  end;
-end;
-
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
-begin
-  Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
-end;
-
-procedure InstallApplicationHook(Hook: TApplicationHook);
-var
-  Item: PApplicationHookItem;
-begin
-  if Assigned(Hook) then
-  begin
-    UninstallApplicationHook(Hook);
-    New(Item);
-    Item.Proc := Hook;
-
-    if not Assigned(AppHookList) then
-      AppHookList := TList.Create;
-    AppHookList.Add(Item); // the last item is the first that is handled.
-
-    InstallAppEventFilter;
-  end;
-end;
-
-procedure UninstallApplicationHook(Hook: TApplicationHook);
-var
-  i: Integer;
-  Item: PApplicationHookItem;
-begin
-  if AppHookList <> nil then
-  begin
-    for i := AppHookList.Count - 1 downto 0 do
-    begin
-      Item := AppHookList[i];
-      if (TMethod(Item.Proc).Code = TMethod(Hook).Code) and
-         (TMethod(Item.Proc).Data = TMethod(Hook).Data) then
-      begin
-        Dispose(Item);
-        AppHookList.Delete(i);
-      end;
-    end;
-    if AppHookList.Count = 0 then
-      FreeAndNil(AppHookList);
-  end;
-end;
-
-procedure FinalizeAppHookList;
-var
-  i: Integer;
-  Item: PApplicationHookItem;
-begin
-  for i := 0 to AppHookList.Count - 1 do
-  begin
-    Item := AppHookList[i];
-    Dispose(Item);
-  end;
-  FreeAndNil(AppHookList);
-end;
-
-type
-  TEventIgnorer = class(TObject)
-  public
-    Events: array of QEventType;
-    Handle: QObjectH;
-    function IgnoreEvents(Sender: QObjectH; Event: QEventH): Boolean;
-  end;
-
-function TEventIgnorer.IgnoreEvents(Sender: QObjectH; Event: QEventH): Boolean;
-var
-  t: QEventType;
-  i: Integer;
-begin
-  if (Handle = nil) or (Sender = Handle) then
-  begin
-    Result := True;
-    t := QEvent_type(Event);
-    for i := 0 to High(Events) do
-      if Events[i] = t then
-      begin
-        case t of
-          QEventType_Wheel:
-            QWheelEvent_ignore(QWheelEventH(Event));
-        end;
-        Exit;
-      end;
-  end;
-  Result := False;
-end;
-
-procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
-var
-  Ignorer: TEventIgnorer;
-  i: Integer;
-begin
-  Ignorer := TEventIgnorer.Create;
-  try
-    SetLength(Ignorer.Events, Length(Events));
-    for i := 0 to High(Events) do
-      Ignorer.Events[i] := Events[i];
-    Ignorer.Handle := Handle;
-    InstallApplicationHook(Ignorer.IgnoreEvents);
-    try
-      QApplication_processEvents(Application.Handle);
-    finally
-      UninstallApplicationHook(Ignorer.IgnoreEvents);
-    end;
-  finally
-    Ignorer.Free;
-  end;
-end;
-
-procedure IgnoreMouseEvents(Handle: QObjectH);
-begin
-  IgnoreNextEvents(Handle, [
+  case QEvent_type(Event) of
     QEventType_MouseButtonPress,
     QEventType_MouseButtonRelease,
     QEventType_MouseButtonDblClick,
     QEventType_MouseMove,
     QEventType_Enter,
     QEventType_Leave,
-    QEventType_Wheel
-  ]);
-end;
-
-{ ---- Timer ---- }
-
-var
-  TimerList: TObjectList = nil;
-  TimerCritSect: TRTLCriticalSection;
-
-type
-  TTimerProc = procedure(hwnd: HWND; uMsg: Cardinal; idEvent: Cardinal;
-    dwTime: Cardinal); stdcall;
-
-  TTimerItem = class(TQtObject)
-  private
-    FWidget: QWidgetH;
-    FId, FTimerId: Cardinal;
-    FTimerProc: TTimerProc;
-  protected
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-  public
-    destructor Destroy; override;
-    procedure SetTimer(AWidget: QWidgetH; AId: Cardinal; Elapse: Cardinal;
-      ATimerProc: TTimerProc);
-    procedure KillTimer;
-    class function FindTimerItem(Widget: QWidgetH; Id: Cardinal): TTimerItem;
-
-    property Widget: QWidgetH read FWidget;
-    property Id: Cardinal read FId;
-    property TimerProc: TTimerProc read FTimerProc;
-  end;
-
-destructor TTimerItem.Destroy;
-begin
-  if FTimerId <> 0 then
-    KillTimer;
-  EnterCriticalSection(TimerCritSect);
-  try
-    TimerList.Extract(Self);
-  finally
-    LeaveCriticalSection(TimerCritSect);
-  end;
-  inherited Destroy;
-end;
-
-procedure TTimerItem.SetTimer(AWidget: QWidgetH; AId: Cardinal; Elapse: Cardinal;
-  ATimerProc: TTimerProc);
-begin
-  if FTimerId <> 0 then
-    KillTimer;
-  FWidget := AWidget;
-  FId := AId;
-  FTimerProc := ATimerProc;
-  FTimerId := QObject_startTimer(Handle, Elapse);
-  if FWidget = nil then
-    FId := FTimerId
+    QEventType_Wheel:
+      Result := true;
   else
-  if FId = 0 then
-    FId := Cardinal(Self);
-end;
-
-procedure TTimerItem.KillTimer;
-begin
-  if FTimerId <> 0 then
-  begin
-    QObject_killTimer(Handle, FTimerId);
-    FTimerId := 0;
+    Result := false;
   end;
-end;
-
-function TTimerItem.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-var
-  Control: TWidgetControl;
-begin
-  if QEvent_type(Event) = QEventType_Timer then
-  begin
-    if Assigned(FTimerProc) then
-      FTimerProc(Widget, WM_TIMER, FId, GetTickCount)
-    else
-    if Widget <> nil then
-    begin
-      Control := FindControl(Widget);
-      if Control <> nil then
-        Perform(Control, WM_TIMER, Id, Longint(@TimerProc))
-      else
-        Free; // Control doesn't exist anymore
-    end
-    else
-      Free; // Timer is not used ( should not happen )
-    Result := True;
-    Exit;
-  end;
-  Result := inherited EventFilter(Sender, Event);
-end;
-
-class function TTimerItem.FindTimerItem(Widget: QWidgetH; Id: Cardinal): TTimerItem;
-var
-  i: Integer;
-begin
-  if TimerList = nil then
-    TimerList := TObjectList.Create;
-
-  for i := 0 to TimerList.Count - 1 do
-  begin
-    Result := TTimerItem(TimerList[i]);
-    if (Id <> 0) then
-    begin
-      if (Result.Widget = Widget) and (Result.Id = Id) then
-        Exit;
-    end
-    else
-    if (Widget <> nil) then
-    begin
-      if (Result.Widget = Widget) and (Result.Id = Id) then
-        Exit;
-    end;
-  end;
-  Result := nil;
-end;
-
-function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
-  TimerFunc: Pointer): Cardinal;
-var
-  Item: TTimerItem;
-begin
-  Result := 0;
-  if ((Wnd = nil) and (TimerFunc = nil)) or
-     ((IDEvent = 0) and (TimerFunc = nil)) then
-    Exit;
-  EnterCriticalSection(TimerCritSect);
-  try
-    Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
-    if Item = nil then
-    begin
-      Item := TTimerItem.Create('SetTimerObject');
-      TimerList.Add(Item);
-    end;
-    Item.SetTimer(Wnd, IDEvent, Elapse, TimerFunc);
-    Result := Integer(Item);
-  except
-    Result := 0;
-  end;
-  LeaveCriticalSection(TimerCritSect);
-end;
-
-function SetTimer(Wnd: Cardinal; IDEvent, Elapse: Cardinal;
-  TimerFunc: Pointer): Cardinal;
-begin
-  Result := SetTimer(QWidgetH(Wnd), IDEvent, Elapse, TimerFunc);
-end;
-
-function KillTimer(Wnd: QWidgetH; IDEvent: Cardinal): LongBool;
-var
-  Item: TTimerItem;
-begin
-  Result := False;
-  EnterCriticalSection(TimerCritSect);
-  try
-    Item := TTimerItem.FindTimerItem(Wnd, IDEvent);
-    if Item <> nil then
-    begin
-      TimerList.Remove(Item);
-      Result := True;
-    end;
-  except
-    Result := False;
-  end;
-  LeaveCriticalSection(TimerCritSect);
-end;
-
-function KillTimer(Wnd: Cardinal; IDEvent: Longword): LongBool;
-begin
-  Result := KillTimer(QWidgetH(Wnd), IDEvent);
 end;
 
 { ------------ Caret -------------- }
 type
-  TEmulatedCaret = class(TObject)
+  TEmulatedCaret = class(TComponent)
   private
     FTimer: TTimer;
     FWndId: Cardinal;
@@ -8839,7 +8100,7 @@ type
     function CreateColorPixmap(Color: Cardinal): QPixmapH;
     procedure SetWidget(AWidget: QWidgetH);
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     procedure Lock;
@@ -8950,12 +8211,12 @@ end;
 
 { TEmulatedCaret }
 
-constructor TEmulatedCaret.Create;
+constructor TEmulatedCaret.Create(AOwner: TComponent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   InitializeCriticalSection(FCritSect);
 
-  FTimer := TTimer.Create(nil);
+  FTimer := TTimer.Create(self);
   FTimer.Enabled := False;
   FTimer.Interval := GetCaretBlinkTime;
   FTimer.OnTimer := DoTimer;
@@ -8964,7 +8225,6 @@ end;
 destructor TEmulatedCaret.Destroy;
 begin
   DestroyCaret;
-  FTimer.Free;
   DeleteCriticalSection(FCritSect);
   inherited Destroy;
 end;
@@ -9112,33 +8372,317 @@ begin
     FWndId := 0;
 end;
 
+type
+  TCriticalSections = class(TComponent)
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+constructor TCriticalSections.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  InitializeCriticalSection(StockObjectListCritSect);
+end;
+
+destructor TCriticalSections.Destroy;
+begin
+  DeleteCriticalSection(StockObjectListCritSect);
+  inherited Destroy;
+end;
+
+function Perform(Control: TControl; Msg: Cardinal; WPar, LPar: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Msg := Msg;
+  Mesg.WParam := WPar;
+  Mesg.LParam := LPar;
+  Mesg.Result := 0;
+  Control.Dispatch(Mesg);
+  Result := Mesg.Result;
+end;
+
+function SendMessage(Receiver: QWidgetH; MsgId: Integer; WPar, LPar: Longint): Integer;
+var
+  Event: QCustomEventH;
+  Mesg: TMessage;
+begin
+  with Mesg do
+  begin
+    Msg := MsgId;
+    wParam := WPar;
+    lParam := LPar;
+    Result := 0;
+  end;
+  Event := QCustomEvent_create(QEventType_Message, @Mesg);
+  QApplication_sendEvent(Receiver, Event);
+  Result := Mesg.Result;
+  QEvent_destroy(Event);
+end;
+
+function SendMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): Integer;
+begin
+  Result := SendMessage(AControl.Handle, MsgId, WPar, LPar);
+end;
+
+type
+  TCustomMsg = packed record
+    Msg: integer;
+    WParam: integer;
+    LParam: integer;
+    Result: integer;
+    Pt: TPoint;
+  end;
+
+function PostMessage(Receiver: QWidgetH; MsgId: Integer; WPar, LPar: Longint): LongBool;
+var
+  Mesg: PMessage;
+  Event: QCustomEventH;
+begin
+  New(Mesg);
+  with Mesg^ do
+  begin
+//    HWnd := Cardinal(Receiver);
+    Msg := MsgId;
+    WParam := WPar;
+    LParam := LPar;
+    Result := 0; //GetTickCount;
+//    Time := GetTickCount;
+//    Pt := Mouse.CursorPos;
+  end;
+  Event := QCustomEvent_Create(QEventType_Message, Mesg);
+  try
+    QApplication_postEvent(Receiver, QEventH(Event));
+    Result := true;
+  except
+    QCustomEvent_Destroy(Event);
+    Result := false;
+  end;
+end;
+
+function PostMessage(AControl: TWidgetControl; MsgId: Integer; WPar, LPar: Longint): LongBool;
+begin
+  OutputDebugString(Pchar(Format('Posted message %d', [ MsgId-CM_BASE ])));
+  Result := PostMessage(AControl.Handle, MsgId, WPar, LPar);
+end;
+
+{
+  implements
+  - WMTimer dispatch
+  - Handles messages posted through QCustomEvent_message
+}
+
+type
+  TWinTimer = class(TComponent)
+  private
+    FWMTimer: Cardinal;
+    FQtTimer: Cardinal;
+    FTimerProc: TTimerProc;
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function CreateTimer(AOwner: TWinControl; WMTimerId: Cardinal;
+      Elapse: Cardinal; Proc: TTimerProc): TWinTimer;
+    destructor Destroy; override;
+    property WMTimer: Cardinal read FWMTimer;
+    property QtTimer: Cardinal read FQtTimer;
+    property TimerProc: TTimerProc read FTimerProc write FTimerProc;
+  end;
+
+constructor TWinTimer.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FWMTimer := 0;
+  FQtTimer := 0;
+  FTimerProc := nil;
+end;
+
+class function TWinTimer.CreateTimer(AOwner: TWinControl; WMTimerId: Cardinal;
+      Elapse: Cardinal; Proc: TTimerProc): TWinTimer;
+begin
+  Result := Create(AOwner);
+  with Result do
+  begin
+    FWMTimer := WMTimerId;
+    FTimerProc := Proc;
+    FQtTimer := QObject_startTimer(AOwner.Handle, Elapse);
+  end;
+end;
+
+destructor TWinTimer.Destroy;
+begin
+  QObject_killTimer(TWinControl(Owner).Handle, FQtTimer);
+  inherited Destroy;
+end;
+
+
+function FindTimer(Receiver: QWidgetH; QtTimerID: Cardinal): TWinTimer;
+var
+  I: Integer;
+  Instance: TWinControl;
+begin
+  Result := nil;
+  Instance := FindControl(Receiver);
+  if Assigned(Instance) then
+    with Instance do
+      for I := 0 to ComponentCount - 1 do
+        if (Components[I] is TWinTimer) and
+           (TWinTimer(Components[I]).QtTimer = QtTimerID) then
+        begin
+          Result := TWinTimer(Components[I]);
+          Exit;
+        end;
+end;
+
+function FindWMTimer(Receiver: QWidgetH; WinTimerID: Longword): TWinTimer;
+var
+  I: Integer;
+  Instance: TComponent;
+begin
+  Result := nil;
+  Instance := FindControl(Receiver);
+  if Assigned(Instance) then
+    with Instance do
+      for I := 0 to ComponentCount - 1 do
+        if (Components[I] is TWinTimer) and
+           (TWinTimer(Components[I]).WMTimer = WinTimerID) then
+        begin
+          Result := TWinTimer(Components[I]);
+          Exit;
+        end;
+end;
+
+function SetTimer(Instance: TWidgetControl; WMTimerID, Elapse: Cardinal;
+  TimerFunc: TTimerProc): Cardinal;
+var
+  FWinTimer: TWinTimer;
+begin
+  FWinTimer := FindWMTimer(Instance.Handle, WMTimerId);
+  if Assigned(FWinTimer) then
+    FWinTimer.Destroy;
+  FWinTimer := TWinTimer.CreateTimer(Instance, WMTimerID, Elapse, TimerFunc);
+  Result := FWinTimer.WMTimer;
+end;
+
+function SetTimer(Wnd: QWidgetH; WMTimerID, Elapse: Cardinal;
+  TimerFunc: TTimerProc): Cardinal;
+var
+  Instance: TWidgetControl;
+begin
+  Instance := FindControl(Wnd);
+  if assigned(Instance) then
+    Result := SetTimer(Instance, WMTimerID, Elapse, TimerFunc)
+  else
+    Result := 0;
+end;
+
+function KillTimer(Instance: TWidgetControl; WMTimerId: Cardinal): LongBool;
+begin
+  Result := KillTimer(Instance.Handle, WMTimerId);
+end;
+
+function KillTimer(Wnd: QWidgetH; WMTimerId: Cardinal): LongBool;
+var
+  WinTimer: TWinTimer;
+begin
+  WinTimer := FindWMTimer(Wnd, WMTimerId);
+  if Assigned(WinTimer) then
+  begin
+    WinTimer.Destroy;
+    Result := true;
+  end
+  else
+    Result := false;
+end;
+
+type
+  TAppEventHook = class(TComponent)
+  private
+    FHook: QObject_hookH;
+  protected
+//    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+function AppEventFilter(App: TApplication; Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  WinTimer: TWinTimer;
+  Mesg: TMessage;
+  PMesg: PMessage;
+  Id: Integer;
+begin
+  Result := false;
+  case QEvent_Type(Event) of
+
+  QEventType_Message:
+    begin
+      PMesg := PMessage(QCustomEvent_data(QCustomEventH(Event)));
+      PMesg^.Result := 0;
+      FindObject(Receiver).Dispatch(PMesg);
+      OutputDebugString(Pchar(Format('QWindows: Dispatched %d', [PMesg^.msg - CM_BASE])));
+      Result := True;
+    end;
+  QEventType_Timer:
+    begin
+      if not QObject_isWidgetType(Receiver) then
+        Exit;
+      Id := QTimerEvent_timerId(QTimerEventH(Event));
+      WinTimer := FindTimer(QWidgetH(Receiver), Id );
+      if Assigned(WinTimer) then
+        with WinTimer do
+        begin
+          if Assigned(TimerProc) then
+            TimerProc(QWidgetH(Receiver), WM_TIMER, WMTimer, GetTickCount);
+          with Mesg do
+          begin
+            Mesg.Msg := WM_TIMER;
+            Mesg.WParam := WMTimer;
+            Mesg.LParam := Integer(@TimerProc);
+            Mesg.Result := 0;
+//            Message.pt := Mouse.CursorPos;
+            Owner.Dispatch(Mesg);
+          end;
+//          Result := Mesg.Result <> 0;
+          Result := True;
+        end;
+    end;
+
+  end;       // case EventType of
+end;
+
+function InstallApplicationEventHook(EventFilter: PAppEventFilter): QObject_hookH;
+var
+  Method: TMethod;
+begin
+  Method.Code := EventFilter;
+  Method.Data := Application;
+  Result := QObject_hook_create(Application.Handle);
+  Qt_hook_hook_events(Result, Method);
+end;
+
+constructor TAppEventHook.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHook := InstallApplicationEventHook(@AppEventFilter);
+end;
+
+destructor TAppEventHook.Destroy;
+begin
+  if Assigned(FHook) then
+    QObject_hook_destroy(FHook);
+  inherited Destroy;
+end;
+
 initialization
+  OutputDebugString('Loading QWindows.pas');
   {$IFDEF LINUX}
   InitGetTickCount;
-  WaitObjectList := THandleObjectList.Create;
+  WaitObjectList := THandleObjectList.Create(Application.MainWidget);
   {$ENDIF LINUX}
-  GlobalCaret := TEmulatedCaret.Create;
-  InitializeCriticalSection(StockObjectListCritSect);
-  InitializeCriticalSection(TimerCritSect);
-  MessageObjectList := TThreadList.Create;
-
-finalization
-  GlobalCaret.Free;
-  StockObjectList.Free;
-  TimerList.Free;
-
-  if Assigned(AppEventFilterHook) then
-    QObject_hook_destroy(AppEventFilterHook);
-  if Assigned(AppHookList) then
-    FinalizeAppHookList;
-  FinalizeMessageObjectList;
-
-  FreePainterInfos;
-  DeleteCriticalSection(StockObjectListCritSect);
-  DeleteCriticalSection(TimerCritSect);
-  {$IFDEF LINUX}
-  WaitObjectList.Free;
-  {$ENDIF LINUX}
+  TAppEventHook.Create(Application);
+  GlobalCaret := TEmulatedCaret.Create(Application);
+  TCriticalSections.Create(Application);
 
 end.
 

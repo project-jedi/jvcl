@@ -64,7 +64,7 @@ interface
 
 uses
   SysUtils, Classes, QWindows, QMessages, 
-  Qt, QControls, QForms, 
+  Qt, QControls, QForms, QStdCtrls,
   JvQComponent;
 
 type
@@ -788,9 +788,9 @@ begin
 
   if JvMouseGestureHookAlreadyInstalled then  
   begin
-    Method.Code := @JvMouseGestureHook;
-    Method.Data := nil;
-    UninstallApplicationHook(TApplicationHook(Method));
+//    Method.Code := @JvMouseGestureHook;
+//    Method.Data := nil;
+//    UninstallApplicationHook(TApplicationHook(Method));
     JvMouseGestureHookAlreadyInstalled := False;
   end; 
   inherited Destroy;
@@ -817,7 +817,7 @@ begin
   
   Method.Code := @JvMouseGestureHook;
   Method.Data := Self;
-  InstallApplicationHook(TApplicationHook(Method));
+//  InstallApplicationHook(TApplicationHook(Method));
 
   JvMouseGestureHookAlreadyInstalled := True;
   FHookInstalled := True; 

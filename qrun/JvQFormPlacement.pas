@@ -69,6 +69,8 @@ type
     property MinTrackWidth: Integer index 7 read GetMinMaxInfo write SetMinMaxInfo default 0;
   end;
 
+  TJvFormPlacementVersionCheck = (fpvcNocheck, fpvcCheckGreaterEqual, fpvcCheckEqual);
+
   TJvFormPlacement = class(TJvComponent)
   private
     FActive: Boolean;
@@ -77,6 +79,7 @@ type
     FLinks: TList;
     FOptions: TPlacementOptions;
     FVersion: Integer;
+    FVersionCheck: TJvFormPlacementVersionCheck;
     FSaved: Boolean;
     FRestored: Boolean;
     FDestroying: Boolean;
@@ -141,6 +144,7 @@ type
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpSize, fpLocation];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
+    property VersionCheck: TJvFormPlacementVersionCheck read FVersionCheck write FVersionCheck default fpvcCheckGreaterEqual;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
     property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
   end;
@@ -152,6 +156,8 @@ type
   private
     FStoredProps: TStringList;
     FStoredValues: TJvStoredValues;
+    FStoredPropsPath: string;
+
     function GetStoredProps: TStrings;
     procedure SetStoredProps(Value: TStrings);
     procedure SetStoredValues(Value: TJvStoredValues);
@@ -159,6 +165,8 @@ type
     procedure SetStoredValue(const Name: string; Value: Variant);
     function GetDefaultStoredValue(const Name: string; DefValue: Variant): Variant;
     procedure SetDefaultStoredValue(const Name: string; DefValue: Variant; const Value: Variant);
+    function GetStoredValuesPath: string;
+    procedure SetStoredValuesPath(const Value: string);
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -176,6 +184,8 @@ type
   published
     property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
+    property StoredPropsPath: string read FStoredPropsPath write FStoredPropsPath;
+    property StoredValuesPath: string read GetStoredValuesPath write SetStoredValuesPath;
   end;
 
   TJvIniLink = class(TPersistent)
@@ -226,6 +236,8 @@ type
   TJvStoredValues = class(TOwnedCollection)
   private
     FStorage: TJvFormPlacement;
+    FPath: string;
+    
     function GetValue(const Name: string): TJvStoredValue;
     procedure SetValue(const Name: string; StoredValue: TJvStoredValue);
     function GetStoredValue(const Name: string): Variant;
@@ -237,6 +249,8 @@ type
     function IndexOf(const Name: string): Integer;
     procedure SaveValues; virtual;
     procedure RestoreValues; virtual;
+
+    property Path: string read FPath write FPath;
     property Storage: TJvFormPlacement read FStorage write FStorage;
     property Items[Index: Integer]: TJvStoredValue read GetItem write SetItem; default;
     property Values[const Name: string]: TJvStoredValue read GetValue write SetValue;
@@ -255,8 +269,8 @@ uses
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
   siVersion = 'FormVersion'; // do not localize
-  siStoredValues = 'StoredValues'; // do not localize
-  siStoredProps = 'StoredProps'; // do not localize
+//  siStoredValues = 'StoredValues'; // do not localize
+//  siStoredProps = 'StoredProps'; // do not localize
 
 //=== { TJvFormPlacement } ===================================================
 
@@ -271,6 +285,8 @@ begin
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
+  FVersion := 0;
+  FVersionCheck := fpvcCheckGreaterEqual;
 end;
 
 destructor TJvFormPlacement.Destroy;
@@ -673,22 +689,35 @@ end;
 procedure TJvFormPlacement.RestoreFormPlacement;
 var
   ActiveCtl: TComponent;
+  readVersion: Integer;
+  ContinueRestore : Boolean;
 begin
-  FSaved := False;
-  if Assigned(AppStorage) and (ReadInteger(siVersion, 0) >= FVersion) then
+  if Assigned(AppStorage) then
   begin
-    RestorePlacement;
-    FRestored := True;
-    Restore;
-    if (fpActiveControl in Options) and (Owner is TCustomForm) then
-    begin
-      ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
-      if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
-        TWinControl(ActiveCtl).CanFocus then
-        Form.ActiveControl := TWinControl(ActiveCtl);
+    FSaved := False;
+    readVersion := ReadInteger(siVersion, 0);
+    Case VersionCheck of
+      fpvcNocheck : ContinueRestore := True;
+      fpvcCheckGreaterEqual : ContinueRestore := readVersion >= FVersion;
+      fpvcCheckEqual : ContinueRestore := readVersion = FVersion;
+    else
+      ContinueRestore := False;
     end;
+    if ContinueRestore then
+    begin
+      RestorePlacement;             
+      FRestored := True;
+      Restore;
+      if (fpActiveControl in Options) and (Owner is TCustomForm) then
+      begin
+        ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
+        if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
+          TWinControl(ActiveCtl).CanFocus then
+          Form.ActiveControl := TWinControl(ActiveCtl);
+      end;
+    end;
+    FRestored := True;
   end;
-  FRestored := True;
   UpdatePlacement;
 end;
 
@@ -872,7 +901,7 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
     StoreObjectsProps(Owner, FStoredProps);
   finally
@@ -884,7 +913,7 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, StoredPropsPath]);
     AppStorage := Self.AppStorage;
     try
       LoadObjectsProps(Owner, FStoredProps);
@@ -1016,7 +1045,7 @@ var
   SaveStrValue: string;
   PathName: string;
 begin
-  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
+  PathName := StoredValues.Storage.ConcatPaths([StoredValues.Path, Name]);
   SaveValue := Value;
   if Assigned(FOnSave) then
     FOnSave(Self, SaveValue);
@@ -1048,7 +1077,7 @@ var
   RestoreStrValue, DefaultStrValue: string;
   PathName: string;
 begin
-  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
+  PathName := StoredValues.Storage.ConcatPaths([StoredValues.Path, Name]);
   if KeyString <> '' then
   begin
     DefaultStrValue := VarToStr(Value);
@@ -1177,6 +1206,16 @@ begin
     StoredValue[Name] := DefValue
   else
     StoredValue[Name] := Value;
+end;
+
+function TJvFormStorage.GetStoredValuesPath: string;
+begin
+  Result := FStoredValues.Path;
+end;
+
+procedure TJvFormStorage.SetStoredValuesPath(const Value: string);
+begin
+  FStoredValues.Path := Value;
 end;
 
 {$IFDEF UNITVERSIONING}

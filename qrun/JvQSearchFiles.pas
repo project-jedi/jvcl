@@ -83,7 +83,7 @@ type
 
   TJvSearchOption = (soAllowDuplicates, soCheckRootDirValid,
     soExcludeFilesInRootDir, soOwnerData, soSearchDirs, soSearchFiles, soSorted,
-    soStripDirs);
+    soStripDirs, soIncludeSystemHiddenDirs, soIncludeSystemHiddenFiles);
   TJvSearchOptions = set of TJvSearchOption;
   { soAllowDuplicates
       Allow duplicate file/dir names in property Files and Directories.
@@ -106,6 +106,13 @@ type
     soStripDirs
       Strip the path of a dir/file name before inserting it in property
       Files and Directories
+    soIncludeSystemHiddenDirs
+      Do NOT ignore directories that are both system and hidden.
+      Examples of such directories are 'RECYCLER', 'System Volume Information' etc.
+    soIncludeSystemHiddenFiles
+      Do NOT ignore files that are both system and hidden.
+      Examples of such files are 'pagefile.sys', 'IO.SYS' etc.
+
   }
 
   TJvSearchType = (stAttribute, stFileMask, stFileMaskCaseSensitive,
@@ -311,6 +318,26 @@ uses
 const
   CDate1_1_1980 = 29221;
 
+function IsDotOrDotDot(P: PChar): Boolean;
+begin
+  // check if a string is '.' (self) or '..' (parent)
+  if P^ = '.' then
+  begin
+    Inc(P);
+    Result := (P^ = #0) or ((P^ = '.') and ((P+1)^ = #0));
+  end
+  else
+    Result := False;
+end;
+
+function IsSystemAndHidden(const AFindData: TWin32FindData): Boolean;
+const
+  cSystemHidden = FILE_ATTRIBUTE_SYSTEM or FILE_ATTRIBUTE_HIDDEN;
+begin
+  with AFindData do
+    Result := dwFileAttributes and cSystemHidden = cSystemHidden;
+end;
+
 //=== { TJvSearchFiles } =====================================================
 
 constructor TJvSearchFiles.Create(AOwner: TComponent);
@@ -376,6 +403,12 @@ end;
 
 function TJvSearchFiles.DoCheckFile: Boolean;
 begin
+  if not (soIncludeSystemHiddenFiles in Options) and IsSystemAndHidden(FFindData) then
+  begin
+    Result := False;
+    Exit;
+  end
+  else
   if Assigned(FOnCheck) then
   begin
     Result := False;
@@ -494,7 +527,8 @@ begin
               True                  |   Y       Y           Y
               False                 |   N       N           N
           }
-          if cFileName[0] <> '.' then
+          if not IsDotOrDotDot(cFileName) and
+            ((soIncludeSystemHiddenDirs in Options) or not IsSystemAndHidden(FFindData)) then
             { Use case to prevent unnecessary calls to DoCheckDir }
             case DirOption of
               doExcludeSubDirs, doIncludeSubDirs:
@@ -516,7 +550,7 @@ begin
             end;
         end
         else
-          if Search and (soSearchFiles in Options) and DoCheckFile then
+        if Search and (soSearchFiles in Options) and DoCheckFile then
           DoFindFile(ADirectoryName);
 
       if not FindNextFile(Handle, FFindData) then
@@ -767,7 +801,7 @@ begin
   if FIncludeAttr and Index > 0 then
     Result := tsMustBeSet
   else
-    if FExcludeAttr and Index > 0 then
+  if FExcludeAttr and Index > 0 then
     Result := tsMustBeUnSet
   else
     Result := tsDontCare;

@@ -112,8 +112,8 @@ begin
 
   inherited CreateNew(AOwner);
 
-  BorderIcons := [];  
-  BorderStyle := fbsNone; 
+  BorderIcons := [];
+ // BorderStyle := fbsNone;
   Font := TCustomEditAccessProtected(AOwner).Font;
 
   FEntering := True;

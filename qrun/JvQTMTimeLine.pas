@@ -152,12 +152,11 @@ type
     function DateHasImage(ADate: TDateTime): Boolean;
     procedure SetShowTodayIcon(const Value: Boolean);
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState; const MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; const MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState;  const  MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -488,6 +487,7 @@ begin
   Color := clWindow;
   Align := alTop;
   BorderStyle := bsSingle;
+  InputKeys := [ikArrows];
 end;
 
 destructor TJvCustomTMTimeline.Destroy;
@@ -1024,11 +1024,6 @@ begin
   FSelection.Assign(Value);
 end;
 
-procedure TJvCustomTMTimeline.DoGetDlgCode(var Code: TDlgCodes);
-begin
-  Include(Code, dcWantArrows);
-  Exclude(Code, dcNative);
-end;
 
 procedure TJvCustomTMTimeline.EnabledChanged;
 begin
@@ -1287,14 +1282,14 @@ begin
   end;
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState; const MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
     ScrollDate(Self, -1);
 end;
 
-function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState; const MousePos: TPoint): Boolean;
+function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;  const  MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then

@@ -130,7 +130,8 @@ var
   F:TFileStream;
   S:string;
 begin
-  S := FileGetTempName('JVCL');
+//  S := FileGetTempName('JVCL');
+  S := 'JVCL.tmp';
   F := TFileStream.Create(S,fmCreate);
   try
     (Component as TJvDataEmbedded).DataSaveToStream(F);

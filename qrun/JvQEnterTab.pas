@@ -88,12 +88,12 @@ begin
   end
   else
     Visible := False; 
-  InstallApplicationHook(TabKeyHook); 
+  //InstallApplicationHook(TabKeyHook);
 end;
 
 destructor TJvEnterAsTab.Destroy;
-begin 
-  UninstallApplicationHook(TabKeyHook); 
+begin
+  //UninstallApplicationHook(TabKeyHook); 
   FBmp.Free;
   inherited Destroy;
 end;
@@ -133,7 +133,7 @@ begin
   with Canvas do
   begin
     Brush.Color := clBtnFace;
-    BrushCopy(Canvas, ClientRect, FBmp, ClientRect, clFuchsia);
+    BrushCopy( Canvas,  ClientRect, FBmp, ClientRect, clFuchsia);
   end;
 end;
 

@@ -37,7 +37,6 @@ Known Issues:
 unit JvQToolEdit;
 
 {$I jvcl.inc}
-{$I crossplatform.inc}
 
 interface
 
@@ -189,8 +188,7 @@ type
     procedure SetShowButton(const Value: Boolean); 
     procedure UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer); 
     { (rb) renamed from UpdateEdit }
-    procedure UpdateGroup; // RDB
- 
+    procedure UpdateGroup; // RDB 
   protected
     FButton: TJvEditButton; // Polaris
     FBtnControl: TWinControl;
@@ -199,9 +197,9 @@ type
     FPopup: TWinControl;   
     procedure CustomAlignPosition(Control: TControl; var NewLeft,
       NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;   
-    procedure DoClearText; override;
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
+//    procedure DoClearText; override;
+//    procedure DoClipboardCut; override;
+//    procedure DoClipboardPaste; override;
     procedure AdjustSize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -209,7 +207,7 @@ type
     procedure FontChanged; override;
     procedure DoEnter; override;
     procedure DoCtl3DChanged; virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
@@ -225,7 +223,7 @@ type
     function EditCanModify: Boolean; override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetPopupValue: Variant; virtual;
-    function GetReadOnly: Boolean; virtual;
+//    function GetReadOnly: Boolean; virtual;
     function GetSettingCursor: Boolean;
     procedure AcceptValue(const Value: Variant); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -245,16 +243,15 @@ type
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual; //virtual Polaris
     procedure AsyncPopupCloseUp(Accept: Boolean); virtual;
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override; // RDB
     procedure SetDirectInput(Value: Boolean); // Polaris
     procedure SetDisabledColor(const Value: TColor); virtual; // RDB
     procedure SetDisabledTextColor(const Value: TColor); virtual; // RDB
     procedure SetGroupIndex(const Value: Integer); // RDB
     procedure SetPopupValue(const Value: Variant); virtual;
-    procedure SetReadOnly(Value: Boolean); virtual;
+//    procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetShowCaret; // Polaris
-    procedure UpdatePopupVisible;  
-    property Alignment; 
+    procedure UpdatePopupVisible;
+    property Alignment;
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
     property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False; 
     property Button: TJvEditButton read FButton;
@@ -275,7 +272,7 @@ type
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+//    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property SettingCursor: Boolean read GetSettingCursor;
     property ShowButton: Boolean read GetShowButton write SetShowButton default True;
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
@@ -373,7 +370,7 @@ type
     FMultipleDirs: Boolean;
     FOnDropFiles: TNotifyEvent;
     FOnBeforeDialog: TExecOpenDialogEvent;
-    FOnAfterDialog: TExecOpenDialogEvent; 
+    FOnAfterDialog: TExecOpenDialogEvent;  
   protected 
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
@@ -813,7 +810,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   the class is derived from another class, it uses the ClientRect of the edit
   control. }
 function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; 
+  AAlignment: TAlignment; PopupVisible: Boolean;
   DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
 
@@ -845,10 +842,7 @@ uses
   ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS} 
   JvQPickDate, JvQJCLUtils, JvQJVCLUtils,
-  JvQThemes, JvQResources, JvQConsts, JvQFinalize;
-
-const
-  sUnitName = 'JvToolEdit';
+  JvQThemes, JvQResources, JvQConsts;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
@@ -1115,7 +1109,6 @@ var
   SavedBrush: TBrushRecall;
   Offset: Integer;
   R: TRect;
-  EditHelperIntf: IComboEditHelper;
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
@@ -1153,16 +1146,8 @@ begin
 
     with ACanvas do
     begin
-      if Supports(Editor, IComboEditHelper, EditHelperIntf) then
-      begin
-        EditRect := EditHelperIntf.GetEditorRect;
-        EditHelperIntf := nil;
-      end
-      else
-      begin
-        EditRect := Rect(0, 0, 0, 0);
-        SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-      end;
+      EditRect := Rect(0, 0, 0, 0);
+      SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
       if IsRectEmpty(EditRect) then
       begin
         EditRect := ed.ClientRect;
@@ -1193,8 +1178,6 @@ begin
       end;
       if not ed.Enabled then
       begin
-        if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
         ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
@@ -1212,8 +1195,6 @@ begin
     SavedBrush.Free;
   end;
 end;
-
-
 
 
 //=== { TJvCustomComboEdit } =================================================
@@ -1429,10 +1410,7 @@ end;
 class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
 begin
   if GDefaultComboEditImagesList = nil then
-  begin
     GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
-    AddFinalizeObjectNil(sUnitName, TObject(GDefaultComboEditImagesList));
-  end;
   Result := GDefaultComboEditImagesList;
 end;
 
@@ -1444,17 +1422,18 @@ end;
 
 procedure TJvCustomComboEdit.DoChange;
 begin
-  inherited Change;
-end;
-
-procedure TJvCustomComboEdit.DoClearText;
-begin
-  Text := '';
+  Change;
 end;
 
 procedure TJvCustomComboEdit.DoClick;
 begin
   EditButtonClick(Self);
+end;
+
+(*
+procedure TJvCustomComboEdit.DoClearText;
+begin
+  Text := '';
 end;
 
 procedure TJvCustomComboEdit.DoClipboardCut;
@@ -1469,6 +1448,8 @@ begin
     inherited DoClipboardPaste;
   UpdateGroup;
 end;
+*)
+
 
 procedure TJvCustomComboEdit.DoCtl3DChanged;
 begin
@@ -1511,14 +1492,14 @@ begin
   end;
 end;
 
-function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -1642,10 +1623,12 @@ begin
   Result := (FPopup <> nil) and FPopupVisible;
 end;
 
+(*
 function TJvCustomComboEdit.GetReadOnly: Boolean;
 begin
   Result := FReadOnly;
 end;
+*)
 
 function TJvCustomComboEdit.GetSettingCursor: Boolean;
 begin
@@ -1839,9 +1822,9 @@ var
   AValue: Variant;
 begin
   if (FPopup <> nil) and FPopupVisible then
-  begin  
+  begin
     if Mouse.Capture <> nil then
-      Mouse.Capture := nil; 
+      Mouse.Capture := nil;
     AValue := GetPopupValue;
     HidePopup;
     try
@@ -1873,38 +1856,42 @@ procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
   Y: Integer;
+  SR: TJvSizeRect;
 begin
   if not ((ReadOnly and not FAlwaysShowPopup) or FPopupVisible) then
   begin
     CreatePopup;
-    if FPopup = nil then Exit;
+    if FPopup = nil then
+      Exit;
 
     P := Parent.ClientToScreen(Point(Left, Top));
+    SR.Top := 0;
+    SR.Left := 0;
+    SR.Width := Screen.Width;
+    SR.Height := Screen.Height;
     Y := P.Y + Height;
-    if Y + FPopup.Height > Screen.Height then
+    if Y + FPopup.Height > SR.Top + SR.Height then
       Y := P.Y - FPopup.Height;
     case FPopupAlign of
       epaRight:
         begin
           Dec(P.X, FPopup.Width - Width);
-          if P.X < 0 then
+          if P.X < SR.Left then
             Inc(P.X, FPopup.Width - Width);
         end;
       epaLeft:
-        begin
-          if P.X + FPopup.Width > Screen.Width then
-            Dec(P.X, FPopup.Width - Width);
-        end;
+        if P.X + FPopup.Width > SR.Left + SR.Width then
+          Dec(P.X, FPopup.Width - Width);
     end;
-    if P.X < 0 then
-      P.X := 0
+    if P.X < SR.Left then
+      P.X := SR.Left
     else
-    if P.X + FPopup.Width > Screen.Width then
-      P.X := Screen.Width - FPopup.Width;
+    if P.X + FPopup.Width > SR.Left + SR.Width then
+      P.X := SR.Left + SR.Width - FPopup.Width;
     if Text <> '' then
       SetPopupValue(Text)
     else
-      SetPopupValue(NULL);
+      SetPopupValue(Null);
     if CanFocus then
       SetFocus;
     ShowPopup(Point(P.X, Y));
@@ -2080,15 +2067,6 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  if ClipboardCommands <> Value then
-  begin
-    inherited SetClipboardCommands(Value);
-    ReadOnly := ClipboardCommands <= [caCopy];
-  end;
-end;
-
 procedure TJvCustomComboEdit.SetDirectInput(Value: Boolean);
 begin
   inherited ReadOnly := not Value or FReadOnly;
@@ -2223,6 +2201,7 @@ begin
     TJvPopupWindow(FPopup).SetValue(Value);
 end;
 
+(*
 procedure TJvCustomComboEdit.SetReadOnly(Value: Boolean);
 begin
   if Value <> FReadOnly then
@@ -2231,6 +2210,7 @@ begin
     inherited ReadOnly := Value or not FDirectInput;
   end;
 end;
+*)
 
 procedure TJvCustomComboEdit.SetShowButton(const Value: Boolean);
 begin
@@ -3624,10 +3604,8 @@ end;
 
 
 procedure TJvPopupWindow.Show(Origin: TPoint);
-
-begin  
-  Left := Origin.X;
-  Top := Origin.Y; 
+begin
+  SetBounds(Origin.X, Origin.Y, Width, Height); 
   Visible := True;
 end;
 
@@ -3660,10 +3638,11 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 
-finalization
+finalization 
+  FreeAndNil(GDefaultComboEditImagesList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

@@ -61,8 +61,9 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
 
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
-    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE; 
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
+    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure SetForceSameSize(const Value: Boolean);
     procedure SetAllowAllUp(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
@@ -169,10 +170,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, QForms,
-  JvQJVCLUtils, JvQThemes, JvQFinalize;
-
-const
-  sUnitName = 'JvButton';
+  JvQJVCLUtils, JvQThemes;
 
 const
   JvBtnLineSeparator = '|';
@@ -200,8 +198,6 @@ begin
             if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
               Pixels[X, Y] := clWhite; { on even/odd rows }
       end;
-
-      AddFinalizeObjectNil(sUnitName, TObject(GlobalPattern)); // finalize code
     except
       FreeAndNil(GlobalPattern);
     end;
@@ -484,23 +480,23 @@ end;
 
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed; 
-  I: Integer; 
+  Msg: TCMButtonPressed; 
+//  I: Integer; 
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_JVBUTTONPRESSED;
+    Msg.Msg := CM_BUTTONPRESSED;
     Msg.Index := GroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg); 
-    for I := 0 to Parent.ControlCount - 1 do
-      if Parent.Controls[I] is TJvCustomGraphicButton then
-        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
+//    for I := 0 to Parent.ControlCount - 1 do
+//      if Parent.Controls[I] is TJvCustomGraphicButton then
+//        TJvCustomGraphicButton(Parent.Controls[I]).ButtonPressed(Self, GroupIndex); 
   end;
 end;
 
-procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvCustomGraphicButton.CMButtonPressed(var Msg: TCMButtonPressed);
 begin
   ButtonPressed(TJvCustomGraphicButton(Msg.Control), Msg.Index);
 end;
@@ -519,7 +515,11 @@ begin
   end;
 end;
 
-
+procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
+begin
+  inherited;
+  RepaintBackground;
+end;
 
 procedure TJvCustomGraphicButton.FontChanged;
 begin
@@ -799,12 +799,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GlobalPattern);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

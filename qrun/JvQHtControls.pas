@@ -116,7 +116,7 @@ uses
   {$ENDIF MSWINDOWS} 
   Qt, 
   QWindows, QMessages, QGraphics, QControls, QStdCtrls, QDialogs,
-  JvQExStdCtrls;
+  JvQJVCLUtils, JvQExStdCtrls;
 
 type
   THyperLinkClick = procedure (Sender: TObject; LinkName: string) of object;
@@ -326,15 +326,15 @@ type
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
-  CalcWidth: Boolean; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string);
+  CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
+  var LinkName: string; Scale: integer = 100);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string): string;
+  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): string;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string): Integer;
+  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
 function ItemHTPlain(const Text: string): string;
-function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
 function PrepareText(const A: string): string;
 
 implementation
@@ -344,421 +344,55 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Math,
-  JvQJVCLUtils, JvQConsts;
+  JvQConsts;
 
 const
-  cBR = '<BR>';
-  cHR = '<HR>';
-  cTagBegin = '<';
-  cTagEnd = '>';
-  cLT = '<';
-  cGT = '>';
-  cQuote = '"';
-  cCENTER = 'CENTER';
-  cRIGHT = 'RIGHT';
-  cHREF = 'HREF';
-  cIND = 'IND';
-  cCOLOR = 'COLOR';
-  cBGCOLOR = 'BGCOLOR';
   cMAILTO = 'MAILTO:';
   cURLTYPE = '://';
 
-// Kaczkowski - begin
 function PrepareText(const A: string): string;
-type
-  THtmlCode = packed record
-    Html: PChar;
-    Text: Char;
-  end;
-const
-  Conversions: array [0..6] of THtmlCode =
-   (
-    (Html: '&amp;';   Text: '&'),
-    (Html: '&quot;';  Text: '"'),
-    (Html: '&reg;';   Text: '®'),
-    (Html: '&copy;';  Text: '©'),
-    (Html: '&trade;'; Text: '™'),
-    (Html: '&euro;';  Text: '€'),
-    (Html: '&nbsp;';  Text: ' ')
-   );
-var
-  I: Integer;
 begin
-  Result := A;
-  for I := Low(Conversions) to High(Conversions) do
-    with Conversions[I] do
-      Result := StringReplace(Result, Html, Text, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, sLineBreak, '', [rfReplaceAll, rfIgnoreCase]); // only <BR> can be new line
-  Result := StringReplace(Result, cBR, sLineBreak, [rfReplaceAll, rfIgnoreCase]);
-  Result := StringReplace(Result, cHR, cHR + sLineBreak, [rfReplaceAll, rfIgnoreCase]); // fixed <HR><BR>
-end;
-
-function BeforeTag(var Str: string; DeleteToTag: Boolean = False): string;
-begin
-  if Pos(cTagBegin, Str) > 0 then
-  begin
-    Result := Copy(Str, 1, Pos(cTagBegin, Str)-1);
-    if DeleteToTag then
-      Delete(Str, 1, Pos(cTagBegin, Str)-1);
-  end
-  else
-  begin
-    Result := Str;
-    if DeleteToTag then
-      Str := '';
-  end;
-end;
-
-function GetChar(const Str: string; Pos: Word; Up: Boolean = False): Char;
-begin
-  if Length(Str) >= Pos then
-    Result := Str[Pos]
-  else
-    Result := ' ';
-  if Up then
-    Result := UpCase(Result);
-end;
-
-function DeleteTag(const Str: string): string;
-begin
-  Result := Str;
-  if (GetChar(Result, 1) = cTagBegin) and (Pos(cTagEnd, Result) > 1) then
-    Delete(Result, 1, Pos(cTagEnd, Result));
+  Result := HTMLPrepareText(A);
 end;
 
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
-  CalcWidth: Boolean; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string);
-const
-  DefaultLeft = 0; // (ahuser) was 2
-var
-  vText, vM, TagPrp, Prp, TempLink: string;
-  vCount: Integer;
-  vStr: TStringList;
-  Selected: Boolean;
-  Alignment: TAlignment;
-  Trans, IsLink: Boolean;
-  CurLeft: Integer;
-  // for begin and end
-  OldFontStyles: TFontStyles;
-  OldFontColor : TColor;
-  OldBrushColor: TColor;
-  OldAlignment : TAlignment;
-  OldFont: TFont;
-  // for font style
-  RemFontColor,
-  RemBrushColor: TColor;
-
-  function ExtractPropertyValue(const Tag: string; PropName: string): string;
-  begin
-    Result := '';
-    PropName := UpperCase(PropName);
-    if Pos(PropName, UpperCase(Tag)) > 0 then
-    begin
-      Result := Copy(Tag, Pos(PropName, UpperCase(Tag)) + Length(PropName), Length(Tag));
-      Result := Copy(Result, Pos(cQuote, Result) + 1, Length(Result));
-      Result := Copy(Result, 1, Pos(cQuote, Result) - 1);
-    end;
-  end;
-
-  procedure Style(const Style: TFontStyle; const Include: Boolean);
-  begin
-    if Assigned(Canvas) then
-      if Include then
-        Canvas.Font.Style := Canvas.Font.Style + [Style]
-      else
-        Canvas.Font.Style := Canvas.Font.Style - [Style];
-  end;
-
-  function CalcPos(const Str: string): Integer;
-  begin
-    case Alignment of
-      taRightJustify:
-        Result := (Rect.Right - Rect.Left) - ItemHTWidth(Canvas, Rect, State, Str);
-      taCenter:
-        Result := (Rect.Right - Rect.Left - ItemHTWidth(Canvas, Rect, State, Str)) div 2;
-    else
-      Result := DefaultLeft;
-    end;
-    if Result <= 0 then
-      Result := DefaultLeft;
-  end;
-
-  procedure Draw(const M: string);
-  var
-    Width, Height: Integer;
-    R: TRect;
-  begin
-    R := Rect;
-    Inc(R.Left, CurLeft);
-    if Assigned(Canvas) then
-    begin
-      Width  := Canvas.TextWidth(M);
-      Height := CanvasMaxTextHeight(Canvas);
-      if IsLink and not MouseOnLink then
-        if (MouseY in [R.Top..R.Top + Height]) and
-          (MouseX in [R.Left..R.Left + Width]) then
-        begin
-          MouseOnLink := True;
-          Canvas.Font.Color := clRed; // hover link
-          LinkName := TempLink;
-        end;
-      if not CalcWidth then
-      begin  
-        if not Trans then
-          Canvas.FillRect(R);  // for opaque ( transparent = False ) 
-        Canvas.TextOut(R.Left, R.Top, M);
-      end;
-      CurLeft := CurLeft + Width;
-    end;
-  end;
-
-  procedure NewLine;
-  begin
-    if Assigned(Canvas) then
-      if vCount < vStr.Count-1 then
-      begin
-        Width := Max(Width, CurLeft);
-        CurLeft := DefaultLeft;
-        Rect.Top := Rect.Top + CanvasMaxTextHeight(Canvas);
-      end;
-  end;
-
+  CalcType: TJvHTMLCalcType; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
+  var LinkName: string; Scale: integer = 100);
 begin
-  // (p3) remove warnings
-  OldFontColor := 0;
-  OldBrushColor := 0;
-  RemFontColor := 0;
-  RemBrushColor := 0;
-  OldAlignment := taLeftJustify;
-  OldFont := TFont.Create;
-
-  if Canvas <> nil then
-  begin
-    OldFontStyles := Canvas.Font.Style;
-    OldFontColor  := Canvas.Font.Color;
-    OldBrushColor := Canvas.Brush.Color;
-    OldAlignment  := Alignment;
-    RemFontColor  := Canvas.Font.Color;
-    RemBrushColor := Canvas.Brush.Color;
-  end;
-  try
-    Alignment := taLeftJustify;
-    IsLink := False;
-    MouseOnLink := False;
-    vText := Text;
-    vStr  := TStringList.Create;
-    vStr.Text := PrepareText(vText);
-    Trans := True;
-    LinkName := '';
-    TempLink := '';
-
-    Selected := (odSelected in State) or (odDisabled in State);
-
-    Width := DefaultLeft;
-    CurLeft := DefaultLeft;
-
-    vM := '';
-    for vCount := 0 to vStr.Count - 1 do
-    begin
-      vText := vStr[vCount];
-      CurLeft := CalcPos(vText);
-      while Length(vText) > 0 do
-      begin
-        vM := BeforeTag(vText, True);
-        vM := StringReplace(vM, '&lt;', cLT, [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
-        vM := StringReplace(vM, '&gt;', cGT, [rfReplaceAll, rfIgnoreCase]); // <--/
-        if GetChar(vText, 1) = cTagBegin then
-        begin
-          Draw(vM);
-          if Pos(cTagEnd, vText) = 0 then
-            Insert(cTagEnd, vText, 2);
-          if GetChar(vText, 2) = '/' then
-          begin
-            case GetChar(vText, 3, True) of
-              'A':
-                begin
-                  IsLink := False;
-                  Canvas.Font.Assign(OldFont);
-                end;
-              'B':
-                Style(fsBold, False);
-              'I':
-                Style(fsItalic, False);
-              'U':
-                Style(fsUnderline, False);
-              'S':
-                Style(fsStrikeOut, False);
-              'F':
-                begin
-                  if not Selected then // restore old colors
-                  begin
-                    Canvas.Font.Color  := RemFontColor;
-                    Canvas.Brush.Color := RemBrushColor;
-                    Trans := True;
-                  end;
-                end;
-            end
-          end
-          else
-          begin
-            case GetChar(vText, 2, True) of
-              'A':
-                begin
-                  if GetChar(vText, 3, True) = 'L' then // ALIGN
-                  begin
-                    TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
-                    if Pos(cCENTER, TagPrp) > 0 then
-                      Alignment := taCenter
-                    else
-                    if Pos(cRIGHT, TagPrp) > 0 then
-                      Alignment := taRightJustify
-                    else
-                      Alignment := taLeftJustify;
-                    CurLeft := DefaultLeft;
-                    if not CalcWidth then
-                      CurLeft := CalcPos(vText);
-                  end
-                  else
-                  begin   // A HREF
-                    TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
-                    if Pos(cHREF, UpperCase(TagPrp)) > 0 then
-                    begin
-                      IsLink := True;
-                      OldFont.Assign(Canvas.Font);
-                      if not Selected then
-                        Canvas.Font.Color := clBlue;
-                      TempLink := ExtractPropertyValue(TagPrp, cHREF);
-                    end;
-                  end;
-                end;
-              'B':
-                Style(fsBold, True);
-              'I':
-                if GetChar(vText, 3, True) = 'N' then //IND="%d"
-                begin
-                  TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
-                  CurLeft := StrToInt(ExtractPropertyValue(TagPrp, cIND)); // ex IND="10"
-                end
-                else
-                  Style(fsItalic, True); // ITALIC
-              'U':
-                Style(fsUnderline, True);
-              'S':
-                Style(fsStrikeOut, True);
-              'H':
-                if (GetChar(vText, 3, True) = 'R') and (not CalcWidth) and Assigned(Canvas) then // HR
-                begin
-                  if odDisabled in State then // only when disabled
-                     Canvas.Pen.Color := Canvas.Font.Color;
-                  Canvas.MoveTo(0,Rect.Top + CanvasMaxTextHeight(Canvas));
-                  Canvas.LineTo(Rect.Right,Rect.Top + CanvasMaxTextHeight(Canvas));
-                end;
-              'F':
-                if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) and not CalcWidth then // F from FONT
-                begin
-                  TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
-                  RemFontColor  := Canvas.Font.Color;
-                  RemBrushColor := Canvas.Brush.Color;
-                  if Pos(cCOLOR, TagPrp) > 0 then
-                  begin
-                    Prp := ExtractPropertyValue(TagPrp, cCOLOR);
-                    Canvas.Font.Color := StringToColor(Prp);
-                  end;
-                  if Pos(cBGCOLOR, TagPrp) > 0 then
-                  begin
-                    Prp := ExtractPropertyValue(TagPrp, cBGCOLOR);
-                    Canvas.Brush.Color := StringToColor(Prp);
-                    Trans := False;
-                  end;
-                end;
-            end;
-          end;
-          vText := DeleteTag(vText);
-          vM := '';
-        end;
-      end;
-      Draw(vM);
-      NewLine;
-      vM := '';
-    end;
-  finally
-    if Canvas <> nil then
-    begin
-      Canvas.Font.Style := OldFontStyles;
-      Canvas.Font.Color := OldFontColor;
-      Canvas.Brush.Color := OldBrushColor;
-      Alignment := OldAlignment;
-  {    Canvas.Font.Color := RemFontColor;
-      Canvas.Brush.Color:= RemBrushColor;}
-    end;
-    FreeAndNil(vStr);
-    FreeAndNil(OldFont);
-  end;
-  Width := Max(Width, CurLeft - DefaultLeft);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LInkName, Scale);
 end;
 // Kaczkowski - end
 
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string): string;
-var
-  W: Integer;
-  S: Boolean;
-  St: string;
+  const Text: string; Scale: integer = 100): string;
 begin
-  ItemHTDrawEx(Canvas, Rect, State, Text, {HideSelColor,} W, False, 0, 0, S, St);
+  HTMLDrawText(Canvas, Rect, State, Text, Scale);
 end;
 
 function ItemHTPlain(const Text: string): string; // Kaczkowski: optimised
-var
-  S: string;
 begin
-  Result := '';
-  S := PrepareText(Text);
-  while Pos(cTagBegin, S) > 0 do
-  begin
-    Result := Result + Copy(S, 1, Pos(cTagBegin, S)-1);
-    if Pos(cTagEnd, S) > 0 then
-      Delete(S, 1, Pos(cTagEnd, S))
-    else
-      Delete(S, 1, Pos(cTagBegin, S));
-  end;
-  Result := Result + S;
+  Result := HTMLPlainText(Text);
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string): Integer;
-var
-  S: Boolean;
-  St: string;
+  const State: TOwnerDrawState; const Text: string; Scale: integer = 100): Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, State, Text, Result, True, 0, 0, S, St);
+  Result := HTMLTextWidth(Canvas, Rect, State, Text, Scale);
 end;
 
 // Kaczkowski - begin
-function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
-var
-  Str: TStringList;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: integer = 100): Integer;
 begin
-  try
-    Str := TStringList.Create;
-    Str.Text := PrepareText(Text);
-    Result := Str.Count * CanvasMaxTextHeight(Canvas);
-  finally
-    FreeAndNil(Str);
-  end;
-  if Result = 0 then
-    Result := CanvasMaxTextHeight(Canvas); // if Str.count = 0;
-  Inc(Result);
+  Result := HTMLTextHeight(Canvas, Text, Scale);
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
+               const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
 var
   W: Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, State, Text, W, False, MouseX, MouseY, Result, HyperLink);
+  ItemHTDrawEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, Result, HyperLink);
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
@@ -766,7 +400,7 @@ function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
 var
   W: Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, [], Text, W, False, MouseX, MouseY, Result, HyperLink);
+  ItemHTDrawEx(Canvas, Rect, [], Text, W, htmlShow, MouseX, MouseY, Result, HyperLink);
 end;
 
 // Kaczkowski - end

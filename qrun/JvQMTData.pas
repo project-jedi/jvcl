@@ -114,10 +114,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvQResources, JvQFinalize;
-
-const
-  sUnitName = 'JvMTData';
+  JvQResources;
 
 
 
@@ -129,10 +126,7 @@ var
 function DataThreadsMan: TMTManager;
 begin
   if not Assigned(GlobalDataThreadsMan) then
-  begin
-    GlobalDataThreadsMan := TMTManager.Create; 
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan)); 
-  end;
+    GlobalDataThreadsMan := TMTManager.Create;
   Result := GlobalDataThreadsMan;
 end;
 
@@ -378,11 +372,8 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+  FreeAndNil(GlobalDataThreadsMan);
   {$IFDEF MSWINDOWS}
   // (rom) no OutputDebugString in production code
   {$IFDEF DEBUGINFO_ON}
@@ -391,7 +382,9 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
- 
-  FinalizeUnit(sUnitName); 
+
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

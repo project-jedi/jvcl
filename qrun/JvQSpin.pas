@@ -41,8 +41,7 @@ unit JvQSpin;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, 
+  SysUtils, Classes, QWindows, QMessages, 
   QComCtrls, QControls, QExtCtrls, QGraphics, QForms, 
   QComboEdits, JvQExComboEdits, QComCtrlsEx, 
   JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
@@ -75,7 +74,8 @@ type
     procedure SetDownGlyph(Value: TBitmap);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetUpGlyph(Value: TBitmap);
-    procedure TimerExpired(Sender: TObject); 
+    procedure TimerExpired(Sender: TObject);
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
   protected
     procedure CheckButtonBitmaps;
     procedure RemoveButtonBitmaps;
@@ -182,13 +182,13 @@ type
     procedure SetThousands(Value: Boolean);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure SetShowButton(Value: Boolean); 
+    procedure WMCut(var Mesg: TMessage); message WM_CUT;
+    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected
     FButtonKind: TSpinButtonKind;
-    procedure DoClipboardPaste; override;
-    procedure DoClipboardCut; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean; override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -700,7 +700,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomSpinEdit.DoBoundsChanged;
+procedure TJvCustomSpinEdit.BoundsChanged;
 var
   MinHeight: Integer;
 begin
@@ -713,20 +713,20 @@ begin
   begin
     ResizeButton;
     SetEditRect;
-    inherited DoBoundsChanged;
+    inherited BoundsChanged;
   end;
 end;
 
-procedure TJvCustomSpinEdit.DoClipboardCut;
+procedure TJvCustomSpinEdit.WMCut(var Mesg: TMessage);
 begin
-  if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardCut;
+  if FEditorEnabled then
+    inherited;
 end;
 
-procedure TJvCustomSpinEdit.DoClipboardPaste;
+procedure TJvCustomSpinEdit.WMPaste(var Mesg: TMessage);
 begin
-  if FEditorEnabled and not ReadOnly then
-    inherited DoClipboardPaste;
+  if FEditorEnabled then
+    inherited ;
 
   { Polaris code:
   if not FEditorEnabled or ReadOnly then
@@ -1373,7 +1373,12 @@ begin
   end;
 end;
 
-
+procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+begin
+  // The buttons we draw are buffered, thus we need to repaint them to theme changes etc.
+  if FButtonBitmaps <> nil then
+    TSpinButtonBitmaps(FButtonBitmaps).Reset;
+end;
 
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
@@ -2007,12 +2012,12 @@ begin
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
     if Enabled then
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
+      BrushCopy( ACanvas,  Dest, AUpArrow, Source, AUpArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
       try
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy( ACanvas,  Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;
@@ -2025,12 +2030,12 @@ begin
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
     if Enabled then
-      BrushCopy(ACanvas,Dest, ADownArrow, Source, ADownArrow.TransparentColor)
+      BrushCopy( ACanvas,  Dest, ADownArrow, Source, ADownArrow.TransparentColor)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
       try
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
+        BrushCopy( ACanvas,  Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
         DisabledBitmap.Free;
       end;

@@ -65,7 +65,10 @@ uses
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils, Classes, QGraphics, QClipbrd, QControls, 
   Qt, QWindows, QStdCtrls,  
-  StrUtils, TypInfo;
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
+  TypInfo;
 
 const
   {$IFDEF MSWINDOWS}
@@ -467,6 +470,7 @@ function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
 { end JvDateUtil }
 function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 
 
 { begin JvStrUtils }
@@ -904,6 +908,15 @@ procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
 // the resulting string
 function TextToValText(const AValue: string): string;
 
+
+
+{$IFDEF MSWINDOWS}
+{
+ Taken from QDialogs, (public with VCL)
+}
+procedure EnableTaskWindows(WindowList: Pointer);
+function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
+{$ENDIF MSWINDOWS}
 
 
 implementation
@@ -4295,10 +4308,8 @@ var
   P: PByteArray;
 begin
   P := Buf;
-  for I := 0 to pred(BufSize) do
-  begin
+  for I := 0 to Pred(BufSize) do
     Result := Result + IntToHex(P[I] , 2);
-  end;
 end;
 
 function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
@@ -4311,10 +4322,8 @@ begin
   if (Length(Value) div 2) < BufSize then
     BufSize := Length(Value) div 2;
   P := Buf;
-  For I := 0 to pred(BufSize) do
-  begin
+  for I := 0 to Pred(BufSize) do
     P[I] := StrToInt('$' + Value[2 * I + 1] + Value[2 * I + 2]);
-  end;
   Result := BufSize;
 end;
 
@@ -7483,6 +7492,78 @@ begin
   end;
   Result := True;
 end;
+
+{$IFDEF MSWINDOWS}
+{
+ Taken from QDialogs,
+}
+type
+  PTaskWindow = ^TTaskWindow;
+  TTaskWindow = record
+    Next: PTaskWindow;
+    Window: Windows.HWnd;
+  end;
+
+var
+  TaskActiveWindow: Windows.HWnd = 0;
+  TaskFirstWindow: Windows.HWnd = 0;
+  TaskFirstTopMost: Windows.HWnd = 0;
+  TaskWindowList: PTaskWindow = nil;
+
+function DoDisableWindow(Window: Windows.HWnd; Data: Longint): Bool; stdcall;
+var
+  P: PTaskWindow;
+begin
+  if (Window <> TaskActiveWindow) and Windows.IsWindowVisible(Window) and
+    Windows.IsWindowEnabled(Window) then
+  begin
+    New(P);
+    P^.Next := TaskWindowList;
+    P^.Window := Window;
+    TaskWindowList := P;
+    Windows.EnableWindow(Window, False);
+  end;
+  Result := True;
+end;
+
+procedure EnableTaskWindows(WindowList: Pointer);
+var
+  P: PTaskWindow;
+begin
+  while WindowList <> nil do
+  begin
+    P := WindowList;
+    if Windows.IsWindow(P^.Window) then Windows.EnableWindow(P^.Window, True);
+    WindowList := P^.Next;
+    Dispose(P);
+  end;
+end;
+
+function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
+var
+  SaveActiveWindow: Windows.HWND;
+  SaveWindowList: Pointer;
+begin
+  Result := nil;
+  SaveActiveWindow := TaskActiveWindow;
+  SaveWindowList := TaskWindowList;
+  TaskActiveWindow := ActiveWindow;
+  TaskWindowList := nil;
+  try
+    try
+      EnumThreadWindows(GetCurrentThreadID, @DoDisableWindow, 0);
+      Result := TaskWindowList;
+    except
+      EnableTaskWindows(TaskWindowList);
+      raise;
+    end;
+  finally
+    TaskWindowList := SaveWindowList;
+    TaskActiveWindow := SaveActiveWindow;
+  end;
+end;
+{$ENDIF MSWINDOWS}
+
 
 
 

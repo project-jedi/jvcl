@@ -364,8 +364,7 @@ type
   private
     FWizard: TJvWizard;
     FAlignment: TJvWizardLeftRight; 
-  protected
-    function StoreCaption: Boolean; virtual; 
+  protected 
     procedure VisibleChanged; override; 
     property Wizard: TJvWizard read FWizard write FWizard;
     property Alignment: TJvWizardLeftRight read FAlignment write FAlignment;
@@ -392,11 +391,10 @@ type
     function GetButtonWidth: Integer;
     procedure SetButtonWidth(const Value: Integer);
   protected
-    function StoreCaption: Boolean; virtual;
     property Control: TJvWizardButtonControl read FControl write FControl;
   published
     property Glyph: TBitmap read GetGlyph write SetGlyph;
-    property Caption: string read GetCaption write SetCaption stored StoreCaption;
+    property Caption: string read GetCaption write SetCaption;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs;
     property Layout: TButtonLayout read GetLayout write SetLayout default blGlyphLeft;
     property ModalResult: TModalResult read GetModalResult write SetModalResult default mrNone;
@@ -896,7 +894,6 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -906,7 +903,6 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -916,7 +912,6 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -926,7 +921,6 @@ type
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
     procedure SelectPage; override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -935,7 +929,6 @@ type
   TJvWizardFinishButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -944,7 +937,6 @@ type
   TJvWizardCancelButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -953,7 +945,6 @@ type
   TJvWizardHelpButton = class(TJvWizardBaseButton)
   protected
     procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
-    function StoreCaption: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
@@ -974,11 +965,6 @@ begin
   end;
   Kind := bkCustom;
   Anchors := [akRight, akBottom];
-end;
-
-function TJvWizardButtonControl.StoreCaption: Boolean;
-begin
-  Result := True;
 end;
 
 
@@ -1050,11 +1036,6 @@ begin
   FWizard.SelectFirstPage;
 end;
 
-function TJvWizardStartButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> RsFirstButtonCaption;
-end;
-
 //=== { TJvWizardLastButton } ================================================
 
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
@@ -1076,11 +1057,6 @@ end;
 procedure TJvWizardLastButton.SelectPage;
 begin
   FWizard.SelectLastPage;
-end;
-
-function TJvWizardLastButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> RsLastButtonCaption;
 end;
 
 //=== { TJvWizardBackButton } ================================================
@@ -1106,11 +1082,6 @@ begin
   FWizard.SelectPriorPage;
 end;
 
-function TJvWizardBackButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> RsBackButtonCaption;
-end;
-
 //=== { TJvWizardNextButton } ================================================
 
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
@@ -1134,11 +1105,6 @@ begin
   FWizard.SelectNextPage;
 end;
 
-function TJvWizardNextButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> RsNextButtonCaption;
-end;
-
 //=== { TJvWizardFinishButton } ==============================================
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
@@ -1154,11 +1120,6 @@ procedure TJvWizardFinishButton.ButtonClick(Page: TJvWizardCustomPage; var Stop:
 begin
   if Assigned(Page.FOnFinishButtonClick) then
     Page.FOnFinishButtonClick(Page, Stop);
-end;
-
-function TJvWizardFinishButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> RsFinishButtonCaption;
 end;
 
 //=== { TJvWizardCancelButton } ==============================================
@@ -1178,11 +1139,6 @@ procedure TJvWizardCancelButton.ButtonClick(Page: TJvWizardCustomPage; var Stop:
 begin
   if Assigned(Page.FOnCancelButtonClick) then
     Page.FOnCancelButtonClick(Page, Stop);
-end;
-
-function TJvWizardCancelButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> SCancelButton;
 end;
 
 //=== { TJvWizardHelpButton } ================================================
@@ -1226,11 +1182,6 @@ procedure TJvWizardHelpButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: B
 begin
   if Assigned(Page.FOnHelpButtonClick) then
     Page.FOnHelpButtonClick(Page, Stop);
-end;
-
-function TJvWizardHelpButton.StoreCaption: Boolean;
-begin
-  Result := Caption <> SHelpButton;
 end;
 
 //=== { TJvWizardNavigateButton } ============================================
@@ -1323,11 +1274,6 @@ begin
     if Assigned(FControl.FWizard) then
       FControl.FWizard.RepositionButtons;
   end;
-end;
-
-function TJvWizardNavigateButton.StoreCaption: Boolean;
-begin
-  Result := not Assigned(FControl) or FControl.StoreCaption;
 end;
 
 //=== { TJvWizardRouteMapControl } ===========================================

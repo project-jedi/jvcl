@@ -171,9 +171,9 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
-  QWindows, QMessages, QGraphics, QControls, QStdCtrls, QExtCtrls, 
-  Qt, JvQExExtCtrls, 
-  JvQComponent, JvQTypes, JvQExControls, JvQFinalize;
+  QWindows, QGraphics, QControls, QStdCtrls, QExtCtrls,
+  Qt, QMessages, JvQExExtCtrls, JvQFinalize,
+  JvQComponent, JvQTypes, JvQExControls;
 
 const
   { Inspector Row Size constants }
@@ -351,7 +351,6 @@ type
     FTopIndex: Integer;
     FUseBands: Boolean;
     FVisibleList: TStringList;
-    FWantTabs: Boolean; 
     FHorzScrollBar: TScrollBar;
     FVertScrollBar: TScrollBar; 
     FOnEditorContextPopup: TContextPopupEvent;
@@ -372,8 +371,8 @@ type
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
     function CalcItemRect(const Item: TJvCustomInspectorItem): TRect; virtual;
-    procedure CMActivate(var Msg: TCMActivate); message CM_ACTIVATE;
-    procedure CMDeactivate(var Msg: TCMActivate); message CM_DEACTIVATE;
+    procedure CMActivate(var Msg: TJvMessage); message CM_ACTIVATE;
+    procedure CMDeactivate(var Msg: TJvMessage); message CM_DEACTIVATE;
     procedure DoAfterDataCreate(const Data: TJvCustomInspectorData); virtual;
     procedure DoAfterItemCreate(const Item: TJvCustomInspectorItem); virtual;
     procedure DoBeforeItemCreate(const Data: TJvCustomInspectorData;
@@ -428,7 +427,7 @@ type
     procedure RebuildVisible; virtual;
     procedure RemoveNotifySort(const Item: TJvCustomInspectorItem); virtual;
     procedure RemoveVisible(const Item: TJvCustomInspectorItem); virtual;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     function ScrollFactorV: Extended; virtual;
     procedure SetAfterDataCreate(const Value: TInspectorDataEvent); virtual;
     procedure SetAfterItemCreate(const Value: TInspectorItemEvent); virtual;
@@ -456,7 +455,6 @@ type
     function ViewWidth: Integer;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure DoSetFocus(Focused: HWND); override;
     procedure DoKillFocus(Focused: HWND); override; 
     procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
@@ -2346,16 +2344,11 @@ end;
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
   I: Integer;
-
-
 var
-  A: TCMActivate;
+  A: TJvMessage;
 begin
   Result := False;
   A.Msg := CM_DEACTIVATE;
-  A.WParam := 0;
-  A.LParam := 0;
-  A.Result := 0;
   for I := High(FInspectors) downto 0 do
     if FInspectors[I].HandleAllocated then
       FInspectors[I].CMDeactivate(A);
@@ -2538,7 +2531,7 @@ end;
 
 constructor TJvCustomInspector.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner); 
+  inherited Create(AOwner);
   ControlStyle := ControlStyle - [csAcceptsControls, csNoFocus];
   FHorzScrollBar := TScrollBar.Create(Self);
   FVertScrollBar := TScrollBar.Create(Self);
@@ -2577,7 +2570,7 @@ begin
   Height := 100;
   Divider := 75;
   BandWidth := 150;
-
+  InputKeys := [ikArrows];
   if not (csDesigning in ComponentState) then
     GlobalInspReg.RegInspector(Self);
 end;
@@ -2681,12 +2674,12 @@ begin
   Result := Item.Rects[iprItem];
 end;
 
-procedure TJvCustomInspector.CMActivate(var Msg: TCMActivate);
+procedure TJvCustomInspector.CMActivate(var Msg: TJvMessage);
 begin
   Invalidate;
 end;
 
-procedure TJvCustomInspector.CMDeactivate(var Msg: TCMActivate);
+procedure TJvCustomInspector.CMDeactivate(var Msg: TJvMessage);
 begin
   inherited;
   if Selected <> nil then
@@ -2925,7 +2918,7 @@ end;
 
 function TJvCustomInspector.GetWantTabs: Boolean;
 begin
-  Result := FWantTabs;
+  Result := ikTabs in InputKeys ;
 end;
 
 procedure TJvCustomInspector.HandleBandResize(X: Integer);
@@ -3501,9 +3494,9 @@ begin
   end;
 end;
 
-procedure TJvCustomInspector.DoBoundsChanged;
+procedure TJvCustomInspector.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   if csCreating in ControlState then
     Exit;
   if not BandSizing then
@@ -3803,11 +3796,10 @@ end;
 
 procedure TJvCustomInspector.SetWantTabs(Value: Boolean);
 begin
-  if Value <> WantTabs then
-  begin
-    FWantTabs := Value;  
-    //RecreateWidget;  
-  end;
+  if Value then
+    InputKeys := InputKeys + [ikTabs]
+  else
+    InputKeys := InputKeys - [ikTabs];
 end;
 
 procedure TJvCustomInspector.UpdateScrollBars;
@@ -3890,13 +3882,6 @@ end;
 function TJvCustomInspector.ViewWidth: Integer;
 begin
   Result := RectWidth(ViewRect);
-end;
-
-procedure TJvCustomInspector.DoGetDlgCode(var Code: TDlgCodes);
-begin
-  Code := [dcWantArrows];
-  if WantTabs then
-    Include(Code, dcWantTab);
 end;
 
 procedure TJvCustomInspector.DoSetFocus(Focused: HWND);
@@ -10566,8 +10551,6 @@ begin
   if GlobalPropItemReg = nil then
   begin
     GlobalPropItemReg := TJvInspectorRegister.Create(TJvInspectorPropData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalPropItemReg));
-
     // register
     RegisterPropDataTypeKinds;
   end;
@@ -10579,7 +10562,6 @@ begin
   if GlobalPropMapReg = nil then
   begin
     GlobalPropMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalPropMapReg));
   end;
   Result := GlobalPropMapReg;
 end;
@@ -12172,9 +12154,6 @@ end;
 
 initialization
   RegisterConsts;
-
-finalization
-  FinalizeUnit(sUnitName);
 
 end.
 

@@ -36,8 +36,7 @@ unit JvQXPCheckCtrls;
 interface
 
 uses
-  Classes, QWindows, QGraphics, QControls, 
-  JvQComponent, 
+  Classes, QWindows, QGraphics, QControls,
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -131,27 +130,6 @@ type
     property OnStartDrag;
   end;
 
-{$IFDEF _VisualCLX}
-  TJvXPCheckBoxPainter = class(TJvComponent)
-  private
-    FCheckSize: Byte;
-
-    FCkGradient: TBitmap;
-    FHlGradient: TBitmap;
-    FBgGradient: TBitmap;
-    procedure DrawCheck(Sender: TObject; Canvas: TCanvas;
-      const Rect: TRect; Checked, Grayed, Down, Enabled: Boolean;
-      var DefaultDraw: Boolean);
-    procedure DrawCheckMask(Sender: TObject; Canvas: TCanvas;
-      const Rect: TRect; Checked, Grayed: Boolean);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-{$ENDIF VisualCLX}
-
-
-
 implementation
 
 {$IFDEF UNITVERSIONING}
@@ -181,18 +159,6 @@ begin
   FBgGradient := TBitmap.Create; // background gradient
   FCkGradient := TBitmap.Create; // clicked gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
-
-  JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_BgFrom_WXP,
-    dxColor_Btn_Enb_BgTo_WXP, 16, gsTop, False, FBgGradient);
-
-  // clicked.
-  JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_CkFrom_WXP,
-    dxColor_Btn_Enb_CkTo_WXP, 16, gsTop, True, FCkGradient);
-
-  // highlight.
-  JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_HlFrom_WXP,
-    dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, True, FHlGradient);
-
 end;
 
 destructor TJvXPCustomCheckControl.Destroy;

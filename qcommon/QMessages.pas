@@ -1,13 +1,40 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http:{www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: QMessages.pas, released on 2004-11-05
+
+The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att xs4all dot nl]
+Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
+All Rights Reserved.
+
+Contributor(s):
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http:{jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
 {-------------------------------------------------------------------------------
  QMessages.pas
 
- Copyright (c) 2004 Andreas Hausladen (Andreas dott Hausladen att gmx dott de),
-                    André Snepvangers (asn att xs4all dott nl)
+ Copyright (c) 2004  André Snepvangers (asn att xs4all dott nl)
  All rights reserved.
 
- Description: Wrappers for common VCL control Messages
+ Description: Windows Messages ID's for
  Purpose: Reduce coding effort for porting VCL based components to VisualCLX
           compatible components
+
+ Copyright (c) 2004 Andre Snepvangers (asn att xs4all dott nl),
+
+ All rights reserved.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of
  this software and associated documentation files(the "Software"), to deal in
@@ -19,6 +46,14 @@
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
 
+ The origin of this software must not be misrepresented, you must
+ not claim that you wrote the original software. If you use this
+ software in a product, an acknowledgment in the product documentation
+ would be appreciated but is not required.
+
+ Altered source versions must be plainly marked as such, and must not
+ be misrepresented as being the original software.
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -27,7 +62,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
 --------------------------------------------------------------------------------
-The Original Code is: QMessages.pas, released on 2004-05-21.
 
 Known Issues:
 
@@ -38,455 +72,294 @@ unit QMessages;
 
 interface
 
-{$I jvcl.inc}
-
 uses
-  Classes,
-  Qt, QControls, QWindows;
+  Classes, Types, Qt, QControls, QWindows;
 
 const
+  WM_SETFOCUS         = $0007;
+  WM_KILLFOCUS        = $0008;
+  WM_GETTEXTLENGTH    = $000E;
+  WM_ERASEBKGND       = $0014;  { 20 }
+//  WM_NCPAINT        = $0085;  { 133 }
+  WM_GETDLGCODE       = $0087;
 
-  EM_GETRECT          = $00B2;
-  EM_SETRECT          = $00B3;
+  EM_GETRECT          = $00B2;  { 178 }  // TODO
+  EM_SETRECT          = $00B3;  { 179 }  // TODO
+  EM_UNDO             = $00C7;  { 199 }  // routed through WM_UNDO
+
+  WM_TIMER            = $0113;  { 275 }   // implemented in QWindows
+  WM_HSCROLL          = $0114;  { 276 }   // TODO
+  WM_VSCROLL          = $0115;  { 277 }   // TODO
+  WM_CUT              = $0300;  { 768 }
+  WM_COPY             = $0301;  { 769 }
+  WM_PASTE            = $0302;  { 770 }
+  WM_CLEAR            = $0303;  { 771 }
+  WM_UNDO             = $0304;  { 772 }
+  WM_USER             = $0400;  { 1024 }
+
+  { WM_GETDLGCODE return codes}
+  DLGC_WANTARROWS   = 1;     { Control wants arrow keys         }
+  DLGC_WANTTAB      = 2;     { Control wants tab keys           }
+  DLGC_WANTALLKEYS  = 4;     { Control wants all keys           }
+  DLGC_HASSETSEL    = 8;     { Understands EM_SETSEL message    }
+  DLGC_WANTCHARS    = $80;   { Want WM_CHAR messages            }
+  DLGC_BUTTON       = $2000; { Button item: can be checked      }
+
+  { WM_SIZE message wParam values }
+  SIZE_RESTORED  = 0; // The window has been resized, but neither the SIZE_MINIMIZED nor SIZE_MAXIMIZED value applies
+  SIZE_MINIMIZED = 1; // The window has been minimized.
+  SIZE_MAXIMIZED = 2; // The window has been maximized.
+  SIZE_MAXSHOW   = 3; // Message is sent to all pop-up windows when some other window has been restored to its former size.
+  SIZE_MAXHIDE   = 4; // Message is sent to all pop-up windows when some other window is maximized.
+
 //
-// Standard VisualCLX Messages
+//  VCL control message IDs
 //
-  CM_BASE = $B000;
-  CM_PARENTSHOWHINTCHANGED = CM_BASE + 1;
-  CM_PARENTCOLORCHANGED    = CM_BASE + 2;
-  CM_PARENTFONTCHANGED     = CM_BASE + 3;
-  CM_RECREATEWINDOW        = CM_BASE + 4;
-  CM_KEYDOWN               = CM_BASE + 5;
-  CM_WANTKEY               = CM_BASE + 6;
-  CM_BUTTONPRESSED         = CM_BASE + 100;
+  CM_VCLBASE                = CM_BASE + 10;
+  CM_ACTIVATE               = CM_VCLBASE + 0; // not connected
+  CM_DEACTIVATE             = CM_VCLBASE + 1; // not connected
+  CM_DIALOGKEY              = CM_VCLBASE + 5;
+  CM_DIALOGCHAR             = CM_VCLBASE + 6;
+  CM_FOCUSCHANGED           = CM_VCLBASE + 7;
+//  CM_PARENTFONTCHANGED      = CM_VCLBASE + 8; native VisualCLX message
+//  CM_PARENTCOLORCHANGED     = CM_VCLBASE + 9; native VisualCLX message
+  CM_HITTEST               = CM_VCLBASE + 10;
+  CM_VISIBLECHANGED        = CM_VCLBASE + 11;
+  CM_ENABLEDCHANGED        = CM_VCLBASE + 12;
+  CM_COLORCHANGED          = CM_VCLBASE + 13;
+  CM_FONTCHANGED           = CM_VCLBASE + 14;
+  CM_CURSORCHANGED         = CM_VCLBASE + 15;
+  CM_TEXTCHANGED           = CM_VCLBASE + 18;
+  CM_MOUSEENTER            = CM_VCLBASE + 19;
+  CM_MOUSELEAVE            = CM_VCLBASE + 20;
+//  CM_BUTTONPRESSED         = CM_VCLBASE + 24;  native VisualCLX message
+  CM_SHOWINGCHANGED        = CM_VCLBASE + 25;
+  CM_ENTER                 = CM_VCLBASE + 26;
+  CM_EXIT                  = CM_VCLBASE + 27;
+  CM_DESIGNHITTEST         = CM_VCLBASE + 28;
+  CM_SHOWHINTCHANGED       = CM_VCLBASE + 34;
+  CM_SYSCOLORCHANGE        = CM_VCLBASE + 36;  // -> application palette changed
+  CM_CONTROLLISTCHANGE     = CM_VCLBASE + 44;
+  CM_GETDATALINK           = CM_VCLBASE + 45;
+  CM_HINTSHOW              = CM_VCLBASE + 48;
+  CM_RECREATEWND           = CM_RECREATEWINDOW; // native clx message
+  CM_SYSFONTCHANGED        = CM_VCLBASE + 53;   // application font changed
+  CM_BORDERCHANGED         = CM_VCLBASE + 59;
+  CM_MOUSEWHEEL            = CM_VCLBASE + 67;
 
-// Support
-  WM_HSCROLL                = CM_BASE + 8; // differs with VCL !!
-  WM_VSCROLL                = CM_BASE + 9; // differs with VCL !!
-
-// Standard VCL Messages
-  CM_FOCUSCHANGED           = CM_BASE + 7;
-
-  CM_HITTEST                = CM_BASE + 10;
-  CM_VISIBLECHANGED         = CM_BASE + 11;
-  CM_ENABLEDCHANGED         = CM_BASE + 12;
-  CM_COLORCHANGED           = CM_BASE + 13;
-  CM_FONTCHANGED            = CM_BASE + 14;
-  CM_CURSORCHANGED          = CM_BASE + 15;
-  CM_TEXTCHANGED            = CM_BASE + 18;
-  CM_MOUSEENTER             = CM_BASE + 19;
-  CM_MOUSELEAVE             = CM_BASE + 20;
-  CM_MENUCHANGED            = CM_BASE + 21;
-  CM_APPKEYDOWN             = CM_BASE + 22;
-  CM_APPSYSCOMMAND          = CM_BASE + 23;
-//  CM_BUTTONPRESSED          = CM_BASE + 24;
-  CM_SHOWINGCHANGED         = CM_BASE + 25;
-  CM_ENTER                  = CM_BASE + 26;
-  CM_EXIT                   = CM_BASE + 27;
-  CM_DESIGNHITTEST          = CM_BASE + 28;
-  CM_ICONCHANGED            = CM_BASE + 29;
-  CM_WANTSPECIALKEY         = CM_BASE + 30;
-  CM_INVOKEHELP             = CM_BASE + 31;
-  CM_WINDOWHOOK             = CM_BASE + 32;
-  CM_RELEASE                = CM_BASE + 33;
-  CM_SHOWHINTCHANGED        = CM_BASE + 34;
-//  CM_PARENTSHOWHINTCHANGED  = CM_BASE + 35;
-  CM_SYSCOLORCHANGE         = CM_BASE + 36;
-  CM_FONTCHANGE             = CM_BASE + 38;
-  CM_TIMECHANGE             = CM_BASE + 39;
-  CM_TABSTOPCHANGED         = CM_BASE + 40;
-  CM_UIACTIVATE             = CM_BASE + 41;
-  CM_UIDEACTIVATE           = CM_BASE + 42;
-  CM_DOCWINDOWACTIVATE      = CM_BASE + 43;
-  CM_CONTROLLISTCHANGE      = CM_BASE + 44;
-  CM_GETDATALINK            = CM_BASE + 45;
-  CM_CHILDKEY               = CM_BASE + 46;
-  CM_DRAG                   = CM_BASE + 47;
-  CM_HINTSHOW               = CM_BASE + 48;
-  CM_DIALOGHANDLE           = CM_BASE + 49;
-  CM_ISTOOLCONTROL          = CM_BASE + 50;
-//  CM_RECREATEWND            = CM_BASE + 51;
-  CM_INVALIDATE             = CM_BASE + 52;
-  CM_SYSFONTCHANGED         = CM_BASE + 53;
-  CM_CONTROLCHANGE          = CM_BASE + 54;
-  CM_CHANGED                = CM_BASE + 55;
-//  CM_DOCKCLIENT             = CM_BASE + 56;
-//  CM_UNDOCKCLIENT           = CM_BASE + 57;
-  CM_FLOAT                  = CM_BASE + 58;
-  CM_BORDERCHANGED          = CM_BASE + 59;
-  CM_ACTIONUPDATE           = CM_BASE + 63;
-  CM_ACTIONEXECUTE          = CM_BASE + 64;
-  CM_HINTSHOWPAUSE          = CM_BASE + 65;
-  CM_MOUSEWHEEL             = CM_BASE + 67;
-  CM_ISSHORTCUT             = CM_BASE + 68;
-  {$IFDEF LINUX}
-  CM_RAWX11EVENT            = CM_BASE + 69;
-  {$ENDIF LINUX}
-
-  CM_ACTIVATE               = CM_BASE + 70;
-  CM_DEACTIVATE             = CM_BASE + 71;
-  CM_GOTFOCUS               = CM_BASE + 72;
-  CM_LOSTFOCUS              = CM_BASE + 73;
-  CM_CANCELMODE             = CM_BASE + 74;
-  CM_DIALOGKEY              = CM_BASE + 75;
-  CM_DIALOGCHAR             = CM_BASE + 76;
-// windows messages
-//  WM_HSCROLL                = CM_BASE + 100;  // Differs from  changed
-//  WM_VSCROLL                = CM_BASE + 101;
-  WM_COMMAND                = CM_BASE + 102;
-
-  WM_USER             = $0400;
-  WM_TIMER            = $0113;
-  WM_NCPAINT          = $0085;
+  { CM_HITTEST }
+  HTNOWHERE = 0;
+  HTCLIENT = 1;
 
 type
-(*
-  IPerformControl = interface
-    ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
-    function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-  end;
-*)
-  PMessage = QWindows.PMessage;
-  {$NODEFINE PMessage}
   TMessage = QWindows.TMessage;
-  {$NODEFINE TMessage}
-(*
-  PMessage = ^TMessage;
-  TMessage = packed record
-    Msg: Integer;
-    WParam: Longint;
-    LParam: Longint;
-    Result: Integer;
-  end;
-*)
-  TMsg = QWindows.TMsg;
-  {$NODEFINE TMsg}
-(*
-  TMsg = packed record
-    hwnd: QWidgetH;
-    message: cardinal;
-    wParam: Longint;
-    lParam: Longint;
-    time: cardinal;
-    pt: TPoint;
-  end;
-*)
-
-  TWMScroll = packed record
-    Msg: Integer;
-    Pos: Integer;
-    ScrollCode: Integer;
-  end;
-  TWMHScroll = TWMScroll;
-  TWMVScroll = TWMScroll;
-
-  TCMActivate = packed record
-    Msg: Integer;
-    WParam: Integer;
-    LParam: Longint;
+  TJvMessage = JvQTypes.TJvMessage;
+  
+  TEMGetRect = packed record
+    Msg: Cardinal;
+    Reserved: Integer;
+    Rect: PRect;
     Result: Integer;
   end;
 
-  TCMFocusChanged = record
+  TEMSetRect       = TEMGetRect;
+
+  TWMNoParams = packed record
+    Msg: Cardinal;
+    Unused: array[0..3] of Word;
+    Handled: LongBool;
+  end;
+
+  TWMActivate = packed record
+    Msg: Integer;
+    Active: Word; { WA_INACTIVE, WA_ACTIVE, WA_CLICKACTIVE }
+    Minimized: WordBool;
+    ActiveWindow: QWidgetH;
+    Result: Integer;
+  end;
+
+  TWMCancelMode     = TWMNoParams;
+
+  TWMChar = packed record
+    Msg: Cardinal;
+    CharCode: Word;
+    Unused: Word;
+    KeyData: Longint;
+    Result: Longint;
+  end;
+
+  TWMChildActivate  = TWMNoParams;
+  TWMClear          = TWMNoParams;
+  TWMClose          = TWMNoParams;
+
+  TWMContextMenu = packed record
+    Msg: Cardinal;
+    hWnd: QWidgetH;      // WParam
+    case Integer of  // LParam
+    0:
+    (
+      Position: TSmallPoint;
+      Result: Integer;
+    );
+    1:
+    (
+      XPos: Smallint;
+      YPos: Smallint
+    );
+  end;
+
+  TWMCopy           = TWMNoParams;
+  TWMCut            = TWMNoParams;
+  TWMDestroy        = TWMNoParams;
+
+  TWMEraseBkgnd = packed record
+    Msg: Cardinal;
+    DC: QPainterH;
+    Unused: Integer;
+    Result: Integer;
+  end;
+
+  TWMGetDlgCode     = TWMNoParams;
+  TWMGetFont        = TWMNoParams;
+  TWMGetHotKey      = TWMNoParams;
+
+  TWMGetText = packed record
+    Msg: Cardinal;
+    TextMax: Integer;
+    Text: PWideChar;
+    Result: Integer;
+  end;
+
+  TWMHotKey = packed record
+    Msg: Cardinal;
+    HotKey: Integer;
+    Unused: Integer;
+    Result: Integer;
+  end;
+
+  TWMKey            = TWMChar;
+  TWMKeyDown        = TWMKey;
+  TWMKeyUp          = TWMKey;
+
+  TWMPaint          = TWMEraseBkgnd;
+
+  TWMKillFocus = packed record
+    Msg: Cardinal;
+    FocusedWnd: QWidgetH;
+    Unused: Integer;
+    Result: Integer;
+  end;
+
+  TWMSetFocus = TWMKillFocus;
+
+  TWMSetCursor = packed record
+    Msg: Cardinal;
+    CursorWnd: QWidgetH;
+    HitTest: Word;
+    MouseMsg: Word;
+    Result: Integer;
+  end;
+
+  TWMSetText = packed record
     Msg: Cardinal;
     Unused: Integer;
-    Sender: TWinControl;
-    Result: Longint;
+    Text: PWideChar;
+    Result: Integer;
   end;
 
-  TCMControlListChange = record
+  TWMMove = packed record
     Msg: Cardinal;
-    Control: TControl;
-    Inserting: LongBool;
-    Result: Longint;
+    Unused: integer;
+
+    case Integer of  // LParam
+    0:
+    (
+      Position: TSmallPoint;
+      Result: Integer;
+    );
+    1:
+    (
+      XPos: Smallint;
+      YPos: Smallint;
+    );
   end;
 
-  TCMControlChange = record
+  TWMMouse = packed record
     Msg: Cardinal;
-    Control: TControl;
-    Inserting: LongBool;
-    Result: Longint;
+    Keys: Integer;   // WParam
+
+    case Integer of  // LParam
+    0:
+    (
+      Position: TSmallPoint;
+      Result: Integer;
+    );
+    1:
+    (
+      XPos: Smallint;
+      YPos: Smallint
+    );
   end;
 
-  TCMChanged = record
+  TWMLButtonDblClk = TWMMouse;   // left mouse button
+  TWMLButtonDown   = TWMMouse;
+  TWMLButtonUp     = TWMMouse;
+  TWMMButtonDblClk = TWMMouse;   // middle mouse button
+  TWMMButtonDown   = TWMMouse;
+  TWMMButtonUp     = TWMMouse;
+
+  TWMMouseWheel = packed record
     Msg: Cardinal;
-    Unused: Longint;
-    Child: TControl;
-    Result: Longint;
+    Keys: SmallInt;          // WParamLo
+    WheelDelta: SmallInt;    // WParamHi
+
+    case Integer of
+    0:
+    (
+      Pos: TSmallPoint;  // LParam
+      Result: Integer;
+    );
+    1:
+    (
+      XPos: Smallint;        // LParamLo
+      YPos: Smallint         // LParamHi
+    );
   end;
 
-  TWMTimer = record
+  TWMNCHitTest      = TWMMouse;
+
+  TWMScroll = packed record
     Msg: Cardinal;
-    TimerID: Longint;
-//    TimerProc: T;
-    Ignored: LongBool;
-    Result: Longint;
+    Pos: Integer;
+    ScrollCode: Integer;
+    Result: Integer;
+    pt: TPoint
   end;
 
+  TWMHScroll        = TWMScroll;
+  TWMVScroll        = TWMScroll;
 
-(*
-asn: currently defined in QWindows.
-{ Message }
-function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
-{ Limitation: Handle must be a TWidgetControl derived class handle }
-function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
-{ SendMsg synchronizes with the main thread }
-function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-//function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-type
-  TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
+  TWMTimer = packed record
+    Msg: Cardinal;
+    TimerID: Integer;
+    TimerProc: TTimerProc;
 
-procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
-procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
-*)
+    case Integer of
+    0:
+    (
+      Result: Integer
+    );
+    1:
+    (
+      Time: Cardinal;
+      pt: TPoint
+    );
+  end;
+
 implementation
-(*
-const
-  QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
-  QEventType_CMDispatchMessageSend = QEventType(Integer(QEventType_ClxUser) - 2);
 
-type
-  PMessageData = ^TMessageData;
-  TMessageData = record
-    Control: TWidgetControl;
-    Event: TEvent;
-    Msg: TMessage;
-  end;
-
-  PApplicationHookItem = ^TApplicationHookItem;
-  TApplicationHookItem = record
-    Proc: TApplicationHook;
-  end;
-
-var
-  AppHookList: TList = nil;
-  AppEventFilterHook: QObject_hookH = nil;
-
-function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  Msg: PMessageData;
-  I: Integer;
-begin
-  try
-    Result := False;
-    if QEvent_isQCustomEvent(Event) then
-    begin
-      Msg := QCustomEvent_data(QCustomEventH(Event));
-      case QEvent_type(Event) of
-        QEventType_CMDispatchMessagePost:
-          begin
-            Result := True;
-            if Msg <> nil then
-              try
-                Msg^.Control.Dispatch(Msg^.Msg);
-              finally
-                Dispose(Msg);
-              end;
-            Exit;
-          end;
-        QEventType_CMDispatchMessageSend:
-          begin
-            Result := True;
-            try
-              if Msg <> nil then
-                Msg^.Control.Dispatch(Msg^.Msg);
-            finally
-              if Msg^.Event <> nil then
-                Msg^.Event.SetEvent;
-            end;
-            Exit;
-          end;
-      end;
-    end;
-
-    if Assigned(AppHookList) then
-    begin
-      Result := True;
-      for I := AppHookList.Count - 1 downto 0 do
-        if PApplicationHookItem(AppHookList[I]).Proc(Sender, Event) then
-          Exit;
-      Result := False;
-    end;
-  except
-    on E: Exception do
-    begin
-      Application.ShowException(E);
-      Result := False;
-    end;
-  end;
-end;
-
-procedure InstallAppEventFilter;
-var
-  Method: TMethod;
-begin
-  if AppEventFilterHook <> nil then
-    Exit;
-
-  Method.Code := @AppEventFilter;
-  Method.Data := Application;
-
-  AppEventFilterHook := QObject_hook_create(Application.Handle);
-  Qt_hook_hook_events(AppEventFilterHook, Method);
-end;
-
-function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  M: TMessage;
-  P: IPerformControl;
-begin
-  if Supports(Control, IPerformControl, P) then
-    Result := P.Perform(Msg, WParam, LParam)
-  else
-  begin
-    M.Msg := Msg;
-    M.WParam := WParam;
-    M.LParam := LParam;
-    M.Result := 0;
-    Control.Dispatch(M);
-    Result := M.Result;
-  end;
-end;
-
-function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
-var
-  M: PMessageData;
-  Control: TWidgetControl;
-begin
-  Result := False;
-  if Handle = nil then
-    Exit;
-  Control := FindControl(Handle);
-  if Control = nil then
-    Exit;
-  try
-    New(M);
-    M^.Control := Control;
-    M.Event := nil;
-    M^.Msg.Msg := Msg;
-    M^.Msg.WParam := WParam;
-    M^.Msg.LParam := LParam;
-    M^.Msg.Result := 0;
-
-    InstallAppEventFilter;
-    QApplication_postEvent(Handle, QCustomEvent_create(QEventType_CMDispatchMessagePost, M));
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-{
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
-begin
-  Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
-end;
-}
-
-function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
-var
-  Event: QCustomEventH;
-  M: TMessageData;
-  Control: TWidgetControl;
-begin
-  Result := 0;
-  if Handle = nil then
-    Exit;
-  Control := FindControl(Handle);
-  if Control = nil then
-    Exit;
-  try
-    M.Control := Control;
-    M.Event := nil;
-    M.Msg.Msg := Msg;
-    M.Msg.WParam := WParam;
-    M.Msg.LParam := LParam;
-    M.Msg.Result := 0;
-
-    InstallAppEventFilter;
-    Event := QCustomEvent_create(QEventType_CMDispatchMessageSend, @M);
-    try
-      if GetCurrentThreadId = MainThreadID then
-        QApplication_sendEvent(Handle, Event)
-      else
-      begin
-       // synchronize with main thread
-        M.Event := TSimpleEvent.Create;
-        try
-          QApplication_postEvent(Handle, Event);
-          M.Event.WaitFor(INFINITE);
-        finally
-          M.Event.Free;
-          M.Event := nil;
-        end;
-      end;
-      Result := M.Msg.Result;
-    finally
-      if GetCurrentThreadId = MainThreadID then
-        QCustomEvent_destroy(Event);
-    end;
-  except
-  end;
-end;
-
-procedure InstallApplicationHook(Hook: TApplicationHook);
-var
-  Item: PApplicationHookItem;
-begin
-  if Assigned(Hook) then
-  begin
-    UninstallApplicationHook(Hook);
-    New(Item);
-    Item.Proc := Hook;
-
-    if not Assigned(AppHookList) then
-      AppHookList := TList.Create;
-    AppHookList.Add(Item); // the last item is the first that is handled.
-
-    InstallAppEventFilter;
-  end;
-end;
-
-procedure UninstallApplicationHook(Hook: TApplicationHook);
-var
-  I: Integer;
-  Item: PApplicationHookItem;
-begin
-  if AppHookList <> nil then
-  begin
-    for I := AppHookList.Count - 1 downto 0 do
-    begin
-      Item := AppHookList[I];
-      if @Item.Proc = @Hook then
-      begin
-        Dispose(Item);
-        AppHookList.Delete(I);
-      end;
-    end;
-    if AppHookList.Count = 0 then
-      FreeAndNil(AppHookList);
-  end;
-end;
-
-procedure FinalizeAppHookList;
-var
-  I: Integer;
-  Item: PApplicationHookItem;
-begin
-  for I := 0 to AppHookList.Count - 1 do
-  begin
-    Item := AppHookList[I];
-    Dispose(Item);
-  end;
-  FreeAndNil(AppHookList);
-end;
-
-initialization
-
-finalization
-  if Assigned(AppEventFilterHook) then
-    QObject_hook_destroy(AppEventFilterHook);
-  if Assigned(AppHookList) then
-    FinalizeAppHookList;
-*)
 end.
+
+
+
+

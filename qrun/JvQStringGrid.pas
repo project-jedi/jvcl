@@ -204,24 +204,24 @@ type
     FLastCol: Integer;
     FLastRow: Integer;
   protected
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
   public 
   end;
 
 
 
-procedure TExInplaceEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TExInplaceEdit.DoExit;
 begin
   TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
-  inherited DoKillFocus(FocusedWnd);
+  inherited DoExit;
 end;
 
-procedure TExInplaceEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TExInplaceEdit.DoEnter;
 begin
   FLastCol := TJvStringGrid(Grid).Col;
   FLastRow := TJvStringGrid(Grid).Row;
-  inherited DoSetFocus(FocusedWnd);
+  inherited DoEnter;
 end;
 
 //=== { TJvStringGrid } ======================================================

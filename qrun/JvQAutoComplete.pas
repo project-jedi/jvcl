@@ -45,10 +45,14 @@ type
   TJvControlAutoComplete = class(TObject)
   private
     FFilter: string;
-    FLastTime, FMaxFilterTime: Cardinal;
+    FLastTime: Cardinal;
+    FMaxFilterTime: Cardinal;
     FListSearch: Boolean;
     FActive: Boolean;
-    FOnDropDown, FOnValidateItems, FOnChange, FOnValueChange: TNotifyEvent;
+    FOnDropDown: TNotifyEvent;
+    FOnValidateItems: TNotifyEvent;
+    FOnChange: TNotifyEvent;
+    FOnValueChange: TNotifyEvent;
   protected
     function GetText: TCaption; virtual; abstract;
     procedure SetText(const Value: TCaption); virtual; abstract;
@@ -85,7 +89,6 @@ type
   private
     FEditCtrl: TCustomEdit;
     FList: TStrings;
-
     procedure SetEditCtrl(Value: TCustomEdit);
   protected
     function GetText: TCaption; override;
@@ -94,13 +97,10 @@ type
     procedure SetEditSel(StartPos, EndPos: Integer); override;
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override; 
-
     function GetActive: Boolean; override;
-
     property List: TStrings read FList write FList;
   public
     constructor Create(AEditCtrl: TCustomEdit; AList: TStrings);
-
     property EditCtrl: TCustomEdit read FEditCtrl write SetEditCtrl;
   end;
 
@@ -124,7 +124,6 @@ type
     constructor Create(AEditCtrl: TCustomEdit; AList: TStrings);
     property ItemIndex: Integer read FItemIndex write SetInternalItemIndex;
     property List: TStrings read GetList write SetList;
-
     property OnItemIndexChange: TNotifyEvent read FOnItemIndexChange write FOnItemIndexChange;
     property OnValidateItemIndex: TNotifyEvent read FOnValidateItemIndex write FOnValidateItemIndex;
   end;
@@ -142,7 +141,6 @@ type
     function GetItemIndex: Integer; override;
   public
     constructor Create(AEditCtrl: TCustomEdit; AListBox: TCustomListBox);
-
     property ListBox: TCustomListBox read FListBox write SetListBox;
   end;
 
@@ -153,7 +151,6 @@ type
   TJvComboBoxAutoComplete = class(TJvControlAutoComplete)
   private
     FComboBox: TCustomComboBox;
-
     procedure SetComboBox(Value: TCustomComboBox);
   protected
     function GetText: TCaption; override;
@@ -164,16 +161,12 @@ type
     function GetItemIndex: Integer; override;
     function FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer; override;
     function GetItemAt(Index: Integer): string; override; 
-
     function GetActive: Boolean; override;
   public
     constructor Create(AComboBox: TCustomComboBox);
-
     property ComboBox: TCustomComboBox read FComboBox write SetComboBox;
   end;
 
-
-  
   TJvLookupAutoCompleteKind = (akListBox, akStrings);
 
   TJvLookupAutoComplete = class(TComponent)
@@ -182,14 +175,11 @@ type
     FListBox: TCustomListBox;
     FStrings: TStrings;
     FKind: TJvLookupAutoCompleteKind;
-
     FOrgKeyPress: TKeyPressEvent;
-
     FOnChange: TNotifyEvent;
     FOnValidateStrings: TNotifyEvent;
     FOnDropDown: TNotifyEvent;
     FOnValueChange: TNotifyEvent;
-
     function GetEdit: TCustomEdit;
     function GetItemIndex: Integer;
     function GetListSearch: Boolean;
@@ -203,9 +193,7 @@ type
     procedure SetActive(const Value: Boolean);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
     procedure EvKeyPress(Sender: TObject; var Key: Char); dynamic;
-
     procedure EvDropDown(Sender: TObject); dynamic;
     procedure EvValidateStrings(Sender: TObject); dynamic;
     procedure EvChange(Sender: TObject); dynamic;
@@ -224,7 +212,6 @@ type
     property Strings: TStrings read FStrings write SetStrings;
     property Kind: TJvLookupAutoCompleteKind read FKind write SetKind default akListBox;
     property ListSearch: Boolean read GetListSearch write SetListSearch default False;
-
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnValidateStrings: TNotifyEvent read FOnValidateStrings write FOnValidateStrings;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -234,6 +221,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQConsts, JvQJCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
@@ -285,6 +275,11 @@ begin
 end;
 
 procedure TJvControlAutoComplete.AutoComplete(var Key: Char);
+var
+  StartPos, EndPos: Integer;
+  SaveText, OldText: TCaption;
+  LastByte: Integer;
+  LT: Int64; 
 
   function HasSelectedText(var StartPos, EndPos: Integer): Boolean;
   begin
@@ -337,11 +332,6 @@ procedure TJvControlAutoComplete.AutoComplete(var Key: Char);
       DoValueChange;
   end;
 
-var
-  StartPos, EndPos: Integer;
-  SaveText, OldText: TCaption;
-  LastByte: Integer;
-  LT: Int64; 
 begin
   if not Active then
     Exit;
@@ -484,7 +474,7 @@ end;
 function TJvBaseEditListAutoComplete.GetActive: Boolean;
 begin
   Result := inherited GetActive and (EditCtrl <> nil) and (List <> nil) and
-            not TCustomEditAccess(EditCtrl).ReadOnly;
+    not TCustomEditAccess(EditCtrl).ReadOnly;
 end;
 
 //=== { TJvEditListAutoComplete } ============================================
@@ -649,7 +639,7 @@ begin
     SetFilter('');
 end;
 
-{ TJvLookupAutoComplete }
+//=== { TJvLookupAutoComplete } ==============================================
 
 constructor TJvLookupAutoComplete.Create(AOwner: TComponent);
 begin
@@ -667,8 +657,8 @@ end;
 
 destructor TJvLookupAutoComplete.Destroy;
 begin
+  SetEdit(nil); // SetEdit accesses FAutoComplete
   FAutoComplete.Free;
-  SetEdit(nil);
   SetListBox(nil);
   FStrings.Free;
   inherited Destroy;
@@ -837,5 +827,21 @@ begin
       FAutoComplete.List := FStrings;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

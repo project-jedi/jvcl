@@ -41,10 +41,8 @@ unit JvQShellHook;
 interface
 
 uses
-  Windows, SysUtils, Classes,
-  JvQComponent,
-  Messages,
-  JvQFinalize;
+  Windows, Messages, SysUtils, Classes,
+  JvQComponent;
 
 const
   HSHELL_WINDOWCREATED = 1;
@@ -263,9 +261,6 @@ uses
   JvQJVCLUtils;
 
 const
-  sUnitName = 'JvShellHook';
-  
-const
   cUser32 = 'user32.dll';
 
 // converted macros
@@ -324,8 +319,6 @@ begin
     DeregisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'DeregisterShellHookWindow');
   end;
   Result := (GlobalLibHandle > 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
-
-  AddFinalizeProc(sUnitName, UnInitJvShellHooks);
 end;
 
 destructor TJvShellHook.Destroy;
@@ -395,10 +388,11 @@ initialization
 
 
 finalization
+  UnInitJvShellHooks;
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
-  
+
 end.
 

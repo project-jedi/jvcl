@@ -39,10 +39,10 @@ interface
 uses
   SysUtils, Registry, Classes, Contnrs,  
   Windows, QForms, 
-  JclBase, JvQComponent;
+  JvQComponent, JvQTypes;
 
 type
-  EJvPerfStatException = class(EJclError);
+  EJvPerfStatException = class(EJVCLException);
 
   TJvPerfStat95 = class;
 
@@ -156,7 +156,6 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  JclSysInfo,
   JvQJCLUtils, JvQJVCLUtils, JvQResources;
 
 const

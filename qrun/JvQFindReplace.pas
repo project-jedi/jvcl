@@ -148,7 +148,7 @@ type
 
 procedure Error;
 begin
-  EJVCLException.CreateRes(@RsENoEditAssigned);
+  raise EJVCLException.CreateRes(@RsENoEditAssigned);
 end;
 
 { utility }
@@ -252,7 +252,6 @@ var
   S: string;
 begin
   Result.StartAt := -1; // assume failure
-
   if Fast then
     Found := BoyerMoore(PChar(AnsiUpperCase(Search)), PChar(AnsiUpperCase(Copy(Text, FromPos + 1, ToPos))))
   else
@@ -261,12 +260,21 @@ begin
   begin
     Result.StartAt := Found + FromPos - 1;
     Result.EndAt := Length(Search);
-//    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 3);
     S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
-    Result.isWhole := IsValidWholeWord(S);
-//    S := Copy(S, 3, Length(S) - 3);
-//    Result.isSameCase := (AnsiCompareStr(Search, S) = 0);
-    S := Copy(S, 1, Length(S) - 1);
+    // check for extremes...
+    // is find string the same as the whole string?
+    if Length(Search) = Length(Text) then begin
+      Result.isWhole := True;
+      S := Text;
+    end else begin
+      // check for match at beginning or end of string
+      if Result.StartAt - 1 < 0 then
+        S := Copy(' ' + S, 1, Result.EndAt + 2);
+      if Result.StartAt - 1 + Result.EndAt + 2 > Length(Text) then
+        S := Copy(S + ' ', Length(Text)- Result.EndAt-1, Result.EndAt + 2);
+      Result.isWhole := IsValidWholeWord(S);
+      S := Copy(S, 2, Length(S) - 2);
+    end;
     Result.isSameCase := (AnsiCompareStr(trim(Search), trim(S)) = 0);
   end;
 end;
@@ -332,12 +340,14 @@ begin
   if not Assigned(FEditControl) then
     Error;
   Terminate := False;
+  UpdateDialogs;
   TmpOptions := FReplaceDialog.Options;
   Txt := FEditControl.Text;
   SLen := Length(SearchText);
   RLen := Length(ReplaceText);
   TLen := Length(Txt);
-  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
+  FoundPos := FindInText(Txt, SearchText, EditControl.SelStart + EditControl.SelLength, TLen, True);
+//  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
 
   if FoundPos.StartAt > -1 then
   begin
@@ -415,11 +425,14 @@ begin
   if not Assigned(FFindDialog) then
   begin
     FFindDialog := TFindDialog.Create(Self);
+    FFindDialog.FindText := FFindText;
     FFindDialog.OnFind := DoOnFind;
   end;
   if not Assigned(FReplaceDialog) then
   begin
     FReplaceDialog := TReplaceDialog.Create(Self);
+    FReplaceDialog.FindText := FFindText;
+    FReplaceDialog.ReplaceText := FReplaceText;
     FReplaceDialog.OnFind := DoOnFind;
     FReplaceDialog.OnReplace := DoOnReplace;
   end;
@@ -613,11 +626,10 @@ end;
 procedure TJvFindReplace.SetFindText(const Value: string);
 begin
   FFindText := Value;
-  if Assigned(FFindDialog) and Assigned(FReplaceDialog) then
-  begin
+  if Assigned(FFindDialog) then
     FFindDialog.FindText := Value;
+  if Assigned(FReplaceDialog) then
     FReplaceDialog.FindText := Value;
-  end;
 end;
 
 procedure TJvFindReplace.SetShowDialogs(Value: Boolean);

@@ -51,7 +51,6 @@ Known Issues:
 unit JvQTimerList;
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 interface
 
@@ -81,7 +80,7 @@ type
     procedure CalculateInterval(StartTicks: Longint);
     procedure UpdateEvents(StartTicks: Longint);
     function ProcessEvents: Boolean;
-    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);  override;  
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification);  override;
   public
     constructor Create(AOwner: TPersistent);
     procedure Activate;
@@ -184,7 +183,7 @@ const
 
 constructor TJvTimerEvent.Create(ACollection: TCollection);
 begin
-  FHandle := INVALID_HANDLE_VALUE;
+  FHandle := nil; // INVALID_HANDLE_VALUE;
   inherited Create(ACollection);
   FCycled := True;
   FRepeatCount := 0;

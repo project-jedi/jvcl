@@ -3255,7 +3255,7 @@ var
   apoint: TPoint;
   Bitmap: TBitmap;
   X1, Y1, X2, Y2: Integer;
-  dcurve: array[0..3] of TPoint;
+  dcurve: array [0..3] of TPoint;
   rgn: HRGN;
   R1, G1, B1, R2, G2, B2: Byte;
   r, g, b, dr, dg, db: Extended;
@@ -3280,7 +3280,7 @@ begin
     CopyClip;
     myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
     With Canvas do
-      BrushCopy(Canvas, myrect, Clip,
+      BrushCopy( Canvas,  myrect, Clip,
       Rect(0, 0, Clip.Width, Clip.Height), RangeTransColor);
     myDraw := False;
   end;

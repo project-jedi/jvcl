@@ -128,7 +128,7 @@ type
     procedure SetEditText(const NewValue: string);
     procedure ChangeText(const NewValue: string);
     function BaseToInt(const BaseValue: string; Base: Byte): Integer;
-    function IntToBase(NewValue, Base: Byte): string;
+    function IntToBase(NewValue: Integer; Base: Byte): string;
     procedure DoValueChanged;
     procedure SetDisplayPrefix(const NewValue: string);
     procedure SetDisplaySuffix(const NewValue: string);
@@ -138,13 +138,13 @@ type
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
     procedure SetTrimDecimals(const Value: Boolean);
+    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected
     function IsValidChar(const S: string; Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(ParseString: string): string;virtual;
     procedure Change; override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoClipboardPaste; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure SetText(const NewValue: TCaption); override;
     property CheckChars: string read FCheckChars write SetCheckChars;
     property TrimDecimals: Boolean read FTrimDecimals write SetTrimDecimals;
@@ -650,9 +650,9 @@ begin
   inherited KeyPress(Key);
 end;
 
-procedure TJvCustomValidateEdit.DoClipboardPaste;
+procedure TJvCustomValidateEdit.WMPaste(var Mesg: TMessage);
 begin
-  inherited DoClipboardPaste;
+  inherited;
   EditText := MakeValid(inherited Text);
 end;
 
@@ -799,17 +799,17 @@ begin
   DoValueChanged;
 end;
 
-procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomValidateEdit.DoEnter;
 begin
   DisplayText;
-  inherited DoSetFocus(FocusedWnd);
+  inherited DoEnter;
 end;
 
-procedure TJvCustomValidateEdit.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomValidateEdit.DoExit;
 begin
   if not (csDestroying in ComponentState) then
     EditText := inherited Text;
-  inherited DoKillFocus(FocusedWnd);
+  DoExit;
 end;
 
 procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
@@ -921,7 +921,7 @@ begin
     Inc(Result, Trunc(BaseCharToInt(BaseValue[I]) * Power(Base, Length(BaseValue) - I)));
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte): string;
+function TJvCustomValidateEdit.IntToBase(NewValue:Integer; Base: Byte): string;
 var
   iDivisor, iRemainder, I: Cardinal;
   iBaseIterations: Integer;
@@ -946,7 +946,7 @@ begin
   begin
     iDivisor := 1;
     iBaseIterations := -1;
-    while (NewValue div iDivisor) > 0 do
+    while (Int64(NewValue) div iDivisor) > 0 do  // Int64 to remove warning about size of operands
     begin
       iDivisor := iDivisor * Base;
       Inc(iBaseIterations);

@@ -38,7 +38,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  QWindows, 
+  {$IFDEF LINUX}
+  QWindows,
+  {$ENDIF LINUX}
+
   SysUtils, Classes, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
   JvQLabel, JvQComponent, JvQExControls;
 

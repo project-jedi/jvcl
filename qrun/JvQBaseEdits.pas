@@ -42,7 +42,7 @@ interface
 
 uses
   QWindows, QMessages, Classes, QControls, QImgList,
-  JvQToolEdit;
+  JvQToolEdit, JvQTypes;
 
 type
   TJvCustomNumEdit = class(TJvCustomComboEdit)
@@ -87,9 +87,9 @@ type
 //    function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean; 
+    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
   protected 
     procedure Paint; override; 
-    procedure DoClipboardPaste; override;
     procedure SetBeepOnError(Value: Boolean); override;
 
     procedure EnabledChanged; override;
@@ -853,18 +853,18 @@ begin
   Self.Value := CheckValue(Value, False); //Polaris
 end;
 
-procedure TJvCustomNumEdit.DoClipboardPaste;
+procedure TJvCustomNumEdit.WMPaste(var Mesg: TMessage);
 var
   S: string;
   WasModified: Boolean;
 begin
+  Mesg.Result := 1;
   WasModified := Modified;
   S := EditText;
   try
-    inherited DoClipboardPaste;
+    inherited;
     UpdateData;
   except
-    { Changing EditText sets Modified to false }
     EditText := S;
     Modified := WasModified;
     SelectAll;

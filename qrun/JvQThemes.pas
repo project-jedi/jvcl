@@ -36,9 +36,9 @@ interface
 
 uses
   SysUtils, Classes, 
-  QControls, QStdCtrls, QGraphics, QButtons, 
+  QControls, QStdCtrls, QGraphics, 
   QWindows, QForms, // Mouse 
-  JvQFinalize;
+  QButtons;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
@@ -83,7 +83,9 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
   Brush: HBRUSH; NeedsParentBackground: Boolean = True); overload;
 
-{ DrawThemesFrameControl draws a themed frame control when theming is enabled. }
+{ DrawThemesFrameControl draws a themed frame control when theming is enabled.
+  Control = nil: the frame control will be painted themed only if the control
+                 is not in csDesigning mode. }
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
   uType, uState: UINT): BOOL;
 
@@ -109,8 +111,6 @@ implementation
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
-
-
 
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; NeedsParentBackground: Boolean = True);
@@ -204,10 +204,11 @@ initialization
   {$ENDIF UNITVERSIONING}
  
 
-finalization
+finalization 
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
 
 end.
 

@@ -41,6 +41,18 @@ uses
   QWindows, QMessages, Classes, QGraphics, QControls, QStdCtrls, QImgList,
   JvQButton;
 
+
+const
+  ODS_DISABLED = 1;
+  ODS_SELECTED = 2;
+  ODS_FOCUS    = 4;
+  
+type
+  TDrawItemStruct = record
+    itemState: Integer;
+  end;
+
+
 type
   TJvImgBtnLayout = (blImageLeft, blImageRight);
 
@@ -99,10 +111,10 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
   protected 
     procedure DestroyWidget; override;
-    procedure Paint; override;  
+    procedure Paint; override; 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
+    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect); 
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); dynamic;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetCustomCaption: string; dynamic;
@@ -186,7 +198,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   QConsts, SysUtils, QForms, QActnList,
-  JvQJCLUtils, JvQThemes, JvQFinalize;
+  JvQJCLUtils, JvQThemes;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
@@ -194,9 +206,6 @@ uses
 {$IFDEF UNIX}
 {$R ../Resources/JvCtrls.res}
 {$ENDIF UNIX}
-
-const
-  sUnitName = 'JvCtrls';
 
 const
   JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
@@ -615,8 +624,7 @@ var
 begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
-    DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
-    AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));  
+    DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);  
     ResBmp := TBitmap.Create;
     try
       ResBmp.LoadFromResourceName(HInstance, 'JVIMGBTNDEFAULT');
@@ -811,7 +819,7 @@ procedure TJvCustomImageButton.StartAnimate;
 begin
   if ComponentState * [csDesigning, csLoading] = [] then
   begin
-//    DoubleBuffered := True;
+    DoubleBuffered := True;
     FCurrentAnimateFrame := 0;
     ShowNextFrame;
     OSCheck(SetTimer(Handle, 1, FAnimateInterval, nil) <> 0);
@@ -825,7 +833,7 @@ begin
   begin
     KillTimer(Handle, 1);
     FCurrentAnimateFrame := 0;
-//    DoubleBuffered := False;
+    DoubleBuffered := False;
     FAnimating := False;
   end;
 end;
@@ -866,12 +874,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(DefaultImgBtnImagesList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

@@ -45,10 +45,10 @@ interface
 
 uses
   QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QStdCtrls, QForms,
-  JvQTypes, JvQComponent;
+  JvQTypes, JvQComponent, JvQExControls;
 
 type
-  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
+//  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
 
   TJvTextMargins = class(TPersistent)
   private
@@ -65,7 +65,7 @@ type
     property Y: Word read FY write SetY;
   end;
 
-  TJvCustomStaticText = class(TJvWinControl)
+  TJvCustomStaticText = class(TJvExFrameControl)
   private
     FFontSave: TFont;
     FHotTrack: Boolean;
@@ -73,18 +73,16 @@ type
     FLayout: TTextLayout;
     FAlignment: TAlignment;
     FAutoSize: Boolean;
-    FBorderStyle: TStaticBorderStyle;
     FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
     FTextMargins: TJvTextMargins;
     FWordWrap: Boolean;
     FHotTrackFontOptions: TJvTrackFOntOptions;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetBorderStyle(Value: TStaticBorderStyle);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetShowAccelChar(Value: Boolean);
     procedure SetHotTrackFont(const Value: TFont);
-    procedure SetLayout(const Value: TTextLayout); 
+    procedure SetLayout(const Value: TTextLayout);
     procedure SetTextMargins(const Value: TJvTextMargins);
     procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
@@ -101,11 +99,10 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean); //override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
-    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;  
-    procedure Paint; override; 
+    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
+    procedure Paint; override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -125,10 +122,10 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
-    property BevelEdges;
-    property BevelInner;
-    property BevelKind;
-    property BevelOuter;
+//    property BevelEdges;
+//    property BevelInner;
+//    property BevelKind;
+//    property BevelOuter;
     property BorderStyle;
     property Caption: TCaption read GetText write SetText;
     property Color;
@@ -246,8 +243,8 @@ begin
 end;
 
 procedure TJvCustomStaticText.DrawItem(const DrawItemStruct: TDrawItemStruct);
-const
-  cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
+//const
+//  cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
 var
   R: TRect;
   DrawStyle: Cardinal;
@@ -258,9 +255,9 @@ begin
     with DrawItemStruct do
     begin
       R := rcItem;
-      if BorderStyle <> sbsNone then
-        QWindows.
-        DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
+//      if BorderStyle <> sbsNone then
+//        QWindows.
+//        DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
       DrawStyle := GetTextDisplayInfo(hDC, R);
       case Layout of
         tlTop:
@@ -368,15 +365,6 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvCustomStaticText.SetBorderStyle(Value: TStaticBorderStyle);
-begin
-  if FBorderStyle <> Value then
-  begin
-    FBorderStyle := Value;
     Invalidate;
   end;
 end;

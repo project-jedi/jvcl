@@ -60,8 +60,8 @@ type
   {$NODEFINE TMsg}
   TOwnerDrawState = QStdCtrls.TOwnerDrawState;
   {$NODEFINE TOwnerDrawState}
-  TBevelKind = JvQExControls.TBevelKind;
-  {$NODEFINE TBevelKind}
+//  TBevelKind = JvQExControls.TBevelKind;
+//  {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
   function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
     Flags: Cardinal): LongBool;
