@@ -485,9 +485,9 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Picture: TPicture read FPicture write SetPicture;
-    property Alignment: TJvWizardImageAlignment read FAlignment write SetAlignment;
-    property Layout: TJvWizardImageLayout read FLayout write SetLayout;
-    property Transparent: Boolean read GetTransparent write SetTransparent;
+    property Alignment: TJvWizardImageAlignment read FAlignment write SetAlignment default iaStretch;
+    property Layout: TJvWizardImageLayout read FLayout write SetLayout default ilStretch;
+    property Transparent: Boolean read GetTransparent write SetTransparent default False;
   end;
 
   TJvWizardGraphicObject = class(TPersistent)
@@ -504,8 +504,8 @@ type
     constructor Create; virtual;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); virtual; abstract;
   published
-    property Color: TColor read FColor write SetColor;
-    property Visible: Boolean read FVisible write SetVisible;
+    property Color: TColor read FColor write SetColor default clBtnFace;
+    property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
   TJvWizardPageHeader = class;
@@ -542,11 +542,10 @@ type
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
   published
     property Text: string read FText write SetText;
-    property Anchors: TAnchors read FAnchors write SetAnchors;
-    property AnchorPlacement: Integer
-      read FAnchorPlacement write SetAnchorPlacement;
-    property Indent: Integer read FIndent write SetIndent;
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Anchors: TAnchors read FAnchors write SetAnchors default [akLeft, akTop];
+    property AnchorPlacement: Integer read FAnchorPlacement write SetAnchorPlacement default 4;
+    property Indent: Integer read FIndent write SetIndent default 0;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Font: TFont read FFont write SetFont;
   end;
 
@@ -590,16 +589,15 @@ type
     destructor Destroy; override;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
   published
-    property ImageIndex: Integer read FImageIndex write SetImageIndex;
-    property ImageOffset: Integer read FImageOffset write SetImageOffset;
-    property ImageAlignment: TJvWizardImageLeftRight
-      read FImageAlignment write SetImageAlignment;
-    property Height: Integer read FHeight write SetHeight;
-    property ParentFont: Boolean read FParentFont write SetParentFont;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
+    property ImageOffset: Integer read FImageOffset write SetImageOffset default 0;
+    property ImageAlignment: TJvWizardImageLeftRight read FImageAlignment write SetImageAlignment default iaRight;
+    property Height: Integer read FHeight write SetHeight default 70;
+    property ParentFont: Boolean read FParentFont write SetParentFont default True;
     property Title: TJvWizardPageTitle read FTitle write FTitle;
     property Subtitle: TJvWizardPageTitle read FSubtitle write FSubtitle;
-    property ShowDivider: Boolean read FShowDivider write SetShowDivider;
-    property Color;
+    property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
+    property Color default clWindow;
     property Visible;
   end;
 
@@ -621,11 +619,11 @@ type
     destructor Destroy; override;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
   published
-    property Align: TJvWizardLeftRight read FAlign write SetAlign;
-    property BorderWidth: Integer read FBorderWidth write SetBorderWidth;
+    property Align: TJvWizardLeftRight read FAlign write SetAlign default alLeft;
+    property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 1;
     property Image: TJvWizardImage read FImage write FImage;
-    property Width: Integer read FWidth write SetWidth;
-    property Color;
+    property Width: Integer read FWidth write SetWidth default 164;
+    property Color default clActiveCaption;
     property Visible;
   end;
 
@@ -638,8 +636,8 @@ type
     constructor Create; override;
     procedure PaintTo(ACanvas: TCanvas; var ARect: TRect); override;
   published
-    property BorderWidth: Word read FBorderWidth write SetBorderWidth;
-    property Color;
+    property BorderWidth: Word read FBorderWidth write SetBorderWidth default 7;
+    property Color default clBtnFace;
     property Visible;
   end;
 
@@ -722,13 +720,9 @@ type
     property Title: TJvWizardPageTitle read GetTitle write SetTitle stored false;
     property Image: TJvWizardImage read FImage write FImage;
     property Panel: TJvWizardPagePanel read FPanel write FPanel;
-    property EnabledButtons: TJvWizardButtonSet
-      read FEnabledButtons write SetEnabledButtons default bkAllButtons;
-    property VisibleButtons: TJvWizardButtonSet
-      read FVisibleButtons write SetVisibleButtons
-      default [bkBack, bkNext, bkCancel];
-    property EnableJumpToPage: Boolean
-      read FEnableJumpToPage write FEnableJumpToPage default true;  // Nonn
+    property EnabledButtons: TJvWizardButtonSet read FEnabledButtons write SetEnabledButtons default bkAllButtons;
+    property VisibleButtons: TJvWizardButtonSet read FVisibleButtons write SetVisibleButtons default [bkBack, bkNext, bkCancel];
+    property EnableJumpToPage: Boolean read FEnableJumpToPage write FEnableJumpToPage default True;  // Nonn
     property Color default clBtnFace;
     property Caption;
     property Enabled;
@@ -739,25 +733,16 @@ type
     property ShowHint;
     property Top stored False;
     property Width stored False;
-    property OnEnterPage: TJvWizardChangePageEvent
-      read FOnEnterPage write FOnEnterPage;
+    property OnEnterPage: TJvWizardChangePageEvent read FOnEnterPage write FOnEnterPage;
     property OnPage: TNotifyEvent read FOnPage write FOnPage;
-    property OnExitPage: TJvWizardChangePageEvent
-      read FOnExitPage write FOnExitPage;
-    property OnPaintPage: TJvWizardPaintPageEvent
-      read FOnPaintPage write FOnPaintPage;
-    property OnStartButtonClick: TJvWizardPageClickEvent
-      read FOnStartButtonClick write FOnStartButtonClick;
-    property OnLastButtonClick: TJvWizardPageClickEvent
-      read FOnLastButtonClick write FOnLastButtonClick;
-    property OnNextButtonClick: TJvWizardPageClickEvent
-      read FOnNextButtonClick write FOnNextButtonClick;
-    property OnBackButtonClick: TJvWizardPageClickEvent
-      read FOnBackButtonClick write FOnBackButtonClick;
-    property OnCancelButtonClick: TJvWizardPageClickEvent
-      read FOnCancelButtonClick write FOnCancelButtonClick;
-    property OnFinishButtonClick: TJvWizardPageClickEvent
-      read FOnFinishButtonClick write FOnFinishButtonClick;
+    property OnExitPage: TJvWizardChangePageEvent read FOnExitPage write FOnExitPage;
+    property OnPaintPage: TJvWizardPaintPageEvent read FOnPaintPage write FOnPaintPage;
+    property OnStartButtonClick: TJvWizardPageClickEvent read FOnStartButtonClick write FOnStartButtonClick;
+    property OnLastButtonClick: TJvWizardPageClickEvent read FOnLastButtonClick write FOnLastButtonClick;
+    property OnNextButtonClick: TJvWizardPageClickEvent read FOnNextButtonClick write FOnNextButtonClick;
+    property OnBackButtonClick: TJvWizardPageClickEvent read FOnBackButtonClick write FOnBackButtonClick;
+    property OnCancelButtonClick: TJvWizardPageClickEvent read FOnCancelButtonClick write FOnCancelButtonClick;
+    property OnFinishButtonClick: TJvWizardPageClickEvent read FOnFinishButtonClick write FOnFinishButtonClick;
   end;
 
   { YW - Wizard Welcome Page }
@@ -875,52 +860,30 @@ type
   published
     property Pages: TJvWizardPageList read FPages;
     {$IFNDEF USEJVCL}
-    property About: TJvWizardAboutInfoForm // Add by Steve Forbes
-      read FAboutInfo write FAboutInfo stored False;
+    // Add by Steve Forbes
+    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
     {$ENDIF !USEJVCL}
-    property ActivePage: TJvWizardCustomPage
-      read FActivePage write SetActivePage;
-    property ButtonStart: TJvWizardNavigateButton
-      read FNavigateButtons[bkStart] write FNavigateButtons[bkStart];
-    property ButtonLast: TJvWizardNavigateButton
-      read FNavigateButtons[bkLast] write FNavigateButtons[bkLast];
-    property ButtonBack: TJvWizardNavigateButton
-      read FNavigateButtons[bkBack] write FNavigateButtons[bkBack];
-    property ButtonNext: TJvWizardNavigateButton
-      read FNavigateButtons[bkNext] write FNavigateButtons[bkNext];
-    property ButtonFinish: TJvWizardNavigateButton
-      read FNavigateButtons[bkFinish] write FNavigateButtons[bkFinish];
-    property ButtonCancel: TJvWizardNavigateButton
-      read FNavigateButtons[bkCancel] write FNavigateButtons[bkCancel];
-    property ButtonHelp: TJvWizardNavigateButton
-      read FNavigateButtons[bkHelp] write FNavigateButtons[bkHelp];
-    property ShowDivider: Boolean
-      read FShowDivider write SetShowDivider default True;
-    property ShowRouteMap: Boolean
-      read GetShowRouteMap write SetShowRouteMap;
-    property HeaderImages: TCustomImageList
-      read FHeaderImages write SetHeaderImages;
-    property OnSelectFirstPage: TJvWizardSelectPageEvent
-      read FOnSelectFirstPage write FOnSelectFirstPage;
-    property OnSelectLastPage: TJvWizardSelectPageEvent
-      read FOnSelectLastPage write FOnSelectLastPage;
-    property OnSelectNextPage: TJvWizardSelectPageEvent
-      read FOnSelectNextPage write FOnSelectNextPage;
-    property OnSelectPriorPage: TJvWizardSelectPageEvent
-      read FOnSelectPriorPage write FOnSelectPriorPage;
-    property OnStartButtonClick: TNotifyEvent index bkStart
-      read GetButtonClick write SetButtonClick;
-    property OnLastButtonClick: TNotifyEvent index bkLast
-      read GetButtonClick write SetButtonClick;
-    property OnBackButtonClick: TNotifyEvent index bkBack
-      read GetButtonClick write SetButtonClick;
-    property OnNextButtonClick: TNotifyEvent index bkNext
-      read GetButtonClick write SetButtonClick;
-    property OnFinishButtonClick: TNotifyEvent index bkFinish
-      read GetButtonClick write SetButtonClick;
-    property OnCancelButtonClick: TNotifyEvent index bkCancel
-      read GetButtonClick write SetButtonClick;
-
+    property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
+    property ButtonStart: TJvWizardNavigateButton read FNavigateButtons[bkStart] write FNavigateButtons[bkStart];
+    property ButtonLast: TJvWizardNavigateButton read FNavigateButtons[bkLast] write FNavigateButtons[bkLast];
+    property ButtonBack: TJvWizardNavigateButton read FNavigateButtons[bkBack] write FNavigateButtons[bkBack];
+    property ButtonNext: TJvWizardNavigateButton read FNavigateButtons[bkNext] write FNavigateButtons[bkNext];
+    property ButtonFinish: TJvWizardNavigateButton read FNavigateButtons[bkFinish] write FNavigateButtons[bkFinish];
+    property ButtonCancel: TJvWizardNavigateButton read FNavigateButtons[bkCancel] write FNavigateButtons[bkCancel];
+    property ButtonHelp: TJvWizardNavigateButton read FNavigateButtons[bkHelp] write FNavigateButtons[bkHelp];
+    property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
+    property ShowRouteMap: Boolean read GetShowRouteMap write SetShowRouteMap;
+    property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
+    property OnSelectFirstPage: TJvWizardSelectPageEvent read FOnSelectFirstPage write FOnSelectFirstPage;
+    property OnSelectLastPage: TJvWizardSelectPageEvent read FOnSelectLastPage write FOnSelectLastPage;
+    property OnSelectNextPage: TJvWizardSelectPageEvent read FOnSelectNextPage write FOnSelectNextPage;
+    property OnSelectPriorPage: TJvWizardSelectPageEvent read FOnSelectPriorPage write FOnSelectPriorPage;
+    property OnStartButtonClick: TNotifyEvent index bkStart read GetButtonClick write SetButtonClick;
+    property OnLastButtonClick: TNotifyEvent index bkLast read GetButtonClick write SetButtonClick;
+    property OnBackButtonClick: TNotifyEvent index bkBack read GetButtonClick write SetButtonClick;
+    property OnNextButtonClick: TNotifyEvent index bkNext read GetButtonClick write SetButtonClick;
+    property OnFinishButtonClick: TNotifyEvent index bkFinish read GetButtonClick write SetButtonClick;
+    property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
     property Color;
     property Font;
     property Enabled;
