@@ -81,17 +81,15 @@ type
       FOnNewMessage;
   end;
 
-procedure Register;
+
+resourcestring
+  sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
+  sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
+  sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
 
 implementation
-uses JvgUtils,
-  JvgTypes;
-
-procedure Register;
-begin
-  //   RegisterComponents('Gl Components', [TJvgMailSlotServer,
-  //      TJvgMailSlotClient]);
-end;
+uses
+  JvConsts, JvgUtils, JvgTypes;
 
 constructor TJvgMailSlotServer.Create(AOwner: TComponent);
 begin
@@ -131,7 +129,7 @@ begin
 
   if h = INVALID_HANDLE_VALUE then
   begin
-    raise Exception.Create('TJvgMailSlotServer: Error creating channel!');
+    raise Exception.Create(sTJvgMailSlotServerErrorCreatingChan);
   end;
   Timer.Enabled := true;
 end;
@@ -154,7 +152,7 @@ begin
   { Determining if there's message in channel [translated] }
   if not GetMailSlotInfo(h, nil, DWORD(MsgNext), @MsgNumber, nil) then
   begin
-    raise Exception.Create('TJvgMailSlotServer: Error gathering information!');
+    raise Exception.Create(sTJvgMailSlotServerErrorGatheringInf);
   end;
   if MsgNext <> MAILSLOT_NO_MESSAGE then
   begin
@@ -165,7 +163,7 @@ begin
       MessageText := str
     else
       raise
-        Exception.Create('TJvgMailSlotServer: Error reading message!');
+        Exception.Create(sTJvgMailSlotServerErrorReadingMessa);
   end;
 
   if (MessageText <> '') and Assigned(OnNewMessage) then

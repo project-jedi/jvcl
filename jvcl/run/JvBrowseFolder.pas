@@ -287,6 +287,9 @@ uses
   JclSysUtils,
   JvTypes;
 
+resourcestring
+  SShellNotCompatible = 'Shell not compatible with BrowseForFolder';
+
 type
   TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;
     dwFlags: DWORD; pszPath: PAnsiChar): HResult; stdcall;
@@ -1040,7 +1043,7 @@ var
 begin
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
-    raise EJVCLException.Create('Shell not compatible with BrowseForFolder');
+    raise EJVCLException.Create(SShellNotCompatible);
 
   FDialogWindow := 0;
   FOwnerWindow := GetOwnerWindow;

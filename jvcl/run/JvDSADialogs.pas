@@ -439,10 +439,20 @@ type
     property OnAutoClose: TJvDSAAutoCloseEvent read FOnAutoClose write FOnAutoClose;
   end;
 
+
+resourcestring
+  sCannotEndCustomReadIfNotInCustomRea = 'Cannot end custom read if not in custom read mode.';
+  sCannotEndCustomWriteIfNotInCustomWr = 'Cannot end custom write if not in custom write mode.';
+  sCannotEndReadIfNotInReadMode = 'Cannot end read if not in read mode.';
+  sCannotEndWriteIfNotInWriteMode = 'Cannot end write if not in write mode.';
+  sInTheCurrentQueue = 'in the current queue';
+  sJvDSADialogPatchErrorJvDSADialogCom = 'JvDSADialog patch error: JvDSADialog component not found.';
+
 implementation
 uses
   Consts, Math, TypInfo,
-  JclRegistry, JclSysUtils;
+  JclRegistry, JclSysUtils,
+  JvConsts;
 
 {$IFNDEF DELPHI6_UP}
 type
@@ -1098,28 +1108,28 @@ end;
 procedure TDSAStorage.EndCustomRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomRead then
-    raise EJvDSADialog.Create('Cannot end custom read if not in custom read mode.');
+    raise EJvDSADialog.Create(sCannotEndCustomReadIfNotInCustomRea);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndCustomWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssCustomWrite then
-    raise EJvDSADialog.Create('Cannot end custom write if not in custom write mode.');
+    raise EJvDSADialog.Create(sCannotEndCustomWriteIfNotInCustomWr);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndRead(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssRead then
-    raise EJvDSADialog.Create('Cannot end read if not in read mode.');
+    raise EJvDSADialog.Create(sCannotEndReadIfNotInReadMode);
   FStates.Pop;
 end;
 
 procedure TDSAStorage.EndWrite(const DSAInfo: TDSARegItem);
 begin
   if FStates.Peek <> ssWrite then
-    raise EJvDSADialog.Create('Cannot end write if not in write mode.');
+    raise EJvDSADialog.Create(sCannotEndWriteIfNotInWriteMode);
   FStates.Pop;
 end;
 
@@ -1329,7 +1339,7 @@ begin
   inherited Create;
   FList := TStringList.Create;
   TStringList(FList).Sorted := True;
-  FCheckMarkSuffix := 'in the current queue';
+  FCheckMarkSuffix := sInTheCurrentQueue;
 end;
 
 destructor TDSAQueueStorage.Destroy;
@@ -2086,7 +2096,7 @@ begin
   while (I > -1) and not (Components[I] is TJvDSADialog) do
     Dec(I);
   if I = -1 then
-    raise EJvDSADialog.Create('JvDSADialog patch error: JvDSADialog component not found.');
+    raise EJvDSADialog.Create(sJvDSADialogPatchErrorJvDSADialogCom);
   JvDSADialog := Components[I] as TJvDSADialog;
 
   // Check the DSA state

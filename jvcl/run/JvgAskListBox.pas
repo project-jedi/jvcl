@@ -177,10 +177,15 @@ type
     property Options: TglAskLBOptions read FOptions write SetOptions;
   end;
 
+
+resourcestring
+  sYes = 'yes';
+  sNo = 'no';
+
 implementation
 
 uses
-  JvgUtils;
+  JvConsts, JvgUtils;
 
 const
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
@@ -197,8 +202,8 @@ begin
   FItemSelStyle := TJvgAskListBoxItemStyle.Create;
 
   TmpBitmap := TBitmap.Create;
-  FButtons.Add('yes');
-  FButtons.Add('no');
+  FButtons.Add(sYes);
+  FButtons.Add(sNo);
   FAutoTransparentColor := ftcLeftBottomPixel;
   FWallpaperOption := fwoNone;
   FShowWallpaper := True;

@@ -196,55 +196,13 @@ type
 
 
 implementation
+uses
+  JvJCLUtils;
 
-{$IFNDEF COMPILER6_UP}
-{ TODO -oJVCL -cTODO : Implement these better for D5! }
-function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
-begin
-  // stupid and slow but at least simple
-  try
-    Result := StrToDateTime(S);
-  except
-    Result := Default;
-  end;
-end;
-
-function DaysBetween(const Date1, Date2:TdateTime):integer;
-begin
-  if Date1 < Date2 then
-    Result := trunc(Date2 - Date1)
-  else
-    Result := trunc(Date1 - Date2);
-end;
-
-const
-  OneMillisecond = 1/24/60/60/1000;
-
-function CompareDateTime(const A, B:TDateTime):integer;
-begin
-  if Abs(A - B) < OneMillisecond then
-    Result := 0
-  else if A < B then
-    Result := -1
-  else
-    Result := 1;
-end;
-
-function StrToFloatDef(const S:String;Default:Extended):Extended;
-begin
-  // stupid and slow but at least simple
-  try
-    Result := StrToFloat(S);
-  except
-    Result := Default;
-  end;
-end;
-{$ENDIF}
-
-var
-  RS_UNKNOWNINST: string    = 'Unknown Instruction %s';
-  RS_UNEXPECTEDEND: string  = 'Unexpected end of query';
-  RS_UNEXPECTEDINST: string = 'Unexpected statement %s';
+resourcestring
+  RS_UNKNOWNINST = 'Unknown Instruction %s';
+  RS_UNEXPECTEDEND = 'Unexpected end of query';
+  RS_UNEXPECTEDINST = 'Unexpected statement %s';
 
 { TJvXMLDatabase }
 

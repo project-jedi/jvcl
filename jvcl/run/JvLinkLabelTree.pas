@@ -275,7 +275,16 @@ const
 
 procedure ResetNodeCount;
 
+
+resourcestring
+  sTNodeGetNodeTypeUnknownClass = 'TNode.GetNodeType: Unknown class';
+  sNoMoreNodesToReturn = 'No more nodes to return';
+  sNoMoreRecordsToReturn = 'No more records to return';
+
 implementation
+
+uses
+  JvConsts;
 
 type
   TRectList = class(TOwnerPointerList)
@@ -778,7 +787,7 @@ begin
     if NodeClasses[Result] = NodeClass then
       Exit;
 
-  raise ENodeError.Create('TNode.GetNodeType: Unknown class');
+  raise ENodeError.Create(sTNodeGetNodeTypeUnknownClass);
 end;
 
 //=== TTopLevelNodeEnumerator ================================================
@@ -833,7 +842,7 @@ begin
     Inc(FIndex);
   end
   else
-    raise ENodeError.Create('No more nodes to return');
+    raise ENodeError.Create(sNoMoreNodesToReturn);
 end;
 
 function TTopLevelNodeEnumerator.HasNext: Boolean;
@@ -869,7 +878,7 @@ begin
     Inc(FIndex);
   end
   else
-    raise ENodeError.Create('No more records to return');
+    raise ENodeError.Create(sNoMoreRecordsToReturn);
 end;
 
 function TRectEnumerator.HasNext: Boolean;

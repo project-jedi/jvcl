@@ -109,6 +109,11 @@ type
     property Anchors;
   end; { TJvTFGantt }
 
+
+resourcestring
+  sThisIsTheMajorScale = 'This is the Major Scale';
+  sThisIsTheMinorScale = 'This is the Minor Scale';
+
 implementation
 
 
@@ -117,7 +122,7 @@ var
   ACaption: string;
 begin
   ACanvas.Font.Assign(FMajorScale.Font);
-  ACaption := 'This is the Major Scale';
+  ACaption := sThisIsTheMajorScale;
   ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), 2, ACaption);
 end;
 
@@ -126,7 +131,7 @@ var
   ACaption: string;
 begin
   ACanvas.Font.Assign(FMinorScale.Font);
-  ACaption := 'This is the Minor Scale';
+  ACaption := sThisIsTheMinorScale;
   ACanvas.TextOut((Width div 2) - (ACanvas.TextWidth(ACaption) div 2), (CalcHeaderHeight div 2) + 2, ACaption);
 end;
 

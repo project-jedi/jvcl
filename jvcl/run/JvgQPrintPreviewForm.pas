@@ -102,8 +102,13 @@ var
   fPrintPreview: TJvgfPrintPreview;
   l: TJvgQRLabel;
 
+
+resourcestring
+  sPagedOfd = 'Page %d of $d';
+
 implementation
-uses JvgTypes, JvgExport, JvgQPrintSetupForm, printers; //, mdrpt;
+uses
+  JvConsts, JvgTypes, JvgExport, JvgQPrintSetupForm, Printers; //, mdrpt;
 {$R *.DFM}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
@@ -165,7 +170,7 @@ end;
 
 procedure TJvgfPrintPreview.UpdateStatus;
 begin
-  SB.Panels[0].Text := 'Page ' + IntToStr(QRPreview1.PageNumber) + ' of ' + IntToStr(QRPreview1.QRPrinter.PageCount);
+  SB.Panels[0].Text := Format(sPagedOfd, [QRPreview1.PageNumber, QRPreview1.QRPrinter.PageCount]);
   try
     PB.Max := QRPreview1.QRPrinter.PageCount;
     PB.Min := QRPreview1.PageNumber;

@@ -208,6 +208,9 @@ uses
   JclDateTime, JclRTTI,
   JvSchedEvtStore, JvTypes;
 
+resourcestring
+  sCannotRestart = 'Can''t restart: Event is being triggered or is executing.';
+    
 { registry constants }
 
 const
@@ -1163,7 +1166,7 @@ end;
 procedure TJvEventCollectionItem.Start;
 begin
   if FState in [sesTriggered, sesExecuting] then
-    raise EJVCLException.Create('Can''t restart: Event is being triggered or is executing.');
+    raise EJVCLException.Create(sCannotRestart);
   if State = sesPaused then
   begin
     FScheduleFire := Schedule.NextEventFromNow(CountMissedEvents);

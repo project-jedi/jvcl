@@ -86,6 +86,7 @@ implementation
 resourcestring
   RC_AniExtension = 'ani';
   RC_AniFilterName = 'ANI Image';
+  SInvalidAnimatedIconImage = 'Animated icon image is not valid';
 
 constructor TJvAni.Create;
 begin
@@ -208,7 +209,7 @@ var
 
   procedure Error;
   begin
-    raise EInvalidGraphic.Create('Animated icon image is not valid');
+    raise EInvalidGraphic.Create(SInvalidAnimatedIconImage);
   end;
 
   function ReadByte: Byte;

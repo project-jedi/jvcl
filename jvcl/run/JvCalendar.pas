@@ -280,12 +280,17 @@ function DayStatesToString(Days: TMonthDayState): string;
 
 implementation
 
+resourcestring
+  sInvalidDate = 'Invalid date to TJvMonthCalendar2 (%d,%d,%d)';
+  sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
+  SCannotAssign = 'Cannot assign %s to a %s';
+  SInvalidArgumentToSetDayStates = 'Invalid argument to SetDayStates';
+
+
 const
   MCM_GETMAXTODAYWIDTH = (MCM_FIRST + 21);
   MCS_NOTODAYCIRCLE = $0008;
   MCS_NOTODAY = $0010;
-  sInvalidDate = 'Invalid date to TJvMonthCalendar2 (%d,%d,%d)';
-  sInvalidDateStr = 'Invalid date specification to TMonthCalStrings (%s)';
   ColorIndex: array[0..5] of Integer = (MCSC_BACKGROUND, MCSC_TEXT,
     MCSC_TITLEBK, MCSC_TITLETEXT, MCSC_MONTHBK, MCSC_TRAILINGTEXT);
 
@@ -421,7 +426,7 @@ begin
   else
     SourceName := Source.ClassName;
   if (Source = nil) or not (Source is TJvMonthCalColors) then
-    raise EConvertError.CreateFmt('Cannot assign %s to a %s', [SourceName, ClassName]);
+    raise EConvertError.CreateFmt(SCannotAssign, [SourceName, ClassName]);
   FBackColor := TJvMonthCalColors(Source).BackColor;
   FTextColor := TJvMonthCalColors(Source).TextColor;
   FTitleBackColor := TJvMonthCalColors(Source).TitleBackColor;
@@ -1101,7 +1106,7 @@ begin
     Exit;
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
-    raise EMonthCalError.Create('Invalid argument to SetDayStates');
+    raise EMonthCalError.Create(SInvalidArgumentToSetDayStates);
   SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, longint(@DayStates));
 end;
 

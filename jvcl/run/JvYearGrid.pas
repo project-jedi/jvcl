@@ -124,16 +124,38 @@ type
     property onInfoChanging: TOnInfoChanging read FonInfoChanging write SeTOnInfoChanging;
   end;
 
+
+resourcestring
+  sYearGrid = 'YearGrid';
+  sEnterYear = 'Enter year (1999-2050):';
+  sInvalidYear = 'invalid year';
+  sYear = '&Year...';
+  sEdit = '&Edit';
+  sColor = '&Color...';
+  sNoColor = '&No Color';
+  sCopy = '&Copy';
+  sCut = 'Cu&t';
+  sPaste = '&Paste';
+  sDelete = '&Delete';
+  sSaveAllInfo = '&Save All Info';
+  sSaveFoundInfo = 'Save Found Info';
+  sBorderColor = '&Border Color...';
+  sBookMarkColor = 'Book&Mark Color...';
+  sFind = '&Find...';
+  sClearFind = 'Clear Find';
+  sYearGridFind = 'YearGrid Find';
+  sEnterSeachText = 'Enter seach text:';
+  sFounds = 'Found %s';
+
 implementation
 
 uses
-  JvYearGridEditForm;
+  JvConsts, JvTypes, JvYearGridEditForm;
 
 const
   todayfontcolor = clwhite;
   todaybrushcolor = clred;
 
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
 var
@@ -548,14 +570,14 @@ var
   s: string;
   Ayear: word;
 begin
-  s := inputbox('YearGrid', 'Enter year (1999-2050):', inttostr(GridYear));
+  s := inputbox(sYearGrid, sEnterYear, inttostr(GridYear));
   try
     if s = '' then exit;
     ayear := strtoint(s);
     if ((ayear < 1999) or (ayear > 2050)) then exit;
     GridYear := ayear;
   except
-    showmessage('invalid year');
+    showmessage(sInvalidYear);
   end;
 
 end;
@@ -585,7 +607,7 @@ begin
   GridPop := Tpopupmenu.create(self);
   g := GridPop;
   m := tmenuitem.Create(g);
-  m.Caption := '&Year...';
+  m.Caption := sYear;
   m.OnClick := year1click;
   m.tag := 1;
   g.Items.Add(m);
@@ -593,46 +615,46 @@ begin
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Edit';
+  m.Caption := sEdit;
   m.OnClick := edit1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Color...';
+  m.Caption := sColor;
   m.OnClick := color1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&No Color';
+  m.Caption := sNoColor;
   m.OnClick := nocolor1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Copy';
+  m.Caption := sCopy;
   m.OnClick := copy1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := 'Cu&t';
+  m.Caption := sCut;
   m.OnClick := cut1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Paste';
+  m.Caption := sPaste;
   m.OnClick := paste1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Delete';
+  m.Caption := sDelete;
   m.OnClick := delete1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Save All Info';
+  m.Caption := sSaveAllInfo;
   m.OnClick := SaveAsHTML;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := 'Save Found Info';
+  m.Caption := sSaveFoundInfo;
   m.OnClick := SaveFound;
   m.tag := 1;
   g.Items.Add(m);
@@ -640,12 +662,12 @@ begin
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Border Color...';
+  m.Caption := sBorderColor;
   m.OnClick := bordercolor1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := 'Book&Mark Color...';
+  m.Caption := sBookMarkColor;
   m.OnClick := bookmarkcolor1click;
   m.tag := 1;
   g.Items.Add(m);
@@ -653,12 +675,12 @@ begin
   m.Caption := '-';
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := '&Find...';
+  m.Caption := sFind;
   m.OnClick := find1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
-  m.Caption := 'Clear Find';
+  m.Caption := sClearFind;
   m.OnClick := clearfind1click;
   m.tag := 1;
   g.Items.Add(m);
@@ -914,7 +936,7 @@ var
   acol, arow: integer;
 begin
   ClearBookMarks;
-  s := inputbox('YearGrid Find', 'Enter seach text:', '');
+  s := inputbox(sYearGridFind, sEnterSeachText, '');
   if s = '' then exit;
   s := lowercase(s);
   for arow := 0 to 12 do
@@ -942,7 +964,7 @@ var
 begin
   alist := tstringlist.create;
   MakeHTML(alist, HTMLBorder, true);
-  afile := 'Found' + changefileext(YearFile, '.htm');
+  afile := Format(sFounds, [changefileext(YearFile, '.htm')]);
   alist.savetofile(afile);
   alist.free;
   launch(afile);

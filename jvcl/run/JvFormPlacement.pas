@@ -247,10 +247,9 @@ uses
   JvJVCLUtils, JvJCLUtils, JvPropsStorage;
 
 const
-  { The following string should not be localized }
-  siActiveCtrl = 'ActiveControl';
-  siVisible = 'Visible';
-  siVersion = 'FormVersion';
+  siActiveCtrl = 'ActiveControl'; // do not localize
+  siVisible = 'Visible'; // do not localize
+  siVersion = 'FormVersion'; // do not localize
 
 //=== TJvFormPlacement =======================================================
 

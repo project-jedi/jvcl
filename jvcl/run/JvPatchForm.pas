@@ -55,7 +55,15 @@ type
     function SetFromStr: TStringList;
   end;
 
+
+resourcestring
+  sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor : Comparing files %d%%';
+  sJvPatcherEditorEndStep = 'Jv - Patcher Editor : end step ...';
+
 implementation
+
+uses
+  JvConsts;
 
 {$R *.DFM}
 
@@ -103,7 +111,7 @@ begin
   AssignFile(g, FileNameBox2.FileName);
   Reset(f);
   Reset(g);
-  Caption := 'Jv - Patcher Editor : Comparing files 0%';
+  Caption := Format(sJvPatcherEditorComparingFilesd, [0]);
   Application.ProcessMessages;
   l := Res.Add(IntToStr(FileSize(f)));
   Res.Add(IntToStr(FileSize(g)));
@@ -111,7 +119,7 @@ begin
   lastcount := 0;
   while not Eof(f) and not Eof(g) do
   begin
-    Caption := 'Jv - Patcher Editor : Comparing files ' + IntToStr(icount div l) + '%';
+    Caption := Format(sJvPatcherEditorComparingFilesd, [icount div l]);
     Application.ProcessMessages;
     BlockRead(f, buf1, 1024, res1); //f = original file
     BlockRead(g, buf2, 1024, res2); //g = patched file
@@ -129,7 +137,7 @@ begin
     end;
   end;
 
-  Caption := 'Jv - Patcher Editor : end step ...';
+  Caption := sJvPatcherEditorEndStep;
   Application.ProcessMessages;
   if res1 > res2 then
   begin

@@ -290,7 +290,7 @@ begin
   else
     Result := '';
   if Result = '' then
-    Result := 'Size';
+    Result := 'Size'; // do not localize
 end;
 
 procedure TJvOpenDialog.ParentResize;

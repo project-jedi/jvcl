@@ -257,6 +257,9 @@ implementation
 uses
   Math, SysUtils;
 
+resourcestring
+  SFrameIDSizeCanOnlyBe34 = 'Frame ID size can only be 3 or 4';
+
 type
   TJvListType = (ltID3LongText, ltID3ShortText, ltISO_639_2Code, ltISO_639_2Name,
     ltID3Genres);
@@ -1085,7 +1088,7 @@ begin
     4:
       Result := CID3FrameDefs[ID].LongTextID;
   else
-    raise Exception.Create('Frame ID size can only be 3 or 4');
+    raise Exception.Create(SFrameIDSizeCanOnlyBe34);
   end;
 end;
 

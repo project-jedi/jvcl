@@ -125,14 +125,15 @@ type
       SetExpandedHeight;
   end;
 
-procedure Register;
+
+resourcestring
+  shelp = ' help ';
+  sOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
 
 implementation
 
-procedure Register;
-begin
-  //  RegisterComponents('Gl Controls', [TJvgHelpPanel]);
-end;
+uses
+  JvConsts;
 
 { TJvgHelpPanel }
 
@@ -151,7 +152,7 @@ begin
 
   FStrings := TStringList.Create;
   Height := 70;
-  Caption := ' help ';
+  Caption := shelp;
 
   //if csDesigning in ComponentState then Align := alBottom;
   Expanded := false;
@@ -222,12 +223,12 @@ begin
 end;
 
 procedure TJvgHelpPanel.Paint;
-const
-  WARNING =
-    'Open context menu to load RTF text. Control shows text at runtime only.';
 var
+  WARNING: string;
   R: TRect;
 begin
+  WARNING :=
+    sOpenContextMenuToLoadRTFTextControl;
   //inherited;
 
   Canvas.Brush.Style := bsSolid;
@@ -265,7 +266,7 @@ begin
     R := ClientRect;
     inc(R.Top, 20);
     SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas.Handle, WARNING, length(WARNING), R, DT_SINGLELINE or
+    DrawText(Canvas.Handle, PChar(WARNING), length(WARNING), R, DT_SINGLELINE or
       DT_CENTER or DT_VCENTER);
   end;
 end;

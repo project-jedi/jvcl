@@ -70,9 +70,14 @@ type
 {TODO : IsChildOf should probably better be moved somewhere into the JCL}
 function IsChildOf(const AChild, AParent: HWND): Boolean;
 
+
+resourcestring
+  sTJvCustomDropDownFormCreateOwnerMus = 'TJvCustomDropDownForm.Create: Owner must be a TCustomEdit';
+
 implementation
 
 uses
+  JvConsts,
   SysUtils;
 
 function IsChildOf(const AChild, AParent: HWND): Boolean;
@@ -93,7 +98,7 @@ type
 constructor TJvCustomDropDownForm.Create(AOwner: TComponent);
 begin
   if not (AOwner is TCustomEdit) then
-    raise EJVCLException.Create('TJvCustomDropDownForm.Create: Owner must be a TCustomEdit');
+    raise EJVCLException.Create(sTJvCustomDropDownFormCreateOwnerMus);
 
   inherited CreateNew(AOwner);
 

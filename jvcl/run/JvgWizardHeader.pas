@@ -176,7 +176,7 @@ begin
     else
       Caption := FCaptions[Min(FCaptions.Count - 1, PageNo)];
     if FComments.Count = 0 then
-      Comment := 'Some comment text'
+      Comment := 'Some comment text' // do not localize
     else
       Comment := FComments[Min(FComments.Count - 1, PageNo)];
 

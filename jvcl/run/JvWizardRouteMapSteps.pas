@@ -81,6 +81,8 @@ implementation
 
 resourcestring
   rsActiveStepFormat = 'Step %d of %d';
+  rsBackTo = 'Back to';
+  rsNextStep = 'Next Step';
 
 
 { TJvWizardRouteMapSteps }
@@ -91,8 +93,8 @@ begin
   FIndent := 5;
   Color := clBackground;
   Font.Color := clWhite;
-  FPreviousStepText := 'Back to';
-  FNextStepText := 'Next Step';
+  FPreviousStepText := rsBackTo;
+  FNextStepText := rsNextStep;
   FShowNavigators := True;
   FShowDivider := True;
 end;

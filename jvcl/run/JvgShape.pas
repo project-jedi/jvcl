@@ -57,16 +57,8 @@ type
     property OnDblClick;
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-  //  RegisterComponents('Gl Controls', [TJvgShape]);
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
 procedure TJvgShape.CMMouseEnter(var Message: TMessage);

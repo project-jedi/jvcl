@@ -223,14 +223,9 @@ type
   published
 
   end;
-procedure Register;
 
 implementation
 
-procedure Register;
-begin
-  //  RegisterComponents('Proba', [TJvgListBox]);
-end;
 //*****************************************_____________LowLevel METHODS
 
 constructor TJvgListBox.Create(AOwner: TComponent);

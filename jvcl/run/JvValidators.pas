@@ -230,14 +230,19 @@ resourcestring
   SValidatorNotChild = 'Validator is not owned by this component';
 
 
+
+resourcestring
+  sInvalidIndexd = 'Invalid index (%d)';
+
 implementation
 uses
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF}
   TypInfo,
+  Forms,
   JclUnicode, // for reg exp support
-  Forms;
+  JvConsts;
 var
   FValidatorsList:TStringList = nil;
 
@@ -320,7 +325,7 @@ end;
 class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
 begin
   if (FValidatorsList = nil) or (Index < 0) or (Index >= FValidatorsList.Count) then
-    raise Exception.CreateFmt('Invalid index (%d)',[Index]);
+    raise Exception.CreateFmt(sInvalidIndexd,[Index]);
   DisplayName := FValidatorsList[Index];
   ABaseValidatorClass := TJvBaseValidatorClass(FValidatorsList.Objects[Index]);
 end;

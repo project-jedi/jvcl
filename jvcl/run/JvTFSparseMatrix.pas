@@ -66,6 +66,9 @@ Type
 
 implementation
 
+resourcestring
+  sMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
+  
 { TJvTFSparseMatrix }
 
 Destructor TJvTFSparseMatrix.Destroy;
@@ -249,7 +252,7 @@ begin
   If FMatrix.Data = 0 Then
     FNullValue := Value
   Else
-    Raise EJvTFSparseMatrixError.Create('Matrix must be empty before setting null value');
+    Raise EJvTFSparseMatrixError.Create(sMatrixMustBeEmpty);
 end;
 
 procedure TJvTFSparseMatrix.Pack;

@@ -35,8 +35,8 @@ unit JvgSmallFontsDefense;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids,
-  JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Grids, JvComponent;
 
 type
   TglSmallFontsDefenceOption = (fdoExcludeGrids);
@@ -55,10 +55,14 @@ type
     property Options: TglSmallFontsDefenceOptions read FOptions write SetOptions;
   end;
 
+
+resourcestring
+  sTJvgSmallFontsDefenceCannotBeUsedWi = 'TJvgSmallFontsDefence cannot be used with large fonts.';
+
 implementation
 
 uses
-  JvgUtils;
+  JvConsts, JvgUtils;
 
 constructor TJvgSmallFontsDefence.Create(AOwner: TComponent);
 begin
@@ -73,7 +77,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not IsSmallFonts then
-      ShowMessage('TJvgSmallFontsDefence cannot be used with large fonts.');
+      ShowMessage(sTJvgSmallFontsDefenceCannotBeUsedWi);
   end
   else
 end;

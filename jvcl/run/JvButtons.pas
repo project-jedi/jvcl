@@ -905,7 +905,7 @@ constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
 begin
   if not (AOwner is TForm) then
-    raise Exception.Create('RACaptionButton owner must be a TForm');
+    raise Exception.Create('JvaCaptionButton owner must be a TForm');
   inherited Create(AOwner);
 
   FGlyph := TJvButtonGlyph.Create;

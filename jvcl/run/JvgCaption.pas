@@ -122,7 +122,13 @@ type
   end;
 
   {$DEFINE GL_CAPT_BUTTONS}
+
+resourcestring
+  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvgCaption component';
+
 implementation
+uses
+  JvConsts;
 {$IFDEF GL_CAPT_BUTTONS}
 {$R ..\Resources\JvgCaption.res}
 {$ENDIF}
@@ -200,7 +206,7 @@ begin
   if (Component <> Self) and (Operation = opInsert) and (Component is
     TJvgCaption) then
     raise
-      Exception.Create('Cannot create more than one instance of TJvgCaption component');
+      Exception.Create(sCannotCreateMoreThanOneInstanceOfTJ);
 end;
 //=========================================================.special procs.
 

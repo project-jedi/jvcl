@@ -176,6 +176,10 @@ type
 
 implementation
 
+resourcestring
+  sNoMoreWords = 'No more words to return';
+  sUnsupported = 'Unsupported TParentTextElement descendant encountered';
+
 //=== TWordEnumerator ========================================================
 
 const
@@ -230,8 +234,7 @@ var
   EndPos: Integer;
 begin
   if not HasNext then
-    raise ETextHandlerError.Create('TWordEnumerator.GetNext: ' +
-      'No more words to return');
+    raise ETextHandlerError.Create('TWordEnumerator.GetNext: ' + sNoMoreWords);
 
   StartPos := FPos;
   EndPos := FPos;
@@ -630,8 +633,7 @@ begin
         Inc(FPosX, TextWidth(Buffer));
       end
     else
-      raise ETextHandlerError.Create('TTextHandler.EmptyBuffer: ' +
-        'Unsupported TParentTextElement descendant encountered');
+      raise ETextHandlerError.Create('TTextHandler.EmptyBuffer: ' + sUnsupported);
 
   FList.Clear;
 end;

@@ -45,7 +45,15 @@ type
     destructor Destroy; override;
   end;
 
+
+resourcestring
+  sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
+  sSecondInstanceLaunchOfs = 'Second instance launch of %s';
+
 implementation
+
+uses
+  JvConsts;
 
 { semaphore
 
@@ -92,6 +100,7 @@ end.
 }
 
 constructor TJvgSingleInstance.Create(AOwner: TComponent);
+var S1, S2: string;
 begin
   inherited Create(AOwner);
   if csDesigning in ComponentState then
@@ -99,9 +108,9 @@ begin
   FCheckEvent := TEvent.Create(nil, False, True, ParamStr(0));
   if FCheckEvent.WaitFor(10) <> wrSignaled then
   begin
-    Application.MessageBox('One instance of this program is already running. A second instance launch is not allowed.',
-      PChar('Second instance launch of ' + ExtractFileName(ParamStr(0))),
-      MB_ICONSTOP or MB_OK);
+    S1 := sOneInstanceOfThisProgramIsAlreadyRu;
+    S2 := Format(sSecondInstanceLaunchOfs, [ExtractFileName(ParamStr(0))]);
+    Application.MessageBox(PChar(S1), PChar(S2), MB_ICONSTOP or MB_OK);
     Halt;
   end;
 end;

@@ -234,18 +234,23 @@ type
 
   end;
 
+
+resourcestring
+  sDataSetIsUnassigned = 'DataSet is unassigned';
+  sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
+
 implementation
-uses ComObj,
-  FileCtrl,
-  JvgUtils,
-  JvgFileUtils;
+uses
+  ComObj, FileCtrl,
+  JvgUtils, JvgFileUtils,
+  JvConsts;
 
 { TJvgCommonExport }
 
 procedure TJvgCommonExport.Execute;
 begin
   if not Assigned(DataSet) then
-    raise EJvgExportException.Create('DataSet is unassigned');
+    raise EJvgExportException.Create(sDataSetIsUnassigned);
   DataSet.Active := true;
   if SaveToFileName <> '' then
     ForceDirectories(ExtractFilePath(SaveToFileName));
@@ -580,7 +585,7 @@ begin
   inherited;
 
   if SaveToFileName = '' then
-    raise EJvgExportException.Create('SaveToFileName property is empty');
+    raise EJvgExportException.Create(sSaveToFileNamePropertyIsEmpty);
 
   Table := TTable.Create(nil);
 

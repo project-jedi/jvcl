@@ -318,10 +318,19 @@ var
   crRAHand: Integer;
   crRAHandMove: Integer;
 
+
+resourcestring
+  sCannotLoadCursorResource = 'Cannot load cursor resource';
+  sTooManyUserdefinedCursors = 'Too many user-defined cursors';
+  sTJvScrollMaxBandCanBePutOnlyIntoTJv = 'TJvScrollMaxBand can be put only into TJvScrollMax component';
+  sTJvScrollMaxCanContainOnlyTJvScroll = 'TJvScrollMax can contain only TJvScrollMaxBand components';
+  sRightClickAndChooseAddBand = 'Right click and choose "Add band"';
+  sControlsNotAChildOfs = 'Control %s not a child of %s';
+
 implementation
 
 uses
-  JvDsgnIntf, JvThemes;
+  JvDsgnIntf, JvConsts, JvThemes;
 
 { Cursors resources }
 {$R ..\resources\JvScrollMax.res}
@@ -344,14 +353,14 @@ var
 begin
   Handle := LoadCursor(HInstance, Identifier);
   if Handle = 0 then
-    raise EOutOfResources.Create('Cannot load cursor resource');
+    raise EOutOfResources.Create(sCannotLoadCursorResource);
   for Result := 1 to High(TCursor) do
     if Screen.Cursors[Result] = Screen.Cursors[crDefault] then
     begin
       Screen.Cursors[Result] := Handle;
       Exit;
     end;
-  raise EOutOfResources.Create('Too many user-defined cursors');
+  raise EOutOfResources.Create(sTooManyUserdefinedCursors);
 end;
 
 //=== TJvScroller ============================================================
@@ -794,7 +803,7 @@ end;
 procedure TJvScrollMaxBand.SetParent(AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
-    raise EJvScrollMaxError.Create('TJvScrollMaxBand can be put only into TJvScrollMax component');
+    raise EJvScrollMaxError.Create(sTJvScrollMaxBandCanBePutOnlyIntoTJv);
   inherited SetParent(AParent);
   if not (csLoading in ComponentState) then
   begin
@@ -987,7 +996,7 @@ begin
     ScrollMax.FOneExpanded then
     for I := 0 to ControlCount - 1 do
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create('TJvScrollMax can contain only TJvScrollMaxBand components')
+        raise EJvScrollMaxError.Create(sTJvScrollMaxCanContainOnlyTJvScroll)
       else
       if Controls[I] <> AControl then
         (Controls[I] as TJvScrollMaxBand).Expanded := False;
@@ -997,7 +1006,7 @@ begin
     for I := 0 to ControlCount - 1 do
     begin
       if not (Controls[I] is TJvScrollMaxBand) then
-        raise EJvScrollMaxError.Create('TJvScrollMax can contain only TJvScrollMaxBand components');
+        raise EJvScrollMaxError.Create(sTJvScrollMaxCanContainOnlyTJvScroll);
       if I > 0 then
         T := Controls[I - 1].BoundsRect.Bottom
       else
@@ -1039,6 +1048,7 @@ end;
 procedure TJvScrollMaxBands.Paint;
 var
   R: TRect;
+  S1: string;
 begin
   if (csDesigning in ComponentState) and
     (ControlCount = 0) and
@@ -1046,7 +1056,8 @@ begin
   begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
-    DrawText(Canvas.Handle, 'Right click and choose "Add band"',
+    S1 := sRightClickAndChooseAddBand;
+    DrawText(Canvas.Handle, PChar(S1),
       -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
   end;
 end;
@@ -1331,7 +1342,7 @@ begin
       Break;
     end;
   if Band = nil then
-    raise EJvScrollMaxError.CreateFmt('Control %s not a child of %s', [AControl.Name, Parent.Name]);
+    raise EJvScrollMaxError.CreateFmt(sControlsNotAChildOfs, [AControl.Name, Parent.Name]);
   Band.Expanded := True;
   Rect := AControl.ClientRect;
   Dec(Rect.Top, BevelWidth + BorderWidth + 4);

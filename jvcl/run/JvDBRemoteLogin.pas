@@ -89,7 +89,7 @@ uses
   MConnect,
   JvJVCLUtils;
 
-const
+resourcestring
   cKeyLoginSection = 'Remote Login';
   cKeyLastLoginUserName = 'Last User';
 

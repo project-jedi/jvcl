@@ -384,10 +384,29 @@ resourcestring
   SInvalidBoolean = '''%s'' is not a valid Boolean value';
 {$ENDIF COMPILER6_UP}
 
+
+resourcestring
+  sInvalidXMLElementUnexpectedCharacte = 'Invalid XML Element: Unexpected character in properties declaration ("%s" found).';
+  sInvalidXMLElementUnexpectedCharacte_ = 'Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.';
+  sUnexpectedValueForLPos = 'Unexpected value for lPos';
+  sInvalidXMLElementExpectedBeginningO = 'Invalid XML Element: Expected beginning of tag but "%s" found.';
+  sInvalidXMLElementExpectedEndOfTagBu = 'Invalid XML Element: Expected end of tag but "%s" found.';
+  sInvalidXMLElementMalformedTagFoundn = 'Invalid XML Element: malformed tag found (no valid name)';
+  sInvalidXMLElementErroneousEndOfTagE = 'Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.';
+  sInvalidCommentExpectedsButFounds = 'Invalid Comment: expected "%s" but found "%s"';
+  sInvalidCommentNotAllowedInsideComme = 'Invalid Comment: "--" not allowed inside comments';
+  sInvalidCommentUnexpectedEndOfData = 'Invalid Comment: Unexpected end of data';
+  sInvalidCDATAExpectedsButFounds = 'Invalid CDATA: expected "%s" but found "%s"';
+  sInvalidCDATAUnexpectedEndOfData = 'Invalid CDATA: Unexpected end of data';
+  sInvalidHeaderExpectedsButFounds = 'Invalid Header: expected "%s" but found "%s"';
+  sInvalidStylesheetExpectedsButFounds = 'Invalid Stylesheet: expected "%s" but found "%s"';
+  sInvalidStylesheetUnexpectedEndOfDat = 'Invalid Stylesheet: Unexpected end of data';
+  sInvalidDocumentUnexpectedTextInFile = 'Invalid Document: Unexpected text in file prolog.';
+
 implementation
 
 uses
-  JvTypes;
+  JvConsts, JvTypes;
 
 const
   cBufferSize = 8192;
@@ -1663,7 +1682,7 @@ begin
                   Break;
                 end;
             else
-              FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
+              FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
             end;
           end;
 
@@ -1681,7 +1700,7 @@ begin
             ' ', #9, #10, #13:
               lPos := ptSpaceBeforeEqual;
           else
-            FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
           end;
 
         ptStartingContent: //We are going to start a property content
@@ -1695,7 +1714,7 @@ begin
                 lPos := ptReadingValue;
               end;
           else
-            FmtError('Invalid XML Element: Unexpected character in property declaration. Expecting " or '' but "%s"  found.',[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte_,[lBuf[I]]);
           end;
         ptReadingValue: //We are reading a property
           if lBuf[I] = lPropStart then
@@ -1714,10 +1733,10 @@ begin
             '=':
               lPos := ptStartingContent;
           else
-            FmtError('Invalid XML Element: Unexpected character in properties declaration ("%s" found).',[lBuf[I]]);
+            FmtError(sInvalidXMLElementUnexpectedCharacte,[lBuf[I]]);
           end;
       else
-        Assert(False, 'Unexpected value for lPos');
+        Assert(False, sUnexpectedValueForLPos);
       end;
     end;
   until Count = 0;
@@ -1820,7 +1839,7 @@ begin
           if lBuf[I] = '<' then
             lPos := 2
           else
-            FmtError('Invalid XML Element: Expected beginning of tag but "%s" found.', [lBuf[I]]);
+            FmtError(sInvalidXMLElementExpectedBeginningO, [lBuf[I]]);
         -1:
           if lBuf[I] = '>' then
           begin
@@ -1828,13 +1847,13 @@ begin
             Break;
           end
           else
-            FmtError('Invalid XML Element: Expected end of tag but "%s" found.',[lBuf[I]]);
+            FmtError(sInvalidXMLElementExpectedEndOfTagBu,[lBuf[I]]);
       else
         begin
           if lBuf[I] in [#9, #10, #13, ' ', '.'] then
           begin
             if lPos = 2 then
-              Error('Invalid XML Element: malformed tag found (no valid name)');
+              Error(sInvalidXMLElementMalformedTagFoundn);
             Stream.Seek(lStreamPos, soFromBeginning);
             Properties.LoadFromStream(Stream);
             lStreamPos := Stream.Position;
@@ -1850,7 +1869,7 @@ begin
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
                   if lName <> St then
-                    FmtError('Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> found.',[lName,St]);
+                    FmtError(sInvalidXMLElementErroneousEndOfTagE,[lName,St]);
                   lStreamPos := Stream.Position;
 
                   //Set value if only one sub element
@@ -1978,7 +1997,7 @@ begin
           if lBuf[I] = CS_START_COMMENT[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Comment: expected "%s" but found "%s"',[CS_START_COMMENT[lPos],lBuf[I]]);
+            FmtError(sInvalidCommentExpectedsButFounds,[CS_START_COMMENT[lPos],lBuf[I]]);
         5:
           if lBuf[I] = CS_STOP_COMMENT[lPos] then
             Inc(lPos)
@@ -2001,8 +2020,8 @@ begin
           end
           else
           begin
-            if lBuf[i+1] <> '>' then  
-              Error('Invalid Comment: "--" not allowed inside comments');
+            if lBuf[i+1] <> '>' then
+              Error(sInvalidCommentNotAllowedInsideComme);
             St := St + '--' + lBuf[I];
             Dec(lPos, 2);
           end;
@@ -2011,7 +2030,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error('Invalid Comment: Unexpected end of data');
+    Error(sInvalidCommentUnexpectedEndOfData);
 
   Value := St;
   Name := '';
@@ -2068,7 +2087,7 @@ begin
           if lBuf[I] = CS_START_CDATA[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid CDATA: expected "%s" but found "%s"',[CS_START_CDATA[lPos],lBuf[I]]);
+            FmtError(sInvalidCDATAExpectedsButFounds,[CS_START_CDATA[lPos],lBuf[I]]);
         10:
           if lBuf[I] = CS_STOP_CDATA[lPos] then
             Inc(lPos)
@@ -2099,7 +2118,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error('Invalid CDATA: Unexpected end of data');
+    Error(sInvalidCDATAUnexpectedEndOfData);
 
   Value := St;
   Name := '';
@@ -2228,7 +2247,7 @@ begin
           if lBuf[I] = CS_START_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_HEADER[lPos],lBuf[I]]);
         5: //L
           if lBuf[I] = CS_START_HEADER[lPos] then
           begin
@@ -2246,12 +2265,12 @@ begin
             Break; //Re read buffer
           end
           else
-            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_HEADER[lPos],lBuf[I]]);
         6: //?
           if lBuf[I] = CS_STOP_HEADER[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_STOP_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds,[CS_STOP_HEADER[lPos],lBuf[I]]);
         7: //>
           if lBuf[I] = CS_STOP_HEADER[lPos] then
           begin
@@ -2260,13 +2279,13 @@ begin
             Break; //End if
           end
           else
-            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_STOP_HEADER[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds,[CS_STOP_HEADER[lPos],lBuf[I]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    Error('Invalid Comment: Unexpected end of data');
+    Error(sInvalidCommentUnexpectedEndOfData);
 
   Name := '';
 
@@ -2331,7 +2350,7 @@ begin
           if lBuf[I] = CS_START_DOCTYPE[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Header: expected "%s" but found "%s"',[CS_START_DOCTYPE[lPos],lBuf[I]]);
+            FmtError(sInvalidHeaderExpectedsButFounds,[CS_START_DOCTYPE[lPos],lBuf[I]]);
         10: //]> or >
           if lChar = lBuf[I] then
           begin
@@ -2358,7 +2377,7 @@ begin
   until Count = 0;
 
   if not lOk then
-    Error('Invalid Comment: Unexpected end of data');
+    Error(sInvalidCommentUnexpectedEndOfData);
 
   Name := '';
   Value := Trim(St);
@@ -2411,7 +2430,7 @@ begin
           if lBuf[I] = CS_START_PI[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_START_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_START_PI[lPos],lBuf[I]]);
         16: //L
           if lBuf[I] = CS_START_PI[lPos] then
           begin
@@ -2422,12 +2441,12 @@ begin
             Break; //Re read buffer
           end
           else
-            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_START_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_START_PI[lPos],lBuf[I]]);
         17: //?
           if lBuf[I] = CS_STOP_PI[lPos] then
             Inc(lPos)
           else
-            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_STOP_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_STOP_PI[lPos],lBuf[I]]);
         18: //>
           if lBuf[I] = CS_STOP_PI[lPos] then
           begin
@@ -2436,13 +2455,13 @@ begin
             Break; //End if
           end
           else
-            FmtError('Invalid Stylesheet: expected "%s" but found "%s"',[CS_STOP_PI[lPos],lBuf[I]]);
+            FmtError(sInvalidStylesheetExpectedsButFounds,[CS_STOP_PI[lPos],lBuf[I]]);
       end;
     end;
   until Count = 0;
 
   if not lOk then
-    Error('Invalid Stylesheet: Unexpected end of data');
+    Error(sInvalidStylesheetUnexpectedEndOfDat);
 
   Name := '';
 
@@ -2542,7 +2561,7 @@ begin
                   St := lBuf[I];
                 end;
             else
-              Error('Invalid Document: Unexpected text in file prolog.');
+              Error(sInvalidDocumentUnexpectedTextInFile);
             end;
           end;
         1: //We are trying to determine the kind of the tag

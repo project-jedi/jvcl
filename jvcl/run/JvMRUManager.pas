@@ -166,11 +166,15 @@ type
     property Mode: TRecentMode read FMode write FMode;
   end;
 
+
+resourcestring
+  sDuplicatesNotAllowedInMRUList = 'Duplicates not allowed in MRU list.';
+
 implementation
 
 uses
   Controls, Math,
-  JvJVCLUtils;
+  JvConsts, JvJVCLUtils;
 
 const
   siRecentItem = 'Item_%d';
@@ -318,7 +322,7 @@ begin
   if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
   begin
     if Duplicates = dupError then
-      raise Exception.Create('Duplicates not allowed in MRU list.')
+      raise Exception.Create(sDuplicatesNotAllowedInMRUList);
   end
   else
   begin

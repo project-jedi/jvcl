@@ -225,9 +225,18 @@ type
     property OnAbort:TNotifyEvent read FOnAbort write FOnAbort;
   end;
 
+
+resourcestring
+  sAPrintPreviewComponentMustBeAssigne = 'A PrintPreview component must be assigned in CreatePreview!';
+  sARichEditComponentMustBeAssignedInC = 'A RichEdit component must be assigned in CreatePreview!';
+  sCannotPerfromThisOperationWhilePrin = 'Cannot perfrom this operation while printing!';
+  sPrinterNotAssigned = 'Printer not assigned!';
+  sNoPrintPreviewAssigned = 'No PrintPreview assigned!';
+
 implementation
 uses
-  Forms;
+  Forms,
+  JvConsts;
 
 type
   TAccessPrvwDoc = class(TJvCustomPreviewControl);
@@ -293,7 +302,7 @@ function TJvCustomPreviewRenderer.CreatePreview(Append: boolean): boolean;
 begin
   Result := false;
   if PrintPreview = nil then
-    raise EPrintPreviewError.Create('A PrintPreview component must be assigned in CreatePreview!');
+    raise EPrintPreviewError.Create(sAPrintPreviewComponentMustBeAssigne);
   if not Append then
     PrintPreview.Clear;
   FOldAddPage := TAccessPrvwDoc(PrintPreview).OnAddPage;
@@ -341,7 +350,7 @@ function TJvPreviewRenderRichEdit.CreatePreview(Append: boolean): boolean;
 begin
   if RichEdit = nil then
     raise
-      EPrintPreviewError.Create('A RichEdit component must be assigned in CreatePreview!');
+      EPrintPreviewError.Create(sARichEditComponentMustBeAssignedInC);
   Result := RichEdit.Lines.Count > 0;
   FFinished := not Result;
   FLastChar := 0;
@@ -767,13 +776,13 @@ end;
 procedure TJvPreviewPrinter.CheckActive;
 begin
   if (Printer <> nil) and GetPrinting then
-    raise EPrintPreviewError.Create('Cannot perfrom this operation while printing!');
+    raise EPrintPreviewError.Create(sCannotPerfromThisOperationWhilePrin);
 end;
 
 procedure TJvPreviewPrinter.CheckPrinter;
 begin
   if Printer = nil then
-    raise EPrintPreviewError.Create('Printer not assigned!');
+    raise EPrintPreviewError.Create(sPrinterNotAssigned);
 end;
 
 procedure TJvPreviewPrinter.EndDoc;
@@ -841,7 +850,7 @@ procedure TJvPreviewPrinter.Print;
 var AMin, AMax: integer;
 begin
   if PrintPreview = nil then
-    raise EPrintPreviewError.Create('No PrintPreview assigned!');
+    raise EPrintPreviewError.Create(sNoPrintPreviewAssigned);
   if PrintRange = prAllPages then
   begin
     AMin := 0;

@@ -155,10 +155,32 @@ type
     property OnGetUnit: TOnGetUnitEvent read FonGetUnit write SetonGetUnit;
   end;
 
+
+resourcestring
+  sBooleanStackOverflow = 'boolean stack overflow';
+  sProgramStopped = 'program stopped';
+  sUnterminatedIncludeDirectiveNears = 'unterminated include directive near %s';
+  sOngetUnitEventHandlerIsNotAssigned = 'ongetUnit event handler is not assigned';
+  sCouldNotIncludeUnits = 'could not include unit %s';
+  sUnterminatedCommentNears = 'unterminated comment near %s';
+  sUnterminatedStringNears = 'unterminated string near %s';
+  sUnterminatedProcedureNears = 'unterminated procedure near %s';
+  sVariablesAllreadyDefineds = 'variable %s allready defined;%s';
+  sVariablesIsNotYetDefineds = 'variable %s is not yet defined;%s';
+  sProceduresNears = 'procedure %s near %s';
+  sUndefinedProcedures = 'undefined procedure %s';
+  sStackUnderflow = 'stack underflow';
+  sStackOverflow = 'stack overflow';
+  sReturnStackUnderflow = 'return stack underflow';
+  sReturnStackOverflow = 'return stack overflow';
+  sCouldNotFindEndOfProcedure = 'could not find end of procedure';
+
 implementation
 
+uses
+  JvConsts, JvTypes;
+
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
 procedure SaveString(aFile, aText: string);
@@ -229,7 +251,7 @@ begin
   bstack[bsp] := aValue;
   inc(bsp);
   if bsp > stacklimit then
-    raise exception.create('boolean stack overflow');
+    raise exception.create(sBooleanStackOverflow);
 end;
 
 constructor TJvSAL.create(AOwner: TComponent);
@@ -277,7 +299,7 @@ begin
       application.ProcessMessages;
     end;
     if FStop then
-      raise exception.create('program stopped');
+      raise exception.create(sProgramStopped);
   until pc >= c;
 end;
 
@@ -320,17 +342,17 @@ begin
     begin
       p2 := charfrom(p, ' ', s);
       if p2 = 0 then
-        raise exception.create('unterminated include directive near ' + copy(s, p, 50));
+        raise exception.create(Format(sUnterminatedIncludeDirectiveNears, [copy(s, p, 50)]));
       fn := trim(copy(s, p + length(fuseDirective), p2 - p - length(fuseDirective)));
       if not assigned(onGetUnit) then
-        raise exception.create('ongetUnit event handler is not assigned');
+        raise exception.create(sOngetUnitEventHandlerIsNotAssigned);
       handled := false;
       fn := lowercase(fn);
       if FUnits.IndexOf(fn) = -1 then
       begin
         onGetUnit(self, fn, theunit, handled);
         if not handled then
-          raise exception.create('could not include unit ' + fn);
+          raise Exception.CreateFmt(sCouldNotIncludeUnits, [fn]);
         theunit := stringreplace(theunit, cr, ' ', [rfreplaceall]);
         delete(s, p, p2 - p);
         insert(theunit, s, p);
@@ -344,7 +366,7 @@ begin
     begin // default= {
       p := pos(fEndOfComment, s); // default= }
       if p = 0 then
-        raise exception.create('unterminated comment near ' + s);
+        raise exception.CreateFmt(sUnterminatedCommentNears, [s]);
       delete(s, 1, p + length(fEndOfComment) - 1);
       s := trim(s);
     end
@@ -353,7 +375,7 @@ begin
       delete(s, 1, length(fStringDelim));
       p := pos(fStringDelim, s);
       if p = 0 then
-        raise exception.create('unterminated string near ' + s);
+        raise exception.CreateFmt(sUnterminatedStringNears, [s]);
       token := copy(s, 1, p - 1);
       delete(s, 1, p + length(fStringDelim) - 1);
       s := trim(s);
@@ -390,7 +412,7 @@ begin
         if pos('proc-', token) = 1 then
         begin // begin of procedure
           if pos('end-proc', s) = 0 then
-            raise exception.create('unterminated procedure near' + s);
+            raise exception.createFmt(sUnterminatedProcedureNears, [s]);
           apo(token, xbosub);
         end
         else if token = 'end-proc' then
@@ -400,7 +422,7 @@ begin
         else if pos('var-', token) = 1 then
         begin // define variable
           if atoms.IndexOf(token) <> -1 then
-            raise exception.Create('variable ' + token + ' allready defined;' + s);
+            raise exception.CreateFmt(sVariablesAllreadyDefineds, [token, s]);
           a := TJvAtom.create;
           a.actor := xDefVariable;
           atoms.AddObject(token, a);
@@ -410,7 +432,7 @@ begin
           // find address
           i := atoms.IndexOf('var-' + copy(token, 2, maxint));
           if i = -1 then
-            raise exception.Create('variable ' + token + ' is not yet defined;' + s);
+            raise exception.CreateFmt(sVariablesIsNotYetDefineds, [token, s]);
           a := TJvAtom.create;
           a.Value := i;
           a.actor := xVariable;
@@ -424,7 +446,7 @@ begin
             apo(Token, aActor);
         end
         else
-          raise exception.create('procedure ' + token + ' near ' + s);
+          raise exception.CreateFmt(sProceduresNears, [token, s]);
       end
     end
   end;
@@ -438,7 +460,7 @@ begin
       s := 'proc-' + copy(s, 1, length(s) - 2);
       p := atoms.indexof(s);
       if p = -1 then
-        raise exception.create('undefined procedure ' + s);
+        raise exception.CreateFmt(sUndefinedProcedures, [s]);
       TJvAtom(atoms.objects[i]).value := p;
     end;
   end;
@@ -448,7 +470,7 @@ function TJvSAL.Pop: variant;
 begin
   dec(sp);
   if sp < 0 then
-    raise exception.create('stack underflow');
+    raise exception.create(sStackUnderflow);
   result := stack[sp];
 end;
 
@@ -457,7 +479,7 @@ begin
   stack[sp] := aValue;
   inc(sp);
   if sp > stacklimit then
-    raise exception.create('stack overflow');
+    raise exception.create(sStackOverflow);
 end;
 
 procedure TJvSAL.Setscript(const Value: string);
@@ -524,7 +546,7 @@ function TJvSAL.rPop: integer;
 begin
   dec(rsp);
   if rsp < 0 then
-    raise exception.create('return stack underflow');
+    raise exception.create(sReturnStackUnderflow);
   result := rstack[rsp];
 end;
 
@@ -533,7 +555,7 @@ begin
   rstack[rsp] := aValue;
   inc(rsp);
   if rsp > stacklimit then
-    raise exception.create('return stack overflow');
+    raise exception.create(sReturnStackOverflow);
 end;
 
 // end of subroutine, marked with end-proc
@@ -557,7 +579,7 @@ begin
     inc(fpc);
     if op = 'end-proc' then exit;
   until pc >= c;
-  raise exception.Create('could not find end of procedure');
+  raise exception.Create(sCouldNotFindEndOfProcedure);
 end;
 
 procedure TJvSAL.SetonGetUnit(const Value: TOnGetUnitEvent);

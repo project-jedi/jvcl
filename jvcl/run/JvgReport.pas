@@ -31,8 +31,8 @@ unit JvgReport;
 
 interface
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses, JvComponent,
-  JvgUtils, Forms, OleCtnrs, ExtCtrls, SysUtils, Printers;
+  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
+  JvComponent, JvgUtils, Forms, OleCtnrs, ExtCtrls, SysUtils, Printers;
 type
 
   TJvgReport = class;
@@ -215,18 +215,20 @@ type
       FBeforePrint;
   end;
 
-procedure Register;
+
+resourcestring
+  sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
+  sError = 'Error';
+  sErrorReadingComponent = 'Error reading component.';
+
 implementation
+uses
+  JvConsts;
 
 const
   S = 2;
   DS = 2 * S + 1;
-  {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
 constructor TJvgRepScrollBox.Create(AOwner: TComponent);
@@ -986,6 +988,7 @@ var
   c: char;
   Compon: TComponent;
   sName, sClassName: string;
+  S1, S2: string;
 
   procedure N2T;
   begin
@@ -1142,7 +1145,9 @@ var
     try
       B.ContainOLE := B.OLELinkToFile <> '';
     except
-      Application.MessageBox('OLE: Linked object not found.', 'Error',
+      S1 := sOLELinkedObjectNotFound;
+      S2 := sError;
+      Application.MessageBox(PChar(S1), PChar(S2),
         MB_APPLMODAL or MB_OK or MB_ICONSTOP);
     end;
     B.Name := sName;
@@ -1199,7 +1204,9 @@ begin
         try
           Create_Object(sClassName, sName);
         except
-          Application.MessageBox('Error reading component.', 'Error',
+          S1 := sErrorReadingComponent;
+          S2 := sError;
+          Application.MessageBox(PChar(S1), PChar(S2),
             MB_APPLMODAL or MB_OK or MB_ICONSTOP);
         end;
       end;

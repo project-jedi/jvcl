@@ -239,6 +239,9 @@ type
 
 implementation
 
+resourcestring
+  sGlanceControlNotAssigned = 'GlanceControl not assigned';
+
 { TJvTFGVTextControl }
 
 function TJvTFGVTextControl.CalcAbsLineNum(Y : Integer) : Integer;
@@ -1100,7 +1103,7 @@ var
   Attr : TJvTFGlanceCellAttr;
 begin
   If not Assigned(GlanceControl) Then
-    Raise EGlanceViewerError.Create('GlanceControl not assigned');
+    Raise EGlanceViewerError.Create(sGlanceControlNotAssigned);
 
   With Result do
     Begin

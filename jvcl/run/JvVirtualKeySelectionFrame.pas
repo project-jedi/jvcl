@@ -63,6 +63,11 @@ implementation
 
 {$R *.dfm}
 
+resourcestring
+  sNoValidKeyCode = 'This is not a valid key code';
+  sInvalidKeyCode = 'Invalid key code';
+
+
 constructor TJvVirtualKeySelectionFrame.Create(AOwner: TComponent);
 begin
   inherited;
@@ -200,9 +205,7 @@ begin
   if cmbVirtualKey.ItemIndex = -1 then
   begin
     // Signal an error, but not sure how...
-    Application.MessageBox('This is not a valid key code',
-                           'Invalid key code',
-                           MB_ICONERROR);
+    Application.MessageBox(PChar(sNoValidKeyCode), PChar(sInvalidKeyCode), MB_ICONERROR);
 
     // in any case, return 0
     Result := 0;

@@ -117,15 +117,16 @@ type
 
   end;
 
-procedure Register;
+
+
+resourcestring
+  sProgressd = 'progress...[%d%%]';
 
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
+uses
+  JvConsts;
+
 //________________________________________________________ Methods _
 
 constructor TJvgProgress.Create(AOwner: TComponent);
@@ -151,7 +152,7 @@ begin
       Delineate := clGray;
       Shadow := 0;
       Background := 0;
-      Caption := 'progress...[%d%%]';
+      Caption := sProgressd;
     end;
   FColors.OnChanged := OnSmthChanged;
   FGradientB.OnChanged := OnSmthChanged;

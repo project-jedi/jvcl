@@ -60,8 +60,7 @@ type
 
 implementation
 
-// (rom) why resourcestrings?
-resourcestring
+const
   // (rom) needs renaming?
   RC_Html1 = '<HTML>';
   RC_Html3 = '<BODY>';

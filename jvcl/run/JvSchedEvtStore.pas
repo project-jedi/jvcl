@@ -148,12 +148,27 @@ type
 function ScheduledEventStore_Stream(const Stream: TStream; const Binary: Boolean = False;
   const OwnsStream: Boolean = True): IJvScheduledEventsStore;
 
+
+resourcestring
+  sStructureStackIsEmpty = 'Structure stack is empty.';
+  sNotImplemented = 'not implemented';
+  sScheduleIsActiveReadingANewSchedule = 'Schedule is active. Reading a new schedule can only be done on inactive schedules.';
+  sScheduleIsActiveStoringOfAScheduleC = 'Schedule is active. Storing of a schedule can only be done on inactive schedules.';
+  sNotImplemented_ = 'not implemented.';
+  sNotASchedule = 'Not a schedule.';
+  sUnknownScheduleVersions = 'Unknown schedule version ($%s)';
+  sUnexpectedStructure = 'Unexpected structure.';
+  sIncorrectIdentifierFound = 'Incorrect identifier found.';
+
 implementation
 
 uses
   SysUtils, TypInfo,
   JclRTTI, JclSchedule,
-  JvTypes;
+  JvConsts, JvTypes;
+
+resourcestring
+  sIncorrectStructure = 'Incorrect structure found.';
 
 //=== TJvSchedEvtStore =======================================================
 
@@ -166,7 +181,7 @@ end;
 function TJvSchedEvtStore.PeekStruct: TSchedEvtStructKind;
 begin
   if Length(FStructStack) = 0 then
-    raise EJVCLException.Create('Structure stack is empty.');
+    raise EJVCLException.Create(sStructureStackIsEmpty);
   Result := FStructStack[High(FStructStack)];
 end;
 
@@ -239,12 +254,12 @@ end;
 
 procedure TJvSchedEvtStore.LoadState(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create('not implemented');
+  raise EJVCLException.Create(sNotImplemented);
 end;
 
 procedure TJvSchedEvtStore.SaveState(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create('not implemented');
+  raise EJVCLException.Create(sNotImplemented);
 end;
 
 procedure TJvSchedEvtStore.LoadSchedule(const Event: TJvEventCollectionItem);
@@ -257,7 +272,7 @@ begin
   with Event do
   begin
     if not (State in [sesNotInitialized, sesEnded]) then
-      raise EJVCLException.Create('Schedule is active. Reading a new schedule can only be done on inactive schedules.');
+      raise EJVCLException.Create(sScheduleIsActiveReadingANewSchedule);
     OrgSchedule := Schedule;
     try
       Schedule := CreateSchedule;
@@ -356,7 +371,7 @@ begin
   with Event do
   begin
     if not (State in [sesNotInitialized, sesEnded, sesPaused]) then
-      raise EJVCLException.Create('Schedule is active. Storing of a schedule can only be done on inactive schedules.');
+      raise EJVCLException.Create(sScheduleIsActiveStoringOfAScheduleC);
     if not IsStructured then
       StoreSignature;
     BeginStruct(seskSchedule);
@@ -438,12 +453,12 @@ end;
 
 procedure TJvSchedEvtStore.LoadEventSettings(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create('not implemented.');
+  raise EJVCLException.Create(sNotImplemented_);
 end;
 
 procedure TJvSchedEvtStore.SaveEventSettings(const Event: TJvEventCollectionItem);
 begin
-  raise EJVCLException.Create('not implemented.');
+  raise EJVCLException.Create(sNotImplemented_);
 end;
 
 const
@@ -534,14 +549,14 @@ begin
   SetLength(S, Length(BinStreamID));
   Stream.ReadBuffer(S[1], Length(BinStreamID));
   if S <> BinStreamID then
-    raise EJVCLException.Create('Not a schedule.');
+    raise EJVCLException.Create(sNotASchedule);
 end;
 
 procedure TBinStore.CheckVersion;
 begin
   Stream.ReadBuffer(StreamVersion, SizeOf(StreamVersion));
   if StreamVersion > BinStreamVer then
-    raise EJVCLException.CreateFmt('Unknown schedule version ($%s)', [IntToHex(StreamVersion, 4)]);
+    raise EJVCLException.CreateFmt(sUnknownScheduleVersions, [IntToHex(StreamVersion, 4)]);
 end;
 
 procedure TBinStore.RestoreScheduleStart;
@@ -1310,7 +1325,7 @@ begin
     seskScheduleYearly:
       WriteLn(sTXTID_SchedYearly);
   else
-    raise EJVCLException.Create('Unexpected structure.');
+    raise EJVCLException.Create(sUnexpectedStructure);
   end;
 end;
 
@@ -1320,8 +1335,6 @@ begin
 end;
 
 procedure TTxtStore.CheckBeginStruct(const StructType: TSchedEvtStructKind);
-const
-  cIncorrectStructure = 'Incorrect structure found.';
 var
   S: string;
 begin
@@ -1330,30 +1343,30 @@ begin
   case StructType of
     seskSchedule:
       if not AnsiSameText(S, sTXTID_SchedGeneric) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleRecurInfo:
       if not AnsiSameText(S, sTXTID_SchedRecur) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleEndInfo:
       if not AnsiSameText(S, sTXTID_SchedEnd) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleDayFreq:
       if not AnsiSameText(S, sTXTID_SchedFreq) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleDaily:
       if not AnsiSameText(S, sTXTID_SchedDaily) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleWeekly:
       if not AnsiSameText(S, sTXTID_SchedWeekly) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleMonthly:
       if not AnsiSameText(S, sTXTID_SchedMonthly) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
     seskScheduleYearly:
       if not AnsiSameText(S, sTXTID_SchedYearly) then
-        raise EJVCLException.Create(cIncorrectStructure);
+        raise EJVCLException.Create(sIncorrectStructure);
   else
-    raise EJVCLException.Create('Unexpected structure.');
+    raise EJVCLException.Create(sUnexpectedStructure);
   end;
 end;
 
@@ -1430,7 +1443,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
+    raise EJVCLException.Create(sIncorrectIdentifierFound);
   Result := GetEnumValue(TypeInfo, Value);
 end;
 
@@ -1441,7 +1454,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
+    raise EJVCLException.Create(sIncorrectIdentifierFound);
   Result := StrToInt64(Value);
 end;
 
@@ -1452,7 +1465,7 @@ var
 begin
   StrValue := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
+    raise EJVCLException.Create(sIncorrectIdentifierFound);
   JclStrToSet(TypeInfo, Value, StrValue);
 end;
 
@@ -1472,7 +1485,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
+    raise EJVCLException.Create(sIncorrectIdentifierFound);
   Y := StrToInt(Copy(Value, 1, 4));
   M := StrToInt(Copy(Value, 6, 2));
   D := StrToInt(Copy(Value, 9, 2));
@@ -1489,7 +1502,7 @@ var
 begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
+    raise EJVCLException.Create(sIncorrectIdentifierFound);
   if (Length(Value) < 3) or (Value[3] in ['0'..'9']) then
     Result := StrToInt(Value)
   else

@@ -54,7 +54,14 @@ type
     property Grid: TStringGrid read FGrid write SetGrid;
   end;
 
+
+resourcestring
+  sFilterTooComplex = 'Filter too complex';
+
 implementation
+
+uses
+  JvConsts;
 
 type
   TGridFilterFunc = function(FieldValue, FilterValue: string): boolean;
@@ -157,7 +164,7 @@ begin
     inc(GridRowFilter.FilterCount);
     if (GridRowFilter.FilterCount > 9) then
     begin
-      showmessage('Filter too complex');
+      showmessage(sFilterTooComplex);
       GridRowFilter.FilterCount := 0;
       exit;
     end;

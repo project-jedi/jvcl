@@ -187,11 +187,15 @@ type
     property OnStartDrag;
   end;
 
+
+resourcestring
+  sImagesNotAssigned = 'Images not Assigned!';
+
 implementation
 
 uses
   Math,
-  JvTypes, JvThemes;
+  JvConsts, JvTypes, JvThemes;
 
 //=== TJvImageWindow =========================================================
 
@@ -230,7 +234,7 @@ var
 begin
   if not Assigned(FImageList) then
   begin
-    EJVCLException.Create('Images not Assigned!');
+    EJVCLException.Create(sImagesNotAssigned);
     Exit;
   end;
   Bmp := TBitmap.Create;

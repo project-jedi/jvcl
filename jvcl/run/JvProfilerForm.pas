@@ -113,16 +113,26 @@ type
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
+
+resourcestring
+  sMaxNumberOfIDsExceededd = 'Max number of ID''s exceeded (%d)';
+  sMaxStackSizeExceededd = 'Max stack size exceeded (%d)';
+  ssTotalElapsedTimedms = '%s -  total elapsed time: %d (ms)';
+  sTextFormatsasctxtinfdocAllFiles = 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
+
 implementation
 
 uses
   SysUtils, CommCtrl,
-  JvTypes;
+  JvConsts, JvTypes;
+
+
+resourcestring
+  DefCaption = 'Profiler 32 Report';
+  DefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
 
 const
-  DefCaption = 'Profiler 32 Report';
   EmptyLine = '0.00';
-  DefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
   DefHeader2 =
     'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
 
@@ -194,7 +204,7 @@ begin
     if Length(Trim(FNames[I])) < 1 then
       Continue;                         { skip empty ID's }
     if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt('Max number of ID''s exceeded (%d)',
+      raise EJVCLException.CreateFmt(sMaxNumberOfIDsExceededd,
         [MaxProfEntries - 1]);
     Inc(FLastProc);
     with FProfileInfo[FLastProc] do
@@ -214,7 +224,7 @@ begin
   begin
     Snap := GetTickCount;
     if FStackSize > MaxStackSize then
-      raise EJVCLException.CreateFmt('Max stack size exceeded (%d)',
+      raise EJVCLException.CreateFmt(sMaxStackSizeExceededd,
         [MaxStackSize]);
     Inc(FStackSize);
 
@@ -369,7 +379,7 @@ begin
         LItem.SubItems.Add(EmptyLine);
       end;
     end;
-  Caption := Format('%s -  total elapsed time: %d (ms)', [DefCaption, TotalSum]);
+  Caption := Format(ssTotalElapsedTimedms, [DefCaption, TotalSum]);
   lvReport.Items.EndUpdate;
 end;
 
@@ -421,7 +431,7 @@ var
 begin
   with TSaveDialog.Create(nil) do
   begin
-    Filter := 'Text formats|*.asc;*.txt;*.inf;*.doc|All files|*.*';
+    Filter := sTextFormatsasctxtinfdocAllFiles;
     if Execute then
     begin
       OutList := TStringList.Create;

@@ -1195,6 +1195,30 @@ uses
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvConsts;
 
+resourcestring
+  SCouldNotReadData = 'Couldn''t read data from stream';
+  SAlreadyReadingWritingFrame = 'Already reading/writing frame';
+  SCannotCallCanRead = 'Can''t call CanRead while writing';
+  SNotReadingFrame = 'Not reading frame';
+  SNotWritingFrame = 'Not writing frame';
+  SFrameSizeDiffers = 'Frame size differs from actually amount of data written';
+  SAllowedEncodingsIsEmpty = 'FAllowedEncodings is empty';
+  SCouldNotFindAllowableEncoding = 'Could not find allowable encoding';
+  SValueTooBig = 'Can''t write value in v2.2; too big';
+  SLanguageNotOfLength3 = 'Language is not of length 3';
+  SNoTempStream = 'No temp stream';
+  SAlreadyReadingWriting = 'Already reading or writing';
+  SAlreadyUsingTempStream = 'Already using temp stream';
+  SNotUsingTempStream = 'Not using temp stream';
+  SNotWriting = 'Not writing';
+  SErrorInFrame = 'Error in frame %s (%s), %s';
+  SControllerDoesNotSupportCompression = 'Controller doesn''t support compression';
+  SControllerDoesNotSupportEncryption = 'Controller doesn''t support encryption';
+  SFrameSizeTooBig = 'Frame size is too big';
+  SControllerDoesNotSupportFooter = 'Controller doesn''t support footer';
+  STagTooBig = 'Tag is too big';
+  SControllerDoesNotSupportCRC = 'Controller doesn''t support CRC';
+
 var
   DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass = (
     nil, { fiErrorFrame (special frame) }
@@ -2585,7 +2609,7 @@ begin
       { Read at max CBufferSize bytes from the stream }
       BytesRead := Source.Read(SourceBuf^, Min(MaxBufSize, BytesToRead));
       if BytesRead = 0 then
-        ID3Error('Couldn''t read data from stream');
+        ID3Error(SCouldNotReadData);
 
       Dec(BytesToRead, BytesRead);
 
@@ -2634,7 +2658,7 @@ begin
       { Read at max CBufferSize div 2 bytes from the stream }
       BytesRead := Source.Read(SourceBuf^, Min(MaxBufSize div 2, BytesToRead));
       if BytesRead = 0 then
-        ID3Error('Couldn''t read data from stream');
+        ID3Error(SCouldNotReadData);
 
       Dec(BytesToRead, BytesRead);
 
@@ -2724,7 +2748,7 @@ end;
 procedure TJvID3Stream.BeginReadFrame(const AFrameSize: Integer);
 begin
   if FReadingFrame or FWritingFrame then
-    ID3Error('Already reading/writing frame');
+    ID3Error(SAlreadyReadingWritingFrame);
 
   FStartPosition := Position;
   FCurrentFrameSize := AFrameSize;
@@ -2734,7 +2758,7 @@ end;
 procedure TJvID3Stream.BeginWriteFrame(const AFrameSize: Integer);
 begin
   if FReadingFrame or FWritingFrame then
-    ID3Error('Already reading/writing frame');
+    ID3Error(SAlreadyReadingWritingFrame);
 
   //if not Assigned(Memory) then
   //  { $0A = 10, the size of the header }
@@ -2749,7 +2773,7 @@ function TJvID3Stream.CanRead(const ACount: Cardinal): Boolean;
 var
   LBytesToRead: Longint;
 begin
-  Assert(not FWritingFrame, 'Can''t call CanRead while writing');
+  Assert(not FWritingFrame, SCannotCallCanRead);
 
   if FReadingFrame then
     LBytesToRead := BytesTillEndOfFrame
@@ -2762,7 +2786,7 @@ end;
 procedure TJvID3Stream.EndReadFrame;
 begin
   if not FReadingFrame then
-    ID3Error('Not reading frame');
+    ID3Error(SNotReadingFrame);
   MoveToNextFrame;
   FReadingFrame := False;
 end;
@@ -2770,7 +2794,7 @@ end;
 procedure TJvID3Stream.EndWriteFrame;
 begin
   if not FWritingFrame then
-    ID3Error('Not writing frame');
+    ID3Error(SNotWritingFrame);
   MoveToNextFrame;
   FWritingFrame := False;
 end;
@@ -2821,7 +2845,7 @@ end;
 procedure TJvID3Stream.MoveToNextFrame;
 begin
   if FWritingFrame and (BytesTillEndOfFrame <> 0) then
-    ID3Error('Frame size differs from actually amount of data written');
+    ID3Error(SFrameSizeDiffers);
 
   Seek(BytesTillEndOfFrame, soFromCurrent);
 end;
@@ -2939,7 +2963,7 @@ begin
     the frame; a number might be bigger than 4 bytes, but that can't be read
     currently }
   if not FReadingFrame then
-    ID3Error('Not reading frame');
+    ID3Error(SNotReadingFrame);
 
   if BytesTillEndOfFrame = 4 then
   begin
@@ -3167,7 +3191,7 @@ begin
     written to the stream
     (when writing, symetrically for reading )
   }
-  Assert(FAllowedEncodings <> [], 'FAllowedEncodings is empty');
+  Assert(FAllowedEncodings <> [], SAllowedEncodingsIsEmpty);
 
   FDestEncoding := FSourceEncoding;
   if not (FDestEncoding in FAllowedEncodings) then
@@ -3177,7 +3201,7 @@ begin
       Inc(I);
     if I > High(CEncodingTry) then
       // insanity, should not happen
-      ID3Error('Could not find allowable encoding');
+      ID3Error(SCouldNotFindAllowableEncoding);
 
     FDestEncoding := CEncodingTry[I];
   end;
@@ -3210,7 +3234,7 @@ function TJvID3Stream.WriteFixedNumber3(AValue: Cardinal): Longint;
 type
   TBytes = array [0..3] of Byte;
 begin
-  Assert(AValue <= $00FFFFFF, 'Can''t write value in v2.2; too big');
+  Assert(AValue <= $00FFFFFF, SValueTooBig);
 
   { Swap byte order from little endian to big endian }
   AValue := ReverseBytes(AValue);
@@ -3220,7 +3244,7 @@ end;
 function TJvID3Stream.WriteLanguage(const Language: string): Longint;
 begin
   if Length(Language) <> 3 then
-    ID3Error('Language is not of length 3');
+    ID3Error(SLanguageNotOfLength3);
 
   Result := WriteStringA(Language);
 end;
@@ -3434,7 +3458,7 @@ begin
     if icsUsingTempStream in FState then
     begin
       if not Assigned(FTempStream) then
-        ID3Error('No temp stream', Self);
+        ID3Error(SNoTempStream, Self);
 
       LTempStreamSize := GetTempStreamSize;
       FTempStream.Seek(0, soFromBeginning);
@@ -3460,7 +3484,7 @@ end;
 procedure TJvID3Controller.BeginReading;
 begin
   if FState <> [] then
-    ID3Error('Already reading or writing', Self);
+    ID3Error(SAlreadyReadingWriting, Self);
 
   Include(FState, icsReading);
   FStream := TJvID3Stream.Create;
@@ -3476,7 +3500,7 @@ end;
 procedure TJvID3Controller.BeginUseTempStream;
 begin
   if icsUsingTempStream in FState then
-    ID3Error('Already using temp stream', Self);
+    ID3Error(SAlreadyUsingTempStream, Self);
 
   Include(FState, icsUsingTempStream);
   if not Assigned(FTempStream) then
@@ -3493,7 +3517,7 @@ end;
 procedure TJvID3Controller.BeginWriting;
 begin
   if FState <> [] then
-    ID3Error('Already reading or writing', Self);
+    ID3Error(SAlreadyReadingWriting, Self);
 
   Include(FState, icsWriting);
   FStream := TJvID3Stream.Create;
@@ -3873,7 +3897,7 @@ end;
 procedure TJvID3Controller.EndUseTempStream;
 begin
   if not (icsUsingTempStream in FState) then
-    ID3Error('Not using temp stream', Self);
+    ID3Error(SNotUsingTempStream, Self);
 
   Exclude(FState, icsUsingTempStream);
   { Do not free the temp stream }
@@ -3882,7 +3906,7 @@ end;
 procedure TJvID3Controller.EndWriting;
 begin
   if not (icsWriting in FState) then
-    ID3Error('Not writing', Self);
+    ID3Error(SNotWriting, Self);
 
   Exclude(FState, icsWriting);
   FreeAndNil(FStream);
@@ -4026,7 +4050,7 @@ end;
 function TJvID3Controller.GetTempStreamSize: Cardinal;
 begin
   if not Assigned(FTempStream) then
-    ID3Error('No temp stream', Self);
+    ID3Error(SNoTempStream, Self);
 
   Result := FTempStream.Position;
 end;
@@ -4168,7 +4192,7 @@ end;
 procedure TJvID3Controller.RemoveUnsynchronisationSchemeToTempStream(const ASize: Integer);
 begin
   if icsUsingTempStream in FState then
-    ID3Error('Already using temp stream', Self);
+    ID3Error(SAlreadyUsingTempStream, Self);
 
   if not Assigned(FTempStream) then
     FTempStream := TJvID3Stream.Create;
@@ -4443,7 +4467,7 @@ var
   LTempStreamSize: Cardinal;
 begin
   if not Assigned(FTempStream) then
-    ID3Error('No temp stream', Self);
+    ID3Error(SNoTempStream, Self);
 
   LTempStreamSize := GetTempStreamSize;
   FTempStream.Seek(0, soFromBeginning);
@@ -4557,7 +4581,7 @@ end;
 
 procedure TJvID3Frame.Error(const Msg: string);
 begin
-  ID3ErrorFmt('Error in frame %s (%s), %s', [FrameName, Name, Msg], Controller);
+  ID3ErrorFmt(SErrorInFrame, [FrameName, Name, Msg], Controller);
 end;
 
 procedure TJvID3Frame.ErrorFmt(const Msg: string;
@@ -4824,11 +4848,11 @@ begin
 
     { fhfIsCompressed is currently not supported }
     if (fhfIsCompressed in ChangedFlags) and (fhfIsCompressed in Value) then
-      ID3Error('Controller doesn''t support compression', Controller);
+      ID3Error(SControllerDoesNotSupportCompression, Controller);
 
     { fhfIsEncrypted is currently not supported }
     if (fhfIsEncrypted in ChangedFlags) and (fhfIsEncrypted in Value) then
-      ID3Error('Controller doesn''t support encryption', Controller);
+      ID3Error(SControllerDoesNotSupportEncryption, Controller);
 
     FFlags := Value;
   end;
@@ -4952,7 +4976,7 @@ begin
     ive2_2:
       if AFrameSize > $00FFFFFF then // = 16 MB
         { TODO : Resource string }
-        ID3Error('Frame size is too big', Self)
+        ID3Error(SFrameSizeTooBig, Self)
       else
         with Stream do
         begin
@@ -5910,7 +5934,7 @@ begin
 
     { hfFooterPresent is currently not supported }
     if (hfFooterPresent in ChangedFlags) and (hfFooterPresent in Value) then
-      ID3Error('Controller doesn''t support footer', Controller);
+      ID3Error(SControllerDoesNotSupportFooter, Controller);
 
     FFlags := Value;
   end;
@@ -5927,7 +5951,7 @@ begin
   { Check max size }
   if Header.Size > $0FFFFFFF then // 28 bits = 256 MB
     { TODO : Resource string, betere foutmelding }
-    ID3Error('Tag is too big', Controller);
+    ID3Error(STagTooBig, Controller);
 
   with Stream do
   begin
@@ -6159,7 +6183,7 @@ begin
 
     { hefCRCDataPresent is currently not supported }
     if (hefCRCDataPresent in ChangedFlags) and (hefCRCDataPresent in Value) then
-      ID3Error('Controller doesn''t support CRC', Controller);
+      ID3Error(SControllerDoesNotSupportCRC, Controller);
 
     FFlags := Value;
   end;

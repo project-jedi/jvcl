@@ -96,10 +96,14 @@ var
 
 implementation
 
+uses JvTypes;
+
 {$R *.DFM}
 
+resourcestring
+  sNoDictionaryLoaded = 'no dictionary loaded';
+
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
@@ -317,7 +321,7 @@ begin
   FSourceText := SourceText;
   if Dict = '' then
   begin
-    showmessage('no dictionary loaded');
+    ShowMessage(sNoDictionaryLoaded);
     exit;
   end;
   FWordEnd := 1;

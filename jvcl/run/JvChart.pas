@@ -506,12 +506,30 @@ type
   end;
 
 
+
+resourcestring
+  sDataIndexCannotBeNegative = 'Data: index cannot be negative';
+  sDataIndexTooLargeProbablyAnInternal = 'Data: index too large. probably an internal error.';
+  sGetAveValueIndexNegative = 'GetAveValue: Index negative';
+  sSetAveValueIndexNegative = 'SetAveValue: Index negative';
+  sJvChartOptionsPenCountPenCountOutOf = 'JvChart.Options.PenCount - PenCount out of range';
+  sJvChartOptionsXStartOffsetValueOutO = 'JvChart.Options.XStartOffset  - value out of range';
+  sNoData = 'No data.';
+  sUnableToGetCanvas = 'Unable to get canvas';
+  sGraphHeader = 'Graph Header';
+  sCurrentHeaders = 'Current Header: %s';
+  sXAxisHeaders = 'X Axis Header: %s';
+  sGraphScale = 'Graph Scale';
+  sYAxisScales = 'Y Axis Scale: %s';
+  sNoValuesHere = 'No values here!';
+
 implementation
 
-{$IFNDEF COMPILER6_UP}
 uses
-  JvJVCLUtils;
+{$IFNDEF COMPILER6_UP}
+  JvJVCLUtils,
 {$ENDIF COMPILER6_UP}
+  JvConsts;
 
 { GRAPH DATA }
 
@@ -540,9 +558,9 @@ procedure TJvChartData.Grow(Pen,values:Integer);
  t,oldAlloc:Integer;} // not used (ahuser)
 begin
   if (Pen<0) or (values<0) then
-      raise ERangeError.Create('Data: index cannot be negative');
+      raise ERangeError.Create(sDataIndexCannotBeNegative);
   if (Pen>JvChart_SANITY_LIMIT) or (values>JvChart_SANITY_LIMIT) then
-      raise ERangeError.Create('Data: index too large. probably an internal error.');
+      raise ERangeError.Create(sDataIndexTooLargeProbablyAnInternal);
 
 
   if (values>=FDataAlloc) then begin
@@ -642,7 +660,7 @@ end;
 
 function TJvChartOptions.GetAveValue(index:Integer):Real;
 begin
-  if (index<0) then raise ERangeError.Create('GetAveValue: Index negative');
+  if (index<0) then raise ERangeError.Create(sGetAveValueIndexNegative);
   if index>=Length(FAveValue) then
       result := 0.0
   else
@@ -651,7 +669,7 @@ end;
 
 procedure TJvChartOptions.SetAveValue(index:Integer;aValue:Real);
 begin
-  if (index<0) then raise ERangeError.Create('GetAveValue: Index negative');
+  if (index<0) then raise ERangeError.Create(sSetAveValueIndexNegative);
   if index>=Length(FAveValue) then
       SetLength(FAveValue,index+1);
   FAveValue[index] := aValue;
@@ -661,7 +679,7 @@ end;
 procedure TJvChartOptions.SetPenCount(count:Integer);
 begin
   if (count < 0) or (count >= MAX_PEN) then
-      raise ERangeError.Create('JvChart.Options.PenCount - PenCount out of range');
+      raise ERangeError.Create(sJvChartOptionsPenCountPenCountOutOf);
 
  FPenCount := count;
 end;
@@ -755,7 +773,7 @@ end;
 procedure TJvChartOptions.SetXStartOffset(offset:Integer);
 begin
   if (offset < 10) or (offset > (FOwner.Width div 2))  then
-      raise ERangeError.Create('JvChart.Options.XStartOffset  - value out of range');
+      raise ERangeError.Create(sJvChartOptionsXStartOffsetValueOutO);
 
   FXStartOffset := offset;
 
@@ -1321,7 +1339,7 @@ begin
    if (Options.XValueCount=0) then begin
          MyRightTextOut( Round(xOrigin),
                          Round(yOrigin),
-                        'No data.' );
+                         sNoData );
          Invalidate;
          exit;
    end;
@@ -1872,7 +1890,7 @@ begin
   if FPicture.Graphic is TBitmap then
 	Result := TBitmap(FPicture.Graphic).Canvas
   else
-  	raise EInvalidOperation.Create('Unable to get canvas');
+  	raise EInvalidOperation.Create(sUnableToGetCanvas);
 end;
 
 
@@ -1922,7 +1940,7 @@ var
    strString : String;
 begin
    strString := Options.Title;
-   if InputQuery('Graph Header','Current Header: '+Options.Title,strString) then
+   if InputQuery(sGraphHeader, Format(sCurrentHeaders, [Options.Title]), strString) then
       Options.Title := strString;
    PlotGraph;
 
@@ -1936,7 +1954,7 @@ var
    strString : String;
 begin
    strString := Options.XAxisHeader;
-   if InputQuery('Graph Header', 'X Axis Header: '+Options.XAxisHeader,strString) then
+   if InputQuery(sGraphHeader, Format(sXAxisHeaders, [Options.XAxisHeader]), strString) then
       Options.XAxisHeader := strString;
    PlotGraph;
 
@@ -1948,7 +1966,7 @@ var
    strString : String;
 begin
    strString := Options.XAxisHeader;
-   if InputQuery('Graph Scale', 'Y Axis Scale: '+FloatToStr(Options.YMax), strString) then
+   if InputQuery(sGraphScale, Format(sYAxisScales, [FloatToStr(Options.YMax)]), strString) then
      Options.YMax := StrToFloatDef( strString, Options.YMax)
    else
      exit;
@@ -2164,7 +2182,7 @@ begin
    strs := TStringList.Create;
    try
 
-   strMessage1 := 'No values here!';
+   strMessage1 := sNoValuesHere;
    nWidth      := MyTextWidth(strMessage1)+20;
 
     if (nMousePen=0) then begin

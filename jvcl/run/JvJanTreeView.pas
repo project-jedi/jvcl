@@ -210,7 +210,19 @@ type
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
   end;
 
+
+resourcestring
+  sInvalidReduction = 'Invalid reduction';
+  sTreeViewFiles = 'TreeView Files';
+  sSaveCurrentTree = 'Save Current Tree';
+  sSearch = 'Search';
+  sSearchFor = 'Search for:';
+  sNoMoresFound = 'No more %s found';
+
 implementation
+
+uses
+  JvConsts;
 
 { TJvJanTreeview }
 
@@ -1092,8 +1104,8 @@ begin
         Pop(Token2);
         CurrToken.Value := -Token1.Value;
       end;
-    11: raise Exception.Create('Invalid reduction');
-    13: raise Exception.Create('Invalid reduction');
+    11: raise Exception.Create(sInvalidReduction);
+    13: raise Exception.Create(sInvalidReduction);
     14:
       begin
         Pop(Token1);
@@ -1304,7 +1316,7 @@ begin
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;
     if s = '' then s := '*';
-    dlg.filter := 'TreeView Files|*.' + s;
+    dlg.filter := sTreeViewFiles + '|*.' + s;
     if dlg.Execute then
     begin
       LoadFromFile(dlg.filename);
@@ -1326,7 +1338,7 @@ begin
     dlg.DefaultExt := FDefaultExt;
     s := FDefaultExt;
     if s = '' then s := '*';
-    dlg.filter := 'TreeView Files|*.' + s;
+    dlg.filter := sTreeViewFiles + '|*.' + s;
     if dlg.Execute then
     begin
       SaveToFile(dlg.filename);
@@ -1349,7 +1361,7 @@ end;
 
 procedure TJvJanTreeview.DoCloseTree;
 begin
-  if messagedlg('Save Current Tree', mtconfirmation, [mbyes, mbno], 0) = mryes then
+  if messagedlg(sSaveCurrentTree, mtconfirmation, [mbyes, mbno], 0) = mryes then
   begin
     if FFilename <> '' then
       SaveToFile(FFilename)
@@ -1393,7 +1405,7 @@ var
 begin
   n := selected;
   if n = nil then exit;
-  s := inputbox('Search', 'Search for:', FSearchText);
+  s := inputbox(sSearch, sSearchFor, FSearchText);
   if s = '' then exit;
   FSearchText := s;
   s := Lowercase(s);
@@ -1405,7 +1417,7 @@ begin
         selected := items[i];
         exit;
       end;
-  showmessage('No more ' + s + ' found');
+  showmessage(Format(sNoMoresFound, [s]));
 end;
 
 end.

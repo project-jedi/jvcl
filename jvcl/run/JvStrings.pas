@@ -34,7 +34,7 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-  SysUtils, Classes, Graphics, dialogs;
+  SysUtils, Classes, Graphics, Dialogs;
 
 {regular expressions}
 
@@ -195,8 +195,14 @@ function getWeekNumber(today: Tdatetime): string;
 //gets a datecode. Returns year and weeknumber in format: YYWW
 implementation
 
+uses
+  JvTypes;
+
+resourcestring
+  sCannotLoadResource = 'Can''t load resource: %s';
+  sIncorrectStringFormat = 'Incorrect string format';
+
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
   B64Table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -965,7 +971,7 @@ begin
   HResInfo := FindResource(HInstance, pchar(aFile), GoodType);
   HGlobal := LoadResource(HInstance, HResInfo);
   if HGlobal = 0 then
-    raise EResNotFound.Create('Can''t load resource: ' + aFile);
+    raise EResNotFound.CreateFmt(sCannotLoadResource, [aFile]);
   Buffer := LockResource(HGlobal);
   ms.clear;
   ms.WriteBuffer(Buffer[0], SizeOfResource(HInstance, HResInfo));
@@ -1316,7 +1322,7 @@ var
   RetValue: string;
 begin
   if ((Length(S) mod 4) <> 0) or (S = '') then
-    raise Exception.Create('Base64: Incorrect string format');
+    raise Exception.Create('Base64: ' + sIncorrectStringFormat);
 
   SetLength(RetValue, ((Length(S) div 4) - 1) * 3);
   for i := 1 to ((Length(S) div 4) - 1) do

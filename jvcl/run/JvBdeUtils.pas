@@ -232,6 +232,12 @@ uses
   BDEConst, DBCommon,
   JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes;
 
+resourcestring
+  STableNotInExclusiveMode = 'Table must be opened in exclusive mode to add passwords';
+  STableNotOpen = 'Table must be opened to pack';
+  STableNotOpenExclusively = 'Table must be opened exclusively to pack';
+  SNoParadoxDBaseTable = 'Table must be either of Paradox or dBASE type to pack';
+
 { Utility routines }
 
 procedure DBError(const Ident: string);
@@ -2037,7 +2043,7 @@ var
 begin
   { Make sure that the table is opened and is exclusive }
   if not Table.Active or not Table.Exclusive then
-    raise EDatabaseError.Create('Table must be opened in exclusive mode to add passwords');
+    raise EDatabaseError.Create(STableNotInExclusiveMode);
   { Initialize the table descriptor }
   FillChar(TblDesc, SizeOf(CRTblDesc), #0);
   with TblDesc do
@@ -2077,9 +2083,9 @@ var
 begin
   // Make sure the table is open exclusively so we can get the db handle...
   if not Table.Active then
-    raise EDatabaseError.Create('Table must be opened to pack');
+    raise EDatabaseError.Create(STableNotOpen);
   if not Table.Exclusive then
-    raise EDatabaseError.Create('Table must be opened exclusively to pack');
+    raise EDatabaseError.Create(STableNotOpenExclusively);
 
   // Get the table properties to determine table type...
   Check(DbiGetCursorProps(Table.Handle, Props));
@@ -2112,7 +2118,7 @@ begin
     Check(DbiPackTable(Table.DBHandle, Table.Handle, nil, szDBASE, True))
   else
     // Pack only works on Paradox or dBASE; nothing else...
-    raise EDatabaseError.Create('Table must be either of Paradox or dBASE type to pack');
+    raise EDatabaseError.Create(SNoParadoxDBaseTable);
   Table.Open;
 end;
 

@@ -96,8 +96,13 @@ type
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
   end;
 
+
+resourcestring
+  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvgHint component';
+
 implementation
-uses JvgTypes, JvgUtils, ExtCtrls;
+uses
+  JvConsts, JvgTypes, JvgUtils, ExtCtrls;
 {$R ..\resources\JvgHint.res}
 
 constructor TJvgHint.Create(AOwner: TComponent);
@@ -130,7 +135,7 @@ end;
 procedure TJvgHint.Notification(Component: TComponent; Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvgHint) then
-    raise Exception.Create('Cannot create more than one instance of TJvgHint component');
+    raise Exception.Create(sCannotCreateMoreThanOneInstanceOfTJ);
 end;
 
 procedure TJvgHint.InitHint;

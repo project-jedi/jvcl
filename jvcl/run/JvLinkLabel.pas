@@ -185,6 +185,10 @@ uses
 
 {$R ..\resources\JvLinkLabel.res}
 
+resourcestring
+  sUnableToLocateMode = 'Unable to locate specified node';
+  sTagNotFound = 'Tag not found';
+
 const
   crNewLinkHand = 1;
 
@@ -352,7 +356,7 @@ begin
   if Assigned(Node) then
     Result := Node.Text
   else
-    raise ELinkLabelError.Create('Unable to locate specified node');
+    raise ELinkLabelError.Create(sUnableToLocateMode);
 end;
 
 function TJvCustomLinkLabel.GetLinkColor: TColor;
@@ -687,7 +691,7 @@ begin
     end;
   end;
 
-  raise ELinkLabelError.Create('TJvCustomLinkLabel.UpdateDynamicTag: Tag not found');
+  raise ELinkLabelError.Create('TJvCustomLinkLabel.UpdateDynamicTag: ' + sTagNotFound);
 end;
 
 end.

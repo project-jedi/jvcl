@@ -323,6 +323,14 @@ begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
 end;
 
+resourcestring
+  SDelphiConstantNames = 'Delphi constant names';
+  SEnglishNames = 'English names';
+  SSpecifiedMappingError = 'Specified mapping does not belong to the current provider.';
+  SCustomColors = 'Custom colors';
+  SStandardColors = 'Standard colors';
+  SSystemColors = 'System colors';
+
 const
   {$IFNDEF COMPILER6_UP}
   clMoneyGreen = TColor($C0DCC0);
@@ -1235,12 +1243,12 @@ end;
 
 procedure TJvColorProvider.GenDelphiConstantMapping;
 begin
-  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, 'Delphi constant names'));
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, SDelphiConstantNames));
 end;
 
 procedure TJvColorProvider.GenEnglishMapping;
 begin
-  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, 'English names'));
+  Mappings.Add(TJvColorProviderNameMapping.Create(Mappings, SEnglishNames));
 end;
 
 procedure TJvColorProvider.InitColorList(var List: TColorItems;
@@ -1867,7 +1875,7 @@ begin
     Set_NameMappingIndex(Idx);
   end
   else
-    raise EJVCLDataConsumer.Create('Specified mapping does not belong to the current provider.');
+    raise EJVCLDataConsumer.Create(SSpecifiedMappingError);
 end;
 
 procedure TJvColorProviderSettings.Set_NameMappingIndex(Value: Integer);
@@ -1932,11 +1940,11 @@ constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersist
 begin
   inherited Create(AOwner);
   FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
-  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, 'Custom colors');
+  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, SCustomColors);
   FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
   FTextSettings := TJvColorProviderTextSettings.Create(Self);
-  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'Standard colors');
-  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'System colors');
+  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, SStandardColors);
+  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, SSystemColors);
   FMapping := -1;
 end;
 

@@ -250,12 +250,17 @@ type
 implementation
 
 uses
+  JvTypes,
   JvPainterEffectsForm,
   JvQuickPreviewForm,
   JvPainterQBForm;
 
+resourcestring
+  sImageMustBeSquare = 'image must be square for Spirographs';
+  sSumOfRadiTolarge = 'sum of radi to large';
+  sBothRadiMustBeGr = 'both radi must be >%d';
+
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
   // Texture constants
@@ -443,19 +448,19 @@ begin
   ys := picture.Bitmap.height div 2;
   if xs <> ys then
   begin
-    showmessage('image must be square for Spirographs');
+    showmessage(sImageMustBeSquare);
     exit;
   end;
   r0 := variant(sqrt(sqr(center.x - xs) + sqr(center.y - ys)));
   r1 := variant(sqrt(sqr(radius.x - center.x) + sqr(radius.y - center.y)));
   if (r0 + r1) > xs then
   begin
-    showmessage('sum of radi to large');
+    showmessage(sSumOfRadiTolarge);
     exit;
   end;
   if (r0 < 5) or (r1 < 5) then
   begin
-    showmessage('both radi must be >5');
+    showmessage(Format(sBothRadiMustBeGr, [5]));
     exit;
   end;
   da1 := 2 * pi / 36;

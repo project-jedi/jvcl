@@ -130,7 +130,14 @@ type
     property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
   end;
 
+
+resourcestring
+  sTJvFooterBtnCanOnlyBePlacedOnATJvFo = 'TJvFooterBtn can only be placed on a TJvFooter';
+
 implementation
+
+uses
+  JvConsts;
 
 //=== TJvFooterBtn ===========================================================
 
@@ -224,7 +231,7 @@ begin
     AParent := TJvFooterBtn(AParent).Parent;
   if not ((AParent is TJvFooter) or (AParent = nil)) then
     raise
-      EJvFooterError.Create('TJvFooterBtn can only be placed on a TJvFooter');
+      EJvFooterError.Create(sTJvFooterBtnCanOnlyBePlacedOnATJvFo);
   inherited SetParent(AParent);
 end;
 

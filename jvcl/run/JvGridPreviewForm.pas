@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, grids, JvGridPrinter, StdCtrls, Spin, ComCtrls, Buttons, printers,
+  ExtCtrls, grids, JvGridPrinter, StdCtrls, Spin, ComCtrls, Buttons, Printers,
   ExtDlgs;
 
 type
@@ -98,14 +98,22 @@ var
 
 procedure SmoothResize(var Src, Dst: TBitmap);
 
+
+resourcestring
+  sOfd = 'of %d';
+  sPaged = 'Page %d';
+  sNoPrinterIsInstalled = 'No Printer is installed';
+
 implementation
+
+uses
+  JvConsts, JvTypes;
 
 {$R *.DFM}
 
 { TJvGridPreviewF }
 
 const
-  cr = chr(13) + chr(10);
   tab = chr(9);
 
 var
@@ -271,7 +279,7 @@ begin
   Margin.Value := GridPrinter.Printoptions.margintop;
   Margins.itemindex := 0;
   previewpage.MaxValue := PageCount;
-  lblpages.caption := 'of ' + inttostr(previewpage.maxvalue);
+  lblpages.caption := Format(sOfd, [previewpage.maxvalue]);
   GridPrinter.PrintOptions.PreviewPage := 1;
   previewpage.value := 1;
   ckBorders.Checked := (GridPrinter.printoptions.borderstyle = bssingle);
@@ -528,7 +536,7 @@ var
     end;
     Y := Y + ScaleY(HHeader);
     //Page nr
-    S := 'Page ' + IntToStr(PageRow);
+    S := Format(sPaged, [PageRow]);
     if (ToCol < Grid.ColCount - 1) or (PageCol > 1) then
       S := S + '-' + IntToStr(PageCol);
     fstr := GridPrinter.Printoptions.PageFooter;
@@ -723,7 +731,7 @@ begin
   UpdateRowHeights;
   if Printer.Printers.Count = 0 then
   begin
-    MessageDlg('No Printer is installed', mtError, [mbOK], 0);
+    MessageDlg(sNoPrinterIsInstalled, mtError, [mbOK], 0);
     Exit;
   end;
   Printer.Title := GridPrinter.PrintOptions.JobTitle;
