@@ -39,11 +39,19 @@ uses
   Windows, Controls, Forms, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QForms, QExtCtrls,
+  QWindows, QControls, QForms, QExtCtrls, QGraphics, QTypes, Types, Qt,
   {$ENDIF VisualCLX}
   JvHtControls;
 
 type
+
+{$IFDEF VisualCLX}
+  TJvHintWindow = class(THintWindow)
+  public
+    property Caption;
+  end;
+  TJvHintWindowClass = class of TJvHintWindow;
+{$ENDIF VisualCLX}
 
   TJvHint = class(TComponent)
   private
@@ -52,16 +60,27 @@ type
     // (rom) definitely needs cleanup here  bad structuring
     R: TRect;
     Area: TRect;
-    Txt: string;
     State: (tmBeginShow, tmShowing, tmStopped);
+    {$IFDEF VCL}
+    Txt: string;
     HintWindow: THintWindow;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Txt: Widestring;
+    HintWindow: TJvHintWindow;
+    {$ENDIF VisualCLX}
     TimerHint: TTimer;
     FDelay: Integer;
     procedure TimerHintTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    {$IFDEF VCL}
     procedure ActivateHint(AArea: TRect; ATxt: string);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure ActivateHint(AArea: TRect; ATxt: widestring);
+    {$ENDIF VisualCLX}
     procedure CancelHint;
   published
     property AutoHide: Boolean read FAutoHide write FAutoHide default True;
@@ -74,7 +93,9 @@ type
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;override;
+    function CalcHintRect(MaxWidth: Integer;
+               const AHint: {$IFDEF VCL}string{$ELSE}WideString{$ENDIF VCL};
+               AData: Pointer): TRect;override;
   end;
 
 procedure RegisterHtHints;
@@ -94,7 +115,12 @@ begin
   TimerHint.Enabled := False;
   TimerHint.Interval := 50;
   TimerHint.OnTimer := TimerHintTimer;
+  {$IFDEF VCL}
   HintWindow := THintWindowClass.Create(Self);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  HintWindow := TJvHintWindowClass.Create(Self);
+  {$ENDIF VisualCLX}
   FAutoHide := True;
 end;
 
@@ -105,7 +131,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvHint.ActivateHint(AArea: TRect; ATxt: string);
+procedure TJvHint.ActivateHint(AArea: TRect; ATxt: {$IFDEF VCL} string {$ELSE}widestring{$ENDIF});
 var
   P: TPoint;
 begin
@@ -222,8 +248,9 @@ procedure TJvHTHintWindow.Paint;
 begin
 end;
 
-function TJvHTHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
-  AData: Pointer): TRect;
+function TJvHTHintWindow.CalcHintRect(MaxWidth: Integer;
+                   const AHint: {$IFDEF VCL}string{$ELSE}WideString{$ENDIF VCL};
+                   AData: Pointer): TRect;
 begin
   HtLabel.Caption := AHint;
   Result := Bounds(0, 0, HtLabel.Width + 6, HtLabel.Height + 2);
