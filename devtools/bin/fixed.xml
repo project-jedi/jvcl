@@ -6,9 +6,12 @@
     <exclude name="./jvcl/images/**" />
     <exclude name="./jvcl/Includes/**" />
     <exclude name="./jvcl/install/**" />
-    <exclude name="./jvcl/lib5/**" />
-    <exclude name="./jvcl/lib6/**" />
-    <exclude name="./jvcl/lib7/**" />
+    <exclude name="./jvcl/lib/c5/**" />
+    <exclude name="./jvcl/lib/c6/**" />
+    <exclude name="./jvcl/lib/d5/**" />
+    <exclude name="./jvcl/lib/d6/**" />
+    <exclude name="./jvcl/lib/d7/**" />
+    <exclude name="./jvcl/lib/k3/**" />
     <exclude name="./jvcl/**/*.zip" />
     <include name="./jvcl/common/jvcl.inc" />
     <include name="./jvcl/common/jedi.inc" />

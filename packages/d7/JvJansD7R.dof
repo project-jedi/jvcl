@@ -3,5 +3,5 @@ UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
 [Directories]
-UnitOutputDir=..\..\lib7
+UnitOutputDir=..\..\lib\d7
 SearchPath=..\..\run;..\..\common;..\..\Resources
