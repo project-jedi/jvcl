@@ -171,6 +171,12 @@ type
     procedure SetSelectedIndex(Value: Integer); virtual; abstract;
   end;
 
+  TJvBaseDataItemRenderer = class(TJvDataItemAggregatedObject, IJvDataItemRenderer)
+  protected
+    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState); virtual; abstract;
+    function Measure(ACanvas: TCanvas): TSize; virtual; abstract;
+  end;
+
   // Items implementation classes
   TJvDataItemsAggregatedObject = class(TAggregatedPersistentEx)
   protected
@@ -281,6 +287,18 @@ type
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
+  end;
+
+  TJvCustomDataItemTextRenderer = class(TJvBaseDataItemRenderer)
+  protected
+    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState); override;
+    function Measure(ACanvas: TCanvas): TSize; override;
+  end;
+
+  TJvCustomDataItemRenderer = class(TJvBaseDataItemRenderer)
+  protected
+    procedure Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState); override;
+    function Measure(ACanvas: TCanvas): TSize; override;
   end;
 
   // Standard items implementers
@@ -1052,6 +1070,132 @@ end;
 function TJvBaseDataItemSubItems.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj) or Succeeded(FItems.QueryInterface(IID, Obj));
+end;
+
+{ TJvCustomDataItemTextRenderer }
+
+procedure TJvCustomDataItemTextRenderer.Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState);
+var
+  TxtIntf: IJvDataItemText;
+  S: string;
+begin
+  if Supports(Item, IJvDataItemText, TxtIntf) then
+    S := TxtIntf.Caption
+  else
+    S := SDataItemRenderHasNoText;
+  ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
+end;
+
+function TJvCustomDataItemTextRenderer.Measure(ACanvas: TCanvas): TSize;
+var
+  TxtIntf: IJvDataItemText;
+  S: string;
+begin
+  if Supports(Item, IJvDataItemText, TxtIntf) then
+    S := TxtIntf.Caption
+  else
+    S := SDataItemRenderHasNoText;
+  Result := ACanvas.TextExtent(S);
+end;
+
+{ TJvCustomDataItemRenderer }
+
+procedure TJvCustomDataItemRenderer.Draw(ACanvas: TCanvas; var ARect: TRect; State: TOwnerDrawState);
+var
+  rgn: HRGN;
+  TxtIntf: IJvDataItemText;
+  S: string;
+  ImgsIntf: IJvDataItemsImages;
+  ImgIntf: IJvDataItemImage;
+  ImgIdx: Integer;
+begin
+  rgn := CreateRectRgn(0,0,0,0);
+  GetClipRgn(ACanvas.handle, rgn);
+  try
+    IntersectClipRect(ACanvas.Handle, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+    if Supports(Item, IJvDataItemText, TxtIntf) then
+      S := TxtIntf.Caption
+    else
+      S := SDataItemRenderHasNoText;
+    if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.ImageList <> nil) and
+      Supports(Item, IJvDataItemImage, ImgIntf) then
+    begin
+      ImgIdx := ImgIntf.ImageIndex;
+      if (ImgIdx < 0) or ((odSelected in State) and (ImgIntf.SelectedIndex >= 0)) then
+        ImgIdx := ImgIntf.SelectedIndex;
+      if (ImgIdx >= 0) and (TxtIntf = nil) then
+        S := '';
+      if ImgIdx >= 0 then
+      begin
+        case ImgIntf.Alignment of
+          taLeftJustify:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Left, ARect.Top, ImgIdx);
+              Inc(ARect.Left, 2 + ImgsIntf.ImageList.Width);
+            end;
+          taRightJustify:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Right - ImgsIntf.ImageList.Width, ARect.Top, ImgIdx);
+              Dec(ARect.Right, 2 + ImgsIntf.ImageList.Width);
+            end;
+          taCenter:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Left + ((ARect.Right - ARect.Left -
+                ImgsIntf.ImageList.Width) div 2), ARect.Top, ImgIdx);
+              Inc(ARect.Top, ImgsIntf.ImageList.Height + 2);
+              ImgIdx := ACanvas.TextWidth(S);
+              ARect.Left := ARect.Left + ((ARect.Right - ARect.Left - ImgIdx) div 2);
+            end;
+        end;
+      end;
+    end;
+    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
+  finally
+    SelectClipRgn(ACanvas.Handle, rgn);
+    DeleteObject(rgn);
+  end;
+end;
+
+function TJvCustomDataItemRenderer.Measure(ACanvas: TCanvas): TSize;
+var
+  TxtIntf: IJvDataItemText;
+  S: string;
+  ImgsIntf: IJvDataItemsImages;
+  ImgIntf: IJvDataItemImage;
+  ImgIdx: Integer;
+begin
+  if Supports(Item, IJvDataItemText, TxtIntf) then
+    S := TxtIntf.Caption
+  else
+    S := SDataItemRenderHasNoText;
+  Result := ACanvas.TextExtent(S);
+  if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.ImageList <> nil) and
+    Supports(Item, IJvDataItemImage, ImgIntf) then
+  begin
+    ImgIdx := ImgIntf.ImageIndex;
+    if (ImgIdx < 0) then
+      ImgIdx := ImgIntf.SelectedIndex;
+    if (ImgIdx >= 0) and (TxtIntf = nil) then
+      S := '';
+    if ImgIdx >= 0 then
+      case ImgIntf.Alignment of
+        taLeftJustify,
+        taRightJustify:
+          begin
+            Result := ACanvas.TextExtent(S);
+            Inc(Result.cx, ImgsIntf.ImageList.Width + 2);
+            if ImgsIntf.ImageList.Height > Result.cy then
+              Result.cy := ImgsIntf.ImageList.Height;
+          end;
+        taCenter:
+          begin
+            Result := ACanvas.TextExtent(S);
+            Inc(Result.cy, ImgsIntf.ImageList.Height + 2);
+            if ImgsIntf.ImageList.Width > Result.cx then
+              Result.cx := ImgsIntf.ImageList.Width;
+          end;
+      end;
+  end;
 end;
 
 { TJvDataItemsAggregatedObject }
