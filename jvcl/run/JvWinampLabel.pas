@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics, Controls, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QStdCtrls, QWindows,
+  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows,
   {$ENDIF VisualCLX}
   JvExStdCtrls;
 
@@ -64,10 +64,9 @@ type
     FWaiting: Boolean;
     FScale: Real;
     // (p3) renamed
-    FText: string;
+    FText: TCaption;
     FCharHeight: Integer;
     FCharWidth: Integer;
-    function GetCol(Ch: Char): Word;
     function GetScrollBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
@@ -78,9 +77,18 @@ type
     procedure Deactivate;
     procedure UpdatePos;
     procedure DoOnTimer(Sender: TObject);
+    {$IFDEF VCL}
+    function GetCol(Ch: Char): Word;
     function GetRow(Ch: Char): Word;
-    procedure SetText(Value: string);
+    procedure SetText(const Value: TCaption);
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+    function GetCol(Ch: WideChar): Word;
+    function GetRow(Ch: WideChar): Word;
+    {$ENDIF VisualCLX}
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
@@ -97,7 +105,7 @@ type
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color;
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property Align;
     property Alignment;
     property FocusControl;
@@ -308,7 +316,22 @@ begin
   Repaint;
 end;
 
+{$IFDEF VisualCLX}
+function UpCase(Ch: WideChar): WideChar;
+var
+  W: WideString;
+begin
+  W := WideUpperCase(Ch);
+  Result := W[1];
+end;
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 function TJvWinampLabel.GetCol(Ch: Char): Word;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvWinampLabel.GetCol(Ch: WideChar): Word;
+{$ENDIF VisualCLX}
 var
   Index: Integer;
 begin
@@ -326,7 +349,12 @@ begin
     Result := (Index - 1) * CharWidth;
 end;
 
+{$IFDEF VCL}
 function TJvWinampLabel.GetRow(Ch: Char): Word;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvWinampLabel.GetRow(Ch: WideChar): Word;
+{$ENDIF VisualCLX}
 begin
   Ch := UpCase(Ch);
   Result := 0;
@@ -440,7 +468,14 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.SetText(Value: string);
+{$IFDEF VisualCLX}
+function TJvWinampLabel.GetText: TCaption;
+begin
+  Result := FText;
+end;
+{$ENDIF VisualCLX}
+
+procedure TJvWinampLabel.SetText(const Value: TCaption);
 var
   Rec: TRect;
 begin

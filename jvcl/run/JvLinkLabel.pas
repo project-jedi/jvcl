@@ -97,8 +97,8 @@ type
     procedure SetAutoHeight(const Value: Boolean);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
-    function GetText: TStrings;
-    procedure SetText(const Value: TStrings);
+    function GetText: TStrings; {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+    procedure SetText(const Value: TStrings); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetLayout(AValue: TTextLayout);     // Bianconi
   protected
     FNodeTree: TNodeTree;

@@ -62,10 +62,10 @@ type
     FProtectPassword: Boolean;
     FLastNotifiedText: String;
     procedure SetHotTrack(Value: Boolean);
-    function GetText: TCaption;
     {$IFDEF VCL}
     procedure SetPasswordChar(const Value: Char);
     function GetPasswordChar: Char;
+    function GetText: TCaption;
     procedure SetText(const Value: TCaption);
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     {$ENDIF VCL}
@@ -79,6 +79,7 @@ type
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
     procedure DoClipboardPaste; override;
     {$IFDEF VisualCLX}
+    function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure Paint; override;
     {$ENDIF VisualCLX}
@@ -439,7 +440,12 @@ begin
   Tmp := ProtectPassword;
   try
     ProtectPassword := False;
+    {$IFDEF VCL}
     Result := inherited Text;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Result := inherited GetText;
+    {$ENDIF VisualCLX}
   finally
     ProtectPassword := Tmp;
   end;

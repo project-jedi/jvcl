@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2003-10-25
+Last Modified: 2004-03-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -305,29 +305,29 @@ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
 
 
 (***** Utility MessageBox based dialogs *)
-// returns true if user clicked Yes
-function MsgYesNo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
-// returns true if user clicked Retry
-function MsgRetryCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+// returns True if user clicked Yes
+function MsgYesNo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
+// returns True if user clicked Retry
+function MsgRetryCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 // returns IDABORT, IDRETRY or IDIGNORE 
-function MsgAbortRetryIgnore(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+function MsgAbortRetryIgnore(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
 // returns IDYES, IDNO or IDCANCEL
-function MsgYesNoCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
-// returns true if user clicked OK
-function MsgOKCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+function MsgYesNoCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
+// returns True if user clicked OK
+function MsgOKCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 
 // dialog without icon
-procedure MsgOK(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgOK(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with info icon
-procedure MsgInfo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgInfo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with warning icon
-procedure MsgWarn(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgWarn(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with question icon
-procedure MsgQuestion(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgQuestion(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with error icon
-procedure MsgError(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgError(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with custom icon (must be available in the app resource)
-procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+procedure MsgAbout(Handle:Integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
 
 
 {**** Windows routines }
@@ -339,7 +339,7 @@ procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
 
 { Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
-  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+  var AValue1, AValue2:string; PasswordChar:char=#0):Boolean;
 
 { Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
 function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
@@ -417,8 +417,8 @@ function IniStrToStr(const Str: string): string;
 // Added by RDB
 
 function FontStylesToString(Styles: TFontStyles): string;
-{$IFDEF VCL}
 function StringToFontStyles(const Styles: string): TFontStyles;
+{$IFDEF VCL}
 function FontToString(Font: TFont): string;
 function StringToFont(const Str: string) : TFont;
 {$ENDIF VCL}
@@ -621,7 +621,7 @@ procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function GetAppHandle: HWND;
 
@@ -3273,57 +3273,57 @@ begin
     HelpContext, Control);
 end;
 
-function MsgYesNo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+function MsgYesNo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNO or Flags) = IDYES;
 end;
 
-function MsgRetryCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+function MsgRetryCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_RETRYCANCEL or Flags) = IDRETRY;
 end;
 
-function MsgAbortRetryIgnore(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+function MsgAbortRetryIgnore(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_ABORTRETRYIGNORE or Flags);
 end;
 
-function MsgYesNoCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+function MsgYesNoCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNOCANCEL or Flags);
 end;
 
-function MsgOKCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+function MsgOKCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OKCANCEL or Flags) = IDOK;
 end;
 
-procedure MsgOK(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgOK(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OK or Flags);
 end;
 
-procedure MsgInfo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgInfo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONINFORMATION or Flags);
 end;
 
-procedure MsgWarn(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgWarn(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONWARNING or Flags);
 end;
 
-procedure MsgQuestion(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgQuestion(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONQUESTION or Flags);
 end;
 
-procedure MsgError(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+procedure MsgError(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONERROR or Flags);
 end;
 
-function FindIcon(hInstance:DWORD;const IconName:string):boolean;
+function FindIcon(hInstance:DWORD;const IconName:string):Boolean;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     Result := (IconName <> '') and (FindResourceW(hInstance,PWideChar(WideString(IconName)),PWideChar(RT_GROUP_ICON)) <> 0)
@@ -3336,12 +3336,12 @@ end;
 
 type
   TMsgBoxParamsRec = record
-  case boolean of
-    false:(ParamsA:TMsgBoxParamsA);
-    true:(ParamsW:TMsgBoxParamsW);
+  case Boolean of
+    False:(ParamsA:TMsgBoxParamsA);
+    True:(ParamsW:TMsgBoxParamsW);
   end;
 
-procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+procedure MsgAbout(Handle:Integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
 var Params: TMsgBoxParamsRec;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
@@ -3407,14 +3407,14 @@ begin
 end;
 
 function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
-  var AValue1, AValue2:string; PasswordChar:char=#0):boolean;
+  var AValue1, AValue2:string; PasswordChar:char=#0):Boolean;
 var
   AForm:TForm;
   ALabel1, ALabel2:TLabel;
   AEdit1, AEdit2:TEdit;
-  ASize, i:integer;
+  ASize, i:Integer;
 begin
-  Result := false;
+  Result := False;
   AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
   ASize := 0;
   if AForm <> nil then
@@ -3476,9 +3476,9 @@ var
   AForm:TForm;
   ALabel:TLabel;
   AEdit:TEdit;
-  ASize:integer;
+  ASize:Integer;
 begin
-  Result := false;
+  Result := False;
   AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK ,mbCancel]);
   if AForm <> nil then
   try
@@ -6412,7 +6412,7 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure InitScreenCursors;
 begin
@@ -6496,17 +6496,17 @@ begin
       S := Trim(ExtractSubstr(Str, Pos, Delims));
       case I of
         1:
-          result.Name := S;
+          Result.Name := S;
         2:
-          result.Size := StrToIntDef(S, result.Size);
+          Result.Size := StrToIntDef(S, Result.Size);
         3:
-          result.Style := StringToFontStyles(S);
+          Result.Style := StringToFontStyles(S);
         4:
-          result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
+          Result.Pitch := TFontPitch(StrToIntDef(S, Ord(Result.Pitch)));
         5:
-          result.Color := StringToColor(S);
+          Result.Color := StringToColor(S);
         6:
-          result.Charset := TFontCharset(StrToIntDef(S, result.Charset));
+          Result.Charset := TFontCharset(StrToIntDef(S, Result.Charset));
       end;
     end;
   finally
@@ -6588,7 +6588,6 @@ begin
     Result.Y := StrToIntDef(Temp, Def.Y);
   end;
 end;
-
 
 
 initialization

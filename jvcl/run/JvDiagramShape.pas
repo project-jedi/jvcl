@@ -35,10 +35,10 @@ uses
   Graphics, Controls, ExtCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
+  QTypes, Types, QGraphics, QControls, QExtCtrls, QImgList, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
   TJvTextShape = class;
@@ -153,10 +153,12 @@ type
 
   TJvTextShape = class(TJvSizeableShape)
   private
-    FText: string;
+    FText: TCaption;
     FAutoSize: Boolean;
     FFont: TFont;
-    procedure SetText(Value: string);
+    {$IFDEF VCL}
+    procedure SetText(const Value: TCaption);
+    {$ENDIF VCL}
     procedure SetFont(Value: TFont);
     procedure FontChange(Sender: TObject);
   protected
@@ -167,6 +169,8 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure SetParent(const AParent: TWidgetControl); override;
+    procedure SetText(const Value: TCaption); override;
+    function GetText: TCaption; override;
     {$ENDIF VisualCLX}
     procedure Paint; override;
   public
@@ -174,7 +178,7 @@ type
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    property Text: string read FText write SetText;
+    property Text: TCaption read FText write SetText;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property Font: TFont read FFont write SetFont;
   end;
@@ -1157,7 +1161,14 @@ begin
   SetBounds(Left, Top, FMinWidth, FMinHeight);
 end;
 
-procedure TJvTextShape.SetText(Value: string);
+{$IFDEF VisualCLX}
+function TJvTextShape.GetText: TCaption;
+begin
+  Result := FText;
+end;
+{$ENDIF VisualCLX}
+
+procedure TJvTextShape.SetText(Value: TCaption);
 begin
   if FText <> Value then
   begin
@@ -1204,8 +1215,14 @@ begin
     Exit;
   Canvas.Font := Font;
   TempRect := ClientRect; // So can pass as a var parameter
-  DrawText(Canvas.Handle, PChar(FText), Length(FText), TempRect,
+  {$IFDEF VCL}
+  DrawText(Canvas.Handle, PCaptionChar(FText), Length(FText), TempRect,
     DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  DrawTextW(Canvas.Handle, PWideChar(FText), Length(FText), TempRect,
+    DT_CENTER or DT_NOPREFIX or DT_WORDBREAK);
+  {$ENDIF VisualCLX}
   inherited Paint;
 end;
 

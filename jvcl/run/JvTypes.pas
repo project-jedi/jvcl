@@ -433,6 +433,15 @@ const
     {$ENDIF VisualCLX}
   );
 
+{$IFDEF VCL}
+type
+  PCaptionChar = PChar;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+type
+  PCaptionChar = PWideChar;
+{$ENDIF VisualCLX}
+
 implementation
 
 end.
