@@ -48,7 +48,7 @@ uses
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, 
   {$IFDEF USEWINDOWS}
-  JvQUninstallControls, JvQCharMap,
+  JvQUninstallControls,
   {$ENDIF USEWINDOWS}
   JvQDsgnIntf, 
   QTypes, 
@@ -91,15 +91,11 @@ begin
   {$ENDIF USEWINDOWS}
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller, 
+    TJvContentScroller,
     TJvScrollingWindow{, TJvScrollText}]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock,
-    {$IFDEF USEWINDOWS}
-    TJvCharMap,
-    {$ENDIF USEWINDOWS}
-    TJvZoom, TJvDice]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
