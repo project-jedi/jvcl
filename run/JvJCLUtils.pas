@@ -2781,7 +2781,8 @@ begin
 end;
 
 { example for ReplaceStrings:
-    with memEdit do begin
+    with memEdit do
+    begin
       Text := ReplaceStrings(Text, SelStart+1, SelLength, memWords.Lines, memFrases.Lines, NewSelStart);
       SelStart := NewSelStart-1;
     end; }

@@ -216,7 +216,8 @@ begin
 
     Y := 0;
     SR := Rect(0,0,W,H);
-    while y < Dest.Height do begin
+    while y < Dest.Height do
+    begin
       X := 0;
       while X < Dest.Width do
       begin

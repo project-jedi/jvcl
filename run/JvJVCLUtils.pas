@@ -5370,20 +5370,24 @@ var
   Src, Dest: Pointer;
   C: Byte;
 begin
-  if Header.biBitCount = 24 then begin
+  if Header.biBitCount = 24 then
+  begin
     Exit;
   end;
   Scanline := ((Header.biWidth * Header.biBitCount + 31) div 32) * 4;
   NewScanline := ((Header.biWidth * 3 + 3) and not 3);
-  for Y := 0 to Header.biHeight - 1 do begin
+  for Y := 0 to Header.biHeight - 1 do
+  begin
     Src := HugeOffset(Data, Y * Scanline);
     Dest := HugeOffset(NewData, Y * NewScanline);
     case Header.biBitCount of
       1:
       begin
         C := 0;
-        for X := 0 to Header.biWidth - 1 do begin
-          if (X and 7) = 0 then begin
+        for X := 0 to Header.biWidth - 1 do
+        begin
+          if (X and 7) = 0 then
+          begin
             C := Byte(Src^);
             Src := HugeOffset(Src, 1);
           end
@@ -5399,7 +5403,8 @@ begin
       4:
       begin
         X := 0;
-        while X < Header.biWidth - 1 do begin
+        while X < Header.biWidth - 1 do
+        begin
           C := Byte(Src^);
           Src := HugeOffset(Src, 1);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
@@ -5416,7 +5421,8 @@ begin
           Dest := HugeOffset(Dest, 1);
           Inc(X, 2);
         end;
-        if X < Header.biWidth then begin
+        if X < Header.biWidth then
+        begin
           C := Byte(Src^);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
           Dest := HugeOffset(Dest, 1);
@@ -5428,7 +5434,8 @@ begin
       end;
       8:
       begin
-        for X := 0 to Header.biWidth - 1 do begin
+        for X := 0 to Header.biWidth - 1 do
+        begin
           C := Byte(Src^);
           Src := HugeOffset(Src, 1);
           PByte(Dest)^ := Colors[C].rgbBlue;

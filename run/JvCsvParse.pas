@@ -595,16 +595,19 @@ var
  x: array[0..255] of char;
 begin
  l := Length(S);
- for t:= 0 to l-1 do begin
+ for t:= 0 to l-1 do
+ begin
      c1 := Ord(S[t+1] );
-     if (c1  >= 32 ) AND (c1 <= 231) then begin
+     if (c1  >= 32 ) AND (c1 <= 231) then
+     begin
         c1 := c1 - 32;
         lo := (c1 MOD 25);
         hi := c1 div 25;
         lo := 24-lo;
         c1 := ((hi*25)+lo ) +32;
         x[t] := Chr(c1);
-     end else
+     end
+     else
         x[t] := Chr(c1);
  end;
  x[l] := Chr(0);

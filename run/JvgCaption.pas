@@ -400,7 +400,8 @@ begin
       Y1 := Y;
       {      while X < IWidth do
             begin
-       while Y < IHeight do begin
+       while Y < IHeight do
+       begin
          BitBlt(DC, X, Y, Min( IWidth, FBmp.Width ), Min( IHeight, FBmp.Height ), FBmp.Canvas.Handle, 0,0, SRCCOPY );
          Inc(Y, Min( IHeight, FBmp.Height ));
        end;

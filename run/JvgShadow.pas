@@ -248,7 +248,8 @@ end;
 
 {procedure TJvgShadow.OnKeyPress_(Sender: TObject; var Key: Char);
 begin
-  if FDigitsOnly then begin
+  if FDigitsOnly then
+  begin
     if Key = #8 then exit
   //  if Length(ACodeEdit.Text)>=CodeDigitsCount then Key := #0
     else if (Key<'0')or(Key>'9') then Key := #0;

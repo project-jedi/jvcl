@@ -6307,7 +6307,8 @@ begin
                 PropInf^.PropType^.Name,FCurrArgs.Obj {FCurInstance},PropInf^.Name));
               SetMethodProp(FCurrArgs.Obj, PropInf, Method);
               FEventList.Add(Method.Data);
-            end else
+            end
+            else
             begin   //Fixed Assign nil to Method property bugs - dejoy-2004-3-13
               Method:=GetMethodProp(FCurrArgs.Obj, PropInf);
               if Method.Data<>nil then
@@ -6625,7 +6626,8 @@ begin
       CurPos := DoCurPos;
       NextToken;
     end;
-  end else
+  end
+  else
   begin
     for I := iBeg downto iEnd do
     begin

@@ -42,6 +42,7 @@ uses
 type
   PJvRGBTriple = ^TJvRGBTriple;
   TPixelTransform = procedure(Dest, Source: PJvRGBTriple);
+
   TJvBitmapButton = class(TJvGraphicControl)
   private
     FBitmap: TBitmap;
@@ -213,16 +214,16 @@ end;
 
 procedure LighterTransform(Dest, Source: PJvRGBTriple);
 begin
-  Dest.rgbBlue  := $FF - Round(0.8 * Abs($FF - Source.rgbBlue));
-  Dest.rgbGreen := $FF - Round(0.8 * Abs($FF - Source.rgbGreen));
-  Dest.rgbRed   := $FF - Round(0.8 * Abs($FF - Source.rgbRed));
+  Dest^.rgbBlue  := $FF - Round(0.8 * Abs($FF - Source^.rgbBlue));
+  Dest^.rgbGreen := $FF - Round(0.8 * Abs($FF - Source^.rgbGreen));
+  Dest^.rgbRed   := $FF - Round(0.8 * Abs($FF - Source^.rgbRed));
 end;
 
 procedure DarkerTransform(Dest, Source: PJvRGBTriple);
 begin
-  Dest.rgbBlue  := Round(0.7 * Source.rgbBlue);
-  Dest.rgbGreen := Round(0.7 * Source.rgbGreen);
-  Dest.rgbRed   := Round(0.7 * Source.rgbRed);
+  Dest^.rgbBlue  := Round(0.7 * Source^.rgbBlue);
+  Dest^.rgbGreen := Round(0.7 * Source^.rgbGreen);
+  Dest^.rgbRed   := Round(0.7 * Source^.rgbRed);
 end;
 
 procedure TJvBitmapButton.MakeLighter;
@@ -237,7 +238,6 @@ begin
   MakeHelperBitmap(FDarker, DarkerTransform);
   MakeCaption(FDarker, FDarkerFontColor);
 end;
-
 
 procedure TJvBitmapButton.MouseLeave(AControl: TControl);
 begin
@@ -401,7 +401,6 @@ begin
   end;
 end;
 
-
 procedure TJvBitmapButton.MakeHelperBitmap(Target: TBitmap; Transform: TPixelTransform);
 var
   p1, p2: PJvRGBTriple;
@@ -412,7 +411,8 @@ begin
   Target.Width := FBitmap.Width;
   Target.Height := FBitmap.Height;
   Target.Transparent:= FBitmap.Transparent;
-  if FBitmap.Transparent then begin
+  if FBitmap.Transparent then
+  begin
     AColor := FBitmap.TransparentColor;
     Target.TransparentColor:= AColor;
   end
@@ -427,7 +427,8 @@ begin
   begin
     p1 := FBitmap.ScanLine[Y];
     p2 := Target.ScanLine[Y];
-    for X := 1 to FBitmap.Width do begin
+    for X := 1 to FBitmap.Width do
+    begin
       if (AColor <> clNone) and
         (p1.rgbBlue = bt) and (p1.rgbGreen = gt) and (p1.rgbRed = rt) then
         p2^ := p1^

@@ -123,7 +123,8 @@ end;
 procedure TJvgDBNavigator.HookFocusControlWndProc;
 begin
      P := Pointer(GetWindowLong( FocusControl.Handle, GWL_WNDPROC));
-     if (P <> FNewWndProc) then begin
+     if (P <> FNewWndProc) then
+     begin
        FPrevWndProc := P;
        FNewWndProc := MakeObjectInstance( FocusControlWndHookProc );
        SetWindowLong( FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));

@@ -521,7 +521,8 @@ var
 //  Pic: TPicture;
 begin
   FSelected := -1;
-  //  If Not FPainted then begin
+  //  If Not FPainted then
+  //  begin
   //    postMessage(Self.Handle,WM_LoadWhenReady,0,0);
   //    Exit;
   //  end;

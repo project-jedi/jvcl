@@ -258,7 +258,8 @@ begin
     begin
       //      GrFromColor := Gradient.FRGBFromColor;
       //      GrToColor := Gradient.FRGBToColor;
-      //      if BackgrColor_ > 0 then begin
+      //      if BackgrColor_ > 0 then
+      //      begin
       //        if ftoTabColorAsGradientFrom in Options then Gradient.FRGBFromColor := BackgrColor_;
       //        if ftoTabColorAsGradientTo in Options then Gradient.FRGBToColor := BackgrColor_;
       //      end;

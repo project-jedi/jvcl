@@ -250,7 +250,9 @@ end;
     InvalidateRect( Parent.Handle, @R, False );
     ValidateRect( Parent.Handle, @IntersectR );
     FOldClientRect := R;
-  end else Invalidate;
+  end
+  else
+    Invalidate;
   Changed;}
 //end;
 
@@ -296,7 +298,8 @@ begin
 
   {  GetObject( FResBitmap.Handle, SizeOf(Windows.TBitmap), @BmpInfo );
     if BmpInfo.bmBitsPixel >= 8 then
-    with FResBitmap,BmpInfo do begin
+    with FResBitmap,BmpInfo do
+    begin
       for i := 1 to bmWidth*bmHeight*(bmBitsPixel div 8)-1 do
         begin
    asm

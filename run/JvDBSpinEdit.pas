@@ -135,7 +135,8 @@ begin
       if FFieldDataLink.Editing or (FFieldDataLink.Field.DataSet.State = dsInsert) then
         Modified := True;
     end;
-  end else
+  end
+  else
   begin
     FIsNull := False; 
     if csDesigning in ComponentState then

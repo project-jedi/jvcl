@@ -94,7 +94,8 @@ begin
       finally
         ReleaseMutex(Mtx);
       end;
-    end else
+    end
+    else
       Exit;
   finally
     CloseHandle(Mtx);

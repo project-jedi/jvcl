@@ -403,7 +403,8 @@ var
 begin
   ABitmap.Height := Height;
   ABitmap.Width := Width;
-  with ABitmap.Canvas do begin
+  with ABitmap.Canvas do
+  begin
     R := Bounds(0, 0, Width, Height);
     Pen.Width := 1;
     Brush.Color := clBtnFace;
@@ -422,7 +423,8 @@ begin
     LineTo(Width - 3, 1);
     if ADownState = sbTopDown then Pen.Color := clBtnHighlight
       else Pen.Color := clBtnShadow;
-    if ADownState <> sbTopDown then begin
+    if ADownState <> sbTopDown then
+    begin
       MoveTo(1, Height - 3);
       LineTo(Width - 2, 0);
     end;
@@ -446,7 +448,8 @@ begin
     {
     if Self.Enabled or (csDesigning in ComponentState) then
       BrushCopy(R, FUpBitmap, RSrc, FUpBitmap.TransparentColor)
-    else begin
+    else
+    begin
       Temp := CreateDisabledBitmap(FUpBitmap, clBlack);
       try
         BrushCopy(R, Temp, RSrc, Temp.TransparentColor);
@@ -464,7 +467,8 @@ begin
     {
     if Self.Enabled or (csDesigning in ComponentState) then
       BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor)
-    else begin
+    else
+    begin
       Temp := CreateDisabledBitmap(FDownBitmap, clBlack);
       try
         BrushCopy(R, Temp, RSrc, Temp.TransparentColor);
@@ -474,7 +478,8 @@ begin
     end;
     }
     BrushCopy(R, FDownBitmap, RSrc, FDownBitmap.TransparentColor);
-    if ADownState = sbBottomDown then begin
+    if ADownState = sbBottomDown then
+    begin
       Pen.Color := clBtnShadow;
       MoveTo(3, Height - 2);
       LineTo(Width - 1, 2);
@@ -663,7 +668,8 @@ function TJvCustomSpinEdit.CheckValue(NewValue: Extended): Extended;
 begin
   Result := NewValue;
   {
-    if (FMaxValue <> FMinValue) then begin
+    if (FMaxValue <> FMinValue) then
+    begin
       if NewValue < FMinValue then
         Result := FMinValue
       else if NewValue > FMaxValue then
