@@ -147,11 +147,15 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure InitValues(AMin, AMax, AInterval, APosition: integer; const ACaption, AText: string);
+
     function Execute: Boolean; override;
     function ShowModal: Integer;
+
     // (p3) Show, Hide and Cancelled are used in non-modal mode)
     procedure Show;
     procedure Hide;
+    // set most values at once
     property Cancelled: Boolean read FCancelled;
   published
     property Caption: string read FCaption write SetCaption;
@@ -410,6 +414,18 @@ begin
   FICaption := Caption;
   FIText := Text;
 end;
+
+procedure TJvProgressDialog.InitValues(AMin, AMax, AInterval, APosition: integer;
+      const ACaption, AText: string);
+begin
+  Min := AMin;
+  Max := AMax;
+  Position := APosition;
+  Text := AText;
+  Caption := ACaption;
+  StoreValues;
+end;
+
 
 end.
 
