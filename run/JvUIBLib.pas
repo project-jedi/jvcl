@@ -30,7 +30,7 @@
 
 unit JvUIBLib;
 
-{$I JCL.INC}
+{$I JVCL.INC}
 {$I JvUIB.inc}
 
 {$ALIGN ON}
