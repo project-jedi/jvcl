@@ -46,7 +46,6 @@ type
     FBufferedDraw: Boolean;
     FOnEraseBkgndEvent: TOnEraseBkgndEvent;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    function GetBackground: TBitmap;
     procedure SetBackground(Value: TBitmap);
   public
     constructor Create(AOwner: TComponent); override;
