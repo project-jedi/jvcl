@@ -29,7 +29,7 @@ Known Issues:
 
 { Enable this define if you want to register property and component editors included in
 JVCL for non-JVCL components as well. }
-{$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
+{.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 { Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
 installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
@@ -41,7 +41,7 @@ requires node in the affected package(s). }
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }
-{$DEFINE USE_DXGETTEXT}
+{.$DEFINE USE_DXGETTEXT}
 
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
 of qrpt. }
