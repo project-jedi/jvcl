@@ -9,8 +9,8 @@
 SET BCBDIR=%1
 if %BCBDIR%!==! SET BCBDIR=C:\Program Files\CBuilder6
 
-MakeBCB "BCB6Per Packages" Bcb6Per "%BCBDIR%" %2 %3
-del /f /q BCB6\*.cfg
+MakeBCB "BCB6Per Packages" c6Per "%BCBDIR%" %2 %3
+del /f /q c6\*.cfg
 
 SET BCBDIR=
 

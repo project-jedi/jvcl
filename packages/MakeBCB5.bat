@@ -9,7 +9,7 @@
 SET BCBDIR=%1
 if %BCBDIR%!==! SET BCBDIR=C:\Program Files\CBuilder5
 
-MakeBCB "BCB5 Packages" Bcb5 "%BCBDIR%" %2 %3
+MakeBCB "BCB5 Packages" c5 "%BCBDIR%" %2 %3
 
 SET BCBDIR=
 
