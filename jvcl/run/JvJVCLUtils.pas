@@ -327,7 +327,7 @@ procedure MsgQuestion(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with error icon
 procedure MsgError(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 // dialog with custom icon (must be available in the app resource)
-procedure MsgAbout(Handle:Integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+procedure MsgAbout(Handle:Integer;const Msg, Caption:string; const IcoName:string='MAINICON';Flags:DWORD=MB_OK);
 
 
 {**** Windows routines }
@@ -3351,7 +3351,7 @@ type
     True:(ParamsW:TMsgBoxParamsW);
   end;
 
-procedure MsgAbout(Handle:Integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+procedure MsgAbout(Handle:Integer;const Msg, Caption:string; const IcoName:string='MAINICON';Flags:DWORD=MB_OK);
 var Params: TMsgBoxParamsRec;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
@@ -3362,7 +3362,7 @@ begin
       Params.ParamsW.hInstance := SysInit.hInstance;
       lpszText := PWideChar(WideString(Msg));
       lpszCaption := PWideChar(WideString(Caption));
-      dwStyle := MB_OK or Flags;
+      dwStyle := Flags;
       if FindIcon(hInstance, IcoName) then
       begin
         dwStyle := dwStyle or MB_USERICON;
@@ -3382,7 +3382,7 @@ begin
       Params.ParamsA.hInstance := SysInit.hInstance;
       lpszText := PChar(Msg);
       lpszCaption := PChar(Caption);
-      dwStyle := MB_OK or Flags;
+      dwStyle := Flags;
       if FindIcon(hInstance, IcoName) then
       begin
         dwStyle := dwStyle or MB_USERICON;
