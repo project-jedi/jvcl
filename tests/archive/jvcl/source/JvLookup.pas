@@ -2756,6 +2756,7 @@ begin
         SlideStyle := AW_VER_POSITIVE;
       AnimateWindowProc(FDataList.Handle, 150, SlideStyle or AW_SLIDE);
       ShowWindow(FDataList.Handle, SW_SHOWNOACTIVATE);
+      FDataList.Invalidate;
     end
     else
     {$ENDIF COMPILER6_UP}
