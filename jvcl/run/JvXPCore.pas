@@ -130,7 +130,7 @@ type
   TJvXPCustomComponent = class(TComponent)
   private
     FVersion: string;
-    procedure SetVersion(Value: string);
+    procedure SetVersion(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -163,7 +163,7 @@ type
     FOnMouseEnter: TNotifyEvent;
     {$IFNDEF USEJVCL}
     FVersion: string;
-    procedure SetVersion(Value: string);
+    procedure SetVersion(const Value: string);
     {$ENDIF USEJVCL}
     procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
     {$IFDEF VCL}
@@ -401,7 +401,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
-procedure TJvXPCustomComponent.SetVersion(Value: string);
+procedure TJvXPCustomComponent.SetVersion(const Value: string);
 begin
   // do not enable overwriting this constant.
 end;
@@ -428,7 +428,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
-procedure TJvXPCustomControl.SetVersion(Value: string);
+procedure TJvXPCustomControl.SetVersion(const Value: string);
 begin
   // disallow changing this property.
 end;

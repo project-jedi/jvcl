@@ -196,7 +196,7 @@ type
     procedure SetEnabled(Value: Boolean);
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetImageList(Value: TCustomImageList);
-    procedure SetName(Value: string);
+    procedure SetName(const Value: string);
     procedure SetVisible(Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
     procedure SetChecked(const Value: Boolean);
@@ -1048,7 +1048,7 @@ begin
   end;
 end;
 
-procedure TJvXPBarItem.SetName(Value: string);
+procedure TJvXPBarItem.SetName(const Value: string);
 begin
   if (Value <> FName) and (FCollection.Find(Value) = nil) then
     FName := Value;
