@@ -1473,6 +1473,7 @@ begin
   inherited Create(AOwner);
   FImages := TImageList.CreateSize(16, 16);
   FImages.ShareImages := True;
+  FillChar(shi, SizeOf(shi), 0);
   FImages.Handle := SHGetFileInfo('', 0, shi, SizeOf(shi), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   FImages.DrawingStyle := dsTransparent;
 
@@ -1546,6 +1547,7 @@ begin
         for J := 0 to Count - 1 do
         begin
           { Note that the strings in FSearchFiles.Directories do not include a path }
+          FillChar(shinf, SizeOf(shinf), 0);
           SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
           if FForceFileExtensions then
             I := Items.Add(cDirPrefix + Strings[J])
@@ -1560,6 +1562,7 @@ begin
       with FSearchFiles.Files do
         for J := 0 to Count - 1 do
         begin
+          FillChar(shinf, SizeOf(shinf), 0);
           SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
           if FForceFileExtensions then
             I := Items.Add(Strings[J])
