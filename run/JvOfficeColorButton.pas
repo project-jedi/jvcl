@@ -93,6 +93,7 @@ type
     FOnColorChange: TNotifyEvent;
     FOnDropDown: TNotifyEvent;
     FOnColorButtonClick: TNotifyEvent;
+    FOnArrowClick: TNotifyEvent;
     procedure SetFlat(const Value: Boolean);
     procedure SetColor(const Value: TColor);
     function GetCustomColors: TStrings;
@@ -110,14 +111,15 @@ type
     procedure ReadEdgeWidth(Reader: TReader);
     procedure ReadOtherCaption(Reader: TReader);
     procedure DoOnColorChange(Sender: Tobject);
-    procedure OnFormShowingChanged(Sender: TObject);
-    procedure OnFormKillFocus(Sender: TObject);
-    procedure OnFormClose(Sender: TObject; var Action: TCloseAction);
-    procedure OnFormWindowStyleChanged(Sender: TObject);
-    procedure OnButtonMouseEnter(Sender: TObject);
-    procedure OnButtonMouseLeave(Sender: TObject);
-    procedure OnButtonClick(Sender: TObject);
-    procedure OnColorButtonsClick(Sender: TObject);
+    procedure DoFormShowingChanged(Sender: TObject);
+    procedure DoFormKillFocus(Sender: TObject);
+    procedure DoFormClose(Sender: TObject; var Action: TCloseAction);
+    procedure DoFormWindowStyleChanged(Sender: TObject);
+    procedure DoButtonMouseEnter(Sender: TObject);
+    procedure DoButtonMouseLeave(Sender: TObject);
+    procedure DoArrowClick(Sender: TObject);
+    procedure DoColorButtonClick(Sender: TObject);
+    procedure DoClick(Sender:TObject);
   protected
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen postion
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen postion
@@ -149,6 +151,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property OnDropDown: TNotifyEvent read FOnDropDown write FOnDropDown;
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
+    property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
   end;
 
@@ -197,7 +200,10 @@ type
     property OnResize;
     property OnStartDrag;
     property OnDropDown;
+    property OnArrowClick;
     property OnColorChange;
+    property OnColorButtonClick;
+    property OnClick;
   end;
 
 implementation
@@ -324,6 +330,7 @@ begin
     NumGlyphs := 2;
     Color := clDefault;
     Tag := MaxColorButtonNumber + 3;
+    OnClick := DoClick;
   end;
 
   FArrowButton := TJvColorArrowButton.Create(Self);
@@ -333,7 +340,7 @@ begin
     GroupIndex := 2;
     AllowAllUp := True;
     Tag := MaxColorButtonNumber + 4;
-    OnClick := OnButtonClick;
+    OnClick := DoArrowClick;
   end;
 
   FColorsForm := TJvOfficeColorForm.CreateNew(Self);
@@ -341,13 +348,13 @@ begin
   begin
     FormStyle := fsStayOnTop;
     ToolWindowStyle := False;
-    OnShowingChanged := OnFormShowingChanged;
-    OnKillFocus := OnFormKillFocus;
-    OnClose := OnFormClose;
-    OnWindowStyleChanged := OnFormWindowStyleChanged;
+    OnShowingChanged := DoFormShowingChanged;
+    OnKillFocus := DoFormKillFocus;
+    OnClose := DoFormClose;
+    OnWindowStyleChanged := DoFormWindowStyleChanged;
 
     ColorPanel.OnColorChange := DoOnColorChange;
-    ColorPanel.OnColorButtonClick := OnColorButtonsClick;
+    ColorPanel.OnColorButtonClick := DoColorButtonClick;
   end;
 
   FProperties := TJvOfficeColorButtonProperties.Create;
@@ -362,10 +369,10 @@ begin
   Properties.ShowDragBar := False;
 
   {$ENDIF VisualCLX}
-  FMainButton.OnMouseEnter := OnButtonMouseEnter;
-  FArrowButton.OnMouseEnter := OnButtonMouseEnter;
-  FMainButton.OnMouseLeave := OnButtonMouseLeave;
-  FArrowButton.OnMouseLeave := OnButtonMouseLeave;
+  FMainButton.OnMouseEnter := DoButtonMouseEnter;
+  FArrowButton.OnMouseEnter := DoButtonMouseEnter;
+  FMainButton.OnMouseLeave := DoButtonMouseLeave;
+  FArrowButton.OnMouseLeave := DoButtonMouseLeave;
 
   FInited := True;
 end;
@@ -440,7 +447,7 @@ begin
   FColorsForm.Font.Assign(Font);
 end;
 
-procedure TJvCustomOfficeColorButton.OnButtonClick(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoArrowClick(Sender: TObject);
 begin
   if TJvColorSpeedButton(Sender).Tag = FArrowButton.Tag then
   begin
@@ -463,9 +470,11 @@ begin
     TJvSubColorButton(Sender).Down := True;
     SetColor(TJvSubColorButton(Sender).Color);
   end;
+  if Assigned(FOnArrowClick) then
+    FOnArrowClick(Self);
 end;
 
-procedure TJvCustomOfficeColorButton.OnColorButtonsClick(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoColorButtonClick(Sender: TObject);
 begin
   if  not FColorsForm.ToolWindowStyle then
   begin
@@ -555,7 +564,7 @@ begin
   FColorFormDropDown := True;
 end;
 
-procedure TJvCustomOfficeColorButton.OnFormShowingChanged(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoFormShowingChanged(Sender: TObject);
 begin
   if not FColorsForm.Visible then
   begin
@@ -565,7 +574,7 @@ begin
   end
 end;
 
-procedure TJvCustomOfficeColorButton.OnFormKillFocus(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoFormKillFocus(Sender: TObject);
 var
   R: TRect;
   P: TPoint;
@@ -583,7 +592,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.OnFormClose(Sender: TObject; var Action: TCloseAction);
+procedure TJvCustomOfficeColorButton.DoFormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if FColorsForm.ToolWindowStyle then
     FColorFormDropDown := False;
@@ -593,7 +602,7 @@ begin
     Action := caHide;
 end;
 
-procedure TJvCustomOfficeColorButton.OnFormWindowStyleChanged(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoFormWindowStyleChanged(Sender: TObject);
 begin
   if FColorsForm.ToolWindowStyle then
   begin
@@ -603,7 +612,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.OnButtonMouseEnter(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoButtonMouseEnter(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
@@ -612,7 +621,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOfficeColorButton.OnButtonMouseLeave(Sender: TObject);
+procedure TJvCustomOfficeColorButton.DoButtonMouseLeave(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
@@ -833,6 +842,11 @@ begin
     FShowDragBar := Value;
     Changed('ShowDragBar');
   end;
+end;
+
+procedure TJvCustomOfficeColorButton.DoClick(Sender: TObject);
+begin
+  if Assigned(OnClick) then OnClick(Self);
 end;
 
 end.
