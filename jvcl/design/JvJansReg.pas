@@ -13,7 +13,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvMarkupLabel, JvMarkupViewer, JvSAL, JvSticker, JvSALCORE, JvSALMath,
+  JvMarkupLabel, JvMarkupViewer, JvSAL, JvSticker, JvSALCore, JvSALMath,
   JvYearGrid, JvTracker, JvAirBrush, JvGridFilter, JvGridPrinter,
   JvJanTreeView, JvArrayButton, JvForth, JvTurtle, JvPaintFX, JvDrawImage,
   JvBitmapButton, JvSimScope, JvSimIndicator, JvSimPID, JvSIMPIDLinker,

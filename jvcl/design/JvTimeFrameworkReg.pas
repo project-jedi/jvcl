@@ -82,7 +82,7 @@ uses
 {$IFDEF COMPILER5}
 class function TJvTFGridLayoutCategory.Name: string;
 begin
-  Result := SGridLayout;
+  Result := RsGridLayout;
 end;
 {$ENDIF COMPILER5}
 
@@ -91,7 +91,7 @@ end;
 {$IFDEF COMPILER5}
 class function TJvTFCustomDrawCategory.Name: string;
 begin
-  Result := SCustomDraw;
+  Result := RsCustomDraw;
 end;
 {$ENDIF COMPILER5}
 
