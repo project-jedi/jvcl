@@ -46,6 +46,8 @@ const
   DefaultXPSFBrushColor = $D2BDB6;
   DefaultXPSFPenColor = $6A240A;
   DefaultXPShadowColor = $9D8D88;
+  DefaultXPCheckedImageBackColorSelected = $B59285;
+  DefaultXPCheckedImageBackColor = $D8D5D4;
 
 type
 
@@ -328,7 +330,7 @@ type
       var ImageIndex: Integer); dynamic;
     procedure DrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState); virtual;
-    procedure DrawMargin(ARect: TRect); virtual;
+//    procedure DrawMargin(ARect: TRect); virtual;
     procedure GetItemParams(Item: TMenuItem; State: TMenuOwnerDrawState;
       AFont: TFont; var Color: TColor; var Graphic: TGraphic;
       var NumGlyphs: Integer); dynamic;
@@ -344,7 +346,7 @@ type
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
       State: TMenuOwnerDrawState);
-    procedure DefaultDrawMargin(ARect: TRect; StartColor, EndColor: TColor);
+//    procedure DefaultDrawMargin(ARect: TRect; StartColor, EndColor: TColor);
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL      : TJVCLAboutInfo           read FAboutJVCL          write FAboutJVCL         stored False;
@@ -602,6 +604,8 @@ type
     FSelectionFramePen   : TPen;
     FShadowColor         : TColor;
     FSeparatorColor      : TColor;
+    FCheckedImageBackColorSelected : TColor;
+    FCheckedImageBackColor         : TColor;
 
     // other usage fields
     FSelRect      : TRect;
@@ -637,8 +641,10 @@ type
     property ImageBackgroundColor default DefaultXPImageBackgroundColor;
     property SelectionFrameBrush : TBrush read FSelectionFrameBrush;
     property SelectionFramePen   : TPen   read FSelectionFramePen;
-    property SeparatorColor      : TColor read FSeparatorColor default DefaultXPSeparatorColor;
-    property ShadowColor         : TColor read FShadowColor default DefaultXPShadowColor;
+    property SeparatorColor      : TColor read FSeparatorColor write FSeparatorColor default DefaultXPSeparatorColor;
+    property ShadowColor         : TColor read FShadowColor write FShadowColor default DefaultXPShadowColor;
+    property CheckedImageBackColor : TColor read FCheckedImageBackColor write FCheckedImageBackColor default DefaultXPCheckedImageBackColor;
+    property CheckedImageBackColorSelected : TColor read FCheckedImageBackColorSelected write FCheckedImageBackColorSelected default DefaultXPCheckedImageBackColorSelected;
   end;
 
   { Utility routines }
@@ -1522,7 +1528,7 @@ begin
     FOnGetImageIndex(Self, Item, State, ImageIndex);
 end;
 
-procedure TJvPopupMenu.DefaultDrawMargin(ARect: TRect; StartColor,
+{procedure TJvPopupMenu.DefaultDrawMargin(ARect: TRect; StartColor,
   EndColor: TColor);
 var
   R: Integer;
@@ -1554,7 +1560,7 @@ begin
       GetGValue(DefMarginColor) div 4,
       GetBValue(DefMarginColor) div 4));
   end;
-end;
+end;  }
 
 procedure TJvPopupMenu.WMDrawItem(var Message: TWMDrawItem);
 var
@@ -2408,7 +2414,7 @@ procedure TJvOfficeMenuItemPainter.CleanupGlyph(BtnRect : TRect);
 var SaveBrush : TBrush; // to save brush
 begin
   SaveBrush := Canvas.Brush;
-  Canvas.Brush.Color := clBtnFace;
+  Canvas.Brush.Color := ImageBackgroundColor;
   inc(BtnRect.Right);
   dec(BtnRect.Left);
   Canvas.FillRect(BtnRect);
@@ -2497,9 +2503,9 @@ begin
     Pen.Assign(SelectionFramePen);
     Brush.Style := bsSolid;
     if mdSelected in FState then
-      Brush.Color := RGB(133,146,181)
+      Brush.Color := CheckedImageBackColorSelected //SRGB(133,146,181)
     else
-      Brush.Color := RGB(212,213,216);
+      Brush.Color := CheckedImageBackColor; //RGB(212,213,216);
     Rectangle(ARect.Left, ARect.Top+1, ARect.Right-3, ARect.Bottom-2);
   end;
 end;
@@ -2885,6 +2891,8 @@ begin
   FSelectionFramePen.Color   := DefaultXPSFPenColor;
   FSelectionFramePen.Style   := psSolid;
   FSeparatorColor            := DefaultXPSeparatorColor;
+  FCheckedImageBackColor     := DefaultXPCheckedImageBackColor;
+  FCheckedImageBackColorSelected := DefaultXPCheckedImageBackColorSelected;
 end;
 
 procedure TJvXPMenuItemPainter.UpdateFieldsFromMenu;
