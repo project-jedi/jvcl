@@ -35,24 +35,17 @@ interface
 
 uses
   SysUtils, Classes,
-
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  QControls, QForms, QToolWin, QTypes, QExtCtrls,
+  
+  
+  QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
   DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
-  {$IFDEF LINUX}
-  JvQRegistryIniFile,
-  {$ENDIF LINUX}
-
-  JvQOutlookBar;
+  
+  JvQOutlookBar, QTypes, QExtCtrls;
 
 type
-  {$IFDEF LINUX}
-  TRegIniFile = TJvRegistryIniFile;
-  {$ENDIF LINUX}
-
+  
+  
   TFrmOLBEditor = class(TClxDesignWindow)
   
     tbTop: TToolBar;
@@ -137,6 +130,11 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+  
+  
   QDialogs,
   
   JvQConsts, JvQDsgnConsts;
@@ -546,12 +544,11 @@ begin
   //  ClientWidth := Max(ClientWidth, btnDown.Left + btnDown.Width + 4);
 end;
 
-
 procedure TFrmOLBEditor.StoreSettings;
 var
   R: TRegIniFile;
 begin
-{$IFDEF MSWINDOWS}
+(*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -564,14 +561,14 @@ begin
   finally
     R.Free;
   end;
-{$ENDIF MSWINDOWS}
+(*)
 end;
 
 procedure TFrmOLBEditor.LoadSettings;
 var
   R: TRegIniFile;
 begin
-{$IFDEF MSWINDOWS}
+  (*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -586,9 +583,10 @@ begin
   finally
     R.Free;
   end;
-{$ENDIF MSWINDOWS}
+  (*)
 end;
 
+{$IFDEF MSWINDOWS}
 function TFrmOLBEditor.GetRegPath: string;
 const
   cRegKey = '\JVCL\OutlookBar Editor';
@@ -597,6 +595,15 @@ begin
   Result := Designer.GetBaseRegKey + cRegKey;
   
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+function TFrmOLBEditor.GetRegPath: string;
+const
+  cRegKey = '/JVCL/OutlookBar Editor';
+begin
+  Result := SDelphiKey + RsPropertyEditors + cRegKey;
+end;
+{$ENDIF LINUX}
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
 var

@@ -433,7 +433,7 @@ begin
     else
     begin
       if Assigned(FOnDropDown) then
-        FOnDropDown(self);
+        FOnDropDown(Self);
       ShowColorForm;
       FColorFormDropDown := True;
     end
@@ -485,7 +485,7 @@ begin
     FColorsForm.FormStyle := fsStayOnTop;
   end;
   if Assigned(FOnColorChange) then
-    FOnColorChange(self);
+    FOnColorChange(Self);
 end;
 
 procedure TJvCustomOfficeColorButton.SetCustomColors(const Value: TStrings);
@@ -737,7 +737,7 @@ begin
       Self.FEdgeWidth := EdgeWidth;
       Self.FArrowWidth := ArrowWidth;
       Self.FDragBarHeight := DragBarHeight;
-      self.FDragBarHint := DragBarHint;
+      Self.FDragBarHint := DragBarHint;
       Self.FDragBarSpace := DragBarSpace;
     end;
 end;

@@ -339,9 +339,8 @@ procedure TJvGammaPanel.ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Int
 var
   Col: TColor;
 begin
-  if not PtInRect(Bounds(0, 0, FGamma.Picture.width, FGamma.Picture.Height), Point(X,Y))
-  then
-    exit; // asn for LINUX/X11     
+  if not PtInRect(Bounds(0, 0, FGamma.Picture.Width, FGamma.Picture.Height), Point(X,Y)) then
+    Exit; // asn for LINUX/X11
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
   LastCol := Col;
   FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);
@@ -397,7 +396,7 @@ procedure TJvGammaPanel.DoBoundsChanged;
 begin
   Width := 65;
   Height := 250;
-  if Assigned( FForegroundColorImg ) then
+  if Assigned(FForegroundColorImg) then
   FForegroundColorImg.BringToFront;
 end;
 
@@ -409,7 +408,7 @@ end;
 
 destructor TJvGammaPanel.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 end.

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -17,20 +17,22 @@ The Original Code is: JvImageListViewer.PAS, released on 2003-12-01.
 The Initial Developer of the Original Code is: Peter Thörnqvist
 All Rights Reserved.
 
-Last Modified: 2003-12-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 unit JvQImageListViewer;
 
 {$I jvcl.inc}
+
 interface
+
 uses
-  SysUtils, Classes,
-  QControls, QGraphics, QStdCtrls, QComCtrls, QImgList,
+  Windows, SysUtils, Messages, Classes, Controls,
+  Graphics, StdCtrls, ComCtrls, ImgList,
   JvQCustomItemViewer;
 
 type
@@ -38,12 +40,12 @@ type
   private
     FDrawingStyle: TDrawingStyle;
     FSelectedStyle: TDrawingStyle;
-    FFillCaption: boolean;
-    FFrameSize: word;
+    FFillCaption: Boolean;
+    FFrameSize: Word;
     procedure SetDrawingStyle(const Value: TDrawingStyle);
     procedure SetSelectedStyle(const Value: TDrawingStyle);
-    procedure SetFillCaption(const Value: boolean);
-    procedure SetFrameSize(const Value: word);
+    procedure SetFillCaption(const Value: Boolean);
+    procedure SetFrameSize(const Value: Word);
   public
     constructor Create(AOwner: TJvCustomItemViewer); override;
   published
@@ -51,9 +53,9 @@ type
     property BrushPattern;
     property DragAutoScroll;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsTransparent;
-    property FillCaption: boolean read FFillCaption write SetFillCaption default true;
+    property FillCaption: Boolean read FFillCaption write SetFillCaption default True;
     property SelectedStyle: TDrawingStyle read FSelectedStyle write SetSelectedStyle default dsSelected;
-    property FrameSize:word read FFrameSize write SetFrameSize default 1;
+    property FrameSize: Word read FFrameSize write SetFrameSize default 1;
     property Height;
     property Layout;
     property RightClickSelect;
@@ -63,7 +65,9 @@ type
     property Width;
   end;
 
-  TJvImageListViewerCaptionEvent = procedure(Sender: TObject; ImageIndex: integer; var ACaption: string) of object;
+  TJvImageListViewerCaptionEvent = procedure(Sender: TObject;
+    ImageIndex: Integer; var ACaption: string) of object;
+
   TJvImageListViewer = class(TJvCustomItemViewer)
   private
     FChangeLink: TChangeLink;
@@ -75,9 +79,10 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoImageChange(Sender: TObject);
-    procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect: TRect); override;
+    procedure DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas;
+      ItemRect, TextRect: TRect); override;
     function GetOptionsClass: TJvItemViewerOptionsClass; override;
-    function GetCaption(ImageIndex: integer): string; virtual;
+    function GetCaption(ImageIndex: Integer): string; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -85,8 +90,6 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property Options: TJvImageListViewerOptions read GetOptions write SetOptions;
     property SelectedIndex;
-    property OnGetCaption: TJvImageListViewerCaptionEvent read FOnGetCaption write FOnGetCaption;
-
     property Align;
     property Anchors;
     //    property BiDiMode;
@@ -107,7 +110,6 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -119,32 +121,37 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetCaption: TJvImageListViewerCaptionEvent read FOnGetCaption write FOnGetCaption;
     property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnKeyPress;
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
   end;
 
 implementation
-uses
-  CommCtrl, JvQJCLUtils, QMath;
 
-{ TJvImageListViewerOptions }
+uses
+  CommCtrl, Math,
+  JvQJCLUtils;
+
+//=== TJvImageListViewerOptions ==============================================
 
 constructor TJvImageListViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDrawingStyle := dsTransparent;
   FSelectedStyle := dsSelected;
-  FFillCaption := true;
+  FFillCaption := True;
   FFrameSize := 1;
 end;
 
-procedure TJvImageListViewerOptions.SetDrawingStyle(
-  const Value: TDrawingStyle);
+procedure TJvImageListViewerOptions.SetDrawingStyle(const Value: TDrawingStyle);
 begin
   if FDrawingStyle <> Value then
   begin
@@ -153,7 +160,7 @@ begin
   end;
 end;
 
-procedure TJvImageListViewerOptions.SetFillCaption(const Value: boolean);
+procedure TJvImageListViewerOptions.SetFillCaption(const Value: Boolean);
 begin
   if FFillCaption <> Value then
   begin
@@ -162,7 +169,7 @@ begin
   end;
 end;
 
-procedure TJvImageListViewerOptions.SetFrameSize(const Value: word);
+procedure TJvImageListViewerOptions.SetFrameSize(const Value: Word);
 begin
   if FFrameSize <> Value then
   begin
@@ -171,8 +178,7 @@ begin
   end;
 end;
 
-procedure TJvImageListViewerOptions.SetSelectedStyle(
-  const Value: TDrawingStyle);
+procedure TJvImageListViewerOptions.SetSelectedStyle(const Value: TDrawingStyle);
 begin
   if FSelectedStyle <> Value then
   begin
@@ -181,11 +187,11 @@ begin
   end;
 end;
 
-{ TJvImageListViewer }
+//=== TJvImageListViewer =====================================================
 
 constructor TJvImageListViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImageChange;
   Color := clWindow;
@@ -195,7 +201,7 @@ destructor TJvImageListViewer.Destroy;
 begin
   Images := nil; 
   FChangeLink.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvImageListViewer.DoImageChange(Sender: TObject);
@@ -207,19 +213,20 @@ begin
   Repaint;
 end;
 
-procedure TJvImageListViewer.DrawItem(Index: Integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect:
-  TRect);
+procedure TJvImageListViewer.DrawItem(Index: Integer; State: TCustomDrawState;
+  Canvas: TCanvas; ItemRect, TextRect: TRect);
 const
-  DrawingStyles: array[TDrawingStyle] of Cardinal = (ILD_FOCUS, ILD_SELECTED,
-    ILD_NORMAL, ILD_TRANSPARENT);
-  DrawMask: array[boolean] of Cardinal = (ILD_MASK, ILD_NORMAL);
+  DrawingStyles: array [TDrawingStyle] of Cardinal =
+    (ILD_FOCUS, ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
+  DrawMask: array [Boolean] of Cardinal =
+    (ILD_MASK, ILD_NORMAL);
 var
-  X, Y: integer;
+  X, Y: Integer;
   S: string;             
   DrawStyle, Flags: Cardinal;
 begin
   Canvas.Brush.Color := Color;
-  Canvas.Font := self.Font;
+  Canvas.Font := Self.Font;
   if Images <> nil then
   begin
     Flags := DT_END_ELLIPSIS or DT_EDITCONTROL;
@@ -258,9 +265,8 @@ begin
       DrawStyle := DrawingStyles[Options.SelectedStyle]
     else
       DrawStyle := DrawingStyles[Options.DrawingStyle];
-    ImageList_Draw(Images.Handle, Index, Canvas.Handle, X, Y, DrawStyle or
-      DrawMask[Images.ImageType = itImage]);
-    Images.
+    ImageList_Draw(Images.Handle, Index, Canvas.Handle, X, Y,
+      DrawStyle or DrawMask[Images.ImageType = itImage]);
     if S <> '' then
     begin
       if cdsSelected in State then
@@ -274,7 +280,7 @@ begin
         Canvas.FillRect(TextRect)
       else
         S := ' ' + S + ' ';
-      ViewerDrawText(Canvas, PChar(S), Length(S), TextRect, Flags, taCenter, tlCenter, true);
+      ViewerDrawText(Canvas, PChar(S), Length(S), TextRect, Flags, taCenter, tlCenter, True);
     end;
 //    if not Options.BrushPattern.Active and (cdsSelected in State) then
 //    begin
@@ -283,11 +289,11 @@ begin
   end;
 end;
 
-function TJvImageListViewer.GetCaption(ImageIndex: integer): string;
+function TJvImageListViewer.GetCaption(ImageIndex: Integer): string;
 begin
   Result := '';
   if Assigned(FOnGetCaption) then
-    FOnGetCaption(self, ImageIndex, Result);
+    FOnGetCaption(Self, ImageIndex, Result);
 end;
 
 function TJvImageListViewer.GetOptions: TJvImageListViewerOptions;
@@ -303,7 +309,7 @@ end;
 procedure TJvImageListViewer.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FImages) then
     Images := nil;
 end;

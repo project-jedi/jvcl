@@ -29,6 +29,14 @@
  page, located at http://www.delphi-jedi.org
 
  RECENT CHANGES:
+    May 3, 2004, Marcel Bestebroer:
+      - Additional checks for value list location and size.
+      - Correction list width calculation for non-ownerdrawn value lists.
+    May 3, 2004, Markus Spoettl:
+      - Right align value list instead of left align (compatible with both
+        Borland inspector and VS.NET property grid).
+      - Fixed width measurement for font name item (used empty font name if
+        fonts where not displayed in the actual font).
     May 2, 2004, Markus Spoettl:
       - Added iifOwnerDrawListMaxHeight flag; using this flag will result in
         a fixed height owner draw list; the item height used will be that of
@@ -2034,100 +2042,100 @@ var
 
 procedure TOpenEdit.SetModified(Value: boolean);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).Modified := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).Modified := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).Modified := Value;
+    TMemo(Self).Modified := Value;
 end;
 
 function TOpenEdit.GetModified: boolean;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).Modified
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).Modified
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).Modified
+    Result := TMemo(Self).Modified
   else
     Result := false;
 end;
 
 procedure TOpenEdit.SetOnChange(Value: TNotifyEvent);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).OnChange := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).OnChange := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).OnChange := Value;
+    TMemo(Self).OnChange := Value;
 end;
 
 function TOpenEdit.GetOnChange: TNotifyEvent;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).OnChange
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).OnChange
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).OnChange
+    Result := TMemo(Self).OnChange
   else
     Result := nil;
 end;
 
 procedure TOpenEdit.SetReadOnly(Value: boolean);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).ReadOnly := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).ReadOnly := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).ReadOnly := Value;
+    TMemo(Self).ReadOnly := Value;
 end;
 
 function TOpenEdit.GetReadOnly: boolean;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TEdit(self).ReadOnly
-  else if self.InheritsFrom(TMemo)
+    Result := TEdit(Self).ReadOnly
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).ReadOnly
+    Result := TMemo(Self).ReadOnly
   else
     Result := false;
 end;
 
 procedure TOpenEdit.SetBorderStyle(Value: TBorderStyle);
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    TEdit(self).BorderStyle := Value
-  else if self.InheritsFrom(TMemo)
+    TEdit(Self).BorderStyle := Value
+  else if Self.InheritsFrom(TMemo)
   then
-    TMemo(self).BorderStyle := Value;
+    TMemo(Self).BorderStyle := Value;
 end;
 
 function TOpenEdit.GetBorderStyle: TBorderStyle;
 begin
-  if self.InheritsFrom(TEdit)
+  if Self.InheritsFrom(TEdit)
   then
-    Result := TBorderStyle(TEdit(self).BorderStyle)
-  else if self.InheritsFrom(TMemo)
+    Result := TBorderStyle(TEdit(Self).BorderStyle)
+  else if Self.InheritsFrom(TMemo)
   then
-    Result := TMemo(self).BorderStyle
+    Result := TMemo(Self).BorderStyle
   else
     Result := bsNone;
 end;
 
 procedure TOpenEdit.SelectAll;
 begin
-  if self.InheritsFrom(TCustomEdit)
+  if Self.InheritsFrom(TCustomEdit)
   then
-    TCustomEdit(self).SelectAll
-  else if self.InheritsFrom(TCustomMemo)
+    TCustomEdit(Self).SelectAll
+  else if Self.InheritsFrom(TCustomMemo)
   then
-    TCustomMemo(self).SelectAll;
+    TCustomMemo(Self).SelectAll;
 end;
 
 
@@ -5508,13 +5516,18 @@ begin
     if ListCount = 0 then
       ListCount := 1;
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
+    if ListBox.Height > Screen.Height then
+    begin
+      ListCount := (Screen.Height - 4) div TListBox(ListBox).ItemHeight;
+      TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
+    end;
     ListBox.ItemIndex := ListBox.Items.IndexOf(EditCtrl.Text);
     J := ListBox.ClientWidth;
     if ListBox.Items.Count > ListCount then
       Dec(J, GetSystemMetrics(SM_CXVSCROLL));
     for I := 0 to ListBox.Items.Count - 1 do
     begin
-      Y := ListBox.Canvas.TextWidth(ListBox.Items[I]);
+      Y := ListBox.Canvas.TextWidth(ListBox.Items[I]) + 4;
       if TListBox(ListBox).Style <> lbStandard then
         DoMeasureListItemWidth(ListBox, I, Y);
       if Y > J then
@@ -5523,7 +5536,11 @@ begin
     if ListBox.Items.Count > ListCount then
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
     ListBox.ClientWidth := J;
-    P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
+    if ListBox.Width > Screen.Width then
+      ListBox.Width := Screen.Width;
+    P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Right - ListBox.Width, EditCtrl.Top));
+    if P.X < 0 then
+      P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
     Y := P.Y + RectHeight(Rects[iprValueArea]);
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
@@ -8356,7 +8373,7 @@ begin
         else
           PrefixWithOwner := '';
         for J := 0 to CurOwner.ComponentCount - 1 do
-          // don't allow setting self as property
+          // don't allow setting Self as property
           if (CurOwner.Components[J] is MinClass) and (not (Parent.Data is TJvInspectorPropData) or
               (CurOwner.Components[J] <> TJvInspectorPropData(Parent.Data).Instance)) then
             SL.AddObject(PrefixWithOwner + CurOwner.Components[J].Name, CurOwner.Components[J]);
@@ -8568,12 +8585,9 @@ procedure TJvInspectorFontNameItem.DoMeasureListItemWidth(Control: TWinControl;
 var
   FontName: string;
 begin
+  FontName := TListBox(Control).Items[Index];
   if UseFont then
-    with TListBox(Control) do
-    begin
-      FontName := Items[Index];
-      Canvas.Font.Name := FontName;
-    end;
+    TListBox(Control).Canvas.Font.Name := FontName;
   Width := TListBox(Control).Canvas.TextWidth(FontName);
 end;
 

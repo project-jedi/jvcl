@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,13 +22,12 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2004-02-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -118,7 +117,7 @@ type
 
 function CreateCalculatorForm(AOwner: TComponent; AHelpContext: THelpContext): TJvCalculatorForm;
 function CreatePopupCalculator(AOwner: TComponent
-   ): TWinControl;
+  ): TWinControl;
 procedure SetupPopupCalculator(PopupCalc: TWinControl; APrecision: Byte;
   ABeepOnError: Boolean);
 
@@ -129,7 +128,7 @@ uses
   JvQJVCLUtils, JvQJCLUtils, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCalc.Res}
+{$R ..\Resources\JvCalc.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvCalc.Res}

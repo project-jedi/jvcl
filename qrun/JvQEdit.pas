@@ -55,8 +55,7 @@ uses
   Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
   QWindows,
   
-  JvQCaret, JvQMaxPixel, JvQTypes, JvQComponent, JvQToolEdit,
-  JvQExControls, JvQExStdCtrls;
+  JvQCaret, JvQMaxPixel, JvQTypes, JvQToolEdit, JvQExStdCtrls;
 
 
 const
@@ -102,7 +101,7 @@ type
     procedure DoClearText; override;
     procedure DoUndo; override;
 
-    procedure UpdateEdit;
+    procedure UpdateEdit; virtual;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
@@ -507,13 +506,14 @@ procedure TJvCustomEdit.UpdateEdit;
 var
   I: Integer;
 begin
-  for I := 0 to Self.Owner.ComponentCount - 1 do
-    if Self.Owner.Components[I] is TJvCustomEdit then
-      if ({(Self.Owner.Components[I].Name <> Self.Name)}
-         (Self.Owner.Components[I] <> Self) and // (ahuser) this is better 
-        ((Self.Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
-        ((Self.Owner.Components[I] as TJvCustomEdit).fGroupIndex = Self.FGroupIndex)) then
-        (Self.Owner.Components[I] as TJvCustomEdit).Caption := '';
+  if Assigned(Owner) then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if Owner.Components[I] is TJvCustomEdit then
+        if ({(Owner.Components[I].Name <> Self.Name)}
+           (Owner.Components[I] <> Self) and // (ahuser) this is better and faster
+          ((Owner.Components[I] as TJvCustomEdit).GroupIndex <> -1) and
+          ((Owner.Components[I] as TJvCustomEdit).GroupIndex = FGroupIndex)) then
+          (Owner.Components[I] as TJvCustomEdit).Caption := '';
 end;
 
 
@@ -619,7 +619,7 @@ begin
     end;
     C := TControlCanvas.Create;
     try
-      C.Control := self;
+      C.Control := Self;
       
       
       if GetTextExtentPoint32W(C.Handle, PWideChar(Text), Length(Text), Size) then

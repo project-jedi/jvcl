@@ -103,8 +103,8 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
-    FOnPaint: TNotifyEvent;
     
+    FOnPaint: TNotifyEvent;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;

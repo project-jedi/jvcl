@@ -34,7 +34,11 @@ unit JvQMTComponents;
 interface
 
 uses
-  SysUtils, Classes, SyncObjs, QConsts,
+  SysUtils, Classes, SyncObjs,
+  
+  
+  QConsts,
+  
   
   JvQComponent,
   
@@ -50,14 +54,14 @@ type
   TJvMTThreadEvent = procedure (Sender: TJvMTThread;
     MTThread: TJvMTSingleThread) of object;
 
-  TJvMTManager = class (TJvMTComponent)
+  TJvMTManager = class(TJvMTComponent)
   private
     FManager: TMTManager;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); 
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function AcquireNewThread: TJvMTSingleThread;
     function AcquireThread(Ticket: TMTTicket;
@@ -245,13 +249,14 @@ type
 
 implementation
 
+
 uses
   JvQResources;
 
 
 
 
-constructor TJvMTManager.Create(aOwner: TComponent);
+constructor TJvMTManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 

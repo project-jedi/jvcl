@@ -58,7 +58,7 @@ uses
   
   
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
-  QWindows, QMessages, QTypes, QExtCtrls, JvQTypes,
+  QWindows, QTypes, QExtCtrls, JvQTypes,
   
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
@@ -772,14 +772,14 @@ var
   lBar: TJvXPCustomWinXPBar;
 begin
   lBar := (AWinXPBar as TJvXPCustomWinXPBar);
-  HasImages := self.Images <> nil;
+  HasImages := Self.Images <> nil;
   with ACanvas do
   begin
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
       FillRect(Rect);
-    if not self.Enabled then
+    if not Self.Enabled then
       Font.Color := clGray
     else
     begin
@@ -823,7 +823,7 @@ begin
     end;
     if HasImages then
       Draw(Rect.Left, Rect.Top + (lBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
-    ItemCaption := self.Caption;
+    ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
       ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
     Inc(Rect.Left, 20);
@@ -1193,11 +1193,10 @@ end;
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
-  inherited Create(True);
+  inherited Create(False);
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
-  Suspended := false;
 end;
 
 procedure TJvXPFadeThread.Execute;
@@ -1220,12 +1219,12 @@ begin
     if NewOffset > FWinXPBar.FItemHeight then
       NewOffset := FWinXPBar.FItemHeight;
     FWinXPBar.RollOffset := NewOffset;
-    Synchronize(FWinXPBar.Repaint);
 
     { terminate on 'out-of-range' }
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate;
+
     { idle process }
     Sleep(FWinXPBar.FRollDelay);
   finally

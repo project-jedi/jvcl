@@ -17,13 +17,12 @@ The Original Code is: JvImagesViewer.PAS, released on 2003-12-01.
 The Initial Developer of the Original Code is: Peter Thörnqvist
 All Rights Reserved.
 
-Last Modified: 2003-12-27
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 unit JvQImagesViewer;
 
@@ -188,6 +187,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnKeyPress;
     property OnStartDrag;
   end;
 
@@ -291,7 +293,7 @@ procedure TJvImageItem.DoLoadProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
   if Owner is TJvImagesViewer then
-    TJvImagesViewer(Owner).DoLoadProgress(self, Stage, PercentDone, RedrawNow, R, Msg);
+    TJvImagesViewer(Owner).DoLoadProgress(Self, Stage, PercentDone, RedrawNow, R, Msg);
 end;
 
 function TJvImageItem.GetPicture: TPicture;
@@ -615,13 +617,13 @@ function TJvImagesViewer.LoadErrorHandled(E: Exception; const Filename: string):
 begin
   Result := false;
   if Assigned(FOnLoadError) then
-    FOnLoadError(self, E, Filename, Result);
+    FOnLoadError(Self, E, Filename, Result);
 end;
 
 procedure TJvImagesViewer.DoLoadBegin;
 begin
   if Assigned(FOnLoadBegin) then
-    FOnLoadBegin(self);
+    FOnLoadBegin(Self);
 end;
 
 procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
@@ -629,13 +631,13 @@ procedure TJvImagesViewer.DoLoadProgress(Item: TJvImageItem;
   const R: TRect; const Msg: string);
 begin
   if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(self, Item, Stage, PercentDone, ReDrawNow, R, Msg);
+    FOnLoadProgress(Self, Item, Stage, PercentDone, ReDrawNow, R, Msg);
 end;
 
 procedure TJvImagesViewer.DoLoadEnd;
 begin
   if Assigned(FOnLoadEnd) then
-    FOnLoadEnd(self);
+    FOnLoadEnd(Self);
 end;
 
 function TJvImagesViewer.GetOptionsClass: TJvItemViewerOptionsClass;

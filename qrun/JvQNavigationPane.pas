@@ -442,7 +442,7 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -457,6 +457,7 @@ type
   published
     property Color;
     property Caption: TCaption read GetCaption write SetCaption;
+    
     property DragMode;
     property Iconic: Boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
@@ -808,7 +809,7 @@ begin
   FDropButton.Width := 22;
   FDropButton.Left := Width + 10;
   FDropButton.Align := alRight;
-  FDropButton.Parent := self;
+  FDropButton.Parent := Self;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
 end;
@@ -1422,7 +1423,7 @@ begin
             Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, itImage, Enabled);
+              ImageIndex,  itImage,  Enabled);
         end;
       nibDropArrow:
         begin
@@ -2169,7 +2170,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent(const AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent( const  AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -2414,7 +2415,7 @@ begin
     Images.Draw(Canvas,
       ClientWidth - Images.Width - (Height - Images.Height) div 2,
       (Height - Images.Height) div 2, ImageIndex,
-      itImage, True);
+       itImage,  True);
   end;
 end;
 
@@ -3112,6 +3113,7 @@ begin
         X := R2.Left + ButtonWidth * i;
         with TJvNavIconButton(FRealButtons[i]) do
         begin
+//          Images := Self.Images;
           Left := X;
           Top := Y;
           Visible := True;
@@ -3172,10 +3174,9 @@ begin
   end;
 end;
 
-procedure TJvNavPaneToolPanel.SetButtons(
-  const Value: TJvNavPaneToolButtons);
+procedure TJvNavPaneToolPanel.SetButtons(const Value: TJvNavPaneToolButtons);
 begin
-  FButtons := Value;
+  FButtons.Assign(Value);
 end;
 
 procedure TJvNavPaneToolPanel.SetButtonWidth(const Value: Integer);
@@ -3242,6 +3243,7 @@ begin
 end;
 
 procedure TJvNavPaneToolPanel.SetImages(const Value: TCustomImageList);
+var i:integer;
 begin
   if FImages <> Value then
   begin
@@ -3253,6 +3255,8 @@ begin
       FImages.RegisterChanges(FChangeLink);
       FImages.FreeNotification(Self);
     end;
+    for i := 0 to Buttons.Count -1 do
+      TJvNavIconButton(FRealButtons[i]).Images := FImages;
     Invalidate;
   end;
 end;

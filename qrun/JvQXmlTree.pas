@@ -294,7 +294,7 @@ function TJvXMLNode.AddAttribute(AName: string;
 var
   n: TJvXMLAttribute;
 begin
-  n := TJvXMLAttribute.Create(self, AName, AValue);
+  n := TJvXMLAttribute.Create(Self, AName, AValue);
   Attributes.Add(n);
   Result := n;
 end;
@@ -303,8 +303,8 @@ function TJvXMLNode.AddNode(AName: string; AValue: Variant): TJvXMLNode;
 var
   n: TJvXMLNode;
 begin
-  n := TJvXMLNode.Create(AName, AValue, self);
-  self.Nodes.Add(n);
+  n := TJvXMLNode.Create(AName, AValue, Self);
+  Self.Nodes.Add(n);
   Result := n
 end;
 
@@ -316,8 +316,8 @@ var
   s, sn, sv: string;
   c, p1, p2: Integer;
 begin
-  n := TJvXMLNode.Create(AName, AValue, self);
-  self.Nodes.Add(n);
+  n := TJvXMLNode.Create(AName, AValue, Self);
+  Self.Nodes.Add(n);
   Result := n;
   c := Length(AName);
   //first parse name
@@ -555,7 +555,7 @@ var
 begin
   Result := nil;
   if ParentNode = nil then Exit;
-  Index := ParentNode.Nodes.IndexOf(self);
+  Index := ParentNode.Nodes.IndexOf(Self);
   if Index = -1 then Exit;
   if Index < ParentNode.nodes.Count - 1 then
     Result := TJvXMLNode(ParentNode.nodes[Index + 1]);
@@ -567,7 +567,7 @@ var
 begin
   Result := nil;
   if ParentNode = nil then Exit;
-  Index := ParentNode.Nodes.IndexOf(self);
+  Index := ParentNode.Nodes.IndexOf(Self);
   if Index = -1 then Exit;
   if Index > 0 then
     Result := TJvXMLNode(ParentNode.nodes[Index - 1]);
@@ -580,14 +580,14 @@ var
 begin
   Result := nil;
   if Dest.parentNode = nil then Exit; // can not move to root
-  index1 := self.parentNode.Nodes.IndexOf(self);
+  index1 := Self.parentNode.Nodes.IndexOf(Self);
   if index1 = -1 then Exit;
   index2 := dest.parentNode.Nodes.IndexOf(dest);
   if index2 = -1 then Exit;
-  dest.parentNode.Nodes.Insert(index2, self);
-  self.parentNode.nodes.Delete(index1);
-  self.parentNode := dest.parentnode;
-  Result := self;
+  dest.parentNode.Nodes.Insert(index2, Self);
+  Self.parentNode.nodes.Delete(index1);
+  Self.parentNode := dest.parentnode;
+  Result := Self;
 end;
 
 function TJvXMLNode.moveAddNode(Dest: TJvXMLNode): TJvXMLNode;
@@ -596,16 +596,16 @@ var
 begin
   Result := nil;
   if Dest = nil then Exit; // can not move to root
-  Index := self.parentNode.Nodes.IndexOf(self);
+  Index := Self.parentNode.Nodes.IndexOf(Self);
   if Index = -1 then Exit;
-  dest.Nodes.Add(self);
-  self.parentNode.nodes.Delete(Index);
-  self.parentNode := dest;
-  Result := self;
+  dest.Nodes.Add(Self);
+  Self.parentNode.nodes.Delete(Index);
+  Self.parentNode := dest;
+  Result := Self;
 end;
 
 // removes and Frees the childnode recursively.
-// returns self when done, or nil in case of error
+// returns Self when done, or nil in case of error
 
 function TJvXMLNode.removeChildNode(aNode: TJvXMLNode): TJvXMLNode;
 var
@@ -616,7 +616,7 @@ begin
   if Index = -1 then Exit;
   nodes.Delete(Index);
   aNode.Free;
-  Result := self;
+  Result := Self;
 end;
 
 function TJvXMLNode.hasChildNodes: Boolean;
@@ -650,7 +650,7 @@ function TJvXMLNode.getNodePath: string;
 var
   n: TJvXMLNode;
 begin
-  n := self;
+  n := Self;
   Result := name;
   while n.parentNode <> nil do
   begin
@@ -736,7 +736,7 @@ begin
     begin
       if TJvXMLAttribute(Attributes[i]).name = AName then
       begin
-        aList.Add(self);
+        aList.Add(Self);
         break;
       end;
     end;
@@ -997,7 +997,7 @@ end;
 function TJvXMLNode.transformNode(stylesheet: TJvXMLNode): string;
 begin
   // to be implemented;
-  Result := stylesheet.process(0, self);
+  Result := stylesheet.process(0, Self);
 end;
 
 // used in conjunction with the transformNode function.
@@ -1075,7 +1075,7 @@ begin
   if c = 0 then Exit;
   if APath = '' then
   begin
-    Result := self;
+    Result := Self;
     Exit;
   end;
   p := posstr('/', APath, 1);
@@ -1194,7 +1194,7 @@ begin
     end;
   end;
   // we dont have it , so force it;
-  n := TJvXMLNode.Create(AName, '', self);
+  n := TJvXMLNode.Create(AName, '', Self);
   nodes.Add(n);
   if newpath = '' then
     Result := n
@@ -1417,7 +1417,7 @@ begin
   ClearNodes;
   ClearAttributes;
   Name := 'root';
-  n := self;
+  n := Self;
   c := Lines.Count - 1;
   repeat
     s := Lines[i];

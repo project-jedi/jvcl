@@ -267,7 +267,6 @@ function DrawShadowText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect;
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 
 implementation
-
 uses
   Math,
   JvQThemes, JvQJCLUtils, JvQJVCLUtils;
@@ -597,14 +596,13 @@ begin
       if RoundedFrame=0 then
       begin
         Brush.Color := FrameColor;
-        FrameRect(Canvas, ClientRect);
+        FrameRect(Canvas,  ClientRect);
       end
       else
       begin
         Brush.Color := Color;
         FrameRounded(Canvas, ClientRect, FrameColor, RoundedFrame);
-//        if not Transparent then
-//          FloodFill(ClientRect.Left + 1, ClientRect.Top + RoundedFrame, FrameColor, fsBorder);
+        
       end;
     end;
     Brush.Style := bsClear;
@@ -984,13 +982,13 @@ begin
     NonProviderChange;
     if FImages <> nil then
     begin
-      FImages.RemoveFreeNotification(self);
+      FImages.RemoveFreeNotification(Self);
       FImages.UnRegisterChanges(FChangeLink);
     end;
     FImages := Value;
     if FImages <> nil then
     begin
-      FImages.FreeNotification(self);
+      FImages.FreeNotification(Self);
       FImages.RegisterChanges(FChangeLink);
     end;
     if AutoSize then
