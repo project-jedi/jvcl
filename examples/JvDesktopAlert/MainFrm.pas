@@ -55,6 +55,14 @@ type
     edHeight: TEdit;
     Label10: TLabel;
     Label11: TLabel;
+    Label12: TLabel;
+    Edit6: TEdit;
+    udEndSteps: TUpDown;
+    Label13: TLabel;
+    Edit7: TEdit;
+    udStartSteps: TUpDown;
+    cmbStyle: TComboBox;
+    Label14: TLabel;
     procedure btnPreviewClick(Sender: TObject);
     procedure Clickme1Click(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
@@ -68,6 +76,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    constructor Create(AOwner: TComponent); override; 
   end;
 
 var
@@ -118,7 +127,7 @@ begin
     DA.OnMessageClick := DoMessageClick;
     DA.OnShow := DoAlertShow;
     DA.OnClose := DoAlertClose;
-    FOptions := [daoCanFade];
+    FOptions := [];
     DA.Options := FOptions;
     DA.Location.AlwaysResetPosition := false;
     DA.Location.Position := TJvDesktopAlertPosition(cbLocation.ItemIndex);
@@ -129,9 +138,12 @@ begin
       DA.Location.Left := Random(Screen.Width - 200);
       DA.Location.Top :=  Random(Screen.Height - 100);
     end;
-    DA.FadeInTime := udFadeIn.Position;
-    DA.WaitTime  := udWait.Position; //  + Random(WaitTime);
-    DA.FadeOutTime := udFadeOut.Position;
+    DA.AlertStyle := TJvAlertStyle(cmbStyle.ItemIndex);
+    DA.StyleHandler.StartInterval := udFadeIn.Position;
+    DA.StyleHandler.StartSteps := udStartSteps.Position;
+    DA.StyleHandler.DisplayDuration  := udWait.Position; //  + Random(WaitTime);
+    DA.StyleHandler.EndInterval := udFadeOut.Position;
+    DA.StyleHandler.EndSteps := udEndSteps.Position;
     if chkClickable.Checked then
       Include(FOptions,daoCanClick);
     if chkMovable.Checked then
@@ -168,6 +180,12 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   cbLocation.ItemIndex := 3;
+end;
+
+constructor TfrmMain.Create(AOwner: TComponent);
+begin
+  inherited;
+  cmbStyle.ItemIndex := 0;
 end;
 
 end.

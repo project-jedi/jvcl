@@ -16,12 +16,13 @@ All Rights Reserved.
 
 Contributor(s):
 Hans-Eric Grönlund (stack logic)
+Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* This form is used by the TJvDeskTop component
+* This form is used by the TJvDesktopAlert component
 
 -----------------------------------------------------------------------------}
 // $Id$
@@ -84,27 +85,15 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnUserMove: TNotifyEvent;
     acClose: TAction;
-    FadeTimer: TTimer;
     MouseTimer: TTimer;
-    {$IFNDEF COMPILER6_UP}
-    FAlphaBlendValue: Byte;
-    procedure SetAlphaBlendValue(const Value: Byte);
-    procedure DoAlphaBlend(Value: Byte);
-    {$ENDIF !COMPILER6_UP}
+
     {$IFDEF VCL}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
 
-    procedure FadeInTimer(Sender: TObject);
-    procedure FadeOutTimer(Sender: TObject);
-    procedure WaitTimer(Sender: TObject);
-
     procedure DoMouseTimer(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   protected
-    procedure FadeIn;
-    procedure FadeOut;
-    procedure Wait;
     procedure DoShow; override;
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
@@ -126,20 +115,12 @@ type
     Closeable: Boolean;
     ClickableMessage: Boolean;
     MouseInControl: Boolean;
-    MaxAlphaBlendValue: Byte;
-    FadeInTime: Integer;
-    FadeOutTime: Integer;
-    WaitTime: Integer;
     WindowColorFrom: TColor;
     WindowColorTo: TColor;
     CaptionColorFrom: TColor;
     CaptionColorTo: TColor;
     FrameColor: TColor;
-    procedure FadeClose;
-    {$IFNDEF COMPILER6_UP}
-    property AlphaBlendValue: Byte read FAlphaBlendValue write SetAlphaBlendValue;
-    {$ENDIF !COMPILER6_UP}
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+    constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
     procedure SetNewLeft(const Value: Integer);
@@ -147,13 +128,16 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
+
   end;
 
 implementation
 
 uses
   Menus,
-  JvJVCLUtils;
+  SysUtils,
+  JvJVCLUtils,
+  JvDesktopAlert;
 
 {.$R *.dfm}// not needed
 
@@ -223,9 +207,10 @@ end;
 
 //=== { TJvFormDesktopAlert } ================================================
 
-constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TJvFormDesktopAlert.Create(AOwner: TComponent);
 begin
-  inherited CreateNew(AOwner, Dummy);
+  inherited CreateNew(AOwner, 1);
+
   {$IFDEF VCL}
   Font.Assign(Screen.IconFont);
   {$ENDIF VCL}
@@ -239,10 +224,6 @@ begin
   MouseTimer.Enabled := True;
 
   {$IFDEF VCL}
-  {$IFDEF COMPILER6_UP}
-  AlphaBlend := True;
-  {$ENDIF COMPILER6_UP}
-  AlphaBlendValue := 0;
   BorderStyle := bsNone;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -280,9 +261,6 @@ begin
   acClose.ShortCut := ShortCut(VK_F4, [ssAlt]); // 32883
   acClose.OnExecute := acCloseExecute;
 
-  FadeTimer := TTimer.Create(Self);
-  FadeTimer.Enabled := False;
-
   tbClose := TJvDesktopAlertButton.Create(Self);
   tbClose.ToolType := abtClose;
   tbClose.Parent := Self;
@@ -311,8 +289,7 @@ begin
     P := ScreenToClient(Point(XPos, YPos));
   if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P, False) = nil)) then
   begin
-    FadeTimer.Enabled := False;
-    AlphaBlendValue := MaxAlphaBlendValue;
+    TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
     Msg.Result := HTCAPTION;
   end
   else
@@ -331,10 +308,7 @@ begin
   inherited MouseEnter(AControl);
   MouseInControl := True;
   //  SetFocus;
-  FadeTimer.Enabled := False;
-  {$IFDEF VCL}
-  AlphaBlendValue := MaxAlphaBlendValue;
-  {$ENDIF VCL}
+  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -350,58 +324,16 @@ begin
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
-    if WaitTime > 0 then
-      FadeOut;
+    if TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0 then
+      TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
     MouseInControl := False;
   end;
-end;
-
-procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
-begin
-  FadeTimer.Enabled := False;
-  {$IFDEF VCL}
-  if AlphaBlendValue <= MaxAlphaBlendValue - cAlphaIncrement then
-    AlphaBlendValue := AlphaBlendValue + cAlphaIncrement;
-  if AlphaBlendValue >= MaxAlphaBlendValue - cAlphaIncrement then
-  begin
-    AlphaBlendValue := MaxAlphaBlendValue;
-    Wait;
-  end
-  else
-    FadeTimer.Enabled := True;
-  {$ENDIF VCL}
-end;
-
-procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
-begin
-  FadeTimer.Enabled := False;
-  {$IFDEF VCL}
-  if AlphaBlendValue > cAlphaIncrement then
-  begin
-    AlphaBlendValue := AlphaBlendValue - cAlphaIncrement;
-    if AlphaBlendValue <= cAlphaIncrement then
-      Close
-    else
-      FadeTimer.Enabled := True;
-  end
-  else
-  {$ENDIF VCL}
-    Close;
-end;
-
-procedure TJvFormDesktopAlert.WaitTimer(Sender: TObject);
-begin
-  Update;
-  FadeOut;
 end;
 
 procedure TJvFormDesktopAlert.DoShow;
 begin
   inherited DoShow;
-  {$IFDEF VCL}
-  AlphaBlendValue := 0;
-  {$ENDIF VCL}
-  FadeTimer.Enabled := False;
+  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   lblText.HotTrackFont.Style := [fsUnderLine];
   lblText.HotTrackFont.Color := clNavy;
   if ClickableMessage then
@@ -418,7 +350,7 @@ begin
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := False;
 
-  if not Closeable and (WaitTime > 0) then // must have either WaitTime or close button
+  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then // must have either WaitTime or close button
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;
@@ -430,7 +362,7 @@ begin
   lblText.Left := lblHeader.Left + 8;
   lblText.Width := tbDropDown.Left - lblText.Left;
   lblText.Top := lblHeader.Top + lblHeader.Height;
-  FadeIn;
+  TJvDesktopAlert(Owner).StyleHandler.DoStartAnimation;
   MouseTimer.Enabled := True;
 end;
 
@@ -477,52 +409,8 @@ begin
   GetCursorPos(P);
   MouseInControl := PtInRect(BoundsRect, P) and (FindVCLWindow(P) = Self);
   MouseTimer.Enabled := True;
-  if not FadeTimer.Enabled and not MouseInControl and (WaitTime > 0) then
-    FadeOut;
-end;
-
-procedure TJvFormDesktopAlert.FadeIn;
-begin
-  {$IFDEF VCL}
-  AlphaBlendValue := 0;
-  {$ENDIF VCL}
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := FadeInTime;
-  FadeTimer.OnTimer := FadeInTimer;
-  FadeTimer.Enabled := FadeInTime > 0;
-  if not FadeTimer.Enabled then
-    Wait;
-end;
-
-procedure TJvFormDesktopAlert.FadeOut;
-begin
-  {$IFDEF VCL}
-  AlphaBlendValue := MaxAlphaBlendValue;
-  {$ENDIF VCL}
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := FadeOutTime;
-  FadeTimer.OnTimer := FadeOutTimer;
-  FadeTimer.Enabled := FadeOutTime > 0;
-  MouseTimer.Enabled := False;
-  if not FadeTimer.Enabled and (WaitTime > 0) then
-    Close;
-end;
-
-procedure TJvFormDesktopAlert.Wait;
-begin
-  {$IFDEF VCL}
-  AlphaBlendValue := MaxAlphaBlendValue;
-  {$ENDIF VCL}
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := WaitTime;
-  FadeTimer.OnTimer := WaitTimer;
-  FadeTimer.Enabled := WaitTime > 0;
-  // NB! If waittime = 0 then we never close - user has to do that manually
-//  if not FadeTimer.Enabled then
-//    FadeOut;
+  if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+    TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
 end;
 
 procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
@@ -531,71 +419,12 @@ begin
   MouseTimer.Enabled := False;
 end;
 
-{$IFNDEF COMPILER6_UP}
-
-type
-  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
-
-const
-  {$EXTERNALSYM WS_EX_LAYERED}
-  WS_EX_LAYERED = $00080000;
-  {$EXTERNALSYM LWA_ALPHA}
-  LWA_ALPHA = $00000002;
-
-procedure TJvFormDesktopAlert.DoAlphaBlend(Value: Byte);
-var
-  DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
-  CurrentStyle: Cardinal;
-
-  procedure InitProcs;
-  const
-    sUser32 = 'User32.dll';
-  var
-    ModH: HMODULE;
-  begin
-    ModH := GetModuleHandle(sUser32);
-    if ModH <> 0 then
-      @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes')
-    else
-      @DynamicSetLayeredWindowAttributes := nil;
-  end;
-begin
-  InitProcs;
-  if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
-  begin
-    CurrentStyle := GetWindowLong(Handle, GWL_EXSTYLE);
-    if (CurrentStyle and WS_EX_LAYERED) = 0 then
-      SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
-    DynamicSetLayeredWindowAttributes(Handle, 0, Value, LWA_ALPHA);
-  end;
-end;
-
-procedure TJvFormDesktopAlert.SetAlphaBlendValue(const Value: Byte);
-
-begin
-  if FAlphaBlendValue <> Value then
-  begin
-    FAlphaBlendValue := Value;
-    DoAlphaBlend(FAlphaBlendValue);
-  end;
-end;
-
-{$ENDIF !COMPILER6_UP}
-
 {$IFDEF VCL}
 procedure TJvFormDesktopAlert.CreateWindowHandle(const Params: TCreateParams);
 begin
   inherited CreateWindowHandle(Params);
-  {$IFNDEF COMPILER6_UP}
-  DoAlphaBlend(0);
-  {$ENDIF !COMPILER6_UP}
 end;
 {$ENDIF VCL}
-
-procedure TJvFormDesktopAlert.FadeClose;
-begin
-  FadeOut;
-end;
 
 //=== { TJvDesktopAlertButton } ==============================================
 

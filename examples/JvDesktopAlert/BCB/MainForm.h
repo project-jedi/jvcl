@@ -46,8 +46,8 @@
 class TfrmMain : public TForm
 {
 __published:	// IDE-managed Components
-  TLabel *lblHeader;
-  TLabel *lblMessages;
+  TLabel *Label1;
+  TLabel *Label2;
   TLabel *Label3;
   TLabel *Label4;
   TLabel *Label5;
@@ -55,32 +55,40 @@ __published:	// IDE-managed Components
   TLabel *Label7;
   TLabel *Label8;
   TLabel *Label9;
+  TLabel *Label12;
+  TLabel *Label13;
+  TLabel *Label14;
   TButton *btnPreview;
   TEdit *edHeader;
   TEdit *edMessage;
   TButton *btnBrowse;
   TPanel *Panel1;
   TImage *Image1;
-  TEdit *edtCustomBtns;
+  TEdit *Edit1;
   TUpDown *udButtons;
   TCheckBox *chkClickable;
   TCheckBox *chkMovable;
   TCheckBox *chkClose;
-  TEdit *edtNumWindows;
+  TEdit *Edit2;
   TUpDown *udWindowCount;
   TCheckBox *chkShowDropDown;
-  TEdit *edtFadeIn;
+  TEdit *Edit3;
   TUpDown *udFadeIn;
-  TEdit *edtDisplay;
+  TEdit *Edit4;
   TUpDown *udWait;
-  TEdit *edtFadeOut;
+  TEdit *Edit5;
   TUpDown *udFadeOut;
   TComboBox *cbLocation;
-  TGroupBox *grbFormSize;
+  TGroupBox *GroupBox1;
   TLabel *Label10;
   TLabel *Label11;
   TEdit *edWidth;
   TEdit *edHeight;
+  TEdit *Edit6;
+  TUpDown *udEndSteps;
+  TEdit *Edit7;
+  TUpDown *udStartSteps;
+  TComboBox *cmbStyle;
   TPopupMenu *PopupMenu1;
   TMenuItem *Examplemenu1;
   TMenuItem *N1;

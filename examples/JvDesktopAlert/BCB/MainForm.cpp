@@ -43,6 +43,7 @@ __fastcall TfrmMain::TfrmMain(TComponent* Owner)
   : TForm(Owner)
 {
   FCount = 0;
+  cmbStyle->ItemIndex = 0;
 }
 //---------------------------------------------------------------------------
 
@@ -78,7 +79,7 @@ void __fastcall TfrmMain::btnPreviewClick(TObject *Sender)
     DA->OnMessageClick = DoMessageClick;
     DA->OnShow = DoAlertShow;
     DA->OnClose = DoAlertClose;
-    FOptions = TJvDesktopAlertOptions() << daoCanFade;
+    FOptions = TJvDesktopAlertOptions();
     DA->Options = FOptions;
     DA->Location->AlwaysResetPosition = false;
     DA->Location->Position = static_cast<TJvDesktopAlertPosition>(cbLocation->ItemIndex);
@@ -89,9 +90,12 @@ void __fastcall TfrmMain::btnPreviewClick(TObject *Sender)
       DA->Location->Left = random(Screen->Width - 200);
       DA->Location->Top =  random(Screen->Height - 100);
     }
-    DA->FadeInTime = udFadeIn->Position;
-    DA->WaitTime  = udWait->Position; //  + Random(WaitTime);
-    DA->FadeOutTime = udFadeOut->Position;
+    DA->AlertStyle = static_cast<TJvAlertStyle>(cmbStyle->ItemIndex);
+    DA->StyleHandler->StartInterval = udFadeIn->Position;
+    DA->StyleHandler->StartSteps = udStartSteps->Position;
+    DA->StyleHandler->DisplayDuration = udWait->Position; //  + Random(WaitTime);
+    DA->StyleHandler->EndInterval = udFadeOut->Position;
+    DA->StyleHandler->EndSteps = udEndSteps->Position;
     if (chkClickable->Checked)
       FOptions << daoCanClick;
     if (chkMovable->Checked)

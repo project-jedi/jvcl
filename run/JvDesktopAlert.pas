@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 Hans-Eric Grönlund (stack logic)
+Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +32,7 @@ unit JvDesktopAlert;
 interface
 
 uses
-  Windows, Classes, Controls, Graphics, Forms, Menus, ImgList,
+  Windows, Classes, Controls, Graphics, Forms, ExtCtrls, Menus, ImgList,
   JvComponent, JvBaseDlg, JvDesktopAlertForm;
 
 const
@@ -42,6 +43,14 @@ const
   JvDefaultCaptionToColor = TColor($00944110);
 
 type
+  // The possible animation styles as an enumeration
+  TJvAlertStyle = (asFade, asCenterGrow);
+
+  // The different status a style handler can have
+  TJvStyleHandlerStatus = (hsIdle, hsStartAnim, hsEndAnim, hsDisplay);
+
+  TJvCustomDesktopAlertStyleHandler = class;
+
   TJvDesktopAlertStack = class;
   TJvDesktopAlertChangePersistent = class(TPersistent)
   private
@@ -127,7 +136,7 @@ type
     procedure Assign(Source: TPersistent); override;
   end;
 
-  TJvDesktopAlertOption = (daoCanClick, daoCanMove, daoCanMoveAnywhere, daoCanClose, daoCanFade);
+  TJvDesktopAlertOption = (daoCanClick, daoCanMove, daoCanMoveAnywhere, daoCanClose);
   TJvDesktopAlertOptions = set of TJvDesktopAlertOption;
 
   TJvDesktopAlert = class(TJvCommonDialogP)
@@ -145,6 +154,8 @@ type
     FOnMouseLeave: TNotifyEvent;
     FData: TObject;
     FAutoFocus: Boolean;
+    FAlertStyle: TJvAlertStyle;
+    FStyleHandler: TJvCustomDesktopAlertStyleHandler;
     function GetStacker: TJvDesktopAlertStack;
     procedure SetButtons(const Value: TJvDesktopAlertButtons);
     procedure SetColors(const Value: TJvDesktopAlertColors);
@@ -162,16 +173,9 @@ type
     procedure InternalOnMove(Sender: TObject);
     function GetAlertStack: TJvDesktopAlertStack;
     procedure SetAlertStack(const Value: TJvDesktopAlertStack);
-    function GetFadeInTime: Integer;
-    function GetFadeOutTime: Integer;
     function GetFont: TFont;
     function GetHeaderFont: TFont;
     function GetImage: TPicture;
-    function GetAlphaBlendValue: Byte;
-    function GetWaitTime: Integer;
-    procedure SetFadeInTime(const Value: Integer);
-    procedure SetFadeOutTime(const Value: Integer);
-    procedure SetAlphaBlendValue(const Value: Byte);
     function GetDropDownMenu: TPopupMenu;
     function GetHeaderText: string;
     function GetMessageText: string;
@@ -186,10 +190,12 @@ type
     procedure SetHint(const Value: string);
     procedure SetParentFont(const Value: Boolean);
     procedure SetShowHint(const Value: Boolean);
-    procedure SetWaitTime(const Value: Integer);
     procedure SetOptions(const Value: TJvDesktopAlertOptions);
     function GetCloseButtonClick: TNotifyEvent;
     procedure SetCloseButtonClick(const Value: TNotifyEvent);
+    procedure SetAlertStyle(const Value: TJvAlertStyle);
+    procedure SetStyleHandler(
+      const Value: TJvCustomDesktopAlertStyleHandler);
   protected
     FFormButtons: array of TControl;
     FDesktopForm: TJvFormDesktopAlert;
@@ -201,8 +207,10 @@ type
     procedure Close(Immediate: Boolean);
     procedure Execute; override;
     property Data: TObject read FData write FData;
+    property StyleHandler: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
+    property AlertStyle: TJvAlertStyle read FAlertStyle write SetAlertStyle default asFade; 
     property AutoFocus: Boolean read FAutoFocus write FAutoFocus default False;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
@@ -212,7 +220,7 @@ type
     property ShowHint: Boolean read GetShowHint write SetShowHint;
     property Font: TFont read GetFont write SetFont;
     property ParentFont: Boolean read GetParentFont write SetParentFont;
-    property Options: TJvDesktopAlertOptions read FOptions write SetOptions default [daoCanClick..daoCanFade];
+    property Options: TJvDesktopAlertOptions read FOptions write SetOptions default [daoCanClick..daoCanClose];
     property Colors: TJvDesktopAlertColors read FColors write SetColors;
     property Buttons: TJvDesktopAlertButtons read FButtons write SetButtons;
     property Location: TJvDesktopAlertLocation read FLocation write SetLocation;
@@ -221,10 +229,8 @@ type
     property DropDownMenu: TPopupMenu read GetDropDownMenu write SetDropDownMenu;
     property PopupMenu: TPopupMenu read GeTPopupMenu write SeTPopupMenu;
 
-    property FadeInTime: Integer read GetFadeInTime write SetFadeInTime default 25;
-    property FadeOutTime: Integer read GetFadeOutTime write SetFadeOutTime default 50;
-    property WaitTime: Integer read GetWaitTime write SetWaitTime default 1400;
-    property AlphaBlendValue: Byte read GetAlphaBlendValue write SetAlphaBlendValue default 255;
+    // This property is equivalent to StyleHandler, it is just renamed to look better in the inspector
+    property StyleOptions: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnCloseButtonClick: TNotifyEvent read GetCloseButtonClick write SetCloseButtonClick;
@@ -256,16 +262,223 @@ type
     property Position: TJvDesktopAlertPosition read FPosition write SetPosition default dapBottomRight;
   end;
 
+  // Common ancestor of all the alert styles for a TJvFormDesktopAlert
+  TJvCustomDesktopAlertStyleHandler = class(TPersistent)
+  private
+    FAnimTimer: TTimer;
+    FOwnerForm: TJvFormDesktopAlert;
+    FStartSteps: Cardinal;
+    FEndSteps: Cardinal;
+    FEndInterval: Cardinal;
+    FStartInterval: Cardinal;
+    FDisplayDuration: Cardinal;
+    FCurrentStep: Cardinal;
+    FStatus: TJvStyleHandlerStatus;
+    procedure SetDisplayDuration(const Value: Cardinal);
+    procedure SetOwnerForm(const Value: TJvFormDesktopAlert);
+    function GetActive: Boolean;
+
+  protected
+    procedure SetEndInterval(const Value: Cardinal); virtual;
+    procedure SetEndSteps(const Value: Cardinal); virtual;
+    procedure SetStartInterval(const Value: Cardinal); virtual;
+    procedure SetStartSteps(const Value: Cardinal); virtual;
+
+    // This procedure will be called for each step of the starting animation
+    // It will be called StartSteps time, every StartInterval milliseconds
+    // The implementation here only ensures that once the number of steps
+    // is reached, the timer is stopped
+    procedure StartAnimTimer(Sender: TObject); virtual;
+
+    // This procedure will be called for each step of the ending animation
+    // It will be called EndSteps time, every EndInterval milliseconds
+    // The implementation here only ensures that once the number of steps
+    // is reached, the timer is stopped and then calls DoDisplay
+    procedure EndAnimTimer(Sender: TObject); virtual;
+
+    // This procedure will be called once after DisplayDuration
+    // (if it is > 0) when the start animation is finished.
+    procedure DisplayTimer(Sender: TObject); virtual;
+
+    // This procedure is called just before the start animation timer
+    // is enabled. Use it to setup initial values required for the
+    // animation
+    // As implemented in this base class, the owner form is shown 
+    procedure PrepareStartAnimation; virtual;
+
+    // This procedure is called just after the start animation has finished
+    // Use it to set the final values of the animation
+    procedure FinalizeStartAnimation; virtual; abstract;
+
+    // This procedure is called just before the end animation timer
+    // is enabled. Use it to setup initial values required for the
+    // animation 
+    procedure PrepareEndAnimation; virtual; abstract;
+
+    // This procedure is called just after the end animation has finished
+    // Use it to set the final values of the animation
+    // As implemented in this base class, this closes the owner form.
+    // Note: It is required to close the form or the end animation
+    // will keep being repeated
+    procedure FinalizeEndAnimation; virtual;
+
+    // The timer used for all animations and waits
+    property AnimTimer: TTimer read FAnimTimer;
+
+  public
+    constructor Create(OwnerForm: TJvFormDesktopAlert); virtual;
+    destructor Destroy; override;
+
+    // Sets up the timer to call StartAnimTimer on the correct interval
+    // then show the owner form.
+    // If StartSteps is not greater than 0, the animation will not start
+    // and the form will not be shown.
+    procedure DoStartAnimation; virtual;
+
+    // Sets up the timer to call EndAnimTimer on the correct interval
+    // If EndSteps is not greater than 0, the animation will not start
+    procedure DoEndAnimation; virtual;
+
+    // Sets up the timer to call DisplayTimer after the correct delay
+    // If DisplayDuration is equal to 0, the timer is not enabled and
+    // DisplayTimer will never be called
+    procedure DoDisplay; virtual;
+
+    // Aborts the current animation, if any. Will call the proper Finalize
+    // function as applicable. The middle wait is NOT aborted by a call
+    // to this function
+    procedure AbortAnimation; virtual;
+
+    // The owner form, the form to which the style is associated.
+    // This value MUST NOT be nil when any of the DoXXXX function is called
+    property OwnerForm: TJvFormDesktopAlert read FOwnerForm write SetOwnerForm;
+
+    // The current step in the animation (starts at 0, use Active to know
+    // if an animation or wait is in progress). 
+    property CurrentStep: Cardinal read FCurrentStep;
+
+    // Returns AnimTimer.Enabled
+    property Active: Boolean read GetActive;
+
+    // Returns the status of the handler
+    property Status: TJvStyleHandlerStatus read FStatus;
+
+  published
+    // The duration between each step of the start animation
+    property StartInterval: Cardinal read FStartInterval write SetStartInterval;
+
+    // The number of steps in the start animation
+    property StartSteps: Cardinal read FStartSteps write SetStartSteps;
+
+    // The duration between each step of the end animation
+    property EndInterval: Cardinal read FEndInterval write SetEndInterval;
+
+    // The number of steps in the end animation
+    property EndSteps: Cardinal read FEndSteps write SetEndSteps;
+
+    // The duration of the middle wait (between the end of the start
+    // animation and the beginning of the end animation)
+    property DisplayDuration: Cardinal read FDisplayDuration write SetDisplayDuration;
+  end;
+
+  // This style will make the form fade in and fade out.
+  // NOTE: This is only supported by Delphi or C++ Builder 6 and above
+  // NOTE: Even if the compiler supports it, this only works if the
+  //       operating system is Windows 2000 or Windows XP
+  TJvFadeAlertStyleHandler = class (TJvCustomDesktopAlertStyleHandler)
+  private
+    FMinAlphaBlendValue: Byte;
+    FCurrentAlphaBlendValue: Byte;
+    FMaxAlphaBlendValue: Byte;
+    procedure SetMinAlphaBlendValue(const Value: Byte);
+    procedure SetMaxAlphaBlendValue(const Value: Byte);
+
+  protected
+    procedure StartAnimTimer(Sender: TObject); override;
+    procedure EndAnimTimer(Sender: TObject); override;
+
+    // Applies the current alpha blend value to the owner form
+    procedure DoAlphaBlend(Value: Byte);
+
+    procedure PrepareStartAnimation; override;
+    procedure FinalizeStartAnimation; override;
+    procedure PrepareEndAnimation; override;
+    procedure FinalizeEndAnimation; override;
+
+  public
+    constructor Create(OwnerForm: TJvFormDesktopAlert); override;
+
+    procedure AbortAnimation; override;
+
+  published
+    property MinAlphaBlendValue: Byte read FMinAlphaBlendValue write SetMinAlphaBlendValue default 0;
+    property MaxAlphaBlendValue: Byte read FMaxAlphaBlendValue write SetMaxAlphaBlendValue default 255;
+
+    property CurrentAlphaBlendValue: Byte read FCurrentAlphaBlendValue;
+
+    property StartInterval default 25;
+    property StartSteps default 10;
+    property EndInterval default 50;
+    property EndSteps default 10;
+    property DisplayDuration default 1400;
+  end;
+
+  TJvCenterGrowAlertStyleHandler = class(TJvCustomDesktopAlertStyleHandler)
+  private
+    FMaxGrowthPercentage: Double;
+    FMinGrowthPercentage: Double;
+    procedure SetMaxGrowthPercentage(const Value: Double);
+    procedure SetMinGrowthPercentage(const Value: Double);
+  protected
+    procedure StartAnimTimer(Sender: TObject); override;
+    procedure EndAnimTimer(Sender: TObject); override;
+
+    // Applies the current region growth percentage value to the owner form
+    procedure DoGrowRegion(Percentage: Double);
+
+    procedure PrepareStartAnimation; override;
+    procedure FinalizeStartAnimation; override;
+    procedure PrepareEndAnimation; override;
+    procedure FinalizeEndAnimation; override;
+
+  public
+    constructor Create(OwnerForm: TJvFormDesktopAlert); override;
+
+    procedure AbortAnimation; override;
+
+  published
+    property StartInterval default 25;
+    property StartSteps default 10;
+    property EndInterval default 50;
+    property EndSteps default 10;
+    property DisplayDuration default 1400;
+
+    property MinGrowthPercentage: Double read FMinGrowthPercentage write SetMinGrowthPercentage;
+    property MaxGrowthPercentage: Double read FMaxGrowthPercentage write SetMaxGrowthPercentage;
+  end;
+
+  function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
+
 implementation
 
 uses
-  JvJVCLUtils, JvTypes, JvFinalize;
+  SysUtils, JvJVCLUtils, JvTypes, JvFinalize;
 
 const
   sUnitName = 'JvDesktopAlert';
 
 var
   FGlobalStacker: TJvDesktopAlertStack = nil;
+
+function CreateHandlerForStyle(Style: TJvAlertStyle; OwnerForm: TJvFormDesktopAlert): TJvCustomDesktopAlertStyleHandler;
+begin
+  case Style of
+    asFade: Result := TJvFadeAlertStyleHandler.Create(OwnerForm);
+    asCenterGrow: Result := TJvCenterGrowAlertStyleHandler.Create(OwnerForm);
+    else
+      raise Exception.Create('');
+  end;
+end;
 
 function GlobalStacker: TJvDesktopAlertStack;
 begin
@@ -479,13 +692,11 @@ begin
   FButtons := TJvDesktopAlertButtons.Create(Self);
   FLocation := TJvDesktopAlertLocation.Create;
   FLocation.OnChange := DoLocationChange;
-  FDesktopForm := TJvFormDesktopAlert.CreateNew(Self, 1);
-//  FDesktopForm.FreeNotification(Self);
-  FOptions := [daoCanClick..daoCanFade];
-  FadeInTime := 25;
-  FadeOutTime := 50;
-  WaitTime := 1400;
-  AlphaBlendValue := 255;
+
+  FDesktopForm := TJvFormDesktopAlert.Create(Self);
+  AlertStyle := asFade;
+
+  FOptions := [daoCanClick..daoCanClose];
 end;
 
 destructor TJvDesktopAlert.Destroy;
@@ -497,6 +708,7 @@ begin
   FLocation.Free;
   GetStacker.Remove(FDesktopForm);
   FDesktopForm.Release;
+  FStyleHandler.Free;
   inherited Destroy;
 end;
 
@@ -507,7 +719,7 @@ begin
     if Immediate then
       FDesktopForm.Close
     else
-      FDesktopForm.FadeClose;
+      FStyleHandler.DoEndAnimation;
   end;
 end;
 
@@ -601,20 +813,6 @@ begin
   if not Assigned(FDesktopForm.tbClose.OnClick) then
     FDesktopForm.tbClose.OnClick := FDesktopForm.acCloseExecute;
 
-  if not (daoCanFade in Options) then
-  begin
-    FDesktopForm.FadeInTime := 0;
-    FDesktopForm.FadeOutTime := 0;
-  end
-  else
-  begin
-    FDesktopForm.FadeInTime := FadeInTime;
-    FDesktopForm.FadeOutTime := FadeOutTime;
-  end;
-
-  FDesktopForm.WaitTime := WaitTime;
-  FDesktopForm.MaxAlphaBlendValue := AlphaBlendValue;
-
   FDesktopForm.tbDropDown.DropDownMenu := DropDownMenu;
   FDesktopForm.imIcon.Picture := Image;
 
@@ -672,16 +870,6 @@ begin
   Result := FDesktopForm.tbDropDown.DropDownMenu;
 end;
 
-function TJvDesktopAlert.GetFadeInTime: Integer;
-begin
-  Result := FDesktopForm.FadeInTime;
-end;
-
-function TJvDesktopAlert.GetFadeOutTime: Integer;
-begin
-  Result := FDesktopForm.FadeOutTime;
-end;
-
 function TJvDesktopAlert.GetFont: TFont;
 begin
   Result := FDesktopForm.lblText.Font;
@@ -700,11 +888,6 @@ end;
 function TJvDesktopAlert.GetImage: TPicture;
 begin
   Result := FDesktopForm.imIcon.Picture;
-end;
-
-function TJvDesktopAlert.GetAlphaBlendValue: Byte;
-begin
-  Result := FDesktopForm.MaxAlphaBlendValue;
 end;
 
 function TJvDesktopAlert.GetMessageText: string;
@@ -733,11 +916,6 @@ begin
     Result := GlobalStacker
   else
     Result := FStacker;
-end;
-
-function TJvDesktopAlert.GetWaitTime: Integer;
-begin
-  Result := FDesktopForm.WaitTime;
 end;
 
 function TJvDesktopAlert.GetHint: string;
@@ -829,16 +1007,6 @@ begin
   FDesktopForm.tbDropDown.DropDownMenu := Value;
 end;
 
-procedure TJvDesktopAlert.SetFadeInTime(const Value: Integer);
-begin
-  FDesktopForm.FadeInTime := Value;
-end;
-
-procedure TJvDesktopAlert.SetFadeOutTime(const Value: Integer);
-begin
-  FDesktopForm.FadeOutTime := Value;
-end;
-
 procedure TJvDesktopAlert.SetFont(const Value: TFont);
 begin
   FDesktopForm.lblText.Font := Value;
@@ -879,11 +1047,6 @@ begin
   //
 end;
 
-procedure TJvDesktopAlert.SetAlphaBlendValue(const Value: Byte);
-begin
-  FDesktopForm.MaxAlphaBlendValue := Value;
-end;
-
 procedure TJvDesktopAlert.SetMessageText(const Value: string);
 begin
   FDesktopForm.lblText.Caption := Value;
@@ -908,11 +1071,6 @@ end;
 function TJvDesktopAlert.Showing: Boolean;
 begin
   Result := (FDesktopForm <> nil) and FDesktopForm.Showing;
-end;
-
-procedure TJvDesktopAlert.SetWaitTime(const Value: Integer);
-begin
-  FDesktopForm.WaitTime := Value;
 end;
 
 procedure TJvDesktopAlert.SetOptions(const Value: TJvDesktopAlertOptions);
@@ -1086,6 +1244,358 @@ begin
         end;
     end;
   end;
+end;
+
+procedure TJvDesktopAlert.SetAlertStyle(const Value: TJvAlertStyle);
+begin
+  if (FAlertStyle <> Value) or (FStyleHandler = nil) then
+  begin
+    FAlertStyle := Value;
+    FStyleHandler.Free;
+    FStyleHandler := CreateHandlerForStyle(AlertStyle, FDesktopForm);
+  end;
+end;
+
+//=== { TJvCustomDesktopAlertStyle } ================================================
+
+procedure TJvCustomDesktopAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  if Status = hsStartAnim then
+    FinalizeStartAnimation
+  else if Status = hsEndAnim then
+    FinalizeEndAnimation;
+end;
+
+constructor TJvCustomDesktopAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
+begin
+  inherited Create;
+  FAnimTimer := TTimer.Create(nil);
+  FAnimTimer.Enabled := False;
+
+  FOwnerForm := OwnerForm;
+end;
+
+destructor TJvCustomDesktopAlertStyleHandler.Destroy;
+begin
+  FAnimTimer.Free;
+  inherited;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.DoEndAnimation;
+begin
+  if EndSteps > 0 then
+  begin
+    AnimTimer.Enabled := False;
+    AnimTimer.OnTimer := EndAnimTimer;
+    AnimTimer.Interval := EndInterval;
+    FCurrentStep := 0;
+    PrepareEndAnimation;
+    AnimTimer.Enabled := True;
+  end;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.DoDisplay;
+begin
+  if DisplayDuration > 0 then
+  begin
+    AnimTimer.Enabled := False;
+    AnimTimer.OnTimer := DisplayTimer;
+    AnimTimer.Interval := DisplayDuration;
+    FCurrentStep := 0;
+    AnimTimer.Enabled := True;
+  end;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.DoStartAnimation;
+begin
+  if StartSteps > 0 then
+  begin
+    AnimTimer.Enabled := False;
+    AnimTimer.OnTimer := StartAnimTimer;
+    AnimTimer.Interval := StartInterval;
+    FCurrentStep := 0;
+    PrepareStartAnimation;
+    AnimTimer.Enabled := True;
+  end;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.EndAnimTimer(Sender: TObject);
+begin
+  Inc(FCurrentStep);
+  if CurrentStep >= EndSteps then
+  begin
+    AnimTimer.Enabled := False;
+    FinalizeEndAnimation;
+  end;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.DisplayTimer(Sender: TObject);
+begin
+  AnimTimer.Enabled := False;
+end;
+
+function TJvCustomDesktopAlertStyleHandler.GetActive: Boolean;
+begin
+  Result := AnimTimer.Enabled;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetEndInterval(const Value: Cardinal);
+begin
+  FEndInterval := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetEndSteps(const Value: Cardinal);
+begin
+  FEndSteps := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetDisplayDuration(
+  const Value: Cardinal);
+begin
+  FDisplayDuration := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetOwnerForm(
+  const Value: TJvFormDesktopAlert);
+begin
+  FOwnerForm := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetStartInterval(
+  const Value: Cardinal);
+begin
+  FStartInterval := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.SetStartSteps(const Value: Cardinal);
+begin
+  FStartSteps := Value;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.StartAnimTimer(Sender: TObject);
+begin
+  Inc(FCurrentStep);
+  if CurrentStep >= StartSteps then
+  begin
+    AnimTimer.Enabled := False;
+    FinalizeStartAnimation;
+    DoDisplay;
+  end;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.FinalizeEndAnimation;
+begin
+  OwnerForm.Close;
+end;
+
+procedure TJvCustomDesktopAlertStyleHandler.PrepareStartAnimation;
+begin
+  OwnerForm.Show;
+end;
+
+//=== { TJvFadingAlertStyle } ================================================
+
+type
+  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+
+const
+  WS_EX_LAYERED = $00080000;
+  LWA_ALPHA = $00000002;
+
+procedure TJvFadeAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  DoAlphaBlend(MaxAlphaBlendValue);
+end;
+
+constructor TJvFadeAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
+begin
+  inherited;
+
+  // Set default values
+  StartInterval := 25;
+  StartSteps := 10;
+  EndInterval := 50;
+  EndSteps := 10;
+  DisplayDuration := 1400;
+  MinAlphaBlendValue := 0;
+  MaxAlphaBlendValue := 255;
+end;
+
+procedure TJvFadeAlertStyleHandler.DoAlphaBlend(Value: Byte);
+var
+  DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
+  CurrentStyle: Cardinal;
+
+  procedure InitProcs;
+  const
+    sUser32 = 'User32.dll';
+  var
+    ModH: HMODULE;
+  begin
+    ModH := GetModuleHandle(sUser32);
+    if ModH <> 0 then
+      @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes')
+    else
+      @DynamicSetLayeredWindowAttributes := nil;
+  end;
+begin
+  InitProcs;
+  if OwnerForm.HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
+  begin
+    CurrentStyle := GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE);
+    if (CurrentStyle and WS_EX_LAYERED) = 0 then
+      SetWindowLong(OwnerForm.Handle, GWL_EXSTYLE, GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
+    DynamicSetLayeredWindowAttributes(OwnerForm.Handle, 0, Value, LWA_ALPHA);
+  end;
+end;
+
+procedure TJvFadeAlertStyleHandler.EndAnimTimer(Sender: TObject);
+begin
+  inherited;
+  DoAlphaBlend(MaxAlphaBlendValue - ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
+end;
+
+procedure TJvFadeAlertStyleHandler.FinalizeEndAnimation;
+begin
+  DoAlphaBlend(MinAlphaBlendValue);
+  inherited;  // Do not forget to call inherited, to hide the form
+end;
+
+procedure TJvFadeAlertStyleHandler.FinalizeStartAnimation;
+begin
+  DoAlphaBlend(MaxAlphaBlendValue);
+end;
+
+procedure TJvFadeAlertStyleHandler.PrepareEndAnimation;
+begin
+  DoAlphaBlend(MaxAlphaBlendValue);
+end;
+
+procedure TJvFadeAlertStyleHandler.PrepareStartAnimation;
+begin
+  DoAlphaBlend(MinAlphaBlendValue);
+  inherited;
+end;
+
+procedure TJvFadeAlertStyleHandler.SetMaxAlphaBlendValue(const Value: Byte);
+begin
+  FMaxAlphaBlendValue := Value;
+end;
+
+procedure TJvFadeAlertStyleHandler.SetMinAlphaBlendValue(const Value: Byte);
+begin
+  FMinAlphaBlendValue := Value;
+end;
+
+procedure TJvFadeAlertStyleHandler.StartAnimTimer(Sender: TObject);
+begin
+  DoAlphaBlend(MinAlphaBlendValue + ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
+  inherited;
+end;
+
+procedure TJvDesktopAlert.SetStyleHandler(
+  const Value: TJvCustomDesktopAlertStyleHandler);
+begin
+  FStyleHandler.Assign(Value);
+end;
+
+//=== { TJvCenterGrowAlertStyleHandler } ================================================
+
+procedure TJvCenterGrowAlertStyleHandler.AbortAnimation;
+begin
+  AnimTimer.Enabled := False;
+  DoGrowRegion(MaxGrowthPercentage);
+end;
+
+constructor TJvCenterGrowAlertStyleHandler.Create(
+  OwnerForm: TJvFormDesktopAlert);
+begin
+  inherited;
+
+  // Set default values
+  StartInterval := 25;
+  StartSteps := 10;
+  EndInterval := 50;
+  EndSteps := 10;
+  DisplayDuration := 1400;
+
+  MinGrowthPercentage := 0;
+  MaxGrowthPercentage := 100;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.DoGrowRegion(Percentage: Double);
+var
+  RegionRect: TRect;
+  Region: HRGN;
+  RegionHeight: Integer;
+  RegionWidth : Integer;
+begin
+  RegionHeight := Round(Percentage*OwnerForm.Height/100);
+  RegionWidth := Round(Percentage*OwnerForm.Width/100);
+
+  RegionRect.Left := (OwnerForm.Width - RegionWidth) div 2;
+  RegionRect.Right := RegionRect.Left + RegionWidth;
+  RegionRect.Top := (OwnerForm.Height - RegionHeight) div 2;
+  RegionRect.Bottom := RegionRect.Top + RegionHeight;
+
+  Region := CreateRectRgnIndirect(RegionRect);
+  SetWindowRgn(OwnerForm.Handle, Region, True);
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.EndAnimTimer(Sender: TObject);
+begin
+  inherited;
+  DoGrowRegion(MaxGrowthPercentage - ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.FinalizeEndAnimation;
+begin
+  DoGrowRegion(MinGrowthPercentage);
+  inherited;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.FinalizeStartAnimation;
+begin
+  DoGrowRegion(MaxGrowthPercentage);
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.PrepareEndAnimation;
+begin
+  DoGrowRegion(MaxGrowthPercentage);
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.PrepareStartAnimation;
+begin
+  DoGrowRegion(MinGrowthPercentage);
+  inherited;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.SetMaxGrowthPercentage(
+  const Value: Double);
+begin
+  FMaxGrowthPercentage := Value;
+  if FMaxGrowthPercentage < 0 then
+    FMaxGrowthPercentage := 0;
+  if FMaxGrowthPercentage > 100 then
+    FMaxGrowthPercentage := 100;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.SetMinGrowthPercentage(
+  const Value: Double);
+begin
+  FMinGrowthPercentage := Value;
+  if FMinGrowthPercentage < 0 then
+    FMinGrowthPercentage := 0;
+  if FMinGrowthPercentage > 100 then
+    FMinGrowthPercentage := 100;
+end;
+
+procedure TJvCenterGrowAlertStyleHandler.StartAnimTimer(Sender: TObject);
+begin
+  DoGrowRegion(MinGrowthPercentage + ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
+  inherited;
 end;
 
 initialization
