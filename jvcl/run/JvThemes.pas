@@ -791,12 +791,13 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
 
 { IsMouseOver returns True if the mouse is over the control. }
 function IsMouseOver(Control: TControl): Boolean;
-
+{$IFDEF VCL}
 { GetParentBackground returns True if the Control has the csParentPackground
   ControlStyle }
 function GetParentBackground(Control: TWinControl): Boolean;
 { SetParentBackground sets the Control's csParentPackground ControlStyle }
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
+{$ENDIF}
 
 implementation
 
@@ -1090,6 +1091,7 @@ begin
   Result := PtInRect(Control.ClientRect, Pt);
 end;
 
+{$IFDEF VCL}
 function GetParentBackground(Control: TWinControl): Boolean;
 begin
   Result := csParentBackground in GetThemeStyle(Control);
@@ -1106,6 +1108,7 @@ begin
     Control.Invalidate;
   end;
 end;
+{$ENDIF}
 
 {$IFDEF JVCLThemesEnabled}
 
