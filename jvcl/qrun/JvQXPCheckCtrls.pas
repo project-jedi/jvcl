@@ -160,7 +160,6 @@ begin
   FBgGradient := TBitmap.Create; // background gradient
   FCkGradient := TBitmap.Create; // clicked gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
-  DoubleBuffered := true;
 end;
 
 destructor TJvXPCustomCheckControl.Destroy;
@@ -234,7 +233,6 @@ begin
     Rect := GetClientRect;
     Brush.Color := TJvXPWinControl(Parent).Color;
     FillRect(Rect);
-    
     // draw designtime rect.
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -278,8 +276,12 @@ var
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
     
+    Bitmap.Canvas.Start;
     
-    Canvas.Draw( R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1, Bitmap);
+    BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
+      FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+    
+    Bitmap.Canvas.Stop;
     
   end;
 
@@ -309,10 +311,13 @@ begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
             
+            FBgGradient.Canvas.Start;
             
-            Draw(R.Left + 3 + ClipW,
-                 (ClientHeight - FCheckSize) div 2 + 1
-                 + ClipW, FBgGradient);
+            BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
+              ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
+              FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+            
+            FBgGradient.Canvas.Stop;
             
           end
           else

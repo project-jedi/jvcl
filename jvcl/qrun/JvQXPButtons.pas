@@ -347,7 +347,6 @@ begin
   FCkGradient := TBitmap.Create; // clicked gradient
   FFcGradient := TBitmap.Create; // focused gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
-  DoubleBuffered := True;
 end;
 
 destructor TJvXPCustomButton.Destroy;
@@ -402,7 +401,7 @@ begin
     FDefault := Value;
     
     
-    Perform(CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
+    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl));
     
   end;
 end;
@@ -584,7 +583,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := Self.Color;
-    
+    FillRect(Rect);
     // draw gradient borders.
     if IsSpecialDrawState then
     begin
@@ -728,7 +727,7 @@ begin
 
       // draw caption.
       
-      SetPenColor(Handle, Font.Color);
+      SetPainterFont(Handle, Font);
       
       SetBkMode(Handle, Transparent);
       JvXPRenderText(Self, Canvas, Caption, Font, Enabled, FShowAccelChar, Rect, Flags);
