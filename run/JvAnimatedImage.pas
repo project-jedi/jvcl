@@ -86,12 +86,14 @@ type
     FCenter: Boolean;
     FStretch: Boolean;
     FTransparentColor: TColor;
-    FOpaque: Boolean;
     FTimerRepaint: Boolean;
     FOnFrameChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     FAsyncDrawing: Boolean;
+    {$IFDEF VCL}
+    FTransparent: Boolean;
+    {$ENDIF VCL}
     procedure DefineBitmapSize;
     procedure ResetImageBounds;
     function GetInterval: Cardinal;
@@ -107,7 +109,8 @@ type
     procedure SetStretch(Value: Boolean);
     procedure SetTransparentColor(Value: TColor);
     {$IFDEF VCL}
-    procedure SetOpaque(Value: Boolean);
+    procedure SetTransparent(const Value:Boolean);
+    procedure ReadOpaque(Reader: TReader);
     {$ENDIF VCL}
     procedure ImageChanged(Sender: TObject);
     procedure UpdateInactive;
@@ -125,6 +128,9 @@ type
     procedure FrameChanged; dynamic;
     procedure Start; dynamic;
     procedure Stop; dynamic;
+    {$IFDEF VCL}
+    procedure DefineProperties(Filer: TFiler); override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -149,7 +155,7 @@ type
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor
       stored TransparentStored;
     {$IFDEF VCL}
-    property Opaque: Boolean read FOpaque write SetOpaque default False;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     {$ENDIF VCL}
     property Color;
     property Cursor;
@@ -425,14 +431,12 @@ end;
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FOpaque := True;
-  {$ENDIF VisualCLX}
   FTimer := TJvTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 100;
   {$IFDEF VCL}
   AutoSize := True;
+  FTransparent := False;
   {$ENDIF VCL}
   FGlyph := TJvLockedBitmap.Create;
   FGraphic := FGlyph;
@@ -505,13 +509,13 @@ begin
 end;
 
 {$IFDEF VCL}
-procedure TJvAnimatedImage.SetOpaque(Value: Boolean);
+procedure TJvAnimatedImage.SetTransparent(const Value:Boolean);
 begin
-  if Value <> FOpaque then
+  if Value <> FTransparent then
   begin
     Lock;
     try
-      FOpaque := Value;
+      FTransparent := Value;
     finally
       Unlock;
     end;
@@ -712,7 +716,7 @@ begin
     BmpIndex := FGlyphNum;
   { copy image from parent and back-level controls }
   {$IFDEF VCL}
-  if not FOpaque then
+  if Transparent then
     CopyParentImage(Self, Canvas);
   {$ENDIF VCL}
   if (FImageWidth > 0) and (FImageHeight > 0) then
@@ -753,7 +757,7 @@ end;
 procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
-  if (not FOpaque) or FGlyph.Empty then
+  if {$IFDEF VCL}Transparent or {$ENDIF VCL}FGlyph.Empty then
     PaintDesignRect;
 end;
 
@@ -878,6 +882,17 @@ begin
     end;
   end;
 end;
+{$IFDEF VCL}
+procedure TJvAnimatedImage.ReadOpaque(Reader:TReader);
+begin
+  Transparent := not Reader.ReadBoolean;
+end;
 
+procedure TJvAnimatedImage.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('Opaque', ReadOpaque, nil, false);
+end;
+{$ENDIF VCL}
 end.
 
