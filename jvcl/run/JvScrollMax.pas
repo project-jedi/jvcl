@@ -70,7 +70,6 @@ type
     FParentBeveled: Boolean;
     FParentButtonFont: Boolean;
     FParentButtonVisible: Boolean;
-    FOnResize: TNotifyEvent;
     FOnExpand: TNotifyEvent;
     FOnCollapse: TNotifyEvent;
     FOnCanCollapse: TOnCanCollapse;
@@ -97,7 +96,7 @@ type
     procedure CMParentButtonVisibleChanged(var Msg: TMessage); message CM_PARENTBUTTONVISIBLECHANGED;
   protected
     procedure TextChanged; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
 
     procedure Loaded; override;
     procedure Paint; override;
@@ -127,7 +126,7 @@ type
     property ParentBeveled: Boolean read FParentBeveled write SetParentBeveled stored IsBeveledStored;
     property ParentButtonVisible: Boolean read FParentButtonVisible write SetParentButtonVisible default True;
     property ParentButtonFont: Boolean read FParentButtonFont write SetParentButtonFont default True;
-    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnResize;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnCanExpand: TOnCanExpand read FOnCanExpand write FOnCanExpand;
@@ -589,13 +588,11 @@ begin
   Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
 end;
 
-procedure TJvScrollMaxBand.Resize;
+procedure TJvScrollMaxBand.DoBoundsChanged;
 begin
   if FExpanded then
     ExpandedHeight := Height;
-  inherited Resize;
-  if Assigned(FOnResize) then
-    FOnResize(Self);
+  inherited DoBoundsChanged;
   if Parent <> nil then
     ScrollMax.CorrectHeight;
 end;

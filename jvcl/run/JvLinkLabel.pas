@@ -415,7 +415,6 @@ procedure TJvCustomLinkLabel.Loaded;
 begin
   inherited Loaded;
   FOriginalCursor := Cursor;
-  Resize;
 end;
 
 procedure TJvCustomLinkLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;

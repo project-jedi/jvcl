@@ -1898,6 +1898,7 @@ begin
   if FScrollBars in [ssVertical, ssBoth] then
     scbVert.Handle := Handle;
   FAllRepaint := True;
+  UpdateEditorSize;
 end;
 
 procedure TJvCustomEditor.SetBorderStyle(Value: TBorderStyle);
@@ -1995,10 +1996,13 @@ var
   P: TPoint;
 begin
   inherited CursorChanged;
-  GetCursorPos(P);
-  P := ScreenToClient(P);
-  if (P.X < GutterWidth) and (Cursor = crIBeam) then
-    SetCursor(Screen.Cursors[crArrow]);
+  if HandleAllocated then
+  begin
+    GetCursorPos(P);
+    P := ScreenToClient(P);
+    if (P.X < GutterWidth) and (Cursor = crIBeam) then
+      SetCursor(Screen.Cursors[crArrow]);
+  end;
 end;
 
 procedure TJvCustomEditor.FontChanged;
@@ -2079,22 +2083,17 @@ const
   BiggestSymbol = 'W';
 var
   I: Integer;
-  //Wi, Ai: Integer;
 begin
-  if csLoading in ComponentState then
+  if (csLoading in ComponentState) or
+    not HandleAllocated then // CreateWnd calls this method in this case
     Exit;
   EditorClient.Canvas.Font := Font;
   FontCacheClear; // clear font cache
-  FCellRect.Height := EditorClient.Canvas.TextHeight(BiggestSymbol) + 1;
 
+  FCellRect.Height := EditorClient.Canvas.TextHeight(BiggestSymbol) + 1;
   // workaround the bug in Windows-9x
   // fixed by Dmitry Rubinstain
   FCellRect.Width := EditorClient.Canvas.TextWidth(BiggestSymbol + BiggestSymbol) div 2;
-
-  //Ai := EditorClient.Canvas.TextWidth('W');
-  //EditorClient.Canvas.Font.Style := [fsBold];
-  //Wi := EditorClient.Canvas.TextWidth('w');
-  //FCellRect.Width := (Wi+Ai) div 2;
 
   for I := 0 to 1024 do
     MyDi[I] := FCellRect.Width;

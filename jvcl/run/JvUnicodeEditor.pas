@@ -685,7 +685,6 @@ type
     property OnGetLineAttr: TOnGetLineAttr read FOnGetLineAttr write FOnGetLineAttr;
     property OnChangeStatus: TOnChangeStatus read FOnChangeStatus write FOnChangeStatus;
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
-    property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -1776,6 +1775,7 @@ begin
   if FScrollBars in [ssVertical, ssBoth] then
     scbVert.Handle := Handle;
   FAllRepaint := True;
+  UpdateEditorSize;
 end;
 
 procedure TJvCustomWideEditor.SetBorderStyle(Value: TBorderStyle);
@@ -1957,9 +1957,9 @@ const
   BiggestSymbol = 'W';
 var
   I: Integer;
-  //Wi, Ai: Integer;
 begin
-  if csLoading in ComponentState then
+  if (csLoading in ComponentState) or
+    not HandleAllocated then // CreateWnd calls this method in this case
     Exit;
   EditorClient.Canvas.Font := Font;
   FontCacheClear; // clear font cache
@@ -1968,11 +1968,6 @@ begin
   // workaround the bug in Windows-9x
   // fixed by Dmitry Rubinstain
   FCellRect.Width := EditorClient.Canvas.TextWidthW(BiggestSymbol + BiggestSymbol) div 2;
-
-  //Ai := EditorClient.Canvas.TextWidthW('W');
-  //EditorClient.Canvas.Font.Style := [fsBold];
-  //Wi := EditorClient.Canvas.TextWidthW('w');
-  //FCellRect.Width := (Wi+Ai) div 2;
 
   for I := 0 to 1024 do
     MyDi[I] := FCellRect.Width;

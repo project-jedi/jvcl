@@ -85,7 +85,7 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     {$IFDEF VisualCLX}
     procedure Paint; override;
     {$ENDIF VisualCLX}
@@ -131,9 +131,9 @@ begin
 end;
 
 
-procedure TJvStatusBar.Resize;
+procedure TJvStatusBar.DoBoundsChanged;
 begin
-  inherited Resize;
+  inherited DoBoundsChanged;
   Realign;
   {$IFDEF COMPILER6_UP}
   MovePanelControls;

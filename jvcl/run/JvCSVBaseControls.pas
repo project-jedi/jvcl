@@ -39,14 +39,15 @@ uses
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, QButtons,
   Types,
   {$ENDIF VisualCLX}
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvComponent;
 
 type
   // (ahuer) changed NameValues: TStringList to TStrings
   TCursorChangedEvent = procedure(Sender: TObject; NameValues: TStrings;
     FieldCount: Integer) of object;
 
-  TJvCSVBase = class(TComponent)
+  TJvCSVBase = class(TJvComponent)
   private
     FDBOpen: Boolean;
     FDB: TStrings;
@@ -126,7 +127,7 @@ type
     property CSVField: string read FCSVField write SetCSVField;
   end;
 
-  TJvCSVNavigator = class(TCustomControl)
+  TJvCSVNavigator = class(TJvCustomControl)
   private
     FbtnFirst: TSpeedButton;
     FbtnPrevious: TspeedButton;
@@ -151,12 +152,12 @@ type
     procedure SetCSVDataBase(const Value: TJvCSVBase);
   protected
     procedure Notification(Acomponent: TComponent; Operation: TOperation); override;
+    procedure DoBoundsChanged; override;
   public
     constructor Create(AOwner: Tcomponent); override;
     {$IFDEF VCL}
     procedure CreateWnd; override;
     {$ENDIF VCL}
-    procedure Resize; override;
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
   end;
@@ -829,13 +830,11 @@ begin
     FCSVDataBase := nil;
 end;
 
-procedure TJvCSVNavigator.Resize;
+procedure TJvCSVNavigator.DoBoundsChanged;
 begin
-  inherited Resize;
   Height := 24;
   if Width < 221 then Width := 221;
-  if Assigned(OnResize) then
-    OnResize(Self);
+  inherited DoBoundsChanged;
 end;
 
 procedure TJvCSVNavigator.SetCSVDataBase(const Value: TJvCSVBase);

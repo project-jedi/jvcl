@@ -124,7 +124,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -303,14 +303,9 @@ begin
 end;
 
 procedure TJvExCheckListBox.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -331,6 +326,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCheckListBox.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCheckListBox.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -341,14 +340,6 @@ end;
 
 procedure TJvExCheckListBox.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCheckListBox.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}

@@ -237,7 +237,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -1393,7 +1393,7 @@ begin
   if Width <> DefBtnWidth then
     Width := DefBtnWidth
   else
-    inherited Resize;
+    inherited Resize; 
 end;
 
 //=== TJvCustomSpinEdit ======================================================
@@ -2192,7 +2192,7 @@ begin
     inherited DoClipboardCut;
 end;
 
-procedure TJvCustomSpinEdit.Resize;
+procedure TJvCustomSpinEdit.DoBoundsChanged;
 var
   MinHeight: Integer;
 begin
@@ -2205,7 +2205,7 @@ begin
   begin
     ResizeButton;
     SetEditRect;
-    inherited Resize;
+    inherited DoBoundsChanged;
   end;
 end;
 

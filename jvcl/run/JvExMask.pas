@@ -121,7 +121,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -246,7 +246,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -459,14 +459,9 @@ begin
 end;
 
 procedure TJvExCustomMaskEdit.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -487,6 +482,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCustomMaskEdit.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCustomMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -497,14 +496,6 @@ end;
 
 procedure TJvExCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCustomMaskEdit.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}
@@ -786,14 +777,9 @@ begin
 end;
 
 procedure TJvExMaskEdit.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -814,6 +800,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExMaskEdit.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -824,14 +814,6 @@ end;
 
 procedure TJvExMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExMaskEdit.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}

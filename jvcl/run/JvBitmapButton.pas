@@ -311,6 +311,7 @@ begin
     MakeLighter;
     MakeNormal;
   end;
+  Resize;
 end;
 
 procedure TJvBitmapButton.SetLatching(const Value: Boolean);

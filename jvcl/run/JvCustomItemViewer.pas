@@ -205,9 +205,6 @@ type
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
-    procedure WMLButtonUp(var Message: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMRButtonDown(var Message: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMCancelMode(var Message: TWMCancelMode); message WM_CANCELMODE;
 
     procedure CMUnselectItem(var Message: TMessage); message CM_UNSELECTITEMS;
@@ -226,8 +223,11 @@ type
     procedure StopScrollTimer;
   protected
     procedure MouseLeave(Control: TControl); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure DoSetFocus(Focuseded: HWND); override;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean); override;
@@ -452,7 +452,7 @@ begin
   if FPattern <> nil then
     ReleasePattern(EvenColor, OddColor);
   FPattern := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvBrushPattern.GetBitmap: TBitmap;
@@ -513,9 +513,9 @@ begin
     BrushPattern.FOddColor := BrushPattern.OddColor;
     BrushPattern.FActive := BrushPattern.Active;
     Change;
-    Exit;
-  end;
-  inherited;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvCustomItemViewerOptions.Change;
@@ -546,7 +546,7 @@ end;
 destructor TJvCustomItemViewerOptions.Destroy;
 begin
   FBrushPattern.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomItemViewerOptions.SetAlignment(const Value: TAlignment);
@@ -880,7 +880,7 @@ end;
 
 constructor TJvCustomItemViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner); 
   ParentColor := False;
   ControlStyle := [csCaptureMouse, csDisplayDragImage, csClickEvents, csOpaque, csDoubleClicks];
   FItems := TList.Create;
@@ -934,7 +934,7 @@ begin
   FItems.Free;
   FOptions.Free;
   FCanvas.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvCustomItemViewer.DoMouseWheel(Shift: TShiftState;
@@ -1221,7 +1221,7 @@ procedure TJvCustomItemViewer.KeyDown(var Key: Word; Shift: TShiftState);
 var
   aIndex: Integer;
 begin
-  inherited;
+  inherited KeyDown(Key, Shift);
   aIndex := -1;
   if Focused then
     case Key of
@@ -1247,7 +1247,7 @@ end;
 
 procedure TJvCustomItemViewer.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   CheckHotTrack;
 end;
 
@@ -1261,9 +1261,11 @@ var
     Result := (R.Top < AClientRect.Bottom) and (R.Bottom > AClientRect.Top) and
       (R.Left < AClientRect.Right) and (R.Right > AClientRect.Left)
   end;
+
 begin
-  //  inherited;
-  if FUpdateCount <> 0 then Exit;
+  //  inherited Paint;
+  if FUpdateCount <> 0 then
+    Exit;
   AClientRect := ClientRect;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Color := Font.Color;
@@ -1515,7 +1517,8 @@ end;
 
 procedure TJvCustomItemViewer.UpdateAll;
 begin
-  if (csDestroying in ComponentState) or (Parent = nil) then Exit;
+  if (csDestroying in ComponentState) or (Parent = nil) then
+    Exit;
   HandleNeeded;
   if not HandleAllocated then Exit;
 
@@ -1605,35 +1608,45 @@ begin
   if Assigned(FOnScroll) then FOnScroll(self);
 end;
 
-procedure TJvCustomItemViewer.WMLButtonDown(var Message: TWMLButtonDown);
-var
-  P: TPoint;
+procedure TJvCustomItemViewer.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  with Message do
+  if Button = mbLeft then
   begin
-    P := SmallPointToPoint(Pos);
-    FTempSelected := ItemAtPos(P.X, P.Y, True);
-    if CanFocus then SetFocus;
+    FTempSelected := ItemAtPos(X, Y, True);
+    if CanFocus then
+      SetFocus;
+  end
+  else if Button = mbRight then
+  begin
+    StopScrollTimer;
+    if Options.RightClickSelect then
+    begin
+      FTempSelected := ItemAtPos(X, Y, True);
+      if CanFocus then
+        SetFocus;
+      SelectedIndex := FTempSelected;
+      Invalidate;
+    end;
   end;
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvCustomItemViewer.WMLButtonUp(var Message: TWMLButtonUp);
+procedure TJvCustomItemViewer.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
-  P: TPoint;
   i: Integer;
 begin
-  with Message do
+  if Button = mbLeft then
   begin
-    P := SmallPointToPoint(Pos);
-    i := ItemAtPos(P.X, P.Y, True);
+    i := ItemAtPos(X, Y, True);
     if (i = FTempSelected) and (i >= 0) and (i < Count) then
     begin
       if Options.MultiSelect then
       begin
-        if (ssCtrl in KeysToShiftState(Keys)) then
+        if (ssCtrl in Shift) then
           ToggleSelection(FTempSelected, True)
-        else if ssShift in KeysToShiftState(Keys) then
+        else if ssShift in Shift then
           ShiftSelection(FTempSelected, True)
         else
         begin
@@ -1645,14 +1658,15 @@ begin
       else
         SelectedIndex := FTempSelected;
     end
-    else if i < 0 then
+    else
+    if i < 0 then
       //    begin
       DoUnSelectItems(-1);
     //      SelectedIndex := -1;
     //    end;
+    FTempSelected := -1;
   end;
-  FTempSelected := -1;
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvCustomItemViewer.WMNCHitTest(var Message: TMessage);
@@ -1668,21 +1682,18 @@ begin
   ControlState := ControlState - [csCustomPaint];
 end;
 
-procedure TJvCustomItemViewer.WMRButtonDown(var Message: TWMRButtonDown);
-var
-  P: TPoint;
+procedure TJvCustomItemViewer.WMVScroll(var Message: TWMVScroll);
 begin
-  StopScrollTimer;
-  if Options.RightClickSelect then
-    with Message do
-    begin
-      P := SmallPointToPoint(Pos);
-      FTempSelected := ItemAtPos(P.X, P.Y, True);
-      if CanFocus then SetFocus;
-      SelectedIndex := FTempSelected;
-      Invalidate;
-    end;
   inherited;
+  UpdateAll;
+  InvalidateClipRect(ClientRect);
+  if Assigned(FOnScroll) then FOnScroll(self);
+end;
+
+procedure TJvCustomItemViewer.WMCancelMode(var Message: TWMCancelMode);
+begin
+  inherited;
+  StopScrollTimer;
 end;
 
 procedure TJvCustomItemViewer.DoSetFocus(Focuseded: HWND);
@@ -1695,20 +1706,12 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.Resize;
+procedure TJvCustomItemViewer.DoBoundsChanged;
 begin
   UpdateAll;
   if HandleAllocated then
     InvalidateClipRect(ClientRect);
-  inherited Resize;
-end;
-
-procedure TJvCustomItemViewer.WMVScroll(var Message: TWMVScroll);
-begin
-  inherited;
-  UpdateAll;
-  InvalidateClipRect(ClientRect);
-  if Assigned(FOnScroll) then FOnScroll(self);
+  inherited DoBoundsChanged;
 end;
 
 procedure TJvCustomItemViewer.Changed;
@@ -1757,7 +1760,7 @@ procedure TJvCustomItemViewer.DragOver(Source: TObject; X, Y: Integer;
 const
   cEdgeSize = 4;
 begin
-  inherited;
+  inherited DragOver(Source, X, Y, State, Accept);
   if Accept and Options.DragAutoScroll then
   begin
     if X <= cEdgeSize then
@@ -1787,19 +1790,13 @@ end;
 
 procedure TJvCustomItemViewer.DragCanceled;
 begin
-  inherited;
+  inherited DragCanceled;
   StopScrollTimer;
 end;
 
 procedure TJvCustomItemViewer.DoEndDrag(Sender: TObject; X, Y: Integer);
 begin
-  inherited;
-  StopScrollTimer;
-end;
-
-procedure TJvCustomItemViewer.WMCancelMode(var Message: TWMCancelMode);
-begin
-  inherited;
+  inherited DoEndDrag(Sender, X, Y);
   StopScrollTimer;
 end;
 
@@ -1857,12 +1854,13 @@ end;
 
 procedure TViewerDrawImageList.Initialize;
 begin
-  inherited;
+  inherited Initialize;
   DragCursor := crArrow;
 end;
 
 initialization
   LoadOLeDragCursors;
+
 finalization
   ClearBrushPatterns;
 

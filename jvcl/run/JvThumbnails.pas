@@ -126,7 +126,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -248,9 +248,10 @@ begin
   end
 end;
 
-procedure TJvThumbnail.Resize;
+procedure TJvThumbnail.DoBoundsChanged;
 begin
   CalculateImageSize;
+  inherited DoBoundsChanged;
 end;
 
 procedure TJvThumbnail.SetStream(const AStream: TStream);

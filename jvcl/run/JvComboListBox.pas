@@ -44,57 +44,54 @@ uses
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
   TJvComboListBoxDrawStyle = (dsOriginal, dsStretch, dsProportional);
-  TJvComboListDropDownEvent = procedure(Sender: TObject; Index: integer; X,Y:integer; var AllowDrop:boolean) of object;
-  TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: integer; const AText: string; R: TRect;
-    var DefaultDraw: boolean) of object;
-  TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: integer; const APicture: TPicture; R: TRect; var
-    DefaultDraw: boolean) of object;
+  TJvComboListDropDownEvent = procedure(Sender: TObject; Index: Integer;
+    X, Y:Integer; var AllowDrop:Boolean) of object;
+  TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: Integer;
+    const AText: string; R: TRect; var DefaultDraw: Boolean) of object;
+  TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
+    const APicture: TPicture; R: TRect; var DefaultDraw: Boolean) of object;
+
   TJvComboListBox = class(TJvCustomListBox)
   private
-    FMouseOver, FPushed: boolean;
+    FMouseOver, FPushed: Boolean;
     FDropdownMenu: TPopupMenu;
     FDrawStyle: TJvComboListBoxDrawStyle;
     FOnDrawImage: TJvComboListDrawImageEvent;
     FOnDrawText: TJvComboListDrawTextEvent;
-    FButtonWidth: integer;
-    FHotTrackCombo: boolean;
-    FLastHotTrack: integer;
+    FButtonWidth: Integer;
+    FHotTrackCombo: Boolean;
+    FLastHotTrack: Integer;
     FOnDropDown: TJvComboListDropDownEvent;
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
     function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
-    procedure SetButtonWidth(const Value: integer);
-    procedure SetHotTrackCombo(const Value: boolean);
+    procedure SetButtonWidth(const Value: Integer);
+    procedure SetHotTrackCombo(const Value: Boolean);
   protected
-    procedure InvalidateItem(Index: integer);
-    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: boolean);
-    procedure DrawItem(Index: integer; Rect: TRect;
+    procedure InvalidateItem(Index: Integer);
+    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
+    procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
-    procedure MouseLeave(Control: TControl); override;
     procedure Resize; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: integer; Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X: integer; Y: integer);
-      override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X: Integer;
-      Y: Integer); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-    function DoDrawImage(Index: integer; APicture: TPicture; R: TRect): boolean; virtual;
-    function DoDrawText(Index: integer; const AText: string; R: TRect): boolean; virtual;
-    function DoDropDown(Index,X,Y:integer):boolean;virtual;
-
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer);  override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);  override;
+    function DoDrawImage(Index: Integer; APicture: TPicture; R: TRect): Boolean; virtual;
+    function DoDrawText(Index: Integer; const AText: string; R: TRect): Boolean; virtual;
+    function DoDropDown(Index,X,Y:Integer):Boolean;virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    function AddText(const S: string): integer;
-    procedure InsertText(Index: integer; const S: string);
+    function AddText(const S: string): Integer;
+    procedure InsertText(Index: Integer; const S: string);
     // helper functions: makes sure the internal TPicture object is created and freed as necessary
-    function AddImage(P: TPicture): integer;
-    procedure InsertImage(Index: integer; P: TPicture);
-    procedure Delete(Index: integer);
+    function AddImage(P: TPicture): Integer;
+    procedure InsertImage(Index: Integer; P: TPicture);
+    procedure Delete(Index: Integer);
   published
-    property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 20;
-    property HotTrackCombo: boolean read FHotTrackCombo write SetHotTrackCombo default false;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 20;
+    property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default false;
     property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
@@ -166,13 +163,13 @@ type
 
 implementation
 
-function TJvComboListBox.AddImage(P: TPicture): integer;
+function TJvComboListBox.AddImage(P: TPicture): Integer;
 begin
   Result := Items.Count;
   InsertImage(Result, P);
 end;
 
-function TJvComboListBox.AddText(const S: string): integer;
+function TJvComboListBox.AddText(const S: string): Integer;
 begin
   Result := Items.Add(S);
 end;
@@ -206,7 +203,7 @@ begin
 //  ControlStyle := ControlStyle + [csCaptureMouse];
 end;
 
-procedure TJvComboListBox.Delete(Index: integer);
+procedure TJvComboListBox.Delete(Index: Integer);
 var
   P: TPicture;
 begin
@@ -217,7 +214,7 @@ end;
 
 function TJvComboListBox.DestRect(Picture: TPicture; ARect: TRect): TRect;
 var
-  W, H, CW, CH: integer;
+  W, H, CW, CH: Integer;
   xyaspect: Double;
 
 begin
@@ -269,26 +266,26 @@ begin
   OffsetRect(Result, (CW - W) div 2, (CH - H) div 2);
 end;
 
-function TJvComboListBox.DoDrawImage(Index: integer; APicture: TPicture; R: TRect): boolean;
+function TJvComboListBox.DoDrawImage(Index: Integer; APicture: TPicture; R: TRect): Boolean;
 begin
   Result := true;
   if Assigned(FOnDrawImage) then FOnDrawImage(Self, Index, APicture, R, Result);
 end;
 
-function TJvComboListBox.DoDrawText(Index: integer; const AText: string; R: TRect): boolean;
+function TJvComboListBox.DoDrawText(Index: Integer; const AText: string; R: TRect): Boolean;
 begin
   Result := true;
   if Assigned(FOnDrawText) then FOnDrawText(Self, Index, AText, R, Result);
 end;
 
-function TJvComboListBox.DoDropDown(Index, X, Y: integer): boolean;
+function TJvComboListBox.DoDropDown(Index, X, Y: Integer): Boolean;
 begin
   Result := true;
   if Assigned(FOnDropDown) then
     FOnDropDown(self, Index, X,Y,Result);
 end;
 
-procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: boolean);
+procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: Boolean);
 var
   uState: Cardinal;
 begin
@@ -312,7 +309,7 @@ begin
   DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, uState or DFCS_ADJUSTRECT);
 end;
 
-procedure TJvComboListBox.DrawItem(Index: integer; Rect: TRect;
+procedure TJvComboListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 var
   P: TPicture;
@@ -320,7 +317,7 @@ var
   aPoints: array[0..4] of TPoint;
   TmpRect: TRect;
   Pt: TPoint;
-  i: integer;
+  i: Integer;
 begin
   if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then Exit;
   Canvas.Lock;
@@ -418,7 +415,7 @@ end;
 
 function TJvComboListBox.GetOffset(OrigRect, ImageRect: TRect): TRect;
 var
-  W, H, W2, H2: integer;
+  W, H, W2, H2: Integer;
 begin
   Result := OrigRect;
   W := ImageRect.Right - ImageRect.Left;
@@ -431,7 +428,7 @@ begin
     OffsetRect(Result, 0, (H2 - H) div 2);
 end;
 
-procedure TJvComboListBox.InsertImage(Index: integer; P: TPicture);
+procedure TJvComboListBox.InsertImage(Index: Integer; P: TPicture);
 var
   P2: TPicture;
 begin
@@ -440,12 +437,12 @@ begin
   Items.InsertObject(Index, '', P2);
 end;
 
-procedure TJvComboListBox.InsertText(Index: integer; const S: string);
+procedure TJvComboListBox.InsertText(Index: Integer; const S: string);
 begin
   Items.Insert(Index, S);
 end;
 
-procedure TJvComboListBox.InvalidateItem(Index: integer);
+procedure TJvComboListBox.InvalidateItem(Index: Integer);
 var
   R, R2: TRect;
 begin
@@ -463,15 +460,15 @@ begin
   end;
 end;
 
-procedure TJvComboListBox.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: integer);
+procedure TJvComboListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
-  i: integer;
+  i: Integer;
   R: TRect;
   P: TPoint;
   Msg: TMsg;
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if (ItemIndex > -1) then
   begin
     P := Point(X, Y);
@@ -506,11 +503,10 @@ begin
   end;
 end;
 
-procedure TJvComboListBox.MouseMove(Shift: TShiftState; X,
-  Y: integer);
+procedure TJvComboListBox.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
-  i: integer;
+  i: Integer;
   R: TRect;
 begin
   if (DropdownMenu <> nil) or HotTrackCombo then
@@ -540,13 +536,13 @@ begin
       InvalidateItem(i);
     end;
   end;
-  inherited;
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvComboListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseUp(Button , Shift, X, Y);
   if FPushed then
   begin
     FPushed := false;
@@ -557,12 +553,12 @@ end;
 procedure TJvComboListBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = DropdownMenu) then
     DropdownMenu := nil;
 end;
 
-procedure TJvComboListBox.SetButtonWidth(const Value: integer);
+procedure TJvComboListBox.SetButtonWidth(const Value: Integer);
 begin
   if FButtonWidth <> Value then
   begin
@@ -580,7 +576,7 @@ begin
   end;
 end;
 
-procedure TJvComboListBox.SetHotTrackCombo(const Value: boolean);
+procedure TJvComboListBox.SetHotTrackCombo(const Value: Boolean);
 begin
   if FHotTrackCombo <> Value then
   begin

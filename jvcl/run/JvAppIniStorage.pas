@@ -115,6 +115,7 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
+{ (ahsuer) make Delphi 5 compiler happy
 function AnsiSameTextShortest(S1, S2: string): Boolean;
 begin
   if Length(S1) > Length(S2) then
@@ -124,6 +125,7 @@ begin
     SetLength(S2, Length(S1));
   Result := AnsiSameText(S1, S2);
 end;
+}
 
 function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
 var

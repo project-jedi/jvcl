@@ -124,7 +124,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubCustomDBGrid = class(TJvExCustomDBGrid)
@@ -215,7 +215,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
-    procedure DoSizeChanged(var Info: TSizeChangedInfo); virtual;
+    procedure DoBoundsChanged; dynamic;
   
   end;
   TJvExPubDBGrid = class(TJvExDBGrid)
@@ -388,14 +388,9 @@ begin
 end;
 
 procedure TJvExCustomDBGrid.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -416,6 +411,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExCustomDBGrid.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExCustomDBGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -426,14 +425,6 @@ end;
 
 procedure TJvExCustomDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExCustomDBGrid.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -601,14 +592,9 @@ begin
 end;
 
 procedure TJvExDBGrid.BoundsChanged;
-var
-  Info: TSizeChangedInfo;
 begin
-  Info.Reason := rrRestored;
-  Info.NewWidth := Width;
-  Info.NewHeight := Height;
-  DoSizeChanged(Info);
   inherited BoundsChanged;
+  DoBoundsChanged;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExDBGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -629,6 +615,10 @@ begin
   Result := False; // Qt allways paints the background
   {$ENDIF VCL}
 end;
+procedure TJvExDBGrid.DoBoundsChanged;
+begin
+end;
+
 procedure TJvExDBGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
@@ -639,14 +629,6 @@ end;
 
 procedure TJvExDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
-end;
-
-procedure TJvExDBGrid.DoSizeChanged(var Info: TSizeChangedInfo);
-begin
-  {$IFDEF VCL}
-  InheritMsg(Self, WM_SIZE, Integer(Info.Reason),
-    MakeLParam(Word(Info.NewWidth), Word(Info.NewHeight)));
-  {$ENDIF VCL}
 end;
 
 constructor TJvExDBGrid.Create(AOwner: TComponent);

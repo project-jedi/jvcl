@@ -52,7 +52,7 @@ type
     //function GetBColor: TColor;
     //procedure SetBColor(const Value: TColor);
   protected
-    procedure Resize; override;
+    procedure DoBoundsChanged; override;
     procedure ColorChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -184,11 +184,11 @@ begin
   FWait.Delay := FRefreshInterval;
 end;
 
-procedure TJvWaitingProgress.Resize;
+procedure TJvWaitingProgress.DoBoundsChanged;
 begin
-  inherited Resize;
-  FProgress.Width := Self.Width;
-  FProgress.Height := Self.Height;
+  inherited DoBoundsChanged;
+  FProgress.Width := Width;
+  FProgress.Height := Height;
 end;
 
 procedure TJvWaitingProgress.ColorChanged;

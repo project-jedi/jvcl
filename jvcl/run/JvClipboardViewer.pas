@@ -58,6 +58,7 @@ type
     procedure SetViewFormat(Value: TClipboardViewFormat);
     function GetClipboardFormatNames(Index: Integer): string;
   protected
+    procedure Loaded; override;
     procedure Resize; override;
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
@@ -620,6 +621,12 @@ procedure TJvCustomClipboardViewer.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
+end;
+
+procedure TJvCustomClipboardViewer.Loaded;
+begin
+  inherited Loaded;
+  Resize; // Resize is not called while csLoading in ComponentState
 end;
 
 procedure TJvCustomClipboardViewer.Resize;
