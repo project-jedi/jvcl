@@ -14,7 +14,7 @@ const
   AuthorConst : string = 'FIRST AUTHOR';
   EmailConst : string = 'EMAIL@ADDRESS';
   DefaultLastTranslatorConst : string = '"Last-Translator: Somebody <your.email@address.com>\n"';
-  NoneLastTranslatorConst : string = '"Last-Translator: none <>\n"';
+  NoneLastTranslatorConst : string = '"Last-Translator: none <none@none.com>\n"';
 
 procedure ApplyHeader(title, copyright, package, version, author, email, poFile : string);
 var
