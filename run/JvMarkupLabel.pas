@@ -46,17 +46,19 @@ type
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
-    FText: string;
     FMarginLeft: Integer;
     FMarginRight: Integer;
     FMarginTop: Integer;
     FAlignment: TAlignment;
+    {$IFDEF VCL}
+    FText: string;
+    procedure SetText(const Value: string);
+    {$ENDIF VCL}
     procedure Refresh;
     procedure ParseHTML(S: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
-    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
@@ -78,14 +80,16 @@ type
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
     property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
-    property Text: string read FText write SetText;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     {$IFDEF VCL}
+    property Text: string read FText write SetText;
     property AutoSize;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property Text: TCaption read GetText write SetText;
+    {$ENDIF VisualCLX}
     property Align;
     property Font;
-
     property Anchors;
     property Enabled;
     property Color default clBtnFace;   // Duplicates BackColor
@@ -461,6 +465,9 @@ var
 begin
   iEol := 0; // Not Needed but removes warning.
   R := ClientRect;
+//  {$IFDEF VisualCLX}
+  Canvas.Brush.Style := bsSolid;
+//  {$ENDIF VisualCLX}
   Canvas.Brush.Color := Color;
   DrawThemedBackground(Self, Canvas, R);
   C := FElementStack.Count;
