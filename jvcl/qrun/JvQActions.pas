@@ -36,9 +36,10 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, JclMapi, ShellAPI,
-  {$ENDIF MSWINDOWS}
-  QActnList,
+  JclMapi,
+  Windows, ShellAPI,
+  {$ENDIF MSWINDOWS}  
+  QActnList, 
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}

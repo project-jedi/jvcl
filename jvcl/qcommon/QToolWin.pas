@@ -27,33 +27,29 @@ unit QToolWin;
 interface
 
 uses
-  SysUtils, Classes, Types, Qt, QGraphics, QControls, QWindows;
+  SysUtils, Classes, Types, Qt, QGraphics, QControls, QExtCtrls, QWindows;
 
 type
 { TToolWindow }
 
-  TEdgeStyle = (esNone, esRaised, esLowered);
   TEdgeBorder = (ebLeft, ebTop, ebRight, ebBottom);
   TEdgeBorders = set of TEdgeBorder;
-  TBorderWidth = 0..MaxInt;
 
-  TToolWindow = class(TWidgetControl)
+  TToolWindow = class(TCustomControl)
   private
     FEdgeBorders: TEdgeBorders;
     FEdgeInner: TEdgeStyle;
     FEdgeOuter: TEdgeStyle;
-    FPainting: Boolean;
     FBorderWidth: TBorderWidth;
     procedure SetEdgeBorders(Value: TEdgeBorders);
     procedure SetEdgeInner(Value: TEdgeStyle);
     procedure SetEdgeOuter(Value: TEdgeStyle);
     procedure SetBorderWidth(const Value: TBorderWidth);
   protected
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
+    procedure Paint; override;
     function GetClientOrigin: TPoint; override;
     function GetClientRect: TRect; override;
     procedure UpdateControl; virtual;
-    procedure PaintBorder(Canvas: TCanvas); virtual;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth;
   public
     constructor Create(AOwner: TComponent); override;
@@ -83,62 +79,6 @@ begin
   AlignControls(Self, R);
 end;
 
-function TToolWindow.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-var
-  Canvas: TControlCanvas;
-  ClientPixmap: QPixmapH;
-  PaintDevice: QPaintDeviceH;
-  QC: QColorH;
-begin
-  case QEvent_type(Event) of
-    QEventType_Paint:
-      begin
-        if not FPainting then
-        begin
-          FPainting := True;
-          try
-            Canvas := TControlCanvas.Create;
-            try
-              Canvas.Control := Self;
-              PaintBorder(Canvas);
-            finally
-              Canvas.Free;
-            end;
-            PaintDevice := GetPaintDevice;
-            ClientPixmap := QPixmap_create(ClientWidth, ClientHeight, -1,
-              QPixmapOptimization_DefaultOptim);
-            try
-              {Qt.bitBlt(ClientPixmap, 0, 0, PaintDevice, BorderWidth, BorderWidth,
-                ClientWidth, ClientHeight, RasterOp_CopyROP, True);}
-              QC := QColor(Brush.COlor, Handle);
-              try
-                QPixmap_fill(ClientPixmap, QC);
-              finally
-                QColor_destroy(QC);
-              end;
-
-             // paint client area to ClientPixmap  
-              QPainter_redirect(PaintDevice, ClientPixmap);
-              try
-                QObject_event(Sender, Event); // default painting
-              finally
-                QPainter_redirect(PaintDevice, nil);
-              end;
-              Qt.bitBlt(PaintDevice, BorderWidth, BorderWidth, ClientPixmap, 0, 0,
-                ClientWidth, ClientHeight, RasterOp_CopyROP, True);
-            finally
-              QPixmap_destroy(ClientPixmap);
-            end;
-          finally
-            FPainting := False;
-          end;
-          Result := True;
-          Exit;
-        end;
-      end;
-  end;
-  Result := inherited EventFilter(Sender, Event);
-end;
 
 procedure TToolWindow.SetEdgeBorders(Value: TEdgeBorders);
 begin
@@ -195,7 +135,7 @@ begin
     Dec(Result.Bottom, EdgeSize);
 end;
 
-procedure TToolWindow.PaintBorder(Canvas: TCanvas);
+procedure TToolWindow.Paint;
 const
   InnerStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDINNER, BDR_SUNKENINNER);
   OuterStyles: array[TEdgeStyle] of Integer = (0, BDR_RAISEDOUTER, BDR_SUNKENOUTER);

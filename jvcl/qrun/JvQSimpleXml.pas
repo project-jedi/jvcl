@@ -35,15 +35,15 @@ unit JvQSimpleXml;
 interface
 
 uses
-  SysUtils, Classes, IniFiles,
+  SysUtils, Classes,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvQFinalize;
+  IniFiles;
 
 type 
   TJvSimpleXML = class;
-  TJvSimpleXMLInvalid = class(Exception);
+  EJvSimpleXMLError = class(Exception);
   TJvSimpleXMLElem = class;
   TJvSimpleXMLElems = class;
   TJvSimpleXMLProps = class;
@@ -450,9 +450,6 @@ uses
   JvQConsts, JvQResources;
 
 const
-  sUnitName = 'JvSimpleXml';
-
-const
   cBufferSize = 8192;
   DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
@@ -466,10 +463,7 @@ var
 function GSorts: TList;
 begin
   if not Assigned(GlobalSorts) then
-  begin
     GlobalSorts := TList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalSorts));
-  end;
   Result := GlobalSorts;
 end;
 
@@ -477,10 +471,7 @@ end;
 function XMLVariant: TXMLVariant;
 begin
   if not Assigned(GlobalXMLVariant) then
-  begin
     GlobalXMLVariant := TXMLVariant.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalXMLVariant));
-  end;
   Result := GlobalXMLVariant;
 end;
 
@@ -1061,7 +1052,7 @@ end;
 
 procedure TJvSimpleXMLElem.Error(const S: string);
 begin
-  raise TJvSimpleXMLInvalid.Create(S);
+  raise EJvSimpleXMLError.Create(S);
 end;
 
 procedure TJvSimpleXMLElem.FmtError(const S: string;
@@ -1731,7 +1722,7 @@ end;
 
 procedure TJvSimpleXMLProps.Error(const S: string);
 begin
-  raise TJvSimpleXMLInvalid.Create(S);
+  raise EJvSimpleXMLError.Create(S);
 end;
 
 procedure TJvSimpleXMLProps.FmtError(const S: string;
@@ -2125,12 +2116,16 @@ end;
 
 procedure TJvSimpleXMLElemClassic.SaveToStream(const Stream: TStream; const Level: string; Parent: TJvSimpleXML);
 var
-  St: string;
+  St, AName: string;
   LevelAdd: string;
 begin
+  AName := Name;
   if Name <> '' then
   begin
-    St := Level + '<' + Name;
+    if GetSimpleXML <> nil then
+       GetSimpleXML.DoEncodeValue(AName);
+    St := Level + '<' + AName;
+
     Stream.Write(St[1], Length(St));
     Properties.SaveToStream(Stream);
   end;
@@ -2145,7 +2140,7 @@ begin
       begin
         if GetSimpleXML <> nil then
           GetSimpleXML.DoEncodeValue(FValue);
-        St := '>' + Value + '</' + Name + '>' + sLineBreak;
+        St := '>' + FValue + '</' + AName + '>' + sLineBreak;
       end;
       Stream.Write(St[1], Length(St));
     end;
@@ -2165,7 +2160,7 @@ begin
     Items.SaveToStream(Stream, Level + LevelAdd, Parent);
     if Name <> '' then
     begin
-      St := Level + '</' + Name + '>' + sLineBreak;
+      St := Level + '</' + AName + '>' + sLineBreak;
       Stream.Write(St[1], Length(St));
     end;
   end;
@@ -2509,10 +2504,10 @@ var
   St: string;
 begin
   St := Level + '<?xml version="' + FVersion + '"';
-  if StandAlone then
-    St := St + ' standalone="yes"';
   if Encoding <> '' then
     St := St + ' encoding="' + Encoding + '"';
+  if StandAlone then
+    St := St + ' standalone="yes"';
   St := St + '?>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
@@ -3042,7 +3037,7 @@ end;
 
 procedure TJvSimpleXMLElemsProlog.Error(const S: string);
 begin
-  raise TJvSimpleXMLInvalid.Create(S);
+  raise EJvSimpleXMLError.Create(S);
 end;
 
 procedure TJvSimpleXMLElemsProlog.FmtError(const S: string;
@@ -3168,12 +3163,13 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
-finalization
+finalization 
+  FreeAndNil(GlobalXMLVariant); 
+  FreeAndNil(GlobalSorts);
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

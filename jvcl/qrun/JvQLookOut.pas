@@ -42,8 +42,9 @@ uses
   JvQJCLUtils, JvQTypes, JvQConsts, JvQComponent, JvQThemes, JvQExControls, JvQExButtons;
 
 const
-  CM_IMAGESIZECHANGED = CM_BASE + 100;
-  CM_LEAVEBUTTON = CM_BASE + 101;
+  CM_IMAGESIZECHANGED = CM_BASE + 200;
+  CM_LEAVEBUTTON = CM_BASE + 201;
+  WM_NCPAINT = $0085;
 
 type
   TJvButtonBorder = (bbDark, bbLight, bbMono);
@@ -127,7 +128,7 @@ type
     procedure DrawSmallImages;
     procedure DrawLargeImages;
     procedure ImageListChange(Sender: TObject);
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
     procedure CMParentImageSizeChanged(var Msg: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     function ParentVisible: Boolean;
@@ -458,7 +459,8 @@ type
     procedure ScrollChildren(Start: Word); override;
     procedure DrawTopButton; override;
     procedure Paint; override;
-    procedure CreateWnd; override; 
+    procedure CreateWnd; override;
+    procedure AlignControls(Control: TControl; var Rect: TRect); override; 
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1038,11 +1040,11 @@ end;
 
 procedure TJvCustomLookOutButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
 begin
   if (FGroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_JVBUTTONPRESSED;
+    Msg.Msg := CM_BUTTONPRESSED;
     Msg.Index := FGroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
@@ -1357,7 +1359,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvCustomLookOutButton.CMButtonPressed(var Msg: TCMButtonPressed);
 var
   Sender: TJvCustomLookOutButton;
 begin
@@ -2632,7 +2634,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin 
+    begin
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2653,8 +2655,8 @@ end;
 procedure TJvLookOut.Paint;
 begin
   if not (Visible or (csDesigning in ComponentState)) then
-    Exit; 
-  Perform(WM_NCPAINT, 1, 0); 
+    Exit;
+  Perform(WM_NCPAINT, 1, 0);
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
   { make TJvLookOuts adjust to Managers size }
@@ -2706,22 +2708,12 @@ begin
   end;
 end;
 
-{
-procedure TJvExpress.SetButton(Index: Integer; Value: TJvExpressButton);
+procedure TJvExpress.AlignControls(Control: TControl; var Rect: TRect);
 begin
-  inherited SetButton(Index,Value);
+  // TJvLookoutPage adjusts the rects top, so move it back
+  Dec(Rect.Top, cHeight);
+  inherited AlignControls(Control, Rect);
 end;
-
-function TJvExpress.GetButton(Index: Integer): TJvExpressButton;
-begin
-  Result := TJvExpressButton(inherited GetButton(Index));
-end;
-
-function TJvExpress.GetButtonCount: Integer;
-begin
-  inherited GetButtonCount;
-end;
-}
 
 procedure TJvExpress.CalcArrows;
 var

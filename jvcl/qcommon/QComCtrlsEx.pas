@@ -209,15 +209,12 @@ begin
   FRepeatTimer := TTimer.Create(Self);
   FRepeatTimer.Interval := 125;
   FRepeatTimer.OnTimer := RepeatTimer;
-
-  // install hook
+  InputKeys := InputKeys + [ikArrows];
   FArrowKeys := False;
-  SetArrowKeys(True);
 end;
 
 destructor TCustomUpDown.Destroy;
 begin
-  SetArrowKeys(False); // uninstall hook
   inherited Destroy;
 end;
 
@@ -292,11 +289,11 @@ procedure TCustomUpDown.SetArrowKeys(Value: Boolean);
 begin
   if Value <> FArrowKeys then
   begin
-    if FArrowKeys then
-      UninstallApplicationHook(AssociateHook);
+    if Value then
+      InputKeys := InputKeys + [ikArrows]
+    else
+      InputKeys := InputKeys - [ikArrows];
     FArrowKeys := Value;
-    if FArrowKeys then
-      InstallApplicationHook(AssociateHook);
   end;
 end;
 

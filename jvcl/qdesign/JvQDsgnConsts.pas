@@ -608,7 +608,7 @@ resourcestring
     '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
     '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
     '// type and the type created must be the same as the declared type above.';
-  RsJediPuginWizard = 'JEDI Plugin Wizard';
+  RsJediPluginWizard = 'JEDI Plugin Wizard';
 
 //=== JvPreviewReg.pas =======================================================
 resourcestring

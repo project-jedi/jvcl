@@ -55,6 +55,7 @@ const
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
+  TJvCustomOutlookBar = class;
   TJvOutlookBarButton = class;
 
   TJvOutlookBarButtonActionLink = class(TActionLink)
@@ -90,6 +91,7 @@ type
     procedure Change;
     procedure SetEnabled(const Value: Boolean);
     procedure SetAction(Value: TBasicAction);
+    function GetOutlookBar:TJvCustomOutlookBar;
   protected
     function GetDisplayName: string; override;
     function GetActionLinkClass: TJvOutlookBarButtonActionLinkClass; dynamic;
@@ -110,7 +112,7 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property OnClick:TNotifyEvent read FOnClick write FOnClick; 
+    property OnClick:TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -166,6 +168,7 @@ type
   protected
     procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
+    function GetOutlookBar:TJvCustomOutlookBar;
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -178,7 +181,7 @@ type
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize;
     property Caption: TCaption read FCaption write SetCaption;
-    property Color: TColor read FColor write SetColor;
+    property Color: TColor read FColor write SetColor default clDefault;
     property DownFont: TFont read FDownFont write SetDownFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Font: TFont read FFont write SetFont;
@@ -272,7 +275,7 @@ type
   protected 
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override; 
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -815,10 +818,20 @@ begin
       FActionLink := GetActionLinkClass.Create(Self);
     FActionLink.Action := Value;
     FActionLink.OnChange := DoActionChange;
-    ActionChange(Value, csLoading in Value.ComponentState); 
-    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // delegates notification to owner! 
+    ActionChange(Value, csLoading in Value.ComponentState);
+    if GetOutlookBar <> nil then
+      Value.FreeNotification(GetOutlookBar); // delegates notification to owner!
   end;
 end;
+
+function TJvOutlookBarButton.GetOutlookBar: TJvCustomOutlookBar;
+begin
+  if TJvOutlookBarButtons(Collection).Owner is TJvOutlookBarPage then
+    Result := TJvOutlookBarPage(TJvOutlookBarButtons(Collection).Owner).GetOutlookBar
+  else
+    Result := nil;
+end;
+
 
 //=== { TJvOutlookBarButtons } ===============================================
 
@@ -881,7 +894,6 @@ end;
 constructor TJvOutlookBarPage.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  FButtons := TJvOutlookBarButtons.Create(Self);
   FFont := TFont.Create;
   FFont.OnChange := DoFontChange;
   FDownFont := TFont.Create;
@@ -892,18 +904,19 @@ begin
   FAlignment := taCenter;
   FImageIndex := -1;
   FEnabled := True;
+  FButtons := TJvOutlookBarButtons.Create(Self);
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).Owner <> nil) then
   begin
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).ButtonSize;
-    FColor := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Color;
+//    FColor := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Color;
     Font := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).Font;
     DownFont := Font;
   end
   else
   begin
     FButtonSize := olbsLarge;
-    FColor := clGray;
   end;
+  FColor := clDefault;
   Font.Color := clWhite;
   FParentButtonSize := True;
 end;
@@ -1058,6 +1071,14 @@ begin
     Result := Caption
   else
     Result := inherited GetDisplayName;
+end;
+
+function TJvOutlookBarPage.GetOutlookBar: TJvCustomOutlookBar;
+begin
+  if TJvOutlookBarPages(Collection).Owner is TJvCustomOutlookBar then
+    Result := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner)
+  else
+    Result := nil;
 end;
 
 procedure TJvOutlookBarPage.SetImageIndex(const Value: TImageIndex);
@@ -1580,7 +1601,7 @@ end;
 procedure TJvCustomOutlookBar.DrawCurrentPage(PageIndex: Integer);
 var
   R: TRect;
-  AColor: TColor;
+  AColor: TColor; 
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1595,7 +1616,11 @@ begin
     begin
       if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin 
+        begin
+          if Canvas.Brush.Color = clDefault then
+            Canvas.Brush.Color := Self.Color;
           Canvas.FillRect(R);
+        end;
       end;
     end;
     DrawButtonFrame(ActivePageIndex, FLastButtonIndex, FPressedButtonIndex);
@@ -2128,7 +2153,7 @@ begin
   Inc(Result, 4);
 end;
 
-function TJvCustomOutlookBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomOutlookBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   // don't redraw background: we always fill it anyway
   Result := True;
@@ -2367,6 +2392,9 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
+
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

@@ -40,10 +40,21 @@ uses
   JvQTypes, JvQComponent;
 
 type
+  TJvPaletteColor = class(TPersistent)
+  private
+    FNormal: TColor;
+    FActive: TColor;
+    FDisabled: TColor;
+  public
+    property Active: TColor read FActive write FActive;
+    property Disabled: TColor read FDisabled write FDisabled;
+    property Normal: TColor read FNormal write FNormal;
+  end;
+
   TJvSystemColors = class(TJvComponent)
   private
+    FPalette:
     FBaseColor: TColor;
-    FSavedColors: array[0..41] of TColor;
     procedure SetColor(Index: Integer; Value: TColor);
     function GetColor(Index: Integer): TColor;
     procedure SetBaseColor(Value: TColor);
@@ -54,7 +65,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Reset; override;
   published
+    property Active: Boolean read FActive write SetActive;
     property BaseColor: TColor read GetBaseColor write SetBaseColor stored False;
     property NormalForeground: TColor index 0 read GetColor write SetColor stored True;
     property NormalButton: TColor index 1 read GetColor write SetColor stored True;
@@ -128,36 +141,29 @@ const
   // Qt Palette on Windows
   //
   WindowsColors: array[0..41] of TColor = (
-    // Normal
-    clBlack,  // Foreground
-    $C8D0D4,  // Button
-    clWhite,  // Light
-    $DCE5E9,  // MidLight
-    clGray,   // Dark
-    $858AD5,  // Mid
-    clBlack,  // Text
-    clWhite,  // BrightText
-    clBlack,  // ButtonText
-    clWhite,  // Base
-    $C8D0D4,  // Background
-    $404040,  // Shadow
+    // Normal  Disabled   Active
+    clBlack,   $64686A, // Foreground
+    $C8D0D4,   $C8D0D4, // Button
+    clWhite,   clWhite, // Light
+    $DCE5E9,   $E3E7E9, // MidLight
+    clGray,    clGray,  // Dark
+    $858AD5,   $858A8D, // Mid
+    clBlack,   $64686A, // Text
+    clWhite,   clWhite, // BrightText
+    clBlack,   $64686A  // ButtonText
+    clWhite,   clWhite, // Base
+    $C8D0D4,   $C8D0D4, // Background
+    $404040,   clBlack, // Shadow
     $C8D0D4,  // HighLight
     clBlack,  // HighLightedText
+
     // Disabled
-    $64686A,  // Foreground
-    $C8D0D4,  // Button
-    clWhite,  // Light
-    $E3E7E9,  // MidLight
-    clGray,   // Dark
-    $858A8D,  // Mid
-    $64686A,  // Text
-    clWhite,  // BrightText
-    $64686A,  // ButtonText
-    clWhite,  // Base
-    $C8D0D4,  // Background
-    clBlack,  // Shadow
+      // Base
+      // Background
+      // Shadow
     $6A686A,  // HighLight
     clWhite,  // HighLightedText
+
     // Active
     clBlack,  // Foreground
     $C8D0D4,  // Button

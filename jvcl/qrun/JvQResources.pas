@@ -287,6 +287,7 @@ resourcestring
   RsGraphScale = 'Graph Scale';
   RsYAxisScales = 'Y Axis Scale: %s';
   RsNoValuesHere = 'No values here!';
+  RsNA = ' n/a ';
 
   RsEDataIndexCannotBeNegative = 'Data: index cannot be negative';
   RsEDataIndexTooLargeProbablyAnInternal = 'Data: index too large. Probably an internal error';
@@ -1236,8 +1237,7 @@ resourcestring
 
 //=== JvJVCLUtils.pas ========================================================
 resourcestring
-  RsNotForMdi = 'MDI forms are not allowed';
-
+  RsENotForMdi = 'MDI forms are not allowed';
   RsEPixelFormatNotImplemented = 'BitmapToMemoryStream: pixel format not implemented';
   RsEBitCountNotImplemented = 'BitmapToMemoryStream: bit count not implemented';
   RsECantGetShortCut = 'Target FileName for ShortCut %s not available';
@@ -1280,11 +1280,11 @@ resourcestring
 resourcestring
   RsRegistrationCaption = 'Registration';
   RsAppTitleLabel = 'Application "%s"';
-  RsHintLabel = 'Type your user name and password';
+  RsHintLabel = 'Type your user name and password to enter the application';
   RsUserNameLabel = '&User name:';
   RsPasswordLabel = '&Password:';
   RsUnlockCaption = 'Unlock application';
-  RsUnlockHint = 'Type your password';
+  RsUnlockHint = 'Type your password to unlock the application';
 
 //=== JvMail.pas =============================================================
 resourcestring
@@ -1296,20 +1296,18 @@ resourcestring
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
   RsEMemNoRecords = 'No data found';
-  // Added by CFZ 2004/03/03
-  // 'Los registros aplicados, difieren de los cambiados.';
-  //SNoExactApply = 'The applied records differs from the changed records.';
-  // 'Record already exists.Registro ya existente.';
-  SRecordDuplicate = 'Record already exists.';
+  //----------------- Added by CFZ ------------------
+  // 'Registro ya existente.';
+  RsERecordDuplicate = 'Record already exists.';
   // 'Registro no encontrado.';
-  SRecordInexistent = 'Record not found.';
+  RsERecordInexistent = 'Record not found.';
   // 'No se pudo agregar el registro.';
-  SInsertError = 'Impossible append the record.';
+  RsEInsertError = 'Unable to append the record.';
   // 'No se pudo modificar el registro.';
-  SUpdateError = 'Impossible modify the record.';
+  RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
-  SDeleteError = 'Impossible erase the record.';
-  //--------------------------------------------------------------------
+  RsEDeleteError = 'Unable to erase the record.';
+  //-------------------------------------------------
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
@@ -1665,7 +1663,7 @@ resourcestring
 
 //=== JvStringHolder.pas =====================================================
 resourcestring
-  RsNoItemFoundWithName = 'No item found with name "%s"';
+  RsENoItemFoundWithName = 'No item found with name "%s"';
 
 //=== JvStrings.pas ==========================================================
 resourcestring
@@ -2033,6 +2031,8 @@ resourcestring
 
 resourcestring
   RsUntitled = 'untitled';
+  RsUntitledFmt = '(%s %d)';
+  RsHintShortcutFmt = '%s (%s)';
 
 
 //=== JvXPCore.pas ===========================================================

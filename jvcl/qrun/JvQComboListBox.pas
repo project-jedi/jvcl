@@ -516,7 +516,7 @@ begin
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
         DropdownMenu.Popup(P.X, P.Y);  
-        QWindows.IgnoreMouseEvents(Handle); 
+//        QWindows.IgnoreMouseEvents(Handle); 
       end;
       MouseUp(Button, Shift, X, Y);
     end;

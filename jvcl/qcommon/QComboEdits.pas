@@ -29,10 +29,17 @@ Known Issues:
 // $Id$
 
 unit QComboEdits;
+
 interface
+
 uses
   SysUtils, Classes,
-  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QForms, QMask;
+  QGraphics, QControls, QStdCtrls, QExtCtrls, QForms, QMask,
+  Qt, QWindows;
+
+const
+  EM_GETRECT = $00B2;  { 178 }
+  EM_SETRECT = $00B3;  { 179 }
 
 type
   TComboEditBorder = class(TPanel)
@@ -67,7 +74,6 @@ type
     FEditRect: TRect;
     FEditClientColor: Boolean;
     FFlat: Boolean;
-
     function GetBorderStyle: TControlBorderStyle;
     procedure SetBorderStyle(Value: TControlBorderStyle);
     function GetBevelInner: TPanelBevel;
@@ -83,39 +89,35 @@ type
     function GetClientArea: TComboEditClientArea;
     function GetFlat: Boolean;
     procedure SetFlat(const Value: Boolean);
+    procedure EMGetRect(var Mesg: TMessage); message EM_GETRECT;
+    procedure EMSetRect(var Mesg: TMessage); message EM_SETRECT;
   protected
+    procedure DoFlatChanged; virtual;
     procedure CreateWidget; override;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetClientRect: TRect; override;
     procedure SetParent(const Value: TWidgetControl); override;
     procedure SetZOrder(TopMost: Boolean); override;
-
-    procedure DoFlatChanged; virtual;
     procedure EnabledChanged; override;
     procedure CursorChanged; override;
     procedure VisibleChanged; override;
     procedure ColorChanged; override;
     procedure RequestAlign; override;
-
     procedure AdjustClientArea; virtual;
-
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-  protected
+
     property ClientColor: TColor read GetClientColor write SetClientColor;
     property EditClientColor: Boolean read FEditClientColor write SetEditClientColor;
-
     property BevelInner: TPanelBevel read GetBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read GetBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read GetBevelWidth write SetBevelWidth default 1;
     property BorderStyle: TControlBorderStyle read GetBorderStyle write SetBorderStyle stored False default bsSingle;
     property Flat: Boolean read GetFlat write SetFlat;
-
     property BorderHandle: QWidgetH read GetBorderHandle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function GetEditorRect: TRect; virtual;
     procedure SetEditorRect(Value: PRect); virtual;
      // SetEditorRect sets the rectangle for the editor relative to the Client
@@ -188,7 +190,6 @@ type
     FEditRect: TRect;
     FEditClientColor: Boolean;
     FFlat: Boolean;
-
     function GetBorderStyle: TControlBorderStyle;
     procedure SetBorderStyle(Value: TControlBorderStyle);
     function GetBevelInner: TPanelBevel;
@@ -204,39 +205,35 @@ type
     function GetClientArea: TComboEditClientArea;
     function GetFlat: Boolean;
     procedure SetFlat(const Value: Boolean);
+    procedure EMGetRect(var Mesg: TMessage); message EM_GETRECT;
+    procedure EMSetRect(var Mesg: TMessage); message EM_SETRECT;
   protected
+    procedure AdjustClientArea; virtual;
+    procedure DoFlatChanged; virtual;
     procedure CreateWidget; override;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure AdjustClientRect(var Rect: TRect); override;
     function GetClientRect: TRect; override;
     procedure SetParent(const Value: TWidgetControl); override;
     procedure SetZOrder(TopMost: Boolean); override;
-
-    procedure DoFlatChanged; virtual;
     procedure EnabledChanged; override;
     procedure CursorChanged; override;
     procedure VisibleChanged; override;
     procedure ColorChanged; override;
     procedure RequestAlign; override;
-
-    procedure AdjustClientArea; virtual;
-
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-  protected
+
     property ClientColor: TColor read GetClientColor write SetClientColor;
     property EditClientColor: Boolean read FEditClientColor write SetEditClientColor;
-
     property BevelInner: TPanelBevel read GetBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read GetBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read GetBevelWidth write SetBevelWidth default 1;
     property BorderStyle: TControlBorderStyle read GetBorderStyle write SetBorderStyle stored False default bsSingle;
     property Flat: Boolean read GetFlat write SetFlat;
-
     property BorderHandle: QWidgetH read GetBorderHandle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function GetEditorRect: TRect; virtual;
     procedure SetEditorRect(Value: PRect); virtual;
      // SetEditorRect sets the rectangle for the editor relative to the Client
@@ -298,6 +295,14 @@ type
   end;
 
 implementation
+
+type
+  TEMRect = packed record
+    Msg: LongInt;
+    Unused: LongInt;
+    Rect: PRect;
+    Handled: LongBool;
+  end;
 
 { TCustomComboEdit }
 
@@ -480,6 +485,24 @@ begin
   if FUseEditRect then
     FEditRect := Value^;
   AdjustClientArea;
+end;
+
+procedure TCustomComboEdit.EMGetRect(var Mesg: TMessage);
+begin
+  with TEMRect(Mesg) do
+  begin
+    Rect^ := GetEditorRect;
+    Handled := True;
+  end;
+end;
+
+procedure TCustomComboEdit.EMSetRect(var Mesg: TMessage);
+begin
+  with TEMRect(Mesg) do
+  begin
+    Self.SetEditorRect(Rect);
+    Handled := True;
+  end;
 end;
 
 procedure TCustomComboEdit.AdjustClientArea;
@@ -800,6 +823,24 @@ begin
   if FUseEditRect then
     FEditRect := Value^;
   AdjustClientArea;
+end;
+
+procedure TCustomComboMaskEdit.EMGetRect(var Mesg: TMessage);
+begin
+  with TEMRect(Mesg) do
+  begin
+    Rect^ := GetEditorRect;
+    Handled := True;
+  end;
+end;
+
+procedure TCustomComboMaskEdit.EMSetRect(var Mesg: TMessage);
+begin
+  with TEMRect(Mesg) do
+  begin
+    Self.SetEditorRect(Rect);
+    Handled := True;
+  end;
 end;
 
 procedure TCustomComboMaskEdit.AdjustClientArea;

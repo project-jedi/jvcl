@@ -37,7 +37,8 @@ interface
 
 uses
   QWindows, Classes, QGraphics, QImgList,
-  JclBase, JvQTypes;
+  JclBase,
+  JvQTypes;
 
 type
   TDataProviderChangeReason =

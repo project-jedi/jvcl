@@ -63,7 +63,7 @@ type
     property Align;
     property Anchors;
     property Color default clWindow;
-    property Constraints;
+    property Constraints; 
     property DragMode;
     property Hint;
     property ParentColor default False;
@@ -71,7 +71,6 @@ type
     property ParentShowHint;
     property ShowHint;
 
-//    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -81,11 +80,10 @@ type
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
-    property OnMouseUp;
+    property OnMouseUp; 
     property OnMouseWheel;
     property OnMouseWheelDown;
-    property OnMouseWheelUp;
-//    property OnStartDock;
+    property OnMouseWheelUp; 
     property OnStartDrag;
   end;
 
@@ -163,7 +161,6 @@ begin
   try
     Bmp.Width := Width;
     Bmp.Height := Height;
-    Bmp.Canvas.Start;
     Bmp.Canvas.Brush.Color := clFuchsia;
     R := ClientRect;
     Bmp.Canvas.FillRect(R);
@@ -254,9 +251,9 @@ begin
         Dec(BarSize, Steps + 1);
       end;
     end;
-    Bmp.Canvas.Stop;
     ACanvas.Brush.Color := AColor;
-    BrushCopy(ACanvas, ClientRect, Bmp, ClientRect, clFuchsia);
+    with ACanvas do
+      BrushCopy( ACanvas,  ClientRect, Bmp, ClientRect, clFuchsia);
   finally
     Bmp.Free;
   end;

@@ -28,7 +28,7 @@
 {******************************************************************************}
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBConst;
 
@@ -82,7 +82,7 @@ resourcestring
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Incorrect Database Server version, check compiler options.';
   EUIB_CANTLOADLIB         = 'Can''t load library: %s.';
-  EUIB_DBHANDLEALLREADYSET = 'Database handle allready assigned, first disconnect database.';
+  EUIB_DBHANDLEALLREADYSET = 'Database handle already assigned, first disconnect database.';
   EUIB_TRANSACTIONNOTDEF   = 'Transaction not assigned.';
   EUIB_DATABASENOTDEF      = 'Database not assigned.';
   EUIB_QUERYNOTOPEN        = 'Query not open.';

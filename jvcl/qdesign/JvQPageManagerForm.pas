@@ -36,7 +36,7 @@ interface
 uses
   SysUtils, Classes, QWindows, QGraphics, QControls, QForms, QGrids, QStdCtrls, QExtCtrls, 
   RTLConsts, DesignIntf, DesignEditors, CLXEditors, QDesignWindows, 
-  JvQSpeedButton, JvQPageManager, JvQJVCLUtils, JvQComponent;
+  JvQPageManager, JvQJVCLUtils, JvQComponent;
 
 type
   TJvProxyEditor = class(TDesignWindow)
@@ -179,10 +179,9 @@ begin
   begin 
     Component := Designer.Root.Components[I]; 
 
-    if (Component.InheritsFrom(TButtonControl) or
+    if (Component.Name <> '') and (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
-      Component.InheritsFrom(TJvSpeedButton)) and
-      (Component.Name <> '') then
+        AnsiSameText(Component.ClassName, 'TJvSpeedButton')) then
       Proc(Component.Name);
   end;
 end;

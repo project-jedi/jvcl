@@ -120,8 +120,8 @@ type
     procedure Change; dynamic;
     procedure ClearTicks;
     procedure Click; override; 
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure ColorChanged; override;
     procedure ParentColorChanged; override;
     procedure DrawBorder; dynamic;
@@ -1007,16 +1007,16 @@ begin
   end;
 end;
 
-procedure TJvCustomDialButton.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomDialButton.DoExit;
 begin
-  inherited DoKillFocus(FocusedWnd);
+  inherited DoExit;
   if HandleAllocated then
     DrawBorder;
 end;
 
-procedure TJvCustomDialButton.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomDialButton.DoEnter;
 begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited DoEnter;
   if HandleAllocated then
     DrawBorder;
 end;

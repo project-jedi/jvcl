@@ -261,7 +261,7 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    //function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -289,7 +289,7 @@ type
     property Align;
     property Anchors; 
     property BorderStyle;
-    property DoubleBuffered default True;
+//    property DoubleBuffered default True;
     property Color;
     property Constraints;
     property Enabled;
@@ -330,6 +330,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Math, QForms,
   JvQConsts;
 
@@ -344,7 +347,7 @@ type
   private 
   protected  
     procedure InitWidget; override;
-    function WidgetFlags: Integer; override; 
+    function WidgetFlags: Integer; override;
     procedure VisibleChanged; override;
   public
     property Visible default False;
@@ -362,15 +365,14 @@ type
     FEndChar: Cardinal; 
     FShowShadow: Boolean;
     FShadowSize: Integer;
-    procedure SetCharacter(const Value: WideChar); 
+    procedure SetCharacter(const Value: WideChar);
     procedure UpdateShadow;
     procedure SetShowShadow(const Value: Boolean);
     procedure SetShadowSize(const Value: Integer);
   protected
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override; 
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure DoEnter; override;
     procedure VisibleChanged; override;
     procedure FontChanged; override;
   
@@ -398,6 +400,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 //=== { TShadowWindow } ======================================================
 
 type
@@ -476,6 +479,7 @@ begin
     SetWindowPos(Handle, TWinControl(Owner).Handle, 0, 0, 0, 0,
       SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE or SWP_NOOWNERZORDER);
 end;
+
 {$ENDIF MSWINDOWS}
 
 //=== { TJvCustomCharMap } ===================================================
@@ -483,7 +487,7 @@ end;
 constructor TJvCustomCharMap.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  DoubleBuffered := True;
+ // DoubleBuffered := True;
   //  DefaultDrawing := False;
   //  VirtualView := True;
 
@@ -992,11 +996,12 @@ begin
     PanelVisible := True;
 end;
 
-function TJvCustomCharMap.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+(*
+function TJvCustomCharMap.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
 end;
-
+*)
 
 
 //=== { TCharZoomPanel } =====================================================
@@ -1009,6 +1014,7 @@ begin
   FShadow := TShadowWindow.Create(AOwner);
   ShowShadow := True;
   FShadowSize := 2;
+  InputKeys := [ikArrows];
 end;
 
 destructor TCharZoomPanel.Destroy;
@@ -1092,19 +1098,16 @@ end;
 
 
 
-procedure TCharZoomPanel.DoGetDlgCode(var Code: TDlgCodes);
+
+
+
+procedure TCharZoomPanel.DoEnter;
 begin
-  Code := [dcWantArrows];
-end;
-
-
-
-procedure TCharZoomPanel.DoSetFocus(FocusedWnd: HWND);
-begin
-  inherited DoSetFocus(FocusedWnd);
+  inherited DoEnter;
   if not (csDestroying in ComponentState) and Parent.CanFocus then
     Parent.SetFocus;
 end;
+
 
 
 
@@ -1426,6 +1429,22 @@ begin
       Change;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

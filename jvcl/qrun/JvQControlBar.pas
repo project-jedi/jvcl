@@ -51,7 +51,7 @@ type
   protected
     procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
     procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string); virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
@@ -99,10 +99,10 @@ begin
   inherited Destroy;
 end;
 
-function TJvControlBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvControlBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Picture.Graphic <> nil then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);

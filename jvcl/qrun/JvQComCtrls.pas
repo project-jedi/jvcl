@@ -49,7 +49,7 @@ uses
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
   QMenus, QComCtrls, QImgList, QButtons,  
   QExtCtrls, 
-  JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls;
+  JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls, JvQTypes;
 
 const
   JvDefPageControlBorder = 4; 
@@ -758,8 +758,8 @@ begin
     for I := 0 to PageCount - 1 do
       Pages[I].TabVisible := Pages[I].TabVisible and not FHideAllTabs;
     ActivePage := SaveActivePage;
-    if FHideAllTabs then
-      TabStop := False;
+    if FHideAllTabs and (SaveActivePage <> nil) then
+      SaveActivePage.TabStop := False;
   end;
 end;
 

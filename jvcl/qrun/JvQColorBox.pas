@@ -127,7 +127,8 @@ type
     FIsDown: Boolean;
     FArrowWidth: Integer;
     procedure SetArrowWidth(Value: Integer);
-    procedure SetDropDown(Value: TPopupMenu); 
+    procedure SetDropDown(Value: TPopupMenu);
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
   protected
     procedure Resize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -445,7 +446,11 @@ begin
   Invalidate;
 end;
 
-
+procedure TJvCustomDropButton.CMSysColorChange(var Msg: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
 
 procedure TJvCustomDropButton.Resize;
 begin

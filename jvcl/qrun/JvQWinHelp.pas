@@ -31,6 +31,7 @@ Known Issues:
 unit JvQWinHelp;
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 interface
 

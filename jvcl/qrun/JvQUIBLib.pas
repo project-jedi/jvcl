@@ -31,7 +31,7 @@
 unit JvQUIBLib;
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
@@ -549,7 +549,7 @@ type
 
     property Values[const name: String]: Variant read GetByNameAsVariant; default;
     property FieldName[const Index: Word]: string read GetFieldName;
-
+    property ParamCount : Word read FParamCount;
   end;
 
   TSQLParamsClass = class of TSQLParams;
@@ -1130,7 +1130,7 @@ const
               case ParamType of
                 prNone : AddByte(Code);
                 prByte :
-                  if TryStrToInt(CurValue, AValue) and (AValue in [0..255]) then
+                  if TryStrToInt(CurValue, AValue) and (AValue >= 0) and (AValue <= 255) then
                   begin
                     AddByte(Code);
                     AddByte(Byte(AValue));
@@ -1797,7 +1797,7 @@ const
       BufferLength := High(Word);
     Lock;
     try
-      AStatus := isc_get_segment(@FStatusVector, @BlobHandle, @length, BufferLength, Buffer);
+      AStatus := isc_get_segment(@FStatusVector, @BlobHandle, @length, Word(BufferLength), Buffer);
     finally
       UnLock;
     end;
@@ -2085,7 +2085,7 @@ type
       begin
         if BufferLength > FSegmentSize then
           size := FSegmentSize else
-          size := BufferLength;
+          size := Word(BufferLength);
         CheckUIBApiCall(isc_put_segment(@FStatusVector, @BlobHandle, Size, Buffer));
         dec(BufferLength, size);
         inc(Buffer, size);
@@ -2106,14 +2106,14 @@ type
   begin
     Stream.Seek(0, soFromBeginning);
     if Stream is TCustomMemoryStream then
-      BlobWriteSegment(BlobHandle, TCustomMemoryStream(Stream).Size,
+      BlobWriteSegment(BlobHandle, Cardinal(TCustomMemoryStream(Stream).Size),
         TCustomMemoryStream(Stream).Memory) else
 
     begin
-      GetMem(Buffer, Stream.Size);
+      GetMem(Buffer, Cardinal(Stream.Size));
       try
-        Stream.Read(Buffer^, Stream.Size);
-        BlobWriteSegment(BlobHandle, Stream.Size, Buffer);
+        Stream.Read(Buffer^, Cardinal(Stream.Size));
+        BlobWriteSegment(BlobHandle, Cardinal(Stream.Size), Buffer);
         Stream.Seek(0, soFromBeginning);
       finally
         FreeMem(buffer);
@@ -2239,10 +2239,7 @@ type
 
 {$IFDEF FPC}
 {$IFDEF LINUX}
-type
-  PDayTable = ^TDayTable;
-  TDayTable = array[1..12] of Word;
-  
+
 const
   MonthDays: array [Boolean] of TDayTable =
     ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
@@ -2350,7 +2347,7 @@ const
   procedure EncodeTimeStamp(const DateTime: TDateTime; v: PISCTimeStamp);
   begin
     EncodeSQLDate(DateTime, v.timestamp_date);
-    v.timestamp_time := Round(Frac(DateTime) * 864000000);
+    v.timestamp_time := ISC_TIME(Round(Frac(DateTime) * 864000000));
   end;
 
   procedure EncodeTimeStamp(const Date: Integer; v: PISCTimeStamp);
@@ -2396,7 +2393,11 @@ const
 
   procedure EncodeSQLTime(const Hour, Minute, Second: Word; const Fractions: LongWord; out v: Cardinal);
   begin
+  {$IFDEF FPC} // strange fpc warning !
+    v := Hour * Cardinal(36000000) + Minute * Cardinal(600000) + Second * Cardinal(10000) + Fractions * 10;
+  {$ELSE}
     v := Hour * 36000000 + Minute * 600000 + Second * 10000 + Fractions * 10;
+  {$ENDIF}
   end;
 
  { TSQLDA }
@@ -2954,7 +2955,7 @@ const
 
   procedure TSQLResult.GetRecord(const Index: Integer);
   begin
-    if (Index <> FCurrentRecord) then
+    if (Index <> FCurrentRecord) and (FMemoryPool <> nil) then
     begin
       Move(FMemoryPool.Items[Index]^, FDataBuffer^, FDataBufferLength);
       FCurrentRecord := Index;
@@ -3015,9 +3016,15 @@ const
     for i := 0 to FXSQLDA.sqln - 1 do
     begin
       // I don't use cardinal for FPC compatibility
+    {$IFDEF FPC}
+      inc(FXSQLDA.sqlvar[i].sqldata, FDataBuffer);
+      if (FXSQLDA.sqlvar[i].sqlind <> nil) then
+        inc(FXSQLDA.sqlvar[i].sqlind, FDataBuffer);
+    {$ELSE}
       inc(Integer(FXSQLDA.sqlvar[i].sqldata), Integer(FDataBuffer));
       if (FXSQLDA.sqlvar[i].sqlind <> nil) then
         inc(Integer(FXSQLDA.sqlvar[i].sqlind), Integer(FDataBuffer));
+    {$ENDIF}
     end;
   end;
 

@@ -38,6 +38,7 @@ interface
 uses
   Windows, Messages, QForms,
   Classes, { Classes must be after Forms for Delphi 5 compatibility. }
+  JvQJVCLUtils,
   JclAppInst;
 
 type
@@ -71,7 +72,7 @@ type
     function GetAppInstances: TJclAppInstances;
   protected
     procedure Loaded; override;
-    procedure WndProc(var Msg: TMessage); virtual;
+    procedure WndProc(var Msg: Messages.TMessage); virtual;
     function GetIsRemoteInstanceActive: Boolean;
     procedure DoInstanceCreated(ProcessId: Cardinal); virtual;
     procedure DoInstanceDestroyed(ProcessId: Cardinal); virtual;
@@ -111,8 +112,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,
-  JvQJVCLUtils;
+  SysUtils;
 
 const
   sAppInstancesWindowClassName = 'JvAppInstances_WindowClass'; // do not localize
@@ -238,7 +238,7 @@ begin
   Check;
 end;
 
-procedure TJvAppInstances.WndProc(var Msg: TMessage);
+procedure TJvAppInstances.WndProc(var Msg: Messages.TMessage);
 var
   Kind: TJvAppInstDataKind;
   Data: Pointer;

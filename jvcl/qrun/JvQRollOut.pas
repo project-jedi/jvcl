@@ -186,9 +186,9 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure DoExit; override;
+    procedure DoEnter; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -289,11 +289,14 @@ type
   end;
 
 implementation
+
+
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  QForms; // for IsAccel()
+  QForms; 
+
 // (p3) not used
 // const
 //  cIncrement = 24;
@@ -596,11 +599,13 @@ end;
 procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
-  begin
+  begin 
+    Canvas.Brush.Style := bsSolid; 
     Invalidate;
   end
   else
-  begin
+  begin 
+    Canvas.Brush.Style := bsClear; 
     DrawButtonFrame;
   end;
 end;
@@ -840,9 +845,9 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited DoPaintBackground(Canvas, Param);
+  //  inherited DoEraseBackground(Canvas, Param);
   Result := False;
 end;
 
@@ -851,6 +856,7 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
+  WS: WideString;
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -924,12 +930,13 @@ begin
   begin
     SetBkMode(Canvas.Handle, Transparent);
     if FMouseDown and FInsideButton then
-      OffsetRect(R, 1, 1);  
+      OffsetRect(R, 1, 1);
+    WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, Caption, -1, R, DT_VCENTER, 270)
+      DrawText(Canvas, WS, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, Caption, -1, R, DT_VCENTER, 0) 
+      DrawText(Canvas, WS, -1, R, DT_VCENTER, 0)
   end;
   if ShowFocus and Focused then
   begin
@@ -1065,17 +1072,17 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.DoKillFocus(FocusedWnd: HWND);
+procedure TJvCustomRollOut.DoExit;
 begin
   CheckChildTabStops;
-  inherited DoKillFocus(FocusedWnd);
+  inherited DoExit;
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.DoSetFocus(FocusedWnd: HWND);
+procedure TJvCustomRollOut.DoEnter;
 begin
   CheckChildTabStops;
-  inherited DoSetFocus(FocusedWnd);
+  inherited DoEnter;
   Invalidate;
 end;
 

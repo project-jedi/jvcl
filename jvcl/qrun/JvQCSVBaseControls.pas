@@ -148,7 +148,7 @@ type
     procedure SetCSVDataBase(const Value: TJvCSVBase);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override; 
   published
@@ -749,12 +749,12 @@ begin
     FCSVDataBase := nil;
 end;
 
-procedure TJvCSVNavigator.DoBoundsChanged;
+procedure TJvCSVNavigator.BoundsChanged;
 begin
   Height := 24;
   if Width < 221 then
     Width := 221;
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 procedure TJvCSVNavigator.SetCSVDataBase(const Value: TJvCSVBase);

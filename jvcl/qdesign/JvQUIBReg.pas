@@ -48,10 +48,10 @@ implementation
 
 uses
   Classes, QControls, 
-  JvQDsgnConsts, 
+  //JvDsgnConsts, 
   {$IFNDEF DelphiPersonalEdition}
   JvQUIBDataSet,
-  {$ENDIF DelphiPersonalEdition}
+  {$ENDIF !DelphiPersonalEdition}
   JvQUIB;
 
 {$IFDEF MSWINDOWS}
@@ -70,7 +70,7 @@ begin
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
   {$ENDIF !DelphiPersonalEdition} 
 
-  RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
+  RegisterComponents('Jv UIB', [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;

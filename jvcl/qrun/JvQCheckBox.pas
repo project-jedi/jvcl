@@ -379,11 +379,11 @@ end;
 
 procedure TJvCheckBox.StateChanged(State: TToggleState);
 begin
-  if not ReadOnly then
-  begin
+//  if not ReadOnly then
+//  begin
     inherited StateChanged(State);
     CheckLinkedControls;
-  end;
+//  end;
 end;
 
 

@@ -42,10 +42,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF UNIX}
-  QWindows,
-  {$ENDIF UNIX}
-  JvQMTConsts;
+  QWindows, JvQMTConsts;
 
 type
   TMTSynchroObject = class(TSynchroObject)

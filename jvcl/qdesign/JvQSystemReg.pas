@@ -29,14 +29,11 @@ unit JvQSystemReg;
 
 interface
 
-{$IFDEF MSWINDOWS}
-{$DEFINE USEWINDOWS}
-{$ENDIF MSWINDOWS}
-
 procedure Register;
 
 implementation
 
+{$UNDEF USEWINDOWS}
 uses
   Classes,
   QControls,
@@ -46,12 +43,11 @@ uses
   JvQMRUList, JvQMRUManager,
   JvQCommStatus, {JvComputerInfo,}
   {JvDeviceChanged, JvDirectories, JvSystemColors, JvKeyboardStates, JvQJoystick,}
-  JvQNTEventLog, JvQRas32, JvQAppInst, JvQScreenSaver,
-  JvQShellHook, JvQSHFileOperation, JvQSoundControl, JvQChangeNotify, JvQSearchFiles,
+  JvQNTEventLog, JvQRas32, JvQScreenSaver,
+  JvQSHFileOperation, JvQSoundControl, JvQChangeNotify, JvQSearchFiles,
   JvQPerfMon95, JvQComputerInfoEx,
-  JvQChangeNotifyEditor, JvQPerfStatEditor, JvQTimerList, JvQTimerListEditor,
+  JvQChangeNotifyEditor, JvQPerfStatEditor,
   {$ENDIF USEWINDOWS}
-  JvQSystemColors,
   JvQThread, JvQThreadTimer, JvQTimer, JvQSimpleXml, JvQXMLDatabase,
   JvQFormPlacement, JvQAppXMLStorage, JvQFormPlacementSelectList,
   JvQMinMaxForm, JvQFormPropertiesForm, JvQDsgnEditors;
@@ -68,8 +64,6 @@ begin
   {$IFDEF MSWINDOWS}
   GroupDescendentsWith(TJvSimpleXML, TControl);
   GroupDescendentsWith(TJvTimer, TControl);
-  GroupDescendentsWith(TJvAppInstances, TControl);
-  GroupDescendentsWith(TJvTimerList, TControl);
   {$ENDIF MSWINDOWS}
 
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
@@ -78,23 +72,18 @@ begin
 
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
-    TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
+    TJvSHFileOperation, TJvChangeNotify, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, {TJvJoystick,} TJvSoundControl,
     {TJvDeviceChanged,  TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
-    TJvPerfStat95, TJvComputerInfoEx, TJvSystemColors]);
+    TJvPerfStat95, TJvComputerInfoEx]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
     {$IFDEF USEWINDOWS}
-    TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook,
+    TJvSearchFiles, TJvMRUList, TJvMRUManager, 
     {$ENDIF USEWINDOWS}
-
     TJvTimer, TJvThread, TJvThreadTimer
-    {$IFDEF USEWINDOWS}, TJvTimerList {$ENDIF}
     ]);
-  {$IFDEF LINUX}
-  RegisterComponents(RsPaletteVisual, [TJvSystemColors]);
-  {$ENDIF LINUX}
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,

@@ -51,14 +51,12 @@ interface
 
 uses
   QWindows, QMessages, 
-  Qt, 
+  Qt,  
   Classes, QGraphics, QControls, QMenus,
   JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
 
 
 const
-//  clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
-                       //          Since when is clGrayText = clLight = clWhite?
   clGrayText = clDisabledText;
 
 
@@ -95,15 +93,11 @@ type
     procedure SetEmptyValue(const Value: string);
     procedure SetGroupIndex(Value: Integer);
     function GetFlat: Boolean; 
+    procedure WMPaste(var Mesg: TMessage); message WM_PASTE;
+    procedure WMUndo(var Mesg: TMessage); message WM_UNDO;
   protected
-    procedure DoClipboardCut; override;
-    procedure DoClipboardPaste; override;
-    procedure DoClearText; override;
-    procedure DoUndo; override;
-
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; virtual;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
     procedure CaretChanged(Sender: TObject); dynamic;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -120,11 +114,9 @@ type
     procedure InitWidget; override;
     procedure Paint; override;
 //    procedure TextChanged; override;
-//    procedure KeyPress(var Key: Char); override;
-    function HintShow(var HintInfo : THintInfo): Boolean; override; 
-    procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoKillFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    procedure KeyPress(var Key: Char); override; 
+    function HintShow(var HintInfo : THintInfo): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -164,18 +156,13 @@ type
     property PasswordChar;
     property PopupMenu;
     property ProtectPassword; 
-    property EchoMode;
-    property InputKeys; 
+    property EchoMode; 
     property Align;
     property Alignment;
     property ClipboardCommands;
     property HintColor;
     property GroupIndex;
-    property MaxPixel;
-    property Modified; { (rb) why published/stored? } 
-    // property SelStart; (p3) why published?
-    // property SelText;
-    // property SelLength; (p3) why published?
+    property MaxPixel; 
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -226,17 +213,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Math, QForms, 
+  SysUtils, Math, 
   JvQToolEdit;
 
 //=== Local procedures =======================================================
 
-function StrFillChar(Ch: Char; Length: Cardinal): string;
-begin
-  SetLength(Result, Length);
-  if Length > 0 then
-    FillChar(Result[1], Length, Ch);
-end;
+// (rom) StrFillChar replaced by StringOfChar
 
 function TextFitsInCtrl(Control: TControl; const Text: string): Boolean;
 var
@@ -257,42 +239,7 @@ begin
   end;
 end;
 
-//=== TJvCustomEdit ==========================================================
-
-procedure TJvCustomEdit.CaretChanged(Sender: TObject);
-begin
-  FCaret.CreateCaret;
-end;
-
-procedure TJvCustomEdit.Change;
-var
-  St: string;
-begin
-  inherited Change;
-  if not HasParent then
-    Exit;
-  St := Text;
-  FMaxPixel.Test(St, Font);
-  if St <> Text then
-  begin
-    Text := St;
-    SelStart := Min(SelStart, Length(Text));
-  end;
-end;
-
-
-
-
-function TJvCustomEdit.HintShow(var HintInfo : THintInfo): Boolean;
-begin
-  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
-  begin
-    HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
-    HintInfo.HintStr := Self.Text;
-  end;
-  Result := inherited HintShow(HintInfo);
-end;
-
+//=== { TJvCustomEdit } ======================================================
 
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
@@ -315,20 +262,6 @@ begin
   FEmptyFontColor := clGrayText;
 end;
 
-
-
-procedure TJvCustomEdit.InitWidget;
-
-begin
-  inherited;
-  if Focused then
-    DoEmptyValueEnter
-  else
-    DoEmptyValueExit;
-end;
-
-
-
 destructor TJvCustomEdit.Destroy;
 begin
   FMaxPixel.Free;
@@ -337,39 +270,88 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomEdit.DoClearText;
+procedure TJvCustomEdit.CaretChanged(Sender: TObject);
 begin
-  if not ReadOnly then
-    inherited DoClearText;
+  FCaret.CreateCaret;
 end;
 
-procedure TJvCustomEdit.DoClipboardCut;
+procedure TJvCustomEdit.Change;
+var
+  St: string;
 begin
-  if not ReadOnly then
-    inherited DoClipboardCut;
-end;
-
-procedure TJvCustomEdit.DoClipboardPaste;
-begin
-  if not ReadOnly then
+  inherited Change;
+  if not HasParent then
+    Exit;
+  St := Text;
+  FMaxPixel.Test(St, Font);
+  if St <> Text then
   begin
-    inherited DoClipboardPaste;
-    UpdateGroup;
+    Text := St;
+    SelStart := Min(SelStart, Length(Text));
   end;
+end;
+
+(*
+procedure TJvCustomEdit.CMHintShow(var Msg: TMessage);
+begin
+  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
+    with TCMHintShow(Msg) do
+    begin
+      HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
+      HintInfo.HintStr := Self.Text;
+      Result := 0;
+    end
+  else
+    inherited;
+end;
+*)
+
+function TJvCustomEdit.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
+  begin
+    HintInfo.HintPos := Self.ClientToScreen(Point(-2, Height - 2));
+    HintInfo.HintStr := Self.Text;
+  end;
+  Result := inherited HintShow(HintInfo);
+end;
+
+
+
+procedure TJvCustomEdit.InitWidget;
+begin
+  inherited InitWidget;
+  if Focused then
+    DoEmptyValueEnter
+  else
+    DoEmptyValueExit;
+end;
+
+
+
+
+
+procedure TJvCustomEdit.WMPaste(var Mesg: TMessage);
+begin
+  inherited;
+  UpdateGroup;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueEnter;
 begin
   if EmptyValue <> '' then
   begin
-    if FIsEmptyValue then
+    if (inherited Text) = EmptyValue then
     begin
-      Text := '';
+      inherited Text := '';
       FIsEmptyValue := False;
       if not (csDesigning in ComponentState) then
         Font.Color := FOldFontColor;
     end;
-  end;
+  end
+  else
+    if not (csDesigning in ComponentState) then
+      Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
@@ -398,21 +380,15 @@ end;
 procedure TJvCustomEdit.DoExit;
 begin
   inherited DoExit;
-  DoEmptyValueExit;
-end;
-
-procedure TJvCustomEdit.DoKillFocus(FocusedWnd: HWND);
-begin
   FCaret.DestroyCaret;
-  inherited DoKillFocus(FocusedWnd);
 end;
 
-function TJvCustomEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 var
   R: TRect;
 begin
   if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -426,16 +402,10 @@ begin
   end;
 end;
 
-procedure TJvCustomEdit.DoSetFocus(FocusedWnd: HWND);
-begin
-  inherited DoSetFocus(FocusedWnd);
-  FCaret.CreateCaret;
-end;
-
-procedure TJvCustomEdit.DoUndo;
+procedure TJvCustomEdit.WMUndo(var Mesg: TMessage);
 begin
   if not ReadOnly then
-    inherited DoUndo;
+    inherited;
 end;
 
 procedure TJvCustomEdit.EnabledChanged;
@@ -464,18 +434,16 @@ function TJvCustomEdit.GetText: TCaption;
 var
   Tmp: Boolean;
 begin
-  if FIsEmptyValue then
-    Result := ''
-  else
-  begin
-    Tmp := ProtectPassword;
-    try
-      ProtectPassword := False;  
-      Result := inherited GetText; 
-    finally
-      ProtectPassword := Tmp;
-    end;
+  Tmp := ProtectPassword;
+  try
+    ProtectPassword := False;  
+    Result := inherited GetText; 
+  finally
+    ProtectPassword := Tmp;
   end;
+
+  if (Result = EmptyValue) and (EmptyValue <> '') then
+    Result := '';
 end;
 
 
@@ -498,6 +466,7 @@ end;
 procedure TJvCustomEdit.Loaded;
 begin
   inherited Loaded;
+  FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
 end;
@@ -569,7 +538,7 @@ begin
     if PasswordChar = #0 then
       S := Text
     else
-      S := StrFillChar(PasswordChar, Length(Text));
+      S := StringOfChar(PasswordChar, Length(Text));
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
       Focused, Flat, Canvas) then
       inherited Paint;
@@ -591,15 +560,6 @@ end;
 procedure TJvCustomEdit.SetCaret(const Value: TJvCaret);
 begin
   FCaret.Assign(Value);
-end;
-
-procedure TJvCustomEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
-begin
-  if ClipboardCommands <> Value then
-  begin
-    inherited SetClipboardCommands(Value);
-    ReadOnly := ClipboardCommands <= [caCopy];
-  end;
 end;
 
 procedure TJvCustomEdit.SetDisabledColor(const Value: TColor);

@@ -1520,7 +1520,7 @@ const
   {$IFDEF LINUX}
   IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
-     QMessageBoxIcon_Warning, QMessageBoxIcon_NoIcon);
+     QMessageBoxIcon_Information, QMessageBoxIcon_NoIcon);
   {$ENDIF LINUX}
 
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);

@@ -20,6 +20,17 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+  Hofi
+
+Last Modified: 2004-10-07
+
+Changes:
+2004-10-07:
+  * Added
+     TJvCustomLogin
+       property Caption to support a custom dialog Caption.
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -58,6 +69,7 @@ type
   private
     FActive: Boolean;
     FAttemptNumber: Integer;
+    FCaption: string;
     FLoggedUser: string;
     FMaxPasswordLen: Integer;
     FAllowEmptyPassword: Boolean;
@@ -104,6 +116,8 @@ type
     procedure TerminateApplication;
     procedure Lock;
     property LoggedUser: string read GetLoggedUser;
+  published
+    property Caption: string read FCaption write FCaption;
   end;
 
   TJvLoginDialog = class(TJvCustomLogin)
@@ -121,6 +135,7 @@ type
     property AppStorage;
     property AppStoragePath;
     property AttemptNumber;
+    property Caption;
     property MaxPasswordLen;
     property UpdateCaption; 
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
@@ -161,7 +176,8 @@ type
   end;
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
-  FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;
+ FormShowEvent, OkClickEvent: TNotifyEvent;
+ ACaption: string = ''): TJvLoginForm;
 
 implementation
 
@@ -176,11 +192,12 @@ uses
 {$R *.xfm}
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
-  FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;
+ FormShowEvent, OkClickEvent: TNotifyEvent; ACaption: string = ''): TJvLoginForm;
 begin
   Result := TJvLoginForm.Create(Application);
   with Result do
   begin
+    Caption := ACaption;
     FSelectDatabase := ASelectDatabase;
     FUnlockMode := UnlockMode;
     if FUnlockMode then
@@ -331,6 +348,7 @@ end;
 function TJvCustomLogin.CreateLoginForm(UnlockMode: Boolean): TJvLoginForm;
 begin
   Result := TJvLoginForm.Create(Application);
+  Result.Caption := FCaption;
   with Result do
   begin
     FUnlockMode := UnlockMode;
@@ -508,12 +526,14 @@ begin
   if not FUnlockMode then
   begin
     HintLabel.Caption := RsHintLabel;
-    Caption := RsRegistrationCaption;
+    if Caption = '' then
+      Caption := RsRegistrationCaption;
   end
   else
   begin
     HintLabel.Caption := RsUnlockHint;
-    Caption := RsUnlockCaption;
+    if Caption = '' then
+      Caption := RsUnlockCaption;
   end;
   if (UserNameEdit.Text = '') and not FUnlockMode then
     ActiveControl := UserNameEdit

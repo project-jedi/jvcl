@@ -20,6 +20,18 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+  Hofi
+
+Last Modified: 2004-10-07
+
+Changes:
+2004-10-07:
+  * Added by Hofi
+      TJvAppEvents
+        property CancelDispatch
+          gives a chance to break event dispatching in a particular event handler.
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -54,6 +66,7 @@ type
     FShowHint: Boolean;
     FCanvas: TCanvas;
     FUpdateFormatSettings: Boolean;
+    FCancelDispatch: Boolean;
     FHintShortPause: Integer;
     FHintHidePause: Integer;
     FShowMainForm: Boolean;
@@ -104,6 +117,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas; { for painting the icon }
+    procedure CancelDispatch;
   published
     property Chained: Boolean read FChained write FChained default True;
     property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
@@ -143,14 +157,10 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  JvQFinalize;
-
-const
-  sUnitName = 'JvAppEvent';
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 type
   TJvAppEventList = class(TObject)
@@ -298,9 +308,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActivate) then
       TJvAppEvents(FAppEvents[I]).FOnActivate(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnActivate) then
@@ -313,9 +325,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnDeactivate) then
       TJvAppEvents(FAppEvents[I]).FOnDeactivate(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnDeactivate) then
@@ -330,12 +344,14 @@ begin
   Handled := False;
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnException) then
     begin
       TJvAppEvents(FAppEvents[I]).FOnException(Sender, E);
       Handled := True;
     end;
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
     begin
       if not Handled then
         Application.ShowException(E);
@@ -357,9 +373,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnIdle) then
       TJvAppEvents(FAppEvents[I]).FOnIdle(Sender, Done);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnIdle) then
@@ -377,10 +395,12 @@ begin
   Result := False;
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnHelp) then
       Result := TJvAppEvents(FAppEvents[I]).FOnHelp(HelpType, HelpContext,
         HelpKeyword, HelpFile, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnHelp) then
@@ -394,9 +414,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnHint) then
       TJvAppEvents(FAppEvents[I]).FOnHint(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnHint) then
@@ -412,9 +434,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnEvent) then
       TJvAppEvents(FAppEvents[I]).FOnEvent(Sender, Event, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnEvent) then
@@ -428,9 +452,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnMinimize) then
       TJvAppEvents(FAppEvents[I]).FOnMinimize(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnMinimize) then
@@ -443,9 +469,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnRestore) then
       TJvAppEvents(FAppEvents[I]).FOnRestore(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnRestore) then
@@ -459,9 +487,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnShowHint) then
       TJvAppEvents(FAppEvents[I]).FOnShowHint(HintStr, CanShow, HintInfo);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnShowHint) then
@@ -474,9 +504,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActiveControlChange) then
       TJvAppEvents(FAppEvents[I]).FOnActiveControlChange(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnActiveControlChange) then
@@ -489,9 +521,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActiveFormChange) then
       TJvAppEvents(FAppEvents[I]).FOnActiveFormChange(Sender);
-    if not TJvAppEvents(FAppEvents[I]).Chained then
+    if not TJvAppEvents(FAppEvents[I]).Chained or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnActiveFormChange) then
@@ -506,9 +540,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActionExecute) then
       TJvAppEvents(FAppEvents[I]).FOnActionExecute(Action, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnActionExecute) then
@@ -522,9 +558,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnActionUpdate) then
       TJvAppEvents(FAppEvents[I]).FOnActionUpdate(Action, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnActionUpdate) then
@@ -539,9 +577,11 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
+    TJvAppEvents(FAppEvents[I]).FCancelDispatch := False;
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnShortCut) then
       TJvAppEvents(FAppEvents[I]).FOnShortCut(Key, Shift, Handled);
-    if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
+    if not TJvAppEvents(FAppEvents[I]).Chained or Handled or
+     TJvAppEvents(FAppEvents[I]).FCancelDispatch then
       Exit;
   end;
   if Assigned(FOnShortCut) then
@@ -558,15 +598,13 @@ constructor TJvAppEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AppList = nil then
-  begin
     AppList := TJvAppEventList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(AppList));
-  end;
 
   FChained := True;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;
   FShowHint := True;
+  FCancelDispatch := False;
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
   FShowMainForm := True;
@@ -597,6 +635,11 @@ begin
   if FCanvas = nil then
     FCanvas := TCanvas.Create;
   Result := FCanvas;
+end;
+
+procedure TJvAppEvents.CancelDispatch;
+begin
+  FCancelDispatch := True;
 end;
 
 
@@ -790,10 +833,11 @@ initialization
 
 
 finalization
+  AppList.Free;
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

@@ -36,17 +36,14 @@ unit JvQScrollText;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QGraphics, QControls, QForms, QStdCtrls, QWindows, 
-  JvQTypes, JvQImageDrawThread, JVCLXVer, JvQComponent;
+  SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls,
+  JvQStaticText, JvQTypes, JvQImageDrawThread, JVCLXVer, JvQComponent;
 
 type
-  TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel 
-  TStaticText = TLabel; 
-
+  TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
   TJvScrollText = class(TJvCustomControl)
   private
-    FText: TStaticText;
+    FText: TJvStaticText;
     FTimerTag: Integer;
     FActive: Boolean;
     FDelay: Cardinal;
@@ -74,13 +71,13 @@ type
     function GetColor: TColor;
     procedure SetColor(const Value: TColor);
     procedure FontChange(Sender: TObject);
-    function GetFont: TFont;
     procedure SetFont(const Value: TFont);
     procedure TextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -92,7 +89,7 @@ type
     property ScrollPixels: Integer read FPixel write SetPixel default 1;
     property ScrollDirection: TJvScrollTextDirection read FScrollDirection write SetScrollDirection default drFromBottom;
     property BackgroundColor: TColor read GetColor write SetColor;
-    property Font: TFont read GetFont write SetFont;
+    property Font: TFont read FFont write SetFont;
     procedure Pause;
     procedure Unpause;
     procedure Reset;
@@ -106,6 +103,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQJVCLUtils, JvQThemes, JvQResources;
 
 constructor TJvScrollText.Create(AOwner: TComponent);
@@ -121,7 +121,7 @@ begin
   FScrollDirection := drFromBottom;
   FItems := TStringList.Create;
 
-  FText := TStaticText.Create(Self);
+  FText := TJvStaticText.Create(Self);
   FText.Parent := Self;
   // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
@@ -133,7 +133,6 @@ begin
   FText.OnMouseMove := TextMouseMove;
   FText.OnMouseUp := TextMouseUp;
 
-  // (p3) does this font do anything?
   FFont := TFont.Create;
   FFont.Assign(FText.Font);
   FFont.OnChange := FontChange;
@@ -142,18 +141,24 @@ begin
   FDown := False;
   FDeja := Application.HintPause;
 
-  FScroll := TJvImageDrawThread.Create(True);
-  FScroll.FreeOnTerminate := False;
-  FScroll.Delay := FDelay;
-  FScroll.OnDraw := OnScroll;
+  if not (csDesigning in ComponentState) then
+  begin
+    FScroll := TJvImageDrawThread.Create(True);
+    FScroll.FreeOnTerminate := False;
+    FScroll.Delay := FDelay;
+    FScroll.OnDraw := OnScroll;
+  end;
 end;
 
 destructor TJvScrollText.Destroy;
 begin
-  FScroll.OnDraw := nil;
-  FScroll.Terminate;
-  // FScroll.WaitFor;
-  FreeAndNil(FScroll);
+  if not (csDesigning in ComponentState) then
+  begin
+    FScroll.OnDraw := nil;
+    FScroll.Terminate;
+    // FScroll.WaitFor;
+    FreeAndNil(FScroll);
+  end;
   Application.HintPause := FDeja;
   FItems.Free;
   FText.Free;
@@ -162,16 +167,19 @@ begin
   inherited Destroy;
 end;
 
-function TJvScrollText.GetFont: TFont;
+procedure TJvScrollText.Loaded;
 begin
-  Result := FText.Font;
+  inherited Loaded;
+  if csDesigning in ComponentState then
+    SetItems(FItems);
 end;
 
 procedure TJvScrollText.SetFont(const Value: TFont);
 var
   Al: TAlignment;
 begin
-  FText.Font.Assign(Value);
+  FFont.Assign(Value);
+  FText.Font.Assign(FFont);
   CalculateText(Self);
   Al := FText.Alignment;
   if FText.Alignment = taCenter then
@@ -194,7 +202,8 @@ begin
     FStartY := P.Y
   else
     FStartY := P.X;
-  FScroll.OnDraw := nil;
+  if not (csDesigning in ComponentState) then
+    FScroll.OnDraw := nil;
   FDown := True;
 end;
 
@@ -246,7 +255,8 @@ end;
 procedure TJvScrollText.TextMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  FScroll.OnDraw := OnScroll;
+  if not (csDesigning in ComponentState) then
+    FScroll.OnDraw := OnScroll;
   FDown := False;
 end;
 
@@ -338,10 +348,13 @@ procedure TJvScrollText.SetActive(const Value: Boolean);
 begin
   SetItems(FItems);
   FActive := Value;
-  if Value then
-    FScroll.Resume
-  else
-    FScroll.Suspend;
+  if not (csDesigning in ComponentState) then
+  begin
+    if Value then
+      FScroll.Resume
+    else
+      FScroll.Suspend;
+  end;
 end;
 
 procedure TJvScrollText.SetDelay(const Value: Cardinal);
@@ -354,7 +367,8 @@ begin
   else
     Application.HintPause := Abs(Value - 1);
   FDelay := Value;
-  FScroll.Delay := Value;
+  if not (csDesigning in ComponentState) then
+    FScroll.Delay := Value;
 end;
 
 procedure TJvScrollText.SetScrollDirection(const Value: TJvScrollTextDirection);
@@ -428,6 +442,7 @@ procedure TJvScrollText.FontChange(Sender: TObject);
 var
   Al: TAlignment;
 begin
+  FText.Font.Assign(FFont);
   CalculateText(Self);
   Al := FText.Alignment;
   if FText.Alignment = taCenter then
@@ -466,7 +481,7 @@ begin
   end;
 end;
 
-procedure TJvScrollText.DoBoundsChanged;
+procedure TJvScrollText.BoundsChanged;
 begin
   if FText <> nil then
   begin
@@ -474,7 +489,7 @@ begin
     if FText.Height < Height then
       FText.Height := Height;
   end;    
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;
@@ -487,5 +502,20 @@ begin
   FText.Alignment := Value;
 end;
 
-end.
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
 
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
+end.

@@ -66,7 +66,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  JvQComponent, JvQTypes, JvQFinalize;
+  JvQComponent, JvQTypes;
 
 type
   TJvDataType = (dtString, dtBinary);
@@ -181,9 +181,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Registry,
   JvQResources;
-
-const
-  sUnitName = 'JvMRUList';  
 
 var
   hComCtlDll: HMODULE = 0;
@@ -753,8 +750,6 @@ begin
     end
     else 
       RaiseLastOSError; 
-    if hComCtlDll > 0 then
-      AddFinalizeProc(sUnitName, FinalizeDLL);
   end;
 end;
 
@@ -774,10 +769,10 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  FinalizeDLL;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

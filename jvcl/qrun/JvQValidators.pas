@@ -35,9 +35,8 @@ unit JvQValidators;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QControls, QForms,
-  JvQComponent, JvQErrorIndicator, JvQFinalize;
+  QWindows, SysUtils, Classes, QControls, QForms,
+  JvQComponent, JvQErrorIndicator;
 
 type
   EValidatorError = class(Exception);
@@ -259,9 +258,6 @@ uses
   JclWideStrings, 
   JvQTypes, JvQResources;
 
-const
-  sUnitName = 'JvValidators';
-
 var
   GlobalValidatorsList: TStringList = nil;
 
@@ -272,7 +268,6 @@ begin
   if not Assigned(GlobalValidatorsList) then
   begin
     GlobalValidatorsList := TStringList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalValidatorsList));
    // register
     RegisterBaseValidators;
   end;
@@ -849,10 +844,11 @@ initialization
   RegisterBaseValidators;
 
 finalization
+  FreeAndNil(GlobalValidatorsList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

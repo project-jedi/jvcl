@@ -34,16 +34,18 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils, Classes, QForms, QControls, QGraphics, QWindows;
-
+  SysUtils, Classes, 
+  QButtons, {CM_BUTTONPRESSED} 
+  QForms, QControls, QGraphics, QWindows;
 
 const
+
+  PaletteMask = $00000000;
+
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
-
-
 
 
   { JvEditor }
@@ -92,7 +94,8 @@ const
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_JVBASE + 0;
   { Command message for TJvSpeedButton }
-  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
+//  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
+  CM_JVBUTTONPRESSED = CM_BUTTONPRESSED;
   // (rom) disabled unused
   { Command messages for TJvWindowHook }
   //CM_RECREATEWINDOW  = CM_JVBASE + 2;
@@ -102,27 +105,23 @@ const
   CM_FORCESIZE = CM_JVBASE + 5;  // used in JvButton
 
   { Values for WParam for CM_SPEEDBARCHANGED message }
-  SBR_CHANGED = 0; { change buttons properties  }
-  SBR_DESTROYED = 1; { destroy SpeedBar           }
-  SBR_BTNSELECT = 2; { select button in SpeedBar  }
-  SBR_BTNSIZECHANGED = 3; { button size changed        }
+  SBR_CHANGED        = 0; { change buttons properties }
+  SBR_DESTROYED      = 1; { destroy SpeedBar }
+  SBR_BTNSELECT      = 2; { select button in SpeedBar }
+  SBR_BTNSIZECHANGED = 3; { button size changed }
 
-  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
-  PaletteMask = $02000000;
-
-  // (rom) unused 
-  DEFAULT_SYSCOLOR_MASK = $000000FF; 
+ 
  
  
   sLineBreakLen = Length(sLineBreak);
 
-  CrLf = #13#10;
-  Cr = #13;
-  Lf = #10;
   Backspace = #8;
-  Tab = #9;
-  Esc = #27;
-  Del = #127;
+  Tab   = #9;
+  CrLf  = #13#10;
+  Cr    = #13;
+  Lf    = #10;
+  Esc   = #27;
+  Del   = #127;
   CtrlC = ^C;
   CtrlH = ^H;
   CtrlI = ^I;
@@ -131,15 +130,16 @@ const
   CtrlV = ^V;
   CtrlX = ^X;
   {$IFDEF MSWINDOWS}
-  RegPathDelim = '\';
-  PathDelim = '\';
-  DriveDelim = ':';
-  PathSep = ';';
+  RegPathDelim   = '\';
+  PathDelim      = '\';
+  DriveDelim     = ':';
+  PathSep        = ';';
   AllFilePattern = '*.*';
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
-  RegPathDelim = '_';
-  PathDelim = '/';
+//  RegPathDelim   = '_';
+  RegPathDelim   = '/';
+  PathDelim      = '/';
   AllFilePattern = '*';
   {$ENDIF UNIX}
 
@@ -177,7 +177,7 @@ const
   FOURCC_fram = 'fram';
   FOURCC_icon = 'icon';
   FOURCC_rate = 'rate';
-  FOURCC_seq = 'seq ';
+  FOURCC_seq  = 'seq ';
 
   AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;

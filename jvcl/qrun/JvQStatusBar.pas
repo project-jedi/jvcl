@@ -66,7 +66,7 @@ type
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl; 
   protected
-    procedure DoBoundsChanged; override; 
+    procedure BoundsChanged; override; 
     procedure Paint; override;   
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
@@ -101,9 +101,9 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-procedure TJvStatusBar.DoBoundsChanged;
+procedure TJvStatusBar.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   Realign; 
   MovePanelControls; 
 end;

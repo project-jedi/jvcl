@@ -78,14 +78,14 @@ begin
   FActive := True;
   FControlKeys := [ssAlt];
   FForm := GetParentForm(TControl(AOwner));
-  if (FForm <> nil) and not (csDesigning in ComponentState) then  
-    InstallApplicationHook(NewEventFilter); 
+//  if (FForm <> nil) and not (csDesigning in ComponentState) then
+//    InstallApplicationHook(NewEventFilter);
 end;
 
 destructor TJvEasterEgg.Destroy;
 begin
-  if (FForm <> nil) and not (csDesigning in ComponentState) then  
-    UninstallApplicationHook(NewEventFilter); 
+//  if (FForm <> nil) and not (csDesigning in ComponentState) then
+//    UninstallApplicationHook(NewEventFilter); 
   inherited Destroy;
 end;
 

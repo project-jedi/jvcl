@@ -94,10 +94,10 @@ begin
         Inc(R.Left);
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
-        QWindows.FrameRect(Canvas, R);
+        QWindows.FrameRect( Canvas,  R);
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
-      QWindows.FrameRect(Canvas, R);
+      QWindows.FrameRect( Canvas,  R);
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then

@@ -28,7 +28,7 @@
 { Class needed to read MetaData. }
 
 {$I jvcl.inc}
-{$I jvuib.inc}
+{$I JvUIB.inc}
 
 unit JvQUIBMetaData;
 
@@ -188,6 +188,7 @@ type
     FNotNull: Boolean;
     FDomain: Integer;
     FInfos: TTableFieldInfos;
+    FComputedSource: string;
     procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
     function GetDomain: TMetaDomain;
@@ -199,11 +200,13 @@ type
     property NotNull: Boolean read FNotNull;
     property Domain: TMetaDomain read GetDomain;
     property FieldInfos: TTableFieldInfos read FInfos;
+    property ComputedSource: string read FComputedSource;
   end;
 
   TMetaDomain = class(TMetaTableField)
   protected
     property Domain; // hidden
+    property ComputedSource; // hidden
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     procedure SaveToDDL(Stream: TStringStream); override;
@@ -586,10 +589,9 @@ const
     ('INSERT', 'UPDATE', 'DELETE');
 
   FieldTypes: array [TUIBFieldType] of PChar =
-   ('', 'NUMERIC', 'CHAR', 'VARCHAR',
-    'CSTRING', 'SMALLINT', 'INTEGER', 'QUAD', 'FLOAT', 'DOUBLE PRECISION',
-    'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME', 'INT64'
-    {$IFDEF IB7_UP}, 'BOOLEAN' {$ENDIF});
+   ('', 'NUMERIC', 'CHAR', 'VARCHAR', 'CSTRING', 'SMALLINT', 'INTEGER', 'QUAD',
+    'FLOAT', 'DOUBLE PRECISION', 'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME',
+    'INT64' {$IFDEF IB7_UP}, 'BOOLEAN' {$ENDIF});
 
   QRYGenerators =
     'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS GEN WHERE ' +
@@ -615,7 +617,7 @@ const
     'FLD.RDB$FIELD_LENGTH, FLD.RDB$FIELD_PRECISION, ' +
     'FLD.RDB$CHARACTER_SET_ID, FLD.RDB$FIELD_SUB_TYPE, RFR.RDB$FIELD_NAME, ' +
     'FLD.RDB$SEGMENT_LENGTH, RFR.RDB$NULL_FLAG, RFR.RDB$DEFAULT_SOURCE, ' +
-    'RFR.RDB$FIELD_SOURCE ' +
+    'RFR.RDB$FIELD_SOURCE , FLD.RDB$COMPUTED_SOURCE ' +
     'FROM RDB$RELATIONS REL, RDB$RELATION_FIELDS RFR, RDB$FIELDS FLD ' +
     'WHERE (RFR.RDB$FIELD_SOURCE = FLD.RDB$FIELD_NAME) AND ' +
     '(RFR.RDB$RELATION_NAME = REL.RDB$RELATION_NAME) AND ' +
@@ -689,13 +691,13 @@ const
   QRYDomains =
     'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, ' +
     'RDB$FIELD_PRECISION, RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, ' +
-    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE ' +
+    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE, RDB$COMPUTED_SOURCE ' +
     'FROM RDB$FIELDS WHERE NOT (RDB$FIELD_NAME STARTING WITH ''RDB$'')';
 
   QRYSysDomains =
     'select RDB$FIELD_TYPE, RDB$FIELD_SCALE, RDB$FIELD_LENGTH, ' +
     'RDB$FIELD_PRECISION, RDB$CHARACTER_SET_ID, RDB$FIELD_SUB_TYPE, ' +
-    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE ' +
+    'RDB$FIELD_NAME, RDB$SEGMENT_LENGTH, RDB$NULL_FLAG, RDB$DEFAULT_SOURCE, RDB$COMPUTED_SOURCE ' +
     'from RDB$FIELDS';
 
   QRYProcedures =
@@ -1436,7 +1438,7 @@ end;
 procedure TMetaDataBase.LoadFromDatabase(Transaction: TJvUIBTransaction);
 var
   I: Integer;
-  ConStr, cForField, Str: string;
+  ConStr, Str: string;
   QNames, QFields, QCharset, QPrimary: TJvUIBStatement;
   QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement;
 
@@ -1526,7 +1528,6 @@ begin
           QForeign.Params.AsString[0] := Tables[I].Name;
           QForeign.Open;
           ConStr := '';
-          cForField := '';
           while not QForeign.Eof do
           begin
             if ConStr <> Trim(QForeign.Fields.AsString[0]) then // new
@@ -1543,7 +1544,6 @@ begin
                 Include(Tables[I].Fields[FFields[0]].FInfos, fForeign);
                 SetLength(FForFields, 1);
                 FForFields[0] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
-                cForField := ForFields[0].Name;
 
                 Str := Trim(QForeign.Fields.AsString[1]);
                 if Str = 'RESTRICT' then
@@ -2658,7 +2658,8 @@ begin
     Stream.WriteString(Format('%s  RETURNS PARAMETER %d', [BreakLine, Freturn]));
   end;
 
-  Stream.WriteString(Format('%s  ENTRY_POINT ''%s'' MODULE_NAME ''%s'';', [BreakLine, FEntry, FModule]));
+  Stream.WriteString(Format('%s  ENTRY_POINT ''%s'' MODULE_NAME ''%s'';',
+    [BreakLine, FEntry, FModule]));
 end;
 
 procedure TMetaUDF.SaveToStream(Stream: TStream);
@@ -2732,10 +2733,13 @@ begin
 
   FDomain := -1;
   if not (Self is TMetaDomain) then
+  begin
     if OIDDomain in TMetaDataBase(FOwner.FOwner).FOIDDatabases then
       if not (Q.Fields.IsNull[10] or (Copy(Q.Fields.AsString[10], 1, 4) = 'RDB$')) then
         FDomain :=
           TMetaDataBase(FOwner.FOwner).FindDomainIndex(Trim(Q.Fields.AsString[10]));
+    Q.ReadBlob(11, FComputedSource);
+  end;
 end;
 
 procedure TMetaTableField.LoadFromStream(Stream: TStream);
@@ -2744,6 +2748,7 @@ begin
   ReadString(Stream, FDefaultValue);
   Stream.Read(FNotNull, SizeOf(FNotNull));
   Stream.Read(FDomain, SizeOf(FDomain));
+  ReadString(Stream, FComputedSource);
 end;
 
 class function TMetaTableField.NodeType: TMetaNodeType;
@@ -2754,9 +2759,10 @@ end;
 procedure TMetaTableField.SaveToDDLNode(Stream: TStringStream);
 begin
   if FDomain >= 0 then
-    Stream.WriteString(Domain.Name)
-  else
-    inherited SaveToDDLNode(Stream);
+    Stream.WriteString(Domain.Name) else
+    if FComputedSource <> '' then
+      Stream.WriteString('COMPUTED BY ' + FComputedSource) else
+      inherited SaveToDDLNode(Stream);
   if FDefaultValue <> '' then
     Stream.WriteString(' DEFAULT ' + FDefaultValue);
   if FNotNull then
@@ -2769,6 +2775,7 @@ begin
   WriteString(Stream, FDefaultValue);
   Stream.Write(FNotNull, SizeOf(FNotNull));
   Stream.Write(FDomain, SizeOf(FDomain));
+  WriteString(Stream, FComputedSource);
 end;
 
 //=== { TMetaProcInField } ===================================================

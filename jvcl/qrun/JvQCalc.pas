@@ -1017,10 +1017,10 @@ begin
   begin
     if FControl is TCustomLabel then
       TCustomLabelAccessProtected(FControl).Caption := Text
-    else
-    { (rb) Fix to update the text of a TJvCalcEdit }
-    if FControl is TCustomEdit then
-      TCustomEdit(FControl).Text := Text;
+//    else
+//    { (rb) Fix to update the text of a TJvCalcEdit }
+//    if FControl is TCustomEdit then
+//      TCustomEdit(FControl).Text := Text;
   end;
   if Assigned(FOnTextChange) then
     FOnTextChange(Self);
