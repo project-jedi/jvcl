@@ -94,11 +94,24 @@ procedure TfrmEditor .RAEditorPaintGutter(Sender: TObject; Canvas: TCanvas);
       end;
   end;
 var
-  i  : integer;
+  i: Integer;
+  R: TRect;
+  S: string;
 begin
   for i := 0 to 9 do
     if (Sender as TJvEditor).Bookmarks[i].Valid then
       Draw((Sender as TJvEditor).Bookmarks[i].Y, i);
+
+ // paint line numbers     
+  Canvas.Font.Color := clBlack;
+  with Sender as TJvEditor do
+    for i := TopRow to TopRow + VisibleRowCount - 1 do
+    begin
+      S := IntToStr(i);
+      R := CalcCellRect(0, i - TopRow);
+      OffsetRect(R, - (GutterWidth + GutterRightMargin), 0); // convert to Gutter origin
+      Canvas.TextOut(GutterWidth - GutterRightMargin - TextWidth(S) - 8, R.Top + 1, S);
+    end;
 end;
 
 procedure TfrmEditor .PageControl1Change(Sender: TObject);
