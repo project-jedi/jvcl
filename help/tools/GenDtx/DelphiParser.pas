@@ -144,8 +144,8 @@ type
     property ErrorMsg: string read FErrorMsg;
   end;
 
-  TDtxCompareErrorFlag = (defJVCLInfoGroup, defJVCLInfoFlag, defNoPackageTag,
-    defPackageTagNotFilled, defNoStatusTag, defEmptySeeAlso, defNoAuthor);
+  TDtxCompareErrorFlag = (defNoPackageTag, defPackageTagNotFilled,
+    defNoStatusTag, defEmptySeeAlso, defNoAuthor, defHasTocEntryError);
   TDtxCompareErrorFlags = set of TDtxCompareErrorFlag;
 
   TPasCheckErrorFlag = (pefNoLicense, pefUnitCase);
@@ -153,11 +153,14 @@ type
 
   TDefaultText = (dtWriteSummary, dtWriteDescription, dtTypeUsedBy,
     dtListProperties, dtRemoveSeeAlso, dtDescribeReturns, dtOverridenMethod,
-    dtInheritedMethod, dtDescriptionFor);
+    dtInheritedMethod, dtDescriptionFor, dtDescriptionForThisItem);
 
   TDefaultTexts = set of TDefaultText;
 
   TDtxCompareTokenType = (ctHelpTag, ctText, ctParseTag, ctSeperator);
+
+  TJVCLInfoError = (jieGroupNotFilled, jieFlagNotFilled, jieOtherNotFilled, jieNoGroup, jieDoubles);
+  TJVCLInfoErrors = set of TJVCLInfoError;
 
   TDtxItem = class
   private
@@ -166,6 +169,11 @@ type
     FTitle: string;
     FCombine: string;
     FCombineWith: string;
+    FHasTocEntry: Boolean;
+    FTitleImg: string;
+    FHasJVCLInfo: Boolean;
+    FJVCLInfoErrors: TJVCLInfoErrors;
+    FIsRegisteredComponent: Boolean;
   public
     constructor Create(const ATag: string); virtual;
     destructor Destroy; override;
@@ -174,6 +182,11 @@ type
     property Title: string read FTitle write FTitle;
     property Combine: string read FCombine write FCombine;
     property CombineWith: string read FCombineWith write FCombineWith;
+    property HasTocEntry: Boolean read FHasTocEntry write FHasTocEntry;
+    property TitleImg: string read FTitleImg write FTitleImg;
+    property HasJVCLInfo: Boolean read FHasJVCLInfo write FHasJVCLInfo;
+    property IsRegisteredComponent: Boolean read FIsRegisteredComponent write FIsRegisteredComponent;
+    property JVCLInfoErrors: TJVCLInfoErrors read FJVCLInfoErrors write FJVCLInfoErrors;
   end;
 
   TDtxCompareParser = class(TBasicParser)
@@ -181,21 +194,27 @@ type
     FList: TList;
     FErrors: TDtxCompareErrorFlags;
     FDefaultTexts: TDefaultTexts;
+    FPasFileNameWithoutPath: string;
     function GetDtxCompareTokenType: TDtxCompareTokenType;
   protected
     function ReadNextToken: Char; override;
 
     function Parse: Boolean;
+
     procedure ReadAuthor;
     procedure ReadCombine(Item: TDtxItem);
     procedure ReadCombineWith(Item: TDtxItem);
-    procedure ReadJVCLINFO;
+    procedure ReadFileInfo;
+    procedure ReadHasTocEntry(Item: TDtxItem);
+    procedure ReadHelpTopic(Item: TDtxItem);
+    procedure ReadJVCLINFO(Item: TDtxItem);
     procedure ReadPackage;
     procedure ReadParameters(List: TStrings);
     procedure ReadRest;
     procedure ReadSeeAlso;
     procedure ReadStartBlock;
     procedure ReadStatus;
+    procedure ReadTitleImg(Item: TDtxItem);
 
     property CompareTokenType: TDtxCompareTokenType read GetDtxCompareTokenType;
   public
@@ -585,7 +604,7 @@ begin
         if Q1 = nil then
           Q := Q2
         else
-          if (Q2 = nil) or (Q1 < Q2) then
+        if (Q2 = nil) or (Q1 < Q2) then
           Q := Q1
         else
           Q := Q2;
@@ -633,28 +652,28 @@ begin
           if SameText(TokenString, 'procedure') then
             ReadProcedure
           else
-            if SameText(TokenString, 'function') then
+          if SameText(TokenString, 'function') then
             ReadFunction
           else
-            if TokenSymbolIs('resourcestring') then
+          if TokenSymbolIs('resourcestring') then
           begin
             Position := inResourceString;
             NextToken;
           end
           else
-            if SameText(TokenString, 'const') then
+          if SameText(TokenString, 'const') then
           begin
             Position := inConst;
             NextToken;
           end
           else
-            if SameText(TokenString, 'type') then
+          if SameText(TokenString, 'type') then
           begin
             Position := inType;
             NextToken;
           end
           else
-            if TokenSymbolIs('var') then
+          if TokenSymbolIs('var') then
           begin
             Position := inVar;
             NextToken;
@@ -693,7 +712,7 @@ begin
   if TokenSymbolIs('library') then
     AModuleType := mtLibrary
   else
-    if TokenSymbolIs('unit') then
+  if TokenSymbolIs('unit') then
     AModuleType := mtUnit
   else
     Error('''library'' or ''unit'' expected');
@@ -945,7 +964,7 @@ begin
     NextToken;
   end
   else
-    if Token <> toSemiColon then
+  if Token <> toSemiColon then
     ReadClassMethods(ClassItem, AddToList)
       { Token staat op eerste token na [end]; }
   else
@@ -1003,7 +1022,7 @@ begin
         if TokenSymbolIs('end') then
           Break
         else
-          if TokenSymbolIs('case') then
+        if TokenSymbolIs('case') then
         begin
           SkipUntilSymbol('of');
           NextToken;
@@ -1389,7 +1408,7 @@ begin
     ReadType('', False);
   end
   else
-    if TokenSymbolIs('set') then
+  if TokenSymbolIs('set') then
   begin
     { same as array }
     SkipUntilSymbol('of');
@@ -1397,14 +1416,14 @@ begin
     ReadType('', False);
   end
   else
-    if Token = '^' then
+  if Token = '^' then
   begin
     NextToken;
     CheckToken(toSymbol);
     NextToken;
   end
   else
-    if TokenSymbolIs('string') then
+  if TokenSymbolIs('string') then
   begin
     NextToken;
     if Token = '[' then
@@ -1415,7 +1434,7 @@ begin
     end;
   end
   else
-    if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
+  if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
     ReadConstantExpression(True)
   else
   begin
@@ -1448,7 +1467,7 @@ begin
       end;
     end
     else
-      if not (Token in [toHaakjeSluiten, toSemiColon, '=']) and not TokenSymbolIs('end') then
+    if not (Token in [toHaakjeSluiten, toSemiColon, '=']) and not TokenSymbolIs('end') then
       ReadConstantExpression(True);
   end;
 
@@ -1532,19 +1551,19 @@ begin
             Exit;
           end
           else
-            if TokenSymbolIs('private') then
+          if TokenSymbolIs('private') then
             Position := inPrivate
           else
-            if TokenSymbolIs('protected') then
+          if TokenSymbolIs('protected') then
             Position := inProtected
           else
-            if TokenSymbolIs('public') then
+          if TokenSymbolIs('public') then
             Position := inPublic
           else
-            if TokenSymbolIs('published') then
+          if TokenSymbolIs('published') then
             Position := inPublished
           else
-            if TokenSymbolIs('property') then
+          if TokenSymbolIs('property') then
           begin
             ReadClass_Property(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities + [inProtected, inPublic, inPublished]));
@@ -1552,7 +1571,7 @@ begin
             Continue;
           end
           else
-            if TokenSymbolIn(['procedure', 'constructor', 'destructor']) >= 0 then
+          if TokenSymbolIn(['procedure', 'constructor', 'destructor']) >= 0 then
           begin
             ReadClass_Procedure(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities), False);
@@ -1560,7 +1579,7 @@ begin
             Continue;
           end
           else
-            if TokenSymbolIs('function') then
+          if TokenSymbolIs('function') then
           begin
             ReadClass_Function(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities), False);
@@ -1568,7 +1587,7 @@ begin
             Continue;
           end
           else
-            if TokenSymbolIs('class') then
+          if TokenSymbolIs('class') then
           begin
             ReadClass_ClassMethod(AClassItem, Position,
               AddToList and (Position in AcceptVisibilities));
@@ -1657,7 +1676,7 @@ begin
   if TokenSymbolIs('constructor') then
     MethodType := mtConstructor
   else
-    if TokenSymbolIs('destructor') then
+  if TokenSymbolIs('destructor') then
     MethodType := mtDestructor
   else
     MethodType := mtNormal;
@@ -2193,7 +2212,7 @@ begin
       end;
     end
     else
-      if TokenSymbolIs('IFNDEF') then
+    if TokenSymbolIs('IFNDEF') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2223,7 +2242,7 @@ begin
       end;
     end
     else
-      if TokenSymbolIs('ENDIF') then
+    if TokenSymbolIs('ENDIF') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2243,7 +2262,7 @@ begin
       Continue;
     end
     else
-      if TokenSymbolIs('ELSE') then
+    if TokenSymbolIs('ELSE') then
     begin
       if SkipUntilIfDefCount0 then
       begin
@@ -2315,21 +2334,21 @@ begin
             Exit;
           end
           else
-            if TokenSymbolIs('property') then
+          if TokenSymbolIs('property') then
           begin
             ReadClass_Property(AInterfaceItem, inPublic, AddToList);
             { Token is eerste token na ; }
             Continue;
           end
           else
-            if TokenSymbolIs('procedure') then
+          if TokenSymbolIs('procedure') then
           begin
             ReadClass_Procedure(AInterfaceItem, inPublic, AddToList, False);
             { Token is eerste token na ; }
             Continue;
           end
           else
-            if TokenSymbolIs('function') then
+          if TokenSymbolIs('function') then
           begin
             ReadClass_Function(AInterfaceItem, inPublic, AddToList, False);
             { Token is eerste token na ; }
@@ -2348,32 +2367,32 @@ begin
   if Token = toHaakjeOpen then
     ReadEnumerator(ATypeName, AddToList)
   else
-    if TokenSymbolIs('record') then
+  if TokenSymbolIs('record') then
     ReadRecord(ATypeName, AddToList)
   else
-    if TokenSymbolIs('class') then
+  if TokenSymbolIs('class') then
     ReadClass(ATypeName, AddToList)
   else
-    if TokenSymbolIs('procedure') then
+  if TokenSymbolIs('procedure') then
     ReadProcedureType(ATypeName, AddToList)
   else
-    if TokenSymbolIs('function') then
+  if TokenSymbolIs('function') then
     ReadFunctionType(ATypeName, AddToList)
   else
-    if TokenSymbolIs('interface') then
+  if TokenSymbolIs('interface') then
     ReadInterfaceType(ATypeName, AddToList)
   else
-    if TokenSymbolIs('dispinterface') then
+  if TokenSymbolIs('dispinterface') then
     ReadDispInterface(ATypeName, AddToList)
   else
-    if TokenSymbolIs('packed') then
+  if TokenSymbolIs('packed') then
   begin
     NextToken;
     CheckToken(toSymbol);
     if TokenSymbolIs('record') then
       ReadRecord(ATypeName, AddToList)
     else
-      if TokenSymbolIs('array') then
+    if TokenSymbolIs('array') then
       ReadSimpleType(ATypeName, AddToList)
     else
       Error('record or array expected');
@@ -2441,14 +2460,14 @@ begin
     if Token = OpenHaak then
       Inc(Haakjes)
     else
-      if Token = CloseHaak then
+    if Token = CloseHaak then
     begin
       Dec(Haakjes);
       if Haakjes = 0 then
         Exit;
     end
     else
-      if Token = toEof then
+    if Token = toEof then
       Exit;
     NextToken;
   end;
@@ -2466,7 +2485,7 @@ begin
     if TokenSymbolIn(CAllowableSymbolsInTypeDef) >= 0 then
       SkipUntilTokenInHaak('(', ')')
     else
-      if TokenSymbolIs('end') then
+    if TokenSymbolIs('end') then
       Exit
     else
       case Token of
@@ -2536,6 +2555,8 @@ begin
   if not Result then
     Exit;
 
+  FPasFileNameWithoutPath := ChangeFileExt(ExtractFileName(AFileName), '.pas');
+
   FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
   try
     FList.Clear;
@@ -2547,7 +2568,7 @@ begin
 end;
 
 const
-  CDefaultText: array[TDefaultText] of PChar = (
+  CDefaultText: array[TDefaultText] of string = (
     'write here a summary (1 line)',
     'write here a description',
     'this type is used by (for reference):',
@@ -2556,7 +2577,8 @@ const
     'describe here what the function returns',
     'this is an overridden method, you don''t have to describe these',
     'if it does the same as the inherited method',
-    'description for'
+    'Description for', // case sensitive
+    'description for this item'
     );
 
 function TDtxCompareParser.GetDtxCompareTokenType: TDtxCompareTokenType;
@@ -2569,10 +2591,10 @@ begin
     if (S[1] = '@') and (S[2] = '@') then
       Result := ctHelpTag
     else
-      if (S[1] = '#') and (S[2] = '#') then
+    if (S[1] = '#') and (S[2] = '#') then
       Result := ctParseTag
     else
-      if (S[1] = '-') and (S[2] = '-') then
+    if (S[1] = '-') and (S[2] = '-') then
       Result := ctSeperator
     else
       Result := ctText;
@@ -2584,6 +2606,7 @@ end;
 function TDtxCompareParser.Parse: Boolean;
 begin
   FErrors := [defNoPackageTag, defNoStatusTag, defNoAuthor];
+  FLastWasNextLine := True; { BOF }
 
   ReadStartBlock;
   ReadRest;
@@ -2631,28 +2654,221 @@ begin
   end;
 end;
 
-procedure TDtxCompareParser.ReadJVCLINFO;
+procedure TDtxCompareParser.ReadFileInfo;
+begin
+  {
+    PRE  : Token = first token after @@Somepasfilename.pas
+    POST : Token = toEof or Token = @@SomeHelpTag }
+
+  { We only determine whether an author is specified }
+
+  while (Token <> toEof) and (CompareTokenType <> ctHelpTag) do
+    if FLastWasNextLine and TokenSymbolIs('author') then
+      ReadAuthor
+    else
+      NextToken;
+end;
+
+procedure TDtxCompareParser.ReadHasTocEntry(Item: TDtxItem);
+var
+  S: string;
+begin
+  if Item = nil then
+    ErrorStr('ReadCombineWith, Item = nil');
+  NextToken;
+  if CompareTokenType = ctText then
+  begin
+    S := TokenString;
+    { Expect 'ON>' or 'OFF>' }
+    if (S > '') and (S[Length(S)] = '>') then
+      Delete(S, Length(S), 1);
+
+    if SameText(S, 'on') then
+      Item.HasTocEntry := True
+    else
+    if SameText(S, 'off') then
+      Item.HasTocEntry := False
+    else
+      Include(FErrors, defHasTocEntryError);
+    NextToken;
+  end;
+end;
+
+type
+  TCheckTextResult = (ctPrefix, ctEqual, ctDifferent);
+
+function CheckText(const Short, Long: string; const CaseSensitive: Boolean): TCheckTextResult;
+var
+  AreEqual: Boolean;
+begin
+  if CaseSensitive then
+    AreEqual := StrLComp(PChar(Short), PChar(Long), Length(Short)) = 0
+  else
+    AreEqual := StrLIComp(PChar(Short), PChar(Long), Length(Short)) = 0;
+
+  if not AreEqual then
+    Result := ctDifferent
+  else
+  if Length(Short) = Length(Long) then
+    Result := ctEqual
+  else
+    Result := ctPrefix;
+end;
+
+procedure TDtxCompareParser.ReadHelpTopic(Item: TDtxItem);
+
+  procedure CheckDefaultText(var ACheck: string);
+  var
+    DefaultText: TDefaultText;
+  begin
+    for DefaultText := Low(TDefaultText) to High(TDefaultText) do
+      case CheckText(ACheck, CDefaultText[DefaultText], DefaultText = dtDescriptionFor) of
+        ctPrefix:
+          Exit;
+        ctEqual:
+          begin
+            ACheck := '';
+            Include(FDefaultTexts, DefaultText);
+            Exit;
+          end;
+      end;
+    ACheck := '';
+  end;
+
+var
+  Check: string;
+  LTokenString: string;
+  LastWasSee, CurrentIsSee: Boolean;
+begin
+  { PRE  : Token = first token after @@SomeHelpTag
+    POST : Token = toEof or Token = @@SomeHelpTag
+  }
+
+  Check := '';
+  CurrentIsSee := False;
+
+  while (Token <> toEof) and (CompareTokenType <> ctHelpTag) do
+  begin
+    LastWasSee := CurrentIsSee;
+    CurrentIsSee := FLastWasNextLine and (CompareTokenType = ctText) and TokenSymbolIsExact('Also');
+
+    { We use continue, otherwise the code becomes unreadable }
+    if CompareTokenType <> ctText then
+    begin
+      { Token is not a text token, thus ------etc or ##something }
+      Check := '';
+      NextToken;
+      Continue;
+    end;
+
+    LTokenString := TokenString;
+
+    { check defaults }
+    if Check = '' then
+      Check := LTokenString
+    else
+      Check := Check + ' ' + LTokenString;
+    CheckDefaultText(Check);
+    if Check = '' then
+      Check := LTokenString;
+
+    if LastWasSee and (CompareStr(LTokenString, 'Also') = 0) then
+    begin
+      ReadSeeAlso;
+      Continue;
+    end;
+
+    if not FLastWasNextLine or (LTokenString = '') then
+    begin
+      { Some text in the middle of a line }
+      NextToken;
+      Continue;
+    end;
+
+    { Token is a text token that start on a new line }
+
+    if LTokenString[1] = '<' then
+    begin
+      { Special tokens that start with a '<' }
+
+      if SameText(LTokenString, '<COMBINE') then
+        ReadCombine(Item)
+      else
+      if SameText(LTokenString, '<COMBINEWith') then
+        ReadCombineWith(Item)
+      else
+      if SameText(LTokenString, '<HASTOCENTRY') then
+        ReadHasTocEntry(Item)
+      else
+      if SameText(LTokenString, '<TITLEIMG') then
+        ReadTitleImg(Item)
+      else
+        { Token starts with < but not a known token }
+        NextToken;
+
+    end
+    else
+    begin
+
+      if CompareStr(LTokenString, 'Parameters') = 0 then
+        ReadParameters(Item.Parameters)
+      else
+      if SameText(LTokenString, 'JVCLInfo') then
+        ReadJVCLINFO(Item)
+      else
+        { Token start on new line but not a known token }
+        NextToken;
+
+    end;
+  end;
+end;
+
+procedure TDtxCompareParser.ReadJVCLINFO(Item: TDtxItem);
+var
+  IsFlag, IsGroup: Boolean;
+  FlagFound, GroupFound: Boolean;
 begin
   NextToken;
 
-  { first expect 'GROUP=', abort if not found }
+  Item.HasJVCLInfo := True;
 
-  if StrLComp(PChar(TokenString), 'GROUP=', 6) <> 0 then
+  FlagFound := False;
+  GroupFound := False;
+
+  while (Token <> toEof) and (Pos('=', TokenString) > 0) do
   begin
-    Include(FErrors, defJVCLInfoFlag);
-    Include(FErrors, defJVCLInfoGroup);
-    Exit;
+    IsFlag := StrLComp(PChar(TokenString), 'FLAG=', 5) = 0;
+    IsGroup := not IsFlag and (StrLComp(PChar(TokenString), 'GROUP=', 6) = 0);
+
+    if (IsFlag and FlagFound) or (IsGroup and GroupFound) then
+      Include(Item.FJVCLInfoErrors, jieDoubles);
+
+    FlagFound := FlagFound or IsFlag;
+    GroupFound := GroupFound or IsGroup;
+
+    if Pos('?', TokenString) > 0 then
+    begin
+      if IsFlag then
+        Include(Item.FJVCLInfoErrors, jieFlagNotFilled)
+      else
+      if IsGroup then
+        Include(Item.FJVCLInfoErrors, jieGroupNotFilled)
+      else
+        Include(Item.FJVCLInfoErrors, jieOtherNotFilled)
+    end
+    else
+    if IsFlag then
+      Item.IsRegisteredComponent :=
+        SameText('component', Trim(Copy(TokenString, 6, MaxInt)));
+
+    { Skip until new line }
+    repeat
+      NextToken
+    until (Token = toEof) or FLastWasNextLine;
   end;
 
-  { Search until 'FLAG=' found }
-  repeat
-    if Pos('?', TokenString) > 0 then
-      Include(FErrors, defJVCLInfoGroup);
-    NextToken;
-  until (Token = toEof) or (StrLComp(PChar(TokenString), 'FLAG=', 5) = 0);
-
-  if Pos('?', TokenString) > 0 then
-    Include(FErrors, defJVCLInfoFlag);
+  if not GroupFound then
+    Include(Item.FJVCLInfoErrors, jieNoGroup);
 end;
 
 function TDtxCompareParser.ReadNextToken: Char;
@@ -2736,94 +2952,22 @@ begin
 end;
 
 procedure TDtxCompareParser.ReadRest;
-type
-  TState = (stNone, stSee);
-
-  procedure CheckDefaultText(var ACheck: string);
-  var
-    DefaultText: TDefaultText;
-  begin
-    for DefaultText := Low(TDefaultText) to High(TDefaultText) do
-      if StrLIComp(PChar(ACheck), CDefaultText[DefaultText], Length(ACheck)) = 0 then
-      begin
-        if Length(ACheck) = Length(CDefaultText[DefaultText]) then
-        begin
-          ACheck := '';
-          Include(FDefaultTexts, DefaultText);
-        end;
-        Exit;
-      end;
-    ACheck := '';
-  end;
-
 var
-  Check: string;
-  S: string;
-  State: TState;
+  HelpToken: string;
   DtxItem: TDtxItem;
 begin
-  Check := '';
-  State := stNone;
-  DtxItem := nil;
-
-  while Token <> toEof do
+  while (Token <> toEof) and (CompareTokenType = ctHelpTag) do
   begin
-    S := TokenString;
-    case CompareTokenType of
-      ctHelpTag:
-        begin
-          DtxItem := TDtxItem.Create(S);
-          FList.Add(DtxItem);
-          Check := '';
-        end;
-      ctText:
-        begin
-          { check defaults }
-          if Check = '' then
-            Check := S
-          else
-            Check := Check + ' ' + S;
-          CheckDefaultText(Check);
-          if Check = '' then
-            Check := S;
-          if (State = stNone) and FLastWasNextLine then
-          begin
-            if TokenSymbolIsExact('See') then
-              State := stSee
-            else
-              if TokenSymbolIsExact('Parameters') then
-            begin
-              if DtxItem = nil then
-                ErrorStr('''Parameters'' found but no help tag');
+    HelpToken := TokenString;
+    DtxItem := TDtxItem.Create(HelpToken);
+    FList.Add(DtxItem);
 
-              ReadParameters(DtxItem.Parameters);
-            end
-            else
-              if TokenSymbolIs('<COMBINE') then
-              ReadCombine(DtxItem)
-            else
-              if TokenSymbolIs('<COMBINEWith') then
-              ReadCombineWith(DtxItem)
-          end
-          else
-            if (State = stSee) and TokenSymbolIsExact('Also') then
-          begin
-            ReadSeeAlso;
-            State := stNone;
-          end
-          else
-            State := stNone;
-          if TokenSymbolIsExact('JVCLInfo') then
-          begin
-            ReadJVCLINFO;
-            State := stNone;
-          end;
-        end
+    NextToken;
+
+    if (Length(HelpToken) > 2) and SameText(Copy(HelpToken, 3, MaxInt), FPasFileNameWithoutPath) then
+      ReadFileInfo
     else
-      Check := '';
-    end;
-
-    ReadNextToken;
+      ReadHelpTopic(DtxItem);
   end;
 end;
 
@@ -2835,70 +2979,44 @@ begin
 end;
 
 procedure TDtxCompareParser.ReadStartBlock;
-type
-  TState = (stNone, stPasTagRead, stSummaryRead, stAuthorRead);
-var
-  LState: TState;
 begin
-  LState := stNone;
-  {
-
-  ##Package: SomePackage
-  ##Status: SomeComment
-  ----------------------------------------------------------------------------------------------------
-  @@Somefile.pas
-  Summary
-    SomeSummary
-  <INCLUDE JVCL.UnitText.dtx>
-  Author
-    SomeAuthor
-  ----------------------------------------------------------------------------------------------------
-  }
-  { Assume first @@Somefile.pas then Summary then Author }
-
-  while (Token <> toEof) and (LState <> stAuthorRead) do
-    case CompareTokenType of
-      ctHelpTag:
-        begin
-          FList.Add(TDtxItem.Create(TokenString));
-          if (LState = stNone) and
-            SameText(Copy(TokenString, Length(TokenString) - 3, 4), '.pas') then
-            LState := stPasTagRead;
-          NextToken;
-        end;
-      ctParseTag:
-        if TokenSymbolIs('##package:') then
-          ReadPackage
-        else
-          if TokenSymbolIs('##status:') then
-          ReadStatus
-        else
-          NextToken;
-      ctText:
-        if (LState = stPasTagRead) and TokenSymbolIs('summary') then
-        begin
-          LState := stSummaryRead;
-          NextToken;
-        end
-        else
-          if (LState = stSummaryRead) and TokenSymbolIs('author') then
-        begin
-          LState := stAuthorRead;
-          ReadAuthor;
-        end
-        else
-          NextToken;
-      ctSeperator:
-        NextToken;
+  { POST : Token = toEof or CompareTokenString = ctHelpTag }
+  while (Token <> toEof) and (CompareTokenType <> ctHelpTag) do
+  begin
+    if FLastWasNextLine and (CompareTokenType = ctParseTag) then
+    begin
+      if TokenSymbolIs('##package:') then
+        ReadPackage
+      else
+      if TokenSymbolIs('##status:') then
+        ReadStatus
+    end
     else
       NextToken;
-    end;
+  end;
 end;
 
 procedure TDtxCompareParser.ReadStatus;
 begin
   Exclude(FErrors, defNoStatusTag);
   NextToken;
+end;
+
+procedure TDtxCompareParser.ReadTitleImg(Item: TDtxItem);
+var
+  S: string;
+begin
+  if Item = nil then
+    ErrorStr('ReadCombineWith, Item = nil');
+  NextToken;
+  if CompareTokenType = ctText then
+  begin
+    S := TokenString;
+    if (S > '') and (S[Length(S)] = '>') then
+      Delete(S, Length(S), 1);
+    Item.TitleImg := S;
+    NextToken;
+  end;
 end;
 
 { TFunctionParser }
@@ -3301,6 +3419,7 @@ constructor TDtxItem.Create(const ATag: string);
 begin
   FParameters := TStringList.Create;
   FTag := ATag;
+  FHasTocEntry := True;
 end;
 
 destructor TDtxItem.Destroy;

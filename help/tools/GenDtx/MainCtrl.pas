@@ -38,6 +38,11 @@ type
     FFilter: TFilterData;
 
     FGenerateDtxVisibilities: TClassVisibilities;
+    FCurrentErrorGroup: string;
+    FCurrentErrorCount: Integer;
+    FCurrentCheckFile: string;
+    FHeaderOfCurrentFilePrinted: Boolean;
+    FHeaderOfCurrentErrorGroupPrinted: Boolean;
 
     procedure SetShowCompletedFiles(const Value: Boolean);
     procedure SetShowIgnoredFiles(const Value: Boolean);
@@ -45,12 +50,23 @@ type
     procedure SetShowGeneratedFiles(const Value: Boolean);
   protected
     procedure CheckDir(const ADir: string);
+
+    procedure StartErrorGroup(const AErrorGroup: string);
+    procedure StartComparing(const AFileName: string);
+    procedure EndComparing;
+    procedure PrintHeaderOfCurrentErrorGroup;
+    procedure DoMessageFmt(const AFormat: string; const Args: array of const);
     procedure DoMessage(const Msg: string); overload;
     procedure DoMessage(Strings: TStrings); overload;
+    procedure DoError(const Msg: string); overload;
+    procedure DoError(Strings: TStrings); overload;
+    procedure DoErrorFmt(const AFormat: string; const Args: array of const);
+
     procedure WriteDtx(ATypeList: TTypeList);
     procedure FillWithHeaders(const UnitName: string; ATypeList: TTypeList; Optional, NotOptional: TStrings);
     procedure CompareDtxFile(const AUnitName: string;
       DtxHeaders: TList; NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
+    procedure CheckJVCLInfos(DtxHeaders: TList);
     procedure CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
       NotInDtx, NotInPas: TStrings);
     procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
@@ -119,9 +135,14 @@ const
   { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled,
     efNoStatusTag, efEmptySeeAlso, efNoAuthor }
   CDtxErrorNice: array[TDtxCompareErrorFlag] of string = (
-    'JVCLINFO: GROUP', 'JVCLINFO: FLAG', 'No ##Package tag',
-    '##Package tag not filled', 'No ##Status tag',
-    'Has empty ''See Also'' section(s)', 'No author specified');
+    'No ##Package tag', '##Package tag not filled', 'No ##Status tag',
+    'Has empty ''See Also'' section(s)', 'No author specified',
+    'HASTOCENTRY error');
+
+  { jieGroupNotFilled, jieFlagNotFilled, jieOtherNotFilled, jieNoGroup, jieDoubles }
+  CJVCLInfoErrorNice: array[TJVCLInfoError] of string = (
+    'Group not filled', 'Flag not filled', 'Other not filled',
+    'No Group', 'Double identifiers');
 
   { pefNoLicense, pefUnitCase }
   CPasErrorNice: array[TPasCheckErrorFlag] of string = (
@@ -137,7 +158,8 @@ const
     'Describe here what the function returns',
     'This is an overridden method, you don''t have to describe these',
     'If it does the same as the inherited method',
-    'Description for');
+    'Description for',
+    'Description for this item');
 
   (*function CSCompare(const S1, S2: string): Integer;
   var
@@ -162,6 +184,19 @@ const
     end;
   end;*)
 
+type
+  TCaseSensitiveStringList = class(TStringList)
+  protected
+    function CompareStrings(const S1, S2: string): Integer; override;
+  end;
+
+  { TCaseSensitiveStringList }
+
+function TCaseSensitiveStringList.CompareStrings(const S1, S2: string): Integer;
+begin
+  Result := CompareStr(S1, S2);
+end;
+
 procedure RemoveSingles(AStrings: TStrings);
 var
   I: Integer;
@@ -172,7 +207,7 @@ begin
     if SameText(AStrings[I - 1], AStrings[I]) then
       Dec(I, 2)
     else
-      if SameText(AStrings[I], AStrings[I + 1]) then
+    if SameText(AStrings[I], AStrings[I + 1]) then
       Dec(I)
     else
     begin
@@ -244,14 +279,14 @@ begin
       Inc(Index2);
     end
     else
-      if C < 0 then
+    if C < 0 then
     begin
       if Assigned(NotInSource2) then
         NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
       Inc(Index1)
     end
     else
-      if C > 0 then
+    if C > 0 then
     begin
       if Assigned(NotInSource1) then
         NotInSource1.AddObject(Source2[Index2], Source2.Objects[Index2]);
@@ -297,10 +332,10 @@ begin
       Inc(RemoveIndex);
     end
     else
-      if C < 0 then
+    if C < 0 then
       Inc(SourceIndex)
     else
-      if C > 0 then
+    if C > 0 then
       Inc(RemoveIndex);
   end;
 end;
@@ -310,7 +345,9 @@ var
   I: Integer;
 begin
   for I := 0 to DtxHeaders.Count - 1 do
-    Dest.Add(TDtxItem(DtxHeaders[I]).Tag);
+    with TDtxItem(DtxHeaders[I]) do
+      if HasTocEntry then
+        Dest.Add(Tag);
 end;
 
 function IndexInDtxHeaders(DtxHeaders: TList; const S: string): Integer;
@@ -868,7 +905,6 @@ var
   NotInDtx, NotInPas: TStringList;
   ParametersNotInDtx, ParametersNotInPas: TStringList;
   I: Integer;
-  FileStatus: string;
   Error: TDtxCompareErrorFlag;
   DefaultText: TDefaultText;
 begin
@@ -906,67 +942,49 @@ begin
     CompareDtxFile(AFileName, DtxParser.List, NotInDtx, NotInPas, DelphiParser.TypeList);
     CompareParameters(DelphiParser.TypeList, DtxParser.List, ParametersNotInDtx, ParametersNotInPas);
 
-    FileStatus := '';
-    if (NotInDtx.Count <> 0) or (NotInPas.Count <> 0) then
-      FileStatus := 'Differs';
-    if DtxParser.Errors <> [] then
-      if FileStatus = '' then
-        FileStatus := 'Errors'
-      else
-        FileStatus := FileStatus + ' & errors';
-    if DtxParser.DefaultTexts <> [] then
-      if FileStatus = '' then
-        FileStatus := 'Contains default texts'
-      else
-        FileStatus := FileStatus + ' & contains default texts';
-    if (ParametersNotInDtx.Count > 0) or (ParametersNotInPas.Count > 0) then
-      if FileStatus = '' then
-        FileStatus := 'Params diff'
-      else
-        FileStatus := FileStatus + ' & params diff';
+    StartComparing(AFileName);
+    try
+      CheckJVCLInfos(DtxParser.List);
 
-    if FileStatus = '' then
-      FileStatus := 'Ok';
-
-    DoMessage('');
-    DoMessage(Format('------------Comparing %s .... %s', [AFileName, FileStatus]));
-
-    if DtxParser.Errors <> [] then
-    begin
-      DoMessage('--   Errors');
-      for Error := Low(TDtxCompareErrorFlag) to High(TDtxCompareErrorFlag) do
-        if Error in DtxParser.Errors then
-          DoMessage(CDtxErrorNice[Error]);
-    end;
-    if DtxParser.DefaultTexts <> [] then
-    begin
-      DoMessage('--   Contained default texts');
-      for DefaultText := Low(TDefaultText) to High(TDefaultText) do
-        if DefaultText in DtxParser.DefaultTexts then
-          DoMessage(CDefaultTextNice[DefaultText]);
-    end;
-    if NotInDtx.Count > 0 then
-    begin
-      DoMessage('--   Not in dtx file');
-      for I := 0 to NotInDtx.Count - 1 do
-        DoMessage(NotInDtx[I] +
-          CCaseRelatied[IndexInDtxHeaders(DtxParser.List, NotInDtx[I]) >= 0]);
-    end;
-    if NotInPas.Count > 0 then
-    begin
-      DoMessage('--   Not in pas file');
-      for I := 0 to NotInPas.Count - 1 do
-        DoMessage(NotInPas[I]);
-    end;
-    if ParametersNotInDtx.Count > 0 then
-    begin
-      DoMessage('--   Params not in dtx file');
-      DoMessage(ParametersNotInDtx);
-    end;
-    if ParametersNotInPas.Count > 0 then
-    begin
-      DoMessage('--   Params not in pas file');
-      DoMessage(ParametersNotInPas);
+      if DtxParser.Errors <> [] then
+      begin
+        StartErrorGroup('Errors');
+        for Error := Low(TDtxCompareErrorFlag) to High(TDtxCompareErrorFlag) do
+          if Error in DtxParser.Errors then
+            DoError(CDtxErrorNice[Error]);
+      end;
+      if DtxParser.DefaultTexts <> [] then
+      begin
+        StartErrorGroup('Contains default texts');
+        for DefaultText := Low(TDefaultText) to High(TDefaultText) do
+          if DefaultText in DtxParser.DefaultTexts then
+            DoError(CDefaultTextNice[DefaultText]);
+      end;
+      if NotInDtx.Count > 0 then
+      begin
+        StartErrorGroup('Not in dtx file');
+        for I := 0 to NotInDtx.Count - 1 do
+          DoError(NotInDtx[I] +
+            CCaseRelatied[IndexInDtxHeaders(DtxParser.List, NotInDtx[I]) >= 0]);
+      end;
+      if NotInPas.Count > 0 then
+      begin
+        StartErrorGroup('Not in pas file');
+        for I := 0 to NotInPas.Count - 1 do
+          DoError(NotInPas[I]);
+      end;
+      if ParametersNotInDtx.Count > 0 then
+      begin
+        StartErrorGroup('Params not in dtx file');
+        DoError(ParametersNotInDtx);
+      end;
+      if ParametersNotInPas.Count > 0 then
+      begin
+        StartErrorGroup('Params not in pas file');
+        DoError(ParametersNotInPas);
+      end;
+    finally
+      EndComparing;
     end;
 
     Inc(FParsedOK);
@@ -1126,11 +1144,11 @@ var
   NotOptional: TStringList;
   LDtxHeaders, LNotInPas, LNotInDtx: TStringList;
 begin
-  Optional := TStringList.Create;
-  NotOptional := TStringList.Create;
-  LDtxHeaders := TStringList.Create;
-  LNotInPas := TStringList.Create;
-  LNotInDtx := TStringList.Create;
+  Optional := TCaseSensitiveStringList.Create;
+  NotOptional := TCaseSensitiveStringList.Create;
+  LDtxHeaders := TCaseSensitiveStringList.Create;
+  LNotInPas := TCaseSensitiveStringList.Create;
+  LNotInDtx := TCaseSensitiveStringList.Create;
   try
     FillWithHeaders(AUnitName, ATypeList, Optional, NotOptional);
 
@@ -1140,9 +1158,12 @@ begin
     FillWithDtxHeaders(DtxHeaders, LDtxHeaders);
     //LDtxHeaders.Assign(DtxHeaders);
 
-    NotOptional.CustomSort(CaseSensitiveSort);
-    Optional.CustomSort(CaseSensitiveSort);
-    LDtxHeaders.CustomSort(CaseSensitiveSort);
+    //NotOptional.CustomSort(CaseSensitiveSort);
+    NotOptional.Sort;
+    //Optional.CustomSort(CaseSensitiveSort);
+    Optional.Sort;
+    //LDtxHeaders.CustomSort(CaseSensitiveSort);
+    LDtxHeaders.Sort;
 
     //Optional.SaveToFile('C:\Temp\Optional.txt');
     //NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
@@ -1150,8 +1171,10 @@ begin
 
     DiffLists(LDtxHeaders, NotOptional, nil, LNotInDtx, LNotInPas, True);
 
-    LNotInDtx.CustomSort(CaseSensitiveSort);
-    LNotInPas.CustomSort(CaseSensitiveSort);
+    //LNotInDtx.CustomSort(CaseSensitiveSort);
+    LNotInDtx.Sort;
+    //LNotInPas.CustomSort(CaseSensitiveSort);
+    LNotInPas.Sort;
 
     ExcludeList(LNotInPas, Optional, True);
     ExcludeList(LNotInDtx, Optional, True);
@@ -1814,8 +1837,8 @@ var
   DtxItem: TDtxItem;
   TagName: string;
 begin
-  AllPasParameters := TStringList.Create;
-  AllDtxParameters := TStringList.Create;
+  AllPasParameters := TCaseSensitiveStringList.Create;
+  AllDtxParameters := TCaseSensitiveStringList.Create;
   ParamsNotInPas := TStringList.Create;
   ParamsNotInDtx := TStringList.Create;
   try
@@ -1850,10 +1873,11 @@ begin
           AllDtxParameters.Add(TDtxItem(DtxHeaders[I]).Tag + ' - ' + Params[J]);
     end;
 
-    AllPasParameters.Sorted := False;
+    //AllPasParameters.Sorted := False;
 
-    AllPasParameters.CustomSort(CaseSensitiveSort);
-    AllDtxParameters.CustomSort(CaseSensitiveSort);
+    //AllPasParameters.CustomSort(CaseSensitiveSort);
+    //AllDtxParameters.CustomSort(CaseSensitiveSort);
+    AllDtxParameters.Sort;
 
     //AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
     //AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
@@ -1869,6 +1893,110 @@ begin
     ParamsNotInDtx.Free;
     ParamsNotInPas.Free;
   end;
+end;
+
+procedure TMainCtrl.CheckJVCLInfos(DtxHeaders: TList);
+var
+  I: Integer;
+  Item: TDtxItem;
+  S: string;
+  IsRegisteredClass: Boolean;
+  JVCLInfoError: TJVCLInfoError;
+  ItemTagStripped: string;
+begin
+  StartErrorGroup('JVCLINFO errors');
+
+  for I := 0 to DtxHeaders.Count - 1 do
+  begin
+    Item := TDtxItem(DtxHeaders[I]);
+    ItemTagStripped := Copy(Item.Tag, 3, MaxInt);
+
+    if Item.HasJVCLInfo and (Item.JVCLInfoErrors <> []) then
+    begin
+      S := Format('%s: ', [Item.Tag]);
+      for JVCLInfoError := Low(TJVCLInfoError) to High(TJVCLInfoError) do
+        if JVCLInfoError in Item.JVCLInfoErrors then
+          S := S + CJVCLInfoErrorNice[JVCLInfoError] + ', ';
+
+      Delete(S, Length(S) - 1, 2);
+      DoError(S);
+    end;
+
+    IsRegisteredClass := TSettings.Instance.IsRegisteredClass(ItemTagStripped);
+
+    if Item.IsRegisteredComponent and not IsRegisteredClass then
+      DoErrorFmt('%s has FLAG=Component in JVCLInfo but is not a registered component', [ItemTagStripped])
+    else
+    if not Item.IsRegisteredComponent and IsRegisteredClass then
+      DoErrorFmt('%s is a registered component but has no FLAG=Component', [ItemTagStripped])
+  end;
+end;
+
+procedure TMainCtrl.DoError(const Msg: string);
+begin
+  PrintHeaderOfCurrentErrorGroup;
+
+  Inc(FCurrentErrorCount);
+  DoMessage('       ' + Msg);
+end;
+
+procedure TMainCtrl.DoErrorFmt(const AFormat: string;
+  const Args: array of const);
+begin
+  DoError(Format(AFormat, Args));
+end;
+
+procedure TMainCtrl.DoMessageFmt(const AFormat: string;
+  const Args: array of const);
+begin
+  DoMessage(Format(AFormat, Args));
+end;
+
+procedure TMainCtrl.StartErrorGroup(const AErrorGroup: string);
+begin
+  FCurrentErrorGroup := AErrorGroup;
+  FHeaderOfCurrentErrorGroupPrinted := False;
+end;
+
+procedure TMainCtrl.PrintHeaderOfCurrentErrorGroup;
+begin
+  if not FHeaderOfCurrentFilePrinted then
+  begin
+    DoMessage('');
+    DoMessageFmt('Comparing %s ... contains errors:', [FCurrentCheckFile]);
+    DoMessage('');
+    FHeaderOfCurrentFilePrinted := True;
+  end;
+
+  if not FHeaderOfCurrentErrorGroupPrinted then
+  begin
+    DoMessage('o  ' + FCurrentErrorGroup);
+    FHeaderOfCurrentErrorGroupPrinted := True;
+  end;
+end;
+
+procedure TMainCtrl.EndComparing;
+begin
+  if not FHeaderOfCurrentFilePrinted then
+    DoMessageFmt('Comparing %s ... OK', [FCurrentCheckFile])
+  else
+  if FCurrentErrorCount > 0 then
+    DoMessage('--------------------');
+end;
+
+procedure TMainCtrl.StartComparing(const AFileName: string);
+begin
+  FCurrentErrorCount := 0;
+  FCurrentCheckFile := AFileName;
+  FHeaderOfCurrentFilePrinted := False;
+end;
+
+procedure TMainCtrl.DoError(Strings: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Strings.Count - 1 do
+    DoError(Strings[I]);
 end;
 
 end.
