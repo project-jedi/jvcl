@@ -50,7 +50,7 @@ USES
    {$ELSE}
    DsgnIntf,
    {$ENDIF COMPILER6_UP}
-
+   JvComponent,
    JvgReport,
    Buttons,
    ExtCtrls,
@@ -64,7 +64,7 @@ TYPE
       FUNCTION GetVerbCount: Integer; OVERRIDE;
    END;
 
-   TJvgReportParamsEditor = CLASS(TComponent)
+   TJvgReportParamsEditor = CLASS(TJvComponent)
       FReport: TJvgReport;
    PROTECTED
       PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);

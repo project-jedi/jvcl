@@ -64,7 +64,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Gl Controls', [TJvgShape]);
+//  RegisterComponents('Gl Controls', [TJvgShape]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

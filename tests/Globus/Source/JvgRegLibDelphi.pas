@@ -32,8 +32,6 @@ Known Issues:
 
 UNIT JvgRegLibDelphi;
 
-{$I glDEF.INC}
-
 INTERFACE
 
 PROCEDURE Register;
@@ -145,7 +143,7 @@ USES Classes,
 
 PROCEDURE Register;
 BEGIN
-   RegisterComponents('Jv DBE', [
+   RegisterComponents('Jv BDE', [
       TJvgExportDBETable
          ]);
 
@@ -165,18 +163,44 @@ BEGIN
       TJvgSysInfo
          ]);
 
-   RegisterComponents('Jv Additional Input', [
-      TJvgMaskEdit
-         ]);
-
-   RegisterComponents('Jv Additional Output', [
-      //      TJvgBevel,
-      TJvgBitBtn,
+   RegisterComponents('Jvg Additional', [
+      TJvgMaskEdit,
+         TJvgBevel,
+         TJvgBitBtn,
          TJvgGraphicButton,
          TJvgGraph,
          TJvgTreeView,
          TJvgCheckTreeView,
-         TJvgSplitter
+         TJvgSplitter,
+         TJvgShadow,
+         TJvgShade,
+         TJvgButton,
+         TJvgImageGroup,
+         TJvgProgress,
+         TJvgTranspMemo,
+         TJvgWinMask,
+         TJvgGroupBox,
+         TJvgBitmapImage,
+         TJvgListBox,
+         TJvgCheckListBox,
+         TJvgAskListBox,
+         TJvgScrollBox,
+         TJvgStringGrid,
+         TJvgSpeedButton,
+         TJvgHelpPanel,
+         TJvgWizardHeader,
+         TJvg3DColors,
+         TJvgCaption,
+         TJvgHint,
+         TJvgJumpingComponent,
+         TJvgStringContainer,
+         TJvgSysRequirements,
+         TJvgSmallFontsDefence,
+         TJvgMultipleResources,
+         TJvgGridHeaderControl,
+         TJvginspectorGrid,
+         TJvgReportParamsEditor,
+         TJvgLogicProducer
          ]);
 
    RegisterComponents('Jv Standard', [
@@ -220,6 +244,7 @@ BEGIN
          TJvgLanguageLoader,
          TJvgExceptionHandler,
          TJvgSingleInstance,
+         TJvgFixFont,
          TJvgComponentDescription]);
 
    RegisterComponents('Jv Composites', [
@@ -230,62 +255,34 @@ BEGIN
          TJvgQRDBText
          ]);
 
-   RegisterComponents('Gl Controls', [
-      TJvgShadow,
-         TJvgShade,
-         TJvgButton,
-         TJvgFixFont,
-         TJvgImageGroup,
-         TJvgProgress,
-         TJvgTranspMemo,
-         TJvgWinMask,
-         TJvgGroupBox,
-         TJvgBitmapImage,
-         TJvgListBox,
-         TJvgCheckListBox,
-         TJvgAskListBox,
-         TJvgScrollBox,
-         TJvgStringGrid,
-         TJvgSpeedButton,
-         TJvgHelpPanel,
-         TJvgWizardHeader,
-         TJvg3DColors,
-         TJvgCaption,
-         TJvgHint,
-         TJvgJumpingComponent,
-         TJvgStringContainer,
-         TJvgSysRequirements,
-         TJvgSmallFontsDefence,
-         TJvgMultipleResources,
-         TJvgGridHeaderControl,
-         TJvginspectorGrid,
-         TJvgReportParamsEditor,
-         TJvgLogicProducer
-         ]);
-
    RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
+
    RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
       'ComponentList', TJvgComponentListProperty);
+
    RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
-   //   RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
+
    RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
-   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
-   //      TMaskProperty);
-   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgProcess, 'FileName',
-   //      TFilenameProperty);
-   RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
-      'Resources', TJvgResourcesProperty);
 
    RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
+
    RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report',
       TJvgRepProperty);
+
    RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
 
    RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
+
    RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
 
    RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
       'Resources', TJvgResourcesProperty);
+
+   //   RegisterComponentEditor(TJvgGridHeaderControl, TJvgGridHeaderControl_Editor);
+   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgMaskEdit, 'EditMask',
+   //      TMaskProperty);
+   //   RegisterPropertyEditor(TypeInfo(STRING), TJvgProcess, 'FileName',
+   //      TFilenameProperty);
 
 END;
 

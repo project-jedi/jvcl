@@ -27,320 +27,361 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgExceptionHandler;
+UNIT JvgExceptionHandler;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvgMailSlots, jpeg, JvgSysInf;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   JvComponent,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   JvgMailSlots,
+   jpeg,
+   JvgSysInf;
 
-type
-  TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime, fehFileLogging, fehSupressExceptions, feScreenShots);
-  TExceptionHandlerOptions = set of TExceptionHandlerOption;
+TYPE
+   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,
+      fehFileLogging, fehSupressExceptions, feScreenShots);
+   TExceptionHandlerOptions = SET OF TExceptionHandlerOption;
 
-  EJvgHandlerException = class(Exception)
-  public
-    dummy: Integer;
-  end;
+   EJvgHandlerException = CLASS(Exception)
+   PUBLIC
+      dummy: Integer;
+   END;
 
-  TJvgExceptionHandler = class(TComponent)
-  private
-    FActive: boolean;
-    FLogFileName: string;
-    FEMail: string;
-    FMailSlot: TJvgMailSlotClient;
-    { Private declarations }
-    FOptions: TExceptionHandlerOptions;
-    ScreenShotList: TList;
-    SysInfo: TJvgSysInfo;
-    procedure MakeScreenShot(const ID: string);
-    procedure ShowMessage(E: Exception; const Message: string);
-  protected
-    procedure OnException(Sender: TObject; E: Exception); virtual;
-    procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+   TJvgExceptionHandler = CLASS(TJvComponent)
+   PRIVATE
+      FActive: boolean;
+      FLogFileName: STRING;
+      FEMail: STRING;
+      FMailSlot: TJvgMailSlotClient;
+      { Private declarations }
+      FOptions: TExceptionHandlerOptions;
+      ScreenShotList: TList;
+      SysInfo: TJvgSysInfo;
+      PROCEDURE MakeScreenShot(CONST ID: STRING);
+      PROCEDURE ShowMessage(E: Exception; CONST Message: STRING);
+   PROTECTED
+      PROCEDURE OnException(Sender: TObject; E: Exception); VIRTUAL;
+      PROCEDURE Loaded; OVERRIDE;
+      PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);
+         OVERRIDE;
 
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-    procedure Refresh;
-    procedure ProcessMessage(const ExceptionMessage, Message, ID: string);
+      PROCEDURE Refresh;
+      PROCEDURE ProcessMessage(CONST ExceptionMessage, Message, ID: STRING);
 
-    procedure Log_(const ID: string); overload;
-    procedure Log_(E: Exception); overload;
-    procedure Log_(E: Exception; const ID: string); overload;
+      PROCEDURE Log_(CONST ID: STRING); OVERLOAD;
+      PROCEDURE Log_(E: Exception); OVERLOAD;
+      PROCEDURE Log_(E: Exception; CONST ID: STRING); OVERLOAD;
 
-    procedure Raise_(const ID: string); overload;
-    procedure Raise_(E: Exception); overload;
-    procedure Raise_(E: Exception; const ID: string); overload;
-    procedure Raise_(E: Exception; const Message, ID: string); overload;
+      PROCEDURE Raise_(CONST ID: STRING); OVERLOAD;
+      PROCEDURE Raise_(E: Exception); OVERLOAD;
+      PROCEDURE Raise_(E: Exception; CONST ID: STRING); OVERLOAD;
+      PROCEDURE Raise_(E: Exception; CONST Message, ID: STRING); OVERLOAD;
 
-    procedure RaiseMessage(const Message: string);
-  published
-    property Active: boolean read FActive write FActive default true;
-    property EMail: string read FEMail write FEMail;
-    property LogFileName: string read FLogFileName write FLogFileName;
-    property MailSlot: TJvgMailSlotClient read FMailSlot write FMailSlot;
-    property Options: TExceptionHandlerOptions read FOptions write FOptions;
-  end;
+      PROCEDURE RaiseMessage(CONST Message: STRING);
+   PUBLISHED
+      PROPERTY Active: boolean READ FActive WRITE FActive DEFAULT true;
+      PROPERTY EMail: STRING READ FEMail WRITE FEMail;
+      PROPERTY LogFileName: STRING READ FLogFileName WRITE FLogFileName;
+      PROPERTY MailSlot: TJvgMailSlotClient READ FMailSlot WRITE FMailSlot;
+      PROPERTY Options: TExceptionHandlerOptions READ FOptions WRITE FOptions;
+   END;
 
-procedure Register;
 
-implementation
-uses JvgUtils, JvgFileUtils, FileCtrl;
+IMPLEMENTATION
+USES JvgUtils,
+   JvgFileUtils,
+   FileCtrl;
 
-var
-  ExceptionHandler: TJvgExceptionHandler;
+VAR
+   ExceptionHandler           : TJvgExceptionHandler;
 
-procedure Register;
-begin
-  RegisterComponents('Gl Components', [TJvgExceptionHandler]);
-end;
 
-procedure AssertErrorHandler_gl(const Message, Filename: string; LineNumber: Integer; ErrorAddr: Pointer);
-begin
-  if Assigned(ExceptionHandler) then
-    ExceptionHandler.ProcessMessage(
-      'ExceptAddr=' + Format('%p', [ErrorAddr]) + #13#10 +
-      'LineNumber=' + IntToStr(LineNumber) + #13#10 +
-      'FileName=' + Filename
-      , 'internal JvgExceptionHandler message', '');
-  ExceptionClass := EAssertionFailed;
-  //  E := CreateAssertException(Message, Filename, LineNumber);
-  //  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
-end;
+PROCEDURE AssertErrorHandler_gl(CONST Message, Filename: STRING; LineNumber:
+   Integer; ErrorAddr: Pointer);
+BEGIN
+   IF Assigned(ExceptionHandler) THEN
+      ExceptionHandler.ProcessMessage(
+         'ExceptAddr=' + Format('%p', [ErrorAddr]) + #13#10 +
+         'LineNumber=' + IntToStr(LineNumber) + #13#10 +
+         'FileName=' + Filename
+         , 'internal JvgExceptionHandler message', '');
+   ExceptionClass := EAssertionFailed;
+   //  E := CreateAssertException(Message, Filename, LineNumber);
+   //  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
+END;
 
 { TJvgExceptionHandler }
 
-constructor TJvgExceptionHandler.Create(AOwner: TComponent);
-begin
-  inherited;
-  FActive := true;
-  FOptions := [fehActiveRunTime, fehFileLogging];
-  FLogFilename := '_errors_log.txt';
-  ScreenShotList := TList.Create;
-end;
+CONSTRUCTOR TJvgExceptionHandler.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   FActive := true;
+   FOptions := [fehActiveRunTime, fehFileLogging];
+   FLogFilename := '_errors_log.txt';
+   ScreenShotList := TList.Create;
+END;
 
-destructor TJvgExceptionHandler.Destroy;
-begin
-  ScreenShotList.Free;
-  if Assigned(SysInfo) then SysInfo.Free;
-  Application.OnException := nil;
-  inherited;
-end;
+DESTRUCTOR TJvgExceptionHandler.Destroy;
+BEGIN
+   ScreenShotList.Free;
+   IF Assigned(SysInfo) THEN
+      SysInfo.Free;
+   Application.OnException := NIL;
+   INHERITED;
+END;
 
-procedure TJvgExceptionHandler.OnException(Sender: TObject; E: Exception);
-begin
-  if E is EJvgHandlerException then exit;
+PROCEDURE TJvgExceptionHandler.OnException(Sender: TObject; E: Exception);
+BEGIN
+   IF E IS EJvgHandlerException THEN
+      exit;
 
-  ProcessMessage(E.Message, '', '');
-  if not (fehSupressExceptions in Options) then
-    Application.MessageBox(PChar(E.Message), PChar('Что-то случилось - ' + Application.Title), MB_OK + MB_ICONSTOP);
-end;
+   ProcessMessage(E.Message, '', '');
+   IF NOT (fehSupressExceptions IN Options) THEN
+      Application.MessageBox(PChar(E.Message), PChar('Что-то случилось - ' +
+         Application.Title), MB_OK + MB_ICONSTOP);
+END;
 
-procedure TJvgExceptionHandler.Loaded;
-begin
-  inherited;
-  if Active then
-    if ((csDesigning in ComponentState) and (fehActiveDesignTime in Options)) or
-      (not (csDesigning in ComponentState) and (fehActiveRunTime in Options)) then
-    begin
-      Application.OnException := OnException;
-      // Настройка ссылки на глобальный обработчик процедуры Assert
-      AssertErrorProc := @AssertErrorHandler_gl;
-      ExceptionHandler := self;
-    end;
-end;
+PROCEDURE TJvgExceptionHandler.Loaded;
+BEGIN
+   INHERITED;
+   IF Active THEN
+      IF ((csDesigning IN ComponentState) AND (fehActiveDesignTime IN Options))
+         OR
+         (NOT (csDesigning IN ComponentState) AND (fehActiveRunTime IN Options))
+            THEN
+      BEGIN
+         Application.OnException := OnException;
+         // Настройка ссылки на глобальный обработчик процедуры Assert
+         AssertErrorProc := @AssertErrorHandler_gl;
+         ExceptionHandler := self;
+      END;
+END;
 
-procedure TJvgExceptionHandler.ProcessMessage(const ExceptionMessage, Message, ID: string);
-var
-  fs: TFileStream;
-  FileName, Msg: string;
-  Buffer: Pointer;
-begin
-  FileName := IIF((pos('//', LogFileName) = 0) and (pos(':', LogFileName) = 0), ExtractFilePath(ParamStr(0)) + LogFileName, LogFileName);
+PROCEDURE TJvgExceptionHandler.ProcessMessage(CONST ExceptionMessage, Message,
+   ID: STRING);
+VAR
+   fs                         : TFileStream;
+   FileName, Msg              : STRING;
+   Buffer                     : Pointer;
+BEGIN
+   FileName := IIF((pos('//', LogFileName) = 0) AND (pos(':', LogFileName) = 0),
+      ExtractFilePath(ParamStr(0)) + LogFileName, LogFileName);
 
-  Msg := '';
-  try
-    if not FileExists(FileName) then { первое создание лога }
-    try
-      if not assigned(SysInfo) then SysInfo := TJvgSysInfo.Create(nil);
-      SysInfo.Refresh;
-      Msg := '##################### exception log header';
-      Msg := Msg + #13#10'ExeModule= ' + ParamStr(0);
-      Msg := Msg + #13#10'OSPlatform= ' + SysInfo.OSPlatform;
-      Msg := Msg + #13#10'CPUKind= ' + IntToStr(SysInfo.CPUKind);
-      Msg := Msg + #13#10'CPUName= ' + SysInfo.CPUName;
-      Msg := Msg + #13#10'TotalPhys= ' + IntToStr(SysInfo.TotalPhys);
-      Msg := Msg + #13#10'AvailPhys= ' + IntToStr(SysInfo.AvailPhys);
-      Msg := Msg + #13#10'TotalPageFile= ' + IntToStr(SysInfo.TotalPageFile);
-      Msg := Msg + #13#10'AvailPageFile= ' + IntToStr(SysInfo.AvailPageFile);
-      Msg := Msg + #13#10'TotalVirtual= ' + IntToStr(SysInfo.TotalVirtual);
-      Msg := Msg + #13#10'AvailVirtual= ' + IntToStr(SysInfo.AvailVirtual);
-      Msg := Msg + #13#10'ColorDepth= ' + IntToStr(SysInfo.ColorDepth);
-      Msg := Msg + #13#10'SystemFont= ' + SysInfo.SystemFont;
-      Msg := Msg + #13#10'VRefreshRate= ' + IntToStr(SysInfo.VRefreshRate);
-      Msg := Msg + #13#10'GraphicResolution= ' + SysInfo.GraphicResolution;
-      Msg := Msg + #13#10'##################### exception log header end'#13#10;
-    except
-      { Сбои в работе TJvgSysInfo не должны мешать обработчику }
-    end;
+   Msg := '';
+   TRY
+      IF NOT FileExists(FileName) THEN  { первое создание лога }
+      TRY
+         IF NOT assigned(SysInfo) THEN
+            SysInfo := TJvgSysInfo.Create(NIL);
+         SysInfo.Refresh;
+         Msg := '##################### exception log header';
+         Msg := Msg + #13#10'ExeModule= ' + ParamStr(0);
+         Msg := Msg + #13#10'OSPlatform= ' + SysInfo.OSPlatform;
+         Msg := Msg + #13#10'CPUKind= ' + IntToStr(SysInfo.CPUKind);
+         Msg := Msg + #13#10'CPUName= ' + SysInfo.CPUName;
+         Msg := Msg + #13#10'TotalPhys= ' + IntToStr(SysInfo.TotalPhys);
+         Msg := Msg + #13#10'AvailPhys= ' + IntToStr(SysInfo.AvailPhys);
+         Msg := Msg + #13#10'TotalPageFile= ' + IntToStr(SysInfo.TotalPageFile);
+         Msg := Msg + #13#10'AvailPageFile= ' + IntToStr(SysInfo.AvailPageFile);
+         Msg := Msg + #13#10'TotalVirtual= ' + IntToStr(SysInfo.TotalVirtual);
+         Msg := Msg + #13#10'AvailVirtual= ' + IntToStr(SysInfo.AvailVirtual);
+         Msg := Msg + #13#10'ColorDepth= ' + IntToStr(SysInfo.ColorDepth);
+         Msg := Msg + #13#10'SystemFont= ' + SysInfo.SystemFont;
+         Msg := Msg + #13#10'VRefreshRate= ' + IntToStr(SysInfo.VRefreshRate);
+         Msg := Msg + #13#10'GraphicResolution= ' + SysInfo.GraphicResolution;
+         Msg := Msg +
+            #13#10'##################### exception log header end'#13#10;
+      EXCEPT
+         { Сбои в работе TJvgSysInfo не должны мешать обработчику }
+      END;
 
-    if ExceptObject <> nil then
-    begin
-      Msg := Msg + #13#10'Exception class= ' + ExceptObject.ClassName;
-      Msg := Msg + #13#10'ExceptAddr= ' + Format('%p', [ExceptAddr]);
-    end;
-    Msg := Msg + #13#10'Computer= ' + ComputerName;
-    Msg := Msg + #13#10'User= ' + UserName;
-    Msg := Msg + #13#10'Datetime= ' + DateToStr(date) + '  ' + TimeToStr(time);
+      IF ExceptObject <> NIL THEN
+      BEGIN
+         Msg := Msg + #13#10'Exception class= ' + ExceptObject.ClassName;
+         Msg := Msg + #13#10'ExceptAddr= ' + Format('%p', [ExceptAddr]);
+      END;
+      Msg := Msg + #13#10'Computer= ' + ComputerName;
+      Msg := Msg + #13#10'User= ' + UserName;
+      Msg := Msg + #13#10'Datetime= ' + DateToStr(date) + '  ' +
+         TimeToStr(time);
 
-    if ID <> '' then Msg := Msg + #13#10 + 'ID= ' + ID;
-    if ExceptionMessage <> '' then Msg := Msg + #13#10'ExceptionMessage= ' + ExceptionMessage;
-    if Message <> '' then Msg := Msg + #13#10'Message= ' + Message;
-    Msg := Msg + #13#10;
+      IF ID <> '' THEN
+         Msg := Msg + #13#10 + 'ID= ' + ID;
+      IF ExceptionMessage <> '' THEN
+         Msg := Msg + #13#10'ExceptionMessage= ' + ExceptionMessage;
+      IF Message <> '' THEN
+         Msg := Msg + #13#10'Message= ' + Message;
+      Msg := Msg + #13#10;
 
-    if Assigned(MailSlot) then MailSlot.Send(Msg);
-    if (fehFileLogging in Options) and (trim(LogFileName) <> '') then
-    begin
-      if FileExists(FileName) then
-        fs := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyNone)
-      else
-        fs := TFileStream.Create(FileName, fmCreate or fmShareDenyNone);
+      IF Assigned(MailSlot) THEN
+         MailSlot.Send(Msg);
+      IF (fehFileLogging IN Options) AND (trim(LogFileName) <> '') THEN
+      BEGIN
+         IF FileExists(FileName) THEN
+            fs := TFileStream.Create(FileName, fmOpenReadWrite OR
+               fmShareDenyNone)
+         ELSE
+            fs := TFileStream.Create(FileName, fmCreate OR fmShareDenyNone);
 
-      try
-        fs.Seek(0, soFromEnd);
-        Buffer := @Msg[1];
-        fs.Write(Buffer^, length(Msg));
-      finally
-        fs.Free;
-      end;
+         TRY
+            fs.Seek(0, soFromEnd);
+            Buffer := @Msg[1];
+            fs.Write(Buffer^, length(Msg));
+         FINALLY
+            fs.Free;
+         END;
 
-    end;
+      END;
 
-  except
-    on E: Exception do ShowMessage(E, 'Ошибка при сохранении протокола. '#13#10#13#10 + E.Message);
-  end;
+   EXCEPT
+      ON E: Exception DO
+         ShowMessage(E, 'Ошибка при сохранении протокола. '#13#10#13#10 +
+            E.Message);
+   END;
 
-  if feScreenShots in Options then MakeScreenShot(ID);
-end;
+   IF feScreenShots IN Options THEN
+      MakeScreenShot(ID);
+END;
 
-procedure TJvgExceptionHandler.MakeScreenShot(const ID: string);
-var
-  Jpeg: TJpegImage;
-  BackImage: TBitmap;
-  LogPath, ScreenShotName: string;
-  SysTime: TSystemTime;
-  DC: HDC;
-begin
-  GetLocalTime(SysTime);
+PROCEDURE TJvgExceptionHandler.MakeScreenShot(CONST ID: STRING);
+VAR
+   Jpeg                       : TJpegImage;
+   BackImage                  : TBitmap;
+   LogPath, ScreenShotName    : STRING;
+   SysTime                    : TSystemTime;
+   DC                         : HDC;
+BEGIN
+   GetLocalTime(SysTime);
 
-  if ScreenShotList.IndexOf(ExceptAddr) <> -1 then exit; //already done
+   IF ScreenShotList.IndexOf(ExceptAddr) <> -1 THEN
+      exit;                             //already done
 
-  ScreenShotList.Add(ExceptAddr);
+   ScreenShotList.Add(ExceptAddr);
 
-  Jpeg := TJpegImage.Create;
-  BackImage := TBitmap.Create;
-  try
-    DC := GetDC(0);
-    BackImage.Width := Screen.Width;
-    BackImage.Height := Screen.Height;
-    BitBlt(BackImage.Canvas.Handle, 0, 0, BackImage.Width, BackImage.Height, DC, 0, 0, SRCCOPY);
-    ReleaseDC(0, DC);
-    Jpeg.CompressionQuality := 50;
-    Jpeg.Assign(BackImage);
+   Jpeg := TJpegImage.Create;
+   BackImage := TBitmap.Create;
+   TRY
+      DC := GetDC(0);
+      BackImage.Width := Screen.Width;
+      BackImage.Height := Screen.Height;
+      BitBlt(BackImage.Canvas.Handle, 0, 0, BackImage.Width, BackImage.Height,
+         DC, 0, 0, SRCCOPY);
+      ReleaseDC(0, DC);
+      Jpeg.CompressionQuality := 50;
+      Jpeg.Assign(BackImage);
 
-    LogPath := ExtractFilePath(ParamStr(0)) + DelFileExt(ExtractFileName(ParamStr(0))) + '\';
-    ScreenShotName := DelFileExt(ExtractFileName(ParamStr(0)) + ' ' + StringReplace(StringReplace(ID, '{', '', [rfReplaceAll]), '}', '', [rfReplaceAll]))
-      + Format('  %2d-%2d-%4d %2d-%2d-%2d', [SysTime.wDay, SysTime.wMonth, SysTime.wYear, SysTime.wHour, SysTime.wMinute, SysTime.wSecond]);
+      LogPath := ExtractFilePath(ParamStr(0)) +
+         DelFileExt(ExtractFileName(ParamStr(0))) + '\';
+      ScreenShotName := DelFileExt(ExtractFileName(ParamStr(0)) + ' ' +
+         StringReplace(StringReplace(ID, '{', '', [rfReplaceAll]), '}', '',
+         [rfReplaceAll]))
+         + Format('  %2d-%2d-%4d %2d-%2d-%2d', [SysTime.wDay, SysTime.wMonth,
+            SysTime.wYear, SysTime.wHour, SysTime.wMinute, SysTime.wSecond]);
 
-    ForceDirectories(LogPath);
+      ForceDirectories(LogPath);
 
-    Jpeg.SaveToFile(LogPath + ScreenShotName + '.jpg');
-  finally
-    Jpeg.Free;
-    BackImage.Free;
-  end;
-end;
+      Jpeg.SaveToFile(LogPath + ScreenShotName + '.jpg');
+   FINALLY
+      Jpeg.Free;
+      BackImage.Free;
+   END;
+END;
 
-procedure TJvgExceptionHandler.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (AComponent = MailSlot) and (Operation = opRemove) then
-  begin
-    FMailSlot := nil;
-  end;
-end;
+PROCEDURE TJvgExceptionHandler.Notification(AComponent: TComponent; Operation:
+   TOperation);
+BEGIN
+   INHERITED Notification(AComponent, Operation);
+   IF (AComponent = MailSlot) AND (Operation = opRemove) THEN
+   BEGIN
+      FMailSlot := NIL;
+   END;
+END;
 
-procedure TJvgExceptionHandler.Raise_(const ID: string);
-begin
-  Log_(ID);
-  if ID <> '' then ShowMessage(nil, ID);
-  raise EJvgHandlerException.Create('');
-end;
+PROCEDURE TJvgExceptionHandler.Raise_(CONST ID: STRING);
+BEGIN
+   Log_(ID);
+   IF ID <> '' THEN
+      ShowMessage(NIL, ID);
+   RAISE EJvgHandlerException.Create('');
+END;
 
-procedure TJvgExceptionHandler.Raise_(E: Exception);
-begin
-  Log_(E);
-  if E.Message <> '' then ShowMessage(E, E.Message);
-  raise EJvgHandlerException.Create('');
-end;
+PROCEDURE TJvgExceptionHandler.Raise_(E: Exception);
+BEGIN
+   Log_(E);
+   IF E.Message <> '' THEN
+      ShowMessage(E, E.Message);
+   RAISE EJvgHandlerException.Create('');
+END;
 
-procedure TJvgExceptionHandler.Raise_(E: Exception; const ID: string);
-begin
-  Log_(E, ID);
-  if E.Message <> '' then ShowMessage(E, E.Message + #13#10#13#10 + ID);
-  raise EJvgHandlerException.Create('');
-end;
+PROCEDURE TJvgExceptionHandler.Raise_(E: Exception; CONST ID: STRING);
+BEGIN
+   Log_(E, ID);
+   IF E.Message <> '' THEN
+      ShowMessage(E, E.Message + #13#10#13#10 + ID);
+   RAISE EJvgHandlerException.Create('');
+END;
 
-procedure TJvgExceptionHandler.Raise_(E: Exception; const Message, ID: string);
-begin
-  ProcessMessage(E.Message, Message, ID);
-  ShowMessage(E, Message);
-  raise EJvgHandlerException.Create('');
-end;
+PROCEDURE TJvgExceptionHandler.Raise_(E: Exception; CONST Message, ID: STRING);
+BEGIN
+   ProcessMessage(E.Message, Message, ID);
+   ShowMessage(E, Message);
+   RAISE EJvgHandlerException.Create('');
+END;
 
-procedure TJvgExceptionHandler.Log_(const ID: string);
-begin
-  ProcessMessage('', '', ID);
-end;
+PROCEDURE TJvgExceptionHandler.Log_(CONST ID: STRING);
+BEGIN
+   ProcessMessage('', '', ID);
+END;
 
-procedure TJvgExceptionHandler.Log_(E: Exception);
-begin
-  ProcessMessage(E.Message, '', '');
-end;
+PROCEDURE TJvgExceptionHandler.Log_(E: Exception);
+BEGIN
+   ProcessMessage(E.Message, '', '');
+END;
 
-procedure TJvgExceptionHandler.Log_(E: Exception; const ID: string);
-begin
-  ProcessMessage(E.Message, '', ID);
-end;
+PROCEDURE TJvgExceptionHandler.Log_(E: Exception; CONST ID: STRING);
+BEGIN
+   ProcessMessage(E.Message, '', ID);
+END;
 
 { Отображает сообщение, если исключение не внутреннее - EJvgHandlerException }
 
-procedure TJvgExceptionHandler.ShowMessage(E: Exception; const Message: string);
-begin
-  if not (E is EJvgHandlerException) and not (fehSupressExceptions in Options) then
-    if Message <> '' then
-      Dialogs.ShowMessage(Message)
-    else
-      Application.ShowException(E);
-end;
+PROCEDURE TJvgExceptionHandler.ShowMessage(E: Exception; CONST Message: STRING);
+BEGIN
+   IF NOT (E IS EJvgHandlerException) AND NOT (fehSupressExceptions IN Options)
+      THEN
+      IF Message <> '' THEN
+         Dialogs.ShowMessage(Message)
+      ELSE
+         Application.ShowException(E);
+END;
 
-procedure TJvgExceptionHandler.Refresh;
-begin
-  Application.OnException := OnException;
-end;
+PROCEDURE TJvgExceptionHandler.Refresh;
+BEGIN
+   Application.OnException := OnException;
+END;
 
 { Вызывает исключение с заданным сообщением без протоколирования }
 
-procedure TJvgExceptionHandler.RaiseMessage(const Message: string);
-begin
-  Dialogs.ShowMessage(Message);
-  raise EJvgHandlerException.Create('');
-end;
+PROCEDURE TJvgExceptionHandler.RaiseMessage(CONST Message: STRING);
+BEGIN
+   Dialogs.ShowMessage(Message);
+   RAISE EJvgHandlerException.Create('');
+END;
 
-initialization
-  ExceptionHandler := nil;
+INITIALIZATION
+   ExceptionHandler := NIL;
 
-end.
+END.
+

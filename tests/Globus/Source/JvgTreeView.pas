@@ -280,8 +280,6 @@ uses JvgUtils;
 
 procedure Register;
 begin
-  RegisterComponents('Globus Controls', [TJvgTreeView]);
-  RegisterComponents('Globus Controls', [TJvgCheckTreeView]);
 end;
 
 //______________________________________________________TglCheckTreeView

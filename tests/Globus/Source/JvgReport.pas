@@ -27,290 +27,308 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgReport;
+UNIT JvgReport;
 
-interface
-uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, Forms, OleCtnrs, ExtCtrls, SysUtils, Printers;
-type
+INTERFACE
+USES
+   Windows,
+   Messages,
+   Classes,
+   Controls,
+   Graphics,
+   JvgTypes,
+   JvgCommClasses,
+   JvComponent,
+   JvgUtils,
+   Forms,
+   OleCtnrs,
+   ExtCtrls,
+   SysUtils,
+   Printers;
+TYPE
 
-  TJvgReport = class;
+   TJvgReport = CLASS;
 
-  TglRepParamType = (gptUnknown, gptEdit, gptRadio, gptCheck);
+   TglRepParamType = (gptUnknown, gptEdit, gptRadio, gptCheck);
 
-  TJvgRepScrollBox = class(TScrollBox)
-  private
-    GridImage: TBitmap;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-  public
-    OnDraw: TNotifyEvent;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   TJvgRepScrollBox = CLASS(TScrollBox)
+   PRIVATE
+      GridImage: TBitmap;
+      PROCEDURE WMEraseBkgnd(VAR Msg: TWMEraseBkgnd); MESSAGE WM_ERASEBKGND;
+   PUBLIC
+      OnDraw: TNotifyEvent;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-  end;
+   END;
 
-  TJvgReportItem = class(TGraphicControl) //TCustomPanel) //TGraphicControl)
-  private
-    FSelected: boolean;
-    FBkColor: integer;
-    FBvColor: integer;
-    FTransparent: integer;
-    FAlignment: word; //..1-left,2-right,3-center,4-boadwise
-    FSideLeft,
-      FSideTop,
-      FSideRight,
-      FSideBottom: word;
-    FPenStyle: integer;
-    FPenWidth: word;
-    FText: string;
-    PrintText: string;
-    FCompName: string;
-    FFName: string;
-    FFSize,
-      FFColor,
-      FFStyle: integer;
-    FContainOLE: boolean;
-    FFixed: word;
-    FOLELinkToFile: string;
-    FOLESizeMode: word;
-    fSizing, fRepaintOnlyBorder: boolean;
-    R: array[1..8] of TRect;
-    DownPos: TPoint;
-    SizeDirection: integer;
-    FExternalCanvas: TCanvas;
-    Cursors: array[1..8] of TCursor;
-    bmp: TBitmap;
-    Report: TJvgReport;
+   TJvgReportItem = CLASS(TJvGraphicControl) //TCustomPanel) //TGraphicControl)
+   PRIVATE
+      FSelected: boolean;
+      FBkColor: integer;
+      FBvColor: integer;
+      FTransparent: integer;
+      FAlignment: word;                 //..1-left,2-right,3-center,4-boadwise
+      FSideLeft,
+         FSideTop,
+         FSideRight,
+         FSideBottom: word;
+      FPenStyle: integer;
+      FPenWidth: word;
+      FText: STRING;
+      PrintText: STRING;
+      FCompName: STRING;
+      FFName: STRING;
+      FFSize,
+         FFColor,
+         FFStyle: integer;
+      FContainOLE: boolean;
+      FFixed: word;
+      FOLELinkToFile: STRING;
+      FOLESizeMode: word;
+      fSizing, fRepaintOnlyBorder: boolean;
+      R: ARRAY[1..8] OF TRect;
+      DownPos: TPoint;
+      SizeDirection: integer;
+      FExternalCanvas: TCanvas;
+      Cursors: ARRAY[1..8] OF TCursor;
+      bmp: TBitmap;
+      Report: TJvgReport;
 
-    procedure SetSelected(Value: boolean);
-    procedure SetBkColor(Value: integer);
-    procedure SetBvColor(Value: integer);
-    procedure SetTransparent(Value: integer);
-    procedure SetAlignment(Value: word);
-    procedure SetSideLeft(Value: word);
-    procedure SetSideTop(Value: word);
-    procedure SetSideRight(Value: word);
-    procedure SetSideBottom(Value: word);
-    procedure SetPenStyle(Value: integer);
-    procedure SetPenWidth(Value: word);
-    procedure SetText(Value: string);
-    procedure SetFName(Value: string);
-    procedure SetFSize(Value: integer);
-    procedure SetFColor(Value: integer);
-    procedure SetFStyle(Value: integer);
-    procedure SetContainOLE(Value: boolean);
-    procedure SetOLELinkToFile(Value: string);
-    procedure SetOLESizeMode(Value: word);
-    procedure SetFixed(Value: word);
-    function IsContainOLE: boolean;
+      PROCEDURE SetSelected(Value: boolean);
+      PROCEDURE SetBkColor(Value: integer);
+      PROCEDURE SetBvColor(Value: integer);
+      PROCEDURE SetTransparent(Value: integer);
+      PROCEDURE SetAlignment(Value: word);
+      PROCEDURE SetSideLeft(Value: word);
+      PROCEDURE SetSideTop(Value: word);
+      PROCEDURE SetSideRight(Value: word);
+      PROCEDURE SetSideBottom(Value: word);
+      PROCEDURE SetPenStyle(Value: integer);
+      PROCEDURE SetPenWidth(Value: word);
+      PROCEDURE SetText(Value: STRING);
+      PROCEDURE SetFName(Value: STRING);
+      PROCEDURE SetFSize(Value: integer);
+      PROCEDURE SetFColor(Value: integer);
+      PROCEDURE SetFStyle(Value: integer);
+      PROCEDURE SetContainOLE(Value: boolean);
+      PROCEDURE SetOLELinkToFile(Value: STRING);
+      PROCEDURE SetOLESizeMode(Value: word);
+      PROCEDURE SetFixed(Value: word);
+      FUNCTION IsContainOLE: boolean;
 
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMMouseMove(var Message: TWMMouse); message WM_MOUSEMOVE;
-    procedure WMLMouseDown(var Message: TWMMouse); message WM_LBUTTONDOWN;
-    procedure WMLMouseUP(var Message: TWMMouse); message WM_LBUTTONUP;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+      PROCEDURE CMMouseEnter(VAR Message: TMessage); MESSAGE CM_MOUSEENTER;
+      PROCEDURE CMMouseLeave(VAR Message: TMessage); MESSAGE CM_MOUSELEAVE;
+      PROCEDURE WMMouseMove(VAR Message: TWMMouse); MESSAGE WM_MOUSEMOVE;
+      PROCEDURE WMLMouseDown(VAR Message: TWMMouse); MESSAGE WM_LBUTTONDOWN;
+      PROCEDURE WMLMouseUP(VAR Message: TWMMouse); MESSAGE WM_LBUTTONUP;
+      PROCEDURE CMFontChanged(VAR Message: TMessage); MESSAGE CM_FONTCHANGED;
+      PROCEDURE WMSize(VAR Message: TWMSize); MESSAGE WM_SIZE;
 
-  public
-    procedure Paint; override;
-    procedure PaintTo(Canvas: TCanvas);
-  protected
-    procedure SetParent(Value: TWinControl); override;
+   PUBLIC
+      PROCEDURE Paint; OVERRIDE;
+      PROCEDURE PaintTo(Canvas: TCanvas);
+   PROTECTED
+      PROCEDURE SetParent(Value: TWinControl); OVERRIDE;
 
-  public
-    ResText: string;
-    OLEContainer: TOLEContainer;
-    property Selected: boolean read FSelected write SetSelected default false;
-    property Visible;
-    property OnClick;
-    property OnDblClick;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    //    property OnResize;
-    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas;
-    //    procedure RepaintBorder;
-    constructor Create(AOwner: TComponent);
-    destructor Destroy; override;
+   PUBLIC
+      ResText: STRING;
+      OLEContainer: TOLEContainer;
+      PROPERTY Selected: boolean READ FSelected WRITE SetSelected DEFAULT false;
+      PROPERTY Visible;
+      PROPERTY OnClick;
+      PROPERTY OnDblClick;
+      PROPERTY OnMouseDown;
+      PROPERTY OnMouseMove;
+      PROPERTY OnMouseUp;
+      //    property OnResize;
+      PROPERTY ExternalCanvas: TCanvas READ FExternalCanvas WRITE
+         FExternalCanvas;
+      //    procedure RepaintBorder;
+      CONSTRUCTOR Create(AOwner: TComponent);
+      DESTRUCTOR Destroy; OVERRIDE;
 
-  published
-    property BkColor: integer read FBkColor write SetBkColor default clWhite;
-    property BvColor: integer read FBvColor write SetBvColor default clBlack;
-    property Transparent: integer read FTransparent write SetTransparent default 0;
-    property Alignment: word read FAlignment write SetAlignment
-      default 1;
-    property SideLeft: word read FSideLeft write SetSideLeft
-      default 1;
-    property SideTop: word read FSideTop write SetSideTop
-      default 1;
-    property SideRight: word read FSideRight write SetSideRight
-      default 1;
-    property SideBottom: word read FSideBottom write SetSideBottom
-      default 1;
-    property PenStyle: integer read FPenStyle write SetPenStyle
-      default integer(psSolid);
-    property PenWidth: word read FPenWidth write SetPenWidth
-      default 1;
-    property Text: string read FText write SetText;
-    property CompName: string read FCompName write FCompName;
-    property FName: string read FFName write SetFName;
-    property FSize: integer read FFSize write SetFSize;
-    property FColor: integer read FFColor write SetFColor;
-    property FStyle: integer read FFStyle write SetFStyle;
-    property ContainOLE: boolean read FContainOLE write SetContainOLE default false;
-    property OLELinkToFile: string read FOLELinkToFile write SetOLELinkToFile stored IsContainOLE;
-    property OLESizeMode: word read FOLESizeMode write SetOLESizeMode
-      stored IsContainOLE default 2;
-    property Fixed: word read FFixed write SetFixed
-      default 0;
-  end;
+   PUBLISHED
+      PROPERTY BkColor: integer READ FBkColor WRITE SetBkColor DEFAULT clWhite;
+      PROPERTY BvColor: integer READ FBvColor WRITE SetBvColor DEFAULT clBlack;
+      PROPERTY Transparent: integer READ FTransparent WRITE SetTransparent
+         DEFAULT 0;
+      PROPERTY Alignment: word READ FAlignment WRITE SetAlignment
+         DEFAULT 1;
+      PROPERTY SideLeft: word READ FSideLeft WRITE SetSideLeft
+         DEFAULT 1;
+      PROPERTY SideTop: word READ FSideTop WRITE SetSideTop
+         DEFAULT 1;
+      PROPERTY SideRight: word READ FSideRight WRITE SetSideRight
+         DEFAULT 1;
+      PROPERTY SideBottom: word READ FSideBottom WRITE SetSideBottom
+         DEFAULT 1;
+      PROPERTY PenStyle: integer READ FPenStyle WRITE SetPenStyle
+         DEFAULT integer(psSolid);
+      PROPERTY PenWidth: word READ FPenWidth WRITE SetPenWidth
+         DEFAULT 1;
+      PROPERTY Text: STRING READ FText WRITE SetText;
+      PROPERTY CompName: STRING READ FCompName WRITE FCompName;
+      PROPERTY FName: STRING READ FFName WRITE SetFName;
+      PROPERTY FSize: integer READ FFSize WRITE SetFSize;
+      PROPERTY FColor: integer READ FFColor WRITE SetFColor;
+      PROPERTY FStyle: integer READ FFStyle WRITE SetFStyle;
+      PROPERTY ContainOLE: boolean READ FContainOLE WRITE SetContainOLE DEFAULT
+         false;
+      PROPERTY OLELinkToFile: STRING READ FOLELinkToFile WRITE SetOLELinkToFile
+         STORED IsContainOLE;
+      PROPERTY OLESizeMode: word READ FOLESizeMode WRITE SetOLESizeMode
+         STORED IsContainOLE DEFAULT 2;
+      PROPERTY Fixed: word READ FFixed WRITE SetFixed
+         DEFAULT 0;
+   END;
 
-  TBeforePrintEvent = procedure(Sender: TJvgReport) of object;
+   TBeforePrintEvent = PROCEDURE(Sender: TJvgReport) OF OBJECT;
 
-  TJvgReport = class(TComponent)
-  private
-    procedure ValidateWnds;
-    function GetReportText: TStringList;
-    procedure SetReportText(Value: TStringList);
-  public
-    OwnerWnd,
-      ParentWnd: TWinControl;
-    ParamNames: TStringList;
-    ParamValues: TStringList;
-    ParamMasks: TStringList;
-    ParamTypes: TList;
-    FReportList: TStringList;
-    ComponentList: TList;
-    FBeforePrint: TBeforePrintEvent;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Save;
-    procedure LoadFromFile(FileName: string);
-    procedure SaveToFile(FileName: string);
-    procedure PaintTo(Canvas: TCanvas);
-    procedure PreviewTo(Window: TWinControl);
-    procedure Print;
-    procedure CreateReport(ParentWnd: TWinControl; fNeedClearOwner: boolean);
-    function SetParam(const sParamName, sParamValue: string): boolean;
-    function GetParam(const sParamName: string; var sParamValue: string): boolean;
-    function AddComponent: TJvgReportItem;
-    procedure AnalyzeParams(Item: TJvgReportItem; DefName: string);
-  private
-    procedure SetUnicalName(laBevel: TJvgReportItem);
-  protected
-    procedure Loaded; override;
-    procedure ClearReport;
-  published
-    property Report: TStringList read FReportList;
-    property ReportText: TStringList read GetReportText write SetReportText;
-    property BeforePrint: TBeforePrintEvent read FBeforePrint write FBeforePrint;
-  end;
+   TJvgReport = CLASS(TJvComponent)
+   PRIVATE
+      PROCEDURE ValidateWnds;
+      FUNCTION GetReportText: TStringList;
+      PROCEDURE SetReportText(Value: TStringList);
+   PUBLIC
+      OwnerWnd,
+         ParentWnd: TWinControl;
+      ParamNames: TStringList;
+      ParamValues: TStringList;
+      ParamMasks: TStringList;
+      ParamTypes: TList;
+      FReportList: TStringList;
+      ComponentList: TList;
+      FBeforePrint: TBeforePrintEvent;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
+      PROCEDURE Save;
+      PROCEDURE LoadFromFile(FileName: STRING);
+      PROCEDURE SaveToFile(FileName: STRING);
+      PROCEDURE PaintTo(Canvas: TCanvas);
+      PROCEDURE PreviewTo(Window: TWinControl);
+      PROCEDURE Print;
+      PROCEDURE CreateReport(ParentWnd: TWinControl; fNeedClearOwner: boolean);
+      FUNCTION SetParam(CONST sParamName, sParamValue: STRING): boolean;
+      FUNCTION GetParam(CONST sParamName: STRING; VAR sParamValue: STRING):
+         boolean;
+      FUNCTION AddComponent: TJvgReportItem;
+      PROCEDURE AnalyzeParams(Item: TJvgReportItem; DefName: STRING);
+   PRIVATE
+      PROCEDURE SetUnicalName(laBevel: TJvgReportItem);
+   PROTECTED
+      PROCEDURE Loaded; OVERRIDE;
+      PROCEDURE ClearReport;
+   PUBLISHED
+      PROPERTY Report: TStringList READ FReportList;
+      PROPERTY ReportText: TStringList READ GetReportText WRITE SetReportText;
+      PROPERTY BeforePrint: TBeforePrintEvent READ FBeforePrint WRITE
+         FBeforePrint;
+   END;
 
-procedure Register;
-implementation
+PROCEDURE Register;
+IMPLEMENTATION
 
-const
-  S = 2;
-  DS = 2 * S + 1;
-  {~~~~~~~~~~~~~~~~~~~~~~~~~}
+CONST
+   S                          = 2;
+   DS                         = 2 * S + 1;
+   {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-  //  RegisterComponentEditor(TJvgReport, TJvgReportEditor);
-  //  RegisterPropertyEditor( TypeInfo(TStringList), TJvgReport, 'Report', TglReportProperty );
-end;
+PROCEDURE Register;
+BEGIN
+END;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
-constructor TJvgRepScrollBox.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  GridImage := TBitmap.Create;
-  GridImage.Width := 8;
-  GridImage.Height := 8;
-  GridImage.Canvas.Brush.Color := clWhite; //clWindow;
-  GridImage.Canvas.FillRect(Rect(0, 0, 8, 8));
-  GridImage.Canvas.Pixels[7, 7] := 0;
-end;
+CONSTRUCTOR TJvgRepScrollBox.Create(AOwner: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
+   GridImage := TBitmap.Create;
+   GridImage.Width := 8;
+   GridImage.Height := 8;
+   GridImage.Canvas.Brush.Color := clWhite; //clWindow;
+   GridImage.Canvas.FillRect(Rect(0, 0, 8, 8));
+   GridImage.Canvas.Pixels[7, 7] := 0;
+END;
 
-destructor TJvgRepScrollBox.Destroy;
-begin
-  GridImage.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgRepScrollBox.Destroy;
+BEGIN
+   GridImage.Free;
+   INHERITED;
+END;
 
-procedure TJvgRepScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-var
-  DC: HDC;
-  Canvas: TCanvas;
-begin
-  with TCanvas.Create do
-  begin
-    Handle := Msg.DC;
-    //    Pen.Color := clWindow;
-    //    Brush.Color := clWindow;
-    //    Brush.Style := bsCross;
-    Brush.Bitmap := GridImage;
-    FillRect(ClientRect);
-    Handle := 0;
-    Free;
-  end;
-  Msg.Result := 1;
-  if Assigned(OnDraw) then OnDraw(self);
-end;
+PROCEDURE TJvgRepScrollBox.WMEraseBkgnd(VAR Msg: TWMEraseBkgnd);
+VAR
+   DC                         : HDC;
+   Canvas                     : TCanvas;
+BEGIN
+   WITH TCanvas.Create DO
+   BEGIN
+      Handle := Msg.DC;
+      //    Pen.Color := clWindow;
+      //    Brush.Color := clWindow;
+      //    Brush.Style := bsCross;
+      Brush.Bitmap := GridImage;
+      FillRect(ClientRect);
+      Handle := 0;
+      Free;
+   END;
+   Msg.Result := 1;
+   IF Assigned(OnDraw) THEN
+      OnDraw(self);
+END;
 
-constructor TJvgReportItem.Create(AOwner: TComponent);
-var
-  Msg: TMessage;
-begin
-  inherited Create(AOwner);
-  //..defaults
-  Width := 50;
-  Height := 50;
-  Color := clWhite;
-  FBkColor := clWhite;
-  FBvColor := clBlack;
-  FAlignment := 1;
-  FSideLeft := 1;
-  FSideTop := 1;
-  FSideRight := 1;
-  FSideBottom := 1;
-  FPenStyle := integer(psSolid);
-  FPenWidth := 1;
-  FOLESizeMode := 2;
-  Cursors[1] := crSizeNWSE;
-  Cursors[2] := crSizeNS;
-  Cursors[3] := crSizeNESW;
+CONSTRUCTOR TJvgReportItem.Create(AOwner: TComponent);
+VAR
+   Msg                        : TMessage;
+BEGIN
+   INHERITED Create(AOwner);
+   //..defaults
+   Width := 50;
+   Height := 50;
+   Color := clWhite;
+   FBkColor := clWhite;
+   FBvColor := clBlack;
+   FAlignment := 1;
+   FSideLeft := 1;
+   FSideTop := 1;
+   FSideRight := 1;
+   FSideBottom := 1;
+   FPenStyle := integer(psSolid);
+   FPenWidth := 1;
+   FOLESizeMode := 2;
+   Cursors[1] := crSizeNWSE;
+   Cursors[2] := crSizeNS;
+   Cursors[3] := crSizeNESW;
 
-  Cursors[4] := crSizeNESW;
-  Cursors[5] := crSizeNS;
-  Cursors[6] := crSizeNWSE;
+   Cursors[4] := crSizeNESW;
+   Cursors[5] := crSizeNS;
+   Cursors[6] := crSizeNWSE;
 
-  Cursors[7] := crSizeWE;
-  Cursors[8] := crSizeWE;
-  ParentFont := false;
-  {$IFDEF GL_RUS}
-  Font.CharSet := RUSSIAN_CHARSET;
-  {$ENDIF}
-  CMFontChanged(Msg);
-end;
+   Cursors[7] := crSizeWE;
+   Cursors[8] := crSizeWE;
+   ParentFont := false;
+   {$IFDEF GL_RUS}
+   Font.CharSet := RUSSIAN_CHARSET;
+   {$ENDIF}
+   CMFontChanged(Msg);
+END;
 
-destructor TJvgReportItem.Destroy;
-begin
-  if Assigned(bmp) then bmp.Free;
-  if Assigned(OLEContainer) then
-  begin
-    OLEContainer.DestroyObject;
-    if not (csDestroying in ComponentState) then
-    begin
-      OLEContainer.Free;
-      OLEContainer := nil;
-    end;
-  end;
-  inherited;
-end;
+DESTRUCTOR TJvgReportItem.Destroy;
+BEGIN
+   IF Assigned(bmp) THEN
+      bmp.Free;
+   IF Assigned(OLEContainer) THEN
+   BEGIN
+      OLEContainer.DestroyObject;
+      IF NOT (csDestroying IN ComponentState) THEN
+      BEGIN
+         OLEContainer.Free;
+         OLEContainer := NIL;
+      END;
+   END;
+   INHERITED;
+END;
 
 {procedure TJvgReportItem.RepaintBorder;
 var R: TRect;
@@ -326,265 +344,275 @@ begin
 end;
 }
 
-procedure TJvgReportItem.Paint;
-begin
-  PaintTo(Canvas);
-end;
+PROCEDURE TJvgReportItem.Paint;
+BEGIN
+   PaintTo(Canvas);
+END;
 
-procedure TJvgReportItem.PaintTo(Canvas: TCanvas);
-const
-  Alignments: array[1..4] of TglAlignment = (ftaLeftJustify, ftaRightJustify, ftaCenter, ftaBroadwise);
-  //  SysAlignments: array[TglAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
-var
-  i, L, T: integer;
-  sPrintText: string;
-  R_, Client_Rect, RCalc: TRect;
-begin
-  FFColor := 0;
-  with Canvas do
-  begin
+PROCEDURE TJvgReportItem.PaintTo(Canvas: TCanvas);
+CONST
+   Alignments                    : ARRAY[1..4] OF TglAlignment = (ftaLeftJustify,
+      ftaRightJustify, ftaCenter, ftaBroadwise);
+   //  SysAlignments: array[TglAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
+VAR
+   i, L, T                    : integer;
+   sPrintText                 : STRING;
+   R_, Client_Rect, RCalc     : TRect;
+BEGIN
+   FFColor := 0;
+   WITH Canvas DO
+   BEGIN
 
-    if Canvas = Self.Canvas then
-      Client_Rect := Rect(0, 0, Width, height)
-    else
-    begin
-      Client_Rect := Bounds(Left, Top, Width, height);
-      Canvas.Font := Self.Canvas.Font;
-      Canvas.Font.Color := 0;
-    end;
-    R_ := Client_Rect;
-    L := Client_Rect.Left;
-    T := Client_Rect.Top;
-    InflateRect(R_, -DS, -S);
-    RCalc := R_;
+      IF Canvas = Self.Canvas THEN
+         Client_Rect := Rect(0, 0, Width, height)
+      ELSE
+      BEGIN
+         Client_Rect := Bounds(Left, Top, Width, height);
+         Canvas.Font := Self.Canvas.Font;
+         Canvas.Font.Color := 0;
+      END;
+      R_ := Client_Rect;
+      L := Client_Rect.Left;
+      T := Client_Rect.Top;
+      InflateRect(R_, -DS, -S);
+      RCalc := R_;
 
-    if Transparent = 0 then
-    begin
-      Brush.Color := BkColor;
-      FillRect(Client_Rect);
-    end;
+      IF Transparent = 0 THEN
+      BEGIN
+         Brush.Color := BkColor;
+         FillRect(Client_Rect);
+      END;
 
-    if Canvas = Self.Canvas then
-    begin
-      Pen.Style := psDot;
-      Pen.Width := 1;
-      Pen.Color := clSilver;
-      Brush.Style := bsClear;
-      Rectangle(L, T, L + Width, T + Height);
-      sPrintText := Text;
-    end
-    else
-      sPrintText := PrintText;
-    if sPrintText = '' then sPrintText := Text;
+      IF Canvas = Self.Canvas THEN
+      BEGIN
+         Pen.Style := psDot;
+         Pen.Width := 1;
+         Pen.Color := clSilver;
+         Brush.Style := bsClear;
+         Rectangle(L, T, L + Width, T + Height);
+         sPrintText := Text;
+      END
+      ELSE
+         sPrintText := PrintText;
+      IF sPrintText = '' THEN
+         sPrintText := Text;
 
-    Pen.Style := TPenStyle(PenStyle);
-    Pen.Width := PenWidth;
-    Pen.Color := BvColor;
-    if bool(SideLeft) then
-    begin
-      MoveTo(L + PenWidth div 2, T + Height - 1);
-      LineTo(L + PenWidth div 2, T);
-    end;
-    if bool(SideTop) then
-    begin
-      MoveTo(L + PenWidth div 2, T + PenWidth div 2);
-      LineTo(L + Width - PenWidth, T + PenWidth div 2);
-    end;
-    if bool(SideRight) then
-    begin
-      MoveTo(L + Width - 1, T);
-      LineTo(L + Width - 1, T + Height - 1);
-    end;
-    if bool(SideBottom) then
-    begin
-      MoveTo(L + Width - 1, T + Height - 1);
-      LineTo(L, T + Height - 1);
-    end;
+      Pen.Style := TPenStyle(PenStyle);
+      Pen.Width := PenWidth;
+      Pen.Color := BvColor;
+      IF bool(SideLeft) THEN
+      BEGIN
+         MoveTo(L + PenWidth DIV 2, T + Height - 1);
+         LineTo(L + PenWidth DIV 2, T);
+      END;
+      IF bool(SideTop) THEN
+      BEGIN
+         MoveTo(L + PenWidth DIV 2, T + PenWidth DIV 2);
+         LineTo(L + Width - PenWidth, T + PenWidth DIV 2);
+      END;
+      IF bool(SideRight) THEN
+      BEGIN
+         MoveTo(L + Width - 1, T);
+         LineTo(L + Width - 1, T + Height - 1);
+      END;
+      IF bool(SideBottom) THEN
+      BEGIN
+         MoveTo(L + Width - 1, T + Height - 1);
+         LineTo(L, T + Height - 1);
+      END;
 
-    if not ContainOLE then
-    begin
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      SetTextColor(Canvas.Handle, FColor);
-      DrawText(Canvas.Handle, PChar(sPrintText), Length(sPrintText), RCalc, DT_CALCRECT or DT_WORDBREAK);
-      R_.Top := R_.Top + max(0, (R_.Bottom - R_.Top - (RCalc.Bottom - RCalc.Top)) div 2);
-      DrawTextExtAligned(Canvas, sPrintText, R_, Alignments[Alignment], true);
-    end
-    else if (OLELinkToFile <> '') and (ExtractFileExt(OLELinkToFile) = '.bmp') then
-    begin
-      if Assigned(OLEContainer) then OLEContainer.Visible := false;
-      if bmp = nil then
-      begin
-        bmp := TBitmap.Create;
-        bmp.LoadFromFile(OLELinkToFile);
-      end;
-      BitBlt(Canvas.Handle, L, T, bmp.width, bmp.height, bmp.Canvas.handle, 0, 0, SRCCOPY);
-    end;
+      IF NOT ContainOLE THEN
+      BEGIN
+         SetBkMode(Canvas.Handle, TRANSPARENT);
+         SetTextColor(Canvas.Handle, FColor);
+         DrawText(Canvas.Handle, PChar(sPrintText), Length(sPrintText), RCalc,
+            DT_CALCRECT OR DT_WORDBREAK);
+         R_.Top := R_.Top + max(0, (R_.Bottom - R_.Top - (RCalc.Bottom -
+            RCalc.Top)) DIV 2);
+         DrawTextExtAligned(Canvas, sPrintText, R_, Alignments[Alignment],
+            true);
+      END
+      ELSE IF (OLELinkToFile <> '') AND (ExtractFileExt(OLELinkToFile) = '.bmp')
+         THEN
+      BEGIN
+         IF Assigned(OLEContainer) THEN
+            OLEContainer.Visible := false;
+         IF bmp = NIL THEN
+         BEGIN
+            bmp := TBitmap.Create;
+            bmp.LoadFromFile(OLELinkToFile);
+         END;
+         BitBlt(Canvas.Handle, L, T, bmp.width, bmp.height, bmp.Canvas.handle,
+            0, 0, SRCCOPY);
+      END;
 
-    if Selected then
-    begin
-      Pen.Style := psSolid;
-      Pen.Width := 1;
-      Pen.Color := 0;
-      Brush.Style := bsSolid;
-      if bool(Fixed) then
-        Brush.Color := clBtnFace
-      else
-        Brush.Color := clWhite;
-      R[1] := Rect(0, 0, DS, DS); //...top-left
-      R[2] := Rect(Width div 2 - S, 0, Width div 2 + S + 1, DS); //...top-center
-      R[3] := Rect(Width - DS, 0, Width, DS); //...top-right
+      IF Selected THEN
+      BEGIN
+         Pen.Style := psSolid;
+         Pen.Width := 1;
+         Pen.Color := 0;
+         Brush.Style := bsSolid;
+         IF bool(Fixed) THEN
+            Brush.Color := clBtnFace
+         ELSE
+            Brush.Color := clWhite;
+         R[1] := Rect(0, 0, DS, DS);    //...top-left
+         R[2] := Rect(Width DIV 2 - S, 0, Width DIV 2 + S + 1, DS);  //...top-center
+         R[3] := Rect(Width - DS, 0, Width, DS); //...top-right
 
-      R[4] := Rect(0, Height - DS, DS, Height); //...bottom-left
-      R[5] := Rect(Width div 2 - S, Height - DS, Width div 2 + S + 1, Height); //...bottom-center
-      R[6] := Rect(Width - DS, Height - DS, Width, Height); //...bottom-right
+         R[4] := Rect(0, Height - DS, DS, Height); //...bottom-left
+         R[5] := Rect(Width DIV 2 - S, Height - DS, Width DIV 2 + S + 1, Height);  //...bottom-center
+         R[6] := Rect(Width - DS, Height - DS, Width, Height); //...bottom-right
 
-      R[7] := Rect(0, Height div 2 - S, DS, Height div 2 + S + 1); //...left-center
-      R[8] := Rect(Width - DS, Height div 2 - S, Width, Height div 2 + S + 1); //...right-center
+         R[7] := Rect(0, Height DIV 2 - S, DS, Height DIV 2 + S + 1);  //...left-center
+         R[8] := Rect(Width - DS, Height DIV 2 - S, Width, Height DIV 2 + S + 1);  //...right-center
 
-      for i := 1 to 8 do
-        Rectangle(R[i].Left, R[i].Top, R[i].Right, R[i].Bottom);
-    end;
-  end;
-  if Assigned(OLEContainer) then
-    OLEContainer.SetBounds(Left + DS, Top + DS, Width - 2 * DS, Height - 2 * DS);
-end;
+         FOR i := 1 TO 8 DO
+            Rectangle(R[i].Left, R[i].Top, R[i].Right, R[i].Bottom);
+      END;
+   END;
+   IF Assigned(OLEContainer) THEN
+      OLEContainer.SetBounds(Left + DS, Top + DS, Width - 2 * DS, Height - 2 *
+         DS);
+END;
 
-procedure TJvgReportItem.SetParent(Value: TWinControl);
-begin
-  inherited;
-  if Assigned(OLEContainer) and Assigned(Value) then OLEContainer.Parent := Value;
-end;
+PROCEDURE TJvgReportItem.SetParent(Value: TWinControl);
+BEGIN
+   INHERITED;
+   IF Assigned(OLEContainer) AND Assigned(Value) THEN
+      OLEContainer.Parent := Value;
+END;
 
-procedure TJvgReportItem.CMMouseEnter(var Message: TMessage);
-begin
-  //Cursor := crCross;
-//  SetCursor( Screen.Cursors[crCross] );
-end;
+PROCEDURE TJvgReportItem.CMMouseEnter(VAR Message: TMessage);
+BEGIN
+   //Cursor := crCross;
+ //  SetCursor( Screen.Cursors[crCross] );
+END;
 
-procedure TJvgReportItem.CMMouseLeave(var Message: TMessage);
-begin
-  Cursor := crDefault;
-  //  SetCursor( Screen.Cursors[crDefault] );
-end;
+PROCEDURE TJvgReportItem.CMMouseLeave(VAR Message: TMessage);
+BEGIN
+   Cursor := crDefault;
+   //  SetCursor( Screen.Cursors[crDefault] );
+END;
 
-procedure TJvgReportItem.WMMouseMove(var Message: TWMMouse);
-var
-  i, dX, dY, nLeft, nTop, nWidth, nHeight: integer;
-  pt: TPoint;
-begin
-  inherited;
-  if not bool(Fixed) then
-    with Message do
-    begin
-      pt.x := Pos.x;
-      pt.y := Pos.y;
-      if fSizing then
-      begin
-        dX := Pos.x - DownPos.x;
-        dY := Pos.y - DownPos.y;
-        inc(pos.x, 4);
-        inc(pos.y, 4);
-        nLeft := Left;
-        nTop := Top;
-        nWidth := Width;
-        nHeight := Height;
-        case SizeDirection of
-          1:
-            begin
-              nLeft := Left + dX;
-              nWidth := Width - dX;
-              nTop := Top + dY;
-              nHeight := Height - dY;
-            end;
-          2:
-            begin
-              nTop := Top + dY;
-              nHeight := Height - dY;
-            end;
-          3:
-            begin
-              nWidth := Pos.x;
-              nTop := Top + dY;
-              nHeight := Height - dY;
-            end;
+PROCEDURE TJvgReportItem.WMMouseMove(VAR Message: TWMMouse);
+VAR
+   i, dX, dY, nLeft, nTop, nWidth, nHeight: integer;
+   pt                         : TPoint;
+BEGIN
+   INHERITED;
+   IF NOT bool(Fixed) THEN
+      WITH Message DO
+      BEGIN
+         pt.x := Pos.x;
+         pt.y := Pos.y;
+         IF fSizing THEN
+         BEGIN
+            dX := Pos.x - DownPos.x;
+            dY := Pos.y - DownPos.y;
+            inc(pos.x, 4);
+            inc(pos.y, 4);
+            nLeft := Left;
+            nTop := Top;
+            nWidth := Width;
+            nHeight := Height;
+            CASE SizeDirection OF
+               1:
+                  BEGIN
+                     nLeft := Left + dX;
+                     nWidth := Width - dX;
+                     nTop := Top + dY;
+                     nHeight := Height - dY;
+                  END;
+               2:
+                  BEGIN
+                     nTop := Top + dY;
+                     nHeight := Height - dY;
+                  END;
+               3:
+                  BEGIN
+                     nWidth := Pos.x;
+                     nTop := Top + dY;
+                     nHeight := Height - dY;
+                  END;
 
-          4:
-            begin
-              nLeft := Left + dX;
-              nWidth := Width - dX;
-              nHeight := Pos.y;
-            end;
+               4:
+                  BEGIN
+                     nLeft := Left + dX;
+                     nWidth := Width - dX;
+                     nHeight := Pos.y;
+                  END;
 
-          5:
-            begin
-              nHeight := Pos.y;
-            end;
+               5:
+                  BEGIN
+                     nHeight := Pos.y;
+                  END;
 
-          6:
-            begin
-              nWidth := Pos.x;
-              nHeight := Pos.y;
-            end;
-          7:
-            begin
-              nLeft := Left + dX;
-              nWidth := Width - dX;
-            end;
-          8:
-            begin
-              nWidth := Pos.x;
-            end;
-        end;
-        Left := min(nLeft, nLeft + nWidth);
-        Top := min(nTop, nTop + nHeight);
-        Width := abs(nWidth);
-        Height := abs(nHeight);
-        if nWidth < 0 then
-        begin
-          case SizeDirection of
-            1: SizeDirection := 3;
-            3: SizeDirection := 1;
-            4: SizeDirection := 6;
-            6: SizeDirection := 4;
-            8: SizeDirection := 7;
-            7: SizeDirection := 8;
-          end;
-          DownPos.x := Pos.x;
-        end;
-        if nHeight < 0 then
-        begin
-          case SizeDirection of
-            1: SizeDirection := 4;
-            2: SizeDirection := 5;
-            3: SizeDirection := 6;
-            4: SizeDirection := 1;
-            5: SizeDirection := 2;
-            6: SizeDirection := 3;
-          end;
-          DownPos.y := Pos.y;
-        end;
-      end
-      else
-        for i := 1 to 8 do
-          if PtInRect(R[i], pt) then
-          begin
-            Cursor := Cursors[i];
-            SizeDirection := i;
-            exit;
-          end;
-    end;
-  Cursor := crDefault;
-  //  SetCursor( Screen.Cursors[crDefault] );
-end;
+               6:
+                  BEGIN
+                     nWidth := Pos.x;
+                     nHeight := Pos.y;
+                  END;
+               7:
+                  BEGIN
+                     nLeft := Left + dX;
+                     nWidth := Width - dX;
+                  END;
+               8:
+                  BEGIN
+                     nWidth := Pos.x;
+                  END;
+            END;
+            Left := min(nLeft, nLeft + nWidth);
+            Top := min(nTop, nTop + nHeight);
+            Width := abs(nWidth);
+            Height := abs(nHeight);
+            IF nWidth < 0 THEN
+            BEGIN
+               CASE SizeDirection OF
+                  1: SizeDirection := 3;
+                  3: SizeDirection := 1;
+                  4: SizeDirection := 6;
+                  6: SizeDirection := 4;
+                  8: SizeDirection := 7;
+                  7: SizeDirection := 8;
+               END;
+               DownPos.x := Pos.x;
+            END;
+            IF nHeight < 0 THEN
+            BEGIN
+               CASE SizeDirection OF
+                  1: SizeDirection := 4;
+                  2: SizeDirection := 5;
+                  3: SizeDirection := 6;
+                  4: SizeDirection := 1;
+                  5: SizeDirection := 2;
+                  6: SizeDirection := 3;
+               END;
+               DownPos.y := Pos.y;
+            END;
+         END
+         ELSE
+            FOR i := 1 TO 8 DO
+               IF PtInRect(R[i], pt) THEN
+               BEGIN
+                  Cursor := Cursors[i];
+                  SizeDirection := i;
+                  exit;
+               END;
+      END;
+   Cursor := crDefault;
+   //  SetCursor( Screen.Cursors[crDefault] );
+END;
 
-procedure TJvgReportItem.WMLMouseDown(var Message: TWMMouse);
-begin
-  DownPos.x := Message.Pos.x;
-  DownPos.y := Message.Pos.y;
-  //DownPos := ClientToScreen(DownPos);
-  fSizing := Cursor <> crDefault;
-  inherited;
-end;
+PROCEDURE TJvgReportItem.WMLMouseDown(VAR Message: TWMMouse);
+BEGIN
+   DownPos.x := Message.Pos.x;
+   DownPos.y := Message.Pos.y;
+   //DownPos := ClientToScreen(DownPos);
+   fSizing := Cursor <> crDefault;
+   INHERITED;
+END;
 
 {procedure TJvgReportItem.WMRMouseDown(var Message: TWMMouse);
 begin
@@ -593,756 +621,792 @@ begin
   inherited;
 end;}
 
-procedure TJvgReportItem.WMLMouseUp(var Message: TWMMouse);
-begin
-  fSizing := false;
-  inherited;
-end;
+PROCEDURE TJvgReportItem.WMLMouseUp(VAR Message: TWMMouse);
+BEGIN
+   fSizing := false;
+   INHERITED;
+END;
 
-procedure TJvgReportItem.CMFontChanged(var Message: TMessage);
-begin
-  inherited;
-  FName := Font.Name;
-  FFSize := Font.Size;
-  FFColor := Font.Color;
-  FFStyle := 0;
-  if fsBold in Font.Style then FFStyle := FFStyle or 1;
-  if fsItalic in Font.Style then FFStyle := FFStyle or (1 shl 1);
-  if fsUnderline in Font.Style then FFStyle := FFStyle or (1 shl 2);
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.CMFontChanged(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+   FName := Font.Name;
+   FFSize := Font.Size;
+   FFColor := Font.Color;
+   FFStyle := 0;
+   IF fsBold IN Font.Style THEN
+      FFStyle := FFStyle OR 1;
+   IF fsItalic IN Font.Style THEN
+      FFStyle := FFStyle OR (1 SHL 1);
+   IF fsUnderline IN Font.Style THEN
+      FFStyle := FFStyle OR (1 SHL 2);
+   Invalidate;
+END;
 
-procedure TJvgReportItem.WMSize(var Message: TWMSize);
-begin
-  inherited;
-  // if Assigned(OnResize) then OnResize(self);
-end;
+PROCEDURE TJvgReportItem.WMSize(VAR Message: TWMSize);
+BEGIN
+   INHERITED;
+   // if Assigned(OnResize) then OnResize(self);
+END;
 
-procedure TJvgReportItem.SetSelected(Value: boolean);
-begin
-  FSelected := Value;
-  Repaint;
-end;
+PROCEDURE TJvgReportItem.SetSelected(Value: boolean);
+BEGIN
+   FSelected := Value;
+   Repaint;
+END;
 
-procedure TJvgReportItem.SetBkColor(Value: integer);
-begin
-  FBkColor := Value;
-  Color := BkColor;
-  Repaint;
-end;
+PROCEDURE TJvgReportItem.SetBkColor(Value: integer);
+BEGIN
+   FBkColor := Value;
+   Color := BkColor;
+   Repaint;
+END;
 
-procedure TJvgReportItem.SetBvColor(Value: integer);
-begin
-  FBvColor := Value;
-  Repaint;
-end;
+PROCEDURE TJvgReportItem.SetBvColor(Value: integer);
+BEGIN
+   FBvColor := Value;
+   Repaint;
+END;
 
-procedure TJvgReportItem.SetTransparent(Value: integer);
-begin
-  FTransparent := Value;
-  Repaint;
-end;
+PROCEDURE TJvgReportItem.SetTransparent(Value: integer);
+BEGIN
+   FTransparent := Value;
+   Repaint;
+END;
 
-procedure TJvgReportItem.SetAlignment(Value: word);
-begin
-  FAlignment := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetAlignment(Value: word);
+BEGIN
+   FAlignment := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetSideLeft(Value: word);
-begin
-  FSideLeft := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetSideLeft(Value: word);
+BEGIN
+   FSideLeft := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetSideTop(Value: word);
-begin
-  FSideTop := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetSideTop(Value: word);
+BEGIN
+   FSideTop := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetSideRight(Value: word);
-begin
-  FSideRight := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetSideRight(Value: word);
+BEGIN
+   FSideRight := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetSideBottom(Value: word);
-begin
-  FSideBottom := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetSideBottom(Value: word);
+BEGIN
+   FSideBottom := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetPenStyle(Value: integer);
-begin
-  FPenStyle := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetPenStyle(Value: integer);
+BEGIN
+   FPenStyle := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetPenWidth(Value: word);
-begin
-  FPenWidth := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetPenWidth(Value: word);
+BEGIN
+   FPenWidth := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetText(Value: string);
-begin
-  if FText = Value then exit;
-  FText := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetText(Value: STRING);
+BEGIN
+   IF FText = Value THEN
+      exit;
+   FText := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetFName(Value: string);
-begin
-  FFName := Value;
-  Canvas.Font.Name := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetFName(Value: STRING);
+BEGIN
+   FFName := Value;
+   Canvas.Font.Name := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetFSize(Value: integer);
-begin
-  FFSize := Value;
-  Canvas.Font.Size := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetFSize(Value: integer);
+BEGIN
+   FFSize := Value;
+   Canvas.Font.Size := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetFColor(Value: integer);
-begin
-  FFColor := Value;
-  Canvas.Font.Color := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetFColor(Value: integer);
+BEGIN
+   FFColor := Value;
+   Canvas.Font.Color := Value;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetFStyle(Value: integer);
-begin
-  FFStyle := Value;
-  with Canvas.Font do
-  begin
-    if bool(Value and 1) then
-      Style := Style + [fsBold]
-    else
-      Style := Style - [fsBold];
-    if bool(Value and (1 shl 1)) then
-      Style := Style + [fsItalic]
-    else
-      Style := Style - [fsItalic];
-    if bool(Value and (1 shl 2)) then
-      Style := Style + [fsUnderline]
-    else
-      Style := Style - [fsUnderline];
-  end;
-  Invalidate;
-end;
+PROCEDURE TJvgReportItem.SetFStyle(Value: integer);
+BEGIN
+   FFStyle := Value;
+   WITH Canvas.Font DO
+   BEGIN
+      IF bool(Value AND 1) THEN
+         Style := Style + [fsBold]
+      ELSE
+         Style := Style - [fsBold];
+      IF bool(Value AND (1 SHL 1)) THEN
+         Style := Style + [fsItalic]
+      ELSE
+         Style := Style - [fsItalic];
+      IF bool(Value AND (1 SHL 2)) THEN
+         Style := Style + [fsUnderline]
+      ELSE
+         Style := Style - [fsUnderline];
+   END;
+   Invalidate;
+END;
 
-procedure TJvgReportItem.SetContainOLE(Value: boolean);
-begin
-  FContainOLE := Value;
-  if FContainOLE and (not Assigned(OLEContainer)) then
-  begin
-    if not Assigned(Parent) then exit;
-    OLEContainer := TOLEContainer.Create(parent.parent); //{$IFDEF COMPILER3_UP} Parent {$ELSE} Owner {$ENDIF} );
-    OLEContainer.AutoVerbMenu := false;
-    OLEContainer.BorderStyle := bsNone;
-    OLEContainer.Color := clWhite;
-    OLEContainer.SizeMode := smScale;
-    OLEContainer.Parent := Parent;
-    if (OLEContainer.State = osEmpty) and (OLELinkToFile <> '') then
-      SetOLELinkToFile(OLELinkToFile);
-  end;
-end;
+PROCEDURE TJvgReportItem.SetContainOLE(Value: boolean);
+BEGIN
+   FContainOLE := Value;
+   IF FContainOLE AND (NOT Assigned(OLEContainer)) THEN
+   BEGIN
+      IF NOT Assigned(Parent) THEN
+         exit;
+      OLEContainer := TOLEContainer.Create(parent.parent);  //{$IFDEF COMPILER3_UP} Parent {$ELSE} Owner {$ENDIF} );
+      OLEContainer.AutoVerbMenu := false;
+      OLEContainer.BorderStyle := bsNone;
+      OLEContainer.Color := clWhite;
+      OLEContainer.SizeMode := smScale;
+      OLEContainer.Parent := Parent;
+      IF (OLEContainer.State = osEmpty) AND (OLELinkToFile <> '') THEN
+         SetOLELinkToFile(OLELinkToFile);
+   END;
+END;
 
-procedure TJvgReportItem.SetOLELinkToFile(Value: string);
-begin
-  FOLELinkToFile := Value;
-  if not Assigned(OLEContainer) then exit;
-  OLEContainer.CreateLinkToFile(Value, False);
-  //OLEContainer.LoadFromFile( Value );
-end;
+PROCEDURE TJvgReportItem.SetOLELinkToFile(Value: STRING);
+BEGIN
+   FOLELinkToFile := Value;
+   IF NOT Assigned(OLEContainer) THEN
+      exit;
+   OLEContainer.CreateLinkToFile(Value, False);
+   //OLEContainer.LoadFromFile( Value );
+END;
 
-procedure TJvgReportItem.SetFixed(Value: word);
-begin
-  FFixed := Value;
-  Repaint;
-end;
+PROCEDURE TJvgReportItem.SetFixed(Value: word);
+BEGIN
+   FFixed := Value;
+   Repaint;
+END;
 
-procedure TJvgReportItem.SetOLESizeMode(Value: word);
-begin
-  if FOLESizeMode = Value then exit;
-  FOLESizeMode := Value;
-  if Assigned(OLEContainer) then OLEContainer.SizeMode := TSizeMode(Value);
-end;
+PROCEDURE TJvgReportItem.SetOLESizeMode(Value: word);
+BEGIN
+   IF FOLESizeMode = Value THEN
+      exit;
+   FOLESizeMode := Value;
+   IF Assigned(OLEContainer) THEN
+      OLEContainer.SizeMode := TSizeMode(Value);
+END;
 
-function TJvgReportItem.IsContainOLE: boolean;
-begin
-  Result := FContainOLE;
-end;
+FUNCTION TJvgReportItem.IsContainOLE: boolean;
+BEGIN
+   Result := FContainOLE;
+END;
 
 //===========================================================================
 
-constructor TJvgReport.Create(AOwner: TComponent);
-begin
-  inherited;
-  ParamNames := TStringList.Create;
-  ParamValues := TStringList.Create;
-  ParamMasks := TStringList.Create;
-  FReportList := TStringList.Create;
-  ParamTypes := TList.Create;
-  ComponentList := TList.Create;
-end;
+CONSTRUCTOR TJvgReport.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   ParamNames := TStringList.Create;
+   ParamValues := TStringList.Create;
+   ParamMasks := TStringList.Create;
+   FReportList := TStringList.Create;
+   ParamTypes := TList.Create;
+   ComponentList := TList.Create;
+END;
 
-destructor TJvgReport.Destroy;
-begin
-  FReportList.Free;
-  ParamNames.Free;
-  ParamValues.Free;
-  ParamMasks.Free;
-  ParamTypes.Free;
-  ClearReport;
-  ComponentList.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgReport.Destroy;
+BEGIN
+   FReportList.Free;
+   ParamNames.Free;
+   ParamValues.Free;
+   ParamMasks.Free;
+   ParamTypes.Free;
+   ClearReport;
+   ComponentList.Free;
+   INHERITED;
+END;
 
-procedure TJvgReport.Loaded;
-begin
-  inherited;
-  CreateReport(nil, false);
-end;
+PROCEDURE TJvgReport.Loaded;
+BEGIN
+   INHERITED;
+   CreateReport(NIL, false);
+END;
 
-procedure TJvgReport.Save;
-var
-  msS, msT: TMemoryStream;
-begin
-  ValidateWnds;
-  msS := TMemoryStream.Create;
-  msT := TMemoryStream.Create;
-  try
-    msS.WriteComponent(ParentWnd);
-    msS.Position := 0;
-    ObjectBinaryToText(msS, msT);
-    msT.Position := 0;
-    FReportList.LoadFromStream(msT);
-  finally
-    msS.Free;
-    msT.Free;
-  end;
-end;
+PROCEDURE TJvgReport.Save;
+VAR
+   msS, msT                   : TMemoryStream;
+BEGIN
+   ValidateWnds;
+   msS := TMemoryStream.Create;
+   msT := TMemoryStream.Create;
+   TRY
+      msS.WriteComponent(ParentWnd);
+      msS.Position := 0;
+      ObjectBinaryToText(msS, msT);
+      msT.Position := 0;
+      FReportList.LoadFromStream(msT);
+   FINALLY
+      msS.Free;
+      msT.Free;
+   END;
+END;
 
-procedure TJvgReport.SaveToFile(FileName: string);
-var
-  fs, fs2: TFileStream;
-  W: TWriter;
-  i: integer;
-begin
-  ValidateWnds;
-  fs := TFileStream.Create(FileName, fmCreate or fmOpenWrite);
-  try
-    fs.WriteComponent(ParentWnd);
-  finally
-    fs.Free;
-  end;
-end;
+PROCEDURE TJvgReport.SaveToFile(FileName: STRING);
+VAR
+   fs, fs2                    : TFileStream;
+   W                          : TWriter;
+   i                          : integer;
+BEGIN
+   ValidateWnds;
+   fs := TFileStream.Create(FileName, fmCreate OR fmOpenWrite);
+   TRY
+      fs.WriteComponent(ParentWnd);
+   FINALLY
+      fs.Free;
+   END;
+END;
 
-procedure TJvgReport.LoadFromFile(FileName: string);
-var
-  fs: TFileStream;
-  ms: TMemoryStream;
-begin
-  fs := TFileStream.Create(FileName, fmOpenRead);
-  ms := TMemoryStream.Create;
-  try
-    ObjectBinaryToText(fs, ms);
-    ms.Position := 0;
-    FReportList.LoadFromStream(ms);
-  finally
-    fs.Free;
-    ms.Free;
-  end;
-end;
+PROCEDURE TJvgReport.LoadFromFile(FileName: STRING);
+VAR
+   fs                         : TFileStream;
+   ms                         : TMemoryStream;
+BEGIN
+   fs := TFileStream.Create(FileName, fmOpenRead);
+   ms := TMemoryStream.Create;
+   TRY
+      ObjectBinaryToText(fs, ms);
+      ms.Position := 0;
+      FReportList.LoadFromStream(ms);
+   FINALLY
+      fs.Free;
+      ms.Free;
+   END;
+END;
 
 {procedure TJvgReport.Edit;
 begin
   CreateReport(true);
 end;}
 
-procedure TJvgReport.PaintTo(Canvas: TCanvas);
-var
-  i: integer;
-begin
-  OwnerWnd := nil;
-  ParentWnd := nil;
-  //  ParamNames.Clear;
-  //  ParamMasks.Clear;
-  //  ParamValues.Clear;
-  //  ParamTypes.Clear;
-  ComponentList.Clear;
-  CreateReport(ParentWnd, false);
-  for i := 0 to ComponentList.Count - 1 do
-    TJvgReportItem(ComponentList[i]).PaintTo(Canvas);
-end;
+PROCEDURE TJvgReport.PaintTo(Canvas: TCanvas);
+VAR
+   i                          : integer;
+BEGIN
+   OwnerWnd := NIL;
+   ParentWnd := NIL;
+   //  ParamNames.Clear;
+   //  ParamMasks.Clear;
+   //  ParamValues.Clear;
+   //  ParamTypes.Clear;
+   ComponentList.Clear;
+   CreateReport(ParentWnd, false);
+   FOR i := 0 TO ComponentList.Count - 1 DO
+      TJvgReportItem(ComponentList[i]).PaintTo(Canvas);
+END;
 
-procedure TJvgReport.PreviewTo(Window: TWinControl);
-begin
-  OwnerWnd := Window;
-  ParentWnd := OwnerWnd;
-  ParamNames.Clear;
-  ParamMasks.Clear;
-  ParamValues.Clear;
-  ParamTypes.Clear;
-  ComponentList.Clear;
-  CreateReport(ParentWnd, false);
-  //  ProcessParams;
-end;
+PROCEDURE TJvgReport.PreviewTo(Window: TWinControl);
+BEGIN
+   OwnerWnd := Window;
+   ParentWnd := OwnerWnd;
+   ParamNames.Clear;
+   ParamMasks.Clear;
+   ParamValues.Clear;
+   ParamTypes.Clear;
+   ComponentList.Clear;
+   CreateReport(ParentWnd, false);
+   //  ProcessParams;
+END;
 
-procedure TJvgReport.Print;
-var
-  i: integer;
-  ScreenDC: HDC;
-  HS, WS, HP, WP: integer;
-begin
-  if Assigned(BeforePrint) then BeforePrint(self);
-  OwnerWnd := TForm.Create(nil);
-  TForm(OwnerWnd).WindowState := wsMaximized;
-  ParentWnd := OwnerWnd;
-  //OwnerWnd.Show;
-  try
-    CreateReport(ParentWnd, true);
-    if ComponentList.Count = 0 then exit;
+PROCEDURE TJvgReport.Print;
+VAR
+   i                          : integer;
+   ScreenDC                   : HDC;
+   HS, WS, HP, WP             : integer;
+BEGIN
+   IF Assigned(BeforePrint) THEN
+      BeforePrint(self);
+   OwnerWnd := TForm.Create(NIL);
+   TForm(OwnerWnd).WindowState := wsMaximized;
+   ParentWnd := OwnerWnd;
+   //OwnerWnd.Show;
+   TRY
+      CreateReport(ParentWnd, true);
+      IF ComponentList.Count = 0 THEN
+         exit;
 
-    Printer.BeginDoc;
-    ScreenDC := GetDC(0);
+      Printer.BeginDoc;
+      ScreenDC := GetDC(0);
 
-    HS := SantimsToPixels(ScreenDC, 21, true);
-    WS := SantimsToPixels(ScreenDC, 21, false);
-    HP := SantimsToPixels(Printer.Canvas.Handle, 21, true);
-    WP := SantimsToPixels(Printer.Canvas.Handle, 21, false);
+      HS := SantimsToPixels(ScreenDC, 21, true);
+      WS := SantimsToPixels(ScreenDC, 21, false);
+      HP := SantimsToPixels(Printer.Canvas.Handle, 21, true);
+      WP := SantimsToPixels(Printer.Canvas.Handle, 21, false);
 
-    ReleaseDC(0, ScreenDC);
+      ReleaseDC(0, ScreenDC);
 
-    for i := 0 to ComponentList.Count - 1 do
-    begin
-      TJvgReportItem(ComponentList[i]).Left := MulDiv(TJvgReportItem(ComponentList[i]).Left, WP, WS);
-      TJvgReportItem(ComponentList[i]).Top := MulDiv(TJvgReportItem(ComponentList[i]).Top, HP, HS);
-      TJvgReportItem(ComponentList[i]).Width := MulDiv(TJvgReportItem(ComponentList[i]).Width, WP, WS);
-      TJvgReportItem(ComponentList[i]).Height := MulDiv(TJvgReportItem(ComponentList[i]).Height, HP, HS);
-      TJvgReportItem(ComponentList[i]).PenWidth := MulDiv(TJvgReportItem(ComponentList[i]).PenWidth, HP, HS);
-    end;
+      FOR i := 0 TO ComponentList.Count - 1 DO
+      BEGIN
+         TJvgReportItem(ComponentList[i]).Left :=
+            MulDiv(TJvgReportItem(ComponentList[i]).Left, WP, WS);
+         TJvgReportItem(ComponentList[i]).Top :=
+            MulDiv(TJvgReportItem(ComponentList[i]).Top, HP, HS);
+         TJvgReportItem(ComponentList[i]).Width :=
+            MulDiv(TJvgReportItem(ComponentList[i]).Width, WP, WS);
+         TJvgReportItem(ComponentList[i]).Height :=
+            MulDiv(TJvgReportItem(ComponentList[i]).Height, HP, HS);
+         TJvgReportItem(ComponentList[i]).PenWidth :=
+            MulDiv(TJvgReportItem(ComponentList[i]).PenWidth, HP, HS);
+      END;
 
-    for i := 0 to ComponentList.Count - 1 do
-      with TJvgReportItem(ComponentList[i]) do
-      begin
-        PaintTo(Printer.Canvas);
-        if ContainOle then OLEContainer.PaintTo(Printer.Canvas.Handle, Left, Top);
-      end;
-    Printer.EndDoc;
+      FOR i := 0 TO ComponentList.Count - 1 DO
+         WITH TJvgReportItem(ComponentList[i]) DO
+         BEGIN
+            PaintTo(Printer.Canvas);
+            IF ContainOle THEN
+               OLEContainer.PaintTo(Printer.Canvas.Handle, Left, Top);
+         END;
+      Printer.EndDoc;
 
-    repeat Application.ProcessMessages;
-    until not TForm(OwnerWnd).Active;
-  finally
-    OwnerWnd.Free;
-  end;
-end;
+      REPEAT Application.ProcessMessages;
+      UNTIL NOT TForm(OwnerWnd).Active;
+   FINALLY
+      OwnerWnd.Free;
+   END;
+END;
 
-procedure TJvgReport.ClearReport;
-var
-  i: integer;
-begin
-  for i := 0 to ComponentList.Count - 1 do
-    TJvgReportItem(ComponentList[i]).Free;
-  ComponentList.Count := 0;
-end;
+PROCEDURE TJvgReport.ClearReport;
+VAR
+   i                          : integer;
+BEGIN
+   FOR i := 0 TO ComponentList.Count - 1 DO
+      TJvgReportItem(ComponentList[i]).Free;
+   ComponentList.Count := 0;
+END;
 
-procedure TJvgReport.CreateReport(ParentWnd: TWinControl; fNeedClearOwner: boolean);
-var
-  fs, fs2: TFileStream;
-  ms: TMemoryStream;
-  p: TParser;
-  c: char;
-  i: integer;
-  Compon: TComponent;
-  sName, sClassName: string;
+PROCEDURE TJvgReport.CreateReport(ParentWnd: TWinControl; fNeedClearOwner:
+   boolean);
+VAR
+   fs, fs2                    : TFileStream;
+   ms                         : TMemoryStream;
+   p                          : TParser;
+   c                          : char;
+   i                          : integer;
+   Compon                     : TComponent;
+   sName, sClassName          : STRING;
 
-  procedure N2T;
-  begin
-    p.NextToken;
-    p.NextToken;
-  end;
+   PROCEDURE N2T;
+   BEGIN
+      p.NextToken;
+      p.NextToken;
+   END;
 
-  procedure Create_Object(sClassName, sName: string);
-  var
-    B: TJvgReportItem;
-  begin
-    B := nil;
-    if sClassName = 'TJvgReportItem' then //...process only TJvgReportItem class
-    begin
-      B := TJvgReportItem.Create(OwnerWnd);
-      B.Report := self;
-    end;
-    if B = nil then exit;
-    ComponentList.Add(B);
-    c := p.NextToken;
-    while not p.TokenSymbolIs('end') do
-      with p do
-      begin
-        case c of
-          '+':
-            begin
-              p.NextToken;
-              b.Text := b.Text + TokenString;
-            end;
-          toSymbol:
-            begin
-              if TokenString = 'Left' then
-              begin
-                N2T;
-                b.Left := TokenInt;
-              end;
-              if TokenString = 'Top' then
-              begin
-                N2T;
-                b.Top := TokenInt;
-              end;
-              if TokenString = 'Width' then
-              begin
-                N2T;
-                b.Width := TokenInt;
-              end;
-              if TokenString = 'Height' then
-              begin
-                N2T;
-                b.Height := TokenInt;
-              end;
-              if TokenString = 'Text' then
-              begin
-                N2T;
-                b.Text := TokenString;
-              end;
-              if TokenString = 'BkColor' then
-              begin
-                N2T;
-                b.BkColor := TokenInt;
-              end;
-              if TokenString = 'BvColor' then
-              begin
-                N2T;
-                b.BvColor := TokenInt;
-              end;
-              if TokenString = 'Transparent' then
-              begin
-                N2T;
-                b.Transparent := TokenInt;
-              end;
-              if TokenString = 'Alignment' then
-              begin
-                N2T;
-                b.Alignment := TokenInt;
-              end;
-              if TokenString = 'SideLeft' then
-              begin
-                N2T;
-                b.SideLeft := TokenInt;
-              end;
-              if TokenString = 'SideTop' then
-              begin
-                N2T;
-                b.SideTop := TokenInt;
-              end;
-              if TokenString = 'SideRight' then
-              begin
-                N2T;
-                b.SideRight := TokenInt;
-              end;
-              if TokenString = 'SideBottom' then
-              begin
-                N2T;
-                b.SideBottom := TokenInt;
-              end;
-              if TokenString = 'PenStyle' then
-              begin
-                N2T;
-                b.PenStyle := TokenInt;
-              end;
-              if TokenString = 'PenWidth' then
-              begin
-                N2T;
-                b.PenWidth := TokenInt;
-              end;
-              if TokenString = 'CompName' then
-              begin
-                N2T;
-                b.CompName := TokenString;
-              end;
-              if TokenString = 'FName' then
-              begin
-                N2T;
-                b.FName := TokenString;
-              end;
-              if TokenString = 'FSize' then
-              begin
-                N2T;
-                b.FSize := TokenInt;
-              end;
-              if TokenString = 'FColor' then
-              begin
-                N2T;
-                b.FColor := TokenInt;
-              end;
-              if TokenString = 'FStyle' then
-              begin
-                N2T;
-                b.FStyle := TokenInt;
-              end;
-              if TokenString = 'OLELinkToFile' then
-              begin
-                N2T;
-                b.OLELinkToFile := TokenString;
-              end;
-              if TokenString = 'OLESizeMode' then
-              begin
-                N2T;
-                b.OLESizeMode := TokenInt;
-              end;
-              if TokenString = 'Fixed' then
-              begin
-                N2T;
-                b.Fixed := TokenInt;
-              end;
-            end;
-        end;
-        c := NextToken;
-      end;
+   PROCEDURE Create_Object(sClassName, sName: STRING);
+   VAR
+      B                       : TJvgReportItem;
+   BEGIN
+      B := NIL;
+      IF sClassName = 'TJvgReportItem' THEN  //...process only TJvgReportItem class
+      BEGIN
+         B := TJvgReportItem.Create(OwnerWnd);
+         B.Report := self;
+      END;
+      IF B = NIL THEN
+         exit;
+      ComponentList.Add(B);
+      c := p.NextToken;
+      WHILE NOT p.TokenSymbolIs('end') DO
+         WITH p DO
+         BEGIN
+            CASE c OF
+               '+':
+                  BEGIN
+                     p.NextToken;
+                     b.Text := b.Text + TokenString;
+                  END;
+               toSymbol:
+                  BEGIN
+                     IF TokenString = 'Left' THEN
+                     BEGIN
+                        N2T;
+                        b.Left := TokenInt;
+                     END;
+                     IF TokenString = 'Top' THEN
+                     BEGIN
+                        N2T;
+                        b.Top := TokenInt;
+                     END;
+                     IF TokenString = 'Width' THEN
+                     BEGIN
+                        N2T;
+                        b.Width := TokenInt;
+                     END;
+                     IF TokenString = 'Height' THEN
+                     BEGIN
+                        N2T;
+                        b.Height := TokenInt;
+                     END;
+                     IF TokenString = 'Text' THEN
+                     BEGIN
+                        N2T;
+                        b.Text := TokenString;
+                     END;
+                     IF TokenString = 'BkColor' THEN
+                     BEGIN
+                        N2T;
+                        b.BkColor := TokenInt;
+                     END;
+                     IF TokenString = 'BvColor' THEN
+                     BEGIN
+                        N2T;
+                        b.BvColor := TokenInt;
+                     END;
+                     IF TokenString = 'Transparent' THEN
+                     BEGIN
+                        N2T;
+                        b.Transparent := TokenInt;
+                     END;
+                     IF TokenString = 'Alignment' THEN
+                     BEGIN
+                        N2T;
+                        b.Alignment := TokenInt;
+                     END;
+                     IF TokenString = 'SideLeft' THEN
+                     BEGIN
+                        N2T;
+                        b.SideLeft := TokenInt;
+                     END;
+                     IF TokenString = 'SideTop' THEN
+                     BEGIN
+                        N2T;
+                        b.SideTop := TokenInt;
+                     END;
+                     IF TokenString = 'SideRight' THEN
+                     BEGIN
+                        N2T;
+                        b.SideRight := TokenInt;
+                     END;
+                     IF TokenString = 'SideBottom' THEN
+                     BEGIN
+                        N2T;
+                        b.SideBottom := TokenInt;
+                     END;
+                     IF TokenString = 'PenStyle' THEN
+                     BEGIN
+                        N2T;
+                        b.PenStyle := TokenInt;
+                     END;
+                     IF TokenString = 'PenWidth' THEN
+                     BEGIN
+                        N2T;
+                        b.PenWidth := TokenInt;
+                     END;
+                     IF TokenString = 'CompName' THEN
+                     BEGIN
+                        N2T;
+                        b.CompName := TokenString;
+                     END;
+                     IF TokenString = 'FName' THEN
+                     BEGIN
+                        N2T;
+                        b.FName := TokenString;
+                     END;
+                     IF TokenString = 'FSize' THEN
+                     BEGIN
+                        N2T;
+                        b.FSize := TokenInt;
+                     END;
+                     IF TokenString = 'FColor' THEN
+                     BEGIN
+                        N2T;
+                        b.FColor := TokenInt;
+                     END;
+                     IF TokenString = 'FStyle' THEN
+                     BEGIN
+                        N2T;
+                        b.FStyle := TokenInt;
+                     END;
+                     IF TokenString = 'OLELinkToFile' THEN
+                     BEGIN
+                        N2T;
+                        b.OLELinkToFile := TokenString;
+                     END;
+                     IF TokenString = 'OLESizeMode' THEN
+                     BEGIN
+                        N2T;
+                        b.OLESizeMode := TokenInt;
+                     END;
+                     IF TokenString = 'Fixed' THEN
+                     BEGIN
+                        N2T;
+                        b.Fixed := TokenInt;
+                     END;
+                  END;
+            END;
+            c := NextToken;
+         END;
 
-    B.Parent := ParentWnd;
-    try
-      B.ContainOLE := B.OLELinkToFile <> '';
-    except
-      Application.MessageBox('OLE: Linked object not found.', 'Error', MB_APPLMODAL or MB_OK or MB_ICONSTOP);
-    end;
-    B.Name := sName;
-    if B.CompName = '' then SetUnicalName(B);
-    AnalyzeParams(B, B.CompName);
-  end;
+      B.Parent := ParentWnd;
+      TRY
+         B.ContainOLE := B.OLELinkToFile <> '';
+      EXCEPT
+         Application.MessageBox('OLE: Linked object not found.', 'Error',
+            MB_APPLMODAL OR MB_OK OR MB_ICONSTOP);
+      END;
+      B.Name := sName;
+      IF B.CompName = '' THEN
+         SetUnicalName(B);
+      AnalyzeParams(B, B.CompName);
+   END;
 
-  procedure ClearOwner;
-  var
-    i: integer;
-  begin
-    //    ParamNames.Clear;
-    //    ParamMasks.Clear;
-    //    ParamValues.Clear;
-    //    ParamTypes.Clear;
-    ComponentList.Clear;
-    if Assigned(ParentWnd) then
-    begin
-      with ParentWnd do
-        for i := ControlCount - 1 downto 0 do
-          if Controls[i] is TJvgReportItem then RemoveControl(Controls[i]);
-      with OwnerWnd do
-        for i := ComponentCount - 1 downto 0 do
-        begin
-          if Components[i] is TJvgReportItem then
-          begin
-            Compon := Components[i];
-            RemoveComponent(Compon);
-            Compon.Free;
-          end;
-        end;
-    end;
-  end;
+   PROCEDURE ClearOwner;
+   VAR
+      i                       : integer;
+   BEGIN
+      //    ParamNames.Clear;
+      //    ParamMasks.Clear;
+      //    ParamValues.Clear;
+      //    ParamTypes.Clear;
+      ComponentList.Clear;
+      IF Assigned(ParentWnd) THEN
+      BEGIN
+         WITH ParentWnd DO
+            FOR i := ControlCount - 1 DOWNTO 0 DO
+               IF Controls[i] IS TJvgReportItem THEN
+                  RemoveControl(Controls[i]);
+         WITH OwnerWnd DO
+            FOR i := ComponentCount - 1 DOWNTO 0 DO
+            BEGIN
+               IF Components[i] IS TJvgReportItem THEN
+               BEGIN
+                  Compon := Components[i];
+                  RemoveComponent(Compon);
+                  Compon.Free;
+               END;
+            END;
+      END;
+   END;
 
-begin
-  ValidateWnds;
-  if fNeedClearOwner then
-    ClearOwner
-  else
-    ClearReport;
-  ms := TMemoryStream.Create;
-  FReportList.SaveToStream(ms);
-  ms.Position := 0;
-  p := TParser.Create(ms);
-  c := p.Token;
-  with p do
-    repeat
-      if TokenSymbolIs('object') then //...only noname objects!
-      begin
-        NextToken;
-        sClassName := TokenString;
-        try
-          Create_Object(sClassName, sName);
-        except
-          Application.MessageBox('Error reading component.', 'Error', MB_APPLMODAL or MB_OK or MB_ICONSTOP);
-        end;
-      end;
-      c := NextToken;
-    until c = toEOF;
+BEGIN
+   ValidateWnds;
+   IF fNeedClearOwner THEN
+      ClearOwner
+   ELSE
+      ClearReport;
+   ms := TMemoryStream.Create;
+   FReportList.SaveToStream(ms);
+   ms.Position := 0;
+   p := TParser.Create(ms);
+   c := p.Token;
+   WITH p DO
+      REPEAT
+         IF TokenSymbolIs('object') THEN //...only noname objects!
+         BEGIN
+            NextToken;
+            sClassName := TokenString;
+            TRY
+               Create_Object(sClassName, sName);
+            EXCEPT
+               Application.MessageBox('Error reading component.', 'Error',
+                  MB_APPLMODAL OR MB_OK OR MB_ICONSTOP);
+            END;
+         END;
+         c := NextToken;
+      UNTIL c = toEOF;
 
-  p.Free;
-  ms.Free;
-end;
+   p.Free;
+   ms.Free;
+END;
 
-function TJvgReport.AddComponent: TJvgReportItem;
-begin
-  //AnalyzeParams( ReportComponent );
-  ValidateWnds;
-  Result := TJvgReportItem.Create(OwnerWnd);
-  Result.Report := self;
-  SetUnicalName(Result);
-  Result.Parent := ParentWnd;
-  ComponentList.Add(Result);
-end;
+FUNCTION TJvgReport.AddComponent: TJvgReportItem;
+BEGIN
+   //AnalyzeParams( ReportComponent );
+   ValidateWnds;
+   Result := TJvgReportItem.Create(OwnerWnd);
+   Result.Report := self;
+   SetUnicalName(Result);
+   Result.Parent := ParentWnd;
+   ComponentList.Add(Result);
+END;
 
-procedure TJvgReport.SetUnicalName(laBevel: TJvgReportItem);
-var
-  i: integer;
+PROCEDURE TJvgReport.SetUnicalName(laBevel: TJvgReportItem);
+VAR
+   i                          : integer;
 
-  function ComponentExists(No: integer): boolean;
-  var
-    i: integer;
-  begin
-    Result := false;
-    for i := 0 to OwnerWnd.ComponentCount - 1 do
-      if OwnerWnd.Components[i] is TJvgReportItem then
-        if TJvgReportItem(OwnerWnd.Components[i]).CompName = 'Component' + IntToStr(No) then
-        begin
-          Result := true;
-          break;
-        end;
-  end;
-begin
-  i := 0;
-  repeat
-    inc(i);
-  until not ComponentExists(i);
-  laBevel.CompName := 'Component' + IntToStr(i);
-end;
+   FUNCTION ComponentExists(No: integer): boolean;
+   VAR
+      i                       : integer;
+   BEGIN
+      Result := false;
+      FOR i := 0 TO OwnerWnd.ComponentCount - 1 DO
+         IF OwnerWnd.Components[i] IS TJvgReportItem THEN
+            IF TJvgReportItem(OwnerWnd.Components[i]).CompName = 'Component' +
+               IntToStr(No) THEN
+            BEGIN
+               Result := true;
+               break;
+            END;
+   END;
+BEGIN
+   i := 0;
+   REPEAT
+      inc(i);
+   UNTIL NOT ComponentExists(i);
+   laBevel.CompName := 'Component' + IntToStr(i);
+END;
 
-procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
-var
-  ParamIndex, LastPos: integer;
-  SList: TStringList;
-  ParamType: TglRepParamType;
-  ParamText, ParamName, ParamMask, ParamValue: string;
+PROCEDURE TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: STRING);
+VAR
+   ParamIndex, LastPos        : integer;
+   SList                      : TStringList;
+   ParamType                  : TglRepParamType;
+   ParamText, ParamName, ParamMask, ParamValue: STRING;
 
-  function ExtractParam(Item: TJvgReportItem; var SrchPos: integer; var ParamName: string; var ParamType: TglRepParamType): boolean;
-  var
-    i, j, p: integer;
-    f: boolean;
-    Text: string;
-  begin
-    Result := false;
-    Text := Item.Text;
-    if Length(Text) = 0 then exit;
-    f := false;
-    for i := SrchPos to Length(Text) - 1 do
-      if Text[i] = '#' then
-      begin
-        f := true;
-        break;
-      end;
+   FUNCTION ExtractParam(Item: TJvgReportItem; VAR SrchPos: integer; VAR
+      ParamName: STRING; VAR ParamType: TglRepParamType): boolean;
+   VAR
+      i, j, p                 : integer;
+      f                       : boolean;
+      Text                    : STRING;
+   BEGIN
+      Result := false;
+      Text := Item.Text;
+      IF Length(Text) = 0 THEN
+         exit;
+      f := false;
+      FOR i := SrchPos TO Length(Text) - 1 DO
+         IF Text[i] = '#' THEN
+         BEGIN
+            f := true;
+            break;
+         END;
 
-    if not f then exit;
-    if Text[i - 1] = '{' then
-      ParamType := gptEdit
-    else if Text[i - 1] = '<' then
-      ParamType := gptRadio
-    else if Text[i - 1] = '[' then
-      ParamType := gptCheck
-    else
-      ParamType := gptUnknown;
+      IF NOT f THEN
+         exit;
+      IF Text[i - 1] = '{' THEN
+         ParamType := gptEdit
+      ELSE IF Text[i - 1] = '<' THEN
+         ParamType := gptRadio
+      ELSE IF Text[i - 1] = '[' THEN
+         ParamType := gptCheck
+      ELSE
+         ParamType := gptUnknown;
 
-    if not f or (ParamType = gptUnknown) then exit;
-    SrchPos := i + 1;
-    f := false;
-    for i := SrchPos to Length(Text) do
-      if (Text[i] = '}') or (Text[i] = ']') or (Text[i] = '>') then
-      begin
-        f := true;
-        break;
-      end;
-    if not f then exit;
-    ParamName := copy(Text, SrchPos, i - SrchPos);
+      IF NOT f OR (ParamType = gptUnknown) THEN
+         exit;
+      SrchPos := i + 1;
+      f := false;
+      FOR i := SrchPos TO Length(Text) DO
+         IF (Text[i] = '}') OR (Text[i] = ']') OR (Text[i] = '>') THEN
+         BEGIN
+            f := true;
+            break;
+         END;
+      IF NOT f THEN
+         exit;
+      ParamName := copy(Text, SrchPos, i - SrchPos);
 
-    j := ParamNames.IndexOf(ParamName);
-    if j <> -1 then
-      Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[j] + copy(Text, i + 1, 255);
+      j := ParamNames.IndexOf(ParamName);
+      IF j <> -1 THEN
+         Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[j] +
+            copy(Text, i + 1, 255);
 
-    Result := true;
-  end;
-begin
+      Result := true;
+   END;
+BEGIN
 
-  LastPos := 0;
-  SList := TStringList.Create;
-  repeat
+   LastPos := 0;
+   SList := TStringList.Create;
+   REPEAT
 
-    if ExtractParam(Item, LastPos, ParamText, ParamType) then
-    begin
-      ParamMask := '';
-      ParamValue := '';
-      ParamTypes.Add(Pointer(ParamType));
-      if ParamType = gptEdit then
-      begin
-        if ParamText = '' then ParamText := DefName;
-        SList.CommaText := ParamText;
-        if SList.Count = 0 then continue;
-        ParamName := SList[0];
-        if SList.Count > 1 then ParamMask := SList[1];
-        if SList.Count > 2 then ParamValue := SList[2];
-      end
-      else
-        ParamName := ParamText;
-      if ParamNames.IndexOf(ParamName) <> -1 then continue; //...already exists
-      ParamNames.Add(ParamName);
-      ParamMasks.Add(ParamMask);
-      ParamValues.Add(ParamValue);
-      // else ParamValues[ParamIndex] := sParamValue;
-    end
-    else
-      break;
-  until false;
-  SList.Free;
-end;
+      IF ExtractParam(Item, LastPos, ParamText, ParamType) THEN
+      BEGIN
+         ParamMask := '';
+         ParamValue := '';
+         ParamTypes.Add(Pointer(ParamType));
+         IF ParamType = gptEdit THEN
+         BEGIN
+            IF ParamText = '' THEN
+               ParamText := DefName;
+            SList.CommaText := ParamText;
+            IF SList.Count = 0 THEN
+               continue;
+            ParamName := SList[0];
+            IF SList.Count > 1 THEN
+               ParamMask := SList[1];
+            IF SList.Count > 2 THEN
+               ParamValue := SList[2];
+         END
+         ELSE
+            ParamName := ParamText;
+         IF ParamNames.IndexOf(ParamName) <> -1 THEN
+            continue;                   //...already exists
+         ParamNames.Add(ParamName);
+         ParamMasks.Add(ParamMask);
+         ParamValues.Add(ParamValue);
+         // else ParamValues[ParamIndex] := sParamValue;
+      END
+      ELSE
+         break;
+   UNTIL false;
+   SList.Free;
+END;
 
-function TJvgReport.SetParam(const sParamName, sParamValue: string): boolean;
-var
-  i: integer;
-begin
-  Result := false;
-  i := ParamNames.IndexOf(sParamName);
-  if i <> -1 then
-  begin
-    Result := true;
-    ParamValues[i] := sParamValue;
-  end;
-end;
+FUNCTION TJvgReport.SetParam(CONST sParamName, sParamValue: STRING): boolean;
+VAR
+   i                          : integer;
+BEGIN
+   Result := false;
+   i := ParamNames.IndexOf(sParamName);
+   IF i <> -1 THEN
+   BEGIN
+      Result := true;
+      ParamValues[i] := sParamValue;
+   END;
+END;
 
-function TJvgReport.GetParam(const sParamName: string; var sParamValue: string): boolean;
-var
-  i, ParamIndex: integer;
-begin
-  ParamIndex := ParamNames.IndexOf(sParamName);
-  if ParamIndex = -1 then
-    Result := false
-  else
-  begin
-    Result := true;
-    sParamValue := ParamValues[ParamIndex];
-  end;
-end;
+FUNCTION TJvgReport.GetParam(CONST sParamName: STRING; VAR sParamValue: STRING):
+   boolean;
+VAR
+   i, ParamIndex              : integer;
+BEGIN
+   ParamIndex := ParamNames.IndexOf(sParamName);
+   IF ParamIndex = -1 THEN
+      Result := false
+   ELSE
+   BEGIN
+      Result := true;
+      sParamValue := ParamValues[ParamIndex];
+   END;
+END;
 
-procedure TJvgReport.ValidateWnds;
-begin
-  {$IFDEF COMPILER3_UP}OwnerWnd := ParentWnd;
-  {$ENDIF}
-  //  if (OwnerWnd=nil)or(ParentWnd=nil) then raise Exception.Create('TJvgReport: Unassigned Owner or Parent window.');
-end;
+PROCEDURE TJvgReport.ValidateWnds;
+BEGIN
+   {$IFDEF COMPILER3_UP}OwnerWnd := ParentWnd;
+   {$ENDIF}
+   //  if (OwnerWnd=nil)or(ParentWnd=nil) then raise Exception.Create('TJvgReport: Unassigned Owner or Parent window.');
+END;
 
-function TJvgReport.GetReportText: TStringList;
-begin
-  Result := FReportList;
-end;
+FUNCTION TJvgReport.GetReportText: TStringList;
+BEGIN
+   Result := FReportList;
+END;
 
-procedure TJvgReport.SetReportText(Value: TStringList);
-begin
-  FReportList.Assign(Value);
-end;
+PROCEDURE TJvgReport.SetReportText(Value: TStringList);
+BEGIN
+   FReportList.Assign(Value);
+END;
 
-end.
+END.
+

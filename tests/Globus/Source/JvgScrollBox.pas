@@ -62,7 +62,6 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgScrollBox]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _

@@ -31,285 +31,304 @@ Known Issues:
  TBevel Delphi component with gradient filling and advanced  borders
  drawing.}
 
-unit JvgBevel;
+UNIT JvgBevel;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, ExtCtrls;
-type
+USES
+   Windows,
+   Messages,
+   Classes,
+   Controls,
+   JVComponent,
+   Graphics,
+   JvgTypes,
+   JvgCommClasses,
+   JvgUtils,
+   ExtCtrls;
+TYPE
 
-  TJvgBevel = class(TGraphicControl)
-  private
-    FBevelInner: TPanelBevel;
-    FBevelOuter: TPanelBevel;
-    FBevelSides: TglSides;
-    FBevelBold: boolean;
-    FBevelPenStyle: TPenStyle;
-    FBevelPenWidth: word;
-    FInteriorOffset: word;
-    FGradient: TJvgGradient;
-    FVertLines: TJvgBevelLines;
-    FHorLines: TJvgBevelLines;
-    //    FMouseSentencive	  : boolean;
-    FExternalCanvas: TCanvas;
-    procedure OnSmthChanged(Sender: TObject);
+   TJvgBevel = CLASS(TJvGraphicControl)
+   PRIVATE
+      FBevelInner: TPanelBevel;
+      FBevelOuter: TPanelBevel;
+      FBevelSides: TglSides;
+      FBevelBold: boolean;
+      FBevelPenStyle: TPenStyle;
+      FBevelPenWidth: word;
+      FInteriorOffset: word;
+      FGradient: TJvgGradient;
+      FVertLines: TJvgBevelLines;
+      FHorLines: TJvgBevelLines;
+      //    FMouseSentencive	  : boolean;
+      FExternalCanvas: TCanvas;
+      PROCEDURE OnSmthChanged(Sender: TObject);
 
-    procedure SetBevelInner(Value: TPanelBevel);
-    procedure SetBevelOuter(Value: TPanelBevel);
-    procedure SetBevelSides(Value: TglSides);
-    procedure SetBevelBold(Value: boolean);
-    procedure SetBevelPenStyle(Value: TPenStyle);
-    procedure SetBevelPenWidth(Value: word);
-    procedure SetInteriorOffset(Value: word);
+      PROCEDURE SetBevelInner(Value: TPanelBevel);
+      PROCEDURE SetBevelOuter(Value: TPanelBevel);
+      PROCEDURE SetBevelSides(Value: TglSides);
+      PROCEDURE SetBevelBold(Value: boolean);
+      PROCEDURE SetBevelPenStyle(Value: TPenStyle);
+      PROCEDURE SetBevelPenWidth(Value: word);
+      PROCEDURE SetInteriorOffset(Value: word);
 
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-  protected
-  public
-    Ctrl3D: boolean;
-    procedure Paint; override;
-    property ExternalCanvas: TCanvas read FExternalCanvas write FExternalCanvas;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Loaded; override;
+      PROCEDURE CMMouseEnter(VAR Message: TMessage); MESSAGE CM_MOUSEENTER;
+      PROCEDURE CMMouseLeave(VAR Message: TMessage); MESSAGE CM_MOUSELEAVE;
+   PROTECTED
+   PUBLIC
+      Ctrl3D: boolean;
+      PROCEDURE Paint; OVERRIDE;
+      PROPERTY ExternalCanvas: TCanvas READ FExternalCanvas WRITE
+         FExternalCanvas;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
+      PROCEDURE Loaded; OVERRIDE;
 
-  published
-    {$IFDEF COMPILER5_UP}
-    property Anchors;
-    {$ENDIF}
-    property Align;
-    property ParentShowHint;
-    property ShowHint;
-    property Visible;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
-    property DragCursor;
-    property DragMode;
+   PUBLISHED
+      {$IFDEF COMPILER5_UP}
+      PROPERTY Anchors;
+      {$ENDIF}
+      PROPERTY Align;
+      PROPERTY ParentShowHint;
+      PROPERTY ShowHint;
+      PROPERTY Visible;
+      PROPERTY OnClick;
+      PROPERTY OnDblClick;
+      PROPERTY OnDragDrop;
+      PROPERTY OnDragOver;
+      PROPERTY OnEndDrag;
+      PROPERTY OnMouseDown;
+      PROPERTY OnMouseMove;
+      PROPERTY OnMouseUp;
+      PROPERTY OnStartDrag;
+      PROPERTY DragCursor;
+      PROPERTY DragMode;
 
-    property Canvas;
-    property BevelInner: TPanelBevel read FBevelInner write SetBevelInner
-      default bvLowered;
-    property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter
-      default bvNone;
-    property BevelSides: TglSides read FBevelSides write SetBevelSides
-      default [fsdLeft, fsdTop, fsdRight, fsdBottom];
-    property BevelBold: boolean read FBevelBold write SetBevelBold
-      default false;
-    property BevelPenStyle: TPenStyle read FBevelPenStyle write SetBevelPenStyle
-      default psSolid;
-    property BevelPenWidth: word read FBevelPenWidth write SetBevelPenWidth
-      default 1;
-    property InteriorOffset: word read FInteriorOffset write SetInteriorOffset
-      default 0;
-    property Gradient: TJvgGradient read FGradient write FGradient;
-    property VertLines: TJvgBevelLines read FVertLines write FVertLines;
-    property HorLines: TJvgBevelLines read FHorLines write FHorLines;
-  end;
+      PROPERTY Canvas;
+      PROPERTY BevelInner: TPanelBevel READ FBevelInner WRITE SetBevelInner
+         DEFAULT bvLowered;
+      PROPERTY BevelOuter: TPanelBevel READ FBevelOuter WRITE SetBevelOuter
+         DEFAULT bvNone;
+      PROPERTY BevelSides: TglSides READ FBevelSides WRITE SetBevelSides
+         DEFAULT [fsdLeft, fsdTop, fsdRight, fsdBottom];
+      PROPERTY BevelBold: boolean READ FBevelBold WRITE SetBevelBold
+         DEFAULT false;
+      PROPERTY BevelPenStyle: TPenStyle READ FBevelPenStyle WRITE
+         SetBevelPenStyle
+         DEFAULT psSolid;
+      PROPERTY BevelPenWidth: word READ FBevelPenWidth WRITE SetBevelPenWidth
+         DEFAULT 1;
+      PROPERTY InteriorOffset: word READ FInteriorOffset WRITE SetInteriorOffset
+         DEFAULT 0;
+      PROPERTY Gradient: TJvgGradient READ FGradient WRITE FGradient;
+      PROPERTY VertLines: TJvgBevelLines READ FVertLines WRITE FVertLines;
+      PROPERTY HorLines: TJvgBevelLines READ FHorLines WRITE FHorLines;
+   END;
 
-procedure Register;
+PROCEDURE Register;
 
-implementation
+IMPLEMENTATION
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-  RegisterComponents('GL Controls', [TJvgBevel]);
-end;
+PROCEDURE Register;
+BEGIN
+
+END;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
-constructor TJvgBevel.Create(AOwner: TComponent);
-begin
-  inherited;
-  FGradient := TJvgGradient.Create;
-  FVertLines := TJvgBevelLines.Create;
-  FHorLines := TJvgBevelLines.Create;
-  //..defaults
-  Width := 50;
-  Height := 50;
-  FBevelInner := bvLowered;
-  //  FBevelOuter := bvNone;
-  FBevelSides := [fsdLeft, fsdTop, fsdRight, fsdBottom];
-  FBevelPenStyle := psSolid;
-  FBevelPenWidth := 1;
-  Ctrl3D := true;
-  FGradient.OnChanged := OnSmthChanged;
-  FVertLines.OnChanged := OnSmthChanged;
-  FHorLines.OnChanged := OnSmthChanged;
-end;
+CONSTRUCTOR TJvgBevel.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   FGradient := TJvgGradient.Create;
+   FVertLines := TJvgBevelLines.Create;
+   FHorLines := TJvgBevelLines.Create;
+   //..defaults
+   Width := 50;
+   Height := 50;
+   FBevelInner := bvLowered;
+   //  FBevelOuter := bvNone;
+   FBevelSides := [fsdLeft, fsdTop, fsdRight, fsdBottom];
+   FBevelPenStyle := psSolid;
+   FBevelPenWidth := 1;
+   Ctrl3D := true;
+   FGradient.OnChanged := OnSmthChanged;
+   FVertLines.OnChanged := OnSmthChanged;
+   FHorLines.OnChanged := OnSmthChanged;
+END;
 
-destructor TJvgBevel.Destroy;
-begin
-  Gradient.Free;
-  FVertLines.Free;
-  FHorLines.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgBevel.Destroy;
+BEGIN
+   Gradient.Free;
+   FVertLines.Free;
+   FHorLines.Free;
+   INHERITED;
+END;
 
-procedure TJvgBevel.Paint;
-var
-  r, r_: TRect;
-  BoxSides: TglSides;
-  TargetCanvas: TCanvas;
+PROCEDURE TJvgBevel.Paint;
+VAR
+   r, r_                      : TRect;
+   BoxSides                   : TglSides;
+   TargetCanvas               : TCanvas;
 
-  procedure DrawLines(r_: TRect; Direction: TglLinesDir; Lines: TJvgBevelLines);
-  var
-    i: integer;
-  begin
-    if Direction = fldVertical then
-    begin
-      if Ctrl3D then
-        BoxSides := [fsdLeft, fsdRight]
-      else
-        BoxSides := [fsdLeft];
-      if Lines.IgnoreBorder then
-      begin
-        r_.top := r.top;
-        r_.bottom := r.bottom;
-      end;
-    end
-    else
-    begin
-      if Ctrl3D then
-        BoxSides := [fsdTop, fsdBottom]
-      else
-        BoxSides := [fsdTop];
-      if Lines.IgnoreBorder then
-      begin
-        r_.left := r.left;
-        r_.right := r.right;
-      end;
-    end;
+   PROCEDURE DrawLines(r_: TRect; Direction: TglLinesDir; Lines:
+      TJvgBevelLines);
+   VAR
+      i                       : integer;
+   BEGIN
+      IF Direction = fldVertical THEN
+      BEGIN
+         IF Ctrl3D THEN
+            BoxSides := [fsdLeft, fsdRight]
+         ELSE
+            BoxSides := [fsdLeft];
+         IF Lines.IgnoreBorder THEN
+         BEGIN
+            r_.top := r.top;
+            r_.bottom := r.bottom;
+         END;
+      END
+      ELSE
+      BEGIN
+         IF Ctrl3D THEN
+            BoxSides := [fsdTop, fsdBottom]
+         ELSE
+            BoxSides := [fsdTop];
+         IF Lines.IgnoreBorder THEN
+         BEGIN
+            r_.left := r.left;
+            r_.right := r.right;
+         END;
+      END;
 
-    for i := 1 to Lines.Count do
-    begin
-      case Direction of
-        fldVertical:
-          begin
-            r_.left := MulDiv(i, Width, Lines.Count + 1);
-            r_.Right := r_.Left + Lines.Thickness + integer(Lines.Bold);
-          end;
-      else {fldHorizontal:}
-        begin
-          r_.Top := MulDiv(i, Height, Lines.Count + 1);
-          //	  if i = 1 then dec( r_.Top, Lines.Thickness );
-          r_.Bottom := r_.Top + Lines.Thickness + integer(Lines.Bold);
-        end;
-      end;
-      {$IFDEF COMPILER5_UP}
-      if Lines.Style = bvSpace then
-        BoxSides := [fsdLeft, fsdTop];
-      {$ENDIF}
+      FOR i := 1 TO Lines.Count DO
+      BEGIN
+         CASE Direction OF
+            fldVertical:
+               BEGIN
+                  r_.left := MulDiv(i, Width, Lines.Count + 1);
+                  r_.Right := r_.Left + Lines.Thickness + integer(Lines.Bold);
+               END;
+         ELSE                           {fldHorizontal:}
+            BEGIN
+               r_.Top := MulDiv(i, Height, Lines.Count + 1);
+               //	  if i = 1 then dec( r_.Top, Lines.Thickness );
+               r_.Bottom := r_.Top + Lines.Thickness + integer(Lines.Bold);
+            END;
+         END;
+         {$IFDEF COMPILER5_UP}
+         IF Lines.Style = bvSpace THEN
+            BoxSides := [fsdLeft, fsdTop];
+         {$ENDIF}
 
-      DrawBoxEx(TargetCanvas.Handle, r_, BoxSides, Lines.Style, bvNone,
-        Lines.Bold, 0, true);
-    end;
-  end;
-begin
-  if Assigned(ExternalCanvas) then
-    TargetCanvas := ExternalCanvas
-  else
-    TargetCanvas := Canvas;
-  r := ClientRect;
-  InflateRect(r, -FInteriorOffset, -FInteriorOffset);
-  GradientBox(TargetCanvas.handle, r, Gradient,
-    integer(FBevelPenStyle), FBevelPenWidth);
+         DrawBoxEx(TargetCanvas.Handle, r_, BoxSides, Lines.Style, bvNone,
+            Lines.Bold, 0, true);
+      END;
+   END;
+BEGIN
+   IF Assigned(ExternalCanvas) THEN
+      TargetCanvas := ExternalCanvas
+   ELSE
+      TargetCanvas := Canvas;
+   r := ClientRect;
+   InflateRect(r, -FInteriorOffset, -FInteriorOffset);
+   GradientBox(TargetCanvas.handle, r, Gradient,
+      integer(FBevelPenStyle), FBevelPenWidth);
 
-  r := ClientRect;
-  dec(r.right);
-  dec(r.bottom);
-  TargetCanvas.Pen.Width := FBevelPenWidth;
-  TargetCanvas.Pen.Style := FBevelPenStyle;
-  r_ := DrawBoxEx(TargetCanvas.Handle, r, BevelSides, BevelInner, BevelOuter,
-    FBevelBold, 0, true);
+   r := ClientRect;
+   dec(r.right);
+   dec(r.bottom);
+   TargetCanvas.Pen.Width := FBevelPenWidth;
+   TargetCanvas.Pen.Style := FBevelPenStyle;
+   r_ := DrawBoxEx(TargetCanvas.Handle, r, BevelSides, BevelInner, BevelOuter,
+      FBevelBold, 0, true);
 
-  DrawLines(r_, fldHorizontal, HorLines);
-  DrawLines(r_, fldVertical, VertLines);
-end;
+   DrawLines(r_, fldHorizontal, HorLines);
+   DrawLines(r_, fldVertical, VertLines);
+END;
 
-procedure TJvgBevel.CMMouseEnter(var Message: TMessage);
-begin
-  inherited;
-end;
+PROCEDURE TJvgBevel.CMMouseEnter(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+END;
 
-procedure TJvgBevel.CMMouseLeave(var Message: TMessage);
-begin
-  inherited;
-end;
+PROCEDURE TJvgBevel.CMMouseLeave(VAR Message: TMessage);
+BEGIN
+   INHERITED;
+END;
 
-procedure TJvgBevel.OnSmthChanged(Sender: TObject);
-begin
-  Repaint;
-end;
+PROCEDURE TJvgBevel.OnSmthChanged(Sender: TObject);
+BEGIN
+   Repaint;
+END;
 //...______________________________________________PROPERTIES METHODS
 
-procedure TJvgBevel.SetBevelOuter(Value: TPanelBevel);
+PROCEDURE TJvgBevel.SetBevelOuter(Value: TPanelBevel);
 //var r: TRect;
-begin
-  if FBevelOuter = Value then exit;
-  //  r:=ClientRect; InflateRect( r, -5, -5 );
-  FBevelOuter := Value;
-  Invalidate; // ValidateRect( canvas.handle, @r );
-end;
+BEGIN
+   IF FBevelOuter = Value THEN
+      exit;
+   //  r:=ClientRect; InflateRect( r, -5, -5 );
+   FBevelOuter := Value;
+   Invalidate;                          // ValidateRect( canvas.handle, @r );
+END;
 
-procedure TJvgBevel.SetBevelInner(Value: TPanelBevel);
+PROCEDURE TJvgBevel.SetBevelInner(Value: TPanelBevel);
 //var r: TRect;
-begin
-  if FBevelInner = Value then exit;
-  //  r:=ClientRect; InflateRect( r, -5, -5 );
-  FBevelInner := Value;
-  Invalidate; //ValidateRect( canvas.handle, @r );
-end;
+BEGIN
+   IF FBevelInner = Value THEN
+      exit;
+   //  r:=ClientRect; InflateRect( r, -5, -5 );
+   FBevelInner := Value;
+   Invalidate;                          //ValidateRect( canvas.handle, @r );
+END;
 
-procedure TJvgBevel.SetBevelSides(Value: TglSides);
-begin
-  if FBevelSides = Value then exit;
-  FBevelSides := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgBevel.SetBevelSides(Value: TglSides);
+BEGIN
+   IF FBevelSides = Value THEN
+      exit;
+   FBevelSides := Value;
+   Invalidate;
+END;
 
-procedure TJvgBevel.SetBevelBold(Value: boolean);
-begin
-  if FBevelBold = Value then exit;
-  FBevelBold := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgBevel.SetBevelBold(Value: boolean);
+BEGIN
+   IF FBevelBold = Value THEN
+      exit;
+   FBevelBold := Value;
+   Invalidate;
+END;
 
-procedure TJvgBevel.SetBevelPenStyle(Value: TPenStyle);
-begin
-  if FBevelPenStyle = Value then exit;
-  FBevelPenStyle := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgBevel.SetBevelPenStyle(Value: TPenStyle);
+BEGIN
+   IF FBevelPenStyle = Value THEN
+      exit;
+   FBevelPenStyle := Value;
+   Invalidate;
+END;
 
-procedure TJvgBevel.SetBevelPenWidth(Value: word);
-begin
-  if FBevelPenWidth = Value then exit;
-  FBevelPenWidth := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgBevel.SetBevelPenWidth(Value: word);
+BEGIN
+   IF FBevelPenWidth = Value THEN
+      exit;
+   FBevelPenWidth := Value;
+   Invalidate;
+END;
 
-procedure TJvgBevel.SetInteriorOffset(Value: word);
-begin
-  if FInteriorOffset = Value then exit;
-  FInteriorOffset := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgBevel.SetInteriorOffset(Value: word);
+BEGIN
+   IF FInteriorOffset = Value THEN
+      exit;
+   FInteriorOffset := Value;
+   Invalidate;
+END;
 
-procedure TJvgBevel.Loaded;
-begin
-  inherited;
-  if FGradient.Active then
-    ControlStyle := ControlStyle + [csOpaque];
-end;
+PROCEDURE TJvgBevel.Loaded;
+BEGIN
+   INHERITED;
+   IF FGradient.Active THEN
+      ControlStyle := ControlStyle + [csOpaque];
+END;
 
-end.
+END.
+

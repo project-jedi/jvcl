@@ -67,7 +67,6 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgShade]);
 end;
 //*****************************************_____________LowLevel METHODS
 //________________________________________________________

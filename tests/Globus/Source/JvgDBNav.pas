@@ -34,7 +34,6 @@ Known Issues:
 unit JvgDBNav;
 
 interface
-{$I glDEF.INC}
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
   JvgUtils, DBCtrls;

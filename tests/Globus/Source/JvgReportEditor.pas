@@ -49,6 +49,7 @@ USES
    {$ELSE}
    DsgnIntf,
    {$ENDIF COMPILER6_UP}
+   JvComponent,
 
    Spin,
    JvgReportParamEditorForm,
@@ -62,7 +63,8 @@ USES
    Forms,
    Classes,
    Sysutils,
-   graphics{$IFDEF COMPILER5_UP},
+   graphics
+   {$IFDEF COMPILER5_UP},
    Imglist{$ENDIF};
 
 TYPE
@@ -79,7 +81,7 @@ TYPE
       FUNCTION GetVerbCount: Integer; OVERRIDE;
    END;
 
-   TJvgReportEditor = CLASS(TComponent)
+   TJvgReportEditor = CLASS(TJvComponent)
       FReport: TJvgReport;
    PROTECTED
       PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);

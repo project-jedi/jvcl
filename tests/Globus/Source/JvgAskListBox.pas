@@ -37,7 +37,6 @@ Known Issues:
 unit JvgAskListBox;
 
 interface
-{$I glDEF.INC}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, commctrl, ExtCtrls, JvgTypes, JvgCommClasses;

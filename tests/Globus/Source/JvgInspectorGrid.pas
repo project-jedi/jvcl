@@ -136,7 +136,7 @@ uses JvgUtils;
 
 procedure Register;
 begin
-  RegisterComponents('Gl Controls', [TJvgInspectorGrid]);
+//  RegisterComponents('Gl Controls', [TJvgInspectorGrid]);
 end;
 
 { TJvgGridItems }

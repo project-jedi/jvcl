@@ -162,7 +162,6 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgGroupBox]);
 end;
 //____________________________________________________ Methods _
 

@@ -30,7 +30,6 @@ Known Issues:
 unit JvgBitBtn;
 
 interface
-{$I glDEF.INC}
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
   JvgUtils, ExtCtrls, buttons;

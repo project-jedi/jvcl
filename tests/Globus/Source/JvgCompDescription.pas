@@ -38,14 +38,14 @@ USES classes,
    {$ELSE}
    DsgnIntf,
    {$ENDIF COMPILER6_UP}
-
+   JVComponent,
    TypInfo;
 
 TYPE
    TJvgPropInfos = CLASS;
    TJvgPropInform = CLASS;
 
-   TJvgComponentDescription = CLASS(TComponent)
+   TJvgComponentDescription = CLASS(TJvComponent)
    PRIVATE
       FPropInfos: TJvgPropInfos;
       FNote: STRING;
@@ -72,7 +72,7 @@ TYPE
       FUNCTION Add: TJvgPropInform;
       FUNCTION Insert(Index: Integer): TJvgPropInform;
       PROPERTY Items[Index: Integer]: TJvgPropInform READ GetItem WRITE SetItem;
-         DEFAULT;
+      DEFAULT;
    END;
 
    TJvgPropInform = CLASS(TCollectionItem)

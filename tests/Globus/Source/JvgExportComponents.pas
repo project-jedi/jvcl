@@ -27,591 +27,638 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgExportComponents;
+UNIT JvgExportComponents;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, db, dbtables;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   JVComponent,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   db,
+   dbtables;
 
-type
-  TglExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
-  TGetCaptionEvent = procedure(Sender: TObject; var Caption: string) of object;
-  TExportRecordEvent = procedure(Sender: TObject; var AllowExport: boolean) of object;
-  TExportFieldEvent = procedure(Sender: TObject; const Field: TField; var FieldValue: string) of object;
-  TGetLineFontEvent = procedure(Sender: TObject; LineNo: integer; const Value: string; Font: TFont) of object;
+TYPE
+   TglExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
+   TGetCaptionEvent = PROCEDURE(Sender: TObject; VAR Caption: STRING) OF OBJECT;
+   TExportRecordEvent = PROCEDURE(Sender: TObject; VAR AllowExport: boolean) OF
+      OBJECT;
+   TExportFieldEvent = PROCEDURE(Sender: TObject; CONST Field: TField; VAR
+      FieldValue: STRING) OF OBJECT;
+   TGetLineFontEvent = PROCEDURE(Sender: TObject; LineNo: integer; CONST Value:
+      STRING; Font: TFont) OF OBJECT;
 
-  EJvgExportException = class(Exception)
-  end;
+   EJvgExportException = CLASS(Exception)
+   END;
 
-  TJvgCommonExport = class(TComponent)
-  private
-    FSaveToFileName: string;
-    FDataSet: TDataSet;
-    FOnExportField: TExportFieldEvent;
-    FOnExportRecord: TExportRecordEvent;
-    FOnGetCaption: TGetCaptionEvent;
-    FCaptions: TglExportCaptions;
-    FTransliterateRusToEng: boolean;
-    FMaxFieldSize: integer;
-    procedure SetCaptions(const Value: TglExportCaptions);
-    procedure SetDataSet(const Value: TDataSet);
-    procedure SetOnExportField(const Value: TExportFieldEvent);
-    procedure SetOnExportRecord(const Value: TExportRecordEvent);
-    procedure SetOnGetCaption(const Value: TGetCaptionEvent);
-    procedure SetSaveToFileName(const Value: string);
-    procedure SetMaxFieldSize(const Value: integer);
-    procedure SetTransliterateRusToEng(const Value: boolean);
-    { Private declarations }
-  protected
-    function GetFieldValue(const Field: TField): string;
-  public
-    procedure Execute; virtual;
-  protected
-    property DataSet: TDataSet read FDataSet write SetDataSet;
-    property Captions: TglExportCaptions read FCaptions write SetCaptions;
-    property SaveToFileName: string read FSaveToFileName write SetSaveToFileName;
-    {$IFDEF COMPILER5_UP}
-    property TransliterateRusToEng: boolean read FTransliterateRusToEng write SetTransliterateRusToEng;
-    {$ENDIF}
-    property MaxFieldSize: integer read FMaxFieldSize write SetMaxFieldSize;
+   TJvgCommonExport = CLASS(TJvComponent)
+   PRIVATE
+      FSaveToFileName: STRING;
+      FDataSet: TDataSet;
+      FOnExportField: TExportFieldEvent;
+      FOnExportRecord: TExportRecordEvent;
+      FOnGetCaption: TGetCaptionEvent;
+      FCaptions: TglExportCaptions;
+      FTransliterateRusToEng: boolean;
+      FMaxFieldSize: integer;
+      PROCEDURE SetCaptions(CONST Value: TglExportCaptions);
+      PROCEDURE SetDataSet(CONST Value: TDataSet);
+      PROCEDURE SetOnExportField(CONST Value: TExportFieldEvent);
+      PROCEDURE SetOnExportRecord(CONST Value: TExportRecordEvent);
+      PROCEDURE SetOnGetCaption(CONST Value: TGetCaptionEvent);
+      PROCEDURE SetSaveToFileName(CONST Value: STRING);
+      PROCEDURE SetMaxFieldSize(CONST Value: integer);
+      PROCEDURE SetTransliterateRusToEng(CONST Value: boolean);
+      { Private declarations }
+   PROTECTED
+      FUNCTION GetFieldValue(CONST Field: TField): STRING;
+   PUBLIC
+      PROCEDURE Execute; VIRTUAL;
+   PROTECTED
+      PROPERTY DataSet: TDataSet READ FDataSet WRITE SetDataSet;
+      PROPERTY Captions: TglExportCaptions READ FCaptions WRITE SetCaptions;
+      PROPERTY SaveToFileName: STRING READ FSaveToFileName WRITE
+         SetSaveToFileName;
+      {$IFDEF COMPILER5_UP}
+      PROPERTY TransliterateRusToEng: boolean READ FTransliterateRusToEng WRITE
+         SetTransliterateRusToEng;
+      {$ENDIF}
+      PROPERTY MaxFieldSize: integer READ FMaxFieldSize WRITE SetMaxFieldSize;
 
-    property OnGetCaption: TGetCaptionEvent read FOnGetCaption write SetOnGetCaption;
-    property OnExportRecord: TExportRecordEvent read FOnExportRecord write SetOnExportRecord;
-    property OnExportField: TExportFieldEvent read FOnExportField write SetOnExportField;
-  end;
+      PROPERTY OnGetCaption: TGetCaptionEvent READ FOnGetCaption WRITE
+         SetOnGetCaption;
+      PROPERTY OnExportRecord: TExportRecordEvent READ FOnExportRecord WRITE
+         SetOnExportRecord;
+      PROPERTY OnExportField: TExportFieldEvent READ FOnExportField WRITE
+         SetOnExportField;
+   END;
 
-  TJvgExportExcel = class(TJvgCommonExport)
-  private
-    FHeader: TStrings;
-    FFooter: TStrings;
-    FBackgroundPicture: TFileName;
-    FAutoColumnFit: boolean;
-    FExcelVisible: boolean;
-    FCloseExcel: boolean;
-    FOnGetFooterLineFont: TGetLineFontEvent;
-    FOnGetHeaderLineFont: TGetLineFontEvent;
-    FSubHeader: TStrings;
-    FSubHeaderFont: TFont;
-    FHeaderFont: TFont;
-    FFooterFont: TFont;
-    FOnGetSubHeaderLineFont: TGetLineFontEvent;
-    procedure SetHeader(const Value: TStrings);
-    procedure SetFooter(const Value: TStrings);
-    procedure SetBackgroundPicture(const Value: TFileName);
-    procedure SetAutoColumnFit(const Value: boolean);
-    procedure SetExcelVisible(const Value: boolean);
-    procedure SetCloseExcel(const Value: boolean);
-    procedure SetOnGetFooterLineFont(const Value: TGetLineFontEvent);
-    procedure SetOnGetHeaderLineFont(const Value: TGetLineFontEvent);
-    procedure SetSubHeader(const Value: TStrings);
-    procedure SetFooterFont(const Value: TFont);
-    procedure SetHeaderFont(const Value: TFont);
-    procedure SetSubHeaderFont(const Value: TFont);
-    procedure SetOnGetSubHeaderLineFont(const Value: TGetLineFontEvent);
-    { Private declarations }
-  protected
-    { Protected declarations }
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   TJvgExportExcel = CLASS(TJvgCommonExport)
+   PRIVATE
+      FHeader: TStrings;
+      FFooter: TStrings;
+      FBackgroundPicture: TFileName;
+      FAutoColumnFit: boolean;
+      FExcelVisible: boolean;
+      FCloseExcel: boolean;
+      FOnGetFooterLineFont: TGetLineFontEvent;
+      FOnGetHeaderLineFont: TGetLineFontEvent;
+      FSubHeader: TStrings;
+      FSubHeaderFont: TFont;
+      FHeaderFont: TFont;
+      FFooterFont: TFont;
+      FOnGetSubHeaderLineFont: TGetLineFontEvent;
+      PROCEDURE SetHeader(CONST Value: TStrings);
+      PROCEDURE SetFooter(CONST Value: TStrings);
+      PROCEDURE SetBackgroundPicture(CONST Value: TFileName);
+      PROCEDURE SetAutoColumnFit(CONST Value: boolean);
+      PROCEDURE SetExcelVisible(CONST Value: boolean);
+      PROCEDURE SetCloseExcel(CONST Value: boolean);
+      PROCEDURE SetOnGetFooterLineFont(CONST Value: TGetLineFontEvent);
+      PROCEDURE SetOnGetHeaderLineFont(CONST Value: TGetLineFontEvent);
+      PROCEDURE SetSubHeader(CONST Value: TStrings);
+      PROCEDURE SetFooterFont(CONST Value: TFont);
+      PROCEDURE SetHeaderFont(CONST Value: TFont);
+      PROCEDURE SetSubHeaderFont(CONST Value: TFont);
+      PROCEDURE SetOnGetSubHeaderLineFont(CONST Value: TGetLineFontEvent);
+      { Private declarations }
+   PROTECTED
+      { Protected declarations }
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-    procedure Execute; override;
-  published
-    property DataSet;
-    property Captions;
-    property SaveToFileName;
-    {$IFDEF COMPILER5_UP}
-    property TransliterateRusToEng;
-    {$ENDIF}
-    property MaxFieldSize;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
+      PROCEDURE Execute; OVERRIDE;
+   PUBLISHED
+      PROPERTY DataSet;
+      PROPERTY Captions;
+      PROPERTY SaveToFileName;
+      {$IFDEF COMPILER5_UP}
+      PROPERTY TransliterateRusToEng;
+      {$ENDIF}
+      PROPERTY MaxFieldSize;
+      PROPERTY OnGetCaption;
+      PROPERTY OnExportRecord;
+      PROPERTY OnExportField;
 
-    property Header: TStrings read FHeader write SetHeader;
-    property SubHeader: TStrings read FSubHeader write SetSubHeader;
-    property Footer: TStrings read FFooter write SetFooter;
-    property HeaderFont: TFont read FHeaderFont write SetHeaderFont;
-    property SubHeaderFont: TFont read FSubHeaderFont write SetSubHeaderFont;
-    property FooterFont: TFont read FFooterFont write SetFooterFont;
-    property AutoColumnFit: boolean read FAutoColumnFit write SetAutoColumnFit default true;
-    property BackgroundPicture: TFileName read FBackgroundPicture write SetBackgroundPicture;
-    property ExcelVisible: boolean read FExcelVisible write SetExcelVisible;
-    property CloseExcel: boolean read FCloseExcel write SetCloseExcel;
+      PROPERTY Header: TStrings READ FHeader WRITE SetHeader;
+      PROPERTY SubHeader: TStrings READ FSubHeader WRITE SetSubHeader;
+      PROPERTY Footer: TStrings READ FFooter WRITE SetFooter;
+      PROPERTY HeaderFont: TFont READ FHeaderFont WRITE SetHeaderFont;
+      PROPERTY SubHeaderFont: TFont READ FSubHeaderFont WRITE SetSubHeaderFont;
+      PROPERTY FooterFont: TFont READ FFooterFont WRITE SetFooterFont;
+      PROPERTY AutoColumnFit: boolean READ FAutoColumnFit WRITE SetAutoColumnFit
+         DEFAULT true;
+      PROPERTY BackgroundPicture: TFileName READ FBackgroundPicture WRITE
+         SetBackgroundPicture;
+      PROPERTY ExcelVisible: boolean READ FExcelVisible WRITE SetExcelVisible;
+      PROPERTY CloseExcel: boolean READ FCloseExcel WRITE SetCloseExcel;
 
-    property OnGetHeaderLineFont: TGetLineFontEvent read FOnGetHeaderLineFont write SetOnGetHeaderLineFont;
-    property OnGetSubHeaderLineFont: TGetLineFontEvent read FOnGetSubHeaderLineFont write SetOnGetSubHeaderLineFont;
-    property OnGetFooterLineFont: TGetLineFontEvent read FOnGetFooterLineFont write SetOnGetFooterLineFont;
-  end;
+      PROPERTY OnGetHeaderLineFont: TGetLineFontEvent READ FOnGetHeaderLineFont
+         WRITE SetOnGetHeaderLineFont;
+      PROPERTY OnGetSubHeaderLineFont: TGetLineFontEvent READ
+         FOnGetSubHeaderLineFont WRITE SetOnGetSubHeaderLineFont;
+      PROPERTY OnGetFooterLineFont: TGetLineFontEvent READ FOnGetFooterLineFont
+         WRITE SetOnGetFooterLineFont;
+   END;
 
-  TJvgExportDBETable = class(TJvgCommonExport)
-  private
-    FTableType: TTableType;
-    procedure SetTableType(const Value: TTableType);
-    { Private declarations }
-  protected
-    { Protected declarations }
-  public
-    constructor Create(AOwner: TComponent); override;
-    //    destructor Destroy; override;
+   TJvgExportDBETable = CLASS(TJvgCommonExport)
+   PRIVATE
+      FTableType: TTableType;
+      PROCEDURE SetTableType(CONST Value: TTableType);
+      { Private declarations }
+   PROTECTED
+      { Protected declarations }
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      //    destructor Destroy; override;
 
-    procedure Execute; override;
-  published
-    property DataSet;
-    property Captions;
-    property SaveToFileName;
-    {$IFDEF COMPILER5_UP}
-    property TransliterateRusToEng;
-    {$ENDIF}
-    property MaxFieldSize;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
+      PROCEDURE Execute; OVERRIDE;
+   PUBLISHED
+      PROPERTY DataSet;
+      PROPERTY Captions;
+      PROPERTY SaveToFileName;
+      {$IFDEF COMPILER5_UP}
+      PROPERTY TransliterateRusToEng;
+      {$ENDIF}
+      PROPERTY MaxFieldSize;
+      PROPERTY OnGetCaption;
+      PROPERTY OnExportRecord;
+      PROPERTY OnExportField;
 
-    property TableType: TTableType read FTableType write SetTableType default ttDBase;
-  end;
+      PROPERTY TableType: TTableType READ FTableType WRITE SetTableType DEFAULT
+         ttDBase;
+   END;
 
-  TJvgExportHTML = class(TJvgCommonExport)
-  private
-    FFooter: TStrings;
-    FHeader: TStrings;
-    FStyles: TStrings;
-    procedure SetFooter(const Value: TStrings);
-    procedure SetHeader(const Value: TStrings);
-    procedure SetStyles(const Value: TStrings);
-    { Private declarations }
-  protected
-    { Protected declarations }
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   TJvgExportHTML = CLASS(TJvgCommonExport)
+   PRIVATE
+      FFooter: TStrings;
+      FHeader: TStrings;
+      FStyles: TStrings;
+      PROCEDURE SetFooter(CONST Value: TStrings);
+      PROCEDURE SetHeader(CONST Value: TStrings);
+      PROCEDURE SetStyles(CONST Value: TStrings);
+      { Private declarations }
+   PROTECTED
+      { Protected declarations }
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-    //    procedure Execute; override;
-  published
-    property DataSet;
-    property Captions;
-    property SaveToFileName;
-    {$IFDEF COMPILER5_UP}
-    property TransliterateRusToEng;
-    {$ENDIF}
-    property MaxFieldSize;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
+      //    procedure Execute; override;
+   PUBLISHED
+      PROPERTY DataSet;
+      PROPERTY Captions;
+      PROPERTY SaveToFileName;
+      {$IFDEF COMPILER5_UP}
+      PROPERTY TransliterateRusToEng;
+      {$ENDIF}
+      PROPERTY MaxFieldSize;
+      PROPERTY OnGetCaption;
+      PROPERTY OnExportRecord;
+      PROPERTY OnExportField;
 
-    property Header: TStrings read FHeader write SetHeader;
-    property Footer: TStrings read FFooter write SetFooter;
-    property Styles: TStrings read FStyles write SetStyles;
-  end;
+      PROPERTY Header: TStrings READ FHeader WRITE SetHeader;
+      PROPERTY Footer: TStrings READ FFooter WRITE SetFooter;
+      PROPERTY Styles: TStrings READ FStyles WRITE SetStyles;
+   END;
 
-  TJvgExportXML = class(TJvgCommonExport)
-  private
-    { Private declarations }
-  protected
-    { Protected declarations }
-  public
-    //    constructor Create(AOwner: TComponent); override;
-    //    destructor Destroy; override;
+   TJvgExportXML = CLASS(TJvgCommonExport)
+   PRIVATE
+      { Private declarations }
+   PROTECTED
+      { Protected declarations }
+   PUBLIC
+      //    constructor Create(AOwner: TComponent); override;
+      //    destructor Destroy; override;
 
-    //    procedure Execute; override;
-  published
-    property DataSet;
-    property Captions;
-    property SaveToFileName;
-    {$IFDEF COMPILER5_UP}
-    property TransliterateRusToEng;
-    {$ENDIF}
-    property MaxFieldSize;
-    property OnGetCaption;
-    property OnExportRecord;
-    property OnExportField;
+      //    procedure Execute; override;
+   PUBLISHED
+      PROPERTY DataSet;
+      PROPERTY Captions;
+      PROPERTY SaveToFileName;
+      {$IFDEF COMPILER5_UP}
+      PROPERTY TransliterateRusToEng;
+      {$ENDIF}
+      PROPERTY MaxFieldSize;
+      PROPERTY OnGetCaption;
+      PROPERTY OnExportRecord;
+      PROPERTY OnExportField;
 
-  end;
+   END;
 
-procedure Register;
-
-implementation
-uses ComObj, FileCtrl, JvgUtils, JvgFileUtils;
-
-procedure Register;
-begin
-  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable {, TJvgExportHTML, TJvgExportXML}]);
-end;
+IMPLEMENTATION
+USES ComObj,
+   FileCtrl,
+   JvgUtils,
+   JvgFileUtils;
 
 { TJvgCommonExport }
 
-procedure TJvgCommonExport.Execute;
-begin
-  if not Assigned(DataSet) then raise EJvgExportException.Create('DataSet is unassigned');
-  DataSet.Active := true;
-  if SaveToFileName <> '' then
-    ForceDirectories(ExtractFilePath(SaveToFileName));
-end;
+PROCEDURE TJvgCommonExport.Execute;
+BEGIN
+   IF NOT Assigned(DataSet) THEN
+      RAISE EJvgExportException.Create('DataSet is unassigned');
+   DataSet.Active := true;
+   IF SaveToFileName <> '' THEN
+      ForceDirectories(ExtractFilePath(SaveToFileName));
+END;
 
-procedure TJvgCommonExport.SetCaptions(const Value: TglExportCaptions);
-begin
-  FCaptions := Value;
-end;
+PROCEDURE TJvgCommonExport.SetCaptions(CONST Value: TglExportCaptions);
+BEGIN
+   FCaptions := Value;
+END;
 
-procedure TJvgCommonExport.SetDataSet(const Value: TDataSet);
-begin
-  FDataSet := Value;
-end;
+PROCEDURE TJvgCommonExport.SetDataSet(CONST Value: TDataSet);
+BEGIN
+   FDataSet := Value;
+END;
 
-procedure TJvgCommonExport.SetMaxFieldSize(const Value: integer);
-begin
-  FMaxFieldSize := Value;
-end;
+PROCEDURE TJvgCommonExport.SetMaxFieldSize(CONST Value: integer);
+BEGIN
+   FMaxFieldSize := Value;
+END;
 
-procedure TJvgCommonExport.SetOnExportField(const Value: TExportFieldEvent);
-begin
-  FOnExportField := Value;
-end;
+PROCEDURE TJvgCommonExport.SetOnExportField(CONST Value: TExportFieldEvent);
+BEGIN
+   FOnExportField := Value;
+END;
 
-procedure TJvgCommonExport.SetOnExportRecord(
-  const Value: TExportRecordEvent);
-begin
-  FOnExportRecord := Value;
-end;
+PROCEDURE TJvgCommonExport.SetOnExportRecord(
+   CONST Value: TExportRecordEvent);
+BEGIN
+   FOnExportRecord := Value;
+END;
 
-procedure TJvgCommonExport.SetOnGetCaption(const Value: TGetCaptionEvent);
-begin
-  FOnGetCaption := Value;
-end;
+PROCEDURE TJvgCommonExport.SetOnGetCaption(CONST Value: TGetCaptionEvent);
+BEGIN
+   FOnGetCaption := Value;
+END;
 
-procedure TJvgCommonExport.SetSaveToFileName(const Value: string);
-begin
-  FSaveToFileName := trim(Value);
-end;
+PROCEDURE TJvgCommonExport.SetSaveToFileName(CONST Value: STRING);
+BEGIN
+   FSaveToFileName := trim(Value);
+END;
 
-procedure TJvgCommonExport.SetTransliterateRusToEng(const Value: boolean);
-begin
-  FTransliterateRusToEng := Value;
-end;
+PROCEDURE TJvgCommonExport.SetTransliterateRusToEng(CONST Value: boolean);
+BEGIN
+   FTransliterateRusToEng := Value;
+END;
 
-function TJvgCommonExport.GetFieldValue(const Field: TField): string;
-begin
-  Result := Field.AsString;
-  if Assigned(OnExportField) then OnExportField(self, Field, Result);
+FUNCTION TJvgCommonExport.GetFieldValue(CONST Field: TField): STRING;
+BEGIN
+   Result := Field.AsString;
+   IF Assigned(OnExportField) THEN
+      OnExportField(self, Field, Result);
 
-  {$IFDEF COMPILER5_UP}
-  if FTransliterateRusToEng then Result := Transliterate(Result, true);
-  {$ENDIF}
+   {$IFDEF COMPILER5_UP}
+   IF FTransliterateRusToEng THEN
+      Result := Transliterate(Result, true);
+   {$ENDIF}
 
-  if (FMaxFieldSize > 0) and (Field.DataType in [ftString, ftMemo, ftFmtMemo]) then
-  begin
-    if length(Result) > FMaxFieldSize then
-      Result := copy(Result, 1, FMaxFieldSize) + '...';
-  end;
-end;
+   IF (FMaxFieldSize > 0) AND (Field.DataType IN [ftString, ftMemo, ftFmtMemo])
+      THEN
+   BEGIN
+      IF length(Result) > FMaxFieldSize THEN
+         Result := copy(Result, 1, FMaxFieldSize) + '...';
+   END;
+END;
 
 { TJvgExportExcel }
 
-constructor TJvgExportExcel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FFooter := TStringList.Create;
-  FHeader := TStringList.Create;
-  FSubHeader := TStringList.Create;
-  FHeaderFont := TFont.Create;
-  FSubHeaderFont := TFont.Create;
-  FFooterFont := TFont.Create;
-  //...defaults
-  FHeaderFont.Size := 12;
-  FHeaderFont.Style := [fsBold];
-  FSubHeaderFont.Size := 10;
-  FAutoColumnFit := true;
-end;
+CONSTRUCTOR TJvgExportExcel.Create(AOwner: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
+   FFooter := TStringList.Create;
+   FHeader := TStringList.Create;
+   FSubHeader := TStringList.Create;
+   FHeaderFont := TFont.Create;
+   FSubHeaderFont := TFont.Create;
+   FFooterFont := TFont.Create;
+   //...defaults
+   FHeaderFont.Size := 12;
+   FHeaderFont.Style := [fsBold];
+   FSubHeaderFont.Size := 10;
+   FAutoColumnFit := true;
+END;
 
-destructor TJvgExportExcel.Destroy;
-begin
-  FFooter.Free;
-  FHeader.Free;
-  FSubHeader.Free;
-  FHeaderFont.Free;
-  FSubHeaderFont.Free;
-  FFooterFont.Free;
-  inherited Destroy;
-end;
+DESTRUCTOR TJvgExportExcel.Destroy;
+BEGIN
+   FFooter.Free;
+   FHeader.Free;
+   FSubHeader.Free;
+   FHeaderFont.Free;
+   FSubHeaderFont.Free;
+   FFooterFont.Free;
+   INHERITED Destroy;
+END;
 
-procedure TJvgExportExcel.Execute;
-var
-  XL: variant;
-  Sheet: variant;
-  AllowExportRecord: boolean;
-  i, j, RecNo, ColNo, OldRecNo: integer;
-  CellFont: TFont;
+PROCEDURE TJvgExportExcel.Execute;
+VAR
+   XL                         : variant;
+   Sheet                      : variant;
+   AllowExportRecord          : boolean;
+   i, j, RecNo, ColNo, OldRecNo: integer;
+   CellFont                   : TFont;
 
-  procedure InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent: TGetLineFontEvent);
-  var
-    i: integer;
-  begin
-    for i := 0 to Strings.Count - 1 do
-    begin
-      Sheet.Cells[RecNo, ColNo] := Strings[i];
-      CellFont.Assign(Font);
-      if Assigned(FOnGetHeaderLineFont) then OnGetHeaderLineFont(self, i, Strings[i], CellFont);
+   PROCEDURE InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent:
+      TGetLineFontEvent);
+   VAR
+      i                       : integer;
+   BEGIN
+      FOR i := 0 TO Strings.Count - 1 DO
+      BEGIN
+         Sheet.Cells[RecNo, ColNo] := Strings[i];
+         CellFont.Assign(Font);
+         IF Assigned(FOnGetHeaderLineFont) THEN
+            OnGetHeaderLineFont(self, i, Strings[i], CellFont);
 
-      Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
-      Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
-      if fsBold in CellFont.Style then
-        Sheet.Cells[RecNo, ColNo].Font.Bold := true;
-      if fsItalic in CellFont.Style then
-        Sheet.Cells[RecNo, ColNo].Font.Italic := true;
+         Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
+         Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
+         IF fsBold IN CellFont.Style THEN
+            Sheet.Cells[RecNo, ColNo].Font.Bold := true;
+         IF fsItalic IN CellFont.Style THEN
+            Sheet.Cells[RecNo, ColNo].Font.Italic := true;
+         inc(RecNo);
+      END;
+   END;
+
+BEGIN
+   INHERITED Execute;
+
+   TRY
+      XL := GetActiveOleObject('Excel.Application');
+   EXCEPT
+      XL := CreateOleObject('Excel.Application');
+   END;
+
+   XL.Visible := FExcelVisible;
+   XL.WorkBooks.Add;
+   XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
+   Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
+   IF (BackgroundPicture <> '') AND FileExists(BackgroundPicture) THEN
+      Sheet.SetBackgroundPicture(FileName := BackgroundPicture);
+
+   CellFont := TFont.Create;
+   TRY
+      RecNo := 1;
+      ColNo := 1;
+
+      inc(RecNo, Header.Count + SubHeader.Count);
+
+      IF FCaptions <> fecNone THEN
+         FOR i := 0 TO DataSet.FieldCount - 1 DO
+         BEGIN
+            CASE FCaptions OF
+               fecDisplayLabels:
+                  IF DataSet.Fields[i].DisplayLabel <> '' THEN
+                     Sheet.Cells[RecNo, ColNo + i] :=
+                        DataSet.Fields[i].DisplayLabel
+                  ELSE
+                     Sheet.Cells[RecNo, ColNo + i] :=
+                        DataSet.Fields[i].FieldName;
+               fecFieldNames:
+                  Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
+            END;
+            Sheet.Cells[RecNo, ColNo + i].Font.Bold := true;
+            Sheet.Cells[RecNo, ColNo + i].Font.Size := 10;
+         END;
+
       inc(RecNo);
-    end;
-  end;
+      DataSet.First;
+      WHILE NOT DataSet.EOF DO
+      BEGIN
+         AllowExportRecord := true;
+         IF Assigned(OnExportRecord) THEN
+            OnExportRecord(self, AllowExportRecord);
+         IF AllowExportRecord THEN
+         BEGIN
+            FOR i := 0 TO DataSet.FieldCount - 1 DO
+               IF NOT (DataSet.Fields[i].DataType IN [ftBlob, ftGraphic,
+                  ftParadoxOle, ftDBaseOle, ftTypedBinary{$IFDEF COMPILER5_UP},
+                  ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
+                  ftIDispatch{$ENDIF}]) THEN
+                  Sheet.Cells[RecNo, ColNo + i] :=
+                     GetFieldValue(DataSet.Fields[i]);
 
-begin
-  inherited Execute;
+            inc(RecNo);
+         END;
+         DataSet.Next;
+      END;
 
-  try
-    XL := GetActiveOleObject('Excel.Application');
-  except
-    XL := CreateOleObject('Excel.Application');
-  end;
+      IF FAutoColumnFit THEN
+         FOR i := 0 TO DataSet.FieldCount - 1 DO
+            Sheet.Columns[i + 1].EntireColumn.AutoFit;
 
-  XL.Visible := FExcelVisible;
-  XL.WorkBooks.Add;
-  XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
-  Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
-  if (BackgroundPicture <> '') and FileExists(BackgroundPicture) then
-    Sheet.SetBackgroundPicture(FileName := BackgroundPicture);
+      OldRecNo := RecNo;
+      RecNo := 1;
+      InsertStrings(Header, HeaderFont, FOnGetHeaderLineFont);
+      InsertStrings(SubHeader, SubHeaderFont, FOnGetSubHeaderLineFont);
+      RecNo := OldRecNo + 1;
+      InsertStrings(Footer, SubHeaderFont, FOnGetSubHeaderLineFont);
 
-  CellFont := TFont.Create;
-  try
-    RecNo := 1;
-    ColNo := 1;
+      IF ExtractFileExt(FSaveToFileName) = '' THEN
+         FSaveToFileName := DelFileExt(FSaveToFileName) + '.xls';
+      IF FileExists(FSaveToFileName) THEN
+         DeleteFileEx(FSaveToFileName);
 
-    inc(RecNo, Header.Count + SubHeader.Count);
+      IF FSaveToFileName <> '' THEN
+         XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
 
-    if FCaptions <> fecNone then
-      for i := 0 to DataSet.FieldCount - 1 do
-      begin
-        case FCaptions of
-          fecDisplayLabels:
-            if DataSet.Fields[i].DisplayLabel <> '' then
-              Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].DisplayLabel
-            else
-              Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
-          fecFieldNames:
-            Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
-        end;
-        Sheet.Cells[RecNo, ColNo + i].Font.Bold := true;
-        Sheet.Cells[RecNo, ColNo + i].Font.Size := 10;
-      end;
+      IF CloseExcel THEN
+         XL.Quit;
 
-    inc(RecNo);
-    DataSet.First;
-    while not DataSet.EOF do
-    begin
-      AllowExportRecord := true;
-      if Assigned(OnExportRecord) then OnExportRecord(self, AllowExportRecord);
-      if AllowExportRecord then
-      begin
-        for i := 0 to DataSet.FieldCount - 1 do
-          if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic, ftParadoxOle, ftDBaseOle, ftTypedBinary{$IFDEF COMPILER5_UP}, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface, ftIDispatch{$ENDIF}]) then
-            Sheet.Cells[RecNo, ColNo + i] := GetFieldValue(DataSet.Fields[i]);
+   FINALLY
+      CellFont.Free;
+   END;
+END;
 
-        inc(RecNo);
-      end;
-      DataSet.Next;
-    end;
+PROCEDURE TJvgExportExcel.SetAutoColumnFit(CONST Value: boolean);
+BEGIN
+   FAutoColumnFit := Value;
+END;
 
-    if FAutoColumnFit then
-      for i := 0 to DataSet.FieldCount - 1 do
-        Sheet.Columns[i + 1].EntireColumn.AutoFit;
+PROCEDURE TJvgExportExcel.SetBackgroundPicture(CONST Value: TFileName);
+BEGIN
+   FBackgroundPicture := Value;
+END;
 
-    OldRecNo := RecNo;
-    RecNo := 1;
-    InsertStrings(Header, HeaderFont, FOnGetHeaderLineFont);
-    InsertStrings(SubHeader, SubHeaderFont, FOnGetSubHeaderLineFont);
-    RecNo := OldRecNo + 1;
-    InsertStrings(Footer, SubHeaderFont, FOnGetSubHeaderLineFont);
+PROCEDURE TJvgExportExcel.SetCloseExcel(CONST Value: boolean);
+BEGIN
+   FCloseExcel := Value;
+END;
 
-    if ExtractFileExt(FSaveToFileName) = '' then FSaveToFileName := DelFileExt(FSaveToFileName) + '.xls';
-    if FileExists(FSaveToFileName) then DeleteFileEx(FSaveToFileName);
+PROCEDURE TJvgExportExcel.SetExcelVisible(CONST Value: boolean);
+BEGIN
+   FExcelVisible := Value;
+END;
 
-    if FSaveToFileName <> '' then XL.WorkBooks[XL.WorkBooks.Count].SaveAs(FSaveToFileName);
+PROCEDURE TJvgExportExcel.SetFooter(CONST Value: TStrings);
+BEGIN
+   FFooter.Assign(Value);
+END;
 
-    if CloseExcel then XL.Quit;
+PROCEDURE TJvgExportExcel.SetFooterFont(CONST Value: TFont);
+BEGIN
+   FFooterFont.Assign(Value);
+END;
 
-  finally
-    CellFont.Free;
-  end;
-end;
+PROCEDURE TJvgExportExcel.SetHeader(CONST Value: TStrings);
+BEGIN
+   FHeader.Assign(Value);
+END;
 
-procedure TJvgExportExcel.SetAutoColumnFit(const Value: boolean);
-begin
-  FAutoColumnFit := Value;
-end;
+PROCEDURE TJvgExportExcel.SetHeaderFont(CONST Value: TFont);
+BEGIN
+   FHeaderFont.Assign(Value);
+END;
 
-procedure TJvgExportExcel.SetBackgroundPicture(const Value: TFileName);
-begin
-  FBackgroundPicture := Value;
-end;
+PROCEDURE TJvgExportExcel.SetOnGetFooterLineFont(CONST Value:
+   TGetLineFontEvent);
+BEGIN
+   FOnGetFooterLineFont := Value;
+END;
 
-procedure TJvgExportExcel.SetCloseExcel(const Value: boolean);
-begin
-  FCloseExcel := Value;
-end;
+PROCEDURE TJvgExportExcel.SetOnGetHeaderLineFont(CONST Value:
+   TGetLineFontEvent);
+BEGIN
+   FOnGetHeaderLineFont := Value;
+END;
 
-procedure TJvgExportExcel.SetExcelVisible(const Value: boolean);
-begin
-  FExcelVisible := Value;
-end;
+PROCEDURE TJvgExportExcel.SetOnGetSubHeaderLineFont(CONST Value:
+   TGetLineFontEvent);
+BEGIN
+   FOnGetSubHeaderLineFont := Value;
+END;
 
-procedure TJvgExportExcel.SetFooter(const Value: TStrings);
-begin
-  FFooter.Assign(Value);
-end;
+PROCEDURE TJvgExportExcel.SetSubHeader(CONST Value: TStrings);
+BEGIN
+   FSubHeader.Assign(Value);
+END;
 
-procedure TJvgExportExcel.SetFooterFont(const Value: TFont);
-begin
-  FFooterFont.Assign(Value);
-end;
-
-procedure TJvgExportExcel.SetHeader(const Value: TStrings);
-begin
-  FHeader.Assign(Value);
-end;
-
-procedure TJvgExportExcel.SetHeaderFont(const Value: TFont);
-begin
-  FHeaderFont.Assign(Value);
-end;
-
-procedure TJvgExportExcel.SetOnGetFooterLineFont(const Value: TGetLineFontEvent);
-begin
-  FOnGetFooterLineFont := Value;
-end;
-
-procedure TJvgExportExcel.SetOnGetHeaderLineFont(const Value: TGetLineFontEvent);
-begin
-  FOnGetHeaderLineFont := Value;
-end;
-
-procedure TJvgExportExcel.SetOnGetSubHeaderLineFont(const Value: TGetLineFontEvent);
-begin
-  FOnGetSubHeaderLineFont := Value;
-end;
-
-procedure TJvgExportExcel.SetSubHeader(const Value: TStrings);
-begin
-  FSubHeader.Assign(Value);
-end;
-
-procedure TJvgExportExcel.SetSubHeaderFont(const Value: TFont);
-begin
-  FSubHeaderFont.Assign(Value);
-end;
+PROCEDURE TJvgExportExcel.SetSubHeaderFont(CONST Value: TFont);
+BEGIN
+   FSubHeaderFont.Assign(Value);
+END;
 
 { TJvgExportHTML }
 
-constructor TJvgExportHTML.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FFooter := TStringList.Create;
-  FHeader := TStringList.Create;
-  FStyles := TStringList.Create;
-end;
+CONSTRUCTOR TJvgExportHTML.Create(AOwner: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
+   FFooter := TStringList.Create;
+   FHeader := TStringList.Create;
+   FStyles := TStringList.Create;
+END;
 
-destructor TJvgExportHTML.Destroy;
-begin
-  FFooter.Free;
-  FHeader.Free;
-  FStyles.Free;
-  inherited Destroy;
-end;
+DESTRUCTOR TJvgExportHTML.Destroy;
+BEGIN
+   FFooter.Free;
+   FHeader.Free;
+   FStyles.Free;
+   INHERITED Destroy;
+END;
 
-procedure TJvgExportHTML.SetFooter(const Value: TStrings);
-begin
-  FFooter.Assign(Value);
-end;
+PROCEDURE TJvgExportHTML.SetFooter(CONST Value: TStrings);
+BEGIN
+   FFooter.Assign(Value);
+END;
 
-procedure TJvgExportHTML.SetHeader(const Value: TStrings);
-begin
-  FHeader.Assign(Value);
-end;
+PROCEDURE TJvgExportHTML.SetHeader(CONST Value: TStrings);
+BEGIN
+   FHeader.Assign(Value);
+END;
 
-procedure TJvgExportHTML.SetStyles(const Value: TStrings);
-begin
-  FStyles.Assign(Value);
-end;
+PROCEDURE TJvgExportHTML.SetStyles(CONST Value: TStrings);
+BEGIN
+   FStyles.Assign(Value);
+END;
 
 { TJvgExportDBETable }
 
-constructor TJvgExportDBETable.Create(AOwner: TComponent);
-begin
-  inherited;
-  //...defailts
-  TableType := ttDBase;
-end;
+CONSTRUCTOR TJvgExportDBETable.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   //...defailts
+   TableType := ttDBase;
+END;
 
-procedure TJvgExportDBETable.Execute;
-var
-  i: integer;
-  Table: TTable;
-  AllowExportRecord: boolean;
-  FieldType: TFieldType;
-const
-  {$IFDEF COMPILER4_UP}
-  aTableTypeExt: array[TTableType] of string = ('', 'db', 'dbf', 'dbf', 'txt');
-  {$ELSE}
-  aTableTypeExt: array[TTableType] of string = ('', 'db', 'dbf', 'txt');
-  {$ENDIF}
-begin
-  inherited;
+PROCEDURE TJvgExportDBETable.Execute;
+VAR
+   i                          : integer;
+   Table                      : TTable;
+   AllowExportRecord          : boolean;
+   FieldType                  : TFieldType;
+CONST
+   {$IFDEF COMPILER4_UP}
+   aTableTypeExt                 : ARRAY[TTableType] OF STRING = ('', 'db', 'dbf',
+      'dbf', 'txt');
+   {$ELSE}
+   aTableTypeExt                 : ARRAY[TTableType] OF STRING = ('', 'db', 'dbf',
+      'txt');
+   {$ENDIF}
+BEGIN
+   INHERITED;
 
-  if SaveToFileName = '' then raise EJvgExportException.Create('SaveToFileName property is empty');
+   IF SaveToFileName = '' THEN
+      RAISE EJvgExportException.Create('SaveToFileName property is empty');
 
-  Table := TTable.Create(nil);
+   Table := TTable.Create(NIL);
 
-  Table.TableType := TableType;
-  Table.TableName := SaveToFileName;
-  //  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
+   Table.TableType := TableType;
+   Table.TableName := SaveToFileName;
+   //  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
 
-  FieldType := DataSet.Fields[i].DataType;
-  if FieldType = ftAutoInc then FieldType := ftInteger;
+   FieldType := DataSet.Fields[i].DataType;
+   IF FieldType = ftAutoInc THEN
+      FieldType := ftInteger;
 
-  for i := 0 to DataSet.FieldCount - 1 do
-    Table.FieldDefs.Add(DataSet.Fields[i].Name, FieldType, DataSet.Fields[i].Size, DataSet.Fields[i].Required);
+   FOR i := 0 TO DataSet.FieldCount - 1 DO
+      Table.FieldDefs.Add(DataSet.Fields[i].Name, FieldType,
+         DataSet.Fields[i].Size, DataSet.Fields[i].Required);
 
-  Table.CreateTable;
-  Table.Open;
+   Table.CreateTable;
+   Table.Open;
 
-  try
-    DataSet.First;
-    while not DataSet.EOF do
-    begin
-      AllowExportRecord := true;
-      if Assigned(OnExportRecord) then OnExportRecord(self, AllowExportRecord);
-      if AllowExportRecord then
-      begin
-        Table.Append;
-        for i := 0 to DataSet.FieldCount - 1 do
-          if DataSet.Fields[i].DataType in [ftString, ftMemo] then
-            Table.Fields[i].Value := GetFieldValue(DataSet.Fields[i])
-          else
-            Table.Fields[i].Value := DataSet.Fields[i].Value;
-        Table.Post;
-      end;
-      DataSet.Next;
-    end;
-    Table.Close;
-  except
-    Table.Free;
-  end;
+   TRY
+      DataSet.First;
+      WHILE NOT DataSet.EOF DO
+      BEGIN
+         AllowExportRecord := true;
+         IF Assigned(OnExportRecord) THEN
+            OnExportRecord(self, AllowExportRecord);
+         IF AllowExportRecord THEN
+         BEGIN
+            Table.Append;
+            FOR i := 0 TO DataSet.FieldCount - 1 DO
+               IF DataSet.Fields[i].DataType IN [ftString, ftMemo] THEN
+                  Table.Fields[i].Value := GetFieldValue(DataSet.Fields[i])
+               ELSE
+                  Table.Fields[i].Value := DataSet.Fields[i].Value;
+            Table.Post;
+         END;
+         DataSet.Next;
+      END;
+      Table.Close;
+   EXCEPT
+      Table.Free;
+   END;
 
-end;
+END;
 
-procedure TJvgExportDBETable.SetTableType(const Value: TTableType);
-begin
-  if Value = ttDefault then
-    FTableType := ttDBase
-  else
-    FTableType := Value;
-end;
+PROCEDURE TJvgExportDBETable.SetTableType(CONST Value: TTableType);
+BEGIN
+   IF Value = ttDefault THEN
+      FTableType := ttDBase
+   ELSE
+      FTableType := Value;
+END;
 
-end.
+END.
+

@@ -130,7 +130,6 @@ const
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgTabControl]);
 end;
 //*****************************************_____________LowLevel METHODS
 

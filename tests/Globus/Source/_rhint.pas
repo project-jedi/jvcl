@@ -7,7 +7,7 @@ uses
   FrTypes, FrUtils, FrCommCl, StdCtrls, ExtCtrls;
 
 type
-  TFrCaption = class(TComponent)
+  TFrCaption = Class(TJvComponent)
   private
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
@@ -34,7 +34,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [TFrCaption]);
+
 end;
 //==============================================================
 

@@ -89,7 +89,6 @@ implementation
 
 procedure Register;
 begin
-//  RegisterComponents('Proba', [TJvgVertDBSGrid]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 

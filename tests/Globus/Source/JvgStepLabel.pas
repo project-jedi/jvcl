@@ -42,7 +42,7 @@ USES
    Dialogs;
 
 TYPE
-   TJvgStepLabel = CLASS(TGraphicControl)
+   TJvgStepLabel = CLASS(TJvGraphicControl)
    PRIVATE
       FStepCount: integer;
       FPassiveColor: TColor;

@@ -30,12 +30,12 @@ Known Issues:
 unit Jvg3DColors;
 
 interface
-{$I glDEF.INC}
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvComponent;
 
 type
-  TJvg3DLocalColors = class(TComponent)
+  TJvg3DLocalColors = Class(TJvComponent)
   private
     FDkShadow,
       FHighlight,

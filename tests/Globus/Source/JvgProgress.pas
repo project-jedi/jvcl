@@ -27,375 +27,392 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgProgress;
+UNIT JvgProgress;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, Classes, Controls, Graphics, SysUtils, JvgTypes,
-  JvgCommClasses, JvgUtils, ExtCtrls{$IFDEF COMPILER5_UP}, Imglist{$ENDIF};
-type
+USES
+   Windows,
+   Messages,
+   Classes,
+   Controls,
+   Graphics,
+   SysUtils,
+   JvgTypes,
+   JvgCommClasses,
+   JvgUtils,
+   JVComponent,
+   ExtCtrls{$IFDEF COMPILER5_UP},
+   Imglist{$ENDIF};
+TYPE
 
-  TJvgProgress = class(TGraphicControl)
-  private
-    FBevelInner: TPanelBevel;
-    FBevelOuter: TPanelBevel;
-    FBevelBold: boolean;
-    FColors: TJvgSimleLabelColors;
-    FGradientF: TJvgGradient;
-    FGradientB: TJvgGradient;
-    FPercent: TglPercent;
-    FCaptionAlignment: TAlignment;
-    FCaptionDirection: TglLabelDir;
-    FCaptionStyle: TglTextStyle;
-    FStep: integer;
-    FInterspace: integer;
-    FOptions: TglProgressOptions;
-    Image: TBitmap;
-    BackImage: TBitmap;
-    procedure SetBevelInner(Value: TPanelBevel);
-    procedure SetBevelOuter(Value: TPanelBevel);
-    procedure SetBevelBold(Value: boolean);
-    procedure SetPercent(Value: TglPercent);
-    procedure SetCaptionAlignment(Value: TAlignment);
-    procedure SetCaptionDirection(Value: TglLabelDir);
-    procedure SetCaptionStyle(Value: TglTextStyle);
-    procedure SetStep(Value: integer);
-    procedure SetInterspace(Value: integer);
-    procedure SetOptions(Value: TglProgressOptions);
+   TJvgProgress = CLASS(TJvGraphicControl)
+   PRIVATE
+      FBevelInner: TPanelBevel;
+      FBevelOuter: TPanelBevel;
+      FBevelBold: boolean;
+      FColors: TJvgSimleLabelColors;
+      FGradientF: TJvgGradient;
+      FGradientB: TJvgGradient;
+      FPercent: TglPercent;
+      FCaptionAlignment: TAlignment;
+      FCaptionDirection: TglLabelDir;
+      FCaptionStyle: TglTextStyle;
+      FStep: integer;
+      FInterspace: integer;
+      FOptions: TglProgressOptions;
+      Image: TBitmap;
+      BackImage: TBitmap;
+      PROCEDURE SetBevelInner(Value: TPanelBevel);
+      PROCEDURE SetBevelOuter(Value: TPanelBevel);
+      PROCEDURE SetBevelBold(Value: boolean);
+      PROCEDURE SetPercent(Value: TglPercent);
+      PROCEDURE SetCaptionAlignment(Value: TAlignment);
+      PROCEDURE SetCaptionDirection(Value: TglLabelDir);
+      PROCEDURE SetCaptionStyle(Value: TglTextStyle);
+      PROCEDURE SetStep(Value: integer);
+      PROCEDURE SetInterspace(Value: integer);
+      PROCEDURE SetOptions(Value: TglProgressOptions);
 
-    procedure OnSmthChanged(Sender: TObject);
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-  protected
-    procedure Loaded; override;
-    procedure Paint; override;
+      PROCEDURE OnSmthChanged(Sender: TObject);
+      PROCEDURE CMTextChanged(VAR Message: TMessage); MESSAGE CM_TEXTCHANGED;
+   PROTECTED
+      PROCEDURE Loaded; OVERRIDE;
+      PROCEDURE Paint; OVERRIDE;
 
-  public
-    fNeedRebuildBackground: boolean;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+   PUBLIC
+      fNeedRebuildBackground: boolean;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
 
-  published
-    {$IFDEF COMPILER5_UP}
-    property Anchors;
-    {$ENDIF}
-    property Align;
-    property Caption;
-    property Font;
-    property ParentShowHint;
-    property ShowHint;
-    property Visible;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
-    property DragCursor;
-    property DragMode;
+   PUBLISHED
+      {$IFDEF COMPILER5_UP}
+      PROPERTY Anchors;
+      {$ENDIF}
+      PROPERTY Align;
+      PROPERTY Caption;
+      PROPERTY Font;
+      PROPERTY ParentShowHint;
+      PROPERTY ShowHint;
+      PROPERTY Visible;
+      PROPERTY OnClick;
+      PROPERTY OnDblClick;
+      PROPERTY OnDragDrop;
+      PROPERTY OnDragOver;
+      PROPERTY OnEndDrag;
+      PROPERTY OnMouseDown;
+      PROPERTY OnMouseMove;
+      PROPERTY OnMouseUp;
+      PROPERTY OnStartDrag;
+      PROPERTY DragCursor;
+      PROPERTY DragMode;
 
-    property BevelInner: TPanelBevel read FBevelInner write SetBevelInner
-      default bvLowered;
-    property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter
-      default bvNone;
-    property BevelBold: boolean read FBevelBold write SetBevelBold
-      default false;
-    property Colors: TJvgSimleLabelColors read FColors write FColors;
-    property Gradient: TJvgGradient read FGradientF write FGradientF;
-    property GradientBack: TJvgGradient read FGradientB write FGradientB;
-    property Percent: TglPercent read FPercent write SetPercent;
-    property CaptionAlignment: TAlignment read FCaptionAlignment write SetCaptionAlignment;
-    property CaptionDirection: TglLabelDir read FCaptionDirection write SetCaptionDirection;
-    property CaptionStyle: TglTextStyle read FCaptionStyle write SetCaptionStyle;
-    property Step: integer read FStep write SetStep;
-    property Interspace: integer read FInterspace write SetInterspace;
-    property Options: TglProgressOptions read FOptions write SetOptions;
+      PROPERTY BevelInner: TPanelBevel READ FBevelInner WRITE SetBevelInner
+         DEFAULT bvLowered;
+      PROPERTY BevelOuter: TPanelBevel READ FBevelOuter WRITE SetBevelOuter
+         DEFAULT bvNone;
+      PROPERTY BevelBold: boolean READ FBevelBold WRITE SetBevelBold
+         DEFAULT false;
+      PROPERTY Colors: TJvgSimleLabelColors READ FColors WRITE FColors;
+      PROPERTY Gradient: TJvgGradient READ FGradientF WRITE FGradientF;
+      PROPERTY GradientBack: TJvgGradient READ FGradientB WRITE FGradientB;
+      PROPERTY Percent: TglPercent READ FPercent WRITE SetPercent;
+      PROPERTY CaptionAlignment: TAlignment READ FCaptionAlignment WRITE
+         SetCaptionAlignment;
+      PROPERTY CaptionDirection: TglLabelDir READ FCaptionDirection WRITE
+         SetCaptionDirection;
+      PROPERTY CaptionStyle: TglTextStyle READ FCaptionStyle WRITE
+         SetCaptionStyle;
+      PROPERTY Step: integer READ FStep WRITE SetStep;
+      PROPERTY Interspace: integer READ FInterspace WRITE SetInterspace;
+      PROPERTY Options: TglProgressOptions READ FOptions WRITE SetOptions;
 
-  end;
+   END;
 
-procedure Register;
+PROCEDURE Register;
 
-implementation
+IMPLEMENTATION
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-//  RegisterComponents('Proba', [TJvgProgress]);
-end;
+PROCEDURE Register;
+BEGIN
+END;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
 
-constructor TJvgProgress.Create(AOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := [csOpaque, csDoubleClicks];
-  FColors := TJvgSimleLabelColors.Create;
-  FGradientB := TJvgGradient.Create;
-  FGradientF := TJvgGradient.Create;
-  //..defaults
-  if csDesigning in ComponentState then
-    with FColors do
-    begin
-      FGradientF.Orientation := fgdVertical;
-      FGradientB.Orientation := fgdVertical;
-      FGradientF.Active := true;
-      FGradientB.Active := true;
-      FGradientF.FromColor := clGreen;
-      FGradientF.ToColor := clYellow;
-      FGradientB.FromColor := 0;
-      FGradientB.ToColor := clGreen;
-      FGradientF.PercentFilling := FPercent;
-      Delineate := clGray;
-      Shadow := 0;
-      Background := 0;
-      Caption := 'progress...[%d%%]';
-    end;
-  FColors.OnChanged := OnSmthChanged;
-  FGradientB.OnChanged := OnSmthChanged;
-  FGradientF.OnChanged := OnSmthChanged;
-  Image := TBitmap.Create;
-  BackImage := TBitmap.Create;
-  Width := 150;
-  height := 15;
+CONSTRUCTOR TJvgProgress.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   ControlStyle := [csOpaque, csDoubleClicks];
+   FColors := TJvgSimleLabelColors.Create;
+   FGradientB := TJvgGradient.Create;
+   FGradientF := TJvgGradient.Create;
+   //..defaults
+   IF csDesigning IN ComponentState THEN
+      WITH FColors DO
+      BEGIN
+         FGradientF.Orientation := fgdVertical;
+         FGradientB.Orientation := fgdVertical;
+         FGradientF.Active := true;
+         FGradientB.Active := true;
+         FGradientF.FromColor := clGreen;
+         FGradientF.ToColor := clYellow;
+         FGradientB.FromColor := 0;
+         FGradientB.ToColor := clGreen;
+         FGradientF.PercentFilling := FPercent;
+         Delineate := clGray;
+         Shadow := 0;
+         Background := 0;
+         Caption := 'progress...[%d%%]';
+      END;
+   FColors.OnChanged := OnSmthChanged;
+   FGradientB.OnChanged := OnSmthChanged;
+   FGradientF.OnChanged := OnSmthChanged;
+   Image := TBitmap.Create;
+   BackImage := TBitmap.Create;
+   Width := 150;
+   height := 15;
 
-  FCaptionDirection := fldLeftRight;
-  FCaptionAlignment := taLeftJustify;
-  //...
-  FStep := 3;
-  FInterspace := 1;
-  FCaptionStyle := fstShadow;
-  FCaptionAlignment := taCenter;
-  Font.Color := clWhite;
-  FBevelInner := bvLowered;
-  //...
-  Color := clBlack;
-end;
+   FCaptionDirection := fldLeftRight;
+   FCaptionAlignment := taLeftJustify;
+   //...
+   FStep := 3;
+   FInterspace := 1;
+   FCaptionStyle := fstShadow;
+   FCaptionAlignment := taCenter;
+   Font.Color := clWhite;
+   FBevelInner := bvLowered;
+   //...
+   Color := clBlack;
+END;
 
-destructor TJvgProgress.Destroy;
-begin
-  FGradientF.Free;
-  FGradientB.Free;
-  FColors.Free;
-  BackImage.Free;
-  Image.Free;
-  inherited;
-end;
+DESTRUCTOR TJvgProgress.Destroy;
+BEGIN
+   FGradientF.Free;
+   FGradientB.Free;
+   FColors.Free;
+   BackImage.Free;
+   Image.Free;
+   INHERITED;
+END;
 
-procedure TJvgProgress.Loaded;
-begin
-  inherited loaded;
-  {  Image.Width := Width; Image.Height := Height;
-    BackImage.Width := Width; BackImage.Height := Height;
-    if fpoTransparent in Options then
-    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
-                 Image.Canvas.Handle );}
+PROCEDURE TJvgProgress.Loaded;
+BEGIN
+   INHERITED loaded;
+   {  Image.Width := Width; Image.Height := Height;
+     BackImage.Width := Width; BackImage.Height := Height;
+     if fpoTransparent in Options then
+     GetParentImageRect( self, Bounds(Left,Top,Width,Height),
+                  Image.Canvas.Handle );}
 
-end;
+END;
 
-procedure TJvgProgress.CMTextChanged(var Message: TMessage);
-begin
-  Repaint;
-end;
+PROCEDURE TJvgProgress.CMTextChanged(VAR Message: TMessage);
+BEGIN
+   Repaint;
+END;
 
-procedure TJvgProgress.Paint;
-const
-  ShadowDepth = 2;
-var
-  r: TRect;
-  i, x, x2, y: integer;
-  Size, TextSize: TSize;
-  Capt: string;
-begin
-  if (Image.Width <> Width) or (Image.Height <> Height) then
-  begin
-    Image.Width := Width;
-    Image.Height := Height;
-    BackImage.Width := Width;
-    BackImage.Height := Height;
-    fNeedRebuildBackground := true;
-  end;
-  r := ClientRect;
-  if (fpoTransparent in Options) and fNeedRebuildBackground then
-  begin
-    GetParentImageRect(self, Bounds(Left, Top, Width, Height),
-      BackImage.Canvas.Handle);
-    fNeedRebuildBackground := false;
-  end;
-  BitBlt(Image.Canvas.Handle, 0, 0, Width, Height, BackImage.Canvas.Handle, 0, 0, SRCCOPY);
-  with Image.Canvas do
-  begin
-    dec(r.bottom);
-    dec(r.right);
-    r := DrawBoxEx(Handle, r, [fsdLeft, fsdTop, fsdRight, fsdBottom], FBevelInner, FBevelOuter,
-      FBevelBold, Colors.Background, fpoTransparent in Options);
+PROCEDURE TJvgProgress.Paint;
+CONST
+   ShadowDepth                = 2;
+VAR
+   r                          : TRect;
+   i, x, x2, y                : integer;
+   Size, TextSize             : TSize;
+   Capt                       : STRING;
+BEGIN
+   IF (Image.Width <> Width) OR (Image.Height <> Height) THEN
+   BEGIN
+      Image.Width := Width;
+      Image.Height := Height;
+      BackImage.Width := Width;
+      BackImage.Height := Height;
+      fNeedRebuildBackground := true;
+   END;
+   r := ClientRect;
+   IF (fpoTransparent IN Options) AND fNeedRebuildBackground THEN
+   BEGIN
+      GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+         BackImage.Canvas.Handle);
+      fNeedRebuildBackground := false;
+   END;
+   BitBlt(Image.Canvas.Handle, 0, 0, Width, Height, BackImage.Canvas.Handle, 0,
+      0, SRCCOPY);
+   WITH Image.Canvas DO
+   BEGIN
+      dec(r.bottom);
+      dec(r.right);
+      r := DrawBoxEx(Handle, r, [fsdLeft, fsdTop, fsdRight, fsdBottom],
+         FBevelInner, FBevelOuter,
+         FBevelBold, Colors.Background, fpoTransparent IN Options);
 
-    //    PercentWidth := trunc( Width * Percent / 100 );
-    //    PercentWidth := Width;
-    Brush.Color := Colors.Background;
-    inc(r.top);
-    if Percent > 0 then
-    begin
-      GradientBox(handle, r, FGradientB, integer(psSolid), 1);
-      GradientBox(handle, r, FGradientF, integer(psSolid), 1);
-      x := r.left;
-      if not (fpoTransparent in Options) then
-        for i := r.left to Width div (FStep + FInterspace) + 1 do
-        begin
-          x2 := x + FInterspace;
-          if x2 > r.right then
-            if x < r.right then
-              x2 := r.right
-            else
-              break;
-          FillRect(Rect(x, r.top, x2, r.Bottom));
-          inc(x, FStep + FInterspace);
-        end;
+      //    PercentWidth := trunc( Width * Percent / 100 );
+      //    PercentWidth := Width;
+      Brush.Color := Colors.Background;
+      inc(r.top);
+      IF Percent > 0 THEN
+      BEGIN
+         GradientBox(handle, r, FGradientB, integer(psSolid), 1);
+         GradientBox(handle, r, FGradientF, integer(psSolid), 1);
+         x := r.left;
+         IF NOT (fpoTransparent IN Options) THEN
+            FOR i := r.left TO Width DIV (FStep + FInterspace) + 1 DO
+            BEGIN
+               x2 := x + FInterspace;
+               IF x2 > r.right THEN
+                  IF x < r.right THEN
+                     x2 := r.right
+                  ELSE
+                     break;
+               FillRect(Rect(x, r.top, x2, r.Bottom));
+               inc(x, FStep + FInterspace);
+            END;
 
-    end;
-    //...CALC POSITION
-    try
-      Capt := Format(Caption, [Percent]);
-    except Capt := Caption;
-    end;
-    GetTextExtentPoint32(Self.Canvas.Handle, PChar(Capt), length(Capt), Size);
+      END;
+      //...CALC POSITION
+      TRY
+         Capt := Format(Caption, [Percent]);
+      EXCEPT Capt := Caption;
+      END;
+      GetTextExtentPoint32(Self.Canvas.Handle, PChar(Capt), length(Capt), Size);
 
-    x := 2;
-    y := 0;
-    //  Size.cx:=Size.cx+2+trunc(Size.cx*0.01);
-    //  Size.cy := Size.cy+2;
-    TextSize := Size;
-    if (FCaptionStyle = fstShadow) or (FCaptionStyle = fstVolumetric) then
-    begin
-      inc(Size.cy, ShadowDepth);
-      inc(Size.cx, ShadowDepth);
-    end;
-    if fpoDelineatedText in FOptions then
-    begin
-      inc(Size.cy, 2);
-      inc(Size.cx, 2);
-    end;
+      x := 2;
+      y := 0;
+      //  Size.cx:=Size.cx+2+trunc(Size.cx*0.01);
+      //  Size.cy := Size.cy+2;
+      TextSize := Size;
+      IF (FCaptionStyle = fstShadow) OR (FCaptionStyle = fstVolumetric) THEN
+      BEGIN
+         inc(Size.cy, ShadowDepth);
+         inc(Size.cx, ShadowDepth);
+      END;
+      IF fpoDelineatedText IN FOptions THEN
+      BEGIN
+         inc(Size.cy, 2);
+         inc(Size.cx, 2);
+      END;
 
-    case FCaptionDirection of
-      fldLeftRight:
-        begin
-          case FCaptionAlignment of
-            taCenter: x := (Width - Size.cx) div 2;
-            taRightJustify: x := Width - Size.cx;
-          end;
-          y := (Height - Size.cy) div 2;
-        end;
-      fldRightLeft:
-        begin
-          case FCaptionAlignment of
-            taCenter: x := (Width + Size.cx) div 2;
-            taLeftJustify: x := Width - (Size.cx - TextSize.cx) - 2;
-          else
-            x := TextSize.cx;
-          end;
-          y := TextSize.cy;
-        end;
-      fldDownUp:
-        begin
-          case FCaptionAlignment of
-            taCenter: y := (Height + TextSize.cx - (Size.cy - TextSize.cy)) div 2;
-            taRightJustify: y := TextSize.cx - 4;
-          else
-            y := Height - (Size.cy - TextSize.cy) - 2;
-          end;
-        end;
-      fldUpDown:
-        begin
-          case FCaptionAlignment of
-            taCenter: y := (Height - Size.cx) div 2;
-            taRightJustify: y := Height - Size.cx;
-          else
-            y := 1;
-          end;
-          x := TextSize.cy;
-        end;
+      CASE FCaptionDirection OF
+         fldLeftRight:
+            BEGIN
+               CASE FCaptionAlignment OF
+                  taCenter: x := (Width - Size.cx) DIV 2;
+                  taRightJustify: x := Width - Size.cx;
+               END;
+               y := (Height - Size.cy) DIV 2;
+            END;
+         fldRightLeft:
+            BEGIN
+               CASE FCaptionAlignment OF
+                  taCenter: x := (Width + Size.cx) DIV 2;
+                  taLeftJustify: x := Width - (Size.cx - TextSize.cx) - 2;
+               ELSE
+                  x := TextSize.cx;
+               END;
+               y := TextSize.cy;
+            END;
+         fldDownUp:
+            BEGIN
+               CASE FCaptionAlignment OF
+                  taCenter: y := (Height + TextSize.cx - (Size.cy - TextSize.cy))
+                     DIV 2;
+                  taRightJustify: y := TextSize.cx - 4;
+               ELSE
+                  y := Height - (Size.cy - TextSize.cy) - 2;
+               END;
+            END;
+         fldUpDown:
+            BEGIN
+               CASE FCaptionAlignment OF
+                  taCenter: y := (Height - Size.cx) DIV 2;
+                  taRightJustify: y := Height - Size.cx;
+               ELSE
+                  y := 1;
+               END;
+               x := TextSize.cy;
+            END;
 
-    end;
-    //...CALC POSITION end
+      END;
+      //...CALC POSITION end
 
-    ExtTextOutExt(Handle, x, y, GetClientRect, Capt,
-      FCaptionStyle, fpoDelineatedText in FOptions,
-      false, Self.Font.Color, FColors.Delineate,
-      FColors.Highlight, FColors.Shadow,
-      nil, nil, Self.Font);
+      ExtTextOutExt(Handle, x, y, GetClientRect, Capt,
+         FCaptionStyle, fpoDelineatedText IN FOptions,
+         false, Self.Font.Color, FColors.Delineate,
+         FColors.Highlight, FColors.Shadow,
+         NIL, NIL, Self.Font);
 
-  end;
-  Canvas.Draw(0, 0, Image);
+   END;
+   Canvas.Draw(0, 0, Image);
 
-end;
+END;
 
-procedure TJvgProgress.OnSmthChanged(Sender: TObject);
-begin
-  Repaint;
-end;
+PROCEDURE TJvgProgress.OnSmthChanged(Sender: TObject);
+BEGIN
+   Repaint;
+END;
 //...______________________________________________PROPERTIES METHODS
 
-procedure TJvgProgress.SetBevelOuter(Value: TPanelBevel);
-begin
-  FBevelOuter := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetBevelOuter(Value: TPanelBevel);
+BEGIN
+   FBevelOuter := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetBevelInner(Value: TPanelBevel);
-begin
-  FBevelInner := Value;
-  Invalidate;
-end;
+PROCEDURE TJvgProgress.SetBevelInner(Value: TPanelBevel);
+BEGIN
+   FBevelInner := Value;
+   Invalidate;
+END;
 
-procedure TJvgProgress.SetBevelBold(Value: boolean);
-begin
-  FBevelBold := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetBevelBold(Value: boolean);
+BEGIN
+   FBevelBold := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetPercent(Value: TglPercent);
-begin
-  if FPercent = Value then exit;
-  FPercent := Value;
-  FGradientF.PercentFilling := FPercent;
-end;
+PROCEDURE TJvgProgress.SetPercent(Value: TglPercent);
+BEGIN
+   IF FPercent = Value THEN
+      exit;
+   FPercent := Value;
+   FGradientF.PercentFilling := FPercent;
+END;
 
-procedure TJvgProgress.SetCaptionAlignment(Value: TAlignment);
-begin
-  FCaptionAlignment := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetCaptionAlignment(Value: TAlignment);
+BEGIN
+   FCaptionAlignment := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetCaptionDirection(Value: TglLabelDir);
-begin
-  FCaptionDirection := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetCaptionDirection(Value: TglLabelDir);
+BEGIN
+   FCaptionDirection := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetCaptionStyle(Value: TglTextStyle);
-begin
-  FCaptionStyle := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetCaptionStyle(Value: TglTextStyle);
+BEGIN
+   FCaptionStyle := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetStep(Value: integer);
-begin
-  FStep := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetStep(Value: integer);
+BEGIN
+   FStep := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetInterspace(Value: integer);
-begin
-  FInterspace := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetInterspace(Value: integer);
+BEGIN
+   FInterspace := Value;
+   Repaint;
+END;
 
-procedure TJvgProgress.SetOptions(Value: TglProgressOptions);
-begin
-  FOptions := Value;
-  Repaint;
-end;
+PROCEDURE TJvgProgress.SetOptions(Value: TglProgressOptions);
+BEGIN
+   FOptions := Value;
+   Repaint;
+END;
 
-end.
+END.
+

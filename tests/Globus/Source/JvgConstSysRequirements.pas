@@ -29,7 +29,6 @@ Known Issues:
 
 unit JvgConstSysRequirements;
 
-{$I glDEF.INC}
 { Constant messages for TJvgSysRequirements }
 
 interface

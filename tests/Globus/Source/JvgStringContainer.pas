@@ -27,77 +27,85 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgStringContainer;
+UNIT JvgStringContainer;
 
-interface
-{$I glDEF.INC}
-uses
-  Windows, Messages, SysUtils, Classes;
+INTERFACE
 
-type
-  TOnReadItem = procedure(Sender: TObject; Index: integer) of object;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   jvComponent,
+   Classes;
 
-  TJvgStringContainer = class(TComponent)
-  private
-    FItems: TStringList;
-    FReadOnly: boolean;
-    FOnReadItem: TOnReadItem;
-    function GetString(Index: integer): string;
-    procedure SetString(Index: integer; const Value: string);
-    procedure SetItems(Value: TStringList);
-    function GetCount: integer;
-  public
-    property Strings[Index: Integer]: string read GetString write SetString; default;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property Items: TStringList read FItems write SetItems;
-    property Count: integer read GetCount;
-    property ReadOnly: boolean read FReadOnly write FReadOnly default false;
-    property OnReadItem: TOnReadItem read FOnReadItem write FOnReadItem;
-  end;
+TYPE
+   TOnReadItem = PROCEDURE(Sender: TObject; Index: integer) OF OBJECT;
 
-procedure Register;
+   TJvgStringContainer = CLASS(TJvComponent)
+   PRIVATE
+      FItems: TStringList;
+      FReadOnly: boolean;
+      FOnReadItem: TOnReadItem;
+      FUNCTION GetString(Index: integer): STRING;
+      PROCEDURE SetString(Index: integer; CONST Value: STRING);
+      PROCEDURE SetItems(Value: TStringList);
+      FUNCTION GetCount: integer;
+   PUBLIC
+      PROPERTY Strings[Index: Integer]: STRING READ GetString WRITE SetString;
+         DEFAULT;
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      DESTRUCTOR Destroy; OVERRIDE;
+   PUBLISHED
+      PROPERTY Items: TStringList READ FItems WRITE SetItems;
+      PROPERTY Count: integer READ GetCount;
+      PROPERTY ReadOnly: boolean READ FReadOnly WRITE FReadOnly DEFAULT false;
+      PROPERTY OnReadItem: TOnReadItem READ FOnReadItem WRITE FOnReadItem;
+   END;
 
-implementation
-uses JvgUtils, JvgTypes;
+PROCEDURE Register;
 
-procedure Register;
-begin
-//  RegisterComponents('Proba', [TJvgStringContainer]);
-end;
+IMPLEMENTATION
+USES JvgUtils,
+   JvgTypes;
 
-constructor TJvgStringContainer.Create(AOwner: TComponent);
-begin
-  inherited;
-  FItems := TStringList.Create;
-end;
+PROCEDURE Register;
+BEGIN
+END;
 
-destructor TJvgStringContainer.Destroy;
-begin
-  FItems.Free;
-  inherited;
-end;
+CONSTRUCTOR TJvgStringContainer.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   FItems := TStringList.Create;
+END;
 
-function TJvgStringContainer.GetString(Index: integer): string;
-begin
-  if Assigned(FOnReadItem) then FOnReadItem(self, Index);
-  Result := FItems[Index];
-end;
+DESTRUCTOR TJvgStringContainer.Destroy;
+BEGIN
+   FItems.Free;
+   INHERITED;
+END;
 
-procedure TJvgStringContainer.SetString(Index: integer; const Value: string);
-begin
-  if not FReadOnly then FItems[Index] := Value;
-end;
+FUNCTION TJvgStringContainer.GetString(Index: integer): STRING;
+BEGIN
+   IF Assigned(FOnReadItem) THEN
+      FOnReadItem(self, Index);
+   Result := FItems[Index];
+END;
 
-procedure TJvgStringContainer.SetItems(Value: TStringList);
-begin
-  FItems.Assign(Value);
-end;
+PROCEDURE TJvgStringContainer.SetString(Index: integer; CONST Value: STRING);
+BEGIN
+   IF NOT FReadOnly THEN
+      FItems[Index] := Value;
+END;
 
-function TJvgStringContainer.GetCount: integer;
-begin
-  Result := FItems.Count;
-end;
+PROCEDURE TJvgStringContainer.SetItems(Value: TStringList);
+BEGIN
+   FItems.Assign(Value);
+END;
 
-end.
+FUNCTION TJvgStringContainer.GetCount: integer;
+BEGIN
+   Result := FItems.Count;
+END;
+
+END.
+

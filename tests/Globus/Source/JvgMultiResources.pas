@@ -44,14 +44,14 @@ USES Windows,
    {$ELSE}
    DsgnIntf,
    {$ENDIF COMPILER6_UP}
-
+   JVComponent,
    TypInfo;
 TYPE
 
    TJvgResStringList = CLASS(TStringList)
    END;
 
-   TJvgMultipleResources = CLASS(TComponent)
+   TJvgMultipleResources = CLASS(TJvComponent)
    PRIVATE
       FComps: TStringList;
       FResources: TJvgResStringList;
@@ -75,9 +75,9 @@ TYPE
       PROPERTY Comps: TStringList READ FComps WRITE FComps;
    END;
 
-
 IMPLEMENTATION
-USES StdCtrls, Contnrs;                          //, JvgMultiResourceEditor;
+USES StdCtrls,
+   Contnrs;                             //, JvgMultiResourceEditor;
 
 {$IFDEF COMPILER6_UP}
 TYPE
@@ -90,7 +90,6 @@ TYPE
    TFormDesigner = IFormDesigner;
    {$ENDIF}
    {$ENDIF}
-
 
 CONSTRUCTOR TJvgMultipleResources.Create(AOwner: TComponent);
 VAR

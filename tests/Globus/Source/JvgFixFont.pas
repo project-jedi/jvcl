@@ -27,53 +27,70 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgFixFont;
+UNIT JvgFixFont;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   JvComponent,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs;
 
-type
-  TJvgPublicControlFont = class(TControl)
-  public
-    property Font;
-  end;
+TYPE
+   TJvgPublicControlFont = CLASS(TControl)
+   PUBLIC
+      PROPERTY Font;
+   END;
 
-  TJvgFixFont = class(TComponent)
-  private
-    procedure FixFont(Window: TWinControl);
-  protected
-    { Protected declarations }
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    { Published declarations }
-  end;
+   TJvgFixFont = CLASS(TJvComponent)
+   PRIVATE
+    FFont: TFont;
+      PROCEDURE FixFont(Window: TWinControl);
+    procedure SetFont(const Value: TFont);
+   PROTECTED
+      { Protected declarations }
+   PUBLIC
+      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
+      property Font : TFont read FFont write SetFont;
+   PUBLISHED
+      { Published declarations }
+   END;
 
-implementation
+IMPLEMENTATION
 
 //____________________________
 
-constructor TJvgFixFont.Create(AOwner: TComponent);
+CONSTRUCTOR TJvgFixFont.Create(AOwner: TComponent);
+BEGIN
+   INHERITED;
+   FixFont(TWinControl(Owner));
+END;
+
+PROCEDURE TJvgFixFont.FixFont(Window: TWinControl);
+VAR
+   i                          : integer;
+BEGIN
+   WITH Window DO
+   BEGIN
+      TJvgPublicControlFont(Window).Font.Assign(fFont);
+      FOR i := 0 TO ComponentCount - 1 DO
+         IF Components[i] IS TWinControl THEN
+            FixFont(TWinControl(Components[i]))
+         ELSE IF Components[i] IS TControl THEN
+            TJvgPublicControlFont(Components[i]).Font.Assign(FFont);
+   END;
+END;
+
+procedure TJvgFixFont.SetFont(const Value: TFont);
 begin
-  inherited;
-  FixFont(TWinControl(Owner));
+  FFont := Value;
 end;
 
-procedure TJvgFixFont.FixFont(Window: TWinControl);
-var
-  i: integer;
-begin
-  with Window do
-  begin
-    TJvgPublicControlFont(Window).Font.Size := 8;
-    for i := 0 to ComponentCount - 1 do
-      if Components[i] is TWinControl then
-        FixFont(TWinControl(Components[i]))
-      else if Components[i] is TControl then
-        TJvgPublicControlFont(Components[i]).Font.Size := 8;
-  end;
-end;
+END.
 
-end.
