@@ -172,8 +172,8 @@ JvTimeFrameworkD6R.bpl: d6\JvTimeFrameworkD6R.dpk
 JvTimeFrameworkD6D.bpl: d6\JvTimeFrameworkD6D.dpk
   $(DCC)
 
-JvHMID6R.bpl: d5\JvHMID6R.dpk
+JvHMID6R.bpl: d6\JvHMID6R.dpk
   $(DCC)
 
-JvHMID6D.bpl: d5\JvHMID6D.dpk
+JvHMID6D.bpl: d6\JvHMID6D.dpk
   $(DCC)

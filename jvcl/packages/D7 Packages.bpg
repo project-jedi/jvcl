@@ -162,9 +162,9 @@ JvTimeFrameworkD7R.bpl: d7\JvTimeFrameworkD7R.dpk
 JvTimeFrameworkD7D.bpl: d7\JvTimeFrameworkD7D.dpk
   $(DCC)
 
-JvHMID7R.bpl: d5\JvHMID7R.dpk
+JvHMID7R.bpl: d7\JvHMID7R.dpk
   $(DCC)
 
-JvHMID7D.bpl: d5\JvHMID7D.dpk
+JvHMID7D.bpl: d7\JvHMID7D.dpk
   $(DCC)
 
