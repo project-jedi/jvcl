@@ -196,8 +196,10 @@ begin
       tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
       tvItems.Selected.SelectedIndex);
+      (*
     tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
       tvItems.Selected.StateIndex);
+      *)
   end;
 end;
 
@@ -258,7 +260,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+//    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -344,7 +346,7 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
-    il := THackTreeView(Treeview).StateImages;
+    il := nil ; //THackTreeView(Treeview).StateImages;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;

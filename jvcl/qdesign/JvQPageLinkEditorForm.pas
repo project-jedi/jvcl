@@ -45,7 +45,7 @@ uses
   QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
   QActnList, QMenus,  
   DesignEditors, Variants, DesignIntf, 
-  JvQPageList, JvQPageListTreeView, JvQComponent, QTypes;
+  JvQPageList, JvQPageListTreeView, JvQComponent;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}

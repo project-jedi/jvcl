@@ -58,7 +58,8 @@ type
   implementation of both these methods are provided in DefaultPropDrawName
   and DefaultPropDrawValue in this unit. }
   ICustomPropertyDrawing = interface
-    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
+//    ['{E1A50419-1288-4B26-9EFA-6608A35F0824}']
+    ['{A6BAB90A-7BDA-4C30-9763-D796DA22831A}']
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -75,7 +76,8 @@ type
   by the object inspector. A default implementation of ListDrawValue is supplied
   in the DefaultPropertyListDrawValue procedure included in this unit }
   ICustomPropertyListDrawing = interface
-    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
+//    ['{BE2B8CF7-DDCA-4D4B-BE26-2396B969F8E0}']
+    ['{ADF07C5E-483E-4F56-8483-0AAEB4407FB3}']
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
       var AWidth: Integer);
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
@@ -1016,28 +1018,19 @@ end;
 procedure DefaultPropertyDrawName(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);
 begin
-  if Canvas = nil then exit;
-  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetName);
-  Canvas.Stop;
 end;
 
 procedure DefaultPropertyDrawValue(Prop: TPropertyEditor; Canvas: TCanvas;
   const Rect: TRect);
 begin
-  if Canvas = nil then exit;
-  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Prop.GetVisualValue);
-  Canvas.Stop;
 end;
 
 procedure DefaultPropertyListDrawValue(const Value: string; Canvas: TCanvas;
   const Rect: TRect; Selected: Boolean);
 begin
-  if Canvas = nil then exit;
-  Canvas.Start;
   Canvas.TextRect(Rect, Rect.Left + 1, Rect.Top + 1, Value);
-  Canvas.Stop;
 end;
 
 

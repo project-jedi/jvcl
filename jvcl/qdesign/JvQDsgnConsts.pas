@@ -89,7 +89,12 @@ resourcestring
   RsPaletteGlobusComponents1 = 'JVCL Globus 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus 2';
   RsPaletteValidators = 'Jv Validators';
-  RsPaletteEDI = 'Jv EDI'; 
+  RsPaletteEDI = 'Jv EDI';
+  RsPaletteJans = 'Jv Jans';
+  RsPaletteJansSim = 'Jv Jans SIM';
+  RsPaletteJansCsv = 'Jv Jans CSV';
+  RsPalettePlugin = 'Jv Plugin';
+  RsPaletteNavPane = 'Jv NavPane'; 
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
@@ -98,7 +103,6 @@ resourcestring
   RsPaletteDocking = 'Jv Docking';
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB'; 
-  RsPalettePlugin = 'Jv Plugin';
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring

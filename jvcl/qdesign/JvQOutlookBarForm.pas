@@ -42,7 +42,7 @@ uses
   QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar, QTypes, QExtCtrls;
+  JvQOutlookBar;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
