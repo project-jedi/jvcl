@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls,
-  JvButton, JvTypes;
+  JvTypes;
 
 type
   TFormParsers = class(TForm)
