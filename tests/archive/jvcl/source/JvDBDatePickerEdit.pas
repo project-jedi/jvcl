@@ -43,7 +43,7 @@ unit JvDBDatePickerEdit;
 interface
 
 uses
-  Classes, Controls, Graphics, Db, DbCtrls,
+  Classes, Controls, Graphics, Db, DbCtrls, Messages,
   JvDatePickerEdit;
 
 type
