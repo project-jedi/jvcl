@@ -18,7 +18,7 @@ The Initial Developer of the Original Code is Olivier Sannier <obones@meloo.com>
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
 All Rights Reserved.
 
-Contributor(s): André Snepvangers [asn@xs4all.nl]: JvQtKeySelectionFrame
+Contributor(s): André Snepvangers [asn att xs4all dott nl]: JvQtKeySelectionFrame
 
 Last Modified: 2004-02-05
 

@@ -4,7 +4,7 @@
 {       OS independent Dynamic Loading Helpers                     }
 {                                                                  }
 { The initial developer of the this code is                        }
-{ Robert Marquardt <robert_marquardt@gmx.de)                       }
+{ Robert Marquardt <robert_marquardt att gmx dott de)                       }
 {                                                                  }
 { Copyright (C) 2000, 2001 Robert Marquardt.                       }
 {                                                                  }

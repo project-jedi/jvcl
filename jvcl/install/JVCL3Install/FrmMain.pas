@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: FrmMain.pas, released on 2003-11-27.
 
-The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
+The Initial Developer of the Original Code is Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
 Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
 All Rights Reserved.
 

@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvImageList.pas, released on 2003-10-09
 
-The Initial Developers of the Original Code are: Andreas Hausladen <Andreas.Hausladen@gmx.de>
+The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 Copyright (c) 2003 Andreas Hausladen
 All Rights Reserved.
 

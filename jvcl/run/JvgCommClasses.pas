@@ -15,8 +15,8 @@ Portions created by Andrey V. Chudin are CopyRight (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
-Rob den Braasem [rbraasem@xs4all.nl]
+Michael Beck [mbeck att bigfoot dott com].
+Rob den Braasem [rbraasem att xs4all dott nl]
 Burov Dmitry, translation of russian text.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

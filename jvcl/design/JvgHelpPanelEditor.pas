@@ -15,7 +15,7 @@ Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
+Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

@@ -32,12 +32,12 @@ Known Issues:
 {+---------------------------------------------------------------------------+
  | CONTRIBUTORS:                                                             |
  +---------------------------------------------------------------------------+
- |   Steve Forbes          <ozmosys@mira.net>                                |
- |   Chris Macksey         <c_macksey@hotmail.com>                           |
- |   Wayne Niddery         <waynen@logicfundamentals.com>                    |
- |   Raymond J. Schappe    <rschappe@isthmus-ts.com>                         |
- |   Theodore              <thpana@otenet.gr>                                |
- |   Max Evans             <max@codecraft.com.au>                            |
+ |   Steve Forbes          <ozmosys att mira dott net>                                |
+ |   Chris Macksey         <c_macksey att hotmail dott com>                           |
+ |   Wayne Niddery         <waynen att logicfundamentals dott com>                    |
+ |   Raymond J. Schappe    <rschappe att isthmus-ts dott com>                         |
+ |   Theodore              <thpana att otenet dott gr>                                |
+ |   Max Evans             <max att codecraft dott com dott au>                            |
  +---------------------------------------------------------------------------+
  | HISTORY      COMMENTS                                                     |
  +---------------------------------------------------------------------------+

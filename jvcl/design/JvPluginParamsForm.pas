@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: SxPluginParams.PAS, released on 2001-11-11.
 
-The Initial Developer of the Original Code is Ralf Steinhaeusser [ralfiii@gmx.net]
+The Initial Developer of the Original Code is Ralf Steinhaeusser [ralfiii att gmx dott net]
 Portions created by Ralf Steinhaeusser are Copyright (C) 2001 Ralf Steinhaeusser.
 All Rights Reserved.
 

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: QExtDlgs.pas, released on 2003-12-05
 
-The Initial Developer of the Original Code is André Snepvangers [asn@xs4all.nl]
+The Initial Developer of the Original Code is André Snepvangers [asn att xs4all dott nl]
 Copyright (C) 2003 André Snepvangers.
 All Rights Reserved.
 

@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMail.PAS, released Jun 10, 2000.
 
-The Initial Developer of the Original Code is Petr Vones (petr.v@mujmail.cz)
+The Initial Developer of the Original Code is Petr Vones (petr dott v att mujmail dott cz)
 Portions created by Petr Vones are Copyright (C) 2000 Petr Vones.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.

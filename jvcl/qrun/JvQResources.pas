@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvResources.PAS, released on 2003-12-10.
 
-The Initial Developer of the Original Code is: Robert Marquardt (robert_marquardt@gmx.de)
+The Initial Developer of the Original Code is: Robert Marquardt (robert_marquardt att gmx dott de)
 Copyright (c) 2003 Robert Marquardt
 All Rights Reserved.
 

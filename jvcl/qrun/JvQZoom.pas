@@ -15,11 +15,11 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvZoom.PAS, released on 2001-02-28.
 2002-12-08 : added crosshair options and OnContentsChanged event (Antoine Potten)
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com], Antoine Potten [jvcl@antp.be]
+Contributor(s): Michael Beck [mbeck att bigfoot dott com], Antoine Potten [jvcl att antp dott be]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

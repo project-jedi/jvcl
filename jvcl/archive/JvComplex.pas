@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvComplex.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 att users dott sourceforge dott net]
 Portions created by Peter Thörnqvist are Copyright (C) 1997 Peter Thörnqvist.
 All Rights Reserved.
 
@@ -28,7 +28,7 @@ Known Issues:
 
 {
   @abstract(functions to handle complex numbers)
-  @author(Peter Thornqvist (peter3@peter3.com))
+  @author(Peter Thornqvist (peter3 att users dott sourceforge dott net))
   @created()
   @lastmod()
 }

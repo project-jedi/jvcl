@@ -14,11 +14,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvGridFilter.PAS, released on 2002-06-15.
 
-The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
+The Initial Developer of the Original Code is Jan Verhoeven [jan1 dott verhoeven att wxs dott nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
 All Rights Reserved.
 
-Contributor(s): Robert Love [rlove@slcdug.org].
+Contributor(s): Robert Love [rlove att slcdug dott org].
 
 Last Modified: 2000-06-15
 

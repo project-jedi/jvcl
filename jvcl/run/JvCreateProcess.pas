@@ -10,14 +10,14 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvSysComp.PAS, released Dec 26, 1999.
 
-The Initial Developer of the Original Code is Petr Vones (petr.v@mujmail.cz)
+The Initial Developer of the Original Code is Petr Vones (petr dott v att mujmail dott cz)
 Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
 Contributor(s):
   Marcel van Brakel <brakelm@bart.nl>.
-  Remko Bonte <remkobonte@myrealbox.com> (redirect console output)
+  Remko Bonte <remkobonte att myrealbox dott com> (redirect console output)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

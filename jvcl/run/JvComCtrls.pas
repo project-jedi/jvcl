@@ -10,13 +10,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvComCtrls.PAS, released Oct 10, 1999.
 
-The Initial Developer of the Original Code is Petr Vones (petr.v@mujmail.cz)
+The Initial Developer of the Original Code is Petr Vones (petr dott v att mujmail dott cz)
 Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
 Contributor(s):
-Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw routine
+Peter Below [100113 dott 1101 att compuserve dott com] - alternate TJvPageControl.OwnerDraw routine
 Peter Thörnqvist [peter3 at sourceforge dot net] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar

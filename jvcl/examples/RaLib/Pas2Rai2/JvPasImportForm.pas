@@ -843,7 +843,7 @@ begin
       Add('The Original Code is: ' + ExtractFileName(eDestination.Text) +
         Format(', generated on %.4d-%.2d-%.2d.', [Year, Month, Day]));
       Add('');
-      Add('The Initial Developer of the Original Code is: Andrei Prygounkov <a.prygounkov@gmx.de>');
+      Add('The Initial Developer of the Original Code is: Andrei Prygounkov <a dott prygounkov att gmx dott de>');
       Add('Copyright (C) ' + Format('%.4d', [Year]) + ' Andrei Prygounkov.');
       Add('All Rights Reserved.');
       Add('');

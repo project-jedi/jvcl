@@ -18,8 +18,8 @@ This is a merging of the original TJvListBox3 and TJvImageListBox
 TJvListBox3 has been renamed TJvImageListBox and the original TJvImageListBox has been moved to \archive
 
 Contributor(s):
-Sébastien Buysse [sbuysse@buypin.com]
-Michael Beck [mbeck@bigfoot.com]
+Sébastien Buysse [sbuysse att buypin dott com]
+Michael Beck [mbeck att bigfoot dott com]
 Olivier Sannier [obones@meloo.com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

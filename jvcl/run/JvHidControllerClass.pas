@@ -10,11 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvHidControllerClass.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Robert Marquardt [robert_marquardt@gmx.de]
+The Initial Developer of the Original Code is Robert Marquardt [robert_marquardt att gmx dott de]
 Portions created by Robert Marquardt are Copyright (C) 1999-2003 Robert Marquardt.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

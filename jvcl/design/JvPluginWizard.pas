@@ -15,7 +15,7 @@ Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 
 Contributor(s):
-Ralf Steinhaeusser [ralfiii@gmx.net].
+Ralf Steinhaeusser [ralfiii att gmx dott net].
 Steefan Lesage - converted to use new OTA
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

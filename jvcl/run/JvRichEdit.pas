@@ -18,11 +18,11 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  Sébastien Buysse [sbuysse@buypin.com] (original code in JvRichEdit.pas)
-  Michael Beck [mbeck@bigfoot.com] (contributor to JvRichEdit.pas)
-  Roman Kovbasiouk [roko@users.sourceforge.net] (merging JvRichEdit.pas)
-  Remko Bonte [remkobonte@myrealbox.com] (insert image procedures, MS Text converters)
-  Jacob Boerema [jgboerema@hotmail.com] (indentation style, zoom, tab styles)
+  Sébastien Buysse [sbuysse att buypin dott com] (original code in JvRichEdit.pas)
+  Michael Beck [mbeck att bigfoot dott com] (contributor to JvRichEdit.pas)
+  Roman Kovbasiouk [roko att users dott sourceforge dott net] (merging JvRichEdit.pas)
+  Remko Bonte [remkobonte att myrealbox dott com] (insert image procedures, MS Text converters)
+  Jacob Boerema [jgboerema att hotmail dott com] (indentation style, zoom, tab styles)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

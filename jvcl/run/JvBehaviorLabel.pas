@@ -15,8 +15,8 @@ Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-Sébastien Buysse [sbuysse@buypin.com] - original author of the merged components
-Michael Beck [mbeck@bigfoot.com].
+Sébastien Buysse [sbuysse att buypin dott com] - original author of the merged components
+Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

@@ -15,7 +15,7 @@ Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
+Michael Beck [mbeck att bigfoot dott com].
 
 Last Modified:  2003-01-15
 

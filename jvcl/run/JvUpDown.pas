@@ -10,12 +10,12 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvUpDown.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
+The Initial Developer of the Original Code is Peter Below <100113 dott 1101 att compuserve dott com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
 All Rights Reserved.
 
 Contributor(s):
-Sebastien Buysse [sbuysse@buypin.com].
+Sebastien Buysse [sbuysse att buypin dott com].
 Peter Thörnqvist [peter3 at sourceforge dot net] - TJvDomainUpDown
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

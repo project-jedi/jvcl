@@ -10,12 +10,12 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvAnimate.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
-                André Snepvangers [asn@xs4all.nl]
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+                André Snepvangers [asn att xs4all dott nl]
 
 2003-01-19 - (asn) support for CLX
 

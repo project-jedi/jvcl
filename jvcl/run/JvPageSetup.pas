@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvPageSetup.PAS, released on 2000-07-25.
 
-The Initial Developer of the Original Code is Pasha Sivtsov [psivtsov@mail.ru]
+The Initial Developer of the Original Code is Pasha Sivtsov [psivtsov att mail dott ru]
 Portions created by Pasha Sivtsov are Copyright (C) 2000 Pasha Sivtsov.
 All Rights Reserved.
 

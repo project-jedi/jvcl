@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvUtils.PAS, released on 2002-07-04.
 
-The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
+The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygounkov att gmx dott de>
                        Roman Tkachev <whiteman@infa.ru>
 Copyright (c) 1999, 2002 Andrei Prygounkov, Roman Tkachev
 All Rights Reserved.
