@@ -248,12 +248,12 @@ msgstr "Control darf nicht nil sein"
 #. Programmer's name for it: RsEDockCannotGetValueWithNoOrient
 #: JvDockGlobals.pas:109
 msgid "Cannot get data of control that has no dock orientation"
-msgstr ""
+msgstr "Kann nicht die Daten einer Control ohne Dock-Orientation holen"
 
 #. Programmer's name for it: RsEDockCannotSetValueWithNoOrient
 #: JvDockGlobals.pas:110
 msgid "Cannot set data of control that has no dock orientation"
-msgstr ""
+msgstr "Kann nicht die Daten einer Control ohne Dock-Orientation setzen"
 
 #  Programmer's name for it: RsDockCannotChangeDockStyleProperty
 #. Programmer's name for it: RsEDockCannotChangeDockStyleProperty
@@ -355,19 +355,19 @@ msgstr "Fehlertyp:"
 #. JvFullColorCircleFrm..Caption
 #: JvFullColorCircleForm.dfm:5
 msgid "Color circle configurations"
-msgstr ""
+msgstr "Farbkreis-Konfigurationen"
 
 #. JvFullColorCircleFrm..LabelOld..Caption
 #. JvFullColorFrm..LabelOld..Caption
 #: JvFullColorCircleForm.dfm:31 JvFullColorForm.dfm:53
 msgid "Old:"
-msgstr ""
+msgstr "Alt:"
 
 #. JvFullColorCircleFrm..LabelNew..Caption
 #. JvFullColorFrm..LabelNew..Caption
 #: JvFullColorCircleForm.dfm:38 JvFullColorForm.dfm:60
 msgid "New:"
-msgstr ""
+msgstr "Neu:"
 
 #  JvHLEditorParamsForm..Pages..tsColors..lblColor..Caption
 #  Programmer's name for it: RsHLEdPropDlg_lblColor
@@ -396,7 +396,7 @@ msgstr "Bemerkung"
 #. JvFullColorCircleFrm..PanelAxisSettings..LabelRed..Caption
 #: JvFullColorCircleForm.dfm:298
 msgid "&Red:"
-msgstr ""
+msgstr "&Rot:"
 
 #  JvHLEditorParamsForm..Pages..tsColors..lblElement..Caption
 #  Programmer's name for it: RsHLEdPropDlg_lblElement
@@ -479,12 +479,12 @@ msgstr "&Anwenden"
 #. JvFullColorFrm..Caption
 #: JvFullColorForm.dfm:7
 msgid "Color Spaces Editor, Choose your color"
-msgstr ""
+msgstr "Farbraum-Editor, Wählen Sie eine Farbe"
 
 #. JvFullColorFrm..LabelColorSpace..Caption
 #: JvFullColorForm.dfm:27
 msgid "&Current Color Space :"
-msgstr ""
+msgstr "&Aktueller Farbraum:"
 
 #  Programmer's name for it: RsSaveSettings
 #  Programmer's name for it: RsSaveSettings
@@ -497,7 +497,7 @@ msgstr "Einstellungen speichern"
 #. JvFullColorFrm..GroupBoxSettings..LabelPredefined..Caption
 #: JvFullColorForm.dfm:99
 msgid "&Predefined colors:"
-msgstr ""
+msgstr "Vordefinierte &Farben:"
 
 #  === JvColorCombo.pas =======================================================
 #  Programmer's name for it: RsCustomCaption
@@ -519,7 +519,7 @@ msgstr "Benutzerdefiniert"
 #. JvFullColorFrm..PanelGraphic..LabelAxis..Caption
 #: JvFullColorForm.dfm:203
 msgid "&Axis:"
-msgstr ""
+msgstr "&Achse:"
 
 #  JvGridPreviewForm..Caption
 #  JvGridPreviewForm..Caption
@@ -621,7 +621,7 @@ msgstr "&Tabstops:"
 #. Programmer's name for it: RsHLEdPropDlg_cbKeyboardLayoutDefault
 #: JvHLEditorPropertyForm.dfm:55 JvResources.pas:1076
 msgid "Default keymapping"
-msgstr "Default Tastaturbelegung"
+msgstr "Default-Tastaturbelegung"
 
 #  JvHLEditorParamsForm..Pages..tsEditor..gbEditor..Caption
 #  Programmer's name for it: RsHLEdPropDlg_gbEditor
@@ -1101,7 +1101,7 @@ msgstr "HID-Fehler: Eine boolesche Funktion schlug fehl"
 #. Programmer's name for it: RsENotSupportedItemKind
 #: JvImageList.pas:258
 msgid "The item kind %s is not supported so far."
-msgstr ""
+msgstr "Diese Item-Art wird noch nicht unterstuetzt."
 
 #  (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
 #  Programmer's name for it: RsPropertyNotExists
@@ -1380,7 +1380,7 @@ msgstr "Der Name des aktiven Threads kann nicht geändert werden"
 #. Programmer's name for it: RsEReleaseOfUnusedTicket
 #: JvMTThreading.pas:164 JvResources.pas:1469
 msgid "Release of unused ticket"
-msgstr ""
+msgstr "Freigabe eines unbenutzten Tickets"
 
 #  PainterEffectsForm..Caption
 #  PainterEffectsForm..Caption
@@ -1488,7 +1488,7 @@ msgstr ""
 #. JvHTMLParserForm..GroupBox1..Label4..Caption
 #: JvParserForm.dfm:79
 msgid "Must be "
-msgstr "Muss sein"
+msgstr "Muss sein "
 
 #  FormParsers..GroupBox1..Label5..Caption
 #  FormParsers..GroupBox1..Label5..Caption
@@ -1615,7 +1615,7 @@ msgid ""
 "Delete the selected item \n"
 "from the list"
 msgstr ""
-"Das markierte Element von \n"
+"Das markierte Element aus \n"
 "der Liste entfernen"
 
 #  FormParsers..RemoveBtn..Caption
@@ -1760,7 +1760,7 @@ msgstr "Ungenutzte Aufrufe von der Liste entfernen"
 #. ProfReport..Panel1..TrimBtn..Caption
 #: JvProfilerForm.dfm:96
 msgid "&Trim"
-msgstr ""
+msgstr "&Trimmen"
 
 #  ProfReport..lvReport..Hint
 #  ProfReport..lvReport..Hint
@@ -1771,7 +1771,7 @@ msgstr ""
 #. ProfReport..lvReport..Hint
 #: JvProfilerForm.dfm:106
 msgid "Click the top column to sort the items"
-msgstr ""
+msgstr "Auf den Spaltenkopf klicken, um die Elemente zu sortieren"
 
 #  ProfReport..lvReport......Caption
 #  ProfReport..lvReport......Caption
@@ -2067,13 +2067,13 @@ msgstr ""
 #. Programmer's name for it: RsESorryForOneDimensionalArraysOnly
 #: JvResources.pas:104
 msgid "Sorry, for one-dimensional arrays only"
-msgstr "Nur für eindimensionierte Arrays"
+msgstr "Nur für eindimensionale Arrays"
 
 #  Programmer's name for it: RsELocalDatabase
 #. Programmer's name for it: RsELocalDatabase
 #: JvResources.pas:105
 msgid "Cannot perform this operation on a local database"
-msgstr "Diese Operation kann nicht auf eine lokale Datenbank angewant werden"
+msgstr "Diese Operation kann nicht auf eine lokale Datenbank angewandt werden"
 
 #  === JvValidators.pas =======================================================
 #  Programmer's name for it: RsEInterfaceNotSupported
@@ -2088,7 +2088,7 @@ msgstr "%s unterstützt das Interface %s nicht."
 #. Programmer's name for it: RsECircularReference
 #: JvResources.pas:108
 msgid "Circular reference not allowed"
-msgstr ""
+msgstr "Zirkuläre Referenz nicht erlaubt"
 
 #  Programmer's name for it: RsSourceBitmapTooSmall
 #  === JvResample.pas =========================================================
@@ -2272,7 +2272,7 @@ msgstr "Der Pfad '%s' ist nicht vorhanden"
 #. Programmer's name for it: RsENotABooleanValue
 #: JvResources.pas:163
 msgid "'%s' is not a valid boolean value"
-msgstr "'%s' ist kein gültiger boolscher Wert"
+msgstr "'%s' ist kein gültiger boolescher Wert"
 
 #. Programmer's name for it: RsENodeNameCannotContainSpaces
 #: JvResources.pas:164
@@ -2310,7 +2310,9 @@ msgstr "Fehler #"
 msgid ""
 "%d is an invalid driver index. The maximum value is %d\n"
 "This may also happen if the device could not be initialized properly."
-msgstr "%d ist ein ungültiger Treiberindex. Der Maximalwert ist %d"
+msgstr ""
+"%d ist ein ungültiger Treiberindex. Der Maximalwert ist %d.\n"
+"Dies kann auch auftreten wenn das Gerät nicht initialisiert werden konnte."
 
 #. === JvBackgrounds.pas ======================================================
 #. Programmer's name for it: SChainError
@@ -2341,7 +2343,7 @@ msgstr "Das Steuerelement '%s' hat kein Elternfenster"
 #. Programmer's name for it: RsEParentGivenNotAParent
 #: JvResources.pas:184
 msgid "Parent given is not a parent of '%s'"
-msgstr ""
+msgstr "Der angegebene Parent ist kein Parent von '%s'"
 
 #  === JvBaseEdits.pas ========================================================
 #  Programmer's name for it: RsEOutOfRangeXFloat
@@ -2619,26 +2621,26 @@ msgstr ""
 #. Programmer's name for it: RsFileNameChange
 #: JvResources.pas:266
 msgid "Filename Change"
-msgstr "Datename ändern"
+msgstr "Datename geändert"
 
 #  Programmer's name for it: RsDirectoryNameChange
 #. Programmer's name for it: RsDirectoryNameChange
 #: JvResources.pas:267
 msgid "Directory Name Change"
-msgstr "Verzeichnisname ändern"
+msgstr "Verzeichnisname geändert"
 
 #  Programmer's name for it: RsAttributesChange
 #  Programmer's name for it: RsAttributesChange
 #. Programmer's name for it: RsAttributesChange
 #: JvResources.pas:268
 msgid "Attributes Change"
-msgstr "Attribute ändern"
+msgstr "Attribute geändert"
 
 #  Programmer's name for it: RsSizeChange
 #. Programmer's name for it: RsSizeChange
 #: JvResources.pas:269
 msgid "Size Change"
-msgstr "Größe geändert"
+msgstr "Größe ändern"
 
 #  Programmer's name for it: RsWriteChange
 #  Programmer's name for it: RsWriteChange
@@ -2646,14 +2648,14 @@ msgstr "Größe geändert"
 #. Programmer's name for it: RsWriteChange
 #: JvResources.pas:270
 msgid "Write Change"
-msgstr ""
+msgstr "Write geändert"
 
 #  Programmer's name for it: RsSecurityChange
 #  Programmer's name for it: RsSecurityChange
 #. Programmer's name for it: RsSecurityChange
 #: JvResources.pas:271
 msgid "Security Change"
-msgstr ""
+msgstr "Sicherheit geändert"
 
 #  Programmer's name for it: RsEFmtCannotChangeName
 #  Programmer's name for it: RsEFmtCannotChangeName
@@ -2696,7 +2698,7 @@ msgstr ""
 #. Programmer's name for it: RsChartDesigntimeLabel
 #: JvResources.pas:281
 msgid ": JEDI JVCL Charting Component"
-msgstr ""
+msgstr ": JEDI JVCL Chart-Komponente"
 
 #. Programmer's name for it: RsNoData
 #: JvResources.pas:282
@@ -2709,42 +2711,42 @@ msgstr "Keine Daten. (Data.ValueCount=0)"
 #. Programmer's name for it: RsGraphHeader
 #: JvResources.pas:283
 msgid "Graph Header"
-msgstr ""
+msgstr "Graph-Beschriftung"
 
 #  Programmer's name for it: RsCurrentHeaders
 #  Programmer's name for it: RsCurrentHeaders
 #. Programmer's name for it: RsCurrentHeaders
 #: JvResources.pas:284
 msgid "Current Header: %s"
-msgstr ""
+msgstr "Aktuelle Beschriftung: %s"
 
 #  Programmer's name for it: RsXAxisHeaders
 #  Programmer's name for it: RsXAxisHeaders
 #. Programmer's name for it: RsXAxisHeaders
 #: JvResources.pas:285
 msgid "X Axis Header: %s"
-msgstr ""
+msgstr "X-Achsen-Beschriftung: %s"
 
 #  Programmer's name for it: RsGraphScale
 #  Programmer's name for it: RsGraphScale
 #. Programmer's name for it: RsGraphScale
 #: JvResources.pas:286
 msgid "Graph Scale"
-msgstr ""
+msgstr "Graph-Skalierung"
 
 #  Programmer's name for it: RsYAxisScales
 #  Programmer's name for it: RsYAxisScales
 #. Programmer's name for it: RsYAxisScales
 #: JvResources.pas:287
 msgid "Y Axis Scale: %s"
-msgstr ""
+msgstr "Y-Achsen-Skalierung: %s"
 
 #  Programmer's name for it: RsNoValuesHere
 #  Programmer's name for it: RsNoValuesHere
 #. Programmer's name for it: RsNoValuesHere
 #: JvResources.pas:288
 msgid "No values here!"
-msgstr ""
+msgstr "Hier keine Werte!"
 
 #. Programmer's name for it: RsNA
 #: JvResources.pas:289
@@ -2842,7 +2844,7 @@ msgstr "Die Zwischenablage ist leer"
 #. Programmer's name for it: RsENoRenderFormatEventGiven
 #: JvResources.pas:310
 msgid "No OnRenderFormat was given"
-msgstr ""
+msgstr "Kein OnRenderFormat angegeben"
 
 #  === JvColorButton.pas ======================================================
 #  Programmer's name for it: RsOtherCaption
@@ -2860,7 +2862,7 @@ msgstr "&Andere..."
 #. Programmer's name for it: RsDelphiConstantNames
 #: JvResources.pas:323
 msgid "Delphi constant names"
-msgstr ""
+msgstr "Delphi-Konstantennamen"
 
 #  Programmer's name for it: RsEnglishNames
 #. Programmer's name for it: RsEnglishNames
