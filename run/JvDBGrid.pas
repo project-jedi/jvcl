@@ -35,17 +35,17 @@ interface
 
 uses
   Classes, DB,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
-{$IFDEF VCL}
+  {$ENDIF COMPILER6_UP}
+  {$IFDEF VCL}
   Windows, Messages, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
   ExtCtrls, DBGrids,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QForms, QGrids, QGraphics, QMenus, QStdCtrls,
   QExtCtrls, QDBGrids,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids,
   JvFinalize;
 
@@ -186,10 +186,8 @@ type
     procedure SetSortedField(const Value: string);
     procedure SetSortMarker(const Value: TSortMarker);
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-
   protected
     FCurrentDrawRow: Integer;
-
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
@@ -235,9 +233,9 @@ type
       MousePos: TPoint): Boolean; override;
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
     procedure DoMaxColWidth; virtual;
@@ -249,8 +247,8 @@ type
     function LastVisibleColumn: Integer;
     function FirstVisibleColumn: Integer;
     procedure TitleClick(Column: TColumn); override;
-    procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker; IsDown:
-      Boolean); virtual;
+    procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor;
+      var ASortMarker: TSortMarker; IsDown: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -270,7 +268,6 @@ type
     procedure Save;
     procedure UpdateTabStops(ALimit: Integer = -1);
     procedure ShowColumnsDialog;
-
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -295,7 +292,7 @@ type
     property ShowGlyphs: Boolean read FShowGlyphs write SetShowGlyphs default True;
     property TitleButtons: Boolean read FTitleButtons write SetTitleButtons default False;
     property RowsHeight: Integer read GetRowsHeight write SetRowsHeight stored False;
-      { obsolete, for backward compatibility only }
+    { obsolete, for backward compatibility only }
     property OnCheckButton: TCheckTitleBtnEvent read FOnCheckButton write FOnCheckButton;
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
@@ -338,12 +335,12 @@ implementation
 
 uses
   SysUtils, DbConsts, Math, TypInfo,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QDialogs,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvConsts, JvResources, JvTypes,
   JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
 
@@ -408,7 +405,10 @@ begin
     Grid.InvalidateCell(I, Row);
 end;
 
+//=== TInternalInplaceEdit ===================================================
+
 {$IFDEF COMPILER6_UP}
+
 type
   TInternalInplaceEdit = class(TInplaceEditList)
   private
@@ -427,6 +427,194 @@ type
     constructor Create(Owner: TComponent); override;
     property DataList: TJvDBLookupList read FDataList; //  TDBLookupListBox
   end;
+
+constructor TInternalInplaceEdit.Create(Owner: TComponent);
+begin
+  inherited Create(Owner);
+  FLookupSource := TDataSource.Create(Self);
+end;
+
+procedure TInternalInplaceEdit.CloseUp(Accept: Boolean);
+var
+  MasterField: TField;
+  ListValue: Variant;
+begin
+  if ListVisible then
+  begin
+    if GetCapture <> 0 then
+      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+    if ActiveList = DataList then
+      ListValue := DataList.KeyValue
+    else
+    if PickList.ItemIndex <> -1 then
+      ListValue := PickList.Items[Picklist.ItemIndex];
+    SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
+      SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+    ListVisible := False;
+    if Assigned(FDataList) then
+      FDataList.LookupSource := nil; //  ListSource
+    FLookupSource.Dataset := nil;
+    Invalidate;
+    if Accept then
+      if ActiveList = DataList then
+        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
+        begin
+          MasterField := DataSet.FieldByName(KeyFields);
+          if MasterField.CanModify and TJvDBGrid(Grid).DataLink.Edit then
+            MasterField.Value := ListValue;
+        end
+      else
+      if (not VarIsNull(ListValue)) and EditCanModify then
+        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
+          Text := ListValue;
+  end;
+end;
+
+procedure TInternalInplaceEdit.DoEditButtonClick;
+begin
+  TJvDBGrid(Grid).EditButtonClick; //   TCustomDBGrid
+end;
+
+procedure TInternalInplaceEdit.DropDown;
+var
+  Column: TColumn;
+begin
+  if not ListVisible then
+  begin
+    with TDBGrid(Grid) do
+      Column := Columns[SelectedIndex];
+    if ActiveList = FDataList then
+      with Column.Field do
+      begin
+        FDataList.Color := Color;
+        FDataList.Font := Font;
+        FDataList.RowCount := Column.DropDownRows;
+        FLookupSource.DataSet := LookupDataSet;
+        FDataList.LookupField := LookupKeyFields; //  KeyField
+        FDataList.LookupDisplay := LookupResultField; //  ListField
+        FDataList.LookupSource := FLookupSource; //  ListSource
+        FDataList.KeyValue := DataSet.FieldByName(KeyFields).Value;
+      end
+    else
+    if ActiveList = PickList then
+    begin
+      PickList.Items.Assign(Column.PickList);
+      DropDownRows := Column.DropDownRows;
+    end;
+  end;
+  inherited DropDown;
+end;
+
+procedure TInternalInplaceEdit.UpdateContents;
+var
+  Column: TColumn;
+begin
+  inherited UpdateContents;
+  if FUseDataList then
+  begin
+    if FDataList = nil then
+    begin
+      FDataList := TJvPopupDataList.Create(Self);
+      FDataList.Visible := False;
+      FDataList.Parent := Self;
+      FDataList.OnMouseUp := ListMouseUp;
+    end;
+    ActiveList := FDataList;
+  end;
+  with TDBGrid(Grid) do
+    Column := Columns[SelectedIndex];
+  Self.ReadOnly := Column.ReadOnly;
+  Font.Assign(Column.Font);
+  ImeMode := Column.ImeMode;
+  ImeName := Column.ImeName;
+end;
+
+type
+  TSelection = record
+    StartPos: Integer;
+    EndPos: Integer;
+  end;
+
+procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
+
+  procedure SendToParent;
+  begin
+    TJvDBGrid(Grid).KeyDown(Key, Shift);
+    Key := 0;
+  end;
+
+  procedure ParentEvent;
+  var
+    GridKeyDown: TKeyEvent;
+  begin
+    GridKeyDown := TJvDBGrid(Grid).OnKeyDown;
+    if Assigned(GridKeyDown) then
+      GridKeyDown(Grid, Key, Shift);
+  end;
+
+  function ForwardMovement: Boolean;
+  begin
+    Result := dgAlwaysShowEditor in TDBGrid(Grid).Options;
+  end;
+
+  function Ctrl: Boolean;
+  begin
+    Result := ssCtrl in Shift;
+  end;
+
+  function Selection: TSelection;
+  begin
+    SendMessage(Handle, EM_GETSEL, WPARAM(@Result.StartPos), LPARAM(@Result.EndPos));
+  end;
+
+  function CaretPos: Integer;
+  var
+    P: TPoint;
+  begin
+    Windows.GetCaretPos(P);
+    Result := SendMessage(Handle, EM_CHARFROMPOS, 0, MakeLong(P.X, P.Y));
+  end;
+
+  function RightSide: Boolean;
+  begin
+    with Selection do
+      Result := {(CaretPos = GetTextLen) and  }
+        ((StartPos = 0) or (EndPos = StartPos)) and (EndPos = GetTextLen);
+  end;
+
+  function LeftSide: Boolean;
+  begin
+    with Selection do
+      Result := (CaretPos = 0) and (StartPos = 0) and
+        ((EndPos = 0) or (EndPos = GetTextLen));
+  end;
+
+begin
+  case Key of
+    VK_LEFT:
+      if ForwardMovement and (Ctrl or LeftSide) then
+        SendToParent;
+    VK_RIGHT:
+      if ForwardMovement and (Ctrl or RightSide) then
+        SendToParent;
+  end;
+  inherited KeyDown(Key, Shift);
+end;
+
+function TInternalInplaceEdit.DoMouseWheel(Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint): Boolean;
+begin
+  // Do not validate a record by error
+  with TJvDBGrid(Grid) do
+    if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
+      DataLink.DataSet.Cancel;
+
+  // Ideally we would transmit the action to the DatalList but
+  // DoMouseWheel is protected
+  //  Result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
+  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+end;
+
 {$ENDIF COMPILER6_UP}
 
 //=== TJvDBGrid ==============================================================
@@ -634,14 +822,14 @@ end;
 
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := TInternalInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-{$ELSE}
+  {$ELSE}
   Result := inherited CreateEditor;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -740,7 +928,7 @@ var
               AddAfter := Compare(CurrentRow, FSelectionAnchor) <> -Direction;
               if not AddAfter then
                 CurrentRowSelected := False;
-            end
+            end;
         end
         else
           ClearSelections;
@@ -787,7 +975,8 @@ var
           ClearSelections;
           ACol := IndicatorOffset;
         end
-        else if ACol < IndicatorOffset then
+        else
+        if ACol < IndicatorOffset then
         begin
           ClearSelections;
           ACol := ColCount;
@@ -882,7 +1071,8 @@ begin
         VK_PRIOR]) or ((Key = VK_INSERT) and (CanModify and
         (not ReadOnly) and (dgEditing in Options))) then
         ClearSelections
-      else if (Key = VK_TAB) and not (ssAlt in Shift) then
+      else
+      if (Key = VK_TAB) and not (ssAlt in Shift) then
         CheckTab(not (ssShift in Shift));
     end;
   OnKeyDown := nil;
@@ -1056,12 +1246,15 @@ begin
   end;
   if Assigned(FOnGetCellParams) then
     FOnGetCellParams(Self, Field, AFont, Background, Highlight)
-  else if Assigned(FOnGetCellProps) then
+  else
+  if Assigned(FOnGetCellProps) then
     FOnGetCellProps(Self, Field, AFont, Background);
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
 const
+  cIndexName = 'IndexName';
+  cIndexDefs = 'IndexDefs';
   cDirection: array [Boolean] of TSortMarker = (smDown, smUp);
 var
   IndexDefs: TIndexDefs;
@@ -1098,9 +1291,9 @@ var
 begin
   IndexFound := False;
 
-  if AutoSort and IsPublishedProp(DataSource.DataSet, 'IndexDefs')
-    and IsPublishedProp(DataSource.DataSet, 'IndexName') then
-    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, 'IndexDefs'))
+  if AutoSort and IsPublishedProp(DataSource.DataSet, cIndexDefs)
+    and IsPublishedProp(DataSource.DataSet, cIndexName) then
+    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, cIndexDefs))
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) then
@@ -1112,7 +1305,7 @@ begin
       SortedField := AField.FieldName;
       SortMarker := cDirection[Descending];
       try
-        SetStrProp(DataSource.DataSet, 'IndexName', lIndexName);
+        SetStrProp(DataSource.DataSet, cIndexName, lIndexName);
       except
       end;
     end;
@@ -1336,7 +1529,8 @@ begin
         FSwapButtons := True;
         MouseCapture := True;
       end
-      else if Button = mbLeft then
+      else
+      if Button = mbLeft then
       begin
         EnableClick := True;
         CheckTitleButton(Cell.X - IndicatorOffset, Cell.Y, EnableClick);
@@ -1347,7 +1541,8 @@ begin
           FPressedCol := GetMasterColumn(Cell.X, Cell.Y);
           TrackButton(X, Y);
         end
-        else if FBeepOnError then
+        else
+        if FBeepOnError then
           SysUtils.Beep;
         Exit;
       end;
@@ -1356,7 +1551,8 @@ begin
     begin
       if dgIndicator in Options then
         inherited MouseDown(Button, Shift, 1, Y)
-      else if Cell.Y >= TitleOffset then
+      else
+      if Cell.Y >= TitleOffset then
         if Cell.Y - Row <> 0 then
           DataLink.Dataset.MoveBy(Cell.Y - Row);
     end
@@ -1406,7 +1602,8 @@ begin
                         Next;
                       end;
                     end
-                    else if lCompare < 0 then
+                    else
+                    if lCompare < 0 then
                     begin
                       GotoBookmark(Pointer(lLastSelected));
                       Prior;
@@ -1465,7 +1662,8 @@ begin
         DoTitleClick(FPressedCol.Index, FPressedCol.Field);
     end;
   end
-  else if FSwapButtons then
+  else
+  if FSwapButtons then
   begin
     FSwapButtons := False;
     MouseCapture := False;
@@ -1497,7 +1695,8 @@ procedure TJvDBGrid.WMRButtonUp(var Msg: TWMMouse);
 begin
   if not (FGridState in [gsColMoving, gsRowMoving]) then
     inherited
-  else if not (csNoStdEvents in ControlStyle) then
+  else
+  if not (csNoStdEvents in ControlStyle) then
     with Msg do
       MouseUp(mbRight, KeysToShiftState(Keys), XPos, YPos);
 end;
@@ -1595,7 +1794,8 @@ begin
             end;
           end;
         end
-        else if FieldKind = fkData then
+        else
+        if FieldKind = fkData then
         begin
           if DataType = ftFloat then
             if Key in ['.', ','] then
@@ -1836,7 +2036,8 @@ begin
         FixRect.Bottom - FMsIndicators.Height) shr 1, Indicator);
     end;
   end
-  else if not (csLoading in ComponentState) and (FTitleButtons or (FixedCols > 0)) and
+  else
+  if not (csLoading in ComponentState) and (FTitleButtons or (FixedCols > 0)) and
     (gdFixed in AState) and (dgTitles in Options) and (ARow < TitleOffset) then
   begin
     SavePen := Canvas.Pen.Color;
@@ -1861,7 +2062,8 @@ begin
         TitleRect.Right := ARect.Right;
       if MasterCol = nil then
         Exit
-      else if MasterCol <> DrawColumn then
+      else
+      if MasterCol <> DrawColumn then
         AField := MasterCol.Field;
       DrawColumn := MasterCol;
       if ((dgColLines in Options) or FTitleButtons) and (ACol = FixedCols - 1) then
@@ -1916,7 +2118,8 @@ begin
       ARect := TitleRect;
       if (DataLink = nil) or not DataLink.Active then
         Canvas.FillRect(TitleRect)
-      else if DrawColumn <> nil then
+      else
+      if DrawColumn <> nil then
       begin
         case ASortMarker of
           smDown: Bmp := GetGridBitmap(gpMarkDown);
@@ -2153,7 +2356,8 @@ begin
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
-    else if (DataSource <> nil) and
+    else
+    if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
@@ -2170,7 +2374,8 @@ begin
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
-    else if (DataSource <> nil) and
+    else
+    if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
@@ -2246,14 +2451,12 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
   InvalidateEditor;
   Click;
 end;
-
 {$ENDIF !COMPILER6_UP}
 
 procedure TJvDBGrid.EditButtonClick;
@@ -2360,203 +2563,11 @@ begin
   end;
 end;
 
-// ***********************************************************************
-// TInternalInplaceEdit
-// ***********************************************************************
-
-{$IFDEF COMPILER6_UP}
-
-constructor TInternalInplaceEdit.Create(Owner: TComponent);
-begin
-  inherited Create(Owner);
-  FLookupSource := TDataSource.Create(Self);
-end;
-
-procedure TInternalInplaceEdit.CloseUp(Accept: Boolean);
-var
-  MasterField: TField;
-  ListValue: Variant;
-begin
-  if ListVisible then
-  begin
-    if GetCapture <> 0 then
-      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    if ActiveList = DataList then
-      ListValue := DataList.KeyValue
-    else if PickList.ItemIndex <> -1 then
-      ListValue := PickList.Items[Picklist.ItemIndex];
-    SetWindowPos(ActiveList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
-      SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
-    ListVisible := False;
-    if Assigned(FDataList) then
-      FDataList.LookupSource := nil; //  ListSource
-    FLookupSource.Dataset := nil;
-    Invalidate;
-    if Accept then
-      if ActiveList = DataList then
-        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
-        begin
-          MasterField := DataSet.FieldByName(KeyFields);
-          if MasterField.CanModify and TJvDBGrid(Grid).DataLink.Edit then
-            MasterField.Value := ListValue;
-        end
-      else if (not VarIsNull(ListValue)) and EditCanModify then
-        with TCustomDBGrid(Grid), TDBGrid(Grid).Columns[SelectedIndex].Field do
-          Text := ListValue;
-  end;
-end;
-
-procedure TInternalInplaceEdit.DoEditButtonClick;
-begin
-  TJvDBGrid(Grid).EditButtonClick; //   TCustomDBGrid
-end;
-
-procedure TInternalInplaceEdit.DropDown;
-var
-  Column: TColumn;
-begin
-  if not ListVisible then
-  begin
-    with TDBGrid(Grid) do
-      Column := Columns[SelectedIndex];
-    if ActiveList = FDataList then
-      with Column.Field do
-      begin
-        FDataList.Color := Color;
-        FDataList.Font := Font;
-        FDataList.RowCount := Column.DropDownRows;
-        FLookupSource.DataSet := LookupDataSet;
-        FDataList.LookupField := LookupKeyFields; //  KeyField
-        FDataList.LookupDisplay := LookupResultField; //  ListField
-        FDataList.LookupSource := FLookupSource; //  ListSource
-        FDataList.KeyValue := DataSet.FieldByName(KeyFields).Value;
-      end
-    else if ActiveList = PickList then
-    begin
-      PickList.Items.Assign(Column.PickList);
-      DropDownRows := Column.DropDownRows;
-    end;
-  end;
-  inherited DropDown;
-end;
-
-procedure TInternalInplaceEdit.UpdateContents;
-var
-  Column: TColumn;
-begin
-  inherited UpdateContents;
-  if FUseDataList then
-  begin
-    if FDataList = nil then
-    begin
-      FDataList := TJvPopupDataList.Create(Self);
-      FDataList.Visible := False;
-      FDataList.Parent := Self;
-      FDataList.OnMouseUp := ListMouseUp;
-    end;
-    ActiveList := FDataList;
-  end;
-  with TDBGrid(Grid) do
-    Column := Columns[SelectedIndex];
-  Self.ReadOnly := Column.ReadOnly;
-  Font.Assign(Column.Font);
-  ImeMode := Column.ImeMode;
-  ImeName := Column.ImeName;
-end;
-
-type
-  TSelection = record
-    StartPos: Integer;
-    EndPos: Integer;
-  end;
-
-procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
-
-  procedure SendToParent;
-  begin
-    TJvDBGrid(Grid).KeyDown(Key, Shift);
-    Key := 0;
-  end;
-
-  procedure ParentEvent;
-  var
-    GridKeyDown: TKeyEvent;
-  begin
-    GridKeyDown := TJvDBGrid(Grid).OnKeyDown;
-    if Assigned(GridKeyDown) then
-      GridKeyDown(Grid, Key, Shift);
-  end;
-
-  function ForwardMovement: Boolean;
-  begin
-    Result := dgAlwaysShowEditor in TDBGrid(Grid).Options;
-  end;
-
-  function Ctrl: Boolean;
-  begin
-    Result := ssCtrl in Shift;
-  end;
-
-  function Selection: TSelection;
-  begin
-    SendMessage(Handle, EM_GETSEL, WPARAM(@Result.StartPos), LPARAM(@Result.EndPos));
-  end;
-
-  function CaretPos: Integer;
-  var
-    P: TPoint;
-  begin
-    Windows.GetCaretPos(P);
-    Result := SendMessage(Handle, EM_CHARFROMPOS, 0, MakeLong(P.X, P.Y));
-  end;
-
-  function RightSide: Boolean;
-  begin
-    with Selection do
-      Result := {(CaretPos = GetTextLen) and  }
-        ((StartPos = 0) or (EndPos = StartPos)) and (EndPos = GetTextLen);
-  end;
-
-  function LeftSide: Boolean;
-  begin
-    with Selection do
-      Result := (CaretPos = 0) and (StartPos = 0) and
-        ((EndPos = 0) or (EndPos = GetTextLen));
-  end;
-
-begin
-  case Key of
-    VK_LEFT:
-      if ForwardMovement and (Ctrl or LeftSide) then
-        SendToParent;
-    VK_RIGHT:
-      if ForwardMovement and (Ctrl or RightSide) then
-        SendToParent;
-  end;
-  inherited KeyDown(Key, Shift);
-end;
-
-function TInternalInplaceEdit.DoMouseWheel(Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint): Boolean;
-begin
-  // Do not validate a record by error
-  with TJvDBGrid(Grid) do
-    if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
-      DataLink.DataSet.Cancel;
-
-  // Ideally we would transmit the action to the DatalList but
-  // DoMouseWheel is protected
-  //  Result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
-  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
-end;
-
-{$ENDIF COMPILER6_UP}
-
 procedure TJvDBGrid.DoAutoSizeColumns;
 var
   TotalWidth, OrigWidth: Integer;
   I: Integer;
-  ScaleFactor: double;
+  ScaleFactor: Double;
   AWidth, AUsedWidth, ALeftCol: Integer;
 begin
   if not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or (FGridState = gsColSizing) then
@@ -2601,7 +2612,8 @@ begin
           end;
       end
       // a index of -2 indicates that we want to autosize the last visible column
-      else if AutoSizeColumnIndex = -2 then // auto size last visible
+      else
+      if AutoSizeColumnIndex = -2 then // auto size last visible
       begin
         // reuse AUsedWidth as the actual resize column index
         AUsedWidth := LastVisibleColumn;
@@ -2616,7 +2628,8 @@ begin
           Columns[AUsedWidth].Width := AWidth;
       end
       // only auto size one column
-      else if AutoSizeColumnIndex <= LastVisibleColumn then
+      else
+      if AutoSizeColumnIndex <= LastVisibleColumn then
       begin
         OrigWidth := 0;
         for I := 0 to Columns.Count - 1 do
@@ -2779,7 +2792,7 @@ begin
   inherited;
 end;
 
-{ TJvSelectDialogColumnStrings }
+//=== TJvSelectDialogColumnStrings ===========================================
 
 constructor TJvSelectDialogColumnStrings.Create;
 begin
@@ -2837,7 +2850,7 @@ begin
         else
         begin
           CursorRect.Left := CellRect(0, 0).Left;
-          CursorRect.top := CellRect(0, 0).Bottom;
+          CursorRect.Top := CellRect(0, 0).Bottom;
         end;
       end
       else
@@ -2883,7 +2896,7 @@ begin
         if (Canvas.TextWidth(HintStr) < Columns[ACol].Width) then
           HintStr := '';
 
-        ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
+        ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
         if Assigned(FOnShowCellHint) and DataLink.Active then
           FOnShowCellHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
         HideTimeOut := ATimeOut;

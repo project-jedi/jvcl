@@ -78,7 +78,7 @@ type
     property ShowImage: Boolean read FShowImage write SetShowImage;
     property MouseleaveHide: Boolean read FMouseleaveHide write SetMouseleaveHide default True;
     property HideHoldTime: Integer read FHideHoldTime write SetHideHoldTime;
-    property TabColor:TColor read FTabColor write FTabColor default clBtnFace;
+    property TabColor: TColor read FTabColor write FTabColor default clBtnFace;
   end;
 
   TJvDockVSNETChannelOptionClass = class of TJvDockVSNETChannelOption;
@@ -214,7 +214,7 @@ type
 
   TJvDockVSNetStyle = class(TJvDockVIDStyle)
   private
-    FMouseleaved:Boolean;
+    FMouseleaved: Boolean;
     FTimer: TTimer;
     FDockServerList: TList;
     FCurrentTimer: Integer;
@@ -493,7 +493,7 @@ var
   // GlobalApplicationEvents: TJvDockAppEvents = nil;
   GlobalPopupPanelAnimateInterval: Integer = 20;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
-  GlobalPopupPanelStartAnimateInterval: Integer  = 400;
+  GlobalPopupPanelStartAnimateInterval: Integer = 400;
 
 // (p3) not used:
 //  AnimateSleepTime: Integer = 500;
@@ -524,7 +524,7 @@ end;
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
 var
-  I:Integer;
+  I: Integer;
   J: TAlign;
   Channel: TJvDockVSChannel;
   DockServer: TJvDockServer;
@@ -641,7 +641,7 @@ function TJvDockVSNetStyle.DockClientWindowProc(DockClient: TJvDockClient;
   var Msg: TMessage): Boolean;
 var
   Channel: TJvDockVSChannel;
-  FormRect:TRect;
+  FormRect: TRect;
   MPosTp: TPoint;
 begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
@@ -650,14 +650,14 @@ begin
       begin
         FMouseleaved := False;
       end;
-    CM_MOUSELEAVE:  //Fix bug on AutoHide --Dejoy.
+    CM_MOUSELEAVE: //Fix bug on AutoHide --Dejoy.
       begin
         GetCursorPos(MPosTp);
-        GetWindowRect(DockClient.ParentForm.Handle,FormRect);
-        if not PtInRect(FormRect,MPosTp) then
+        GetWindowRect(DockClient.ParentForm.Handle, FormRect);
+        if not PtInRect(FormRect, MPosTp) then
           FMouseleaved := True;
       end;
-   CM_ENTER,CM_EXIT:
+    CM_ENTER, CM_EXIT:
       begin
         Channel := nil;
         if DockClient.ParentForm.HostDockSite is TJvDockVSPopupPanel then
@@ -716,6 +716,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
+
 function TJvDockVSNetStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeVSNETStyle, [RsDockStyleName]);
@@ -990,7 +991,8 @@ var
 
 begin
   inherited CustomLoadZone(Stream, Zone);
-  if Zone = nil then Exit;
+  if Zone = nil then
+    Exit;
   Stream.Read(TJvDockVSNETZone(Zone).FVSPaneVisible, SizeOf(TJvDockVSNETZone(Zone).VSPaneVisible));
   if DockSite is TJvDockVSPopupPanel then
   begin
@@ -1308,9 +1310,8 @@ end;
 procedure TJvDockVSNETTree.DoLButtonDbClk(var Msg: TWMMouse;
   var Zone: TJvDockZone; out HTFlag: Integer);
 begin
-  if DockSite is TJvDockVSPopupPanel then
-    Exit;
-  inherited DoLButtonDbClk(Msg, Zone, HTFlag);
+  if not (DockSite is TJvDockVSPopupPanel) then
+    inherited DoLButtonDbClk(Msg, Zone, HTFlag);
 end;
 
 procedure TJvDockVSNETTree.DoHideZoneChild(AZone: TJvDockZone);
@@ -1720,10 +1721,12 @@ begin
   begin
     // There is not "DockFormVisible" or "Hidden" property, so we just use
     // VSPane.FDockForm.CanFocus, which seems to work fine.
-    if VSPane.FDockForm.CanFocus then begin
+    if VSPane.FDockForm.CanFocus then
+    begin
       VSPane.FActive := True;
       VSPane.FDockForm.SetFocus;
-    end else
+    end
+    else
       PopupDockForm(VSPane);
   end;
 end;
@@ -1732,15 +1735,16 @@ procedure TJvDockVSChannel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   // Create the timer object if not existing
-  if FAnimationStartTimer = nil then begin
+  if FAnimationStartTimer = nil then
+  begin
     FAnimationStartTimer := TTimer.Create(nil);
     FAnimationStartTimer.OnTimer := AnimationStartTimerOnTimerHandler;
     FAnimationStartTimer.Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
     FAnimationStartTimer.Enabled := True;
   end
   // Restart the timer only, if mouse is above another pane now
-  else if GetDockFormWithMousePos(Point(X, Y)) <>
-                         Pointer(FAnimationStartTimer.Tag) then
+  else
+  if GetDockFormWithMousePos(Point(X, Y)) <> Pointer(FAnimationStartTimer.Tag) then
   begin
     FAnimationStartTimer.Enabled := False;
     FAnimationStartTimer.Enabled := True;
@@ -3003,10 +3007,8 @@ begin
       else
       begin
         if FVSChannel.ActiveDockForm <> nil then
-        begin
           if FVSChannel.ActiveDockForm.CanFocus then
             FVSChannel.ActiveDockForm.SetFocus;
-        end;
       end;
       FVSChannel := nil;
       FCurrentWidth := 0;
@@ -3186,8 +3188,7 @@ begin
   Result := GlobalPopupPanelStartAnimateInterval;
 end;
 
-procedure TJvDockVSChannel.AnimationStartTimerOnTimerHandler(
-  Sender: TObject);
+procedure TJvDockVSChannel.AnimationStartTimerOnTimerHandler(Sender: TObject);
 var
   CursorPos: TPoint;
 begin
@@ -3195,14 +3196,14 @@ begin
   try
     GetCursorPos(CursorPos);
     CursorPos := Self.ScreenToClient(CursorPos);
-    if GetDockFormWithMousePos(Point(CursorPos.X, CursorPos.Y)) =
-           Pointer(FAnimationStartTimer.Tag) then
+    if GetDockFormWithMousePos(Point(CursorPos.X, CursorPos.Y)) = Pointer(FAnimationStartTimer.Tag) then
       PopupDockForm(TJvDockVSPane(Pointer(FAnimationStartTimer.Tag)));
   finally
     FAnimationStartTimer.Free;
     FAnimationStartTimer := nil;
   end;
 end;
+
 initialization
 
 finalization

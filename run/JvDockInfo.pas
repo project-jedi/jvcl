@@ -119,7 +119,7 @@ type
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
     {$IFDEF USEJVCL}
     function GetAppStoragePath: string;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
   protected
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;
     {$IFDEF USEJVCL}
@@ -386,7 +386,7 @@ end;
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromApp(Control: TControl);
 var
   I: TAlign;
-  J:integer;
+  J: Integer;
   TreeZone: TJvDockInfoZone;
   DockBaseControl: TJvDockBaseControl;
   TmpDockPanel: TJvDockPanel;
@@ -624,29 +624,32 @@ var
   begin
     TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
 
-    TreeZone.DockFormName := TempDockInfoZoneArray[Index].DockFormName;
-    TreeZone.ParentName := TempDockInfoZoneArray[Index].ParentName;
-    TreeZone.DockRect := TempDockInfoZoneArray[Index].DockRect;
-    TreeZone.LastDockSiteName := TempDockInfoZoneArray[Index].LastDockSiteName;
-    TreeZone.UnDockLeft := TempDockInfoZoneArray[Index].UnDockLeft;
-    TreeZone.UnDockTop := TempDockInfoZoneArray[Index].UnDockTop;
-    TreeZone.LRDockWidth := TempDockInfoZoneArray[Index].LRDockWidth;
-    TreeZone.TBDockHeight := TempDockInfoZoneArray[Index].TBDockHeight;
-    TreeZone.UnDockWidth := TempDockInfoZoneArray[Index].UnDockWidth;
-    TreeZone.UnDockHeight := TempDockInfoZoneArray[Index].UnDockHeight;
-    TreeZone.VSPaneWidth := TempDockInfoZoneArray[Index].VSPaneWidth;
-    TreeZone.Visible := TempDockInfoZoneArray[Index].Visible;
-    TreeZone.BorderStyle := TempDockInfoZoneArray[Index].BorderStyle;
-    TreeZone.FormStyle := TempDockInfoZoneArray[Index].FormStyle;
-    TreeZone.WindowState := TempDockInfoZoneArray[Index].WindowState;
-    TreeZone.DockFormStyle := TempDockInfoZoneArray[Index].DockFormStyle;
-    TreeZone.CanDocked := TempDockInfoZoneArray[Index].CanDocked;
-    TreeZone.EachOtherDocked := TempDockInfoZoneArray[Index].EachOtherDocked;
-    TreeZone.LeftDocked := TempDockInfoZoneArray[Index].LeftDocked;
-    TreeZone.TopDocked := TempDockInfoZoneArray[Index].TopDocked;
-    TreeZone.RightDocked := TempDockInfoZoneArray[Index].RightDocked;
-    TreeZone.BottomDocked := TempDockInfoZoneArray[Index].BottomDocked;
-    TreeZone.DockClientData := TempDockInfoZoneArray[Index].DockClientData;
+    with TempDockInfoZoneArray[Index] do
+    begin
+      TreeZone.DockFormName := DockFormName;
+      TreeZone.ParentName := ParentName;
+      TreeZone.DockRect := DockRect;
+      TreeZone.LastDockSiteName := LastDockSiteName;
+      TreeZone.UnDockLeft := UnDockLeft;
+      TreeZone.UnDockTop := UnDockTop;
+      TreeZone.LRDockWidth := LRDockWidth;
+      TreeZone.TBDockHeight := TBDockHeight;
+      TreeZone.UnDockWidth := UnDockWidth;
+      TreeZone.UnDockHeight := UnDockHeight;
+      TreeZone.VSPaneWidth := VSPaneWidth;
+      TreeZone.Visible := Visible;
+      TreeZone.BorderStyle := BorderStyle;
+      TreeZone.FormStyle := FormStyle;
+      TreeZone.WindowState := WindowState;
+      TreeZone.DockFormStyle := DockFormStyle;
+      TreeZone.CanDocked := CanDocked;
+      TreeZone.EachOtherDocked := EachOtherDocked;
+      TreeZone.LeftDocked := LeftDocked;
+      TreeZone.TopDocked := TopDocked;
+      TreeZone.RightDocked := RightDocked;
+      TreeZone.BottomDocked := BottomDocked;
+      TreeZone.DockClientData := DockClientData;
+    end;
 
     for I := Index - 1 downto 0 do
       if TempDockInfoZoneArray[I].ParentName = Sections[Index] then
@@ -760,7 +763,6 @@ begin
 end;
 
 {$IFDEF USEJVCL}
-
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
 begin
   CreateZoneAndAddInfoFromAppStorage;
@@ -777,7 +779,6 @@ begin
     FJvDockInfoStyle := isNone;
   end;
 end;
-
 {$ENDIF USEJVCL}
 
 procedure TJvDockInfoTree.ReadInfoFromIni;
@@ -820,16 +821,15 @@ var
   I: Integer;
   APath, OldPath: string;
 begin
-  if (FJvDockInfoStyle = isJVCLReadInfo) then
+  if FJvDockInfoStyle = isJVCLReadInfo then
   begin
     for I := 0 to TreeZone.GetChildCount - 1 do
-    begin
       with TJvDockInfoZone(TreeZone.GetChildZone(I)) do
         DockControl := FindDockForm(DockFormName);
-    end;
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else if FJvDockInfoStyle = isJVCLWriteInfo then
+  else
+  if FJvDockInfoStyle = isJVCLWriteInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
@@ -882,13 +882,12 @@ begin
   if (FJvDockInfoStyle = isReadFileInfo) or (FJvDockInfoStyle = isReadRegInfo) then
   begin
     for I := 0 to TreeZone.GetChildCount - 1 do
-    begin
       with TJvDockInfoZone(TreeZone.GetChildZone(I)) do
         DockControl := FindDockForm(DockFormName);
-    end;
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else if FJvDockInfoStyle = isWriteFileInfo then
+  else
+  if FJvDockInfoStyle = isWriteFileInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), DockInfoIni do
@@ -1063,7 +1062,6 @@ begin
 end;
 
 {$IFDEF USEJVCL}
-
 procedure TJvDockInfoTree.WriteInfoToAppStorage;
 begin
   AppStorage.DeleteSubTree(AppStoragePath);
@@ -1074,7 +1072,6 @@ begin
     FJvDockInfoStyle := isNone;
   end;
 end;
-
 {$ENDIF USEJVCL}
 
 procedure TJvDockInfoTree.WriteInfoToIni;
@@ -1125,7 +1122,7 @@ begin
   if (Result = '') and (FAppStorage <> nil) then
     Result := FAppStorage.Path;
 end;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 end.
 
