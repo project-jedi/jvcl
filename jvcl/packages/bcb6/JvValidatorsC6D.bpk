@@ -12,21 +12,9 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\..\design\JvValidatorsEditorForm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JvPrintPreviewC6R.lib VclSmp.lib JvJansC6R.lib JvPluginC6R.lib 
-      JvCryptC6R.lib JvBandsC6R.lib bcb2kaxserver.lib indy.lib dbxcds.lib 
-      dclocx.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib 
-      inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib 
-      teeqr.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib
-      ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib JvBandsC6R.lib JvCoreC6R.lib 
-      CJCL60.lib JvCryptC6R.lib JvPluginC6R.lib JvJansC6R.lib VclSmp.lib 
-      JvPrintPreviewC6R.lib"/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJCL60.bpi vcljpg.bpi
-      JvCoreC6R.bpi vclx.bpi dclstd.bpi JvValidatorsC6R.bpi"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJCL60.bpi vclx.bpi dclstd.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -37,17 +25,18 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvValidatorsC6D.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\design;..\..\common"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\design;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\dcu;..\..\resources;..\..\design;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I..\..\design -I..\..\common 
+    <IDLCFLAGS value="-I..\..\design -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde -LUdclstd"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde 
+      -LUdclstd"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\dcu -D&quot;JVCL Validators and Error Provider Components&quot; -aa -Tpp 
@@ -68,13 +57,9 @@
       <FILE FILENAME="..\..\design\JvValidatorsEditorForm.pas" FORMNAME="frmValidatorsEditor" UNITNAME="JvValidatorsEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvValidatorsC6R.bpi" FORMNAME="" UNITNAME="JvValidatorsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -108,14 +93,17 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=2
-Item0=$(BCB)\include;$(BCB)\include\vcl;..\..\design;..\..\common
-Item1=C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Count=3
+Item0=..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;$(BCB)\include;$(BCB)\include\vcl
+Item2=C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=2
-Item0=$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources
-Item1=C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=4
+Item0=..\..\dcu;..\..\resources;..\..\design;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
+Item1=C:\Prog\delphi6\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\dcu;..\..\resources;..\..\design;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\..\dcu;..\..\resources;..\..\design;$(BCB)\lib\obj;$(BCB)\lib
+Item3=C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
