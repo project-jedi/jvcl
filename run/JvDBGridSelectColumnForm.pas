@@ -33,10 +33,6 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Buttons, CheckLst, ExtCtrls, DB, DBGrids, JvDBGrid;
 
-resourcestring
-  RES_JvDBGridSelectTitle = 'Select columns';
-  RES_JvDBGridSelectWarning = 'At least one column must be visible!';
-  RES_JvDBGridSelectOK      = '&OK';
 
 type
   TfrmSelectColumn = class(TForm)
@@ -55,6 +51,7 @@ type
     FSelectColumn: TSelectColumn;
     FColumnUpdate: boolean;
     FCanHide: boolean;
+    FNoSelectionWarning: string;
     procedure ResizeForm;
     function GetColumn(aField: TField): TColumn;
     { Déclarations privées }
@@ -62,6 +59,9 @@ type
     property DataSource: TDataSource read FDataSource write FDataSource;
     property Grid: TJvDBGrid read FJvDBGrid write FJvDBGrid;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn;
+  published
+    // make this published so localization tools have a chance to pick it up
+    property NoSelectionWarning:string read FNoSelectionWarning write FNoSelectionWarning;
   end;
 
 implementation
@@ -72,8 +72,9 @@ procedure TfrmSelectColumn.FormCreate(Sender: TObject);
 begin
   FColumnUpdate := true;
   FCanHide := true;
-  Caption := RES_JvDBGridSelectTitle;
-  ButtonOK.Caption := RES_JvDBGridSelectOK;
+  // (p3) don't use resourcestring here since this property is normally set from the JvDBGrid
+  // and using resourcestrings might give problems with localization synchronizing
+  NoSelectionWarning := 'At least one column must be visible!';
 end;
 
 procedure TfrmSelectColumn.FormClose(Sender: TObject;
@@ -96,7 +97,7 @@ begin
           begin
             lColumn := FJvDBGrid.Columns.Add;
             // Try to insert it at its place
-            if i < FJvDBGrid.Columns.Count then 
+            if i < FJvDBGrid.Columns.Count then
               lColumn.Index := i;
             lColumn.Field := DataSource.DataSet.Fields[i];
           end;
@@ -182,7 +183,7 @@ begin
     end;
   if not FCanHide then
   begin
-    MessageDlg(RES_JvDBGridSelectWarning, mtWarning, [mbOk], 0);
+    MessageDlg(NoSelectionWarning, mtWarning, [mbOk], 0);
     if clbList.ItemIndex >= 0 then
     begin
       clbList.Checked[clbList.ItemIndex] := true;

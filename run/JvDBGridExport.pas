@@ -93,16 +93,18 @@ type
     procedure DoSave; virtual;
     procedure DoClose; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property Caption: string read FCaption write FCaption;
-    property Filename: TFilename read FFilename write FFilename;
-    property Grid: TDBGrid read FGrid write FGrid;
-    property Silent: boolean read FSilent write FSilent default true;
-    property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
-    property OnException: TNotifyEvent read FOnException write FOnException;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ExportGrid: boolean;
+  published
+    // (p3) these should be published: all exporters must support them
+    property Caption: string read FCaption write FCaption;
+    property Grid: TDBGrid read FGrid write FGrid;
+    property Filename: TFilename read FFilename write FFilename;
+    property Silent: boolean read FSilent write FSilent default true;
+    property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
+    property OnException: TNotifyEvent read FOnException write FOnException;
     property LastExceptionMessage: string read FLastExceptionMessage;
   end;
 
