@@ -82,10 +82,10 @@ type
     procedure SetDisabledTextColor(const Value: TColor); virtual;
     procedure SetHotTrack(const Value: Boolean);
     procedure SetAlignment(Value: TAlignment);
-    procedure WMPaste(var Msg:TWMPaste);message WM_PASTE;
-    procedure WMCopy(var Msg:TWMCopy);message WM_COPY;
-    procedure WMCut(var Msg:TWMCut);message WM_CUT;
-    procedure WMUndo(var Msg:TWMUndo);message WM_UNDO;
+    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
+    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
+    procedure WMCut(var Msg: TWMCut); message WM_CUT;
+    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -109,14 +109,14 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Caret: TJvCaret read FCaret write SetCaret;
-    property ClipBoardCommands:TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
+    property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
-    property ReadOnly:boolean read GetReadOnly write SetReadOnly;
+    property ReadOnly: boolean read GetReadOnly write SetReadOnly;
 
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -216,20 +216,21 @@ implementation
 constructor TJvCustomEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Parent := TWinControl(AOwner);
-  FCaret := TJvCaret.Create(self);
-  FCaret.OnChanged := CaretChanged;
+  // (p3) this is a hack to avoid (Control "" has no parent window) - fixed by checking for Parent in Change
+//  Parent := TWinControl(AOwner);
   FColor := clInfoBk;
   FHotTrack := False;
   FOver := False;
   FAlignment := taLeftJustify;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  FAutoSave := TJvAutoSave.Create(Self);
-  FMaxPixel := TJvMaxPixel.Create(Self);
-  FMaxPixel.OnChanged := MaxPixelChanged;
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FClipBoardCommands := [caCopy..caUndo];
+  FCaret := TJvCaret.Create(self);
+  FCaret.OnChanged := CaretChanged;
+  FAutoSave := TJvAutoSave.Create(Self);
+  FMaxPixel := TJvMaxPixel.Create(Self);
+  FMaxPixel.OnChanged := MaxPixelChanged;
 end;
 
 procedure TJvCustomEdit.Loaded;
@@ -258,6 +259,7 @@ var
   st: string;
 begin
   inherited;
+  if not HasParent then Exit;
   st := Text;
   FMaxPixel.Test(st, Font);
   if st <> Text then
@@ -269,19 +271,18 @@ end;
 procedure TJvCustomEdit.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if Parent <> nil then
-    case FAlignment of
-      taLeftJustify:
-        Params.Style := Params.Style or ES_LEFT;
-      taRightJustify:
-        Params.Style := Params.Style or ES_RIGHT;
-      taCenter:
-        Params.Style := Params.Style or ES_CENTER;
-    end;
+  case FAlignment of
+    taLeftJustify:
+      Params.Style := Params.Style or ES_LEFT;
+    taRightJustify:
+      Params.Style := Params.Style or ES_RIGHT;
+    taCenter:
+      Params.Style := Params.Style or ES_CENTER;
+  end;
 end;
 
 procedure TJvCustomEdit.CMMouseEnter(var Msg: TMessage);
-var i,j:integer;
+var i, j: integer;
 begin
   if not FOver then
   begin
@@ -302,7 +303,7 @@ begin
 end;
 
 procedure TJvCustomEdit.CMMouseLeave(var Msg: TMessage);
-var i,j:integer;
+var i, j: integer;
 begin
   if FOver then
   begin
@@ -348,7 +349,7 @@ end;
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
 begin
-  if FAlignment <> Value then
+  if (FAlignment <> Value) then
   begin
     FAlignment := Value;
     ReCreateWnd;
