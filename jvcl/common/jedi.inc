@@ -202,7 +202,16 @@
 //------------------------------------------------------------------------------
 // VERXXX to COMPILERX, DELPHIX and BCBX mappings
 //------------------------------------------------------------------------------
-
+{$IFDEF VER160}
+  {$DEFINE COMPILER8}
+  {$IFDEF BCB}
+    {$DEFINE BCB8}
+    {$DEFINE BCB}
+  {$ELSE}
+    {$DEFINE DELPHI8}
+    {$DEFINE DELPHI}
+  {$ENDIF}
+{$ENDIF}
 {$IFDEF VER150}
   {$DEFINE COMPILER7}
   {$IFDEF BCB}
@@ -377,6 +386,21 @@
 //------------------------------------------------------------------------------
 // COMPILERX_UP from COMPILERX mappings
 //------------------------------------------------------------------------------
+
+
+{$IFDEF COMPILER8}
+  {$DEFINE MSWINDOWS}
+  {$DEFINE DOTNET}
+  {$DEFINE COMPILER8_UP}
+  {$DEFINE COMPILER7_UP}
+  {$DEFINE COMPILER6_UP}
+  {$DEFINE COMPILER5_UP}
+  {$DEFINE COMPILER4_UP}
+  {$DEFINE COMPILER35_UP}
+  {$DEFINE COMPILER3_UP}
+  {$DEFINE COMPILER2_UP}
+  {$DEFINE COMPILER1_UP}
+{$ENDIF}
 
 {$IFDEF COMPILER7}
   {$DEFINE COMPILER7_UP}
