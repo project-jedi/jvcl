@@ -69,7 +69,7 @@ contains
   JvOBEdFrm in '..\Source\JvOBEdFrm.pas' {frmOLBarEditFrm},
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
-  JvTipProperty in '..\Source\JvTipProperty.pas',
+  JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
   JvAppletProperty in '..\source\JvAppletProperty.pas',
   JvLConst in '..\source\JvLConst.pas',
   JvHintProp in '..\source\JvHintProp.pas',
