@@ -86,6 +86,7 @@ resourcestring
 
   //=== JvColorProviderEditors.pas ===========================================
   SMappingDoesNotExistForThisColorProv = 'Mapping does not exist for this color provider.';
+  SInvalidPropertyValue = 'Invalid property value';
 
   //=== JvCsvDataEditor.pas ==================================================
   SJvCsvDataSetSelectCSVFileToOpen = 'JvCsvDataSet - Select CSV File to Open';
