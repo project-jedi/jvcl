@@ -1718,12 +1718,11 @@ begin
     end;
   end;
 
-
   Header := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN;
   if (Y < Header) or (Y > Height - FC_ITEM_MARGIN) then
     NewIndex := -1
   else
-    NewIndex := (Y - Header) div ((Height - Header) div FVisibleItems.Count);
+    NewIndex := (Y - Header) div ((Height - Header + 4 - FTopSpace) div FVisibleItems.Count);
   if (NewIndex >= 0) and (NewIndex < VisibleItems.Count) then
   begin
     if FStoredHint = '|' then
