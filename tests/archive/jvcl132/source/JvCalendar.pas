@@ -1066,8 +1066,8 @@ begin
     R := MinSize;
     with R do
     begin
-      NewWidth := Right - Left;
-      NewHeight := Bottom - Top;
+      NewWidth := Right - Left + Ord(BorderStyle = bsSingle) * 2;
+      NewHeight := Bottom - Top + Ord(BorderStyle = bsSingle)* 2;
     end;
   end
   else Result := False;
