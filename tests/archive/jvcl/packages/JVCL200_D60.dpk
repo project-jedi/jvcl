@@ -121,6 +121,7 @@ contains
   JvDialogActns in '..\source\JvDialogActns.pas',
   JvPluginWizard in '..\source\JvPluginWizard.pas',
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
-  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule};
+  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas';
 
 end.

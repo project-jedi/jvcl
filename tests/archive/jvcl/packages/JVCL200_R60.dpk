@@ -480,9 +480,12 @@ contains
   JvNTEventLog in '..\source\JvNTEventLog.pas',
   JvGroupHeader in '..\source\JvGroupHeader.pas',
   JvFooter in '..\source\JvFooter.pas',
-
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
-  JvPlugCommon in '..\source\JvPlugCommon.pas';  
+  JvPlugCommon in '..\source\JvPlugCommon.pas',
+  JvDatePickerEdit in '..\source\JvDatePickerEdit.pas',
+  JvCheckedMaskEdit in '..\source\JvCheckedMaskEdit.pas',
+  JvDropDownForm in '..\source\JvDropDownForm.pas',
+  JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas';
 
 end.
