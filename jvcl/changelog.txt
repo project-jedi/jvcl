@@ -1,6 +1,8 @@
 Changelog for JVCL 3.0
 ======================
 2003-10-03:
+- New component TJvDBMaskEdit in JvDBControls.pas //W.Postma
+2003-10-03:
 - DaysBetween implementation in JvJCLUtils was wrong. It returned the days between plus one day and was not able to handle "Younger-Older"
 2003-10-01:
 - added Delphi 6 Personal Edition packages
