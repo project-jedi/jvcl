@@ -64,16 +64,14 @@ type
     property OnEraseBkgndEvent: TOnEraseBkgndEvent read FOnEraseBkgndEvent write FOnEraseBkgndEvent;
   end;
 
-{$IFNDEF USEJVCL}
-  {$UNDEF UNITVERSIONING}
-{$ENDIF ~USEJVCL}
-
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 constructor TJvgScrollBox.Create(AOwner: TComponent);
 begin
@@ -183,6 +181,7 @@ begin
   BitBlt(DC, 0, 0, Width, Height, FBuffer.Canvas.Handle, 0, 0, SRCCOPY);
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -198,6 +197,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

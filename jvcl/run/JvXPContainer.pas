@@ -33,7 +33,10 @@ interface
 uses
   TypInfo, Classes,
   Windows, Controls, Graphics, StdCtrls, ExtCtrls,
-  JvJCLUtils, JvXPCore, JvXPCoreUtils;
+  {$IFDEF USEJVCL}
+  JvJCLUtils,
+  {$ENDIF USEJVCL}
+  JvXPCore, JvXPCoreUtils;
 
 type
   TJvXPPaintEvent = procedure(Sender: TObject; Rect: TRect; ACanvas: TCanvas;
@@ -389,10 +392,15 @@ var
   DrawStyle: Longint;
   CalcRect: TRect;
 
-  procedure DoDrawText(Canvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
-    Flags: Integer);
+  procedure DoDrawText(ACanvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
+    AFlags: Integer);
   begin
-    DrawText(Canvas, ACaption, -1, ARect, Flags);
+    {$IFDEF USEJVCL}
+    DrawText(ACanvas, ACaption, -1, ARect, AFlags);
+    {$ELSE}
+    // (rom) Kludge! This will probably not work for CLX
+    DrawText(ACanvas.Handle, PChar(ACaption), -1, ARect, AFlags);
+    {$ENDIF USEJVCL}
   end;
 
 begin

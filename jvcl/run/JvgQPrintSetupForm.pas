@@ -45,13 +45,16 @@ var
 
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 {$R *.dfm}
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -67,5 +70,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

@@ -86,9 +86,11 @@ procedure LoadLanguage(Component: TComponent; const FileName: string;
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   TypInfo;
 
 //{Ф-ия для загрузки словаря без предварительного создания компонента}
@@ -265,6 +267,7 @@ begin
     Result := '';
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -280,6 +283,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

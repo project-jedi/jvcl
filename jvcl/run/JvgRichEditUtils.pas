@@ -45,10 +45,12 @@ procedure DoSyntaxHighlight(Memo: TRichEdit);
 
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 procedure AddNl(RE: TRichEdit);
 begin
@@ -230,6 +232,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -245,6 +248,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

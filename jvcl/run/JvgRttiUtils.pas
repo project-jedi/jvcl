@@ -40,9 +40,11 @@ procedure Assign(Source, Target: TObject; Recursive: Boolean);
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   Classes, SysUtils, TypInfo;
 
 function GetValueFromPropertyName(Component: TObject; const PropertyName: string): string;
@@ -215,6 +217,7 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -230,6 +233,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -67,10 +67,10 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USEJVCL}
   JvResources, JvConsts,
   {$ENDIF USEJVCL}
   JvgUtils;
@@ -78,7 +78,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgSmallFontsDefense.Create(AOwner: TComponent);
 begin
@@ -131,6 +131,7 @@ begin
     end;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -146,6 +147,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -141,7 +141,7 @@ uses
 resourcestring
   RsHelp = ' help ';
   RsOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgHelpPanel.Create(AOwner: TComponent);
 begin
@@ -315,6 +315,7 @@ begin
   InitRichText;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -330,6 +331,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -160,10 +160,10 @@ type
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
   JvgUtils;
@@ -975,6 +975,7 @@ begin
     raise E.Create('XMLSerializerException'#13#10#13#10 + Msg);
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -990,6 +991,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

@@ -25,6 +25,7 @@ Known Issues:
 
 unit JvBackgrounds;
 
+// (rom) this needs to get untangled. jvcl.inc is required!
 {$I jedi.inc}
 {$I windowsonly.inc}
 

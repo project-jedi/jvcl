@@ -83,7 +83,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgHTTPVersionInfo.Create(AOwner: TComponent);
 begin
@@ -157,6 +157,7 @@ begin
   //  VersionInfo.Names[i] := LowerCase(VersionInfo.Names[i]);
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -172,6 +173,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

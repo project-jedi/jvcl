@@ -130,7 +130,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsProgressCaption = 'Progress...[%d%%]';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 constructor TJvgProgress.Create(AOwner: TComponent);
 begin
@@ -451,6 +451,7 @@ begin
   Repaint;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -466,6 +467,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

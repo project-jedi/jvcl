@@ -55,16 +55,14 @@ type
     {$ENDIF USEJVCL}
   end;
 
-{$IFNDEF USEJVCL}
-  {$UNDEF UNITVERSIONING}
-{$ENDIF ~USEJVCL}
-
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 procedure TJvgTransparentMemo.CreateParams(var Params: TCreateParams);
 begin
@@ -86,6 +84,7 @@ procedure TJvgTransparentMemo.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -101,6 +100,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 
