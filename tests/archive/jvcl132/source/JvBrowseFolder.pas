@@ -296,7 +296,7 @@ var F:TCustomForm;
 begin
   F := GetParentForm(TControl(Owner));
   if F <> nil then
-    Result :0 F.Handle
+    Result := F.Handle
   else if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
     Result := Screen.ActiveCustomForm.Handle
   else
