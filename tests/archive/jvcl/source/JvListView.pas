@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvListView;
 
-
-
 interface
 
 uses
@@ -98,11 +96,11 @@ type
     function GetItemPopup(Node: TListItem): TPopupMenu;
     procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
-    procedure SaveToStream(stream: TStream; ForceOldStyle: Boolean = False);
-    procedure LoadFromStream(stream: TStream);
+    procedure SaveToStream(Stream: TStream; ForceOldStyle: Boolean = False);
+    procedure LoadFromStream(Stream: TStream);
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
-    property AutoClipboardCopy:Boolean read FAutoClipboard write FAutoClipboard default true;
+    property AutoClipboardCopy: Boolean read FAutoClipboard write FAutoClipboard default True;
     property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
     property OnSaveProgress: TProgress read FOnSave write FOnSave;
     property OnAutoSort: TOnSortMethod read FOnSort write FOnSort;
@@ -148,7 +146,7 @@ begin
   FOver := False;
   FSort := True;
   FLast := -1;
-  FAutoClipboard := true;
+  FAutoClipboard := True;
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -166,13 +164,13 @@ begin
   Point := ScreenToClient(Point);
   with Msg, Point do
   begin
-    case NMHdr^.code of
+    case NMHDR^.code of
       NM_CLICK, NM_RCLICK:
         begin
           Node := GetItemAt(x, y);
           if Assigned(Node) then
             Selected := Node;
-          if (Selected <> nil) and (NMHdr^.code = NM_RCLICK) then
+          if (Selected <> nil) and (NMHDR^.code = NM_RCLICK) then
             TJvListItem(Selected).PopupMenu.Popup(Mouse.CursorPos.x, Mouse.CursorPos.y);
         end;
     end;
@@ -204,7 +202,8 @@ begin
   FOver := True;
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -241,16 +240,16 @@ end;
 
 function FirstNonAlpha(Value: string): Integer;
 var
-  len: Integer;
+  Len: Integer;
   i, j: Integer;
   comma: Boolean;
 begin
-  len := Length(Value);
+  Len := Length(Value);
   i := 1;
   j := 0;
   comma := False;
 
-  while i <= len do
+  while i <= Len do
   begin
     case Value[i] of
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -261,12 +260,12 @@ begin
         else
         begin
           j := i - 1;
-          i := len;
+          i := Len;
         end;
     else
       begin
         j := i - 1;
-        i := len;
+        i := Len;
       end;
     end;
     Inc(i);
@@ -282,7 +281,7 @@ var
   i, j: real;
   d, e: TDateTime;
   a, b: Currency;
-  l, m: int64;
+  l, m: Int64;
   st, st2: string;
   int1, int2: Integer;
 begin
@@ -372,7 +371,7 @@ end;
 
 {******************************************************************************}
 
-function SortList(item1, item2, Paramsort: Integer): Integer stdcall;
+function SortList(Item1, Item2, Paramsort: Integer): Integer stdcall;
 type
   TParamSort = record
     Index: Integer;
@@ -381,13 +380,13 @@ type
 var
   parm: TParamSort;
   i1, i2: TListItem;
-  s1, s2: string;
+  S1, S2: string;
   i: Integer;
   sortype: TJvSortMethod;
 begin
   parm := TParamSort(Pointer(ParamSort)^);
-  i1 := TListItem(item1);
-  i2 := TListItem(item2);
+  i1 := TListItem(Item1);
+  i2 := TListItem(Item2);
   i := parm.Index;
 
   if Assigned(TJvListView(parm.Sender).FOnSort) then
@@ -399,12 +398,12 @@ begin
     {sort by caption}
     0:
       begin
-        s1 := i1.Caption;
-        s2 := i2.Caption;
+        S1 := i1.Caption;
+        S2 := i2.Caption;
 
-        if IsBigger(s1, s2, sortype) then
+        if IsBigger(S1, S2, sortype) then
           Result := +1
-        else if IsSmaller(s1, s2, sortype) then
+        else if IsSmaller(S1, S2, sortype) then
           Result := -1
         else
           Result := 0;
@@ -423,11 +422,11 @@ begin
         Result := +1
       else
       begin
-        s1 := i1.SubItems[i - 1];
-        s2 := i2.SubItems[i - 1];
-        if IsBigger(s1, s2, sortype) then
+        S1 := i1.SubItems[i - 1];
+        S2 := i2.SubItems[i - 1];
+        if IsBigger(S1, S2, sortype) then
           Result := +1
-        else if IsSmaller(s1, s2, sortype) then
+        else if IsSmaller(S1, S2, sortype) then
           Result := -1
         else
           Result := 0;
@@ -438,9 +437,9 @@ end;
 
 {******************************************************************************}
 
-function SortList2(item1, item2, Paramsort: Integer): Integer; stdcall;
+function SortList2(Item1, Item2, Paramsort: Integer): Integer; stdcall;
 begin
-  Result := -SortList(item1, item2, ParamSort);
+  Result := -SortList(Item1, Item2, ParamSort);
 end;
 
 {**************************************************}
@@ -467,7 +466,7 @@ begin
     else
     begin
       FLast := Column.Index;
-      CustomSort(sortlist, Integer(@parm));
+      CustomSort(SortList, Integer(@parm));
     end;
   end;
 end;
@@ -497,24 +496,24 @@ end;
 
 procedure TJvListView.LoadFromFile(FileName: string);
 var
-  stream: TFileStream;
+  Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  LoadFromStream(stream);
+  LoadFromStream(Stream);
   Stream.Free;
 end;
 
 {**************************************************}
 
-procedure TJvListView.LoadFromStream(stream: TStream);
+procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  buf: array[0..100] of Char;
-  start: Integer;
+  Buf: array[0..100] of Char;
+  Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
     i, j, k: Integer;
-    buf: array[0..100] of Byte;
+    Buf: array[0..100] of Byte;
     st: string;
     ch1, checks: Boolean;
     t: TListItem;
@@ -524,21 +523,21 @@ var
     st := '';
     Items.Clear;
     if Assigned(FOnLoad) then
-      FOnLoad(Self, 0, stream.Size - start);
+      FOnLoad(Self, 0, Stream.Size - Start);
     checks := False;
     ch1 := CheckBoxes;
     while i < Stream.Size do
     begin
-      j := Stream.Read(buf, 100);
+      j := Stream.Read(Buf, 100);
       if Assigned(FOnLoad) then
-        FOnLoad(Self, j, stream.Size - start);
+        FOnLoad(Self, j, Stream.Size - Start);
       i := i + j;
       k := 0;
       while k < j do
       begin
-        while (k < j) and (buf[k] <> 0) and (buf[k] <> 1) do
+        while (k < j) and (Buf[k] <> 0) and (Buf[k] <> 1) do
         begin
-          st := st + Char(buf[k]);
+          st := st + Char(Buf[k]);
           Inc(k);
         end;
 
@@ -554,7 +553,7 @@ var
             st := Copy(st, 2, Length(st));
             t.Caption := st;
           end;
-          if buf[k] = 1 then
+          if Buf[k] = 1 then
             t := nil;
           st := '';
         end;
@@ -567,49 +566,63 @@ var
 
   procedure LoadNewStyle(Stream: TStream);
   const
+
     LV_HASCHECKBOXES = $80;
-    LV_CHECKED = $8000;
+    // hs-    LV_CHECKED = $8000;
   var
-    count, i, j: Word;
-    options: Byte;
+    Count, i, j: Word;
+    Options: Byte;
     st: string;
     t: TListItem;
-    buf: array[0..2048] of Char;
+    Buf: array[0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
       Self.Items.Clear;
       Self.Items.EndUpdate;
 
-      Stream.Read(options, SizeOf(options));
-      CheckBoxes := (options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
+      Stream.Read(Options, SizeOf(Options));
+      CheckBoxes := (Options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
 
       //Read all lines
       while Stream.Position < Stream.Size do
       begin
-        Stream.Read(count, SizeOf(count));
+        Stream.Read(Count, SizeOf(Count));
 
         //statistics
         if Assigned(FOnLoad) then
-          FOnLoad(Self, Stream.Position, stream.Size - start);
+          FOnLoad(Self, Stream.Position, Stream.Size - Start);
 
         //Read all columns
         t := Self.Items.Add;
-        for i := 1 to count do
+        for i := 1 to Count do
         begin
-          //Read Size of the string
-          Stream.Read(j, SizeOf(i));
+          // hs-
+          if (i = 1) then
+          begin
+            Stream.Read(Options, SizeOf(Options));
+            if CheckBoxes then
+              t.Checked := Boolean(Options and Ord(True));
+          end;
+          // -hs
+
+          (* hs-
+                    Stream.Read(j, SizeOf(i));
+          -hs *)
+          Stream.Read(j, SizeOf(j));
 
           //Read the string
-          ZeroMemory(@buf, SizeOf(buf));
-          Stream.Read(buf, j);
-          st := buf;
+          ZeroMemory(@Buf, SizeOf(Buf));
+          Stream.Read(Buf, j);
+          st := Buf;
 
           if (i = 1) then
           begin
             t.Caption := st;
-            if CheckBoxes then
-              t.Checked := (i and LV_CHECKED) = LV_CHECKED;
+            (* hs-
+                        if CheckBoxes then
+                          t.Checked := (i and LV_CHECKED) = LV_CHECKED;
+            -hs *)
           end
           else
             t.SubItems.Add(st);
@@ -620,12 +633,12 @@ var
   end;
 
 begin
-  start := Stream.Position;
-  Stream.Read(buf, 10);
-  buf[10] := #0;
-  if (buf <> 'LISTVIEW01') then
+  Start := Stream.Position;
+  Stream.Read(Buf, 10);
+  Buf[10] := #0;
+  if (Buf <> 'LISTVIEW01') then
   begin
-    Stream.Position := start;
+    Stream.Position := Start;
     LoadOldStyle(Stream);
   end
   else
@@ -635,7 +648,7 @@ end;
 
 procedure TJvListView.SaveToFile(FileName: string; ForceOldStyle: Boolean);
 var
-  stream: TFileStream;
+  Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
   SaveToStream(Stream, ForceOldStyle);
@@ -643,56 +656,56 @@ begin
 end;
 {**************************************************}
 
-procedure TJvListView.SaveToStream(stream: TStream; ForceOldStyle: Boolean);
+procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
 
   procedure SaveOldStyle(Stream: TStream);
   var
     i, j, k: Integer;
     b, c, d, e: Byte;
     st: string;
-    buf: array[0..1000] of Byte;
+    Buf: array[0..1000] of Byte;
   begin
     b := 0;
     c := 1;
-    d := ord('T'); //checked
-    E := ord('F'); //not checked
+    d := Ord('T'); //checked
+    E := Ord('F'); //not checked
     if Assigned(FOnSave) then
-      FOnSave(Self, 0, Self.Items.count);
-    for i := 0 to Self.Items.count - 1 do
+      FOnSave(Self, 0, Self.Items.Count);
+    for i := 0 to Self.Items.Count - 1 do
     begin
       if Assigned(FOnSave) then
-        FOnSave(Self, i + 1, Self.Items.count);
-      st := Self.Items[i].caption;
+        FOnSave(Self, i + 1, Self.Items.Count);
+      st := Self.Items[i].Caption;
       for k := 1 to Length(st) do
-        buf[k - 1] := Byte(st[k]);
+        Buf[k - 1] := Byte(st[k]);
       k := Length(st);
       //write checked,not
       if Self.Items[i].Checked then
-        Stream.write(d, 1)
+        Stream.Write(d, 1)
       else
-        Stream.write(e, 1);
-      stream.Write(buf, k);
+        Stream.Write(e, 1);
+      Stream.Write(Buf, k);
       if Self.Items[i].SubItems.Count = 0 then
-        Stream.write(c, 1)
+        Stream.Write(c, 1)
       else
       begin
         Stream.Write(b, 1);
-        for j := 0 to Self.Items[i].subitems.count - 2 do
+        for j := 0 to Self.Items[i].subitems.Count - 2 do
         begin
           st := Self.Items[i].subitems[j];
           for k := 1 to Length(st) do
-            buf[k - 1] := Byte(st[k]);
+            Buf[k - 1] := Byte(st[k]);
           k := Length(st);
-          stream.write(buf, k);
-          stream.write(b, 1);
+          Stream.Write(Buf, k);
+          Stream.Write(b, 1);
         end;
-        j := Self.Items[i].subitems.count - 1;
+        j := Self.Items[i].subitems.Count - 1;
         st := Self.Items[i].subitems[j];
         for k := 1 to Length(st) do
-          buf[k - 1] := Byte(st[k]);
+          Buf[k - 1] := Byte(st[k]);
         k := Length(st);
-        stream.write(buf, k);
-        stream.write(c, 1);
+        Stream.Write(Buf, k);
+        Stream.Write(c, 1);
       end;
     end;
   end;
@@ -700,36 +713,43 @@ procedure TJvListView.SaveToStream(stream: TStream; ForceOldStyle: Boolean);
   procedure SaveNewStyle(Stream: TStream);
   const
     LV_HASCHECKBOXES = $80;
-    LV_CHECKED = $8000;
+    // hs-    LV_CHECKED = $8000;
   var
-    buf: array[0..100] of Char;
-    i, j: Word;
-    options: Byte;
+    Buf: array[0..100] of Char;
+    // hs-    i, j: Word;
+    i: Integer;
+    j: Word;
+    // hs    Options : Byte;
+    Options, IsChecked: Byte;
 
     procedure WriteString(Txt: string);
     var
       i: Word;
-      buf: array[1..2056] of Char;
+      Buf: array[1..2056] of Char;
     begin
       i := Length(Txt);
-      CopyMemory(@buf, @Txt[1], i);
+      CopyMemory(@Buf, @Txt[1], i);
       Stream.Write(i, SizeOf(i));
-      Stream.Write(buf, i);
+      Stream.Write(Buf, i);
     end;
 
   begin
-    buf := 'LISTVIEW01';
-    Stream.Write(buf, 10);
+    Buf := 'LISTVIEW01';
+    Stream.Write(Buf, 10);
     if CheckBoxes then
-      options := LV_HASCHECKBOXES
+      Options := LV_HASCHECKBOXES
     else
-      options := 0;
-    Stream.Write(options, SizeOf(options));
+      Options := 0;
+    Stream.Write(Options, SizeOf(Options));
     for i := 0 to Items.Count - 1 do
       with Items[i] do
       begin
         j := SubItems.Count + 1;
         Stream.Write(j, SizeOf(j));
+        // hs-
+        IsChecked := Options or (Byte(Ord(Checked)));
+        Stream.Write(IsChecked, SizeOf(IsChecked));
+        // -hs
         WriteString(Caption);
         for j := 0 to SubItems.Count - 1 do
           WriteString(SubItems[j]);
@@ -749,7 +769,7 @@ procedure TJvListView.LoadFromCSV(FileName: string; Separator: Char);
 var
   st, st2: string;
   fich: textfile;
-  Size, current: Integer;
+  Size, Current: Integer;
   t: TListItem;
   f: file of Byte;
   i, j, k, l: Integer;
@@ -765,13 +785,13 @@ begin
   Reset(fich);
   if Assigned(FOnLoad) then
     FOnLoad(Self, 0, Size);
-  current := 0;
+  Current := 0;
   while not Eof(fich) do
   begin
     Readln(fich, st);
-    current := current + Length(st) + 2;
+    Current := Current + Length(st) + 2;
     if Assigned(FOnLoad) then
-      FOnLoad(Self, current, Size);
+      FOnLoad(Self, Current, Size);
     t := Items.Add;
 
     j := 0;
@@ -917,22 +937,22 @@ end;
 
 procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
 var
- st: string;
- i,j: Integer;
+  st: string;
+  i, j: Integer;
 begin
   inherited;
   if AutoClipboardCopy then
     if (Key in [Ord('c'), Ord('C')]) and (ssCtrl in Shift) then
     begin
-      for i:=0 to Columns.Count-1 do
-        st := st + Columns[i].Caption+#9;
-      if st<>'' then
+      for i := 0 to Columns.Count - 1 do
+        st := st + Columns[i].Caption + #9;
+      if st <> '' then
         st := st + #13#10;
-      for i:=0 to Items.Count-1 do
+      for i := 0 to Items.Count - 1 do
         if (SelCount = 0) or (Items[i].Selected) then
         begin
           st := st + Items[i].Caption;
-          for j:=0 to Items[i].SubItems.Count-1 do
+          for j := 0 to Items[i].SubItems.Count - 1 do
             st := st + #9 + Items[i].SubItems[j];
           st := st + #13#10;
         end;
@@ -972,16 +992,16 @@ end;
 
 function TJvListView.GetColumnsOrder: string;
 var
-  res: array[0..100] of Integer;
+  Res: array[0..100] of Integer;
   i: Integer;
 begin
-  ListView_GetColumnOrderArray(Columns.Owner.Handle,Columns.Count,@res);
-  result := '';
-  for i:=0 to Columns.Count - 1 do
+  ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res);
+  Result := '';
+  for i := 0 to Columns.Count - 1 do
   begin
-    if result <> '' then
-      result := result+',';
-    result := result + IntToStr(res[i]) + '=' + IntToStr(Columns[i].Width);
+    if Result <> '' then
+      Result := Result + ',';
+    Result := Result + IntToStr(Res[i]) + '=' + IntToStr(Columns[i].Width);
   end;
 end;
 
@@ -989,30 +1009,30 @@ end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  res: array[0..100] of Integer;
-  i,j: Integer;
+  Res: array[0..100] of Integer;
+  i, j: Integer;
   st: string;
 begin
-  for i:=0 to 100 do
-    res[i] := 0;
+  for i := 0 to 100 do
+    Res[i] := 0;
   with TStringList.Create do
   try
     CommaText := Order;
     i := 0;
-    while Count>0 do
+    while Count > 0 do
     begin
       st := Strings[0];
-      j := pos('=',st);
-      if (j<>0) and (i<Columns.Count) then
+      j := Pos('=', st);
+      if (j <> 0) and (i < Columns.Count) then
       begin
-        Columns[i].Width := StrToIntDef(Copy(st, j+1, Length(st)),Columns[i].Width);
-        st := Copy(st,1,j-1);
+        Columns[i].Width := StrToIntDef(Copy(st, j + 1, Length(st)), Columns[i].Width);
+        st := Copy(st, 1, j - 1);
       end;
-      res[i] := StrToIntDef(st,0);
+      Res[i] := StrToIntDef(st, 0);
       Delete(0);
-      inc(i);
+      Inc(i);
     end;
-    ListView_SetColumnOrderArray(Columns.Owner.Handle,Columns.Count,@res);
+    ListView_SetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res);
   finally
     Free;
   end;
@@ -1021,3 +1041,4 @@ end;
 {**************************************************}
 
 end.
+
