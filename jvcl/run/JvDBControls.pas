@@ -260,8 +260,8 @@ type
     procedure TrackButton(X, Y: Integer);
     function ActiveRowSelected: Boolean;
     function GetSelCount: Longint;
-    procedure SaveColumnsLayout(IniFile: TObject; const Section: string);
-    procedure RestoreColumnsLayout(IniFile: TObject; const Section: string);
+    procedure SaveColumnsLayout(const AppStore: TJvCustomAppStore; const Section: string);
+    procedure RestoreColumnsLayout(const AppStore: TJvCustomAppStore; const Section: string);
     function GetOptions: TDBGridOptions;
     procedure SetOptions(Value: TDBGridOptions);
     function GetMasterColumn(ACol, ARow: Longint): TColumn;
@@ -323,8 +323,8 @@ type
     procedure UnselectAll;
     procedure ToggleRowSelection;
     procedure GotoSelection(Index: Longint);
-    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
-    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure LoadFromAppStore(const AppStore: TJvCustomAppStore; const Path: string);
+    procedure SaveToAppStore(const AppStore: TJvCustomAppStore; const Path: string);
     procedure Load;
     procedure Save;
     property SelectedRows;
@@ -2609,28 +2609,31 @@ begin
   ARow := Coord.Y;
 end;
 
-procedure TJvDBGrid.SaveColumnsLayout(IniFile: TObject;
+procedure TJvDBGrid.SaveColumnsLayout(const AppStore: TJvCustomAppStore;
   const Section: string);
 var
   I: Integer;
-  S: string;
+  SectionName: string;
 begin
   if Section <> '' then
-    S := Section
+    SectionName := Section
   else
-    S := GetDefaultSection(Self);
-  IniEraseSection(IniFile, S);
-  with Columns do
+    SectionName := GetDefaultSection(Self);
+  if Assigned (AppStore) then
   begin
-    for I := 0 to Count - 1 do
+    AppStore.DeleteSubTree(SectionName);
+    with Columns do
     begin
-      IniWriteString(IniFile, S, Format('%s.%s', [Name, Items[I].FieldName]),
-        Format('%d,%d', [Items[I].Index, Items[I].Width]));
+      for I := 0 to Count - 1 do
+      begin
+        AppStore.WriteString(AppStore.ConcatPaths([SectionName, Format('%s.%s', [Name, Items[I].FieldName])]),
+          Format('%d,%d', [Items[I].Index, Items[I].Width]));
+      end;
     end;
   end;
 end;
 
-procedure TJvDBGrid.RestoreColumnsLayout(IniFile: TObject;
+procedure TJvDBGrid.RestoreColumnsLayout(const AppStore: TJvCustomAppStore;
   const Section: string);
 type
   TColumnInfo = record
@@ -2650,42 +2653,43 @@ begin
     SectionName := Section
   else
     SectionName := GetDefaultSection(Self);
-  with Columns do
-  begin
-    ColumnArray := AllocMemo(Count * SizeOf(TColumnInfo));
-    try
-      for I := 0 to Count - 1 do
-      begin
-        S := IniReadString(IniFile, SectionName,
-          Format('%s.%s', [Name, Items[I].FieldName]), '');
-        ColumnArray^[I].Column := Items[I];
-        ColumnArray^[I].EndIndex := Items[I].Index;
-        if S <> '' then
+  if Assigned(AppStore) then
+    with Columns do
+    begin
+      ColumnArray := AllocMemo(Count * SizeOf(TColumnInfo));
+      try
+        for I := 0 to Count - 1 do
         begin
-          ColumnArray^[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
-            ColumnArray^[I].EndIndex);
-          Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims),
-            Items[I].Width);
-        end;
-      end;
-      for I := 0 to Count - 1 do
-      begin
-        for J := 0 to Count - 1 do
-        begin
-          if ColumnArray^[J].EndIndex = I then
+          S := AppStore.ReadString(AppStore.ConcatPaths([SectionName,
+            Format('%s.%s', [Name, Items[I].FieldName])]));
+          ColumnArray^[I].Column := Items[I];
+          ColumnArray^[I].EndIndex := Items[I].Index;
+          if S <> '' then
           begin
-            ColumnArray^[J].Column.Index := ColumnArray^[J].EndIndex;
-            Break;
+            ColumnArray^[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
+              ColumnArray^[I].EndIndex);
+            Items[I].Width := StrToIntDef(ExtractWord(2, S, Delims),
+              Items[I].Width);
           end;
         end;
+        for I := 0 to Count - 1 do
+        begin
+          for J := 0 to Count - 1 do
+          begin
+            if ColumnArray^[J].EndIndex = I then
+            begin
+              ColumnArray^[J].Column.Index := ColumnArray^[J].EndIndex;
+              Break;
+            end;
+          end;
+        end;
+      finally
+        FreeMemo(Pointer(ColumnArray));
       end;
-    finally
-      FreeMemo(Pointer(ColumnArray));
     end;
-  end;
 end;
 
-procedure TJvDBGrid.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvDBGrid.LoadFromAppStore(const AppStore: TJvCustomAppStore; const Path: string);
 begin
   if (DataSource <> nil) and (DataSource.DataSet <> nil) then
   begin
@@ -2693,22 +2697,22 @@ begin
     BeginLayout;
     try
       if StoreColumns then
-        RestoreColumnsLayout(AppStorage, Path)
+        RestoreColumnsLayout(AppStore, Path)
       else
-        InternalRestoreFields(DataSource.DataSet, AppStorage, Path, False);
+        InternalRestoreFields(DataSource.DataSet, AppStore, Path, False);
     finally
       EndLayout;
     end;
   end;
 end;
 
-procedure TJvDBGrid.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+procedure TJvDBGrid.SaveToAppStore(const AppStore: TJvCustomAppStore; const Path: string);
 begin
   if (DataSource <> nil) and (DataSource.DataSet <> nil) then
     if StoreColumns then
-      SaveColumnsLayout(AppStorage, Path)
+      SaveColumnsLayout(AppStore, Path)
     else
-      InternalSaveFields(DataSource.DataSet, AppStorage, Path);
+      InternalSaveFields(DataSource.DataSet, AppStore, Path);
 end;
 
 procedure TJvDBGrid.Load;
