@@ -28,7 +28,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{$DEFINE DEBUG}
+{.$DEFINE DEBUG}
 
 unit jvBandObject;
 
