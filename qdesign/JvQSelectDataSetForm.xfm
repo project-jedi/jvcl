@@ -1,6 +1,6 @@
 object JvSelectDataSetForm: TJvSelectDataSetForm
-  Left = 336
-  Top = 201
+  Left = 637
+  Top = 170
   Width = 269
   Height = 223
   ActiveControl = CancelBtn
@@ -27,7 +27,7 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
   ParentFont = False
   Position = poScreenCenter
   Scaled = False
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object GroupBox: TGroupBox
     Left = 6
     Top = 3
@@ -43,7 +43,7 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
       Height = 154
       Anchors = [akLeft, akTop, akRight, akBottom]
       Enabled = False
-      ItemHeight = 13
+      ItemHeight = 14
       Sorted = True
       TabOrder = 0
       OnDblClick = DataSetListDblClick

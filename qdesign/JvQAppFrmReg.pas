@@ -43,9 +43,9 @@ uses
   QGraphics, Types,
   DesignIntf,
   JvQDsgnConsts,
-  JvQAppAnimatedIcon, JvQAppEvent, JvQFormAutoSize,
+  JvQAppAnimatedIcon, JvQAppEvent, JvQFormAutoSize, JvQEmbeddedForms,
   JvQFormAnimatedIcon, JvQFormAnimation, JvQFormWallpaper,
-  JvQAnimTitle;
+  JvQAnimTitle, JvQSystemColors;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvAppFrmReg.dcr}
@@ -57,9 +57,9 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
-    [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvFormAutoSize,
-     TJvFormAnimation, TJvFormWallpaper]);
-
+    [TJvAppEvents, TJvSystemColors, TJvAppAnimatedIcon, 
+    TJvFormAnimatedIcon, TJvFormAutoSize, TJvFormAnimation, TJvFormWallpaper,
+    TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink]);
 //  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
 //  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
 end;

@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQDBReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -39,25 +39,30 @@ procedure Register;
 implementation
 
 uses
-  Classes, 
+  Classes, QComCtrls, QControls,
   DesignEditors, DesignIntf, 
   JvQDsgnConsts,
-  JvQMemoryDataset, JvQDBDatePickerEdit, JvQDBDateTimePicker, JvQDBLookupTreeView,
-  JvQDBProgressBar, JvQDBRichEdit, JvQDBSpinEdit, JvQDBTreeView, JvQDBLookup,
-  JvQCsvData, JvQDBCombobox, JvQDBControls, JvQDBGrid, JvQDBRadioPanel,
-  JvQDBGridExport, JvQDBLookupComboEdit, JvQDBHTLabel, JvQDBSearchEdit,
-  JvQDBSearchComboBox, JvQAppDBStorage, JvQDBFindEdit, JvQDBImage,
   {$IFDEF JV_MIDAS}
   JvQDBRemoteLogin,
   {$ENDIF JV_MIDAS}
-  JvQDBEditors, JvQDBMemDatasetEditor, JvQDBGridExportEditors;
+  JvQDBHTLabel, JvQDBProgressBar, JvQMemoryDataset,
+  JvQCsvData, JvQCsvDataEditor, JvQAppDBStorage, JvQDBFindEdit;
+  (*
+  JvQDBDatePickerEdit, JvQDBDateTimePicker, JvQDBLookupTreeView,
+  JvDBSpinEdit, JvQDBTreeView, JvQDBLookup,
+
+  JvQDBCombobox, JvQDBControls, JvQDBGrid, JvQDBUltimGrid, JvQDBGridFooter,
+  JvQDBRadioPanel, JvQDBGridExport, JvQDBLookupComboEdit, JvQDBSearchEdit,
+  JvQDBSearchComboBox, JvQDBImage, JvQDBEditors,
+  JvQDBGridExportEditors, JvQDBGridEditors;
+  *)
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDBReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const
@@ -70,26 +75,35 @@ const
   cLookupField = 'LookupField';
   cSectionField = 'SectionField';
   cValueField = 'ValueField';
-  cRowsHeight = 'RowsHeight';
-  //cStartMasterValue = 'StartMasterValue';
+  cEditControls = 'EditControls';
+  cSortedField = 'SortedField';
+  cSortMarker = 'SortMarker';
+  cPanels = 'Panels';
 begin
+  GroupDescendentsWith(TJvMemoryData, TControl);
+  GroupDescendentsWith(TJvCSVDataSet, TControl);
+  GroupDescendentsWith(TJvCustomCSVDataSet, TControl);
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
-    TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
-    TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport, TJvDBGridCSVExport, TJvDBGridXMLExport]);
-  RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
-    TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
+    TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF}]);
+
+//    TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
+//    TJvDBGridCSVExport, TJvDBGridXMLExport, );
+  RegisterComponents(RsPaletteDBVisual, [TJvDBProgressBar, TJvDBFindEdit,
+    TJvDBHTLabel]);
+(*
+    TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
-    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBMaskEdit,
-    TJvDBStatusLabel, TJvDBLookupComboEdit, TJvDBHTLabel, TJvDBSearchEdit,
-    TJvDBSearchComboBox, TJvDBFindEdit, TJvDBImage]);
+    TJvDBGrid, TJvDBUltimGrid, TJvDBGridFooter, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit,
+    TJvDBMaskEdit, TJvDBStatusLabel, TJvDBLookupComboEdit,
+    TJvDBSearchEdit, TJvDBSearchComboBox,  TJvDBImage]);
+*)
   RegisterComponents(RsPalettePersistence, [TJvAppDBStorage]);
-
-  RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, cRowsHeight, nil);
-  RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cMasterField, TJvDataFieldProperty);
+  (*
+//  RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cMasterField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cDetailField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cIconField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, cKeyField, TJvListFieldProperty);
@@ -103,12 +117,17 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cDetailField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(TWordGridFormat), TJvDBGridWordExport, '', TDBGridExportWordFormatProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cSectionField, TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cValueField, TJvDataFieldProperty);
-
-  RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
+  *)
+//  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cSectionField, TJvDataFieldProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cValueField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'FileName', TJvFilenameProperty);
+//  RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
+//  RegisterPropertyEditor(TypeInfo(string), TJvDBUltimGrid, cSortedField, nil);
+//  RegisterPropertyEditor(TypeInfo(TSortMarker), TJvDBUltimGrid, cSortMarker, nil);
+//  RegisterPropertyEditor(TypeInfo(TStatusPanels), TJvDBGridFooter, cPanels, nil);
+//  RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;
 
 end.
-
