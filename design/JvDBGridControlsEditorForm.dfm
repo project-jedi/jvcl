@@ -1,4 +1,4 @@
-object fmGridProp: TfmGridProp
+object frmJvDBGridControlsEditor: TfrmJvDBGridControlsEditor
   Left = 201
   Top = 176
   BorderStyle = bsDialog

@@ -49,7 +49,7 @@ uses
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
-  JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp, JvCsvDataEditor;
+  JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
