@@ -30,8 +30,12 @@ unit JvJanTreeView;
 interface
 
 uses
-  Windows, ShellAPI, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, Menus;
+  Windows,
+  {$IFDEF VCL}
+  ShellAPI, Messages,
+  {$ENDIF VCL}
+  SysUtils, Classes,
+  Graphics, Controls, Forms, Dialogs, ComCtrls, Menus;
 
 type
   TGetVarEvent = procedure(Sender: TObject; VarName: string;
@@ -319,14 +323,22 @@ end;
 
 procedure TJvJanTreeView.DragDrop(Source: TObject; X, Y: Integer);
 var
+  {$IFDEF VCL}
   HitTest: THitTests;
+  {$ENDIF VCL}
   N: TTreeNode;
 begin
   inherited DragDrop(Source, X, Y);
+  {$IFDEF VCL}
   HitTest := Self.GetHitTestInfoAt(X, Y);
   if htOnLabel in HitTest then
   begin
+  {$ENDIF VCL}
     N := Self.GetNodeAt(X, Y);
+  {$IFDEF VisualCLX}
+  if N <> nil then
+  begin
+ {$ENDIF VisualCLX}
     if Source = Self then
     begin
       if Selected = nil then
@@ -483,15 +495,23 @@ end;
 
 procedure TJvJanTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
+{$IFDEF VCL}
   HitTest: THitTests;
+{$ENDIF VCL}
   N: TTreeNode;
   S: string;
 begin
+{$IFDEF VCL}
   HitTest := GetHitTestInfoAt(X, Y);
   if htOnLabel in HitTest then
   begin
+{$ENDIF VCL}
     N := GetNodeAt(X, Y);
-    S := N.Text;
+ {$IFDEF VisualCLX}
+  if N <> nil then
+  begin
+ {$ENDIF VisualCLX}
+     S := N.Text;
     if (Copy(S, 1, 7) = 'http://') or (Copy(S, 1, 7) = 'mailto:') then
       Cursor := crHandPoint
     else
