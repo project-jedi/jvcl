@@ -23,12 +23,10 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-{$IFOPT D+}
-{.$DEFINE DEBUG}
-{$ENDIF}
 unit JvPrvwDoc;
 { TODO :
     * Adjust zoom when Cols or Rows change - DONE
@@ -1112,7 +1110,8 @@ begin
     FillRect(ClipRect);
     Pen.Color := clBlack;
     Pen.Style := psDot;
-{$IFDEF DEBUG}
+    { (rom) disabled
+    // $IFDEF DEBUG
     Polyline([
       Point(AOffsetX, AOffsetY),
         Point(AOffsetX, AOffsetY + FMaxHeight),
@@ -1120,7 +1119,8 @@ begin
         Point(AOffsetX + FMaxWidth, AOffsetY),
         Point(AOffsetX, AOffsetY)
         ]);
-{$ENDIF}
+    // $ENDIF DEBUG
+    }
     Pen.Style := psSolid;
     APageIndex := k * TotalCols;
     m := Max(0, PageCount - 1);

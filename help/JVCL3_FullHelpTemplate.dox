@@ -12527,7 +12527,7 @@ HandleConditionalDefines=0
 
 [Parsing\Excluded Source Files]
 Count=1
-File_0=..\jvcl\source\JEDI.INC
+File_0=..\jvcl\source\jedi.inc
 
 [Project File Info]
 Version=304

@@ -26,12 +26,12 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I jvcl.inc}
+{$I windowsonly.inc}
+
 unit JvDdeCmd;
 
 interface
-
-{$I jvcl.inc}
-{$I windowsonly.inc}
 
 uses
   DdeMan, Messages, SysUtils, Classes, JclBase, Forms,

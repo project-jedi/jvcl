@@ -24,13 +24,16 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JvUIBMetaData;
-
 {$I jvcl.inc}
 {$I jvuib.inc}
 
+unit JvUIBMetaData;
+
 interface
-uses Classes, SysUtils, JvUIBase, JvUIBLib, JvUIB, JvUIBConst;
+
+uses
+  Classes, SysUtils,
+  JvUIBase, JvUIBLib, JvUIB, JvUIBConst;
 
 type
 

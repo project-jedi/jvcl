@@ -1,1 +1,1 @@
-{$INCLUDE ..\..\common\JVCL.INC}
+{$I ..\..\common\jvcl.inc}

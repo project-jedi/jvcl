@@ -26,7 +26,6 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\common\JvDBConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMemoryDataset.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvData.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvParse.pas" Targets="all" Formname="" Condition=""/>

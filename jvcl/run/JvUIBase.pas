@@ -42,6 +42,7 @@
 unit JvUIBase;
 
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,

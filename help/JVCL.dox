@@ -706,7 +706,7 @@ IndexTitlePrefixes=
 
 [Parsing\Excluded Source Files]
 Count=1
-File_0=..\jvcl\source\JEDI.INC
+File_0=..\jvcl\source\jedi.inc
 
 [Editor Options]
 MaxLineLength=100
