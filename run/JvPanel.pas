@@ -36,6 +36,9 @@ interface
 uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  {$IFDEF VisualCLX}
+  Qt, 
+  {$ENDIF VisualCLX}
   JvThemes, JvComponent, JvExControls;
 
 type
@@ -101,13 +104,17 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
+    FOnPaint: TNotifyEvent;
     {$IFDEF VCL}
     FMovable: Boolean;
     FWasMoved: Boolean;
     FOnAfterMove: TNotifyEvent;
     FOnBeforeMove: TJvPanelMoveEvent;
     {$ENDIF VCL}
-    FOnPaint: TNotifyEvent;
+    {$IFDEF VisualCLX}
+    FGripBmp: TBitmap;
+    procedure CreateSizeGrip;
+    {$ENDIF VisualCLX}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -130,15 +137,18 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-    procedure AdjustSize; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
+    procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure DrawMask(ACanvas: TCanvas); override;
+    {$ENDIF VisualCLX}
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
@@ -402,6 +412,13 @@ end;
 destructor TJvPanel.Destroy;
 begin
   FArrangeSettings.Free;
+  {$IFDEF VisualCLX}
+  if assigned(FGripBmp) then
+  begin
+    FGripBmp.Free;
+    FGripBmp := nil;
+  end;
+  {$ENDIF VisualCLX}
   inherited Destroy;
 end;
 
@@ -461,12 +478,49 @@ begin
   if Assigned(FOnBeforeMove) then
     FOnBeforeMove(Self, X, Y, Result);
 end;
-
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvPanel.DrawMask(ACanvas: TCanvas);
+var
+  R: TRect;
+  i, j, X, Y: integer;
+begin
+  inherited DrawMask(ACanvas);
+  ACanvas.Brush.Style := bsClear;
+  ACanvas.Pen.Color := clDontMask;
+  i := 0 ; //BorderWidth;
+  if BevelOuter <> bvNone then
+    Inc(i, BevelWidth);
+  if BevelInner <> bvNone then
+    Inc(i, BevelWidth);
+  ACanvas.Pen.Width := i;
+  R := ClientRect;
+  ACanvas.Rectangle(R);
+  if Sizeable then
+  begin
+    X := ClientWidth - FGripBmp.Width - i;
+    Y := ClientHeight - FGripBmp.Height - i;
+    for i := 0 to 2 do
+    begin
+      for j := 0 to 2 do
+      begin
+        ACanvas.moveto(X + 4 * i + j, Y + FGripBmp.Height);
+        ACanvas.lineto(X + FGripBmp.Width, Y + 4 * i + j);
+      end
+    end;
+  end;
+end;
+{$ENDIF VisualCLX}
+
+
 
 procedure TJvPanel.Paint;
 var
   X, Y: Integer;
+  {$IFDEF VisualCLX}
+  i: integer;
+  {$ENDIF VisualCLX}
 begin
   if Assigned(FOnPaint) then
   begin
@@ -506,6 +560,17 @@ begin
     {$ENDIF JVCLThemesEnabled}
       with Canvas do
       begin
+        {$IFDEF VisualCLX}
+        i := 0 ; //BorderWidth;
+        if BevelOuter <> bvNone then
+          Inc(i, BevelWidth);
+        if BevelInner <> bvNone then
+          Inc(i, BevelWidth);
+        X := ClientWidth - FGripBmp.Width - i;
+        Y := ClientHeight - FGripBmp.Height - i;
+        Draw(X, Y, FGripBmp);
+        {$ENDIF VisualCLX}
+        {$IFDEF VCL}
         // (rom) Marlett is not a standard Windows font
         Font.Name := 'Marlett';
         Font.Charset := DEFAULT_CHARSET;
@@ -518,9 +583,11 @@ begin
         if Transparent and not IsThemed then
           SetBkMode(Handle, BkModeTransparent);
         TextOut(X, Y, 'o');
-      end;
+        {$ENDIF VCL}
+      end;  // end with Canvas do
 end;
 
+{$IFDEF VCL}
 procedure TJvPanel.AdjustSize;
 begin
   inherited AdjustSize;
@@ -531,6 +598,7 @@ begin
     Width := Width - 1;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvPanel.DrawBorders;
 var
@@ -736,6 +804,19 @@ begin
   if FSizeable <> Value then
   begin
     FSizeable := Value;
+    {$IFDEF VisualCLX}
+    if Value then
+    begin
+      if not assigned(FGripBmp) then
+        CreateSizeGrip;
+    end
+    else
+      if assigned(FGripBmp) then
+      begin
+        FGripBmp.Destroy;
+        FGripBmp := nil;
+      end;
+    {$ENDIF VisualCLX}
     Invalidate;
   end;
 end;
@@ -1020,6 +1101,39 @@ begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvPanel.CreateSizeGrip;
+var
+  i: integer;
+begin
+  FGripBmp := TBitmap.Create;
+  FGripBmp.Width := 13; //GetSystemMetrics(SM_CXVSCROLL);
+  FGripBmp.Height := 13; //GetSystemMetrics(SM_CXYSCROLL);
+  with FGripBmp.Canvas do
+  begin
+    Brush.Color := clBackGround;
+    FillRect(Bounds(0, 0, Width, Height));
+    Pen.Width := 1;
+    for i := 0 to 2 do
+    begin
+      Pen.Color := clLight;
+      moveto(3 * i, FGripBmp.Height);
+      lineto(FGripBmp.Width, 3 * i);
+      Pen.Color := clDark;
+      moveto(3 * i + 1, FGripBmp.Height);
+      lineto(FGripBmp.Width, 3 * i + 1);
+//      Pen.Color := clMid;
+      moveto(3 * i + 2, FGripBmp.Height);
+      lineto(FGripBmp.Width, 3 * i + 2);
+    end;
+  end;
+  FGripBmp.TransparentColor := clBackGround;
+  FGripBmp.TransparentMode := tmFixed;
+  FGripBmp.Transparent := true;
+end;
+{$ENDIF VisualCLX}
+
 
 end.
 
