@@ -58,7 +58,7 @@ REM It will work if %MAKE% is something like:
 REM   C:\PROGRA~1\Borland\Delphi7\bin\make.exe
 REM   "C:\Program Files\Borland\Delphi7\bin\make.exe"
 
-%MAKE% -f "%PACKAGE%.mak" %4 %5 %6 %7 %8 %9
+%MAKE% -f "%PACKAGE%.mak" %TARGETS% %4 %5 %6 %7 %8 %9
 
 IF ERRORLEVEL 1 GOTO error
 echo.
