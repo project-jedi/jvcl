@@ -552,3 +552,126 @@ msgstr ""
 msgid "JvHLEdPropDlg.ini"
 msgstr ""
 
+msgid "Wingdings"
+msgstr ""
+
+msgid "fPrintPreview"
+msgstr ""
+
+msgid "tbPrior"
+msgstr ""
+
+msgid "DateFormat"
+msgstr ""
+
+msgid "TimeFormat"
+msgstr ""
+
+msgid "MarginTop"
+msgstr ""
+
+msgid "MarginHeader"
+msgstr ""
+
+msgid "MarginLeft"
+msgstr ""
+
+msgid "MarginRight"
+msgstr ""
+
+msgid "MarginBottom"
+msgstr ""
+
+msgid "PaddingLeft"
+msgstr ""
+
+msgid "HeaderSize"
+msgstr ""
+
+msgid "FooterSize"
+msgstr ""
+
+msgid "FoLog"
+msgstr ""
+
+msgid "csv"
+msgstr ""
+
+msgid "LblContext"
+msgstr ""
+
+msgid "TxtSpell"
+msgstr ""
+
+msgid "txt"
+msgstr ""
+
+msgid "1.0.0.0"
+msgstr ""
+
+msgid "zhouyibo"
+msgstr ""
+
+msgid "http://jvcl.sourceforge.net"
+msgstr ""
+
+msgid "jvcl@jvcl.sf.net"
+msgstr ""
+
+msgid "@"
+msgstr ""
+
+msgid "JvJCLUtils.MakeYear4Digit: Pivot < 0"
+msgstr ""
+
+msgid "*.pcx;*.tga;"
+msgstr ""
+
+msgid "frmJvColorProviderDesigner"
+msgstr ""
+
+msgid "CSVFieldDef="
+msgstr ""
+
+msgid "*.bmp;*.ico;*.wmf"
+msgstr ""
+
+msgid "DecreaseBox.Checked"
+msgstr ""
+
+msgid "TXT"
+msgstr ""
+
+msgid "%d - %s"
+msgstr ""
+
+msgid "*.csv"
+msgstr ""
+
+msgid "??"
+msgstr ""
+
+msgid "MPEG 1.0"
+msgstr ""
+
+msgid "MPEG 2.0"
+msgstr ""
+
+msgid "MPEG 2.5"
+msgstr ""
+
+msgid "Layer 1"
+msgstr ""
+
+msgid "Layer 2"
+msgstr ""
+
+msgid "Layer 3"
+msgstr ""
+
+msgid "CCIT J.17"
+msgstr ""
+
+msgid " (VBR)"
+msgstr ""
+
