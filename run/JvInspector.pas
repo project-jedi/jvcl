@@ -5779,7 +5779,7 @@ var
   IH: Integer;
   MH: Integer;
 begin
-  if not DroppedDown then
+  if (not DroppedDown) and (ListBox <> nil) then
   begin
     ListBox.Width := RectWidth(Rects[iprValueArea]);
     TListBox(ListBox).Font := TCustomEditAccessProtected(EditCtrl).Font;
