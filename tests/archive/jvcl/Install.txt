@@ -1,4 +1,4 @@
-Install notes for JEDI-VCL (JVCL) Version 2.00 Beta 3 for Delphi 5 - 7
+Install notes for JEDI-VCL (JVCL) Version 2.10 for Delphi 5 - 7
 ============================================================================
 
 The BEST way to install JVCL is to download the JCL/JVCL combined package, and use the "JEDI Installer". 
@@ -52,7 +52,7 @@ NOTE: If you are using an older JCL version and can't upgrade for some reason, y
 
 If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that you have the zlib files on your computer and in Delphi's library path. If not, you need to install those files from your Delphi CD first. 
 
-You will get a couple of warnings about "implicitly included" files, but this is normal and can be ignored.
+You will get a couple of warnings about "implicitly included" files, but this is normal and can be ignored. 
 
 9) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window (or hit ENTER). You should now have JVCL installed on your PC. 
 

@@ -1,9 +1,9 @@
-JEDI VCL 2.00 BETA 3 for D5-D7 
+JEDI VCL 2.10 for D5-D7 
 (http://jvcl.sourceforge.net)
 
 The JEDI Visual Component Library (JVCL) for D5-D7 consists of a set of visual components which can be instantly reused in your Delphi  projects.
 
-The library is built upon code donated from the JEDI community. Please note that this is a beta release, and as such, there is still a lot of work to do. There has been a significant merging/refactoring since version 1.3 and this means, among other things, that some components have disappeared and others have been equipped with new capabilities. Please read restruct_changelog.txt and restruct_demochanges.txt for details on what has changed since 1.3 and to give you a hint on how to move your code from 1.3 to 2.0. Your involvement and help in improving JVCL and finding bugs would be very much appreciated.
+The library is built upon code donated from the JEDI community. Please note that this is a beta release, and as such, there is still a lot of work to do. There has been a significant merging/refactoring since version 2.0 and this means, among other things, that some components have disappeared and others have been equipped with new capabilities. Please read restruct_changelog.txt, restruct_demochanges.txt and ChangeLog20to21.txt for details on what has changed since the last release and to give you a hint on how to move your code from 2.0 to 2.1. Your involvement and help in improving JVCL and finding bugs would be very much appreciated.
 
 JVCL is released to the public under the terms of the Mozilla Public License (MPL) and as such can be freely used in both freeware/shareware, opensource and commercial projects. The MPL does have a few restrictions and we urge you to read the MPL (at http://www.mozilla.org/MPL/MPL-1.1.html) and MPL FAQ documents available in the JCL-Help.chm file.
 
@@ -68,7 +68,7 @@ FUTURE PLANS / NOT FINISHED:
 
 - This release contains a number of duplicate components, since the merging of new libraries into JVCL isn't complete. Please report any suggestions and findings in the Issue Tracker to speed up this process. 
 
-- If you have existing code using JVCL 1.31 or earlier, you might have to rename and remove units and components. Use the restructure_changelog.txt as a guide to where things are located currently. If anything is missing from restructure_changleog.txt, please let us know by posting in the Issue Tracker
+- If you have existing code using JVCL 2.00 or earlier, you might have to rename and remove units and components. Use the restructure_changelog.txt as a guide to where things are located currently. If anything is missing from restructure_changelog.txt, please let us know by posting in the Issue Tracker
 
 - Since it is hard to tell up front what will stay and what will disappear, here's a couple of hints on how you should use the components to minimize the risk of having to redo it in the future:
 
