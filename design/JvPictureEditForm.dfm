@@ -29,14 +29,6 @@ object PictureEditDialog: TPictureEditDialog
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object UsePreviewBox: TCheckBox
-    Left = 7
-    Top = 270
-    Width = 339
-    Height = 14
-    Caption = ' &Use preview dialog box '
-    TabOrder = 1
-  end
   object OKButton: TButton
     Left = 105
     Top = 306
@@ -45,7 +37,7 @@ object PictureEditDialog: TPictureEditDialog
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 3
+    TabOrder = 2
   end
   object CancelButton: TButton
     Left = 188
@@ -55,7 +47,7 @@ object PictureEditDialog: TPictureEditDialog
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 4
+    TabOrder = 3
   end
   object HelpBtn: TButton
     Left = 271
@@ -63,7 +55,7 @@ object PictureEditDialog: TPictureEditDialog
     Width = 75
     Height = 25
     Caption = '&Help'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = HelpBtnClick
   end
   object GroupBox: TGroupBox
@@ -170,13 +162,13 @@ object PictureEditDialog: TPictureEditDialog
   end
   object DecreaseBox: TCheckBox
     Left = 7
-    Top = 287
+    Top = 271
     Width = 339
     Height = 14
     Caption = ' &Decrease to 16 colors when paste '
     Checked = True
     State = cbChecked
-    TabOrder = 2
+    TabOrder = 1
   end
   object FormStorage: TJvFormStorage
     AppStorage = AppStore
@@ -185,7 +177,6 @@ object PictureEditDialog: TPictureEditDialog
     OnSavePlacement = FormStorageSavePlacement
     OnRestorePlacement = FormStorageRestorePlacement
     StoredProps.Strings = (
-      'UsePreviewBox.Checked'
       'DecreaseBox.Checked')
     StoredValues = <>
     Left = 32
@@ -194,7 +185,7 @@ object PictureEditDialog: TPictureEditDialog
   object PathsMenu: TPopupMenu
     Alignment = paRight
     OnPopup = PathsMenuPopup
-    Left = 60
+    Left = 96
     Top = 30
   end
   object PathsMRU: TJvMRUManager
