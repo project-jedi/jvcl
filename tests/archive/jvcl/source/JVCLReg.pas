@@ -110,7 +110,7 @@ uses
   JvCommonDialogD, JvBaseDlg,
   JvSelectDirectory, JvPasswordForm,
   JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
-  JvTipsOfDay, JvImageDlg, JvCalculator, JvProgressDlg, JvDiskPrompt,
+  JvTipsOfDay, JvImageDlg, JvProgressDlg, JvDiskPrompt,
   JvCopyError, JvDeleteError, JvRenameError, JvPageSetupTitled, JvPageSetup,
 
   //WinDialogs
@@ -412,7 +412,6 @@ begin
       TJvNagScreen,
       TJvTipsOfDay,
       TJvTipWindow,
-      TJvCalculator,
       TJvProgressDlg,
       TJvFindReplace,
       TJvImageDlg,

@@ -1,13 +1,17 @@
 2002-07-20
-- moved standard compiler directives from units into JVCL.INC
-- replaced JEDI.INC with JVCL.INC in units/packages
+- moved JvCalculator, JvCalculatorBox, JvButtonBox, JvCustomBox, JvDirectoryBox, JvFilenameBox,JvImageBox to \archive
+- moved JvShell to \archive - JvxTrayIcon duplicates JvTrayIcon
+- moved JvShDlg to \archive - utility functions not used
+- moved JvCombos to \archive - duplicates TJvFontComboBox and TJvColorComboBox
+- moved standard compiler directives from units into JVCL.INC (using Convert)
+- replaced JEDI.INC with JVCL.INC in units/packages (using Convert)
 - added DJCL??.DPK to JVCL200_R??.DPKs requires section
-- moved {$ObjExportAll ON} from units to JVCL.INC
+- moved {$ObjExportAll ON} from units to JVCL.INC (using Convert)
 
 2002-07-19
 - Converted DELPHIXX defines to COMPILERXX with Michael Becks Convert utility 
 - fixed Directory setter bug in JvBrowseFolder
-- moved all BMP's and PNG's to \glyphs because of re-casing problem in CVS (cannot change case on existing files)
+- moved all BMP's and PNG's to \glyphs and glyphs\PNG because of re-casing problem in CVS (cannot change case of existing files even if you delete and re-add it)
 2002-07-18
 - Changed generic Exception classes to EJVCLException and added JvTypes where necessary
 - Remko Bonte fixed design-time bugs in JvSpecialProgress 
