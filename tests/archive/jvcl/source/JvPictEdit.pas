@@ -38,7 +38,7 @@ uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   {$ENDIF}
   StdCtrls, ExtCtrls, 
   {$IFDEF COMPILER3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
-  JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon;
+  JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon, JvComponent;
 
 type
 
