@@ -52,23 +52,19 @@ type
   private
     FStates: TJvButtonMouseStates;
     FBuffer: TBitmap;
-    FOnMouseExit: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
-    FFlat: boolean;
+    FFlat: Boolean;
     FDropDownMenu: TPopupMenu;
-    FDown: boolean;
+    FDown: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-    FForceSameSize: boolean;
-    FAllowAllUp: boolean;
-    FGroupIndex: integer;
-    FHotTrack: boolean;
+    FForceSameSize: Boolean;
+    FAllowAllUp: Boolean;
+    FGroupIndex: Integer;
+    FHotTrack: Boolean;
     FHotFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
     function GetPattern: TBitmap;
-    procedure SetFlat(const Value: boolean);
-    procedure SetDown(Value: boolean);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure SetFlat(const Value: Boolean);
+    procedure SetDown(Value: Boolean);
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -76,48 +72,45 @@ type
     procedure CMButtonPressed(var Msg: TMessage); message CM_BUTTONPRESSED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure SetForceSameSize(const Value: boolean);
-    procedure SetAllowAllUp(const Value: boolean);
-    procedure SetGroupIndex(const Value: integer);
+    procedure SetForceSameSize(const Value: Boolean);
+    procedure SetAllowAllUp(const Value: Boolean);
+    procedure SetGroupIndex(const Value: Integer);
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 
   protected
-    function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: integer): boolean; virtual;
+    function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseEnter; virtual;
-    procedure MouseExit; virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure PaintButton(Canvas: TCanvas); virtual;
     procedure PaintFrame(Canvas: TCanvas); virtual;
-    function InsideBtn(X, Y: integer): boolean; virtual;
+    function InsideBtn(X, Y: Integer): Boolean; virtual;
 
 
-    property AllowAllUp: boolean read FAllowAllUp write SetAllowAllUp default false;
-    property GroupIndex: integer read FGroupIndex write SetGroupIndex default 0;
+    property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
 
     property MouseStates: TJvButtonMouseStates read FStates write FStates default [];
-    property ForceSameSize: boolean read FForceSameSize write SetForceSameSize default false;
+    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default false;
     property Pattern: TBitmap read GetPattern;
-    property Flat: boolean read FFlat write SetFlat default true;
-    property HotTrack: boolean read FHotTrack write FHotTrack default false;
+    property Flat: Boolean read FFlat write SetFlat default true;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default false;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    property Down: boolean read FDown write SetDown default false;
+    property Down: Boolean read FDown write SetDown default false;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
 
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseExit: TNotifyEvent read FOnMouseExit write FOnMouseExit;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     procedure Click; override;
-    procedure SetBounds(ALeft: integer; ATop: integer; AWidth: integer;
-      AHeight: integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -132,16 +125,16 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDropDownMenu: TPopupMenu;
-    FHotTrack: boolean;
+    FHotTrack: Boolean;
     FHotFont: TFont;
     FFontSave: TFont;
-    FOver: boolean;
-    FWordWrap: boolean;
-    FForceSameSize: boolean;
+    FOver: Boolean;
+    FWordWrap: Boolean;
+    FForceSameSize: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
     procedure SetHotFont(const Value: TFont);
-    procedure SetWordWrap(const Value: boolean);
-    procedure SetForceSameSize(const Value: boolean);
+    procedure SetWordWrap(const Value: Boolean);
+    procedure SetForceSameSize(const Value: Boolean);
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -150,8 +143,8 @@ type
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-    procedure DoMouseEnter; dynamic;
-    procedure DoMouseLeave; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -159,13 +152,13 @@ type
     procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetBounds(ALeft: integer; ATop: integer; AWidth: integer;
-      AHeight: integer); override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   protected
-    property WordWrap: boolean read FWordWrap write SetWordWrap default true;
-    property ForceSameSize: boolean read FForceSameSize write SetForceSameSize default false;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
+    property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default false;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
-    property HotTrack: boolean read FHotTrack write FHotTrack default false;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default false;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
@@ -191,7 +184,7 @@ var
 
 function CreateBrushPattern: TBitmap;
 var
-  X, Y: integer;
+  X, Y: Integer;
 begin
   if APattern = nil then
   begin
@@ -255,42 +248,23 @@ begin
   Repaint;
 end;
 
-procedure TJvCustomGraphicButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomGraphicButton.MouseEnter(Control: TControl);
 begin
-  inherited;
-  MouseEnter;
-end;
-
-procedure TJvCustomGraphicButton.CMMouseLeave(var Msg: TMessage);
-begin
-  MouseExit;
-  inherited;
-end;
-
-procedure TJvCustomGraphicButton.MouseEnter;
-begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   if Enabled then
   begin
     Include(FStates, bsMouseInside);
-    if Assigned(FOnMouseEnter) then
-      FOnMouseEnter(Self);
+    inherited; // trigger event
     if Flat then
       Refresh;
   end;
 end;
 
-procedure TJvCustomGraphicButton.MouseExit;
+procedure TJvCustomGraphicButton.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit; // for D7...
   if Enabled then
   begin
     Exclude(FStates, bsMouseInside);
-    if Assigned(FOnMouseExit) then
-      FOnMouseExit(Self);
+    inherited; // trigger event
     if Flat then
       Refresh;
   end;
@@ -318,13 +292,13 @@ begin
     Canvas.Font := Font;
 end;
 
-function TJvCustomGraphicButton.InsideBtn(X, Y: integer): boolean;
+function TJvCustomGraphicButton.InsideBtn(X, Y: Integer): Boolean;
 begin
   Result := PtInRect(Rect(0, 0, Width, Height), Point(X, Y));
 end;
 
 procedure TJvCustomGraphicButton.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: integer);
+  Shift: TShiftState; X, Y: Integer);
 var
   Tmp: TPoint;
 begin
@@ -345,7 +319,7 @@ begin
 end;
 
 procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState; X,
-  Y: integer);
+  Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   //   if Assigned(OnMouseMove) then OnMouseMove(Self,Shift,X,Y);
@@ -365,7 +339,7 @@ begin
 end;
 
 procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
-  Shift: TShiftState; X, Y: integer);
+  Shift: TShiftState; X, Y: Integer);
 begin
   if not Enabled or Down then
     Exit;
@@ -374,7 +348,7 @@ begin
   Repaint;
 end;
 
-function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: integer): boolean;
+function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
 var
   Msg: TMsg;
 begin
@@ -395,7 +369,7 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.SetFlat(const Value: boolean);
+procedure TJvCustomGraphicButton.SetFlat(const Value: Boolean);
 begin
   if FFlat <> Value then
   begin
@@ -416,7 +390,7 @@ begin
     DropDownMenu := nil;
 end;
 
-procedure TJvCustomGraphicButton.SetDown(Value: boolean);
+procedure TJvCustomGraphicButton.SetDown(Value: Boolean);
 begin
   if GroupIndex <> 0 then
     Value := false;
@@ -436,7 +410,7 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.SetForceSameSize(const Value: boolean);
+procedure TJvCustomGraphicButton.SetForceSameSize(const Value: Boolean);
 begin
   if FForceSameSize <> Value then
   begin
@@ -446,8 +420,7 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth,
-  AHeight: integer);
+procedure TJvCustomGraphicButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
@@ -496,7 +469,7 @@ begin
   Result := CreateBrushPattern;
 end;
 
-procedure TJvCustomGraphicButton.SetAllowAllUp(const Value: boolean);
+procedure TJvCustomGraphicButton.SetAllowAllUp(const Value: Boolean);
 begin
   if FAllowAllUp <> Value then
   begin
@@ -505,7 +478,7 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.SetGroupIndex(const Value: integer);
+procedure TJvCustomGraphicButton.SetGroupIndex(const Value: Integer);
 begin
   if FGroupIndex <> Value then
   begin
@@ -644,7 +617,7 @@ begin
     end;
     FOver := true;
   end;
-  DoMouseEnter;
+  MouseEnter(Self);
 end;
 
 procedure TJvCustomButton.CMMouseLeave(var Msg: TMessage);
@@ -656,7 +629,7 @@ begin
       Font.Assign(FFontSave);
     FOver := false;
   end;
-  DoMouseLeave;
+  MouseLeave(Self);
 end;
 
 procedure TJvCustomButton.SetHotFont(const Value: TFont);
@@ -671,13 +644,13 @@ begin
   inherited;
 end;
 
-procedure TJvCustomButton.DoMouseEnter;
+procedure TJvCustomButton.MouseEnter(Control: TControl);
 begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-procedure TJvCustomButton.DoMouseLeave;
+procedure TJvCustomButton.MouseLeave(Control: TControl);
 begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -691,7 +664,7 @@ begin
     Result := Caption;
 end;
 
-procedure TJvCustomButton.SetWordWrap(const Value: boolean);
+procedure TJvCustomButton.SetWordWrap(const Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
@@ -700,7 +673,7 @@ begin
   end;
 end;
 
-procedure TJvCustomButton.SetForceSameSize(const Value: boolean);
+procedure TJvCustomButton.SetForceSameSize(const Value: Boolean);
 begin
   if FForceSameSize <> Value then
   begin
@@ -710,7 +683,7 @@ begin
   end;
 end;
 
-procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TJvCustomButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   Form: TCustomForm;
   Msg: TCMForceSize;
