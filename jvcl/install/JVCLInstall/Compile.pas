@@ -874,9 +874,9 @@ begin
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir + '\debug'))
     else
       SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
-    SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
-    SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
-    SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
+    //SetEnvironmentVariable('MAINBPLDIR', Pointer(TargetConfig.Target.BplDir));
+    //SetEnvironmentVariable('MAINDCPDIR', Pointer(TargetConfig.Target.DcpDir));
+    //SetEnvironmentVariable('MAINLIBDIR', Pointer(TargetConfig.Target.DcpDir)); // for BCB
     SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));  // for BCB
