@@ -65,6 +65,12 @@ uses
   ActnList, ImgList,
   JvComponent, JvWndProcHook;
 
+{$IFNDEF COMPILER6_UP}
+const
+  {$EXTERNALSYM AC_SRC_ALPHA}
+  AC_SRC_ALPHA = $01;
+{$ENDIF COMPILEr6_UP}
+
 type
   {$IFNDEF COMPILER6_UP}
   TWMNCPaint = packed record
