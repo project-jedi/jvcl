@@ -910,15 +910,6 @@ function TextToValText(const AValue: string): string;
 
 
 
-{$IFDEF MSWINDOWS}
-{
- Taken from QDialogs, (public with VCL)
-}
-procedure EnableTaskWindows(WindowList: Pointer);
-function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
-{$ENDIF MSWINDOWS}
-
-
 implementation
 
 uses
@@ -6276,7 +6267,7 @@ var
 begin
   LStr := '';
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
       LStr := LStr + Str[I];
   try
     if not TextToFloat(PChar(LStr), Result, fvCurrency) then
@@ -6292,7 +6283,7 @@ var
   I: Integer;
 begin
   for I := 1 to Length(Str) do
-    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+    if Str[I] in ['0'..'9', '-', '+', DecimalSeparator] then
       LStr := LStr + Str[I];
   Result := Def;
   if LStr <> '' then
@@ -6850,13 +6841,13 @@ end;
 // UnregisterServer by Ralf Kaiser patterned on RegisterServer
 function UnregisterServer(const ModuleName: string): Boolean;
 type
-  TCOMFunc = function:HResult;
+  TCOMFunc = function: HRESULT;
 const
-  S_OK    = $00000000;
+  S_OK = $00000000;
 var
   Handle: THandle;
   DllUnRegServ: TCOMFunc;
-  DllCanUnloadNow:TCOMFunc;
+  DllCanUnloadNow: TCOMFunc;
 begin
   Handle := LoadDLL(ModuleName);
   try
@@ -6869,15 +6860,11 @@ begin
   end;
 end;
 
-
 procedure FreeUnusedOle;
 begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
 
-{$ENDIF MSWINDOWS}
-
-{$IFDEF MSWINDOWS}
 function GetEnvVar(const VarName: string): string;
 var
   S: array [0..16383] of Char;
@@ -6887,7 +6874,9 @@ begin
   else
     Result := '';
 end;
+
 {$ENDIF MSWINDOWS}
+
 {$IFDEF UNIX}
 function GetEnvVar(const VarName: string): string;
 begin
@@ -7333,7 +7322,7 @@ begin
 
   J := 1;
   for I := 1 to Length(Result) do
-    if Result[I] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
+    if Result[I] in ['0'..'9', '-', '+', DecimalSeparator, ThousandSeparator] then
     begin
       Result[J] := Result[I];
       Inc(J);
@@ -7492,80 +7481,6 @@ begin
   end;
   Result := True;
 end;
-
-{$IFDEF MSWINDOWS}
-{
- Taken from QDialogs,
-}
-type
-  PTaskWindow = ^TTaskWindow;
-  TTaskWindow = record
-    Next: PTaskWindow;
-    Window: Windows.HWnd;
-  end;
-
-var
-  TaskActiveWindow: Windows.HWnd = 0;
-  TaskFirstWindow: Windows.HWnd = 0;
-  TaskFirstTopMost: Windows.HWnd = 0;
-  TaskWindowList: PTaskWindow = nil;
-
-function DoDisableWindow(Window: Windows.HWnd; Data: Longint): Bool; stdcall;
-var
-  P: PTaskWindow;
-begin
-  if (Window <> TaskActiveWindow) and Windows.IsWindowVisible(Window) and
-    Windows.IsWindowEnabled(Window) then
-  begin
-    New(P);
-    P^.Next := TaskWindowList;
-    P^.Window := Window;
-    TaskWindowList := P;
-    Windows.EnableWindow(Window, False);
-  end;
-  Result := True;
-end;
-
-procedure EnableTaskWindows(WindowList: Pointer);
-var
-  P: PTaskWindow;
-begin
-  while WindowList <> nil do
-  begin
-    P := WindowList;
-    if Windows.IsWindow(P^.Window) then Windows.EnableWindow(P^.Window, True);
-    WindowList := P^.Next;
-    Dispose(P);
-  end;
-end;
-
-function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
-var
-  SaveActiveWindow: Windows.HWND;
-  SaveWindowList: Pointer;
-begin
-  Result := nil;
-  SaveActiveWindow := TaskActiveWindow;
-  SaveWindowList := TaskWindowList;
-  TaskActiveWindow := ActiveWindow;
-  TaskWindowList := nil;
-  try
-    try
-      EnumThreadWindows(GetCurrentThreadID, @DoDisableWindow, 0);
-      Result := TaskWindowList;
-    except
-      EnableTaskWindows(TaskWindowList);
-      raise;
-    end;
-  finally
-    TaskWindowList := SaveWindowList;
-    TaskActiveWindow := SaveActiveWindow;
-  end;
-end;
-{$ENDIF MSWINDOWS}
-
-
-
 
 
 {$IFDEF UNITVERSIONING}

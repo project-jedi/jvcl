@@ -263,10 +263,13 @@ begin
     S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
     // check for extremes...
     // is find string the same as the whole string?
-    if Length(Search) = Length(Text) then begin
+    if Length(Search) = Length(Text) then
+    begin
       Result.isWhole := True;
       S := Text;
-    end else begin
+    end
+    else
+    begin
       // check for match at beginning or end of string
       if Result.StartAt - 1 < 0 then
         S := Copy(' ' + S, 1, Result.EndAt + 2);

@@ -170,7 +170,7 @@ type
     procedure ParserGetVar(Sender: TObject; VarName: string; var Value: Extended; var Found: Boolean);
     procedure ParserParseError(Sender: TObject; ParseError: Integer);  
     procedure DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
+       Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
        Stage: TCustomDrawStage; var DefaultDraw: Boolean); 
     procedure SetColorFormulas(const Value: Boolean);
     procedure SetFormuleColor(const Value: TColor);
@@ -621,8 +621,8 @@ type
   TCustomViewItemAccessProtected = class(TCustomViewItem);
 
 procedure TJvJanTreeView.DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
-       Canvas: TCanvas; const Rect:TRect; State: TCustomDrawState;
-       Stage: TCustomDrawStage; var DefaultDraw: Boolean);
+  Canvas: TCanvas; const Rect: TRect; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var DefaultDraw: Boolean);
 
 
 var

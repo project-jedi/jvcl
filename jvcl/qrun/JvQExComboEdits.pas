@@ -98,6 +98,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -196,6 +197,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -295,6 +297,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -400,6 +403,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -503,6 +507,7 @@ end;
 
 procedure TJvExCustomComboEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -618,6 +623,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCustomComboEdit.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCustomComboEdit.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -644,6 +657,14 @@ procedure TJvExCustomComboEdit.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCustomComboEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCustomComboEdit.FocusChanged;
@@ -753,12 +774,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCustomComboEdit.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCustomComboEdit.EnabledChanged;
@@ -874,6 +889,7 @@ end;
 
 procedure TJvExComboEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -989,6 +1005,14 @@ begin
   inherited;
 end;
 
+procedure TJvExComboEdit.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExComboEdit.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1015,6 +1039,14 @@ procedure TJvExComboEdit.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExComboEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExComboEdit.FocusChanged;
@@ -1124,12 +1156,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExComboEdit.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExComboEdit.EnabledChanged;
@@ -1263,6 +1289,7 @@ end;
 
 procedure TJvExCustomComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1378,6 +1405,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCustomComboMaskEdit.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCustomComboMaskEdit.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1404,6 +1439,14 @@ procedure TJvExCustomComboMaskEdit.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCustomComboMaskEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCustomComboMaskEdit.FocusChanged;
@@ -1513,12 +1556,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCustomComboMaskEdit.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCustomComboMaskEdit.EnabledChanged;
@@ -1646,6 +1683,7 @@ end;
 
 procedure TJvExComboMaskEdit.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1761,6 +1799,14 @@ begin
   inherited;
 end;
 
+procedure TJvExComboMaskEdit.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExComboMaskEdit.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1787,6 +1833,14 @@ procedure TJvExComboMaskEdit.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExComboMaskEdit.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExComboMaskEdit.FocusChanged;
@@ -1896,12 +1950,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExComboMaskEdit.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExComboMaskEdit.EnabledChanged;

@@ -97,6 +97,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -137,6 +138,7 @@ end;
 
 procedure TJvExCheckListBox.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -184,6 +186,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCheckListBox.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCheckListBox.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -210,6 +220,14 @@ procedure TJvExCheckListBox.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCheckListBox.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCheckListBox.FocusChanged;
@@ -319,12 +337,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCheckListBox.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCheckListBox.EnabledChanged;

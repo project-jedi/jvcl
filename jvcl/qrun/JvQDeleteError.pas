@@ -36,7 +36,7 @@ unit JvQDeleteError;
 interface
 
 uses
-  Windows, QSetUpApi, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -56,10 +56,11 @@ type
 
 implementation
 
-{$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QSetUpApi;
 
 constructor TJvDeleteError.Create(AOwner: TComponent);
 begin

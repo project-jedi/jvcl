@@ -39,11 +39,11 @@ uses
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
-  JV_WINCONTROL(CheckListBox)
+  JV_WINCUSTOMCONTROL(CheckListBox)
 
 implementation
 
-JV_WINCONTROL_IMPL(CheckListBox)
+JV_WINCUSTOMCONTROL_IMPL(CheckListBox)
 
 {$DEFINE UnitName 'JvQExCheckLst.pas'}
 

@@ -36,7 +36,7 @@ unit JvQRenameError;
 interface
 
 uses
-  Windows, QSetUpApi, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type
@@ -62,6 +62,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  QSetUpApi,
   JclSysUtils;
 
 constructor TJvRenameError.Create(AOwner: TComponent);

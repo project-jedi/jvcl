@@ -133,7 +133,7 @@ type
     destructor Destroy; override;
     procedure AdjustSize; override;
     property Flat: Boolean read FFlat write SetFlat default True;
-    property Color:TColor read GetControlBgColor write SetControlBgColor default clDefault;
+    property Color: TColor read GetControlBgColor write SetControlBgColor default clDefault;
 //    property Color: TColor read GetColor write SetColor default clBtnFace; // COLOR OF THE BACKGROUND OF THE CONTROL
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor default clBlack; // COLOR SELECTED IN THE BUTTON.
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;

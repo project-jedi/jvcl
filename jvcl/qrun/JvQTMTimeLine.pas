@@ -676,7 +676,7 @@ begin
   for I := 0 to Width div FDayWidth do
   begin
     R := GetRectForDate(Self.Date + I);
-    if (Self.Date + I = SysUtils.Date) then
+    if Self.Date + I = SysUtils.Date then
       DrawToday(ACanvas, R);
 
     DecodeDate(Self.Date + I, Y, M, D);
@@ -689,8 +689,8 @@ begin
     else
       ACanvas.Font.Style := FTmpStyle;
 
-    DrawText(ACanvas.Handle, PChar(S), Length(S), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or
-      DT_NOCLIP);
+    DrawText(ACanvas.Handle, PChar(S), Length(S), R,
+      DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     DrawImage(ACanvas, Self.Date + I, GetRectForDate(Self.Date + I));
     // frame should be drawn on top of text and image
     if (Trunc(SelDate) = Trunc(Self.Date + I)) and not ReadOnly then
@@ -729,14 +729,15 @@ begin
           // draw text for end of this month:
           S := ShortMonthNames[M];
           Size := ACanvas.TextExtent(S);
-          R := Rect(I * FDayWidth + FDayWidth - Size.cx - 8, Height - Size.cy - 4, I * FDayWidth + FDayWidth, Height -
-            4);
+          R := Rect(I * FDayWidth + FDayWidth - Size.cx - 8,
+            Height - Size.cy - 4, I * FDayWidth + FDayWidth, Height - 4);
           OffsetRect(R, FirstOffset, 0);
           SetBkMode(ACanvas.Handle, TRANSPARENT);
-          DrawText(ACanvas.Handle, PChar(S), Length(S), R, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or
-            DT_NOCLIP);
+          DrawText(ACanvas.Handle, PChar(S), Length(S), R,
+            DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
         end
-        else if D = 1 then
+        else
+        if D = 1 then
         begin
           // draw text for start of this month and the year:
           S := Format('%s %d', [ShortMonthNames[M], Y]);
@@ -744,8 +745,8 @@ begin
           R := Rect(I * FDayWidth + 4, Height - Size.cy - 4, I * FDayWidth + Size.cx + 4, Height - 4);
           OffsetRect(R, FirstOffset, 0);
           SetBkMode(ACanvas.Handle, TRANSPARENT);
-          DrawText(ACanvas.Handle, PChar(S), Length(S), R, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or
-            DT_NOCLIP);
+          DrawText(ACanvas.Handle, PChar(S), Length(S), R,
+            DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
 
           // Draw the separator
           with ACanvas do
@@ -841,7 +842,8 @@ begin
   begin
     if (FMinDate > 0) and (Trunc(FMinDate) > Trunc(FDate)) then
       FDate := FMinDate
-    else if (FMaxDate > 0) and (Trunc(FMaxDate) < Trunc(FDate)) then
+    else
+    if (FMaxDate > 0) and (Trunc(FMaxDate) < Trunc(FDate)) then
       FDate := Trunc(FMaxDate)
     else
       FDate := Trunc(Value);
@@ -1048,7 +1050,8 @@ begin
     VK_LEFT:
       if ssCtrl in Shift then
         ScrollDate(nil, -LargeChange)
-      else if ssShift in Shift then
+      else
+      if ssShift in Shift then
       begin
         SelDate := SelDate - 1;
         // make sure the selection is visible:
@@ -1063,7 +1066,8 @@ begin
     VK_RIGHT:
       if ssCtrl in Shift then
         ScrollDate(nil, LargeChange)
-      else if ssShift in Shift then
+      else
+      if ssShift in Shift then
       begin
         SelDate := SelDate + 1;
         // make sure the selection is visible:

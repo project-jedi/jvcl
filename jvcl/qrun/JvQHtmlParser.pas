@@ -66,7 +66,8 @@ type
     procedure Clear; override;
   end;
   TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
-  TJvKeyFoundExEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string; TagInfo:TTagInfo; Attributes:TStrings) of object;
+  TJvKeyFoundExEvent = procedure(Sender: TObject; Key, Results,
+    OriginalLine: string; TagInfo: TTagInfo; Attributes: TStrings) of object;
 
   TJvHTMLParser = class(TJvComponent)
   private

@@ -97,6 +97,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -168,6 +169,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -239,6 +241,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -320,6 +323,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -401,6 +405,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -482,6 +487,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -563,6 +569,7 @@ type
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -626,6 +633,7 @@ end;
 
 procedure TJvExCustomForm.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -673,6 +681,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCustomForm.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCustomForm.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -699,6 +715,14 @@ procedure TJvExCustomForm.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCustomForm.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCustomForm.FocusChanged;
@@ -810,12 +834,6 @@ begin
   end;
 end;
 
-procedure TJvExCustomForm.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
-end;
-
 procedure TJvExCustomForm.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -912,6 +930,7 @@ end;
 
 procedure TJvExForm.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -959,6 +978,14 @@ begin
   inherited;
 end;
 
+procedure TJvExForm.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExForm.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -985,6 +1012,14 @@ procedure TJvExForm.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExForm.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExForm.FocusChanged;
@@ -1094,12 +1129,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExForm.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExForm.EnabledChanged;
@@ -1220,6 +1249,7 @@ end;
  
 procedure TJvExCustomFrame.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1267,6 +1297,14 @@ begin
   inherited;
 end;
 
+procedure TJvExCustomFrame.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExCustomFrame.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1293,6 +1331,14 @@ procedure TJvExCustomFrame.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExCustomFrame.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExCustomFrame.FocusChanged;
@@ -1402,12 +1448,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCustomFrame.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCustomFrame.EnabledChanged;
@@ -1529,6 +1569,7 @@ end;
  
 procedure TJvExFrame.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1576,6 +1617,14 @@ begin
   inherited;
 end;
 
+procedure TJvExFrame.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExFrame.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1602,6 +1651,14 @@ procedure TJvExFrame.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExFrame.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExFrame.FocusChanged;
@@ -1711,12 +1768,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExFrame.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExFrame.EnabledChanged;
@@ -1838,6 +1889,7 @@ end;
  
 procedure TJvExScrollBox.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1885,6 +1937,14 @@ begin
   inherited;
 end;
 
+procedure TJvExScrollBox.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExScrollBox.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -1911,6 +1971,14 @@ procedure TJvExScrollBox.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExScrollBox.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExScrollBox.FocusChanged;
@@ -2020,12 +2088,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExScrollBox.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExScrollBox.EnabledChanged;
@@ -2147,6 +2209,7 @@ end;
  
 procedure TJvExScrollingWidget.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -2194,6 +2257,14 @@ begin
   inherited;
 end;
 
+procedure TJvExScrollingWidget.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExScrollingWidget.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -2220,6 +2291,14 @@ procedure TJvExScrollingWidget.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExScrollingWidget.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExScrollingWidget.FocusChanged;
@@ -2331,12 +2410,6 @@ begin
   end;
 end;
 
-procedure TJvExScrollingWidget.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
-end;
-
 procedure TJvExScrollingWidget.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -2423,6 +2496,7 @@ end;
   
 procedure TJvExToolWindow.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -2470,6 +2544,14 @@ begin
   inherited;
 end;
 
+procedure TJvExToolWindow.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
 procedure TJvExToolWindow.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
@@ -2496,6 +2578,14 @@ procedure TJvExToolWindow.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvExToolWindow.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvExToolWindow.FocusChanged;
@@ -2605,12 +2695,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExToolWindow.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExToolWindow.EnabledChanged;

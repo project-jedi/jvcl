@@ -273,6 +273,7 @@ end;
  
 procedure TJvExInplaceEdit.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -293,6 +294,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExInplaceEdit.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExInplaceEdit.FontChanged;
@@ -353,12 +360,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExInplaceEdit.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExInplaceEdit.EnabledChanged;
@@ -443,6 +444,7 @@ end;
  
 procedure TJvExCustomGrid.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -463,6 +465,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExCustomGrid.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExCustomGrid.FontChanged;
@@ -523,12 +531,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExCustomGrid.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExCustomGrid.EnabledChanged;
@@ -618,6 +620,7 @@ end;
  
 procedure TJvExDrawGrid.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -638,6 +641,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExDrawGrid.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExDrawGrid.FontChanged;
@@ -698,12 +707,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExDrawGrid.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExDrawGrid.EnabledChanged;
@@ -793,6 +796,7 @@ end;
  
 procedure TJvExStringGrid.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -813,6 +817,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvExStringGrid.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvExStringGrid.FontChanged;
@@ -873,12 +883,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvExStringGrid.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvExStringGrid.EnabledChanged;

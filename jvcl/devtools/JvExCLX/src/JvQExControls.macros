@@ -144,10 +144,12 @@ EMPTYLINE
     procedure CreateWidget; override;
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
+    procedure DoEnter; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    procedure DoEnter; override;
-    procedure DoExit; override;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -157,62 +159,25 @@ EMPTYLINE
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
     procedure SetFocus; override;
 *)
-
-//
-// WidgetControls with a Canvas.
-// no doublebuffered paint
-// ListViews, TreeViews
-//
-(*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(ClassName)
-  { QWinCustomControl }
-  TJvEx##ClassName = class(T##ClassName)
-  JV_DECL_CONTROL
-  JV_DECL_WINCONTROL
-*)
-
-(*$DEFINE JV_WINCUSTOMCONTROL_END(ClassName)
-  { QWinCustomControl Paint }
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
-  { QWinCustomControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
-  EMPTYLINE
-*)
-
-(*$DEFINE JV_WINCUSTOMCONTROL(ClassName)
-  JV_WINCUSTOMCONTROL_BEGIN(ClassName)
-  JV_WINCUSTOMCONTROL_END(ClassName)
-*)
-
 //
 // WidgetControls without a Canvas property.
+// used by WinControl & EditControl
 //
-(*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
-  { QWinControl Begin }
-  TJvEx##ClassName = class(T##ClassName)
-  JV_DECL_CONTROL
-  JV_DECL_WINCONTROL
-*)
-
 (*$DEFINE JV_WINCONTROL_END(ClassName)
   { QWinControl }
   private
-    FCanvas: TCanvas;
+    FCanvas: TControlCanvas;
     FDoubleBuffered: Boolean;
-    procedure GetCanvas: TCanvas;
+    function GetCanvas: TCanvas;
   protected
     procedure Paint; virtual;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  publised
-     property DoubleBuffered: Boolean write FDoubleBuffered read FDoubleBuffered;
+  published
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
@@ -221,24 +186,35 @@ EMPTYLINE
   EMPTYLINE
 *)
 
-(*$DEFINE JV_WINCONTROL(ClassName)
-  JV_WINCONTROL_BEGIN(ClassName)
-  JV_WINCONTROL_END(ClassName)
-*)
 //
-// CustomControls do not require Paint, Canvas and DoEraseBackGround
+// ListViews, TreeViews, IconViews, Forms with a Canvas.
+// - No Doublebuffering
+// - No Paint override;
 //
-(*$DEFINE JV_CUSTOMCONTROL_BEGIN(ClassName)
-  { QCustomControl Begin }
-  TJvEx##ClassName = class(T##ClassName)
-  JV_DECL_CONTROL
-  JV_DECL_WINCONTROL
-*)
-
-(*$DEFINE JV_CUSTOMCONTROL_END(ClassName)
+(*$DEFINE JV_WINCUSTOMCONTROL_END(ClassName)
+  { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  end;
+
+  { QWinCustomControl }
+  TJvExPub##ClassName = class(TJvEx##ClassName);
+  EMPTYLINE
+*)
+
+//
+// CustomControls do not require Paint & Canvas
+// but have doublebuffered paint
+//
+(*$DEFINE JV_CUSTOMCONTROL_END(ClassName)
+  protected
+    FDoubleBuffered: Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
@@ -246,10 +222,63 @@ EMPTYLINE
   EMPTYLINE
 *)
 
+(*$DEFINE JV_CUSTOMFORM_END(ClassName)
+  { QCustomForm }
+  public
+    constructor Create(AOwner: TComponent); override;
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+    destructor Destroy; override;
+  end;
+
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  end;
+  EMPTYLINE
+*)
+
+
+(*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
+  { QWinControl Begin }
+  TJvEx##ClassName = class(T##ClassName)
+  JV_DECL_CONTROL
+  JV_DECL_WINCONTROL
+*)
+
+(*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(ClassName)
+  { QWinCustomControl }
+  JV_WINCONTROL_BEGIN(ClassName)
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_BEGIN(ClassName)
+  { QCustomControl Begin }
+  JV_WINCONTROL_BEGIN(ClassName)
+*)
+
+(*$DEFINE JV_CUSTOMFORM_BEGIN(ClassName)
+  { QCustomForm }
+  JV_WINCONTROL_BEGIN(ClassName)
+*)
+
+(*$DEFINE JV_WINCONTROL(ClassName)
+  JV_WINCONTROL_BEGIN(ClassName)
+  JV_WINCONTROL_END(ClassName)
+*)
+
+(*$DEFINE JV_WINCUSTOMCONTROL(ClassName)
+  JV_WINCONTROL_BEGIN(ClassName)
+  JV_WINCUSTOMCONTROL_END(ClassName)
+*)
+
+
 (*$DEFINE JV_CUSTOMCONTROL(ClassName)
-  JV_CUSTOMCONTROL_BEGIN(ClassName)
+  JV_WINCONTROL_BEGIN(ClassName)
   JV_CUSTOMCONTROL_END(ClassName)
 *)
+
+(*$DEFINE JV_CUSTOMFORM(ClassName)
+  JV_WINCONTROL_BEGIN(ClassName)
+  JV_CUSTOMFORM_END(ClassName)
+*)
+
 
 (*$DEFINE JV_DECL_EDITCONTROL
   { QEditControl }
@@ -319,54 +348,32 @@ EMPTYLINE
   JV_DECL_EDITCONTROL
 *)
 
+(*$DEFINE JV_CUSTOMEDIT_BEGIN(ClassName)
+  { QCustomEdit Begin }
+  TJvEx##ClassName = class(T##ClassName)
+  JV_DECL_CONTROL
+  JV_DECL_WINCONTROL
+  JV_DECL_EDITCONTROL
+  JV_DECL_CUSTOMEDIT
+*)
+
 
 (*$DEFINE JV_EDITCONTROL_END(ClassName)
-  { QEditControl }
-  private
-    FCanvas: TControlCanvas;
-    procedure GetCanvas: TCanvas;
+JV_WINCONTROL_END(ClassName)
+*)
 
-    procedure Paint; virtual;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    property Canvas: TCanvas read FCanvas;
-  end;
-
-  { QEditControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
-  EMPTYLINE
+(*$DEFINE JV_CUSTOMEDIT_END(ClassName)
+JV_WINCONTROL_END(ClassName)
 *)
 
 (*$DEFINE JV_EDITCONTROL(ClassName)
   JV_EDITCONTROL_BEGIN(ClassName)
-  JV_EDITCONTROL_END(ClassName)
+  JV_WINCONTROL_END(ClassName)
 *)
 
-
-(*$DEFINE JV_CUSTOMFORM_BEGIN(ClassName)
-  { QCustomForm }
-  TJvEx##ClassName = class(T##ClassName)
-  JV_DECL_CONTROL
-  JV_DECL_WINCONTROL
-*)
-
-(*$DEFINE JV_CUSTOMFORM_END(ClassName)
-  { QCustomForm }
-  public
-    constructor Create(AOwner: TComponent); override;
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-    destructor Destroy; override;
-  end;
-
-  TJvExPub##ClassName = class(TJvEx##ClassName)
-  end;
-  EMPTYLINE
-*)
-
-(*$DEFINE JV_CUSTOMFORM(ClassName)
-  JV_CUSTOMFORM_BEGIN(ClassName)
-  JV_CUSTOMFORM_END(ClassName)
+(*$DEFINE JV_CUSTOMEDIT(ClassName)
+  JV_CUSTOMEDIT_BEGIN(ClassName)
+  JV_WINCONTROL_END(ClassName)
 *)
 
 
@@ -404,6 +411,7 @@ end;
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
+  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -421,6 +429,12 @@ begin
       inherited Dispatch(Mesg);
     end;
   end;
+end;
+
+procedure TJvEx##ClassName.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited ColorChanged;
 end;
 
 procedure TJvEx##ClassName.FontChanged;
@@ -484,12 +498,6 @@ begin
     Font.Assign(Application.Font);
     FDesktopFont := True;
   end;
-end;
-
-procedure TJvEx##ClassName.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited ColorChanged;
 end;
 
 procedure TJvEx##ClassName.EnabledChanged;
@@ -581,15 +589,37 @@ end;
 
 destructor TJvEx##ClassName.Destroy;
 begin
-  DESTROY_CUSTOMCODE;
+  DESTROY_CUSTOMCODE
   FCanvas.Free;
   inherited Destroy;
 end;
   EMPTYLINE
 *) // end macro JV_IMPL_WINCONTROL_CREATE
 
+(*$DEFINE JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
+{ QCustomControl Create }
+
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FWindowProc := WndProc;
+  FInternalFontChanged := Font.OnChange;
+  Font.OnChange := DoOnFontChanged;
+  FHintColor := clDefault;
+  FDoubleBuffered := True;
+  CREATE_CUSTOMCODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTROY_CUSTOMCODE
+  inherited Destroy;
+end;
+  EMPTYLINE
+*) // end macro JV_IMPL_CUSTOMCONTROL_CREATE
+
 //
-// used by CustomControl, WinCustomControl & CustomForm
+// used by WinCustomControl & CustomForm
 //
 
 (*$DEFINE JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
@@ -613,6 +643,25 @@ end;
 EMPTYLINE
 *)
 
+(*$DEFINE JV_IMPL_CUSTOMFORM_CREATE(ClassName)
+
+{ QWinCustomControl Create }
+constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited CreateNew(AOwner, Dummy);
+  FWindowProc := WndProc;
+  FHintColor := clDefault;
+  FInternalFontChanged := Font.OnChange;
+  Font.OnChange := DoOnFontChanged;
+  CREATE_CUSTOMCODE
+end;
+
+JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+EMPTYLINE
+*)
+
+// ************************************************
+
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
       { WinControl Messages }
@@ -627,17 +676,6 @@ EMPTYLINE
         Handled := HintShow(HintInfo^);
       end;
 
-*)
-
-(*$DEFINE JV_IMPL_WINCONTROL(ClassName)
-procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
-begin
-  with TJvMessage(Mesg) do
-  begin
-    case Msg of
-      JV_IMPL_WINCONTROL_MESSAGES
-      JV_IMPL_CONTROL_MESSAGES
-
       WM_ERASEBKGND:
       begin
         Canvas.Start;
@@ -647,39 +685,45 @@ begin
           Canvas.Stop;
         end;
       end;
-
-    else
-      inherited Dispatch(Mesg);
-    end;
-  end;
-end;
-
 *)
 
-(*$DEFINE JV_IMPL_WINCUSTOMCONTROL(ClassName)
+(*$DEFINE JV_IMPL_WINCONTROL(ClassName)
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
+//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
       JV_IMPL_WINCONTROL_MESSAGES
       JV_IMPL_CONTROL_MESSAGES
+
     else
       inherited Dispatch(Mesg);
     end;
   end;
 end;
 
- EMPTYLINE
 *)
-
 
 (*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
 { QWinControl Common }
 
+function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  Result := false;
+end;
+
 procedure TJvEx##ClassName.ShowingChanged;
 begin
   Perform(CM_SHOWINGCHANGED, 0 ,0);
+  inherited;
+end;
+
+procedure TJvEx##ClassName.ColorChanged;
+begin
+  if HandleAllocated and Bitmap.Empty then
+    Palette.Color := Brush.Color;
+  Perform(CM_COLORCHANGED, 0, 0);
   inherited;
 end;
 
@@ -709,6 +753,14 @@ procedure TJvEx##ClassName.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
+end;
+
+function TJvEx##ClassName.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+begin
+  if JvEventFilter(Self, Receiver, Event) then
+    Result := True
+  else
+    Result := inherited EventFilter(Receiver, Event);
 end;
 
 procedure TJvEx##ClassName.FocusChanged;
@@ -789,11 +841,6 @@ begin
   Result := FCanvas;
 end;
 
-function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := false;
-end;
-
 procedure TJvEx##ClassName.Paint;
 begin
   TControlCanvas(Canvas).StopPaint;
@@ -816,14 +863,25 @@ end;
  EMPTYLINE
 *)
 
-(*$DEFINE JV_WINCUSTOMCONTROL_IMPL(ClassName)
-JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+
+(*$DEFINE JV_CUSTOMCONTROL_IMPL(ClassName)
+JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
 JV_IMPL_WINCONTROL(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
+ EMPTYLINE
 *)
 
-(*$DEFINE JV_CUSTOMCONTROL_IMPL(ClassName)
+(*$DEFINE JV_WINCONTROL_IMPL(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_WINCONTROL_PAINT(ClassName)
+JV_IMPL_WINCONTROL(ClassName)
+JV_IMPL_WINCONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
+ EMPTYLINE
+*)
+
+(*$DEFINE JV_WINCUSTOMCONTROL_IMPL(ClassName)
 JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
 JV_IMPL_WINCONTROL(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
@@ -831,15 +889,13 @@ JV_IMPL_CONTROL_COMMON(ClassName)
  EMPTYLINE
 *)
 
-
-
-(*$DEFINE JV_WINCONTROL_IMPL(ClassName)
-JV_IMPL_WINCONTROL_CREATE(ClassName)
+(*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
+JV_IMPL_CUSTOMFORM_CREATE(ClassName)
 JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_PAINT(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
+
 
 (*$DEFINE JV_IMPL_EDITCONTROL_MESSAGES
 
@@ -851,16 +907,6 @@ JV_IMPL_CONTROL_COMMON(ClassName)
           inherited Dispatch(msg);
 
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
-
-      WM_ERASEBKGND:
-      begin
-        Canvas.Start;
-        try
-          Handled := DoEraseBackGround(Canvas, LParam);
-        finally
-          Canvas.Stop;
-        end;
-      end;
 *)
 
 (*$DEFINE JV_IMPL_EDITCONTROL_COMMON(ClassName)
@@ -868,6 +914,7 @@ JV_IMPL_CONTROL_COMMON(ClassName)
 
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
+  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -1160,28 +1207,4 @@ JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
-(*$DEFINE JV_IMPL_CUSTOMFORM(ClassName)
-{ QCustomForm }
-constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
-begin
-  inherited CreateNew(AOwner, Dummy);
-  FWindowProc := WndProc;
-  FHintColor := clDefault;
-  FDoubleBuffered := False;
-  FInternalFontChanged := Font.OnChange;
-  Font.OnChange := DoOnFontChanged;
-  CREATE_CUSTOMCODE
-end;
-  EMPTYLINE
-*) // MACRO END JV_IMPL_CUSTOMFORM
-
-// ************************************************
-
-(*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
-JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
-JV_IMPL_CUSTOMFORM(ClassName)
-JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
-*)
 
