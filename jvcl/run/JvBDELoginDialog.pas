@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2002-07-04
+Last Modified: 2004-03-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,7 +42,8 @@ type
     const UserName, Password: string): Boolean of object;
 
   TDialogMode = (dmAppLogin, dmDBLogin, dmUnlock);
-  TJvDBLoginEvent = procedure (Sender:TObject; const UserName, Password:string) of object;
+
+  TJvDBLoginEvent = procedure (Sender:TObject; const UserName, Password: string) of object;
 
   TJvDBLoginDialog = class(TObject)
   private
@@ -81,7 +82,6 @@ type
     procedure FillParams(LoginParams: TStrings);
     property Mode: TDialogMode read FMode;
     property SelectDatabase: Boolean read FSelectDatabase;
-    property OnLoginFailure:TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
     property OnCheckUnlock: TCheckUnlockEvent read FCheckUnlock write FCheckUnlock;
     property OnCheckUserEvent: TCheckUserNameEvent read FCheckUserEvent write FCheckUserEvent;
     property OnIconDblClick: TNotifyEvent read FIconDblClick write FIconDblClick;
@@ -94,6 +94,8 @@ type
     property UserNameField: string read FUserNameField write FUserNameField;
     property MaxPwdLen: Integer read FMaxPwdLen write fMaxPwdLen;
     property LoginName: string read FLoginName write FLoginName;
+  published
+    property OnLoginFailure: TJvDBLoginEvent read FOnLoginFailure write FOnLoginFailure;
   end;
 
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
@@ -103,7 +105,8 @@ function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
   var LoginName: string; AppStorage: TJvCustomAppStorage;
-  AppStoragePath: string; SelectDatabase: Boolean): Boolean;
+  AppStoragePath: string; SelectDatabase: Boolean;
+  LoginFailure: TJvDBLoginEvent): Boolean;
 
 function UnlockDialog(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent): Boolean;
@@ -389,7 +392,8 @@ begin
         if Table.FindKey([GetUserName]) then
         begin
           Result := CheckUser(Table);
-          if not Result then
+
+     if not Result then
           begin
             if Assigned(FOnLoginFailure) then
               FOnLoginFailure(Self, GetUserName, FDialog.PasswordEdit.Text)
@@ -412,6 +416,7 @@ begin
     end;
   end;
 end;
+
 
 function TJvDBLoginDialog.CheckUser(Table: TTable): Boolean;
 begin
@@ -475,7 +480,8 @@ function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
   var LoginName: string; AppStorage: TJvCustomAppStorage;
-  AppStoragePath: string; SelectDatabase: Boolean): Boolean;
+  AppStoragePath: string; SelectDatabase: Boolean;
+  LoginFailure: TJvDBLoginEvent): Boolean;
 var
   Dlg: TJvDBLoginDialog;
 begin
@@ -484,6 +490,7 @@ begin
     Dlg.LoginName := LoginName;
     Dlg.OnIconDblClick := IconDblClick;
     Dlg.OnCheckUserEvent := CheckUserEvent;
+    Dlg.OnLoginFailure := LoginFailure;
     Dlg.MaxPwdLen := MaxPwdLen;
     Dlg.Database := Database;
     Dlg.AttemptNumber := AttemptNumber;
