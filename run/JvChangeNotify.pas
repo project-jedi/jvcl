@@ -122,7 +122,7 @@ type
     procedure CheckActive(const Name: string);
     function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
-    procedure DoThreadTerminate(Sender: TObject);
+    // { PrY } procedure DoThreadTerminate(Sender: TObject);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
     procedure Loaded; override;
@@ -329,10 +329,13 @@ begin
   Change(Notifications[Index]);
 end;
 
+(*
+ { PrY }
 procedure TJvChangeNotify.DoThreadTerminate(Sender: TObject);
 begin
   FThread := nil;
 end;
+*)
 
 procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
@@ -372,21 +375,22 @@ begin
       if FThread <> nil then
       begin
         FThread.Terminate;
+        // {PrY } FThread := nil;
         FThread.WaitFor;
         FreeAndNil(FThread);
       end;
       FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
       FThread.OnChangeNotify := DoThreadChangeNotify;
-      FThread.OnTerminate := DoThreadTerminate;
+      // { PrY } FThread.OnTerminate := DoThreadTerminate;
       FThread.Resume;
     end
     else
     if FThread <> nil then
     begin
       FThread.Terminate;
-      FThread := nil;
-  //    FThread.WaitFor;
-  //    FreeAndNil(FThread);
+      // { PrY } FThread := nil;
+      FThread.WaitFor;
+      FreeAndNil(FThread);
     end;
 
     {
@@ -432,9 +436,8 @@ begin
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
-  FreeOnTerminate := True;
+  FreeOnTerminate := False; // PrY - was True. I want to control thread destruction
 end;
-
 
 procedure TJvChangeThread.Execute;
 var

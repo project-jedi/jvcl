@@ -360,27 +360,27 @@ msgstr ""
 #. Programmer's name for it: RsDockCannotChangeDockStyleProperty
 #: JvDockGlobals.pas:85
 msgid "Changing DockStyle at runtime is not supported"
-msgstr ""
+msgstr "DockStyle kann zur Laufzeit nicht geändert werden"
 
 #  Programmer's name for it: RsDockCannotLayAnother
 #. Programmer's name for it: RsDockCannotLayAnother
 #: JvDockGlobals.pas:86
 msgid "Only one %s allowed on each form.Cannot add another %s"
-msgstr ""
+msgstr "Nur ein %s pro Form erlaubt. Es kann kein %s hinzugefügt werden"
 
 #  Programmer's name for it: RsDockCannotSetTabPosition
 #  Programmer's name for it: RsDockCannotSetTabPosition
 #. Programmer's name for it: RsDockCannotSetTabPosition
 #: JvDockGlobals.pas:88
 msgid "Can not set TabPosition property to tpLeft or tpRight"
-msgstr ""
+msgstr "property TabPosition kann nicht auf tpLeft oder tpRight gesetzt werden"
 
 #  Programmer's name for it: RsDockTabPositionMustBetpBottom
 #  Programmer's name for it: RsDockTabPositionMustBetpBottom
 #. Programmer's name for it: RsDockTabPositionMustBetpBottom
 #: JvDockGlobals.pas:89
 msgid "TabPosition property must be tpBottom"
-msgstr ""
+msgstr "TabPosition muss tpBottom sein"
 
 #  Programmer's name for it: RsDockLikeDelphiStyle
 #  Programmer's name for it: RsDockLikeDelphiStyle
@@ -855,7 +855,7 @@ msgstr "&Hintergrund"
 #. Programmer's name for it: RsUnknownLocaleIDFmt
 #: JvHidControllerClass.pas:452
 msgid "unknown Locale ID $%.4x"
-msgstr ""
+msgstr "unbekannte Locale ID $%.4x"
 
 #  Programmer's name for it: RsHIDP_STATUS_NULL
 #. Programmer's name for it: RsHIDP_STATUS_NULL
@@ -869,13 +869,13 @@ msgstr "Gerät nicht eingesteckt"
 #. Programmer's name for it: RsHIDP_STATUS_INVALID_PREPARSED_DATA
 #: JvHidControllerClass.pas:454
 msgid "invalid preparsed data"
-msgstr "Ungültige parsierte Daten"
+msgstr "Ungültige vorparsierte Daten"
 
 #  Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_TYPE
 #. Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_TYPE
 #: JvHidControllerClass.pas:455
 msgid "invalid report type"
-msgstr "Ungültiger Report"
+msgstr "Ungültiger Reporttyp"
 
 #  Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_LENGTH
 #. Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_LENGTH
