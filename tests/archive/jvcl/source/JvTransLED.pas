@@ -37,90 +37,110 @@ uses
   Windows, Classes, Graphics, JvComponent;
 
 type
-  TJvTLActiveLight = (alRed, alBlue, alGreen, alYellow, alGray, alDkGray);
-  TJvTLLightArray = array[TJvTLActiveLight] of TColor;
-
-type
   TJvTransLED = class(TJvGraphicControl)
   private
-    ImgPict, ImgMask: TBitmap;
-    FActiveLight: TJvTLActiveLight;
-    procedure SetActiveLight(Value: TJvTLActiveLight);
+    FImgPict: TBitmap;
+    FImgMask: TBitmap;
+    FColor: TColor;
+    procedure SetColor(Value: TColor);
   protected
     procedure Paint; override;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
 
   published
-    property ActiveLight: TJvTLActiveLight read FActiveLight write SetActiveLight;
     property Align;
     property Anchors;
     property AutoSize;
+    property Color: TColor read FColor write SetColor default clLime;
     property Constraints;
-
-    property OnClick;
-    property OnMouseMove;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Height default 17;
+    property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
+    property Visible;
+    property Width default 17;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 implementation
 
-uses Controls;
+uses
+  Controls;
+
 {$R JvTransLED.res}
+
+const
+  cMaskLEDName = 'JVTR_MASK_LED';
+  cGreenLEDName = 'JVTR_GREEN_LED';
 
 constructor TJvTransLED.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ImgPict := TBitmap.Create;
-  ImgMask := TBitmap.Create;
-  ImgMask.Handle := LoadBitmap(hInstance, 'JVTR_MASK_LED');
-  FActiveLight := alGreen;
+  FImgPict := TBitmap.Create;
+  FImgMask := TBitmap.Create;
+  FImgMask.LoadFromResourceName(HInstance, cMaskLEDName);
+  Color := clLime;
   Width := 17;
   Height := 17;
 end;
 
 destructor TJvTransLED.Destroy;
 begin
-  ImgPict.Free;
-  ImgMask.Free;
-  inherited;
+  FImgPict.Free;
+  FImgMask.Free;
+  inherited Destroy;
 end;
 
 procedure TJvTransLED.Paint;
-const
-  cBmpName: array[TJvTLActiveLight] of PChar =
-  {  alRed, alBlue, alGreen, alYellow, alGray, alDkGray }
-  ('JVTR_RED_LED', 'JVTR_BLUE_LED', 'JVTR_GREEN_LED', 'JVTR_YELLOW_LED', 'JVTR_GRAY_LED', 'JVTR_DK_GRAY_LED');
 var
   DestRect, SrcRect: TRect;
 begin
-  if ImgPict.Handle = 0 then
-    ImgPict.Handle := LoadBitmap(hInstance, cBmpName[FActiveLight]);
   if csDesigning in ComponentState then
   begin
     Canvas.Pen.Style := psDash;
     Canvas.Brush.Style := bsClear;
     Canvas.Rectangle(ClientRect);
   end;
-  SrcRect := Rect(0, 0, ImgPict.Width, ImgPict.Height);
+  SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);
   DestRect := SrcRect;
-  OffsetRect(DestRect,(ClientWidth - ImgPict.Width) div 2,(ClientHeight - ImgPict.Height) div 2);
+  OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
-  Canvas.CopyRect(DestRect, ImgMask.Canvas, SrcRect);
+  Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
   Canvas.CopyMode := cmSrcPaint;
-  Canvas.CopyRect(DestRect, ImgPict.Canvas, SrcRect);
+  Canvas.CopyRect(DestRect, FImgPict.Canvas, SrcRect);
 end;
 
-procedure TJvTransLED.SetActiveLight(Value: TJvTLActiveLight);
+procedure TJvTransLED.SetColor(Value: TColor);
+var
+  X, Y: Integer;
 begin
-  if Value <> FActiveLight then
+  if Value <> FColor then
   begin
-    FActiveLight := Value;
-    ImgPict.Handle := 0;
+    FColor := Value;
+    FImgPict.LoadFromResourceName(HInstance, cGreenLEDName);
+    FImgPict.PixelFormat := pf24bit;
+    for X := 0 to FImgPict.Width-1 do
+      for Y := 0 to FImgPict.Height-1 do
+        if FImgPict.Canvas.Pixels[X, Y] = clLime then
+          FImgPict.Canvas.Pixels[X, Y] := Color;
     Repaint;
   end;
 end;
@@ -129,13 +149,13 @@ end;
 procedure TJvTransLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   {$IFDEF COMPILER6_UP}
-  if AutoSize and (Align in [alNone,alCustom]) then
+  if AutoSize and (Align in [alNone, alCustom]) then
   {$ELSE}
   if AutoSize and (Align = alNone) then
   {$ENDIF}
-    inherited SetBounds(ALeft,ATop,ImgPict.Width,ImgPict.Height)
+    inherited SetBounds(ALeft, ATop, FImgPict.Width, FImgPict.Height)
   else
-    inherited;
+    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 end.
