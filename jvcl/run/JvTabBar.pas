@@ -193,6 +193,7 @@ type
     procedure SetColor(const Value: TColor);
     procedure FontChanged(Sender: TObject);
     procedure SetDividerColor(const Value: TColor);
+    procedure SetCloseCrossColorSelected(const Value: TColor);
   protected
     procedure DrawBackground(Canvas: TCanvas; TabBar: TJvCustomTabBar; R: TRect); override;
     procedure DrawTab(Canvas: TCanvas; Tab: TJvTabBarItem; R: TRect); override;
@@ -212,7 +213,7 @@ type
     property ModifiedCrossColor: TColor read FModifiedCrossColor write SetModifiedCrossColor default clRed;
     property CloseColorSelected: TColor read FCloseColorSelected write SetCloseColorSelected default $F4F4F4;
     property CloseColor: TColor read FCloseColor write SetCloseColor default clWhite;
-    property CloseCrossColorSelected: TColor read FCloseCrossColorSelected write FCloseCrossColorSelected default clBlack;
+    property CloseCrossColorSelected: TColor read FCloseCrossColorSelected write SetCloseCrossColorSelected default clBlack;
     property CloseCrossColor: TColor read FCloseCrossColor write SetCloseCrossColor default $5D5D5D;
     property CloseCrossColorDisabled: TColor read FCloseCrossColorDisabled write SetCloseCrossColorDisabled default $ADADAD;
     property CloseRectColor: TColor read FCloseRectColor write SetCloseRectColor default $868686;
@@ -1750,12 +1751,20 @@ begin
   end;
 end;
 
-procedure TJvModernTabBarPainter.SetCloseCrossColorDisabled(
-  const Value: TColor);
+procedure TJvModernTabBarPainter.SetCloseCrossColorDisabled(const Value: TColor);
 begin
   if Value <> FCloseCrossColorDisabled then
   begin
     FCloseCrossColorDisabled := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvModernTabBarPainter.SetCloseCrossColorSelected(const Value: TColor);
+begin
+  if Value <> FCloseCrossColorSelected then
+  begin
+    FCloseCrossColorSelected := Value;
     Changed;
   end;
 end;
