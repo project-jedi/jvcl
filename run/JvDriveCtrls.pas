@@ -467,7 +467,7 @@ begin
         SHGetFileInfo(PChar(S), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or Options);
         Items.AddObject(Trim(Info.szDisplayName), TObject(Info.iIcon));
         FDrives.Add(S[1]);
-      end;
+      end
     end;
     Drive := Drv;
     Update;
@@ -583,6 +583,7 @@ begin
   if FDriveTypes = [] then
     FDriveTypes := [dtFixed];
   BuildList;
+  Change;
   // Drive := FDrive;
 end;
 
@@ -648,10 +649,17 @@ begin
 end;
 
 procedure TJvDriveCombo.Change;
+  function FirstChar(const S: string): char;
+  begin
+    if Length(S) > 0 then
+      Result := S[1]
+    else
+      Result := #0;
+  end;
 begin
   if ItemIndex <> -1 then
     FItemIndex := ItemIndex;
-  Drive := FDrives[FItemIndex][1];
+  FDrive := FirstChar(FDrives[FItemIndex]);
   if (ItemIndex > -1) and (ItemIndex < Items.Count) then
     FDisplayName := Items[ItemIndex]
   else
