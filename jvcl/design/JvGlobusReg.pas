@@ -38,7 +38,6 @@ procedure Register;
 
 implementation
 
-// (rom) is this needed?
 {$R ..\Resources\JvGlobusReg.dcr}
 
 uses Classes,
@@ -83,7 +82,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteGlobusComponents1, [
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportDataset, TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
+    {TJvgExportDataset,} TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
     TJvgVertDBSGrid,
     {$ENDIF DelphiPersonalEdition}
     TJvgGridHeaderControl,
