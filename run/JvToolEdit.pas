@@ -1268,11 +1268,11 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 var
   I: Integer;
 begin
-  Result := False;
+  Result := True;
   for I := 0 to High(A) do
     if A[I] = Value then
       Exit;
-  Result := True;
+  Result := False;
 end;
 
 function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
