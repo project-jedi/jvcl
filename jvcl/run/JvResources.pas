@@ -46,7 +46,6 @@ resourcestring
   RsDateDlgCaption = 'Select a Date';
   RsDetailsLeftCaption = '<< &Details';
   RsDetailsRightCaption = '&Details >>';
-  RsNoneCaption = '(none)';
 
   RsUndoItem = '&Undo';
   RsCutItem = 'Cu&t';
@@ -433,6 +432,10 @@ resourcestring
   RsDefaultNoDateShortcut = 'Alt+Del';
 
   RsEMustHaveADate = '%s must have a date!';
+
+//=== JvDateTimePicker.pas ===================================================
+resourcestring
+  RsNoneCaption = '(none)';
 
 //=== JvDBControls.pas =======================================================
 resourcestring

@@ -75,6 +75,7 @@ const
   {$ELSE}
   BreakLine = #13;
   {$ENDIF LINUX}
+  // (rom) this is wrong for Windows #13#10 is correct
   NewLine = BreakLine + BreakLine;
 
 resourcestring
@@ -113,6 +114,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
+
+  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Can''t connect to server.';
@@ -155,6 +160,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
+
+  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
@@ -197,6 +206,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
+
+  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Nelze pшipojit server.';
@@ -239,6 +252,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse-Fehler: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse-Fehler: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" Parameter muss "ON" oder "OFF" lauten.';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s nicht gefunden.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unerwarteter Fehler bei Typumwandlung.';
+
+  EUIB_ERRCODEFMT          = 'Fehler-Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
@@ -281,6 +298,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
+
+  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Не могу установить соединение с сервером.';
@@ -289,8 +310,8 @@ resourcestring
   {$ENDIF UIBLANG_RU}
 
   {$IFDEF UIBLANG_ES}
-  sUIBTrue             = 'Si';
-  sUIBFalse            = 'No';
+  sUIBTrue  = 'Si';
+  sUIBFalse = 'No';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Versiуn incorrecta del Servidor de Base de Datos, verifica las opciones del compilador.';
@@ -323,6 +344,10 @@ resourcestring
   EUIB_PARSESQLDIALECT     = 'Parse error: SET SQL DIALECT';
   EUIB_PARSESETNAMES       = 'Parse error: SET NAMES';
   EUIB_BADAUTODLL          = '"SET AUTODDL" must be "ON" or "OFF"';
+  EUIB_CHARSETNOTFOUND     = 'CharacterSet %s not found.';
+  EUIB_UNEXPECTEDCASTERROR = 'Unexpected cast error.';
+
+  EUIB_ERRCODEFMT          = 'Error Code: %d';
 
   // ORB Errors
   EJvUIB_CantConnect   = 'Imposible conectar con el servidor.';
