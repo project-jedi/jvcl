@@ -337,6 +337,15 @@ begin
       Scrollbars := ssBoth;
     end;
     ParameterList.AddParameter(Parameter);
+    Parameter := tjvRichEditParameter.Create(ParameterList);
+    with tjvRichEditParameter(Parameter) do
+    begin
+      SearchName := 'RichEditTest';
+      Caption    := 'RichEditTest';
+      //Height     := 60;
+      Scrollbars := ssBoth;
+    end;
+    ParameterList.AddParameter(Parameter);
     Parameter := tjvRadioGroupParameter.Create(ParameterList);
     with tjvRadioGroupParameter(Parameter) do
     begin
