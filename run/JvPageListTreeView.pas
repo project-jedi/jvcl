@@ -97,9 +97,9 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode; override;
-    function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
-    function CanChange(Node: TTreeNode): Boolean; override;
+    function CreateNode: TTreeNode;{$IFDEF VCL}override;{$ENDIF}{$IFDEF VisualCLX}dynamic;{$ENDIF}
+    function CreateNodes: TTreeNodes;{$IFDEF VCL}{$IFDEF COMPILER6_UP}override;{$ENDIF}{$ENDIF}
+    function CanChange(Node: TTreeNode): Boolean;{$IFDEF VCL}override;{$ENDIF}{$IFDEF VisualCLX}dynamic;{$ENDIF}
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -181,11 +181,12 @@ type
   protected
     FLastSelected: TTreeNode;
     procedure Delete(Node: TTreeNode); override;
-
+    {$IFDEF VCL}
     procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
-    procedure GetImageIndex(Node: TTreeNode); override;
     procedure GetSelectedIndex(Node: TTreeNode); override;
+    procedure GetImageIndex(Node: TTreeNode); {$IFDEF VCL}override;{$ENDIF}
+    {$ENDIF VCL}
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
     procedure ResetPreviousNode(NewNode: TTreeNode); virtual;
@@ -193,10 +194,11 @@ type
     procedure Loaded; override;
     procedure Expand(Node: TTreeNode); override;
     procedure Collapse(Node: TTreeNode); override;
-
     property PageNodeImages: TJvSettingsTreeImages read FNodeImages write SetImageSelection;
+    {$IFDEF VCL}
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetSelectedIndex: TTVExpandedEvent read FOnGetSelectedIndex write FOnGetSelectedIndex;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -213,11 +215,9 @@ type
     property PageDefault;
     property PageLinks;
     property PageList;
-
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-
     property Align;
     property Anchors;
     {$IFDEF VCL}
@@ -270,15 +270,15 @@ type
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-    property OnCompare;
     property OnContextPopup;
     {$IFDEF VCL}
+    property OnCompare;
     {$IFDEF COMPILER6_UP}
     property OnAddition;
     property OnCreateNodeClass;
     {$ENDIF COMPILER6_UP}
-    {$ENDIF VCL}
     property OnCustomDraw;
+    {$ENDIF VCL}
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -329,22 +329,34 @@ type
     property BevelKind default bkNone;
     property BevelWidth;
     property BiDiMode;
-    property DragKind;
-    property DragCursor;
-    property ParentBiDiMode;
-    property OnEndDock;
-    property OnStartDock;
-    {$ENDIF VCL}
-    property BorderStyle;
     property BorderWidth;
     property ChangeDelay;
+    property DragKind;
+    property DragCursor;
+    property HideSelection;
+    property HotTrack;
+    property ParentBiDiMode;
+    {$IFDEF COMPILER6_UP}
+    property OnAddition;
+    property OnCreateNodeClass;
+    {$ENDIF COMPILER6_UP}
+    property OnCustomDraw;
+    property OnEndDock;
+    property OnStartDock;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
+    property OnCompare;
+    property RightClickSelect;
+    property ShowRoot;
+    property StateImages;
+    property ToolTips;
+    {$ENDIF VCL}
+    property BorderStyle;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-    property HideSelection;
-    property HotTrack;
     property Images;
     property Indent;
     // don't use!
@@ -354,30 +366,18 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RightClickSelect;
     property RowSelect;
     property ShowHint;
-    property ShowRoot;
     property SortType;
-    property StateImages;
     property TabOrder;
     property TabStop default True;
-    property ToolTips;
     property Visible;
-    property OnAdvancedCustomDraw;
-    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-    property OnCompare;
     property OnContextPopup;
-    {$IFDEF COMPILER6_UP}
-    property OnAddition;
-    property OnCreateNodeClass;
-    {$ENDIF COMPILER6_UP}
-    property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
     property OnDeletion;
@@ -388,10 +388,13 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnExpanding;
+    property OnExpanding;    
     property OnExpanded;
     property OnGetImageIndex;
     property OnGetSelectedIndex;
+    {$IFDEF VisualCLX}
+    property OnInsert;
+    {$ENDIF VisualCLX}
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -513,7 +516,12 @@ end;
 
 function TJvCustomPageListTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
+	{$IFDEF VCL}
   Result := inherited CanChange(Node);
+  {$ENDIF VCL}
+	{$IFDEF VisualCLX}
+  Result := true;
+  {$ENDIF VisualCLX}
   if Result and Assigned(Node) and Assigned(FPageList) then
     Result := FPageList.CanChange(TJvPageIndexNode(Node).PageIndex);
 end;
@@ -560,7 +568,7 @@ begin
       PageList := nil;
     {$ELSE}
     if (AComponent = FPageListComponent) then
-      PageList := nil;
+      PageList := nil;       
     {$ENDIF COMPILER6_UP}
   end;
 end;
@@ -738,14 +746,14 @@ begin
   FNodeImages.TreeView := Self;
   AutoExpand := True;
   ShowButtons := False;
+  ReadOnly := True;
   {$IFDEF VCL}
   ShowLines := False;
-  {$ENDIF VCL}
-  ReadOnly := True;
   // we need to assign to these since the TTreeView checks if they are assigned
   // and won't call GetImageIndex without them
   inherited OnGetImageIndex := DoGetImageIndex;
   inherited OnGetSelectedIndex := DoGetSelectedIndex;
+  {$ENDIF VCL}
 end;
 
 destructor TJvCustomSettingsTreeView.Destroy;
@@ -789,6 +797,7 @@ begin
     FLastSelected := nil;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomSettingsTreeView.DoGetImageIndex(Sender: TObject;
   Node: TTreeNode);
 begin
@@ -806,6 +815,7 @@ begin
   else
     GetSelectedIndex(Node);
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomSettingsTreeView.Expand(Node: TTreeNode);
 var
@@ -835,6 +845,7 @@ begin
   inherited Expand(Node);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomSettingsTreeView.GetImageIndex(Node: TTreeNode);
 begin
   if Node.HasChildren then
@@ -862,6 +873,7 @@ procedure TJvCustomSettingsTreeView.GetSelectedIndex(Node: TTreeNode);
 begin
   GetImageIndex(Node);
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomSettingsTreeView.Loaded;
 begin
