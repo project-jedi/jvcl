@@ -32,8 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Registry, IniFiles, jpeg, Menus,
-  JvSlider, JvLabel, JvPcx, JvImage, JvScrollingLabel, JvTypes, JVCLVer;
+  StdCtrls, ExtCtrls, Registry, IniFiles, jpeg, Menus, JvBehaviorLabel,
+  JvSlider, JvLabel, JvPcx, JvImage, JvTypes, JVCLVer;
 
 type
   TJvBreatheLabel = class(TPersistent)
@@ -79,30 +79,30 @@ type
 
   TJvBreatheScrollLabel = class(TPersistent)
   private
-    FLabel: TJvScrollingLabel;
+    FLabel: TJvBehaviorLabel;
     FHeight: Integer;
     FTop: Integer;
     FWidth: Integer;
     FLeft: Integer;
     FCaption: string;
     function GetColor: TColor;
-    function GetDirection: TLabelDirection;
+    function GetDirection: TJvLabelScrollDirection;
     function GetFont: TFont;
     function GetHint: string;
     function GetInterval: Cardinal;
-    function GetNoGrap: Boolean;
+//    function GetNoGrap: Boolean;
     function GetScrolling: Boolean;
     function GetShowHint: Boolean;
     function GetTransparent: Boolean;
     procedure SetCaption(const Value: string);
     procedure SetColor(const Value: TColor);
-    procedure SetDirection(const Value: TLabelDirection);
+    procedure SetDirection(const Value: TJvLabelScrollDirection);
     procedure SetFont(const Value: TFont);
     procedure SetHeight(const Value: Integer);
     procedure SetHint(const Value: string);
     procedure SetInterval(const Value: Cardinal);
     procedure SetLeft(const Value: Integer);
-    procedure SetNoGrap(const Value: Boolean);
+//    procedure SetNoGrap(const Value: Boolean);
     procedure SetScrolling(const Value: Boolean);
     procedure SetShowHint(const Value: Boolean);
     procedure SetTop(const Value: Integer);
@@ -122,9 +122,9 @@ type
     property Hint: string read GetHint write SetHint;
     property ShowHint: Boolean read GetShowHint write SetShowHint;
     property Scrolling: Boolean read GetScrolling write SetScrolling;
-    property ScrollDirectory: TLabelDirection read GetDirection write SetDirection;
+    property ScrollDirection: TJvLabelScrollDirection read GetDirection write SetDirection;
     property ScrollInterval: Cardinal read GetInterval write SetInterval;
-    property NoGrap: Boolean read GetNoGrap write SetNoGrap;
+//    property NoGrap: Boolean read GetNoGrap write SetNoGrap;
   end;
 
   TJvBreatheButton = class(TPersistent)
@@ -1812,12 +1812,13 @@ end;
 constructor TJvBreatheScrollLabel.Create(AOwner: TComponent);
 begin
   inherited Create;
-  FLabel := TJvScrollingLabel.Create(AOwner);
+  FLabel := TJvBehaviorLabel.Create(AOwner);
   FLabel.Parent := TWinControl(AOwner);
   FLabel.AutoSize := False;
   FLabel.ParentColor := False;
   FLabel.ParentFont := False;
   FLabel.ParentShowHint := False;
+  FLabel.Behavior := 'Scrolling';
 end;
 
 function TJvBreatheScrollLabel.GetColor: TColor;
@@ -1825,9 +1826,9 @@ begin
   Result := FLabel.Color;
 end;
 
-function TJvBreatheScrollLabel.GetDirection: TLabelDirection;
+function TJvBreatheScrollLabel.GetDirection: TJvLabelScrollDirection;
 begin
-  Result := FLabel.ScrollDirection;
+  Result := TJvLabelScroll(FLabel.BehaviorOptions).Direction;
 end;
 
 function TJvBreatheScrollLabel.GetFont: TFont;
@@ -1842,17 +1843,12 @@ end;
 
 function TJvBreatheScrollLabel.GetInterval: Cardinal;
 begin
-  Result := FLabel.ScrollInterval;
-end;
-
-function TJvBreatheScrollLabel.GetNoGrap: Boolean;
-begin
-  Result := FLabel.NoGrap;
+  Result := TJvLabelScroll(FLabel.BehaviorOptions).Interval;
 end;
 
 function TJvBreatheScrollLabel.GetScrolling: Boolean;
 begin
-  Result := FLabel.Scrolling;
+  Result := TJvLabelScroll(FLabel.BehaviorOptions).Active;
 end;
 
 function TJvBreatheScrollLabel.GetShowHint: Boolean;
@@ -1868,7 +1864,7 @@ end;
 procedure TJvBreatheScrollLabel.SetCaption(const Value: string);
 begin
   FCaption := Value;
-  FLabel.Text := Value;
+  FLabel.Caption := Value;
 end;
 
 procedure TJvBreatheScrollLabel.SetColor(const Value: TColor);
@@ -1876,9 +1872,9 @@ begin
   FLabel.Color := Value;
 end;
 
-procedure TJvBreatheScrollLabel.SetDirection(const Value: TLabelDirection);
+procedure TJvBreatheScrollLabel.SetDirection(const Value: TJvLabelScrollDirection);
 begin
-  FLabel.ScrollDirection := Value;
+  TJvLabelScroll(FLabel.BehaviorOptions).Direction := Value;
 end;
 
 procedure TJvBreatheScrollLabel.SetFont(const Value: TFont);
@@ -1899,7 +1895,7 @@ end;
 
 procedure TJvBreatheScrollLabel.SetInterval(const Value: Cardinal);
 begin
-  FLabel.ScrollInterval := Value;
+  TJvLabelScroll(FLabel.BehaviorOptions).Interval := Value;
 end;
 
 procedure TJvBreatheScrollLabel.SetLeft(const Value: Integer);
@@ -1908,14 +1904,9 @@ begin
   FLabel.Left := Value;
 end;
 
-procedure TJvBreatheScrollLabel.SetNoGrap(const Value: Boolean);
-begin
-  FLabel.NoGrap := Value;
-end;
-
 procedure TJvBreatheScrollLabel.SetScrolling(const Value: Boolean);
 begin
-  FLabel.Scrolling := Value;
+  TJvLabelScroll(FLabel.BehaviorOptions).Active := Value;
 end;
 
 procedure TJvBreatheScrollLabel.SetShowHint(const Value: Boolean);
