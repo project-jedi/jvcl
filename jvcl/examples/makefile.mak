@@ -89,6 +89,7 @@ JvHtmlParserProj.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
 SimpleHIDWrite.exe \
+UsagesDemo.exe \
 prjControls.exe \
 FindReplaceDemo.exe \
 FileDirDemo.exe \
@@ -581,6 +582,11 @@ CollectionDemo.exe: JvHIDController\CollectionDemo\CollectionDemo.dpr
 
 SimpleHIDWrite.exe: JvHIDController\ReadWriteDemo\SimpleHIDWrite.dpr
   cd JvHIDController\ReadWriteDemo
+  $(DCCH) $&.dpr
+  cd ..\..
+
+UsagesDemo.exe: JvHIDController\UsagesDemo\UsagesDemo.dpr
+  cd JvHIDController\UsagesDemo
   $(DCCH) $&.dpr
   cd ..\..
 

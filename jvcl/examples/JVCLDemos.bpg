@@ -31,7 +31,7 @@ PROJECTS = EditorDemo.exe MessengerDemo.exe Philosophers.exe Balls.exe \
   MailExample.exe JvLogFileDemo.exe ListCombDemo.exe JvLinkLabelDemo.exe \
   Install2LabelDemo.exe InspectorDBExample.exe InspectorSimpleExample.exe \
   InspExample.exe ImageWindowDemo.exe JvID3v2Demo.exe JvID3v1Demo.exe \
-  JvHtmlParserProj.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
+  JvHtmlParserProj.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe UsagesDemo.exe \
   RxGIFAnm.exe prjControls.exe FindReplaceDemo.exe FileDirDemo.exe JvEdits.exe \
   DSAExamples.exe MessageDlgEditor.exe JvDomainUpDownDemo.exe JvDialogsDemo.exe \
   StoredProc.exe Script.exe MetaData.exe Query.exe QueryStream.exe \
@@ -292,6 +292,9 @@ CollectionDemo.exe: JvHIDController\CollectionDemo\CollectionDemo.dpr
   $(DCC)
 
 SimpleHIDWrite.exe: JvHIDController\ReadWriteDemo\SimpleHIDWrite.dpr
+  $(DCC)
+
+UsagesDemo.exe: JvHIDController\UsagesDemo\UsagesDemo.dpr
   $(DCC)
 
 RxGIFAnm.exe: JvGIFAnimator\RxGIFAnm.dpr
