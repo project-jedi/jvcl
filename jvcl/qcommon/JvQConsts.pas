@@ -34,7 +34,7 @@ unit JvQConsts;
 interface
 
 uses
-  SysUtils, Classes, QControls, QGraphics, QWindows;
+  SysUtils, Classes, QForms, QControls, QGraphics, QWindows;
 
 
 const
@@ -44,7 +44,8 @@ const
   clMedGray = TColor($A4A0A0);
 
 
-const
+
+
   { JvEditor }
   JvEditorCompletionChars = #8 + '0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
