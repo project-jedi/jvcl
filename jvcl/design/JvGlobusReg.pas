@@ -102,7 +102,7 @@ begin
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
     TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgQRLabel, TJvgQRDBText,
+    TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgExportDataset, TJvgQRLabel, TJvgQRDBText,
     TJvgMyQRPreview,
     {$ENDIF DelphiPersonalEdition}
     {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
