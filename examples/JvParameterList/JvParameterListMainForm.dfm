@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 230
-  Top = 80
+  Left = 500
+  Top = 271
   Width = 689
   Height = 660
   Caption = 'JvDynControlEngine / JvParameterList Sample'
@@ -1415,36 +1415,50 @@ object Form1: TForm1
     Left = 10
     Top = 125
     Width = 331
-    Height = 126
+    Height = 156
     Caption = 'Parameterlist Settings'
     TabOrder = 0
     object Label1: TLabel
-      Left = 138
-      Top = 20
+      Left = 148
+      Top = 15
       Width = 51
       Height = 13
       Caption = 'Max Width'
     end
     object Label2: TLabel
       Left = 218
-      Top = 20
+      Top = 15
       Width = 54
       Height = 13
       Caption = 'Max Height'
     end
     object Label3: TLabel
-      Left = 138
-      Top = 60
+      Left = 148
+      Top = 55
       Width = 28
       Height = 13
       Caption = 'Width'
     end
     object Label4: TLabel
       Left = 218
-      Top = 60
+      Top = 55
       Width = 31
       Height = 13
       Caption = 'Height'
+    end
+    object Label6: TLabel
+      Left = 148
+      Top = 95
+      Width = 59
+      Height = 26
+      Caption = 'Def. Param. '#13#10'Width'
+    end
+    object Label7: TLabel
+      Left = 218
+      Top = 95
+      Width = 57
+      Height = 26
+      Caption = 'Def. Param.'#13#10'Label Width'
     end
     object AutoWidthCheckBox: TCheckBox
       Left = 10
@@ -1464,67 +1478,98 @@ object Form1: TForm1
     end
     object LoadFromCheckBox: TCheckBox
       Left = 10
-      Top = 60
-      Width = 119
+      Top = 80
+      Width = 131
       Height = 17
       Caption = 'Load From AppStorage'
-      TabOrder = 2
+      TabOrder = 3
     end
     object StoreToCheckBox: TCheckBox
       Left = 10
-      Top = 80
-      Width = 111
+      Top = 100
+      Width = 126
       Height = 17
       Caption = 'Store To AppStorage'
-      TabOrder = 3
+      TabOrder = 4
     end
     object MaxWidthEdit: TMaskEdit
-      Left = 138
-      Top = 35
-      Width = 59
-      Height = 21
-      EditMask = '0999;0; '
-      MaxLength = 4
-      TabOrder = 4
-      Text = '600'
-    end
-    object MaxHeightEdit: TMaskEdit
-      Left = 218
-      Top = 35
+      Left = 148
+      Top = 30
       Width = 59
       Height = 21
       EditMask = '0999;0; '
       MaxLength = 4
       TabOrder = 5
-      Text = '400'
+      Text = '600'
     end
-    object WidthEdit: TMaskEdit
-      Left = 138
-      Top = 75
-      Width = 55
+    object MaxHeightEdit: TMaskEdit
+      Left = 218
+      Top = 30
+      Width = 59
       Height = 21
       EditMask = '0999;0; '
       MaxLength = 4
       TabOrder = 6
-      Text = '600'
+      Text = '400'
     end
-    object HeightEdit: TMaskEdit
-      Left = 218
-      Top = 75
-      Width = 57
+    object WidthEdit: TMaskEdit
+      Left = 148
+      Top = 70
+      Width = 58
       Height = 21
       EditMask = '0999;0; '
       MaxLength = 4
       TabOrder = 7
+      Text = '600'
+    end
+    object HeightEdit: TMaskEdit
+      Left = 218
+      Top = 70
+      Width = 57
+      Height = 21
+      EditMask = '0999;0; '
+      MaxLength = 4
+      TabOrder = 8
       Text = '400'
     end
     object HistoryEnabledCheckBox: TCheckBox
       Left = 10
-      Top = 100
+      Top = 120
       Width = 111
       Height = 17
       Caption = 'History Enabled'
-      TabOrder = 8
+      TabOrder = 9
+    end
+    object DefaultParameterWidthEdit: TMaskEdit
+      Left = 148
+      Top = 120
+      Width = 54
+      Height = 21
+      Hint = 'Default Parameter Width'
+      EditMask = '0999;0; '
+      MaxLength = 4
+      TabOrder = 10
+      Text = '180'
+    end
+    object DefaultParameterLabelWidthEdit: TMaskEdit
+      Left = 218
+      Top = 120
+      Width = 55
+      Height = 21
+      Hint = 'Default Parameter Label Width'
+      EditMask = '0999;0; '
+      MaxLength = 4
+      TabOrder = 11
+      Text = '60'
+    end
+    object AssignWidthHeightCheckBox: TCheckBox
+      Left = 10
+      Top = 60
+      Width = 131
+      Height = 17
+      Caption = 'Assign Width/Height'
+      TabOrder = 2
+      OnClick = AssignWidthHeightCheckBoxClick
     end
   end
   object GroupBox2: TGroupBox
@@ -1622,8 +1667,8 @@ object Form1: TForm1
     end
   end
   object GroupBox4: TGroupBox
-    Left = 390
-    Top = 285
+    Left = 380
+    Top = 260
     Width = 276
     Height = 206
     Caption = 'Message Dlg Tests'
@@ -1892,7 +1937,7 @@ object Form1: TForm1
       Top = 260
       Width = 176
       Height = 65
-      Caption = 'GroupBox6'
+      Caption = 'Crypted'
       TabOrder = 3
       object StaticText5: TStaticText
         Left = 5
@@ -1951,13 +1996,22 @@ object Form1: TForm1
       OnClick = BitBtn2Click
     end
   end
-  object Button15: TButton
-    Left = 392
-    Top = 504
-    Width = 75
-    Height = 25
-    Caption = 'Button15'
+  object GroupBox7: TGroupBox
+    Left = 380
+    Top = 475
+    Width = 276
+    Height = 146
+    Caption = 'Different Dialogs'
     TabOrder = 5
+    object Button15: TButton
+      Left = 5
+      Top = 15
+      Width = 126
+      Height = 25
+      Caption = 'Analyze Table Sample'
+      TabOrder = 0
+      OnClick = Button15Click
+    end
   end
   object JvAppRegistryStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -1989,7 +2043,10 @@ object Form1: TForm1
       'DevExpCxLookAndFeelRadioGroup.ItemIndex'
       'CxRadioButton.Checked'
       'JVCLRadioButton.Checked'
-      'VCLRadioButton.Checked')
+      'VCLRadioButton.Checked'
+      'DefaultParameterLabelWidthEdit.Text'
+      'DefaultParameterWidthEdit.Text'
+      'AssignWidthHeightCheckBox.Checked')
     StoredValues = <>
     Left = 414
     Top = 3
@@ -2022,6 +2079,7 @@ object Form1: TForm1
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     FileName = 'JvParameterListDemo.xml'
     RootNodeName = 'Configuration'
+    SubStorages = <>
     Left = 275
     Top = 10
   end
