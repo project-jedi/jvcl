@@ -340,11 +340,11 @@ end;
 type
   // (p3) from ShLwAPI
   TDLLVersionInfo = packed record
-    cbSize: DWord;
-    dwMajorVersion: DWord;
-    dwMinorVersion: DWord;
-    dwBuildNumber: DWord;
-    dwPlatformID: DWord;
+    cbSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformID: DWORD;
   end;
 
 {
@@ -821,7 +821,7 @@ begin
   end
   else
     MonthCal_SetRange(Handle, 0, nil);
-  DecodeDate(FTOday, Y, M, D);
+  DecodeDate(FToday, Y, M, D);
   with rgst[0] do
   begin
     wYear := Y;
@@ -835,7 +835,7 @@ procedure TJvCustomMonthCalendar.DoBoldDays;
 var
   Y, M, D: Word;
   DayArray: TMonthDayStateArray;
-  NMDAyState: TNmDayState;
+  NMDayState: TNMDayState;
 begin
   if not HandleAllocated then
     Exit;
@@ -1113,7 +1113,7 @@ begin
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
     raise EMonthCalError.CreateRes(@RsEInvalidArgumentToSetDayStates);
-  SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, longint(@DayStates));
+  SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, Longint(@DayStates));
 end;
 
 // first default width  = 166
@@ -1144,7 +1144,7 @@ begin
   with Msg.NMHdr^ do
     case Code of
       MCN_GETDAYSTATE:
-        DoGetDayState(PNMDayState(Msg.NMHDR)^, StateArray);
+        DoGetDayState(PNMDayState(Msg.NMHdr)^, StateArray);
       MCN_SELCHANGE:
         begin
           if IsBlankDate(PNMSelChange(Msg.NMHdr)^.stSelStart) then

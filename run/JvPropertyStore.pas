@@ -84,8 +84,8 @@ type
     property Enabled: Boolean read FEnabled write FEnabled default True;
     property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore
       default False;
-    property ClearBeforeLoad: Boolean read FClearBeforeLoad write fClearBeforeLoad default False;
-    property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write fIgnoreLastLoadTime
+    property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
+    property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime
       default False;
     property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties
@@ -328,7 +328,7 @@ function TJvCustomPropertyStore.GetPropCount(Instance: TPersistent): Integer;
 var
   Data: PTypeData;
 begin
-  Data := GetTypeData(Instance.Classinfo);
+  Data := GetTypeData(Instance.ClassInfo);
   Result := Data^.PropCount;
 end;
 
@@ -409,14 +409,14 @@ procedure TJvCustomPropertyStore.SetAutoLoad(Value: Boolean);
 begin
   if not Assigned(Owner) then
     Exit;
-  if Owner is tJvCustomPropertyStore then
+  if Owner is TJvCustomPropertyStore then
     FAutoLoad := False
   else
   if Value <> AutoLoad then
     FAutoLoad := Value;
 end;
 
-procedure tJvCustomPropertyStore.DisableAutoLoadDown;
+procedure TJvCustomPropertyStore.DisableAutoLoadDown;
 var
   Index: Integer;
   PropName: string;
@@ -424,10 +424,10 @@ begin
   for Index := 0 to GetPropCount(Self) - 1 do
   begin
     PropName := GetPropName(Self, Index);
-    if IgnoreProperties.IndexOf(Propname) < 0 then
-      if FIntIgnoreProperties.IndexOf(Propname) < 0 then
+    if IgnoreProperties.IndexOf(PropName) < 0 then
+      if FIntIgnoreProperties.IndexOf(PropName) < 0 then
         if PropType(Self, GetPropName(Self, Index)) = tkClass then
-          if (TPersistent(GetOrdProp(Self, PropName)) is tJvCustomPropertyStore) then
+          if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
             TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AutoLoad := False;
   end;
 end;
@@ -675,7 +675,7 @@ begin
   begin
     if Assigned(Objects[Index]) then
     begin
-      if Objects[Index] is tJvCustomPropertyStore then
+      if Objects[Index] is TJvCustomPropertyStore then
       begin
         TJvCustomPropertyStore(Objects[Index]).AppStoragePath := Sender.ConcatPaths([Path, cObject +
           IntToStr(Index)]);
@@ -696,7 +696,7 @@ begin
 end;
 
 procedure TJvCustomPropertyListStore.WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-  const Index: integer);
+  const Index: Integer);
 begin
   if Assigned(Objects[Index]) then
   begin

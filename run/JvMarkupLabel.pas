@@ -52,7 +52,7 @@ type
     FMarginTop: Integer;
     FAlignment: TAlignment;
     procedure Refresh;
-    procedure ParseHTML(s: string);
+    procedure ParseHTML(S: string);
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
@@ -90,7 +90,7 @@ type
     property Enabled;
     property Color default clBtnFace;   // Duplicates BackColor
     property Constraints;
-    property ParentColor default true;
+    property ParentColor default True;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -130,7 +130,7 @@ begin
   FMarginRight := 5;
   FMarginTop := 5;
   Color := clBtnFace;
-  ParentColor := true;
+  ParentColor := True;
 end;
 
 destructor TJvMarkupLabel.Destroy;
@@ -219,8 +219,9 @@ var
   var
     VV: string;
   begin
-    Result := false;
-    if Length(V) < 2 then Exit;
+    Result := False;
+    if Length(V) < 2 then
+      Exit;
     if not (V[1] in ['#','$']) then
     begin
       // allow the use of both "clBlack" and "Black" 
@@ -492,10 +493,10 @@ begin
       El := TJvHTMLElement(FElementStack.Items[I]);
       if El.BreakLine then
       begin
-        if not PendingBreak and (PendingCount <> i) then
+        if not PendingBreak and (PendingCount <> I) then
         begin
           PendingBreak := True;
-          PendingCount := i;
+          PendingCount := I;
           iEol := I;
           Break;
         end
@@ -514,7 +515,7 @@ begin
         repeat
           El.Breakup(Canvas, ATotalWidth);
           Inc(ATotalWidth, 5);
-        until lSolText <> El.Soltext;
+        until lSolText <> El.SolText;
       end;
       if El.SolText <> '' then
       begin
@@ -577,7 +578,7 @@ begin
   if AutoSize then
   begin
     Width := MaxWidth;
-    Height := y + 5;
+    Height := Y + 5;
   end;
   {$ENDIF VCL}
 end;

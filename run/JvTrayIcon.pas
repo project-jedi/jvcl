@@ -64,12 +64,12 @@ type
     uFlags: UINT;
     uCallbackMessage: UINT;
     hIcon: HICON;
-    szTip: array[0..127] of AnsiChar; // 0..64 for pre 5.0 shell versions
+    szTip: array [0..127] of AnsiChar; // 0..64 for pre 5.0 shell versions
     dwState: DWORD;
     dwStateMask: DWORD;
-    szInfo: array[0..255] of AnsiChar;
+    szInfo: array [0..255] of AnsiChar;
     uTimeOut: DWORD;
-    szInfoTitle: array[0..63] of AnsiChar;
+    szInfoTitle: array [0..63] of AnsiChar;
     dwInfoFlags: DWORD;
   end;
 
@@ -803,8 +803,8 @@ begin
     else
       cbSize := SizeOf(TNotifyIconData);
     Wnd := FHandle;
-    uId := 1; // We have only 1 icon per FHandle, so no need to uniquely identify
-    uCallBackMessage := WM_CALLBACKMESSAGE;
+    uID := 1; // We have only 1 icon per FHandle, so no need to uniquely identify
+    uCallbackMessage := WM_CALLBACKMESSAGE;
     if not CurrentIcon.Empty then
       hIcon := CurrentIcon.Handle
     else
@@ -1160,7 +1160,7 @@ begin
               Include(ShState, ssAlt);
             case LParam of
               WM_MOUSEMOVE:
-                DoMouseMove(shState, Pt.X, Pt.Y);
+                DoMouseMove(ShState, Pt.X, Pt.Y);
               WM_LBUTTONDOWN:
                 DoMouseDown(mbLeft, ShState, Pt.X, Pt.Y);
               WM_RBUTTONDOWN:
@@ -1211,7 +1211,7 @@ begin
                   except
                   end;
                   Result := Ord(True);
-                  //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+                  //Result := DefWindowProc(FHandle, Msg, WParam, LParam);
                   HideBalloon;
                 end;
             end;
@@ -1254,7 +1254,7 @@ begin
           end;
         end
         else
-          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+          Result := DefWindowProc(FHandle, Msg, WParam, LParam);
       end; // case
   except
     Application.HandleException(Self);

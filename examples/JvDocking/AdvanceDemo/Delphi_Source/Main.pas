@@ -144,8 +144,7 @@ var
 implementation
 
 uses
-  frmDelphiStyle, frmVCStyle, frmVIDStyle, frmVSNetStyle, JvDockSupportProc,
-  frmVIDVCStyle;
+  frmDelphiStyle, frmVCStyle, frmVIDStyle, frmVSNetStyle, JvDockSupportProc;
 
 {$R *.DFM}
 
@@ -544,15 +543,16 @@ begin
 end;
 
 procedure TMainForm.ToolButton2Click(Sender: TObject);
-var
-  Form: TForm5;
+//var
+//  Form: TForm5;
 begin
+{
   Form := TForm5.Create(Self);
   Form.Caption := Form.Caption + ' _ ' + IntToStr(FForm5Count);
   Inc(FForm5Count);
   AddItemToShowDockMenu(Form);
   ShowDockStatus(JvDockVIDVCStyle1);
-
+}
 end;
 
 end.

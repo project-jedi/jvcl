@@ -62,13 +62,13 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
- for i := 0 to ControlCount-1 do
-   with Controls[i] do
+ for I := 0 to ControlCount - 1 do
+   with Controls[I] do
    begin
-     Hint := classname;
-     ShowHint := true;
+     Hint := ClassName;
+     ShowHint := True;
    end;
 
 end;

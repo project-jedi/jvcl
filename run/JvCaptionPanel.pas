@@ -90,7 +90,7 @@ type
   private
     FButtonArray: array [TJvCapBtnStyle] of TJvCapBtn;
     FButtonClick: TJvCapBtnEvent;
-    FDrawPosition: TJvDrawPosition;
+    FCaptionPosition: TJvDrawPosition;
     FCaptionWidth: Integer;
     FOffset: Integer;
     FButtons: TJvCapBtnStyles;
@@ -118,7 +118,7 @@ type
     procedure SetFlat(Value: Boolean);
     procedure SetButtons(Value: TJvCapBtnStyles);
     procedure SetCaption(Value: string);
-    procedure SetJvDrawPosition(Value: TJvDrawPosition);
+    procedure SetCaptionPosition(Value: TJvDrawPosition);
     procedure DrawRotatedText(Rotation: Integer);
     procedure DrawButtons;
     {$IFDEF VCL}
@@ -150,7 +150,7 @@ type
     property BorderStyle default bsSingle;
     property Caption: string read FCaption write SetCaption;
     property CaptionColor: TColor read FCaptionColor write SetCaptionColor default clActiveCaption;
-    property CaptionPosition: TJvDrawPosition read FDrawPosition write SeTJvDrawPosition default dpLeft;
+    property CaptionPosition: TJvDrawPosition read FCaptionPosition write SetCaptionPosition default dpLeft;
     property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
     property Color;
     property Cursor;
@@ -405,7 +405,7 @@ begin
   FCaptionFont.Style := [fsBold];
   FCaptionFont.Color := clWhite;
   FCaptionFont.OnChange := DoCaptionFontChange;
-  FDrawPosition := dpLeft;
+  FCaptionPosition := dpLeft;
   FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
   FAutoDrag := True;
   {$IFDEF VCL}
@@ -467,7 +467,7 @@ begin
   if FFlat <> Value then
   begin
     FFlat := Value;
-    for I := Low(FbuttonArray) to High(FButtonArray) do
+    for I := Low(FButtonArray) to High(FButtonArray) do
       FButtonArray[I].Flat := FFlat;
   end;
 end;
@@ -485,11 +485,11 @@ begin
   end;
 end;
 
-procedure TJvCaptionPanel.SetJvDrawPosition(Value: TJvDrawPosition);
+procedure TJvCaptionPanel.SetCaptionPosition(Value: TJvDrawPosition);
 begin
-  if FDrawPosition <> Value then
+  if FCaptionPosition <> Value then
   begin
-    FDrawPosition := Value;
+    FCaptionPosition := Value;
     {$IFDEF VCL}
     RecreateWnd;
     {$ENDIF VCL}
@@ -502,13 +502,12 @@ end;
 procedure TJvCaptionPanel.SetIcon(Value: TIcon);
 begin
   FIcon.Assign(Value);
-  invalidate;
+  Invalidate;
 end;
-
 
 procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
-  case FDrawPosition of
+  case FCaptionPosition of
     dpLeft:
       Rect := Classes.Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
@@ -544,7 +543,7 @@ begin
   {$IFDEF VisualCLX}
   if BorderStyle = bsSingle then
   begin
-    DrawShadePanel(Canvas, R, false, 1, nil);
+    DrawShadePanel(Canvas, R, False, 1, nil);
     InflateRect(R, -2, -2);
   end;
   {$ENDIF VisualCLX}
@@ -572,7 +571,7 @@ begin
   else
     FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
 
-  case FDrawPosition of
+  case FCaptionPosition of
     dpLeft:
       begin
         FCaptionRect := Rect(FBevel, FBevel, FCaptionWidth + FBevel, ClientHeight - FBevel);
@@ -592,7 +591,7 @@ begin
   if not FIcon.Empty then
   begin
     with FCaptionRect do
-      case FDrawPosition of
+      case FCaptionPosition of
       dpRight:
         Canvas.Draw( (Left + Right - FIcon.Width) div 2, Top + 1, FIcon);
       dpLeft:
@@ -655,12 +654,12 @@ begin
       {$ENDIF VisualCLX}
       if FOutlookLook then
       begin
-        Dec(th);
+        Dec(tH);
         {$IFDEF VCL}
-        Dec(tw);
+        Dec(tW);
         {$ENDIF VCL}
       end;
-      case FDrawPosition of
+      case FCaptionPosition of
         dpLeft:
           begin
             {$IFDEF VCL}
@@ -683,7 +682,7 @@ begin
           begin
             {$IFDEF VisualCLX}
             X := R.Left;
-            Y := R.Top + th + Canvas.TextHeight(Caption) - FOffset;
+            Y := R.Top + tH + Canvas.TextHeight(Caption) - FOffset;
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
@@ -716,7 +715,7 @@ begin
       end;
       {$IFDEF VCL}
       Flags := DT_NOPREFIX;
-      if FDrawPosition in [dpTop, dpBottom] then
+      if FCaptionPosition in [dpTop, dpBottom] then
         Flags := Flags or DT_VCENTER;
       if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
         Flags := Flags or DT_NOCLIP; { bug or feature? }
@@ -750,7 +749,7 @@ begin
     Inc(FHeight);
   end;
 
-  case FDrawPosition of
+  case FCaptionPosition of
     dpLeft:
       R := Rect(FCaptionRect.Left + FCaptionOffsetSmall, FCaptionRect.Top + FCaptionOffsetSmall, 0, 0);
     dpTop:
@@ -766,7 +765,7 @@ begin
     FButtonArray[capClose].Top := R.Top;
     FButtonArray[capClose].Left := R.Left;
     FButtonArray[capClose].Visible := True;
-    case FDrawPosition of
+    case FCaptionPosition of
       dpLeft:
         OffsetRect(R, 0, FHeight + FCaptionOffsetSmall);
       dpTop:
@@ -785,7 +784,7 @@ begin
     FButtonArray[capMax].Top := R.Top;
     FButtonArray[capMax].Left := R.Left;
     FButtonArray[capMax].Visible := True;
-    case FDrawPosition of
+    case FCaptionPosition of
       dpLeft:
         OffsetRect(R, 0, FHeight);
       dpTop:
@@ -804,7 +803,7 @@ begin
     FButtonArray[capRestore].Top := R.Top;
     FButtonArray[capRestore].Left := R.Left;
     FButtonArray[capRestore].Visible := True;
-    case FDrawPosition of
+    case FCaptionPosition of
       dpLeft:
         OffsetRect(R, 0, FHeight);
       dpTop:
@@ -823,7 +822,7 @@ begin
     FButtonArray[capMin].Top := R.Top;
     FButtonArray[capMin].Left := R.Left;
     FButtonArray[capMin].Visible := True;
-    case FDrawPosition of
+    case FCaptionPosition of
       dpLeft:
         OffsetRect(R, 0, FHeight);
       dpTop:

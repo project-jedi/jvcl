@@ -256,7 +256,7 @@ var
   Palette256: TPcxPalette256;
   Buffer: array [0..MaxPixelCount - 1] of Byte;
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
-  b: Byte;
+  B: Byte;
   ByteNum, BitNum: Integer;
   X, Y: Integer;
 begin
@@ -406,26 +406,26 @@ begin
         {$ENDIF VisualCLX}
         for X := 0 to Width - 1 do
         begin
-          b := 0;
+          B := 0;
           ByteNum := X div 8;
           BitNum := 7 - (X mod 8);
           if (Buffer[ByteNum] shr BitNum) and $1 <> 0 then
-            b := b or $01;
+            B := B or $01;
           if (Buffer2[ByteNum] shr BitNum) and $1 <> 0 then
-            b := b or $02;
+            B := B or $02;
           if (Buffer3[ByteNum] shr BitNum) and $1 <> 0 then
-            b := b or $04;
+            B := B or $04;
           if (Buffer4[ByteNum] shr BitNum) and $1 <> 0 then
-            b := b or $08;
+            B := B or $08;
 
           {$IFDEF VCL}
           if X mod 2 = 0 then // BIG ENDIAN
-            b := b shl 4;
-          ByteLine[X div 2] := ByteLine[X div 2] or b;
+            B := B shl 4;
+          ByteLine[X div 2] := ByteLine[X div 2] or B;
           {$ENDIF VCL}
           {$IFDEF VisualCLX}
           // VisualCLX does not support pf4bit
-          ByteLine[X] := ByteLine[X] or b;
+          ByteLine[X] := ByteLine[X] or B;
           {$ENDIF VisualCLX}
         end;
       end;
@@ -450,7 +450,7 @@ var
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
   Palette256: TPcxPalette256;
   BytesPerRasterLine: Integer;
-  b: Byte;
+  B: Byte;
   ByteNum, BitNum: Integer;
 begin
   {$IFDEF VCL}
@@ -554,25 +554,25 @@ begin
             for X := 0 to Width - 1 do
             begin
               {$IFDEF VCL}
-              b := ByteLine[X div 2];
+              B := ByteLine[X div 2];
               if X mod 2 = 0 then // BIG ENDIAN
-                b := b shr 4
+                B := B shr 4
               else
-                b := b and $0F;
+                B := B and $0F;
               {$ENDIF VCL}
               {$IFDEF VisualCLX}
-              b := ByteLine[X];
+              B := ByteLine[X];
               {$ENDIF VisualCLX}
 
               ByteNum := X div 8;
               BitNum := 7 - (X mod 8);
-              if b and $01 <> 0 then
+              if B and $01 <> 0 then
                 Buffer[ByteNum] := Buffer[ByteNum] or (1 shl BitNum);
-              if b and $02 <> 0 then
+              if B and $02 <> 0 then
                 Buffer2[ByteNum] := Buffer2[ByteNum] or (1 shl BitNum);
-              if b and $04 <> 0 then
+              if B and $04 <> 0 then
                 Buffer3[ByteNum] := Buffer3[ByteNum] or (1 shl BitNum);
-              if b and $08 <> 0 then
+              if B and $08 <> 0 then
                 Buffer4[ByteNum] := Buffer4[ByteNum] or (1 shl BitNum);
             end;
             CompressStream.Write(Buffer, BytesPerRasterLine);

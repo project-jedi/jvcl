@@ -66,20 +66,20 @@ implementation
 
 uses
   JvFrameEmpty, hello, JvLabelsU, JvFormsU, JvDialogsU, JvButtonsU, JvDateTimeU,
-  JvPanelsU, JvChoosersU, JvUtilsU, JvControlsU, JvSearchFiles, JvWinDialogsU,
+  JvPanelsU, JvChoosersU, JvControlsU, JvSearchFiles, JvWinDialogsU,
   JvEditsU, JvAniMainFormU,
   JvSearchFileMainFormU, JvNTEventLogMainFormU, JvMruListMainFormU,
   JvLogFileMainFormU, InstallLabelMainFormU, 
   JvDBDateTimePickerMainFormU, ContentScrollerMainFormU, JvDataEmbeddedMainFormU,
   JvBrowseFolderMainFormU, 
-  JvClipboardViewerMainFormU, JvZoomMainFormU, JvSpecialProgressMainFormU,
+  JvClipboardViewerMainFormU, JvZoomMainFormU,
   JvWindowsTitleMainFomU,
   RaHtHintsMainFormU, FileListBoxMainFormU, JvTreeViewAsMenuMainFormU,
   ListCombMainFormU, JvBalloonHintMainFormU,
   JvHTMLParserMainFormU,
   JvLinkLabelMainFormU, JvScreenCaptureMainFormU,
   JvShFileOperationMainFormU, JvSystemPopup2MainFormU, JvSystemPopupMainFormU,
-  JvThumbnailMainFormU, JvTranslatorMainFormU,
+  JvThumbnailMainFormU,
   RegTVMainFormU, RunDll32MainFormU, TimelineMainFormU,
   TipOfDayMainFormU, TMTimeLineMainFormU,
   JvZLibMultipleMainFormU, OtherStandAlone, Profiler32MainFormU,
@@ -107,7 +107,7 @@ begin
 
      1 : TheFormArray[ID]  := TJvFormsFrm.Create(nil);
      2 : TheFormArray[ID]  := TJvDialogs.Create(nil);
-     3 : TheFormArray[ID]  := TJvUtilsFrm.Create(nil);
+//     3 : TheFormArray[ID]  := TJvUtilsFrm.Create(nil);
      4 : TheFormArray[ID]  := TJvLabelsFrm.Create(nil);
      5 : TheFormArray[ID] := TRaHtHintsMainForm.Create(nil);
      6 : TheFormArray[ID] := TJvZoomMainForm.Create(nil);
@@ -135,7 +135,7 @@ begin
     29 : TheFormArray[ID] := TJvNTEventLogMainForm.Create(nil);
 //    30 : TheFormArray[ID] := TJvAppHotKeyDemoMainForm.Create(nil);
     31 : TheFormArray[ID] := TJvWindowsTitleMainForm.Create(nil);
-    32 : TheFormArray[ID] := TJvSpecialProgressMainForm.Create(nil);
+//    32 : TheFormArray[ID] := TJvSpecialProgressMainForm.Create(nil);
 //    33 : TheFormArray[ID] := TJvColorComboDemoMainForm.Create(nil);
     34 : TheFormArray[ID] := TContentScrollerMainForm.Create(nil);
 //    35 : TheFormArray[ID] := TMailExampleMainForm.Create(nil);
@@ -157,7 +157,7 @@ begin
     51 : TheFormArray[ID] := TJvSystemPopupMainForm.Create(nil);
     52 : TheFormArray[ID] := TJvSystemPopup2MainForm.Create(nil);
     53 : TheFormArray[ID] := TJvThumbnailMainForm.Create(nil);
-    54 : TheFormArray[ID] := TJvTranslatorMainForm.Create(nil);
+//    54 : TheFormArray[ID] := TJvTranslatorMainForm.Create(nil);
 //    55 : TheFormArray[ID] := TJvWndProcHookDemoMainForm.Create(nil);
 //    56 : TheFormArray[ID] := TJvWndProcHookDemoMainForm.Create(nil);
     57 : TheFormArray[ID] := TRegTVMainForm.Create(nil);

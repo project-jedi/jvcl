@@ -66,7 +66,7 @@ JvCheckBoxDemo.exe CheckTVDemo.exe JvClipboardViewerProj.exe ColorButtonDemo.exe
 JvComboListBoxDemo.exe ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe \
 CsvDataDemo.exe JvDataEmbeddedProj.exe DBDTPDemo.exe JvDBGridExportDemo.exe JvDbMaskEditDemo.exe \
 JvDialogsDemo.exe JvDomainUpDownDemo.exe JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe \
-JvEdits.exe JvErrorIndicatorDemo.exe FileDirDemo.exe FindReplaceDemo.exe prjControls.exe BasicDemo.exe \
+JvErrorIndicatorDemo.exe FileDirDemo.exe FindReplaceDemo.exe prjControls.exe BasicDemo.exe \
 CollectionDemo.exe SimpleHIDWrite.exe UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe \
 Install2LabelDemo.exe JvItemViewerDemo.exe JvLEDDemo.exe JvLinkLabelDemo.exe ListCombDemo.exe \
 JvLogFileDemo.exe MailExample.exe JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe \
@@ -74,9 +74,9 @@ JvMruListDemo.exe JvNavPaneDemo.exe EventViewer.exe JvObjPickerDemo.exe OfficeCo
 JvOLEDragCursorsDemo.exe OLBarDemo.exe JvOutlookBarCustomDrawDemo.exe pm.exe JvPanelDemo.exe \
 JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe JvProgressDialogDemo.exe \
 RegEditDemo.exe JvRollOutDemo.exe RunDLL32Demo.exe JvScreenCaptureProj.exe ScrollWinDemo.exe \
-JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe SpecialProgressTestPrj.exe JvSpellCheckerDemo.exe \
+JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe JvSpellCheckerDemo.exe \
 JvStringGridDemo.exe JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe JvThumbnailDemo.exe \
-PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe JvTranslatorProj.exe TransparentButtonDemo.exe \
+PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe TransparentButtonDemo.exe \
 JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe JvUrlListGrabberDemo.exe \
 JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe WndProcHookDemo.exe \
 Hospital.exe WinXPBarDemo.exe SimpleDemo.exe JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
@@ -327,11 +327,6 @@ DSAExamples.exe: "JvDSADialogs\DSAExamples.dpr"
 
 MessageDlgEditor.exe: "JvDSADialogs\MessageDlgEditor.dpr"
   @cd JvDSADialogs
-  $(DCC) $&.dpr
-  @cd ..
-
-JvEdits.exe: "JvEdits\JvEdits.dpr"
-  @cd JvEdits
   $(DCC) $&.dpr
   @cd ..
 
@@ -660,11 +655,6 @@ XMLValidator.exe: "JvSimpleXML Validator\XMLValidator.dpr"
   $(DCC) $&.dpr
   @cd ..
 
-SpecialProgressTestPrj.exe: "JvSpecialProgress\SpecialProgressTestPrj.dpr"
-  @cd JvSpecialProgress
-  $(DCC) $&.dpr
-  @cd ..
-
 JvSpellCheckerDemo.exe: "JvSpellChecker\JvSpellCheckerDemo.dpr"
   @cd JvSpellChecker
   $(DCC) $&.dpr
@@ -712,11 +702,6 @@ TipsDemo.exe: "JvTipOfDay\TipsDemo.dpr"
 
 SimpleTLTest1.exe: "JvTMTimeLine\SimpleTLTest1.dpr"
   @cd JvTMTimeLine
-  $(DCC) $&.dpr
-  @cd ..
-
-JvTranslatorProj.exe: "JvTranslator\JvTranslatorProj.dpr"
-  @cd JvTranslator
   $(DCC) $&.dpr
   @cd ..
 

@@ -1606,7 +1606,7 @@ begin
   if Update then
   begin
     SiblingZone.ParentZone.ResetChildren(nil);
-    UpDateChild(SiblingZone.ParentZone);
+    UpdateChild(SiblingZone.ParentZone);
   end;
 end;
 
@@ -1683,7 +1683,7 @@ var
       begin
         if not Result.Visible or ((Result is TWinControl) and
           not TWinControl(Result).Showing) then
-          continue;
+          Continue;
         P := Point(Pos.X - Left, Pos.Y - Top);
         if PtInRect(ClientRect, P) then
           Exit;
@@ -2130,13 +2130,13 @@ begin
   ReleaseDC(FSizingWnd, FSizingDC);
   if FSizingZone.ParentZone.Orientation = doHorizontal then
   begin
-    FSizingZone.ZoneLimit := FSizePos.y + (SplitterWidth div 2);
-    SetSiblingZoneSize(FSizePos.y);
+    FSizingZone.ZoneLimit := FSizePos.Y + (SplitterWidth div 2);
+    SetSiblingZoneSize(FSizePos.Y);
   end
   else
   begin
-    FSizingZone.ZoneLimit := FSizePos.x + (SplitterWidth div 2);
-    SetSiblingZoneSize(FSizePos.x);
+    FSizingZone.ZoneLimit := FSizePos.X + (SplitterWidth div 2);
+    SetSiblingZoneSize(FSizePos.X);
   end;
   SetNewBounds(FSizingZone.ParentZone);
   ForEachAt(FSizingZone.ParentZone, UpdateZone, tskForward);
@@ -2250,7 +2250,7 @@ begin
   begin
     FGrabberSize := Value;
     UpdateAll;
-    Docksite.Invalidate;
+    DockSite.Invalidate;
   end;
 end;
 
@@ -2927,20 +2927,20 @@ begin
   if FSizingZone.ParentZone.Orientation = doHorizontal then
   begin
     TestLimit := GetSplitterLimit(FSizingZone, True, False) + MinWidth;
-    if FSizePos.y <= TestLimit then
-      FSizePos.y := TestLimit;
+    if FSizePos.Y <= TestLimit then
+      FSizePos.Y := TestLimit;
     TestLimit := GetSplitterLimit(FSizingZone, False, True) - MinWidth - SplitterWidth;
-    if FSizePos.y >= TestLimit then
-      FSizePos.y := TestLimit;
+    if FSizePos.Y >= TestLimit then
+      FSizePos.Y := TestLimit;
   end
   else
   begin
     TestLimit := GetSplitterLimit(FSizingZone, True, False) + MinWidth;
-    if FSizePos.x <= TestLimit then
-      FSizePos.x := TestLimit;
+    if FSizePos.X <= TestLimit then
+      FSizePos.X := TestLimit;
     TestLimit := GetSplitterLimit(FSizingZone, False, True) - MinWidth - SplitterWidth;
-    if FSizePos.x >= TestLimit then
-      FSizePos.x := TestLimit;
+    if FSizePos.X >= TestLimit then
+      FSizePos.X := TestLimit;
   end;
 end;
 
@@ -3287,7 +3287,7 @@ procedure TJvDockTree.HideAllControl;
     begin
       DoHideAllControl(AZone.NextSibling);
       DoHideAllControl(AZone.ChildZones);
-      if (AZone.ChildControl <> nil) and (AZone.visibled) then
+      if (AZone.ChildControl <> nil) and (AZone.Visibled) then
         AZone.Remove(AZone.LimitSize, True);
     end;
   end;
@@ -3713,7 +3713,7 @@ end;
 procedure TJvDockAdvTree.SetDockRectangles(Orient: TDockOrientation;
   AtLast: Boolean; const Value: Integer);
 begin
-  FDockRectangles[Orient, Atlast] := Value;
+  FDockRectangles[Orient, AtLast] := Value;
 end;
 
 procedure TJvDockAdvTree.InitDockRectangles(ARect: TRect);

@@ -86,7 +86,7 @@ Known Issues:
 //
 //  OnCalcResult - если данное событие назначено, то расчет итогов осуществл€етс€ ¬ами. —обытие передает  значение текущей €чейки и
 //                                       значени€ итогов дл€ данного столбца и строки. ≈сли событие OnCalcResult не назначено, расчет выполн€етс€
-//                                       компонентом,   причем предполагаетс€, что значение €чейки можно преобразовать в значение single и итоги
+//                                       компонентом,   причем предполагаетс€, что значение €чейки можно преобразовать в значение Single и итоги
 //                                       рассчитываютс€ как суммы соответствующих столбцов и строк.
 //
 //  OnDuplicateCellValue  - событие инициируетс€, если какой-либо паре значений колонки и строки соответствует более одного значени€.
@@ -94,7 +94,7 @@ Known Issues:
 //___ћ≈“ќƒџ___
 //
 //    procedure Print; - без слов.
-//    procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );  - вывод таблицы на произвольный холст(Canvas) с указанием
+//    procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: Integer );  - вывод таблицы на произвольный холст(Canvas) с указанием
 //                                                                               размеров условной таблицы в точках.
 { [Translation]
 
@@ -163,7 +163,7 @@ Known Issues:
                          of totals(agregates). Event gives You values of current
                          cell and totals for column and row. If event is not
                          assigned, the component proceeds it, assuming cell value
-                         can be casted to single, and calculating totals as sums
+                         can be casted to Single, and calculating totals as sums
                          of all cells in the row/column
   OnDuplicateCellValue - Event is fired if some pair [Column & Row] value matches
                          another pairs value.
@@ -173,7 +173,7 @@ Known Issues:
 
   procedure Print;
     No comment needed.
-  procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: integer );
+  procedure PreviewTo( Canvas: TCanvas; PageWidth, PageHeight: Integer );
     Rendering the table to the given canvas, specifying size of conditional(virtual,
     conventional) table in pixels.
 }
@@ -216,7 +216,7 @@ type
     IntermediateColResult,
     IntermediateRowResult,
     ColResult,
-    RowResult: single) of object;
+    RowResult: Single) of object;
 
   TDuplicateCellValueEvent = procedure(Sender: TObject;
     ColNo, RowNo: cardinal;
@@ -235,7 +235,7 @@ type
 
   TPrintTableElement = procedure(Sender: TObject;
     var Text: string;
-    ColNo, RowNo: integer;
+    ColNo, RowNo: Integer;
     TableElement: TPCTableElement;
     var Font: TFont;
     var Color: TColor;
@@ -279,15 +279,15 @@ type
   TJvgPrintCrossTableIndents = class(TPersistent)
   private
     FLeft, FTop,
-      FRight, FBottom: single;
+      FRight, FBottom: Single;
   public
     //    constructor Create;
     //    destructor Destroy; override;
   published
-    property _Left: single read FLeft write FLeft;
-    property _Top: single read FTop write FTop;
-    property _Right: single read FRight write FRight;
-    property _Bottom: single read FBottom write FBottom;
+    property _Left: Single read FLeft write FLeft;
+    property _Top: Single read FTop write FTop;
+    property _Right: Single read FRight write FRight;
+    property _Bottom: Single read FBottom write FBottom;
   end;
 
   TJvgPrintCrossTable = class(TJvComponent)
@@ -296,16 +296,16 @@ type
     FColumnFieldName: string;
     FRowFieldName: string;
     FValueFieldName: string;
-    FVerticalGrid: boolean;
-    FHorizontalGrid: boolean;
+    FVerticalGrid: Boolean;
+    FHorizontalGrid: Boolean;
     FOptions: TPCTOptions;
-    FPageWidth: integer;
-    FPageHeight: integer;
-    FColWidthInSantim: single;
-    FRowHeightInSantim: single;
+    FPageWidth: Integer;
+    FPageHeight: Integer;
+    FColWidthInSantim: Single;
+    FRowHeightInSantim: Single;
     FIndentsInSantim: TJvgPrintCrossTableIndents;
-    FCaptColWidthInSantim: single;
-    FCaptRowHeightInSantim: single;
+    FCaptColWidthInSantim: Single;
+    FCaptRowHeightInSantim: Single;
     FFonts: TJvgPrintCrossTableFonts;
     FColors: TJvgPrintCrossTableColors;
     FTitle: string;
@@ -319,23 +319,36 @@ type
 
     Font_: TFont;
     Color_: TColor;
-    ColsSum: array of single;
-    RowsSum: array of single;
-    FinalColsSum: array of single;
-    FinalRowsSum: array of single;
-    Columnslist, RowsList: TStringList;
-    ColsOnPage, RowsOnPage, TotalCols, TotalRows: integer;
-    ColsOnPage1, RowsOnPage1: integer;
-    ColsOnPageX, RowsOnPageX: integer;
-    RowPageCount, ColPageCount: integer;
-    //    LOGPIXELSX_, LOGPIXELSY_: integer;
-    CaptColWidth, CaptRowHeight: integer;
-    LeftIndent, TopIndent, RightIndent, BottomIndent: integer;
-    ColWidth, RowHeight: integer;
-    ColsOnCurrPage, RowsOnCurrPage: integer;
+    ColsSum: array of Single;
+    RowsSum: array of Single;
+    FinalColsSum: array of Single;
+    FinalRowsSum: array of Single;
+    ColumnsList: TStringList;
+    RowsList: TStringList;
+    ColsOnPage: Integer;
+    RowsOnPage: Integer;
+    TotalCols: Integer;
+    TotalRows: Integer;
+    ColsOnPage1: Integer;
+    RowsOnPage1: Integer;
+    ColsOnPageX: Integer;
+    RowsOnPageX: Integer;
+    RowPageCount: Integer;
+    ColPageCount: Integer;
+    //    LOGPIXELSX_, LOGPIXELSY_: Integer;
+    CaptColWidth: Integer;
+    CaptRowHeight: Integer;
+    LeftIndent: Integer;
+    TopIndent: Integer;
+    RightIndent: Integer;
+    BottomIndent: Integer;
+    ColWidth: Integer;
+    RowHeight: Integer;
+    ColsOnCurrPage: Integer;
+    RowsOnCurrPage: Integer;
 
     procedure PrintTable(Canvas: TCanvas);
-    procedure CalcResults(Str: string; ColNo, RowNo: integer);
+    procedure CalcResults(Str: string; ColNo, RowNo: Integer);
 
     procedure SetColumnFieldName(Value: string);
     procedure SetRowFieldName(Value: string);
@@ -344,12 +357,12 @@ type
     procedure SetOptions(Value: TPCTOptions);
 
     procedure DrawGrid(Canvas: TCanvas; ColPageNo, RowPageNo, ColsOnThisPage,
-      RowsOnThisPage: integer);
+      RowsOnThisPage: Integer);
     procedure DrawCell(Canvas: TCanvas; ColPageNo, RowPageNo, ColNo, RowNo:
-      integer; Str: string; Element: TPCTableElement);
-    procedure DrawTitle(Canvas: TCanvas; RowPageNo: integer);
-    function CalcColNo(ColPageNo: integer): integer;
-    function CalcRowNo(RowPageNo: integer): integer;
+      Integer; Str: string; Element: TPCTableElement);
+    procedure DrawTitle(Canvas: TCanvas; RowPageNo: Integer);
+    function CalcColNo(ColPageNo: Integer): Integer;
+    function CalcRowNo(RowPageNo: Integer): Integer;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
@@ -358,7 +371,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Print;
-    procedure PreviewTo(Canvas: TCanvas; PageWidth, PageHeight: integer);
+    procedure PreviewTo(Canvas: TCanvas; PageWidth, PageHeight: Integer);
   published
     property DataSet: TDataSet read FDataSet write SetDataSet;
     property ColumnFieldName: string read FColumnFieldName write
@@ -367,17 +380,17 @@ type
     property ValueFieldName: string read FValueFieldName write
       SetValueFieldName;
     property Options: TPCTOptions read FOptions write SetOptions;
-    property PageWidth: integer read FPageWidth write FPageWidth;
-    property PageHeight: integer read FPageHeight write FPageHeight;
-    property ColWidthInSantim: single read FColWidthInSantim write
+    property PageWidth: Integer read FPageWidth write FPageWidth;
+    property PageHeight: Integer read FPageHeight write FPageHeight;
+    property ColWidthInSantim: Single read FColWidthInSantim write
       FColWidthInSantim;
-    property RowHeightInSantim: single read FRowHeightInSantim write
+    property RowHeightInSantim: Single read FRowHeightInSantim write
       FRowHeightInSantim;
     property IndentsInSantim: TJvgPrintCrossTableIndents read FIndentsInSantim
       write FIndentsInSantim;
-    property CaptColWidthInSantim: single read FCaptColWidthInSantim write
+    property CaptColWidthInSantim: Single read FCaptColWidthInSantim write
       FCaptColWidthInSantim;
-    property CaptRowHeightInSantim: single read FCaptRowHeightInSantim write
+    property CaptRowHeightInSantim: Single read FCaptRowHeightInSantim write
       FCaptRowHeightInSantim;
     property Fonts: TJvgPrintCrossTableFonts read FFonts write FFonts;
     property Colors: TJvgPrintCrossTableColors read FColors write FColors;
@@ -495,8 +508,8 @@ begin
   ColWidthInSantim := 0.9;
   RowHeightInSantim := 0.5;
 
-  FVerticalGrid := true;
-  FHorizontalGrid := true;
+  FVerticalGrid := True;
+  FHorizontalGrid := True;
 
   Colors.Captions := JvDefaultCaptionsColor;
   Colors.Cells := clWhite;
@@ -539,15 +552,15 @@ begin
 end;
 
 procedure TJvgPrintCrossTable.DrawGrid(Canvas: TCanvas; ColPageNo, RowPageNo,
-  ColsOnThisPage, RowsOnThisPage: integer);
+  ColsOnThisPage, RowsOnThisPage: Integer);
 var
-  Col, Row: integer;
+  Col, Row: Integer;
 begin
   exit;
   if ColPageNo = ColPageCount - 1 then
-    inc(ColsOnThisPage);
+    Inc(ColsOnThisPage);
   if RowPageNo = RowPageCount - 1 then
-    inc(RowsOnThisPage);
+    Inc(RowsOnThisPage);
   if FVerticalGrid then
     for Col := 0 to ColsOnThisPage + 1 do
       with Canvas do
@@ -568,35 +581,35 @@ begin
       end;
 end;
 
-function TJvgPrintCrossTable.CalcColNo(ColPageNo: integer): integer;
+function TJvgPrintCrossTable.CalcColNo(ColPageNo: Integer): Integer;
 begin
   if ColPageNo > 0 then
     Result := ColsOnPage1
   else
     Result := 0;
   if ColPageNo > 1 then
-    inc(Result, ColsOnPageX * (ColPageNo - 1));
+    Inc(Result, ColsOnPageX * (ColPageNo - 1));
 end;
 
-function TJvgPrintCrossTable.CalcRowNo(RowPageNo: integer): integer;
+function TJvgPrintCrossTable.CalcRowNo(RowPageNo: Integer): Integer;
 begin
   if RowPageNo > 0 then
     Result := RowsOnPage1
   else
     Result := 0;
   if RowPageNo > 1 then
-    inc(Result, RowsOnPageX * (RowPageNo - 1));
+    Inc(Result, RowsOnPageX * (RowPageNo - 1));
 end;
 
 procedure TJvgPrintCrossTable.DrawCell(Canvas: TCanvas; ColPageNo, RowPageNo,
-  ColNo, RowNo: integer; Str: string; Element: TPCTableElement);
+  ColNo, RowNo: Integer; Str: string; Element: TPCTableElement);
 var
   R, R_: TRect;
-  i, j: integer;
+  I, J: Integer;
   AlignFlags: Word;
-  fCanPrint: boolean;
+  fCanPrint: Boolean;
 const
-  SingleLine: array[boolean] of integer = (DT_WORDBREAK,
+  SingleLine: array[Boolean] of Integer = (DT_WORDBREAK,
     DT_SINGLELINE);
 begin
 
@@ -605,31 +618,31 @@ begin
 
     if (ColNo = -1) or (RowNo = -1) then //...Draw Caption
     begin
-      i := max(0, ColNo);
-      j := max(0, RowNo);
+      I := max(0, ColNo);
+      J := max(0, RowNo);
       if (RowNo = -1) then
       begin
-        R.Left := i * ColWidth;
+        R.Left := I * ColWidth;
         R.Top := 0;
         if (ColPageNo = 0) or (fcoIntermediateLeftIndent in Options) then
-          inc(R.Left, LeftIndent);
+          Inc(R.Left, LeftIndent);
         if (RowPageNo = 0) or (fcoIntermediateTopIndent in Options) then
-          inc(R.Top, TopIndent);
+          Inc(R.Top, TopIndent);
         if (ColPageNo = 0) or (fcoIntermediateRowCaptions in Options) then
-          inc(R.Left, CaptColWidth);
+          Inc(R.Left, CaptColWidth);
         R.Right := R.Left + ColWidth;
         R.Bottom := R.Top + CaptRowHeight;
       end
       else
       begin
         R.Left := 0;
-        R.Top := j * RowHeight;
+        R.Top := J * RowHeight;
         if (ColPageNo = 0) or (fcoIntermediateLeftIndent in Options) then
-          inc(R.Left, LeftIndent);
+          Inc(R.Left, LeftIndent);
         if (RowPageNo = 0) or (fcoIntermediateTopIndent in Options) then
-          inc(R.Top, TopIndent);
+          Inc(R.Top, TopIndent);
         if (RowPageNo = 0) or (fcoIntermediateColCaptions in Options) then
-          inc(R.Top, CaptRowHeight);
+          Inc(R.Top, CaptRowHeight);
         R.Right := R.Left + CaptColWidth;
         R.Bottom := R.Top + RowHeight;
       end;
@@ -637,21 +650,21 @@ begin
     end
     else //...Draw Cell
     begin
-      i := CalcColNo(ColPageNo);
-      j := CalcRowNo(RowPageNo);
+      I := CalcColNo(ColPageNo);
+      J := CalcRowNo(RowPageNo);
 
-      R.Left := (ColNo - i + 1) * ColWidth - ColWidth;
-      R.Top := (RowNo - j + 1) * RowHeight - RowHeight;
+      R.Left := (ColNo - I + 1) * ColWidth - ColWidth;
+      R.Top := (RowNo - J + 1) * RowHeight - RowHeight;
 
       if (ColPageNo = 0) or (fcoIntermediateLeftIndent in Options) then
-        inc(R.Left, LeftIndent);
+        Inc(R.Left, LeftIndent);
       if (RowPageNo = 0) or (fcoIntermediateTopIndent in Options) then
-        inc(R.Top, TopIndent);
+        Inc(R.Top, TopIndent);
 
       if (RowPageNo = 0) or (fcoIntermediateColCaptions in Options) then
-        inc(R.Top, CaptRowHeight);
+        Inc(R.Top, CaptRowHeight);
       if (ColPageNo = 0) or (fcoIntermediateRowCaptions in Options) then
-        inc(R.Left, CaptColWidth);
+        Inc(R.Left, CaptColWidth);
 
       R.Right := R.Left + ColWidth;
       R.Bottom := R.Top + RowHeight;
@@ -695,12 +708,12 @@ begin
     AlignFlags := SingleLine[(ColNo <> -1) and (RowNo <> -1)] or DT_CENTER or
       DT_VCENTER;
 
-    fCanPrint := true;
+    fCanPrint := True;
     if Assigned(FOnPrintTableElement) then
     begin
       Color_ := Brush.Color;
       Font_.Assign(Font);
-      FOnPrintTableElement(Self, Str, i + 1, j + 1, Element, Font_, Color_,
+      FOnPrintTableElement(Self, Str, I + 1, J + 1, Element, Font_, Color_,
         AlignFlags, fCanPrint);
       Font.Assign(Font_);
     end;
@@ -715,7 +728,7 @@ begin
     SetBkMode(Handle, TRANSPARENT);
 
     if (fcoVertColCaptionsFont in Options) and (RowNo = -1) then
-      ExtTextOut(Handle, R.Left + 5, R.Bottom - 2, ETO_CLIPPED, @r,
+      ExtTextOut(Handle, R.Left + 5, R.Bottom - 2, ETO_CLIPPED, @R,
         PChar(Str), Length(Str), nil)
     else
     begin
@@ -729,9 +742,9 @@ begin
   end;
 end;
 
-procedure TJvgPrintCrossTable.DrawTitle(Canvas: TCanvas; RowPageNo: integer);
+procedure TJvgPrintCrossTable.DrawTitle(Canvas: TCanvas; RowPageNo: Integer);
 var
-  fCanPrint: boolean;
+  fCanPrint: Boolean;
   Str: string;
   AlignFlags: Word;
   R: TRect;
@@ -747,7 +760,7 @@ begin
     if not ((RowPageNo = 0) or (fcoIntermediateTopIndent in Options)) then
       exit;
 
-    fCanPrint := true;
+    fCanPrint := True;
     AlignFlags := (DT_SINGLELINE or DT_EXPANDTABS) or
       Alignments[FTitleAlignment];
     Str := FTitle;
@@ -775,7 +788,7 @@ begin
 end;
 
 procedure TJvgPrintCrossTable.PreviewTo(Canvas: TCanvas; PageWidth, PageHeight:
-  integer);
+  Integer);
 begin
   Self.PageWidth := PageWidth;
   Self.PageHeight := PageHeight;
@@ -784,18 +797,18 @@ end;
 
 procedure TJvgPrintCrossTable.PrintTable(Canvas: TCanvas);
 var
-  i, j: integer;
-  fPrint, fCanPrint, fUseDuplicateValue: boolean;
+  I, J: Integer;
+  fPrint, fCanPrint, fUseDuplicateValue: Boolean;
   ClientSize: TSize;
   PrintingStatus: TglPrintingStatus;
-  str: string;
+  Str: string;
   TargetCanvas: TCanvas;
   ColumnField, RowField, ValueField: TField;
-  ColPageNo, RowPageNo, ColNo, RowNo: integer;
+  ColPageNo, RowPageNo, ColNo, RowNo: Integer;
   ClientR, CaptR, DataR: TRect;
-  FilledRowNo: array[0..MAX_ROWS] of boolean;
+  FilledRowNo: array[0..MAX_ROWS] of Boolean;
   OldFilter: string;
-  OldFiltered: boolean;
+  OldFiltered: Boolean;
 begin
   if not Assigned(FDataSet) then
     exit;
@@ -810,7 +823,7 @@ begin
       OldFilter := Filter;
       OldFiltered := Filtered;
 
-      Filtered := false;
+      Filtered := False;
       ColumnField := FieldByName(ColumnFieldName);
       RowField := FieldByName(RowFieldName);
       ValueField := FieldByName(ValueFieldName);
@@ -834,14 +847,14 @@ begin
       //    LOGPIXELSX_ := GetDeviceCaps(Canvas.Handle,LOGPIXELSX);
       //    LOGPIXELSY_ := GetDeviceCaps(Canvas.Handle,LOGPIXELSY);
 
-      ColWidth := CentimetersToPixels(Handle, ColWidthInSantim, true);
-      RowHeight := CentimetersToPixels(Handle, RowHeightInSantim, false);
-      LeftIndent := CentimetersToPixels(Handle, _Left, true);
-      TopIndent := CentimetersToPixels(Handle, _Top, false);
-      RightIndent := CentimetersToPixels(Handle, _Right, true);
-      BottomIndent := CentimetersToPixels(Handle, _Bottom, false);
-      CaptColWidth := CentimetersToPixels(Handle, CaptColWidthInSantim, true);
-      CaptRowHeight := CentimetersToPixels(Handle, CaptRowHeightInSantim, false);
+      ColWidth := CentimetersToPixels(Handle, ColWidthInSantim, True);
+      RowHeight := CentimetersToPixels(Handle, RowHeightInSantim, False);
+      LeftIndent := CentimetersToPixels(Handle, _Left, True);
+      TopIndent := CentimetersToPixels(Handle, _Top, False);
+      RightIndent := CentimetersToPixels(Handle, _Right, True);
+      BottomIndent := CentimetersToPixels(Handle, _Bottom, False);
+      CaptColWidth := CentimetersToPixels(Handle, CaptColWidthInSantim, True);
+      CaptRowHeight := CentimetersToPixels(Handle, CaptRowHeightInSantim, False);
 
     end;
     //  CaptR := Rect( LeftIndent, TopIndent, PageWidth-RightIndent, PageHeight-BottomIndent );
@@ -862,15 +875,15 @@ begin
     end;
     ColumnsList.Sort;
     RowsList.Sort;
-    ColumnsList.Sorted := true;
-    RowsList.Sorted := true;
-    for i := ColumnsList.Count - 1 downto 1 do
-      if ColumnsList[i - 1] = ColumnsList[i] then
-        ColumnsList.Delete(i);
+    ColumnsList.Sorted := True;
+    RowsList.Sorted := True;
+    for I := ColumnsList.Count - 1 downto 1 do
+      if ColumnsList[I - 1] = ColumnsList[I] then
+        ColumnsList.Delete(I);
 
-    for i := RowsList.Count - 1 downto 1 do
-      if RowsList[i - 1] = RowsList[i] then
-        RowsList.Delete(i);
+    for I := RowsList.Count - 1 downto 1 do
+      if RowsList[I - 1] = RowsList[I] then
+        RowsList.Delete(I);
 
     TotalCols := ColumnsList.Count + 1; //...+1 - final results
     TotalRows := RowsList.Count + 1;
@@ -879,36 +892,36 @@ begin
     ClientSize.cy := PageHeight - TopIndent - BottomIndent;
 
     ColsOnPage1 := (ClientSize.cx - CaptColWidth) div ColWidth -
-      integer(fcoIntermediateColResults in Options);
+      Integer(fcoIntermediateColResults in Options);
     RowsOnPage1 := (ClientSize.cy - CaptRowHeight) div RowHeight -
-      integer(fcoIntermediateRowResults in Options);
+      Integer(fcoIntermediateRowResults in Options);
 
     ClientSize.cx := PageWidth;
     ClientSize.cy := PageHeight;
 
     if (fcoIntermediateColCaptions in Options) then
-      dec(ClientSize.cy, CaptRowHeight);
+      Dec(ClientSize.cy, CaptRowHeight);
     if (fcoIntermediateRowCaptions in Options) then
-      dec(ClientSize.cx, CaptColWidth);
+      Dec(ClientSize.cx, CaptColWidth);
     if (fcoIntermediateLeftIndent in Options) then
-      dec(ClientSize.cx, LeftIndent);
+      Dec(ClientSize.cx, LeftIndent);
     if (fcoIntermediateTopIndent in Options) then
-      dec(ClientSize.cy, TopIndent);
+      Dec(ClientSize.cy, TopIndent);
     if (fcoIntermediateRightIndent in Options) then
-      dec(ClientSize.cx, RightIndent);
+      Dec(ClientSize.cx, RightIndent);
     if (fcoIntermediateBottomIndent in Options) then
-      dec(ClientSize.cy, BottomIndent);
+      Dec(ClientSize.cy, BottomIndent);
 
     ColsOnPageX := (ClientSize.cx) div ColWidth -
-      integer(fcoIntermediateColResults in Options);
+      Integer(fcoIntermediateColResults in Options);
     RowsOnPageX := (ClientSize.cy) div RowHeight -
-      integer(fcoIntermediateRowResults in Options);
+      Integer(fcoIntermediateRowResults in Options);
 
     RowPageCount := max(trunc(TotalRows / (RowsOnPageX + 1)), 1);
     ColPageCount := max(trunc(TotalCols / (ColsOnPageX + 1)), 1);
 
     //...EVENT OnPrintQuery
-    fCanPrint := true;
+    fCanPrint := True;
     if Assigned(FOnPrintQuery) then
       FOnPrintQuery(Self, ColPageCount, RowPageCount, fCanPrint);
     if not fCanPrint then
@@ -947,9 +960,9 @@ begin
             RowsOnPage);
 
           if ColPageNo = ColPageCount - 1 then
-            dec(ColsOnCurrPage);
+            Dec(ColsOnCurrPage);
           if RowPageNo = RowPageCount - 1 then
-            dec(RowsOnCurrPage);
+            Dec(RowsOnCurrPage);
           //...EVENT OnPrintNewPage
           PrintingStatus := fpsContinue;
           if Assigned(OnPrintNewPage) then
@@ -994,112 +1007,112 @@ begin
             RowsOnCurrPage);
           SetBkMode(TargetCanvas.Handle, TRANSPARENT);
           if (RowPageNo = 0) or (fcoIntermediateColCaptions in Options) then
-            for i := 0 to ColsOnCurrPage - 1 do //...captions_________________________
+            for I := 0 to ColsOnCurrPage - 1 do //...captions_________________________
             try
-              Str := ColumnsList[CalcColNo(ColPageNo) + i];
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, i, -1, Str,
+              Str := ColumnsList[CalcColNo(ColPageNo) + I];
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, I, -1, Str,
                 teColCapt);
-            except break;
+            except
+              Break;
             end;
 
           if (ColPageNo = 0) or (fcoIntermediateRowCaptions in Options) then
-            for i := 0 to RowsOnCurrPage - 1 do //...captions_________________________
+            for I := 0 to RowsOnCurrPage - 1 do //...captions_________________________
             try
-              Str := RowsList[CalcRowNo(RowPageNo) + i];
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, -1, i, Str,
+              Str := RowsList[CalcRowNo(RowPageNo) + I];
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, -1, I, Str,
                 teRowCapt);
-            except break;
+            except
+              Break;
             end;
 
-          i := CalcColNo(ColPageNo);
+          I := CalcColNo(ColPageNo);
           with FDataSet do
-            for ColNo := i to i + ColsOnCurrPage - 1 do
+            for ColNo := I to I + ColsOnCurrPage - 1 do
             begin
 
               if ColNo >= ColumnsList.Count then
-                break;
+                Break;
               if ColumnsList[ColNo] = '' then
-                continue;
-              Filtered := false;
+                Continue;
+              Filtered := False;
               Filter := '[' + ColumnFieldName + ']=''' +
                 ColumnsList[ColNo] + '''' + OldFilter;
-              Filtered := true;
+              Filtered := True;
               First;
 
               FillChar(FilledRowNo, SizeOf(FilledRowNo), 0);
-              for i := 0 to RecordCount - 1 do
+              for I := 0 to RecordCount - 1 do
               begin
 
                 if not RowsList.Find(RowField.AsString, RowNo) then
                 begin
                   Next;
-                  continue;
+                  Continue;
                 end;
 
                 if (RowNo < CalcRowNo(RowPageNo)) or (RowNo >=
                   CalcRowNo(RowPageNo) + RowsOnCurrPage) then
                 begin
                   Next;
-                  continue;
+                  Continue;
                 end;
                 // if not((RowNo >= RowPageNo*(RowsOnCurrPage))and(RowNo <= (RowPageNo+1)*(RowsOnPage)-1))then
-                // begin Next; continue; end;
+                // begin Next; Continue; end;
 
-                fUseDuplicateValue := false;
+                fUseDuplicateValue := False;
                 if FilledRowNo[RowNo] then //...duplicate
                 begin
                   if Assigned(OnDuplicateCellValue) then
                     OnDuplicateCellValue(Self, ColNo, RowNo,
-                      valueField.AsString, fUseDuplicateValue);
-
+                      ValueField.AsString, fUseDuplicateValue);
                 end;
 
                 if (not FilledRowNo[RowNo]) or fUseDuplicateValue then
                 begin
-                  FilledRowNo[RowNo] := true;
-                  Str := valueField.AsString;
+                  FilledRowNo[RowNo] := True;
+                  Str := ValueField.AsString;
                   DrawCell(TargetCanvas, ColPageNo, RowPageNo,
                     ColNo, RowNo, Str, teCell);
                   CalcResults(Str, ColNo, RowNo);
-
                 end;
 
                 Next;
               end;
             end;
           //...sums
-          i := CalcColNo(ColPageNo);
-          j := CalcRowNo(RowPageNo);
+          I := CalcColNo(ColPageNo);
+          J := CalcRowNo(RowPageNo);
           if fcoIntermediateColResults in Options then
-            for ColNo := i to i + ColsOnCurrPage - 1 do
+            for ColNo := I to I + ColsOnCurrPage - 1 do
             begin
               Str := FloatToStr(ColsSum[ColNo]);
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, ColNo, j +
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, ColNo, J +
                 RowsOnCurrPage, Str, teColIRes);
             end;
           if fcoIntermediateRowResults in Options then
-            for RowNo := j to j + RowsOnCurrPage - 1 do
+            for RowNo := J to J + RowsOnCurrPage - 1 do
             begin
               Str := FloatToStr(RowsSum[RowNo]);
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, i +
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, I +
                 ColsOnCurrPage, RowNo, Str, teRowIRes);
             end;
           //...sums
 
           if RowPageNo = RowPageCount - 1 then
-            for ColNo := i to i + ColsOnCurrPage - 1 do
+            for ColNo := I to I + ColsOnCurrPage - 1 do
             begin
               Str := FloatToStr(FinalColsSum[ColNo]);
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, ColNo, j +
-                RowsOnCurrPage + integer(fcoIntermediateRowResults in
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, ColNo, J +
+                RowsOnCurrPage + Integer(fcoIntermediateRowResults in
                 Options), Str, teColRes);
             end;
           if ColPageNo = ColPageCount - 1 then
-            for RowNo := j to j + RowsOnCurrPage - 1 do
+            for RowNo := J to J + RowsOnCurrPage - 1 do
             begin
               Str := FloatToStr(FinalRowsSum[RowNo]);
-              DrawCell(TargetCanvas, ColPageNo, RowPageNo, i +
-                ColsOnCurrPage + integer(fcoIntermediateColResults in
+              DrawCell(TargetCanvas, ColPageNo, RowPageNo, I +
+                ColsOnCurrPage + Integer(fcoIntermediateColResults in
                 Options), RowNo, Str, teRowRes);
             end;
           //...
@@ -1116,7 +1129,6 @@ begin
   //...
   if fPrint then
     Printer.EndDoc;
-
 end;
 
 {procedure TJvgPrintCrossTable.SetDataSource(Value: TDataSource);
@@ -1124,7 +1136,7 @@ begin
   FDataSource := Value;
 end;}
 
-procedure TJvgPrintCrossTable.CalcResults(Str: string; ColNo, RowNo: integer);
+procedure TJvgPrintCrossTable.CalcResults(Str: string; ColNo, RowNo: Integer);
 begin
   //...if event is assigned then user should calculates results himself
   if Assigned(OnCalcResult) then

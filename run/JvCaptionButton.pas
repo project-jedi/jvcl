@@ -153,7 +153,7 @@ type
     FMouseInControl: Boolean;
     FNeedRecalculate: Boolean;
     FRgnChanged: Boolean;
-    FSaveRgn: HRgn;
+    FSaveRgn: HRGN;
     FShowHint: Boolean;
     FParentShowHint: Boolean;
 
@@ -302,7 +302,7 @@ function TransparentBlt(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hH
   crTransparent: UINT): BOOL; stdcall;
 function AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
   nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc,
-  nHeightSrc: Integer; blendFunction: BLENDFUNCTION): BOOL; stdcall;
+  nHeightSrc: Integer; BlendFunction: BLENDFUNCTION): BOOL; stdcall;
 
 implementation
 
@@ -2096,7 +2096,7 @@ end;
 procedure TJvCaptionButton.HideToolTip;
 begin
   if FToolTipHandle <> 0 then
-    SendMessage(FTooltipHandle, TTM_POP, 0, 0);
+    SendMessage(FToolTipHandle, TTM_POP, 0, 0);
 end;
 
 procedure TJvCaptionButton.Hook;

@@ -59,7 +59,7 @@ type
   TJvListboxFillMode = (bfmTile, bfmStretch);
   TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object;
   TJvListboxChange = procedure(Sender: TObject; Item: string) of object;
-  TJvScrollEvent = procedure(Sender: TObject; const Msg: TWMScroll; var dontScroll: Boolean) of object;
+  TJvScrollEvent = procedure(Sender: TObject; const Msg: TWMScroll; var DontScroll: Boolean) of object;
 
   TJvListBoxBackground = class(TPersistent)
   private
@@ -490,7 +490,7 @@ begin
     if (Index <> -1) {$IFDEF COMPILER6_UP} and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) {$ENDIF} then
     begin
       ListBox.DeselectProvider;
-      ListBox.SetItemData(Index, LongInt(AObject));
+      ListBox.SetItemData(Index, Longint(AObject));
     end;
   end;
 end;
@@ -582,7 +582,7 @@ begin
     Result := ListBox.DoFindData(S)
   else
   {$ENDIF COMPILER6_UP}
-    Result := SendMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, LongInt(PChar(S)));
+    Result := SendMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, Longint(PChar(S)));
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
@@ -938,7 +938,7 @@ procedure TJvCustomListBox.CreateWnd;
 begin
   if not (csLoading in ComponentState) then
   begin
-    FMultiLine := MultiLine and (Style = lbOwnerDrawVariable);
+    FMultiline := MultiLine and (Style = lbOwnerDrawVariable);
 
     if not (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]) then
       FAlignment := taLeftJustify;
@@ -1209,7 +1209,7 @@ begin
     Canvas.Handle := ADC;
     if Canvas.Handle = 0 then
       Exit;
-    if Background.Fillmode = bfmStretch then
+    if Background.FillMode = bfmStretch then
       Canvas.StretchDraw(ClientRect, Background.Image)
     else
     begin

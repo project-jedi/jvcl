@@ -292,14 +292,14 @@ type
   // the event triggered in case of an error
   // Sender is the TJvAVICapture component triggering the event
   // nErr is the error number
-  // str is the string associated with that error
-  TOnError = procedure(Sender: TJvAVICapture; nErr: Integer; str: string) of object;
+  // Str is the string associated with that error
+  TOnError = procedure(Sender: TJvAVICapture; nErr: Integer; Str: string) of object;
 
   // the event triggered in case of a status change (use it to follow progress)
   // Sender is the TJvAVICapture component triggering the event
   // nId is the id of the status change (see win32 API for more details)
-  // str is the string associated with that status change
-  TOnStatus = procedure(Sender: TJvAVICapture; nId: Integer; str: string) of object;
+  // Str is the string associated with that status change
+  TOnStatus = procedure(Sender: TJvAVICapture; nId: Integer; Str: string) of object;
 
   // the event triggerred when the driver is yielding. a good place to put a
   // call to Application.ProcessMessages
@@ -436,12 +436,12 @@ type
     procedure StopCallbacks;
     procedure RestartCallbacks;
     // Functions to be called from the callbacks that will trigger the user events
-    procedure DoError(errId: Integer; str: string);
-    procedure DoStatus(nID: Integer; str: string);
+    procedure DoError(ErrId: Integer; Str: string);
+    procedure DoStatus(nId: Integer; Str: string);
     procedure DoYield;
     procedure DoFrame(videoHdr: PVIDEOHDR);
     procedure DoVideoStream(videoHdr: PVIDEOHDR);
-    procedure DoWaveStream(waveHdr: PWAVEHDR);
+    procedure DoWaveStream(waveHdr: PWaveHdr);
     procedure DoCapControl(nState: Integer; var AResult: Boolean);
   public
     // creates the component and initializes the different fields
@@ -602,12 +602,12 @@ end;
 // This is the callback called in case of an error
 // will only be called if the user chose so with ueError
 
-function ErrorCallback(hWnd: HWND; errID: Integer; str: LPSTR): LRESULT; stdcall;
+function ErrorCallback(hWnd: HWND; ErrId: Integer; Str: LPSTR): LRESULT; stdcall;
 var
   SelfObj: TJvAVICapture;
 begin
   // clear previous error if required
-  if errID = 0 then
+  if ErrId = 0 then
   begin
     Result := LRESULT(Ord(True));
     Exit;
@@ -616,7 +616,7 @@ begin
   // get the Pointer to self from the window user data
   SelfObj := TJvAVICapture(GetWindowLong(hWnd, GWL_USERDATA));
   if SelfObj <> nil then
-    SelfObj.DoError(errId, str);
+    SelfObj.DoError(ErrId, Str);
 
   Result := LRESULT(Ord(True));
 end;
@@ -624,14 +624,14 @@ end;
 // This is the callback called in case of a status change
 // will only be called if the user chose so with ueStatus
 
-function StatusCallback(hWnd: HWND; nID: Integer; str: LPSTR): LRESULT; stdcall;
+function StatusCallback(hWnd: HWND; nId: Integer; Str: LPSTR): LRESULT; stdcall;
 var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
   SelfObj := TJvAVICapture(GetWindowLong(hWnd, GWL_USERDATA));
   if SelfObj <> nil then
-    SelfObj.DoStatus(nId, str);
+    SelfObj.DoStatus(nId, Str);
 
   Result := LRESULT(Ord(True));
 end;
@@ -687,7 +687,7 @@ end;
 // and only when using streaming capture
 // will only be called if user chose so with ueWaveStream
 
-function WaveStreamCallback(hWnd: HWND; waveHdr: PWAVEHDR): LRESULT; stdcall;
+function WaveStreamCallback(hWnd: HWND; waveHdr: PWaveHdr): LRESULT; stdcall;
 var
   SelfObj: TJvAVICapture;
 begin
@@ -829,7 +829,7 @@ begin
         wfex^.cbSize := 0;
       end;
   else
-    GetMem(wfex, SizeOf(TWAVEFORMATEX) + FExtraSize);
+    GetMem(wfex, SizeOf(tWAVEFORMATEX) + FExtraSize);
     wfex^.wFormatTag := FFormatTag;
     wfex^.nChannels := FChannels;
     wfex^.nSamplesPerSec := FSamplesPerSec;
@@ -839,7 +839,7 @@ begin
     wfex^.cbSize := FExtraSize;
 
       // copy Extra to the end of the structure
-    CopyMemory((PChar(@wfex)) + SizeOf(TWAVEFORMATEX), FExtra, FExtraSize);
+    CopyMemory((PChar(@wfex)) + SizeOf(tWAVEFORMATEX), FExtra, FExtraSize);
   end;
 end;
 
@@ -1668,19 +1668,19 @@ begin
       Result := capGrabFrameNoStop(FHWnd);
 end;
 
-procedure TJvAVICapture.DoError(errId: Integer; str: string);
+procedure TJvAVICapture.DoError(ErrId: Integer; Str: string);
 begin
   if csDesigning in ComponentState then
-    Windows.MessageBox(WindowHandle, PChar(str), PChar(RsErrorMessagePrefix + IntToStr(errId)), MB_ICONERROR);
+    Windows.MessageBox(WindowHandle, PChar(Str), PChar(RsErrorMessagePrefix + IntToStr(ErrId)), MB_ICONERROR);
   if Assigned(FOnError) then
-    FOnError(Self, errID, str);
+    FOnError(Self, ErrId, Str);
 end;
 
-procedure TJvAVICapture.DoStatus(nID: Integer; str: string);
+procedure TJvAVICapture.DoStatus(nId: Integer; Str: string);
 begin
   UpdateCaptureStatus;
   if Assigned(FOnStatus) then
-    FOnStatus(Self, nId, str);
+    FOnStatus(Self, nId, Str);
 end;
 
 procedure TJvAVICapture.DoYield;
@@ -1702,7 +1702,7 @@ begin
     FOnVideoStream(Self, videoHdr);
 end;
 
-procedure TJvAVICapture.DoWaveStream(waveHdr: PWAVEHDR);
+procedure TJvAVICapture.DoWaveStream(waveHdr: PWaveHdr);
 begin
   if Assigned(FOnWaveStream) then
     FOnWaveStream(Self, waveHdr);
