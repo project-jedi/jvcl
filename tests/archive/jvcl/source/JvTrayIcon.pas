@@ -155,9 +155,6 @@ type
 
 implementation
 
-uses
- Unit1;
-
 const
   WM_CALLBACKMESSAGE            = WM_USER + 1;
   NOTIFYICON_VERSION            = 3;
@@ -397,11 +394,6 @@ procedure TJvTrayIcon.SetHint(Value: string);
 begin
   DoCheckCrash;
   FHint := Value;
-    with FIc do
-      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-    Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
-    if FActive then
-      Shell_NotifyIcon(NIM_MODIFY, @fic);
 end;
 
 {**************************************************}
