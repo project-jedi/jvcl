@@ -1,12 +1,14 @@
 program TipsDemo;
 
 uses
-  Forms, TipOfDayMainFormU;
+  Forms,
+  TipOfDayMainFormU in 'TipOfDayMainFormU.pas' {TipOfDayMainForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
+  Application.CreateForm(TTipOfDayMainForm, TipOfDayMainForm);
   Application.CreateForm(TTipOfDayMainForm, TipOfDayMainForm);
   Application.Run;
 end.

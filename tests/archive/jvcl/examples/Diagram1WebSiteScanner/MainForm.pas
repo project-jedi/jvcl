@@ -404,9 +404,8 @@ end;
 
 procedure TMainDlg.JvHttpGrabber1DoneStream(Sender: TObject;
   Stream: TStream; StreamSize: Integer; Url: string);
-var Body: string;
-StrStream: TStringStream;
-
+var
+  StrStream: TStringStream;
 begin
   StrStream:= TStringStream.Create('');
   StrStream.CopyFrom(Stream, Stream.Size);

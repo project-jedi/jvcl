@@ -11,7 +11,7 @@ uses
 
 type
   TForm1 = class(TForm)
-    JvFormatDrive1: TJvFormatDrive;
+    JvFormatDriveDialog1: TJvFormatDriveDialog;
     JvFindFiles1: TJvFindFilesDialog;
     JvBrowseFolder1: TJvBrowseForFolderDialog;   //TJvShellAbout;
     JvSelectDirectory1: TJvSelectDirectory;
@@ -133,7 +133,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  JvFormatDrive1.Execute;
+  JvFormatDriveDialog1.Execute;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);

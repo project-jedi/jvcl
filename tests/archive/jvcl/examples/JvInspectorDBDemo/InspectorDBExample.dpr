@@ -1,12 +1,14 @@
 program InspectorDBExample;
 
 uses
-  Forms, JvInspectorDBDemoMainFormU;
+  Forms,
+  JvInspectorDBDemoMainFormU in 'JvInspectorDBDemoMainFormU.pas' {JvInspectorDBDemoMainForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
+  Application.CreateForm(TJvInspectorDBDemoMainForm, JvInspectorDBDemoMainForm);
   Application.CreateForm(TJvInspectorDBDemoMainForm, JvInspectorDBDemoMainForm);
   Application.Run;
 end.

@@ -352,7 +352,7 @@ object Form1: TForm1
       end
     end
   end
-  object JvFormatDrive1: TJvFormatDrive
+  object JvFormatDriveDialog1: TJvFormatDriveDialog
     FormatType = ftQuick
     Capacity = dcDefault
     Left = 104
