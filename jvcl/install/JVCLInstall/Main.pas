@@ -179,7 +179,6 @@ begin
     begin
       Page := TJvWizardInteriorPage.Create(JvWizard);
       Page.Wizard := JvWizard;
-      //Page.Header.Height := 65;
       Page.Header.Height := 50;
       PreparePage(Page, Inst);
       Page.OnPage := DoPageShow;
