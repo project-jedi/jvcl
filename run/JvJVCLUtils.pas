@@ -50,6 +50,11 @@ uses
   IniFiles,
   JvTypes, JvFinalize;
 
+{$IFDEF VisualCLX}
+function Icon2Bitmap(Ico: TIcon): TBitmap;
+function Bitmap2Icon(bmp: TBitmap): TIcon;
+{$ENDIF VisualCLX}
+
 {$IFDEF VCL}
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -661,6 +666,23 @@ begin
   Screen.Cursor := FCUrsor;
   inherited Destroy;
 end;
+
+{$IFDEF VisualCLX}
+type
+  TOpenIcon = class(TIcon);
+
+function Icon2Bitmap(Ico: TIcon): TBitmap;
+begin
+  Result := TBitmap.Create;
+  TOpenIcon(Ico).AssignTo(Result);
+end;
+
+function Bitmap2Icon(bmp: TBitmap): TIcon;
+begin
+  Result := TIcon.Create;
+  Result.Assign(bmp);
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 
