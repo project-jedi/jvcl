@@ -1139,12 +1139,13 @@ const
 function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
-function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+function ShellExecute(Handle: QWidgetH; const Operation, FileName, Parameters,
   Directory: string; ShowCmd: Integer): THandle; overload;
 
-{$IFDEF LINUX}
-function ShellExecute(Handle: integer; Operation, FileName, Parameters,
+function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
+
+{$IFDEF LINUX}
 
 resourcestring
   SFCreateError = 'Unable to create file %s';
@@ -6632,15 +6633,15 @@ begin
   gettimeofday(StartTimeVal, nil);
 end;
 
+{$ENDIF LINUX}
 
 // for ShellExecute(0, ..
-function ShellExecute(Handle: integer; Operation, FileName, Parameters,
+function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle;
 begin
   Result := ShellExecute(QWidgetH(Handle), Operation, FileName,
                          Parameters, Directory, ShowCmd);
 end;
-{$ENDIF LINUX}
 
 function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle;
@@ -6649,48 +6650,49 @@ var
   Dir: string;
   Par: string;
 begin
-  if Directory <> nil
-  then
+  if Directory <> nil then
     Dir := Directory;
-  if Parameters <> nil
-  then
+  if Parameters <> nil then
     Par := Parameters;
-  if Filename <> nil
-  then
+  if Filename <> nil then
     Name := FileName;
   Result := ShellExecute(Handle, Operation, Name, Par, Dir, ShowCmd);
 end;
 
-
-function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
+function ShellExecute(Handle: QWidgetH; const Operation, FileName, Parameters,
   Directory: string; ShowCmd: Integer): THandle;
-{$IFDEF LINUX}
 var
-  line: string;
-{$ENDIF LINUX}  
+  {$IFDEF MSWINDOWS}
+  WinId: Integer;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Line: string;
+  {$ENDIF LINUX}
 begin
   {$IFDEF MSWINDOWS}
-  Result := ShellAPI.ShellExecute( QWidget_winID(Handle), PChar(Operation),
+  if Handle = nil then
+    WinId := 0
+  else
+    WinId := QWidget_winID(Handle);
+  Result := ShellAPI.ShellExecute(WinId, PChar(Operation),
                          PChar(FileName), PChar(Parameters),
                          PChar(Directory), ShowCmd);
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  if Operation = 'open'
-  then
-    line := Format('%s "%s" %s&',[Shell, Filename, Parameters])
-  else if Operation = 'browse' then
-    line := Format('%s "%s" %s&',
+  if (Operation = 'open') or (Operation = '') then
+    Line := Format('%s "%s" %s&',[Shell, Filename, Parameters])
+  else
+  if Operation = 'browse' then
+    Line := Format('%s "%s" %s&',
       [GetEnvironmentVariable('BROWSER'), Filename, Parameters])
   else
   begin
     Result := THandle(HINSTANCE_ERROR);
-    exit;
+    Exit;
   end;
-  if directory <> ''
-  then
-    line := Format('cd "%s";', [Directory]) + line;
-  if  Libc.system( PChar(line) ) = 0
-  then
+  if Directory <> '' then
+    Line := Format('cd "%s";', [Directory]) + Line;
+  if Libc.system(PChar(Line)) = 0 then
     Result := THandle(HINSTANCE_OK)
   else
     Result := THandle(HINSTANCE_ERROR)
