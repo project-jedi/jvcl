@@ -23,11 +23,11 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
-
 unit JvDSADialogs;
 
 interface
+
+{$I JVCL.INC}
 
 uses
   Classes, Contnrs, Controls, Dialogs, Forms, Graphics, SysUtils, Windows,
@@ -158,6 +158,7 @@ type
   TDSAQueueStorage = class(TDSAStorage)
   private
     FList: TStrings;
+    FCheckMarkSuffix: string;
   protected
     procedure AddDSA(const DSAInfo: TDSARegItem);
     procedure DeleteDSA(const Index: Integer);
@@ -198,6 +199,8 @@ type
       const Value: Integer); override;
     procedure WriteString(const DSAInfo: TDSARegItem; const Key: string;
       const Value: string); override;
+
+    property CheckMarkTextSuffix: string read GetCheckMarkTextSuffix write SetCheckMarkTextSuffix;
   end;
 
 const
@@ -646,8 +649,8 @@ begin
       end;
       ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
       ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
-      if (Screen.Width div 2) > (CenterParWidth + (2 * TWinControl(CenterParent).Left)) then
-        SetRect(TextRect, 0, 0, CenterParWidth + (2 * TWinControl(CenterParent).Left), 0)
+      if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
+        SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
       DrawText(Canvas.Handle, PChar(Msg), Length(Msg)+1, TextRect,
@@ -1302,7 +1305,7 @@ end;
 
 function TDSAQueueStorage.GetCheckMarkTextSuffix: string;
 begin
-  Result := 'in the current queue';
+  Result := FCheckMarkSuffix;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1345,6 +1348,8 @@ end;
 
 procedure TDSAQueueStorage.SetCheckMarkTextSuffix(Value: string);
 begin
+  if Value <> CheckMarkTextSuffix then
+    FCheckMarkSuffix := Value;
 end;
 
 //--------------------------------------------------------------------------------------------------
@@ -1378,6 +1383,7 @@ begin
   inherited Create;
   FList := TStringList.Create;
   TStringList(FList).Sorted := True;
+  FCheckMarkSuffix := 'in the current queue';
 end;
 
 //--------------------------------------------------------------------------------------------------
