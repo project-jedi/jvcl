@@ -977,6 +977,11 @@ begin
               end;
             WM_COPY:
               begin
+                // The PSDK documentation says that WM_COPY does not has a result
+                // value. This is wrong. WM_COPY returns the number of chars that
+                // were copied to the clipboard. Unfortunatelly does the CLX methods
+                // have no return value and so return 1. If we do not do this
+                // WM_CUT will not work.
                 DoClipboardCopy;
                 PMsg^.Result := 1;
               end;
