@@ -33,7 +33,7 @@ cd ..\..\packages
 
 ..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
 
-%MAKE% -f "%PACKAGE%.mak"
+%MAKE% -f "%PACKAGE%.mak" %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 echo.
 echo Cleaning
