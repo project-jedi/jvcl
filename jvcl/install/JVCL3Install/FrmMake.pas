@@ -302,28 +302,31 @@ begin
   else
     SetEnvironmentVariable('DCC32', PChar('dcc32 -Q -M ' + Options));
 
- // create make file
-  PrepareBpgData := PrepareBpg(BpgFilename, FTarget);
-  try
-    FMaxPackages := PrepareBpgData.Make.Projects.Count;
-    if (FTarget.IsBCB) and (IsJcl) then FMaxPackages := FMaxPackages * 2; // include DCP creation steps
-    Synchronize(InitPkgProgressBar);
+  if (not IsJCL) or (FTarget.InstallJcl and FTarget.IsBCB) then
+  begin
+   // create make file
+    PrepareBpgData := PrepareBpg(BpgFilename, FTarget);
+    try
+      FMaxPackages := PrepareBpgData.Make.Projects.Count;
+      if (FTarget.IsBCB) and (IsJcl) then FMaxPackages := FMaxPackages * 2; // include DCP creation steps
+      Synchronize(InitPkgProgressBar);
 
-   // compile
-    Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
-      '-B -f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
-      CaptureLine) = 0;
-    if FTarget.IsBCB then
-    begin
-      MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
-      MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+     // compile
+      Result := CaptureExecute('"' + FTarget.RootDir + '\Bin\make.exe"',
+        '-B -f"' + ChangeFileExt(BpgFilename, '.mak') + '"', StartDir,
+        CaptureLine) = 0;
+      if FTarget.IsBCB then
+      begin
+        MoveBCBFiles(LibOutDir, FTarget); // move .lib, .bpi to DcpDir, .bpl to BplDir and deletes .tds
+        MoveHPPFiles(SourcePaths, StartDir + '\xyz', FTarget);
+      end;
+    finally
+      SetEnvironmentVariable('DCCOPT', nil);
+      SetEnvironmentVariable('DCC32', nil);
+
+      PrepareBpgData.Cleaning := Result;
+      PrepareBpgData.Free;
     end;
-  finally
-    SetEnvironmentVariable('DCCOPT', nil);
-    SetEnvironmentVariable('DCC32', nil);
-
-    PrepareBpgData.Cleaning := Result;
-    PrepareBpgData.Free;
   end;
 
   if (Result) and (FTarget.IsBCB) and IsJcl then
@@ -350,6 +353,12 @@ begin
      // create make file
       PrepareBpgData := PrepareDcpBpg(JclMakeFilename, Files, FTarget, IsJcl);
       try
+        if IsJcl and not FTarget.InstallJcl then
+        begin
+          FMaxPackages := PrepareBpgData.Make.Projects.Count;
+          Synchronize(InitPkgProgressBar);
+        end;
+
         PrepareBpgData.CreatedFiles.AddStrings(Files);
         SetEnvironmentVariable('DCCOPT', Pointer(DcpOptions));
 
@@ -377,18 +386,18 @@ begin
   if Aborted then Exit;
   Result := True;
 
-  if FTarget.InstallJcl then
+  if (FTarget.InstallJcl) or (FTarget.JCLNeedsDcp) then
   begin
     if FTarget.IsDelphi then Prefix := '' else Prefix := 'C';
     JclBpgFilename := 'JclPackages' + Prefix + IntToStr(FTarget.MajorVersion) + '0.bpg';
 
     Result := CompilePackageGroup(
-      JCLPackageDir + '\' + JclBpgFilename,
+      FTarget.JCLPackageDir + '\' + JclBpgFilename,
       JclIncludePaths,
       JclLibDir + '\' + FTarget.JclDirName + ';' + FTarget.DcpDir,
       JclSourcePaths,
       JclLibDir + '\' + FTarget.JclDirName,
-      JCLPackageDir + '\' + FTarget.JclDirName,
+      FTarget.JCLPackageDir + '\' + FTarget.JclDirName,
       True);
     if Result then
       FTarget.JclRegistryInstall;
@@ -503,14 +512,30 @@ procedure TFormMake.MemoLogSelectionChange(Sender: TObject);
 var
   S: string;
   ps: Integer;
+  i: Integer;
+  ShowDirLbl: Boolean;
 begin
   if not FFinished then
     Exit;
   if (MemoLog.CaretPos.Y > 0) and (MemoLog.CaretPos.Y < MemoLog.Lines.Count) then
   begin
     S := MemoLog.Lines[MemoLog.CaretPos.Y];
-    if StartsWith(S, JVCLDir + '\') or
-       ((JCLDir <> '') and (StartsWith(S, JCLDir + '\'))) then
+
+   // find the directory 
+    if StartsWith(S, JVCLDir + '\') then
+      ShowDirLbl := True
+    else
+    begin
+      ShowDirLbl := False;
+      for i := 0 to TargetList.Count - 1 do
+        if StartsWith(S, TargetList[i].JCLDir + '\') then
+        begin
+          ShowDirLbl := True;
+          Break;
+        end;
+    end;
+
+    if ShowDirLbl then
     begin
       ps := Pos('(', S);
       if ps > 0 then

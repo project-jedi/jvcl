@@ -846,8 +846,8 @@ object FormMain: TFormMain
     end
   end
   object PopupMenuPackages: TPopupMenu
-    Left = 368
-    Top = 168
+    Left = 248
+    Top = 56
     object MenuSelectAll: TMenuItem
       Caption = 'Select &all'
       OnClick = MenuInvertSelectionClick

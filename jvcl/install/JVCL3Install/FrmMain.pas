@@ -465,21 +465,24 @@ end;
 
 procedure TFormMain.ListViewTargetsChange(Sender: TObject;
   Item: TListItem; Change: TItemChange);
+var
+  Target: TTargetInfo;
 begin
   if Change = ctState then
   begin
     if (Item <> nil) and (Item.Data <> nil) and
        (TTargetInfo(Item.Data).CompileFor <> Item.Checked) then
     begin
+      Target := Item.Data;
       if Item.Checked then
       begin
-        TTargetInfo(Item.Data).NeedsUpdate := False;
-        if not CheckTargetUpdates(Item.Data) then
+        Target.NeedsUpdate := False;
+        if not CheckTargetUpdates(Target) then
         begin
           Item.Checked := False;
           Exit;
         end;
-        if (not TTargetInfo(Item.Data).IsJCLInstalled) and (JCLDir = '') then
+        if (not Target.IsJCLInstalled) and (Target.JCLDir = '') then
         begin
           if not FInFillingList then
             MessageDlg('JCL is not installed for this target and no JCL directory available.'#10 +
@@ -487,7 +490,7 @@ begin
           Item.Checked := False;
         end;
       end;
-      TTargetInfo(Item.Data).CompileFor := Item.Checked;
+      Target.CompileFor := Item.Checked;
     end;
   end;
 end;
