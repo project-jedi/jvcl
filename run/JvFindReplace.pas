@@ -143,7 +143,7 @@ type
 
 procedure Error;
 begin
-  EJVCLException.CreateRes(@RsENoEditAssigned);
+  raise EJVCLException.CreateRes(@RsENoEditAssigned);
 end;
 
 { utility }
@@ -258,7 +258,7 @@ begin
     Result.EndAt := Length(Search);
 //    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 3);
     S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
-    Result.isWhole := IsValidWholeWord(S);
+    Result.isWhole := IsValidWholeWord(S) or AnsiSameText(S, Text);
 //    S := Copy(S, 3, Length(S) - 3);
 //    Result.isSameCase := (AnsiCompareStr(Search, S) = 0);
     S := Copy(S, 1, Length(S) - 1);
@@ -327,6 +327,7 @@ begin
   if not Assigned(FEditControl) then
     Error;
   Terminate := False;
+  UpdateDialogs;
   TmpOptions := FReplaceDialog.Options;
   Txt := FEditControl.Text;
   SLen := Length(SearchText);
@@ -410,11 +411,14 @@ begin
   if not Assigned(FFindDialog) then
   begin
     FFindDialog := TFindDialog.Create(Self);
+    FFindDialog.FindText := FFindText;
     FFindDialog.OnFind := DoOnFind;
   end;
   if not Assigned(FReplaceDialog) then
   begin
     FReplaceDialog := TReplaceDialog.Create(Self);
+    FReplaceDialog.FindText := FFindText;
+    FReplaceDialog.ReplaceText := FReplaceText;
     FReplaceDialog.OnFind := DoOnFind;
     FReplaceDialog.OnReplace := DoOnReplace;
   end;
@@ -633,11 +637,10 @@ end;
 procedure TJvFindReplace.SetFindText(const Value: string);
 begin
   FFindText := Value;
-  if Assigned(FFindDialog) and Assigned(FReplaceDialog) then
-  begin
+  if Assigned(FFindDialog) then
     FFindDialog.FindText := Value;
+  if Assigned(FReplaceDialog) then
     FReplaceDialog.FindText := Value;
-  end;
 end;
 
 procedure TJvFindReplace.SetShowDialogs(Value: Boolean);
