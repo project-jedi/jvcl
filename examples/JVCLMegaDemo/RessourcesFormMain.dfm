@@ -1,6 +1,6 @@
 object RessourcesForm: TRessourcesForm
-  Left = 281
-  Top = 5
+  Left = 326
+  Top = 9
   BorderStyle = bsSingle
   Caption = 'Ressources'
   ClientHeight = 518
@@ -32,7 +32,7 @@ object RessourcesForm: TRessourcesForm
   object JvHotLink5: TJvLabel
     Left = 64
     Top = 86
-    Width = 54
+    Width = 56
     Height = 16
     Cursor = crHandPoint
     Caption = 'CompBar'
@@ -48,12 +48,12 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://sourceforge.net/projects/compbar'
+    URL = 'http://www.geocities.com/componentbar/'
   end
   object JvHotLink9: TJvLabel
     Left = 64
     Top = 162
-    Width = 55
+    Width = 57
     Height = 16
     Cursor = crHandPoint
     Caption = 'GExperts'
@@ -69,7 +69,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://www.gexperts.org/'
+    URL = 'http://www.gexperts.org/'
   end
   object Label2: TLabel
     Left = 48
@@ -118,7 +118,7 @@ object RessourcesForm: TRessourcesForm
   object JvHotLink1: TJvLabel
     Left = 64
     Top = 102
-    Width = 120
+    Width = 122
     Height = 16
     Cursor = crHandPoint
     Caption = 'Raize Palette Expert'
@@ -134,7 +134,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://www.raize.com/DevTools/Tools/Delphi/PaletteMenu.htm'
+    URL = 'http://www.raize.com/DevTools/Tools/Delphi/PaletteMenu.htm'
   end
   object Label3: TLabel
     Left = 48
@@ -152,7 +152,7 @@ object RessourcesForm: TRessourcesForm
   object JvHotLink2: TJvLabel
     Left = 64
     Top = 243
-    Width = 136
+    Width = 138
     Height = 16
     Cursor = crHandPoint
     Caption = 'Project JEDI homepage'
@@ -168,12 +168,12 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://delphi-jedi.org/'
+    URL = 'http://delphi-jedi.org/'
   end
   object JvHotLink3: TJvLabel
     Left = 64
     Top = 259
-    Width = 212
+    Width = 214
     Height = 16
     Cursor = crHandPoint
     Caption = 'JEDI Code Library at sourceforge.net'
@@ -189,7 +189,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://sourceforge.net/projects/jcl/'
+    URL = 'http://sourceforge.net/projects/jcl/'
   end
   object Label4: TLabel
     Left = 48
@@ -223,7 +223,7 @@ object RessourcesForm: TRessourcesForm
   object JvHotLink4: TJvLabel
     Left = 64
     Top = 317
-    Width = 132
+    Width = 134
     Height = 16
     Cursor = crHandPoint
     Caption = 'TurboPower homepage'
@@ -239,12 +239,12 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://www.turbopower.com/'
+    URL = 'http://www.turbopower.com/'
   end
   object JvHotLink6: TJvLabel
     Left = 64
     Top = 333
-    Width = 161
+    Width = 163
     Height = 16
     Cursor = crHandPoint
     Caption = 'TurboPower at SourceForge'
@@ -260,7 +260,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://sourceforge.net/users/tpsfadmin/'
+    URL = 'http://sourceforge.net/users/tpsfadmin/'
   end
   object Label6: TLabel
     Left = 48
@@ -294,7 +294,7 @@ object RessourcesForm: TRessourcesForm
   object JvHotLink7: TJvLabel
     Left = 64
     Top = 429
-    Width = 172
+    Width = 174
     Height = 16
     Cursor = crHandPoint
     Caption = 'Developer Express homepage'
@@ -310,12 +310,12 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'http://www.devexpress.com/index.shtm'
+    URL = 'http://www.devexpress.com/index.shtm'
   end
   object JvHotLink8: TJvLabel
     Left = 64
     Top = 445
-    Width = 283
+    Width = 285
     Height = 16
     Cursor = crHandPoint
     Caption = 'ExpressQuantumGrid4 Features Demo download'
@@ -331,7 +331,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 
+    URL = 
       'http://www.devexpress.com/downloads/demo/ExpressQuantumGridSuite' +
       '4.zip'
   end

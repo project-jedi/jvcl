@@ -212,8 +212,6 @@ type
     procedure InvalidateImage(UpdateAll: Boolean);
   protected
     function GetPalette: HPALETTE; override;
-  public
-    { Public declarations }
   end;
 
 var
@@ -222,8 +220,7 @@ var
 implementation
 
 uses
-  Clipbrd, JvJVCLUtils, JvJCLUtils, JvHints,
-  GIFPrvw, GIFPal, About, Math;
+  Clipbrd, JvJVCLUtils, JvJCLUtils, JvHints, GIFPrvw, GIFPal, Math;
 
 {$R *.DFM}
 
@@ -498,7 +495,6 @@ begin
   //RegUseAppTitle := True;
   //DefCompanyName := 'RX';
   { Initialization }
-  ToolbarImages.ResourceLoad(rtBitmap, 'TOOLBAR_IMAGES', clFuchsia);
   SetHintStyle(hsRectangle, 3, False, taCenter);
   UpdateCaption;
   FTopIndex := -1;
@@ -519,6 +515,7 @@ begin
     Options := [ofHideReadOnly, ofFileMustExist];
     DefaultExt := GraphicExtension(TJvGIFImage);
     Filter := GraphicFilter(TGraphic);
+    InitialDir := ExtractFileDir(Application.ExeName) + '\data';
   end;
   with FSaveDlg do
   begin
@@ -854,8 +851,9 @@ end;
 
 procedure TAnimatorForm.AboutBtnClick(Sender: TObject);
 begin
-  ShowAbout('RX GIF Image Format Support', 'RX Library Demo Program',
-    1, 1, 1998);
+ MessageDlg(
+   'RX GIF Image Format Support'+#13+#10+
+   'RX Library Demo Program'+#13+#10+'1, 1, 1998', mtInformation, [mbOK], 0);
 end;
 
 procedure TAnimatorForm.ThumbnailsBoxClick(Sender: TObject);

@@ -4,7 +4,7 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author:
+ Original author: Ralf Grenzing
 
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net
@@ -142,9 +142,13 @@ begin
  begin
    hotLnk.font.Color := clNavy; // now it is visited
    hotLnk.Tag := 1;
+   ShellExecute(0, nil, PChar('"' +fileName+ '"'), nil, nil, SW_SHOWNORMAL);
  end
  else
+ begin
+   MessageDlg('File "' + fileName + ' " was not found!', mtError, [mbOK], 0);
    hotLnk.font.Color := clBlue;
+ end;
 end;
 
 procedure TOtherMainForm.JvHotLinkBuildJVCLClick(Sender: TObject);
@@ -219,5 +223,8 @@ begin
 end;
 
 end.
+
+
+
 
 

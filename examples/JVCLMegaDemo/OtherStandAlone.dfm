@@ -1,6 +1,6 @@
 object OtherMainForm: TOtherMainForm
-  Left = 431
-  Top = 95
+  Left = 345
+  Top = 87
   Width = 745
   Height = 555
   Caption = 'other Demos'
@@ -16,7 +16,7 @@ object OtherMainForm: TOtherMainForm
   object JvHotLink1: TJvLabel
     Left = 24
     Top = 48
-    Width = 286
+    Width = 288
     Height = 16
     Cursor = crHandPoint
     Caption = 'call the batch file to build all JVCL examples now!'
@@ -29,13 +29,14 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkBuildJVCLClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = ' '
+    URL = ' '
   end
   object Label1: TLabel
     Left = 23
@@ -56,8 +57,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvHotLink2: TJvLabel
     Left = 34
-    Top = 404
-    Width = 127
+    Top = 380
+    Width = 129
     Height = 16
     Cursor = crHandPoint
     Caption = 'JvCaptionButtonDemo'
@@ -70,18 +71,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'CaptionButtonDemo.exe'
+    URL = 'CaptionButtonDemo.exe'
   end
   object JvHotLink4: TJvLabel
     Left = 34
-    Top = 424
-    Width = 92
+    Top = 400
+    Width = 94
     Height = 16
     Cursor = crHandPoint
     Caption = 'EnvironmentList'
@@ -94,18 +96,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'EnvironmentList.exe'
+    URL = 'EnvironmentList.exe'
   end
   object JvHotLink3: TJvLabel
     Left = 34
-    Top = 444
-    Width = 94
+    Top = 420
+    Width = 96
     Height = 16
     Cursor = crHandPoint
     Caption = 'JvTrayIconDemo'
@@ -118,18 +121,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'JvTrayIconDemo.exe'
+    URL = 'JvTrayIconDemo.exe'
   end
   object JvHotLink5: TJvLabel
     Left = 34
-    Top = 105
-    Width = 250
+    Top = 81
+    Width = 252
     Height = 16
     Cursor = crHandPoint
     Caption = 'RAControls (also some kind of MegaDemo)'
@@ -142,18 +146,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RAControls.exe'
+    URL = 'RAControls.exe'
   end
   object JvHotLink6: TJvLabel
     Left = 34
-    Top = 124
-    Width = 48
+    Top = 100
+    Width = 50
     Height = 16
     Cursor = crHandPoint
     Caption = 'DBMove'
@@ -166,18 +171,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'DBMove.exe'
+    URL = 'DBMove.exe'
   end
   object JvHotLink7: TJvLabel
     Left = 34
-    Top = 155
-    Width = 225
+    Top = 131
+    Width = 227
     Height = 16
     Cursor = crHandPoint
     Caption = 'how to draw  line numbers in a JvEditor'
@@ -190,18 +196,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'LineNumbers.exe'
+    URL = 'LineNumbers.exe'
   end
   object JvHotLink8: TJvLabel
     Left = 34
-    Top = 175
-    Width = 56
+    Top = 151
+    Width = 58
     Height = 16
     Cursor = crHandPoint
     Caption = 'RA Editor'
@@ -214,18 +221,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RAEditorTest.exe'
+    URL = 'RAEditorTest.exe'
   end
   object JvHotLink9: TJvLabel
     Left = 34
-    Top = 251
-    Width = 68
+    Top = 227
+    Width = 70
     Height = 16
     Cursor = crHandPoint
     Caption = 'RAHLEditor'
@@ -238,18 +246,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RAHLEdPropDlgTest.exe'
+    URL = 'RAHLEdPropDlgTest.exe'
   end
   object JvHotLink10: TJvLabel
     Left = 34
-    Top = 283
-    Width = 98
+    Top = 259
+    Width = 100
     Height = 16
     Cursor = crHandPoint
     Caption = 'JvInterpreter Test'
@@ -262,17 +271,18 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'JvInterpreterTest.exe'
+    URL = 'JvInterpreterTest.exe'
   end
   object Label2: TLabel
     Left = 20
-    Top = 87
+    Top = 63
     Width = 134
     Height = 16
     Caption = 'formerly RaLib stuff'
@@ -285,8 +295,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvHotLink11: TJvLabel
     Left = 34
-    Top = 303
-    Width = 119
+    Top = 279
+    Width = 121
     Height = 16
     Cursor = crHandPoint
     Caption = 'JvInterpreterEndUser'
@@ -299,18 +309,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'JvInterpreterEndUser.exe'
+    URL = 'JvInterpreterEndUser.exe'
   end
   object JvHotLink12: TJvLabel
     Left = 34
-    Top = 323
-    Width = 50
+    Top = 299
+    Width = 52
     Height = 16
     Cursor = crHandPoint
     Caption = 'MDI App'
@@ -323,18 +334,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'MDIApp.exe'
+    URL = 'MDIApp.exe'
   end
   object JvHotLink13: TJvLabel
     Left = 34
-    Top = 343
-    Width = 70
+    Top = 319
+    Width = 72
     Height = 16
     Cursor = crHandPoint
     Caption = 'RA Notepad'
@@ -347,17 +359,18 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RANotepad.exe'
+    URL = 'RANotepad.exe'
   end
   object Label3: TLabel
     Left = 20
-    Top = 231
+    Top = 207
     Width = 209
     Height = 16
     Caption = 'formerly RaLib Interpreter stuff'
@@ -370,7 +383,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label4: TLabel
     Left = 20
-    Top = 386
+    Top = 362
     Width = 108
     Height = 16
     Caption = 'other JVCL stuff'
@@ -383,7 +396,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label5: TLabel
     Left = 371
-    Top = 187
+    Top = 155
     Width = 111
     Height = 16
     Caption = 'formerly Rx stuff'
@@ -396,8 +409,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvHotLink14: TJvLabel
     Left = 395
-    Top = 205
-    Width = 169
+    Top = 173
+    Width = 171
     Height = 16
     Cursor = crHandPoint
     Caption = 'RxDemo (their MegaDemo :-)'
@@ -410,21 +423,22 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RxDemo.exe'
+    URL = 'RxDemo.exe'
   end
   object JvHotLink15: TJvLabel
     Left = 395
-    Top = 224
-    Width = 67
+    Top = 192
+    Width = 165
     Height = 16
     Cursor = crHandPoint
-    Caption = 'RxGIFAnim'
+    Caption = 'RxGIFAnim (now integrated)'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -434,18 +448,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'RxGIFAnm.exe'
+    URL = 'RxGIFAnm.exe'
   end
   object JvHotLink16: TJvLabel
     Left = 395
-    Top = 243
-    Width = 70
+    Top = 211
+    Width = 72
     Height = 16
     Cursor = crHandPoint
     Caption = 'DB Explorer'
@@ -458,17 +473,18 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'DBEXPL32.exe'
+    URL = 'DBEXPL32.exe'
   end
   object Label6: TLabel
     Left = 371
-    Top = 268
+    Top = 236
     Width = 328
     Height = 16
     Caption = 'demos using Jim Cooper'#39's diagramming comps'
@@ -481,8 +497,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvHotLink17: TJvLabel
     Left = 395
-    Top = 285
-    Width = 70
+    Top = 253
+    Width = 72
     Height = 16
     Cursor = crHandPoint
     Caption = 'WebMapper'
@@ -495,18 +511,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'WebMapper.exe'
+    URL = 'WebMapper.exe'
   end
   object JvHotLink18: TJvLabel
     Left = 395
-    Top = 302
-    Width = 53
+    Top = 270
+    Width = 55
     Height = 16
     Cursor = crHandPoint
     Caption = 'UseCase'
@@ -519,18 +536,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'UseCase.exe'
+    URL = 'UseCase.exe'
   end
   object JvHotLink19: TJvLabel
     Left = 395
-    Top = 320
-    Width = 113
+    Top = 288
+    Width = 115
     Height = 16
     Cursor = crHandPoint
     Caption = 'DependencyWalker'
@@ -543,17 +561,18 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'DepWalk.exe'
+    URL = 'DepWalk.exe'
   end
   object Label7: TLabel
     Left = 371
-    Top = 348
+    Top = 316
     Width = 281
     Height = 16
     Caption = 'there are also 2 articles from Jim Cooper'
@@ -566,7 +585,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label8: TLabel
     Left = 371
-    Top = 412
+    Top = 380
     Width = 299
     Height = 16
     Caption = '3 HID Demos for the JvHidDeviceController'
@@ -579,8 +598,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvHotLink22: TJvLabel
     Left = 395
-    Top = 465
-    Width = 95
+    Top = 433
+    Width = 97
     Height = 16
     Cursor = crHandPoint
     Caption = 'ReadWriteDemo'
@@ -593,18 +612,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'SimpleHIDWrite.exe'
+    URL = 'SimpleHIDWrite.exe'
   end
   object JvHotLink23: TJvLabel
     Left = 395
-    Top = 430
-    Width = 67
+    Top = 398
+    Width = 69
     Height = 16
     Cursor = crHandPoint
     Caption = 'BasicDemo'
@@ -617,18 +637,19 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'BasicDemo.exe'
+    URL = 'BasicDemo.exe'
   end
   object JvHotLink24: TJvLabel
     Left = 395
-    Top = 447
-    Width = 91
+    Top = 415
+    Width = 93
     Height = 16
     Cursor = crHandPoint
     Caption = 'CollectionDemo'
@@ -641,17 +662,18 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvHotLinkClick
     OnMouseEnter = JvHotLinkMouseEnter
     OnMouseLeave = JvHotLinkMouseLeave
+    AutoOpenURL = False
     HotTrack = True
     HotTrackFont.Charset = ANSI_CHARSET
     HotTrackFont.Color = clBlue
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = 'CollectionDemo.exe'
+    URL = 'CollectionDemo.exe'
   end
   object Label9: TLabel
     Left = 52
-    Top = 192
+    Top = 168
     Width = 228
     Height = 26
     Caption = 
@@ -666,7 +688,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label10: TLabel
     Left = 52
-    Top = 140
+    Top = 116
     Width = 167
     Height = 13
     Caption = 'uses JvaSQLScript and JvDBMove'
@@ -679,7 +701,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label11: TLabel
     Left = 52
-    Top = 362
+    Top = 338
     Width = 268
     Height = 13
     Caption = 'Notepad with syntaxhighlighting (TJvEditor, TJvHLEditor)'
@@ -692,7 +714,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label12: TLabel
     Left = 52
-    Top = 267
+    Top = 243
     Width = 184
     Height = 13
     Caption = 'uses JvHLEdPropDlg and TJvHLEditor'
@@ -705,8 +727,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvLabel1: TJvLabel
     Left = 395
-    Top = 365
-    Width = 185
+    Top = 333
+    Width = 187
     Height = 16
     Hint = 'jvcl\examples\Diagram1WebSiteScanner\DiagrammingClassArticle.doc'
     Caption = 'Diagramming with Delphi Part 1'
@@ -719,6 +741,7 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvLabelClick
     OnMouseEnter = JvLabelMouseEnter
     OnMouseLeave = JvLabelMouseLeave
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -727,8 +750,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvLabel2: TJvLabel
     Left = 395
-    Top = 381
-    Width = 185
+    Top = 349
+    Width = 187
     Height = 16
     Hint = 
       'jvcl\examples\Diagram2UseCaseEditor\Diagramming with Delphi Part' +
@@ -743,6 +766,7 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvLabelClick
     OnMouseEnter = JvLabelMouseEnter
     OnMouseLeave = JvLabelMouseLeave
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -751,7 +775,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label13: TLabel
     Left = 20
-    Top = 467
+    Top = 443
     Width = 323
     Height = 16
     Caption = 'There are several examples for JvPlugin comp'
@@ -764,8 +788,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvLabel3: TJvLabel
     Left = 34
-    Top = 483
-    Width = 184
+    Top = 459
+    Width = 186
     Height = 16
     Hint = 'jvcl\examples\JvPlugin'
     Caption = 'open JvPlugin examples folder'
@@ -778,6 +802,7 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvLabelClick
     OnMouseEnter = JvLabelMouseEnter
     OnMouseLeave = JvLabelMouseLeave
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -786,7 +811,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label14: TLabel
     Left = 371
-    Top = 88
+    Top = 56
     Width = 99
     Height = 16
     Caption = 'JCL Examples'
@@ -799,8 +824,8 @@ object OtherMainForm: TOtherMainForm
   end
   object JvLabel4: TJvLabel
     Left = 387
-    Top = 105
-    Width = 198
+    Top = 73
+    Width = 200
     Height = 16
     Hint = '\JCL\examples'
     Caption = 'open the sample folder of the JCL'
@@ -813,6 +838,7 @@ object OtherMainForm: TOtherMainForm
     OnClick = JvLabelClick
     OnMouseEnter = JvLabelMouseEnter
     OnMouseLeave = JvLabelMouseLeave
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -821,7 +847,7 @@ object OtherMainForm: TOtherMainForm
   end
   object Label15: TLabel
     Left = 396
-    Top = 125
+    Top = 93
     Width = 317
     Height = 52
     Caption = 
@@ -838,7 +864,7 @@ object OtherMainForm: TOtherMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 511
+    Top = 509
     Width = 737
     Height = 19
     Panels = <>

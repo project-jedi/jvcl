@@ -19,6 +19,9 @@ object TransBtnFormMain: TTransBtnFormMain
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress
   OnPaint = FormPaint
+  DesignSize = (
+    528
+    355)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -48,19 +51,20 @@ object TransBtnFormMain: TTransBtnFormMain
     Top = 224
     Width = 40
     Height = 40
+    AllowAllUp = True
     Caption = 'JvTransparentButton21'
-    HiFont.Charset = DEFAULT_CHARSET
-    HiFont.Color = clWindowText
-    HiFont.Height = -11
-    HiFont.Name = 'MS Sans Serif'
-    HiFont.Style = []
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
   end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
     Width = 524
     Height = 293
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     OnChange = PageControl1Change
@@ -1865,13 +1869,18 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 20
         Width = 57
         Height = 37
+        AllowAllUp = True
         Caption = '&Enable ->'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
-        Flat = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           72010000424D7201000000000000760000002800000015000000150000000100
@@ -1901,9 +1910,14 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 16
         Width = 90
         Height = 57
+        AllowAllUp = True
         Caption = '&Forward'
         Enabled = False
-        Flat = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsIndent
         Glyph.Data = {
           72010000424D7201000000000000760000002800000015000000150000000100
@@ -1927,12 +1941,18 @@ object TransBtnFormMain: TTransBtnFormMain
         Width = 78
         Height = 105
         Hint = 'This is a hint!'
+        AllowAllUp = True
         Caption = '&Wordwrapping enabled - this button uses 4 glyphs'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
           08000000000010120000000000000000000000010000000100006A5757006A69
@@ -2127,7 +2147,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 58
         Width = 58
         Height = 38
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           C20C0000424DC20C000000000000420000002800000031000000200000000100
@@ -2240,7 +2265,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 58
         Width = 58
         Height = 38
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           C20C0000424DC20C000000000000420000002800000031000000200000000100
@@ -2353,13 +2383,18 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 16
         Width = 115
         Height = 43
+        AllowAllUp = True
         Caption = 'Go home'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clPurple
         Font.Height = -13
         Font.Name = 'Arial'
         Font.Style = [fsBold]
-        Flat = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -13
+        HotTrackFont.Name = 'Arial'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           321F0000424D321F00000000000042000000280000006E000000240000000100
@@ -2620,7 +2655,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 104
         Width = 59
         Height = 66
+        AllowAllUp = True
         Caption = 'OS'
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Glyph.Data = {
           16020000424D160200000000000076000000280000001A0000001A0000000100
           040000000000A001000000000000000000001000000010000000000000000000
@@ -2649,8 +2690,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 104
         Width = 65
         Height = 65
+        AllowAllUp = True
         Caption = 'Down / not Down'
-        Flat = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsIndent
         Glyph.Data = {
           B6010000424DB60100000000000076000000280000001E000000140000000100
@@ -2678,8 +2724,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 104
         Width = 49
         Height = 54
+        AllowAllUp = True
         Caption = '&Add'
-        Flat = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsIndent
         Glyph.Data = {
           F6000000424DF600000000000000760000002800000010000000100000000100
@@ -2699,7 +2750,14 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 105
         Width = 63
         Height = 54
+        AllowAllUp = True
         Caption = '&Drop Down'
+        DropDownMenu = PopupMenu1
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Glyph.Data = {
           B6010000424DB60100000000000076000000280000001E000000140000000100
           0400000000004001000000000000000000001000000010000000000000000000
@@ -2715,7 +2773,6 @@ object TransBtnFormMain: TTransBtnFormMain
           700080DDDDDDDDDDDD000FFFFFFFFFFFFFF080DDDDDDDDDDDD000F1818181818
           1FF080DDDDDDDDDDDD000F81818181818FF080DDDDDDDDDDDD000FFFFFFFFFFF
           FFF000DDDDDDDDDDDD000000000000000000DDDDDDDDDDDDDD00}
-        DropDownMenu = PopupMenu1
         Spacing = 6
         TextAlign = ttaTop
       end
@@ -2724,7 +2781,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 224
         Width = 40
         Height = 39
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
@@ -2915,7 +2977,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 224
         Width = 40
         Height = 39
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
@@ -3106,7 +3173,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 224
         Width = 40
         Height = 39
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
@@ -3297,7 +3369,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 224
         Width = 40
         Height = 39
-        Flat = False
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         Glyph.Data = {
           46160000424D4616000000000000360400002800000088000000220000000100
@@ -3500,12 +3577,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
+        AllowAllUp = True
         AutoGray = False
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         ActiveImage = ImageList1
         ActiveIndex = 0
         Transparent = False
@@ -3515,12 +3593,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
+        AllowAllUp = True
         DropDownMenu = PopupMenu1
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsIndent
         ActiveImage = ImageList1
         ActiveIndex = 1
@@ -3530,12 +3609,13 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
+        AllowAllUp = True
         AutoGray = False
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsLight
         ActiveImage = ImageList1
         ActiveIndex = 2
@@ -3545,11 +3625,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsMono
         ActiveImage = ImageList1
         ActiveIndex = 3
@@ -3559,11 +3640,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         ActiveImage = ImageList1
         ActiveIndex = 6
         OnClick = JvTransparentButton26Click
@@ -3573,11 +3655,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsNone
         ActiveImage = ImageList1
         ActiveIndex = 4
@@ -3593,11 +3676,12 @@ object TransBtnFormMain: TTransBtnFormMain
         Top = 8
         Width = 40
         Height = 40
-        HiFont.Charset = DEFAULT_CHARSET
-        HiFont.Color = clWindowText
-        HiFont.Height = -11
-        HiFont.Name = 'MS Sans Serif'
-        HiFont.Style = []
+        AllowAllUp = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         FrameStyle = fsRegular
         ActiveImage = ImageList1
         ActiveIndex = 5
