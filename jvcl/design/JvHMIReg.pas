@@ -8,6 +8,8 @@ procedure Register;
 
 implementation
 
+{$R ..\..\Resources\JvHMIReg.dcr}
+
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
@@ -15,12 +17,14 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayEditors;
+  JvConsts, JvSegmentedLEDDisplay, JvLED,
+  JvSegmentedLEDDisplayEditors;
 
 procedure Register;
 begin
   RegisterComponents('HMI Indicators',[
-    TJvSegmentedLEDDisplay
+    TJvSegmentedLEDDisplay,
+    TJvLED
     ]);
 
   RegisterComponents('HMI Non Visual',[

@@ -8,6 +8,7 @@ brc32 JvCtrlsReg.rc -r -fo..\Resources\JvCtrlsReg.dcr
 brc32 JvDBReg.rc -r -fo..\Resources\JvDBReg.dcr
 brc32 JvDlgsReg.rc -r -fo..\Resources\JvDlgsReg.dcr
 brc32 JvInterpreterReg.rc -r -fo..\Resources\JvInterpreterReg.dcr
+brc32 JvHMIReg.rc -r -fo..\Resources\JvHMIReg.dcr
 brc32 JvMMReg.rc -r -fo..\Resources\JvMMReg.dcr
 brc32 JvNetReg.rc -r -fo..\Resources\JvNetReg.dcr
 brc32 JvStdCtrlsReg.rc -r -fo..\Resources\JvStdCtrlsReg.dcr
