@@ -43,8 +43,6 @@ var
     Catalogue: TCatalogue; // the class, which we will preserve and load
 
 procedure TfglXMLSerializerDemo.FormCreate(Sender: TObject);
-var
-  i: integer;
 begin
   {  we will use the local file  test.xml}
   sTestFileName := ExtractFilePath(ParamStr(0)) + 'test.xml';
@@ -84,8 +82,8 @@ begin
   Catalogue.Footer := 'Created ' + DateToStr(date);
 
   { сохраняем }
+  fs := TFileStream.Create( sTestFileName, fmCreate);
   try
-    fs := TFileStream.Create( sTestFileName, fmCreate);
     JvgXMLSerializer.Serialize(Catalogue, fs);
   finally
     fs.Free;
@@ -102,8 +100,8 @@ var
   fs: TFileStream;
 begin
   Catalogue.Documents.Clear;
+  fs := TFileStream.Create( sTestFileName, fmOpenRead);
   try
-    fs := TFileStream.Create( sTestFileName, fmOpenRead);
     JvgXMLSerializer.DeSerialize(Catalogue, fs);
   finally
     fs.Free;
@@ -114,7 +112,7 @@ end;
 { Open in browser}
 procedure TfglXMLSerializerDemo.bViewXMLClick(Sender: TObject);
 begin
-  ShellExecute(0, 'open', PChar(sTestFileName), 0, 0, SW_SHOW);
+  ShellExecute(0, 'open', PChar(sTestFileName), nil, nil, SW_SHOW);
 end;
 
 

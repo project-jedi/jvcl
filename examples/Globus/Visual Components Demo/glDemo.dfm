@@ -25682,11 +25682,6 @@ object Form1: TForm1
     Left = 56
     Top = 93
   end
-  object Timer2: TTimer
-    OnTimer = Timer2Timer
-    Left = 10
-    Top = 206
-  end
   object ImageList2: TImageList
     Left = 109
     Top = 193

@@ -15,7 +15,6 @@ object Form2: TForm2
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object FreeHoleShape2: TJvgHoleShape
@@ -24,24 +23,24 @@ object Form2: TForm2
     Width = 182
     Height = 67
     BevelInner = bvRaised
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape3: TJvgHoleShape
     Left = 104
     Top = 117
     Width = 83
     Height = 49
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape4: TJvgHoleShape
     Left = 243
     Top = 86
     Width = 27
     Height = 52
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape5: TJvgHoleShape
     Left = 281
@@ -50,8 +49,8 @@ object Form2: TForm2
     Height = 23
     BevelInnerBold = False
     BevelOuterBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape6: TJvgHoleShape
     Left = 108
@@ -60,8 +59,8 @@ object Form2: TForm2
     Height = 38
     Shape = stCircle
     BevelOuterBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape10: TJvgHoleShape
     Left = 223
@@ -70,8 +69,8 @@ object Form2: TForm2
     Height = 38
     Shape = stCircle
     BevelOuterBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape7: TJvgHoleShape
     Left = 82
@@ -81,8 +80,8 @@ object Form2: TForm2
     BevelInnerBold = False
     BevelOuterBold = False
     BevelOffset = 1
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape9: TJvgHoleShape
     Left = 133
@@ -91,8 +90,8 @@ object Form2: TForm2
     Height = 29
     BevelOuterBold = False
     BevelOffset = 1
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape11: TJvgHoleShape
     Left = 179
@@ -101,8 +100,8 @@ object Form2: TForm2
     Height = 26
     BevelOuterBold = False
     BevelOffset = 1
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape12: TJvgHoleShape
     Left = 218
@@ -111,8 +110,8 @@ object Form2: TForm2
     Height = 22
     BevelOuterBold = False
     BevelOffset = 1
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape14: TJvgHoleShape
     Left = 132
@@ -120,8 +119,8 @@ object Form2: TForm2
     Width = 127
     Height = 27
     BevelOuter = bvRaised
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape15: TJvgHoleShape
     Left = 248
@@ -131,8 +130,8 @@ object Form2: TForm2
     BevelInner = bvRaised
     BevelOuterBold = False
     BevelOffset = 2
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape16: TJvgHoleShape
     Left = 80
@@ -141,8 +140,8 @@ object Form2: TForm2
     Height = 24
     BevelInnerBold = False
     BevelOuterBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object glHoleShape1: TJvgHoleShape
     Left = -43
@@ -150,8 +149,8 @@ object Form2: TForm2
     Width = 89
     Height = 81
     Shape = stRoundRect
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object glHoleShape3: TJvgHoleShape
     Left = 6
@@ -160,8 +159,8 @@ object Form2: TForm2
     Height = 8
     BevelOuter = bvNone
     CombineMode = cmOR
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object FreeHoleShape13: TJvgHoleShape
     Left = 136
@@ -169,8 +168,8 @@ object Form2: TForm2
     Width = 504
     Height = 65
     BevelOuter = bvRaised
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object glHoleShape2: TJvgHoleShape
     Left = 246
@@ -180,16 +179,16 @@ object Form2: TForm2
     Shape = stRectangle
     BevelOuter = bvRaised
     BevelInnerBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object glHoleShape4: TJvgHoleShape
     Left = 504
     Top = 1
     Width = 127
     Height = 127
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
     ShapeBitmap.Data = {
       360F0000424D360F00000000000076000000280000007F0000003B0000000100
       040000000000C00E00000000000000000000100000000000000000000000FFFF
@@ -321,8 +320,8 @@ object Form2: TForm2
     Height = 250
     Shape = stRectangle
     BevelInnerBold = False
-    RectEllipse.X = 45
-    RectEllipse.Y = 45
+    RectEllipse.x = 45
+    RectEllipse.y = 45
   end
   object glBevel1: TJvgBevel
     Left = 504

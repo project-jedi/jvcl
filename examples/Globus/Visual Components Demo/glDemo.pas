@@ -151,7 +151,6 @@ type
     glCheckBox19: TJvgCheckBox;
     glDigits12: TJvgDigits;
     diTime: TJvgDigits;
-    Timer2: TTimer;
     Panel6: TPanel;
     glGroupBox6: TJvgGroupBox;
     FrLabel16: TJvgLabel;
@@ -237,14 +236,9 @@ type
     procedure TrackBarChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure lCiteClick(Sender: TObject);
-    procedure Timer2Timer(Sender: TObject);
     procedure glFlyingTextTextLineChanging(Sender: TObject;
       LineNum: Integer);
     procedure sbTglHelpPanelClick(Sender: TObject);
-  private
-    CanvasBmp,ShowBmp: TBitmap;
-    yShift,yShiftHeight,yShift_,yShiftHeight_: integer;
-    sStr: string;
   public
     { Public declarations }
   end;
@@ -327,14 +321,6 @@ end;
 procedure TForm1.lCiteClick(Sender: TObject);
 begin
   ShellExecute(0, 'open', Pchar(lCite.Caption), '', '', SW_SHOW);
-end;
-
-procedure TForm1.Timer2Timer(Sender: TObject);
-var
-  Hour, Min, Sec, MSec: Word;
-begin
-//  DecodeTime(Time);
-//  diTime.Value := Hour
 end;
 
 procedure TForm1.glFlyingTextTextLineChanging(Sender: TObject; LineNum: Integer);

@@ -29,7 +29,6 @@ type
     glHoleShape4: TJvgHoleShape;
     glHoleShape5: TJvgHoleShape;
     glBevel1: TJvgBevel;
-    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -41,13 +40,5 @@ var
 implementation
 
 {$R *.DFM}
-
-procedure TForm2.FormShow(Sender: TObject);
-var    RGN, RGN2, oldRGN: HRGN;
-begin
-//  glHoleShape2.ShapeBitmap:=Image.Picture.Bitmap;
-//  RGN := CreateRectRgn( 0, 0, 100, 100 );
-//  CombineRgn(RGN, glHoleShape2.RGNInner, glHoleShape1.RGNInner,  RGN_OR );
-end;
 
 end.
