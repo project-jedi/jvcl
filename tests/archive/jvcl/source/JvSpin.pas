@@ -19,6 +19,7 @@ Contributor(s):
   Polaris Software
   boerema1
   roko
+  remkobonte
 
 Last Modified: 2003-03-17
 
@@ -303,7 +304,7 @@ type
     //Polaris
     //property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     //property CheckOnChange: Boolean read FCheckOnChange write FCheckOnChange default False;
-    property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default [];
+    property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
     property CheckMinValue: Boolean read FCheckMinValue write SetCheckMinValue stored StoreCheckMinValue;
     //default False;
     property CheckMaxValue: Boolean read FCheckMaxValue write SetCheckMaxValue stored StoreCheckMaxValue;
@@ -1445,7 +1446,7 @@ begin
 
   //Polaris
   FFocused := False;
-  FCheckOptions := [];
+  FCheckOptions := [coCheckOnChange, coCheckOnExit, coCropBeyondLimit];
   FLCheckMinValue := True;
   FLCheckMaxValue := True;
   FCheckMinValue := False;
