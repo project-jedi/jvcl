@@ -56,6 +56,12 @@ contains
   JvObjectPickerDialog in '..\..\run\JvObjectPickerDialog.pas',
   JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
   JvImageDlg in '..\..\run\JvImageDlg.pas',
-  JvFormImage in '..\..\run\JvFormImage.pas' {FormImg};
+  JvFormImage in '..\..\run\JvFormImage.pas' {FormImg},
+  JvFormProgress in '..\..\run\JvFormProgress.pas' {FormProg},
+  JvExceptionForm in '..\..\run\JvExceptionForm.pas',
+  JvProgressDialog in '..\..\run\JvProgressDialog.pas',
+  JvProgressFrm in '..\..\run\JvProgressFrm.pas' {frmProgress},
+  JvDualList in '..\..\run\JvDualList.pas',
+  JvDualListForm in '..\..\run\JvDualListForm.pas';
 
 end.

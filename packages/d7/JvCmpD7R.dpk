@@ -47,6 +47,7 @@ contains
   JvTranslator in '..\..\run\JvTranslator.pas',
   JvPrint in '..\..\run\JvPrint.pas',
   JvCreateProcess in '..\..\run\JvCreateProcess.pas',
-  JvEasterEgg in '..\..\run\JvEasterEgg.pas';
+  JvEasterEgg in '..\..\run\JvEasterEgg.pas',
+  JvProfiler32 in '..\..\run\JvProfiler32.pas' {ProfReport};
 
 end.

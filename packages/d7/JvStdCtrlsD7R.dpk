@@ -28,7 +28,9 @@ package JvStdCtrlsD7R;
 
 requires
   JvCoreD7R,
-  JvSystemD7R;
+  JvSystemD7R,
+  vcl,
+  rtl;
 
 contains
   JvSpin in '..\..\run\JvSpin.pas',
@@ -91,6 +93,7 @@ contains
   JvFavoritesButton in '..\..\run\JvFavoritesButton.pas',
   JvBrowseFolder in '..\..\run\JvBrowseFolder.pas',
   JvTransparentPanel in '..\..\run\JvTransparentPanel.pas',
-  JvColorCombo in '..\..\run\JvColorCombo.pas';
+  JvColorCombo in '..\..\run\JvColorCombo.pas',
+  JvGrids in '..\..\run\JvGrids.pas';
 
 end.

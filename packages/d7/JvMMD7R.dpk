@@ -35,7 +35,8 @@ requires
   designide,
   vclactnband,
   vclx,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  JvCtrlsD7R;
 
 contains
   JvVisualId3v2 in '..\..\run\JvVisualId3v2.pas',
@@ -60,7 +61,6 @@ contains
   JvGIFCtrl in '..\..\run\JvGIFCtrl.pas',
   JvID3v2Base in '..\..\run\JvID3v2Base.pas',
   JvAnimatedImage in '..\..\run\JvAnimatedImage.pas',
-  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
   JvSpecialImage in '..\..\run\JvSpecialImage.pas',
   JvPicClip in '..\..\run\JvPicClip.pas',
   JvAni in '..\..\run\JvAni.pas',
