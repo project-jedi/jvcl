@@ -14,6 +14,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: dxgettext 1.2 beta 3\n"
 
+msgid "Margins"
+msgstr ""
+
+msgid "&Printer..."
+msgstr ""
+
+msgid "Page Footer:"
+msgstr ""
+
+msgid "Page Header:"
+msgstr ""
+
+msgid "&Bottom:"
+msgstr ""
+
+msgid "&Top:"
+msgstr ""
+
+msgid "&Right:"
+msgstr ""
+
+msgid "&Left:"
+msgstr ""
+
+msgid "L&andscape"
+msgstr ""
+
+msgid "Si&ze"
+msgstr ""
+
+msgid "Paper"
+msgstr ""
+
+msgid "P&ortrait"
+msgstr ""
+
 #. JvChPswdForm..OkBtn..Caption
 #. JvQueryParamsDialog..OkBtn..Caption
 #. JvDualListForm..OkBtn..Caption
@@ -940,6 +976,11 @@ msgstr ""
 #. Programmer's name for it: RsEReleaseOfUnusedTicket
 #: JvMTThreading.pas:151 JvResources.pas:1234
 msgid "Release of unused ticket"
+msgstr ""
+
+#. JvPageSetupTitled
+#: JvPageSetupTitled.rc
+msgid "Page Setup with Header & Footer"
 msgstr ""
 
 #. Programmer's name for it: RsSourceBitmapTooSmall
@@ -7551,45 +7592,4 @@ msgstr ""
 #. Programmer's name for it: RsEExpressionStringIsEmpty
 #: JvgUtils.pas:170
 msgid "Expression string is empty."
-msgstr ""
-
-#. JvPageSetupTitled
-#: JvPageSetupTitled.rc
-msgid "Page Setup with Header & Footer"
-msgstr ""
-
-msgid "Paper"
-msgstr ""
-
-msgid "Si&ze"
-msgstr ""
-
-msgid "P&ortrait"
-msgstr ""
-
-msgid "L&andscape"
-msgstr ""
-
-msgid "&Left:"
-msgstr ""
-
-msgid "&Right:"
-msgstr ""
-
-msgid "&Top:"
-msgstr ""
-
-msgid "&Bottom:"
-msgstr ""
-
-msgid "Page Header:"
-msgstr ""
-
-msgid "Page Footer:"
-msgstr ""
-
-msgid "&Printer..."
-msgstr ""
-
-msgid "Margins"
 msgstr ""

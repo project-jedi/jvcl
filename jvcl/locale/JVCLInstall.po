@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-05-24 20:38\n"
-"PO-Revision-Date: 2004-05-24 20:38\n"
+"POT-Creation-Date: 2004-08-07 13:01\n"
+"PO-Revision-Date: 2004-08-07 13:01\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,12 +27,12 @@ msgid "Cancel"
 msgstr ""
 
 #. FormMain..JvWizard..LblHomepage..Hint
-#: Main.dfm:60
+#: Main.dfm:57
 msgid "<c:blue>http://jvcl.sourceforge.net"
 msgstr ""
 
 #. FormMain..JvWizard..LblHomepage..Caption
-#: Main.dfm:61
+#: Main.dfm:58
 msgid "Jedi Visual Component Library Homepage"
 msgstr ""
 
@@ -397,23 +397,23 @@ msgid "LblComment"
 msgstr ""
 
 #. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#: Helpers/MainConfig.dfm:98
+#: Helpers/MainConfig.dfm:95
 msgid "http://projectjedi.sourceforge.net"
 msgstr ""
 
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
-#: Helpers/MainConfig.dfm:107
+#: Helpers/MainConfig.dfm:104
 msgid "Project JEDI   JVCL 3 Installer - jvcl.inc "
 "Editor"
 msgstr ""
 
 #. FormJvclIncConfig..BtnCancel..Caption
-#: Helpers/MainConfig.dfm:138
+#: Helpers/MainConfig.dfm:135
 msgid "&Cancel"
 msgstr ""
 
 #. FormJvclIncConfig..BtnOk..Caption
-#: Helpers/MainConfig.dfm:147
+#: Helpers/MainConfig.dfm:144
 msgid "&OK"
 msgstr ""
 
@@ -511,8 +511,8 @@ msgstr ""
 #: Compile.pas:175
 msgid "Command could not be executed.\n"
 "\n\nCmdline: %s\n"
-msgid_plural "Start directory: %s"
-msgstr[0] ""
+"Start directory: %s"
+msgstr ""
 
 #. JVCL3Install.pas
 #: InstallerConsts.pas:48
