@@ -46,9 +46,10 @@ type
     destructor Destroy; override;
     procedure Translate(const FileName: string); overload;
     procedure Translate(const Stream: TStream); overload;
-    { (RB) Use TCustomForm }
-    procedure Translate(const FileName: string; const Form: TForm); overload;
-    procedure Translate(const Form: TForm); overload;
+    procedure Translate(const FileName: string; const Form: TCustomForm); overload;
+    procedure Translate(const Form: TCustomForm); overload;
+    procedure TranslateScreen(const FileName: string); overload;
+    procedure TranslateScreen(const Stream: TStream); overload;
     function Translate(const Category, Item: string): string; overload;
   end;
 
@@ -62,8 +63,7 @@ type
     destructor Destroy; override;
     function IndexOf(const Name: string): Integer;
     function Add(const Name: string; var Value: string): Integer;
-    // (rom) add default?
-    property Strings[const Index: Integer]: string read GetString write SetString;
+    property Strings[const Index: Integer]: string read GetString write SetString;default;
   end;
 
 implementation
@@ -103,7 +103,31 @@ begin
   end;
 end;
 
-procedure TJvTranslator.Translate(const FileName: string; const Form: TForm);
+procedure TJvTranslator.TranslateScreen(const FileName: string);
+var
+ i: Integer;
+begin
+  try
+    FXml.LoadFromFile(FileName);
+    for i:=0 to Screen.FormCount-1 do
+      Translate(Screen.Forms[i]);
+  except
+  end;
+end;
+
+procedure TJvTranslator.TranslateScreen(const Stream: TStream);
+var
+ i: Integer;
+begin
+  try
+    FXml.LoadFromStream(Stream);
+    for i:=0 to Screen.FormCount-1 do
+      Translate(Screen.Forms[i]);
+  except
+  end;
+end;
+
+procedure TJvTranslator.Translate(const FileName: string; const Form: TCustomForm);
 begin
   try
     FXml.LoadFromFile(FileName);
@@ -251,8 +275,11 @@ var
       J := Elem.Items[I].Properties.IntValue('Index', -1);
       if J = -1 then
         Continue;
-      TransProperties(Collection.Items[J], Elem.Items[I]);
-      TransObject(Collection.Items[J], Elem.Items[I]);
+      if (j < Collection.Count) then
+      begin
+        TransProperties(Collection.Items[J], Elem.Items[I]);
+        TransObject(Collection.Items[J], Elem.Items[I]);
+      end;
     end;
   end;
 
@@ -360,7 +387,7 @@ begin
   end;
 end;
 
-procedure TJvTranslator.Translate(const Form: TForm);
+procedure TJvTranslator.Translate(const Form: TCustomForm);
 var
   J: Integer;
   S: string;
