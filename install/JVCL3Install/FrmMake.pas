@@ -565,7 +565,7 @@ begin
   begin
     S := MemoLog.Lines[MemoLog.CaretPos.Y];
 
-   // find the directory 
+   // find the directory
     if StartsWith(S, JVCLDir + '\') then
       ShowDirLbl := True
     else
