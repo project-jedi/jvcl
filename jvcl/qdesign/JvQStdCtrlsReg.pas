@@ -77,7 +77,9 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [ 
     TJvCalculator]);
+{$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
+{$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup,  
     TUpDown, 
