@@ -44,12 +44,19 @@ type
   TAggregatedPersistentEx = class;
   TJvBaseDataItem = class;
   TJvBaseDataItems = class;
+  TJvBaseDataContexts = class;
+  TJvBaseDataContextsManager = class;
+  TJvBaseDataContext = class;
 
   // Class references
   TAggregatedPersistentExClass = class of TAggregatedPersistentEx;
   TJvDataItemTextImplClass = class of TJvBaseDataItemTextImpl;
   TJvBaseDataItemClass = class of TJvBaseDataItem;
   TJvDataItemsClass = class of TJvBaseDataItems;
+  TJvDataContextsClass = class of TJvBaseDataContexts;
+  TJvDataContextsManagerClass = class of TJvBaseDataContextsManager;
+  TJvDataContextClass = class of TJvBaseDataContext;
+  
 
   // Generic classes (move to some other unit?)
   TExtensibleInterfacedPersistent = class(TPersistent, IUnknown)
@@ -91,11 +98,12 @@ type
     function GetController: IUnknown;
   protected
     { IUnknown }
-    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
-    function _AddRef: Integer; stdcall;
-    function _Release: Integer; stdcall;
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    function _AddRef: Integer; virtual; stdcall;
+    function _Release: Integer; virtual; stdcall;
   public
     constructor Create(Controller: IUnknown);
+    function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
     property Controller: IUnknown read GetController;
   end;
 
@@ -108,7 +116,6 @@ type
     constructor Create(AOwner: TExtensibleInterfacedPersistent); virtual;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
   end;
 
   TProviderNotifyEvent = procedure(ADataProvider: IJvDataProvider;
@@ -137,6 +144,8 @@ type
   // Item implementation classes
   TJvDataItemAggregatedObject = class(TAggregatedPersistentEx)
   protected
+    function QueryInterface(const IID: TGUID; out Obj): HResult; override; stdcall;
+    procedure ContextDestroying(Context: IJvDataContext); dynamic;
     function Item: IJvDataItem;
     function ItemImpl: TJvBaseDataItem;
   end;
@@ -169,8 +178,11 @@ type
     function GetItems: IJvDataItems;
     function GetImplementer: TObject;
     function GetID: string;
+    procedure ContextDestroying(Context: IJvDataContext); dynamic;
     property Items: IJvDataItems read GetItems;
     property Implementer: TObject read GetImplementer;
+    { Optional IJvDataContextSensitive interface implementation }
+    procedure RevertToDefault; dynamic;
   public
     constructor Create(AOwner: IJvDataItems);
     procedure AfterConstruction; override;
@@ -215,6 +227,7 @@ type
   // Items implementation classes
   TJvDataItemsAggregatedObject = class(TAggregatedPersistentEx)
   protected
+    procedure ContextDestroying(Context: IJvDataContext); dynamic;
     function Items: IJvDataItems;
     function ItemsImpl: TJvBaseDataItems;
   end;
@@ -245,6 +258,7 @@ type
     function GetProvider: IJvDataProvider;
     function GetImplementer: TObject;
     function IsDynamic: Boolean; virtual;
+    procedure ContextDestroying(Context: IJvDataContext); dynamic;
     { IJvDataIDSearch methods }
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
@@ -298,6 +312,23 @@ type
     procedure SetCaption(const Value: string); override;
   published
     property Caption: string read GetCaption write SetCaption;
+  end;
+
+  { Context sensitive text implementation: Retrieves/Sets the caption linked to the currently
+    selected context. The implementation provides in a default caption that is not linked to any
+    context. If there's no active context set at the provider; this caption will be retrieved/set.
+    If the active context set at the provider has no caption linked to it, the standard caption
+    is retrieved, but a new link is added when the caption is changed. }
+  TJvDataItemContextTextImpl = class(TJvDataItemTextImpl, IJvDataContextSensitive)
+  private
+    FContextStrings: TStrings;
+  protected
+    function GetCaption: string; override;
+    procedure SetCaption(const Value: string); override;
+  public
+    constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
+    destructor Destroy; override;
+    procedure RevertToDefault;
   end;
 
   TJvDataItemImageImpl = class(TJvBaseDataItemImageImpl)
@@ -423,23 +454,32 @@ type
   // Generic data provider implementation
   TJvDataProviderTree = type Integer;
   TJvDataProviderItemID = type string;
-  TJvCustomDataProvider = class(TJvComponent, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
+  TJvDataProviderContexts = type Integer;
+  TJvCustomDataProvider = class(TJvComponent, IUnknown, {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}
     IJvDataProvider, IJvDataItems)
   private
     FDataItemsImpl: TJvBaseDataItems;
+    FDataContextsImpl: TJvBaseDataContexts;
     FNotifiers: TInterfaceList;
     FTreeItems: TJvDataProviderTree;
     FConsumerStack: TInterfaceList;
     FContextStack: TInterfaceList;
+    FContexts: TJvDataProviderContexts;
   protected
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
     class function PersistentDataItems: Boolean; dynamic;
     class function ItemsClass: TJvDataItemsClass; dynamic;
+    class function ContextsClass: TJvDataContextsClass; dynamic;
+    class function ContextsManagerClass: TJvDataContextsManagerClass; dynamic;
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadRoot(Reader: TReader);
     procedure WriteRoot(Writer: TWriter);
+    procedure ReadContexts(Reader: TReader);
+    procedure WriteContexts(Writer: TWriter);
+    procedure ReadContext(Reader: TReader);
+    procedure WriteContext(Writer: TWriter; AContext: IJvDataContext);
     procedure AddToArray(var ClassArray: TClassArray; AClass: TClass);
     procedure DeleteFromArray(var ClassArray: TClassArray; Index: Integer);
     function IndexOfClass(AClassArray: TClassArray; AClass: TClass): Integer;
@@ -460,9 +500,13 @@ type
     procedure SelectContext(Context: IJvDataContext);
     function SelectedContext: IJvDataContext;
     procedure ReleaseContext;
+    procedure ContextDestroying(Context: IJvDataContext); dynamic;
+    procedure ConsumerDestroying(Consumer: IJvDataConsumer); dynamic;
 
     property DataItemsImpl: TJvBaseDataItems read FDataItemsImpl implements IJvDataItems;
+    property DataContextsImpl: TJvBaseDataContexts read FDataContextsImpl;
     property Items: TJvDataProviderTree read FTreeItems write FTreeItems stored False;
+    property Contexts: TJvDataProviderContexts read FContexts write FContexts stored False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -471,9 +515,10 @@ type
   end;
 
   // Basic context list
-  TJvBaseContexts = class(TExtensibleInterfacedPersistent, IJvDataContexts)
+  TJvBaseDataContexts = class(TExtensibleInterfacedPersistent, IJvDataContexts, IJvDataContext)
   private
     FProvider: IJvDataProvider;
+    FDsgnContext: IJvDataContext;
   protected
     procedure DoAddContext(Context: IJvDataContext); virtual; abstract;
     procedure DoDeleteContext(Index: Integer); virtual; abstract;
@@ -482,16 +527,19 @@ type
     function Provider: IJvDataProvider;
     function GetCount: Integer; virtual; abstract;
     function GetContext(Index: Integer): IJvDataContext; virtual; abstract;
-    function GetContextByName(Name: string): IJvDataContext; virtual; abstract;
+    function GetContextByName(Name: string): IJvDataContext; virtual;
+    property DsgnContext: IJvDataContext read FDsgnContext write FDsgnContext implements IJvDataContext; 
   public
     constructor Create(AProvider: IJvDataProvider); virtual;
+    constructor CreateManaged(AProvider: IJvDataProvider;
+      ManagerClass: TJvDataContextsManagerClass);
   end;
 
-(*  // Basic context list manager
-  TJvBaseContextsManager = class(TAggregatedPersistentEx, IJvDataContextsManager)
+  // Basic context list manager
+  TJvBaseDataContextsManager = class(TAggregatedPersistentEx, IJvDataContextsManager)
   protected
     function Contexts: IJvDataContexts;
-    function ContextsImpl: TJvBaseContexts;
+    function ContextsImpl: TJvBaseDataContexts;
     function Add(Context: IJvDataContext): IJvDataContext;
     function New: IJvDataContext; virtual; abstract;
     procedure Delete(Context: IJvDataContext);
@@ -499,16 +547,53 @@ type
   end;
 
   // Basic context
-  TJvBaseContext = class(TExtensibleInterfacedPersistent, IJvDataContext)
+  TJvBaseDataContext = class(TExtensibleInterfacedPersistent, IJvDataContext)
   private
-    FContexts: IJvDataContexts;
+    FContexts: TJvBaseDataContexts;
   protected
-    function ContextsImpl: TJvBaseContexts;
+    { Will actually set the name without any checks or notification. You should use SetName to
+      change the context's name which in turn will call this method after it has checked the
+      name is unique. }
+    procedure DoSetName(Value: string); virtual; abstract;
+    { Changes this context's name to the given name. It will first check if the new name is
+      unique and then calls DoSetName to change it. }
+    procedure SetName(Value: string); virtual;
+    function GetImplementer: TObject;
+    function ContextsImpl: TJvBaseDataContexts;
     function Contexts: IJvDataContexts;
     function Name: string; virtual; abstract;
   public
-    constructor Create(AContexts: IJvDataContexts); virtual;
-  end;*)
+    constructor Create(AContexts: TJvBaseDataContexts; AName: string); virtual;
+  end;
+
+  // Basic managed context
+  TJvBaseManagedDataContext = class(TJvBaseDataContext, IJvDataContextManager);
+
+  // Standard context list
+  TJvDataContexts = class(TJvBaseDataContexts)
+  private
+    FContexts: TInterfaceList;
+  protected
+    procedure DoAddContext(Context: IJvDataContext); override;
+    procedure DoDeleteContext(Index: Integer); override;
+    procedure DoRemoveContext(Context: IJvDataContext); override;
+    procedure DoClearContexts; override;
+    function GetCount: Integer; override;
+    function GetContext(Index: Integer): IJvDataContext; override;
+  public
+    constructor Create(AProvider: IJvDataProvider); override;
+  end;
+
+  // Standard context
+  TJvDataContext = class(TJvBaseDataContext)
+  private
+    FName: string;
+  protected
+    procedure DoSetName(Value: string); override;
+  end;
+
+  // Standard managed context
+  TJvManagedDataContext = class(TJvDataContext, IJvDataContextManager);
 
 // Helper routines
 { Locate nearest IJvDataItems* implementation for a specific item. }
@@ -586,14 +671,21 @@ type
     property Alignment: TAlignment read FAlignment write FAlignment;
   end;
 
+  TJvDataConsumer = class;
   TJvDataConsumerAggregatedObject = class;
   TJvDataConsumerAggregatedObjectClass = class of TJvDataConsumerAggregatedObject;
+  TBeforeCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
+    var SubSvcClass: TJvDataConsumerAggregatedObjectClass) of object;
+  TAfterCreateSubSvcEvent = procedure(Sender: TJvDataConsumer;
+    SubSvc: TJvDataConsumerAggregatedObject) of object;
   TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify)
   private
     FOwner: TComponent;
     FAttrList: array of Integer;
     FProvider: IJvDataProvider;
     FContext: IJvDataContext;
+    FAfterCreateSubSvc: TAfterCreateSubSvcEvent;
+    FBeforeCreateSubSvc: TBeforeCreateSubSvcEvent;
     FOnChanged: TNotifyEvent;
     FNeedFixups: Boolean;
     FFixupContext: TJvDataContextID;
@@ -608,6 +700,8 @@ type
     { Event triggering }
     procedure DoProviderChanging(ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DoProviderChanged(ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
+    procedure DoAfterCreateSubSvc(ASvc: TJvDataConsumerAggregatedObject);
+    procedure DoBeforeCreateSubSvc(var AClass: TJvDataConsumerAggregatedObjectClass);
     procedure DoChanged;
     { Misc. }
     procedure DoAddAttribute(Attr: Integer);
@@ -643,6 +737,10 @@ type
     procedure Leave;
 
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    property AfterCreateSubSvc: TAfterCreateSubSvcEvent read FAfterCreateSubSvc
+      write FAfterCreateSubSvc;
+    property BeforeCreateSubSvc: TBeforeCreateSubSvcEvent read FBeforeCreateSubSvc
+      write FBeforeCreateSubSvc;
   published
     {$IFDEF COMPILER6_UP}
     property Provider: IJvDataProvider read FProvider write setProvider;
@@ -1001,6 +1099,11 @@ begin
   end;
 end;
 
+function IsExtensionSpecificIntf(IID: TGUID): Boolean;
+begin
+  Result := IsEqualGuid(IID, IJvDataContextSensitive);
+end;
+
 { TJvDP_ProviderBaseRender }
 
 constructor TJvDP_ProviderBaseRender.Create(AItem: IJvDataItem; ACanvas: TCanvas; AState: TProviderDrawStates);
@@ -1215,7 +1318,59 @@ type
       PropPathField^ := NewPath;
   end;
 
+type
+  TDesignContext = class(TInterfacedObject, IJvDataContext)
+  private
+    FContexts: IJvDataContexts;
+  protected
+    function GetImplementer: TObject;
+    function Contexts: IJvDataContexts;
+    function Name: string;
+  public
+    constructor Create(AContexts: IJvDataContexts);
+  end;
+
+function TDesignContext.GetImplementer: TObject;
+begin
+  Result := Self;
+end;
+
+function TDesignContext.Contexts: IJvDataContexts;
+begin
+  Result := FContexts;
+end;
+
+function TDesignContext.Name: string;
+begin
+  Result := 'Designer context';
+end;
+
+constructor TDesignContext.Create(AContexts: IJvDataContexts);
+begin
+  inherited Create;
+  FContexts := AContexts;
+end;
+
 { TJvDataItemAggregatedObject }
+
+function TJvDataItemAggregatedObject.QueryInterface(const IID: TGUID; out Obj): HResult;
+const
+  E_NOINTERFACE = HResult($80004002);
+begin
+  if not GetInterface(IID, Obj) then
+  begin
+    if IsExtensionSpecificIntf(IID) then
+      Result := E_NOINTERFACE
+    else
+      Result := inherited QueryInterface(IID, Obj);
+  end
+  else
+    Result := S_OK;
+end;
+
+procedure TJvDataItemAggregatedObject.ContextDestroying(Context: IJvDataContext);
+begin
+end;
 
 function TJvDataItemAggregatedObject.Item: IJvDataItem;
 begin
@@ -1365,6 +1520,72 @@ begin
     Item.Items.Provider.Changing(pcrUpdateItem, Item);
     FCaption := Value;
     Item.Items.Provider.Changed(pcrUpdateItem, Item);
+  end;
+end;
+
+//===TJvDataItemContextTextImpl=====================================================================
+
+function TJvDataItemContextTextImpl.GetCaption: string;
+var
+  CurCtx: IJvDataContext;
+begin
+  CurCtx := Item.Items.Provider.SelectedContext;
+  if (CurCtx <> nil) and (FContextStrings.IndexOfObject(TObject(CurCtx)) > -1) then
+    Result := FContextStrings[FContextStrings.IndexOfObject(TObject(CurCtx))]
+  else
+    Result := inherited GetCaption;
+end;
+
+procedure TJvDataItemContextTextImpl.SetCaption(const Value: string);
+var
+  CurCtx: IJvDataContext;
+  I: Integer;
+begin
+  CurCtx := Item.Items.Provider.SelectedContext;
+  if CurCtx <> nil then
+  begin
+    if Caption <> Value then
+    begin
+      Item.Items.Provider.Changing(pcrUpdateItem, Item);
+      I := FContextStrings.IndexOfObject(TObject(CurCtx));
+      if I > -1 then
+        FContextStrings[I] := Value
+      else
+        FContextStrings.AddObject(Value, TObject(CurCtx));
+      Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    end;
+  end
+  else
+    inherited SetCaption(Value);
+end;
+
+constructor TJvDataItemContextTextImpl.Create(AOwner: TExtensibleInterfacedPersistent);
+begin
+  inherited Create(AOwner);
+  FContextStrings := TStringList.Create;
+end;
+
+destructor TJvDataItemContextTextImpl.Destroy;
+begin
+  FreeAndNil(FContextStrings);
+  inherited Destroy;
+end;
+
+procedure TJvDataItemContextTextImpl.RevertToDefault;
+var
+  CurCtx: IJvDataContext;
+  I: Integer;
+begin
+  CurCtx := Item.Items.Provider.SelectedContext;
+  if CurCtx <> nil then
+  begin
+    I := FContextStrings.IndexOfObject(TObject(CurCtx));
+    if I > -1 then
+    begin
+      Item.Items.Provider.Changing(pcrUpdateItem, Item);
+      FContextStrings.Delete(I);
+      Item.Items.Provider.Changed(pcrUpdateItem, Item);
+    end;
   end;
 end;
 
@@ -1658,6 +1879,11 @@ begin
   FController := Pointer(Controller);
 end;
 
+function TAggregatedPersistent.GetInterface(const IID: TGUID; out Obj): Boolean;
+begin
+  Result := inherited GetInterface(IID, Obj);
+end;
+
 { TAggregatedPersistentEx }
 
 constructor TAggregatedPersistentEx.Create(AOwner: TExtensibleInterfacedPersistent);
@@ -1680,11 +1906,6 @@ begin
   I := FOwner.FAdditionalIntfImpl.IndexOf(Self);
   if I >= 0 then
     FOwner.FAdditionalIntfImpl.Delete(I);
-end;
-
-function TAggregatedPersistentEx.GetInterface(const IID: TGUID; out Obj): Boolean;
-begin
-  Result := inherited GetInterface(IID, Obj);
 end;
 
 //===TJvProviderNotification========================================================================
@@ -1827,6 +2048,16 @@ end;
 function TJvBaseDataItems.IsDynamic: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJvBaseDataItems.ContextDestroying(Context: IJvDataContext);
+var
+  I: Integer;
+begin
+  for I := 0 to FAdditionalIntfImpl.Count - 1 do
+    TJvDataItemsAggregatedObject(FAdditionalIntfImpl[I]).ContextDestroying(Context);
+  for I := 0 to GetCount - 1 do
+    GetItem(I).ContextDestroying(Context);
 end;
 
 function TJvBaseDataItems.FindByID(ID: string; const Recursive: Boolean): IJvDataItem;
@@ -2082,6 +2313,10 @@ begin
 end;
 
 { TJvDataItemsAggregatedObject }
+
+procedure TJvDataItemsAggregatedObject.ContextDestroying(Context: IJvDataContext);
+begin
+end;
 
 function TJvDataItemsAggregatedObject.Items: IJvDataItems;
 begin
@@ -2376,6 +2611,31 @@ begin
   Result := FID;
 end;
 
+procedure TJvBaseDataItem.ContextDestroying(Context: IJvDataContext);
+var
+  I: Integer;
+  SubItems: IJvDataItems;
+begin
+  for I := 0 to FAdditionalIntfImpl.Count - 1 do
+    TJvDataItemAggregatedObject(FAdditionalIntfImpl[I]).ContextDestroying(Context);
+  if Supports(Self as IJvDataItem, IJvDataItems, SubItems) then
+    SubItems.ContextDestroying(Context);
+end;
+
+procedure TJvBaseDataItem.RevertToDefault;
+var
+  I: Integer;
+  Inst: TJvDataItemAggregatedObject;
+  CtxSens: IJvDataContextSensitive;
+begin
+  for I := 0 to FAdditionalIntfImpl.Count - 1 do
+  begin
+    Inst := TJvDataItemAggregatedObject(FAdditionalIntfImpl[I]);
+    if Inst.GetInterface(IJvDataContextSensitive, CtxSens) then
+      CtxSens.RevertToDefault;
+  end;
+end;
+
 constructor TJvBaseDataItem.Create(AOwner: IJvDataItems);
 begin
   inherited Create;
@@ -2429,9 +2689,21 @@ begin
   Result := TJvDataItemsList;
 end;
 
+class function TJvCustomDataProvider.ContextsClass: TJvDataContextsClass;
+begin
+  Result := nil;
+end;
+
+class function TJvCustomDataProvider.ContextsManagerClass: TJvDataContextsManagerClass;
+begin
+  Result := nil;
+end;
+
 procedure TJvCustomDataProvider.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
+  if (ContextsClass <> nil) and (ContextsManagerClass <> nil) then
+    Filer.DefineProperty('ContextList', ReadContexts, WriteContexts, True);
   if PersistentDataItems then
     Filer.DefineProperty('Root', ReadRoot, WriteRoot, True);
 end;
@@ -2455,6 +2727,67 @@ begin
   // We don''t really have a root item; just stream out the DataItemsImpl instance.
   TOpenWriter(Writer).WriteProperties(DataItemsImpl);
   Writer.WriteListEnd;
+  Writer.WriteListEnd;
+end;
+
+procedure TJvCustomDataProvider.ReadContexts(Reader: TReader);
+begin
+  if Reader.ReadValue <> vaCollection then
+    raise EReadError.Create(SExtensibleIntObjCollectionExpected);
+  while not Reader.EndOfList do
+    ReadContext(Reader);
+  Reader.ReadListEnd;
+end;
+
+procedure TJvCustomDataProvider.WriteContexts(Writer: TWriter);
+var
+  I: Integer;
+begin
+  TOpenWriter(Writer).WriteValue(vaCollection);
+  for I := 0 to FDataContextsImpl.GetCount - 1 do
+    WriteContext(Writer, FDataContextsImpl.GetContext(I));
+  Writer.WriteListEnd;
+end;
+
+procedure TJvCustomDataProvider.ReadContext(Reader: TReader);
+var
+  ClassName: string;
+  ClassType: TClass;
+  CtxName: string;
+  CtxInst: TJvBaseDataContext;
+begin
+  Reader.ReadListBegin;
+  ClassName := Reader.ReadStr;
+  if not AnsiSameText(ClassName, 'ClassName') then
+    raise EReadError.Create(SExtensibleIntObjClassNameExpected);
+  ClassName := Reader.ReadString;
+  ClassType := FindClass(ClassName);
+  if not ClassType.InheritsFrom(TJvBaseDataContext) then
+    raise EReadError.Create(SExtensibleIntObjInvalidClass);
+  CtxName := Reader.ReadStr;
+  if not AnsiSameText(CtxName, 'Name') then
+    raise EReadError.Create('Context name expected.');
+  CtxName := Reader.ReadString;
+  CtxInst := TJvDataContextClass(ClassType).Create(FDataContextsImpl, CtxName);
+  try
+    FDataContextsImpl.DoAddContext(CtxInst);
+  except
+    CtxInst.Free;
+    raise;
+  end;
+  while not Reader.EndOfList do
+    TOpenReader(Reader).ReadProperty(CtxInst);
+  Reader.ReadListEnd;
+end;
+
+procedure TJvCustomDataProvider.WriteContext(Writer: TWriter; AContext: IJvDataContext);
+begin
+  Writer.WriteListBegin;
+  Writer.WriteStr('ClassName');
+  Writer.WriteString(AContext.GetImplementer.ClassName);
+  Writer.WriteStr('Name');
+  Writer.WriteString(AContext.Name);
+  TOpenWriter(Writer).WriteProperties(TPersistent(AContext.GetImplementer));
   Writer.WriteListEnd;
 end;
 
@@ -2531,7 +2864,7 @@ begin
   SetLength(Result, 0);
 
   // Generic provider based extensions
-  if Supports(Self, IJvDataContexts, Obj) then
+  if Supports(Self as IJvDataProvider, IJvDataContexts, Obj) then
     AddToArray(Result, TJvDataConsumerContext);
 
   // Consumer based extensions
@@ -2578,7 +2911,7 @@ begin
   if (FContextStack <> nil) and (FContextStack.Count > 0) then
     Result := IJvDataContext(FContextStack[0])
   else
-    Result := nil; //TODO: Return the providers implicit context
+    Result := nil;
 end;
 
 procedure TJvCustomDataProvider.ReleaseContext;
@@ -2589,12 +2922,23 @@ begin
     raise EJVCLException.Create('Context stack is empty.');
 end;
 
+procedure TJvCustomDataProvider.ContextDestroying(Context: IJvDataContext);
+begin
+  DataItemsImpl.ContextDestroying(Context);
+end;
+
+procedure TJvCustomDataProvider.ConsumerDestroying(Consumer: IJvDataConsumer);
+begin
+end;
+
 constructor TJvCustomDataProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FNotifiers := TInterfaceList.Create;
   FConsumerStack := TInterfaceList.Create;
   FContextStack := TInterfaceList.Create;
+  if ContextsClass <> nil then
+    FDataContextsImpl := ContextsClass.CreateManaged(Self, ContextsManagerClass);    
   if ItemsClass <> nil then
     FDataItemsImpl := ItemsClass.CreateProvider(Self)
   else
@@ -2621,20 +2965,174 @@ end;
 
 function TJvCustomDataProvider.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
-  Result := inherited GetInterface(IID, Obj) or (FDataItemsImpl.GetInterface(IID, Obj));
+  Result := inherited GetInterface(IID, Obj) or FDataItemsImpl.GetInterface(IID, Obj) or (
+    // If we have contexts, check the interface table of that implementation as well.
+    (FDataContextsImpl <> nil) and Supports(Tobject(FDataContextsImpl), IID, Obj)
+  );
 end;
 
-//===TJvBaseContexts================================================================================
+//===TJvBaseDataContexts============================================================================
 
-function TJvBaseContexts.Provider: IJvDataProvider;
+function TJvBaseDataContexts.Provider: IJvDataProvider;
 begin
   Result := FProvider;
 end;
 
-constructor TJvBaseContexts.Create(AProvider: IJvDataProvider);
+function TJvBaseDataContexts.GetContextByName(Name: string): IJvDataContext;
+var
+  Idx: Integer;
+begin
+  Idx := GetCount - 1;
+  while (Idx >= 0) and not AnsiSameText(GetContext(Idx).Name, Name) do
+    Dec(Idx);
+  if Idx >= 0 then
+    Result := GetContext(Idx);
+end;
+
+constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider);
 begin
   inherited Create;
   FProvider := AProvider;
+  FDsgnContext := TDesignContext.Create(Self);
+end;
+
+constructor TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider;
+  ManagerClass: TJvDataContextsManagerClass);
+begin
+  Create(AProvider);
+  if ManagerClass <> nil then
+    ManagerClass.Create(Self);
+end;
+
+//===TJvBaseDataContextsManager=====================================================================
+
+function TJvBaseDataContextsManager.Contexts: IJvDataContexts;
+begin
+  Result := Owner as IJvDataContexts;
+end;
+
+function TJvBaseDataContextsManager.ContextsImpl: TJvBaseDataContexts;
+begin
+  Result := Owner as TJvBaseDataContexts;
+end;
+
+function TJvBaseDataContextsManager.Add(Context: IJvDataContext): IJvDataContext;
+begin
+  Result := Context;
+  ContextsImpl.DoAddContext(Result);
+end;
+
+procedure TJvBaseDataContextsManager.Delete(Context: IJvDataContext);
+begin
+  ContextsImpl.DoRemoveContext(Context);
+end;
+
+procedure TJvBaseDataContextsManager.Clear;
+begin
+  ContextsImpl.DoClearContexts;
+end;
+
+//===TJvBaseDataContext=============================================================================
+
+procedure TJvBaseDataContext.SetName(Value: string);
+var
+  ExistingContext: IJvDataContext;
+begin
+  if Value <> Name then
+  begin
+    ExistingContext := Contexts.GetContextByName(Value);
+    if (ExistingContext = nil) or (ExistingContext = (Self as IJvDataContext)) then
+      DoSetName(Value)
+    else
+      raise EJVCLException.Create('A context with that name already exists.');
+  end;
+end;
+
+function TJvBaseDataContext.GetImplementer: TObject;
+begin
+  Result := Self;
+end;
+
+function TJvBaseDataContext.ContextsImpl: TJvBaseDataContexts;
+begin
+  Result := FContexts;
+end;
+
+function TJvBaseDataContext.Contexts: IJvDataContexts;
+begin
+  Result := FContexts;
+end;
+
+constructor TJvBaseDataContext.Create(AContexts: TJvBaseDataContexts; AName: string);
+begin
+  if AContexts <> nil then
+  begin
+    inherited Create;
+    FContexts := AContexts;
+    SetName(AName);
+  end
+  else
+    raise EJVCLException.Create('Cannot create a context without a context list owner.');
+end;
+
+//===TJvDataContexts================================================================================
+
+procedure TJvDataContexts.DoAddContext(Context: IJvDataContext);
+var
+  Tmp: IJvDataContext;
+begin
+  Tmp := GetContextByName(Context.Name);
+  if Tmp = nil then
+    FContexts.Add(Context)
+  else
+  begin
+    if Tmp <> Context then
+      raise EJVCLException.Create('A context with that name already exists.');
+  end;
+end;
+
+procedure TJvDataContexts.DoDeleteContext(Index: Integer);
+begin
+  FContexts.Delete(Index);
+end;
+
+procedure TJvDataContexts.DoRemoveContext(Context: IJvDataContext);
+var
+  Idx: Integer;
+begin
+  Idx := GetCount - 1;
+  while (Idx >= 0) and (GetContext(Idx) <> Context) do
+    Dec(Idx);
+  if Idx >= 0 then
+    DoDeleteContext(Idx);
+end;
+
+procedure TJvDataContexts.DoClearContexts;
+begin
+  FContexts.Clear;
+end;
+
+function TJvDataContexts.GetCount: Integer;
+begin
+  Result := FContexts.Count;
+end;
+
+function TJvDataContexts.GetContext(Index: Integer): IJvDataContext;
+begin
+  Result := IJvDataContext(FContexts[Index]);
+end;
+
+constructor TJvDataContexts.Create(AProvider: IJvDataProvider);
+begin
+  inherited Create(AProvider);
+  FContexts := TInterfaceList.Create;
+end;
+
+//===TJvDataContext=================================================================================
+
+procedure TJvDataContext.DoSetName(Value: string);
+begin
+  FName := Value;
 end;
 
 { TJvDataConsumer }
@@ -2722,6 +3220,18 @@ end;
 procedure TJvDataConsumer.DoProviderChanged(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 begin
+end;
+
+procedure TJvDataConsumer.DoAfterCreateSubSvc(ASvc: TJvDataConsumerAggregatedObject);
+begin
+  if @FAfterCreateSubSvc <> nil then
+    AfterCreateSubSvc(Self, ASvc);
+end;
+
+procedure TJvDataConsumer.DoBeforeCreateSubSvc(var AClass: TJvDataConsumerAggregatedObjectClass);
+begin
+  if @FBeforeCreateSubSvc <> nil then
+    BeforeCreateSubSvc(Self, AClass);
 end;
 
 procedure TJvDataConsumer.DoChanged;
@@ -2834,6 +3344,7 @@ procedure TJvDataConsumer.UpdateExtensions;
 var
   ImplArray: TClassArray;
   I: Integer;
+  TmpClass: TJvDataConsumerAggregatedObjectClass;
 begin
   SetLength(ImplArray, 0);
   if ProviderIntf <> nil then
@@ -2846,11 +3357,24 @@ begin
     end;
     for I := Low(ImplArray) to High(ImplArray) do
     begin
-      if IndexOfImplClass(TAggregatedPersistentExClass(ImplArray[I])) < 0 then
-        TJvDataConsumerAggregatedObjectClass(ImplArray[I]).Create(Self);
+      TmpClass := TJvDataConsumerAggregatedObjectClass(ImplArray[I]);
+      if IndexOfImplClass(TmpClass) < 0 then
+      begin
+        DoBeforeCreateSubSvc(TmpClass);
+        if TmpClass <> nil then
+          DoAfterCreateSubSvc(TmpClass.Create(Self));
+      end;
     end;
-    if AttributeApplies(DPA_ConsumerDisplaysList) and (IndexOfImplClass(TJvDataConsumerViewList) < 0) then
-      TJvDataConsumerViewList.Create(Self);
+    if AttributeApplies(DPA_ConsumerDisplaysList) then
+    begin
+      TmpClass := TJvDataConsumerViewList;
+      if IndexOfImplClass(TJvDataConsumerViewList) < 0 then
+      begin
+        DoBeforeCreateSubSvc(TmpClass);
+        if TmpClass <> nil then
+          DoAfterCreateSubSvc(TmpClass.Create(Self));
+      end;
+    end;
   end
   else
     ClearIntfImpl;
