@@ -475,6 +475,7 @@ contains
   JvxConst in '..\source\JvxConst.pas',
   JvTransLED in '..\source\JvTransLED.pas',
   JvJVCLAbout in '..\source\JvJVCLAbout.pas' {JvJVCLAboutForm},
+  JvZlibMultiple in '..\source\JvZlibMultiple.pas',
   JvCaret in '..\source\JvCaret.pas',
   Winamp in '..\common\Winamp.pas',
   Ras32 in '..\common\Ras32.pas',

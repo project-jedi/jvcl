@@ -53,7 +53,6 @@ contains
   JvLoginDlg in '..\Source\JvLoginDlg.pas',
   JvPatcherEditor in '..\Source\JvPatcherEditor.pas',
   JVCLMiscal in '..\Source\JVCLMiscal.pas',
-  JvOutlookEdit in '..\Source\JvOutlookEdit.pas',
   JvDateTimeDlg in '..\Source\JvDateTimeDlg.pas' {frmSelectDateTimeDlg},
   JvDsgnEditors in '..\Source\JvDsgnEditors.pas',
   JvTimeLineEdit in '..\Source\JvTimeLineEdit.pas',

@@ -53,7 +53,6 @@ contains
   JvLoginDlg in '..\Source\JvLoginDlg.pas',
   JvPatcherEditor in '..\Source\JvPatcherEditor.pas',
   JVCLMiscal in '..\Source\JVCLMiscal.pas',
-  JvOutlookEdit in '..\Source\JvOutlookEdit.pas',
   JvDateTimeDlg in '..\Source\JvDateTimeDlg.pas' {frmSelectDateTimeDlg},
   JvDsgnEditors in '..\Source\JvDsgnEditors.pas',
   JvTimeLineEdit in '..\Source\JvTimeLineEdit.pas',
@@ -87,6 +86,7 @@ contains
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
+  JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
   JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 

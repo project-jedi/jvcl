@@ -384,7 +384,6 @@ contains
   JvInterpreterFm in '..\Source\JvInterpreterFm.pas',
   JvInterpreterConst in '..\Source\JvInterpreterConst.pas',
   JvInterpreter in '..\source\JvInterpreter.pas',
-  JvInterpreter_all in '..\source\JvInterpreter_all.pas',
   JvInterpreter_Windows in '..\Source\JvInterpreter_Windows.pas',
   JvInterpreter_Classes in '..\Source\JvInterpreter_Classes.pas',
   JvInterpreter_ComCtrls in '..\Source\JvInterpreter_ComCtrls.pas',
