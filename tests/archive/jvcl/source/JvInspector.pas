@@ -12,7 +12,7 @@
 
  The Initial Developer of the Original Code is Marcel Bestebroer
   <marcelb@zeelandnet.nl>.
- Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
+ Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2003 mbeSoft.
  All Rights Reserved.
 
  ******************************************************************************
@@ -22,7 +22,7 @@
  anything you can think of (e.g. DataSet based or event based).
 
  You may retrieve the latest version of this file at the Project JEDI home
- page, located at http://www.delphi-jedi.org
+ page, located at http://jvcl.sourceforge.net
 -----------------------------------------------------------------------------}
 
 
@@ -56,6 +56,30 @@ resourcestring
   sJvInspNoGenReg = 'Unable to create generic item registration list.';
   sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
   sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
+  sJvInspIntDupDataInst = 'Internal error: two data instances pointing to the same data are registered.';
+  sJvInspItemDateSepExpected = 'A specifier should be placed before and after a separator.';
+  sJvInspItemDateSpecAllowedOnce = '''%s'' or ''%0:s%0:s'' only allowed once.';
+  sJvInspItemDateAllowedSpec = 'Only ''%s'' or ''%0:s%0:s'' are allowed.';
+  sJvInspItemDateTwoSepMax = 'Only two separators are allowed.';
+  sJvInspItemDateAllowedChars = 'Only ''d'', ''m'', ''y'' and ''%s'' are allowed.';
+  sJvInspItemDateSpecRequired = '''%s'' or ''%0:s%0:s'' is required.';
+  sJvInspItemTStringsEditorCaption = 'String list editor';
+  sJvInspItemTStringsEditorOKButtonWithAccelerator = '&OK';
+  SJvInspItemTStringsEditorOneLine = '1 line';
+  SJvInspItemTStringsEditorLines = '%d lines';
+  sJvInspItemTMethodInstanceRegWithOtherName = 'Instance already exists with another name.';
+  sJvInspItemTMethodNameLinkedWithOtherInstance = 'Name already exists for another instance.';
+  sJvInspItemTMethodInstanceNotFound = 'Instance does not exist.';
+  sJvInspItemTMethodMethodRegWithOtherName = 'Method already exists with another name.';
+  sJvInspItemTMethodNameLinkedWithOtherMethod = 'Name already exists for another method.';
+  sJvInspItemTMethodNamedInstanceNotFound = 'Instance named ''%s'' does not exist.';
+  sJvInspItemTMethodMethodNotFound = 'Method does not exist.';
+  sJvInspItemTMethodNamedMethodNotFound = 'Method named ''%s'' does not exist.';
+  sJvInspDataNoSeparateCreate = '%s cannot be created separately.';
+  sJvInspDataNoNewInstance = '%s does not allow a new instance to be created.';
+
+  sJvInspDataPropAssertPI_nil = 'PropInfo nil in TJvInspectorPropData.New';
+
 
 const
   { Inspector Row Size constants }
@@ -1984,7 +2008,7 @@ begin
   if I > -1 then
   begin
     if Items[I] <> Instance then
-      raise EJvInspectorData.Create('Internal error: two data instances pointing to the same data are registered.');
+      raise EJvInspectorData.Create(sJvInspIntDupDataInst);
     if I < High(FInstanceList) then
       Move(FInstanceList[I + 1], FInstanceList[I], (Length(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
     SetLength(FInstanceList, High(FInstanceList));
@@ -7420,31 +7444,31 @@ begin
       'd':
         begin
           if (DCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
-            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+            raise EJvInspectorData.Create(sJvInspItemDateSepExpected);
           if (DCount = 1) and (Value[I - 1] <> 'd') then
-            raise EJvInspectorData.Create('''d'' or ''dd'' should appear only once.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecAllowedOnce, ['d']);
           if (DCount = 2) then
-            raise EJvInspectorData.Create('Only ''d'' or ''dd'' are allowed.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateAllowedSpec, ['d']);
           Inc(DCount);
         end;
       'm':
         begin
           if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
-            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+            raise EJvInspectorData.Create(sJvInspItemDateSepExpected);
           if (MCount = 1) and (Value[I - 1] <> 'm') then
-            raise EJvInspectorData.Create('''m'' or ''mm'' should appear only once.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecAllowedOnce, ['m']);
           if (MCount = 2) then
-            raise EJvInspectorData.Create('Only ''m'' or ''mm'' are allowed.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateAllowedSpec, ['m']);
           Inc(MCount);
         end;
       'y':
         begin
           if (MCount = 0) and (I > 1) and (Value[I - 1] <>  DateSeparator) then
-            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+            raise EJvInspectorData.Create(sJvInspItemDateSepExpected);
           if (YCount > 1) and (YCount < 4) and (Value[I - 1] <> 'y') then
-            raise EJvInspectorData.Create('''yy'' or ''yyyy'' should appear only once.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecAllowedOnce, ['yy']);
           if (YCount = 4) then
-            raise EJvInspectorData.Create('Only ''yy'' or ''yyyy'' are allowed.');
+            raise EJvInspectorData.CreateFmt(sJvInspItemDateAllowedSpec, ['yy']);
           Inc(YCount);
         end;
       else
@@ -7452,24 +7476,24 @@ begin
         begin
           if ((SepCount = 0) and (I = 1)) or
               ((SepCount = 1) and ((Value[I - 1]) = DateSeparator) or (I = Length(Value))) then
-            raise EJvInspectorData.Create('A specifier should be placed before and after a separator.');
+            raise EJvInspectorData.Create(sJvInspItemDateSepExpected);
           if SepCount = 2 then
-            raise EJvInspectorData.Create('Only two separators are allowed.');
+            raise EJvInspectorData.Create(sJvInspItemDateTwoSepMax);
           Inc(SepCount);
         end
         else
-          raise EJvInspectorData.CreateFmt('Only ''d'', ''m'', ''y'' and ''%s'' are allowed', [DateSeparator]);
+          raise EJvInspectorData.CreateFmt(sJvInspItemDateAllowedChars, [DateSeparator]);
     end;
     Inc(I);
   end;
   if DCount = 0 then
-    raise EJvInspectorData.Create('''d'' or ''dd'' are required.');
+    raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecRequired, ['d']);
   if MCount = 0 then
-    raise EJvInspectorData.Create('''m'' or ''mm'' are required.');
+    raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecRequired, ['m']);
   if YCount = 0 then
-    raise EJvInspectorData.Create('''yy'' or ''yyyy'' are required.');
+    raise EJvInspectorData.CreateFmt(sJvInspItemDateSpecRequired, ['yy']);
   if (YCount = 1) or (YCount = 3) then
-    raise EJvInspectorData.Create('Only ''yy'' or ''yyyy'' are allowed.');
+    raise EJvInspectorData.CreateFmt(sJvInspItemDateAllowedSpec, ['yy']);
   if Value <> FFormat then
   begin
     WasEditing := Editing;
@@ -7636,7 +7660,7 @@ type
   constructor TSLEditorForm.CreateNew(AOwner: TComponent);
   begin
     inherited CreateNew(AOwner);
-    Caption := 'String list editor';
+    Caption := sJvInspItemTStringsEditorCaption;
     Width := 435;
     Height := 305;
     BorderIcons := [biSystemMenu];
@@ -7671,7 +7695,7 @@ type
     btnOK.Parent := Self;
     btnOK.ModalResult := mrOK;
     btnOK.Default := True;
-    btnOK.Caption := '&OK';
+    btnOK.Caption := sJvInspItemTStringsEditorOKButtonWithAccelerator;
     btnOK.Left := ClientWidth - 15 - 2 * btnOK.Width;
     btnOK.Top := ClientHeight - 5 - btnOK.Height;
     btnOK.Anchors := [akRight, akBottom];
@@ -7679,7 +7703,7 @@ type
     btnCancel.Parent := Self;
     btnCancel.ModalResult := mrCancel;
     btnCancel.Cancel := True;
-    btnCancel.Caption := 'Cancel';
+    btnCancel.Caption := SCancelButton;
     btnCancel.Left := ClientWidth - 10 - btnCancel.Width;
     btnCancel.Top := ClientHeight - 5 - btnCancel.Height;
     btnCancel.Anchors := [akRight, akBottom];
@@ -7693,9 +7717,9 @@ type
   begin
     I := mm.Lines.Count;
     if I <> 1 then
-      lbl.Caption := IntToStr(I) + ' lines'
+      lbl.Caption := Format(SJvInspItemTStringsEditorLines, [I])
     else
-      lbl.Caption := '1 line';
+      lbl.Caption := SJvInspItemTStringsEditorOneLine;
     if @OnContentsChanged <> nil then
       OnContentsChanged(Sender);
   end;
@@ -7995,9 +8019,9 @@ begin
   IdxInst := IndexOfInstance(Instance);
   IdxName := IndexOfInstance(InstanceName);
   if (IdxInst <> -1) and (IdxInst <> IdxName) then
-    raise EJvInspectorItem.Create('Instance already exists with another name.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceRegWithOtherName);
   if (IdxName <> -1) and (IdxInst <> IdxName) then
-    raise EJvInspectorItem.Create('Name already exists for another instance.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodNameLinkedWithOtherInstance);
   if IdxInst = -1 then
   begin
     IdxInst := FList.AddObject(InstanceName, TInstanceItem.Create);
@@ -8015,14 +8039,14 @@ var
 begin
   InstIdx := IndexOfInstance(Instance);
   if InstIdx = -1 then
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
   InstItem := TInstanceItem(FList.Objects[InstIdx]);
   MethodIdx := InstItem.IndexOf(MethodAddr);
   MethodNameIdx := InstItem.IndexOf(MethodName);
   if (MethodIdx <> -1) and (MethodNameIdx <> MethodIdx) then
-    raise EJvInspectorItem.Create('Method already exists with another name.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodMethodRegWithOtherName);
   if (MethodNameIdx <> -1) and (MethodNameIdx <> MethodIdx) then
-    raise EJvInspectorItem.Create('Name already exists for another method.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodNameLinkedWithOtherMethod);
   if MethodIdx = -1 then
     InstItem.AddMethod(MethodName, MethodAddr);
 end;
@@ -8240,7 +8264,7 @@ begin
   if Idx > -1 then
     DeleteInstance(Idx)
   else
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteInstance(const InstanceName: string);
@@ -8251,7 +8275,7 @@ begin
   if Idx > -1 then
     DeleteInstance(Idx)
   else
-    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(sJvInspItemTMethodNamedInstanceNotFound, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const Method: TMethod);
@@ -8268,10 +8292,10 @@ begin
     if MethodIdx > -1 then
       InstItem.DeleteMethod(MethodIdx)
     else
-      raise EJvInspectorItem.Create('Method does not exist.');
+      raise EJvInspectorItem.Create(sJvInspItemTMethodMethodNotFound);
   end
   else
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const Index: Integer);
@@ -8287,7 +8311,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, Index)
   else
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const Index: Integer);
@@ -8298,7 +8322,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, Index)
   else
-    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(sJvInspItemTMethodNamedInstanceNotFound, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceIndex: Integer; const MethodName: string);
@@ -8309,7 +8333,7 @@ begin
   if MethodIdx > -1 then
     DeleteMethod(InstanceIndex, MethodIdx)
   else
-    raise EJvInspectorItem.CreateFmt('Method named ''%s'' does not exist.', [MethodName]);
+    raise EJvInspectorItem.CreateFmt(sJvInspItemTMethodNamedMethodNotFound, [MethodName]);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const Instance: TObject; const MethodName: string);
@@ -8320,7 +8344,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, MethodName)
   else
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
 end;
 
 procedure TJvInspectorTMethodItem.DeleteMethod(const InstanceName: string; const MethodName: string);
@@ -8331,7 +8355,7 @@ begin
   if InstIdx > -1 then
     DeleteMethod(InstIdx, MethodName)
   else
-    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(sJvInspItemTMethodNamedInstanceNotFound, [InstanceName]);
 end;
 
 procedure TJvInspectorTMethodItem.ClearInstances;
@@ -8355,7 +8379,7 @@ begin
   if InstIdx > -1 then
     ClearMethods(InstIdx)
   else
-    raise EJvInspectorItem.Create('Instance does not exist.');
+    raise EJvInspectorItem.Create(sJvInspItemTMethodInstanceNotFound);
 end;
 
 procedure TJvInspectorTMethodItem.ClearMethods(const InstanceName: string);
@@ -8366,7 +8390,7 @@ begin
   if InstIdx > -1 then
     ClearMethods(InstIdx)
   else
-    raise EJvInspectorItem.CreateFmt('Instance named ''%s'' does not exist.', [InstanceName]);
+    raise EJvInspectorItem.CreateFmt(sJvInspItemTMethodNamedInstanceNotFound, [InstanceName]);
 end;
 
 function TJvInspectorTMethodItem.IndexOfInstance(const Instance: TObject): Integer;
@@ -8586,7 +8610,7 @@ end;
 
 constructor TJvCustomInspectorData.Create;
 begin
-  raise EJvInspectorData.Create(ClassName + ' cannot be created separately.');
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoSeparateCreate, [ClassName]);
 end;
 
 procedure TJvCustomInspectorData.BeforeDestruction;
@@ -8608,7 +8632,7 @@ end;
 
 class function TJvCustomInspectorData.New: TJvCustomInspectorData;
 begin
-  raise EJvInspectorData.Create(ClassName + ' does not allow a new instance to be created.');
+  raise EJvInspectorData.CreateFmt(sJvInspDataNoNewInstance, [ClassName]);
 end;
 
 function TJvCustomInspectorData.NewItem(
@@ -9153,7 +9177,7 @@ class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
 var
   Data: TJvInspectorPropData;
 begin
-  Assert(PropInfo <> nil, 'PropInfo nil in TJvInspectorPropData.New');
+  Assert(PropInfo <> nil, sJvInspDataPropAssertPI_nil);
   Data := CreatePrim(PropInfo.Name, PropInfo.PropType^);
   Data.Instance := AInstance;
   Data.Prop := PropInfo;
@@ -10493,7 +10517,7 @@ const
     (Value: irsNoReSize; Name: 'irsNoReSize'),
     (Value: irsNameHeight; Name: 'irsNameHeight'),
     (Value: irsValueHeight; Name: 'irsValueHeight'),
-    (Value: irsItemHeight; Name: 'irsItemHeight')
+    (Value: irsItemHeight; Name: 'irsItemHeight'),
   );
 
 function irsToInt(const Ident: string; var Int: Longint): Boolean;
