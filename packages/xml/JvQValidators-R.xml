@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQValidators" Design="0">
+  <Description>JVCLX Validators and Error Indicator Components</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQValidators.pas" Targets="D7,K3" Formname="" Condition="VisualCLX"/>
+    <File Name="..\..\qrun\JvQErrorIndicator.pas" Targets="D7,K3" Formname="" Condition="VisualCLX"/>
+  </Contains>
+</Package>
