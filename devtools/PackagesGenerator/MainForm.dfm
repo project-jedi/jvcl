@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 192
-  Top = 107
+  Left = 331
+  Top = 115
   Width = 800
   Height = 600
   Caption = 'JVCL Package editor and generator'
@@ -341,7 +341,7 @@ object frmMain: TfrmMain
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
         PopupMenu = jpmGridPopup
         TabOrder = 0
-        OnSetEditText = jsgFilesSetEditText
+        OnGetEditText = jsgFilesGetEditText
         Alignment = taLeftJustify
         FixedFont.Charset = DEFAULT_CHARSET
         FixedFont.Color = clWindowText
@@ -365,6 +365,7 @@ object frmMain: TfrmMain
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
         PopupMenu = jpmGridPopup
         TabOrder = 1
+        OnGetEditText = jsgFilesGetEditText
         OnSetEditText = jsgDependenciesSetEditText
         Alignment = taLeftJustify
         FixedFont.Charset = DEFAULT_CHARSET
