@@ -453,6 +453,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
     procedure Change; override;
+    procedure SetText(const AValue: string); override;
 
     procedure DataChanged; override; //Polaris
 
@@ -1928,6 +1929,12 @@ begin
   if not Formatting then
     FDataLink.Modified;
   inherited Change;
+end;
+
+procedure TJvDBCalcEdit.SetText(const AValue: string);
+begin
+  if not ReadOnly then
+    inherited SetText(AValue);
 end;
 
 //Polaris
