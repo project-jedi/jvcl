@@ -994,7 +994,7 @@ begin
   if Operation = opRemove then
     if AComponent = HeaderImages then
       HeaderImages := nil
-    else
+    else if not (csDestroying in ComponentState) and (AComponent is TPopupMenu) then
       for I := 0 to Items.Count - 1 do
         if TJvListItem(Items[I]).PopupMenu = AComponent then
           TJvListItem(Items[I]).PopupMenu := nil;
