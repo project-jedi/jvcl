@@ -829,14 +829,14 @@ begin
       GlobalPaths := TStringList.Create;
       CurPaths := TStringList.Create;
       Index := High(Paths);
-      while (Index > 0) and (StrLeft(Paths[Index], 1) <> '\') do
+      while (Index > 0) and (StrLeft(Paths[Index], 1) <> PathDelim) do
         Dec(Index);
       repeat
-        StrToStrings(Paths[Index], '\', CurPaths, False);
+        StrToStrings(Paths[Index], PathDelim, CurPaths, False);
         UpdateGlobalPath(GlobalPaths, CurPaths);
         Inc(Index);
       until Index > High(Paths);
-      Result := StringsToStr(GlobalPaths, '\', False);
+      Result := StringsToStr(GlobalPaths, PathDelim, False);
     finally
       CurPaths.Free;
       GlobalPaths.Free;
@@ -1060,7 +1060,7 @@ var
   ValueNamePos: Integer;
 begin
   AbsPath := GetAbsPath(Path);
-  ValueNamePos := LastDelimiter('\', AbsPath);
+  ValueNamePos := LastDelimiter(PathDelim, AbsPath);
   Key := StrLeft(AbsPath, ValueNamePos - 1);
   ValueName := StrRestOf(AbsPath, ValueNamePos + 1);
 end;
@@ -1086,8 +1086,8 @@ end;
 
 function TJvCustomAppStorage.GetAbsPath(const Path: string): string;
 begin
-  Result := GetRoot + '\' + OptimizePaths([GetPath, Path]);
-  while (Result <> '') and (Result[1] = '\') do
+  Result := GetRoot + PathDelim + OptimizePaths([GetPath, Path]);
+  while (Result <> '') and (Result[1] = PathDelim) do
     Delete(Result, 1, 1);
 end;
 
@@ -1296,7 +1296,7 @@ begin
       EnumFolders(SearchPath, TempList, False);
       for I := 0 to TempList.Count - 1 do
       begin
-        if (aeoFolders in Options) and IsFolder(SearchPath + '\' +
+        if (aeoFolders in Options) and IsFolder(SearchPath + PathDelim +
           TempList[I], aeoReportListAsValue in Options) then
         begin
           PrevIdx := Strings.IndexOf(PrefixPath + TempList[I]);
@@ -1307,8 +1307,8 @@ begin
             Strings.AddObject(PrefixPath + TempList[I], TObject(aptFolder));
         end;
         if aeoRecursive in Options then
-          InternalGetStoredValues(PrefixPath + TempList[I] + '\',
-            SearchPath + '\' + TempList[I],
+          InternalGetStoredValues(PrefixPath + TempList[I] + PathDelim,
+            SearchPath + PathDelim + TempList[I],
             Strings, Options);
       end;
     end;
@@ -1356,7 +1356,7 @@ end;
 
 function TJvCustomAppStorage.ListStoredInt(const Path: string): Boolean;
 begin
-  Result := ValueStoredInt(StrEnsureSuffix('\', Path) + cCount);
+  Result := ValueStoredInt(StrEnsureSuffix(PathDelim, Path) + cCount);
 end;
 
 function TJvCustomAppStorage.DoReadDateTime(const Path: string; Default: TDateTime): TDateTime;
@@ -1556,7 +1556,7 @@ class function TJvCustomAppStorage.NameIsListItem(const Name: string): Boolean;
 var
   NameStart: PChar;
 begin
-  NameStart := AnsiStrRScan(PChar(Name), '\');
+  NameStart := AnsiStrRScan(PChar(Name), PathDelim);
   if NameStart = nil then
     NameStart := PChar(Name);
   Result := (AnsiStrLIComp(NameStart, cItem, 4) = 0) and (NameStart[4] in DigitSymbols);
@@ -1572,15 +1572,15 @@ procedure TJvCustomAppStorage.ResolvePath(const InPath: string; out TargetStore:
 var
   SubStorageItem: TJvAppSubStorage;
 begin
-  TargetPath := '\' + ConcatPaths([Path, InPath]);
+  TargetPath := PathDelim + ConcatPaths([Path, InPath]);
   TargetStore := Self;
   SubStorageItem := SubStorages.MatchFor(TargetPath);
   if (SubStorageItem <> nil) and (SubStorageItem.AppStorage <> nil) then
   begin
     TargetStore := SubStorageItem.AppStorage;
     Delete(TargetPath, 1, Length(SubStorageItem.RootPath) + 1);
-    TargetPath := '\' + OptimizePaths([TargetPath]);
-    if TargetPath = '\' then
+    TargetPath := PathDelim + OptimizePaths([TargetPath]);
+    if TargetPath = PathDelim then
       raise EJVCLAppStorageError.CreateRes(@RsEInvalidPath);
   end;
 end;
@@ -2357,7 +2357,7 @@ begin
       InternalGetStoredValues('', SearchPath, Strings, Options)
     else
       InternalGetStoredValues(OptimizePaths([Self.Path, SearchPath]) +
-        '\', SearchPath, Strings, Options);
+        PathDelim, SearchPath, Strings, Options);
     I := Strings.IndexOf(OptimizePaths([Self.Path, SearchPath]));
     if I > -1 then
       Strings.Delete(I);
@@ -2521,7 +2521,7 @@ end;
 
 function TJvAppSubStorages.CheckUniqueBase(const APath: string; IgnoreIndex: Integer): Boolean;
 begin
-  Result := MatchFor(OptimizePaths([APath]) + '\*', IgnoreIndex) = nil;
+  Result := MatchFor(OptimizePaths([APath]) + PathDelim + '*', IgnoreIndex) = nil;
 end;
 
 function TJvAppSubStorages.MatchFor(APath: string; IgnoreIndex: Integer): TJvAppSubStorage;
@@ -2535,7 +2535,7 @@ begin
     if I <> IgnoreIndex then
       if StrLIComp(PChar(Items[I].RootPath), PChar(APath), Length(Items[I].RootPath)) = 0 then
         // Possible match. Check if next char is a \
-        if APath[Length(Items[I].RootPath) + 1] = '\' then
+        if APath[Length(Items[I].RootPath) + 1] = PathDelim then
           { Next char in APath is a backslash, so we have a valid match. Check with any previous
             to see if it is better than that one. }
           if (Result = nil) or (Length(Result.RootPath) < Length(Items[I].RootPath)) then
@@ -2570,7 +2570,7 @@ begin
   RootPath := OptimizePaths([RootPath]);
   if RootPath <> '' then
   begin
-    SubPath := RootPath + '\';
+    SubPath := RootPath + PathDelim;
     CmpLen := Length(SubPath);
     I := Count - 1;
     while I >= 0 do
@@ -2606,7 +2606,7 @@ end;
 function TJvAppSubStorage.GetDisplayName: string;
 begin
   if (RootPath <> '') and (AppStorage <> nil) then
-    Result := '\' + RootPath + '=' + AppStorage.Name
+    Result := PathDelim + RootPath + '=' + AppStorage.Name
   else
     Result := inherited GetDisplayName;
 end;
