@@ -30,6 +30,7 @@ Known Issues:
 {$I JEDI.INC}
 
 unit JvFunctions;
+{$OBJEXPORTALL On}
 
 interface
 
@@ -43,6 +44,8 @@ function IconToBitmap(ico: HIcon): TBitmap;
 // Transform an icon to a bitmap using an image list
 function IconToBitmap2(ico: HIcon;Size:integer=32;TransparentColor:TColor=clNone): TBitmap;
 {$EXTERNALSYM IconToBitmap2}
+function IconToBitmap3(ico:HIcon; Size:integer=32; TransparentColor: TColor=clNone): TBitmap;
+{$EXTERNALSYM IconToBitmap3}
 
 //Open an object with the shell (url or something like that)
 procedure OpenObject(Value: PChar); overload;
@@ -56,6 +59,7 @@ procedure RaiseLastWin32; overload;
 procedure RaiseLastWin32(Text: string); overload;
 {$EXTERNALSYM RaiseLastWin32}
 //Raise the last Exception with a small comment from your part
+
 //Same as linux function ;)
 procedure PError(Text: string);
 {$EXTERNALSYM PError}
@@ -260,15 +264,45 @@ begin
   // (p3) this seems to generate "better" bitmaps...
   with TImageList.CreateSize(Size,Size) do
   try
-//    DrawingStyle := dsTransparent;
+    Masked := true;
+    BkColor := TransparentColor;
     ImageList_AddIcon(Handle,ico);
     Result := TBitmap.Create;
+    Result.PixelFormat := pf24bit;
     if TransparentColor <> clNone then
-      Result.TransparentColor := TransparentColor; 
+      Result.TransparentColor := TransparentColor;
     Result.Transparent := true;
     GetBitmap(0,Result);
   finally
     Free;
+  end;
+end;
+
+function IconToBitmap3(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
+var
+  Icon: TIcon; tmp: TBitmap;
+begin
+  Icon := TIcon.Create;
+  tmp := TBitmap.Create;
+  try
+    Icon.Handle := CopyIcon(ico);
+    Result := TBitmap.Create;
+  Result.Width := Icon.Width;
+  Result.Height := Icon.Height;
+    Result.PixelFormat := pf24bit;
+    // fill the bitmap with the transparant color
+    Result.Canvas.Brush.Color := TransparentColor;
+    Result.Canvas.FillRect(Rect(0, 0, Result.Width, Result.Height));
+    Result.Canvas.Draw(0, 0, Icon);
+    Result.TransparentColor := TransparentColor;
+    tmp.Assign(Result);
+    Result.Width := Size;
+    Result.Height := Size;
+    Result.Canvas.StretchDraw(Rect(0, 0, Size, Size), tmp);
+    Result.Transparent := True;
+  finally
+    Icon.Free;
+    tmp.Free;
   end;
 end;
 
