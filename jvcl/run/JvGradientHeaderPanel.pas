@@ -31,7 +31,13 @@ unit JvGradientHeaderPanel;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Messages, Graphics, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QStdCtrls,
+  {$ENDIF VisualCLX}
   JvGradient, JvTypes, JvComponent;
 
 type
@@ -72,8 +78,13 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
+    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure AdjustSize; override;
+    {$ENDIF VisualCLX}
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
   public
@@ -99,42 +110,44 @@ type
     property LabelAlignment: TAlignment read GetLabelAlignment write SetLabelAlignment;
     property Align;
     property Anchors;
+    {$IFDEF VCL}
     property AutoSize;
     property BevelEdges;
     property BevelInner;
     property BevelKind;
     property BevelOuter;
     property BevelWidth;
-    property BiDiMode;
     property BorderWidth;
+    {$ENDIF VCL}
     property Constraints;
+    {$IFDEF VCL}
     property DockSite;
     property DoubleBuffered;
-    property DragCursor;
-    property DragKind;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
-    property ParentBiDiMode;
     property ParentShowHint;
     property PopupMenu;
     property TabOrder;
     property TabStop;
     property Visible;
+    {$IFDEF VCL}
     property OnCanResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnGetSiteInfo;
+    property OnUnDock;
+    {$ENDIF}
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
-    property OnDockDrop;
-    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetSiteInfo;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -145,9 +158,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    property OnStartDock;
     property OnStartDrag;
-    property OnUnDock;
   end;
 
 implementation
@@ -349,7 +360,12 @@ begin
   AdjustLabelWidth;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvGradientHeaderPanel.AdjustSize;
+{$ENDIF}
+{$IFDEF VCL}
 procedure TJvGradientHeaderPanel.WMSize(var Msg: TWMSize);
+{$ENDIF VCL}
 begin
   inherited;
   AdjustLabelWidth;

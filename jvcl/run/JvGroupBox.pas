@@ -89,7 +89,9 @@ begin
   FOver := False;
   FPropagateEnable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
+  {$ENDIF JVCLThemesEnabledD56}
 end;
 
 procedure TJvGroupBox.Paint;

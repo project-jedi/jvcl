@@ -358,8 +358,9 @@ constructor TJvCustomDropButton.Create(AOWner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csSetCaption];
+  {$IFDEF VCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-
+  {$ENDIF VCL}
   FArrowWidth := 13;
   Width := 42;
   Height := 21;

@@ -62,7 +62,9 @@ type
     procedure DoKillFocusEvent(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
     procedure DoShow; override;
+    {$IFDEF VCL}
     procedure CreateParams(var AParams: TCreateParams); override;
+    {$ENDIF VCL}
     property Edit: TCustomEdit read GetEdit;
   public
     constructor Create(AOwner: TComponent); override;
@@ -82,6 +84,14 @@ uses
   SysUtils,
   JvConsts, JvResources;
 
+const
+{$IFDEF VCL}
+  NilHandle = 0;
+{$ENDIF}
+{$IFDEF VisualCLX}
+  NilHandle = nil;
+{$ENDIF}
+
 function IsChildWindow(const AChild, AParent: HWND): Boolean;
 var
   LParent: HWND;
@@ -89,9 +99,9 @@ begin
  {determines whether a window is the child (or grand^x-child) of another}
   LParent := AChild;
   // (rom) changed to while loop
-  while (LParent <> AParent) and (LParent <> 0) do
+  while (LParent <> AParent) and (LParent <> NilHandle) do
     LParent := GetParent(LParent);
-  Result := (LParent = AParent) and (LParent <> 0);
+  Result := (LParent = AParent) and (LParent <> NilHandle);
 end;
 
 type
@@ -105,7 +115,12 @@ begin
   inherited CreateNew(AOwner);
 
   BorderIcons := [];
+  {$IFDEF VCL}
   BorderStyle := bsNone;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  BorderStyle := fbsNone;
+  {$ENDIF VisualCLX}
   Font := TCustomEditHack(AOwner).Font;
 
   FEntering := True;
@@ -119,11 +134,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomDropDownForm.CreateParams(var AParams: TCreateParams);
 begin
   inherited CreateParams(AParams);
   AParams.Style := AParams.Style or WS_BORDER;
 end;
+{$ENDIF}
 
 procedure TJvCustomDropDownForm.DoClose(var Action: TCloseAction);
 begin
@@ -136,7 +153,9 @@ var
   LScreenRect: TRect;
 begin
   inherited DoShow;
+  {$IFDEF VCL}
   if (not SystemParametersInfo(SPI_GETWORKAREA, 0, @lScreenRect, 0)) then
+  {$ENDIF VCL}
     LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
   if (Left + Width > LScreenRect.Right) then
     Left := LScreenRect.Right - Width;
