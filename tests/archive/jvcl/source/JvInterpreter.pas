@@ -366,6 +366,7 @@ type
     FISetList: TJvInterpreterIdentifierList; // write indexed properties
     FIDGetList: TJvInterpreterIdentifierList; // read default indexed properties
     FIDSetList: TJvInterpreterIdentifierList; // write default indexed properties
+    FIntfGetList: TJvInterpreterIdentifierList;  // interface methods
     FDGetList: TJvInterpreterIdentifierList; // direct get list
     FClassList: TJvInterpreterIdentifierList; // delphi classes
     FConstList: TJvInterpreterIdentifierList; // delphi consts
@@ -434,6 +435,12 @@ type
       dynamic;
     procedure AddClassEx(UnitName: string; AClassType: TClass; Identifier: string;
       Data: Pointer); dynamic;
+    procedure AddIntfGet(IID: TGUID; Identifier: string;
+      GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+      ParamTypes: array of Word; ResTyp: Word);
+    procedure AddIntfGetEx(IID: TGUID; Identifier: string;
+      GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+      ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
     procedure AddGet(AClassType: TClass; Identifier: string;
       GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
       ParamTypes: array of Word; ResTyp: Word); dynamic;
@@ -970,6 +977,15 @@ type
     Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
   end;
 
+  TJvInterpreterIntfMethod = class(TJvInterpreterIdentifier)
+  private
+    IID: TGUID;
+    ParamCount: TParamCount;
+    ParamTypes: TTypeArray; { varInteger, varString, .. }
+    ResTyp: Word; { varInteger, varString, .. }
+    Func: Pointer; { TJvInterpreterAdapterGetValue or TJvInterpreterAdapterSetValue }
+  end;
+
   TJvInterpreterDMethod = class(TJvInterpreterMethod)
   private
     ResTyp: Word;
@@ -1242,6 +1258,7 @@ begin
     case TVarData(V[i]).VType of
       varInteger, varSmallInt:
         begin
+          OAValues[i] := V[i];
           OA[i].vInteger := V[i];
           OA[i].VType := vtInteger;
         end;
@@ -1255,11 +1272,13 @@ begin
         end;
       varBoolean:
         begin
+          OAValues[i] := V[i];
           OA[i].vBoolean := V[i];
           OA[i].VType := vtBoolean;
         end;
       varDouble, varCurrency:
         begin
+          OAValues[i] := V[i];
           OA[i].vExtended := TVarData(V[i]).vPointer;
           OA[i].VType := vtExtended;
         end;
@@ -2332,6 +2351,7 @@ begin
   FOwner := AOwner;
   FSrcUnitList := TJvInterpreterIdentifierList.Create;
   FExtUnitList := TJvInterpreterIdentifierList.Create;
+  FIntfGetList := TJvInterpreterIdentifierList.Create;
   FGetList     := TJvInterpreterMethodList.Create;
   FSetList     := TJvInterpreterMethodList.Create;
   FIGetList    := TJvInterpreterMethodList.Create;
@@ -2354,6 +2374,7 @@ begin
   FSrcVarList       := TJvInterpreterVarList.Create;
   FSrcClassList     := TJvInterpreterIdentifierList.Create;
 
+  FIntfGetList.Duplicates := dupAccept;
   FGetList.Duplicates  := dupAccept;
   FSetList.Duplicates  := dupAccept;
   FIGetList.Duplicates := dupAccept;
@@ -2365,6 +2386,7 @@ begin
   Clear;
   FSrcUnitList.Free;
   FExtUnitList.Free;
+  FIntfGetList.Free;
   FGetList.Free;
   FSetList.Free;
   FIGetList.Free;
@@ -2400,6 +2422,7 @@ end;
 procedure TJvInterpreterAdapter.ClearNonSource;
 begin
   ClearList(FExtUnitList);
+  ClearList(FIntfGetList);
   ClearList(FGetList);
   ClearList(FSetList);
   ClearList(FIGetList);
@@ -2450,6 +2473,9 @@ begin
   for i := 0 to Source.FIDSetList.Count - 1 do
     with TJvInterpreterMethod(Source.FIDSetList[i]) do
       AddIDSetEx(FClassType, Func, ParamCount, ParamTypes, Data);
+  for i := 0 to Source.FIntfGetList.Count - 1 do
+    with TJvInterpreterIntfMethod(Source.FIntfGetList[i]) do
+       AddIntfGetEx(IID, Identifier, Func, ParamCount, ParamTypes, ResTyp, Data);
   for i := 0 to Source.FDGetList.Count - 1 do
     with TJvInterpreterDMethod(Source.FDGetList[i]) do
       AddDGetEx(FClassType, Identifier, Func, ParamCount, ParamTypes, ResTyp,
@@ -2647,6 +2673,31 @@ begin
   JvInterpreterMethod.Data := Data;
   ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
   FIDGetList.Add(JvInterpreterMethod);
+end;
+
+procedure TJvInterpreterAdapter.AddIntfGet(IID: TGUID; Identifier: string;
+  GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+  ParamTypes: array of Word; ResTyp: Word);
+begin
+  AddIntfGetEx(IID, Identifier, GetFunc, ParamCount, ParamTypes, ResTyp, nil);
+end;
+
+procedure TJvInterpreterAdapter.AddIntfGetEx(IID: TGUID; Identifier: string;
+  GetFunc: TJvInterpreterAdapterGetValue; ParamCount: Integer;
+  ParamTypes: array of Word; ResTyp: Word; Data: Pointer);
+var
+  JvInterpreterMethod: TJvInterpreterIntfMethod;
+begin
+  JvInterpreterMethod := TJvInterpreterIntfMethod.Create;
+  JvInterpreterMethod.IID := IID;
+  JvInterpreterMethod.Identifier := Identifier;
+  JvInterpreterMethod.Func := @GetFunc;
+  JvInterpreterMethod.ParamCount := ParamCount;
+  JvInterpreterMethod.ResTyp := ResTyp;
+  JvInterpreterMethod.Data := Data;
+  ConvertParamTypes(ParamTypes, JvInterpreterMethod.ParamTypes);
+  FIntfGetList.Add(JvInterpreterMethod);
+  FSorted := False;  // Ivan_ra
 end;
 
 procedure TJvInterpreterAdapter.AddDGet(AClassType: TClass; Identifier: string;
@@ -3107,6 +3158,34 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
     end;
   end;
 
+  function IntfGetMethod: boolean;
+  var
+    i: Integer;
+    JvInterpreterMethod: TJvInterpreterIntfMethod;
+    Intf: IUnknown;
+  begin
+    Result := False;
+    if FIntfGetList.Find(Identifier, i) then
+      for i := i to FIntfGetList.Count - 1 do
+      begin
+        JvInterpreterMethod := TJvInterpreterIntfMethod(FIntfGetList[i]);
+        if Assigned(JvInterpreterMethod.Func) and
+          ((Args.ObjTyp = varUnknown) and
+          (IUnknown(Pointer(Args.Obj)).QueryInterface(JvInterpreterMethod.IID, Intf) = S_OK)) then
+        begin
+          Args.Identifier := Identifier;
+          CheckAction(Expression, Args, JvInterpreterMethod.Data);
+          CheckArgs(Args, JvInterpreterMethod.ParamCount,
+            JvInterpreterMethod.ParamTypes);
+          TJvInterpreterAdapterGetValue(JvInterpreterMethod.Func)(Value, Args);
+          Result := True;
+          Exit;
+        end;
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
+          Break;
+      end;
+  end;
+
   function IGetMethod: Boolean;
   var
     i: Integer;
@@ -3461,6 +3540,11 @@ begin
       if Args.ObjTyp in [varObject, varClass] then
       begin
         if GetMethod or DGetMethod then
+          Exit;
+      end
+      else if Args.ObjTyp = varUnknown then
+      begin
+        if IntfGetMethod then
           Exit;
       end
       else if Args.ObjTyp = varRecord then
@@ -3928,6 +4012,8 @@ begin
       Value := O2V(TObject(GetOrdProp(Args.Obj, PropInf)));
     tkSet:
       Value := S2V(GetOrdProp(Args.Obj, PropInf));
+    tkInterface:
+
   else
     Exit;
   end;
@@ -4057,6 +4143,7 @@ begin
   FClassList.Sort;
   FFunList.Sort;
   FGetList.Sort;
+  FIntfGetList.Sort;
   FSetList.Sort;
   FIGetList.Sort;
   FISetList.Sort;
@@ -4521,6 +4608,9 @@ var
             if TVarData(Tmp).VType in [varObject, varClass, varSet, varPointer] then
               Result := TVarData(Tmp).VInteger <>
                 TVarData(Expression(TTyp)).VInteger
+            else if TVarData(Tmp).VType in [varUnknown] then
+              Result := TVarData(Tmp).VUnknown <>
+                TVarData(Expression(TTyp)).VUnknown
             else
               Result := Tmp <> Expression(TTyp)
           end
@@ -4822,7 +4912,7 @@ begin
     if TTyp <> ttIdentifier then
       ErrorExpected(LoadStr2(irIdentifier));
     if not (TVarData(Result).VType in
-      [varObject, varClass, varRecord, varDispatch]) then
+      [varObject, varClass, varRecord, varDispatch, varUnknown]) then
       JvInterpreterError(ieROCRequired, PosBeg);
 
     V := Null;
