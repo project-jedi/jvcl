@@ -200,7 +200,7 @@ end;
 
 procedure TfrmGenDonate.SortAuthorsSortName;
 begin
-  TStringList(AuthorList).Sort;
+  TStringList(AuthorList).CustomSort(CompareAuthors);
 end;
 
 procedure TfrmGenDonate.WriteOutAuthors;

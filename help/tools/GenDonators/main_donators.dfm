@@ -59,7 +59,6 @@ object frmGenDonate: TfrmGenDonate
         Caption = 'Sorting name'
         Width = 389
       end>
-    Ctl3D = True
     OwnerData = True
     ReadOnly = True
     RowSelect = True
@@ -73,7 +72,7 @@ object frmGenDonate: TfrmGenDonate
     Left = 395
     Top = 25
     Width = 391
-    Height = 11
+    Height = 19
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 3
