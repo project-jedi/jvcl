@@ -32,36 +32,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, CheckLst;
+  StdCtrls, CheckLst, JVCLVer;
 
-// *** Important to include this constant showing your version #
-const
-  TJvComponent_VERSION = '5.01';
 
 type
   TJvMultiselectChecklistBox = class(TChecklistbox)
   private
-    function GetAboutMe: string;
-    procedure SetAboutMe(const Value: string);
+    FAboutJVCL: TJVCLAboutInfo;
   published
     { Published declarations }
-    property AboutMe: string read GetAboutMe write SetAboutMe stored False;
+    property AboutJVCL:TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
 
     property Multiselect;
   end;
 
 implementation
-
-{ TJvMultiselectChecklistBox }
-
-function TJvMultiselectChecklistBox.GetAboutMe: string;
-begin
-  Result := 'Version: ' + TJvComponent_VERSION;
-end;
-
-procedure TJvMultiselectChecklistBox.SetAboutMe(const Value: string);
-begin
-
-end;
 
 end.
