@@ -26,7 +26,6 @@ description : Language specific constant for English
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvCtlConst;
@@ -34,48 +33,47 @@ unit JvCtlConst;
 interface
 
 const
-
- {RegAutoEditor}
+  {RegAutoEditor}
   sRegAutoEditorEdtPropHint    = 'You can type property name here';
   sRegAutoEditorTreeHint       = 'Available properties';
   sRegAutoEditorListHint       = 'Stored properties';
   sRegAutoEditorBtnAddPropHint = 'Add/Remove property';
   sRegAutoEditorSort           = 'Sort';
 
- {JvEditor}
+  {JvEditor}
   RAEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
-{IParser}
- {$IFDEF Delphi}
+  {IParser}
+  {$IFDEF Delphi}
   StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
   StConstSymbols10 = ['0'..'9'];
   StSeparators     = ['(', ')', ',', '.', ';'];
- {$ENDIF Delphi}
- {$IFDEF BCB}
+  {$ENDIF Delphi}
+  {$IFDEF BCB}
   StIdSymbols      = '_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StIdFirstSymbols = '_QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
   StConstSymbols   = '0123456789ABCDEFabcdef';
   StConstSymbols10 = '0123456789';
   StSeparators     = '(),.;';
- {$ENDIF BCB}
+  {$ENDIF BCB}
 
-{$IFDEF RAINTER}
- {RAInter}
+  {$IFDEF RAINTER}
+  {RAInter}
   RAIIdSymbols      = ['0'..'9', 'A'..'Z', 'a'..'z',  '_'];
   RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
-{$ENDIF RAINTER}
+  {$ENDIF RAINTER}
 
-{$IFDEF COMPILER2}
+  {$IFDEF COMPILER2}
   SScrollBarRange = 'Scrollbar value out of bounds';
-{$ENDIF}
+  {$ENDIF}
 
- {JvDlg}
+  {JvDlg}
   SOk = 'OK';
   SCancel = 'Cancel';
 
- { Menu Designer }
+  { Menu Designer }
   SMDMenuDesigner       = 'Menu &Designer';
   SMDInsertItem         = '&Insert';
   SMDDeleteItem         = '&Delete';
@@ -83,14 +81,13 @@ const
 
   SCantGetShortCut      = 'Target FileName for ShortCut %s not available';
 
-
- { RALib 1.23 } 
+  { RALib 1.23 }
   SPropertyNotExists    = 'Property "%s" does not exists';
   SInvalidPropertyType  = 'Property "%s" has invalid type';
 
- { RALib 1.55 }
+  { RALib 1.55 }
 
- {JvHLEdPropDlg}
+  {JvHLEdPropDlg}
   SHLEdPropDlg_Caption = 'Editor Properties';
   SHLEdPropDlg_tsEditor = 'Editor';
   SHLEdPropDlg_tsColors = 'Colors';

@@ -29,6 +29,7 @@ Known Issues:
 unit JvCtrls;
 
 {$I JVCL.INC}
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
@@ -40,7 +41,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ImgList, ActnList, JclBase, JVCLVer, JvListBox;
+  StdCtrls, ImgList, ActnList,
+  JclBase,
+  JVCLVer, JvListBox;
 
 type
 
@@ -85,9 +88,9 @@ type
     property TabWidth;
     property Visible;
     property OnClick;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
+    {$ENDIF}
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -179,15 +182,15 @@ type
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-    procedure CNMeasureItem(var Message: TWMMeasureItem); message CN_MEASUREITEM;
-    procedure WMDestroy(var Message: TWMDestroy); message WM_DESTROY;
-    procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
-    procedure WMTimer(var Message: TWMTimer); message WM_TIMER;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
+    procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
@@ -256,16 +259,14 @@ resourcestring
 
 const
   JvImgBtnLineSeparator = '|';
-  JvImgBtnModalResults: array[TJvImgBtnKind] of TModalResult =
-  (mrNone, mrOk, mrCancel, mrNone, mrYes, mrNo, mrNone, mrAbort, mrRetry,
-    mrIgnore, mrAll);
+  JvImgBtnModalResults: array [TJvImgBtnKind] of TModalResult =
+    (mrNone, mrOk, mrCancel, mrNone, mrYes, mrNo, mrNone,
+     mrAbort, mrRetry, mrIgnore, mrAll);
 
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
 var
   DefaultImgBtnImagesList: TImageList = nil;
-
-{ TJvImgBtnActionLink }
 
 procedure TJvImgBtnActionLink.AssignClient(AClient: TObject);
 begin
@@ -284,8 +285,6 @@ begin
   if IsImageIndexLinked then
     FClient.ImageIndex := Value;
 end;
-
-{ TJvImgBtn }
 
 procedure TJvImgBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 begin
@@ -354,7 +353,7 @@ begin
         if Form <> nil then
           Form.Close
         else
-          inherited;
+          inherited Click;
       end;
     bkHelp:
       begin
@@ -364,30 +363,31 @@ begin
         if Control <> nil then
           Application.HelpContext(Control.HelpContext)
         else
-          inherited;
+          inherited Click;
       end;
   else
-    inherited;
+    inherited Click;
   end;
 end;
 
-procedure TJvImgBtn.CMEnabledChanged(var Message: TMessage);
+procedure TJvImgBtn.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvImgBtn.CMFontChanged(var Message: TMessage);
+procedure TJvImgBtn.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvImgBtn.CMMouseEnter(var Message: TMessage);
+procedure TJvImgBtn.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FMouseInControl and Enabled and (GetCapture = 0) then
   begin
     FMouseInControl := True;
@@ -395,7 +395,7 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CMMouseLeave(var Message: TMessage);
+procedure TJvImgBtn.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FMouseInControl and Enabled and not Dragging then
@@ -405,23 +405,23 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvImgBtn.CNDrawItem(var Msg: TWMDrawItem);
 begin
-  FCanvas.Handle := Message.DrawItemStruct^.hDC;
+  FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   try
     FCanvas.Font := Font;
     if FOwnerDraw and Assigned(FOnButtonDraw) then
-      FOnButtonDraw(Self, Message.DrawItemStruct^)
+      FOnButtonDraw(Self, Msg.DrawItemStruct^)
     else
-      DrawItem(Message.DrawItemStruct^);
+      DrawItem(Msg.DrawItemStruct^);
   finally
     FCanvas.Handle := 0;
   end;
 end;
 
-procedure TJvImgBtn.CNMeasureItem(var Message: TWMMeasureItem);
+procedure TJvImgBtn.CNMeasureItem(var Msg: TWMMeasureItem);
 begin
-  with Message.MeasureItemStruct^ do
+  with Msg.MeasureItemStruct^ do
   begin
     itemWidth := Width;
     itemHeight := Height;
@@ -454,7 +454,7 @@ end;
 
 procedure TJvImgBtn.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   if FAnimate then
     StartAnimate;
 end;
@@ -597,10 +597,9 @@ end;
 
 function TJvImgBtn.GetCustomCaption: string;
 const
-  Captions: array[TJvImgBtnKind] of string =
-  ('', SOKButton, SCancelButton, SHelpButton, SYesButton, SNoButton,
-    SCloseButton, SAbortButton, SRetryButton, SIgnoreButton,
-    SAllButton);
+  Captions: array [TJvImgBtnKind] of string =
+    ('', SOKButton, SCancelButton, SHelpButton, SYesButton, SNoButton,
+      SCloseButton, SAbortButton, SRetryButton, SIgnoreButton, SAllButton);
 begin
   Result := Captions[FKind];
 end;
@@ -627,8 +626,8 @@ end;
 
 function TJvImgBtn.GetKindImageIndex: Integer;
 const
-  ImageKindIndexes: array[TJvImgBtnKind] of Integer =
-  (-1, 2, 4, 0, 3, 1, 5, 8, 6, 9, 7);
+  ImageKindIndexes: array [TJvImgBtnKind] of Integer =
+    (-1, 2, 4, 0, 3, 1, 5, 8, 6, 9, 7);
 begin
   Result := ImageKindIndexes[FKind];
 end;
@@ -669,7 +668,7 @@ end;
 
 procedure TJvImgBtn.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if FAnimate then
     StartAnimate;
 end;
@@ -859,23 +858,23 @@ begin
   end;
 end;
 
-procedure TJvImgBtn.WMDestroy(var Message: TWMDestroy);
+procedure TJvImgBtn.WMDestroy(var Msg: TWMDestroy);
 begin
   StopAnimate;
   inherited;
 end;
 
-procedure TJvImgBtn.WMLButtonDblClk(var Message: TWMLButtonDblClk);
+procedure TJvImgBtn.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
-  Perform(WM_LBUTTONDOWN, Message.Keys, Longint(Message.Pos));
+  Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
 end;
 
-procedure TJvImgBtn.WMTimer(var Message: TWMTimer);
+procedure TJvImgBtn.WMTimer(var Msg: TWMTimer);
 begin
-  if Message.TimerID = 1 then
+  if Msg.TimerID = 1 then
   begin
     ShowNextFrame;
-    Message.Result := 1;
+    Msg.Result := 1;
   end
   else
     inherited;

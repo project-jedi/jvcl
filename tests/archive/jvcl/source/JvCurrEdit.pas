@@ -25,26 +25,24 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
-
 unit JvCurrEdit;
 
 interface
 
-uses SysUtils, Windows, Messages, Classes, Graphics, Controls, Menus, Forms, StdCtrls, Mask,
-  Buttons, JvToolEdit;
+uses
+  SysUtils, Windows, Messages, Classes, Graphics, Controls, Menus,
+  Forms, StdCtrls, Mask, Buttons,
+  JvToolEdit;
 
 type
-
-{ TJvCustomNumEdit }
-
   TJvCustomNumEdit = class(TJvCustomComboEdit)
   private
     FCanvas: TControlCanvas;
     FAlignment: TAlignment;
     FFocused: Boolean;
     FValue: Extended;
-    FMinValue, FMaxValue: Extended;
+    FMinValue: Extended;
+    FMaxValue: Extended;
     FDecimalPlaces: Cardinal;
     FBeepOnError: Boolean;
     FCheckOnExit: Boolean;
@@ -71,18 +69,18 @@ type
     function TextToValText(const AValue: string): string;
     function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Message: TCMExit); message CM_EXIT;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure WMPaste(var Message: TMessage); message WM_PASTE;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
+    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure AcceptValue(const Value: Variant); override;
-{$ELSE}
+    {$ELSE}
     procedure AcceptValue(const Value: string); override;
-{$ENDIF}
+    {$ENDIF}
     procedure Change; override;
     procedure ReformatEditText; dynamic;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
@@ -125,8 +123,6 @@ type
     property Value: Extended read GetValue write SetValue;
   end;
 
-{ TJvxCurrencyEdit }
-
   TJvxCurrencyEdit = class(TJvCustomNumEdit)
   protected
     function DefaultDisplayFormat: string; override;
@@ -149,19 +145,19 @@ type
     property Font;
     property FormatOnEditing;
     property HideSelection;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-  {$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFNDEF VER90}
     property ImeMode;
     property ImeName;
-  {$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property MaxLength;
     property MaxValue;
     property MinValue;
@@ -192,16 +188,16 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF WIN32}
+    {$ENDIF}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipBoardCommands;
     property DisabledTextColor;
@@ -209,14 +205,10 @@ type
     (* -- RDB -- *)
   end;
 
-{ TJvCustomCalcEdit }
-
   TJvCustomCalcEdit = class(TJvCustomNumEdit)
   public
     constructor Create(AOwner: TComponent); override;
   end;
-
-{ TJvCalcEdit }
 
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
@@ -243,19 +235,19 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-  {$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFNDEF VER90}
     property ImeMode;
     property ImeName;
-  {$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property MaxLength;
     property MaxValue;
     property MinValue;
@@ -289,16 +281,16 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF WIN32}
+    {$ENDIF}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipBoardCommands;
     property DisabledTextColor;
@@ -308,21 +300,23 @@ type
 
 implementation
 
-uses Consts, JvStrUtils, JvVCLUtils, JvMaxMin, JvCalc;
+uses
+  Consts,
+  JvStrUtils, JvVCLUtils, JvMaxMin, JvCalc;
 
- {$R *.Res}
+{$R *.Res}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
   CalcBitmap: TBitmap = nil;
 
 type
-  TJvHack = class(TJvPopupWindow);
+  TJvPopupWindowHack = class(TJvPopupWindow);
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
   I: Integer;
-  Buffer: array[0..63] of Char;
+  Buffer: array [0..63] of Char;
 begin
   Result := False;
   for I := 1 to Length(Value) do
@@ -340,26 +334,31 @@ begin
   Result := '';
   MaxSym := Length(S);
   IsSign := (MaxSym > 0) and (S[1] in ['-', '+']);
-  if IsSign then MinSym := 2
-  else MinSym := 1;
+  if IsSign then
+    MinSym := 2
+  else
+    MinSym := 1;
   I := Pos(DecimalSeparator, S);
-  if I > 0 then MaxSym := I - 1;
+  if I > 0 then
+    MaxSym := I - 1;
   I := Pos('E', AnsiUpperCase(S));
-  if I > 0 then MaxSym := Min(I - 1, MaxSym);
+  if I > 0 then
+    MaxSym := Min(I - 1, MaxSym);
   Result := Copy(S, MaxSym + 1, MaxInt);
   Group := 0;
-  for I := MaxSym downto MinSym do begin
+  for I := MaxSym downto MinSym do
+  begin
     Result := S[I] + Result;
     Inc(Group);
-    if (Group = 3) and Thousands and (I > MinSym) then begin
+    if (Group = 3) and Thousands and (I > MinSym) then
+    begin
       Group := 0;
       Result := ThousandSeparator + Result;
     end;
   end;
-  if IsSign then Result := S[1] + Result;
+  if IsSign then
+    Result := S[1] + Result;
 end;
-
-{ TJvCustomNumEdit }
 
 constructor TJvCustomNumEdit.Create(AOwner: TComponent);
 begin
@@ -389,7 +388,8 @@ destructor TJvCustomNumEdit.Destroy;
 begin
   FCanvas.Free;
   //DisposeStr(FDisplayFormat);
-  if FPopup <> nil then begin
+  if FPopup <> nil then
+  begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
     FPopup.Free;
     FPopup := nil;
@@ -400,7 +400,8 @@ end;
 function TJvCustomNumEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
 begin
   DestroyNeeded := False;
-  if CalcBitmap = nil then begin
+  if CalcBitmap = nil then
+  begin
     CalcBitmap := TBitmap.Create;
     CalcBitmap.Handle := LoadBitmap(hInstance, sCalcBmp);
   end;
@@ -430,11 +431,15 @@ begin
   System.Insert(Key, S, SelStart + 1);
   S := TextToValText(S);
   DecPos := Pos(DecimalSeparator, S);
-  if (DecPos > 0) then begin
+  if (DecPos > 0) then
+  begin
     SelStart := Pos('E', UpperCase(S));
-    if (SelStart > DecPos) then DecPos := SelStart - DecPos
-    else DecPos := Length(S) - DecPos;
-    if DecPos > Integer(FDecimalPlaces) then Exit;
+    if SelStart > DecPos then
+      DecPos := SelStart - DecPos
+    else
+      DecPos := Length(S) - DecPos;
+    if DecPos > Integer(FDecimalPlaces) then
+      Exit;
   end;
   Result := IsValidFloat(S, RetValue);
   if Result and (FMinValue >= 0) and (FMaxValue > 0) and (RetValue < 0) then
@@ -447,17 +452,21 @@ begin
     '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
     [ThousandSeparator]) then
   begin
-    TJvHack(FPopup).KeyPress(Key);
+    TJvPopupWindowHack(FPopup).KeyPress(Key);
     Key := #0;
   end;
   if Key in ['.', ','] - [ThousandSeparator] then
     Key := DecimalSeparator;
   inherited KeyPress(Key);
-  if (Key in [#32..#255]) and not IsValidChar(Key) then begin
-    if BeepOnError then MessageBeep(0);
+  if (Key in [#32..#255]) and not IsValidChar(Key) then
+  begin
+    if BeepOnError then
+      MessageBeep(0);
     Key := #0;
   end
-  else if Key = #27 then begin
+  else
+  if Key = #27 then
+  begin
     Reset;
     Key := #0;
   end;
@@ -471,7 +480,8 @@ end;
 
 procedure TJvCustomNumEdit.SetZeroEmpty(Value: Boolean);
 begin
-  if FZeroEmpty <> Value then begin
+  if FZeroEmpty <> Value then
+  begin
     FZeroEmpty := Value;
     DataChanged;
   end;
@@ -479,7 +489,8 @@ end;
 
 procedure TJvCustomNumEdit.SetBeepOnError(Value: Boolean);
 begin
-  if FBeepOnError <> Value then begin
+  if FBeepOnError <> Value then
+  begin
     FBeepOnError := Value;
     UpdatePopup;
   end;
@@ -487,7 +498,8 @@ end;
 
 procedure TJvCustomNumEdit.SetAlignment(Value: TAlignment);
 begin
-  if FAlignment <> Value then begin
+  if FAlignment <> Value then
+  begin
     FAlignment := Value;
     Invalidate;
   end;
@@ -495,7 +507,8 @@ end;
 
 procedure TJvCustomNumEdit.SetDisplayFormat(const Value: string);
 begin
-  if DisplayFormat <> Value then begin
+  if DisplayFormat <> Value then
+  begin
     FDisplayFormat := Value;
     Invalidate;
     DataChanged;
@@ -509,7 +522,8 @@ end;
 
 procedure TJvCustomNumEdit.SetFocused(Value: Boolean);
 begin
-  if FFocused <> Value then begin
+  if FFocused <> Value then
+  begin
     FFocused := Value;
     Invalidate;
     FFormatting := True;
@@ -523,12 +537,18 @@ end;
 
 procedure TJvCustomNumEdit.SetFormatOnEditing(Value: Boolean);
 begin
-  if FFormatOnEditing <> Value then begin
+  if FFormatOnEditing <> Value then
+  begin
     FFormatOnEditing := Value;
-    if FFormatOnEditing then inherited Alignment := Alignment
-    else inherited Alignment := taLeftJustify;
-    if FFormatOnEditing and FFocused then ReformatEditText
-    else if FFocused then begin
+    if FFormatOnEditing then
+      inherited Alignment := Alignment
+    else
+      inherited Alignment := taLeftJustify;
+    if FFormatOnEditing and FFocused then
+      ReformatEditText
+    else
+    if FFocused then
+    begin
       UpdateData;
       DataChanged;
     end;
@@ -537,7 +557,8 @@ end;
 
 procedure TJvCustomNumEdit.SetDecimalPlaces(Value: Cardinal);
 begin
-  if FDecimalPlaces <> Value then begin
+  if FDecimalPlaces <> Value then
+  begin
     FDecimalPlaces := Value;
     DataChanged;
     Invalidate;
@@ -579,17 +600,28 @@ function TJvCustomNumEdit.CheckValue(NewValue: Extended;
   RaiseOnError: Boolean): Extended;
 begin
   Result := NewValue;
-  if (FMaxValue <> FMinValue) then begin
-    if (FMaxValue > FMinValue) then begin
-      if NewValue < FMinValue then Result := FMinValue
-      else if NewValue > FMaxValue then Result := FMaxValue;
+  if (FMaxValue <> FMinValue) then
+  begin
+    if (FMaxValue > FMinValue) then
+    begin
+      if NewValue < FMinValue then
+        Result := FMinValue
+      else
+      if NewValue > FMaxValue then
+        Result := FMaxValue;
     end
-    else begin
-      if FMaxValue = 0 then begin
-        if NewValue < FMinValue then Result := FMinValue;
+    else
+    begin
+      if FMaxValue = 0 then
+      begin
+        if NewValue < FMinValue then
+          Result := FMinValue;
       end
-      else if FMinValue = 0 then begin
-        if NewValue > FMaxValue then Result := FMaxValue;
+      else
+      if FMinValue = 0 then
+      begin
+        if NewValue > FMaxValue then
+          Result := FMaxValue;
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
@@ -646,7 +678,8 @@ end;
 
 procedure TJvCustomNumEdit.SetMinValue(AValue: Extended);
 begin
-  if FMinValue <> AValue then begin
+  if FMinValue <> AValue then
+  begin
     FMinValue := AValue;
     Value := FValue;
   end;
@@ -654,7 +687,8 @@ end;
 
 procedure TJvCustomNumEdit.SetMaxValue(AValue: Extended);
 begin
-  if FMaxValue <> AValue then begin
+  if FMaxValue <> AValue then
+  begin
     FMaxValue := AValue;
     Value := FValue;
   end;
@@ -668,20 +702,23 @@ end;
 function TJvCustomNumEdit.TextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then begin
+  if DecimalSeparator <> ThousandSeparator then
     Result := DelChars(Result, ThousandSeparator);
-  end;
   if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
     Result := ReplaceStr(Result, '.', DecimalSeparator);
   if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
     Result := ReplaceStr(Result, ',', DecimalSeparator);
-  if Result = '' then Result := '0'
-  else if Result = '-' then Result := '-0';
+  if Result = '' then
+    Result := '0'
+  else
+  if Result = '-' then
+    Result := '-0';
 end;
 
 procedure TJvCustomNumEdit.SetText(const AValue: string);
 begin
-  if not (csReading in ComponentState) then begin
+  if not (csReading in ComponentState) then
+  begin
     FValue := CheckValue(StrToFloat(TextToValText(AValue)), False);
     DataChanged;
     Invalidate;
@@ -699,12 +736,14 @@ begin
     S := inherited Text;
     OldLen := Length(S);
     IsEmpty := (OldLen = 0) or (S = '-');
-    if HandleAllocated then GetSel(SelStart, SelStop);
-    if not IsEmpty then S := TextToValText(S);
+    if HandleAllocated then
+      GetSel(SelStart, SelStop);
+    if not IsEmpty then
+      S := TextToValText(S);
     S := FormatFloatStr(S, Pos(',', DisplayFormat) > 0);
     inherited Text := S;
-    if HandleAllocated and (GetFocus = Handle) and not
-      (csDesigning in ComponentState) then
+    if HandleAllocated and (GetFocus = Handle) and
+      not (csDesigning in ComponentState) then
     begin
       Inc(SelStart, Length(S) - OldLen);
       SetCursor(SelStart);
@@ -716,8 +755,10 @@ end;
 
 procedure TJvCustomNumEdit.Change;
 begin
-  if not FFormatting then begin
-    if FFormatOnEditing and FFocused then ReformatEditText;
+  if not FFormatting then
+  begin
+    if FFormatOnEditing and FFocused then
+      ReformatEditText;
     inherited Change;
   end;
 end;
@@ -731,7 +772,7 @@ begin
   inherited AcceptValue(Value);
 end;
 
-procedure TJvCustomNumEdit.WMPaste(var Message: TMessage);
+procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
 var
   S: string;
 begin
@@ -742,26 +783,30 @@ begin
   except
     EditText := S;
     SelectAll;
-    if CanFocus then SetFocus;
-    if BeepOnError then MessageBeep(0);
+    if CanFocus then
+      SetFocus;
+    if BeepOnError then
+      MessageBeep(0);
   end;
 end;
 
-procedure TJvCustomNumEdit.CMEnter(var Message: TCMEnter);
+procedure TJvCustomNumEdit.CMEnter(var Msg: TCMEnter);
 begin
   SetFocused(True);
-  if FFormatOnEditing then ReformatEditText;
+  if FFormatOnEditing then
+    ReformatEditText;
   inherited;
 end;
 
-procedure TJvCustomNumEdit.CMExit(var Message: TCMExit);
+procedure TJvCustomNumEdit.CMExit(var Msg: TCMExit);
 begin
   try
     CheckRange;
     UpdateData;
   except
     SelectAll;
-    if CanFocus then SetFocus;
+    if CanFocus then
+      SetFocus;
     raise;
   end;
   SetFocused(False);
@@ -769,24 +814,27 @@ begin
   DoExit;
 end;
 
-procedure TJvCustomNumEdit.CMEnabledChanged(var Message: TMessage);
+procedure TJvCustomNumEdit.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
-  if NewStyleControls and not FFocused then Invalidate;
+  if NewStyleControls and not FFocused then
+    Invalidate;
 end;
 
-procedure TJvCustomNumEdit.WMPaint(var Message: TWMPaint);
+procedure TJvCustomNumEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
 begin
   inherited;
-  if PopupVisible then S := TJvPopupWindow(FPopup).GetPopupText
-  else S := GetDisplayText;
+  if PopupVisible then
+    S := TJvPopupWindow(FPopup).GetPopupText
+  else
+    S := GetDisplayText;
 {  if not PaintComboEdit(Self, S, FAlignment, FFocused and not PopupVisible,
-    FCanvas, Message) then inherited;}
+    FCanvas, Msg) then inherited;}
 end;
 
-procedure TJvCustomNumEdit.CMFontChanged(var Message: TMessage);
+procedure TJvCustomNumEdit.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
@@ -813,30 +861,38 @@ var
 begin
   Result := ',0.' + MakeStr('0', CurrencyDecimals);
   CurrStr := '';
-  for I := 1 to Length(CurrencyString) do begin
+  for I := 1 to Length(CurrencyString) do
+  begin
     C := CurrencyString[I];
-    if C in [',', '.'] then CurrStr := CurrStr + '''' + C + ''''
-    else CurrStr := CurrStr + C;
+    if C in [',', '.'] then
+      CurrStr := CurrStr + '''' + C + ''''
+    else
+      CurrStr := CurrStr + C;
   end;
   if Length(CurrStr) > 0 then
     case CurrencyFormat of
-      0: Result := CurrStr + Result; { '$1' }
-      1: Result := Result + CurrStr; { '1$' }
-      2: Result := CurrStr + ' ' + Result; { '$ 1' }
-      3: Result := Result + ' ' + CurrStr; { '1 $' }
+      0:
+        Result := CurrStr + Result; { '$1' }
+      1:
+        Result := Result + CurrStr; { '1$' }
+      2:
+        Result := CurrStr + ' ' + Result; { '$ 1' }
+      3:
+        Result := Result + ' ' + CurrStr; { '1 $' }
     end;
   Result := Format('%s;-%s', [Result, Result]);
 end;
-
-{ TJvCustomCalcEdit }
 
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
   try
-    FPopup := TJvPopupWindow(CreatePopupCalculator(Self
-      {$IFDEF COMPILER4_UP}, BiDiMode {$ENDIF}));
+    {$IFDEF COMPILER4_UP}
+    FPopup := TJvPopupWindow(CreatePopupCalculator(Self, BiDiMode));
+    {$ELSE}
+    FPopup := TJvPopupWindow(CreatePopupCalculator(Self));
+    {$ENDIF}
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally

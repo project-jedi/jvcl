@@ -413,7 +413,6 @@ contains
   JvDBSpinEdit in '..\Source\JvDBSpinEdit.pas',
   JvDSADialogs in '..\Source\JvDSADialogs.pas',
   JvBandForms in '..\Source\JvBandForms.pas',
-  JvBandUtils in '..\Source\JvBandUtils.pas',
   JvBandObject in '..\Source\JvBandObject.pas',
   JvComponentPanel in '..\Source\JvComponentPanel.pas',
   JvDlg in '..\Source\JvDlg.pas',

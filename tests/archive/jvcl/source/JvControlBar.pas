@@ -32,19 +32,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Extctrls, Controls, Forms,
-  Menus, JVCLVer;
+  Menus,
+  JVCLVer;
 
 type
   TPopupNames = (pnHint, pnName);
   TJvControlBar = class(TControlBar)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    Fover: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
+    FOver: Boolean;
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
@@ -57,19 +58,19 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
-    procedure Loaded;override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy;override;
+    destructor Destroy; override;
     function SavePositions: string;
     procedure LoadPositions(const Value: string);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 
-    property PopupControl:Boolean read FPopupControl write FPopupControl default true;
-    property PopupNames:TPopupNames read FPopupNames write FPopupNames default pnHint;
+    property PopupControl: Boolean read FPopupControl write FPopupControl default True;
+    property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
 
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -92,9 +93,9 @@ constructor TJvControlBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FList := TList.Create;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
-  FPopupControl := true;
+  FPopupControl := True;
   FPopupNames := pnHint;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
@@ -108,8 +109,9 @@ begin
     FOver := True;
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -133,38 +135,38 @@ end;
 procedure TJvControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
- i: Integer;
+  I: Integer;
 
   procedure DoAddControl(const AControl: TControl; const Index: Integer);
   var
-   it: TMenuItem;
+    It: TMenuItem;
   begin
-    it := TMenuItem.Create(FPopup);
-    if PopupNames=pnHint then
-      it.Caption := AControl.Hint
+    It := TMenuItem.Create(FPopup);
+    if PopupNames = pnHint then
+      It.Caption := AControl.Hint
     else
-      it.Caption := AControl.Name;
+      It.Caption := AControl.Name;
     {$IFDEF COMPILER6_UP}
-    it.AutoCheck := true;
+    It.AutoCheck := True;
     {$ENDIF}
-    it.Tag := Index;
-    it.OnClick := PopupMenuClick;
-    it.Checked := AControl.Visible;
-    FPopup.Items.Add(it);
+    It.Tag := Index;
+    It.OnClick := PopupMenuClick;
+    It.Checked := AControl.Visible;
+    FPopup.Items.Add(It);
   end;
 
 begin
   inherited;
-  if (PopupControl) and (Button = mbRight) then
+  if PopupControl and (Button = mbRight) then
   begin
-    if FPopup<>nil then
+    if FPopup <> nil then
       FPopup.Items.Clear
     else
-      FPopup := TPopupMenu.Create(self);
-    for i:=0 to FList.Count-1 do
-      DoAddControl(TControl(FList[i]), i);
-    with ClientToScreen(Point(X,Y)) do
-      FPopup.Popup(X,Y);
+      FPopup := TPopupMenu.Create(Self);
+    for I := 0 to FList.Count - 1 do
+      DoAddControl(TControl(FList[I]), I);
+    with ClientToScreen(Point(X, Y)) do
+      FPopup.Popup(X, Y);
   end;
 end;
 
@@ -173,9 +175,9 @@ end;
 destructor TJvControlBar.Destroy;
 begin
   FList.Free;
-  if FPopup<>nil then
+  if FPopup <> nil then
     FPopup.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {**************************************************}
@@ -187,7 +189,7 @@ begin
     {$IFNDEF COMPILER6_UP}
     Checked := not Checked;
     {$ENDIF}
-    if (Tag>=0) and (Tag<FList.Count) then
+    if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;
 end;
@@ -196,64 +198,65 @@ end;
 
 procedure TJvControlBar.LoadPositions(const Value: string);
 var
-  st,st2: string;
-  i,j: Integer;
-  lLeft, lTop: Integer;
-  lDocked: Boolean;
+  St, St2: string;
+  I, J: Integer;
+  LLeft, LTop: Integer;
+  LDocked: Boolean;
 begin
-  st := Value;
-  j := 0;
-  while (Length(st)>1) and (j<FList.Count) do
+  St := Value;
+  J := 0;
+  while (Length(St) > 1) and (J < FList.Count) do
   begin
-    i := Pos(';',st);
-    if i=0 then
+    I := Pos(';', St);
+    if I = 0 then
     begin
-      st2 := st;
-      st := '';
+      St2 := St;
+      St := '';
     end
     else
     begin
-      st2 := Copy(st,1,i-1);
-      st := Copy(st,i+1,Length(st));
+      St2 := Copy(St, 1, I - 1);
+      St := Copy(St, I + 1, Length(St));
     end;
 
-    i := pos(',',st2);
-    if i<>0 then
+    I := Pos(',', St2);
+    if I <> 0 then
     begin
-      TControl(FList[j]).Visible := pos('true',st2)=1;
-      st2 := Copy(st2,i+1,Length(st2));
-      i := pos(',',st2);
-      if i<>0 then
+      TControl(FList[J]).Visible := Pos('true', St2) = 1;
+      St2 := Copy(St2, I + 1, Length(St2));
+      I := Pos(',', St2);
+      if I <> 0 then
       begin
-        lLeft := StrToIntDef( Copy(st2,1,i-1), TControl(FList[j]).Left);
-        lDocked := true;
-        st2 := Copy(st2,i+1,Length(st2));
-        i := pos(',',st2);
-        if i<>0 then
+        LLeft := StrToIntDef(Copy(St2, 1, I - 1), TControl(FList[J]).Left);
+        LDocked := True;
+        St2 := Copy(St2, I + 1, Length(St2));
+        I := Pos(',', St2);
+        if I <> 0 then
         begin
-          if pos('undocked',st2)<>0 then
-            lDocked := false;
-          st2 := Copy(st2,1,i-1);
+          if Pos('undocked', St2) <> 0 then
+            LDocked := False;
+          St2 := Copy(St2, 1, I - 1);
         end;
-        if (lDocked) and (TControl(FList[j]).Parent<>self) then
-          TControl(FList[j]).ManualDock(self)
-        else if (not lDocked) and (TControl(FList[j]).Parent=self) then
-          TControl(FList[j]).ManualDock(nil);
-        lTop := StrToIntDef(st2, TControl(FList[j]).Top);
+        if LDocked and (TControl(FList[J]).Parent <> Self) then
+          TControl(FList[J]).ManualDock(Self)
+        else
+          if (not LDocked) and (TControl(FList[J]).Parent = Self) then
+          TControl(FList[J]).ManualDock(nil);
+        LTop := StrToIntDef(St2, TControl(FList[J]).Top);
 
-        if ControlAtPos(Point(lLeft,TControl(FList[j]).Top),true)<>nil then
+        if ControlAtPos(Point(LLeft, TControl(FList[J]).Top), True) <> nil then
         begin
-          TControl(FList[j]).Left := lLeft;
-          TControl(FList[j]).Top := lTop;
+          TControl(FList[J]).Left := LLeft;
+          TControl(FList[J]).Top := LTop;
         end
         else
         begin
-          TControl(FList[j]).Top := lTop;
-          TControl(FList[j]).Left := lLeft;
+          TControl(FList[J]).Top := LTop;
+          TControl(FList[J]).Left := LLeft;
         end;
       end;
     end;
-    inc(j);
+    Inc(J);
   end;
 end;
 
@@ -261,19 +264,19 @@ end;
 
 function TJvControlBar.SavePositions: string;
 var
- i: Integer;
+  I: Integer;
 begin
-  result := '';
-  for i:=0 to FList.Count-1 do
+  Result := '';
+  for I := 0 to FList.Count - 1 do
   begin
-    if TControl(FList[i]).Visible then
-      result := result+'true,'
+    if TControl(FList[I]).Visible then
+      Result := Result + 'true,'
     else
-      result := result+'false,';
-    result := result + IntToStr(TControl(FList[i]).Left) + ',' + IntToStr(TControl(Flist[i]).Top);
-    if TControl(FList[i]).Parent <> self then
-      result := result + ',undocked';
-    result := result + ';';
+      Result := Result + 'false,';
+    Result := Result + IntToStr(TControl(FList[I]).Left) + ',' + IntToStr(TControl(Flist[I]).Top);
+    if TControl(FList[I]).Parent <> Self then
+      Result := Result + ',undocked';
+    Result := Result + ';';
   end;
 end;
 
@@ -281,19 +284,20 @@ end;
 
 procedure TJvControlBar.Loaded;
 var
- i: Integer;
+  I: Integer;
 begin
   inherited;
-  for i:=0 to ControlCount-1 do
-    FList.Add(Controls[i]);
+  for I := 0 to ControlCount - 1 do
+    FList.Add(Controls[I]);
 end;
 
 procedure TJvControlBar.DoAddDockClient(Client: TControl;
   const ARect: TRect);
 begin
-  inherited;
-  if FList.IndexOf(Client)=-1 then
+  inherited DoAddDockClient(Client, ARect);
+  if FList.IndexOf(Client) = -1 then
     FList.Add(Client);
 end;
 
 end.
+

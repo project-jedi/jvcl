@@ -35,28 +35,46 @@ procedure Register;
 
 implementation
 
-uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
-{$IFDEF COMPILER6_UP}
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes,
+  {$ENDIF}
+  Classes, SysUtils,
+  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-{$ELSE}
+  {$ELSE}
   LibIntf, DsgnIntf,
-{$ENDIF}
-
+  {$ENDIF}
   TypInfo, Controls, Graphics, ExtCtrls, Tabs, Dialogs, Forms,
-{$IFDEF COMPILER3_UP}DsnConst, ExtDlgs, {$ELSE}LibConst, {$ENDIF}
-{$IFNDEF DelphiPersonalEdition}
-{$IFDEF COMPILER4_UP}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
-{$ENDIF DelphiPersonalEdition}
-{$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
+  {$IFDEF COMPILER3_UP}
+  DsnConst, ExtDlgs,
+  {$ELSE}
+  LibConst,
+  {$ENDIF}
+  {$IFNDEF DelphiPersonalEdition}
+  {$IFDEF COMPILER4_UP}
+  ImgEdit,
+  {$ENDIF}
+  {$IFDEF WIN32}
+  ImgList,
+  {$ENDIF}
+  {$ENDIF DelphiPersonalEdition}
+  {$IFDEF WIN32}
+  JvRichEd,
+  {$ENDIF}
+  Menus, FiltEdit, StdCtrls, Buttons,
   JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
   JvDsgnEditors, JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
-{$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, 
+  {$IFDEF USE_Jv_GIF}
+  JvGIF, JvGIFCtrl,
+  {$ENDIF}
+  JvHints, JvExcptDlg, 
   JvFileUtil, JvDsgn;
 
 {$IFNDEF COMPILER3_UP}
-
-{ TJvDateProperty }
 
 type
   TJvDateProperty = class(TFloatProperty)
@@ -81,8 +99,6 @@ begin
     SetFloatValue(StrToDateFmt(ShortDateFormat, Value));
 end;
 
-{ TJvModalResultProperty }
-
 type
   TJvModalResultProperty = class(TModalResultProperty)
   public
@@ -92,10 +108,8 @@ type
   end;
 
 const
-  ModalResults: array[mrAll..mrYesToAll] of string = (
-    'mrAll',
-    'mrNoToAll',
-    'mrYesToAll');
+  ModalResults: array [mrAll..mrYesToAll] of PChar =
+    ('mrAll', 'mrNoToAll', 'mrYesToAll');
 
 function TJvModalResultProperty.GetValue: string;
 var
@@ -123,7 +137,7 @@ procedure TJvModalResultProperty.SetValue(const Value: string);
 var
   I: Integer;
 begin
-  if (Value <> '') then
+  if Value <> '' then
     for I := Low(ModalResults) to High(ModalResults) do
       if CompareText(ModalResults[I], Value) = 0 then
       begin
@@ -139,17 +153,23 @@ function ValueName(E: Extended): string;
 begin
   if E = High(Integer) then
     Result := 'MaxInt'
-  else if E = Low(Integer) then
+  else
+  if E = Low(Integer) then
     Result := 'MinInt'
-  else if E = High(Longint) then
+  else
+  if E = High(Longint) then
     Result := 'MaxLong'
-  else if E = Low(Longint) then
+  else
+  if E = Low(Longint) then
     Result := 'MinLong'
-  else if E = High(ShortInt) then
+  else
+  if E = High(ShortInt) then
     Result := 'MaxShort'
-  else if E = Low(ShortInt) then
+  else
+  if E = Low(ShortInt) then
     Result := 'MinShort'
-  else if E = High(Word) then
+  else
+  if E = High(Word) then
     Result := 'MaxWord'
   else
     Result := '';
@@ -159,23 +179,27 @@ function StrToValue(const S: string): Longint;
 begin
   if CompareText(S, 'MaxLong') = 0 then
     Result := High(Longint)
-  else if CompareText(S, 'MinLong') = 0 then
+  else
+  if CompareText(S, 'MinLong') = 0 then
     Result := Low(Longint)
-  else if CompareText(S, 'MaxInt') = 0 then
+  else
+  if CompareText(S, 'MaxInt') = 0 then
     Result := High(Integer)
-  else if CompareText(S, 'MinInt') = 0 then
+  else
+  if CompareText(S, 'MinInt') = 0 then
     Result := Low(Integer)
-  else if CompareText(S, 'MaxShort') = 0 then
+  else
+  if CompareText(S, 'MaxShort') = 0 then
     Result := High(ShortInt)
-  else if CompareText(S, 'MinShort') = 0 then
+  else
+  if CompareText(S, 'MinShort') = 0 then
     Result := Low(ShortInt)
-  else if CompareText(S, 'MaxWord') = 0 then
+  else
+  if CompareText(S, 'MaxWord') = 0 then
     Result := High(Word)
   else
     Result := 0;
 end;
-
-{ TJvIntegerProperty }
 
 type
   TJvIntegerProperty = class(TIntegerProperty)
@@ -201,8 +225,6 @@ begin
   inherited SetValue(IntToStr(L));
 end;
 
-{ TJvFloatProperty }
-
 type
   TJvFloatProperty = class(TFloatProperty)
   public
@@ -212,11 +234,11 @@ type
 
 function TJvFloatProperty.GetValue: string;
 const
-{$IFDEF WIN32}
-  Precisions: array[TFloatType] of Integer = (7, 15, 18, 18, 18);
-{$ELSE}
-  Precisions: array[TFloatType] of Integer = (7, 15, 18, 18);
-{$ENDIF}
+  {$IFDEF WIN32}
+  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18, 18);
+  {$ELSE}
+  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18);
+  {$ENDIF}
 begin
   Result := ValueName(GetFloatValue);
   if Result = '' then
@@ -235,26 +257,22 @@ begin
     SetFloatValue(StrToFloat(Value));
 end;
 
-{ TJvPaintBoxEditor }
-
 type
   TJvPaintBoxEditor = class(TDefaultEditor)
   public
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const PropertyEditor: IProperty;
       var Continue: Boolean); override;
-{$ELSE}
+    {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor;
       var Continue, FreeEditor: Boolean); override;
-{$ENDIF}
+    {$ENDIF}
   end;
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvPaintBoxEditor.EditProperty(const PropertyEditor: IProperty;
   var Continue: Boolean);
 {$ELSE}
-
 procedure TJvPaintBoxEditor.EditProperty(PropertyEditor: TPropertyEditor;
   var Continue, FreeEditor: Boolean);
 {$ENDIF}
@@ -268,17 +286,15 @@ begin
     inherited;
 end;
 
-{ TJvAnimatedEditor }
-
 type
   TJvAnimatedEditor = class(TComponentEditor)
   private
     FContinue: Boolean;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure CheckEdit(const PropertyEditor: IProperty);
-{$ELSE}
+    {$ELSE}
     procedure CheckEdit(PropertyEditor: TPropertyEditor);
-{$ENDIF}
+    {$ENDIF}
     procedure EditImage(Image: TJvAnimatedImage);
     procedure LoadAniFile(Image: TJvAnimatedImage);
   public
@@ -288,11 +304,9 @@ type
   end;
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);
 begin
 {$ELSE}
-
 procedure TJvAnimatedEditor.CheckEdit(PropertyEditor: TPropertyEditor);
 begin
   try
@@ -318,18 +332,22 @@ procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
   Components: TDesignerSelectionList;
 begin
-  Components := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
+  Components := TDesignerSelections.Create;
+  {$ELSE}
+  Components := TDesignerSelectionList.Create;
+  {$ENDIF}
+  {$IFNDEF COMPILER6_UP}
   try
-{$ENDIF}
+  {$ENDIF}
     FContinue := True;
     Components.Add(Component);
     GetComponentProperties(Components, tkAny, Designer, CheckEdit);
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   finally
     Components.Free;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);
@@ -369,9 +387,10 @@ end;
 
 procedure TJvAnimatedEditor.ExecuteVerb(Index: Integer);
 begin
-  if (Index = GetVerbCount - 1) then
+  if Index = GetVerbCount - 1 then
     LoadAniFile(TJvAnimatedImage(Component))
-  else if (Index = GetVerbCount - 2) then
+  else
+  if Index = GetVerbCount - 2 then
     EditImage(TJvAnimatedImage(Component))
   else
     inherited ExecuteVerb(Index);
@@ -379,9 +398,10 @@ end;
 
 function TJvAnimatedEditor.GetVerb(Index: Integer): string;
 begin
-  if (Index = GetVerbCount - 1) then
+  if Index = GetVerbCount - 1 then
     Result := srLoadAniCursor
-  else if (Index = GetVerbCount - 2) then
+  else
+  if Index = GetVerbCount - 2 then
     Result := srEditPicture
   else
     Result := inherited GetVerb(Index);
@@ -413,11 +433,11 @@ var
 begin
   if ImageList.Count > 0 then
   begin
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     SaveDlg := TSavePictureDialog.Create(Application);
-{$ELSE}
+    {$ELSE}
     SaveDlg := TSaveDialog.Create(Application);
-{$ENDIF}
+    {$ENDIF}
     with SaveDlg do
     try
       Options := [ofHideReadOnly, ofOverwritePrompt];
@@ -438,13 +458,14 @@ begin
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
               ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-{$IFDEF COMPILER3_UP}
+            {$IFDEF COMPILER3_UP}
             HandleType := bmDIB;
             if PixelFormat in [pf15bit, pf16bit] then
             try
               PixelFormat := pf24bit;
-            except {} end;
-{$ENDIF}
+            except
+            end;
+            {$ENDIF}
           end;
           Bitmap.SaveToFile(FileName);
         finally
@@ -463,21 +484,26 @@ procedure TJvImageListEditor.ExecuteVerb(Index: Integer);
 begin
   if Designer <> nil then
     case Index of
-      0: if EditImageList(Component as TImageList) then
+      0:
+        if EditImageList(Component as TImageList) then
           Designer.Modified;
-      1: SaveAsBitmap(TImageList(Component));
+      1:
+        SaveAsBitmap(TImageList(Component));
     end;
 end;
 
 function TJvImageListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-{$IFDEF COMPILER3_UP}
-    0: Result := SImageListEditor;
-{$ELSE}
-    0: Result := SImageEditor;
-{$ENDIF}
-    1: Result := srSaveImageList;
+    {$IFDEF COMPILER3_UP}
+    0:
+      Result := SImageListEditor;
+    {$ELSE}
+    0:
+      Result := SImageEditor;
+    {$ENDIF}
+    1:
+      Result := srSaveImageList;
   else
     Result := '';
   end;
@@ -490,8 +516,6 @@ end;
 
 {$ENDIF WIN32}
 {$ENDIF DelphiPersonalEdition}
-
-{ TJvWeekDayProperty }
 
 type
   TJvWeekDayProperty = class(TEnumProperty)
@@ -510,11 +534,11 @@ resourcestring
 
 procedure Register;
 const
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   BaseClass: TClass = TPersistent;
-{$ELSE}
+  {$ELSE}
   BaseClass: TClass = TComponent;
-{$ENDIF}
+  {$ENDIF}
 begin
   RegisterComponents('Jv Composites',
     [TJvComboEdit, TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit]);
@@ -523,32 +547,38 @@ begin
 
   RegisterComponents('Jv Controls', [TJvTextListBox,
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
-      TJvxLabel, {$IFDEF WIN32}TJvxRichEdit, {$ENDIF}
+    TJvxLabel,
+    {$IFDEF WIN32}
+    TJvxRichEdit,
+    {$ENDIF}
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,
-{$IFDEF USE_Jv_GIF}TJvGIFAnimator, {$ENDIF}TJvSpinButton, 
+    {$IFDEF USE_Jv_GIF}
+    TJvGIFAnimator,
+    {$ENDIF}
+    TJvSpinButton,
     TJvSwitch, TJvDice]);
-{$IFDEF CBUILDER}
-{$IFNDEF COMPILER35_UP} { C++Builder 1.0 }
+  {$IFDEF CBUILDER}
+  {$IFNDEF COMPILER35_UP} { C++Builder 1.0 }
   RegisterComponents(ResStr(srAdditional), [TScroller]);
-{$ELSE}
+  {$ELSE}
   RegisterComponents(ResStr(srSamples), [TScroller]);
-{$ENDIF}
-{$ELSE}
+  {$ENDIF}
+  {$ELSE}
   RegisterComponents(ResStr(srSamples), [TScroller]);
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvCustomComboEdit, TJvCustomDateEdit, TJvCustomNumEdit,
     TJvFileDirEdit, TJvxCustomListBox, TJvxRichEdit], axrComponentOnly);
   RegisterNonActiveX([TScroller], axrComponentOnly);
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', nil);
-{$ELSE}
+  {$ELSE}
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, 'Text', TStringProperty);
-{$ENDIF}
+  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(string), TJvFileDirEdit, 'Text', TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomDateEdit, 'Text', TStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvFilenameEdit, 'Filter', TFilterProperty);
@@ -562,12 +592,12 @@ begin
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   RegisterPropertyEditor(TypeInfo(TCursor), TJvxSplitter, 'Cursor', nil);
-{$ELSE}
+  {$ELSE}
   RegisterPropertyEditor(TypeInfo(TDateTime), TPersistent, '', TJvDateProperty);
   RegisterPropertyEditor(TypeInfo(TModalResult), TPersistent, '', TJvModalResultProperty);
-{$ENDIF}
+  {$ENDIF}
 
   RegisterPropertyEditor(TypeInfo(TCaption), TLabel, 'Caption', THintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvxLabel, 'Caption', THintProperty);
@@ -584,18 +614,18 @@ begin
   RegisterPropertyEditor(TypeInfo(Single), BaseClass, '', TJvFloatProperty);
   RegisterPropertyEditor(TypeInfo(Double), BaseClass, '', TJvFloatProperty);
   RegisterPropertyEditor(TypeInfo(Extended), BaseClass, '', TJvFloatProperty);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
-{$ENDIF}
+  {$ENDIF}
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
-{$IFDEF WIN32}
-{$IFNDEF DelphiPersonalEdition}
+  {$IFDEF WIN32}
+  {$IFNDEF DelphiPersonalEdition}
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
-{$ENDIF}
-{$ENDIF}
+  {$ENDIF}
+  {$ENDIF}
   RegisterJvColors;
 end;
 

@@ -35,7 +35,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Menus, Math, JclBase, JclSysUtils, JclStrings;
+  ComCtrls, Menus, Math,
+  JclBase, JclSysUtils, JclStrings;
 
 function IntToExtended(I: Integer): Extended;
 
@@ -110,12 +111,15 @@ var
 begin
   if AForm.FormStyle = fsMDIForm then
     raise EJclError.CreateResRec(@RsNotForMdi);
-  if AMenu = nil then AMenu := AForm.Menu;
-  if AMenu = nil then Exit;
+  if AMenu = nil then
+    AMenu := AForm.Menu;
+  if AMenu = nil then
+    Exit;
   with AToolBar do
   begin
     TotalWidth := BorderWidth;
-    for I := ButtonCount - 1 downto 0 do Buttons[I].Free;
+    for I := ButtonCount - 1 downto 0 do
+      Buttons[I].Free;
     ShowCaptions := True;
   end;
   with AMenu do
@@ -145,18 +149,18 @@ var
   S: string;
 
   procedure AddLine;
-begin
-  Strings.Add(TrimRight(S));
-end;
+  begin
+    Strings.Add(TrimRight(S));
+  end;
 
   function MakeCellStr(const Text: string; Index: Integer): string;
-begin
-  with ListView.Columns[Index] do
-    if Alignment = taLeftJustify then
-      Result := StrPadRight(Text, ColWidths[Index] + 1)
-    else
-      Result := StrPadLeft(Text, ColWidths[Index]) + ' ';
-end;
+  begin
+    with ListView.Columns[Index] do
+      if Alignment = taLeftJustify then
+        Result := StrPadRight(Text, ColWidths[Index] + 1)
+      else
+        Result := StrPadLeft(Text, ColWidths[Index]) + ' ';
+  end;
 
 begin
   SetLength(S, 256);
@@ -241,14 +245,15 @@ var
   ColIndex: Integer;
 
   function FmtStrToInt(S: string): Integer;
-var
-  I: Integer;
-begin
-  I := 1;
-  while I <= Length(S) do
-    if not (S[I] in ['0'..'9', '-']) then Delete(S, I, 1) else Inc(I);
-  Result := StrToInt(S);
-end;
+  var
+    I: Integer;
+  begin
+    I := 1;
+    while I <= Length(S) do
+      if not (S[I] in ['0'..'9', '-']) then
+        Delete(S, I, 1) else Inc(I);
+    Result := StrToInt(S);
+  end;
 
 begin
   with ListView do
@@ -260,14 +265,16 @@ begin
         Compare := AnsiCompareText(Item1.Caption, Item2.Caption)
       else
         Compare := AnsiCompareText(Item1.SubItems[ColIndex], Item2.SubItems[ColIndex]);
-    end else
+    end
+    else
     begin
       if ColIndex = -1 then
         Compare := FmtStrToInt(Item1.Caption) - FmtStrToInt(Item2.Caption)
       else
         Compare := FmtStrToInt(Item1.SubItems[ColIndex]) - FmtStrToInt(Item2.SubItems[ColIndex]);
     end;
-    if Tag and $100 <> 0 then Compare := -Compare;
+    if Tag and $100 <> 0 then
+      Compare := -Compare;
   end;
 end;
 
@@ -278,23 +285,27 @@ var
   Data: Integer;
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
-  with ListView do if MultiSelect then
-  begin
-    Items.BeginUpdate;
-    SaveOnSelectItem := OnSelectItem;
-    Screen.Cursor := crHourGlass;
-    try
-      H := Handle;
-      OnSelectItem := nil;
-      if Deselect then Data := 0 else Data := LVIS_SELECTED;
-      for I := 0 to Items.Count - 1 do
-        ListView_SetItemState(H, I, Data, LVIS_SELECTED);
-    finally
-      OnSelectItem := SaveOnSelectItem;
-      Items.EndUpdate;
-      Screen.Cursor := crDefault;
+  with ListView do
+    if MultiSelect then
+    begin
+      Items.BeginUpdate;
+      SaveOnSelectItem := OnSelectItem;
+      Screen.Cursor := crHourGlass;
+      try
+        H := Handle;
+        OnSelectItem := nil;
+        if Deselect then
+          Data := 0
+        else
+          Data := LVIS_SELECTED;
+        for I := 0 to Items.Count - 1 do
+          ListView_SetItemState(H, I, Data, LVIS_SELECTED);
+      finally
+        OnSelectItem := SaveOnSelectItem;
+        Items.EndUpdate;
+        Screen.Cursor := crDefault;
+      end;
     end;
-  end;
 end;
 
 function JvListViewSaveState(ListView: TListView): TJvLVItemStateData;
@@ -305,14 +316,19 @@ begin
   begin
     Focused := Assigned(ListView.ItemFocused);
     Selected := Assigned(ListView.Selected);
-    if Focused then TempItem := ListView.ItemFocused else
-      if Selected then TempItem := ListView.Selected else
-        TempItem := nil;
+    if Focused then
+      TempItem := ListView.ItemFocused
+    else
+    if Selected then
+      TempItem := ListView.Selected
+    else
+      TempItem := nil;
     if TempItem <> nil then
     begin
       Caption := TempItem.Caption;
       Data := TempItem.Data;
-    end else
+    end
+    else
     begin
       Caption := '';
       Data := nil;
@@ -333,14 +349,16 @@ begin
     begin
       TempItem.Focused := Data.Focused;
       TempItem.Selected := Data.Selected;
-    end else
+    end
+    else
     if FocusFirst and (Items.Count > 0) then
     begin
       TempItem := Items[0];
       TempItem.Focused := True;
       TempItem.Selected := True;
     end;
-    if MakeVisible and (TempItem <> nil) then TempItem.MakeVisible(True);  
+    if MakeVisible and (TempItem <> nil) then
+      TempItem.MakeVisible(True);  
   end;
 end;
 

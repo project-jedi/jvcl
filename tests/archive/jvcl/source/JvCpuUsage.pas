@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvCpuUsage;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Registry,
+  JvComponent;
 
 // (rom) the whole component seems to be badly designed
 
@@ -64,7 +63,7 @@ resourcestring
 
 constructor TJvCpuUsage.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FRegistry := TRegistry.Create;
   FRegistry.RootKey := HKEY_DYN_DATA;
   FRegistry.OpenKey(RC_PerfStart, False);
@@ -79,7 +78,7 @@ begin
   FRegistry.ReadBinaryData(RC_CpuUsageKey, FValue, SizeOf(FValue));
   FRegistry.CloseKey;
   FRegistry.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {*****************************************************}
@@ -93,3 +92,4 @@ begin
 end;
 
 end.
+

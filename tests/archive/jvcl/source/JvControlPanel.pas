@@ -31,27 +31,25 @@ Known Issues:
 
 unit JvControlPanel;
 
-
-
-interface     
+interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, JvTypes, JvButton, JvDirectories, JvFunctions;
+  StdCtrls, Menus,
+  JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
   TJvControlPanel = class(TJvButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnUrl: TOnLinkClick;
+    FOnLinkClick: TOnLinkClick;
     FIMages: TImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
-    procedure UrlClick(Sender: TObject);
     procedure SetImages(const Value: TImageList);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure DoLinkClick(Sender: TObject);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Click; override;
@@ -60,41 +58,39 @@ type
     procedure Refresh;
   published
     property Images: TImageList read FImages write SetImages;
-    property OnLinkClick: TOnLinkClick read FOnUrl write FOnUrl;
+    property OnLinkClick: TOnLinkClick read FOnLinkClick write FOnLinkClick;
   end;
 
-
 implementation
-
 
 {*******************************************************}
 
 procedure TJvControlPanel.AddToPopup(Item: TMenuItem; Path: string);
 var
-  i: Integer;
-  it: TMenuItem;
+  I: Integer;
+  It: TMenuItem;
   S: TStringList;
-  b: TBitmap;
+  B: TBitmap;
 begin
   S := TStringList.Create;
   try
     GetControlPanelApplets(Path, '*.cpl', S, Images);
     S.Sort;
-    for i := 0 to S.Count - 1 do
+    for I := 0 to S.Count - 1 do
     begin
-      it := TMenuItem.Create(Self);
-      it.Caption := S.Names[i];
-      it.OnClick := UrlClick;
-      it.Hint := S.Values[S.Names[i]];
+      It := TMenuItem.Create(Self);
+      It.Caption := S.Names[I];
+      It.OnClick := DoLinkClick;
+      It.Hint := S.Values[S.Names[I]];
       if Images <> nil then
-        it.ImageIndex := integer(S.Objects[i])
+        It.ImageIndex := integer(S.Objects[I])
       else
       begin
-        b := TBitmap(S.Objects[i]);
-        it.Bitmap.Assign(b);
-        b.Free;
+        B := TBitmap(S.Objects[I]);
+        It.Bitmap.Assign(B);
+        B.Free;
       end;
-      item.Add(it);
+      Item.Add(It);
       Application.ProcessMessages;
     end;
   finally
@@ -105,9 +101,10 @@ end;
 {*******************************************************}
 
 procedure TJvControlPanel.Click;
-var P: TPoint;
+var
+  P: TPoint;
 begin
-  inherited;
+  inherited Click;
   if Parent <> nil then
   begin
     P := Parent.ClientToScreen(Point(Left, Top + Height));
@@ -119,7 +116,7 @@ end;
 
 constructor TJvControlPanel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDirs := TJvDirectories.Create(Self);
   FPopup := TPopupMenu.Create(Self);
 end;
@@ -128,7 +125,7 @@ end;
 
 procedure TJvControlPanel.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   if not (csDesigning in ComponentState) then
     Refresh;
 end;
@@ -137,14 +134,14 @@ end;
 
 destructor TJvControlPanel.Destroy;
 var
-  i: Integer;
+  I: Integer;
 begin
   FDirs.Free;
   if Images = nil then
-    for i := 0 to FPopup.Items.Count - 1 do
-      FPopup.Items[i].Bitmap.FreeImage;
+    for I := 0 to FPopup.Items.Count - 1 do
+      FPopup.Items[I].Bitmap.FreeImage;
   FPopup.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {*******************************************************}
@@ -152,22 +149,22 @@ end;
 procedure TJvControlPanel.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FImages) then
     Images := nil; // (p3) calls Refresh
 end;
 
 procedure TJvControlPanel.Refresh;
 var
-  st: string;
+  St: string;
 begin
   while FPopup.Items.Count > 0 do
     FPopup.Items.Delete(0);
-  st := FDirs.SystemDirectory;
-  if st[Length(st)] <> '\' then
-    st := st + '\';
+  St := FDirs.SystemDirectory;
+  if St[Length(St)] <> '\' then
+    St := St + '\';
   FPopup.Images := Images;
-  AddToPopup(TMenuItem(FPopup.Items), st);
+  AddToPopup(TMenuItem(FPopup.Items), St);
   PopupMenu := FPopup;
 end;
 
@@ -180,10 +177,10 @@ begin
   end;
 end;
 
-procedure TJvControlPanel.UrlClick(Sender: TObject);
+procedure TJvControlPanel.DoLinkClick(Sender: TObject);
 begin
-  if Assigned(FOnUrl) then
-    FOnUrl(Self, (Sender as TMenuItem).Hint);
+  if Assigned(FOnLinkClick) then
+    FOnLinkClick(Self, (Sender as TMenuItem).Hint);
 end;
 
 end.

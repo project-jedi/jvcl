@@ -29,7 +29,8 @@ unit JvConst;
 
 interface
 
-uses Controls;
+uses
+  Controls;
 
 //const
 //  RX_VERSION = $0002004B;  { 2.75 }
@@ -54,35 +55,27 @@ const
   {$IFDEF VER90}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF}
-
   {$IFDEF VER93}
   SDelphiKey = 'Software\Borland\C++Builder\1.0';
   {$ENDIF}
-
   {$IFDEF VER100}
   SDelphiKey = 'Software\Borland\Delphi\3.0';
   {$ENDIF}
-
   {$IFDEF VER110}
   SDelphiKey = 'Software\Borland\C++Builder\3.0';
   {$ENDIF}
-
   {$IFDEF VER120}
   SDelphiKey = 'Software\Borland\Delphi\4.0';
   {$ENDIF}
-
   {$IFDEF VER125}
   SDelphiKey = 'Software\Borland\C++Builder\4.0';
   {$ENDIF}
-
   {$IFDEF VER130}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
   {$ENDIF}
-
   {$IFDEF VER140}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
   {$ENDIF}
-
   {$IFDEF VER150}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
   {$ENDIF}
