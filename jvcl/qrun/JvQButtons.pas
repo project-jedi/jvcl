@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,8 +19,6 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2004-02-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -63,6 +61,7 @@ Maciej Kaczkowski:
   [*] procedure ItemHtDrawEx - rewrited
   [*] function ItemHtPlain - optimized
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -71,11 +70,11 @@ unit JvQButtons;
 interface
 
 uses
-
-
-  Types, Qt, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
   
-  SysUtils, Classes, JvQExControls,
+  
+  Types, QGraphics, QControls, QForms, QButtons, QImgList, QWindows,
+  
+  SysUtils, Classes,
   JvQComponent, JvQExButtons;
 
 type
@@ -120,7 +119,7 @@ type
     function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
-
+    
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
@@ -142,19 +141,18 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private
-
+    
     FCanvas: TCanvas;
-
+    
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent;
-//    FDoubleBuffered: Boolean;
-
+    
   protected
     IsFocused: Boolean;
-
-
+    
+    
     procedure Paint; override;
-
+    
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -162,7 +160,6 @@ type
     property Canvas ;
   published
     property Color;
-//    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default false;
     property ParentColor;
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
@@ -481,13 +478,15 @@ begin
             MonoBmp := TBitmap.Create;
             DDB := TBitmap.Create;
             DDB.Assign(FOriginal);
-
+            
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
-                start;
+                
+                Start;
+                
                 CopyRect(IRect, DDB.Canvas, ORect);
-                // MonoBmp.Monochrome := True;
+                
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -520,7 +519,9 @@ begin
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                
                 Stop;
+                
               end
             else
             begin
@@ -528,7 +529,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-
+                
                 Canvas.Brush.Color := clBlack;
                 Width := IWidth;
                 if Monochrome then
@@ -537,11 +538,13 @@ begin
                   Monochrome := False;
                   Canvas.Brush.Color := clWhite;
                 end;
-                //Monochrome := True;
+                Monochrome := True;
               end;
               with TmpImage.Canvas do
               begin
+                
                 Start;
+                
                 Brush.Color := Color {clBtnFace};
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -554,7 +557,9 @@ begin
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                
                 Stop;
+                
               end;
             end;
           finally
@@ -613,14 +618,20 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      
+      
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
+      
     end
     else
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds,
+      
+      
+      DrawText(Canvas, Caption, Length(Caption), TextBounds,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
+      
   end;
 end;
 
@@ -782,7 +793,10 @@ procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
   TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
-  DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, DT_CALCRECT);
+  
+  
+  DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
+  
 end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -863,42 +877,13 @@ begin
     DefaultDrawing(IsDown, IsDefault, State);
 end;
 
-(*)
-procedure TJvaColorButton.Painting(Sender: QObjectH; EventRegion: QRegionH);
-var
-  Buffer: TBitmap;
-  CanvasPainter: QPainterH;
-begin
-  if DoubleBuffered then
-  begin
-    if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-    begin // returns an interface
-      Buffer := TBitmap.create;
-      Buffer.Width := width;
-      Buffer.Height := height;
-      Buffer.Canvas.Start;
-      CanvasPainter := Canvas.Handle;
-      Canvas.Handle := Buffer.canvas.handle;
-//      DoPaintBackground(Canvas, 0);
-      Paint;
-      Canvas.Handle := CanvasPainter;
-      bitblt(Canvas.Handle, 0, 0, width, height, Buffer.canvas.handle, 0, 0, SRCCOPY);
-      Buffer.canvas.Stop;
-      buffer.free;
-    end;
-  end
-  else
-    inherited;
-end;
-(*)
-
 
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
 var
   R: TRect;
   Flags: Longint;
 begin
-
+  
   
   if (csDestroying in ComponentState) or (FCanvas.Handle = nil) then
     Exit;
@@ -916,10 +901,10 @@ begin
         default button, so it must be done here. }
     if IsFocused or IsDefault then
     begin
-      Canvas.Pen.Color := clWindowFrame;
-      Canvas.Pen.Width := 1;
-      Canvas.Brush.Style := bsClear;
-      Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
 
       { DrawFrameControl must draw within this border }
       InflateRect(R, -1, -1);
@@ -928,20 +913,20 @@ begin
     { DrawFrameControl does not draw a pressed button correctly }
     if IsDown then
     begin
-      Canvas.Pen.Color := clBtnShadow;
-      Canvas.Pen.Width := 1;
-      Canvas.Brush.Color := Color {clBtnFace};
-      Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      FCanvas.Pen.Color := clBtnShadow;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color {clBtnFace};
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
       InflateRect(R, -1, -1);
     end
     else
     begin
       DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
-      Canvas.Pen.Style := psSolid;
-      Canvas.Pen.Color := Color {clBtnShadow};
-      Canvas.Pen.Width := 1;
-      Canvas.Brush.Color := Color;
-      Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      FCanvas.Pen.Style := psSolid;
+      FCanvas.Pen.Color := Color {clBtnShadow};
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
     end;
   end;
 
@@ -951,20 +936,20 @@ begin
     InflateRect(R, -1, -1);
   end;
 
-  Canvas.Font := Self.Font;
+  FCanvas.Font := Self.Font;
   if IsDown then
     OffsetRect(R, 1, 1);
 
   FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
     Spacing, State, False {True});
 
-
+  
     if IsFocused and IsDefault then
     begin
       R := ClientRect;
       InflateRect(R, -4, -4);
-      Canvas.Pen.Color := clWindowFrame;
-      Canvas.Brush.Color := Color;  {clBtnFace}
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Brush.Color := Color;  {clBtnFace}
       DrawFocusRect(FCanvas.Handle, R);
     end;
 end;

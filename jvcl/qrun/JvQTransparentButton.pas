@@ -38,9 +38,9 @@ uses
   
   
   Types, QGraphics, QControls,
-  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons,
-
-  JvQComponent, JvQButton, QWindows;
+  QExtCtrls, QMenus, QForms, QImgList, QActnList, QButtons, QWindows,
+  
+  JvQComponent, JvQButton;
 
 type
   TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
@@ -85,10 +85,10 @@ type
     procedure GlyphChanged(Sender: TObject);
   protected
     procedure AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
-    procedure PaintButton(ACanvas: TCanvas); override;
-    procedure PaintFrame(ACanvas: TCanvas); override;
-    procedure DrawTheText(ARect: TRect; ACanvas: TCanvas); virtual;
-    procedure DrawTheBitmap(ARect: TRect; ACanvas: TCanvas); virtual;
+    procedure PaintButton(Canvas: TCanvas); override;
+    procedure PaintFrame(Canvas: TCanvas); override;
+    procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
+    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
     function GetActionLinkClass: TControlActionLinkClass; override;
   public
@@ -183,10 +183,10 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AddGlyphs;
-    procedure PaintButton(ACanvas: TCanvas); override;
-    procedure PaintFrame(ACanvas: TCanvas); override;
-    procedure DrawTheText(ARect: TRect; ACanvas: TCanvas); virtual;
-    procedure DrawTheBitmap(ARect: TRect; ACanvas: TCanvas); virtual;
+    procedure PaintButton(Canvas: TCanvas); override;
+    procedure PaintFrame(Canvas: TCanvas); override;
+    procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
+    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean);override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -314,12 +314,11 @@ begin
       Assign(Bmp);
       Canvas.Font.Color := clWhite;
       Canvas.Brush.Color := clBlack;
-      //Monochrome := True;
+      Monochrome := True;
     end;
 
     with TmpImage.Canvas do
     begin
-      Start;
       Brush.Color := clBtnFace;
       FillRect(Rect(0, 0, W, H));
       Brush.Color := clBtnHighlight;
@@ -330,7 +329,6 @@ begin
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
       BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-      Stop;
     end;
     Bmp.Assign(TmpImage);
   finally
@@ -562,14 +560,14 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton.PaintFrame(ACanvas: TCanvas);
+procedure TJvTransparentButton.PaintFrame(Canvas: TCanvas);
 var
   TmpRect: TRect;
   FDrawIt: Boolean;
 begin
   TmpRect := Rect(0, 0, Width, Height);
   { draw the outline }
-  with ACanvas do
+  with Canvas do
   begin
     Brush.Color := Color;
     Pen.Color := clBlack;
@@ -648,12 +646,12 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton.PaintButton(ACanvas: TCanvas);
+procedure TJvTransparentButton.PaintButton(Canvas: TCanvas);
 var
   Dest: TRect;
   TmpWidth: Integer;
 begin
-  with ACanvas do
+  with Canvas do
   begin
     { find glyph bounding rect - adjust according to textalignment}
     TmpWidth := FImList.Width;
@@ -679,7 +677,7 @@ begin
       Dest.Left := (Width - TmpWidth) div 2;
     Dest.Bottom := Dest.Top + FImList.Height;
     Dest.Right := Dest.Left + TmpWidth;
-    Canvas.start;
+
     if not FGlyph.Empty then
     begin
       DrawTheBitmap(Dest, Canvas);
@@ -688,59 +686,66 @@ begin
     { finally, do the caption }
     if Length(Caption) > 0 then
       DrawTheText(Dest, Canvas);
-    Canvas.stop;  
   end;
 end;
 
 { just like DrawText, but draws disabled instead }
 
-function DrawDisabledText(ACanvas: TCanvas; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: Integer):
-  Integer;
+function DrawDisabledText(DC: HDC; lpString:  PWideChar ;
+  nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
 var
   OldCol: Integer;
 begin
-  OldCol := SetTextColor(ACanvas.Handle, ColorToRGB(clBtnHighlight));
+  OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-
-
-  DrawTextW(ACanvas.Handle, lpString, nCount, lpRect, uFormat);
-
+  
+  
+  DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  
   OffsetRect(lpRect, -1, -1);
-  SetTextColor(ACanvas.Handle, ColorToRGB(clBtnShadow));
-
-
-  Result := DrawTextW(ACanvas.Handle, lpString, nCount, lpRect, uFormat);
-
-  SetTextColor(ACanvas.Handle, OldCol);
+  SetTextColor(DC, ColorToRGB(clBtnShadow));
+  
+  
+  Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
+  
+  SetTextColor(DC, OldCol);
 end;
 
 { ARect contains the bitmap bounds }
 
-procedure TJvTransparentButton.DrawTheText(ARect: TRect; ACanvas: TCanvas);
+procedure TJvTransparentButton.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
   DC: HDC; { Col:TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
-    aCanvas.Font := HotTrackFont
+    Canvas.Font := HotTrackFont
   else
-    aCanvas.Font := Self.Font;
+    Canvas.Font := Self.Font;
+  DC := Canvas.Handle; { reduce calls to GetHandle }
+
+  if FWordWrap then
+    Flags := DT_WORDBREAK
+  else
+    Flags := DT_SINGLELINE;
+
+  TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
-  TmpRect := Bounds(0,0, Width, Height);
+  
+  
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+{
   if FWordWrap then
-    aCanvas.TextExtent(Caption, TmpRect, WordBreak)
+    Canvas.TextExtent(Caption, TmpRect, WordBreak)
   else
-    aCanvas.TextExtent(Caption, TmpRect, 0);
-
-  aCanvas.start;
-  DC := aCanvas.Handle; { reduce calls to GetHandle }
-
-
+    Canvas.TextExtent(Caption, TmpRect, 0);
+}
+  
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
-  Flags := AlignCenter;
+  Flags := DT_CENTER;
   { div 2 and shr 1 generates the exact same Asm code... }
   case self.TextAlign of
     ttaTop:
@@ -763,31 +768,30 @@ begin
       OffsetRect(TmpRect, Spacing, Height div 2 - MidY div 2);
   end;
   if FWordWrap then
-    Flags := Flags or WordBreak // or DT_NOCLIP
+    Flags := Flags or DT_WORDBREAK or DT_NOCLIP
   else
-    Flags := Flags or SingleLine; // or DT_NOCLIP;
+    Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
 
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
-
-
-//  SetBkMode(DC, QWindows.TRANSPARENT);
+  
+  
   if not Enabled then
-    DrawDisabledText(Canvas, PWideChar(Caption), -1, TmpRect, Flags)
+    DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
   else
   begin
     if (bsMouseInside in MouseStates) and HotTrack then
-      aCanvas.Font.Color := HotTrackFont.Color
+      SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
-      aCanvas.Font.Color := Self.Font.Color;
-    aCanvas.TextRect(TmpRect, TmpRect.left, TmpRect.Top, Caption, Flags);
+      SetTextColor(DC, ColorToRGB(Self.Font.Color));
+    DrawText(Canvas, Caption, -1, TmpRect, Flags);
   end;
-  acanvas.stop;
+  
 
 end;
 
-procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; aCanvas: TCanvas);
+procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
   Index: Integer;
   HelpRect: TRect;
@@ -839,8 +843,8 @@ begin
     end;
     
     
-    FImList.Draw(aCanvas, ARect.Left, ARect.Top, Index);
-
+    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
+    
   end;
 end;
 
@@ -1167,13 +1171,13 @@ end;
 
 { paint everything but bitmap and text }
 
-procedure TJvTransparentButton2.PaintFrame(aCanvas: TCanvas);
+procedure TJvTransparentButton2.PaintFrame(Canvas: TCanvas);
 var
   TmpRect: TRect;
 begin
   TmpRect := Rect(0, 0, Width, Height);
   { draw the outline }
-  with aCanvas do
+  with Canvas do
   begin
     Brush.Color := Color;
     Pen.Color := clBlack;
@@ -1315,12 +1319,12 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton2.PaintButton(aCanvas: TCanvas);
+procedure TJvTransparentButton2.PaintButton(Canvas: TCanvas);
 var
   Dest: TRect;
   TmpWidth: Integer;
 begin
-  with aCanvas do
+  with Canvas do
   begin
     TmpWidth := FImList.Width;
 
@@ -1361,18 +1365,17 @@ end;
 
 { ARect contains the bitmap bounds }
 
-procedure TJvTransparentButton2.DrawTheText(ARect: TRect; ACanvas: TCanvas);
+procedure TJvTransparentButton2.DrawTheText(ARect: TRect; Canvas: TCanvas);
 var
   Flags, MidX, MidY: Integer;
   DC: HDC; { Col:TColor; }
   TmpRect: TRect;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
-    ACanvas.Font := HotTrackFont
+    Canvas.Font := HotTrackFont
   else
-    ACanvas.Font := Self.Font;
-  aCanvas.Start;
-  DC := ACanvas.Handle; { reduce calls to GetHandle }
+    Canvas.Font := Self.Font;
+  DC := Canvas.Handle; { reduce calls to GetHandle }
 
   if FWordWrap then
     Flags := DT_WORDBREAK
@@ -1382,10 +1385,10 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
-
-
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
-
+  
+  
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -1419,19 +1422,19 @@ begin
     OffsetRect(TmpRect, 1, 1);
 
 
-
-
-//  SetBkMode(DC, QWindows.TRANSPARENT);
-
+  
+  
+  SetBkMode(DC, QWindows.TRANSPARENT);
+  
   if not Enabled then
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
 
-
-
-    DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
-
+    
+    
+    DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
+    
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1440,13 +1443,13 @@ begin
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
 
-
-
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags);
-  aCanvas.stop;
+  
+  
+  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags);
+  
 end;
 
-procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; ACanvas: TCanvas);
+procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
 var
   Index: Integer;
 begin
@@ -1469,7 +1472,7 @@ begin
     if (bsMouseDown in MouseStates) and FShowPressed then
       OffsetRect(ARect, 1, 1);
 
-    FImList.Draw(ACanvas, ARect.Left, ARect.Top, Index);
+    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
   end;
 end;
 

@@ -39,7 +39,7 @@ uses
   
   QGraphics, QControls, QForms, QComCtrls, QStdActns,
   
-  JVQCLVer, JvQExComCtrls;
+  JvQCLVer, JvQExComCtrls;
 
 type
   
@@ -74,7 +74,7 @@ type
     
     procedure Paint; override;
     
-    procedure CreateParams(var Params: TCreateParams); override;
+//    procedure CreateParams(var Params: TCreateParams); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     
     procedure MovePanelControls;
@@ -107,12 +107,14 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
+(*)
 procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
 end;
+(*)
 
 procedure TJvStatusBar.DoBoundsChanged;
 begin

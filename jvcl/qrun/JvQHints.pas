@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -268,7 +267,7 @@ var
   begin
     
     
-    DrawTextW(FImage.Canvas.Handle, PWideChar(Caption), -1, R,
+    DrawText(FImage.Canvas, Caption, -1, R,
       DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]);
     
   end;
@@ -412,8 +411,8 @@ begin
   Result := Rect(0, 0, MaxWidth, 0);
   
   
-  DrawTextW(Canvas.Handle, PwWideChar(AHint), -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
+  DrawText(Canvas, AHint, -1, Result,
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment];
   
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);

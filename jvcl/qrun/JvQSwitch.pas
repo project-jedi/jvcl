@@ -398,8 +398,11 @@ begin
           Bottom := Top + FontHeight;
         end;
         Text := Caption;
-        DrawText(Handle, PChar(Text), Length(Caption), ARect,
+        
+        
+        DrawText(Canvas, Text, Length(Caption), ARect,
           DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
+        
       end;
     end;
   

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -24,13 +24,12 @@ Ain Valtin - ReadOnly, Alignment, Layout, RightButton
 Robert Marquardt RightButton renamed to LeftText
 Peter Thörnqvist- added LinkedControls property
 
-Last Modified: 2004-01-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -252,11 +251,8 @@ begin
   begin
     
     
-    FCanvas.Start;
-    RequiredState(Fcanvas, [csHandleValid, csFontValid]);
-    DrawTextW(FCanvas.Handle, PWideChar(Caption), -1, R,
+    DrawText(FCanvas, Caption, -1, R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-    FCanvas.Stop;
     
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;

@@ -77,9 +77,9 @@ type
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure EnabledChanged;override;
-    procedure SetAutoSize(Value: Boolean); //override;
-
-
+    procedure SetAutoSize(Value: Boolean); 
+    
+    
     procedure RecreateWnd;
     procedure StateChanged(State: TToggleState); override;
     
@@ -213,8 +213,7 @@ begin
   begin
     
     
-    RequiredState(FCanvas, [csHandleValid, csFontValid]);
-    DrawTextW(FCanvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(FCanvas, Caption, Length(Caption), R,
       Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
@@ -343,11 +342,13 @@ end;
 
 
 procedure TJvRadioButton.StateChanged(State: TToggleState);
-
 begin
   inherited StateChanged(State);
   CheckLinkedControls;
 end;
+
+
+
 
 procedure TJvRadioButton.EnabledChanged;
 begin

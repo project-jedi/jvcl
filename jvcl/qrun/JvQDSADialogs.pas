@@ -432,11 +432,12 @@ type
 implementation
 
 uses
-  Math, TypInfo, QConsts,
-  {$IFDEF MSWINDOWS}
-  JclRegistry,
-  {$ENDIF MSWINDOWS}
-  JclSysUtils,
+  Math, TypInfo,
+  
+  
+  QConsts,
+  
+  JclRegistry, JclSysUtils,
   JvQResources, JvQDynControlEngineIntf;
 
 const
@@ -727,15 +728,22 @@ begin
         SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
-      DrawText(Canvas.Handle, PChar(Msg), Length(Msg) + 1, TextRect,
+      
+      
+      DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
         DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+      
+
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
       if CheckCaption <> '' then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(CheckCaption), Length(CheckCaption) + 1, TempRect,
+        
+        
+        DrawText(Canvas, CheckCaption, Length(CheckCaption) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+        
         ChkTextWidth := TempRect.Right;
       end
       else
@@ -743,9 +751,12 @@ begin
       if ATimeout > 0 then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])),
+        
+        
+        DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+        
         TimeoutTextWidth := TempRect.Right;
       end
       else

@@ -1733,7 +1733,10 @@ begin
         S := 'NOT'; // do not localize
     end;
     Brush.Style := bsClear;
-    DrawText(Canvas.handle, PChar(S), -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    
+    
+    DrawText(Canvas, S, -1, R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    
   end;
 end;
 

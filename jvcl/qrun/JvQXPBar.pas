@@ -768,9 +768,6 @@ begin
   HasImages := self.Images <> nil;
   with ACanvas do
   begin
-    
-    Start;
-    
     Font.Assign(lBar.Font);
     Brush.Color := lBar.Colors.BodyColor;
     if not ShowItemFrame then
@@ -827,9 +824,8 @@ begin
     
 
     
-    DrawTextW(ACanvas, PWideChar(ItemCaption), -1, Rect, DT_SINGLELINE or
+    DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
       DT_VCENTER or DT_END_ELLIPSIS);
-    Stop;
     
   end;
 end;
@@ -1559,7 +1555,7 @@ end;
 procedure TJvXPCustomWinXPBar.HookMouseLeave;
 begin
   inherited HookMouseLeave;
-  if (FHoverIndex <> -1) and (not FVisibleItems[FHoverIndex].Checked) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (not FVisibleItems[FHoverIndex].Checked) then
     DoDrawItem(FHoverIndex, []);
 end;
 
@@ -1606,13 +1602,13 @@ begin
 
   if NewIndex <> FHoverIndex then
   begin
-    if FHoverIndex <> -1 then
+    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) then
       if FVisibleItems[FHoverIndex].Checked then
         DoDrawItem(FHoverIndex, [dsClicked])
       else
         DoDrawItem(FHoverIndex, []);
     FHoverIndex := NewIndex;
-    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
     begin
       DoDrawItem(FHoverIndex, [dsFocused]);
       if FShowLinkCursor then
@@ -1800,7 +1796,7 @@ begin
   CallInherited := True;
   if (FShowRollButton) and (FHitTest <> htNone) then
     Collapsed := not Collapsed;
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
   begin
     AllowChange := True;
     if Assigned(FOnCanChange) then
@@ -1983,8 +1979,7 @@ begin
     Dec(Rect.Right, 3);
     
     
-    SetPainterFont(Handle, Font);
-    DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
+    DrawText(Canvas, Caption, -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
     
     { draw visible items }
@@ -2084,7 +2079,7 @@ end;
 function TJvXPCustomWinXPBar.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   // draw the item hint (if available)
-  if FHoverIndex > -1 then
+  if (FHoverIndex > -1) and (FVisibleItems[FHoverIndex] <> nil) then
   begin
     HintInfo.CursorRect := GetItemRect(FHoverIndex);
     with VisibleItems[FHoverIndex] do
@@ -2173,7 +2168,7 @@ procedure TJvXPCustomWinXPBar.DblClick;
 var
   lItem: TJvXPBarItem;
 begin
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
   begin
     lItem := FVisibleItems[FHoverIndex];
     if Assigned(lItem.FOnDblClick) then

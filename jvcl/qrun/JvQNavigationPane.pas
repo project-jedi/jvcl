@@ -432,7 +432,7 @@ type
     procedure DoStyleChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    procedure SetParent(const AParent: TWinControl); override;
+    procedure SetParent( const  AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property NavPanel: TJvNavPanelButton read FNavPanel;
@@ -1356,7 +1356,7 @@ begin
             Images.Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, itImage, Enabled);
+              ImageIndex,  itImage,  Enabled);
         end;
       nibDropArrow:
         begin
@@ -1576,8 +1576,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
-//    Canvas.TextRect(R, R.Left, R.Top, Caption, AlignVCenter + SingleLine);
+    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
     
   end;
   Canvas.Pen.Color := clGray;
@@ -2061,7 +2060,7 @@ begin
   UpdatePageList;
 end;
 
-procedure TJvNavPanelPage.SetParent(const AParent: TWinControl);
+procedure TJvNavPanelPage.SetParent( const  AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if (FNavPanel = nil) or (FIconButton = nil) or (csDestroying in ComponentState) then
@@ -2295,7 +2294,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(Canvas, Caption, Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     
   end;
@@ -2304,7 +2303,7 @@ begin
     Images.Draw(Canvas,
       ClientWidth - Images.Width - (Height - Images.Height) div 2,
       (Height - Images.Height) div 2, ImageIndex,
-      itImage, True);
+       itImage,  True);
   end;
 end;
 
@@ -2456,8 +2455,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
-    SetPainterFont(Canvas.Handle, Font);
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+    DrawText(Canvas, Caption, Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     
   end;
@@ -2971,8 +2969,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
-    SetPainterFont(Canvas.Handle, Self.Font);
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+    DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     
     // draw the client areas top rounding
     R := ClientRect;

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-05
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -506,12 +505,14 @@ function ColorProviderColorAdderRegister: TJvColorProviderColorAdderRegister;
 implementation
 
 uses
-  
-  QControls,
+  SysUtils,
   
   RTLConsts,
   
-  SysUtils,
+  
+  
+  QControls,
+  
   JclRTTI, JclStrings,
   JvQJVCLUtils, JvQConsts, JvQResources;
 
@@ -2941,8 +2942,11 @@ begin
     
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
     try
-      DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
+      
+      
+      DrawText(CurrentCanvas, S, Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
         DT_VCENTER or DT_NOPREFIX);
+      
     finally
       SetBkMode(CurrentCanvas.Handle, OldBkMode);
       

@@ -237,7 +237,10 @@ begin
   if FHotTrack and HighLight then
     Canvas.Font.Color := FHotTrackColor;
   
-  DrawText(Canvas.Handle, PChar(Items[Index]), -1, R, Flags);
+  
+  
+  DrawText(Canvas, Items[Index], -1, R, Flags);
+  
 end;
 
 procedure TJvItemsPanel.SetAutoGrow(const Value: Boolean);
