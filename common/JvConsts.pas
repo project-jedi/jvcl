@@ -62,12 +62,6 @@ const
   IdentifierSymbols = IdentifierFirstSymbols + DigitSymbols;
   HexadecimalSymbols = DigitSymbols + HexadecimalUppercaseLetters + HexadecimalLowercaseLetters;
 
-  {$IFDEF RAINTER}
-  {RAInter}
-  RAIIdSymbols      = StIdSymbols;
-  RAIIdFirstSymbols = StIdFirstSymbols;
-  {$ENDIF RAINTER}
-
   { Menu Designer }
   { (rom) disabled unused
   SMDMenuDesigner       = 'Menu &Designer';
