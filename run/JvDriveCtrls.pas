@@ -628,7 +628,7 @@ procedure TJvDriveCombo.SetImageSize(Value: TJvImageSize);
 begin
   if FImageSize <> Value then
   begin
-    FIMageSize := Value;
+    FImageSize := Value;
 
     if Items.Count > 0 then
       Items.Clear;
@@ -660,7 +660,7 @@ begin
 end;
 
 procedure TJvDriveCombo.Change;
-  function FirstChar(const S: string): char;
+  function FirstChar(const S: string): Char;
   begin
     if Length(S) > 0 then
       Result := S[1]
@@ -1030,7 +1030,7 @@ function ConcatPaths(const Path, S: string): string;
 begin
   if Path = '' then
   begin
-    Result := AddPathBackSlash(S);
+    Result := AddPathBackslash(S);
     Exit;
   end;
   if AnsiLastChar(Path)^ <> '\' then
@@ -1071,7 +1071,7 @@ end;
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
 var
   VolFlags, MLength: DWORD;
-  tmpDrive: char;
+  TmpDrive: Char;
 begin
   if UpCase(NewDrive) <> UpCase(Drive) then
   begin
@@ -1079,13 +1079,13 @@ begin
     begin
       if not SetCurrentDir(NewDrive + ':') then
       begin
-        tmpDrive := NewDrive;
-        if DoDriveChangeError(NewDrive) and (NewDrive <> tmpDrive) then
+        TmpDrive := NewDrive;
+        if DoDriveChangeError(NewDrive) and (NewDrive <> TmpDrive) then
         begin
           DriveChange(NewDrive)
         end
         else
-        if tmpDrive <> Drive then
+        if TmpDrive <> Drive then
           DriveChange(Drive); // ...if not, revert
       end;
       FDirectory := GetCurrentDir; { store correct directory name }

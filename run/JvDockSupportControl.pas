@@ -410,7 +410,7 @@ type
     FDragThreshold: Integer;
     FActiveDrag: TJvDockDragOperation;
     FDragImageList: TDragImageList;
-    fDockSiteList: TList;
+    FDockSiteList: TList;
     FQualifyingSites: TSiteList;
     procedure BeginLoad;
     procedure EndLoad;
@@ -2793,7 +2793,7 @@ begin
   FDragImageList := DragObject.GetDragImages;
   if FDragImageList <> nil then
     with FDragStartPos do
-      FDragImageList.BeginDrag(GetDeskTopWindow, X, Y);
+      FDragImageList.BeginDrag(GetDesktopWindow, X, Y);
   FQualifyingSites := TSiteList.Create;
   if FActiveDrag <> dopNone then
     DragTo(FDragStartPos);
@@ -2813,7 +2813,7 @@ begin
     Target := DragFindTarget(Pos, TargetHandle, TControlAccessProtected(FDragControl).DragKind, FDragControl);
     if (FActiveDrag = dopNone) and (FDragImageList <> nil) then
       with FDragStartPos do
-        FDragImageList.BeginDrag(GetDeskTopWindow, X, Y);
+        FDragImageList.BeginDrag(GetDesktopWindow, X, Y);
     DoErase := FActiveDrag <> dopNone;
     FActiveDrag := dopDock;
 
@@ -2839,7 +2839,7 @@ begin
       begin
         FDragImageList.DragCursor := DragCursor;
         if not FDragImageList.Dragging then
-          FDragImageList.BeginDrag(GetDeskTopWindow, Pos.X, Pos.Y)
+          FDragImageList.BeginDrag(GetDesktopWindow, Pos.X, Pos.Y)
         else
           FDragImageList.DragMove(Pos.X, Pos.Y);
       end

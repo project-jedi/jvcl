@@ -88,8 +88,8 @@ type
 
     procedure OnGradientChanged(Sender: TObject);
     procedure OnIlluminationChanged(Sender: TObject);
-    procedure WMLButtonUp(var Message: TMessage); message WM_LBUTTONUP;
-    procedure WMLButtonDown(var Message: TMessage); message WM_LBUTTONDOWN;
+    procedure WMLButtonUp(var Msg: TMessage); message WM_LBUTTONUP;
+    procedure WMLButtonDown(var Msg: TMessage); message WM_LBUTTONDOWN;
     procedure SetAlignment(const Value: TLeftRight);
   protected
     procedure MouseEnter(Control: TControl); override;
@@ -295,7 +295,7 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.WMLButtonUp(var Message: TMessage);
+procedure TJvgCheckBox.WMLButtonUp(var Msg: TMessage);
 var
   pt: TPoint;
 begin
@@ -317,7 +317,7 @@ begin
 end;
 //______________________________________________________________
 
-procedure TJvgCheckBox.WMLButtonDown(var Message: TMessage);
+procedure TJvgCheckBox.WMLButtonDown(var Msg: TMessage);
 begin
   if not Enabled or (fcoIgnoreMouse in Options) then
     Exit;
@@ -345,7 +345,7 @@ end;
 
 procedure TJvgCheckBox.Paint;
 var
-  x, y: Integer;
+  X, Y: Integer;
   DrawState: TglDrawState;
   Bitmap: TBitmap;
   FontColor: TColor;
@@ -390,7 +390,7 @@ begin
   end;
 
   //...CAPTION
-  SetBkMode(Canvas.handle, Integer(Transparent));
+  SetBkMode(Canvas.Handle, Integer(Transparent));
   with TextStyles, Colors do
   begin
     if FActiveNow then
@@ -421,16 +421,16 @@ begin
   end;
   GetTextExtentPoint32(FImg.Canvas.Handle, PChar(Caption),
     length(Caption), Size);
-  y := max(0, (Height - Size.cy) div 2);
+  Y := Max(0, (Height - Size.cy) div 2);
   X := 0;
   if Assigned(FGlyphOn) then
-    X := max(X, FGlyphOn.Width);
+    X := Max(X, FGlyphOn.Width);
   if Assigned(FGlyphOff) then
-    X := max(X, FGlyphOff.Width);
+    X := Max(X, FGlyphOff.Width);
   if Assigned(FGlyphDisabled) then
-    X := max(X, FGlyphDisabled.Width);
+    X := Max(X, FGlyphDisabled.Width);
   if Assigned(FGlyph) then
-    X := max(X, FGlyph.Width);
+    X := Max(X, FGlyph.Width);
 
   FImg.Width := Width;
   FImg.Height := Height;
@@ -456,17 +456,17 @@ begin
   begin
     X := 0;
     if FGlyph <> nil then
-      inc(X, FGlyph.Width);
+      Inc(X, FGlyph.Width);
   end
   else
-    inc(X, Interspace);
+    Inc(X, Interspace);
 
   //...Supress Gradient if needed
   isGradientActive := Gradient.Active;
   if FActiveNow and (Colors.TextActive <> Colors.Text) then
     Gradient.Active := False;
 
-  ExtTextOutExt(FImg.Canvas.Handle, X, y, GetClientRect, Caption,
+  ExtTextOutExt(FImg.Canvas.Handle, X, Y, GetClientRect, Caption,
     CurrTextStyle, fcoDelineatedText in Options,
     FNeedUpdateOnlyMainText, FontColor, CurrDelinColor,
     Colors.Highlight, Colors.Shadow,
@@ -486,8 +486,8 @@ begin
             FGlyph.Height - 1), clBtnFace);
 
         // glyph always left
-        CreateBitmapExt(FImg.Canvas.Handle, FGlyph, ClientRect, 0, max(0,
-          (Height - FGlyph.Height) div 2),
+        CreateBitmapExt(FImg.Canvas.Handle, FGlyph, ClientRect, 0,
+          Max(0, (Height - FGlyph.Height) div 2),
           fwoNone, DrawState, Transparent,
           GetPixel(FGlyph.Canvas.Handle, 0, FGlyph.Height - 1)
           {TransparentColor},
@@ -510,7 +510,7 @@ begin
 
     if Assigned(Bitmap) then
       CreateBitmapExt(FImg.Canvas.Handle, Bitmap, ClientRect, X,
-        Integer(GlyphShift.Y + max(0, (Height - Bitmap.Height) div 2)),
+        Integer(GlyphShift.Y + Max(0, (Height - Bitmap.Height) div 2)),
         fwoNone, DrawState, Transparent,
         GetPixel(Bitmap.Canvas.Handle, 0, Bitmap.Height - 1),
         DisabledMaskColor);

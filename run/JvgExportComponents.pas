@@ -39,8 +39,8 @@ uses
 type
   TJvExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
   TJvExportGetValue = procedure(Sender: TObject; const Field: TField; var Caption: string) of object;
-  // RDB Added TDataset to Signature
-  TJvExportRecordEvent = procedure(Sender: TObject; const Dataset: TDataSet;
+  // RDB Added TDataSet to Signature
+  TJvExportRecordEvent = procedure(Sender: TObject; const DataSet: TDataSet;
     var AllowExport: Boolean) of object;
   // RDB Added TField to Signature
   TJvExportFieldEvent = procedure(Sender: TObject; const Field: TField; var
@@ -154,7 +154,7 @@ type
     property OnExportField;
   end;
 
-  TJvCreateDataset = procedure(Sender: TObject; var Dataset: TDataset) of object;
+  TJvCreateDataset = procedure(Sender: TObject; var DataSet: TDataSet) of object;
 
   TJvgExportDataset = class(TJvgCommonExport)
   private
@@ -406,12 +406,12 @@ begin
 
     Inc(RecNo);
     DataSet.First;
-    RecCount := Dataset.RecordCount;
+    RecCount := DataSet.RecordCount;
     while not DataSet.Eof do
     begin
       AllowExportRecord := True;
       if Assigned(FOnExportRecord) then
-        FOnExportRecord(Self, Dataset, AllowExportRecord);
+        FOnExportRecord(Self, DataSet, AllowExportRecord);
       if AllowExportRecord then
       begin
         for I := 0 to DataSet.FieldCount - 1 do
@@ -573,7 +573,7 @@ end;
 procedure TJvgExportDataset.Execute;
 var
   I, RecNo, RecCount: Integer;
-  Dest: TDataset;
+  Dest: TDataSet;
   AllowExportRecord: Boolean;
   FieldType: TFieldType;
 begin
@@ -600,7 +600,7 @@ begin
     DataSet.First;
     RecCount := DataSet.RecordCount;
     RecNo := 0;
-    while not DataSet.EOF do
+    while not DataSet.Eof do
     begin
       AllowExportRecord := True;
       if Assigned(FOnExportRecord) then
@@ -659,7 +659,7 @@ begin
 
   Header := CreateNode('Header', XML.Root);
   Table := CreateNode('Table', Header);
-  AName := Dataset.Name;
+  AName := DataSet.Name;
   DoGetTableName(AName);
   Table.Properties.Add('Name', AName);
   DataSet.Open;
@@ -684,14 +684,14 @@ begin
   XMLRecord := CreateNode('Record', Records);
   DataSet.First;
   RecNo := 0;
-  while not DataSet.EOF do
+  while not DataSet.Eof do
   begin
     Inc(RecNo);
     XMLRecord := CreateNode('Record', Records);
     XMLRecord.Properties.Add('Nr', RecNo);
     AllowExportRecord := True;
     if Assigned(OnExportRecord) then
-      OnExportRecord(Self, Dataset, AllowExportRecord);
+      OnExportRecord(Self, DataSet, AllowExportRecord);
     if AllowExportRecord then
     begin
       for I := 0 to DataSet.FieldCount - 1 do
@@ -729,7 +729,7 @@ var
   Records: TJvSimpleXMLElemClassic;
   XMLRecord: TJvSimpleXMLElemClassic;
   AllowExportRecord: Boolean;
-  Fieldvalue: string;
+  FieldValue: string;
   I: Integer;
 
   function CreateNode(Name: string; Base: TJvSimpleXMLElemClassic):
@@ -798,8 +798,8 @@ begin
           AddFieldName(Field);
           FieldValue := DataSet.Fields[I].AsString;
           if Assigned(FOnExportField) then
-            FOnExportField(Self, DataSet.Fields[I], Fieldvalue);
-          Field.Value := Fieldvalue;
+            FOnExportField(Self, DataSet.Fields[I], FieldValue);
+          Field.Value := FieldValue;
         end;
     DoProgress(0, RecCount, RecNo, '');
     DataSet.Next;

@@ -119,8 +119,8 @@ begin
   ControlStyle := ControlStyle - [csOpaque];
   FEnabledAllInDesignTime := FEnabled;
   FRectEllipse := TJvgPointClass.Create;
-  FRectEllipse.x := 30;
-  FRectEllipse.y := 30;
+  FRectEllipse.X := 30;
+  FRectEllipse.Y := 30;
   FRectEllipse.OnChanged := SmthChanged;
   FShape := stEllipse;
   FBevelOuter := bvLowered;
@@ -128,8 +128,8 @@ begin
   FCombineMode := cmDIFF;
   FBevelInnerBold := True;
   FBevelOuterBold := True;
-  FRectEllipse.y := 45;
-  FRectEllipse.x := 45;
+  FRectEllipse.Y := 45;
+  FRectEllipse.X := 45;
   FBevelOffset := 0;
   Width := 112;
   Height := 112;
@@ -334,9 +334,9 @@ var
       for I := 0 to FShapeBitmap.Width do
         if FShapeBitmap.Canvas.Pixels[I, J] = TransparentColor then
         begin
-          RGN2 := CreateRectRgn(I, J, I + 1, J + 1);
-          CombineRgn(RGN, RGN2, RGN, RGN_OR);
-          DeleteObject(RGN2);
+          Rgn2 := CreateRectRgn(I, J, I + 1, J + 1);
+          CombineRgn(Rgn, Rgn2, Rgn, RGN_OR);
+          DeleteObject(Rgn2);
         end;
   end;
 
@@ -380,7 +380,7 @@ begin
         RGNOuter := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
       stRoundRect, stRoundSquare:
         RGNOuter := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom,
-          FRectEllipse.x, FRectEllipse.y);
+          FRectEllipse.X, FRectEllipse.Y);
       stEllipse, stCircle:
         RGNOuter := CreateEllipticRgn(R.Left, R.Top, R.Right, R.Bottom);
     end;
@@ -397,7 +397,7 @@ begin
           R.Bottom + 1);
       stRoundRect, stRoundSquare:
         RGNInner := CreateRoundRectRgn(R.Left + 1, R.Top + 1, R.Right + 2,
-          R.Bottom + 2, FRectEllipse.x, FRectEllipse.y);
+          R.Bottom + 2, FRectEllipse.X, FRectEllipse.Y);
       stEllipse, stCircle:
         RGNInner := CreateEllipticRgn(R.Left + 1, R.Top + 1, R.Right + 2,
           R.Bottom + 2);

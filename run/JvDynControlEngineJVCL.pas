@@ -69,17 +69,17 @@ type
     destructor Destroy; override;
 
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     //IJvDynControlEdit
     procedure ControlSetPasswordChar(Value: Char);
@@ -91,7 +91,7 @@ type
 
     //IJvDynControlButton
     procedure ControlSetGlyph(Value: TBitmap);
-    procedure ControlSetNumGlyphs(Value: integer);
+    procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
   end;
 
@@ -259,7 +259,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetReadonly(Value: Boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -276,7 +276,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
-    procedure ControlSetReadonly(Value: Boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -602,7 +602,7 @@ procedure TJvDynControlJVCLButtonEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLButtonEdit.ControlSetReadOnly(Value: Boolean);
 begin
   FEditControl.ReadOnly := Value;
 end;
@@ -611,7 +611,7 @@ procedure TJvDynControlJVCLButtonEdit.ControlSetCaption(const Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLButtonEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -636,12 +636,12 @@ begin
   FEditControl.OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLButtonEdit.ControlSetValue(Value: Variant);
 begin
   FEditControl.Text := Value;
 end;
 
-function TJvDynControlJVCLButtonEdit.ControlGetValue: variant;
+function TJvDynControlJVCLButtonEdit.ControlGetValue: Variant;
 begin
   Result := FEditControl.Text;
 end;
@@ -671,7 +671,7 @@ begin
   FButton.Glyph.Assign(Value);
 end;
 
-procedure TJvDynControlJVCLButtonEdit.ControlSetNumGlyphs(Value: integer);
+procedure TJvDynControlJVCLButtonEdit.ControlSetNumGlyphs(Value: Integer);
 begin
   FButton.NumGlyphs := Value;
 end;

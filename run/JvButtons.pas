@@ -937,9 +937,9 @@ end;
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 var
-  cap: string;
+  Cap: string;
 begin
-  cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
+  Cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -1141,7 +1141,7 @@ const
   CaptionColor: array [Boolean] of TColor = (clInactiveCaption, clActiveCaption);
 begin
   if not FVisible then
-    exit;
+    Exit;
   Offset := CalcOffset;
   DC := GetWindowDC((Owner as TForm).Handle);
   Canvas := TCanvas.Create;
@@ -1184,7 +1184,7 @@ var
   OldPress: Boolean;
 begin
   if Owner = nil then
-    exit;
+    Exit;
   case Msg.Msg of
     WM_NCACTIVATE: // after
       begin
@@ -1580,7 +1580,7 @@ begin
     if not Enabled then
       State := bsDisabled
     else
-      if IsDown then
+    if IsDown then
       State := bsDown
     else
       State := bsUp;
@@ -1609,7 +1609,7 @@ begin
   if not Enabled then
     State := bsDisabled
   else
-    if IsDown then
+  if IsDown then
     State := bsDown
   else
     State := bsUp;
@@ -1723,7 +1723,7 @@ end;
 destructor TJvNoFrameButton.Destroy;
 begin
   FGlyphDrawer.Free;
-  FglyphDrawer := nil;
+  FGlyphDrawer := nil;
   inherited Destroy;
 end;
 

@@ -815,7 +815,7 @@ begin
       if CheckCaption <> '' then
         Result.ClientHeight := Result.ClientHeight + VertMargin + 17;
       if ATimeout > 0 then
-        Result.ClientHeight := Result.CLientHeight + VertMargin + 13;
+        Result.ClientHeight := Result.ClientHeight + VertMargin + 13;
       Left := (CenterParWidth div 2) - (Width div 2) + CenterParLeft;
       Top := (CenterParHeight div 2) - (Height div 2) + CenterParTop;
       if ACaption <> '' then
@@ -1682,7 +1682,7 @@ end;
 
 function ButtonIndex(const Results: array of Integer; const Button: TMsgDlgBtn): Integer; overload;
 begin
-  Result := ButtonIndex(Results, Modalresults[Button]);
+  Result := ButtonIndex(Results, ModalResults[Button]);
 end;
 
 //----------------------------------------------------------------------------
@@ -2025,7 +2025,7 @@ var
 begin
   RegItem := DSARegister.Locate(DlgID);
   if RegItem.ID <> EmptyItem.ID then
-    Result := Regitem.Storage.GetState(RegItem, ResCode, OnCustomData)
+    Result := RegItem.Storage.GetState(RegItem, ResCode, OnCustomData)
   else
     raise EJvDSADialog.CreateResFmt(@RsEDSADialogIDNotFound, [DlgID]);
 end;
@@ -2189,7 +2189,7 @@ begin
     if (JvDSADialog.CheckControl <> nil) and not JvDSADialog.IgnoreDSAChkMrkTxt then
     begin
       // Get DSA checkmark caption
-      DSAItem := LocateDSAReg(JvDSADIalog.DialogID);
+      DSAItem := LocateDSAReg(JvDSADialog.DialogID);
       CheckCaption := GetDSACheckMarkText(DSAItem.ChkTextKind);
       if CheckCaption = '' then
         CheckCaption := GetDSACheckMarkText(ctkShow);
@@ -2393,7 +2393,7 @@ begin
   if FTimerCount = 0 then
     AutoClose
   else
-    DoCountdown;
+    DoCountDown;
 end;
 
 procedure TJvDSADialog.UpdateDSAState;

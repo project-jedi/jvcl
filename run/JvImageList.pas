@@ -158,9 +158,9 @@ type
     {$IFDEF VisualCLX}
     procedure GetIcon(Index: Integer; Ico: TIcon);
     {$ENDIF VisualCLX}
-    procedure SaveToFile(const Filename: string);
+    procedure SaveToFile(const FileName: string);
     procedure SaveToStream(Stream: TStream); virtual;
-    procedure LoadFromFile(const Filename: string);
+    procedure LoadFromFile(const FileName: string);
     procedure LoadFromStream(Stream: TStream); virtual;
 
     { imItemList }
@@ -171,7 +171,7 @@ type
       // transparent color. If the image list mode is not imItemList the image
       // list is cleared and the mode is set to imItemList.
     procedure AddItem(const AResourceName: string; ATransparentColor: TColor); overload;
-      // AddItem adds the resource AResourceName from the hInstance libarary to
+      // AddItem adds the resource AResourceName from the HInstance libarary to
       // the ItemList with ATransparentColor as transparent color. If the image
       // list mode is not imItemList the image list is cleared and the mode is
       // set to imItemList.
@@ -277,7 +277,7 @@ type
     FHeight: Integer;
     FWidth: Integer;
     FAllocBy: Integer;
-    FHandle: HImageList;
+    FHandle: HIMAGELIST;
   end;
 
   TJumpCode = packed record
@@ -520,7 +520,7 @@ begin
     try
       try
         if FKind = ikResourceBitmap then
-          Bitmap.LoadFromResourceName(hInstance, FResourceName);
+          Bitmap.LoadFromResourceName(HInstance, FResourceName);
 {// (usc) include when MappedResourceBitmap support is finished
         else
         if FKind = ikMappedResourceBitmap then
@@ -754,7 +754,7 @@ begin
       else
         Picture.Assign(nil);
       ResourceIds.Assign(ImageList.ResourceIds);
-      // Do not assign Filename here.
+      // Do not assign FileName here.
       TransparentMode := ImageList.TransparentMode;
       TransparentColor := ImageList.TransparentColor;
       {$IFDEF VCL}
@@ -1168,11 +1168,11 @@ end;
 
 
 
-procedure TJvImageList.LoadFromFile(const Filename: string);
+procedure TJvImageList.LoadFromFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(Filename, fmOpenRead or fmShareDenyWrite);
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally
@@ -1180,11 +1180,11 @@ begin
   end;
 end;
 
-procedure TJvImageList.SaveToFile(const Filename: string);
+procedure TJvImageList.SaveToFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(Filename, fmCreate);
+  Stream := TFileStream.Create(FileName, fmCreate);
   try
     SaveToStream(Stream);
   finally
@@ -1219,7 +1219,7 @@ var
   ImageList_WriteEx: TWriteExProc;
 begin
   Adapter := TStreamAdapter.Create(Stream);
-  if PixelFormat <> pf32Bit then // 32 Bit is only supported by CommCtrls 6.0
+  if PixelFormat <> pf32bit then // 32 Bit is only supported by CommCtrls 6.0
   begin
     ImageList_WriteEx := GetProcAddress(GetModuleHandle('comctl32.dll'), 'ImageList_WriteEx');
     if Assigned(ImageList_WriteEx) then

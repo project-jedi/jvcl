@@ -238,13 +238,13 @@ type
   TModifiedAction =
     (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn, maReplace);
 
-  TBookMark = record
+  TBookmark = record
     X: Integer;
     Y: Integer;
     Valid: Boolean;
   end;
-  TBookMarkNum = 0..9;
-  TBookMarks = array [TBookMarkNum] of TBookMark;
+  TBookmarkNum = 0..9;
+  TBookmarks = array [TBookmarkNum] of TBookmark;
 
   { Borland Block Type:
     00 - inclusive;
@@ -683,7 +683,7 @@ type
     procedure GutterPaint(Canvas: TCanvas); dynamic;
     procedure GutterClick(Line: Integer); dynamic;
     procedure GutterDblClick(Line: Integer); dynamic;
-    procedure BookmarkChanged(BookMark: Integer); dynamic;
+    procedure BookmarkChanged(Bookmark: Integer); dynamic;
     procedure CompletionIdentifier(var Cancel: Boolean); dynamic;
     procedure CompletionTemplate(var Cancel: Boolean); dynamic;
     procedure DoCompletionIdentifier(var Cancel: Boolean);
@@ -791,7 +791,7 @@ type
 
     procedure NotUndoable;
     procedure NotRedoable;
-    procedure ChangeBookMark(BookMark: TBookMarkNum; Valid: Boolean);
+    procedure ChangeBookmark(Bookmark: TBookmarkNum; Valid: Boolean);
     procedure BeginRecord;
     procedure EndRecord(var AMacro: TMacro);
     procedure PlayMacro(const AMacro: TMacro);
@@ -804,7 +804,7 @@ type
 
     property Completion: TJvCompletionBase read FCompletion write FCompletion;
   public
-    BookMarks: TBookMarks;
+    Bookmarks: TBookmarks;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2679,7 +2679,7 @@ begin
     FOnGutterDblClick(Self, Line);
 end;
 
-procedure TJvCustomEditorBase.BookmarkChanged(BookMark: Integer);
+procedure TJvCustomEditorBase.BookmarkChanged(Bookmark: Integer);
 begin
   Gutter.Invalidate;
 end;
@@ -2916,7 +2916,7 @@ begin
     Key := 0;
   end;
 
-  if Com = ecBackSpace then
+  if Com = ecBackspace then
     Completion.DoKeyPress(Backspace);
 end;
 
@@ -4059,7 +4059,7 @@ begin
   FUndoBuffer.ClearRedo;
 end;
 
-procedure TJvCustomEditorBase.ChangeBookMark(BookMark: TBookMarkNum;
+procedure TJvCustomEditorBase.ChangeBookmark(Bookmark: TBookmarkNum;
   Valid: Boolean);
 
   procedure SetXY(X, Y: Integer);
@@ -4078,18 +4078,18 @@ procedure TJvCustomEditorBase.ChangeBookMark(BookMark: TBookMarkNum;
 
 begin
   if Valid then
-    if BookMarks[Bookmark].Valid and (BookMarks[Bookmark].Y = FCaretY) then
-      BookMarks[Bookmark].Valid := False
+    if Bookmarks[Bookmark].Valid and (Bookmarks[Bookmark].Y = FCaretY) then
+      Bookmarks[Bookmark].Valid := False
     else
     begin
-      BookMarks[Bookmark].X := FCaretX;
-      BookMarks[Bookmark].Y := FCaretY;
-      BookMarks[Bookmark].Valid := True;
+      Bookmarks[Bookmark].X := FCaretX;
+      Bookmarks[Bookmark].Y := FCaretY;
+      Bookmarks[Bookmark].Valid := True;
     end
   else
-  if BookMarks[Bookmark].Valid then
-    SetXY(BookMarks[Bookmark].X, BookMarks[Bookmark].Y);
-  BookmarkChanged(BookMark);
+  if Bookmarks[Bookmark].Valid then
+    SetXY(Bookmarks[Bookmark].X, Bookmarks[Bookmark].Y);
+  BookmarkChanged(Bookmark);
 end;
 
 procedure TJvCustomEditorBase.BeginRecord;
@@ -4607,7 +4607,7 @@ begin
             IndentSelLines(False);
           Exit;
         end;
-      ecUnIndent:
+      ecUnindent:
         if not FReadOnly and FSelection.IsSelected then
         begin
           if FSelection.SelBlockFormat = bfColumn then
@@ -4695,10 +4695,10 @@ begin
       ecEndCompound:
         EndCompound;
       ecSetBookmark0..ecSetBookmark9:
-        ChangeBookMark(ACommand - ecSetBookmark0, True);
+        ChangeBookmark(ACommand - ecSetBookmark0, True);
       ecGotoBookmark0..ecGotoBookmark9:
         begin
-          ChangeBookMark(ACommand - ecGotoBookmark0, False);
+          ChangeBookmark(ACommand - ecGotoBookmark0, False);
           X := CaretX;
           Y := CaretY;
         end;

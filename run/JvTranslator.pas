@@ -48,7 +48,7 @@ type
   protected
     function FindItemNamed(Root: TJvSimpleXMLElem; const AName: string;
       ARecurse: Boolean = False): TJvSimpleXMLElem; virtual;
-    procedure TranslateComponent(const Component: TComponent; const Elem: TJvSimpleXmlElem); virtual;
+    procedure TranslateComponent(const Component: TComponent; const Elem: TJvSimpleXMLElem); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -227,12 +227,12 @@ var
   AName: string;
   AElem: TJvSimpleXMLElem;
 
-  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXmlElem); forward;
+  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem); forward;
 
-  procedure TreeNodesToXML(Nodes: TTreeNodes; Elem: TJvSimpleXmlElem);
+  procedure TreeNodesToXML(Nodes: TTreeNodes; Elem: TJvSimpleXMLElem);
   var
     N: TTreeNode;
-    AElem: TJvSimpleXmlElem;
+    AElem: TJvSimpleXMLElem;
   begin
     // format: <Items>
     //           <Item Index="" Value="" />
@@ -251,10 +251,10 @@ var
     end;
   end;
 
-  procedure ListItemsToXML(Items: TListItems; Elem: TJvSimpleXmlElem);
+  procedure ListItemsToXML(Items: TListItems; Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
-    AElem: TJvSimpleXmlElem;
+    AElem: TJvSimpleXMLElem;
   begin
     // format: <Items>
     //           <Item Index="" Column="" Value="" />
@@ -275,10 +275,10 @@ var
     end;
   end;
 
-  procedure StringsToXML(Strings: TStrings; Elem: TJvSimpleXmlElem);
+  procedure StringsToXML(Strings: TStrings; Elem: TJvSimpleXMLElem);
   var
     I: Integer;
-    AElem: TJvSimpleXmlElem;
+    AElem: TJvSimpleXMLElem;
   begin
     // format: <Items>
     //           <Item Index="" Value="" />
@@ -305,7 +305,7 @@ var
     end;
   end;
 
-  procedure ObjectToXML(AnObject: TObject; Elem: TJvSimpleXmlElem);
+  procedure ObjectToXML(AnObject: TObject; Elem: TJvSimpleXMLElem);
   var
     J, Count: Integer;
     PropList: PPropList;
@@ -363,7 +363,7 @@ var
     end;
   end;
 
-  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXmlElem);
+  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem);
   var
     I: Integer;
   begin
@@ -371,7 +371,7 @@ var
       ObjectToXML(Collection.Items[I], Elem.Items.Add(Collection.Items[I].DisplayName));
   end;
 
-  procedure InnerComponentToXML(AComponent: TComponent; Elem: TJvSimpleXmlElem; Recurse: Boolean);
+  procedure InnerComponentToXML(AComponent: TComponent; Elem: TJvSimpleXMLElem; Recurse: Boolean);
   var
     I, Count: Integer;
     PropList: PPropList;
@@ -516,7 +516,7 @@ begin
 end;
 
 procedure TJvTranslator.TranslateComponent(const Component: TComponent;
-  const Elem: TJvSimpleXmlElem);
+  const Elem: TJvSimpleXMLElem);
 var
   I, J: Integer;
   PropInfo: PPropInfo;
@@ -524,19 +524,19 @@ var
   Ok: Boolean;
   S: string;
 
-  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXmlElem); forward;
+  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXMLElem); forward;
 
   function AnalyseCRLF(Value: string): string;
   begin
     Result := StringReplace(Value, cNewline, sLineBreak, [rfReplaceAll]);
   end;
 
-  procedure TransStrings(const Obj: TObject; const Elem: TJvSimpleXmlElem);
+  procedure TransStrings(const Obj: TObject; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
   begin
     if (Elem.Items.Count > 0) and (Elem.Items[0] is TJvSimpleXmlElemCData) then
-      TStrings(obj).Text := Elem.Items[0].Value
+      TStrings(Obj).Text := Elem.Items[0].Value
     else
       for I := 0 to Elem.Items.Count - 1 do
       begin
@@ -546,7 +546,7 @@ var
       end;
   end;
 
-  procedure TransTreeNodes(const Obj: TObject; const Elem: TJvSimpleXmlElem);
+  procedure TransTreeNodes(const Obj: TObject; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
   begin
@@ -571,7 +571,7 @@ var
       end;
   end;
 
-  procedure TransListItems(const Obj: TObject; const Elem: TJvSimpleXmlElem);
+  procedure TransListItems(const Obj: TObject; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
   begin
@@ -594,7 +594,7 @@ var
     end;
   end;
 
-  procedure TransProperties(const Obj: TObject; const Elem: TJvSimpleXmlElem);
+  procedure TransProperties(const Obj: TObject; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
     PropInfo: PPropInfo;
@@ -608,7 +608,7 @@ var
         tkEnumeration, tkSet, tkString, tkLString, tkWString]);
       if (PropInfo <> nil) and (PropInfo^.SetProc <> nil) and not InSkipList(Obj, Elem.Properties[I].Name) then
         case PropInfo^.PropType^.Kind of
-          tkstring, tkLString, tkWString:
+          tkString, tkLString, tkWString:
             SetStrProp(Obj, PropInfo, StringReplace(Elem.Properties[I].Value, cNewline, sLineBreak, []));
           tkSet:
             SetSetProp(Obj, PropInfo, Elem.Properties[I].Value);
@@ -637,7 +637,7 @@ var
     end;
   end;
 
-  procedure TranslateCollection(const Collection: TCollection; const Elem: TJvSimpleXmlElem);
+  procedure TranslateCollection(const Collection: TCollection; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
   begin
@@ -656,7 +656,7 @@ var
     end;
   end;
 
-  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXmlElem);
+  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXMLElem);
   var
     I, J: Integer;
     PropInfo: PPropInfo;
@@ -765,7 +765,7 @@ procedure TJvTranslator.Translate(const Form: TCustomForm);
 var
   J: Integer;
   S: string;
-  lElem: TJvSimpleXmlElem;
+  lElem: TJvSimpleXMLElem;
 begin
   J := Pos('_', Form.Name);
   if J = 0 then
@@ -779,7 +779,7 @@ end;
 
 function TJvTranslator.Translate(const Category, Item: string): string;
 var
-  lElem: TJvSimpleXmlElem;
+  lElem: TJvSimpleXMLElem;
 begin
   Result := '';
   lElem := FindItemNamed(nil, Category, True);
@@ -998,7 +998,7 @@ begin
           Dispose(P);
         end;
         if FSkipList.Count = 0 then
-          FreeAndnil(FSkipList);
+          FreeAndNil(FSkipList);
         Break;
       end;
   end;

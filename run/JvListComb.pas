@@ -183,8 +183,8 @@ type
     {$IFDEF VisualCLX}
     procedure RecreateWidget;
     procedure CreateWidget; override;
-    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean; override;
-    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+    function DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean; override;
+    procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer); override;
     procedure SetParent(const AParent: TWidgetControl); override;
     {$ENDIF VisualCLX}
@@ -283,8 +283,8 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
 //    procedure CreateWidget; override;
-    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):boolean ; override;
-    procedure MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+    function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState):Boolean ; override;
+    procedure MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer); override;
     procedure SetParent(const AParent: TWidgetControl); override;
     {$ENDIF VisualCLX}
@@ -746,7 +746,7 @@ end;
 procedure TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-function TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): boolean;
+function TJvImageComboBox.DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState): Boolean;
 {$ENDIF VisualCLX}
 var
   Offset, Tmp: Integer;
@@ -863,7 +863,7 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-procedure TJvImageComboBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+procedure TJvImageComboBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
   Height := GetItemHeight(Font) + 4 ;
@@ -1202,7 +1202,7 @@ end;
 procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): boolean;
+function TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean;
 {$ENDIF VisualCLX}
 var
   SavedColor: TColor;
@@ -1210,7 +1210,7 @@ begin
   if csDestroying in ComponentState then
     Exit;
   {$IFDEF VisualCLX}
-  Result := true;
+  Result := True;
   if odSelected in State then
   begin
     Canvas.Brush.Color := Items[Index].ColorHighlight;
@@ -1472,18 +1472,21 @@ begin
   Height := Max(GetItemHeight(Font) + 4, GetImageHeight(Index) + 4);
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
+
 procedure TJvImageListBox.SetParent(const AParent: TWidgetControl);
 begin
   inherited SetParent(AParent);
   ResetItemHeight;
 end;
 
-procedure TJvImageListBox.MeasureItem(Control: TWinControl; item: QClxListBoxItemH;
+procedure TJvImageListBox.MeasureItem(Control: TWinControl; Item: QClxListBoxItemH;
                           var Height, Width: Integer);
 begin
   Height := Max(GetItemHeight(Font) + 4, FImageList.Height + 4);
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvImageListBox.FontChanged;

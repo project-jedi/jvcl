@@ -259,7 +259,7 @@ type
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
     {$IFDEF VCL}
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     {$ENDIF VCL}
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
@@ -2351,13 +2351,13 @@ var
   B: TJvOutlookBarButton;
   P: TJvOutlookBarPage;
 begin
-  TJvOutlookBarEdit(FEdit).Tag := Msg.wParam;
+  TJvOutlookBarEdit(FEdit).Tag := Msg.WParam;
 //  TJvOutlookBarEdit(FEdit).Font.Name := Pages[ActivePageIndex].Font.Name;
 //  TJvOutlookBarEdit(FEdit).Font.Size := Pages[ActivePageIndex].Font.Size;
-  case Msg.lParam of
+  case Msg.LParam of
     0: // button
       begin
-        B := TJvOutlookBarButton(Msg.wParam);
+        B := TJvOutlookBarButton(Msg.WParam);
         R := GetButtonTextRect(ActivePageIndex, B.Index);
         R.Left := Max(R.Left, 0);
         R.Right := Min(R.Right, ClientWidth);
@@ -2365,7 +2365,7 @@ begin
       end;
     1: // page
       begin
-        P := TJvOutlookBarPage(Msg.wParam);
+        P := TJvOutlookBarPage(Msg.WParam);
         R := GetPageTextRect(P.Index);
         TJvOutlookBarEdit(FEdit).ShowEdit(P.Caption, R);
       end;
@@ -2493,7 +2493,7 @@ end;
 
 
 {$IFDEF VCL}
-procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvCustomOutlookBar.CMDialogChar(var Msg: TCMDialogChar);
 var
   I: Integer;
 begin
@@ -2503,18 +2503,18 @@ begin
     if (ActivePage <> nil) and (ActivePage.Enabled) then
     begin
       for I := 0 to ActivePage.Buttons.Count - 1 do
-        if ActivePage.Buttons[I].Enabled and IsAccel(Message.CharCode, ActivePage.Buttons[I].Caption) then
+        if ActivePage.Buttons[I].Enabled and IsAccel(Msg.CharCode, ActivePage.Buttons[I].Caption) then
         begin
-          Message.Result := 1;
+          Msg.Result := 1;
           DoButtonClick(I);
           Exit;
         end;
     end;
 
     for I := 0 to Pages.Count - 1 do
-      if Pages[I].Enabled and IsAccel(Message.CharCode, Pages[I].Caption) then
+      if Pages[I].Enabled and IsAccel(Msg.CharCode, Pages[I].Caption) then
       begin
-        Message.Result := 1;
+        Msg.Result := 1;
         ActivePageIndex := I;
         Exit;
       end;
