@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
   Left = 350
   Top = 136
-  Width = 417
+  Width = 476
   Height = 454
   Caption = 'JvColorCombo Demo'
   Color = clBtnFace
@@ -11,7 +11,11 @@ object frmMain: TfrmMain
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  DesignSize = (
+    468
+    427)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -28,11 +32,20 @@ object frmMain: TfrmMain
     Height = 13
     Caption = 'Custom Color Prefix:'
   end
+  object Label3: TLabel
+    Left = 304
+    Top = 8
+    Width = 38
+    Height = 13
+    Caption = 'Display:'
+  end
   object JvColorComboBox1: TJvColorComboBox
     Left = 16
     Top = 24
     Width = 145
     Height = 20
+    AutoSave.Registry.Key = 'DefaultColor'
+    AutoSave.Registry.Path = '\Software\JEDI\ColorTest'
     ColorNameMap.Strings = (
       'clBlack=Black'
       'clMaroon=Maroon'
@@ -88,32 +101,33 @@ object frmMain: TfrmMain
       'clMenuBar=MenuBar'
       'clNone=None'
       'clDefault=Default')
+    ColorValue = clNavy
     ColorDialogText = '(Other...)'
-    NewColorText = 'New Color '
+    NewColorText = 'Custom Color %d'
     Options = [coText, coSysColors, coCustomColors]
     DroppedDownWidth = 145
     OnNewColor = JvColorComboBox1NewColor
     TabOrder = 0
   end
-  object Memo1: TMemo
+  object memInfo: TMemo
     Left = 24
     Top = 96
-    Width = 361
+    Width = 420
     Height = 321
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssVertical
     TabOrder = 1
   end
-  object Button1: TButton
+  object btnColorNames: TButton
     Left = 24
     Top = 64
     Width = 90
     Height = 25
     Caption = 'Get Color Map:'
     TabOrder = 2
-    OnClick = Button1Click
+    OnClick = btnColorNamesClick
   end
-  object Edit1: TEdit
+  object edNameTemplate: TEdit
     Left = 168
     Top = 24
     Width = 121
@@ -121,7 +135,7 @@ object frmMain: TfrmMain
     TabOrder = 3
     Text = 'Custom Color %d'
   end
-  object CheckBox1: TCheckBox
+  object chkAllowCustom: TCheckBox
     Left = 168
     Top = 64
     Width = 121
@@ -130,6 +144,30 @@ object frmMain: TfrmMain
     Checked = True
     State = cbChecked
     TabOrder = 4
-    OnClick = CheckBox1Click
+    OnClick = cbDisplayStyleChange
+  end
+  object btnCustColors: TButton
+    Left = 352
+    Top = 64
+    Width = 89
+    Height = 25
+    Caption = 'Custom Colors'
+    TabOrder = 5
+    OnClick = btnCustColorsClick
+  end
+  object cbDisplayStyle: TComboBox
+    Left = 304
+    Top = 23
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
+    TabOrder = 6
+    OnChange = cbDisplayStyleChange
+    Items.Strings = (
+      '(none)'
+      'Text'
+      'Hex'
+      'RGB')
   end
 end
