@@ -1997,12 +1997,15 @@ begin
   FOriginal := Node.Properties.ItemNamed['original'].Value;
   FReplacement := Node.Properties.ItemNamed['replacement'].Value;
   FRemapList := TStringList.Create;
-  FRemapList.Add('*.dfm=*.xfm'); 
 end;
 
 destructor TClxReplacement.Destroy;
 begin
-  FRemapList.SaveToFile(RemapFile);
+  if FRemapList.Count > 0 then
+  begin
+    FRemapList.Add('*.dfm=*.xfm');
+    FRemapList.SaveToFile(RemapFile);
+  end;  
   FRemapList.Free;
   inherited Destroy;
 end;
