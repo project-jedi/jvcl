@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvXPCore, JvXPBar, JvXPContainer, ImgList, ActnList, ExtCtrls,
-  StdCtrls, ComCtrls, JvExControls, JvComponent;
+  StdCtrls, ComCtrls, JvExControls, JvComponent, JvXPCheckCtrls,
+  JvXPButtons;
 
 resourcestring
   SClickEvent =
@@ -24,18 +25,18 @@ type
     acSettingsUsers: TAction;
     acSynchronizeUnknown: TAction;
     acSynchronizeWeb: TAction;
-    btnCollapseAll: TButton;
-    btnExpandAll: TButton;
+    btnCollapseAll: TJvXPButton;
+    btnExpandAll: TJvXPButton;
     cntDetails: TJvXPContainer;
     cntWinXPBar: TJvXPContainer;
     imlWinXPBar: TImageList;
     lbWelcome: TLabel;
     sbxWinXPBar: TScrollBox;
     spltMain: TSplitter;
-    btnToogleEnableMode: TButton;
-    btnToggleVisibleMode: TButton;
+    btnToogleEnableMode: TJvXPButton;
+    btnToggleVisibleMode: TJvXPButton;
     ilOldButtons: TImageList;
-    chkGrouped: TCheckBox;
+    chkGrouped: TJvXPCheckbox;
     ilWhiteButtons: TImageList;
     ilRedButtons: TImageList;
     ilBlackButtons: TImageList;

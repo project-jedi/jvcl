@@ -11,7 +11,7 @@ object frmMain: TfrmMain
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Shell Dlg 2'
+  Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
@@ -68,6 +68,7 @@ object frmMain: TfrmMain
           Height = 35
           Caption = 'Structure'
           Collapsed = True
+          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = 4227327
           Colors.GradientTo = 4227327
           Colors.SeparatorColor = 4227327
@@ -158,6 +159,7 @@ object frmMain: TfrmMain
           Hint = 'This bar doesn'#39't use actions'
           Caption = 'Synchronize'
           Collapsed = True
+          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = 8421631
           Colors.GradientTo = 8421631
           Colors.SeparatorColor = clRed
@@ -270,6 +272,7 @@ object frmMain: TfrmMain
           Hint = 'This is a hint'
           Caption = 'Information'
           Collapsed = True
+          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = clInfoBk
           Colors.GradientFrom = clBtnFace
           Colors.GradientTo = clWindowText
@@ -337,6 +340,7 @@ object frmMain: TfrmMain
           Height = 35
           Caption = 'Settings'
           Collapsed = True
+          Colors.ItemFrameColor = clBlack
           Items = <
             item
               Action = acSettingsDatabase
@@ -434,6 +438,7 @@ object frmMain: TfrmMain
           Height = 103
           Hint = 'Click to see connection options'
           Caption = 'Connect'
+          Colors.ItemFrameColor = clBlack
           Colors.GradientTo = 16244694
           Items = <
             item
@@ -554,7 +559,7 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
     end
-    object btnCollapseAll: TButton
+    object btnCollapseAll: TJvXPButton
       Left = 8
       Top = 48
       Width = 75
@@ -563,7 +568,7 @@ object frmMain: TfrmMain
       TabOrder = 0
       OnClick = btnCollapseAllClick
     end
-    object btnExpandAll: TButton
+    object btnExpandAll: TJvXPButton
       Left = 88
       Top = 48
       Width = 75
@@ -572,7 +577,7 @@ object frmMain: TfrmMain
       TabOrder = 1
       OnClick = btnExpandAllClick
     end
-    object btnToogleEnableMode: TButton
+    object btnToogleEnableMode: TJvXPButton
       Left = 8
       Top = 80
       Width = 153
@@ -581,7 +586,7 @@ object frmMain: TfrmMain
       TabOrder = 2
       OnClick = btnToogleEnableModeClick
     end
-    object btnToggleVisibleMode: TButton
+    object btnToggleVisibleMode: TJvXPButton
       Left = 8
       Top = 112
       Width = 153
@@ -590,7 +595,7 @@ object frmMain: TfrmMain
       TabOrder = 3
       OnClick = btnToggleVisibleModeClick
     end
-    object chkGrouped: TCheckBox
+    object chkGrouped: TJvXPCheckbox
       Left = 24
       Top = 152
       Width = 97
