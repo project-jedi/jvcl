@@ -71,6 +71,7 @@ uses
   //Multimedia
   JvSoundControl, JvDeviceChanged, JvImageTransform, JvImageRotate,
   JvWavePlayer, JvStarfield, JvJoystick, JvSpecialImage,
+  JvThumbImage, JvThumbNail, JvThumbView, JvMovableBevel,
 
   //Labels
   JvHotLink, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
@@ -190,6 +191,8 @@ begin
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
   RegisterPropertyEditor(typeinfo(integer), TJvCustomOutlookBar, 'ActivePageIndex', TOLBarActivePageEditor);
+    {Thumbview.filter editor}
+  RegisterPropertyEditor(TypeInfo(string), TjvTHumbview, 'Filter', TFilterProperty);
 end;
 
 procedure RegCompEds;
@@ -233,7 +236,7 @@ begin
       TJvPanel
       ]);
 
-  
+
   // Jv Additional
   // =============
   RegisterComponents('Jv Additional', [
@@ -501,6 +504,11 @@ begin
     TJvWinampLabel,
       TJvBreatheSkin,
       TJvWinampApi
+
+    TjvThumbImage,
+      TjvThumbNail,
+      TjvThumbView,
+      TJvMovableBevel
       ]);
 
   // Jv Forms
