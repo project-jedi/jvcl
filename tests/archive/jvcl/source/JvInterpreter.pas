@@ -25,8 +25,7 @@ component   : JvInterpreterProgram and more..
 description : JVCL Interpreter version 2
 
 Known Issues:
-  Some russian comments were translated to english; these comments are marked
-  with [translated]
+   String fields in records binded from Delphi don't work
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -152,6 +151,8 @@ Upcoming JVCL 3.00
    - fixed record bugs with Delphi 6
    - fixed OLE bugs
    - record declaration support
+   - arrays of records, arrays of arrays
+   - dynamic arrays
    - introduced data type system for variables and record fields initializations
    - major code cleanups
 }
@@ -800,7 +801,6 @@ type
 {$ENDIF COMPILER6_UP}
 
   EJvInterpreterError = class(Exception)
-
   private
     FExceptionPos: Boolean;
     FErrCode: Integer;
@@ -864,6 +864,7 @@ const
   varArray = $0014;
 {$ENDIF COMPILER6_UP}
 
+
 { V2O - converts variant to object }
 function V2O(const V: Variant): TObject;
 
@@ -915,6 +916,14 @@ procedure JvInterpreterVarFree(var V: Variant);
 
 { compare strings }
 function Cmp(const S1, S2: string): Boolean;
+
+{ For dynamic array support}
+procedure JvInterpreterArraySetLength(AArray: Variant; ASize: integer);
+function JvInterpreterArrayLength(const AArray: Variant): integer;
+function JvInterpreterArrayLow(const AArray: Variant): integer;
+function JvInterpreterArrayHigh(const AArray: Variant): integer;
+procedure JvInterpreterArrayElementDelete(AArray: Variant; AElement: integer);
+procedure JvInterpreterArrayElementInsert(AArray: Variant; AElement: integer; Value: Variant);
 
 var
   GlobalJvInterpreterAdapter: TJvInterpreterAdapter = nil;
@@ -1111,6 +1120,7 @@ type
     BeginPos: TJvInterpreterArrayValues; {starting range for all dimensions}
     EndPos: TJvInterpreterArrayValues; {ending range for all dimensions}
     ItemType: Integer; {array type}
+    DT : IJvInterpreterDataType;
     ElementSize: Integer; {size of element in bytes}
     Size: Integer; {number of elements in array}
     Memory: Pointer; {pointer to memory representation of array}
@@ -1131,9 +1141,10 @@ type
     FArrayBegin, FArrayEnd: TJvInterpreterArrayValues;
     FDimension: Integer;
     FArrayType: Integer;
+    FDT: IJvInterpreterDataType;
   public
     constructor Create(AArrayBegin, AArrayEnd: TJvInterpreterArrayValues;
-      ADimension: Integer; AArrayType: Integer);
+      ADimension: Integer; AArrayType: Integer; ADT: IJvInterpreterDataType);
     procedure Init(var V: Variant);
     function GetTyp: Word;
   end;
@@ -1474,6 +1485,39 @@ end;
 
 //RWare: added check for "char", otherwise function with ref variable
 //of type char causes AV, like KeyPress event handler
+
+function Typ2Size(ATyp: Word): integer;
+begin
+  case ATyp of
+    varInteger:
+      begin
+        Result := SizeOf(Integer);
+      end;
+    varDouble:
+      begin
+        Result := SizeOf(Double);
+      end;
+    varByte:
+      begin
+        Result := SizeOf(Byte);
+      end;
+    varSmallInt:
+      begin
+        Result := SizeOf(varSmallInt);
+      end;
+    varDate:
+      begin
+        Result := SizeOf(Double);
+      end;
+    varEmpty:
+      begin
+        Result := SizeOf(TVarData);
+      end
+  else if ATyp = varObject then
+    Result := SizeOf(Integer);
+  end;
+
+end;
 
 function TypeName2VarTyp(TypeName: string): Word;
 begin
@@ -1919,18 +1963,21 @@ end;
 
 function JvInterpreterArrayInit(const Dimension: Integer;
   const BeginPos, EndPos: TJvInterpreterArrayValues;
-  const ItemType: Integer): PJvInterpreterArrayRec;
+  const ItemType: Integer; DataType : IJvInterpreterDataType): PJvInterpreterArrayRec;
 var
   PP: PJvInterpreterArrayRec;
   SS: TStringList;
   AA: Integer;
   ArraySize: Integer;
+  i: integer;
 begin
   if (Dimension < 1) or (Dimension > cJvInterpreterMaxArgs) then
     JvInterpreterError(ieArrayBadDimension, -1);
   for AA := 0 to Dimension - 1 do
   begin
-    if not (BeginPos[AA] <= EndPos[AA]) then
+    // For dynamic arrays BeginPos[AA] <= EndPos[AA]
+    if (not (BeginPos[AA] <= EndPos[AA])) and
+      (Dimension <> 1) and (BeginPos[AA] <> 0) and (EndPos[AA] <> - 1)then
       JvInterpreterError(ieArrayBadRange, -1);
   end;
 
@@ -1938,46 +1985,30 @@ begin
   PP^.BeginPos := BeginPos;
   PP^.EndPos := EndPos;
   PP^.ItemType := ItemType;
+  PP^.DT := DataType;
   ArraySize := GetArraySize(Dimension, BeginPos, EndPos);
   PP^.Size := ArraySize;
   PP^.Dimension := Dimension;
-  case ItemType of
-    varInteger:
-      begin
-        PP^.ElementSize := SizeOf(Integer);
-      end;
-    varDouble:
-      begin
-        PP^.ElementSize := SizeOf(Double);
-      end;
-    varByte:
-      begin
-        PP^.ElementSize := SizeOf(Byte);
-      end;
-    varSmallInt:
-      begin
-        PP^.ElementSize := SizeOf(varSmallInt);
-      end;
-    varDate:
-      begin
-        PP^.ElementSize := SizeOf(Double);
-      end;
-    varString:
-      begin
-        PP^.ElementSize := 0;
-        SS := TStringList.Create;
-        for AA := 1 to ArraySize do
-          SS.Add('');
-        PP^.Memory := SS;
-      end
-  else if ItemType = varObject then
-    PP^.ElementSize := SizeOf(Integer);
+
+  if ItemType <> varString then
+    PP^.ElementSize := Typ2Size(ItemType)
+  else
+  begin
+    PP^.ElementSize := 0;
+    SS := TStringList.Create;
+    for AA := 1 to ArraySize do
+      SS.Add('');
+    PP^.Memory := SS;
   end;
+
   if ItemType <> varString then
   begin
     GetMem(PP^.Memory, ArraySize * PP^.ElementSize);
     //ZeroMemory(PP^.Memory, ArraySize * PP^.ElementSize);
     FillChar(PP^.Memory^, ArraySize * PP^.ElementSize, 0);
+    if ItemType = varEmpty then
+      for i := 0 to ArraySize - 1 do
+        PP^.DT.Init(Variant(PVarData(PChar(PP^.Memory) + i * PP^.ElementSize)^));
   end;
   Result := PP;
 end;
@@ -1985,11 +2016,19 @@ end;
 {Free memory for array}
 
 procedure JvInterpreterArrayFree(JvInterpreterArrayRec: PJvInterpreterArrayRec);
+var
+  i: integer;
+  ArraySize: integer;
 begin
   if not Assigned(JvInterpreterArrayRec) then
     Exit;
+  ArraySize := GetArraySize(JvInterpreterArrayRec^.Dimension,
+    JvInterpreterArrayRec^.BeginPos, JvInterpreterArrayRec^.EndPos);
   if JvInterpreterArrayRec^.ItemType <> varString then
   begin
+    if JvInterpreterArrayRec^.ItemType = varEmpty then
+      for i := 0 to ArraySize - 1 do
+        JvInterpreterVarFree(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + i * JvInterpreterArrayRec^.ElementSize)^));
     FreeMem(JvInterpreterArrayRec^.Memory, (JvInterpreterArrayRec^.Size) *
       JvInterpreterArrayRec^.ElementSize);
     Dispose(JvInterpreterArrayRec);
@@ -2034,7 +2073,10 @@ begin
       begin
         Value := VarAsType(Value, varString);
         TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset] := Value;
-      end
+      end ;
+    varEmpty:
+      JvInterpreterVarAssignment(Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) +
+        Offset * JvInterpreterArrayRec^.ElementSize)^), Value)
   else if JvInterpreterArrayRec^.ItemType = varObject then
       PInteger(Pointer(Integer(JvInterpreterArrayRec^.Memory) +
         (Offset * JvInterpreterArrayRec^.ElementSize)))^ := TVarData(Value).VInteger;
@@ -2070,7 +2112,10 @@ begin
       Result := TDateTime(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
         JvInterpreterArrayRec^.ElementSize))^);
     varString:
-      Result := TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset]
+      Result := TStringList(JvInterpreterArrayRec^.Memory).Strings[Offset];
+    varEmpty:
+      JvInterpreterVarCopy(Result, Variant(PVarData(PChar(JvInterpreterArrayRec^.Memory) + Offset *
+        JvInterpreterArrayRec^.ElementSize)^))
   else if JvInterpreterArrayRec^.ItemType = varObject then
       begin
         Result := Integer(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
@@ -2078,6 +2123,115 @@ begin
         TVarData(Result).VType := varObject;
       end;
   end;
+end;
+
+{ For dynamic array support}
+procedure JvInterpreterArraySetLength(AArray: Variant; ASize: integer);
+var
+  i: integer;
+  OldSize: integer;
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry. Dynamic arrays support is made for one-dimensional arrays only.');
+  OldSize := ArrayRec^.Size;
+  if OldSize > ASize then
+  begin
+    for i := ASize to OldSize - 1 do
+      if ArrayRec^.ItemType = varEmpty then
+        JvInterpreterVarFree(Variant((PVarData(PChar(ArrayRec^.Memory) + i * ArrayRec^.ElementSize))^));
+    ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - (OldSize - ASize);
+    ArrayRec^.Size := GetArraySize(1, ArrayRec^.BeginPos, ArrayRec^.EndPos);
+    ReallocMem(ArrayRec^.Memory, ASize * ArrayRec^.ElementSize);
+  end
+  else if OldSize < ASize then
+  begin
+    ReallocMem(ArrayRec^.Memory, ASize * ArrayRec^.ElementSize);
+    FillChar((PChar(ArrayRec^.Memory) + OldSize * ArrayRec^.ElementSize)^,
+     (ASize - OldSize) * ArrayRec^.ElementSize, 0);
+    for i := OldSize to ASize - 1 do
+      if ArrayRec^.ItemType = varEmpty then
+        ArrayRec^.DT.Init(Variant(Pointer(PChar(ArrayRec^.Memory) + i * ArrayRec^.ElementSize)^));
+    ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + (ASize - OldSize );
+    ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
+  end;
+end;
+
+function JvInterpreterArrayLength(const AArray: Variant): integer;
+var
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry. For one-dimensional arrays only.');
+  Result := ArrayRec^.Size;
+end;
+
+function JvInterpreterArrayLow(const AArray: Variant): integer;
+var
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry. For one-dimensional arrays only.');
+  Result := ArrayRec^.BeginPos[0];
+end;
+
+function JvInterpreterArrayHigh(const AArray: Variant): integer;
+var
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry. For one-dimensional arrays only.');
+  Result := ArrayRec^.EndPos[0];
+end;
+
+// Not Tested
+procedure JvInterpreterArrayElementDelete(AArray: Variant; AElement: integer);
+var
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry. For one-dimensional arrays only.');
+  if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
+    JvInterpreterError(ieArrayIndexOutOfBounds, -1);
+  ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] - 1;
+  ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
+  if ArrayRec^.ItemType = varEmpty then
+    JvInterpreterVarFree(Variant(PVarData(PChar(ArrayRec^.Memory) +
+      (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^));
+  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) *ArrayRec^.ElementSize)^,
+    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) *ArrayRec^.ElementSize)^,
+    (ArrayRec^.EndPos[0]-AElement + 1) * ArrayRec^.ElementSize);
+  ReallocMem(ArrayRec^.Memory, ArrayRec^.Size * ArrayRec^.ElementSize);
+
+end;
+
+// Not Tested
+procedure JvInterpreterArrayElementInsert(AArray: Variant; AElement: integer; Value: Variant);
+var
+  ArrayRec: PJvInterpreterArrayRec;
+begin
+  ArrayRec := PJvInterpreterArrayRec(TVarData(AArray).VPointer);
+  if ArrayRec^.Dimension > 1 then
+    raise exception.Create('Sorry.For one-dimensional arrays only.');
+  if (AElement < ArrayRec^.BeginPos[0]) or (AElement > ArrayRec^.EndPos[0]) then
+    JvInterpreterError(ieArrayIndexOutOfBounds, -1);
+  ArrayRec^.EndPos[0] := ArrayRec^.EndPos[0] + 1;
+  ArrayRec^.Size := GetArraySize(ArrayRec^.Dimension, ArrayRec^.BeginPos, ArrayRec^.EndPos);
+  ReallocMem(ArrayRec^.Memory, ArrayRec^.Size * ArrayRec^.ElementSize);
+  Move((PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^,
+    (PChar(ArrayRec^.Memory) + (AElement - ArrayRec^.BeginPos[0] + 1) * ArrayRec^.ElementSize)^,
+    (ArrayRec^.EndPos[0] - AElement) * ArrayRec^.ElementSize);
+  if ArrayRec^.ItemType = varEmpty then
+    ArrayRec^.DT.Init(Variant(PVarData(PChar(ArrayRec^.Memory) +
+      (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^));
+  JvInterpreterVarAssignment(Variant(PVarData(PChar(ArrayRec^.Memory) +
+    (AElement - ArrayRec^.BeginPos[0]) * ArrayRec^.ElementSize)^), Value);
+
 end;
 
 { ########################## Array support ########################## }
@@ -2123,11 +2277,30 @@ begin
 end;
 
 procedure JvInterpreterVarAssignment(var Dest: Variant; const Source: Variant);
+var
+  i: integer;
+  DestRecHolder: TJvInterpreterRecHolder;
+  SourceRecHolder: TJvInterpreterRecHolder;
 begin
   if (TVarData(Source).VType = varArray) then
     TVarData(Dest) := TVarData(Source)
   else if (TVarData(Source).VType = varRecord) then
-    Move(TJvInterpreterRecHolder(TVarData(Source).VPointer).Rec^, TJvInterpreterRecHolder(TVarData(Dest).VPointer).Rec^, TJvInterpreterRecHolder(TVarData(Source).VPointer).JvInterpreterRecord.RecordSize)
+  begin
+    DestRecHolder := TJvInterpreterRecHolder(TVarData(Dest).VPointer);
+    SourceRecHolder := TJvInterpreterRecHolder(TVarData(Source).VPointer);
+    for i := 0 to SourceRecHolder.JvInterpreterRecord.FieldCount - 1 do
+      if SourceRecHolder.JvInterpreterRecord.Fields[i].Typ = varEmpty then
+        JvInterpreterVarAssignment(Variant(PVarData(PChar(DestRecHolder.Rec) +
+          DestRecHolder.JvInterpreterRecord.Fields[i].Offset)^),
+          Variant(PVarData(PChar(SourceRecHolder.Rec) +
+          SourceRecHolder.JvInterpreterRecord.Fields[i].Offset)^))
+      else
+        Move((PChar(SourceRecHolder.Rec) +
+          SourceRecHolder.JvInterpreterRecord.Fields[i].Offset)^,
+          (PChar(DestRecHolder.Rec) +
+          DestRecHolder.JvInterpreterRecord.Fields[i].Offset)^,
+          Typ2Size(SourceRecHolder.JvInterpreterRecord.Fields[i].Typ));
+  end
   else
     Dest := Source;
 end;
@@ -4398,7 +4571,7 @@ end;
 
 destructor TJvInterpreterExpression.Destroy;
 begin
-  JvInterpreterVarFree(FVResult);
+  //JvInterpreterVarFree(FVResult);
   FAdapter.Free;
   FArgs.Free;
   FPStream.Free;
@@ -6435,6 +6608,7 @@ var
   Minus: Boolean;
   //
   JvInterpreterRecord: TJvInterpreterRecord;
+  ArrayDT: IJvInterpreterDataType;
 begin
   //NextToken;
   TypName := Token;
@@ -6455,50 +6629,59 @@ begin
     {This is code is not very clear}
     Typ := varArray;
     NextToken;
-    if TTyp <> ttLs then
-      ErrorExpected('''[''');
+    if (TTyp <> ttLs) and (TTyp <> ttOf) then
+      ErrorExpected('''[ or Of''');
     {Parse Array Range}
-    Dimension := 0;
-    repeat
-      NextToken;
-      Minus := False;
-      if (Trim(TokenStr1) = '-') then
-      begin
-        Minus := True;
+    if TTyp = ttLs then
+    begin
+      Dimension := 0;
+      repeat
         NextToken;
-      end;
-      if Pos('..', TokenStr1) < 1 then
-        ErrorExpected('''..''');
-      try
-        ArrayBegin[Dimension] :=
-          StrToInt(Copy(TokenStr1, 1, Pos('..', TokenStr1) - 1));
-        ArrayEnd[Dimension] :=
-          StrToInt(Copy(TokenStr1, Pos('..', TokenStr1) + 2, Length(TokenStr1)));
-        if Minus then
-          ArrayBegin[Dimension] := ArrayBegin[Dimension] * (-1);
-      except
-        ErrorExpected('''Integer Value''');
-      end;
-      if (Dimension < 0) or (Dimension > cJvInterpreterMaxArgs) then
-        JvInterpreterError(ieArrayBadDimension, CurPos);
-      if not (ArrayBegin[Dimension] <= ArrayEnd[Dimension]) then
-        JvInterpreterError(ieArrayBadRange, CurPos);
-    {End Array Range}
+        Minus := False;
+        if (Trim(TokenStr1) = '-') then
+        begin
+          Minus := True;
+          NextToken;
+        end;
+        if Pos('..', TokenStr1) < 1 then
+          ErrorExpected('''..''');
+        try
+          ArrayBegin[Dimension] :=
+            StrToInt(Copy(TokenStr1, 1, Pos('..', TokenStr1) - 1));
+          ArrayEnd[Dimension] :=
+            StrToInt(Copy(TokenStr1, Pos('..', TokenStr1) + 2, Length(TokenStr1)));
+          if Minus then
+            ArrayBegin[Dimension] := ArrayBegin[Dimension] * (-1);
+        except
+          ErrorExpected('''Integer Value''');
+        end;
+        if (Dimension < 0) or (Dimension > cJvInterpreterMaxArgs) then
+          JvInterpreterError(ieArrayBadDimension, CurPos);
+        if not (ArrayBegin[Dimension] <= ArrayEnd[Dimension]) then
+          JvInterpreterError(ieArrayBadRange, CurPos);
+      {End Array Range}
+        NextToken;
+        Inc(Dimension);
+      until TTyp <> ttCol; { , }
+
+      if TTyp <> ttRs then
+        ErrorExpected(''']''');
       NextToken;
-      Inc(Dimension);
-    until TTyp <> ttCol; { , }
+      if TTyp <> ttOf then
+        ErrorExpected('''' + kwOF + '''');
+    end
+    else if TTyp = ttOf then
+    begin
+      Dimension := 1;
+      ArrayBegin[0] := 0;
+      ArrayEnd[0] := -1;
+    end;
+      NextToken;
+      ArrayType := TypeName2VarTyp(Token);
+    //recursion for arrays
+    ArrayDT := ParseDataType;
 
-    if TTyp <> ttRs then
-      ErrorExpected(''']''');
-    NextToken;
-    if TTyp <> ttOf then
-      ErrorExpected('''' + kwOF + '''');
-    NextToken;
-    ArrayType := TypeName2VarTyp(Token);
-    if ArrayType = varEmpty then
-      ErrorNotImplemented(Token + ' array type');
-
-    Result := TJvInterpreterArrayDataType.Create(ArrayBegin, ArrayEnd, Dimension, ArrayType);
+    Result := TJvInterpreterArrayDataType.Create(ArrayBegin, ArrayEnd, Dimension, ArrayType, ArrayDT);
     {end: var A:array [1..200] of Integer, parsing}
   end
   else
@@ -7287,6 +7470,8 @@ procedure TJvInterpreterRecord.NewRecord(var Value: Variant);
 var
   i: integer;
   Rec: PChar;
+  Res: Boolean;
+  RecHolder: TJvInterpreterRecHolder;
 begin
   if Assigned(CreateFunc) then
     CreateFunc(Pointer(Rec))
@@ -7305,7 +7490,8 @@ begin
     end;
   end;
   JvInterpreterVarCopy(Value, R2V(Identifier, Rec));
-  GlobalJvInterpreterAdapter.SetRecord(Value);
+  RecHolder := TJvInterpreterRecHolder(TVarData(Value).vPointer);
+  RecHolder.JvInterpreterRecord := Self;
 end;
 
 { TJvInterpreterRecordDataType }
@@ -7333,13 +7519,14 @@ end;
 { TJvInterpreterArrayDataType }
 
 constructor TJvInterpreterArrayDataType.Create(AArrayBegin,
-  AArrayEnd: TJvInterpreterArrayValues; ADimension: Integer; AArrayType: Integer);
+  AArrayEnd: TJvInterpreterArrayValues; ADimension: Integer; AArrayType: Integer; ADT: IJvInterpreterDataType);
 begin
   inherited Create;
   FArrayBegin := AArrayBegin;
   FArrayEnd := AArrayEnd;
   FDimension := ADimension;
   FArrayType := AArrayType;
+  FDT := ADT;
 end;
 
 function TJvInterpreterArrayDataType.GetTyp: Word;
@@ -7349,7 +7536,8 @@ end;
 
 procedure TJvInterpreterArrayDataType.Init(var V: Variant);
 begin
-  V := Integer(JvInterpreterArrayInit(FDimension, FArrayBegin, FArrayEnd, FArrayType));
+  V := Integer(JvInterpreterArrayInit(FDimension, FArrayBegin, FArrayEnd,
+    FArrayType, FDT));
   TVarData(V).VType := varArray;
 end;
 

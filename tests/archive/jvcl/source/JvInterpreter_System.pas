@@ -338,7 +338,10 @@ end;
 
 procedure JvInterpreter_Length(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Length(Args.Values[0]);
+  if TVarData(Args.Values[0]).vType = varArray then
+    Value := JvInterpreterArrayLength(Args.Values[0])
+  else
+    Value := Length(Args.Values[0]);
 end;
 
 { function Copy(S; Index, Count: Integer): String; }
@@ -457,7 +460,38 @@ end;
 
 procedure JvInterpreter_SetLength(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  SetLength(string(TVarData(Args.Values[0]).vString), Integer(Args.Values[1]));
+  if TVarData(Args.Values[0]).vType <> varArray then
+    SetLength(string(TVarData(Args.Values[0]).vString), Integer(Args.Values[1]))
+  else
+    JvInterpreterArraySetLength(Args.Values[0], Integer(Args.Values[1]));
+end;
+
+{procedure High(var Value: Variant; Args: TJvInterpreterArgs);}
+
+procedure JvInterpreter_High(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := JvInterpreterArrayHigh(Args.Values[0]);
+end;
+
+{procedure Low(var Value: Variant; Args: TJvInterpreterArgs);}
+
+procedure JvInterpreter_Low(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := JvInterpreterArrayLow(Args.Values[0]);
+end;
+
+{procedure DeleteFromArray(var Value: Variant; Args: TJvInterpreterArgs);}
+
+procedure JvInterpreter_DeleteFromArray(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  JvInterpreterArrayElementDelete(Args.Values[0], Integer(Args.Values[1]));
+end;
+
+{procedure InsertIntoArray(var Value: Variant; Args: TJvInterpreterArgs);}
+
+procedure JvInterpreter_InsertIntoArray(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  JvInterpreterArrayElementInsert(Args.Values[0], Integer(Args.Values[1]), Args.Values[2]);
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -535,7 +569,11 @@ begin
     AddFun(cSystem, 'Tan', JvInterpreter_Tan, 1, [varEmpty], varEmpty);
     AddFun(cSystem, 'ArcTan', JvInterpreter_ArcTan, 1, [varEmpty], varEmpty);
     //---pfh
-    AddFun(cSystem, 'SetLength', JvInterpreter_SetLength, 2, [varByRef or varString, varInteger], varEmpty);
+    AddFun(cSystem, 'SetLength', JvInterpreter_SetLength, 2, [varByRef or varString or varArray, varInteger], varEmpty);
+    AddFun(cSystem, 'High', JvInterpreter_High, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'Low', JvInterpreter_Low, 1, [varEmpty], varEmpty);
+    AddFun(cSystem, 'DeleteFromArray', JvInterpreter_DeleteFromArray, 2, [varEmpty, varEmpty], varEmpty);
+    AddFun(cSystem, 'InsertIntoArray', JvInterpreter_InsertIntoArray, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
   end;
 end;
 
