@@ -492,7 +492,7 @@ object frmEditor: TfrmEditor
           'end;'
           ''
           'end.')
-        GutterWidth = 16
+        GutterWidth = 30
         RightMarginVisible = False
         RightMargin = 0
         RightMarginColor = clSilver
@@ -547,7 +547,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet2: TTabSheet
@@ -702,7 +701,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet3: TTabSheet
@@ -1142,7 +1140,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet6: TTabSheet
@@ -1243,7 +1240,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet7: TTabSheet
@@ -1826,7 +1822,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet8: TTabSheet
@@ -2060,7 +2055,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
       end
     end
     object TabSheet9: TTabSheet
@@ -2218,7 +2212,6 @@ object frmEditor: TfrmEditor
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
         Colors.Statement.ForeColor = clLime
-        DelphiColors = False
       end
     end
     object TabSheet10: TTabSheet
@@ -2305,7 +2298,6 @@ object frmEditor: TfrmEditor
         Colors.Declaration.ForeColor = clNavy
         Colors.Statement.Style = [fsBold]
         Colors.PlainText.ForeColor = clGray
-        DelphiColors = False
       end
     end
     object TabSheet11: TTabSheet
@@ -2632,7 +2624,6 @@ object frmEditor: TfrmEditor
         Colors.Declaration.ForeColor = clNavy
         Colors.Statement.Style = [fsBold]
         Colors.PlainText.ForeColor = clGray
-        DelphiColors = False
       end
     end
     object TabSheet12: TTabSheet
@@ -2688,7 +2679,6 @@ object frmEditor: TfrmEditor
         Colors.Declaration.ForeColor = clNavy
         Colors.Statement.Style = [fsBold]
         Colors.PlainText.ForeColor = clGray
-        DelphiColors = False
       end
     end
     object TabSheet4: TTabSheet
@@ -2867,7 +2857,6 @@ object frmEditor: TfrmEditor
         Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
         Colors.Statement.Style = [fsBold]
-        DelphiColors = False
         OnReservedWord = RAEditor3ReservedWord
       end
     end
