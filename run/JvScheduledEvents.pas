@@ -20,8 +20,6 @@
  Event scheduling component. Allows to schedule execution of events, with
  optional recurring schedule options.
 
- !!! REQUIRES JCL 1.22 OR HIGHER !!!
-
  You may retrieve the latest version of this file at the Project JEDI home
  page, located at http://www.delphi-jedi.org
 -----------------------------------------------------------------------------}
@@ -86,6 +84,9 @@ type
     property Events: TJvEventCollection read GetEvents write SetEvents;
     procedure LoadEventStates (const ClearBefore : Boolean = True);
     procedure SaveEventStates;
+    procedure StartAll;
+    procedure StopAll;
+    procedure PauseAll;
   published
   end;
 
@@ -571,6 +572,31 @@ procedure TJvCustomScheduledEvents.SaveEventStates;
 begin
   if Assigned(AppStorage) then
     AppStorage.WriteList(AppStoragePath, FEvents, FEvents.Count, SaveSingleEvent, DeleteSingleEvent);
+end;
+
+procedure TJvCustomScheduledEvents.StartAll;
+var
+  I: Integer;
+begin
+  for I := 0 to FEvents.Count - 1 do
+    if FEvents[I].State in [sesPaused, sesNotInitialized] then
+      FEvents[I].Start;
+end;
+
+procedure TJvCustomScheduledEvents.StopAll;
+var
+  I: Integer;
+begin
+  for I := 0 to FEvents.Count - 1 do
+    FEvents[I].Stop;
+end;
+
+procedure TJvCustomScheduledEvents.PauseAll;
+var
+  I: Integer;
+begin
+  for I := 0 to FEvents.Count - 1 do
+    FEvents[I].Pause;
 end;
 
 procedure TJvCustomScheduledEvents.SetEvents(Value: TJvEventCollection);
@@ -1097,7 +1123,8 @@ end;
 
 procedure TJvEventCollectionItem.Pause;
 begin
-  FState := sesPaused;
+  if FState = sesWaiting then
+    FState := sesPaused;
 end;
 
 procedure TJvEventCollectionItem.SaveState(out TriggerStamp: TTimeStamp; out TriggerCount,
