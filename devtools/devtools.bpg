@@ -12,7 +12,7 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = crlf.exe MakeRC.exe jconvert.exe dc.exe MakeDOF.exe \
   MakeCFG.exe jtouch.exe isu.exe stripCmtPO.exe pg.exe pgEdit.exe \
   dxgettextResstr.exe NoQuotes.exe SetPoHeader.exe JVCLConvert.exe \
-  MakePNG.exe ErrLook.exe Res2Bmp.exe
+  MakePNG.exe ErrLook.exe Res2Bmp.exe LastModifyRepl.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -63,6 +63,9 @@ SetPoHeader.exe: SetPoHeader\SetPoHeader.dpr
   $(DCC)
 
 JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
+  $(DCC)
+
+LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr
   $(DCC)
 
 #------------------------------------------------------------------------------
