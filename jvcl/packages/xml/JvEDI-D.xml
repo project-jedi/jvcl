@@ -12,6 +12,8 @@
     <Package Name="JvEDI-R" Targets="all" Condition=""/>
     <Package Name="rtl" Targets="C6" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="CJCL" Targets="C6" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvEDIDBBufferingReg.pas" Targets="allbutperso" Formname="" Condition=""/>
