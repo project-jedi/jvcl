@@ -57,7 +57,8 @@ uses
   {$ENDIF VCL}
   JvGammaPanel, JvLinkLabel, JvLookOut, JvOutlookBar, JvScheduledEvents,
   JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart,
-  JvTimeLineEditor, JvOutlookBarEditors, JvLookoutEditor;
+  JvTimeLineEditor, JvOutlookBarEditors, JvLookoutEditor,
+  JvTabBar;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}
@@ -77,7 +78,7 @@ begin
   RegisterComponents(RsPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(RsPaletteEdit, [TJvValidateEdit]);
   RegisterComponents(RsPaletteBarPanel, [TJvGammaPanel, TJvOutlookBar,
-    TJvLookOut, {TJvLookOutPage, } TJvExpress]);
+    TJvLookOut, {TJvLookOutPage, } TJvExpress, TJvTabBar, TJvModernTabBarPainter]);
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart]);
   RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);

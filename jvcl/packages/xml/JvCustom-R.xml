@@ -63,5 +63,6 @@
     <File Name="..\..\run\JvImagesViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvImagelistViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTabBar.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
