@@ -272,6 +272,11 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString, ftWideString];
+  DefaultValidDetailFields = DefaultValidMasterFields;
+  DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
+    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime];
+  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord];
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin
@@ -412,7 +417,7 @@ end;
 
 procedure TCustomJvDBTreeView.SetMasterField(Value: string);
 begin
-  if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
+  if ValidField(Value, DefaultValidMasterFields) then
   begin
     FMasterField := Value;
     RefreshChild(nil);
@@ -423,7 +428,7 @@ end;
 
 procedure TCustomJvDBTreeView.SetDetailField(Value: string);
 begin
-  if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
+  if ValidField(Value, DefaultValidDetailFields) then
   begin
     FDetailField := Value;
     RefreshChild(nil);
@@ -434,8 +439,7 @@ end;
 
 procedure TCustomJvDBTreeView.SetItemField(Value: string);
 begin
-  if ValidField(Value, [ftString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
-    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime]) then
+  if ValidField(Value, DefaultValidItemFields) then
   begin
     FItemField := Value;
     RefreshChild(nil);
@@ -446,7 +450,7 @@ end;
 
 procedure TCustomJvDBTreeView.SetIconField(Value: string);
 begin
-  if ValidField(Value, [ftSmallInt, ftAutoInc, ftInteger, ftWord]) then
+  if ValidField(Value, DefaultValidIconFields) then
   begin
     FIconField := Value;
     RefreshChild(nil);

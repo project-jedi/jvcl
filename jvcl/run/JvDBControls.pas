@@ -466,7 +466,7 @@ type
 
   end;
 
-  TJvDBCalcEdit = class(TJvCustomCalcEdit)
+  TJvDBCalcEdit = class(TJvCalcEdit)
   private
     FDataLink: TFieldDataLink;
     FDefaultParams: Boolean;
