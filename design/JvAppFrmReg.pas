@@ -67,7 +67,7 @@ begin
      TJvFormAnimation, TJvFormWallpaper, TJvFormAutoSize,
      TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink]);
 
-  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
+  RegisterComponentEditor(TJvGradientCaption, TJvGradientCaptionEditor);
   //RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
 end;
 

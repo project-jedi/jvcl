@@ -91,10 +91,10 @@ begin
   // CSV Components
   RegisterComponents(RsPaletteJansCsv, [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox,
     TJvCSVCheckBox, TJvCSVNavigator]);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVBase, cCSVFieldName, TCSVFileNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVEdit, cCSVField, TCSVFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVComboBox, cCSVField, TCSVFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCSVCheckBox, cCSVField, TCSVFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVBase, cCSVFieldName, TJvCSVFileNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVEdit, cCSVField, TJvCSVFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVComboBox, cCSVField, TJvCSVFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCSVCheckBox, cCSVField, TJvCSVFieldProperty);
 end;
 
 end.

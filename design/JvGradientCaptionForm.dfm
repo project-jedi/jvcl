@@ -142,7 +142,6 @@ object GradCaptionsEditor: TGradCaptionsEditor
       Top = 66
       Width = 133
       Height = 21
-      ButtonFlat = False
       ButtonWidth = 17
       ImageKind = ikEllipsis
       TabOrder = 2
@@ -156,6 +155,9 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Height = 157
     Caption = '&Captions'
     TabOrder = 0
+    DesignSize = (
+      137
+      157)
     object NewButton: TButton
       Left = 8
       Top = 124
@@ -208,6 +210,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
   end
   object FormStorage: TJvFormStorage
     AppStorage = AppStorage
+    AppStoragePath = '%FORM_NAME%'
     StoredValues = <
       item
       end>
@@ -217,6 +220,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
   object AppStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = '%NONE%'
     SubStorages = <>
     Left = 133
     Top = 24

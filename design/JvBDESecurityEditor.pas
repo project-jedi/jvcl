@@ -45,7 +45,7 @@ type
     procedure GetValueList(List: TStrings); override;
   end;
 
-  TLoginNameFieldProperty = class(TJvDBStringProperty)
+  TJvLoginNameFieldProperty = class(TJvDBStringProperty)
   public
     procedure GetValueList(List: TStrings); override;
   end;
@@ -64,9 +64,9 @@ begin
       '*.*', True, False, List);
 end;
 
-//=== { TLoginNameFieldProperty } ============================================
+//=== { TJvLoginNameFieldProperty } ==========================================
 
-procedure TLoginNameFieldProperty.GetValueList(List: TStrings);
+procedure TJvLoginNameFieldProperty.GetValueList(List: TStrings);
 var
   Security: TJvDBSecurity;
   Table: TTable;

@@ -89,7 +89,7 @@ begin
 
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
-    'MinMaxInfo', TMinMaxProperty);
+    'MinMaxInfo', TJvMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
 

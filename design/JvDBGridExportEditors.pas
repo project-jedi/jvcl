@@ -38,7 +38,7 @@ uses
   {$ENDIF COMPILER6_UP}
 
 type
-  TDBGridExportWordFormatProperty = class(TIntegerProperty)
+  TJvDBGridExportWordFormatProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -52,23 +52,23 @@ uses
   SysUtils,
   JvDBGridExport, JvDsgnConsts;
 
-function TDBGridExportWordFormatProperty.GetAttributes: TPropertyAttributes;
+function TJvDBGridExportWordFormatProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
-function TDBGridExportWordFormatProperty.GetValue: string;
+function TJvDBGridExportWordFormatProperty.GetValue: string;
 begin
   if not IntToWordGridFormatIdent(GetOrdValue, Result) then
     Result := IntToStr(GetOrdValue);
 end;
 
-procedure TDBGridExportWordFormatProperty.GetValues(Proc: TGetStrProc);
+procedure TJvDBGridExportWordFormatProperty.GetValues(Proc: TGetStrProc);
 begin
   GetWordGridFormatValues(Proc);
 end;
 
-procedure TDBGridExportWordFormatProperty.SetValue(const Value: string);
+procedure TJvDBGridExportWordFormatProperty.SetValue(const Value: string);
 var
   N: Integer;
 begin

@@ -66,7 +66,7 @@ type
   end;
  
  
-  TUnlitColorProperty = class(TJvColorProperty)
+  TJvUnlitColorProperty = class(TJvColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -181,9 +181,9 @@ begin
     AItem.Enabled := False;
 end;
 
-//=== { TUnlitColorProperty } ================================================
+//=== { TJvUnlitColorProperty } ==============================================
 
-function TUnlitColorProperty.GetValue: string;
+function TJvUnlitColorProperty.GetValue: string;
 begin
   case GetOrdValue of
     clDefaultBackground:
@@ -195,14 +195,14 @@ begin
   end;
 end;
 
-procedure TUnlitColorProperty.GetValues(Proc: TGetStrProc);
+procedure TJvUnlitColorProperty.GetValues(Proc: TGetStrProc);
 begin
   inherited GetValues(Proc);
   Proc(cDefaultBackground);
   Proc(cDefaultLitColor);
 end;
 
-procedure TUnlitColorProperty.SetValue(const Value: string);
+procedure TJvUnlitColorProperty.SetValue(const Value: string);
 var
   NewValue: Longint;
 begin

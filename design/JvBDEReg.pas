@@ -74,7 +74,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TFileName), TJvDBSecurity, cUsersTableName,
     TJvUserTableNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity, cLoginNameField,
-    TLoginNameFieldProperty);
+    TJvLoginNameFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvBDESQLScript, cDatabaseName,
     TJvDatabaseNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, cSessionName,
