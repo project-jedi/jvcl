@@ -23,10 +23,19 @@ Contributor(s):
   Remko Bonte [remkobonte@myrealbox.com], theme support, actions
   Oliver Giesen [ogware@gmx.net], caption hints.
 
-Last Modified: 2003-06-12
+Last Modified: 2003-06-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
+
+Modified 2003-06-13 (p3):
+- Fixed MouseUp X,Y inconsistentcy (did not report the same values as MouseDown)
+- Added MouseMove handler
+- Added ShowHint, ParentShowHint
+- Fixed drawing of disabled MinimizeToTray icon as well as incorrect Font.Color in text drawing
+- Added Assign
+- Tested on W2k
+- Demo (examples\CaptionBtn) updated and extended
 
 Known Issues:
 
@@ -39,6 +48,7 @@ Known Issues:
     ugly.
   * If Standard = tsbNone, and themed, buttons looks not really good.
   * Only tested on XP.
+
 
 -----------------------------------------------------------------------------}
 
@@ -106,6 +116,7 @@ type
     FOnClick: TNotifyEvent;
     FOnMouseUp: TMouseEvent;
     FOnMouseDown: TMouseEvent;
+    FOnMouseMove: TMouseMoveEvent;
 
     FDefaultButtonLeft: Integer;
     FDefaultButtonTop: Integer;
@@ -125,6 +136,8 @@ type
     FNeedRecalculate: Boolean;
     FRgnChanged: Boolean;
     FSaveRgn: HRgn;
+    FShowHint: boolean;
+    FParentShowHint: boolean;
 
     {tool tip specific}
     FToolTipHandle: THandle;
@@ -205,6 +218,8 @@ type
     procedure DoActionChange(Sender: TObject);
 
     function MouseOnButton(X, Y: Integer; const TranslateToScreenCoord: Boolean): Boolean;
+    procedure SetParentShowHint(const Value: boolean);
+    procedure SetShowHint(const Value: boolean);
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure CalcButtonParts(ACanvas: TCanvas; ButtonRect: TRect; var RectText, RectImage: TRect);
@@ -212,6 +227,7 @@ type
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure UpdateButtonRect(Wnd: THandle);
 
@@ -226,6 +242,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Assign(Source:TPersistent);override;
     procedure InitiateAction; virtual;
     procedure ResetButton;
     procedure Click; dynamic;
@@ -238,6 +255,8 @@ type
     property ButtonWidth: Integer read FWidth write SetWidth default 0;
     property Caption: string read FCaption write SetCaption stored IsCaptionStored;
     property Down: Boolean read FDown write SetDown;
+    property ShowHint: boolean read FShowHint write SetShowHint default false;
+    property ParentShowHint: boolean read FParentShowHint write SetParentShowHint default true;
     property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont;
     property Hint: string read FHint write FHint stored IsHintStored;
@@ -253,6 +272,7 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
   end;
 
 implementation
@@ -271,7 +291,7 @@ uses
 
 const
   htCaptionButton = HTSIZELAST + 1;
-  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 
   { TJvCaptionButton }
 
@@ -296,6 +316,37 @@ begin
       if not CheckDefaults or not Assigned(Self.OnClick) then
         Self.OnClick := OnExecute;
     end;
+end;
+
+procedure TJvCaptionButton.Assign(Source: TPersistent);
+begin
+  if Source is TJvCaptionButton then
+  begin
+    Alignment       := TJvCaptionButton(Source).Alignment;
+    ButtonHeight    := TJvCaptionButton(Source).ButtonHeight;
+    ButtonLeft      := TJvCaptionButton(Source).ButtonLeft;
+    ButtonTop       := TJvCaptionButton(Source).ButtonTop;
+    ButtonWidth     := TJvCaptionButton(Source).ButtonWidth;
+    Caption         := TJvCaptionButton(Source).Caption;
+    ShowHint        := TJvCaptionButton(Source).ShowHint;
+    ParentShowHint  := TJvCaptionButton(Source).ParentShowHint;
+    Enabled         := TJvCaptionButton(Source).Enabled;
+    Font            := TJvCaptionButton(Source).Font;
+    Hint            := TJvCaptionButton(Source).Hint;
+    ImageIndex      := TJvCaptionButton(Source).ImageIndex;
+    Images          := TJvCaptionButton(Source).Images;
+    Layout          := TJvCaptionButton(Source).Layout;
+    Margin          := TJvCaptionButton(Source).Margin;
+    Position        := TJvCaptionButton(Source).Position;
+    Spacing         := TJvCaptionButton(Source).Spacing;
+    Standard        := TJvCaptionButton(Source).Standard;
+    // set toggle before down
+    Toggle          := TJvCaptionButton(Source).Toggle;
+    Down            := TJvCaptionButton(Source).Down;
+    Visible         := TJvCaptionButton(Source).Visible;
+    Exit;
+  end;
+  inherited;
 end;
 
 procedure TJvCaptionButton.CalcButtonParts(ACanvas: TCanvas;
@@ -443,7 +494,7 @@ begin
             Inc(FDefaultButtonLeft, FDefaultButtonWidth + 2 * CSpaceBetweenButtons);
         end;
       end
-      else
+      else 
       { 4c. If it have CONTEXTHELP button, avoid it. }
       if ExStyle and WS_EX_CONTEXTHELP = WS_EX_CONTEXTHELP then
         Inc(FDefaultButtonLeft, FDefaultButtonWidth + CSpaceBetweenButtons);
@@ -455,19 +506,16 @@ procedure TJvCaptionButton.Click;
 begin
   if csDesigning in ComponentState then
     DesignerSelectComponent(Self)
-  else
-  if Enabled then
+  else if Enabled then
   begin
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
       OnClick. }
     if Assigned(FOnClick) and (Action <> nil) and (@FOnClick <> @Action.OnExecute) then
       FOnClick(Self)
-    else
-    if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
+    else if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
       FActionLink.Execute(Self)
-    else
-    if Assigned(FOnClick) then
+    else if Assigned(FOnClick) then
       FOnClick(Self);
   end;
 end;
@@ -505,6 +553,7 @@ begin
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
+  FParentShowHint := true;
 
   Hook;
 end;
@@ -619,9 +668,10 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 procedure TJvCaptionButton.DrawButtonBackground(ACanvas: TCanvas);
 const
-  CCaption: array [Boolean, Boolean] of TThemedWindow = (
+  CCaption: array[Boolean, Boolean] of TThemedWindow = (
     (twCaptionInactive, twCaptionActive),
     (twSmallCaptionInactive, twSmallCaptionActive)
     );
@@ -675,7 +725,10 @@ begin
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
     end
     else
+    begin
+      Font.Color := self.Font.Color;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+    end;
   end;
 end;
 
@@ -708,14 +761,12 @@ begin
       CaptionButton := twMinButtonDisabled;
       NormalButton := tbPushButtonDisabled;
     end
-    else
-    if FDown then
+    else if FDown then
     begin
       CaptionButton := twMinButtonPushed;
       NormalButton := tbPushButtonPressed;
     end
-    else
-    if FMouseInControl then
+    else if FMouseInControl then
     begin
       CaptionButton := twMinButtonHot;
       NormalButton := tbPushButtonHot;
@@ -792,15 +843,15 @@ end;
 procedure TJvCaptionButton.DrawStandardButton(ACanvas: TCanvas);
 const
   {$IFDEF JVCLThemesEnabled}
-  CElements: array [TJvStandardButton] of TThemedWindow = (
+  CElements: array[TJvStandardButton] of TThemedWindow = (
     twWindowDontCare, twCloseButtonNormal, twHelpButtonNormal, twMaxButtonNormal,
     twMinButtonNormal, twRestoreButtonNormal, twMinButtonNormal);
   {$ENDIF}
-  CDrawFlags: array [TJvStandardButton] of Word = (
+  CDrawFlags: array[TJvStandardButton] of Word = (
     0, DFCS_CAPTIONCLOSE, DFCS_CAPTIONHELP, DFCS_CAPTIONMAX, DFCS_CAPTIONMIN,
     DFCS_CAPTIONRESTORE, 0);
-  CDown: array [Boolean] of Word = (0, DFCS_PUSHED);
-  CEnabled: array [Boolean] of Word = (DFCS_INACTIVE, 0);
+  CDown: array[Boolean] of Word = (0, DFCS_PUSHED);
+  CEnabled: array[Boolean] of Word = (DFCS_INACTIVE, 0);
 var
   DrawRect: TRect;
   {$IFDEF JVCLThemesEnabled}
@@ -821,12 +872,10 @@ begin
 
     if not Enabled then
       Inc(CaptionButton, 3)
-    else
-    if FDown then
+    else if FDown then
       { If Down and inactive, draw inactive border }
       Inc(CaptionButton, 2)
-    else
-    if FMouseInControl then
+    else if FMouseInControl then
       Inc(CaptionButton);
 
     Details := ThemeServices.GetElementDetails(CaptionButton);
@@ -837,16 +886,28 @@ begin
   end
   else
   {$ENDIF JVCLThemesEnabled}
-  if Standard = tsbMinimizeToTray then
-  begin
-    DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
-    ACanvas.Brush.Color := clBlack;
-    with DrawRect do
-      ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
-  end
-  else
-    DrawFrameControl(ACanvas.Handle, DrawRect, DFC_CAPTION, {DFCS_ADJUSTRECT or}
-      CDrawFlags[Standard] or CDown[Down] or CEnabled[Enabled]);
+    if Standard = tsbMinimizeToTray then
+    begin
+      DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
+      if Enabled then
+      begin
+        ACanvas.Brush.Color := clWindowText;
+        with DrawRect do
+          ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
+      end
+      else
+      begin
+        ACanvas.Brush.Color := clBtnHighlight;
+        with DrawRect do
+          ACanvas.FillRect(Rect(Right - 6, Bottom - 4, Right - 3, Bottom - 2));
+        ACanvas.Brush.Color := clBtnShadow;
+        with DrawRect do
+          ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
+      end;
+    end
+    else
+      DrawFrameControl(ACanvas.Handle, DrawRect, DFC_CAPTION, {DFCS_ADJUSTRECT or}
+        CDrawFlags[Standard] or CDown[Down] or CEnabled[Enabled]);
 end;
 
 procedure TJvCaptionButton.ForwardToToolTip(Msg: TMessage);
@@ -931,8 +992,7 @@ begin
     if Toggle then
       Click;
   end
-  else
-  if FDown and not Toggle then
+  else if FDown and not Toggle then
   begin
     FMouseButtonDown := False;
     FDown := False;
@@ -943,6 +1003,7 @@ end;
 function TJvCaptionButton.HandleButtonUp(var Msg: TWMNCHitMessage): Boolean;
 var
   DoClick: Boolean;
+  P: TPoint;
 begin
   Result := False;
 
@@ -965,8 +1026,14 @@ begin
   if DoClick then
     Click;
 
+  //(p3) we need to convert MouseUp message because they are in client coordinates (MouseDown are already in screen coords, so no need to change)
   with TWMMouse(Msg) do
-    MouseUp(mbLeft, KeysToShiftState(Keys), XPos, YPos);
+  begin
+    P := Point(XPos, YPos);
+    Assert(ParentForm <> nil, '');
+    P := ParentForm.ClientToScreen(P);
+    MouseUp(mbLeft, KeysToShiftState(Keys), P.X, P.Y);
+  end;
 end;
 
 function TJvCaptionButton.HandleHitTest(var Msg: TWMNCHitTest): Boolean;
@@ -998,16 +1065,18 @@ begin
     SetMouseInControl(MouseOnButton(Msg.XCursor, Msg.YCursor, Msg.Msg = WM_MOUSEMOVE));
     DoRedraw := (FMouseInControl <> MouseWasInControl) or
       // User presses mouse button, but left the caption button
-      (FDown and not Toggle and not FMouseInControl) or
+    (FDown and not Toggle and not FMouseInControl) or
       // User presses mouse button, and enters the caption button
-      (not FDown and not Toggle and FMouseInControl);
+    (not FDown and not Toggle and FMouseInControl);
 
     FDown := (FDown and Toggle) or
       (FMouseButtonDown and not Toggle and FMouseInControl);
-
     if DoRedraw then
       Redraw(rkIndirect);
   end;
+  // (p3) don't handle mouse move here: it is triggered even if the mouse is outside the button
+  //  with TWmMouseMove(Msg) do
+  //    MouseMove(KeysToShiftState(Keys), XPos, YPos);
 end;
 
 procedure TJvCaptionButton.HandleNCActivate(var Msg: TWMNCActivate);
@@ -1022,12 +1091,21 @@ end;
 
 procedure TJvCaptionButton.HandleNCMouseMove(
   var Msg: TWMNCHitMessage);
+var IsOnButton:boolean;
 begin
-  if Visible and (MouseOnButton(Msg.XCursor, Msg.YCursor, False) <> FMouseInControl) then
+  IsOnButton := MouseOnButton(Msg.XCursor, Msg.YCursor, False);
+  if Visible then
   begin
-    SetMouseInControl(not FMouseInControl);
-    if not Down then
-      Redraw(rkIndirect);
+    if (IsOnButton <> FMouseInControl) then
+    begin
+      SetMouseInControl(not FMouseInControl);
+      if not Down then
+        Redraw(rkIndirect);
+    end;
+   // (p3) only handle mouse move if we are inside the button or it will be triggered for the entire NC area
+    if IsOnButton then
+      with TWmMouseMove(Msg) do
+        MouseMove(KeysToShiftState(Keys), XPos, YPos);
   end;
 end;
 
@@ -1106,7 +1184,7 @@ begin
   // and it is from the tooltip
   Result := (Msg.NMHdr.Code = TTN_NEEDTEXT) and (Msg.NMHdr.hWndFrom = FToolTipHandle);
 
-  if Result then
+  if Result and (ShowHint or (ParentShowHint and ParentForm.ShowHint)) then
   begin
     // get cursor position
     GetCursorPos(CurPos);
@@ -1197,6 +1275,12 @@ procedure TJvCaptionButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X
 begin
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Button, Shift, X, Y);
+end;
+
+procedure TJvCaptionButton.MouseMove(Shift: TShiftState; X, Y: integer);
+begin
+  if Assigned(FOnMouseMove) then
+    FOnMouseMove(self, Shift, X, Y);
 end;
 
 function TJvCaptionButton.MouseOnButton(X, Y: Integer;
@@ -1419,12 +1503,31 @@ begin
   end;
 end;
 
+procedure TJvCaptionButton.SetParentShowHint(const Value: boolean);
+begin
+  if FParentShowHint <> Value then
+  begin
+    FParentShowHint := Value;
+    if FParentShowHint then
+      FSHowHint := ParentForm.ShowHint;
+  end;
+end;
+
 procedure TJvCaptionButton.SetPosition(const Value: Integer);
 begin
   if FPosition <> Value then
   begin
     FPosition := Value;
     Redraw(rkTotalCaptionBar);
+  end;
+end;
+
+procedure TJvCaptionButton.SetShowHint(const Value: boolean);
+begin
+  if FSHowHint <> Value then
+  begin
+    FShowHint := Value;
+    FParentShowHint := false;
   end;
 end;
 
@@ -1596,6 +1699,9 @@ begin
         Result := False;
       end;
     {$ENDIF}
+    CM_SHOWHINTCHANGED:
+      if ParentShowHint then
+        FShowHint := ParentForm.ShowHint;
     CM_MOUSELEAVE, CM_MOUSEENTER:
       begin
         if FMouseInControl then
