@@ -137,9 +137,9 @@ type
   {$ENDIF VisualCLX}
 
   PJvRGBArray = ^TJvRGBArray;
-  TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
+  TJvRGBArray = array [0..MaxPixelCount] of TJvRGBTriple;
   PRGBQuadArray = ^TRGBQuadArray;
-  TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
+  TRGBQuadArray = array [0..MaxPixelCount] of TRGBQuad;
   PRGBPalette = ^TRGBPalette;
   TRGBPalette = array [Byte] of TRGBQuad;
 
