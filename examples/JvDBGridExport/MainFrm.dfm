@@ -38,6 +38,8 @@ object frmMain: TfrmMain
     TitleButtons = True
     AlternateRowColor = 16768667
     TitleArrow = True
+    AutoSizeColumns = True
+    AutoSizeColumnIndex = 3
     Columns = <
       item
         Expanded = False
@@ -48,7 +50,7 @@ object frmMain: TfrmMain
         Title.Font.Height = -16
         Title.Font.Name = 'Tahoma'
         Title.Font.Style = [fsBold]
-        Width = 300
+        Width = 301
         Visible = True
       end
       item
@@ -108,7 +110,7 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 150
+        Width = 152
         Visible = True
       end>
   end

@@ -2,6 +2,8 @@ Changelog for JVCL 3.0
 ======================
 2004-01-30
 - added JvDBHTLabel donation from Maciej Kaczkowski // peter3
+- added AutoSizeColumns, AutoSizeColumnsIndex, MinColumnWidth and MaxColumnWidth to TJvDBGrid // peter3
+- added improved MultiSelect code from Lionel Reynaud // peter3
 2004-01-29
 - added AutoHint property to JvEdit // peter3
 - added tvAutoHideIcon to TJvTrayIcon.Options // peter3
