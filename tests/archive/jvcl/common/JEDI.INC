@@ -42,7 +42,7 @@
   Directive    Description
   ------------------------------------------------------------------------------
   DELPHI       Defined if compiled with Delphi
-  BCB          Defined if compiled with C++ Builder
+  CBUILDER     Defined if compiled with C++ Builder
 
 - Platform Directives
 
@@ -206,7 +206,7 @@
   {$DEFINE COMPILER7}
   {$IFDEF BCB}
     {$DEFINE BCB7}
-    {$DEFINE BCB}
+    {$DEFINE CBUILDER}
   {$ELSE}
     {$DEFINE DELPHI7}
     {$DEFINE DELPHI}
@@ -217,7 +217,7 @@
   {$DEFINE COMPILER6}
   {$IFDEF BCB}
     {$DEFINE BCB6}
-    {$DEFINE BCB}
+    {$DEFINE CBUILDER}
   {$ELSE}
     {$DEFINE DELPHI6}
     {$DEFINE DELPHI}
@@ -228,7 +228,7 @@
   {$DEFINE COMPILER5}
   {$IFDEF BCB}
     {$DEFINE BCB5}
-    {$DEFINE BCB}
+    {$DEFINE CBUILDER}
   {$ELSE}
     {$DEFINE DELPHI5}
     {$DEFINE DELPHI}
@@ -238,7 +238,7 @@
 {$IFDEF VER125}
   {$DEFINE COMPILER4}
   {$DEFINE BCB4}
-  {$DEFINE BCB}
+  {$DEFINE CBUILDER}
 {$ENDIF}
 
 {$IFDEF VER120}
@@ -250,6 +250,7 @@
 {$IFDEF VER110}
   {$DEFINE COMPILER35}
   {$DEFINE BCB3}
+  {$DEFINE CBUILDER}
 {$ENDIF}
 
 {$IFDEF VER100}
@@ -261,7 +262,7 @@
 {$IFDEF VER93}
   {$DEFINE COMPILER2}
   {$DEFINE BCB1}
-  {$DEFINE BCB}
+  {$DEFINE CBUILDER}
 {$ENDIF}
 
 {$IFDEF VER90}
