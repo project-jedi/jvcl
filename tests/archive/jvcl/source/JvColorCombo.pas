@@ -354,7 +354,7 @@ begin
   FColorValue := clBlack;
   FColWidth := 21;
   FPrefix := SNewColorPrefix;
-//  FOther := SOtherCaption;
+  FOther := SOtherCaption;
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
@@ -548,7 +548,7 @@ begin
       DoGetDisplayName(Index, TColor(Items.Objects[Index]), S);
       Brush.Color := self.Color;
       FillRect(R);
-      R.Left := R.Left + FColWidth + 6;
+      R.Left := R.Left + 2;
       R.Right := R.Left + TextWidth(S) + 2;
       Brush.Color := aColor;
       FillRect(R);
@@ -590,7 +590,7 @@ begin
     try
       Color := ColorValue;
       Options := Options + [cdFullOpen, cdPreventFullOpen];
-      S := FPrefix + IntToStr(FCustCnt);
+      S := FPrefix;
       if Execute and DoNewColor(Color, S) then
       begin
         Inc(FCustCnt);
@@ -664,7 +664,7 @@ end;
 function TJvColorComboBox.GetColorName(AColor: TColor; const Default: string): string;
 var tmp: string;
 begin
-  if Default = FOther then
+  if (Default = FOther) and (FOther <> '') then
   begin
     Result := Default;
     Exit;
