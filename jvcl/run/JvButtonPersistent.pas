@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Buttons,
-  JvButton, JvxCtrls;
+  JvButton, JvxCtrls, JvTypes;
 
 type
   TJvButtonPersistent = class(TPersistent)
@@ -46,6 +46,7 @@ type
     FHint: string;
     FShowHint: Boolean;
     FFont: TFont;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     procedure SetCaption(const Value: string);
     procedure SetEnabled(const Value: Boolean);
     procedure SetFlat(const Value: Boolean);
@@ -54,6 +55,7 @@ type
     procedure SetHint(const Value: string);
     procedure SetShowHint(const Value: Boolean);
     procedure SetFont(const Value: TFont);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure Changed;
   public
@@ -70,6 +72,7 @@ type
     property Flat: Boolean read FFlat write SetFlat default True;
     property HotTrack: Boolean read FFontEffect write SetFontEffect default True;
     property HotTrackFont: TFont read FFont write SetFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions;
     property Hint: string read FHint write SetHint;
     property ShowHint: Boolean read FShowHint write SetShowHint;
   end;
@@ -107,6 +110,7 @@ begin
     begin
       TAccessButton(Sender).HotTrack := HotTrack;
       TAccessButton(Sender).HotTrackFont.Assign(FFont);
+      TAccessButton(Sender).HotTrackFontOptions := HotTrackFontOptions; 
     end;
   end
   else
@@ -122,6 +126,7 @@ begin
     begin
       TJvSpeedButton(Sender).HotTrack := HotTrack;
       TJvSpeedButton(Sender).HotTrackFont.Assign(FFont);
+      TJvSpeedButton(Sender).HotTrackFontOptions := HotTrackFontOptions;
     end;
   end
   else
@@ -203,6 +208,16 @@ begin
   if FVisible <> Value then
   begin
     FVisible := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvButtonPersistent.SetHotTrackFontOptions(
+  const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
     Changed;
   end;
 end;

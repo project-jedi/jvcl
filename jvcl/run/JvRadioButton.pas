@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JVCLVer;
+  JVCLVer,JvTypes;
 
 type
   TJvRadioButton = class(TRadioButton)
@@ -50,8 +50,10 @@ type
     FOver: Boolean;
     FAutoSize: boolean;
     FControlCanvas: TControlCanvas;
+    FHotTrackFontOptions: TJvTrackFOntOptions;
     procedure SetHotFont(const Value: TFont);
     function GetCanvas: TCanvas;
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
   protected
     procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -71,6 +73,8 @@ type
     property AutoSize:boolean read FAutoSize write SetAutoSize;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -79,6 +83,8 @@ type
   end;
 
 implementation
+uses
+  JvJVCLUtils;
 
 constructor TJvRadioButton.Create(AOwner: TComponent);
 begin
@@ -89,6 +95,7 @@ begin
   FOver := False;
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  FHotTrackFontOptions := DefaultHotTrackOptions;
 end;
 
 destructor TJvRadioButton.Destroy;
@@ -202,12 +209,22 @@ procedure TJvRadioButton.CMFontchanged(var Message: TMessage);
 begin
   inherited;
   CalcAutoSize;
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvRadioButton.CMTextchanged(var Message: TMessage);
 begin
   inherited;
   CalcAutoSize;
+end;
+
+procedure TJvRadioButton.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
 end;
 
 end.

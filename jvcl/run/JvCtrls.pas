@@ -248,6 +248,8 @@ type
     property DropDownMenu;
     property HotTrack;
     property HotTrackFont;
+    property HotTrackFontOptions;
+
     property HintColor;
     property Images;
     property ImageIndex;

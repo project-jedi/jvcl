@@ -374,7 +374,6 @@ const
 
 type
   TShadowPosition = (spLeftTop, spLeftBottom, spRightBottom, spRightTop);
-
   TJvCustomLabel = class(TJvGraphicControl)
   private
     FFocusControl: TWinControl;
@@ -409,6 +408,7 @@ type
     FURL: string;
     FAngle: TJvLabelRotateAngle;
     FSpacing: integer;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -445,6 +445,7 @@ type
     procedure SetAngle(const Value: TJvLabelRotateAngle);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetSpacing(const Value: integer);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
@@ -469,6 +470,7 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
 
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
@@ -707,6 +709,7 @@ type
     FFontSave: TFont;
     FSaved:TColor;
     FOnParentColorChanged: TNotifyEvent;
+    FHotTrackFontOptions: TJvTrackFontOptions;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
@@ -750,6 +753,7 @@ type
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
     procedure SetHotTrackFont(const Value: TFont);
+    procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
     FState: TJvButtonState;
     //Polaris
@@ -790,6 +794,7 @@ type
     property ParentBiDiMode;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
     property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
 
@@ -949,7 +954,7 @@ const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
-  //=== TJvTextListBox =========================================================
+//=== TJvTextListBox =========================================================
 
 procedure TJvTextListBox.SetHorizontalExtent;
 begin
@@ -2711,6 +2716,7 @@ begin
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
   FShadowPos := spLeftTop;
+  FHotTrackFontOptions := DefaultHotTrackOptions;
 end;
 
 destructor TJvCustomLabel.Destroy;
@@ -3122,6 +3128,7 @@ procedure TJvCustomLabel.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
+  UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
 end;
 
 procedure TJvCustomLabel.CMDialogChar(var Msg: TCMDialogChar);
@@ -3285,6 +3292,15 @@ begin
   begin
     FSpacing := Value;
     if AutoSize then AdjustBounds else Invalidate;
+  end;
+end;
+
+procedure TJvCustomLabel.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
 
@@ -4768,6 +4784,7 @@ begin
   FLayout := blGlyphTop;
   FMarkDropDown := True;
   Inc(ButtonCount);
+  FHotTrackFontOptions := DefaultHotTrackOptions;
 end;
 
 destructor TJvSpeedButton.Destroy;
@@ -5586,6 +5603,7 @@ end;
 
 procedure TJvSpeedButton.CMFontChanged(var Msg: TMessage);
 begin
+  UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
   Invalidate;
 end;
 
@@ -5677,6 +5695,14 @@ begin
   FHotTrackFont.Assign(Value);
 end;
 
+procedure TJvSpeedButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+begin
+  if FHotTrackFontOptions <> Value then
+  begin
+    FHotTrackFontOptions := Value;
+    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
 
 initialization
   GCheckBitmap := nil;

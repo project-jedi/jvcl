@@ -9,7 +9,7 @@ uses
   {$ENDIF}
   Windows, Forms, Graphics, Messages, Classes, Controls, StdCtrls,
   ExtCtrls, Menus, Dialogs, Registry, ComCtrls, SysUtils, ShellApi,
-  ImgList, Grids, IniFiles,  
+  ImgList, Grids, IniFiles,
   JclBase, JclSysUtils, JclStrings,
   JvTypes;
 
@@ -727,6 +727,9 @@ function JvMessageBox(const Text, Caption: string; Flags: DWORD): Integer; overl
 function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 
 { end JvCtrlUtils }
+
+procedure UpdateTrackFont(TrackFont,Font:TFont;TrackOptions:TJvTrackFontOptions);
+
 
 implementation
 
@@ -7424,6 +7427,25 @@ function JvMessageBox(const Text: string; Flags: DWORD): Integer;
 begin
   with Application do
     Result := MessageBox(PChar(Text), PChar(Title), Flags);
+end;
+
+procedure UpdateTrackFont(TrackFont,Font:TFont;TrackOptions:TJvTrackFontOptions);
+begin
+  if hoFollowFont in TrackOptions then
+  begin
+    if not (hoPreserveCharSet in TrackOptions) then
+      TrackFont.CharSet := Font.CharSet;
+    if not (hoPreserveColor in TrackOptions) then
+      TrackFont.Color := Font.Color;
+    if not (hoPreserveHeight in TrackOptions) then
+      TrackFont.Height := Font.Height;
+    if not (hoPreserveName in TrackOptions) then
+      TrackFont.Name := Font.Name;
+    if not (hoPreservePitch in TrackOptions) then
+      TrackFont.Pitch := Font.Pitch;
+    if not (hoPreserveStyle in TrackOptions) then
+      TrackFont.Style := Font.Style;
+  end;
 end;
 
 { end JvCtrlUtils }

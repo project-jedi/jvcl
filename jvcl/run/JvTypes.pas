@@ -263,6 +263,21 @@ type
   TJvDriveType = (dtUnknown, dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
   TJvDriveTypes = set of TJvDriveType;
 
+  // Defines how a property (like a HotTrackFont) follows changes in the component's normal Font
+  TJvTrackFontOption = (
+    hoFollowFont,  // makes HotTrackFont follow changes to the normal Font
+    hoPreserveCharSet,  // don't change HotTrackFont.Charset
+    hoPreserveColor,    // don't change HotTrackFont.Color
+    hoPreserveHeight,   // don't change HotTrackFont.Height (affects Size as well)
+    hoPreserveName,     // don't change HotTrackFont.Name
+    hoPreservePitch,    // don't change HotTrackFont.Pitch
+    hoPreserveStyle);   // don't change HotTrackFont.Style
+  TJvTrackFontOptions = set of TJvTrackFontOption;
+
+const
+  DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
+
+
 implementation
 
 end.
