@@ -19,12 +19,13 @@ Sebastien Buysse [sbuysse@buypin.com].
 Peter Thörnqvist [peter3@peter3.com] - TJvDomainUpDown
 
 
-Last Modified: 2003-04-09
+Last Modified: 2003-05-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+- Can't set Position of TJvDomainUpDown at design-time. SOLVED 2003-05-30
 
 Description:
 
@@ -43,7 +44,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   ComCtrls, CommCtrl,
   JVCLVer;
-  
+
 type
   TJvAlignButton = (abLeft, abRight, abNone);
   TJvUpDownFormat = (ufInt,ufHex);
@@ -82,7 +83,7 @@ type
     procedure UpdateAssociate;virtual;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
-    function AcceptPosition(Value: Integer): Boolean;
+    function AcceptPosition(Value: Integer): Boolean;virtual;
     function CanChange: Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -121,6 +122,7 @@ type
 
     procedure UpdateAssociate;override;
     procedure Click(Button: TUDBtnType); override;
+    function AcceptPosition(Value: Integer): Boolean;override;
     property Thousands default false;
     property Items:TStrings read FItems write SetItems;
     property Text:string read GetText write SetText;
@@ -370,7 +372,7 @@ procedure TJvCustomUpDown.CreateWnd;
 const
   cBase:array[TJvUpDownFormat] of integer = (10,16);
 var
-  OrigWidth:integer; 
+  OrigWidth:integer;
 begin
   OrigWidth := Width;
   inherited CreateWnd;
@@ -572,6 +574,11 @@ begin
   inherited;
   if (Operation = opRemove) and (AComponent = FAssociate) then
     Associate := nil;
+end;
+
+function TJvCustomDomainUpDown.AcceptPosition(Value: Integer): Boolean;
+begin
+  Result := (Value >= 0) and (Value < Items.Count);
 end;
 
 end.
