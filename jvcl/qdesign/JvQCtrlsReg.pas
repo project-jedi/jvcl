@@ -72,7 +72,8 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteButton, [TJvArrowButton, TJvColorButton,
-    TJvHTButton, TJvSpacer, TJvSwitch]);
+    TJvHTButton, TJvSpacer, TJvSwitch, TJvColorBox, TJvColorSquare,
+    TJvDropButton]);
   RegisterComponents(RsPaletteBarPanel, [TJvCaptionPanel,
     TJvItemsPanel, TJvMovableBevel, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
