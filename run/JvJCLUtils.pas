@@ -5116,10 +5116,6 @@ begin
     end;
 end;
 
-// (rom) something for JVCL.INC
-
-{$DEFINE MBCS}
-
 function QuotedString(const S: string; Quote: Char): string;
 begin
   Result := AnsiQuotedStr(S, Quote);
