@@ -40,6 +40,7 @@
       ..\..\lib\c5\obj\JvWaitingProgress.obj
       ..\..\lib\c5\obj\JvWavePlayer.obj
       ..\..\lib\c5\obj\JvAni.obj
+      ..\..\lib\c5\obj\JvCursor.obj
       ..\..\lib\c5\obj\JvAnimate.obj
       ..\..\lib\c5\obj\JvAnimatedImage.obj
       ..\..\lib\c5\obj\VFW.obj
