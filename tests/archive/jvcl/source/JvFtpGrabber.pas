@@ -143,6 +143,14 @@ type
 
 implementation
 
+{$IFNDEF COMPILER6_UP}
+const
+  winetdll = 'wininet.dll';
+
+function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall; external winetdll name 'FtpGetFileSize';
+  {$EXTERNALSYM FtpGetFileSize}
+{$ENDIF}
+
 ///////////////////////////////////////////////////////////
 // TJvFtpGrabber
 ///////////////////////////////////////////////////////////
@@ -446,7 +454,7 @@ begin
     Synchronize(Error);
     Exit;
   end;
-  (FSender as TJvFtpGrabber).FSize:=FtpGetFileSize(hDownload,@lpdwFileSizeHigh); // acp
+  (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload,@lpdwFileSizeHigh); // acp
 
   Stream := TMemoryStream.Create;
 

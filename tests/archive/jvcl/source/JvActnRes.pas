@@ -1,9 +1,9 @@
 unit JvActnRes;
-
+{$I JVCL.INC}
 interface
 
 uses
-  SysUtils, Classes, ActnList, ImgList, Controls;
+  SysUtils, Classes, ActnList, ImgList, {$IFNDEF COMPILER6_UP}Forms, {$ENDIF}Controls;
 
 type
   TJvStandardActions = class(TDataModule)

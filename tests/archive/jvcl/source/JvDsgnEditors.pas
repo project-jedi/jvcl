@@ -138,9 +138,9 @@ type
   TJvDefaultImageIndexProperty = class(TIntegerProperty)
   protected
     function ImageList: TCustomImageList; virtual;
+  public
     function GetValue: string;override;
     procedure SetValue(const Value: string);override;
-  public
     function GetAttributes: TPropertyAttributes;override;
     procedure GetValues(Proc:TGetStrProc);override;
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
