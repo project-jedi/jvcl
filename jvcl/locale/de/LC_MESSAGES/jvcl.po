@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2004-02-24 22:21\n"
-"PO-Revision-Date: 2004-03-04 00:25+0100\n"
+"PO-Revision-Date: 2004-03-22 13:49+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -199,7 +199,7 @@ msgid "&Null Value"
 msgstr "&Null-Wert:"
 
 #  JvQueryParamsDialog..HelpBtn..Caption
-#. JvQueryParamsDialog..HelpBtn..Caption
+#  JvQueryParamsDialog..HelpBtn..Caption
 #: JvDBQueryParamsForm.dfm:137
 msgid "&Help"
 msgstr "&Hilfe"
@@ -366,8 +366,8 @@ msgstr "Fehlertyp:"
 
 #  JvGridPreviewForm..Caption
 #  JvGridPreviewForm..Caption
-#. JvGridPreviewForm..Caption
-#. JvGridPreviewForm..Caption
+#  JvGridPreviewForm..Caption
+#  JvGridPreviewForm..Caption
 #: JvGridPreviewForm.dfm:6
 #: JvGridPreviewForm.xfm:8
 msgid "Preview"
@@ -622,7 +622,7 @@ msgid "Whitespace"
 msgstr "Whitespace"
 
 #  JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
-#. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
+#  JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:226
 msgid "Comment"
 msgstr "Bemerkung"
@@ -886,19 +886,19 @@ msgstr ""
 #  Programmer's name for it: RsEDeviceCannotBeIdentified
 #: JvHidControllerClass.pas:476
 msgid "device cannot be identified"
-msgstr ""
+msgstr "Gerät konnte nicht erkannt werden"
 
 #  Programmer's name for it: RsEDeviceCannotBeOpened
 #: JvHidControllerClass.pas:477
 msgid "device cannot be opened"
-msgstr ""
+msgstr "Gerät konnte nicht geöffnet werden"
 
 #  Programmer's name for it: RsEOnlyOneControllerPerProgram
 #  Programmer's name for it: RsEOnlyOneControllerPerProgram
 #: JvHidControllerClass.pas:478
 #: JvResources.pas:865
 msgid "Only one TJvHidDeviceController allowed per program"
-msgstr ""
+msgstr "Es ist nur ein TJvHidDeviceController pro Programm erlaubt"
 
 #  Programmer's name for it: RsEHIDBooleanError
 #  Programmer's name for it: RsEHIDBooleanError
@@ -907,18 +907,18 @@ msgstr ""
 #: JvHidControllerClass.pas:479
 #: JvResources.pas:866
 msgid "HID Error: a boolean function failed"
-msgstr ""
+msgstr "HID Fehler: Eine boolsche Funktion schlug fehl"
 
 #  (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
 #  Programmer's name for it: RsPropertyNotExists
 #: JvJCLUtils.pas:1027
 msgid "Property \"%s\" does not exist"
-msgstr ""
+msgstr "Eigenschaft \"%s\" ist nicht vorhanden"
 
 #  Programmer's name for it: RsInvalidPropertyType
 #: JvJCLUtils.pas:1028
 msgid "Property \"%s\" has invalid type"
-msgstr ""
+msgstr "Eigenschaft \"%s\" hat einen ungültigen Typ"
 
 #  JvJVCLAboutForm..Caption
 #: JvJVCLAboutForm.dfm:7
@@ -1258,7 +1258,7 @@ msgstr "Schlüsselwort"
 #: JvParserForm.dfm:62
 #: JvParserForm.xfm:64
 msgid "Start Tag"
-msgstr ""
+msgstr "Start-Tag"
 
 #  FormParsers..GroupBox1..Label3..Caption
 #  FormParsers..GroupBox1..Label3..Caption
@@ -1267,7 +1267,7 @@ msgstr ""
 #: JvParserForm.dfm:69
 #: JvParserForm.xfm:71
 msgid "End Tag"
-msgstr ""
+msgstr "End-Tag"
 
 #  FormParsers..GroupBox1..Label4..Hint
 #  FormParsers..GroupBox1..Label4..Hint
@@ -1346,14 +1346,14 @@ msgstr "Zwischen den Limits"
 #: JvParserForm.dfm:127
 #: JvParserForm.xfm:126
 msgid "All before start tag"
-msgstr ""
+msgstr "Alles vor dem Start-Tag"
 
 #  FormParsers..GroupBox1..ComboBox1....Items.Strings
 #  FormParsers..GroupBox1..ComboBox1....Items.Strings
 #: JvParserForm.dfm:128
 #: JvParserForm.xfm:127
 msgid "All after start tag"
-msgstr ""
+msgstr "Alles nach dem Start-Tag"
 
 #  FormParsers..GroupBox1..ComboBox1....Items.Strings
 #  FormParsers..GroupBox1..ComboBox1....Items.Strings
@@ -1383,7 +1383,7 @@ msgstr ""
 #: JvParserForm.dfm:150
 #: JvParserForm.xfm:152
 msgid "Add an item to the list"
-msgstr ""
+msgstr "Element zur liste hinzufügen"
 
 #  FormParsers..AddBtn..Caption
 #  JvSpellerForm..ButtonPanel..BtnAdd..Caption
@@ -4670,7 +4670,7 @@ msgstr ""
 msgid "TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil"
 msgstr ""
 
-#. Programmer's name for it: RsEJvAssertDataParent
+#  Programmer's name for it: RsEJvAssertDataParent
 #: JvResources.pas:1022
 msgid "TJvInspectorSetMemberData.New: unexpected ADataParent = nil"
 msgstr ""
@@ -4792,7 +4792,7 @@ msgstr ""
 msgid "Stack overflow"
 msgstr ""
 
-#. Programmer's name for it: RsEInterpreter53
+#  Programmer's name for it: RsEInterpreter53
 #: JvResources.pas:1065
 msgid "Type mismatch"
 msgstr ""
@@ -4860,7 +4860,7 @@ msgstr ""
 msgid "Record, object or class type required"
 msgstr ""
 
-#. Programmer's name for it: RsEInterpreter110
+#  Programmer's name for it: RsEInterpreter110
 #: JvResources.pas:1079
 msgid "Missing operator or semicolon"
 msgstr ""
@@ -4920,8 +4920,8 @@ msgstr ""
 msgid "Error loading library '%s'"
 msgstr ""
 
-#. Programmer's name for it: RsEInterpreter185
-#. Programmer's name for it: RsEInterpreter188
+#  Programmer's name for it: RsEInterpreter185
+#  Programmer's name for it: RsEInterpreter188
 #: JvResources.pas:1093
 #: JvResources.pas:1096
 msgid "Invalid type of argument in call to function '%s'"
@@ -4975,7 +4975,7 @@ msgstr ""
 msgid "Procedure \"JvInterpreterRunReportPreview\" not found"
 msgstr ""
 
-#. Programmer's name for it: RsENoReportProc2
+#  Programmer's name for it: RsENoReportProc2
 #: JvResources.pas:1113
 msgid "Procedure \"JvInterpreterRunReportPreview2\" not found"
 msgstr ""
@@ -5028,7 +5028,7 @@ msgstr ""
 msgid "The specified joystick is not connected to the system."
 msgstr ""
 
-#. Programmer's name for it: RsJoystickErrorParam
+#  Programmer's name for it: RsJoystickErrorParam
 #: JvResources.pas:1131
 msgid "The specified joystick device identifier is invalid."
 msgstr ""
@@ -5083,7 +5083,7 @@ msgstr ""
 msgid "TElementEnumerator.GetNextElement: No more elements to return"
 msgstr ""
 
-#. Programmer's name for it: RsEUnsupportedState
+#  Programmer's name for it: RsEUnsupportedState
 #: JvResources.pas:1155
 msgid "TDefaultParser.ParseNode: Unsupported state"
 msgstr ""
@@ -5253,8 +5253,8 @@ msgstr ""
 msgid "Failure Audit"
 msgstr ""
 
-#. === JvObjectPickerDialog.pas ===============================================
-#. Programmer's name for it: RsAttributeIndexOutOfBounds
+#  === JvObjectPickerDialog.pas ===============================================
+#  Programmer's name for it: RsAttributeIndexOutOfBounds
 #: JvResources.pas:1251
 msgid "%d is not a valid attribute index"
 msgstr ""
@@ -5308,7 +5308,7 @@ msgstr ""
 msgid "Cl&ear"
 msgstr ""
 
-#. Programmer's name for it: RsHistoryLoadCaption
+#  Programmer's name for it: RsHistoryLoadCaption
 #: JvResources.pas:1285
 msgid "Load Parameter Settings"
 msgstr ""
@@ -5360,7 +5360,7 @@ msgstr ""
 msgid "Parameter %s: The file \"%s\" does not exist!"
 msgstr ""
 
-#. Programmer's name for it: RsErrParameterFileExistOverwrite
+#  Programmer's name for it: RsErrParameterFileExistOverwrite
 #: JvResources.pas:1300
 msgid "Parameter %s: The file \"%s\" exists! Overwrite?"
 msgstr ""
@@ -5413,7 +5413,7 @@ msgstr ""
 msgid "Performance registry key not found"
 msgstr ""
 
-#. Programmer's name for it: RsECantStart
+#  Programmer's name for it: RsECantStart
 #: JvResources.pas:1322
 msgid "Cannot start performance statistics (%s)"
 msgstr ""
@@ -5468,7 +5468,7 @@ msgstr ""
 msgid "Plugin package not found: %s"
 msgstr ""
 
-#. Programmer's name for it: RsERegisterPluginNotFound
+#  Programmer's name for it: RsERegisterPluginNotFound
 #: JvResources.pas:1341
 msgid "Plugin function %s not found in %s"
 msgstr ""
@@ -5521,7 +5521,7 @@ msgstr ""
 msgid "A RichEdit component must be assigned in CreatePreview!"
 msgstr ""
 
-#. Programmer's name for it: RsECannotPerfromThisOperationWhilePrin
+#  Programmer's name for it: RsECannotPerfromThisOperationWhilePrin
 #: JvResources.pas:1358
 msgid "Cannot perfrom this operation while printing!"
 msgstr ""
@@ -5574,7 +5574,7 @@ msgstr ""
 msgid "Plain text (*.txt)|*.txt"
 msgstr ""
 
-#. Programmer's name for it: RsEConversionError
+#  Programmer's name for it: RsEConversionError
 #: JvResources.pas:1384
 msgid "Conversion error %.8x"
 msgstr ""
@@ -5625,7 +5625,7 @@ msgstr ""
 msgid "Error opening exception file"
 msgstr ""
 
-#. Programmer's name for it: RsEOpenInFileErr
+#  Programmer's name for it: RsEOpenInFileErr
 #: JvResources.pas:1394
 msgid "Could not open input file"
 msgstr ""
@@ -5727,8 +5727,8 @@ msgstr ""
 msgid "Could not find end of procedure"
 msgstr ""
 
-#. === JvSALCore.pas ==========================================================
-#. Programmer's name for it: RsEVariablesIsNotInitialized
+#  === JvSALCore.pas ==========================================================
+#  Programmer's name for it: RsEVariablesIsNotInitialized
 #: JvResources.pas:1420
 msgid "Variable %s is not initialized"
 msgstr ""
@@ -5781,7 +5781,7 @@ msgstr ""
 msgid "Incorrect identifier found"
 msgstr ""
 
-#. Programmer's name for it: RsEIncorrectStructure
+#  Programmer's name for it: RsEIncorrectStructure
 #: JvResources.pas:1436
 msgid "Incorrect structure found"
 msgstr ""
@@ -5837,7 +5837,7 @@ msgid "The current character has been modified. Apply changes?"
 msgstr ""
 
 #  Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
-#. Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
+#  Programmer's name for it: RsTheCurrentMappingHasBeenModifiedSav
 #: JvResources.pas:1463
 msgid "The current mapping has been modified. Save changes to file?"
 msgstr ""
@@ -5895,7 +5895,7 @@ msgid "Invalid XML Element: Expected end of tag but \"%s\" found"
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidXMLElementMalformedTagFoundn
-#. Programmer's name for it: RsEInvalidXMLElementMalformedTagFoundn
+#  Programmer's name for it: RsEInvalidXMLElementMalformedTagFoundn
 #: JvResources.pas:1484
 msgid "Invalid XML Element: malformed tag found (no valid name)"
 msgstr ""
@@ -5907,19 +5907,19 @@ msgid "Invalid XML Element: Erroneous end of tag, expecting </%s> but </%s> foun
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidCommentExpectedsButFounds
-#. Programmer's name for it: RsEInvalidCommentExpectedsButFounds
+#  Programmer's name for it: RsEInvalidCommentExpectedsButFounds
 #: JvResources.pas:1487
 msgid "Invalid Comment: expected \"%s\" but found \"%s\""
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidCommentNotAllowedInsideComme
-#. Programmer's name for it: RsEInvalidCommentNotAllowedInsideComme
+#  Programmer's name for it: RsEInvalidCommentNotAllowedInsideComme
 #: JvResources.pas:1488
 msgid "Invalid Comment: \"--\" not allowed inside comments"
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidCommentUnexpectedEndOfData
-#. Programmer's name for it: RsEInvalidCommentUnexpectedEndOfData
+#  Programmer's name for it: RsEInvalidCommentUnexpectedEndOfData
 #: JvResources.pas:1489
 msgid "Invalid Comment: Unexpected end of data"
 msgstr ""
@@ -5931,39 +5931,39 @@ msgid "Invalid CDATA: expected \"%s\" but found \"%s\""
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidCDATAUnexpectedEndOfData
-#. Programmer's name for it: RsEInvalidCDATAUnexpectedEndOfData
+#  Programmer's name for it: RsEInvalidCDATAUnexpectedEndOfData
 #: JvResources.pas:1491
 msgid "Invalid CDATA: Unexpected end of data"
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidHeaderExpectedsButFounds
-#. Programmer's name for it: RsEInvalidHeaderExpectedsButFounds
+#  Programmer's name for it: RsEInvalidHeaderExpectedsButFounds
 #: JvResources.pas:1492
 msgid "Invalid Header: expected \"%s\" but found \"%s\""
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidStylesheetExpectedsButFounds
-#. Programmer's name for it: RsEInvalidStylesheetExpectedsButFounds
+#  Programmer's name for it: RsEInvalidStylesheetExpectedsButFounds
 #: JvResources.pas:1493
 msgid "Invalid Stylesheet: expected \"%s\" but found \"%s\""
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidStylesheetUnexpectedEndOfDat
-#. Programmer's name for it: RsEInvalidStylesheetUnexpectedEndOfDat
+#  Programmer's name for it: RsEInvalidStylesheetUnexpectedEndOfDat
 #: JvResources.pas:1494
 msgid "Invalid Stylesheet: Unexpected end of data"
 msgstr ""
 
 #  Programmer's name for it: RsEInvalidDocumentUnexpectedTextInFile
-#. Programmer's name for it: RsEInvalidDocumentUnexpectedTextInFile
+#  Programmer's name for it: RsEInvalidDocumentUnexpectedTextInFile
 #: JvResources.pas:1495
 msgid "Invalid Document: Unexpected text in file prolog"
 msgstr ""
 
 #  === JvSpeedbar.pas =========================================================
 #  Programmer's name for it: RsEAutoSpeedbarMode
-#. === JvSpeedbar.pas =========================================================
-#. Programmer's name for it: RsEAutoSpeedbarMode
+#  === JvSpeedbar.pas =========================================================
+#  Programmer's name for it: RsEAutoSpeedbarMode
 #: JvResources.pas:1499
 msgid "Cannot set this property value while Position is bpAuto"
 msgstr ""
@@ -5988,13 +5988,13 @@ msgstr "&Verfügbare Buttons:"
 msgid "&Categories:"
 msgstr "&Kategorien"
 
-#. Programmer's name for it: RsSpeedbarEditHint
+#  Programmer's name for it: RsSpeedbarEditHint
 #: JvResources.pas:1507
 msgid "To add command buttons, drag and drop buttons onto the SpeedBar. To remove command buttons, drag them off the SpeedBar."
 msgstr ""
 
-#. === JvSpellChecker.pas =====================================================
-#. Programmer's name for it: RsENoSpellCheckerAvailable
+#  === JvSpellChecker.pas =====================================================
+#  Programmer's name for it: RsENoSpellCheckerAvailable
 #: JvResources.pas:1511
 msgid "No IJvSpellChecker implementation available!"
 msgstr ""
@@ -6003,28 +6003,28 @@ msgstr ""
 #  Programmer's name for it: RsENoDictionaryLoaded
 #: JvResources.pas:1515
 msgid "No dictionary loaded"
-msgstr ""
+msgstr "Kein Wörerbuch geladen"
 
-#. === JvSpin.pas =============================================================
-#. Programmer's name for it: RsEOutOfRangeFloat
+#  === JvSpin.pas =============================================================
+#  Programmer's name for it: RsEOutOfRangeFloat
 #: JvResources.pas:1519
 msgid "Value must be between %g and %g"
 msgstr ""
 
-#. === JvStatusBar.pas ========================================================
-#. Programmer's name for it: RsEInvalidControlSelection
+#  === JvStatusBar.pas ========================================================
+#  Programmer's name for it: RsEInvalidControlSelection
 #: JvResources.pas:1523
 msgid "Invalid control selection"
 msgstr ""
 
-#. === JvSticker.pas ==========================================================
-#. Programmer's name for it: RsEditStickerCaption
+#  === JvSticker.pas ==========================================================
+#  Programmer's name for it: RsEditStickerCaption
 #: JvResources.pas:1527
 msgid "Edit sticker"
 msgstr ""
 
-#. === JvStrings.pas ==========================================================
-#. Programmer's name for it: RsECannotLoadResource
+#  === JvStrings.pas ==========================================================
+#  Programmer's name for it: RsECannotLoadResource
 #: JvResources.pas:1531
 msgid "Cannot load resource: %s"
 msgstr ""
@@ -6034,23 +6034,23 @@ msgstr ""
 msgid "Base64: Incorrect string format"
 msgstr ""
 
-#. === JvSyncSplitter.pas =====================================================
-#. Programmer's name for it: RsEInvalidPartner
+#  === JvSyncSplitter.pas =====================================================
+#  Programmer's name for it: RsEInvalidPartner
 #: JvResources.pas:1536
 msgid "TJvSyncSplitter.SetPartner: cannot set Partner to Self!"
 msgstr ""
 
 #  === JvSystemPopup.pas ======================================================
 #  Programmer's name for it: RsEAlreadyHooked
-#. === JvSystemPopup.pas ======================================================
-#. Programmer's name for it: RsEAlreadyHooked
+#  === JvSystemPopup.pas ======================================================
+#  Programmer's name for it: RsEAlreadyHooked
 #: JvResources.pas:1540
 msgid "TJvSystemPopup.Hook: already hooked"
 msgstr ""
 
-#. === JvTFDays.pas ===========================================================
-#. Programmer's name for it: RsEInvalidPrimeTimeStartTime
-#. Programmer's name for it: RsEInvalidPrimeTimeStartTime
+#  === JvTFDays.pas ===========================================================
+#  Programmer's name for it: RsEInvalidPrimeTimeStartTime
+#  Programmer's name for it: RsEInvalidPrimeTimeStartTime
 #: JvResources.pas:1544
 #: JvTFDays.pas:1777
 msgid "Invalid PrimeTime StartTime"
@@ -6063,50 +6063,50 @@ msgstr ""
 msgid "Invalid PrimeTime EndTime"
 msgstr ""
 
-#. Programmer's name for it: RsEColumnIndexOutOfBounds
-#. Programmer's name for it: RsEColumnIndexOutOfBounds
+#  Programmer's name for it: RsEColumnIndexOutOfBounds
+#  Programmer's name for it: RsEColumnIndexOutOfBounds
 #: JvResources.pas:1546
 #: JvTFDays.pas:1779
 msgid "Column index out of bounds"
 msgstr ""
 
-#. Programmer's name for it: RsERowIndexOutOfBounds
-#. Programmer's name for it: RsERowIndexOutOfBounds
+#  Programmer's name for it: RsERowIndexOutOfBounds
+#  Programmer's name for it: RsERowIndexOutOfBounds
 #: JvResources.pas:1547
 #: JvTFDays.pas:1780
 msgid "Row index out of bounds"
 msgstr ""
 
-#. Programmer's name for it: RsEMapColNotFoundForAppointment
-#. Programmer's name for it: RsEMapColNotFoundForAppointment
+#  Programmer's name for it: RsEMapColNotFoundForAppointment
+#  Programmer's name for it: RsEMapColNotFoundForAppointment
 #: JvResources.pas:1548
 #: JvTFDays.pas:1781
 msgid "Map column not found for appointment"
 msgstr ""
 
-#. Programmer's name for it: RsECorruptAppointmentMap
-#. Programmer's name for it: RsECorruptAppointmentMap
+#  Programmer's name for it: RsECorruptAppointmentMap
+#  Programmer's name for it: RsECorruptAppointmentMap
 #: JvResources.pas:1549
 #: JvTFDays.pas:1782
 msgid "Corrupt appointment map"
 msgstr ""
 
-#. Programmer's name for it: RsEGridGranularityCannotBeGreater
-#. Programmer's name for it: RsEGridGranularityCannotBeGreater
+#  Programmer's name for it: RsEGridGranularityCannotBeGreater
+#  Programmer's name for it: RsEGridGranularityCannotBeGreater
 #: JvResources.pas:1551
 #: JvTFDays.pas:1784
 msgid "Grid granularity cannot be greater than the time block granularity"
 msgstr ""
 
-#. Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
-#. Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
+#  Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
+#  Programmer's name for it: RsETimeBlockGranularityMustBeEvenly
 #: JvResources.pas:1553
 #: JvTFDays.pas:1786
 msgid "Time block granularity must be evenly divisible by the grid granularity"
 msgstr ""
 
-#. Programmer's name for it: RsETimeBlocksMustBeginExactlyOn
-#. Programmer's name for it: RsETimeBlocksMustBeginExactlyOn
+#  Programmer's name for it: RsETimeBlocksMustBeginExactlyOn
+#  Programmer's name for it: RsETimeBlocksMustBeginExactlyOn
 #: JvResources.pas:1555
 #: JvTFDays.pas:1788
 msgid "Time blocks must begin exactly on a grid time division"
@@ -6114,8 +6114,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
 #  Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
-#. Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
-#. Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
+#  Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
+#  Programmer's name for it: RsEGridEndTimeCannotBePriorToGridStart
 #: JvResources.pas:1556
 #: JvTFDays.pas:1789
 msgid "GridEndTime cannot be prior to GridStartTime"
@@ -6128,29 +6128,29 @@ msgstr ""
 msgid "GridStartTime cannot be after GridEndTime"
 msgstr ""
 
-#. Programmer's name for it: RsEInvalidRowd
-#. Programmer's name for it: RsEInvalidRowd
+#  Programmer's name for it: RsEInvalidRowd
+#  Programmer's name for it: RsEInvalidRowd
 #: JvResources.pas:1558
 #: JvTFDays.pas:1791
 msgid "Invalid row (%d)"
-msgstr ""
+msgstr "Ungültige Zeile (%d)"
 
-#. Programmer's name for it: RsEThereIsNoDataToPrint
-#. Programmer's name for it: RsEThereIsNoDataToPrint
+#  Programmer's name for it: RsEThereIsNoDataToPrint
+#  Programmer's name for it: RsEThereIsNoDataToPrint
 #: JvResources.pas:1559
 #: JvTFDays.pas:1792
 msgid "There is no data to print"
-msgstr ""
+msgstr "Keine Druckdaten vorhanden"
 
-#. Programmer's name for it: RsENoPageInfoExists
-#. Programmer's name for it: RsENoPageInfoExists
+#  Programmer's name for it: RsENoPageInfoExists
+#  Programmer's name for it: RsENoPageInfoExists
 #: JvResources.pas:1561
 #: JvTFDays.pas:1794
 msgid "No page info exists.  Document must be prepared"
 msgstr ""
 
-#. Programmer's name for it: RsEATimeBlockNameCannotBeNull
-#. Programmer's name for it: RsEATimeBlockNameCannotBeNull
+#  Programmer's name for it: RsEATimeBlockNameCannotBeNull
+#  Programmer's name for it: RsEATimeBlockNameCannotBeNull
 #: JvResources.pas:1562
 #: JvTFDays.pas:1795
 msgid "A time block name cannot be null"
@@ -6163,23 +6163,23 @@ msgstr ""
 msgid "Another time block with the name \"%s\" already exists"
 msgstr ""
 
-#. Programmer's name for it: RsEATimeBlockWithTheNamesDoesNotExist
-#. Programmer's name for it: RsEATimeBlockWithTheNamesDoesNotExist
+#  Programmer's name for it: RsEATimeBlockWithTheNamesDoesNotExist
+#  Programmer's name for it: RsEATimeBlockWithTheNamesDoesNotExist
 #: JvResources.pas:1565
 #: JvTFDays.pas:1798
 msgid "A time block with the name \"%s\" does not exist"
 msgstr ""
 
-#. === JvTFGantt.pas ==========================================================
-#. Programmer's name for it: RsThisIsTheMajorScale
-#. Programmer's name for it: RsThisIsTheMajorScale
+#  === JvTFGantt.pas ==========================================================
+#  Programmer's name for it: RsThisIsTheMajorScale
+#  Programmer's name for it: RsThisIsTheMajorScale
 #: JvResources.pas:1569
 #: JvTFGantt.pas:141
 msgid "This is the Major Scale"
 msgstr ""
 
-#. Programmer's name for it: RsThisIsTheMinorScale
-#. Programmer's name for it: RsThisIsTheMinorScale
+#  Programmer's name for it: RsThisIsTheMinorScale
+#  Programmer's name for it: RsThisIsTheMinorScale
 #: JvResources.pas:1570
 #: JvTFGantt.pas:142
 msgid "This is the Minor Scale"
@@ -6198,8 +6198,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECellMapHasBeenCorrupteds
 #  Programmer's name for it: RsECellMapHasBeenCorrupteds
-#. Programmer's name for it: RsECellMapHasBeenCorrupteds
-#. Programmer's name for it: RsECellMapHasBeenCorrupteds
+#  Programmer's name for it: RsECellMapHasBeenCorrupteds
+#  Programmer's name for it: RsECellMapHasBeenCorrupteds
 #: JvResources.pas:1575
 #: JvTFGlance.pas:781
 msgid "Cell map has been corrupted %s"
@@ -6207,8 +6207,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECellObjectNotAssigned
 #  Programmer's name for it: RsECellObjectNotAssigned
-#. Programmer's name for it: RsECellObjectNotAssigned
-#. Programmer's name for it: RsECellObjectNotAssigned
+#  Programmer's name for it: RsECellObjectNotAssigned
+#  Programmer's name for it: RsECellObjectNotAssigned
 #: JvResources.pas:1576
 #: JvTFGlance.pas:782
 msgid "Cell object not assigned"
@@ -6216,8 +6216,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEInvalidColIndexd
 #  Programmer's name for it: RsEInvalidColIndexd
-#. Programmer's name for it: RsEInvalidColIndexd
-#. Programmer's name for it: RsEInvalidColIndexd
+#  Programmer's name for it: RsEInvalidColIndexd
+#  Programmer's name for it: RsEInvalidColIndexd
 #: JvResources.pas:1577
 #: JvTFGlance.pas:783
 msgid "Invalid col index (%d)"
@@ -6225,8 +6225,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEInvalidRowIndexd
 #  Programmer's name for it: RsEInvalidRowIndexd
-#. Programmer's name for it: RsEInvalidRowIndexd
-#. Programmer's name for it: RsEInvalidRowIndexd
+#  Programmer's name for it: RsEInvalidRowIndexd
+#  Programmer's name for it: RsEInvalidRowIndexd
 #: JvResources.pas:1578
 #: JvTFGlance.pas:784
 msgid "Invalid row index (%d)"
@@ -6234,8 +6234,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEApptIndexOutOfBoundsd
 #  Programmer's name for it: RsEApptIndexOutOfBoundsd
-#. Programmer's name for it: RsEApptIndexOutOfBoundsd
-#. Programmer's name for it: RsEApptIndexOutOfBoundsd
+#  Programmer's name for it: RsEApptIndexOutOfBoundsd
+#  Programmer's name for it: RsEApptIndexOutOfBoundsd
 #: JvResources.pas:1579
 #: JvTFGlance.pas:785
 msgid "Appt index out of bounds (%d)"
@@ -6243,8 +6243,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECellCannotBeSplit
 #  Programmer's name for it: RsECellCannotBeSplit
-#. Programmer's name for it: RsECellCannotBeSplit
-#. Programmer's name for it: RsECellCannotBeSplit
+#  Programmer's name for it: RsECellCannotBeSplit
+#  Programmer's name for it: RsECellCannotBeSplit
 #: JvResources.pas:1580
 #: JvTFGlance.pas:786
 msgid "Cell cannot be split"
@@ -6252,8 +6252,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEASubcellCannotBeSplit
 #  Programmer's name for it: RsEASubcellCannotBeSplit
-#. Programmer's name for it: RsEASubcellCannotBeSplit
-#. Programmer's name for it: RsEASubcellCannotBeSplit
+#  Programmer's name for it: RsEASubcellCannotBeSplit
+#  Programmer's name for it: RsEASubcellCannotBeSplit
 #: JvResources.pas:1581
 #: JvTFGlance.pas:787
 msgid "A subcell cannot be split"
@@ -6262,9 +6262,9 @@ msgstr ""
 #  === JvTFGlanceTextViewer.pas ===============================================
 #  Programmer's name for it: RsEGlanceControlNotAssigned
 #  Programmer's name for it: RsEGlanceControlNotAssigned
-#. === JvTFGlanceTextViewer.pas ===============================================
-#. Programmer's name for it: RsEGlanceControlNotAssigned
-#. Programmer's name for it: RsEGlanceControlNotAssigned
+#  === JvTFGlanceTextViewer.pas ===============================================
+#  Programmer's name for it: RsEGlanceControlNotAssigned
+#  Programmer's name for it: RsEGlanceControlNotAssigned
 #: JvResources.pas:1585
 #: JvTFGlanceTextViewer.pas:259
 msgid "GlanceControl not assigned"
@@ -6283,8 +6283,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotCreateAppointmentObject
 #  Programmer's name for it: RsECouldNotCreateAppointmentObject
-#. Programmer's name for it: RsECouldNotCreateAppointmentObject
-#. Programmer's name for it: RsECouldNotCreateAppointmentObject
+#  Programmer's name for it: RsECouldNotCreateAppointmentObject
+#  Programmer's name for it: RsECouldNotCreateAppointmentObject
 #: JvResources.pas:1592
 #: JvTFManager.pas:1085
 msgid "Could not create Appointment object.  ScheduleManager not assigned"
@@ -6292,8 +6292,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEScheduleManagerNotificationFailedSc
 #  Programmer's name for it: RsEScheduleManagerNotificationFailedSc
-#. Programmer's name for it: RsEScheduleManagerNotificationFailedSc
-#. Programmer's name for it: RsEScheduleManagerNotificationFailedSc
+#  Programmer's name for it: RsEScheduleManagerNotificationFailedSc
+#  Programmer's name for it: RsEScheduleManagerNotificationFailedSc
 #: JvResources.pas:1593
 #: JvTFManager.pas:1086
 msgid "ScheduleManager notification failed.  ScheduleManager not assigned"
@@ -6301,8 +6301,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEScheduleNotificationFailed
 #  Programmer's name for it: RsEScheduleNotificationFailed
-#. Programmer's name for it: RsEScheduleNotificationFailed
-#. Programmer's name for it: RsEScheduleNotificationFailed
+#  Programmer's name for it: RsEScheduleNotificationFailed
+#  Programmer's name for it: RsEScheduleNotificationFailed
 #: JvResources.pas:1595
 #: JvTFManager.pas:1088
 msgid "Schedule notification failed.  Schedule not assigned"
@@ -6310,8 +6310,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEInvalidStartAndEndTimes
 #  Programmer's name for it: RsEInvalidStartAndEndTimes
-#. Programmer's name for it: RsEInvalidStartAndEndTimes
-#. Programmer's name for it: RsEInvalidStartAndEndTimes
+#  Programmer's name for it: RsEInvalidStartAndEndTimes
+#  Programmer's name for it: RsEInvalidStartAndEndTimes
 #: JvResources.pas:1596
 #: JvTFManager.pas:1089
 msgid "Invalid start and end times"
@@ -6328,8 +6328,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEAppointmentNotificationFailed
 #  Programmer's name for it: RsEAppointmentNotificationFailed
-#. Programmer's name for it: RsEAppointmentNotificationFailed
-#. Programmer's name for it: RsEAppointmentNotificationFailed
+#  Programmer's name for it: RsEAppointmentNotificationFailed
+#  Programmer's name for it: RsEAppointmentNotificationFailed
 #: JvResources.pas:1599
 #: JvTFManager.pas:1092
 msgid "Appointment notification failed.  Appointment not assigned"
@@ -6337,8 +6337,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotCreateNewAppointment
 #  Programmer's name for it: RsECouldNotCreateNewAppointment
-#. Programmer's name for it: RsECouldNotCreateNewAppointment
-#. Programmer's name for it: RsECouldNotCreateNewAppointment
+#  Programmer's name for it: RsECouldNotCreateNewAppointment
+#  Programmer's name for it: RsECouldNotCreateNewAppointment
 #: JvResources.pas:1601
 #: JvTFManager.pas:1094
 msgid "Could not create new appointment. Appointment with given ID already exists"
@@ -6346,8 +6346,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEInvalidTriggerForRefreshControls
 #  Programmer's name for it: RsEInvalidTriggerForRefreshControls
-#. Programmer's name for it: RsEInvalidTriggerForRefreshControls
-#. Programmer's name for it: RsEInvalidTriggerForRefreshControls
+#  Programmer's name for it: RsEInvalidTriggerForRefreshControls
+#  Programmer's name for it: RsEInvalidTriggerForRefreshControls
 #: JvResources.pas:1602
 #: JvTFManager.pas:1095
 msgid "Invalid Trigger for RefreshControls"
@@ -6364,8 +6364,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotRetrieveSchedule
 #  Programmer's name for it: RsECouldNotRetrieveSchedule
-#. Programmer's name for it: RsECouldNotRetrieveSchedule
-#. Programmer's name for it: RsECouldNotRetrieveSchedule
+#  Programmer's name for it: RsECouldNotRetrieveSchedule
+#  Programmer's name for it: RsECouldNotRetrieveSchedule
 #: JvResources.pas:1605
 #: JvTFManager.pas:1098
 msgid "Could not retrieve schedule.  ScheduleManager not assigned"
@@ -6373,8 +6373,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotReleaseSchedule
 #  Programmer's name for it: RsECouldNotReleaseSchedule
-#. Programmer's name for it: RsECouldNotReleaseSchedule
-#. Programmer's name for it: RsECouldNotReleaseSchedule
+#  Programmer's name for it: RsECouldNotReleaseSchedule
+#  Programmer's name for it: RsECouldNotReleaseSchedule
 #: JvResources.pas:1607
 #: JvTFManager.pas:1100
 msgid "Could not release schedule.  ScheduleManager not assigned"
@@ -6382,8 +6382,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotCreateADocumentBecauseA
 #  Programmer's name for it: RsECouldNotCreateADocumentBecauseA
-#. Programmer's name for it: RsECouldNotCreateADocumentBecauseA
-#. Programmer's name for it: RsECouldNotCreateADocumentBecauseA
+#  Programmer's name for it: RsECouldNotCreateADocumentBecauseA
+#  Programmer's name for it: RsECouldNotCreateADocumentBecauseA
 #: JvResources.pas:1609
 #: JvTFManager.pas:1102
 msgid "Could not create a document because a document already exists"
@@ -6391,8 +6391,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
 #  Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
-#. Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
-#. Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
+#  Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
+#  Programmer's name for it: RsECouldNotFinishDocumentBecauseNo
 #: JvResources.pas:1611
 #: JvTFManager.pas:1104
 msgid "Could not finish document because no document has been created"
@@ -6400,17 +6400,17 @@ msgstr ""
 
 #  Programmer's name for it: RsEDocumentDoesNotExist
 #  Programmer's name for it: RsEDocumentDoesNotExist
-#. Programmer's name for it: RsEDocumentDoesNotExist
-#. Programmer's name for it: RsEDocumentDoesNotExist
+#  Programmer's name for it: RsEDocumentDoesNotExist
+#  Programmer's name for it: RsEDocumentDoesNotExist
 #: JvResources.pas:1612
 #: JvTFManager.pas:1105
 msgid "Document does not exist"
-msgstr ""
+msgstr "Das Dokument ist nicht vorhanden"
 
 #  Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
 #  Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
-#. Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
-#. Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
+#  Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
+#  Programmer's name for it: RsEDocumentPagesCannotBeAccessedIf
 #: JvResources.pas:1614
 #: JvTFManager.pas:1107
 msgid "Document pages cannot be accessed if printing directly to the printer"
@@ -6418,8 +6418,8 @@ msgstr ""
 
 #  Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
 #  Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
-#. Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
-#. Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
+#  Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
+#  Programmer's name for it: RsEDocumentPagesAreInaccessibleUntil
 #: JvResources.pas:1616
 #: JvTFManager.pas:1109
 msgid "Document pages are inaccessible until the document has been finished"
@@ -6427,8 +6427,8 @@ msgstr ""
 
 #  Programmer's name for it: RsECouldNotRetrievePageCount
 #  Programmer's name for it: RsECouldNotRetrievePageCount
-#. Programmer's name for it: RsECouldNotRetrievePageCount
-#. Programmer's name for it: RsECouldNotRetrievePageCount
+#  Programmer's name for it: RsECouldNotRetrievePageCount
+#  Programmer's name for it: RsECouldNotRetrievePageCount
 #: JvResources.pas:1618
 #: JvTFManager.pas:1111
 msgid "Could not retrieve page count because document does not exist"
@@ -6441,7 +6441,7 @@ msgstr ""
 #: JvResources.pas:1619
 #: JvTFManager.pas:1112
 msgid "Only a finished document can be printed"
-msgstr ""
+msgstr "Nur ein geschlossenes Dokument kann gedruckt werden"
 
 #  Programmer's name for it: RsEThereAreNoPagesToPrint
 #  Programmer's name for it: RsEThereAreNoPagesToPrint
@@ -6450,7 +6450,7 @@ msgstr ""
 #: JvResources.pas:1620
 #: JvTFManager.pas:1113
 msgid "There are no pages to print"
-msgstr ""
+msgstr "Es sind keine Seiten zum Drucken vorhanden"
 
 #  Programmer's name for it: RsEDocumentMustBeFinishedToSaveToFile
 #  Programmer's name for it: RsEDocumentMustBeFinishedToSaveToFile
@@ -6486,7 +6486,7 @@ msgstr ""
 #: JvResources.pas:1626
 #: JvTFManager.pas:1119
 msgid "Invalid Footer Height (%d)"
-msgstr ""
+msgstr "Ungültige Höhe für Fußzeile (%d)"
 
 #  Programmer's name for it: RsEInvalidHeaderHeightd
 #  Programmer's name for it: RsEInvalidHeaderHeightd
@@ -6495,7 +6495,7 @@ msgstr ""
 #: JvResources.pas:1627
 #: JvTFManager.pas:1120
 msgid "Invalid Header Height (%d)"
-msgstr ""
+msgstr "Ungültige Höher für Kopfzeile (%d)"
 
 #  === JvTFSparseMatrix.pas ===================================================
 #  Programmer's name for it: RsEMatrixMustBeEmpty
@@ -6526,7 +6526,7 @@ msgstr ""
 #: JvResources.pas:1636
 #: JvTFUtils.pas:121
 msgid "Invalid Month Value (%d)"
-msgstr ""
+msgstr "Ungültiger Wert für Monat (%d)"
 
 #  Programmer's name for it: RsEInvalidDayOfWeekValue
 #  Programmer's name for it: RsEInvalidDayOfWeekValue
@@ -6535,7 +6535,7 @@ msgstr ""
 #: JvResources.pas:1637
 #: JvTFUtils.pas:122
 msgid "Invalid value for day of week (%d)"
-msgstr ""
+msgstr "Ungültiger Wert für Wochentag (%d)"
 
 #  === JvTFWeeks.pas ==========================================================
 #  Programmer's name for it: RsWeekOf
@@ -6682,7 +6682,7 @@ msgstr "Ungültiger Text in %s"
 #  Programmer's name for it: RsMissingFontname
 #: JvResources.pas:1693
 msgid "Missing fontname"
-msgstr ""
+msgstr "Fehlender Schriftartname"
 
 #  Programmer's name for it: RsNumberExpectedIns
 #: JvResources.pas:1694
@@ -6737,7 +6737,7 @@ msgstr ""
 #  Programmer's name for it: RsSymbolExpectedAfterIf
 #: JvResources.pas:1704
 msgid "Symbol expected after if"
-msgstr ""
+msgstr "Symbol erwartet nach if"
 
 #  Programmer's name for it: RsCanNotTakeSqrtOf
 #: JvResources.pas:1705
@@ -6769,7 +6769,7 @@ msgstr ""
 #  Programmer's name for it: RssDoesNotExist
 #: JvResources.pas:1710
 msgid "%s does not exist"
-msgstr ""
+msgstr "%s ist nicht vorhanden"
 
 #  Programmer's name for it: RsDivisionByZeroNotAllowedInIn
 #: JvResources.pas:1711
@@ -6820,7 +6820,7 @@ msgid "Purple"
 msgstr ""
 
 #  Programmer's name for it: RsClTeal
-#. Programmer's name for it: RsClTeal
+#  Programmer's name for it: RsClTeal
 #: JvResources.pas:1723
 msgid "Teal"
 msgstr ""
@@ -6844,7 +6844,7 @@ msgid "Red"
 msgstr ""
 
 #  Programmer's name for it: RsClLime
-#. Programmer's name for it: RsClLime
+#  Programmer's name for it: RsClLime
 #: JvResources.pas:1727
 msgid "Lime"
 msgstr ""
@@ -6905,8 +6905,8 @@ msgstr ""
 
 #  windows system colors
 #  Programmer's name for it: RsClScrollBar
-#. windows system colors
-#. Programmer's name for it: RsClScrollBar
+#  windows system colors
+#  Programmer's name for it: RsClScrollBar
 #: JvResources.pas:1739
 msgid "Scrollbar"
 msgstr ""
@@ -6914,16 +6914,16 @@ msgstr ""
 #  Programmer's name for it: RsClBackground
 #  non standard colors introduced in QWindows.pas
 #  Programmer's name for it: RsClDesktop
-#. Programmer's name for it: RsClBackground
-#. non standard colors introduced in QWindows.pas
-#. Programmer's name for it: RsClDesktop
+#  Programmer's name for it: RsClBackground
+#  non standard colors introduced in QWindows.pas
+#  Programmer's name for it: RsClDesktop
 #: JvResources.pas:1740
 #: JvResources.pas:1827
 msgid "Desktop background"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveCaption
-#. Programmer's name for it: RsClActiveCaption
+#  Programmer's name for it: RsClActiveCaption
 #: JvResources.pas:1741
 msgid "Active window title bar"
 msgstr ""
@@ -6935,15 +6935,15 @@ msgid "Inactive window title bar"
 msgstr ""
 
 #  Programmer's name for it: RsClMenu
-#. Programmer's name for it: RsClMenu
+#  Programmer's name for it: RsClMenu
 #: JvResources.pas:1743
 msgid "Menu background"
 msgstr ""
 
 #  Programmer's name for it: RsClWindow
 #  Programmer's name for it: RsClBackground
-#. Programmer's name for it: RsClWindow
-#. Programmer's name for it: RsClBackground
+#  Programmer's name for it: RsClWindow
+#  Programmer's name for it: RsClBackground
 #: JvResources.pas:1744
 #: JvResources.pas:1773
 msgid "Window background"
@@ -6971,33 +6971,33 @@ msgid "Window text"
 msgstr ""
 
 #  Programmer's name for it: RsClCaptionText
-#. Programmer's name for it: RsClCaptionText
+#  Programmer's name for it: RsClCaptionText
 #: JvResources.pas:1748
 msgid "Active window title bar text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveBorder
-#. Programmer's name for it: RsClActiveBorder
+#  Programmer's name for it: RsClActiveBorder
 #: JvResources.pas:1749
 msgid "Active window border"
 msgstr ""
 
 #  Programmer's name for it: RsClInactiveBorder
-#. Programmer's name for it: RsClInactiveBorder
+#  Programmer's name for it: RsClInactiveBorder
 #: JvResources.pas:1750
 msgid "Inactive window border"
 msgstr ""
 
 #  Programmer's name for it: RsClAppWorkSpace
-#. Programmer's name for it: RsClAppWorkSpace
+#  Programmer's name for it: RsClAppWorkSpace
 #: JvResources.pas:1751
 msgid "Application workspace"
 msgstr ""
 
 #  Programmer's name for it: RsClHighlight
 #  Programmer's name for it: RsClHighlight
-#. Programmer's name for it: RsClHighlight
-#. Programmer's name for it: RsClHighlight
+#  Programmer's name for it: RsClHighlight
+#  Programmer's name for it: RsClHighlight
 #: JvResources.pas:1752
 #: JvResources.pas:1772
 msgid "Selection background"
@@ -7005,8 +7005,8 @@ msgstr ""
 
 #  Programmer's name for it: RsClHighlightText
 #  Programmer's name for it: RsClHighlightedText
-#. Programmer's name for it: RsClHighlightText
-#. Programmer's name for it: RsClHighlightedText
+#  Programmer's name for it: RsClHighlightText
+#  Programmer's name for it: RsClHighlightedText
 #: JvResources.pas:1753
 #: JvResources.pas:1771
 msgid "Selection text"
@@ -7014,8 +7014,8 @@ msgstr ""
 
 #  Programmer's name for it: RsClBtnFace
 #  Programmer's name for it: RsClButton
-#. Programmer's name for it: RsClBtnFace
-#. Programmer's name for it: RsClButton
+#  Programmer's name for it: RsClBtnFace
+#  Programmer's name for it: RsClButton
 #: JvResources.pas:1754
 #: JvResources.pas:1777
 msgid "Button face"
@@ -7028,7 +7028,7 @@ msgid "Button shadow"
 msgstr ""
 
 #  Programmer's name for it: RsClGrayText
-#. Programmer's name for it: RsClGrayText
+#  Programmer's name for it: RsClGrayText
 #: JvResources.pas:1756
 msgid "Dimmed text"
 msgstr ""
@@ -7043,13 +7043,13 @@ msgid "Button text"
 msgstr ""
 
 #  Programmer's name for it: RsClInactiveCaptionText
-#. Programmer's name for it: RsClInactiveCaptionText
+#  Programmer's name for it: RsClInactiveCaptionText
 #: JvResources.pas:1758
 msgid "Inactive window title bar text"
 msgstr ""
 
 #  Programmer's name for it: RsClBtnHighlight
-#. Programmer's name for it: RsClBtnHighlight
+#  Programmer's name for it: RsClBtnHighlight
 #: JvResources.pas:1759
 msgid "Button highlight"
 msgstr ""
@@ -7061,13 +7061,13 @@ msgid "Dark shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsCl3DLight
-#. Programmer's name for it: RsCl3DLight
+#  Programmer's name for it: RsCl3DLight
 #: JvResources.pas:1761
 msgid "Highlight 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClInfoText
-#. Programmer's name for it: RsClInfoText
+#  Programmer's name for it: RsClInfoText
 #: JvResources.pas:1762
 msgid "Tooltip text"
 msgstr ""
@@ -7090,13 +7090,13 @@ msgid "Edit text"
 msgstr ""
 
 #  Programmer's name for it: RsClBrightText
-#. Programmer's name for it: RsClBrightText
+#  Programmer's name for it: RsClBrightText
 #: JvResources.pas:1769
 msgid "Bright text"
 msgstr ""
 
 #  Programmer's name for it: RsClBase
-#. Programmer's name for it: RsClBase
+#  Programmer's name for it: RsClBase
 #: JvResources.pas:1774
 msgid "Edit background"
 msgstr ""
@@ -7108,31 +7108,31 @@ msgid "Light 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClMidlight
-#. Programmer's name for it: RsClMidlight
+#  Programmer's name for it: RsClMidlight
 #: JvResources.pas:1776
 msgid "Medium Light 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClMid
-#. Programmer's name for it: RsClMid
+#  Programmer's name for it: RsClMid
 #: JvResources.pas:1778
 msgid "Light Shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClShadow
-#. Programmer's name for it: RsClShadow
+#  Programmer's name for it: RsClShadow
 #: JvResources.pas:1779
 msgid "Shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClDark
-#. Programmer's name for it: RsClDark
+#  Programmer's name for it: RsClDark
 #: JvResources.pas:1780
 msgid "Dark Shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalText
-#. Programmer's name for it: RsClNormalText
+#  Programmer's name for it: RsClNormalText
 #: JvResources.pas:1782
 msgid "Normal edit text"
 msgstr ""
@@ -7144,19 +7144,19 @@ msgid "Normal window text"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalBrightText
-#. Programmer's name for it: RsClNormalBrightText
+#  Programmer's name for it: RsClNormalBrightText
 #: JvResources.pas:1784
 msgid "Normal bright text"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalButtonText
-#. Programmer's name for it: RsClNormalButtonText
+#  Programmer's name for it: RsClNormalButtonText
 #: JvResources.pas:1785
 msgid "Normal button text"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalHighlightedText
-#. Programmer's name for it: RsClNormalHighlightedText
+#  Programmer's name for it: RsClNormalHighlightedText
 #: JvResources.pas:1786
 msgid "Normal selection text"
 msgstr ""
@@ -7174,13 +7174,13 @@ msgid "Normal window background"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalBase
-#. Programmer's name for it: RsClNormalBase
+#  Programmer's name for it: RsClNormalBase
 #: JvResources.pas:1789
 msgid "Normal edit background"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalLight
-#. Programmer's name for it: RsClNormalLight
+#  Programmer's name for it: RsClNormalLight
 #: JvResources.pas:1790
 msgid "Normal light 3D elements"
 msgstr ""
@@ -7198,25 +7198,25 @@ msgid "Normal button face"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalMid
-#. Programmer's name for it: RsClNormalMid
+#  Programmer's name for it: RsClNormalMid
 #: JvResources.pas:1793
 msgid "Normal light shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalShadow
-#. Programmer's name for it: RsClNormalShadow
+#  Programmer's name for it: RsClNormalShadow
 #: JvResources.pas:1794
 msgid "Normal shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClNormalDark
-#. Programmer's name for it: RsClNormalDark
+#  Programmer's name for it: RsClNormalDark
 #: JvResources.pas:1795
 msgid "Normal dark shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledText
-#. Programmer's name for it: RsClDisabledText
+#  Programmer's name for it: RsClDisabledText
 #: JvResources.pas:1797
 msgid "Disabled edit text"
 msgstr ""
@@ -7228,19 +7228,19 @@ msgid "Disabled window text"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledBrightText
-#. Programmer's name for it: RsClDisabledBrightText
+#  Programmer's name for it: RsClDisabledBrightText
 #: JvResources.pas:1799
 msgid "Disabled bright text"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledButtonText
-#. Programmer's name for it: RsClDisabledButtonText
+#  Programmer's name for it: RsClDisabledButtonText
 #: JvResources.pas:1800
 msgid "Disabled button text"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledHighlightedText
-#. Programmer's name for it: RsClDisabledHighlightedText
+#  Programmer's name for it: RsClDisabledHighlightedText
 #: JvResources.pas:1801
 msgid "Disabled selection text"
 msgstr ""
@@ -7252,25 +7252,25 @@ msgid "Disabled selection background"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledBackground
-#. Programmer's name for it: RsClDisabledBackground
+#  Programmer's name for it: RsClDisabledBackground
 #: JvResources.pas:1803
 msgid "Disabled window background"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledBase
-#. Programmer's name for it: RsClDisabledBase
+#  Programmer's name for it: RsClDisabledBase
 #: JvResources.pas:1804
 msgid "Disabled edit background"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledLight
-#. Programmer's name for it: RsClDisabledLight
+#  Programmer's name for it: RsClDisabledLight
 #: JvResources.pas:1805
 msgid "Disabled light 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledMidlight
-#. Programmer's name for it: RsClDisabledMidlight
+#  Programmer's name for it: RsClDisabledMidlight
 #: JvResources.pas:1806
 msgid "Disabled medium light 3D elements"
 msgstr ""
@@ -7288,7 +7288,7 @@ msgid "Disabled light shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClDisabledShadow
-#. Programmer's name for it: RsClDisabledShadow
+#  Programmer's name for it: RsClDisabledShadow
 #: JvResources.pas:1809
 msgid "Disabled shadow 3D elements"
 msgstr ""
@@ -7306,37 +7306,37 @@ msgid "Active edit text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveForeground
-#. Programmer's name for it: RsClActiveForeground
+#  Programmer's name for it: RsClActiveForeground
 #: JvResources.pas:1813
 msgid "Active window text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveBrightText
-#. Programmer's name for it: RsClActiveBrightText
+#  Programmer's name for it: RsClActiveBrightText
 #: JvResources.pas:1814
 msgid "Active bright text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveButtonText
-#. Programmer's name for it: RsClActiveButtonText
+#  Programmer's name for it: RsClActiveButtonText
 #: JvResources.pas:1815
 msgid "Active button text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveHighlightedText
-#. Programmer's name for it: RsClActiveHighlightedText
+#  Programmer's name for it: RsClActiveHighlightedText
 #: JvResources.pas:1816
 msgid "Active selection text"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveHighlight
-#. Programmer's name for it: RsClActiveHighlight
+#  Programmer's name for it: RsClActiveHighlight
 #: JvResources.pas:1817
 msgid "Active selection background"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveBackground
-#. Programmer's name for it: RsClActiveBackground
+#  Programmer's name for it: RsClActiveBackground
 #: JvResources.pas:1818
 msgid "Active window background"
 msgstr ""
@@ -7348,7 +7348,7 @@ msgid "Active edit background"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveLight
-#. Programmer's name for it: RsClActiveLight
+#  Programmer's name for it: RsClActiveLight
 #: JvResources.pas:1820
 msgid "Active light 3D elements"
 msgstr ""
@@ -7360,25 +7360,25 @@ msgid "Active medium light 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveButton
-#. Programmer's name for it: RsClActiveButton
+#  Programmer's name for it: RsClActiveButton
 #: JvResources.pas:1822
 msgid "Active button face"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveMid
-#. Programmer's name for it: RsClActiveMid
+#  Programmer's name for it: RsClActiveMid
 #: JvResources.pas:1823
 msgid "Active light shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveShadow
-#. Programmer's name for it: RsClActiveShadow
+#  Programmer's name for it: RsClActiveShadow
 #: JvResources.pas:1824
 msgid "Active shadow 3D elements"
 msgstr ""
 
 #  Programmer's name for it: RsClActiveDark
-#. Programmer's name for it: RsClActiveDark
+#  Programmer's name for it: RsClActiveDark
 #: JvResources.pas:1825
 msgid "Active dark shadow 3D elements"
 msgstr ""
@@ -7896,7 +7896,7 @@ msgstr ""
 #: JvSpellerForm.dfm:107
 #: JvSpellerForm.xfm:108
 msgid "Skip all, update and finish"
-msgstr ""
+msgstr "Alles überspringen, aktualisieren und beenden"
 
 #  JvSpellerForm..ButtonPanel..BtnSkipAll..Caption
 #  JvSpellerForm..ButtonPanel..BtnSkipAll..Caption
@@ -7919,7 +7919,7 @@ msgstr ""
 #  Programmer's name for it: EUIB_CANTLOADLIB
 #: JvUIBConst.pas:85
 msgid "Can't load library: %s."
-msgstr ""
+msgstr "Fehler beim Laden der Bibliothek: %s"
 
 #  Programmer's name for it: EUIB_DBHANDLEALLREADYSET
 #: JvUIBConst.pas:86
@@ -7954,25 +7954,25 @@ msgstr ""
 #  Programmer's name for it: EUIB_UNEXPECTEDERROR
 #: JvUIBConst.pas:91
 msgid "Unexpected error."
-msgstr ""
+msgstr "Unerwarteter Fehler."
 
 #  Programmer's name for it: EUIB_FIELDNUMNOTFOUND
 #  Programmer's name for it: EUIB_FIELDNUMNOTFOUND
 #: JvUIBConst.pas:92
 msgid "Field num: %d not found."
-msgstr ""
+msgstr "Feldnummer %d wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_FIELDSTRNOTFOUND
 #  Programmer's name for it: EUIB_FIELDSTRNOTFOUND
 #: JvUIBConst.pas:93
 msgid "Field \"%s\" not found."
-msgstr ""
+msgstr "Feld \"%s\" wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_PARAMSTRNOTFOUND
 #  Programmer's name for it: EUIB_PARAMSTRNOTFOUND
 #: JvUIBConst.pas:94
 msgid "Parameter \"%s\" not found."
-msgstr ""
+msgstr "Parameter \"%s\" wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_BLOBFIELDNOTFOUND
 #  Programmer's name for it: EUIB_BLOBFIELDNOTFOUND
@@ -7990,7 +7990,7 @@ msgstr ""
 #  Programmer's name for it: EUIB_INDEXERROR
 #: JvUIBConst.pas:97
 msgid "Index out of bound (%d)"
-msgstr ""
+msgstr "Index außerhalb des Bereichs (%d)"
 
 #  Programmer's name for it: EUIB_SIZENAME
 #  Programmer's name for it: EUIB_SIZENAME
@@ -8056,7 +8056,7 @@ msgstr "Die Übertragung muss explizit geschlossen werden."
 #: JvUIBConst.pas:281
 #: JvUIBConst.pas:325
 msgid "Generator %s not found."
-msgstr ""
+msgstr "Generator %s wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_NOFIELD
 #. Programmer's name for it: EUIB_NOFIELD
@@ -8084,7 +8084,7 @@ msgstr "Feld nicht gefunden."
 #: JvUIBConst.pas:283
 #: JvUIBConst.pas:327
 msgid "Table \"%s\" not found."
-msgstr ""
+msgstr "Tabelle \"%s\" wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
 #  Programmer's name for it: EUIB_DOMAINSTRNOTFOUND
@@ -8098,7 +8098,7 @@ msgstr ""
 #: JvUIBConst.pas:284
 #: JvUIBConst.pas:328
 msgid "Domain %s not found."
-msgstr ""
+msgstr "Domäne %s wurde nicht gefunden."
 
 #  Programmer's name for it: EUIB_PROCSTRNOTFOUND
 #  Programmer's name for it: EUIB_PROCSTRNOTFOUND
