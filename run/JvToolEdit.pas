@@ -30,7 +30,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I crossplatform.inc}
 
 unit JvToolEdit;
 
@@ -43,7 +42,7 @@ uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$IFDEF VisualCLX}
-  Qt, QComboEdits, JvQExComboEdits, Types, QWindows,
+  Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
   JvSpeedButton, JvTypes, JvExMask, JvExForms;
 
@@ -153,7 +152,6 @@ type
     FReadOnly: Boolean;
     FDirectInput: Boolean;
     FAlwaysEnable: Boolean;
-    FAlignment: TAlignment;
     FPopupAlign: TPopupAlign;
     FGroupIndex: Integer; // RDB
     FDisabledColor: TColor; // RDB
@@ -169,14 +167,18 @@ type
     { We hide the button by setting its width to 0, thus we have to store the
       width the button should have when shown again in FSavedButtonWidth: }
     FSavedButtonWidth: Integer;
+    {$IFDEF VCL}
+    FAlignment: TAlignment;
+    procedure SetAlignment(Value: TAlignment);
+    function GetFlat: Boolean;
+    procedure SetFlat(const Value: Boolean);
+    procedure ReadCtl3D(Reader: TReader);
+    {$ENDIF VCL}
     function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
-    {$IFDEF VCL}
-    function GetFlat: Boolean;
-    {$ENDIF VCL}
     function GetGlyph: TBitmap;
     function GetGlyphKind: TGlyphKind;
     function GetMinHeight: Integer;
@@ -188,17 +190,10 @@ type
     function IsCustomGlyph: Boolean;
     procedure EditButtonClick(Sender: TObject);
     procedure ReadGlyphKind(Reader: TReader);
-    {$IFDEF VCL}
-    procedure ReadCtl3D(Reader: TReader);
-    {$ENDIF VCL}
     procedure RecreateGlyph;
-    procedure SetAlignment(Value: TAlignment);
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
     procedure SetButtonWidth(Value: Integer);
-    {$IFDEF VCL}
-    procedure SetFlat(const Value: Boolean);
-    {$ENDIF VCL}
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
     procedure SetImageIndex(const Value: TImageIndex);
@@ -301,8 +296,12 @@ type
     procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetShowCaret; // Polaris
     procedure UpdatePopupVisible;
-
+    {$IFDEF VCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property Alignment;
+    {$ENDIF VisualCLX}
     property AlwaysEnable: Boolean read FAlwaysEnable write FAlwaysEnable default False;
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
@@ -1865,6 +1864,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csCaptureMouse];
   //  AutoSize := False;   // Polaris
+  Height := 21;
   FDirectInput := True;
   FClickKey := scAltDown;
   FPopupAlign := epaRight;
@@ -1876,22 +1876,23 @@ begin
   FBtnControl.Visible := True;
   {$IFDEF VCL}
   FBtnControl.Parent := Self;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FBtnControl.Parent := Self.ClientArea;
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   FBtnControl.Align := alCustom;
   {$ELSE}
   FBtnControl.Align := alRight;
   {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FBtnControl.Parent := Self.ClientArea;
+  FBtnControl.Left := Self.ClientArea.Width - DefEditBtnWidth;
+  Anchors := [akRight, akTop, akBottom];
+  {$ENDIF VisualCLX}
   FButton := TJvEditButton.Create(Self);
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
   FButton.Parent := FBtnControl;
   FButton.Align := alClient;
   TJvEditButton(FButton).OnClick := EditButtonClick;
-  Height := 21;
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
@@ -2354,7 +2355,7 @@ begin
     inherited Paint
   else
   begin
-    if not PaintEdit(Self, Text, FAlignment, PopupVisible,
+    if not PaintEdit(Self, Text, Alignment, PopupVisible,
       DisabledTextColor, Focused and not PopupVisible, {Flat:}False, Canvas) then
       inherited Paint;
   end;
@@ -2576,19 +2577,16 @@ begin
     inherited SelectAll;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomComboEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Invalidate;
-    {$ENDIF VisualCLX}
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
@@ -2936,7 +2934,6 @@ begin
   LTop := 0;
   LLeft := 0;
   LRight := 0;
-
   {$IFDEF JVCLThemesEnabled}
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
@@ -2954,8 +2951,6 @@ begin
       end;
     end;
   end;
-  {$ENDIF JVCLThemesEnabled}
-  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
   if BorderStyle = bsSingle then
@@ -2974,19 +2969,22 @@ begin
        {$IFDEF VisualCLX}
        not Flat then
        {$ENDIF VisualCLX}
-      LRight := 3
+        LTop := 2;
   end;
 
   GetInternalMargins(LLeft, LRight);
 
-  SetRect(Loc, LLeft, LTop, Width - LRight, ClientHeight - 1);
   {$IFDEF VCL}
+  SetRect(Loc, LLeft, LTop, Width - LRight-3, ClientHeight - 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
   // (rb) EM_SETMARGINS necessary?
   //SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+  SetRect(Loc, LLeft, LTop, Width - LRight - LTop-2, Height - 2 * LTop);
   SetEditorRect(@Loc);
+  FBtnControl.Left := Loc.Right + 2;
+  FBtnControl.Height := Height - 2 * LTop;
   {$ENDIF VisualCLX}
 end;
 
