@@ -269,8 +269,49 @@ a Command prompt window, change to the directory where the batch files
 are and launch the one appropriate for your version of C++ Builder. By
 default, it assumes that C++ Builder is installed in c:\program
 files\cbuilder?, where ? is the version number (5 or 6). If it is not
-located there, you must indicate the path to it as the first argument to
-the batch file.<br>
+located there, you must indicate the path to it as the first argument
+to the batch file.<br>
+Here is the output of the help message for MakeBCB6.bat:<br>
+</p>
+<div style="margin-left: 160px;"><span style="font-family: monospace;">MakeBCB6.bat
+- Builds the JVCL for BCB6</span><br style="font-family: monospace;">
+</div>
+<div style="margin-left: 160px;"><span style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">Usage:&nbsp;&nbsp;&nbsp; MakeBCB6
+[BCBDirectory] [LIBDirectory] [BPLDirectory]</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+BCBDirectory&nbsp;&nbsp; The place where BCB6 is installed.</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to "C:\Program Files\CBuilder6"</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+LIBDirectory&nbsp;&nbsp; The place where to put the BPI and LIB files.</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to $(BCB)\Projects\Lib</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+You MUST ensure that this directory is in the</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PATH environment variable</span><br style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+BPLDirectory&nbsp;&nbsp; The place where to put the BPL and TDS files.</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Defaults to $(BCB)\Projects\Bpl</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;"></span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">Any additional argument will be
+ignored, BCB MUST be closed.</span><br style="font-family: monospace;">
+</div>
+<p><br>
 </p>
 <p>After all packages are compiled, open the <b>Project Manager</b>
 (Ctrl+Alt+F11) and right-click each of the packages ending with C?D
