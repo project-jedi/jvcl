@@ -353,14 +353,12 @@ uses
   JclRegistry, JclSysUtils,
   JvResources, JvDynControlEngineIntf;
 
-{$IFNDEF DELPHI6_UP}
-type
-  PBoolean = ^boolean;
-{$ENDIF DELPHI6_UP}
-
 const
   cDSAStateValueName      = 'DSA_State';  // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
+
+type
+  PBoolean = ^Boolean;
 
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts

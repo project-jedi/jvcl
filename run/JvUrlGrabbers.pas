@@ -32,10 +32,12 @@ unit JvUrlGrabbers;
 
 interface
 
-uses Windows, Contnrs, Classes, JvTypes, SysUtils;
+uses
+  Windows, Contnrs, Classes, SysUtils,
+  JvTypes;
 
 type
-  // early declarations
+  // forward declarations
   TJvUrlGrabberList = class;
   TJvUrlGrabberThread = class;
   TJvUrlGrabberDefaultProperties = class;
@@ -54,74 +56,62 @@ type
   // in the property editor for each object is the same, DefaultProperties
   // Hence, the need for an editor for TJvUrlGrabberDefPropEdTrick that
   // displays a meaningful name instead
-  TJvUrlGrabberDefPropEdTrick = class (TPersistent)
+  TJvUrlGrabberDefPropEdTrick = class(TPersistent)
   private
     FDefaultProperties: TJvUrlGrabberDefaultProperties;
   public
-    constructor Create(GrabberDefaults : TJvUrlGrabberDefaultProperties);
+    constructor Create(GrabberDefaults: TJvUrlGrabberDefaultProperties);
   published
-    property DefaultProperties : TJvUrlGrabberDefaultProperties read FDefaultProperties;
+    property DefaultProperties: TJvUrlGrabberDefaultProperties read FDefaultProperties;
   end;
 
   // A container for Default properties, and a list of such
   // containers
-  TJvUrlGrabberDefaultProperties = class (TPersistent)
+  TJvUrlGrabberDefaultProperties = class(TPersistent)
   private
     FEditorTrick: TJvUrlGrabberDefPropEdTrick;
   protected
     // agent to impersonate
     FAgent: string;
-
     // user information
     FUserName: string;
     FPassword: string;
-
     // filename to use
     FFileName: TFileName;
-
     // output mode (stream or file)
     FOutputMode: TJvOutputMode;
-
   public
-    property EditorTrick : TJvUrlGrabberDefPropEdTrick read FEditorTrick;
-
     constructor Create;
     destructor Destroy; override;
-
+    property EditorTrick: TJvUrlGrabberDefPropEdTrick read FEditorTrick;
   published
-    // the user name and password to use for authentication 
+    // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
-
-    // the name of the file to write to if OutputMode is omFile 
+    // the name of the file to write to if OutputMode is omFile
     property FileName: TFileName read FFileName write FFileName;
-
     // The output mode
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
-
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
   end;
-  
-  TJvUrlGrabberDefaultPropertiesClass = class of TJvUrlGrabberDefaultProperties;
-  TJvUrlGrabberDefaultPropertiesList = class (TPersistent)
-  protected
-    FItems : TObjectList;
 
+  TJvUrlGrabberDefaultPropertiesClass = class of TJvUrlGrabberDefaultProperties;
+
+  TJvUrlGrabberDefaultPropertiesList = class(TPersistent)
+  protected
+    FItems: TObjectList;
     function GetCount: Integer;
     function GetItems(Index: Integer): TJvUrlGrabberDefaultProperties;
     procedure SetItems(Index: Integer; const Value: TJvUrlGrabberDefaultProperties);
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Clear;
-    procedure Add(Item : TJvUrlGrabberDefaultProperties);
-
-    property Count : Integer read GetCount;
-    property Items[Index : Integer] : TJvUrlGrabberDefaultProperties read GetItems write SetItems;
+    procedure Add(Item: TJvUrlGrabberDefaultProperties);
+    property Count: Integer read GetCount;
+    property Items[Index: Integer]: TJvUrlGrabberDefaultProperties read GetItems write SetItems;
   end;
-
 
   // the status of a grabber
   TJvGrabberStatus = (gsStopped, gsConnecting, gsGrabbing);
@@ -131,70 +121,59 @@ type
   // Do not instanciate a TJvUrlGrabber directly, simply use one
   // of its descendants. This family of classes is used by
   // TJvUrlListGrabber to allow downloading a list of URLs
-  TJvUrlGrabber = class (TObject)
+
+  TJvUrlGrabber = class(TObject)
   protected
     // the thread that will grab for us
-    FUrlGrabberThread : TJvUrlGrabberThread;
-
+    FUrlGrabberThread: TJvUrlGrabberThread;
     // events
-    FOnDoneFile    : TJvDoneFileEvent;      // file is done
-    FOnDoneStream  : TJvDoneStreamEvent;    // stream is done
-    FOnError       : TJvErrorEvent;         // error occured
-    FOnProgress    : TJvFTPProgressEvent;   // download progressed a bit
-    FOnClosed      : TNotifyEvent;          // connection is closed
-    FOnReceiving   : TNotifyEvent;          // beginning to receive
-    FOnReceived    : TNotifyEvent;          // end of reception
-    FOnConnecting  : TNotifyEvent;          // beginning of connection
-    FOnResolving   : TNotifyEvent;          // beginning of resolving URL
-    FOnRedirect    : TNotifyEvent;          // redirection happened
-    FOnConnected   : TNotifyEvent;          // now connected to host
-    FOnStateChange : TNotifyEvent;          // state of connection changed
-    FOnResolved    : TNotifyEvent;          // name has been resolved
-    FOnClosing     : TNotifyEvent;          // beginning of close of connection
-    FOnRequest     : TNotifyEvent;          // sending a request
-    FOnSent        : TNotifyEvent;          // data sent
-    FOnSending     : TNotifyEvent;          // beginning to send data
-
+    FOnDoneFile: TJvDoneFileEvent; // file is done
+    FOnDoneStream: TJvDoneStreamEvent; // stream is done
+    FOnError: TJvErrorEvent; // error occured
+    FOnProgress: TJvFTPProgressEvent; // download progressed a bit
+    FOnClosed: TNotifyEvent; // connection is closed
+    FOnReceiving: TNotifyEvent; // beginning to receive
+    FOnReceived: TNotifyEvent; // end of reception
+    FOnConnecting: TNotifyEvent; // beginning of connection
+    FOnResolving: TNotifyEvent; // beginning of resolving URL
+    FOnRedirect: TNotifyEvent; // redirection happened
+    FOnConnected: TNotifyEvent; // now connected to host
+    FOnStateChange: TNotifyEvent; // state of connection changed
+    FOnResolved: TNotifyEvent; // name has been resolved
+    FOnClosing: TNotifyEvent; // beginning of close of connection
+    FOnRequest: TNotifyEvent; // sending a request
+    FOnSent: TNotifyEvent; // data sent
+    FOnSending: TNotifyEvent; // beginning to send data
     // current status of the grabber
     FStatus: TJvGrabberStatus;
-
     // URL to grab
     FUrl: string;
-
     // the stream to grab into.
     FStream: TMemoryStream;
-
-    FTotalBytes : Int64;
-    FBytesRead : Int64;
-
+    FTotalBytes: Int64;
+    FBytesRead: Int64;
     // agent to impersonate
     FAgent: string;
-
     // user information
     FUserName: string;
     FPassword: string;
-
     // filename to use
     FFileName: TFileName;
-
     // output mode (stream or file)
     FOutputMode: TJvOutputMode;
-    procedure DoError(ErrorMsg : string);
-    procedure DoProgress(Status : DWORD);
+    procedure DoError(ErrorMsg: string);
+    procedure DoProgress(Status: DWORD);
     procedure DoEnded;
     procedure DoClosed;
-
-    function GetGrabberThreadClass : TJvUrlGrabberThreadClass; virtual; abstract;
+    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; virtual; abstract;
   public
-    constructor Create(AUrl : string; DefaultProperties : TJvUrlGrabberDefaultProperties); virtual;
-    destructor Destroy; override; 
-
+    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); virtual;
+    destructor Destroy; override;
     // this function must return True if the given URL can be grabbed
     // by the class being asked. It returns False otherwise
     // It MUST be overriden in the derived classes but cannot be abstract
     // because of BCB compatibility issues
-    class function CanGrab(const Url : string) : Boolean; virtual;
-
+    class function CanGrab(const Url: string): Boolean; virtual;
     // This function returns the class of a property holder to
     // be displayed in the object inspector. This property holder
     // will be used by TJvUrlListGrabber to let the user specify default
@@ -202,154 +181,134 @@ type
     // handle a specific URL.
     // It MUST be overriden in the derived classes but cannot be abstract
     // because of BCB compatibility issues
-    class function GetDefaultPropertiesClass : TJvUrlGrabberDefaultPropertiesClass; virtual;
-
+    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; virtual;
     // Asks to Start to grab the URL
     procedure Start; virtual;
-
     // Asks to Stop to grab the URL
     procedure Stop; virtual;
-
     // The status of the grab
-    property Status : TJvGrabberStatus read FStatus;
-
+    property Status: TJvGrabberStatus read FStatus;
     // the Url being grabbed
-    property Url : string read FUrl;
-
-    // the user name and password to use for authentication 
+    property Url: string read FUrl;
+    // the user name and password to use for authentication
     property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
-
-    // the name of the file to write to if OutputMode is omFile 
+    // the name of the file to write to if OutputMode is omFile
     property FileName: TFileName read FFileName write FFileName;
-
     // The output mode
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
-
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
-
     // Events
-    property OnDoneFile           : TJvDoneFileEvent    read FOnDoneFile    write FOnDoneFile;
-    property OnDoneStream         : TJvDoneStreamEvent  read FOnDoneStream  write FOnDoneStream;
-    property OnError              : TJvErrorEvent       read FOnError       write FOnError;
-    property OnProgress           : TJvFTPProgressEvent read FOnProgress    write FOnProgress;
-    property OnResolvingName      : TNotifyEvent        read FOnResolving   write FOnResolving;
-    property OnNameResolved       : TNotifyEvent        read FOnResolved    write FOnResolved;
-    property OnConnectingToServer : TNotifyEvent        read FOnConnecting  write FOnConnecting;
-    property OnConnectedToServer  : TNotifyEvent        read FOnConnected   write FOnConnected;
-    property OnSendingRequest     : TNotifyEvent        read FOnSending     write FOnSending;
-    property OnRequestSent        : TNotifyEvent        read FOnSent        write FOnSent;
-    property OnRequestComplete    : TNotifyEvent        read FOnRequest     write FOnRequest;
-    property OnReceivingResponse  : TNotifyEvent        read FOnReceiving   write FOnReceiving;
-    property OnResponseReceived   : TNotifyEvent        read FOnReceived    write FOnReceived;
-    property OnClosingConnection  : TNotifyEvent        read FOnClosing     write FOnClosing;
-    property OnConnectionClosed   : TNotifyEvent        read FOnClosed      write FOnClosed;
-    property OnRedirect           : TNotifyEvent        read FOnRedirect    write FOnRedirect;
-    property OnStateChange        : TNotifyEvent        read FOnStateChange write FOnStateChange;
+    property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
+    property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
+    property OnError: TJvErrorEvent read FOnError write FOnError;
+    property OnProgress: TJvFTPProgressEvent read FOnProgress write FOnProgress;
+    property OnResolvingName: TNotifyEvent read FOnResolving write FOnResolving;
+    property OnNameResolved: TNotifyEvent read FOnResolved write FOnResolved;
+    property OnConnectingToServer: TNotifyEvent read FOnConnecting write FOnConnecting;
+    property OnConnectedToServer: TNotifyEvent read FOnConnected write FOnConnected;
+    property OnSendingRequest: TNotifyEvent read FOnSending write FOnSending;
+    property OnRequestSent: TNotifyEvent read FOnSent write FOnSent;
+    property OnRequestComplete: TNotifyEvent read FOnRequest write FOnRequest;
+    property OnReceivingResponse: TNotifyEvent read FOnReceiving write FOnReceiving;
+    property OnResponseReceived: TNotifyEvent read FOnReceived write FOnReceived;
+    property OnClosingConnection: TNotifyEvent read FOnClosing write FOnClosing;
+    property OnConnectionClosed: TNotifyEvent read FOnClosed write FOnClosed;
+    property OnRedirect: TNotifyEvent read FOnRedirect write FOnRedirect;
+    property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
   end;
 
   // A grabber for FTP URLs
   TJvFtpDownloadMode = (hmBinary, hmAscii);
 
-  TJvFtpUrlGrabberDefaultProperties = class (TJvUrlGrabberDefaultProperties)
+  TJvFtpUrlGrabberDefaultProperties = class(TJvUrlGrabberDefaultProperties)
   protected
     FPassive: Boolean;
     FMode: TJvFtpDownloadMode;
   published
-    property Passive : Boolean read FPassive write FPassive;
-    property Mode : TJvFtpDownloadMode read FMode write FMode;
+    property Passive: Boolean read FPassive write FPassive;
+    property Mode: TJvFtpDownloadMode read FMode write FMode;
   end;
-  
-  TJvFtpUrlGrabber = class (TJvUrlGrabber)
+
+  TJvFtpUrlGrabber = class(TJvUrlGrabber)
   protected
-    FPassiveFTP : Boolean;
-    FMode : TJvFtpDownloadMode;
-    FSize : Int64;
-
-    function GetGrabberThreadClass : TJvUrlGrabberThreadClass; override;
+    FPassiveFTP: Boolean;
+    FMode: TJvFtpDownloadMode;
+    FSize: Int64;
+    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; override;
   public
-    constructor Create(AUrl : string; DefaultProperties : TJvUrlGrabberDefaultProperties); override;
-
-    class function CanGrab(const Url : string) : Boolean; override;
-    class function GetDefaultPropertiesClass : TJvUrlGrabberDefaultPropertiesClass; override;
-
-    property Size : Int64 read FSize;
+    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); override;
+    class function CanGrab(const Url: string): Boolean; override;
+    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; override;
+    property Size: Int64 read FSize;
   published
-    property Passive : Boolean read FPassiveFTP write FPassiveFTP;
-    property Mode : TJvFtpDownloadMode read FMode write FMode;
+    property Passive: Boolean read FPassiveFTP write FPassiveFTP;
+    property Mode: TJvFtpDownloadMode read FMode write FMode;
   end;
 
   // A grabber for HTTP URLs
-  TJvHttpUrlGrabberDefaultProperties = class (TJvUrlGrabberDefaultProperties)
-  protected
-  published
-  end;
+  TJvHttpUrlGrabberDefaultProperties = class(TJvUrlGrabberDefaultProperties);
 
-  TJvHttpUrlGrabber = class (TJvUrlGrabber)
+  TJvHttpUrlGrabber = class(TJvUrlGrabber)
   protected
-    function GetGrabberThreadClass : TJvUrlGrabberThreadClass; override;
+    function GetGrabberThreadClass: TJvUrlGrabberThreadClass; override;
   public
-    constructor Create(AUrl : string; DefaultProperties : TJvUrlGrabberDefaultProperties); override;
-
-    class function CanGrab(const Url : string) : Boolean; override;
-    class function GetDefaultPropertiesClass : TJvUrlGrabberDefaultPropertiesClass; override;
+    constructor Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties); override;
+    class function CanGrab(const Url: string): Boolean; override;
+    class function GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass; override;
   end;
 
   // A thread that will grab the given URL in the background
   // this is the ancestor of all the grabber threads, and there
   // should be as many descendants as there are TJvUrlGrabber descendants.
-  TJvUrlGrabberThread = class (TThread)
+  TJvUrlGrabberThread = class(TThread)
   protected
-    FErrorText : string; // the error string received from the server
-    FGrabber : TJvUrlGrabber;
-    FStatus : DWORD;
-
+    FErrorText: string; // the error string received from the server
+    FGrabber: TJvUrlGrabber;
+    FStatus: DWORD;
     procedure Error;
     procedure Progress;
     procedure Ended;
-    procedure ParseUrl(Value: string; Protocol : string; var Host : string; var FileName : string);
+    procedure ParseUrl(Value: string; Protocol: string; var Host: string; var FileName: string);
   public
-    constructor Create(Grabber : TJvUrlGrabber); virtual;
+    constructor Create(Grabber: TJvUrlGrabber); virtual;
   end;
 
   // a grabbing thread for HTTP URLs
-  TJvHttpUrlGrabberThread = class (TJvUrlGrabberThread)
+  TJvHttpUrlGrabberThread = class(TJvUrlGrabberThread)
   protected
-    FReferer : string;
-    FContinue : Boolean;
-    
+    FReferer: string;
+    FContinue: Boolean;
     function GetGrabber: TJvHttpUrlGrabber;
     procedure Execute; override;
   public
-    constructor Create(Grabber : TJvUrlGrabber); override;
-    property Grabber : TJvHttpUrlGrabber read GetGrabber;
+    constructor Create(Grabber: TJvUrlGrabber); override;
+    property Grabber: TJvHttpUrlGrabber read GetGrabber;
   end;
 
   // a grabbing thread for FTP URLs
-  TJvFtpUrlGrabberThread = class (TJvUrlGrabberThread)
+  TJvFtpUrlGrabberThread = class(TJvUrlGrabberThread)
   protected
     function GetGrabber: TJvFtpUrlGrabber;
     procedure Closed;
     procedure Execute; override;
   public
-    property Grabber : TJvFtpUrlGrabber read GetGrabber;
+    property Grabber: TJvFtpUrlGrabber read GetGrabber;
   end;
 
   // A list of instances of TJvUrlGrabber descendants
   // This is used internally by TJvUrlListGrabber to keep track of
   // the objects in charge of every URLs it has to grab
-  TJvUrlGrabberList = class (TObjectList)
+
+  TJvUrlGrabberList = class(TObjectList)
   protected
     function GetItem(Index: Integer): TJvUrlGrabber;
     procedure SetItem(Index: Integer; const AGrabber: TJvUrlGrabber);
   public
-    function Add(AGrabber : TJvUrlGrabber) : integer;
-    procedure Insert(Index : integer; AGrabber : TJvUrlGrabber);
-
-    // the items of the list
-    property Items [Index : Integer] : TJvUrlGrabber read GetItem write SetItem;  default;
-
+    function Add(AGrabber: TJvUrlGrabber): integer;
+    procedure Insert(Index: integer; AGrabber: TJvUrlGrabber);
+    property Items[Index: Integer]: TJvUrlGrabber read GetItem write SetItem; default;
   end;
 
   TJvUrlGrabberClass = class of TJvUrlGrabber;
@@ -359,48 +318,43 @@ type
   // function that returns all the registered classes.
   // This list is then used by TJvUrlListGrabber to determine which
   // class is best suited for handling a given URL
-  TJvUrlGrabberClassList = class (TClassList)
+
+  TJvUrlGrabberClassList = class(TClassList)
   protected
     function GetItem(Index: Integer): TJvUrlGrabberClass;
     procedure SetItem(Index: Integer; const AGrabberClass: TJvUrlGrabberClass);
   public
-    procedure Populate(DefaultPropertiesList : TJvUrlGrabberDefaultPropertiesList);
-
-    function Add(AGrabberClass : TJvUrlGrabberClass) : integer;
-    procedure Insert(Index : integer; AGrabberClass : TJvUrlGrabberClass);
-
-    function CreateFor(Url : string; DefaultPropertiesCollection : TJvUrlGrabberDefaultPropertiesList) : TJvUrlGrabber;
-
-    // the items of the list
-    property Items [Index : Integer] : TJvUrlGrabberClass read GetItem write SetItem;  default;
-
+    procedure Populate(DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
+    function Add(AGrabberClass: TJvUrlGrabberClass): integer;
+    procedure Insert(Index: integer; AGrabberClass: TJvUrlGrabberClass);
+    function CreateFor(Url: string; DefaultPropertiesCollection: TJvUrlGrabberDefaultPropertiesList): TJvUrlGrabber;
+    property Items[Index: Integer]: TJvUrlGrabberClass read GetItem write SetItem; default;
   end;
 
-function JvUrlGrabberClassList : TJvUrlGrabberClassList;
+function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 
 implementation
 
-uses Wininet;
+uses
+  WinInet;
 
 {$IFNDEF COMPILER6_UP}
-const
-  winetdll = 'wininet.dll';
-
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
-  external winetdll name 'FtpGetFileSize';
-{$ENDIF}
+  external 'wininet.dll' name 'FtpGetFileSize';
+{$ENDIF COMPILER6_UP}
 
 var
   // the global object to contain the list of registered
   // url grabber classes
-  GJvUrlGrabberClassList : TJvUrlGrabberClassList;
+  GJvUrlGrabberClassList: TJvUrlGrabberClassList = nil;
 
-function JvUrlGrabberClassList : TJvUrlGrabberClassList;
+function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 begin
   Result := GJvUrlGrabberClassList;
 end;
 
-// global dowbload callback
+// global download callback
+
 procedure DownloadCallBack(Handle: HInternet; Context: DWord;
   Status: DWord; Info: Pointer; StatLen: DWord); stdcall;
 begin
@@ -411,16 +365,9 @@ begin
   end;
 end;
 
-{ TJvUrlGrabber }
+//=== TJvUrlGrabber ==========================================================
 
-class function TJvUrlGrabber.CanGrab(const Url: string): Boolean;
-begin
-  // useless implementation required for BCB compatibility as
-  // C++ doesn't support abstract virtual class methods
-  Result := False;
-end;
-
-constructor TJvUrlGrabber.Create(AUrl: string; DefaultProperties : TJvUrlGrabberDefaultProperties);
+constructor TJvUrlGrabber.Create(AUrl: string; DefaultProperties: TJvUrlGrabberDefaultProperties);
 begin
   inherited Create;
   FUrl := AUrl;
@@ -436,16 +383,21 @@ end;
 
 destructor TJvUrlGrabber.Destroy;
 begin
-  if FUrlGrabberThread <> nil then
-    FUrlGrabberThread.Free;
-    
-  inherited;
+  FUrlGrabberThread.Free;
+  inherited Destroy;
+end;
+
+class function TJvUrlGrabber.CanGrab(const Url: string): Boolean;
+begin
+  // useless implementation required for BCB compatibility as
+  // C++ doesn't support abstract virtual class methods
+  Result := False;
 end;
 
 procedure TJvUrlGrabber.DoClosed;
 begin
   if Assigned(FOnClosed) then
-    FOnClosed(Self); 
+    FOnClosed(Self);
 end;
 
 procedure TJvUrlGrabber.DoEnded;
@@ -473,7 +425,7 @@ end;
 procedure TJvUrlGrabber.DoProgress(Status: DWORD);
 begin
   if Assigned(FOnProgress) then
-      FOnProgress(self, Status, FUrl);
+    FOnProgress(self, Status, FUrl);
 end;
 
 class function TJvUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
@@ -493,17 +445,17 @@ begin
   FUrlGrabberThread.Terminate;
 end;
 
-{ TJvHttpUrlGrabber }
-
-class function TJvHttpUrlGrabber.CanGrab(const Url: string): Boolean;
-begin
-  Result := LowerCase(Copy(Url, 1, 7)) = 'http://';
-end;
+//=== TJvHttpUrlGrabber ======================================================
 
 constructor TJvHttpUrlGrabber.Create(AUrl: string;
   DefaultProperties: TJvUrlGrabberDefaultProperties);
 begin
-  inherited;
+  inherited Create(AUrl, DefaultProperties);
+end;
+
+class function TJvHttpUrlGrabber.CanGrab(const Url: string): Boolean;
+begin
+  Result := LowerCase(Copy(Url, 1, 7)) = 'http://';
 end;
 
 class function TJvHttpUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
@@ -516,19 +468,19 @@ begin
   Result := TJvHttpUrlGrabberThread;
 end;
 
-{ TJvFtpUrlGrabber }
-
-class function TJvFtpUrlGrabber.CanGrab(const Url: string): Boolean;
-begin
-  Result := LowerCase(Copy(Url, 1, 6)) = 'ftp://';
-end;
+//=== TJvFtpUrlGrabber =======================================================
 
 constructor TJvFtpUrlGrabber.Create(AUrl: string;
   DefaultProperties: TJvUrlGrabberDefaultProperties);
 begin
-  inherited;
+  inherited Create(AUrl, DefaultProperties);
   Passive := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Passive;
   Mode := TJvFtpUrlGrabberDefaultProperties(DefaultProperties).Mode;
+end;
+
+class function TJvFtpUrlGrabber.CanGrab(const Url: string): Boolean;
+begin
+  Result := LowerCase(Copy(Url, 1, 6)) = 'ftp://';
 end;
 
 class function TJvFtpUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
@@ -541,7 +493,7 @@ begin
   Result := TJvFtpUrlGrabberThread;
 end;
 
-{ TJvUrlGrabberList }
+//=== TJvUrlGrabberList ======================================================
 
 function TJvUrlGrabberList.Add(AGrabber: TJvUrlGrabber): integer;
 begin
@@ -553,46 +505,44 @@ begin
   Result := TJvUrlGrabber(inherited Items[Index]);
 end;
 
-procedure TJvUrlGrabberList.Insert(Index: integer;
-  AGrabber: TJvUrlGrabber);
+procedure TJvUrlGrabberList.Insert(Index: Integer; AGrabber: TJvUrlGrabber);
 begin
   inherited Insert(Index, AGrabber);
 end;
 
-procedure TJvUrlGrabberList.setItem(Index: Integer;
-  const AGrabber: TJvUrlGrabber);
+procedure TJvUrlGrabberList.SetItem(Index: Integer; const AGrabber: TJvUrlGrabber);
 begin
   inherited Items[Index] := AGrabber;
 end;
 
-{ TJvUrlGrabberClassList }
+//=== TJvUrlGrabberClassList =================================================
 
 function TJvUrlGrabberClassList.Add(AGrabberClass: TJvUrlGrabberClass): integer;
 begin
   Result := inherited Add(AGrabberClass);
 end;
 
-function TJvUrlGrabberClassList.CreateFor(Url: string; DefaultPropertiesCollection : TJvUrlGrabberDefaultPropertiesList): TJvUrlGrabber;
+function TJvUrlGrabberClassList.CreateFor(Url: string;
+  DefaultPropertiesCollection: TJvUrlGrabberDefaultPropertiesList): TJvUrlGrabber;
 var
-  i : Integer;
+  I: Integer;
 begin
-  i := 0;
+  I := 0;
   Result := nil;
-  while (i < Count) and not Assigned(Result) do
+  while (I < Count) and not Assigned(Result) do
   begin
-    if Items[i].CanGrab(Url) then
-      Result := Items[i].Create(Url, DefaultPropertiesCollection.Items[i]);
-    Inc(i);
+    if Items[I].CanGrab(Url) then
+      Result := Items[I].Create(Url, DefaultPropertiesCollection.Items[I]);
+    Inc(I);
   end;
 end;
 
-function TJvUrlGrabberClassList.GetItem(
-  Index: Integer): TJvUrlGrabberClass;
+function TJvUrlGrabberClassList.GetItem(Index: Integer): TJvUrlGrabberClass;
 begin
   Result := TJvUrlGrabberClass(inherited Items[Index]);
 end;
 
-procedure TJvUrlGrabberClassList.Insert(Index: integer;
+procedure TJvUrlGrabberClassList.Insert(Index: Integer;
   AGrabberClass: TJvUrlGrabberClass);
 begin
   inherited Insert(Index, AGrabberClass);
@@ -601,13 +551,11 @@ end;
 procedure TJvUrlGrabberClassList.Populate(
   DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
 var
-  i : Integer;
+  I: Integer;
 begin
   DefaultPropertiesList.Clear;
-  for i := 0 to Count - 1 do
-  begin
-    DefaultPropertiesList.Add(Items[i].GetDefaultPropertiesClass.Create);
-  end;
+  for I := 0 to Count - 1 do
+    DefaultPropertiesList.Add(Items[I].GetDefaultPropertiesClass.Create);
 end;
 
 procedure TJvUrlGrabberClassList.SetItem(Index: Integer;
@@ -616,7 +564,7 @@ begin
   inherited Items[Index] := AGrabberClass;
 end;
 
-{ TJvUrlGrabberThread }
+//=== TJvUrlGrabberThread ====================================================
 
 constructor TJvUrlGrabberThread.Create(Grabber: TJvUrlGrabber);
 begin
@@ -639,11 +587,12 @@ begin
   FGrabber.DoProgress(FStatus);
 end;
 
-procedure TJvUrlGrabberThread.ParseUrl(Value: string; Protocol : string; var Host : string; var FileName : string);
+procedure TJvUrlGrabberThread.ParseUrl(Value: string; Protocol: string;
+  var Host: string; var FileName: string);
 begin
   Host := '';
   FileName := '';
-  if Pos(UpperCase(protocol), UpperCase(Value)) <> 0 then
+  if Pos(UpperCase(Protocol), UpperCase(Value)) <> 0 then
     Value := Copy(Value, 8, Length(Value));
   if Pos('/', Value) <> 0 then
   begin
@@ -654,8 +603,7 @@ begin
     Host := Value;
 end;
 
-
-{ TJvFtpUrlGrabberThread }
+//=== TJvFtpUrlGrabberThread =================================================
 
 procedure TJvFtpUrlGrabberThread.Closed;
 begin
@@ -664,7 +612,7 @@ end;
 
 procedure TJvFtpUrlGrabberThread.Execute;
 const
-  cPassive:array [boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
+  cPassive: array [Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
@@ -674,7 +622,6 @@ var
   dwFileSizeHigh: DWORD;
   Buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
-
 begin
   // (rom) secure thread against exceptions
   Grabber.FStream := nil;
@@ -686,7 +633,7 @@ begin
       FErrorText := '';
       ParseUrl(Grabber.FUrl, 'ftp://', HostName, FileName);
 
-      //Connect to the web
+      // Connect to the web
       hSession := InternetOpen(PChar(Grabber.FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
@@ -695,7 +642,7 @@ begin
         Exit;
       end;
 
-      //Connect to the hostname
+      // Connect to the hostname
       if Grabber.FUserName = '' then
         UserName := nil
       else
@@ -721,7 +668,7 @@ begin
 
       InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
 
-      //Request the file
+      // Request the file
       if Grabber.FMode = hmBinary then
         hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
           INTERNET_FLAG_DONT_CACHE, 0)
@@ -741,7 +688,7 @@ begin
 
       TotalBytes := 0;
       BytesRead := 1;
-      while (BytesRead <> 0) and (not Terminated) do // acp
+      while (BytesRead <> 0) and not Terminated do // acp
       begin
         if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
           BytesRead := 0
@@ -787,12 +734,11 @@ begin
   Result := TJvFtpUrlGrabber(FGrabber);
 end;
 
-{ TJvHttpUrlGrabberThread }
+//=== TJvHttpUrlGrabberThread ================================================
 
-constructor TJvHttpUrlGrabberThread.Create(Grabber : TJvUrlGrabber);
+constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvUrlGrabber);
 begin
-  inherited;
-
+  inherited Create(Grabber);
   FContinue := True;
 end;
 
@@ -828,7 +774,7 @@ begin
         Exit;
       end;
 
-      //Connect to the hostname
+      // Connect to the hostname
       if Grabber.FUsername = '' then
         Username := nil
       else
@@ -906,7 +852,8 @@ begin
 //        FCriticalSection.Enter;
         while InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) and not Terminated do
         begin
-          if dwBytesRead = 0 then Break;
+          if dwBytesRead = 0 then
+            Break;
 //          Inc(dwTotalBytes,dwBytesRead);
           Grabber.FStream.Write(Buf, dwBytesRead);
           Synchronize(Progress);
@@ -918,12 +865,12 @@ begin
     except
     end;
   finally
-    //Free all stuff's
+    // Free all stuff's
     if Buffer <> nil then
-    FreeMem(Buffer);
+      FreeMem(Buffer);
     Grabber.FStream.Free;
 
-    //Release all handles
+    // Release all handles
     if hDownload <> nil then
       InternetCloseHandle(hDownload);
     if hHostConnection <> nil then
@@ -938,18 +885,7 @@ begin
   Result := TJvHttpUrlGrabber(FGrabber);
 end;
 
-{ TJvUrlGrabberDefaultPropertiesCollection }
-
-procedure TJvUrlGrabberDefaultPropertiesList.Add(
-  Item: TJvUrlGrabberDefaultProperties);
-begin
-  FItems.Add(Item);
-end;
-
-procedure TJvUrlGrabberDefaultPropertiesList.Clear;
-begin
-  FItems.Clear;
-end;
+//=== TJvUrlGrabberDefaultPropertiesCollection ===============================
 
 constructor TJvUrlGrabberDefaultPropertiesList.Create;
 begin
@@ -961,7 +897,17 @@ end;
 destructor TJvUrlGrabberDefaultPropertiesList.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvUrlGrabberDefaultPropertiesList.Add(Item: TJvUrlGrabberDefaultProperties);
+begin
+  FItems.Add(Item);
+end;
+
+procedure TJvUrlGrabberDefaultPropertiesList.Clear;
+begin
+  FItems.Clear;
 end;
 
 function TJvUrlGrabberDefaultPropertiesList.GetCount: Integer;
@@ -981,7 +927,7 @@ begin
   FItems[Index] := Value;
 end;
 
-{ TJvUrlGrabberDefPropEdTrick }
+//=== TJvUrlGrabberDefPropEdTrick ============================================
 
 constructor TJvUrlGrabberDefPropEdTrick.Create(
   GrabberDefaults: TJvUrlGrabberDefaultProperties);
@@ -989,20 +935,19 @@ begin
   FDefaultProperties := GrabberDefaults;
 end;
 
-{ TJvUrlGrabberDefaultProperties }
+//=== TJvUrlGrabberDefaultProperties =========================================
 
 constructor TJvUrlGrabberDefaultProperties.Create;
 begin
-  inherited;
-
-  FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(self);
-  FFileName := 'output.txt'; 
+  inherited Create;
+  FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
+  FFileName := 'output.txt';
 end;
 
 destructor TJvUrlGrabberDefaultProperties.Destroy;
 begin
   FEditorTrick.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 initialization
@@ -1017,3 +962,4 @@ finalization
   GJvUrlGrabberClassList.Free;
 
 end.
+

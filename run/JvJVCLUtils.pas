@@ -614,6 +614,10 @@ procedure DeallocateHWndEx(Wnd: HWND);
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 
+{$IFNDEF COMPILER6_UP}
+function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
+{$ENDIF COMPILER6_UP}
+
 implementation
 
 uses
@@ -5928,6 +5932,18 @@ begin
   FreeObjectInstance(ObjectInstance);
   {$ENDIF}
 end;
+
+{$IFNDEF COMPILER6_UP}
+function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
+begin
+  try
+    Value := StrToDateTime(S);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+{$ENDIF COMPILER6_UP}
 
 initialization
   { begin JvGraph }

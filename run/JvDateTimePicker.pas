@@ -44,9 +44,9 @@ uses
   JVCLVer;
 
 type
-{$IFDEF BCB}
+  {$IFDEF BCB}
   TDate = TDateTime;
-{$ENDIF}
+  {$ENDIF}
 
   TJvDateTimePicker = class(TDateTimePicker)
   private
@@ -90,19 +90,7 @@ implementation
 
 uses
   CommCtrl,
-  JvResources;
-
-{$IFNDEF COMPILER6_UP}
-function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
-begin
-  try
-    Value := StrToDateTime(S);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
+  JvJVCLUtils, JvResources;
 
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
