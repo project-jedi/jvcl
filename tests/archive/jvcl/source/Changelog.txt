@@ -1,4 +1,6 @@
-2000-08-10
+2002-08-23
+- Added JVDSADialogs donated by Marcel Bestebroer
+2002-08-10
 - Moved JvSearchFile.pas, JvSearchFiles.pas and JvSysComp to /archive //Remko Bonte
 - Removed JclFileMaskComparator and TJvFileTreescan out of JvSysComp.pas //Remko Bonte
 - Added modification to JvSearchFiles.pas //Remko Bonte
