@@ -36,7 +36,7 @@ uses
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvComponent;
 
 type
@@ -100,6 +100,7 @@ implementation
 
 {$R *.DFM}
 
+// (rom) needs explanation
 {$D-}
 
 uses
@@ -149,7 +150,7 @@ begin
   inherited CreateNew(AOwner, 0);
   {$ELSE}
   inherited CreateNew(AOwner);
-  {$ENDIF}
+  {$ENDIF CBUILDER}
   { Form definitions }
   {Left := 354;
   Top := 338;}
@@ -163,6 +164,7 @@ begin
   Font.Style := [];
   Scaled := True;
   Position := poScreenCenter;
+
   { FEdit }
   FEdit := TEdit.Create(Self);
   with FEdit do
@@ -174,6 +176,7 @@ begin
     Height := 21;
     TabOrder := 0;
   end;
+
   { FOkBtn }
   FOkBtn := TButton.Create(Self);
   with FOkBtn do
@@ -188,6 +191,7 @@ begin
     ModalResult := mrOk;
     TabOrder := 1;
   end;
+
   { FCancelBtn }
   FCancelBtn := TButton.Create(Self);
   with FCancelBtn do
@@ -202,6 +206,7 @@ begin
     ModalResult := mrCancel;
     TabOrder := 2;
   end;
+
   { FCheckBox }
   FComboBox := TComboBox.Create(Self);
   with FComboBox do
@@ -216,6 +221,7 @@ begin
     Width := 88;
     TabOrder := 3;
   end;
+
   { FEnableBox }
   FEnableBox := TCheckBox.Create(Self);
   with FEnableBox do
@@ -392,7 +398,7 @@ begin
   if Sender = UpBtn then
     NewIndex := OldIndex - 1
   else
-  {if Sender = DownBtn then}
+  //if Sender = DownBtn then
     NewIndex := OldIndex + 1;
   CheckList.Items.Move(OldIndex, NewIndex);
   CheckList.ItemIndex := NewIndex;
@@ -418,7 +424,7 @@ begin
         Key := 0;
       end;
     VK_DOWN, VK_UP:
-      if (ssCtrl in Shift) then
+      if ssCtrl in Shift then
       begin
         if Key = VK_DOWN then
           Incr := 1

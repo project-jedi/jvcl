@@ -1,21 +1,21 @@
 {$I JVCL.INC}
+
 unit JvPictureEditors;
 
 interface
-uses
-  Windows,
-  Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
-  JvPictureEditForm,
-  {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors
-  {$ELSE}
-  DsgnIntf
-  {$ENDIF}
-  ;
 
+uses
+  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  JvPictureEditForm;
+
+type
   { Property editor the TPicture properties (e.g. the Picture property). Brings
     up a file open dialog allowing loading a picture file. }
-type
   TJvPictProperty = class(TPropertyEditor)
   public
     procedure Edit; override;
@@ -247,7 +247,7 @@ begin
   FPicDlg.ValidateImage;
   CurDir := GetCurrentDir;
   try
-    Result := FPicDlg.ShowModal = mrOK;
+    Result := FPicDlg.ShowModal = mrOk;
   finally
     SetCurrentDir(CurDir);
   end;

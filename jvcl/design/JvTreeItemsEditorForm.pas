@@ -22,22 +22,27 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
------------------------------------------------------------------------------}
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
-unit JvTreeItemsEditorForm;
-{
 Changes:
 2002-10-22:
   Drawing of State images differs from normal images since they are 1-based:
   the 0-th item for the state imagelist isn't drawn to alert the user to this fact
-}
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+{$I WINDOWSONLY.INC}
+
+unit JvTreeItemsEditorForm;
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, Menus, StdActns,
-  {$IFDEF COMPILEr6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -123,34 +128,30 @@ type
     procedure acLoadFromFileExecute(Sender: TObject);
     procedure acSaveToFileExecute(Sender: TObject);
   private
-    { Private declarations }
     FDragNode:TTreeNode;
     FTreeView:TCustomTreeView;
   public
-    { Public declarations }
-    class function Edit(TreeView: TCustomTreeView): boolean;
+    class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
 
   TGroupBox = class(StdCtrls.TGroupBox)
   private
-    FPropagateEnabled: boolean;
+    FPropagateEnabled: Boolean;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property PropagateEnabled: boolean read FPropagateEnabled write FPropagateEnabled default true;
+    property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
   end;
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
-
-resourcestring
-  sItemsEditor = 'Items Editor...';
-  sLinksEditor = 'Links Editor...';
-
 implementation
+
 uses
-  JvPageListTreeView, JvPageLinkEditorForm, ImgList;
+  ImgList,
+  JvPageListTreeView, JvPageLinkEditorForm, JvDsgnConsts;
+
 {$R *.dfm}
 
 type
@@ -161,7 +162,13 @@ begin
   TfrmTreeViewItems.Edit(TreeView);
 end;
 
-{ TGroupBox }
+//=== TGroupBox ==============================================================
+
+constructor TGroupBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  PropagateEnabled := True;
+end;
 
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
@@ -170,23 +177,19 @@ begin
     Broadcast(Msg);
 end;
 
-constructor TGroupBox.Create(AOwner: TComponent);
-begin
-  inherited;
-  PropagateEnabled := true;
-end;
+//=== TfrmTreeViewItems ======================================================
 
 procedure TfrmTreeViewItems.edNodeTextChange(Sender: TObject);
 begin
   if tvItems.Selected <> nil then
   begin
     tvItems.Selected.Text := edNodeText.Text;
-    tvItems.Selected.ImageIndex := StrToIntDef(
-      cbImage.Text, tvItems.Selected.ImageIndex);
-    tvItems.Selected.SelectedIndex := StrToIntDef(
-      cbSelected.Text, tvItems.Selected.SelectedIndex);
-    tvItems.Selected.StateIndex := StrToIntDef(
-      cbState.Text, tvItems.Selected.StateIndex);
+    tvItems.Selected.ImageIndex := StrToIntDef(cbImage.Text,
+      tvItems.Selected.ImageIndex);
+    tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
+      tvItems.Selected.SelectedIndex);
+    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
+      tvItems.Selected.StateIndex);
   end;
 end;
 
@@ -195,9 +198,9 @@ begin
   with tvItems.Items.Add(tvItems.Selected, '') do
   begin
     MakeVisible;
-    Selected := true;
+    Selected := True;
   end;
-  gbProperties.Enabled := true;
+  gbProperties.Enabled := True;
   edNodeText.SetFocus;
 end;
 
@@ -206,29 +209,30 @@ begin
   with tvItems.Items.AddChild(tvItems.Selected, '') do
   begin
     MakeVisible;
-    Selected := true;
+    Selected := True;
   end;
-  gbProperties.Enabled := true;
+  gbProperties.Enabled := True;
   edNodeText.SetFocus;
 end;
 
-function DoStringCompare(SL: TStringList; Index1, Index2: integer): integer;
+function DoStringCompare(SL: TStringList; Index1, Index2: Integer): Integer;
 begin
   Result := StrToIntDef(SL[Index2], Index2) - StrToIntDef(SL[Index1], Index1);
 end;
 
-procedure TfrmTreeViewItems.tvItemsChange(Sender: TObject;
-  Node: TTreeNode);
-  function AddCB(CB: TComboBox; AItemIndex: integer): integer;
-  var S: string;
-    SL: TStringlist;
+procedure TfrmTreeViewItems.tvItemsChange(Sender: TObject; Node: TTreeNode);
+
+  function AddCB(CB: TComboBox; AItemIndex: Integer): Integer;
+  var
+    S: string;
+    SL: TStringList;
   begin
     S := IntToStr(AItemIndex);
     Result := CB.Items.IndexOf(S);
     if Result < 0 then
     begin
       Result := CB.Items.Add(S);
-      SL := TStringlist.Create;
+      SL := TStringList.Create;
       try
         SL.Assign(CB.Items);
         SL.CustomSort(DoStringCompare);
@@ -238,6 +242,7 @@ procedure TfrmTreeViewItems.tvItemsChange(Sender: TObject;
       end;
     end;
   end;
+
 begin
   if Node <> nil then
   begin
@@ -263,7 +268,8 @@ begin
 end;
 
 procedure TfrmTreeViewItems.acDeleteExecute(Sender: TObject);
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   edNodeText.OnChange := nil;
   tvItems.OnChange := nil;
@@ -276,7 +282,7 @@ begin
     if N <> nil then
     begin
       N.MakeVisible;
-      N.Selected := true;
+      N.Selected := True;
     end;
   finally
     edNodeText.OnChange := edNodeTextChange;
@@ -284,9 +290,10 @@ begin
   end;
 end;
 
-procedure TfrmTreeViewItems.acItemsUpdate(Action: TBasicAction;
-  var Handled: Boolean);
-var bSel:boolean;nSel:TTreeNode;
+procedure TfrmTreeViewItems.acItemsUpdate(Action: TBasicAction; var Handled: Boolean);
+var
+  bSel: Boolean;
+  nSel: TTreeNode;
 begin
   bSel := tvItems.Selected <> nil;
   nSel := tvItems.Selected;
@@ -298,12 +305,15 @@ begin
   acNodeMoveDown.Enabled := bSel and ((nSel.getNextSibling <> nil) or (nSel.Parent <> nil));
 end;
 
-class function TfrmTreeViewItems.Edit(TreeView: TCustomTreeView): boolean;
-var f: TfrmTreeViewItems;
+class function TfrmTreeViewItems.Edit(TreeView: TCustomTreeView): Boolean;
+const
+  cNegItem = '-1';
+var
+  f: TfrmTreeViewItems;
   il: TCustomImageList;
-  i: integer;
+  i: Integer;
 begin
-  f := self.Create(Application);
+  f := Self.Create(Application);
   try
     f.FTreeView := TreeView;
     f.tvItems.Items.Assign(THackTreeView(Treeview).Items);
@@ -315,25 +325,25 @@ begin
       f.cbImage.ItemHeight := il.Height;
       f.cbSelected.ItemHeight := il.Height;
 
-      f.cbImage.Items.Add('-1');
-      f.cbSelected.Items.Add('-1');
-      for i := 0 to il.Count - 1 do
+      f.cbImage.Items.Add(cNegItem);
+      f.cbSelected.Items.Add(cNegItem);
+      for I := 0 to il.Count - 1 do
       begin
-        f.cbImage.Items.Add(IntToStr(i));
-        f.cbSelected.Items.Add(IntToStr(i));
+        f.cbImage.Items.Add(IntToStr(I));
+        f.cbSelected.Items.Add(IntToStr(I));
       end;
-      f.cbImage.Tag := integer(il);
-      f.cbSelected.Tag := integer(il);
+      f.cbImage.Tag := Integer(il);
+      f.cbSelected.Tag := Integer(il);
     end;
     il := THackTreeView(Treeview).StateImages;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;
       f.cbState.ItemHeight := il.Height;
-      f.cbState.Items.Add('-1');
+      f.cbState.Items.Add(cNegItem);
       for i := 0 to il.Count - 1 do
         f.cbState.Items.Add(IntToStr(i));
-      f.cbState.Tag := integer(il);
+      f.cbState.Tag := Integer(il);
     end;
     f.cbSelected.ItemIndex := 0;
     f.cbSelected.ItemIndex := 0;
@@ -341,7 +351,7 @@ begin
     f.tvItems.FullExpand;
     if f.tvItems.Items.Count > 0 then
       f.tvItems.Items.getFirstNode.MakeVisible;
-    Result := f.ShowModal = mrOK;
+    Result := f.ShowModal = mrOk;
     if Result then
       THackTreeView(Treeview).Items.Assign(f.tvItems.Items);
   finally
@@ -352,7 +362,7 @@ end;
 procedure TfrmTreeViewItems.cbImageIndexDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  DrawOffset, DrawIndex: integer;
+  DrawOffset, DrawIndex: Integer;
   il: TImageList;
   CB: TComboBox;
 begin
@@ -367,13 +377,14 @@ begin
     DrawOffset := il.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
-  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
+    DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
 
 procedure TfrmTreeViewItems.cbStateDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  DrawOffset, DrawIndex: integer;
+  DrawOffset, DrawIndex: Integer;
   il: TImageList;
   CB: TComboBox;
 begin
@@ -384,17 +395,18 @@ begin
   CB.Canvas.FillRect(Rect);
   // state images are *one*-based, so we don't draw the 0'th image
   // to remind the user about this fact...
-  if (il <> nil) then
+  if il <> nil then
   begin
     if DrawIndex > 0 then
       il.Draw(CB.Canvas, Rect.Left + 2, Rect.Top, DrawIndex);
     DrawOffset := il.Width + 2;
   end;
   Rect.Left := Rect.Left + DrawOffset;
-  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+  DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
+    DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 end;
 
-{ TJvTreeItemsProperty }
+//=== TJvTreeItemsProperty ===================================================
 
 procedure TJvTreeItemsProperty.Edit;
 begin
@@ -406,7 +418,7 @@ begin
   Result := [paDialog];
 end;
 
-{ TJvTreeViewComponentEditor }
+//=== TJvTreeViewComponentEditor =============================================
 
 procedure TJvTreeViewComponentEditor.Edit;
 begin
@@ -415,16 +427,16 @@ end;
 
 procedure TJvTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 begin
-  if (Index = 0) then
+  if Index = 0 then
     ShowTreeNodeEditor(TCustomTreeView(Component))
   else
-    inherited;
+    inherited ExecuteVerb(Index);
 end;
 
 function TJvTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := sItemsEditor
+    Result := SItemsEditorEllipsis
   else
     Result := '';
 end;
@@ -434,14 +446,17 @@ begin
   Result := 1;
 end;
 
+//=== TfrmTreeViewItems ======================================================
+
 procedure TfrmTreeViewItems.acNodeMoveUpExecute(Sender: TObject);
 begin
   with tvItems.Selected do
   begin
-    if getPrevSibling <> nil then
-      MoveTo(getPrevSibling,naInsert)
-    else if Parent <> nil then
-      MoveTo(Parent,naInsert);
+    if GetPrevSibling <> nil then
+      MoveTo(GetPrevSibling, naInsert)
+    else
+    if Parent <> nil then
+      MoveTo(Parent, naInsert);
   end;
   tvItems.FullExpand;
 end;
@@ -451,13 +466,14 @@ var N:TTreeNode;
 begin
   with tvItems.Selected do
   begin
-    if getNextSibling <> nil then
-      getNextSibling.MoveTo(tvItems.Selected,naInsert)
-    else if Parent <> nil then
+    if GetNextSibling <> nil then
+      GetNextSibling.MoveTo(tvItems.Selected, naInsert)
+    else
+    if Parent <> nil then
     begin
       N := Parent;
-      MoveTo(Parent,naInsert);
-      N.MoveTo(tvItems.Selected,naInsert);
+      MoveTo(Parent, naInsert);
+      N.MoveTo(tvItems.Selected, naInsert);
     end;
   end;
   tvItems.FullExpand;
@@ -466,7 +482,7 @@ end;
 procedure TfrmTreeViewItems.acNodeMoveRightExecute(Sender: TObject);
 begin
   with tvItems.Selected do
-    MoveTo(getPrevSibling,naAddChild);
+    MoveTo(GetPrevSibling, naAddChild);
   tvItems.FullExpand;
 end;
 
@@ -476,8 +492,8 @@ begin
   with tvItems.Selected do
   begin
     N := Parent;
-    MoveTo(Parent,naInsert);
-    N.MoveTo(tvItems.Selected,naInsert);
+    MoveTo(Parent, naInsert);
+    N.MoveTo(tvItems.Selected, naInsert);
   end;
   tvItems.FullExpand;
 end;
@@ -488,26 +504,29 @@ begin
   FDragNode := tvItems.Selected;
 end;
 
-procedure TfrmTreeViewItems.tvItemsDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-var N:TTreeNode;
+procedure TfrmTreeViewItems.tvItemsDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  N: TTreeNode;
 begin
   N := tvItems.GetNodeAt(X,Y);
   Accept := (Source = Sender) and (FDragNode <> nil) and (N <> FDragNode);
   if (N <> nil) and N.HasChildren and not N.Expanded then
-    N.Expand(false);
+    N.Expand(False);
 end;
 
-procedure TfrmTreeViewItems.tvItemsDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-var N:TTreeNode;
+procedure TfrmTreeViewItems.tvItemsDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
+var
+  N: TTreeNode;
 begin
-  if FDragNode = nil then Exit;
+  if FDragNode = nil then
+    Exit;
   N := tvItems.GetNodeAt(X,Y);
   if N = nil then
-    FDragNode.MoveTo(tvItems.Items.GetFirstNode,naAdd)
+    FDragNode.MoveTo(tvItems.Items.GetFirstNode, naAdd)
   else
-    FDragNode.MoveTo(N,naAddChildFirst);
+    FDragNode.MoveTo(N, naAddChildFirst);
   FDragNode := nil;
   tvItems.FullExpand;
 end;
@@ -524,7 +543,7 @@ begin
     tvItems.SaveToFile(SaveDialog1.Filename);
 end;
 
-{ TJvPageTreeViewComponentEditor }
+//=== TJvPageTreeViewComponentEditor =========================================
 
 procedure TJvPageTreeViewComponentEditor.ExecuteVerb(Index: Integer);
 begin
@@ -537,7 +556,7 @@ end;
 function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 1 then
-    Result := sLinksEditor
+    Result := SLinksEditorEllipsis
   else
     Result := inherited GetVerb(Index);
 end;

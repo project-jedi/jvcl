@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvCompEditorTemplateForm;
@@ -33,9 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, Buttons, ExtCtrls,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
+  DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -87,7 +86,7 @@ begin
     begin
       Form := GetParentForm(Self);
       if Form <> nil then
-        Form.ModalResult := mrOK;
+        Form.ModalResult := mrOk;
     end;
 end;
 

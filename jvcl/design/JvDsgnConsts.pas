@@ -40,10 +40,14 @@ resourcestring
   //=== strings used by several editors ======================================
   SPreviewEllipsis = 'Preview...';
   SDesignerEllipsis = 'Designer...';
+  SItemsEditorEllipsis = 'Items Editor...';
   SNone = '(none)';
   SHelp = 'Help';
   SConfirm = 'Confirm?';
   SAllFilesFilter = 'All Files (*.*)|*.*';
+  SNextPage = 'Next Page';
+  SPreviousPage = 'Previous Page';
+  SJVCLActionsCategory = 'JVCL';
 
   //=== JvAVICaptureEditors.pas ==============================================
   SDisconnected = 'Disconnected';
@@ -92,7 +96,7 @@ resourcestring
     'Field name must start with a letter A-Z and consist of letters and numbers only. ' +
     'All field names will be converted to uppercase before being used.';
   SAddFailed = 'Add Failed';
-  SsFieldNameIsNotAValidIdentifier = '%s: Field name is not a valid identifier';
+  SFieldNameIsNotAValidIdentifier = '%s: Field name is not a valid identifier';
   SCantAddTwoFieldsWithTheSameNameSele =
     'Can''t add two fields with the same name! Select existing item and click ''Modify'' button to change its properties.';
   SUpdateFailed = 'Update Failed';
@@ -208,8 +212,6 @@ resourcestring
   SScrollUp = 'Scroll Up';
   SScrollDown = 'Scroll Down';
   SAddPage_ = 'Add Page';
-  SNextPage = 'Next Page';
-  SPreviousPage = 'Previous Page';
 
   //=== JvMailEditor.pas =====================================================
   SSend = 'Send';
@@ -243,6 +245,19 @@ resourcestring
     sLineBreak + sLineBreak +
     '* A project called Plg%0:s.%1:s' + sLineBreak +
     '* A unit called Plugin%0:s, containing the data module T%0:s.';
+
+  //=== JvPluginWizard.pas ===================================================
+  SJvPluginWizard = 'Jv Plugin Wizard';
+  SProjects = 'Projects';
+  SNewPlugin = 'New Plugin';
+  SPrivateDeclarations = '{ Private declarations }';
+  SPublicDeclarations = '{ Public declarations }';
+  SIMPORTANTNOTEIfYouChangeTheNameOfTh =
+    '// IMPORTANT NOTE: If you change the name of the Plugin container,' + sLineBreak +
+    '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
+    '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
+    '// type and the type created must be the same as the declared type above.';
+  SJediPuginWizard = 'JEDI Plugin Wizard';
 
   //=== JvPreviewReg.pas =====================================================
   SCreatePreview = 'Create Preview';
@@ -278,11 +293,21 @@ resourcestring
   SGridLayout = 'Grid Layout';
   SCustomDraw = 'Custom Draw';
 
-  //=== JvTimeLineEditor.pas =================================================
-  SItemsEditorEllipsis = 'Items Editor...';
-
   //=== JvTimerListEditor.pas ================================================
   SEventsEllipsis = 'Events...';
+
+  //=== JvTreeItemsEditorForm.pas ============================================
+  SLinksEditorEllipsis = 'Links Editor...';
+
+  //=== JvValidatorsEditorForm.pas ===========================================
+  SJvValidatorsItemsEditorEllipsis = 'JvValidators Items Editor...';
+  SJvValidatorItemsEditorEllipsis = 'JvValidator Items Editor';
+
+  //=== JvWizardEditorForm.pas ===============================================
+  SPageListEllipsis = 'Page List...';
+  SNewWelcomePage = 'New Welcome Page';
+  SNewInteriorPage = 'New Interior Page';
+  SDeletePage = 'Delete Page';
 
   //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';

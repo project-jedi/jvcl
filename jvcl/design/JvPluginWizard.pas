@@ -47,25 +47,26 @@ unit JvPluginWizard;
 interface
 
 uses
-  Windows, ToolsApi, JvTypes;
+  Windows, ToolsAPI,
+  JvTypes;
 
 type
-  TJvPluginWizard = class( TNotifierObject, IOTAWizard, IOTARepositoryWizard,
-                                            IOTAMenuWizard, IOTAProjectWizard )
+  TJvPluginWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
+      IOTAMenuWizard, IOTAProjectWizard)
   public
-    PluginMainMenu : IOTAComponent;
+    PluginMainMenu: IOTAComponent;
 
     { IOTAWizard Methods }
-    function GetIDString : string; virtual;
-    function GetName     : string; Virtual;
-    function GetState    : TWizardState; Virtual;
+    function GetIDString: string; virtual;
+    function GetName: string; virtual;
+    function GetState: TWizardState; virtual;
     procedure Execute; virtual;
 
     { IOTARepositoryWizard Methods }
     function GetAuthor: string; virtual;
     function GetComment: string; virtual;
     function GetPage: string; virtual;
-    function GetGlyph: {$IFDEF COMPILER6_UP}Cardinal;{$ELSE}HICON;{$ENDIF} virtual;
+    function GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF} virtual;
 
     { IOTAMenuWizard methods }
     function GetMenuText: string; virtual;
@@ -73,21 +74,17 @@ type
 
   TJvPluginProjectCreator = class(TInterfacedObject, IOTACreator, IOTAProjectCreator) // both interfaces needed !!!!
   public
-    Wizard : TJvPluginWizard;
-
+    Wizard: TJvPluginWizard;
     { 0 = dll; 1 = dpk }
     PlugType: Integer;
-
     { Private variables which will be used to store some properties for
       the TJvPlugin }
     PlugName: string;
-    PlugDesc : String;
-    PlugAuth : String;
-    PlugCopy : String;
-    PlugUID  : String;
-
-    Project : IOTAModule;
-
+    PlugDesc: string;
+    PlugAuth: string;
+    PlugCopy: string;
+    PlugUID: string;
+    Project: IOTAModule;
     function GetFileName: string;
     function GetOptionFileName: string;
     function GetShowSource: Boolean;
@@ -102,23 +99,19 @@ type
     function GetUnnamed: Boolean;
   end;
 
-  TJvPluginModuleCreator = class( TInterfacedObject, IOTACreator, IOTAModuleCreator )
+  TJvPluginModuleCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
   public
-    Wizard : TJvPluginWizard;
-
+    Wizard: TJvPluginWizard;
     { 0 = dll; 1 = dpk }
     PlugType: Integer;
-
-    Project    : IOTAModule;
-
+    Project: IOTAModule;
     { Private variables which will be used to store some properties for
       the TJvPlugin }
     PlugName: string;
-    PlugDesc : String;
-    PlugAuth : String;
-    PlugCopy : String;
-    PlugUID  : String;
-
+    PlugDesc: string;
+    PlugAuth: string;
+    PlugCopy: string;
+    PlugUID: string;
     function GetCreatorType: string;
     function GetExisting: Boolean;
     function GetFileSystem: string;
@@ -148,39 +141,24 @@ type
     function GetAge: TDateTime;
   end;
 
-
-resourcestring
-  sJvPluginWizard = 'Jv Plugin Wizard';
-  sProjects = 'Projects';
-  sNewPlugin = 'New Plugin';
-  sPrivateDeclarations = '{ Private declarations }';
-  sPublicDeclarations = '{ Public declarations }';
-  sIMPORTANTNOTEIfYouChangeTheNameOfTh = '// IMPORTANT NOTE: If you change the name of the Plugin container,' + sLineBreak +
-    '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
-    '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
-    '// type and the type created must be the same as the declared type above.';
-
 implementation
 
 uses
+  Controls, SysUtils, Dialogs, Classes, ActnList, Menus,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  Controls, SysUtils, Dialogs, Classes, ActnList, Menus,
-  JvPlugin, JvPluginParamsForm;
+  JvPlugin, JvPluginParamsForm, JvDsgnConsts;
 
 {$R ..\resources\JvPluginWiz.res}
 
 const
-  CrLf = sLineBreak;
+  CRLF = sLineBreak;
   cPlgPrefix = 'Plg';
   cPluginPrefix = 'Plugin';
   cDirSep = '\';
-
-resourcestring
-  cJediPuginWizard = 'JEDI Plugin Wizard';
 
 (* make Delphi 5 compiler happy // andreas
 function GetFormEditorFromModule(
@@ -215,17 +193,17 @@ end;
 
 function TJvPluginWizard.GetMenuText: string;
 begin
-  Result := cJediPuginWizard;
+  Result := SJediPuginWizard;
 end;
 
 function TJvPluginWizard.GetName: string;
 begin
-  Result := sJvPluginWizard;
+  Result := SJvPluginWizard;
 end;
 
 function TJvPluginWizard.GetPage: string;
 begin
-  Result := sProjects;
+  Result := SProjects;
 end;
 
 function TJvPluginWizard.GetAuthor: string;
@@ -235,10 +213,10 @@ end;
 
 function TJvPluginWizard.GetComment: string;
 begin
-  Result := sNewPlugin;
+  Result := SNewPlugin;
 end;
 
-function TJvPluginWizard.GetGlyph:{$IFDEF COMPILER6_UP}Cardinal;{$ELSE}HICON;{$ENDIF}
+function TJvPluginWizard.GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF}
 begin
   Result := LoadIcon(HInstance, 'JvPLUGINWIZ');
 end;
@@ -265,10 +243,10 @@ begin
           ProjectCreator.PlugType := Ord(rbPackage.Checked); //  radPluginType.ItemIndex;
           ProjectCreator.PlugName := Trim(edtPluginName.Text);
 
-          ProjectCreator.PlugAuth := Trim( edtPluginAuthor.Text );
-          ProjectCreator.PlugCopy := Trim( edtPluginCopyright.Text );
-          ProjectCreator.PlugDesc := Trim( mmoDescripton.Text );
-          ProjectCreator.PlugUID  := Trim( edtPluginUID.Text );
+          ProjectCreator.PlugAuth := Trim(edtPluginAuthor.Text);
+          ProjectCreator.PlugCopy := Trim(edtPluginCopyright.Text);
+          ProjectCreator.PlugDesc := Trim(mmoDescripton.Text);
+          ProjectCreator.PlugUID := Trim(edtPluginUID.Text);
 
           ModuleServices.CreateModule(ProjectCreator);
         end;
@@ -304,7 +282,7 @@ end;
 
 procedure TJvPluginProjectCreator.NewDefaultModule;
 var
-  Module       : IOTAModule;
+  Module: IOTAModule;
   ModuleCreator: TJvPluginModuleCreator;
 begin
   ModuleCreator := TJvPluginModuleCreator.Create;
@@ -314,7 +292,7 @@ begin
   ModuleCreator.PlugAuth := PlugAuth;
   ModuleCreator.PlugDesc := PlugDesc;
   ModuleCreator.PlugCopy := PlugCopy;
-  ModuleCreator.PlugUID  := PlugUID;
+  ModuleCreator.PlugUID := PlugUID;
   ModuleCreator.Project := Project;
   Module := (BorlandIDEServices as IOTAModuleServices).CreateModule(ModuleCreator);
 end;
@@ -334,33 +312,32 @@ var
 begin
   { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    S := 'library ' + ProjectName + ';' + CrLf +
-      CrLf +
-      'uses' + CrLf +
-      '  ShareMem;' + CrLf +
-      CrLf +
-      'exports' + CrLf +
-      '  RegisterPlugin;' + CrLf +
-      CrLf +
-      'begin' + CrLf +
+    S := 'library ' + ProjectName + ';' + CRLF +
+      CRLF +
+      'uses' + CRLF +
+      '  ShareMem;' + CRLF +
+      CRLF +
+      'exports' + CRLF +
+      '  RegisterPlugin;' + CRLF +
+      CRLF +
+      'begin' + CRLF +
       'end.'
   else // Package-Library
-    S := 'package ' + ProjectName + ';' + CrLf + CrLf +
-      '{$DESCRIPTION ''JEDI Plugin Package''}' + CrLf +
-      '{$RUNONLY}' + CrLf +
-      '{$IMPLICITBUILD ON}' + CrLf + CrLf +
-      'requires' + CrLf +
-    {$IFDEF COMPILER5}
-    '  vcl50,' + CrLf + '  JvCoreD5R;' +
-    {$ENDIF COMPILER5}
-    {$IFDEF COMPILER6}
-    '  vcl,' + CrLf + '  JvCoreD6R;' +
-    {$ENDIF COMPILER6}
-    {$IFDEF COMPILER7}
-    '  vcl,' + CrLf + '  JvCoreD7R;' +
-    {$ENDIF COMPILER7}
-
-    CrLf + CrLf + 'end.';
+    S := 'package ' + ProjectName + ';' + CRLF + CRLF +
+      '{$DESCRIPTION ''JEDI Plugin Package''}' + CRLF +
+      '{$RUNONLY}' + CRLF +
+      '{$IMPLICITBUILD ON}' + CRLF + CRLF +
+      'requires' + CRLF +
+      {$IFDEF COMPILER5}
+      '  vcl50,' + CRLF + '  JvCoreD5R;' +
+      {$ENDIF COMPILER5}
+      {$IFDEF COMPILER6}
+      '  vcl,' + CRLF + '  JvCoreD6R;' +
+      {$ENDIF COMPILER6}
+      {$IFDEF COMPILER7}
+      '  vcl,' + CRLF + '  JvCoreD7R;' +
+      {$ENDIF COMPILER7}
+      CRLF + CRLF + 'end.';
 
   Result := TJvOTAFile.Create(S);
 end;
@@ -435,10 +412,10 @@ end;
 
 procedure RegisterContainerModule;
 begin
-  RegisterCustomModule(TJvPlugin, TCustomModule);
+  RegisterCustomModule(TJvPlugIn, TCustomModule);
 end;
 
-{ TJvPluginModuleCreator }
+//=== TJvPluginModuleCreator =================================================
 
 {*****************************************************************************
   Name           : TJvPluginModuleCreator.FormCreated
@@ -457,10 +434,9 @@ end;
   11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
-procedure TJvPluginModuleCreator.FormCreated(
-  const FormEditor: IOTAFormEditor);
+procedure TJvPluginModuleCreator.FormCreated(const FormEditor: IOTAFormEditor);
 begin
-  with TJvPlugin( INTAComponent( FormEditor.GetRootComponent ).GetComponent ) do
+  with TJvPlugIn(INTAComponent(FormEditor.GetRootComponent).GetComponent) do
   begin
     Author := PlugAuth;
     Description := PlugDesc;
@@ -489,7 +465,7 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetCreatorType 
+  Name           : TJvPluginModuleCreator.GetCreatorType
   Author         : Stefaan Lesage
   Arguments      : None
   Return Values  : Returns the type of the creator as a string.  In our case
@@ -509,11 +485,11 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetExisting 
+  Name           : TJvPluginModuleCreator.GetExisting
   Author         : Stefaan Lesage
   Arguments      : None
-  Return Values  : Returns a boolean indicating if this is an existing
-                   module.  We return false since this is a new Module.
+  Return Values  : Returns a Boolean indicating if this is an existing
+                   module.  We return False since this is a new Module.
   Exceptions     : None
   Description    : Property Getter for the Existing property.
   History        :
@@ -529,7 +505,7 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetFileSystem 
+  Name           : TJvPluginModuleCreator.GetFileSystem
   Author         : Stefaan Lesage
   Arguments      : None
   Return Values  : Return the File system IDString that this module uses for
@@ -550,7 +526,7 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetFormName 
+  Name           : TJvPluginModuleCreator.GetFormName
   Author         : Stefaan Lesage
   Arguments      : None
   Return Values  : Returns the name of the form ( not the class, but its
@@ -559,11 +535,11 @@ end;
                    name.
   Exceptions     : None
   Description    : Property getter for the FormName property.
-  History        :                                                          
-                                                                            
-  Date         By                   Description                                    
-  ----         --                   -----------                                    
-  11/07/2003   slesage              Initial creation of the Method.                  
+  History        :
+
+  Date         By                   Description
+  ----         --                   -----------
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetFormName: string;
@@ -572,12 +548,12 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetImplFileName 
+  Name           : TJvPluginModuleCreator.GetImplFileName
   Author         : Stefaan Lesage
-  Arguments      : None                                                     
+  Arguments      : None
   Return Values  : Returns the complete path to the implementation ( source )
                    file name, e.g. “C:\dir\Unit1.pas”. If GetUnnamed returns
-                   true, the file name is just a placeholder, and the user
+                   True, the file name is just a placeholder, and the user
                    will be prompted for a file name when the file is saved.
   Exceptions     : None
   Description    : Property getter for the ImplFileName property.
@@ -601,11 +577,11 @@ end;
                    create a new unique one.
   Exceptions     : None
   Description    : Property getter for the IntfFileName property.
-  History        :                                                          
-                                                                            
-  Date         By                   Description                                    
+  History        :
+
+  Date         By                   Description
   ----         --                   -----------
-  11/07/2003   slesage              Initial creation of the Method.                  
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetIntfFileName: string;
@@ -617,11 +593,11 @@ end;
   Name           : TJvPluginModuleCreator.GetMainForm
   Author         : Stefaan Lesage
   Arguments      : None
-  Return Values  : Returns true if the newly created form is to be the
-                   application’s main form. It returns false if the form
+  Return Values  : Returns True if the newly created form is to be the
+                   application’s main form. It returns False if the form
                    is not necessarily the main form.
   Exceptions     : None
-  Description    : Property getter for the MainForm property.                                                          
+  Description    : Property getter for the MainForm property.
   History        :
 
   Date         By                   Description
@@ -635,9 +611,9 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetOwner 
+  Name           : TJvPluginModuleCreator.GetOwner
   Author         : Stefaan Lesage
-  Arguments      : None                                                     
+  Arguments      : None
   Return Values  : Returns the module interface of the new module’s owner,
                    that is, it returns the project interface for a new source
                    file or the project group interface for a new project.
@@ -646,19 +622,19 @@ end;
                    In our case we will return the Active ProjectGroup's
                    Active Project.
   Exceptions     : None
-  Description    : Property getter for the Owner property.                                                          
-  History        :                                                          
-                                                                            
-  Date         By                   Description                                    
-  ----         --                   -----------                                    
-  11/07/2003   slesage              Initial creation of the Method.                  
+  Description    : Property getter for the Owner property.
+  History        :
+
+  Date         By                   Description
+  ----         --                   -----------
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetOwner: IOTAModule;
 var
-  ModuleServices : IOTAModuleServices;
-  Module         : IOTAModule;
-  NewModule      : IOTAModule;
+  ModuleServices: IOTAModuleServices;
+  Module: IOTAModule;
+  NewModule: IOTAModule;
 begin
   // You may prefer to return the project group's ActiveProject instead
   Result := nil;
@@ -669,16 +645,18 @@ begin
   begin
     if Module.QueryInterface(IOTAProject, NewModule) = S_OK then
       Result := NewModule
-
-    {$IFDEF VER130} // Delphi 5
-    else if Module.GetOwnerCount > 0 then
+    else
+    // (rom) not sure if DELPHI or COMPILER
+    {$IFDEF COMPILER5}
+    if Module.GetOwnerCount > 0 then
     begin
       NewModule := Module.GetOwner(0);
-    {$ELSE not VER_140} // Delphi 6+
-    else if Module.OwnerModuleCount > 0 then
+    {$ENDIF COMPILER5}
+    {$IFDEF COMPILER6_UP}
+    if Module.OwnerModuleCount > 0 then
     begin
       NewModule := Module.OwnerModules[0];
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
       if NewModule <> nil then
         if NewModule.QueryInterface(IOTAProject, Result) <> S_OK then
           Result := nil;
@@ -690,8 +668,8 @@ end;
   Name           : TJvPluginModuleCreator.GetShowForm
   Author         : Stefaan Lesage
   Arguments      : None
-  Return Values  : Returns true if you want the IDE to show the form editor
-                   after the form is created. Have GetShowForm returns false
+  Return Values  : Returns True if you want the IDE to show the form editor
+                   after the form is created. Have GetShowForm returns False
                    to keep the form hidden.
   Exceptions     : None
   Description    : Property getter for the ShowForm property.
@@ -711,16 +689,16 @@ end;
   Name           : TJvPluginModuleCreator.GetShowSource
   Author         : Stefaan Lesage
   Arguments      : None
-  Return Values  : Returns true if you want the IDE to show the source file
-                   in the source editor. Have GetShowSource return false to
+  Return Values  : Returns True if you want the IDE to show the source file
+                   in the source editor. Have GetShowSource return False to
                    keep the source file hidden.
   Exceptions     : None
   Description    : Property getter for the ShowSource property.
   History        :
-                                                                            
-  Date         By                   Description                                    
-  ----         --                   -----------                                    
-  11/07/2003   slesage              Initial creation of the Method.                  
+
+  Date         By                   Description
+  ----         --                   -----------
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetShowSource: Boolean;
@@ -729,21 +707,21 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetUnnamed 
+  Name           : TJvPluginModuleCreator.GetUnnamed
   Author         : Stefaan Lesage
-  Arguments      : None                                                     
-  Return Values  : Returns true if the new module has not been saved to a
+  Arguments      : None
+  Return Values  : Returns True if the new module has not been saved to a
                    file and therefore does not have a file name yet. If the
                    user saves the module, the user will be prompted for a
-                   file name. GetUnnamed returns false if the module has a
-                   file name.                                                     
+                   file name. GetUnnamed returns False if the module has a
+                   file name.
   Exceptions     : None
   Description    : Property Getter for the Unnamed property.
-  History        :                                                          
-                                                                            
-  Date         By                   Description                                    
-  ----         --                   -----------                                    
-  11/07/2003   slesage              Initial creation of the Method.                  
+  History        :
+
+  Date         By                   Description
+  ----         --                   -----------
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.GetUnnamed: Boolean;
@@ -752,7 +730,7 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.NewFormFile 
+  Name           : TJvPluginModuleCreator.NewFormFile
   Author         : Stefaan Lesage
   Arguments      : FormIdent     - The name of the form. Use this to
                                    parameterize the form description.
@@ -776,7 +754,7 @@ end;
 function TJvPluginModuleCreator.NewFormFile(const FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
-  Result := Nil;
+  Result := nil;
 end;
 
 {*****************************************************************************
@@ -810,57 +788,58 @@ function TJvPluginModuleCreator.NewImplSource(const ModuleIdent, FormIdent,
 var
   TypeName: string;
   Ancestor: string;
-  Source  : String;
-
-  aPluginClassName : String;
+  Source: string;
+  ClassNameOfPlugin: string;
 begin
-  aPluginClassName := 'T' + FormIdent;
+  ClassNameOfPlugin := 'T' + FormIdent;
 
   TypeName := FormIdent;
   Ancestor := AncestorIdent;
 
   TypeName := PlugName;
 
-  Source := 'unit ' + ModuleIdent + ';' + CrLf + CrLf +
+  Source :=
+    'unit ' + ModuleIdent + ';' + CRLF + CRLF +
 
-  'interface' + CrLf + CrLf +
+    'interface' + CRLF + CRLF +
 
-  'uses' + CrLf +
-    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms,' + CrLf +
-    '  Controls' + CrLf +
-    '  JvPlugin;' + CrLf + CrLf +
+    // (rom) fixed missing "," after "Controls"
+    'uses' + CRLF +
+    '  Windows, Messages, SysUtils, Classes, Dialogs, Forms,' + CRLF +
+    '  Controls,' + CRLF +
+    '  JvPlugin;' + CRLF + CRLF +
 
-  'type' + CrLf +
-    '  ' + aPluginClassName + ' = class(T' + Ancestor + ')' + CrLf +
-//    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
-    '  private' + CrLf +
-    '    ' + sPrivateDeclarations + CrLf +
-    '  public' + CrLf +
-    '    ' + sPublicDeclarations + CrLf +
-    '  end;' + CrLf + CrLf +
+    'type' + CRLF +
+    '  ' + ClassNameOfPlugin + ' = class(T' + Ancestor + ')' + CRLF +
+    //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CRLF +
+    '  private' + CRLF +
+    '    ' + SPrivateDeclarations + CRLF +
+    '  public' + CRLF +
+    '    ' + SPublicDeclarations + CRLF +
+    '  end;' + CRLF + CRLF +
 
-//  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf + CrLf;
-  'function RegisterPlugin: TJvPlugin; stdcall;' + CrLf + CrLf;
+    //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CRLF + CRLF;
+    'function RegisterPlugin: TJvPlugin; stdcall;' + CRLF + CRLF;
 
   { 0 = dll; 1 = dpk }
   if PlugType <> 0 then
-    Source := Source + 'exports RegisterPlugin;' + CrLf + CrLf;
+    Source := Source + 'exports RegisterPlugin;' + CRLF + CRLF;
 
   Source := Source +
-    'implementation' + CrLf + CrLf +
+    'implementation' + CRLF + CRLF +
 
-  '{$R *.DFM}' + CrLf + CrLf +
+    '{$R *.DFM}' + CRLF + CRLF +
 
-  sIMPORTANTNOTEIfYouChangeTheNameOfTh + sLineBreak +
-    'function RegisterPlugin: TJvPlugin;' + CrLf + CrLf +
-    'begin' + CrLf +
-    '  Result := ' + aPluginClassName + '.Create(nil);' + CrLf +
-//    '  Result := T' + TypeName + '.Create(nil);' + CrLf +
-    'end;' + CrLf + CrLf +
+  SIMPORTANTNOTEIfYouChangeTheNameOfTh + sLineBreak +
+    'function RegisterPlugin: TJvPlugin;' + CRLF + CRLF +
+    'begin' + CRLF +
+    '  Result := ' + ClassNameOfPlugin + '.Create(nil);' + CRLF +
+    //    '  Result := T' + TypeName + '.Create(nil);' + CrLf +
+    'end;' + CRLF + CRLF +
 
-  'end.';
+    'end.';
 
-  Result := TJvOTAFile.Create( Source );
+  Result := TJvOTAFile.Create(Source);
 end;
 
 {*****************************************************************************
@@ -883,16 +862,16 @@ end;
   Description    : NewIntfSource returns the source code for the new module’s
                    interface or 0 for a default header.
   History        :
-                                                                            
+
   Date         By                   Description
-  ----         --                   -----------                                    
-  11/07/2003   slesage              Initial creation of the Method.                  
+  ----         --                   -----------
+  11/07/2003   slesage              Initial creation of the Method.
  *****************************************************************************}
 
 function TJvPluginModuleCreator.NewIntfSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
-  Result := Nil;
+  Result := nil;
 end;
 
 initialization

@@ -36,7 +36,7 @@ uses
   DesignEditors, DesignIntf;
   {$ELSE}
   DsgnIntf;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
 type
   TJvChangeNotifyEditor = class(TDefaultEditor)
@@ -77,13 +77,13 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, cNotifications) then // do not localize
+  if SameText(PropName, cNotifications) then
   begin
     PropertyEditor.Edit;
     Cont := False;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvChangeNotifyEditor.ExecuteVerb(Index: Integer);
 begin

@@ -37,7 +37,7 @@ uses
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvAVICapture;
 
 type
@@ -68,6 +68,9 @@ implementation
 uses
   Controls,
   JvVirtualKeyEditorForm, JvDsgnConsts;
+
+const
+  cSeparator = ' - ';
 
 //=== TJvDriverIndexEditor ===================================================
 
@@ -108,18 +111,18 @@ var
 begin
   Index := GetOrdValue;
   if Index = -1 then
-    Result := IntToStr(GetOrdValue) + ' - ' + SDisconnected
+    Result := IntToStr(GetOrdValue) + cSeparator + SDisconnected
   else
-    Result := IntToStr(GetOrdValue) + ' - ' + FDrivers[GetOrdValue];
+    Result := IntToStr(GetOrdValue) + cSeparator + FDrivers[GetOrdValue];
 end;
 
 procedure TJvDriverIndexEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  Proc('-1 - ' + SDisconnected);
+  Proc('-1' + cSeparator + SDisconnected);
   for I := 0 to FDrivers.Count - 1 do
-    Proc(IntToStr(I) + ' - ' + FDrivers[I]);
+    Proc(IntToStr(I) + cSeparator + FDrivers[I]);
 end;
 
 procedure TJvDriverIndexEditor.SetValue(const Value: string);
@@ -138,14 +141,14 @@ begin
       [NewIndex, -1, FDrivers.Count - 1]);
 end;
 
-//=== TJvVirtualKeyEditor =====================================================
+//=== TJvVirtualKeyEditor ====================================================
 
 procedure TJvVirtualKeyEditor.Edit;
 begin
   with TfrmJvVirtualKeyEditor.Create(nil) do
   begin
     EditingFrame.CombinedKeyCode := GetOrdValue;
-    if ShowModal = mrOK then
+    if ShowModal = mrOk then
       SetOrdValue(EditingFrame.CombinedKeyCode);
     Free;
   end;

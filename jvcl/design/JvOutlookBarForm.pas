@@ -496,7 +496,7 @@ begin
     tvItems.Items.EndUpdate;
   end;
   tvItems.FullExpand;
-  if Screen.ActiveForm = self then
+  if Screen.ActiveForm = Self then
     tvItems.Selected := N2;
 end;
 

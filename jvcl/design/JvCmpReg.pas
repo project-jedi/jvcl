@@ -57,15 +57,24 @@ begin
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
 
-  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, '', TJvExeNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess, 'CurrentDirectory', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded, 'Data', TJvDataEmbeddedEditor);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile, 'Differences', TJvPatcherEditor);
-  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager, 'PageProxies', TJvProxyListProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy, 'PageName', TJvPageNameProperty);
-  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager, 'PriorBtn', TJvPageBtnProperty);
-  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager, 'NextBtn', TJvPageBtnProperty);
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager, 'MergeFrame', TJvComponentFormProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
+    '', TJvExeNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
+    'CurrentDirectory', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
+    'Data', TJvDataEmbeddedEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
+    'Differences', TJvPatcherEditor);
+  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager,
+    'PageProxies', TJvProxyListProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy,
+    'PageName', TJvPageNameProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'PriorBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
+    'NextBtn', TJvPageBtnProperty);
+  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
+    'MergeFrame', TJvComponentFormProperty);
 
   RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);

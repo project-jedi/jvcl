@@ -32,12 +32,11 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF COMPILER5}
-  DsgnIntf,
-  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ENDIF}
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   JvCommonDialogD;
 
 type
@@ -47,7 +46,6 @@ type
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
-
 
 implementation
 

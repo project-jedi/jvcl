@@ -36,7 +36,7 @@ uses
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvDBMemDatasetEditor, JvBDEMemTable;
 
 type
@@ -50,8 +50,6 @@ implementation
 uses
   DsnDBCst, DSDesign, DBReg,
   JvJVCLUtils, JvSelectDataSetForm, JvConsts;
-
-//=== TJvBDEMemoryTableEditor =================================================
 
 function TJvBDEMemoryTableEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
 begin

@@ -23,18 +23,22 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvCSVBaseEditor;
 
 interface
-uses JvCSVBaseControls, Classes,
-{$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors
-{$ELSE}
-  DsgnIntf
-{$ENDIF COMPILER6_UP}
 
-  ;
+uses
+  Classes,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvCSVBaseControls;
+
 type
   TCSVFileNameProperty = class(TStringProperty)
   public
@@ -49,70 +53,79 @@ type
   end;
 
 implementation
-uses Forms, Dialogs;
+
+uses
+  Forms, Dialogs;
+
+//=== TCSVFileNameProperty ===================================================
 
 procedure TCSVFileNameProperty.Edit;
-var
-  dlg: TOpenDialog;
 begin
-  dlg := TOpendialog.Create(application);
-  dlg.FileName := getValue;
-  if dlg.Execute then
-    SetValue(dlg.filename);
-  dlg.free;
+  with TOpenDialog.Create(Application) do
+    try
+      FileName := GetValue;
+      if Execute then
+        SetValue(FileName);
+    finally
+     Free;
+    end;
 end;
 
-function TCSVFileNameProperty.GetAttributes: TPropertyattributes;
+function TCSVFileNameProperty.GetAttributes: TPropertyAttributes;
 begin
-  result := [padialog];
+  Result := [paDialog];
 end;
+
+//=== TCSVFieldProperty ======================================================
 
 function TCSVFieldProperty.GetAttributes: TPropertyAttributes;
 begin
-  result := [paValueList];
+  Result := [paValueList];
 end;
 
 procedure TCSVFieldProperty.GetValues(Proc: TGetStrProc);
 var
-  i, c: integer;
-  dbedit: TJvCSVEdit;
-  dbcombo: TJvCSVComboBox;
-  ck: TJvCSVCheckBox;
-  AComponent: TPersistent;
+  I, C: Integer;
+  DbEdit: TJvCSVEdit;
+  DbCombo: TJvCSVComboBox;
+  Ck: TJvCSVCheckBox;
+  Compo: TPersistent;
 begin
   try
-    Acomponent := getcomponent(0);
-    if Acomponent.ClassName = 'TJvCSVEdit' then
+    Compo := GetComponent(0);
+    if Compo.ClassName = 'TJvCSVEdit' then
     begin
-      dbedit := TJvCSVEdit(getcomponent(0));
-      if assigned(dbedit.CSVDataBase) then
+      DbEdit := TJvCSVEdit(GetComponent(0));
+      if Assigned(DbEdit.CSVDataBase) then
       begin
-        c := dbEdit.CSVDataBase.CSVFieldNames.count;
-        if c > 0 then
-          for i := 0 to c - 1 do
-            Proc(dbEdit.CSVDataBase.CSVFieldNames[i]);
+        C := DbEdit.CSVDataBase.CSVFieldNames.Count;
+        if C > 0 then
+          for I := 0 to C - 1 do
+            Proc(DbEdit.CSVDataBase.CSVFieldNames[I]);
       end;
     end
-    else if Acomponent.ClassName = 'TJvCSVComboBox' then
+    else
+    if Compo.ClassName = 'TJvCSVComboBox' then
     begin
-      dbcombo := TJvCSVComboBox(getcomponent(0));
-      if assigned(dbcombo.CSVDataBase) then
+      DbCombo := TJvCSVComboBox(GetComponent(0));
+      if Assigned(DbCombo.CSVDataBase) then
       begin
-        c := dbcombo.CSVDataBase.CSVFieldNames.count;
-        if c > 0 then
-          for i := 0 to c - 1 do
-            Proc(dbcombo.CSVDataBase.CSVFieldNames[i]);
+        C := DbCombo.CSVDataBase.CSVFieldNames.Count;
+        if C > 0 then
+          for I := 0 to C - 1 do
+            Proc(DbCombo.CSVDataBase.CSVFieldNames[I]);
       end;
     end
-    else if Acomponent.ClassName = 'TJvCSVCheckBox' then
+    else
+    if Compo.ClassName = 'TJvCSVCheckBox' then
     begin
-      ck := TJvCSVCheckBox(getcomponent(0));
-      if assigned(ck.CSVDataBase) then
+      Ck := TJvCSVCheckBox(GetComponent(0));
+      if Assigned(Ck.CSVDataBase) then
       begin
-        c := ck.CSVDataBase.CSVFieldNames.count;
-        if c > 0 then
-          for i := 0 to c - 1 do
-            Proc(ck.CSVDataBase.CSVFieldNames[i]);
+        C := Ck.CSVDataBase.CSVFieldNames.Count;
+        if C > 0 then
+          for I := 0 to C - 1 do
+            Proc(Ck.CSVDataBase.CSVFieldNames[I]);
       end;
     end;
   except

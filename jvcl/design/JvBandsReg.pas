@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is John Doe
+The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
 All Rights Reserved.
 
@@ -43,8 +43,8 @@ uses
   {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER7_UP}
   ExptIntf,
-  {$ENDIF}
-  ToolsApi,
+  {$ENDIF COMPILER7_UP}
+  ToolsAPI,
   JclSchedule, JvBandForms, JvBandObject, JvBandObjectDLLWizard,
   JvBandObjectDLLWizardForm;
 
