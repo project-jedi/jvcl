@@ -39,8 +39,21 @@ interface
 // The downside is that the control "flashes" more when it's dragged
 {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
+{$IFDEF VisualCLX}
+ {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
+{$ENDIF VisualCLX}
+
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, Qt, QWindows, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
 type
@@ -58,7 +71,7 @@ type
     FMouseDown: Boolean;
     FDown: Boolean;
     FFlat: Boolean;
-    FInside: Boolean;
+    FOver: Boolean;
     procedure SetFlat(Value: Boolean);
     procedure SetStyle(Value: TJvCapBtnStyle);
     procedure BtnClick;
@@ -107,25 +120,32 @@ type
     procedure SetFlat(Value: Boolean);
     procedure SetButtons(Value: TJvCapBtnStyles);
     procedure SetCaption(Value: string);
-    procedure SeTJvDrawPosition(Value: TJvDrawPosition);
+    procedure SetJvDrawPosition(Value: TJvDrawPosition);
     procedure DrawRotatedText(Rotation: Integer);
     procedure DrawButtons;
+    {$IFDEF VCL}
     procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
+    procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
+    {$ENDIF VCL}
     procedure SetOutlookLook(const Value: Boolean);
     procedure DoCaptionFontChange(Semder:TObject);
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   protected
     procedure Paint; override;
+    {$IFDEF VisualCLX}
+    procedure BoundsChanged; override;
+    {$ENDIF VisualCLX}
 
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure ClickButton(Button: TJvCapBtnStyle); virtual;
     function CanStartDrag: Boolean; virtual;
     procedure DoLeaveDrag; virtual;
-    procedure WMNCLButtonUp(var Msg: TWMNCLButtonUp); message WM_NCLBUTTONUP;
-    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -140,14 +160,16 @@ type
     property CaptionFont: TFont read FCaptionFont write SetCaptionFont;
     property Color;
     property Cursor;
+    {$IFDEF VCL}
     property DragCursor;
+    property FullRepaint;
+    property Locked;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FlatButtons: Boolean read FFlat write SetFlat default False;
     property Font;
-    property FullRepaint;
     property Hint;
-    property Locked;
     property OutlookLook: Boolean read FOutlookLook write SetOutlookLook;
     property ParentColor;
     property ParentFont;
@@ -250,8 +272,8 @@ begin
   inherited MouseMove(Shift, X, Y);
   if FMouseDown then
   begin
-    FInside := PtInRect(ClientRect, Point(X, Y));
-    if not FInside then
+    FOver := PtInRect(ClientRect, Point(X, Y));
+    if not FOver then
     begin
       if FDown then { mouse has slid off, so release }
       begin
@@ -276,31 +298,35 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  FInside := True;
-  if FFlat then
+  if not FOver then
   begin
-    R := ClientRect;
-    if FDown then
-      Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
-    else
-      Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
+    FOver := True;
+    if FFlat then
+    begin
+      R := ClientRect;
+      if FDown then
+        Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
+      else
+        Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
+    end;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCapBtn.MouseLeave(Control: TControl);
 var
   R: TRect;
 begin
-  if csDesigning in ComponentState then
-    Exit;
-  FInside := False;
-  if FFlat then
+  if FOver then
   begin
-    R := ClientRect;
-    Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
+    FOver := False;
+    if FFlat then
+    begin
+      R := ClientRect;
+      Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
+    end;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control);
 end;
 
 procedure TJvCapBtn.Paint;
@@ -332,18 +358,27 @@ begin
     Flags := Flags or DFCS_FLAT;
 
   Canvas.Brush.Color := Color;
-  SetBkMode(Canvas.Handle, TRANSPARENT);
-  DrawFrameControl(Canvas.Handle, ClientRect, DFC_CAPTION, Flags);
-  if FFlat then
-  begin
-    R := ClientRect;
-    if FDown and FMouseDown then
-      Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
-    else if FInside then
-      Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
-    else
-      Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+  {$ENDIF VisualCLX}
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+    DrawFrameControl(Canvas.Handle, ClientRect, DFC_CAPTION, Flags);
+    if FFlat then
+    begin
+      R := ClientRect;
+      if FDown and FMouseDown then
+        Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
+      else if FOver then
+        Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1)
+      else
+        Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
+    end;
+  {$IFDEF VisualCLX}
+  finally
+    Canvas.Stop;
   end;
+  {$ENDIF VisualCLX}
 end;
 
 //=== TJvCaptionPanel ========================================================
@@ -353,7 +388,9 @@ var
   I: TJvCapBtnStyle;
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
   DoubleBuffered := True;
+  {$ENDIF VCL}
   FCaptionFont := TFont.Create;
   // (rom) Warning! This seems no standard Windows font
   FCaptionFont.Name := 'MS Shell Dlg 2';
@@ -365,7 +402,11 @@ begin
   FCaptionWidth := GetSystemMetrics(SM_CYCAPTION);
   FOffset := 8;
   FAutoDrag := True;
+  {$IFDEF VCL}
   FCaptionColor := clActiveCaption;
+  {$ELSE}
+  FCaptionColor := clActiveHighlight;
+  {$ENDIF VCL}
   FFlat := False;
   for I := Low(FButtonArray) to High(FButtonArray) do //Iterate
   begin
@@ -435,13 +476,16 @@ begin
   end;
 end;
 
-
-procedure TJvCaptionPanel.SeTJvDrawPosition(Value: TJvDrawPosition);
+procedure TJvCaptionPanel.SetJvDrawPosition(Value: TJvDrawPosition);
 begin
   if FDrawPosition <> Value then
   begin
     FDrawPosition := Value;
+    {$IFDEF VCL}
     RecreateWnd;
+    {$ELSE}
+    RecreateWidget;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -460,6 +504,7 @@ begin
   inherited AlignControls(AControl, Rect);
 end;
 
+{$IFDEF VCL}
 procedure TJvCaptionPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -470,14 +515,28 @@ begin
       ExStyle := ExStyle and not WS_EX_CLIENTEDGE;
     end;
 end;
+{$ENDIF VCL}
 
 procedure TJvCaptionPanel.Paint;
 var
   Rotation: Integer;
   R: TRect;
-  FlatOffset:Integer;
+  FlatOffset: Integer;
 begin
   R := ClientRect;
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+    R := ClientRect;
+    InflateRect(R, -2, -2);
+    QPainter_save(Canvas.Handle);
+    ExcludeClipRect(Canvas.Handle, R);
+    inherited Paint;
+    QPainter_restore(Canvas.Handle);
+  finally
+    Canvas.Stop;
+  end;
+  {$ENDIF VisualCLX}
   with Canvas do
   begin
     Brush.Color := Color;
@@ -524,62 +583,84 @@ end;
 
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
+{$IFDEF VCL}
   lf: TLogFont;
   tf: TFont;
+{$ENDIF VCL}
   R: TRect;
   Flags, tH, tW: Integer;
 begin
   if FCaption = '' then
     Exit;
-  SetBkMode(Canvas.Handle, TRANSPARENT);
-  with Canvas do
-  begin
-    tf := TFont.Create;
-    try
-      tf.Assign(CaptionFont);
-      GetObject(tf.Handle, SizeOf(lf), @lf);
-      lf.lfEscapement := Rotation * 10;
-      lf.lfOrientation := Rotation * 10;
-      lf.lfOutPrecision := OUT_TT_PRECIS;
-      tf.Handle := CreateFontIndirect(lf);
-      Canvas.Font.Assign(tf);
-    finally
-      tf.Free;
-    end;
-    R := FCaptionRect;
-    tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
-    tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
-    if FOutlookLook then
+  {$IFDEF VisualCLX}
+  Canvas.Start;
+  try
+    QPainter_save(Canvas.Handle);
+  {$ENDIF VisualCLX}
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+    with Canvas do
     begin
-      Dec(th);
-      Dec(tw);
-    end;
-    case FDrawPosition of
-      dpLeft:
-        begin
-          with FCaptionRect do
-            R := Rect(Left, Bottom, Right, Top);
-          OffsetRect(R, tW, -FOffset);
-        end;
-      dpTop:
-        OffsetRect(R, FOffset, tH);
-      dpRight:
-        begin
-          with FCaptionRect do
-            R := Rect(Right, Top, Left, Bottom);
-          OffsetRect(R, -tW, FOffset);
-        end;
-      dpBottom:
-        OffsetRect(R, FOffset, tH);
-    end;
-    Flags := DT_NOPREFIX;
-    if FDrawPosition in [dpTop, dpBottom] then
-      Flags := Flags or DT_VCENTER;
+      {$IFDEF VCL}
+      tf := TFont.Create;
+      try
+        tf.Assign(CaptionFont);
+        GetObject(tf.Handle, SizeOf(lf), @lf);
+        lf.lfEscapement := Rotation * 10;
+        lf.lfOrientation := Rotation * 10;
+        lf.lfOutPrecision := OUT_TT_PRECIS;
+        tf.Handle := CreateFontIndirect(lf);
+        Canvas.Font.Assign(tf);
+      finally
+        tf.Free;
+      end;
+      {$ENDIF VCL}
+      R := FCaptionRect;
+      tH := ((R.Bottom - R.Top) - Canvas.TextHeight(FCaption)) div 2;
+      tW := ((R.Right - R.Left) - Canvas.TextHeight(FCaption)) div 2;
+      if FOutlookLook then
+      begin
+        Dec(th);
+        Dec(tw);
+      end;
+      case FDrawPosition of
+        dpLeft:
+          begin
+            with FCaptionRect do
+              R := Rect(Left, Bottom, Right, Top);
+            OffsetRect(R, tW, -FOffset);
+          end;
+        dpTop:
+          OffsetRect(R, FOffset, tH);
+        dpRight:
+          begin
+            with FCaptionRect do
+              R := Rect(Right, Top, Left, Bottom);
+            OffsetRect(R, -tW, FOffset);
+          end;
+        dpBottom:
+          OffsetRect(R, FOffset, tH);
+      end;
+      Flags := DT_NOPREFIX;
+      if FDrawPosition in [dpTop, dpBottom] then
+        Flags := Flags or DT_VCENTER;
 
-    if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
-      Flags := Flags or DT_NOCLIP; { bug or feature? }
-    DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
+      {$IFDEF VCL}
+      if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
+        Flags := Flags or DT_NOCLIP; { bug or feature? }
+      DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Canvas.Font.Assign(CaptionFont);
+      IntersectClipRect(Canvas.Handle, R);
+      TextOutAngle(Canvas, Rotation, R.Left, R.Top, Caption);
+      {$ENDIF VisualCLX}
+    end;
+  {$IFDEF VisualCLX}
+  finally
+    QPainter_restore(Canvas.Handle);
+    Canvas.Stop;
   end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCaptionPanel.DrawButtons;
@@ -744,16 +825,24 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    {$IFDEF VCL}
     SetCapture(Handle);
-    FAnchorPos := Point(X, Y);
     {$ELSE}
+    SetMouseGrabControl(Self);
+    {$ENDIF VCL}
+    FAnchorPos := Point(X, Y);
+   {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCaptionPanel.WMSize(var Msg: TWMNoParams);
+{$ELSE}
+procedure TJvCaptionPanel.BoundsChanged;
+{$ENDIF}
 begin
   inherited;
   Repaint;
@@ -766,12 +855,14 @@ begin
     FOnStartAutoDrag(Self, Result);
 end;
 
+{$IFDEF VCL}
 procedure TJvCaptionPanel.WMNCLButtonUp(var Msg: TWMNCLButtonUp);
 begin
   inherited;
   if FDragging then
     MouseUp(mbLeft, [], Msg.XCursor, Msg.YCursor);
 end;
+{$ENDIF VCL}
 
 procedure TJvCaptionPanel.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin

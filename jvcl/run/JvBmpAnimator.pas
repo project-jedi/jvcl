@@ -41,7 +41,7 @@ uses
   ExtCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls,  QExtCtrls, QImgList,
+  QWindows, QGraphics, QControls,  QExtCtrls, QImgList,
   {$ENDIF VisualCLX}
   JvComponent;
 
@@ -407,7 +407,7 @@ begin
     begin
       Brush.Color := clBlack;
       {$IFDEF VisualCLX}
-      Rectangle(GetClientRect);
+      FrameRect(Canvas, GetClientRect);
       {$ELSE}
       FrameRect(GetClientRect);
       {$ENDIF VisualCLX}

@@ -65,11 +65,9 @@ type
   protected
     procedure Changed;
   public
-    // (rom) i changed this from hiding to override
     procedure AssignTo(Sender: TPersistent); override;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     constructor Create;
-    // (rom) added because FFont has to be freed
     destructor Destroy; override;
   published
     property Caption: string read FCaption write SetCaption;

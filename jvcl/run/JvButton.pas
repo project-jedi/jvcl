@@ -31,20 +31,19 @@ unit JvButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Menus, Controls,
-  Forms, JvComponent, JVCLVer, JvTypes, JvExStdCtrls;
-
-const
-  CM_FORCESIZE = WM_USER + 777;
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Forms, StdCtrls, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, Qt, QGraphics, QControls, QForms, QStdCtrls, QMenus,
+  {$ENDIF VisualCLX}
+  JvComponent, JVCLVer, JvConsts, JvTypes, JvExStdCtrls;
 
 type
-  TCMForceSize = record
-    Msg: Cardinal;
-    Sender: TControl;
-    NewSize: TSmallPoint;
-    Result: Longint;
-  end;
-
   TJvButtonMouseState = (bsMouseInside, bsMouseDown);
   TJvButtonMouseStates = set of TJvButtonMouseState;
 
@@ -66,8 +65,7 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
 
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED;
-
+    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_JVBUTTONPRESSED;
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     {$IFDEF VCL}
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -142,7 +140,9 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
     procedure ParentColorChanged; override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -165,8 +165,6 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
   end;
 
-//  TJvButton = class(TJvCustomButton);
-
 implementation
 
 uses
@@ -174,6 +172,7 @@ uses
 
 const
   JvBtnLineSeparator = '|';
+
 var
   APattern: TBitmap = nil;
 
@@ -304,7 +303,6 @@ begin
     Exit;
 
   inherited MouseDown(Button, Shift, X, Y);
-
   //   if Assigned(OnMouseDown) then OnMouseDown(Self,Button,Shift,X,Y);
 
   if InsideBtn(X, Y) then
@@ -347,8 +345,10 @@ begin
 end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
+{$IFDEF VCL}
 var
   Msg: TMsg;
+{$ENDIF VCL}
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -359,9 +359,13 @@ begin
       paCenter: Inc(X,Width div 2);
     end;
     DropDownMenu.Popup(X, Y);
-   { wait 'til menu is done }
+    {$IFDEF VCL}
+    { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
       {nothing};
+    {$ELSE}
+    Application.ProcessMessages;
+    {$ENDIF VCL}
     { release button }
     MouseUp(Button, Shift, X, Y);
   end;
@@ -472,13 +476,13 @@ end;
 
 procedure TJvCustomGraphicButton.UpdateExclusive;
 var
-  Msg: TMessage;
+  Msg: TJvCMButtonPressed;
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
-    Msg.Msg := CM_BUTTONPRESSED;
-    Msg.wParam := GroupIndex;
-    Msg.lParam := Longint(Self);
+    Msg.Msg := CM_JVBUTTONPRESSED;
+    Msg.Index := GroupIndex;
+    Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -518,11 +522,13 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomGraphicButton.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomGraphicButton.FontChanged;
 begin
@@ -567,15 +573,21 @@ begin
   begin
     FDropDownMenu.PopupComponent := Self;
     FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
+    {$IFDEF VCL}
     Perform(CM_MOUSELEAVE, 0, 0);
+    {$ELSE}
+    MouseLeave(Self);
+    {$ENDIF VCL}
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE;
 end;
+{$ENDIF VCL}
 
 procedure TJvCustomButton.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
@@ -605,22 +617,20 @@ begin
       Font.Assign(FHotFont);
     end;
     FOver := true;
+    inherited MouseEnter(Control);
   end;
-  inherited MouseEnter(Control);
 end;
 
 procedure TJvCustomButton.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
     FOver := false;
+    inherited MouseLeave(Control);
   end;
-  inherited MouseLeave(Control); 
 end;
 
 procedure TJvCustomButton.FontChanged;

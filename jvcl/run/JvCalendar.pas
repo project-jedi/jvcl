@@ -25,6 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 { @abstract(A wrapper component for the MS MonthCal control available in
     ComCtl32.dll versions 4.70 and above.) }

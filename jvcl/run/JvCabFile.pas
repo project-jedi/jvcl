@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,13 +25,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvCABFile;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Windows, SetupApi, SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
@@ -82,7 +83,6 @@ type
 implementation
 
 uses
-  SetupApi,
   JvConsts, JvResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);

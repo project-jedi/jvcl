@@ -32,8 +32,9 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
-  {$ENDIF}
-  Classes, Controls, Forms, Messages, Windows,  
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Classes,
+  Windows, Messages, Controls, Forms,
   JvAppStorage, JvComponent, JvWndProcHook, JvTypes;
 
 type
@@ -242,7 +243,6 @@ type
 implementation
 
 uses
-  SysUtils,
   Consts,
   JvJVCLUtils, JvJCLUtils, JvPropertyStorage;
 

@@ -31,12 +31,16 @@ unit JvBitBtn;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Buttons, Menus,
-  {$ELSE}
-  QGraphics, QControls, QForms, QButtons, QMenus,
+  Graphics, Controls, Forms, Buttons, Menus,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QButtons, QMenus,
+  {$ENDIF VisualCLX}
   JVCLVer, JvTypes, JvExButtons;
 
 type
@@ -166,14 +170,12 @@ begin
       Font.Assign(FHotTrackFont);
     end;
     FOver := True;
+    inherited MouseEnter(AControl);
   end;
-  inherited MouseEnter(AControl);
 end;
 
 procedure TJvBitBtn.MouseLeave(AControl: TControl);
 begin
-  if csDesigning in ComponentState then
-    Exit;
   if FOver then
   begin
     FOver := False;
@@ -182,8 +184,8 @@ begin
       Glyph.Assign(FOldGlyph);
     if FHotTrack then
       Font.Assign(FFontSave);
+    inherited MouseLeave(AControl);
   end;
-  inherited MouseLeave(AControl);
 end;
 
 procedure TJvBitBtn.ParentColorChanged;

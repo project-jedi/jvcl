@@ -35,10 +35,10 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QDialogs, JvTypes,
+  Types, QWindows, QGraphics, QControls, QForms, QDialogs,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvComponent;
+  JvComponent, JvTypes;
 
 type
   TJvBitmapButton = class(TJvGraphicControl)
@@ -105,9 +105,6 @@ type
   end;
 
 implementation
-
-uses
-  JvTypes;
 
 constructor TJvBitmapButton.Create(AOwner: TComponent);
 begin
@@ -230,7 +227,7 @@ begin
   AColor := ColorToRGB(FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
   rt := GetRValue(AColor);
   gt := GetGValue(AColor);
-  bt := getBValue(AColor);
+  bt := GetBValue(AColor);
   FBitmap.PixelFormat := pf24bit;
   FLighter.PixelFormat := pf24bit;
   for Y := 0 to FBitmap.Height - 1 do
