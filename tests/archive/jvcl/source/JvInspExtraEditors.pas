@@ -60,6 +60,34 @@ type
     property ActiveColor: TColor read FActiveColor;
   end;
 
+  { TAnchors item editor. Descents from the set item to keep DisplayValue available }
+  TJvInspectorAnchorsItem = class(TJvInspectorSetItem)
+  private
+    FUnassignedColor: TColor;
+    FNormalColor: TColor;
+    FActiveColor: TColor;
+  protected
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+    procedure SetItemSetFlags(const Value: TInspectorSetFlags); override;
+
+    procedure PaintAnchorsBox(const Anchors: TAnchors; const ACanvas: TCanvas; const ARect: TRect;
+      const UseUnassigned: Boolean);
+  public
+    procedure AfterConstruction; override;
+    procedure DoneEdit(const CancelEdits: Boolean = False); override;
+    procedure DrawValue(const ACanvas: TCanvas); override;
+    procedure InitEdit; override;
+
+    class procedure RegisterAsDefaultItem;
+    class procedure UnregisterAsDefaultItem;
+
+    property UnassignedColor: TColor read FUnassignedColor;
+    property NormalColor: TColor read FNormalColor;
+    property ActiveColor: TColor read FActiveColor;
+  end;
+
   { TColor item editor. Will render the color in a box, together with the name/value }
   TJvInspectorColorItem = class(TJvCustomInspectorItem)
   private
@@ -533,6 +561,189 @@ begin
 end;
 
 class procedure TJvInspectorColorItem.UnregisterAsDefaultItem;
+begin
+  TJvCustomInspectorData.ItemRegister.Delete(Self);
+end;
+
+{ TJvInspectorAnchorsItem }
+
+procedure TJvInspectorAnchorsItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  NewAnchors: TAnchors;
+
+  procedure Toggle(const Side: TAnchorKind);
+  begin
+    if Side in NewAnchors then
+      Exclude(NewAnchors, Side)
+    else
+      Include(NewAnchors, Side)
+  end;
+
+begin
+  if Editing and (Shift = [ssCtrl]) then
+  begin
+    if Data.IsAssigned then
+      Data.GetAsSet(NewAnchors)
+    else
+      NewAnchors := [];
+    if Key in [VK_UP, VK_NUMPAD8] then
+      Toggle(akTop)
+    else if Key in [VK_RIGHT, VK_NUMPAD6] then
+      Toggle(akRight)
+    else if Key in [VK_DOWN, VK_NUMPAD2] then
+      Toggle(akBottom)
+    else if Key in [VK_LEFT, VK_NUMPAD4] then
+      Toggle(akLeft)
+    else if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    begin
+      if NewAnchors <> [] then
+        NewAnchors := []
+      else
+        NewAnchors := [akLeft, akTop, akRight, akBottom];
+    end;
+    if Key in [VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2, VK_LEFT, VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    begin
+      Data.SetAsSet(NewAnchors);
+      Key := 0;
+    end
+    else
+      inherited EditKeyDown(Sender, Key, Shift);
+  end;
+end;
+
+procedure TJvInspectorAnchorsItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  NewAnchors: TAnchors;
+  OrgAnchors: TAnchors;
+  ValueRect: TRect;
+
+  procedure Toggle(const Side: TAnchorKind);
+  begin
+    if Side in NewAnchors then
+      Exclude(NewAnchors, Side)
+    else
+      Include(NewAnchors, Side)
+  end;
+
+begin
+  if Editing and (Shift = [ssLeft]) then
+  begin
+    if Data.IsAssigned then
+      Data.GetAsSet(NewAnchors)
+    else
+      NewAnchors := [];
+    OrgAnchors := NewAnchors;
+    ValueRect := Rects[iprValueArea];
+    with ValueRect do
+    begin
+      if PtInRect(Rect(Left + 5, Top, Right - 5, Top + 5), Point(X, Y)) then
+        Toggle(akTop)
+      else if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
+        Toggle(akRight)
+      else if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
+        Toggle(akBottom)
+      else if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
+        Toggle(akLeft)
+      else if PtInRect(ValueRect, Point(X, Y)) then
+      begin
+        if NewAnchors <> [] then
+          NewAnchors := []
+        else
+          NewAnchors := [akLeft, akTop, akRight, akBottom];
+      end;
+    end;
+    if OrgAnchors <> NewAnchors then
+      Data.SetAsSet(NewAnchors);
+  end;
+end;
+
+procedure TJvInspectorAnchorsItem.SetFlags(const Value: TInspectorItemFlags);
+begin
+  inherited SetFlags(Value);
+end;
+
+procedure TJvInspectorAnchorsItem.SetItemSetFlags(const Value: TInspectorSetFlags);
+begin
+  inherited SetItemSetFlags(Value - [isfCreateMemberItems] + [isfEditString]);
+end;
+
+procedure TJvInspectorAnchorsItem.PaintAnchorsBox(const Anchors: TAnchors; const ACanvas: TCanvas;
+  const ARect: TRect; const UseUnassigned: Boolean);
+var
+  NoAnchorsColor: TColor;
+
+  procedure RenderAnchors(const Check: TAnchorKind; const X, Y : Integer);
+  begin
+    if Check in Anchors then
+      ACanvas.Pen.Color := ActiveColor
+    else
+      ACanvas.Pen.Color := NoAnchorsColor;
+    ACanvas.LineTo(X, Y);
+  end;
+
+begin
+  if UseUnassigned then
+    NoAnchorsColor := UnassignedColor
+  else
+    NoAnchorsColor := NormalColor;
+  ACanvas.Pen.Width := 2;
+
+  ACanvas.MoveTo(ARect.Left + 2, ARect.Top + 2);
+  RenderAnchors(akTop, ARect.Right - 3, ARect.Top + 2);
+  RenderAnchors(akRight, ARect.Right - 3, ARect.Bottom - 3);
+  RenderAnchors(akBottom, ARect.Left + 2, ARect.Bottom - 3);
+  RenderAnchors(akLeft, ARect.Left + 2, ARect.Top + 1);
+end;
+
+procedure TJvInspectorAnchorsItem.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FUnassignedColor := clGrayText;
+  FNormalColor := clWindowText;
+  FActiveColor := clBlue;
+end;
+
+procedure TJvInspectorAnchorsItem.DoneEdit(const CancelEdits: Boolean = False);
+begin
+  SetEditing(False);
+end;
+
+procedure TJvInspectorAnchorsItem.DrawValue(const ACanvas: TCanvas);
+var
+  IsValid: Boolean;
+  Anchors: TAnchors;
+  ARect: TRect;
+
+begin
+  IsValid := Data.IsInitialized and Data.IsAssigned and Data.HasValue;
+  if IsValid then
+    Data.GetAsSet(Anchors)
+  else
+    Anchors := [];
+
+  if Editing and Data.IsAssigned then
+    ACanvas.Brush.Color := clWindow;
+
+  ARect := Rects[iprValueArea];
+  ACanvas.FillRect(ARect);
+  PaintAnchorsBox(Anchors, ACanvas, ARect, not IsValid);
+end;
+
+procedure TJvInspectorAnchorsItem.InitEdit;
+begin
+  SetEditing(CanEdit);
+end;
+
+class procedure TJvInspectorAnchorsItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TAnchors)));
+  end;
+end;
+
+class procedure TJvInspectorAnchorsItem.UnregisterAsDefaultItem;
 begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;

@@ -8995,8 +8995,19 @@ begin
 end;
 
 procedure TJvInspectorPropData.GetAsSet(var Buf);
+var
+  I: Integer;
+  CompType: PTypeInfo;
+  EnumMin: Integer;
+  EnumMax: Integer;
+  ResBytes: Integer;
 begin
-  Integer(Buf) := AsOrdinal;
+  I := AsOrdinal;
+  CompType := GetTypeData(TypeInfo).CompType^;
+  EnumMin := GetTypeData(CompType).MinValue;
+  EnumMax := GetTypeData(CompType).MaxValue;
+  ResBytes := (EnumMax div 8) - (EnumMin div 8) + 1;
+  Move(I, Buf, ResBytes);
 end;
 
 function TJvInspectorPropData.HasValue: Boolean;
