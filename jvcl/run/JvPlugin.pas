@@ -129,7 +129,7 @@ type
 implementation
 
 resourcestring
-  SFmtResNotFound = 'Resource Not Found: %s';
+  SFmtResNotFound = 'Resource not found: %s';
 
 //=== TJvPlugin ==============================================================
 

@@ -53,7 +53,7 @@ type
 
 implementation
 
-resourcestring
+const
   RC_CpuUsageKey = 'KERNEL\CPUUsage';
   RC_PerfStart = 'PerfStats\StartStat';
   RC_PerfStop = 'PerfStats\StopStat';

@@ -124,7 +124,7 @@ type
   {$DEFINE GL_CAPT_BUTTONS}
 
 resourcestring
-  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvgCaption component';
+  sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
 
 implementation
 uses
@@ -206,7 +206,7 @@ begin
   if (Component <> Self) and (Operation = opInsert) and (Component is
     TJvgCaption) then
     raise
-      Exception.Create(sCannotCreateMoreThanOneInstanceOfTJ);
+      Exception.Create(sOnlyOneInstanceOfTJvgCaption);
 end;
 //=========================================================.special procs.
 

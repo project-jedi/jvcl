@@ -158,8 +158,8 @@ function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 
 
 resourcestring
-  sRightBraketsNotFound = 'Right brakets not found';
-  sRightBraketHavntALeftOnePosd = 'Right braket havn''t a left one. Pos: %d';
+  sRightBracketsNotFound = 'Right brackets not found';
+  sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
   sDivideBy = 'Divide by 0';
   sDuplicateSignsPos = 'Duplicate signs. Pos:';
   sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
@@ -1620,7 +1620,7 @@ var
               NextChar;
             if cCurrChar <> ')' then
             begin
-              raise Exception.Create(sRightBraketsNotFound);
+              raise Exception.Create(sRightBracketsNotFound);
               fCalcResult := false;
               Result := 0;
             end
@@ -1635,7 +1635,7 @@ var
     begin
       dec(BracketsCount);
       if BracketsCount < 0 then
-        raise Exception.Create(Format(sRightBraketHavntALeftOnePosd, [ExpressionPtr - 1]));
+        raise Exception.Create(Format(sRightBracketHavntALeftOnePosd, [ExpressionPtr - 1]));
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

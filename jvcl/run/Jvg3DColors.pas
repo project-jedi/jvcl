@@ -78,7 +78,7 @@ uses
   JvConsts, JvgUtils, JvgTypes;
 
 resourcestring
-  sCannotCreateMoreThanOneInstanceOfTJ = 'Cannot create more than one instance of TJvg3DLocalColors component';
+  sOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
 
 //=== TJvg3DLocalColors ======================================================
 
@@ -156,7 +156,7 @@ end;
 procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
-    raise Exception.Create(sCannotCreateMoreThanOneInstanceOfTJ);
+    raise Exception.Create(sOnlyOneInstanceOfTJvg3DLocalColors);
 end;
 
 end.

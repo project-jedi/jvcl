@@ -441,7 +441,7 @@ implementation
 //******************************************************************************
 
 resourcestring
-  sCannotHookTwice = 'Fatal: You can''t hook this event twice :-(';
+  sCannotHookTwice = 'Fatal: You cannot hook this event twice';
 
 const
 

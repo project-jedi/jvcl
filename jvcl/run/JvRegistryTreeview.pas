@@ -147,7 +147,7 @@ resourcestring
   SDefaultCaption = '(Default)';
   SMyComputer = 'My Computer';
   SDefaultNoValue = '(value not set)';
-  SUnknown = '(Unknown)';
+  SUnknownCaption = '(Unknown)';
 
 implementation
 
@@ -408,7 +408,7 @@ begin
           rdUnknown:
             begin
               TmpItem.ImageIndex := imText;
-              TmpItem.SubItems.Add(SUnknown);
+              TmpItem.SubItems.Add(SUnknownCaption);
             end;
           rdString, rdExpandString:
             begin

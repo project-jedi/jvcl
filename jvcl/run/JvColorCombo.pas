@@ -270,7 +270,7 @@ type
   end;
 
 resourcestring
-  SOtherCaption = 'Custom...';
+  SCustomCaption = 'Custom...';
   SNewColorPrefix = 'Custom';
 
 implementation
@@ -389,7 +389,7 @@ begin
   FColorValue := clBlack;
   FColWidth := 21;
   FPrefix := SNewColorPrefix;
-  FOther := SOtherCaption;
+  FOther := SCustomCaption;
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;

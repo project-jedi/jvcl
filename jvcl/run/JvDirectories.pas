@@ -94,10 +94,6 @@ type
 
 implementation
 
-resourcestring
-  RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
-//  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
-
 const
   DirectoryList: array [0..14] of PChar =
    ('AppData', 'Cache', 'Cookies', 'Desktop', 'Favorites',
@@ -107,6 +103,8 @@ const
    ('Common Administrative Tools', 'Common AppData', 'Common  Desktop',
     'Common  Documents', 'Common Programs', 'Common Start Menu',
     'Common Startup', 'Common Templates', 'Personal', 'Common Favorites');
+  ShellFoldersRegistryKey = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
+//  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
 
 function TJvDirectories.GetCurrent: string;
 var
@@ -145,7 +143,7 @@ begin
   try
     with TRegistry.Create do
     try
-      OpenKey(RC_ShellFolders, False);
+      OpenKey(ShellFoldersRegistryKey, False);
       Result := CheckLastChar(ReadString(DirectoryList[Index]));
     finally
       Free;
@@ -185,7 +183,7 @@ begin
     with TRegistry.Create do
     try
       RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey(RC_ShellFolders, False);
+      OpenKey(ShellFoldersRegistryKey, False);
       Result := CheckLastChar(ReadString(CommonDirectoryList[Index]));
     finally
       Free;
@@ -209,7 +207,7 @@ begin
     with TRegistry.Create do
     try
       RootKey := HKEY_LOCAL_MACHINE;
-      OpenKey(RC_ShellFolders, False);
+      OpenKey(ShellFoldersRegistryKey, False);
       Result := CheckLastChar(ExpandEnvVar(ReadString(CommonDirectoryList[Index])));
     finally
       Free;

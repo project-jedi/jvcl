@@ -579,7 +579,7 @@ resourcestring
   SUnknownBaseType = 'Unknown base type for given set';
   SInvalidPath = 'Invalid path';
   SNotAUniqueRootPath = '''%s'' is not a unique root path';
-  SCircularReference = 'Circular reference of storages';
+  SCircularReferenceOfStorages = 'Circular reference of storages';
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -2063,7 +2063,7 @@ begin
   if Value <> AppStore then
   begin
     if (Value <> nil) and (Value.HasSubStore(OwnerStore) or (Value = OwnerStore)) then
-      raise EJVCLAppStoreError.Create(SCircularReference);
+      raise EJVCLAppStoreError.Create(SCircularReferenceOfStorages);
     if AppStore <> nil then
       AppStore.RemoveFreeNotification(OwnerStore);
     FAppStore := Value;

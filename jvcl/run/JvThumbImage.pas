@@ -118,7 +118,7 @@ uses
   JvThumbnails, JvTypes;
 
 resourcestring
-  sUnknownFileExitension = 'Unknown file extension %s';
+  sUnknownFileExtension = 'Unknown file extension %s';
   sFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
 
 constructor TJvThumbImage.Create(AOwner: TComponent);
@@ -412,7 +412,7 @@ begin
     Gr.SaveToFile(AFile);
   end
   else
-    raise Exception.CreateFmt(sUnknownFileExitension, [Ext]);
+    raise Exception.CreateFmt(sUnknownFileExtension, [Ext]);
 end;
 
 procedure TJvThumbImage.Save;
