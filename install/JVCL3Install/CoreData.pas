@@ -732,7 +732,7 @@ begin
         end;
       if (not Found) and (Add) then
       begin
-        if StartsWith(AnsiLowerCase(NewPaths[DirIndex]), AnsiLowerCase(RootDir) + '\') then
+        if StartsWith(NewPaths[DirIndex], RootDir + '\', True) then
         begin
           if IsDelphi then
             List.Add('$(DELPHI)' + Copy(NewPaths[DirIndex], 1 + Length(RootDir), MaxInt))
