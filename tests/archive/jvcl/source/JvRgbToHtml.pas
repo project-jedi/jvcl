@@ -52,7 +52,9 @@ type
 function RgbToHtml(Value: TColor): string;
 
 implementation
-
+uses
+  JvTypes;
+  
 {**************************************************}
 
 function RgbToHtml(Value: TColor): string;
@@ -83,7 +85,7 @@ begin
   FColor := Value;
   Clr := Value;
   if Clr < 0 then
-    Clr := GetSysColor(Clr and not ($80000000));
+    Clr := GetSysColor(Clr and not (DEFAULT_SYSCOLOR_MASK));
   FHtml := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
 end;
 {**************************************************}

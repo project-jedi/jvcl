@@ -80,7 +80,8 @@ type
   end;
 
 implementation
-
+uses
+  JvTypes; 
 ///////////////////////////////////////////////////////////
 // TJvWaitingGradient
 ///////////////////////////////////////////////////////////
@@ -128,22 +129,22 @@ begin
   if FTimerTag = 0 then
   begin
     if FStart < 0 then
-      FStartColor := GetSysColor(FStart and not $80000000)
+      FStartColor := GetSysColor(FStart and not DEFAULT_SYSCOLOR_MASK)
     else
       FStartColor := FStart;
     if FEnd < 0 then
-      FEndColor := GetSysColor(FEnd and not $80000000)
+      FEndColor := GetSysColor(FEnd and not DEFAULT_SYSCOLOR_MASK)
     else
       FEndColor := FEnd;
   end
   else
   begin
     if FStart < 0 then
-      FEndColor := GetSysColor(FStart and not $80000000)
+      FEndColor := GetSysColor(FStart and not DEFAULT_SYSCOLOR_MASK)
     else
       FEndColor := FStart;
     if FEnd < 0 then
-      FStartColor := GetSysColor(FEnd and not $80000000)
+      FStartColor := GetSysColor(FEnd and not DEFAULT_SYSCOLOR_MASK)
     else
       FStartColor := FEnd;
   end;

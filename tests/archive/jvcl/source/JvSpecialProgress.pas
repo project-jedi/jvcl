@@ -162,6 +162,8 @@ type
   end;
 
 implementation
+uses
+  JvTypes;
 
 type
   TControlAccess = class(TControl);
@@ -508,7 +510,7 @@ begin
   begin
     FEndColor := Value;
     if FEndColor < 0 then
-      FEnd := GetSysColor(FEndColor and not $80000000)
+      FEnd := GetSysColor(FEndColor and not DEFAULT_SYSCOLOR_MASK)
     else
       FEnd := FEndColor;
 
@@ -625,7 +627,7 @@ begin
   begin
     FStartColor := Value;
     if FStartColor < 0 then
-      FStart := GetSysColor(FStartColor and not $80000000)
+      FStart := GetSysColor(FStartColor and not DEFAULT_SYSCOLOR_MASK)
     else
       FStart := FStartColor;
 
