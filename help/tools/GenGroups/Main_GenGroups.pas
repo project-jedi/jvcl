@@ -872,20 +872,60 @@ var
   FList: TStrings;
   Res: Integer;
   SR: TSearchRec;
+
+  function ValueOf(Index: Integer): string;
+  var
+    I: Integer;
+  begin
+    I := Pos('=', FileSL[Index]);
+    if I = 0 then
+      Result := ''
+    else
+      Result := Copy(FileSL[Index], I + 1, Length(FileSL[Index]) - I);
+  end;
+
+  procedure ReadDOX;
+  var
+    I: Integer;
+    S: string;
+  begin
+    WriteLn('Scanning .dox...');
+    I := StrToInt(ValueOf(Res + 1));
+    Inc(Res, 2);
+    while I > 0 do
+    begin
+      S := ValueOf(Res);
+      if not AnsiSameText(Copy(ExtractFileName(S), 1, 5), 'JVCL.') then
+        FList.Add(HelpPath + S);
+      Dec(I);
+      Inc(Res);
+    end;
+    WriteLn('  done.');
+  end;
+  
 begin
   FList := TStringList.Create;
   try
-    Res := FindFirst(HelpPath + '*.dtx', faAnyFile - faDirectory, SR);
-    try
-      while Res = 0 do
-      begin
-        if not AnsiSameText(Copy(SR.FindData.cFileName, 1, 5), 'JVCL.') then
-          FList.Add(HelpPath + SR.FindData.cFileName);
-        Res := FindNext(SR);
+    FileSL.LoadFromFile(HelpPath + 'JVCL.dox');
+    Res := FileSL.IndexOf('[Description Files]');
+    if Res = -1 then
+    begin
+      WriteLn('Scanning directory...');
+      Res := FindFirst(HelpPath + '*.dtx', faAnyFile - faDirectory, SR);
+      try
+        while Res = 0 do
+        begin
+          if not AnsiSameText(Copy(SR.FindData.cFileName, 1, 5), 'JVCL.') then
+            FList.Add(HelpPath + SR.FindData.cFileName);
+          Res := FindNext(SR);
+        end;
+      finally
+        FindClose(SR);
       end;
-    finally
-      FindClose(SR);
-    end;
+      WriteLn('  done.');
+    end
+    else
+      ReadDOX;
     TStringList(FList).Sort;
     WriteLn(Format('Scanning %d file(s)...', [FList.Count]));
     for Res := 0 to FList.Count - 1 do
@@ -896,6 +936,7 @@ begin
     WriteLn(Format('  done.', [FList.Count]));
   finally
     FreeAndNil(FList);
+    FileSL.Clear;
   end;
 end;
 
