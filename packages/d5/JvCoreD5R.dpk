@@ -21,16 +21,13 @@ package JvCoreD5R;
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $400000}
+{$IMAGEBASE $500000}
 {$DESCRIPTION 'JVCL Core Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
   DJCL50,
-{$IFDEF JVCLThemesEnabled}
-  ThemeManager5,
-{$ENDIF}
   vclx50;
 
 contains
