@@ -153,21 +153,41 @@ const
 
 type
   TMessage = QWindows.TMessage;
+  TWndMethod = procedure(var Message: TMessage) of object;
 //  TJvMessage = JvQTypes.TJvMessage;
 
   TEMGetRect = packed record
     Msg: Cardinal;
     Reserved: Integer;
     Rect: PRect;
-    Result: Integer;
+    case Integer of  
+    0:
+    (
+      Handled: LongBool;
+    );
+    1:
+    (
+      Result: Integer;
+    );
   end;
 
-  TEMSetRect       = TEMGetRect;
-
+  TEMSetRect  = TEMGetRect;
+  TEMRect     = TEMGetRect;
+  
   TWMNoParams = packed record
     Msg: Cardinal;
-    Unused: array[0..3] of Word;
-    Handled: LongBool;
+    case Integer of
+    0:
+    (
+      Unused: array[0..3] of Word;
+      Handled: LongBool;
+    );
+    1:
+    (
+      WParam: Integer;
+      LParam: Integer;
+      Result: Integer;
+    );
   end;
 
   TWMActivate = packed record
@@ -291,7 +311,7 @@ type
     case Integer of  // LParam
     0:
     (
-      Position: TSmallPoint;
+      Pos: TSmallPoint;
       Result: Integer;
     );
     1:
@@ -368,8 +388,6 @@ begin
     for I := 0 to ControlCount - 1 do
     begin
       Controls[I].Dispatch(Mesg);
-      if TMessage(Mesg).Result <> 0 then
-        Exit;
     end;
 end;
 
