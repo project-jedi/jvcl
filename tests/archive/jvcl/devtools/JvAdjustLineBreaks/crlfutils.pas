@@ -8,6 +8,95 @@ implementation
 uses
   Windows, SysUtils, Classes;
 
+function IsTextStream(Stream:TStream):Boolean;
+const
+  MaxLineLength = 255;
+var
+  LineBuffer:array[0..MaxLineLength] of Char;
+  CharFlags:array of Word;
+  I, Count:Integer;
+  P, S:PChar;
+begin
+  Result := False;
+
+  FillChar(LineBuffer, SizeOf(LineBuffer), 0);
+
+  Stream.Position := 0;
+  if Stream.Size > MaxLineLength then
+    Count := MaxLineLength
+  else
+    Count := Stream.Size;
+  Stream.Read(LineBuffer, Count);
+
+  // see if we can come up with an EOL (unless we read the whole file)
+  if Count < Stream.Size then
+  begin
+    P := StrPos(LineBuffer, #13);
+    // try the LF variant too
+    if P = nil then
+    begin
+      P := StrPos(LineBuffer,#10);
+      if P = nil then
+        Exit;
+    end;
+
+    // terminate the string here
+    P^ := #0;
+
+    // check if there are any terminators prior to where we expect the EOL
+    S := @LineBuffer;
+    while S < P do
+    begin
+      if S^ = #0 then
+        Exit;
+      Inc(S);
+    end;
+
+  end;
+
+  Count := StrLen(LineBuffer);
+
+  // some editors place a $1A (26) as an EOF marker
+  if LineBuffer[Count - 1] = Char($1A) then
+  begin
+    LineBuffer[Count - 1] := #0;
+    Dec(Count);
+  end;
+
+  // if first character is $FF, then it's likely not text
+  if LineBuffer[0] = Char($FF) then
+    Exit;
+
+  // get the char flags
+  SetLength(CharFlags, Count);
+  GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, LineBuffer, Count,
+    CharFlags[0]);
+
+  // check the CharFlags array to see if anything looks fishy
+  for I := Low(CharFlags) to High(CharFlags) do
+    if ((CharFlags[I] and C1_CNTRL) <> 0) and ((CharFlags[I] and $0F) = 0) then
+      Exit;
+
+  // best guess is that it looks reasonable
+  Result := True;
+end;
+
+function IsTextFile(const FileName:string):Boolean;
+var
+  S:TStream;
+begin
+  Result := False;
+  if not FileExists(FileName) then
+    Exit;
+
+  S := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
+  try
+    Result := IsTextStream(S);
+  finally
+    S.Free;
+  end;
+end;
+
 procedure ShowHelp;
 begin
   writeln('');
@@ -48,6 +137,8 @@ var
   F:TFileStream;
   tmp,tmp2:string;
 begin
+  // don't convert binary files
+  if not IsTextFile(Filename) then Exit;
   F := TFileStream.Create(Filename,fmOpenReadWrite or fmShareExclusive );
   try
     SetLength(tmp,F.Size);
