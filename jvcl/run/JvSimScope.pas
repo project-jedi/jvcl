@@ -451,7 +451,12 @@ begin
   Rect.Left := 0;
   Rect.Right := Width;
   Rect.Bottom := Height;
+  {$IFDEF VCL}
   Canvas.CopyRect(Rect, FDrawBuffer.Canvas, Rect);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Canvas.CopyRect(Bounds(Left, Top, Width, Height), FDrawBuffer.Canvas, Rect);
+  {$ENDIF VisualCLX}
   FAllowed := True;
 end;
 
