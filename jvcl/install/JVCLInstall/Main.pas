@@ -234,9 +234,13 @@ begin
     Exit;
   end;
 
- // create welcome page
+  // create welcome page
   BuildPages(PackageInstaller.Page);
   JvWizard.SelectFirstPage;
+  
+  // for some reason, the label doesn't get translated 
+  // if we don't do it ourselves
+  DoTranslate(LblHomepage);
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
