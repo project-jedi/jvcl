@@ -42,6 +42,7 @@ We would like to thank following people, who made JEDI-VCL possible by helping t
    • Michael Beck
    • Peter Below
    • Alec Bergamini
+   • Marcel Bestebroer
    • Helen Borrie
    • Marcel van Brakel
    • Sebastien Buysse
