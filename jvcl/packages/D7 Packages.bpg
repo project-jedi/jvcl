@@ -19,7 +19,8 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvGlobusD7R.bpl JvGlobusD7D.bpl JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl \
   JvPageCompsD7R.bpl JvPageCompsD7D.bpl JvValidatorsD7R.bpl JvValidatorsD7D.bpl \
   JvUIBD7R.bpl JvUIBD7D.bpl JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl \
-  JvHMID7R.bpl JvHMID7D.bpl
+  JvHMID7R.bpl JvHMID7D.bpl JvManagedThreadsD6R.bpl JvManagedThreadsD6D.bpl
+  $(DCC)
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -169,3 +170,8 @@ JvHMID7R.bpl: d7\JvHMID7R.dpk
 JvHMID7D.bpl: d7\JvHMID7D.dpk
   $(DCC)
 
+JvManagedThreadsD7R.bpl: d7\JvManagedThreadsD7R.dpk
+  $(DCC)
+
+JvManagedThreadsD7D.bpl: d7\JvManagedThreadsD7D.dpk
+  $(DCC)

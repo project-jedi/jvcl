@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-10:
+- added JvManagedThreads donation from Erwin Molendjik // peter3
 2003-10-09:
 - added TJvImageList component ("Images and Animations" palette) // andreas
 2003-10-08:
