@@ -152,9 +152,10 @@ const
   { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
-  // (rom) unused
+  // (outchy) now used
   {$IFDEF COMPILER7_UP}
-  DEFAULT_SYSCOLOR_MASK = $000000FF;
+  // (outchy) it was defined as $000000FF
+  DEFAULT_SYSCOLOR_MASK = clSystemColor;  // $FF000000
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF COMPILER7_UP}
@@ -170,11 +171,12 @@ const
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
-  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
-  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
-  clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
-  clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
-  clMenuBar = TColor(COLOR_MENUBAR or $80000000);
+  // (outchy) = TColor(COLOR_XXXXXXXXXXX or $80000000);
+  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or DEFAULT_SYSCOLOR_MASK);
+  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or DEFAULT_SYSCOLOR_MASK);
+  clHotLight = TColor(COLOR_HOTLIGHT or DEFAULT_SYSCOLOR_MASK);
+  clMenuHighlight = TColor(COLOR_MENUHILIGHT or DEFAULT_SYSCOLOR_MASK);
+  clMenuBar = TColor(COLOR_MENUBAR or DEFAULT_SYSCOLOR_MASK);
   {$ENDIF COMPILER6_UP}
 
   {$IFNDEF COMPILER6_UP}

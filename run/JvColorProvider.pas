@@ -529,7 +529,13 @@ begin
   S := Item.GetID;
   Result := Copy(S, 1, 7) = cColorItemIDPrefix;
   if Result then
+  begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
+{$IFDEF COMPILER7_UP}
+    if (Color and $80000000)<>0 then
+      Color := Color or clSystemColor;
+{$ENDIF COMPILER7_UP}
+  end;
 end;
 
 function GetUniqueMappingName(Mappings: TJvColorProviderNameMappings; Prefix: string): string;
@@ -1626,7 +1632,13 @@ begin
     end;
   end;
   if ColorFound then
-    SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8))
+  begin
+{$IFDEF COMPILER7_UP}
+    if (ColorValue and clSystemColor)=clSystemColor then
+      ColorValue := ColorValue and $80FFFFFF;
+{$ENDIF COMPILER7_UP}
+    SetID(cColorItemIDPrefix + IntToHex(ColorValue, 8));
+  end
   else
     SetID('Item' + IntToStr(ListNumber) + '.' + IntToStr(ListIndex));
 end;
