@@ -65,7 +65,6 @@ type
     SpeedButtonMoveFieldUp: TSpeedButton;
     SpeedButtonMoveFieldDown: TSpeedButton;
     LabelKey: TLabel;
-    Bevel2: TBevel;
     procedure ButtonOkClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -173,7 +172,7 @@ begin
     begin
       EditFieldName.Text := SubFields[0];
       FFieldTypeCh := SubFields[1][1];
-      FieldLength := StrToIntDef(Copy(SubFields[1], 1, Length(SubFields[1])), DEFAULT_CSV_STR_FIELD);
+      FieldLength := StrToIntDef(Copy(SubFields[1], 2, Length(SubFields[1])), DEFAULT_CSV_STR_FIELD);
     end;
   except
     { clear it if we have a problem }
