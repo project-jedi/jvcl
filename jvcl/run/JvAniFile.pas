@@ -33,13 +33,13 @@ uses
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   {$IFDEF COMPLIB_VCL}
   Windows, Graphics, Forms, Dialogs,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   QGraphics, QForms, QDialogs, Types,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   JvTypes;
 
 type
@@ -110,6 +110,9 @@ implementation
 uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts;
+
+resourcestring
+  SWriteStreamNotImplemented = 'TJvAnimatedCursorImage.WriteStream not implemented';
 
 { This implementation based on animated cursor editor source code
   (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
@@ -201,9 +204,9 @@ end;
 { Icon and cursor types }
 
 const
-  rc3_StockIcon = 0;
-  rc3_Icon = 1;
-  rc3_Cursor = 2;
+  RC3_STOCKICON = 0;
+  RC3_ICON = 1;
+  RC3_CURSOR = 2;
 
 type
   PCursorOrIcon = ^TCursorOrIcon;
@@ -235,15 +238,13 @@ end;
 
 destructor TJvIconFrame.Destroy;
 begin
-  if FIcon <> nil then
-    FIcon.Free;
+  FIcon.Free;
   inherited Destroy;
 end;
 
 procedure TJvIconFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvIconFrame then
-  begin
     with Source as TJvIconFrame do
     begin
       if Self.FIcon = nil then
@@ -255,8 +256,7 @@ begin
       Self.FHotSpot.Y := FHotSpot.Y;
       Self.FJiffRate := FJiffRate;
       Self.FSeq := FSeq;
-    end;
-  end
+    end
   else
     inherited Assign(Source);
 end;
@@ -697,7 +697,7 @@ end;
 
 procedure TJvAnimatedCursorImage.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
-  NotImplemented;
+  raise EJVCLException.Create(SWriteStreamNotImplemented);
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);
@@ -759,11 +759,9 @@ begin
         end;
         Canvas.FillRect(Bounds(0, 0, Width, Height));
         for I := 0 to FIcons.Count - 1 do
-        begin
           if Icons[I] <> nil then
             Canvas.Draw(Icons[I].Width * I * Ord(not Vertical),
               Icons[I].Height * I * Ord(Vertical), Icons[I]);
-        end;
       end;
       if DecreaseColors then
         DecreaseBMPColors(Temp, Max(OriginalColors, 16));

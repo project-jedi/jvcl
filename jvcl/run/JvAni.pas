@@ -31,12 +31,12 @@ unit JvAni;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Windows, Graphics, Forms, ExtCtrls,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   QGraphics, QForms, QExtCtrls, Types,
-{$ENDIF}
+  {$ENDIF QForms}
   SysUtils, Classes, Consts,
   JvTypes;
 
@@ -74,10 +74,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
-  {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
     property Author: string read FAuthor;
@@ -143,7 +143,7 @@ begin
   {$ELSE}
   if not FCurrentIcon.Empty then
     FCurrentIcon.Assign(nil);
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   FIndex := -1;
 
   if not (csDestroying in Application.ComponentState) then
@@ -196,6 +196,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
+
 procedure TJvAni.LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE);
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
@@ -205,21 +206,22 @@ procedure TJvAni.SaveToClipboardFormat(var Format: Word; var Data: THandle; var 
 begin
   raise EInvalidGraphicOperation.Create(sIconToClipboard);
 end;
+
 {$ENDIF COMPLIB_VCL}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
 const
-  an_RIFF = $46464952;
-  an_ACON = $4E4F4341;
-  an_LIST = $5453494C;
-  an_INFO = $4F464E49;
-  an_INAM = $4D414E49;
-  an_IART = $54524149;
-  an_anih = $68696E61;
-  an_rate = $65746172;
-  an_fram = $00617266;
-  an_icon = $6E6F6369;
-  an_seq = $20716573;
+  an_RIFF = $46464952;  // 'RIFF'
+  an_ACON = $4E4F4341;  // 'ACON'
+  an_LIST = $5453494C;  // 'LIST'
+  an_INFO = $4F464E49;  // 'INFO'
+  an_INAM = $4D414E49;  // 'INAM'
+  an_IART = $54524149;  // 'IART'
+  an_anih = $68696E61;  // 'anih'
+  an_rate = $65746172;  // 'rate'
+  an_fram = $00617266;  // 'fram'
+  an_icon = $6E6F6369;  // 'icon'
+  an_seq = $20716573;   // 'seq '
 var
   dw, dw2: Integer;
 
@@ -235,10 +237,10 @@ var
       Result := 0;
   end;
 
-  function ReadDWord: DWord;
+  function ReadDWord: DWORD;
   begin
-    Dec(dw, SizeOf(DWord));
-    if FImage.Read(Result, SizeOf(Result)) < SizeOf(DWord) then
+    Dec(dw, SizeOf(DWORD));
+    if FImage.Read(Result, SizeOf(Result)) < SizeOf(DWORD) then
       Result := 0;
   end;
 
@@ -270,11 +272,9 @@ var
     Len: Integer;
   begin
     Len := ReadDWord div 4;
-    if (Len = FHeader.dwSteps) then
-    begin
+    if Len = FHeader.dwSteps then
       for Len := 1 to Len do
-        List.Add(Pointer(ReadDWord));
-    end
+        List.Add(Pointer(ReadDWord))
     else
       Error;
   end;
@@ -355,13 +355,13 @@ end;
 
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if FCurrentIcon.Handle <> 0 then
     DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
-{$ELSE}
+  {$ELSE}
   if not FCurrentIcon.Empty then
     Canvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
 end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
@@ -382,11 +382,11 @@ type
     dwImageOffset: LongInt;
   end;
 var
-{$IFDEF COMPLIB_VCL}
-  p: Integer;
-{$ELSE}
-  Mstream : TMemoryStream ;
-{$ENDIF}
+  {$IFDEF COMPLIB_VCL}
+  P: Integer;
+  {$ELSE}
+  MStream: TMemoryStream;
+  {$ENDIF COMPLIB_VCL}
   Len: Integer;
   IconHeader: TIconHeader;
 begin
@@ -394,32 +394,32 @@ begin
     if FIndex <> Value then
     begin
       FIndex := Value;
-    {$IFDEF COMPLIB_CLX}
+      {$IFDEF COMPLIB_CLX}
       if not FCurrentIcon.Empty then
         FCurrentIcon.Assign(nil);
-    {$ENDIF}
-    {$IFDEF COMPLIB_VCL}
+      {$ENDIF COMPLIB_CLX}
+      {$IFDEF COMPLIB_VCL}
       if FCurrentIcon.Handle <> 0 then
         DestroyIcon(FCurrentIcon.Handle);
-      p := Integer(FImage.Memory);
-    {$ENDIF}
+      P := Integer(FImage.Memory);
+      {$ENDIF COMPLIB_VCL}
       FImage.Position := Integer(FImages[FIndex]);
       FImage.Read(Len, SizeOf(Len));
       FImage.Read(IconHeader, SizeOf(IconHeader));
       FImage.Position := FImage.Position + (SizeOf(TIconDirEntry) * IconHeader.NumIcons);
       Dec(Len, SizeOf(IconHeader) + (SizeOf(TIconDirEntry) * IconHeader.NumIcons));
-    {$IFDEF COMPLIB_VCL}
-      Inc(p, FImage.Position);
-      p := CreateIconFromResource(Pointer(p), Len, True, $30000);
+      {$IFDEF COMPLIB_VCL}
+      Inc(P, FImage.Position);
+      P := CreateIconFromResource(Pointer(p), Len, True, $30000);
       FCurrentIcon.Handle := p;
-    {$ENDIF}
-    {$IFDEF COMPLIB_CLX}
+      {$ENDIF COMPLIB_VCL}
+      {$IFDEF COMPLIB_CLX}
       MStream := TMemoryStream.Create;
       MStream.CopyFrom(FImage, Len);
       MStream.Position := 0; // set start 
       FCurrentIcon.LoadFromStream(MStream);
       MStream.Free;
-    {$ENDIF}
+      {$ENDIF COMPLIB_CLX}
       Changed(Self);
     end;
 end;
@@ -449,15 +449,13 @@ begin
   if FIndex = -1 then
     SetAnimated(False)
   else
+  if (FIndex > 0) and (FRate.Count > FIndex) then
+    FTimer.Interval := Cardinal(FRate[FIndex]) * (1000 div 60)
+  else
   begin
-    if (FIndex > 0) and (FRate.Count > FIndex) then
-      FTimer.Interval := Cardinal(FRate[FIndex]) * (1000 div 60)
-    else
-    begin
-      FTimer.Interval := FHeader.dwJIFRate * (1000 div 60);
-      if FTimer.Interval = 0 then
-        FTimer.Interval := 100;
-    end
+    FTimer.Interval := FHeader.dwJIFRate * (1000 div 60);
+    if FTimer.Interval = 0 then
+      FTimer.Interval := 100;
   end;
 end;
 
