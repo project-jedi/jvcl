@@ -513,7 +513,7 @@ uses
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Controls,
   JclStrings,
-  JvJVCLUtils, JvConsts, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
 const
   aisPrvEvt = 'aisPrvEvt';
@@ -2965,14 +2965,8 @@ begin
     {$ENDIF VisualCLX}
     OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
     try
-      {$IFDEF VCL}
-      DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
-        DT_VCENTER or DT_NOPREFIX);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       DrawText(CurrentCanvas, S, Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
         DT_VCENTER or DT_NOPREFIX);
-      {$ENDIF VisualCLX}
     finally
       SetBkMode(CurrentCanvas.Handle, OldBkMode);
       {$IFDEF VisualCLX}
