@@ -99,6 +99,9 @@ type
     procedure PageControl1Change(Sender: TObject);
     procedure JvTransparentButton26Click(Sender: TObject);
     procedure JvTransparentButton28Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  public
+    Activated: Boolean;
   end;
 
 var
@@ -239,6 +242,15 @@ end;
 procedure TTransBtnFormMain.JvTransparentButton28Click(Sender: TObject);
 begin
   JvTransparentButton27.Enabled := not JvTransparentButton27.Enabled;
+end;
+
+procedure TTransBtnFormMain.FormActivate(Sender: TObject);
+begin
+  if not Activated then
+  begin
+    Activated := True;
+    Image2.Picture.Assign(Image3.Picture);
+  end;
 end;
 
 end.
