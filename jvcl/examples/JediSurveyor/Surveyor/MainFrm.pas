@@ -6,8 +6,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, JvScrollBox, ComCtrls, JvProgressBar,
   JvBevel, Buttons, JvBitBtn, JvFooter, JvComponent, JvSurveyIntf,
-  JvDialogs, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
-  JvRadioButton, JvCheckBox, JvMemo, Menus;
+  JvDialogs, ImgList, ActnList, JvActions, JvLinkLabel,
+  JvRadioButton, JvCheckBox, JvMemo, Menus, JvExForms, JvExButtons,
+  JvExExtCtrls, JvExControls, JvImageSquare;
 
 type
   TfrmMain = class(TForm)
@@ -26,7 +27,7 @@ type
     acPrevPage: TAction;
     acNextPage: TAction;
     acLoadSurvey: TAction;
-    acSendMail: TJvSendMail;
+    acSendMail: TJvSendMailAction;
     acGotoJVCL: TJvWebAction;
     acLastPage: TAction;
     acExit: TAction;
@@ -141,8 +142,8 @@ const
 
 implementation
 uses
-  ComObj, Math, JclStrings, JclSysInfo, 
-  JvJVCLUtils, JvSurveyUtils, CommentFrm;
+  ComObj, Math, JclStrings, JclSysInfo,
+  JvJCLUtils, JvSurveyUtils, CommentFrm;
 
 {$R *.dfm}
 

@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, StdActns, ActnList, Menus, ExtCtrls, ComCtrls, JvStatusBar,
   JvComCtrls, JvSurveyIntf, JvDialogs, StdCtrls, JvListView, HTTPApp,
-  JvComponent, JvImageWindow{$IFDEF COMPILER6_UP}, HTTPProd{$ENDIF};
+  JvComponent, JvImageSquare {$IFDEF COMPILER6_UP}, HTTPProd, JvExComCtrls{$ENDIF};
 
 type
   TfrmMain = class(TForm)
@@ -106,7 +106,7 @@ resourcestring
 
 implementation
 uses
-  JvSurveyUtils, JclStrings, Math, JvSimpleXML, JvJVCLUtils, CommentsFrm;
+  JvSurveyUtils, JclStrings, Math, JvSimpleXML, JvJCLUtils, CommentsFrm;
 
 {$R *.DFM}
 resourcestring

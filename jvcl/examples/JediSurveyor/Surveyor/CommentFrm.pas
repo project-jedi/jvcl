@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ActnList, JvDialogs, Menus, JvMemo;
+  Dialogs, StdCtrls, ComCtrls, ActnList, JvDialogs, Menus, JvMemo,
+  JvExStdCtrls;
 
 type
   TfrmComment = class(TForm)
