@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 David Frauzel (DF)
+Remko Bonte
 
 Last Modified: 2003-02-18
 
