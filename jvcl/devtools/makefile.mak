@@ -48,6 +48,7 @@ MakePNG.exe \
 Res2BMP.exe \
 stripCmtPO.exe \
 dxgettextResstr.exe \
+pg2want.exe
 
 #---------------------------------------------------------------------------------------------------
 
@@ -155,3 +156,9 @@ Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
   $(DCC) $&.dpr
   cd ..
 
+pg2want.exe: pg2want\pg2want.dpr
+  cd pg2want
+  @echo.
+  @echo.
+  $(DCC) $&.dpr
+  cd ..

@@ -30,6 +30,7 @@
     <echo message="  separate - builds separate zip files" />
     <echo message="  all - build all zip files" />
     <echo message="  release - get all from CVS and build all zip files" />
+    <echo message="  ftpupload - upload generated zip files to sourceforge ftp (incoming)" />
   </target>
 
   <target name="jcl_export" description="Get latest jcl from CVS">
@@ -196,12 +197,36 @@
     </zip>
   </target>
   <target name="separate" description="Build separate zip files">
-  <!-- !!!insert "separate" targets here!!! -->
+    <want buildfile="separate.xml"/>
   </target>
   <target name="all" description="Build all zip files" depends="separate, standalone, dist">
     <!-- builds everything -->
   </target>
   <target name="release" description="Get all from CVS and build all zip files" depends="jvcl_export, jcl_export, all">
     <!-- exports from CVS and builds everything -->
+  </target>
+  <target name="ftpupload" description="Upload zip files to sourceforge FTP">
+    <echo file="ftpupload.txt" append="no">
+    open upload.sourceforge.net
+    anonymous
+    peter3@sourceforge.net
+    binary
+    hash
+    cd /incoming
+    put ${fullzip}
+    put ${srcexzip}
+    put ${srczip}
+    put ${uibzip}
+    put ${tfzip}
+    put ${mtzip}
+    put ${dotnetzip}
+    put ${dockzip}
+    put ${xpzip}
+    put ${wizzip}
+    quit
+    </echo>
+    <exec executable="ftp.exe">
+      <arg value="-s:ftpupload.txt" />
+    </exec>
   </target>
 </project>
