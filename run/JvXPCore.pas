@@ -38,7 +38,8 @@ uses
 
 {$IFDEF VisualCLX}
 uses
-  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows, JvComponent;
+  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows,
+  JvQComponent;
 {$ENDIF VisualCLX}
 
 const
@@ -142,7 +143,6 @@ type
   end;
   {$ENDIF USEJVCL}
 
-  {$IFDEF VCL}
   {$IFDEF USEJVCL}
   TJvXPWinControl = class(TJvWinControl)
   {$ELSE}
@@ -151,16 +151,6 @@ type
   published
     property Color;
   end;
-  {$ENDIF VCL}
-
-  {$IFDEF VisualCLX}
-  TJvXPWinControl = class(TJvWinControl)
-    function GetColor: TColor;
-  published
-    property Color: TColor read GetColor;
-  end;
-  {$ENDIF VisualCLX}
-
   { baseclass for focusable control descendants. }
 
   {$IFDEF USEJVCL}
@@ -225,7 +215,7 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    function WidgetFlags: integer; override;
+//    function WidgetFlags: integer; override;
     procedure Loaded; override;
     {$ENDIF VisualCLX}
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -404,15 +394,6 @@ resourcestring
   SVersion = '2.0.1'; // always increase version number on new releases!
 {$ENDIF USEJVCL}
 
-{$IFDEF VisualCLX}
-//=== TJvXPWinControl
-
-function  TJvXPWinControl.GetColor: TColor;
-begin
-  Result := QColorColor(QWidget_backgroundColor(Handle));
-end;
-{$ENDIF VisualCLX}
-
 //=== TJvXPCustomComponent ===================================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
@@ -436,9 +417,7 @@ constructor TJvXPCustomControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  {$IFDEF VCL}
   DoubleBuffered := True;
-  {$ENDIF VCL}
   ExControlStyle := [csRedrawEnabledChanged, csRedrawFocusedChanged,
     csRedrawMouseDown, csRedrawMouseEnter, csRedrawMouseLeave, csRedrawMouseUp,
     csRedrawParentColorChanged, csRedrawCaptionChanged];
@@ -585,10 +564,12 @@ begin
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
+(*
 function TJvXPCustomControl.WidgetFlags: integer;
 begin
   Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
+*)
 
 procedure TJvXPCustomControl.Loaded;
 begin
