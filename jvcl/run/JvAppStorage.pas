@@ -1797,7 +1797,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
@@ -1812,7 +1812,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, List, List.Count,
     TargetStore.WriteObjectListItem, TargetStore.DeleteObjectListItem, ItemName);
@@ -1824,7 +1824,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
     List.Clear;
@@ -1837,7 +1837,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, List, List.Count,
     TargetStore.WriteCollectionItem, TargetStore.DeleteCollectionItem, ItemName);
@@ -1851,7 +1851,7 @@ var
 begin
   SL.BeginUpdate;
   try
-    ResolvePath(Path + '\*', TargetStore, TargetPath);
+    ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
     Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
@@ -1867,7 +1867,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, SL, SL.Count,
     TargetStore.WriteStringListItem, TargetStore.DeleteStringListItem, ItemName);
@@ -1888,7 +1888,7 @@ var
 begin
   SL.BeginUpdate;
   try
-    ResolvePath(Path + '\*', TargetStore, TargetPath);
+    ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
     Delete(TargetPath, Length(TargetPath) - 1, 2);
     if ClearFirst then
       SL.Clear;
@@ -1903,7 +1903,7 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
-  ResolvePath(Path + '\*', TargetStore, TargetPath);
+  ResolvePath(Path + PathDelim + '*', TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   TargetStore.WriteList(TargetPath, SL, SL.Count, TargetStore.WriteStringObjectListItem, TargetStore.DeleteStringObjectListItem, ItemName);
 end;
