@@ -36,11 +36,12 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Classes,
+  Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
   {$ENDIF VCL}
+  SysUtils, // SysUtils after Windows because both define Beep
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QExtCtrls,
   QButtons, QClipbrd, Types, QImgList, QWindows,
