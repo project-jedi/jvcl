@@ -905,7 +905,9 @@ begin
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    // TODO
+    repeat
+      Application.ProcessMessages;
+    until not QWidget_isVisible(DropDownMenu.handle);
     {$ENDIF VisualCLX}
 
   end;
