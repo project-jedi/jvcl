@@ -2247,6 +2247,31 @@ begin
   Invalidate;
 end;
 
+procedure TJvDBGrid.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('AlternRowColor', ReadAlternRowColor, nil, false);
+end;
+
+procedure TJvDBGrid.ReadAlternRowColor(Reader:TReader);
+var b:boolean;
+begin
+  b := Reader.ReadBoolean;
+  if b then
+    AlternateRowColor := $00DDDDDD // this was the previous default row color
+  else
+    AlternateRowColor := clNone;
+end;
+
+procedure TJvDBGrid.SetAlternateRowColor(const Value: TColor);
+begin
+  if FAlternateRowColor <> Value then
+  begin
+    FAlternateRowColor := Value;
+    Invalidate;
+  end;
+end;
+
 // ***********************************************************************
 // TMyInplaceEdit
 // ***********************************************************************
@@ -2435,30 +2460,6 @@ end;
 // End Lionel
 // ***********************************************************************
 
-procedure TJvDBGrid.SetAlternateRowColor(const Value: TColor);
-begin
-  if FAlternateRowColor <> Value then
-  begin
-    FAlternateRowColor := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvDBGrid.ReadAlternRowColor(Reader:TReader);
-var b:boolean;
-begin
-  b := Reader.ReadBoolean;
-  if b then
-    AlternateRowColor := $00DDDDDD
-  else
-    AlternateRowColor := clNone;
-end;
-
-procedure TJvDBGrid.DefineProperties(Filer: TFiler);
-begin
-  inherited;
-  Filer.DefineProperty('AlternRowColor', ReadAlternRowColor, nil, false);
-end;
 
 initialization
 
