@@ -161,13 +161,6 @@ begin
   TfrmTreeViewItems.Edit(TreeView);
 end;
 
-function Max(Val1, Val2: integer): integer;
-begin
-  Result := Val1;
-  if Val2 > Val1 then
-    Result := Val2;
-end;
-
 { TGroupBox }
 
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
