@@ -739,9 +739,14 @@ begin
     end;
     S := ExtractFileDir(S);
     DxgettextDir := S;
-    if Version = 5 then
-      S := S + '\delphi5';
-    ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+    if not FileExists(DxgettextDir + '\msgfmt.exe') then
+      DxgettextDir := ''
+    else
+    begin
+      if Version = 5 then
+        S := S + '\delphi5';
+      ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+    end;
   end;
 end;
 {******************************************************************************}
