@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-13
+Last Modified: 2004-01-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -28,11 +28,14 @@ Known Issues:
 unit JvExControls;
 interface
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
+  Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QWindows, QForms,  // order: QControls, QWindows
+  Qt, QTypes, QGraphics, QControls, QWindows, QForms,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvThemes;
@@ -52,6 +55,7 @@ type
     dcNative // if dcNative is in the set the native functions are used and DoGetDlgCode is ignored
   );
   TDlgCodes = set of TDlgCode;
+
 const
   dcWantMessage = dcWantAllKeys;
 
@@ -67,12 +71,13 @@ type
     procedure ParentColorChanged;
     procedure ParentShowHintChanged;
     function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean;
+      const KeyText: WideString): Boolean; // CM_DIALOGCHAR
     function HintShow(var HintInfo: THintInfo): Boolean;
-    function HitTest(X, Y: Integer): Boolean;
+    function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
+    procedure DoFocusChanged(Control: TWinControl);
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean);
     {$ENDIF VCL}
@@ -85,7 +90,9 @@ type
     procedure ShowHintChanged;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
-    procedure DoGetDlgCode(var Code: TDlgCodes);
+    procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
+    procedure DoSetFocus(PreviousControl: TWinControl);  // WM_SETFOCUS
+    procedure DoKillFocus(NextControl: TWinControl); // WM_KILLFOCUS
   end;
 
   IJvCustomControlEvents = interface
@@ -93,7 +100,7 @@ type
   end;
 
 const
-  CM_DENYSUBCLASSING = CM_BASE + 2000; // from JvThemes.pas
+  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
@@ -103,12 +110,33 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
+{$IFDEF VisualCLX}
+const
+  CM_FOCUSCHANGED = CM_BASE + 17; // VCL Controls: CM_BASE + 7
+
+type
+  TCMFocusChanged = record
+    Msg: Cardinal;
+    Unused: Integer;
+    Sender: TWinControl;
+    Result: Longint;
+  end;
+{$ENDIF VisualCLX}
+
 
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
 
-  JV_CONTROL_EVENTS(GraphicControl)
+  JV_CONTROL_EVENTS_BEGIN(GraphicControl)
+  {$IFDEF VisualCLX}
+  private
+    FText: TCaption; // TControl does not save the Caption property
+  protected
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+  {$ENDIF VisualCLX}
+  JV_CONTROL_EVENTS_END(GraphicControl)
   JV_CUSTOMCONTROL_EVENTS(CustomControl)
   JV_CUSTOMCONTROL_EVENTS(HintWindow)
 
@@ -232,6 +260,7 @@ begin
         CM_DIALOGCHAR:
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
+        // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
 
         WM_ERASEBKGND:
           begin
@@ -306,6 +335,19 @@ begin
                   PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
               end;
             end;
+
+            WM_SETFOCUS:
+              begin
+                with PMsg^ do
+                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+                DoSetFocus(FindControl(HWND(PMsg^.WParam)));
+              end;
+            WM_KILLFOCUS:
+              begin
+                with PMsg^ do
+                  Result := InheritMsg(Instance, Msg, WParam, LParam);
+                DoKillFocus(FindControl(HWND(PMsg^.WParam)));
+              end;
         else
           CallInherited := True;
         end;
@@ -313,7 +355,8 @@ begin
   end;
 
   if CallInherited then
-    PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+    with PMsg^ do
+      Result := InheritMsg(Instance, Msg, WParam, LParam);
 end;
 
 { VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order that
@@ -381,9 +424,9 @@ end;
 
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 var
-  Event: QPaintEventH;
   PaintDevice: QPaintDeviceH;
   IsActive: Boolean;
+  Painting: procedure(Instance: TWidgetControl; Sender: QObjectH; EventRegion: QRegionH);
 begin
   if not (csDestroying in Instance.ComponentState) and
      (not Supports(Instance, IJvCustomControlEvents)) then
@@ -398,17 +441,9 @@ begin
       QPainter_end(Canvas.Handle);
     end;
     try
-      Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
-      try
-        Instance.ControlState := Instance.ControlState + [csWidgetPainting];
-        try
-          QObject_event(Instance.Handle, Event);
-        finally
-          Instance.ControlState := Instance.ControlState - [csWidgetPainting];
-        end;
-      finally
-        QPaintEvent_destroy(Event);
-      end;
+      Painting := @TOpenWidgetControl.Painting;
+     // default painting 
+      Painting(Instance, Instance.Handle, QPainter_clipRegion(Canvas.Handle));
     finally
       // restore
       if IsActive then
@@ -473,56 +508,33 @@ end;
 JV_CONTROL_EVENTS_IMPL(Control)
 JV_WINCONTROL_EVENTS_IMPL(WinControl)
 
-JV_CONTROL_EVENTS_IMPL(GraphicControl)
+JV_CONTROL_EVENTS_IMPL_BEGIN(GraphicControl)
+{$IFDEF VisualCLX}
+function TJvExGraphicControl.GetText: TCaption;
+begin
+  Result := FText;
+end;
+
+procedure TJvExGraphicControl.SetText(const Value: TCaption);
+begin
+  if Value <> FText then
+  begin
+    FText := Value;
+    TextChanged;
+  end;
+end;
+{$ENDIF VisualCLX}
+JV_CONTROL_EVENTS_IMPL_END(GraphicControl)
+
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomControl)
 JV_CUSTOMCONTROL_EVENTS_IMPL(HintWindow)
 
 // *****************************************************************************
 
-{$IFNDEF COMPILER6_UP}
 type
   TOpenControl = class(TControl);
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
-
-  TJumpCode = packed record
-    Pop: Byte; // pop xxx
-    Jmp: Byte; // jmp Offset
-    Offset: Integer;
-  end;
-
-  TRelocationRec = packed record
-    Jump: Word;
-    Address: PPointer;
-  end;
-
-var
-  AutoSizeOffset: Cardinal;
-  TControl_SetAutoSize: Pointer;
-  SavedControlCode: TJumpCode;
-
-procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
-begin
-  with TOpenControl(Instance) do
-  begin
-    if AutoSize <> Value then
-    begin
-      PBoolean(Cardinal(Instance) + AutoSizeOffset)^ := Value;
-      if Value then
-        AdjustSize;
-    end;
-  end;
-end;
-
-procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
-var
-  IntfControl: IJvControlEvents;
-begin
-  if Instance.GetInterface(IJvControlEvents, IntfControl) then
-    IntfControl.SetAutoSize(Value)
-  else
-    TOpenControl_SetAutoSize(Instance, Value);
-end;
 
 function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
 var
@@ -540,8 +552,142 @@ begin
   Result := Result and (n = Count);
 end;
 
+type
+  TJumpCode = packed record
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+  end;
+
+  TOrgCallCode = packed record
+    Push: Byte; // push ebx/ebp
+    InjectedCode: TJumpCode;
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+    Address: Pointer;
+  end;
+
+function GetRelocAddress(ProcAddress: Pointer): Pointer;
+type
+  TRelocationRec = packed record
+    Jump: Word;
+    Address: PPointer;
+  end;
+var
+  Relocation: TRelocationRec;
+  Data: Byte;
+begin
+  Result := ProcAddress;
+ // the relocation table meight be protected
+  if ReadProtectedMemory(ProcAddress, Data, SizeOf(Data)) then
+  begin
+    if Data = $FF then // ProcAddress is in a dll or package
+      if ReadProtectedMemory(ProcAddress, Relocation, SizeOf(Relocation)) then
+        Result := Relocation.Address^;
+  end;
+end;
+
+function InstallProcHook(ProcAddress, HookProc, OrgCallProc: Pointer): Boolean;
+var
+  Code: TJumpCode;
+  OrgCallCode: TOrgCallCode;
+begin
+  ProcAddress := GetRelocAddress(ProcAddress);
+  Result := False;
+  if Assigned(ProcAddress) and Assigned(HookProc) then
+  begin
+    if OrgCallProc <> nil then
+    begin
+      if ReadProtectedMemory(ProcAddress, OrgCallCode, SizeOf(OrgCallCode) - (1 + SizeOf(Integer))) then
+      begin
+        OrgCallCode.Jmp := $E9;
+        OrgCallCode.Offset := (Integer(ProcAddress) + 1 + SizeOf(Code)) -
+          Integer(OrgCallProc) -
+          (SizeOf(OrgCallCode) - SizeOf(OrgCallCode.Address));
+        OrgCallCode.Address := ProcAddress;
+
+        WriteProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode));
+        FlushInstructionCache(GetCurrentProcess, OrgCallProc, SizeOf(OrgCallCode));
+      end;
+    end;
+
+    if PByte(ProcAddress)^ = $53 then // push ebx
+      Code.Pop := $5B // pop ebx
+    else
+    if PByte(ProcAddress)^ = $55 then // push ebp
+      Code.Pop := $5D // pop ebp
+    else
+      Exit;
+    Code.Jmp := $E9;
+    Code.Offset := Integer(HookProc) - (Integer(ProcAddress) + 1) - SizeOf(Code);
+
+   { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
+    if WriteProtectedMemory(Pointer(Cardinal(ProcAddress) + 1), Code,
+         SizeOf(Code)) then
+    begin
+      FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(Code));
+      Result := True;
+    end;
+  end;
+end;
+
+function UninstallProcHook(OrgCallProc: Pointer): Boolean;
+var
+  OrgCallCode: TOrgCallCode;
+  ProcAddress: Pointer;
+begin
+  Result := False;
+  if Assigned(OrgCallProc) then
+  begin
+    if OrgCallProc <> nil then
+    begin
+      if ReadProtectedMemory(OrgCallProc, OrgCallCode, SizeOf(OrgCallCode)) then
+      begin
+        ProcAddress := OrgCallCode.Address;
+
+        Result := WriteProtectedMemory(ProcAddress, OrgCallCode, 1 + SizeOf(TJumpCode));
+        FlushInstructionCache(GetCurrentProcess, ProcAddress, SizeOf(OrgCallCode));
+      end;
+    end;
+  end;
+end;
+
+{$IFNDEF COMPILER6_UP}
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
+
+procedure OrgSetAutoSize(Instance: TControl; Value: Boolean);
+asm
+  dd    0, 0, 0, 0  // 16 Bytes
+end;
+
+procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
+begin
+  with TOpenControl(Instance) do
+  begin
+    if AutoSize <> Value then
+    begin
+      PBoolean(Cardinal(Instance) + AutoSizeOffset)^ := Value;
+      if Value then
+        AdjustSize;
+    end;
+  end;
+  // same as OrgSetAutoSize(Instance, Value); but secure
+end;
+
+procedure SetAutoSizeHook(Instance: TControl; Value: Boolean);
+var
+  IntfControl: IJvControlEvents;
+begin
+  if Instance.GetInterface(IJvControlEvents, IntfControl) then
+    IntfControl.SetAutoSize(Value)
+  else
+    TOpenControl_SetAutoSize(Instance, Value);
+end;
+
 {$OPTIMIZATION ON} // be sure to have optimization activated
-function GetCode(Instance: TOpenControl): Boolean;
+function GetCode(Instance: TOpenControl): Boolean; register;
 begin
   { generated code:
       8A40xx       mov al,[eax+Byte(Offset)]
@@ -549,7 +695,7 @@ begin
   Result := Instance.AutoSize;
 end;
 
-procedure SetCode(Instance: TOpenControl);
+procedure SetCode(Instance: TOpenControl); register;
 begin
   { generated code:
       B201         mov dl,$01
@@ -580,10 +726,8 @@ const
 
 procedure InitHookVars;
 var
-  Relocation: TRelocationRec;
   PGetCode: PGetCodeRec;
   PSetCode: PSetCodeRec;
-  Data: Byte;
 begin
   TControl_SetAutoSize := nil;
   AutoSizeOffset := 0;
@@ -595,68 +739,116 @@ begin
      (PSetCode^.Sign1 = SetCodeSign1) and (PSetCode^.Sign2 = SetCodeSign2) then
   begin
     AutoSizeOffset := PGetCode^.Offset;
-    TControl_SetAutoSize := Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) +
-      PSetCode^.Offset);
-
-   // the relocation table meight be protected
-    if ReadProtectedMemory(TControl_SetAutoSize, Data, SizeOf(Data)) then
-    begin
-      if Data = $FF then // TControl.SetAutoSize is in a dll or package
-        if ReadProtectedMemory(TControl_SetAutoSize, Relocation, SizeOf(Relocation)) then
-          TControl_SetAutoSize := Relocation.Address^;
-    end;
-  end;
-end;
-
-procedure InstallSetAutoSizeHook;
-var
-  Code: TJumpCode;
-begin
-  InitHookVars;
-  if Assigned(TControl_SetAutoSize) then
-  begin
-    if PByte(TControl_SetAutoSize)^ = $53 then // push ebx
-      Code.Pop := $5B // pop ebx
-    else
-    if PByte(TControl_SetAutoSize)^ = $55 then // push ebp
-      Code.Pop := $5D // pop ebp
-    else
-      Exit;
-    Code.Jmp := $E9;
-    Code.Offset := Integer(@SetAutoSizeHook) -
-      (Integer(TControl_SetAutoSize) + 1) - SizeOf(Code);
-
-    if ReadProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1),
-      SavedControlCode, SizeOf(SavedControlCode)) then
-    begin
-     { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
-      if WriteProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1), Code,
-           SizeOf(Code)) then
-        FlushInstructionCache(GetCurrentProcess, TControl_SetAutoSize, SizeOf(Code));
-    end;
-  end;
-end;
-
-procedure UninstallSetAutoSizeHook;
-var
-  P: procedure;
-  n: Cardinal;
-begin
-  P := TControl_SetAutoSize;
-  if Assigned(P) then
-  begin
-    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-         @SavedControlCode, SizeOf(SavedControlCode), n) then
-      FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedControlCode));
+    TControl_SetAutoSize := GetRelocAddress(
+      Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset)
+    );
   end;
 end;
 
 initialization
-  InstallSetAutoSizeHook;
+  InitHookVars;
+  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
 
 finalization
-  UninstallSetAutoSizeHook;
+  UninstallProcHook(@OrgSetAutoSize);
 
 {$ENDIF !COMPILER6_UP}
+
+{$IFDEF VisualCLX}
+
+// Handles DoSetFocus and DoKillFocus
+
+function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  Control: TWidgetControl;
+  Intf: IJvWinControlEvents;
+begin
+  Result := False; // let the default event handler handle this event
+  try
+    case QEvent_type(Event) of
+      QEventType_FocusIn, QEventType_FocusOut:
+        begin
+          Control := FindControl(QWidgetH(Sender));
+          if (Control <> nil) and Supports(Control, IJvWinControlEvents, Intf) then
+          begin
+            if QEvent_type(Event) = QEventType_FocusIn then
+              Intf.DoSetFocus(Screen.ActiveControl)
+            else
+              Intf.DoKillFocus(Screen.ActiveControl);
+          end;
+        end;
+    end;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      Result := False;
+    end;
+  end;
+end;
+
+var
+  AppEventFilterHook: QObject_hookH = nil;
+
+procedure InstallAppEventFilterHook;
+var
+  Method: TMethod;
+begin
+  if AppEventFilterHook = nil then
+  begin
+    Method.Code := @AppEventFilter;
+    Method.Data := Application;
+    AppEventFilterHook := QObject_hook_create(Application.Handle);
+    Qt_hook_hook_events(AppEventFilterHook, Method);
+  end;
+end;
+
+procedure UninstallAppEventFilterHook;
+begin
+  if Assigned(AppEventFilterHook) then
+    QObject_hook_destroy(AppEventFilterHook);
+end;
+
+
+function CallSetFocusedControl(Instance: TCustomForm; Control: TWidgetControl): Boolean;
+asm
+  dd    0, 0, 0, 0  // 16 Bytes
+end;
+
+function SetFocusedControlHook(Instance: TCustomForm; Control: TWidgetControl): Boolean;
+var
+  Msg: TCMFocusChanged;
+begin
+  if csFocusing in Instance.ControlState then
+    Result := CallSetFocusedControl(Instance, Control)
+  else
+  begin
+    Result := CallSetFocusedControl(Instance, Control);
+    if Result then
+    begin
+      Instance.ControlState := Instance.ControlState + [csFocusing]; // lock
+      try
+        Msg.Msg := CM_FOCUSCHANGED;
+        Msg.Unused := 0;
+        Msg.Sender := Control;
+        Msg.Result := 0;
+        Instance.Broadcast(Msg);
+      finally
+        Instance.ControlState := Instance.ControlState - [csFocusing];
+      end;
+    end;
+  end;
+end;
+
+initialization
+  InstallAppEventFilterHook;
+  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
+                  @CallSetFocusedControl);
+
+finalization
+  UninstallProcHook(@CallSetFocusedControl);
+  UninstallAppEventFilterHook;
+
+{$ENDIF VisualCLX}
 
 end.
