@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Generated
+##Status: Completed (peter3), needs review
 ----------------------------------------------------------------------------------------------------
 @@JvNetscapeSplitter.pas
 Summary
@@ -11,69 +11,54 @@ Author
 @@TJvButtonStyle
 <TITLE TJvButtonStyle type>
 Summary
-  Write here a summary (1 line)
+  Defines the look of the TJvNetscapeSplitter.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvButtonStyle is the type of the ButtonStyle property of TJvButtonStyle and defines the look
+  of the splitter component.
 @@TJvButtonStyle.bsNetscape
-  Description for bsNetscape
+  Looks like a splitter in Netscape Navigator.
 @@TJvButtonStyle.bsWindows
-  Description for bsWindows
+  Looks like a band with close, maximize and minimize buttons.
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonWidthType
 <TITLE TJvButtonWidthType type>
 Summary
-  Write here a summary (1 line)
+  Specifies how a size is to be interpreted.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvButtonWidthType is the type of the ButtonWidth property of a TJvNetscapeSplitter component.
 @@TJvButtonWidthType.btwPixels
-  Description for btwPixels
+  The ButtonWidth value is in pixels.
 @@TJvButtonWidthType.btwPercentage
-  Description for btwPercentage
+  The ButtonWidth value is in percentage of the total width or height of th esplitter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNetscapeSplitter
 Summary
-  Write here a summary (1 line)
+  A splitter component.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvCustomNetscapeSplitter.Align
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomNetscapeSplitter is the base class for splitter components that can draw their client area either as
+  a splitter in Netscape Navigator or as a band with close, minimize and maximize buttons. Do not create instances of
+  TJvCustomNetscapeSplitter. Instead, use a derived class, like TJvNetscapeSplitter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNetscapeSplitter.AllowDrag
 Summary
-  Write here a summary (1 line)
+  Specifies if the splitter is active or not.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AllowDrag to false, to prevent the user from resizing adjacent controls by dragging the splitter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNetscapeSplitter.ArrowColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color of the arrows.
 Description
-  Write here a description
+  Modify ArrowColor to change the appearance of the arrows on the splitter. The arrows are only visible
+  when ButtonStyle is bsNetscape.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNetscapeSplitter.AutoHighlightColor
 Summary
-  Write here a summary (1 line)
+  Specifies the highlight color when the mouse hovers over the control.
 Description
-  Write here a description
+  Modify
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

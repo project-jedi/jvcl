@@ -1,16 +1,16 @@
 ##Package: PageComps
-##Status: Locked (peter3)
+##Status: Completed (peter3), needs review
 ----------------------------------------------------------------------------------------------------
 @@JvNavigationPane.pas
 Summary
-  Contains the Jv NavPane component suite.
+  Contains the Jv Navigation Pane components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thornqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane
 Summary
-  Base class for navigation pane components.
+  Base class for navigation pane controls.
 Description
   TJvCustomNavigationPane is the base class for navigationpane style components. Do not create
   instances of TJvCustomNavigationPane. Instead, drop a component, like TJvNavigationPane, on the form.
@@ -106,6 +106,13 @@ Description
 See Also
   LargeImages
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
+----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.UpdatePositions
 Summary
   Iterates the pages and buttons and updates their appearance.
@@ -159,6 +166,13 @@ Description
   to display is determined by the ImageIndex property. An image is only displayed when ButtonType is set to nibImage.
 See Also
   ImageIndex, ButtonType
+----------------------------------------------------------------------------------------------------
+@@TJvNavIconButton.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButtonType
 <TITLE TJvNavIconButtonType type>
@@ -214,6 +228,13 @@ Description
 See Also
   ImageIndex
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPanelButton.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
+----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors
 Summary
   Class that manages the color setting of a nav pane component or style manager.
@@ -228,7 +249,7 @@ Description
 Summary
   Specifies the starting color of the control's background gradient.
 Description
-  Write here a description
+  Use ButtonColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ButtonColorTo
 ----------------------------------------------------------------------------------------------------
@@ -236,7 +257,7 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient.
 Description
-  Write here a description
+  Use ButtonColorTo to specify the ending color of the gradient drawn on the control.
 See Also
   ButtonColorFrom
 ----------------------------------------------------------------------------------------------------
@@ -244,7 +265,7 @@ See Also
 Summary
   Specifies the color of the control's frame.
 Description
-  Write here a description
+  Use FrameColor to specify the frame color of the control.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -253,7 +274,7 @@ See Also
 Summary
   Specifies the starting color of the control's background gradient when the mouse hovers over it.
 Description
-  Write here a description
+  Use ButtonHotColorFrom to specify the starting color of the gradient drawn on a hot tracked control.
 See Also
   ButtonHotColorTo
 ----------------------------------------------------------------------------------------------------
@@ -261,7 +282,7 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient when the mouse hovers over it.
 Description
-  Write here a description
+  Use ButtonHotColorTo to specify the ending color of the gradient drawn on a hot tracked control.
 See Also
 ButtonHotColorFrom
 ----------------------------------------------------------------------------------------------------
@@ -269,7 +290,7 @@ ButtonHotColorFrom
 Summary
   Specifies the starting color of the control's background gradient when the control is in its Down state.
 Description
-  Write here a description
+  Use ButtonSelectedColorFrom to specify the starting color of the gradient drawn on a pressed control.
 See Also
   ButtonSelectedColorTo
 ----------------------------------------------------------------------------------------------------
@@ -277,7 +298,7 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient when the control is in its Down state.
 Description
-  Write here a description
+  Use ButtonSelectedColorTo to specify the ending color of the gradient drawn on a pressed control.
 See Also
   ButtonSelectedColorFrom
 ----------------------------------------------------------------------------------------------------
@@ -285,7 +306,7 @@ See Also
 Summary
   Specifies the starting color of the control's background gradient when the control is a splitter.
 Description
-  Write here a description
+  Use SplitterColorFrom to specify the starting color of the gradient drawn on a splitter.
 See Also
   SplitterColorTo
 ----------------------------------------------------------------------------------------------------
@@ -293,7 +314,7 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient when the control is a splitter.
 Description
-  Write here a description
+  Use SplitterColorTo to specify the ending color of the gradient drawn on a splitter.
 See Also
   SplitterColorFrom
 ----------------------------------------------------------------------------------------------------
@@ -301,13 +322,14 @@ See Also
 Summary
   Panel used as a group splitter in a TJvCustomNavigationPane.
 Description
-  Write here a description
+  Use a TJvNavPanelDivider when you need a divider in the styl eof the Nav Pane components that can 
+  also act as a splitter.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider.ColorFrom
 Summary
   Specifies the starting color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ColorTo
 ----------------------------------------------------------------------------------------------------
@@ -315,7 +337,7 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorTo to specify the ending color of the gradient drawn on the control.
 See Also
   ColorFrom
 ----------------------------------------------------------------------------------------------------
@@ -323,22 +345,30 @@ See Also
 Summary
   Specifies the color of the control's frame.
 Description
-  Write here a description
+  Use FrameColor to specify the frame color of the control.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelDivider.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader
 Summary
   Panel used as a header panel in conjunction with other Nav Pane components.
 Description
-  Write here a description
+  Use a TJvNavPanelHeader when you need a panel that is compatible with other Nav Pane components. 
+  TJvNavPanelHeader supports 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.ColorFrom
 Summary
   Specifies the starting color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ColorTo
 ----------------------------------------------------------------------------------------------------
@@ -346,18 +376,20 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorTo to specify the ending color of the gradient drawn on the control.
 See Also
   ColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display.
 Description
-  Write here a description
+  Set ImageIndex to a value between 0 and Images.Count - 1 to display an image in the control.
+
+  You will also need to assign an image list to the Images property and set ButtonType to nibImage for
+  the button to display the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonType, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.Images
 Summary
@@ -368,11 +400,18 @@ Description
 See Also
   ImageIndex
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPanelHeader.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
+----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage
 Summary
   Class used for the pages in a TJvCustomNavigationPane or descendant.
 Description
-  Write here a description
+  TJvNavPanelPage is the type of the Pages and NavPages property of a TJvCustomNavigationPane. 
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.Colors
 Summary
@@ -387,7 +426,7 @@ See Also
 Summary
   Reference to the button used as the iconic button for the control.
 Description
-  Write here a description
+  This propery is for internal use only.
 See Also
   Iconic, NavPanel, IconPanel
 ----------------------------------------------------------------------------------------------------
@@ -395,7 +434,7 @@ See Also
 Summary
   Indicates whether the page is currently displaying a maximized or iconic button.
 Description
-  Write here a description
+  Use Iconic to specify whether the page's button is displayed mazimized or minimized.
 See Also
   IconButton
 ----------------------------------------------------------------------------------------------------
@@ -403,7 +442,7 @@ See Also
 Summary
   Reference to the icon panel containing the IconButton.
 Description
-  Write here a description
+  This propery is for internal use only.
 See Also
   NavPanel, IconButton
 ----------------------------------------------------------------------------------------------------
@@ -422,9 +461,16 @@ See Also
 Summary
   Refrerence to the maximzed button of the page.
 Description
-  Write here a description
+  This propery is for internal use only.
 See Also
   IconButton
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelPage.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter
 Summary
@@ -440,7 +486,7 @@ Note
 Summary
   Specifies the starting color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ColorTo
 ----------------------------------------------------------------------------------------------------
@@ -448,21 +494,32 @@ See Also
 Summary
   Specifies the ending color of the control's background gradient.
 Description
-  Write here a description
+  Use ColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ColorFrom
 ----------------------------------------------------------------------------------------------------
+@@TJvOutlookSplitter.StyleManager
+Summary
+  Specifies the component responsible for handling the control's styles.
+Description
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  the Theme property of the style manager changes, the corresponding properties in the control changes as well.
+----------------------------------------------------------------------------------------------------
 @@TJvNavPaneStyleManager
 Summary
+  Handles themes for multiple components.
 Description
-See Also
+  Use a TJvNavPaneStyleManager to handle the color and font settings for several components from one 
+  central point. Components that supports TJvNavPaneStyleManager has a StyleManager property that 
+  can be assigned a TJvNavPaneStyleManager instance. When you change the settings of the style manager,
+  the corresponding settings in th ecomponent is changed as well
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneStyleManager.Theme
 Summary
-  Indicates the current color theme in the style manager.
+  Indicates the current theme in the style manager.
 Description
-  Use Theme to specify the theme to use in the style manager. When Theme changes, any control using the
-  StyleManager will have its theme settings updated.
+  Use Theme to specify the theme used in the style manager. When Theme changes, any control using the
+  StyleManager will have its themeable settings updated.
 See Also
   Colors
 ----------------------------------------------------------------------------------------------------
@@ -477,18 +534,18 @@ Description
 Summary
   Specifies the themes supported by a TJvNavPaneStyleManager.
 Description
-  TJvNavPanelTheme is the type of the Theme property of a TJvNavPanelTheme and specifies the themes supporte by
-  the style manager.
+  TJvNavPanelTheme is the type of the Theme property of a TJvNavPaneStyleManager and specifies the 
+  themes supported by the style manager.
 @@TJvNavPanelTheme.nptStandard
-  The current color theme is the default color theme used on non-XP system.
+  The current theme is the default theme used on non-XP system.
 @@TJvNavPanelTheme.nptXPBlue
-  The current color theme is the default blue XP color theme.
+  The current theme is the default blue XP theme.
 @@TJvNavPanelTheme.nptXPSilver
-  The current color theme is the default silver XP color theme.
+  The current theme is the default silver XP theme.
 @@TJvNavPanelTheme.nptXPOlive
-  The current color theme is the default olive XP color theme.
+  The current theme is the default olive XP theme.
 @@TJvNavPanelTheme.nptCustom
-  The current color theme is a custom theme.
+  The current theme is a custom theme.
 
 
 
