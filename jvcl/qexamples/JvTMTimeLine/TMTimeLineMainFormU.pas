@@ -574,6 +574,8 @@ end;
 // update the statusbar whnever anything changes
 procedure TTMTimeLineMainForm.StatusBarResize(Sender: TObject);
 begin
+  if not assigned(sl) then
+    exit;
   StatusBar.Panels[0].Text := Format('Visible days: %d',[sl.VisibleDays]);
   StatusBar.Panels[1].Text := Format('Last visible date: %s',[DateToStr(sl.LastVisibleDate)]);
 end;
