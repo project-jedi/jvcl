@@ -26,25 +26,25 @@ Known Issues:
 
 {$I jvcl.inc}
 
-
 unit JvForth;
+
+{$IFDEF COMPILER6_UP}
+ {$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
 
 interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, ShellAPI,
-  {$ENDIF}
-  {$IFDEF LINUX}
-  QWindows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages, Forms, Dialogs, FileCtrl,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QDialogs, QFileCtrls,
-  {$ENDIF}
+  Types, QWindows, QForms, QDialogs, QFileCtrls,
+  {$ENDIF VisualCLX}
   {$IFDEF DELPHI6_UP}
   Variants,
   {$ENDIF DELPHI6_UP}

@@ -92,7 +92,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure CMDenySubClassing(var Msg: TCMDenySubClasssing); message CM_DENYSUBCLASSING;
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -444,7 +444,7 @@ procedure TJvItemsPanel.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  inherited MouseLeave(Control;
+  inherited MouseLeave(Control);
   PaintUp;
 end;
 

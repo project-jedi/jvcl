@@ -32,10 +32,10 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Graphics, Controls, ExtCtrls, ImgList
+  Graphics, Controls, ExtCtrls, ImgList,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QExtCtrls, QImgList
+  Types, QGraphics, QControls, QExtCtrls, QImgList,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
 

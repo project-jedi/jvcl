@@ -43,8 +43,6 @@ uses
   {$ENDIF VisualCLX}
   JVCLVer, JvThemes, JvExStdCtrls;
 
-  { TODO -oahuser : CLX does not work (especially Paint) }
-  
 type
   TJvGroupBox = class(TJvExGroupBox)
   private
@@ -130,6 +128,7 @@ begin
   {$ENDIF VisualCLX}
 end;
 
+{$IFDEF VisualCLX}
 procedure TJvGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   TControlCanvas(FCanvas).StartPaint;
@@ -140,6 +139,7 @@ begin
     TControlCanvas(FCanvas).StopPaint;
   end;
 end;
+{$ENDIF VisualCLX}
 
 procedure TJvGroupBox.Paint;
 {$IFDEF VisualCLX}
