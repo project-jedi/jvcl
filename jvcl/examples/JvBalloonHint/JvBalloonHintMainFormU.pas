@@ -67,6 +67,7 @@ type
     chbShowIconInHint: TCheckBox;
     chbPlaySound: TCheckBox;
     JvBalloonHint1: TJvBalloonHint;
+    chbUseBalloonAsApplicationHint: TCheckBox;
     procedure edtDefaultHeaderChange(Sender: TObject);
     procedure chbShowHeaderInHintClick(Sender: TObject);
     procedure chbShowIconInHintClick(Sender: TObject);
@@ -84,6 +85,7 @@ type
     procedure chbShowCloseBtnClick(Sender: TObject);
     procedure chbCustomAnimationClick(Sender: TObject);
     procedure chbO_PlaySoundClick(Sender: TObject);
+    procedure chbUseBalloonAsApplicationHintClick(Sender: TObject);
   public
     procedure InitValues;
     procedure FillAnchors(Strings: TStrings);
@@ -152,6 +154,7 @@ begin
     chbShowHeaderInHint.Checked := ahShowHeaderInHint in ApplicationHintOptions;
     chbShowIconInHint.Checked := ahShowIconInHint in ApplicationHintOptions;
     chbPlaySound.Checked := ahPlaySound in ApplicationHintOptions;
+    chbUseBalloonAsApplicationHint.Checked := JvBalloonHint1.UseBalloonAsApplicationHint;
     rgrDefaultIcon.ItemIndex := Integer(DefaultIcon);
     rgrDefaultBalloonPosition.ItemIndex := Integer(DefaultBalloonPosition);
 
@@ -311,6 +314,12 @@ begin
       EndUpdate;
     end;
   end;
+end;
+
+procedure TJvBalloonHintMainForm.chbUseBalloonAsApplicationHintClick(
+  Sender: TObject);
+begin
+  JvBalloonHint1.UseBalloonAsApplicationHint := chbUseBalloonAsApplicationHint.Checked;
 end;
 
 end.
