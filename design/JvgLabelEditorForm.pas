@@ -536,23 +536,16 @@ begin
 end;
 
 procedure TJvgLabelEditorDlg.InitializeEditor;
-
-  procedure LoadGlyph(CheckBoxGlyph: TBitmap; Glyph: string);
-  begin
-    CheckBoxGlyph.LoadFromResourceName(HInstance, Glyph);
-  end;
-
 begin
   inherited InitializeEditor;
   // loading from Resource file save ~ 200K in DFM file
-  imglBrushes.ResInstLoad(HInstance, rtBitmap, 'BRUSH', clFuchsia);
-  sbtnLabelDirectionDown.Glyph.LoadFromResourceName(HInstance, 'DOWN');
-  sbtnLabelDirectionUp.Glyph.LoadFromResourceName(HInstance, 'UP');
-  sbtnLabelDirectionRight.Glyph.LoadFromResourceName(HInstance, 'RIGHT');
-  sbtnLabelDirectionLeft.Glyph.LoadFromResourceName(HInstance, 'LEFT');
+  imglBrushes.ResInstLoad(HInstance, rtBitmap, 'JvgLabelEditorDlgBRUSH', clFuchsia);
+  sbtnLabelDirectionDown.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgDOWN');
+  sbtnLabelDirectionUp.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgUP');
+  sbtnLabelDirectionRight.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgRIGHT');
+  sbtnLabelDirectionLeft.Glyph.LoadFromResourceName(HInstance, 'JvgLabelEditorDlgLEFT');
 
   // Square Checkboxes
-
 
   sbarFontSize.Position := FLabelSource.Font.Size;
   sbarShadowDepth.Position := FLabelSource.Illumination.ShadowDepth;

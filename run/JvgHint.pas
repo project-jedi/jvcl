@@ -188,7 +188,7 @@ begin
     Application.ShowHint := ShowHint;
   end;
   if Glyph.Empty then
-    Glyph.LoadFromResourceName(HInstance, 'HELP');
+    Glyph.LoadFromResourceName(HInstance, 'JvgHintHELP');
 end;
 
 procedure TJvgHint.NewHint(Sender: TObject);
