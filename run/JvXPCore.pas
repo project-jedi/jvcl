@@ -142,6 +142,7 @@ type
   end;
   {$ENDIF USEJVCL}
 
+  {$IFDEF VCL}
   {$IFDEF USEJVCL}
   TJvXPWinControl = class(TJvWinControl)
   {$ELSE}
@@ -150,6 +151,15 @@ type
   published
     property Color;
   end;
+  {$ENDIF VCL}
+
+  {$IFDEF VisualCLX}
+  TJvXPWinControl = class(TJvWinControl)
+    function GetColor: TColor;
+  published
+    property Color: TColor read GetColor;
+  end;
+  {$ENDIF VisualCLX}
 
   { baseclass for focusable control descendants. }
 
@@ -393,6 +403,15 @@ resourcestring
   SCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
   SVersion = '2.0.1'; // always increase version number on new releases!
 {$ENDIF USEJVCL}
+
+{$IFDEF VisualCLX}
+//=== TJvXPWinControl
+
+function  TJvXPWinControl.GetColor: TColor;
+begin
+  Result := QColorColor(QWidget_backgroundColor(Handle));
+end;
+{$ENDIF VisualCLX}
 
 //=== TJvXPCustomComponent ===================================================
 
