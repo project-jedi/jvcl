@@ -32,14 +32,8 @@ unit JvClock;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls,
-  JvTimer, JvComponent, JvExControls;
+  Windows, Messages, Classes, Graphics, Controls,
+  JvJCLUtils, JvTimer, JvComponent, JvExControls;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -988,16 +982,9 @@ var
       (NewTime.Hour <> FDisplayTime.Hour) then
     begin
       DrawThemedBackground(Self, Canvas, Rect);
-      {$IFDEF VCL}
       SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-      DrawText(Canvas.Handle, @Sym, 1, Rect, DT_EXPANDTABS or
-        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
       DrawText(Canvas, Sym, 1, Rect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
-      {$ENDIF VisualCLX}
     end;
   end;
 
@@ -1059,7 +1046,7 @@ begin
     if FullTime or (NewTime.Hour <> FDisplayTime.Hour) then
     begin
       Rect.Right := Rect.Left + TextWidth(SAmPm);
-      DrawText(Handle, @SAmPm[1], Length(SAmPm), Rect,
+      DrawText(Canvas, SAmPm[1], Length(SAmPm), Rect,
         DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
     end;
   end;
