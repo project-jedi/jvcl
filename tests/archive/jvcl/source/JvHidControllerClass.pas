@@ -324,7 +324,7 @@ procedure Register;
 
 implementation
 
-{$R HidControllerClass.dcr}
+{.$R HidControllerClass.dcr}
 
 type
   EControllerError = class(Exception);
@@ -1059,7 +1059,7 @@ begin
   begin
     FillChar(FOvlRead, SizeOf(TOverlapped), #0);
     FOvlRead.hEvent := DWORD(Self);
-    Result := HidControllerClass.ReadFileEx(HidOverlappedRead, Report, ToRead, FOvlRead, CallBack);
+    Result := JvHidControllerClass.ReadFileEx(HidOverlappedRead, Report, ToRead, FOvlRead, CallBack);
   end;
 end;
 
@@ -1072,7 +1072,7 @@ begin
   begin
     FillChar(FOvlWrite, SizeOf(TOverlapped), #0);
     FOvlWrite.hEvent := DWORD(Self);
-    Result := HidControllerClass.WriteFileEx(HidOverlappedWrite, Report, ToWrite, FOvlWrite, CallBack);
+    Result := JvHidControllerClass.WriteFileEx(HidOverlappedWrite, Report, ToWrite, FOvlWrite, CallBack);
   end;
 end;
 
