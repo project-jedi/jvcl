@@ -1543,15 +1543,15 @@ begin
       {if r<g then limit:=r else limit:=g; if b<limit then limit:=b;//...min
       if limit<FColorShadowShift then FColorShadowShift:=limit;
       FShadow := RGB(r-FColorShadowShift,g-FColorShadowShift,b-FColorShadowShift);}
-      FShadow := RGB(max(r - FColorShadowShift, 0), max(g - FColorShadowShift, 0), max(b - FColorShadowShift, 0));
+      Shadow := RGB(max(r - ColorShadowShift, 0), max(g - ColorShadowShift, 0), max(b - ColorShadowShift, 0));
     end;
     if AutoHighlight then
     begin
       {if r>g then limit:=r else limit:=g; if b>limit then limit:=b;//...max
       if (255-limit)<FColorHighlightShift then FColorHighlightShift:=255-limit;
       FHighlight := RGB(r+FColorHighlightShift,g+FColorHighlightShift,b+FColorHighlightShift);}
-      FHighlight := RGB(min(r + FColorHighlightShift, 255), min(g + FColorHighlightShift, 255), min(b +
-        FColorHighlightShift, 255));
+      Highlight := RGB(min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b +
+        ColorHighlightShift, 255));
     end;
   end;
 end;

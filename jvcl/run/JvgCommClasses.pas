@@ -6,12 +6,12 @@ http://www.mozilla.org/MPL/MPL-1.1.html
 
 Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
+the specific language governing Rights and limitations under the License.
 
 The Original Code is: JvgCommClasses.PAS, released on 2003-01-15.
 
 The Initial Developer of the Original Code is Andrey V. Chudin,  [chudin@yandex.ru]
-Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
+Portions created by Andrey V. Chudin are CopyRight (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 
 Contributor(s):
@@ -26,13 +26,14 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 {$I JVCL.INC}
 
 unit JvgCommClasses;
 
 interface
-uses Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes;
+
+uses
+  Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes;
 
 type
   TJvgTwainColors = class;
@@ -41,7 +42,7 @@ type
   TJvg3DGradient = class;
   TJvg2DAlign = class;
   TJvgPointClass = class;
-  TJvgBeveloptions = class;
+  TJvgBevelOptions = class;
   TJvgExtBevelOptions = class;
   TJvgIllumination = class;
   TJvgLabelTextStyles = class;
@@ -61,57 +62,56 @@ type
   private
     FFromColor: TColor;
     FToColor: TColor;
-    procedure SeTglomColor(Value: TColor);
-    procedure SetToColor(Value: TColor);
-  public
     FRGBFromColor: Longint;
     FRGBToColor: Longint;
-    OnChanged: TNotifyEvent;
+    FOnChanged: TNotifyEvent;
+    procedure SetFromColor(Value: TColor);
+    procedure SetToColor(Value: TColor);
+  protected
+    procedure Changed; virtual;
+  public
     constructor Create; virtual;
+
+    property RGBFromColor: Longint read FRGBFromColor write FRGBFromColor;
+    property RGBToColor: Longint read FRGBToColor write FRGBToColor;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property FromColor: TColor read FFromColor write SeTglomColor
-      default $00808080;
-    property ToColor: TColor read FToColor write SetToColor
-      default 0;
+    property FromColor: TColor read FFromColor write SetFromColor default $00808080;
+    property ToColor: TColor read FToColor write SetToColor default 0;
   end;
   //*************************************{ . TJvgCustomGradient . }
   TJvgCustomGradient = class(TJvgTwainColors)
   private
-    FBufferedDraw: boolean;
-    FSteps: integer;
+    FBufferedDraw: Boolean;
+    FSteps: Integer;
     FPercentFilling: TPercentRange;
     FBrushStyle: TBrushStyle;
-    procedure SetActive(Value: boolean);
+
+    FOrientation: TglGradientDir; //...public!
+    FActive: Boolean;
+    FReverse: Boolean;
+    procedure SetActive(Value: Boolean);
     procedure SetOrientation(Value: TglGradientDir);
-    procedure SetSteps(Value: integer);
+    procedure SetSteps(Value: Integer);
     procedure SetPercentFilling(Value: TPercentRange);
     procedure SetBrushStyle(Value: TBrushStyle);
   public
-    FOrientation: TglGradientDir; //...public!
-    FActive: boolean;
-    fReverse: boolean;
-    procedure TextOut(DC: HDC; Str: string; TextR: TRect; x, y: integer);
-    function GetColorFromGradientLine(GradientLineWidth, Position: word): COLORREF;
+    procedure TextOut(DC: HDC; Str: string; TextR: TRect; x, y: Integer);
+    function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
 
     constructor Create; override;
-    //  destructor Destroy;override;
   protected
-    property Active: boolean read FActive write SetActive;
-    property BufferedDraw: boolean read FBufferedDraw write FBufferedDraw
-      default false;
+    property Active: Boolean read FActive write SetActive;
+    property BufferedDraw: Boolean read FBufferedDraw write FBufferedDraw default False;
     property Orientation: TglGradientDir read FOrientation write SetOrientation;
-    property Steps: integer read FSteps write SetSteps default 255;
-    property PercentFilling: TPercentRange read FPercentFilling write SetPercentFilling
-      default 100;
-    property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle
-      default bsSolid;
-
+    property Steps: Integer read FSteps write SetSteps default 255;
+    property PercentFilling: TPercentRange read FPercentFilling write SetPercentFilling default 100;
+    property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle default bsSolid;
   end;
   //*************************************{ . TJvgGradient . }
   TJvgGradient = class(TJvgCustomGradient)
-  private
   public
-    procedure Draw(DC: HDC; r: TRect; PenStyle, PenWidth: integer);
+    procedure Draw(DC: HDC; r: TRect; PenStyle, PenWidth: Integer);
   published
     property Active;
     property BufferedDraw;
@@ -123,15 +123,14 @@ type
   //*************************************{ . TJvg3DGradient . }
   TJvg3DGradient = class(TJvgCustomGradient)
   private
-    FDepth: word;
+    FDepth: Word;
     FGType: TThreeDGradientType;
-    procedure SetDepth(Value: word);
+    procedure SetDepth(Value: Word);
     procedure SetGType(Value: TThreeDGradientType);
   public
     constructor Create; override;
   published
-    property Depth: word
-      read FDepth write SetDepth default 16;
+    property Depth: Word read FDepth write SetDepth default 16;
     property GType: TThreeDGradientType read FGType write SetGType default fgtFlat;
   end;
   //*************************************{ . TJvg2DAlign . }
@@ -139,11 +138,14 @@ type
   private
     FHorizontal: TglHorAlign;
     FVertical: TglVertAlign;
+    FOnChanged: TNotifyEvent;
     procedure SetHorizontal(Value: TglHorAlign);
     procedure SetVertical(Value: TglVertAlign);
+  protected
+    procedure Changed; virtual;
   public
-    OnChanged: TNotifyEvent;
     constructor Create;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     property Horizontal: TglHorAlign read FHorizontal write SetHorizontal
       default fhaLeft;
@@ -153,72 +155,72 @@ type
   //*************************************{ . TJvgPointClass . }
   TJvgPointClass = class(TPersistent)
   private
-    FX: integer;
-    FY: integer;
-    procedure SetX(Value: integer);
-    procedure SetY(Value: integer);
+    FX: Integer;
+    FY: Integer;
+    FOnChanged: TNotifyEvent;
+    procedure SetX(Value: Integer);
+    procedure SetY(Value: Integer);
+  protected
+    procedure Changed; virtual;
   public
-    OnChanged: TNotifyEvent;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property x: integer read FX write SetX;
-    property y: integer read FY write SetY;
+    property x: Integer read FX write SetX;
+    property y: Integer read FY write SetY;
   end;
   //*************************************{ . TJvgBevel . }
-  TJvgBeveloptions = class(TPersistent)
+  TJvgBevelOptions = class(TPersistent)
   private
     FInner: TPanelBevel;
     FOuter: TPanelBevel;
     FSides: TglSides;
-    FBold: boolean;
+    FBold: Boolean;
+    FOnChanged: TNotifyEvent;
     procedure SetInner(Value: TPanelBevel);
     procedure SetOuter(Value: TPanelBevel);
     procedure SetSides(Value: TglSides);
-    procedure SetBold(Value: boolean);
+    procedure SetBold(Value: Boolean);
+  protected
+    procedure Changed; virtual;
   public
-    OnChanged: TNotifyEvent;
     constructor Create; virtual;
-    function BordersHeight: integer;
-    function BordersWidth: integer;
+    function BordersHeight: Integer;
+    function BordersWidth: Integer;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property Inner: TPanelBevel read FInner write SetInner stored true; //    default bvLowered;
-    property Outer: TPanelBevel read FOuter write SetOuter stored true; //    default bvNone;
-    property Sides: TglSides read FSides write SetSides stored true default ALLGLSIDES;
-    property Bold: boolean read FBold write SetBold stored true; //  default false;
+    property Inner: TPanelBevel read FInner write SetInner stored True; //    default bvLowered;
+    property Outer: TPanelBevel read FOuter write SetOuter stored True; //    default bvNone;
+    property Sides: TglSides read FSides write SetSides stored True default ALLGLSIDES;
+    property Bold: Boolean read FBold write SetBold stored True; //  default False;
   end;
   //*************************************{ . TJvgExtBevel . }
-  TJvgExtBevelOptions = class(TJvgBeveloptions)
+  TJvgExtBevelOptions = class(TJvgBevelOptions)
   private
-    FActive: boolean;
+    FActive: Boolean;
     FBevelPenStyle: TPenStyle;
-    FBevelPenWidth: word;
-    FInteriorOffset: word;
-    procedure SetActive(Value: boolean);
+    FBevelPenWidth: Word;
+    FInteriorOffset: Word;
+    procedure SetActive(Value: Boolean);
     procedure SetBevelPenStyle(Value: TPenStyle);
-    procedure SetBevelPenWidth(Value: word);
-    procedure SetInteriorOffset(Value: word);
+    procedure SetBevelPenWidth(Value: Word);
+    procedure SetInteriorOffset(Value: Word);
   public
     constructor Create; override;
   published
-    property Active: boolean read FActive write SetActive
-      default true;
-    property BevelPenStyle: TPenStyle read FBevelPenStyle write SetBevelPenStyle
-      default psSolid;
-    property BevelPenWidth: word read FBevelPenWidth write SetBevelPenWidth
-      default 1;
-    property InteriorOffset: word read FInteriorOffset write SetInteriorOffset
-      default 0;
+    property Active: Boolean read FActive write SetActive default True;
+    property BevelPenStyle: TPenStyle read FBevelPenStyle write SetBevelPenStyle default psSolid;
+    property BevelPenWidth: Word read FBevelPenWidth write SetBevelPenWidth default 1;
+    property InteriorOffset: Word read FInteriorOffset write SetInteriorOffset default 0;
   end;
   //*************************************{ . TJvgIllumination . }
   TJvgIllumination = class(TJvg2DAlign)
   private
-    procedure SetShadowDepth(Value: integer);
+    FShadowDepth: Integer;
+    procedure SetShadowDepth(Value: Integer);
   public
-    FShadowDepth: integer;
-    OnChanged: TNotifyEvent;
     constructor Create;
   published
-    property ShadowDepth: integer
-      read FShadowDepth write SetShadowDepth default 2;
+    property ShadowDepth: Integer read FShadowDepth write SetShadowDepth default 2;
   end;
   //*************************************{ . TJvgLabelTextStyles . }
   TJvgLabelTextStyles = class(TPersistent)
@@ -226,28 +228,29 @@ type
     FPassive: TglTextStyle;
     FActive: TglTextStyle;
     FDisabled: TglTextStyle;
+    FOnChanged: TNotifyEvent;
     procedure SetPassive(Value: TglTextStyle);
     procedure SetActive(Value: TglTextStyle);
     procedure SetDisabled(Value: TglTextStyle);
+  protected
+    procedure Changed; virtual;
   public
-    OnChanged: TNotifyEvent;
     constructor Create;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property Passive: TglTextStyle read FPassive write SetPassive
-      default fstRaised;
-    property Active: TglTextStyle read FActive write SetActive
-      default fstRaised;
-    property Disabled: TglTextStyle read FDisabled write SetDisabled
-      default fstPushed;
+    property Passive: TglTextStyle read FPassive write SetPassive default fstRaised;
+    property Active: TglTextStyle read FActive write SetActive default fstRaised;
+    property Disabled: TglTextStyle read FDisabled write SetDisabled default fstPushed;
   end;
   //*************************************{ . TJvgCustomTextColors . }
   TJvgCustomTextColors = class(TPersistent)
   private
+    FOnChanged: TNotifyEvent;
     FText: TColor;
     FTextDisabled: TColor;
     FDelineate: TColor;
     FBackground: TColor;
-  public
+  {public}
     FHighlight: TColor;
     FShadow: TColor;
   private
@@ -257,32 +260,27 @@ type
     procedure SetBackground(Value: TColor);
     procedure SetHighlight(Value: TColor);
     procedure SetShadow(Value: TColor);
-  public
-    OnChanged: TNotifyEvent;
-    constructor Create; virtual;
   protected
-    property Text: TColor read FText write SetText
-      default clBlack;
-    property TextDisabled: TColor read FTextDisabled write SetTextDisabled
-      default clGray;
-    property Delineate: TColor read FDelineate write SetDelineate
-      default clWhite;
-    property Shadow: TColor
-      read FShadow write SetShadow default clBtnShadow;
-    property HighLight: TColor
-      read FHighlight write SetHighlight default clBtnHighlight;
-    property Background: TColor
-      read FBackground write SetBackground default clBtnFace;
-
+    procedure Changed; virtual;
+  public
+    constructor Create; virtual;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+  protected
+    property Text: TColor read FText write SetText default clBlack;
+    property TextDisabled: TColor read FTextDisabled write SetTextDisabled default clGray;
+    property Delineate: TColor read FDelineate write SetDelineate default clWhite;
+    property Shadow: TColor read FShadow write SetShadow default clBtnShadow;
+    property Highlight: TColor read FHighlight write SetHighlight default clBtnHighlight;
+    property Background: TColor read FBackground write SetBackground default clBtnFace;
   end;
   //*************************************{ . TJvgCustomLabelColors . }
   TJvgSimleLabelColors = class(TJvgCustomTextColors)
   published
-    //  property Text stored true;
-    property Delineate stored true;
-    property Shadow stored true;
-    property HighLight;
-    property Background stored true;
+    //  property Text stored True;
+    property Delineate stored True;
+    property Shadow stored True;
+    property Highlight;
+    property Background stored True;
   end;
 
   //*************************************{ . TJvgCustomLabelColors . }
@@ -290,38 +288,30 @@ type
   private
     FTextActive: TColor;
     FDelineateActive: TColor;
-    FAutoHighlight: boolean;
-    FAutoShadow: boolean;
+    FAutoHighlight: Boolean;
+    FAutoShadow: Boolean;
     FBackgroundActive: TColor;
-  public
-    FColorHighlightShift: integer;
-    FColorShadowShift: integer;
+  {public}
+    FColorHighlightShift: Integer;
+    FColorShadowShift: Integer;
   private
     procedure SetTextActive(Value: TColor);
     procedure SetDelineateActive(Value: TColor);
     procedure SetBackgroundActive(Value: TColor);
-    procedure SetAutoHighlight(Value: boolean);
-    procedure SetAutoShadow(Value: boolean);
-    procedure SetColorHighlightShift(Value: integer);
-    procedure SetColorShadowShift(Value: integer);
+    procedure SetAutoHighlight(Value: Boolean);
+    procedure SetAutoShadow(Value: Boolean);
+    procedure SetColorHighlightShift(Value: Integer);
+    procedure SetColorShadowShift(Value: Integer);
   public
-    OnChanged: TNotifyEvent;
     constructor Create; override;
   protected
-    property TextActive: TColor read FTextActive write SetTextActive
-      default clBlack;
-    property DelineateActive: TColor read FDelineateActive write SetDelineateActive
-      default clWhite;
-    property AutoHighlight: boolean
-      read FAutoHighlight write SetAutoHighlight default false;
-    property AutoShadow: boolean
-      read FAutoShadow write SetAutoShadow default false;
-    property ColorHighlightShift: integer
-      read FColorHighlightShift write SetColorHighlightShift default 40;
-    property ColorShadowShift: integer
-      read FColorShadowShift write SetColorShadowShift default 60;
-    property BackgroundActive: TColor
-      read FBackgroundActive write SetBackgroundActive default clBtnFace;
+    property TextActive: TColor read FTextActive write SetTextActive default clBlack;
+    property DelineateActive: TColor read FDelineateActive write SetDelineateActive default clWhite;
+    property AutoHighlight: Boolean read FAutoHighlight write SetAutoHighlight default False;
+    property AutoShadow: Boolean read FAutoShadow write SetAutoShadow default False;
+    property ColorHighlightShift: Integer read FColorHighlightShift write SetColorHighlightShift default 40;
+    property ColorShadowShift: Integer read FColorShadowShift write SetColorShadowShift default 60;
+    property BackgroundActive: TColor read FBackgroundActive write SetBackgroundActive default clBtnFace;
   end;
   //*************************************{ . TJvgLabelColors . }
   TJvgLabelColors = class(TJvgCustomLabelColors)
@@ -330,7 +320,7 @@ type
     property TextDisabled;
     property Delineate;
     property Shadow;
-    property HighLight;
+    property Highlight;
     property Background;
     property TextActive;
     property DelineateActive;
@@ -357,7 +347,7 @@ type
     property Text;
     property Delineate;
     property Shadow;
-    property HighLight;
+    property Highlight;
     //  property Background;
     property TextActive;
     property DelineateActive;
@@ -377,7 +367,7 @@ type
     FColor: TColor;
     FDelineateColor: TColor;
     FFont: TFont;
-    FBevel: TJvgBeveloptions;
+    FBevel: TJvgBevelOptions;
     FTextStyle: TglTextStyle;
     FOnChanged: TNotifyEvent;
     procedure SetColor(Value: TColor);
@@ -386,17 +376,18 @@ type
     procedure SetTextStyle(Value: TglTextStyle);
   protected
     procedure SetOnChanged(Value: TNotifyEvent); virtual;
+    procedure Changed;
   public
-    property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
     constructor Create; virtual;
     destructor Destroy; override;
-    function HighLightColor: TColor;
+    function HighlightColor: TColor;
     function ShadowColor: TColor;
+    property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
   published
     property Color: TColor read FColor write SetColor;
     property DelineateColor: TColor read FDelineateColor write SetDelineateColor;
     property Font: TFont read FFont write SetFont;
-    property Bevel: TJvgBeveloptions read FBevel write FBevel;
+    property Bevel: TJvgBevelOptions read FBevel write FBevel;
     property TextStyle: TglTextStyle read FTextStyle write SetTextStyle;
   end;
   //*************************************{ . TglListItemStyle . }
@@ -439,7 +430,7 @@ type
     property BtnTextStyle: TglTextStyle read FBtnTextStyle write SetBtnTextStyle;
   end;
   //*************************************{ . TJvgCustomBoxStyle . }
-  TJvgCustomBoxStyle = class(TJvgBeveloptions)
+  TJvgCustomBoxStyle = class(TJvgBevelOptions)
   private
     FPenStyle: TPenStyle;
     FHighlightColor: TColor;
@@ -448,15 +439,11 @@ type
     procedure SetHighlightColor(Value: TColor);
     procedure SetShadowColor(Value: TColor);
   public
-    OnChanged: TNotifyEvent;
     constructor Create; override;
   protected
-    property PenStyle: TPenStyle read FPenStyle write SetPenStyle
-      default psSolid;
-    property HighLightColor: TColor read FHighlightColor write SetHighlightColor
-      default clBtnHighlight;
-    property ShadowColor: TColor read FShadowColor write SetShadowColor
-      default clBtnShadow;
+    property PenStyle: TPenStyle read FPenStyle write SetPenStyle default psSolid;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor default clBtnHighlight;
+    property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnShadow;
   end;
   //*************************************{ . TJvgTextBoxStyle . }
   TJvgCustomTextBoxStyle = class(TJvgCustomBoxStyle)
@@ -468,10 +455,8 @@ type
   public
     constructor Create; override;
   protected
-    property TextColor: TColor read FTextColor write SetTextColor
-      default clBlack;
-    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor
-      default clWindow;
+    property TextColor: TColor read FTextColor write SetTextColor default clBlack;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
   end;
   //*************************************{ . TJvgCustomBoxStyle . }
   TJvgTextBoxStyle = class(TJvgCustomTextBoxStyle)
@@ -483,7 +468,7 @@ type
     property PenStyle;
     property TextColor;
     property BackgroundColor;
-    property HighLightColor;
+    property HighlightColor;
     property ShadowColor;
   end;
   //*************************************{ .TJvgBevelOptionsLines. }
@@ -493,40 +478,43 @@ type
     FStep: cardinal;
     FOrigin: TglOrigin;
     FStyle: TPanelBevel;
-    FBold: boolean;
-    FThickness: byte;
-    FIgnoreBorder: boolean;
+    FBold: Boolean;
+    FThickness: Byte;
+    FIgnoreBorder: Boolean;
+    FOnChanged: TNotifyEvent;
 
     procedure SetCount(Value: cardinal);
     procedure SetStep(Value: cardinal);
     procedure SetOrigin(Value: TglOrigin);
     procedure SetStyle(Value: TPanelBevel);
-    procedure SetBold(Value: boolean);
-    procedure SetThickness(Value: byte);
-    procedure SetIgnoreBorder(Value: boolean);
+    procedure SetBold(Value: Boolean);
+    procedure SetThickness(Value: Byte);
+    procedure SetIgnoreBorder(Value: Boolean);
+  protected
+    procedure Changed; virtual;
   public
-    OnChanged: TNotifyEvent;
     constructor Create;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
-    property Count: cardinal read FCount write SetCount
-      default 0;
-    property Step: cardinal read FStep write SetStep
-      default 0;
-    property Origin: TglOrigin read FOrigin write SetOrigin
-      default forLeftTop;
-    property Style: TPanelBevel read FStyle write SetStyle
-      default bvLowered;
-    property Bold: boolean read FBold write SetBold
-      default false;
-    property Thickness: byte read FThickness write SetThickness
-      default 1;
-    property IgnoreBorder: boolean read FIgnoreBorder write SetIgnoreBorder
-      default false;
+    property Count: cardinal read FCount write SetCount default 0;
+    property Step: cardinal read FStep write SetStep default 0;
+    property Origin: TglOrigin read FOrigin write SetOrigin default forLeftTop;
+    property Style: TPanelBevel read FStyle write SetStyle default bvLowered;
+    property Bold: Boolean read FBold write SetBold default False;
+    property Thickness: Byte read FThickness write SetThickness default 1;
+    property IgnoreBorder: Boolean read FIgnoreBorder write SetIgnoreBorder default False;
   end;
   //*************************************{ .. }
 implementation
-uses JvgUtils;
+uses
+  JvgUtils;
 //______________________________________{ . TJvgTwainColors methods . }
+
+procedure TJvgTwainColors.Changed;
+begin
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
+end;
 
 constructor TJvgTwainColors.Create;
 begin
@@ -538,20 +526,24 @@ begin
   FRGBToColor := ColorToRGB(FToColor);
 end;
 
-procedure TJvgTwainColors.SeTglomColor(Value: TColor);
+procedure TJvgTwainColors.SetFromColor(Value: TColor);
 begin
-  if FFromColor = Value then Exit;
-  FFromColor := Value;
-  FRGBFromColor := ColorToRGB(Value);
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FFromColor <> Value then
+  begin
+    FFromColor := Value;
+    FRGBFromColor := ColorToRGB(Value);
+    Changed;
+  end;
 end;
 
 procedure TJvgTwainColors.SetToColor(Value: TColor);
 begin
-  if FToColor = Value then Exit;
-  FToColor := Value;
-  FRGBToColor := ColorToRGB(Value);
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FToColor <> Value then
+  begin
+    FToColor := Value;
+    FRGBToColor := ColorToRGB(Value);
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgCustomGradient methods . }
 
@@ -559,71 +551,76 @@ constructor TJvgCustomGradient.Create;
 begin
   inherited Create;
   //...set defaults
-  FActive := false;
-  FBufferedDraw := false;
+  FActive := False;
+  FBufferedDraw := False;
   FOrientation := fgdHorizontal;
   FSteps := 255;
   FPercentFilling := 100;
   FBrushStyle := bsSolid;
 end;
 
-//destructor TJvgCustomGradient.Destroy;
-//begin inherited Destroy; end;
-
-//procedure TJvgCustomGradient.Free;
-//begin if self<>nil then Destroy; end;
-
-procedure TJvgCustomGradient.SetActive(Value: boolean);
+procedure TJvgCustomGradient.SetActive(Value: Boolean);
 begin
-  if FActive = Value then Exit;
-  FActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomGradient.SetOrientation(Value: TglGradientDir);
 begin
-  if FOrientation = Value then Exit;
-  FOrientation := Value;
-  if FActive and Assigned(OnChanged) then OnChanged(Self);
+  if FOrientation <> Value then
+  begin
+    FOrientation := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgCustomGradient.SetSteps(Value: integer);
+procedure TJvgCustomGradient.SetSteps(Value: Integer);
 begin
   if Value > 255 then
     Value := 255
   else if Value < 1 then
     Value := 1;
-  if FSteps = Value then Exit;
-  FSteps := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FSteps <> Value then
+  begin
+    FSteps := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomGradient.SetPercentFilling(Value: TPercentRange);
 begin
-  if FPercentFilling = Value then Exit;
-  FPercentFilling := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FPercentFilling <> Value then
+  begin
+    FPercentFilling := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomGradient.SetBrushStyle(Value: TBrushStyle);
 begin
-  FBrushStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FBrushStyle then
+  begin
+    FBrushStyle := Value;
+    Changed;
+  end;
 end;
 
 function TJvgCustomGradient.GetColorFromGradientLine
-  (GradientLineWidth, Position: word): COLORREF;
+  (GradientLineWidth, Position: Word): COLORREF;
 var
-  c1F, c2F, c3F: byte;
-  c1T, c2T, c3T: byte;
+  c1F, c2F, c3F: Byte;
+  c1T, c2T, c3T: Byte;
   Step1, Step2, Step3: Single;
 begin
-  c1F := byte(Self.FRGBFromColor);
-  c2F := byte(word(Self.FRGBFromColor) shr 8);
-  c3F := byte(Self.FRGBFromColor shr 16);
-  c1T := byte(Self.FRGBToColor);
-  c2T := byte(word(Self.FRGBToColor) shr 8);
-  c3T := byte(Self.FRGBToColor shr 16);
+  c1F := Byte(Self.FRGBFromColor);
+  c2F := Byte(Word(Self.FRGBFromColor) shr 8);
+  c3F := Byte(Self.FRGBFromColor shr 16);
+  c1T := Byte(Self.FRGBToColor);
+  c2T := Byte(Word(Self.FRGBToColor) shr 8);
+  c3T := Byte(Self.FRGBToColor shr 16);
 
   Step1 := (c1T - c1F) / GradientLineWidth;
   Step2 := (c2T - c2F) / GradientLineWidth;
@@ -634,12 +631,12 @@ begin
     trunc(c3F + Step3 * Position));
 end;
 
-procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; x, y: integer);
+procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; x, y: Integer);
 var
-  i, Steps: integer;
+  i, Steps: Integer;
   r: TRect;
-  c1F, c2F, c3F: byte;
-  c1T, c2T, c3T: byte;
+  c1F, c2F, c3F: Byte;
+  c1T, c2T, c3T: Byte;
   c1, c2, c3: Single;
   Step1, Step2, Step3: Single;
   OldTextColor: TCOLORREF;
@@ -650,20 +647,20 @@ begin
     Exit;
   end;
   r := TextR;
-  c1F := byte(FRGBFromColor);
-  c2F := byte(word(FRGBFromColor) shr 8);
-  c3F := byte(FRGBFromColor shr 16);
-  c1T := byte(FRGBToColor);
-  c2T := byte(word(FRGBToColor) shr 8);
-  c3T := byte(FRGBToColor shr 16);
+  c1F := Byte(FRGBFromColor);
+  c2F := Byte(Word(FRGBFromColor) shr 8);
+  c3F := Byte(FRGBFromColor shr 16);
+  c1T := Byte(FRGBToColor);
+  c2T := Byte(Word(FRGBToColor) shr 8);
+  c3T := Byte(FRGBToColor shr 16);
 
   c1 := c1F;
   c2 := c2F;
   c3 := c3F;
   if FOrientation = fgdVertical then
-    Steps := r.right - r.Left
+    Steps := r.Right - r.Left
   else
-    Steps := r.bottom - r.top;
+    Steps := r.Bottom - r.Top;
   Step1 := (c1T - c1F) / Steps;
   Step2 := (c2T - c2F) / Steps;
   Step3 := (c3T - c3F) / Steps;
@@ -677,12 +674,12 @@ begin
     if FOrientation = fgdVertical then
     begin
       r.Left := i;
-      r.right := r.Left + 1;
+      r.Right := r.Left + 1;
     end
     else
     begin
-      r.top := i;
-      r.bottom := r.top + 1;
+      r.Top := i;
+      r.Bottom := r.Top + 1;
     end;
 
     Windows.ExtTextOut(DC, x, y, ETO_CLIPPED, @r,
@@ -700,21 +697,25 @@ begin
   inherited Create;
   Depth := 16;
   FGType := fgtFlat;
-  FActive := true;
+  FActive := True;
 end;
 
 procedure TJvg3DGradient.SetGType(Value: TThreeDGradientType);
 begin
-  if FGType = Value then Exit;
-  FGType := Value;
-  if FActive and Assigned(OnChanged) then OnChanged(Self);
+  if FGType <> Value then
+  begin
+    FGType := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvg3DGradient.SetDepth(Value: word);
+procedure TJvg3DGradient.SetDepth(Value: Word);
 begin
-  if FDepth = Value then Exit;
-  FDepth := Value;
-  if FActive and Assigned(OnChanged) then OnChanged(Self);
+  if FDepth <> Value then
+  begin
+    FDepth := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvg2DAlign methods . }
@@ -727,69 +728,103 @@ begin
   FVertical := fvaTop;
 end;
 
+procedure TJvg2DAlign.Changed;
+begin
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 procedure TJvg2DAlign.SetHorizontal(Value: TglHorAlign);
 begin
-  if FHorizontal = Value then Exit;
-  FHorizontal := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FHorizontal <> Value then
+  begin
+    FHorizontal := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvg2DAlign.SetVertical(Value: TglVertAlign);
 begin
-  if FVertical = Value then Exit;
-  FVertical := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FVertical <> Value then
+  begin
+    FVertical := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgPointClass methods . }
 
-procedure TJvgPointClass.SetX(Value: integer);
+procedure TJvgPointClass.Changed;
 begin
-  if FX = Value then Exit;
-  FX := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Assigned(OnChanged) then
+    OnChanged(Self);
 end;
 
-procedure TJvgPointClass.SetY(Value: integer);
+procedure TJvgPointClass.SetX(Value: Integer);
 begin
-  if FY = Value then Exit;
-  FY := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FX <> Value then
+  begin
+    FX := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvgPointClass.SetY(Value: Integer);
+begin
+  if FY <> Value then
+  begin
+    FY := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgBevelOptions methods . }
 
-constructor TJvgBeveloptions.Create;
+constructor TJvgBevelOptions.Create;
 begin
   inherited;
   //..defaults
   FSides := ALLGLSIDES;
 end;
 
-procedure TJvgBeveloptions.SetOuter(Value: TPanelBevel);
+procedure TJvgBevelOptions.Changed;
 begin
-  if FOuter = Value then Exit;
-  FOuter := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
 end;
 
-procedure TJvgBeveloptions.SetInner(Value: TPanelBevel);
+procedure TJvgBevelOptions.SetOuter(Value: TPanelBevel);
 begin
-  if FInner = Value then Exit;
-  FInner := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FOuter <> Value then
+  begin
+    FOuter := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgBeveloptions.SetSides(Value: TglSides);
+procedure TJvgBevelOptions.SetInner(Value: TPanelBevel);
 begin
-  if FSides = Value then Exit;
-  FSides := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FInner <> Value then
+  begin
+    FInner := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgBeveloptions.SetBold(Value: boolean);
+procedure TJvgBevelOptions.SetSides(Value: TglSides);
 begin
-  if FBold = Value then Exit;
-  FBold := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FSides <> Value then
+  begin
+    FSides := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvgBevelOptions.SetBold(Value: Boolean);
+begin
+  if FBold <> Value then
+  begin
+    FBold := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvgIllumination methods . }
@@ -801,12 +836,14 @@ begin
   FShadowDepth := 2;
 end;
 
-procedure TJvgIllumination.SetShadowDepth(Value: integer);
+procedure TJvgIllumination.SetShadowDepth(Value: Integer);
 begin
   if Value < 0 then Value := 0;
-  if FShadowDepth = Value then Exit;
-  FShadowDepth := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FShadowDepth <> Value then
+  begin
+    FShadowDepth := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgLabelTextStyles methods . }
 
@@ -819,25 +856,37 @@ begin
   FDisabled := fstPushed;
 end;
 
+procedure TJvgLabelTextStyles.Changed;
+begin
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 procedure TJvgLabelTextStyles.SetPassive(Value: TglTextStyle);
 begin
-  if FPassive = Value then Exit;
-  FPassive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FPassive <> Value then
+  begin
+    FPassive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgLabelTextStyles.SetActive(Value: TglTextStyle);
 begin
-  if FActive = Value then Exit;
-  FActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgLabelTextStyles.SetDisabled(Value: TglTextStyle);
 begin
-  if FDisabled = Value then Exit;
-  FDisabled := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FDisabled <> Value then
+  begin
+    FDisabled := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgCustomTextColors methods . }
 
@@ -853,46 +902,64 @@ begin
   FBackground := clBtnFace;
 end;
 
+procedure TJvgCustomTextColors.Changed;
+begin
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 procedure TJvgCustomTextColors.SetText(Value: TColor);
 begin
-  if FText = Value then Exit;
-  FText := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FText <> Value then
+  begin
+    FText := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextColors.SetTextDisabled(Value: TColor);
 begin
-  if FTextDisabled = Value then Exit;
-  FTextDisabled := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FTextDisabled <> Value then
+  begin
+    FTextDisabled := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextColors.SetDelineate(Value: TColor);
 begin
-  if FDelineate = Value then Exit;
-  FDelineate := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FDelineate <> Value then
+  begin
+    FDelineate := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextColors.SetHighlight(Value: TColor);
 begin
-  if FHighlight = Value then Exit;
-  FHighlight := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FHighlight <> Value then
+  begin
+    FHighlight := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextColors.SetShadow(Value: TColor);
 begin
-  if FShadow = Value then Exit;
-  FShadow := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FShadow <> Value then
+  begin
+    FShadow := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextColors.SetBackground(Value: TColor);
 begin
-  if FBackground = Value then Exit;
-  FBackground := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FBackground <> Value then
+  begin
+    FBackground := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgCustomLabelColors . }
 
@@ -902,8 +969,8 @@ begin
   //..defaults
   FTextActive := clBlack;
   FDelineateActive := clWhite;
-  FAutoHighlight := false;
-  FAutoShadow := false;
+  FAutoHighlight := False;
+  FAutoShadow := False;
   FColorHighlightShift := 40;
   FColorShadowShift := 60;
   FBackgroundActive := clBtnFace;
@@ -911,51 +978,65 @@ end;
 
 procedure TJvgCustomLabelColors.SetTextActive(Value: TColor);
 begin
-  if FTextActive = Value then Exit;
-  FTextActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FTextActive <> Value then
+  begin
+    FTextActive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomLabelColors.SetDelineateActive(Value: TColor);
 begin
-  if FDelineateActive = Value then Exit;
-  FDelineateActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FDelineateActive <> Value then
+  begin
+    FDelineateActive := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgCustomLabelColors.SetAutoHighlight(Value: boolean);
+procedure TJvgCustomLabelColors.SetAutoHighlight(Value: Boolean);
 begin
-  if FAutoHighlight = Value then Exit;
-  FAutoHighlight := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FAutoHighlight <> Value then
+  begin
+    FAutoHighlight := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgCustomLabelColors.SetAutoShadow(Value: boolean);
+procedure TJvgCustomLabelColors.SetAutoShadow(Value: Boolean);
 begin
-  if FAutoShadow = Value then Exit;
-  FAutoShadow := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FAutoShadow <> Value then
+  begin
+    FAutoShadow := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgCustomLabelColors.SetColorHighlightShift(Value: integer);
+procedure TJvgCustomLabelColors.SetColorHighlightShift(Value: Integer);
 begin
-  if FColorHighlightShift = Value then Exit;
-  FColorHighlightShift := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FColorHighlightShift <> Value then
+  begin
+    FColorHighlightShift := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgCustomLabelColors.SetColorShadowShift(Value: integer);
+procedure TJvgCustomLabelColors.SetColorShadowShift(Value: Integer);
 begin
-  if FColorShadowShift = Value then Exit;
-  FColorShadowShift := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FColorShadowShift <> Value then
+  begin
+    FColorShadowShift := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomLabelColors.SetBackgroundActive(Value: TColor);
 begin
-  if FBackgroundActive = Value then Exit;
-  FBackgroundActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FBackgroundActive <> Value then
+  begin
+    FBackgroundActive := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgGroupBoxColors . }
 
@@ -971,26 +1052,38 @@ end;
 
 procedure TJvgGroupBoxColors.SetCaption(Value: TColor);
 begin
-  FCaption := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FCaption then
+  begin
+    FCaption := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgGroupBoxColors.SetCaptionActive(Value: TColor);
 begin
-  FCaptionActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FCaptionActive then
+  begin
+    FCaptionActive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgGroupBoxColors.SetClient(Value: TColor);
 begin
-  FClient := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FClient then
+  begin
+    FClient := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgGroupBoxColors.SetClientActive(Value: TColor);
 begin
-  FClientActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FClientActive then
+  begin
+    FClientActive := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgExtBevelOptions . }
 
@@ -998,37 +1091,45 @@ constructor TJvgExtBevelOptions.Create;
 begin
   inherited;
   //..defaults
-  FActive := true;
+  FActive := True;
   FBevelPenStyle := psSolid;
   FBevelPenWidth := 1;
 end;
 
-procedure TJvgExtBevelOptions.SetActive(Value: boolean);
+procedure TJvgExtBevelOptions.SetActive(Value: Boolean);
 begin
-  if FActive = Value then Exit;
-  FActive := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FActive <> Value then
+  begin
+    FActive := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgExtBevelOptions.SetBevelPenStyle(Value: TPenStyle);
 begin
-  if FBevelPenStyle = Value then Exit;
-  FBevelPenStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FBevelPenStyle <> Value then
+  begin
+    FBevelPenStyle := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgExtBevelOptions.SetBevelPenWidth(Value: word);
+procedure TJvgExtBevelOptions.SetBevelPenWidth(Value: Word);
 begin
-  if FBevelPenWidth = Value then Exit;
-  FBevelPenWidth := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FBevelPenWidth <> Value then
+  begin
+    FBevelPenWidth := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgExtBevelOptions.SetInteriorOffset(Value: word);
+procedure TJvgExtBevelOptions.SetInteriorOffset(Value: Word);
 begin
-  if FInteriorOffset = Value then Exit;
-  FInteriorOffset := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FInteriorOffset <> Value then
+  begin
+    FInteriorOffset := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvgCustomListBoxItemStyle . }
@@ -1036,7 +1137,7 @@ end;
 constructor TJvgCustomListBoxItemStyle.Create;
 begin
   inherited Create;
-  FBevel := TJvgBeveloptions.Create;
+  FBevel := TJvgBevelOptions.Create;
   FFont := TFont.Create;
 end;
 
@@ -1053,30 +1154,46 @@ begin
   FBevel.OnChanged := Value;
 end;
 
+procedure TJvgCustomListBoxItemStyle.Changed;
+begin
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 procedure TJvgCustomListBoxItemStyle.SetColor(Value: TColor);
 begin
-  if FColor = Value then Exit;
-  FColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FColor <> Value then
+  begin
+    FColor := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetDelineateColor(Value: TColor);
 begin
-  if FDelineateColor = Value then Exit;
-  FDelineateColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FDelineateColor <> Value then
+  begin
+    FDelineateColor := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetFont(Value: TFont);
 begin
-  FFont.Assign(Value);
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FFont then
+  begin
+    FFont.Assign(Value);
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomListBoxItemStyle.SetTextStyle(Value: TglTextStyle);
 begin
-  FTextStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FTextStyle then
+  begin
+    FTextStyle := Value;
+    Changed;
+  end;
 end;
 //______________________________________{ . TJvgListBoxItemStyle . }
 
@@ -1116,21 +1233,29 @@ end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnColor(Value: TColor);
 begin
-  if FBtnColor = Value then Exit;
-  FBtnColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if FBtnColor <> Value then
+  begin
+    FBtnColor := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnFont(Value: TFont);
 begin
-  FBtnFont.Assign(Value);
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FBtnFont then
+  begin
+    FBtnFont.Assign(Value);
+    Changed;
+  end;
 end;
 
 procedure TJvgAskListBoxItemStyle.SetBtnTextStyle(Value: TglTextStyle);
 begin
-  FBtnTextStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FBtnTextStyle then
+  begin
+    FBtnTextStyle := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvgCustomBoxStyle . }
@@ -1145,20 +1270,29 @@ end;
 
 procedure TJvgCustomBoxStyle.SetPenStyle(Value: TPenStyle);
 begin
-  FPenStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FPenStyle then
+  begin
+    FPenStyle := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomBoxStyle.SetHighlightColor(Value: TColor);
 begin
-  FHighlightColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FHighlightColor then
+  begin
+    FHighlightColor := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomBoxStyle.SetShadowColor(Value: TColor);
 begin
-  FShadowColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FShadowColor then
+  begin
+    FShadowColor := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvgCustomTextBoxStyle . }
@@ -1172,14 +1306,20 @@ end;
 
 procedure TJvgCustomTextBoxStyle.SetTextColor(Value: TColor);
 begin
-  FTextColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FTextColor then
+  begin
+    FTextColor := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgCustomTextBoxStyle.SetBackgroundColor(Value: TColor);
 begin
-  FBackgroundColor := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FBackgroundColor then
+  begin
+    FBackgroundColor := Value;
+    Changed;
+  end;
 end;
 
 //______________________________________{ . TJvgBevelLines . }
@@ -1191,59 +1331,86 @@ begin
   FThickness := 1;
 end;
 
+procedure TJvgBevelLines.Changed;
+begin
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
 procedure TJvgBevelLines.SetCount(Value: cardinal);
 begin
-  FCount := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FCount then
+  begin
+    FCount := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgBevelLines.SetStep(Value: cardinal);
 begin
-  FStep := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FStep then
+  begin
+    FStep := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgBevelLines.SetOrigin(Value: TglOrigin);
 begin
-  FOrigin := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FOrigin then
+  begin
+    FOrigin := Value;
+    Changed;
+  end;
 end;
 
 procedure TJvgBevelLines.SetStyle(Value: TPanelBevel);
 begin
-  FStyle := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FStyle then
+  begin
+    FStyle := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgBevelLines.SetBold(Value: boolean);
+procedure TJvgBevelLines.SetBold(Value: Boolean);
 begin
-  FBold := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FBold then
+  begin
+    FBold := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgBevelLines.SetThickness(Value: byte);
+procedure TJvgBevelLines.SetThickness(Value: Byte);
 begin
-  FThickness := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FThickness then
+  begin
+    FThickness := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvgBevelLines.SetIgnoreBorder(Value: boolean);
+procedure TJvgBevelLines.SetIgnoreBorder(Value: Boolean);
 begin
-  FIgnoreBorder := Value;
-  if Assigned(OnChanged) then OnChanged(Self);
+  if Value <> FIgnoreBorder then
+  begin
+    FIgnoreBorder := Value;
+    Changed;
+  end;
 end;
 
 { TJvgGradient }
 
 // { paints the gradient; отрисовывает градиент }
 
-procedure TJvgGradient.Draw(DC: HDC; r: TRect; PenStyle, PenWidth: integer);
+procedure TJvgGradient.Draw(DC: HDC; r: TRect; PenStyle, PenWidth: Integer);
 var
-  i, j, x, y, x2, y2, h, w, NumberOfColors: integer;
-  c1F, c2F, c3F: byte;
-  c1T, c2T, c3T: byte;
-  c1D, c2D, c3D: integer;
-  _R, _G, _B: byte;
+  i, j, x, y, x2, y2, h, w, NumberOfColors: Integer;
+  c1F, c2F, c3F: Byte;
+  c1T, c2T, c3T: Byte;
+  c1D, c2D, c3D: Integer;
+  _R, _G, _B: Byte;
   Pen, OldPen: HPen;
   FillBrush: HBRUSH;
   BufferBmp, OldBMP: HBITMAP;
@@ -1270,9 +1437,9 @@ begin
     Exit;
   end;
   x := r.Left;
-  y := r.top;
-  h := r.bottom - r.top;
-  w := r.right - r.Left;
+  y := r.Top;
+  h := r.Bottom - r.Top;
+  w := r.Right - r.Left;
   x2 := 0;
   y2 := 0;
   Pen := 0;
@@ -1282,9 +1449,9 @@ begin
   if Orientation = fgdHorzConvergent then
   begin
     FOrientation := fgdHorizontal;
-    Draw(DC, Rect(r.Left, r.top, r.right, r.bottom - h div 2), PenStyle, PenWidth);
+    Draw(DC, Rect(r.Left, r.Top, r.Right, r.Bottom - h div 2), PenStyle, PenWidth);
     SwapColors;
-    Draw(DC, Rect(r.Left, r.top + h div 2, r.right, r.bottom), PenStyle, PenWidth);
+    Draw(DC, Rect(r.Left, r.Top + h div 2, r.Right, r.Bottom), PenStyle, PenWidth);
     SwapColors;
     FOrientation := fgdHorzConvergent;
     Exit;
@@ -1292,21 +1459,21 @@ begin
   if Orientation = fgdVertConvergent then
   begin
     FOrientation := fgdVertical;
-    Draw(DC, Rect(r.Left, r.top, r.right - w div 2, r.bottom), PenStyle, PenWidth);
+    Draw(DC, Rect(r.Left, r.Top, r.Right - w div 2, r.Bottom), PenStyle, PenWidth);
     SwapColors;
-    Draw(DC, Rect(r.Left + w div 2, r.top, r.right, r.bottom), PenStyle, PenWidth);
+    Draw(DC, Rect(r.Left + w div 2, r.Top, r.Right, r.Bottom), PenStyle, PenWidth);
     SwapColors;
     FOrientation := fgdVertConvergent;
     Exit;
   end;
 
   //...r._ data no more useful
-  c1F := byte(FRGBFromColor);
-  c2F := byte(word(FRGBFromColor) shr 8);
-  c3F := byte(FRGBFromColor shr 16);
-  c1T := byte(FRGBToColor);
-  c2T := byte(word(FRGBToColor) shr 8);
-  c3T := byte(FRGBToColor shr 16);
+  c1F := Byte(FRGBFromColor);
+  c2F := Byte(Word(FRGBFromColor) shr 8);
+  c3F := Byte(FRGBFromColor shr 16);
+  c1T := Byte(FRGBToColor);
+  c2T := Byte(Word(FRGBToColor) shr 8);
+  c3T := Byte(FRGBToColor shr 16);
   c1D := c1T - c1F;
   c2D := c2T - c2F;
   c3D := c3T - c3F;
@@ -1327,13 +1494,13 @@ begin
       begin
         NumberOfColors := Min(Steps, h);
         ColorR.Left := r.Left;
-        ColorR.right := r.right;
+        ColorR.Right := r.Right;
       end;
     fgdVertical:
       begin
         NumberOfColors := Min(Steps, w);
-        ColorR.top := r.top;
-        ColorR.bottom := r.bottom;
+        ColorR.Top := r.Top;
+        ColorR.Bottom := r.Bottom;
       end;
     fgdLeftBias, fgdRightBias:
       begin
@@ -1347,8 +1514,8 @@ begin
           x2 := x
         else
         begin
-          x := r.right;
-          x2 := r.right;
+          x := r.Right;
+          x2 := r.Right;
         end;
       end;
   else {fgdRectangle}
@@ -1380,36 +1547,36 @@ begin
           case Orientation of
             fgdHorizontal:
               begin
-                if fReverse then
+                if FReverse then
                 begin
-                  ColorR.top := r.bottom - MulDiv(i, h, NumberOfColors);
-                  ColorR.bottom := r.bottom - MulDiv(i + 1, h, NumberOfColors);
+                  ColorR.Top := r.Bottom - MulDiv(i, h, NumberOfColors);
+                  ColorR.Bottom := r.Bottom - MulDiv(i + 1, h, NumberOfColors);
                 end
                 else
                 begin
-                  ColorR.top := r.top + MulDiv(i, h, NumberOfColors);
-                  ColorR.bottom := r.top + MulDiv(i + 1, h, NumberOfColors);
+                  ColorR.Top := r.Top + MulDiv(i, h, NumberOfColors);
+                  ColorR.Bottom := r.Top + MulDiv(i + 1, h, NumberOfColors);
                 end;
               end;
             fgdVertical:
               begin
-                if fReverse then
+                if FReverse then
                 begin
-                  ColorR.Left := r.right - MulDiv(i, w, NumberOfColors);
-                  ColorR.right := r.right - MulDiv(i + 1, w, NumberOfColors);
+                  ColorR.Left := r.Right - MulDiv(i, w, NumberOfColors);
+                  ColorR.Right := r.Right - MulDiv(i + 1, w, NumberOfColors);
                 end
                 else
                 begin
                   ColorR.Left := r.Left + MulDiv(i, w, NumberOfColors);
-                  ColorR.right := r.Left + MulDiv(i + 1, w, NumberOfColors);
+                  ColorR.Right := r.Left + MulDiv(i + 1, w, NumberOfColors);
                 end;
               end;
             fgdRectangle:
               begin
-                ColorR.top := r.top + MulDiv(i, h, NumberOfColors);
-                ColorR.bottom := r.bottom - MulDiv(i, h, NumberOfColors);
+                ColorR.Top := r.Top + MulDiv(i, h, NumberOfColors);
+                ColorR.Bottom := r.Bottom - MulDiv(i, h, NumberOfColors);
                 ColorR.Left := r.Left + MulDiv(i, w, NumberOfColors);
-                ColorR.right := r.right - MulDiv(i, w, NumberOfColors);
+                ColorR.Right := r.Right - MulDiv(i, w, NumberOfColors);
               end;
           end;
           FillRect(TargetDC, ColorR, FillBrush);
@@ -1428,11 +1595,11 @@ begin
           case Orientation of
             fgdLeftBias:
               begin
-                if y >= r.bottom then
+                if y >= r.Bottom then
                   Inc(x, PenWidth)
                 else
                   y := y + PenWidth;
-                if x2 >= r.right then
+                if x2 >= r.Right then
                   Inc(y2, PenWidth)
                 else
                   x2 := x2 + PenWidth;
@@ -1445,7 +1612,7 @@ begin
                 Inc(y, PenWidth)
               else
                 x := x - PenWidth;
-              if y2 >= r.bottom then
+              if y2 >= r.Bottom then
                 dec(x2, PenWidth)
               else
                 y2 := y2 + PenWidth;
@@ -1463,14 +1630,14 @@ begin
 
   if BufferedDraw then
   begin
-    BitBlt(DC, 0, 0, r.right - r.Left, r.bottom - r.top, BufferDC, 0, 0, SRCCOPY);
+    BitBlt(DC, 0, 0, r.Right - r.Left, r.Bottom - r.Top, BufferDC, 0, 0, SRCCOPY);
     DeleteObject(SelectObject(BufferDC, OldBMP));
     DeleteDC(BufferDC);
   end;
 
 end;
 
-function TJvgBeveloptions.BordersHeight: integer;
+function TJvgBevelOptions.BordersHeight: Integer;
 begin
   Result := 0;
   if Inner <> bvNone then
@@ -1493,7 +1660,7 @@ begin
   end;
 end;
 
-function TJvgBeveloptions.BordersWidth: integer;
+function TJvgBevelOptions.BordersWidth: Integer;
 begin
   Result := 0;
   if Inner <> bvNone then
@@ -1516,14 +1683,14 @@ begin
   end;
 end;
 
-function TJvgCustomListBoxItemStyle.HighLightColor: TColor;
+function TJvgCustomListBoxItemStyle.HighlightColor: TColor;
 begin
-  Result := incColor(Color, 60);
+  Result := IncColor(Color, 60);
 end;
 
 function TJvgCustomListBoxItemStyle.ShadowColor: TColor;
 begin
-  Result := decColor(Color, 60);
+  Result := DecColor(Color, 60);
 end;
 
 end.
