@@ -1536,6 +1536,7 @@ begin
   FDefaultMapping['-'] := 64;   // G;
   FDefaultMapping['U'] := 62;   // B + C + D + E + F;
   FDefaultMapping['u'] := 28;   // C + D + E;
+  FDefaultMapping['Y'] := 106;  // B + C + D + F + G;
   FDefaultMapping['y'] := 106;  // B + C + D + F + G;
   FDefaultMapping[DecimalSeparator] := 256;  // CL;
   FDefaultMapping[':'] := 768;  // CL + CH;
