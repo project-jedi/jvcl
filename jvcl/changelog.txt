@@ -1,9 +1,10 @@
 Changelog for JVCL 3.0
 ======================
 2003-09-25:
+- fixed bug with Scrollbars in JvThemes // andreas
 - Updated JvCsvData, JvDBLookup, JvBalloonHint, JvTimeLine, JvOutlookBar, 
   JvCaptionButton, JvSpin, JvCtrls, JvRichEdit, JvEditor, JvPickDate, JvxCtrls,
-  JvToolEdit to JvThemes
+  JvToolEdit to JvThemes // andreas
 - JvInstallLabel: ImageList renamed to Images, changed TImagelist to TCustomImagelist // peter3
 - JvListComb: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
 - JvExtraInspEditors: Imagelist renamed to Images, changed TImagelist to TCustomImagelist // peter3
