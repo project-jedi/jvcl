@@ -65,10 +65,10 @@ var
           j := Pos('{$L ',S[i]);
         if j = 0 then
           j := Pos('{$LINK ',S[i]);
-        if j = 0 then
-          j := Pos('{$I ',S[i]);
-        if j = 0 then
-          j := Pos('{$INCLUDE ',S[i]);
+//        if j = 0 then
+//          j := Pos('{$I ',S[i]);
+//        if j = 0 then
+//          j := Pos('{$INCLUDE ',S[i]);
         if j > 0 then
         begin
           tmp := trim(S[i]);
