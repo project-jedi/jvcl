@@ -4,6 +4,7 @@ object FramePackageSelection: TFramePackageSelection
   Width = 518
   Height = 335
   TabOrder = 0
+  OnClick = FrameClick
   object LblTarget: TLabel
     Left = 8
     Top = 104
@@ -288,7 +289,7 @@ object FramePackageSelection: TFramePackageSelection
       Action = ActionResetPackages
     end
   end
-  object ActionList1: TActionList
+  object ActionList: TActionList
     Left = 48
     Top = 128
     object ActionInstallAll: TAction

@@ -49,7 +49,7 @@ type
     PopupMenuPackages: TPopupMenu;
     MenuInstallAll: TMenuItem;
     MenuInstallNone: TMenuItem;
-    ActionList1: TActionList;
+    ActionList: TActionList;
     ActionInstallAll: TAction;
     ActionInstallNone: TAction;
     LblFrameworks: TLabel;
@@ -72,6 +72,7 @@ type
     procedure CheckListBoxPackagesMouseMove(Sender: TObject;
       Shift: TShiftState; X, Y: Integer);
     procedure TimerHintTimer(Sender: TObject);
+    procedure FrameClick(Sender: TObject);
   private
     function GetSelProjectGroup: TProjectGroup;
     function GetSelTargetConfig: TTargetConfig;
@@ -617,6 +618,11 @@ begin
   FOrgWndProc := CheckListBoxPackages.WindowProc;
   CheckListBoxPackages.WindowProc := HookWndProc;
   ComboBoxDisplayMode.ItemIndex := 0;
+end;
+
+procedure TFramePackageSelection.FrameClick(Sender: TObject);
+begin
+  ShowMessage(ActionList.Owner.Name);
 end;
 
 end.

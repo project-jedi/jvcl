@@ -274,7 +274,7 @@ begin
   try
     Compiler.OnProgress := EvProgress;
     Compiler.OnCaptureLine := EvCaptureLine;
-    Success := Compiler.Compile;
+    Success := Compiler.Compile(True);
   finally
     Compiler.Free;
   end;
