@@ -30,7 +30,9 @@ Known Issues:
 unit JvgWebDocumentIterator;
 
 interface
-uses windows, classes, sysutils, graphics, controls, menus, extctrls, JvgCommClasses, JvgTypes, shdocvw;
+uses
+  Windows, Classes, SysUtils, Graphics, Controls, Menus, ExtCtrls,
+  JvgCommClasses, JvgTypes, shdocvw;
 
 type
   {  TJvgIterator = class
@@ -140,3 +142,4 @@ begin
 end;
 
 end.
+

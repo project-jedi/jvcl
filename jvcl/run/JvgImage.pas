@@ -32,19 +32,8 @@ unit JvgImage;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  JvgTypes,
-  JvgUtils,
-  JVComponent,
-  JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, JvgTypes, JvgUtils, JVComponent, JvgCommClasses;
 
 type
   TJvgBitmapImage = class(TJvGraphicControl)
@@ -87,7 +76,9 @@ type
     procedure SetFastDraw(Value: boolean);
 
   protected
-    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: boolean);
+    {$IFDEF COMPILER6_UP} override;
+    {$ENDIF}
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -567,3 +558,4 @@ begin
 end;}
 //________________________________________________________
 end.
+

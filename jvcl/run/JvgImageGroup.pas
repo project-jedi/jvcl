@@ -32,28 +32,17 @@ unit JvgImageGroup;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  JvgTypes,
-  JvgUtils,
-  JVComponent,
-  JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
 
 type
   TJvgImageGroup = class(TJvGraphicControl)
   private
     FImageList: TImageList;
-//    FPassiveMask: TBitmap;
-//    FActiveMask: TBitmap;
-//    FSelectedMask: TBitmap;
-//    FSingleSelected: boolean;
+    //    FPassiveMask: TBitmap;
+    //    FActiveMask: TBitmap;
+    //    FSelectedMask: TBitmap;
+    //    FSingleSelected: boolean;
     FTransparent: boolean;
     FTransparentColor: TColor;
     FMasked: boolean;
@@ -64,10 +53,10 @@ type
     FFastDraw: boolean;
     fNeedRemakeBackground: boolean;
     Image: TBitmap;
-//    OldWidth, OldHeight,
-//      OldLeft, OldTop: integer;
+    //    OldWidth, OldHeight,
+    //      OldLeft, OldTop: integer;
 
-//    procedure SmthChanged(Sender: TObject);
+    //    procedure SmthChanged(Sender: TObject);
 
     procedure SetImageList(Value: TImageList);
     procedure SetTransparent(Value: boolean);
@@ -310,3 +299,4 @@ begin
 end;
 
 end.
+

@@ -30,7 +30,8 @@ Known Issues:
 unit JvgUtils;
 
 interface
-uses Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
+uses
+  Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
   JvgTypes, JvgCommClasses, Jvg3DColors, mmsystem;
 
 function Min(i1, i2: integer): integer;
@@ -115,9 +116,8 @@ procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColor
 
 function CalcMathString(sExpression: string): single;
 
-function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;overload;
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant; overload;
 function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
-
 
 function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
 procedure TypeStringOnKeyboard(S: string);
@@ -148,6 +148,7 @@ uses shlobj;
 
 { debug func }
 {$IFDEF glDEBUG}
+
 function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 begin
   Result := Windows.DeleteObject(p1);
@@ -1481,7 +1482,8 @@ begin
       {if r>g then limit:=r else limit:=g; if b>limit then limit:=b;//...max
       if (255-limit)<FColorHighlightShift then FColorHighlightShift:=255-limit;
       FHighlight := RGB(r+FColorHighlightShift,g+FColorHighlightShift,b+FColorHighlightShift);}
-      FHighlight := RGB(min(r + FColorHighlightShift, 255), min(g + FColorHighlightShift, 255), min(b + FColorHighlightShift, 255));
+      FHighlight := RGB(min(r + FColorHighlightShift, 255), min(g + FColorHighlightShift, 255), min(b +
+        FColorHighlightShift, 255));
     end;
   end;
 end;
@@ -1569,7 +1571,8 @@ var
     if cCurrChar = ')' then
     begin
       dec(BracketsCount);
-      if BracketsCount < 0 then raise Exception.Create('Right braket havn''t a left one. Pos:' + IntToStr(ExpressionPtr - 1));
+      if BracketsCount < 0 then
+        raise Exception.Create('Right braket havn''t a left one. Pos:' + IntToStr(ExpressionPtr - 1));
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1617,13 +1620,15 @@ var
         '+':
           begin
             NextChar;
-            if cCurrChar in ['+', '-', '/', '*'] then raise Exception.Create('Duplicate signs. Pos:' + IntToStr(ExpressionPtr - 1));
+            if cCurrChar in ['+', '-', '/', '*'] then
+              raise Exception.Create('Duplicate signs. Pos:' + IntToStr(ExpressionPtr - 1));
             Result := Result + TestFor_MulDiv;
           end;
         '-':
           begin
             NextChar;
-            if cCurrChar in ['+', '-', '/', '*'] then raise Exception.Create('Duplicate signs at. Pos:' + IntToStr(ExpressionPtr - 1));
+            if cCurrChar in ['+', '-', '/', '*'] then
+              raise Exception.Create('Duplicate signs at. Pos:' + IntToStr(ExpressionPtr - 1));
             Result := Result - TestFor_MulDiv;
           end;
       else
@@ -1653,7 +1658,7 @@ end;
  Тренарный оператор   x ? y : z
 }
 
-function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;overload;
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant; overload;
 begin
   if fExpression then
     Result := IfTrue
@@ -2066,7 +2071,8 @@ const
     );
 
   TRANS_PAIRCOUNT = 14;
-  aTRANS_PAIR: array[1..TRANS_PAIRCOUNT, boolean] of string = (('х', 'kh'), ('ц', 'ts'), ('ч', 'ch'), ('ш', 'sh'), ('щ', 'shch'), ('ю', 'iu'), ('я', 'ia'),
+  aTRANS_PAIR: array[1..TRANS_PAIRCOUNT, boolean] of string = (('х', 'kh'), ('ц', 'ts'), ('ч', 'ch'), ('ш', 'sh'), ('щ',
+    'shch'), ('ю', 'iu'), ('я', 'ia'),
     ('Х', 'Kh'), ('Ц', 'Ts'), ('Ч', 'Сh'), ('Ш', 'Sh'), ('Щ', 'Shch'), ('Ю', 'Iu'), ('Я', 'Ia'));
 var
   i, j: integer;
@@ -2202,3 +2208,4 @@ asm
 end;
 
 end.
+

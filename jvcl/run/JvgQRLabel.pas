@@ -31,10 +31,9 @@ unit JvgQRLabel;
 
 interface
 
-uses Windows, classes, graphics, QRCTRLS, JvgTypes, db;
+uses Windows, Classes, Graphics, QRCTRLS, JvgTypes, DB;
 
 type
-
   TJvgQRLabel = class(TQRCustomLabel)
   private
     FDirection: TglLabelDir;
@@ -44,7 +43,7 @@ type
     procedure SetDirection(Value: TglLabelDir);
     procedure SetEscapment(Value: integer);
   protected
-    procedure SetAlignment(Value: TAlignment);override;
+    procedure SetAlignment(Value: TAlignment); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -194,8 +193,10 @@ begin
   begin
     //      with QRPrinter do R := Bounds(XPos(OfsX), YPos(OfsY), {XPos}trunc(Width * Zoom / 100), trunc(Height*Zoom / 100));
     with QRPrinter do
-      R := Rect(XPos(OfsX {+ self.Size.Left}), YPos(OfsY {+ self.Size.Top}), XPos(OfsX + self.Size.Left + self.Size.Width), YPos(OfsY + self.Size.Top + self.Size.Height));
-    ExtTextOut(Canvas.Handle, X {QRPrinter.XPos(OfsX)+X}, Y {QRPrinter.YPos(OfsY)+Y}, ETO_CLIPPED, @R, PChar(Caption), Length(Caption), nil);
+      R := Rect(XPos(OfsX {+ self.Size.Left}), YPos(OfsY {+ self.Size.Top}), XPos(OfsX + self.Size.Left +
+        self.Size.Width), YPos(OfsY + self.Size.Top + self.Size.Height));
+    ExtTextOut(Canvas.Handle, X {QRPrinter.XPos(OfsX)+X}, Y {QRPrinter.YPos(OfsY)+Y}, ETO_CLIPPED, @R, PChar(Caption),
+      Length(Caption), nil);
   end
   else
     Canvas.TextOut(OfsX + X, OfsY + Y, Caption);
@@ -271,3 +272,4 @@ begin
 end;
 
 end.
+

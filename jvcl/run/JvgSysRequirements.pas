@@ -32,15 +32,8 @@ unit JvgSysRequirements;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  JVComponent,
-  Dialogs;
+  Windows,  Messages,  SysUtils,  Classes,  Graphics,  Controls,  Forms,
+  JvComponent,  Dialogs;
 
 type
   TglMinVideoVRefreshRate = (frrIgnore, frr70Hertz, frr75Hertz, frr85Hertz);

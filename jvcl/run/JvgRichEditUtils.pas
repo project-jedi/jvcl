@@ -30,7 +30,8 @@ Known Issues:
 unit JvgRichEditUtils; //  TRichEdit Wrapping functions
 
 interface
-uses Windows, Messages, graphics, comctrls, classes;
+uses
+  Windows, Messages, graphics, comctrls, classes;
 
 procedure AddNl(RE: TRichEdit);
 procedure AddText(RE: TRichEdit; Str: string; TxtSize: integer; TxtStyle: TFontStyles; TxtColor: TColor);
@@ -117,7 +118,8 @@ const
     Pos2 := Pos;
     if fTrimleft then Pos1 := Pos;
     repeat inc(Pos2);
-    until (Pos2 > length(memoText)) or (memoText[Pos2] = ' ') or (memoText[Pos2] = '''') or (memoText[Pos2] = '"') or (memoText[Pos2] = chr($0D));
+    until (Pos2 > length(memoText)) or (memoText[Pos2] = ' ') or (memoText[Pos2] = '''') or (memoText[Pos2] = '"') or
+      (memoText[Pos2] = chr($0D));
 
     Result := copy(memoText, Pos1, Pos2 - Pos1);
   end;
@@ -205,3 +207,4 @@ begin
 end;
 
 end.
+

@@ -32,17 +32,8 @@ unit JvgGraph;
 interface
 
 uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  JvgTypes,
-  JvgCommClasses,
-  JvgUtils,
-  ExtCtrls,
-  JVComponent,
-  JvgBevel;
+  Windows, Messages, Classes, Controls, Graphics,
+  JvgTypes, JvgCommClasses, JvgUtils, ExtCtrls, JvComponent, JvgBevel;
 
 const
   MaxPointsCount = 30;
@@ -139,3 +130,4 @@ begin
 end;
 
 end.
+

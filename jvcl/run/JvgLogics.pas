@@ -30,10 +30,8 @@ Known Issues:
 unit JvgLogics;
 
 interface
-uses classes,
-  jvComponent,
-  sysUtils,
-  Graphics;
+uses
+  Classes, JvComponent, SysUtils, Graphics;
 
 type
 
@@ -58,7 +56,7 @@ type
   private
     FLogics: TJvgLogics;
     FCommentAreas: TJvgCommentAreas;
-//    FIgnoreSpaces: boolean;
+    //    FIgnoreSpaces: boolean;
 
     procedure SetLogics(const Value: TJvgLogics);
     procedure SetDictionary(const Value: TStrings);
@@ -87,8 +85,8 @@ type
     FNextElementID: integer;
     FNextFalseElementID: integer;
 
-//    FNextElement: TJvgLogicElement;
-//    FNextFalseElement: TJvgLogicElement;
+    //    FNextElement: TJvgLogicElement;
+    //    FNextFalseElement: TJvgLogicElement;
 
     FLeft: integer;
     FTop: integer;
@@ -602,3 +600,4 @@ begin
 end;
 
 end.
+

@@ -35,84 +35,76 @@ unit JvgDBNav;
 
 interface
 uses
-   Windows,
-   Messages,
-   Classes,
-   JVCLVer,
-   Controls,
-   Graphics,
-   JvgTypes,
-   JvgCommClasses,
-   JvgUtils,
-   DBCtrls;
+  Windows, Messages, Classes, JVCLVer, Controls, Graphics, DBCtrls,
+  JvgTypes, JvgCommClasses, JvgUtils;
 
 type
-   TJvgDBNavigator = class(TDBNavigator)
-   private
-      FAboutJVCL: TJVCLAboutInfo;
-//      FNewWndProc: Pointer;
-      //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
-      //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-      procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-//      procedure PaintControls(DC: HDC; First: TControl);
-//      procedure HookFocusControlWndProc;
-//      procedure UnhookFocusControlWndProc;
-//      procedure FocusControlWndHookProc(var Msg_: TMessage);
-   protected
-      //    procedure PaintHandler(var message: TWMPaint);
-      //    procedure Paint; override;
-   public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-   published
-      property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-   end;
+  TJvgDBNavigator = class(TDBNavigator)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+    //      FNewWndProc: Pointer;
+          //    procedure CMMouseMove(var Message: TMessage); message CM_MOUSEMOVE;
+          //    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    //      procedure PaintControls(DC: HDC; First: TControl);
+    //      procedure HookFocusControlWndProc;
+    //      procedure UnhookFocusControlWndProc;
+    //      procedure FocusControlWndHookProc(var Msg_: TMessage);
+  protected
+    //    procedure PaintHandler(var message: TWMPaint);
+    //    procedure Paint; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  end;
 
 implementation
 //________________________________________________________ Methods _
 
 constructor TJvgDBNavigator.Create(AOwner: TComponent);
 begin
-   inherited;
-   //  FocusControl := Controls[0];
-   //  HookFocusControlWndProc;
+  inherited;
+  //  FocusControl := Controls[0];
+  //  HookFocusControlWndProc;
 end;
 
 destructor TJvgDBNavigator.Destroy;
 begin
-   //  UnhookFocusControlWndProc;
-   inherited;
+  //  UnhookFocusControlWndProc;
+  inherited;
 end;
 
 procedure TJvgDBNavigator.WMPaint(var message: TWMPaint);
 var
-   DC                         : HDC;
-   i                          : integer;
-   PS                         : TPaintStruct;
+  DC: HDC;
+  i: integer;
+  PS: TPaintStruct;
 begin
-//   DC := BeginPaint(Handle, PS);
-   EndPaint(Handle, PS);
-   exit;
-   DC := message.DC;
-   if DC = 0 then
-      DC := BeginPaint(Handle, PS);
-   TRY
-      //PaintWindow(DC);
-      FOR i := 0 TO ControlCount - 1 DO
-         if Controls[i] IS TNavButton then
-            WITH TNavButton(Controls[i]) DO
-               if Visible AND Enabled then
-                  //        BitBlt( DC, Width*I,1,{Glyph.width,Glyph.Height}10,10,Glyph.Canvas.Handle, 0,0, SRCCOPY);
+  //   DC := BeginPaint(Handle, PS);
+  EndPaint(Handle, PS);
+  exit;
+  DC := message.DC;
+  if DC = 0 then
+    DC := BeginPaint(Handle, PS);
+  try
+    //PaintWindow(DC);
+    for i := 0 to ControlCount - 1 do
+      if Controls[i] is TNavButton then
+        with TNavButton(Controls[i]) do
+          if Visible and Enabled then
+            //        BitBlt( DC, Width*I,1,{Glyph.width,Glyph.Height}10,10,Glyph.Canvas.Handle, 0,0, SRCCOPY);
 
-                  SetPixel(DC, 2, 2, 0);
-      //    BitBlt( DC, 0,0,10,10,TNavButton(Controls[0]).Glyph.Canvas.Handle,0,0, SRCCOPY);
-      begin
+            SetPixel(DC, 2, 2, 0);
+    //    BitBlt( DC, 0,0,10,10,TNavButton(Controls[0]).Glyph.Canvas.Handle,0,0, SRCCOPY);
+    begin
 
-      end;
-   FINALLY
-      if message.DC = 0 then
-         EndPaint(Handle, PS);
-   end;
+    end;
+  finally
+    if message.DC = 0 then
+      EndPaint(Handle, PS);
+  end;
 end;
 
 {

@@ -46,7 +46,7 @@ type
 
   TJvgFileIterator = class
   private
-//    FileExt: string;
+    //    FileExt: string;
     FPath: string;
     FAttr: Integer;
     FRecurse: boolean;
@@ -137,7 +137,8 @@ begin
 
     if not FindOpened then exit;
 
-    if FRecurse and (PCurrentItem^.sr.Attr and faDirectory = faDirectory) and (PCurrentItem^.sr.Name <> '.') and (PCurrentItem^.sr.Name <> '..') then
+    if FRecurse and (PCurrentItem^.sr.Attr and faDirectory = faDirectory) and (PCurrentItem^.sr.Name <> '.') and
+      (PCurrentItem^.sr.Name <> '..') then
       First(ExtractFilePath(PCurrentItem^.Path) + PCurrentItem^.sr.Name + '\', '', FAttr, true)
     else if not CheckFileExt(PCurrentItem^.sr.Name) then
       Next;
@@ -195,3 +196,4 @@ begin
 end;
 
 end.
+

@@ -40,7 +40,8 @@ procedure ExportToExcel(QuickRep: TCustomQuickRep);
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
 implementation
-uses ComObj, JvgUtils;
+uses
+  ComObj, JvgUtils;
 //_________________________________________________________________\\
 
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
@@ -202,3 +203,4 @@ begin
 end;
 
 end.
+

@@ -32,17 +32,8 @@ unit JvgExportComponents;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JVComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  db,
-  dbtables;
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
+  Controls, Forms, Dialogs, db, dbtables;
 
 type
   TglExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
@@ -429,7 +420,7 @@ begin
         for i := 0 to DataSet.FieldCount - 1 do
           if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic,
             ftParadoxOle, ftDBaseOle, ftTypedBinary,
-            ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
+              ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
               ftIDispatch]) then
             Sheet.Cells[RecNo, ColNo + i] :=
               GetFieldValue(DataSet.Fields[i]);
@@ -597,7 +588,6 @@ begin
   Table.TableName := SaveToFileName;
   //  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
 
-
   for i := 0 to DataSet.FieldCount - 1 do
   begin
     FieldType := DataSet.Fields[i].DataType;
@@ -645,3 +635,4 @@ begin
 end;
 
 end.
+

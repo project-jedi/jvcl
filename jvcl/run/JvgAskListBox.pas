@@ -73,7 +73,7 @@ type
     FCaptionsAlign_: UINT;
     FShowText: Boolean;
     FSegment1Width: Word;
-    FPushedButton: array [0..1023] of Byte;
+    FPushedButton: array[0..1023] of Byte;
     FOnButtonClicked: TNotifyEvent;
     FSelectedItem: Word;
     FButtons: TStringList;
@@ -131,8 +131,8 @@ type
     property IntegralHeight;
     property Items;
     property ParentColor;
-      //    property ParentCtl3D;
-      //    property ParentFont;
+    //    property ParentCtl3D;
+    //    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
@@ -144,7 +144,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-      //    property AfterItemWasDrown;
+    //    property AfterItemWasDrown;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -183,7 +183,7 @@ uses
   JvgUtils;
 
 const
-  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
+  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
@@ -207,7 +207,7 @@ begin
   begin
     with FItemStyle do
     begin
-         //      Style := idsRaised;
+      //      Style := idsRaised;
       Color := clBtnFace;
       BtnColor := clBtnFace;
       TextStyle := fstRaised;
@@ -215,7 +215,7 @@ begin
     end;
     with FItemSelStyle do
     begin
-         //      Style := idsRaised;
+      //      Style := idsRaised;
       Color := clBtnShadow;
       BtnColor := clBtnFace;
       TextStyle := fstRaised;
@@ -292,8 +292,8 @@ var
   Shift, OldPushedBtn, I: Integer;
   Rect1: TRect;
   ItemStyle: TJvgAskListBoxItemStyle;
-   //  TS:TglTextStyle;
-   //  TA:UINT;
+  //  TS:TglTextStyle;
+  //  TA:UINT;
 
   procedure DrawLBItem(ItemSt: TglItemsDrawStyle; R: TRect);
   begin
@@ -314,12 +314,12 @@ var
   procedure DrawTextInRect(Rect: TRect; Align: Word; StrListNum: Integer);
   var
     FontColor: TColor;
-    szStr: array [0..255] of Char;
+    szStr: array[0..255] of Char;
     Len: Word;
     TextStyle: TglTextStyle;
   begin
     Dec(Rect.Right, 2);
-      //    FillMemory(@szStr,255,0);
+    //    FillMemory(@szStr,255,0);
     if StrListNum = -1 then
       StrPCopy(szStr, Items[Index])
     else
@@ -404,13 +404,13 @@ begin
     if Index = -1 then
       Exit;
     InitState(State, WordRec(LongRec(ItemState).Lo).Lo);
-      //   State := TOwnerDrawState(WordRec(LongRec(ItemState).Lo).Lo);
+    //   State := TOwnerDrawState(WordRec(LongRec(ItemState).Lo).Lo);
     Canvas.Handle := hDC;
     Rect := rcItem;
   end;
 
   Canvas.Brush := Brush;
-   //  if State = [odSelected,odFocused] then Exit;
+  //  if State = [odSelected,odFocused] then Exit;
   Canvas.FrameRect(Rect);
   Inc(Rect.Top);
   Inc(Rect.Left);
@@ -441,7 +441,7 @@ begin
   else
     Canvas.FillRect(Rect1);
 
-   //DrawLBItem( idsRecessed, Rect1 );
+  //DrawLBItem( idsRecessed, Rect1 );
   DrawBoxEx(Canvas.Handle, Rect1, ItemStyle.Bevel.Sides, ItemStyle.Bevel.Inner,
     ItemStyle.Bevel.Outer, ItemStyle.Bevel.Bold, 0, True);
   if fSelected then
@@ -478,7 +478,7 @@ begin
     end
     else
       DrawLBItem(idsRaised, BtnRect);
-      //...button text
+    //...button text
     if FPushedButton[Index] = I then
       ItemStyle.BtnFont.Style := [fsBold]
     else
@@ -577,8 +577,7 @@ begin
   I := -1;
   if NumGlyphs = 1 then
     I := 0
-  else
-  if Index < NumGlyphs then
+  else if Index < NumGlyphs then
     I := Index;
   if I >= 0 then
   begin
@@ -610,8 +609,7 @@ begin
   if (not Assigned(Value)) and Assigned(WallpaperImage) then
     if Assigned(FWallpaper) then
       WallpaperBmp := FWallpaper
-    else
-    if Assigned(FWallpaperImage) then
+    else if Assigned(FWallpaperImage) then
       WallpaperBmp := FWallpaperImage.Picture.Bitmap
     else
       WallpaperBmp := nil;
@@ -672,7 +670,7 @@ end;
 
 procedure TJvgAskListBox.SetGlyphs(Value: TImageList);
 begin
-   //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then Exit;
+  //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then Exit;
   FGlyphs := Value;
   if FShowGlyphs then
     Invalidate;
@@ -847,7 +845,7 @@ begin
     SendMessage(Handle, LB_GETITEMRECT, Index, Longint(@R));
     R.Left := FSegment1Width;
     InvalidateRect(Handle, @R, True);
-      //ButtonClicked;
+    //ButtonClicked;
     if (aloAutoScroll in Options) and (Value <> 0) then
       SendMessage(Handle, LB_SETCURSEL, FSelectedItem + 1, Longint(0));
   end
@@ -871,7 +869,7 @@ begin
     SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));
     Inc(R.Left, FSegment1Width);
     InvalidateRect(Handle, @R, False);
-      //if (aloAutoScroll in Options)then SendMessage( Handle, LB_SETCURSEL, FSelectedItem+1, Longint(0));
+    //if (aloAutoScroll in Options)then SendMessage( Handle, LB_SETCURSEL, FSelectedItem+1, Longint(0));
   end;
 end;
 

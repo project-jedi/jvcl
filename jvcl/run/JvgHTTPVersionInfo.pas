@@ -32,16 +32,8 @@ unit JvgHTTPVersionInfo;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JvComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  shdocvw;
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, Controls,
+  Forms, Dialogs, shdocvw;
 
 type
   TJvgHTTPVersionInfo = class(TJvComponent)
@@ -150,3 +142,4 @@ begin
 end;
 
 end.
+

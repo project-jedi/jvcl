@@ -54,7 +54,7 @@ type
     PropList: PPropList;
     NumProps: word;
   public
-    constructor Create(AOwner, Component: TComponent);reintroduce;
+    constructor Create(AOwner, Component: TComponent); reintroduce;
     destructor Destroy; override;
     procedure LoadProperties(Component: TComponent);
   published
@@ -137,8 +137,8 @@ begin
 
       PropName := PropList^[i]^.Name;
 
-//      PropTypeInf := PropList^[i]^.PropType^;
-//      PropInfo := PropList^[i];
+      //      PropTypeInf := PropList^[i]^.PropType^;
+      //      PropInfo := PropList^[i];
     end;
   finally
 
@@ -207,3 +207,4 @@ begin
 end;
 
 end.
+

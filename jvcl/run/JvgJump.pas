@@ -34,13 +34,7 @@ unit JvgJump;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  JVComponent,
-  Classes,
-  Graphics,
-  Controls,
+  Windows, Messages, SysUtils, JVComponent, Classes, Graphics, Controls,
   ExtCtrls; //MMSystem;
 
 type
@@ -234,3 +228,4 @@ end;
 //-----
 
 end.
+

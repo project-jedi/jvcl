@@ -71,7 +71,7 @@ type
     property Values: TStringList read FValues write FValues;
     property Expanded: boolean read FExpanded write SetExpanded;
     property Selected: boolean read FSelected write SetSelected;
-    property HasChanged: boolean read GetChanged write SetChanged; 
+    property HasChanged: boolean read GetChanged write SetChanged;
   end;
 
   TJvgGridItems = class(TCollection)
@@ -113,7 +113,8 @@ type
     procedure KeyPress(var Key: Char); override;
 
     procedure GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle); override;
-    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: longint; var CellRect: TRect; var Gradient: TJvgGradient); override;
+    procedure GetCellGradientParams(Sender: TObject; ACol, ARow: longint; var CellRect: TRect; var Gradient:
+      TJvgGradient); override;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -386,7 +387,7 @@ end;
 
 procedure TJvgInspectorGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle);
 var
-//  ItemNo: integer;
+  //  ItemNo: integer;
   Item: TJvgGridItem;
 begin
   with Style do
@@ -505,7 +506,7 @@ var
   i, Index: integer;
 begin
   Index := 0;
-//  i := 0;
+  //  i := 0;
   Result := nil;
   if Items.Count = 0 then exit;
   for i := 0 to ARow - 1 do
@@ -625,3 +626,4 @@ begin
 end;
 
 end.
+

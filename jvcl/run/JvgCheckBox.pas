@@ -31,20 +31,9 @@ unit JvgCheckBox;
 
 interface
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  ExtCtrls,
-  JvgTypes,
-  JvgCommClasses,
-  JVComponent,
-  JvgUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls,
+  JvgTypes, JvgCommClasses, JvComponent, JvgUtils;
 
 type
 

@@ -81,8 +81,7 @@ var
             fSorted := False;
           end;
         end
-        else
-        if Control.Top > Control2.Top then
+        else if Control.Top > Control2.Top then
         begin
           ControlsList.Exchange(I, I + 1);
           fSorted := False;
@@ -133,7 +132,8 @@ begin
             Left := R.Right - Width;
           haSpaceEqually:
             if ControlNo <> TotalControls then
-              Left := R.Left + AccumulatedSize.cx + Trunc((R.Right - R.Left - TotalSize.cx) / TotalControls * ControlNo);
+              Left := R.Left + AccumulatedSize.cx + Trunc((R.Right - R.Left - TotalSize.cx) / TotalControls *
+                ControlNo);
           haCenterWindow:
             Left := (Wnd.Width - Width) div 2;
           haClose:
@@ -173,3 +173,4 @@ begin
 end;
 
 end.
+

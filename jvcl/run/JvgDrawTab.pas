@@ -31,7 +31,8 @@ unit JvgDrawTab;
 
 interface
 
-uses Windows, CommCtrl, graphics, Classes, ExtCtrls,
+uses
+  Windows, CommCtrl, graphics, Classes, ExtCtrls,
   JvgTypes, JvgUtils, JvgTabComm;
 
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
@@ -265,7 +266,8 @@ begin
     end;
 
     if DrawTabStr.FlatButtons then InflateRect(r, 3, 3);
-    r := DrawBoxEx(HDC, r, Borders, BevelInner, BevelOuter, Bold, BackgrColor_, (Wallpaper.FillCaptions and fWallpaper) or Gradient.Active);
+    r := DrawBoxEx(HDC, r, Borders, BevelInner, BevelOuter, Bold, BackgrColor_, (Wallpaper.FillCaptions and fWallpaper)
+      or Gradient.Active);
     if DrawTabStr.FlatButtons then InflateRect(r, -3, -3);
     //_________________________________________DRAW caption BACKGROUND_
     if Wallpaper.FillCaptions and (not Wallpaper.IncludeBevels) then
@@ -392,3 +394,4 @@ begin
 end;
 
 end.
+

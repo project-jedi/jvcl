@@ -27,125 +27,125 @@ Known Issues:
 
 {$I JVCL.INC}
 
-UNIT JvgWinMask;
+unit JvgWinMask;
 
-INTERFACE
+interface
 
-USES
-   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-   Dialogs, ComCtrls, ExtCtrls, CommCtrl, ImgList,
-   JvgTypes, JvComponent, JvgCommClasses;
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, ExtCtrls, CommCtrl, ImgList,
+  JvgTypes, JvComponent, JvgCommClasses;
 
 //const
 
-TYPE
+type
 
-   TJvgWinMask = CLASS(TJvCustomPanel)
-   PRIVATE
-      FMask: TBitmap;
-      FMaskBuff: TBitmap;
-      fIgnorePaint: boolean;
-   PUBLIC
-      Control: TWinControl;
-      CONSTRUCTOR Create(AOwner: TComponent); OVERRIDE;
-      DESTRUCTOR Destroy; OVERRIDE;
-   PROTECTED
-      PROCEDURE Loaded; OVERRIDE;
-      PROCEDURE Paint; OVERRIDE;
-      PROCEDURE SetParent(Value: TWinControl); OVERRIDE;
-      PROCEDURE Notification(AComponent: TComponent; Operation: TOperation);
-         OVERRIDE;
-   PUBLIC
-      PROPERTY Mask: TBitmap READ FMask WRITE FMask;  // stored fDontUseDefaultImage;
-   END;
+  TJvgWinMask = class(TJvCustomPanel)
+  private
+    FMask: TBitmap;
+    FMaskBuff: TBitmap;
+    fIgnorePaint: boolean;
+  public
+    Control: TWinControl;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  protected
+    procedure Loaded; override;
+    procedure Paint; override;
+    procedure SetParent(Value: TWinControl); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
+  public
+    property Mask: TBitmap read FMask write FMask; // stored fDontUseDefaultImage;
+  end;
 
-PROCEDURE Register;
+procedure Register;
 
-IMPLEMENTATION
-USES JvgUtils;
+implementation
+uses JvgUtils;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-PROCEDURE Register;
-BEGIN
-END;
+procedure Register;
+begin
+end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //___________________________________________________ TJvgWinMask Methods _
 
-CONSTRUCTOR TJvgWinMask.Create(AOwner: TComponent);
-BEGIN
-   INHERITED;
-   Height := 50;
-   Width := 100;
-   FMask := TBitmap.Create;
-   FMaskBuff := TBitmap.Create;
-   fIgnorePaint := false;
-END;
+constructor TJvgWinMask.Create(AOwner: TComponent);
+begin
+  inherited;
+  Height := 50;
+  Width := 100;
+  FMask := TBitmap.Create;
+  FMaskBuff := TBitmap.Create;
+  fIgnorePaint := false;
+end;
 
-DESTRUCTOR TJvgWinMask.Destroy;
-BEGIN
-   FMask.Free;
-   FMaskBuff.Free;
-   INHERITED;
-END;
+destructor TJvgWinMask.Destroy;
+begin
+  FMask.Free;
+  FMaskBuff.Free;
+  inherited;
+end;
 
-PROCEDURE TJvgWinMask.Loaded;
-BEGIN
-   INHERITED;
-END;
+procedure TJvgWinMask.Loaded;
+begin
+  inherited;
+end;
 
-PROCEDURE TJvgWinMask.Paint;
-VAR
-   r                          : TRect;
-   Message                    : TMessage;
+procedure TJvgWinMask.Paint;
+var
+  r: TRect;
+  Message: TMessage;
 
-   PROCEDURE CreateMaskBuff(R: TRect);
-   BEGIN
-      FMaskBuff.Width := Width;
-      FMaskBuff.Height := Height;
+  procedure CreateMaskBuff(R: TRect);
+  begin
+    FMaskBuff.Width := Width;
+    FMaskBuff.Height := Height;
 
-      FMaskBuff.Canvas.Brush.Color := clBlue;
-      FMaskBuff.Canvas.FillRect(R);
+    FMaskBuff.Canvas.Brush.Color := clBlue;
+    FMaskBuff.Canvas.FillRect(R);
 
-      Message.Msg := WM_PAINT;
-      SendMessage(Control.Handle, WM_PAINT, FMaskBuff.Canvas.handle, 0);
-      //    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
-      //    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
-      //			  FMaskBuff.Canvas.Handle );
+    Message.Msg := WM_PAINT;
+    SendMessage(Control.Handle, WM_PAINT, FMaskBuff.Canvas.handle, 0);
+    //    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
+    //    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
+    //			  FMaskBuff.Canvas.Handle );
 
-      //    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
-      //            FMask.Canvas.Handle, 0, 0, SRCPAINT );
+    //    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
+    //            FMask.Canvas.Handle, 0, 0, SRCPAINT );
 
-      BitBlt(Canvas.Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-         FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY);
-      //    FMaskBuff
-   END;
-BEGIN
-   IF fIgnorePaint THEN
-      exit;
-   fIgnorePaint := true;
+    BitBlt(Canvas.Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+      FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY);
+    //    FMaskBuff
+  end;
+begin
+  if fIgnorePaint then
+    exit;
+  fIgnorePaint := true;
 
-   r := ClientRect;
-   IF Enabled THEN
-   BEGIN
-      CreateMaskBuff(R);
+  r := ClientRect;
+  if Enabled then
+  begin
+    CreateMaskBuff(R);
 
-      //    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-      //            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
-   END;
-   //  if Assigned(FAfterPaint) then FAfterPaint(self);
-   fIgnorePaint := false;
-END;
+    //    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+    //            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
+  end;
+  //  if Assigned(FAfterPaint) then FAfterPaint(self);
+  fIgnorePaint := false;
+end;
 
-PROCEDURE TJvgWinMask.SetParent(Value: TWinControl);
-BEGIN
-   INHERITED;
-END;
+procedure TJvgWinMask.SetParent(Value: TWinControl);
+begin
+  inherited;
+end;
 
-PROCEDURE TJvgWinMask.Notification(AComponent: TComponent; Operation:
-   TOperation);
-BEGIN
-   INHERITED Notification(AComponent, Operation);
-END;
+procedure TJvgWinMask.Notification(AComponent: TComponent; Operation:
+  TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+end;
 
-END.
+end.
 

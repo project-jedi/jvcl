@@ -32,20 +32,8 @@ unit JvgCaption;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  JvComponent,
-  JvgTypes,
-  JvgUtils,
-  JvgCommClasses,
-  StdCtrls,
-  ExtCtrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  JvComponent, JvgTypes, JvgUtils, JvgCommClasses, StdCtrls, ExtCtrls;
 
 type
   TJvgCaption = class(TJvComponent)
@@ -611,3 +599,4 @@ begin
 end;
 
 end.
+
