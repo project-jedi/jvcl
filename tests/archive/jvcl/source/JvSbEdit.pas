@@ -180,7 +180,7 @@ type
 
 implementation
 
-uses TypInfo, JvMaxMin, JvLConst, JvProps, JvDsgn;
+uses TypInfo, JvMaxMin, JvxConst, JvProps, JvDsgn;
 
 {$R *.DFM}
 
@@ -253,7 +253,7 @@ end;
 function TJvSpeedbarCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := LoadStr(srSpeedbarDesigner);
+    0: Result := srSpeedbarDesigner;
   end;
 end;
 
@@ -367,7 +367,7 @@ end;
 
 function TJvSpeedbarEditor.ConfirmDelete: Boolean;
 begin
-  Result := MessageDlg(LoadStr(srConfirmSBDelete), mtWarning, mbYesNoCancel, 0) = mrYes;
+  Result := MessageDlg(srConfirmSBDelete, mtWarning, mbYesNoCancel, 0) = mrYes;
 end;
 
 procedure TJvSpeedbarEditor.SaveSelection;
@@ -555,7 +555,7 @@ begin
   if CheckSpeedBar then begin
     I := 0;
     repeat
-      S := Format(LoadStr(srNewSectionName), [I]);
+      S := Format(srNewSectionName, [I]);
       Inc(I);
     until FBar.SearchSection(S) < 0;
     I := NewSpeedSection(FBar, S);
@@ -677,7 +677,7 @@ begin
     Item.Free;
     raise;
   end
-  else raise EJvSpeedbarError.CreateRes(srSBItemNotCreate);
+  else raise EJvSpeedbarError.Create(srSBItemNotCreate);
 end;
 
 procedure TJvSpeedbarEditor.RemoveButtonClick(Sender: TObject);

@@ -50,7 +50,7 @@ implementation
 {.$R *.D16}
 {.$ENDIF}
 
-uses TypInfo, JvDBLists, JvLConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
+uses TypInfo, JvDBLists, JvxConst, JvDBQBE, JvDBFilter, JvDBIndex, JvDBPrgrss,
   JvxLogin, JvDBSecur, JvQuery, JvVCLUtils, JvDbExcpt, JvDsgn,
 {$IFDEF DCS}JvSelDSFrm, {$ENDIF}{$IFDEF Jv_MIDAS}JvRemLog, {$ENDIF}
 {$IFDEF COMPILER3_UP}JvQBndDlg, {$ELSE}

@@ -78,7 +78,7 @@ implementation
 
 {$IFDEF DCS}
 
-uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvLConst,
+uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvxConst,
   {$IFDEF COMPILER3_UP}{$IFDEF COMPILER5_UP} DsnDbCst, {$ELSE} BdeConst, {$ENDIF}{$ENDIF}
   DSDesign;
 

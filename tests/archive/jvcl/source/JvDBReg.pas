@@ -47,7 +47,7 @@ implementation
 {.$R *.D16}
 {.$ENDIF}
 
-uses TypInfo, JvLConst, JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils,
+uses TypInfo, JvxConst, JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils,
 {$IFNDEF COMPILER3_UP}DBTables, {$ENDIF}{$IFDEF DCS}JvSelDSFrm, {$ENDIF}
 {$IFDEF COMPILER3_UP}JvMemDS, {$ENDIF}{$IFDEF WIN32}JvDBRichEd, {$ENDIF}
   Consts, LibHelp, JvDsgn;

@@ -364,7 +364,7 @@ type
 implementation
 
 Uses SysUtils, Messages, JvMaxMin, Consts, JvConst, {$IFDEF COMPILER35_UP} SysConst, {$ENDIF}
-  {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvCConst, JvFunctions;
+  {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvxConst, JvFunctions;
 
 { Exceptions }
 
@@ -1003,7 +1003,7 @@ end;
 procedure NotImplemented;
 begin
   Screen.Cursor := crDefault;
-  MessageDlg(LoadStr(SNotImplemented), mtInformation, [mbOk], 0);
+  MessageDlg(SNotImplemented, mtInformation, [mbOk], 0);
   Abort;
 end;
 

@@ -128,7 +128,7 @@ function EditGradientCaption(Component: TJvxGradientCaption;
 
 implementation
 
-uses JvVCLUtils, JvBoxProcs, JvConst, JvLConst;
+uses JvVCLUtils, JvBoxProcs, JvConst, JvxConst;
 
 {$R *.DFM}
 
@@ -158,7 +158,7 @@ end;
 
 function TGradientCaptionEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := LoadStr(srCaptionDesigner)
+  if Index = 0 then Result := srCaptionDesigner
   else Result := '';
 end;
 
@@ -196,7 +196,7 @@ begin
   try
     CaptionList.Items.Clear;
     for I := 0 to GradientCaption.Captions.Count - 1 do
-      CaptionList.Items.Add(Format('%s[%d]', [LoadStr(srGradientCaptions), I]));
+      CaptionList.Items.Add(Format('%s[%d]', [srGradientCaptions, I]));
     if Save < 0 then Save := 0;
     if Save >= CaptionList.Items.Count then
       Save := CaptionList.Items.Count - 1;
@@ -235,10 +235,10 @@ begin
       Captions := Component.Captions;
       if Component.Name <> '' then
         FormCaption := Format('%s.%s', [Component.Name,
-          LoadStr(srGradientCaptions)])
+          srGradientCaptions])
       else
         FormCaption := Format('%s.%s', [Component.ClassName,
-          LoadStr(srGradientCaptions)]);
+          srGradientCaptions]);
       Active := True;
     end;
   end;

@@ -754,7 +754,7 @@ end;
 procedure TJvPageControl.CMDialogKey(var msg: TWMKey);
 var
   thistab, tab: TTabSheet;
-  forward: Boolean;
+  forward: Boolean;            
 begin
   if HandleGlobalTab and not FormKeyPreview and (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin

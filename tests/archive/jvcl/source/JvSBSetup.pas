@@ -95,7 +95,7 @@ procedure ShowSpeedbarSetupWindow(JvSpeedbar: TJvSpeedBar; HelpCtx: THelpContext
 
 implementation
 
-uses JvVCLUtils, JvMaxMin, Consts, JvTConst;
+uses JvVCLUtils, JvMaxMin, Consts, JvxConst;
 
 {$R *.DFM}
 
@@ -353,10 +353,10 @@ begin
   { Load string resources }
   CloseBtn.Caption := ResStr(SOKButton);
   HelpBtn.Caption := ResStr(SHelpButton);
-  Caption := LoadStr(SCustomizeSpeedbar);
-  CategoriesLabel.Caption := LoadStr(SSpeedbarCategories);
-  ButtonsLabel.Caption := LoadStr(SAvailButtons);
-  HintLabel.Caption := LoadStr(SSpeedbarEditHint);
+  Caption := SCustomizeSpeedbar;
+  CategoriesLabel.Caption := SSpeedbarCategories;
+  ButtonsLabel.Caption := SAvailButtons;
+  HintLabel.Caption := SSpeedbarEditHint;
 end;
 
 procedure TJvSpeedbarSetupWindow.FormDestroy(Sender: TObject);

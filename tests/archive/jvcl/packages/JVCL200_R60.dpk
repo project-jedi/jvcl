@@ -345,7 +345,6 @@ contains
   JvPickDate in '..\source\JvPickDate.pas',
   JvMaxMin in '..\source\JvMaxMin.pas',
   JvConst in '..\source\JvConst.pas',
-  JvCConst in '..\source\JvCConst.pas',
   JvAppUtils in '..\source\JvAppUtils.pas',
   JvStrUtils in '..\source\JvStrUtils.pas',
   JvFileUtil in '..\source\JvFileUtil.pas',
@@ -362,7 +361,6 @@ contains
   JvClipMon in '..\source\JvClipMon.pas',
   JvParsing in '..\source\JvParsing.pas',
   JvGraph in '..\source\JvGraph.pas',
-  JvGConst in '..\source\JvGConst.pas',
   JvGIF in '..\source\JvGIF.pas',
   JvGIFCtrl in '..\source\JvGIFCtrl.pas',
   JvPicClip in '..\source\JvPicClip.pas',
@@ -383,13 +381,11 @@ contains
   JvGrdCpt in '..\source\JvGrdCpt.pas',
   JvSplshWnd in '..\source\JvSplshWnd.pas',
   JvDataConv in '..\source\JvDataConv.pas',
-  JvTConst in '..\source\JvTConst.pas',
   JvOle2Auto in '..\source\JvOle2Auto.pas',
   JvVerInf in '..\source\JvVerInf.pas',
   JvDBCtrl in '..\source\JvDBCtrl.pas',
   JvLookup in '..\source\JvLookup.pas',
   JvxLogin in '..\source\JvxLogin.pas',
-  JvDConst in '..\source\JvDConst.pas',
   JvDBUtils in '..\source\JvDBUtils.pas',
   JvDBComb in '..\source\JvDBComb.pas',
   JvDBRichEd in '..\source\JvDBRichEd.pas',
@@ -482,6 +478,7 @@ contains
   JvDropDownForm in '..\source\JvDropDownForm.pas',
   JvDBDatePickerEdit in '..\source\JvDBDatePickerEdit.pas',
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
-  JvWndProcHook in '..\source\JvWndProcHook.pas';
+  JvWndProcHook in '..\source\JvWndProcHook.pas',
+  JvxConst in '..\source\JvxConst.pas';
 
 end.

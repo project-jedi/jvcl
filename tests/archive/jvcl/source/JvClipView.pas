@@ -107,7 +107,7 @@ function ClipboardFormatToView(Value: Word): TClipboardViewFormat;
 
 implementation
 
-uses Grids, JvClipIcon, JvMaxMin, JvTConst, {$IFNDEF WIN32} JvStr16, {$ENDIF}
+uses Grids, JvClipIcon, JvMaxMin, JvxConst, {$IFNDEF WIN32} JvStr16, {$ENDIF}
   JvVCLUtils;
 
 { Utility routines }
@@ -452,8 +452,8 @@ begin
               Instance.Free;
             end;
           end
-          else if IsEmptyClipboard then Text := LoadStr(SClipbrdEmpty)
-          else Text := LoadStr(SClipbrdUnknown);
+          else if IsEmptyClipboard then Text := SClipbrdEmpty
+          else Text := SClipbrdUnknown;
           ReadOnly := True;
         end;
       end;

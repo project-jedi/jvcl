@@ -292,7 +292,7 @@ procedure Jvgif_dummy;
 implementation
 
 uses Consts, {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvAniFile, JvConst,
-  JvMaxMin, JvGConst;
+  JvMaxMin, JvxConst;
 
 {$R-}
 
@@ -400,7 +400,7 @@ begin
       Result := I;
       Exit;
     end;
-  GifError(LoadStr(SWrongGIFColors));
+  GifError(SWrongGIFColors);
 end;
 
 function ColorsToPixelFormat(Colors: Word): TPixelFormat;
@@ -831,7 +831,7 @@ begin
               Corrupted := True;
               MinCodeSize := Max(2, Min(MinCodeSize, 9));
             end
-            else GifError(LoadStr(SBadGIFCodeSize));
+            else GifError(SBadGIFCodeSize);
           end;
           { Initial read context }
           ReadCtxt.Inx := 0;
@@ -891,7 +891,7 @@ begin
                     Corrupted := True;
                     Break;
                   end
-                  else GifError(LoadStr(SGIFDecodeError));
+                  else GifError(SGIFDecodeError);
                 end;
                 OutCode^[OutCount] := Suffix^[CurCode];
                 Inc(OutCount);
@@ -1521,7 +1521,7 @@ begin
     1: ColorCount := 2;
     4: ColorCount := 16;
     8: ColorCount := 256;
-    else GifError(LoadStr(SGIFEncodeError));
+    else GifError(SGIFEncodeError);
   end;
   FInterlaced := False;
   FillColorTable(FImage.FColorMap, PRGBPalette(Pal)^, ColorCount);
@@ -1555,7 +1555,7 @@ var
   Method: TMappingMethod;
   Mem: TMemoryStream;
 begin
-  if not Assigned(FBitmap) or FBitmap.Empty then GifError(LoadStr(SNoGIFData));
+  if not Assigned(FBitmap) or FBitmap.Empty then GifError(SNoGIFData);
   if not (GetBitmapPixelFormat(FBitmap) in [pf1bit, pf4bit, pf8bit]) then
   begin
     if FGrayscale then Method := mmGrayscale
@@ -1615,7 +1615,7 @@ procedure TJvGIFFrame.SaveToBitmapStream(Stream: TMemoryStream);
       1: Result := pf1bit;
       2..4: Result := pf4bit;
       5..8: Result := pf8bit;
-      else GifError(LoadStr(SWrongGIFColors));
+      else GifError(SWrongGIFColors);
     end;
   end;
 
@@ -2278,7 +2278,7 @@ begin
   FVersion := gvUnknown;
   SetLength(S, 3);
   Stream.Read(S[1], 3);
-  if CompareText(GIFSignature, S) <> 0 then GifError(LoadStr(SGIFVersion));
+  if CompareText(GIFSignature, S) <> 0 then GifError(SGIFVersion);
   SetLength(S, 3);
   Stream.Read(S[1], 3);
   for I := Low(TGIFVersion) to High(TGIFVersion) do
@@ -2286,7 +2286,7 @@ begin
       FVersion := I;
       Break;
     end;
-  if FVersion = gvUnknown then GifError(LoadStr(SGIFVersion));
+  if FVersion = gvUnknown then GifError(SGIFVersion);
 end;
 
 procedure TJvGIFImage.ReadStream(Size: Longint; Stream: TStream;
@@ -2374,7 +2374,7 @@ var
           Stream.Read(FExtRec.APPE, SizeOf(TAppExtension));
           FData := ReadDataBlock(Stream);
         end
-        else GifError(Format(LoadStr(SUnrecognizedGIFExt), [ExtensionLabel]));
+        else GifError(Format(SUnrecognizedGIFExt, [ExtensionLabel]));
     except
       Result.Free;
       raise;
@@ -2473,7 +2473,7 @@ begin
                 CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
               begin
                 SeparatorChar := #0;
-                {GifError(LoadStr(SGIFDecodeError));}
+                {GifError(SGIFDecodeError);}
               end;
             except
               FreeExtensions(Extensions);
@@ -2566,12 +2566,12 @@ end;
 
 procedure TJvGIFImage.SetHeight(Value: Integer);
 begin
-  GifError(LoadStr(SChangeGIFSize));
+  GifError(SChangeGIFSize);
 end;
 
 procedure TJvGIFImage.SetWidth(Value: Integer);
 begin
-  GifError(LoadStr(SChangeGIFSize));
+  GifError(SChangeGIFSize);
 end;
 
 procedure TJvGIFImage.WriteStream(Stream: TStream; WriteSize: Boolean);
@@ -2678,7 +2678,7 @@ var
   end;
 
 begin
-  if FItems.Count = 0 then GifError(LoadStr(SNoGIFData));
+  if FItems.Count = 0 then GifError(SNoGIFData);
   EncodeFrames(False);
   Mem := TMemoryStream.Create;
   try
@@ -2738,7 +2738,7 @@ procedure TJvGIFImage.Grayscale(ForceEncoding: Boolean);
 var
   I: Integer;
 begin
-  if FItems.Count = 0 then GifError(LoadStr(SNoGIFData));
+  if FItems.Count = 0 then GifError(SNoGIFData);
   for I := 0 to FItems.Count - 1 do
     Frames[I].GrayscaleImage(ForceEncoding);
   if FBackgroundColor <> clNone then begin
@@ -2781,7 +2781,7 @@ initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
 {$IFDEF USE_Jv_GIF}
-  TPicture.RegisterFileFormat('gif', LoadStr(SGIFImage), TJvGIFImage);
+  TPicture.RegisterFileFormat('gif', SGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
  {$IFDEF COMPILER3_UP}
 finalization

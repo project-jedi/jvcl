@@ -174,7 +174,7 @@ procedure _DBError(Ident: Word);
 
 implementation
 
-uses Forms, Controls, Dialogs, Consts, DBConsts, JvDConst, JvVCLUtils, JvFileUtil,
+uses Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils, JvFileUtil,
   JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}
 {$IFNDEF WIN32}JvStr16, {$ENDIF}JvDateUtil{$IFDEF COMPILER6_UP},Variants{$ENDIF};
 
@@ -207,7 +207,7 @@ begin
     DataSet.UpdateRecord;
     if DataSet.Modified then
     begin
-      case MessageDlg(LoadStr(SConfirmSave), mtConfirmation, mbYesNoCancel, 0) of
+      case MessageDlg(SConfirmSave, mtConfirmation, mbYesNoCancel, 0) of
         mrYes: DataSet.Post;
         mrNo: DataSet.Cancel;
       else

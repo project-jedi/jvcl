@@ -36,7 +36,8 @@ interface
 
 uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, DB, {$IFDEF COMPILER3_UP} DBTables, {$ENDIF} JvxCtrls;
+  StdCtrls, ExtCtrls, DB, {$IFDEF COMPILER3_UP} DBTables, {$ENDIF} JvxCtrls,
+  JvComponent;
 
 type
   TDBErrorEvent = procedure (Error: TDBError; var Msg: string) of object;
@@ -93,7 +94,7 @@ procedure DbErrorIntercept;
 implementation
 
 uses {$IFDEF WIN32} Windows, BDE, {$ELSE} WinProcs, WinTypes, DbiErrs,
-  JvStr16, {$ENDIF} Consts, JvDConst, JvCConst, JvVCLUtils;
+  JvStr16, {$ENDIF} Consts, JvxConst, JvVCLUtils;
 
 {$R *.DFM}
 
@@ -165,14 +166,14 @@ begin
     if Value then begin
       DetailsPanel.Height := DetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
-      DetailsBtn.Caption := '<< &' + LoadStr(SDetails);
+      DetailsBtn.Caption := '<< &' + SDetails;
       CurItem := 0;
       ShowError;
     end
     else begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
-      DetailsBtn.Caption := '&' + LoadStr(SDetails) + ' >>';
+      DetailsBtn.Caption := '&' + SDetails + ' >>';
     end;
     DetailsPanel.Enabled := Value;
     Details := Value;
@@ -199,12 +200,12 @@ begin
   Icon.Handle := LoadIcon(0, IDI_EXCLAMATION);
   IconImage.Picture.Icon := Icon;
   { Load string resources }
-  Caption := LoadStr(SDBExceptCaption);
-  BDELabel.Caption := LoadStr(SBDEErrorLabel);
-  NativeLabel.Caption := LoadStr(SServerErrorLabel);
-  Next.Caption := LoadStr(SNextButton) + ' >';
-  Back.Caption := '< ' + LoadStr(SPrevButton);
-  OKBtn.Caption := ResStr(SOKButton);
+  Caption := SDBExceptCaption;
+  BDELabel.Caption := SBDEErrorLabel;
+  NativeLabel.Caption := SServerErrorLabel;
+  Next.Caption := SNextButton + ' >';
+  Back.Caption := '< ' + SPrevButton;
+  OKBtn.Caption := SOKButton;
   { Set exception handler }
   FPrevOnException := Application.OnException;
   Application.OnException := ShowException;

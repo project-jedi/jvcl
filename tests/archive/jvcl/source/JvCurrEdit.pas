@@ -583,7 +583,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      raise ERangeError.CreateFmt(ReplaceStr(ResStr(SOutOfRange), '%d', '%.*f'),
+      raise ERangeError.CreateFmt(ReplaceStr(SOutOfRange, '%d', '%.*f'),
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;

@@ -150,7 +150,7 @@ function SetLookupFilter(DataSet: TDataSet; Field: TField;
 implementation
 
 uses {$IFNDEF WIN32} DBIErrs, DBIProcs, JvStr16, {$ENDIF} DBConsts, Dialogs,
-  {$IFDEF COMPILER3_UP} DbCommon, {$ENDIF} JvDConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
+  {$IFDEF COMPILER3_UP} DbCommon, {$ENDIF} JvxConst, JvVCLUtils, JvDBUtils, JvBdeUtils;
 
 procedure DropAllFilters(DataSet: TDataSet);
 begin
@@ -166,14 +166,14 @@ end;
 
 { JvDBFilter exceptions }
 
-procedure FilterError(Ident: Word); near;
+procedure FilterError(const Ident: string);
 begin
-  raise EFilterError.CreateRes(Ident);
+  raise EFilterError.Create(Ident);
 end;
 
-procedure FilterErrorFmt(Ident: Word; const Args: array of const); near;
+procedure FilterErrorFmt(const Ident: string; const Args: array of const);
 begin
-  raise EFilterError.CreateResFmt(Ident, Args);
+  raise EFilterError.CreateFmt(Ident, Args);
 end;
 
 const

@@ -164,7 +164,7 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 
 implementation
 
-uses {$IFDEF WIN32} Registry, {$ENDIF} IniFiles, JvAppUtils, JvDConst,
+uses {$IFDEF WIN32} Registry, {$ENDIF} IniFiles, JvAppUtils, JvxConst,
   Consts, JvVCLUtils, JvConst;
 
 {$R *.DFM}
@@ -568,11 +568,11 @@ begin
   Icon := Application.Icon;
   if Icon.Empty then Icon.Handle := LoadIcon(0, IDI_APPLICATION);
   AppIcon.Picture.Assign(Icon);
-  AppTitleLabel.Caption := FmtLoadStr(SAppTitleLabel, [Application.Title]);
-  PasswordLabel.Caption := LoadStr(SPasswordLabel);
-  UserNameLabel.Caption := LoadStr(SUserNameLabel);
-  OkBtn.Caption := ResStr(SOKButton);
-  CancelBtn.Caption := ResStr(SCancelButton);
+  AppTitleLabel.Caption := Format(SAppTitleLabel, [Application.Title]);
+  PasswordLabel.Caption := SPasswordLabel;
+  UserNameLabel.Caption := SUserNameLabel;
+  OkBtn.Caption := SOKButton;
+  CancelBtn.Caption := SCancelButton;
 end;
 
 procedure TJvLoginForm.OkBtnClick(Sender: TObject);
@@ -591,7 +591,7 @@ var
 begin
   if FSelectDatabase then begin
     ClientHeight := CustomCombo.Top + PasswordEdit.Top - UserNameEdit.Top;
-    S := LoadStr(SDatabaseName);
+    S := SDatabaseName;
     I := Pos(':', S);
     if I = 0 then I := Length(S);
     CustomLabel.Caption := '&' + Copy(S, 1, I);
@@ -602,12 +602,12 @@ begin
     CustomCombo.Visible := False;
   end;
   if not FUnlockMode then begin
-    HintLabel.Caption := LoadStr(SHintLabel);
-    Caption := LoadStr(SRegistration);
+    HintLabel.Caption := SHintLabel;
+    Caption := SRegistration;
   end
   else begin
-    HintLabel.Caption := LoadStr(SUnlockHint);
-    Caption := LoadStr(SUnlockCaption);
+    HintLabel.Caption := SUnlockHint;
+    Caption := SUnlockCaption;
   end;
   if (UserNameEdit.Text = EmptyStr) and not FUnlockMode then
     ActiveControl := UserNameEdit

@@ -133,7 +133,7 @@ type
 
 implementation
 
-uses Consts, Buttons, JvxCtrls, JvConst, JvLConst, JvDsgn;
+uses Consts, Buttons, JvxCtrls, JvConst, JvxConst, JvDsgn;
 
 {$R *.DFM}
 
@@ -266,7 +266,7 @@ end;
 function TJvPageManagerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := LoadStr(srProxyEditor);
+    0: Result := srProxyEditor;
   end;
 end;
 
@@ -406,7 +406,7 @@ end;
 procedure TJvProxyEditor.FormShow(Sender: TObject);
 begin
   if FPageManager.PageOwner <> nil then begin
-    Caption := Format(LoadStr(srPageProxies), [FPageManager.PageOwner.Name]);
+    Caption := Format(srPageProxies, [FPageManager.PageOwner.Name]);
   end;
 end;
 
@@ -454,8 +454,8 @@ begin
   CellText := '';
   if gdFixed in State then begin
     case Col of
-      0: CellText := LoadStr(srProxyName);
-      1: CellText := LoadStr(srPageName);
+      0: CellText := srProxyName;
+      1: CellText := srPageName;
     end;
   end
   else begin

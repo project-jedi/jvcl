@@ -39,7 +39,7 @@ RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
 
   StdCtrls, ExtCtrls, JvPlacemnt,
   {$IFDEF COMPILER3_UP} ExtDlgs, {$ELSE}
-  ImagPrvw, {$ENDIF} Menus, JvSpeedbar;
+  ImagPrvw, {$ENDIF} Menus, JvSpeedbar, JvComponent;
 
 type
 
@@ -120,7 +120,7 @@ procedure EditIconList(IconList: TJvIconList);
 implementation
 
 uses TypInfo, SysUtils, Clipbrd, Consts, JvClipIcon, JvVCLUtils, JvAppUtils,
-  JvConst, JvLConst, JvMaxMin, JvAniFile;
+  JvConst, JvxConst, JvMaxMin, JvAniFile;
 
 {$B-}
 {$IFDEF WIN32}
@@ -209,7 +209,7 @@ begin
     with Dialog do begin
       Options := [ofHideReadOnly, ofFileMustExist];
       DefaultExt := 'ani';
-      Filter := LoadStr(srAniCurFilter);
+      Filter := srAniCurFilter;
       if Execute then begin
         AniCursor := TJvAnimatedCursorImage.Create;
         try
@@ -314,7 +314,7 @@ begin
   FileDialog := TOpenDialog.Create(Self);
 {$ENDIF}
   with FileDialog do begin
-    Title := LoadStr(srLoadIcon);
+    Title := srLoadIcon;
     Options := [ofHideReadOnly, ofFileMustExist];
     DefaultExt := GraphicExtension(TIcon);
     Filter := GraphicFilter(TIcon);

@@ -798,7 +798,7 @@ implementation
 
 uses SysUtils, JvStrUtils, Dialogs, ExtCtrls, DbConsts, JvAppUtils, JvVCLUtils,
   JvDBUtils, {$IFNDEF COMPILER3_UP} JvBdeUtils, {$ENDIF} JvPickDate, JvCalc, JvMaxMin,
-  JvDConst;
+  JvxConst;
 
 {$IFDEF WIN32}
   {$R *.Res}
@@ -3604,7 +3604,7 @@ end;
 
 function TJvDBStatusLabel.GetCaption(State: TDataSetState): string;
 const
-  StrIds: array[TDBStatusKind] of Word = (SInactiveData, SBrowseData,
+  StrIds: array[TDBStatusKind] of string = (SInactiveData, SBrowseData,
     SEditData, SInsertData, SSetKeyData, SCalcFieldsData);
 var
   Kind: TDBStatusKind;
@@ -3612,7 +3612,7 @@ begin
   Kind := GetStatusKind(State);
   if (FCaptions <> nil) and (Ord(Kind) < FCaptions.Count) and
     (FCaptions[Ord(Kind)] <> '') then Result := FCaptions[Ord(Kind)]
-  else Result := LoadStr(StrIds[Kind]);
+  else Result := StrIds[Kind];
 end;
 
 procedure TJvDBStatusLabel.Paint;

@@ -79,7 +79,7 @@ function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
 
 implementation
 
-uses Consts, JvDConst, JvVCLUtils;
+uses Consts, JvxConst, JvVCLUtils;
 
 {$R *.DFM}
 
@@ -124,10 +124,10 @@ end;
 
 procedure TJvChPswdForm.FormCreate(Sender: TObject);
 begin
-  Caption := LoadStr(SChangePassword);
-  OldPswdLabel.Caption := LoadStr(SOldPasswordLabel);
-  NewPswdLabel.Caption := LoadStr(SNewPasswordLabel);
-  ConfirmLabel.Caption := LoadStr(SConfirmPasswordLabel);
+  Caption := SChangePassword;
+  OldPswdLabel.Caption := SOldPasswordLabel;
+  NewPswdLabel.Caption := SNewPasswordLabel;
+  ConfirmLabel.Caption := SConfirmPasswordLabel;
   OkBtn.Caption := ResStr(SOKButton);
   CancelBtn.Caption := ResStr(SCancelButton);
 end;
@@ -188,11 +188,11 @@ begin
           end;
         end;
         if Ok then
-          MessageDlg(LoadStr(SPasswordChanged), mtInformation, [mbOk], 0)
+          MessageDlg(SPasswordChanged, mtInformation, [mbOk], 0)
         else
           if Error = peMismatch then
-            MessageDlg(LoadStr(SPasswordsMismatch), mtError, [mbOk], 0)
-          else MessageDlg(LoadStr(SPasswordNotChanged), mtError, [mbOk], 0);
+            MessageDlg(SPasswordsMismatch, mtError, [mbOk], 0)
+          else MessageDlg(SPasswordNotChanged, mtError, [mbOk], 0);
       finally
         if Table <> nil then Table.Free;
       end;

@@ -80,13 +80,13 @@ type
 
 implementation
 
-uses Consts, Dialogs, JvCConst, JvFileUtil, JvVCLUtils, JvPrgrss;
+uses Consts, Dialogs, JvxConst, JvFileUtil, JvVCLUtils, JvPrgrss;
 
 { TJvFilenameProperty }
 
 function TJvFilenameProperty.GetFilter: string;
 begin
-  Result := LoadStr(SDefaultFilter);
+  Result := SDefaultFilter;
 end;
 
 procedure TJvFilenameProperty.Edit;

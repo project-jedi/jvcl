@@ -72,7 +72,7 @@ function Power(Base, Exponent: Extended): Extended;
 
 implementation
 
-uses JvTConst;
+uses JvxConst;
 
 const
   SpecialChars = [#0..' ', '+', '-', '/', '*', ')', '^'];
@@ -84,9 +84,9 @@ const
 
 { Parser errors }
 
-procedure InvalidCondition(Str: Word);
+procedure InvalidCondition(const Str: string);
 begin
-  raise EJvParserError.Create(LoadStr(Str));
+  raise EJvParserError.Create(Str);
 end;
 
 { IntPower and Power functions are copied from Borland's MATH.PAS unit }

@@ -22,8 +22,8 @@ Known Issues:
 
 package JVCL200_D60;
 
-{$R *.RES}
-{$ALIGN ON}
+{$R *.res}
+{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -92,7 +92,6 @@ contains
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
   JvAppletProperty in '..\source\JvAppletProperty.pas',
-  JvLConst in '..\source\JvLConst.pas',
   JvHintProp in '..\source\JvHintProp.pas',
   JvColors in '..\source\JvColors.pas',
   JvDsgn in '..\source\JvDsgn.pas',

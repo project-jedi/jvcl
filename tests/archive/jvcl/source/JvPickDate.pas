@@ -62,7 +62,7 @@ const
 implementation
 
 uses Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, JvxCtrls,
-  JvCConst, JvToolEdit, JvVCLUtils, JvMaxMin, JvStrUtils;
+  JvxConst, JvToolEdit, JvVCLUtils, JvMaxMin, JvStrUtils;
 
 {$IFDEF WIN32}
  {$R *.Res}
@@ -661,7 +661,7 @@ begin
     SetBounds(-1, -1, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
-    Hint := LoadStr(SPrevYear);
+    Hint := SPrevYear;
   end;
 
   FBtns[1] := TJvTimerSpeedButton.Create(Self);
@@ -670,7 +670,7 @@ begin
     SetBounds(BtnSide - 2, -1, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
-    Hint := LoadStr(SPrevMonth);
+    Hint := SPrevMonth;
   end;
 
   FTitleLabel := TLabel.Create(Self);
@@ -692,7 +692,7 @@ begin
     SetBounds(Control.Width - 2 * BtnSide + 2, -1, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
-    Hint := LoadStr(SNextMonth);
+    Hint := SNextMonth;
   end;
 
   FBtns[3] := TJvTimerSpeedButton.Create(Self);
@@ -701,7 +701,7 @@ begin
     SetBounds(Control.Width - BtnSide + 1, -1, BtnSide, BtnSide);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
-    Hint := LoadStr(SNextYear);
+    Hint := SNextYear;
   end;
 end;
 
@@ -856,7 +856,7 @@ begin
 {$ELSE}
   inherited CreateNew(AOwner);
 {$ENDIF}
-  Caption := LoadStr(SDateDlgTitle);
+  Caption := SDateDlgTitle;
 {$IFDEF WIN32}
   BorderStyle := bsToolWindow;
 {$ELSE}
@@ -901,7 +901,7 @@ begin
     SetBounds(3, 3, 16, 16);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
-    Hint := LoadStr(SPrevYear);
+    Hint := SPrevYear;
   end;
 
   FBtns[1] := TJvTimerSpeedButton.Create(Self);
@@ -910,7 +910,7 @@ begin
     SetBounds(18, 3, 16, 16);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
-    Hint := LoadStr(SPrevMonth);
+    Hint := SPrevMonth;
   end;
 
   FBtns[2] := TJvTimerSpeedButton.Create(Self);
@@ -919,7 +919,7 @@ begin
     SetBounds(188, 3, 16, 16);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
-    Hint := LoadStr(SNextMonth);
+    Hint := SNextMonth;
   end;
 
   FBtns[3] := TJvTimerSpeedButton.Create(Self);
@@ -928,7 +928,7 @@ begin
     SetBounds(203, 3, 16, 16);
     Glyph.Handle := LoadBitmap(hInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
-    Hint := LoadStr(SNextYear);
+    Hint := SNextYear;
   end;
 
   Control := TPanel.Create(Self);

@@ -136,7 +136,7 @@ type
 
 implementation
 
-uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvLConst, JvDsgn, JvTypes;
+uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvxConst, JvDsgn, JvTypes;
 
 {$R *.DFM}
 
@@ -231,7 +231,7 @@ end;
 function TJvTimersCollectionEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := LoadStr(srTimerDesigner);
+    0: Result := srTimerDesigner;
   end;
 end;
 
@@ -313,7 +313,7 @@ var
   Empty: Boolean;
 begin
   if CheckCollection then begin
-    Caption := Format(LoadStr(srTimerEvents), [TimersCollection.Name]);
+    Caption := Format(srTimerEvents, [TimersCollection.Name]);
     Empty := TimersCollection.Count = 0;
   end
   else Empty := True;
@@ -502,7 +502,7 @@ begin
       Item.Free;
       raise;
     end
-  else raise EJVCLException.CreateRes(srEventNotCreate);
+  else raise EJVCLException.Create(srEventNotCreate);
 end;
 
 procedure TJvTimerItemsEditor.CutClick(Sender: TObject);

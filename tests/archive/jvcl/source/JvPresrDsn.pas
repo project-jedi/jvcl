@@ -118,9 +118,9 @@ function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
 implementation
 
 {$IFDEF WIN32}
-uses Windows, JvBoxProcs, TypInfo, JvLConst;
+uses Windows, JvBoxProcs, TypInfo, JvxConst;
 {$ELSE}
-uses WinTypes, WinProcs, JvStr16, JvBoxProcs, TypInfo, JvLConst;
+uses WinTypes, WinProcs, JvStr16, JvBoxProcs, TypInfo, JvxConst;
 {$ENDIF}
 
 {$R *.DFM}
@@ -153,7 +153,7 @@ end;
 function TJvFormStorageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := LoadStr(srStorageDesigner);
+    0: Result := srStorageDesigner;
     else Result := '';
   end;
 end;

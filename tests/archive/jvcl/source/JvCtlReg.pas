@@ -49,10 +49,10 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$IFDEF COMPILER4_UP}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
 {$ENDIF DCS}
 {$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
-  JvLConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
+  JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
   JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
-{$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, JvCConst,
+{$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, 
   JvFileUtil, JvDsgn;
 
 {$IFNDEF COMPILER3_UP}
@@ -346,7 +346,7 @@ begin
     begin
       Options := [ofHideReadOnly, ofFileMustExist];
       DefaultExt := 'ani';
-      Filter := LoadStr(srAniCurFilter);
+      Filter := srAniCurFilter;
       if Execute then
       begin
         AniCursor := TJvAnimatedCursorImage.Create;
@@ -381,9 +381,9 @@ end;
 function TJvAnimatedEditor.GetVerb(Index: Integer): string;
 begin
   if (Index = GetVerbCount - 1) then
-    Result := LoadStr(srLoadAniCursor)
+    Result := srLoadAniCursor
   else if (Index = GetVerbCount - 2) then
-    Result := LoadStr(srEditPicture)
+    Result := srEditPicture
   else
     Result := inherited GetVerb(Index);
 end;

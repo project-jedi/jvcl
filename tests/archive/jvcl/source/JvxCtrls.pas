@@ -1164,7 +1164,7 @@ begin
 {$ELSE}
     Longint(StrPCopy(Text, S))) < 0 then
 {$ENDIF}
-      raise EOutOfResources.Create(ResStr(SInsertLineError));
+      raise EOutOfResources.Create(SInsertLineError);
 end;
 
 procedure TJvListBoxStrings.Delete(Index: Integer);

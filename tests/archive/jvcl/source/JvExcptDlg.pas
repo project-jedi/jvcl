@@ -39,7 +39,7 @@ interface
 
 uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvxCtrls;
+  StdCtrls, ExtCtrls, JvxCtrls, JvComponent;
 
 type
   TErrorEvent = procedure (Error: Exception; var Msg: string) of object;
@@ -104,7 +104,7 @@ uses
 {$ELSE WIN32}
   WinProcs, WinTypes, ToolHelp, JvStr16,
 {$ENDIF WIN32}
-  Consts, JvCConst, JvStrUtils, JvVCLUtils;
+  Consts, JvxConst, JvStrUtils, JvVCLUtils;
 
 {$R *.DFM}
 
@@ -269,13 +269,13 @@ begin
     if Value then begin
       DetailsPanel.Height := DetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
-      DetailsBtn.Caption := '<< &' + LoadStr(SDetails);
+      DetailsBtn.Caption := '<< &' + SDetails;
       ShowError;
     end
     else begin
       ClientHeight := BasicPanel.Height;
       DetailsPanel.Height := 0;
-      DetailsBtn.Caption := '&' + LoadStr(SDetails) + ' >>';
+      DetailsBtn.Caption := '&' + SDetails + ' >>';
     end;
     DetailsPanel.Enabled := Value;
     Details := Value;

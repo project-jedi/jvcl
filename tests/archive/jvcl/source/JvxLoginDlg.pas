@@ -96,7 +96,7 @@ function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
 implementation
 
 uses {$IFDEF WIN32} Windows, Registry, BDE, {$ELSE} WinTypes, WinProcs,
-  DbiTypes, {$ENDIF} IniFiles, Graphics, JvAppUtils, JvDConst, Consts,
+  DbiTypes, {$ENDIF} IniFiles, Graphics, JvAppUtils, JvxConst, Consts,
   JvVCLUtils, JvConst;
 
 const
@@ -271,8 +271,7 @@ begin
   Result := False;
   if (Database = nil) or not Assigned(LoginParams) then Exit;
   if ShowDBName then
-    FDialog.AppTitleLabel.Caption := FmtLoadStr(SDatabaseName,
-      [Database.DatabaseName]);
+    FDialog.AppTitleLabel.Caption := Format(SDatabaseName, [Database.DatabaseName]);
   FDialog.UserNameEdit.Text := LoginParams.Values[szUSERNAME];
 {$IFDEF WIN32}
   CurrSession := Sessions.CurrentSession;
@@ -381,10 +380,10 @@ begin
         if Table.FindKey([GetUserName]) then begin
           Result := CheckUser(Table);
           if not Result then
-            raise EDatabaseError.Create(LoadStr(SInvalidUserName));
+            raise EDatabaseError.Create(SInvalidUserName);
         end
         else
-          raise EDatabaseError.Create(LoadStr(SInvalidUserName));
+          raise EDatabaseError.Create(SInvalidUserName);
       except
         Application.HandleException(Self);
       end;

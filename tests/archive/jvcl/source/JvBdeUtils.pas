@@ -205,16 +205,16 @@ procedure InitRSRUN(Database: TDatabase; const ConName: string;
 
 implementation
 
-uses Forms, Controls, Dialogs, Consts, DBConsts, JvDConst, JvVCLUtils,
+uses Forms, Controls, Dialogs, Consts, DBConsts, JvxConst, JvVCLUtils,
   JvFileUtil, JvAppUtils, JvStrUtils, JvMaxMin, {$IFNDEF WIN32} JvStr16, {$ENDIF}
   {$IFDEF COMPILER3_UP} BDEConst, DBCommon, {$ENDIF} JvDateUtil;
 
 { Utility routines }
 
 {$IFDEF COMPILER5_UP}
-procedure DBError(Ident: Word);
+procedure DBError(const Ident: string);
 begin
-  DatabaseError(LoadStr(Ident));
+  DatabaseError(Ident);
 end;
 {$ENDIF}
 
@@ -516,7 +516,7 @@ begin
       EndLogin := True;
     except
       on E: EDbEngineError do begin
-        EndLogin := (MessageDlg(E.Message + '. ' + LoadStr(SRetryLogin),
+        EndLogin := (MessageDlg(E.Message + '. ' + SRetryLogin,
           mtConfirmation, [mbYes, mbNo], 0) <> mrYes);
       end;
       on E: EDatabaseError do begin

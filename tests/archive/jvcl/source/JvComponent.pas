@@ -63,8 +63,8 @@ type
   published
     { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;   
-  
+  end;
+
   TJvCustomPanel = class(TCustomPanel)
   private
     { Private declarations }

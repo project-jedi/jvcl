@@ -790,7 +790,7 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
 
 implementation
 
-uses ShellAPI, Consts, {$IFDEF COMPILER3_UP} ExtDlgs, {$ENDIF} JvCConst, JvVCLUtils,
+uses ShellAPI, Consts, {$IFDEF COMPILER3_UP} ExtDlgs, {$ENDIF} JvxConst, JvVCLUtils,
   JvStrUtils, JvFileUtil, JvPickDate, JvMaxMin;
 
 {$IFDEF WIN32}
@@ -1918,8 +1918,8 @@ begin
       FDialog.Free;
     end
     else begin
-      NewDialog.Title := LoadStr(SBrowse);
-      NewDialog.Filter := LoadStr(SDefaultFilter);
+      NewDialog.Title := SBrowse;
+      NewDialog.Filter := SDefaultFilter;
       NewDialog.Options := [ofHideReadOnly];
     end;
   finally
@@ -1929,12 +1929,12 @@ end;
 
 function TJvFilenameEdit.IsCustomTitle: Boolean;
 begin
-  Result := CompareStr(LoadStr(SBrowse), FDialog.Title) <> 0;
+  Result := CompareStr(SBrowse, FDialog.Title) <> 0;
 end;
 
 function TJvFilenameEdit.IsCustomFilter: Boolean;
 begin
-  Result := CompareStr(LoadStr(SDefaultFilter), FDialog.Filter) <> 0;
+  Result := CompareStr(SDefaultFilter, FDialog.Filter) <> 0;
 end;
 
 procedure TJvFilenameEdit.ButtonClick;
@@ -2218,7 +2218,7 @@ constructor TJvCustomDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBlanksChar := ' ';
-  FTitle := LoadStr(SDateDlgTitle);
+  FTitle := SDateDlgTitle;
   FPopupColor := clBtnFace;
   FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
@@ -2416,7 +2416,7 @@ end;
 
 function TJvCustomDateEdit.IsCustomTitle: Boolean;
 begin
-  Result := (CompareStr(LoadStr(SDateDlgTitle), DialogTitle) <> 0) and (FTitle <> EmptyStr);
+  Result := (CompareStr(SDateDlgTitle, DialogTitle) <> 0) and (FTitle <> EmptyStr);
 end;
 
 procedure TJvCustomDateEdit.UpdatePopup;

@@ -44,7 +44,7 @@ uses Classes, SysUtils, Controls, Graphics, TypInfo,
   Consts, ExtCtrls, JvPictEdit, JvWndProcHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
-{$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvLConst, JvxCtrls,
+{$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvxConst, JvxCtrls,
 {$IFDEF COMPILER3_UP} {JvResExp, }{$ENDIF}JvMenus, JvMRUList,
 {$IFDEF WIN32}JvNotify, JvGrdCpt, JvGradEdit, {$ENDIF}JvHintProp;
 

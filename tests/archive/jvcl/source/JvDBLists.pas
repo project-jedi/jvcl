@@ -227,7 +227,7 @@ type
 
 implementation
 
-uses DBConsts, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} JvDConst;
+uses DBConsts, {$IFDEF COMPILER3_UP} BDEConst, {$ENDIF} JvxConst;
 
 { Utility routines }
 
@@ -448,13 +448,13 @@ begin
     dtStoredProcs:
       if DataBase.IsSQLBased then
         Check(DbiOpenSPList(DBHandle, FExtended, FSystemItems, nil, Result))
-      else DatabaseError(LoadStr(SLocalDatabase));
+      else DatabaseError(SLocalDatabase);
     dtFiles: Check(DbiOpenFileList(DBHandle, WildCard, Result));
 {$IFDEF WIN32}
     dtFunctions:
       if DataBase.IsSQLBased then
         Check(DbiOpenFunctionList(DBHandle, DBIFUNCOpts(FExtended), @Result))
-      else DatabaseError(LoadStr(SLocalDatabase));
+      else DatabaseError(SLocalDatabase);
 {$ENDIF}
   end;
 end;
