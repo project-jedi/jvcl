@@ -32,8 +32,9 @@ unit JvCalc;
 interface
 
 uses
+  Windows,
   {$IFDEF VCL}
-  Windows, Messages,
+  Messages,
   {$ENDIF VCL}
   Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls,
   {$IFDEF VisualCLX}
