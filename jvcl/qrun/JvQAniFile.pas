@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2003-10-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -51,7 +50,6 @@ type
     FIsIcon: Boolean;
     FHotSpot: TPoint;
   public
-    constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Icon: TIcon read FIcon;
@@ -108,7 +106,8 @@ type
 implementation
 
 uses
-  Consts, Math,
+  QConsts,
+  Math,
   JvQJVCLUtils, JvQJCLUtils, JvQIconList, JvQConsts, JvQResources;
 
 function PadUp(Value: Longint): Longint;
@@ -201,11 +200,6 @@ type
   end;
 
 //=== TJvIconFrame ===========================================================
-
-constructor TJvIconFrame.Create;
-begin
-  inherited Create;
-end;
 
 destructor TJvIconFrame.Destroy;
 begin

@@ -4802,9 +4802,10 @@ end;
 
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
-  
-  Classes.FreeObjectInstance(ObjectInstance);
-  
+  if ObjectInstance <> nil then
+    
+    Classes.FreeObjectInstance(ObjectInstance);
+    
 end;
 
 {$ENDIF MSWINDOWS}

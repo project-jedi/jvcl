@@ -40,11 +40,8 @@ unit JvQSecretPanel;
 
 interface
 uses
-  Classes,
-  
-  
-  QWindows, QMessages, QControls, Types, QGraphics, QExtCtrls, QForms,
-  
+  Windows,
+  Messages, Classes, Controls, Graphics, ExtCtrls, Forms,
   JvQTimer, JvQComponent, JvQTypes;
 
 type
@@ -124,14 +121,17 @@ type
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
-    
+    property BiDiMode;
     property Constraints;
+    property DragKind;
+    property ParentBiDiMode;
     property Align;
     property BevelInner;
     property BevelOuter default bvLowered;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
+    property DragCursor;
     property DragMode;
     property Color;
     property Font;
@@ -158,16 +158,14 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnContextPopup;
+    property OnEndDock;
+    property OnStartDock;
     property OnResize;
   end;
 
 implementation
 uses
-  SysUtils, Math,
-  
-  
-  QActnList, QConsts,
-  
+  SysUtils, Consts, Math, ActnList, CommCtrl,
   JvQConsts, JvQThemes, JvQJCLUtils, JvQJVCLUtils;
 
 const
@@ -392,8 +390,8 @@ begin
     begin
       I := SaveDC(Handle);
       try
-//       with FTxtRect do
-//          MoveWindowOrg(Handle, -Left, -Top);
+        with FTxtRect do
+          MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
       finally
@@ -459,12 +457,9 @@ begin
     end;
     Canvas.Lock;
     try
-      
-      
-      BitBlt(Canvas, FTxtRect.Left, FTxtRect.Top, FMemoryImage.Width,
-        FMemoryImage.Height, FMemoryImage.Canvas, 0, 0, SRCCOPY);
-      
-//      ValidateRect(Handle, @FTxtRect);
+      BitBlt(Canvas.Handle, FTxtRect.Left, FTxtRect.Top, FMemoryImage.Width,
+        FMemoryImage.Height, FMemoryImage.Canvas.Handle, 0, 0, SRCCOPY);
+      ValidateRect(Handle, @FTxtRect);
     finally
       Canvas.Unlock;
     end;
@@ -652,7 +647,7 @@ begin
       StopPlay;
       if (csDesigning in ComponentState) and
         not (csDestroying in ComponentState) then
-        ValidParentForm(Self).DesignerHook.Modified;
+        ValidParentForm(Self).Designer.Modified;
     end;
     if not (csDestroying in ComponentState) then
       for I := 0 to Pred(ControlCount) do

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -18,13 +18,12 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens dott fudickar att oratool dott de]
 
-Last Modified: 2003-12-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -64,7 +63,6 @@ type
     procedure AfterCreateControl(AControl: TControl); virtual;
   public
     constructor Create; virtual;
-    destructor Destroy; override;
     function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
@@ -162,11 +160,6 @@ end;
 constructor TJvDynControlEngine.Create;
 begin
   inherited Create;
-end;
-
-destructor TJvDynControlEngine.Destroy;
-begin
-  inherited Destroy;
 end;
 
 function TJvDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
@@ -583,6 +576,7 @@ end;
 function TJvDynControlEngine.CreateForm(ACaption: string; AHint: string): TCustomForm;
 begin
   Result := TCustomForm(CreateControl(jctForm, Application, nil, ''));
+  Result.Caption := ACaption;
   Result.Hint := AHint;
 end;
 

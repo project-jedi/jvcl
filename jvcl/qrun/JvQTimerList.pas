@@ -54,11 +54,7 @@ unit JvQTimerList;
 interface
 
 uses
-  
-  
-  Qt, QWindows,
-  
-  Classes;
+  Windows, Messages, Classes;
 
 const
   DefaultInterval = 1000;
@@ -149,15 +145,12 @@ type
     FOnTimers: TAllTimersEvent;
     FActive: Boolean;
     FSorted: boolean;
-    
+    procedure TimerWndProc(var Msg: TMessage);
     procedure UpdateTimer;
     procedure SetEvents(const Value: TJvTimerEvents);
     procedure SetActive(Value: Boolean);
     procedure SetSorted(const Value: boolean);
   protected
-    
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
@@ -176,7 +169,7 @@ type
 implementation
 
 uses
-  QConsts, QForms, SysUtils, Math,
+  Consts, Forms, SysUtils, Math,
   JvQJVCLUtils, JvQResources, JvQTypes;
 
 const
@@ -317,13 +310,12 @@ begin
   UpdateTimer;
 end;
 
-
-function TJvTimerList.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+procedure TJvTimerList.TimerWndProc(var Msg: TMessage);
 begin
   if not (csDesigning in ComponentState) then
   begin
-    if QEvent_type(Event) = QEventType_Timer
-    then
+    with Msg do
+      if Msg = WM_TIMER then
       try
         if (not (csDesigning in ComponentState)) and
           (Events.FStartInterval = 0) and Active then
@@ -344,12 +336,10 @@ begin
       except
         Application.HandleException(Self);
       end
+      else
+        Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
   end;
-  Result := inherited EventFilter(Sender, Event);
 end;
-
-
-
 
 procedure TJvTimerList.UpdateTimer;
 var

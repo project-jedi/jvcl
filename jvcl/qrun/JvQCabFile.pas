@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2004-01-07
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -36,7 +35,7 @@ unit JvQCABFile;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvQTypes, JvQComponent;
 
 type
@@ -87,6 +86,7 @@ type
 implementation
 
 uses
+  SetupApi,
   JvQConsts, JvQResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);

@@ -58,8 +58,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     //IJvDynControlEdit
     procedure ControlSetPasswordChar(Value: Char);
@@ -86,8 +86,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     //IJvDynControlEdit
     procedure ControlSetPasswordChar(Value: Char);
@@ -132,8 +132,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlFileName
     procedure ControlSetInitialDir(Value: string);
@@ -169,8 +169,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(Value: string);
@@ -192,8 +192,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
   TJvDynControlVCLMemo = class (TMemo, IUnknown, IJvDynControl,
@@ -209,8 +209,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
@@ -234,8 +234,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
@@ -256,8 +256,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
@@ -278,8 +278,8 @@ type
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
@@ -415,15 +415,14 @@ end;
 
 procedure TJvDynControlVCLMaskEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
-procedure TJvDynControlVCLMaskEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLMaskEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlVCLMaskEdit.ControlGetValue: variant;
+function TJvDynControlVCLMaskEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -507,12 +506,12 @@ begin
   FEditControl.OnClick := Value;
 end;
 
-procedure TJvDynControlVCLButtonEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLButtonEdit.ControlSetValue(Value: Variant);
 begin
   FEditControl.Text := Value;
 end;
 
-function TJvDynControlVCLButtonEdit.ControlGetValue: variant;
+function TJvDynControlVCLButtonEdit.ControlGetValue: Variant;
 begin
   Result := FEditControl.Text;
 end;
@@ -596,13 +595,13 @@ begin
     jdkOpen:
       with TOpenDialog.Create(Self) do
         try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
           FilterIndex := FFilterIndex;
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
+          FileName := ControlGetValue;
           if Execute then
             ControlSetValue(FileName);
         finally
@@ -611,13 +610,13 @@ begin
     jdkOpenPicture:
       with TOpenPictureDialog.Create(Self) do
         try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
           FilterIndex := FFilterIndex;
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
+          FileName := ControlGetValue;
           if Execute then
             ControlSetValue(FileName);
         finally
@@ -626,13 +625,13 @@ begin
     jdkSave:
       with TSaveDialog.Create(Self) do
         try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
           FilterIndex := FFilterIndex;
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
+          FileName := ControlGetValue;
           if Execute then
             ControlSetValue(FileName);
         finally
@@ -641,13 +640,13 @@ begin
     jdkSavePicture:
       with TSavePictureDialog.Create(Self) do
         try
-          Options    := FDialogOptions;
-          Title      := FDialogTitle;
-          Filter     := FFilter;
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
           FilterIndex := FFilterIndex;
           InitialDir := FInitialDir;
           DefaultExt := FDefaultExt;
-          FileName   := ControlGetValue;
+          FileName := ControlGetValue;
           if Execute then
             ControlSetValue(FileName);
         finally
@@ -692,20 +691,19 @@ end;
 
 procedure TJvDynControlVCLFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
-procedure TJvDynControlVCLFileNameEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLFileNameEdit.ControlSetValue(Value: Variant);
 begin
   FEditControl.Text := Value;
 end;
 
-function TJvDynControlVCLFileNameEdit.ControlGetValue: variant;
+function TJvDynControlVCLFileNameEdit.ControlGetValue: Variant;
 begin
   Result := FEditControl.Text;
 end;
 
-    // IJvDynControlFileName
+// IJvDynControlFileName
 procedure TJvDynControlVCLFileNameEdit.ControlSetInitialDir(Value: string);
 begin
   FInitialDir := Value;
@@ -826,12 +824,12 @@ begin
 
 end;
 
-procedure TJvDynControlVCLDirectoryEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLDirectoryEdit.ControlSetValue(Value: Variant);
 begin
   FEditControl.Text := Value;
 end;
 
-function TJvDynControlVCLDirectoryEdit.ControlGetValue: variant;
+function TJvDynControlVCLDirectoryEdit.ControlGetValue: Variant;
 begin
   Result := FEditControl.Text;
 end;
@@ -886,7 +884,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLCheckBox.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLCheckBox.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) = varBoolean then
     Checked := Value
@@ -894,11 +892,10 @@ begin
     Checked := Uppercase(Value) = 'TRUE';
 end;
 
-function TJvDynControlVCLCheckBox.ControlGetValue: variant;
+function TJvDynControlVCLCheckBox.ControlGetValue: Variant;
 begin
   Result := Checked;
 end;
-
 
 //=== TJvDynControlVCLMemo ===================================================
 
@@ -941,12 +938,12 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLMemo.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLMemo.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlVCLMemo.ControlGetValue: variant;
+function TJvDynControlVCLMemo.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -985,7 +982,6 @@ begin
   ScrollBars := Value;
 end;
 
-
 //=== TJvDynControlVCLRadioGroup =============================================
 
 procedure TJvDynControlVCLRadioGroup.ControlSetDefaultProperties;
@@ -1021,7 +1017,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLRadioGroup.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLRadioGroup.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) in [varSmallInt, varInteger] then
     ItemIndex := Value
@@ -1034,7 +1030,7 @@ begin
     end;
 end;
 
-function TJvDynControlVCLRadioGroup.ControlGetValue: variant;
+function TJvDynControlVCLRadioGroup.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
@@ -1063,7 +1059,6 @@ end;
 procedure TJvDynControlVCLListBox.ControlSetDefaultProperties;
 begin
 end;
-
 
 procedure TJvDynControlVCLListBox.ControlSetCaption(Value: string);
 begin
@@ -1094,7 +1089,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLListBox.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLListBox.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) in [varSmallInt, varInteger] then
     ItemIndex := Value
@@ -1107,7 +1102,7 @@ begin
     end;
 end;
 
-function TJvDynControlVCLListBox.ControlGetValue: variant;
+function TJvDynControlVCLListBox.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
@@ -1131,7 +1126,6 @@ procedure TJvDynControlVCLListBox.ControlSetOnDblClick(Value: TNotifyEvent);
 begin
   OnDblClick := Value;
 end;
-
 
 //=== TJvDynControlVCLComboBox ===============================================
 
@@ -1168,7 +1162,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlVCLComboBox.ControlSetValue(Value: variant);
+procedure TJvDynControlVCLComboBox.ControlSetValue(Value: Variant);
 begin
   if Style = csDropDownList then
     ItemIndex := Items.IndexOf(Value)
@@ -1176,7 +1170,7 @@ begin
     Text := Value;
 end;
 
-function TJvDynControlVCLComboBox.ControlGetValue: variant;
+function TJvDynControlVCLComboBox.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -1197,13 +1191,12 @@ begin
 end;
 
 procedure TJvDynControlVCLComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
+const
+  Styles: array [Boolean] of TComboBoxStyle =
+    (csDropDown, csDropDownList);
 begin
-  if Value then
-    Style := csDropDown
-  else
-    Style := csDropDownList;
+  Style := Styles[Value];
 end;
-
 
 //=== TJvDynControlVCLPanel ==================================================
 
@@ -1430,7 +1423,6 @@ procedure TJvDynControlVCLButton.ControlSetLayout(Value: TButtonLayout);
 begin
   Layout := Value;
 end;
-
 
 function DynControlEngineVCL: TJvDynControlEngine;
 begin

@@ -725,7 +725,7 @@ var
 const
   // These characters cannot be used for separator for various reasons:
   // Either they are used as field type specifiers, break lines or are used to
-  // delimit field content 
+  // delimit field content
   cInvalidSeparators = [#0,#8,#10,#12,#13,#39,'"','\', '$','%','&','@','#','^','!','-'];
 
 procedure JvCsvDatabaseError(const TableName, Msg: string);
@@ -737,8 +737,72 @@ begin
   raise EJvCsvDataSetError.CreateFmt(RsECsvErrFormat, [TableName, Msg]);
 end;
 
-    // Each ROW Record has an internal Data pointer (similar to the
-    // user-accessible 'Data:Pointer' stored in treeviews, etc)
+// note that file is not being locked!
+
+constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSeparator := ',';
+
+  FInitialWorkingDirectory := GetCurrentDir; // from SysUtils;
+
+  FTempBuffer := AllocMem(MAXLINELENGTH + 1); // AllocMem fills with zeros
+
+  // FRecordSize = size of a csv text buffer and the indexes pointing
+  //               into that buffer:
+
+  FRecordSize := SizeOf(TJvCsvRow) - SizeOf(TJvCsvBookmark);
+
+  // FBuffer size includes CSV Text buffer, and the bookmark data, followed
+  // by space for storing the binary form of a calculated-field:
+
+  // initial FBufferSize size: My theory is that we should pick a conservative
+  // estimate plus a margin for error:
+
+  FBufferSize := SizeOf(TJvCsvRow) + MaxCalcDataOffset; //;128; {CalcFieldsSize}
+  //; // our regular record + calculated field data.
+
+  FReadOnly := False;
+  FCursorOpen := False;
+  FRecordPos := ON_BOF_CRACK;
+  FLoadsFromFile := True;
+  FSavesChanges := True;
+  FHasHeaderRow := True;
+  FValidateHeaderRow := True;
+
+  { Additional initialization }
+  FCsvColumns := TJvCsvColumns.Create;
+  FData := TJvCsvRows.Create;
+  FData.EnquoteBackslash := FEnquoteBackslash;
+
+end;
+
+destructor TJvCustomCsvDataSet.Destroy;
+begin
+  InternalClearFileStrings; // delete file strings
+  FreeMem(FTempBuffer); // Free the memory we allocated.
+  FTempBuffer := nil;
+
+  try
+    if FCursorOpen then
+      InternalClose;
+  except
+  end;
+  if Assigned(FCsvColumns) then
+  begin
+    FCsvColumns.Clear;
+    FCsvColumns.Free;
+  end;
+  if Assigned(FData) then
+  begin
+    FData.Clear;
+    FData.Free;
+  end;
+  inherited Destroy;
+end;
+
+// Each ROW Record has an internal Data pointer (similar to the
+// user-accessible 'Data:Pointer' stored in treeviews, etc)
 
 function TJvCustomCsvDataSet.GetRowUserData: Pointer;
 var
@@ -1092,73 +1156,6 @@ begin
     else
       First;
   end;
-end;
-
-// note that file is not being locked!
-
-{ TJvCustomCsvDataSet }
-
-
-constructor TJvCustomCsvDataSet.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FSeparator := ',';
-
-  FInitialWorkingDirectory := GetCurrentDir; // from SysUtils;
-
-  FTempBuffer := AllocMem(MAXLINELENGTH + 1); // AllocMem fills with zeros
-
-  // FRecordSize = size of a csv text buffer and the indexes pointing
-  //               into that buffer:
-
-  FRecordSize := SizeOf(TJvCsvRow) - SizeOf(TJvCsvBookmark);
-
-  // FBuffer size includes CSV Text buffer, and the bookmark data, followed
-  // by space for storing the binary form of a calculated-field:
-
-  // initial FBufferSize size: My theory is that we should pick a conservative
-  // estimate plus a margin for error:
-
-  FBufferSize := SizeOf(TJvCsvRow) + MaxCalcDataOffset; //;128; {CalcFieldsSize}
-  //; // our regular record + calculated field data.
-
-  FReadOnly := False;
-  FCursorOpen := False;
-  FRecordPos := ON_BOF_CRACK;
-  FLoadsFromFile := True;
-  FSavesChanges := True;
-  FHasHeaderRow := True;
-  FValidateHeaderRow := True;
-
-  { Additional initialization }
-  FCsvColumns := TJvCsvColumns.Create;
-  FData := TJvCsvRows.Create;
-  FData.EnquoteBackslash := FEnquoteBackslash;
-
-end;
-
-destructor TJvCustomCsvDataSet.Destroy;
-begin
-  InternalClearFileStrings; // delete file strings
-  FreeMem(FTempBuffer); // Free the memory we allocated.
-  FTempBuffer := nil;
-
-  try
-    if FCursorOpen then
-      InternalClose;
-  except
-  end;
-  if Assigned(FCsvColumns) then
-  begin
-    FCsvColumns.Clear;
-    FCsvColumns.Free;
-  end;
-  if Assigned(FData) then
-  begin
-    FData.Clear;
-    FData.Free;
-  end;
-  inherited Destroy;
 end;
 
 function TJvCustomCsvDataSet.BookmarkValid(Bookmark: TBookmark): Boolean;

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -18,27 +18,26 @@ All Rights Reserved.
 Contributor(s):
 Jens Fudickar [jens dott fudickar att oratool dott de]
 
-Last Modified: 2003-12-17
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
-
+{$I windowsonly.inc}
 
 unit JvQDynControlEngineJVCL;
 
 interface
 
 uses
-  Classes, QControls, QStdCtrls, QExtCtrls, QComCtrls, QMask, QForms,
-  QGraphics, QButtons, QDialogs, QFileCtrls,
-  JvQMaskEdit, {JvQDateTimePicker,} JvQBitBtn, JvQCheckBox, JvQBaseEdits,
-  JvQLabel, {JvQListBox,} JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
-  JvQScrollBox, {JvQStaticText,} JvQComboBox, JvQImage, JvQSpin,
+  Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
+  Buttons, Dialogs, FileCtrl,
+  JvQMaskEdit, JvQDateTimePicker, JvQBitBtn, JvQCheckBox, JvQBaseEdits,
+  JvQLabel, JvQListBox, JvQMemo, JvQPanel, JvQRadioGroup, JvQToolEdit,
+  JvQScrollBox, JvQStaticText, JvQComboBox, JvQImage, JvQSpin,
   JvQDynControlEngine, JvQDynControlEngineIntf;
 
 type
@@ -929,7 +928,6 @@ procedure TJvDynControlJVCLDirectoryEdit.ControlSetDialogOptions(Value: TSelectD
 begin
   DialogOptions := Value;
 end;
-
 
 //=== TJvDynControlJVCLDateTimeEdit ==========================================
 

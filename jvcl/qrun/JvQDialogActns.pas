@@ -35,7 +35,7 @@ unit JvQDialogActns;
 interface
 
 uses
-  Classes, SysUtils, QActnList, QStdActns,
+  Classes, SysUtils, ActnList, StdActns,
   
   JvQBaseDlg, JvQBrowseFolder, JvQSelectDirectory, JvQConnectNetwork,
   JvQWinDialogs, JvQDialogs, JvQPageSetupTitled, JvQPageSetup;
@@ -514,6 +514,9 @@ function TJvPageSetupTitledAction.GetDialogClass: TJvCommonDialogClass;
 begin
   Result := TJvPageSetupTitledDialog;
 end;
+
+//=== TCommonDialogAction ====================================================
+
 
 
 end.

@@ -90,7 +90,7 @@ resourcestring
   RsFalse = 'False';
   RsTrue = 'True';
 
-  RsEErrorSetupDll = 'Unable to find SetupApi.dll';
+  RsEErrorSetupDll = 'SetupApi.dll not found';
   RsEInternalError = 'internal error';
   RsEUnterminatedStringNears = 'unterminated string near %s';
   RsEStackOverflow = 'stack overflow';
