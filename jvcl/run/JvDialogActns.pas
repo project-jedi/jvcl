@@ -55,6 +55,32 @@ type
   TJvCommonDialogPClass = class of TJvCommonDialogP;
   TJvCommonDialogFClass = class of TJvCommonDialogF;
 
+  {$IFNDEF COMPILER6_UP}
+  TCommonDialogAction = class(TCustomAction)
+  private
+    FOnAccept: TNotifyEvent;
+    FOnCancel: TNotifyEvent;
+    FBeforeExecute: TNotifyEvent;
+  protected
+    FDialog: TCommonDialog;
+    function GetDialogClass: TCommonDialogClass; virtual;
+    property OnAccept: TNotifyEvent read FOnAccept write FOnAccept;
+    property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
+  public
+    constructor Create(AOwner: TComponent); override;
+    function HandlesTarget(Target: TObject): Boolean; override;
+    property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
+  published
+    property Caption;
+    property Enabled;
+    property HelpContext;
+    property Hint;
+    property ImageIndex;
+    property ShortCut;
+    property Visible;
+  end;
+  {$ENDIF !COMPILER6_UP}
+
   TJvCommonDialogAction = class(TCustomAction)
   private
     {$IFDEF COMPILER6_UP}
@@ -147,7 +173,11 @@ type
     function GetDialog: TJvBrowseForFolderDialog;
   protected
     function GetDialogClass: TJvCommonDialogFClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvBrowseForFolderDialog read GetDialog;
   end;
 
@@ -156,7 +186,11 @@ type
     function GetDialog: TJvSelectDirectory;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP} 
     property Dialog: TJvSelectDirectory read GetDialog;
   end;
 
@@ -165,7 +199,11 @@ type
     function GetDialog: TJvNetworkConnect;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvNetworkConnect read GetDialog;
   end;
 
@@ -174,7 +212,11 @@ type
     function GetDialog: TJvFormatDriveDialog;
   protected
     function GetDialogClass: TJvCommonDialogFClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvFormatDriveDialog read GetDialog;
   end;
 
@@ -183,7 +225,11 @@ type
     function GetDialog: TJvOrganizeFavoritesDialog;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvOrganizeFavoritesDialog read GetDialog;
   end;
 
@@ -192,18 +238,21 @@ type
     function GetDialog: TJvAppletDialog;
   protected
     function GetDialogClass: TJvCommonDialogFClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvAppletDialog read GetDialog;
   end;
 
-  TJvOpenFileAction = class(TJvCommonDialogAction)
+  TJvOpenFileAction = class(TCommonDialogAction)
   private
     function GetDialog: TJvOpenDialog;
   protected
-    function GetDialogClass: TCommonDialogClass; reintroduce; virtual;
+    function GetDialogClass: TCommonDialogClass; override;
   published
     property Caption;
-    property Dialog: TJvOpenDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property Hint;
@@ -215,6 +264,12 @@ type
     {$ENDIF COMPILER6_UP}
     property OnAccept;
     property OnCancel;
+  {$IFDEF COMPILER6_UP}
+  published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
+    property Dialog: TJvOpenDialog read GetDialog;
   end;
 
   TJvSaveFileAction = class(TJvOpenFileAction)
@@ -222,7 +277,11 @@ type
     function GetDialog: TJvSaveDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvSaveDialog read GetDialog;
   end;
 
@@ -231,7 +290,11 @@ type
     function GetDialog: TJvPageSetupDialog;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvPageSetupDialog read GetDialog;
   end;
 
@@ -240,7 +303,11 @@ type
     function GetDialog: TJvPageSetupTitledDialog;
   protected
     function GetDialogClass: TJvCommonDialogClass; override;
+  {$IFDEF COMPILER6_UP}
   published
+  {$ELSE}
+  public
+  {$ENDIF COMPILER6_UP}
     property Dialog: TJvPageSetupTitledDialog read GetDialog;
   end;
 
@@ -501,5 +568,33 @@ begin
   Result := TJvPageSetupTitledDialog;
 end;
 
+{$IFNDEF COMPILER6_UP}
+{ TCommonDialogAction }
+
+constructor TCommonDialogAction.Create(AOwner: TComponent);
+var
+  DialogClass: TCommonDialogClass;
+begin
+  inherited Create(AOwner);
+  DialogClass := GetDialogClass;
+  if Assigned(DialogClass) then
+  begin
+    FDialog := DialogClass.Create(Self);
+    FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
+  end;
+  DisableIfNoHandler := False;
+  Enabled := True;
+end;
+
+function TCommonDialogAction.GetDialogClass: TCommonDialogClass;
+begin
+  Result := nil;
+end;
+
+function TCommonDialogAction.HandlesTarget(Target: TObject): Boolean;
+begin
+  Result := True;
+end;
+{$ENDIF !"COMPILER6_UP}
 end.
 
