@@ -23,9 +23,9 @@
     <Package Name="dbrtl" Targets="C6,D6,D7,D9" Condition=""/>
     <Package Name="bdertl" Targets="C6,D6,D7,D9" Condition=""/>
     <Package Name="qrpt" Targets="C6" Condition=""/>
-    <Package Name="qrpt" Targets="D6,D7" Condition="!QREPORT4 AND JVCL_UseQuickReport"/>
-    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 AND JVCL_UseQuickReport"/>
-    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 AND JVCL_UseQuickReport"/>
+    <Package Name="qrpt" Targets="D6,D7" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
+    <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="inet" Targets="C6,D6,D7,D9" Condition=""/>
     <Package Name="vcldb" Targets="C6,D6,D7,D9" Condition=""/>
