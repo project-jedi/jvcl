@@ -2,7 +2,7 @@
 <Package Name="JvXPCtrls" Design="0">
   <Description>JVCL XP Controls Runtime Package</Description>
   <ClxDescription>JVCLX XP Controls Runtime Package</ClxDescription>
-  <C5PFlags>-LUCJcl50(USEJVCL)</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL) -LUCJclVcl(USEJVCL)</C6PFlags>
   <C5Libs/>
   <C6Libs/>
