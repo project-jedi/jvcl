@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-12-18 17:36\n"
-"PO-Revision-Date: 2004-12-18 16:59+0100\n"
+"POT-Creation-Date: 2004-12-18 17:51\n"
+"PO-Revision-Date: 2004-12-18 17:50+0100\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
 "MIME-Version: 1.0\n"
@@ -446,40 +446,19 @@ msgid ""
 "Activate this option if the installer should not stop when an error occured while\n"
 "compiling the packages."
 msgstr ""
+"Activez cette option si l'installateur ne doit pas s'arrêter quand une erreur\n"
+"survient lors de la compilation des paquets."
 
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
 #. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
 #: Frames/FrmConfigPage.dfm:389
 msgid "D&o not stop on errors"
-msgstr ""
-
-#. FrameDirEditBrowse..LblCaption..Caption
-#: Frames/FrmDirEditBrowse.dfm:12
-msgid "LblCaption"
-msgstr "LblCaption"
+msgstr "Ne pas st&opper en cas d'erreur"
 
 #. FrameDirEditBrowse..BtnDirBrowse..Hint
 #: Frames/FrmDirEditBrowse.dfm:44
 msgid "Browse..."
 msgstr "Parcourir..."
-
-#. FrameInstall..LblTarget..Caption
-#. FramePackageSelection..LblTarget..Caption
-#. FrameUninstall..LblTarget..Caption
-#: Frames/FrmInstall.dfm:12 Frames/FrmPackageSelection.dfm:12
-#: Frames/FrmUninstall.dfm:12
-msgid "LblTarget"
-msgstr "LblTarget"
-
-#. FrameInstall..LblInfo..Caption
-#: Frames/FrmInstall.dfm:25
-msgid "LblInfo"
-msgstr "LblInfo"
-
-#. FrameInstall..LblOpenFile..Caption
-#: Frames/FrmInstall.dfm:34
-msgid "LblOpenFile"
-msgstr "LblOpenFile"
 
 #. FrameInstall..BtnDetails..Caption
 #: Frames/FrmInstall.dfm:82
@@ -567,11 +546,6 @@ msgstr "&Réinitialiser tous les paquets"
 msgid "Reset the package selection to IDE default."
 msgstr "Réinitialiser la sélection de paquets à l'EDI standard."
 
-#. FrameUninstall..LblFilename..Caption
-#: Frames/FrmUninstall.dfm:25
-msgid "LblFilename"
-msgstr "LblFilename"
-
 #. FormCompile..Caption
 #. Programmer's name for it: RsCompiling
 #: FrmCompile.dfm:6 FrmCompile.pas:127
@@ -581,53 +555,52 @@ msgstr "Compilation"
 #. FormCompile..PanelClient..LblProject..Caption
 #: FrmCompile.dfm:57
 msgid "Project filename"
-msgstr ""
+msgstr "Nom du fichier projet"
 
 #  FormCompile..PanelClient..LblStatusCaption..Caption
 #. FormCompile..PanelClient..LblStatusCaption..Caption
 #: FrmCompile.dfm:65
 msgid "Done:"
-msgstr ""
+msgstr "Fait :"
 
 #. FormCompile..PanelClient..LblCurrentLineCaption..Caption
 #: FrmCompile.dfm:84
 msgid "Current line:"
-msgstr ""
+msgstr "Ligne actuelle :"
 
 #  FormCompile..PanelClient..LblTotalLinesCaption..Caption
 #  FormCompile..PanelClient..LblTotalLinesCaption..Caption
 #. FormCompile..PanelClient..LblTotalLinesCaption..Caption
 #: FrmCompile.dfm:99
-#, fuzzy
 msgid "Total lines:"
-msgstr "Contient:"
+msgstr "Total :"
 
 #. FormCompile..PanelClient..LblHintsCaption..Caption
 #: FrmCompile.dfm:126
 msgid "Hints:"
-msgstr ""
+msgstr "Conseils :"
 
 #. FormCompile..PanelClient..LblWarningsCaption..Caption
 #: FrmCompile.dfm:141
 msgid "Warnings:"
-msgstr ""
+msgstr "Avertissements :"
 
 #  FormCompile..PanelClient..LblErrorsCaption..Caption
 #. FormCompile..PanelClient..LblErrorsCaption..Caption
 #: FrmCompile.dfm:156
 msgid "Errors:"
-msgstr ""
+msgstr "Erreurs :"
 
 #. FormCompile..PanelClient..LblProjectCaption..Caption
 #: FrmCompile.dfm:171
 msgid "Project:"
-msgstr ""
+msgstr "Projet :"
 
 #. FormCompile..PanelClient..LblStatus..Caption
 #. Programmer's name for it: RsThereAreErrors
 #: FrmCompile.dfm:178 FrmCompile.pas:130
 msgid "There are errors."
-msgstr ""
+msgstr "Il y a des erreurs."
 
 #  FormCompile..BtnOk..Caption
 #. FormCompile..BtnOk..Caption
@@ -638,27 +611,27 @@ msgstr "OK"
 #. Programmer's name for it: RsPreparing
 #: FrmCompile.pas:126
 msgid "Preparing..."
-msgstr ""
+msgstr "Preparation..."
 
 #. Programmer's name for it: RsLinking
 #: FrmCompile.pas:128
 msgid "Linking"
-msgstr ""
+msgstr "Liaison"
 
 #. Programmer's name for it: RsDone
 #: FrmCompile.pas:129
 msgid "Done"
-msgstr ""
+msgstr "Fait"
 
 #. Programmer's name for it: RsThereAreWarnings
 #: FrmCompile.pas:131
 msgid "There are warnings."
-msgstr ""
+msgstr "Il y a des avertissements."
 
 #. Programmer's name for it: RsThereAreHints
 #: FrmCompile.pas:132
 msgid "There are hints."
-msgstr ""
+msgstr "Il y a des conseils."
 
 #  Programmer's name for it: RsCompiled
 #. Programmer's name for it: RsCompiled
@@ -670,24 +643,23 @@ msgstr "Terminé."
 #  FormCompileMessages..Caption
 #. FormCompileMessages..Caption
 #: FrmCompileMessages.dfm:8
-#, fuzzy
 msgid "Compiler Messages"
-msgstr "Compiler les paquets"
+msgstr "Messages du compilateur"
 
 #. FormCompileMessages..PanelTop..LabelHelp....Height
 #: FrmCompileMessages.dfm:52
 msgid "Many error messages appear because the JCL version and the JVCL version are not compatible. Please keep in mind that you need the correct JCL version."
-msgstr ""
+msgstr "De nombreux messages d'erreurs sont dûs à des versions de JVCL et JCL non compatibles. Penseé à toujours avoir la bonne version de la JCL."
 
 #. FormCompileMessages..PopupMenu..Open1..Caption
 #: FrmCompileMessages.dfm:59
 msgid "&Open"
-msgstr ""
+msgstr "&Ouvrir"
 
 #. FormCompileMessages..PopupMenu..MenuNotepad..Caption
 #: FrmCompileMessages.dfm:63
 msgid "Open in &Notepad"
-msgstr ""
+msgstr "Ouvrir dans &Notepad"
 
 #. FormMain..JvWizard..ButtonHelp.Caption
 #. Programmer's name for it: STR_HELPBTN
@@ -704,16 +676,6 @@ msgstr "Configuration JVCL"
 #: Helpers/MainConfig.dfm:36
 msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 msgstr "Les changements de jvcl.inc s'appliquent à toutes les versions de Delphi/BCB installées."
-
-#. FormJvclIncConfig..ScrollBox..LblComment..Caption
-#: Helpers/MainConfig.dfm:69
-msgid "LblComment"
-msgstr "LblComment"
-
-#. FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#: Helpers/MainConfig.dfm:95
-msgid "http://projectjedi.sourceforge.net"
-msgstr "http://projectjedi.sourceforge.net"
 
 #. FormJvclIncConfig..TitlePanel..Label4..Caption
 #: Helpers/MainConfig.dfm:104
@@ -866,12 +828,12 @@ msgstr "Compilation de %s"
 #. Programmer's name for it: RsCompilerHint
 #: InstallerConsts.pas:91
 msgid "Hint"
-msgstr ""
+msgstr "Conseil"
 
 #. Programmer's name for it: RsCompilerWarning
 #: InstallerConsts.pas:92
 msgid "Warning"
-msgstr ""
+msgstr "Avertissement"
 
 #  Programmer's name for it: RsCompilerError
 #. Programmer's name for it: RsCompilerError
@@ -883,7 +845,7 @@ msgstr "Erreur"
 #. Programmer's name for it: RsCompilerFatal
 #: InstallerConsts.pas:94
 msgid "Fatal"
-msgstr ""
+msgstr "Fatal"
 
 #. FrmPackageSelection.pas
 #. Programmer's name for it: RsSelectTargetIDE
@@ -1190,11 +1152,6 @@ msgstr "Erreur d'application. Aucun PackageInstaller créé."
 msgid "Do you really want to cancel the installation?"
 msgstr "Voulez-vous vraiment annuler l'installation ?"
 
-#. Programmer's name for it: RsComponentPalettePrefix
-#: JVCLData.pas:289
-msgid "TJv"
-msgstr "TJv"
-
 #. Programmer's name for it: RsNoJVCLFound
 #: JVCLData.pas:290
 msgid "No JVCL directory found. Application terminated."
@@ -1228,23 +1185,23 @@ msgstr "Suppression des fichiers..."
 #. FormMain..JvWizard..ButtonStart.Caption
 #: Main.dfm:30
 msgid "To &Start Page"
-msgstr ""
+msgstr "Ver&s la page de début"
 
 #. FormMain..JvWizard..ButtonLast.Caption
 #: Main.dfm:33
 msgid "To &Last Page"
-msgstr ""
+msgstr "Vers &la dernière page"
 
 #  FormMain..JvWizard..ButtonBack.Caption
 #. FormMain..JvWizard..ButtonBack.Caption
 #: Main.dfm:36
 msgid "< &Back"
-msgstr ""
+msgstr "< &Précédent"
 
 #. FormMain..JvWizard..ButtonNext.Caption
 #: Main.dfm:39
 msgid "&Next >"
-msgstr ""
+msgstr "&Suivant >"
 
 #  FormMain..JvWizard..ButtonFinish.Caption
 #. FormMain..JvWizard..ButtonFinish.Caption
