@@ -37,7 +37,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 unit JvComCtrls;
 
@@ -46,22 +45,30 @@ interface
 uses
   Windows, Messages, Contnrs, Graphics, Controls, Forms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
-  Menus, ComCtrls, CommCtrl, ImgList, Buttons,
+  Menus, ComCtrls, ImgList, Buttons,
+  {$IFDEF VCL}
+  CommCtrl,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QExtCtrls,
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;
+  {$IFDEF VCL}
 
   TVM_SETLINECOLOR = TV_FIRST + 40;
   {$EXTERNALSYM TVM_SETLINECOLOR}
 
   TVM_GETLINECOLOR = TV_FIRST + 41;
   {$EXTERNALSYM TVM_GETLINECOLOR}
-
+  {$ENDIF VCL}
   JvDefaultInactiveColorFrom = TColor($D7D7D7);
   JvDefaultInactiveColorTo= TColor($ADADAD);
 
 type
+  {$IFDEF VCL}
   TJvIPAddress = class;
 
   TJvIPAddressMinMax = record
@@ -188,8 +195,12 @@ type
     property Anchors;
     property Color;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnStartDock;
+    property OnEndDock;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -208,7 +219,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -216,9 +226,9 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnStartDock;
     property OnStartDrag;
   end;
+  {$ENDIF VCL}
 
   // TJvHintSource is a hint enumeration type to describe how to display hints for
   // controls that have hint properties both for the main control as well as
@@ -317,17 +327,20 @@ type
   private
     FTabPainter: TJvTabControlPainter;
     FRightClickSelect: Boolean;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     procedure SetTabPainter(const Value: TJvTabControlPainter); // not WantKeys
   protected
-{$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X: Integer; Y: Integer); override;
-{$ENDIF VisualCLX}
+    function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
+    {$ENDIF VisualCLX}
+    {$IFDEF VCL}
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
+    {$ENDIF VCL}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -351,7 +364,9 @@ type
     FTabPainter: TJvTabControlPainter;
     FRightClickSelect: Boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
+    {$IFDEF VCL}
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
+    {$ENDIF VCL}
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
@@ -363,14 +378,15 @@ type
       const KeyText: WideString): Boolean; override;
 
     procedure Loaded; override;
-    procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     function CanChange: Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     {$IFDEF VisualCLX}
+    function DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: Integer; Y: Integer); override;
     {$ENDIF VisualCLX}
     {$IFDEF VCL}
+    procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     {$ENDIF VCL}
@@ -398,29 +414,35 @@ type
 
   TJvTrackBar = class(TJvExTrackBar)
   private
+    FOnChanged: TNotifyEvent;
+    FShowRange: Boolean;
+    {$IFDEF VCL}
     FToolTips: Boolean;
     FToolTipSide: TJvTrackToolTipSide;
     FToolTipText: WideString;
     FOnToolTip: TJvTrackToolTipEvent;
-    FOnChanged: TNotifyEvent;
-    FShowRange: Boolean;
     procedure SetToolTips(const Value: Boolean);
     procedure SetToolTipSide(const Value: TJvTrackToolTipSide);
     procedure WMNotify(var Msg: TWMNotify); message WM_NOTIFY;
     procedure CNHScroll(var Msg: TWMHScroll); message CN_HSCROLL;
     procedure CNVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
+    {$ENDIF VCL}
     procedure SetShowRange(const Value: Boolean);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure InternalSetToolTipSide;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property ShowRange: Boolean read FShowRange write SetShowRange default True;
+    {$IFDEF VCL}
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
+    {$ENDIF VCL}
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -430,9 +452,12 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    {$IFDEF VCL}
     property OnToolTip: TJvTrackToolTipEvent read FOnToolTip write FOnToolTip;
+    {$ENDIF VCL}
   end;
 
+{$IFDEF VCL}
   TJvTreeNode = class(TTreeNode)
   private
     FBold: Boolean;
@@ -482,10 +507,12 @@ type
     procedure SetMultiSelect(const Value: Boolean);
 {$ENDIF COMPILER6_UP}
     procedure SetScrollDirection(const Value: Integer);
+    {$IFDEF VCL}
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    {$ENDIF VCL}
     procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: Integer;
     procedure SetItemHeight(Value: Integer);
@@ -507,8 +534,10 @@ type
     function IsMenuItemClick(Node: TTreeNode): Boolean;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    {$ENDIF VCL}
     procedure Change(Node: TTreeNode); override;
     procedure Delete(Node: TTreeNode); override;
     procedure DoEditCancelled; dynamic;
@@ -579,6 +608,7 @@ type
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
+{$ENDIF VCL}
 
 implementation
 
@@ -587,6 +617,7 @@ uses
   JclStrings,
   JvJCLUtils;
 
+{$IFDEF VCL}
 const
   TVIS_CHECKED = $2000;
 
@@ -721,7 +752,9 @@ constructor TJvIPAddress.Create(AOwner: TComponent);
 var
   I: Integer;
 begin
+  {$IFDEF MSWINDOWS}
   CheckCommonControl(ICC_INTERNET_CLASSES);
+  {$ENDIF MSWINDOWS}
   inherited Create(AOwner);
   FRange := TJvIPAddressRange.Create(Self);
   FAddressValues := TJvIPAddressValues.Create;
@@ -752,6 +785,7 @@ begin
     FEditControls[I].Free;
 end;
 
+{$IFDEF VCL}
 procedure TJvIPAddress.CreateParams(var Params: TCreateParams);
 begin
   InitCommonControl(ICC_INTERNET_CLASSES);
@@ -763,6 +797,7 @@ begin
     WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvIPAddress.CreateWnd;
 var
@@ -1066,6 +1101,7 @@ begin
     Application.HandleException(Self);
   end;
 end;
+{$ENDIF VCL}
 
 //=== { TJvTabControlPainter } ===============================================
 
@@ -1126,7 +1162,12 @@ begin
   if Owner is TForm then
     FActiveFont.Assign(TForm(Owner).Font)
   else
+    {$IFDEF VCL}
     FActiveFont.Assign(Screen.IconFont);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FActiveFont.Assign(Screen.HintFont);
+    {$ENDIF VisualCLX}
   FActiveFont.Color := clHighlight;
   FActiveFont.OnChange := DoFontChange;
   FActiveColorFrom := clWhite;
@@ -1137,7 +1178,12 @@ begin
   if Owner is TForm then
     FDisabledFont.Assign(TForm(Owner).Font)
   else
+    {$IFDEF VCL}
     FDisabledFont.Assign(Screen.IconFont);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FDisabledFont.Assign(Screen.HintFont);
+    {$ENDIF VisualCLX}
   FDisabledFont.Color := clGrayText;
   FDisabledFont.OnChange := DoFontChange;
   FDisabledColorFrom := clBtnFace;
@@ -1148,7 +1194,12 @@ begin
   if Owner is TForm then
     FInactiveFont.Assign(TForm(Owner).Font)
   else
+    {$IFDEF VCL}
     FInactiveFont.Assign(Screen.IconFont);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FInactiveFont.Assign(Screen.HintFont);
+    {$ENDIF VisualCLX}
   FInactiveFont.OnChange := DoFontChange;
   FInactiveColorFrom := JvDefaultInactiveColorFrom;
   FInactiveColorTo := JvDefaultInactiveColorTo;
@@ -1236,7 +1287,11 @@ begin
     InflateRect(ImageRect, -(RectWidth(ImageRect) - Images.Width) div 2, -(RectHeight(ImageRect) - Images.Height) div 2);
     SaveState := SaveDC(Canvas.Handle);
     try
-      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, Enabled);
+      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex,
+      {$IFDEF VisualCLX}
+      itImage,
+      {$ENDIF VisualCLX}
+      Enabled);
     finally
       RestoreDC(Canvas.Handle, SaveState);
     end;
@@ -1475,8 +1530,17 @@ begin
   inherited;
 end;
 
+function TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean): Boolean;
+begin
+  Result := true;
+  if Assigned(TabPainter) then
+    TabPainter.DrawTab(Self, Canvas, Images, TabIndex, Tabs[TabIndex].Caption, Rect, TabIndex = Self.TabIndex, Enabled)
+  else
+    Result := inherited DrawTab(TabIndex, Rect, Active);
+end;
 {$ENDIF VisualCLX}
 
+{$IFDEF VCL}
 procedure TJvTabControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
 begin
   if Assigned(TabPainter) then
@@ -1484,6 +1548,7 @@ begin
   else
     inherited DrawTab(TabIndex, Rect, Active);
 end;
+{$ENDIF VCL}
 
 procedure TJvTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
@@ -1493,7 +1558,6 @@ begin
     TabPainter := nil;
 
 end;
-
 
 procedure TJvTabControl.SetTabPainter(const Value: TJvTabControlPainter);
 begin
@@ -1560,11 +1624,20 @@ begin
   Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
+{$IFDEF VCL}
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
   Active: Boolean);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
+  Active: Boolean): Boolean;
+{$ENDIF VisualCLX}
 var
   I, RealIndex: Integer;
 begin
+  {$IFDEF VisualCLX}
+  Result := false;
+  {$ENDIF VisualCLX}
   if TabPainter <> nil then
   begin
     RealIndex := 0;
@@ -1579,7 +1652,7 @@ begin
       TabPainter.DrawTab(Self, Canvas, Images, Pages[RealIndex].ImageIndex, Pages[RealIndex].Caption, Rect, Active, Pages[RealIndex].Enabled);
   end
   else
-    inherited DrawTab(TabIndex, Rect, Active);
+    {$IFDEF VisualCLX}Result := {$ENDIF}inherited DrawTab(TabIndex, Rect, Active);
 end;
 
 procedure TJvPageControl.Loaded;
@@ -1616,6 +1689,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvPageControl.TCMAdjustRect(var Msg: TMessage);
 var
   Offset: Integer;
@@ -1627,6 +1701,7 @@ begin
     InflateRect(PRect(Msg.LParam)^, Offset, Offset);
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvPageControl.UpdateTabImages;
 begin
@@ -1806,10 +1881,13 @@ constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // ControlStyle := ControlStyle + [csAcceptsControls];
+  {$IFDEF VCL}
   FToolTipSide := tsLeft;
+  {$ENDIF VCL}
   FShowRange := True;
 end;
 
+{$IFDEF VCL}
 procedure TJvTrackBar.CNHScroll(var Msg: TWMHScroll);
 begin
   if Msg.ScrollCode <> SB_ENDSCROLL then
@@ -1849,6 +1927,7 @@ begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
+{$ENDIF VCL}
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -1867,6 +1946,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvTrackBar.SetToolTips(const Value: Boolean);
 begin
   if FToolTips <> Value then
@@ -1904,9 +1984,11 @@ begin
     else
       inherited;
 end;
+{$ENDIF VCL}
 
 //=== { TJvTreeNode } ========================================================
 
+{$IFDEF VCL}
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
   Result := Create(AOwner);
@@ -2295,9 +2377,22 @@ begin
 end;
 
 procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
+{$IFDEF VisualCLX}
+const
+  cNewType: array [Boolean] of TListViewItemType = (itDefault, itCheckBox);
+{$ENDIF VisualCLX}
 begin
-  FCheckBoxes := Value;
-  RecreateWnd;
+  if FCheckBoxes <> Value then
+  begin
+    FCheckBoxes := Value;
+    {$IFDEF VCL}
+    RecreateWnd;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Items.ChangeItemTypes(cNewType[FCheckBoxes]);
+    Selected := nil;
+    {$ENDIF VisualCLX}
+  end;
 end;
 
 procedure TJvTreeView.SetChecked(Node: TTreeNode; Value: Boolean);
@@ -2650,7 +2745,6 @@ begin
   end;
 end;
 
-
 //=== { TJvIPAddressValues } =================================================
 
 procedure TJvIPAddressValues.Change;
@@ -2716,6 +2810,7 @@ begin
     Change;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
 begin
