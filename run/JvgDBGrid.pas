@@ -31,143 +31,146 @@ Known Issues:
 unit JvgDBGrid;
 
 interface
+
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, StdCtrls, ExtCtrls, grids, dbgrids, JVCLVer, ImgList;
+  Windows, Messages, Classes, Controls, Graphics,
+  StdCtrls, ExtCtrls, Grids, DBGrids, ImgList,
+  JVCLVer;
 
 type
 
   TJvgDBGrid = class(TDBGrid)
   private
-    FAlignment: TAlignment;
-    FAutoColumnSize: boolean;
-    FCaptionHeight: integer;
-    FBitmap, bmp: TBitmap;
+    FAboutJVCL: TJVCLAboutInfo;
+    FCaptionTextAlignment: TAlignment;
+    FAutoColumnSize: Boolean;
+    FCaptionHeight: Integer;
+    FBitmap: TBitmap;
+    FBmp: TBitmap;
     FImage: TImage;
     FGlyphs: TImageList;
-    FSingleGlyph: boolean;
-
-    GlyphsChangeLink: TChangeLink;
-    Glyph: TBitmap;
-    FAboutJVCL: TJVCLAboutInfo;
-    FFixedWidthCols: integer;
-    doRecalculateWidth: boolean;
-    procedure SetAlignment(Value: TAlignment);
-    procedure SetCaptionHeight(Value: integer);
+    FSingleGlyph: Boolean;
+    FGlyphsChangeLink: TChangeLink;
+    FGlyph: TBitmap;
+    FFixedWidthCols: Integer;
+    FRecalculateWidth: Boolean;
+    procedure SetCaptionTextAlignment(Value: TAlignment);
+    procedure SetCaptionHeight(Value: Integer);
     function GetBitmap: TBitmap;
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
     procedure SetGlyphs(Value: TImageList);
-    procedure SetSingleGlyph(Value: boolean);
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    procedure SetAutoColumnSize(const Value: boolean);
+    procedure SetSingleGlyph(Value: Boolean);
+    procedure SetAutoColumnSize(const Value: Boolean);
     procedure UpdateSize;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     procedure Loaded; override;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure GlyphsListChanged(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    AlignAll: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property CaptionTextAlignment: TAlignment read FAlignment write SetAlignment
-      default taCenter;
-    property CaptionHeight: integer read FCaptionHeight write SetCaptionHeight
-      default 17;
+    property AutoColumnSize: Boolean read FAutoColumnSize write SetAutoColumnSize default True;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
-    property Image: TImage read FImage write SetImage;
+    property CaptionHeight: Integer read FCaptionHeight write SetCaptionHeight default 17;
+    property CaptionTextAlignment: TAlignment read FCaptionTextAlignment write SetCaptionTextAlignment default taCenter;
+    property FixedWidthCols: Integer read FFixedWidthCols write FFixedWidthCols;
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
-    property SingleGlyph: boolean read FSingleGlyph write SetSingleGlyph
-      default false;
-    property AutoColumnSize: boolean read FAutoColumnSize write SetAutoColumnSize default true;
-    property FixedWidthCols: integer read FFixedWidthCols write FFixedWidthCols;
+    property Image: TImage read FImage write SetImage;
+    property SingleGlyph: Boolean read FSingleGlyph write SetSingleGlyph default False;
   end;
 
 implementation
 
+uses
+  JvgTypes, JvgUtils;
+
 constructor TJvgDBGrid.Create(AOwner: TComponent);
 begin
-  inherited;
-  FAlignment := taCenter;
+  inherited Create(AOwner);
+  FCaptionTextAlignment := taCenter;
   FCaptionHeight := 17;
-  FSingleGlyph := false;
-  Glyph := TBitmap.Create;
-  GlyphsChangeLink := TChangeLink.Create;
-  GlyphsChangeLink.OnChange := GlyphsListChanged;
-  // defaults
-  FAutoColumnSize := true;
+  FAutoColumnSize := True;
+  FSingleGlyph := False;
+  FGlyph := TBitmap.Create;
+  FGlyphsChangeLink := TChangeLink.Create;
+  FGlyphsChangeLink.OnChange := GlyphsListChanged;
 end;
 
 destructor TJvgDBGrid.Destroy;
 begin
-  if Assigned(FBitmap) then FBitmap.Free;
-  GlyphsChangeLink.Free;
-  Glyph.Free;
-  inherited;
+  FBitmap.Free;
+  FGlyphsChangeLink.Free;
+  FGlyph.Free;
+  inherited Destroy;
 end;
 
 procedure TJvgDBGrid.Loaded;
 begin
-  inherited;
-  if Assigned(FBitmap) and (not FBitmap.Empty) then Bmp := FBitmap;
+  inherited Loaded;
+  if Assigned(FBitmap) and (not FBitmap.Empty) then
+    FBmp := FBitmap;
   RowHeights[0] := FCaptionHeight;
-  if AutoColumnSize then UpdateSize;
+  if AutoColumnSize then
+    UpdateSize;
 end;
 
 procedure TJvgDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 const
-  aAlignments: array[TAlignment] of Longint = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  cAlignments: array [TAlignment] of Longint = (ES_LEFT, ES_RIGHT, ES_CENTER);
 var
   R: TRect;
   Str: string;
-  CaptionHeight_: integer;
-  x, x_, y, y_, IHeight, IWidth, Index: integer;
+  CaptionHeight_: Integer;
+  X, X1, Y, Y1, IHeight, IWidth, Index: Integer;
 begin
-
-  R := ARect;
   if (ARow > 0) and (ACol > 0) then
   begin
-    inherited;
-    exit;
+    inherited DrawCell(ACol, ARow, ARect, AState);
+    Exit;
   end;
+  R := ARect;
 
-  if IsItAFilledBitmap(bmp) then
+  if IsItAFilledBitmap(FBmp) then
   begin
-    x := r.Left;
-    y := r.top;
-    //    IHeight := r.bottom - r.top;
-    IWidth := r.Right - r.Left;
-    x_ := x;
-    y_ := y;
-    while x_ < r.right do
+    X := R.Left;
+    Y := R.Top;
+    //    IHeight := R.Bottom - R.Top;
+    IWidth := R.Right - R.Left;
+    X1 := X;
+    Y1 := Y;
+    while X1 < R.Right do
     begin
-      if x_ + IWidth > r.right then IWidth := r.right - x_;
-      while y_ < r.bottom do
+      if X1 + IWidth > R.Right then
+        IWidth := R.Right - X1;
+      while Y1 < R.Bottom do
       begin
-        IHeight := r.bottom - r.top;
-        if y_ + IHeight > r.bottom then IHeight := r.bottom - y_;
-        BitBlt(Canvas.Handle, x_, y_, min(IWidth, bmp.Width), min(IHeight, bmp.Height), bmp.Canvas.Handle, 0, 0,
-          SRCCOPY);
-        Inc(y_, min(IHeight, bmp.Height));
+        IHeight := R.Bottom - R.Top;
+        if Y1 + IHeight > R.Bottom then
+          IHeight := R.Bottom - Y1;
+        BitBlt(Canvas.Handle, X1, Y1, Min(IWidth, FBmp.Width), Min(IHeight, FBmp.Height),
+          FBmp.Canvas.Handle, 0, 0, SRCCOPY);
+        Inc(Y1, Min(IHeight, FBmp.Height));
       end;
-      Inc(x_, min(IWidth, bmp.Width));
-      y_ := y;
+      Inc(X1, Min(IWidth, FBmp.Width));
+      Y1 := Y;
     end;
 
     if ACol = 0 then
     begin
-      DrawBoxEx(Canvas.Handle, ARect, ALLGLSIDES, bvNone, bvRaised, false, 0, true);
-      exit;
+      DrawBoxEx(Canvas.Handle, ARect, ALLGLSIDES, bvNone, bvRaised, False, 0, True);
+      Exit;
     end;
   end;
 
   if (ARow <> 0) or (ACol < 1) then
   begin
-    inherited;
-    exit;
+    inherited DrawCell(ACol, ARow, ARect, AState);
+    Exit;
   end;
 
   Str := Columns[ACol - 1].Title.Caption;
@@ -176,8 +179,9 @@ begin
   InflateRect(ARect, -1, -1);
   R := ARect;
   InflateRect(R, 1, 1);
-  DrawBoxEx(Canvas.Handle, R, ALLGLSIDES, bvNone, bvRaised, false, Columns[ACol - 1].Title.Color, IsItAFilledBitmap(bmp)
-    or (Columns[ACol - 1].Title.Color = Color));
+  DrawBoxEx(Canvas.Handle, R, ALLGLSIDES, bvNone, bvRaised, False,
+    Columns[ACol - 1].Title.Color, IsItAFilledBitmap(FBmp) or
+      (Columns[ACol - 1].Title.Color = Color));
 
   if Assigned(FGlyphs) then
   begin
@@ -187,32 +191,30 @@ begin
       Index := ACol - 1;
     if Index < FGlyphs.Count then
     begin
-      FGlyphs.GetBitmap(Index, Glyph);
-      CreateBitmapExt(Canvas.Handle, Glyph,
-        R, 2, max(0, (R.Bottom - R.Top - Glyph.Height) div 2),
-        fwoNone, fdsDefault, true,
-        GetTransparentColor(Glyph, ftcLeftBottomPixel), 0
-        );
-      inc(ARect.Left, Glyph.Width);
+      FGlyphs.GetBitmap(Index, FGlyph);
+      CreateBitmapExt(Canvas.Handle, FGlyph,
+        R, 2, Max(0, (R.Bottom - R.Top - FGlyph.Height) div 2),
+        fwoNone, fdsDefault, True,
+        GetTransparentColor(FGlyph, ftcLeftBottomPixel), 0);
+      Inc(ARect.Left, FGlyph.Width);
       R := ARect;
     end;
   end;
 
   SetBkMode(Canvas.Handle, TRANSPARENT);
-  DrawText(Canvas.Handle, PChar(Str), -1, R, aAlignments[FAlignment] or DT_WORDBREAK or
-    DT_CALCRECT);
+  DrawText(Canvas.Handle, PChar(Str), -1, R,
+    cAlignments[FCaptionTextAlignment] or DT_WORDBREAK or DT_CALCRECT);
 
   if FCaptionHeight < 0 then
-    CaptionHeight_ := R.Bottom - R.top
+    CaptionHeight_ := R.Bottom - R.Top
   else
     CaptionHeight_ := FCaptionHeight;
 
   RowHeights[0] := CaptionHeight_;
 
-  ARect.Top := ARect.Top + max(0, (ARect.Bottom - R.Bottom) div 2);
-  DrawText(Canvas.Handle, PChar(Str), -1, ARect, aAlignments[FAlignment] or DT_WORDBREAK);
-  //              DT_CENTER or DT_WORDBREAK );
-
+  ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
+  DrawText(Canvas.Handle, PChar(Str), -1, ARect,
+    cAlignments[FCaptionTextAlignment] or DT_WORDBREAK);
 end;
 
 procedure TJvgDBGrid.GlyphsListChanged(Sender: TObject);
@@ -220,15 +222,16 @@ begin
   Repaint;
 end;
 
-//*****************************************_____________PROPERTY METHODS
-
-procedure TJvgDBGrid.SetAlignment(Value: TAlignment);
+procedure TJvgDBGrid.SetCaptionTextAlignment(Value: TAlignment);
 begin
-  FAlignment := Value;
-  Repaint;
+  if FCaptionTextAlignment <> Value then
+  begin
+    FCaptionTextAlignment := Value;
+    Repaint;
+  end;
 end;
 
-procedure TJvgDBGrid.SetCaptionHeight(Value: integer);
+procedure TJvgDBGrid.SetCaptionHeight(Value: Integer);
 begin
   FCaptionHeight := Value;
   if FCaptionHeight >= 0 then
@@ -239,21 +242,23 @@ end;
 
 function TJvgDBGrid.GetBitmap: TBitmap;
 begin
-  if not Assigned(FBitmap) then FBitmap := TBitmap.Create;
+  if not Assigned(FBitmap) then
+    FBitmap := TBitmap.Create;
   Result := FBitmap;
 end;
 
 procedure TJvgDBGrid.SetBitmap(Value: TBitmap);
 begin
-  if Assigned(FBitmap) then FBitmap.Free;
-  FBitmap := TBitmap.Create;
+  if not Assigned(FBitmap) then
+    FBitmap := TBitmap.Create;
   FBitmap.Assign(Value);
   if Assigned(Value) then
-    Bmp := FBitmap
-  else if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
+    FBmp := FBitmap
   else
-    Bmp := nil;
+  if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
+    FBmp := FImage.Picture.Bitmap
+  else
+    FBmp := nil;
   Invalidate;
 end;
 
@@ -261,80 +266,86 @@ procedure TJvgDBGrid.SetImage(Value: TImage);
 begin
   FImage := Value;
   if Assigned(FImage) and Assigned(FImage.Picture) and Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
-  else if Assigned(FBitmap) then
-    Bmp := FBitmap
+    FBmp := FImage.Picture.Bitmap
   else
-    Bmp := nil;
+  if Assigned(FBitmap) then
+    FBmp := FBitmap
+  else
+    FBmp := nil;
   Invalidate;
 end;
 
 procedure TJvgDBGrid.SetGlyphs(Value: TImageList);
 begin
-  if Assigned(FGlyphs) then FGlyphs.UnregisterChanges(GlyphsChangeLink);
+  if Assigned(FGlyphs) then
+    FGlyphs.UnregisterChanges(FGlyphsChangeLink);
   FGlyphs := Value;
   if Assigned(FGlyphs) then
-    FGlyphs.RegisterChanges(GlyphsChangeLink);
-
+    FGlyphs.RegisterChanges(FGlyphsChangeLink);
 end;
 
-procedure TJvgDBGrid.SetSingleGlyph(Value: boolean);
+procedure TJvgDBGrid.SetSingleGlyph(Value: Boolean);
 begin
   FSingleGlyph := Value;
   Repaint;
 end;
-//-------------------------------------------------------------------------------
 
-procedure TJvgDBGrid.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvgDBGrid.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  if Assigned(Glyphs) and (AComponent = Glyphs) and (Operation = opRemove) then
+    Glyphs := nil;
+  if Assigned(Image) and (AComponent = Image) and (Operation = opRemove) then
+    Image := nil;
   inherited Notification(AComponent, Operation);
-  if Assigned(Glyphs) and (AComponent = Glyphs) and (Operation = opRemove) then Glyphs := nil;
-  if Assigned(Image) and (AComponent = Image) and (Operation = opRemove) then Image := nil;
 end;
 
 procedure TJvgDBGrid.UpdateSize;
 var
-  Message: TWMSize;
+  Msg: TWMSize;
 begin
-  WMSize(Message);
+  WMSize(Msg);
 end;
 
-procedure TJvgDBGrid.SetAutoColumnSize(const Value: boolean);
+procedure TJvgDBGrid.SetAutoColumnSize(const Value: Boolean);
 begin
-  if FAutoColumnSize = Value then exit;
-  FAutoColumnSize := Value;
-  UpdateSize;
-end;
-
-procedure TJvgDBGrid.WMSize(var Message: TWMSize);
-var
-  i, TotalWidth, FreeClientWidth: integer;
-begin
-  if Message.Msg <> 0 then inherited;
-
-  if doRecalculateWidth then exit;
-  doRecalculateWidth := true;
-
-  try
-    if (not AutoColumnSize) or (Width = 0) then exit;
-    TotalWidth := 0;
-    for i := FixedWidthCols to Columns.Count - 1 do
-      inc(TotalWidth, Columns[i].Width + 1);
-    FreeClientWidth := ClientWidth - 2;
-    if dgIndicator in Options then dec(FreeClientWidth, 10);
-    dec(FreeClientWidth, Columns.Count);
-    if ScrollBars in [ssVertical, ssBoth] then dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL) + 2);
-
-    for i := 0 to FixedWidthCols - 1 do
-      dec(FreeClientWidth, Columns[i].Width);
-
-    for i := FixedWidthCols to Columns.Count - 1 do
-      Columns[i].Width := MulDiv(Columns[i].Width, FreeClientWidth, TotalWidth) - 1;
-  finally
-    doRecalculateWidth := false;
+  if FAutoColumnSize <> Value then
+  begin
+    FAutoColumnSize := Value;
+    UpdateSize;
   end;
+end;
 
+procedure TJvgDBGrid.WMSize(var Msg: TWMSize);
+var
+  I, TotalWidth, FreeClientWidth: Integer;
+begin
+  if Msg.Msg <> 0 then
+    inherited;
+
+  if FRecalculateWidth then
+    Exit;
+  FRecalculateWidth := True;
+  try
+    if (not AutoColumnSize) or (Width = 0) then
+      Exit;
+    TotalWidth := 0;
+    for I := FixedWidthCols to Columns.Count - 1 do
+      Inc(TotalWidth, Columns[I].Width + 1);
+    FreeClientWidth := ClientWidth - 2;
+    if dgIndicator in Options then
+      Dec(FreeClientWidth, 10);
+    Dec(FreeClientWidth, Columns.Count);
+    if ScrollBars in [ssVertical, ssBoth] then
+      Dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL) + 2);
+
+    for I := 0 to FixedWidthCols - 1 do
+      Dec(FreeClientWidth, Columns[I].Width);
+
+    for I := FixedWidthCols to Columns.Count - 1 do
+      Columns[I].Width := MulDiv(Columns[I].Width, FreeClientWidth, TotalWidth) - 1;
+  finally
+    FRecalculateWidth := False;
+  end;
 end;
 
 end.

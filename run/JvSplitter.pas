@@ -44,16 +44,15 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     function GetParentBackground: Boolean;
-  protected
-    procedure SetParentBackground(Value: Boolean); virtual;
-  {$ENDIF JVCLThemesEnabled}
+    {$ENDIF JVCLThemesEnabled}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     {$IFDEF JVCLThemesEnabled}
+    procedure SetParentBackground(Value: Boolean); virtual;
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabled}
   public

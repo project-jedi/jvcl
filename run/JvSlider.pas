@@ -37,6 +37,7 @@ uses
 type
   TJvSlider = class(TCustomControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FImageRuler: TBitmap;
     FImageThumb: TBitmap;
     FThumb1: TBitmap;
@@ -55,7 +56,6 @@ type
     FOnBeginChange: TNotifyEvent;
     FAutoSize: Boolean;
     FTimer: TTimer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetImageThumb(Value: TBitmap);
     procedure SetImageRuler(Value: TBitmap);
     procedure ThumbChanged(Sender: TObject);
@@ -65,15 +65,14 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
@@ -162,7 +161,7 @@ begin
   Canvas.StretchDraw(T, FImageRuler);
   if FHorizontal then
   begin
-    //horizontal
+    // horizontal
     T.Left := Round(FDifference * FPosition);
     if Height - FThumb1.Height < 0 then
       T.Top := 0
@@ -174,7 +173,7 @@ begin
   end
   else
   begin
-    //vertical
+    // vertical
     if Width - FThumb1.Width < 0 then
       T.Left := 0
     else
@@ -213,7 +212,7 @@ end;
 
 procedure TJvSlider.Calculate;
 begin
-  // calculate the difference between pixel
+  // calculate the difference between pixels
   if FHorizontal then
     FDifference := (Width - FThumb1.Width) / FMaximum
   else
@@ -347,8 +346,8 @@ begin
   FImageRuler.Assign(Value);
   if (Value.Width > 0) and (Value.Height > 0) and FAutoSize then
   begin
-    Self.Height := Value.Height;
-    Self.Width := Value.Width;
+    Height := Value.Height;
+    Width := Value.Width;
   end;
   Paint;
   Calculate;

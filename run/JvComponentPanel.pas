@@ -45,8 +45,8 @@ type
 
   TJvComponentPanel = class(TCustomPanel)
   private
-    FButtonW: Integer;
-    FButtonH: Integer;
+    FButtonWidth: Integer;
+    FButtonHeight: Integer;
     FButtons: TList;
     FOnClick: TButtonClick;
     FOnDblClick: TButtonClick;
@@ -57,21 +57,19 @@ type
     FButtonRight: TJvNoFrameButton;
     FFirstVisible: Integer;
     FLockUpdate: Integer;
-    {***** For property the beginning [translated] *****}
+    FSelectButton: TSpeedButton;
     function GetButton(Index: Integer): TSpeedButton;
     function GetButtonCount: Integer;
     procedure SetButtonCount(AButtonCount: Integer);
-    procedure SetButtonW(AButtonW: Integer);
-    procedure SetButtonH(AButtonH: Integer);
+    procedure SetButtonWidth(AButtonWidth: Integer);
+    procedure SetButtonHeight(AButtonHeight: Integer);
     procedure SetFirstVisible(AButton: Integer);
-    {##### For property the end [translated] #####}
-  protected
-    FSelectButton: TSpeedButton;
-    procedure OnMoveClick(Sender: TObject);
-    procedure OnBClick(Sender: TObject);
-    procedure OnBDblClick(Sender: TObject);
+    procedure BtnClick(Sender: TObject);
+    procedure BtnDblClick(Sender: TObject);
+    procedure MoveClick(Sender: TObject);
     procedure WMSetText(var Msg: TWMSetText); message WM_SETTEXT;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+  protected
     procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -87,9 +85,9 @@ type
     property Align;
     property OnClick: TButtonClick read FOnClick write FOnClick;
     property OnDblClick: TButtonClick read FOnDblClick write FOnDblClick;
-    property ButtonWidth: Integer read FButtonW write SetButtonW;
-    property ButtonHeight: Integer read FButtonH write SetButtonH;
-    property ButtonCount: Integer read GetButtonCount write SetButtonCount;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 28;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 28;
+    property ButtonCount: Integer read GetButtonCount write SetButtonCount default 0;
     property Anchors;
     property AutoSize;
     property BiDiMode;
@@ -111,7 +109,7 @@ type
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvTypes;
 
 {$R ..\resources\JvComponentPanel.res}
 
@@ -121,8 +119,8 @@ begin
   BevelOuter := bvNone;
   FButtons := TList.Create;
   FFirstVisible := 0;
-  FButtonW := 28;
-  FButtonH := 28;
+  FButtonWidth := 28;
+  FButtonHeight := 28;
  { FButtonLeft    := TSpeedButton.Create(Self);
   FButtonRight   := TSpeedButton.Create(Self); }
   FButtonLeft := TJvNoFrameButton.Create(Self);
@@ -138,7 +136,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'RACPLEFT');
     NumGlyphs := 2;
     // Layout := blGlyphRight;
-    OnClick := OnMoveClick;
+    OnClick := MoveClick;
   end;
   with FButtonRight do
   begin
@@ -150,7 +148,7 @@ begin
     Glyph.LoadFromResourceName(HInstance, 'RACPRIGHT');
     NumGlyphs := 2;
    // Layout := blGlyphLeft;
-    OnClick := OnMoveClick;
+    OnClick := MoveClick;
   end;
   with FButtonPointer do
   begin
@@ -159,7 +157,7 @@ begin
     Top := 0;
     Glyph.LoadFromResourceName(HInstance, 'RACPPOINTER');
     GroupIndex := 1;
-    OnClick := OnBClick;
+    OnClick := BtnClick;
   end;
   SetMainButton;
 end;
@@ -171,9 +169,6 @@ begin
   for I := 0 to FButtons.Count - 1 do
     TSpeedButton(FButtons[I]).Free;
   FButtons.Free;
-  FButtonPointer.Free;
-  FButtonRight.Free;
-  FButtonLeft.Free;
   inherited Destroy;
 end;
 
@@ -193,7 +188,7 @@ begin
     TSpeedButton(FButtons[I]).Free;
   FButtons.Clear;
   FFirstVisible := 0;
-  SetButtonCount(TmpNum);
+  ButtonCount := TmpNum;
 end;
 
 procedure TJvComponentPanel.SetMainButton;
@@ -219,8 +214,9 @@ procedure TJvComponentPanel.SetButtonCount(AButtonCount: Integer);
 var
   TmpButton: TSpeedButton;
 begin
-  if (AButtonCount < 0) or (AButtonCount > 100) then
-    raise EJVCLException.Create(RsEInvalidButtonCount);
+  // (rom) removed the exception and the limit of 100 buttons
+  if AButtonCount < 0 then
+    Exit;
   BeginUpdate;
   try
     SetMainButton;
@@ -238,8 +234,8 @@ begin
         Parent := Self;
         Top := 0;
         GroupIndex := 1;
-        OnClick := OnBClick;
-        OnDblClick := OnBDblClick;
+        OnClick := BtnClick;
+        OnDblClick := BtnDblClick;
       end;
       FButtons.Add(TmpButton);
     end;
@@ -248,25 +244,25 @@ begin
   end;
 end;
 
-procedure TJvComponentPanel.SetButtonW(AButtonW: Integer);
+procedure TJvComponentPanel.SetButtonWidth(AButtonWidth: Integer);
 begin
-  if FButtonW <> AButtonW then
+  if FButtonWidth <> AButtonWidth then
   begin
-    FButtonW := AButtonW;
+    FButtonWidth := AButtonWidth;
     Resize;
   end;
 end;
 
-procedure TJvComponentPanel.SetButtonH(AButtonH: Integer);
+procedure TJvComponentPanel.SetButtonHeight(AButtonHeight: Integer);
 begin
-  if FButtonH <> AButtonH then
+  if FButtonHeight <> AButtonHeight then
   begin
-    FButtonH := AButtonH;
+    FButtonHeight := AButtonHeight;
     Resize;
   end;
 end;
 
-procedure TJvComponentPanel.OnMoveClick(Sender: TObject);
+procedure TJvComponentPanel.MoveClick(Sender: TObject);
 begin
   case TSpeedButton(Sender).Tag of
     0:
@@ -277,7 +273,7 @@ begin
   Resize;
 end;
 
-procedure TJvComponentPanel.OnBClick(Sender: TObject);
+procedure TJvComponentPanel.BtnClick(Sender: TObject);
 begin
   if FSelectButton <> Sender then
   begin
@@ -287,7 +283,7 @@ begin
   end;
 end;
 
-procedure TJvComponentPanel.OnBDblClick(Sender: TObject);
+procedure TJvComponentPanel.BtnDblClick(Sender: TObject);
 begin
   if Assigned(FOnDblClick) then
     FOnDblClick(Sender, FButtons.IndexOf(Sender));
@@ -310,15 +306,15 @@ var
   VisibleCount: Integer;
   I: Integer;
 begin
-  Height := FButtonH;
-  FButtonPointer.Height := FButtonH;
-  FButtonPointer.Width := FButtonW;
-  FButtonLeft.Height := FButtonH;
-  FButtonRight.Height := FButtonH;
-  VisibleCount := (Width - (12 + 12 + FButtonW)) div FButtonW;
+  Height := FButtonHeight;
+  FButtonPointer.Height := FButtonHeight;
+  FButtonPointer.Width := FButtonWidth;
+  FButtonLeft.Height := FButtonHeight;
+  FButtonRight.Height := FButtonHeight;
+  VisibleCount := (Width - (12 + 12 + FButtonWidth)) div FButtonWidth;
   FButtonPointer.Left := 0;
-  FButtonLeft.Left := FButtonW + 6;
-  FButtonRight.Left := (FButtonW + 12 + 6) + VisibleCount * FButtonW;
+  FButtonLeft.Left := FButtonWidth + 6;
+  FButtonRight.Left := (FButtonWidth + 12 + 6) + VisibleCount * FButtonWidth;
   if FFirstVisible = 0 then
     FButtonLeft.Enabled := False
   else
@@ -329,10 +325,10 @@ begin
     FButtonRight.Enabled := False;
   for I := 0 to FButtons.Count - 1 do
   begin
-    TSpeedButton(FButtons[I]).Width := FButtonW;
-    TSpeedButton(FButtons[I]).Height := FButtonH;
+    TSpeedButton(FButtons[I]).Width := FButtonWidth;
+    TSpeedButton(FButtons[I]).Height := FButtonHeight;
     if (I >= FFirstVisible) and (I < FFirstVisible + VisibleCount) then
-      TSpeedButton(FButtons[I]).Left := (FButtonW + 12 + 6) + (I - FFirstVisible) * FButtonW
+      TSpeedButton(FButtons[I]).Left := (FButtonWidth + 12 + 6) + (I - FFirstVisible) * FButtonWidth
     else
       TSpeedButton(FButtons[I]).Left := -100;
   end;

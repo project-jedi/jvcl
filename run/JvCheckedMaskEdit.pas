@@ -21,25 +21,22 @@ Last Modified: 2002-12-24
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A simple TCustomMaskEdit descendant with an optional checkbox control in front
+  of the text area.
+
 Known Issues:
+ - BiDi support (checkbox should probably be on the right for RTL)
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ A simple TCustomMaskEdit descendant with an optional checkbox control in front
- of the text area.
-
- Known issues / not (yet) implemented features:
-
- - BiDi support (checkbox should probably be on the right for RTL)
-}
 
 unit JvCheckedMaskEdit;
 
 interface
 
 uses
-  Classes, Controls, Graphics, StdCtrls, Messages, Mask,
+  Classes, Messages, Controls, Graphics, StdCtrls, Mask,
   JvMaskEdit;
 
 type
@@ -49,7 +46,7 @@ type
     FInternalChange: Boolean;
     FOnCheckClick: TNotifyEvent;
     procedure CheckClick(Sender: TObject);
-    function GetShowCheckbox: Boolean;
+    function GetShowCheckBox: Boolean;
   protected
     procedure DoCheckClick; dynamic;
     procedure DoCtl3DChanged; override;
@@ -58,7 +55,7 @@ type
 
     function GetChecked: Boolean; virtual;
     procedure SetChecked(const AValue: Boolean); virtual;
-    procedure SetShowCheckbox(const AValue: Boolean); virtual;
+    procedure SetShowCheckBox(const AValue: Boolean); virtual;
 
     procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
     procedure UpdateControls; dynamic;
@@ -74,7 +71,7 @@ type
     function InternalChanging: Boolean;
   protected
     property Checked: Boolean read GetChecked write SetChecked;
-    property ShowCheckbox: Boolean read GetShowCheckbox write SetShowCheckbox default False;
+    property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
   public
     constructor Create(AOwner: TComponent); override;
@@ -116,7 +113,7 @@ type
     property ProtectPassword;
     property ReadOnly;
     property ShowHint;
-    property ShowCheckbox;
+    property ShowCheckBox;
     property Text;
     property TabOrder;
     property Visible;
@@ -154,7 +151,7 @@ uses
 
 constructor TJvCustomCheckedMaskEdit.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FCheck := nil;
   FInternalChange := False;
 
@@ -178,22 +175,22 @@ end;
 
 destructor TJvCustomCheckedMaskEdit.Destroy;
 begin
-  if ShowCheckbox then
+  if ShowCheckBox then
     FCheck.OnClick := nil;
   inherited Destroy;
 end;
 
 function TJvCustomCheckedMaskEdit.GetChecked: Boolean;
 begin
-  if ShowCheckbox then
+  if ShowCheckBox then
     Result := FCheck.Checked
   else
-    Result := False; //should this really be the default?
+    Result := False; // should this really be the default?
 end;
 
 procedure TJvCustomCheckedMaskEdit.SetChecked(const AValue: Boolean);
 begin
-  if ShowCheckbox and (FCheck.Checked <> AValue) then
+  if ShowCheckBox and (FCheck.Checked <> AValue) then
   begin
     FCheck.Checked := AValue;
     Change;
@@ -203,16 +200,16 @@ begin
           checkbox is instantiated.}
 end;
 
-function TJvCustomCheckedMaskEdit.GetShowCheckbox: Boolean;
+function TJvCustomCheckedMaskEdit.GetShowCheckBox: Boolean;
 begin
   Result := Assigned(FCheck);
 end;
 
-procedure TJvCustomCheckedMaskEdit.SetShowCheckbox(const AValue: Boolean);
+procedure TJvCustomCheckedMaskEdit.SetShowCheckBox(const AValue: Boolean);
 begin
-  {The checkbox will only get instantiated when ShowCheckbox is set to True;
+  {The checkbox will only get instantiated when ShowCheckBox is set to True;
    setting it to false frees the checkbox.}
-  if ShowCheckbox <> AValue then
+  if ShowCheckBox <> AValue then
   begin
     if AValue then
     begin
@@ -220,7 +217,7 @@ begin
       with FCheck do
       begin
         Parent := Self;
-//        Align:= alLeft;
+        // Align := alLeft;
         if HotTrack then
           Left := 1;
         Top := 1;
@@ -241,15 +238,15 @@ end;
 
 procedure TJvCustomCheckedMaskEdit.UpdateControls;
 var
-  lLeft, lRight: Integer;
+  LLeft, LRight: Integer;
 begin
   {UpdateControls gets called whenever the layout of child controls changes.
    It uses GetInternalMargins to determine the left and right margins of the
    actual text area.}
-  lLeft := 0;
-  lRight := 0;
-  GetInternalMargins(lLeft, lRight);
-  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(lLeft, lRight));
+  LLeft := 0;
+  LRight := 0;
+  GetInternalMargins(LLeft, LRight);
+  SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
 end;
 
 procedure TJvCustomCheckedMaskEdit.GetInternalMargins( var ALeft, ARight: Integer);
@@ -274,7 +271,6 @@ begin
   inherited Resize;
   UpdateControls;
 end;
-
 
 {Begin/EndInternalChange and InternalChanging implement a simple locking
  mechanism to prevent change processing and display updates during internal
@@ -311,15 +307,15 @@ end;
 
 procedure TJvCustomCheckedMaskEdit.DoCheckClick;
 begin
-  if Assigned(OnCheckClick) then
-    OnCheckClick(Self);
+  if Assigned(FOnCheckClick) then
+    FOnCheckClick(Self);
 end;
 
 procedure TJvCustomCheckedMaskEdit.DoCtl3DChanged;
 begin
   inherited DoCtl3DChanged;
-  { propagate to child conrols: }
-  if ShowCheckbox then
+  { propagate to child controls: }
+  if ShowCheckBox then
   begin
     FCheck.Ctl3D := Self.Ctl3D;
     // adjust layout quirks:
@@ -334,7 +330,7 @@ end;
 procedure TJvCustomCheckedMaskEdit.DoEnabledChanged;
 begin
   { propagate to child controls: }
-  if ShowCheckbox then
+  if ShowCheckBox then
     FCheck.Enabled := Self.Enabled;
   inherited DoEnabledChanged;
 end;

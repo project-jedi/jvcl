@@ -31,6 +31,7 @@ unit JvDdeCmd;
 interface
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 uses
   DdeMan, Messages, SysUtils, Classes, JclBase, Forms,
@@ -56,6 +57,7 @@ type
     FOnBusyChanged: TJvADCBusyEvent;
     FOnExecCommand: TJvADCMacroEvent;
     FOnExecParsedCmd: TJvADCParsedEvent;
+    function GetCommands: TStrings;
     procedure SetEnabled(Value: Boolean);
     procedure SetIgnoreAppBusy(Value: Boolean);
     procedure SetModalState(Value: Boolean);
@@ -69,9 +71,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Commands: TStringList read FCommands;
+    property Commands: TStrings read GetCommands;
   published
-    property CorrectParams: Boolean read FCorrectParams write FCorrectParams;
+    property CorrectParams: Boolean read FCorrectParams write FCorrectParams default True;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property IgnoreAppBusy: Boolean read FIgnoreAppBusy write SetIgnoreAppBusy default False;
     property OnBusyChanged: TJvADCBusyEvent read FOnBusyChanged write FOnBusyChanged;
@@ -128,7 +130,7 @@ destructor TAppDdeMgr.Destroy;
 begin
   FreeAndNil(Components);
   FreeAndNil(Commands);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TAppDdeMgr.AddComponent(AComponent: TComponent);
@@ -167,6 +169,7 @@ begin
   inherited Create(AOwner);
   FCorrectParams := True;
   FEnabled := True;
+  FIgnoreAppBusy := False;
   FModalState := False;
   FCommands := TStringList.Create;
   if not (csDesigning in ComponentState) then
@@ -185,6 +188,11 @@ begin
   end;
   FreeAndNil(FCommands);
   inherited Destroy;
+end;
+
+function TJvAppDdeCmd.GetCommands: TStrings;
+begin
+  Result := FCommands;
 end;
 
 procedure TJvAppDdeCmd.SetEnabled(Value: Boolean);
@@ -244,8 +252,6 @@ begin
     end;
 end;
 
-{$HINTS OFF}
-
 procedure TJvAppDdeCmd.ExecuteParsedCommands(const CmdStr: string);
 var
   I: Integer;
@@ -285,7 +291,7 @@ begin
   CmdSPos := 0;
   CmdEPos := 0;
   ParamsSPos := 0;
-  ParamsEPos := 0;
+  // ParamsEPos := 0;
   Params := TStringList.Create;
   try
     S := Trim(CmdStr);
@@ -301,7 +307,7 @@ begin
         CmdSPos := I + 1;
         CmdEPos := 0;
         ParamsSPos := 0;
-        ParamsEPos := 0;
+        // ParamsEPos := 0;
         Params.Clear;
       end
       else
