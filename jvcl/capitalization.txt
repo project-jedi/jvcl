@@ -51,7 +51,6 @@ JvHtmlParserEditor.pas -HTML
 JvaScrollText.pas
 JvxSlider.pas
 JvxCtrls.pas
-JvxClock.pas
 
 
 * Consistently postfix forms/designers/property editors.
