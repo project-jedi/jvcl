@@ -36,12 +36,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Menus, ShellApi, JvTypes, JvComponent
  {$IFDEF Delphi6_UP}
-  , DateUtils
-{$ENDIF}
-
+  ,DateUtils
+ {$ENDIF}
   ;
-
-// (rom) Heavily modified this one. Mouse and Click events completely redesigned.
 
 type
   TBalloonType = (btNone, btError, btInfo, btWarning);
@@ -63,6 +60,7 @@ type
 
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
+  TAnimateEvent = procedure (Sender: TObject; const ImageIndex: Integer) of object; 
   TJvTrayIcon = class(TJvComponent)
   private
     FActive: Boolean;
@@ -92,27 +90,34 @@ type
     FTime: TDateTime;
     FTimeDelay: Integer;
     FOldTray: HWND;
+    FOnAnimate: TAnimateEvent;
+    procedure OnAnimateTimer(Sender: TObject);
+    procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
     procedure SetHint(Value: string);
     procedure SetIcon(Icon: TIcon);
     procedure SetVisible(Value: Boolean);
-    procedure OnAnimate(Sender: TObject);
     procedure SetAnimated(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetImgList(const Value: TImageList);
-    procedure IconChanged(Sender: TObject);
     procedure SetTask(const Value: Boolean);
+    procedure SetNumber(const Value: Integer);
+  protected
+    procedure DoMouseMove(Shift: TShiftState;X, Y: Integer);
+    procedure DoMouseDown(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
+    procedure DoMouseUp(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
+    procedure DoDoubleClick(Button: TMouseButton;Shift: TShiftState;X, Y: Integer);
   public
-    procedure WndProc(var Mesg: TMessage);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DoCheckCrash; //sb
+    procedure DoCheckCrash;
+    procedure WndProc(var Mesg: TMessage);
   published
     procedure HideApplication;
     procedure ShowApplication;
     procedure BalloonHint(Title,Value: string;BalloonType:
-      TBalloonType = btNone;Delay: Integer = 5000); //sb
-    function AcceptBalloons: Boolean; //sb
+      TBalloonType = btNone;Delay: Integer = 5000);
+    function AcceptBalloons: Boolean;
 
     property Active: Boolean read FActive write SetActive default False;
     property Icon: TIcon read FIcon write SetIcon;
@@ -120,19 +125,21 @@ type
     property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
     property ApplicationVisible: Boolean read FVisible write SetVisible default True;
     property Animated: Boolean read FAnimated write SetAnimated default False;
+    property IconIndex: Integer read FNumber write SetNumber;
     property Icons: TImageList read FImgList write SetImgList;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
     property VisibleInTaskList: Boolean read FTask write SetTask default True;
 
+    property OnAnimate: TAnimateEvent read FOnAnimate write FOnAnimate;
     property OnClick: TMouseEvent read FOnClick write FOnClick;
     property OnDblClick: TMouseEvent read FOnDblClick write FOnDblClick;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
-    property OnBalloonShow:TNotifyEvent read FOnBalloonShow write FOnBalloonShow; //sb
-    property OnBalloonHide:TNotifyEvent read FOnBalloonHide write FOnBalloonHide; //sb
-    property OnBalloonClick:TNotifyEvent read FOnBalloonClick write FOnBalloonClick; //sb
+    property OnBalloonShow:TNotifyEvent read FOnBalloonShow write FOnBalloonShow;
+    property OnBalloonHide:TNotifyEvent read FOnBalloonHide write FOnBalloonHide;
+    property OnBalloonClick:TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
   end;
 
 implementation
@@ -162,7 +169,7 @@ const
   NIIF_WARNING                  = $00000002;
   NIIF_ERROR                    = $00000003;
 
-  NIN_SELECT                    = (WM_USER + 2);
+  NIN_SELECT                    = (WM_USER + 0);
   NINF_KEY                      = 1;
   NIN_KEYSELECT                 = (NIN_SELECT or NINF_KEY);
 
@@ -221,11 +228,11 @@ begin
     FIcon.Assign(Application.Icon);
   FIcon.OnChange := IconChanged;
   FVisible := True;
- {$IFDEF Delphi6_UP}
+  {$IFDEF Delphi6_UP}
   FHandle := Classes.AllocateHWnd(WndProc);
-{$ELSE}
+  {$ELSE}
   FHandle := AllocateHWnd(WndProc);
-{$ENDIF}
+  {$ENDIF}
 
   FAnimated := False;
   FDelay := 100;
@@ -233,7 +240,7 @@ begin
   FTimer := TTimer.Create(Self);
   FTImer.Interval := FDelay;
   FTimer.Enabled := FAnimated;
-  FTimer.OnTimer := OnAnimate;
+  FTimer.OnTimer := OnAnimateTimer;
   FActive := False;
   FTask := True;
 
@@ -274,9 +281,9 @@ begin
   FIcon.Free;
  {$IFDEF Delphi6_UP}
   Classes.DeallocateHWnd(FHandle);
-{$ELSE}
+  {$ELSE}
   DeallocateHWnd(FHandle);
-{$ENDIF}
+  {$ENDIF}
 
   if not (csDesigning in ComponentState) then
     if FDllHandle <> 0 then
@@ -312,63 +319,29 @@ begin
           Include(ShState, ssAlt);
         case LParam of
           WM_MOUSEMOVE:
-            begin
-              if Assigned(FOnMouseMove) then
-                FOnMouseMove(Self, ShState, po.x, po.y);
-            end;
+            DoMouseMove(shState,po.x,po.y);
+
           WM_LBUTTONDOWN:
-            begin
-              if Assigned(FOnMouseDown) then
-                FOnMouseDown(Self, mbLeft, ShState, po.x, po.y);
-              if FDropDown <> nil then
-              begin
-                SetForegroundWindow(FHandle);
-                FDropDown.Popup(po.x, po.y);
-                PostMessage(FHandle, WM_NULL, 0, 0);
-              end;
-            end;
-          WM_LBUTTONUP:
-            begin
-              if Assigned(FOnMouseUp) then
-                FOnMouseUp(Self, mbLeft, ShState, po.x, po.y);
-              if Assigned(FOnClick) then
-                FOnClick(Self, mbLeft, ShState, po.x, po.y);
-            end;
-          WM_LBUTTONDBLCLK:
-            if Assigned(FOnDblClick) then
-              FOnDblClick(Self, mbLeft, ShState, po.x, po.y);
+            DoMouseDown(mbLeft, ShState, po.X, po.Y);
           WM_RBUTTONDOWN:
-            if Assigned(FOnMouseDown) then
-              FOnMouseDown(Self, mbRight, ShState, po.x, po.y);
-          WM_RBUTTONUP:
-            begin
-              if FPopupMenu <> nil then
-              begin
-                SetForegroundWindow(FHandle);
-                FPopupMenu.Popup(po.x, po.y);
-                PostMessage(FHandle, WM_NULL, 0, 0);
-              end;
-              if Assigned(FOnMouseUp) then
-                FOnMouseUp(Self, mbRight, ShState, po.x, po.y);
-              if Assigned(FOnClick) then
-                FOnClick(Self, mbRight, ShState, po.x, po.y);
-            end;
-          WM_RBUTTONDBLCLK:
-            if Assigned(FOnDblClick) then
-              FOnDblClick(Self, mbRight, ShState, po.x, po.y);
+            DoMouseDown(mbRight, ShState, po.X, po.Y);
           WM_MBUTTONDOWN:
-            if Assigned(FOnMouseDown) then
-              FOnMouseDown(Self, mbMiddle, ShState, po.x, po.y);
+            DoMouseDown(mbMiddle, ShState, po.X, po.Y);
+
+          WM_LBUTTONUP:
+            DoMouseUp(mbLeft, ShState, po.x, po.y);
           WM_MBUTTONUP:
-            begin
-              if Assigned(FOnMouseUp) then
-                FOnMouseUp(Self, mbMiddle, ShState, po.x, po.y);
-              if Assigned(FOnClick) then
-                FOnClick(Self, mbMiddle, ShState, po.x, po.y);
-            end;
+            DoMouseUp(mbMiddle, ShState, po.x, po.y);
+          WM_RBUTTONUP,NIN_KEYSELECT: //Mimics previous versions of shell32.dll
+            DoMouseUp(mbRight, ShState, po.x, po.y);
+
+          WM_LBUTTONDBLCLK:
+            DoDoubleClick(mbLeft, ShState, po.x, po.y);
+          WM_RBUTTONDBLCLK:
+            DoDoubleClick(mbRight, ShState, po.x, po.y);
           WM_MBUTTONDBLCLK:
-            if Assigned(FOnDblClick) then
-              FOnDblClick(Self, mbMiddle, ShState, po.x, po.y);
+            DoDoubleClick(mbMiddle, ShState, po.x, po.y);
+
           NIN_BALLOONHIDE: //sb
             begin
               if Assigned(FOnBalloonHide) then
@@ -493,6 +466,7 @@ end;
 
 procedure TJvTrayIcon.HideApplication;
 begin
+  Application.Minimize;
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
@@ -501,21 +475,21 @@ end;
 procedure TJvTrayIcon.ShowApplication;
 begin
   ShowWindow(Application.Handle, SW_SHOW);
+  Application.Restore;
 end;
 
 {**************************************************}
 
-procedure TJvTrayIcon.OnAnimate(Sender: TObject);
-var
-  ico: TIcon;
+procedure TJvTrayIcon.OnAnimateTimer(Sender: TObject);
 begin
-  if (FImglist <> nil) and (FImgList.Count > 0) and FActive then
+  if (FActive) then
   begin
-    ico := TIcon.Create;
-    FNumber := (FNumber + 1) mod FimgList.Count;
-    FImgList.GetIcon(FNumber, ico);
-    SetIcon(ico);
-    ico.Free;
+    if IconIndex<0 then
+      IconIndex := 0
+    else
+      IconIndex := (IconIndex + 1) mod FimgList.Count;
+    if Assigned(FOnAnimate) then
+      FOnAnimate(self, IconIndex);
   end;
 end;
 
@@ -590,6 +564,88 @@ begin
       Active := true;
     end;
   end;
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.DoMouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(FOnMouseMove) then
+    FOnMouseMove(Self, Shift, X, Y);
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if Assigned(FOnMouseDown) then
+    FOnMouseDown(Self, Button, Shift, X, Y);
+  if (Button = mbLeft) and (FDropDown <> nil) then
+  begin
+    SetForegroundWindow(FHandle);
+    FDropDown.Popup(X, Y);
+    PostMessage(FHandle, WM_NULL, 0, 0);
+  end;
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.DoMouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if (Button = mbRight) and (FPopupMenu <> nil) then
+  begin
+    SetForegroundWindow(FHandle);
+    FPopupMenu.Popup(X, Y);
+    PostMessage(FHandle, WM_NULL, 0, 0);
+  end;
+  if Assigned(FOnMouseUp) then
+    FOnMouseUp(Self, Button, Shift, X, Y);
+  if Assigned(FOnClick) then
+    FOnClick(Self, Button, Shift, X, Y);
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  i: Integer;
+begin
+  if Assigned(FOnDblClick) then
+    FOnDblClick(Self, Button, Shift, X, Y)
+  else if (Button = mbLeft) and (FPopupMenu <> nil) then
+  begin
+    for i := 0 to FPopupMenu.Items.Count - 1 do
+      if FPopupMenu.Items[i].Default then
+      begin
+        FPopupMenu.Items[i].Click;
+        Break;
+      end;
+  end;
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.SetNumber(const Value: Integer);
+var
+  ico: TIcon;
+begin
+  FNumber := Value;
+  if (FImglist <> nil) and (FNumber>=0) and (FNumber<FImgList.Count) then
+  begin
+    ico := TIcon.Create;
+    try
+      Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+      FImgList.GetIcon(FNumber, ico);
+      SetIcon(ico);
+    finally
+      ico.Free;
+    end;
+  end
+  else
+    FNumber := -1;
 end;
 
 end.
