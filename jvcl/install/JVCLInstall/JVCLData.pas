@@ -1440,7 +1440,7 @@ end;
 
 function TTargetConfig.GetQuickReport: Boolean;
 begin
-  Result := FileExists(Target.RootDir + '\qrpt.bpl') or GetQuickReport4;
+  Result := FileExists(Target.BplDir + '\qrpt.dcp') or GetQuickReport4;
 end;
 
 function TTargetConfig.GetQuickReport4: Boolean;
