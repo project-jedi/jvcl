@@ -399,7 +399,7 @@ begin
   Rect := ClientRect;
   if BorderStyle = bsNone then
   begin
-    FBuffer.Canvas.Brush.Color;
+    FBuffer.Canvas.Brush.Color := Color;
     FBuffer.Canvas.FrameRect(Rect);
   end
   else
