@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQOutlookBarForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -41,7 +41,7 @@ uses
   {$ENDIF MSWINDOWS}
   QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar, QTypes, QExtCtrls;
+  JvQOutlookBar;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
@@ -590,15 +590,12 @@ begin
     if OpenKey(GetRegPath, True) then
     try
     // Width, Height, TextLabels
-      Width := ReadInteger(cWidth);
-      Height := ReadInteger(cHeight);
-      acShowTextLabels.Checked := ReadBool(cTextLabels);
-      acToolBar.Checked := not ReadBool(cToolBar);
-      acToolBar.Execute;
-      acShowTextLabels.Checked := not ReadBool(cTextLabels);
-      acShowTextLabels.Execute; // toggles
+      WriteInteger(cWidth, Width);
+      WriteInteger(cHeight, Height);
+      WriteBool(cTextLabels, acShowTextLabels.Checked);
+      WriteBool(cToolBar, acToolBar.Checked);
     finally
-      CloseKey;
+      CloseKey;  
     end;
   finally
     Free;
@@ -609,16 +606,17 @@ end;
 function TFrmOLBEditor.GetRegPath: string;
 {$IFDEF MSWINDOWS}
 const
-  cRegKey = '\JVCLX\OutlookBar Editor';
-begin
-  Result := Designer.GetBaseRegKey + cRegKey;
+  cRegKey = '\JVCL\OutlookBar Editor';
+begin 
+  Result := Designer.GetBaseRegKey + cRegKey; 
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 const
-  cRegKey = '/.JVCLX/OutlookBar Editor';
+  cRegKey = 'OutlookBar Editor';
 begin
-  Result := SDelphiKey + cRegKey;
+  Result := SDelphiKey + RsPropertyEditors + cRegKey
+              + PathDelim + cJvOutlookBar;
 end;
 {$ENDIF LINUX}
 

@@ -30,12 +30,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I crossplatform.inc}
-
 unit JvQDsgnEditors;
 
-{ Various property editors }
+{$I jvcl.inc}
+{$I crossplatform.inc}
 
 interface
 

@@ -28,11 +28,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQOutlookBarEditors;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils, Classes,  
   QWindows, QControls, QForms, QToolWin,
@@ -265,7 +266,7 @@ begin
 end;
 
 
-{ TJvOutlookBarPageImageIndexProperty }
+//=== { TJvOutlookBarPageImageIndexProperty } ================================
 
 function TJvOutlookBarPageImageIndexProperty.ImageList: TCustomImageList;
 begin

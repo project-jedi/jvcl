@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQNavPaneEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -76,7 +76,7 @@ begin
   if P = nil then
     Result := nil
   else
-  if P.SmallImages <> nil then // small images fi better into the OI, so prefer those
+  if P.SmallImages <> nil then // small images fit better into the OI, so prefer those
     Result := P.SmallImages
   else
     Result := P.LargeImages;

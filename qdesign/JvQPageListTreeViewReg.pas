@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPageListTreeViewReg;
+
+{$I jvcl.inc}
 
 interface
 

@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorEditor;
+
+{$I jvcl.inc}
 
 interface
 
@@ -223,7 +223,6 @@ const
 
     '845118',  // border line
     'FFFFFFFF');
-
 
 procedure TJvColorProperty.Edit;
 var

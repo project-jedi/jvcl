@@ -28,9 +28,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQValidatorsEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -478,7 +478,7 @@ end;
 
 
 
-{ TJvPropertyToCompareProperty }
+//=== { TJvPropertyToCompareProperty } =======================================
 
 function TJvPropertyToCompareProperty.GetAttributes: TPropertyAttributes;
 begin

@@ -27,17 +27,17 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jvcl.inc}
 
 unit JvQRollOutEditor;
+
+{$I jvcl.inc}
 
 interface
 
 uses 
   DesignIntf, DesignEditors,      
   QImgList, 
-  JvQDsgnEditors,
-  JvQRollOut;
+  JvQDsgnEditors, JvQRollOut;
 
 type
   // property editor for IndexCollapsed and IndexExpanded on a TJvRollOut to

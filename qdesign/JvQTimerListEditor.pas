@@ -24,15 +24,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Property editor for the TJvTimerList component
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTimerListEditor;
 
-{ Property editor for the TJvTimerList component }
+{$I jvcl.inc}
 
 interface
 

@@ -28,11 +28,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPaintBoxEditor;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   SysUtils, Classes,  
   QForms, QGraphics, QImgList, QDialogs, QControls, Types,   

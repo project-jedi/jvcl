@@ -43,9 +43,9 @@ Known Issues:
                       TJvWizardPageList dialog form added
 ******************************************************************************}
 
-{$I jvcl.inc}
-
 unit JvQWizardEditorForm;
+
+{$I jvcl.inc}
 
 interface
 

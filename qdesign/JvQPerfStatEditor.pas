@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQPerfStatEditor;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQPerfStatEditor;
 
 interface
 

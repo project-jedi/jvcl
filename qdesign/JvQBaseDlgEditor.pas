@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQBaseDlgEditor;
+
+{$I jvcl.inc}
 
 interface
 

@@ -27,7 +27,7 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
   ParentFont = False
   Position = poScreenCenter
   Scaled = False
-  PixelsPerInch = 96
+  PixelsPerInch = 113
   object GroupBox: TGroupBox
     Left = 6
     Top = 3
@@ -43,7 +43,7 @@ object JvSelectDataSetForm: TJvSelectDataSetForm
       Height = 154
       Anchors = [akLeft, akTop, akRight, akBottom]
       Enabled = False
-      ItemHeight = 14
+      ItemHeight = 13
       Sorted = True
       TabOrder = 0
       OnDblClick = DataSetListDblClick

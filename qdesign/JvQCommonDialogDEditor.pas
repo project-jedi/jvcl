@@ -28,10 +28,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvQCommonDialogDEditor;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvQCommonDialogDEditor;
 
 interface
 

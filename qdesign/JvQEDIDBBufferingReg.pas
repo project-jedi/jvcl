@@ -27,10 +27,11 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
-{$I jvcl.inc}
+// $Id$
 
 unit JvQEDIDBBufferingReg;
+
+{$I jvcl.inc}
 
 interface
 

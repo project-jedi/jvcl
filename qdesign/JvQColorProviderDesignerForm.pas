@@ -29,9 +29,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQColorProviderDesignerForm;
+
+{$I jvcl.inc}
 
 interface
 

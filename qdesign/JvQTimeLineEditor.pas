@@ -24,15 +24,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Property editor(s) for the @link(TJvTimeLine) component
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQTimeLineEditor;
 
-{ Property editor(s) for the @link(TJvTimeLine) component }
+{$I jvcl.inc}
 
 interface
 

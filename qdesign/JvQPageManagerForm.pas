@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQPageManagerForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -276,11 +276,11 @@ end;
 
 
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
-
-begin 
-  if ADesigner.Root = OwnerForm then 
+begin
+  if ADesigner.Root = OwnerForm then
     Free;
 end;
+
 
 
 procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
@@ -342,9 +342,7 @@ end;
 procedure TJvProxyEditor.FormShow(Sender: TObject);
 begin
   if FPageManager.PageOwner <> nil then
-  begin
     Caption := Format(RsPageProxies, [FPageManager.PageOwner.Name]);
-  end;
 end;
 
 function TJvProxyEditor.CheckPageManager: Boolean;
@@ -378,27 +376,23 @@ begin
   Result := nil;
   if CheckPageManager and (Row >= 0) and
     (Row < FPageManager.PageProxies.Count) then
-  begin
     Result := FPageManager.PageProxies.Items[Row];
-  end;
 end;
 
-procedure TJvProxyEditor.ProxyGridDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvProxyEditor.ProxyGridDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 var
   CellText: string;
   Proxy: TJvPageProxy;
 begin
   CellText := '';
   if gdFixed in State then
-  begin
     case Col of
       0:
         CellText := RsProxyName;
       1:
         CellText := RsPageName;
-    end;
-  end
+    end
   else
   begin
     Proxy := ProxyByRow(Row - 1);
@@ -415,8 +409,8 @@ begin
   DrawCellText(ProxyGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenterJustify);
 end;
 
-procedure TJvProxyEditor.ProxyGridSelectCell(Sender: TObject; Col,
-  Row: Longint; var CanSelect: Boolean);
+procedure TJvProxyEditor.ProxyGridSelectCell(Sender: TObject;
+  Col, Row: Longint; var CanSelect: Boolean);
 begin
   SelectProxy(ProxyByRow(Row - 1));
 end;

@@ -28,15 +28,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQStdCtrlsReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -48,11 +48,11 @@ uses
   QImgList, 
   DesignEditors, DesignIntf, 
   JvQDsgnConsts, JvQTypes,  
-  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx, 
+  JvQGauges, JvQStdDsgnEditors, QComCtrlsEx,
   {$IFDEF USEWINDOWS}
   JvQBrowseFolder,
   {$ENDIF USEWINDOWS}
-  JvQCombobox, JvQColorCombo, JvQComCtrls,
+  JvQComboBox, JvQColorCombo, JvQComCtrls,
   JvQSpin, JvQEdit, JvQProgressBar, JvQMaskEdit, JvQBaseEdits, JvQCalc,
   JvQToolEdit, JvQBevel, JvQCheckBox, JvQSpeedButton, JvQSecretPanel,
   JvQCheckListBox, JvQControlBar, JvQCtrls, JvQGroupBox, JvQHeaderControl,
@@ -79,32 +79,32 @@ begin
     TJvCalculator]);
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup,  
-    TUpDown, 
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup,
+    TUpDown,
     TJvSpinButton]);
-  RegisterComponents(RsPaletteEdit, [TJvEdit, 
+  RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit, 
+    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl, TJvTabControl, TJvTabDefaultPainter, 
-    TJvGauge, 
-    TJvProgressBar, TJvStatusBar, 
+  RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
+    TJvTabControl, TJvTabDefaultPainter,
+    TGauge,
+    TJvProgressBar, TJvStatusBar,
     TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel 
-    ]);
-  RegisterComponents(RsPaletteListComboTree, [
-    TJvComboBox, 
-    TJvCheckListBox, 
-    TJvColorComboBox, 
+  RegisterComponents(RsPaletteLabel, [
+    TJvLabel]);
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox,
+    TJvCheckListBox,
+    TJvColorComboBox,
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar ]);
-  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]); 
+  RegisterComponents(RsPaletteScrollerTracker, [
+    TJvScrollBar]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
