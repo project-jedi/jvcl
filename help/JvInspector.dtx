@@ -1,5 +1,13 @@
 ##Package: Custom
 ##Status: Needs review
+##Skip: TItemRowSizing
+##Skip: TJvInspAsFloat
+##Skip: TJvInspAsInt64
+##Skip: TJvInspAsMethod
+##Skip: TJvInspAsSet
+##Skip: TJvInspAsString
+##Skip: TJvInspectorDataInstances
+##Skip: TJvInspectorItemInstances
 ----------------------------------------------------------------------------------------------------
 @@JvInspector.pas
 Summary
@@ -84,9 +92,49 @@ Description
 TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
   Indicates the item's name in single name mode is obtained from the DisplayName of the item associated
   with the first column.
+@@TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
+    Description for icifSingleNameUseFirstCol
 ----------------------------------------------------------------------------------------------------
 @@TInspectorCompoundItemFlags
 <COMBINE TInspectorCompoundItemFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorDataEvent
+<TITLE TInspectorDataEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvCustomInspector.AfterDataCreate
+    TJvCustomInspector.OnDataValueChanged
+Parameters
+  Sender - Description for this parameter
+  Data   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemBeforeCreateEvent
+<TITLE TInspectorItemBeforeCreateEvent type>
+<COMBINE TJvCustomInspector.BeforeItemCreate>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemBeforeSelectEvent
+<TITLE TInspectorItemBeforeSelectEvent type>
+<COMBINE TJvCustomInspector.BeforeSelection>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemEvent
+<TITLE TInspectorItemEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvCustomInspector.AfterItemCreate
+    TJvCustomInspector.OnItemValueChanged
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag
 Summary
@@ -131,6 +179,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlags
 <COMBINE TInspectorItemFlag>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemGetValueListEvent
+<TITLE TInspectorItemGetValueListEvent type>
+<COMBINE TJvCustomInspectorItem.OnGetValueList>
+----------------------------------------------------------------------------------------------------
+@@TInspectorItemSortCompare
+<TITLE TInspectorItemSortCompare type>
+<COMBINE TJvCustomInspectorItem.OnCompare>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemSortKind
 Summary
@@ -368,6 +424,15 @@ Description
     ItemRect := Item.Rects[iprItem];
   </CODE>
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.CollapseButton
 Summary
   Bitmap to use as a collapse button.
@@ -383,6 +448,15 @@ Description
   Divider is the X-position of the divider between the name and
   the value part. Read Divider to determine it's current
   location or set it to a new position.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.DividerAbs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.DoAfterDataCreate
 Summary
@@ -543,6 +617,15 @@ Description
   never need to call this method, as it is called automatically by the painting
   methods.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.InspectObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.InvalidateHeight
 Summary
   Invalidates the cached virtual height of the inspector.
@@ -636,6 +719,33 @@ See Also
   BeginUpdate, EndUpdate, SortNotificationList, RemoveNotifySort,
   TJvCustomInspectorItem.Sort
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnContextPopup
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnDataValueChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnEnter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.OnItemSelected
 Summary
   Event fired after an item is selected.
@@ -645,6 +755,58 @@ Parameters
   Sender -    The inspector that fired the event.
 See Also
   BeforeSelection
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnItemValueChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnKeyDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnKeyPress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnKeyUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.OnMouseDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+  Button - Description for this parameter
+  Shift  - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.Paint
 Summary
@@ -696,6 +858,24 @@ Description
   currently visible items. It will not change the Selected property, unless the
   previously selected item is no longer visible, in which case the Selected
   property will be set to <B>nil</B>.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.RefreshValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.RelativeDivider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.RemoveNotifySort
 Summary
@@ -1405,6 +1585,15 @@ Description
   Category references the nearest category for this item, if any. If the
   item is in no category, Category will be <B>nil</B>.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.CloseUp
 Summary
   Closes the drop down list.
@@ -1469,7 +1658,7 @@ Description
   
   The implementation of TJvCustomInspectorItem will close the drop down box if it's still open.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomInspectorItem.Delete
+@@TJvCustomInspectorItem.Delete@Integer
 Summary
   Deletes an item.
 Description
@@ -1479,6 +1668,12 @@ Parameters
   Index   - Index of child item to delete.
   Item    - \Item to delete.
   Data    - \Data instance to delete.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.Delete@TJvCustomInspectorData
+<COMBINE TJvCustomInspectorItem.Delete@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.Delete@TJvCustomInspectorItem
+<COMBINE TJvCustomInspectorItem.Delete@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DisplayIndex
 Summary
@@ -1830,6 +2025,15 @@ Description
 Notes:
   Some of the flags are aliased through the properties of the item.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.FullName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.GetDisplayParent
 Summary
   Retrieves the visual parent.
@@ -1843,6 +2047,17 @@ Description
 
   GetDisplayParent is used when items are added/deleted to request a resort of
   the display parent.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.GetEditorText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.GetNextSibling
 Summary
@@ -1911,7 +2126,7 @@ Description
 Notes:
   Hidden maps onto the iifHidden flag in the Flags property.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomInspectorItem.IndexOf
+@@TJvCustomInspectorItem.IndexOf@TJvCustomInspectorData
 Summary
   Locates an item or data instance.
 Description
@@ -1921,6 +2136,9 @@ Description
 Parameters
   Item    - \Item to locate.
   Data    - \Data instance to locate.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.IndexOf@TJvCustomInspectorItem
+<COMBINE TJvCustomInspectorItem.IndexOf@TJvCustomInspectorData>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.InitEdit
 Summary
@@ -2124,6 +2342,15 @@ Description
 Notes:
   Multiline maps onto the iifMultiline flag in the Flags property.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.NaturalSort
 Summary
   Sorts the sub items by the order in which they are added.
@@ -2157,6 +2384,15 @@ Parameters
   Sender    - The item requesting the value list.
   Values    - TStrings instance to receive the value list. If you assign objects
               to the values, they will not be freed when the list is freed.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.OnValueChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Parent
 Summary
@@ -2342,6 +2578,15 @@ Description
 Notes
   Do not call this method directly. It is called whenever one of the display
   rectangles are modified, which usually signals the item is to be repainted.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.UserData
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Visible
 Summary
@@ -2559,6 +2804,15 @@ Description
 See Also
   TJvInspectorPainter.DividerColor, TJvCustomInspector.Divider
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorBorlandPainter.OnSetItemColors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorCharItem
 Summary
   Char inspector item.
@@ -2702,7 +2956,7 @@ Parameters
 See Also
   Owners, DeleteOwner
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorComponentItem.DeleteOwner
+@@TJvInspectorComponentItem.DeleteOwner@Integer
 Summary
   Removes a component owner from the owners list.
 Description
@@ -2721,6 +2975,9 @@ Parameters
   Index - Index into the Owners list of the owner to be removed.
 See Also
   Owners, DeleteOwner
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorComponentItem.DeleteOwner@TComponent
+<COMBINE TJvInspectorComponentItem.DeleteOwner@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorComponentItem.ItemComponentFlags
 Summary
@@ -2900,7 +3157,7 @@ Description
 See Also
   TJvCustomInspectorItem.IsCompoundColumn
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.AddColumn
+@@TJvInspectorCompoundItem.AddColumn@Integer
 Summary
   Adds the specified child to column list.
 Description
@@ -2918,7 +3175,10 @@ Parameters
 See Also
   DeleteColumn, InsertColumn
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.DeleteColumn
+@@TJvInspectorCompoundItem.AddColumn@TJvCustomInspectorItem
+<COMBINE TJvInspectorCompoundItem.AddColumn@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundItem.DeleteColumn@Integer
 Summary
   Deletes an item from the column list.
 Description
@@ -2933,7 +3193,13 @@ Parameters
   Index - Column index to delete.
   Item - Item to delete from the column list.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.IndexOfColumn
+@@TJvInspectorCompoundItem.DeleteColumn@TJvCustomInspectorItem
+<COMBINE TJvInspectorCompoundItem.DeleteColumn@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundItem.DeleteColumn@TJvInspectorCompoundColumn
+<COMBINE TJvInspectorCompoundItem.DeleteColumn@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundItem.IndexOfColumn@TJvCustomInspectorItem
 Summary
   Locates a specific column.
 Description
@@ -2947,7 +3213,10 @@ Parameters
   Col - Column instance to locate.
   Item - Item instance to locate.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCompoundItem.InsertColumn
+@@TJvInspectorCompoundItem.IndexOfColumn@TJvInspectorCompoundColumn
+<COMBINE TJvInspectorCompoundItem.IndexOfColumn@TJvCustomInspectorItem>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundItem.InsertColumn@Integer@Integer
 Summary
   Inserts the specified child to column list at a specified index.
 Description
@@ -2970,6 +3239,9 @@ See Also
   AddColumn, DeleteColumn, TJvInspectorCustomCompoundItem.ColumnCount,
   TJvInspectorCustomCompoundItem.Columns
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorCompoundItem.InsertColumn@Integer@TJvCustomInspectorItem
+<COMBINE TJvInspectorCompoundItem.InsertColumn@Integer@Integer>
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCategoryItem
 Summary
   Inspector category item.
@@ -2977,6 +3249,15 @@ Description
   TJvInspectorCustomCategoryItem is an inspector item that represents a
   category. A category is a data-less item that allows you to group several
   items that are related to each other.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCategoryItem.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem
 Summary
@@ -2997,7 +3278,7 @@ Description
 See Also
   TJvCustomInspectorItem.IsCompoundColumn
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCustomCompoundItem.AddColumnPrim
+@@TJvInspectorCustomCompoundItem.AddColumnPrim@Integer
 Summary
   Adds the specified child to column list.
 Description
@@ -3018,6 +3299,9 @@ Parameters
   ItemIndex - Index into the Items item list of the item to add.
 See Also
   DeleteColumnPrim, InsertColumnPrim
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.AddColumnPrim@TJvCustomInspectorItem
+<COMBINE TJvInspectorCustomCompoundItem.AddColumnPrim@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.ColumnCount
 Summary
@@ -3046,7 +3330,7 @@ Description
 See Also
   SingleName, SingleNameUseFirstCol
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCustomCompoundItem.DeleteColumnPrim
+@@TJvInspectorCustomCompoundItem.DeleteColumnPrim@Integer
 Summary
   Deletes an item from the column list.
 Description
@@ -3065,6 +3349,12 @@ Parameters
   Index - Column index to delete.
   Item - Item to delete from the column list.
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.DeleteColumnPrim@TJvCustomInspectorItem
+<COMBINE TJvInspectorCustomCompoundItem.DeleteColumnPrim@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.DeleteColumnPrim@TJvInspectorCompoundColumn
+<COMBINE TJvInspectorCustomCompoundItem.DeleteColumnPrim@Integer>
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.DivideRect
 Summary
   Divides the specified rectangle over the columns.
@@ -3082,7 +3372,7 @@ See Also
   TJvInspectorCompoundColumn.Width, TJvCustomInspector.Painter,
   TJvInspectorPainter.CalcEditBasedRects
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCustomCompoundItem.IndexOfColumnPrim
+@@TJvInspectorCustomCompoundItem.IndexOfColumnPrim@TJvCustomInspectorItem
 Summary
   Locates a specific column.
 Description
@@ -3099,7 +3389,10 @@ Parameters
   Col - Column instance to locate.
   Item - Item instance to locate.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCustomCompoundItem.InsertColumnPrim
+@@TJvInspectorCustomCompoundItem.IndexOfColumnPrim@TJvInspectorCompoundColumn
+<COMBINE TJvInspectorCustomCompoundItem.IndexOfColumnPrim@TJvCustomInspectorItem>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.InsertColumnPrim@Integer@Integer
 Summary
   Inserts the specified child to column list at a specified index.
 Description
@@ -3124,6 +3417,9 @@ Parameters
   ItemIndex - Index into the Items item list of the item to add.
 See Also
   AddColumnPrim, DeleteColumnPrim, ColumnCount, Columns
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorCustomCompoundItem.InsertColumnPrim@Integer@TJvCustomInspectorItem
+<COMBINE TJvInspectorCustomCompoundItem.InsertColumnPrim@Integer@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem.RecalcColumnWidths
 Summary
@@ -3483,6 +3779,15 @@ Description
   TJvInspectorDotNETPainter is the painter component that implements the .NET/Visual Studio paint
   style.
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorDotNETPainter.OnSetItemColors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorEnumItem
 Summary
   Enumeration inspector item.
@@ -3633,7 +3938,7 @@ Parameters
 See Also
   OnSetAsString
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorEventData.New
+@@TJvInspectorEventData.New@TJvCustomInspectorItem@string@PTypeInfo
 Summary
   Instantiate a data instance and attaches an item to it.
 Description
@@ -3775,6 +4080,18 @@ Parameters
   Sender - Reference to the data layer instance that generated the event.
   Value - The new value to assign.
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorEventData.OnSupportsMethodPointers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender          - Description for this parameter
+  SupportsTMethod - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorFloatItem
 Summary
   Float inspector item.
@@ -3784,6 +4101,15 @@ Description
 
   TJvCustomInspectorData registers this item for all float types (ie. Single,
   Double, Extended, Comp and Currency).
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorFloatItem.Format
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorFontItem
 Summary
@@ -3830,7 +4156,7 @@ Summary
 Description
   INIFile holds a reference to the INI-file object linked to the data instance.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorINIFileData.New
+@@TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@string@string@PTypeInfo@TCustomIniFile
 Summary
   Instantiate a data instance and attaches an item to it.
 Description
@@ -3859,6 +4185,12 @@ Parameters
   OnAddKey - Event that will be called before a key is added. If no event is
               supplied, all keys are added, leaving the key name as the display
               name and the type info pointer set to string.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@TCustomIniFile@TJvInspConfKeyEvent
+<COMBINE TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@string@string@PTypeInfo@TCustomIniFile>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorINIFileData.New@TJvCustomInspectorItem@TCustomIniFile@TJvInspConfSectionEvent@TJvInspConfKeyEvent
+<COMBINE TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@string@string@PTypeInfo@TCustomIniFile>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorInt64Item
 Summary
@@ -4299,7 +4631,7 @@ Parameters
   YTop - Top of the divider bar.
   YBottom - Bottom of the divider bar.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPainter.PaintItem
+@@TJvInspectorPainter.PaintItem@TJvCustomInspectorItem
 Summary
   Renders an item.
 Description
@@ -4319,6 +4651,9 @@ Parameters
   AItemIndex - Index into the <LINK TJvCustomInspector.VisibleItems,
                 Inspector.VisibleItems> array of the item to be rendered.
   AItem - Item instance to be rendered.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPainter.PaintItem@TRect@Integer
+<COMBINE TJvInspectorPainter.PaintItem@TJvCustomInspectorItem>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter.PaintRect
 Summary
@@ -4469,7 +4804,7 @@ Description
 See also
   Prop
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorPropData.New
+@@TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@PPropInfo
 Summary
   Instantiate a data instance and attaches an item to it.
 Description
@@ -4500,6 +4835,15 @@ Parameters
   PropCount -     Number of properties in the list at PropInfos.
 See Also
   NewByNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@PPropList@Integer
+<COMBINE TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@PPropInfo>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@string
+<COMBINE TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@PPropInfo>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@TTypeKinds
+<COMBINE TJvInspectorPropData.New@TJvCustomInspectorItem@TObject@PPropInfo>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPropData.NewByNames
 Summary
@@ -4671,13 +5015,19 @@ Description
   This is used in FindMatch to search for other registration databases up the
   data layer hierarchie.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorRegister.Delete
+@@TJvInspectorRegister.Delete@Integer
 Summary
   Removes a registration item from the database.
 Description
   Delete removes a registration item from the registration database.
 Parameters
   RegItem - Registration item to remove.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorRegister.Delete@TJvCustomInspectorRegItem
+<COMBINE TJvInspectorRegister.Delete@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorRegister.Delete@TJvInspectorItemClass
+<COMBINE TJvInspectorRegister.Delete@Integer>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorRegister.Destroy
 Summary
@@ -4697,6 +5047,25 @@ Description
   registration item that matched best.
 Parameters
   ADataObj - Data layer instance to find a match for.
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorRegister.IndexOf@TJvCustomInspectorRegItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description
+  of all these functions into 1 general description. If you do so, combine all "Parameter" 
+  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
+  other overloaded functions with the same name.
+Parameters
+  RegItem - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorRegister.IndexOf@TJvInspectorItemClass
+<COMBINE TJvInspectorRegister.IndexOf@TJvCustomInspectorRegItem>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorRegister.Items
 Summary
@@ -4793,7 +5162,16 @@ Description
   BitOffset holds the bit offset within the set value for this particular
   member. This value is calculcated upon creation of the member data layer.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorSetMemberData.New
+@@TJvInspectorSetMemberData.DataParent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorSetMemberData.New@TJvCustomInspectorItem@Integer@TJvCustomInspectorData
 Summary
   Instantiate a data instance and attaches an item to it.
 Description
@@ -4903,6 +5281,15 @@ Description
 
   TJvCustomInspectorData registers this item for TTime types.
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorTimeItem.Format
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorTimeItem.ShowAMPM
 Summary
   Determines if the editor shows AM/PM.
@@ -4968,7 +5355,7 @@ See Also
   AddMethod, DeleteInstance, ClearInstances, IndexOfInstance, InstanceCount, Instances,
   InstanceNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.AddMethod
+@@TJvInspectorTMethodItem.AddMethod@TMethod@string
 Summary
   Adds an event handler to the list of event handlers.
 Description
@@ -4990,6 +5377,9 @@ Parameters
 See Also
   AddInstance, DeleteMethod, ClearMethods, IndexOfMethod, MethodCount, Methods, MethodNames
 ----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.AddMethod@TObject@Pointer@string
+<COMBINE TJvInspectorTMethodItem.AddMethod@TMethod@string>
+----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.ClearInstances
 Summary
   Removes all event instance from the list of instances.
@@ -5000,7 +5390,7 @@ See Also
   ClearMethods, AddInstance, DeleteInstance, IndexOfInstance, InstanceCount, Instances,
   InstanceNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.ClearMethods
+@@TJvInspectorTMethodItem.ClearMethods@Integer
 Summary
   Removes all event handlers from the list of event handlers.
 Description
@@ -5018,7 +5408,13 @@ Parameters
 See Also
   ClearInstances, AddMethod, DeleteMethod, IndexOfMethod, MethodCount, Methods, MethodNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.DeleteInstance
+@@TJvInspectorTMethodItem.ClearMethods@string
+<COMBINE TJvInspectorTMethodItem.ClearMethods@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.ClearMethods@TObject
+<COMBINE TJvInspectorTMethodItem.ClearMethods@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteInstance@Integer
 Summary
   Removes an event instance from the instance list.
 Description
@@ -5037,7 +5433,13 @@ See Also
   DeleteMethod, AddInstance, ClearInstances, IndexOfInstance, InstanceCount, Instances,
   InstanceNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.DeleteMethod
+@@TJvInspectorTMethodItem.DeleteInstance@string
+<COMBINE TJvInspectorTMethodItem.DeleteInstance@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteInstance@TObject
+<COMBINE TJvInspectorTMethodItem.DeleteInstance@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@Integer@Integer
 Summary
   Removes an event handler from the list of event handlers.
 Description
@@ -5060,7 +5462,25 @@ Parameters
 See Also
   DeleteInstance, AddMethod, ClearMethods, IndexOfMethod, MethodCount, Methods, MethodNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.IndexOfInstance
+@@TJvInspectorTMethodItem.DeleteMethod@Integer@string
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@string@Integer
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@string@string
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@TMethod
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@TObject@Integer
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.DeleteMethod@TObject@string
+<COMBINE TJvInspectorTMethodItem.DeleteMethod@Integer@Integer>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfInstance@string
 Summary
   Determines the index of an instance in the list instances.
 Description
@@ -5076,7 +5496,10 @@ See Also
   IndexOfMethod, AddInstance, DeleteInstance, ClearInstances, InstanceCount, Instances,
   InstanceNames
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorTMethodItem.IndexOfMethod
+@@TJvInspectorTMethodItem.IndexOfInstance@TObject
+<COMBINE TJvInspectorTMethodItem.IndexOfInstance@string>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfMethod@Integer@string
 Summary
   Determines the index of an event handler in the list of event handlers.
 Description
@@ -5096,6 +5519,15 @@ Parameters
   MethodName -    Name (case insensitive) of the handler to locate.
 See Also
   IndexOfInstance, AddMethod, DeleteMethod, ClearMethods, MethodCount, Methods, MethodNames
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfMethod@string@string
+<COMBINE TJvInspectorTMethodItem.IndexOfMethod@Integer@string>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfMethod@TMethod
+<COMBINE TJvInspectorTMethodItem.IndexOfMethod@Integer@string>
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorTMethodItem.IndexOfMethod@TObject@string
+<COMBINE TJvInspectorTMethodItem.IndexOfMethod@Integer@string>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorTMethodItem.InstanceCount
 Summary
@@ -5367,7 +5799,7 @@ Description
   created the data layer (either specifying an address or a variable), the
   address is determined by the constructor.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorVarData.New
+@@TJvInspectorVarData.New@TJvCustomInspectorItem@string@PTypeInfo@Pointer
 Summary
   Instantiate a data instance and attaches an item to it.
 Description
@@ -5385,3 +5817,26 @@ Parameters
                   use the overloaded version where you can specify a variable.
   AVar -          The variable that holds the data. Alternatively you could use
                   the overloaded version where you can specify an address.
+----------------------------------------------------------------------------------------------------
+@@TJvInspSupportsMethodPointers
+<TITLE TJvInspSupportsMethodPointers type>
+<COMBINE TJvInspectorEventData.OnSupportsMethodPointers>
+----------------------------------------------------------------------------------------------------
+@@TOnJvInspectorMouseDown
+<TITLE TOnJvInspectorMouseDown type>
+<COMBINE TJvCustomInspector.OnMouseDown>
+----------------------------------------------------------------------------------------------------
+@@TOnJvInspectorSetItemColors
+<TITLE TOnJvInspectorSetItemColors type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorBorlandPainter.OnSetItemColors
+    TJvInspectorDotNETPainter.OnSetItemColors
+Parameters
+  Item   - Description for this parameter
+  Canvas - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references

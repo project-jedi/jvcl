@@ -1,5 +1,10 @@
 ##Package: Dlgs
 ##Status: Needs review
+##Skip: CreateDSAMessageForm
+##Skip: DSAQueueStore
+##Skip: TDSACustomData
+##Skip: TDSAMessageForm
+##Skip: TDSAQueueStorage
 ----------------------------------------------------------------------------------------------------
 @@JvDSADialogs.pas
 Summary
@@ -42,7 +47,7 @@ Parameters
 See Also
   DSACount, RegisterDSA, UnregisterDSA
 ----------------------------------------------------------------------------------------------------
-@@DSAMessageDlg
+@@DSAMessageDlg@integer@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -86,7 +91,13 @@ Note
 See Also
   DSAMessageDlgEx, MessageDlg
 ----------------------------------------------------------------------------------------------------
-@@DSAMessageDlgEx
+@@DSAMessageDlg@integer@string@string@TMsgDlgType@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<COMBINE DSAMessageDlg@integer@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@DSAMessageDlg@integer@string@TMsgDlgType@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<COMBINE DSAMessageDlg@integer@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@DSAMessageDlgEx@integer@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -121,6 +132,12 @@ Note
   If the user presses Ctrl-C in the dialog, the contents of the dialog is copied to the clipboard.
 See Also
   DSAMessageDlg, MessageDlgEx
+----------------------------------------------------------------------------------------------------
+@@DSAMessageDlgEx@integer@string@string@TMsgDlgType@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<COMBINE DSAMessageDlgEx@integer@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@DSAMessageDlgEx@integer@string@TMsgDlgType@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<COMBINE DSAMessageDlgEx@integer@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@DSARegStore
 JVCLInfo
@@ -188,7 +205,7 @@ Description
 See Also
   RegisterDSACheckMarkText, UnregisterDSACheckMarkText
 ----------------------------------------------------------------------------------------------------
-@@GetDSAState
+@@GetDSAState@integer
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -205,6 +222,9 @@ Parameters
                   storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
 See Also
   SetDSAState
+----------------------------------------------------------------------------------------------------
+@@GetDSAState@integer@integer@TDSACustomData
+<COMBINE GetDSAState@integer>
 ----------------------------------------------------------------------------------------------------
 @@LocateDSAReg
 JVCLInfo
@@ -238,7 +258,7 @@ Description
 See Also
   mbDefault
 ----------------------------------------------------------------------------------------------------
-@@MessageDlg
+@@MessageDlg@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -281,7 +301,13 @@ Note
 See Also
   DSAMessageDlg, MessageDlgEx
 ----------------------------------------------------------------------------------------------------
-@@MessageDlgEx
+@@MessageDlg@string@string@TMsgDlgType@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<COMBINE MessageDlg@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@MessageDlg@string@TMsgDlgType@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<COMBINE MessageDlg@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@MessageDlgEx@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -320,6 +346,12 @@ Note
   to the clipboard.
 See Also
   DSAMessageDlgEx, MessageDlg
+----------------------------------------------------------------------------------------------------
+@@MessageDlgEx@string@string@TMsgDlgType@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<COMBINE MessageDlgEx@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
+----------------------------------------------------------------------------------------------------
+@@MessageDlgEx@string@TMsgDlgType@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<COMBINE MessageDlgEx@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSA
 JVCLInfo
@@ -559,6 +591,151 @@ Parameters
 See Also
   SetState
 ----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadBool
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadBoolDef
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadFloat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadFloatDef
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadInt64
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadInt64Def
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadInteger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadIntegerDef
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.ReadStringDef
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TDSAStorage.SetCheckMarkTextSuffix
 Summary
   Set the string to append to the check mark text.
@@ -591,6 +768,91 @@ Parameters
                   storage. Leave this parameter <B>nil</B> if no additional data is to be retrieved.
 See Also
   GetState
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.WriteBool
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.WriteFloat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.WriteInt64
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.WriteInteger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TDSAStorage.WriteString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DSAInfo - Description for this parameter
+  Key     - Description for this parameter
+  Value   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDSAAutoCloseEvent
+<TITLE TJvDSAAutoCloseEvent type>
+<COMBINE TJvDSADialog.OnAutoClose>
+----------------------------------------------------------------------------------------------------
+@@TJvDSADataEvent
+<TITLE TJvDSADataEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvDSADialog.OnApplyKeys
+    TJvDSADialog.OnUpdateKeys
+Parameters
+  Sender  - Description for this parameter
+  DSAInfo - Description for this parameter
+  Storage - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog
 <TITLEIMG TJvDSADialog>
@@ -631,6 +893,15 @@ Description
   neccessary information to retrieve custom stored data from the DSA storage.
 See Also
   OnApplyKeys, UpdateDSAState
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.CancelCountdown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.CheckControl
 Summary
@@ -730,6 +1001,15 @@ Description
 See Also
   Storage
 ----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.IgnoreDSAChkMrkTxt
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.IsDSAChecked
 Summary
   Checks if the DSA state has been set to "suppress".
@@ -755,6 +1035,27 @@ Parameters
   Storage - reference to the storage where the dialog info is stored.
 See Also
   OnUpdateKeys
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OnAutoClose
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Handled - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OnCountdown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnUpdateKeys
 <COMBINEWITH TJvDSADataEvent>
@@ -794,6 +1095,17 @@ Description
 See Also
   FormPatch, FormUnPatch
 ----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.SecondsLeft
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.Storage
 Summary
   Reference to storage device for this dialog.
@@ -801,6 +1113,15 @@ Description
   Storage holds the reference to the storage device assigned to the dialog.
 
   It's used internally to retrieve and store the DSA state and dialog result.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.Timeout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.UpdateDSAState
 Summary
