@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 240
   Top = 156
-  Width = 236
-  Height = 428
+  Width = 277
+  Height = 422
   Caption = 'JvAppHotKey demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,8 +13,8 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poDesktopCenter
   DesignSize = (
-    228
-    401)
+    269
+    395)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -22,12 +22,12 @@ object frmMain: TfrmMain
     Top = 8
     Width = 95
     Height = 13
-    Caption = 'Application hot key:'
+    Caption = 'Application &hot key:'
   end
   object HotKey1: THotKey
     Left = 8
     Top = 24
-    Width = 121
+    Width = 170
     Height = 19
     Anchors = [akLeft, akTop, akRight]
     HotKey = 49217
@@ -36,20 +36,21 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object btnAdd: TButton
-    Left = 136
+    Left = 185
     Top = 24
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
     Caption = '&Add'
+    Default = True
     TabOrder = 1
     OnClick = btnAddClick
   end
   object lbHotKeys: TListBox
     Left = 8
     Top = 56
-    Width = 201
-    Height = 329
+    Width = 253
+    Height = 323
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 13
     TabOrder = 2

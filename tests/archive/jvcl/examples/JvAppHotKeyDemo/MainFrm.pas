@@ -30,17 +30,25 @@ uses
 
 procedure TfrmMain.DoHotKey(Sender:TObject);
 begin
-  ShowMessage(Format('HotKey %s pressed!',[ShortCutToText((Sender as TJvApplicationHotKey).HotKey)]));
+  Application.BringToFront;
+  ShowMessage(Format('HotKey "%s" pressed!',[ShortCutToText((Sender as TJvApplicationHotKey).HotKey)]));
 end;
 
 procedure TfrmMain.btnAddClick(Sender: TObject);
+var S:string;
 begin
+  S := ShortCutToText(HotKey1.HotKey);
+  if lbHotKeys.Items.IndexOf(S) > -1 then
+  begin
+    ShowMessage('Hot key already assigned!');
+    Exit;
+  end;
   with TJvApplicationHotKey.Create(self) do
   begin
     HotKey := HotKey1.HotKey;
     Active := true;
     OnHotKey := DoHotKey;
-    lbHotKeys.Items.Add(ShortCutToText(HotKey1.HotKey));
+    lbHotKeys.Items.Add(S);
   end;
 end;
 
