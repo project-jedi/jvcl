@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-//=== TJvPropertyStorage ========================================================
+//=== TJvPropertyStorage =====================================================
 
 function TJvPropertyStorage.GetItemName(const APropName: string): string;
 begin
@@ -328,9 +328,8 @@ begin
       else
         Exit;
       end;
-      if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass])
-        or (PropInfo^.PropType^.Kind in [tkLString, tkWChar])
-      then
+      if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass]) or
+        (PropInfo^.PropType^.Kind in [tkLString, tkWChar]) then
         S := Trim(ReadString(Section, GetItemName(PropInfo^.Name), Def))
       else
         S := '';
@@ -610,8 +609,7 @@ end;
 
 procedure TJvPropertyStorage.LoadFloatProperty(const S: string; PropInfo: PPropInfo);
 begin
-  SetFloatProp(FObject, PropInfo, StrToFloat(ReplaceStr(S, '.',
-    DecimalSeparator)));
+  SetFloatProp(FObject, PropInfo, StrToFloat(ReplaceStr(S, '.', DecimalSeparator)));
 end;
 
 procedure TJvPropertyStorage.LoadInt64Property(const S: string; PropInfo: PPropInfo);

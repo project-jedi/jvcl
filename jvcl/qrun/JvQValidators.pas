@@ -27,7 +27,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-
 {$I jvcl.inc}
 
 unit JvQValidators;
@@ -247,10 +246,10 @@ type
 implementation
 
 uses
-  Masks, 
+  Masks,
   Variants, 
-  TypInfo,  
-  JvWStrUtils, 
+  TypInfo,
+  JvQWStrUtils,
   JvQTypes, JvQResources;
 
 const

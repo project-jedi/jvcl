@@ -39,7 +39,7 @@ unit JvQCreateProcess;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, 
+  Windows, Messages, SysUtils, Classes, 
   ShellAPI, SyncObjs, Contnrs,
   JclStrings,
   JvQComponent, JvQTypes;

@@ -31,7 +31,7 @@ Known Issues:
     list indicate not supported frames.
 -----------------------------------------------------------------------------}
 // $Id$
-
+{$I windowsonly.inc}
 {$I jvcl.inc}
 
 unit JvQID3v2Base;
@@ -39,7 +39,7 @@ unit JvQID3v2Base;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils,  
   JclUnicode,
   JvQComponent, JvQID3v2Types, JvQID3v1;
 

@@ -44,7 +44,7 @@ unit JvQOutlookBar;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes,  
   QControls, QButtons, QGraphics, QTypes, QImgList, QForms, QStdCtrls,
   QExtCtrls, Types, QWindows, 
   JvQThemes, JvQComponent, JvQExButtons;

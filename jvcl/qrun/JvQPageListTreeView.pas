@@ -98,9 +98,9 @@ type
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function CreateNode: TTreeNode; //override;
-    function CreateNodes: TTreeNodes;  //override;
-    function CanChange(Node: TTreeNode): Boolean; //override;
+    function CreateNode: TTreeNode; override;
+    function CreateNodes: TTreeNodes;  override; 
+    function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -177,9 +177,9 @@ type
 
     procedure DoGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure DoGetSelectedIndex(Sender: TObject; Node: TTreeNode);
-    procedure GetImageIndex(Node: TTreeNode); //override;
-    procedure GetSelectedIndex(Node: TTreeNode); //override;
-    function CanChange(Node: TTreeNode): Boolean; //override;
+    procedure GetImageIndex(Node: TTreeNode); override;
+    procedure GetSelectedIndex(Node: TTreeNode); override;
+    function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
     procedure ResetPreviousNode(NewNode: TTreeNode); virtual;
     procedure SetPreviousNode(NewNode: TTreeNode); virtual;
@@ -211,19 +211,13 @@ type
     property Align;
     property Anchors; 
     property BorderStyle;
-    property BorderWidth;
-    property ChangeDelay;
     property Color;
     property Constraints;
     property DragMode;
     property Enabled;
     property Font;
-    property HideSelection;
-    property HotTrack;
     property Images;
-    property Indent; 
-    property MultiSelect;
-    property MultiSelectStyle; 
+    property Indent;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -233,21 +227,18 @@ type
     property ShowHint;
     property ShowRoot;
     property SortType;
-    property StateImages;
     property TabOrder;
     property TabStop default True;
-    property ToolTips;
     property Visible;
-    property OnAdvancedCustomDraw;
-    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
-    property OnContextPopup;
+    property OnCompare;
+    property OnContextPopup; 
     property OnAddition;
-    property OnCreateNodeClass;
+    property OnCreateNodeClass; 
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -276,7 +267,7 @@ type
   TJvSettingsTreeView = class(TJvCustomSettingsTreeView)
   published
     property AutoExpand default True;
-    property ShowButtons default False;
+    property ShowButtons default False; 
     property ReadOnly default True;
     property PageDefault;
     property PageNodeImages;
@@ -288,9 +279,9 @@ type
     property OnParentColorChange;
 
     property Align;
-    property Anchors;
+    property Anchors; 
     property BorderStyle;
-//    property BorderWidth;
+    property BorderWidth;
     property ChangeDelay;
     property Color;
     property Constraints;
@@ -318,15 +309,15 @@ type
     property TabStop default True;
     property ToolTips;
     property Visible;
-//    property OnAdvancedCustomDraw;
-//    property OnAdvancedCustomDrawItem;
+    property OnAdvancedCustomDraw;
+    property OnAdvancedCustomDrawItem;
     property OnChange;
     property OnChanging;
     property OnClick;
     property OnCollapsed;
     property OnCollapsing;
     property OnCompare;
-    property OnContextPopup;
+    property OnContextPopup; 
     property OnAddition;
     property OnCreateNodeClass; 
     property OnCustomDraw;

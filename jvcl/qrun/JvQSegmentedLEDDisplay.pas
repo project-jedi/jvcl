@@ -39,8 +39,7 @@ unit JvQSegmentedLEDDisplay;
 interface
 
 uses
-  Classes,
-  Types, QGraphics, QWindows,
+  Classes, Types, QGraphics, QWindows,
   JclBase,
   JvQComponent, JvQTypes;
 

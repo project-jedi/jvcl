@@ -291,8 +291,7 @@ begin
   MouseCapture := True;
   R := ClientRect;
   P := ClientToScreen(Point(0,0));
-  OffsetRect(R, P.X, P.Y);
-  ClipCursor(@R);
+  OffsetRect(R, P.X, P.Y); 
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -312,8 +311,7 @@ var
   Tmp: TBitmap;
 begin
   FTracking := False;
-  FChanging := False;
-  ClipCursor(nil);
+  FChanging := False; 
   if FChanged then
   begin
     Tmp := TBitmap.Create;

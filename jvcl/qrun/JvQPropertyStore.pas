@@ -260,8 +260,28 @@ end;
 //=== TJvCustomPropertyStore =================================================
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
+const
+  IgnorePropertyList: array [1..14] of PChar =
+   (
+    'AboutJVCL',
+    'AppStoragePath',
+    'AutoLoad',
+    'ClearBeforeLoad',
+    'Name',
+    'Tag',
+    'Enabled',
+    'DeleteBeforeStore',
+    'IgnoreLastLoadTime',
+    'IgnoreProperties',
+    'OnBeforeLoadProperties',
+    'OnAfterLoadProperties',
+    'OnBeforeStoreProperties',
+    'OnAfterStoreProperties'
+   );
+var
+  I: Integer;
 begin
-  inherited Create(Aowner);
+  inherited Create(AOwner);
   FLastLoadTime := Now;
   FAppStorage := nil;
   FEnabled := True;
@@ -271,23 +291,8 @@ begin
   FIgnoreProperties := TStringList.Create;
   FIgnoreLastLoadTime := False;
   FCombinedIgnoreList := TCombinedStrings.Create;
-  with FIntIgnoreProperties do
-  begin
-    Add('AboutJVCL');
-    Add('AppStoragePath');
-    Add('AutoLoad');
-    Add('ClearBeforeLoad');
-    Add('Name');
-    Add('Tag');
-    Add('Enabled');
-    Add('DeleteBeforeStore');
-    Add('IgnoreLastLoadTime');
-    Add('IgnoreProperties');
-    Add('OnBeforeLoadProperties');
-    Add('OnAfterLoadProperties');
-    Add('OnBeforeStoreProperties');
-    Add('OnAfterStoreProperties');
-  end;
+  for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
+    FIntIgnoreProperties.Add(IgnorePropertyList[I]);
 end;
 
 destructor TJvCustomPropertyStore.Destroy;

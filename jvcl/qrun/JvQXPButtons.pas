@@ -392,7 +392,7 @@ begin
   if Value <> FDefault then
   begin
     FDefault := Value;  
-    //QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl)); 
+//    QWindows.Perform(GetParentForm(Self), CM_FOCUSCHANGED, 0, Longint(GetParentForm(Self).ActiveControl)); 
   end;
 end;
 
