@@ -1,3 +1,6 @@
+2002-07-10
+- TJvTranslator: Added support for descendant classes translated inside DLL's //Sebastien Buysse
+
 2002-07-06
 - TJvListView: Added a property to automatically copy selected lines to clipboard //Sebastien Buysse
 - TJvTranslator: Speeded up a little the process //Sebastien Buysse
