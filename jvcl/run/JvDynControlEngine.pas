@@ -137,7 +137,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvResources, JvTypes, JVDynControlEngineVCL;
+  JvResources, JvTypes, JvDynControlEngineVCL;
 
 var
   GlobalDefaultDynControlEngine: TJvDynControlEngine = nil;
