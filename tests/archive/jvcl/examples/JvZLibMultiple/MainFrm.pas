@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit MainFrm;
 
 interface
@@ -42,6 +43,9 @@ var
 
 implementation
 uses
+  {$IFNDEF COMPILER6_UP}
+  FileCtrl,
+  {$ENDIF}
   JvBrowseFolder;
 
 {$R *.dfm}
