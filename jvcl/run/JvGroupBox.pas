@@ -73,8 +73,7 @@ type
     procedure DoHotKey; dynamic;
     {$IFDEF VCL}
     procedure Paint; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
+    {$ELSE}
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure Paint; virtual;
     {$ENDIF VisualCLX}
@@ -155,7 +154,7 @@ var
   CaptionRect: TRect;
   {$ENDIF JVCLThemesEnabledD56}
   LastBkMode: Integer;
-  PText: {$IFDEF VCL} PChar; {$ELSE} WideString; {$ENDIF}
+  Txt: {$IFDEF VCL} PChar; {$ELSE} WideString; {$ENDIF}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
@@ -184,9 +183,9 @@ begin
   with Canvas do
   begin
     {$IFDEF VCL}
-    PText := PChar(Text);
+    Txt := PChar(Text);
     {$ELSE}
-    PText := Text;
+    Txt := Text;
     Start;
     {$ENDIF VCL}
     LastBkMode := GetBkMode(Handle);
@@ -194,7 +193,7 @@ begin
       Font := Self.Font;
       H := TextHeight('0');
       R := Rect(0, H div 2 - 1, Width, Height);
-      {$IFDEF VCL}
+      {$IFDEF VCl}
       if Ctl3D then
       {$ELSE}
       if True then
@@ -227,20 +226,20 @@ begin
         Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
         SetBkMode(Handle, OPAQUE);
-        DrawText(Handle, PText, Length(Text), R, Flags or DT_CALCRECT);
+        DrawText(Handle, Txt, Length(Text), R, Flags or DT_CALCRECT);
         Brush.Color := Color;
         if not Enabled then
         begin
           OffsetRect(R, 1, 1);
           Font.Color := clBtnHighlight;
-          DrawText(Handle, PText, Length(Text), R, Flags);
+          DrawText(Handle, Txt, Length(Text), R, Flags);
           OffsetRect(R, -1, -1);
           Font.Color := clBtnShadow;
           SetBkMode(Handle, TRANSPARENT);
-          DrawText(Handle, PText, Length(Text), R, Flags);
+          DrawText(Handle, Txt, Length(Text), R, Flags);
         end
         else
-          DrawText(Handle, PText, Length(Text), R, Flags);
+          DrawText(Handle, Txt, Length(Text), R, Flags);
       end;
     finally
       SetBkMode(Handle, LastBkMode);
