@@ -42,7 +42,7 @@ unit JvDsgnEditors;
 interface
 
 uses
-  Windows, Forms,  {$IFDEF COMPILER6_UP} DesignIntf,  DesignEditors, {$ELSE} DsgnIntf, {$ENDIF}
+  Windows, Forms,  Graphics, {$IFDEF COMPILER6_UP} ImgList, DesignIntf,  DesignEditors, DesignMenus, VCLEditors,{$ELSE} DsgnIntf, {$ENDIF}
   SysUtils, Classes, Dialogs, Controls;
 
 type
@@ -111,13 +111,50 @@ type
     procedure ExecuteVerb(Index: integer); override;
     procedure Edit; override;
   end;
+{$IFDEF COMPILER6_UP}
+  TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
+  protected
+    function ImageList: TCustomImageList; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+
+    procedure ListMeasureWidth(const Value: string;
+      ACanvas: TCanvas; var AWidth: Integer); virtual;
+    procedure ListMeasureHeight(const Value: string;
+      ACanvas: TCanvas; var AHeight: Integer); virtual;
+    procedure ListDrawValue(const Value: string;
+      ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean); virtual;
+
+    procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean);
+  end;
+{$ELSE}
+  TJvDefaultImageIndexProperty = class(TIntegerProperty)
+    function GetAttributes: TPropertyAttributes;override;
+    procedure GetValues(Proc:TGetStrProc);override;
+    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
+      var AWidth: Integer); override;
+    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
+      var AHeight: Integer); override;
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean); override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      ASelected: Boolean); override;
+  end;
+{$ENDIF}
+
 
 
 
 implementation
 uses
-  Graphics, JvTypes, JvGroupHeader, JvFooter,
-  FileCtrl, JvStrLEdit, TypInfo, JvDateTimeDlg;
+  FileCtrl, TypInfo,
+  JvTypes, JvGroupHeader, JvFooter, JvStrLEdit, JvDateTimeDlg, JvMaxMin;
 
 procedure TFilenameProperty.Edit;
 begin
@@ -412,5 +449,191 @@ procedure TJvFooterEditor.Edit;
 begin
   // We don't need to add band on double click
 end;
+
+{ TJvDefaultImageIndexProperty }
+
+{$IFDEF COMPILER6_UP}
+function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
+begin
+  Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), 'ImageList'));
+end;
+
+function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paSortList, paMultiSelect,paRevertable];
+end;
+
+function TJvDefaultImageIndexProperty.GetValue: string;
+begin
+  Result := intToStr(GetOrdValue);
+end;
+
+procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
+var
+  XValue: integer;
+begin
+  try
+    XValue := strToInt(Value);
+    SetOrdValue(XValue);
+  except
+    inherited SetValue(Value);
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
+var
+  tmp: TCustomImageList;
+  i: integer;
+begin
+  tmp := ImageList;
+  if Assigned(tmp) then
+    for i := 0 to tmp.Count - 1 do
+      Proc(intToStr(i));
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string; ACanvas:TCanvas; var AWidth: Integer);
+var
+  tmp: TCustomImageList;
+begin
+  tmp := ImageList;
+  if Assigned(tmp) then
+    AWidth := tmp.Width + ACanvas.TextHeight(Value) + 4;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string; ACanvas:TCanvas;var AHeight: Integer);
+var
+  tmp: TCustomImageList;
+begin
+  tmp := ImageList;
+  if Assigned(tmp) then
+    AHeight := Max(tmp.Height + 2,ACanvas.TextHeight(Value) + 2);
+end;
+
+procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string; ACanvas:
+  TCanvas;const ARect: TRect; ASelected:Boolean);
+var
+  tmp: TCustomImageList;
+  R:TRect;
+begin
+  DefaultPropertyListDrawValue(Value,ACanvas,ARect,ASelected);
+  tmp := ImageList;
+  if tmp <> nil then
+  begin
+    R := ARect;
+    ACanvas.FillRect(ARect);
+    tmp.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
+    OffsetRect(R,tmp.Width + 2,0);
+    DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+ end;
+end;
+
+procedure TJvDefaultImageIndexProperty.PropDrawName(ACanvas: TCanvas; const ARect:
+  TRect;
+  ASelected: Boolean);
+begin
+  DefaultPropertyDrawName(Self, ACanvas, ARect);
+end;
+
+procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas; const ARect:
+  TRect; ASelected: Boolean);
+var
+  tmp: TCustomImageList;
+begin
+  tmp := ImageList;
+  if (GetVisualValue <> '') and Assigned(tmp) then
+    ListDrawValue(GetVisualValue, ACanvas, ARect, ASelected)
+  else
+    DefaultPropertyDrawValue(Self, ACanvas, ARect);
+end;
+{$ELSE}
+// d5 assumed
+function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList,paSortList,paMultiselect];
+end;
+
+procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
+var btn:TJvLookOutButton;i:integer;
+begin
+  if GetComponent(0) is TJvCustomLookOutButton then
+  begin
+    btn := TJvLookOutButton(GetComponent(0));
+    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
+      for i := 0 to btn.LargeImages.Count - 1 do
+        Proc(IntToStr(i))
+    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
+      for i := 0 to btn.SmallImages.Count - 1 do
+        Proc(IntToStr(i))
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
+  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+var btn:TJvLookOutButton;R:TRect;
+begin
+  inherited ListDrawValue(Value,ACanvas,ARect,ASelected);
+  if (GetComponent(0) is TJvCustomLookOutButton) then
+  begin
+    R := ARect;
+    btn := TJvLookOutButton(GetComponent(0));
+    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
+    begin
+      ACanvas.FillRect(ARect);
+      btn.LargeImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
+      OffsetRect(R,btn.LargeImages.Width + 2,0);
+      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+    end
+    else if Assigned(btn.SmallImages) then
+    begin
+      ACanvas.FillRect(ARect);
+      btn.SmallImages.Draw(ACanvas,ARect.Left,ARect.Top,StrToInt(Value));
+      OffsetRect(R,btn.SmallImages.Width + 2,1);
+      DrawText(ACanvas.Handle,PChar(Value),-1,R,0);
+    end;
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
+  ACanvas: TCanvas; var AHeight: Integer);
+var btn:TJvLookOutButton;
+begin
+  AHeight := ACanvas.TextHeight(Value) + 2;
+  if (GetComponent(0) is TJvCustomLookOutButton) then
+  begin
+    btn := TJvLookOutButton(GetComponent(0));
+    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
+        AHeight := btn.LargeImages.Height + 2
+    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
+        AHeight := btn.SmallImages.Height + 2;
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
+  ACanvas: TCanvas; var AWidth: Integer);
+var btn:TJvLookOutButton;
+begin
+  AWidth := ACanvas.TextWidth(Value) + 4;
+  if (GetComponent(0) is TJvCustomLookOutButton) then
+  begin
+    btn := TJvLookOutButton(GetComponent(0));
+    if (btn.ImageSize = isLarge) and Assigned(btn.LargeImages) then
+        AWidth := btn.LargeImages.Width + AWidth
+    else if (btn.ImageSize = isSmall) and Assigned(btn.SmallImages) then
+        AWidth := btn.SmallImages.Width  + AWidth;
+  end;
+end;
+
+procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; ASelected: Boolean);
+begin
+//  if GetVisualValue <> '' then
+//    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
+//  else
+    inherited PropDrawValue(ACanvas, ARect, ASelected);
+end;
+
+
+{$ENDIF}
+
 
 end.
