@@ -30,8 +30,11 @@ unit JvAnimatedImage;
 interface
 
 uses
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
+  Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, Types, QGraphics, QControls, QForms,
@@ -47,7 +50,9 @@ type
     FLock: TRTLCriticalSection;
   protected
     FGraphic: TGraphic;
+    {$IFDEF VCL}
     function DoPaletteChange: Boolean;
+    {$ENDIF VCL}
     procedure Paint; override;
     procedure BufferedPaint; virtual;
     procedure DoPaintImage; virtual; abstract;
@@ -101,14 +106,18 @@ type
     procedure SetNumGlyphs(Value: Integer);
     procedure SetStretch(Value: Boolean);
     procedure SetTransparentColor(Value: TColor);
+    {$IFDEF VCL}
     procedure SetOpaque(Value: Boolean);
+    {$ENDIF VCL}
     procedure ImageChanged(Sender: TObject);
     procedure UpdateInactive;
     procedure TimerExpired(Sender: TObject);
     function TransparentStored: Boolean;
   protected
+    {$IFDEF VCL}
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
+    {$ENDIF VCL}
     procedure AdjustSize; override;
     procedure Loaded; override;
     procedure BufferedPaint; override;
@@ -123,8 +132,10 @@ type
     property Align;
     property Anchors;
     property Constraints;
+    {$IFDEF VCL}
     property DragKind;
     property AutoSize default True;
+    {$ENDIF VCL}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
     property Active: Boolean read FActive write SetActive default False;
     property Center: Boolean read FCenter write SetCenter default False;
@@ -137,10 +148,14 @@ type
     property InactiveGlyph: Integer read FInactiveGlyph write SetInactiveGlyph default -1;
     property TransparentColor: TColor read FTransparentColor write SetTransparentColor
       stored TransparentStored;
+    {$IFDEF VCL}
     property Opaque: Boolean read FOpaque write SetOpaque default False;
+    {$ENDIF VCL}
     property Color;
     property Cursor;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property ParentColor default True;
     property ParentShowHint;
@@ -157,8 +172,10 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnStartDrag;
+    {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
+    {$ENDIF VCL}
     property OnContextPopup;
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
@@ -170,7 +187,7 @@ procedure HookBitmap;
 implementation
 
 uses
-  JclSysUtils,
+  //JclSysUtils,
   JvConsts, JvJVCLUtils;
 
 
@@ -311,17 +328,25 @@ begin
     end;
 end;
 
-// (rom) this method is obviously not yet CLX compatible
+type
+  TOpenWidgetControl = class(TWidgetControl);
 
 procedure TJvImageControl.DoPaintControl;
 var
+{$IFDEF VCl}
   DC: HDC;
+{$ENDIF}
+{$IFDEF VisualCLX}
+  DC: QPainterH;
+  OrgDC: QPainterH;
+{$ENDIF}
 begin
   if GetCurrentThreadID = MainThreadID then
   begin
     Repaint;
     Exit;
   end;
+{$IFDEF VCL}
   DC := GetDC(Parent.Handle);
   try
     IntersectClipRect(DC, Left, Top, Left + Width, Top + Height);
@@ -330,8 +355,32 @@ begin
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  DC := QPainter_create;
+  try
+    QPainter_begin(DC, TOpenWidgetControl(Parent).GetPaintDevice);
+    try
+      QPainter_setClipRect(DC, Left, Top, Width, Height);
+      QPainter_translate(DC, Left, Top);
+
+      OrgDC := Canvas.Handle;
+      try
+       Canvas.Handle := DC;
+       PaintRequest;
+      finally
+        Canvas.Handle := OrgDC;
+      end;
+    finally
+      QPainter_end(DC);
+    end;
+  finally
+    QPainter_destroy(DC);
+  end;
+{$ENDIF VisualCLX}
 end;
 
+{$IFDEF VCL}
 function TJvImageControl.DoPaletteChange: Boolean;
 var
   ParentForm: TCustomForm;
@@ -339,8 +388,8 @@ var
 begin
   Result := False;
   Tmp := FGraphic;
-  if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil) and
-    Tmp.PaletteModified then
+  if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil)
+    and Tmp.PaletteModified then
   begin
     if (GetPalette <> 0) then
     begin
@@ -359,6 +408,7 @@ begin
       Tmp.PaletteModified := False;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvImageControl.PictureChanged;
 begin
@@ -366,7 +416,7 @@ begin
   begin
     AdjustSize;
     if FGraphic <> nil then
-      if DoPaletteChange and FDrawing then
+      if {$IFDEF VCL}DoPaletteChange and{$ENDIF} FDrawing then
         Update;
     if not FDrawing then
       Invalidate;
@@ -378,10 +428,15 @@ end;
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FOpaque := True;
+  {$ENDIF}
   FTimer := TJvTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 100;
+  {$IFDEF VCL}
   AutoSize := True;
+  {$ENDIF VCL}
   FGlyph := TBitmap.Create;
   FGraphic := FGlyph;
   FGlyph.OnChange := ImageChanged;
@@ -411,12 +466,14 @@ begin
   UpdateInactive;
 end;
 
+{$IFDEF VCL}
 function TJvAnimatedImage.GetPalette: HPALETTE;
 begin
   Result := 0;
   if not FGlyph.Empty then
     Result := FGlyph.Palette;
 end;
+{$ENDIF VCL}
 
 procedure TJvAnimatedImage.ImageChanged(Sender: TObject);
 begin
@@ -450,6 +507,7 @@ begin
     ((FGlyph.TransparentColor and not PaletteMask) <> FTransparentColor);
 end;
 
+{$IFDEF VCL}
 procedure TJvAnimatedImage.SetOpaque(Value: Boolean);
 begin
   if Value <> FOpaque then
@@ -463,6 +521,7 @@ begin
     PictureChanged;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvAnimatedImage.SetTransparentColor(Value: TColor);
 begin
@@ -634,16 +693,20 @@ end;
 
 procedure TJvAnimatedImage.AdjustSize;
 begin
+{$IFDEF VCL}
   if not (csReading in ComponentState) then
     if AutoSize and (FImageWidth > 0) and (FImageHeight > 0) then
       SetBounds(Left, Top, FImageWidth, FImageHeight);
+{$ENDIF VCL}
 end;
 
 procedure TJvAnimatedImage.DoPaintImage;
 var
   BmpIndex: Integer;
   SrcRect, DstRect: TRect;
-  {Origin: TPoint;}
+{$IFDEF VisualCLX}
+  Bmp: TBitmap;
+{$ENDIF VisualCLX}
 begin
   if (not Active) and (FInactiveGlyph >= 0) and
     (FInactiveGlyph < FNumGlyphs) then
@@ -651,8 +714,10 @@ begin
   else
     BmpIndex := FGlyphNum;
   { copy image from parent and back-level controls }
+  {$IFDEF VCL}
   if not FOpaque then
     CopyParentImage(Self, Canvas);
+  {$ENDIF VCL}
   if (FImageWidth > 0) and (FImageHeight > 0) then
   begin
     if Orientation = goHorizontal then
@@ -668,16 +733,30 @@ begin
         (ClientHeight - FImageHeight) div 2, FImageWidth, FImageHeight)
     else
       DstRect := Rect(0, 0, FImageWidth, FImageHeight);
+    {$IFDEF VCL}
     with DstRect do
       StretchBitmapRectTransparent(Canvas, Left, Top, Right - Left,
         Bottom - Top, SrcRect, FGlyph, FTransparentColor);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := SrcRect.Right - SrcRect.Left;
+      Bmp.Height := SrcRect.Bottom - SrcRect.Top;
+      Bmp.TransparentColor := FTransparentColor;
+      Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), FGlyph);
+      Canvas.StretchDraw(DstRect, Bmp);
+    finally
+      Bmp.Free;
+    end;
+    {$ENDIF VisualCLX}
   end;
 end;
 
 procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
-  if (not Opaque) or FGlyph.Empty then
+  if (not FOpaque) or FGlyph.Empty then
     PaintDesignRect;
 end;
 
@@ -737,6 +816,7 @@ begin
       FOnStart(Self);
 end;
 
+{$IFDEF VCL}
 function TJvAnimatedImage.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := True;
@@ -749,6 +829,7 @@ begin
       NewHeight := FImageHeight;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvAnimatedImage.SetInterval(Value: Cardinal);
 begin

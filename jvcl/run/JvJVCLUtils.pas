@@ -606,6 +606,7 @@ function GetDefaultCheckBoxSize: TSize;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 
+{$IFDEF MSWINDOWS}
 // AllocateHWndEx works like Classes.AllocateHWnd but does not use any virtual memory pages
 function AllocateHWndEx(Method: TWndMethod; const AClassName: string = ''): HWND;
 // DeallocateHWndEx works like Classes.DeallocateHWnd but does not use any virtual memory pages
@@ -613,6 +614,7 @@ procedure DeallocateHWndEx(Wnd: HWND);
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
@@ -5843,6 +5845,7 @@ begin
   Result := Canvas.TextHeight(S);
 end;
 
+{$IFDEF MSWINDOWS}
 //=== AllocateHWndEx =========================================================
 
 const
@@ -5861,7 +5864,7 @@ const
 function StdWndProc(Window: HWND; Message, WParam: WPARAM;
   LParam: LPARAM): LRESULT; stdcall;
 var
-  Msg: TMessage;
+  Msg: Messages.TMessage;
   WndProc: TWndMethod;
 begin
   TMethod(WndProc).Code := Pointer(GetWindowLong(Window, 0));
@@ -5932,6 +5935,7 @@ begin
   FreeObjectInstance(ObjectInstance);
   {$ENDIF}
 end;
+{$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
@@ -5957,10 +5961,13 @@ initialization
     Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
     }
     { end RxLib }
+    {$IFDEF VCL}
+    { (ahuser) if used in VisualCLX mode then Application.Destroy crashes }
     Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
     Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
     Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
+    {$ENDIF VCL}
   end;
 
 { begin JvVCLUtils }
