@@ -11,6 +11,7 @@ object FoPatch: TFoPatch
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -52,8 +53,8 @@ object FoPatch: TFoPatch
       Top = 14
       Width = 207
       Height = 21
+      AddQuotes = False
       ButtonFlat = False
-      NumGlyphs = 1
       TabOrder = 0
     end
     object FileNameBox2: TJvFilenameEdit
@@ -61,8 +62,8 @@ object FoPatch: TFoPatch
       Top = 38
       Width = 207
       Height = 21
+      AddQuotes = False
       ButtonFlat = False
-      NumGlyphs = 1
       TabOrder = 1
     end
   end

@@ -28,7 +28,7 @@ object frmSelectColumn: TfrmSelectColumn
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 125
+    Top = 122
     Width = 185
     Height = 41
     Align = alBottom
@@ -50,7 +50,7 @@ object frmSelectColumn: TfrmSelectColumn
     Left = 0
     Top = 0
     Width = 185
-    Height = 125
+    Height = 122
     OnClickCheck = clbListClickCheck
     Align = alClient
     ItemHeight = 13

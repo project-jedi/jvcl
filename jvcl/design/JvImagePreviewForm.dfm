@@ -40,6 +40,7 @@ object ImageForm: TImageForm
     01C7E00003E3F8000FF1F9FFDFFBFCFF9FFFFE7E3FFFFF007FFFFFC0FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

@@ -13,6 +13,7 @@ object FoWallpaperChooser: TFoWallpaperChooser
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96

@@ -25,6 +25,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -215,7 +216,9 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Top = 24
   end
   object AppStorage: TJvAppRegistryStorage
-    RegRoot = hkCurrentUser
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    SubStorages = <>
     Left = 133
     Top = 24
   end

@@ -1,4 +1,4 @@
-object ReportParamEditor: TJvgReportParamEditor
+object JvgReportParamEditor: TJvgReportParamEditor
   Left = 250
   Top = 212
   BorderIcons = []
@@ -14,6 +14,7 @@ object ReportParamEditor: TJvgReportParamEditor
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel

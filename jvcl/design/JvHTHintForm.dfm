@@ -28,6 +28,7 @@ object JvHintEditor: TJvHintEditor
   KeyPreview = True
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   ShowHint = True
   PixelsPerInch = 96
   TextHeight = 13

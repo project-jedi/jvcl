@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, ComCtrls, Buttons,
   JvgSpeedButton, JvgWizardHeader, JvgShadow, JvgSmallFontsDefense,
-  JvComponent;
+  JvComponent, JvExControls;
 
 type
   TJvgfCheckVersionInfo = class(TJvForm)

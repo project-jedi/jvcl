@@ -1,4 +1,4 @@
-object fRTFPreview: TJvgRTFPreview
+object JvgRTFPreview: TJvgRTFPreview
   Left = 378
   Top = 268
   Width = 347
@@ -12,13 +12,14 @@ object fRTFPreview: TJvgRTFPreview
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Rich: TRichEdit
     Left = 0
     Top = 0
     Width = 339
-    Height = 120
+    Height = 117
     Align = alClient
     Lines.Strings = (
       ' ')

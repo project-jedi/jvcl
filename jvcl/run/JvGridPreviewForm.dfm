@@ -12,6 +12,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow

@@ -13,6 +13,7 @@ object JvgLogicItemEditor: TJvgLogicItemEditor
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

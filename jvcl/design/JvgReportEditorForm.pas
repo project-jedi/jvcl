@@ -41,7 +41,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvgReport, JvgCaption, JvgBevel, JvgPage, JvgLabel, JvgRuler,
-  JvgListBox, JvgReportParamEditorForm, JvComponent;
+  JvgListBox, JvgReportParamEditorForm, JvComponent, JvExControls;
 
 type
   TJvgRepProperty = class(TPropertyEditor)

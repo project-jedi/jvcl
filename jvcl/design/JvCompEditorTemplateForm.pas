@@ -47,7 +47,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvgCheckBox, JvgLanguageLoader, JvgLabel, JvgGroupBox, JvgTab, JvgPage,
   JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit,
-  JvComponent;
+  JvComponent, JvExControls;
 
 type
   TJvgCompEditorTemplate = class(TJvForm)

@@ -33,7 +33,7 @@ interface
 uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  JvLabel, JvComponent;
+  JvLabel, JvComponent, JvExControls;
 
 type
   TJvErrorEvent = procedure(Error: Exception; var Msg: string) of object;

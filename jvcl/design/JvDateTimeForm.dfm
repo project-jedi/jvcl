@@ -14,6 +14,7 @@ object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = PopupMenu1
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

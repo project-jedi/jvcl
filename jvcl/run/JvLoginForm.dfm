@@ -15,6 +15,7 @@ object JvLoginForm: TJvLoginForm
   FormStyle = fsStayOnTop
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

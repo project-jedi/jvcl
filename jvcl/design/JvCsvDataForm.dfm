@@ -25,6 +25,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     000080070000800F0000801F0000803F0000FFFF0000FFFF0000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

@@ -25,6 +25,7 @@ object JvDualListForm: TJvDualListForm
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnActivate = ListClick
   OnCreate = FormCreate
   OnShow = ListClick
@@ -57,8 +58,11 @@ object JvDualListForm: TJvDualListForm
     Height = 194
     DragMode = dmAutomatic
     ItemHeight = 13
+    Background.FillMode = bfmTile
+    Background.Visible = False
     MultiSelect = True
     ParentShowHint = False
+    ScrollBars = ssNone
     ShowHint = True
     Sorted = True
     TabOrder = 0
@@ -67,9 +71,6 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = SrcListDragDrop
     OnDragOver = SrcListDragOver
     OnKeyDown = SrcListKeyDown
-    Background.FillMode = bfmTile
-    Background.Visible = False
-    ScrollBars = ssNone
   end
   object DstList: TJvListBox
     Left = 216
@@ -78,8 +79,11 @@ object JvDualListForm: TJvDualListForm
     Height = 194
     DragMode = dmAutomatic
     ItemHeight = 13
+    Background.FillMode = bfmTile
+    Background.Visible = False
     MultiSelect = True
     ParentShowHint = False
+    ScrollBars = ssNone
     ShowHint = True
     Sorted = True
     TabOrder = 5
@@ -88,9 +92,6 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = DstListDragDrop
     OnDragOver = DstListDragOver
     OnKeyDown = DstListKeyDown
-    Background.FillMode = bfmTile
-    Background.Visible = False
-    ScrollBars = ssNone
   end
   object IncBtn: TButton
     Left = 183

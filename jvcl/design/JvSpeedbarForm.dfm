@@ -39,6 +39,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     0001000000010000000100000001000000010000000100000001000000010000
     00010000000100000001000000030000000700001FFF00003FFF80007FFFBA00}
   OldCreateOrder = True
+  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -252,7 +253,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   object AppStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    RegRoot = hkCurrentUser
+    SubStorages = <>
     Left = 44
     Top = 53
   end

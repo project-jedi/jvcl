@@ -13,6 +13,7 @@ object PainterQBForm: TPainterQBForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

@@ -13,6 +13,7 @@ object JvWizardAboutDialog: TJvWizardAboutDialog
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

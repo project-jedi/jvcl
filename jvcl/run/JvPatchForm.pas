@@ -38,7 +38,7 @@ uses
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QMask, 
   {$ENDIF VisualCLX}
-  JvToolEdit, JvComponent;
+  JvToolEdit, JvComponent, JvExMask;
 
 type
   TFoPatch = class(TJvForm)

@@ -15,6 +15,7 @@ object JvErrorDialog: TJvErrorDialog
   FormStyle = fsStayOnTop
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
@@ -97,6 +98,12 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error address: '
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
     end
     object TypeLabel: TJvLabel
       Left = 53
@@ -106,6 +113,12 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error Type: '
+      AutoOpenURL = False
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'MS Sans Serif'
+      HotTrackFont.Style = []
     end
     object MessageText: TMemo
       Left = 7

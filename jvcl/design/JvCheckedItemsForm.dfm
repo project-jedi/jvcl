@@ -39,10 +39,8 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     FFFFFF1FFFFFFE3FFFFFFC7FFFFFF8FFFFFFF1FFFFFFF3FFFFFFFFFFFFFF0000}
   OldCreateOrder = True
   Position = poDefaultPosOnly
+  Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    342
-    262)
   PixelsPerInch = 96
   TextHeight = 13
   object OkBtn: TButton
