@@ -1218,14 +1218,26 @@ begin
 
     // if the mouse is in the area of the button
     if PtInRect(LButtonRect, CurPos) then
-      with PNMTTDispInfo(Msg.NMHdr)^ do
+      if Msg.NMHdr.code = TTN_NEEDTEXTA then
       begin
-        // then we return the hint
-        lpszText := PChar(FHint);
-        hinst := 0;
-        uFlags := TTF_IDISHWND;
-        hdr.idFrom := ParentFormHandle;
+        with PNMTTDispInfoA(Msg.NMHdr)^ do
+        begin
+          // then we return the hint
+          lpszText := PChar(FHint);
+          hinst := 0;
+          uFlags := TTF_IDISHWND;
+          hdr.idFrom := ParentFormHandle;
+        end;
       end
+      else
+        with PNMTTDispInfoW(Msg.NMHdr)^ do
+        begin
+          // then we return the hint
+          lpszText := PWideChar(WideString(FHint));
+          hinst := 0;
+          uFlags := TTF_IDISHWND;
+          hdr.idFrom := ParentFormHandle;
+        end
     else
       //else we hide the tooltip
       HideToolTip;
