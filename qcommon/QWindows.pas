@@ -29,7 +29,7 @@
  THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-Last Modified: 2004-02-24
+Last Modified: 2004-03-10
 
 Known Issues:
   - Covers only a small part of the Windows APIs
@@ -970,6 +970,8 @@ function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
 function WindowFromDC(Handle: QPainterH): QWidgetH;
 function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH; // hWndParent is ignored under Linux
 function WindowFromPoint(Point: TPoint): QWidgetH;
+function FindCLXWindow(const Point: TPoint): TWidgetControl;
+function FindVCLWindow(const Point: TPoint): TWidgetControl;
 function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
 function IsIconic(Handle: QWidgetH): LongBool;
 
@@ -2849,6 +2851,27 @@ begin
   end;
 end;
 
+function FindCLXWindow(const Point: TPoint): TWidgetControl;
+var
+  Handle: QWidgetH;
+begin
+  Handle := WindowFromPoint(Point);
+  Result := nil;
+  while Handle <> nil do
+  begin
+    Result := FindControl(Handle);
+    if Result <> nil
+    then
+      Exit;
+    Handle := GetParent(Handle);
+  end;
+end;
+
+function FindVCLWindow(const Point: TPoint): TWidgetControl;
+begin
+  Result := FindCLXWindow(Point);
+end;
+
 function GetClassName(Handle: QWidgetH; Buffer: PChar; MaxCount: Integer): Integer;
 begin
   Result := 0;
@@ -4388,7 +4411,6 @@ begin
     QPainter_translate(Handle, R.Left, R.Top);
     QPainter_rotate(Handle, -Angle);
     Result := DrawText(Handle, Text, Len, R2, WinFlags);
-//    QPainter_drawText(Handle, 0, 0, @Text, -1);
   finally
     QPainter_restore(Handle);
   end;
@@ -4748,7 +4770,7 @@ begin
     Exit;
 
   QPainter_save(Handle);
-  oBkMode := TRANSPARENT; // asn: satisfy compiler
+//  oBkMode := TRANSPARENT; // asn: satisfy compiler
   try
     if uState and DFCS_TRANSPARENT <> 0 then
     begin
