@@ -90,7 +90,6 @@ type
     property ButtonWidth: Integer read FButtonW write SetButtonW;
     property ButtonHeight: Integer read FButtonH write SetButtonH;
     property ButtonCount: Integer read GetButtonCount write SetButtonCount;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoSize;
     property BiDiMode;
@@ -107,7 +106,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF COMPILER4_UP}
   end;
 
 implementation
@@ -153,9 +151,7 @@ begin
   end;
   with FButtonPointer do
   begin
-    {$IFDEF COMPILER3_UP}
     Flat := True;
-    {$ENDIF COMPILER3_UP}
     Parent := Self;
     Top := 0;
     Glyph.LoadFromResourceName(HInstance, 'RACPPOINTER');
@@ -235,9 +231,7 @@ begin
       TmpButton := TSpeedButton.Create(Self);
       with TmpButton do
       begin
-        {$IFDEF COMPILER3_UP}
         Flat := True;
-        {$ENDIF COMPILER3_UP}
         Parent := Self;
         Top := 0;
         GroupIndex := 1;

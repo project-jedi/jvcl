@@ -229,17 +229,9 @@ var
 procedure CenterWindow(Wnd: HWND);
 var
   Rect: TRect;
-  {$IFDEF COMPILER4_UP}
   Monitor: TMonitor;
-  {$ENDIF}
 begin
   GetWindowRect(Wnd, Rect);
-  {$IFNDEF COMPILER4_UP}
-  SetWindowPos(Wnd, 0,
-    (GetSystemMetrics(SM_CXSCREEN) - Rect.Right + Rect.Left) div 2,
-    (GetSystemMetrics(SM_CYSCREEN) - Rect.Bottom + Rect.Top) div 3,
-    0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
-  {$ELSE}
   if Application.MainForm <> nil then
     Monitor := Application.MainForm.Monitor
   else
@@ -248,7 +240,6 @@ begin
     Monitor.Left + ((Monitor.Width - Rect.Right + Rect.Left) div 2),
     Monitor.Top + ((Monitor.Height - Rect.Bottom + Rect.Top) div 3),
     0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
-  {$ENDIF}
 end;
 
 // Generic dialog hook. Centers the dialog on the screen in response to
@@ -331,19 +322,9 @@ begin
   DevNames := PDevNames(GlobalLock(DeviceNames));
   try
     with DevNames^ do
-      {$IFDEF COMPILER4_UP}
       Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
         PChar(DevNames) + wDriverOffset,
         PChar(DevNames) + wOutputOffset, DeviceMode);
-    {$ELSE} // D3+NT bugfix
-      if Win32Platform = VER_PLATFORM_WIN32_NT then
-        Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
-          PChar(DevNames) + wDriverOffset, '', DeviceMode)
-      else
-        Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
-          PChar(DevNames) + wDriverOffset,
-          PChar(DevNames) + wOutputOffset, DeviceMode);
-    {$ENDIF}
   finally
     GlobalUnlock(DeviceNames);
     GlobalFree(DeviceNames);

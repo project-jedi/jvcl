@@ -38,47 +38,12 @@ uses
   JvDBUtils;
 
 type
-  {$IFNDEF WIN32}
-  TLocateFilter = (lfTree, lfCallback);
-  {$ENDIF}
-
-  {$IFNDEF COMPILER3_UP}
-  TBDEDataSet = TDataSet;
-  {$ENDIF}
-
-  {$IFNDEF COMPILER5_UP}
-  TDatabaseLoginEvent = TLoginEvent;
-  {$ENDIF}
-
   TJvDBLocate = class(TJvLocateObject)
   private
-    {$IFNDEF WIN32}
-    FFilterHandle: HDBIFilter;
-    FTree: PChar;
-    FTreeSize: Integer;
-    FFilterKind: TLocateFilter;
-    procedure ActivateFilter;
-    procedure DeactivateFilter;
-    procedure DropFilter;
-    procedure CheckFilterKind;
-    procedure ChangeBookmark;
-    procedure BuildFilterHeader(var Rec);
-    procedure BuildFilterTree;
-    procedure FreeTree;
-    function RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
-    {$IFDEF WIN32} stdcall;
-    {$ENDIF}
-    {$ELSE}
     function LocateCallback: Boolean;
     procedure RecordFilter(DataSet: TDataSet; var Accept: Boolean);
-    {$ENDIF WIN32}
   protected
-    {$IFDEF WIN32}
     function LocateFilter: Boolean; override;
-    {$ELSE}
-    procedure ActiveChanged; override;
-    function LocateFilter: Boolean; override;
-    {$ENDIF WIN32}
     procedure CheckFieldType(Field: TField); override;
     function LocateKey: Boolean; override;
     function UseKey: Boolean; override;
@@ -133,15 +98,10 @@ type
 { Utility routines }
 
 function CreateDbLocate: TJvLocateObject;
-{$IFNDEF WIN32}
-function CheckOpen(Status: DBIResult): Boolean;
-{$ENDIF}
 procedure FetchAllRecords(DataSet: TBDEDataSet);
 function TransActive(Database: TDatabase): Boolean;
 function AsyncQrySupported(Database: TDatabase): Boolean;
-{$IFDEF WIN32}
 function GetQuoteChar(Database: TDatabase): string;
-{$ENDIF}
 procedure ExecuteQuery(const DbName, QueryText: string);
 procedure ExecuteQueryEx(const SessName, DbName, QueryText: string);
 procedure BdeTranslate(Locale: TLocale; Source, Dest: PChar; ToOem: Boolean);
@@ -271,13 +231,10 @@ uses
 
 { Utility routines }
 
-{$IFDEF COMPILER5_UP}
-
 procedure DBError(const Ident: string);
 begin
   DatabaseError(Ident);
 end;
-{$ENDIF}
 
 function IsBookmarkStable(DataSet: TBDEDataSet): Boolean;
 var
@@ -291,7 +248,6 @@ end;
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
-  {$IFDEF COMPILER3_UP}
   with ADataSet do
     if Active and (ABookmark <> nil) and not (Bof and Eof) and
       BookmarkValid(ABookmark) then
@@ -300,16 +256,6 @@ begin
       Result := True;
     except
     end;
-  {$ELSE}
-  with TBDEDataSet(ADataSet) do
-    if Active and (ABookmark <> nil) and not (Bof and Eof) then
-      if DbiSetToBookmark(Handle, ABookmark) = DBIERR_NONE then
-      try
-        Resync([rmExact, rmCenter]);
-        Result := True;
-      except
-      end;
-  {$ENDIF}
 end;
 
 function BookmarksCompare(DataSet: TBDEDataSet; Bookmark1, Bookmark2: TBookmark): Integer;
@@ -320,13 +266,8 @@ begin
   Result := RetCodes[Bookmark1 = nil, Bookmark2 = nil];
   if Result = 2 then
   begin
-    {$IFDEF WIN32}
     Check(DbiCompareBookmarks(DataSet.Handle, Bookmark1, Bookmark2,
       Result));
-    {$ELSE}
-    Check(DbiCompareBookmarks(DataSet.Handle, Bookmark1, Bookmark2,
-      Word(Result)));
-    {$ENDIF}
     if Result = CMPKeyEql then
       Result := CMPEql;
   end;
@@ -342,13 +283,7 @@ begin
   Result := Value;
 end;
 
-{$IFDEF WIN32}
-
 function GetQuoteChar(Database: TDatabase): string;
-{$IFNDEF COMPILER3_UP}
-const
-  dbQUOTECHAR = $0404000A;
-  {$ENDIF}
 var
   Q: Char;
   Len: Word;
@@ -364,7 +299,6 @@ begin
   else
     Result := '"';
 end;
-{$ENDIF}
 
 function AsyncQrySupported(Database: TDatabase): Boolean;
 begin
@@ -376,71 +310,18 @@ begin
     except
     end
     else
-      {$IFDEF WIN32}
       Result := True;
-  {$ELSE}
-      Result := False;
-  {$ENDIF}
 end;
 
 function FieldLogicMap(FldType: TFieldType): Integer;
-{$IFNDEF COMPILER3_UP}
-{$IFDEF DELPHI1}
-const
-  FldTypeMap: array [TFieldType] of Integer = (
-    fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
-    fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
-    fldVARBYTES, fldBLOB, fldBLOB, fldBLOB);
-  {$ELSE}
-const
-  FldTypeMap: array [TFieldType] of Integer = (
-    fldUNKNOWN, fldZSTRING, fldINT16, fldINT32, fldUINT16, fldBOOL,
-    fldFLOAT, fldFLOAT, fldBCD, fldDATE, fldTIME, fldTIMESTAMP, fldBYTES,
-    fldVARBYTES, fldINT32, fldBLOB, fldBLOB, fldBLOB, fldBLOB, fldBLOB,
-    fldBLOB, fldBLOB);
-  {$ENDIF}
-  {$ENDIF}
 begin
   Result := FldTypeMap[FldType];
 end;
 
 function FieldSubtypeMap(FldType: TFieldType): Integer;
-{$IFNDEF COMPILER3_UP}
-{$IFDEF DELPHI1}
-const
-  FldSubtypeMap: array [TFieldType] of Integer = (
-    0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstBINARY,
-    fldstMEMO, fldstGRAPHIC);
-  {$ELSE}
-const
-  FldSubtypeMap: array [TFieldType] of Integer = (
-    0, 0, 0, 0, 0, 0, 0, fldstMONEY, 0, 0, 0, 0, 0, 0, fldstAUTOINC,
-    fldstBINARY, fldstMEMO, fldstGRAPHIC, fldstFMTMEMO, fldstOLEOBJ,
-    fldstDBSOLEOBJ, fldstTYPEDBINARY);
-  {$ENDIF}
-  {$ENDIF}
 begin
   Result := FldSubtypeMap[FldType];
 end;
-
-{$IFNDEF WIN32}
-
-function CheckOpen(Status: DBIResult): Boolean;
-begin
-  case Status of
-    DBIERR_NONE:
-      Result := True;
-    DBIERR_NOTSUFFTABLERIGHTS:
-      begin
-        if not Session.GetPassword then
-          DbiError(Status);
-        Result := False;
-      end;
-  else
-    DbiError(Status);
-  end;
-end;
-{$ENDIF}
 
 { Routine for convert string to IDAPI logical field type }
 
@@ -455,11 +336,7 @@ var
   DateTime: TDateTime;
   D: Double;
   Data: Longint;
-  {$IFDEF WIN32}
   TimeStamp: TTimeStamp;
-  {$ELSE}
-  DtData: TDateTime;
-  {$ENDIF}
 begin
   if Buffer = nil then
   begin
@@ -482,11 +359,7 @@ begin
           begin
             Val(Value, L, E);
             if E <> 0 then
-              {$IFDEF COMPILER3_UP}
               DatabaseErrorFmt(SInvalidIntegerValue, [Value, FldName]);
-              {$ELSE}
-              DBErrorFmt(SInvalidIntegerValue, [Value, FldName]);
-              {$ENDIF}
             Move(L, Buffer^, FldSize);
           end;
         end;
@@ -522,12 +395,8 @@ begin
           else
           begin
             DateTime := StrToDate(Value);
-            {$IFDEF WIN32}
             TimeStamp := DateTimeToTimeStamp(DateTime);
             Data := TimeStamp.Date;
-            {$ELSE}
-            Data := Trunc(DateTime);
-            {$ENDIF}
             Move(Data, Buffer^, Min(FldSize, SizeOf(Data)));
           end;
         end;
@@ -538,12 +407,8 @@ begin
           else
           begin
             DateTime := StrToTime(Value);
-            {$IFDEF WIN32}
             TimeStamp := DateTimeToTimeStamp(DateTime);
             Data := TimeStamp.Time;
-            {$ELSE}
-            Data := Round(Frac(DateTime) * MSecsPerDay);
-            {$ENDIF}
             Move(Data, Buffer^, Min(FldSize, SizeOf(Data)));
           end;
         end;
@@ -554,14 +419,9 @@ begin
           else
           begin
             DateTime := StrToDateTime(Value);
-            {$IFDEF WIN32}
             TimeStamp := DateTimeToTimeStamp(DateTime);
             D := TimeStampToMSecs(DateTimeToTimeStamp(DateTime));
             Move(D, Buffer^, Min(FldSize, SizeOf(D)));
-            {$ELSE}
-            DtData := DateTime * MSecsPerDay;
-            Move(DtData, Buffer^, Min(FldSize, SizeOf(DtData)));
-            {$ENDIF}
           end;
         end;
     else
@@ -580,9 +440,7 @@ begin
   with TQuery.Create(Application) do
   try
     DatabaseName := DbName;
-    {$IFDEF WIN32}
     SessionName := SessName;
-    {$ENDIF}
     SQL.Add(QueryText);
     ExecSQL;
   finally
@@ -651,11 +509,7 @@ var
 begin
   ParamList := TStringList.Create;
   try
-    {$IFDEF WIN32}
     Database.Session.GetAliasParams(Database.AliasName, ParamList);
-    {$ELSE}
-    Session.GetAliasParams(Database.AliasName, ParamList);
-    {$ENDIF}
     if Database.IsSQLBased then
       DBPath := ParamList.Values['SERVER NAME']
     else
@@ -705,11 +559,9 @@ begin
   I := 1;
   while I <= Length(DatabaseName) do
   begin
-    {$IFDEF COMPILER3_UP}
     if DatabaseName[I] in LeadBytes then
       Inc(I)
     else
-      {$ENDIF COMPILER3_UP}
       if DatabaseName[I] in [':', '\'] then
       Exit;
     Inc(I);
@@ -736,9 +588,7 @@ begin
   begin
     Params := TStringList.Create;
     try
-      {$IFDEF WIN32}
       Session.Active := True;
-      {$ENDIF}
       Session.GetAliasParams(AliasName, Params);
       Result := Params.Values['SERVER NAME'];
     finally
@@ -777,23 +627,17 @@ procedure TJvCloneDbDataset.InitFromDataSet(Source: TDBDataSet; Reset: Boolean);
 begin
   with Source do
   begin
-    {$IFDEF WIN32}
     Self.SessionName := SessionName;
-    {$ENDIF}
     Self.DatabaseName := DatabaseName;
     SetSourceHandle(Handle);
-    {$IFDEF WIN32}
     Self.Filter := Filter;
     Self.OnFilterRecord := OnFilterRecord;
     if not Reset then
       Self.Filtered := Filtered;
-    {$ENDIF}
   end;
   if Reset then
   begin
-    {$IFDEF WIN32}
     Filtered := False;
-    {$ENDIF}
     First;
   end;
 end;
@@ -828,9 +672,7 @@ begin
   begin
     Self.TableType := TableType;
     Self.TableName := TableName;
-    {$IFDEF WIN32}
     Self.SessionName := SessionName;
-    {$ENDIF}
     Self.DatabaseName := DatabaseName;
     if not Reset then
     begin
@@ -841,18 +683,14 @@ begin
         Self.IndexFieldNames := IndexFieldNames;
     end;
     SetSourceHandle(Handle);
-    {$IFDEF WIN32}
     Self.Filter := Filter;
     Self.OnFilterRecord := OnFilterRecord;
     if not Reset then
       Self.Filtered := Filtered;
-    {$ENDIF}
   end;
   if Reset then
   begin
-    {$IFDEF WIN32}
     Filtered := False;
-    {$ENDIF}
     DbiResetRange(Handle);
     IndexName := '';
     IndexFieldNames := '';
@@ -889,20 +727,8 @@ begin
   Result := TJvDBLocate.Create;
 end;
 
-{$IFNDEF WIN32}
-function CallbackFilter(pDBLocate: Longint; RecBuf: Pointer;
-  RecNo: Longint): Smallint;
-  {$IFDEF WIN32} stdcall;{$ELSE} export; {$ENDIF WIN32}
-begin
-  Result := TJvDBLocate(pDBLocate).RecordFilter(RecBuf, RecNo);
-end;
-{$ENDIF WIN32}
-
 destructor TJvDBLocate.Destroy;
 begin
-  {$IFNDEF WIN32}
-  DropFilter;
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -1000,7 +826,6 @@ begin
   Result := IsFilterApplicable(DataSet);
 end;
 
-{$IFDEF WIN32}
 
 function TJvDBLocate.LocateCallback: Boolean;
 var
@@ -1057,201 +882,6 @@ begin
     end;
   end;
 end;
-
-{$ELSE WIN32}
-
-type
-  TFilterRec = record { the simple filter tree with one condition }
-    Header: CANExpr;
-    Condition: CANBinary;
-    FieldNode: CANField;
-    ConstNode: CANConst;
-  end;
-
-function TJvDBLocate.LocateFilter: Boolean;
-var
-  SaveCursor: TCursor;
-  Status: DBIResult;
-begin
-  SaveCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  try
-    ActivateFilter;
-    try
-      Check(DbiSetToBegin(TBDEDataSet(DataSet).Handle));
-      Status := DbiGetNextRecord(TBDEDataSet(DataSet).Handle, dbiNoLock,
-        nil, nil);
-      if Status = DBIERR_NONE then
-      begin
-        DataSet.Resync([rmExact, rmCenter]);
-        ChangeBookmark;
-        Result := True;
-      end
-      else
-        Result := False;
-    finally
-      DeactivateFilter;
-      if Result then
-        SetToBookmark(DataSet, Bookmark);
-    end;
-  finally
-    Screen.Cursor := SaveCursor;
-  end;
-end;
-
-procedure TJvDBLocate.BuildFilterHeader(var Rec);
-const
-  FCondition: array [Boolean] of CANOp = (canGE, canEQ);
-  FilterHeaderSize = SizeOf(CANExpr) + SizeOf(CANBinary) +
-    SizeOf(CANField) + SizeOf(CANConst);
-begin
-  with TFilterRec(Rec) do
-  begin
-    with Header do
-    begin
-      iVer := CANEXPRVERSION;
-      iNodes := 3;
-      iNodeStart := SizeOf(CANExpr);
-      iLiteralStart := FilterHeaderSize;
-    end;
-    with Condition do
-    begin
-      nodeClass := nodeBINARY;
-      canOp := FCondition[LookupExact];
-      iOperand1 := SizeOf(CANBinary);
-      iOperand2 := iOperand1 + SizeOf(CANField);
-    end;
-    with FieldNode do
-    begin
-      nodeClass := nodeFIELD;
-      canOp := canFIELD2;
-      iFieldNum := LookupField.FieldNo;
-      iNameOffset := 0;
-    end;
-    with ConstNode do
-    begin
-      canOp := canCONST2;
-      iType := FieldLogicMap(LookupField.DataType);
-      iSize := LookupField.DataSize;
-      iOffset := Length(LookupField.FieldName) + 1;
-    end;
-    Header.iTotalSize := FilterHeaderSize + ConstNode.iSize +
-      ConstNode.iOffset;
-  end;
-end;
-
-procedure TJvDBLocate.BuildFilterTree;
-var
-  Temp: PChar;
-  Rec: TFilterRec;
-begin
-  if FTree <> nil then
-    FreeMem(FTree, FTreeSize);
-  FTree := nil;
-  BuildFilterHeader(Rec);
-  FTreeSize := Rec.Header.iTotalSize;
-  FTree := AllocMem(FTreeSize);
-  try
-    FillChar(FTree^, FTreeSize, 0);
-    Temp := FTree;
-    Move(Rec, FTree^, SizeOf(TFilterRec));
-    Inc(Temp, SizeOf(TFilterRec));
-    StrPCopy(PChar(Temp), LookupField.FieldName);
-    Inc(Temp, Rec.ConstNode.iOffset);
-    ConvertStringToLogicType(DataSet.Locale, FieldLogicMap(LookupField.DataType),
-      LookupField.DataSize, LookupField.FieldName, LookupValue, Temp);
-  except
-    FreeTree;
-    raise;
-  end;
-end;
-
-procedure TJvDBLocate.FreeTree;
-begin
-  if FTree <> nil then
-    FreeMem(FTree, FTreeSize);
-  FTree := nil;
-  FTreeSize := 0;
-end;
-
-procedure TJvDBLocate.CheckFilterKind;
-var
-  NewKind: TLocateFilter;
-begin
-  if CaseSensitive and LookupExact then
-    NewKind := lfTree
-  else
-    NewKind := lfCallback;
-  if (FFilterKind <> NewKind) or (NewKind = lfTree) then
-  begin
-    DropFilter;
-    FFilterKind := NewKind;
-  end;
-end;
-
-procedure TJvDBLocate.ActivateFilter;
-begin
-  CheckFilterKind;
-  if FFilterHandle = nil then
-  begin
-    if FFilterKind = lfCallback then
-    begin
-      Check(DbiAddFilter(DataSet.Handle, Longint(Self), 0, True, nil,
-        CallbackFilter, FFilterHandle));
-    end
-    else { lfTree }
-    begin
-      BuildFilterTree;
-      Check(DbiAddFilter(DataSet.Handle, 0, 1, False,
-        pCANExpr(FTree), nil, FFilterHandle));
-    end;
-  end;
-  DbiActivateFilter(DataSet.Handle, FFilterHandle);
-end;
-
-procedure TJvDBLocate.DeactivateFilter;
-begin
-  DbiDeactivateFilter(DataSet.Handle, FFilterHandle);
-end;
-
-procedure TJvDBLocate.DropFilter;
-begin
-  if FFilterHandle <> nil then
-    DbiDropFilter(DataSet.Handle, FFilterHandle);
-  FreeTree;
-  FFilterHandle := nil;
-end;
-
-function TJvDBLocate.RecordFilter(RecBuf: Pointer; RecNo: Longint): Smallint;
-var
-  Accept: Boolean;
-begin
-  try
-    Move(RecBuf^, DataSet.ActiveBuffer^, DataSet.RecordSize);
-    if LookupField <> nil then
-      Accept := MatchesLookup(LookupField)
-    else
-      Accept := True;
-    Result := Ord(Accept);
-  except
-    Application.HandleException(Self);
-    Result := Abort;
-  end;
-end;
-
-procedure TJvDBLocate.ChangeBookmark;
-begin
-  if Bookmark <> nil then
-    DataSet.FreeBookmark(Bookmark);
-  Bookmark := DataSet.GetBookmark;
-end;
-
-procedure TJvDBLocate.ActiveChanged;
-begin
-  DropFilter;
-end;
-
-{$ENDIF WIN32}
 
 { DataSet locate routines }
 
@@ -1497,18 +1127,14 @@ end;
 procedure BdeFlushBuffers;
 var
   I, L: Integer;
-  {$IFDEF WIN32}
   Session: TSession;
   J: Integer;
-  {$ENDIF}
 begin
-  {$IFDEF WIN32}
   for J := 0 to Sessions.Count - 1 do
   begin
     Session := Sessions[J];
     if not Session.Active then
       Continue;
-    {$ENDIF}
     for I := 0 to Session.DatabaseCount - 1 do
     begin
       with Session.Databases[I] do
@@ -1521,55 +1147,18 @@ begin
           end;
         end;
     end;
-    {$IFDEF WIN32}
   end;
-  {$ENDIF}
 end;
-
-{$IFNDEF WIN32}
-type
-  TDbiGetExactRecordCount = function(hCursor: hDBICur;
-    var iRecCount: Longint): DbiResult;
-
-const
-  DbiGetExactRecCnt: TDbiGetExactRecordCount = nil;
-
-function DbiGetExactRecordCount(hCursor: hDBICur;
-  var iRecCount: Longint): DbiResult;
-var
-  HModule: THandle;
-  ErrMode: Cardinal;
-begin
-  if not Assigned(DbiGetExactRecCnt) then
-  begin
-    ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-    HModule := LoadLibrary('IDAPI01.DLL');
-    SetErrorMode(ErrMode);
-    if HModule >= HINSTANCE_ERROR then
-    begin
-      @DbiGetExactRecCnt := GetProcAddress(HModule, 'DBIGETEXACTRECORDCOUNT');
-      FreeLibrary(HModule);
-    end;
-  end;
-  if Assigned(DbiGetExactRecCnt) then
-    Result := DbiGetExactRecCnt(hCursor, iRecCount)
-  else
-    Result := DbiGetRecordCount(hCursor, iRecCount);
-end;
-{$ENDIF}
 
 function DataSetRecordCount(DataSet: TDataSet): Longint;
 var
   IsCount: Boolean;
 begin
-  {$IFDEF COMPILER3_UP}
   if DataSet is TBDEDataSet then
   begin
-  {$ENDIF}
     IsCount := (DbiGetExactRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE) or (DbiGetRecordCount(TBDEDataSet(DataSet).Handle,
       Result) = DBIERR_NONE);
-  {$IFDEF COMPILER3_UP}
   end
   else
   try
@@ -1578,7 +1167,6 @@ begin
   except
     IsCount := False;
   end;
-  {$ENDIF}
   if not IsCount then
     Result := -1;
 end;
@@ -1592,13 +1180,11 @@ begin
   if (DataSet <> nil) and DataSet.Active and (DataSet.State in [dsBrowse,
     dsEdit]) then
   begin
-    {$IFDEF COMPILER3_UP}
     if not (DataSet is TBDEDataSet) then
     begin
       Result := DataSet.RecNo;
       Exit;
     end;
-    {$ENDIF}
     if DbiGetCursorProps(TBDEDataSet(DataSet).Handle, FCurProp) <> DBIERR_NONE then
       Exit;
     if (StrComp(FCurProp.szTableType, szParadox) = 0) or
@@ -1643,48 +1229,32 @@ end;
 function TransActive(Database: TDatabase): Boolean;
 var
   Info: XInfo;
-  {$IFDEF WIN32}
   S: hDBISes;
-  {$ENDIF}
 begin
-  {$IFDEF WIN32}
   Result := False;
   if DbiGetCurrSession(S) <> DBIERR_NONE then
     Exit;
-  {$ENDIF}
   Result := (Database.Handle <> nil) and
     (DbiGetTranInfo(Database.Handle, nil, @Info) = DBIERR_NONE) and
     (Info.exState = xsActive);
-  {$IFDEF WIN32}
   DbiSetCurrSession(S);
-  {$ENDIF}
 end;
 
 function GetBdeDirectory: string;
 const
   Ident = 'DLLPATH';
 var
-  {$IFDEF WIN32}
   Ini: TRegistry;
 const
   BdeKey = 'SOFTWARE\Borland\Database Engine';
-  {$ELSE}
-  Ini: TIniFile;
-  {$ENDIF}
 begin
   Result := '';
-  {$IFDEF WIN32}
   Ini := TRegistry.Create;
   try
     Ini.RootKey := HKEY_LOCAL_MACHINE;
     if Ini.OpenKey(BdeKey, False) then
       if Ini.ValueExists(Ident) then
         Result := Ini.ReadString(Ident);
-  {$ELSE}
-  Ini := TIniFile.Create('WIN.INI');
-  try
-    Result := Ini.ReadString('IDAPI', Ident, '');
-  {$ENDIF}
   { Check for multiple directories, use only the first one }
     if Pos(';', Result) > 0 then
       Delete(Result, Pos(';', Result), MaxInt);
@@ -1703,7 +1273,7 @@ procedure ExportDataSetEx(Source: TBDEDataSet; DestTable: TTable;
   function ExportAsciiField(Field: TField): Boolean;
   begin
     Result := Field.Visible and not (Field.Calculated
-      {$IFDEF WIN32} or Field.Lookup {$ENDIF}) and not (Field.DataType in
+      or Field.Lookup) and not (Field.DataType in
       ftNonTextTypes + [ftUnknown]);
   end;
 
@@ -1720,10 +1290,8 @@ begin
     _DBError(SDataSetEmpty);
   if DestTable.Active then
     DestTable.Close;
-  {$IFDEF WIN32}
   if Source is TDBDataSet then
     DestTable.SessionName := TDBDataSet(Source).SessionName;
-  {$ENDIF}
   if (TableType = ttDefault) then
   begin
     if DestTable.TableType <> ttDefault then
@@ -1799,7 +1367,7 @@ begin
           S := ChangeFileExt(S, TextExt);
         I := FileCreate(S);
         if I < 0 then
-          raise EFCreateError.CreateFmt(ResStr(SFCreateError), [S]);
+          raise EFCreateError.CreateFmt(SFCreateError, [S]);
         FileClose(I);
         BatchMove.Execute;
       end;
@@ -1826,10 +1394,8 @@ var
 begin
   if Source = nil then
     _DBError(SDataSetEmpty);
-  {$IFDEF WIN32}
   if (Source is TDBDataSet) and not Source.Active then
     TDBDataSet(Source).SessionName := DestTable.SessionName;
-  {$ENDIF}
   BatchMove := TBatchMove.Create(Application);
   try
     StartWait;
@@ -1924,7 +1490,7 @@ begin
   DbiGetErrorString(ErrorCode, Msg);
   TrimMessage(Msg);
   if Msg[0] = #0 then
-    Result := Format(ResStr(SBDEError), [ErrorCode])
+    Result := Format(SBDEError, [ErrorCode])
   else
     Result := StrPas(Msg);
   while True do
@@ -1996,20 +1562,6 @@ begin
     DebugFile, SizeOf(DBIPATH) - 1)));
 end;
 { begin JvDBUtil }
-
-{$IFNDEF COMPILER3_UP}
-
-function AnsiStrIComp(S1, S2: PChar): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, -1, S2, -1) - 2;
-end;
-
-function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, MaxLen, S2, MaxLen) - 2;
-end;
-
-{$ENDIF COMPILER3_UP}
 
 procedure ExecuteSQLScript(Base: TDataBase; const Script: string; const Commit: TCommit; OnProgress: TJvDBProgressEvent; const UserData: Integer);
 var
@@ -2251,10 +1803,8 @@ begin
         Result := 'varbytes'; { Length prefixed var bytes }
       fldLOCKINFO:
         Result := 'lockinfo'; { Look for LOCKINFO typedef }
-      {$IFDEF COMPILER3_UP}
       fldCURSOR:
         Result := 'Oracle cursor'; { For Oracle Cursor type }
-      {$ENDIF COMPILER3_UP}
 
      { Paradox types (Physical) }
       fldPDXCHAR:
@@ -2317,7 +1867,6 @@ begin
         Result := 'binary blob'; { Binary data   (blob) }
       fldDBBYTES:
         Result := 'bytes'; { Only for TEMPORARY tables }
-      {$IFDEF COMPILER3_UP}
       fldDBLONG:
         Result := 'long integer'; { Long (Integer) }
       fldDBDATETIME:
@@ -2327,7 +1876,6 @@ begin
 
       fldDBAUTOINC:
         Result := 'auto increment'; { Auto increment (long) }
-      {$ENDIF COMPILER3_UP}
 
      { InterBase types (Physical) }
       1026:
@@ -2677,12 +2225,8 @@ end;
 initialization
   JvDBUtils.CreateLocateObject := CreateDbLocate;
   
-{$IFDEF WIN32}
 finalization
   ReleaseSaveIndexies;
-{$ELSE}
-  AddExitProc(ReleaseSaveIndexies);
-{$ENDIF}
 
 end.
 

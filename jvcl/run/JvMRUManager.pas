@@ -30,10 +30,7 @@ unit JvMRUManager;
 interface
 
 uses
-  SysUtils, Classes, Menus, IniFiles,
-  {$IFDEF WIN32}
-  Registry,
-  {$ENDIF}
+  SysUtils, Classes, Menus, IniFiles, Registry,
   JvFormPlacement {, JvComponent};
 
 type
@@ -119,10 +116,8 @@ type
     procedure Remove(const RecentName: string);
     procedure UpdateRecentMenu;
     procedure RemoveInvalid;
-    {$IFDEF WIN32}
     procedure LoadFromRegistry(Ini: TRegIniFile; const Section: string);
     procedure SaveToRegistry(Ini: TRegIniFile; const Section: string);
-    {$ENDIF WIN32}
     procedure LoadFromIni(Ini: TIniFile; const Section: string);
     procedure SaveToIni(Ini: TIniFile; const Section: string);
     property Strings: TStrings read FList;
@@ -448,10 +443,8 @@ procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
 begin
   ClearRecentMenu;
   FRecentMenu := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
   UpdateRecentMenu;
 end;
 
@@ -554,8 +547,6 @@ begin
     DoWriteItem(Ini, Section, I, FList[I], Longint(FList.Objects[I]));
 end;
 
-{$IFDEF WIN32}
-
 procedure TJvMRUManager.LoadFromRegistry(Ini: TRegIniFile; const Section: string);
 begin
   InternalLoad(Ini, Section);
@@ -565,8 +556,6 @@ procedure TJvMRUManager.SaveToRegistry(Ini: TRegIniFile; const Section: string);
 begin
   InternalSave(Ini, Section);
 end;
-
-{$ENDIF WIN32}
 
 procedure TJvMRUManager.LoadFromIni(Ini: TIniFile; const Section: string);
 begin

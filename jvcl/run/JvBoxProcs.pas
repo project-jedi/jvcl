@@ -292,22 +292,16 @@ var
   R: TRect;
 
   procedure DrawItemFocusRect(Idx: Integer);
-  {$IFDEF WIN32}
   var
     P: TPoint;
     DC: HDC;
-  {$ENDIF}
   begin
     R := BoxItemRect(List, Idx);
-    {$IFDEF WIN32}
     P := List.ClientToScreen(R.TopLeft);
     R := Bounds(P.X, P.Y, R.Right - R.Left, R.Bottom - R.Top);
     DC := GetDC(0);
     DrawFocusRect(DC, R);
     ReleaseDC(0, DC);
-    {$ELSE}
-    BoxGetCanvas(List).DrawFocusRect(R);
-    {$ENDIF}
   end;
 
 begin

@@ -148,7 +148,6 @@ end;
 
 procedure TJvMergeManager.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
@@ -156,12 +155,10 @@ procedure TJvMergeManager.DefineProperties(Filer: TFiler);
     else
       Result := IsForm;
   end;
-  {$ENDIF}
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('IsForm', ReadForm, WriteForm,
-    {$IFDEF WIN32} DoWrite {$ELSE} IsForm {$ENDIF});
+  Filer.DefineProperty('IsForm', ReadForm, WriteForm, DoWrite);
 end;
 
 procedure TJvMergeManager.SetMergeFrame(Value: TWinControl);
@@ -169,10 +166,8 @@ begin
   if FMergeFrame <> Value then
   begin
     FMergeFrame := Value;
-    {$IFDEF WIN32}
     if Value <> nil then
       Value.FreeNotification(Self);
-    {$ENDIF}
     FFormHistory.ResetHistory;
   end;
 end;

@@ -59,12 +59,10 @@ type
 
 { property Read Handle: HWnd }
 
-{$IFDEF COMPILER3_UP}
 procedure TCommonDialog_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(TCommonDialog(Args.Obj).Handle);
 end;
-{$ENDIF COMPILER3_UP}
 
 {$IFDEF COMPLIB_VCL}
 
@@ -444,11 +442,7 @@ end;
 
 procedure TPrinterSetupDialog_Execute(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER3_UP}
   Value := TPrinterSetupDialog(Args.Obj).Execute;
-  {$ELSE}
-  TPrinterSetupDialog(Args.Obj).Execute;
-  {$ENDIF COMPILER3_UP}
 end;
 
 { TPrintDialog }
@@ -760,13 +754,11 @@ end;
 { function MessageDlgPosHelp(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer; }
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
 procedure JvInterpreter_MessageDlgPosHelp(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := MessageDlgPosHelp(Args.Values[0], Args.Values[1], TMsgDlgButtons(Word(V2S(Args.Values[2]))), Args.Values[3],
     Args.Values[4], Args.Values[5], Args.Values[6]);
 end;
-{$ENDIF COMPILER3_UP}
 {$ENDIF COMPLIB_VCL}
 
 { procedure ShowMessage(const Msg: string); }
@@ -783,13 +775,11 @@ end;
 
 { procedure ShowMessageFmt(const Msg: string; Params: array of const); }
 
-{$IFDEF COMPILER3_UP}
 procedure JvInterpreter_ShowMessageFmt(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Args.OpenArray(1);
   ShowMessageFmt(Args.Values[0], Slice(Args.OA^, Args.OAS));
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure ShowMessagePos(const Msg: string; X, Y: Integer); }
 
@@ -836,9 +826,7 @@ begin
   begin
     { TCommonDialog }
     AddClass(cDialogs, TCommonDialog, 'TCommonDialog');
-    {$IFDEF COMPILER3_UP}
     AddGet(TCommonDialog, 'Handle', TCommonDialog_Read_Handle, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddGet(TCommonDialog, 'Ctl3D', TCommonDialog_Read_Ctl3D, 0, [0], varEmpty);
     AddSet(TCommonDialog, 'Ctl3D', TCommonDialog_Write_Ctl3D, 0, [0]);
@@ -1056,10 +1044,8 @@ begin
     AddConst(cDialogs, 'mbIgnore', Integer(mbIgnore));
     {$IFDEF COMPLIB_VCL}
     AddConst(cDialogs, 'mbAll', Integer(mbAll));
-    {$IFDEF COMPILER3_UP}
     AddConst(cDialogs, 'mbNoToAll', Integer(mbNoToAll));
     AddConst(cDialogs, 'mbYesToAll', Integer(mbYesToAll));
-    {$ENDIF COMPILER3_UP}
     AddConst(cDialogs, 'mbHelp', Integer(mbHelp));
     {$ENDIF COMPLIB_VCL}
     AddConst(cDialogs, 'mrNone', Integer(mrNone));
@@ -1071,10 +1057,8 @@ begin
     AddConst(cDialogs, 'mrYes', Integer(mrYes));
     AddConst(cDialogs, 'mrNo', Integer(mrNo));
     AddConst(cDialogs, 'mrAll', Integer(mrAll));
-    {$IFDEF COMPILER3_UP}
     AddConst(cDialogs, 'mrNoToAll', Integer(mrNoToAll));
     AddConst(cDialogs, 'mrYesToAll', Integer(mrYesToAll));
-    {$ENDIF COMPILER3_UP}
     {$IFDEF COMPLIB_VCL}
     AddFun(cDialogs, 'CreateMessageDialog', JvInterpreter_CreateMessageDialog, 3, [varEmpty, varEmpty, varEmpty],
       varEmpty);
@@ -1083,15 +1067,11 @@ begin
     AddFun(cDialogs, 'MessageDlgPos', JvInterpreter_MessageDlgPos, 6, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty], varEmpty);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
     AddFun(cDialogs, 'MessageDlgPosHelp', JvInterpreter_MessageDlgPosHelp, 7, [varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     {$ENDIF COMPLIB_VCL}
     AddFun(cDialogs, 'ShowMessage', JvInterpreter_ShowMessage, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddFun(cDialogs, 'ShowMessageFmt', JvInterpreter_ShowMessageFmt, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddFun(cDialogs, 'ShowMessagePos', JvInterpreter_ShowMessagePos, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun(cDialogs, 'InputBox', JvInterpreter_InputBox, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFun(cDialogs, 'InputQuery', JvInterpreter_InputQuery, 3, [varEmpty, varEmpty, varByRef], varEmpty);

@@ -45,28 +45,28 @@ uses
 function SelectDate(Sender: TWinControl; var Date: TDateTime; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean; // Polaris
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean; // Polaris
 function SelectDateStr(Sender: TWinControl; var StrDate: string; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings;
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean; // Polaris
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean; // Polaris
 function PopupDate(var Date: TDateTime; Edit: TWinControl;
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): Boolean;
 
 { Popup calendar }
 
 function CreatePopupCalendar(AOwner: TComponent;
-  {$IFDEF COMPILER4_UP} ABiDiMode: TBiDiMode = bdLeftToRight; {$ENDIF}
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): TWinControl;
+  ABiDiMode: TBiDiMode = bdLeftToRight;
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0): TWinControl;
 procedure SetupPopupCalendar(PopupCalendar: TWinControl;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings; FourDigitYear: Boolean;
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF});
+  MinDate: TDateTime = 0;
+  MaxDate: TDateTime = 0);
 
 const
   PopupCalendarSize: TPoint = (X: 187; Y: 124);
@@ -75,7 +75,7 @@ implementation
 
 uses
   Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
   JvxCtrls, JvConsts, JvToolEdit, JvJVCLUtils;
@@ -87,17 +87,13 @@ const
     ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
 
 procedure FontSetDefault(AFont: TFont);
-{$IFDEF WIN32}
 var
   NonClientMetrics: TNonClientMetrics;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
-  {$ENDIF}
     with AFont do
     begin
       Color := clWindowText;
@@ -123,9 +119,7 @@ begin
   inherited Create(AOwner);
   Style := bsWin31;
   AllowTimer := True;
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
 end;
 
 //=== TJvCalendar ============================================================
@@ -231,12 +225,8 @@ procedure TJvCalendar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or WS_BORDER;
-  {$IFDEF WIN32}
   Params.ExStyle := Params.ExStyle and not WS_EX_CLIENTEDGE;
-  {$ENDIF}
-  {$IFDEF COMPILER4_UP}
   AddBiDiModeExStyle(Params.ExStyle);
-  {$ENDIF}
 end;
 
 procedure TJvCalendar.Change;
@@ -754,9 +744,7 @@ constructor TJvLocCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
-  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable];
-  {$ENDIF}
   Ctl3D := False;
   Enabled := False;
   BorderStyle := bsNone;
@@ -834,13 +822,8 @@ type
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    {$IFDEF WIN32}
     function GetValue: Variant; override;
     procedure SetValue(const Value: Variant); override;
-    {$ELSE}
-    function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-    {$ENDIF}
     //>Polaris
     procedure CheckButton;
     //<Polaris
@@ -855,9 +838,9 @@ type
   end;
 
 function CreatePopupCalendar(AOwner: TComponent;
-  {$IFDEF COMPILER4_UP} ABiDiMode: TBiDiMode = bdLeftToRight; {$ENDIF}
-  MinDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF};
-  MaxDate: TDateTime {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): TWinControl;
+  ABiDiMode: TBiDiMode = bdLeftToRight;
+  MinDate: TDateTime  = 0;
+  MaxDate: TDateTime = 0): TWinControl;
 begin
   Result := TJvPopupCalendar.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
@@ -870,9 +853,7 @@ begin
     TJvPopupCalendar(Result).FCalendar.MinDate := MinDate;
     TJvPopupCalendar(Result).FCalendar.MaxDate := MaxDate;
     FontSetDefault(TJvPopupCalendar(Result).Font);
-    {$IFDEF COMPILER4_UP}
     Result.BiDiMode := ABiDiMode;
-    {$ENDIF}
   end;
 end;
 
@@ -911,7 +892,7 @@ begin
 end;
 
 constructor TJvPopupCalendar.Create(AOwner: TComponent);
-{$IFNDEF COMPILER7_UP}
+{$IFNDEF JVCLThemesEnabled}
 const
   BtnSide = 14;
   VertOffset = -1;
@@ -938,7 +919,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  {$IFDEF COMPILER7_UP}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     VertOffset := 0;
@@ -959,9 +940,7 @@ begin
     Parent := Self;
     Align := alClient;
     ParentColor := True;
-    {$IFDEF WIN32}
     ControlStyle := ControlStyle + [csReplicatable];
-    {$ENDIF}
   end;
 
   Control := TPanel.Create(Self);
@@ -973,9 +952,7 @@ begin
     Height := 18;
     BevelOuter := bvNone;
     ParentColor := True;
-    {$IFDEF WIN32}
     ControlStyle := ControlStyle + [csReplicatable];
-    {$ENDIF}
   end;
 
   FCalendar := TJvLocCalendar.Create(Self);
@@ -1016,9 +993,7 @@ begin
     SetBounds(BtnSide * 2 + 1, 1, Control.Width - 4 * BtnSide - 2, 14);
     Transparent := True;
     OnDblClick := TopPanelDblClick;
-    {$IFDEF WIN32}
     ControlStyle := ControlStyle + [csReplicatable];
-    {$ENDIF}
   end;
 
   FBtns[2] := TJvTimerSpeedButton.Create(Self);
@@ -1159,8 +1134,6 @@ begin
     FCalendar.KeyPress(Key);
 end;
 
-{$IFDEF WIN32}
-
 function TJvPopupCalendar.GetValue: Variant;
 begin
   if csDesigning in ComponentState then
@@ -1185,28 +1158,6 @@ begin
     end;
   end;
 end;
-
-{$ELSE}
-
-function TJvPopupCalendar.GetValue: string;
-begin
-  if csDesigning in ComponentState then
-    Result := FormatDateTime(DefDateFormat(FFourDigitYear), SysUtils.Date)
-  else
-    Result := FormatDateTime(DefDateFormat(FFourDigitYear), FCalendar.CalendarDate);
-end;
-
-procedure TJvPopupCalendar.SetValue(const Value: string);
-begin
-  if not (csDesigning in ComponentState) then
-  begin
-    FCalendar.CalendarDate := StrToDateFmtDef(DefDateFormat(FFourDigitYear),
-      Value, SysUtils.Date);
-    CalendarChange(nil);
-  end;
-end;
-
-{$ENDIF}
 
 procedure TJvPopupCalendar.PrevYearBtnClick(Sender: TObject);
 begin
@@ -1269,11 +1220,7 @@ begin
   inherited CreateNew(AOwner);
   {$ENDIF}
   Caption := SDateDlgTitle;
-  {$IFDEF WIN32}
   BorderStyle := bsToolWindow;
-  {$ELSE}
-  BorderStyle := bsDialog;
-  {$ENDIF}
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris
   ClientWidth := 222;

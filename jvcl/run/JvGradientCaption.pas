@@ -90,9 +90,7 @@ type
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF COMPILER4_UP}
     function IsRightToLeft: Boolean;
-    {$ENDIF}
     property Form: TForm read GetForm;
     property TextWidth: Integer read GetTextWidth;
   public
@@ -129,9 +127,7 @@ type
     function GetCaption(Index: Integer): TJvCaption;
     procedure SetCaption(Index: Integer; Value: TJvCaption);
   protected
-    {$IFDEF COMPILER3_UP}
     function GetOwner: TPersistent; override;
-    {$ENDIF}
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AParent: TJvGradientCaption);
@@ -216,12 +212,10 @@ begin
   Result := TJvCaption(inherited Items[Index]);
 end;
 
-{$IFDEF COMPILER3_UP}
 function TJvCaptionList.GetOwner: TPersistent;
 begin
   Result := FParent;
 end;
-{$ENDIF}
 
 procedure TJvCaptionList.RestoreDefaults;
 var
@@ -412,13 +406,6 @@ end;
 
 //=== TJvGradientCaption ====================================================
 
-{$IFNDEF COMPILER4_UP}
-const
-  COLOR_GRADIENTACTIVECAPTION = 27;
-  COLOR_GRADIENTINACTIVECAPTION = 28;
-  SPI_GETGRADIENTCAPTIONS = $1008;
-{$ENDIF}
-
 const
   clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or $80000000);
   clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or $80000000);
@@ -532,9 +519,7 @@ begin
         Style := [fsBold];
       end;
       Color := clCaptionText;
-      {$IFNDEF DELPHI2}
       Charset := DEFAULT_CHARSET;
-      {$ENDIF}
     finally
       OnChange := FontChanged;
     end;
@@ -841,7 +826,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER4_UP}
 function TJvGradientCaption.IsRightToLeft: Boolean;
 var
   F: TForm;
@@ -852,7 +836,6 @@ begin
   else
     Result := Application.IsRightToLeft;
 end;
-{$ENDIF}
 
 procedure TJvGradientCaption.DrawGradientCaption(DC: HDC);
 var
@@ -914,18 +897,14 @@ var
           end;
         end;
         Flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX;
-        {$IFDEF COMPILER4_UP}
         if IsRightToLeft then
           Flags := Flags or DT_RIGHT or DT_RTLREADING
         else
-        {$ENDIF}
           Flags := Flags or DT_LEFT;
         DrawText(Image.Canvas.Handle, PChar(Text), -1, R, Flags);
-        {$IFDEF COMPILER4_UP}
         if IsRightToLeft then
           Dec(R.Right, Image.Canvas.TextWidth(Text))
         else
-        {$ENDIF}
           Inc(R.Left, Image.Canvas.TextWidth(Text));
       end;
       Result := (Text = S);

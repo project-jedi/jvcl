@@ -101,8 +101,6 @@ begin
   TFont(Args.Obj).PixelsPerInch := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Charset: TFontCharset }
 
 procedure TFont_Read_Charset(var Value: Variant; Args: TJvInterpreterArgs);
@@ -116,8 +114,6 @@ procedure TFont_Write_Charset(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TFont(Args.Obj).Charset := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Color: TColor }
 
@@ -478,12 +474,11 @@ end;
 
 { procedure Lock; }
 
-{$IFDEF COMPILER3_UP}
 procedure TCanvas_Lock(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCanvas(Args.Obj).Lock;
 end;
-{$ENDIF COMPILER3_UP}
+
 
 { procedure MoveTo(X, Y: Integer); }
 
@@ -581,7 +576,6 @@ begin
   Value := TCanvas(Args.Obj).TextWidth(Args.Values[0]);
 end;
 
-{$IFDEF COMPILER3_UP}
 
 { function TryLock: Boolean; }
 
@@ -597,7 +591,7 @@ begin
   TCanvas(Args.Obj).Unlock;
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 { property Read ClipRect: TRect }
 
@@ -632,12 +626,11 @@ end;
 
 { property Read LockCount: Integer }
 
-{$IFDEF COMPILER3_UP}
 procedure TCanvas_Read_LockCount(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCanvas(Args.Obj).LockCount;
 end;
-{$ENDIF COMPILER3_UP}
+
 
 { property Read PenPos: TPoint }
 
@@ -793,7 +786,6 @@ begin
   TGraphic(Args.Obj).Modified := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
 {$IFDEF COMPLIB_VCL}
 
 { property Read Palette: HPALETTE }
@@ -840,7 +832,7 @@ begin
   TGraphic(Args.Obj).Transparent := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 { property Read Width: Integer }
 
@@ -940,7 +932,6 @@ begin
   TPicture(Args.Obj).Graphic := V2O(Value) as TGraphic;
 end;
 
-{$IFDEF COMPILER3_UP}
 {$IFDEF COMPLIB_VCL}
 
 { property Read PictureAdapter: IChangeNotifier }
@@ -959,7 +950,7 @@ begin
 end;
 
 {$ENDIF COMPLIB_VCL}
-{$ENDIF COMPILER3_UP}
+
 
 { property Read Height: Integer }
 
@@ -1070,12 +1061,11 @@ end;
 
 { function ReleaseHandle: HENHMETAFILE; }
 
-{$IFDEF COMPILER3_UP}
 procedure TMetafile_ReleaseHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(TMetafile(Args.Obj).ReleaseHandle);
 end;
-{$ENDIF COMPILER3_UP}
+
 
 { property Read CreatedBy: String }
 
@@ -1225,12 +1215,11 @@ end;
 
 { procedure Mask(TransparentColor: TColor); }
 
-{$IFDEF COMPILER3_UP}
 procedure TBitmap_Mask(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TBitmap(Args.Obj).Mask(Args.Values[0]);
 end;
-{$ENDIF COMPILER3_UP}
+
 
 {$IFDEF COMPLIB_VCL}
 
@@ -1243,12 +1232,11 @@ end;
 
 { function ReleaseMaskHandle: HBITMAP; }
 
-{$IFDEF COMPILER3_UP}
 procedure TBitmap_ReleaseMaskHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(TBitmap(Args.Obj).ReleaseMaskHandle);
 end;
-{$ENDIF COMPILER3_UP}
+
 
 { function ReleasePalette: HPALETTE; }
 
@@ -1306,7 +1294,6 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
-{$IFDEF COMPILER3_UP}
 
 { property Read HandleType: TBitmapHandleType }
 
@@ -1322,7 +1309,7 @@ begin
   TBitmap(Args.Obj).HandleType := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 { property Read IgnorePalette: Boolean }
 
@@ -1340,12 +1327,12 @@ end;
 
 { property Read MaskHandle: HBITMAP }
 
-{$IFDEF COMPILER3_UP}
+
 procedure TBitmap_Read_MaskHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(TBitmap(Args.Obj).MaskHandle);
 end;
-{$ENDIF COMPILER3_UP}
+
 
 {$ENDIF COMPLIB_VCL}
 
@@ -1363,7 +1350,7 @@ begin
   TBitmap(Args.Obj).Monochrome := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
+
 
 { property Read PixelFormat: TPixelFormat }
 
@@ -1386,7 +1373,7 @@ begin
   Value := P2V(TBitmap(Args.Obj).ScanLine[Args.Values[0]]);
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 { property Read TransparentColor: TColor }
 
@@ -1395,7 +1382,7 @@ begin
   Value := TBitmap(Args.Obj).TransparentColor;
 end;
 
-{$IFDEF COMPILER3_UP}
+
 
 { property Write TransparentColor(Value: TColor) }
 
@@ -1418,7 +1405,7 @@ begin
   TBitmap(Args.Obj).TransparentMode := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
+
 
 { TIcon }
 
@@ -1534,10 +1521,10 @@ begin
     AddSet(TFont, 'Handle', TFont_Write_Handle, 0, [0]);
     AddGet(TFont, 'PixelsPerInch', TFont_Read_PixelsPerInch, 0, [0], varEmpty);
     AddSet(TFont, 'PixelsPerInch', TFont_Write_PixelsPerInch, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TFont, 'Charset', TFont_Read_Charset, 0, [0], varEmpty);
     AddSet(TFont, 'Charset', TFont_Write_Charset, 0, [0]);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TFont, 'Color', TFont_Read_Color, 0, [0], varEmpty);
     AddSet(TFont, 'Color', TFont_Write_Color, 0, [0]);
     AddGet(TFont, 'Height', TFont_Read_Height, 0, [0], varEmpty);
@@ -1609,9 +1596,9 @@ begin
     AddGet(TCanvas, 'FrameRect', TCanvas_FrameRect, 1, [varEmpty], varEmpty);
     {$ENDIF COMPLIB_VCL}
     AddGet(TCanvas, 'LineTo', TCanvas_LineTo, 2, [varEmpty, varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TCanvas, 'Lock', TCanvas_Lock, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TCanvas, 'MoveTo', TCanvas_MoveTo, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'Pie', TCanvas_Pie, 8, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty,
       varEmpty], varEmpty);
@@ -1627,16 +1614,16 @@ begin
     AddGet(TCanvas, 'TextOut', TCanvas_TextOut, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'TextRect', TCanvas_TextRect, 4, [varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TCanvas, 'TextWidth', TCanvas_TextWidth, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TCanvas, 'TryLock', TCanvas_TryLock, 0, [0], varEmpty);
     AddGet(TCanvas, 'Unlock', TCanvas_Unlock, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TCanvas, 'ClipRect', TCanvas_Read_ClipRect, 0, [0], varEmpty);
     AddGet(TCanvas, 'Handle', TCanvas_Read_Handle, 0, [0], varEmpty);
     AddSet(TCanvas, 'Handle', TCanvas_Write_Handle, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TCanvas, 'LockCount', TCanvas_Read_LockCount, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TCanvas, 'PenPos', TCanvas_Read_PenPos, 0, [0], varEmpty);
     AddSet(TCanvas, 'PenPos', TCanvas_Write_PenPos, 0, [0]);
     AddGet(TCanvas, 'Brush', TCanvas_Read_Brush, 0, [0], varEmpty);
@@ -1647,12 +1634,12 @@ begin
     AddSet(TCanvas, 'Font', TCanvas_Write_Font, 0, [0]);
     AddGet(TCanvas, 'Pen', TCanvas_Read_Pen, 0, [0], varEmpty);
     AddSet(TCanvas, 'Pen', TCanvas_Write_Pen, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     { TProgressStage }
     AddConst(cGraphics, 'psStarting', Integer(psStarting));
     AddConst(cGraphics, 'psRunning', Integer(psRunning));
     AddConst(cGraphics, 'psEnding', Integer(psEnding));
-    {$ENDIF COMPILER3_UP}
+    
     { TGraphic }
     AddClass(cGraphics, TGraphic, 'TGraphic');
     AddGet(TGraphic, 'LoadFromFile', TGraphic_LoadFromFile, 1, [varEmpty], varEmpty);
@@ -1670,7 +1657,7 @@ begin
     AddSet(TGraphic, 'Height', TGraphic_Write_Height, 0, [0]);
     AddGet(TGraphic, 'Modified', TGraphic_Read_Modified, 0, [0], varEmpty);
     AddSet(TGraphic, 'Modified', TGraphic_Write_Modified, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     {$IFDEF COMPLIB_VCL}
     AddGet(TGraphic, 'Palette', TGraphic_Read_Palette, 0, [0], varEmpty);
     AddSet(TGraphic, 'Palette', TGraphic_Write_Palette, 0, [0]);
@@ -1679,7 +1666,7 @@ begin
     {$ENDIF COMPLIB_VCL}
     AddGet(TGraphic, 'Transparent', TGraphic_Read_Transparent, 0, [0], varEmpty);
     AddSet(TGraphic, 'Transparent', TGraphic_Write_Transparent, 0, [0]);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TGraphic, 'Width', TGraphic_Read_Width, 0, [0], varEmpty);
     AddSet(TGraphic, 'Width', TGraphic_Write_Width, 0, [0]);
     { TPicture }
@@ -1699,12 +1686,12 @@ begin
     AddSet(TPicture, 'Bitmap', TPicture_Write_Bitmap, 0, [0]);
     AddGet(TPicture, 'Graphic', TPicture_Read_Graphic, 0, [0], varEmpty);
     AddSet(TPicture, 'Graphic', TPicture_Write_Graphic, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     {$IFDEF COMPLIB_VCL}
     AddGet(TPicture, 'PictureAdapter', TPicture_Read_PictureAdapter, 0, [0], varEmpty);
     AddSet(TPicture, 'PictureAdapter', TPicture_Write_PictureAdapter, 0, [0]);
     {$ENDIF COMPLIB_VCL}
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TPicture, 'Height', TPicture_Read_Height, 0, [0], varEmpty);
     AddGet(TPicture, 'Icon', TPicture_Read_Icon, 0, [0], varEmpty);
     AddSet(TPicture, 'Icon', TPicture_Write_Icon, 0, [0]);
@@ -1726,9 +1713,9 @@ begin
     AddGet(TMetafile, 'SaveToClipboardFormat', TMetafile_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef],
       varEmpty);
     AddGet(TMetafile, 'Assign', TMetafile_Assign, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TMetafile, 'ReleaseHandle', TMetafile_ReleaseHandle, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TMetafile, 'CreatedBy', TMetafile_Read_CreatedBy, 0, [0], varEmpty);
     AddGet(TMetafile, 'Description', TMetafile_Read_Description, 0, [0], varEmpty);
     AddGet(TMetafile, 'Enhanced', TMetafile_Read_Enhanced, 0, [0], varEmpty);
@@ -1741,10 +1728,10 @@ begin
     AddSet(TMetafile, 'MMHeight', TMetafile_Write_MMHeight, 0, [0]);
     AddGet(TMetafile, 'Inch', TMetafile_Read_Inch, 0, [0], varEmpty);
     AddSet(TMetafile, 'Inch', TMetafile_Write_Inch, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     {$ENDIF COMPLIB_VCL}
     { TBitmapHandleType }
-    {$IFDEF COMPILER3_UP}
+    
     AddConst(cGraphics, 'bmDIB', Integer(bmDIB));
     AddConst(cGraphics, 'bmDDB', Integer(bmDDB));
     { TPixelFormat }
@@ -1760,9 +1747,9 @@ begin
     { TTransparentMode }
     AddConst(cGraphics, 'tmAuto', Integer(tmAuto));
     AddConst(cGraphics, 'tmFixed', Integer(tmFixed));
-    {$ENDIF COMPILER3_UP}
+    
     { TBitmap }
-    {$ENDIF COMPILER3_UP}
+    
     AddClass(cGraphics, TBitmap, 'TBitmap');
     AddGet(TBitmap, 'Create', TBitmap_Create, 0, [0], varEmpty);
     AddGet(TBitmap, 'Assign', TBitmap_Assign, 1, [varEmpty], varEmpty);
@@ -1775,14 +1762,14 @@ begin
     AddGet(TBitmap, 'LoadFromStream', TBitmap_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceName', TBitmap_LoadFromResourceName, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TBitmap, 'LoadFromResourceID', TBitmap_LoadFromResourceID, 2, [varEmpty, varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TBitmap, 'Mask', TBitmap_Mask, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     {$IFDEF COMPLIB_VCL}
     AddGet(TBitmap, 'ReleaseHandle', TBitmap_ReleaseHandle, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TBitmap, 'ReleaseMaskHandle', TBitmap_ReleaseMaskHandle, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TBitmap, 'ReleasePalette', TBitmap_ReleasePalette, 0, [0], varEmpty);
     AddGet(TBitmap, 'SaveToClipboardFormat', TBitmap_SaveToClipboardFormat, 3, [varByRef, varByRef, varByRef],
       varEmpty);
@@ -1792,29 +1779,29 @@ begin
     AddGet(TBitmap, 'Handle', TBitmap_Read_Handle, 0, [0], varEmpty);
     AddSet(TBitmap, 'Handle', TBitmap_Write_Handle, 0, [0]);
     {$IFDEF COMPLIB_VCL}
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TBitmap, 'HandleType', TBitmap_Read_HandleType, 0, [0], varEmpty);
     AddSet(TBitmap, 'HandleType', TBitmap_Write_HandleType, 0, [0]);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TBitmap, 'IgnorePalette', TBitmap_Read_IgnorePalette, 0, [0], varEmpty);
     AddSet(TBitmap, 'IgnorePalette', TBitmap_Write_IgnorePalette, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TBitmap, 'MaskHandle', TBitmap_Read_MaskHandle, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     {$ENDIF COMPLIB_VCL}
     AddGet(TBitmap, 'Monochrome', TBitmap_Read_Monochrome, 0, [0], varEmpty);
     AddSet(TBitmap, 'Monochrome', TBitmap_Write_Monochrome, 0, [0]);
-    {$IFDEF COMPILER3_UP}
+    
     AddGet(TBitmap, 'PixelFormat', TBitmap_Read_PixelFormat, 0, [0], varEmpty);
     AddSet(TBitmap, 'PixelFormat', TBitmap_Write_PixelFormat, 0, [0]);
     AddGet(TBitmap, 'ScanLine', TBitmap_Read_ScanLine, 1, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
+    
     AddGet(TBitmap, 'TransparentColor', TBitmap_Read_TransparentColor, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
+
     AddSet(TBitmap, 'TransparentColor', TBitmap_Write_TransparentColor, 0, [0]);
     AddGet(TBitmap, 'TransparentMode', TBitmap_Read_TransparentMode, 0, [0], varEmpty);
     AddSet(TBitmap, 'TransparentMode', TBitmap_Write_TransparentMode, 0, [0]);
-    {$ENDIF COMPILER3_UP}
+    
     { TIcon }
     AddClass(cGraphics, TIcon, 'TIcon');
     AddGet(TIcon, 'Create', TIcon_Create, 0, [0], varEmpty);

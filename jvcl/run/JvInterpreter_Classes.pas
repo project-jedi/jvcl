@@ -206,12 +206,10 @@ end;
 
 { function GetNamePath: string; }
 
-{$IFDEF COMPILER3_UP}
 procedure TPersistent_GetNamePath(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TPersistent(Args.Obj).GetNamePath;
 end;
-{$ENDIF COMPILER3_UP}
 
 { TCollectionItem }
 
@@ -238,12 +236,10 @@ end;
 
 { property Read ID: Integer }
 
-{$IFDEF COMPILER3_UP}
 procedure TCollectionItem_Read_ID(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCollectionItem(Args.Obj).ID;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read Index: Integer }
 
@@ -259,8 +255,6 @@ begin
   TCollectionItem(Args.Obj).Index := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read DisplayName: string }
 
 procedure TCollectionItem_Read_DisplayName(var Value: Variant; Args: TJvInterpreterArgs);
@@ -274,8 +268,6 @@ procedure TCollectionItem_Write_DisplayName(const Value: Variant; Args: TJvInter
 begin
   TCollectionItem(Args.Obj).DisplayName := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { TCollection }
 
@@ -323,12 +315,10 @@ end;
 
 { function FindItemID(ID: Integer): TCollectionItem; }
 
-{$IFDEF COMPILER3_UP}
 procedure TCollection_FindItemID(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCollection(Args.Obj).FindItemID(Args.Values[0]));
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read Count: Integer }
 
@@ -339,12 +329,10 @@ end;
 
 { property Read ItemClass: TCollectionItemClass }
 
-{$IFDEF COMPILER3_UP}
 procedure TCollection_Read_ItemClass(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TObject(TCollection(Args.Obj).ItemClass));
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read Items[Integer]: TCollectionItem }
 
@@ -509,8 +497,6 @@ begin
   TStrings(Args.Obj).SaveToStream(V2O(Args.Values[0]) as TStream);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Capacity: Integer }
 
 procedure TStrings_Read_Capacity(var Value: Variant; Args: TJvInterpreterArgs);
@@ -524,8 +510,6 @@ procedure TStrings_Write_Capacity(const Value: Variant; Args: TJvInterpreterArgs
 begin
   TStrings(Args.Obj).Capacity := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read CommaText: string }
 
@@ -611,8 +595,6 @@ begin
   TStrings(Args.Obj).Text := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read StringsAdapter: IStringsAdapter }
 
 procedure TStrings_Read_StringsAdapter(var Value: Variant; Args: TJvInterpreterArgs);
@@ -627,8 +609,6 @@ begin
 //  TStrings(Args.Obj).StringsAdapter := Value;
   NotImplemented('TStrings.StringsAdapter');
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { TStringList }
 
@@ -846,12 +826,10 @@ end;
 
 { property Write Size(Value: Longint) }
 
-{$IFDEF COMPILER3_UP}
 procedure TStream_Write_Size(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TStream(Args.Obj).Size := Value;
 end;
-{$ENDIF COMPILER3_UP}
 
 { TFileStream }
 
@@ -877,8 +855,6 @@ begin
 end;
 
 { TJvStringStream  }
-
-{$IFDEF COMPILER3_UP}
 
 { constructor Create(AString: string) }
 
@@ -929,8 +905,6 @@ begin
   Value := TStringStream(Args.Obj).DataString;
 end;
 
-{$ENDIF COMPILER3_UP}
-
 { TComponent }
 
 { constructor Create(AOwner: TComponent) }
@@ -970,12 +944,10 @@ end;
 
 { procedure FreeOnRelease; }
 
-{$IFDEF COMPILER3_UP}
 procedure TComponent_FreeOnRelease(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TComponent(Args.Obj).FreeOnRelease;
 end;
-{$ENDIF COMPILER3_UP}
 
 { function GetParentComponent: TComponent; }
 
@@ -1005,8 +977,6 @@ begin
   TComponent(Args.Obj).RemoveComponent(V2O(Args.Values[0]) as TComponent);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { function SafeCallException(ExceptObject: TObject; ExceptAddr: Pointer): Integer; }
 
 procedure TComponent_SafeCallException(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1020,8 +990,6 @@ procedure TComponent_Read_ComObject(var Value: Variant; Args: TJvInterpreterArgs
 begin
   Value := TComponent(Args.Obj).ComObject;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Components[Integer]: TComponent }
 
@@ -1088,8 +1056,6 @@ begin
   Value := O2V(TComponent(Args.Obj).Owner);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read VCLComObject: Pointer }
 
 procedure TComponent_Read_VCLComObject(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1103,8 +1069,6 @@ procedure TComponent_Write_VCLComObject(const Value: Variant; Args: TJvInterpret
 begin
   TComponent(Args.Obj).VCLComObject := V2P(Value);
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Name: TComponentName }
 
@@ -1196,23 +1160,17 @@ begin
     { TPersistent }
     AddClass('Classes', TPersistent, 'TPersistent');
     AddGet(TPersistent, 'Assign', TPersistent_Assign, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TPersistent, 'GetNamePath', TPersistent_GetNamePath, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     { TCollectionItem }
     AddClass('Classes', TCollectionItem, 'TCollectionItem');
     AddGet(TCollectionItem, 'Create', TCollectionItem_Create, 1, [varEmpty], varEmpty);
     AddGet(TCollectionItem, 'Collection', TCollectionItem_Read_Collection, 0, [0], varEmpty);
     AddSet(TCollectionItem, 'Collection', TCollectionItem_Write_Collection, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TCollectionItem, 'ID', TCollectionItem_Read_ID, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TCollectionItem, 'Index', TCollectionItem_Read_Index, 0, [0], varEmpty);
     AddSet(TCollectionItem, 'Index', TCollectionItem_Write_Index, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TCollectionItem, 'DisplayName', TCollectionItem_Read_DisplayName, 0, [0], varEmpty);
     AddSet(TCollectionItem, 'DisplayName', TCollectionItem_Write_DisplayName, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TCollection }
     AddClass('Classes', TCollection, 'TCollection');
     AddGet(TCollection, 'Create', TCollection_Create, 1, [varEmpty], varEmpty);
@@ -1221,13 +1179,9 @@ begin
     AddGet(TCollection, 'BeginUpdate', TCollection_BeginUpdate, 0, [0], varEmpty);
     AddGet(TCollection, 'Clear', TCollection_Clear, 0, [0], varEmpty);
     AddGet(TCollection, 'EndUpdate', TCollection_EndUpdate, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TCollection, 'FindItemID', TCollection_FindItemID, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TCollection, 'Count', TCollection_Read_Count, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TCollection, 'ItemClass', TCollection_Read_ItemClass, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddIGet(TCollection, 'Items', TCollection_Read_Items, 1, [0], varEmpty);
     AddIDGet(TCollection, TCollection_Read_Items, 1, [0], varEmpty);
     AddISet(TCollection, 'Items', TCollection_Write_Items, 1, [1]);
@@ -1255,10 +1209,8 @@ begin
     AddGet(TStrings, 'Move', TStrings_Move, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TStrings, 'SaveToFile', TStrings_SaveToFile, 1, [varEmpty], varEmpty);
     AddGet(TStrings, 'SaveToStream', TStrings_SaveToStream, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TStrings, 'Capacity', TStrings_Read_Capacity, 0, [0], varEmpty);
     AddSet(TStrings, 'Capacity', TStrings_Write_Capacity, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TStrings, 'CommaText', TStrings_Read_CommaText, 0, [0], varEmpty);
     AddSet(TStrings, 'CommaText', TStrings_Write_CommaText, 0, [0]);
     AddGet(TStrings, 'Count', TStrings_Read_Count, 0, [0], varEmpty);
@@ -1273,10 +1225,8 @@ begin
     AddIDSet(TStrings, TStrings_Write_Strings, 1, [1]);
     AddGet(TStrings, 'Text', TStrings_Read_Text, 0, [0], varEmpty);
     AddSet(TStrings, 'Text', TStrings_Write_Text, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TStrings, 'StringsAdapter', TStrings_Read_StringsAdapter, 0, [0], varEmpty);
     AddSet(TStrings, 'StringsAdapter', TStrings_Write_StringsAdapter, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TDuplicates }
     AddConst('Classes', 'dupIgnore', Integer(dupIgnore));
     AddConst('Classes', 'dupAccept', Integer(dupAccept));
@@ -1314,16 +1264,13 @@ begin
     AddGet(TStream, 'Position', TStream_Read_Position, 0, [0], varEmpty);
     AddSet(TStream, 'Position', TStream_Write_Position, 0, [0]);
     AddGet(TStream, 'Size', TStream_Read_Size, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddSet(TStream, 'Size', TStream_Write_Size, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TFileStream }
     AddClass('Classes', TFileStream, 'TFileStream');
     AddGet(TFileStream, 'Create', TFileStream_Create, 2, [varEmpty, varEmpty], varEmpty);
     { TMemoryStream }
     AddClass('Classes', TMemoryStream, 'TMemoryStream');
     AddGet(TMemoryStream, 'Create', TMemoryStream_Create, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     { TJvStringStream  }
     AddClass('Classes', TStringStream, 'TStringStream ');
     AddGet(TStringStream, 'Create', TStringStream_Create, 1, [varEmpty], varEmpty);
@@ -1333,7 +1280,6 @@ begin
     AddGet(TStringStream, 'Write', TStringStream_Write, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TStringStream, 'WriteString', TStringStream_WriteString, 1, [varEmpty], varEmpty);
     AddGet(TStringStream, 'DataString', TStringStream_Read_DataString, 0, [0], varEmpty);
-    {$ENDIF}
     { TComponentState }
     AddConst('Classes', 'csLoading', Integer(csLoading));
     AddConst('Classes', 'csReading', Integer(csReading));
@@ -1353,17 +1299,13 @@ begin
     AddGet(TComponent, 'Destroying', TComponent_Destroying, 0, [0], varEmpty);
     AddGet(TComponent, 'FindComponent', TComponent_FindComponent, 1, [varEmpty], varEmpty);
     AddGet(TComponent, 'FreeNotification', TComponent_FreeNotification, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TComponent, 'FreeOnRelease', TComponent_FreeOnRelease, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TComponent, 'GetParentComponent', TComponent_GetParentComponent, 0, [0], varEmpty);
     AddGet(TComponent, 'HasParent', TComponent_HasParent, 0, [0], varEmpty);
     AddGet(TComponent, 'InsertComponent', TComponent_InsertComponent, 1, [varEmpty], varEmpty);
     AddGet(TComponent, 'RemoveComponent', TComponent_RemoveComponent, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TComponent, 'SafeCallException', TComponent_SafeCallException, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TComponent, 'ComObject', TComponent_Read_ComObject, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddIGet(TComponent, 'Components', TComponent_Read_Components, 1, [0], varEmpty);
     AddGet(TComponent, 'ComponentCount', TComponent_Read_ComponentCount, 0, [0], varEmpty);
     AddGet(TComponent, 'ComponentIndex', TComponent_Read_ComponentIndex, 0, [0], varEmpty);
@@ -1373,10 +1315,8 @@ begin
     AddGet(TComponent, 'DesignInfo', TComponent_Read_DesignInfo, 0, [0], varEmpty);
     AddSet(TComponent, 'DesignInfo', TComponent_Write_DesignInfo, 0, [0]);
     AddGet(TComponent, 'Owner', TComponent_Read_Owner, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TComponent, 'VCLComObject', TComponent_Read_VCLComObject, 0, [0], varEmpty);
     AddSet(TComponent, 'VCLComObject', TComponent_Write_VCLComObject, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TComponent, 'Name', TComponent_Read_Name, 0, [0], varEmpty);
     AddSet(TComponent, 'Name', TComponent_Write_Name, 0, [0]);
     AddGet(TComponent, 'Tag', TComponent_Read_Tag, 0, [0], varEmpty);

@@ -41,9 +41,6 @@ implementation
 
 uses
   Classes,
-  {$IFNDEF COMPILER3_UP}
-  DbTables
-  {$ENDIF}
   Db;
 
 { EDatabaseError }
@@ -67,8 +64,6 @@ begin
   Value := O2V(TFieldDef(Args.Obj).CreateField(V2O(Args.Values[0]) as TComponent));
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read InternalCalcField: Boolean }
 
 procedure TFieldDef_Read_InternalCalcField(var Value: Variant; Args: TJvInterpreterArgs);
@@ -82,8 +77,6 @@ procedure TFieldDef_Write_InternalCalcField(const Value: Variant; Args: TJvInter
 begin
   TFieldDef(Args.Obj).InternalCalcField := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read DataType: TFieldType }
 
@@ -113,8 +106,6 @@ begin
   Value := TFieldDef(Args.Obj).Name;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Precision: Integer }
 
 procedure TFieldDef_Read_Precision(var Value: Variant; Args: TJvInterpreterArgs);
@@ -128,8 +119,6 @@ procedure TFieldDef_Write_Precision(const Value: Variant; Args: TJvInterpreterAr
 begin
   TFieldDef(Args.Obj).Precision := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Required: Boolean }
 
@@ -257,12 +246,10 @@ end;
 
 { function IsBlob: Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_IsBlob(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TField(Args.Obj).IsBlob;
 end;
-{$ENDIF COMPILER3_UP}
 
 { function IsValidChar(InputChar: Char): Boolean; }
 
@@ -273,12 +260,10 @@ end;
 
 { procedure RefreshLookupList; }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_RefreshLookupList(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TField(Args.Obj).RefreshLookupList;
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure SetData(Buffer: Pointer); }
 
@@ -296,12 +281,10 @@ end;
 
 { procedure Validate(Buffer: Pointer); }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_Validate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TField(Args.Obj).Validate(V2P(Args.Values[0]));
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read AsBoolean: Boolean }
 
@@ -438,12 +421,10 @@ end;
 
 { property Read CurValue: Variant }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_Read_CurValue(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TField(Args.Obj).CurValue;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read DataSet: TDataSet }
 
@@ -559,12 +540,10 @@ end;
 
 { property Read Offset: word }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_Read_Offset(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TField(Args.Obj).Offset;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read OldValue: Variant }
 
@@ -643,8 +622,6 @@ begin
   TField(Args.Obj).Alignment := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read CustomConstraint: string }
 
 procedure TField_Read_CustomConstraint(var Value: Variant; Args: TJvInterpreterArgs);
@@ -686,8 +663,6 @@ procedure TField_Write_DefaultExpression(const Value: Variant; Args: TJvInterpre
 begin
   TField(Args.Obj).DefaultExpression := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read DisplayLabel: string }
 
@@ -747,12 +722,10 @@ end;
 
 { property Read HasConstraints: Boolean }
 
-{$IFDEF COMPILER3_UP}
 procedure TField_Read_HasConstraints(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TField(Args.Obj).HasConstraints;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read Index: Integer }
 
@@ -768,8 +741,6 @@ begin
   TField(Args.Obj).Index := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read ImportedConstraint: string }
 
 procedure TField_Read_ImportedConstraint(var Value: Variant; Args: TJvInterpreterArgs);
@@ -783,8 +754,6 @@ procedure TField_Write_ImportedConstraint(const Value: Variant; Args: TJvInterpr
 begin
   TField(Args.Obj).ImportedConstraint := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read LookupDataSet: TDataSet }
 
@@ -842,8 +811,6 @@ begin
   TField(Args.Obj).KeyFields := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read LookupCache: Boolean }
 
 procedure TField_Read_LookupCache(var Value: Variant; Args: TJvInterpreterArgs);
@@ -871,8 +838,6 @@ procedure TField_Write_Origin(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TField(Args.Obj).Origin := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read ReadOnly: Boolean }
 
@@ -1365,12 +1330,10 @@ end;
 
 { function IsBlob: Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure TBlobField_IsBlob(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TBlobField(Args.Obj).IsBlob;
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure LoadFromFile(const FileName: string); }
 
@@ -1407,8 +1370,6 @@ begin
   TBlobField(Args.Obj).SetFieldType(Args.Values[0]);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read BlobSize: Integer }
 
 procedure TBlobField_Read_BlobSize(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1430,8 +1391,6 @@ begin
   TBlobField(Args.Obj).Modified := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
-
 { property Read Value: string }
 
 procedure TBlobField_Read_Value(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1446,8 +1405,6 @@ begin
   TBlobField(Args.Obj).Value := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Transliterate: Boolean }
 
 procedure TBlobField_Read_Transliterate(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1461,8 +1418,6 @@ procedure TBlobField_Write_Transliterate(const Value: Variant; Args: TJvInterpre
 begin
   TBlobField(Args.Obj).Transliterate := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read BlobType: TBlobType }
 
@@ -1545,12 +1500,10 @@ end;
 
 { property Write Source(Value: string) }
 
-{$IFDEF COMPILER3_UP}
 procedure TIndexDef_Write_Source(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TIndexDef(Args.Obj).Source := Value;
 end;
-{$ENDIF COMPILER3_UP}
 
 { TIndexDefs }
 
@@ -1558,11 +1511,7 @@ end;
 
 procedure TIndexDefs_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER3_UP}
   Value := O2V(TIndexDefs.Create(V2O(Args.Values[0]) as TDataSet));
-  {$ELSE}
-  Value := O2V(TIndexDefs.Create(V2O(Args.Values[0]) as TTable));
-  {$ENDIF COMPILER3_UP}
 end;
 
 { procedure Add(const Name, Fields: string; Options: TIndexOptions); }
@@ -1595,12 +1544,10 @@ end;
 
 { function GetIndexForFields(const Fields: string; CaseInsensitive: Boolean): TIndexDef; }
 
-{$IFDEF COMPILER3_UP}
 procedure TIndexDefs_GetIndexForFields(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TIndexDefs(Args.Obj).GetIndexForFields(Args.Values[0], Args.Values[1]));
 end;
-{$ENDIF COMPILER3_UP}
 
 { function IndexOf(const Name: string): Integer; }
 
@@ -1630,8 +1577,6 @@ begin
   Value := O2V(TIndexDefs(Args.Obj).Items[Args.Values[0]]);
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Updated: Boolean }
 
 procedure TIndexDefs_Read_Updated(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1645,8 +1590,6 @@ procedure TIndexDefs_Write_Updated(const Value: Variant; Args: TJvInterpreterArg
 begin
   TIndexDefs(Args.Obj).Updated := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { TDataLink }
 
@@ -1841,8 +1784,6 @@ begin
   TDataSource(Args.Obj).Enabled := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { TCheckConstraint }
 
 { procedure Assign(Source: TPersistent); }
@@ -1945,8 +1886,6 @@ begin
   TCheckConstraints(Args.Obj).Items[Args.Values[0]] := V2O(Value) as TCheckConstraint;
 end;
 
-{$ENDIF COMPILER3_UP}
-
 { TDataSet }
 
 { function ActiveBuffer: PChar; }
@@ -1973,12 +1912,10 @@ end;
 
 { function BookmarkValid(Bookmark: TBookmark): Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure TDataSet_BookmarkValid(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TDataSet(Args.Obj).BookmarkValid(V2P(Args.Values[0]));
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure Cancel; }
 
@@ -2015,8 +1952,6 @@ begin
   Value := TDataSet(Args.Obj).ControlsDisabled;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; }
 
 procedure TDataSet_CompareBookmarks(var Value: Variant; Args: TJvInterpreterArgs);
@@ -2030,8 +1965,6 @@ procedure TDataSet_CreateBlobStream(var Value: Variant; Args: TJvInterpreterArgs
 begin
   Value := O2V(TDataSet(Args.Obj).CreateBlobStream(V2O(Args.Values[0]) as TField, Args.Values[1]));
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { procedure CursorPosChanged; }
 
@@ -2176,12 +2109,10 @@ end;
 
 { function IsEmpty: Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure TDataSet_IsEmpty(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TDataSet(Args.Obj).IsEmpty;
 end;
-{$ENDIF COMPILER3_UP}
 
 { function IsLinkedTo(DataSource: TDataSource): Boolean; }
 
@@ -2192,12 +2123,10 @@ end;
 
 { function IsSequenced: Boolean; }
 
-{$IFDEF COMPILER3_UP}
 procedure TDataSet_IsSequenced(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TDataSet(Args.Obj).IsSequenced;
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure Last; }
 
@@ -2279,12 +2208,10 @@ end;
 
 { procedure Translate(Src, Dest: PChar; ToOem: Boolean); }
 
-{$IFDEF COMPILER3_UP}
 procedure TDataSet_Translate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TDataSet(Args.Obj).Translate(PChar(string(Args.Values[0])), PChar(string(Args.Values[1])), Args.Values[2]);
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure UpdateCursorPos; }
 
@@ -2384,15 +2311,6 @@ begin
   Value := O2V(TDataSet(Args.Obj).Fields[Args.Values[0]]);
 end;
 
-{ property Write Fields[Integer]: TField }
-
-{$IFNDEF COMPILER4_UP}
-procedure TDataSet_Write_Fields(const Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TDataSet(Args.Obj).Fields[Args.Values[0]] := V2O(Value) as TField;
-end;
-{$ENDIF COMPILER4_UP}
-
 { property Read FieldValues[string]: Variant }
 
 procedure TDataSet_Read_FieldValues(var Value: Variant; Args: TJvInterpreterArgs);
@@ -2437,12 +2355,10 @@ end;
 
 { property Write RecNo(Value: Integer) }
 
-{$IFDEF COMPILER3_UP}
 procedure TDataSet_Write_RecNo(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TDataSet(Args.Obj).RecNo := Value;
 end;
-{$ENDIF COMPILER3_UP}
 
 { property Read RecordSize: Word }
 
@@ -2593,11 +2509,9 @@ begin
     AddConst(cDb, 'dsSetKey', dsSetKey);
     AddConst(cDb, 'dsCalcFields', dsCalcFields);
     AddConst(cDb, 'dsFilter', dsFilter);
-    {$IFDEF COMPILER3_UP}
     AddConst(cDb, 'dsNewValue', dsNewValue);
     AddConst(cDb, 'dsOldValue', dsOldValue);
     AddConst(cDb, 'dsCurValue', dsCurValue);
-    {$ENDIF COMPILER3_UP}
     { TDataEvent }
     AddConst(cDb, 'deFieldChange', deFieldChange);
     AddConst(cDb, 'deRecordChange', deRecordChange);
@@ -2640,9 +2554,7 @@ begin
     AddConst(cDb, 'ftParadoxOle', ftParadoxOle);
     AddConst(cDb, 'ftDBaseOle', ftDBaseOle);
     AddConst(cDb, 'ftTypedBinary', ftTypedBinary);
-    {$IFDEF COMPILER3_UP}
     AddConst(cDb, 'ftCursor', ftCursor);
-    {$ENDIF COMPILER3_UP}
     { TFieldDef }
     AddClass(cDb, TFieldDef, 'TFieldDef');
     {$IFNDEF BCB3}
@@ -2650,18 +2562,14 @@ begin
       varEmpty);
     {$ENDIF BCB3}
     AddGet(TFieldDef, 'CreateField', TFieldDef_CreateField, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TFieldDef, 'InternalCalcField', TFieldDef_Read_InternalCalcField, 0, [0], varEmpty);
     AddSet(TFieldDef, 'InternalCalcField', TFieldDef_Write_InternalCalcField, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TFieldDef, 'DataType', TFieldDef_Read_DataType, 0, [0], varEmpty);
     AddGet(TFieldDef, 'FieldClass', TFieldDef_Read_FieldClass, 0, [0], varEmpty);
     AddGet(TFieldDef, 'FieldNo', TFieldDef_Read_FieldNo, 0, [0], varEmpty);
     AddGet(TFieldDef, 'Name', TFieldDef_Read_Name, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TFieldDef, 'Precision', TFieldDef_Read_Precision, 0, [0], varEmpty);
     AddSet(TFieldDef, 'Precision', TFieldDef_Write_Precision, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TFieldDef, 'Required', TFieldDef_Read_Required, 0, [0], varEmpty);
     AddGet(TFieldDef, 'Size', TFieldDef_Read_Size, 0, [0], varEmpty);
     { TFieldDefs }
@@ -2679,9 +2587,7 @@ begin
     AddConst(cDb, 'fkData', fkData);
     AddConst(cDb, 'fkCalculated', fkCalculated);
     AddConst(cDb, 'fkLookup', fkLookup);
-    {$IFDEF COMPILER3_UP}
     AddConst(cDb, 'fkInternalCalc', fkInternalCalc);
-    {$ENDIF COMPILER3_UP}
     { TField }
     AddClass(cDb, TField, 'TField');
     AddGet(TField, 'Create', TField_Create, 1, [varEmpty], varEmpty);
@@ -2690,18 +2596,12 @@ begin
     AddGet(TField, 'Clear', TField_Clear, 0, [0], varEmpty);
     AddGet(TField, 'FocusControl', TField_FocusControl, 0, [0], varEmpty);
     AddGet(TField, 'GetData', TField_GetData, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'IsBlob', TField_IsBlob, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'IsValidChar', TField_IsValidChar, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'RefreshLookupList', TField_RefreshLookupList, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'SetData', TField_SetData, 1, [varEmpty], varEmpty);
     AddGet(TField, 'SetFieldType', TField_SetFieldType, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'Validate', TField_Validate, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'AsBoolean', TField_Read_AsBoolean, 0, [0], varEmpty);
     AddSet(TField, 'AsBoolean', TField_Write_AsBoolean, 0, [0]);
     AddGet(TField, 'AsCurrency', TField_Read_AsCurrency, 0, [0], varEmpty);
@@ -2721,9 +2621,7 @@ begin
     AddGet(TField, 'Calculated', TField_Read_Calculated, 0, [0], varEmpty);
     AddSet(TField, 'Calculated', TField_Write_Calculated, 0, [0]);
     AddGet(TField, 'CanModify', TField_Read_CanModify, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'CurValue', TField_Read_CurValue, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'DataSet', TField_Read_DataSet, 0, [0], varEmpty);
     AddSet(TField, 'DataSet', TField_Write_DataSet, 0, [0]);
     AddGet(TField, 'DataSize', TField_Read_DataSize, 0, [0], varEmpty);
@@ -2740,9 +2638,7 @@ begin
     AddSet(TField, 'Lookup', TField_Write_Lookup, 0, [0]);
     AddGet(TField, 'NewValue', TField_Read_NewValue, 0, [0], varEmpty);
     AddSet(TField, 'NewValue', TField_Write_NewValue, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'Offset', TField_Read_Offset, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'OldValue', TField_Read_OldValue, 0, [0], varEmpty);
     AddGet(TField, 'Size', TField_Read_Size, 0, [0], varEmpty);
     AddSet(TField, 'Size', TField_Write_Size, 0, [0]);
@@ -2754,14 +2650,12 @@ begin
     AddSet(TField, 'Value', TField_Write_Value, 0, [0]);
     AddGet(TField, 'Alignment', TField_Read_Alignment, 0, [0], varEmpty);
     AddSet(TField, 'Alignment', TField_Write_Alignment, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'CustomConstraint', TField_Read_CustomConstraint, 0, [0], varEmpty);
     AddSet(TField, 'CustomConstraint', TField_Write_CustomConstraint, 0, [0]);
     AddGet(TField, 'ConstraintErrorMessage', TField_Read_ConstraintErrorMessage, 0, [0], varEmpty);
     AddSet(TField, 'ConstraintErrorMessage', TField_Write_ConstraintErrorMessage, 0, [0]);
     AddGet(TField, 'DefaultExpression', TField_Read_DefaultExpression, 0, [0], varEmpty);
     AddSet(TField, 'DefaultExpression', TField_Write_DefaultExpression, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'DisplayLabel', TField_Read_DisplayLabel, 0, [0], varEmpty);
     AddSet(TField, 'DisplayLabel', TField_Write_DisplayLabel, 0, [0]);
     AddGet(TField, 'DisplayWidth', TField_Read_DisplayWidth, 0, [0], varEmpty);
@@ -2770,15 +2664,11 @@ begin
     AddSet(TField, 'FieldKind', TField_Write_FieldKind, 0, [0]);
     AddGet(TField, 'FieldName', TField_Read_FieldName, 0, [0], varEmpty);
     AddSet(TField, 'FieldName', TField_Write_FieldName, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'HasConstraints', TField_Read_HasConstraints, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'Index', TField_Read_Index, 0, [0], varEmpty);
     AddSet(TField, 'Index', TField_Write_Index, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'ImportedConstraint', TField_Read_ImportedConstraint, 0, [0], varEmpty);
     AddSet(TField, 'ImportedConstraint', TField_Write_ImportedConstraint, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'LookupDataSet', TField_Read_LookupDataSet, 0, [0], varEmpty);
     AddSet(TField, 'LookupDataSet', TField_Write_LookupDataSet, 0, [0]);
     AddGet(TField, 'LookupKeyFields', TField_Read_LookupKeyFields, 0, [0], varEmpty);
@@ -2787,12 +2677,10 @@ begin
     AddSet(TField, 'LookupResultField', TField_Write_LookupResultField, 0, [0]);
     AddGet(TField, 'KeyFields', TField_Read_KeyFields, 0, [0], varEmpty);
     AddSet(TField, 'KeyFields', TField_Write_KeyFields, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TField, 'LookupCache', TField_Read_LookupCache, 0, [0], varEmpty);
     AddSet(TField, 'LookupCache', TField_Write_LookupCache, 0, [0]);
     AddGet(TField, 'Origin', TField_Read_Origin, 0, [0], varEmpty);
     AddSet(TField, 'Origin', TField_Write_Origin, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TField, 'ReadOnly', TField_Read_ReadOnly, 0, [0], varEmpty);
     AddSet(TField, 'ReadOnly', TField_Write_ReadOnly, 0, [0]);
     AddGet(TField, 'Required', TField_Read_Required, 0, [0], varEmpty);
@@ -2892,25 +2780,19 @@ begin
     AddGet(TBlobField, 'Create', TBlobField_Create, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'Assign', TBlobField_Assign, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'Clear', TBlobField_Clear, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'IsBlob', TBlobField_IsBlob, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'LoadFromFile', TBlobField_LoadFromFile, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'LoadFromStream', TBlobField_LoadFromStream, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SaveToFile', TBlobField_SaveToFile, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SaveToStream', TBlobField_SaveToStream, 1, [varEmpty], varEmpty);
     AddGet(TBlobField, 'SetFieldType', TBlobField_SetFieldType, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'BlobSize', TBlobField_Read_BlobSize, 0, [0], varEmpty);
     AddGet(TBlobField, 'Modified', TBlobField_Read_Modified, 0, [0], varEmpty);
     AddSet(TBlobField, 'Modified', TBlobField_Write_Modified, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'Value', TBlobField_Read_Value, 0, [0], varEmpty);
     AddSet(TBlobField, 'Value', TBlobField_Write_Value, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TBlobField, 'Transliterate', TBlobField_Read_Transliterate, 0, [0], varEmpty);
     AddSet(TBlobField, 'Transliterate', TBlobField_Write_Transliterate, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TBlobField, 'BlobType', TBlobField_Read_BlobType, 0, [0], varEmpty);
     AddSet(TBlobField, 'BlobType', TBlobField_Write_BlobType, 0, [0]);
     { TMemoField }
@@ -2935,9 +2817,7 @@ begin
     AddGet(TIndexDef, 'Name', TIndexDef_Read_Name, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Options', TIndexDef_Read_Options, 0, [0], varEmpty);
     AddGet(TIndexDef, 'Source', TIndexDef_Read_Source, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddSet(TIndexDef, 'Source', TIndexDef_Write_Source, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TIndexDefs }
     AddClass(cDb, TIndexDefs, 'TIndexDefs');
     AddGet(TIndexDefs, 'Create', TIndexDefs_Create, 1, [varEmpty], varEmpty);
@@ -2945,18 +2825,14 @@ begin
     AddGet(TIndexDefs, 'Assign', TIndexDefs_Assign, 1, [varEmpty], varEmpty);
     AddGet(TIndexDefs, 'Clear', TIndexDefs_Clear, 0, [0], varEmpty);
     AddGet(TIndexDefs, 'FindIndexForFields', TIndexDefs_FindIndexForFields, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TIndexDefs, 'GetIndexForFields', TIndexDefs_GetIndexForFields, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TIndexDefs, 'IndexOf', TIndexDefs_IndexOf, 1, [varEmpty], varEmpty);
     AddGet(TIndexDefs, 'Update', TIndexDefs_Update, 0, [0], varEmpty);
     AddGet(TIndexDefs, 'Count', TIndexDefs_Read_Count, 0, [0], varEmpty);
     AddIGet(TIndexDefs, 'Items', TIndexDefs_Read_Items, 1, [0], varEmpty);
     AddIDGet(TIndexDefs, TIndexDefs_Read_Items, 1, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TIndexDefs, 'Updated', TIndexDefs_Read_Updated, 0, [0], varEmpty);
     AddSet(TIndexDefs, 'Updated', TIndexDefs_Write_Updated, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TDataLink }
     AddClass(cDb, TDataLink, 'TDataLink');
     AddGet(TDataLink, 'Create', TDataLink_Create, 0, [0], varEmpty);
@@ -2988,7 +2864,6 @@ begin
     AddSet(TDataSource, 'DataSet', TDataSource_Write_DataSet, 0, [0]);
     AddGet(TDataSource, 'Enabled', TDataSource_Read_Enabled, 0, [0], varEmpty);
     AddSet(TDataSource, 'Enabled', TDataSource_Write_Enabled, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     { TCheckConstraint }
     AddClass(cDb, TCheckConstraint, 'TCheckConstraint');
     AddGet(TCheckConstraint, 'Assign', TCheckConstraint_Assign, 1, [varEmpty], varEmpty);
@@ -3007,25 +2882,20 @@ begin
     AddGet(TCheckConstraints, 'Add', TCheckConstraints_Add, 0, [0], varEmpty);
     AddIGet(TCheckConstraints, 'Items', TCheckConstraints_Read_Items, 1, [0], varEmpty);
     AddISet(TCheckConstraints, 'Items', TCheckConstraints_Write_Items, 1, [0]);
-    {$ENDIF COMPILER3_UP}
-    {$IFDEF COMPILER3_UP}
     { TBookmarkFlag }
     AddConst(cDb, 'bfCurrent', bfCurrent);
     AddConst(cDb, 'bfBOF', bfBOF);
     AddConst(cDb, 'bfEOF', bfEOF);
     AddConst(cDb, 'bfInserted', bfInserted);
-    {$ENDIF COMPILER3_UP}
     { TGetMode }
     AddConst(cDb, 'gmCurrent', gmCurrent);
     AddConst(cDb, 'gmNext', gmNext);
     AddConst(cDb, 'gmPrior', gmPrior);
-    {$IFDEF COMPILER3_UP}
     { TGetResult }
     AddConst(cDb, 'grOK', grOK);
     AddConst(cDb, 'grBOF', grBOF);
     AddConst(cDb, 'grEOF', grEOF);
     AddConst(cDb, 'grError', grError);
-    {$ENDIF COMPILER3_UP}
     { TResyncMode }
     AddConst(cDb, 'rmExact', rmExact);
     AddConst(cDb, 'rmCenter', rmCenter);
@@ -3052,18 +2922,14 @@ begin
     AddGet(TDataSet, 'ActiveBuffer', TDataSet_ActiveBuffer, 0, [0], varEmpty);
     AddGet(TDataSet, 'Append', TDataSet_Append, 0, [0], varEmpty);
     AddGet(TDataSet, 'AppendRecord', TDataSet_AppendRecord, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'BookmarkValid', TDataSet_BookmarkValid, 1, [varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'Cancel', TDataSet_Cancel, 0, [0], varEmpty);
     AddGet(TDataSet, 'CheckBrowseMode', TDataSet_CheckBrowseMode, 0, [0], varEmpty);
     AddGet(TDataSet, 'ClearFields', TDataSet_ClearFields, 0, [0], varEmpty);
     AddGet(TDataSet, 'Close', TDataSet_Close, 0, [0], varEmpty);
     AddGet(TDataSet, 'ControlsDisabled', TDataSet_ControlsDisabled, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'CompareBookmarks', TDataSet_CompareBookmarks, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDataSet, 'CreateBlobStream', TDataSet_CreateBlobStream, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'CursorPosChanged', TDataSet_CursorPosChanged, 0, [0], varEmpty);
     AddGet(TDataSet, 'Delete', TDataSet_Delete, 0, [0], varEmpty);
     AddGet(TDataSet, 'DisableControls', TDataSet_DisableControls, 0, [0], varEmpty);
@@ -3084,13 +2950,9 @@ begin
     AddGet(TDataSet, 'GotoBookmark', TDataSet_GotoBookmark, 1, [varEmpty], varEmpty);
     AddGet(TDataSet, 'Insert', TDataSet_Insert, 0, [0], varEmpty);
     AddGet(TDataSet, 'InsertRecord', TDataSet_InsertRecord, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'IsEmpty', TDataSet_IsEmpty, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'IsLinkedTo', TDataSet_IsLinkedTo, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'IsSequenced', TDataSet_IsSequenced, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'Last', TDataSet_Last, 0, [0], varEmpty);
     AddGet(TDataSet, 'Locate', TDataSet_Locate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TDataSet, 'Lookup', TDataSet_Lookup, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
@@ -3102,9 +2964,7 @@ begin
     AddGet(TDataSet, 'Refresh', TDataSet_Refresh, 0, [0], varEmpty);
     AddGet(TDataSet, 'Resync', TDataSet_Resync, 1, [varEmpty], varEmpty);
     AddGet(TDataSet, 'SetFields', TDataSet_SetFields, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddGet(TDataSet, 'Translate', TDataSet_Translate, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'UpdateCursorPos', TDataSet_UpdateCursorPos, 0, [0], varEmpty);
     AddGet(TDataSet, 'UpdateRecord', TDataSet_UpdateRecord, 0, [0], varEmpty);
     AddGet(TDataSet, 'BOF', TDataSet_Read_BOF, 0, [0], varEmpty);
@@ -3119,9 +2979,6 @@ begin
     AddGet(TDataSet, 'FieldDefs', TDataSet_Read_FieldDefs, 0, [0], varEmpty);
     AddSet(TDataSet, 'FieldDefs', TDataSet_Write_FieldDefs, 0, [0]);
     AddIGet(TDataSet, 'Fields', TDataSet_Read_Fields, 1, [0], varEmpty);
-    {$IFNDEF COMPILER4_UP}
-    AddISet(TDataSet, 'Fields', TDataSet_Write_Fields, 1, [0]);
-    {$ENDIF COMPILER4_UP}
     AddIGet(TDataSet, 'FieldValues', TDataSet_Read_FieldValues, 1, [0], varEmpty);
     AddISet(TDataSet, 'FieldValues', TDataSet_Write_FieldValues, 1, [0]);
     AddIDGet(TDataSet, TDataSet_Read_FieldValues, 1, [0], varEmpty);
@@ -3130,9 +2987,7 @@ begin
     AddGet(TDataSet, 'Modified', TDataSet_Read_Modified, 0, [0], varEmpty);
     AddGet(TDataSet, 'RecordCount', TDataSet_Read_RecordCount, 0, [0], varEmpty);
     AddGet(TDataSet, 'RecNo', TDataSet_Read_RecNo, 0, [0], varEmpty);
-    {$IFDEF COMPILER3_UP}
     AddSet(TDataSet, 'RecNo', TDataSet_Write_RecNo, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TDataSet, 'RecordSize', TDataSet_Read_RecordSize, 0, [0], varEmpty);
     AddGet(TDataSet, 'State', TDataSet_Read_State, 0, [0], varEmpty);
     AddGet(TDataSet, 'Filter', TDataSet_Read_Filter, 0, [0], varEmpty);
@@ -3158,7 +3013,7 @@ begin
     TWordField, TAutoIncField, TFloatField, TCurrencyField, TBooleanField,
       TDateTimeField, TDateField, TTimeField, TBinaryField, TBytesField,
       TVarBytesField, TBCDField, TBlobField, TMemoField, TGraphicField,
-      TDataSource {$IFDEF COMPILER3_UP}, TCheckConstraint, TCheckConstraints {$ENDIF COMPILER3_UP}]);
+      TDataSource, TCheckConstraint, TCheckConstraints]);
 end;
 
 end.

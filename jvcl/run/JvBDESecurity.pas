@@ -70,9 +70,7 @@ type
     property IniFileName;
     property MaxPasswordLen;
     property UpdateCaption;
-    {$IFDEF WIN32}
     property UseRegistry;
-    {$ENDIF}
     property OnCheckUser: TCheckUserEvent read FOnCheckUser write FOnCheckUser;
     property OnChangePassword: TChangePasswordEvent read FOnChangePassword
       write FOnChangePassword;
@@ -121,10 +119,8 @@ begin
   if FDatabase <> Value then
   begin
     FDatabase := Value;
-    {$IFDEF WIN32}
     if Value <> nil then
       Value.FreeNotification(Self);
-    {$ENDIF}
   end;
 end;
 

@@ -41,26 +41,6 @@ const
   RT_GIF = 'GIF'; { GIF Resource Type }
 
 type
-
-  {$IFNDEF COMPILER3_UP}
-
-  TProgressStage = (psStarting, psRunning, psEnding);
-  TProgressEvent = procedure(Sender: TObject; Stage: TProgressStage;
-    PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-    const Msg: string) of object;
-
-  TSharedImage = class(TObject)
-  private
-    FRefCount: Integer;
-  protected
-    procedure Reference;
-    procedure Release;
-    procedure FreeHandle; virtual; abstract;
-    property RefCount: Integer read FRefCount;
-  end;
-
-  {$ENDIF COMPILER3_UP}
-
   TGIFVersion = (gvUnknown, gv87a, gv89a);
   TGIFBits = 1..8;
   TDisposalMethod = (dmUndefined, dmLeave, dmRestoreBackground,
@@ -93,9 +73,6 @@ type
     FLooping: Boolean;
     FCorrupted: Boolean;
     FRepeatCount: Word;
-    {$IFNDEF COMPILER3_UP}
-    FOnProgress: TProgressEvent;
-    {$ENDIF}
     function GetBitmap: TBitmap;
     function GetCount: Integer;
     function GetComment: TStrings;
@@ -122,26 +99,15 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
-    {$IFDEF WIN32}
     function Equals(Graphic: TGraphic): Boolean; override;
-    {$ENDIF}
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    function GetPalette: HPALETTE;
-    {$IFDEF COMPILER3_UP} override;
-    {$ENDIF}
-    function GetTransparent: Boolean;
-    {$IFDEF COMPILER3_UP} override;
-    {$ENDIF}
+    function GetPalette: HPALETTE;override;
+    function GetTransparent: Boolean;override;
     procedure ClearItems;
     procedure NewImage;
     procedure UniqueImage;
-    {$IFNDEF COMPILER3_UP}
-    procedure Progress(Sender: TObject; Stage: TProgressStage;
-      PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-      const Msg: string); dynamic;
-    {$ENDIF}
     procedure ReadData(Stream: TStream); override;
     procedure SetHeight(Value: Integer); override;
     procedure SetWidth(Value: Integer); override;
@@ -182,11 +148,6 @@ type
     property ScreenHeight: Integer read GetScreenHeight;
     property TransparentColor: TColor read GetTransparentColor;
     property Version: TGIFVersion read FVersion;
-    {$IFNDEF COMPILER3_UP}
-    property Palette: HPALETTE read GetPalette;
-    property Transparent: Boolean read GetTransparent;
-    property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
-    {$ENDIF}
   end;
 
   TJvGIFFrame = class(TPersistent)
@@ -299,46 +260,16 @@ end;
 
 procedure GifError(const Msg: string);
 
-  {$IFDEF WIN32}
   function ReturnAddr: Pointer;
   asm
           MOV     EAX,[EBP+4]
   end;
-  {$ELSE}
-  function ReturnAddr: Pointer; assembler;
-  asm
-          MOV     AX,[BP].Word[2]
-          MOV     DX,[BP].Word[4]
-  end;
-  {$ENDIF}
 
 begin
   raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
 end;
 
 //=== TSharedImage ===========================================================
-
-{$IFNDEF COMPILER3_UP}
-
-procedure TSharedImage.Reference;
-begin
-  Inc(FRefCount);
-end;
-
-procedure TSharedImage.Release;
-begin
-  if Pointer(Self) <> nil then
-  begin
-    Dec(FRefCount);
-    if FRefCount = 0 then
-    begin
-      FreeHandle;
-      Free;
-    end;
-  end;
-end;
-
-{$ENDIF}
 
 const
   GIFSignature = 'GIF';
@@ -351,11 +282,7 @@ end;
 
 const
   CODE_TABLE_SIZE = 4096;
-  {$IFDEF WIN32}
   HASH_TABLE_SIZE = 17777;
-  {$ELSE}
-  HASH_TABLE_SIZE = MaxListSize - $10;
-  {$ENDIF}
   MAX_LOOP_COUNT = 30000;
 
   CHR_EXT_INTRODUCER = '!';
@@ -1012,7 +939,7 @@ begin
             end;
           end; { while }
           if Code = $FFFF then
-            GifError(ResStr(SReadError));
+            GifError(SReadError);
         finally
           if Assigned(ProgressProc) then
           begin
@@ -1365,10 +1292,8 @@ begin
       try
         SaveToBitmapStream(Mem);
         FBitmap.LoadFromStream(Mem);
-        {$IFDEF COMPILER3_UP}
         if not FBitmap.Monochrome then
           FBitmap.HandleType := bmDDB;
-        {$ENDIF}
       finally
         Mem.Free;
       end;
@@ -1522,7 +1447,6 @@ begin
       FBitmap.Height := TGraphic(Source).Height;
       FBitmap.Canvas.Draw(0, 0, TGraphic(Source));
     end;
-    {$IFDEF COMPILER3_UP}
     if TGraphic(Source).Transparent then
     begin
       if Source is TBitmap then
@@ -1531,11 +1455,6 @@ begin
         FTransparentColor := GetNearestColor(FBitmap.Canvas.Handle,
           ColorToRGB(FBitmap.Canvas.Brush.Color));
     end;
-    {$ELSE}
-    if (Source is TIcon) or (Source is TMetafile) then
-      FTransparentColor := GetNearestColor(FBitmap.Canvas.Handle,
-        ColorToRGB(FBitmap.Canvas.Brush.Color));
-    {$ENDIF}
   end
   else
     inherited Assign(Source);
@@ -1551,14 +1470,12 @@ begin
   if Dest is TGraphic then
   begin
     Dest.Assign(Bitmap);
-    {$IFDEF COMPILER3_UP}
     if (Dest is TBitmap) and (FTransparentColor <> clNone) then
     begin
       TBitmap(Dest).TransparentColor := GetNearestColor(
         TBitmap(Dest).Canvas.Handle, ColorToRGB(FTransparentColor));
       TBitmap(Dest).Transparent := True;
     end;
-    {$ENDIF}
   end
   else
     inherited AssignTo(Dest);
@@ -1887,7 +1804,7 @@ begin
     ReadImageStream(Stream, FImage.FImageData, ImageDesc, FInterlaced,
       FLocalColors, FCorrupted, FImage.FBitsPerPixel, FImage.FColorMap);
     if FCorrupted and not GIFLoadCorrupted then
-      GifError(ResStr(SReadError));
+      GifError(SReadError);
     FImage.FImageData.Position := 0;
     with ImageDesc do
     begin
@@ -1949,9 +1866,7 @@ constructor TJvGIFImage.Create;
 begin
   inherited Create;
   NewImage;
-  {$IFDEF COMPILER3_UP}
   inherited SetTransparent(True);
-  {$ENDIF}
 end;
 
 destructor TJvGIFImage.Destroy;
@@ -2191,20 +2106,16 @@ begin
   if FFrameIndex <> Value then
   begin
     FFrameIndex := Value;
-    {$IFDEF COMPILER3_UP}
     PaletteModified := True;
-    {$ENDIF}
     Changed(Self);
   end;
 end;
 
-{$IFDEF WIN32}
 function TJvGIFImage.Equals(Graphic: TGraphic): Boolean;
 begin
   Result := (Graphic is TJvGIFImage) and
     (FImage = TJvGIFImage(Graphic).FImage);
 end;
-{$ENDIF}
 
 function TJvGIFImage.GetBitmap: TBitmap;
 var
@@ -2259,9 +2170,7 @@ function TJvGIFImage.GetTransparent: Boolean;
 var
   I: Integer;
 begin
-  {$IFDEF COMPILER3_UP}
   if inherited GetTransparent then
-  {$ENDIF}
     for I := 0 to FItems.Count - 1 do
       if Frames[I].TransparentColor <> clNone then
       begin
@@ -2807,7 +2716,7 @@ begin
           end
           else
           if not (SeparatorChar in [CHR_TRAILER, #0]) then
-            GifError(ResStr(SReadError));
+            GifError(SReadError);
         end;
       end;
     finally
@@ -2826,9 +2735,7 @@ begin
       raise;
     end;
   end;
-  {$IFDEF COMPILER3_UP}
   PaletteModified := True;
-  {$ENDIF}
   Changed(Self);
 end;
 
@@ -3086,9 +2993,7 @@ begin
     else
       FBackgroundColor := GrayColor(FBackgroundColor);
   end;
-  {$IFDEF COMPILER3_UP}
   PaletteModified := True;
-  {$ENDIF}
   Changed(Self);
 end;
 
@@ -3103,25 +3008,14 @@ begin
   Progress(Self, Stage, PercentDone, False, Rect(0, 0, 0, 0), Msg);
 end;
 
-{$IFNDEF COMPILER3_UP}
-procedure TJvGIFImage.Progress(Sender: TObject; Stage: TProgressStage;
-  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-begin
-  if Assigned(FOnProgress) then
-    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg);
-end;
-{$ENDIF}
-
 initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
 {$IFDEF USE_Jv_GIF}
   TPicture.RegisterFileFormat('gif', SGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
-{$IFDEF COMPILER3_UP}
 finalization
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
-{$ENDIF}
 {$ENDIF}
 end.
 

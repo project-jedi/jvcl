@@ -53,11 +53,7 @@ type
     FZeroEmpty: Boolean;
     FFormatOnEditing: Boolean;
     FFormatting: Boolean;
-    {$IFDEF COMPILER4_UP} // Polaris
     FDisplayFormat: string;
-    {$ELSE}
-    FDisplayFormat: PString;
-    {$ENDIF}
     // Polaris
     FDecimalPlaceRound: Boolean;
     procedure SetDecimalPlaceRound(Value: Boolean);
@@ -90,11 +86,7 @@ type
   protected
     //Polaris up to protected
     function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    {$IFDEF WIN32}
     procedure AcceptValue(const Value: Variant); override;
-    {$ELSE}
-    procedure AcceptValue(const Value: string); override;
-    {$ENDIF}
     procedure Change; override;
     procedure ReformatEditText; dynamic;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
@@ -132,11 +124,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF COMPILER5_UP}
     procedure Clear; override;
-    {$ELSE}
-    procedure Clear;
-    {$ENDIF}
     property AsInteger: Longint read GetAsInteger write SetAsInteger;
     property DisplayText: string read GetDisplayText;
     property PopupVisible;
@@ -168,19 +156,13 @@ type
     property Font;
     property FormatOnEditing;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property MaxValue;
     property MinValue;
@@ -211,16 +193,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -267,19 +243,13 @@ type
     property Glyph;
     property ButtonWidth;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property MaxValue;
     property MinValue;
@@ -313,16 +283,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -358,7 +322,7 @@ begin
     if not (Value[I] in [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
   Result := TextToFloat(StrPLCopy(Buffer, Value,
-    SizeOf(Buffer) - 1), RetValue {$IFDEF WIN32}, fvExtended {$ENDIF});
+    SizeOf(Buffer) - 1), RetValue , fvExtended);
 end;
 
 function FormatFloatStr(const S: string; Thousands: Boolean): string;
@@ -405,11 +369,7 @@ begin
   MaxLength := 0;
   FBeepOnError := True;
   FAlignment := taRightJustify;
-  {$IFDEF COMPILER4_UP} // Polaris
   FDisplayFormat := DefaultDisplayFormat;
-  {$ELSE}
-  FDisplayFormat := NewStr(DefaultDisplayFormat);
-  {$ENDIF}
   FDecimalPlaces := 2;
   FZeroEmpty := True;
   inherited Text := '';
@@ -430,9 +390,6 @@ end;
 destructor TJvCustomNumEdit.Destroy;
 begin
   FCanvas.Free;
-  {$IFNDEF COMPILER4_UP} // Polaris
-  DisposeStr(FDisplayFormat);
-  {$ENDIF}
   if FPopup <> nil then
   begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
@@ -566,11 +523,7 @@ procedure TJvCustomNumEdit.SetDisplayFormat(const Value: string);
 begin
   if DisplayFormat <> Value then
   begin
-    {$IFDEF COMPILER4_UP} // Polaris
     FDisplayFormat := Value;
-    {$ELSE}
-    AssignStr(FDisplayFormat, Value);
-    {$ENDIF}
     Invalidate;
     DataChanged;
   end;
@@ -578,11 +531,7 @@ end;
 
 function TJvCustomNumEdit.GetDisplayFormat: string;
 begin
-  {$IFDEF COMPILER4_UP} // Polaris
   Result := FDisplayFormat;
-  {$ELSE}
-  Result := FDisplayFormat^;
-  {$ENDIF}
 end;
 
 procedure TJvCustomNumEdit.SetFocused(Value: Boolean);
@@ -848,11 +797,7 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
 procedure TJvCustomNumEdit.AcceptValue(const Value: Variant);
-{$ELSE}
-procedure TJvCustomNumEdit.AcceptValue(const Value: string);
-{$ENDIF}
 begin
   inherited AcceptValue(Value);
   Self.Value := CheckValue(Value, False); //Polaris
@@ -976,11 +921,7 @@ begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
   try
-    {$IFDEF COMPILER4_UP}
     FPopup := TJvPopupWindow(CreatePopupCalculator(Self, BiDiMode));
-    {$ELSE}
-    FPopup := TJvPopupWindow(CreatePopupCalculator(Self));
-    {$ENDIF}
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     UpdatePopup;
   finally
@@ -1003,16 +944,10 @@ begin
     DoChange;
 end;
 
-{$IFDEF WIN32}
-
 initialization
 
 finalization
   DestroyLocals;
-{$ELSE}
-initialization
-  AddExitProc(DestroyLocals);
-{$ENDIF}
 
 end.
 

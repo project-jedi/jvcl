@@ -214,9 +214,6 @@ const
 
 {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
-  {$IFNDEF COMPILER3_UP}
-  WM_MOUSEWHEEL = $020A;
-  {$ENDIF COMPILER3_UP}
 {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
 {$ENDIF}
@@ -228,21 +225,6 @@ const
   sLineBreakLen = Length(sLineBreak);
 
 type
-  {$IFNDEF COMPILER4_UP}
-  TWMMouseWheel = packed record
-    Msg: Cardinal;
-    Keys: Smallint;
-    WheelDelta: Smallint;
-    case Integer of
-      0:
-       (XPos: Smallint;
-        YPos: Smallint);
-      1:
-       (Pos: TSmallPoint;
-        Result: Longint);
-  end;
-  {$ENDIF COMPILER4_UP}
-
   TCellRect = record
     Width: Integer;
     Height: Integer;
@@ -422,7 +404,7 @@ type
     procedure Add(AUndo: TUndo);
     procedure Undo;
     procedure Redo;
-    procedure Clear; {$IFDEF COMPILER35_Up} override; {$ENDIF}
+    procedure Clear; override;
     procedure Delete;
     function CanUndo: Boolean;
   end;
@@ -569,9 +551,6 @@ type
     FOnCompletionApply: TOnCompletionApply;
 
     { internal message processing }
-    {$IFNDEF COMPILER4_UP}
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF COMPILER4_UP}
     procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMSetFocus); message WM_KILLFOCUS;
@@ -625,7 +604,7 @@ type
     procedure AdjustSelLineMode(Restore: Boolean);
   protected
     LineAttrs: TLineAttrs;
-    procedure Resize; {$IFDEF COMPILER4_UP} override; {$ELSE} dynamic; {$ENDIF}
+    procedure Resize; override;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Loaded; override;
@@ -670,9 +649,7 @@ type
     function ExpandTabs(const S: string): string;
     function GetAutoIndentStop(Y: Integer): Integer;
     // add by patofan
-    {$IFDEF COMPILER3_UP}
     function CheckDoubleByteChar(var x: Integer; y: Integer; ByteType: TMbcsByteType; delta_inc: Integer): Boolean;
-    {$ENDIF COMPILER3_UP}
     // ending add by patofan
 
     procedure NotUndoable;
@@ -816,9 +793,7 @@ type
     property OnCompletionDrawItem: TDrawItemEvent read FOnCompletionDrawItem write FOnCompletionDrawItem;
     property OnCompletionMeasureItem: TMeasureItemEvent read FOnCompletionMeasureItem write FOnCompletionMeasureItem;
     property OnCompletionApply: TOnCompletionApply read FOnCompletionApply write FOnCompletionApply;
-    {$IFDEF COMPILER4_UP}
     property DockManager;
-    {$ENDIF COMPILER4_UP}
   end;
 
   TJvEditor = class(TJvCustomEditor)
@@ -879,7 +854,6 @@ type
     property ShowHint;
     property TabStop;
     property Visible;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property AutoSize;
     property BiDiMode;
@@ -896,7 +870,6 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$ENDIF COMPILER4_UP}
   end;
 
   TCompletionList = (cmIdentifiers, cmTemplates);
@@ -1243,29 +1216,6 @@ begin
   Dec(X);
   Inc(Y, CaretY);
 end;
-
-{$IFDEF COMPILER2}
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,P1
-        MOV     EDI,P2
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,1
-        SHR     ECX,1
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    INC     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-{$ENDIF COMPILER2}
 
 //=== TJvControlScrollBar95 ==================================================
 
@@ -1898,15 +1848,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER4_UP}
-procedure TJvCustomEditor.WMSize(var Msg: TWMSize);
-begin
-  inherited;
-  if not (csLoading in ComponentState) then
-    Resize;
-end;
-{$ENDIF COMPILER4_UP}
-
 procedure TJvCustomEditor.Resize;
 begin
   UpdateEditorSize;
@@ -2268,8 +2209,8 @@ begin
           FillRect(Bounds(R.Left, R.Bottom - 1, FCellRect.Width * Length(Ch), 1));
 
           // add by patofan
-          if (i = ColBeg) and (i < SL) {$IFDEF COMPILER3_UP} and
-            (StrByteType(PChar(s), i) = mbTrailByte) {$ENDIF} then
+          if (i = ColBeg) and (i < SL) and
+            (StrByteType(PChar(s), i) = mbTrailByte) then
           begin
             R.Right := R.Left + FCellRect.Width * Length(Ch);
             Ch := S[i] + Ch;
@@ -3051,9 +2992,7 @@ begin
           if Com([ecSelLeft, ecSelRight]) then
           begin
             // add by patofan
-            {$IFDEF COMPILER3_UP}
             CheckDoubleByteChar(x, y, mbTrailByte, deltastep);
-            {$ENDIF}
             // ending add by patofan
             SetSel1(X, Y);
           end
@@ -3077,9 +3016,7 @@ begin
           if Com([ecSelUp, ecSelDown]) then
           begin
             // add by patofan
-            {$IFDEF COMPILER3_UP}
             CheckDoubleByteChar(x, y, mbTrailByte, deltastep);
-            {$ENDIF COMPILER3_UP}
             // ending add by patofan
             SetSel1(X, Y);
           end
@@ -3208,9 +3145,7 @@ begin
           if Y > FLastVisibleRow then
             Y := FLastVisibleRow;
           // add by patofan
-          {$IFDEF COMPILER3_UP}
           CheckDoubleByteChar(x, y, mbTrailByte, -1);
-          {$ENDIF COMPILER3_UP}
           // ending add by patofan
         end;
       ecBeginLine, ecSelBeginLine, ecBeginDoc, ecSelBeginDoc,
@@ -3271,9 +3206,7 @@ begin
           Scroll(True, scbVert.Position);
           Y := Y - FVisibleRowCount;
           // add by patofan
-          {$IFDEF COMPILER3_UP}
           CheckDoubleByteChar(x, y, mbTrailByte, deltastep);
-          {$ENDIF COMPILER3_UP}
           // ending add by patofan
           SetSel1(X, Y);
           EndUpdate;
@@ -3288,18 +3221,14 @@ begin
           if Y <= FLines.Count - 1 then
           begin
             // add by patofan
-            {$IFDEF COMPILER3_UP}
             CheckDoubleByteChar(x, y, mbTrailByte, deltastep);
-            {$ENDIF COMPILER3_UP}
             // ending add by patofan
             SetSel1(X, Y);
           end
           else
           begin
             // add by patofan
-            {$IFDEF COMPILER3_UP}
             CheckDoubleByteChar(x, FLines.Count - 1, mbTrailByte, deltastep);
-            {$ENDIF COMPILER3_UP}
             // ending add by patofan
             SetSel1(X, FLines.Count - 1);
           end;
@@ -3357,11 +3286,9 @@ begin
                 X := FCaretX - 1;
 
               // add by patofan
-              {$IFDEF COMPILER3_UP}
               k := x - 1;
               if CheckDoubleByteChar(k, y, mbLeadByte, 0) then
                 X := k;
-              {$ENDIF COMPILER3_UP}
               // ending add by patofan
 
               S := Copy(FLines[FCaretY], X + 1, FCaretX - X);
@@ -3392,11 +3319,9 @@ begin
               X := Length(FLines[Y - 1]);
 
               // add by patofan
-              {$IFDEF COMPILER3_UP}
               k := x - 1;
               if CheckDoubleByteChar(k, y, mbLeadByte, 0) then
                 X := k;
-              {$ENDIF COMPILER3_UP}
               // ending add by patofan
 
               { --- UNDO --- }
@@ -3667,9 +3592,7 @@ begin
         end;
     end;
     // add by patofan
-    {$IFDEF COMPILER3_UP}
     CheckDoubleByteChar(x, y, mbTrailByte, deltastep);
-    {$ENDIF COMPILER3_UP}
     // add by patofan
 
     if CaretUndo then
@@ -3995,9 +3918,7 @@ begin
   // if (XX = FCaretX) and (YY = FCaretY) then Exit;
 
   // add by patofan
-  {$IFDEF COMPILER3_UP}
   CheckDoubleByteChar(xx, yy, mbTrailByte, -1);
-  {$ENDIF COMPILER3_UP}
   // ending add by patofan
 
   PaintCaret(False);
@@ -4123,9 +4044,7 @@ begin
     Mouse2Caret(X, Y, MouseMoveXX, MouseMoveYY);
 
     // add by patofan
-    {$IFDEF COMPILER3_UP}
     CheckDoubleByteChar(MouseMoveXX, MouseMoveYY, mbTrailByte, -1);
-    {$ENDIF COMPILER3_UP}
     // ending add by patofan
 
     if MouseMoveYY <= FLastVisibleRow then
@@ -4974,7 +4893,6 @@ begin
 end;
 
 // add by patofan
-{$IFDEF COMPILER3_UP}
 function TJvCustomEditor.CheckDoubleByteChar(var x: Integer; y: Integer; ByteType: TMbcsByteType;
   delta_inc: Integer): Boolean;
 var
@@ -4995,7 +4913,7 @@ begin
     on E: EStringListError do
   end;
 end;
-{$ENDIF COMPILER3_UP}
+
 // ending add by patofan
 
 procedure TJvCustomEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction; const Text: string);

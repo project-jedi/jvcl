@@ -101,9 +101,7 @@ type
       procedure WriteFullHeight(Writer: TWriter);
       procedure Paint; override;
       procedure CreateParams(var Params: TCreateParams); override;
-      {$IFDEF COMPILER5_UP}
       procedure AdjustClientRect(var Rect: TRect); override;
-      {$ENDIF}
       //    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
       procedure WMLButtonDown(var Message: TWMLButtonDown); message
          WM_LBUTTONDOWN;
@@ -117,9 +115,7 @@ type
    published
       property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
          False;
-      {$IFDEF COMPILER5_UP}
       property Anchors;
-      {$ENDIF}
       property Align;
       property Caption;
       property Color;
@@ -203,7 +199,6 @@ begin
    FCaptionShift := TJvgPointClass.Create;
    //...defaults
 
-   {$IFDEF COMPILER5_UP}
    FColors.Caption := clBtnShadow;
    FColors.CaptionActive := clBtnShadow;
    FColors.Text := clHighlightText;
@@ -212,12 +207,6 @@ begin
    FBorder.Inner := bvSpace;
    FCaptionBorder.Outer := bvNone;
    FCaptionBorder.Inner := bvSpace;
-   {$ELSE}
-   FBorder.Outer := bvLowered;
-   FBorder.Inner := bvRaised;
-   FCaptionBorder.Outer := bvNone;
-   FCaptionBorder.Inner := bvRaised;
-   {$ENDIF}
    FGradient.FromColor := clBlack;
    FGradient.ToColor := clGray;
    FCaptionShift.x := 8;
@@ -265,14 +254,12 @@ begin
    if Transparent or TransparentCaption then
       Params.ExStyle := Params.ExStyle or WS_EX_Transparent;
 end;
-{$IFDEF COMPILER5_UP}
 
 procedure TJvgGroupBox.AdjustClientRect(var Rect: TRect);
 begin
    inherited AdjustClientRect(Rect);
    Inc(Rect.Top, 1);
 end;
-{$ENDIF}
 
 procedure TJvgGroupBox.WMLButtonDown(var Message: TWMLButtonDown);
 var

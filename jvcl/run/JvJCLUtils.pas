@@ -170,13 +170,6 @@ function IntPower(Base, Exponent: Integer): Integer;
 function ChangeTopException(E: TObject): TObject;
 function StrToBool(const S: string): Boolean;
 
-{$IFNDEF COMPILER3_UP}
-{ AnsiStrLIComp compares S1 to S2, without case-sensitivity, up to a maximum
-  Length of MaxLen bytes. The compare operation is controlled by the
-  current Windows locale. The return value is the same as for CompareStr. }
-function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-function AnsiStrIComp(S1, S2: PChar): Integer;
-{$ENDIF}
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 function VarToInt(V: Variant): Integer;
 function VarToFloat(V: Variant): Double;
@@ -295,9 +288,6 @@ function GetPropMethod(Obj: TObject; const PropName: string): TMethod;
 procedure PrepareIniSection(SS: TStrings);
 { following functions are not documented because
   they are don't work properly, so don't use them }
-{$IFDEF COMPILER2}
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-{$ENDIF}
 
 // (rom) from JvBandWindows to make it obsolete
 function PointL(const X, Y: Longint): TPointL;
@@ -373,10 +363,8 @@ function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDate
 function DefDateFormat(FourDigitYear: Boolean): string;
 function DefDateMask(BlanksChar: Char; FourDigitYear: Boolean): string;
 
-{$IFDEF WIN32}
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
-{$ENDIF}
 
 const
   DefaultDateOrder = doDMY;
@@ -390,19 +378,12 @@ function FourDigitYear: Boolean;
 
 const
   CenturyOffset: Byte = 60;
-{$IFDEF WIN32}
   NullDate: TDateTime = {-693594} 0;
-{$ELSE}
-  NullDate: TDateTime = 0;
-{$ENDIF}
 { end JvDateUtil }
 
 { begin JvStrUtils }
 
 type
-  {$IFNDEF COMPILER4_UP}
-  TSysCharSet = set of Char;
-  {$ENDIF}
   TCharSet = TSysCharSet;
 
   { ** Common string handling routines ** }
@@ -510,10 +491,6 @@ function XorDecode(const Key, Source: string): string;
 
 { ** Command line routines ** }
 
-{$IFNDEF COMPILER4_UP}
-function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
-  IgnoreCase: Boolean): Boolean;
-{$ENDIF}
 function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
 
 { ** Numeric string handling routines ** }
@@ -555,18 +532,10 @@ function FindNotBlankCharPos(const S: string): Integer;
 function AnsiChangeCase(const S: string): string;
 function StringEndsWith(const Str, SubStr: string): Boolean;
 function ExtractFilePath2(const FileName: string): string;
-{$IFNDEF COMPILER3_UP}
-function AnsiStrIComp(S1, S2: PChar): Integer;
-function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-{$ENDIF COMPILER3_UP}
 {end JvStrUtils}
 
 { begin JvFileUtil }
-{$IFDEF COMPILER4_UP}
 function GetFileSize(const FileName: string): Int64;
-{$ELSE}
-function GetFileSize(const FileName: string): Longint;
-{$ENDIF}
 function FileDateTime(const FileName: string): TDateTime;
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
 function DeleteFilesEx(const FileMasks: array of string): Boolean;
@@ -575,32 +544,20 @@ function RemoveBackSlash(const DirName: string): string;
 function ValidFileName(const FileName: string): Boolean;
 function DirExists(Name: string): Boolean;
 
-function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer;
-  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
-{$IFDEF COMPILER4_UP}
+function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
-{$ENDIF}
-function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;
-  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
-{$IFDEF COMPILER4_UP}
+function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;overload;
 function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
-{$ENDIF}
-
 function GetWindowsDir: string;
 function GetSystemDir: string;
 
-{$IFDEF WIN32}
 function ShortToLongFileName(const ShortName: string): string;
 function ShortToLongPath(const ShortName: string): string;
 function LongToShortFileName(const LongName: string): string;
 function LongToShortPath(const LongName: string): string;
 procedure CreateFileLink(const FileName, DisplayName: string; Folder: Integer);
 procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
-{$ENDIF WIN32}
 
-{$IFNDEF COMPILER3_UP}
-function IsPathDelimiter(const S: string; Index: Integer): Boolean;
-{$ENDIF}
 { end JvFileUtil }
 
 implementation
@@ -2360,31 +2317,6 @@ end;
 
 
 
-{$IFDEF COMPILER2}
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,P1
-        MOV     EDI,P2
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,1
-        SHR     ECX,1
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    Inc     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-{$ENDIF COMPILER2}
-
-
-
 procedure SetChildPropOrd(Owner: TComponent; PropName: string; Value: Longint);
 var
   I: Integer;
@@ -2663,7 +2595,7 @@ begin
   if PropInf = nil then
     raise Exception.CreateFmt(SPropertyNotExists, [PropName]);
   if not (PropInf^.PropType^.Kind in
-    [tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}]) then
+    [tkString, tkLString, tkWString]) then
     raise Exception.CreateFmt(SInvalidPropertyType, [PropName]);
   Result := GetStrProp(Obj, PropInf);
 end;
@@ -2761,7 +2693,6 @@ end;
 { begin JvIconClipboardUtils}
 { Icon clipboard routines }
 
-{$IFDEF WIN32}
 function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
 var
   Ico: HIcon;
@@ -2787,12 +2718,6 @@ begin
     DestroyIcon(Ico);
   end;
 end;
-{$ELSE}
-function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
-begin
-  Result := JvVCLUtils.CreateBitmapFromIcon(Icon, BackColor);
-end;
-{$ENDIF}
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 var
@@ -2918,8 +2843,6 @@ type
     DIBSize: Longint;
     DIBOffset: Longint;
   end;
-
-{$IFDEF WIN32}
 
 function WidthBytes(I: Longint): Longint;
 begin
@@ -3187,17 +3110,6 @@ begin
   end;
 end;
 
-{$ELSE}
-
-procedure GetIconSize(Icon: HICON; var W, H: Integer);
-begin
-  W := GetSystemMetrics(SM_CXICON);
-  H := GetSystemMetrics(SM_CYICON);
-end;
-
-{$ENDIF WIN32}
-
-{$IFDEF WIN32}
 function CreateRealSizeIcon(Icon: TIcon): HIcon;
 var
   Mem: TMemoryStream;
@@ -3218,14 +3130,6 @@ begin
     Mem.Free;
   end;
 end;
-{$ELSE}
-function CreateRealSizeIcon(Icon: TIcon): HIcon;
-begin
-  Result := CopyIcon(hInstance, Icon.Handle);
-end;
-{$ENDIF}
-
-{$IFDEF WIN32}
 procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 var
   Ico: HIcon;
@@ -3239,11 +3143,6 @@ begin
     DestroyIcon(Ico);
   end;
 end;
-{$ELSE}
-begin
-  Canvas.Draw(X, Y, Icon);
-end;
-{$ENDIF}
 { end JvIconClipboardUtils }
 
 { begin JvRLE }
@@ -3654,8 +3553,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 procedure ScanToNumber(const S: string; var Pos: Integer);
 begin
   while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do
@@ -3665,7 +3562,6 @@ begin
     Inc(Pos);
   end;
 end;
-{$ENDIF}
 
 function GetDateOrder(const DateFormat: string): TDateOrder;
 var
@@ -3676,10 +3572,8 @@ begin
   while I <= Length(DateFormat) do
   begin
     case Chr(Ord(DateFormat[I]) and $DF) of
-{$IFDEF COMPILER3_UP}
       'E':
         Result := doYMD;
-{$ENDIF}
       'Y':
         Result := doYMD;
       'M':
@@ -3735,10 +3629,8 @@ begin
   M := 0;
   D := 0;
   DateOrder := GetDateOrder(DateFormat);
-{$IFDEF COMPILER3_UP}
   if ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
-{$ENDIF COMPILER3_UP}
   if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
     ScanNumber(S, MaxInt, Pos, N2)) then
     Exit;
@@ -3784,7 +3676,6 @@ begin
   end;
   ScanChar(S, Pos, DateSeparator);
   ScanBlanks(S, Pos);
-{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
     if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
@@ -3798,7 +3689,6 @@ begin
         (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
         (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
   end;
-{$ENDIF COMPILER3_UP}
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
 end;
 
@@ -3894,11 +3784,7 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-{$IFDEF COMPILER3_UP}
     raise EConvertError.CreateFmt(SInvalidDate, [S]);
-{$ELSE}
-    raise EConvertError.CreateFmt(LoadStr(SInvalidDate), [S]);
-{$ENDIF}
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -3963,22 +3849,12 @@ begin
     Result := Result + BlanksChar;
 end;
 
-{$IFDEF WIN32}
-
 function FormatLongDate(Value: TDateTime): string;
 var
   Buffer: array[0..1023] of Char;
   SystemTime: TSystemTime;
 begin
-{$IFDEF COMPILER3_UP}
   DateTimeToSystemTime(Value, SystemTime);
-{$ELSE}
-  with SystemTime do
-  begin
-    DecodeDate(Value, wYear, wMonth, wDay);
-    DecodeTime(Value, wHour, wMinute, wSecond, wMilliseconds);
-  end;
-{$ENDIF}
   SetString(Result, Buffer, GetDateFormat(GetThreadLocale, DATE_LONGDATE,
     @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
   Result := TrimRight(Result);
@@ -3991,8 +3867,6 @@ begin
   else
     Result := '';
 end;
-
-{$ENDIF WIN32}
 
 {$IFNDEF USE_FOUR_DIGIT_YEAR}
 
@@ -4008,22 +3882,14 @@ function StrToOem(const AnsiStr: string): string;
 begin
   SetLength(Result, Length(AnsiStr));
   if Length(Result) > 0 then
-    {$IFDEF WIN32}
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
-  {$ELSE}
-    AnsiToOemBuff(@AnsiStr[1], @Result[1], Length(Result));
-  {$ENDIF}
 end;
 
 function OemToAnsiStr(const OemStr: string): string;
 begin
   SetLength(Result, Length(OemStr));
   if Length(Result) > 0 then
-    {$IFDEF WIN32}
     OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
-  {$ELSE}
-    OemToAnsiBuff(@OemStr[1], @Result[1], Length(Result));
-  {$ENDIF}
 end;
 
 function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
@@ -4144,10 +4010,6 @@ begin
     Result := ''
   else
   begin
-    {$IFNDEF WIN32}
-    if N > 255 then
-      N := 255;
-    {$ENDIF WIN32}
     SetLength(Result, N);
     FillChar(Result[1], Length(Result), C);
   end;
@@ -4208,22 +4070,14 @@ end;
 
 function CompStr(const S1, S2: string): Integer;
 begin
-  {$IFDEF WIN32}
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT, PChar(S1),
     Length(S1), PChar(S2), Length(S2)) - 2;
-  {$ELSE}
-  Result := CompareStr(S1, S2);
-  {$ENDIF}
 end;
 
 function CompText(const S1, S2: string): Integer;
 begin
-  {$IFDEF WIN32}
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT or NORM_IGNORECASE,
     PChar(S1), Length(S1), PChar(S2), Length(S2)) - 2;
-  {$ELSE}
-  Result := CompareText(S1, S2);
-  {$ENDIF}
 end;
 
 function Copy2Symb(const S: string; Symb: Char): string;
@@ -4413,32 +4267,15 @@ end;
 
 // (rom) something for JEDI.INC
 
-{$IFDEF WIN32}
-{$IFDEF COMPILER3_UP}
-{ C++Builder or Delphi 3.0 }
 {$DEFINE MBCS}
-{$ENDIF}
-{$ENDIF}
 
 function QuotedString(const S: string; Quote: Char): string;
-{$IFDEF MBCS}
 begin
   Result := AnsiQuotedStr(S, Quote);
-  {$ELSE}
-var
-  I: Integer;
-begin
-  Result := S;
-  for I := Length(Result) downto 1 do
-    if Result[I] = Quote then
-      Insert(Quote, Result, I);
-  Result := Quote + Result + Quote;
-  {$ENDIF MBCS}
 end;
 
 function ExtractQuotedString(const S: string; Quote: Char): string;
 var
-  {$IFDEF MBCS}
   P: PChar;
 begin
   P := PChar(S);
@@ -4446,23 +4283,6 @@ begin
     Result := AnsiExtractQuotedStr(P, Quote)
   else
     Result := S;
-  {$ELSE}
-  I: Integer;
-begin
-  Result := S;
-  I := Length(Result);
-  if (I > 0) and (Result[1] = Quote) and
-    (Result[I] = Quote) then
-  begin
-    Delete(Result, I, 1);
-    Delete(Result, 1, 1);
-    for I := Length(Result) downto 2 do
-    begin
-      if (Result[I] = Quote) and (Result[I - 1] = Quote) then
-        Delete(Result, I, 1);
-    end;
-  end;
-  {$ENDIF MBCS}
 end;
 
 function Numb2USA(const S: string): string;
@@ -4523,21 +4343,13 @@ end;
 function Dec2Numb(N: Longint; A, B: Byte): string;
 var
   C: Integer;
-  {$IFDEF COMPILER4_UP}
   Number: Cardinal;
-  {$ELSE}
-  Number: Longint;
-  {$ENDIF}
 begin
   if N = 0 then
     Result := '0'
   else
   begin
-    {$IFDEF COMPILER4_UP}
     Number := Cardinal(N);
-    {$ELSE}
-    Number := N;
-    {$ENDIF}
     Result := '';
     while Number > 0 do
     begin
@@ -4622,10 +4434,6 @@ label
   A500, A400, A100, A90, A50, A40, A10, A9, A5, A4, A1;
 begin
   Result := '';
-  {$IFNDEF WIN32}
-  if Value > MaxInt * 2 then
-    Exit;
-  {$ENDIF}
   while Value >= 1000 do
   begin
     Dec(Value, 1000);
@@ -4922,42 +4730,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER4_UP}
-
-function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
-  IgnoreCase: Boolean): Boolean;
-var
-  I: Integer;
-  S: string;
-begin
-  for I := 1 to ParamCount do
-  begin
-    S := ParamStr(I);
-    if (SwitchChars = []) or ((S[1] in SwitchChars) and (Length(S) > 1)) then
-    begin
-      S := Copy(S, 2, MaxInt);
-      if IgnoreCase then
-      begin
-        if AnsiCompareText(S, Switch) = 0 then
-        begin
-          Result := True;
-          Exit;
-        end;
-      end
-      else
-      begin
-        if AnsiCompareStr(S, Switch) = 0 then
-        begin
-          Result := True;
-          Exit;
-        end;
-      end;
-    end;
-  end;
-  Result := False;
-end;
-{$ENDIF COMPILER4_UP}
-
 function GetCmdLineArg(const Switch: string; SwitchChars: TCharSet): string;
 var
   I: Integer;
@@ -4985,22 +4757,6 @@ begin
 end;
 
 { begin JvStrUtil }
-{$IFNDEF COMPILER3_UP}
-
-function AnsiStrIComp(S1, S2: PChar): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE, S1, -1,
-    S2, -1) - 2;
-end;
-
-function AnsiStrLIComp(S1, S2: PChar; MaxLen: Cardinal): Integer;
-begin
-  Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-    S1, MaxLen, S2, MaxLen) - 2;
-end;
-
-{$ENDIF COMPILER3_UP}
-
 function FindNotBlankCharPos(const S: string): Integer;
 begin
   for Result := 1 to Length(S) do
@@ -5064,11 +4820,7 @@ function NormalDir(const DirName: string): string;
 begin
   Result := DirName;
   if (Result <> '') and
-    {$IFDEF COMPILER3_UP}
     not (AnsiLastChar(Result)^ in [':', '\']) then
-    {$ELSE}
-    not (Result[Length(Result)] in [':', '\']) then
-    {$ENDIF}
     if (Length(Result) = 1) and (UpCase(Result[1]) in ['A'..'Z']) then
       Result := Result + ':\'
     else
@@ -5079,17 +4831,12 @@ function RemoveBackSlash(const DirName: string): string;
 begin
   Result := DirName;
   if (Length(Result) > 1) and
-    {$IFDEF COMPILER3_UP}
     (AnsiLastChar(Result)^ = '\') then
-    {$ELSE}
-    (Result[Length(Result)] = '\') then
-    {$ENDIF}
     if not ((Length(Result) = 3) and (UpCase(Result[1]) in ['A'..'Z']) and
       (Result[2] = ':')) then
       Delete(Result, Length(Result), 1);
 end;
 
-{$IFDEF WIN32}
 function DirExists(Name: string): Boolean;
 var
   Code: Integer;
@@ -5097,22 +4844,7 @@ begin
   Code := GetFileAttributes(PChar(Name));
   Result := (Code <> -1) and (FILE_ATTRIBUTE_DIRECTORY and Code <> 0);
 end;
-{$ELSE}
-function DirExists(Name: string): Boolean;
-var
-  SR: TSearchRec;
-begin
-  if Name[Length(Name)] = '\' then
-    Dec(Name[0]);
-  if (Length(Name) = 2) and (Name[2] = ':') then
-    Name := Name + '\*.*';
-  Result := FindFirst(Name, faDirectory, SR) = 0;
-  Result := Result and (SR.Attr and faDirectory <> 0);
-end;
-{$ENDIF}
 
-
-{$IFDEF COMPILER4_UP}
 function GetFileSize(const FileName: string): Int64;
 var
   Handle: THandle;
@@ -5131,18 +4863,6 @@ begin
   end;
   Result := -1;
 end;
-{$ELSE}
-function GetFileSize(const FileName: string): Longint;
-var
-  SearchRec: TSearchRec;
-begin
-  if FindFirst(ExpandFileName(FileName), faAnyFile, SearchRec) = 0 then
-    Result := SearchRec.Size
-  else
-    Result := -1;
-  FindClose(SearchRec);
-end;
-{$ENDIF COMPILER4_UP}
 
 function FileDateTime(const FileName: string): System.TDateTime;
 var
@@ -5175,35 +4895,19 @@ begin
     Result := Result and DeleteFiles(ExtractFilePath(FileMasks[I]), ExtractFileName(FileMasks[I]));
 end;
 
-{$IFDEF WIN32}
 function GetWindowsDir: string;
 var
   Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
 end;
-{$ELSE}
-function GetWindowsDir: string;
-begin
-  Result[0] := Char(GetWindowsDirectory(@Result[1], 254));
-end;
-{$ENDIF}
 
-{$IFDEF WIN32}
 function GetSystemDir: string;
 var
   Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
 end;
-{$ELSE}
-function GetSystemDir: string;
-begin
-  Result[0] := Char(GetSystemDirectory(@Result[1], 254));
-end;
-{$ENDIF}
-
-{$IFDEF WIN32}
 
 function ValidFileName(const FileName: string): Boolean;
 
@@ -5244,8 +4948,6 @@ begin
     Result := GetLastError;
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer;
 begin
   if LockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
@@ -5263,91 +4965,6 @@ begin
   else
     Result := GetLastError;
 end;
-
-{$ENDIF COMPILER4_UP}
-
-{$ELSE}
-
-function ValidFileName(const FileName: string): Boolean;
-const
-  MaxNameLen = 12; { file name and extension }
-  MaxExtLen = 4; { extension with point }
-  MaxPathLen = 79; { full file path in DOS }
-var
-  Dir, Name, Ext: TFileName;
-
-  function HasAny(Str, SubStr: string): Boolean; near; assembler;
-  asm
-        PUSH     DS
-        CLD
-        LDS      SI,Str
-        LES      DI,SubStr
-        INC      DI
-        MOV      DX,DI
-        XOR      AH,AH
-        LODSB
-        MOV      BX,AX
-        OR       BX,BX
-        JZ       @@2
-        MOV      AL,ES:[DI-1]
-        XCHG     AX,CX
-  @@1:  PUSH     CX
-        MOV      DI,DX
-        LODSB
-        REPNE    SCASB
-        POP      CX
-        JE       @@3
-        DEC      BX
-        JNZ      @@1
-  @@2:  XOR      AL,AL
-        JMP      @@4
-  @@3:  MOV      AL,1
-  @@4:  POP      DS
-  end;
-
-begin
-  Result := True;
-  Dir := Copy(ExtractFilePath(FileName), 1, MaxPathLen);
-  Name := Copy(ExtractFileName(FileName), 1, MaxNameLen);
-  Ext := Copy(ExtractFileExt(FileName), 1, MaxExtLen);
-  if (Dir + Name <> FileName) or HasAny(Name, ';,=+<>|"[] \') or
-    HasAny(Copy(Ext, 2, 255), ';,=+<>|"[] \.') then
-    Result := False;
-end;
-
-function LockFile(Handle: Integer; StartPos, Length: Longint;
-  Unlock: Boolean): Integer; assembler;
-asm
-      PUSH     DS
-      MOV      AH,5CH
-      MOV      AL,Unlock
-      MOV      BX,Handle
-      MOV      DX,StartPos.Word[0]
-      MOV      CX,StartPos.Word[2]
-      MOV      DI,Length.Word[0]
-      MOV      SI,Length.Word[2]
-      INT      21H
-      JNC      @@1
-      NEG      AX
-      JMP      @@2
-@@1:  MOV      AX,0
-@@2:  POP      DS
-end;
-
-function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer;
-begin
-  Result := LockFile(Handle, Offset, LockSize, False);
-end;
-
-function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;
-begin
-  Result := LockFile(Handle, Offset, LockSize, True);
-end;
-
-{$ENDIF WIN32}
-
-{$IFDEF WIN32}
-
 function ShortToLongFileName(const ShortName: string): string;
 var
   Temp: TWin32FindData;
@@ -5426,40 +5043,6 @@ const
   IID_IPersistFile: TGUID =
     (D1: $0000010B; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
-{$IFNDEF COMPILER3_UP}
-
-const
-  IID_IShellLinkA: TGUID =
-    (D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
-  CLSID_ShellLink: TGUID =
-    (D1: $00021401; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
-
-type
-  IShellLink = class(IUnknown) { sl }
-    function GetPath(pszFile: LPSTR; cchMaxPath: Integer;
-      var pfd: TWin32FindData; fFlags: DWORD): HResult; virtual; stdcall; abstract;
-    function GetIDList(var ppidl: PItemIDList): HResult; virtual; stdcall; abstract;
-    function SetIDList(pidl: PItemIDList): HResult; virtual; stdcall; abstract;
-    function GetDescription(pszName: LPSTR; cchMaxName: Integer): HResult; virtual; stdcall; abstract;
-    function SetDescription(pszName: LPSTR): HResult; virtual; stdcall; abstract;
-    function GetWorkingDirectory(pszDir: LPSTR; cchMaxPath: Integer): HResult; virtual; stdcall; abstract;
-    function SetWorkingDirectory(pszDir: LPSTR): HResult; virtual; stdcall; abstract;
-    function GetArguments(pszArgs: LPSTR; cchMaxPath: Integer): HResult; virtual; stdcall; abstract;
-    function SetArguments(pszArgs: LPSTR): HResult; virtual; stdcall; abstract;
-    function GetHotkey(var pwHotkey: Word): HResult; virtual; stdcall; abstract;
-    function SetHotkey(wHotkey: Word): HResult; virtual; stdcall; abstract;
-    function GetShowCmd(var piShowCmd: Integer): HResult; virtual; stdcall; abstract;
-    function SetShowCmd(iShowCmd: Integer): HResult; virtual; stdcall; abstract;
-    function GetIconLocation(pszIconPath: LPSTR; cchIconPath: Integer;
-      var piIcon: Integer): HResult; virtual; stdcall; abstract;
-    function SetIconLocation(pszIconPath: LPSTR; iIcon: Integer): HResult; virtual; stdcall; abstract;
-    function SetRelativePath(pszPathRel: LPSTR; dwReserved: DWORD): HResult; virtual; stdcall; abstract;
-    function Resolve(Wnd: HWND; fFlags: DWORD): HResult; virtual; stdcall; abstract;
-    function SetPath(pszFile: LPSTR): HResult; virtual; stdcall; abstract;
-  end;
-
-{$ENDIF}
-
 const
   LinkExt = '.lnk';
 
@@ -5486,18 +5069,10 @@ begin
         MultiByteToWideChar(CP_ACP, 0, FileDestPath, -1, FileNameW, MAX_PATH);
         OleCheck(PersistFile.Save(FileNameW, True));
       finally
-        {$IFDEF COMPILER3_UP}
         PersistFile := nil;
-        {$ELSE}
-        PersistFile.Release;
-        {$ENDIF}
       end;
     finally
-      {$IFDEF COMPILER3_UP}
       ShellLink := nil;
-      {$ELSE}
-      ShellLink.Release;
-      {$ENDIF}
     end;
   finally
     CoUninitialize;
@@ -5520,25 +5095,13 @@ begin
       StrCat(FileDestPath, PChar('\' + DisplayName + LinkExt));
       DeleteFile(FileDestPath);
     finally
-      {$IFDEF COMPILER3_UP}
       ShellLink := nil;
-      {$ELSE}
-      ShellLink.Release;
-      {$ENDIF}
     end;
   finally
     CoUninitialize;
   end;
 end;
 
-{$ENDIF WIN32}
-
-{$IFNDEF COMPILER3_UP}
-function IsPathDelimiter(const S: string; Index: Integer): Boolean;
-begin
-  Result := (Index > 0) and (Index <= Length(S)) and (S[Index] = '\');
-end;
-{$ENDIF}
 { end JvFileUtil }
 initialization
   { begin JvIconClipboardUtils}

@@ -150,11 +150,7 @@ begin
   else
   if Mode = dmAppLogin then
   begin
-    {$IFDEF WIN32}
     SetCursor := GetCurrentThreadID = MainThreadID;
-    {$ELSE}
-    SetCursor := True;
-    {$ENDIF}
     SaveLogin := Database.OnLogin;
     try
       try
@@ -211,9 +207,7 @@ begin
   begin
     with TJvBDEItems.Create(FDialog) do
     try
-      {$IFDEF WIN32}
       SessionName := Database.SessionName;
-      {$ENDIF}
       ItemType := bdDatabases;
       FDialog.CustomCombo.Items.Clear;
       Open;
@@ -239,19 +233,13 @@ var
   Ini: TObject;
 begin
   try
-    {$IFDEF WIN32}
     if UseRegistry then
     begin
       Ini := TRegIniFile.Create(IniFileName);
-      {$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
-      {$ENDIF}
     end
     else
       Ini := TIniFile.Create(IniFileName);
-    {$ELSE}
-    Ini := TIniFile.Create(IniFileName);
-    {$ENDIF WIN32}
     try
       FDialog.UserNameEdit.Text := IniReadString(Ini, FDialog.ClassName,
         keyLastLoginUserName, LoginName);
@@ -273,14 +261,10 @@ begin
     LoginName := GetUserName;
     if IniFileName <> '' then
     begin
-      {$IFDEF WIN32}
       if UseRegistry then
         Ini := TRegIniFile.Create(IniFileName)
       else
         Ini := TIniFile.Create(IniFileName);
-      {$ELSE}
-      Ini := TIniFile.Create(IniFileName);
-      {$ENDIF WIN32}
       try
         IniWriteString(Ini, FDialog.ClassName, keyLastLoginUserName, GetUserName);
         IniWriteString(Ini, FDialog.ClassName, keyLastAliasName, Database.AliasName);
@@ -292,10 +276,8 @@ begin
 end;
 
 function TJvDBLoginDialog.ExecuteDbLogin(LoginParams: TStrings): Boolean;
-{$IFDEF WIN32}
 var
   CurrSession: TSession;
-{$ENDIF}
 begin
   Result := False;
   if (Database = nil) or not Assigned(LoginParams) then
@@ -303,9 +285,7 @@ begin
   if ShowDBName then
     FDialog.AppTitleLabel.Caption := Format(SDatabaseName, [Database.DatabaseName]);
   FDialog.UserNameEdit.Text := LoginParams.Values[szUSERNAME];
-  {$IFDEF WIN32}
   CurrSession := Sessions.CurrentSession;
-  {$ENDIF}
   try
     Result := FDialog.ShowModal = mrOk;
     if Result then
@@ -313,9 +293,7 @@ begin
     else
       SysUtils.Abort;
   finally
-    {$IFDEF WIN32}
     Sessions.CurrentSession := CurrSession;
-    {$ENDIF}
   end;
 end;
 
@@ -413,9 +391,7 @@ begin
     try
       try
         Table.DatabaseName := Database.DatabaseName;
-        {$IFDEF WIN32}
         Table.SessionName := Database.SessionName;
-        {$ENDIF}
         Table.TableName := UsersTableName;
         Table.IndexFieldNames := UserNameField;
         Table.Open;

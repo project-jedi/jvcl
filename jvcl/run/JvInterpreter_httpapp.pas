@@ -890,8 +890,6 @@ begin
   TWebActionItem(Args.Obj).PathInfo := Value;
 end;
 
-{$IFDEF COMPILER5_UP}
-
 { property Read Producer: TCustomContentProducer }
 
 procedure TWebActionItem_Read_Producer(var Value: Variant; Args: TJvInterpreterArgs);
@@ -905,8 +903,6 @@ procedure TWebActionItem_Write_Producer(const Value: Variant; Args: TJvInterpret
 begin
   TWebActionItem(Args.Obj).Producer := V2O(Value) as TCustomContentProducer;
 end;
-
-{$ENDIF COMPILER5_UP}
 
 { TWebDispatcher }
 

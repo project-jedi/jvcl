@@ -153,8 +153,6 @@ begin
   TImage(Args.Obj).Center := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read IncrementalDisplay: Boolean }
 
 procedure TImage_Read_IncrementalDisplay(var Value: Variant; Args: TJvInterpreterArgs);
@@ -168,8 +166,6 @@ procedure TImage_Write_IncrementalDisplay(const Value: Variant; Args: TJvInterpr
 begin
   TImage(Args.Obj).IncrementalDisplay := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { property Read Picture: TPicture }
 
@@ -199,8 +195,6 @@ begin
   TImage(Args.Obj).Stretch := Value;
 end;
 
-{$IFDEF COMPILER3_UP}
-
 { property Read Transparent: Boolean }
 
 procedure TImage_Read_Transparent(var Value: Variant; Args: TJvInterpreterArgs);
@@ -214,8 +208,6 @@ procedure TImage_Write_Transparent(const Value: Variant; Args: TJvInterpreterArg
 begin
   TImage(Args.Obj).Transparent := Value;
 end;
-
-{$ENDIF COMPILER3_UP}
 
 { TBevel }
 
@@ -440,8 +432,6 @@ end;
 
 { TSplitter }
 
-{$IFDEF COMPILER3_UP}
-
 { constructor Create(AOwner: TComponent) }
 
 procedure TSplitter_Create(var Value: Variant; Args: TJvInterpreterArgs);
@@ -477,8 +467,6 @@ begin
   TSplitter(Args.Obj).MinSize := Value;
 end;
 
-{$ENDIF COMPILER3_UP}
-
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
   cExtCtrls = 'ExtCtrls';
@@ -513,18 +501,14 @@ begin
     AddSet(TImage, 'AutoSize', TImage_Write_AutoSize, 0, [0]);
     AddGet(TImage, 'Center', TImage_Read_Center, 0, [0], varEmpty);
     AddSet(TImage, 'Center', TImage_Write_Center, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TImage, 'IncrementalDisplay', TImage_Read_IncrementalDisplay, 0, [0], varEmpty);
     AddSet(TImage, 'IncrementalDisplay', TImage_Write_IncrementalDisplay, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     AddGet(TImage, 'Picture', TImage_Read_Picture, 0, [0], varEmpty);
     AddSet(TImage, 'Picture', TImage_Write_Picture, 0, [0]);
     AddGet(TImage, 'Stretch', TImage_Read_Stretch, 0, [0], varEmpty);
     AddSet(TImage, 'Stretch', TImage_Write_Stretch, 0, [0]);
-    {$IFDEF COMPILER3_UP}
     AddGet(TImage, 'Transparent', TImage_Read_Transparent, 0, [0], varEmpty);
     AddSet(TImage, 'Transparent', TImage_Write_Transparent, 0, [0]);
-    {$ENDIF COMPILER3_UP}
     { TBevelStyle }
     AddConst(cExtCtrls, 'bsLowered', bsLowered);
     AddConst(cExtCtrls, 'bsRaised', bsRaised);
@@ -586,7 +570,6 @@ begin
     { TRadioGroup }
     AddClass(cExtCtrls, TRadioGroup, 'TRadioGroup');
     AddGet(TRadioGroup, 'Create', TRadioGroup_Create, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER3_UP}
     { TSplitter }
     AddClass(cExtCtrls, TSplitter, 'TSplitter');
     AddGet(TSplitter, 'Create', TSplitter_Create, 1, [varEmpty], varEmpty);
@@ -594,10 +577,9 @@ begin
     AddSet(TSplitter, 'Beveled', TSplitter_Write_Beveled, 0, [0]);
     AddGet(TSplitter, 'MinSize', TSplitter_Read_MinSize, 0, [0], varEmpty);
     AddSet(TSplitter, 'MinSize', TSplitter_Write_MinSize, 0, [0]);
-    {$ENDIF COMPILER3_UP}
   end;
   RegisterClasses([TShape, TPaintBox, TImage, TBevel, TTimer, TPanel, TPage,
-    TNotebook, THeader, TRadioGroup {$IFDEF COMPILER3_UP}, TSplitter {$ENDIF COMPILER3_UP}]);
+    TNotebook, THeader, TRadioGroup, TSplitter]);
 end;
 
 end.

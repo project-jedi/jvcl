@@ -144,8 +144,7 @@ function FontToString(Font: TFont): string;
 begin
   with Font do
     Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
-      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),
-      {$IFDEF COMPILER3_UP} Charset {$ELSE} 0 {$ENDIF}]);
+      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
 end;
 
 type

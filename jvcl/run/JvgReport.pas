@@ -1386,8 +1386,7 @@ end;
 
 procedure TJvgReport.ValidateWnds;
 begin
-  {$IFDEF COMPILER3_UP}OwnerWnd := ParentWnd;
-  {$ENDIF}
+  OwnerWnd := ParentWnd;
   //  if (OwnerWnd=nil)or(ParentWnd=nil) then raise Exception.Create('TJvgReport: Unassigned Owner or Parent window.');
 end;
 

@@ -289,7 +289,7 @@ end;
 
 procedure TJvAnimatedCursorImage.RiffReadError;
 begin
-  raise EReadError.Create(ResStr(SReadError));
+  raise EReadError.Create(SReadError);
 end;
 
 function TJvAnimatedCursorImage.GetTitle: string;

@@ -85,25 +85,17 @@ type
 
   TJvClipboardViewer = class(TJvCustomClipboardViewer)
   published
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
     property ViewFormat;
     property OnChange;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
 function ClipboardFormatToView(Value: Word): TClipboardViewFormat;
@@ -131,10 +123,8 @@ begin
         Result := 'DIF';
       CF_METAFILEPICT:
         Result := 'Metafile Picture';
-      {$IFDEF WIN32}
       CF_ENHMETAFILE:
         Result := 'Enchanced Metafile';
-      {$ENDIF}
       CF_OEMTEXT:
         Result := 'OEM Text';
       CF_PALETTE:
@@ -189,10 +179,8 @@ begin
       Result := cvBitmap;
     CF_METAFILEPICT:
       Result := cvMetafile;
-    {$IFDEF WIN32}
     CF_ENHMETAFILE:
       Result := cvMetafile;
-    {$ENDIF}
     CF_PALETTE:
       Result := cvPalette;
     CF_OEMTEXT:
@@ -433,9 +421,6 @@ constructor TJvCustomClipboardViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlState := ControlState + [csCreating];
-  {$IFNDEF WIN32}
-  ControlStyle := ControlStyle + [csFramed];
-  {$ENDIF}
   FWndNext := 0;
   FPaintControl := nil;
   FViewFormat := cvDefault;
@@ -550,7 +535,7 @@ begin
           else
             if ((Format = cvBitmap) and Clipboard.HasFormat(CF_BITMAP))
             or ((Format = cvMetafile) and (Clipboard.HasFormat(CF_METAFILEPICT))
-            {$IFDEF WIN32} or Clipboard.HasFormat(CF_ENHMETAFILE){$ENDIF WIN32})
+            or Clipboard.HasFormat(CF_ENHMETAFILE))
             or ((Format = cvPicture) and Clipboard.HasFormat(CF_PICTURE)) then
           begin
             Picture.Assign(Clipboard);
@@ -733,11 +718,9 @@ function TJvCustomClipboardViewer.GetDrawFormat: TClipboardViewFormat;
     if Clipboard.HasFormat(CF_METAFILEPICT) then
       Result := cvMetafile
     else
-    {$IFDEF WIN32}
     if Clipboard.HasFormat(CF_ENHMETAFILE) then
       Result := cvMetafile
     else
-    {$ENDIF}
     if Clipboard.HasFormat(CF_ICON) then
       Result := cvIcon
     else

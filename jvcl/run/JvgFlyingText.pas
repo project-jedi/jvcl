@@ -136,9 +136,7 @@ TYPE
       PROCEDURE RepaintBackground;      //...for users
       PROCEDURE RemakeBackground;       //...for users
    PUBLISHED
-      {$IFDEF COMPILER5_UP}
       PROPERTY Anchors;
-      {$ENDIF}
       PROPERTY Align;
       PROPERTY AlignTextHorizontal: TglHorAlign READ FHorAlign WRITE SetHorAlign
          DEFAULT fhaCenter;

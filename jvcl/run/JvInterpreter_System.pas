@@ -105,12 +105,10 @@ end;
 
 { property Read RefCount: Integer }
 
-{$IFDEF COMPILER3_UP}
 procedure TInterfacedObject_Read_RefCount(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TInterfacedObject(Args.Obj).RefCount;
 end;
-{$ENDIF COMPILER3_UP}
 
 { procedure Move(const Source; var Dest; Count: Integer); }
 
@@ -551,10 +549,8 @@ begin
     AddGet(TObject, 'InheritsFrom', TObject_InheritsFrom, 1, [varEmpty], varEmpty);
     // AddGet(TObject, 'GetInterface', TObject_GetInterface, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     { TInterfacedObject }
-    {$IFDEF COMPILER3_UP}
     AddClass(cSystem, TInterfacedObject, 'TInterfacedObject');
     AddGet(TInterfacedObject, 'RefCount', TInterfacedObject_Read_RefCount, 0, [0], varEmpty);
-    {$ENDIF COMPILER3_UP}
     AddFun(cSystem, 'Move', JvInterpreter_Move, 3, [varEmpty, varByRef, varEmpty], varEmpty);
     AddFun(cSystem, 'ParamCount', JvInterpreter_ParamCount, 0, [0], varEmpty);
     AddFun(cSystem, 'ParamStr', JvInterpreter_ParamStr, 1, [varEmpty], varEmpty);

@@ -88,11 +88,7 @@ type
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
-    {$IFDEF WIN32}
-    procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP}; Root: TComponent {$ENDIF}); override;
-    {$ELSE}
-    procedure WriteComponents(Writer: TWriter); override;
-    {$ENDIF WIN32}
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure ChangePage(Next: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -144,18 +140,12 @@ type
     procedure PageShow(Next: Boolean);
     procedure PageHide(Next: Boolean);
   protected
-    {$IFDEF WIN32}
     procedure SetParentComponent(Value: TComponent); override;
-    {$ELSE}
-    procedure ReadState(Reader: TReader); override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
-    {$ENDIF}
     property PageManager: TJvPageManager read FPageManager write SeTJvPageManager;
   published
     property PageName: string read GetPageName write SetPageName;
@@ -195,12 +185,7 @@ const
 implementation
 
 uses
-
-  {$IFDEF COMPILER4_UP}
   SysUtils, Forms, StdCtrls, ActnList;
-  {$ELSE}
-  SysUtils, Forms, StdCtrls;
-  {$ENDIF COMPILER4_UP}
 
 // (rom) changed to var
 var
@@ -253,8 +238,6 @@ begin
   Result := True;
 end;
 
-{$IFDEF WIN32}
-
 function TJvPageProxy.GetParentComponent: TComponent;
 begin
   Result := FPageManager;
@@ -267,19 +250,6 @@ begin
   if (Value <> nil) and (Value is TJvPageManager) then
     PageManager := TJvPageManager(Value);
 end;
-
-{$ELSE}
-
-procedure TJvPageProxy.ReadState(Reader: TReader);
-begin
-  inherited ReadState(Reader);
-  if Reader.Parent is TJvPageManager then
-  begin
-    PageManager := TJvPageManager(Reader.Parent);
-  end;
-end;
-
-{$ENDIF WIN32}
 
 procedure TJvPageProxy.PageEnter(Next: Boolean);
 begin
@@ -388,10 +358,8 @@ begin
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, False);
     FButtons[Boolean(Index)] := Value;
-    {$IFDEF WIN32}
     if Value <> nil then
       Value.FreeNotification(Self);
-    {$ENDIF}
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, True);
   end;
@@ -429,7 +397,6 @@ procedure TJvPageManager.CheckBtnEnabled;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    {$IFDEF COMPILER4_UP}
     if GetButton(0) <> nil then
     begin
       if GetButton(0).Action <> nil then
@@ -444,44 +411,21 @@ begin
       else
         GetButton(1).Enabled := NextEnabled;
     end;
-    {$ELSE}
-    if GetButton(0) <> nil then
-      GetButton(0).Enabled := PriorEnabled;
-    if GetButton(1) <> nil then
-      GetButton(1).Enabled := NextEnabled;
-    {$ENDIF}
     if Assigned(FOnCheckButtons) then
       FOnCheckButtons(Self);
   end;
 end;
 
-{$IFDEF WIN32}
-procedure TJvPageManager.GetChildren(Proc: TGetChildProc{$IFDEF COMPILER3_UP};
-  Root: TComponent{$ENDIF});
+procedure TJvPageManager.GetChildren(Proc: TGetChildProc;  Root: TComponent);
 var
   I: Integer;
 begin
-  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
+  inherited GetChildren(Proc, Root);
   for I := 0 to FPageProxies.Count - 1 do
   begin
     Proc(TJvPageProxy(FPageProxies.Items[I]));
   end;
 end;
-{$ELSE}
-procedure TJvPageManager.WriteComponents(Writer: TWriter);
-var
-  I: Integer;
-  Proxy: TJvPageProxy;
-begin
-  inherited WriteComponents(Writer);
-  for I := 0 to FPageProxies.Count - 1 do
-  begin
-    Proxy := FPageProxies.Items[I];
-    if Proxy.Owner = Writer.Root then
-      Writer.WriteComponent(Proxy);
-  end;
-end;
-{$ENDIF WIN32}
 
 procedure TJvPageManager.SetDestroyHandles(Value: Boolean);
 begin
@@ -498,10 +442,8 @@ begin
   if FPageOwner <> Value then
   begin
     FPageOwner := Value;
-    {$IFDEF WIN32}
     if Value <> nil then
       Value.FreeNotification(Self);
-    {$ENDIF}
     if not (csLoading in ComponentState) then
     begin
       Resync;

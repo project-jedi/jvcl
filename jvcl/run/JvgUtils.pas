@@ -115,11 +115,9 @@ procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColor
 
 function CalcMathString(sExpression: string): single;
 
-function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
-{$IFDEF COMPILER5_UP}overload;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
-{$ENDIF}
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;overload;
+function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
+
 
 function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
 procedure TypeStringOnKeyboard(S: string);
@@ -134,9 +132,7 @@ function UserName: string;
 function ComputerName: string;
 function CreateIniFileName: string;
 function ExpandString(const str: string; len: integer): string;
-{$IFDEF COMPILER5_UP}
 function Transliterate(const Str: string; RusToLat: boolean): string;
-{$ENDIF}
 function IsSmallFonts: boolean;
 function SystemColorDepth: integer;
 function GetFileType(const FileName: string): TglFileType;
@@ -745,7 +741,6 @@ var
               inc(r_.left);
             end;
           end;
-        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -753,7 +748,6 @@ var
             LineTo(DC, r.left, r.bottom);
             inc(r_.left);
           end;
-        {$ENDIF}
       end; //........{ . END CASE . }
     end;
     if fsdTop in Borders then
@@ -789,7 +783,6 @@ var
               inc(r_.top);
             end;
           end;
-        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -797,7 +790,6 @@ var
             LineTo(DC, r.right, r.top);
             inc(r_.top);
           end;
-        {$ENDIF}
       end; //........{ . END CASE . }
     end;
     if fsdRight in Borders then
@@ -833,7 +825,6 @@ var
             dec(r_.right);
             //. if Bold then dec(r_.right);
           end;
-        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -841,7 +832,6 @@ var
             LineTo(DC, r.right, r.bottom);
             dec(r_.right);
           end;
-        {$ENDIF}
       end; //........{ . END CASE . }
     end;
     if fsdBottom in Borders then
@@ -883,7 +873,6 @@ var
             //. if Bold then dec(r_.bottom);
             //dec(r_.bottom);
           end;
-        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -891,7 +880,6 @@ var
             LineTo(DC, r.right + 1, r.bottom {-1});
             dec(r_.bottom);
           end;
-        {$ENDIF}
       end; //........{ . END CASE . }
     end;
   end; //_______________________________________LOCAL END_
@@ -1665,9 +1653,7 @@ end;
  Тренарный оператор   x ? y : z
 }
 
-function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
-{$IFDEF COMPILER5_UP} overload;
-{$ENDIF}
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;overload;
 begin
   if fExpression then
     Result := IfTrue
@@ -1675,7 +1661,6 @@ begin
     Result := IfFalse;
 end;
 //------------------------
-{$IFDEF COMPILER5_UP}
 
 function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
 begin
@@ -1684,7 +1669,6 @@ begin
   else
     Result := IfFalse;
 end;
-{$ENDIF}
 //------------------------
 
 {
@@ -2062,7 +2046,6 @@ end;
 {
  Транслитерация строки RusToLat и обратно
 }
-{$IFDEF COMPILER5_UP}
 
 function Transliterate(const Str: string; RusToLat: boolean): string;
 const
@@ -2108,7 +2091,6 @@ begin
             break;
           end;
 end;
-{$ENDIF}
 
 {Значение функции TRUE если мелкий шрифт}
 

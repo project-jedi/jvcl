@@ -51,15 +51,9 @@ type
     FParams: TParams;
     FStartParam: Char;
     FAuxiliaryTables: Boolean;
-    {$IFDEF WIN32}
     FText: string;
     FRowsAffected: Integer;
-    {$ELSE}
-    FText: PChar;
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     FConstrained: Boolean;
-    {$ENDIF}
     FLocal: Boolean;
     FRequestLive: Boolean;
     FBlankAsZero: Boolean;
@@ -77,32 +71,20 @@ type
     procedure SetPrepared(Value: Boolean);
     procedure SetPrepare(Value: Boolean);
     procedure SetStartParam(Value: Char);
-    {$IFDEF COMPILER4_UP}
     procedure ReadParamData(Reader: TReader);
     procedure WriteParamData(Writer: TWriter);
-    {$ENDIF}
-    {$IFDEF WIN32}
     function GetRowsAffected: Integer;
-    {$ENDIF}
   protected
-    {$IFDEF COMPILER5_UP}
     { IProviderSupport }
     procedure PSExecute; override;
     function PSGetParams: TParams; override;
     procedure PSSetCommandText(const CommandText: string); override;
     procedure PSSetParams(AParams: TParams); override;
-    {$ENDIF}
     function CreateHandle: HDBICur; override;
     procedure Disconnect; override;
     function GetParamsCount: Word;
-    {$IFDEF COMPILER4_UP}
     procedure DefineProperties(Filer: TFiler); override;
-    {$ENDIF}
-    {$IFDEF COMPILER35_UP}
     function SetDBFlag(Flag: Integer; Value: Boolean): Boolean; override;
-    {$ELSE}
-    procedure SetDBFlag(Flag: Integer; Value: Boolean); override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -112,23 +94,14 @@ type
     procedure Prepare;
     procedure RefreshQuery;
     procedure UnPrepare;
-    {$IFNDEF COMPILER3_UP}
-    function IsEmpty: Boolean;
-    {$ENDIF}
     property Local: Boolean read FLocal;
     property ParamCount: Word read GetParamsCount;
     property Prepared: Boolean read FPrepared write SetPrepare;
     property StmtHandle: HDBIStmt read FStmtHandle;
-    {$IFDEF WIN32}
     property Text: string read FText;
     property RowsAffected: Integer read GetRowsAffected;
-    {$ELSE}
-    property Text: PChar read FText;
-    {$ENDIF}
   published
-    {$IFDEF COMPILER5_UP}
     property AutoRefresh;
-    {$ENDIF}
     property AuxiliaryTables: Boolean read FAuxiliaryTables write FAuxiliaryTables default True;
     property ParamCheck: Boolean read FParamCheck write FParamCheck default True;
     property StartParam: Char read FStartParam write SetStartParam default DefQBEStartParam;
@@ -136,25 +109,19 @@ type
     property QBE: TStrings read FQBE write SetQuery;
     { Ensure QBE is declared before Params }
     property BlankAsZero: Boolean read FBlankAsZero write FBlankAsZero default False;
-    property Params: TParams read FParams write SetParamsList {$IFDEF COMPILER4_UP} stored False {$ENDIF};
+    property Params: TParams read FParams write SetParamsList stored False;
     property RequestLive: Boolean read FRequestLive write FRequestLive default False;
     property UpdateMode;
-    {$IFDEF WIN32}
     property UpdateObject;
-    {$IFDEF COMPILER3_UP}
     property Constrained: Boolean read FConstrained write FConstrained default False;
     property Constraints stored ConstraintsStored;
-    {$ENDIF}
-    {$ENDIF}
   end;
 
 implementation
 
 uses
   DBConsts,
-  {$IFDEF COMPILER3_UP}
   BDEConst,
-  {$ENDIF}
   JvDBUtils;
 
 function NameDelimiter(C: Char): Boolean;
@@ -172,15 +139,11 @@ begin
   inherited Create(AOwner);
   FQBE := TStringList.Create;
   TStringList(QBE).OnChange := QueryChanged;
-  FParams := TParams.Create {$IFDEF COMPILER4_UP} (Self) {$ENDIF};
+  FParams := TParams.Create(Self);
   FStartParam := DefQBEStartParam;
   FParamCheck := True;
   FAuxiliaryTables := True;
-  {$IFNDEF WIN32}
-  FText := nil;
-  {$ELSE}
   FRowsAffected := -1;
-  {$ENDIF}
   FRequestLive := False;
 end;
 
@@ -189,9 +152,6 @@ begin
   Destroying;
   Disconnect;
   QBE.Free;
-  {$IFNDEF WIN32}
-  StrDispose(FText);
-  {$ENDIF}
   FParams.Free;
   inherited Destroy;
 end;
@@ -253,9 +213,7 @@ end;
 
 procedure TJvQBEQuery.SetQuery(Value: TStrings);
 begin
-  {$IFDEF WIN32}
   if QBE.Text <> Value.Text then
-  {$ENDIF}
   begin
     Disconnect;
     TStringList(QBE).OnChange := nil;
@@ -269,36 +227,22 @@ procedure TJvQBEQuery.QueryChanged(Sender: TObject);
 var
   List: TParams;
 begin
-  {$IFDEF COMPILER4_UP}
   if not (csReading in ComponentState) then
   begin
-  {$ENDIF COMPILER4_UP}
     Disconnect;
-    {$IFDEF WIN32}
     FText := QBE.Text;
-    {$ELSE}
-    StrDispose(FText);
-    FText := QBE.GetText;
-    {$ENDIF WIN32}
     if ParamCheck or (csDesigning in ComponentState) then
     begin
-      List := TParams.Create {$IFDEF COMPILER4_UP} (Self) {$ENDIF};
+      List := TParams.Create(Self);
       try
         CreateParams(List, PChar(Text));
         List.AssignValues(FParams);
-      {$IFDEF COMPILER4_UP}
         FParams.Clear;
         FParams.Assign(List);
       finally
-      {$ELSE}
-        FParams.Free;
-        FParams := List;
-      except
-      {$ENDIF COMPILER4_UP}
         List.Free;
       end;
     end;
-  {$IFDEF COMPILER4_UP}
     DataEvent(dePropertyChange, 0);
   end
   else
@@ -307,15 +251,12 @@ begin
     FParams.Clear;
     CreateParams(FParams, PChar(Text));
   end;
-  {$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvQBEQuery.SetParamsList(Value: TParams);
 begin
   FParams.AssignValues(Value);
 end;
-
-{$IFDEF COMPILER4_UP}
 
 procedure TJvQBEQuery.DefineProperties(Filer: TFiler);
 begin
@@ -333,8 +274,6 @@ procedure TJvQBEQuery.WriteParamData(Writer: TWriter);
 begin
   Writer.WriteCollection(Params);
 end;
-
-{$ENDIF}
 
 function TJvQBEQuery.GetParamsCount: Word;
 begin
@@ -403,20 +342,14 @@ begin
   begin
     if Value then
     begin
-      {$IFDEF WIN32}
       FRowsAffected := -1;
-      {$ENDIF}
       if ParamCount > 0 then
       begin
         TempQBE := TStringList.Create;
         try
           TempQBE.Assign(QBE);
           ReplaceParams(TempQBE);
-          {$IFDEF WIN32}
           AText := PChar(TempQBE.Text);
-          {$ELSE}
-          AText := TempQBE.GetText;
-          {$ENDIF}
           try
             FreeStatement;
             if StrLen(AText) > 1 then
@@ -424,9 +357,6 @@ begin
             else
               _DBError(SEmptySQLStatement);
           finally
-            {$IFNDEF WIN32}
-            StrDispose(AText);
-            {$ENDIF}
           end;
         finally
           TempQBE.Free;
@@ -442,9 +372,7 @@ begin
     end
     else
     begin
-      {$IFDEF WIN32}
       FRowsAffected := RowsAffected;
-      {$ENDIF}
       FreeStatement;
     end;
     FPrepared := Value;
@@ -529,9 +457,7 @@ begin
       end
       else
         Name := StrPas(StartPos + 1);
-      {$IFDEF COMPILER4_UP}
       if List.FindParam(Name) = nil then
-      {$ENDIF}
         List.CreateParam(ftUnknown, Name, ptUnknown);
       CurPos^ := CurChar;
       StartPos^ := '?';
@@ -549,13 +475,6 @@ begin
     Inc(CurPos);
   until CurChar = #0;
 end;
-
-{$IFNDEF COMPILER3_UP}
-function TJvQBEQuery.IsEmpty: Boolean;
-begin
-  Result := IsDataSetEmpty(Self);
-end;
-{$ENDIF}
 
 function TJvQBEQuery.CreateCursor(GenHandle: Boolean): HDBICur;
 begin
@@ -596,22 +515,14 @@ begin
   Check(DbiQExec(StmtHandle, PCursor));
 end;
 
-{$IFDEF COMPILER35_UP}
 function TJvQBEQuery.SetDBFlag(Flag: Integer; Value: Boolean): Boolean;
-{$ELSE}
-procedure TJvQBEQuery.SetDBFlag(Flag: Integer; Value: Boolean);
-{$ENDIF}
 var
   NewConnection: Boolean;
 begin
   if Value then
   begin
     NewConnection := DBFlags = [];
-    {$IFDEF COMPILER35_UP}
     Result := inherited SetDBFlag(Flag, Value);
-    {$ELSE}
-    inherited SetDBFlag(Flag, Value);
-    {$ENDIF}
     if not (csReading in ComponentState) and NewConnection then
       FLocal := not Database.IsSQLBased;
   end
@@ -619,11 +530,7 @@ begin
   begin
     if DBFlags - [Flag] = [] then
       SetPrepared(False);
-    {$IFDEF COMPILER35_UP}
     Result := inherited SetDBFlag(Flag, Value);
-    {$ELSE}
-    inherited SetDBFlag(Flag, Value);
-    {$ENDIF}
   end;
 end;
 
@@ -636,16 +543,13 @@ procedure TJvQBEQuery.GetStatementHandle(QBEText: PChar);
 const
   DataType: array [Boolean] of Longint = (Ord(wantCanned), Ord(wantLive));
 begin
-  {$IFDEF WIN32}
   Check(DbiQAlloc(DBHandle, qrylangQBE, FStmtHandle));
   try
     Check(DBiSetProp(hDbiObj(StmtHandle), stmtLIVENESS,
       DataType[RequestLive and not ForceUpdateCallback]));
     Check(DBiSetProp(hDbiObj(StmtHandle), stmtAUXTBLS, Longint(FAuxiliaryTables)));
-    {$IFDEF COMPILER3_UP}
     if Local and RequestLive and Constrained then
       Check(DBiSetProp(hDbiObj(StmtHandle), stmtCONSTRAINED, LongInt(True)));
-    {$ENDIF}
     if FBlankAsZero then
       Check(DbiSetProp(hDbiObj(StmtHandle), stmtBLANKS, Longint(True)));
     while not CheckOpen(DbiQPrepare(FStmtHandle, QBEText)) do {Retry}
@@ -655,25 +559,6 @@ begin
     FStmtHandle := nil;
     raise;
   end;
-  {$ELSE}
-  if Local then
-  begin
-    while not CheckOpen(DbiQPrepare(DBHandle, qrylangQBE, QBEText,
-      FStmtHandle)) do {Retry}
-      ;
-    Check(DBiSetProp(hDbiObj(StmtHandle), stmtLIVENESS, DataType[RequestLive]));
-  end
-  else
-  begin
-    if RequestLive then
-      Check(DbiQPrepareExt(DBHandle, qrylangQBE, QBEText, qprepFORUPDATE, FStmtHandle))
-    else
-      Check(DbiQPrepare(DBHandle, qrylangQBE, QBEText, FStmtHandle));
-  end;
-  Check(DBiSetProp(hDbiObj(StmtHandle), stmtAUXTBLS, Longint(FAuxiliaryTables)));
-  if FBlankAsZero then
-    Check(DbiSetProp(hDbiObj(StmtHandle), stmtBLANKS, LongInt(True)));
-  {$ENDIF}
 end;
 
 function TJvQBEQuery.GetQBEText: PChar;
@@ -701,7 +586,6 @@ begin
   end;
 end;
 
-{$IFDEF WIN32}
 function TJvQBEQuery.GetRowsAffected: Integer;
 var
   Length: Word;
@@ -715,9 +599,6 @@ begin
   else
     Result := FRowsAffected;
 end;
-{$ENDIF}
-
-{$IFDEF COMPILER5_UP}
 
 { TJvQBEQuery.IProviderSupport }
 
@@ -743,8 +624,6 @@ begin
   if CommandText <> '' then
     QBE.Text := CommandText;
 end;
-
-{$ENDIF COMPILER5_UP}
 
 end.
 

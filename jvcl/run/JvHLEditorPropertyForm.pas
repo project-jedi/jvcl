@@ -364,9 +364,7 @@ begin
   Section := AddSlash2(FRegAutoSection) + HighLighters[AHighLighter];
   FRegAuto.WriteString(Section, 'BackColor', ColorToString(ARAHLEditor.Color));
   FRegAuto.WriteString(Section, 'FontName', ARAHLEditor.Font.Name);
-  {$IFDEF COMPILER3_UP}
   FRegAuto.WriteString(Section, 'Charset', IntToStr(ARAHLEditor.Font.Charset));
-  {$ENDIF COMPILER3_UP}
   FRegAuto.WriteInteger(Section, 'FontSize', ARAHLEditor.Font.Size);
   FRegAuto.WriteString(Section, 'RightMarginColor', ColorToString(ARAHLEditor.RightMarginColor));
   SaveColor(ARAHLEditor.Colors.Number, 'Number');
@@ -428,9 +426,7 @@ begin
   LoadColor(ARAHLEditor.Colors.PlainText, clWindowText, clWindow, [], 'PlainText');
   ARAHLEditor.Color := StringToColor(FRegAuto.ReadString(Section, 'BackColor', 'clWindow'));
   ARAHLEditor.Font.Name := FRegAuto.ReadString(Section, 'FontName', 'Courier New');
-  {$IFDEF COMPILER3_UP}
   ARAHLEditor.Font.Charset := FRegAuto.ReadInteger(Section, 'Charset', DEFAULT_CHARSET);
-  {$ENDIF COMPILER3_UP}
   ARAHLEditor.Font.Size := FRegAuto.ReadInteger(Section, 'FontSize', 10);
   ARAHLEditor.RightMarginColor := StringToColor(FRegAuto.ReadString(Section, 'RightMarginColor', 'clSilver'));
 end;

@@ -35,41 +35,29 @@ uses
   JvDBUtils;
 
 type
-  TBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers
-    {$IFDEF WIN32}, bdRepositories {$ENDIF});
+  TBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers, bdRepositories);
 
   TJvCustomBDEItems = class(TBDEDataSet)
   private
     FItemType: TBDEItemType;
-    {$IFDEF WIN32}
     FSessionName: string;
     FSessionLink: TDatabase;
     function GetDBSession: TSession;
     procedure SetSessionName(const Value: string);
-    {$ENDIF}
     procedure SetItemType(Value: TBDEItemType);
   protected
-    {$IFDEF WIN32}
-    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer; override {$ENDIF};
-    procedure OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery: Boolean) {$ENDIF}; override;
+    function GetRecordCount: Integer; override;
+    procedure OpenCursor (InfoQuery: Boolean); override;
     procedure CloseCursor; override;
-    {$ENDIF}
     function CreateHandle: HDBICur; override;
     property ItemType: TBDEItemType read FItemType write SetItemType
       default bdDatabases;
   public
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
-    {$ENDIF}
     property DBSession: TSession read GetDBSession;
-    {$IFNDEF COMPILER3_UP}
-    property RecordCount: Longint read GetRecordCount;
-    {$ENDIF}
   published
     property SessionName: string read FSessionName write SetSessionName;
-    {$ENDIF WIN32}
   end;
 
   TJvBDEItems = class(TJvCustomBDEItems)
@@ -78,21 +66,14 @@ type
   end;
 
   TJvDBListDataSet = class(TDBDataSet)
-  {$IFDEF WIN32}
   protected
-    function GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer; override {$ENDIF};
+    function GetRecordCount: Integer; override;
   public
-    {$IFDEF COMPILER3_UP}
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
-    {$ELSE}
-    property RecordCount: Longint read GetRecordCount;
-    {$ENDIF}
-  {$ENDIF}
   end;
 
-  TDBItemType = (dtTables, dtStoredProcs, dtFiles {$IFDEF WIN32},
-    dtFunctions {$ENDIF});
+  TDBItemType = (dtTables, dtStoredProcs, dtFiles, dtFunctions);
 
   TJvCustomDatabaseItems = class(TJvDBListDataSet)
   private
@@ -220,7 +201,6 @@ end;
 
 //=== TJvSessionLink =========================================================
 
-{$IFDEF WIN32}
 
 type
   TJvSessionLink = class(TDatabase)
@@ -250,7 +230,6 @@ begin
   inherited Destroy;
 end;
 
-{$ENDIF}
 
 //=== TJvCustomBDEItems ======================================================
 
@@ -274,24 +253,17 @@ begin
       Check(DbiOpenLdList(Result));
     bdUsers:
       Check(DbiOpenUserList(Result));
-    {$IFDEF WIN32}
     bdRepositories:
       Check(DbiOpenRepositoryList(Result));
-    {$ENDIF}
   end;
 end;
 
-{$IFDEF WIN32}
 
 function TJvCustomBDEItems.GetDBSession: TSession;
 begin
   Result := Sessions.FindSession(SessionName);
   if Result = nil then
-    {$IFDEF COMPILER3_UP}
     Result := DBTables.Session;
-    {$ELSE}
-    Result := DB.Session;
-    {$ENDIF}
 end;
 
 procedure TJvCustomBDEItems.SetSessionName(const Value: string);
@@ -311,7 +283,7 @@ begin
   FSessionLink := TJvSessionLink.Create(S);
   try
     TJvSessionLink(FSessionLink).FList := Self;
-    inherited OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery) {$ENDIF};
+    inherited OpenCursor(InfoQuery);
   except
     FSessionLink.Free;
     FSessionLink := nil;
@@ -330,14 +302,11 @@ begin
   end;
 end;
 
-function TJvCustomBDEItems.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
+function TJvCustomBDEItems.GetRecordCount: Integer;
 begin
   Result := dsGetRecordCount(Self);
 end;
 
-{$ENDIF WIN32}
-
-{$IFDEF COMPILER3_UP}
 function TJvCustomBDEItems.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 begin
@@ -349,11 +318,9 @@ begin
     DoAfterScroll;
   end;
 end;
-{$ENDIF COMPILER3_UP}
 
 //=== TJvDBListDataSet =======================================================
 
-{$IFDEF COMPILER3_UP}
 function TJvDBListDataSet.Locate(const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 begin
@@ -365,14 +332,11 @@ begin
     DoAfterScroll;
   end;
 end;
-{$ENDIF COMPILER3_UP}
 
-{$IFDEF WIN32}
-function TJvDBListDataSet.GetRecordCount: {$IFNDEF COMPILER3_UP} Longint {$ELSE} Integer {$ENDIF};
+function TJvDBListDataSet.GetRecordCount: Integer;
 begin
   Result := dsGetRecordCount(Self);
 end;
-{$ENDIF WIN32}
 
 //=== TJvCustomDatabaseItems =================================================
 
@@ -456,13 +420,11 @@ begin
         DatabaseError(SLocalDatabase);
     dtFiles:
       Check(DbiOpenFileList(DBHandle, WildCard, Result));
-    {$IFDEF WIN32}
     dtFunctions:
       if DataBase.IsSQLBased then
         Check(DbiOpenFunctionList(DBHandle, DBIFUNCOpts(FExtended), @Result))
       else
         DatabaseError(SLocalDatabase);
-    {$ENDIF}
   end;
 end;
 

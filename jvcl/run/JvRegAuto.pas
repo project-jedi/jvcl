@@ -99,13 +99,8 @@ type
     procedure SetSaveWindowPlace(F: Boolean);
     {$ENDIF COMPLIB_VCL}
     procedure SetIniStrings(AIniStrings: TStrings);
-    {$IFDEF COMPILER4_UP}
     function GetUse(Index: TStorageMedia): Boolean;
     procedure SetUse(Index: TStorageMedia; Value: Boolean);
-    {$ELSE}
-    function GetUse(Index: Integer): Boolean;
-    procedure SetUse(Index: Integer; Value: Boolean);
-    {$ENDIF COMPILER4_UP}
     procedure NewFormOnCreate(Sender: TObject);
     procedure NewFormOnDestroy(Sender: TObject);
     procedure GenerateRegistryName;
@@ -156,15 +151,9 @@ type
     procedure DeleteKey(const Section, Ident: string);
     // next three properties are only for compatibility with
     // previous TJvRegAuto versions, don't use them in new programs.
-    {$IFDEF COMPILER4_UP}
     property UseReg: Boolean index raRegistry read GetUse write SetUse;
     property UseIni: Boolean index raIniFile read GetUse write SetUse;
     property UseStr: Boolean index raIniStrings read GetUse write SetUse;
-    {$ELSE}
-    property UseReg: Boolean index 0 read GetUse write SetUse;
-    property UseIni: Boolean index 1 read GetUse write SetUse;
-    property UseStr: Boolean index 2 read GetUse write SetUse;
-    {$ENDIF COMPILER4_UP}
     procedure AddNotify(ANotify: TRegAutoEvent);
     procedure RemoveNotify(ANotify: TRegAutoEvent);
     function GetFullIniFileName: string;
@@ -217,10 +206,6 @@ type
   TJvMyIniFile = class(TIniFile)
   public
     procedure ReadWholeSection(const Section: string; Ss: TStrings);
-    {$IFNDEF COMPILER35_UP}
-    function ReadFloat(const Section, Ident: string; Default: Double): Double;
-    procedure WriteFloat(const Section, Ident: string; Value: Double);
-    {$ENDIF COMPILER35_UP}
   end;
 
   EJvRegAutoError = class(Exception);
@@ -251,29 +236,6 @@ begin
   Result := GetEnvironmentVariable('HOME');
   {$ENDIF LINUX}
 end;
-
-{$IFDEF COMPILER2}
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,P1
-        MOV     EDI,P2
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,1
-        SHR     ECX,1
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    Inc     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-{$ENDIF COMPILER2}
 
 //=== TJvRegAuto =============================================================
 
@@ -469,7 +431,7 @@ function TJvRegAuto.GetStrPrp: string;
 begin
   Result := '';
   case PropTyp of
-    tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}:
+    tkString, tkLString , tkWString :
       if FLoaded then
         Result := GetStrProp(Obj, PropInf);
   end;
@@ -478,7 +440,7 @@ end;
 procedure TJvRegAuto.SetStrPrp(Value: string);
 begin
   case PropTyp of
-    tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}:
+    tkString, tkLString , tkWString :
       if FLoaded then
         SetStrProp(Obj, PropInf, Value);
   end;
@@ -548,7 +510,7 @@ begin
           SaveOrdPrp;
         tkFloat:
           SaveFloatPrp;
-        tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}:
+        tkString, tkLString , tkWString :
           SaveStrPrp;
       end;
     end;
@@ -617,7 +579,7 @@ begin
           LoadOrdPrp;
         tkFloat:
           LoadFloatPrp;
-        tkString, tkLString {$IFDEF COMPILER3_UP}, tkWString {$ENDIF COMPILER3_UP}:
+        tkString, tkLString , tkWString :
           LoadStrPrp;
       end;
     end;
@@ -742,8 +704,6 @@ begin
   IniStrings.Assign(AIniStrings);
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function TJvRegAuto.GetUse(Index: TStorageMedia): Boolean;
 begin
   Result := FStorage = Index;
@@ -753,20 +713,6 @@ procedure TJvRegAuto.SetUse(Index: TStorageMedia; Value: Boolean);
 begin
   FStorage := Index;
 end;
-
-{$ELSE}
-
-function TJvRegAuto.GetUse(Index: Integer): Boolean;
-begin
-  Result := FStorage = TStorageMedia(Index);
-end;
-
-procedure TJvRegAuto.SetUse(Index: Integer; Value: Boolean);
-begin
-  FStorage := TStorageMedia(Index);
-end;
-
-{$ENDIF COMPILER4_UP}
 
 function TJvRegAuto.GetFullIniFileName: string;
 begin
@@ -1159,20 +1105,6 @@ begin
     TmpSS.Free;
   end;
 end;
-
-{$IFNDEF COMPILER35_UP}
-
-function TJvMyIniFile.ReadFloat(const Section, Ident: string; Default: Double): Double;
-begin
-  Result := StrToFloat(ReadString(Section, Ident, FloatToStr(Default)));
-end;
-
-procedure TJvMyIniFile.WriteFloat(const Section, Ident: string; Value: Double);
-begin
-  WriteString(Section, Ident, FloatToStr(Value));
-end;
-
-{$ENDIF COMPILER35_UP}
 
 //=== TJvIniStrings ==========================================================
 

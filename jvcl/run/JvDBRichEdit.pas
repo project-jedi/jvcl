@@ -29,8 +29,6 @@ unit JvDBRichEdit;
 
 interface
 
-{$IFDEF WIN32}
-
 uses
   Windows, Messages, ComCtrls, RichEdit, SysUtils, Classes,
   Graphics, Controls, Menus, StdCtrls, DB, DBCtrls,
@@ -79,11 +77,9 @@ type
     destructor Destroy; override;
     procedure LoadMemo; virtual;
     procedure UpdateMemo;
-    {$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
-    {$ENDIF}
     property Field: TField read GetField;
     property Lines;
   published
@@ -93,9 +89,7 @@ type
     property Align;
     property Alignment;
     property AllowObjects;
-    {$IFDEF COMPILER3_UP}
     property AllowInPlace;
-    {$ENDIF}
     property AutoURLDetect;
     property AutoVerbMenu;
     property BorderStyle;
@@ -107,17 +101,13 @@ type
     property Font;
     property HideSelection;
     property HideScrollBars;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
     property LangOptions;
     property MaxLength;
     property ParentColor;
@@ -161,28 +151,18 @@ type
     property OnProtectChangeEx;
     property OnSaveClipboard;
     property OnStartDrag;
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property OnTextNotFound;
-    {$IFDEF COMPILER3_UP}
     property OnCloseFindDialog;
-    {$ENDIF}
     property OnURLClick;
   end;
 
-{$ENDIF}
-
 implementation
-
-{$IFDEF WIN32}
 
 constructor TJvDBRichEdit.Create(AOwner: TComponent);
 begin
@@ -218,12 +198,10 @@ begin
     DataSource := nil;
 end;
 
-{$IFDEF COMPILER4_UP}
 function TJvDBRichEdit.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
 end;
-{$ENDIF}
 
 function TJvDBRichEdit.EditCanModify: Boolean;
 begin
@@ -232,11 +210,7 @@ begin
     Result := FDataLink.Editing;
     if not Result and Assigned(FDataLink.Field) then
     try
-      {$IFDEF COMPILER3_UP}
       if FDataLink.Field.IsBlob then
-      {$ELSE}
-      if FDataLink.Field is TBlobField then
-      {$ENDIF}
         FDataSave := FDataLink.Field.AsString;
       Result := FDataLink.Edit;
     finally
@@ -332,7 +306,6 @@ begin
 end;
 
 procedure TJvDBRichEdit.LoadMemo;
-{$IFDEF COMPILER3_UP}
 begin
   if FMemoLoaded or (FDataLink.Field = nil) or not
     FDataLink.Field.IsBlob then
@@ -350,32 +323,6 @@ begin
   finally
     FUpdating := False;
   end;
-{$ELSE}
-var
-  Stream: TBlobStream;
-begin
-  if FMemoLoaded or (FDataLink.Field = nil) or
-    not (FDataLink.Field is TBlobField) then
-    Exit;
-  FUpdating := True;
-  try
-    Stream := TBlobStream.Create(TBlobField(FDataLink.Field), bmRead);
-    try
-      try
-        Lines.LoadFromStream(Stream);
-        FMemoLoaded := True;
-      except
-        on E: EOutOfResources do
-          Lines.Text := Format('(%s)', [E.Message]);
-      end;
-    finally
-      Stream.Free;
-    end;
-    EditingChange(Self);
-  finally
-    FUpdating := False;
-  end;
-{$ENDIF}
 end;
 
 procedure TJvDBRichEdit.DataChange(Sender: TObject);
@@ -388,15 +335,9 @@ begin
       Text := '';
     FMemoLoaded := False;
   end
-  {$IFDEF COMPILER3_UP}
   else
   if FDataLink.Field.IsBlob then
   begin
-  {$ELSE}
-  else
-  if FDataLink.Field is TBlobField then
-  begin
-  {$ENDIF}
     if AutoDisplay or (FDataLink.Editing and FMemoLoaded) then
     begin
       { Check if the data has changed since we read it the first time }
@@ -441,7 +382,6 @@ begin
 end;
 
 procedure TJvDBRichEdit.UpdateData(Sender: TObject);
-{$IFDEF COMPILER3_UP}
 begin
   if (FDataLink.Field <> nil) and FDataLink.Field.CanModify and not ReadOnly then
   begin
@@ -450,26 +390,6 @@ begin
     else
       FDataLink.Field.AsString := Text;
   end;
-{$ELSE}
-var
-  Stream: TBlobStream;
-begin
-  if (FDataLink.Field <> nil) and FDataLink.Field.CanModify and not ReadOnly then
-  begin
-    if FDataLink.Field is TBlobField then
-    begin
-      Stream := TBlobStream.Create(TBlobField(FDataLink.Field), bmWrite);
-      try
-        if Lines.Count > 0 then
-          Lines.SaveToStream(Stream);
-      finally
-        Stream.Free;
-      end;
-    end
-    else
-      FDataLink.Field.AsString := Text;
-  end;
-{$ENDIF}
 end;
 
 procedure TJvDBRichEdit.SetFocused(Value: Boolean);
@@ -478,11 +398,7 @@ begin
   begin
     FFocused := Value;
     if not Assigned(FDataLink.Field) or not
-      {$IFDEF COMPILER3_UP}
       FDataLink.Field.IsBlob then
-      {$ELSE}
-      (FDataLink.Field is TBlobField) then
-      {$ENDIF}
       FDataLink.Reset;
   end;
 end;
@@ -491,10 +407,8 @@ procedure TJvDBRichEdit.CMEnter(var Msg: TCMEnter);
 begin
   SetFocused(True);
   inherited;
-  {$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
-  {$ENDIF COMPILER3_UP}
 end;
 
 procedure TJvDBRichEdit.CMExit(var Msg: TCMExit);
@@ -561,8 +475,6 @@ begin
     UpdateData(Self);
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function TJvDBRichEdit.ExecuteAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited ExecuteAction(Action) or (FDataLink <> nil) and
@@ -574,8 +486,6 @@ begin
   Result := inherited UpdateAction(Action) or (FDataLink <> nil) and
     FDataLink.UpdateAction(Action);
 end;
-
-{$ENDIF}
 
 procedure TJvDBRichEdit.EMSetCharFormat(var Msg: TMessage);
 begin
@@ -594,8 +504,6 @@ begin
         Change;
   inherited;
 end;
-
-{$ENDIF WIN32}
 
 end.
 

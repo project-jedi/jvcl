@@ -92,13 +92,11 @@ type
     FOnPosChanged: TNotifyEvent;
     FOnVisibleChanged: TNotifyEvent;
     FOnCustomize: TNotifyEvent;
-    {$IFDEF WIN32}
     FImages: TImageList;
     FImageChangeLink: TChangeLink;
     procedure ImageListChange(Sender: TObject);
     procedure SetImages(Value: TImageList);
     procedure InvalidateItem(Item: TJvSpeedItem; Data: Longint);
-    {$ENDIF}
     function GetOrientation: TBarOrientation;
     procedure SetOrientation(Value: TBarOrientation);
     procedure ApplyOrientation(Value: TBarOrientation);
@@ -166,14 +164,10 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure DefineProperties(Filer: TFiler); override;
-    {$IFDEF WIN32}
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure GetChildren(Proc: TGetChildProc{$IFDEF COMPILER3_UP}; Root: TComponent{$ENDIF}); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure SetChildOrder(Component: TComponent; Order: Integer); override;
-    {$ELSE}
-    procedure WriteComponents(Writer: TWriter); override;
-    {$ENDIF}
     procedure ForEachItem(Proc: TForEachItem; Data: Longint); virtual;
     procedure PosChanged; dynamic;
     procedure AfterCustomize; dynamic;
@@ -196,10 +190,8 @@ type
     function FindItem(Item: TJvSpeedItem; var Section, Index: Integer): Boolean;
     function SearchSection(const ACaption: string): Integer;
     procedure Customize(HelpCtx: THelpContext);
-    {$IFDEF WIN32}
     procedure SaveLayoutReg(IniFile: TRegIniFile);
     procedure RestoreLayoutReg(IniFile: TRegIniFile);
-    {$ENDIF WIN32}
     procedure SaveLayout(IniFile: TIniFile);
     procedure RestoreLayout(IniFile: TIniFile);
     function ItemsCount(Section: Integer): Integer;
@@ -229,14 +221,10 @@ type
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
     property Version: Integer read FVersion write FVersion default 0;
     property Wallpaper: TPicture read FWallpaper write SetWallpaper;
-    {$IFDEF WIN32}
     property Images: TImageList read FImages write SetImages;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property BiDiMode;
     property Constraints;
     property ParentBiDiMode;
-    {$ENDIF}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -270,16 +258,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property OnResize;
   end;
 
@@ -294,14 +276,10 @@ type
     FParent: TJvSpeedBar;
     FSection: Integer;
     FSectionName: string;
-    {$IFDEF WIN32}
     FImageIndex: Integer;
     procedure SetImageIndex(Value: Integer);
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     function GetAction: TBasicAction;
     procedure SetAction(Value: TBasicAction);
-    {$ENDIF}
     function GetAllowAllUp: Boolean;
     procedure SetAllowAllUp(Value: Boolean);
     function GetAllowTimer: Boolean;
@@ -383,10 +361,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
     procedure SetParentComponent(Value: TComponent); override;
-    {$ENDIF}
     procedure ButtonClick;
     function CheckBtnMenuDropDown: Boolean;
     procedure Click; virtual;
@@ -396,9 +372,7 @@ type
     property SpeedBar: TJvSpeedBar read FParent;
     property Button: TJvSpeedButton read FButton;
   published
-    {$IFDEF COMPILER4_UP}
     property Action: TBasicAction read GetAction write SetAction;
-    {$ENDIF}
     property AllowAllUp: Boolean read GetAllowAllUp write SetAllowAllUp default False;
     property AllowTimer: Boolean read GetAllowTimer write SetAllowTimer default False;
     property BtnCaption: TCaption read GetBtnCaption write SetBtnCaption;
@@ -411,9 +385,7 @@ type
     property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property Hint: string read GetHint write SetHint;
-    {$IFDEF WIN32}
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
-    {$ENDIF}
     property Layout: TButtonLayout read GetLayout write SetLayout default blGlyphTop;
     property Margin: Integer read GetMargin write SetMargin default -1;
     property MarkDropDown: Boolean read GetMarkDropDown write SetMarkDropDown default True;
@@ -452,18 +424,12 @@ type
     procedure SetSpeedBar(Value: TJvSpeedBar);
     procedure ValidateCaption(const NewCaption: string);
   protected
-    {$IFDEF WIN32}
     procedure SetParentComponent(Value: TComponent); override;
-    {$ELSE}
-    procedure ReadState(Reader: TReader); override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
-    {$ENDIF}
     procedure Clear;
     procedure RemoveItem(Item: TJvSpeedItem);
     property Count: Integer read GetCount;
@@ -481,10 +447,8 @@ type
     FSpacing: Integer;
     FMargin: Integer;
     FLayout: TButtonLayout;
-    {$IFDEF WIN32}
     FImageIndex: Integer;
     FImages: TImageList;
-    {$ENDIF}
     function GetCaption: TCaption;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
@@ -510,10 +474,8 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs: TJvNumGlyphs read GetNumGlyphs write SetNumGlyphs;
     property Spacing: Integer read FSpacing write FSpacing;
-    {$IFDEF WIN32}
     property ImageIndex: Integer read FImageIndex write FImageIndex;
     property Images: TImageList read FImages write FImages;
-    {$ENDIF}
     property Margin: Integer read FMargin write FMargin;
     property Layout: TButtonLayout read FLayout write FLayout;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
@@ -531,7 +493,7 @@ const
 
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
 procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
-  Image: TJvButtonImage {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
+  Image: TJvButtonImage; ARightToLeft: Boolean = False);
 function NewSpeedSection(ASpeedbar: TJvSpeedBar; const ACaption: string): Integer;
 function NewSpeedItem(AOwner: TComponent; ASpeedbar: TJvSpeedBar; Section: Integer;
   const AName: string): TJvSpeedItem;
@@ -542,11 +504,7 @@ uses
   Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvSpeedbarSetupForm;
 
-{$IFDEF COMPILER3_UP}
 resourcestring
-{$ELSE}
-const
-{$ENDIF}
   SAutoSpeedbarMode = 'Cannot set this property value while Position is bpAuto';
 
 const
@@ -661,8 +619,6 @@ begin
     Index := CurIndex;
 end;
 
-{$IFDEF WIN32}
-
 function TJvSpeedBarSection.GetParentComponent: TComponent;
 begin
   Result := FParent;
@@ -672,17 +628,6 @@ procedure TJvSpeedBarSection.SetParentComponent(Value: TComponent);
 begin
   SpeedBar := Value as TJvSpeedBar;
 end;
-
-{$ELSE}
-
-procedure TJvSpeedBarSection.ReadState(Reader: TReader);
-begin
-  inherited ReadState(Reader);
-  if Reader.Parent is TJvSpeedBar then
-    SpeedBar := TJvSpeedBar(Reader.Parent);
-end;
-
-{$ENDIF}
 
 procedure TJvSpeedBarSection.RemoveItem(Item: TJvSpeedItem);
 var
@@ -706,7 +651,7 @@ begin
   begin
     I := FParent.SearchSection(NewCaption);
     if (I <> Index) and (I >= 0) then
-      raise EJvSpeedbarError.Create(ResStr(SDuplicateString));
+      raise EJvSpeedbarError.Create(SDuplicateString);
   end;
 end;
 
@@ -907,16 +852,13 @@ end;
 procedure TJvSpeedBarButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
   AState: TJvButtonState; DrawMark: Boolean);
 begin
-  {$IFDEF WIN32}
   if FItem.SpeedBar <> nil then
   begin
     TJvButtonGlyph(ButtonGlyph).DrawEx(Canvas, ARect, Caption, Layout,
       Margin, Spacing, DrawMark, FItem.SpeedBar.Images, FItem.FImageIndex,
-      AState, {$IFDEF COMPILER4_UP} DrawTextBiDiModeFlags(Alignments[Alignment])
-      {$ELSE} Alignments[Alignment] {$ENDIF});
+      AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
   end
   else
-  {$ENDIF}
     inherited PaintGlyph(Canvas, ARect, AState, DrawMark);
 end;
 
@@ -942,9 +884,7 @@ begin
   FEnabled := True;
   FEditing := False;
   FParent := nil;
-  {$IFDEF WIN32}
   FImageIndex := -1;
-  {$ENDIF}
 end;
 
 destructor TJvSpeedItem.Destroy;
@@ -1025,7 +965,6 @@ end;
 
 procedure TJvSpeedItem.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
@@ -1033,13 +972,11 @@ procedure TJvSpeedItem.DefineProperties(Filer: TFiler);
     else
       Result := True;
   end;
-  {$ENDIF}
 
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('Section', ReadSection, WriteSection, False);
-  Filer.DefineProperty('SectionName', ReadSectionName, WriteSectionName,
-    {$IFDEF WIN32} DoWrite {$ELSE} True {$ENDIF});
+  Filer.DefineProperty('SectionName', ReadSectionName, WriteSectionName, DoWrite);
 end;
 
 procedure TJvSpeedItem.ReadSectionName(Reader: TReader);
@@ -1062,8 +999,6 @@ begin
   UpdateSection;
   Writer.WriteInteger(FSection);
 end;
-
-{$IFDEF WIN32}
 
 function TJvSpeedItem.GetParentComponent: TComponent;
 begin
@@ -1097,8 +1032,6 @@ begin
     FButton.Invalidate;
   end;
 end;
-
-{$ENDIF}
 
 procedure TJvSpeedItem.ReadState(Reader: TReader);
 begin
@@ -1426,8 +1359,6 @@ begin
   FButton.Hint := Value;
 end;
 
-{$IFDEF COMPILER4_UP}
-
 function TJvSpeedItem.GetAction: TBasicAction;
 begin
   Result := FButton.Action;
@@ -1437,8 +1368,6 @@ procedure TJvSpeedItem.SetAction(Value: TBasicAction);
 begin
   FButton.Action := Value;
 end;
-
-{$ENDIF}
 
 procedure TJvSpeedItem.ButtonClick;
 begin
@@ -1538,17 +1467,15 @@ begin
   FRowCount := 1;
   FEditWin := 0;
   FOptions := [sbAllowDrag, sbGrayedBtns];
-  ControlStyle := ControlStyle - [csSetCaption {$IFDEF WIN32}, csReplicatable {$ENDIF}];
+  ControlStyle := ControlStyle - [csSetCaption, csReplicatable];
   ParentShowHint := False;
   ShowHint := True;
   SetFontDefault;
   inherited Align := alTop;
   FAlign := alTop;
   UpdateGridSize;
-  {$IFDEF WIN32}
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-  {$ENDIF}
   if not Registered then
   begin
     RegisterClasses([TJvSpeedItem, TJvSpeedBarSection, TJvSpeedBarButton]);
@@ -1572,9 +1499,7 @@ begin
   end;
   ClearSections;
   FSections.Free;
-  {$IFDEF WIN32}
   FImageChangeLink.Free;
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -1620,14 +1545,9 @@ end;
 
 procedure TJvSpeedBar.ReadSections(Reader: TReader);
 var
-  {$IFDEF WIN32}
   TmpList: TStrings;
   I: Integer;
-  {$ELSE}
-  S: string;
-  {$ENDIF}
 begin
-  {$IFDEF WIN32}
   TmpList := TStringList.Create;
   try
     Reader.ReadListBegin;
@@ -1645,17 +1565,6 @@ begin
   finally
     TmpList.Free;
   end;
-  {$ELSE}
-  Reader.ReadListBegin;
-  FSections.Clear;
-  while not Reader.EndOfList do
-  begin
-    S := Reader.ReadString;
-    if SearchSection(S) < 0 then
-      AddSection(S);
-  end;
-  Reader.ReadListEnd;
-  {$ENDIF}
 end;
 
 procedure TJvSpeedBar.WriteSections(Writer: TWriter);
@@ -1673,8 +1582,7 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('Sections', ReadSections, WriteSections, False);
   Filer.DefineProperty('NewStyle', ReadDesignStyle, WriteDesignStyle, False);
-  Filer.DefineProperty('InternalVer', ReadData, WriteData,
-    {$IFDEF WIN32} Filer.Ancestor = nil {$ELSE} True {$ENDIF});
+  Filer.DefineProperty('InternalVer', ReadData, WriteData,Filer.Ancestor = nil);
   { AllowDrag reading for backward compatibility only }
   Filer.DefineProperty('AllowDrag', ReadAllowDrag, nil, False);
 end;
@@ -1742,33 +1650,25 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
-{$IFDEF WIN32}
 var
   NCMetrics: TNonClientMetrics;
-{$ENDIF}
 begin
   ParentFont := False;
   with Font do
   begin
-    {$IFDEF WIN32}
     NCMetrics.cbSize := SizeOf(TNonClientMetrics);
     if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
     begin
       Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
-      {$IFNDEF COMPILER2}
       Charset := DEFAULT_CHARSET;
-      {$ENDIF}
     end
     else
     begin
-    {$ENDIF}
       Name := 'MS Sans Serif';
       Size := 8;
       Style := [];
       Color := clBtnText;
-    {$IFDEF WIN32}
     end;
-    {$ENDIF}
   end;
 end;
 
@@ -2503,15 +2403,13 @@ begin
   ApplyButtonSize;
 end;
 
-{$IFDEF WIN32}
-
-procedure TJvSpeedBar.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP}; Root: TComponent {$ENDIF});
+procedure TJvSpeedBar.GetChildren(Proc: TGetChildProc ; Root: TComponent);
 var
   I, Idx: Integer;
   Sect: TJvSpeedBarSection;
   Item: TJvSpeedItem;
 begin
-  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
+  inherited GetChildren(Proc, Root);
   for I := 0 to FSections.Count - 1 do
   begin
     Sect := Sections[I];
@@ -2574,36 +2472,6 @@ begin
   end;
   ImageListChange(FImages);
 end;
-
-{$ELSE}
-
-procedure TJvSpeedBar.WriteComponents(Writer: TWriter);
-var
-  I, Idx: Integer;
-  Sect: TJvSpeedBarSection;
-  Item: TJvSpeedItem;
-begin
-  inherited WriteComponents(Writer);
-  for I := 0 to FSections.Count - 1 do
-  begin
-    Sect := TJvSpeedBarSection(FSections[I]);
-    if (Sect <> nil) and (Sect.Owner = Writer.Root) then
-      Writer.WriteComponent(Sect);
-  end;
-  for I := 0 to FSections.Count - 1 do
-  begin
-    Sect := TJvSpeedBarSection(FSections[I]);
-    if Sect <> nil then
-      for Idx := 0 to Sect.Count - 1 do
-      begin
-        Item := TJvSpeedItem(Sect[Idx]);
-        if (Item <> nil) and (Item.Owner = Writer.Root) then
-          Writer.WriteComponent(Item);
-      end;
-  end;
-end;
-
-{$ENDIF}
 
 function TJvSpeedBar.SearchItem(const ItemName: string): TJvSpeedItem;
 var
@@ -3097,8 +2965,6 @@ begin
   InternalRestoreLayout(IniFile, GetDefaultSection(Self));
 end;
 
-{$IFDEF WIN32}
-
 procedure TJvSpeedBar.SaveLayoutReg(IniFile: TRegIniFile);
 begin
   InternalSaveLayout(IniFile, GetDefaultSection(Self));
@@ -3108,8 +2974,6 @@ procedure TJvSpeedBar.RestoreLayoutReg(IniFile: TRegIniFile);
 begin
   InternalRestoreLayout(IniFile, GetDefaultSection(Self));
 end;
-
-{$ENDIF WIN32}
 
 //=== TJvBtnControl ==========================================================
 
@@ -3121,9 +2985,7 @@ begin
   FSpacing := 1;
   FMargin := -1;
   FLayout := blGlyphTop;
-  {$IFDEF WIN32}
   FImageIndex := -1;
-  {$ENDIF}
 end;
 
 destructor TJvBtnControl.Destroy;
@@ -3139,10 +3001,8 @@ begin
   begin
     Style := WS_POPUP or WS_DISABLED;
     WindowClass.Style := WindowClass.Style or CS_SAVEBITS;
-    {$IFDEF WIN32}
     if NewStyleControls then
       ExStyle := WS_EX_TOOLWINDOW;
-    {$ENDIF}
   end;
 end;
 
@@ -3156,17 +3016,13 @@ begin
   Layout := Item.Layout;
   Caption := Item.BtnCaption;
   WordWrap := Item.WordWrap;
-  {$IFDEF WIN32}
   ImageIndex := Item.ImageIndex;
   if Item.SpeedBar <> nil then
     Images := Item.SpeedBar.Images
   else
     Images := nil;
-  {$ENDIF}
   Font := Item.Font;
-  {$IFDEF COMPILER4_UP}
   BiDiMode := Item.FButton.BiDiMode;
-  {$ENDIF}
   SetBounds(0, 0, Item.SpeedBar.BtnWidth, Item.SpeedBar.BtnHeight);
 end;
 
@@ -3227,15 +3083,9 @@ end;
 
 procedure TJvBtnControl.Paint;
 begin
-  {$IFDEF WIN32}
   FImage.DrawEx(Canvas, 0, 0, Margin, Spacing, Layout, Font, Images,
     ImageIndex,
-    {$IFDEF COMPILER4_UP} DrawTextBiDiModeFlags(Alignments[Alignment])
-    {$ELSE} Alignments[Alignment] {$ENDIF});
-  {$ELSE}
-  FImage.Draw(Canvas, 0, 0, Margin, Spacing, Layout, Font,
-    Alignments[Alignment]);
-  {$ENDIF}
+    DrawTextBiDiModeFlags(Alignments[Alignment]));
 end;
 
 procedure TJvBtnControl.Activate(Rect: TRect);
@@ -3287,19 +3137,16 @@ begin
 end;
 
 procedure DrawCellButton(Grid: TDrawGrid; R: TRect; Item: TJvSpeedItem;
-  Image: TJvButtonImage {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
+  Image: TJvButtonImage; ARightToLeft: Boolean = False);
 var
   FBar: TJvSpeedBar;
   AFont: TFont;
-  {$IFDEF WIN32}
   ImageList: TImageList;
-  {$ENDIF}
 begin
   if Item <> nil then
   begin
     FBar := Item.SpeedBar;
     AFont := nil;
-    {$IFDEF WIN32}
     ImageList := nil;
     if FBar <> nil then
     begin
@@ -3311,11 +3158,6 @@ begin
       Image.Glyph := Item.Glyph
     else
       Image.Glyph := nil;
-    {$ELSE}
-    Image.Glyph := Item.Glyph;
-    if FBar <> nil then
-      AFont := FBar.Font;
-    {$ENDIF}
     with Image do
     begin
       Alignment := Item.FButton.Alignment;
@@ -3325,17 +3167,11 @@ begin
       if FBar <> nil then
         ButtonSize := Point(FBar.BtnWidth, FBar.BtnHeight);
     end;
-    {$IFDEF WIN32}
     Image.DrawEx(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
       Item.Spacing, Item.Layout, AFont, ImageList, Item.ImageIndex,
-      {$IFDEF COMPILER4_UP} Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment])
-      {$ELSE} Alignments[Image.Alignment] {$ENDIF});
-    {$ELSE}
-    Image.Draw(Grid.Canvas, R.Left + 1, R.Top + 1, Item.Margin,
-      Item.Spacing, Item.Layout, AFont, Alignments[Image.Alignment]);
-    {$ENDIF}
+      Item.FButton.DrawTextBiDiModeFlags(Alignments[Image.Alignment]));
     Inc(R.Left, Image.ButtonSize.X + 3);
-    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenter{$IFDEF COMPILER4_UP}, ARightToLeft{$ENDIF});
+    DrawCellText(Grid, 0, 0, Item.Caption, R, taLeftJustify, vaCenter, ARightToLeft);
   end;
 end;
 

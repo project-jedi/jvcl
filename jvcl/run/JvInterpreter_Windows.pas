@@ -196,7 +196,6 @@ begin
     AddConst(cWindows, 'VK_MENU', VK_MENU);
     AddConst(cWindows, 'VK_PAUSE', VK_PAUSE);
     AddConst(cWindows, 'VK_CAPITAL', VK_CAPITAL);
-    {$IFDEF COMPILER3_UP}
     AddConst(cWindows, 'VK_KANA', VK_KANA);
     AddConst(cWindows, 'VK_HANGUL', VK_HANGUL);
     AddConst(cWindows, 'VK_JUNJA', VK_JUNJA);
@@ -207,7 +206,6 @@ begin
     AddConst(cWindows, 'VK_NONCONVERT', VK_NONCONVERT);
     AddConst(cWindows, 'VK_ACCEPT', VK_ACCEPT);
     AddConst(cWindows, 'VK_MODECHANGE', VK_MODECHANGE);
-    {$ENDIF COMPILER3_UP}
     AddConst(cWindows, 'VK_ESCAPE', VK_ESCAPE);
     AddConst(cWindows, 'VK_SPACE', VK_SPACE);
     AddConst(cWindows, 'VK_PRIOR', VK_PRIOR);

@@ -76,8 +76,7 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure SetStyle(Value: TComboBoxStyle);
-    {$IFDEF WIN32} override {$ELSE} virtual {$ENDIF};
+    procedure SetStyle(Value: TComboBoxStyle);override;
     {$IFDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings); override;
     {$ENDIF}

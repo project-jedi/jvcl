@@ -39,10 +39,8 @@ type
   TOnMessageChange = procedure(Sender: TObject; const Msg: string) of object;
   TOnPercentChange = procedure(Sender: TObject; PercentDone: Integer) of object;
   TOnProgressEvent = procedure(Sender: TObject; var AbortQuery: Boolean) of object;
-  {$IFDEF WIN32}
   TOnTraceEvent = procedure(Sender: TObject; Flag: TTraceFlag;
     const Msg: string) of object;
-  {$ENDIF WIN32}
 
   TJvDBProgress = class(TComponent)
   private
@@ -58,7 +56,6 @@ type
     FOnMessageChange: TOnMessageChange;
     FOnPercentChange: TOnPercentChange;
     FOnProgress: TOnProgressEvent;
-    {$IFDEF WIN32}
     FTraceFlags: TTraceFlags;
     FTraceCallback: TObject;
     FTrace: Boolean;
@@ -72,7 +69,6 @@ type
     procedure SetSessionName(const Value: string);
     procedure Activate;
     procedure Deactivate;
-    {$ENDIF WIN32}
     procedure FreeTimer;
     procedure StartTimer;
     procedure TimerExpired(Sender: TObject);
@@ -95,12 +91,10 @@ type
     property WaitCursor: TCursor read FWaitCursor write FWaitCursor default crHourGlass;
     property MessageControl: TControl read FMessageControl write SetMessageControl;
     property Gauge: TControl read FGauge write SetGauge;
-    {$IFDEF WIN32}
     property SessionName: string read FSessionName write SetSessionName;
     property Trace: Boolean read FTrace write SetTrace default False;
     property TraceFlags: TTraceFlags read FTraceFlags write SetTraceFlags default [];
     property OnTrace: TOnTraceEvent read FOnTrace write FOnTrace;
-    {$ENDIF WIN32}
     property OnMessageChange: TOnMessageChange read FOnMessageChange write FOnMessageChange;
     property OnPercentChange: TOnPercentChange read FOnPercentChange write FOnPercentChange;
     property OnProgress: TOnProgressEvent read FOnProgress write FOnProgress;
@@ -145,11 +139,7 @@ uses
 const
   cbQRYPROGRESS = cbRESERVED4;
 
-{$IFDEF WIN32}
 function BdeCallBack(CallType: CBType; Data: Longint; CBInfo: Pointer): CBRType; stdcall;
-{$ELSE}
-function BdeCallBack(CallType: CBType; Data: Longint; var CBInfo: Pointer): CBRType; export;
-{$ENDIF WIN32}
 begin
   if Data <> 0 then
   begin
@@ -169,13 +159,8 @@ begin
   FOwner := AOwner;
   FCBType := CBType;
   FCallbackEvent := CallbackEvent;
-  {$IFDEF WIN32}
   DbiGetCallBack(nil, FCBType, @FOldCBData, @FOldCBBufLen, @FOldCBBuf,
     pfDBICallBack(FOldCBFunc));
-  {$ELSE}
-  DbiGetCallBack(nil, FCBType, FOldCBData, FOldCBBufLen, FOldCBBuf,
-    @FOldCBFunc);
-  {$ENDIF}
   FChain := Chain;
   if not Assigned(FOldCBFunc) then
     FOldCBBufLen := 0;
@@ -212,11 +197,7 @@ begin
   Result := cbrUSEDEF;
   if CallType = FCBType then
   try
-    {$IFDEF WIN32}
     Result := FCallbackEvent(CBInfo);
-    {$ELSE}
-    Result := FCallbackEvent(@CBInfo);
-    {$ENDIF}
   except
     Application.HandleException(Self);
   end;
@@ -230,9 +211,7 @@ var
 
 procedure SetWaitCursor;
 begin
-  {$IFDEF WIN32}
   if GetCurrentThreadID = MainThreadID then
-  {$ENDIF}
     Screen.Cursor :=
       TJvDBProgress(ProgressList.Items[ProgressList.Count - 1]).WaitCursor;
 end;
@@ -261,7 +240,6 @@ end;
 
 //=== TJvSessionLink =========================================================
 
-{$IFDEF WIN32}
 
 type
   TJvSessionLink = class(TDatabase)
@@ -282,8 +260,6 @@ begin
   inherited Destroy;
 end;
 
-{$ENDIF WIN32}
-
 //=== TJvDBProgress ==========================================================
 
 constructor TJvDBProgress.Create(AOwner: TComponent);
@@ -295,10 +271,8 @@ end;
 
 destructor TJvDBProgress.Destroy;
 begin
-  {$IFDEF WIN32}
   FOnTrace := nil;
   Trace := False;
-  {$ENDIF}
   Active := False;
   FreeTimer;
   FTimer.Free;
@@ -311,9 +285,7 @@ begin
   FStreamedValue := True;
   try
     SetActive(FActive);
-    {$IFDEF WIN32}
     SetTrace(FTrace);
-    {$ENDIF WIN32}
   finally
     FStreamedValue := False;
   end;
@@ -387,9 +359,7 @@ begin
         RemoveProgress(Self);
       if (FGenProgressCallback = nil) and Value then
       begin
-        {$IFDEF WIN32}
         Activate;
-        {$ENDIF}
         FGenProgressCallback := TJvDBCallback.Create(Self, cbGENPROGRESS,
           Max(SizeOf(CBPROGRESSDesc), SizeOf(DBIPATH) + SizeOf(Integer) * 4),
           GenProgressCallback, dcChain);
@@ -399,25 +369,19 @@ begin
       else
         if not Value and (FGenProgressCallback <> nil) then
       begin
-        {$IFDEF WIN32}
         Sessions.CurrentSession := GetDBSession;
-        {$ENDIF}
         FGenProgressCallback.Free;
         FGenProgressCallback := nil;
         FQryProgressCallback.Free;
         FQryProgressCallback := nil;
         FreeTimer;
-        {$IFDEF WIN32}
         if not Trace then
           Deactivate;
-        {$ENDIF}
       end;
     end;
     FActive := Value;
   end;
 end;
-
-{$IFDEF WIN32}
 
 procedure TJvDBProgress.Activate;
 var
@@ -457,11 +421,7 @@ function TJvDBProgress.GetDBSession: TSession;
 begin
   Result := Sessions.FindSession(SessionName);
   if Result = nil then
-    {$IFDEF COMPILER3_UP}
     Result := DBTables.Session;
-    {$ELSE}
-    Result := DB.Session;
-    {$ENDIF}
 end;
 
 procedure TJvDBProgress.SetSessionName(const Value: string);
@@ -547,12 +507,10 @@ begin
         CurFlag := tfMisc;
       traceVENDOR:
         CurFlag := tfVendor;
-      {$IFDEF COMPILER3_UP}
       traceDATAIN:
         CurFlag := tfDataIn;
       traceDATAOUT:
         CurFlag := tfDataOut;
-      {$ENDIF COMPILER3_UP}
     else
       Exit;
     end;
@@ -561,24 +519,18 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
-
 procedure TJvDBProgress.SetMessageControl(Value: TControl);
 begin
   FMessageControl := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
 end;
 
 procedure TJvDBProgress.SetGauge(Value: TControl);
 begin
   FGauge := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
 end;
 
 procedure TJvDBProgress.Notification(AComponent: TComponent; AOperation: TOperation);

@@ -82,13 +82,11 @@ type
     property Enabled;
     property FocusControl;
     property Font;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
     property Layout;
     property ParentColor;
     property ParentFont;

@@ -222,14 +222,10 @@ begin
   Result := FIniFileName;
   if (Result = '') and not (csDesigning in ComponentState) then
   begin
-    {$IFDEF WIN32}
     if UseRegistry then
       Result := GetDefaultIniRegKey
     else
       Result := GetDefaultIniName;
-    {$ELSE}
-    Result := GetDefaultIniName;
-    {$ENDIF}
   end;
 end;
 
@@ -312,19 +308,12 @@ procedure TJvCustomLogin.TerminateApplication;
 begin
   with Application do
   begin
-    {$IFDEF WIN32}
     ShowMainForm := False;
-    {$ENDIF}
     if Handle <> 0 then
       ShowOwnedPopups(Handle, False);
     Terminate;
   end;
-  {$IFDEF COMPILER3_UP}
   CallTerminateProcs;
-  {$ENDIF}
-  {$IFNDEF COMPILER3_UP}
-  Halt(10);
-  {$ENDIF}
 end;
 
 procedure TJvCustomLogin.UnlockOkClick(Sender: TObject);
@@ -414,22 +403,14 @@ function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
   begin
     with Application do
       if IsWindowVisible(Handle) and IsWindowEnabled(Handle) then
-        {$IFDEF WIN32}
         SetForegroundWindow(Handle);
-        {$ELSE}
-        BringWindowToTop(Handle);
-        {$ENDIF}
     if FUnlockDlgShowing then
     begin
       Popup := GetLastActivePopup(Application.Handle);
       if (Popup <> 0) and IsWindowVisible(Popup) and
         (WindowClassName(Popup) = TJvLoginForm.ClassName) then
       begin
-        {$IFDEF WIN32}
         SetForegroundWindow(Popup);
-        {$ELSE}
-        BringWindowToTop(Popup);
-        {$ENDIF}
       end;
       Result := False;
       Exit;
@@ -494,11 +475,7 @@ var
 begin
   with TJvLoginForm(Sender) do
   begin
-    {$IFDEF WIN32}
     SetCursor := GetCurrentThreadID = MainThreadID;
-    {$ELSE}
-    SetCursor := True;
-    {$ENDIF}
     try
       if SetCursor then
         Screen.Cursor := crHourGlass;
@@ -529,14 +506,10 @@ var
   Ini: TObject;
 begin
   try
-    {$IFDEF WIN32}
     if UseRegistry then
       Ini := TRegIniFile.Create(IniFileName)
     else
       Ini := TIniFile.Create(IniFileName);
-    {$ELSE}
-    Ini := TIniFile.Create(IniFileName);
-    {$ENDIF}
     try
       IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, UserName);
     finally
@@ -551,19 +524,13 @@ var
   Ini: TObject;
 begin
   try
-    {$IFDEF WIN32}
     if UseRegistry then
     begin
       Ini := TRegIniFile.Create(IniFileName);
-      {$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
-      {$ENDIF}
     end
     else
       Ini := TIniFile.Create(IniFileName);
-    {$ELSE}
-    Ini := TIniFile.Create(IniFileName);
-    {$ENDIF}
     try
       Result := IniReadString(Ini, keyLoginSection, keyLastLoginUserName,
         UserName);

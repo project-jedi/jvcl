@@ -49,7 +49,6 @@ type
     procedure TypeListChange(Sender: TObject);
     procedure ParamValueExit(Sender: TObject);
     procedure NullValueClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
     procedure HelpBtnClick(Sender: TObject);
   private
@@ -63,7 +62,7 @@ type
   end;
 
 function EditQueryParams(DataSet: TDataSet; List: TParams;
-  AHelpContext: THelpContext {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean;
+  AHelpContext: THelpContext = 0): Boolean;
 
 implementation
 
@@ -137,18 +136,10 @@ begin
     end;
     if csDesigning in DataSet.ComponentState then
       Caption := Format(SParamEditor,
-        {$IFDEF COMPILER3_UP}
         {$IFDEF CBUILDER}
         [DataSet.Owner.Name, '->', DataSet.Name]);
         {$ELSE}
-        {$IFDEF COMPILER4_UP}
         [DataSet.Owner.Name, '.', DataSet.Name]);
-        {$ELSE}
-        [DataSet.Owner.Name, DataSet.Name]);
-        {$ENDIF}
-        {$ENDIF}
-        {$ELSE}
-        [DataSet.Owner.Name, DataSet.Name]);
         {$ENDIF}
     InitList := List;
     Edit;
@@ -322,21 +313,10 @@ begin
   Application.HelpContext(HelpContext);
 end;
 
-procedure TJvQueryParamsDialog.FormCreate(Sender: TObject);
-begin
-  {$IFNDEF WIN32}
-  Font.Style := [fsBold];
-  {$ENDIF}
-end;
-
 initialization
   FillFieldTypes;
-{$IFDEF WIN32}
 finalization
   DoneQBind;
-{$ELSE}
-  AddExitProc(DoneQBind);
-{$ENDIF}
 
 end.
 

@@ -36,25 +36,9 @@ UNIT JvgPage;
 
 INTERFACE
 USES
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   ComCtrls,
-   CommCtrl,
-   JvgTypes,
-   JVclVer,
-   JvgUtils,
-   JvgDrawTab,
-   JvgTabComm,
-   ExtCtrls,
-   JvgCommClasses
-   {$IFDEF COMPILER4_UP},
-   Imglist{$ENDIF};
+   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+   ComCtrls, CommCtrl, Imglist, ExtCtrls,
+   JvgTypes, JVclVer, JvgUtils, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
 CONST
    TCM_SETTEXTCOLOR           = (TCM_FIRST + 36);
@@ -381,10 +365,8 @@ BEGIN
          ELSE
             DrawTabStr.BackgrColor_ := DrawTabStr.BoxStyle.BackgrColor;
 
-         {$IFDEF COMPILER4_UP}IF Style = tsFlatButtons THEN
+         IF Style = tsFlatButtons THEN
             DrawTabStr.FlatButtons := true;
-         {$ELSE}DrawTabStr.FlatButtons := false;
-         {$ENDIF}
 
          DrawOwnTab(DrawTabStr);        //FWallpaper.IncludeBevels
       END;

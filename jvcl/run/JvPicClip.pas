@@ -135,17 +135,13 @@ begin
     inherited Assign(Source);
 end;
 
-{$IFDEF WIN32}
 type
   TJvHack = class(TImageList);
-{$ENDIF}
 
 procedure TJvPicClip.AssignTo(Dest: TPersistent);
-{$IFDEF WIN32}
 var
   I: Integer;
   SaveChange: TNotifyEvent;
-{$ENDIF}
 begin
   if (Dest is TPicture) then
     Dest.Assign(FPicture)
@@ -153,7 +149,6 @@ begin
   if (Dest is TGraphic) and (FPicture.Graphic <> nil) and
     (FPicture.Graphic is TGraphic(Dest).ClassType) then
     Dest.Assign(FPicture.Graphic)
-  {$IFDEF WIN32}
   else
   if (Dest is TImageList) and not IsEmpty then
   begin
@@ -177,7 +172,6 @@ begin
       TJvHack(Dest).Change;
     end;
   end
-  {$ENDIF}
   else
     inherited AssignTo(Dest);
 end;
@@ -241,11 +235,7 @@ end;
 procedure TJvPicClip.CheckIndex(Index: Integer);
 begin
   if (Index >= Cols * Rows) or (Index < 0) then
-    {$IFDEF COMPILER3_UP}
     raise EListError.CreateFmt(SListIndexError, [Index]);
-    {$ELSE}
-    raise EListError.CreateFmt('%s (%d)', [LoadStr(SListIndexError), Index]);
-    {$ENDIF}
 end;
 
 function TJvPicClip.GetIndex(Col, Row: Cardinal): Integer;
@@ -264,18 +254,11 @@ function TJvPicClip.GetGraphicCell(Index: Integer): TBitmap;
 begin
   CheckIndex(Index);
   AssignBitmapCell(Picture.Graphic, FBitmap, Cols, Rows, Index);
-  {$IFDEF COMPILER3_UP}
   if Picture.Graphic is TBitmap then
     if FBitmap.PixelFormat <> pfDevice then
       FBitmap.PixelFormat := TBitmap(Picture.Graphic).PixelFormat;
   FBitmap.TransparentColor := FMaskColor or PaletteMask;
   FBitmap.Transparent := (FMaskColor <> clNone) and Masked;
-  {$ELSE}
-  if Masked and (FMaskColor <> clNone) then
-    with FBitmap do
-      if not Empty then
-        Canvas.Pixels[0, Height - 1] := FMaskColor;
-  {$ENDIF}
   Result := FBitmap;
 end;
 

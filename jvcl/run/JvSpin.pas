@@ -132,23 +132,17 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowHint;
     property ParentShowHint;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-    {$ENDIF}
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
   {$IFDEF CBUILDER}
@@ -161,7 +155,7 @@ type
   {.$IFDEF WIN32
     TSpinButtonKind = (bkStandard, bkDiagonal);
   $ENDIF}
-  TSpinButtonKind = ({$IFDEF WIN32} bkStandard, {$ENDIF} bkDiagonal, bkClassic);
+  TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
 
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
@@ -194,7 +188,6 @@ type
     FArrowKeys: Boolean;
     FOnTopClick: TNotifyEvent;
     FOnBottomClick: TNotifyEvent;
-    {$IFDEF WIN32}
     // FButtonKind: TSpinButtonKind;
     FUpDown: TCustomUpDown;
     //Polaris
@@ -219,7 +212,6 @@ type
     function GetButtonKind: TSpinButtonKind;
     procedure SetButtonKind(Value: TSpinButtonKind);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
-    {$ENDIF WIN32}
     function GetMinHeight: Integer;
     procedure GetTextHeight(var SysHeight, Height: Integer);
     //function TryGetValue(var Value: Extended): Boolean; // New
@@ -245,14 +237,10 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
-    {$ENDIF}
   protected
     //Polaris up to protected
-    {$IFDEF WIN32}
     FButtonKind: TSpinButtonKind;
-    {$ENDIF}
     procedure RecreateButton;
     function CheckValue(NewValue: Extended): Extended;
     function CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
@@ -288,10 +276,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment
       default taLeftJustify;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
-    {$IFDEF WIN32}
-    property ButtonKind: TSpinButtonKind read FButtonKind write SetButtonKind
-      default bkDiagonal;
-    {$ENDIF}
+    property ButtonKind: TSpinButtonKind read FButtonKind write SetButtonKind default bkDiagonal;
     property Decimal: Byte read FDecimal write SetDecimal default 2;
     property EditorEnabled: Boolean read FEditorEnabled write FEditorEnabled default True;
     property Increment: Extended read FIncrement write FIncrement stored IsIncrementStored;
@@ -331,9 +316,7 @@ type
     property Alignment;
     property ArrowKeys;
     property DisplayFormat;
-    {$IFDEF WIN32}
     property ButtonKind default bkDiagonal;
-    {$ENDIF}
     property Thousands;
     property Decimal;
     property EditorEnabled;
@@ -354,19 +337,13 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property ParentColor;
     property ParentCtl3D;
@@ -392,28 +369,20 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property AboutJVCL;
     property HideSelection;
     property HotTrack;
-    {$IFDEF WIN32}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF}
     {$ENDIF}
     (* ++ RDB ++ *)
     property ClipboardCommands;
@@ -561,10 +530,8 @@ end;
 procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
 begin
   FFocusControl := Value;
-  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-  {$ENDIF}
 end;
 
 procedure TJvSpinButton.Notification(AComponent: TComponent;
@@ -1346,8 +1313,6 @@ end;
 
 //=== TJvUpDown ==============================================================
 
-{$IFDEF WIN32}
-
 type
   TJvUpDown = class(TCustomUpDown)
   private
@@ -1417,8 +1382,6 @@ begin
     Width := DefBtnWidth;
 end;
 
-{$ENDIF WIN32}
-
 //=== TJvCustomSpinEdit ======================================================
 
 constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
@@ -1439,9 +1402,7 @@ begin
   FIncrement := 1.0;
   FDecimal := 2;
   FEditorEnabled := True;
-  {$IFDEF WIN32}
   FButtonKind := bkDiagonal;
-  {$ENDIF}
   FArrowKeys := True;
   RecreateButton;
 end;
@@ -1457,13 +1418,11 @@ begin
     FBtnWindow.Free;
     FBtnWindow := nil;
   end;
-  {$IFDEF WIN32}
   if FUpDown <> nil then
   begin
     FUpDown.Free;
     FUpDown := nil;
   end;
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -1475,7 +1434,6 @@ begin
   FButton := nil;
   FBtnWindow.Free;
   FBtnWindow := nil;
-  {$IFDEF WIN32}
   FUpDown.Free;
   FUpDown := nil;
   if GetButtonKind = bkStandard then
@@ -1486,11 +1444,9 @@ begin
       Visible := True;
       //Polaris
       SetBounds(0, 1, DefBtnWidth, Self.Height);
-      {$IFDEF COMPILER4_UP}
       if BiDiMode = bdRightToLeft then
         Align := alLeft
       else
-      {$ENDIF}
         Align := alRight;
       Parent := Self;
       OnClick := UpDownClick;
@@ -1498,7 +1454,6 @@ begin
   end
   else
   begin
-  {$ENDIF}
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
     FBtnWindow.Parent := Self;
@@ -1521,20 +1476,14 @@ begin
     FButton.OnBottomClick := DownClick;
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
-  {$IFDEF WIN32}
   end;
-  {$ENDIF}
 end;
 
 procedure TJvCustomSpinEdit.SetArrowKeys(Value: Boolean);
 begin
   FArrowKeys := Value;
-  {$IFDEF WIN32}
   ResizeButton;
-  {$ENDIF}
 end;
-
-{$IFDEF WIN32}
 
 function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
@@ -1581,15 +1530,11 @@ begin
   end;
 end;
 
-{$ENDIF WIN32}
-
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
 begin
-  {$IFDEF WIN32}
   if FUpDown <> nil then
     Result := FUpDown.Width
   else
-  {$ENDIF}
   if FButton <> nil then
     Result := FButton.Width
   else
@@ -1597,20 +1542,15 @@ begin
 end;
 
 procedure TJvCustomSpinEdit.ResizeButton;
-{$IFDEF WIN32}
 var
   R: TRect;
-{$ENDIF}
 begin
-  {$IFDEF WIN32}
   if FUpDown <> nil then
   begin
     FUpDown.Width := DefBtnWidth;
-    {$IFDEF COMPILER4_UP}
     if BiDiMode = bdRightToLeft then
       FUpDown.Align := alLeft
     else
-    {$ENDIF}
       FUpDown.Align := alRight;
   end
   else
@@ -1630,7 +1570,6 @@ begin
         else
         {$ENDIF}
           R := Bounds(Width - Height, 0, Height, Height);
-      {$IFDEF COMPILER4_UP}
       if BiDiMode = bdRightToLeft then
       begin
         if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then
@@ -1644,26 +1583,11 @@ begin
           R.Right := Height;
         end;
       end;
-      {$ENDIF}
       with R do
         FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
       //Polaris
       FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
     end;
-  {$ELSE}
-  if FButton <> nil then
-  begin
-    {$IFDEF POLESPIN}
-    //Polaris
-    if FButtonKind = bkClassic then
-      FBtnWindow.SetBounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
-    else
-      //Polaris
-    {$ENDIF}
-      FBtnWindow.SetBounds(Width - Height, 0, Height, Height);
-    FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
-  end;
-  {$ENDIF}
 end;
 
 procedure TJvCustomSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1770,22 +1694,14 @@ end;
 
 procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
 const
-  {$IFDEF COMPILER4_UP}
   Alignments: array [Boolean, TAlignment] of DWORD =
   ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
-  {$ELSE}
-  Alignments: array [TAlignment] of Longint = (ES_LEFT, ES_RIGHT, ES_CENTER);
-  {$ENDIF}
 begin
   inherited CreateParams(Params);
   // Polaris:
   //    or ES_MULTILINE
   Params.Style := Params.Style or WS_CLIPCHILDREN or
-    {$IFDEF COMPILER4_UP}
     Alignments[UseRightToLeftAlignment, FAlignment];
-    {$ELSE}
-    Alignments[FAlignment];
-    {$ENDIF}
 end;
 
 procedure TJvCustomSpinEdit.CreateWnd;
@@ -1799,7 +1715,6 @@ var
   Loc: TRect;
 begin
   //Polaris
-  {$IFDEF COMPILER4_UP}
   if BiDiMode = bdRightToLeft then
   begin
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
@@ -1808,12 +1723,9 @@ begin
   end
   else
   begin
-    {$ENDIF COMPILER4_UP}
     SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
-    {$IFDEF COMPILER4_UP}
     SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, GetButtonWidth));
   end;
-  {$ENDIF COMPILER4_UP}
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
 end;
 
@@ -1866,8 +1778,7 @@ begin
   GetTextHeight(I, H);
   if I > H then
     I := H;
-  Result := H + {$IFNDEF WIN32} (I div 4) + {$ENDIF}
-    (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
+  Result := H + (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
 end;
 
 procedure TJvCustomSpinEdit.UpClick(Sender: TObject);
@@ -1920,14 +1831,12 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER4_UP}
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
   ResizeButton;
   SetEditRect;
 end;
-{$ENDIF}
 
 procedure TJvCustomSpinEdit.CMFontChanged(var Msg: TMessage);
 begin
@@ -1946,13 +1855,11 @@ end;
 procedure TJvCustomSpinEdit.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
-  {$IFDEF WIN32}
   if FUpDown <> nil then
   begin
     FUpDown.Enabled := Enabled;
     ResizeButton;
   end;
-  {$ENDIF}
   if FButton <> nil then
     FButton.Enabled := Enabled;
 end;

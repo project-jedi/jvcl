@@ -27,9 +27,7 @@ Known Issues:
 
 unit JvVersionInfo;
 
-{$IFDEF COMPILER3_UP}
 {$WEAKPACKAGEUNIT}
-{$ENDIF}
 
 interface
 
@@ -52,11 +50,6 @@ type
     (vcsASCII, vcsJapan, vcsKorea, vcsTaiwan, vcsUnicode,
      vcsEasternEuropean, vcsCyrillic, vcsMultilingual, vcsGreek, vcsTurkish,
      vcsHebrew, vcsArabic, vcsUnknown);
-
-  {$IFNDEF WIN32}
-  PVSFixedFileInfo = Pvs_FixedFileInfo;
-  DWORD = Longint;
-  {$ENDIF}
 
   TLongVersion = record
     case Integer of
@@ -142,23 +135,9 @@ uses
   JvJVCLUtils, JvJCLUtils;
 
 function MemAlloc(Size: Longint): Pointer;
-{$IFDEF WIN32}
 begin
   GetMem(Result, Size);
 end;
-{$ELSE}
-var
-  Handle: THandle;
-begin
-  if Size < 65535 then
-    GetMem(Result, Size)
-  else
-  begin
-    Handle := GlobalAlloc(HeapAllocFlags, Size);
-    Result := GlobalLock(Handle);
-  end;
-end;
-{$ENDIF WIN32}
 
 const
   LanguageValues: array [TVersionLanguage] of Word =
@@ -218,11 +197,7 @@ end;
 
 function TJvVersionInfo.GetTranslation: Pointer;
 var
-  {$IFDEF WIN32}
   Len: UINT;
-  {$ELSE}
-  Len: Cardinal;
-  {$ENDIF}
 begin
   Result := nil;
   if Valid then
@@ -263,11 +238,7 @@ end;
 
 function TJvVersionInfo.GetFixedFileInfo: PVSFixedFileInfo;
 var
-  {$IFDEF WIN32}
   Len: UINT;
-  {$ELSE}
-  Len: Cardinal;
-  {$ENDIF}
 begin
   Result := nil;
   if Valid then
@@ -300,11 +271,7 @@ function TJvVersionInfo.GetVerValue(const VerName: string): string;
 var
   szName: array [0..255] of Char;
   Value: Pointer;
-  {$IFDEF WIN32}
   Len: UINT;
-  {$ELSE}
-  Len: Cardinal;
-  {$ENDIF}
 begin
   Result := '';
   if Valid then

@@ -30,11 +30,7 @@ unit JvSwitch;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus;
 
 type
@@ -111,11 +107,9 @@ type
     property TabStop default True;
     property TextPosition: TTextPos read FTextPosition write SetTextPosition
       default tpNone;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-    {$ENDIF}
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -130,16 +124,10 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
     property OnOn: TNotifyEvent read FOnOn write FOnOn;
     property OnOff: TNotifyEvent read FOnOff write FOnOff;
   end;
@@ -204,7 +192,6 @@ end;
 
 procedure TJvSwitch.DefineProperties(Filer: TFiler);
 
-  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
@@ -212,12 +199,10 @@ procedure TJvSwitch.DefineProperties(Filer: TFiler);
     else
       Result := FUserBitmaps <> [];
   end;
-  {$ENDIF}
 
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineBinaryProperty('Data', ReadBinaryData, WriteBinaryData,
-    {$IFDEF WIN32} DoWrite {$ELSE} FUserBitmaps <> [] {$ENDIF});
+  Filer.DefineBinaryProperty('Data', ReadBinaryData, WriteBinaryData,DoWrite);
 end;
 
 function TJvSwitch.GetPalette: HPALETTE;
@@ -431,13 +416,8 @@ begin
         Bottom := Top + FontHeight;
       end;
       StrPCopy(Text, Caption);
-      {$IFDEF WIN32}
       Windows.DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER);
-      {$ELSE}
-      WinProcs.DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
-        DT_VCENTER or DT_CENTER);
-      {$ENDIF}
     end;
   end;
 end;
