@@ -300,9 +300,9 @@ uses
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF COMPILER7_UP}
-  JvJVCLUtils, JvJCLUtils,
+  JvJVCLUtils, 
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvTypes, JvResources;
+  JvDsgnIntf, JvTypes, JvJCLUtils, JvResources;
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -845,8 +845,7 @@ begin
   SetRect(RectText, 0, 0, 0, 0);
   OldFont := ACanvas.Font;
   ACanvas.Font := Font;
-  DrawText(ACanvas.Handle, PChar(Caption), -1, RectText, DT_CALCRECT or
-    Alignments[FAlignment]);
+  DrawText(ACanvas, Caption, -1, RectText, DT_CALCRECT or Alignments[FAlignment]);
   ACanvas.Font := OldFont;
   if IsImageVisible then
   begin
@@ -1149,17 +1148,17 @@ begin
       OldFont := Font;
       Font := Self.Font;
       Font.Color := clBtnHighlight;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      DrawText(ACanvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      DrawText(ACanvas, Caption, Length(Caption), TextBounds, Flags);
       Font := OldFont;
     end
     else
     begin
       OldFont := Font;
       Font := Self.Font;
-      DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      DrawText(ACanvas, Caption, Length(Caption), TextBounds, Flags);
       Font := OldFont;
     end;
   end;
