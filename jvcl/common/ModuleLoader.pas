@@ -364,7 +364,7 @@ begin
   {$IFDEF LINUX}
   Result := dlopen(lpLibFilename,dwFlags);
   {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WIN32}
   Result := LoadLibraryEx(lpLibFilename,hFile,dwFlags);
   {$ENDIF}
 end;
@@ -375,7 +375,7 @@ begin
   {$IFDEF LINUX}
   Result := dlsym(hModule,lpProcName);
   {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WIN32}
   Result := GetProcAddress(hModule,lpProcName);
   {$ENDIF}
 end;
@@ -385,7 +385,7 @@ begin
   {$IFDEF LINUX}
   Result := dlclose(hModule) = 0;
   {$ENDIF}
-  {$IFDEF MSWINDOWS}
+  {$IFDEF WIN32}
   Result := FreeLibrary(hModule);
   {$ENDIF}
 end;
