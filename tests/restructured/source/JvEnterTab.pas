@@ -68,7 +68,7 @@ begin
   if (csDesigning in ComponentState) then
   begin
     FBmp := TBitmap.Create;
-    FBmp.LoadFromResourceName(hInstance, 'TJvENTERASTAB');
+    FBmp.LoadFromResourceName(hInstance, 'DESIGNENTERASTAB');
   end
   else
     Visible := false;
