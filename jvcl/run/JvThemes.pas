@@ -727,12 +727,6 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
 implementation
 
 {$IFDEF JVCLThemesEnabled}
-procedure TThemeServicesEx.ApplyThemeChange;
-begin
-  ThemeServices.UpdateThemes;
-  ThemeServices.DoOnThemeChange;
-end;
-
 
 function ThemeServices: TThemeServicesEx;
 begin
@@ -779,6 +773,12 @@ begin
 end;
 
 {$ELSE} // COMPILER7_UP
+
+procedure TThemeServicesEx.ApplyThemeChange;
+begin
+  ThemeServices.UpdateThemes;
+  ThemeServices.DoOnThemeChange;
+end;
 
 { Delphi 5 and 6 need WindowProc hooks }
 
