@@ -32,8 +32,8 @@ requires
   vcljpg50,
   vcldb50,
   vclbde50,
-  vclmid50,
-  vclsmp50;
+  vclsmp50,
+  DJCL50;
 
 contains
   JvAddPrinter in '..\Source\JvAddPrinter.pas',
