@@ -166,7 +166,6 @@ begin
             st := FDirectory;
             SendMessage(FDialogHandle, BFFM_SETSELECTION, Integer(True), Integer(st));
           end;
-
           //Call init event
           if Assigned(FOnInit) then
             FOnInit(TObject(lpData) as TJvBrowseFolder);
@@ -184,7 +183,7 @@ begin
           except
           end;
           if Assigned(FOnChange) then
-            FOnChange(TObject(lpData) as TJvBrowseFolder, FDirectory);
+            FOnChange(TObject(lpData) as TJvBrowseFolder, st);
         end;
     end;
   end;
