@@ -240,6 +240,18 @@
 ********************** Interface end macros *********************
 (*$DEFINE JV_CONTROL_EVENTS_END(ClassName)
   end;
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   EMPTYLINE
 *)
 {$DEFINE JV_WINCONTROL_EVENTS_END(ClassName) JV_CONTROL_EVENTS_END(ClassName)}
