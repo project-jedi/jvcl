@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,12 +36,9 @@ unit JvQXPCoreUtils;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QTypes, QWindows,
-  
-  TypInfo, JvQXPCore;
+  SysUtils, Classes, TypInfo,  
+  Types, QGraphics, QControls, QTypes, QWindows, 
+  JvQXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -155,14 +153,11 @@ begin
                   XX := iBndS + Random(xLoop);
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
-                    begin
-
-
+                    begin  
                       rgbRed := GetRValue(GBand[iLoop - 1]);
                       rgbGreen := GetGValue(GBand[iLoop - 1]);
                       rgbBlue := GetBValue(GBand[iLoop - 1]);
-                      rgbReserved := 0;
-
+                      rgbReserved := 0; 
                     end;
                 end;
             end;
@@ -178,7 +173,7 @@ begin
         iBndS := MulDiv(iLoop, AHeight, Colors);
         iBndE := MulDiv(iLoop + 1, AHeight, Colors);
         Brush.Color := GBand[iLoop];
-        PatBlt(Bitmap.Canvas, 0, iBndS, AWidth, iBndE, PATCOPY);
+        PatBlt(Handle, 0, iBndS, AWidth, iBndE, PATCOPY);
         if (iLoop > 0) and Dithered then
           for yLoop := 0 to AHeight div (Colors - 1) do
           begin
@@ -189,14 +184,11 @@ begin
               for xLoop := 0 to DitherDepth - 1 do
               if xLoop < AWidth  then
                 with Row[xLoop] do
-                begin
-                  
-                  
+                begin  
                   rgbRed := GetRValue(GBand[iLoop - 1]);
                   rgbGreen := GetGValue(GBand[iLoop - 1]);
                   rgbBlue := GetBValue(GBand[iLoop - 1]);
-                  rgbReserved := 0;
-                  
+                  rgbReserved := 0; 
                 end;
               end;
           end;
@@ -277,11 +269,9 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
   var Rect: TRect; Flags: Integer); overload;
 
   procedure DoDrawText;
-  begin
-
-    RequiredState(ACanvas, [csFontValid, csHandleValid, csBrushValid]);
-    DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
-
+  begin  
+    SetPenColor(ACanvas.handle, ACanvas.Font.Color);
+    DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags); 
   end;
 
 begin
@@ -289,8 +279,7 @@ begin
     (AText[1] = '&') and (AText[2] = #0)) then
     AText := AText + ' ';
   if not AShowAccelChar then
-    Flags := Flags or DT_NOPREFIX;
-
+    Flags := Flags or DT_NOPREFIX; 
   with ACanvas do
   begin
     Font.Assign(AFont);
@@ -342,25 +331,18 @@ begin
   ColorMap := TBitmap.Create;
   try
     ColorMap.Assign(Bitmap);
-    Bitmap.Dormant;
-    
+    Bitmap.Dormant; 
     with ColorMap.Canvas do
     begin
-      Brush.Color := AColor;
-      
-      
+      Brush.Color := AColor;  
       FillRect(Rect);
       Bitmap.TransparentColor := clBlack;
-      Bitmap.Transparent := true;
-      Draw(0,0, Bitmap);
-      
-    end;
-    
+      Bitmap.Transparent := True;
+      Draw(0,0, Bitmap); 
+    end; 
     Bitmap.FreeImage;
     Bitmap.Assign(ColorMap);
-    Bitmap.TransparentMode := tmAuto;
-    
-    
+    Bitmap.TransparentMode := tmAuto;  
   finally
     ColorMap.Free;
   end;

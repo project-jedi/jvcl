@@ -40,7 +40,10 @@ unit JvQSearchFiles;
 interface
 
 uses
-  Classes, SysUtils, Windows,
+  Classes, SysUtils,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
   JvQComponent, JvQJCLUtils;
 
 const

@@ -36,7 +36,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, 
-  QGraphics, QControls, QForms, QComCtrls, CommCtrl, QStdActns,
+  Types, QGraphics, QControls, QForms, QComCtrls, CommCtrl, QStdActns,
   JVQCLVer, JvQExComCtrls;
 
 type  

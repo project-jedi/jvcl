@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQXPContainer;
 interface
 
 uses
-  TypInfo, Classes,
-  
-  
-  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QTypes, QWindows,
-  
+  TypInfo, Classes,  
+  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QTypes, QWindows, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -77,8 +75,7 @@ type
     procedure SetShowCaption(Value: Boolean);
     procedure SetSpacing(Value: Byte);
     procedure SetWordWrap(Value: Boolean);
-  protected
-    
+  protected 
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure HookEnabledChanged; override;
     procedure HookMouseDown; override;
@@ -111,8 +108,7 @@ type
 
   TJvXPContainer = class(TJvXPCustomContainer)
   published
-    property Alignment;
-    
+    property Alignment; 
     property BorderWidth;
     property BoundColor;
     property BoundLines;
@@ -148,8 +144,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     //property Enabled;
     property Font;
@@ -373,13 +368,13 @@ const
 var
   DrawStyle: LongInt;
   CalcRect: TRect;
-
+  
   procedure DoDrawText(Handle: HDC; ACaption: TCaption; var ARect: TRect;
     Flags: Integer);
   begin
     SetPainterFont(Handle, AFont);
     DrawTextW(Handle, PWideChar(ACaption), -1, ARect, Flags);
-  end;
+  end; 
 
 begin
   with AParent, Canvas do
@@ -387,7 +382,7 @@ begin
     DrawStyle := Alignments[AAlignment];
     if (DrawStyle <> DT_LEFT) and (ARect.Right - ARect.Left < TextWidth(ACaption)) then
       DrawStyle := DT_LEFT;
-    DrawStyle := DrawStyle or DT_EXPANDTABS or WordWraps[AWordWrap]; // or DT_END_ELLIPSIS;
+    DrawStyle := DrawStyle or DT_EXPANDTABS or WordWraps[AWordWrap] or DT_END_ELLIPSIS;
     if ALayout <> tlTop then
     begin
       CalcRect := ARect;
@@ -409,7 +404,6 @@ begin
   begin
     Rect := GetClientRect;
     Brush.Color := Self.Color;
-    Brush.Style := bsSolid;
     FillRect(Rect);
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -442,9 +436,9 @@ begin
         LineTo(Rect.Left, Rect.Bottom);
         MoveTo(Rect.Right, Rect.Top);
         LineTo(Rect.Right, Rect.Bottom);
-      end;
+      end; 
       Inc(Rect.Left, 4);
-      Dec(Rect.Right, 4);
+      Dec(Rect.Right, 4); 
       DxDrawText(Self, Caption, Font, FAlignment, FLayout, FWordWrap, Rect);
       //JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, False, FAlignment,
       //  FWordWrap, Rect);

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,11 @@ unit JvQXPCore;
 interface
 
 uses
-  
-  
-  Types, QControls, QGraphics, QForms, Qt, QWindows,
+  QWindows, QMessages, QControls, Types, QGraphics, QForms,
+  {$IFDEF USEJVCL}
   JvQComponent,
-  
+  {$ENDIF USEJVCL} 
+  Qt,
   Classes;
 
 const
@@ -126,24 +127,38 @@ type
    );
 
   { baseclass for non-focusable component descendants. }
-  
+  {$IFDEF USEJVCL}
   TJvXPCustomComponent = class(TJvComponent)
   public
     constructor Create(AOwner: TComponent); override;
   end;
-  
+  {$ELSE}
+  TJvXPCustomComponent = class(TComponent)
+  private
+    FVersion: string;
+    procedure SetVersion(Value: string);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Version: string read FVersion write SetVersion stored False;
+  end;
+  {$ENDIF USEJVCL}
 
-  
+  {$IFDEF USEJVCL}
   TJvXPWinControl = class(TJvWinControl)
-  
+  {$ELSE}
+  TJvXPWinControl = class(TWinControl)
+  {$ENDIF USEJVCL}
   published
     property Color;
   end;
   { baseclass for focusable control descendants. }
 
-  
+  {$IFDEF USEJVCL}
   TJvXPCustomControl = class(TJvCustomControl)
-  
+  {$ELSE}
+  TJvXPCustomControl = class(TCustomControl)
+  {$ENDIF USEJVCL}
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -152,8 +167,10 @@ type
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    
-    
+    {$IFNDEF USEJVCL}
+    FVersion: string;
+    procedure SetVersion(Value: string);
+    {$ENDIF USEJVCL} 
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -172,8 +189,7 @@ type
     procedure HookTextChanged; dynamic;
     procedure BeginUpdate; dynamic;
     procedure EndUpdate; dynamic;
-    procedure LockedInvalidate; dynamic;
-    
+    procedure LockedInvalidate; dynamic; 
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
@@ -185,9 +201,7 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-//    function WidgetFlags: integer; override;
-    procedure Loaded; override;
-    
+    procedure Loaded; override; 
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -201,7 +215,9 @@ type
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
   published
-    
+    {$IFNDEF USEJVCL}
+    property Version: string read FVersion write SetVersion stored False;
+    {$ENDIF USEJVCL}
   end;
 
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
@@ -220,8 +236,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     //property Enabled;
     property Font;
@@ -237,10 +252,8 @@ type
     //property OnStartDock;
     //property OnUnDock;
     property OnClick;
-    property OnConstrainedResize;
-    
-    property OnContextPopup;
-    
+    property OnConstrainedResize; 
+    property OnContextPopup; 
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -342,9 +355,9 @@ type
 implementation
 
 uses
-  
+  {$IFDEF USEJVCL}
   JvQResources,
-  
+  {$ENDIF USEJVCL}
   JvQXPCoreUtils;
 
 {$IFDEF MSWINDOWS}
@@ -354,17 +367,29 @@ uses
 {$R ../Resources/JvXPCore.res}
 {$ENDIF LINUX}
 
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
+  RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
+  RsVersion = '2.0.1'; // always increase version number on new releases!
+{$ENDIF USEJVCL}
 
 //=== TJvXPCustomComponent ===================================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+  {$IFNDEF USEJVCL}
+  FVersion := RsCopyright + RsVersion;
+  {$ENDIF USEJVCL}
 end;
 
-
+{$IFNDEF USEJVCL}
+procedure TJvXPCustomComponent.SetVersion(Value: string);
+begin
+  // do not enable overwriting this constant.
+end;
+{$ENDIF USEJVCL}
 
 //=== TJvXPCustomControl =====================================================
 
@@ -381,10 +406,17 @@ begin
   FIsLocked := False;
   FIsSibling := False;
   FModalResult := 0;
-  
+  {$IFNDEF USEJVCL}
+  FVersion := RsCopyright2 + RsVersion;
+  {$ENDIF USEJVCL}
 end;
 
-
+{$IFNDEF USEJVCL}
+procedure TJvXPCustomControl.SetVersion(Value: string);
+begin
+  // disallow changing this property.
+end;
+{$ENDIF USEJVCL}
 
 procedure TJvXPCustomControl.BeginUpdate;
 begin
@@ -439,7 +471,7 @@ end;
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-//  inherited BorderChanged;
+  //inherited BorderChanged;
   HookBorderChanged;
 end;
 

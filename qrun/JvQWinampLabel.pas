@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQWinampLabel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows,
-  
+  SysUtils, Classes,  
+  QTypes, Types, QGraphics, QControls, QStdCtrls, QWindows, 
   JvQExStdCtrls;
 
 type
@@ -77,15 +75,12 @@ type
     procedure Activate;
     procedure Deactivate;
     procedure UpdatePos;
-    procedure DoOnTimer(Sender: TObject);
-    
-  protected
-    
+    procedure DoOnTimer(Sender: TObject); 
+  protected 
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     function GetCol(Ch: WideChar): Word;
-    function GetRow(Ch: WideChar): Word;
-    
+    function GetRow(Ch: WideChar): Word; 
     procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
@@ -105,8 +100,7 @@ type
     property Text: TCaption read FText write SetText;
     property Align;
     property Alignment;
-    property FocusControl;
-    
+    property FocusControl; 
     property DragMode;
     property ParentColor;
     property ShowHint;
@@ -434,35 +428,26 @@ begin
       Rec := ClientRect;
       Rec.Top := Rec.Top + CharHeight;
       Canvas.FillRect(Rec);
-      if FActive then
-        
-        
-        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, FCurPos, 0, ROP_DSPDxax)
-        
+      if FActive then  
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, FCurPos, 0, SRCCOPY) 
       else
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
         Rec.Left := Rec.Left + (CharWidth * Length(Text));
-        Canvas.FillRect(Rec);
-        
-        
-        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, 0, 0, SRCCOPY);
-        
+        Canvas.FillRect(Rec);  
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, 0, 0, SRCCOPY); 
       end;
     end
     else
     begin
-      FScale := Height / CharHeight;
-      
-      
+      FScale := Height / CharHeight;  
       if FActive then
         StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, FCurPos, 0, Round(Width / FScale),
           CharHeight, SRCCOPY)
       else
         StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, 0, 0, Round(Width / FScale), CharHeight,
-          SRCCOPY);
-      
+          SRCCOPY); 
     end;
   except
   end;

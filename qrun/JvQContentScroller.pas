@@ -39,8 +39,8 @@ interface
 
 uses
   SysUtils, Classes,
-  Windows, Messages, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
-  Types, QTypes, 
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, 
+  QTypes, 
   JvQComponent;
 
 type

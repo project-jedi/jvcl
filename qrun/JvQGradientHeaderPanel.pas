@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,15 +35,12 @@ unit JvQGradientHeaderPanel;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QStdCtrls,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QStdCtrls, 
   JvQGradient, JvQTypes, JvQComponent;
 
 type
-  TJvGradientHeaderPanel = class(TJvWinControl)
+  TJvGradientHeaderPanel = class(TJvCustomControl)
   private
     FGradient: TJvGradient;
     FLabel: TLabel;
@@ -80,13 +77,14 @@ type
     function GetLabelAlignment: TAlignment;
     procedure SetLabelAlignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
-    
-  protected
-    
-    procedure AdjustSize; override;
-    
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+ 
+  protected 
+    procedure AdjustSize; override; 
+//    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,10 +107,8 @@ type
     property ShowHint: Boolean read FHint write SetShowHint default False;
     property LabelAlignment: TAlignment read GetLabelAlignment write SetLabelAlignment;
     property Align;
-    property Anchors;
-    
-    property Constraints;
-    
+    property Anchors; 
+    property Constraints; 
     property DragMode;
     property Enabled;
     property Font;
@@ -120,8 +116,7 @@ type
     property PopupMenu;
     property TabOrder;
     property TabStop;
-    property Visible;
-    
+    property Visible; 
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -149,15 +144,26 @@ implementation
 uses
   JvQResources;
 
+type
+  TNoEventLabel = class(TLabel)
+  public
+    procedure Dispatch(var Message); override;
+  end;
+
+  TNoEventGradient = class(TJvGradient)
+  public
+    procedure Dispatch(var Message); override;
+  end;
+
 constructor TJvGradientHeaderPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque];
+  ControlStyle := ControlStyle + [csOpaque, csAcceptsControls];
   Self.Width := 285;
   Self.Height := 30;
-  FGradient := TJvGradient.Create(Self);
+  FGradient := TNoEventGradient.Create(Self);
   FGradient.Parent := Self;
-  FLabel := TLabel.Create(Self);
+  FLabel := TNoEventLabel.Create(Self);
   FLabel.AutoSize := False;
   FLabel.Parent := Self;
   FGradient.Left := 0;
@@ -385,10 +391,51 @@ begin
   AdjustLabelWidth;
 end;
 
+procedure TJvGradientHeaderPanel.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+  if CanFocus then SetFocus;
+end;
+
+
+(*
 function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
   Result := True;
+end;
+*)
+
+{ TNoEventLabel }
+
+procedure TNoEventLabel.Dispatch(var Message);
+begin
+(*)
+  with TMessage(Message) do
+    if (Parent <> nil) and
+    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+    Parent.Dispatch(Message)
+  else
+(*)
+    inherited;
+
+end;
+
+{ TNoEventGradient }
+
+procedure TNoEventGradient.Dispatch(var Message);
+begin
+  (*)
+  with TMessage(Message) do
+    if (Parent <> nil) and
+    (((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) or
+    ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST))) then
+    Parent.Dispatch(Message)
+  else
+  (*)
+    inherited;
 end;
 
 end.

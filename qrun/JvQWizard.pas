@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -338,17 +339,12 @@ unit JvQWizard;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QWindows, QControls, QForms, QGraphics, QButtons, QImgList,
-  
-  
-  Types,
-  
-  
+  SysUtils, Classes,  
+  QWindows, QControls, QForms, QGraphics, QButtons, QImgList,  
+  Types, 
+  {$IFDEF USEJVCL}
   JvQComponent,
-  
+  {$ENDIF USEJVCL}
   JvQWizardCommon;
 
 type
@@ -369,13 +365,10 @@ type
   TJvWizardButtonControl = class(TBitBtn)
   private
     FWizard: TJvWizard;
-    FAlignment: TJvWizardLeftRight;
-    
+    FAlignment: TJvWizardLeftRight; 
   protected
-    function StoreCaption: Boolean; virtual;
-    
-    procedure VisibleChanged; override;
-    
+    function StoreCaption: Boolean; virtual; 
+    procedure VisibleChanged; override; 
     property Wizard: TJvWizard read FWizard write FWizard;
     property Alignment: TJvWizardLeftRight read FAlignment write FAlignment;
   public
@@ -426,18 +419,14 @@ type
     function GetPage(Index: Integer): TJvWizardCustomPage;
     function GetPageCount: Integer;
     procedure SetAlign(Value: TJvWizardAlign);
-    procedure SetPageIndex(Value: Integer);
-    
+    procedure SetPageIndex(Value: Integer); 
     procedure DoAddPage(const APage: TJvWizardCustomPage);
     procedure DoDeletePage(const APage: TJvWizardCustomPage);
     procedure DoUpdatePage(const APage: TJvWizardCustomPage);
     procedure DoActivatePage(const APage: TJvWizardCustomPage);
     procedure DoMovePage(const APage: TJvWizardCustomPage; const OldIndex: Integer);
-  protected
-    
-    
-    procedure SetParent(const ParentA: TWidgetControl); override;
-    
+  protected  
+    procedure SetParent(const ParentA: TWidgetControl); override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; virtual;
@@ -619,11 +608,8 @@ type
     property Align: TJvWizardLeftRight read FAlign write SetAlign default alLeft;
     property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 1;
     property Image: TJvWizardImage read FImage write FImage;
-    property Width: Integer read FWidth write SetWidth default 164;
-    
-    
-    property Color default clActiveHighlight;
-    
+    property Width: Integer read FWidth write SetWidth default 164;  
+    property Color default clActiveHighlight; 
     property Visible;
   end;
 
@@ -676,19 +662,15 @@ type
     procedure SetWizard(AWizard: TJvWizard);
     procedure SetEnabledButtons(Value: TJvWizardButtonSet);
     procedure SetVisibleButtons(Value: TJvWizardButtonSet);
-    procedure ImageChanged(Sender: TObject);
-    
+    procedure ImageChanged(Sender: TObject); 
     function GetSubtitle: TJvWizardPageTitle;
     function GetTitle: TJvWizardPageTitle;
     procedure SetSubtitle(const Value: TJvWizardPageTitle);
     procedure SetTitle(const Value: TJvWizardPageTitle);
-  protected
-    
+  protected 
     procedure FontChanged; override;
     procedure TextChanged; override;
-    procedure EnabledChanged; override;
-    
-    
+    procedure EnabledChanged; override;  
     procedure ReadState(Reader: TReader); override;
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure Paint; override;
@@ -778,9 +760,11 @@ type
   end;
 
   { YW - JvWizard Control }
-  
+  {$IFDEF USEJVCL}
   TJvWizard = class(TJvCustomControl)
-  
+  {$ELSE}
+  TJvWizard = class(TCustomControl)
+  {$ENDIF USEJVCL}
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -797,7 +781,9 @@ type
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: boolean;
-    
+    {$IFNDEF USEJVCL}
+    FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
+    {$ENDIF !USEJVCL}
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -814,8 +800,7 @@ type
     procedure SetActivePageIndex(Value: Integer);
     function GetPageCount: Integer;
     procedure RepositionButtons;
-    procedure UpdateButtonsStatus;
-    
+    procedure UpdateButtonsStatus; 
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;
     procedure SetAutoHideButtonBar(const Value: boolean);
@@ -852,7 +837,10 @@ type
     property WizardPages[Index:integer]: TJvWizardCustomPage read GetWizardPages;
   published
     property Pages: TJvWizardPageList read FPages;
-    
+    {$IFNDEF USEJVCL}
+    // Add by Steve Forbes
+    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
+    {$ENDIF !USEJVCL}
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar:boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
@@ -903,7 +891,21 @@ const
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
+{$IFNDEF USEJVCL}
+resourcestring
+  RsBackButtonCaption = '< &Back';
+  RsNextButtonCaption = '&Next >';
 
+  RsFirstButtonCaption = 'To &Start Page';
+  RsLastButtonCaption = 'To &Last Page';
+  RsFinishButtonCaption = '&Finish';
+  RsWelcome = 'Welcome';
+  RsTitle = 'Title';
+  RsSubtitle = 'Subtitle';
+
+  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
+  RsEInvalidWizardPage = 'The pages belong to another wizard';
+{$ENDIF USEJVCL}
 
 type
   // (ahuser) introduced for refactoring the WizardButtons
@@ -989,13 +991,11 @@ constructor TJvWizardButtonControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if csDesigning in ComponentState then
-  begin
-    
+  begin 
       { !!! YW - Add csClickEvents in order to fired the Click method
          at design time. It does NOT need at run time, otherwise it cause
         the OnClick event to be called twice. }
-    ControlStyle := ControlStyle + [csClickEvents];
-    
+    ControlStyle := ControlStyle + [csClickEvents]; 
     ControlStyle := ControlStyle + [csNoDesignVisible];
   end;
   Kind := bkCustom;
@@ -1243,11 +1243,8 @@ begin
       ID := GetParentForm(Self).HelpContext;
   end;
   if ID <> 0 then
-  begin
-    
-    
-    Application.ContextHelp(ID);
-    
+  begin  
+    Application.ContextHelp(ID); 
   end;
 end;
 
@@ -1373,8 +1370,7 @@ begin
   TabStop := False;
   Width := 145;
   Visible := True;
-  FPages := TList.Create;
-  
+  FPages := TList.Create; 
 end;
 
 destructor TJvWizardRouteMapControl.Destroy;
@@ -2078,11 +2074,8 @@ end;
 constructor TJvWizardWaterMark.Create;
 begin
   inherited Create;
-  FAlign := alLeft;
-  
-  
-  Color := clActiveHighlight;
-  
+  FAlign := alLeft;  
+  Color := clActiveHighlight; 
   FWidth := 164;
   FBorderWidth := 1;
   FImage := TJvWizardImage.Create;
@@ -2223,8 +2216,7 @@ begin
   { YW - try to avoid screen flicker, it paints its image
     into memory, then move image memory to the screen at once. }
   FEnabledButtons := bkAllButtons;
-  FVisibleButtons := [bkBack, bkNext, bkCancel];
-  
+  FVisibleButtons := [bkBack, bkNext, bkCancel]; 
   FEnableJumpToPage := True; // Nonn
 end;
 
@@ -2380,12 +2372,9 @@ begin
     if csDesigning in ComponentState then
     begin
       Canvas.Brush.Style := bsClear;
-      Canvas.Font.Assign(Font);
-      
-      
+      Canvas.Font.Assign(Font);  
       DrawTextW(Canvas.Handle, PWideChar(Caption), -1, ARect,
-        DT_SINGLELINE + DT_CENTER + DT_VCENTER);
-      
+        DT_SINGLELINE + DT_CENTER + DT_VCENTER); 
     end;
   finally
     FDrawing := False;
@@ -2562,10 +2551,8 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
   FAutoHideButtonBar := True;
-  CreateNavigateButtons;
-  
-  InputKeys := [ikAll];
-  
+  CreateNavigateButtons; 
+  InputKeys := [ikAll]; 
 end;
 
 destructor TJvWizard.Destroy;

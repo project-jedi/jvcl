@@ -37,7 +37,7 @@ unit JvQUrlGrabbers;
 interface
 
 uses
-  Windows, Contnrs, Classes, SysUtils,
+  QWindows, Contnrs, Classes, SysUtils,
   JvQUrlListGrabber, JvQTypes, JvQFinalize;
 
 type

@@ -324,7 +324,7 @@ end;
 procedure TMTSimpleEvent.ResetEvent;
 begin
   {$IFDEF WINDOWS}
-  Windows.ResetEvent(FHandle);
+  QWindows.ResetEvent(FHandle);
   {$ENDIF WINDOWS}
   {$IFDEF LINUX}
   QWindows.ResetEvent(FHandle);
@@ -334,7 +334,7 @@ end;
 procedure TMTSimpleEvent.SetEvent;
 begin
   {$IFDEF WINDOWS}
-  Windows.SetEvent(FHandle);
+  QWindows.SetEvent(FHandle);
   {$ENDIF WINDOWS}
   {$IFDEF LINUX}
   QWindows.SetEvent(FHandle);

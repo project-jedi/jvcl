@@ -36,7 +36,7 @@ unit JvQDeleteError;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
+  QWindows, SetupApi, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type

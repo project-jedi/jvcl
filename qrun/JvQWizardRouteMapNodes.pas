@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -45,11 +46,8 @@ unit JvQWizardRouteMapNodes;
 interface
 
 uses
-  Classes,
-  
-  
-  QWindows, QGraphics, QStdCtrls, Types,
-  
+  Classes,  
+  QWindows, QGraphics, QStdCtrls, Types, 
   JvQWizard;
 
 type
@@ -340,9 +338,10 @@ begin
               DrawText(Canvas.Handle,
                 PChar((Pages[I] as TJvWizardCustomPage).Header.Title.Text), -1,
                 ATextRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER)
-            else
+            else  
               DrawText(Canvas, Pages[I].Caption, -1, ATextRect,
-                DT_LEFT or DT_SINGLELINE or DT_VCENTER);
+                DT_LEFT or DT_SINGLELINE or DT_VCENTER); 
+
           finally
             OffsetRect(ARect, 0, FItemHeight);
           end;

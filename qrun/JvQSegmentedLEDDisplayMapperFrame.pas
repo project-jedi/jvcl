@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,12 +36,12 @@ unit JvQSegmentedLEDDisplayMapperFrame;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls, QForms, QDialogs,
   QActnList, QMenus,
   {$IFDEF USE_DXGETTEXT}
   JvQGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JvQComponent, JvQSegmentedLEDDisplay, JvQExControls, QTypes;
+  JvQComponent, JvQSegmentedLEDDisplay, JvQExControls;
 
 type
   TfmeJvSegmentedLEDDisplayMapper = class(TFrame)
@@ -205,8 +206,8 @@ begin
   with TSaveDialog.Create(Application) do
   try
     InitialDir := LastSaveFolder;
-    Options := [ofOverwritePrompt, ofNoChangeDir, ofPathMustExist,
-      ofEnableSizing];
+    Options := [ofOverwritePrompt, ofNoChangeDir, ofNoValidate, ofPathMustExist,
+      ofShareAware, ofNoReadOnlyReturn, ofNoTestFileCreate, ofEnableSizing];
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
@@ -343,7 +344,7 @@ begin
     try
       InitialDir := LastOpenFolder;
       Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
-         ofEnableSizing];
+        ofShareAware, ofNoNetworkButton, ofNoLongNames, ofEnableSizing];
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then

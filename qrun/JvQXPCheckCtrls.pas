@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQXPCheckCtrls;
 interface
 
 uses
-  Classes,
-  
-  
-  Types, QGraphics, QControls, QWindows,
-  
+  Classes,  
+  Types, QGraphics, QControls, QWindows, 
   JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -100,8 +98,7 @@ type
     property Align;
     property Anchors;
     //property AutoSize;
-    property Constraints;
-    
+    property Constraints; 
     property DragMode;
     //property Enabled;
     property Font;
@@ -119,10 +116,8 @@ type
     //property OnStartDock;
     //property OnUnDock;
     property OnClick;
-    property OnConstrainedResize;
-    
-    property OnContextPopup;
-    
+    property OnConstrainedResize; 
+    property OnContextPopup; 
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -262,8 +257,7 @@ begin
 
     // draw caption.
     SetBkMode(Handle, Transparent);
-    Font.Assign(Self.Font);
-    
+    Font.Assign(Self.Font); 
     begin
       Inc(Rect.Left, FCheckSize + 4 + FSpacing);
       JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
@@ -280,12 +274,9 @@ var
   Theme: TJvXPTheme;
 
   procedure DrawGradient(const Bitmap: TBitmap);
-  begin
-    
-    
+  begin  
       BitBlt(Canvas, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
-        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY);
-    
+        FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas, 0, 0, SRCCOPY); 
   end;
 
 begin
@@ -301,8 +292,7 @@ begin
     if (Theme = WindowsXP) or ((Theme = OfficeXP) and (ClipW = 0)) then
       Pen.Color := dxColor_Chk_Enb_Border_WXP
     else
-      Pen.Color := dxColor_BorderLineOXP;
-
+      Pen.Color := dxColor_BorderLineOXP; 
       Rectangle(Bounds(R.Left + 2, (ClientHeight - FCheckSize) div 2,FCheckSize, FCheckSize));
 
     // draw background.
@@ -312,13 +302,10 @@ begin
           if not ((ClipW <> 0) and (dsClicked in DrawState)) then
           begin
             if ClipW <> 0 then
-              DrawGradient(FHlGradient);
-            
-            
+              DrawGradient(FHlGradient);  
               BitBlt(Canvas, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
                 ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
-                FBgGradient.Canvas, 0, 0, SRCCOPY);
-            
+                FBgGradient.Canvas, 0, 0, SRCCOPY); 
           end
           else
             DrawGradient(FCkGradient);
@@ -330,8 +317,7 @@ begin
             if not (dsClicked in DrawState) then
               Brush.Color := dxColor_BgOXP
             else
-              Brush.Color := dxColor_BgCkOXP;
-            
+              Brush.Color := dxColor_BgCkOXP; 
               FillRect(Bounds(R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
                 FCheckSize - 2, FCheckSize - 2))
           end;
@@ -351,7 +337,7 @@ begin
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
         else
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
-          JvXPColorizeBitmap(Bitmap, clWhite);
+          JvXPColorizeBitmap(Bitmap, clWhite); 
           Draw(FCheckSize div 2 - 1, (ClientHeight - FCheckSize) div 2 + 3, Bitmap);
       finally
         Bitmap.Free;

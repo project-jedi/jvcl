@@ -36,9 +36,13 @@ unit JvQRas32;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QControls, QForms, 
-  Windows, Messages, Ras32, // Messages must be after QControls
+  SysUtils, Classes,
+  QControls, QForms, 
+  Qt, 
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  Ras32, // Messages must be after QControls
   JvQComponent, JvQTypes;
 
 type

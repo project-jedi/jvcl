@@ -929,7 +929,7 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := Windows.IsCharAlpha(Ch);
+  Result := QWindows.IsCharAlpha(Ch);
 end;
 
 { (ahuser) make Delphi 5 compiler happy

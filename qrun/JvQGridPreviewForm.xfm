@@ -30,14 +30,14 @@ object JvGridPreviewForm: TJvGridPreviewForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object ScrollBox1: TScrollBox
     Left = 157
     Top = 0
     Width = 446
     Height = 392
-    HorzScrollBar.Range = 85
     VertScrollBar.Range = 85
+    HorzScrollBar.Range = 85
     Align = alClient
     TabOrder = 0
     object PreviewImage: TImage
@@ -148,15 +148,15 @@ object JvGridPreviewForm: TJvGridPreviewForm
     object lblpages: TLabel
       Left = 59
       Top = 312
-      Width = 47
-      Height = 15
+      Width = 48
+      Height = 16
       Caption = 'lblpages'
     end
     object Header: TEdit
       Left = 7
       Top = 7
       Width = 117
-      Height = 23
+      Height = 24
       TabOrder = 0
       Text = 'Header'
       OnChange = HeaderChange
@@ -168,7 +168,6 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Height = 79
       BorderStyle = bsEtched
       Color = 16644814
-      ItemHeight = 15
       Items.Strings = (
         'HeaderText'
         'FooterText'
@@ -183,7 +182,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Left = 7
       Top = 124
       Width = 46
-      Height = 23
+      Height = 24
       TabOrder = 2
     end
     object ckborders: TCheckBox
@@ -204,7 +203,6 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Height = 124
       BorderStyle = bsEtched
       Color = 13172735
-      ItemHeight = 15
       Items.Strings = (
         'MarginTop'
         'MarginHeader'
@@ -222,7 +220,7 @@ object JvGridPreviewForm: TJvGridPreviewForm
       Left = 7
       Top = 308
       Width = 46
-      Height = 23
+      Height = 24
       TabOrder = 5
       Value = 1
     end
@@ -235,22 +233,5 @@ object JvGridPreviewForm: TJvGridPreviewForm
       TabOrder = 6
       OnClick = ckliveClick
     end
-  end
-  object OpenPictureDialog1: TOpenPictureDialog
-    DefaultExt = '*.bmp'
-    Filter = 
-      'Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm*.ico|Bitma' +
-      'ps (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm|Icons (*.ico)|*.ico|All' +
-      ' Files (*)|*'
-    FilterIndex = 0
-    Options = [ofEnableSizing, ofHideReadOnly, ofPreview]
-    Height = 0
-    Width = 0
-    Left = 8
-    Top = 360
-  end
-  object PrinterSetupDialog1: TPrinterSetupDialog
-    Left = 48
-    Top = 360
   end
 end

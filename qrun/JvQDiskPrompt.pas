@@ -36,7 +36,7 @@ unit JvQDiskPrompt;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  QWindows, SysUtils, Classes,
   JvQCommonDialogD, JvQTypes;
 
 type

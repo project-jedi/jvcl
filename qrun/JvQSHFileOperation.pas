@@ -40,7 +40,10 @@ unit JvQSHFileOperation;
 interface
 
 uses
-  Windows, ShellAPI, SysUtils, Classes,  
+  {$IFDEF MSWINDOWS}
+  Windows, ShellAPI,
+  {$ENDIF MSWINDOWS}
+  SysUtils, Classes,  
   Qt, QControls, 
   JvQBaseDlg;
 

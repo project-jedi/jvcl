@@ -36,9 +36,9 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin,
-  Types, QTypes, 
-  JvQThemes, JvQExControls, JvQExExtCtrls;
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin, 
+  QTypes, 
+  JvQJCLUtils, JvQThemes, JvQExControls, JvQExExtCtrls;
 
 type
   TJvRadioGroupHintEvent = procedure(Sender: TObject; Index: Integer;
@@ -68,7 +68,7 @@ type
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
-    property HintColor; 
+    property HintColor;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -87,7 +87,7 @@ begin
   FEdgeBorders := [ebLeft, ebTop, ebRight, ebBottom];
   FEdgeInner := esRaised;
   FEdgeOuter := esLowered;
-  FCaptionVisible := True; 
+  FCaptionVisible := True;
 end;
 
 procedure TJvRadioGroup.Paint;
@@ -101,30 +101,28 @@ const
 var
   H: Integer;
   R: TRect;
-  Flags: Longint; 
-begin 
+  Flags: Longint;
+begin
   with Canvas do
   begin
     Font := Self.Font;
     H := TextHeight('0');
-    R := Rect(0, H div 2 - 1, Width, Height);  
+    R := Rect(0, H div 2 - 1, Width, Height);
     QWindows.DrawEdge(Handle, R, InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],
       Byte(FEdgeBorders)  or BF_ADJUST);
     if (Text <> '') and CaptionVisible then
     begin
-        R := Rect(8, 0, 0, H);
+      if not UseRightToLeftAlignment then
+        R := Rect(8, 0, 0, H)
+      else
+        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
-      {$IFDEF _VCL}
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
-      Brush.Color := Color;
-      DrawText(Handle, PChar(Text), Length(Text), R, Flags);
-      {$ENDIF VCL}
-//      {$IFDEF VisualCLX}
+
+      // (rom) unified VCL/VisualCLX version
       DrawText(Canvas, Text, Length(Text), R, Flags or DT_CALCRECT);
       Brush.Color := Color;
       SetBkMode(Handle, OPAQUE);
       DrawText(Canvas, Text, Length(Text), R, Flags);
-//      {$ENDIF VisualCLX}
     end;
   end;
 end;

@@ -42,9 +42,9 @@ unit JvQSpeedButton;
 interface
 uses
   SysUtils, Classes,  
-  Types, Qt, QTypes, 
+  Qt, QTypes, 
   QWindows, QMessages,
-  QControls, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList, QActnList,
+  QControls, Types, QGraphics, QForms, QExtCtrls, QButtons, QMenus, QImgList, QActnList,
   JvQExControls, JvQComponent, JvQConsts, JvQTypes, JvQJCLUtils, JvQJVCLUtils,
   JvQThemes;
 

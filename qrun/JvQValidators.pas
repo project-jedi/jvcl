@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,11 +35,8 @@ unit JvQValidators;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms,
-  
+  SysUtils, Classes,  
+  QControls, QForms, 
   JvQComponent, JvQErrorIndicator, JvQFinalize;
 
 type
@@ -196,8 +194,7 @@ type
     FOnValidateFailed: TJvValidateFailEvent;
     FItems: TList;
     FValidationSummary: IJvValidationSummary;
-    FErrorIndicator: IJvErrorIndicator;
-    
+    FErrorIndicator: IJvErrorIndicator; 
     procedure SetValidationSummary(const Value: IJvValidationSummary);
     procedure SetErrorIndicator(const Value: IJvErrorIndicator);
     function GetCount: Integer;
@@ -215,11 +212,9 @@ type
     function Validate: Boolean;
     property Items[Index: Integer]: TJvBaseValidator read GetItem; default;
     property Count: Integer read GetCount;
-  published
-    
+  published 
     property ValidationSummary: IJvValidationSummary read FValidationSummary write SetValidationSummary;
-    property ErrorIndicator: IJvErrorIndicator read FErrorIndicator write SetErrorIndicator;
-    
+    property ErrorIndicator: IJvErrorIndicator read FErrorIndicator write SetErrorIndicator; 
     property OnValidateFailed: TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
@@ -252,15 +247,10 @@ type
 implementation
 
 uses
-  Masks,
-  
-  Variants,
-  
-  TypInfo,
-  
-  
-  JvQWStrUtils,
-  
+  Masks, 
+  Variants, 
+  TypInfo,  
+  JvWStrUtils, 
   JvQTypes, JvQResources;
 
 const
@@ -690,13 +680,11 @@ procedure TJvValidators.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-  begin
-    
+  begin 
     if Assigned(ValidationSummary) and AComponent.IsImplementorOf(ValidationSummary) then
       ValidationSummary := nil;
     if Assigned(ErrorIndicator) and AComponent.IsImplementorOf(ErrorIndicator) then
-      ErrorIndicator := nil;
-    
+      ErrorIndicator := nil; 
   end;
 end;
 
@@ -710,12 +698,10 @@ begin
 end;
 
 procedure TJvValidators.SetValidationSummary(const Value: IJvValidationSummary);
-begin
-  
+begin 
   ReferenceInterface(FValidationSummary, opRemove);
   FValidationSummary := Value;
-  ReferenceInterface(FValidationSummary, opInsert);
-  
+  ReferenceInterface(FValidationSummary, opInsert); 
 end;
 
 
@@ -754,12 +740,10 @@ begin
 end;
 
 procedure TJvValidators.SetErrorIndicator(const Value: IJvErrorIndicator);
-begin
-  
+begin 
   ReferenceInterface(FErrorIndicator, opRemove);
   FErrorIndicator := Value;
-  ReferenceInterface(FErrorIndicator, opInsert);
-  
+  ReferenceInterface(FErrorIndicator, opInsert); 
 end;
 
 //=== TJvValidationSummary ===================================================

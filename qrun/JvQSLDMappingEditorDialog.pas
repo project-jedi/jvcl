@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,10 +37,10 @@ unit JvQSLDMappingEditorDialog;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls,
-  QForms, QDialogs, QStdCtrls, QActnList, QMenus,
+  QWindows, QMessages, SysUtils, Classes, Types, QGraphics, QControls,
+  QForms, QDialogs, QStdCtrls,
   JvQBaseDlg, JvQSegmentedLEDDisplay, JvQSegmentedLEDDisplayMapperFrame,
-  JvQExControls, JvQComponent;
+  QActnList, QMenus, JvQExControls, JvQComponent;
 
 type
   TfrmSLDMappingEditorDialog = class(TForm)
