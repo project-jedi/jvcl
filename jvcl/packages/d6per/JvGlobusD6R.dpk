@@ -1,0 +1,105 @@
+package JvGlobusD6R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Globus Components'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  Vclx,
+  VclSmp,
+  vcljpg,
+  JvCoreD6R,
+  DJCL60,
+  JvStdCtrlsD6R,
+  JvSystemD6R;
+
+contains
+  JvgAlignForm in '..\..\run\JvgAlignForm.pas' {AlignForm},
+  JvgAlignFunction in '..\..\run\JvgAlignFunction.pas',
+  JvgBitBtn in '..\..\run\JvgBitBtn.pas',
+  JvgRuler in '..\..\run\JvgRuler.pas',
+  JvgCaption in '..\..\run\JvgCaption.pas',
+  JvgCGI in '..\..\run\JvgCGI.pas',
+  JvgRichEditUtils in '..\..\run\JvgRichEditUtils.pas',
+  JvgCommClasses in '..\..\run\JvgCommClasses.pas',
+  JvgRttiUtils in '..\..\run\JvgRttiUtils.pas',
+  JvgScrollBox in '..\..\run\JvgScrollBox.pas',
+  JvgConstSysRequirements in '..\..\run\JvgConstSysRequirements.pas',
+  JvgShade in '..\..\run\JvgShade.pas',
+  JvgDigits in '..\..\run\JvgDigits.pas',
+  JvgDrawTab in '..\..\run\JvgDrawTab.pas',
+  JvgEdit in '..\..\run\JvgEdit.pas',
+  JvgExceptionHandler in '..\..\run\JvgExceptionHandler.pas',
+  JvgFileIterator in '..\..\run\JvgFileIterator.pas',
+  JvgFileUtils in '..\..\run\JvgFileUtils.pas',
+  JvgFixFont in '..\..\run\JvgFixFont.pas',
+  JvgShadow in '..\..\run\JvgShadow.pas',
+  JvgGraphicButton in '..\..\run\JvgGraphicButton.pas',
+  JvgSingleInstance in '..\..\run\JvgSingleInstance.pas',
+  JvgShape in '..\..\run\JvgShape.pas',
+  JvgSpeedButton in '..\..\run\JvgSpeedButton.pas',
+  JvgStaticText in '..\..\run\JvgStaticText.pas',
+  JvgHoleShape in '..\..\run\JvgHoleShape.pas',
+  JvgSplit in '..\..\run\JvgSplit.pas',
+  JvgInspectorGrid in '..\..\run\JvgInspectorGrid.pas',
+  JvgJump in '..\..\run\JvgJump.pas',
+  JvgSmallFontsDefense in '..\..\run\JvgSmallFontsDefense.pas',
+  JvgSysInf in '..\..\run\JvgSysInf.pas',
+  JvgLogics in '..\..\run\JvgLogics.pas',
+  JvgStringContainer in '..\..\run\JvgStringContainer.pas',
+  JvgMailSlots in '..\..\run\JvgMailSlots.pas',
+  JvgStringGrid in '..\..\run\JvgStringGrid.pas',
+  JvgTabComm in '..\..\run\JvgTabComm.pas',
+  JvgTab in '..\..\run\JvgTab.pas',
+  JvgSysRequirements in '..\..\run\JvgSysRequirements.pas',
+  JvgProcess in '..\..\run\JvgProcess.pas',
+  JvgProcessUtils in '..\..\run\JvgProcessUtils.pas',
+  JvgTransparentMemo in '..\..\run\JvgTransparentMemo.pas',
+  JvgTreeView in '..\..\run\JvgTreeView.pas',
+  JvgTypes in '..\..\run\JvgTypes.pas',
+  JvgUtils in '..\..\run\JvgUtils.pas',
+  JvgWizardHeader in '..\..\run\JvgWizardHeader.pas',
+  JvgXMLSerializer in '..\..\run\JvgXMLSerializer.pas',
+  Jvg3DColors in '..\..\run\Jvg3DColors.pas',
+  JvgAskListBox in '..\..\run\JvgAskListBox.pas',
+  JvgBevel in '..\..\run\JvgBevel.pas',
+  JvgButton in '..\..\run\JvgButton.pas',
+  JvgCheckBox in '..\..\run\JvgCheckBox.pas',
+  JvgFlyingText in '..\..\run\JvgFlyingText.pas',
+  JvgGroupBox in '..\..\run\JvgGroupBox.pas',
+  JvgHelpPanel in '..\..\run\JvgHelpPanel.pas',
+  JvgHint in '..\..\run\JvgHint.pas',
+  JvgImage in '..\..\run\JvgImage.pas',
+  JvgLabel in '..\..\run\JvgLabel.pas',
+  JvgLanguageLoader in '..\..\run\JvgLanguageLoader.pas',
+  JvgListBox in '..\..\run\JvgListBox.pas',
+  JvgPage in '..\..\run\JvgPage.pas',
+  JvgProgress in '..\..\run\JvgProgress.pas',
+  JvgReport in '..\..\run\JvgReport.pas',
+  JvgReportParamsEditor in '..\..\run\JvgReportParamsEditor.pas';
+
+end.
+
