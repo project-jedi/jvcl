@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2003-11-08:
+- Updated BCB packages to include MPL header and ensure the build goes ok in the IDE AND in the batch file // olivier
 - Updated installation and C++ Builder documentation // olivier
 - Finally fixed TJvUrlListGrabber. Please use demo for testing. // olivier
 - Moved JvCaret from JvSystem to JvCore for all builds to reflect Delphi 7 and BCB5 packages. //olivier
