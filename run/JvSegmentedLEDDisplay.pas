@@ -1200,6 +1200,7 @@ begin
   // DO NOTHING.
   // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
   // SUPPORTED BY C++ BUILDER
+  Result := 0;
 end;
 
 class function TJvCustomSegmentedLEDDigit.GetSegmentName(
@@ -1208,6 +1209,7 @@ begin
   // DO NOTHING.
   // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
   // SUPPORTED BY C++ BUILDER
+  Result := '';
 end;
 
 class function TJvCustomSegmentedLEDDigit.SegmentCount: Integer;
@@ -1215,6 +1217,7 @@ begin
   // DO NOTHING.
   // THIS CAN'T BE AN ABSTRACT CLASS METHOD AS THIS IS NOT
   // SUPPORTED BY C++ BUILDER
+  Result := 0;
 end;
 
 //===TJvBaseSegmentedLEDDigit=======================================================================

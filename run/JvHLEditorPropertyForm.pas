@@ -376,7 +376,7 @@ end;
 
 procedure TJvHLEdPropDlg.LoadHighlighterColors(AJvHLEditor: TJvHLEditor; AHighlighter: THighlighter);
 var
-  Section, S: string;
+  Section: string;
 
   procedure LoadColor(AColor: TJvSymbolColor; DefaultForeColor,
     DefaultBackColor: TColor; DefaultStyle: TFontStyles; const Prefix: string);
