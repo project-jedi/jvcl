@@ -29,13 +29,7 @@ unit JvConsts;
 interface
 
 uses
-  SysUtils,
-  {$IFDEF VCL}
-  Controls, Graphics, Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QGraphics;
-  {$ENDIF VisualCLX}
+  SysUtils, Controls, Graphics, Windows;
 
 {$IFDEF VisualCLX}
 const
@@ -115,7 +109,7 @@ const
   {$ENDIF DELPHI8}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SDelphiKey = '.borland/.Jvcl3';
+  SDelphiKey = '.borland/.jvclx1';
   {$ENDIF}
   { JvDataProvider constants }
   { Consumer attributes }
