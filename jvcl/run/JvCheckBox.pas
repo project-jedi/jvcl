@@ -198,6 +198,7 @@ begin
   inherited;
   if Assigned(Associated) then
     Associated.Enabled := Checked;
+  CalcAutoSize;
 end;
 
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
@@ -268,38 +269,41 @@ begin
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-function GetDefaultCheckBoxSize:TSize;
-begin
-  with TBitmap.Create do
-  try
-    Handle := LoadBitmap(0, PChar(32759));
-    Result.cx := Width div 4;
-    Result.cy := Height div 3;
-  finally
-    Free;
-  end;
-end;
 
 procedure TJvCheckBox.CalcAutoSize;
-var AWidth,AHeight:integer;ASize:TSize;
+const
+  Flags: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+var
+  AWidth, AHeight: integer;
+  ASize: TSize;
+  R: TRect;
 begin
-  // (p3) TODO: find the Windows constants for width and height of checkbox and radiobutton icons
   if Parent = nil then Exit;
-  ASize := GetDefaultCheckBoxSize;
   if AutoSize then
   begin
-    with Canvas.TextExtent(Caption) do
+    ASize := GetDefaultCheckBoxSize;
+    // add some spacing
+    Inc(ASize.cy, 4);
+    Canvas.Font := Font;
+    R := Rect(0, 0, ClientWidth, ClientHeight);
+    // This is slower than GetTextExtentPoint but it does consider hotkeys
+    if Caption <> '' then
     begin
-      AWidth := cx + ASize.cx;
-      if AWidth < 14 then
-        AWidth := 14;
-      AHeight := cy + 4;
-      if AHeight < ASize.cy then AHeight := ASize.cy;
-      if Caption <> '' then
-        Inc(AWidth,4);
-      ClientWidth := AWidth;
-      ClientHeight := AHeight;
+      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+      AWidth := (R.Right - R.Left) + ASize.cx + 8;
+      AHeight := R.Bottom - R.Top;
+    end
+    else
+    begin
+      AWidth := ASize.cx;
+      AHeight := ASize.cy;
     end;
+    if AWidth < ASize.cx then
+      AWidth := ASize.cx;
+    if AHeight < ASize.cy then
+      AHeight := ASize.cy;
+    ClientWidth := AWidth;
+    ClientHeight := AHeight;
   end;
 end;
 
