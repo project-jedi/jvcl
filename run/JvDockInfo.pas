@@ -101,24 +101,18 @@ type
     property DockControl: TWinControl read FDockControl write FDockControl;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDockInfoStyle =
-    (isNone, isReadInfo, isWriteInfo);
-  {$ELSE}
-  TJvDockInfoStyle =
-    (isNone, isReadFileInfo, isWriteFileInfo, isReadRegInfo, isWriteRegInfo);
-  {$ENDIF USEJVCL}
+    (isNone, isJVCLReadInfo, isJVCLWriteInfo, isReadFileInfo, isWriteFileInfo, isReadRegInfo, isWriteRegInfo);
 
   TJvDockInfoTree = class(TJvDockBaseTree)
   private
     {$IFDEF USEJVCL}
     FAppStorage: TJvCustomAppStorage;
     FAppStoragePath: string;
-    {$ELSE}
+    {$ENDIF USEJVCL}
     FDockInfoIni: TIniFile;
     FDockInfoReg: TRegistry;
     FRegName: string;
-    {$ENDIF USEJVCL}
     FJvDockInfoStyle: TJvDockInfoStyle;
     FDataStream: TMemoryStream;
     function FindDockForm(FormName: string): TCustomForm;
@@ -127,10 +121,9 @@ type
     procedure ScanTreeZone(TreeZone: TJvDockBaseZone); override;
     {$IFDEF USEJVCL}
     procedure CreateZoneAndAddInfoFromAppStorage; virtual;
-    {$ELSE}
+    {$ENDIF USEJVCL}
     procedure CreateZoneAndAddInfoFromIni; virtual;
     procedure CreateZoneAndAddInfoFromReg; virtual;
-    {$ENDIF USEJVCL}
     procedure SetDockControlInfo(ATreeZone: TJvDockInfoZone); virtual;
   public
     constructor Create(TreeZone: TJvDockTreeZoneClass); override;
@@ -142,14 +135,13 @@ type
     procedure WriteInfoToAppStorage;
     property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
-    {$ELSE}
+    {$ENDIF USEJVCL}
     procedure ReadInfoFromIni;
     procedure ReadInfoFromReg(RegName: string);
     procedure WriteInfoToIni;
     procedure WriteInfoToReg(RegName: string);
     property DockInfoIni: TIniFile read FDockInfoIni write FDockInfoIni;
     property DockInfoReg: TRegistry read FDockInfoReg write FDockInfoReg;
-    {$ENDIF USEJVCL}
   end;
 
 implementation
@@ -552,7 +544,7 @@ begin
         cp := cp1 + 1;
         cp1 := StrPos(cp, ';');
       end;
-      FJvDockInfoStyle := isReadInfo;
+      FJvDockInfoStyle := isJVCLReadInfo;
       for I := FormList.Count - 1 downto 0 do
         if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = '' then
           CreateZoneAndAddInfo(I);
@@ -563,7 +555,7 @@ begin
   end;
 end;
 
-{$ELSE}
+{$ENDIF USEJVCL}
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromIni;
 var
@@ -763,8 +755,6 @@ begin
   end;
 end;
 
-{$ENDIF USEJVCL}
-
 {$IFDEF USEJVCL}
 
 procedure TJvDockInfoTree.ReadInfoFromAppStorage;
@@ -777,19 +767,51 @@ begin
   Application.ProcessMessages;
 
   try
-    FJvDockInfoStyle := isReadInfo;
+    FJvDockInfoStyle := isJVCLReadInfo;
     MiddleScanTree(TopTreeZone);
   finally
     FJvDockInfoStyle := isNone;
   end;
 end;
 
+{$ENDIF USEJVCL}
+
+procedure TJvDockInfoTree.ReadInfoFromIni;
+begin
+  CreateZoneAndAddInfoFromIni;
+
+  DoFloatAllForm;
+
+  // (rom) this is disputable
+  Application.ProcessMessages;
+
+  FJvDockInfoStyle := isReadFileInfo;
+  MiddleScanTree(TopTreeZone);
+  FJvDockInfoStyle := isNone;
+end;
+
+procedure TJvDockInfoTree.ReadInfoFromReg(RegName: string);
+begin
+  FRegName := RegName;
+  CreateZoneAndAddInfoFromReg;
+
+  DoFloatAllForm;
+
+  // (rom) this is disputable
+  Application.ProcessMessages;
+
+  FJvDockInfoStyle := isReadRegInfo;
+  MiddleScanTree(TopTreeZone);
+  FJvDockInfoStyle := isNone;
+end;
+
+{$IFDEF USEJVCL}
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
   OldPath: string;
 begin
-  if (FJvDockInfoStyle = isReadInfo) then
+  if (FJvDockInfoStyle = isJVCLReadInfo) then
   begin
     for I := 0 to TreeZone.GetChildCount - 1 do
     begin
@@ -799,7 +821,7 @@ begin
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
   else
-  if FJvDockInfoStyle = isWriteInfo then
+  if FJvDockInfoStyle = isJVCLWriteInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
@@ -840,38 +862,7 @@ begin
   end;
   inherited ScanTreeZone(TreeZone);
 end;
-
 {$ELSE}
-
-procedure TJvDockInfoTree.ReadInfoFromIni;
-begin
-  CreateZoneAndAddInfoFromIni;
-
-  DoFloatAllForm;
-
-  // (rom) this is disputable
-  Application.ProcessMessages;
-
-  FJvDockInfoStyle := isReadFileInfo;
-  MiddleScanTree(TopTreeZone);
-  FJvDockInfoStyle := isNone;
-end;
-
-procedure TJvDockInfoTree.ReadInfoFromReg(RegName: string);
-begin
-  FRegName := RegName;
-  CreateZoneAndAddInfoFromReg;
-
-  DoFloatAllForm;
-
-  // (rom) this is disputable
-  Application.ProcessMessages;
-
-  FJvDockInfoStyle := isReadRegInfo;
-  MiddleScanTree(TopTreeZone);
-  FJvDockInfoStyle := isNone;
-end;
-
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
@@ -957,7 +948,6 @@ begin
   end;
   inherited ScanTreeZone(TreeZone);
 end;
-
 {$ENDIF USEJVCL}
 
 function TJvDockInfoTree.FindDockForm(FormName: string): TCustomForm;
@@ -1066,14 +1056,14 @@ procedure TJvDockInfoTree.WriteInfoToAppStorage;
 begin
   AppStorage.DeleteSubTree(AppStoragePath);
   try
-    FJvDockInfoStyle := isWriteInfo;
+    FJvDockInfoStyle := isJVCLWriteInfo;
     MiddleScanTree(TopTreeZone);
   finally
     FJvDockInfoStyle := isNone;
   end;
 end;
 
-{$ELSE}
+{$ENDIF USEJVCL}
 
 procedure TJvDockInfoTree.WriteInfoToIni;
 var
@@ -1113,7 +1103,6 @@ begin
   end;
 end;
 
-{$ENDIF USEJVCL}
 
 end.
 

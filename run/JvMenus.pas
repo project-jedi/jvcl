@@ -829,6 +829,7 @@ end;
 procedure TJvMainMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean); 
 var i : integer;
 begin
+  if csLoading in ComponentState then Exit;
   for i:=0 to FChangeLinks.Count - 1 do
   begin
     TJvMenuChangeLink(FChangeLinks[i]).Change(Self, Source, Rebuild);
