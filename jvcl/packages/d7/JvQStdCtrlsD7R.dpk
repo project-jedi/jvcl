@@ -31,7 +31,8 @@ requires
   JvQCoreD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl,
+  vcl;
 
 contains
   JvQItemsSearchs in '..\..\qrun\JvQItemsSearchs.pas',
@@ -62,6 +63,7 @@ contains
   JvQLinkedControls in '..\..\qrun\JvQLinkedControls.pas',
   QComboEdits in '..\..\qcommon\QComboEdits.pas',
   JvQExComboEdits in '..\..\qrun\JvQExComboEdits.pas',
-  JvQLabel in '..\..\qrun\JvQLabel.pas';
+  JvQLabel in '..\..\qrun\JvQLabel.pas',
+  JvQControlBar in '..\..\qrun\JvQControlBar.pas';
 
 end.
