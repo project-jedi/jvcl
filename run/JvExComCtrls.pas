@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExComCtrls;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
@@ -62,7 +64,7 @@ uses
 {$ENDIF COMPILER6_UP}
 
 type
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TJvExProgressBar = class(TProgressBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -1022,8 +1024,8 @@ type
   {$ENDIF VCL}
   end;
   
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TJvExProgressBar = class(TProgressBar, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2066,8 +2068,8 @@ type
   {$ENDIF VCL}
   end;
   
-{$ENDIF VisualCLX}
-{$IFDEF COMPILER6_UP}
+  {$ENDIF VisualCLX}
+  {$IFDEF COMPILER6_UP}
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2193,7 +2195,7 @@ type
   {$ENDIF VCL}
   end;
   
- {$IFDEF VCL}
+  {$IFDEF VCL}
   TJvExCustomStatusBar = class(TCustomStatusBar, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2319,8 +2321,8 @@ type
   {$ENDIF VCL}
   end;
   
- {$ENDIF VCL}
-{$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
   TJvExHeaderControl = class(THeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2946,7 +2948,7 @@ type
   {$ENDIF VCL}
   end;
   
-{$IFDEF ANIMATE}
+  {$IFDEF ANIMATE}
   {$IFDEF VCL}
   TJvExAnimate = class(TAnimate, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
@@ -3195,8 +3197,8 @@ type
   end;
   
   {$ENDIF VisualCLX}
-{$ENDIF ANIMATE}
-{$IFDEF VCL}
+  {$ENDIF ANIMATE}
+  {$IFDEF VCL}
   TJvExCustomHotKey = class(TCustomHotKey, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -4447,7 +4449,7 @@ type
   {$ENDIF VCL}
   end;
   
- {$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   TJvExCustomComboBoxEx = class(TCustomComboBoxEx, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -4698,8 +4700,8 @@ type
   {$ENDIF VCL}
   end;
   
- {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
 
 implementation
 
@@ -9995,7 +9997,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$IFDEF VCL}
+{$IFDEF VCL}
 {$IFDEF VCL}
 procedure TJvExCustomStatusBar.Dispatch(var Msg);
 asm
@@ -10308,7 +10310,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$ENDIF VCL}
+{$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExHeaderControl.Dispatch(var Msg);
@@ -11871,7 +11873,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 {$IFDEF ANIMATE}
-  {$IFDEF VCL}
+{$IFDEF VCL}
 {$IFDEF VCL}
 procedure TJvExAnimate.Dispatch(var Msg);
 asm
@@ -12184,8 +12186,8 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExAnimate.Dispatch(var Msg);
 asm
@@ -12491,7 +12493,7 @@ begin
   inherited Destroy;
 end;
 {$ENDIF VisualCLX}
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 {$ENDIF ANIMATE}
 {$IFDEF VCL}
 {$IFDEF VCL}
@@ -15614,7 +15616,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomComboBoxEx.Dispatch(var Msg);
 asm
@@ -16239,7 +16241,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
 end.

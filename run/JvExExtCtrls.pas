@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExExtCtrls;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
@@ -1219,7 +1221,7 @@ type
   end;
   
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TJvExPage = class(TPage,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2163,7 +2165,7 @@ type
   end;
   
   {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
 implementation
 
@@ -5825,7 +5827,7 @@ begin
   inherited Destroy;
 end;
 {$ENDIF VisualCLX}
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExBoundLabel.Dispatch(var Msg);
 asm
@@ -7246,7 +7248,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
 end.

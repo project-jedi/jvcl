@@ -33,7 +33,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExControls;
+
 interface
+
 uses
   {$IFDEF MSWINDOWS}
   Windows,
@@ -69,10 +71,10 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   HWND = QWindows.HWND;
   TClxWindowProc = procedure(var Msg: TMessage) of object;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
 const
   dcWantMessage = dcWantAllKeys;
@@ -145,7 +147,7 @@ const
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 const
-  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
+  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 {$ENDIF VisualCLX}
 
 type
@@ -778,7 +780,6 @@ procedure TCustomEdit_Copy(Instance: TWinControl);
 procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
-
 implementation
 
 {$IFDEF VCL}
@@ -1270,7 +1271,8 @@ begin
 
       if Instance is TCustomForm then
         // TCustomForm calls Paint in it's EventFilter
-      else if Instance is TCustomControl then
+      else
+      if Instance is TCustomControl then
         TOpenCustomControl(Instance).Paint
       else
         Intf.Paint;
@@ -1338,8 +1340,7 @@ function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
 
   function IsArrowKey: Boolean;
   begin
-    Result := (Key = Key_Left) or (Key = Key_Right) or
-              (Key = Key_Down) or (Key = Key_Up);
+    Result := (Key = Key_Left) or (Key = Key_Right) or (Key = Key_Down) or (Key = Key_Up);
   end;
 
 var
@@ -1372,8 +1373,8 @@ begin
       Result := IsArrowKey;
     if (not Result) and (dcWantChars in DlgCodes) then
       Result := ((Shift * [ssCtrl, ssAlt] = []) and
-                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
-                not (IsTabKey or IsArrowKey);
+        ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
+        not (IsTabKey or IsArrowKey);
   end;
 end;
 
@@ -3028,8 +3029,7 @@ begin
   begin
     AutoSizeOffset := PGetCode^.Offset;
     TControl_SetAutoSize := GetRelocAddress(
-      Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset)
-    );
+      Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) + PSetCode^.Offset));
   end;
 end;
 
@@ -3180,22 +3180,22 @@ var
 initialization
   InstallAppEventFilterHook;
   InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
-                  @CallSetFocusedControl);
+    @CallSetFocusedControl);
 
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
-                  @CallCutToClipboard);
+    @CallCutToClipboard);
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
-                  @CallCopyToClipboard);
+    @CallCopyToClipboard);
   InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
-                  @CallPasteFromClipboard);
+    @CallPasteFromClipboard);
   {$IFDEF COMPILER7}
   InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-                  @CallUndo);
+    @CallUndo);
   {$ELSE}
-   {$IF declared(PatchedVCLX)}
+  {$IF declared(PatchedVCLX)}
   InstallProcHook(@TCustomEdit.Undo, @UndoHook,
-                  @CallUndo);
-   {$IFEND}
+    @CallUndo);
+  {$IFEND}
   {$ENDIF COMPILER7}
 
 finalization
@@ -3205,9 +3205,9 @@ finalization
   {$IFDEF COMPILER7}
   UninstallProcHook(@CallUndo);
   {$ELSE}
-   {$IF declared(PatchedVCLX)}
+  {$IF declared(PatchedVCLX)}
   UninstallProcHook(@CallUndo);
-   {$IFEND}
+  {$IFEND}
   {$ENDIF COMPILER7}
 
   UninstallProcHook(@CallSetFocusedControl);
