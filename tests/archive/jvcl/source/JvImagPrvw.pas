@@ -59,7 +59,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    PreviewBtn: TJvxSpeedButton;
+    PreviewBtn: TJvSpeedButton;
     procedure FileListBoxClick(Sender: TObject);
     procedure StretchCheckClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

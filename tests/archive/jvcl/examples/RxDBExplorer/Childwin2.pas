@@ -54,7 +54,7 @@ type
     Panel2: TPanel;
     SQLMemo: TMemo;
     Panel3: TPanel;
-    RunSQL: TJvxSpeedButton ;
+    RunSQL: TJvSpeedButton ;
     Panel4: TPanel;
     Label1: TLabel;
     Panel5: TPanel;
@@ -87,8 +87,8 @@ type
     AbortQueryMenu: TPopupMenu;
     CancelItem: TMenuItem;
     TableListVIEW: TBooleanField;
-    PriorSQL: TJvxSpeedButton ;
-    NextSQL: TJvxSpeedButton ;
+    PriorSQL: TJvSpeedButton ;
+    NextSQL: TJvSpeedButton ;
     PopupSQLMenu: TPopupMenu;
     Undo1: TMenuItem;
     N2: TMenuItem;

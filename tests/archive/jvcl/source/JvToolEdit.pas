@@ -81,7 +81,7 @@ type
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
 
-  TJvEditButton = class(TJvxSpeedButton)
+  TJvEditButton = class(TJvSpeedButton)
   private
     FNoAction: Boolean;
   protected

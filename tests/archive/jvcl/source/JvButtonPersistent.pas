@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Buttons,
-  JvButton, JvSpeedButton;
+  JvButton, JvxCtrls;
 
 type
   TJvButtonPersistent = class(TPersistent)

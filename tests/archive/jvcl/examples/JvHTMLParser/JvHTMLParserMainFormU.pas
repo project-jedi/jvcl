@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, Forms, SysUtils, StdCtrls, Controls, ExtCtrls, JvPanel,
-  JvSplitter, JvHtmlParser, Classes, JvComCtrls, JvButton,
-  ComCtrls, JvComponent, JvStatusBar, JvMemo;
+  JvSyncSplitter, JvHtmlParser, Classes, JvComCtrls, JvButton,
+  ComCtrls, JvComponent, JvStatusBar, JvMemo, JvCtrls;
 
 type
   TJvHTMLParserMainForm = class(TForm)
@@ -16,20 +16,20 @@ type
     JvTreeView1: TJvTreeView;
     JvStatusBar1: TJvStatusBar;
     TabSheet4: TTabSheet;
-    JvSplitter1: TJvSplitter;
+    JvSplitter1: TJvSyncSplitter;
     JvDisplayMemo1: TJvMemo;
     JvPanel1: TJvPanel;
-    btnProcessTable: TJvButton;
+    btnProcessTable: TJvImgBtn;
     JvHtmlParser1: TJvHtmlParser;
     JvDisplayMemo2: TJvMemo;
     JvDisplayMemo3: TJvMemo;
     JvDisplayMemo4: TJvMemo;
     JvPanel2: TJvPanel;
-    btnProcessHTML2Text: TJvButton;
+    btnProcessHTML2Text: TJvImgBtn;
     JvPanel3: TJvPanel;
-    btnProcessURL: TJvButton;
+    btnProcessURL: TJvImgBtn;
     JvPanel4: TJvPanel;
-    btnProcessTags: TJvButton;
+    btnProcessTags: TJvImgBtn;
     procedure Button1Click(Sender: TObject);
     procedure TableKeyFound(Sender: TObject; Key, Results, OriginalLine: string);
     procedure HTML2TextKeyFound(Sender: TObject; Key, Results, OriginalLine: string);

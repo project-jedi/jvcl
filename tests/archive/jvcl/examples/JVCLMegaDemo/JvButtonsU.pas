@@ -15,7 +15,6 @@ type
     JvImageJEDI: TJvImage;
     CheckBoxImage: TCheckBox;
     JvBitBtn1: TJvBitBtn;
-    JvButton1: TJvButton;
     Label1: TLabel;
     procedure CheckBoxImageClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);

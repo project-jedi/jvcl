@@ -338,20 +338,6 @@ object JvButtons: TJvButtons
       0000000000000000000000000000000000000000000000000000000000000000
       000000001E0E}
   end
-  object JvButton1: TJvButton
-    Left = 304
-    Top = 40
-    Width = 177
-    Height = 25
-    Caption = 'a JvButton with hottracking'
-    TabOrder = 2
-    HotTrack = True
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clRed
-    HotTrackFont.Height = -16
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = [fsBold]
-  end
   object ilTreeview: TImageList
     Left = 392
     Top = 216

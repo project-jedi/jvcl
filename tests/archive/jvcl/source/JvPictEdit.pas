@@ -67,7 +67,7 @@ type
     ImagePaintBox: TPaintBox;
     Bevel: TBevel;
     Paths: TButton;
-    PathsBtn: TJvxSpeedButton;
+    PathsBtn: TJvSpeedButton;
     PathsMenu: TPopupMenu;
     PathsMRU: TJvMRUManager;
     procedure FormCreate(Sender: TObject);

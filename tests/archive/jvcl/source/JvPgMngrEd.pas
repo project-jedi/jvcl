@@ -229,7 +229,7 @@ begin
 
     if (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
-      Component.InheritsFrom(TJvxSpeedButton)) and
+      Component.InheritsFrom(TJvSpeedButton)) and
       (Component.Name <> '') then
       Proc(Component.Name);
   end;

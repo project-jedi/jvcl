@@ -200,7 +200,7 @@ end;
 //=== TJvCalcButton ==========================================================
 
 type
-  TJvCalcButton = class(TJvxSpeedButton)
+  TJvCalcButton = class(TJvSpeedButton)
   private
     FKind: TCalcBtnKind;
     FFontChanging: Boolean;
@@ -365,7 +365,7 @@ type
     procedure SetDisplay(R: Double);
     function GetDisplay: Double;
     procedure UpdateMemoryLabel;
-    function FindButton(Key: Char): TJvxSpeedButton;
+    function FindButton(Key: Char): TJvSpeedButton;
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     procedure BtnClick(Sender: TObject);
   protected
@@ -570,8 +570,8 @@ begin
   inherited;
   for I := 0 to ComponentCount - 1 do
   begin
-    if Components[I] is TJvxSpeedButton then
-      TJvxSpeedButton(Components[I]).Style := Ctl3DStyle[Ctl3D]
+    if Components[I] is TJvSpeedButton then
+      TJvSpeedButton(Components[I]).Style := Ctl3DStyle[Ctl3D]
     else
     if Components[I] = FMemoryPanel then
     begin
@@ -695,7 +695,7 @@ end;
 
 procedure TJvCalculatorPanel.CalcKeyPress(Sender: TObject; var Key: Char);
 var
-  Btn: TJvxSpeedButton;
+  Btn: TJvSpeedButton;
 begin
   Btn := FindButton(Key);
   if Btn <> nil then
@@ -704,7 +704,7 @@ begin
     CalcKey(Key);
 end;
 
-function TJvCalculatorPanel.FindButton(Key: Char): TJvxSpeedButton;
+function TJvCalculatorPanel.FindButton(Key: Char): TJvSpeedButton;
 const
   ButtonChars = '0123456789_./*-+Q%R='#8'C';
 var
@@ -723,9 +723,9 @@ begin
   if BtnTag >= 0 then
     for I := 0 to ControlCount - 1 do
     begin
-      if Controls[I] is TJvxSpeedButton then
+      if Controls[I] is TJvSpeedButton then
       begin
-        Result := TJvxSpeedButton(Controls[I]);
+        Result := TJvSpeedButton(Controls[I]);
         if Result.Tag = BtnTag then
           Exit;
       end;

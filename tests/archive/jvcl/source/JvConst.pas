@@ -38,7 +38,7 @@ uses
 const
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_BASE + 80;
-  { Command message for TJvxSpeedButton }
+  { Command message for TJvSpeedButton }
   CM_JVBUTTONPRESSED = CM_BASE + 81;
   { Command messages for TJvWindowHook }
   CM_RECREATEWINDOW  = CM_BASE + 82;

@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
-  JvSpeedButton, JvToolEdit, JvComponent, JvSearchFiles, JvButton;
+  JvxCtrls, JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 
 type
   TFoWallpaperChooser = class(TForm)

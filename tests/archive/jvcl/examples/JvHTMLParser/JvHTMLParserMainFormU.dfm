@@ -28,7 +28,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
     object TabSheet1: TTabSheet
       Hint = 'Table Demo'
       Caption = 'Table'
-      object JvSplitter1: TJvSplitter
+      object JvSplitter1: TJvSyncSplitter
         Left = 0
         Top = 153
         Width = 518
@@ -70,7 +70,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 2
         MultiLine = False
-        object btnProcessTable: TJvButton
+        object btnProcessTable: TJvImgBtn
           Left = 442
           Top = 5
           Width = 75
@@ -114,7 +114,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        object btnProcessHTML2Text: TJvButton
+        object btnProcessHTML2Text: TJvImgBtn
           Left = 442
           Top = 5
           Width = 75
@@ -158,7 +158,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        object btnProcessURL: TJvButton
+        object btnProcessURL: TJvImgBtn
           Left = 442
           Top = 5
           Width = 75
@@ -202,7 +202,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         BevelOuter = bvNone
         TabOrder = 1
         MultiLine = False
-        object btnProcessTags: TJvButton
+        object btnProcessTags: TJvImgBtn
           Left = 442
           Top = 5
           Width = 75

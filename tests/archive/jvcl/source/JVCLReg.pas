@@ -52,7 +52,7 @@ uses
   JvJVCLAbout, JvJVCLAboutProperty, JVCLVer,
 
   // Additional
-  JvImage, JvBitBtn, JvSpeedButton, JvMaskEdit, JvStaticText, JvCheckListBox,
+  JvImage, JvBitBtn, JvMaskEdit, JvStaticText, JvCheckListBox,
   JvBevel, JvScrollBox, JvStringGrid, JvShape, JvControlBar,
   JvSplitter,
 
@@ -259,7 +259,7 @@ begin
 
   // Jv Additional
   RegisterComponents(srJvAdditionalPalette,
-    [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvArrowButton, TJvTransparentButton, TJvTransparentButton2,
+    [TJvBitBtn, TJvImgBtn, TJvArrowButton, TJvTransparentButton, TJvTransparentButton2,
 
      TJvPopupMemo, TJvStringGrid,
 
@@ -267,7 +267,7 @@ begin
      TJvColorComboBox, TJvImageComboBox,
 
      TJvScrollBox, TJvImage, TJvImageWindow, TJvImageSquare,
-     TJvShape, TJvBevel, TJvSplitter, TJvSyncSplitter,
+     TJvShape, TJvBevel, TJvSyncSplitter,
 
      TJvControlBar,
 

@@ -114,7 +114,7 @@ end;
 //=== TJvTimerSpeedButton ====================================================
 
 type
-  TJvTimerSpeedButton = class(TJvxSpeedButton)
+  TJvTimerSpeedButton = class(TJvSpeedButton)
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -822,7 +822,7 @@ type
     FCalendar: TJvCalendar;
     FTitleLabel: TLabel;
     FFourDigitYear: Boolean;
-    FBtns: array[0..3] of TJvxSpeedButton;
+    FBtns: array[0..3] of TJvSpeedButton;
     procedure CalendarMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure PrevMonthBtnClick(Sender: TObject);
@@ -1254,7 +1254,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    FBtns: array [0..3] of TJvxSpeedButton;
+    FBtns: array [0..3] of TJvSpeedButton;
     procedure SetDate(Date: TDateTime);
     procedure CheckButton; // Polaris
     function GetDate: TDateTime;

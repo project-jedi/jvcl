@@ -147,7 +147,7 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvSpeedButton, JvButton, Dialogs, SysUtils, Registry,
+  Windows, ExtCtrls, JvxCtrls, JvButton, Dialogs, SysUtils, Registry,
   JvWndProcHook;
 
 {$R JvTipOfDay.res}

@@ -31,13 +31,11 @@ unit JvSyncSplitter;
 interface
 
 uses
-  Messages, SysUtils, Classes, Controls, ExtCtrls,
-  JVCLVer;
+  Messages, SysUtils, Classes, Controls, ExtCtrls, JvSplitter;
 
 type
-  TJvSyncSplitter = class(TSplitter)
+  TJvSyncSplitter = class(TJvSplitter)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FPartner: TJvSyncSplitter;
     FForcedSize: Boolean;
     procedure SetPartner(const Value: TJvSyncSplitter);
@@ -47,7 +45,6 @@ type
   public
     procedure WndProc(var Msg: TMessage); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
   end;
 

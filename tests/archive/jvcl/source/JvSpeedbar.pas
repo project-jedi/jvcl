@@ -290,7 +290,7 @@ type
     FCaption: string;
     FEditing: Boolean;
     FEnabled: Boolean;
-    FButton: TJvxSpeedButton;
+    FButton: TJvSpeedButton;
     FVisible: Boolean;
     FStored: Boolean;
     FParent: TJvSpeedBar;
@@ -396,7 +396,7 @@ type
     procedure InvalidateItem;
     property ASection: Integer read GetSection write SetSection;
     property SpeedBar: TJvSpeedBar read FParent;
-    property Button: TJvxSpeedButton read FButton;
+    property Button: TJvSpeedButton read FButton;
   published
     {$IFDEF COMPILER4_UP}
     property Action: TBasicAction read GetAction write SetAction;
@@ -727,7 +727,7 @@ end;
 //=== TJvSpeedBarButton ======================================================
 
 type
-  TJvSpeedBarButton = class(TJvxSpeedButton)
+  TJvSpeedBarButton = class(TJvSpeedButton)
   private
     FItem: TJvSpeedItem;
     FBtn: TJvBtnControl;
