@@ -155,7 +155,6 @@ type
   TJvCustomComboEdit = class(TJvExCustomComboMaskEdit)
   {$ENDIF VisualCLX}
   private
-    FBtnControl: TWinControl;
     FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
     FReadOnly: Boolean;
@@ -217,6 +216,7 @@ type
     {$ENDIF VCL}
   protected
     FButton: TJvEditButton; // Polaris
+    FBtnControl: TWinControl;
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TWinControl;
