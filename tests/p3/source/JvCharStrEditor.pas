@@ -5,8 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, ImgList,
-  {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, ImgList;
 
 type
   TfrmJvCharEditDlg = class(TForm)
@@ -84,22 +83,16 @@ type
     procedure lvCharactersSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
-    function getCharacters: TJvCharacters;
-    procedure setCharacters(const Value: TJvCharacters);
+    function getCharacters: string;
+    procedure setCharacters(const Value: string);
     procedure UnCheckAll;
     { Private declarations }
   public
     { Public declarations }
-    class function Edit(var Characters: TJvCharacters): boolean;
-    property Characters: TJvCharacters read getCharacters write setCharacters;
+    class function Edit(var Characters: string): boolean;
+    property Characters: string read getCharacters write setCharacters;
   end;
 
-type
-  TJvCharStringProperty = class(TStringProperty)
-  public
-    function GetAttributes: TPropertyAttributes; override;
-    procedure Edit; override;
-  end;
   
 const
   cAsciiNames:array [char] of PChar =
@@ -247,7 +240,7 @@ end;
 { TfrmJvCharEditDlg }
 
 class function TfrmJvCharEditDlg.Edit(
-  var Characters: TJvCharacters): boolean;
+  var Characters: string): boolean;
 var
   frmJvCharEditDlg: TfrmJvCharEditDlg;
 begin
@@ -262,7 +255,7 @@ begin
   end;
 end;
 
-function TfrmJvCharEditDlg.getCharacters: TJvCharacters;
+function TfrmJvCharEditDlg.getCharacters: string;
 var i: integer;
 begin
   Result := '';
@@ -272,7 +265,7 @@ begin
         Result := Result + Char(Items[i].Data);
 end;
 
-procedure TfrmJvCharEditDlg.setCharacters(const Value: TJvCharacters);
+procedure TfrmJvCharEditDlg.setCharacters(const Value: string);
 var i: integer;
 begin
   acUnCheckAll.Execute;
@@ -489,21 +482,6 @@ procedure TfrmJvCharEditDlg.lvCharactersSelectItem(Sender: TObject;
 begin
   if Item <> nil then
     Caption := Format(SFormCaption,[integer(Item.Data),integer(Item.Data),cAsciiNames[Char(Item.Data)]]);
-end;
-
-{ TJvCharStringProperty }
-
-procedure TJvCharStringProperty.Edit;
-var S:String;
-begin
-  S := GetValue;
-  if TfrmJvCharEditDlg.Edit(S) then
-    SetValue(S);
-end;
-
-function TJvCharStringProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := inherited GetAttributes + [paDialog];
 end;
 
 end.
