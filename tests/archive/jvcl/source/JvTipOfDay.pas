@@ -17,7 +17,7 @@ are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
-                Remko Bonte [remkobonte@hotmail.com]
+                Remko Bonte [remkobonte@myrealbox.com]
 
 Last Modified: 2000-10-24
 
@@ -291,6 +291,7 @@ begin
       else
         InitStandard(LForm);
 
+      Randomize;
       FCurrentTip := Random(Tips.Count);
 
       UpdateTip;
@@ -321,7 +322,7 @@ end;
 
 function TJvTipOfDay.GetRegKey: string;
 begin
-  Result := Application.Name + '_' + Name;
+  Result := Application.Title + '_' + Name;
 end;
 
 procedure TJvTipOfDay.HandleNextClick(Sender: TObject);
@@ -629,8 +630,7 @@ begin
   with TRegistry.Create do
   try
     OpenKey(RC_KeyStartup, True);
-    Result := not ValueExists(Application.Name + '_' + Name) or
-      ReadBool(GetRegKey);
+    Result := not ValueExists(GetRegKey) or ReadBool(GetRegKey);
   finally
     Free;
   end;
