@@ -23,7 +23,7 @@
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
-{$I JCL.INC}
+{$I JVCL.INC}
 {$I JvUIB.inc}
 unit JvUIBConst;
 

@@ -26,7 +26,7 @@
 
 
 unit JvUIBError;
-{$I JCL.INC}
+{$I JVCL.INC}
 {$I JvUIB.inc}
 
 interface

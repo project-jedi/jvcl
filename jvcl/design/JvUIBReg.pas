@@ -26,7 +26,7 @@
 
 unit JvUIBReg;
 {$IFNDEF BCB}
-{$I JCL.INC}
+{$I JVCL.INC}
 {$ENDIF}
 {$I JvUIB.inc}
 
