@@ -23,6 +23,12 @@ Known Issues:
 
 {$I jvcl.inc}
 
+// for FileCtrl.pas and QFileCtrls.pas 
+{$IFDEF COMPILER6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
 unit JvParameterListParameter;
 
 interface

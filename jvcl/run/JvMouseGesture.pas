@@ -330,7 +330,7 @@ type
     See Also
     TJvMouseGesture
   }
-  TJvMouseGestureHook = class(TComponent)
+  TJvMouseGestureHook = class(TJvComponent)
   private
     { Description
       True if a hook is installed

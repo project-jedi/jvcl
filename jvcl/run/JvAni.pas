@@ -45,7 +45,7 @@ uses
   Windows, Graphics, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QExtCtrls, QDialogs, Types, QTypes, QWindows, 
+  QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,
   {$ENDIF VisualCLX}
   JvTypes;
 
@@ -1097,6 +1097,9 @@ end;
 {$ENDIF VisualCLX}
 
 initialization
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TJvAni, TControl);
+  {$ENDIF VisualCLX}
   Classes.RegisterClass(TJvAni);
   TPicture.RegisterFileFormat(RsAniExtension, RsAniFilterName, TJvAni);
 

@@ -48,12 +48,12 @@ type
     // (rom) lifted the stupid limit of 10 filters
     FGridRowFilter: TList;
     procedure ApplyFilter;
-    function ParseFilter(AFilter: string): Boolean;
+    function ParseFilter(const AFilter: string): Boolean;
     procedure SetGrid(const Value: TStringGrid);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Filter(AFilter: string);
+    procedure Filter(const AFilter: string);
     procedure ShowRows;
   published
     property Grid: TStringGrid read FGrid write SetGrid;
@@ -65,7 +65,7 @@ uses
   JvConsts;
 
 type
-  TGridFilterFunc = function(FieldValue, FilterValue: string): Boolean;
+  TGridFilterFunc = function(const FieldValue, FilterValue: string): Boolean;
 
   PGridFieldFilter = ^TGridFieldFilter;
   TGridFieldFilter = record
@@ -74,27 +74,27 @@ type
     FilterValue: string;
   end;
 
-function FilterEQ(FieldValue, FilterValue: string): Boolean;
+function FilterEQ(const FieldValue, FilterValue: string): Boolean;
 begin
   Result := FieldValue = FilterValue;
 end;
 
-function FilterNE(FieldValue, FilterValue: string): Boolean;
+function FilterNE(const FieldValue, FilterValue: string): Boolean;
 begin
   Result := FieldValue <> FilterValue;
 end;
 
-function FilterGT(FieldValue, FilterValue: string): Boolean;
+function FilterGT(const FieldValue, FilterValue: string): Boolean;
 begin
   Result := FieldValue > FilterValue;
 end;
 
-function FilterLT(FieldValue, FilterValue: string): Boolean;
+function FilterLT(const FieldValue, FilterValue: string): Boolean;
 begin
   Result := FieldValue < FilterValue;
 end;
 
-function FilterLIKE(FieldValue, FilterValue: string): Boolean;
+function FilterLIKE(const FieldValue, FilterValue: string): Boolean;
 begin
   Result := Pos(LowerCase(FilterValue), LowerCase(FieldValue)) > 0;
 end;
@@ -115,7 +115,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvGridFilter.ParseFilter(AFilter: string): Boolean;
+function TJvGridFilter.ParseFilter(const AFilter: string): Boolean;
 var
   Op, S: string;
   Func: TGridFilterFunc;
@@ -221,7 +221,7 @@ begin
   end;
 end;
 
-procedure TJvGridFilter.Filter(AFilter: string);
+procedure TJvGridFilter.Filter(const AFilter: string);
 begin
   if Assigned(FGrid) then
     if ParseFilter(AFilter) then
