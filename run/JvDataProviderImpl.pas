@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, Graphics, ImgList, Contnrs,
-  JvComponent, JvDataProvider;
+  JvConsts, JvComponent, JvDataProvider;
 
 type
   // Forwards
@@ -628,8 +628,8 @@ procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Intege
 implementation
 
 uses
-  ActiveX, Consts, Controls, TypInfo,
-  JvConsts, JvTypes;
+  ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
+  JvTypes;
 
 function HexBytes(const Buf; Length: Integer): string;
 var
