@@ -3,7 +3,7 @@ object frmTargets: TfrmTargets
   Top = 187
   BorderStyle = bsDialog
   Caption = 'Indicate the targets to generate'
-  ClientHeight = 325
+  ClientHeight = 300
   ClientWidth = 305
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -37,9 +37,10 @@ object frmTargets: TfrmTargets
   end
   object bbtOk: TBitBtn
     Left = 62
-    Top = 284
+    Top = 259
     Width = 83
     Height = 29
+    Anchors = [akLeft, akBottom]
     Caption = 'Ok'
     Default = True
     ModalResult = 1
@@ -100,9 +101,10 @@ object frmTargets: TfrmTargets
   end
   object bbtCancel: TBitBtn
     Left = 158
-    Top = 284
+    Top = 259
     Width = 85
     Height = 29
+    Anchors = [akLeft, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -167,13 +169,5 @@ object frmTargets: TfrmTargets
     Height = 201
     ItemHeight = 13
     TabOrder = 2
-  end
-  object chkGenDof: TCheckBox
-    Left = 54
-    Top = 256
-    Width = 197
-    Height = 17
-    Caption = 'Generate DOF files where applicable'
-    TabOrder = 3
   end
 end
