@@ -36,6 +36,8 @@ package %NAME%;
 {$DEFINE D6PersonalEdition}
 {$DEFINE DelphiPersonalEdition}
 
+{$I JVCL.INC}
+
 requires
 <%%% START REQUIRES %%%>
   %NAME%,
