@@ -788,7 +788,7 @@ end;
 
 function TJvColorItem.GetCaption: string;
 begin
-  Result := ID;
+  ColorToIdent(List[ListIndex].Value, Result);
 end;
 
 procedure TJvColorItem.SetCaption(const Value: string);
@@ -929,7 +929,7 @@ var
 begin
   with CurrentSettings.TextSettings do
   begin
-    if Active then
+    if Active or (CurrentItemIsColorItem and (CurrentColorValue >= clNone)) then
     begin
       if ShowName and Supports(CurrentItem, IJvDataItemText, ItemText) then
         Result := ItemText.Caption
@@ -937,7 +937,7 @@ begin
         Result := '';
       if CurrentItemIsColorItem then
       begin
-        if ShowHex then
+        if ShowHex or (Result = '') then
         begin
           if Result <> '' then
             Result := Result + Format(' (%s%.8x)', [HexDisplayPrefix, CurrentColorValue])
@@ -1028,7 +1028,7 @@ var
   R: TRect;
   OldBkMode: Integer;
 begin
-  if CurrentSettings.TextSettings.Active then
+  if CurrentSettings.TextSettings.Active or (CurrentColorValue >= clNone) then
   begin
     S := GetRenderText;
     R := CurrentRect;
@@ -1047,6 +1047,7 @@ var
   S: string;
   OldFont: TFont;
   R: TRect;
+  ha: TColorGroupHeaderAlign;
   RWidth: Integer;
   RVCenter: Integer;
   OldBkMode: Integer;
@@ -1060,7 +1061,11 @@ begin
         CurrentCanvas.Font.Style := CurrentCanvas.Font.Style + [fsBold];
       R := CurrentRect;
       Dec(R.Right, 2);
-      case CurrentSettings.GroupingSettings.HeaderAlign of
+      if not CurrentSettings.GroupingSettings.FlatList then
+        ha := ghaLeft
+      else
+        ha := CurrentSettings.GroupingSettings.HeaderAlign;
+      case ha of
         ghaLeft:
           Inc(R.Left, 2);
         ghaColorText:
@@ -1242,7 +1247,9 @@ type
 
 function TJvColorItemsRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
 var
-  Comp: TComponent;
+//  Comp: TComponent;
+  ChHeight: Integer;
+  Metrics: TTextMetric;
   ChWdth: Integer;
 begin
   CurrentSettings := GetConsumerSettings;
@@ -1252,7 +1259,12 @@ begin
     MeasureColorBox(Result);
     if CurrentSettings.TextSettings.Active then
     begin
-      Comp := Items.GetProvider.SelectedConsumer.VCLComponent;
+      ChHeight := ACanvas.TextHeight('Wy');
+      if ChHeight > Result.cy then
+        Result.cy := ChHeight;
+      GetTextMetrics(ACanvas.Handle, Metrics);
+      ChWdth := Metrics.tmAveCharWidth;
+(*      Comp := Items.GetProvider.SelectedConsumer.VCLComponent;
       if (Comp <> nil) and (Comp is TControl) then
       begin
         with TOpenControl(Comp) do
@@ -1267,7 +1279,7 @@ begin
         if Result.cy < 15 then
           Result.cy := 15;
         ChWdth := 4;
-      end;
+      end;*)
       if CurrentSettings.ColorBoxSettings.Active then
         Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
       else
