@@ -31,31 +31,32 @@ unit JvgQRLabel;
 
 interface
 
-uses Windows, Classes, Graphics, QRCTRLS, JvgTypes, DB;
+uses
+  Windows, Classes, Graphics, QRCtrls, DB,
+  JvgTypes;
 
 type
   TJvgQRLabel = class(TQRCustomLabel)
   private
     FDirection: TglLabelDir;
-    FEscapment: integer;
+    FEscapment: Integer;
     FAlignment: TAlignment;
-    fPrinting: boolean;
+    FPrinting: Boolean;
     procedure SetDirection(Value: TglLabelDir);
-    procedure SetEscapment(Value: integer);
+    procedure SetEscapment(Value: Integer);
   protected
     procedure SetAlignment(Value: TAlignment); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   protected
     procedure Paint; override;
-    procedure Print(OfsX, OfsY: integer); override;
+    procedure Print(OfsX, OfsY: Integer); override;
     procedure PaintLabel(Caption: string; Canvas: TCanvas; OfsX, OfsY: Integer);
   published
     property Direction: TglLabelDir read FDirection write SetDirection
       default fldLeftRight;
-    property Escapment: integer read FEscapment write SetEscapment;
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Escapment: Integer read FEscapment write SetEscapment default 0;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Align;
     property AutoSize;
     property AlignToBand;
@@ -75,29 +76,31 @@ type
     procedure SetDataField(Value: string);
   protected
     procedure Paint; override;
-    procedure Print(OfsX, OfsY: integer); override;
+    procedure Print(OfsX, OfsY: Integer); override;
   published
     property DataSet: TDataSet read FDataSet write FDataSet;
     property DataField: string read FDataField write SetDataField;
   end;
 
 implementation
-uses JvgUtils, sysUtils, controls;
+
+uses
+  SysUtils, Controls,
+  JvgUtils;
+
+//=== TJvgQRLabel ============================================================
 
 constructor TJvgQRLabel.Create(AOwner: TComponent);
 begin
-  inherited;
-  AutoSize := true;
-end;
-
-destructor TJvgQRLabel.Destroy;
-begin
-  inherited;
+  inherited Create(AOwner);
+  AutoSize := True;
+  FAlignment := taLeftJustify;
+  FEscapment := 0;
 end;
 
 procedure TJvgQRLabel.Paint;
 begin
-  fPrinting := false;
+  FPrinting := False;
   PaintLabel(Caption, Canvas, 0, 0);
 end;
 
@@ -105,9 +108,9 @@ procedure TJvgQRLabel.PaintLabel(Caption: string; Canvas: TCanvas; OfsX, OfsY: I
 var
   FreeFontHandle: THandle;
   R: TRect;
-  x, y: integer;
-  Size, TextSize: TSIZE;
-  PixFactor: single;
+  X, Y: Integer;
+  Size, TextSize: TSize;
+  PixFactor: Single;
 begin
   X := 0;
   Y := 0;
@@ -118,69 +121,74 @@ begin
   FreeFontHandle := CreateRotatedFont(Canvas.Font, Escapment);
   Canvas.Font.Handle := FreeFontHandle;
 
-  GetTextExtentPoint32(Canvas.handle, PChar(Caption),
-    length(Caption), Size);
-  inc(Size.cx, 1);
-  inc(Size.cy, 1);
+  GetTextExtentPoint32(Canvas.Handle, PChar(Caption), Length(Caption), Size);
+  Inc(Size.cx);
+  Inc(Size.cy);
   TextSize := Size;
 
   if (Align = alNone) and AutoSize then
     case FDirection of
       fldLeftRight, fldRightLeft:
         begin
-          width := Size.cx;
-          height := Size.cy;
+          Width := Size.cx;
+          Height := Size.cy;
         end;
-    else {fldDownUp,fldUpDown:}
-      begin
-        width := Size.cy;
-        height := Size.cx;
-      end;
+    else {fldDownUp, fldUpDown:}
+      Width := Size.cy;
+      Height := Size.cx;
     end;
   case FDirection of
     fldLeftRight:
-      begin //if Align = alNone then begin width:=max(w,Size.cx);height:=max(h,Size.cy); end;
+      begin //if Align = alNone then begin Width:=max(w,Size.cx);Height:=max(h,Size.cy); end;
         case Alignment of
-          taCenter: x := (Width - Size.cx) div 2;
-          taRightJustify: x := Width - Size.cx;
+          taCenter:
+            X := (Width - Size.cx) div 2;
+          taRightJustify:
+            X := Width - Size.cx;
         end;
       end;
     fldRightLeft:
-      begin //if Align = alNone then begin width:=max(w,Size.cx);height:=max(h,Size.cy);x:=width;y:=height; end;
+      begin //if Align = alNone then begin Width:=max(w,Size.cx);Height:=max(h,Size.cy);X:=Width;Y:=Height; end;
         case Alignment of
-          taCenter: x := (Width + Size.cx) div 2;
-          taLeftJustify: x := Width - (Size.cx - TextSize.cx) - 2;
+          taCenter:
+            X := (Width + Size.cx) div 2;
+          taLeftJustify:
+            X := Width - (Size.cx - TextSize.cx) - 2;
         else
-          x := TextSize.cx;
+          X := TextSize.cx;
         end;
-        y := TextSize.cy;
+        Y := TextSize.cy;
       end;
     fldDownUp:
-      begin //if Align = alNone then begin height:=max(h,Size.cx);width:=max(w,Size.cy);y:=height-2; end;
+      begin //if Align = alNone then begin Height:=max(h,Size.cx);Width:=max(w,Size.cy);Y:=Height-2; end;
         case Alignment of
-          taCenter: y := (Height + TextSize.cx - (Size.cy - TextSize.cy)) div 2;
-          taRightJustify: y := TextSize.cx - 4;
+          taCenter:
+            Y := (Height + TextSize.cx - (Size.cy - TextSize.cy)) div 2;
+          taRightJustify:
+            Y := TextSize.cx - 4;
         else
-          y := Height - (Size.cy - TextSize.cy) - 2;
+          Y := Height - (Size.cy - TextSize.cy) - 2;
         end;
       end;
     fldUpDown:
-      begin //if Align = alNone then begin height:=max(h,Size.cx);width:=max(w,Size.cy);x:=width; end;
+      begin //if Align = alNone then begin Height:=max(h,Size.cx);Width:=max(w,Size.cy);X:=Width; end;
         case Alignment of
-          taCenter: y := (Height - Size.cx) div 2;
-          taRightJustify: y := Height - Size.cx;
+          taCenter:
+            Y := (Height - Size.cx) div 2;
+          taRightJustify:
+            Y := Height - Size.cx;
         else
-          y := 1;
+          Y := 1;
         end;
-        x := TextSize.cy;
+        X := TextSize.cy;
       end;
   end;
 
-  PixFactor := (Height / self.Size.Height);
-  if assigned(QRPrinter) then
+  PixFactor := (Height / Self.Size.Height);
+  if Assigned(QRPrinter) then
   begin
-    X := QRPrinter.XPos(OfsX {+ self.Size.Left} + Round(X / PixFactor));
-    Y := QRPrinter.YPos(OfsY {+ self.Size.Top} + Round(Y / PixFactor));
+    X := QRPrinter.XPos(OfsX {+ Self.Size.Left} + Round(X / PixFactor));
+    Y := QRPrinter.YPos(OfsY {+ Self.Size.Top} + Round(Y / PixFactor));
   end;
 
   if Transparent then
@@ -189,12 +197,12 @@ begin
     SetBkMode(Canvas.Handle, OPAQUE);
   SetTextColor(Canvas.Handle, ColorToRGB(Font.Color));
 
-  if fPrinting then
+  if FPrinting then
   begin
     //      with QRPrinter do R := Bounds(XPos(OfsX), YPos(OfsY), {XPos}trunc(Width * Zoom / 100), trunc(Height*Zoom / 100));
     with QRPrinter do
-      R := Rect(XPos(OfsX {+ self.Size.Left}), YPos(OfsY {+ self.Size.Top}), XPos(OfsX + self.Size.Left +
-        self.Size.Width), YPos(OfsY + self.Size.Top + self.Size.Height));
+      R := Rect(XPos(OfsX {+ Self.Size.Left}), YPos(OfsY {+ Self.Size.Top}), XPos(OfsX + Self.Size.Left +
+        Self.Size.Width), YPos(OfsY + Self.Size.Top + Self.Size.Height));
     ExtTextOut(Canvas.Handle, X {QRPrinter.XPos(OfsX)+X}, Y {QRPrinter.YPos(OfsY)+Y}, ETO_CLIPPED, @R, PChar(Caption),
       Length(Caption), nil);
   end
@@ -217,38 +225,49 @@ begin
   //  JvgLabel.Direction := fldDownUp;
   if ParentReport.FinalPass then
   begin
-    fPrinting := true;
-    PaintLabel(Caption, QRPrinter.Canvas, round(Size.Left + OfsX), round(Size.Top + OfsY));
+    FPrinting := True;
+    PaintLabel(Caption, QRPrinter.Canvas, Round(Size.Left + OfsX), Round(Size.Top + OfsY));
   end;
 end;
 
 procedure TJvgQRLabel.SetDirection(Value: TglLabelDir);
 const
-  RadianEscapments: array[TgllabelDir] of integer = (0, -1800, -900, 900);
+  RadianEscapments: array [TgllabelDir] of Integer =
+    (0, -1800, -900, 900);
 begin
-  FDirection := Value;
-  FEscapment := RadianEscapments[FDirection];
-  repaint;
-  //  CreateLabelFont;
+  if FDirection <> Value then
+  begin
+    FDirection := Value;
+    FEscapment := RadianEscapments[FDirection];
+    Repaint;
+    //CreateLabelFont;
+  end;
 end;
 
-procedure TJvgQRLabel.SetEscapment(Value: integer);
+procedure TJvgQRLabel.SetEscapment(Value: Integer);
 begin
-  FEscapment := Value;
-  repaint;
-  //  CreateLabelFont;
+  if FEscapment <> Value then
+  begin
+    FEscapment := Value;
+    Repaint;
+    //CreateLabelFont;
+  end;
 end;
 
 procedure TJvgQRLabel.SetAlignment(Value: TAlignment);
 begin
-  FAlignment := Value;
-  repaint;
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    Repaint;
+  end;
 end;
-//------------------------------------------------------------------------------
+
+//=== TJvgQRDBText ===========================================================
 
 procedure TJvgQRDBText.Paint;
 begin
-  fPrinting := false;
+  FPrinting := False;
   //  if DataField <> '' then Caption := DataField;
   PaintLabel(Caption, Canvas, 0, 0);
 end;
@@ -257,18 +276,21 @@ procedure TJvgQRDBText.Print(OfsX, OfsY: Integer);
 begin
   if ParentReport.FinalPass then
   begin
-    fPrinting := true;
+    FPrinting := True;
     if (DataField <> '') and Assigned(DataSet) and (DataSet.FindField(DataField) <> nil) then
       Caption := DataSet.FindField(DataField).AsString;
-    PaintLabel(Caption, QRPrinter.Canvas, round(Size.Left + OfsX), round(Size.Top + OfsY));
+    PaintLabel(Caption, QRPrinter.Canvas, Round(Size.Left + OfsX), Round(Size.Top + OfsY));
   end;
 end;
 
 procedure TJvgQRDBText.SetDataField(Value: string);
 begin
-  FDataField := Value;
-  Caption := FDataField;
-  repaint;
+  if FDataField <> Value then
+  begin
+    FDataField := Value;
+    Caption := FDataField;
+    Repaint;
+  end;
 end;
 
 end.

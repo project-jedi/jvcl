@@ -21,17 +21,16 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A wrapper component for the SHFileOperation function
+
 Known Issues:
+  fofConfirmMouse does nothing
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
 unit JvSHFileOperation;
-
-{A wrapper component for the SHFileOperation function }
-{  Notes:
-    fofConfirmMouse does nothing
-}
 
 interface
 
@@ -48,12 +47,12 @@ const
   // IE 5.01 and up
   FOF_NORECURSEREPARSE = $8000;
   FOF_WANTNUKEWARNING = $4000;
-{$IFDEF BCB6}
+  {$IFDEF BCB6}
   {$EXTERNALSYM FOF_NOCOPYSECURITYATTRIBS}
   {$EXTERNALSYM FOF_NORECURSION}
   {$EXTERNALSYM FOF_NO_CONNECTED_ELEMENTS}
   {$EXTERNALSYM FOF_WANTNUKEWARNING}
-{$ENDIF}
+  {$ENDIF BCB6}
 
 type
   // type of operation to perform
@@ -68,12 +67,14 @@ type
 
   TJvSHFileOperation = class(TJvCommonDialog)
   private
-    FSourceFiles: TStrings;
-    FDestFiles: TStrings;
+    FSourceFiles: TStringList;
+    FDestFiles: TStringList;
     FOperation: TJvSHFileOpType;
     FOptions: TJvSHFileOptions;
     FTitle: string;
     FOnFileMapping: TJvShFileMappingEvent;
+    function GetSourceFiles: TStrings;
+    function GetDestFiles: TStrings;
     procedure SetSourceFiles(Value: TStrings);
     procedure SetDestFiles(Value: TStrings);
   protected
@@ -88,10 +89,10 @@ type
   published
     // the files to perform the operation on (one file on each row).
     // Filenames can contain wildcards
-    property SourceFiles: TStrings read FSourceFiles write SetSourceFiles;
+    property SourceFiles: TStrings read GetSourceFiles write SetSourceFiles;
     // A list of destination filenames. If this is a folder, only need to add folder once
     // Otherwise, destfiles should match sourcefiles exactly
-    property DestFiles: TStrings read FDestFiles write SetDestFiles;
+    property DestFiles: TStrings read GetDestFiles write SetDestFiles;
     // the operation to perform when Execute is called
     property Operation: TJvSHFileOpType read FOperation write FOperation default foCopy;
     /// Options for the Operation
@@ -102,17 +103,17 @@ type
     property OnFileMapping: TJvShFileMappingEvent read FOnFileMapping write FOnFileMapping;
   end;
 
-
-resourcestring
-  sNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
-
 implementation
 
 uses
   JvConsts, JvTypes;
 
-// helper object for file mappings
+resourcestring
+  sNoFilesSpecifiedToTJvSHFileOperatio = 'No files specified to TJvSHFileOperation Execute function';
+
+
 type
+  // helper object for file mappings
   PShHandleToMappings = ^TShHandleToMappings;
   TShHandleToMappings = packed record
     aCount: UINT;
@@ -122,8 +123,8 @@ type
 constructor TJvSHFileOperation.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FSourceFiles := TStringlist.Create;
-  FDestFiles := TStringlist.Create;
+  FSourceFiles := TStringList.Create;
+  FDestFiles := TStringList.Create;
   FOperation := foCopy;
   FOptions := [fofAllowUndo, fofFilesOnly];
 end;
@@ -150,7 +151,7 @@ const
 var
   SFOS: TShFileOpStruct;
   I: TJvSHFileOption;
-  J: integer;
+  J: Integer;
   ppFrom, ppTo: string;
   PNameMapping: PSHNameMapping;
   PNameCount: UINT;
@@ -224,6 +225,16 @@ begin
   end;
 end;
 
+function TJvSHFileOperation.GetSourceFiles: TStrings;
+begin
+  Result := FSourceFiles;
+end;
+
+function TJvSHFileOperation.GetDestFiles: TStrings;
+begin
+  Result := FDestFiles;
+end;
+
 procedure TJvSHFileOperation.SetSourceFiles(Value: TStrings);
 begin
   FSourceFiles.Assign(Value);
@@ -242,8 +253,7 @@ begin
     Result := GetFocus;
 end;
 
-procedure TJvSHFileOperation.DoFileMapping(const OldFilename,
-  NewFilename: string);
+procedure TJvSHFileOperation.DoFileMapping(const OldFilename, NewFilename: string);
 begin
   if Assigned(FOnFileMapping) then
     FOnFileMapping(Self, OldFilename, NewFilename);

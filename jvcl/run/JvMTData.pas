@@ -37,7 +37,9 @@ uses
   Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  JvMTSync, JvMTConsts, JvMTThreading, SyncObjs;
+  JvMTSync, JvMTConsts, JvMTThreading,
+  // (rom) any need to have this last?
+  SyncObjs;
 
 type
   TMTBoundedQueue = class(TObjectQueue)

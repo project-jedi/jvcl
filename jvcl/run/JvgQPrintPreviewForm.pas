@@ -33,9 +33,10 @@ unit JvgQPrintPreviewForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, QuickRpt, Qrctrls, JvgQRLabel, QRPrntr, ComCtrls, ToolWin,
-  JvgBevel, ImgList, JvgLabel, shellApi, StdCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, QuickRpt, QRCtrls, QRPrntr, ComCtrls, ToolWin,
+  ImgList, ShellApi, StdCtrls,
+  JvgQRLabel, JvgBevel, JvgLabel, JvComponent;
 
 type
   TJvgfPrintPreview = class(TJvForm)
@@ -86,34 +87,35 @@ type
     procedure tbLoadClick(Sender: TObject);
     procedure tbSaveClick(Sender: TObject);
   private
-    qr: TCustomQuickRep;
+    QR: TCustomQuickRep;
     procedure UpdateStatus;
     procedure InitPrintDialog;
     procedure SavePrintDialog;
     procedure QuickRep1StartPage(Sender: TCustomQuickRep);
-
   public
-    procedure Execute(qr: TCustomQuickRep);
+    procedure Execute(QR: TCustomQuickRep);
   end;
 
-  TJvgMyQRPreview = class(TQRPreview)
-  end;
+  TJvgMyQRPreview = class(TQRPreview);
+
 var
   fPrintPreview: TJvgfPrintPreview;
   l: TJvgQRLabel;
 
+implementation
+
+uses
+  Printers,
+  JvConsts, JvgTypes, JvgExport, JvgQPrintSetupForm;
+
+{$R *.dfm}
 
 resourcestring
   sPagedOfd = 'Page %d of $d';
 
-implementation
-uses
-  JvConsts, JvgTypes, JvgExport, JvgQPrintSetupForm, Printers; //, mdrpt;
-{$R *.dfm}
-
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin
-  {  l := TJvgQRLabel.Create(self);
+  {  l := TJvgQRLabel.Create(Self);
     l.Caption := 'FormCreate(Sender: TObject)';
     l.Top := 40;
     l.Left := 40;
@@ -123,7 +125,7 @@ end;
 
 procedure TJvgfPrintPreview.qrPreview(Sender: TObject);
 begin
-  QRPreview1.QRPrinter := qr.QRPrinter;
+  QRPreview1.QRPrinter := QR.QRPrinter;
   //  QRPreview1.UpdateImage;
 end;
 
@@ -156,7 +158,8 @@ end;
 
 procedure TJvgfPrintPreview.glLabel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, sw_show);
+  // (rom) should be removed
+  ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, SW_SHOW);
 end;
 
 procedure TJvgfPrintPreview.ToolButton4Click(Sender: TObject);
@@ -180,39 +183,38 @@ end;
 
 procedure TJvgfPrintPreview.tbExportExcelClick(Sender: TObject);
 begin
-  ExportToExcel(qr);
+  ExportToExcel(QR);
 end;
 
 procedure TJvgfPrintPreview.InitPrintDialog;
 begin
-  Printer.Orientation := qr.Page.Orientation;
+  Printer.Orientation := QR.Page.Orientation;
   PrintDialog.PrintRange := prAllPages;
-  PrintDialog.Copies := qr.PrinterSettings.Copies;
+  PrintDialog.Copies := QR.PrinterSettings.Copies;
   PrintDialog.FromPage := 0;
   PrintDialog.ToPage := 0;
 end;
 
 procedure TJvgfPrintPreview.SavePrintDialog;
 begin
-  qr.Page.Orientation := Printer.Orientation;
-  qr.PrinterSettings.Copies := PrintDialog.Copies;
-  qr.PrinterSettings.FirstPage := PrintDialog.FromPage;
-  qr.PrinterSettings.LastPage := PrintDialog.ToPage;
-
-  //  qr.Printer.FirstPage := PrintDialog.FromPage;
-  //  qr.Printer.LastPage := PrintDialog.ToPage;
+  QR.Page.Orientation := Printer.Orientation;
+  QR.PrinterSettings.Copies := PrintDialog.Copies;
+  QR.PrinterSettings.FirstPage := PrintDialog.FromPage;
+  QR.PrinterSettings.LastPage := PrintDialog.ToPage;
+  //  QR.Printer.FirstPage := PrintDialog.FromPage;
+  //  QR.Printer.LastPage := PrintDialog.ToPage;
 end;
 
 procedure TJvgfPrintPreview.tbPrinterSetupClick(Sender: TObject);
 begin
-  Printer.Orientation := qr.Page.Orientation;
+  Printer.Orientation := QR.Page.Orientation;
   //  Printer.Paper
   PrinterSetupDialog.Execute;
-  qr.Page.Orientation := Printer.Orientation;
-  qr.PrinterSettings.Orientation := Printer.Orientation;
+  QR.Page.Orientation := Printer.Orientation;
+  QR.PrinterSettings.Orientation := Printer.Orientation;
 
-  qr.Prepare;
-  QRPreview1.QRPrinter := qr.QRPrinter;
+  QR.Prepare;
+  QRPreview1.QRPrinter := QR.QRPrinter;
   QRPreview1.UpdateZoom;
   UpdateStatus;
 end;
@@ -225,39 +227,43 @@ begin
   //  PrintDialog.PrintRange := prPageNums;
   //  if not PrintDialog.Execute then exit;
   //  SavePrintDialog;
-  qr.PrinterSettings.FirstPage := QRPreview1.PageNumber;
-  qr.PrinterSettings.LastPage := QRPreview1.PageNumber;
+  QR.PrinterSettings.FirstPage := QRPreview1.PageNumber;
+  QR.PrinterSettings.LastPage := QRPreview1.PageNumber;
 
   QRPreview1.Zoom := 100;
-  qr.Print;
+  QR.Print;
 end;
 
 procedure TJvgfPrintPreview.tbPrintClick(Sender: TObject);
 begin
   InitPrintDialog;
-  if not PrintDialog.Execute then exit;
-  SavePrintDialog;
-  QRPreview1.Zoom := 100;
-  qr.Print;
+  if PrintDialog.Execute then
+  begin
+    SavePrintDialog;
+    QRPreview1.Zoom := 100;
+    QR.Print;
+  end;
 end;
 
 procedure TJvgfPrintPreview.cbDuplexClick(Sender: TObject);
 begin
-  qr.PrinterSettings.Duplex := cbDuplex.Checked;
+  QR.PrinterSettings.Duplex := cbDuplex.Checked;
 end;
 
 procedure TJvgfPrintPreview.tbLoadClick(Sender: TObject);
 begin
-  if not OpenDialog.Execute then exit;
-  qr.QRPrinter.Load(OpenDialog.FileName);
-  QRPreview1.QRPrinter := qr.QRPrinter;
-  qr.Update;
+  if OpenDialog.Execute then
+  begin
+    QR.QRPrinter.Load(OpenDialog.FileName);
+    QRPreview1.QRPrinter := QR.QRPrinter;
+    QR.Update;
+  end;
 end;
 
 procedure TJvgfPrintPreview.tbSaveClick(Sender: TObject);
 begin
-  if not OpenDialog.Execute then exit;
-  qr.QRPrinter.Save(SaveDialog.FileName);
+  if OpenDialog.Execute then
+    QR.QRPrinter.Save(SaveDialog.FileName);
 end;
 
 procedure TJvgfPrintPreview.QuickRep1StartPage(Sender: TCustomQuickRep);
@@ -265,18 +271,18 @@ begin
   PB.Position := QRPreview1.PageNumber;
 end;
 
-procedure TJvgfPrintPreview.Execute(qr: TCustomQuickRep);
+procedure TJvgfPrintPreview.Execute(QR: TCustomQuickRep);
 begin
-  self.qr := qr;
-  qr.OnStartPage := nil;
-  qr.Prepare;
-  QRPreview1.QRPrinter := qr.QRPrinter;
+  Self.QR := QR;
+  QR.OnStartPage := nil;
+  QR.Prepare;
+  QRPreview1.QRPrinter := QR.QRPrinter;
   QRPreview1.UpdateZoom;
   UpdateStatus;
 
-  qr.OnStartPage := QuickRep1StartPage;
+  QR.OnStartPage := QuickRep1StartPage;
 
-  cbDuplex.Checked := qr.PrinterSettings.Duplex;
+  cbDuplex.Checked := QR.PrinterSettings.Duplex;
   ShowModal;
 end;
 

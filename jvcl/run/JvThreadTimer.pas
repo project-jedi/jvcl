@@ -29,8 +29,8 @@ Known Issues:
 
 History:
   2003-07-24 (p3)
-    * Changed Active->Enabled and Delay-> Interval to make property names match TTimer
-    * Changed implementation so that setting Enabled := false, fress the thread instead
+    * Changed Active->Enabled and Delay->Interval to make property names match TTimer
+    * Changed implementation so that setting Enabled := false, frees the thread instead
       of suspending it. This makes it possible to restart the timer interval.
   2003-07-25 (ivobauer)
     * Rewritten almost everything.
@@ -83,7 +83,10 @@ type
 implementation
 
 uses
-  Messages {$IFNDEF COMPILER6_UP} , Forms {$ENDIF COMPILER6_UP} ;
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF COMPILER6_UP}
+  Messages;
 
 type
   TJvTimerThread = class(TThread)
@@ -98,9 +101,7 @@ type
   public
     constructor Create(ATimer: TJvThreadTimer);
     destructor Destroy; override;
-
     procedure Stop;
-
     property Interval: Cardinal read FInterval;
     property Timer: TJvThreadTimer read FTimer;
   end;
@@ -113,7 +114,7 @@ begin
     Result := Big - Small;
 end;
 
-//=== TJvTimerThread ====================================================
+//=== TJvTimerThread =========================================================
 
 constructor TJvTimerThread.Create(ATimer: TJvThreadTimer);
 begin
@@ -125,10 +126,10 @@ begin
   FEvent := CreateEvent(nil, False, False, nil);
   if FEvent = 0 then
     {$IFDEF COMPILER6_UP}
-    RaiseLastOSError
+    RaiseLastOSError;
     {$ELSE}
-    RaiseLastWin32Error
-    {$ENDIF COMPILER6_UP};
+    RaiseLastWin32Error;
+    {$ENDIF COMPILER6_UP}
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   Priority := ATimer.Priority;
@@ -205,7 +206,7 @@ end;
 
 destructor TJvThreadTimer.Destroy;
 begin
-  if (FThread is TJvTimerThread) then
+  if FThread is TJvTimerThread then
     TJvTimerThread(FThread).Stop;
   FThread := nil;
   inherited Destroy;
@@ -225,7 +226,7 @@ begin
       ApplicationHandleException(Self);
     {$ELSE}
     Application.HandleException(Self);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -267,7 +268,7 @@ procedure TJvThreadTimer.SetKeepAlive(const Value: Boolean);
 begin
   if Value <> KeepAlive then
   begin
-    if (FThread is TJvTimerThread) then
+    if FThread is TJvTimerThread then
       TJvTimerThread(FThread).Stop;
     FThread := nil;
 

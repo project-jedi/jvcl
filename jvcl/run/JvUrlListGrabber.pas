@@ -30,7 +30,9 @@ unit JvUrlListGrabber;
 
 interface
 
-uses Windows, Classes, SysUtils, JvComponent, JvUrlGrabbers;
+uses
+  Windows, Classes, SysUtils,
+  JvComponent, JvUrlGrabbers;
 
 type
   // early declarations
@@ -42,15 +44,15 @@ type
 
   // The type of the events triggered when one of the grabbers
   // has triggred its own event to indicate a change in its state
-  TJvGrabberNotifyEvent = procedure (Sender : TJvUrlListGrabber; Grabber : TJvUrlGrabber) of object;
+  TJvGrabberNotifyEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvUrlGrabber) of object;
 
-  ENoGrabberForUrl = class (Exception);
+  ENoGrabberForUrl = class(Exception);
 
   // This component allows the user to specify a list of URLs to be
   // grabbed and then start grabbing. All the grab operations will be done
   // in parallel in the background, leaving the user's application free
   // to continue its operations
-  TJvUrlListGrabber = class (TJvComponent)
+  TJvUrlListGrabber = class(TJvComponent)
   protected
     FOnClosed: TJvGrabberNotifyEvent;
     FOnReceiving: TJvGrabberNotifyEvent;
@@ -63,104 +65,72 @@ type
     FOnSent: TJvGrabberNotifyEvent;
     FOnClosing: TJvGrabberNotifyEvent;
     FOnSending: TJvGrabberNotifyEvent;
-
     FCleanupThreshold: Cardinal;
     FGrabbers : TJvUrlGrabberList;
-    FURLs : TStrings;
+    FURLs: TStringList;
     FDefaultGrabberIndex: TJvUrlGrabberIndex;
-    FDefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList;
-
-    // sets the URLs property, assigning the given strings
-    // to the internal FURLs field 
+    FDefaultGrabbersProperties: TJvUrlGrabberDefaultPropertiesList;
+    // gets/sets the URLs property, assigning the given strings
+    // to the internal FURLs field
+    function GetUrls: TStrings;
     procedure SetUrls(const Value: TStrings);
-
     // sets the Default Grabber value, ensuring that it doesn't go
     // below -1 or above the number of registered grabber classes
     // if you try to set the value above the last index in the
     // JvUrlGrabberClassList, then the value will be set to -1.
     // The same goes if you set a value below -1.
     procedure SetDefaultGrabberIndex(const Value: TJvUrlGrabberIndex);
-
     // returns the grabber associated with the given index
     function GetGrabbers(const Index: Integer): TJvUrlGrabber;
-
     // Called whenever the list of Urls has changed
     procedure URLsChange(Sender : TObject);
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-
     // cleans up the internal list of grabbers
     procedure Cleanup;
-
     // starts all the grabbers
     procedure StartAll;
-
     // stops all the grabbers
     procedure StopAll;
-
     // the Grabber objects associated with the Urls
     property Grabbers[const Index : Integer]: TJvUrlGrabber read GetGrabbers;
   published
     // the index of the default grabber to use, if any
-    property DefaultGrabberIndex : TJvUrlGrabberIndex read FDefaultGrabberIndex write SetDefaultGrabberIndex default -1;
-
+    property DefaultGrabberIndex: TJvUrlGrabberIndex read FDefaultGrabberIndex write SetDefaultGrabberIndex default -1;
     // the cleanup threshold. When the difference between Urls.Count
     // and the internal Grabber count is greater than this value
     // the process of cleaning if launched. This can take some time
     // and this is why it's done every time
-    property CleanupThreshold : Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
-
+    property CleanupThreshold: Cardinal read FCleanupThreshold write FCleanupThreshold default 10;
     // The Urls to grab
-    property URLs : TStrings read FURLs write SetUrls;
-
+    property URLs: TStrings read GetURLs write SetUrls;
     // The default properties for each family of grabber
     property DefaultGrabbersProperties : TJvUrlGrabberDefaultPropertiesList read FDefaultGrabbersProperties;
-
     // Events
-    property OnResolvingName      : TJvGrabberNotifyEvent read FOnResolving  write FOnResolving;
-    property OnNameResolved       : TJvGrabberNotifyEvent read FOnResolved   write FOnResolved;
-    property OnConnectingToServer : TJvGrabberNotifyEvent read FOnConnecting write FOnConnecting;
-    property OnConnectedToServer  : TJvGrabberNotifyEvent read FOnConnected  write FOnConnected;
-    property OnSendingRequest     : TJvGrabberNotifyEvent read FOnSending    write FOnSending;
-    property OnRequestSent        : TJvGrabberNotifyEvent read FOnSent       write FOnSent;
-    property OnRequestComplete    : TJvGrabberNotifyEvent read FOnRequest    write FOnRequest;
-    property OnReceivingResponse  : TJvGrabberNotifyEvent read FOnReceiving  write FOnReceiving;
-    property OnResponseReceived   : TJvGrabberNotifyEvent read FOnReceived   write FOnReceived;
-    property OnClosingConnection  : TJvGrabberNotifyEvent read FOnClosing    write FOnClosing;
-    property OnConnectionClosed   : TJvGrabberNotifyEvent read FOnClosed     write FOnClosed;
+    property OnResolvingName: TJvGrabberNotifyEvent read FOnResolving write FOnResolving;
+    property OnNameResolved: TJvGrabberNotifyEvent read FOnResolved write FOnResolved;
+    property OnConnectingToServer: TJvGrabberNotifyEvent read FOnConnecting write FOnConnecting;
+    property OnConnectedToServer: TJvGrabberNotifyEvent read FOnConnected write FOnConnected;
+    property OnSendingRequest: TJvGrabberNotifyEvent read FOnSending write FOnSending;
+    property OnRequestSent: TJvGrabberNotifyEvent read FOnSent write FOnSent;
+    property OnRequestComplete: TJvGrabberNotifyEvent read FOnRequest write FOnRequest;
+    property OnReceivingResponse: TJvGrabberNotifyEvent read FOnReceiving write FOnReceiving;
+    property OnResponseReceived: TJvGrabberNotifyEvent read FOnReceived write FOnReceived;
+    property OnClosingConnection: TJvGrabberNotifyEvent read FOnClosing write FOnClosing;
+    property OnConnectionClosed   : TJvGrabberNotifyEvent read FOnClosed write FOnClosed;
 //    property OnRedirect: TGrabberNotifyEvent read FOnRedirect write FOnRedirect;
 //    property OnStateChange: TGrabberNotifyEvent read FOnStateChange write FOnStateChange;
   end;
 
 implementation
 
-uses JvConsts;
-
-{ TJvUrlListGrabber }
-
-procedure TJvUrlListGrabber.Cleanup;
-var
-  i : Integer;
-begin
-  // try to find each created grabber in the string list
-  // if not found, mark the object as nil which in turn
-  // will delete it
-  for i := 0 to FGrabbers.Count - 1 do
-  begin
-    if FUrls.IndexOfObject(FGrabbers[i]) = -1 then
-    begin
-      FGrabbers[i] := nil;
-    end;
-  end;
-
-  // pack the list
-  FGrabbers.Pack;
-end;
+uses
+  JvConsts;
 
 constructor TJvUrlListGrabber.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDefaultGrabbersProperties := TJvUrlGrabberDefaultPropertiesList.Create;
   FGrabbers := TJvUrlGrabberList.Create(True);
   FURLs := TStringList.Create;
@@ -174,7 +144,21 @@ begin
   FURLs.Free;
   FGrabbers.Free;
   FDefaultGrabbersProperties.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvUrlListGrabber.Cleanup;
+var
+  I: Integer;
+begin
+  // try to find each created grabber in the string list
+  // if not found, mark the object as nil which in turn
+  // will delete it
+  for I := 0 to FGrabbers.Count - 1 do
+    if FUrls.IndexOfObject(FGrabbers[I]) = -1 then
+      FGrabbers[I] := nil;
+  // pack the list
+  FGrabbers.Pack;
 end;
 
 function TJvUrlListGrabber.GetGrabbers(const Index: Integer): TJvUrlGrabber;
@@ -182,15 +166,20 @@ begin
   Result := TJvUrlGrabber(FURLs.Objects[Index]);
 end;
 
-procedure TJvUrlListGrabber.SetDefaultGrabberIndex(
-  const Value: TJvUrlGrabberIndex);
+procedure TJvUrlListGrabber.SetDefaultGrabberIndex(const Value: TJvUrlGrabberIndex);
 begin
   if Value < -1 then
     FDefaultGrabberIndex := -1
-  else if Value > JvUrlGrabberClassList.Count - 1 then
+  else
+  if Value > JvUrlGrabberClassList.Count - 1 then
     FDefaultGrabberIndex := -1
   else
     FDefaultGrabberIndex := Value;
+end;
+
+function TJvUrlListGrabber.GetUrls: TStrings;
+begin
+  Result := FURLs;
 end;
 
 procedure TJvUrlListGrabber.SetUrls(const Value: TStrings);
@@ -200,43 +189,40 @@ end;
 
 procedure TJvUrlListGrabber.StartAll;
 var
-  i : Integer;
+  I: Integer;
 begin
-  for i := 0 to FUrls.Count - 1 do
-  begin
-    Grabbers[i].Start;
-  end;
+  for I := 0 to FUrls.Count - 1 do
+    Grabbers[I].Start;
 end;
 
 procedure TJvUrlListGrabber.StopAll;
 var
-  i : Integer;
+  I: Integer;
 begin
-  for i := 0 to FUrls.Count - 1 do
-  begin
-    Grabbers[i].Stop;
-  end;
+  for I := 0 to FUrls.Count - 1 do
+    Grabbers[I].Stop;
 end;
 
 procedure TJvUrlListGrabber.URLsChange(Sender: TObject);
 var
-  i : Integer;
-  tmpGrabber : TJvUrlGrabber;
+  I: Integer;
+  TmpGrabber: TJvUrlGrabber;
 begin
-  for i := 0 to FUrls.Count - 1 do
+  for I := 0 to FUrls.Count - 1 do
   begin
-    if not Assigned(FUrls.Objects[i]) then
+    if not Assigned(FUrls.Objects[I]) then
     begin
-      tmpGrabber := JvUrlGrabberClassList.CreateFor(FUrls[i], FDefaultGrabbersProperties);
-      if Assigned(tmpGrabber) then
-        FUrls.Objects[i] := tmpGrabber
-      else if DefaultGrabberIndex > -1 then
-        FUrls.Objects[i] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(FUrls[i], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
+      TmpGrabber := JvUrlGrabberClassList.CreateFor(FUrls[I], FDefaultGrabbersProperties);
+      if Assigned(TmpGrabber) then
+        FUrls.Objects[I] := TmpGrabber
       else
-        raise ENoGrabberForUrl.CreateFmt(sENoGrabberForUrl, [FUrls[i]]);
+      if DefaultGrabberIndex > -1 then
+        FUrls.Objects[I] := JvUrlGrabberClassList[DefaultGrabberIndex].Create(FUrls[I], FDefaultGrabbersProperties.Items[DefaultGrabberIndex])
+      else
+        raise ENoGrabberForUrl.CreateFmt(sENoGrabberForUrl, [FUrls[I]]);
 
       // add in the list of owned objects
-      FGrabbers.Add(TJvUrlGrabber(FUrls.Objects[i]));
+      FGrabbers.Add(TJvUrlGrabber(FUrls.Objects[I]));
       if Cardinal(FGrabbers.Count - FUrls.Count) > FCleanupThreshold then
         Cleanup;
     end;
