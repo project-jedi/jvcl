@@ -2715,8 +2715,7 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
-    DPA_RendersSingleItem]);
+  FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
