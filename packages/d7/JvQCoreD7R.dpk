@@ -70,6 +70,7 @@ contains
   QExtDlgs in '..\..\qcommon\QExtDlgs.pas',
   QToolWin in '..\..\qcommon\QToolWin.pas',
   JvQWStrUtils in '..\..\qcommon\JvQWStrUtils.pas',
-  JVQCLVer in '..\..\qrun\JVQCLVer.pas';
+  JVQCLVer in '..\..\qrun\JVQCLVer.pas',
+  JvQFinalize in '..\..\qcommon\JvQFinalize.pas';
 
 end.
