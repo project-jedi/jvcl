@@ -51,7 +51,7 @@ begin
   if hFile = -1 then
     Exit;
   try
-    GetFileTime(hFile, @aCreate, @aChange, @aAccess);
+    GetFileTime(hFile, @aCreate, @aAccess, @aChange);
     if mtCreated in ATypes then
       aCreate := ft;
     if mtChanged in ATypes then
