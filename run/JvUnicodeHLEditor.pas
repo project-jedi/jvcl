@@ -33,12 +33,10 @@ unit JvUnicodeHLEditor;
 interface
 
 uses
+  Windows,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFNDEF COMPILER6_UP}
-  Windows,
-  {$ENDIF !COMPILER6_UP}
   SysUtils, Classes, Graphics,
   JclWideStrings,
   JvEditorCommon, JvUnicodeEditor, JvHLParser;
@@ -68,7 +66,7 @@ type
     FLineNum: Integer;
     FLong: TLongTokenType;
     FLongTokens: Boolean;
-    FLongDesc: array[0..Max_Line] of TLongTokenType;
+    FLongDesc: array {[0..Max_Line]} of TLongTokenType;
     FSyntaxHighlighting: Boolean;
     FSyntaxHighlighter: TJvWideEditorHighlighter;
     FOnReservedWord: TOnReservedWord;
@@ -442,6 +440,17 @@ const
     ' tokens create destroy errors comments from nested chr any ' +
     ' description ';
 
+  CSharpKeyWords =
+    ' abstract as base bool break byte case catch char checked class ' +
+    ' const continue decimal default delegate do double else enum event ' +
+    ' explicit extern false finally fixed float for foreach goto if ' +
+    ' implicit in int interface internal is lock long namespace new null ' +
+    ' object operator out override params private protected public readonly ' +
+    ' ref return sbyte sealed short sizeof stackalloc static string struct ' +
+    ' switch this throw true try typeof uint ulong unchecked unsafe ushort ' +
+    ' using virtual void volatile while ';
+
+
   function PosI(const S1, S2: WideString): Boolean;
   var
     F, P: PWideChar;
@@ -554,6 +563,11 @@ const
   function IsPhpKeyWord(const St: WideString): Boolean;
   begin
     Result := PosNI(St, PerlKeyWords);
+  end;
+
+  function IsCSharpKeyWord(const St: WideString): Boolean;
+  begin
+    Result := PosNI(St, CSharpKeyWords);
   end;
 
   function IsComment(const St: WideString): Boolean;
@@ -781,7 +795,7 @@ begin
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
       case Highlighter of
-        hlCBuilder, hlPython, hlPerl, hlNQC:
+        hlCBuilder, hlPython, hlPerl, hlNQC, hlCSharp:
           case FLong of
             lgString:
               C := Colors.Strings;
@@ -968,6 +982,11 @@ begin
               SetColor(Colors.Reserved)
             else
               F := False;
+          hlCSharp:
+            if IsCSharpKeyWord(Token) then
+              SetColor(Colors.Reserved)
+            else
+              F := False;
         else
           F := False;
         end;
@@ -989,7 +1008,7 @@ begin
       if IsIntConstantW(Token) or IsRealConstantW(Token) then
         SetColor(Colors.Number)
       else
-      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC]) and
+      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC, hlCSharp]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
         SetColor(Colors.Number)
       else
@@ -1028,8 +1047,7 @@ begin
     end;
   end
   else
-    { oh my god!, it's very big text }
-    FLong := lgNone;
+    RescanLong(-1);
 end;
 
 function TJvWideHLEditor.RescanLong(iLine: Integer): Boolean;
@@ -1048,6 +1066,8 @@ begin
      (not FLongTokens or (FHighlighter in [hlNone, hlIni])) or
      (Lines.Count = 0) then
     Exit;
+  if Lines.Count >= Length(FLongDesc) then
+    SetLength(FLongDesc, (Lines.Count div (64*1024) + 1) * (64*1024));
 
   ProductionsLine := High(Integer);
   MaxLine := Lines.Count - 1;
@@ -1585,7 +1605,7 @@ begin
   end
   else
   begin
-    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Max_Line) then
+    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Cardinal(Length(FLongDesc))) then
     begin
      // comment <-> preproc
       S := Lines[ACaretY];
@@ -1675,7 +1695,6 @@ begin
     end;
   end;
 end;
-
 
 function TJvWideHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;

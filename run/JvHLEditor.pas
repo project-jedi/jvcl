@@ -91,15 +91,10 @@ unit JvHLEditor;
 interface
 
 uses
-  {$IFDEF HAS_INLINE}
   Windows,
-  {$ENDIF HAS_INLINE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFNDEF COMPILER6_UP}
-  Windows,
-  {$ENDIF !COMPILER6_UP}
   SysUtils, Classes, Graphics,
   JvEditor, JvEditorCommon, JvHLParser;
 
@@ -128,7 +123,7 @@ type
     FLineNum: Integer;
     FLong: TLongTokenType;
     FLongTokens: Boolean;
-    FLongDesc: array[0..Max_Line] of TLongTokenType;
+    FLongDesc: array {[0..Max_Line]} of TLongTokenType;
     FSyntaxHighlighting: Boolean;
     FSyntaxHighlighter: TJvEditorHighlighter;
     FOnReservedWord: TOnReservedWord;
@@ -1069,8 +1064,7 @@ begin
       if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(Colors.Number)
       else
-      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC,
-        hlCSharp]) and
+      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC, hlCSharp]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
         SetColor(Colors.Number)
       else
@@ -1109,8 +1103,7 @@ begin
     end;
   end
   else
-    { oh my god!, it's very big text }
-    FLong := lgNone;
+    RescanLong(-1);
 end;
 
 function TJvHLEditor.RescanLong(iLine: Integer): Boolean;
@@ -1129,6 +1122,8 @@ begin
      (not FLongTokens or (FHighlighter in [hlNone, hlIni])) or
      (Lines.Count = 0) then
     Exit;
+  if Lines.Count >= Length(FLongDesc) then
+    SetLength(FLongDesc, (Lines.Count div (64*1024) + 1) * (64*1024));
 
   ProductionsLine := High(Integer);
   MaxLine := Lines.Count - 1;
@@ -1666,7 +1661,7 @@ begin
   end
   else
   begin
-    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Max_Line) then
+    if (Highlighter = hlPascal) and (Cardinal(ACaretY) < Cardinal(Length(FLongDesc))) then
     begin
      // comment <-> preproc
       S := Lines[ACaretY];
@@ -1737,12 +1732,14 @@ begin
 end;
 
 function TJvHLEditor.GetDelphiColors: Boolean;
+
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
   begin
     Result := (Symbol.ForeColor = DelphiColor.ForeColor) and
       (Symbol.BackColor = DelphiColor.BackColor) and
       (Symbol.Style = DelphiColor.Style);
   end;
+
 begin
   Result := False;
   if not CompareColor(Colors.Comment, DelphiColor_Comment) then

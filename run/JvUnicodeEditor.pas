@@ -42,11 +42,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Menus, ExtCtrls, StdCtrls, Clipbrd,
+  Windows, Messages, Classes, Controls,
   JclWideStrings,
-  JvJCLUtils, JvFixedEditPopup, JvUnicodeCanvas, JvComponent,
-  JvExControls, JvEditorCommon;
+  JvEditorCommon;
 
 type
   TJvCustomWideEditor = class;
@@ -283,8 +281,8 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math,
-  JvThemes, JvConsts, JvResources;
+  SysUtils, Math, Graphics, Clipbrd,
+  JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
 
 type
   TJvInsertUndo = class(TJvCaretUndo)
@@ -562,7 +560,7 @@ begin
 
     EndLine := Strings[EndY];
 
-   // delete lines between and end line
+    // delete lines between and end line
     for I := EndY downto BegY + 1 do
       Delete(I);
 
@@ -595,9 +593,9 @@ begin
   EndLine := System.Copy(BegLine, X, MaxInt);
   System.Delete(BegLine, X, MaxInt);
 
- // line is too small -> expand it with spaces
+  // line is too small -> expand it with spaces
   Len := Length(BegLine);
-  if (Len < X) then
+  if Len < X then
   begin
     SetLength(BegLine, X - 1);
     FillChar(BegLine[Len + 1], X - Len - 1, ' ');
@@ -700,7 +698,7 @@ begin
     while P[0] <> #0 do
     begin
       while (P[0] <> #0) and (P[0] <> Lf) and (P[0] <> Cr) do
-         Inc(P);
+        Inc(P);
       SetString(S, F, P - F);
 
       while Y >= Count do
@@ -751,11 +749,19 @@ var
   R: TRect;
   S: WideString;
   LA: TLineAttr;
-  jCStart: Integer;
+  jCStart, Len: Integer;
+  MyDi: TDynIntArray;
 begin
   with EditorClient do
   begin
     S := FLines[Line];
+
+    Len := Max(Length(S), Max_X) + 1;
+    if Len > Length(LineAttrs) then
+      SetLength(LineAttrs, Len)
+    else if Len + 128 < Length(LineAttrs) then
+      SetLength(LineAttrs, Len);
+
     GetLineAttr(S, Line, ColBeg, ColEnd);
 
     {left line}
@@ -767,6 +773,15 @@ begin
     {optimized, paint group of chars with identical attributes}
     SL := Length(S);
     MX := ColEnd;
+
+    if Length(FMyDi) < MX then
+    begin
+      SetLength(MyDi, MX);
+      for iC := 0 to High(MyDi) do
+        MyDi[iC] := CellRect.Width;
+     end
+    else
+      MyDi := FMyDi;
 
     while ColPainted < MX do
     begin
@@ -832,9 +847,9 @@ begin
     LineAttrs[I] := LineAttrs[ColBeg];
 
   GetAttr(Line, ColBeg, ColEnd);
-  ChangeAttr(Line, ColBeg, ColEnd);
   if Assigned(FOnGetLineAttr) then
     FOnGetLineAttr(Self, Str, Line, LineAttrs);
+  ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
 function TJvCustomWideEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; 
@@ -936,7 +951,7 @@ begin
             FLines.Internal[Y] := Copy(FLines[Y], 1, X);
             Inc(Y);
             { auto indent }
-            if (AutoIndent) and
+            if AutoIndent and
               (((Length(FLines[CaretY]) > 0) and
               (FLines[CaretY][1] = ' ')) or
               ((TrimW(FLines[CaretY]) = '') and (X > 0))) then
@@ -1079,6 +1094,8 @@ begin
       begin
         if (ACommand = ecSelPrevWord) and IsNewSelection then
           SetSel1(CaretX, CaretY);
+        if Y >= FLines.Count then
+          Exit;
 
         S := FLines[Y];
         B := False;
@@ -1134,6 +1151,8 @@ begin
         if Y >= FLines.Count then
         begin
           Y := FLines.Count - 1;
+          if Y < 0 then
+            Exit;
           X := Length(FLines[Y]);
         end;
         S := FLines[Y];
@@ -1184,8 +1203,8 @@ begin
       if not ReadOnly then
         if X > 0 then
         begin
-          //{ in the middle of line - в середине строки }
-          if (not PersistentBlocks) and (FSelection.IsSelected) then
+          // in the middle of line - в середине строки
+          if (not PersistentBlocks) and FSelection.IsSelected then
             DoAndCorrectXY(RemoveSelectedBlock)
           else
           begin
@@ -1205,7 +1224,7 @@ begin
             CaretUndo := False;
             { --- /UNDO --- }
 
-           // persistent blocks: adjust selection
+            // persistent blocks: adjust selection
             AdjustPersistentBlockSelection(CaretX, CaretY, amDelete, [1]);
 
             FLines.DeleteText(X, Y, CaretX - 1, Y);
@@ -1254,7 +1273,7 @@ begin
         finally
           UnlockUpdate;
         end;
-        if (not PersistentBlocks) and (FSelection.IsSelected) then
+        if not PersistentBlocks and FSelection.IsSelected then
           DoAndCorrectXY(RemoveSelectedBlock)
         else
         if X < Length(FLines[Y]) then
@@ -1300,7 +1319,7 @@ begin
         if not ReadOnly then
         begin
           if FSelection.IsSelected then
-            if (ACommand = ecTab) and (InsertMode) then
+            if (ACommand = ecTab) and InsertMode then
               DeleteSelected;
           ReLine;
           if (ACommand = ecTab) and InsertMode then
@@ -1406,7 +1425,7 @@ begin
       begin
         P := PWideChar(Result);
 
-       // first line
+        // first line
         S := FLines[SelBegY];
         CLen := Length(S) - SelBegX;
         if CLen > 0 then
@@ -1415,11 +1434,11 @@ begin
           Inc(P, CLen);
         end;
 
-       // line break
+        // line break
         MoveWideChar(sLineBreak[1], P^, sLineBreakLen);
         Inc(P, sLineBreakLen);
 
-       // lines between
+        // lines between
         for I := SelBegY + 1 to SelEndY - 1 do
         begin
          // line
@@ -1432,7 +1451,7 @@ begin
           Inc(P, sLineBreakLen);
         end;
 
-       // last line
+        // last line
         S := FLines[SelEndY];
         CLen := SelEndX + Ord(SelBlockFormat = bfInclusive);
         if CLen > Length(S) then
@@ -1441,7 +1460,7 @@ begin
           MoveWideChar(S[1], P^, CLen);
       end;
     end;
-  end; // with
+  end;
 end;
 
 procedure TJvCustomWideEditor.SetSelText(const AValue: WideString);
@@ -1469,7 +1488,7 @@ begin
       if IsSelected then
         Inc(SelEndX);
       SetSelUpdateRegion(SelBegY, SelEndY);
-    end; // with
+    end;
   finally
     EndCompound;
     EndUpdate;
@@ -1571,7 +1590,7 @@ begin
     S := FLines[CaretY];
 
   W := TrimW(GetWordOnPosExW(S, CaretX + 1, iBegSX, iEndSX));
-  if (W <> NewString) then
+  if W <> NewString then
   begin
     PaintCaret(False);
     try
@@ -1662,7 +1681,7 @@ begin
       S := FLines[Y];
       Len := Length(S);
 
-     // how many spaces to delete
+      // how many spaces to delete
       L := 0;
       while (X + L <= Len) and (L < 2) and (S[X + L] = ' ') do
         Inc(L);
@@ -1725,7 +1744,7 @@ begin
       try
         if IsSelected then
         begin
-          if (BlockOverwrite and not PersistentBlocks) then
+          if BlockOverwrite and not PersistentBlocks then
           begin
             X := SelBegX;
             Y := SelBegY;
@@ -1738,7 +1757,7 @@ begin
        SelBlockFormat := GetClipboardBlockFormat;
        if SelBlockFormat in [bfInclusive, bfNonInclusive, bfLine] then
         begin
-         // special line block mode handling
+          // special line block mode handling
           if SelBlockFormat = bfLine then
           begin
             X := 0;
@@ -1753,7 +1772,7 @@ begin
           FLines.InsertText(X, Y, ClipS);
           TextModified(X, Y, maInsert, ClipS);
 
-         // get new caret position
+          // get new caret position
           GetEndPosCaretW(ClipS, X, Y, EndX, EndY);
           Inc(EndX);
 
@@ -1761,7 +1780,7 @@ begin
           begin
             SelBegX := X;
             SelBegY := Y;
-           // special line block mode handling
+            // special line block mode handling
             if SelBlockFormat = bfLine then
             begin
               Dec(EndY);
@@ -1839,7 +1858,7 @@ begin
         EndUpdate;
       end;
     end;
-  end; // with
+  end;
 end;
 
 
@@ -1874,7 +1893,7 @@ begin
   ps := Pos(Tab, S);
   if ps > 0 then
   begin
-   // How may Tab chars?
+    // How many Tab chars?
     Tabs := 1;
     for I := ps + 1 to Length(S) do
       if S[I] = Tab then
@@ -1883,11 +1902,11 @@ begin
     Sp := SpacesW(GetDefTabStop(0, True));
     LenSp := Length(Sp);
 
-   // needed memory
+    // needed memory
     SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
     P := PWideChar(Result);
 
-   // copy the chars before the Tab
+    // copy the chars before the Tab
     if ps > 1 then
     begin
       MoveWideChar(S[1], P[0], ps - 1);
@@ -1954,7 +1973,7 @@ begin
 
  // find non-empty line
   Dec(Y);
-  while (Y > 0) do
+  while Y > 0 do
   begin
     S := FLines[Y];
     if Length(TrimW(S)) > 0 then
@@ -2021,7 +2040,7 @@ begin
         Result := I;
         Exit;
       end;
-    if (Result = X) then
+    if Result = X then
       Result := GetDefTabStop(X, True);
   end
   else
@@ -2039,7 +2058,7 @@ var
   procedure UpdateBackStops;
   var
     S: WideString;
-    J, I, k: Integer;
+    J, I, K: Integer;
   begin
     J := 1;
     I := X - 1;
@@ -2048,10 +2067,10 @@ var
     while Y - J >= 0 do
     begin
       S := FLines[Y - J];
-      for k := 1 to Min(Length(S), I) do
-        if S[k] <> ' ' then
+      for K := 1 to Min(Length(S), I) do
+        if S[K] <> ' ' then
         begin
-          I := k;
+          I := K;
           FTabPos[I - 1] := True;
           Break;
         end;
@@ -2331,14 +2350,12 @@ begin
     GetEditor.TextModified(CaretX - 1, CaretY, maInsert, Text);
   end;
 
- // set caret on last backspace undo's position
+  // set caret on last backspace undo's position
   with TJvDeleteUndo(UndoBuffer.Items[TJvUndoBufferAccessProtected(UndoBuffer).FPtr]) do
-  begin
     if (FText = Lf) or (FText = Cr) then // a line was removed by backspace
       GetEditor.SetCaretInternal(0, CaretY + 1)
     else
       GetEditor.SetCaretInternal(CaretX, CaretY);
-  end;
 end;
 
 procedure TJvBackspaceUnindentUndo.Undo;
@@ -2361,7 +2378,7 @@ begin
     begin
       GetEditor.FLines.InsertText(CaretX - Length(Text), CaretY, Text);
       GetEditor.TextModified(CaretX - Length(Text), CaretY, maInsert, Text);
-     // set caret on last backspace undo's position
+      // set caret on last backspace undo's position
       GetEditor.SetCaretInternal(CaretX, CaretY);
     end;
   end;

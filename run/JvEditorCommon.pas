@@ -223,6 +223,7 @@ const
   WM_EDITCOMMAND = CM_BASE + $101;
   WM_COMPOUND = CM_BASE + $102;
   {$ENDIF VisualCLX}
+  CM_RESETCAPTURECONTROL = CM_BASE + $103;
 
 type
   EJvEditorError = class(Exception);
@@ -234,14 +235,16 @@ type
     Height: Integer;
   end;
 
-  TLineAttr = packed record
+  TLineAttr = packed record { CompareMem() requires "packed" } 
     FC: TColor;
     BC: TColor;
     Style: TFontStyles;
     Border: TColor;
   end;
 
-  TLineAttrs = array [0..Max_X] of TLineAttr;
+  TLineAttrs = array {[0..Max_X]} of TLineAttr;
+
+  TDynIntArray = array of Integer;
 
   TModifiedAction =
     (maAll, maInsert, maDelete, maInsertColumn, maDeleteColumn, maReplace);
@@ -668,11 +671,12 @@ type
     FOnCompletionMeasureItem: TMeasureItemEvent;
     FCurrentLineHighlight: TColor;
 
-    {$IFDEF VCL}
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCompound(var Msg: TMessage); message WM_COMPOUND;
+    procedure CMResetCaptureControl(var Msg: TMessage); message CM_RESETCAPTURECONTROL;
 
+    {$IFDEF VCL}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
@@ -690,7 +694,7 @@ type
     procedure WMGetTextLength(var Msg: TMessage); message WM_GETTEXTLENGTH;
     {$ENDIF VCL}
   protected
-    FMyDi: array [0..1024] of Integer;
+    FMyDi: TDynIntArray; //array [0..Max_X] of Integer;
     FSelection: TJvSelectionRec;
     FCaretX: Integer;
     FCaretY: Integer;
@@ -1036,10 +1040,6 @@ type
   end;
 
 //=== Highligther Editor =====================================================
-
-const
-  { Max_Line - maximum line numbers, scanned by editor for comments }
-  Max_Line = 64 * 1024;
 
 type
   TJvHighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
@@ -2319,6 +2319,7 @@ begin
       Self.FFontColor := FFontColor;
       Self.FBorderColor := FBorderColor;
       Self.FColor := FColor;
+      Self.FWordPairs.Assign(FWordPairs);
     end;
   end
   else
@@ -2481,6 +2482,11 @@ begin
   Msg.Result := Ord(True);
 end;
 
+procedure TJvCustomEditorBase.CMResetCaptureControl(var Msg: TMessage);
+begin
+  SetCaptureControl(TControl(Msg.LParam));
+end;
+
 procedure TJvCustomEditorBase.WMHScroll(var Msg: TWMHScroll);
 begin
   FScrollBarHorz.DoScroll(Msg);
@@ -2603,7 +2609,8 @@ begin
   // fixed by Dmitry Rubinstain
   FCellRect.Width := FEditorClient.Canvas.TextWidth(BiggestSymbol + BiggestSymbol) div 2;
 
-  for I := 0 to 1024 do
+  SetLength(FMyDi, Max_X);
+  for I := 0 to High(FMyDi) do
     FMyDi[I] := FCellRect.Width;
 
   FVisibleColCount := Trunc(FEditorClient.ClientWidth / FCellRect.Width);
@@ -3059,6 +3066,8 @@ begin
       { optimized scrolling }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
+      if FLeftCol >= Max_X then
+        FLeftCol := Max_X - 1;
       {$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * CellRect.Width) < FEditorClient.Width then
       begin
@@ -3090,6 +3099,9 @@ begin
       FTopRow := ScrollPos
     else
       FLeftCol := ScrollPos;
+
+    if FLeftCol >= Max_X then
+      FLeftCol := Max_X - 1;
   end;
   FLastVisibleRow := FTopRow + FVisibleRowCount - 1;
   FLastVisibleCol := FLeftCol + FVisibleColCount - 1;
@@ -3148,6 +3160,13 @@ begin
   if (Com > 0) and (Com <> twoKeyCommand) then
   begin
     Command(Com);
+    if ssAlt in Shift then
+    begin
+      { Setting the capture control to the editor prevents the VM_MENU key to
+        activate the mainmenu. }
+      PostMessage(Handle, CM_RESETCAPTURECONTROL, 0, Integer(GetCaptureControl));
+      SetCaptureControl(Self);
+    end;
     Key := 0;
   end;
 
