@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2003-01-26
+Last Modified: 2003-02-25
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,7 +40,7 @@ uses
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.8';
+  cHidControllerClassVersion = '1.0.9';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -171,17 +171,19 @@ type
     procedure GetMax;
 
     // internal property implementors
-    function  GetDeviceStringAnsi    (Idx: Byte): string;
-    function  GetDeviceStringUnicode (Idx: Byte): WideString;
-    function  GetLinkCollectionNode  (Idx: WORD): THIDPLinkCollectionNode;
-    function  GetConfiguration:      THIDDConfiguration;
-    function  GetPreparsedData:      PHIDPPreparsedData;
-    function  GetCaps:               THIDPCaps;
-    function  GetVendorName:         WideString;
-    function  GetProductName:        WideString;
-    function  GetSerialNumber:       WideString;
-    function  GetPhysicalDescriptor: TJvPhysicalDescriptor;
-    function  GetLanguageStrings:    TStringList;
+    function  GetDeviceStringAnsi   (Idx: Byte): string;
+    function  GetDeviceStringUnicode(Idx: Byte): WideString;
+    function  GetLinkCollectionNode (Idx: WORD): THIDPLinkCollectionNode;
+    function  GetConfiguration:         THIDDConfiguration;
+    function  GetPreparsedData:         PHIDPPreparsedData;
+    function  GetCaps:                  THIDPCaps;
+    function  GetVendorName:            WideString;
+    function  GetProductName:           WideString;
+    function  GetSerialNumber:          WideString;
+    function  GetPhysicalDescriptor:    TJvPhysicalDescriptor;
+    function  GetLanguageStrings:       TStringList;
+    function  GetOverlappedReadResult:  DWORD;
+    function  GetOverlappedWriteResult: DWORD;
     procedure SetConfiguration       (const Config: THIDDConfiguration);
     procedure SetNumInputBuffers     (const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
@@ -191,34 +193,38 @@ type
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
     constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
                           const Controller: TJvHidDeviceController);
+
   protected
     // internal event implementors
     procedure DoUnplug;
     procedure SetUnplug(const Event: TJvHidUnplugEvent);
+
   public
     // dummy constructor
     constructor Create;
     destructor Destroy; override;
 
     // read only properties
-    property Attributes:           THIDDAttributes       read FAttributes;
-    property Caps:                 THIDPCaps             read GetCaps;
-    property HasReadWriteAccess:   Boolean               read FHasReadWriteAccess;
-    property HidFileHandle:        THandle               read FHidFileHandle;
-    property HidOverlappedRead:    THandle               read FHidOverlappedRead;
-    property HidOverlappedWrite:   THandle               read FHidOverlappedWrite;
-    property IsCheckedOut:         Boolean               read FIsCheckedOut;
-    property IsPluggedIn:          Boolean               read FIsPluggedIn;
-    property LanguageStrings:      TStringList           read GetLanguageStrings;
-    property MaxButtonListLength:  ULONG                 read FMaxButtonListLength;
-    property MaxDataListLength:    ULONG                 read FMaxDataListLength;
-    property MaxUsageListLength:   ULONG                 read FMaxUsageListLength;
-    property PhysicalDescriptor:   TJvPhysicalDescriptor read GetPhysicalDescriptor;
-    property PnPInfo:              TJvHidPnPInfo         read FPnPInfo;
-    property PreparsedData:        PHIDPPreparsedData    read GetPreparsedData;
-    property ProductName:          WideString            read GetProductName;
-    property SerialNumber:         WideString            read GetSerialNumber;
-    property VendorName:           WideString            read GetVendorName;
+    property Attributes:               THIDDAttributes       read FAttributes;
+    property Caps:                     THIDPCaps             read GetCaps;
+    property HasReadWriteAccess:       Boolean               read FHasReadWriteAccess;
+    property HidFileHandle:            THandle               read FHidFileHandle;
+    property HidOverlappedRead:        THandle               read FHidOverlappedRead;
+    property HidOverlappedWrite:       THandle               read FHidOverlappedWrite;
+    property HidOverlappedReadResult:  DWORD                 read GetOverlappedReadResult;
+    property HidOverlappedWriteResult: DWORD                 read GetOverlappedWriteResult;
+    property IsCheckedOut:             Boolean               read FIsCheckedOut;
+    property IsPluggedIn:              Boolean               read FIsPluggedIn;
+    property LanguageStrings:          TStringList           read GetLanguageStrings;
+    property MaxButtonListLength:      ULONG                 read FMaxButtonListLength;
+    property MaxDataListLength:        ULONG                 read FMaxDataListLength;
+    property MaxUsageListLength:       ULONG                 read FMaxUsageListLength;
+    property PhysicalDescriptor:       TJvPhysicalDescriptor read GetPhysicalDescriptor;
+    property PnPInfo:                  TJvHidPnPInfo         read FPnPInfo;
+    property PreparsedData:            PHIDPPreparsedData    read GetPreparsedData;
+    property ProductName:              WideString            read GetProductName;
+    property SerialNumber:             WideString            read GetSerialNumber;
+    property VendorName:               WideString            read GetVendorName;
     // read write properties
     property Configuration:        THIDDConfiguration read GetConfiguration      write SetConfiguration;
     property LinkCollectionParam:  WORD               read FLinkCollectionParam  write FLinkCollectionParam;
@@ -985,6 +991,26 @@ begin
       CloseFile;
     end;
   Result := FLanguageStrings;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetOverlappedReadResult: DWORD;
+begin
+  Result := 0;
+  if HidOverlappedRead <> INVALID_HANDLE_VALUE then
+    if not GetOverlappedResult(HidOverlappedRead, FOvlRead, Result, False) then
+      Result := 0;
+end;
+
+//------------------------------------------------------------------------------
+
+function TJvHidDevice.GetOverlappedWriteResult: DWORD;
+begin
+  Result := 0;
+  if HidOverlappedWrite <> INVALID_HANDLE_VALUE then
+    if not GetOverlappedResult(HidOverlappedWrite, FOvlWrite, Result, False) then
+      Result := 0;
 end;
 
 //------------------------------------------------------------------------------

@@ -12,7 +12,11 @@ object InfoForm: TInfoForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
+  DesignSize = (
+    565
+    379)
   PixelsPerInch = 96
   TextHeight = 16
   object Label1: TLabel

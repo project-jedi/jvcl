@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, ComCtrls,
-  JvHidControllerClass, JvComponent;
+  JvHidControllerClass;
 
 type
   TForm1 = class(TForm)
@@ -40,14 +40,15 @@ end;
 procedure TForm1.EnumerateNodes(HidDev: TJvHidDevice;
    Parent: TTreeNode; Idx, Count: WORD);
 var
-  I: WORD;
+  I: Integer;
   Node: TTreeNode;
   UsagePageText: string;
   UsageText: string;
+  CollectionTypeText: string;
 begin
   // add a list of sibling nodes to the device tree node Parent
-  for I := 0 to Count-1 do
-  begin
+  I := 0;
+  repeat
     UsagePageText := '';
     UsageText := '';
     case HidDev.LinkCollectionNodes[Idx].LinkUsagePage of
@@ -212,17 +213,41 @@ begin
       UsageText := Format('Usage=%u',
         [HidDev.LinkCollectionNodes[Idx].LinkUsage]);
 
+    case HidDev.LinkCollectionNodes[Idx].CollectionType of
+      $00:
+        CollectionTypeText := 'Physical';
+      $01:
+        CollectionTypeText := 'Application';
+      $02:
+        CollectionTypeText := 'Logical';
+      $03:
+        CollectionTypeText := 'Report';
+      $04:
+        CollectionTypeText := 'Named Array';
+      $05:
+        CollectionTypeText := 'Usage Switch';
+      $06:
+        CollectionTypeText := 'Usage Modifier';
+      $07..$7F:
+        CollectionTypeText := Format('Reserved $%.2x',
+          [Cardinal(HidDev.LinkCollectionNodes[Idx].CollectionType)]);
+      $80..$FF:
+        CollectionTypeText := Format('Vendor-defined $%.2x',
+          [Cardinal(HidDev.LinkCollectionNodes[Idx].CollectionType)]);
+    end;
+
     Node := TreeView1.Items.AddChild(Parent,
-      UsagePageText + ': ' + UsageText);
+      UsagePageText + ': ' + UsageText + ' (' + CollectionTypeText + ')');
 
     // recurse to the children nodes
     if HidDev.LinkCollectionNodes[Idx].FirstChild <> 0 then
       EnumerateNodes(HidDev, Node,
-        HidDev.LinkCollectionNodes[Idx].FirstChild,
+        Idx + HidDev.LinkCollectionNodes[Idx].FirstChild,
          HidDev.LinkCollectionNodes[Idx].NumberOfChildren);
     // follow the link to the next sibling
     Idx := HidDev.LinkCollectionNodes[Idx].NextSibling;
-  end;
+    Inc(I);
+  until I >= Count;
 end;
 
 function TForm1.HidCtlEnumerate(HidDev: TJvHidDevice;
@@ -235,7 +260,7 @@ begin
   if Name = '' then
     Name := Format('VID=%.4x PID=%.4x', [HidDev.Attributes.VendorID, HidDev.Attributes.ProductID]);
   Node := TreeView1.Items.AddChild(FRoot, Name);
-  EnumerateNodes(HidDev, Node, 0, HidDev.LinkCollectionNodes[0].NumberOfChildren);
+  EnumerateNodes(HidDev, Node, 1, HidDev.LinkCollectionNodes[1].NumberOfChildren);
   TreeView1.FullExpand;
   Result := True;
 end;

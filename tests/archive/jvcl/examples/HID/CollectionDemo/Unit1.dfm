@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 407
   Top = 116
-  Width = 297
+  Width = 350
   Height = 422
   Caption = 'HID Collections'
   Color = clBtnFace
@@ -16,9 +16,10 @@ object Form1: TForm1
   object TreeView1: TTreeView
     Left = 0
     Top = 0
-    Width = 288
-    Height = 393
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Width = 342
+    Height = 392
+    Align = alClient
+    Anchors = []
     Indent = 19
     TabOrder = 0
   end
