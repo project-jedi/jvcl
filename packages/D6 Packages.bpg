@@ -20,7 +20,7 @@ PROJECTS = DJCL60.bpl JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl \
   JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl JvPageCompsD6R.bpl \
   JvPageCompsD6D.bpl JvValidatorsD6R.bpl JvValidatorsD6D.bpl JvUIBD6R.bpl \
   JvUIBD6D.bpl JvWizardD6R.bpl JvWizardD6D.bpl JvTimeFrameworkD6R.bpl \
-  JvTimeFrameworkD6D.bpl
+  JvTimeFrameworkD6D.bpl JvHMID6R.bpl JvHMID6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -172,4 +172,8 @@ JvTimeFrameworkD6R.bpl: d6\JvTimeFrameworkD6R.dpk
 JvTimeFrameworkD6D.bpl: d6\JvTimeFrameworkD6D.dpk
   $(DCC)
 
+JvHMID6R.bpl: d5\JvHMID6R.dpk
+  $(DCC)
 
+JvHMID6D.bpl: d5\JvHMID6D.dpk
+  $(DCC)
