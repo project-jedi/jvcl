@@ -37,7 +37,7 @@ Known Issues:
     * Added the component TJvWindowHook from JvHook
   }
 
-{.$I JVCL.INC}
+{$I JVCL.INC}
 
 unit JvWndProcHook;
 
@@ -86,6 +86,22 @@ type
       SetBeforeMessage;
     property AfterMessage: TJvHookMessageEvent read FAfterMessage write
       SetAfterMessage;
+  end;
+
+  { Maybe move to implementation section, and only declare a procedure, that
+    calls release in the interface section ? See also remark in TJvHookInfos.WindowProc }
+  TJvReleaser = class
+  private
+    FHandle: HWND;
+    function GetHandle: HWND;
+    procedure CMRelease(var Message: TMessage); message CM_Release;
+    procedure WndProc(var Message: TMessage);
+  public
+    destructor Destroy; override;
+    procedure DefaultHandler(var Message); override;
+    class function Instance: TJvReleaser;
+    procedure Release(AObject: TObject);
+    property Handle: HWND read GetHandle;
   end;
 
 function RegisterWndProcHook(AControl: TControl; Hook: TJvControlHook;
@@ -154,6 +170,7 @@ type
 
 var
   FJvWndProcHook: TJvWndProcHook = nil;
+  GReleaser: TJvReleaser = nil;
 
 function WndProcHook: TJvWndProcHook;
 begin
@@ -267,21 +284,32 @@ begin
 end;
 
 function TJvWndProcHook.IndexOf(AHandle: HWND): Integer;
-var
-  Ctrl: TWinControl;
 begin
-  Ctrl := FindControl(AHandle);
+  { The following code introduces a problem:
+
+    The handle of a control may change (by a call to RecreateWnd for example)
+    thus you may find a Ctrl by calling FindControl(AHandle) in RegisterWndProcHook
+    and then it's possible to _not_ find the same control in UnRegisterWndProcHook,
+    thus hooks may be left open unwanted.
+
+    Maybe there is a better way to identify hooks than (Handle x Hook x Order) or
+    ( Ctrl x Hook x Order ) (?)
+  }
+
+  {Ctrl := FindControl(AHandle);
   if Ctrl <> nil then
-    Result := IndexOf(Ctrl)
-  else
   begin
-    Result := 0;
-    while (Result < FHookInfos.Count) and
-      (TJvHookInfos(FHookInfos[Result]).Handle <> AHandle) do
-      Inc(Result);
-    if Result = FHookInfos.Count then
-      Result := -1;
-  end;
+    Result := IndexOf(Ctrl);
+    if Result >= 0 then
+      Exit;
+  end;}
+
+  Result := 0;
+  while (Result < FHookInfos.Count) and
+    (TJvHookInfos(FHookInfos[Result]).Handle <> AHandle) do
+    Inc(Result);
+  if Result = FHookInfos.Count then
+    Result := -1;
 end;
 
 procedure TJvWndProcHook.Notification(AComponent: TComponent;
@@ -290,8 +318,7 @@ var
   I: Integer;
 begin
   inherited;
-  if (Operation = opRemove) and (FHookInfos <> nil) and (AComponent is TControl)
-    then
+  if (Operation = opRemove) and (FHookInfos <> nil) and (AComponent is TControl) then
   begin
     I := IndexOf(TControl(AComponent));
     if I >= 0 then
@@ -466,7 +493,11 @@ begin
   begin
     TMethod(FOldWndProc).Data := nil;
     TMethod(FOldWndProc).Code := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
+{$IFDEF COMPILER6_UP}
+    SetWindowLong(FHandle, GWL_WNDPROC, Integer(Classes.MakeObjectInstance(WindowProc)));
+{$ELSE}
     SetWindowLong(FHandle, GWL_WNDPROC, Integer(MakeObjectInstance(WindowProc)));
+{$ENDIF}
     FHooked := True;
   end;
 end;
@@ -487,7 +518,11 @@ begin
     Ptr := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
     SetWindowLong(FHandle, GWL_WNDPROC, Integer(TMethod(FOldWndProc).Code));
     FHooked := False;
+{$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(Ptr);
+{$ELSE}
     FreeObjectInstance(Ptr);
+{$ENDIF}
   end;
 end;
 
@@ -524,7 +559,8 @@ begin
   if TMethod(FOldWndProc).Data <> nil then
     FOldWndProc(Message)
   else
-    Message.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Message.Msg, Message.WParam, Message.LParam);
+    Message.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Message.Msg,
+      Message.WParam, Message.LParam);
 
   HookInfo := FFirst[hoAfterMsg];
   while HookInfo <> nil do
@@ -538,15 +574,24 @@ begin
   if (Control = nil) and (Message.Msg = WM_DESTROY) then
   begin
     // Handle is being destroyed: remove all hooks on this window
+
+    { This looks like a nice function candidate }
     with WndProcHook do
     begin
-      I := IndexOf(Handle);
+      I := FHookInfos.IndexOf(Self);
       if I >= 0 then
-      begin
-        TJvHookInfos(FHookInfos[I]).Free;
         FHookInfos.Delete(I);
-      end;
     end;
+
+    { We could unhook later (or never (?)) but now is a good time }
+    UnhookControl;
+
+    { Now must this object free _itself_, but that is kinda risky (?)
+
+      Therefore I introduced TJvReleaser, if this is a silly idea please remove
+      it :)
+    }
+    TJvReleaser.Instance.Release(Self);
   end;
 end;
 
@@ -614,8 +659,9 @@ begin
     if AComponent = Control then
       Control := nil
         { Correct? }
-    else if (Owner = AComponent) or (Owner = nil) then
-      Control := nil;
+    else
+      if (Owner = AComponent) or (Owner = nil) then
+        Control := nil;
   end;
 end;
 
@@ -665,8 +711,9 @@ begin
     { Only register if assigned, to prevent unnecessarily overhead }
     if Assigned(Value) and not Assigned(FAfterMessage) then
       WndProcHook.RegisterWndProc(FControl, DoAfterMessage, hoAfterMsg)
-    else if not Assigned(Value) and Assigned(FAfterMessage) then
-      WndProcHook.UnRegisterWndProc(FControl, DoAfterMessage, hoAfterMsg);
+    else
+      if not Assigned(Value) and Assigned(FAfterMessage) then
+        WndProcHook.UnRegisterWndProc(FControl, DoAfterMessage, hoAfterMsg);
   end;
   FAfterMessage := Value;
 end;
@@ -678,8 +725,9 @@ begin
     { Only register if assigned, to prevent unnecessarily overhead }
     if Assigned(Value) and not Assigned(FBeforeMessage) then
       WndProcHook.RegisterWndProc(FControl, DoBeforeMessage, hoBeforeMsg)
-    else if not Assigned(Value) and Assigned(FBeforeMessage) then
-      WndProcHook.UnRegisterWndProc(FControl, DoBeforeMessage, hoBeforeMsg);
+    else
+      if not Assigned(Value) and Assigned(FBeforeMessage) then
+        WndProcHook.UnRegisterWndProc(FControl, DoBeforeMessage, hoBeforeMsg);
   end;
   FBeforeMessage := Value;
 end;
@@ -714,9 +762,70 @@ begin
   Writer.WriteBoolean(IsForm);
 end;
 
+{ TJvReleaser }
+
+procedure TJvReleaser.CMRelease(var Message: TMessage);
+var
+  Obj: TObject;
+begin
+  Obj := TObject(Message.WParam);
+  Obj.Free;
+end;
+
+procedure TJvReleaser.DefaultHandler(var Message);
+begin
+  with TMessage(Message) do
+    if FHandle <> 0 then
+      Result := CallWindowProc(@DefWindowProc, FHandle, Msg, wParam, lParam);
+end;
+
+destructor TJvReleaser.Destroy;
+begin
+  if FHandle <> 0 then
+{$IFDEF COMPILER6_UP}
+    Classes.DeallocateHWnd(FHandle);
+{$ELSE}
+    DeallocateHWnd(FHandle);
+{$ENDIF}
+end;
+
+function TJvReleaser.GetHandle: HWND;
+begin
+  if FHandle = 0 then
+{$IFDEF COMPILER6_UP}
+    FHandle := Classes.AllocateHwnd(WndProc);
+{$ELSE}
+    FHandle := AllocateHwnd(WndProc);
+{$ENDIF}
+  Result := FHandle;
+end;
+
+class function TJvReleaser.Instance: TJvReleaser;
+begin
+  if GReleaser = nil then
+    GReleaser := TJvReleaser.Create;
+  Result := GReleaser;
+end;
+
+procedure TJvReleaser.Release(AObject: TObject);
+begin
+  PostMessage(Handle, CM_Release, Integer(AObject), 0);
+end;
+
+procedure TJvReleaser.WndProc(var Message: TMessage);
+begin
+  try
+    Dispatch(Message);
+  except
+    if Assigned(ApplicationHandleException) then
+      ApplicationHandleException(Self);
+  end;
+end;
+
 initialization
 
 finalization
   FJvWndProcHook.Free;
+  GReleaser.Free;
 end.
 
