@@ -73,6 +73,14 @@ type
 
   {$ENDIF COMPILER5}
 
+  IPageList = interface
+    ['{6BB90183-CFB1-4431-9CFD-E9A032E0C94C}']
+    function CanChange(AIndex: Integer): Boolean;
+    procedure SetActivePageIndex(AIndex: Integer);
+    function GetPageCount: Integer;
+    function GetPageCaption(AIndex: Integer): string;
+  end;
+
   TJvTabBarItem = class(TCollectionItem)
   private
     FLeft: Integer; // used for calculating DisplayRect
@@ -273,6 +281,7 @@ type
     FAutoFreeClosed: Boolean;
     FAllowUnselected: Boolean;
     FSelectBeforeClose: Boolean;
+    FPageList: TCustomControl;
 
     FOnTabClosing: TJvTabBarClosingEvent;
     FOnTabSelected: TJvTabBarItemEvent;
@@ -309,6 +318,7 @@ type
     function FindSelectableTab(Tab: TJvTabBarItem): TJvTabBarItem;
     procedure SetHint(const Value: TCaption);
     procedure SetFlatScrollButtons(const Value: Boolean);
+    procedure SetPageList(const Value: TCustomControl);
   protected
     procedure Resize; override;
     procedure CalcTabsRects;
@@ -348,6 +358,7 @@ type
     destructor Destroy; override;
 
     function AddTab(const Caption: string): TJvTabBarItem;
+    function FindTab(const Caption: string): TJvTabBarItem; // returns the first tab with the given Caption
     function TabAt(X, Y: Integer): TJvTabBarItem;
     function MakeVisible(Tab: TJvTabBarItem): Boolean;
     function FindData(Data: TObject): TJvTabBarItem;
@@ -357,6 +368,7 @@ type
     property Tabs: TJvTabBarItems read FTabs write SetTabs;
     property Painter: TJvTabBarPainter read FPainter write SetPainter;
     property Images: TImageList read FImages write SetImages;
+    property PageList: TCustomControl read FPageList write SetPageList;
 
     // Status
     property SelectedTab: TJvTabBarItem read FSelectedTab write SetSelectedTab;
@@ -406,6 +418,7 @@ type
     property Tabs;
     property Painter;
     property Images;
+    property PageList;
 
     property OnTabClosing;
     property OnTabClosed;
@@ -463,6 +476,7 @@ procedure TCanvasX.LineTo(X, Y: Integer);
 var
   C: TColor;
 begin
+  // Should be replaced because GetPixel is not really working under Linux
   C := Pixels[X, Y];
   inherited LineTo(X, Y);
   Pixels[X, Y] := C;
@@ -534,7 +548,10 @@ begin
       Painter := nil
     else
     if Component = FImages then
-      Images := nil;
+      Images := nil
+    else
+    if Component = FPageList then
+      PageList := nil;
   end;
   if Assigned(FTabs) then
     for I := Tabs.Count - 1 downto 0 do
@@ -707,7 +724,14 @@ begin
 end;
 
 procedure TJvCustomTabBar.TabSelected(Tab: TJvTabBarItem);
+var
+  PageListIntf: IPageList;
 begin
+  if Assigned(PageList) and Supports(PageList, IPageList, PageListIntf) then
+  begin
+    PageListIntf.SetActivePageIndex(Tab.Index);
+    PageListIntf := nil; // who knows what OnTabSelected does with the PageList
+  end;
   if Assigned(FOnTabSelected) then
     FOnTabSelected(Self, Tab);
 end;
@@ -978,6 +1002,19 @@ function TJvCustomTabBar.AddTab(const Caption: string): TJvTabBarItem;
 begin
   Result := TJvTabBarItem(Tabs.Add);
   Result.Caption := Caption;
+end;
+
+function TJvCustomTabBar.FindTab(const Caption: string): TJvTabBarItem;
+var
+  i: Integer;
+begin
+  for i := 0 to Tabs.Count - 1 do
+    if Caption = Tabs[i].Caption then
+    begin
+      Result := Tabs[i];
+      Exit;
+    end;
+  Result := nil;
 end;
 
 procedure TJvCustomTabBar.CalcTabsRects;
@@ -1284,6 +1321,30 @@ begin
     FreeAndNil(FBtnLeftScroll);
     FreeAndNil(FBtnRightScroll);
     UpdateScrollButtons;
+  end;
+end;
+
+procedure TJvCustomTabBar.SetPageList(const Value: TCustomControl);
+var
+  PageListIntf: IPageList;
+begin
+  if Value <> FPageList then
+  begin
+    if Value <> nil then
+    begin
+      if not Supports(Value, IPageList, PageListIntf) then
+        Exit;
+      if SelectedTab <> nil then
+        PageListIntf.SetActivePageIndex(SelectedTab.Index)
+      else
+        PageListIntf.SetActivePageIndex(0);
+      PageListIntf := nil;
+    end;
+    if Assigned(FPageList) then
+      FPageList.RemoveFreeNotification(Self);
+    FPageList := Value;
+    if Assigned(FPageList) then
+      FPageList.FreeNotification(Self);
   end;
 end;
 
@@ -1738,6 +1799,14 @@ begin
       end;
     end;
 
+    if Tab.Enabled and not Tab.Selected and Tab.Hot then
+    begin
+      // hot
+      Pen.Color := DividerColor;
+      MoveTo(R.Left, R.Top);
+      LineTo(R.Right - 1 - 1, R.Top);
+    end;
+
     if Tab.TabBar.CloseButton then
     begin
       // close button color
@@ -1745,14 +1814,6 @@ begin
         Brush.Color := CloseColorSelected
       else
         Brush.Color := CloseColor;
-
-      if Tab.Enabled and not Tab.Selected and Tab.Hot then
-      begin
-        // hot
-        Pen.Color := DividerColor;
-        MoveTo(R.Left, R.Top);
-        LineTo(R.Right - 1 - 1, R.Top);
-      end;
 
       CloseR := GetCloseRect(Canvas, Tab, Tab.DisplayRect);
       Pen.Color := CloseRectColor;
@@ -1995,6 +2056,7 @@ begin
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
