@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Tim Sullivan [tim@uil.net]
 Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 
-Contributor(s): Ralf Steinhaeusser [ralfiii@gmx.net].
+Contributor(s):
+Ralf Steinhaeusser [ralfiii@gmx.net].
+Steefan Lesage - converted to use new OTA
 
-Last Modified: 2002-09-02
+Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

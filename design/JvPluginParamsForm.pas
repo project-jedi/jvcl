@@ -15,8 +15,9 @@ Portions created by Ralf Steinhaeusser are Copyright (C) 2001 Ralf Steinhaeusser
 All Rights Reserved.
 
 Contributor(s):
+Stefaan Lesage - converted to use new OTA
 
-Last Modified: 2002-09-02
+Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +32,7 @@ unit JvPluginParamsForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmPluginParams = class(TForm)
@@ -42,14 +43,17 @@ type
     rbPackage: TRadioButton;
     rbDLL: TRadioButton;
     lblCreateInfo: TLabel;
-    Label1: TLabel;
+    lblPluginName: TLabel;
+    lblLabel1: TLabel;
     edtPluginAuthor: TEdit;
-    Label2: TLabel;
+    lblDescription: TLabel;
+    mmoDescripton: TMemo;
     edtPluginCopyright: TEdit;
-    Label3: TLabel;
-    mmoDescripton: TRichEdit;
+    lblLabel2: TLabel;
     edtPluginUID: TEdit;
-    Label4: TLabel;
+    lblLabel3: TLabel;
+    lblLabel4: TLabel;
+    edtPluginHostProject: TEdit;
     procedure SettingsChanged(Sender: TObject);
     procedure FormShow(Sender: TObject);
   end;
@@ -59,10 +63,12 @@ var
 
 implementation
 
-uses
-  JvTypes;
+//uses
+//  JvTypes;
 
 const
+  CrLf = #13#10;
+
   SInfoText = 'The settings above will create the following project:' +
     CrLf + CrLf +
     '* A project called Plg%0:s.%1:s' + CrLf +
@@ -82,6 +88,7 @@ procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
 begin
   lblCreateInfo.Caption := Format(SInfoText, [edtPluginName.Text, RbToPrjExt]);
   butOK.Enabled := Trim(edtPluginName.Text) <> '';
+  edtPluginUID.Text := 'JVCL.' + edtPluginHostProject.Text + '.Plg' + edtPluginName.Text;
 end;
 
 procedure TfrmPluginParams.FormShow(Sender: TObject);
