@@ -32,6 +32,9 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
+  {$IFDEF CLR}
+  Types,
+  {$ENDIF CLR}
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
@@ -1664,9 +1667,9 @@ begin
   Result.cx := Canvas.TextWidth(Tab.Caption) + 11;
   Result.cy := Canvas.TextHeight(Tab.Caption + 'Ag') + 7;
   if Tab.TabBar.CloseButton then
-    Inc(Result.cx, 15);
+    Result.cx := Result.cx + 15;
   if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then
-    Inc(Result.cx, Tab.GetImages.Width + 2);
+    Result.cx := Result.cx + Tab.GetImages.Width + 2;
 end;
 
 function TJvModernTabBarPainter.Options: TJvTabBarPainterOptions;
