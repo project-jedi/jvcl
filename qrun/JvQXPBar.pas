@@ -58,7 +58,8 @@ uses
   
   
   Types, Qt, QControls, QGraphics, QForms, QImgList, QActnList,
-  QWindows, QTypes, QExtCtrls, JvQTypes,
+  QWindows, QTypes, QExtCtrls,
+  JvQTypes,
   
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
@@ -71,11 +72,11 @@ type
   TJvXPBarRollMode = (rmFixed, rmShrink); // rmFixed is default
 
   TJvXPBarHitTest =
-    (
-    htNone, // mouse is inside non-supported rect
-    htHeader, // mouse is inside header
+   (
+    htNone,      // mouse is inside non-supported rect
+    htHeader,    // mouse is inside header
     htRollButton // mouse is inside rollbutton
-    );
+   );
 
   TJvXPBarRollDelay = 1..200;
   TJvXPBarRollStep = 1..50;
@@ -1278,7 +1279,9 @@ begin
       Self.GradientTo := GradientTo;
       Self.GradientFrom := GradientFrom;
       Self.SeparatorColor := SeparatorColor;
+      Exit;
     end;
+  inherited Assign(Source);
 end;
 
 procedure TJvXPBarColors.Change;
@@ -1478,7 +1481,7 @@ begin
   if IsLocked then
     Exit;
   NewHeight := FC_HEADER_MARGIN + HeaderHeight + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
-{ full collapsing }
+  { full collapsing }
   if ((FRolling and not FCollapsed) or (not FRolling and FCollapsed) or
     (FVisibleItems.Count = 0)) then
     Dec(NewHeight, FC_ITEM_MARGIN);
@@ -1544,7 +1547,7 @@ end;
 
 procedure TJvXPCustomWinXPBar.ItemVisibilityChanged(Item: TJvXPBarItem);
 begin
-// update visible-item list
+  // update visible-item list
   if Item.Visible then
     FVisibleItems.Add(Item)
   else

@@ -302,13 +302,13 @@ type
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
@@ -316,31 +316,34 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   private
-  
-  
+
+
     FAboutJVCLX: TJVCLAboutInfo;
   published
     property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
-  
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  
+
   private
+    FColor: TColor;
     FText: TCaption; // TControl does not save the Caption property
   protected
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure PaintRequest; override;
-  
+    function GetColor: TColor;
+    procedure SetColor(const Value: TColor);
+  published
+    property Color: TColor read GetColor write SetColor;
   end;
   TJvExPubGraphicControl = class(TJvExGraphicControl)
-  
-  end;
-  
 
-  
+  end;
+
+
+
   
   TJvExCustomControl = class(TCustomControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   
@@ -1230,6 +1233,20 @@ begin
   end;
 end;
 
+function TJvExGraphicControl.GetColor: TColor;
+begin
+  Result := FColor;
+end;
+
+procedure TJvExGraphicControl.SetColor(const Value: TColor);
+begin
+  if Value <> FColor then
+  begin
+    FColor := Value;
+    inherited Color := value;
+  end;
+end;
+
 procedure TJvExGraphicControl.PaintRequest;
 begin
   Canvas.Start;
@@ -1343,7 +1360,7 @@ end;
 
 procedure TJvExCustomControl.SetDoubleBuffered(Value: Boolean);
 begin
-  if Value <> FDoubleBuffered then
+  if Value <> FDoubleBuffered and Assigned(handle) then
   begin
     if Value then
       QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)

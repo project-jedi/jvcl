@@ -258,16 +258,19 @@ end;
 
 procedure TJvTimerEvent.Assign(Source: TPersistent);
 begin
-  if (Source is TJvTimerEvent) and (Source <> Self) then
+  if Source is TJvTimerEvent then
   begin
-    Cycled := TJvTimerEvent(Source).Cycled;
-    Enabled := TJvTimerEvent(Source).Enabled;
-    Interval := TJvTimerEvent(Source).Interval;
-    Name := TJvTimerEvent(Source).Name;
-    RepeatCount := TJvTimerEvent(Source).RepeatCount;
-    Exit;
-  end;
-  inherited;
+    if Source <> Self then
+    begin
+      Cycled := TJvTimerEvent(Source).Cycled;
+      Enabled := TJvTimerEvent(Source).Enabled;
+      Interval := TJvTimerEvent(Source).Interval;
+      Name := TJvTimerEvent(Source).Name;
+      RepeatCount := TJvTimerEvent(Source).RepeatCount;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== TJvTimerList ===========================================================
@@ -461,9 +464,9 @@ begin
     Clear;
     for I := 0 to TJvTimerEvents(Source).Count - 1 do
       Add.Assign(TJvTimerEvents(Source).Items[I]);
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvTimerEvents.CalculateInterval(StartTicks: Integer);

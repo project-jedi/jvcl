@@ -280,14 +280,16 @@ end;
 
 procedure TJvMacro.Assign(Source: TPersistent);
 begin
-  if (Source is TJvMacro) and (Source <> nil) then
+  if Source is TJvMacro then
   begin
     if VarIsEmpty(TJvMacro(Source).FData) then
       Clear
     else
       Value := TJvMacro(Source).FData;
     Name := TJvMacro(Source).Name;
+    Exit;
   end;
+  inherited Assign(Source);
 end;
 
 function TJvMacro.GetDisplayName: string;
@@ -302,7 +304,7 @@ procedure TJvMacro.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvMacros) and (TJvMacros(Collection).IndexOf(Value) >= 0) then
-    raise EJVCLException.Create(SDuplicateString);
+    raise EJVCLException.CreateRes(@SDuplicateString);
   FName := Value;
   inherited SetDisplayName(Value);
 end;
@@ -414,7 +416,7 @@ function TJvMacros.MacroByName(const Value: string): TJvMacro;
 begin
   Result := FindMacro(Value);
   if Result = nil then
-    raise EJVCLException.Create(SInvalidPropertyValue);
+    raise EJVCLException.CreateRes(@SInvalidPropertyValue);
 end;
 
 function TJvMacros.FindMacro(const Value: string): TJvMacro;
