@@ -72,6 +72,7 @@ var
   cl: TRect;
 begin
   FActive := Value;
+  if csDesigning in ComponentState then Exit; // should really not be hidden at design-time ???
   cl := FForm.ClientRect;
   if FActive then
   begin
