@@ -668,8 +668,7 @@ type
     FOnBackButtonClick: TJvWizardPageClickEvent;
     FOnCancelButtonClick: TJvWizardPageClickEvent;
     FOnFinishButtonClick: TJvWizardPageClickEvent;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    FOnHelpButtonClick:TJvWizardPageClickEvent;
+    FOnHelpButtonClick:TJvWizardPageClickEvent;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetWizard(AWizard: TJvWizard);
@@ -745,8 +744,7 @@ type
     property OnBackButtonClick: TJvWizardPageClickEvent read FOnBackButtonClick write FOnBackButtonClick;
     property OnCancelButtonClick: TJvWizardPageClickEvent read FOnCancelButtonClick write FOnCancelButtonClick;
     property OnFinishButtonClick: TJvWizardPageClickEvent read FOnFinishButtonClick write FOnFinishButtonClick;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    property OnHelpButtonClick:TJvWizardPageClickEvent read FOnHelpButtonClick write FOnHelpButtonClick;
+    property OnHelpButtonClick:TJvWizardPageClickEvent read FOnHelpButtonClick write FOnHelpButtonClick;
   end;
 
   { YW - Wizard Welcome Page }
@@ -803,8 +801,7 @@ type
     FOnSelectLastPage: TJvWizardSelectPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    FAutoHideButtonBar: boolean;
+    FAutoHideButtonBar: boolean;
     {$IFNDEF USEJVCL}
     FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
     {$ENDIF !USEJVCL}
@@ -832,10 +829,8 @@ type
     {$ENDIF VCL}
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    procedure SetAutoHideButtonBar(const Value: boolean);
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    function GetWizardPages(Index: integer): TJvWizardCustomPage;  // Nonn
+    procedure SetAutoHideButtonBar(const Value: boolean);
+    function GetWizardPages(Index: integer): TJvWizardCustomPage;  // Nonn
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -846,9 +841,7 @@ type
     procedure InsertPage(Page: TJvWizardCustomPage);
     procedure RemovePage(Page: TJvWizardCustomPage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetButtonControlClass(
-      AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
-    property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
+    function GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -866,17 +859,16 @@ type
     property ActivePageIndex: Integer
       read GetActivePageIndex write SetActivePageIndex;
     property PageCount: Integer read GetPageCount;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    property WizardPages[Index:integer]:TJvWizardCustomPage read GetWizardPages;
+    property WizardPages[Index:integer]:TJvWizardCustomPage read GetWizardPages;
   published
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    property AutoHideButtonBar:boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property Pages: TJvWizardPageList read FPages;
     {$IFNDEF USEJVCL}
     // Add by Steve Forbes
     property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
     {$ENDIF !USEJVCL}
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
+    property AutoHideButtonBar:boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
+    property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
     property ButtonStart: TJvWizardNavigateButton read FNavigateButtons[bkStart] write FNavigateButtons[bkStart];
     property ButtonLast: TJvWizardNavigateButton read FNavigateButtons[bkLast] write FNavigateButtons[bkLast];
     property ButtonBack: TJvWizardNavigateButton read FNavigateButtons[bkBack] write FNavigateButtons[bkBack];
@@ -897,8 +889,7 @@ type
     property OnNextButtonClick: TNotifyEvent index bkNext read GetButtonClick write SetButtonClick;
     property OnFinishButtonClick: TNotifyEvent index bkFinish read GetButtonClick write SetButtonClick;
     property OnCancelButtonClick: TNotifyEvent index bkCancel read GetButtonClick write SetButtonClick;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    property OnHelpButtonClick: TNotifyEvent index bkHelp  read GetButtonClick write SetButtonClick;
+    property OnHelpButtonClick: TNotifyEvent index bkHelp  read GetButtonClick write SetButtonClick;
     property Color;
     property Font;
     property Enabled;
@@ -1004,9 +995,8 @@ type
 
   { YW - Help Button }
   TJvWizardHelpButton = class(TJvWizardBaseButton)
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//  protected
-//    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
+  protected
+    procedure ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
@@ -1228,7 +1218,14 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     if Assigned(FWizard) and Assigned(FWizard.ActivePage) then
-      ID := FWizard.ActivePage.HelpContext
+    begin
+      if Assigned(FWizard.ActivePage.OnHelpButtonClick) then // MF
+      begin
+        inherited Click;
+        Exit;
+      end;
+      ID := FWizard.ActivePage.HelpContext;
+    end
     else
       ID := GetParentForm(Self).HelpContext;
   end;
@@ -1241,16 +1238,13 @@ begin
     Application.ContextHelp(ID);
     {$ENDIF VisualCLX}
   end;
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//  inherited;
 end;
 
-{ TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-{procedure TJvWizardHelpButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
+procedure TJvWizardHelpButton.ButtonClick(Page: TJvWizardCustomPage; var Stop: Boolean);
 begin
   if Assigned(Page.FOnHelpButtonClick) then
     Page.FOnHelpButtonClick(Page, Stop);
-end;}
+end;
 
 { TJvWizardNavigateButton }
 
@@ -2459,14 +2453,13 @@ begin
     begin
       { YW - if there is no buttons are visible, then we don't need
         to display the button bar. }
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//      if FWizard.AutoHideButtonBar then
-//      begin
+      if FWizard.AutoHideButtonBar then
+      begin
         if FVisibleButtons = [] then
           FWizard.ButtonBarHeight := 0
         else
           FWizard.ButtonBarHeight := ciButtonBarHeight;
-//      end;
+      end;
       Invalidate;
     end;
   end;
@@ -2818,14 +2811,13 @@ begin
     FActivePage := Page;
     if Assigned(FRouteMap) then
       FRouteMap.DoActivatePage(FActivePage);
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-//    if AutoHideButtonBar then
-//    begin
+    if AutoHideButtonBar then
+    begin
       if Assigned(FActivePage) and (FActivePage.FVisibleButtons = []) then
         ButtonBarHeight := 0
       else
         ButtonBarHeight := ciButtonBarHeight;
-//    end;
+    end;
     { YW - At design time, if the Page's Enabled property set to false,
       the following if block never gets called. }
     if Assigned(ParentForm) and Assigned(FActivePage) and
@@ -3167,67 +3159,7 @@ begin
     (FromPage.PageIndex < ToPage.PageIndex));
 end;
 
-{function TJvWizard.GetBackButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkBack);
-end;
-
-function TJvWizard.GetCancelButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkCancel);
-end;
-
-function TJvWizard.GetFinishButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkFinish);
-end;
-
-function TJvWizard.GetLastButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkLast);
-end;
-
-function TJvWizard.GetNextButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkNext);
-end;
-
-function TJvWizard.GetStartButtonClick: TNotifyEvent;
-begin
-  Result := GetButtonClick(bkStart);
-end;
-
-procedure TJvWizard.SetBackButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkBack, Value);
-end;
-
-procedure TJvWizard.SetCancelButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkCancel, Value);
-end;
-
-procedure TJvWizard.SetFinishButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkFinish, Value);
-end;
-
-procedure TJvWizard.SetLastButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkLast, Value);
-end;
-
-procedure TJvWizard.SetNextButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkNext, Value);
-end;
-
-procedure TJvWizard.SetStartButtonClick(const Value: TNotifyEvent);
-begin
-  SetButtonClick(bkStart, Value);
-end;}
-    { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
-{procedure TJvWizard.SetAutoHideButtonBar(const Value: boolean);
+procedure TJvWizard.SetAutoHideButtonBar(const Value: boolean);
 begin
   if FAutoHideButtonBar <> Value then
   begin
@@ -3240,7 +3172,7 @@ end;
 function TJvWizard.GetWizardPages(Index: integer): TJvWizardCustomPage;
 begin
   Result := TJvWizardCustomPage(Pages[Index]);
-end;}
+end;
 
 end.
 
