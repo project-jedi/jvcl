@@ -45,39 +45,39 @@ Description
 Parameters
   AFileName - Specifies the name of the file.
 See Also
-  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, TJvId3v1.Erase, <LINK WriteID3v1Tag>
+  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, TJvID3v1.Erase, <LINK WriteID3v1Tag>
 ----------------------------------------------------------------------------------------------------
-@@TId3v1Tag
-<TITLE TId3v1Tag type>
+@@TID3v1Tag
+<TITLE TID3v1Tag type>
 Summary
   Represents an ID3v1 tag.
 Description
-  Use the TId3v1Tag to represent an ID3v1 tag.
-@@TId3v1Tag.Identifier
+  Use the TID3v1Tag to represent an ID3v1 tag.
+@@TID3v1Tag.Identifier
   The tag is valid if this field contains the \string "TAG". This has to be uppercase!
-@@TId3v1Tag.SongName
+@@TID3v1Tag.SongName
   Contains the title of the MP3.
-@@TId3v1Tag.Artist
+@@TID3v1Tag.Artist
   Contains the artist of the MP3.
-@@TId3v1Tag.Album
+@@TID3v1Tag.Album
   Contains the album where the MP3 comes from.
-@@TId3v1Tag.Year
+@@TID3v1Tag.Year
   Contains the year when this song has originally been released.
-@@TId3v1Tag.Comment
+@@TID3v1Tag.Comment
   Contains a comment for the MP3. Revision to this field has been made in ID3v1.1.
-@@TId3v1Tag.Genre
+@@TID3v1Tag.Genre
   Contains the offset of a genre in a <LINK TJvID3Genre_Table,predefined list>, the byte is treated
   as an unsigned byte. The offset is starting from 0.
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1
-<TITLEIMG TJvId3v1>
+@@TJvID3v1
+<TITLEIMG TJvID3v1>
 JVCLInfo
   GROUP=JVCL.Multimedia.Audio
   FLAG=Component
 Summary
   Gives access to a file's ID3v1 tag.
 Description
-  Use the TJvId3v1 component to read, alter or remove the ID3v1 tag of a file.
+  Use the TJvID3v1 component to read, alter or remove the ID3v1 tag of a file.
 
   * To read a tag, set FileName to a name of a file, then set Active to True. \Now the
     properties - such as Album, Artist - of the component give access to the fields of the ID3v1
@@ -88,7 +88,7 @@ Description
   * Alternatively, to remove a file's ID3v1 tag, set FileName to a name of file and call Erase. You
     don't have to set Active to True.
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Active
+@@TJvID3v1.Active
 Summary
   Specifies whether or not the ID3v1 component is \open.
 Description
@@ -99,7 +99,7 @@ Description
 See Also
   Close, FileName, Open, <LINK ReadID3v1Tag>, Refresh
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Album
+@@TJvID3v1.Album
 Summary
   Specifies the album where the MP3 comes from.
 Description
@@ -109,7 +109,7 @@ Description
 See Also
   AlbumTrack, Artist, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.AlbumTrack
+@@TJvID3v1.AlbumTrack
 Summary
   Specifies the tracknumber of the MP3.
 Description
@@ -125,7 +125,7 @@ Description
 See Also
   Album, Artist, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Artist
+@@TJvID3v1.Artist
 Summary
   Specifies the artist of the MP3
 Description
@@ -135,7 +135,7 @@ Description
 See Also
   Album, AlbumTrack, Comment, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Close
+@@TJvID3v1.Close
 Summary
   Deactivates the component.
 Description
@@ -144,7 +144,7 @@ Description
 See Also
   Active, FileName, Open
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Comment
+@@TJvID3v1.Comment
 Summary
   Specifies a comment for the MP3.
 Description
@@ -160,7 +160,7 @@ Description
 See Also
   Album, AlbumTrack, Artist, Genre, SongName, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Commit
+@@TJvID3v1.Commit
 Summary
   Writes the ID3v1 tag to the file.
 Description
@@ -173,7 +173,7 @@ Return value
 See Also
   Active, Erase, HasTag, <LINK WriteID3v1Tag>
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Erase
+@@TJvID3v1.Erase
 Summary
   Removes the ID3v1 tag.
 Description
@@ -182,7 +182,7 @@ Description
 See Also
   Active, Commit, HasTag, <LINK RemoveID3v1Tag>
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.FileName
+@@TJvID3v1.FileName
 Summary
   Specifies the file containing an ID3v1 tag.
 Description
@@ -194,7 +194,7 @@ Description
 See Also
   Active, Close, Erase, HasTag, Open
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Genre
+@@TJvID3v1.Genre
 Summary
   Specifies the offset of a genre in a <LINK TJvID3Genre_Table, predefined list>.
 Description
@@ -205,7 +205,7 @@ Description
 See Also
   Album, AlbumTrack, Artist, Comment, GenreAsString, <LINK ID3_Genres>, SongName, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.GenreAsString
+@@TJvID3v1.GenreAsString
 Summary
   Specifies the genre as \string for the MP3.
 Description
@@ -216,7 +216,7 @@ Description
 See Also
   Genre, <LINK ID3_Genres>
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.HasTag
+@@TJvID3v1.HasTag
 Summary
   Indicates whether the MP3 file has an ID3v1 tag.
 Description
@@ -224,7 +224,7 @@ Description
 See Also
   Active, Commit, Erase, HasID3v1Tag, Open
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Open
+@@TJvID3v1.Open
 Summary
   Activates the component.
 Description
@@ -236,7 +236,7 @@ Description
 See Also
   Active, Close, FileName, HasTag
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Refresh
+@@TJvID3v1.Refresh
 Summary
   Rereads the ID3v1 tag.
 Description
@@ -245,7 +245,7 @@ Description
 See Also
   Active, HasTag, Open
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.SongName
+@@TJvID3v1.SongName
 Summary
   Specifies the title of the MP3.
 Description
@@ -255,7 +255,7 @@ Description
 See Also
   Album, AlbumTrack, Artist, Comment, Genre, Year
 ----------------------------------------------------------------------------------------------------
-@@TJvId3v1.Year
+@@TJvID3v1.Year
 Summary
   Specifies the year when this song has originally been released.
 Description
@@ -278,13 +278,13 @@ Parameters
   AFileName - Specifies the name of the file.
   ATag      - Specifies the new tag data for the file.
 See Also
-  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>, TJvId3v1.Commit
+  <LINK HasID3v1Tag>, <LINK ReadID3v1Tag>, <LINK RemoveID3v1Tag>, TJvID3v1.Commit
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Genre_Table
 <TITLE ID3 Genres Table>
 <HASTOCENTRY OFF>
 JVCLInfo
-  GROUP=TJvId3v1.Genre
+  GROUP=TJvID3v1.Genre
 Description
   The genres with offset 0 to 79 are defined in ID3v1. The other genres are Winamp extensions.
 
