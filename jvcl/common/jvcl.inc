@@ -45,7 +45,8 @@ Known Issues:
 
 { Activate this define if you have Mike Lischke's Theme Manager
   (http:// www.lischke-online.de) installed and available and
-  you are using D6/BCB6 or below }
+  you are using D6/BCB6 or below. The ThemeManager package must
+  be compiled as "never-build package". }
 {.$DEFINE JVCLThemesEnabled}
 
 { D7 has theme support built in...}
