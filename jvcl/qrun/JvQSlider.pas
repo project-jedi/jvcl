@@ -40,7 +40,7 @@ uses
   {$IFDEF LINUX}
   Types,
   {$ENDIF LINUX}
-  Messages, SysUtils, Classes,
+  QMessages, SysUtils, Classes,
   
   
   QGraphics, QControls, QExtCtrls,
@@ -76,8 +76,7 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd);
-      message WM_ERASEBKGND;
+    
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -101,6 +100,7 @@ type
     property TabOrder;
     property Width default 191;
     property Height default 11;
+//    property AutoSize default True;
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -300,7 +300,7 @@ begin
   R := ClientRect;
   P := ClientToScreen(Point(0,0));
   OffsetRect(R, P.X, P.Y);
-  ClipCursor(@R);
+//  ClipCursor(@R);
   if Assigned(FOnBeginChange) then
     FOnBeginChange(Self);
   if not FChanged then
@@ -321,7 +321,7 @@ var
 begin
   FTracking := False;
   FChanging := False;
-  ClipCursor(nil);
+//  ClipCursor(nil);
   if FChanged then
   begin
     Tmp := TBitmap.Create;
@@ -371,6 +371,11 @@ end;
 procedure TJvSlider.SetImageRuler(Value: TBitmap);
 begin
   FImageRuler.Assign(Value);
+  if (Value.Width > 0) and (Value.Height > 0)  then
+  begin
+    Height := Value.Height;
+    Width := Value.Width;
+  end;
   Repaint;
   Calculate;
 end;
@@ -384,13 +389,16 @@ begin
   FTimer.Free;
 end;
 
-procedure TJvSlider.WMEraseBkgnd(var Message: TWMEraseBkgnd);
-begin
-  Message.Result := 1;
-end;
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
+  if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
+  begin
+    NewHeight := FImageRuler.Height;
+    NewWidth := FImageRuler.Width;
+    Result := True;
+  end
+  else
     Result := False;
 end;
 

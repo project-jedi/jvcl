@@ -986,7 +986,7 @@ begin
       try
         QPixmap_grabWidget(Pixmap, Control.Parent.Handle, Control.Left,
           Control.Top, Control.Width, Control.Height);
-        Qt.bitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
+        BitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
           Control.Height, RasterOp_CopyROP, True);
       finally
         TPrivateControl(Control).FVisible := OrigVisible;
@@ -2477,7 +2477,7 @@ begin
   Result := FileName;
   if CompareText(ExtractFileExt(FileName), '.lnk') = 0 then
     if ResolveLink(GetAppHandle, FileName, Result) <> 0 then
-      raise EJVCLException.CreateFmt(RsECantGetShortCut, [FileName]);
+      raise EJVCLException.CreateResFmt(@RsECantGetShortCut, [FileName]);
 end;
 
 function ResolveLink(const HWND: HWND; const LinkFile: TFileName;

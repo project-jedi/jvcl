@@ -28,7 +28,6 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-
 {$I jvcl.inc}
 
 // (ahuser) No dependency on JCL units. Required functions are emulated.
@@ -940,7 +939,7 @@ end;
 
 function CharIsAlpha(Ch: AnsiChar): Boolean;
 begin
-  Result := Windows.IsCharAlpha(Ch);
+  Result := QWindows.IsCharAlpha(Ch);
 end;
 
 { (ahuser) make Delphi 5 compiler happy
@@ -6592,7 +6591,9 @@ begin
   b := Filename;
   UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if QWindows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
+  if DrawText(Canvas, PChar(b), Length(b), R,
+       DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or
+       DT_NOPREFIX) > 0 then
     Result := string(PChar(b))
   else
     Result := Filename;

@@ -104,7 +104,7 @@ Maciej Kaczkowski:
 
 {$I jvcl.inc}
 
-unit JvQHTControls;
+unit JvQHtControls;
 
 interface
 
