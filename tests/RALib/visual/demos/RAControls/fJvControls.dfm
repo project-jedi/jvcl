@@ -22,7 +22,7 @@ object MainForm: TMainForm
     Top = 72
     Width = 569
     Height = 321
-    PageIndex = 20
+    PageIndex = 10
     TabOrder = 2
     object TPage
       Left = 0
@@ -187,9 +187,9 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 0
         object RAScrollMaxBand1: TJvScrollMaxBand
-          Expanded = False
+          Cursor = 1
           Caption = 'Person'
-          ExpandedHeight = 113
+          ExpandedHeight = 121
           ButtonFont.Charset = DEFAULT_CHARSET
           ButtonFont.Color = clWindowText
           ButtonFont.Height = -11
@@ -198,28 +198,28 @@ object MainForm: TMainForm
           ParentButtonFont = False
           object Label11: TLabel
             Left = 16
-            Top = 32
+            Top = 40
             Width = 28
             Height = 13
             Caption = 'Name'
           end
           object Label12: TLabel
             Left = 16
-            Top = 60
+            Top = 68
             Width = 22
             Height = 13
             Caption = 'Nick'
           end
           object Label16: TLabel
             Left = 16
-            Top = 89
+            Top = 97
             Width = 22
             Height = 13
             Caption = 'Born'
           end
           object Edit9: TEdit
             Left = 88
-            Top = 24
+            Top = 32
             Width = 121
             Height = 21
             TabOrder = 0
@@ -227,7 +227,7 @@ object MainForm: TMainForm
           end
           object Edit10: TEdit
             Left = 88
-            Top = 52
+            Top = 60
             Width = 121
             Height = 21
             TabOrder = 1
@@ -235,7 +235,7 @@ object MainForm: TMainForm
           end
           object Edit14: TEdit
             Left = 88
-            Top = 81
+            Top = 89
             Width = 121
             Height = 21
             TabOrder = 2
@@ -243,6 +243,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand2: TJvScrollMaxBand
+          Cursor = 1
           Expanded = False
           Caption = 'Contact information'
           ExpandedHeight = 113
@@ -301,6 +302,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand3: TJvScrollMaxBand
+          Cursor = 1
           Expanded = False
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
@@ -358,7 +360,7 @@ object MainForm: TMainForm
         ParentColor = True
         TabOrder = 1
         object RAScrollMaxBand4: TJvScrollMaxBand
-          Cursor = 7
+          Cursor = 1
           Caption = 'Person'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -418,7 +420,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand5: TJvScrollMaxBand
-          Cursor = 7
+          Cursor = 1
           Caption = 'Contact information'
           ExpandedHeight = 113
           ButtonVisible = False
@@ -478,7 +480,7 @@ object MainForm: TMainForm
           end
         end
         object RAScrollMaxBand6: TJvScrollMaxBand
-          Cursor = 7
+          Cursor = 1
           Caption = 'Net (confidential)'
           ExpandedHeight = 84
           ButtonVisible = False
@@ -6226,7 +6228,7 @@ object MainForm: TMainForm
       'example - RegAuto2 contains descriptions for all components.'
       ''
       '[TRegAutoGrid\Descript]'
-      'TRegAutoGrid save and restore column widths of '
+      'TRegAutoGrid save and restore column widths of'
       'all grids on the form.'
       ''
       '[TRATreeView]'
@@ -6489,12 +6491,13 @@ object MainForm: TMainForm
       ''
       'See demo JvDBMove for more information.'
       ''
-      '[TJvaScrollText ]'
+      '[TJvaScrollText]'
       'Page=JvaScrollText'
       'Memo=false'
       ''
       ''
-      '')
+      ''
+      ' ')
     AutoMode = False
     GlobalSettings = False
     Left = 184

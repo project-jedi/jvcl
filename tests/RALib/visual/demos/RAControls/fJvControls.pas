@@ -179,9 +179,9 @@ var
   hRgn  : Windows.HRGN;
 begin
   Application.Title := Caption;
-  if FileExists(ExePath + '..\..\!README.TXT1') then
+  if FileExists(ExePath + '..\..\..\..\README.TXT') then
   begin
-    RAScrollText1.Lines.LoadFromFile(ExePath + '..\..\!README.TXT');
+    RAScrollText1.Lines.LoadFromFile(ExePath + '..\..\..\..\README.TXT');
     RAScrollText1.Lines.Insert(0, '$Font:Times New Roman;12;1');
     RAScrollText1.Lines.Insert(3, '');
     RAScrollText1.Lines.Insert(4, '');
@@ -198,7 +198,7 @@ begin
   else
   begin
     RAScrollText1.Lines.Clear;
-    RAScrollText1.Lines.Add('          File "' + ExpandFileName(ExePath + '..\..\!README.TXT') + '" not found !');
+    RAScrollText1.Lines.Add('          File "' + ExpandFileName(ExePath + '..\..\..\..\README.TXT') + '" not found !');
   end;
   RAScrollMax1.MouseClasses([TLabel]);
   TabControl1Change(nil);
