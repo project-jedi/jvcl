@@ -115,7 +115,9 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     {$IFDEF VisualCLX}
+    function GetColor: TColor;
     function GetDoubleBuffered: Boolean;
+    procedure Paint;
     {$ENDIF VisualCLX}
   end;
 
@@ -138,7 +140,7 @@ const
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 const
-  CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
+  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 {$ENDIF VisualCLX}
 
 type
@@ -228,10 +230,8 @@ procedure Control_MouseLeave(var FMouseOver: Boolean; FSavedHintColor: TColor);
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 {$IFDEF VisualCLX}
-procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
-
-function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
-  EventRegion: QRegionH): IInterface;
+procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH);
   // - returns NIL if the Instance is in csDestroying.
   // - enters the painting and returns an interface that leaves the painting when
   //   is is released.
@@ -653,95 +653,116 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-{$IFDEF VisualCLX}
-
 type
   TOpenControl = class(TControl);
+{$IFDEF VisualCLX}
   TOpenWidgetControl = class(TWidgetControl);
+  TOpenCustomControl = class(TCustomControl);
   TOpenCustomEdit = class(TCustomEdit);
   TOpenCustomMaskEdit = class(TCustomMaskEdit);
 
-  TWidgetControlPainting = class(TInterfacedObject)
-  private
-    FCanvas: TCanvas;
-    FInstance: TWidgetControl;
-    FPixmap: QPixmapH;
-    FOriginalPainter: QPainterH;
-    FRegion: QRegionH;
-  public
-    constructor Create(Instance: TWidgetControl; Canvas: TCanvas;
-      EventRegion: QRegionH);
-    destructor Destroy; override;
-  end;
-
-constructor TWidgetControlPainting.Create(Instance: TWidgetControl; Canvas: TCanvas;
+procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH);
 var
-  WidgetCtrlIntf: IJvWinControlEvents;
-begin
-  inherited Create;
-  FCanvas := Canvas;
-  FInstance := Instance;
-  TControlCanvas(FCanvas).StartPaint;
-  if Supports(Instance, IJvWinControlEvents, WidgetCtrlIntf) and
-     WidgetCtrlIntf.GetDoubleBuffered then
-  begin
-    FPixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
-    QPixmap_fill(FPixmap, Instance.Handle, 0, 0);
-    FOriginalPainter := Canvas.Handle;
-    Canvas.Handle := QPainter_create(FPixmap);
-    TControlCanvas(FCanvas).StartPaint;
-    FRegion := EventRegion;
-  end;
-  QPainter_setClipRegion(FCanvas.Handle, EventRegion);
-end;
-
-destructor TWidgetControlPainting.Destroy;
-begin
-  if FPixmap <> nil then
-  begin
-    TControlCanvas(FCanvas).StopPaint;
-    QPainter_destroy(FCanvas.Handle);
-    FCanvas.Handle := FOriginalPainter;
-    QPainter_setClipRegion(FCanvas.Handle, FRegion);
-    QPainter_drawPixmap(FCanvas.Handle, 0, 0,
-      FPixmap, 0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
-    QPixmap_destroy(FPixmap);
-  end;
-  TControlCanvas(FCanvas).StopPaint;
-  inherited Destroy;
-end;
-
-function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
-  EventRegion: QRegionH): IInterface;
+  HasBackground: Boolean;
+  Pixmap: QPixmapH;
+  OriginalPainter: QPainterH;
+  Intf: IJvWinControlEvents;
+  IsDoubleBuffered: Boolean;
+  R: TRect;
+  TC: QColorH;
 begin
   if csDestroying in Instance.ComponentState then
-    Result := nil
-  else
-    Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
+    Exit;
 
-  Canvas.Brush.Color := TOpenControl(Instance).Color;
-  QPainter_setFont(Canvas.Handle, TOpenControl(Instance).Font.Handle);
-  QPainter_setPen(Canvas.Handle, TOpenControl(Instance).Font.FontPen);
-  Canvas.Font.Assign(TOpenControl(Instance).Font);
-end;
+  Instance.GetInterface(IJvWinControlEvents, Intf);
+  IsDoubleBuffered := Intf.GetDoubleBuffered;
+  Pixmap := nil;
+  OriginalPainter := nil;
 
-procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
-var
-  b: Boolean;
-begin
-  b := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
-  if b then
+  with TOpenWidgetControl(Instance) do
   begin
-    // The widget draws the background itself, so set the background to no background
-    if QWidget_backgroundMode(Instance.Handle) <> QWidgetBackgroundMode_NoBackground then
-      QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_NoBackground);
-  end
-  else
-  begin
-    // The widget does not draw the background itself
-    if QWidget_backgroundMode(Instance.Handle) = QWidgetBackgroundMode_NoBackground then
-      QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_PaletteBackground);
+    TControlCanvas(Canvas).StartPaint;
+    if IsDoubleBuffered then
+    begin
+      Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
+      // fill with parent's background if the control has a parent
+      if Instance.Parent <> nil then
+        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
+      OriginalPainter := Canvas.Handle;
+      Canvas.Handle := QPainter_create(Pixmap);
+      TControlCanvas(Canvas).StartPaint;
+      QPainter_setClipRegion(Canvas.Handle, EventRegion);
+      QPainter_setClipping(Canvas.Handle, True);
+      R := Rect(0, 0, 0, 0);
+      QRegion_boundingRect(EventRegion, @R);
+    end;
+
+    try
+      Canvas.Brush.Color := Intf.GetColor;
+      QPainter_setFont(Canvas.Handle, Font.Handle);
+      QPainter_setPen(Canvas.Handle, Font.FontPen);
+      Canvas.Font.Assign(Font);
+
+      HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
+
+      if IsDoubleBuffered then
+      begin
+        if not HasBackground then
+        begin
+          // fill with control's background
+          if (QWidget_backgroundPixmap(Handle) <> nil) and
+             not QPixmap_isNull(QWidget_backgroundPixmap(Handle)) then
+            QPixmap_fill(Pixmap, Handle, 0, 0)
+          else
+          begin
+            TC := QColor(Brush.Color, Instance.Handle);
+            QPixmap_fill(Pixmap, TC);
+            QColor_destroy(TC);
+          end;
+        end;
+      end
+      else
+      begin
+        if HasBackground then
+        begin
+          // The widget draws the background itself, so set the background to no background
+          if QWidget_backgroundMode(Instance.Handle) <> QWidgetBackgroundMode_NoBackground then
+            QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_NoBackground);
+        end
+        else
+        begin
+          // The widget does not draw the background itself
+          if QWidget_backgroundMode(Instance.Handle) = QWidgetBackgroundMode_NoBackground then
+            QWidget_setBackgroundMode(Instance.Handle, QWidgetBackgroundMode_PaletteBackground);
+        end;
+      end;
+
+      if Instance is TCustomForm then
+        // TCustomForm calls Paint in it's EventFilter
+      else if Instance is TCustomControl then
+        TOpenCustomControl(Instance).Paint
+      else
+        Intf.Paint;
+
+    finally
+      if Pixmap <> nil then
+      begin
+        TControlCanvas(Canvas).StopPaint;
+        QPainter_destroy(Canvas.Handle);
+        Canvas.Handle := OriginalPainter;
+        if (R.Right - R.Left > 0) or (R.Bottom - R.Top > 0) then
+          bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
+            Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+            RasterOp_CopyROP, True)
+        else
+          bitBlt(QPainter_device(Canvas.Handle), 0, 0,
+            Pixmap, 0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap),
+            RasterOp_CopyROP, True);
+        QPixmap_destroy(Pixmap);
+      end;
+      TControlCanvas(Canvas).StopPaint;
+    end;
   end;
 end;
 
@@ -754,7 +775,7 @@ var
 begin
   if not (csDestroying in Instance.ComponentState) and
      (not Supports(Instance, IJvCustomControlEvents)) then
-       { TCustomControls do not have a default paint method. }
+       { TCustomControls do not have a Qt paint method. }
   begin
    // Canvas.StopPaint uses a counter, but we must garantee the Stop.
     PaintDevice := nil;
@@ -838,9 +859,9 @@ begin
       Palette.Color := Color;
       Brush.Color := Color;
       TC := QColor(Color);
-      QWidget_setBackgroundColor(Instance.Handle, TC);
+      QWidget_setBackgroundColor(Handle, TC);
       QColor_destroy(TC);
-    end;
+    end; 
     NotifyControls(CM_PARENTCOLORCHANGED);
     Invalidate;
   end;

@@ -119,15 +119,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  published
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -240,15 +244,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  published
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -357,15 +365,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  published
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -472,15 +484,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  public
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -596,15 +612,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  published
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -716,15 +736,19 @@ type
     procedure ParentColorChanged; override;
   private
     FDoubleBuffered: Boolean;
+    function GetColor: TColor;
+    procedure SetColor(Value: TColor);
+    function GetDoubleBuffered: Boolean;
+    procedure SetDoubleBuffered(Value: Boolean);
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    function GetDoubleBuffered: Boolean;
     procedure ColorChanged; override;
-  published
-    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
+    property Color: TColor read GetColor write SetColor;
+  published // asn: change to public in final
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
   {$ENDIF VisualCLX}
   private
     FHintColor: TColor;
@@ -970,16 +994,7 @@ begin
 end;
 procedure TJvExInplaceEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExInplaceEdit.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExInplaceEdit.NeedKey(Key: Integer; Shift: TShiftState;
@@ -998,6 +1013,39 @@ end;
 procedure TJvExInplaceEdit.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExInplaceEdit.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExInplaceEdit.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExInplaceEdit.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExInplaceEdit.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExInplaceEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1258,16 +1306,7 @@ begin
 end;
 procedure TJvExCustomGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExCustomGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExCustomGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -1286,6 +1325,39 @@ end;
 procedure TJvExCustomGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExCustomGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExCustomGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1317,6 +1389,7 @@ function TJvExCustomGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
+{$IFDEF VCL}
 constructor TJvExCustomGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
@@ -1335,6 +1408,25 @@ begin
   
   inherited Destroy;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExCustomGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  inherited Create(AOwner);
+  
+  DoubleBuffered := True;
+end;
+
+destructor TJvExCustomGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
  {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
@@ -1521,16 +1613,7 @@ begin
 end;
 procedure TJvExCustomDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExCustomDrawGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExCustomDrawGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -1549,6 +1632,39 @@ end;
 procedure TJvExCustomDrawGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExCustomDrawGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExCustomDrawGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExCustomDrawGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExCustomDrawGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomDrawGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1580,6 +1696,7 @@ function TJvExCustomDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer):
 asm
   JMP   DefaultDoPaintBackground
 end;
+{$IFDEF VCL}
 constructor TJvExCustomDrawGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
@@ -1598,6 +1715,25 @@ begin
   
   inherited Destroy;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExCustomDrawGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  inherited Create(AOwner);
+  
+  DoubleBuffered := True;
+end;
+
+destructor TJvExCustomDrawGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvExInplaceEditList.Dispatch(var Msg);
 asm
@@ -1782,16 +1918,7 @@ begin
 end;
 procedure TJvExInplaceEditList.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExInplaceEditList.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExInplaceEditList.NeedKey(Key: Integer; Shift: TShiftState;
@@ -1810,6 +1937,39 @@ end;
 procedure TJvExInplaceEditList.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExInplaceEditList.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExInplaceEditList.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExInplaceEditList.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExInplaceEditList.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExInplaceEditList.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2073,16 +2233,7 @@ begin
 end;
 procedure TJvExDrawGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExDrawGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExDrawGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -2101,6 +2252,39 @@ end;
 procedure TJvExDrawGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExDrawGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExDrawGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExDrawGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExDrawGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExDrawGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2132,6 +2316,7 @@ function TJvExDrawGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boole
 asm
   JMP   DefaultDoPaintBackground
 end;
+{$IFDEF VCL}
 constructor TJvExDrawGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
@@ -2150,6 +2335,25 @@ begin
   
   inherited Destroy;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExDrawGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  inherited Create(AOwner);
+  
+  DoubleBuffered := True;
+end;
+
+destructor TJvExDrawGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin
@@ -2342,16 +2546,7 @@ begin
 end;
 procedure TJvExStringGrid.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin
-    WidgetControl_PaintBackground(Self, Canvas);
-     Paint;
-  end;
-end;
-
-function TJvExStringGrid.GetDoubleBuffered: Boolean;
-begin
-  Result := FDoubleBuffered;
+  WidgetControl_Painting(Self, Canvas, EventRegion);
 end;
 
 function TJvExStringGrid.NeedKey(Key: Integer; Shift: TShiftState;
@@ -2370,6 +2565,39 @@ end;
 procedure TJvExStringGrid.ColorChanged;
 begin
   TWidgetControl_ColorChanged(Self);
+end;
+
+function TJvExStringGrid.GetColor: TColor;
+begin
+  Result := Brush.Color;
+end;
+
+procedure TJvExStringGrid.SetColor(Value: TColor);
+begin
+  if Brush.Color <> Value then
+  begin
+    inherited Color := Value;
+    Brush.Color := Value;
+  end;
+end;
+
+function TJvExStringGrid.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
+end;
+
+procedure TJvExStringGrid.SetDoubleBuffered(Value: Boolean);
+begin
+  if Value <> FDoubleBuffered then
+  begin
+    if Value then
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
+    else
+      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
+    FDoubleBuffered := Value;
+    if not (csCreating in ControlState) then
+      Invalidate;
+  end;
 end;
 {$ENDIF VisualCLX}
 procedure TJvExStringGrid.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -2401,6 +2629,7 @@ function TJvExStringGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boo
 asm
   JMP   DefaultDoPaintBackground
 end;
+{$IFDEF VCL}
 constructor TJvExStringGrid.Create(AOwner: TComponent);
 begin
   {$IFDEF VisualCLX}
@@ -2419,6 +2648,25 @@ begin
   
   inherited Destroy;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExStringGrid.Create(AOwner: TComponent);
+begin
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  inherited Create(AOwner);
+  
+  DoubleBuffered := True;
+end;
+
+destructor TJvExStringGrid.Destroy;
+begin
+  
+  inherited Destroy;
+end;
+{$ENDIF VisualCLX}
 {$IFNDEF HAS_GRID_EDITSTYLE}
 function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
 begin

@@ -35,7 +35,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
+  Qt, QTypes, QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;
@@ -58,7 +58,16 @@ type
   JV_CUSTOMCONTROL_EVENTS(Panel)
   JV_WINCONTROL_EVENTS(CustomRadioGroup)
   JV_WINCONTROL_EVENTS(RadioGroup)
-  JV_CONTROL_EVENTS(Splitter)
+  JV_CONTROL_EVENTS_BEGIN(Splitter)
+  JV_CONSTRUCTOR
+  {$IFDEF VisualCLX}
+  private
+    FText: string;
+  protected
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+  {$ENDIF VisualCLX}
+  JV_CONTROL_EVENTS_END(Splitter)
 
   JV_CUSTOMCONTROL_EVENTS_BEGIN(CustomControlBar)
   JV_CONSTRUCTOR
@@ -75,7 +84,7 @@ type
     function HitTest(X, Y: Integer): Boolean; overload; dynamic;
   {$ENDIF VisualCLX}
   JV_CUSTOMCONTROL_EVENTS_END(ControlBar)
-  
+
 {$IFDEF VCL}
   JV_CUSTOMCONTROL_EVENTS(Page)
   JV_CUSTOMCONTROL_EVENTS(Notebook)
@@ -99,7 +108,28 @@ JV_CUSTOMCONTROL_EVENTS_IMPL(CustomPanel)
 JV_CUSTOMCONTROL_EVENTS_IMPL(Panel)
 JV_WINCONTROL_EVENTS_IMPL(CustomRadioGroup)
 JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
-JV_CONTROL_EVENTS_IMPL(Splitter)
+
+{$UNDEF CONSTRUCTORCODE}
+{$DEFINE CONSTRUCTORCODE ControlStyle := ControlStyle + [csSetCaption];}
+JV_CONTROL_EVENTS_IMPL_BEGIN(Splitter)
+{$IFDEF VisualCLX}
+function TJvExSplitter.GetText: TCaption;
+begin
+  Result := FText;
+end;
+
+procedure TJvExSplitter.SetText(const Value: TCaption);
+begin
+  if Value <> FText then
+  begin
+    FText := Value;
+    TextChanged;
+  end;
+end;
+{$ENDIF VisualCLX}
+JV_CONTROL_EVENTS_IMPL_END(Splitter)
+{$UNDEF CONSTRUCTORCODE}
+{$DEFINE CONSTRUCTORCODE}
 
 JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(CustomControlBar)
 {$IFDEF VisualCLX}
