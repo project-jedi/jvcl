@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -693,14 +693,14 @@ end;
 
 procedure TJvDrawGrid.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and IniStorage.IsActive then
+  if (Name <> '') and Assigned(IniStorage) then
     SaveToAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;
 
 procedure TJvDrawGrid.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and IniStorage.IsActive then
+  if (Name <> '') and Assigned(IniStorage) then
     LoadFromAppStorage(IniStorage.AppStorage, IniStorage.AppStorage.ConcatPaths([
       IniStorage.AppStoragePath, GetDefaultSection(Self)]));
 end;

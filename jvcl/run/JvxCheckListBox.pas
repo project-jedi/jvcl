@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3@peter3.com]
 
-Last Modified: 2003-10-19
+Last Modified: 2004-02-02
 
 Changes:
 2003-10-19:
@@ -1346,13 +1346,13 @@ end;
 
 procedure TJvxCheckListBox.IniSave(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
+  if (Name <> '') and (Assigned(IniStorage)) then
     InternalSave(GetDefaultSection(Self));
 end;
 
 procedure TJvxCheckListBox.IniLoad(Sender: TObject);
 begin
-  if (Name <> '') and (IniStorage.IsActive) then
+  if (Name <> '') and (Assigned(IniStorage)) then
     InternalLoad(GetDefaultSection(Self));
 end;
 
@@ -1511,14 +1511,14 @@ end;
 
 procedure TJvxCheckListBox.InternalLoad(const Section: string);
 begin
-  if IniStorage.IsActive then
+  if Assigned(IniStorage) then
     with IniStorage do
       LoadFromAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;
 
 procedure TJvxCheckListBox.InternalSave(const Section: string);
 begin
-  if IniStorage.IsActive then
+  if Assigned(IniStorage) then
     with IniStorage do
       SaveToAppStorage(AppStorage, AppStorage.ConcatPaths([AppStoragePath, Section]));
 end;

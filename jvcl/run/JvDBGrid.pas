@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Lionel Reynaud
 
-Last Modified: 2004-01-15
+Last Modified: 2004-02-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -2084,7 +2084,7 @@ procedure TJvDBGrid.IniSave(Sender: TObject);
 var
   Section: string;
 begin
-  if (Name <> '') and IniStorage.IsActive then
+  if (Name <> '') and Assigned(IniStorage) then
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
@@ -2102,7 +2102,7 @@ procedure TJvDBGrid.IniLoad(Sender: TObject);
 var
   Section: string;
 begin
-  if (Name <> '') and IniStorage.IsActive then
+  if (Name <> '') and Assigned(IniStorage) then
   begin
     if StoreColumns then
       Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
