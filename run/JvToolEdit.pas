@@ -1026,7 +1026,7 @@ begin
   if ACanvas = nil then
   begin
     ACanvas := TControlCanvas.Create;
-    TControlCanvas(ACanvas).Control := Editor;
+    ACanvas.Control := Editor;
   end;
   DC := Msg.DC;
   if DC = 0 then

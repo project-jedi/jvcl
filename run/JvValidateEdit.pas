@@ -36,8 +36,14 @@ unit JvValidateEdit;
 interface
 
 uses
-  { delphi } Classes, Messages, Controls, Graphics,
-  { local } JvEdit, JVCLVer;
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QTypes, QControls, QGraphics, Types, QWindows, 
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
+  JvEdit, JVCLVer;
 
 type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
@@ -65,7 +71,7 @@ type
     constructor Create;
   published
     property CheckPoints: TJvValidateEditCriticalPointsCheck read FCheckPoints
-        write SetCheckPoints;
+      write SetCheckPoints;
     property ColorAbove: TColor read FColorAbove write SetColorAbove;
     property ColorBelow: TColor read FColorBelow write SetColorBelow;
     property MaxValue: Double read FMaxValue write SetMaxValue;
@@ -98,8 +104,6 @@ type
     FStandardFontColor: TColor;
     FAutoAlignment: Boolean;
     FOldFontChange:TNotifyEvent;
-    procedure SetText(NewValue: TCaption);
-    function GetText: TCaption;
     procedure DisplayText;
     function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
     function MakeValid(ParseString: string): string;
@@ -120,17 +124,13 @@ type
     function GetValue: Variant;
     procedure SetValue(NewValue: Variant);
     procedure SetCheckChars(const NewValue: string);
-    procedure CMChanged(var Message: TMessage); message CM_CHANGED;
-    procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
     function CurrRangeValue(CheckValue: Currency): Currency; overload;
     function FloatRangeValue(CheckValue: Double): Double; overload;
     function IntRangeValue(CheckValue: Integer): Integer; overload;
     function GetEditText: string;
     procedure SetEditText(const NewValue: string);
-    procedure ChangeText(NewValue: string);
-    function BaseToInt(BaseValue: string; Base: Byte): Integer;
+    procedure ChangeText(const NewValue: string);
+    function BaseToInt(const BaseValue: string; Base: Byte): Integer;
     function IntToBase(NewValue, Base: Byte): string;
     procedure DoValueChanged;
     procedure SetDisplayPrefix(const NewValue: string);
@@ -140,11 +140,25 @@ type
     procedure FontChange(Sender: TObject);
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
+    {$IFDEF VCL}
+    procedure CMChanged(var Message: TMessage); message CM_CHANGED;
+    procedure WMSetFocus(var Message: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
+    procedure SetText(const NewValue: TCaption);
+    function GetText: TCaption;
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure SetText(const NewValue: TCaption); override;
+    procedure TextChanged; override; // -> CMChanged
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    {$ENDIF VisualCLX}
     property CheckChars: string read FCheckChars write SetCheckChars;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
-    property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat write
-        SetDisplayFormat;
+    property DisplayFormat: TJvValidateEditDisplayFormat read FDisplayFormat
+      write SetDisplayFormat;
     property EditText: string read GetEditText write SetEditText;
     property HasMaxValue: Boolean read FHasMaxValue write SetHasMaxValue;
     property HasMinValue: Boolean read FHasMinValue write SetHasMinValue;
@@ -152,15 +166,15 @@ type
     property MinValue: Double read FMinValue write SetMinValue;
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
-    property OnValueChanged: TNotifyEvent read FOnValueChanged write
-        FOnValueChanged;
+    property OnValueChanged: TNotifyEvent read FOnValueChanged
+      write FOnValueChanged;
     property Text: TCaption read GetText write SetText;
     property Value: Variant read GetValue write SetValue;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
     property DisplayPrefix: string read FDisplayPrefix write SetDisplayPrefix;
     property DisplaySuffix: string read FDisplaySuffix write SetDisplaySuffix;
     property CriticalPoints: TJvValidateEditCriticalPoints read FCriticalPoints
-        write FCriticalPoints;
+      write FCriticalPoints;
     property AutoAlignment: Boolean read FAutoAlignment write FAutoAlignment;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -169,6 +183,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    {$IFDEF VisualCLX}
+    procedure PasteFromClipboard; override;
+    {$ENDIF VisualCLX}
 
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
@@ -186,7 +204,17 @@ type
 
     property AutoSelect;
     property AutoSize;
+    {$IFDEF VCL}
     property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property ImeMode;
+    property ImeName;
+    property OEMConvert;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property BorderStyle;
     property Caret;
     property CheckChars;
@@ -201,8 +229,6 @@ type
     property DisplayFormat default dfInteger;
     property DisplayPrefix;
     property DisplaySuffix;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property EditText;
     property Enabled;
@@ -210,13 +236,9 @@ type
     property HasMaxValue default False;
     property HasMinValue default False;
     property HideSelection;
-    property ImeMode;
-    property ImeName;
     property MaxLength;
     property MaxValue;
     property MinValue;
-    property OEMConvert;
-    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -237,7 +259,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -247,7 +268,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
     property OnValueChanged;
   end;
@@ -255,13 +275,13 @@ type
 implementation
 
 uses
-  { Delphi } Windows, SysUtils, Math,
-  { local } JvJCLUtils;
+  Math,
+  JvJCLUtils;
 
 
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   bSelfChange := False;
   FAutoAlignment := True;
@@ -286,14 +306,14 @@ end;
 destructor TJvCustomValidateEdit.Destroy;
 begin
   FreeAndNil(FCriticalPoints);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvCustomValidateEdit.Assign(Source: TPersistent);
 var
   lcSource: TJvCustomValidateEdit;
 begin
-  inherited;
+  inherited Assign(Source);
 
   if Source is TJvCustomValidateEdit then
   begin
@@ -592,7 +612,12 @@ begin
   inherited;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomValidateEdit.WMPaste(var Message: TWMPaste);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomValidateEdit.PasteFromClipboard;
+{$ENDIF VisualCLX}
 begin
   EnterText := FEditText;
   inherited;
@@ -724,24 +749,46 @@ begin
 end;
 
 
+{$IFDEF VCL}
 procedure TJvCustomValidateEdit.WMSetFocus(var Message: TWMSetFocus);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomValidateEdit.DoEnter;
+{$ENDIF VisualCLX}
 begin
   EnterText := FEditText;
   DisplayText;
   inherited;
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomValidateEdit.WMKillFocus(var Message: TWMKillFocus);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomValidateEdit.DoExit;
+{$ENDIF VisualCLX}
 begin
   EditText := inherited Text;
   inherited;
 end;
 
-procedure TJvCustomValidateEdit.ChangeText(NewValue: string);
+procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
+var
+  S: string;
 begin
   bSelfChange := True;
-  inherited Text := FDisplayPrefix + NewValue + FDisplaySuffix;
-  bSelfChange := False;
+  try
+    S := FDisplayPrefix + NewValue + FDisplaySuffix;
+    if S <> inherited Text then
+      {$IFDEF VCL}
+      inherited Text := S;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      inherited SetText(S);
+      {$ENDIF VisualCLX}
+  finally
+    bSelfChange := False;
+  end;
 end;
 
 procedure TJvCustomValidateEdit.DisplayText;
@@ -802,7 +849,7 @@ begin
   end;
 end;
 
-function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Byte): Integer;
+function TJvCustomValidateEdit.BaseToInt(const BaseValue: string; Base: Byte): Integer;
 var
   i: integer;
 
@@ -821,7 +868,7 @@ begin
 
   Result := 0;
   for i := 1 to Length(BaseValue) do
-    Inc(Result,Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i)));
+    Inc(Result, Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i)));
 end;
 
 function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte):
@@ -871,7 +918,12 @@ begin
     FOnValueChanged(Self);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomValidateEdit.TextChanged;
+{$ENDIF VisualCLX}
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
@@ -882,12 +934,14 @@ begin
   inherited;
 end;
 
+{$IFDEF VCL}
 function TJvCustomValidateEdit.GetText: TCaption;
 begin
   Result := inherited Text;
 end;
+{$ENDIF VCL}
 
-procedure TJvCustomValidateEdit.SetText(NewValue: TCaption);
+procedure TJvCustomValidateEdit.SetText(const NewValue: TCaption);
 begin
   EnterText := FEditText;
   EditText := NewValue;

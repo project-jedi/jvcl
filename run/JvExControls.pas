@@ -688,21 +688,37 @@ end;
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 var
   Event: QPaintEventH;
+  PaintDevice: QPaintDeviceH;
+  IsActive: Boolean;
 begin
   if not (csDestroying in Instance.ComponentState) and
-     (not Supports(Instance, IJvCustomControlEvents) then
+     (not Supports(Instance, IJvCustomControlEvents)) then
        { TCustomControls do not have a default paint method. }
   begin
-    Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+   // Canvas.StopPaint uses a counter, but we must garantee the Stop.
+    PaintDevice := nil;
+    IsActive := QPainter_isActive(Canvas.Handle);
+    if IsActive then
+    begin
+      PaintDevice := QPainter_device(Canvas.Handle);
+      QPainter_end(Canvas.Handle);
+    end;
     try
-      Instance.ControlState := Instance.ControlState + [csWidgetPainting];
+      Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
       try
-        QObject_event(Instance.Handle, Event);
+        Instance.ControlState := Instance.ControlState + [csWidgetPainting];
+        try
+          QObject_event(Instance.Handle, Event);
+        finally
+          Instance.ControlState := Instance.ControlState - [csWidgetPainting];
+        end;
       finally
-        Instance.ControlState := Instance.ControlState - [csWidgetPainting];
+        QPaintEvent_destroy(Event);
       end;
     finally
-      QPaintEvent_destroy(Event);
+      // restore
+      if IsActive then
+        QPainter_begin(Canvas.Handle, PaintDevice); // restart
     end;
   end;
 end;
@@ -712,14 +728,14 @@ function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
 
   function IsTabKey: Boolean;
   begin
-    Result := (Key = Key_Tab) or (Key = Tab_BackTab);
+    Result := (Key = Key_Tab) or (Key = Key_BackTab);
   end;
 
   function IsArrowKey: Boolean;
   begin
     Result := (Key = Key_Left) or (Key = Key_Right) or
               (Key = Key_Down) or (Key = Key_Up);
-  end
+  end;
 
 var
   DlgCodes: TDlgCodes;
@@ -738,7 +754,7 @@ begin
   if ikChars in Value then
     Include(DlgCodes, dcWantChars);
 
-  DoGetDlgCode(DlgCodes);
+  (Instance as IJvWinControlEvents).DoGetDlgCode(DlgCodes);
 
   if not (dcNative in DlgCodes) then
   begin
@@ -751,7 +767,7 @@ begin
       Result := IsArrowKey;
     if (not Result) and (dcWantChars in DlgCodes) then
       Result := ((Shift * [ssCtrl, ssAlt] = []) and
-                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0)) and
+                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
                 not (IsTabKey or IsArrowKey);
   end;
 end;
@@ -1028,12 +1044,7 @@ begin
   end;
 end;
 
-procedure TJvExWinControl.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExWinControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -1079,6 +1090,11 @@ begin
   
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvExWinControl.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 
@@ -1350,12 +1366,7 @@ begin
   end;
 end;
 
-procedure TJvExCustomControl.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExCustomControl.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -1531,12 +1542,7 @@ begin
   end;
 end;
 
-procedure TJvExHintWindow.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvExHintWindow.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,

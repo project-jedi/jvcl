@@ -209,10 +209,18 @@ end;
 
 procedure TJvCaret.DestroyCaret;
 begin
-  if CaretCreated and FCaretOwner.Focused and not (csDesigning in FCaretOwner.ComponentState) and
+  if CaretCreated and
+    {$IFDEF VCL}
+    FCaretOwner.Focused and
+    {$ENDIF VCL}
+    not (csDesigning in FCaretOwner.ComponentState) and
     not IsDefaultCaret then
   begin
+    {$IFDEF VCL}
     if Windows.DestroyCaret then
+    {$ELSE}
+    if QWindows.DestroyCaret then
+    {$ENDIF VCL}
       FCaretCreated := False;
   end;
 end;
