@@ -1,3 +1,32 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvBaseDsgnForm.pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-07-15
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvBaseDsgnForm;
 
 interface
@@ -7,23 +36,25 @@ uses
 
 type
   TJvBaseDesign = class(TForm)
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHowingChanged;
   protected
+    { Protected declarations }
     { Determines the key to write the settings to or read from. Generally you don't need to override
       this method.
       Default will return (DELPHIRootKey)\Property Editors\(DesignerFormName)\(ClassName), where
         (DELPHIRootKey) is the root registry key for this Delphi version,
-        (DesignerFormName) is the return value of said class function,
+        (DesignerFormName) is the return value of the DesignerFormName function,
         (ClassName) is the return value of ClassName. }
     function GetRegKey: string; dynamic;
     { Editor name. Defaults to 'JEDI-VCL Editor' but should be renamed to an appropiate editor type
       name (e.g. 'Provider Editor' or 'Form Storage Editor'). }
-    class function DesignerFormName: string; dynamic;
+    function DesignerFormName: string; dynamic;
     { Determines if the settings for this class should be automatically stored/restored upon class
       destruction/streaming back in. Defaults to False. }
-    class function AutoStoreSettings: Boolean; dynamic;
+    function AutoStoreSettings: Boolean; dynamic;
     { Store the settings for this form. Descendants that want to store additional settings should
       override this method. You should always call the inherited method (which stores the position
       and size information). }
@@ -36,7 +67,6 @@ type
     { Public declarations }
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    procedure Loaded; override;
   end;
 
   TCompareDsgFunc = function(DsgnForm: TJvBaseDesign; const Args: array of const): Boolean;
@@ -47,7 +77,7 @@ implementation
 
 uses
   Registry,
-  JvConsts;
+  JvBaseDsgnFrame, JvConsts;
 
 {$R *.DFM}
 
@@ -88,17 +118,19 @@ begin
   Result := SDelphiKey + '\Property Editors\' + Trim(DesignerFormName) + '\' + ClassName
 end;
 
-class function TJvBaseDesign.DesignerFormName: string;
+function TJvBaseDesign.DesignerFormName: string;
 begin
   Result := 'JEDI-VCL Editor';
 end;
 
-class function TJvBaseDesign.AutoStoreSettings: Boolean;
+function TJvBaseDesign.AutoStoreSettings: Boolean;
 begin
   Result := False;
 end;
 
 procedure TJvBaseDesign.StoreSettings;
+var
+  I: Integer;
 begin
   with TRegistry.Create do
   try
@@ -115,9 +147,16 @@ begin
   finally
     Free;
   end;
+  for I := 0 to ComponentCount - 1 do
+  begin
+    if Components[I] is TfmeJvBaseDesign then
+      TfmeJvBaseDesign(Components[I]).StoreSettings;
+  end;
 end;
 
 procedure TJvBaseDesign.RestoreSettings;
+var
+  I: Integer;
 begin
   with TRegistry.Create do
   try
@@ -137,10 +176,16 @@ begin
   finally
     Free;
   end;
+  for I := 0 to ComponentCount - 1 do
+  begin
+    if Components[I] is TfmeJvBaseDesign then
+      TfmeJvBaseDesign(Components[I]).RestoreSettings;
+  end;
 end;
 
 procedure TJvBaseDesign.AfterConstruction;
 begin
+  inherited AfterConstruction;
   if DsgnFrmList = nil then
     DsgnFrmList := TList.Create;
   if DsgnFrmList.IndexOf(Self) < 0 then
@@ -152,17 +197,19 @@ end;
 procedure TJvBaseDesign.BeforeDestruction;
 begin
   inherited BeforeDestruction;
-//  if AutoStoreSettings then
-//    StoreSettings;
-  DsgnFrmList.Remove(Self);
+  if DsgnFrmList <> nil then
+    DsgnFrmList.Remove(Self);
 end;
 
-procedure TJvBaseDesign.Loaded;
+procedure TJvBaseDesign.FormClose(Sender: TObject;
+  var Action: TCloseAction);
 begin
-  inherited Loaded;
-//  if not (csDesigning in ComponentState) and AutoStoreSettings then
-//    RestoreSettings;
+  Action := caFree;
 end;
 
+initialization
+
+finalization
+  FreeAndNil(DsgnFrmList)
 end.
  
