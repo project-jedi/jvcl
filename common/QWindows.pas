@@ -187,6 +187,7 @@ type
     X: Longint;
     Y: Longint;
   end;
+  PSize = ^TSize;
   TTime = TDateTime;
   TDate = TDateTime;
 
@@ -5244,7 +5245,7 @@ begin
   try
     SetLength(S, 255);
     if gethostname(PChar(S), Length(S)) = -1 then
-      Result := ''
+      Result := false
     else
       SetLength(S, StrLen(PChar(Result)));
     Size := Length(S) + 1;

@@ -36,8 +36,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF}
   SysUtils, Classes,
-  JvClxUtils,
   {$IFDEF VCL}
   Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
   ComCtrls, ImgList, Grids,
@@ -143,7 +145,7 @@ function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 
 { Execute executes other program and waiting for it
   terminating, then return its Exit Code }
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
+function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
@@ -213,9 +215,11 @@ function GetNextFreeCursorIndex(StartHint: Integer; PreDefined: Boolean):
   Integer;
 function WaitCursor: IInterface;
 function ScreenCursor(ACursor: TCursor): IInterface;
+{$IFDEF MSWINDOWS}
 // loads the more modern looking drag cursors from OLE32.DLL
 function LoadOLEDragCursors: Boolean;
 // set some default cursor from JVCL
+{$ENDIF}
 procedure SetDefaultJVCLCursors;
 
 {$IFDEF VCL}
@@ -579,9 +583,15 @@ function GetAppHandle: HWND;
 implementation
 
 uses
-  Consts, SysConst, CommCtrl, MMSystem, ShlObj, ActiveX, Math,
-  JclSysInfo,
-  JvConsts, JvProgressUtils, JvResources;
+  SysConst,
+  {$IFDEF VCL}
+  Consts, CommCtrl, MMSystem, ShlObj, ActiveX,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF}
+  Math,
+  JclSysInfo, JvConsts, JvProgressUtils, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\resources\JvConsts.res}
@@ -631,7 +641,6 @@ begin
   inherited;
 end;
 
-{$IFDEF MSWINDOWS}
 {$IFDEF VCL}
 
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -702,6 +711,7 @@ end;
 {$ENDIF VCL}
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
+{$IFDEF VCL}
 var
   Delta: Integer;
   Min, Max: Integer;
@@ -747,6 +757,16 @@ begin
       H := H + 360;
   end;
 end;
+{$ENDIF}
+{$IFDEF VisualCLX}
+var
+  QC: QColorH;
+begin
+  QC := QColor_create(R, G , B);
+  QColor_getHsv(QC, @H, @S, @V);
+  QColor_destroy(QC);
+end;
+{$ENDIF}
 
 (* (rom) to be deleted. Use ScreenShot from JCL
 {$IFDEF VCL}
@@ -819,6 +839,7 @@ end;
 {$ENDIF VCL}
 *)
 
+{$IFDEF MSWINDOWS}
 procedure SetWallpaper(const Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path),
@@ -1014,7 +1035,7 @@ end;
 
 // (rom) a thread to wait would be more elegant, also JCL function available
 
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
+function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
 {$IFDEF MSWINDOWS}
 var
   r: Boolean;
@@ -1051,7 +1072,7 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDirectory;
+  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDir;
   Result := Libc.system(PChar(Format('cd "%s" ; %s',
     [WorkingDirectory, CommandLine])));
 end;
@@ -1251,18 +1272,18 @@ end;
 function ConvertStates(const State: Integer): TItemStates;
 begin
   Result := [];
+  {$IFDEF VCL}
   if HasFlag(State, LVIS_ACTIVATING) then
     Include(Result, isActivating);
-  {$IFDEF VCL}
   if HasFlag(State, LVIS_CUT) then
     Include(Result, isCut);
   if HasFlag(State, LVIS_DROPHILITED) then
     Include(Result, isDropHilited);
-  {$ENDIF VCL}
   if HasFlag(State, LVIS_FOCUSED) then
     Include(Result, IsFocused);
   if HasFlag(State, LVIS_SELECTED) then
     Include(Result, isSelected);
+  {$ENDIF VCL}
 end;
 
 function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
@@ -2328,7 +2349,9 @@ end;
 
 function ScreenWorkArea: TRect;
 begin
+  {$IFDEF MSWINDOWS}
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
+  {$ENDIF}
     with Screen do
       Result := Bounds(0, 0, Width, Height);
 end;
@@ -2709,6 +2732,7 @@ begin
   Result := TWaitCursor.Create(ACursor);
 end;
 
+{$IFDEF MSWINDOWS}
 function LoadOLEDragCursors: Boolean;
 const
   cOle32DLL: PChar = 'ole32.dll';
@@ -2734,6 +2758,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure SetDefaultJVCLCursors;
 begin
