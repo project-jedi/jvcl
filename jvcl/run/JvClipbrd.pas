@@ -115,7 +115,13 @@ type
     {$ELSE}
     procedure WndProc(var Message: TMessage); virtual;
     procedure MainWndProc(var Message: TMessage);
-    procedure SetBuffer(Format: Word; var Buffer; Size: Integer); overload;
+
+    // SetBuffer is not protected in the VCL shipped with D5 and BCB5.
+    // We need to access it anyway and this is done using direct memory
+    // access to the correct procedure. However this method cannot be
+    // called SetBuffer because under BCB the Buffer parameter will be
+    // output as a void* for both Pointer and Untyped types.
+    procedure SetBufferVCL5(Format: Word; var Buffer; Size: Integer);
     {$ENDIF COMPILER6_UP}
 
     // This function calls the user event handler and does the
@@ -285,7 +291,7 @@ end;
 
 {$IFNDEF COMPILER6_UP}
 
-procedure TJvClipboard.SetBuffer(Format: Word; var Buffer; Size: Integer);
+procedure TJvClipboard.SetBufferVCL5(Format: Word; var Buffer; Size: Integer);
 var
   P: PByte;
 begin
@@ -614,7 +620,7 @@ begin
     {$IFDEF COMPILER6_UP}
     inherited SetBuffer(Format, Buffer^, Size);
     {$ELSE}
-    SetBuffer(Format, Buffer^, Size);
+    SetBufferVCL5(Format, Buffer^, Size);
     {$ENDIF COMPILER6_UP}
   end;
 end;
@@ -652,7 +658,11 @@ begin
   Open;
   try
     AsText := Value; {Ensures ANSI compatiblity across platforms.}
+    {$IFDEF COMPILER6_UP}
     SetBuffer(CF_UNICODETEXT, PWideChar(Value)^, (Length(Value) + 1) * SizeOf(WideChar));
+    {$ELSE}
+    SetBufferVCL5(CF_UNICODETEXT, PWideChar(Value)^, (Length(Value) + 1) * SizeOf(WideChar));
+    {$ENDIF COMPILER6_UP}
   finally
     Close;
   end;
