@@ -19,7 +19,7 @@ Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3@peter3.com]
 
-Last Modified: 2003-09-13
+Last Modified: 2003-09-30
 
 Changes:
 2003-09-13:
@@ -2717,7 +2717,10 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  IncludeThemeStyle(Self, [csParentBackground]);
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    ControlStyle := ControlStyle - [csOpaque];
+{$ENDIF}
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
@@ -2932,11 +2935,8 @@ begin
   with Canvas do
   begin
     if not Transparent then
-    begin
-      Brush.Color := Self.Color;
-      Brush.Style := bsSolid;
-      DrawThemedBackground(Self, Canvas, ClientRect);
-    end;
+     // only FillRect mode because Transparent is always True on JVCLThemesEnabled
+      DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
     Brush.Style := bsClear;
     if Angle <> 0 then
       DrawAngleText(DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
@@ -3114,16 +3114,14 @@ procedure TJvCustomLabel.SetTransparent(Value: Boolean);
 begin
   if Transparent <> Value then
   begin
+  {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+     Value := True; // themes aware Label are always transparent transparent
+  {$ENDIF}
     if Value then
-    begin
-      ControlStyle := ControlStyle - [csOpaque];
-      ExcludeThemeStyle(Self, [csParentBackground]);
-    end
+      ControlStyle := ControlStyle - [csOpaque]
     else
-    begin
       ControlStyle := ControlStyle + [csOpaque];
-      IncludeThemeStyle(Self, [csParentBackground]);
-    end;
     Invalidate;
   end;
 end;
@@ -5854,9 +5852,4 @@ finalization
   DestroyLocals;
 
 end.
-
-
-
-
-
 
