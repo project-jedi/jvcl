@@ -52,9 +52,8 @@ uses
   {$ELSE}
   JvDockGlobals,
   {$ENDIF USEJVCL}
-  JvDockControlForm, JvDockPropertyEditors,
-  JvDockVIDStyle, JvDockDelphiStyle,
-  JvDockVCStyle, JvDockVIDVCStyle, JvDockVSNetStyle;
+  JvDockControlForm, JvDockPropertyEditors, JvDockVIDStyle,
+  JvDockDelphiStyle, JvDockVCStyle, JvDockVIDVCStyle, JvDockVSNetStyle;
 
 procedure Register;
 begin

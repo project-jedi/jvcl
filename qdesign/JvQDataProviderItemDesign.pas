@@ -66,7 +66,7 @@ uses
   {$ENDIF MSWINDOWS} 
   QWindows, 
   QImgList,
-  JvQDsgnConsts;
+  JvQDsgnConsts, JvQJCLUtils;
 
 type
   PPropData = ^TPropData;

@@ -45,28 +45,24 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-
   {$IFDEF VCL}
-   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
+  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
-   {$ENDIF !BCB5}
+  {$ENDIF !BCB5}
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
   {$ENDIF VCL}
-
   {$IFDEF VisualCLX}
   QExtDlgs,
   {$ENDIF VisualCLX}
-
   {$IFDEF USEWINDOWS}
   JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvConnectNetwork, JvCopyError,
   JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
   JvObjectPickerDialog, JvCommonDialogDEditor,
   {$ENDIF USEWINDOWS}
-
   JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
-  JvDesktopAlert, JvDesktopAlertEditors, JvProgressComponent, JvSelectDirectory, JvImageDlg,
-  JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
+  JvDesktopAlert, JvDesktopAlertEditors, JvProgressComponent, JvSelectDirectory,
+  JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
   JvTipOfDayEditor;
 
 {$IFDEF MSWINDOWS}

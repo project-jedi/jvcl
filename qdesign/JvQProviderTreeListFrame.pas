@@ -111,7 +111,7 @@ type
 implementation
 
 uses 
-  JvQDsgnConsts, JvQConsts;
+  JvQDsgnConsts, JvQConsts, JvQJCLUtils;
 
 {$R *.xfm}
 

@@ -1211,7 +1211,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   JclStrings,
-  JvTypes, JvConsts, JvResources;
+  JvTypes, JvConsts, JvResources, JvJCLUtils;
 
 const
   vifHasChildren = Integer($80000000);

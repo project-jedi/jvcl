@@ -68,9 +68,6 @@ type
     procedure Initialize;
   end;
 
-var
-  frmJvDBGridControlsEditor: TfrmJvDBGridControlsEditor;
-
 implementation
 
 uses

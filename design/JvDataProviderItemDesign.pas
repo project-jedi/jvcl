@@ -63,7 +63,7 @@ uses
   QWindows,
   {$ENDIF VisualCLX}
   ImgList,
-  JvDsgnConsts;
+  JvDsgnConsts, JvJCLUtils;
 
 type
   PPropData = ^TPropData;
@@ -77,13 +77,6 @@ type
 var
   GIntfPropReg: TIntfItems;
 
-{$IFNDEF COMPILER6_UP} 
-function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
-begin
-  Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
-end;
-{$ENDIF !COMPILER6_UP}
-  
 function LocateReg(IID: TGUID): Integer;
 begin
   Result := High(GIntfPropReg);
