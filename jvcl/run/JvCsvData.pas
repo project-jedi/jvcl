@@ -1433,7 +1433,7 @@ var
 begin
   Result := False;
   Lo := -1;
-  Hi := -1;
+//  Hi := -1;  // Value is never used
 
   if not Active then
     Exit;
