@@ -15,8 +15,9 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
+Maciej Kaczkowski
 
-Last Modified: 2002-07-04
+Last Modified: 2003-09-16
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -28,6 +29,37 @@ located at http://jvcl.sourceforge.net
        description : Buttons
 
 Known Issues:
+=============
+Maciej Kaczkowski:
+  [X] Height of JvHTComboBox - on design time you cannot use mouse for resize
+  [X] alignment not work correctly on JvHTButtonGlyph
+  [X] not tested on BCB & Kylix
+
+Create label with caption:
+<ALIGN CENTER>Item 1 <b>bold</b> <u>underline</u><br><ALIGN RIGHT><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue</i><br><ALIGN LEFT><FONT COLOR="clTeal">Item 2 <i>italic ITALIC</i> <s>strikeout STRIKEOUT </s><hr><br><ALIGN CENTER><FONT COLOR="clRed" BGCOLOR="clYellow">red with yellow background</FONT><FONT COLOR="clwhite"> white <FONT COLOR="clnavy"><b><i>navy</i></b>
+
+Some information about coding:
+[?] If you want use few times function <ALIGN> you must use before next <ALIGN>
+    function <BR>
+[?] After <HR> must be <BR>
+
+Changes:
+========
+Maciej Kaczkowski:
+  [+] <BR> - new line
+  [+] <HR> - horizontal line
+  [+] <S> and </S> - StrikeOut
+  [+] Multiline for JvHTListBox, JvHTComboBox
+      TJvHTButton
+  [+] You can change Height of JvHTComboBox
+  [+] Tags: &amp; &quot; &reg; &copy; &trade;
+      &nbsp; &lt; &gt;
+  [+] <ALIGN [CENTER, LEFT, RIGHT]>
+  [*] <C:color> was changed to ex.:
+      <FONT COLOR="clRed" BGCOLOR="clWhite">
+      </FONT>
+  [*] procedure ItemHtDrawEx - rewrited
+  [*] function ItemHtPlain - optimized
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -419,7 +451,6 @@ begin
 end;
 
 {O}
-
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
   if FBiDiMode <> Value then
@@ -827,7 +858,9 @@ end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
+var cap: String;
 begin
+cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -835,21 +868,21 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      ItemHtDraw(Canvas, TextBounds, [odSelected], Caption, False);
+      ItemHtDraw(Canvas, TextBounds, [odSelected], Cap, False);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      ItemHtDraw(Canvas, TextBounds, [odSelected], Caption, False);
+      ItemHtDraw(Canvas, TextBounds, [odSelected], Cap, False);
     end
     else
-      ItemHtDraw(Canvas, TextBounds, [], Caption, False);
+      ItemHtDraw(Canvas, TextBounds, [], Cap, False);
   end;
 end;
 
 procedure TJvHTButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
-  TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption, False),
-    Canvas.TextHeight(Caption));
+TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption, False),
+    ItemHtHeight(Canvas, Caption));     // Kaczkowski
 end;
 
 // == TJvaCaptionButton ======================================================
