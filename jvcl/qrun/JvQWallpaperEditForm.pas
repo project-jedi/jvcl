@@ -40,7 +40,8 @@ uses
   
   QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, Types,
   
-  JvQToolEdit, JvQComponent, JvQSearchFiles, JvQButton, JvQExMask;
+  JvQToolEdit, JvQComponent, JvQSearchFiles, JvQButton, JvQExMask,
+  QComboEdits, JvQExComboEdits;
 
 type
   TFoWallpaperChooser = class(TJvForm)
