@@ -67,20 +67,18 @@ begin
     1:
       begin
         try
-          fRTFPreview := TJvgRTFPreview.Create(nil);
-
+          JvgRTFPreview := TJvgRTFPreview.Create(nil);
           ms := TMemoryStream.Create;
           try
             (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
             ms.Position := 0;
-            fRTFPreview.Rich.Lines.LoadFromStream(ms);
-            fRTFPreview.ShowModal;
+            JvgRTFPreview.Rich.Lines.LoadFromStream(ms);
+            JvgRTFPreview.ShowModal;
           finally
             ms.Free;
           end;
-
         finally
-          fRTFPreview.Free;
+          JvgRTFPreview.Free;
         end;
       end;
   end;

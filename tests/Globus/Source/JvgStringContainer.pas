@@ -32,66 +32,57 @@ unit JvgStringContainer;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  jvComponent,
-  Classes;
+  Windows, Messages, SysUtils, Classes,
+  JvComponent;
 
 type
-  TOnReadItem = procedure(Sender: TObject; Index: integer) of object;
+  TOnReadItem = procedure(Sender: TObject; Index: Integer) of object;
 
   TJvgStringContainer = class(TJvComponent)
   private
     FItems: TStringList;
-    FReadOnly: boolean;
+    FReadOnly: Boolean;
     FOnReadItem: TOnReadItem;
-    function GetString(Index: integer): string;
-    procedure SetString(Index: integer; const Value: string);
+    function GetString(Index: Integer): string;
+    function GetCount: Integer;
+    procedure SetString(Index: Integer; const Value: string);
     procedure SetItems(Value: TStringList);
-    function GetCount: integer;
   public
-    property Strings[Index: Integer]: string read GetString write SetString;
-    default;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Strings[Index: Integer]: string read GetString write SetString; default;
   published
     property Items: TStringList read FItems write SetItems;
-    property Count: integer read GetCount;
-    property ReadOnly: boolean read FReadOnly write FReadOnly default false;
+    property Count: Integer read GetCount;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnReadItem: TOnReadItem read FOnReadItem write FOnReadItem;
   end;
 
-procedure Register;
-
 implementation
-uses JvgUtils,
-  JvgTypes;
 
-procedure Register;
-begin
-end;
+uses
+  JvgUtils, JvgTypes;
 
 constructor TJvgStringContainer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FItems := TStringList.Create;
 end;
 
 destructor TJvgStringContainer.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvgStringContainer.GetString(Index: integer): string;
+function TJvgStringContainer.GetString(Index: Integer): string;
 begin
-  if Assigned(FOnReadItem) then
-    FOnReadItem(self, Index);
   Result := FItems[Index];
+  if Assigned(FOnReadItem) then
+    FOnReadItem(Self, Index);
 end;
 
-procedure TJvgStringContainer.SetString(Index: integer; const Value: string);
+procedure TJvgStringContainer.SetString(Index: Integer; const Value: string);
 begin
   if not FReadOnly then
     FItems[Index] := Value;
@@ -102,7 +93,7 @@ begin
   FItems.Assign(Value);
 end;
 
-function TJvgStringContainer.GetCount: integer;
+function TJvgStringContainer.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;

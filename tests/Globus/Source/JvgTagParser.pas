@@ -30,42 +30,57 @@ Known Issues:
 unit JvgTagParser;
 
 interface
-uses Classes, SysUtils, httpapp;
+
+uses
+  Classes, SysUtils, HTTPApp;
 
 type
-
-  TJvgTagParser = class
+  TJvgTagParser = class(TObject)
   private
-    TagParams: TStrings;
+    FTagParams: TStrings;
+    FAttributeFilter: TStringList;
   public
-    AttributeFilter: TStrings;
     constructor Create;
     destructor Destroy; override;
-    function Attributes(const sTag: string): TStrings;
+    function Attributes(const STag: string): TStrings;
     procedure OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
+    property AttributeFilter: TStringList read FAttributeFilter;
   end;
 
 implementation
-//uses ;
 
-function TJvgTagParser.Attributes(const sTag: string): TStrings;
+constructor TJvgTagParser.Create;
+begin
+  inherited Create;
+  FTagParams := TStringList.Create;
+  FAttributeFilter := TStringList.Create;
+end;
+
+destructor TJvgTagParser.Destroy;
+begin
+  FTagParams.Free;
+  FAttributeFilter.Free;
+  inherited Destroy;
+end;
+
+function TJvgTagParser.Attributes(const STag: string): TStrings;
 var
-  i: integer;
+  I: Integer;
   PageProducer: TPageProducer;
   sTemp, sIncludeParamName, sIncludeParamValue: string;
 begin
   Result := TStringList.Create;
   try
     PageProducer := TPageProducer.Create(nil);
-    PageProducer.HTMLDoc.Text := StringReplace(sTag, '<?', '<#', []);
+    PageProducer.HTMLDoc.Text := StringReplace(STag, '<?', '<#', []);
     PageProducer.OnHTMLTag := OnHTMLTag;
     sTemp := PageProducer.Content;
 
     try
-      for i := 1 to TagParams.Count - 1 do
+      for I := 1 to FTagParams.Count - 1 do
       begin
-        sIncludeParamValue := TagParams.Values[TagParams.Names[i]];
-        sIncludeParamName := TagParams.Names[i];
+        sIncludeParamValue := FTagParams.Values[FTagParams.Names[I]];
+        sIncludeParamName := FTagParams.Names[I];
         sIncludeParamValue := StringReplace(sIncludeParamValue, '[', '<', [rfReplaceAll]);
         sIncludeParamValue := StringReplace(sIncludeParamValue, ']', '>', [rfReplaceAll]);
         Result.Add(sIncludeParamName + '=' + sIncludeParamValue);
@@ -78,32 +93,17 @@ begin
   end;
 end;
 
-constructor TJvgTagParser.Create;
-begin
-  TagParams := TStringList.Create;
-  AttributeFilter := TStringList.Create;
-end;
-
-destructor TJvgTagParser.Destroy;
-begin
-  TagParams.Free;
-  AttributeFilter.Free;
-  inherited;
-end;
-
 procedure TJvgTagParser.OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
-  i: integer;
+  I: Integer;
 begin
+  // (rom) completely silly
   TagParams.Text := LowerCase(TagParams.Text);
-
   with AttributeFilter do
-    for i := 0 to pred(TagParams.Count) do
-      if IndexOfName(TagParams.Names[i]) <> -1 then
-        if Values[TagParams.Names[i]] = Values[TagParams.Names[i]] then
-        begin
-          self.TagParams.Assign(TagParams);
-        end;
+    for I := 0 to TagParams.Count-1 do
+      if IndexOfName(TagParams.Names[I]) <> -1 then
+        if Values[TagParams.Names[I]] = Values[TagParams.Names[I]] then
+          FTagParams.Assign(TagParams);
 end;
 
 end.

@@ -14,12 +14,12 @@ The Initial Developer of the Original Code is Andrey V. Chudin,  [chudin@yandex.
 Portions created by Andrey V. Chudin are Copyright (C) 2003 Andrey V. Chudin.
 All Rights Reserved.
 
-Contributor(s):
+Contributor(S):
 Michael Beck [mbeck@bigfoot.com].
 
 Last Modified:  2003-01-15
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+You may retrieve the latest version of this file at the Project JEDI'S JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
@@ -32,56 +32,51 @@ unit JvgButton;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  JVComponent,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  JvgTypes,
-  JvgUtils,
-  JvgCommClasses{$IFDEF COMPILER5_UP},
-  Imglist{$ENDIF};
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  {$IFDEF COMPILER5_UP}
+  Imglist,
+  {$ENDIF}
+  JvComponent,
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
   TDrawMode = (dmUseImageList, dmAutoCtrl3D, dmAutoFlat, dmAutoShadow);
 
-  TglButtonOptions_ = (boBlinkWhenActive, boBlinkWhenInactive,
+  TglButtonOption = (boBlinkWhenActive, boBlinkWhenInactive,
     boBlinkWhenPushed, boChangeColorWhenActive,
     boChangeColorWhenPushed, boDelicateInactive,
     boDrawPushedAsFlat, boRaisedInactive,
     boRefreshOnActivate, boRefreshOnPush,
     boShadowSurround, boShiftMouseOnPush);
 
-  TglButtonOptions = set of TglButtonOptions_;
+  TglButtonOptions = set of TglButtonOption;
+
   TglBtnState = (fbsOriginal, fbsInactive, fbsActive, fbsPushed, fbsDisabled);
 
-  //*************************************{ . TJvgGlyphsIndexes . }
   TJvgGlyphsIndexes = class(TPersistent)
   private
-    FInactive: integer;
-    FPushed: integer;
-    FActive: integer;
-    FDisabled: integer;
-    FMask: integer;
-    procedure SetInactive(Value: integer);
-    procedure SetPushed(Value: integer);
-    procedure SetActive(Value: integer);
-    procedure SetDisabled(Value: integer);
-    procedure SetMask(Value: integer);
+    FInactive: Integer;
+    FPushed: Integer;
+    FActive: Integer;
+    FDisabled: Integer;
+    FMask: Integer;
+    FOnChanged: TNotifyEvent;
+    procedure SetInactive(Value: Integer);
+    procedure SetPushed(Value: Integer);
+    procedure SetActive(Value: Integer);
+    procedure SetDisabled(Value: Integer);
+    procedure SetMask(Value: Integer);
+  protected
+    procedure DoChanged; virtual;
   public
-    OnChanged: TNotifyEvent;
     constructor Create;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged stored False;
   published
-    property Inactive: integer read FInactive write SetInactive default 0;
-    property Pushed: integer read FPushed write SetPushed default 1;
-    property Active: integer read FActive write SetActive default 2;
-    property Disabled: integer read FDisabled write SetDisabled default -1;
-    property Mask: integer read FMask write SetMask default 3;
+    property Inactive: Integer read FInactive write SetInactive default 0;
+    property Pushed: Integer read FPushed write SetPushed default 1;
+    property Active: Integer read FActive write SetActive default 2;
+    property Disabled: Integer read FDisabled write SetDisabled default -1;
+    property Mask: Integer read FMask write SetMask default 3;
   end;
 
   TJvgBtnGlyphs = class(TPersistent)
@@ -91,26 +86,22 @@ type
     FGlyphPushed: TBitmap;
     FGlyphActive: TBitmap;
     FGlyphDisabled: TBitmap;
-
     procedure SetGlyphInactive(Value: TBitmap);
     procedure SetGlyphMask(Value: TBitmap);
     procedure SetGlyphPushed(Value: TBitmap);
     procedure SetGlyphActive(Value: TBitmap);
     procedure SetGlyphDisabled(Value: TBitmap);
-
   public
     constructor Create;
     destructor Destroy; override;
   published
-    property GlyphInactive: TBitmap read FGlyphInactive write
-      SetGlyphInactive;
+    property GlyphInactive: TBitmap read FGlyphInactive write SetGlyphInactive;
     property GlyphMask: TBitmap read FGlyphMask write SetGlyphMask;
     property GlyphPushed: TBitmap read FGlyphPushed write SetGlyphPushed;
     property GlyphActive: TBitmap read FGlyphActive write SetGlyphActive;
-    property GlyphDisabled: TBitmap read FGlyphDisabled write
-      SetGlyphDisabled;
+    property GlyphDisabled: TBitmap read FGlyphDisabled write SetGlyphDisabled;
   end;
-  //*************************************{ . TJvgButton . }
+
   TJvgButton = class(TJvGraphicControl)
   private
     FGlyph: TBitmap;
@@ -118,11 +109,11 @@ type
     FDrawMode: TDrawMode;
     FGlyphsList: TImageList;
     FTransparentColor: TColor;
-    FNumGlyphs: integer;
+    FNumGlyphs: Integer;
     FShiftMaskWhenPushed: TJvgPointClass;
-    FEnabled: boolean;
+    FEnabled: Boolean;
     FOptions: TglButtonOptions;
-    FShadowDepth: word;
+    FShadowDepth: Word;
     FGlyphsIndexes: TJvgGlyphsIndexes;
     FColorHighlight: TColor;
     FColorShadow: TColor;
@@ -132,31 +123,35 @@ type
     FChangeColorOnPush: TJvgTwainColors;
     FAutoTrColor: TglAutoTransparentColor;
     FBlinkTimer: TTimer;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnClick: TNotifyEvent;
 
     TmpBMP: TBitmap;
     Img: TBitmap;
     DefaultGlyphsList: TImageList;
-    fBimapsCreated: boolean;
-    fMouseInControl: boolean;
-    fPushed: boolean;
-    fShowingAsPushedNow: boolean;
-    fActiveNow: boolean;
-    fLoaded: boolean;
-    fBlinked: boolean;
-    fNeedBlink: boolean;
+    FBitmapsCreated: Boolean;
+    FMouseInControl: Boolean;
+    FPushed: Boolean;
+    FShowingAsPushedNow: Boolean;
+    FActiveNow: Boolean;
+    FLoaded: Boolean;
+    FBlinked: Boolean;
+    FNeedBlink: Boolean;
     MShift: TPoint;
+    FTestMode: Boolean;
+
+    FHintColor: TColor;
+    FSaved: TColor;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FOver: Boolean;
     procedure SetGlyph(Value: TBitmap);
     procedure SetDrawMode(Value: TDrawMode);
     procedure SetGlyphsList(Value: TImageList);
-    procedure SetNumGlyphs(Value: integer);
+    procedure SetNumGlyphs(Value: Integer);
     procedure SetTransparentColor(Value: TColor);
-    procedure SetEnabled(Value: boolean);
-    //    procedure SetDelicateInactive( Value: boolean );
-    //    procedure SetRaisedInactive( Value: boolean );
-    procedure SetShadowDepth(Value: word);
+    procedure SetEnabled(Value: Boolean);
+    procedure SetShadowDepth(Value: Word);
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorShadow(Value: TColor);
     procedure SetColorDarkShadow(Value: TColor);
@@ -165,33 +160,26 @@ type
     procedure SetAutoTrColor(Value: TglAutoTransparentColor);
     procedure SetBlinkTimer(Value: TTimer);
     function GetBlinkTimer: TTimer;
-    procedure SetTestMode(Value: boolean);
-    //    procedure SetShadowSurround( Value: boolean );
-    //    procedure SetDrawPushedAsFlat( Value: boolean );
+    procedure SetTestMode(Value: Boolean);
 
-    function IsMouseInControl: boolean;
+    function IsMouseInControl: Boolean;
     procedure GetBitmaps;
     procedure CreateBitmaps; //...based on Inactive Glyph
-    procedure GetBitmap_(Index: integer; var Bmp: TBitmap);
+    procedure GetBitmap_(Index: Integer; var Bmp: TBitmap);
     procedure SmthChanged(Sender: TObject);
     procedure ApplicateGlyph(var TargetBMP: TBitmap; State: TglBtnState;
-      DrawState: TglDrawState; s: integer);
+      DrawState: TglDrawState; S: Integer);
   protected
     procedure Paint; override;
     procedure Paint_;
     procedure Loaded; override;
-    //    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-    //  procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    //    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   public
-    FTestMode: boolean; //...placed hete to access from SetTestMode method
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure OnBlinkTimer(Sender: TObject);
@@ -201,54 +189,36 @@ type
     property DrawMode: TDrawMode read FDrawMode write SetDrawMode;
     property GlyphsList: TImageList read FGlyphsList write SetGlyphsList;
     property Glyph: TBitmap read FGlyph write SetGlyph;
-    property NumGlyphs: integer read FNumGlyphs write SetNumGlyphs;
-    property TransparentColor: TColor
-      read FTransparentColor write SetTransparentColor default clOlive;
-    property ShiftMaskWhenPushed: TJvgPointClass read FShiftMaskWhenPushed
-      write FShiftMaskWhenPushed;
-    //    property RefreshOnActivate: boolean
-    //     read FRefreshOnActivate write FRefreshOnActivate default false;
-    //    property RefreshOnPush: boolean
-    //     read FRefreshOnPush write FRefreshOnPush default true;
-    property Enabled: boolean read FEnabled write SetEnabled default true;
-    property GlyphsIndexes: TJvgGlyphsIndexes
-      read FGlyphsIndexes write FGlyphsIndexes;
-    property ShadowDepth: word read FShadowDepth write SetShadowDepth
-      default 5;
-    property ColorHighlight: TColor read FColorHighlight write
-      SetColorHighlight
-      default clBtnHighlight;
-    property ColorShadow: TColor read FColorShadow write SetColorShadow
-      default clBtnShadow;
-    property ColorDarkShadow: TColor read FColorDarkShadow write
-      SetColorDarkShadow
-      default clBlack;
-    property DisabledMaskColor: TColor read FDisabledMaskColor write
-      SetDisabledMaskColor
-      default clBlack;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property NumGlyphs: Integer read FNumGlyphs write SetNumGlyphs;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor default clOlive;
+    property ShiftMaskWhenPushed: TJvgPointClass read FShiftMaskWhenPushed write FShiftMaskWhenPushed;
+    property Enabled: Boolean read FEnabled write SetEnabled default True;
+    property GlyphsIndexes: TJvgGlyphsIndexes read FGlyphsIndexes write FGlyphsIndexes;
+    property ShadowDepth: Word read FShadowDepth write SetShadowDepth default 5;
+    property ColorHighlight: TColor read FColorHighlight write SetColorHighlight default clBtnHighlight;
+    property ColorShadow: TColor read FColorShadow write SetColorShadow default clBtnShadow;
+    property ColorDarkShadow: TColor read FColorDarkShadow write SetColorDarkShadow default clBlack;
+    property DisabledMaskColor: TColor read FDisabledMaskColor write SetDisabledMaskColor default clBlack;
     property Options: TglButtonOptions read FOptions write SetOptions;
-    property ChangeColorOnActivate: TJvgTwainColors
-      read FChangeColorOnActivate write FChangeColorOnActivate;
-    property ChangeColorOnPush: TJvgTwainColors
-      read FChangeColorOnPush write FChangeColorOnPush;
-    property AutoTransparentColor: TglAutoTransparentColor
-      read FAutoTrColor write SetAutoTrColor default ftcUser;
+    property ChangeColorOnActivate: TJvgTwainColors read FChangeColorOnActivate write FChangeColorOnActivate;
+    property ChangeColorOnPush: TJvgTwainColors read FChangeColorOnPush write FChangeColorOnPush;
+    property AutoTransparentColor: TglAutoTransparentColor read FAutoTrColor write SetAutoTrColor default ftcUser;
     property BlinkTimer: TTimer read GetBlinkTimer write SetBlinkTimer;
-    property TestMode: boolean read FTestMode write SetTestMode default false;
-
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
+    property TestMode: Boolean read FTestMode write SetTestMode default False;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
 implementation
+
 {$R ..\Resources\JvgButton.res}
 
 constructor TJvgBtnGlyphs.Create;
 begin
-  inherited;
+  inherited Create;
   FGlyphInactive := TBitmap.Create;
   FGlyphMask := TBitmap.Create;
   FGlyphPushed := TBitmap.Create;
@@ -258,57 +228,38 @@ end;
 
 destructor TJvgBtnGlyphs.Destroy;
 begin
-  if Assigned(FGlyphInactive) then
-    FGlyphInactive.Free;
-  if Assigned(FGlyphMask) then
-    FGlyphMask.Free;
-  if Assigned(FGlyphPushed) then
-    FGlyphPushed.Free;
-  if Assigned(FGlyphActive) then
-    FGlyphActive.Free;
-  if Assigned(FGlyphDisabled) then
-    FGlyphDisabled.Free;
-  inherited;
+  FGlyphInactive.Free;
+  FGlyphMask.Free;
+  FGlyphPushed.Free;
+  FGlyphActive.Free;
+  FGlyphDisabled.Free;
+  inherited Destroy;
 end;
-
-//procedure TJvgBtnGlyphs.SetGlyphInactive( Value: TBitmap );
 
 procedure TJvgBtnGlyphs.SetGlyphInactive(Value: TBitmap);
 begin
-  if Assigned(GlyphInactive) then
-    GlyphInactive.Free;
-  GlyphInactive.Assign(value);
+  GlyphInactive.Assign(Value);
 end;
 
 procedure TJvgBtnGlyphs.SetGlyphMask(Value: TBitmap);
 begin
-  if Assigned(GlyphMask) then
-    GlyphMask.Free;
-  GlyphMask.Assign(value);
+  GlyphMask.Assign(Value);
 end;
 
 procedure TJvgBtnGlyphs.SetGlyphPushed(Value: TBitmap);
 begin
-  if Assigned(GlyphPushed) then
-    GlyphPushed.Free;
-  GlyphPushed.Assign(value);
+  GlyphPushed.Assign(Value);
 end;
 
 procedure TJvgBtnGlyphs.SetGlyphActive(Value: TBitmap);
 begin
-  if Assigned(GlyphActive) then
-    GlyphActive.Free;
-  GlyphActive.Assign(value);
+  GlyphActive.Assign(Value);
 end;
 
 procedure TJvgBtnGlyphs.SetGlyphDisabled(Value: TBitmap);
 begin
-  if Assigned(GlyphDisabled) then
-    GlyphDisabled.Free;
-  GlyphDisabled.Assign(value);
+  GlyphDisabled.Assign(Value);
 end;
-
-//*************************************{ . TJvgButton methods. }
 
 constructor TJvgButton.Create(AOwner: TComponent);
 begin
@@ -325,9 +276,9 @@ begin
   FChangeColorOnPush := TJvgTwainColors.Create;
   FGlyphsIndexes.OnChanged := SmthChanged;
   //...set defaults
-  FShiftMaskWhenPushed.x := 0;
-  FShiftMaskWhenPushed.y := 0;
-  FEnabled := true;
+  FShiftMaskWhenPushed.X := 0;
+  FShiftMaskWhenPushed.Y := 0;
+  FEnabled := True;
   FGlyphsList := nil;
   FNumGlyphs := 3;
   FDrawMode := dmUseImageList;
@@ -336,19 +287,17 @@ begin
   FColorShadow := clBtnShadow;
   FColorDarkShadow := clBlack;
   FDisabledMaskColor := clBlack;
-  FTestMode := false;
-  ShowHint := true;
+  FTestMode := False;
+  ShowHint := True;
   FOptions := [boRaisedInactive, boShadowSurround, boShiftMouseOnPush,
     boChangeColorWhenActive, boChangeColorWhenPushed,
     boBlinkWhenActive];
-  //  if (csDesigning in ComponentState)and not(csLoading in ComponentState) then
   if DefaultGlyphsList.ResourceLoad(rtBitmap, 'FRDEFBUTTON', clNone) then
   begin
-    //    ShowMessage('qwerty');
     FGlyphsList := DefaultGlyphsList;
     GetBitmaps;
   end;
-  fPushed := false;
+  FPushed := False;
   FChangeColorOnActivate.FromColor := clBlack;
   FChangeColorOnActivate.ToColor := clBlack;
   FChangeColorOnPush.FromColor := clBlack;
@@ -357,14 +306,13 @@ begin
   FAutoTrColor := {ftcLeftBottomPixel;} ftcUser;
   Width := 20;
   Height := 20;
-  fLoaded := false; //(csDesigning in ComponentState);
-
+  FLoaded := False;
 end;
 
 destructor TJvgButton.Destroy;
 begin
   FGlyphsList := nil;
-  Glyphs.Free;
+  FGlyphs.Free;
   FGlyph.Free;
   DefaultGlyphsList.Free;
   Img.Free;
@@ -375,34 +323,31 @@ begin
   FChangeColorOnPush.Free;
   if not (csDestroying in Owner.ComponentState) then
     SetBlinkTimer(nil);
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgButton.Loaded;
 begin
-  inherited Loaded; //if csDesigning in ComponentState then exit;
-  //AutoTransparentColor := FAutoTrColor;
-  fLoaded := true; // GetBitmaps;
+  inherited Loaded;
+  FLoaded := True;
 end;
 
 procedure TJvgButton.Paint;
 var
   DrawState: TglDrawState;
-  i: word;
+  I: Word;
 begin
   with Glyphs do
   begin
-    if not fLoaded then
+    if not FLoaded then
     begin
-      fLoaded := true;
+      FLoaded := True;
       GetBitmaps;
     end;
-    //    if not fBimapsCreated then exit;
     Width := FGlyphInactive.Width + 1;
     Height := FGlyphInactive.Height + 1;
-    //fMouseInControl:=IsMouseInControl;
-    fShowingAsPushedNow := fPushed and fMouseInControl;
-    fActiveNow := true;
+    FShowingAsPushedNow := FPushed and FMouseInControl;
+    FActiveNow := True;
 
     with Img do
     begin
@@ -412,7 +357,7 @@ begin
       Canvas.Brush.Style := bsSolid;
       Canvas.FillRect(Bounds(0, 0, Width, Height));
     end;
-    GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+    GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
       Img.Canvas.Handle);
 
     if boDelicateInactive in FOptions then
@@ -420,144 +365,128 @@ begin
     else
       DrawState := fdsDefault;
 
-    if FEnabled then //..._______________ENABLED_
+    if FEnabled then
     begin
-      if fMouseInControl then
+      if FMouseInControl then
       begin
-        if fPushed then //..._____________PUSHED_
+        if FPushed then
         begin
-
           if (boDrawPushedAsFlat in FOptions) and (FDrawMode <>
             dmUseImageList) then
             ApplicateGlyph(Img, fbsOriginal {fbsPushed}, fdsDefault, 3)
           else
           begin
             if FDrawMode = dmAutoFlat then
-              i := 2
+              I := 2
             else
-              i := 0;
-            ApplicateGlyph(Img, fbsPushed, fdsDefault, i);
+              I := 0;
+            ApplicateGlyph(Img, fbsPushed, fdsDefault, I);
           end;
         end
         else
-        begin //...__________________ACTIVE_
-          fActiveNow := false;
+        begin
+          FActiveNow := False;
           if (FDrawMode = dmAutoFlat) then
-            i := 1
+            I := 1
           else
-            i := 0;
-          //	  if {(FGlyphsIndexes.Active=-1)or}(FDrawMode=dmAutoCtrl3D) then
-          //	     (FDrawMode=dmAutoShadow) then
-          //	    //...__use INACTIVE as ACTIVE_
-          //	    ApplicateGlyph( Img, fbsInactive, fdsDefault, 0 )
-          //	  else
-          ApplicateGlyph(Img, fbsActive, fdsDefault, i);
+            I := 0;
+          ApplicateGlyph(Img, fbsActive, fdsDefault, I);
         end;
       end
       else
-      begin //..._______________INACTIVE_
-
-        if (FDrawMode = dmAutoFlat)
-          and ({fPushed or }(not (boRaisedInactive in FOptions))) then
+      begin
+        if (FDrawMode = dmAutoFlat) and
+          ({FPushed or }(not (boRaisedInactive in FOptions))) then
           ApplicateGlyph(Img, fbsOriginal, DrawState, 2)
         else
         begin
           if (FDrawMode = dmAutoFlat) then
-            i := 1
+            I := 1
           else
-            i := 0;
-          ApplicateGlyph(Img, fbsInactive, DrawState, i);
+            I := 0;
+          ApplicateGlyph(Img, fbsInactive, DrawState, I);
         end;
       end;
     end
     else
-    begin //..._____________DISABLED_
+    begin
       if (FDrawMode = dmAutoFlat) and (boRaisedInactive in Options) then
-        i := 1
+        I := 1
       else
-        i := 0;
+        I := 0;
       if DrawMode <> dmUseImageList then //...auto disabled
-        ApplicateGlyph(Img, fbsDisabled, fdsDisabled, i)
+        ApplicateGlyph(Img, fbsDisabled, fdsDisabled, I)
       else
-      begin //...user's disabled
+      begin //...user'S disabled
         if FGlyphsIndexes.Disabled = -1 then
           CreateBitmapExt(Img.Canvas.Handle, FGlyphInactive, ClientRect, 0,
             0,
-            fwoNone, fdsDisabled, true, FTransparentColor,
+            fwoNone, fdsDisabled, True, FTransparentColor,
             DisabledMaskColor)
         else
           CreateBitmapExt(Img.Canvas.Handle, FGlyphDisabled, ClientRect, 0,
             0,
-            fwoNone, fdsDefault, true, FTransparentColor,
+            fwoNone, fdsDefault, True, FTransparentColor,
             DisabledMaskColor);
       end;
     end;
     Canvas.Draw(0, 0, Img);
-    //BitBlt( Canvas.Handle, 0, 0, Height, Width, Img.Canvas.Handle, 0, 0, SRCCOPY );
   end;
 end;
 
 procedure TJvgButton.Paint_;
-//var R: TRect;
 begin
-  //  r:=Bounds(left-1,top-1,Width+1,Height+1);
-  //InvalidateRect( Parent.Handle, @R, false);
   if not Enabled then
-    exit;
+    Exit;
   if FChangeColorOnActivate.FromColor <> FChangeColorOnActivate.ToColor then
   begin
-    rePaint;
-    exit;
+    Repaint;
+    Exit;
   end;
-  if ((FDrawMode = dmAutoCtrl3D) or (FDrawMode = dmAutoShadow)) and (not
-    fShowingAsPushedNow) and (not fPushed) and (not (boDelicateInactive in
-    FOptions)) then
-    exit;
-  if (FDrawMode = dmAutoFlat)
-    and (not fShowingAsPushedNow)
-    and (not fPushed)
-    and (boRaisedInactive in FOptions)
-    and (not (boDelicateInactive in FOptions)) then
-    exit;
+  if ((FDrawMode = dmAutoCtrl3D) or (FDrawMode = dmAutoShadow)) and
+    (not FShowingAsPushedNow) and (not FPushed) and (not (boDelicateInactive in FOptions)) then
+    Exit;
+  if (FDrawMode = dmAutoFlat) and (not FShowingAsPushedNow) and (not FPushed) and
+    (boRaisedInactive in FOptions) and (not (boDelicateInactive in FOptions)) then
+    Exit;
 
-  rePaint;
-  exit;
-  //Refresh;exit;
+  Repaint;
+  Exit;
 
-  if (FDrawMode = dmAutoFlat)
-    and (fShowingAsPushedNow or (not (boRaisedInactive in FOptions))) then
+  // (rom) unused code
+  if (FDrawMode = dmAutoFlat) and
+    (FShowingAsPushedNow or (not (boRaisedInactive in FOptions))) then
   begin
-    repaint;
-    exit;
+    Repaint;
+    Exit;
   end;
-  if fPushed then
+  if FPushed then
   begin
     if (boRefreshOnPush in FOptions) or (FDrawMode = dmAutoShadow) then
       Repaint
     else
       Paint;
   end
-  else if boRefreshOnActivate in FOptions then
+  else
+  if boRefreshOnActivate in FOptions then
     Repaint
   else
     Paint;
 end;
 
-procedure TJvgButton.ApplicateGlyph(var TargetBMP: TBitmap;
-  State: TglBtnState;
-  DrawState: TglDrawState;
-  s: integer);
+procedure TJvgButton.ApplicateGlyph(var TargetBMP: TBitmap; State: TglBtnState;
+  DrawState: TglDrawState; S: Integer);
 var
-  i, j: integer;
-  fChangeColor, fCanBlink: boolean;
+  I, J: Integer;
+  fChangeColor, fCanBlink: Boolean;
   DrawState2: TglDrawState;
 begin
   with Glyphs do
   begin
-    i := 1;
-    j := 1;
-    fChangeColor := false;
-    fCanBlink := false;
+    I := 1;
+    J := 1;
+    fChangeColor := False;
+    fCanBlink := False;
     if DrawState = fdsDisabled then
     begin
       DrawState := fdsDefault;
@@ -569,43 +498,43 @@ begin
       dmAutoCtrl3D:
         if State = fbsPushed then
         begin
-          i := 2;
-          j := 2;
+          I := 2;
+          J := 2;
         end;
       dmUseImageList:
         begin
-          i := 0;
-          j := 0;
-          s := 0;
+          I := 0;
+          J := 0;
+          S := 0;
         end;
     end;
 
     case State of
       fbsOriginal:
         begin
-          CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyph, ClientRect, s,
-            s,
-            fwoNone, DrawState, true, FTransparentColor,
+          CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyph, ClientRect, S,
+            S,
+            fwoNone, DrawState, True, FTransparentColor,
             DisabledMaskColor);
-          exit;
+          Exit;
         end;
       fbsInactive, fbsDisabled:
         begin
           if (DrawMode = dmAutoFlat) and (boRaisedInactive in FOptions) then
             CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyphActive,
-              ClientRect, s, s,
-              fwoNone, DrawState, true, FTransparentColor,
+              ClientRect, S, S,
+              fwoNone, DrawState, True, FTransparentColor,
               DisabledMaskColor)
           else
             CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyphInactive,
               ClientRect, 0, 0,
-              fwoNone, DrawState, true, FTransparentColor,
+              fwoNone, DrawState, True, FTransparentColor,
               DisabledMaskColor);
 
           if State = fbsDisabled then
           begin
-            i := 0;
-            j := 0;
+            I := 0;
+            J := 0;
           end;
           fCanBlink := boBlinkWhenInactive in Options;
         end;
@@ -613,13 +542,13 @@ begin
         begin
           if (FDrawMode = dmAutoCtrl3D) or (DrawMode = dmAutoShadow) then
             CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyphInactive,
-              ClientRect, s, s,
-              fwoNone, DrawState, true, FTransparentColor,
+              ClientRect, S, S,
+              fwoNone, DrawState, True, FTransparentColor,
               DisabledMaskColor)
           else
             CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyphActive,
-              ClientRect, s, s,
-              fwoNone, DrawState, true, FTransparentColor,
+              ClientRect, S, S,
+              fwoNone, DrawState, True, FTransparentColor,
               DisabledMaskColor);
           fChangeColor := boChangeColorWhenActive in Options;
           fCanBlink := boBlinkWhenActive in Options;
@@ -627,26 +556,26 @@ begin
       fbsPushed:
         begin
           CreateBitmapExt(TargetBMP.Canvas.Handle, FGlyphPushed,
-            ClientRect, s, s,
-            fwoNone, DrawState, true, FTransparentColor,
+            ClientRect, S, S,
+            fwoNone, DrawState, True, FTransparentColor,
             DisabledMaskColor);
           fChangeColor := boChangeColorWhenPushed in Options;
           fCanBlink := boBlinkWhenPushed in Options;
         end;
     end;
     GetBitmap_(FGlyphsIndexes.Inactive, TmpBMP);
-    fCanBlink := fCanBlink and fNeedBlink;
+    fCanBlink := fCanBlink and FNeedBlink;
     if fCanBlink then
-      fBlinked := not fBlinked
-    else if State = fbsActive then
-      fBlinked := FChangeColorOnActivate.FromColor <>
-        FChangeColorOnActivate.ToColor
+      FBlinked := not FBlinked
     else
-      fBlinked := FChangeColorOnPush.FromColor <> FChangeColorOnPush.ToColor;
+    if State = fbsActive then
+      FBlinked := FChangeColorOnActivate.FromColor <> FChangeColorOnActivate.ToColor
+    else
+      FBlinked := FChangeColorOnPush.FromColor <> FChangeColorOnPush.ToColor;
 
     if fCanBlink then
     begin
-      if fBlinked then
+      if FBlinked then
         if State = fbsPushed then
           with FChangeColorOnPush do
             ChangeBitmapColor(TmpBMP, FromColor, ToColor)
@@ -654,123 +583,139 @@ begin
           with FChangeColorOnActivate do
             ChangeBitmapColor(TmpBMP, FromColor, ToColor);
     end
-    else if fChangeColor and (FDrawMode <> dmUseImageList) then
+    else
+    if fChangeColor and (FDrawMode <> dmUseImageList) then
       if State = fbsActive then
         with FChangeColorOnActivate do
           ChangeBitmapColor(TmpBMP, FromColor, ToColor)
       else
         with FChangeColorOnPush do
           ChangeBitmapColor(TmpBMP, FromColor, ToColor);
-    fNeedBlink := false;
-    if (DrawMode = dmAutoShadow) and (State = fbsPushed)
-      or (FDrawMode = dmUseImageList) then
-      exit;
+    FNeedBlink := False;
+    if (DrawMode = dmAutoShadow) and (State = fbsPushed) or
+      (FDrawMode = dmUseImageList) then
+      Exit;
 
     if DrawState2 = fdsDisabled then
     begin
       TmpBMP.Canvas.Brush.Color := FTransparentColor;
       TmpBMP.Canvas.Font.Color := clBtnFace;
       //    SetBkColor(TmpBMP.Canvas.Handle, FTransparentColor);
-      TmpBMP.Monochrome := true;
-      TmpBMP.Monochrome := false;
+      TmpBMP.Monochrome := True;
+      TmpBMP.Monochrome := False;
       CreateBitmapExt(TargetBMP.Canvas.Handle, TmpBMP, Rect(0, 0,
         TmpBMP.Width, TmpBMP.Height),
-        i + s, j + s, fwoNone, fdsDefault, true, FTransparentColor,
+        I + S, J + S, fwoNone, fdsDefault, True, FTransparentColor,
         FDisabledMaskColor);
       GetBitmap_(FGlyphsIndexes.Inactive, TmpBMP);
     end;
 
     CreateBitmapExt(TargetBMP.Canvas.Handle, TmpBMP, Rect(0, 0, TmpBMP.Width,
       TmpBMP.Height),
-      i + s, j + s, fwoNone, DrawState2, true, FTransparentColor,
+      I + S, J + S, fwoNone, DrawState2, True, FTransparentColor,
       FDisabledMaskColor);
   end;
 end;
 
-{procedure TJvgButton.WMSize(var Message: TWMSize);
-begin
-  Width := FGlyphInactive.Width; Height := FGlyphInactive.Height;
-end;}
-
 procedure TJvgButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  pt: TPoint;
-  fMouseInControl_: boolean;
+  Pt: TPoint;
+  fMouseInControl_: Boolean;
 begin
   inherited MouseMove(Shift, X, Y);
-  pt.x := X;
-  pt.y := Y;
-  if IsPointInRect(pt, ClientRect) then
+  Pt.X := X;
+  Pt.Y := Y;
+  if IsPointInRect(Pt, ClientRect) then
   begin
     fMouseInControl_ := IsMouseInControl;
-    if fMouseInControl_ <> fMouseInControl then
+    if fMouseInControl_ <> FMouseInControl then
     begin
-      if fMouseInControl then
+      if FMouseInControl then
         if Assigned(FOnMouseEnter) then
-          FOnMouseEnter(self)
-        else if Assigned(FOnMouseLeave) then
-          FOnMouseLeave(self);
-      fMouseInControl := fMouseInControl_;
+          FOnMouseEnter(Self)
+        else
+        if Assigned(FOnMouseLeave) then
+          FOnMouseLeave(Self);
+      FMouseInControl := FMouseInControl_;
       Paint_;
     end;
   end;
 end;
 
-{procedure TJvgButton.CMMouseEnter(var Message: TMessage);
-begin
-  fMouseInControl:=true; Paint_;
-end;}
-
-procedure TJvgButton.CMMouseLeave(var Message: TMessage);
+procedure TJvgButton.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
-  //fMouseInControl:=IsMouseInControl;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvgButton.CMMouseEnter(var Msg: TMessage);
+begin
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    // for D7...
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvgButton.CMMouseLeave(var Msg: TMessage);
+begin
+  if FOver then
+  begin
+    Application.HintColor := FSaved;
+    FOver := False;
+  end;
   if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(self);
-  fMouseInControl := false;
+    FOnMouseLeave(Self);
+  FMouseInControl := False;
   Paint_;
 end;
 
 procedure TJvgButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  pt: TPoint;
+  Pt: TPoint;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if (Button <> mbLeft) or (not Enabled) or (not IsMouseInControl) then
-    exit;
+    Exit;
 
   if boShiftMouseOnPush in FOptions then
   begin
-    GetCursorPos(pt);
-    SetCursorPos(pt.x + MShift.x, pt.y + MShift.y);
+    GetCursorPos(Pt);
+    SetCursorPos(Pt.X + MShift.X, Pt.Y + MShift.Y);
   end;
-  //  if not FMouseInControl then FMouseInControl := True;
-  fPushed := true;
+  FPushed := True;
   Paint_;
 end;
 
 procedure TJvgButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  pt: TPoint;
+  Pt: TPoint;
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if fShowingAsPushedNow and Assigned(FOnClick) then
-    FOnClick(self);
+  if FShowingAsPushedNow and Assigned(FOnClick) then
+    FOnClick(Self);
   if (boShiftMouseOnPush in FOptions) and IsMouseInControl then
   begin
-    GetCursorPos(pt);
-    SetCursorPos(pt.x - MShift.x, pt.y - MShift.y);
+    GetCursorPos(Pt);
+    SetCursorPos(Pt.X - MShift.X, Pt.Y - MShift.Y);
   end;
-  fPushed := false;
+  FPushed := False;
   Paint_;
 end;
 
 procedure TJvgButton.GetBitmaps;
 begin
-  if not fLoaded then
-    exit;
+  if not FLoaded then
+    Exit;
   with Glyphs do
   begin
     FGlyphInactive.Width := 0;
@@ -781,16 +726,16 @@ begin
     if FDrawMode = dmUseImageList then
     begin
       if not Assigned(FGlyphsList) then
-        exit;
+        Exit;
       with FGlyphsList, FGlyphsIndexes do
       begin
-        if (Inactive < 0) and (Inactive > (Count - 1)) then
+        if (Inactive < 0) and (Inactive > Count - 1) then
           Inactive := 0;
-        if (Pushed < 0) and (Pushed > (Count - 1)) then
+        if (Pushed < 0) and (Pushed > Count - 1) then
           Pushed := 1;
-        if (Active > (Count - 1)) then
+        if Active > Count - 1 then
           Active := -1;
-        if (Mask > (Count - 1)) then
+        if Mask > Count - 1 then
           Mask := -1;
 
         if Inactive <> -1 then
@@ -804,39 +749,39 @@ begin
         if Mask <> -1 then
           GetBitmap_(Mask, FGlyphMask); //...optional bitmap
         FNumGlyphs := Count;
-        fBimapsCreated := not (FGlyphInactive.Empty or FGlyphPushed.Empty);
+        FBitmapsCreated := not (FGlyphInactive.Empty or FGlyphPushed.Empty);
       end;
     end
     else
       CreateBitmaps;
-    fBimapsCreated := true;
+    FBitmapsCreated := True;
 
     case FDrawMode of
       dmAutoShadow:
         if boDrawPushedAsFlat in FOptions then
         begin
-          MShift.x := 1;
-          MShift.y := 1;
+          MShift.X := 1;
+          MShift.Y := 1;
         end
         else
         begin
-          MShift.x := FShadowDepth - 1;
-          MShift.y := FShadowDepth - 1;
+          MShift.X := FShadowDepth - 1;
+          MShift.Y := FShadowDepth - 1;
         end;
       dmAutoCtrl3D:
         begin
-          MShift.x := 2;
-          MShift.y := 2;
+          MShift.X := 2;
+          MShift.Y := 2;
         end;
       dmAutoFlat:
         begin
-          MShift.x := 1;
-          MShift.y := 1;
+          MShift.X := 1;
+          MShift.Y := 1;
         end;
     else
       begin
-        MShift.x := FShiftMaskWhenPushed.x;
-        MShift.y := FShiftMaskWhenPushed.y;
+        MShift.X := FShiftMaskWhenPushed.X;
+        MShift.Y := FShiftMaskWhenPushed.Y;
       end;
     end;
 
@@ -849,7 +794,7 @@ procedure TJvgButton.CreateBitmaps; //...based on Inactive Glyph
 var
   MonoBMP, OldMonoBMP: HBITMAP;
   MonoDC: HDC;
-  i: word;
+  I: Word;
 
   procedure RemakeTmpBMP;
   begin
@@ -857,8 +802,8 @@ var
     BitBlt(TmpBMP.Canvas.Handle, 0, 0, TmpBMP.Width, TmpBMP.Height, MonoDC, 0,
       0, SRCCOPY);
   end;
-begin
 
+begin
   with FGlyphs, FGlyphsList, FGlyphsIndexes do
   begin
     FInactive := 0;
@@ -877,7 +822,6 @@ begin
       TmpBMP.Canvas.Handle, 0, 0, SRCCOPY);
     //SetBkColor(TmpBMP.Canvas.Handle, OldBkColor);
     try
-
       if FDrawMode = dmAutoShadow then
       begin
         with FGlyphInactive do
@@ -905,19 +849,19 @@ begin
         ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          FShadowDepth, FShadowDepth, fwoNone, fdsDefault, true,
+          FShadowDepth, FShadowDepth, fwoNone, fdsDefault, True,
           FTransparentColor, FDisabledMaskColor);
-        exit;
+        Exit;
       end;
 
       if FDrawMode = dmAutoCtrl3D then
-        i := 3
+        I := 3
       else
-        i := 3;
+        I := 3;
       with FGlyphInactive do
       begin
-        Width := TmpBMP.Width + i;
-        Height := TmpBMP.Height + i;
+        Width := TmpBMP.Width + I;
+        Height := TmpBMP.Height + I;
         Canvas.Brush.Style := bsSolid;
         Canvas.Brush.Color := FTransparentColor;
         Canvas.FillRect(Rect(0, 0, Width, Height));
@@ -925,294 +869,262 @@ begin
       if not (boDrawPushedAsFlat in FOptions) then
         with FGlyphPushed do
         begin
-          Width := TmpBMP.Width + i;
-          Height := TmpBMP.Height + i;
+          Width := TmpBMP.Width + I;
+          Height := TmpBMP.Height + I;
           Canvas.Brush.Style := bsSolid;
           Canvas.Brush.Color := FTransparentColor;
           Canvas.FillRect(Rect(0, 0, Width, Height));
         end;
       with FGlyphActive do
       begin
-        Width := TmpBMP.Width + i;
-        Height := TmpBMP.Height + i;
+        Width := TmpBMP.Width + I;
+        Height := TmpBMP.Height + I;
         Canvas.Brush.Style := bsSolid;
         Canvas.Brush.Color := FTransparentColor;
         Canvas.FillRect(Rect(0, 0, Width, Height));
       end;
 
-      //    TmpBMP.Width:=TmpBMP.Width+i;  TmpBMP.Height:=TmpBMP.Height+i;
-
-      //===========================-AUTOCTRL3D-=================================
-
-      if FDrawMode = dmAutoCtrl3D then //..._add 3d border to inactive BEGIN_
+      if FDrawMode = dmAutoCtrl3D then //...add 3d border to inactive
       begin
-        //============================================.CTRL3D INACTIVE.=
         RemakeTmpBMP;
-        //...__________________________________________________Dark Shadow
         if clBlack <> FColorDarkShadow then
           ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 3, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 3, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            3, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            3, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          3, 3, fwoNone, fdsDefault, true, FTransparentColor,
+          3, 3, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
 
         RemakeTmpBMP;
-        //...__________________________________________________Highlight
         ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            2, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            2, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 2, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 2, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         RemakeTmpBMP;
-        //...__________________________________________________Shadow
         ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            1, 2, fwoNone, fdsDefault, true, FTransparentColor,
+            1, 2, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            2, 1, fwoNone, fdsDefault, true, FTransparentColor,
+            2, 1, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          2, 2, fwoNone, fdsDefault, true, FTransparentColor,
+          2, 2, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
-        //============================================.CTRL3D PUSHED.=
         if boDrawPushedAsFlat in FOptions then
-          exit;
+          Exit;
         RemakeTmpBMP;
-        //...__________________________________________________Highlight
         ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 3, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 3, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            3, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            3, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          3, 3, fwoNone, fdsDefault, true, FTransparentColor,
+          3, 3, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
 
         RemakeTmpBMP;
-        //...__________________________________________________Dark Shadow
         if clBlack <> FColorDarkShadow then
           ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
 
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            2, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            2, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 2, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 2, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         RemakeTmpBMP;
-        //...__________________________________________________Shadow
         ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            1, 2, fwoNone, fdsDefault, true, FTransparentColor,
+            1, 2, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            2, 1, fwoNone, fdsDefault, true, FTransparentColor,
+            2, 1, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          1, 1, fwoNone, fdsDefault, true, FTransparentColor,
+          1, 1, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         RemakeTmpBMP;
-        exit;
+        Exit;
       end;
-
-      //===========================-AUTOFLAT-=================================
 
       if FDrawMode = dmAutoFlat then
       begin
-        //============================================.FLAT INACTIVE.=
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
-        //============================================.FLAT ACTIVE.=
         RemakeTmpBMP;
-        //...__________________________________________________Shadow
         ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 2, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 2, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            2, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            2, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          2, 2, fwoNone, fdsDefault, true, FTransparentColor,
+          2, 2, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
-        //...__________________________________________________Highlight
         RemakeTmpBMP;
         ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            1, 0, fwoNone, fdsDefault, true, FTransparentColor,
+            1, 0, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
           CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
             TmpBMP.Width, TmpBMP.Height),
-            0, 1, fwoNone, fdsDefault, true, FTransparentColor,
+            0, 1, fwoNone, fdsDefault, True, FTransparentColor,
             FDisabledMaskColor);
         end;
         RemakeTmpBMP;
       end;
-      //============================================.FLAT PUSHED.=
       if boDrawPushedAsFlat in FOptions then
-        exit;
+        Exit;
       RemakeTmpBMP;
-      //...__________________________________________________Highlight
       ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
       if boShadowSurround in FOptions then
       begin
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 2, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 2, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          2, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          2, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
       end;
       CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
         TmpBMP.Width, TmpBMP.Height),
-        2, 2, fwoNone, fdsDefault, true, FTransparentColor,
+        2, 2, fwoNone, fdsDefault, True, FTransparentColor,
         FDisabledMaskColor);
       RemakeTmpBMP;
-      //...__________________________________________________Shadow
       if clBlack <> FColorShadow then
         ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
 
       CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
         TmpBMP.Width, TmpBMP.Height),
-        0, 0, fwoNone, fdsDefault, true, FTransparentColor,
+        0, 0, fwoNone, fdsDefault, True, FTransparentColor,
         FDisabledMaskColor);
       if boShadowSurround in FOptions then
       begin
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          1, 0, fwoNone, fdsDefault, true, FTransparentColor,
+          1, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
-          0, 1, fwoNone, fdsDefault, true, FTransparentColor,
+          0, 1, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
       end;
       RemakeTmpBMP;
     finally
-      {      RemakeTmpBMP;
-            ChangeBitmapColor( TmpBMP, clBlack, clBtnFace );
-            CreateBitmapExt( FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0,0,TmpBMP.Width,TmpBMP.Height),
-               1, 1, fwoNone, fdsDefault, true, FTransparentColor, FDisabledMaskColor );
-            CreateBitmapExt( FGlyphActive.Canvas.Handle, TmpBMP, Rect(0,0,TmpBMP.Width,TmpBMP.Height),
-               1, 1, fwoNone, fdsDefault, true, FTransparentColor, FDisabledMaskColor );
-           } DeleteObject(SelectObject(MonoDC, OldMonoBMP));
+      DeleteObject(SelectObject(MonoDC, OldMonoBMP));
     end;
   end;
 end;
 
-function TJvgButton.IsMouseInControl: boolean;
+function TJvgButton.IsMouseInControl: Boolean;
 var
-  pt: TPoint;
+  Pt: TPoint;
   PixelColor: TCOLORREF;
 begin
-  GetCursorPos(pt);
-  pt := ScreenToClient(pt);
-  if fShowingAsPushedNow and fPushed then
+  GetCursorPos(Pt);
+  Pt := ScreenToClient(Pt);
+  if FShowingAsPushedNow and FPushed then
   begin
-    dec(pt.x, FShiftMaskWhenPushed.x);
-    dec(pt.y, FShiftMaskWhenPushed.y);
+    Dec(Pt.X, FShiftMaskWhenPushed.X);
+    Dec(Pt.Y, FShiftMaskWhenPushed.Y);
   end
-  else if FDrawMode = dmAutoShadow then
+  else
+  if FDrawMode = dmAutoShadow then
   begin
-    inc(pt.x, FShadowDepth);
-    inc(pt.y, FShadowDepth);
+    Inc(Pt.X, FShadowDepth);
+    Inc(Pt.Y, FShadowDepth);
   end;
 
-  {  if (FDrawMode = dmAutoShadow)and(boDrawPushedAsFlat in Options) then
-    begin
-      dec( pt.x, FShadowDepth );
-      dec( pt.y, FShadowDepth );
-    end;}
-  dec(pt.x);
-  dec(pt.y);
+  Dec(Pt.X);
+  Dec(Pt.Y);
 
-  //	  (FDrawMode = dmAutoFlat)and(fPushed or FRaisedInactive
   if FGlyphsIndexes.Mask = -1 then //...__mask is absent_
   begin
     with FGlyphs do
       case FDrawMode of
         dmAutoShadow:
-          PixelColor := GetPixel(FGlyphPushed.Canvas.Handle, pt.x, pt.y);
+          PixelColor := GetPixel(FGlyphPushed.Canvas.Handle, Pt.X, Pt.Y);
         dmAutoFlat:
-          PixelColor := GetPixel(FGlyphActive.Canvas.Handle, pt.x, pt.y);
+          PixelColor := GetPixel(FGlyphActive.Canvas.Handle, Pt.X, Pt.Y);
       else
-        PixelColor := GetPixel(FGlyphInactive.Canvas.Handle, pt.x, pt.y);
+        PixelColor := GetPixel(FGlyphInactive.Canvas.Handle, Pt.X, Pt.Y);
       end;
     Result := (PixelColor <> FTransparentColor) and (PixelColor <> -1);
   end
   else //...__use mask_
   begin
     with FGlyphs do
-      PixelColor := GetPixel(FGlyphMask.Canvas.Handle, pt.x, pt.y);
+      PixelColor := GetPixel(FGlyphMask.Canvas.Handle, Pt.X, Pt.Y);
     Result := (PixelColor = clWhite) and (PixelColor <> -1);
   end;
 end;
@@ -1223,7 +1135,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvgButton.GetBitmap_(Index: integer; var Bmp: TBitmap);
+procedure TJvgButton.GetBitmap_(Index: Integer; var Bmp: TBitmap);
 begin
   try
     if FDrawMode = dmUseImageList then
@@ -1238,8 +1150,7 @@ begin
       Bmp.Assign(Glyph);
     end;
   except
-    MessageDlg('Error during access GlyphsList or Glyph property',
-      mtError, [mbOk], 0);
+    MessageDlg('Error during access GlyphsList or Glyph property', mtError, [mbOk], 0);
     raise;
   end;
 end;
@@ -1247,238 +1158,233 @@ end;
 procedure TJvgButton.OnBlinkTimer(Sender: TObject);
 var
   ParentForm: TForm;
-  i: integer;
+  I: Integer;
 
   procedure Blink(FreeButton: TJvgButton);
   begin
     with FreeButton do
     begin
-      fNeedBlink := false;
-      if fShowingAsPushedNow then
+      FNeedBlink := False;
+      if FShowingAsPushedNow then
         with FChangeColorOnPush do
           if (boBlinkWhenPushed in Options) and (FromColor <> ToColor) then
           begin
-            fNeedBlink := true;
-            repaint;
-            exit;
+            FNeedBlink := True;
+            Repaint;
+            Exit;
           end
           else
-            exit;
-      if fMouseInControl then
+            Exit;
+      if FMouseInControl then
         with FChangeColorOnActivate do
           if (boBlinkWhenActive in Options) and (FromColor <> ToColor) then
           begin
-            fNeedBlink := true;
-            repaint;
-            exit;
+            FNeedBlink := True;
+            Repaint;
+            Exit;
           end
           else
-            exit;
-      if not fMouseInControl then
+            Exit;
+      if not FMouseInControl then
         with FChangeColorOnActivate do
           if (boBlinkWhenInactive in Options) and (FromColor <> ToColor) then
           begin
-            fNeedBlink := true;
-            repaint;
-            exit;
+            FNeedBlink := True;
+            Repaint;
+            Exit;
           end
           else
-            exit;
+            Exit;
     end;
   end;
-begin //...main proc
-  if (not FTestMode) and (csDesigning in ComponentState) then
-    exit;
-  ParentForm := GetParentForm(self);
-  for i := 0 to ParentForm.ComponentCount - 1 do
-    if (ParentForm.Components[i] is TJvgButton)
-      and (TJvgButton(ParentForm.Components[i]).BlinkTimer = FBlinkTimer) then
-      with ParentForm.Components[i] as TJvgButton do
-      begin
-        Blink(TJvgButton(ParentForm.Components[i]));
-      end;
 
+begin
+  if (not TestMode) and (csDesigning in ComponentState) then
+    Exit;
+  ParentForm := GetParentForm(Self);
+  for I := 0 to ParentForm.ComponentCount - 1 do
+    if (ParentForm.Components[I] is TJvgButton) and
+      (TJvgButton(ParentForm.Components[I]).BlinkTimer = FBlinkTimer) then
+      with ParentForm.Components[I] as TJvgButton do
+        Blink(TJvgButton(ParentForm.Components[I]));
 end;
-
-//*************************************{ . TJvgButton properties methods. }
 
 procedure TJvgButton.SetDrawMode(Value: TDrawMode);
 begin
-  if FDrawMode = Value then
-    exit;
-  //  if (Value=dmUseGlyphList)and(not Assigned(GlyphList)) then
-  //  if (Value<>dmUseimageList)and(not Assigned(Glyph)) then
-  //   FGlyph.Assign(FGlyphInactive);
-  FDrawMode := Value;
-
-  GetBitmaps;
-  Invalidate;
+  if FDrawMode <> Value then
+  begin
+    FDrawMode := Value;
+    GetBitmaps;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgButton.SetGlyphsList(Value: TImageList);
 begin
-  if (not Assigned(Value)) {or(Value.Count<2)} then
-    exit;
-  FGlyphsList := Value;
-  GetBitmaps;
-  Invalidate;
+  if Assigned(Value) then
+  begin
+    FGlyphsList := Value;
+    GetBitmaps;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgButton.SetGlyph(Value: TBitmap);
 begin
-  //  if (not Assigned(Value)) then exit;
   if Assigned(FGlyph) then
   begin
     FGlyph.Free;
     FGlyph := TBitmap.Create;
   end;
   FGlyph.Assign(Value);
-  begin
-    GetBitmaps;
-    Invalidate;
-  end;
+  GetBitmaps;
+  Invalidate;
   AutoTransparentColor := AutoTransparentColor;
-  //if FDrawMode <> dmUseImageList then begin GetBitmaps; Invalidate; end;
 end;
 
-procedure TJvgButton.SetNumGlyphs(Value: integer);
+procedure TJvgButton.SetNumGlyphs(Value: Integer);
 begin
-  if (Value < 2) or (Value > 4) then
-    exit;
-  FNumGlyphs := Value;
+  if (Value >= 2) or (Value <= 4) then
+    FNumGlyphs := Value;
 end;
 
 procedure TJvgButton.SetTransparentColor(Value: TColor);
 begin
   if (FAutoTrColor <> ftcUser) or (FTransparentColor = Value) then
-    exit;
+    Exit;
   FTransparentColor := Value;
   GetBitmaps;
   Invalidate;
 end;
 
-procedure TJvgButton.SetEnabled(Value: boolean);
+procedure TJvgButton.SetEnabled(Value: Boolean);
 begin
-  if FEnabled = Value then
-    exit;
-  FEnabled := Value;
-  Repaint;
+  if FEnabled <> Value then
+  begin
+    FEnabled := Value;
+    Repaint;
+  end;
 end;
 
-procedure TJvgButton.SetShadowDepth(Value: word);
+procedure TJvgButton.SetShadowDepth(Value: Word);
 begin
-  if FShadowDepth = Value then
-    exit;
-  FShadowDepth := Value;
-  if FDrawMode = dmAutoShadow then
+  if FShadowDepth <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FShadowDepth := Value;
+    if FDrawMode = dmAutoShadow then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetColorHighlight(Value: TColor);
 begin
-  if FColorHighlight = Value then
-    exit;
-  FColorHighlight := Value;
-  if FDrawMode <> dmUseImageList then
+  if FColorHighlight <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FColorHighlight := Value;
+    if FDrawMode <> dmUseImageList then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetColorShadow(Value: TColor);
 begin
-  if FColorShadow = Value then
-    exit;
-  FColorShadow := Value;
-  if FDrawMode <> dmUseImageList then
+  if FColorShadow <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FColorShadow := Value;
+    if FDrawMode <> dmUseImageList then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetColorDarkShadow(Value: TColor);
 begin
-  if FColorDarkShadow = Value then
-    exit;
-  FColorDarkShadow := Value;
-  if FDrawMode <> dmUseImageList then
+  if FColorDarkShadow <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FColorDarkShadow := Value;
+    if FDrawMode <> dmUseImageList then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetDisabledMaskColor(Value: TColor);
 begin
-  if FDisabledMaskColor = Value then
-    exit;
-  FDisabledMaskColor := Value;
-  if FDrawMode <> dmUseImageList then
+  if FDisabledMaskColor <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FDisabledMaskColor := Value;
+    if FDrawMode <> dmUseImageList then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetOptions(Value: TglButtonOptions);
 begin
-  if FOptions = Value then
-    exit;
-  FOptions := Value;
-  if FDrawMode <> dmUseImageList then
+  if FOptions <> Value then
   begin
-    GetBitmaps;
-    Invalidate;
+    FOptions := Value;
+    if FDrawMode <> dmUseImageList then
+    begin
+      GetBitmaps;
+      Invalidate;
+    end;
   end;
 end;
 
 procedure TJvgButton.SetAutoTrColor(Value: TglAutoTransparentColor);
 var
-  x, y: integer;
+  X, Y: Integer;
   TmpBmp_: TBitmap;
 begin
   FAutoTrColor := Value;
   TmpBmp_ := nil;
   if {(FAutoTrColor=ftcUser)or}(FGlyph.Width = 0) or (FGlyph.Height = 0) then
-    exit;
+    Exit;
   try
     with FGlyph do
       case FAutoTrColor of
         ftcLeftTopPixel:
           begin
-            x := 0;
-            y := 0;
+            X := 0;
+            Y := 0;
           end;
         ftcLeftBottomPixel:
           begin
-            x := 0;
-            y := Height - 1;
+            X := 0;
+            Y := Height - 1;
           end;
         ftcRightTopPixel:
           begin
-            x := Width - 1;
-            y := 0;
+            X := Width - 1;
+            Y := 0;
           end;
         ftcRightBottomPixel:
           begin
-            x := Width - 1;
-            y := Height - 1;
+            X := Width - 1;
+            Y := Height - 1;
           end;
       else
-        exit;
+        Exit;
       end;
     TmpBmp_ := TBitmap.Create;
     TmpBmp_.Assign(FGlyph);
-    //  if not (csDesigning in ComponentState) then
-    FTransparentColor := GetPixel(TmpBmp_.Canvas.Handle, x, y);
+    FTransparentColor := GetPixel(TmpBmp_.Canvas.Handle, X, Y);
   finally
-    if Assigned(TmpBmp_) then
-      TmpBmp_.Free;
+    TmpBmp_.Free;
+    TmpBmp_ := nil;
     GetBitmaps;
     Invalidate;
   end;
@@ -1487,39 +1393,35 @@ end;
 procedure TJvgButton.SetBlinkTimer(Value: TTimer);
 var
   ParentForm: TForm;
-  i: integer;
+  I: Integer;
   p1, p2: TNotifyEvent;
   Timer: TTimer;
 begin
   if FBlinkTimer = Value then
-    exit;
+    Exit;
   if Assigned(FBlinkTimer) then
   begin
     p1 := FBlinkTimer.OnTimer;
     p2 := OnBlinkTimer;
     if @FBlinkTimer.OnTimer = @p2 then //...points at me
     begin
-      ParentForm := GetParentForm(self);
-      for i := 0 to ParentForm.ComponentCount - 1 do
-        if (ParentForm.Components[i] is TJvgButton)
-          and (TJvgButton(ParentForm.Components[i]) <> self)
-          and (TJvgButton(ParentForm.Components[i]).BlinkTimer =
-          FBlinkTimer) then
+      ParentForm := GetParentForm(Self);
+      for I := 0 to ParentForm.ComponentCount - 1 do
+        if (ParentForm.Components[I] is TJvgButton) and
+          (TJvgButton(ParentForm.Components[I]) <> Self) and
+          (TJvgButton(ParentForm.Components[I]).BlinkTimer = FBlinkTimer) then
         begin
           Timer := FBlinkTimer;
           FBlinkTimer := nil;
-          Timer.OnTimer :=
-            TJvgButton(ParentForm.Components[i]).OnBlinkTimer;
-          break;
+          Timer.OnTimer := TJvgButton(ParentForm.Components[I]).OnBlinkTimer;
+          Break;
         end;
       if Assigned(FBlinkTimer) and (@FBlinkTimer.OnTimer = @p2) then
         FBlinkTimer.OnTimer := nil;
     end;
   end
   else
-  begin
     FBlinkTimer := nil;
-  end;
 
   FBlinkTimer := Value;
   if Assigned(FBlinkTimer) then
@@ -1537,17 +1439,16 @@ begin
   end;
 end;
 
-procedure TJvgButton.SetTestMode(Value: boolean);
+procedure TJvgButton.SetTestMode(Value: Boolean);
 var
   ParentForm: TForm;
-  i: integer;
+  I: Integer;
 begin
-  ParentForm := GetParentForm(self);
-  for i := 0 to ParentForm.ComponentCount - 1 do
-    if (ParentForm.Components[i] is TJvgButton) then
-      TJvgButton(ParentForm.Components[i]).FTestMode := Value;
+  ParentForm := GetParentForm(Self);
+  for I := 0 to ParentForm.ComponentCount - 1 do
+    if (ParentForm.Components[I] is TJvgButton) then
+      TJvgButton(ParentForm.Components[I]).FTestMode := Value;
 end;
-//*************************************{ . TJvgGlyphsIndexes methods. }
 
 constructor TJvgGlyphsIndexes.Create;
 begin
@@ -1559,39 +1460,41 @@ begin
   FMask := 3;
 end;
 
-procedure TJvgGlyphsIndexes.SetInactive(Value: integer);
+procedure TJvgGlyphsIndexes.DoChanged;
+begin
+  if Assigned(FOnChanged) then
+    FOnChanged(Self);
+end;
+
+procedure TJvgGlyphsIndexes.SetInactive(Value: Integer);
 begin
   FInactive := Value;
-  if Assigned(OnChanged) then
-    OnChanged(self);
+  DoChanged;
 end;
 
-procedure TJvgGlyphsIndexes.SetPushed(Value: integer);
+procedure TJvgGlyphsIndexes.SetPushed(Value: Integer);
 begin
   FPushed := Value;
-  if Assigned(OnChanged) then
-    OnChanged(self);
+  DoChanged;
 end;
 
-procedure TJvgGlyphsIndexes.SetActive(Value: integer);
+procedure TJvgGlyphsIndexes.SetActive(Value: Integer);
 begin
   FActive := Value;
-  if Assigned(OnChanged) then
-    OnChanged(self);
+  DoChanged;
 end;
 
-procedure TJvgGlyphsIndexes.SetDisabled(Value: integer);
+procedure TJvgGlyphsIndexes.SetDisabled(Value: Integer);
 begin
   FDisabled := Value;
-  if Assigned(OnChanged) then
-    OnChanged(self);
+  DoChanged;
 end;
 
-procedure TJvgGlyphsIndexes.SetMask(Value: integer);
+procedure TJvgGlyphsIndexes.SetMask(Value: Integer);
 begin
   FMask := Value;
-  if Assigned(OnChanged) then
-    OnChanged(self);
+  DoChanged;
 end;
 
 end.
+

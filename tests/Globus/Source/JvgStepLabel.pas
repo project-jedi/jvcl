@@ -32,39 +32,25 @@ unit JvgStepLabel;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
 
 type
   TJvgStepLabel = class(TJvGraphicControl)
   private
-    FStepCount: integer;
+    FStepCount: Integer;
     FPassiveColor: TColor;
     FActiveColor: TColor;
-    procedure SetStepCount(const Value: integer);
-    { Private declarations }
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    procedure SetStepCount(const Value: Integer);
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SetActiveColor(const Value: TColor);
     procedure SetPassiveColor(const Value: TColor);
-  protected
-    { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
-    property StepCount: integer read FStepCount write SetStepCount default 4;
-    property ActiveColor: TColor read FActiveColor write SetActiveColor default
-      clWindowText;
-    property PassiveColor: TColor read FPassiveColor write SetPassiveColor
-      default clSilver;
+    property StepCount: Integer read FStepCount write SetStepCount default 4;
+    property ActiveColor: TColor read FActiveColor write SetActiveColor default clWindowText;
+    property PassiveColor: TColor read FPassiveColor write SetPassiveColor default clSilver;
     property Font;
-
   end;
 
 procedure Register;
@@ -76,17 +62,9 @@ begin
   RegisterComponents('Gl Controls', [TJvgStepLabel]);
 end;
 
-{ TJvgStepLabel }
-
 constructor TJvgStepLabel.Create(AOwner: TComponent);
 begin
-  inherited;
-
-end;
-
-destructor TJvgStepLabel.Destroy;
-begin
-  inherited;
+  inherited Create(AOwner);
   FStepCount := 4;
   FActiveColor := clWindowText;
   FPassiveColor := clSilver;
@@ -94,27 +72,34 @@ end;
 
 procedure TJvgStepLabel.SetActiveColor(const Value: TColor);
 begin
-  FActiveColor := Value;
+  if FActiveColor <> Value then
+  begin
+    FActiveColor := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgStepLabel.SetPassiveColor(const Value: TColor);
 begin
-  FPassiveColor := Value;
+  if FPassiveColor <> Value then
+  begin
+    FPassiveColor := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvgStepLabel.SetStepCount(const Value: integer);
+procedure TJvgStepLabel.SetStepCount(const Value: Integer);
 begin
-  if Value < 1 then
-    exit;
-  FStepCount := Value;
+  if Value >= 1 then
+    FStepCount := Value;
 end;
 
-procedure TJvgStepLabel.WMPaint(var Message: TWMPaint);
+procedure TJvgStepLabel.WMPaint(var Msg: TWMPaint);
 var
   Caption: string;
-  i: integer;
+  I: Integer;
 begin
-  StepCount
+  StepCount;
 end;
 
 end.

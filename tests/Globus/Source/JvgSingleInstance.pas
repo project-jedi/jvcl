@@ -32,35 +32,19 @@ unit JvgSingleInstance;
 interface
 
 uses
-  Windows,
-  Messages,
-  Classes,
-  Forms,
-  JvComponent,
-  Dialogs,
-  syncobjs,
-  SysUtils;
+  Windows, Messages, Classes, Forms, Dialogs, SyncObjs, SysUtils,
+  JvComponent;
 
 type
   TJvgSingleInstance = class(TJvComponent)
   private
-    CheckEvent: TEvent;
-  protected
-    { Protected declarations }
+    FCheckEvent: TEvent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    { Published declarations }
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-end;
 
 { semaphore
 
@@ -105,27 +89,25 @@ begin
   end;
 end.
 }
-{ TJvgSingleInstance }
 
 constructor TJvgSingleInstance.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   if csDesigning in ComponentState then
-    exit;
-  CheckEvent := TEvent.Create(nil, false, true, ExtractFileName(ParamStr(0)));
-  if CheckEvent.WaitFor(10) <> wrSignaled then
+    Exit;
+  FCheckEvent := TEvent.Create(nil, False, True, ParamStr(0));
+  if FCheckEvent.WaitFor(10) <> wrSignaled then
   begin
     Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
       MB_ICONSTOP or MB_OK);
-    halt;
+    Halt;
   end;
 end;
 
 destructor TJvgSingleInstance.Destroy;
 begin
-  inherited;
-  if Assigned(CheckEvent) then
-    CheckEvent.Free;
+  FCheckEvent.Free;
+  inherited Destroy;
 end;
 
 end.

@@ -44,7 +44,6 @@ type
     B_Ok: TButton;
     B_Cancel: TButton;
     procedure B_OkClick(Sender: TObject);
-    procedure B_CancelClick(Sender: TObject);
   public
     Horz: TglHComponentAlign;
     Vert: TglVComponentAlign;
@@ -61,12 +60,6 @@ procedure TAlignForm.B_OkClick(Sender: TObject);
 begin
   Horz := TglHComponentAlign(g_Horz.ItemIndex);
   Vert := TglVComponentAlign(g_Vert.ItemIndex);
-  ModalResult := mrOk;
-end;
-
-procedure TAlignForm.B_CancelClick(Sender: TObject);
-begin
-  ModalResult := mrCancel;
 end;
 
 end.

@@ -34,97 +34,81 @@ unit JvgSmallFontsDefense;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  jvComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  grids;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids,
+  JvComponent;
 
 type
-  TglSmallFontsDefenceOptions_ = (fdoExcludeGrids);
-  TglSmallFontsDefenceOptions = set of TglSmallFontsDefenceOptions_;
+  TglSmallFontsDefenceOption = (fdoExcludeGrids);
+  TglSmallFontsDefenceOptions = set of TglSmallFontsDefenceOption;
 
   TJvgSmallFontsDefence = class(TJvComponent)
   private
     FOptions: TglSmallFontsDefenceOptions;
     procedure UpdateFonts(Control: TWinControl);
     procedure SetOptions(const Value: TglSmallFontsDefenceOptions);
-    { Private declarations }
   protected
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Options: TglSmallFontsDefenceOptions read FOptions write
-      SetOptions;
+    property Options: TglSmallFontsDefenceOptions read FOptions write SetOptions;
   end;
 
-procedure Register;
-
 implementation
-uses JvgUtils,
-  JvgTypes;
 
-procedure Register;
-begin
-end;
-
-{ TJvgSmallFontsDefence }
+uses
+  JvgUtils;
 
 constructor TJvgSmallFontsDefence.Create(AOwner: TComponent);
 begin
-  inherited;
-  if (Owner is TForm) then
-    (Owner as TForm).Scaled := false;
+  inherited Create(AOwner);
 end;
 
 procedure TJvgSmallFontsDefence.Loaded;
 begin
-  inherited;
-  if (Owner is TForm) then
-    (Owner as TForm).Scaled := false;
+  inherited Loaded;
+  if Owner is TForm then
+    (Owner as TForm).Scaled := False;
   if csDesigning in ComponentState then
   begin
     if not IsSmallFonts then
       ShowMessage('Проектирование приложения в режиме крупных шрифтов недопустимо!'#13#10'Компонент TJvgSmallFontsDefence отказывается работать в таких условиях.');
   end
   else
-    UpdateFonts((Owner as TForm));
 end;
 
-procedure TJvgSmallFontsDefence.SetOptions(const Value:
-  TglSmallFontsDefenceOptions);
+procedure TJvgSmallFontsDefence.SetOptions(const Value: TglSmallFontsDefenceOptions);
 begin
   FOptions := Value;
+  if Owner is TCustomForm then
+    UpdateFonts(Owner as TCustomForm);
 end;
+
+type
+  THackControl = class(TControl);
 
 procedure TJvgSmallFontsDefence.UpdateFonts(Control: TWinControl);
 var
-  i: integer;
+  I: Integer;
 
   procedure UpdateFont(Font: TFont);
   begin
-    if CompareText(Font.Name, 'MS Sans Serif') <> 0 then
-      exit;
-    Font.Name := 'Arial';
+    if CompareText(Font.Name, 'MS Sans Serif') = 0 then
+      Font.Name := 'Arial';
   end;
+
 begin
   if IsSmallFonts then
-    exit;
+    Exit;
   if (fdoExcludeGrids in Options) and (Control is TCustomGrid) then
-    exit;
-  UpdateFont(TJvgShowFont(Control).Font);
+    Exit;
+  UpdateFont(THackControl(Control).Font);
   with Control do
-    for i := 0 to ControlCount - 1 do
+    for I := 0 to ControlCount - 1 do
     begin
-      UpdateFont(TJvgShowFont(Controls[i]).Font);
-      if Controls[i] is TWinControl then
-        UpdateFonts(Controls[i] as TWinControl);
+      UpdateFont(THackControl(Controls[I]).Font);
+      if Controls[I] is TWinControl then
+        UpdateFonts(Controls[I] as TWinControl);
     end;
 
 end;

@@ -32,64 +32,59 @@ unit JvgFixFont;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  JvComponent,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs;
+  Windows, Classes, Graphics, Controls,
+  JvComponent;
 
 type
-  TJvgPublicControlFont = class(TControl)
-  public
-    property Font;
-  end;
-
   TJvgFixFont = class(TJvComponent)
   private
     FFont: TFont;
     procedure FixFont(Window: TWinControl);
-    procedure SetFont(const Value: TFont);
-  protected
-    { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
-    property Font: TFont read FFont write SetFont;
+    destructor Destroy; override;
+    procedure Loaded; override;
   published
-    { Published declarations }
+    property Font: TFont read FFont write FFont;
   end;
 
 implementation
 
-//____________________________
+type
+  THackControl = class(TControl);
 
 constructor TJvgFixFont.Create(AOwner: TComponent);
 begin
-  inherited;
-  FixFont(TWinControl(Owner));
+  inherited Create(AOwner);
+  FFont := TFont.Create;
+end;
+
+destructor TJvgFixFont.Destroy;
+begin
+  FFont.Free;
+  inherited Destroy;
+end;
+
+procedure TJvgFixFont.Loaded;
+begin
+  if Owner is TWinControl then
+    FixFont(TWinControl(Owner));
 end;
 
 procedure TJvgFixFont.FixFont(Window: TWinControl);
 var
-  i: integer;
+  I: Integer;
 begin
   with Window do
   begin
-    TJvgPublicControlFont(Window).Font.Assign(fFont);
-    for i := 0 to ComponentCount - 1 do
-      if Components[i] is TWinControl then
-        FixFont(TWinControl(Components[i]))
-      else if Components[i] is TControl then
-        TJvgPublicControlFont(Components[i]).Font.Assign(FFont);
+    THackControl(Window).Font.Assign(FFont);
+    for I := 0 to ComponentCount - 1 do
+      if Components[I] is TWinControl then
+        FixFont(TWinControl(Components[I]))
+      else
+      if Components[I] is TControl then
+        THackControl(Components[I]).Font.Assign(FFont);
   end;
-end;
-
-procedure TJvgFixFont.SetFont(const Value: TFont);
-begin
-  FFont := Value;
 end;
 
 end.

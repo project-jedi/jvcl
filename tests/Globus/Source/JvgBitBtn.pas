@@ -92,6 +92,7 @@ var
   IsDown: Boolean;
   R: TRect;
 begin
+  FCanvas.Handle := DrawItemStruct.hDC;
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
   if (not FOver) and (not IsDown) then
@@ -122,6 +123,7 @@ begin
         Brush.Color := clBtnFace;
         FrameRect(Rect(R.Left + 2, R.Top + 2, R.Right - 2, R.Bottom - 2));
       end;
+  FCanvas.Handle := 0;
 end;
 
 procedure TJvgBitBtn.CMParentColorChanged(var Msg: TMessage);

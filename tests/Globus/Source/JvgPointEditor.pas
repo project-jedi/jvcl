@@ -32,14 +32,7 @@ unit JvgPointEditor;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -47,25 +40,22 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-
   TypInfo; //FrTypes;
 
 type
-  TJvgPointProperty = class(TPropertyEditor)
 
+  TJvgPointProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
-    //    procedure Edit; override;
   end;
 
 procedure Register;
 
 implementation
+
 var
   PPointTypeInfo: PTypeInfo;
   PointTypeInfo: TTypeInfo;
-
-  {== TPointPropertyEditor Methods ==}
 
 function TJvgPointProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -86,9 +76,7 @@ begin
   PointTypeInfo.Name := 'TPoint';
   PointTypeInfo.Kind := tkFloat;
   PPointTypeInfo := @PointTypeInfo;
-  RegisterPropertyEditor(TypeInfo(TPoint), nil,
-    '', TJvgPointProperty);
-
+  RegisterPropertyEditor(TypeInfo(TPoint), nil, '', TJvgPointProperty);
 end;
 
 end.

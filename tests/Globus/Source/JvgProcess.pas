@@ -27,73 +27,99 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgProcess; //...simple process managment
+unit JvgProcess;
 
 interface
 
-uses Windows,
-  Messages,
-  JVComponent,
-  Classes,
-  Forms,
-  dialogs;
+//...simple process managment
+
+uses
+  Windows, Messages, Classes, Forms,
+  JVComponent;
 
 type
-
   TJvgProcess = class(TJvComponent)
   private
-    FResult: boolean;
+    FRunning: Boolean;
     FFileName: string;
-    FOnTermainated: TNotifyEvent;
-    si: TStartupInfo;
+    FOnTerminated: TNotifyEvent;
+    FSi: TStartupInfo;
+    FInfo: TProcessInformation;
   public
-    pi: TProcessInformation;
-    function Run: boolean;
-    function Kill: boolean;
     destructor Destroy; override;
+    function Run: Boolean;
+    function Kill: Boolean;
+  public
+    property Info: TProcessInformation read FInfo;
+    property Running: Boolean read FRunning;
   published
     property FileName: string read FFileName write FFileName;
-    property Result: boolean read FResult stored false;
-    property OnTermainated: TNotifyEvent read FOnTermainated write
-      FOnTermainated;
+    property OnTerminated: TNotifyEvent read FOnTerminated write FOnTerminated;
   end;
-
-procedure Register;
 
 implementation
 
-procedure Register;
+type
+  TJvgProcessMonitorThread = class(TThread)
+  public
+    Process: THandle;
+    Owner: TJvgProcess;
+    procedure Execute; override;
+    procedure DoTerminated;
+  end;
+
+var
+  ProcessMonitorThread: TJvgProcessMonitorThread;
+
+procedure TJvgProcessMonitorThread.DoTerminated;
 begin
+  Owner.FRunning := False;
+  if not (csDestroying in Owner.ComponentState) then
+    if Assigned(Owner.FOnTerminated) then
+      Owner.FOnTerminated(Owner);
+end;
+
+procedure TJvgProcessMonitorThread.Execute;
+begin
+  while not Terminated do
+    if WaitForSingleObject(Process, 100) <> WAIT_TIMEOUT then
+      Break;
+  Synchronize(DoTerminated);
 end;
 
 destructor TJvgProcess.Destroy;
 begin
   Kill;
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvgProcess.Run: boolean;
+function TJvgProcess.Run: Boolean;
 begin
-  GetStartupInfo(si);
-  si.wShowWindow := SW_NORMAL;
-  FResult := CreateProcess(PChar(FFileName), nil, nil, nil, false,
-    NORMAL_PRIORITY_CLASS, nil, nil, si, pi);
-  Run := FResult;
-  if Result then
+  Result := False;
+  if Running then
+    Exit;
+  FillChar(FSi, SizeOf(FSi), #0);
+  FSi.cb := SizeOf(FSi);
+  GetStartupInfo(FSi);
+  FSi.wShowWindow := SW_NORMAL;
+  FRunning := CreateProcess(PChar(FFileName), nil, nil, nil, False,
+    NORMAL_PRIORITY_CLASS, nil, nil, FSi, FInfo);
+  Result := FRunning;
+  if FRunning then
   begin
-    while WaitForSingleObject(pi.hProcess, 100) = WAIT_TIMEOUT do
-      Application.ProcessMessages;
-    if Assigned(OnTermainated) then
-      OnTermainated(self);
+    ProcessMonitorThread := TJvgProcessMonitorThread.Create(True);
+    ProcessMonitorThread.FreeOnTerminate := True;
+    ProcessMonitorThread.Process := Info.hProcess;
+    ProcessMonitorThread.Resume;
   end;
 end;
 
-function TJvgProcess.Kill: boolean;
+function TJvgProcess.Kill: Boolean;
 begin
-  if FResult {and(WaitForSingleObject(pi.hProcess, 100) <> WAIT_TIMEOUT)} then
-    Kill := TerminateProcess(pi.hProcess, 0)
+  if FRunning then
+    Result := TerminateProcess(Info.hProcess, 0)
   else
-    Kill := false;
+    Result := False;
 end;
 
 end.
