@@ -7,8 +7,8 @@ uses
   Dialogs, Menus, JvMenus, ComCtrls, JvToolBar, ToolWin, JvCoolBar,
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
-  Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStore,
-  JvStringGrid, JvAppXmlStore;
+  Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStorage,
+  JvStringGrid, JvAppXMLStorage;
 
 type
   TfrmMain = class(TForm)
@@ -94,7 +94,7 @@ type
     actDelete: TAction;
     jpmList: TJvPopupMenu;
     mnuDeletePackageP: TMenuItem;
-    jaxStore: TJvAppXmlStore;
+    jaxStore: TJvAppXMLStorage;
     pnlOptions: TPanel;
     shHideOptions: TShape;
     mnuDeletePackage: TMenuItem;
