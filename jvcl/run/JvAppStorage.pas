@@ -622,7 +622,7 @@ var
 begin
   for I := 0 to NewPaths.Count - 1 do
   begin
-    if StrLeft(NewPaths[I], 1) = '.' then
+    if StrCharCount(NewPaths[I],'.') = Length(NewPaths[I]) then
     begin
       J := Length(NewPaths[I]) - 1;
       if J > GlobalPaths.Count then
@@ -659,7 +659,7 @@ begin
         UpdateGlobalPath(GlobalPaths, CurPaths);
         Inc(Index);
       until Index > High(Paths);
-      Result := StringsToStr(GlobalPaths, '\', False);
+      Result := StringReplace(StringsToStr(GlobalPaths, '\', False),'\.','.',[rfReplaceAll]);
     finally
       CurPaths.Free;
       GlobalPaths.Free;
