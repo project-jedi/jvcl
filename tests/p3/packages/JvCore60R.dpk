@@ -44,15 +44,15 @@ contains
   JvDateUtil in '..\source\JvDateUtil.pas',
   JvStrUtils in '..\source\JvStrUtils.pas',
   JvMaxPixel in '..\source\JvMaxPixel.pas',
-  JvxConst in '..\source\JvxConst.pas',
+  JvxRConst in '..\source\JvxRConst.pas',
   JvFileUtil in '..\source\JvFileUtil.pas',
   JvPrgrss in '..\source\JvPrgrss.pas',
   JvPropAutoSave in '..\source\JvPropAutoSave.pas',
   JvHook in '..\source\JvHook.pas',
   JvClipIcon in '..\source\JvClipIcon.pas',
-  JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
-  JvActions in '..\source\JvActions.pas',
   JvDirectories in '..\source\JvDirectories.pas',
-  JvSimpleXml in '..\source\JvSimpleXML.pas';
+  JvSimpleXml in '..\source\JvSimpleXML.pas',
+  JvBaseDlg in '..\Source\JvBaseDlg.pas',
+  JvJVCLAbout in '..\Source\JvJVCLAbout.pas' {JvJVCLAboutForm};
 
 end.
