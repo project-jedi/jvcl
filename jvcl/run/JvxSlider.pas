@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Controls, ExtCtrls, Classes, Graphics, Messages, Menus,
-  JVCLVer;
+  JVCLVer, JvComponent;
 
 type
   TNumThumbStates = 1..2;
@@ -45,7 +45,7 @@ type
   TSliderImageArray = array [TSliderImage] of TBitmap;
   TJumpMode = (jmNone, jmHome, jmEnd, jmNext, jmPrior);
 
-  TJvCustomSlider = class(TCustomControl)
+  TJvCustomSlider = class(TJvCustomControl)
   private
     FUserImages: TSliderImages;
     FImages: TSliderImageArray;
@@ -177,10 +177,7 @@ type
   end;
 
   TJvxSlider = class(TJvCustomSlider)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property BevelStyle;
     property Color;
@@ -233,6 +230,9 @@ type
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+  {$ENDIF}
   end;
 
   TJvSliderImages = class;
@@ -417,11 +417,7 @@ begin
     Frame3D(Canvas, R, TopColor, BottomColor, FBevelWidth);
   end;
   if (csOpaque in ControlStyle) then
-    with Canvas do
-    begin
-      Brush.Color := Color;
-      DrawThemedBackground(Self, Canvas, R);
-    end;
+    DrawThemedBackground(Self, Canvas, R, Self.Color);
   if FRuler.Width > 0 then
   begin
     if soRulerOpaque in Options then

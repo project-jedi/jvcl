@@ -44,10 +44,17 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+  {$IFDEF JVCLThemesEnabled}
+    function GetParentBackground: Boolean;
+    procedure SetParentBackground(const Value: Boolean);
+  {$ENDIF}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+  {$IFDEF JVCLThemesEnabled}
+    procedure Paint; override;
+  {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -57,13 +64,20 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
+  {$ENDIF}
   end;
 
 implementation
 
+uses
+  JvThemes;
+
 constructor TJvSplitter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   FHintColor := clInfoBk;
   FOver := False;
 end;
@@ -100,6 +114,56 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFDEF JVCLThemesEnabled}
+
+procedure TJvSplitter.Paint;
+var
+  Bmp: TBitmap;
+  DC: THandle;
+begin
+  if (ThemeServices.ThemesEnabled) and (ParentBackground) then
+  begin
+//    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
+    DC := Canvas.Handle;
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Width := ClientWidth;
+      Bmp.Height := ClientHeight;
+      Canvas.Handle := Bmp.Canvas.Handle;
+      try
+        inherited Paint;
+      finally
+        Canvas.Handle := DC;
+      end;
+      Bmp.Transparent := True;
+      Bmp.TransparentColor := Color;
+      Canvas.Draw(0, 0, Bmp);
+    finally
+      Bmp.Free;
+    end;
+  end
+  else
+    inherited Paint;
+end;
+
+function TJvSplitter.GetParentBackground: Boolean;
+begin
+  Result := csParentBackground in GetThemeStyle(Self);
+end;
+
+procedure TJvSplitter.SetParentBackground(const Value: Boolean);
+begin
+  if Value <> GetParentBackground then
+  begin
+    if Value then
+      IncludeThemeStyle(Self, [csParentBackground])
+    else
+      ExcludeThemeStyle(Self, [csParentBackground]);
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
 
 end.
 
