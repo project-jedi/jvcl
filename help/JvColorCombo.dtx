@@ -1,0 +1,237 @@
+----------------------------------------------------------------------------------------------------
+@@$TJvColorComboBox
+<TITLE TJvColorComboBox overview>
+<GROUP JVCL.EditsMemosAndCombos.Combos>
+  TJvColorComboBox is a TJvCustomComboBox descendant which enables the user to select a
+  color from a drop-down list.
+----------------------------------------------------------------------------------------------------
+@@$TJvFontComboBox
+<TITLE TJvFontComboBox overview>
+<GROUP JVCL.EditsMemosAndCombos.Combos>
+  TJvFontCombobox is a TJvCustomComboBox descendant which enables the user to select a
+  font from a drop-down list of the face names for all fonts supported by the
+  screen /installed on the system.
+----------------------------------------------------------------------------------------------------
+@@JvColorCombo.pas
+Summary
+  Contains the TJvColorCombo and TJvFontComboBox components.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Thörnqvist
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox
+<GROUP TJvColorComboBox>
+Summary
+  Combo box that enables the user to select a color from a drop-down list.
+Description
+  TJvColorComboBox is a TJvCustomComboBox descendant which enables the user to select a
+  color from a drop-down list.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.ColorDialogText
+Summary
+  Specifies the display text for the special combo box item, used to select a color from a dialog.
+Description
+  Use ColorDialogText to specify a new string for the combo box item, used to select a color from
+  a dialog. Thus, if the user selects this item, the component displays a dialog for selecting colors.
+  
+  If the user selects a color from the dialog, a new item is added to the combobox, with text specified
+  by NewColorText, and color as selected in the dialog.
+Note
+  coCustomColors must be included in Options, otherwise the combobox doesn't display this special
+  item.
+See Also
+  NewColorText, OnNewColor, Options
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.ColorValue
+Summary
+  Specifies the color value that is displayed in the edit box.
+Description
+  Use the ColorValue property to read the color value of the current selected color or specify a new
+  color for the ColorValue value, to change the current selected color.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.ColorWidth
+Summary
+  Specifies the width, in pixels, of the color boxes.
+Description
+  Use ColorWidth to specify the width of the color boxes.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.DroppedDownWidth
+Summary
+  Specifies the width, in pixels, of the drop-down list. 
+Description
+  Use DropDownWidth to customize the width of the drop-down list.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.HiliteColor
+Summary
+  Specifies the background color of the text that is focused.
+Description
+  Use HiliteColor to read or change the background color of the text that is focused. The focused line
+  is painted using highlight colors, to make it stand out.
+See Also
+  HiliteText
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.HiliteText
+Summary
+  Specifies the color of the text that is focused.
+Description
+  Use HiliteText to specify the color of the text characters (as opposed to the background color) of
+  the focused line. The focused text is painted using highlight colors, to make it stand out.
+  
+  If Color is set to a dithered color, the text appears in the closest non-dithered value.
+See Also
+  HiliteColor
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.NewColorText
+Summary
+  Specifies the prefix for the display text of new colors added by the user.
+Description
+  Use NewColorText to specify a prefix for the text of colors added by the user. The user can add
+  colors to the combo box by selecting the special combo box item - with text ColorDialogText. 
+  
+  If the user selects a color from the dialog, a new item is added to the combobox. The display text
+  of this item consist of the NewColorText and a number indicating the number of custom colors added
+  by the user, so far. 
+Note
+  coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
+  by the user.
+See Also
+  ColorDialogText, OnNewColor, Options
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.OnNewColor
+Summary
+  Occurs when the users adds a new color to the combo box.
+Description
+  Write an OnNewColor event handler to take specific actions as an user adds a new color to the
+  combo box.
+Parameters
+  Sender      - The TJvColorComboBox component that has sent this event.
+  Color       - The new color added by the user.
+  DisplayName - The display text for the new color. It consists of the NewColorText and a number
+                indicating the number of custom colors added by the user, so far. Alter DisplayName
+                to change the display text for the new color.
+  AllowAdd    - Set AllowAdd to True to allow the new color to be added to the combo box. Set AllowAdd
+                To False to disallow the new color to be added.
+Note
+  coCustomColors must be included in Options, otherwise the combobox doesn't allow colors to be added
+  by the user.
+See Also
+  ColorDialogText, NewColorText, Options
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboBox.Options
+<COMBINEWITH TJvColorComboOption>
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboOption
+Summary
+  Determines the appearance and behavior of the color combo box.
+Description
+  Use the Options property to customize the appearance and functionality of the combo box. The 
+  possible values of Options are:
+@@TJvColorComboOption.coText
+  Displays the name of the color.
+@@TJvColorComboOption.coHex
+  Displays the hexadecimal value of the color.
+@@TJvColorComboOption.coRGB
+  Displays the RGB value of the color.
+@@TJvColorComboOption.coSysColors
+  Adds the system colors such as clWindow to the combo box.
+@@TJvColorComboOption.coCustomColors
+  Allows the user to add colors to the combo box, by selecting the special combo box item with text
+  ColorDialogText.
+----------------------------------------------------------------------------------------------------
+@@TJvColorComboOptions
+<COMBINEWITH TJvColorComboOption>
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox
+<GROUP TJvFontComboBox>
+Summary
+  Combo box that enables the user to select a font from a drop-down list.
+Description
+  TJvFontCombobox is a TJvCustomComboBox descendant which enables the user to select a
+  font from a drop-down list of the face names for all fonts supported by the
+  screen /installed on the system.
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.Device
+Summary
+  Specifies the device from which to retrieve the list of available fonts.
+Description
+  These are the possible values of Device:
+  <TABLE>
+  Value         Meaning
+  -----         -------
+  fdScreen      Retrieve from the screen.
+  fdPrinter     Retrieve from the printer.
+  fdBoth        Retrieve from both the screen and the printer.
+  </TABLE>
+See Also
+  UseImages
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.FontName
+Summary
+  Specifies the font name that is displayed in the edit box.
+Description
+  Use the FontName property to read the text of the combo box or specify a new string for the FontName 
+  value, to change the current selected font name.
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.HiliteColor
+Summary
+  Specifies the background color of the text that is focused.
+Description
+  Use HiliteColor to read or change the background color of the text that is focused. The focused line
+  is painted using highlight colors, to make it stand out.
+See Also
+  HiliteText
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.HiliteText
+Summary
+  Specifies the color of the text that is focused.
+Description
+  Use HiliteText to specify the color of the text characters (as opposed to the background color) of
+  the focused line. The focused text is painted using highlight colors, to make it stand out.
+  
+  If Color is set to a dithered color, the text appears in the closest non-dithered value.
+See Also
+  HiliteColor
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.Options
+<COMBINEWITH TJvFontComboOption>
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.UseImages
+Summary
+  Specifies whether to use images to indicate the font type.
+Description
+  If UseImages is set to True, the combobox uses images to indicate the font type. Set UseImages to
+  False, to disable showing images.
+  
+  The following table lists the possible images and their meaning.  
+  <TABLE>
+  Image                       Font Type
+  -----                       ---------
+  <IMAGE FontType_TrueType>   TrueType font.
+  <IMAGE FontType_Printer>    The printer supports downloading this TrueType font.
+  <IMAGE FontType_Fixed>      Other font, such as vector or raster fonts.
+  </TABLE>
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboOption
+Summary
+  Determines the appearance and behavior of the Font combo box.
+Description
+  Use the Options property to customize the appearance and functionality of the combo box. The 
+  possible values of Options are:
+@@TJvFontComboOption.foAnsiOnly
+  Displays only fonts that use the Windows character set. Symbol fonts are not listed in the dialog.
+@@TJvFontComboOption.foTrueTypeOnly
+  Displays only TrueType fonts in the dialog. Other fonts are not listed.
+@@TJvFontComboOption.foFixedPitchOnly
+  Displays only monospaced fonts in the dialog. Proportionally spaced fonts are not listed, nor are
+  TrueType fonts that do not have the fixed-pitch flag set in the style header.
+@@TJvFontComboOption.foNoOEMFonts
+  Removes OEM fonts from the combo box. Lists only non-OEM fonts.
+@@TJvFontComboOption.foOEMFontsOnly
+  Displays only OEM fonts in the combo box.
+@@TJvFontComboOption.foScalableOnly
+  Displays only scalable fonts in the combo box. Non-scalable (bitmap) fonts are removed from the list.
+@@TJvFontComboOption.foWysiWyg
+  Displays each font name in the combo box using the specific font.
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboOptions
+<COMBINEWITH TJvFontComboOption>
