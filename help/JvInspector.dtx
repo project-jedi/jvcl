@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Incomplete
+##Status: Locked
 ##Skip: TItemRowSizing
 ##Skip: TJvInspectorDataInstances
 ##Skip: TJvInspectorItemInstances
@@ -265,6 +265,10 @@ Description
   Indicates the string representing the set value can be edited.
 @@TInspectorSetFlag.isfCreateMemberItems
   Indicates that for each item in the set, a member item is created as a boolean value.
+@@TInspectorSetFlag.isfRenderAsCategory
+  Indicate that the main item should be rendered and treated as a category item. Setting this flag
+  will always create a boolean item for each member of the set, regardless of the
+  isfCreateMemberItems flag.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorSetFlags
 <TITLE TInspectorSetFlags type>
@@ -301,16 +305,24 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.AddComponent
 Summary
-  Write here a summary (1 line)
+  Adds an object to the inspector.
 Description
-  Write here a description
+  AddComponent will add the published properties of an object to the inspector.
+
+  If the CategoryName parameter is an empty string, the properties are added to the root of the
+  inspector, otherwise a new category is created and the properties are added to that category.
+
+  The Expanded parameter is only used if CategoryName is a non-empty string and determines if the
+  new category should be expanded.
 Parameters
-  AComponent  - Description for this parameter
-  DisplayName - Description for this parameter
-  Expanded    - Description for this parameter
+  Instance     - Instance to be added to the inspector.
+  CategoryName - Name of the category to create. If no name is given, no category will be created
+                 and the object will be added to the root.
+  Expanded     - Specifies whether the newly created category should be expanded when the object is
+                 added. When set to True the category will be expanded. If no category is created
+                 (because CategoryName is an empty string) the parameter will be ignored.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InspectObject, TJvInspectorPropData.New, TJvInspectorCustomCategoryItem, TJvCustomInspectorItem.Expanded
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.AfterDataCreate
 Summary
@@ -447,12 +459,16 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.Clear
 Summary
-  Write here a summary (1 line)
+  Clears the inspector.
 Description
-  Write here a description
+  Clear will remove all items from the inspector. Clear is implemented as:
+  <CODE>
+  BeginUpdate;
+  Root.Clear;
+  EndUpdate;
+  </CODE>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomInspectorItem.Clear
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.CollapseButton
 Summary
@@ -466,18 +482,35 @@ Description
 Summary
   Divider position.
 Description
-  Divider is the X-position of the divider between the name and
-  the value part. Read Divider to determine its current
-  location or set it to a new position.
+  Divider is the position of the divider between the name and the value part.
+
+  Depending on the value of RelativeDivider, this is either an actual position in pixels
+  (RelativeDivider set to False) or the percentage (RelativeDivider set to True) of the width of a
+  band (UseBands set to True) or the width of the inspector (UseBands set to False).
+
+  To obtain or modify the actual position is pixels, regardless of the state of RelativeDivider you
+  can read or set DividerAbs.
+
+  Read Divider to determine its current location or set it to a new position.
+See Also
+  BandWidth, DividerAbs, RelativeDivider, UseBands
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.DividerAbs
 Summary
-  Write here a summary (1 line)
+  Absolute divider position.
 Description
-  Write here a description
+  DividerAbs is the X-position (in actual pixels) of the divider between the name and the value
+  part.
+
+  Depending on the state of RelativeDivider, DividerAbs is either identical to Divider
+  (RelativeDivider set to False) or is the calculated X-offset (RelativeDivider set to True) based
+  on the value of Divider and the BandWidth (UseBand set to True) or ClientWidth (UseBands set to
+  False).
+
+  Read DividerAbs to determine the X-position in pixels of the Divider bar or set it to a new
+  position.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BandWidth, Divider, RelativeDivider, UseBands
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.DoAfterDataCreate
 Summary
@@ -640,12 +673,18 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.InspectObject
 Summary
-  Write here a summary (1 line)
+  Inspects the specified object.
 Description
-  Write here a description
+  Use InspectObject to specify a single object. The value of InspectObject is <B>not</B> reset when
+  the items of the inspector is manually modified (e.g. after clearing the inspector or manually
+  adding items).
+
+  Setting InspectObject to a new value will clear the inspector and add all published properties of
+  the object to the root of the inspector.
+
+  Read InspectObject to determine the instance last inspected or set it to a new instance.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AddComponent
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.InvalidateHeight
 Summary
@@ -753,21 +792,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.OnDataValueChanged
 Summary
-  Write here a summary (1 line)
+  Event fired after the data value is changed.
 Description
-  Write here a description
+  \Write an OnDataValueChanged to peform additional actions when the value of an data instance is
+  changed.
+Parameters
+  Sender - The inspector that fired the event.
+  \Data  - Reference to the data instance who's value has changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnEnter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnItemValueChanged
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.OnItemSelected
 Summary
@@ -784,49 +817,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnKeyDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnKeyPress
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnKeyUp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvCustomInspector.OnMouseDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Button - Description for this parameter
-  Shift  - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -884,21 +874,35 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.RefreshValues
 Summary
-  Write here a summary (1 line)
+  Refreshes the items of the inspector.
 Description
-  Write here a description
+  RefreshValues will refresh all items of the inspector. If any item is being edited, the edit
+  operation is canceled (losing any change not yet committed) and reinitialised.
+
+  Use RefreshValues if you know one or more of the items in the inspector have been modified outside
+  the inspector (e.g. you changed a property from code and this property is displayed in the
+  inspector).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveValues
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.RelativeDivider
 Summary
-  Write here a summary (1 line)
+  Determines whether the divider bar is a percentage of the width or an absolute position.
 Description
-  Write here a description
+  RelativeDivider determines whether the value represented by the Divider property is an absolute
+  position is pixels or a percentage of either the <LINK BandWidth, width of a band> (UseBands set
+  to True) or the control (UseBands set to False).
+
+  When RelativeDivider is set to True, the Divider property is percentage and the divider bar will
+  adjust when the width of the band or control changes. The DividerAbs property will hold the
+  calculated absolute position in pixels.
+
+  When RelativeDivider is set to False, the Divider property is an absolute position in pixels and
+  the divider bar will remain at it's set position when the band or control is resized (although the
+  bar will be adjusted if the minimum width to the right of bar becomes to small). The DividerAbs
+  property will be the same as the Divider property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Divider, BandWidth, UseBands
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.RemoveNotifySort
 Summary
@@ -939,6 +943,19 @@ Description
   RowSizingItem indicates which item is being resized by the user. RowSizingItem
   is used internally to find out which row is being resized, and gives valid
   results only if RowSizing is True.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.SaveValues
+Summary
+  Refreshes the items of the inspector.
+Description
+  SaveValues will refresh all items of the inspector. If any item is being edited, the value of the
+  editor is applied to the data instance.
+
+  Use SaveValues if you know one or more of the items in the inspector have been modified outside
+  the inspector (e.g. you changed a property from code and this property is displayed in the
+  inspector) but you don't want to lose the data being edited.
+See Also
+  RefreshValues
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.ScrollfactorV
 Summary
@@ -1567,6 +1584,11 @@ Description
 
   The value of BaseCategory is used by the DotNET/Visual Studio paint style to
   determine if a category bar should be painted to the left of the item.
+
+  Note that any item can represent a category, not just TJvInspectorCustomCategoryItem or
+  descendants.
+See Also
+  Category, IsCategory
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.BuildDisplayableList
 Summary
@@ -1616,16 +1638,18 @@ Summary
   References the nearest category for this item.
 Description
   Category references the nearest category for this item, if any. If the
-  item is in no category, Category will be <B>nil</B>.
+  item is in no category, Category will be <B>nil</B>. Note that any item can represent a category,
+  not just TJvInspectorCustomCategoryItem or descendants.
+See Also
+  BaseCategory, IsCategory
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Clear
 Summary
-  Write here a summary (1 line)
+  Clears the list of sub items.
 Description
-  Write here a description
+  Clear will empty the list of sub items of this item.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Delete
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.CloseUp
 Summary
@@ -1742,7 +1766,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.DoAfterItemCreate
 Summary
-  Calls the AfterItemCreate event.
+  Triggers the AfterItemCreate event.
 Description
   DoAfterItemCreate will call the <LINKTJvCustomInspectorItem.DoAfterItemCreate,
   Inspector.DoAfterItemCreate> method if an inspector is assigned.
@@ -2090,14 +2114,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.GetEditorText
 Summary
-  Write here a summary (1 line)
+  Retrieves the text of the editor.
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
+  GetEditorText retrieves the text of the editor (provided the item is currently being edited). The
+  resulting string represents the display representation of the value before it is applied to the
+  underlaying data object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Editing
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.GetNextSibling
 Summary
@@ -2250,6 +2273,19 @@ Description
   inspector's LockCount is 0, the Sort method will be called, followed by an
   InvalidateList. If the inspector's LockCount > 0, its NotifySort will
   be called.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomInspectorItem.IsCategory
+Summary
+  Determines if the item represents a category item.
+Description
+  IsCategory determines if the item represents a category item.
+
+  If the item represents a category the method will return True, otherwise False is returned.
+
+  \TJvCustomInspectorItem implements this method to always return False. There are currently two
+  descendants that override this method: TJvInspectorCustomCategoryItem and TJvInspectorSetItem.
+See Also
+  TJvInspectorCustomCategoryItem, TJvInspectorSetItem
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.IsCompoundColumn
 Summary
@@ -2873,6 +2909,8 @@ Description
 
   The control does not handle the painting itself. This is left
   to a painter object.
+See Also
+  $JVCL.Info.Inspector
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorBooleanItem
 Summary
@@ -3371,14 +3409,15 @@ Description
   category. A category is a data-less item that allows you to group several
   items that are related to each other.
 ----------------------------------------------------------------------------------------------------
-@@TJvInspectorCustomCategoryItem.Name
+@@TJvInspectorCustomCategoryItem.IsCategory
 Summary
-  Write here a summary (1 line)
+  Determines if the item represents a category item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IsCategory determines if the item represents a category item.
+
+  If the item represents a category the method will return True, otherwise False is returned.
+
+  \TJvInspectorCustomCategoryItem implements this method to always return True.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorCustomCompoundItem
 Summary
@@ -5224,17 +5263,17 @@ Description
   CreateMemberItems maps to the isfCreateMemberItems in the ItemSetFlags
   property.
 See Also
-  EditString, ItemSetFlags
+  EditString, ItemSetFlags, RenderAsCategory
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetItem.CreateMembers
 Summary
   Creates the set members as child items.
 Description
   CreateMembers will create all set members of the set it represents as child
-  items. CreateMembers will be called from InvalidateMetaData if the
-  CreateMemberItems property is set to True.
+  items. CreateMembers will be called from InvalidateMetaData if either the CreateMemberItems or
+  RenderAsCategory property is set to True.
 See Also
-  CreateMemberItems, DeleteMembers, TJvCustomInspectorItem.InvalidateMetaData
+  CreateMemberItems, DeleteMembers, RenderAsCategory, TJvCustomInspectorItem.InvalidateMetaData
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetItem.DeleteMembers
 Summary
@@ -5259,7 +5298,20 @@ Description
 
   EditString maps to the isfEditString in the ItemSetFlags property.
 See Also
-  CreateMemberItems, ItemSetFlags
+  CreateMemberItems, ItemSetFlags, RenderAsCategory
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorSetItem.IsCategory
+Summary
+  Determines if the item represents a category item.
+Description
+  IsCategory determines if the item represents a category item.
+
+  If the item represents a category the method will return True, otherwise False is returned.
+
+  \TJvInspectorSetItem implements this method to always return True if the isfRenderAsCategory flag
+  has been specified in the ItemSetFlags property.
+See Also
+  RenderAsCategory
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetItem.ItemSetFlags
 Summary
@@ -5269,7 +5321,23 @@ Description
   determine if the string value can be edited and/or is sub items are created
   for the individual items.
 See Also
-  CreateMemberItems, EditString
+  CreateMemberItems, EditString, RenderAsCategory
+----------------------------------------------------------------------------------------------------
+@@TJvInspectorSetItem.RenderAsCategory
+Summary
+  Controls whether the item should be treated as a category item.
+Description
+  RenderAsCategory determines if the item should be treated as a category item. When set to True the
+  item is treated as a category item, otherwise it's a normal item with a name and value sections.
+
+  If RenderAsCategory is True, the item will not have a value section. As such, the isfEditString
+  flag/EditString property have no purpose and are ignored. In addition all set members will be
+  created as boolean type sub items automatically, regardless whether the isfCreateMemberItems flag
+  is specified or the CreateMemberItems property is set to True.
+
+  RenderAsCategory maps to the isfRenderAsCategory in the ItemSetFlags property.
+See Also
+  CreateMemberItems, EditString, ItemSetFlags
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetMemberData
 Summary
@@ -5291,12 +5359,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetMemberData.DataParent
 Summary
-  Write here a summary (1 line)
+  References the data object of the parent item.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DataParent references the data object of the parent item. This will always be the data object
+  representing the entire set value.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorSetMemberData.New@TJvCustomInspectorItem@Integer@TJvCustomInspectorData
 Summary
