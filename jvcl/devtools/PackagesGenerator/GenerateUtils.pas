@@ -449,7 +449,6 @@ var
   bcblibsList : TStringList;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
-  outputDate : TDateTime;
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
@@ -480,10 +479,9 @@ begin
     // Process the file, only if the template or the xml are newer
     // than the output file. If that output file doesn't exist,
     // create it too
-    outputDate := FileDateToDateTime(FileAge(OutFileName));
     if not FileExists(OutFileName) or
-      (outputDate < templateDate) or
-      (outputDate < xmlDate) then
+      (FileDateToDateTime(FileAge(OutFileName)) < templateDate) or
+      (FileDateToDateTime(FileAge(OutFileName)) < xmlDate) then
     begin
       SendMsg(#9#9'Applying to ' + package);
 
@@ -739,7 +737,8 @@ begin
               // then generate it now. If we find a template file
               // named the same as the current one in the perso
               // directory then use it instead
-              if persoTarget <> '' then
+              if (persoTarget <> '') and
+                 DirectoryExists(persoTarget) then
               begin
                 SendMsg(#9'Regenerating for '+persoTarget);
                 if FileExists(path+persoTarget+PathSeparator+rec.Name) then
