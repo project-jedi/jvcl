@@ -27,14 +27,18 @@ package JvQDlgsK3D;
 {$DEFINE VisualCLX}
 
 requires
-  JvQDlgsD7R,
-  JvQCoreD7D,
   designide,
   rtl,
   visualclx,
-  JvQCoreD7R;
+  designhooks,
+  DJcl,
+  JvQCoreK3D,
+  JvQCoreK3R,
+  JvQStdCtrlsK3R,
+  JvQDlgsK3R;
 
 contains
-  JvQDlgsReg in '..\..\qdesign\JvQDlgsReg.pas';
+  JvQDlgsReg in '../../qdesign/JvQDlgsReg.pas',
+  JvQTipOfDayEditor in '../../qdesign/JvQTipOfDayEditor.pas';
 
 end.
