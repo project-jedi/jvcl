@@ -146,13 +146,6 @@ type
     {$ENDIF VCL}
     function GetRealCaption: string; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
-    procedure Click; override;
-  protected
     property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
     property ForceSameSize: Boolean read FForceSameSize write SetForceSameSize default false;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
@@ -162,6 +155,12 @@ type
       DefaultTrackFontOptions;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
+    procedure Click; override;
   end;
 
 implementation

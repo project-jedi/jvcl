@@ -151,8 +151,6 @@ type
     property SelCount: Integer read GetSelCount;
     property Selected[Index: Integer]: Boolean read GetSelected write SetSelected;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
-  published
-    property TabStop default True;
   end;
 
   TCheckKind = (ckCheckBoxes, ckRadioButtons, ckCheckMarks);
@@ -271,6 +269,7 @@ type
     property Sorted;
     property Style;
     property TabOrder;
+    property TabStop default True;
     property TabWidth;
     property Visible;
     property OnStateChange: TChangeStateEvent read FOnStateChange write FOnStateChange;

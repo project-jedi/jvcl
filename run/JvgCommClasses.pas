@@ -95,11 +95,6 @@ type
     procedure SetSteps(Value: Integer);
     procedure SetPercentFilling(Value: TPercentRange);
     procedure SetBrushStyle(Value: TBrushStyle);
-  public
-    procedure TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
-    function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
-
-    constructor Create; override;
   protected
     property Active: Boolean read FActive write SetActive;
     property BufferedDraw: Boolean read FBufferedDraw write FBufferedDraw default False;
@@ -107,8 +102,12 @@ type
     property Steps: Integer read FSteps write SetSteps default 255;
     property PercentFilling: TPercentRange read FPercentFilling write SetPercentFilling default 100;
     property BrushStyle: TBrushStyle read FBrushStyle write SetBrushStyle default bsSolid;
+  public
+    constructor Create; override;
+    procedure TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
+    function GetColorFromGradientLine(GradientLineWidth, Position: Word): COLORREF;
   end;
-  //*************************************{ . TJvgGradient . }
+
   TJvgGradient = class(TJvgCustomGradient)
   public
     procedure Draw(DC: HDC; r: TRect; PenStyle, PenWidth: Integer);
@@ -383,7 +382,6 @@ type
     function HighlightColor: TColor;
     function ShadowColor: TColor;
     property OnChanged: TNotifyEvent read FOnChanged write SetOnChanged;
-  published
     property Color: TColor read FColor write SetColor;
     property DelineateColor: TColor read FDelineateColor write SetDelineateColor;
     property Font: TFont read FFont write SetFont;
@@ -403,6 +401,11 @@ type
     destructor Destroy; override;
   published
     property Gradient: TJvgGradient read FGradient write FGradient;
+    property Color;
+    property DelineateColor;
+    property Font;
+    property Bevel;
+    property TextStyle;
   end;
 
   TJvgHintStyle = class(TJvgListBoxItemStyle)
@@ -428,6 +431,11 @@ type
     property BtnColor: TColor read FBtnColor write SetBtnColor;
     property BtnFont: TFont read FBtnFont write SetBtnFont;
     property BtnTextStyle: TglTextStyle read FBtnTextStyle write SetBtnTextStyle;
+    property Color;
+    property DelineateColor;
+    property Font;
+    property Bevel;
+    property TextStyle;
   end;
   //*************************************{ . TJvgCustomBoxStyle . }
   TJvgCustomBoxStyle = class(TJvgBevelOptions)
@@ -438,12 +446,12 @@ type
     procedure SetPenStyle(Value: TPenStyle);
     procedure SetHighlightColor(Value: TColor);
     procedure SetShadowColor(Value: TColor);
-  public
-    constructor Create; override;
   protected
     property PenStyle: TPenStyle read FPenStyle write SetPenStyle default psSolid;
     property HighlightColor: TColor read FHighlightColor write SetHighlightColor default clBtnHighlight;
     property ShadowColor: TColor read FShadowColor write SetShadowColor default clBtnShadow;
+  public
+    constructor Create; override;
   end;
   //*************************************{ . TJvgTextBoxStyle . }
   TJvgCustomTextBoxStyle = class(TJvgCustomBoxStyle)
@@ -452,11 +460,11 @@ type
     FBackgroundColor: TColor;
     procedure SetTextColor(Value: TColor);
     procedure SetBackgroundColor(Value: TColor);
-  public
-    constructor Create; override;
   protected
     property TextColor: TColor read FTextColor write SetTextColor default clBlack;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWindow;
+  public
+    constructor Create; override;
   end;
   //*************************************{ . TJvgCustomBoxStyle . }
   TJvgTextBoxStyle = class(TJvgCustomTextBoxStyle)

@@ -123,18 +123,6 @@ type
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     class procedure InitializeDefaultImageList;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Click; override;
-    procedure DrawButtonImage(ImageBounds: TRect);
-    procedure DrawButtonFocusRect(const RectContent: TRect);
-    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
-    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
-    property Canvas: TCanvas read FCanvas;
-    property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
-    property MouseInControl: Boolean read FMouseInControl;
-  protected
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Animate: Boolean read FAnimate write SetAnimate default False;
     property AnimateFrames: Integer read FAnimateFrames write SetAnimateFrames default 0;
@@ -150,6 +138,17 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property OnButtonDraw: TJvImgBtnDrawEvent read FOnButtonDraw write FOnButtonDraw;
     property OnGetAnimateIndex: TJvImgBtnAnimIndexEvent read FOnGetAnimateIndex write FOnGetAnimateIndex;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Click; override;
+    procedure DrawButtonImage(ImageBounds: TRect);
+    procedure DrawButtonFocusRect(const RectContent: TRect);
+    procedure DrawButtonFrame(const DrawItemStruct: TDrawItemStruct; var RectContent: TRect);
+    procedure DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
+    property Canvas: TCanvas read FCanvas;
+    property CurrentAnimateFrame: Byte read FCurrentAnimateFrame;
+    property MouseInControl: Boolean read FMouseInControl;
   end;
 
   TJvImgBtn = class(TJvCustomImageButton)

@@ -72,6 +72,7 @@ const
 
 type
   TJvExportProgressEvent = procedure(Sender: TObject; Min, Max, Position: Cardinal; const AText: string; var AContinue: boolean) of object;
+
   TJvCustomDBGridExport = class(TJvComponent)
   private
     FGrid: TDBGrid;
@@ -92,18 +93,17 @@ type
     procedure DoSave; virtual;
     procedure DoClose; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function ExportGrid: boolean;
-    property LastExceptionMessage: string read FLastExceptionMessage;
-  published
     property Caption: string read FCaption write FCaption;
     property Filename: TFilename read FFilename write FFilename;
     property Grid: TDBGrid read FGrid write FGrid;
     property Silent: boolean read FSilent write FSilent default true;
     property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;
-    property OnException:TNotifyEvent read FOnException write FOnException;
+    property OnException: TNotifyEvent read FOnException write FOnException;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function ExportGrid: boolean;
+    property LastExceptionMessage: string read FLastExceptionMessage;
   end;
 
   TJvCustomDBGridExportClass = class of TJvCustomDBGridExport;
@@ -128,13 +128,12 @@ type
     property Caption;
     property Grid;
     property OnProgress;
-
     property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property WordFormat: TWordGridFormat read FWordFormat write FWordFormat default wdTableFormatGrid3;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
-                      
+
   TJvDBGridExcelExport = class(TJvCustomDBGridExport)
   private
     FExcel: OleVariant;
@@ -155,7 +154,6 @@ type
     property Caption;
     property Grid;
     property OnProgress;
-
     property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
@@ -185,7 +183,7 @@ type
     property Caption;
     property Grid;
     property OnProgress;
-    property IncludeColumnHeader:boolean read FIncludeColumnHeader write FIncludeColumnHeader default true;
+    property IncludeColumnHeader: boolean read FIncludeColumnHeader write FIncludeColumnHeader default true;
     property Header: TStrings read GetHeader write SetHeader;
     property Footer: TStrings read GetFooter write SetFooter;
     property DocTitle: string read FDocTitle write FDocTitle;
@@ -234,6 +232,7 @@ type
     property Grid;
     property OnProgress;
   end;
+
 function WordGridFormatIdentToInt(const Ident: string; var Value: Longint): Boolean;
 function IntToWordGridFormatIdent(Value: Longint; var Ident: string): Boolean;
 procedure GetWordGridFormatValues(Proc: TGetStrProc);

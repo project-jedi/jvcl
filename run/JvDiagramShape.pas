@@ -81,12 +81,8 @@ type
     class procedure UnselectAllShapes(ParentControl: TWinControl);
     class procedure SetMultiSelected(ParentControl: TWinControl; Value: Boolean);
     property Selected: Boolean read FSelected write SetSelected;
-  published
     property Caption: TJvTextShape read FCaption write SetCaption;
     property RightClickSelect: Boolean read FRightClickSelect write FRightClickSelect default True;
-    // Make these properties available
-    property OnClick;
-    property OnDblClick;
   end;
 
   TJvMoveableShape = class(TJvCustomDiagramShape)
@@ -107,6 +103,12 @@ type
     property Moving: Boolean read FMoving write FMoving;
   public
     constructor Create(AOwner: TComponent); override;
+  published
+    property Caption;
+    property RightClickSelect;
+    // Make these properties available
+    property OnClick;
+    property OnDblClick;
   end;
 
   TJvSizingMode = (smTopLeft, smTop, smTopRight, smLeft, smRight,
@@ -277,6 +279,11 @@ type
     property StartConn: TJvConnection index 1 read GetConn write SetConn;
     property EndConn: TJvConnection index 2 read GetConn write SetConn;
     property MidPoint: TPoint read GetMidPoint;
+    property Caption;
+    property RightClickSelect;
+    // Make these properties available
+    property OnClick;
+    property OnDblClick;
   end;
 
   TJvSingleHeadArrow = class(TJvConnector)

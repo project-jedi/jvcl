@@ -57,10 +57,10 @@ type
   protected
     function GetSelectList: TStrings; virtual;
     procedure SetSelectList(const Value: TStrings); virtual;
-    function GeTJvAppStorage: TJvCustomAppStorage; virtual;
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage); virtual;
+    function GetAppStorage: TJvCustomAppStorage; virtual;
+    procedure SetAppStorage(Value: TJvCustomAppStorage); virtual;
     procedure SetSelectPath(Value: string);
-    function GetStoragePath : string; virtual;
+    function GetStoragePath: string; virtual;
     function GetDynControlEngine: TJvDynControlEngine; virtual;
     procedure SetDynControlEngine(Value: TJvDynControlEngine); virtual;
     procedure CreateDialog(AOperation: TJvAppStorageSelectListOperation; ACaption: string = '');
@@ -88,7 +88,7 @@ type
     procedure ManageSelectList(ACaption: string = '');
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   published
-    property AppStorage: TJvCustomAppStorage read GeTJvAppStorage write SeTJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
     property SelectPath: string read FSelectPath write SetSelectPath;
     property CheckEntries: Boolean read FCheckEntries write FCheckEntries default True;
   end;
@@ -130,12 +130,12 @@ begin
   FSelectList.Assign(Value);
 end;
 
-function TJvAppStorageSelectList.GeTJvAppStorage: TJvCustomAppStorage;
+function TJvAppStorageSelectList.GetAppStorage: TJvCustomAppStorage;
 begin
   Result := FAppStorage;
 end;
 
-procedure TJvAppStorageSelectList.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvAppStorageSelectList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FAppStorage := Value;
 end;

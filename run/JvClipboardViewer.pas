@@ -78,18 +78,17 @@ type
     class function CanDrawFormat(ClipboardFormat: Word): Boolean;
     procedure EmptyClipboard;
     property ClipboardFormatNames[Index: Integer]: string read GetClipboardFormatNames;
-  published
-    property Color default clWindow;
-    property ParentColor default False;
   end;
 
   TJvClipboardViewer = class(TJvCustomClipboardViewer)
   published
     property Anchors;
     property BiDiMode;
+    property Color default clWindow;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
+    property ParentColor default False;
     property ViewFormat;
     property OnImage;
     property OnText;

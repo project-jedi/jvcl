@@ -83,9 +83,23 @@ type
     procedure SetWordWrap(Value: Boolean); virtual;
     procedure Paint; override;
     procedure HookResized; override;
+    // advanced properties.
+    property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
+    property Cancel: Boolean read FCancel write FCancel default False;
+    property Default: Boolean read FDefault write SetDefault default False;
+    property Glyph: TBitmap read FGlyph write SetGlyph;
+    property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
+    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
+    property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
+    property SmoothEdges: Boolean read FSmoothEdges write SetSmoothEdges default True;
+    property Spacing: Byte read FSpacing write SetSpacing default 3;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  end;
+
+  TJvXPButton = class(TJvXPCustomButton)
   published
     // common properties.
     property Action;
@@ -97,20 +111,72 @@ type
     property Width default 73;
 
     // advanced properties.
-    property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
-    property Cancel: Boolean read FCancel write FCancel default False;
-    property Default: Boolean read FDefault write SetDefault default False;
-    property Glyph: TBitmap read FGlyph write SetGlyph;
-    property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
+    property AutoGray;
+    property Cancel;
+    property Default;
+    property Glyph;
+    property Layout;
     property ModalResult;
-    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
-    property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
-    property SmoothEdges: Boolean read FSmoothEdges write SetSmoothEdges default True;
-    property Spacing: Byte read FSpacing write SetSpacing default 3;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
-  end;
+    property ShowAccelChar;
+    property ShowFocusRect;
+    property SmoothEdges;
+    property Spacing;
+    property WordWrap;
 
-  TJvXPButton = class(TJvXPCustomButton);
+    //property BevelInner;
+    //property BevelOuter;
+    //property BevelWidth;
+    //property BiDiMode;
+    //property Ctl3D;
+    //property DockSite;
+    //property ParentBiDiMode;
+    //property ParentCtl3D;
+    //property TabOrder;
+    //property TabStop;
+    //property UseDockManager default True;
+    property Align;
+    property Anchors;
+    //property AutoSize;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    //property Enabled;
+    property Font;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Style;
+    property StyleManager;
+    property Visible;
+    //property OnDockDrop;
+    //property OnDockOver;
+    //property OnEndDock;
+    //property OnGetSiteInfo;
+    //property OnStartDock;
+    //property OnUnDock;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    {$IFDEF COMPILER6_UP}
+    property OnContextPopup;
+    {$ENDIF COMPILER6_UP}
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+  end;
 
   TJvXPToolType =
     (ttArrowLeft, ttArrowRight, ttClose, ttMaximize, ttMinimize, ttPopup, ttRestore);
@@ -122,17 +188,73 @@ type
     procedure SetToolType(Value: TJvXPToolType); virtual;
     procedure Paint; override;
     procedure HookResized; override;
+    property ToolType: TJvXPToolType read FToolType write SetToolType default ttClose;
   public
     constructor Create(AOwner: TComponent); override;
+  end;
+
+  TJvXPToolButton = class(TJvXPCustomToolButton)
   published
     property Enabled;
     property Color default clBlack;
     property Height default 15;
-    property ToolType: TJvXPToolType read FToolType write SetToolType default ttClose;
+    property ToolType;
     property Width default 15;
-  end;
 
-  TJvXPToolButton = class(TJvXPCustomToolButton);
+    //property BevelInner;
+    //property BevelOuter;
+    //property BevelWidth;
+    //property BiDiMode;
+    //property Ctl3D;
+    //property DockSite;
+    //property ParentBiDiMode;
+    //property ParentCtl3D;
+    //property TabOrder;
+    //property TabStop;
+    //property UseDockManager default True;
+    property Align;
+    property Anchors;
+    //property AutoSize;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    //property Enabled;
+    property Font;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Style;
+    property StyleManager;
+    property Visible;
+    //property OnDockDrop;
+    //property OnDockOver;
+    //property OnEndDock;
+    //property OnGetSiteInfo;
+    //property OnStartDock;
+    //property OnUnDock;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    {$IFDEF COMPILER6_UP}
+    property OnContextPopup;
+    {$ENDIF COMPILER6_UP}
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+  end;
 
 implementation
 

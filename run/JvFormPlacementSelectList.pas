@@ -36,8 +36,8 @@ type
   protected
     function GetFormStorage: TJvFormStorage; virtual;
     procedure SetFormStorage(Value: TJvFormStorage); virtual;
-    function GeTJvAppStorage: TJvCustomAppStorage; override;
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage); override;
+    function GetAppStorage: TJvCustomAppStorage; override;
+    procedure SetAppStorage(Value: TJvCustomAppStorage); override;
     function GetStoragePath : string; override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -62,7 +62,7 @@ begin
   FFormStorage := Value;
 end;
 
-function TJvFormStorageSelectList.GeTJvAppStorage: TJvCustomAppStorage;
+function TJvFormStorageSelectList.GetAppStorage: TJvCustomAppStorage;
 begin
   if Assigned(FFormStorage) then
     Result := FFormStorage.AppStorage
@@ -70,7 +70,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvFormStorageSelectList.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvFormStorageSelectList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   if Assigned(FFormStorage) then
     FFormStorage.AppStorage := Value;

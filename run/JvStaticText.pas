@@ -115,6 +115,7 @@ type
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
+    property TextMargins: TJvTextMargins read FTextMargins write SetTextMargins;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -122,8 +123,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property TextMargins: TJvTextMargins read FTextMargins write SetTextMargins;
   end;
 
   TJvStaticText = class(TJvCustomStaticText)
@@ -161,6 +160,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TextMargins;
     property Visible;
     property WordWrap;
     property OnClick;

@@ -100,9 +100,9 @@ Known Issues and Updates:
 // before you can link this to any data aware controls!
 //
 //
-// TJvCsvCustomInMemoryDataSet
+// TJvCustomCsvInMemoryDataSet
 //
-// Internally, we first define a TJvCsvCustomInMemoryDataSet a base class.
+// Internally, we first define a TJvCustomCsvInMemoryDataSet a base class.
 // Nothing published.  This exists so you can easily inherit from it
 // and define your own version of the component, and publish whatever
 // properties and methods you wish to publish, and you can hide or
@@ -274,7 +274,7 @@ type
 
   // Easily Customizeable Dataset descendant our CSV handler and
   // any other variants we create:
-  TJvCsvCustomInMemoryDataSet = class(TDataSet)
+  TJvCustomCsvInMemoryDataSet = class(TDataSet)
 
   protected
     FTempBuffer:PChar;
@@ -515,8 +515,8 @@ function Locate(const KeyFields: string; const KeyValues: Variant;
 
   end;
 
-  // TJvCsvDataSet is just a TJvCsvCustomInMemoryDataSet with all properties and events exposed:
-  TJvCsvDataSet = class(TJvCsvCustomInMemoryDataSet)
+  // TJvCsvDataSet is just a TJvCustomCsvInMemoryDataSet with all properties and events exposed:
+  TJvCsvDataSet = class(TJvCustomCsvInMemoryDataSet)
   public
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
       // Per-Record user-data fields:
@@ -652,7 +652,7 @@ end;
     // Each ROW Record has an internal Data pointer (similar to the
     // user-accessible 'Data:Pointer' stored in treeviews, etc)
 
-function TJvCsvCustomInMemoryDataSet.GetRowUserData: Pointer;
+function TJvCustomCsvInMemoryDataSet.GetRowUserData: Pointer;
 var
   recno: Integer;
 begin
@@ -660,7 +660,7 @@ begin
   Result := FData.GetUserData(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRowUserData(UserData: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.SetRowUserData(UserData: Pointer);
 var
   recno: Integer;
 begin
@@ -668,7 +668,7 @@ begin
   FData.SetUserData(recno, UserData);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRowTag: Integer;
+function TJvCustomCsvInMemoryDataSet.GetRowTag: Integer;
 var
   recno: Integer;
 begin
@@ -676,7 +676,7 @@ begin
   Result := FData.GetUserTag(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRowTag(tagValue: Integer);
+procedure TJvCustomCsvInMemoryDataSet.SetRowTag(tagValue: Integer);
 var
   recno: Integer;
 begin
@@ -715,7 +715,7 @@ begin
     Result := True; // ALL of the AND condition were met!
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetAllUserTags(tagValue: Integer);
+procedure TJvCustomCsvInMemoryDataSet.SetAllUserTags(tagValue: Integer);
 var
 //  row: PCsvRow;
   t: Integer;
@@ -727,7 +727,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetAllUserData(data: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.SetAllUserData(data: Pointer);
 var
 //  row: PCsvRow;
   t: Integer;
@@ -739,22 +739,22 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetUserTag(recno: Integer): Integer;
+function TJvCustomCsvInMemoryDataSet.GetUserTag(recno: Integer): Integer;
 begin
   Result := FData.GetUserTag(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetUserTag(recno, newValue: Integer);
+procedure TJvCustomCsvInMemoryDataSet.SetUserTag(recno, newValue: Integer);
 begin
   FData.SetUserTag(recno, newValue);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetUserData(recno: Integer): Pointer;
+function TJvCustomCsvInMemoryDataSet.GetUserData(recno: Integer): Pointer;
 begin
   Result := FData.GetUserData(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetUserData(recno: Integer; newValue: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.SetUserData(recno: Integer; newValue: Pointer);
 begin
   FData.SetUserData(recno, newValue);
 end;
@@ -889,7 +889,7 @@ begin
   end;
 end;
 
-// NEW: TJvCsvCustomInMemoryDataSet.SetFilter
+// NEW: TJvCustomCsvInMemoryDataSet.SetFilter
 //
 // XXX Simplest possible filtering routine. Not very flexible.
 // XXX Todo: Make this more flexible.
@@ -899,7 +899,7 @@ end;
 // XXX hide rows that the user sets HideRow := True in the event handler.
 // XXX
 
-procedure TJvCsvCustomInMemoryDataSet.SetFilter(FieldName, pattern: string);
+procedure TJvCustomCsvInMemoryDataSet.SetFilter(FieldName, pattern: string);
   // Make Rows Visible Only if they match filterString
 var
   valueLen, t: Integer;
@@ -964,7 +964,7 @@ begin
 end;
 
 
-procedure TJvCsvCustomInMemoryDataSet._ClearFilter; // Clear Previous Filtering.
+procedure TJvCustomCsvInMemoryDataSet._ClearFilter; // Clear Previous Filtering.
 var
   t: Integer;
   pRow: PCsvRow;
@@ -978,7 +978,7 @@ begin
   FIsFiltered := False;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
+procedure TJvCustomCsvInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
 var
   m:TBookmark;
 begin
@@ -995,9 +995,9 @@ end;
 
 // note that file is not being locked!
 
-{ TJvCsvCustomInMemoryDataSet }
+{ TJvCustomCsvInMemoryDataSet }
 
-constructor TJvCsvCustomInMemoryDataSet.Create(AOwner: TComponent);
+constructor TJvCustomCsvInMemoryDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
@@ -1035,7 +1035,7 @@ begin
 
 end;
 
-destructor TJvCsvCustomInMemoryDataSet.Destroy;
+destructor TJvCustomCsvInMemoryDataSet.Destroy;
 begin
   InternalClearFileStrings; // delete file strings
   FreeMem(FTempBuffer); // Free the memory we allocated.
@@ -1059,7 +1059,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvCsvCustomInMemoryDataSet.AllocRecordBuffer: PChar;
+function TJvCustomCsvInMemoryDataSet.AllocRecordBuffer: PChar;
 var
   RowPtr: PCsvRow;
 begin
@@ -1070,7 +1070,7 @@ end;
 
 { calc fields support }
 
-procedure TJvCsvCustomInMemoryDataSet.ClearCalcFields(Buffer: PChar);
+procedure TJvCustomCsvInMemoryDataSet.ClearCalcFields(Buffer: PChar);
 begin
      // Assumes that our buffer is a TJvCsvRow followed by
      // a dynamically resized buffer used for calculated field
@@ -1080,7 +1080,7 @@ end;
 
 { calc fields support and buffer support }
 
-function TJvCsvCustomInMemoryDataSet.GetActiveRecordBuffer: PChar;
+function TJvCustomCsvInMemoryDataSet.GetActiveRecordBuffer: PChar;
 begin
   case State of
     dsBrowse:
@@ -1102,7 +1102,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetCsvFieldDef(CsvFieldDefs: string);
+procedure TJvCustomCsvInMemoryDataSet.SetCsvFieldDef(CsvFieldDefs: string);
 begin
   if (FCsvFieldDef <> CsvFieldDefs) then
   begin
@@ -1115,7 +1115,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.FreeRecordBuffer(var Buffer: PChar);
+procedure TJvCustomCsvInMemoryDataSet.FreeRecordBuffer(var Buffer: PChar);
 //var
 //  RowPtr:PCsvRow;
 begin
@@ -1126,13 +1126,13 @@ begin
 // except
      //Trace( 'FreeRecordBuffer - Exception freeing '+IntToHex(Integer(Buffer),8) );
 //  end;
-//  //Trace('TJvCsvCustomInMemoryDataSet.FreeRecordBuffer');
+//  //Trace('TJvCustomCsvInMemoryDataSet.FreeRecordBuffer');
 
 end;
 
 { called after the record is allocated }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalInitRecord(Buffer: PChar);
+procedure TJvCustomCsvInMemoryDataSet.InternalInitRecord(Buffer: PChar);
 var
   RowPtr: PCsvRow;
 begin
@@ -1149,7 +1149,7 @@ end;
 // which is intially full of just commas.
 //
 
-procedure TJvCsvCustomInMemoryDataSet.CsvRowInit(RowPtr: PCsvRow);
+procedure TJvCustomCsvInMemoryDataSet.CsvRowInit(RowPtr: PCsvRow);
 var
   t: Integer;
   ColCount: Integer;
@@ -1175,13 +1175,13 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.IsKeyUnique: Boolean;
+function TJvCustomCsvInMemoryDataSet.IsKeyUnique: Boolean;
   // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
 begin
   Result := False; // not yet implemented! XXX
 end;
 
-function TJvCsvCustomInMemoryDataSet.Locate(const KeyFields: string; const KeyValues: Variant;
+function TJvCustomCsvInMemoryDataSet.Locate(const KeyFields: string; const KeyValues: Variant;
   Options: TLocateOptions): Boolean; // override;
   // Options is    [loCaseInsensitive]
   //              or [loPartialKey]
@@ -1255,7 +1255,7 @@ begin
 end;
 
 
-function TJvCsvCustomInMemoryDataSet.InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: Boolean):
+function TJvCustomCsvInMemoryDataSet.InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: Boolean):
   TGetResult;
 var
   LimitReached: Boolean;
@@ -1295,7 +1295,7 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
+function TJvCustomCsvInMemoryDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 var
   RowPtr: PCsvRow;
@@ -1422,7 +1422,7 @@ begin
 
 end;
 
-function TJvCsvCustomInMemoryDataSet._Enquote(strVal: string): string;
+function TJvCustomCsvInMemoryDataSet._Enquote(strVal: string): string;
   // puts whole string in quotes, escapes embedded commas and quote characters!
   // Can optionally deal with newlines also.
 var
@@ -1459,14 +1459,14 @@ begin
   Result := s;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecordSize: Word;
+function TJvCustomCsvInMemoryDataSet.GetRecordSize: Word;
 begin
  // In create:
  //    FRecordSize := SizeOf(TJvCsvRow) - SizeOf(TJvCsvBookmark);
   Result := FRecordSize;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetFieldData(Field: TField; Buffer: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.SetFieldData(Field: TField; Buffer: Pointer);
 var
   RowPtr: PCsvRow;
   NewVal: string;
@@ -1624,7 +1624,7 @@ end;
 // Removes first and last character of the string (assumes they are quotes,
 // to be called byGetFieldData only!)
 
-function TJvCsvCustomInMemoryDataSet._Dequote(strValue: string): string;
+function TJvCustomCsvInMemoryDataSet._Dequote(strValue: string): string;
 var
   s: string;
   t, l: Integer;
@@ -1678,7 +1678,7 @@ end;
 
 // Tells controls to redraw.
 
-procedure TJvCsvCustomInMemoryDataSet.Refresh;
+procedure TJvCustomCsvInMemoryDataSet.Refresh;
 var
   m: TBookmark;
 begin
@@ -1689,7 +1689,7 @@ begin
   GotoBookmark(m); // Go back where we were. This could result in some odd scrolling behaviour but I haven't seen it yet.
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
+function TJvCustomCsvInMemoryDataSet.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
 var
   RowPtr: PCsvRow;
   {ActiveRowPtr:PCsvRow;}
@@ -1933,7 +1933,7 @@ end;
 
 // Our bookmark data is a pointer to a PCsvData
 
-procedure TJvCsvCustomInMemoryDataSet.GetBookmarkData(Buffer: PChar; data: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.GetBookmarkData(Buffer: PChar; data: Pointer);
 //var
 //  t:Integer;
 begin
@@ -1941,7 +1941,7 @@ begin
   PInteger(data)^ := PCsvRow(Buffer)^.Bookmark.data;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
+function TJvCustomCsvInMemoryDataSet.GetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
 begin
   Result := PCsvRow(Buffer)^.Bookmark.flag;
 end;
@@ -1950,7 +1950,7 @@ end;
 // out when I found that DBGrid and other controls that compare bookmarks
 // won't function if you don't provide a non-default implementation of this.
 
-function TJvCsvCustomInMemoryDataSet.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;
+function TJvCustomCsvInMemoryDataSet.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;
 var
   v1, v2: Integer;
 begin
@@ -1967,18 +1967,18 @@ begin
     Result := Bookmark_Gtr;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag);
+procedure TJvCustomCsvInMemoryDataSet.SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag);
 begin
   PCsvRow(Buffer)^.Bookmark.flag := Value;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalGotoBookmark(Bookmark: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.InternalGotoBookmark(Bookmark: Pointer);
 begin
   {Bookmark is just pointer to Integer}
   FRecordPos := PInteger(Bookmark)^;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalSetToRecord(Buffer: PChar);
+procedure TJvCustomCsvInMemoryDataSet.InternalSetToRecord(Buffer: PChar);
 begin
   FRecordPos := PCsvRow(Buffer)^.Bookmark.data; //Look up index from the record.
 //  Resync([]);
@@ -1986,12 +1986,12 @@ end;
 
 // Also used when inserting:
 
-procedure TJvCsvCustomInMemoryDataSet.SetBookmarkData(Buffer: PChar; data: Pointer);
+procedure TJvCustomCsvInMemoryDataSet.SetBookmarkData(Buffer: PChar; data: Pointer);
 begin
   PCsvRow(Buffer)^.Bookmark.data := PInteger(data)^;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalFirst;
+procedure TJvCustomCsvInMemoryDataSet.InternalFirst;
 begin
 //  Eof := False;
   FRecordPos := ON_BOF_CRACK;
@@ -2007,7 +2007,7 @@ end;
 //
 // See top of file!
 
-procedure TJvCsvCustomInMemoryDataSet.InternalInitFieldDefs;
+procedure TJvCustomCsvInMemoryDataSet.InternalInitFieldDefs;
 var
   CsvFieldRec: TJvCsvRow; //record type.
   CsvFieldOption: string;
@@ -2195,7 +2195,7 @@ end; { InternalInitFieldDefs ends }
 
 { set our position onto the EOF Crack }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalLast;
+procedure TJvCustomCsvInMemoryDataSet.InternalLast;
 begin
 //  Eof := True;
   FRecordPos := ON_EOF_CRACK; // FData.Count;
@@ -2204,7 +2204,7 @@ end;
 // At shutdown or on user-calling this method, check if data has changed,
 // and write changes to the file.
 
-procedure TJvCsvCustomInMemoryDataSet.Flush;
+procedure TJvCustomCsvInMemoryDataSet.Flush;
 begin
   if Length(FTableName) = 0 then
     raise EJvCsvDataSetError.Create(RsETableNameNotSet);
@@ -2223,14 +2223,14 @@ begin
   end;
 end;
 
-{procedure TJvCsvCustomInMemoryDataSet.DestroyFields;
+{procedure TJvCustomCsvInMemoryDataSet.DestroyFields;
 begin
  inherited DestroyFields;
  // Clear out local TCsvFieldDefs.
  FCsvColumns.Clear;
 end;}
 
-procedure TJvCsvCustomInMemoryDataSet.InternalClose;
+procedure TJvCustomCsvInMemoryDataSet.InternalClose;
 begin
   if not FCursorOpen then
   begin
@@ -2245,14 +2245,14 @@ begin
   FRecordPos := ON_BOF_CRACK;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalHandleException;
+procedure TJvCustomCsvInMemoryDataSet.InternalHandleException;
 begin
   // standard implementation for this method:
   if Application <> nil then
     Application.HandleException(Self);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalDelete;
+procedure TJvCustomCsvInMemoryDataSet.InternalDelete;
 begin
   if (FRecordPos >= 0) and (FRecordPos < FData.Count) then
   begin
@@ -2268,7 +2268,7 @@ end;
 
 { returns -1 if not found, else returns record index }
 
-function TJvCsvCustomInMemoryDataSet.InternalFindByKey(row: PCsvRow): Integer;
+function TJvCustomCsvInMemoryDataSet.InternalFindByKey(row: PCsvRow): Integer;
 var
   t: Integer;
 begin
@@ -2283,7 +2283,7 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.FindByCsvKey(key: string): Boolean;
+function TJvCustomCsvInMemoryDataSet.FindByCsvKey(key: string): Boolean;
 var
   logical_row, physical_row: TJvCsvRow;
   t, recno: Integer;
@@ -2309,7 +2309,7 @@ begin
   Result := True;
 end;
 
-{procedure TJvCsvCustomInMemoryDataSet.InternalInsert;
+{procedure TJvCustomCsvInMemoryDataSet.InternalInsert;
 //var
 //  pAddRec : pCsvRow;
 begin
@@ -2322,7 +2322,7 @@ begin
 //FCurrentRecord := FData.Count;
 end;}
 
-procedure TJvCsvCustomInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append: Boolean);
+procedure TJvCustomCsvInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append: Boolean);
 var
   RecPos: Integer;
   pAddRec: PCsvRow;
@@ -2390,7 +2390,7 @@ end;
 { During the parsing stage only, we have the contents of the file loaded in memory
   as a TString LIst. This creates that TString List. }
 
-function TJvCsvCustomInMemoryDataSet.GetFileName:String;
+function TJvCustomCsvInMemoryDataSet.GetFileName:String;
 //var
 // ufilename:String;
 // FullyQualified:Boolean;
@@ -2415,7 +2415,7 @@ begin
 //      result :=  FInitialWorkingDirectory+'\'+FTableName;
 end;
 
-function TJvCsvCustomInMemoryDataSet.InternalLoadFileStrings: Boolean;
+function TJvCustomCsvInMemoryDataSet.InternalLoadFileStrings: Boolean;
 begin
   Result := False;
   if not FileExists(FTableName) then Exit;
@@ -2443,7 +2443,7 @@ end;
 { During the parsing stage only, we have the contents of the file loaded in memory
   as a TString LIst. This cleans up that TString List. }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalClearFileStrings;
+procedure TJvCustomCsvInMemoryDataSet.InternalClearFileStrings;
 begin
   if Assigned(FCsvFileAsStrings) then
   begin
@@ -2452,7 +2452,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AppendPlaceHolderCommasToAllRows(Strings: TStrings); // Add 1+ commas to FCsvFileAsStrings[1 .. Count-1]
+procedure TJvCustomCsvInMemoryDataSet.AppendPlaceHolderCommasToAllRows(Strings: TStrings); // Add 1+ commas to FCsvFileAsStrings[1 .. Count-1]
 var
   Commas: string;
   I: Integer;
@@ -2469,7 +2469,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalOpen;
+procedure TJvCustomCsvInMemoryDataSet.InternalOpen;
 var
 //  Strings: TStringlist;
   TempBuf: array[0..MAXCOLUMNS] of char;
@@ -2531,7 +2531,7 @@ begin
 
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalPost;
+procedure TJvCustomCsvInMemoryDataSet.InternalPost;
 var
   pInsertRec: PCsvRow;
   RecPos: Integer;
@@ -2589,7 +2589,7 @@ begin
     JvCsvDatabaseError(FTableName, RsECannotPost);
 end;
 
-function TJvCsvCustomInMemoryDataSet.IsCursorOpen: Boolean;
+function TJvCustomCsvInMemoryDataSet.IsCursorOpen: Boolean;
 begin
   // "Cursor" is open if data file is open.   File is open if FDataFile's
   // Mode includes the FileMode in which the file was open.
@@ -2597,7 +2597,7 @@ begin
   Result := FCursorOpen; // bogus value: Valid field definition
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecordCount: Integer;
+function TJvCustomCsvInMemoryDataSet.GetRecordCount: Integer;
 begin
   if (FData.Count > 0) then
     Result := FData.Count
@@ -2605,7 +2605,7 @@ begin
     Result := 0;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecNo: Integer; {RecNo := FRecordPos+1}
+function TJvCustomCsvInMemoryDataSet.GetRecNo: Integer; {RecNo := FRecordPos+1}
 var
   BufPtr: PChar;
 
@@ -2631,7 +2631,7 @@ begin
 
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRecNo(Value: Integer);
+procedure TJvCustomCsvInMemoryDataSet.SetRecNo(Value: Integer);
 begin
   if (Value >= 0) and (Value <= FData.Count - 1) then
   begin
@@ -2640,7 +2640,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetTableName(const Value: string);
+procedure TJvCustomCsvInMemoryDataSet.SetTableName(const Value: string);
 begin
   CheckInActive;
   FTableName := Value;
@@ -2651,7 +2651,7 @@ begin
 //  FBmkFileName:= ChangeFileExt(FTableName, '.bmk' ); // bookmark file
 end;
 
-(*function TJvCsvCustomInMemoryDataSet.GetDataFileSize: Integer;
+(*function TJvCustomCsvInMemoryDataSet.GetDataFileSize: Integer;
 //var
 //  File1:TextFile;
 begin
@@ -2661,7 +2661,7 @@ begin
   result := 8192; // not implemented yet.
 end; *)
 
-procedure TJvCsvCustomInMemoryDataSet.EmptyTable;
+procedure TJvCustomCsvInMemoryDataSet.EmptyTable;
 begin
    // Erase Rows.
   while (FData.Count > 0) do
@@ -2677,7 +2677,7 @@ end;
 // Record comparison between two PCsvRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCsvCustomInMemoryDataSet.InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
+function TJvCustomCsvInMemoryDataSet.InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
 var
   strLeft, strRight: string;
   numLeft, numRight, diff: Double;
@@ -2723,7 +2723,7 @@ end;
 // Record comparison between two PCsvRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left,
+function TJvCustomCsvInMemoryDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer; Left,
   Right: PCsvRow): Integer;
 var
   t: Integer;
@@ -2750,7 +2750,7 @@ begin
   // equal, and result is already set to 0.
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.Sort(SortFields: string; Ascending: Boolean);
+procedure TJvCustomCsvInMemoryDataSet.Sort(SortFields: string; Ascending: Boolean);
 var
   Index: array of Pointer;
   swap: Pointer;
@@ -2817,19 +2817,19 @@ end;
 
 { Support Delphi VCL TDataSetDesigner's field persistence }
 
-procedure TJvCsvCustomInMemoryDataSet.DefChanged(Sender: TObject); //override;
+procedure TJvCustomCsvInMemoryDataSet.DefChanged(Sender: TObject); //override;
 begin
   FStoreDefs := True;
 end;
 
 { Support Delphi VCL TDataSetDesigner's field persistence }
 
-function TJvCsvCustomInMemoryDataSet.FieldDefsStored: Boolean;
+function TJvCustomCsvInMemoryDataSet.FieldDefsStored: Boolean;
 begin
   Result := FStoreDefs and (FieldDefs.Count > 0);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetCanModify: Boolean; //override;
+function TJvCustomCsvInMemoryDataSet.GetCanModify: Boolean; //override;
 begin
   Result := not FReadOnly; // You can modify if it's NOT read only.
 end;
@@ -3002,7 +3002,7 @@ end;
 
 { Call this one first, then AssignFromStrings on subsequent updates only.}
 
-procedure TJvCsvCustomInMemoryDataSet.OpenWith(Strings: TStrings);
+procedure TJvCustomCsvInMemoryDataSet.OpenWith(Strings: TStrings);
 begin
   Active := False;
   if FHasHeaderRow then
@@ -3010,7 +3010,7 @@ begin
   AssignFromStrings(Strings); // parse strings
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AppendWith(Strings: TStrings);
+procedure TJvCustomCsvInMemoryDataSet.AppendWith(Strings: TStrings);
 //var
 //x:Integer;
 begin
@@ -3030,7 +3030,7 @@ end;
 
 { Additional Custom Methods - internal use }
 
-procedure TJvCsvCustomInMemoryDataSet.AssignFromStrings(const Strings: TStrings);
+procedure TJvCustomCsvInMemoryDataSet.AssignFromStrings(const Strings: TStrings);
 var
   // HeaderRowFound: Boolean;
   I: Integer;
@@ -3068,7 +3068,7 @@ begin
     First;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AssignToStrings(Strings: TStrings);
+procedure TJvCustomCsvInMemoryDataSet.AssignToStrings(Strings: TStrings);
 var
   I: Integer;
   Line: string;
@@ -3092,7 +3092,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AppendRowString(RowAsString:String);
+procedure TJvCustomCsvInMemoryDataSet.AppendRowString(RowAsString:String);
 begin
    if not Active then
      JvCsvDatabaseError(FTableName, RsEDataSetNotOpen);
@@ -3100,7 +3100,7 @@ begin
   Last;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetAsString(const Row,Column:Integer):string; //virtual;
+function TJvCustomCsvInMemoryDataSet.GetAsString(const Row,Column:Integer):string; //virtual;
 var
   GetIndex:Integer;
 begin
@@ -3113,7 +3113,7 @@ begin
   Result := GetCsvRowItem( FData.GetRowPtr(GetIndex), Column );
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRowAsString(const Index: Integer): string;
+function TJvCustomCsvInMemoryDataSet.GetRowAsString(const Index: Integer): string;
 var
   GetIndex:Integer;
 begin
@@ -3129,7 +3129,7 @@ end;
 
 // Get names of all the columns as a comma-separated string:
 
-function TJvCsvCustomInMemoryDataSet.GetColumnsAsString: string;
+function TJvCustomCsvInMemoryDataSet.GetColumnsAsString: string;
 var
   t: Integer;
 begin
@@ -3153,7 +3153,7 @@ end;
   are supposed to exist in this dataset we have a real CSV header which we
   are hoping contains header information }
 
-procedure TJvCsvCustomInMemoryDataSet.ProcessCsvHeaderRow;
+procedure TJvCustomCsvInMemoryDataSet.ProcessCsvHeaderRow;
 var
   CsvFieldRec: TJvCsvRow; // CSV Field record type.
   ptrCsvColumn: PCsvColumn;
@@ -3233,7 +3233,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ProcessCsvDataRow(const datarow: string; Index: Integer);
+procedure TJvCustomCsvInMemoryDataSet.ProcessCsvDataRow(const datarow: string; Index: Integer);
 var
   pNewRow: PCsvRow;
 begin
@@ -3253,7 +3253,7 @@ end;
 grown too large into a file, and then DeleteRows can be called to remove
 that section of the file. }
 
-procedure TJvCsvCustomInMemoryDataSet.ExportRows(FileName: string; FromRow, ToRow: Integer);
+procedure TJvCustomCsvInMemoryDataSet.ExportRows(FileName: string; FromRow, ToRow: Integer);
 var
   t: Integer;
   StrList: TStringlist;
@@ -3271,7 +3271,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.DeleteRows(FromRow, ToRow: Integer);
+procedure TJvCustomCsvInMemoryDataSet.DeleteRows(FromRow, ToRow: Integer);
 var
   Count: Integer;
 begin
@@ -3295,7 +3295,7 @@ begin
   FFileDirty := True;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ExportCsvFile(const FileName: string); // save out to a file.
+procedure TJvCustomCsvInMemoryDataSet.ExportCsvFile(const FileName: string); // save out to a file.
 var
   Strings: TStringlist;
 begin
@@ -3305,7 +3305,7 @@ begin
   Strings.Free;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetCsvHeader: string;
+function TJvCustomCsvInMemoryDataSet.GetCsvHeader: string;
 var
   f: Text;
   FirstLine: string;
