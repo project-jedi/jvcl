@@ -430,21 +430,21 @@ procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
 
-function IniReadString(IniFile: TObject; const Section, Ident,
-  Default: string): string;
-procedure IniWriteString(IniFile: TObject; const Section, Ident,
-  Value: string);
-function IniReadInteger(IniFile: TObject; const Section, Ident: string;
-  Default: Longint): Longint;
-procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
-  Value: Longint);
-function IniReadBool(IniFile: TObject; const Section, Ident: string;
-  Default: Boolean): Boolean;
-procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
-  Value: Boolean);
-procedure IniReadSections(IniFile: TObject; Strings: TStrings);
-procedure IniEraseSection(IniFile: TObject; const Section: string);
-procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
+//function IniReadString(IniFile: TObject; const Section, Ident,
+//  Default: string): string;
+//procedure IniWriteString(IniFile: TObject; const Section, Ident,
+//  Value: string);
+//function IniReadInteger(IniFile: TObject; const Section, Ident: string;
+//  Default: Longint): Longint;
+//procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
+//  Value: Longint);
+//function IniReadBool(IniFile: TObject; const Section, Ident: string;
+//  Default: Boolean): Boolean;
+//procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
+//  Value: Boolean);
+//procedure IniReadSections(IniFile: TObject; Strings: TStrings);
+//procedure IniEraseSection(IniFile: TObject; const Section: string);
+//procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 
 {$IFDEF VCL}
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
