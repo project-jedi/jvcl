@@ -48,7 +48,7 @@ type
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
     {$ELSE}
     constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure AddButton; virtual;
     procedure AddPage; virtual;
     procedure SetActive; virtual;
@@ -66,7 +66,7 @@ type
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
     {$ELSE}
     constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure AddPage; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -82,7 +82,7 @@ type
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
     {$ELSE}
     constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure AddButton; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -98,18 +98,15 @@ type
     function GetButton: TJvCustomLookOutButton;
   end;
 
-
-resourcestring
-  sAddPage = 'Add page';
-  sActivate = 'Activate';
-  sAddButton = 'Add Button';
-  sScrollUp = 'Scroll Up';
-  sScrollDown = 'Scroll Down';
-  sAddPage_ = 'Add Page';
-  sNextPage = 'Next Page';
-  sPreviousPage = 'Previous Page';
-
 implementation
+
+uses
+  JvDsgnConsts;
+
+const
+  cLookOutButton = 'LookOutButton';
+  cLookOutPage = 'LookOutPage';
+  cExpressButton = 'ExpressButton';
 
 //=== TJvLookOutPageEditor =====================================================
 
@@ -123,7 +120,7 @@ constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IForm
 begin
   inherited Create(AComponent, ADesigner);
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvLookOutPageEditor.Edit;
 begin
@@ -153,9 +150,9 @@ begin
   if Component = nil then
     Exit;
   Btn := TJvLookOutPage(Component).AddButton;
-  Btn.Name := Designer.UniqueName('LookOutButton');
+  Btn.Name := Designer.UniqueName(cLookOutButton);
   Btn.Caption := Btn.Name;
-//  Designer.CreateComponent(TJvLookOutButton,Component,0,MaxInt,0,0);
+//  Designer.CreateComponent(TJvLookOutButton, Component, 0, MaxInt, 0, 0);
 end;
 
 function TJvLookOutPageEditor.GetVerb(Index: Integer): string;
@@ -166,17 +163,17 @@ begin
     Exit;
   case Index of
     0:
-      Result := sAddPage;
+      Result := SAddPage;
     1:
-      Result := sActivate;
+      Result := SActivate;
     2:
-      Result := sAddButton;
+      Result := SAddButton;
     3:
       Result := '-'; // do not localize
     4:
-      Result := sScrollUp;
+      Result := SScrollUp;
     5:
-      Result := sScrollDown;
+      Result := SScrollDown;
   end;
 end;
 
@@ -207,14 +204,15 @@ procedure TJvLookOutPageEditor.AddPage;
 var
   Page: TJvLookOutPage;
 begin
-  if not (Component is TJvLookOutPage) then
-    Exit;
-  Page := TJvLookOut(TJvLookOutPage(Component).Parent).AddPage;
-  Page.Name := Designer.UniqueName('LookOutPage');
-  Page.Caption := Page.Name;
+  if Component is TJvLookOutPage then
+  begin
+    Page := TJvLookOut(TJvLookOutPage(Component).Parent).AddPage;
+    Page.Name := Designer.UniqueName(cLookOutPage);
+    Page.Caption := Page.Name;
+  end;
 end;
 
-//=== TJvLookOutEditor =========================================================
+//=== TJvLookOutEditor =======================================================
 
 {$IFDEF COMPILER6_UP}
 constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
@@ -226,7 +224,7 @@ constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesi
 begin
   inherited Create(AComponent, ADesigner);
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvLookOutEditor.Edit;
 begin
@@ -276,22 +274,23 @@ procedure TJvLookOutEditor.AddPage;
 var
   Page: TJvLookOutPage;
 begin
-  if Component = nil then
-    Exit;
-  Page := TJvLookOut(Component).AddPage;
-  Page.Name := Designer.UniqueName('LookOutPage');
-  Page.Caption := Page.Name;
+  if Component <> nil then
+  begin
+    Page := TJvLookOut(Component).AddPage;
+    Page.Name := Designer.UniqueName(cLookOutPage);
+    Page.Caption := Page.Name;
+  end;
 end;
 
 function TJvLookOutEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sAddPage_;
+      Result := SAddPage_;
     1:
-      Result := sNextPage;
+      Result := SNextPage;
     2:
-      Result := sPreviousPage;
+      Result := SPreviousPage;
   end;
 end;
 
@@ -312,7 +311,7 @@ constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesi
 begin
   inherited Create(Acomponent, ADesigner);
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvExpressEditor.AddButton;
 var
@@ -321,9 +320,10 @@ var
 begin
   if Component = nil then
     Exit;
+
   Exp := TJvExpress(Component);
   Btn := TJvExpressButton(Exp.AddButton);
-  Btn.Name := Designer.UniqueName('ExpressButton');
+  Btn.Name := Designer.UniqueName(cExpressButton);
   Btn.Caption := Btn.Name;
 
   with Exp.Controls[Exp.ControlCount - 1] do
@@ -351,7 +351,7 @@ function TJvExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := sAddButton;
+      Result := SAddButton;
 //    1: Result := _('About...');
   end;
 end;

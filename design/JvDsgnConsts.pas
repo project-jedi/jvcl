@@ -37,6 +37,7 @@ resourcestring
   SNone = '(none)';
   SHelp = 'Help';
   SConfirm = 'Confirm?';
+  SAllFilesFilter = 'All Files (*.*)|*.*';
 
   //=== JvAVICaptureEditors.pas ==============================================
   SDisconnected = 'Disconnected';
@@ -49,6 +50,16 @@ resourcestring
   //=== JvBandObjectDLLWizardForm.pas ========================================
   SBandNameHasToBeAValidIdentifier = 'Band name has to be a valid identifier!';
   SPleaseEnterBandDescription = 'Please enter band description!';
+  SHelpText = sLineBreak +
+    'Band Name' + sLineBreak +
+    'Enter a band name, e.g. MyBand.' + sLineBreak +
+    'This will be the class name of the band object.' + sLineBreak +
+    'No need to prefix it with ''T'' as it will be generated.' + sLineBreak + sLineBreak +
+    'Description' + sLineBreak +
+    'Enter a menuitem text, e.g. &My Band' + sLineBreak +
+    'This text will appear in the Explorer Bar or Toolbars menu.' + sLineBreak + sLineBreak +
+    'Band Type' + sLineBreak +
+    'Select the type of band object to create.';
 
   //=== JvChangeNotifyEditor.pas =============================================
   SEditProperty = 'Notifications...';
@@ -76,6 +87,10 @@ resourcestring
   SNoItemIsSelectedInTheFieldsListYouC = 'No item is selected in the fields list. You can''t update nothing.';
   SModifyingTheCurrentlySelectedItemWo =
     'Modifying the currently selected item would create two items with the same name.';
+  SYouHaventActuallyChangedAnythingIfY = 'You haven''t actually changed anything. If you ' +
+    'made changes and didn''t click Modify, the changes have ' +
+    'not been made yet. (Click no, to go back.) ' + sLineBreak +
+    'Are you sure you want to close the CSV Fields editor? ';
 
   //=== JvDataConsumerContextSelectForm.pas ==================================
   SConsumerDoesNotSupportContextSelect = 'Consumer does not support context selection.';
@@ -86,9 +101,6 @@ resourcestring
 
   //=== JvDataContextManagerForm.pas =========================================
   SDataProviderContextManager = 'DataProvider Context Manager';
-
-  //=== JvDataEmbeddedEditor.pas =============================================
-  SAllFilesFilter = 'All Files (*.*)|*.*';
 
   //=== JvDataProviderDesignerForm.pas =======================================
   SDataProviderDesigner = 'DataProvider Designer';
@@ -110,14 +122,13 @@ resourcestring
   SSelectDateTime = 'Select Date and Time';
 
   //=== JvDsgnEditors.pas ====================================================
-  SAllFiles = 'All files (*.*)|*.*';
   SStripFilePath = '&Strip file path';
   SExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
   SItems = 'Items';
   SFmtEditProperty = '%s Editor...';
 
   //=== JvFooterEditor.pas ===================================================
-  SAddButton = 'Add button';
+  SAddButtonText = 'Add button';
   SMSOffice = 'MS Office 2000';
   SMSEnterpriseManagerWizard = 'MS Enterprise Manager Wizard';
   SDialogMode = 'Dialog Mode';
@@ -131,6 +142,62 @@ resourcestring
   SRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
   SLoadRTFFile = 'Load RTF file';
   SPreviewRTFText = 'Preview RTF text';
+
+  //=== JvgLabelEditorForm.pas ===============================================
+  SEditLabel = 'Edit &Label...';
+
+  //=== JvgLogicItemEditorForm.pas ===========================================
+  SLogicElements = 'Logic Element: %s';
+  SResult = '[RESULT]';
+  SNotDefined = '[ not defined ]';
+
+  //=== JvgLogicsEditorForm.pas ==============================================
+  SCaption = 'Caption';
+  SComments = 'Comments';
+  SEditComponent = 'Edit component...';
+
+  //=== JvgReportEditorForm.pas ==============================================
+  SEditReport = 'Edit report...';
+  SPreviewReport = 'Preview report...';
+  SDeleteObject = 'Delete object?';
+  SPagePreview = 'Page Preview';
+
+  //=== JvgReportParamsForm.pas ==============================================
+  SEditParams = 'Edit params...';
+
+  //=== JvGroupHeaderEditor.pas ==============================================
+  SStandardFlat = 'Standard/Flat';
+  SWeb = 'Web';
+
+  //=== JvgShadowEditor.pas ==================================================
+  SUpdateAllEditControl = 'Update all edit control';
+
+  //=== JVHLEditEditor.pas ===================================================
+  SHLEditorMsg = 'Please select "JvHLEditor" first';
+  SHLEditorMsgTitle = 'Cannot edit';
+  SExecute = 'Execute';
+
+  //=== JvID3v2EditorForm.pas ================================================
+  SCommit = 'Commit?';
+
+  //=== JvIDEZoom.pas ========================================================
+  SZoomEditWindow = 'Zoom Edit Window';
+
+  //=== JvImagePreviewForm.pas ===============================================
+  SPreviewText = 'Preview';
+
+  //=== JvJVCLAboutEditor.pas ================================================
+  SVersions = 'Version %s';
+
+  //=== JvLookoutEditor.pas ==================================================
+  SAddPage = 'Add page';
+  SActivate = 'Activate';
+  SAddButton = 'Add Button';
+  SScrollUp = 'Scroll Up';
+  SScrollDown = 'Scroll Down';
+  SAddPage_ = 'Add Page';
+  SNextPage = 'Next Page';
+  SPreviousPage = 'Previous Page';
 
   //=== DataProvider design time constants ===================================
   SDataProviderDesignerCaption = 'Editing %s%s...';

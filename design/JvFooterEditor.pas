@@ -65,7 +65,7 @@ function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SAddButton;
+      Result := SAddButtonText;
     1:
       Result := '-'; // do not localize
     2:

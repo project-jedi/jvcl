@@ -33,8 +33,7 @@ unit JvID3v2EditorForm;
 interface
 
 uses
-  Windows, Messages, Forms,
-  StdCtrls, ExtCtrls, Menus, Classes, Controls,
+  Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Classes, Controls,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
@@ -100,7 +99,7 @@ type
     procedure EditAction(Action: TEditAction); override;
     procedure ComponentDeleted(Component: IPersistent); override;
     procedure FormModified; override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
     property Controller: TJvID3Controller read FController write SetController;
   end;
@@ -137,26 +136,23 @@ procedure ShowFramesEditor(
   Designer: IDesigner;
   {$ELSE}
   Designer: IFormDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   AController: TJvID3Controller);
 function CreateFramesEditor(
   {$IFDEF COMPILER6_UP}
   Designer: IDesigner;
   {$ELSE}
   Designer: IFormDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 procedure ShowFileInfo(AController: TJvID3Controller);
 
-
-resourcestring
-  sCommit = 'Commit?';
 
 implementation
 
 uses
   Dialogs, Math, SysUtils,
-  JvID3v2DefineForm, JvConsts;
+  JvID3v2DefineForm, JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
 
@@ -164,6 +160,7 @@ type
   TJvID3ControllerAccess = class(TJvID3Controller);
 
 const
+  // (rom) needs localization through resourcestrings
   CFrameDescriptions: array [TJvID3FrameID] of PChar = (
     'Error', {fiErrorFrame}
     'Padding', {fiPaddingFrame}
@@ -174,7 +171,7 @@ const
     'Comments', {fiComment}
     'Commercial frame', {fiCommercial}
     'Encryption method registration', {fiCryptoReg}
-    'Equalisation (2)', {fiEqualization2}
+    'Equalization (2)', {fiEqualization2}
     'Equalization', {fiEqualization}
     'Event timing codes', {fiEventTiming}
     'General encapsulated object', {fiGeneralObject}
@@ -269,13 +266,13 @@ procedure ShowFramesEditor(
   Designer: IDesigner;
   {$ELSE}
   Designer: IFormDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   AController: TJvID3Controller);
 var
   FramesEditor: TJvID3FramesEditor;
-  vShared: Boolean;
+  VShared: Boolean;
 begin
-  FramesEditor := CreateFramesEditor(Designer, AController, vShared);
+  FramesEditor := CreateFramesEditor(Designer, AController, VShared);
   if FramesEditor <> nil then
     FramesEditor.Show;
 end;
@@ -285,14 +282,12 @@ function CreateFramesEditor(
   Designer: IDesigner;
   {$ELSE}
   Designer: IFormDesigner;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 begin
   Shared := True;
   if AController.Designer <> nil then
-  begin
-    Result := (AController.Designer as TFSDesigner).FFramesEditor;
-  end
+    Result := (AController.Designer as TFSDesigner).FFramesEditor
   else
   begin
     Result := TJvID3FramesEditor.Create(Application);
@@ -304,22 +299,28 @@ end;
 
 procedure ShowFileInfo(AController: TJvID3Controller);
 const
-  CVersion: array[TJvMPEGVersion] of string = ('MPEG 2.5', '??', 'MPEG 2.0', 'MPEG 1.0');
-  CLayer: array[TJvMPEGLayer] of string = ('??', 'layer 3', 'layer 2', 'layer 1');
-  CChannelMode: array[TJvMPEGChannelMode] of string = ('Stereo', 'Joint Stereo', 'Dual Channel', 'Mono');
-  CEmphasis: array[TJvMPEGEmphasis] of string = ('None', '50/15 microsec', '??', 'CCIT J.17');
-  CBool: array[Boolean] of string = ('No', 'Yes');
-  CVbr: array[Boolean] of string = ('', ' (VBR)');
-  CFileInfo =
-    'Size: %d bytes'#13 +
-    'Header found at: %d bytes'#13 +
-    'Length: %d seconds'#13 +
-    '%s %s'#13 +
-    '%dkbit%s, %d frames'#13 +
-    '%dHz %s'#13 +
-    'CRCs: %s'#13 +
-    'Copyrighted: %s'#13 +
-    'Original: %s'#13 +
+  cVersion: array [TJvMPEGVersion] of PChar =
+    ('MPEG 2.5', '??', 'MPEG 2.0', 'MPEG 1.0');
+  cLayer: array [TJvMPEGLayer] of PChar =
+    ('??', 'Layer 3', 'Layer 2', 'Layer 1');
+  cChannelMode: array [TJvMPEGChannelMode] of PChar =
+    ('Stereo', 'Joint Stereo', 'Dual Channel', 'Mono');
+  cEmphasis: array [TJvMPEGEmphasis] of PChar =
+    ('None', '50/15 microsec', '??', 'CCIT J.17');
+  cBool: array [Boolean] of PChar =
+    ('No', 'Yes');
+  cVbr: array [Boolean] of PChar =
+    ('', ' (VBR)');
+  cFileInfo =
+    'Size: %d bytes' + sLineBreak +
+    'Header found at: %d bytes' + sLineBreak +
+    'Length: %d seconds' + sLineBreak +
+    '%s %s' + sLineBreak +
+    '%dkbit%s, %d frames' + sLineBreak +
+    '%dHz %s' + sLineBreak +
+    'CRCs: %s' + sLineBreak +
+    'Copyrighted: %s' + sLineBreak +
+    'Original: %s' + sLineBreak +
     'Emphasis: %s';
 var
   Msg: string;
@@ -352,16 +353,11 @@ begin
           Exit;
         end;
 
-        Msg := Format(CFileInfo, [
-          FileSize,
-            HeaderFoundAt,
-            LengthInSec,
-            CVersion[Version], CLayer[Layer],
-            Bitrate, CVbr[IsVbr], FrameCount,
-            SamplingRateFrequency, CChannelMode[ChannelMode],
-            CBool[mbProtection in Bits], CBool[mbCopyrighted in Bits], CBool[mbOriginal in Bits],
-            CEmphasis[Emphasis]
-            ]);
+        Msg := Format(cFileInfo, [FileSize, HeaderFoundAt, LengthInSec,
+            cVersion[Version], cLayer[Layer], Bitrate, cVbr[IsVbr], FrameCount,
+            SamplingRateFrequency, cChannelMode[ChannelMode],
+            cBool[mbProtection in Bits], cBool[mbCopyrighted in Bits],
+            cBool[mbOriginal in Bits], cEmphasis[Emphasis]]);
       end;
     end;
 
@@ -385,7 +381,7 @@ procedure TJvID3FramesEditor.Activated;
 begin
   {$IFDEF COMPILER6_UP}
   Designer.Activate;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   try
     UpdateSelection;
   except
@@ -405,7 +401,7 @@ begin
   if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
     UpdateDisplay;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function TJvID3FramesEditor.DoNewFrame: TJvID3Frame;
 var
@@ -433,7 +429,7 @@ end;
 function TJvID3FramesEditor.EditAction(Action: TEditAction): Boolean;
 {$ELSE}
 procedure TJvID3FramesEditor.EditAction(Action: TEditAction);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   {$IFDEF COMPILER6_UP}
   Result := True;
@@ -452,7 +448,7 @@ begin
   {$IFDEF COMPILER6_UP}
   else
     Result := False;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -482,13 +478,13 @@ begin
   if (AItem is TJvID3Frame) and (TJvID3Frame(AItem).Controller = Controller) then
     UpdateDisplay;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.ItemsModified(const Designer: IDesigner);
 {$ELSE}
 procedure TJvID3FramesEditor.FormModified;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   UpdateCaption;
 end;
@@ -555,9 +551,8 @@ begin
   FrameListBox.SetFocus;
 end;
 
-procedure TJvID3FramesEditor.RestoreSelection(
-  var Selection: TStringList; ItemIndex, TopIndex: Integer;
-  RestoreUpdate: Boolean);
+procedure TJvID3FramesEditor.RestoreSelection(var Selection: TStringList;
+  ItemIndex, TopIndex: Integer; RestoreUpdate: Boolean);
 var
   I: Integer;
 begin
@@ -579,9 +574,8 @@ begin
   end;
 end;
 
-procedure TJvID3FramesEditor.SaveSelection(
-  var Selection: TStringList; var ItemIndex, TopIndex: Integer;
-  NoUpdate: Boolean);
+procedure TJvID3FramesEditor.SaveSelection(var Selection: TStringList;
+  var ItemIndex, TopIndex: Integer; NoUpdate: Boolean);
 var
   I: Integer;
 begin
@@ -617,7 +611,7 @@ procedure TJvID3FramesEditor.SelectionChanged(const ADesigner: IDesigner;
   const ASelection: IDesignerSelections);
 {$ELSE}
 procedure TJvID3FramesEditor.SelectionChanged(ASelection: TDesignerSelectionList);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 var
   I: Integer;
   S: Boolean;
@@ -650,9 +644,7 @@ begin
   if FController <> Value then
   begin
     if FController <> nil then
-    begin
       FreeAndNil(FFSDesigner);
-    end;
     FController := Value;
     if FController <> nil then
     begin
@@ -679,13 +671,13 @@ end;
 
 procedure TJvID3FramesEditor.UpdateCaption;
 const
-  SFrameEditor = '%s%s%s';
+  cFrameEditor = '%s%s%s';
 var
   NewCaption: string;
 begin
   if (Controller <> nil) and (Controller.Owner <> nil) then
-    NewCaption := Format(SFrameEditor, [Controller.Owner.Name, '.',
-      Controller.Name]);
+    NewCaption := Format(cFrameEditor,
+      [Controller.Owner.Name, '.', Controller.Name]);
   if Caption <> NewCaption then
     Caption := NewCaption;
 end;
@@ -743,7 +735,7 @@ var
   ComponentList: IDesignerSelections;
   {$ELSE}
   ComponentList: TDesignerSelectionList;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 begin
   if Active then
   begin
@@ -751,7 +743,7 @@ begin
     ComponentList := TDesignerSelections.Create;
     {$ELSE}
     ComponentList := TDesignerSelectionList.Create;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     try
       with FrameListBox do
         for I := 0 to Items.Count - 1 do
@@ -767,14 +759,14 @@ begin
       {$IFNDEF COMPILER6_UP}
       // In D6 up it's an interface, so no need to free up
       ComponentList.Free;
-      {$ENDIF}
+      {$ENDIF COMPILER6_UP}
       raise;
     end;
     {$IFDEF COMPILER6_UP}
     Designer.SetSelections(ComponentList);
     {$ELSE}
     SetSelection(ComponentList);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -792,27 +784,35 @@ end;
 
 procedure TJvID3ControllerEditor.Commit;
 begin
-  if MessageDlg(sCommit, mtConfirmation, mbOKCancel, 0) = mrOk then
+  if MessageDlg(SCommit, mtConfirmation, mbOKCancel, 0) = mrOk then
     TJvID3Controller(Component).Commit;
 end;
 
 procedure TJvID3ControllerEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowFramesEditor(Designer, TJvID3Controller(Component));
-    1: RemoveTag;
-    2: ShowFileInfo(TJvID3Controller(Component));
-    3: Commit;
+    0:
+      ShowFramesEditor(Designer, TJvID3Controller(Component));
+    1:
+      RemoveTag;
+    2:
+      ShowFileInfo(TJvID3Controller(Component));
+    3:
+      Commit;
   end;
 end;
 
 function TJvID3ControllerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := SID3FrameEditorTag;
-    1: Result := SID3RemoveTag;
-    2: Result := SID3FileInfoTag;
-    3: Result := SID3CommitTag;
+    0:
+      Result := SID3FrameEditorTag;
+    1:
+      Result := SID3RemoveTag;
+    2:
+      Result := SID3FileInfoTag;
+    3:
+      Result := SID3CommitTag;
   end;
 end;
 
@@ -874,8 +874,7 @@ begin
   UpdateSelection;
 end;
 
-function TFSDesigner.GetFrameDescription(
-  const FrameID: TJvID3FrameID): string;
+function TFSDesigner.GetFrameDescription(const FrameID: TJvID3FrameID): string;
 begin
   Result := CFrameDescriptions[FrameID];
 end;
@@ -910,8 +909,8 @@ begin
   Key := 0;
 end;
 
-procedure TJvID3FramesEditor.ListBoxDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TJvID3FramesEditor.ListBoxDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 var
   F: TJvID3Frame;
   I: Integer;
@@ -935,8 +934,8 @@ begin
   end;
 end;
 
-procedure TJvID3FramesEditor.ListBoxDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TJvID3FramesEditor.ListBoxDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 var
   Item: Integer;
 
@@ -950,8 +949,7 @@ var
 
 begin
   Item := FrameListBox.ItemAtPos(Point(X, Y), False);
-  Accept :=
-    (Source = FrameListBox) and
+  Accept := (Source = FrameListBox) and
     (Item >= 0) and (Item < FrameListBox.Items.Count) and
     not FrameListBox.Selected[Item];
   if State = dsDragEnter then
@@ -1002,7 +1000,7 @@ begin
   UpdateSelection;
 end;
 
-{ TJvID3FileInfoEditor }
+//=== TJvID3FileInfoEditor ===================================================
 
 procedure TJvID3FileInfoEditor.Edit;
 var
