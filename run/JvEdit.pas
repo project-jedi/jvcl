@@ -856,6 +856,14 @@ end;
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
   inherited Text := Value;
+  if FIsEmptyValue <> (Value = '') then
+  begin
+    FIsEmptyValue := (Value = '');
+    if not FIsEmptyValue then
+      Font.Color := FOldFontColor
+    else
+     Font.Color := FEmptyFontColor;
+  end;
 end;
 
 {$ENDIF VCL}
