@@ -432,8 +432,7 @@ type
 implementation
 
 uses
-  Math, TypInfo,
-  Consts, 
+  Math, TypInfo, QConsts,
   JclRegistry, JclSysUtils,
   JvQResources, JvQDynControlEngineIntf;
 
