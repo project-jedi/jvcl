@@ -181,6 +181,7 @@ type
     function CalcImageHeight: Integer; virtual;
     function CalcItemIndex(X, Y: Integer; var Rect: TRect): Integer; virtual;
     function CalcItemRect(const Item: TJvCustomInspectorItem): TRect; virtual;
+    procedure CMDeactivate(var Msg: TCMActivate); message CM_DEACTIVATE;
     procedure DoAfterDataCreate(const Data: TJvCustomInspectorData); virtual;
     procedure DoAfterItemCreate(const Item: TJvCustomInspectorItem); virtual;
     procedure DoBeforeItemCreate(const Data: TJvCustomInspectorData;
@@ -555,6 +556,7 @@ type
     function CanEdit: Boolean; virtual;
     procedure CloseUp(Accept: Boolean); virtual;
     procedure DataSort;
+    procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
@@ -1584,7 +1586,8 @@ implementation
 
 uses
   Consts, Dialogs, ExtCtrls, Forms, {$IFDEF COMPILER6_UP}RTLConsts,{$ENDIF}
-  JclRTTI, JclLogic;
+  JclRTTI, JclLogic,
+  JvWndProcHook;
 
 type
   PMethod = ^TMethod;
@@ -1812,6 +1815,65 @@ begin
     SetDefaultProp(Instance, PropNames[I]);
 end;
 
+type
+  TInspReg = class
+  private
+    FInspectors: array of TJvCustomInspector;
+  protected
+    function ApplicationDeactivate(var Msg: TMessage): Boolean;
+    function IndexOf(const Inspector: TJvCustomInspector): Integer;
+  public
+    procedure RegInspector(const Inspector: TJvCustomInspector);
+    procedure UnRegInspector(const Inspector: TJvCustomInspector);
+  end;
+
+var
+  InspReg: TInspReg;
+
+function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  if Msg.Msg = CM_DEACTIVATE then
+    // Post the CM_DEACTIVATE message to all registered inspectors
+    for I := High(FInspectors) downto 0 do
+      PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
+end;
+
+function TInspReg.IndexOf(const Inspector: TJvCustomInspector): Integer;
+begin
+  Result := High(FInspectors);
+  while (Result >= 0) and (FInspectors[Result] <> Inspector) do
+    Dec(Result);
+end;
+
+procedure TInspReg.RegInspector(const Inspector: TJvCustomInspector);
+begin
+  if IndexOf(Inspector) = -1 then
+  begin
+    SetLength(FInspectors, Length(FInspectors) + 1);
+    FInspectors[High(FInspectors)] := Inspector;
+    if Length(FInspectors) = 1 then           
+      RegisterWndProcHook(Application.Handle, ApplicationDeactivate, hoBeforeMsg);
+  end;
+end;
+
+procedure TInspReg.UnRegInspector(const Inspector: TJvCustomInspector);
+var
+  I: Integer;
+begin
+  I := IndexOf(Inspector);
+  if I <> -1 then
+  begin
+    if I < High(FInspectors) then
+      Move(FInspectors[I + 1], FInspectors[I], (High(FInspectors) - I) * SizeOf(TJvCustomInspector));
+    SetLength(FInspectors, High(FInspectors));
+    if Length(FInspectors) = 0 then
+      UnRegisterWndProcHook(Application.Handle, ApplicationDeactivate, hoBeforeMsg);
+  end;
+end;
+
 { TJvInspDataReg }
 
 type
@@ -2015,6 +2077,13 @@ function TJvCustomInspector.CalcItemRect(
   const Item: TJvCustomInspectorItem): TRect;
 begin
   Result := Item.Rects[iprItem];
+end;
+
+procedure TJvCustomInspector.CMDeactivate(var Msg: TCMActivate);
+begin
+  inherited;
+  if Selected <> nil then
+    Selected.Deactivate;
 end;
 
 procedure TJvCustomInspector.DoAfterDataCreate(
@@ -3153,10 +3222,14 @@ begin
   Height := 100;
   Divider := 75;
   BandWidth := 150;
+  if not (csDesigning in ComponentState) then
+    InspReg.RegInspector(Self);
 end;
 
 procedure TJvCustomInspector.BeforeDestruction;
 begin
+  if not (csDesigning in ComponentState) then
+    InspReg.UnRegInspector(Self);
   Painter := nil;
   FRoot.Free;
   FBandStartsSB.Free;
@@ -4298,6 +4371,12 @@ begin
   finally
     ItemList.Free;
   end;
+end;
+
+procedure TJvCustomInspectorItem.Deactivate;
+begin
+  if DroppedDown then
+    CloseUp(False);
 end;
 
 procedure TJvCustomInspectorItem.DoAfterItemCreate;
@@ -10434,6 +10513,7 @@ end;
 
 initialization
   CanvasStack := TCanvasStack.Create(512);
+  InspReg := TInspReg.Create;
   RegisterTypeKinds;
   RegisterConsts;
   DataRegister := TJvInspDataReg.Create;
@@ -10444,5 +10524,6 @@ finalization
   TJvCustomInspectorData.ItemRegister.Free;
   TJvInspectorPropData.ItemRegister.Free;
   TJvInspectorVarData.ItemRegister.Free;
+  InspReg.Free;
   CanvasStack.Free;
 end.
