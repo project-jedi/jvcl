@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvUrlListGrabber, JvUrlGrabbers, StdCtrls, JvComponent;
+  Dialogs, JvHTTPGrabber, JvFTPGrabber, JvUrlListGrabber, JvUrlGrabbers, StdCtrls, JvComponent, ComCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -44,13 +44,18 @@ type
     btnGoDesign: TButton;
     btnClear: TButton;
     btnStop: TButton;
+    StatusBar1: TStatusBar;
     procedure btnGoDynamicClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure btnGoDesignClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     grabber : TJvUrlListGrabber;
+    procedure DoHandleError(Sender: TObject; ErrorMsg: string);
+    procedure DoProgressEvent(Sender: TObject; Position: Integer;
+      Url: string);
   public
     { Public declarations }
     procedure grabberConnectionClosed(Sender : TJvUrlListGrabber; Grabber : TJvUrlGrabber);
@@ -66,11 +71,15 @@ uses JvTypes;
 
 procedure TfrmMain.btnGoDynamicClick(Sender: TObject);
 begin
+
   grabber := TJvUrlListGrabber.Create(Self);
   grabber.URLs.Add(InputBox('Url to grab', 'Please give a url to grab', 'http://jvcl.sf.net/'));
+  memExplanation.Lines.Clear;
   with grabber.Grabbers[0] do
   begin
     OutputMode := omFile;
+    OnError := DoHandleError;
+    OnProgress := DoProgressEvent;
     FileName := ExtractFilePath(Application.Exename)+'\test.txt';
     Start;
   end;
@@ -100,13 +109,18 @@ begin
   end
   else
   begin
+    memExplanation.Lines.Clear;
     julGrabber.URLs.Clear;
     julGrabber.Cleanup;
-    julGrabber.URLs.Assign(memUrls.Lines);
+    for i := 0 to memUrls.Lines.Count -1 do
+      if memUrls.Lines[i] <> '' then
+        julGrabber.URLs.Add(memUrls.Lines[i]);
     for i := 0 to julGrabber.URLs.Count -1 do
     begin
       with julGrabber.Grabbers[i] do
       begin
+        OnError := DoHandleError;
+        OnProgress := DoProgressEvent;
         OutputMode := omFile;
         FileName := ExtractFilePath(Application.ExeName) + '\result' + IntToStr(i) + '.txt';
       end;
@@ -115,9 +129,24 @@ begin
   end;
 end;
 
+procedure TfrmMain.DoProgressEvent(Sender: TObject; Position: Integer; Url: string);
+begin
+  memExplanation.Lines.Add(Format('Url: %s, Position: %d',[Url, Position]));
+end;
+
+procedure TfrmMain.DoHandleError(Sender: TObject; ErrorMsg: string);
+begin
+  memExplanation.Lines.Add(Format('Error: %s',[ErrorMsg]));
+end;
+
 procedure TfrmMain.btnStopClick(Sender: TObject);
 begin
   julGrabber.StopAll;
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  memExplanation.WordWrap := true;
 end;
 
 end.
