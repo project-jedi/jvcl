@@ -370,6 +370,14 @@ var
 begin
   if ed = '' then
     Exit;
+{$IFDEF MSWINDOWS}
+  if SameText(ed, 'k3') then
+    Exit;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  if not SameText(ed, 'k3') then
+    Exit;
+{$ENDIF LINUX}
   for i := 0 to High(Editions) do
     if SameText(Editions[i], ed) then
       Exit;
