@@ -18,9 +18,6 @@ object Form1: TForm1
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    427
-    246)
   PixelsPerInch = 96
   TextHeight = 13
   object Label4: TLabel
@@ -74,9 +71,6 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvLowered
     TabOrder = 3
-    DesignSize = (
-      179
-      213)
     object Label1: TLabel
       Left = 8
       Top = 8

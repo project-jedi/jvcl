@@ -46,9 +46,6 @@ object Form1: TForm1
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      267
-      332)
     object Label1: TLabel
       Left = 24
       Top = 24

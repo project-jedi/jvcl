@@ -17,9 +17,6 @@ object fBouncingBalls: TfBouncingBalls
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    492
-    484)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

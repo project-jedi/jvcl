@@ -18,9 +18,6 @@ object Form1: TForm1
   Position = poDesktopCenter
   Scaled = False
   OnResize = FormResize
-  DesignSize = (
-    432
-    343)
   PixelsPerInch = 96
   TextHeight = 13
   object JvUninstallComboBox1: TJvUninstallComboBox

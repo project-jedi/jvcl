@@ -29,9 +29,6 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
     Constraints.MinHeight = 183
     FullRepaint = False
     TabOrder = 0
-    DesignSize = (
-      762
-      238)
     object JvSpecialProgress1: TJvSpecialProgress
       Left = 8
       Top = 56

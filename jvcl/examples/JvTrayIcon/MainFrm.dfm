@@ -17,9 +17,6 @@ object frmMain: TfrmMain
   Position = poDesktopCenter
   Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    402
-    420)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -30,9 +27,6 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Tray Icon Options '
     TabOrder = 0
-    DesignSize = (
-      385
-      361)
     object Label1: TLabel
       Left = 16
       Top = 56

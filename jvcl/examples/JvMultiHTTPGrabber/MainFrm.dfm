@@ -40,9 +40,6 @@ object Form1: TForm1
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    DesignSize = (
-      401
-      61)
     object Label1: TLabel
       Left = 12
       Top = 12
@@ -98,9 +95,6 @@ object Form1: TForm1
     Align = alClient
     Caption = ' Content: '
     TabOrder = 1
-    DesignSize = (
-      401
-      166)
     object reContent: TRichEdit
       Left = 5
       Top = 17
@@ -155,9 +149,6 @@ object Form1: TForm1
     Align = alBottom
     Caption = ' Log: '
     TabOrder = 2
-    DesignSize = (
-      401
-      85)
     object reLog: TRichEdit
       Left = 5
       Top = 15

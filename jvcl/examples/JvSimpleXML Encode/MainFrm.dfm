@@ -28,9 +28,6 @@ object Form1: TForm1
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      437
-      230)
     object Label2: TLabel
       Left = 6
       Top = 8
@@ -93,9 +90,6 @@ object Form1: TForm1
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      437
-      259)
     object Label1: TLabel
       Left = 6
       Top = 12

@@ -17,9 +17,6 @@ object JvTranslatorMainForm: TJvTranslatorMainForm
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
-  DesignSize = (
-    441
-    369)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

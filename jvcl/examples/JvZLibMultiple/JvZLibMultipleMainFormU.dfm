@@ -18,9 +18,6 @@ object JvZLibMultipleMainForm: TJvZLibMultipleMainForm
   Position = poDesktopCenter
   Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    368
-    231)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -27,9 +27,6 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   ShowHint = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    532
-    246)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

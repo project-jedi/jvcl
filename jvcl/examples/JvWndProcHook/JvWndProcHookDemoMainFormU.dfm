@@ -14,9 +14,6 @@ object JvWndProcHookDemoMainForm: TJvWndProcHookDemoMainForm
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
-  DesignSize = (
-    645
-    499)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

@@ -18,9 +18,6 @@ object frmMain: TfrmMain
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  DesignSize = (
-    424
-    450)
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
@@ -30,7 +27,6 @@ object frmMain: TfrmMain
     Height = 389
     ActivePage = tabOptions
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabIndex = 0
     TabOrder = 0
     object tabOptions: TTabSheet
       Caption = 'Options'
@@ -246,9 +242,6 @@ object frmMain: TfrmMain
     object tabFiles: TTabSheet
       Caption = 'Files'
       ImageIndex = 1
-      DesignSize = (
-        398
-        361)
       object reFiles: TRichEdit
         Left = 8
         Top = 16

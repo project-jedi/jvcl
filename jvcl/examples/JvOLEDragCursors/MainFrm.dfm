@@ -26,9 +26,6 @@ object Form1: TForm1
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      460
-      56)
     object Button1: TButton
       Left = 171
       Top = 12
@@ -48,9 +45,6 @@ object Form1: TForm1
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      460
-      292)
     object Panel7: TPanel
       Left = 0
       Top = 246

@@ -190,9 +190,6 @@ object frmMain: TfrmMain
     Height = 34
     Align = alBottom
     ParentBackground = False
-    DesignSize = (
-      582
-      34)
     object JvFooterBtn2: TJvFooterBtn
       Left = 339
       Top = 5
@@ -261,9 +258,6 @@ object frmMain: TfrmMain
       Height = 303
       Caption = 'Environment - General'
       Color = clBtnFace
-      DesignSize = (
-        410
-        303)
       object Label1: TLabel
         Left = 248
         Top = 8
@@ -445,9 +439,6 @@ object frmMain: TfrmMain
       Height = 303
       Caption = 'Environment - Documents'
       Color = clBtnFace
-      DesignSize = (
-        410
-        303)
       object Label7: TLabel
         Left = 32
         Top = 112
