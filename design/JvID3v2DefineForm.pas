@@ -33,15 +33,16 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms,
-  QDialogs, QStdCtrls, Types,
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, Types, ClxDesignWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus, DesignWindows,
+  DesignEditors, DesignIntf, DesignMenus,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

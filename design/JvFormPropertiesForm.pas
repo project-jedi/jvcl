@@ -35,16 +35,13 @@ uses
   Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,
+  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types, ClxEditors,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CLXEditors,
-  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}

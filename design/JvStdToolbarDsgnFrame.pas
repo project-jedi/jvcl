@@ -32,8 +32,15 @@ unit JvStdToolbarDsgnFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ActnList, Menus, ImgList, ToolWin, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QComCtrls, QActnList,
+  QMenus, QImgList, QToolWin, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvBaseDsgnToolbarFrame;
 
 type
@@ -55,6 +62,10 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
-
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 end.

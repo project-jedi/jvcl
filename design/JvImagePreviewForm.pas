@@ -42,7 +42,8 @@ uses
   {$IFDEF VisualCLX}
   QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
   {$ENDIF VisualCLX}
-  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent,
+  JvPlacemnt;
 
 type
   TImageForm = class(TJvForm)

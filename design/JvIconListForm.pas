@@ -36,17 +36,14 @@ uses
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QControls, QDialogs,
-  QStdCtrls, QExtCtrls, QExtDlgs, QImgList, QComCtrls, QToolWin,
+  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
+  QImgList, QComCtrls, QToolWin, ClxEditors,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CLXEditors,
-  {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}

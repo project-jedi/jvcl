@@ -35,7 +35,7 @@ uses
   Windows, Controls, Forms, StdCtrls, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QComCtrls, QStdCtrls
+  QControls, QForms, QComCtrls, QStdCtrls,
   {$ENDIF VisualCLX}
   JvComponent;
 

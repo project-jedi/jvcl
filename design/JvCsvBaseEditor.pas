@@ -33,7 +33,13 @@ interface
 uses
   Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ClxEditors,
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -54,8 +60,14 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   Forms, Dialogs;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QForms, QDialogs;
+{$ENDIF}
 
 //=== TCSVFileNameProperty ===================================================
 

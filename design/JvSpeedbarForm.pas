@@ -30,16 +30,29 @@ unit JvSpeedbarForm;
 interface
 
 uses
-  Windows,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Buttons, Grids, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs,
+  QStdCtrls, QButtons, QGrids, QMenus, QWindows, ClxDesignWindows,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, DesignWindows,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF VCL}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, Grids, Menus,
   JvSpeedButton, JvSpeedBar, JvFormPlacement,
-  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage;
+  JvConsts, JvComponent, JvAppStorage,
+  {$IFDEF MSWINDOWS}
+  JvAppRegistryStorage,
+  {$ENDIF MSWINDOWS}
+  JvPlacemnt;
 
 type
   TSelectData = record

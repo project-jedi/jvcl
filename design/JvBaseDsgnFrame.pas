@@ -32,12 +32,9 @@ unit JvBaseDsgnFrame;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils,
   {$IFDEF VCL}
-  Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, 
@@ -66,7 +63,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 uses
   JvBaseDsgnForm;

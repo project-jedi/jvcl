@@ -38,10 +38,14 @@ uses
   Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QStdCtrls, QExtCtrls, QMenus, QControls,
+  QForms, QStdCtrls, QExtCtrls, QMenus, QControls, QWindows,
+  ClxDesignWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf, DesignMenus, DesignWindows,
+  DesignEditors, DesignIntf, DesignMenus,
+  {$IFDEF VCL}
+  DesignWindows,
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}

@@ -41,7 +41,11 @@ uses
   QStdCtrls, QExtCtrls, QExtDlgs, QButtons, QTypes,
   {$ENDIF VisualCLX}
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
-  JvAppStorage, JvAppRegistryStorage, JvMRUList;
+  JvAppStorage,
+  {$IFDEF MSWINDOWS}
+  JvAppRegistryStorage,
+  {$ENDIF MSWINDOWS}
+  JvMRUList, JvPlacemnt;
 
 type
   TPictureEditDialog = class(TJvForm)

@@ -37,14 +37,15 @@ uses
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
+  ClxDesignWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, DesignWindows,
+  RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
-  VCLEditors,
+  VCLEditors, DesignWindows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  CLXEditors,
+  ClxEditors,
   {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
