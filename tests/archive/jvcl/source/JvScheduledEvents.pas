@@ -250,6 +250,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure BeforeDestruction;
 
     procedure AddEventComponent(const AComp: TJvCustomScheduledEvents);
     procedure RemoveEventComponent(const AComp: TJvCustomScheduledEvents);
@@ -271,27 +272,30 @@ begin
   FEnded := False;
   while not Terminated do
   begin
-    FCritSect.Enter;
-    try
-      FEventIdx := FEventComponents.Count - 1;
-      while (FEventIdx > -1) and not Terminated do
-      begin
-        GetLocalTime(SysTime);
-        NowStamp := DateTimeToTimeStamp(Now);
-        with SysTime do
-          NowStamp.Time := wHour * 3600000 + wMinute * 60000 + wSecond * 1000 + wMilliseconds;
-        TskColl := TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Events;
-        I := 0;
-        while (I < TskColl.Count) and not Terminated do
+    if (FCritSect <> nil) and (FEventComponents <> nil) then
+    begin
+      FCritSect.Enter;
+      try
+        FEventIdx := FEventComponents.Count - 1;
+        while (FEventIdx > -1) and not Terminated do
         begin
-          if TskColl[I].Initialized and (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
-            PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle, CM_ExecEvent, Integer(TskColl[I]), 0);
-          Inc(I);
+          GetLocalTime(SysTime);
+          NowStamp := DateTimeToTimeStamp(Now);
+          with SysTime do
+            NowStamp.Time := wHour * 3600000 + wMinute * 60000 + wSecond * 1000 + wMilliseconds;
+          TskColl := TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Events;
+          I := 0;
+          while (I < TskColl.Count) and not Terminated do
+          begin
+            if TskColl[I].Initialized and (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
+              PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle, CM_ExecEvent, Integer(TskColl[I]), 0);
+            Inc(I);
+          end;
+          Dec(FEventIdx);
         end;
-        Dec(FEventIdx);
+      finally
+        FCritSect.Leave;
       end;
-    finally
-      FCritSect.Leave;
     end;
     if not Terminated then
       Sleep(1);
@@ -309,12 +313,26 @@ end;
 destructor TScheduleThread.Destroy;
 begin
   inherited Destroy;
-  Suspend;
-  FEventComponents.Free;
+  FreeAndNil(FCritSect);
+end;
+
+procedure TScheduleThread.BeforeDestruction;
+begin
+  if (FCritSect = nil) or (FEventComponents = nil) then
+    Exit;
+  FCritSect.Enter;
+  try
+    FreeAndNil(FEventComponents);
+  finally
+    FCritSect.Leave;
+  end;
+  inherited BeforeDestruction;
 end;
 
 procedure TScheduleThread.AddEventComponent(const AComp: TJvCustomScheduledEvents);
 begin
+  if (FCritSect = nil) or (FEventComponents = nil) then
+    Exit;
   FCritSect.Enter;
   try
     if FEventComponents.IndexOf(AComp) = -1 then
@@ -330,6 +348,8 @@ end;
 
 procedure TScheduleThread.RemoveEventComponent(const AComp: TJvCustomScheduledEvents);
 begin
+  if (FCritSect = nil) or (FEventComponents = nil) then
+    Exit;
   FCritSect.Enter;
   try
     FEventComponents.Remove(AComp);
@@ -559,11 +579,14 @@ begin
     ScheduleThread.RemoveEventComponent(Self);
     if AutoSave then
       SaveEventStates;
-    {$IFNDEF COMPILER6_UP}
-    DeallocateHWnd(FWnd);
-    {$ELSE}
-    Classes.DeallocateHWnd(FWnd);
-    {$ENDIF COMPILER6_UP}
+    if FWnd <> 0 then
+    begin
+      {$IFNDEF COMPILER6_UP}
+      DeallocateHWnd(FWnd);
+      {$ELSE}
+      Classes.DeallocateHWnd(FWnd);
+      {$ENDIF COMPILER6_UP}
+    end;
   end;
   FEvents.Free;
   inherited Destroy;
