@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls, StdCtrls,
-  JVCLVer;
+  JvExStdCtrls;
 
 type
   TJvWinampThread = class(TThread)
@@ -44,9 +44,8 @@ type
     FOnDraw: TNotifyEvent;
   end;
 
-  TJvWinampLabel = class(TCustomLabel)
+  TJvWinampLabel = class(TJvExCustomLabel)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FBitmap: TBitmap;
     FPicture: TPicture;
     FTimer: TJvWinampThread;
@@ -75,8 +74,8 @@ type
     procedure DoOnTimer(Sender: TObject);
     function GetRow(Ch: Char): Word;
     procedure SetText(Value: string);
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
+    procedure ColorChanged; override;
     procedure Paint; override;
     // (rom) made protected property
     property CharHeight: Integer read FCharHeight;
@@ -85,7 +84,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive;
     property Stretch: Boolean read FStretch write SetStretch;
     property ScrollBy: Integer read GetScrollBy write FScrollBy;
@@ -449,10 +447,10 @@ begin
   end;
 end;
 
-procedure TJvWinampLabel.CMColorChanged(var Msg: TMessage);
+procedure TJvWinampLabel.ColorChanged;
 begin
   FText := '';
-  inherited;
+  inherited ColorChanged;
 end;
 
 end.
