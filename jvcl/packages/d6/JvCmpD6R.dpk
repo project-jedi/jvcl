@@ -28,7 +28,7 @@ package JvCmpD6R;
 
 requires
   JvCoreD6R,
-  DJCL70,
+  DJCL60,
   JvSystemD6R;
 
 contains

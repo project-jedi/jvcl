@@ -1,7 +1,6 @@
 package JvCoreD5R;
 
 {$R *.res}
-{$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,8 +26,8 @@ package JvCoreD5R;
 {$IMPLICITBUILD ON}
 
 requires
-  DJCL70,
-  vclx;
+  DJCL50,
+  vclx50;
 
 contains
   JvConsts in '..\..\common\JvConsts.pas',

@@ -43,7 +43,7 @@ requires
   rtl,
   vclactnband,
   JvCoreD5R,
-  DJCL70;
+  DJCL50;
 
 contains
   JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',

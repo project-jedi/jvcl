@@ -34,7 +34,7 @@ requires
   vcljpg,
   vclie,
   JvCoreD5R,
-  DJCL70,
+  DJCL50,
   JvStdCtrlsD5R,
   JvSystemD5R;
 

@@ -31,7 +31,7 @@ requires
   vcl,
   vclx,
   JvCoreD6R,
-  DJCL70;
+  DJCL60;
 
 contains
   JvValidators in '..\..\run\JvValidators.pas',

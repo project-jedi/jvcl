@@ -27,7 +27,7 @@ package JvCoreD6R;
 {$IMPLICITBUILD ON}
 
 requires
-  DJCL70,
+  DJCL60,
   vclx;
 
 contains
