@@ -318,7 +318,7 @@ implementation
 uses
   ExtCtrls;
 
-{$R ..\resources\JvOlBar.res}
+{$R JvOUTLOOKBARRES.RES}
 
 const
   cButtonLeftOffset = 4;
@@ -529,9 +529,8 @@ procedure TJvOutlookBarButton.Change;
 begin
   if (Collection <> nil) and (TJvOutlookBarButtons(Collection).GetOwner <> nil) and
     (TCollectionItem(TJvOutlookBarButtons(Collection).GetOwner).Collection <> nil) and
-    (TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).GetOwner).Collection).GetOwner)
-      <> nil) then
-    TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).GetOwner).Collection).GetOwner).Invalidate;
+    (TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).GetOwner).Collection).GetOwner) <> nil) then
+      TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).GetOwner).Collection).GetOwner).Invalidate;
 end;
 
 procedure TJvOutlookBarButton.EditCaption;
@@ -576,6 +575,7 @@ end;
 function TJvOutlookBarButtons.Add: TJvOutlookBarButton;
 begin
   Result := TJvOutlookBarButton(inherited Add);
+  Result.SetCollection(self);
 end;
 
 procedure TJvOutlookBarButtons.Assign(Source: TPersistent);
@@ -661,6 +661,7 @@ begin
 end;
 
 procedure TJvOutlookBarPage.Assign(Source: TPersistent);
+var i:integer;
 begin
   if Source is TJvOutlookBarPage then
   begin
@@ -670,6 +671,9 @@ begin
     ButtonSize := TJvOutlookBarPage(Source).ButtonSize;
     ParentButtonSize := TJvOutlookBarPage(Source).ParentButtonSize;
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
+    Buttons.Clear;
+    for i := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
+      Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[i]);
     Change;
   end
   else
