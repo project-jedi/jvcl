@@ -1,8 +1,8 @@
 object frmInspector: TfrmInspector
-  Left = 409
-  Top = 115
+  Left = 367
+  Top = 125
   Width = 254
-  Height = 707
+  Height = 609
   ActiveControl = JvInspector1
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
@@ -27,25 +27,21 @@ object frmInspector: TfrmInspector
     Left = 0
     Top = 0
     Width = 246
-    Height = 677
+    Height = 582
     Align = alClient
-    BandWidth = 150
-    BevelKind = bkTile
-    BevelInner = bvNone
     RelativeDivider = True
     Divider = 50
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1
-    ReadOnly = False
-    UseBands = False
-    WantTabs = False
     AfterItemCreate = JvInspector1AfterItemCreate
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
+    DrawNameEndEllipsis = False
     Left = 104
     Top = 16
   end
   object JvInspectorDotNETPainter1: TJvInspectorDotNETPainter
+    DrawNameEndEllipsis = False
     SelectedColor = clNavy
     SelectedTextColor = clWhite
     Left = 104
