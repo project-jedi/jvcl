@@ -1,3 +1,7 @@
+{**************************************************************************************************}
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
+{**************************************************************************************************}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -16,7 +20,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-03-16
+Last Modified: 2003-11-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,58 +39,64 @@ procedure Register;
 implementation
 uses
   Classes,
-
-
+  
+  
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
-  Types,  QTypes, QExtDlgs,
-  JvQExStdCtrls, JvQExExtCtrls, JvQExControls, JvQExCheckLst, JvQExComCtrls,
-  JvQExButtons, JvQExGrids, JvQExMask,
-
+  QTypes,
+  
+  
   DesignEditors, DesignIntf,
-
+  
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
-  JvQActions, JvQActnResForm, JvQJVCLAboutForm,
-  JvQDsgnEditors,
-  JvQIDEZoom,
-  JvQJVCLAboutEditor,
-
-  JvQPaintBoxEditor,
-  JvQBaseDlgEditor, JvQBaseDlg,
-  {$IFDEF MSWINDOWS}
-  JvQAppRegistryStorage,  JvQContextProvider,
-  JvQColorProvider, JvQColorProviderEditors, JvQDataProviderEditors,
-  {$ENDIF MSWINDOWS}
+  JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
+  JvQJVCLAboutEditor, JvQBaseDlgEditor, {JvQColorEditor,} JvQPaintBoxEditor,
   JvQAppIniStorage,
-  JvQAppStorage;
+  {$IFDEF MSWINDOWS}
+  JvQAppRegistryStorage, JvQContextProvider,
+  JvQColorProviderEditors, JvQDataProviderEditors, JvQDataProvider,
+  JvQDataProviderIntf, JvQColorProvider,
+  {$ENDIF MSWINDOWS}
+  
+  JvQAppStorage, JvQAppStorageSelectList;
+
+
 
 {$R ../Resources/JvCoreReg.dcr}
 
-{$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
-   {$IFDEF MSWINDOWS},
- TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
-   {$ENDIF}]);
-  RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     {$IFDEF MSWINDOWS}
-    TJvAppRegistryStorage,
+    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
     {$ENDIF MSWINDOWS}
-    TJvAppIniFileStorage]);
+    ]);
+  RegisterComponents(RsPalettePersistence, [TJvAppStorage,
+     {$IFDEF MSWINDOWS}TJvAppRegistryStorage,{$ENDIF}
+     TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
+
+  // The TJvPersistent class needs an editor for D5 and BCB5, but for
+  // all other compilers, it doesn't need anything as it is declared as
+  // a SubComponent. However, we want to hide the Name and Tag property
+  // in this case, thus the registration of 'nil' property editors
+  
+  RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
+  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
+  
+
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
+  
+
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
-  RegisterPropertyEditor(TypeInfo(widestring), BaseClass, '', TJvHintProperty);
-//  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), BaseClass, '', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Text', TJvHintProperty);
 
   RegisterPropertyEditor(TypeInfo(Integer), BaseClass, '', TJvIntegerProperty);
   RegisterPropertyEditor(TypeInfo(Shortint), BaseClass, '', TJvIntegerProperty);
@@ -102,20 +112,28 @@ begin
   RegisterPropertyEditor(TypeInfo(Currency), BaseClass, '', TJvFloatProperty);
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
-//  RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
-//  RegisterComponentEditor(TImageList, TJvImageListEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-  RegisterActions(RsJVCLActionsCategory,
-    [{$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF} TJvWebAction], TJvStandardActions);
+
+  
+
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
+  // DataProvider related editors
+  RegisterPropertyEditor(TypeInfo(TJvColorProviderMapping), TPersistent, '', TJvColorProviderMappingProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataContextID), TPersistent, '', TJvDataConsumerContextProperty);
+  RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
+  RegisterPropertyEditor(TypeInfo(TComponent), TJvDataConsumerClientNotifyItem, '', TJvConsumerNotifyComponentProperty);
+  RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
+  RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
+  RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
-
+  RegisterActions(RsJVCLActionsCategory, [
+  {$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;
-
-
-  end;
+end;
 
 end.

@@ -36,6 +36,7 @@ interface
 
 uses
   Classes,
+  QWindows,
   JvQDataProviderIntf;
 
 type
@@ -63,9 +64,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  QWindows,
-  {$ENDIF LINUX}
   QImgList,
   SysUtils, TypInfo,
   JvQDsgnConsts;

@@ -35,7 +35,7 @@ unit JvQHtmlParserEditor;
 interface
 
 uses
-  SysUtils, Classes, Forms,
+  SysUtils, Classes, QForms,
   
   DesignEditors, DesignIntf,
   

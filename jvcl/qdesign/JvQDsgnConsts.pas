@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -101,6 +101,7 @@ resourcestring
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
   {$ENDIF USEJVCL}
+  RsPalettePlugin = 'Jv Plugin';
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring

@@ -52,11 +52,11 @@ uses
 
   JvQDsgnConsts,
   JvQOfficeColorButton, JvQOfficeColorPanel,
-  JvQZoom, JvQBehaviorLabel, JvQArrowButton,
-  JvQaScrollText,
+  {JvQZoom,} JvQBehaviorLabel, JvQArrowButton,
+  JvQaScrollText, JvQScrollPanel,
 
   {$IFDEF LINUX}
-  JvQSpeedBar, JvQSpeedbarSetupForm,
+  JvQSpeedBar, JvQSpeedbarSetupForm, JvQSpeedbarForm,
   {$ENDIF LINUX}
   JvQClock, JvQContentScroller, JvQColorBox,
   JvQColorButton,
@@ -89,9 +89,9 @@ begin
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvHTListBox, TJvHTComboBox]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvaScrollText,
-    TJvContentScroller, TJvScrollText]);
+    TJvContentScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, {TJvZoom,} TJvDice]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);

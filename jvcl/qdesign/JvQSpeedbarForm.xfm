@@ -2,8 +2,8 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   Left = 378
   Top = 221
   Width = 437
-  Height = 277
-  VertScrollBar.Range = 277
+  Height = 285
+  VertScrollBar.Range = 281
   HorzScrollBar.Range = 434
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
@@ -60,7 +60,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
     Left = 4
     Top = 248
     Width = 429
-    Height = 29
+    Height = 33
     AutoSize = False
     Caption = 
       'To add command buttons, drag and drop button onto the JvSpeedbar' +
@@ -243,18 +243,5 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
       ShortCut = 8237
       OnClick = PasteMenuClick
     end
-  end
-  object FormPlacement1: TJvFormStorage
-    AppStorage = AppStorage
-    StoredValues = <>
-    Left = 44
-    Top = 103
-  end
-  object AppStorage: TJvAppRegistryStorage
-    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
-    SubStorages = <>
-    Left = 44
-    Top = 53
   end
 end
