@@ -42,7 +42,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=00000080'
@@ -72,7 +72,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=00008000'
@@ -102,7 +102,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=00800000'
@@ -132,7 +132,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=80000001'
@@ -162,7 +162,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=80000005'
@@ -192,7 +192,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=8000000C'
@@ -222,7 +222,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=80000017'
@@ -252,7 +252,7 @@ object Form2: TForm2
     HotTrackFont.Style = []
     ImageIndex = 0
     Provider.Provider = dpColor
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvDataConsumerItemSelect'
         Item = 'TCOLOR=80000018'
@@ -281,7 +281,7 @@ object Form2: TForm2
     Style = csOwnerDrawFixed
     ItemHeight = 16
     Provider.Provider = dpColorMapping
-    Provider.Implementers = <
+    Provider.Extensions = <
       item
         ClassName = 'TJvColorProviderServerNotify'
         Clients = <
