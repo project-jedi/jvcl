@@ -161,8 +161,8 @@ type
     procedure OnTimer(Sender: TObject);
   protected
     {$IFDEF JVCLThemesEnabled}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     {$ENDIF}
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -226,8 +226,6 @@ type
     FOnLoadItem: TJvStreamItemEvent;
     FOnSaveItem: TJvStreamItemEvent;
     FOnSize: TNotifyEvent;
-    FMouseEnter: TNotifyEvent;
-    FMouseExit: TNotifyEvent;
     FOnItemMoved: TJvItemMovedEvent;
     FOnItemMoving: TJvItemMovingEvent;
     FLastScrollCode: TScrollCode;
@@ -271,8 +269,6 @@ type
     procedure WMCancelMode(var Msg: TWMCancelMode); message WM_CANCELMODE;
     procedure CMEnter(var Msg: TWMNoParams); message CM_ENTER;
     procedure CMExit(var Msg: TWMNoParams); message CM_EXIT;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure DrawDays(ACanvas: TCanvas; Days, StartAt: Integer);
     procedure DrawDayNumbers(ACanvas: TCanvas; Days, StartAt: Integer);
@@ -321,8 +317,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseEnter; virtual;
-    procedure MouseExit; virtual;
     procedure DblClick; override;
     procedure Click; override;
     procedure Paint; override;
@@ -388,8 +382,6 @@ type
       FOnItemClick;
     property OnItemDblClick: TJvTimeItemClickEvent read FOnItemDblClick write
       FOnItemDblClick;
-    property OnMouseEnter: TNotifyEvent read FMouseEnter write FMouseEnter;
-    property OnMouseExit: TNotifyEvent read FMouseExit write FMouseExit;
     property OnSize: TNotifyEvent read FOnSize write FOnSize;
     property OnHorzScroll: TScrollEvent read FOnHorzScroll write FOnHorzScroll;
     property OnVertScroll: TScrollEvent read FOnVertScroll write FOnVertScroll;
@@ -455,7 +447,7 @@ type
     property OnMouseUp;
     property OnMouseMove;
     property OnMouseEnter;
-    property OnMouseExit;
+    property OnMouseLeave;
     property OnDblClick;
     property OnClick;
     property OnEndDrag;
@@ -814,17 +806,17 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-procedure TJvTLScrollBtn.CMMouseEnter(var Msg: TMessage);
+procedure TJvTLScrollBtn.MouseEnter(Control: TControl);
 begin
-  inherited;
   if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in ComponentState) then
   begin
     FMouseInControl := True;
     Invalidate;
   end;
+  inherited;
 end;
 
-procedure TJvTLScrollBtn.CMMouseLeave(var Msg: TMessage);
+procedure TJvTLScrollBtn.MouseLeave(Control: TControl);
 begin
   inherited;
   if ThemeServices.ThemesEnabled and FMouseInControl then
@@ -2409,18 +2401,6 @@ begin
   inherited;
 end;
 
-procedure TJvCustomTimeLine.MouseEnter;
-begin
-  if Assigned(FMouseEnter) then
-    FMouseEnter(Self);
-end;
-
-procedure TJvCustomTimeLine.MouseExit;
-begin
-  if Assigned(FMouseExit) then
-    FMouseExit(Self);
-end;
-
 procedure TJvCustomTimeLine.CMEnter(var Msg: TWMNoParams);
 begin
   if CanFocus then
@@ -2437,19 +2417,6 @@ begin
     ReleaseCapture;
   inherited;
   Invalidate;
-end;
-
-procedure TJvCustomTimeLine.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  // (rom) needs real MouseEnter/MouseLeave events
-  MouseEnter;
-end;
-
-procedure TJvCustomTimeLine.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseExit;
 end;
 
 procedure TJvCustomTimeLine.ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer);
