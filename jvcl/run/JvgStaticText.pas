@@ -44,19 +44,17 @@ type
     FAutoSize: Boolean;
     FTransparent: Boolean;
     FWordWrap: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FActive: Boolean;
     procedure DrawTextBroadwise;
     procedure AdjustBounds;
     procedure SetAlignment(Value: TglAlignment);
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure Paint; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -87,8 +85,8 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
   end;
 
 implementation
@@ -105,20 +103,18 @@ begin
   FWordWrap := True;
 end;
 
-procedure TJvgStaticText.CMMouseEnter(var Msg: TMessage);
+procedure TJvgStaticText.MouseEnter(Control: TControl);
 begin
   FActive := True;
   Repaint;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited;
 end;
 
-procedure TJvgStaticText.CMMouseLeave(var Msg: TMessage);
+procedure TJvgStaticText.MouseLeave(Control: TControl);
 begin
   FActive := False;
   Repaint;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited;
 end;
 
 procedure TJvgStaticText.Paint;

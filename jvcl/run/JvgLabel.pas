@@ -48,19 +48,13 @@ type
     FFocusControl: TWinControl;
     FFocusControlMethod: TFocusControlMethod;
     FTransparent: boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseleave: TNotifyEvent;
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
     procedure SetFocusControl(Value: TWinControl);
     procedure SetTransparent(Value: boolean);
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure WMLMouseUP(var Message: TMessage); message WM_LBUTTONUP;
     procedure WMLMouseDown(var Message: TMessage); message WM_LBUTTONDOWN;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CallMouseEnter; virtual;
-    procedure CallMouseLeave; virtual;
   protected
     fActiveNow: boolean;
     fShowAsActiveWhileControlFocused: boolean;
@@ -70,8 +64,8 @@ type
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
     procedure FocusControlWndHookProc(var Msg_: TMessage);
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure MouseEnter(Control: TControl); override;
 
     property AutoSize: boolean read FAutoSize write FAutoSize default true;
     property FocusControl: TWinControl read FFocusControl write
@@ -81,10 +75,6 @@ type
       default fcmOnMouseDown;
     property Transparent: boolean read FTransparent write SetTransparent
       default true;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
     property ExternalCanvas: TCanvas read FExternalCanvas write
       FExternalCanvas;
     procedure Paint; override;
@@ -136,17 +126,13 @@ type
     procedure CreateLabelFont;
     procedure InvalidateLabel(UpdateBackgr: boolean);
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CallMouseEnter; override;
-    procedure CallMouseLeave; override;
     //    procedure WMLMouseUP(var Message: TMessage); message WM_LBUTTONUP;
     //    procedure WMLMouseDown(var Message: TMessage); message WM_LBUTTONDOWN;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
-
   public
     FreeFont: TFont;
     property Canvas;
@@ -218,12 +204,10 @@ type
     procedure SetOptions(Value: TglStaticTextOptions);
     procedure SetWordWrap(Value: boolean);
     function GetAutoSize: boolean;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CallMouseEnter; override;
-    procedure CallMouseLeave; override;
   protected
     procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     procedure Paint; override;
     property Canvas;
@@ -336,19 +320,11 @@ begin
 end;
 //______
 
-procedure TJvgCustomLabel.CMMouseEnter(var Message: TMessage);
+procedure TJvgCustomLabel.MouseEnter(Control: TControl);
 begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
+  inherited;
   if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
     FocusControl.SetFocus;
-end;
-//______
-
-procedure TJvgCustomLabel.CMMouseLeave(var Message: TMessage);
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(self);
 end;
 //______
 
@@ -375,22 +351,6 @@ end;
 procedure TJvgCustomLabel.CMTextChanged(var Message: TMessage);
 begin
   Invalidate;
-end;
-//______
-
-procedure TJvgCustomLabel.CallMouseEnter;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseEnter(EmptyMsg);
-end;
-//______
-
-procedure TJvgCustomLabel.CallMouseLeave;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseLeave(EmptyMsg);
 end;
 //______
 
@@ -428,13 +388,13 @@ begin
   case Msg_.Msg of
     WM_SETFOCUS:
       begin
-        CallMouseEnter;
+        MouseEnter(Self);
         fShowAsActiveWhileControlFocused := true;
       end;
     WM_KILLFOCUS:
       begin
         fShowAsActiveWhileControlFocused := false;
-        CallMouseLeave;
+        MouseLeave(Self);
       end;
     WM_DESTROY: fNeedRehookFocusControl := true;
   end;
@@ -536,11 +496,11 @@ begin
 end;
 //______
 
-procedure TJvgLabel.CMMouseEnter(var Message: TMessage);
+procedure TJvgLabel.MouseEnter(Control: TControl);
 begin
   if not Enabled or (floIgnoreMouse in Options) or
-    fShowAsActiveWhileControlFocused then
-    exit;
+     fShowAsActiveWhileControlFocused then
+    Exit;
   //inherited;
   fActiveNow := true;
   with TextStyles, Colors do
@@ -563,11 +523,11 @@ begin
 end;
 //______
 
-procedure TJvgLabel.CMMouseLeave(var Message: TMessage);
+procedure TJvgLabel.MouseLeave(Control: TControl);
 begin
   if not Enabled or (floIgnoreMouse in Options) or
-    fShowAsActiveWhileControlFocused then
-    exit;
+     fShowAsActiveWhileControlFocused then
+    Exit;
   //inherited;
   fActiveNow := false;
   with TextStyles, Colors do
@@ -587,22 +547,6 @@ begin
       Paint;
     end;
   inherited;
-end;
-//______
-
-procedure TJvgLabel.CallMouseEnter;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseEnter(EmptyMsg);
-end;
-//______
-
-procedure TJvgLabel.CallMouseLeave;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseLeave(EmptyMsg);
 end;
 //______
 
@@ -1102,43 +1046,28 @@ end;
 //______
 //______
 
-procedure TJvgStaticTextLabel.CMMouseEnter(var Message: TMessage);
+procedure TJvgStaticTextLabel.MouseEnter(Control: TControl);
 begin
   if (ftoIgnoreMouse in Options) or fShowAsActiveWhileControlFocused then
-    exit;
+    Exit;
   fActiveNow := true;
-  paint;
+  Paint;
   inherited;
 end;
 //______
 
-procedure TJvgStaticTextLabel.CMMouseLeave(var Message: TMessage);
+procedure TJvgStaticTextLabel.MouseLeave(Control: TControl);
 begin
   if (ftoIgnoreMouse in Options) or fShowAsActiveWhileControlFocused then
-    exit;
+    Exit;
   fActiveNow := false;
   if ftoUnderlinedActive in Options then
     Invalidate
   else
-    paint;
+    Paint;
   inherited;
 end;
-//______
 
-procedure TJvgStaticTextLabel.CallMouseEnter;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseEnter(EmptyMsg);
-end;
-//______
-
-procedure TJvgStaticTextLabel.CallMouseLeave;
-var
-  EmptyMsg: TMessage;
-begin
-  CMMouseLeave(EmptyMsg);
-end;
 //______
 
 procedure TJvgStaticTextLabel.Paint;
@@ -1152,8 +1081,8 @@ var
   Rect: TRect;
 begin
   //inherited;
-  if length(Caption) = 0 then
-    exit;
+  if Caption = '' then
+    Exit;
 
   if Assigned(ExternalCanvas) then
     TargetCanvas := ExternalCanvas
@@ -1188,7 +1117,6 @@ begin
   Rect := ClientRect;
   DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), Rect,
     DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[Alignment_]);
-
 end;
 //______
 
