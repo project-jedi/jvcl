@@ -55,7 +55,7 @@ uses
   {$ENDIF VCL}
 
   {$IFDEF VisualCLX}
-	QExtDlgs,
+  QExtDlgs,
   {$ENDIF VisualCLX}
 
   {$IFDEF USEWINDOWS}
@@ -107,7 +107,8 @@ begin
   RegisterComponents(RsPaletteDialog, [TJvDiskPrompt, TJvCopyError,
     TJvDeleteError, TJvRenameError]);
   {$ENDIF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack]);
+  RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack,
+    TJvDualListDialog]);
   {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
