@@ -2,14 +2,15 @@
 <Package Name="JvCore" Design="0">
   <Description>JVCL Core Runtime Package</Description>
   <C5PFlags>-LUCJcl50</C5PFlags>
-  <C6PFlags>-LUCJcl</C6PFlags>
+  <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="ThemeManager6" Targets="D6,D6p,C6,C6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManager5" Targets="D5,D5s,C5,C5s" Condition="JVCLThemesEnabled"/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJcl" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJclVcl" Targets="C6,C6p" Condition=""/>
     <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
     <Package Name="DJclVcl" Targets="D6,D6p,D7,D7p" Condition=""/>
     <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p," Condition=""/>
