@@ -27,6 +27,8 @@ Known Issues:
  Versionhistory:
 
  BaseVersion 5 :
+ V 11 : When loading packages -> except instead of finally -> //!11
+        New event : OnErrorLoading
  V 10 : Now handles custom Plugins (only their destructors are called when unloading)
  V 09 : Pluginmanager : Extension automatically follows plugintype
         First version to share with "rest of the world"

@@ -198,6 +198,9 @@ end;}
 // ######
 // ###################################
 
+// Here the plugin should verify if it CAN be loaded (e.g. Mainapplication implements correct interface,
+//      Dongle is there....)
+
 function TJvPlugin.Initialize(Manager: TComponent; HostApplication: TApplication; Filename: string): Boolean;
 begin
   Result := true;
