@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -31,7 +31,7 @@ unit PgIDESelection;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls,
   Core, JVCL3Install, DelphiData, JVCLData,
   Windows;
 
@@ -45,6 +45,7 @@ type
   private
     procedure JCLDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure DoInstallJcl(Sender: TObject);
+    procedure DoClickUninstallDeleteFiles(Sender: TObject);
   public
     { IInstallerPage }
     function NextPage: IInstallerPage; override;
@@ -64,10 +65,7 @@ type
 implementation
 
 uses
-  FrmDirEditBrowse, PgConfig, PgSummary;
-
-resourcestring
-  RsErrorInstallingJCL = 'The JCL installer could not be startet.';
+  InstallerConsts, FrmDirEditBrowse, PgConfig, PgSummary;
 
 { TIDESelectionPage }
 
@@ -165,9 +163,9 @@ begin
 
       Lbl.Font.Color := clBlue;
       Lbl.Font.Style := [fsUnderline];
-      Lbl.Caption := 'Delphi/BCB update required';
-      Lbl.Hint := 'Download from <c:blue>' + Config.Target.Homepage + '<c:black>|' +
-        Config.Target.Homepage;
+      Lbl.Caption := RsDelphiBCBUpdateRequired;
+      Lbl.Hint := Format('%s <c:blue>%s<c:black>|%s', [RsDownloadUpdatesFrom,
+        Config.Target.Homepage, Config.Target.Homepage]);
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
     end
@@ -178,10 +176,8 @@ begin
 
       Lbl.Font.Color := clBlue;
       Lbl.Font.Style := [fsUnderline];
-      Lbl.Caption := 'JCL 1.9 or higher required';
-      // Lbl.Hint := 'http://jcl.sourceforge.net';
-      Lbl.Hint := 'Download or select a JCL directory.|' +
-        'http://homepages.borland.com/jedi/jcl/';
+      Lbl.Caption := RsJCLVersionRequired;
+      Lbl.Hint := RsDownloadOrSelectJclDir;
       Lbl.Cursor := crHandPoint;
       Lbl.OnClick := Installer.DoHomepageClick;
     end
@@ -189,7 +185,7 @@ begin
     begin
       Control.Checked := True;
       if Config.InstalledJVCLVersion > 0 then
-        Lbl.Caption := Format('installed JVCL version: %d', [Config.InstalledJVCLVersion]);
+        Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.InstalledJVCLVersion]);
       if Config.MissingJCL and (Installer.JCLDir <> '') then
       begin
         Control.Enabled := False;
@@ -198,7 +194,7 @@ begin
         Lbl.Font.Name := 'Arial';
         Lbl.Font.Style := [fsUnderline];
         Lbl.Font.Color := clBlue;
-        Lbl.Caption := 'Install JCL';
+        Lbl.Caption := RsInstallJCL;
         Lbl.Left := Control.BoundsRect.Right + 10;
         Lbl.Top := Control.Top;
         Lbl.Parent := Control.Parent;
@@ -211,36 +207,65 @@ begin
   begin
     Control.Checked := True;
     if Config.InstalledJVCLVersion > 0 then
-      Lbl.Caption := Format('installed JVCL version: %d', [Config.InstalledJVCLVersion]);
+      Lbl.Caption := Format(RsInstalledJVCLVersion, [Config.InstalledJVCLVersion]);
   end;
 end;
 
 function TIDESelectionPage.SetupPage(Client: TWinControl): TWinControl;
+var
+  Panel: TPanel;
 begin
   if Installer.InstallType <> itUninstall then
-    with TFrameDirEditBrowse.Build('&JCL directory:', Installer.JCLDir,
+    with TFrameDirEditBrowse.Build(RsJCLDirectoryCaption, Installer.JCLDir,
                                    JCLDirChanged, nil, Client) do
+      Align := alBottom
+  else
+  begin
+    Panel := TPanel.Create(Client);
+    with Panel do
+    begin
+      Height := 40;
+      BevelOuter := bvNone;
+      Parent := Client;
       Align := alBottom;
+    end;
+    with TCheckBox.Create(Panel) do
+    begin
+      Parent := Panel;
+      Left := 8;
+      Top := 10;
+      Caption := RsDeleteJVCLFilesCaption;
+      Width := Panel.ClientWidth - Left * 2;
+      Checked := Installer.Data.DeleteFilesOnUninstall;
+      OnClick := DoClickUninstallDeleteFiles;
+    end;
+  end;
   Result := nil;
 end;
 
 procedure TIDESelectionPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Choose IDE targets';
-  if Installer.InstallType <> itUninstall then
-    SubTitle := 'Select all target IDEs where the JVCL should be installed.'
-  else
-    SubTitle := 'Select all target IDEs from which the JVCL should be uninstalled.';
+  Title := RsSelectionPageTitle;
+  case Installer.InstallType of
+    itFreshInstall:
+      SubTitle := RsSelectionPageSubTitleInstall;
+    itUpdate:
+      SubTitle := RsSelectionPageSubTitleUpdate;
+    itUninstall:
+      SubTitle := RsSelectionPageSubTitleUninstall;
+  end;
 end;
 
 procedure TIDESelectionPage.JCLDirChanged(Sender: TObject; UserData: TObject;
   var Dir: string);
 begin
-  if FileExists(Dir + '\CJcl.dcp') and FileExists(Dir + '\CJclVcl.dcp') then
+{  if (FileExists(Dir + '\CJcl.dcp') and FileExists(Dir + '\CJclVcl.dcp')) or
+     (FileExists(Dir + '\DJcl.dcp') and FileExists(Dir + '\DJclVcl.dcp')) then
   begin
-   // are CJcl.dcp and CJclVcl.dcp are available that we could use
+   // are D/CJcl.dcp and D/CJclVcl.dcp are available that we could use
+   // Delphi 5 / BCB 5 are not supported here
   end
-  else
+  else}
   begin
     Dir := Dir + '\';
     while (Dir <> '') and (not FileExists(Dir + 'source\common\JclBase.pas')) do
@@ -261,7 +286,7 @@ begin
     end;
   end
   else
-    MessageDlg('No JCL 1.9 found.', mtError, [mbOk], 0);
+    MessageDlg(RsNoJclVersionFound, mtError, [mbOk], 0);
 end;
 
 procedure TIDESelectionPage.DoInstallJcl(Sender: TObject);
@@ -294,7 +319,7 @@ begin
     end;
   end;
 
-  Assert(Tg <> nil, 'No Delphi/BCB installed');
+  Assert(Tg <> nil, 'No Delphi/BCB installed'); // do not localize
 
   Dir := ExtractShortPathName(Installer.JCLDir) + '\install';
   Cmd := ExtractShortPathName(Tg.Target.Make);
@@ -311,6 +336,11 @@ begin
   end
   else
     raise Exception.Create(RsErrorInstallingJCL);
+end;
+
+procedure TIDESelectionPage.DoClickUninstallDeleteFiles(Sender: TObject);
+begin
+  Installer.Data.DeleteFilesOnUninstall := TCheckBox(Sender).Checked;
 end;
 
 end.

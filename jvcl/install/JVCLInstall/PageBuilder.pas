@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -119,13 +119,13 @@ var
   FocusControl: TWinControl;
 begin
   Result := nil;
-  if Page.FindComponent('piPageClient') <> nil then
+  if Page.FindComponent('piPageClient') <> nil then // do not localize
     Exit;
   if Page.Header.Visible then
     Y := Page.Header.Height
   else
     Y := 0;
-  PageClient := CreateLayoutPanel(Page, 'piPageClient',
+  PageClient := CreateLayoutPanel(Page, 'piPageClient', // do not localize
     Rect(0, Y, Page.ClientWidth, Page.ClientHeight));
 
   if Supports(Inst, IWelcomePage) then
@@ -165,7 +165,7 @@ procedure DestroyPage(Page: TJvWizardInteriorPage);
 var
   Panel: TPanel;
 begin
-  Panel := TPanel(Page.FindComponent('piPageClient'));
+  Panel := TPanel(Page.FindComponent('piPageClient')); // do not localize
   if Panel <> nil then
   begin
     RemoveActionLists(Panel); // Bug in VCL does not remove the action list from the frame's actionlist list.
@@ -227,7 +227,7 @@ begin
           if ps = 0 then
             ps := Length(S) + 1;
           RadioButton := TRadioButton.Create(Parent);
-          RadioButton.Name := 'piOption_' + IntToStr(i);
+          RadioButton.Name := 'piOption_' + IntToStr(i); // do not localize
           RadioButton.Left := X;
           RadioButton.Top := Y;
           RadioButton.Width := Parent.ClientWidth div 2;
@@ -347,14 +347,14 @@ var
   HorzOrientation: THorzOrientation;
   MultiChoosePage: IMultiChoosePage;
 begin
-  PageClient := TPanel(Page.FindComponent('piPageClient'));
+  PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
 
   Text := Inst.Text;
   if Text <> '' then
   begin
     Memo := TMemo.Create(PageClient);
     Memo.Parent := PageClient;
-    Memo.Name := 'piPageMemo';
+    Memo.Name := 'piPageMemo'; // do not localize
     Memo.Left := 8;
     Memo.Top := 8;
     Memo.Width := PageClient.ClientWidth - Memo.Left * 2;
@@ -368,7 +368,7 @@ begin
   end
   else
     Y := 0;
-  ControlsPanel := CreateLayoutPanel(PageClient, 'piControlsPanel',
+  ControlsPanel := CreateLayoutPanel(PageClient, 'piControlsPanel', // do not localize
     Rect(0, Y, PageClient.ClientWidth, PageClient.ClientHeight));
 
   HorzOrientation := hoDefault;
@@ -382,7 +382,7 @@ var
   PageClient: TPanel;
   HortOrientation: THorzOrientation;
 begin
-  PageClient := TPanel(Page.FindComponent('piPageClient'));
+  PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
 
   HortOrientation := hoDefault;
   Result := CreateSingleChooseControls(PageClient, Inst, HortOrientation);
@@ -393,7 +393,7 @@ var
   PageClient: TPanel;
   HortOrientation: THorzOrientation;
 begin
-  PageClient := TPanel(Page.FindComponent('piPageClient'));
+  PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
 
   HortOrientation := hoDefault;
   Result := CreateMultiChooseControls(PageClient, Inst, HortOrientation);
@@ -407,7 +407,7 @@ var
   I, MaxWidth, TextWidth, Count: Integer;
   ListItem: TListItem;
 begin
-  PageClient := TPanel(Page.FindComponent('piPageClient'));
+  PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
 
   ListView := TListView.Create(PageClient);
   ListView.Parent := PageClient;

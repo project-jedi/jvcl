@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -126,6 +126,9 @@ type
 
   IInstallPage = interface(IInstallerPage)
     ['{5DFD17E9-1DCE-444F-9B6F-FC27B79DFBFF}']
+    procedure Abort;
+      { The package installer calls Abort when the installation process should
+        be aborted. }
   end;
 
   IUninstallPage = interface(IInstallerPage)
@@ -152,6 +155,10 @@ type
 
     procedure Finish;
       { Is called when the finish button is pressed. }
+
+    function AutoInstall: Boolean;
+      { Return True if the package installer should step through all pages
+        automatically until it reaches a IInstallPage or IUninstallPage. }
   end;
 
   IPackageInstaller = interface

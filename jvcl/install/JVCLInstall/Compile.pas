@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -119,14 +119,14 @@ type
 
 const
   ProjectMax = 5;
-  
+
 var
   Compiler: TJVCLCompiler = nil;
 
 implementation
 
 uses
-  JvConsts;
+  CmdLineUtils, JvConsts;
 
 resourcestring
   RsGeneratingTemplates = 'Generating templates...';
@@ -135,14 +135,12 @@ resourcestring
   RsCompilingPackages = 'Compiling packages...';
   RsFinished = 'Finished.';
   RsCompilingJCL = 'Compiling JCL dcp files...';
+  RsGeneratePackages = '[Generating: Packages]';
 
 const
   CommonDependencyFiles: array[0..3] of string = (
     'jvcl.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
-
-resourcestring
-  RsGeneratePackages = '[Generating: Packages]';
 
 { TJVCLCompiler }
 
@@ -310,10 +308,19 @@ end;
 /// should be installed.
 /// </summary>
 function TJVCLCompiler.PrepareJCL(Force: Boolean): Boolean;
+
+  function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
+    const Filename2Fmt: string; const Args2: array of const): Integer;
+  begin
+    Result := FileAge(Format(Filename1Fmt, Args1))
+              -
+              FileAge(Format(Filename2Fmt, Args2));
+  end;
+
 var
   Args: string;
   i, LineNum: Integer;
-  ErrorFileName, TargetPkgDir, TargetXmlDir: string;
+  ErrorFileName, TargetPkgDir, TargetXmlDir, S: string;
   ErrorLines: TStrings;
 begin
   Result := False;
@@ -328,11 +335,16 @@ begin
       DeleteFile(ErrorFileName);
 
       // Are the .dcp files newer than the .bpk files
-      if (not Force) and (not Data.TargetConfig[i].Build) and
-          FileExists(Data.TargetConfig[i].BplDir + '\CJcl.dcp') and
-          FileExists(Data.TargetConfig[i].BplDir + '\CJclVcl.dcp') and
-         (FileAge(Data.TargetConfig[i].BplDir + '\CJcl.dcp') >= FileAge(TargetXmlDir + '\Jcl-R.xml')) then
-        Continue;
+      with Data.TargetConfig[i] do
+      begin
+        if Target.Version = 5 then S := '50' else S := '';
+        if (not Force) and (not Build) and CompiledJCL and
+           (CompareFileAge('%s\CJcl%s.dcp', [BplDir, S],
+                          '%s\Jcl-R.xml', [TargetXmlDir]) >= 0) and
+           (CompareFileAge('%s\CJclVcl%s.dcp', [BplDir, S],
+                          '%s\JclVcl-R.xml', [TargetXmlDir]) >= 0) then
+          Continue;
+      end;
 
       SetEnvironmentVariable('JCLROOT', PChar(Data.TargetConfig[i].JCLDir));
       Args := Format('-f MakeJCLDcp4BCB.mak -DVERSION=%d', [Data.Targets[i].Version]);
@@ -340,39 +352,42 @@ begin
       DoTargetProgress(Data.TargetConfig[i], 0, 100);
       DoPackageProgress(nil, RsCompilingJCL, 0, 3);
 
-     // copy template for PackageGenerator
-      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Templates',
-                        Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
-        Exit;
-      DoPackageProgress(nil, RsCompilingJCL, 1, 3);
+      try
+       // copy template for PackageGenerator
+        if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Templates',
+                          Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
+          Exit;
+        DoPackageProgress(nil, RsCompilingJCL, 1, 3);
 
-     // generate packages
-      Result := GeneratePackages('JCL', 'c' + IntToStr(Data.Targets[i].Version),
-        Data.TargetConfig[i].JCLDir + '\packages');
-      DoPackageProgress(nil, RsCompilingJCL, 2, 3);
+       // generate packages
+        Result := GeneratePackages('JCL', 'c' + IntToStr(Data.Targets[i].Version),
+          Data.TargetConfig[i].JCLDir + '\packages');
+        DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
-     // compile dcp files
-      if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Compile',
-                        Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
-      begin
-        if FileExists(ErrorFileName) then
+       // compile dcp files
+        if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Compile',
+                          Data.JVCLPackagesDir + '\bin', CaptureLine, True) <> 0 then
         begin
-          ErrorLines := TStringList.Create;
-          try
-            ErrorLines.LoadFromFile(ErrorFileName);
-            for LineNum := 0 to ErrorLines.Count - 1 do
-              CaptureLine(ErrorLines[LineNum], FAborted);
-          finally
-            ErrorLines.Free;
+          if FileExists(ErrorFileName) then
+          begin
+            ErrorLines := TStringList.Create;
+            try
+              ErrorLines.LoadFromFile(ErrorFileName);
+              for LineNum := 0 to ErrorLines.Count - 1 do
+                CaptureLine(ErrorLines[LineNum], FAborted);
+            finally
+              ErrorLines.Free;
+            end;
           end;
+          Exit;
         end;
-        Exit;
-      end;
-     // clean
-      CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s CleanJcl',
-                     Data.JVCLPackagesDir + '\bin', CaptureLine);
+      finally
+       // clean
+        CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s CleanJcl',
+                       Data.JVCLPackagesDir + '\bin', CaptureLine);
 
-      DeleteFile(ErrorFileName);
+        DeleteFile(ErrorFileName);
+      end;
 
       DoTargetProgress(Data.TargetConfig[i], 0, 100);
       DoPackageProgress(nil, '', 0, 100);
@@ -412,7 +427,7 @@ begin
   end;
   SetLength(TargetConfigs, Count);
 
- // compile all targets 
+ // compile all targets
   for i := 0 to Count - 1 do
   begin
     DoTargetProgress(TargetConfigs[i], i, Count);
@@ -428,9 +443,28 @@ end;
 /// given target IDE.
 /// </summary>
 function TJVCLCompiler.CompileTarget(TargetConfig: TTargetConfig): Boolean;
+var
+  ObjFiles: TStrings;
+  i: Integer;
 begin
   Result := True;
   FOutput.Clear;
+
+  if TargetConfig.Target.IsBCB and TargetConfig.Build then
+  begin
+    // Delete all .obj files because dcc32.exe -JPHNE does not create new .obj
+    // files if they already exist. And as a result interface changes in a unit
+    // let the bcc32.exe compiler fail.
+    ObjFiles := TStringList.Create;
+    try
+      FindFiles(TargetConfig.UnitOutDir, '*.*', True, ObjFiles, ['.obj']);
+      for i := 0 to ObjFiles.Count - 1 do
+        DeleteFile(ObjFiles[i]);
+    finally
+      ObjFiles.Free;
+    end;
+
+  end;
 
  // VCL
   if Result and (pkVCL in TargetConfig.InstallMode) then
@@ -444,6 +478,10 @@ begin
      // compile
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+
+    if Result or not CmdOptions.KeepFiles then
+      CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
+                      Data.JVCLPackagesDir + '\bin', CaptureLine);
   end;
 
  // Clx
@@ -458,11 +496,11 @@ begin
      // compile
       Result := CompileProjectGroup(
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
-  end;
 
-  if Result then
-    CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
-                    Data.JVCLPackagesDir + '\bin', CaptureLine);
+    if Result or not CmdOptions.KeepFiles then
+      CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
+                      Data.JVCLPackagesDir + '\bin', CaptureLine);
+  end;
 end;
 
 /// <summary>
@@ -486,7 +524,7 @@ begin
     DoResourceProgress('', 0, FResCount);
    // generate .res and .dcr files
     if CaptureExecute('"' + TargetConfig.Target.Make + '"', '',
-                      TargetConfig.JVCLDir + '\images', CaptureLineResourceCompilation) <> 0 then
+                      TargetConfig.JVCLDir + '\images', CaptureLineResourceCompilation, True) <> 0 then
       Exit;
     DoResourceProgress('', FResCount, FResCount);
   end;
@@ -513,6 +551,7 @@ var
   end;
 
 begin
+  SetEnvironmentVariable('MAKEOPTIONS', nil);
   Result := False;
   FCurrentProjectGroup := ProjectGroup;
   try
@@ -545,18 +584,24 @@ begin
     SetEnvironmentVariable('TARGETS', nil); // we create our own makefile so do not allow a user defined TARGETS envvar
     SetEnvironmentVariable('MASTEREDITION', nil);
 
-    SetEnvironmentVariable('ROOT', PChar(ProjectGroup.TargetConfig.Target.RootDir));
-    SetEnvironmentVariable('JCLROOT', PChar(ProjectGroup.TargetConfig.JCLDir));
-    SetEnvironmentVariable('JVCLROOT', PChar(ProjectGroup.TargetConfig.JVCLDir));
-    SetEnvironmentVariable('VERSION', PChar(IntToStr(ProjectGroup.TargetConfig.Target.Version)));
+    SetEnvironmentVariable('ROOT', Pointer(ProjectGroup.TargetConfig.Target.RootDir));
+    SetEnvironmentVariable('JCLROOT', Pointer(ProjectGroup.TargetConfig.JCLDir));
+    SetEnvironmentVariable('JVCLROOT', Pointer(ProjectGroup.TargetConfig.JVCLDir));
+    SetEnvironmentVariable('VERSION', Pointer(IntToStr(ProjectGroup.TargetConfig.Target.Version)));
     if DebugUnits then
-      SetEnvironmentVariable('UNITOUTDIR', PChar(ProjectGroup.TargetConfig.UnitOutDir + '\debug'))
+      SetEnvironmentVariable('UNITOUTDIR', Pointer(ProjectGroup.TargetConfig.UnitOutDir + '\debug'))
     else
-      SetEnvironmentVariable('UNITOUTDIR', PChar(ProjectGroup.TargetConfig.UnitOutDir));
-    SetEnvironmentVariable('BPLDIR', PChar(ProjectGroup.TargetConfig.BplDir));
-    SetEnvironmentVariable('DCPDIR', PChar(ProjectGroup.TargetConfig.DcpDir));
-    SetEnvironmentVariable('LIBDIR', PChar(ProjectGroup.TargetConfig.DcpDir));
-    SetEnvironmentVariable('HPPDIR', PChar(ProjectGroup.TargetConfig.HPPDir));
+      SetEnvironmentVariable('UNITOUTDIR', Pointer(ProjectGroup.TargetConfig.UnitOutDir));
+    SetEnvironmentVariable('BPLDIR', Pointer(ProjectGroup.TargetConfig.BplDir));
+    SetEnvironmentVariable('DCPDIR', Pointer(ProjectGroup.TargetConfig.DcpDir));
+    SetEnvironmentVariable('LIBDIR', Pointer(ProjectGroup.TargetConfig.DcpDir));
+    SetEnvironmentVariable('HPPDIR', Pointer(ProjectGroup.TargetConfig.HPPDir));
+
+   // add dxgettext unit directory
+    SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(ProjectGroup.TargetConfig.DxgettextDir));
+    SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
+    SetEnvironmentVariable('EXTRARESDIRS', nil);
+
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
@@ -611,19 +656,16 @@ begin
       if AutoDepend then
       begin
         SetEnvironmentVariable('MAKEOPTIONS', '-n');
-        try
           // get number of packages that will be compiled
-          FCount := 0;
-          if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' CompilePackages',
-                            ProjectGroup.TargetConfig.JVCLPackagesDir + '\bin',
-                            CaptureLineGetCompileCount) <> 0 then
-            Exit;
-         // update FPkgCount with the number of packages that MAKE will compile
-          FPkgCount := FCount;
-        finally
-          SetEnvironmentVariable('MAKEOPTIONS', nil);
-        end;
+        FCount := 0;
+        if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' CompilePackages',
+                          ProjectGroup.TargetConfig.JVCLPackagesDir + '\bin',
+                          CaptureLineGetCompileCount) <> 0 then
+          Exit;
+       // update FPkgCount with the number of packages that MAKE will compile
+        FPkgCount := FCount;
       end;
+      SetEnvironmentVariable('MAKEOPTIONS', nil);
 
       if FPkgCount > 0 then
       begin
@@ -631,7 +673,7 @@ begin
         // compile packages
         if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' CompilePackages',
                           ProjectGroup.TargetConfig.JVCLPackagesDir + '\bin',
-                          CaptureLinePackageCompilation) <> 0 then
+                          CaptureLinePackageCompilation, True) <> 0 then
           Exit;
         DoPackageProgress(nil, '', FPkgCount, FPkgCount);
       end;
@@ -671,11 +713,12 @@ begin
     Lines.Add('MAKE = "$(ROOT)\bin\make" -$(MAKEFLAGS)');
     Lines.Add('DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)');
     Lines.Add('');
-    if {(not ProjectGroup.Target.IsBCB) and} AutoDepend then
+    if AutoDepend then
     begin
       S := ProjectGroup.TargetConfig.JVCLDir;
-      Lines.Add(Format('.path.pas = %s\common;%s\run;%s\design;%s\qcommon;%s\qrun;%s\qdesign',
-        [S, S, S, S, S, S]));
+      Lines.Add(Format('.path.pas = %s\common;%s\run;%s\design;%s\qcommon;%s\qrun;%s\qdesign;%s',
+        [S, S, S, S, S, S,
+         ProjectGroup.TargetConfig.DxgettextDir]));
       Lines.Add(Format('.path.dfm = %s\run;%s\design;%s\qrun;%s\qdesign',
         [S, S, S, S]));
       Lines.Add(Format('.path.inc = %s\common', [S]));
@@ -713,7 +756,7 @@ begin
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
            ProjectGroup.FindPackagebyXmlName(Pkg.JvDependencies[depI]).TargetName;
 
-      if {(not ProjectGroup.Target.IsBCB) and} AutoDepend then
+      if AutoDepend then
       begin
        // Add all contained files even if the condition and target is not
        // correct. This does not make any difference because the Compiler has
@@ -729,8 +772,26 @@ begin
       Lines.Add(#9'@cd ' + Pkg.RelSourceDir);
       if ProjectGroup.Target.IsBCB then
       begin
+        if not ProjectGroup.TargetConfig.Build then
+        begin
+         // dcc32.exe does not recreate the .obj files when they already exist.
+         // So we must delete them before compilation.
+         // This is not needed when building the JVCL for BCB because all .obj
+         // files will be deleted by the installer before entering compilation
+         // process.
+          for depI := 0 to Pkg.Info.ContainCount - 1 do
+          begin
+            S := ExtractFileName(Pkg.Info.Contains[depI].Name);
+            if CompareText(ExtractFileExt(S), '.pas') = 0 then
+            begin
+              S := ProjectGroup.TargetConfig.UnitOutDir + '\obj\' + ChangeFileExt(S, '.obj');
+              if FileExists(S) then
+                Lines.Add(#9'-@del /f /q "' + S + '" 2>NUL');
+            end;
+          end;
+        end;
         Lines.Add(#9'@$(BPR2MAK) $&.bpk');
-        Lines.Add(#9'@echo.');
+        Lines.Add(#9'@echo.');                 // prevent the "......Borland De"
         Lines.Add(#9'@$(MAKE) -f $&.mak');
       end
       else

@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -68,6 +68,7 @@ type
     function GetHppDir: string;
     function GetBplDir: string;
     function GetDcpDir: string;
+    function GetDxgettextDir: string;
 
     property TargetSymbol: string read GetTargetSymbol;
     property Target: TCompileTarget read GetTarget;
@@ -81,6 +82,7 @@ type
     property HppDir: string read GetHppDir;
     property BplDir: string read GetBplDir;
     property DcpDir: string read GetDcpDir;
+    property DxgettextDir: string read GetDxgettextDir;
 
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;
     property JVCLDir: string read GetJVCLDir;

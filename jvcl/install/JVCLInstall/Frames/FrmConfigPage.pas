@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -56,15 +56,19 @@ type
     FrameDirEditBrowseBPL: TFrameDirEditBrowse;
     FrameDirEditBrowseDCP: TFrameDirEditBrowse;
     FrameDirEditBrowseHPP: TFrameDirEditBrowse;
+    BtnEditJvclInc: TButton;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
     procedure ComboBoxTargetIDEDrawItem(Control: TWinControl;
       Index: Integer; Rect: TRect; State: TOwnerDrawState);
+    procedure BtnEditJvclIncClick(Sender: TObject);
+    procedure LblDxgettextHomepageClick(Sender: TObject);
   private
     FInitializing: Integer;
     FInstaller: TInstaller;
     procedure Init;
+    procedure UpdateJvclIncSettings;
     function GetSelTargetConfig: TTargetConfig;
     procedure BplDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure DcpDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
@@ -80,7 +84,7 @@ type
 implementation
 
 uses
-  Core;
+  Core, MainConfig, Main;
 
 {$R *.dfm}
 
@@ -177,15 +181,7 @@ begin
     CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
     LblDxgettextHomepage.Visible := not Installer.Data.IsDxgettextInstalled;
 
-    with Installer.Data do
-    begin
-      CheckBoxXPTheming.Checked := JVCLConfig.Enabled['JVCLThemesEnabled'];
-      CheckBoxRegisterGlobalDesignEditors.Checked := JVCLConfig.Enabled['JVCL_REGISTER_GLOBAL_DESIGNEDITORS'];
-      CheckBoxDxgettextSupport.Checked := JVCLConfig.Enabled['USE_DXGETTEXT'];
-      CheckBoxRegisterJvGif.Checked := JVCLConfig.Enabled['USE_JV_GIF'];
-      CheckBoxUseJVCL.Checked := JVCLConfig.Enabled['USEJVCL'];
-    end;
-
+    UpdateJvclIncSettings;
   finally
     Dec(FInitializing);
   end;
@@ -199,6 +195,9 @@ begin
     Exit;
   if TCheckBox(Sender).State = cbGrayed then
     TCheckBox(Sender).State := cbChecked;
+
+  CheckBoxDeveloperInstall.Enabled := not CheckBoxCompileOnly.Checked;
+  CheckBoxCleanPalettes.Enabled := not CheckBoxCompileOnly.Checked;
 
   if ComboBoxTargetIDE.ItemIndex <= 0 then
   begin
@@ -226,6 +225,18 @@ begin
     ;
   end;
   PackageInstaller.UpdatePages;
+end;
+
+procedure TFrameConfigPage.UpdateJvclIncSettings;
+begin
+  with Installer.Data do
+  begin
+    CheckBoxXPTheming.Checked := JVCLConfig.Enabled['JVCLThemesEnabled'];
+    CheckBoxRegisterGlobalDesignEditors.Checked := JVCLConfig.Enabled['JVCL_REGISTER_GLOBAL_DESIGNEDITORS'];
+    CheckBoxDxgettextSupport.Checked := JVCLConfig.Enabled['USE_DXGETTEXT'];
+    CheckBoxRegisterJvGif.Checked := JVCLConfig.Enabled['USE_JV_GIF'];
+    CheckBoxUseJVCL.Checked := JVCLConfig.Enabled['USEJVCL'];
+  end;
 end;
 
 procedure TFrameConfigPage.CheckBoxXPThemingClick(Sender: TObject);
@@ -308,6 +319,23 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrameConfigPage.BtnEditJvclIncClick(Sender: TObject);
+begin
+  if FormJvclIncConfig.Config = nil then
+  begin
+    FormJvclIncConfig.Config := Installer.Data.JVCLConfig;
+    FormJvclIncConfig.imgProjectJEDI.Picture.Assign(FormMain.ImageLogo.Picture);
+  end;
+  FormJvclIncConfig.UpdateCheckStates;
+  FormJvclIncConfig.ShowModal;
+  UpdateJvclIncSettings;
+end;
+
+procedure TFrameConfigPage.LblDxgettextHomepageClick(Sender: TObject);
+begin
+  Installer.DoHomepageClick(Sender);
 end;
 
 end.

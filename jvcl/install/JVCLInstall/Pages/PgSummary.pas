@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -51,7 +51,7 @@ type
 implementation
 
 uses
-  PackageUtils, Intf, PgInstall, PgUninstall;
+  InstallerConsts, PackageUtils, Intf, PgInstall, PgUninstall;
 
 { TSummaryPage }
 
@@ -96,7 +96,7 @@ begin
           itFreshInstall,
           itUpdate:
             begin
-              Add('Install JVCL 3 for', Target.DisplayName);
+              Add(RsInstallForTarget, Target.DisplayName);
               if FrameworkCount > 1 then
               begin
                 S := '';
@@ -105,45 +105,54 @@ begin
                     S := ', ' + PackageGroupKindToStr[Kind];
                 Delete(S, 1, 2);
 
-                Add('Install for frameworks:', S);
+                Add(RsInstallForFrameworks, S);
               end;
 
              // directories:
-              Add('BPL output directory:', BplDir);
+              Add(RsBplOutputDirectory, BplDir);
               if Target.IsBCB then
               begin
-                Add('Lib output directory:', DcpDir);
-                Add('HPP output directory:', HppDir);
+                Add(RsLibOutputDirectory, DcpDir);
+                Add(RsHppOutputDirectory, HppDir);
               end
               else
-                Add('DCP output directory:', DcpDir);
+                Add(RsDcpOutputDirectory, DcpDir);
 
              // options
               if Build then
-                Add('Build packages', '')
+                Add(RsBuildPackages, '')
               else
-                Add('Compile packages', '');
+                Add(RsCompilePackages, '');
 
-              if CleanPalettes then
-                Add('Clean component palettes', '');
+              if not CompileOnly then
+              begin
+                if CleanPalettes then
+                  Add(RsCleanComponentPalettes, '');
 
-             // search directories
-              if DeveloperInstall then
-                Add('Add to search path:', '$(JVCL)\common;$(JVCL)\run;$(JVCL)\qcommon;$(JVCL)\qrun')
-              else
-                Add('Add to search path:', '$(JVCL)\common');
+               // search directories
+                S := sJVCLMacroCommonDir;
+                if pkVCL in InstallMode then
+                  S := S + ';' + sJVCLMacroRunDir;
+                if pkClx in InstallMode then
+                  S := S + ';' + sJVCLMacroClxDirs;
+                Add(RsAddToBrowsePath, S);
+                if not DeveloperInstall then
+                  S := sJVCLMacroCommonDir;
+                Add(RsAddToSearchPath, S);
 
-              Add('Add to browse path:', '$(JVCL)\common;$(JVCL)\run;$(JVCL)\qcommon;$(JVCL)\qrun');
-              Add('Add to library path:', UnitOutDir);
-              if Target.IsBCB then
-                Add('Add to include path:', HppDir);
+                Add(RsAddToLibraryPath, UnitOutDir);
+                if Target.IsBCB then
+                  Add(RsAddToIncludePath, HppDir);
+              end;
             end;
           itUninstall:
             begin
-              Add('Uninstall from', Target.DisplayName);
-              Add('Remove', 'JVCL palettes');
-              Add('Unregister', 'JVCL 3 packages');
-              Add('Remove', 'JVCL 3 files');
+              Add(RsUninstallFromTarget, Target.DisplayName);
+              Add(RsRemove, RsJVCLPalettes);
+              Add(RsRemove, RsJVCLDirsFromPathLists);
+              Add(RsUnregister, RsJVCLPackages);
+              if Installer.Data.DeleteFilesOnUninstall then
+                Add(RsRemove, RsJVCLFiles);
             end;
         end;
       end;
@@ -164,14 +173,14 @@ end;
 
 procedure TSummaryPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Summary';
+  Title := RsSummaryPageTitle;
   case Installer.InstallType of
     itFreshInstall:
-      SubTitle := 'The following actions will be done through installation.';
+      SubTitle := RsSummaryPageSubTitleInstall;
     itUpdate:
-      SubTitle := 'The following actions will be done through the update.';
+      SubTitle := RsSummaryPageSubTitleUpdate;
     itUninstall:
-      SubTitle := 'The following actions will be done through uninstallation.';
+      SubTitle := RsSummaryPageSubTitleUninstall;
   end;
 end;
 

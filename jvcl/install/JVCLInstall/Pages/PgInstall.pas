@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -47,12 +47,16 @@ type
     function CanNext: Boolean; override;
     function CanPrev: Boolean; override;
     procedure Action; override;
+    procedure Abort;
   public
     { IUserDefinedPage }
     function SetupPage(Client: TWinControl): TWinControl; virtual;
   end;
 
 implementation
+
+uses
+  InstallerConsts;
 
 { TInstallPage }
 
@@ -75,8 +79,8 @@ end;
 
 procedure TInstallPage.Title(var Title, SubTitle: WideString);
 begin
-  Title := 'Compiling packages';
-  SubTitle := 'The selected packages are compiled for the selected Delphi and BCB versions.';
+  Title := RsInstallPageTitle;
+  SubTitle := RsInstallPageSubTitle;
 end;
 
 function TInstallPage.CanPrev: Boolean;
@@ -88,6 +92,12 @@ procedure TInstallPage.Action;
 begin
   if Assigned(FFrame) then
     FFrame.Execute;
+end;
+
+procedure TInstallPage.Abort;
+begin
+  if Assigned(FFrame) then
+    FFrame.Aborted := True;
 end;
 
 end.

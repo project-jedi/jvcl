@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -40,9 +40,13 @@ const
 
 type
   TJVCLData = class;
+  TTargetConfig = class;
+
   TInstallMode = set of TPackageGroupKind;
+
   TDeinstallProgressEvent = procedure(Sender: TObject; const Text: string;
     Position, Max: Integer) of object;
+  TDeleteFilesEvent = procedure(TargetConfig: TTargetConfig) of object;
 
   TTargetConfig = class(TComponent, ITargetConfig) // TComponent <-> TInterfacedObject
   private
@@ -52,7 +56,6 @@ type
     FJCLDir: string;
     FMissingJCL: Boolean;
     FCompiledJCL: Boolean;
-    FInstallJCL: Boolean;
     FInstallJVCL: Boolean;
     FHppDir: string;
 
@@ -70,6 +73,7 @@ type
 
     procedure SetInstallMode(const Value: TInstallMode);
     function GetFrameworkCount: Integer;
+    function GetDxgettextDir: string;
   private
     { ITargetConfig }
     function GetInstance: TObject;
@@ -93,6 +97,7 @@ type
     procedure Init; virtual;
     procedure DoCleanPalette(reg: TRegistry; const Name: string;
       RemoveEmptyPalettes: Boolean);
+    function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
   public
     property Target: TCompileTarget read GetTarget;
     property Owner: TJVCLData read FOwner;
@@ -102,7 +107,9 @@ type
     procedure Load;
     procedure Save;
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
-    procedure DeinstallJVCL(Progress: TDeinstallProgressEvent);
+    procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
+      DeleteFiles: TDeleteFilesEvent);
+    function RegisterToIDE: Boolean;
 
     function CanInstallJVCL: Boolean;
       // CanInstallJVCL returns False when the target is not up to date or
@@ -132,7 +139,12 @@ type
     property UnitOutDir: string read GetUnitOutDir;
       // UnitOutDir specifies the JVCL directory where the .dcu should go.
     property BplDir: string read GetBplDir write FBplDir;
+      // BPL directory for this target
     property DcpDir: string read GetDcpDir write FDcpDir;
+      // DCP directory for this target
+
+    property DxgettextDir: string read GetDxgettextDir;
+      // Directory where dxgettext is installed or ''. (special handling for Delphi/BCb 5)
 
     property InstalledJVCLVersion: Integer read FInstalledJVCLVersion;
       // InstalledJVCLVersion returns the version of the installed JVCL.
@@ -142,7 +154,7 @@ type
       // found that could be installed.
 
     property CompiledJCL: Boolean read FCompiledJCL;
-      // CompiledJCL is True when CJcl.dcp and CJclVcl.dcp exist for this
+      // CompiledJCL is True when D/CJcl.dcp and D/CJclVcl.dcp exist for this
       // target.
 
     property Frameworks: TJVCLFrameworks read FFrameworks;
@@ -152,10 +164,6 @@ type
       // FrameworkCount returns the number of available frameworks for this
       // target.
   public
-    property InstallJCL: Boolean read FInstallJCL write FInstallJCL;
-      // InstallJCL specifies if the required JCL should be installed on this
-      // target.
-
     property InstallJVCL: Boolean read FInstallJVCL write FInstallJVCL;
       // InstallJVCL specifies if the JVCL should be installed on this target.
 
@@ -201,6 +209,7 @@ type
     FDxgettextDir: string;
     FJVCLConfig: TJVCLConfig;
     FJVCLDir: string;
+    FDeleteFilesOnUninstall: Boolean;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -214,19 +223,16 @@ type
     procedure SetBuild(Value: Integer);
     function GetCompileOnly: Integer;
     procedure SetCompileOnly(const Value: Integer);
+    function GetOptionState(Index: Integer): Integer;
   protected
     function JvclIncFilename: string;
     procedure Init; virtual;
-    function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure SaveTargetConfigs;
-    function RegisterToIDE(TargetConfig: TTargetConfig): Boolean;
-
     function FindTargetConfig(const TargetSymbol: string): TTargetConfig;
-
     function IsJVCLInstalledAnywhere(MinVersion: Integer): Boolean;
 
     property DxgettextDir: string read FDxgettextDir;
@@ -242,6 +248,8 @@ type
     property Build: Integer read GetBuild write SetBuild;
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
 
+    property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall;
+
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
   end;
@@ -249,10 +257,24 @@ type
 implementation
 
 uses
-  Utils;
+  Utils, CmdLineUtils;
 
 resourcestring
   RsComponentPalettePrefix = 'TJv';
+  RsNoJVCLFound = 'No JVCL directory found. Application terminated.';
+  RsJVCLInstaller = 'JVCL Installer';
+
+  RsCleaningPalette = 'Cleaning Palette...';
+  RsCleaningPathLists = 'Cleaning Path lists...';
+  RsUnregisteringPackages = 'Unregistering packages...';
+  RsDeletingFiles = 'Deleting files...';
+  RsComplete = 'Complete.';
+
+const
+  sDxgettextRegKey = '\bplfile\Shell\Extract strings\Command';
+  sJvclIncFile = '%s\common\jvcl.inc';
+  sBCBIncludeDir = '%s\Include\Vcl';
+
 
 function ReadRegString(RootKey: HKEY; const Key, Name: string): string;
 var
@@ -317,76 +339,66 @@ begin
   Result := nil;
 end;
 
-function TJVCLData.GetBuild: Integer;
+function TJVCLData.GetOptionState(Index: Integer): Integer;
 var
   i: Integer;
+  b: Boolean;
 begin
   Result := 0; // false
   for i := 0 to Targets.Count - 1 do
   begin
-    if TargetConfig[i].Build then
-      Result := 1 // true
-    else
-      if Result = 1 then
-      begin
-        Result := 2; // mixed
-        Exit;
+    if TargetConfig[i].InstallJVCL then
+    begin
+      case Index of
+        0: b := TargetConfig[i].Build;
+        1: b := TargetConfig[i].CleanPalettes;
+        2: b := TargetConfig[i].CompileOnly;
+        3: b := TargetConfig[i].DeveloperInstall;
+      else
+        b := False;
       end;
+      if b then
+      begin
+        if Result = 3 then
+        begin
+          Result := 2;
+          Exit;
+        end;
+        Result := 1 // true
+      end
+      else
+      begin
+        if Result = 1 then
+        begin
+          Result := 2; // mixed
+          Exit;
+        end;
+        Result := 3;
+      end;
+    end;
   end;
+  if Result = 3 then
+    Result := 0;
+end;
+
+function TJVCLData.GetBuild: Integer;
+begin
+  Result := GetOptionState(0);
 end;
 
 function TJVCLData.GetCleanPalettes: Integer;
-var
-  i: Integer;
 begin
-  Result := 0; // false
-  for i := 0 to Targets.Count - 1 do
-  begin
-    if TargetConfig[i].CleanPalettes then
-      Result := 1 // true
-    else
-      if Result = 1 then
-      begin
-        Result := 2; // mixed
-        Exit;
-      end;
-  end;
+  Result := GetOptionState(1);
 end;
 
 function TJVCLData.GetCompileOnly: Integer;
-var
-  i: Integer;
 begin
-  Result := 0; // false
-  for i := 0 to Targets.Count - 1 do
-  begin
-    if TargetConfig[i].CompileOnly then
-      Result := 1 // true
-    else
-      if Result = 1 then
-      begin
-        Result := 2; // mixed
-        Exit;
-      end;
-  end;
+  Result := GetOptionState(2);
 end;
 
 function TJVCLData.GetDeveloperInstall: Integer;
-var
-  i: Integer;
 begin
-  Result := 0; // false
-  for i := 0 to Targets.Count - 1 do
-  begin
-    if TargetConfig[i].DeveloperInstall then
-      Result := 1 // true
-    else
-      if Result = 1 then
-      begin
-        Result := 2; // mixed
-        Exit;
-      end;
-  end;
+  Result := GetOptionState(3);
 end;
 
 function TJVCLData.GetJVCLDir: string;
@@ -394,12 +406,11 @@ begin
   if FJVCLDir = '' then
   begin
     FJVCLDir := ExtractFileDir(ParamStr(0));
-    while not DirectoryExists(FJVCLDir + '\packages') do
+    while not DirectoryExists(JVCLPackagesDir) do
     begin
       if Length(FJVCLDir) < 4 then
       begin
-        MessageBox(0, 'No JVCL directory found. Application terminated.',
-                   'JVCL Installer', MB_ICONERROR or MB_OK);
+        MessageBox(0, PChar(RsNoJVCLFound), PChar(RsJVCLInstaller), MB_ICONERROR or MB_OK);
         Halt(1);
         Break;
       end;
@@ -416,7 +427,7 @@ end;
 
 function TJVCLData.GetJVCLPackagesXmlDir: string;
 begin
-  Result := JVCLDir + '\packages\xml';
+  Result := JVCLPackagesDir + '\xml';
 end;
 
 function TJVCLData.GetTargetConfig(Index: Integer): TTargetConfig;
@@ -429,8 +440,10 @@ var
   i: Integer;
   S: string;
 begin
+  FDeleteFilesOnUninstall := True;
+
  // dxgettext detection
-  S := ReadRegString(HKEY_CLASSES_ROOT, '\bplfile\Shell\Extract strings\Command', '');
+  S := ReadRegString(HKEY_CLASSES_ROOT, PChar(sDxgettextRegKey), '');
   FIsDxgettextInstalled := S <> '';
   if FIsDxgettextInstalled then
   begin
@@ -461,103 +474,7 @@ end;
 
 function TJVCLData.JvclIncFilename: string;
 begin
-  Result := JVCLDir + '\common\jvcl.inc';
-end;
-
-function TJVCLData.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
-var
-  PackageIndex, i: Integer;
-  KnownPackages, DisabledPackages: TDelphiPackageList;
-  Target: TCompileTarget;
-begin
-  Target := ProjectGroup.Target;
-  KnownPackages := Target.KnownPackages;
-  DisabledPackages := Target.DisabledPackages;
-
-  // remove JVCL packages
-  for i := DisabledPackages.Count - 1 downto 0 do
-    if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then
-      DisabledPackages.Delete(i);
-
-  for i := KnownPackages.Count - 1 downto 0 do
-    if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then
-      KnownPackages.Delete(i);
-
-
-  for PackageIndex := 0 to ProjectGroup.Count - 1 do
-  begin
-    if ProjectGroup.Packages[PackageIndex].Install and
-       ProjectGroup.Packages[PackageIndex].Info.IsDesign then
-    begin
-      KnownPackages.Add(
-        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName,
-        ProjectGroup.Packages[PackageIndex].Info.Description
-      );
-    end;
-  end;
-
-  ProjectGroup.Target.SavePaths;
-  ProjectGroup.Target.SaveKnownPackages;
-  Result := True;
-end;
-
-function TJVCLData.RegisterToIDE(TargetConfig: TTargetConfig): Boolean;
-var
-  Kind: TPackageGroupKind;
-  i: Integer;
-  AllPackages, PackageGroup: TProjectGroup;
-begin
-  if TargetConfig.InstalledJVCLVersion < 3 then
-    TargetConfig.DeinstallJVCL(nil);
-
- // remove old
-  AddPaths(TargetConfig.Target.BrowsingPaths, False, ExtractFileDir(JVCLDir),
-    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
-  AddPaths(TargetConfig.Target.SearchPaths, False, ExtractFileDir(JVCLDir),
-    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
-
-
- // common
-  AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
-    ['jvcl3\common']);
-  AddPaths(TargetConfig.Target.SearchPaths, True, ExtractFileDir(JVCLDir),
-    ['jvcl3\common', TargetConfig.Target.InsertDirMacros(TargetConfig.UnitOutDir)]);
-
- // add
-  if pkVCL in TargetConfig.InstallMode then
-  begin
-    AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
-      ['jvcl3\run']);
-    AddPaths(TargetConfig.Target.SearchPaths, {Add:=}TargetConfig.DeveloperInstall, ExtractFileDir(JVCLDir),
-      ['jvcl3\run']);
-  end;
-  if pkCLX in TargetConfig.InstallMode then
-  begin
-    AddPaths(TargetConfig.Target.BrowsingPaths, True, ExtractFileDir(JVCLDir),
-      ['jvcl3\qcommon', 'jvcl3\qrun']);
-    AddPaths(TargetConfig.Target.SearchPaths, {Add:=}TargetConfig.DeveloperInstall, ExtractFileDir(JVCLDir),
-      ['jvcl3\qcommon', 'jvcl3\qrun']);
-  end;
-
-  AllPackages := TProjectGroup.Create(TargetConfig, '');
-  try
-    for Kind := pkFirst to pkLast do
-    begin
-      if Kind in TargetConfig.InstallMode then
-      begin
-        PackageGroup := TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, Kind];
-        if PackageGroup <> nil then
-        begin
-          for i := 0 to PackageGroup.Count - 1 do
-            if PackageGroup.Packages[i].Install then
-              AllPackages.AddPackage(PackageGroup.Packages[i]);
-        end;
-      end;
-    end;
-    Result := RegisterProjectGroupToIDE(AllPackages);
-  finally
-    AllPackages.Free;
-  end;
+  Result := Format(sJvclIncFile, [JVCLDir]);
 end;
 
 procedure TJVCLData.SaveTargetConfigs;
@@ -611,12 +528,13 @@ begin
   FTarget := ATarget;
 
   FInstallMode := [pkVcl];
-  FHppDir := Target.RootDir + '\Include\Vcl';
+  FHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FCleanPalettes := True;
   FDeveloperInstall := False;
   FAutoDependencies := True;
   FBplDir := Target.BplDir;
   FDcpDir := Target.DcpDir;
+  FJCLDir := CmdOptions.JclPath;
   Init;
   FInstallJVCL := CanInstallJVCL;
 
@@ -633,23 +551,43 @@ end;
 procedure TTargetConfig.Init;
  // Memory allocations must go to the constructor because Init could be called
  // more the once.
-var
-  i: Integer;
-  S: string;
-begin
-  FCompiledJCL := False;
 
- // parse command line arguments
-  for i := 1 to ParamCount do
+  function FindJCL(List: TStrings): string;
+  var
+    i: Integer;
+    S: string;
   begin
-    S := ParamStr(i);
-    if StartsWith(S, '--jcl-path=', True) then
+    Result := '';
+    for i := 0 to List.Count - 1 do
     begin
-      Delete(S, 1, 11);
-      if DirectoryExists(S) then
-        FJCLDir := S;
+      S := Target.ExpandDirMacros(List[i]);
+      if EndsWith(S, '\jcl\source\common', True) then
+      begin
+        if FileExists(S + '\JclBase.pas') then
+        begin
+          Result := ExtractFileDir(ExtractFileDir(S));
+          FMissingJCL := False;
+          Break;
+        end;
+      end
+      else
+      if EndsWith(S, '\jcl\lib\', True) then
+      begin
+        if FileExists(ExtractFileDir(S) + '\source\common\JclBase.pas') then
+        begin
+          Result := ExtractFileDir(S);
+          FMissingJCL := False;
+          Break;
+        end;
+      end;
     end;
   end;
+
+var
+  S: string;
+begin
+  FInstallMode := [];
+  FCompiledJCL := False;
 
  // identify JVCL version
   FInstalledJVCLVersion := 0;
@@ -657,59 +595,53 @@ begin
     FInstalledJVCLVersion := 1
   else if Target.FindPackageEx('jvcl2') <> nil then
     FInstalledJVCLVersion := 2
-  else if Target.FindPackageEx('JvCore') <> nil then
+  else if Target.FindPackageEx('JvCore') <> nil then // VCL
+  begin
+    Include(FInstallMode, pkVCL);
     FInstalledJVCLVersion := 3;
+  end;
+  if Target.FindPackageEx('JvQCore') <> nil then // CLX
+  begin
+    Include(FInstallMode, pkCLX);
+    FInstalledJVCLVersion := 3;
+  end;
+  if FInstallMode = [] then // if no VCL and no CLX that it is CLX
+    Include(FInstallMode, pkVCL);
 
  // identify JCL version
   FMissingJCL := True;
   if FJCLDir = '' then
   begin
-    for i := 0 to Target.BrowsingPaths.Count - 1 do
-    begin
-      if Pos('jcl\source', LowerCase(Target.BrowsingPaths[i])) <> 0 then
-      begin
-        FJCLDir := Target.ExpandDirMacros(Target.BrowsingPaths[i]);
-        if CompareText(ExtractFileName(FJCLDir), 'source') = 0 then
-          FJCLDir := ExtractFileDir(FJCLDir)
-        else
-          FJCLDir := ExtractFileDir(ExtractFileDir(FJCLDir));
-        FInstallJCL := False;
-        Break;
-      end;
-    end;
+    FJCLDir := FindJCL(Target.BrowsingPaths);
+    if FJCLDir = '' then
+      FJCLDir := FindJCL(Target.SearchPaths);
   end;
 
-  if FJCLDir = '' then
-  begin
-    for i := 0 to Target.SearchPaths.Count - 1 do
-    begin
-      if Pos('jcl\lib', LowerCase(Target.SearchPaths[i])) <> 0 then
-      begin
-        FJCLDir := Target.ExpandDirMacros(Target.SearchPaths[i]);
-        if CompareText(ExtractFileName(FJCLDir), 'lib') = 0 then
-          FJCLDir := ExtractFileDir(FJCLDir)
-        else
-          FJCLDir := ExtractFileDir(ExtractFileDir(FJCLDir));
-        FInstallJCL := False;
-        Break;
-      end;
-    end;
-  end;
+  // are C/DJcl.dcp and C/DJclVcl.dcp available
+  if Target.Version = 5 then S := '50' else S := '';
 
-  if FJCLDir <> '' then
-  begin
-    if DirectoryExists(JCLDir + '\source\common') then
-      FMissingJCL := False;
-  end;
+  if (Target.IsBCB and
+      FileExists(Format('%s\CJcl%s.dcp', [BplDir, S])) and
+      FileExists(Format('%s\CJclVcl%s.dcp', [BplDir, S]))) or
 
-  // are CJcl.dcp and CJclVcl.dcp available
-  if FileExists(BplDir + '\CJcl.dcp') and
-     FileExists(BplDir + '\CJclVcl.dcp') then
+     (not Target.IsBCB and
+      FileExists(Format('%s\DJcl%s.dcp', [BplDir, S])) and
+      FileExists(Format('%s\DJclVcl%s.dcp', [BplDir, S]))) then
   begin
-    if FJCLDIr = '' then
-      FJCLDir := BplDir;
-    FMissingJCL := False;
     FCompiledJCL := True;
+
+    if FJCLDir = '' then // replace JCL directory
+      FJCLDir := BplDir;
+
+    if Target.IsBCB then
+      FMissingJCL := False
+    else
+    begin
+      // Delphi requires .bpl files
+      if FileExists(Format('%s\DJcl%s.bpl', [BplDir, S])) and
+         FileExists(Format('%s\DJclVcl%s.bpl', [BplDir, S])) then
+        FMissingJCL := False;
+    end;
   end;
 end;
 
@@ -956,6 +888,14 @@ begin
   end;
 end;
 
+function TTargetConfig.GetDxgettextDir: string;
+begin
+  Result := Owner.DxgettextDir;
+  if Result <> '' then
+    if Target.Version = 5 then
+      Result := Result + '\delphi5';
+end;
+
 procedure TTargetConfig.Save;
 var
   Kind: TPackageGroupKind;
@@ -971,13 +911,15 @@ begin
 
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   try
-    Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir);
-    Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir);
-    Ini.WriteBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall);
-    Ini.WriteBool(Target.DisplayName, 'CleanPalettes', CleanPalettes);
+    Ini.WriteString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
+    Ini.WriteString(Target.DisplayName, 'HPPDir', HppDir); // do not localize
+    Ini.WriteString(Target.DisplayName, 'BPLDir', BplDir); // do not localize
+    Ini.WriteString(Target.DisplayName, 'DCPDir', DcpDir); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     for Kind := pkFirst to pkLast do
-      Ini.WriteBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode);
-    Ini.WriteBool(Target.DisplayName, 'AutoDependencies', AutoDependencies);
+      Ini.WriteBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode); // do not localize
+    Ini.WriteBool(Target.DisplayName, 'AutoDependencies', AutoDependencies); // do not localize
 
     Ini.UpdateFile;
   finally
@@ -1002,19 +944,116 @@ begin
   Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   try
     if JCLDir = '' then
-      JCLDir := Ini.ReadString(Target.DisplayName, 'JCLDir', JCLDir);
-    if HppDir = '' then
-      HppDir := Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir);
-    DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall);
-    CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes);
+      JCLDir := Ini.ReadString(Target.DisplayName, 'JCLDir', JCLDir); // do not localize
+    HppDir := Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir);   // do not localize
+    BplDir := Ini.ReadString(Target.DisplayName, 'BPLDir', BplDir);   // do not localize
+    DcpDir := Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir);   // do not localize
+    DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
+    CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     Mode := [];
     for Kind := pkFirst to pkLast do
-      if Ini.ReadBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode) then
+      if Ini.ReadBool(Target.DisplayName, 'InstallMode_' + IntToStr(Integer(Kind)), Kind in InstallMode) then // do not localize
         Include(Mode, Kind);
     InstallMode := Mode;
     //AutoDependencies := Ini.ReadBool(Target.DisplayName, 'AutoDependencies', AutoDependencies);
   finally
     Ini.Free;
+  end;
+end;
+
+function TTargetConfig.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
+var
+  PackageIndex, i: Integer;
+  KnownPackages, DisabledPackages: TDelphiPackageList;
+  Target: TCompileTarget;
+begin
+  Target := ProjectGroup.Target;
+  KnownPackages := Target.KnownPackages;
+  DisabledPackages := Target.DisabledPackages;
+
+  // remove JVCL packages
+  for i := DisabledPackages.Count - 1 downto 0 do
+    if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then
+      DisabledPackages.Delete(i);
+
+  for i := KnownPackages.Count - 1 downto 0 do
+    if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then
+      KnownPackages.Delete(i);
+
+
+  for PackageIndex := 0 to ProjectGroup.Count - 1 do
+  begin
+    if ProjectGroup.Packages[PackageIndex].Install and
+       ProjectGroup.Packages[PackageIndex].Info.IsDesign then
+    begin
+      KnownPackages.Add(
+        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName,
+        ProjectGroup.Packages[PackageIndex].Info.Description
+      );
+    end;
+  end;
+
+  ProjectGroup.Target.SavePaths;
+  ProjectGroup.Target.SavePackagesLists;
+  Result := True;
+end;
+
+function TTargetConfig.RegisterToIDE: Boolean;
+var
+  Kind: TPackageGroupKind;
+  i: Integer;
+  AllPackages, PackageGroup: TProjectGroup;
+begin
+  if InstalledJVCLVersion < 3 then
+    DeinstallJVCL(nil, nil);
+
+ // remove old
+  AddPaths(Target.BrowsingPaths, False, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
+  AddPaths(Target.SearchPaths, False, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qrun']);
+
+
+ // common
+  AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common']);
+  AddPaths(Target.SearchPaths, True, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common', Target.InsertDirMacros(UnitOutDir)]);
+
+ // add
+  if pkVCL in InstallMode then
+  begin
+    AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
+      ['jvcl3\run']);
+    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, ExtractFileDir(Owner.JVCLDir),
+      ['jvcl3\run']);
+  end;
+  if pkCLX in InstallMode then
+  begin
+    AddPaths(Target.BrowsingPaths, True, ExtractFileDir(Owner.JVCLDir),
+      ['jvcl3\qcommon', 'jvcl3\qrun']);
+    AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, ExtractFileDir(Owner.JVCLDir),
+      ['jvcl3\qcommon', 'jvcl3\qrun']);
+  end;
+
+  AllPackages := TProjectGroup.Create(Self, '');
+  try
+    for Kind := pkFirst to pkLast do
+    begin
+      if Kind in InstallMode then
+      begin
+        PackageGroup := Frameworks.Items[Target.IsPersonal, Kind];
+        if PackageGroup <> nil then
+        begin
+          for i := 0 to PackageGroup.Count - 1 do
+            if PackageGroup.Packages[i].Install then
+              AllPackages.AddPackage(PackageGroup.Packages[i]);
+        end;
+      end;
+    end;
+    Result := RegisterProjectGroupToIDE(AllPackages);
+  finally
+    AllPackages.Free;
   end;
 end;
 
@@ -1088,14 +1127,31 @@ begin
   end;
 end;
 
-procedure TTargetConfig.DeinstallJVCL(Progress: TDeinstallProgressEvent);
+procedure TTargetConfig.DeinstallJVCL(Progress: TDeinstallProgressEvent;
+  DeleteFiles: TDeleteFilesEvent);
+
+  procedure DoProgress(const Text: string; Position, Max: Integer);
+  begin
+    if Assigned(Progress) then
+      Progress(Self, Text, Position, Max);
+  end;
+
 var
+  MaxSteps: Integer;
   i: Integer;
+  Ini: TMemIniFile;
   Kind: TPackageGroupKind;
-  ProjectGroup: TProjectGroup;
 begin
+  MaxSteps := 4;
+  if not Assigned(DeleteFiles) then
+    Dec(MaxSteps); 
+
+{**}DoProgress(RsCleaningPalette, 0, MaxSteps);
   CleanJVCLPalette(True);
 
+{**}DoProgress(RsCleaningPathLists, 1, MaxSteps);
+
+ // remove JVCL 1 and 2 directories
   for i := Target.BrowsingPaths.Count - 1 downto 0 do
     if Pos('\jvpack\', AnsiLowerCase(Target.BrowsingPaths[i])) <> 0 then
       Target.BrowsingPaths.Delete(i);
@@ -1104,20 +1160,52 @@ begin
     if Pos('\jvpack\', AnsiLowerCase(Target.SearchPaths[i])) <> 0 then
       Target.SearchPaths.Delete(i);
 
-  for Kind := pkFirst to pkLast do
+
+ // remove JVCL 3 directories
+  AddPaths(Target.BrowsingPaths, {Add:=}False, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common', 'jvcl3\design', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qdesign', 'jvcl3\qrun']);
+  AddPaths(Target.SearchPaths, {Add:=}False, ExtractFileDir(Owner.JVCLDir),
+    ['jvcl3\common', 'jvcl3\design', 'jvcl3\run', 'jvcl3\qcommon', 'jvcl3\qdesign', 'jvcl3\qrun',
+    Target.InsertDirMacros(UnitOutDir), UnitOutDir]);
+  Target.SavePaths;
+
+{**}DoProgress(RsUnregisteringPackages, 2, MaxSteps);
+  // remove JVCL packages
+  with Target do
   begin
-    ProjectGroup := Frameworks.Items[Target.IsPersonal, Kind];
-    if ProjectGroup <> nil then
+    for i := DisabledPackages.Count - 1 downto 0 do
+      if StartsWith(DisabledPackages.Items[i].Name, 'Jv', True) then
+        DisabledPackages.Delete(i);
+
+    for i := KnownPackages.Count - 1 downto 0 do
+      if StartsWith(KnownPackages.Items[i].Name, 'Jv', True) then
+        KnownPackages.Delete(i);
+  end;
+  Target.SavePackagesLists;
+
+ // clean ini file
+  Ini := TMemIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
+  try
+    Ini.EraseSection(Target.DisplayName);
+    for Kind := pkFirst to pkLast do
     begin
-
-      for i := Target.KnownPackages.Count - 1 downto 0 do
-      begin
-
-      end;
-
+      if Frameworks.Items[False, Kind] <> nil then
+        Ini.EraseSection(Frameworks.Items[False, Kind].BpgName);
+      if Frameworks.Items[True, Kind] <> nil then
+        Ini.EraseSection(Frameworks.Items[True, Kind].BpgName);
     end;
+    Ini.UpdateFile;
+  finally
+    Ini.Free;
   end;
 
+  if Assigned(DeleteFiles) then
+  begin
+{**}DoProgress(RsDeletingFiles, 3, MaxSteps);
+    DeleteFiles(Self);
+  end;
+
+{**}DoProgress(RsComplete, MaxSteps, MaxSteps);
 end;
 
 end.

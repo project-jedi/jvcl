@@ -17,8 +17,8 @@ All Rights Reserved.
 
 Contributor(s): -
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this file at the Project JEDI's JVCL
+home page, located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -93,8 +93,8 @@ type
 
     procedure SavePaths;
       { writes BrowsingPaths and SearchPaths to the registry }
-    procedure SaveKnownPackages;
-      { writes KnownPackages to the registry }
+    procedure SavePackagesLists;
+      { writes KnownPackages and DisabledPackages to the registry }
 
     property Homepage: string read GetHomepage;
     property RegistryKey: string read FRegistryKey;
@@ -150,10 +150,11 @@ type
 
 implementation
 
-{$IFDEF COMPILER6_UP}
 uses
-  StrUtils;
-{$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
+  StrUtils,
+  {$ENDIF COMPILER6_UP}
+  CmdLineUtils;
 
 {$IFDEF COMPILER5}
 function AnsiStartsText(const SubStr, Text: string): Boolean;
@@ -163,7 +164,7 @@ end;
 {$ENDIF COMPIELR5}
 
 const
-  KeyBorland = '\SOFTWARE\Borland\';
+  KeyBorland = '\SOFTWARE\Borland\'; // do not localize
 
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 begin
@@ -217,8 +218,10 @@ end;
 constructor TCompileTargetList.Create;
 begin
   inherited Create;
-  LoadTargets('Delphi');
-  LoadTargets('C++Builder');
+  if not CmdOptions.IgnoreDelphi then
+    LoadTargets('Delphi'); // do not localize
+  if not CmdOptions.IgnoreBCB then
+    LoadTargets('C++Builder'); // do not localize
 end;
 
 function TCompileTargetList.GetItems(Index: Integer): TCompileTarget;
@@ -287,7 +290,7 @@ end;
 
 function TCompileTarget.DisplayName: string;
 begin
-  Result := Name + ' ' + VersionStr + ' (' + Edition + ')';
+  Result := Format('%s %s (%s)', [Name, VersionStr, Edition]); // do not localize
 end;
 
 function TCompileTarget.ExpandDirMacros(const Dir: string): string;
@@ -308,7 +311,7 @@ begin
       NewS := S;
 
      // available macros
-      if (S = 'delphi') or (S = 'bcb') then
+      if (S = 'delphi') or (S = 'bcb') then // do not localize
         NewS := FRootDir;
 
       if NewS <> S then
@@ -329,9 +332,9 @@ begin
   if AnsiStartsText(RootDir + '\', Dir) then
   begin
     if IsBCB then
-      Result := '$(BCB)'
+      Result := '$(BCB)' // do not localize
     else
-      Result := '$(DELPHI)';
+      Result := '$(DELPHI)'; // do not localize
     Result := Result + Copy(Dir, Length(RootDir) + 1, MaxInt);
   end;
 end;
@@ -386,9 +389,9 @@ end;
 
 function TCompileTarget.IsPersonal: Boolean;
 begin
-  Result := (CompareText(Edition, 'PER') = 0) or
-            (CompareText(Edition, 'PERS') = 0) or
-            (CompareText(Edition, 'STD') = 0);
+  Result := (CompareText(Edition, 'PER') = 0) or // do not localize
+            (CompareText(Edition, 'PERS') = 0) or // do not localize
+            (CompareText(Edition, 'STD') = 0); // do not localize
 end;
 
 procedure TCompileTarget.LoadFromRegistry;
@@ -402,9 +405,9 @@ begin
     Reg.RootKey := HKEY_LOCAL_MACHINE;
     if Reg.OpenKeyReadOnly(RegistryKey) then
     begin
-      FExecutable := Reg.ReadString('App');
-      FEdition := Reg.ReadString('Version');
-      FRootDir := Reg.ReadString('RootDir');
+      FExecutable := Reg.ReadString('App'); // do not localize
+      FEdition := Reg.ReadString('Version'); // do not localize
+      FRootDir := Reg.ReadString('RootDir'); // do not localize
 
      // obtain updates state
       List := TStringList.Create;
@@ -412,15 +415,15 @@ begin
         Reg.GetValueNames(List);
         for i := 1 to 10 do
         begin
-          if Reg.ValueExists('Update #' + IntToStr(i)) then
+          if Reg.ValueExists('Update #' + IntToStr(i)) then // do not localize
             FLatestUpdate := i;
           if i = 1 then
           begin
-            if Reg.ValueExists('Pascal RTL Patch') then
+            if Reg.ValueExists('Pascal RTL Patch') then // do not localize
               FLatestRTLPatch := i;
           end
           else
-            if Reg.ValueExists('Pascal RTL Patch #' + IntToStr(i)) then
+            if Reg.ValueExists('Pascal RTL Patch #' + IntToStr(i)) then // do not localize
               FLatestRTLPatch := i;
         end;
       finally
@@ -430,21 +433,21 @@ begin
 
     Reg.RootKey := HKEY_CURRENT_USER;
    // get library paths
-    if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then
+    if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
     begin
-      FDCPOutputDir := Reg.ReadString('Package DCP Output');
-      FBPLOutputDir := Reg.ReadString('Package DPL Output');
-      ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths);
-      ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths);
-      ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths);
+      FDCPOutputDir := Reg.ReadString('Package DCP Output'); // do not localize
+      FBPLOutputDir := Reg.ReadString('Package DPL Output'); // do not localize
+      ConvertPathList(Reg.ReadString('Browsing Path'), FBrowsingPaths); // do not localize
+      ConvertPathList(Reg.ReadString('Package Search Path'), FPackageSearchPaths); // do not localize
+      ConvertPathList(Reg.ReadString('Search Path'), FSearchPaths); // do not localize
     end;
   finally
     Reg.Free;
   end;
 
-  LoadPackagesFromRegistry(FKnownIDEPackages, 'Known IDE Packages');
-  LoadPackagesFromRegistry(FKnownPackages, 'Known Packages');
-  LoadPackagesFromRegistry(FDisabledPackages, 'Disabled Packages');
+  LoadPackagesFromRegistry(FKnownIDEPackages, 'Known IDE Packages'); // do not localize
+  LoadPackagesFromRegistry(FKnownPackages, 'Known Packages'); // do not localize
+  LoadPackagesFromRegistry(FDisabledPackages, 'Disabled Packages'); // do not localize
 end;
 
 procedure TCompileTarget.LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
@@ -515,19 +518,20 @@ end;
 function TCompileTarget.GetHomepage: string;
 begin
   if IsBCB then
-    Result := 'http://www.borland.com/products/downloads/download_cbuilder.html'
+    Result := 'http://www.borland.com/products/downloads/download_cbuilder.html' // do not localize
   else
   begin
     if Version = 5 then
-      Result := 'http://info.borland.com/devsupport/delphi/downloads/index.html'
+      Result := 'http://info.borland.com/devsupport/delphi/downloads/index.html' // do not localize
     else
-      Result := 'http://www.borland.com/products/downloads/download_delphi.html'
+      Result := 'http://www.borland.com/products/downloads/download_delphi.html' // do not localize
   end;
 end;
 
-procedure TCompileTarget.SaveKnownPackages;
+procedure TCompileTarget.SavePackagesLists;
 begin
-  SavePackagesToRegistry(FKnownPackages, 'Known Packages');
+  SavePackagesToRegistry(FKnownPackages, 'Known Packages'); // do not localize
+  SavePackagesToRegistry(FDisabledPackages, 'Disabled Packages'); // do not localize
 end;
 
 procedure TCompileTarget.SavePaths;
@@ -537,10 +541,10 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey(RegistryKey + '\Library', True) then
+    if Reg.OpenKey(RegistryKey + '\Library', True) then // do not localize
     begin
-      Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths));
-      Reg.WriteString('Search Path', ConvertPathList(FSearchPaths));
+      Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths)); // do not localize
+      Reg.WriteString('Search Path', ConvertPathList(FSearchPaths)); // do not localize
     end;
   finally
     Reg.Free;
@@ -549,7 +553,7 @@ end;
 
 function TCompileTarget.GetMake: string;
 begin
-  Result := RootDir + '\Bin\make.exe';
+  Result := RootDir + '\Bin\make.exe'; // do not localize
 end;
 
 function TCompileTarget.GetBplDir: string;
