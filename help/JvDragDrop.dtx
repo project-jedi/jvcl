@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Incomplete (peter3)
+##Status: Completed (I) (peter3)
 ##Skip: CF_FILECONTENTS
 ##Skip: CF_FILEDESCRIPTOR
 ##Skip: FileContentFormatEtc
@@ -32,7 +32,7 @@ Description
 
   * Drop a TJvDragDrop component on a form.
   * Set DropTarget to the control that should accept dropped files.
-  * Set property AcceptDrag to True; this means that now the control accepts dropped files.
+  * Set property AcceptDrag to true; this means that now the control accepts dropped files.
   * Write an OnDrop event handler, that will respond when the user drops files on the
      <LINK TJvDragDrop.DropTarget,drop target>.
   * At run-time, set TargetStrings to a TStrings descendant, that should automatically receive
@@ -42,7 +42,7 @@ Description
 Summary
   Indicates whether the drop target accepts dropped files.
 Description
-  Set AcceptDrag to True to accept dropped files or set it to False to not accept dropped files.
+  Set AcceptDrag to true to accept dropped files or set it to false to not accept dropped files.
 See Also
   DropTarget, OnDrop
 ----------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ Summary
 Description
   Use DropTarget to specify the control that accepts dropped files, it can be set to any TWincontrol
   descendant. The OnDrop event is fired when files are dropped on the drop target and AcceptDrag
-  is set to True.
+  is set to true.
 See Also
   AcceptDrag
 ----------------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ Summary
 Description
   Write an OnDrop event handler to respond when the user drops files on the drop target.
 Note
-  Set AcceptDrag to True, otherwise no OnDrop event is fired.
+  Set AcceptDrag to true, otherwise no OnDrop event is fired.
 Parameters
   Sender - The component that has fired this event.
   Pos    - Indicates the coordinates of the mouse pointer at the time the file was dropped.
@@ -139,15 +139,24 @@ JVCLInfo
   GROUP=JVCL.System, JVCL.FormsAndApp.Forms
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Enables a control to accepts dropped files.
 Description
-  Write here a description
+  Use TJvDropTarget to enable a control to accept dropped files.
+
+  To use a TJvDropTarget, do the following:
+
+  * Drop a TJvDropTarget component on a form.
+  * Set Control to the control that should accept dropped files.
+  * Set property AcceptDrag to true; this means that now the control accepts dropped files.
+  * Write an OnDragDrop event handler, that will respond when the user drops files on the
+     <LINK TJvDropTarget.Control,drop target>. Use the methods of the component in the event handle,
+     to retrieve the file names, content etc. of the dropped files.
 ----------------------------------------------------------------------------------------------------
 @@TJvDropTarget.AcceptDrag
 Summary
   Indicates whether the drop target accepts dropped files.
 Description
-  Set AcceptDrag to True to accept dropped files or set it to False to not accept dropped files.
+  Set AcceptDrag to true to accept dropped files or set it to false to not accept dropped files.
 See Also
   Control
 ----------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete
+##Status: Completed (I)
 ----------------------------------------------------------------------------------------------------
 @@JvComboListBox.pas
 Summary
@@ -17,8 +17,8 @@ Summary
   A listbox that displays a combobox overlaying the selected item.
 Description
   TJvComboListBox is an ownerdrawn listbox that displays a combobox overlaying the selected item.
-  If you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user 
-  clicks on the combobox button. This component inherits from TJvCustomListBox and publishes many of 
+  If you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user
+  clicks on the combobox button. This component inherits from TJvCustomListBox and publishes many of
   it's properties and events as well as adding new ones like DropdownMenu, DrawStyle, OnDrawImage and OnDrawText.
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.AddImage
@@ -84,12 +84,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.HotTrackCombo
 Summary
-  Write here a summary (1 line)
+  Specifies whether a combobox is highlighted when the mouse passes over it.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set HotTrackCombo to true to provide visual feedback about which combobox is under the mouse
+  When HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the
+  list box.
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.InsertImage
 Summary
@@ -143,18 +142,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.OnDropDown
 Summary
-  Write here a summary (1 line)
+  Occurs when the user tries to open the drop-down list by clicking the arrow at the right of the control.
 Description
-  Write here a description
+  Write an OnDropDown event handler to conditionally prevent opening of a drop-down list.
 Parameters
-  Sender    - Description for this parameter
-  Index     - Description for this parameter
-  X         - Description for this parameter
-  Y         - Description for this parameter
-  AllowDrop - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender    - The component that fired the event.
+  Index     - The index of the item in the Items list.
+  X         - Horizontal pixel coordinates of the mouse pointer in the client area of the Sender.
+  Y         - Vertical pixel coordinates of the mouse pointer in the client area of the Sender.
+  AllowDrop - Set to true if the drop-down attempt can proceed and false if the attempt to drop-down
+               should be aborted.
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle
 <TITLE TJvComboListBoxDrawStyle type>
