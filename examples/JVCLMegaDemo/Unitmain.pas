@@ -40,7 +40,8 @@ uses
   JvListBox, JvExControls, JvLabel, JvXPBar, JvXPCore, JvXPContainer,
   ExtCtrls, JvExExtCtrls, JvSplitter, JvCtrls, JvCaptionPanel, JvToolBar,
   JvAppStorageBaseMainFrmU, ControlsExampleMainFormU, JvCheckBox,
-  JvHtControls, JvStatusBar, JvNetscapeSplitter, JvDbMaskEditDemoForm;
+  JvHtControls, JvStatusBar, JvNetscapeSplitter, JvDbMaskEditDemoForm,
+  JvOutlookBarCustomDrawDemoMainForm;
 
 type
   TMainform = class(TForm)
@@ -152,7 +153,8 @@ uses
   JvErrorIndicatorMainDemoForm, JvFooterAndGroupHeaderDemoForm,
   JvFullColorCircleDialogMainForm, JvFullColorDialogMainForm,
   EditorMainFormU, GIFMAIN, uJvMouseGesture, JvNavPaneDemoMainForm, fBalls,
-    fPhilosophers;
+  fPhilosophers, JvMarkupLabelDemoMainForm, JvMenusExampleMainForm,
+  PackageModifierMainForm, JvPageListTreeViewMainForm, JvPanelDemoFrm;
 
 {$R *.dfm}
 
@@ -453,9 +455,20 @@ begin
     116: TheFormArray[ID] := TJvNavPaneDemoMainFrm.Create(nil);
     117: TheFormArray[ID] := TfBouncingBalls.Create(nil);
     118: TheFormArray[ID] := TfrmDiningPhilosophers.Create(nil);
-//    107: TheFormArray[ID] := .Create(nil);
-//    107: TheFormArray[ID] := .Create(nil);
-//    107: TheFormArray[ID] := .Create(nil);
+    119: TheFormArray[ID] := TJvMarkupLabelDemoMainFrm.Create(nil);
+    120: TheFormArray[ID] := TJvMenusExampleMainFrm.Create(nil);
+    121: TheFormArray[ID] := TJvOutlookBarCustomDrawDemoMainFrm.Create(nil);
+    122: TheFormArray[ID] := TPackageModifierMainFrm.Create(nil);
+    123: TheFormArray[ID] := TJvPageListTreeViewMainFrm.Create(nil);
+    124: TheFormArray[ID] := TJvPanelDemoMainFrm.Create(nil);
+    {$IFDEF INCLUDE_DEVEXP_CX}
+    125: TheFormArray[ID] := TJvParameterListDemoMainFrm.Create(nil);
+    {$ENDIF}
+    //125: TheFormArray[ID] := T .Create(nil);
+    //126: TheFormArray[ID] := T .Create(nil);
+    //127: TheFormArray[ID] := T .Create(nil);
+    //128: TheFormArray[ID] := T .Create(nil);
+    //129: TheFormArray[ID] := T .Create(nil);
   else
     TheFormArray[ID] := tfrEmpty.create(nil);
   end;
@@ -526,6 +539,9 @@ begin
   CreateDemoForm(65);
 
   ReadAllDemosFromIni;
+
+  // workaround, because anchors seems not to work here
+  JvPageControlComps.width := self.width - 40;
 end;
 
 procedure TMainform.btnLoadIdeClick(Sender: TObject);

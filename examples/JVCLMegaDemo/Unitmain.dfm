@@ -1,16 +1,16 @@
 object Mainform: TMainform
   Left = 113
   Top = 0
-  Width = 1024
-  Height = 754
+  Width = 652
+  Height = 492
   Caption = 
     'JVCL3 - MegaDemo                                                ' +
     '                                                                ' +
     '                                                                ' +
     '                                      '
   Color = clBtnFace
-  Constraints.MinHeight = 517
-  Constraints.MinWidth = 812
+  Constraints.MinHeight = 492
+  Constraints.MinWidth = 652
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -27,8 +27,8 @@ object Mainform: TMainform
   TextHeight = 13
   object JvNetscapeSplitter1: TJvNetscapeSplitter
     Left = 216
-    Top = 161
-    Height = 547
+    Top = 181
+    Height = 419
     Hint = 'click me to have more '#13#10'space for the current demo'
     Align = alLeft
     MinSize = 10
@@ -38,7 +38,7 @@ object Mainform: TMainform
   end
   object JvCaptionPanel1: TJvCaptionPanel
     Left = 231
-    Top = 167
+    Top = 199
     Width = 513
     Height = 401
     Buttons = []
@@ -54,7 +54,7 @@ object Mainform: TMainform
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 1016
+    Width = 744
     Height = 48
     Align = alTop
     BevelOuter = bvNone
@@ -253,9 +253,9 @@ object Mainform: TMainform
   end
   object sbxWinXPBar: TScrollBox
     Left = 0
-    Top = 161
+    Top = 181
     Width = 216
-    Height = 547
+    Height = 419
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -278,7 +278,7 @@ object Mainform: TMainform
       Left = 0
       Top = 145
       Width = 216
-      Height = 402
+      Height = 274
       AutoSize = True
       BorderWidth = 4
       Caption = 'JvXPContainer1'
@@ -746,14 +746,14 @@ object Mainform: TMainform
           Left = 4
           Top = 36
           Width = 200
-          Height = 49
+          Height = 29
           Align = alClient
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
           DesignSize = (
             200
-            49)
+            29)
           object JvLabel2: TJvLabel
             Left = 8
             Top = 8
@@ -771,7 +771,7 @@ object Mainform: TMainform
             Left = 7
             Top = 48
             Width = 179
-            Height = 4
+            Height = 0
             Anchors = [akLeft, akTop, akRight, akBottom]
             Color = clInfoBk
             ItemHeight = 13
@@ -809,14 +809,16 @@ object Mainform: TMainform
   object JvXPBarIDE: TJvXPBar
     Left = 0
     Top = 48
-    Width = 1016
-    Height = 113
+    Width = 744
+    Height = 133
     Caption = 'Components as in the Delphi IDE'
     Colors.BorderColor = 9845
     Colors.BodyColor = clWindow
     Colors.GradientTo = clGray
     Colors.SeparatorColor = 4227327
     Items = <
+      item
+      end
       item
       end
       item
@@ -890,13 +892,13 @@ object Mainform: TMainform
     Align = alTop
     ParentFont = False
     DesignSize = (
-      1016
-      113)
+      744
+      133)
     object JvPageControlComps: TJvPageControl
       Left = 7
       Top = 31
-      Width = 1002
-      Height = 74
+      Width = 730
+      Height = 94
       Anchors = [akLeft, akTop, akRight, akBottom]
       MultiLine = True
       TabOrder = 0
@@ -971,8 +973,8 @@ object Mainform: TMainform
   end
   object StatusBar: TJvStatusBar
     Left = 0
-    Top = 708
-    Width = 1016
+    Top = 600
+    Width = 744
     Height = 19
     Panels = <>
     SimplePanel = True
