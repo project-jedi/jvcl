@@ -56,7 +56,7 @@ type
   TJvOnAfterProfiledTransactionSet = procedure(TransactionSet: TEDIObject) of object;
   TJvOnAfterProfiledSegment = procedure(Segment: TEDIObject) of object;
 
-  //Base Class EDI Specification Profiler (TDataSet Compatible)
+  // Base Class EDI Specification Profiler (TDataSet Compatible)
   TJvEDIDBProfiler = class(TJvComponent)
   private
     FElementProfiles: TDataSet;
@@ -91,13 +91,13 @@ type
       write FOnAfterProfiledSegment;
   end;
 
-  //EDI Specification Profiler (JclEDI_ANSIX12.pas)
+  // EDI Specification Profiler (JclEDI_ANSIX12.pas)
   TJvEDIDBSpecProfiler = class(TJvEDIDBProfiler)
   public
     procedure BuildProfile(EDIFileSpec: TEDIFileSpec); reintroduce;
   end;
 
-  //Standard Exchange Format (SEF) EDI Specification Profiler (JclEDISEF.pas)
+  // Standard Exchange Format (SEF) EDI Specification Profiler (JclEDISEF.pas)
   TJvEDIDBSEFProfiler = class(TJvEDIDBProfiler)
   public
     procedure BuildProfile(EDISEFFile: TEDISEFFile); reintroduce;
@@ -272,19 +272,13 @@ procedure TJvEDIDBProfiler.ClearProfile;
 begin
   FElementProfiles.First;
   while not FElementProfiles.Eof do
-  begin
     FElementProfiles.Delete;
-  end;
   FSegmentProfiles.First;
   while not FSegmentProfiles.Eof do
-  begin
     FSegmentProfiles.Delete;
-  end;
   FLoopProfiles.First;
   while not FLoopProfiles.Eof do
-  begin
     FLoopProfiles.Delete;
-  end;
 end;
 
 constructor TJvEDIDBProfiler.Create(AOwner: TComponent);
@@ -306,56 +300,47 @@ end;
 procedure TJvEDIDBProfiler.DoAfterProfiledSegment(Segment: TEDIObject);
 begin
   if Assigned(FOnAfterProfiledSegment) then
-  begin
     FOnAfterProfiledSegment(Segment);
-  end;
 end;
 
 procedure TJvEDIDBProfiler.DoAfterProfiledTransactionSet(TransactionSet: TEDIObject);
 begin
   if Assigned(FOnAfterProfiledTransactionSet) then
-  begin
     FOnAfterProfiledTransactionSet(TransactionSet);
-  end;
 end;
 
 function TJvEDIDBProfiler.ElementExist(SegmentId, ElementId: string): Boolean;
 begin
   FElementProfiles.First;
   Result := FElementProfiles.Locate(Field_SegmentId + ';' + Field_ElementId,
-                                    VarArrayOf([SegmentId, ElementId]), [loCaseInsensitive]);
+    VarArrayOf([SegmentId, ElementId]), [loCaseInsensitive]);
 end;
 
 function TJvEDIDBProfiler.LoopExist(OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FLoopProfiles.First;
   Result := FLoopProfiles.Locate(Field_OwnerLoopId + ';' + Field_ParentLoopId,
-                                 VarArrayOf([OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
+    VarArrayOf([OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
 end;
 
 function TJvEDIDBProfiler.SegmentExist(SegmentId, OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FSegmentProfiles.First;
   Result := FSegmentProfiles.Locate(Field_SegmentId + ';' + Field_OwnerLoopId + ';' +
-              Field_ParentLoopId, VarArrayOf([SegmentId, OwnerLoopId, ParentLoopId]),
-              [loCaseInsensitive]);
+    Field_ParentLoopId, VarArrayOf([SegmentId, OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
 end;
 
-procedure TJvEDIDBProfiler.UpdateElement(SegmentId, ElementId, ElementType: string; MaximumLength,
-  Count: Integer);
+procedure TJvEDIDBProfiler.UpdateElement(SegmentId, ElementId, ElementType: string;
+  MaximumLength, Count: Integer);
 begin
   with FElementProfiles do
   begin
     Edit;
     if Count > FieldByName(Field_ElementCount).AsInteger then
-    begin
       FieldByName(Field_ElementCount).AsInteger := Count;
-    end;
     FieldByName(Field_ElementType).AsString := ElementType;
     if MaximumLength > FieldByName(Field_MaximumLength).AsInteger then
-    begin
       FieldByName(Field_MaximumLength).AsInteger := MaximumLength;
-    end;
     Post;
   end;
 end;
@@ -372,9 +357,7 @@ var
   ElementList: TStrings;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-  begin
     raise Exception.Create('Not all profile datasets have been assigned.');
-  end;
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -392,42 +375,31 @@ begin
           Segment := TEDISegmentSpec(TransactionSet[S]);
           RecordExists := LoopExist(Segment.OwnerLoopId, Segment.ParentLoopId);
           if not RecordExists then
-          begin
             AddLoop(Segment.OwnerLoopId, Segment.ParentLoopId);
-          end;
           RecordExists := SegmentExist(Segment.SegmentID, Segment.OwnerLoopId,
-                                       Segment.ParentLoopId);
+            Segment.ParentLoopId);
           if not RecordExists then
-          begin
             AddSegment(Segment.SegmentID, Segment.OwnerLoopId, Segment.ParentLoopId);
-          end;
           for E := 0 to Segment.ElementCount - 1 do
           begin
             Element := TEDIElementSpec(Segment.Element[E]);
             if ElementList.Values[Element.Id] = '' then
-            begin
               ElementList.Values[Element.Id] := '0';
-            end;
             ElementList.Values[Element.Id] :=
               IntToStr(StrToInt(ElementList.Values[Element.Id]) + 1);
             RecordExists := ElementExist(Segment.SegmentID, Element.Id);
             if not RecordExists then
-            begin
-              AddElement(Segment.SegmentID, Element.Id, Element.ElementType, Element.MaximumLength);
-            end
+              AddElement(Segment.SegmentID, Element.Id, Element.ElementType, Element.MaximumLength)
             else
-            begin
               UpdateElement(Segment.SegmentID, Element.Id, Element.ElementType,
-                            Element.MaximumLength, StrToInt(ElementList.Values[Element.Id]));
-            end;
-            //
-          end; //for E
+                Element.MaximumLength, StrToInt(ElementList.Values[Element.Id]));
+          end; // for E
           DoAfterProfiledSegment(Segment);
-        end; //for S
+        end; // for S
         DoAfterProfiledTransactionSet(TransactionSet);
-      end; //for T
-    end; //for F
-  end; //for I
+      end; // for T
+    end; // for F
+  end; // for I
   ElementList.Free;
 end;
 
@@ -439,18 +411,14 @@ var
   RecordExists: Boolean;
   ElementStrList: TStrings;
   Id: string;
-
   SEFSet: TEDISEFSet;
   SEFSegment: TEDISEFSegment;
   SEFElement: TEDISEFElement;
-
   SegmentList: TObjectList;
   ElementList: TObjectList;
 begin
   if (FElementProfiles = nil) or (FSegmentProfiles = nil) or (FLoopProfiles = nil) then
-  begin
     raise Exception.Create('Not all profile datasets have been assigned.');
-  end;
   FElementProfiles.Filtered := False;
   FSegmentProfiles.Filtered := False;
   FLoopProfiles.Filtered := False;
@@ -480,35 +448,29 @@ begin
               SEFElement := TEDISEFElement(ElementList[E]);
               Id := SEFSegment.Id + SEFElement.Id;
               if ElementStrList.Values[Id] = '' then
-              begin
                 ElementStrList.Values[Id] := '0';
-              end;
               ElementStrList.Values[Id] :=
                 IntToStr(StrToInt(ElementStrList.Values[Id]) + 1);
               RecordExists := ElementExist(SEFSegment.Id, SEFElement.Id);
               if not RecordExists then
-              begin
                 AddElement(SEFSegment.Id, SEFElement.Id, SEFElement.ElementType,
-                  SEFElement.MaximumLength);
-              end
+                  SEFElement.MaximumLength)
               else
-              begin
                 UpdateElement(SEFSegment.Id, SEFElement.Id, SEFElement.ElementType,
-                              SEFElement.MaximumLength, StrToInt(ElementStrList.Values[Id]));
-              end; //if
-            end; //if
-          end; //for E
+                  SEFElement.MaximumLength, StrToInt(ElementStrList.Values[Id]));
+            end; // if
+          end; // for E
         finally
           ElementStrList.Free;
           ElementList.Free;
-        end; //try
+        end; // try
         DoAfterProfiledSegment(SEFSegment);
-      end; //for J
+      end; // for J
     finally
       SegmentList.Free;
-    end; //try
+    end; // try
     DoAfterProfiledTransactionSet(SEFSet);
-  end; //for I
+  end; // for I
 end;
 
 { TJclEDIFieldDef }
@@ -617,8 +579,8 @@ begin
     FOnTableExists(TableName, TableExists);
 end;
 
-procedure TJvEDIDBBuffer.CreateFieldDefs(FieldDefs: TJvEDIFieldDefs; TableName, OwnerLoopId,
-  ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
+procedure TJvEDIDBBuffer.CreateFieldDefs(FieldDefs: TJvEDIFieldDefs;
+  TableName, OwnerLoopId, ParentLoopId: string; DefaultUpdateStatus: TUpdateStatus);
 var
   FieldDef: TJvEDIFieldDef;
   ApplyFilter: Boolean;
@@ -627,7 +589,7 @@ begin
   FieldDefs.Clear;
   //Primary Key
   FieldDef := FieldDefs.Add;
-  FieldDef.FieldName := FSegmentKeyPrefix + TableName + FKeySuffix; //Primary Key
+  FieldDef.FieldName := FSegmentKeyPrefix + TableName + FKeySuffix; // Primary Key
   FieldDef.FieldType := FieldType_PKey;
   FieldDef.DataType := ftInteger;
   FieldDef.MaximumLength := 1;
@@ -635,9 +597,9 @@ begin
   //Foreign Key
   FieldDef := FieldDefs.Add;
   if (OwnerLoopId = NA_LoopId) or (OwnerLoopId = '') then
-    FieldDef.FieldName := TransactionSetKeyName + FKeySuffix //Transaction Set Foreign Key
+    FieldDef.FieldName := TransactionSetKeyName + FKeySuffix // Transaction Set Foreign Key
   else
-    FieldDef.FieldName := FLoopKeyPrefix + OwnerLoopId + FKeySuffix; //Loop Foreign Key
+    FieldDef.FieldName := FLoopKeyPrefix + OwnerLoopId + FKeySuffix; // Loop Foreign Key
   FieldDef.FieldType := FieldType_FKey;
   FieldDef.DataType := ftInteger;
   FieldDef.MaximumLength := 1;
@@ -657,7 +619,8 @@ begin
     for I := 1 to FElementProfiles.FieldByName(Field_ElementCount).AsInteger do
     begin
       FieldDef := FieldDefs.Add;
-      FieldDef.FieldName := FElementNonKeyPrefix + FElementProfiles.FieldByName(Field_ElementId).AsString + '_' + IntToStr(I);
+      FieldDef.FieldName := FElementNonKeyPrefix +
+        FElementProfiles.FieldByName(Field_ElementId).AsString + '_' + IntToStr(I);
       FieldDef.FieldType := FElementProfiles.FieldByName(Field_ElementType).AsString;
       if FieldDef.FieldType = '' then
         FieldDef.DataType := ftString
@@ -682,7 +645,7 @@ begin
       DoResolveFieldDefDataType(FieldDef);
     end;
     FElementProfiles.Next;
-  end; //while
+  end; //  while
 end;
 
 procedure TJvEDIDBBuffer.OpenProfileDataSets;
@@ -763,7 +726,7 @@ begin
     Exit;
   //Primary Key
   FieldDef := FieldDefs.Add;
-  FieldDef.FieldName := TableName + FKeySuffix; //Primary Key
+  FieldDef.FieldName := TableName + FKeySuffix; // Primary Key
   FieldDef.FieldType := FieldType_PKey;
   FieldDef.DataType := ftInteger;
   FieldDef.MaximumLength := 1;
@@ -771,9 +734,9 @@ begin
   //Foriegn Key
   FieldDef := FieldDefs.Add;
   if (ParentLoopId = NA_LoopId) or (ParentLoopId = '') then
-    FieldDef.FieldName := TransactionSetKeyName + FKeySuffix //Transaction Set Foreign Key
+    FieldDef.FieldName := TransactionSetKeyName + FKeySuffix // Transaction Set Foreign Key
   else
-    FieldDef.FieldName := FLoopKeyPrefix + ParentLoopId + FKeySuffix; //Foreign Key
+    FieldDef.FieldName := FLoopKeyPrefix + ParentLoopId + FKeySuffix; // Foreign Key
   FieldDef.FieldType := FieldType_FKey;
   FieldDef.DataType := ftInteger;
   FieldDef.MaximumLength := 1;
