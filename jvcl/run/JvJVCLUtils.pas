@@ -2112,7 +2112,7 @@ begin
 end;
 
 type
-  TOpenCustomControl = class(TCustomControl);
+  TCustomControlHack = class(TCustomControl);
 
 {$IFDEF MSWINDOWS}
 
@@ -2275,7 +2275,7 @@ var
 begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
-  TOpenCustomControl(AForm).DestroyHandle;
+  TCustomControlHack(AForm).DestroyHandle;
   with AForm do
   begin
     BorderStyle := {$IFDEF VCL} bsNone {$ELSE} fbsNone {$ENDIF};
@@ -2898,17 +2898,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TOpenCustomControl(Control) do
+      with TCustomControlHack(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TOpenCustomControl(Control) do
+      with TCustomControlHack(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TOpenCustomControl(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
+  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
     ARightToLeft);
 end;
 
@@ -2932,17 +2932,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TOpenCustomControl(Control) do
+      with TCustomControlHack(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TOpenCustomControl(Control) do
+      with TCustomControlHack(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TOpenCustomControl(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
+  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
@@ -2958,7 +2958,7 @@ procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
 begin
   Rect.Top := (Rect.Bottom + Rect.Top - Bmp.Height) div 2;
   Rect.Left := (Rect.Right + Rect.Left - Bmp.Width) div 2;
-  TOpenCustomControl(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
+  TCustomControlHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
 { TJvDesktopCanvas }

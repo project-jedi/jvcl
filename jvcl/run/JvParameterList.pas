@@ -386,8 +386,8 @@ type
     function GetDynControlEngine: TJvDynControlEngine; override;
     function GetParameterList: TJvParameterList; virtual;
     procedure SetParameterList(Value: TJvParameterList); virtual;
-    function GetJvAppStorage: TJvCustomAppStorage; override;
-    procedure SetJvAppStorage(Value: TJvCustomAppStorage); override;
+    function GetAppStorage: TJvCustomAppStorage; override;
+    procedure SetAppStorage(Value: TJvCustomAppStorage); override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RestoreParameterList(ACaption: string = '');
@@ -1725,7 +1725,7 @@ begin
   FParameterList := Value;
 end;
 
-function TJvParameterListSelectList.GetJvAppStorage: TJvCustomAppStorage;
+function TJvParameterListSelectList.GetAppStorage: TJvCustomAppStorage;
 begin
   if Assigned(FParameterList) then
     Result := FParameterList.AppStorage
@@ -1733,7 +1733,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvParameterListSelectList.SetJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvParameterListSelectList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   if Assigned(FParameterList) then
     FParameterList.AppStorage := Value;

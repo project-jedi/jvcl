@@ -354,7 +354,7 @@ begin
 end;
 
 type
-  TOpenCustomEditorBase = class(TJvCustomEditorBase);
+  TCustomEditorBaseHack = class(TJvCustomEditorBase);
 
 procedure TJvHLEdPropDlg.SaveHighlighterColors(AJvHLEditor: TJvCustomEditorBase;
   AHighlighter: TJvHighlighter);
@@ -369,13 +369,13 @@ var
   end;
 
 var
-  ed: TOpenCustomEditorBase;
+  ed: TCustomEditorBaseHack;
   HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
-    ed := TOpenCustomEditorBase(AJvHLEditor);
+    ed := TCustomEditorBaseHack(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
     Storage.StoredValue[Section + 'BackColor'] := ColorToString(ed.Color);
@@ -427,13 +427,13 @@ var
   end;
 
 var
-  ed: TOpenCustomEditorBase;
+  ed: TCustomEditorBaseHack;
   HLed: IJvHLEditor;
 begin
   if Storage <> nil then
   begin
 //    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
-    ed := TOpenCustomEditorBase(AJvHLEditor);
+    ed := TCustomEditorBaseHack(AJvHLEditor);
     FJvHLEditor.GetInterface(IJvHLEditor, HLed);
     Section := AddSlash2(StorageSection) + Highlighters[AHighlighter];
     LoadColor(HLed.Colors.Number, clNavy, clWindow, [], 'Number');

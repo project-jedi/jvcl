@@ -78,7 +78,6 @@ type
     destructor Destroy; override;
     property Handle: HWND read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
-  published
   end;
 
   TJvScheduledEvents = class(TJvCustomScheduledEvents)

@@ -52,17 +52,17 @@ type
     function CreateHandle: HDBICur; override;
     property ItemType: TJvBDEItemType read FItemType write SetItemType
       default bdDatabases;
+    property SessionName: string read FSessionName write SetSessionName;
   public
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
     property DBSession: TSession read GetDBSession;
-  published
-    property SessionName: string read FSessionName write SetSessionName;
   end;
 
   TJvBDEItems = class(TJvCustomBDEItems)
   published
     property ItemType;
+    property SessionName;
   end;
 
   TJvDBListDataSet = class(TDBDataSet)
@@ -120,11 +120,8 @@ type
     procedure SetPhysTypes(Value: Boolean);
   protected
     function CreateHandle: HDBICur; override;
-    property ItemType: TTabItemType read FItemType write SetItemType
-      default dtFields;
-    property PhysTypes: Boolean read FPhysTypes write SetPhysTypes
-      default False; { for dtFields only }
-  published
+    property ItemType: TTabItemType read FItemType write SetItemType default dtFields;
+    property PhysTypes: Boolean read FPhysTypes write SetPhysTypes default False; { for dtFields only }
     property TableName: TFileName read FTableName write SetTableName;
   end;
 
@@ -132,6 +129,7 @@ type
   published
     property ItemType;
     property PhysTypes;
+    property TableName;
   end;
 
   TJvDatabaseDesc = class(TObject)
@@ -154,10 +152,16 @@ type
 { Obsolete classes, for backward compatibility only }
 
 type
-  TJvDatabaseList = class(TJvCustomBDEItems);
+  TJvDatabaseList = class(TJvCustomBDEItems)
+  published
+    property SessionName;
+  end;
 
   TJvLangDrivList = class(TJvCustomBDEItems)
+  public
     constructor Create(AOwner: TComponent); override;
+  published
+    property SessionName;
   end;
 
   TJvTableList = class(TJvCustomDatabaseItems)
@@ -177,10 +181,17 @@ type
     property SystemItems;
   end;
 
-  TJvFieldList = class(TJvCustomTableItems);
+  TJvFieldList = class(TJvCustomTableItems)
+  published
+    property TableName;
+  end;
+
 
   TJvIndexList = class(TJvCustomTableItems)
+  public
     constructor Create(AOwner: TComponent); override;
+  published
+    property TableName;
   end;
 
 {$ENDIF BCB}

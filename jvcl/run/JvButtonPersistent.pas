@@ -100,7 +100,7 @@ begin
 end;
 
 type
-  TOpenJvCustomButton = class(TJvCustomButton);
+  TJvCustomButtonHack = class(TJvCustomButton);
 
 procedure TJvButtonPersistent.AssignTo(Sender: TPersistent);
 begin
@@ -113,9 +113,9 @@ begin
     TButton(Sender).ShowHint := ShowHint;
     if Sender is TJvCustomButton then
     begin
-      TOpenJvCustomButton(Sender).HotTrack := HotTrack;
-      TOpenJvCustomButton(Sender).HotTrackFont.Assign(FFont);
-      TOpenJvCustomButton(Sender).HotTrackFontOptions := HotTrackFontOptions;
+      TJvCustomButtonHack(Sender).HotTrack := HotTrack;
+      TJvCustomButtonHack(Sender).HotTrackFont.Assign(FFont);
+      TJvCustomButtonHack(Sender).HotTrackFontOptions := HotTrackFontOptions;
     end;
   end
   else

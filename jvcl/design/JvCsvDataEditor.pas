@@ -111,9 +111,9 @@ end;
 procedure TJvCsvDefStrProperty.Edit;
 var
   S1, S2: string;
-  Component: TJvCsvCustomInMemoryDataSet;
+  Component: TJvCustomCsvInMemoryDataSet;
 begin
-  Component := GetComponent(0) as TJvCsvCustomInMemoryDataSet;
+  Component := GetComponent(0) as TJvCustomCsvInMemoryDataSet;
 
   S1 := GetValue;
   if S1 = '' then

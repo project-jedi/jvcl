@@ -66,7 +66,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure FillGridWithData;
-  published
   end;
 
   TJvgVertDBSGrid = class(TJvgCustomVertDBSGrid)

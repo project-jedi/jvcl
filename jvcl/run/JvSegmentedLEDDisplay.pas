@@ -145,7 +145,6 @@ type
     function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
     function GetHitInfo(X, Y: Integer; out Digit: TJvCustomSegmentedLEDDigit;
       out SegmentIndex: Integer): TSLDHitInfo; overload;
-  published
   end;
 
   TJvSegmentedLEDDisplay = class(TJvCustomSegmentedLEDDisplay)

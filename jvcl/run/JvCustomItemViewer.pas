@@ -304,10 +304,10 @@ type
     function ItemAtPos(X, Y: Integer; Existing: Boolean): Integer; virtual;
   end;
 
-  // Creates a 8x8 brush pattern with alternate odd and even colors
-  // If the pattern already exists, no new pattern is created. Instead, the previous pattern is resued.
-  // NB! Do *not* free the returned TBitmap! It is freed when the unit is finalized or when ClearBrushPatterns
-  // is called
+// Creates a 8x8 brush pattern with alternate odd and even colors
+// If the pattern already exists, no new pattern is created. Instead, the previous pattern is resued.
+// NB! Do *not* free the returned TBitmap! It is freed when the unit is finalized or when ClearBrushPatterns
+// is called
 function CreateBrushPattern(const EvenColor: TColor = clWhite; const OddColor: TColor = clBtnFace): TBitmap;
 // Decrements the reference count for a particular brush pattern. When the ref
 // count reaches 0, the pattern is released

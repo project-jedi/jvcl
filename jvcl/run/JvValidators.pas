@@ -153,6 +153,7 @@ type
   end;
 
   TJvCustomValidateEvent = procedure(Sender: TObject; ValueToValidate: Variant; var Valid: boolean) of object;
+
   TJvCustomValidator = class(TJvBaseValidator)
   private
     FOnValidate: TJvCustomValidateEvent;

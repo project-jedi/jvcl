@@ -148,6 +148,58 @@ type
     property OnDblClick;
     property OnPaint;
     property OnResize;
+
+    //property BevelInner;
+    //property BevelOuter;
+    //property BevelWidth;
+    //property BiDiMode;
+    //property Ctl3D;
+    //property DockSite;
+    //property ParentBiDiMode;
+    //property ParentCtl3D;
+    //property TabOrder;
+    //property TabStop;
+    //property UseDockManager default True;
+    property Align;
+    property Anchors;
+    //property AutoSize;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    //property Enabled;
+    property Font;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+    //property OnDockDrop;
+    //property OnDockOver;
+    //property OnEndDock;
+    //property OnGetSiteInfo;
+    //property OnStartDock;
+    //property OnUnDock;
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    {$IFDEF COMPILER6_UP}
+    property OnContextPopup;
+    {$ENDIF COMPILER6_UP}
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
   end;
 
 implementation

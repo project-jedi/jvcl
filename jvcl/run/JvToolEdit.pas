@@ -908,9 +908,9 @@ uses
 {$R ..\resources\JvToolEdit.res}
 
 type
-  TOpenWinControl = class(TWinControl);
-  TOpenCustomEdit = class(TCustomEdit);
-  TOpenCustomForm = class(TCustomForm);
+  TWinControlHack = class(TWinControl);
+  TCustomEditHack = class(TCustomEdit);
+  TCustomFormHack = class(TCustomForm);
 
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
@@ -1070,9 +1070,9 @@ var
   I: Integer;
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
-  ed: TOpenCustomEdit;
+  ed: TCustomEditHack;
 begin
-  ed := TOpenCustomEdit(Editor);
+  ed := TCustomEditHack(Editor);
   if NewStyleControls then
   begin
     if ed.BorderStyle = bsNone then
@@ -1134,7 +1134,7 @@ var
   PS: TPaintStruct;
   S: string;
   ExStyle: DWORD;
-  ed: TOpenCustomEdit;
+  ed: TCustomEditHack;
 const
   AlignStyle: array [Boolean, TAlignment] of DWORD =
     ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
@@ -1143,7 +1143,7 @@ begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  ed := TOpenCustomEdit(Editor);
+  ed := TCustomEditHack(Editor);
   if ed.UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(AAlignment);
   if StandardPaint and not (csPaintCopy in ed.ControlState) then
@@ -1237,9 +1237,9 @@ end;
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   I: Integer;
-  ed: TOpenCustomEdit;
+  ed: TCustomEditHack;
 begin
-  ed := TOpenCustomEdit(Editor);
+  ed := TCustomEditHack(Editor);
   if ed.BorderStyle = bsNone then
     I := 0
   else
@@ -1334,7 +1334,7 @@ var
   LTextWidth, X: Integer;
   EditRect: TRect;
   S: WideString;
-  ed: TOpenCustomEdit;
+  ed: TCustomEditHack;
   SavedFont: TFontRecall;
   SavedBrush: TBrushRecall;
   Offset: Integer;
@@ -1343,7 +1343,7 @@ begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  ed := TOpenCustomEdit(Editor);
+  ed := TCustomEditHack(Editor);
   if StandardPaint and not (csPaintCopy in ed.ControlState) then
   begin
     Result := False;
@@ -1882,13 +1882,13 @@ begin
       VK_RETURN:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TOpenWinControl(Form).KeyDown(Key, Shift);
+          TWinControlHack(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
       VK_TAB:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TOpenWinControl(Form).KeyDown(Key, Shift);
+          TWinControlHack(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
     end;
@@ -1923,7 +1923,7 @@ begin
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      TOpenCustomForm(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
+      TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       {$ENDIF VisualCLX}
       if Key = Char(VK_RETURN) then
       begin
@@ -1938,7 +1938,7 @@ begin
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then
-      TOpenWinControl(Form).KeyPress(Key);
+      TWinControlHack(Form).KeyPress(Key);
   end;
   //Polaris
   inherited KeyPress(Key);

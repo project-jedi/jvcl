@@ -190,12 +190,21 @@ type
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure Click; override;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
+  published
+    {$IFNDEF USEJVCL}
+    property Version: string read FVersion write SetVersion stored False;
+    {$ENDIF USEJVCL}
+  end;
+
+  TJvXPUnlimitedControl = class(TJvXPCustomControl)
   published
     //property BevelInner;
     //property BevelOuter;
@@ -221,9 +230,6 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    {$IFNDEF USEJVCL}
-    property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF USEJVCL}
     property Visible;
     //property OnDockDrop;
     //property OnDockOver;
@@ -246,14 +252,12 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
   end;
-
-  TJvXPUnlimitedControl = class(TJvXPCustomControl);
 
   TJvXPStyle = class(TPersistent)
   private
@@ -299,7 +303,6 @@ type
   protected
     procedure SetStyleManager(Value: TJvXPStyleManager); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  published
     property Style: TJvXPStyle read FStyle write FStyle;
     property StyleManager: TJvXPStyleManager read FStyleManager write SetStyleManager;
   end;

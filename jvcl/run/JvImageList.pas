@@ -180,7 +180,7 @@ const
   TCustomImageList.HandleNeeded method. }
 
 type
-  TOpenCustomImageList = class(TCustomImageList);
+  TCustomImageListHack = class(TCustomImageList);
 
   // we need direct access to the FHandle field because the Handle property
   // calls the Changed method that calls HandleNeeded that calls SetHandle, ...
@@ -228,7 +228,7 @@ var
 begin
   if not HandleNeededHookInstalled then
   begin
-    OrgProc := @TOpenCustomImageList.HandleNeeded;
+    OrgProc := @TCustomImageListHack.HandleNeeded;
     NewProc := @HandleNeededHook;
 
     Code.Jump := $e9;
@@ -250,7 +250,7 @@ var
 begin
   if HandleNeededHookInstalled then
   begin
-    OrgProc := @TOpenCustomImageList.HandleNeeded;
+    OrgProc := @TCustomImageListHack.HandleNeeded;
 
     if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
     begin
