@@ -1,6 +1,9 @@
 TODO for JVCL 3.0
 ======================
-- Add TJvAppStorage support to TJvMRUList // (obones)
+- Make public Ini property for TJvAppIniFileStorage // obones
+- Add LeftMargin to JvMenus back, through the use of painters // obones
+- Add TJvAppStorage support to TJvMRUList // obones
+- Give some default values to TJvAviCapture properties // obones, suggested by (rom)
 
 - Separate out a TJvRecentPopupMenu from JvRecentMenuButton.pas // (rom)
 
@@ -18,7 +21,6 @@ TODO for JVCL 3.0
 
 - JvArrowButton.pas move GrayedBitmap function to JCL and file to Archive // (rom)
 - JvaScrollText change crude Delay function // (rom)
-- JvAVICapture.pas has some strange boolean expressions which should be fixed // (rom)
 
 - JvAirBrush.pas has a timing mechanism for spray which has to be reanimated or deleted // (rom)
 - JvAnimateTitle.pas TJvAnimTitle.AnimateTitle implementation of blinking title is problematic. // (rom)
