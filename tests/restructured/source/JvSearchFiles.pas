@@ -116,7 +116,7 @@ function MakeValidMask(const Mask: string): string;
 
 implementation
 uses
-  JvTypes, JclStrings
+  JvTypes, JclStrings, JvFunctions
 {$IFNDEF DELPHI6_UP}
   ,FileCtrl
 {$ENDIF}

@@ -33,7 +33,11 @@ interface
 
 uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons,
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors, StdCtrls, ExtCtrls, 
+  {$IFDEF DELPHI6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE} 
+  DsgnIntf,
+  {$ENDIF}
+  StdCtrls, ExtCtrls, 
   {$IFDEF DELPHI_D3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
   JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon;
 
@@ -158,7 +162,11 @@ type
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
+    {$IFDEF DELPHI6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
+    {$ELSE}
+    procedure EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
+    {$ENDIF}
   end;
 
 function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
@@ -410,7 +418,11 @@ end;
 
 { TJvGraphicsEditor }
 
-procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
+{$IFDEF DELPHI6_UP}
+procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean); 
+{$ELSE}
+procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); 
+{$ENDIF}
 var
   PropName: string;
 begin
