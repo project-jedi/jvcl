@@ -335,7 +335,19 @@ const
 function ColorSpaceManager: TJvColorSpaceManager;
 begin
   if GlobalColorSpaceManager = nil then
+  begin
     GlobalColorSpaceManager := TJvColorSpaceManager.Create;
+    GlobalColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
+  end;
   Result := GlobalColorSpaceManager;
 end;
 
@@ -1735,23 +1747,9 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
-{$ENDIF UNITVERSIONING}
-
 initialization
-  ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
-  ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
-  ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
-  ColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
-  ColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
-  ColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
-  ColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
-  ColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
-  ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
-  ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
-
-  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 finalization
   FreeAndNil(GlobalColorSpaceManager);
