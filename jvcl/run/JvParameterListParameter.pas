@@ -47,7 +47,7 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  JvTypes,
+  JvQTypes,
   {$ENDIF VisualCLX}
   JvPanel, JvPropertyStore, JvParameterList, JvDynControlEngine, JvDSADialogs,
   JvDynControlEngineIntf;
