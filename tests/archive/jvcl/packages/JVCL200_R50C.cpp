@@ -234,7 +234,6 @@ USEUNIT("..\source\JvSearchFiles.pas");
 USEUNIT("..\source\JvSHFileOp.pas");
 USEUNIT("..\source\JvTimeLine.pas");
 USEUNIT("..\source\JvTransBtn.pas");
-USEUNIT("..\source\JvTransBtn2.pas");
 USEUNIT("..\source\JvDriveCtrls.pas");
 USEUNIT("..\source\JvOLBar.pas");
 USEUNIT("..\source\JvTMTL.pas");

@@ -101,7 +101,7 @@
       ..\lib6\JvLookOut.obj ..\lib6\JvProfiler32.obj ..\lib6\JvRegTV.obj 
       ..\lib6\JvRollOut.obj ..\lib6\JvScrollPanel.obj ..\lib6\JvSearchFiles.obj 
       ..\lib6\JvSHFileOp.obj ..\lib6\JvTimeLine.obj ..\lib6\JvTransBtn.obj 
-      ..\lib6\JvTransBtn2.obj ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj 
+      ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj
       ..\lib6\JvTMTL.obj ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj 
       ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj
       ..\lib6\JvHotkeyEx.obj ..\lib6\JvObjPickerComp.obj 
@@ -460,7 +460,6 @@
       <FILE FILENAME="..\source\JvSHFileOp.pas" FORMNAME="" UNITNAME="JvSHFileOp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTimeLine.pas" FORMNAME="" UNITNAME="JvTimeLine" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransBtn.pas" FORMNAME="" UNITNAME="JvTransBtn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvTransBtn2.pas" FORMNAME="" UNITNAME="JvTransBtn2" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDriveCtrls.pas" FORMNAME="" UNITNAME="JvDriveCtrls" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvOLBar.pas" FORMNAME="" UNITNAME="JvOLBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTMTL.pas" FORMNAME="" UNITNAME="JvTMTL" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

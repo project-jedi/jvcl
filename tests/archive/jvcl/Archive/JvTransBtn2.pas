@@ -32,8 +32,7 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
-  ExtCtrls, Menus, Forms, ImgList,
-  JvComponent;
+  ExtCtrls, Menus, Forms, ImgList, JvComponent;
 
 type
   TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);

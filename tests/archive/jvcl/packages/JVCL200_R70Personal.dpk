@@ -263,7 +263,6 @@ contains
   JvSHFileOp in '..\source\JvSHFileOp.pas',
   JvTimeLine in '..\source\JvTimeLine.pas',
   JvTransBtn in '..\source\JvTransBtn.pas',
-  JvTransBtn2 in '..\source\JvTransBtn2.pas',
   JvDriveCtrls in '..\source\JvDriveCtrls.pas',
   JvOLBar in '..\source\JvOLBar.pas',
   JvTMTL in '..\source\JvTMTL.pas',

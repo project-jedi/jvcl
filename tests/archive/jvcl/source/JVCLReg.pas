@@ -171,7 +171,7 @@ uses
 
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
-  JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey, JvBalloonHint,
+  JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey, JvBalloonHint,
 
   JvCaptionPanel, JvColorBtn, JvColorBox, JvColorForm, JvOutEdit,
   JvImagewindow, JvListComb, JvLookout, JvProfiler32, JvRegTV,

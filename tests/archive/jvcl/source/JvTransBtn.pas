@@ -32,96 +32,67 @@ interface
 
 uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, CommCtrl,
-  ExtCtrls, Menus, Forms,
-  JvComponent;
+  ExtCtrls, Menus, Forms, ImgList, JvComponent, Buttons, JvButton;
 
 type
-  TNumGlyphs = 1..4;
   TJvFrameStyle = (fsRegular, fsIndent, fsExplorer, fsNone, fsLight, fsDark, fsMono);
-  TJvButtonState = (bsUp, bsDown, bsExclusive);
   TJvTextAlign = (ttaTopLeft, ttaTop, ttaTopRight, ttaRight, ttaBottomRight,
     ttaBottom, ttaBottomLeft, ttaLeft, ttaCenter);
 
 type
-  TJvTransparentButton = class(TJvGraphicControl)
+  TJvTransparentButton = class(TJvCustomGraphicButton)
   private
     FTextAlign: TJvTextAlign;
-    FCaption: TCaption;
     FAutoGray: Boolean;
     FTransparent: Boolean;
-    FMouseInside: Boolean;
     FShowPressed: Boolean;
     FOffset: Integer;
     FSpacing: Integer;
     FGlyph: TBitmap;
     FGrayGlyph: TBitmap;
-    FDropDownMenu: TPopupMenu;
     FDisabledGlyph: TBitmap;
-    FState: TJvButtonState;
     FBorderSize: Cardinal;
     FNumGlyphs: TNumGlyphs;
     FImList: TImageList;
     FOutline: TJvFrameStyle;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseExit: TNotifyEvent;
-    FInsideButton: Boolean;
     FWordWrap: Boolean;
-    FStayDown: Boolean;
-    FFlat: Boolean;
-    FPattern: TBitmap;
-    procedure SetFlat(Value: Boolean);
-    procedure SetStayDown(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
     procedure SetSpacing(Value: Integer);
     procedure SetAutoGray(Value: Boolean);
     procedure SetTextAlign(Value: TJvTextAlign);
-    procedure SetCaption(Value: TCaption);
     procedure SetGlyph(Bmp: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
     procedure SetFrameStyle(Value: TJvFrameStyle);
     procedure SetTransparent(Value: Boolean);
     procedure SetBorderWidth(Value: Cardinal);
     procedure GlyphChanged(Sender: TObject);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AddGlyphs(aGlyph: TBitmap; AColor: TColor; Value: Integer);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseEnter; virtual;
-    procedure MouseExit; virtual;
-    procedure Paint; override;
-    procedure PaintButton(Canvas: TCanvas); virtual;
-    procedure PaintFrame(Canvas: TCanvas); virtual;
+    procedure PaintButton(Canvas: TCanvas); override;
+    procedure PaintFrame(Canvas: TCanvas); override;
     procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
     procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
-    function InsideBtn(X, Y: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Click; override;
     property Canvas;
   published
     property Align;
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property BorderWidth: Cardinal read FBorderSize write SetBorderWidth default 1;
-    property Caption: TCaption read FCaption write SetCaption;
+    property Caption;
     property Color;
-    property Down: Boolean read FStayDown write SetStayDown default False;
+    property Down;
     property Enabled;
     property Font;
-    property Flat: Boolean read FFlat write SetFlat default True;
+    property Flat;
     property FrameStyle: TJvFrameStyle read FOutline write SetFrameStyle default fsExplorer;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs default 1;
     property Offset: Integer read FOffset write FOffset default 1;
     property ParentFont;
     property ParentShowHint;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
+    property DropDownMenu;
     property PopupMenu;
     property ShowHint;
     property ShowPressed: Boolean read FShowPressed write FShowPressed default True;
@@ -131,20 +102,117 @@ type
     property Visible;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseExit: TNotifyEvent read FOnMouseExit write FOnMouseExit;
+    property OnMouseEnter;
+    property OnMouseExit;
+    property OnParentColorChange;
     property OnStartDrag;
+  end;
+
+  TJvTransparentButton2 = class(TJvCustomGraphicButton)
+  private
+    FIsDown: Boolean;
+    FTextAlign: TJvTextAlign;
+    FAutoGray: Boolean;
+    FTransparent: Boolean;
+    FShowPressed: Boolean;
+    FSpacing: Integer;
+    FBorderSize: Cardinal;
+    FGrayList: TImageList;
+    FActiveList: TImageList;
+    FDisabledList: TImageList;
+    FDownList: TImageList;
+    FGrayLink: TChangeLink;
+    FActiveLink: TChangeLink;
+    FDisabledLink: TChangeLink;
+    FDownLink: TChangeLink;
+    FGrayIndex: Integer;
+    FActiveIndex: Integer;
+    FDisabledIndex: Integer;
+    FDownIndex: Integer;
+    FImList: TImageList;
+    FOutline: TJvFrameStyle;
+    FWordWrap: Boolean;
+    FHiFont: TFont;
+    procedure SetHiFont(Value: TFont);
+    procedure SetAutoGray(Value: Boolean);
+    procedure SetGrayList(Value: TImageList);
+    procedure SetActiveList(Value: TImageList);
+    procedure SetDisabledList(Value: TImageList);
+    procedure SetDownList(Value: TImageList);
+    procedure SetGrayIndex(Value: Integer);
+    procedure SetActiveIndex(Value: Integer);
+    procedure SetDisabledIndex(Value: Integer);
+    procedure SetDownIndex(Value: Integer);
+    procedure SetWordWrap(Value: Boolean);
+    procedure SetSpacing(Value: Integer);
+    procedure SetTextAlign(Value: TJvTextAlign);
+    procedure SetFrameStyle(Value: TJvFrameStyle);
+    procedure SetTransparent(Value: Boolean);
+    procedure SetBorderWidth(Value: Cardinal);
+    procedure GlyphChanged(Sender: TObject);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure AddGlyphs;
+    procedure PaintButton(Canvas: TCanvas); override;
+    procedure PaintFrame(Canvas: TCanvas); override;
+    procedure DrawTheText(ARect: TRect; Canvas: TCanvas); virtual;
+    procedure DrawTheBitmap(ARect: TRect; Canvas: TCanvas); virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Canvas;
+    property InternalList: TImageList read FImList;
+  published
+    property Align;
+    property Anchors;
+    property Constraints;
+    property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
+    property BorderWidth: Cardinal read FBorderSize write SetBorderWidth default 1;
+    property Caption;
+    property Color;
+    property Down;
+    property Enabled;
+    property Font;
+    property HiFont: TFont read FHiFont write SetHiFont;
+    property FrameStyle: TJvFrameStyle read FOutline write SetFrameStyle default fsExplorer;
+    property ActiveImage: TImageList read FActiveList write SetActiveList;
+    property ActiveIndex: Integer read FActiveIndex write SetActiveIndex default -1;
+    property GrayImage: TImageList read FGrayList write SetGrayList;
+    property GrayIndex: Integer read FGrayIndex write SetGrayIndex default -1;
+    property DisabledImage: TImageList read FDisabledList write SetDisabledList;
+    property DisabledIndex: Integer read FDisabledIndex write SetDisabledIndex default -1;
+    property DownImage: TImageList read FDownList write SetDownList;
+    property DownIndex: Integer read FDownIndex write SetDownIndex default -1;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property ShowPressed: Boolean read FShowPressed write FShowPressed default True;
+    property Spacing: Integer read FSpacing write SetSpacing default 2;
+    property TextAlign: TJvTextAlign read FTextAlign write SetTextAlign default ttaCenter;
+    property Transparent: Boolean read FTransparent write SetTransparent default True;
+    property Visible;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    property OnClick;
+    property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-    property OnDragOver;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseExit;
+    property OnParentColorChange;
+    property OnStartDrag;
   end;
 
 implementation
-
-{ (RB) Some similar functions are in JvVCLUtils.pas, need to check differences }
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
@@ -270,20 +338,11 @@ end;
 constructor TJvTransparentButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  { (RB) Weird construction, why not ControlStyle := ControlStyle - [x,y] }
-  if csOpaque in ControlStyle then
-    ControlStyle := ControlStyle - [csOpaque];
-  if csDoubleClicks in ControlStyle then
-    ControlStyle := ControlStyle - [csDoubleClicks];
   FNumGlyphs := 1;
-  FState := bsUp;
-  FMouseInside := False;
   FAutoGray := True;
   FShowPressed := True;
   FOffset := 1;
   FBorderSize := 1;
-  FStayDown := False;
-  SetBounds(0, 0, 40, 40);
   FTransparent := True;
 
   FImList := TImageList.CreateSize(Width, Height);
@@ -295,11 +354,8 @@ begin
   FNumGlyphs := 1;
   FSpacing := 2;
   FTextAlign := ttaCenter;
-  FInsideButton := False;
   FWordwrap := False;
   FOutline := fsExplorer;
-  FFlat := True;
-  FPattern := CreateBrushPattern;
 end;
 
 destructor TJvTransparentButton.Destroy;
@@ -308,7 +364,6 @@ begin
   FGrayGlyph.Free;
   FDisabledGlyph.Free;
   FImList.Free;
-  FPattern.Free;
   inherited Destroy;
 end;
 
@@ -390,46 +445,12 @@ begin
   end;
 end;
 
-procedure TJvTransparentButton.SetCaption(Value: TCaption);
-begin
-  if FCaption <> Value then
-  begin
-    FCaption := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TJvTransparentButton.SetBorderWidth(Value: Cardinal);
 begin
   if FBorderSize <> Value then
   begin
     FBorderSize := Value;
     Invalidate;
-  end;
-end;
-
-procedure TJvTransparentButton.SetFlat(Value: Boolean);
-begin
-  if FFlat <> Value then
-  begin
-    FFlat := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvTransparentButton.SetStayDown(Value: Boolean);
-begin
-  if FStayDown <> Value then
-  begin
-    FStayDown := Value;
-    if FStayDown then
-    begin
-      FState := bsDown;
-      {     Click; }{ uncomment and see what happens... }
-    end
-    else
-      FState := bsUp;
-    Repaint;
   end;
 end;
 
@@ -458,7 +479,6 @@ begin
     FAutoGray := Value;
     Invalidate;
   end;
-
 end;
 
 procedure TJvTransparentButton.SetTextAlign(Value: TJvTextAlign);
@@ -470,31 +490,14 @@ begin
   end;
 end;
 
-function TJvTransparentButton.InsideBtn(X, Y: Integer): Boolean;
-begin
-  Result := PtInRect(Rect(0, 0, Width, Height), Point(X, Y));
-end;
-
-{ paint everything but bitmap and text }
-
-procedure TJvTransparentButton.Paint;
-begin
-  { repaint rest }
-  PaintFrame(Canvas);
-  PaintButton(Canvas);
-end;
-
 procedure TJvTransparentButton.PaintFrame(Canvas: TCanvas);
 var
   TmpRect: TRect;
-  aCanvas: TCanvas;
   FDrawIt: Boolean;
 begin
-  { (RB) Weird construction - assigning Canvas to aCanvas, why? }
-  aCanvas := Canvas;
   TmpRect := Rect(0, 0, Width, Height);
   { draw the outline }
-  with aCanvas do
+  with Canvas do
   begin
     Brush.Color := Color;
     Pen.Color := clBlack;
@@ -503,72 +506,71 @@ begin
     if not Transparent then
       FillRect(TmpRect);
 
-    if FState = bsDown then
+    if (bsMouseDown in MouseStates) then
     begin
       case FrameStyle of
         fsRegular:
           if ShowPressed then
           begin
-            Frame3D(aCanvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
-            Frame3D(aCanvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
           end;
         fsExplorer:
-          if FInsideButton or FStayDown then
+          if (bsMouseInside in MouseStates) or Down then
           begin
             if ShowPressed then
-              Frame3D(aCanvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth)
+              Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth)
             else
-              Frame3D(aCanvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+              Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
           end;
         fsIndent:
           if ShowPressed then
           begin
-            Frame3D(aCanvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
-            Frame3D(aCanvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
           end;
         fsLight:
           if ShowPressed then
-            Frame3D(aCanvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
         fsDark:
           if ShowPressed then
-            Frame3D(aCanvas, TmpRect, cl3DDkShadow, clBtnFace, BorderWidth);
+            Frame3D(Canvas, TmpRect, cl3DDkShadow, clBtnFace, BorderWidth);
         fsMono:
           if ShowPressed then
-            Frame3D(aCanvas, TmpRect, cl3DDkShadow, clBtnHighlight, BorderWidth);
+            Frame3D(Canvas, TmpRect, cl3DDkShadow, clBtnHighlight, BorderWidth);
       end;
     end
     else
-    if FState = bsUp then
     begin
-      FDrawIt := (FInsideButton and FFlat) or not FFlat or (csDesigning in ComponentState);
+      FDrawIt := ((bsMouseInside in MouseStates) and Flat) or not Flat or (csDesigning in ComponentState);
       case FrameStyle of
         fsNone:
           if csDesigning in ComponentState then
-            Frame3D(aCanvas, TmpRect, clBlack, clBlack, 1);
+            Frame3D(Canvas, TmpRect, clBlack, clBlack, 1);
         fsRegular:
           if FDrawIt then
           begin
-            Frame3D(aCanvas, TmpRect, clBtnHighlight, clBlack, BorderWidth);
-            Frame3D(aCanvas, TmpRect, RGB(223, 223, 223), clBtnShadow, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBlack, BorderWidth);
+            Frame3D(Canvas, TmpRect, RGB(223, 223, 223), clBtnShadow, BorderWidth);
           end;
         fsExplorer:
-          if FInsideButton or (csDesigning in ComponentState) then
-            Frame3D(aCanvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+          if (bsMouseInside in MouseStates) or (csDesigning in ComponentState) then
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
         fsIndent:
           if FDrawIt then
           begin
-            Frame3D(aCanvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
-            Frame3D(aCanvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
           end;
         fsLight:
           if FDrawIt then
-            Frame3D(aCanvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
         fsDark:
           if FDrawIt then
-            Frame3D(aCanvas, TmpRect, clBtnFace, cl3DDkShadow, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnFace, cl3DDkShadow, BorderWidth);
         fsMono:
           if FDrawIt then
-            Frame3D(aCanvas, TmpRect, clBtnHighlight, cl3DDkShadow, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnHighlight, cl3DDkShadow, BorderWidth);
       end;
     end;
   end;
@@ -612,7 +614,7 @@ begin
       FGlyph.Dormant;
     end;
     { finally, do the caption }
-    if Length(FCaption) > 0 then
+    if Length(Caption) > 0 then
       DrawTheText(Dest, Canvas);
   end;
 end;
@@ -652,7 +654,7 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
-  DrawText(DC, PChar(FCaption), Length(FCaption), TmpRect, Flags or DT_CALCRECT);
+  DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -682,17 +684,17 @@ begin
   else
     Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
 
-  if (FState = bsDown) and FShowPressed then
+  if (MouseStates = [bsMouseDown]) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
   SetBkMode(DC, Windows.TRANSPARENT);
 
   if not Enabled then
-    DrawDisabledText(DC, PChar(FCaption), -1, TmpRect, Flags)
+    DrawDisabledText(DC, PChar(Caption), -1, TmpRect, Flags)
   else
   begin
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawText(DC, PChar(FCaption), -1, TmpRect, Flags);
+    DrawText(DC, PChar(Caption), -1, TmpRect, Flags);
   end;
 end;
 
@@ -713,13 +715,13 @@ begin
         if not Enabled then
           Index := 1
         else
-        if (FState = bsDown) or FStayDown then
+        if (MouseStates = [bsMouseDown]) or Down then
           Index := 2;
       4:
         if not Enabled then
           Index := 1
         else
-        if (FState = bsDown) or FStayDown then
+        if (MouseStates = [bsMouseDown]) or Down then
           Index := 2;
     else
       Index := 0;
@@ -728,10 +730,10 @@ begin
     if FGlyph.Empty then
       Exit;
 
-    if ((FState = bsDown) and FShowPressed) or FStayDown then
+    if ((MouseStates = [bsMouseDown]) and FShowPressed) or Down then
       OffsetRect(ARect, FOffset, FOffset);
     { do we need the grayed bitmap ? }
-    if (FFlat or (FrameStyle = fsExplorer)) and FAutoGray and not FInsideButton and not FStayDown then
+    if (Flat or (FrameStyle = fsExplorer)) and FAutoGray and not (bsMouseInside in MouseStates) and not Down then
       Index := Count - 2;
 
     { do we need the disabled bitmap ? }
@@ -739,11 +741,11 @@ begin
       Index := Count - 1;
 
     { Norris }
-    if FInsideButton and FStayDown then
+    if (bsMouseInside in MouseStates) and Down then
     begin
       HelpRect := ClientRect;
       InflateRect(HelpRect, -BorderWidth - 1, -BorderWidth - 1);
-      Canvas.Brush.Bitmap := FPattern;
+      Canvas.Brush.Bitmap := Pattern;
       Self.Canvas.FillRect(HelpRect);
     end;
 
@@ -751,76 +753,6 @@ begin
       clNone, clNone, ILD_Transparent);
   end;
 end;
-
-procedure TJvTransparentButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  Tmp: TPoint;
-  Msg: TMsg;
-begin
-  if not Enabled then
-    Exit;
-
-  inherited MouseDown(Button, Shift, X, Y);
-
-  //   if Assigned(OnMouseDown) then OnMouseDown(Self,Button,Shift,X,Y);
-
-  if InsideBtn(X, Y) then
-  begin
-    FState := bsDown;
-    Repaint;
-  end;
-  if Assigned(FDropDownMenu) and (Button = mbLeft) then
-  begin
-    { calc where to put menu }
-    Tmp := ClientToScreen(Point(0, Height));
-    FDropDownMenu.Popup(Tmp.X, Tmp.Y);
-    // (rom) needs to be checked
-    { wait 'til menu is done }
-    while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-      {nothing};
-    { release button }
-    MouseUp(Button, Shift, X, Y);
-  end;
-end;
-
-procedure TJvTransparentButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if not Enabled then
-    Exit;
-  if FStayDown then
-    Exit;
-  inherited MouseUp(Button, Shift, X, Y);
-
-  FState := bsUp;
-  Repaint;
-  //  if Assigned(OnMouseUp) then OnMouseUp(Self,Button,Shift,X,Y);
-end;
-
-procedure TJvTransparentButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseMove(Shift, X, Y);
-  //   if Assigned(OnMouseMove) then OnMouseMove(Self,Shift,X,Y);
-  if FState = bsDown then
-  begin
-    if not InsideBtn(X, Y) then
-    begin
-      if FState = bsDown then { mouse has slid off, so release }
-      begin
-        FState := bsUp;
-        Repaint;
-      end;
-    end
-    else
-    begin
-      if FState = bsUp then { mouse has slid back on, so push }
-      begin
-        FState := bsDown;
-        Repaint;
-      end;
-    end;
-  end;
-end;
-
 procedure TJvTransparentButton.GlyphChanged(Sender: TObject);
 var
   GlyphNum: Integer;
@@ -839,82 +771,650 @@ begin
     AddGlyphs(Glyph, Glyph.TransparentColor {Glyph.Canvas.Pixels[0,Height]}, GlyphNum);
   end;
 end;
+{ create a grayed version of a color bitmap }
+{ SLOW! don't use in realtime! }
 
-{ Handle speedkeys (Alt + key) }
-
-procedure TJvTransparentButton.CMDialogChar(var Msg: TCMDialogChar);
+procedure GrayBitmap(Bmp: TBitmap; R, G, B: Integer);
+var
+  I, J: Integer;
+  Col: Longint;
 begin
-  with Msg do
-    if IsAccel(CharCode, FCaption) and Enabled then
+  if Bmp.Empty then
+    Exit;
+  for I := 0 to Bmp.Width do
+    for J := 0 to Bmp.Height do
     begin
-      Click;
-      Result := 1;
-    end
-    else
-      inherited;
+      Col := Bmp.Canvas.Pixels[I, J];
+      Col := (GetRValue(Col) * R + GetGValue(Col) * G + GetBValue(Col) * B) div (R + G + B);
+      Bmp.Canvas.Pixels[I, J] := RGB(Col, Col, Col);
+    end;
 end;
 
-procedure TJvTransparentButton.CMEnabledChanged(var Msg: TMessage);
+{* create a disabled bitmap from a regular one, works best when bitmap has been
+reduced to a few colors. Used by BWBitmap }
+
+procedure ReducedColorDisabledBitmap(Bmp: TBitmap);
+const
+  ROP_DSPDxax = $00E20746;
+var
+  MonoBmp, TmpImage: TBitmap;
+  W, H: Integer;
 begin
-  if not Enabled then
+  if Bmp.Empty then
+    Exit;
+  MonoBmp := TBitmap.Create;
+  TmpImage := TBitmap.Create;
+  W := Bmp.Width;
+  H := Bmp.Height;
+
+  with TmpImage do
   begin
-    FState := bsUp;
-    FInsideButton := False;
+    Width := W;
+    Height := H;
+    Canvas.Brush.Color := clBtnFace;
+  end;
+
+  try
+    with MonoBmp do
+    begin
+      Assign(Bmp);
+      Canvas.Font.Color := clWhite;
+      Canvas.Brush.Color := clBlack;
+      Monochrome := True;
+    end;
+
+    with TmpImage.Canvas do
+    begin
+      Brush.Color := clBtnFace;
+      FillRect(Rect(0, 0, W, H));
+      Brush.Color := clBtnHighlight;
+      SetTextColor(Handle, clBlack);
+      SetBkColor(Handle, clWhite);
+      BitBlt(Handle, 1, 1, W + 1, H + 1, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+      Brush.Color := clBtnShadow;
+      SetTextColor(Handle, clBlack);
+      SetBkColor(Handle, clWhite);
+      BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+    end;
+    Bmp.Assign(TmpImage);
+  finally
+    MonoBmp.Free;
+    TmpImage.Free;
+  end;
+end;
+
+
+constructor TJvTransparentButton2.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHiFont := TFont.Create;
+  FHiFont.Assign(Font);
+  FAutoGray := True;
+  FShowPressed := True;
+  FBorderSize := 1;
+  FTransparent := True;
+  FGrayLink := TChangeLink.Create;
+  FGrayLink.OnChange := GlyphChanged;
+  FActiveLink := TChangeLink.Create;
+  FActiveLink.OnChange := GlyphChanged;
+  FDisabledLink := TChangeLink.Create;
+  FDisabledLink.OnChange := GlyphChanged;
+  FDownLink := TChangeLink.Create;
+  FDownLink.OnChange := GlyphChanged;
+  FActiveIndex := -1;
+  FDisabledIndex := -1;
+  FDownIndex := -1;
+  FGrayIndex := -1;
+  FImList := TImageList.CreateSize(Width, Height);
+  FSpacing := 2;
+  FTextAlign := ttaCenter;
+  FWordwrap := False;
+  FOutline := fsExplorer;
+end;
+
+destructor TJvTransparentButton2.Destroy;
+begin
+  FGrayLink.Free;
+  FActiveLink.Free;
+  FDisabledLink.Free;
+  FDownLink.Free;
+  FImList.Free;
+  FHiFont.Free;
+  inherited Destroy;
+end;
+
+procedure TJvTransparentButton2.AddGlyphs;
+var
+  Bmp: TBitmap;
+  Ico: TIcon;
+begin
+  Bmp := TBitmap.Create;
+  Ico := TIcon.Create;
+  try
+    { destroy old list }
+    FImList.Clear;
+    Repaint;
+    { create the imagelist }
+    if Assigned(FActiveList) and (FActiveIndex > -1) then
+    begin
+      FImList.Height := FActiveList.Height;
+      FImList.Width := FActiveList.Width;
+      Bmp.Height := FImList.Height;
+      Bmp.Width := FImList.Width;
+      FActiveList.GetIcon(FActiveIndex, Ico);
+      FImList.AddIcon(Ico);
+    end
+    else
+      Exit;
+
+    if Assigned(FDisabledList) and (FDisabledIndex > -1) then
+    begin
+      FDisabledList.GetIcon(FDisabledIndex, Ico);
+      FImList.AddIcon(Ico);
+    end
+    else
+    begin
+      FActiveList.GetBitmap(FActiveIndex, Bmp);
+      DisabledBitmap(Bmp);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+    end;
+
+    if Assigned(FDownList) and (FDownIndex > -1) then
+    begin
+      FDownList.GetIcon(FDownIndex, Ico);
+      FImList.AddIcon(Ico);
+    end
+    else
+    begin
+      FActiveList.GetIcon(FActiveIndex, Ico);
+      FImList.AddIcon(Ico);
+    end;
+
+    if Assigned(FGrayList) and (FGrayIndex > -1) then
+    begin
+      FGrayList.GetIcon(FGrayIndex, Ico);
+      FImList.AddIcon(Ico);
+    end
+    else
+    begin
+      FActiveList.GetBitmap(FActiveIndex, Bmp);
+      GrayBitmap(Bmp, 11, 59, 30);
+      FImList.AddMasked(Bmp, Bmp.TransparentColor);
+    end;
+
+  finally
+    Bmp.Free;
+    Ico.Free;
   end;
   Repaint;
 end;
 
-procedure TJvTransparentButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvTransparentButton2.SetHiFont(Value: TFont);
 begin
-  MouseEnter;
+  FHiFont.Assign(Value);
+  Invalidate;
 end;
 
-procedure TJvTransparentButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvTransparentButton2.SetAutoGray(Value: Boolean);
 begin
-  MouseExit;
-end;
-
-procedure TJvTransparentButton.MouseEnter;
-begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  if Enabled then
+  if FAutoGray <> Value then
   begin
-    FInsideButton := True;
-    if Assigned(FOnMouseEnter) then
-      FOnMouseEnter(Self);
-    if FFlat then
-      Refresh;
+    FAutoGray := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvTransparentButton.MouseExit;
+procedure TJvTransparentButton2.SetGrayList(Value: TImageList);
 begin
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  if Enabled then
+  if FGrayList <> nil then
+    FGrayList.UnRegisterChanges(FGrayLink);
+  FGrayList := Value;
+
+  if FGrayList <> nil then
+    FGrayList.RegisterChanges(FGrayLink);
+  AddGlyphs;
+end;
+
+procedure TJvTransparentButton2.SetActiveList(Value: TImageList);
+begin
+  if FActiveList <> nil then
+    FActiveList.UnRegisterChanges(FActiveLink);
+  FActiveList := Value;
+
+  if FActiveList <> nil then
   begin
-    if FInsideButton then
-      FInsideButton := False;
-    if Assigned(FOnMouseExit) then
-      FOnMouseExit(Self);
-    if FFlat then
-      Refresh;
+    FImList.Assign(FActiveList); // get properties
+    FImList.BkColor := clNone;
+    FActiveList.RegisterChanges(FActiveLink);
+  end;
+  AddGlyphs;
+end;
+
+procedure TJvTransparentButton2.SetDisabledList(Value: TImageList);
+begin
+  if FDisabledList <> nil then
+    FDisabledList.UnRegisterChanges(FDisabledLink);
+  FDisabledList := Value;
+
+  if FDisabledList <> nil then
+    FDisabledList.RegisterChanges(FDisabledLink);
+  AddGlyphs;
+end;
+
+procedure TJvTransparentButton2.SetDownList(Value: TImageList);
+begin
+  if FDownList <> nil then
+    FDownList.UnRegisterChanges(FDownLink);
+  FDownList := Value;
+
+  if FDownList <> nil then
+    FDownList.RegisterChanges(FDownLink);
+  AddGlyphs;
+end;
+
+procedure TJvTransparentButton2.SetGrayIndex(Value: Integer);
+begin
+  if FGrayIndex <> Value then
+  begin
+    FGrayIndex := Value;
+    AddGlyphs;
   end;
 end;
 
-procedure TJvTransparentButton.Click;
+procedure TJvTransparentButton2.SetActiveIndex(Value: Integer);
 begin
-  inherited Click;
+  if FActiveIndex <> Value then
+  begin
+    FActiveIndex := Value;
+    AddGlyphs;
+  end;
 end;
 
-procedure TJvTransparentButton.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvTransparentButton2.SetDisabledIndex(Value: Integer);
 begin
-  if (Operation = opRemove) and (AComponent = FDropDownMenu) then
-    FDropDownMenu := nil;
-  // (rom) inherited missing?
+  if FDisabledIndex <> Value then
+  begin
+    FDisabledIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetDownIndex(Value: Integer);
+begin
+  if FDownIndex <> Value then
+  begin
+    FDownIndex := Value;
+    AddGlyphs;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetFrameStyle(Value: TJvFrameStyle);
+begin
+  if FOutline <> Value then
+  begin
+    FOutline := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetTransparent(Value: Boolean);
+begin
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    Invalidate;
+  end;
+end;
+procedure TJvTransparentButton2.SetBorderWidth(Value: Cardinal);
+begin
+  if FBorderSize <> Value then
+  begin
+    FBorderSize := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetWordWrap(Value: Boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordwrap := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetSpacing(Value: Integer);
+begin
+  if FSpacing <> Value then
+  begin
+    FSpacing := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTransparentButton2.SetTextAlign(Value: TJvTextAlign);
+begin
+  if FTextAlign <> Value then
+  begin
+    FTextAlign := Value;
+    Invalidate;
+  end;
+end;
+
+{ paint everything but bitmap and text }
+
+procedure TJvTransparentButton2.PaintFrame(Canvas: TCanvas);
+var
+  TmpRect: TRect;
+begin
+  TmpRect := Rect(0, 0, Width, Height);
+  { draw the outline }
+  with Canvas do
+  begin
+    Brush.Color := Color;
+    Pen.Color := clBlack;
+    Pen.Width := BorderWidth;
+
+    case FrameStyle of
+      fsNone:
+        begin
+          if not Transparent then
+            FillRect(Rect(0, 0, Width, Height));
+          if csDesigning in ComponentState then
+            Frame3D(Canvas, TmpRect, clBlack, clBlack, 1);
+        end;
+      fsExplorer:
+        begin
+          if not Transparent then
+            FillRect(Rect(0, 0, Width, Height));
+          if csDesigning in ComponentState then
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+        end;
+      fsRegular:
+        begin
+          { draw outline }
+          Pen.Color := clBlack;
+          if not Transparent then
+            Rectangle(1, 1, Width, Height)
+          else
+          begin
+            TmpRect := Rect(1, 1, Width, Height);
+            Frame3D(Canvas, TmpRect, clBlack, clBlack, BorderWidth);
+          end;
+        end;
+      fsIndent:
+        begin
+          { draw outline }
+          Pen.Color := clBtnShadow;
+          if not Transparent then
+            Rectangle(0, 0, Width - 1, Height - 1)
+          else
+          begin
+            TmpRect := Rect(0, 0, Width - 1, Height - 1);
+            Frame3D(Canvas, TmpRect, clBtnShadow, clBtnShadow, BorderWidth)
+          end;
+          TmpRect := Rect(1, 1, Width, Height);
+          Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnHighlight, BorderWidth);
+        end;
+      fsLight:
+        begin
+          if not Transparent then
+            FillRect(Rect(0, 0, Width, Height));
+          if csDesigning in ComponentState then
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+        end;
+      fsDark:
+        begin
+          if not Transparent then
+            FillRect(Rect(0, 0, Width, Height));
+          if csDesigning in ComponentState then
+            Frame3D(Canvas, TmpRect, clBtnFace, cl3DDkShadow, 1);
+        end;
+      fsMono:
+        begin
+          if not Transparent then
+            FillRect(Rect(0, 0, Width, Height));
+          if csDesigning in ComponentState then
+            Frame3D(Canvas, TmpRect, clBtnHighlight, cl3DDkShadow, 1);
+        end;
+    end;
+
+    TmpRect := Rect(1, 1, Width - 1, Height - 1);
+
+    if (bsMouseDown in MouseStates)  then
+    begin
+      if not (FrameStyle = fsNone) then
+      begin
+        InflateRect(TmpRect, 1, 1);
+        case FrameStyle of
+          fsRegular:
+            if ShowPressed then
+            begin
+              Frame3D(Canvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
+              Frame3D(Canvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
+            end;
+          fsExplorer:
+            if (bsMouseInside in MouseStates) or Down then
+            begin
+              if ShowPressed then
+                Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth)
+              else
+                Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+            end;
+          fsIndent:
+            if ShowPressed then
+            begin
+              Frame3D(Canvas, TmpRect, clBlack, clBtnHighlight, BorderWidth);
+              Frame3D(Canvas, TmpRect, clBtnShadow, clBtnFace, BorderWidth);
+            end;
+          fsLight:
+            if ShowPressed then
+              Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, 1);
+          fsDark:
+            if ShowPressed then
+              Frame3D(Canvas, TmpRect, cl3DDkShadow, clBtnFace, 1);
+          fsMono:
+            if ShowPressed then
+              Frame3D(Canvas, TmpRect, cl3DDkShadow, clBtnHighlight, 1);
+        end;
+      end;
+    end;
+
+    if not (bsMouseDown in MouseStates) then
+    begin
+      InflateRect(TmpRect, 1, 1);
+      case FrameStyle of
+        fsRegular:
+          begin
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBlack, BorderWidth);
+            Frame3D(Canvas, TmpRect, clBtnFace, clBtnShadow, BorderWidth);
+          end;
+        fsExplorer:
+          if (bsMouseInside in MouseStates) then
+            Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, BorderWidth);
+        fsIndent:
+          Frame3D(Canvas, TmpRect, clBtnShadow, clBtnHighlight, BorderWidth);
+        fsLight:
+          Frame3D(Canvas, TmpRect, clBtnHighlight, clBtnShadow, 1);
+        fsDark:
+          Frame3D(Canvas, TmpRect, clBtnFace, cl3DDkShadow, 1);
+        fsMono:
+          Frame3D(Canvas, TmpRect, clBtnHighlight, cl3DDkShadow, 1);
+      end;
+    end;
+    if (FHiFont <> Font) and (Caption <> '') then
+    begin
+      InflateRect(TmpRect, 1, 1);
+      DrawTheText(TmpRect, Canvas);
+    end;
+
+  end;
+end;
+
+procedure TJvTransparentButton2.PaintButton(Canvas: TCanvas);
+var
+  Dest: TRect;
+  TmpWidth: Integer;
+begin
+  with Canvas do
+  begin
+    TmpWidth := FImList.Width;
+
+    { do top }
+    if TextAlign in [ttaBottomLeft, ttaBottom, ttaBottomRight] then
+      Dest.Top := Spacing
+    else
+    if TextAlign in [ttaTopLeft, ttaTop, ttaTopRight] then
+      Dest.Top := Height - FImList.Height - Spacing
+    else
+      Dest.Top := (Height - FImList.Height) div 2;
+
+    { do left }
+    if TextAlign = ttaLeft then
+      Dest.Left := Width - TmpWidth - Spacing
+    else
+    if TextAlign = ttaRight then
+      Dest.Left := Spacing
+    else { left, center, right }
+      Dest.Left := (Width - TmpWidth) div 2;
+    {
+        if Dest.Top < Spacing then Dest.Top := Spacing;
+        if Dest.Left < Spacing then Dest.Left := Spacing;
+    }
+    Dest.Bottom := Dest.Top + FImList.Height;
+    Dest.Right := Dest.Left + TmpWidth;
+    {
+        if Dest.Bottom > Height - Spacing then
+           Dest.Top := Height - FGlyph.Height - Spacing;
+    }
+    if FImList.Count > 0 then
+      DrawTheBitmap(Dest, Canvas);
+    { finally, do the caption }
+    if Length(Caption) > 0 then
+      DrawTheText(Dest, Canvas);
+  end;
+end;
+
+{ aRect contains the bitmap bounds }
+
+procedure TJvTransparentButton2.DrawTheText(ARect: TRect; Canvas: TCanvas);
+var
+  Flags, MidX, MidY: Integer;
+  DC: THandle; { Col:TColor; }
+  TmpRect: TRect;
+begin
+  if (bsMouseInside in MouseStates) then
+    Canvas.Font := FHiFont
+  else
+    Canvas.Font := Self.Font;
+  DC := Canvas.Handle; { reduce calls to GetHandle }
+
+  if FWordWrap then
+    Flags := DT_WORDBREAK
+  else
+    Flags := DT_SINGLELINE;
+
+  TmpRect := Rect(0, 0, Width, Height);
+
+  { calculate width and height of text: }
+  DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  MidY := TmpRect.Bottom - TmpRect.Top;
+  MidX := TmpRect.Right - TmpRect.Left;
+  Flags := DT_CENTER;
+  { div 2 and shr 1 generates the exact same Asm code... }
+  case TextAlign of
+    ttaTop:
+      OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Top - MidY - Spacing);
+    ttaTopLeft:
+      OffsetRect(TmpRect, Spacing, ARect.Top - MidY - Spacing);
+    ttaTopRight:
+      OffsetRect(TmpRect, Width - TmpRect.Right - Spacing, ARect.Top - MidY - Spacing);
+    ttaBottom:
+      OffsetRect(TmpRect, Width div 2 - MidX div 2, ARect.Bottom + Spacing);
+    ttaBottomLeft:
+      OffsetRect(TmpRect, Spacing, ARect.Bottom + Spacing);
+    ttaBottomRight:
+      OffsetRect(TmpRect, Width - MidX - Spacing, ARect.Bottom + Spacing);
+    ttaCenter:
+      OffsetRect(TmpRect, Width div 2 - MidX div 2, Height div 2 - MidY div 2);
+    ttaRight:
+      OffsetRect(TmpRect, Width - MidX - Spacing, Height div 2 - MidY div 2);
+    ttaLeft:
+      OffsetRect(TmpRect, Spacing, Height div 2 - MidY div 2);
+  end;
+  if FWordWrap then
+    Flags := Flags or DT_WORDBREAK or DT_NOCLIP
+  else
+    Flags := Flags or DT_SINGLELINE or DT_NOCLIP;
+
+  if ((bsMouseDown in MouseStates)) and FShowPressed then
+    OffsetRect(TmpRect, 1, 1);
+
+  SetBkMode(DC, Windows.TRANSPARENT);
+
+  if not Enabled then
+  begin
+    SetTextColor(DC, ColorToRGB(clBtnHighlight));
+    OffsetRect(TmpRect, 1, 1);
+    DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
+    OffsetRect(TmpRect, -1, -1);
+    SetTextColor(DC, ColorToRGB(clBtnShadow));
+  end
+  else
+  if (bsMouseInside in MouseStates) then
+    SetTextColor(DC, ColorToRGB(FHiFont.Color))
+  else
+    SetTextColor(DC, ColorToRGB(Self.Font.Color));
+
+  DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags);
+end;
+
+procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
+var
+  Index: Integer;
+begin
+  if FImList.Count = 0 then
+    Exit;
+
+  with FImList do
+  begin
+    if not Enabled then
+      Index := 1
+    else
+    if (bsMouseDown in MouseStates) then
+      Index := 2
+    else
+    if (FrameStyle = fsExplorer) and FAutoGray and not (bsMouseDown in MouseStates) then
+      Index := 3 { autogray }
+    else
+      Index := 0; { active }
+
+    if (bsMouseDown in MouseStates) and FShowPressed then
+      OffsetRect(ARect, 1, 1);
+
+    FImList.Draw(Canvas, ARect.Left, ARect.Top, Index);
+  end;
+end;
+
+procedure TJvTransparentButton2.GlyphChanged(Sender: TObject);
+begin
+  AddGlyphs;
+end;
+
+procedure TJvTransparentButton2.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited;
+  if Operation = opRemove then
+  begin
+    if AComponent = FGrayList then
+      GrayImage := nil;
+    if AComponent = FActiveList then
+      ActiveImage := nil;
+    if AComponent = FDisabledList then
+      DisabledImage := nil;
+    if AComponent = FDownList then
+      DownImage := nil;
+  end;
 end;
 
 end.

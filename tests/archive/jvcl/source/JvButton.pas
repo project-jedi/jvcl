@@ -32,10 +32,57 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Menus, Controls,
-  Forms,
-  JVCLVer;
+  Forms, JvComponent, JVCLVer;
 
 type
+  TJvButtonMouseState = (bsMouseInside, bsMouseDown);
+  TJvButtonMouseStates = set of TJvButtonMouseState;
+
+  TJvCustomGraphicButton = class(TJvGraphicControl)
+  private
+    FCaption: TCaption;
+    FStates: TJvButtonMouseStates;
+    FPattern,FBuffer: TBitmap;
+    FOnMouseExit: TNotifyEvent;
+    FOnMouseEnter: TNotifyEvent;
+    FFlat: boolean;
+    FDropDownMenu: TPopupMenu;
+    FDown: boolean;
+    FOnParentColorChanged: TNotifyEvent;
+    procedure SetCaption(const Value: TCaption);
+    procedure SetFlat(const Value: boolean);
+    procedure SetDown(const Value: boolean);
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; virtual;
+    procedure MouseExit; virtual;
+    procedure Paint; override;
+    procedure PaintButton(Canvas: TCanvas); virtual;
+    procedure PaintFrame(Canvas: TCanvas); virtual;
+    function InsideBtn(X, Y: Integer): Boolean; virtual;
+    property MouseStates:TJvButtonMouseStates read FStates write FStates default [];
+    property Pattern:TBitmap read FPattern;
+    property Caption:TCaption read FCaption write SetCaption;
+    property Flat:boolean read FFlat write SetFlat default True;
+    property Down:boolean read FDown write SetDown default false;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
+
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseExit: TNotifyEvent read FOnMouseExit write FOnMouseExit;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
   TJvButton = class(TButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -74,6 +121,239 @@ type
   end;
 
 implementation
+
+function CreateBrushPattern: TBitmap;
+var
+  X, Y: Integer;
+begin
+  Result := TBitmap.Create;
+  Result.Width := 8; { must have this size }
+  Result.Height := 8;
+  with Result.Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := clBtnFace;
+    FillRect(Rect(0, 0, Result.Width, Result.Height));
+    for Y := 0 to 7 do
+      for X := 0 to 7 do
+        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
+          Pixels[X, Y] := clWhite; { on even/odd rows }
+  end;
+end;
+
+constructor TJvCustomGraphicButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csOpaque,csDoubleClicks];
+  FStates := [];
+  SetBounds(0, 0, 40, 40);
+  FPattern := CreateBrushPattern;
+  FBuffer := TBitmap.Create;
+  FFlat := True;
+end;
+
+destructor TJvCustomGraphicButton.Destroy;
+begin
+  FPattern.Free;
+  FBuffer.Free;
+  inherited Destroy;
+end;
+
+{ Handle speedkeys (Alt + key) }
+
+procedure TJvCustomGraphicButton.CMDialogChar(var Msg: TCMDialogChar);
+begin
+  with Msg do
+    if IsAccel(CharCode, FCaption) and Enabled then
+    begin
+      Click;
+      Result := 1;
+    end
+    else
+      inherited;
+end;
+
+procedure TJvCustomGraphicButton.CMEnabledChanged(var Msg: TMessage);
+begin
+  if not Enabled then
+    FStates := [];
+  Repaint;
+end;
+
+procedure TJvCustomGraphicButton.CMMouseEnter(var Msg: TMessage);
+begin
+  MouseEnter;
+end;
+
+procedure TJvCustomGraphicButton.CMMouseLeave(var Msg: TMessage);
+begin
+  MouseEnter;
+  inherited;
+end;
+
+procedure TJvCustomGraphicButton.MouseEnter;
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if Enabled then
+  begin
+    Include(FStates,bsMouseInside);
+    if Assigned(FOnMouseEnter) then
+      FOnMouseEnter(Self);
+    if Flat then
+      Refresh;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.MouseExit;
+begin
+  if csDesigning in ComponentState then
+    Exit; // for D7...
+  if Enabled then
+  begin
+    Exclude(FStates,bsMouseInside);
+    if Assigned(FOnMouseExit) then
+      FOnMouseExit(Self);
+    if Flat then
+      Refresh;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.Paint;
+begin
+  FBuffer.Width := Width;
+  FBuffer.Height := Height;
+  PaintFrame(FBuffer.Canvas);
+  PaintButton(FBuffer.Canvas);
+  BitBlt(Canvas.Handle,0,0,Width,Height,FBuffer.Canvas.Handle,0,0,SRCCOPY);
+end;
+
+procedure TJvCustomGraphicButton.PaintFrame(Canvas: TCanvas);
+begin
+// do nothing
+end;
+
+procedure TJvCustomGraphicButton.PaintButton(Canvas: TCanvas);
+begin
+// do nothing
+end;
+
+function TJvCustomGraphicButton.InsideBtn(X, Y: Integer): Boolean;
+begin
+  Result := PtInRect(Rect(0, 0, Width, Height), Point(X, Y));
+end;
+
+procedure TJvCustomGraphicButton.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Tmp: TPoint;
+  Msg: TMsg;
+begin
+  if not Enabled then
+    Exit;
+
+  inherited MouseDown(Button, Shift, X, Y);
+
+  //   if Assigned(OnMouseDown) then OnMouseDown(Self,Button,Shift,X,Y);
+
+  if InsideBtn(X, Y) then
+  begin
+    FStates := [bsMouseDown,bsMouseInside];
+    Repaint;
+  end;
+  if Assigned(FDropDownMenu) and (Button = mbLeft) then
+  begin
+    { calc where to put menu }
+    Tmp := ClientToScreen(Point(0, Height));
+    FDropDownMenu.Popup(Tmp.X, Tmp.Y);
+    // (rom) needs to be checked
+    { wait 'til menu is done }
+    while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
+      {nothing};
+    { release button }
+    MouseUp(Button, Shift, X, Y);
+  end;
+end;
+
+procedure TJvCustomGraphicButton.MouseMove(Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  //   if Assigned(OnMouseMove) then OnMouseMove(Self,Shift,X,Y);
+  if (bsMouseDown in FStates) then
+  begin
+    if not InsideBtn(X, Y) then
+    begin
+      if FStates = [bsMouseDown] then { mouse has slid off, so release }
+      begin
+        FStates := [];
+        Repaint;
+      end;
+    end
+    else
+    begin
+      if FStates = [] then { mouse has slid back on, so push }
+      begin
+        FStates := [bsMouseDown,bsMouseInside];
+        Repaint;
+      end;
+    end;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if not Enabled or Down then
+    Exit;
+  inherited MouseUp(Button, Shift, X, Y);
+
+  Exclude(FStates,bsMouseDown);
+  Repaint;
+end;
+
+procedure TJvCustomGraphicButton.SetCaption(const Value: TCaption);
+begin
+  if FCaption <> Value then
+  begin
+    FCaption := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.SetFlat(const Value: boolean);
+begin
+  if FFlat <> Value then
+  begin
+    FFlat := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomGraphicButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = FDropDownMenu) then
+    FDropDownMenu := nil;
+end;
+
+procedure TJvCustomGraphicButton.SetDown(const Value: boolean);
+begin
+  if FDown <> Value then
+  begin
+    FDown := Value;
+    if FDown then
+    begin
+      Include(FStates,bsMouseDown);
+      {     Click; }{ uncomment and see what happens... }
+    end
+    else
+      Exclude(FStates,bsMouseDown);
+    Repaint;
+  end;
+end;
 
 constructor TJvButton.Create(AOwner: TComponent);
 begin
@@ -160,6 +440,13 @@ end;
 procedure TJvButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
+end;
+
+procedure TJvCustomGraphicButton.CMParentColorChanged(var Msg: TMessage);
+begin
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+  inherited;
 end;
 
 end.

@@ -5,7 +5,7 @@ interface
 uses 
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvGIF, ExtCtrls, JvImage, ImgList, ComCtrls, JvArrowBtn, JvComponent,
-  JvTransBtn2, StdCtrls, JvButton, Buttons, JvBitBtn;
+  JvTransBtn, StdCtrls, JvButton, Buttons, JvBitBtn;
 
 type
   TJvButtons = class(TForm)
