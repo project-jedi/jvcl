@@ -115,7 +115,7 @@ type
     FRegName: string;
     FJvDockInfoStyle: TJvDockInfoStyle;
     FDataStream: TMemoryStream;
-    function FindDockForm(FormName: string): TCustomForm;
+    function FindDockForm(const FormName: string): TCustomForm;
     function CreateHostControl(ATreeZone: TJvDockInfoZone): TWinControl;
     {$IFDEF USEJVCL}
     function GetAppStoragePath: string;
@@ -140,9 +140,9 @@ type
     property AppStoragePath: string read GetAppStoragePath write FAppStoragePath;
     {$ENDIF USEJVCL}
     procedure ReadInfoFromIni;
-    procedure ReadInfoFromReg(RegName: string);
+    procedure ReadInfoFromReg(const RegName: string);
     procedure WriteInfoToIni;
-    procedure WriteInfoToReg(RegName: string);
+    procedure WriteInfoToReg(const RegName: string);
     property DockInfoIni: TCustomIniFile read FDockInfoIni write FDockInfoIni;
     property DockInfoReg: TRegistry read FDockInfoReg write FDockInfoReg;
   end;
@@ -153,7 +153,7 @@ uses
   SysUtils, 
   JvDockGlobals, JvDockVSNetStyle;
 
-function FindDockForm(FormName: string): TCustomForm;
+function FindDockForm(const FormName: string): TCustomForm;
 begin
   if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
     Result := nil
@@ -161,7 +161,7 @@ begin
     Result := JvDockFindDockFormWithName(FormName);
 end;
 
-function FindDockPanel(ControlName: string): TWinControl;
+function FindDockPanel(const ControlName: string): TWinControl;
 var
   Index: Word;
   DockServer: TJvDockServer;
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-function FindDockHost(ControlName: string): TWinControl;
+function FindDockHost(const ControlName: string): TWinControl;
 begin
   Result := FindDockForm(ControlName);
   if Result = nil then
@@ -332,7 +332,7 @@ end;
 
 procedure TJvDockInfoZone.SetDockInfoFromNodeToDockControl(DockControl: TJvDockBaseControl);
 
-  function GetLastDockSite(AName: string): TWinControl;
+  function GetLastDockSite(const AName: string): TWinControl;
   begin
     Result := FindDockPanel(AName);
     if Result = nil then
@@ -802,7 +802,7 @@ begin
   FJvDockInfoStyle := isNone;
 end;
 
-procedure TJvDockInfoTree.ReadInfoFromReg(RegName: string);
+procedure TJvDockInfoTree.ReadInfoFromReg(const RegName: string);
 begin
   FRegName := RegName;
   CreateZoneAndAddInfoFromReg;
@@ -964,7 +964,7 @@ end;
 
 {$ENDIF USEJVCL}
 
-function TJvDockInfoTree.FindDockForm(FormName: string): TCustomForm;
+function TJvDockInfoTree.FindDockForm(const FormName: string): TCustomForm;
 begin
   if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
     Result := nil
@@ -1106,7 +1106,7 @@ begin
   FJvDockInfoStyle := isNone;
 end;
 
-procedure TJvDockInfoTree.WriteInfoToReg(RegName: string);
+procedure TJvDockInfoTree.WriteInfoToReg(const RegName: string);
 begin
   try
     if DockInfoReg.OpenKey(RegName, False) then

@@ -47,7 +47,7 @@ type
     FSelected: Boolean;
     FSequence: Integer;
     FRow: Integer;
-    procedure SetCaption(Value: string);
+    procedure SetCaption(const Value: string);
     procedure SetExpanded(Value: Boolean);
     procedure SetSelected(Value: Boolean);
     procedure SetChanged(Value: Boolean);
@@ -242,7 +242,7 @@ begin
   (Collection as TJvgGridItems).Update(Self);
 end;
 
-procedure TJvgGridItem.SetCaption(Value: string);
+procedure TJvgGridItem.SetCaption(const Value: string);
 begin
   if FCaption <> Value then
   begin

@@ -59,20 +59,20 @@ type
     FRiseException: Boolean; 
     procedure SetTableSize(const Value: Integer);     
   protected
-    function HashProc(Name: string): Integer; virtual;
+    function HashProc(const Name: string): Integer; virtual;
     procedure DeleteListIndex(Index: Integer);
-    function CreateKeyNode(KeyName: string; KeyData: Pointer;
+    function CreateKeyNode(const KeyName: string; KeyData: Pointer;
       ListIndex: Integer): TJvDockClientHashNode;
-    function CompareKey(Key1, Key2: string): Integer;
+    function CompareKey(const Key1, Key2: string): Integer;
   public
     constructor Create(Size: Integer = DefaultHashSize; RiseExcept: Boolean = True); virtual;
     destructor Destroy; override;
     procedure CreateDictionary(Size: Integer); virtual;
-    function IsIn(Name: string): Boolean; virtual;
-    function FindNode(Name: string): TJvDockClientHashNode; virtual;
-    function Find(Name: string): Pointer; virtual;
-    function Insert(Name: string; Data: Pointer): Integer; virtual;
-    procedure Remove(Name: string); virtual;
+    function IsIn(const Name: string): Boolean; virtual;
+    function FindNode(const Name: string): TJvDockClientHashNode; virtual;
+    function Find(const Name: string): Pointer; virtual;
+    function Insert(const Name: string; Data: Pointer): Integer; virtual;
+    procedure Remove(const Name: string); virtual;
     procedure MakeEmpty;
     property CurrentSize: Integer read FCurrentSize;
     property TableSize: Integer read FTableSize write SetTableSize;
@@ -101,7 +101,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvDockControlHashTable.CompareKey(Key1, Key2: string): Integer;
+function TJvDockControlHashTable.CompareKey(const Key1, Key2: string): Integer;
 begin
   Result := AnsiStrComp(PChar(Key1), PChar(Key2));
 end;
@@ -117,7 +117,7 @@ begin
   end;
 end;
 
-function TJvDockControlHashTable.CreateKeyNode(KeyName: string;
+function TJvDockControlHashTable.CreateKeyNode(const KeyName: string;
   KeyData: Pointer; ListIndex: Integer): TJvDockClientHashNode;
 begin
   Result := TJvDockClientHashNode.Create;
@@ -140,7 +140,7 @@ begin
   FEntryList.Delete(Index);
 end;
 
-function TJvDockControlHashTable.Find(Name: string): Pointer;
+function TJvDockControlHashTable.Find(const Name: string): Pointer;
 var
   Node: TJvDockClientHashNode;
 begin
@@ -151,7 +151,7 @@ begin
     Result := nil;
 end;
 
-function TJvDockControlHashTable.FindNode(Name: string): TJvDockClientHashNode;
+function TJvDockControlHashTable.FindNode(const Name: string): TJvDockClientHashNode;
 var
   Value: Integer;
   ListIndex: Integer;
@@ -168,7 +168,7 @@ begin
     until Result = nil;
 end;
 
-function TJvDockControlHashTable.HashProc(Name: string): Integer;
+function TJvDockControlHashTable.HashProc(const Name: string): Integer;
 var
   I: Integer;
 begin
@@ -178,7 +178,7 @@ begin
   Result := Result mod FTableSize;
 end;
 
-function TJvDockControlHashTable.Insert(Name: string; Data: Pointer): Integer;
+function TJvDockControlHashTable.Insert(const Name: string; Data: Pointer): Integer;
 var
   Index: Integer;
   Value: Integer;
@@ -211,7 +211,7 @@ begin
   Result := Index;
 end;
 
-function TJvDockControlHashTable.IsIn(Name: string): Boolean;
+function TJvDockControlHashTable.IsIn(const Name: string): Boolean;
 begin
   Result := FindNode(Name) <> nil;
 end;
@@ -224,7 +224,7 @@ begin
     DeleteListIndex(I);
 end;
 
-procedure TJvDockControlHashTable.Remove(Name: string);
+procedure TJvDockControlHashTable.Remove(const Name: string);
 var
   Node: TJvDockClientHashNode;
 begin

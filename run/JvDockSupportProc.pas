@@ -36,27 +36,27 @@ type
   TJvDockListScanKind = (lskForward, lskBackward);
 
 function JvDockStreamDataToString(Stream: TStream): string;
-procedure JvDockStringToStreamData(Stream: TStream; Data: string);
+procedure JvDockStringToStreamData(Stream: TStream; const Data: string);
 
-function JvDockFindDockFormWithName(FormName: string;
+function JvDockFindDockFormWithName(const FormName: string;
   FromDockManager: Boolean = False;
   FromList: Boolean = True;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
-function JvDockFindDockServerFormWithName(FormName: string;
+function JvDockFindDockServerFormWithName(const FormName: string;
   FromDockManager: Boolean = False;
   FromList: Boolean = True;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
-function JvDockFindDockClientFormWithName(FormName: string;
+function JvDockFindDockClientFormWithName(const FormName: string;
   FromDockManager: Boolean = False;
   FromList: Boolean = True;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
-function JvDockFindDockServerFromDockManager(FormName: string;
+function JvDockFindDockServerFromDockManager(const FormName: string;
   FromList: Boolean = True;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
-function JvDockFindDockClientFromDockManager(FormName: string;
+function JvDockFindDockClientFromDockManager(const FormName: string;
   FromList: Boolean = True;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
-function JvDockFindDockFormFromScreen(FormName: string;
+function JvDockFindDockFormFromScreen(const FormName: string;
   ScanKind: TJvDockListScanKind = lskForward): TCustomForm;
 
 function JvDockGetMinOffset(TBDockSize, ControlSize: Integer; Scale: Real): Integer;
@@ -106,7 +106,7 @@ begin
   end;
 end;
 
-procedure JvDockStringToStreamData(Stream: TStream; Data: string);
+procedure JvDockStringToStreamData(Stream: TStream; const Data: string);
 var
   I: Integer;
   Ch: Char;
@@ -120,7 +120,7 @@ begin
   end;
 end;
 
-function JvDockFindDockFormWithName(FormName: string; FromDockManager: Boolean;
+function JvDockFindDockFormWithName(const FormName: string; FromDockManager: Boolean;
   FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   Result := JvDockFindDockClientFormWithName(FormName, FromDockManager, FromList, ScanKind);
@@ -128,7 +128,7 @@ begin
     Result := JvDockFindDockServerFormWithName(FormName, FromDockManager, FromList, ScanKind);
 end;
 
-function JvDockFindDockServerFormWithName(FormName: string; FromDockManager: Boolean;
+function JvDockFindDockServerFormWithName(const FormName: string; FromDockManager: Boolean;
   FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   if FromDockManager then
@@ -137,7 +137,7 @@ begin
     Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
 end;
 
-function JvDockFindDockClientFormWithName(FormName: string; FromDockManager: Boolean;
+function JvDockFindDockClientFormWithName(const FormName: string; FromDockManager: Boolean;
   FromList: Boolean; ScanKind: TJvDockListScanKind): TCustomForm;
 begin
   if FromDockManager then
@@ -146,7 +146,7 @@ begin
     Result := JvDockFindDockFormFromScreen(FormName, ScanKind);
 end;
 
-function JvDockFindDockServerFromDockManager(FormName: string; FromList: Boolean;
+function JvDockFindDockServerFromDockManager(const FormName: string; FromList: Boolean;
   ScanKind: TJvDockListScanKind): TCustomForm;
 var
   I: Integer;
@@ -170,7 +170,7 @@ begin
   end;
 end;
 
-function JvDockFindDockClientFromDockManager(FormName: string; FromList: Boolean;
+function JvDockFindDockClientFromDockManager(const FormName: string; FromList: Boolean;
   ScanKind: TJvDockListScanKind): TCustomForm;
 var
   I: Integer;
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-function JvDockFindDockFormFromScreen(FormName: string;
+function JvDockFindDockFormFromScreen(const FormName: string;
   ScanKind: TJvDockListScanKind): TCustomForm;
 var
   I: Integer;

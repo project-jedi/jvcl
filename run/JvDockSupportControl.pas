@@ -424,9 +424,9 @@ type
     procedure AddDockClientToDockManager(AControl: TControl);
     procedure RemoveDockServerFromDockManager(AControl: TControl);
     procedure RemoveDockClientFromDockManager(AControl: TControl);
-    function FindDockServerForm(AName: string): TControl;
-    function FindDockClientForm(AName: string): TControl;
-    function FindDockControlForm(AName: string): TControl;
+    function FindDockServerForm(const AName: string): TControl;
+    function FindDockClientForm(const AName: string): TControl;
+    function FindDockControlForm(const AName: string): TControl;
     function IsDockLoading: Boolean;
     function IsSaving: Boolean;
     procedure ShowDockForm(DockWindow: TWinControl);
@@ -435,13 +435,13 @@ type
     procedure SetTabDockHostBorderStyle(Value: TFormBorderStyle);
     procedure SetConjoinDockHostBorderStyle(Value: TFormBorderStyle);
     {$IFDEF USEJVCL}
-    procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
-    procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+    procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
+    procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
     {$ELSE}
-    procedure SaveDockTreeToFile(FileName: string);
-    procedure LoadDockTreeFromFile(FileName: string);
-    procedure SaveDockTreeToReg(RootKey: DWORD; RegPatch: string);
-    procedure LoadDockTreeFromReg(RootKey: DWORD; RegPatch: string);
+    procedure SaveDockTreeToFile(const FileName: string);
+    procedure LoadDockTreeFromFile(const FileName: string);
+    procedure SaveDockTreeToReg(RootKey: DWORD; const RegPatch: string);
+    procedure LoadDockTreeFromReg(RootKey: DWORD; const RegPatch: string);
     {$ENDIF USEJVCL}
     procedure BeginDrag(Control: TControl;
       Immediate: Boolean; Threshold: Integer = -1); virtual;
@@ -2490,7 +2490,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvDockManager.FindDockClientForm(AName: string): TControl;
+function TJvDockManager.FindDockClientForm(const AName: string): TControl;
 var
   I: Integer;
 begin
@@ -2503,7 +2503,7 @@ begin
     end;
 end;
 
-function TJvDockManager.FindDockServerForm(AName: string): TControl;
+function TJvDockManager.FindDockServerForm(const AName: string): TControl;
 var
   I: Integer;
 begin
@@ -2516,7 +2516,7 @@ begin
     end;
 end;
 
-function TJvDockManager.FindDockControlForm(AName: string): TControl;
+function TJvDockManager.FindDockControlForm(const AName: string): TControl;
 begin
   Result := FindDockServerForm(AName);
   if Result = nil then
@@ -2535,7 +2535,7 @@ end;
 
 {$IFDEF USEJVCL}
 
-procedure TJvDockManager.LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+procedure TJvDockManager.LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
 begin
   BeginLoad;
   try
@@ -2545,7 +2545,7 @@ begin
   end;
 end;
 
-procedure TJvDockManager.SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+procedure TJvDockManager.SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; const AppStoragePath: string = '');
 begin
   BeginSave;
   try
@@ -2557,7 +2557,7 @@ end;
 
 {$ELSE}
 
-procedure TJvDockManager.LoadDockTreeFromFile(FileName: string);
+procedure TJvDockManager.LoadDockTreeFromFile(const FileName: string);
 begin
   BeginLoad;
   try
@@ -2567,7 +2567,7 @@ begin
   end;
 end;
 
-procedure TJvDockManager.LoadDockTreeFromReg(RootKey: DWORD; RegPatch: string);
+procedure TJvDockManager.LoadDockTreeFromReg(RootKey: DWORD; const RegPatch: string);
 begin
   BeginLoad;
   try
@@ -2577,7 +2577,7 @@ begin
   end;
 end;
 
-procedure TJvDockManager.SaveDockTreeToFile(FileName: string);
+procedure TJvDockManager.SaveDockTreeToFile(const FileName: string);
 begin
   BeginSave;
   try
@@ -2587,7 +2587,7 @@ begin
   end;
 end;
 
-procedure TJvDockManager.SaveDockTreeToReg(RootKey: DWORD; RegPatch: string);
+procedure TJvDockManager.SaveDockTreeToReg(RootKey: DWORD; const RegPatch: string);
 begin
   BeginSave;
   try

@@ -30,11 +30,6 @@ unit JvgCGI;
 
 interface
 
-// (rom) from the Delphi help
-// The $APPTYPE directive is meaningful only in a program.
-// It should not be used in a library, unit, or package.
-{ APPTYPE CONSOLE}
-
 uses
   Windows, SysUtils, Classes;
 
@@ -42,7 +37,7 @@ type
   TJvgCGI = class(TObject)
   private
     FAutoHeaderAndFooter: Boolean;
-    procedure Split(S: string);
+    procedure Split(const S: string);
     procedure Decode(sl: TStringList);
   public
     //      Names: TStringList;
@@ -53,8 +48,8 @@ type
     destructor Destroy; override;
     procedure InsertHeader;
     procedure InsertFooter;
-    function ParamNameIndex(Str: string): Integer; //...returns -1 if Name doesn't exist
-    function ParamValueIndex(Str: string): Integer; //...returns -1 if Name doesn't exist
+    function ParamNameIndex(const Str: string): Integer; //...returns -1 if Name doesn't exist
+    function ParamValueIndex(const Str: string): Integer; //...returns -1 if Name doesn't exist
   end;
 
 implementation
@@ -129,7 +124,7 @@ begin
   Writeln('</HTML>');
 end;
 
-procedure TJvgCGI.Split(S: string);
+procedure TJvgCGI.Split(const S: string);
 var
   I, LastI: Integer;
 
@@ -143,6 +138,7 @@ var
         Values.Add( Copy( S, J+1, I-J-1 ) );}
     Params.Add(Copy(S, LastI, I - LastI + 1));
   end;
+
 begin
   I := 1;
   LastI := 1;
@@ -182,7 +178,7 @@ begin
   end;
 end;
 
-function TJvgCGI.ParamNameIndex(Str: string): Integer;
+function TJvgCGI.ParamNameIndex(const Str: string): Integer;
 var
   I: Integer;
 begin
@@ -195,7 +191,7 @@ begin
   Result := -1;
 end;
 
-function TJvgCGI.ParamValueIndex(Str: string): Integer;
+function TJvgCGI.ParamValueIndex(const Str: string): Integer;
 //var
 //  I: Integer;
 begin

@@ -137,7 +137,7 @@ procedure CopyFolder(const SourceFilePath, TargetFilePath: string;
 var
   sr: TSearchRec;
 
-  procedure ProcessFile(FileName: string);
+  procedure ProcessFile(const FileName: string);
   var
     Ext: string;
   begin
@@ -153,6 +153,7 @@ var
       CopyFile(PChar(SourceFilePath + FileName),
         PChar(TargetFilePath + ExtractFileName(FileName)), not Overwrite);
   end;
+  
 begin
   ForceDirectories(TargetFilePath);
   if FindFirst(SourceFilePath + AllFilesMask, faAnyFile, sr) = 0 then
@@ -168,7 +169,7 @@ procedure RemoveDirectories(const FilePath: string);
 var
   sr: TSearchRec;
 
-  procedure ProcessFile(FileName: string);
+  procedure ProcessFile(const FileName: string);
   var
     Ext: string;
   begin

@@ -67,12 +67,12 @@ type
   protected
     procedure UpdateComponent(Component: TPersistent); virtual;
   public
-    procedure LoadLanguage(Component: TComponent; FileName: string);
+    procedure LoadLanguage(Component: TComponent; const FileName: string);
   published
     property Options: TLanguageLoaderOptions read FOptions write FOptions;
   end;
 
-procedure LoadLanguage(Component: TComponent; FileName: string;
+procedure LoadLanguage(Component: TComponent; const FileName: string;
   Options: TLanguageLoaderOptions);
 
 implementation
@@ -83,7 +83,7 @@ uses
 //{Ф-ия для загрузки словаря без предварительного создания компонента}
 { Function to load dictionary without previous creation of the component [translated] }
 
-procedure LoadLanguage(Component: TComponent; FileName: string;
+procedure LoadLanguage(Component: TComponent; const FileName: string;
   Options: TLanguageLoaderOptions);
 var
   LanguageLoader: TJvgLanguageLoader;
@@ -103,7 +103,7 @@ end;
 { Loading dictionary, passing the given component and all his children components
   [translated] }
 
-procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName: string);
+procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; const FileName: string);
 
   procedure UpdateAllComponents(Component: TComponent);
   var

@@ -97,13 +97,13 @@ type
     procedure SetSideBottom(Value: Word);
     procedure SetPenStyle(Value: Integer);
     procedure SetPenWidth(Value: Word);
-    procedure SetText(Value: string);
-    procedure SetFName(Value: string);
+    procedure SetText(const Value: string);
+    procedure SetFName(const Value: string);
     procedure SetFSize(Value: Integer);
     procedure SetFColor(Value: Integer);
     procedure SetFStyle(Value: Integer);
     procedure SetContainOLE(Value: Boolean);
-    procedure SetOLELinkToFile(Value: string);
+    procedure SetOLELinkToFile(const Value: string);
     procedure SetOLESizeMode(Value: Word);
     procedure SetFixed(Value: Word);
     function IsContainOLE: Boolean;
@@ -191,8 +191,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Save;
-    procedure LoadFromFile(FileName: string);
-    procedure SaveToFile(FileName: string);
+    procedure LoadFromFile(const FileName: string);
+    procedure SaveToFile(const FileName: string);
     procedure PaintTo(Canvas: TCanvas);
     procedure PreviewTo(Window: TWinControl);
     procedure Print;
@@ -200,7 +200,7 @@ type
     function SetParam(const sParamName, sParamValue: string): Boolean;
     function GetParam(const sParamName: string; var sParamValue: string): Boolean;
     function AddComponent: TJvgReportItem;
-    procedure AnalyzeParams(Item: TJvgReportItem; DefName: string);
+    procedure AnalyzeParams(Item: TJvgReportItem; const DefName: string);
   private
     procedure SetUnicalName(laBevel: TJvgReportItem);
   protected
@@ -746,15 +746,16 @@ begin
   Invalidate;
 end;
 
-procedure TJvgReportItem.SetText(Value: string);
+procedure TJvgReportItem.SetText(const Value: string);
 begin
-  if FText = Value then
-    Exit;
-  FText := Value;
-  Invalidate;
+  if FText <> Value then
+  begin
+    FText := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvgReportItem.SetFName(Value: string);
+procedure TJvgReportItem.SetFName(const Value: string);
 begin
   FFName := Value;
   Canvas.Font.Name := Value;
@@ -814,13 +815,14 @@ begin
   end;
 end;
 
-procedure TJvgReportItem.SetOLELinkToFile(Value: string);
+procedure TJvgReportItem.SetOLELinkToFile(const Value: string);
 begin
   FOLELinkToFile := Value;
-  if not Assigned(OLEContainer) then
-    Exit;
-  OLEContainer.CreateLinkToFile(Value, False);
-  //OLEContainer.LoadFromFile( Value );
+  if Assigned(OLEContainer) then
+  begin
+    OLEContainer.CreateLinkToFile(Value, False);
+    //OLEContainer.LoadFromFile( Value );
+  end;
 end;
 
 procedure TJvgReportItem.SetFixed(Value: Word);
@@ -893,7 +895,7 @@ begin
   end;
 end;
 
-procedure TJvgReport.SaveToFile(FileName: string);
+procedure TJvgReport.SaveToFile(const FileName: string);
 var
   fs: TFileStream;
 begin
@@ -906,7 +908,7 @@ begin
   end;
 end;
 
-procedure TJvgReport.LoadFromFile(FileName: string);
+procedure TJvgReport.LoadFromFile(const FileName: string);
 var
   fs: TFileStream;
   ms: TMemoryStream;
@@ -1039,7 +1041,7 @@ var
     P.NextToken;
   end;
 
-  procedure Create_Object(sClassName, sName: string);
+  procedure Create_Object(const sClassName, sName: string);
   var
     B: TJvgReportItem;
   begin
@@ -1297,15 +1299,15 @@ begin
   laBevel.CompName := 'Component' + IntToStr(I);
 end;
 
-procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; DefName: string);
+procedure TJvgReport.AnalyzeParams(Item: TJvgReportItem; const DefName: string);
 var
   LastPos: Integer;
   SList: TStringList;
   ParamType: TJvgReportParamKind;
   ParamText, ParamName, ParamMask, ParamValue: string;
 
-  function ExtractParam(Item: TJvgReportItem; var SrchPos: Integer; var
-    ParamName: string; var ParamType: TJvgReportParamKind): Boolean;
+  function ExtractParam(Item: TJvgReportItem; var SrchPos: Integer;
+    var ParamName: string; var ParamType: TJvgReportParamKind): Boolean;
   var
     I, J: Integer;
     f: Boolean;
@@ -1348,52 +1350,54 @@ var
       end;
     if not f then
       Exit;
-    ParamName := copy(Text, SrchPos, I - SrchPos);
+    ParamName := Copy(Text, SrchPos, I - SrchPos);
 
     J := ParamNames.IndexOf(ParamName);
     if J <> -1 then
-      Item.PrintText := copy(Text, 0, SrchPos - 3) + ParamValues[J] +
-        copy(Text, I + 1, 255);
+      Item.PrintText := Copy(Text, 0, SrchPos - 3) + ParamValues[J] +
+        Copy(Text, I + 1, 255);
 
     Result := True;
   end;
-begin
 
+begin
   LastPos := 0;
   SList := TStringList.Create;
-  repeat
-
-    if ExtractParam(Item, LastPos, ParamText, ParamType) then
-    begin
-      ParamMask := '';
-      ParamValue := '';
-      ParamTypes.Add(Pointer(ParamType));
-      if ParamType = gptEdit then
+  try
+    repeat
+      if ExtractParam(Item, LastPos, ParamText, ParamType) then
       begin
-        if ParamText = '' then
-          ParamText := DefName;
-        SList.CommaText := ParamText;
-        if SList.Count = 0 then
-          continue;
-        ParamName := SList[0];
-        if SList.Count > 1 then
-          ParamMask := SList[1];
-        if SList.Count > 2 then
-          ParamValue := SList[2];
+        ParamMask := '';
+        ParamValue := '';
+        ParamTypes.Add(Pointer(ParamType));
+        if ParamType = gptEdit then
+        begin
+          if ParamText = '' then
+            ParamText := DefName;
+          SList.CommaText := ParamText;
+          if SList.Count = 0 then
+            continue;
+          ParamName := SList[0];
+          if SList.Count > 1 then
+            ParamMask := SList[1];
+          if SList.Count > 2 then
+            ParamValue := SList[2];
+        end
+        else
+          ParamName := ParamText;
+        if ParamNames.IndexOf(ParamName) <> -1 then
+          continue; //...already exists
+        ParamNames.Add(ParamName);
+        ParamMasks.Add(ParamMask);
+        ParamValues.Add(ParamValue);
+        // else ParamValues[ParamIndex] := sParamValue;
       end
       else
-        ParamName := ParamText;
-      if ParamNames.IndexOf(ParamName) <> -1 then
-        continue; //...already exists
-      ParamNames.Add(ParamName);
-      ParamMasks.Add(ParamMask);
-      ParamValues.Add(ParamValue);
-      // else ParamValues[ParamIndex] := sParamValue;
-    end
-    else
-      Break;
-  until False;
-  SList.Free;
+        Break;
+    until False;
+  finally
+    SList.Free;
+  end;
 end;
 
 function TJvgReport.SetParam(const sParamName, sParamValue: string): Boolean;

@@ -258,7 +258,7 @@ type
     FIsSourceDockClient: Boolean;
     procedure SetTabWidth(const Value: Integer);
     procedure WMSetText(var Msg: TMessage); message WM_SETTEXT;
-    procedure SetSheetSort(CaptionStr: string);
+    procedure SetSheetSort(const CaptionStr: string);
   protected
     procedure SetPageControl(APageControl: TJvDockPageControl); override;
     property TabWidth: Integer read FTabWidth write SetTabWidth;
@@ -3619,7 +3619,7 @@ begin
   inherited SetPageControl(APageControl);
 end;
 
-procedure TJvDockVIDTabSheet.SetSheetSort(CaptionStr: string);
+procedure TJvDockVIDTabSheet.SetSheetSort(const CaptionStr: string);
 var
   TabPanel: TJvDockTabPanel;
   TempWidth: Integer;

@@ -61,7 +61,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ShowHintAt(X, Y: Integer; Caption: string);
+    procedure ShowHintAt(X, Y: Integer; const Caption: string);
   published
     property Active: Boolean read FActive write FActive default False;
     property ShowHint: Boolean read FShowHint write FShowHint default False;
@@ -196,7 +196,7 @@ begin
     Self.ShowHintAt(HintInfo.CursorPos.X, HintInfo.CursorPos.Y, HintStr);
 end;
 
-procedure TJvgHint.ShowHintAt(X, Y: Integer; Caption: string);
+procedure TJvgHint.ShowHintAt(X, Y: Integer; const Caption: string);
 var
   R: TRect;
   HW: TJvgHintWindow;
