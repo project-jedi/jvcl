@@ -532,6 +532,7 @@ type
     FRepeatTimer: TTimer;
     procedure TimerExpired(Sender: TObject);
   protected
+    procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -541,6 +542,13 @@ type
   end;
 
 { TJvRepeatButton }
+
+procedure TJvRepeatButton.CMVisibleChanged(var Msg: TMessage);
+begin
+  inherited;
+  if not Visible then
+    FreeAndNil(FRepeatTimer);
+end;
 
 destructor TJvRepeatButton.Destroy;
 begin
@@ -949,15 +957,15 @@ end;
 //=== TJvThemedTopBottomButton =================================================
 
 type
-  TJvThemedTopBottomButton = class(TJvRepeatSpeedButton)
+  TJvThemedTopBottomButton = class(TJvRepeatButton)
   protected
     FIsUpBtn: Boolean;
+    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure Paint; override;
   end;
 
 procedure TJvThemedTopBottomButton.Paint;
 var
-  PaintRect, ClipRect: TRect;
   Button: TThemedScrollBar;
   Details: TThemedElementDetails;
 begin
@@ -979,13 +987,16 @@ begin
 
     Details := ThemeServices.GetElementDetails(Button);
 
-    ClipRect := ClientRect;
-    with ClipRect do
-      PaintRect := Rect(Left-1, Top, Right, Bottom);
-    ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, @ClipRect);
+    ThemeServices.DrawElement(Canvas.Handle, Details, ClientRect, nil); //@ClipRect);
   end
   else
     inherited Paint;
+end;
+
+procedure TJvThemedTopBottomButton.WMEraseBkgnd(
+  var Msg: TWmEraseBkgnd);
+begin
+  Msg.Result := 1;
 end;
 {$ENDIF}
 
@@ -993,16 +1004,18 @@ end;
 
 procedure TJvCustomOutlookBar.DoDwnClick(Sender: TObject);
 begin
-  with Pages[ActivePageIndex] do
-    if TopButtonIndex < Buttons.Count then
-      TopButtonIndex := TopButtonIndex + 1;
+  if FBtmButton.Visible then
+    with Pages[ActivePageIndex] do
+      if TopButtonIndex < Buttons.Count then
+        TopButtonIndex := TopButtonIndex + 1;
 end;
 
 procedure TJvCustomOutlookBar.DoUpClick(Sender: TObject);
 begin
-  with Pages[ActivePageIndex] do
-    if TopButtonIndex > 0 then
-      TopButtonIndex := TopButtonIndex - 1;
+  if FTopButton.Visible then
+    with Pages[ActivePageIndex] do
+      if TopButtonIndex > 0 then
+        TopButtonIndex := TopButtonIndex - 1;
 end;
 
 constructor TJvCustomOutlookBar.Create(AOwner: TComponent);
@@ -2120,7 +2133,6 @@ begin
   end;
 end;
 {$ENDIF}
-
 
 end.
 
