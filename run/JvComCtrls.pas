@@ -621,12 +621,17 @@ type
 
   {$IFDEF VisualCLX}
 
+  { A fake component which either maps the properties to TTreeView or ignores them. }
   TJvTreeView = class(TJvExTreeView)
   private
     FOnSelectionChange: TNotifyEvent;
     FLineColor: TColor;
     FLastSelection: TTreeNode;
+    FHideSelection: Boolean;
+    FShowRoot: Boolean;
     procedure SetLineColor(Value: TColor);
+    procedure SetHideSelection(Value: Boolean);
+    procedure SetShowRoot(Value: Boolean);
   protected
     procedure Change(Node: TTreeNode); override;
     procedure DoSelectionChange; dynamic;
@@ -634,7 +639,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
+    property ShowRoot: Boolean read FShowRoot write SetShowRoot default True;
     property LineColor: TColor read FLineColor write SetLineColor default clDefault;
+
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
   end;
 
@@ -3083,6 +3091,24 @@ begin
   if Value <> FLineColor then
   begin
     FLineColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTreeView.SetHideSelection(Value: Boolean);
+begin
+  if Value <> FHideSelection then
+  begin
+    FHideSelection := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvTreeView.SetShowRoot(Value: Boolean);
+begin
+  if Value <> FShowRoot then
+  begin
+    FShowRoot := Value;
     Invalidate;
   end;
 end;
