@@ -47,7 +47,7 @@ type
   TJvParameterListSelectList = class
     ;
 
-  TJvBaseParameter = class;
+  TJvBaseParameter = class ;
 
   TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) of object;
 
@@ -115,7 +115,7 @@ type
     procedure AddValue(AName: string; AValue: variant);
   end;
 
-  TJvBaseParameter = class(TComponent)
+  TJvBaseParameter = class (TComponent)
   private
     FCaption: string;
     FValue: variant;
@@ -411,42 +411,22 @@ type
 implementation
 
 uses
-  JvParameterListParameter;
-
-resourcestring
-  SErrParameterMustBeEntered = 'Parameter "%s" must be entered!';
-
-  SHistorySelectPath = 'History';
-
-  SDialogCaption = '';
-  SOkButton      = '&Ok';
-  SCancelButton  = '&Cancel';
-  SHistoryLoadButton = '&Load';
-  SHistorySaveButton = '&Save';
-  SHistoryClearButton = 'Cl&ear';
-  SHistoryLoadCaption = 'Load Parameter Settings';
-  SHistorySaveCaption = 'Save Parameter Settings';
-  SHistoryClearCaption = 'Manage Parameter Settings';
-
-  SNoParametersDefined      = 'TJvParameterList.ShowParameterDialog: No Parameters defined';
-  SAddObjectWrongObjectType = 'TJvParameterList.AddObject: Wrong object type';
-  SAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
-  SAddObjectDuplicateSearchNamesNotAllowed = 'TJvParameterList.AddObject: Duplicate SearchNames ("%s") not allowed';
+  JvParameterListParameter, JvResources;
 
 //=== TJvParameterListMessages ===============================================
 
 constructor TJvParameterListMessages.Create;
 begin
   inherited Create;
-  Caption      := SDialogCaption;
-  OkButton     := SOkButton;
-  CancelButton := SCancelButton;
-  HistoryLoadButton := SHistoryLoadButton;
-  HistorySaveButton := SHistorySaveButton;
-  HistoryClearButton := SHistoryClearButton;
-  HistoryLoadCaption := SHistoryLoadCaption;
-  HistorySaveCaption := SHistorySaveCaption;
-  HistoryClearCaption := SHistoryClearCaption;
+  Caption      := RsDialogCaption;
+  OkButton     := RsOkButton;
+  CancelButton := RsCancelButton;
+  HistoryLoadButton := RsHistoryLoadButton;
+  HistorySaveButton := RsHistorySaveButton;
+  HistoryClearButton := RsHistoryClearButton;
+  HistoryLoadCaption := RsHistoryLoadCaption;
+  HistorySaveCaption := RsHistorySaveCaption;
+  HistoryClearCaption := RsHistoryClearCaption;
 end;
 
 //=== TJvParameterListEnableDisableReason ====================================
@@ -940,7 +920,7 @@ begin
   else
     Result := not VarIsNull(AData);
   if not Result then
-    JvDSADialogs.MessageDlg(Format(SErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
 end;
 
 function TJvBaseParameter.GetParameterNameExt: string;
@@ -1057,7 +1037,7 @@ procedure TJvParameterList.SetPath(Value: string);
 begin
   FParameterListPropertyStore.Path := Value;
   if Assigned(AppStore) then
-    FParameterListSelectList.SelectPath := AppStore.ConcatPaths([Value, SHistorySelectPath])
+    FParameterListSelectList.SelectPath := AppStore.ConcatPaths([Value, RsHistorySelectPath])
 end;
 
 function TJvParameterList.GetPath: string;
@@ -1074,7 +1054,7 @@ procedure TJvParameterList.SetAppStore(Value: TJvCustomAppStore);
 begin
   FParameterListPropertyStore.AppStore := Value;
   if Assigned(Value) then
-    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.Path, SHistorySelectPath])
+    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.Path, RsHistorySelectPath])
 end;
 
 procedure TJvParameterList.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1295,20 +1275,21 @@ begin
         else
           TForm(ParameterDialog).ClientHeight := ArrangePanel.Height + BottomPanel.Height + 5;
 
-  if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
-  begin
-    ButtonPanel.Align  := alBottom;
-    ButtonPanel.Height := BottomPanel.Height;
-    BottomPanel.Height := BottomPanel.Height * 2 + 1;
-    HistoryPanel.Align := alClient;
-  end;
+  if Assigned(HistoryPanel) then
+    if (ButtonPanel.Width + HistoryPanel.Width) > BottomPanel.Width then
+    begin
+      ButtonPanel.Align  := alBottom;
+      ButtonPanel.Height := BottomPanel.Height;
+      BottomPanel.Height := BottomPanel.Height * 2 + 1;
+      HistoryPanel.Align := alClient;
+    end;
   CheckScrollBoxAutoScroll;
 end;
 
 function TJvParameterList.ShowParameterDialog: boolean;
 begin
   if Count = 0 then
-    EJVCLException.Create(SNoParametersDefined);
+    EJVCLException.Create(RsENoParametersDefined);
   CreateParameterDialog;
   try
     SetDataToWinControls;
@@ -1616,11 +1597,11 @@ end;
 function TJvParameterList.AddObject(const S: string; AObject: TObject): integer;
 begin
   if not (AObject is TJvBaseParameter) then
-    raise EJVCLException.Create(SAddObjectWrongObjectType);
+    raise EJVCLException.Create(RsEAddObjectWrongObjectType);
   if TJvBaseParameter(AOBject).SearchName = '' then
-    raise EJVCLException.Create(SAddObjectSearchNameNotDefined);
+    raise EJVCLException.Create(RsEAddObjectSearchNameNotDefined);
   if IntParameterList.IndexOf(S) >= 0 then
-    raise Exception.Create(Format(SAddObjectDuplicateSearchNamesNotAllowed, [s]));
+    raise Exception.Create(Format(RsEAddObjectDuplicateSearchNamesNotAllowed, [s]));
   TJvBaseParameter(AObject).ParameterList := Self;
   Result := FIntParameterList.AddObject(S, AObject);
 end;

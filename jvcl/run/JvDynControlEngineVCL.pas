@@ -23,7 +23,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$I WINDOWSONLY.INC}
 
 unit JvDynControlEngineVCL;
 
@@ -390,7 +389,7 @@ type
     procedure ControlSetLayout(Value: TButtonLayout);
   end;
 
-function DynControlEngine_VCL: TJvDynControlEngine;
+function DynControlEngineVCL: TJvDynControlEngine;
 
 implementation
 
@@ -401,7 +400,7 @@ uses
   SysUtils, ExtDlgs;
 
 var
-  IntDynControlEngine_VCL: TJvDynControlEngine = nil;
+  IntDynControlEngineVCL: TJvDynControlEngine = nil;
 
 //=== TJvDynControlVCLMaskEdit ===============================================
 
@@ -1576,35 +1575,35 @@ begin
 end;
 
 
-function DynControlEngine_VCL: TJvDynControlEngine;
+function DynControlEngineVCL: TJvDynControlEngine;
 begin
-  Result := IntDynControlEngine_VCL;
+  Result := IntDynControlEngineVCL;
 end;
 
 initialization
-  IntDynControlEngine_VCL := TJvDynControlEngine.Create;
-  IntDynControlEngine_VCL.RegisterControl(jctLabel, TJvDynControlVCLLabel);
-  IntDynControlEngine_VCL.RegisterControl(jctStaticText, TJvDynControlVCLStaticText);
-  IntDynControlEngine_VCL.RegisterControl(jctButton, TJvDynControlVCLButton);
-  IntDynControlEngine_VCL.RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
-  IntDynControlEngine_VCL.RegisterControl(jctPanel, TJvDynControlVCLPanel);
-  IntDynControlEngine_VCL.RegisterControl(jctImage, TJvDynControlVCLImage);
-  IntDynControlEngine_VCL.RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
-  IntDynControlEngine_VCL.RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
-  IntDynControlEngine_VCL.RegisterControl(jctListBox, TJvDynControlVCLListBox);
-  IntDynControlEngine_VCL.RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
-  IntDynControlEngine_VCL.RegisterControl(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngine_VCL.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
- //  IntDynControlEngine_VCL.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
-  IntDynControlEngine_VCL.RegisterControl(jctMemo, TJvDynControlVCLMemo);
-  SetDefaultDynControlEngine(IntDynControlEngine_VCL);
+  IntDynControlEngineVCL := TJvDynControlEngine.Create;
+  IntDynControlEngineVCL.RegisterControl(jctLabel, TJvDynControlVCLLabel);
+  IntDynControlEngineVCL.RegisterControl(jctStaticText, TJvDynControlVCLStaticText);
+  IntDynControlEngineVCL.RegisterControl(jctButton, TJvDynControlVCLButton);
+  IntDynControlEngineVCL.RegisterControl(jctScrollBox, TJvDynControlVCLScrollBox);
+  IntDynControlEngineVCL.RegisterControl(jctPanel, TJvDynControlVCLPanel);
+  IntDynControlEngineVCL.RegisterControl(jctImage, TJvDynControlVCLImage);
+  IntDynControlEngineVCL.RegisterControl(jctCheckBox, TJvDynControlVCLCheckBox);
+  IntDynControlEngineVCL.RegisterControl(jctComboBox, TJvDynControlVCLComboBox);
+  IntDynControlEngineVCL.RegisterControl(jctListBox, TJvDynControlVCLListBox);
+  IntDynControlEngineVCL.RegisterControl(jctRadioGroup, TJvDynControlVCLRadioGroup);
+  IntDynControlEngineVCL.RegisterControl(jctDateTimeEdit, TJvDynControlVCLDateTimeEdit);
+  IntDynControlEngineVCL.RegisterControl(jctTimeEdit, TJvDynControlVCLTimeEdit);
+  IntDynControlEngineVCL.RegisterControl(jctDateEdit, TJvDynControlVCLDateEdit);
+  IntDynControlEngineVCL.RegisterControl(jctEdit, TJvDynControlVCLMaskEdit);
+ //  IntDynControlEngineVCL.RegisterControl(jctCalculateEdit, TJvDynControlVCLMaskEdit);
+ //  IntDynControlEngineVCL.RegisterControl(jctSpinEdit, TJvDynControlVCLMaskEdit);
+  IntDynControlEngineVCL.RegisterControl(jctDirectoryEdit, TJvDynControlVCLDirectoryEdit);
+  IntDynControlEngineVCL.RegisterControl(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
+  IntDynControlEngineVCL.RegisterControl(jctMemo, TJvDynControlVCLMemo);
+  SetDefaultDynControlEngine(IntDynControlEngineVCL);
 
 finalization
-  FreeAndNil(IntDynControlEngine_VCL);
+  FreeAndNil(IntDynControlEngineVCL);
 
 end.

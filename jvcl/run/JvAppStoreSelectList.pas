@@ -368,10 +368,6 @@ end;
 procedure TJvAppStoreSelectList.StoreSelectList;
 begin
   if Assigned(AppStore) then
-  //  if CheckEntries then
-  //    for I := FSelectList.Count - 1 downto 0 do
-  //      if not AppStore.PathExists(SelectPath + PathDelim + FSelectList[I]) then
-  //        FSelectList.Delete(I);
     AppStore.WriteStringList(SelectPath, FSelectList);
 end;
 
