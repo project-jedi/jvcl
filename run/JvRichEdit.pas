@@ -1342,7 +1342,7 @@ var
 
   Painting: Boolean = False;
 
-  //=== Local procedures =======================================================
+//=== Local procedures =======================================================
 
 function GConversionFormatList: TConversionFormatList;
 begin

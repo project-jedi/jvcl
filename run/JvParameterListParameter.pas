@@ -61,10 +61,12 @@ type
     FGlyph: TBitmap;
     FNumGlyphs: Integer;
     FLayout: TButtonLayout;
+    // (rom) bad name?
     FOnButtonClick: TJvParameterListEvent;
   protected
     procedure SetGlyph(Value: TBitmap);
     function GetParameterNameExt: string; override;
+    // (rom) bad name
     procedure OnButtonClickInt(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
@@ -76,6 +78,7 @@ type
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: Integer read FNumGlyphs write FNumGlyphs;
     property Layout: TButtonLayout read FLayout write FLayout;
+    // (rom) bad name?
     property OnButtonClick: TJvParameterListEvent read FOnButtonClick write FOnButtonClick;
   end;
 
@@ -84,6 +87,7 @@ type
     FOnClick: TJvParameterListEvent;
   protected
     function GetParameterNameExt: string; override;
+    // (rom) bad name
     procedure OnClickInt(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
@@ -92,7 +96,6 @@ type
   published
     property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
   end;
-
 
   TJvParameterLabelArrangeMode = (lamBefore, lamAbove);
 
@@ -425,7 +428,7 @@ type
     property Sorted: Boolean read FSorted write FSorted;
   end;
 
-  TJvCheckListItemDataWrapper = class
+  TJvCheckListItemDataWrapper = class(TObject)
   private
     FState: TCheckBoxState;
     FItemEnabled: Boolean;
@@ -556,7 +559,6 @@ type
     property FontName: string read FFontName write FFontName;
   end;
 
-
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -659,7 +661,7 @@ begin
     end;
 end;
 
-//=== { TJvRadioButtonParameter } =================================================
+//=== { TJvRadioButtonParameter } ============================================
 
 function TJvRadioButtonParameter.GetParameterNameExt: string;
 begin
@@ -668,8 +670,8 @@ end;
 
 procedure TJvRadioButtonParameter.OnClickInt(Sender: TObject);
 begin
-  if Assigned(OnClick) then
-    OnClick(ParameterList, Self);
+  if Assigned(FOnClick) then
+    FOnClick(ParameterList, Self);
 end;
 
 procedure TJvRadioButtonParameter.Assign(Source: TPersistent);
@@ -2281,7 +2283,7 @@ begin
     end;
 end;
 
-///=== { TJvRichEditParameter } ==================================================
+///=== { TJvRichEditParameter } ==============================================
 
 constructor TJvRichEditParameter.Create(AParameterList: TJvParameterList);
 begin
@@ -2325,8 +2327,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

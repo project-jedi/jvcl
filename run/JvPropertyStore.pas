@@ -37,7 +37,7 @@ uses
 type
   TJvIgnorePropertiesStringList = class(TStringList)
   public
-    procedure AddDelete (iItem : String; iDelete : Boolean);
+    procedure AddDelete(AItem: string; ADelete: Boolean);
   end;
 
   TJvCustomPropertyStore = class(TJvComponent)
@@ -113,10 +113,12 @@ type
     procedure SetString(Index: Integer; Value: string);
     procedure SetObject(Index: Integer; Value: TObject);
     function GetCount: Integer;
-    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;const Index: Integer; const ItemName: string);
-    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
-    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-      const First, Last: Integer; const ItemName: string);
+    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject;const Index: Integer; const ItemName: string);
+    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer; const ItemName: string);
     function CreateItemList: TStringList; virtual;
     function CreateObject: TObject; virtual;
     function GetSorted: Boolean;
@@ -264,17 +266,20 @@ procedure TCombinedStrings.Insert(Index: Integer; const S: string);
 begin
 end;
 
-//=== { TJvIgnorePropertiesStringList } =============================================
+//=== { TJvIgnorePropertiesStringList } ======================================
 
-procedure TJvIgnorePropertiesStringList.AddDelete (iItem : String; iDelete : Boolean);
+procedure TJvIgnorePropertiesStringList.AddDelete(AItem: string; ADelete: Boolean);
 begin
-  if iDelete then
-    if (IndexOf(iItem) >= 0) then
-      Delete(IndexOf(iitem))
-    else
+  if ADelete then
+  begin
+    if IndexOf(AItem) >= 0 then
+      Delete(IndexOf(AItem));
+  end
   else
-    if (IndexOf(iItem) < 0) then
-      Add(iItem);
+  begin
+    if IndexOf(AItem) < 0 then
+     Add(AItem);
+  end;
 end;
 
 //=== { TJvCustomPropertyStore } =============================================

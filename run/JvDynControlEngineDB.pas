@@ -32,24 +32,24 @@ uses
   JvDynControlEngine, JvDynControlEngineDBIntf;
 
 const
-    jctDBEdit              : TJvDynControlType = 'DBEdit';
-    jctDBText              : TJvDynControlType = 'DBText';
-    jctDBListBox           : TJvDynControlType = 'DBListBox';
-    jctDBCheckBox          : TJvDynControlType = 'DBCheckBox';
-    jctDBComboBox          : TJvDynControlType = 'DBComboBox';
-    jctDBImage             : TJvDynControlType = 'DBImage';
-    jctDBRadioGroup        : TJvDynControlType = 'DBRadioGroup';
-    jctDBMemo              : TJvDynControlType = 'DBMemo';
-    jctDBDateTimeEdit      : TJvDynControlType = 'DBDateTimeEdit';
-    jctDBDateEdit          : TJvDynControlType = 'DBDateEdit';
-    jctDBTimeEdit          : TJvDynControlType = 'DBTimeEdit';
-    jctDBCalculateEdit     : TJvDynControlType = 'DBCalculateEdit';
-    jctDBSpinEdit          : TJvDynControlType = 'DBSpinEdit';
-    jctDBDirectoryEdit     : TJvDynControlType = 'DBDirectoryEdit';
-    jctDBFileNameEdit      : TJvDynControlType = 'DBFileNameEdit';
-    jctDBGrid              : TJvDynControlType = 'DBGrid';
-    jctDBButtonEdit        : TJvDynControlType = 'DBButtonEdit';
-    jctDBNavigator         : TJvDynControlType = 'DBNavigator';
+  jctDBEdit = TJvDynControlType('DBEdit');
+  jctDBText = TJvDynControlType('DBText');
+  jctDBListBox = TJvDynControlType('DBListBox');
+  jctDBCheckBox = TJvDynControlType('DBCheckBox');
+  jctDBComboBox = TJvDynControlType('DBComboBox');
+  jctDBImage = TJvDynControlType('DBImage');
+  jctDBRadioGroup = TJvDynControlType('DBRadioGroup');
+  jctDBMemo = TJvDynControlType('DBMemo');
+  jctDBDateTimeEdit = TJvDynControlType('DBDateTimeEdit');
+  jctDBDateEdit = TJvDynControlType('DBDateEdit');
+  jctDBTimeEdit = TJvDynControlType('DBTimeEdit');
+  jctDBCalculateEdit = TJvDynControlType('DBCalculateEdit');
+  jctDBSpinEdit = TJvDynControlType('DBSpinEdit');
+  jctDBDirectoryEdit = TJvDynControlType('DBDirectoryEdit');
+  jctDBFileNameEdit = TJvDynControlType('DBFileNameEdit');
+  jctDBGrid = TJvDynControlType('DBGrid');
+  jctDBButtonEdit = TJvDynControlType('DBButtonEdit');
+  jctDBNavigator = TJvDynControlType('DBNavigator');
 
 type
   TJvDynControlEngineDB = class(TJvCustomDynControlEngine)
@@ -58,7 +58,7 @@ type
   protected
     function GetFieldControlType(AField: TField): TJvDynControlType; virtual;
     function GetDynControlEngine: TJvDynControlEngine;
-    procedure SetDynControlEngine (ADynControlEngine: TJvDynControlEngine);
+    procedure SetDynControlEngine(ADynControlEngine: TJvDynControlEngine);
   public
     function IsControlTypeValid(const ADynControlType: TJvDynControlType;
       AControlClass: TControlClass): Boolean; override;
@@ -106,7 +106,7 @@ type
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     function CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
-    procedure CreateControlsFromDatasourceOnControl (ADataSource: TDataSource;
+    procedure CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
       AControl: TWinControl; AShowInvisibleFields: Boolean = False; ALabelOnTop: Boolean = True;
       ALabelDefaultWidth: Integer = 0; AFieldDefaultWidth: Integer = 0;
       AMaxFieldWidth: Integer = 300; AFieldSizeStep: Integer = 250);
@@ -131,7 +131,7 @@ uses
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;
 
-procedure TJvDynControlEngineDB.SetDynControlEngine (ADynControlEngine: TJvDynControlEngine);
+procedure TJvDynControlEngineDB.SetDynControlEngine(ADynControlEngine: TJvDynControlEngine);
 begin
   FDynControlEngine := ADynControlEngine;
 end;
@@ -155,43 +155,46 @@ begin
 //  else
   if ADynControlType = jctDBButtonEdit then
     Valid := Valid and
-        Supports(AControlClass, IJvDynControlButton) and
-        Supports(AControlClass, IJvDynControlData)
-  else if ADynControlType = jctDBMemo then
+      Supports(AControlClass, IJvDynControlButton) and
+      Supports(AControlClass, IJvDynControlData)
+  else
+  if ADynControlType = jctDBMemo then
     Valid := Valid and
-        Supports(AControlClass, IJvDynControlItems) and
-        Supports(AControlClass, IJvDynControlData) and
-        Supports(AControlClass, IJvDynControlMemo)
-  else if (ADynControlType = jctDBRadioGroup) or
-          (ADynControlType = jctDBComboBox) then
+      Supports(AControlClass, IJvDynControlItems) and
+      Supports(AControlClass, IJvDynControlData) and
+      Supports(AControlClass, IJvDynControlMemo)
+  else
+  if (ADynControlType = jctDBRadioGroup) or
+    (ADynControlType = jctDBComboBox) then
     Valid := Valid and
-        Supports(AControlClass, IJvDynControlItems) and
-        Supports(AControlClass, IJvDynControlData)
-  else if (ADynControlType = jctDBEdit) or
-          (ADynControlType = jctDBCalculateEdit) or
-          (ADynControlType = jctDBSpinEdit) or
-          (ADynControlType = jctDBCheckBox) or
-          (ADynControlType = jctDBDateTimeEdit) or
-          (ADynControlType = jctDBDateEdit) or
-          (ADynControlType = jctDBTimeEdit) or
-          (ADynControlType = jctDBDirectoryEdit) or
-          (ADynControlType = jctDBFileNameEdit) then
+      Supports(AControlClass, IJvDynControlItems) and
+      Supports(AControlClass, IJvDynControlData)
+  else
+  if (ADynControlType = jctDBEdit) or
+    (ADynControlType = jctDBCalculateEdit) or
+    (ADynControlType = jctDBSpinEdit) or
+    (ADynControlType = jctDBCheckBox) or
+    (ADynControlType = jctDBDateTimeEdit) or
+    (ADynControlType = jctDBDateEdit) or
+    (ADynControlType = jctDBTimeEdit) or
+    (ADynControlType = jctDBDirectoryEdit) or
+    (ADynControlType = jctDBFileNameEdit) then
     Valid := Valid and Supports(AControlClass, IJvDynControlData);
   if (ADynControlType = jctDBEdit) or
-     (ADynControlType = jctDBCalculateEdit) or
-     (ADynControlType = jctDBSpinEdit) or
-     (ADynControlType = jctDBCheckBox) or
-     (ADynControlType = jctDBDateTimeEdit) or
-     (ADynControlType = jctDBDateEdit) or
-     (ADynControlType = jctDBTimeEdit) or
-     (ADynControlType = jctDBDirectoryEdit) or
-     (ADynControlType = jctDBFileNameEdit)  or
-     (ADynControlType = jctDBText) or
-     (ADynControlType = jctDBListBox) or
-     (ADynControlType = jctDBImage) or
-     (ADynControlType = jctDBRadioGroup) or
-     (ADynControlType = jctDBMemo) or
-     (ADynControlType = jctDBGrid) then
+    (ADynControlType = jctDBCalculateEdit) or
+    (ADynControlType = jctDBSpinEdit) or
+    (ADynControlType = jctDBCheckBox) or
+    (ADynControlType = jctDBDateTimeEdit) or
+    (ADynControlType = jctDBDateEdit) or
+    (ADynControlType = jctDBTimeEdit) or
+    (ADynControlType = jctDBDirectoryEdit) or
+    (ADynControlType = jctDBFileNameEdit) or
+    (ADynControlType = jctDBText) or
+    (ADynControlType = jctDBListBox) or
+    (ADynControlType = jctDBImage) or
+    (ADynControlType = jctDBRadioGroup) or
+    (ADynControlType = jctDBMemo) or
+    (ADynControlType = jctDBGrid) then
     Valid := Valid and Supports(AControlClass, IJvDynControlDataBase);
   Result := Valid;
 end;
@@ -223,7 +226,7 @@ end;
 function TJvDynControlEngineDB.CreateDBFieldControl(AField: TField; AOwner: TComponent;
   AParentControl: TWinControl; AControlName: string; ADataSource: TDataSource): TWinControl;
 begin
-  Result:= TWinControl(CreateDBControl(GetFieldControlType(AField), AOwner, AParentControl,
+  Result := TWinControl(CreateDBControl(GetFieldControlType(AField), AOwner, AParentControl,
     AControlName, ADataSource, AField.FieldName));
 end;
 
@@ -239,7 +242,6 @@ begin
   DynCtrl.ControlSetDatasource(ADataSource);
   DynCtrl.ControlSetDatafield(ADataField);
 end;
-
 
 function TJvDynControlEngineDB.CreateDBTextControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string;
@@ -355,7 +357,7 @@ function TJvDynControlEngineDB.CreateDBTimeControl(AOwner: TComponent;
   const ADataField: string): TWinControl;
 begin
   Result := TWinControl(CreateDBControl(jctDBTimeEdit, AOwner, AParentControl,
-  AControlName, ADataSource, ADataField));
+    AControlName, ADataSource, ADataField));
 end;
 
 function TJvDynControlEngineDB.CreateDBCalculateControl(AOwner: TComponent;
@@ -420,7 +422,7 @@ begin
     raise EJVCLException.CreateRes(@RsEUnassignedMultiple);
   if not ADataSource.DataSet.Active then
     raise EJVCLException.CreateRes(@RsEUnassignedDataSet);
-  for I := 0 to ADataSource.DataSet.FieldCount -1 do
+  for I := 0 to ADataSource.DataSet.FieldCount - 1 do
     if ADataSource.DataSet.Fields[I].Visible or AShowInvisibleFields then
     begin
       Control := CreateDBFieldControl(ADataSource.DataSet.Fields[I], AControl, AControl, '', ADataSource);
@@ -436,8 +438,8 @@ begin
       end;
       LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
         '', '&' + ADataSource.DataSet.Fields[I].DisplayLabel, Control, ALabelOnTop, ALabelDefaultWidth);
-      if (AFieldSizeStep > 0) then
-        if ((LabelControl.Width mod AFieldSizeStep) <> 0) then
+      if AFieldSizeStep > 0 then
+        if (LabelControl.Width mod AFieldSizeStep) <> 0 then
           LabelControl.Width := ((LabelControl.Width div AFieldSizeStep) + 1) * AFieldSizeStep;
     end;
 end;
@@ -453,7 +455,6 @@ begin
   Result := GlobalDefaultDynControlEngineDB;
 end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -461,7 +462,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

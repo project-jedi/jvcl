@@ -29,14 +29,16 @@ unit JvDynControlEngineJVCLDB;
 interface
 
 uses
-  Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl, Forms,
-  DBCtrls, DB, JvDBGrid, StdCtrls, JvPanel, ComCtrls,
-  JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
-  JvDynControlEngine, JvDynControlEngineDB,
-  JvDynControlEngineIntf, JvDynControlEngineDBIntf;
+  Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
+  Forms, DBCtrls, DB, StdCtrls, ComCtrls,
+  JvDBGrid, JvPanel, JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
+  JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
+  JvDynControlEngineDBIntf;
 
 type
-  TJvDynControlJVCLDBEdit = class (TJvDBMaskEdit, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit, IJvDynControlDatabase)
+  TJvDynControlJVCLDBEdit = class(TJvDBMaskEdit, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+    IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -63,9 +65,9 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBButtonEdit = class (TPanel, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlReadOnly, IJvDynControlEdit, IJvDynControlButtonEdit,
-    IJvDynControlButton, IJvDynControlDatabase)
+  TJvDynControlJVCLDBButtonEdit = class(TPanel, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+    IJvDynControlButtonEdit, IJvDynControlButton, IJvDynControlDatabase)
   private
     FEditControl: TJvDBMaskEdit;
     FButton: TBitBtn;
@@ -107,10 +109,9 @@ type
     function ControlGetDataField: string;
   end;
 
-
-  TJvDynControlJVCLDBFileNameEdit = class (TPanel, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlFileName, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+  TJvDynControlJVCLDBFileNameEdit = class(TPanel, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlFileName,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FEditControl: TJvDBMaskEdit;
     FButton: TBitBtn;
@@ -157,9 +158,9 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBDirectoryEdit = class (TPanel, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDirectory, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+  TJvDynControlJVCLDBDirectoryEdit = class(TPanel, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlDirectory,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FEditControl: TJvDBMaskEdit;
     FButton: TBitBtn;
@@ -202,9 +203,8 @@ type
     function ControlGetDataField: string;
   end;
 
-
-  TJvDynControlJVCLDBCheckBox = class (TDBCheckBox, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDatabase)
+  TJvDynControlJVCLDBCheckBox = class(TDBCheckBox, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -226,9 +226,9 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBMemo = class (TDBMemo, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+  TJvDynControlJVCLDBMemo = class(TDBMemo, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -315,9 +315,9 @@ type
     function ControlGetDataField: string;
   end;
 
-
-  TJvDynControlJVCLDBRadioGroup = class (TDBRadioGroup, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup, IJvDynControlDatabase)
+  TJvDynControlJVCLDBRadioGroup = class(TDBRadioGroup, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlItems,
+    IJvDynControlRadioGroup, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -345,8 +345,9 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBListBox = class (TDBListBox, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick, IJvDynControlDatabase)
+  TJvDynControlJVCLDBListBox = class(TDBListBox, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick,
+    IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -374,9 +375,9 @@ type
     function ControlGetDataField: string;
   end;
 
-
-  TJvDynControlJVCLDBComboBox = class (TJvDBComboBox, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox, IJvDynControlDatabase)
+  TJvDynControlJVCLDBComboBox = class(TJvDBComboBox, IUnknown,
+    IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox,
+    IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -404,8 +405,8 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBImage = class (TJvDBImage, IUnknown, IJvDynControl,
-      IJvDynControlImage, IJvDynControlDatabase)
+  TJvDynControlJVCLDBImage = class(TJvDBImage, IUnknown,
+    IJvDynControl, IJvDynControlImage, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -435,7 +436,8 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBText = class (TDBText, IUnknown, IJvDynControl, IJvDynControlDatabase)
+  TJvDynControlJVCLDBText = class(TDBText, IUnknown,
+    IJvDynControl, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -454,7 +456,8 @@ type
   end;
 
 
-  TJvDynControlJVCLDBGrid = class (TJvDBGrid, IUnknown, IJvDynControl, IJvDynControlDatabase)
+  TJvDynControlJVCLDBGrid = class(TJvDBGrid, IUnknown,
+    IJvDynControl, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -472,7 +475,8 @@ type
     function ControlGetDataField: string;
   end;
 
-  TJvDynControlJVCLDBNavigator = class (TDBNavigator, IUnknown, IJvDynControl, IJvDynControlDatabase)
+  TJvDynControlJVCLDBNavigator = class(TDBNavigator, IUnknown,
+    IJvDynControl, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -489,7 +493,6 @@ type
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
   end;
-
 
 function DynControlEngineJVCLDB: TJvDynControlEngineDB;
 
@@ -503,13 +506,12 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
-  JvDynControlEngineJVCL,
-  JvConsts, JvJCLUtils;
+  JvDynControlEngineTools, JvDynControlEngineJVCL, JvConsts, JvJCLUtils;
 
 var
   IntDynControlEngineJVCLDB: TJvDynControlEngineDB = nil;
 
-//=== { TJvDynControlJVCLDBEdit } ===========================================
+//=== { TJvDynControlJVCLDBEdit } ============================================
 
 procedure TJvDynControlJVCLDBEdit.ControlSetDefaultProperties;
 begin
@@ -599,25 +601,25 @@ end;
 
 function TJvDynControlJVCLDBEdit.ControlGetDataField: string;
 begin
-  Result := Datafield;
+  Result := DataField;
 end;
 
-//=== { TJvDynControlJVCLDBButtonEdit } =========================================
+//=== { TJvDynControlJVCLDBButtonEdit } ======================================
 
 constructor TJvDynControlJVCLDBButtonEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEditControl := TJvDBMaskEdit.Create(AOwner);
   FEditControl.Parent := Self;
-  FButton     := TBitBtn.Create(AOwner);
+  FButton := TBitBtn.Create(AOwner);
   FButton.Parent := Self;
   FButton.Align := alRight;
   FButton.Caption := '...';
-  Height      := FEditControl.Height;
+  Height := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
-  BevelInner  := bvNone;
-  BevelOuter  := bvNone;
+  BevelInner := bvNone;
+  BevelOuter := bvNone;
 end;
 
 destructor TJvDynControlJVCLDBButtonEdit.Destroy;
@@ -744,31 +746,29 @@ begin
   FEditControl.DataField := Value;
 end;
 
-
 function TJvDynControlJVCLDBButtonEdit.ControlGetDataField: string;
 begin
   Result := FEditControl.Datafield;
 end;
 
-
-//=== { TJvDynControlJVCLDBFileNameEdit } =======================================
+//=== { TJvDynControlJVCLDBFileNameEdit } ====================================
 
 constructor TJvDynControlJVCLDBFileNameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEditControl := TJvDBMaskEdit.Create(AOwner);
   FEditControl.Parent := Self;
-  FButton     := TBitBtn.Create(AOwner);
+  FButton := TBitBtn.Create(AOwner);
   FButton.Parent := Self;
   FButton.Align := alRight;
   FButton.OnClick := DefaultOnButtonClick;
   FButton.Caption := '...';
-  Height      := FEditControl.Height;
+  Height := FEditControl.Height;
   FButton.Width := Height;
   FEditControl.Align := alClient;
   FDialogOptions := [ofHideReadOnly,ofEnableSizing];
-  BevelInner  := bvNone;
-  BevelOuter  := bvNone;
+  BevelInner := bvNone;
+  BevelOuter := bvNone;
   FDialogKind := jdkOpen;
 end;
 
@@ -937,7 +937,6 @@ begin
   FDialogKind := Value;
 end;
 
-
 procedure TJvDynControlJVCLDBFileNameEdit.ControlSetDataSource(Value: TDataSource);
 begin
   FEditControl.DataSource := Value;
@@ -955,11 +954,10 @@ end;
 
 function TJvDynControlJVCLDBFileNameEdit.ControlGetDataField: string;
 begin
-  Result := FEditControl.Datafield;
+  Result := FEditControl.DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBDirectoryEdit } ======================================
+//=== { TJvDynControlJVCLDBDirectoryEdit } ===================================
 
 constructor TJvDynControlJVCLDBDirectoryEdit.Create(AOwner: TComponent);
 begin
@@ -1061,7 +1059,6 @@ end;
 
 procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
 procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetValue(Value: Variant);
@@ -1091,7 +1088,6 @@ begin
 end;
 {$ENDIF VCL}
 
-
 procedure TJvDynControlJVCLDBDirectoryEdit.ControlSetDataSource(Value: TDataSource);
 begin
   FEditControl.DataSource := Value;
@@ -1109,12 +1105,10 @@ end;
 
 function TJvDynControlJVCLDBDirectoryEdit.ControlGetDataField: string;
 begin
-  Result := FEditControl.Datafield;
+  Result := FEditControl.DataField;
 end;
 
-
-
-//=== { TJvDynControlJVCLDBCheckBox } ===========================================
+//=== { TJvDynControlJVCLDBCheckBox } ========================================
 
 procedure TJvDynControlJVCLDBCheckBox.ControlSetDefaultProperties;
 begin
@@ -1157,10 +1151,7 @@ end;
 
 procedure TJvDynControlJVCLDBCheckBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) = varBoolean then
-    Checked := Value
-  else
-    Checked := UpperCase(Value) = 'TRUE';
+  Checked := JvDynControlVariantToBoolean(Value);
 end;
 
 function TJvDynControlJVCLDBCheckBox.ControlGetValue: Variant;
@@ -1188,7 +1179,7 @@ begin
   Result := DataField;
 end;
 
-//=== { TJvDynControlJVCLDBMemo } ===============================================
+//=== { TJvDynControlJVCLDBMemo } ============================================
 
 procedure TJvDynControlJVCLDBMemo.ControlSetDefaultProperties;
 begin
@@ -1297,8 +1288,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBDateEdit } ==========================================
+//=== { TJvDynControlJVCLDBDateEdit } ========================================
 
 procedure TJvDynControlJVCLDBDateEdit.ControlSetDefaultProperties;
 begin
@@ -1351,7 +1341,6 @@ begin
 end;
 
 // IJvDynControlDate
-
 procedure TJvDynControlJVCLDBDateEdit.ControlSetMinDate(Value: TDateTime);
 begin
   MinDate := Value;
@@ -1389,7 +1378,7 @@ begin
   Result := DataField;
 end;
 
-//=== { TJvDynControlJVCLDBTimeEdit } ==========================================
+//=== { TJvDynControlJVCLDBTimeEdit } ========================================
 
 procedure TJvDynControlJVCLDBTimeEdit.ControlSetDefaultProperties;
 begin
@@ -1468,8 +1457,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBRadioGroup } =========================================
+//=== { TJvDynControlJVCLDBRadioGroup } ======================================
 
 procedure TJvDynControlJVCLDBRadioGroup.ControlSetDefaultProperties;
 begin
@@ -1562,8 +1550,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBListBox } ============================================
+//=== { TJvDynControlJVCLDBListBox } =========================================
 
 procedure TJvDynControlJVCLDBListBox.ControlSetDefaultProperties;
 begin
@@ -1656,8 +1643,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBComboBox } ===========================================
+//=== { TJvDynControlJVCLDBComboBox } ========================================
 
 procedure TJvDynControlJVCLDBComboBox.ControlSetDefaultProperties;
 begin
@@ -1753,8 +1739,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBImage } ==============================================
+//=== { TJvDynControlJVCLDBImage } ===========================================
 
 procedure TJvDynControlJVCLDBImage.ControlSetDefaultProperties;
 begin
@@ -1859,8 +1844,7 @@ begin
   Result := DataField;
 end;
 
-
-//=== { TJvDynControlJVCLDBText } =========================================
+//=== { TJvDynControlJVCLDBText } ============================================
 
 procedure TJvDynControlJVCLDBText.ControlSetDefaultProperties;
 begin
@@ -1911,7 +1895,7 @@ begin
   Result := DataField;
 end;
 
-//=== { TJvDynControlJVCLDBGrid } ==========================================
+//=== { TJvDynControlJVCLDBGrid } ============================================
 
 procedure TJvDynControlJVCLDBGrid.ControlSetDefaultProperties;
 begin
@@ -1964,7 +1948,7 @@ begin
   Result := '';
 end;
 
-//=== { TJvDynControlJVCLDBNavigator } ==========================================
+//=== { TJvDynControlJVCLDBNavigator } =======================================
 
 procedure TJvDynControlJVCLDBNavigator.ControlSetDefaultProperties;
 begin
@@ -2017,7 +2001,7 @@ begin
   Result := '';
 end;
 
-//=== { TJvDynControlEngineJVCLDB } =============================================
+//=== { TJvDynControlEngineJVCLDB } ==========================================
 
 function DynControlEngineJVCLDB: TJvDynControlEngineDB;
 begin

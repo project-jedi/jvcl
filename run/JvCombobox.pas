@@ -44,6 +44,7 @@ type
   {$IFDEF COMPILER5}
   TCustomComboBoxStrings = TStrings;
   {$ENDIF COMPILER5}
+
   { This class will be used for the Items property of the combo box.
 
     If a provider is active at the combo box, this list will keep the strings stored in an internal
@@ -328,7 +329,6 @@ type
     property Columns: Integer read FColumns write SetColumns default 0;
     property DropDownLines: Integer read FDropDownLines write SetDropDownLines default 6;
     property Delimiter: Char read FDelimiter write SetDelimiter default ',';
-
   end;
 
   TJvCheckedComboBox = class(TJvCustomCheckedComboBox)
@@ -378,8 +378,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  JvDataProviderIntf,
-  JvItemsSearchs, JvThemes, JvConsts, JvResources;
+  JvDataProviderIntf, JvItemsSearchs, JvThemes, JvConsts, JvResources, JvTypes;
 
 type
   PStrings = ^TStrings;
@@ -402,22 +401,22 @@ const
 
 function PartExist(const Part, Source: string; Delimiter: Char): Boolean;
 var
-  m: Integer;
+  M: Integer;
   Temp1, Temp2: string;
 begin
   Temp1 := Copy(Source, 1, MAXSELLENGTH);
   Result := Part = Temp1;
   while not Result do
   begin
-    m := Pos(Delimiter, Temp1);
-    if m > 0 then
-      Temp2 := Copy(Temp1, 1, m - 1)
+    M := Pos(Delimiter, Temp1);
+    if M > 0 then
+      Temp2 := Copy(Temp1, 1, M - 1)
     else
       Temp2 := Temp1;
     Result := Part = Temp2;
-    if Result or (m = 0) then
+    if Result or (M = 0) then
       Break;
-    Delete(Temp1, 1, m);
+    Delete(Temp1, 1, M);
   end;
 end;
 
@@ -446,35 +445,32 @@ begin
   end;
 end;
 
-function Add(const SUB: string; var Str: string; Delimiter: Char): Boolean;
+function Add(const Sub: string; var Str: string; Delimiter: Char): Boolean;
 begin
   Result := False;
-  if Length(Str) + Length(SUB) + 1 >= MAXSELLENGTH then
-  begin
-    raise Exception.CreateRes(@RsENoMoreLength);
-    Exit;
-  end;
+  if Length(Str) + Length(Sub) + 1 >= MAXSELLENGTH then
+    raise EJVCLException.CreateRes(@RsENoMoreLength);
   if Str = '' then
   begin
-    Str := SUB;
+    Str := Sub;
     Result := True;
   end
   else
-  if not PartExist(SUB, Str, Delimiter) then
+  if not PartExist(Sub, Str, Delimiter) then
   begin
-    Str := Str + Delimiter + SUB;
+    Str := Str + Delimiter + Sub;
     Result := True;
   end;
 end;
 
-function Remove(const SUB: string; var Str: string; Delimiter: Char): Boolean;
+function Remove(const Sub: string; var Str: string; Delimiter: Char): Boolean;
 var
   Temp: string;
 begin
   Result := False;
   if Str <> '' then
   begin
-    Temp := RemovePart(SUB, Str, Delimiter);
+    Temp := RemovePart(Sub, Str, Delimiter);
     if Temp <> Str then
     begin
       Str := Temp;
@@ -485,7 +481,7 @@ end;
 
 // added 2000/04/08
 
-function GetFormatedText(Kind: TJvCHBQuoteStyle; const Str: string; Delimiter: Char): string;
+function GetFormattedText(Kind: TJvCHBQuoteStyle; const Str: string; Delimiter: Char): string;
 var
   S: string;
 begin
@@ -502,7 +498,7 @@ begin
   end;
 end;
 
-//=== { TJvCustomCheckedComboBox } =================================================
+//=== { TJvCustomCheckedComboBox } ===========================================
 
 constructor TJvCustomCheckedComboBox.Create(AOwner: TComponent);
 begin
@@ -629,13 +625,11 @@ begin
     SendCancelMode(FListBox);
     PopupMenu.PopupComponent := FListBox;
     if (MousePos.X = -1) and (MousePos.Y = -1) then // ahuser: InvalidPoint is not supported by Delphi 5
-    begin
       with FListBox do
         if ItemIndex >= 0 then
           MousePos := Point(Width div 2, ItemHeight * (ItemIndex + 1))
         else
           MousePos := Point(Width div 2, Height div 2);
-    end;
 
     MousePos := FListBox.ClientToScreen(MousePos);
     PopupMenu.Popup(MousePos.X, MousePos.Y);
@@ -703,7 +697,7 @@ begin
   if FQuoteStyle = qsNone then
     Result := Text
   else
-    Result := GetFormatedText(FQuoteStyle, Text, Delimiter);
+    Result := GetFormattedText(FQuoteStyle, Text, Delimiter);
 end;
 
 function TJvCustomCheckedComboBox.IsChecked(Index: Integer): Boolean;
@@ -813,15 +807,11 @@ begin
     Text := '';
     S := '';
     for I := 0 to FListBox.Items.Count - 1 do
-    begin
       if FListBox.Checked[I] then
-      begin
         if I = 0 then
           S := FListBox.Items[I]
         else
           S := S + Delimiter + FListBox.Items[I];
-      end;
-    end;
     Text := S;
   end;
 end;
@@ -861,8 +851,7 @@ begin
   end;
 end;
 
-procedure TJvCustomCheckedComboBox.SetState(Index: Integer;
-  const Value: TCheckBoxState);
+procedure TJvCustomCheckedComboBox.SetState(Index: Integer; const Value: TCheckBoxState);
 begin
   FListBox.State[Index] := Value;
 end;
@@ -873,11 +862,8 @@ var
 begin
   FCheckedCount := 0;
   with FListBox do
-  begin
     for I := 0 to Items.Count - 1 do
-      if Checked[I] then
-        Checked[I] := False;
-  end;
+      Checked[I] := False;
   Text := '';
   Change;
 end;
@@ -892,7 +878,7 @@ begin
   if FListBox.Checked[FListBox.ItemIndex] then
   begin
     if Add(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
-      FCheckedCount := FCheckedCount + 1
+      FCheckedCount := FCheckedCount + 1;
   end
   else
   if Remove(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
@@ -1659,8 +1645,8 @@ end;
 
 procedure TJvCustomComboBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  if not (csLoading in ComponentState) and (MeasureStyle = cmsStandard) and
-    not IsProviderSelected then
+  if not (csLoading in ComponentState) and
+    (MeasureStyle = cmsStandard) and not IsProviderSelected then
     PerformMeasureItem(Index, Height);
 end;
 
@@ -1750,12 +1736,10 @@ procedure TJvCustomComboBox.SetEmptyValue(const Value: string);
 begin
   FEmptyValue := Value;
   if HandleAllocated then
-  begin
     if Focused then
       DoEmptyValueEnter
     else
       DoEmptyValueExit;
-  end;
 end;
 
 procedure TJvCustomComboBox.SetItemHeight(Value: Integer);
@@ -1819,7 +1803,7 @@ procedure TJvCustomComboBox.WMInitDialog(var Msg: TWMInitDialog);
 begin
   inherited;
   if (MeasureStyle = cmsAfterCreate) or
-     (IsProviderSelected and ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
+    (IsProviderSelected and ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
     PerformMeasure;
 end;
 
@@ -1845,6 +1829,7 @@ begin
       WM_KEYDOWN:
         if Msg.WParam in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
         begin
+          // (rom) please english comments
           // see keelab aktiivse itemi vahetamise nooleklahvidega DDL kui CB on aktiivne
           Msg.Result := 0;
           Exit;
@@ -1869,6 +1854,7 @@ begin
           Msg.Result := 0;
           Exit;
         end;
+      // (rom) these values need an explanation
       WM_USER + $B900:
         if Msg.WParam = VK_F4 then
         begin
@@ -1934,7 +1920,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

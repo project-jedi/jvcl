@@ -1270,7 +1270,6 @@ begin
   end;
 end;
 
-
 //=== { TJvCustomDesktopAlertStyle } =========================================
 
 constructor TJvCustomDesktopAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
@@ -1416,14 +1415,14 @@ begin
     OwnerForm.Show;
 end;
 
-//=== { TJvFadeAlertStyleHandler } =============================================
-
-type
-  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+//=== { TJvFadeAlertStyleHandler } ===========================================
 
 const
   WS_EX_LAYERED = $00080000;
   LWA_ALPHA = $00000002;
+
+type
+  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
 
 constructor TJvFadeAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
@@ -1462,6 +1461,7 @@ var
     else
       @DynamicSetLayeredWindowAttributes := nil;
   end;
+
 begin
   if OwnerForm <> nil then
   begin
@@ -1520,8 +1520,7 @@ begin
   inherited StartAnimTimer(Sender);
 end;
 
-procedure TJvDesktopAlert.SetStyleHandler(
-  const Value: TJvCustomDesktopAlertStyleHandler);
+procedure TJvDesktopAlert.SetStyleHandler(const Value: TJvCustomDesktopAlertStyleHandler);
 begin
   FStyleHandler.Assign(Value);
 end;
@@ -1608,19 +1607,19 @@ end;
 procedure TJvCenterGrowAlertStyleHandler.SetMaxGrowthPercentage(const Value: Double);
 begin
   FMaxGrowthPercentage := Value;
-  if FMaxGrowthPercentage < 0 then
-    FMaxGrowthPercentage := 0;
-  if FMaxGrowthPercentage > 100 then
-    FMaxGrowthPercentage := 100;
+  if FMaxGrowthPercentage < 0.0 then
+    FMaxGrowthPercentage := 0.0;
+  if FMaxGrowthPercentage > 100.0 then
+    FMaxGrowthPercentage := 100.0;
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.SetMinGrowthPercentage(const Value: Double);
 begin
   FMinGrowthPercentage := Value;
-  if FMinGrowthPercentage < 0 then
-    FMinGrowthPercentage := 0;
-  if FMinGrowthPercentage > 100 then
-    FMinGrowthPercentage := 100;
+  if FMinGrowthPercentage < 0.0 then
+    FMinGrowthPercentage := 0.0;
+  if FMinGrowthPercentage > 100.0 then
+    FMinGrowthPercentage := 100.0;
 end;
 
 function TJvDesktopAlert.GetBiDiMode: TBidiMode;

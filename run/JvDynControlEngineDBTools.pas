@@ -32,7 +32,8 @@ uses
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
-  TJvCreateDataControlsEvent = procedure (ADynControlEngineDB : TJvDynControlEngineDB; AParentControl : TWinControl) of object;
+  TJvCreateDataControlsEvent = procedure(ADynControlEngineDB: TJvDynControlEngineDB; AParentControl: TWinControl) of
+    object;
   TJvDynControlDataSourceEditDialog = class(TObject)
   private
     FForm: TCustomForm;
@@ -43,13 +44,13 @@ type
     FCancelButtonCaption: string;
     FCloseButtonCaption: string;
     FIncludeNavigator: Boolean;
-    FBorderStyle : TFormBorderStyle;
-    FPosition : TPosition;
-    FTop : integer;
-    FLeft : Integer;
-    FWidth : Integer;
-    FHeight : Integer;
-    FOnCreateDataControlsEvent : TJvCreateDataControlsEvent;
+    FBorderStyle: TFormBorderStyle;
+    FPosition: TPosition;
+    FTop: Integer;
+    FLeft: Integer;
+    FWidth: Integer;
+    FHeight: Integer;
+    FOnCreateDataControlsEvent: TJvCreateDataControlsEvent;
   protected
     procedure OnPostButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
@@ -67,13 +68,14 @@ type
     property DialogCaption: string read FDialogCaption write FDialogCaption;
     property DynControlEngineDB: TJvDynControlEngineDB read FDynControlEngineDB write FDynControlEngineDB;
     property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
-    property BorderStyle : TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog	;
-    property Position : TPosition read FPosition write FPosition default poScreenCenter;
-    property Top : integer read FTop write FTop default 0;
-    property Left : Integer read FLeft write FLeft default 0;
-    property Width : Integer read FWidth write FWidth default 640;
-    property Height : Integer read FHeight write FHeight default 480;
-    property OnCreateDataControlsEvent : TJvCreateDataControlsEvent read FOnCreateDataControlsEvent write FOnCreateDataControlsEvent;
+    property BorderStyle: TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog;
+    property Position: TPosition read FPosition write FPosition default poScreenCenter;
+    property Top: Integer read FTop write FTop default 0;
+    property Left: Integer read FLeft write FLeft default 0;
+    property Width: Integer read FWidth write FWidth default 640;
+    property Height: Integer read FHeight write FHeight default 480;
+    property OnCreateDataControlsEvent: TJvCreateDataControlsEvent read FOnCreateDataControlsEvent write
+      FOnCreateDataControlsEvent;
   end;
 
 function ShowDatasourceEditDialog(ADataSource: TDataSource;
@@ -84,11 +86,11 @@ function ShowDatasourceEditDialog(ADataSource: TDataSource;
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
-  JvResources, StdCtrls, SysUtils;
-
+  {$ENDIF UNITVERSIONING}
+  StdCtrls, SysUtils,
+  JvResources;
 
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
 var
@@ -96,7 +98,7 @@ var
   ButtonPanel: TWinControl;
   Form: TCustomForm;
   PostButton, CancelButton, CloseButton: TButtonControl;
-  LeftPos : Integer;
+  LeftPos: Integer;
 begin
   if Assigned(IntDynControlEngineDB.DynControlEngine) then
     DynControlEngine := IntDynControlEngineDB.DynControlEngine
@@ -120,7 +122,8 @@ begin
   LeftPos := ButtonPanel.Width;
   if CloseButtonCaption <> '' then
   begin
-    CloseButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CloseButtonCaption, '', OnCloseButtonClick, True, False);
+    CloseButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CloseButtonCaption, '', OnCloseButtonClick,
+      True, False);
     ButtonPanel.Height := CloseButton.Height + 6;
     CloseButton.Top := 3;
     CloseButton.Anchors := [akTop, akRight];
@@ -130,7 +133,8 @@ begin
   end;
   if CancelButtonCaption <> '' then
   begin
-    CancelButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CancelButtonCaption, '', OnCancelButtonClick, True, False);
+    CancelButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', CancelButtonCaption, '', OnCancelButtonClick,
+      True, False);
     ButtonPanel.Height := CancelButton.Height + 6;
     CancelButton.Top := 3;
     CancelButton.Anchors := [akTop, akRight];
@@ -140,7 +144,8 @@ begin
   end;
   if PostButtonCaption <> '' then
   begin
-    PostButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', PostButtonCaption, '', OnPostButtonClick, True, False);
+    PostButton := DynControlEngine.CreateButton(Form, ButtonPanel, '', PostButtonCaption, '', OnPostButtonClick, True,
+      False);
     ButtonPanel.Height := PostButton.Height + 6;
     PostButton.Top := 3;
     PostButton.Anchors := [akTop, akRight];
@@ -150,17 +155,15 @@ begin
   Result := Form;
 end;
 
-
-
 procedure TJvDynControlDataSourceEditDialog.OnPostButtonClick(Sender: TObject);
 begin
   if DataSource.Dataset.State in [dsInsert, dsEdit] then
-    try
-      DataSource.Dataset.Post;
-      FForm.ModalResult := mrOk;
-    except
-      FForm.ModalResult := mrNone;
-    end;
+  try
+    DataSource.Dataset.Post;
+    FForm.ModalResult := mrOk;
+  except
+    FForm.ModalResult := mrNone;
+  end;
 end;
 
 procedure TJvDynControlDataSourceEditDialog.OnCancelButtonClick(Sender: TObject);
@@ -185,7 +188,7 @@ end;
 
 constructor TJvDynControlDataSourceEditDialog.Create;
 begin
-  Inherited Create;
+  inherited Create;
   FDialogCaption := '';
   FPostButtonCaption := RSSRWPostButtonCaption;
   FCancelButtonCaption := RSSRWCancelButtonCaption;
@@ -249,7 +252,7 @@ begin
       OnCreateDataControlsEvent(IntDynControlEngineDB, ArrangePanel)
     else
       IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel);
-    ArrangePanel.ArrangeControls;  
+    ArrangePanel.ArrangeControls;
 //    FForm.ClientWidth := 450;
     if Assigned(NavigatorPanel) then
       FForm.ClientHeight := ArrangePanel.Height + 35 + NavigatorPanel.Height
@@ -291,11 +294,9 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
 
 initialization
-{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization

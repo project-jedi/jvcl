@@ -57,7 +57,6 @@ Revisions : 1st = 2004/09/19
             3th = 2004/10/25
 
 Comments and Bugs : cfzwit att yahoo dott com dott ar
-//***************************************************************************************
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -82,7 +81,7 @@ type
   TApplyRecordEvent = procedure(Dataset: TDataset; RecStatus: TRecordStatus; FoundApply: Boolean) of object;
   //------------------------------------------------------------
   TMemBlobData = string;
-  TMemBlobArray = array[0..0] of TMemBlobData;
+  TMemBlobArray = array [0..0] of TMemBlobData;
   PMemBlobArray = ^TMemBlobArray;
   TJvMemoryRecord = class;
   TLoadMode = (lmCopy, lmAppend);
@@ -442,7 +441,7 @@ type
     BookmarkFlag: TBookmarkFlag;
   end;
 
-  //=== { TJvMemoryRecord } ====================================================
+//=== { TJvMemoryRecord } ====================================================
 
 constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData);
 begin

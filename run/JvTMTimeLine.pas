@@ -220,7 +220,6 @@ type
     property ImageIndex[ADate: TDate]: Integer read GetImageIndex write SetImageIndex;
     // gets / sets the TObject for a specific date
     property Objects[ADate: TDate]: TObject read GetObjects write SetObjects;
-
   end;
 
   TJvTMTimeline = class(TJvCustomTMTimeline)
@@ -342,12 +341,12 @@ uses
 {$IFDEF VisualCLX}
 resourcestring
   SInvalidImage = 'Invalid Image';
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';
 
-  //=== { TJvTLSelFrame } ======================================================
+//=== { TJvTLSelFrame } ======================================================
 
 constructor TJvTLSelFrame.Create;
 begin

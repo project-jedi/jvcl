@@ -64,7 +64,7 @@ type
     procedure DeleteListItem(Sender: TJvCustomAppStorage; const Path: string;
       const List: TObject; const First, Last: Integer; const ItemName: string);
   public
-    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall;
     procedure AfterConstruction; override;
   end;
 
@@ -86,7 +86,7 @@ type
   end;
 
   // (rom) Why that? C++ Builder should need this class.
-{$EXTERNALSYM TJvListItem}
+  {$EXTERNALSYM TJvListItem}
 
   TJvListView = class(TJvExListView)
   private
@@ -107,14 +107,14 @@ type
     procedure SetPicture(const Value: TPicture);
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
-    procedure WmAutoSelect(var Message: TMessage); message WM_AUTOSELECT;
-{$IFNDEF COMPILER6_UP}
+    procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
+    {$IFNDEF COMPILER6_UP}
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
-    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF COMPILER6_UP}
+    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -129,7 +129,7 @@ type
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
 
     procedure InsertItem(Item: TListItem); override;
-    function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF COMPILER6_UP}
+    function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -144,10 +144,10 @@ type
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
     procedure SetSmallImages(const Value: TCustomImageList);
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
     function MoveUp(Index: Integer; Focus: Boolean = True): Integer;
@@ -159,9 +159,9 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -185,9 +185,9 @@ type
 implementation
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   Math,
   JvJCLUtils, JvConsts, JvResources;
 
@@ -209,11 +209,11 @@ begin
   FPopupMenu := Value;
 end;
 
-//=== { TJvListItems } ========================================================
+//=== { TJvListItems } =======================================================
 
 procedure TJvListItems.AfterConstruction;
 begin
-  inherited;
+  inherited AfterConstruction;
   if GetOwner <> nil then
     GetOwner.GetInterface(IInterface, FOwnerInterface);
 end;
@@ -221,23 +221,27 @@ end;
 function TJvListItems._AddRef: Integer;
 begin
   if FOwnerInterface <> nil then
-    Result := FOwnerInterface._AddRef else
+    Result := FOwnerInterface._AddRef
+  else
     Result := -1;
 end;
 
 function TJvListItems._Release: Integer;
 begin
   if FOwnerInterface <> nil then
-    Result := FOwnerInterface._Release else
+    Result := FOwnerInterface._Release
+  else
     Result := -1;
 end;
 
-function TJvListItems.QueryInterface(const IID: TGUID;
-  out Obj): HResult;
+function TJvListItems.QueryInterface(const IID: TGUID; out Obj): HRESULT;
 const
-  E_NOINTERFACE = HResult($80004002);
+  E_NOINTERFACE = HRESULT($80004002);
 begin
-  if GetInterface(IID, Obj) then Result := 0 else Result := E_NOINTERFACE;
+  if GetInterface(IID, Obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
 end;
 
 procedure TJvListItems.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
@@ -263,14 +267,12 @@ var
   NewPath: string;
 begin
   if List is TJvListItems then
-  begin
     try
       NewPath := Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]);
       NewItem := TJvListItems(List).Add;
       Sender.ReadPersistent(NewPath, NewItem);
     except
     end;
-  end;
 end;
 
 procedure TJvListItems.WriteListItem(Sender: TJvCustomAppStorage;
@@ -290,7 +292,6 @@ begin
     for I := First to Last do
       Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
 end;
-
 
 //=== { TJvListView } ========================================================
 
@@ -590,13 +591,13 @@ end;
 
 procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  Buf: array[0..100] of Char;
+  Buf: array [0..100] of Char;
   Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
     I, J, K: Integer;
-    Buf: array[0..100] of Byte;
+    Buf: array [0..100] of Byte;
     st: string;
     ch1, checks: Boolean;
     t: TListItem;
@@ -656,7 +657,7 @@ var
     Options: Byte;
     st: string;
     t: TListItem;
-    Buf: array[0..2048] of Char;
+    Buf: array [0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
@@ -746,7 +747,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     I, J, K: Integer;
     b, c, d, e: Byte;
     st: string;
-    Buf: array[0..1000] of Byte;
+    Buf: array [0..1000] of Byte;
   begin
     b := 0;
     c := 1;
@@ -798,7 +799,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Buf: array[0..100] of Char;
+    Buf: array [0..100] of Char;
     // hs-    I, J: Word;
     I: Integer;
     J: SmallInt;
@@ -848,7 +849,7 @@ end;
 
 procedure TJvListView.SaveToStrings(Strings: TStrings; Separator: Char);
 var
-  i, j: integer;
+  i, j: Integer;
   tmpStr: string;
 begin
   if Assigned(FOnSaveProgress) then
@@ -866,7 +867,7 @@ end;
 
 procedure TJvListView.LoadFromStrings(Strings: TStrings; Separator: Char);
 var
-  i: integer;
+  i: Integer;
   Start, _End, tmpStart: PChar;
   tmpStr: string;
   li: TlistItem;
@@ -889,7 +890,8 @@ begin
         tmpStart := Start;
         while Start^ <> Separator do
         begin
-          if Start = _End then Break;
+          if Start = _End then
+            Break;
           Inc(Start);
         end;
         SetString(tmpStr, Start, Start - tmpStart);
@@ -913,7 +915,8 @@ begin
           tmpStart := Start;
           while Start^ <> Separator do
           begin
-            if Start = _End then Break;
+            if Start = _End then
+              Break;
             Inc(Start);
           end;
           SetString(tmpStr, Start, Start - tmpStart);
@@ -926,9 +929,9 @@ end;
 
 procedure TJvListView.LoadFromCSV(FileName: string; Separator: Char);
 var
-  S: TStringlist;
+  S: TStringList;
 begin
-  S := TStringlist.Create;
+  S := TStringList.Create;
   Items.BeginUpdate;
   try
     Items.Clear;
@@ -942,9 +945,9 @@ end;
 
 procedure TJvListView.SaveToCSV(FileName: string; Separator: Char);
 var
-  S: TStringlist;
+  S: TStringList;
 begin
-  S := TStringlist.Create;
+  S := TStringList.Create;
   Items.BeginUpdate;
   try
     SaveToStrings(S, Separator);
@@ -966,7 +969,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvListView.SelectAll;
 var
   I: Integer;
@@ -976,7 +978,7 @@ begin
     Items[I].Selected := True;
   Items.EndUpdate;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 procedure TJvListView.UnselectAll;
 var
@@ -1014,7 +1016,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvListView.DeleteSelected;
 var
   I: Integer;
@@ -1035,11 +1036,11 @@ begin
         Items[I].Delete;
   Items.EndUpdate;
 end;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array[0..cColumnsHandled - 1] of Integer;
+  Res: array [0..cColumnsHandled - 1] of Integer;
   I: Integer;
 begin
   ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
@@ -1056,7 +1057,7 @@ end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  Res: array[0..cColumnsHandled - 1] of Integer;
+  Res: array [0..cColumnsHandled - 1] of Integer;
   I, J: Integer;
   st: string;
 begin
@@ -1189,11 +1190,11 @@ begin
     PostMessage(Handle, WM_AUTOSELECT, Integer(Item), 1);
 end;
 
-procedure TJvListView.WmAutoSelect(var Message: TMessage);
+procedure TJvListView.WMAutoSelect(var Msg: TMessage);
 var
   lv: TListItem;
 begin
-  with Message do
+  with Msg do
   begin
     lv := TListItem(WParam);
     if Assigned(lv) and (items.IndexOf(lv) >= 0) and (LParam = 1) then
@@ -1415,7 +1416,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
     );
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
