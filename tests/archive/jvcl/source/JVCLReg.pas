@@ -135,7 +135,6 @@ uses
   JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
   JvMonthCalendar, JvListView, JvHeaderControl, JvToolBar,
   JvCoolBar, JvPageScroller,
-  JvHotKeyEx,
 
   // Image types
   JvPcx, JvAni,
@@ -297,7 +296,7 @@ begin
      {$IFNDEF DelphiPersonalEdition}
      TJvProgressBar,
      {$ENDIF}
-     TJvUpDown, TJvHotKey, TJvHotKeyEx, TJvApplicationHotKey,
+     TJvUpDown, TJvHotKey, TJvApplicationHotKey,
      TJvAnimate, TJvDateTimePicker, TJvMonthCalendar, TJvMonthCalendar2,
      TJvTreeView, TJvListView, TJvHeaderControl, TJvStatusBar, TJvToolBar,
      TJvCoolBar, TJvPageScroller, TJvScrollingWindow, TJvIpAddress,

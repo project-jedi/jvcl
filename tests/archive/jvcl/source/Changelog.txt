@@ -4,6 +4,7 @@
 - Merged JvAppearingLabel, JvBlinkingLabel, JvBouncingLabel, JvRealLabel and JvSpecialLabel into JvBehaviorLabel. Use Behavior property to control what label to simulate. // peter3
 - Removed JvReversedLabel - use (new) JvLabel with Angle set to 180 to simulate same behavior
 - Merged TJvTransparentButton and TJvTransparentButton2 into one unit. Now derives from common ancestor in JvButton. Moved JvTransBtn2.pas to \archive
+- Moved JvHotKeyEx to \archive - duplicates JvHotKey functionality // peter3
 
 2003-03-23
 - Replaced TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvxCurrencyEdit, TJvIntegerEdit and TJvYearEdit with TJvValidateEdit. JvFloatEdit.pas and JvTypedEdit.pas moved to \archive, examples updated. // peter3

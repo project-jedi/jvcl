@@ -242,7 +242,6 @@ USEUNIT("..\source\JvArrow.pas");
 USEUNIT("..\source\JvValidateEdit.pas");
 USEUNIT("..\source\JvTranslator.pas");
 USEUNIT("..\source\JvSimpleXml.pas");
-USEUNIT("..\source\JvHotkeyEx.pas");
 USEUNIT("..\source\JvObjPickerComp.pas");
 USEUNIT("..\source\JvImageDrawThread.pas");
 USEUNIT("..\source\JvInspector.pas");

@@ -103,7 +103,7 @@
       ..\lib5\JvDriveCtrls.obj ..\lib5\JvOLBar.obj
       ..\lib5\JvTMTL.obj ..\lib5\JvColorForm.obj ..\lib5\JvArrow.obj 
       ..\lib5\JvTranslator.obj ..\lib5\JvSimpleXml.obj
-      ..\lib5\JvHotkeyEx.obj ..\lib5\JvObjPickerComp.obj 
+      ..\lib5\JvObjPickerComp.obj
       ..\lib5\JvImageDrawThread.obj ..\lib5\JvInspector.obj ..\lib5\JvInspDB.obj 
       ..\lib5\JvHidControllerClass.obj ..\lib5\JvAnalogClock.obj 
       ..\lib5\JvxCtrls.obj ..\lib5\JvGrids.obj ..\lib5\JvCurrEdit.obj 

@@ -300,7 +300,6 @@ contains
   JvArrow in '..\source\JvArrow.pas',
   JvTranslator in '..\source\JvTranslator.pas',
   JvSimpleXml in '..\source\JvSimpleXml.pas',
-  JvHotkeyEx in '..\source\JvHotkeyEx.pas',
   JvObjPickerComp in '..\source\JvObjPickerComp.pas',
   JvImageDrawThread in '..\source\JvImageDrawThread.pas',
   JvInspector in '..\source\JvInspector.pas',

@@ -104,7 +104,7 @@
       ..\lib6\JvDriveCtrls.obj ..\lib6\JvOLBar.obj
       ..\lib6\JvTMTL.obj ..\lib6\JvColorForm.obj ..\lib6\JvArrow.obj 
       ..\lib6\JvTranslator.obj ..\lib6\JvSimpleXml.obj
-      ..\lib6\JvHotkeyEx.obj ..\lib6\JvObjPickerComp.obj 
+      ..\lib6\JvObjPickerComp.obj
       ..\lib6\JvImageDrawThread.obj ..\lib6\JvInspector.obj ..\lib6\JvInspDB.obj 
       ..\lib6\JvHidControllerClass.obj ..\lib6\JvAnalogClock.obj 
       ..\lib6\JvxCtrls.obj ..\lib6\JvGrids.obj ..\lib6\JvCurrEdit.obj 
@@ -467,7 +467,6 @@
       <FILE FILENAME="..\source\JvArrow.pas" FORMNAME="" UNITNAME="JvArrow" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTranslator.pas" FORMNAME="" UNITNAME="JvTranslator" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSimpleXml.pas" FORMNAME="" UNITNAME="JvSimpleXml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvHotkeyEx.pas" FORMNAME="" UNITNAME="JvHotkeyEx" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvObjPickerComp.pas" FORMNAME="" UNITNAME="JvObjPickerComp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvImageDrawThread.pas" FORMNAME="" UNITNAME="JvImageDrawThread" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvInspector.pas" FORMNAME="" UNITNAME="JvInspector" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
