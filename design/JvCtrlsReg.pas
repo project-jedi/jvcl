@@ -52,7 +52,7 @@ uses
   JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
   JvComboListBox, JvCharMap, JvScrollMaxEditor, JvBehaviorLabelEditor,
   JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
-  JvTransparentButtonEditors;
+  JvTransparentButtonEditors, JvRollOutEditor;
 
 {$R ..\resources\JvCtrlsReg.dcr}
 
@@ -90,6 +90,7 @@ begin
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
   RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvRollOutImageOptions, '', TJvRollOutOptionsImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
