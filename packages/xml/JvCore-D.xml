@@ -11,7 +11,7 @@
     <Package Name="dclstd" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="D5,D5s,C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
-    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>

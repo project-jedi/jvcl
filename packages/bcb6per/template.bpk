@@ -62,6 +62,7 @@
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M
                    -DDelphiPersonalEdition
                    -U&quot;$(PATH)&quot; %C6PFLAGS%
+                   -U$(BCB)\Projects\Bpl
                   "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
