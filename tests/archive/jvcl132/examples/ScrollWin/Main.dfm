@@ -15,9 +15,6 @@ object Form1: TForm1
   OldCreateOrder = True
   Position = poScreenCenter
   OnResize = FormResize
-  DesignSize = (
-    499
-    426)
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel

@@ -18,8 +18,9 @@ object Form1: TForm1
     Top = 0
     Width = 556
     Height = 398
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Windows Dialogs'
@@ -456,8 +457,6 @@ object Form1: TForm1
   object JvExchListboxes1: TJvExchListboxes
     FirstCaption = 'First Column'
     SecondCaption = 'Second Column'
-    Button1Caption = '&Add'
-    Button2Caption = '&Remove'
     Title = 'Listbox Editor'
     Left = 624
     Top = 232

@@ -3,7 +3,7 @@ unit Main;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF} Classes, Graphics, Controls, Forms,
   Dialogs, JvOLBar, ComCtrls, StdCtrls, Menus, ExtCtrls, ImgList;
 
 type

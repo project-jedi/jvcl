@@ -1,4 +1,5 @@
 unit Main;
+{$I JEDI.INC}
 
 interface
 
@@ -69,8 +70,13 @@ implementation
 
 const
   BoolOnOff : array[boolean]of string=(' Off ',' On');
+{$IFDEF DELPHI6_UP}
   AlignStr  : array[TAlign] of string=('alNone','alTop','alBottom','alLeft','alRight','alClient','alCustom');
-{$R *.DFM}
+{$ELSE}
+  AlignStr  : array[TAlign] of string=('alNone','alTop','alBottom','alLeft','alRight','alClient');
+ {$ENDIF}
+
+  {$R *.DFM}
 
 procedure TForm1.Button1Click(Sender: TObject);
 var i,tmp:integer;

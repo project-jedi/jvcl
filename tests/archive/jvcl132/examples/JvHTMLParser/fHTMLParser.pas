@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, Forms, SysUtils, StdCtrls, Controls, ExtCtrls, JvPanel,
   JvSplitter, JvHtmlParser, JvDisplayMemo, Classes, JvComCtrls, JvButton,
-  ComCtrls, JvComponent;
+  ComCtrls, JvComponent, JvStatusBar;
 
 type
   TForm1 = class(TForm)

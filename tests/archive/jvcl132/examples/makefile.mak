@@ -67,7 +67,8 @@ AppDdeCmdExample.exe \
 ControlsExample.exe \
 CreateProcessExample.exe \ 
 EvnironmentList.exe \
-MailExample.exe
+MailExample.exe \
+JvTranslatorProj.exe
 #---------------------------------------------------------------------------------------------------
 
 ArrowButtonDemo.exe: ArrowButton\ArrowButtonDemo.dpr
@@ -313,4 +314,9 @@ EvnironmentList.exe: EvnironmentList\EvnironmentList.dpr
 MailExample.exe: MailExample\MailExample.dpr
   cd MailExample
   $(DCC) $&.dpr
-  cd ..        
+  cd ..
+
+JvTranslatorProj.exe: JvTranslator\JvTranslatorProj.dpr
+  cd JvTranslator
+  $(DCC) $&.dpr
+  cd ..

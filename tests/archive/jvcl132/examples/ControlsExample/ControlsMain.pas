@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvComCtrls, ExtCtrls, StdCtrls, JvCtrls, ImgList;
+  ComCtrls, JvComCtrls, ExtCtrls, StdCtrls, JvCtrls, ImgList, JvStatusBar;
 
 type
   TMainFrom = class(TForm)
