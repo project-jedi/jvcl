@@ -27,175 +27,186 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgCompDescription;
+UNIT JvgCompDescription;
 
-interface
-uses classes, TypInfo, dsgnintf;
+INTERFACE
+USES classes,
+   {$IFDEF COMPILER6_UP}
+   DesignIntf,
+   DesignEditors,
+   PropertyCategories,
+   {$ELSE}
+   DsgnIntf,
+   {$ENDIF COMPILER6_UP}
 
-type
-  TJvgPropInfos = class;
-  TJvgPropInform = class;
+   TypInfo;
 
-  TJvgComponentDescription = class(TComponent)
-  private
-    FPropInfos: TJvgPropInfos;
-    FNote: string;
-    FClass_Name: string;
+TYPE
+   TJvgPropInfos = CLASS;
+   TJvgPropInform = CLASS;
 
-    PropList: PPropList;
-    NumProps: word;
-  public
-    constructor Create(AOwner, Component: TComponent);
-    destructor Destroy; override;
-    procedure LoadProperties(Component: TComponent);
-  published
-    property Class_Name: string read FClass_Name write FClass_Name;
-    property Note: string read FNote write FNote;
-    property PropInfos: TJvgPropInfos read FPropInfos write FPropInfos;
-  end;
+   TJvgComponentDescription = CLASS(TComponent)
+   PRIVATE
+      FPropInfos: TJvgPropInfos;
+      FNote: STRING;
+      FClass_Name: STRING;
 
-  TJvgPropInfos = class(TCollection)
-  private
-    procedure AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
-    function GetItem(Index: Integer): TJvgPropInform;
-    procedure SetItem(Index: Integer; const Value: TJvgPropInform);
-  public
-    function Add: TJvgPropInform;
-    function Insert(Index: Integer): TJvgPropInform;
-    property Items[Index: Integer]: TJvgPropInform read GetItem write SetItem; default;
-  end;
+      PropList: PPropList;
+      NumProps: word;
+   PUBLIC
+      CONSTRUCTOR Create(AOwner, Component: TComponent);
+      DESTRUCTOR Destroy; OVERRIDE;
+      PROCEDURE LoadProperties(Component: TComponent);
+   PUBLISHED
+      PROPERTY Class_Name: STRING READ FClass_Name WRITE FClass_Name;
+      PROPERTY Note: STRING READ FNote WRITE FNote;
+      PROPERTY PropInfos: TJvgPropInfos READ FPropInfos WRITE FPropInfos;
+   END;
 
-  TJvgPropInform = class(TCollectionItem)
-  private
-    FName: string;
-    FTypeName: string;
-    FTypeKind: TTypeKind;
-    FChecked: boolean;
-    FMakeHref: boolean;
-    FNote: string;
-  public
-    Info: PPropInfo;
-  published
-    property Name: string read FName write FName;
-    property TypeName: string read FTypeName write FTypeName;
-    property TypeKind: TTypeKind read FTypeKind write FTypeKind;
-    property Checked: boolean read FChecked write FChecked;
-    property MakeHref: boolean read FMakeHref write FMakeHref;
-    property Note: string read FNote write FNote;
-  end;
+   TJvgPropInfos = CLASS(TCollection)
+   PRIVATE
+      PROCEDURE AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
+      FUNCTION GetItem(Index: Integer): TJvgPropInform;
+      PROCEDURE SetItem(Index: Integer; CONST Value: TJvgPropInform);
+   PUBLIC
+      FUNCTION Add: TJvgPropInform;
+      FUNCTION Insert(Index: Integer): TJvgPropInform;
+      PROPERTY Items[Index: Integer]: TJvgPropInform READ GetItem WRITE SetItem;
+         DEFAULT;
+   END;
 
-implementation
+   TJvgPropInform = CLASS(TCollectionItem)
+   PRIVATE
+      FName: STRING;
+      FTypeName: STRING;
+      FTypeKind: TTypeKind;
+      FChecked: boolean;
+      FMakeHref: boolean;
+      FNote: STRING;
+   PUBLIC
+      Info: PPropInfo;
+   PUBLISHED
+      PROPERTY Name: STRING READ FName WRITE FName;
+      PROPERTY TypeName: STRING READ FTypeName WRITE FTypeName;
+      PROPERTY TypeKind: TTypeKind READ FTypeKind WRITE FTypeKind;
+      PROPERTY Checked: boolean READ FChecked WRITE FChecked;
+      PROPERTY MakeHref: boolean READ FMakeHref WRITE FMakeHref;
+      PROPERTY Note: STRING READ FNote WRITE FNote;
+   END;
 
-constructor TJvgComponentDescription.Create(AOwner, Component: TComponent);
-begin
-  inherited Create(AOwner);
-  PropInfos := TJvgPropInfos.Create(TJvgPropInform);
-  LoadProperties(Component);
-end;
+IMPLEMENTATION
 
-destructor TJvgComponentDescription.Destroy;
-begin
-  FreeMem(PropList, NumProps * sizeof(pointer));
-  PropInfos.Free;
-  inherited;
-end;
+CONSTRUCTOR TJvgComponentDescription.Create(AOwner, Component: TComponent);
+BEGIN
+   INHERITED Create(AOwner);
+   PropInfos := TJvgPropInfos.Create(TJvgPropInform);
+   LoadProperties(Component);
+END;
 
-procedure TJvgComponentDescription.LoadProperties(Component: TComponent);
-var
-  PropInfo: PPropInfo;
-  TypeInf, PropTypeInf: PTypeInfo;
-  TypeData: PTypeData;
-  i, j: integer;
-  AName, PropName, sPropValue: string;
-  PropObject: TObject;
-begin
-  if NumProps > 0 then
-    FreeMem(PropList, NumProps * sizeof(pointer));
+DESTRUCTOR TJvgComponentDescription.Destroy;
+BEGIN
+   FreeMem(PropList, NumProps * sizeof(pointer));
+   PropInfos.Free;
+   INHERITED;
+END;
 
-  { Playing with RTTI }
-  TypeInf := Component.ClassInfo;
-  AName := TypeInf^.Name;
-  TypeData := GetTypeData(TypeInf);
-  NumProps := TypeData^.PropCount;
+PROCEDURE TJvgComponentDescription.LoadProperties(Component: TComponent);
+VAR
+   PropInfo                   : PPropInfo;
+   TypeInf, PropTypeInf       : PTypeInfo;
+   TypeData                   : PTypeData;
+   i, j                       : integer;
+   AName, PropName, sPropValue: STRING;
+   PropObject                 : TObject;
+BEGIN
+   IF NumProps > 0 THEN
+      FreeMem(PropList, NumProps * sizeof(pointer));
 
-  GetMem(PropList, NumProps * sizeof(pointer));
-  try
-    { Получаем список свойств }
-    GetPropInfos(TypeInf, PropList);
+   { Playing with RTTI }
+   TypeInf := Component.ClassInfo;
+   AName := TypeInf^.Name;
+   TypeData := GetTypeData(TypeInf);
+   NumProps := TypeData^.PropCount;
 
-    for i := 0 to NumProps - 1 do
-    begin
-      PropInfos.AddPropInfo(PropList^[i], Component);
+   GetMem(PropList, NumProps * sizeof(pointer));
+   TRY
+      { Получаем список свойств }
+      GetPropInfos(TypeInf, PropList);
 
-      PropName := PropList^[i]^.Name;
+      FOR i := 0 TO NumProps - 1 DO
+      BEGIN
+         PropInfos.AddPropInfo(PropList^[i], Component);
 
-      PropTypeInf := PropList^[i]^.PropType^;
-      PropInfo := PropList^[i];
-    end;
-  finally
+         PropName := PropList^[i]^.Name;
 
-  end;
-end;
+         PropTypeInf := PropList^[i]^.PropType^;
+         PropInfo := PropList^[i];
+      END;
+   FINALLY
 
-procedure TJvgPropInfos.AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
-var
-  TypeData: PTypeData;
-  TypeInfo: PTypeInfo;
-  j: integer;
-  sNote: string;
-begin
-  with TJvgPropInform(Add) do
-  begin
-    Name := PropInfo^.Name;
-    TypeName := PropInfo^.PropType^.Name;
-    TypeKind := PropInfo^.PropType^.Kind;
-    Info := PropInfo;
-    sNote := '';
+   END;
+END;
 
-    if TypeKind in [tkEnumeration, tkSet] then
-    begin
-      if TypeKind = tkSet then
-        TypeInfo := GetTypeData(PropInfo^.PropType^)^.CompType^
-      else
-        TypeInfo := PropInfo.PropType^;
+PROCEDURE TJvgPropInfos.AddPropInfo(PropInfo: PPropInfo; Component: TComponent);
+VAR
+   TypeData                   : PTypeData;
+   TypeInfo                   : PTypeInfo;
+   j                          : integer;
+   sNote                      : STRING;
+BEGIN
+   WITH TJvgPropInform(Add) DO
+   BEGIN
+      Name := PropInfo^.Name;
+      TypeName := PropInfo^.PropType^.Name;
+      TypeKind := PropInfo^.PropType^.Kind;
+      Info := PropInfo;
+      sNote := '';
 
-      TypeData := GetTypeData(TypeInfo);
+      IF TypeKind IN [tkEnumeration, tkSet] THEN
+      BEGIN
+         IF TypeKind = tkSet THEN
+            TypeInfo := GetTypeData(PropInfo^.PropType^)^.CompType^
+         ELSE
+            TypeInfo := PropInfo.PropType^;
 
-      for j := TypeData^.MinValue to TypeData^.MaxValue do
-      begin
-        if sNote <> '' then
-          if TypeKind = tkSet then
-            sNote := sNote + ' | '
-          else
-            sNote := sNote + ', ';
-        sNote := sNote + GetEnumName(TypeInfo, j);
-      end;
-      sNote := '[' + sNote + ']';
-    end;
-    Note := sNote;
+         TypeData := GetTypeData(TypeInfo);
 
-    Checked := not IsPublishedProp(Component.ClassParent, Name);
-  end;
-end;
+         FOR j := TypeData^.MinValue TO TypeData^.MaxValue DO
+         BEGIN
+            IF sNote <> '' THEN
+               IF TypeKind = tkSet THEN
+                  sNote := sNote + ' | '
+               ELSE
+                  sNote := sNote + ', ';
+            sNote := sNote + GetEnumName(TypeInfo, j);
+         END;
+         sNote := '[' + sNote + ']';
+      END;
+      Note := sNote;
 
-function TJvgPropInfos.Add: TJvgPropInform;
-begin
-  Result := TJvgPropInform(inherited Add);
-end;
+      Checked := NOT IsPublishedProp(Component.ClassParent, Name);
+   END;
+END;
 
-function TJvgPropInfos.Insert(Index: Integer): TJvgPropInform;
-begin
-  Result := TJvgPropInform(inherited Insert(Index));
-end;
+FUNCTION TJvgPropInfos.Add: TJvgPropInform;
+BEGIN
+   Result := TJvgPropInform(INHERITED Add);
+END;
 
-function TJvgPropInfos.GetItem(Index: Integer): TJvgPropInform;
-begin
-  Result := TJvgPropInform(inherited Items[Index]);
-end;
+FUNCTION TJvgPropInfos.Insert(Index: Integer): TJvgPropInform;
+BEGIN
+   Result := TJvgPropInform(INHERITED Insert(Index));
+END;
 
-procedure TJvgPropInfos.SetItem(Index: Integer; const Value: TJvgPropInform);
-begin
-  Items[Index].Assign(Value);
-end;
+FUNCTION TJvgPropInfos.GetItem(Index: Integer): TJvgPropInform;
+BEGIN
+   Result := TJvgPropInform(INHERITED Items[Index]);
+END;
 
-end.
+PROCEDURE TJvgPropInfos.SetItem(Index: Integer; CONST Value: TJvgPropInform);
+BEGIN
+   Items[Index].Assign(Value);
+END;
+
+END.
+

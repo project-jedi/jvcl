@@ -884,7 +884,7 @@ begin //_________________________________________MAIN_
 
   try
     if Assigned(glGlobalData.lp3DColors) then
-      with Tgl3DColors(glGlobalData.lp3DColors) do
+      with TJvg3DColors(glGlobalData.lp3DColors) do
       begin
         BColor := ColorToRGB(DkShadow);
         HColor := ColorToRGB(Highlight);

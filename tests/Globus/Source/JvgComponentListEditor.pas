@@ -27,238 +27,275 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgComponentListEditor;
+UNIT JvgComponentListEditor;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, dsgnintf,
-  StdCtrls, JvgPropertyCenter, ComCtrls, ExtCtrls, TypInfo, Buttons{$IFDEF COMPILER5_UP}, ImgList{$ENDIF};
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   {$IFDEF COMPILER6_UP}
+   DesignIntf,
+   DesignEditors,
+   PropertyCategories,
+   {$ELSE}
+   DsgnIntf,
+   {$ENDIF COMPILER6_UP}
 
+   StdCtrls,
+   JvgPropertyCenter,
+   ComCtrls,
+   ExtCtrls,
+   TypInfo,
+   Buttons{$IFDEF COMPILER5_UP},
+   ImgList{$ENDIF};
+
+TYPE
+
+   TJvgComponentListProperty = CLASS(TPropertyEditor)
+      FUNCTION GetAttributes: TPropertyAttributes; OVERRIDE;
+      FUNCTION GetValue: STRING; OVERRIDE;
+      PROCEDURE Edit; OVERRIDE;
+   END;
+
+   TJvgComponentListEditor = CLASS(TComponentEditor)
+      PROCEDURE ExecuteVerb(Index: Integer); OVERRIDE;
+      FUNCTION GetVerb(Index: Integer): STRING; OVERRIDE;
+      FUNCTION GetVerbCount: Integer; OVERRIDE;
+   END;
+
+   TJvgCompListEditor = CLASS(TForm)
+      lvAll: TListView;
+      Label1: TLabel;
+      Bevel1: TBevel;
+      Bevel2: TBevel;
+      Label2: TLabel;
+      Bevel3: TBevel;
+      Bevel4: TBevel;
+      lvSel: TListView;
+      pbAdd: TBitBtn;
+      pbRemove: TBitBtn;
+      BitBtn3: TBitBtn;
+      BitBtn4: TBitBtn;
+      ImageList1: TImageList;
+      PROCEDURE FormCreate(Sender: TObject);
+      PROCEDURE FormDestroy(Sender: TObject);
+      PROCEDURE FormShow(Sender: TObject);
+      PROCEDURE lvAllDblClick(Sender: TObject);
+      PROCEDURE BitBtn4Click(Sender: TObject);
+      PROCEDURE BitBtn3Click(Sender: TObject);
+      PROCEDURE lvSelDblClick(Sender: TObject);
+      PROCEDURE lvSelChange(Sender: TObject; Item: TListItem;
+         Change: TItemChange);
+      PROCEDURE lvAllChange(Sender: TObject; Item: TListItem;
+         Change: TItemChange);
+   PRIVATE
+      ComponentList: TStringList;
+   PUBLIC
+      Component: TJvgPropertyCenter;
+   END;
+
+{$IFDEF COMPILER6_UP}
 type
-
-  TJvgComponentListProperty = class(TPropertyEditor)
-    function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-    procedure Edit; override;
-  end;
-
-  TJvgComponentListEditor = class(TComponentEditor)
-    procedure ExecuteVerb(Index: Integer); override;
-    function GetVerb(Index: Integer): string; override;
-    function GetVerbCount: Integer; override;
-  end;
-
-  TJvgCompListEditor = class(TForm)
-    lvAll: TListView;
-    Label1: TLabel;
-    Bevel1: TBevel;
-    Bevel2: TBevel;
-    Label2: TLabel;
-    Bevel3: TBevel;
-    Bevel4: TBevel;
-    lvSel: TListView;
-    pbAdd: TBitBtn;
-    pbRemove: TBitBtn;
-    BitBtn3: TBitBtn;
-    BitBtn4: TBitBtn;
-    ImageList1: TImageList;
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure lvAllDblClick(Sender: TObject);
-    procedure BitBtn4Click(Sender: TObject);
-    procedure BitBtn3Click(Sender: TObject);
-    procedure lvSelDblClick(Sender: TObject);
-    procedure lvSelChange(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
-    procedure lvAllChange(Sender: TObject; Item: TListItem;
-      Change: TItemChange);
-  private
-    ComponentList: TStringList;
-  public
-    Component: TJvgPropertyCenter;
-  end;
-
-  {$IFDEF COMPILER4_UP}
+  TDesigner = DesignIntf.IDesigner;
+  TFormDesigner = DesignIntf.IDesigner;
+{$ELSE}
+{$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;
-  {$ENDIF}
+{$ENDIF}
+{$ENDIF}
 
-var
-  glCompListEditor: TJvgCompListEditor;
+VAR
+   glCompListEditor           : TJvgCompListEditor;
 
-implementation
+IMPLEMENTATION
 {$R *.DFM}
 //----------- common proc
 
-procedure ShowCompListEditor(Designer: TDesigner; glPropertyCenter: TJvgPropertyCenter);
-var
-  Dialog: TJvgCompListEditor;
-  I: Integer;
-begin
-  Dialog := TJvgCompListEditor.Create(Application);
-  Dialog.Component := glPropertyCenter; //TJvgPropertyCenter(GetComponent(0));
-  Dialog.ShowModal;
-  Dialog.free;
-end;
+PROCEDURE ShowCompListEditor(Designer: TDesigner; glPropertyCenter:
+   TJvgPropertyCenter);
+VAR
+   Dialog                     : TJvgCompListEditor;
+   I                          : Integer;
+BEGIN
+   Dialog := TJvgCompListEditor.Create(Application);
+   Dialog.Component := glPropertyCenter; //TJvgPropertyCenter(GetComponent(0));
+   Dialog.ShowModal;
+   Dialog.free;
+END;
 
 //----------- TJvgComponentListProperty
 
-function TJvgComponentListProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog];
-end;
+FUNCTION TJvgComponentListProperty.GetAttributes: TPropertyAttributes;
+BEGIN
+   Result := [paDialog];
+END;
 
-function TJvgComponentListProperty.GetValue: string;
-begin
-  Result := Format('(%s)', [GetPropType^.Name]);
-end;
+FUNCTION TJvgComponentListProperty.GetValue: STRING;
+BEGIN
+   Result := Format('(%s)', [GetPropType^.Name]);
+END;
 
-procedure TJvgComponentListProperty.Edit;
-begin
-  ShowCompListEditor(Designer, TJvgPropertyCenter(GetComponent(0)));
-  //  GetComponent(0).Owner.Name
-end;
+PROCEDURE TJvgComponentListProperty.Edit;
+BEGIN
+   ShowCompListEditor(Designer, TJvgPropertyCenter(GetComponent(0)));
+   //  GetComponent(0).Owner.Name
+END;
 //----------- TJvgComponentListEditor
 
-procedure TJvgComponentListEditor.ExecuteVerb(Index: Integer);
-begin
-  case Index of
-    0: ShowCompListEditor(Designer, TJvgPropertyCenter(Component));
-  end;
-end;
+PROCEDURE TJvgComponentListEditor.ExecuteVerb(Index: Integer);
+BEGIN
+   CASE Index OF
+      0: ShowCompListEditor(Designer, TJvgPropertyCenter(Component));
+   END;
+END;
 
-function TJvgComponentListEditor.GetVerb(Index: Integer): string;
-begin
-  case Index of
-    0: Result := 'Edit component list...';
-  end;
-end;
+FUNCTION TJvgComponentListEditor.GetVerb(Index: Integer): STRING;
+BEGIN
+   CASE Index OF
+      0: Result := 'Edit component list...';
+   END;
+END;
 
-function TJvgComponentListEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
+FUNCTION TJvgComponentListEditor.GetVerbCount: Integer;
+BEGIN
+   Result := 1;
+END;
 
 //----------- TJvgCompListEditor
 
-procedure TJvgCompListEditor.FormCreate(Sender: TObject);
-begin
-  //  ControlsList := TList.create;
-end;
+PROCEDURE TJvgCompListEditor.FormCreate(Sender: TObject);
+BEGIN
+   //  ControlsList := TList.create;
+END;
 
-procedure TJvgCompListEditor.FormDestroy(Sender: TObject);
-begin
-  //  ControlsList.Free;
-end;
+PROCEDURE TJvgCompListEditor.FormDestroy(Sender: TObject);
+BEGIN
+   //  ControlsList.Free;
+END;
 
-procedure TJvgCompListEditor.FormShow(Sender: TObject);
-var
-  i, j: integer;
-  ListItem: TListItem;
-  Comp: TComponent;
-  ColorPropInfo, FontPropInfo: PPropInfo;
-const
-  aSigns: array[boolean] of string = ('-', '+');
-begin
-  lvAll.Items.Clear;
-  lvSel.Items.Clear;
+PROCEDURE TJvgCompListEditor.FormShow(Sender: TObject);
+VAR
+   i, j                       : integer;
+   ListItem                   : TListItem;
+   Comp                       : TComponent;
+   ColorPropInfo, FontPropInfo: PPropInfo;
+CONST
+   aSigns                     : ARRAY[boolean] OF STRING = ('-', '+');
+BEGIN
+   lvAll.Items.Clear;
+   lvSel.Items.Clear;
 
-  for i := 0 to Component.ComponentList.Count - 1 do
-  begin
-    ListItem := lvSel.Items.Add;
-    ListItem.Caption := Component.ComponentList[i];
-    Comp := Component.Owner.FindComponent(Component.ComponentList[i]);
-    if Comp = nil then continue;
-    ColorPropInfo := GetPropInfo(Comp.ClassInfo, 'Color');
-    FontPropInfo := GetPropInfo(Comp.ClassInfo, 'Font');
-    ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
-    ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
-    ListItem.ImageIndex := 1;
-  end;
+   FOR i := 0 TO Component.ComponentList.Count - 1 DO
+   BEGIN
+      ListItem := lvSel.Items.Add;
+      ListItem.Caption := Component.ComponentList[i];
+      Comp := Component.Owner.FindComponent(Component.ComponentList[i]);
+      IF Comp = NIL THEN
+         continue;
+      ColorPropInfo := GetPropInfo(Comp.ClassInfo, 'Color');
+      FontPropInfo := GetPropInfo(Comp.ClassInfo, 'Font');
+      ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
+      ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
+      ListItem.ImageIndex := 1;
+   END;
 
-  with Component.Owner do
-    for i := 0 to ComponentCount - 1 do
-    begin
-      ColorPropInfo := GetPropInfo(Components[i].ClassInfo, 'Color');
-      FontPropInfo := GetPropInfo(Components[i].ClassInfo, 'Font');
-      if (ColorPropInfo <> nil) or (FontPropInfo <> nil) then
-      begin
-        ListItem := lvAll.Items.Add;
-        ListItem.Caption := Components[i].Name;
-        ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
-        ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
+   WITH Component.Owner DO
+      FOR i := 0 TO ComponentCount - 1 DO
+      BEGIN
+         ColorPropInfo := GetPropInfo(Components[i].ClassInfo, 'Color');
+         FontPropInfo := GetPropInfo(Components[i].ClassInfo, 'Font');
+         IF (ColorPropInfo <> NIL) OR (FontPropInfo <> NIL) THEN
+         BEGIN
+            ListItem := lvAll.Items.Add;
+            ListItem.Caption := Components[i].Name;
+            ListItem.SubItems.Add(aSigns[Assigned(ColorPropInfo)]);
+            ListItem.SubItems.Add(aSigns[Assigned(FontPropInfo)]);
 
-        for j := 0 to lvSel.Items.Count - 1 do
-          if lvSel.Items[j].Caption = ListItem.Caption then
-          begin
-            ListItem.ImageIndex := 1;
-            break;
-          end;
+            FOR j := 0 TO lvSel.Items.Count - 1 DO
+               IF lvSel.Items[j].Caption = ListItem.Caption THEN
+               BEGIN
+                  ListItem.ImageIndex := 1;
+                  break;
+               END;
 
-      end;
-      //  SetOrdProp( FormX.Components[i], PropInfo, clGreen );
-    end;
-end;
+         END;
+         //  SetOrdProp( FormX.Components[i], PropInfo, clGreen );
+      END;
+END;
 
-procedure TJvgCompListEditor.lvAllDblClick(Sender: TObject);
-var
-  ListItem: TListItem;
-begin
-  if (lvAll.Selected = nil) or (lvAll.Selected.ImageIndex = 1) then exit;
+PROCEDURE TJvgCompListEditor.lvAllDblClick(Sender: TObject);
+VAR
+   ListItem                   : TListItem;
+BEGIN
+   IF (lvAll.Selected = NIL) OR (lvAll.Selected.ImageIndex = 1) THEN
+      exit;
 
-  ListItem := lvSel.Items.Add;
-  ListItem.Caption := lvAll.Selected.Caption;
-  ListItem.SubItems.Add(lvAll.Selected.SubItems[0]);
-  ListItem.SubItems.Add(lvAll.Selected.SubItems[1]);
-  lvAll.Selected.ImageIndex := 1;
-  ListItem.ImageIndex := 1;
-end;
+   ListItem := lvSel.Items.Add;
+   ListItem.Caption := lvAll.Selected.Caption;
+   ListItem.SubItems.Add(lvAll.Selected.SubItems[0]);
+   ListItem.SubItems.Add(lvAll.Selected.SubItems[1]);
+   lvAll.Selected.ImageIndex := 1;
+   ListItem.ImageIndex := 1;
+END;
 
-procedure TJvgCompListEditor.BitBtn4Click(Sender: TObject);
-begin
-  close;
-end;
+PROCEDURE TJvgCompListEditor.BitBtn4Click(Sender: TObject);
+BEGIN
+   close;
+END;
 
-procedure TJvgCompListEditor.BitBtn3Click(Sender: TObject);
-var
-  i: integer;
-  Comp: TComponent;
-begin
-  Component.ComponentList.Clear;
-  Component.CompList.Clear;
-  for i := 0 to lvSel.Items.Count - 1 do
-  begin
-    Comp := Component.Owner.FindComponent(lvSel.Items[i].Caption);
-    if Comp = nil then continue;
-    Component.CompList.Add(Comp);
-    Component.ComponentList.Add(lvSel.Items[i].Caption);
-  end;
-  close;
-end;
+PROCEDURE TJvgCompListEditor.BitBtn3Click(Sender: TObject);
+VAR
+   i                          : integer;
+   Comp                       : TComponent;
+BEGIN
+   Component.ComponentList.Clear;
+   Component.CompList.Clear;
+   FOR i := 0 TO lvSel.Items.Count - 1 DO
+   BEGIN
+      Comp := Component.Owner.FindComponent(lvSel.Items[i].Caption);
+      IF Comp = NIL THEN
+         continue;
+      Component.CompList.Add(Comp);
+      Component.ComponentList.Add(lvSel.Items[i].Caption);
+   END;
+   close;
+END;
 
-procedure TJvgCompListEditor.lvSelDblClick(Sender: TObject);
-var
-  i: integer;
-begin
-  if not Assigned(lvSel.Selected) then exit;
-  for i := 0 to lvAll.Items.Count - 1 do
-    if lvAll.Items[i].Caption = lvSel.Selected.Caption then break;
+PROCEDURE TJvgCompListEditor.lvSelDblClick(Sender: TObject);
+VAR
+   i                          : integer;
+BEGIN
+   IF NOT Assigned(lvSel.Selected) THEN
+      exit;
+   FOR i := 0 TO lvAll.Items.Count - 1 DO
+      IF lvAll.Items[i].Caption = lvSel.Selected.Caption THEN
+         break;
 
-  lvAll.Items[i].ImageIndex := 0;
-  lvSel.Items.Delete(lvSel.Selected.Index);
-end;
+   lvAll.Items[i].ImageIndex := 0;
+   lvSel.Items.Delete(lvSel.Selected.Index);
+END;
 
-procedure TJvgCompListEditor.lvSelChange(Sender: TObject; Item: TListItem; Change: TItemChange);
-begin
-  pbRemove.Enabled := Assigned(lvSel.Selected);
-end;
+PROCEDURE TJvgCompListEditor.lvSelChange(Sender: TObject; Item: TListItem;
+   Change: TItemChange);
+BEGIN
+   pbRemove.Enabled := Assigned(lvSel.Selected);
+END;
 
-procedure TJvgCompListEditor.lvAllChange(Sender: TObject; Item: TListItem; Change: TItemChange);
-begin
-  pbAdd.Enabled := Assigned(lvAll.Selected) and (lvAll.Selected.ImageIndex = 0);
-end;
+PROCEDURE TJvgCompListEditor.lvAllChange(Sender: TObject; Item: TListItem;
+   Change: TItemChange);
+BEGIN
+   pbAdd.Enabled := Assigned(lvAll.Selected) AND (lvAll.Selected.ImageIndex =
+      0);
+END;
 
-end.
+END.
+

@@ -78,7 +78,7 @@ type
     FOnGetItemFontColor: TglOnGetItemColorEvent;
     FOnGetDragImage: TglOnGetDragImageEvent;
     //'''''''''''''''''''''''''''''''''''''''''
-    ThreeDColors: Tgl3DLocalColors;
+    ThreeDColors: TJvg3DLocalColors;
     WallpaperBmp: TBitmap;
     TmpBitmap: TBitmap;
     OldSelItemIndex,
@@ -220,7 +220,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csDisplayDragImage];
   Style := lbOwnerDrawVariable;
-  ThreeDColors := Tgl3DLocalColors.Create(self);
+  ThreeDColors := TJvg3DLocalColors.Create(self);
   FWallpaper := TBitmap.Create;
   TmpBitmap := TBitmap.Create;
   FGlyphsAlign := TJvg2DAlign.Create;

@@ -32,7 +32,7 @@ unit JvgDBGrid;
 interface
 uses
   Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, ExtCtrls, grids, dbgrids;
+  JvgUtils, ExtCtrls, grids, dbgrids, ImgList;
 
 type
 

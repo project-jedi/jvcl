@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvgSpeedButton, JvgWizardHeader, JvgShadow,
-  ComCtrls, JvgSmallFontsDefence;
+  ComCtrls, JvgSmallFontsDefense;
 
 type
   TJvgfCheckVersionInfo = class(TForm)
@@ -67,7 +67,7 @@ var
   fCheckVersionInfo: TJvgfCheckVersionInfo;
 
 implementation
-uses ShellApi, JvgHTTPVersionInfo, globCon;
+uses ShellApi, JvgHTTPVersionInfo;
 {$R *.DFM}
 
 { TJvgfCheckVersionInfo }
@@ -76,8 +76,8 @@ procedure TJvgfCheckVersionInfo.Execute(WinControl: TWinControl);
 var
   VersionInfo: TJvgHTTPVersionInfo;
 begin
-  eCurentVersion.Text := globCon.APP_VERSION;
-  eCurentVersionDate.Text := globCon.APP_DATE;
+//  eCurentVersion.Text := globCon.APP_VERSION;
+//  eCurentVersionDate.Text := globCon.APP_DATE;
 
   VersionInfo := TJvgHTTPVersionInfo.Create(self);
   try

@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
-  Tgl3DLocalColors = class(TComponent)
+  TJvg3DLocalColors = class(TComponent)
   private
     FDkShadow,
       FHighlight,
@@ -64,7 +64,7 @@ type
     property Shadow: TColor read FShadow write SetShadow default clBtnShadow;
   end;
 
-  Tgl3DColors = class(Tgl3DLocalColors)
+  TJvg3DColors = class(TJvg3DLocalColors)
   protected
     procedure Notification(Component: TComponent; Operation: TOperation); override;
   public
@@ -78,35 +78,35 @@ uses JvgUtils, JvgTypes;
 
 procedure Register;
 begin
-  RegisterComponents('Proba', [Tgl3DColors]);
+  RegisterComponents('Proba', [TJvg3DColors]);
 end;
 
-constructor Tgl3DColors.Create(AOwner: TComponent);
+constructor TJvg3DColors.Create(AOwner: TComponent);
 begin
   inherited;
   SetDefaults;
   glGlobalData.lp3DColors := self;
 end;
 
-procedure Tgl3DColors.Notification(Component: TComponent; Operation: TOperation);
+procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
 begin
-  if (Component <> Self) and (Operation = opInsert) and (Component is Tgl3DLocalColors) then
-    raise Exception.Create('Cannot create more than one instance of Tgl3DLocalColors component');
+  if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
+    raise Exception.Create('Cannot create more than one instance of TJvg3DLocalColors component');
 end;
 
-constructor Tgl3DLocalColors.Create(AOwner: TComponent);
+constructor TJvg3DLocalColors.Create(AOwner: TComponent);
 begin
   inherited;
   SetDefaults;
 end;
 
-destructor Tgl3DLocalColors.Destroy;
+destructor TJvg3DLocalColors.Destroy;
 begin
   glGlobalData.lp3DColors := nil;
   inherited;
 end;
 
-procedure Tgl3DLocalColors.SetDefaults;
+procedure TJvg3DLocalColors.SetDefaults;
 begin
   FDkShadow := cl3DDkShadow;
   FHighlight := clBtnHighlight;
@@ -115,7 +115,7 @@ begin
   FColorHighlightShift := 60;
 end;
 
-procedure Tgl3DLocalColors.CreateAuto3DColors(BaseColor: TColor);
+procedure TJvg3DLocalColors.CreateAuto3DColors(BaseColor: TColor);
 var
   r, g, b: byte;
 begin
@@ -128,28 +128,28 @@ begin
   FHighlight := RGB(min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift, 255));
 end;
 
-procedure Tgl3DLocalColors.MakeGlobal;
+procedure TJvg3DLocalColors.MakeGlobal;
 begin
   OldPointer := glGlobalData.lp3DColors;
   glGlobalData.lp3DColors := self;
 end;
 
-procedure Tgl3DLocalColors.MakeLocal;
+procedure TJvg3DLocalColors.MakeLocal;
 begin
   glGlobalData.lp3DColors := OldPointer;
 end;
 
-procedure Tgl3DLocalColors.SetDkShadow(Value: TColor);
+procedure TJvg3DLocalColors.SetDkShadow(Value: TColor);
 begin
   FDkShadow := Value; {TWinControl(Owner).Invalidate;}
 end;
 
-procedure Tgl3DLocalColors.SetHighlight(Value: TColor);
+procedure TJvg3DLocalColors.SetHighlight(Value: TColor);
 begin
   FHighlight := Value; {TWinControl(Owner).Invalidate;}
 end;
 
-procedure Tgl3DLocalColors.SetShadow(Value: TColor);
+procedure TJvg3DLocalColors.SetShadow(Value: TColor);
 begin
   FShadow := Value; {TWinControl(Owner).Invalidate;}
 end;

@@ -54,7 +54,7 @@ type
     FAfterPaint: TNotifyEvent;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
-    ThreeDColors: Tgl3DLocalColors;
+    ThreeDColors: TJvg3DLocalColors;
     fDontUseDefaultImage: boolean;
     procedure CreateShadowImageBuff(R: TRect);
     procedure CreateDefaultShadowImage;
@@ -134,7 +134,7 @@ end;
 constructor TJvgShadow.Create(AOwner: TComponent);
 begin
   inherited;
-  ThreeDColors := Tgl3DLocalColors.Create(self);
+  ThreeDColors := TJvg3DLocalColors.Create(self);
   FStyle := TJvgTextBoxStyle.Create;
   FStyleActive := TJvgTextBoxStyle.Create;
   FTransparentColor := clOlive;

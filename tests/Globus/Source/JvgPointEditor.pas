@@ -27,53 +27,69 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgPointEditor;
+UNIT JvgPointEditor;
 
-interface
+INTERFACE
 
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  DsgnIntf, TypInfo; //FrTypes;
+USES
+   Windows,
+   Messages,
+   SysUtils,
+   Classes,
+   Graphics,
+   Controls,
+   Forms,
+   Dialogs,
+   {$IFDEF COMPILER6_UP}
+   DesignIntf,
+   DesignEditors,
+   PropertyCategories,
+   {$ELSE}
+   DsgnIntf,
+   {$ENDIF COMPILER6_UP}
 
-type
-  TJvgPointProperty = class(TPropertyEditor)
+   TypInfo;                             //FrTypes;
 
-    function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-    //    procedure Edit; override;
-  end;
+TYPE
+   TJvgPointProperty = CLASS(TPropertyEditor)
 
-procedure Register;
+      FUNCTION GetAttributes: TPropertyAttributes; OVERRIDE;
+      FUNCTION GetValue: STRING; OVERRIDE;
+      //    procedure Edit; override;
+   END;
 
-implementation
-var
-  PPointTypeInfo: PTypeInfo;
-  PointTypeInfo: TTypeInfo;
+PROCEDURE Register;
 
-  {== TPointPropertyEditor Methods ==}
+IMPLEMENTATION
+VAR
+   PPointTypeInfo             : PTypeInfo;
+   PointTypeInfo              : TTypeInfo;
 
-function TJvgPointProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := []; // paSubProperties, paReadOnly ];
-end;
+   {== TPointPropertyEditor Methods ==}
 
-function TJvgPointProperty.GetValue: string;
-var
-  pPT: PPoint;
-begin
-  //  pPT := PPoint(GetOrdValue);
-  //  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
-  Result := '[,]';
-end;
+FUNCTION TJvgPointProperty.GetAttributes: TPropertyAttributes;
+BEGIN
+   Result := [];                        // paSubProperties, paReadOnly ];
+END;
 
-procedure Register;
-begin
-  PointTypeInfo.Name := 'TPoint';
-  PointTypeInfo.Kind := tkFloat;
-  PPointTypeInfo := @PointTypeInfo;
-  RegisterPropertyEditor(TypeInfo(TPoint), nil,
-    '', TJvgPointProperty);
+FUNCTION TJvgPointProperty.GetValue: STRING;
+VAR
+   pPT                        : PPoint;
+BEGIN
+   //  pPT := PPoint(GetOrdValue);
+   //  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
+   Result := '[,]';
+END;
 
-end;
+PROCEDURE Register;
+BEGIN
+   PointTypeInfo.Name := 'TPoint';
+   PointTypeInfo.Kind := tkFloat;
+   PPointTypeInfo := @PointTypeInfo;
+   RegisterPropertyEditor(TypeInfo(TPoint), NIL,
+      '', TJvgPointProperty);
 
-end.
+END;
+
+END.
+
