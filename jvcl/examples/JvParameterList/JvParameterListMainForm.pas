@@ -113,12 +113,14 @@ type
     StaticText5: TStaticText;
     Button14: TButton;
     GroupBox7: TGroupBox;
-    Button15: TButton;
     DefaultParameterWidthEdit: TMaskEdit;
     Label6: TLabel;
     Label7: TLabel;
     DefaultParameterLabelWidthEdit: TMaskEdit;
     AssignWidthHeightCheckBox: TCheckBox;
+    JvPanel2: TJvPanel;
+    Button16: TButton;
+    Button15: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -141,6 +143,7 @@ type
     procedure Button14Click(Sender: TObject);
     procedure Button15Click(Sender: TObject);
     procedure AssignWidthHeightCheckBoxClick(Sender: TObject);
+    procedure Button16Click(Sender: TObject);
   private
     { Private-Deklarationen }
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
@@ -238,7 +241,7 @@ begin
       SearchName := 'DateTest';
       Caption    := 'DateTest';
 //      Width      := 80;
-      AsDate     := Now;
+      AsDate     := Now-10;
     end;
     ParameterList.AddParameter(Parameter);
     Parameter := tjvDateTimeParameter.Create(ParameterList);
@@ -1039,6 +1042,37 @@ procedure TForm1.AssignWidthHeightCheckBoxClick(Sender: TObject);
 begin
   WidthEdit.Enabled := AssignWidthHeightCheckBox.Checked;
   HeightEdit.Enabled := AssignWidthHeightCheckBox.Checked;
+end;
+
+procedure TForm1.Button16Click(Sender: TObject);
+VAR
+  ParameterList     : TJvParameterList;
+  BaseParameter     : TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(self);
+  try
+    BaseParameter:= TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
+    WITH tJvMemoParameter(BaseParameter) DO
+    BEGIN
+      SearchName := 'Memo';
+      Caption := 'Simple Memo';
+      AsString := 'Memo Contents';
+      Width := 420;
+      Height := 200;
+      WordWrap := False;
+      WantTabs := False;
+      WantReturns := False;
+      Scrollbars := ssBoth;
+      ReadOnly := TRUE;
+    END;   {*** WITH BaseParameter DO ***}
+    ParameterList.AddParameter(BaseParameter);
+    ParameterList.Messages.OkButton := 'C&opy';
+    ParameterList.Messages.CancelButton := '&Cancel';
+    IF ParameterList.ShowParameterDialog THEN
+      MessageDlg (ParameterList.ParameterByName('Memo').ASString, mtInformation, [mbok],0);
+  finally
+    ParameterList.Free;
+  end;
 end;
 
 end.
