@@ -81,8 +81,10 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   JvJCLUtils;
+{$ENDIF USEJVCL}
 
 constructor TJvgFileIterator.Create;
 begin

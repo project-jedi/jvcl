@@ -34,14 +34,15 @@ interface
 
 uses
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-  DB, JvgTypes,
+  DB,
   {$IFDEF JVCL_USEQuickReport}
   QuickRpt, QRExport,
   {$ENDIF JVCL_USEQuickReport}
-  JclUnitConv;
+  JvgTypes;
 
 type
   TOnExportProgress = procedure(Progress: Integer) of object;
+
 {$IFDEF JVCL_UseQuickReport}
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
 {$ENDIF JVCL_USEQuickReport}
@@ -51,7 +52,7 @@ implementation
 
 uses
   ComObj,
-  JvConsts, JvgUtils;
+  JvgUtils;
 
 const
   cExcelApplication = 'Excel.Application';
@@ -76,7 +77,7 @@ var
   begin
     Result := Str;
     for I := 1 to Length(Result) do
-      if Result[I] = Cr then
+      if Result[I] = #13 then
         Result[I] := ' ';
   end;
 
@@ -209,9 +210,8 @@ begin
         Inc(ColIndex);
       end;
     DataSet.Next;
-    // (rom) using HowAOneLinerCanBiteYou as my easter egg ;-)
     if Assigned(OnExportProgress) then
-      OnExportProgress(HowAOneLinerCanBiteYou(DataSet.RecNo, DataSet.RecordCount));
+      OnExportProgress(Round((DataSet.RecNo * 100.0) / DataSet.RecordCount));
     Inc(RecNo);
   end;
 end;

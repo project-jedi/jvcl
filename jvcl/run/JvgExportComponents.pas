@@ -33,8 +33,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
+  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, DB,
   JvComponent;
+  {$ELSE}
+  Controls, Forms, Dialogs, DB;
+  {$ENDIF USEJVCL}
 
 type
   TJvExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
@@ -54,7 +58,11 @@ type
 
   EJvgExportException = class(Exception);
 
+  {$IFDEF USEJVCL}
   TJvgCommonExport = class(TJvComponent)
+  {$ELSE}
+  TJvgCommonExport = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FSaveToFileName: string;
     FDataSet: TDataSet;
@@ -202,6 +210,7 @@ type
     property Styles: TStrings read GetStyles write SetStyles;
   end;
 
+  {$IFDEF USEJVCL}
   TJvgExportXML = class(TJvgCommonExport)
   public
     procedure Execute; override;
@@ -216,6 +225,7 @@ type
     property OnExportField;
     property OnProgress;
   end;
+  {$ENDIF USEJVCL}
 
 implementation
 
@@ -223,8 +233,8 @@ uses
   ComObj, FileCtrl,
   {$IFDEF USEJVCL}
   JvResources,
-  {$ENDIF USEJVCL}
   JvConsts, JvSimpleXML,
+  {$ENDIF USEJVCL}
   JvgUtils, JvgFileUtils;
 
 {$IFNDEF USEJVCL}
@@ -629,6 +639,8 @@ begin
   end;
 end;
 
+{$IFDEF USEJVCL}
+
 //=== { TJvgExportXML } ======================================================
 (*
 procedure TJvgExportXML.Execute;
@@ -808,6 +820,8 @@ begin
 
   XML.SaveToFile(Self.FSaveToFileName);
 end;
+
+{$ENDIF USEJVCL}
 
 end.
 
