@@ -58,6 +58,7 @@ type
 
 const
   OFN_EX_NOPLACESBAR = 1; // for new style of standard Windows dialogs
+  {$EXTERNALSYM OFN_EX_NOPLACESBAR}
 
   SpecialFolders: array[0..29] of TSpecialFolderInfo = (
     (Name: 'Alt Startup'; ID: CSIDL_ALTSTARTUP),
