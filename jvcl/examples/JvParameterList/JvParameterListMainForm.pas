@@ -2,7 +2,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{$DEFINE INCLUDE_DEVEXP_CX}
+{.$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
@@ -13,12 +13,13 @@ uses
   cxDropDownEdit, cxCalendar, cxSpinEdit, cxTimeEdit, cxCheckBox, cxMemo,
   cxTextEdit, cxMaskEdit, cxControls, cxContainer, cxEdit, cxLabel,
   cxImage, cxCheckListBox,
-  cxGroupBox,
+  cxGroupBox, cxButtonEdit,
   {$ENDIF}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStorage,
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
-  JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, cxButtonEdit;
+  JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
+  JvExExtCtrls, JvAppXMLStorage;
 
 type
   TForm1 = class (TForm)
@@ -80,6 +81,7 @@ type
     StaticText2: TStaticText;
     StaticText3: TStaticText;
     StaticText4: TStaticText;
+    JvAppXMLStorage: TJvAppXMLStorage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -100,6 +102,7 @@ type
   private
     { Private-Deklarationen }
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
+    function DefaultStorage : TJvCustomAppStorage;
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
@@ -119,10 +122,10 @@ uses JvDynControlEngineVCL,
   JclBase,
   JvFormPlacementSelectList,
   JvDynControlEngineVCLRed
-     {$IFDEF INCLUDE_DEVEXP_CX}
+  {$IFDEF INCLUDE_DEVEXP_CX}
   , JvDynControlEngineDevExpCx
   , cxLookAndFeels
-{$ENDIF}
+  {$ENDIF}
   ;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -334,7 +337,7 @@ begin
     ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStorage  := JvAppRegistryStorage;
+    ParameterList.AppStorage  := DefaultStorage;
     ParameterList.Path      := 'Dialog 1';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
@@ -431,7 +434,7 @@ begin
     ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width     := StrToInt(WidthEdit.Text);
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStorage  := JvAppRegistryStorage;
+    ParameterList.AppStorage  := DefaultStorage;
     ParameterList.Path      := 'Dialog 2';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
@@ -547,7 +550,7 @@ begin
  //  ParameterList.Height    := StrToInt(HeightEdit.Text);
     ParameterList.Width    := 240;
     ParameterList.HistoryEnabled := HistoryEnabledCheckBox.Checked;
-    ParameterList.AppStorage := JvAppRegistryStorage;
+    ParameterList.AppStorage := DefaultStorage;
     ParameterList.Path     := 'Dialog 3';
     if LoadFromCheckBox.Checked then
       ParameterList.LoadData;
@@ -710,6 +713,11 @@ end;
 procedure TForm1.Button13Click(Sender: TObject);
 begin
   ShowTest3(nil);
+end;
+
+function TForm1.DefaultStorage : TJvCustomAppStorage;
+begin
+  Result := JvAppXMLStorage;
 end;
 
 end.

@@ -17,7 +17,7 @@ object Form1: TForm1
   TextHeight = 13
   object Image1: TImage
     Left = 240
-    Top = 25
+    Top = 225
     Width = 85
     Height = 76
     Picture.Data = {
@@ -1929,11 +1929,11 @@ object Form1: TForm1
     StorageOptions.DefaultIfReadConvertError = True
     Root = 'Software\JVCL\JvParameterListDemo'
     SubStorages = <>
-    Left = 319
-    Top = 3
+    Left = 274
+    Top = 53
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppRegistryStorage
+    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1956,7 +1956,7 @@ object Form1: TForm1
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
-    AppStorage = JvAppRegistryStorage
+    AppStorage = JvAppXMLStorage
     AppStoragePath = 'Form\'
     StoredProps.Strings = (
       'AutoHeightCheckBox.Checked'
@@ -1977,5 +1977,13 @@ object Form1: TForm1
     StoredValues = <>
     Left = 520
     Top = 38
+  end
+  object JvAppXMLStorage: TJvAppXMLStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    FileName = 'JvParameterListDemo.xml'
+    RootNodeName = 'Configuration'
+    Left = 275
+    Top = 10
   end
 end
