@@ -108,8 +108,6 @@ type
     procedure SetFixed(Value: word);
     function IsContainOLE: boolean;
 
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure WMMouseMove(var Message: TWMMouse); message WM_MOUSEMOVE;
     procedure WMLMouseDown(var Message: TWMMouse); message WM_LBUTTONDOWN;
     procedure WMLMouseUP(var Message: TWMMouse); message WM_LBUTTONUP;
@@ -117,6 +115,8 @@ type
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
 
   public
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure PaintTo(Canvas: TCanvas);
   protected
@@ -481,15 +481,17 @@ begin
     OLEContainer.Parent := Value;
 end;
 
-procedure TJvgReportItem.CMMouseEnter(var Message: TMessage);
+procedure TJvgReportItem.MouseEnter(Control: TControl);
 begin
+  inherited;
   //Cursor := crCross;
 //  SetCursor( Screen.Cursors[crCross] );
 end;
 
-procedure TJvgReportItem.CMMouseLeave(var Message: TMessage);
+procedure TJvgReportItem.MouseLeave(Control: TControl);
 begin
   Cursor := crDefault;
+  inherited;
   //  SetCursor( Screen.Cursors[crDefault] );
 end;
 

@@ -45,8 +45,6 @@ type
     FGlyphPassive: TPicture;
     FGlyphPushed: TPicture;
     FState: TJvgButtonState;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     procedure SetGlyphActive(Value: TPicture);
     procedure SetGlyphPassive(Value: TPicture);
     procedure SetGlyphPushed(Value: TPicture);
@@ -56,8 +54,8 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     //    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -81,8 +79,8 @@ type
     property GlyphActive: TPicture read FGlyphActive write SetGlyphActive;
     property GlyphPassive: TPicture read FGlyphPassive write SetGlyphPassive;
     property GlyphPushed: TPicture read FGlyphPushed write SetGlyphPushed;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
   end;
 
 implementation
@@ -168,22 +166,18 @@ begin
   Invalidate;
 end;
 
-procedure TJvgGraphicButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvgGraphicButton.MouseEnter(Control: TControl);
 begin
-  inherited;
   FState := bsActive;
   Paint;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited;
 end;
 
-procedure TJvgGraphicButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvgGraphicButton.MouseLeave(Control: TControl);
 begin
-  inherited;
   FState := bsPassive;
   Paint;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited;
 end;
 
 procedure TJvgGraphicButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
