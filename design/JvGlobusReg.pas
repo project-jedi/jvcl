@@ -44,7 +44,8 @@ implementation
 {$R ../Resources/JvGlobusReg.dcr}
 {$ENDIF LINUX}
 
-uses Classes,
+uses
+  Classes,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
   {$ELSE}
@@ -78,6 +79,7 @@ uses Classes,
   JvgCheckVersionInfoForm,
   {$ENDIF DelphiPersonalEdition}
   JvgLabelEditorForm;
+
 // JvgStepLabel,
 // JvgTagParser,
 // JvgPointEditor,
@@ -112,13 +114,13 @@ begin
     {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
     TJvgFixFont]);
 
-  RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
     'ComponentList', TJvgComponentListProperty);
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty);
+  RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
   RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
   RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
-  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty);
   RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
   RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);

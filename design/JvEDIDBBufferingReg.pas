@@ -22,32 +22,34 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
+
 unit JvEDIDBBufferingReg;
 
 interface
-
-uses
-  Classes;
 
 procedure Register;
 
 implementation
 
-uses 
-  JvEDIDBBuffering{, JvEDITCPServer, JvEDITCPClient};
+uses
+  Classes,
+  JvDsgnConsts,
+  JvEDIDBBuffering {, JvEDITCPServer, JvEDITCPClient};
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEDIDBBufferingReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvEDIDBBufferingReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
-{ Register Components }
-
- RegisterComponents('Jv EDI', [TJvEDIDBSpecProfiler,
-                              TJvEDIDBSEFProfiler,
-                              TJvEDIDBBuffer{TJvEDITCPServer,TJvEDITCPClient}]);
-
-
-end; { Register }
+ RegisterComponents(RsPaletteEDI, [TJvEDIDBSpecProfiler,
+   TJvEDIDBSEFProfiler, TJvEDIDBBuffer {TJvEDITCPServer, TJvEDITCPClient}]);
+end;
 
 end.
 
