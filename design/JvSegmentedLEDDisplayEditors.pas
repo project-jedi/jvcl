@@ -39,7 +39,7 @@ uses
   {$IFDEF VisualCLX}
   JvQDsgnEditors,
   {$ENDIF VisualCLX}
-  JvSegmentedLEDDisplay;
+  JvColorEditor, JvSegmentedLEDDisplay;
 
 type
   TJvTClassProperty = class(TStringProperty)
@@ -70,6 +70,7 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
+{$IFDEF VCL}
   TUnlitColorProperty = class(TColorProperty {$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
     {$IFDEF COMPILER6_UP}
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
@@ -85,13 +86,24 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
     {$ENDIF COMPILER6_UP}
   end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+  TUnlitColorProperty = class(TJvColorProperty)
+  public
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: string); override;
+  end;
+{$ENDIF VisualCLX}
+
 
 implementation
 
 uses
   SysUtils,
   JclRTTI,
-  JvSegmentedLEDDisplayMappingForm, JvDsgnConsts, JvColorEditor;
+  JvSegmentedLEDDisplayMappingForm, JvDsgnConsts;
 
 const
   cDefaultBackground = 'clDefaultBackground';
@@ -227,6 +239,7 @@ begin
     inherited SetValue(Value);
 end;
 
+{$IFDEF VCL}
 procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
@@ -264,5 +277,6 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 {$ENDIF COMPILER6_UP}
+{$ENDIF VCL}
 
 end.
