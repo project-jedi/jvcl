@@ -72,9 +72,9 @@ type
     FFocused: Boolean;
 
     {new: Specific to this component}
-      // value of text in the edit control at the time
-      // that keyboard focus enters the control:
-    FOriginalValue : String;
+    // value of text in the edit control at the time
+    // that keyboard focus enters the control:
+    FOriginalValue: string;
     // Validation/event.
     FOnAcceptNewValue: TJvDbAcceptValueEvent;
     procedure ActiveChange(Sender: TObject);
@@ -90,8 +90,8 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -103,8 +103,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
     function GetReadOnly: Boolean; override;
     procedure SetReadOnly(Value: Boolean); override;
@@ -117,7 +116,7 @@ type
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
-    { Here are the common designtime properties, exactly like the VCL TDBEdit  }
+    { Here are the common designtime properties, exactly like the VCL TDBEdit }
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -152,6 +151,10 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    {Common JEDI Niceties}
+    property BeepOnError;
+    { designtime properties SPECIFIC to only JvDBMaskEdit: }
+    property EditMask; { from TJvCustomMaskEdit }
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -170,9 +173,6 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-    { designtime properties SPECIFIC to only JvDBMaskEdit: }
-    property EditMask; { from TJvCustomMaskEdit }
-
     {new event}
     // This event is fired when a new value has been entered, and the Enter key is
     // hit, and the mask checking worked, and we are asking the user
@@ -180,9 +180,6 @@ type
     // user may also want to automatically set a flag to cause an automatic Post
     // after the db control does a write to the fieldlink.
     property OnAcceptNewValue: TJvDbAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
-
-    {Common JEDI Niceties}
-    property BeepOnError;
   end;
 
   TJvDBComboEdit = class(TJvCustomComboEdit)
@@ -210,12 +207,11 @@ type
     procedure Change; override;
     function EditCanModify: Boolean; override;
     function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean);override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -319,15 +315,13 @@ type
     procedure AcceptValue(const Value: Variant); override;
     procedure ApplyDate(Value: TDateTime); override;
     function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean);override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
-
     // Polaris
     procedure SetDate(Value: TDateTime); override;
     function IsValidDate(Value: TDateTime): Boolean;
@@ -427,16 +421,14 @@ type
   private
     FDataLink: TFieldDataLink;
     FDefaultParams: Boolean;
-
     //Polaris
-    FLEmptyIsNull,
-      FEmptyIsNull: Boolean;
+    FLEmptyIsNull: Boolean;
+    FEmptyIsNull: Boolean;
     procedure SetEmptyIsNull(Value: Boolean);
     function GetZeroEmpty: Boolean;
     procedure SetZeroEmpty(Value: Boolean);
     function StoreEmptyIsNull: Boolean;
     //Polaris
-
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetDataField: string;
@@ -454,7 +446,7 @@ type
     procedure AcceptValue(const Value: Variant); override;
     function GetDisplayText: string; override;
     function GetReadOnly: Boolean; override;
-    procedure SetReadOnly(Value: Boolean);override;
+    procedure SetReadOnly(Value: Boolean); override;
     procedure Change; override;
 
     procedure DataChanged; override; //Polaris
@@ -463,11 +455,9 @@ type
     function IsValidChar(Key: Char): Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
     procedure UpdatePopup; override;
-
     //Polaris
     procedure Loaded; override;
     //Polaris
@@ -561,8 +551,7 @@ type
   end;
 
   TGetStringEvent = function(Sender: TObject): string of object;
-  TDataValueEvent = procedure(Sender: TObject; DataSet: TDataSet;
-    var Value: Longint) of object;
+  TDataValueEvent = procedure(Sender: TObject; DataSet: TDataSet; var Value: Longint) of object;
   TDBLabelStyle = (lsState, lsRecordNo, lsRecordSize);
   TGlyphAlign = glGlyphLeft..glGlyphRight;
   TDBStatusKind = dsInactive..dsCalcFields;
@@ -585,7 +574,8 @@ type
     FOnGetDataName: TGetStringEvent;
     FOnGetRecNo: TDataValueEvent;
     FOnGetRecordCount: TDataValueEvent;
-    FLeftMargin, FRightMargin:Integer;
+    FLeftMargin: Integer;
+    FRightMargin: Integer;
     function GetStatusKind(State: TDataSetState): TDBStatusKind;
     procedure CaptionsChanged(Sender: TObject);
     function GetDataSetName: string;
@@ -601,26 +591,21 @@ type
     procedure SetCaptions(Value: TStrings);
     procedure SetCalcCount(Value: Boolean);
   protected
-
     procedure Loaded; override;
     function GetDefaultFontColor: TColor; override;
     function GetLabelCaption: string; override;
     function GetCaption(State: TDataSetState): string; virtual;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetName(const Value: TComponentName); override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateData; virtual;
     procedure UpdateStatus; virtual;
-
     property Caption;
     property DatasetState: TDataSetState read GetDatasetState;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
     property DatasetName: string read GetDataSetName write SetDataSetName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -655,8 +640,7 @@ type
     property Visible;
     property WordWrap;
     property OnGetDataName: TGetStringEvent read FOnGetDataName write FOnGetDataName;
-    property OnGetRecordCount: TDataValueEvent read FOnGetRecordCount
-      write FOnGetRecordCount;
+    property OnGetRecordCount: TDataValueEvent read FOnGetRecordCount write FOnGetRecordCount;
     property OnGetRecNo: TDataValueEvent read FOnGetRecNo write FOnGetRecNo;
     property OnClick;
     property OnDblClick;
@@ -688,7 +672,7 @@ uses
 {$ENDIF LINUX}
 
 //=== NEW IN JVCL 3.0 ==
-//=== TJvDBMaskEdit ==============================================================
+//=== TJvDBMaskEdit ==========================================================
 
 constructor TJvDBMaskEdit.Create(AOwner: TComponent);
 begin
@@ -866,10 +850,8 @@ begin
     end;
     EditMask := FDataLink.Field.EditMask;
     if not (csDesigning in ComponentState) then
-    begin
       if (FDataLink.Field.DataType in [ftString, ftWideString]) and (MaxLength = 0) then
         MaxLength := FDataLink.Field.Size;
-    end;
     if FFocused and FDataLink.CanModify then
       Text := FDataLink.Field.Text
     else
@@ -938,7 +920,7 @@ begin
   newValue := Text;
   // When we hit enter, check if there was a change, and if so,
   // we can fire the confirmation event.
-  if (FOriginalValue<>newValue) then
+  if FOriginalValue <> NewValue then
     if Assigned(FOnAcceptNewValue) then
     begin
       FOnAcceptNewValue(Self, FOriginalValue, NewValue, Accept, Post);
@@ -969,14 +951,14 @@ begin
         DataSource.DataSet.Post;
 end;
 
-procedure TJvDBMaskEdit.WMPaint(var Message: TWMPaint);
+procedure TJvDBMaskEdit.WMPaint(var Msg: TWMPaint);
 (*const
-  AlignmentValues: array[False..True, TAlignment] of TAlignment = (
+  AlignmentValues: array [Boolean, TAlignment] of TAlignment = (
     (taLeftJustify, taRightJustify, taCenter),
     (taRightJustify, taLeftJustify, taCenter)
   ); *)
 const
-  AlignStyle : array[Boolean, TAlignment] of DWORD =
+  AlignStyle: array [Boolean, TAlignment] of DWORD =
    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 var
@@ -1014,11 +996,12 @@ begin
     inherited; // This is where the main Non Control-Grid Paint Code lives.
     Exit;
   end;
-{ Handler code here is for
-  Data Aware Controls drawing themselves into their own internal
-  canvas, for purpose of being displayed in a DBControl Grid:
-}
-  DC := Message.DC;
+
+  { Handler code here is for
+    Data Aware Controls drawing themselves into their own internal
+    canvas, for purpose of being displayed in a DBControl Grid:
+  }
+  DC := Msg.DC;
   if DC = 0 then
     DC := BeginPaint(Handle, PS);
   FCanvas.Handle := DC;
@@ -1040,8 +1023,10 @@ begin
       begin
         S := FDataLink.Field.DisplayText;
         case CharCase of
-          ecUpperCase: S := AnsiUpperCase(S);
-          ecLowerCase: S := AnsiLowerCase(S);
+          ecUpperCase:
+            S := AnsiUpperCase(S);
+          ecLowerCase:
+            S := AnsiLowerCase(S);
         end;
       end
       else
@@ -1050,8 +1035,10 @@ begin
         FillChar(S[1], Length(S), PasswordChar);
       Margins := GetTextMargins;
       case AAlignment of
-        taLeftJustify: Left := Margins.X;
-        taRightJustify: Left := ClientWidth - TextWidth(S) - Margins.X - 1;
+        taLeftJustify:
+          Left := Margins.X;
+        taRightJustify:
+          Left := ClientWidth - TextWidth(S) - Margins.X - 1;
       else
         Left := (ClientWidth - TextWidth(S)) div 2;
       end;
@@ -1061,14 +1048,14 @@ begin
     end;
   finally
     FCanvas.Handle := 0;
-    if Message.DC = 0 then
+    if Msg.DC = 0 then
       EndPaint(Handle, PS);
   end;
 end;  
 
-procedure TJvDBMaskEdit.CMGetDataLink(var Message: TMessage);
+procedure TJvDBMaskEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
 function TJvDBMaskEdit.GetTextMargins: TPoint;
@@ -1297,10 +1284,8 @@ begin
     end;
     EditMask := FDataLink.Field.EditMask;
     if not (csDesigning in ComponentState) then
-    begin
       if (FDataLink.Field.DataType = ftString) and (MaxLength = 0) then
         MaxLength := FDataLink.Field.Size;
-    end;
     if FFocused and FDataLink.CanModify then
       Text := FDataLink.Field.Text
     else
@@ -1511,16 +1496,16 @@ begin
     try
       if Value <> NullDate then
       begin
-        if ((MinDate <> NullDate) and (MaxDate <> NullDate) and
-          ((Value < MinDate) or (Value > MaxDate))) then
+        if (MinDate <> NullDate) and (MaxDate <> NullDate) and
+          ((Value < MinDate) or (Value > MaxDate)) then
           raise EJVCLException.CreateResFmt(@RsEDateOutOfRange, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate), FormatDateTime(GetDateFormat, MaxDate)])
         else
-        if ((MinDate <> NullDate) and (Value < MinDate)) then
+        if (MinDate <> NullDate) and (Value < MinDate) then
           raise EJVCLException.CreateResFmt(@RsEDateOutOfMin, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MinDate)])
         else
-        if ((MaxDate <> NullDate) and (Value > MaxDate)) then
+        if (MaxDate <> NullDate) and (Value > MaxDate) then
           raise EJVCLException.CreateResFmt(@RsEDateOutOfMax, [FormatDateTime(GetDateFormat, Value),
             FormatDateTime(GetDateFormat, MaxDate)]);
       end;
@@ -1812,8 +1797,8 @@ end;
 procedure TJvDBCalcEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if not ReadOnly and ((Key = VK_DELETE) or ((Key = VK_INSERT)
-    and (ssShift in Shift))) then
+  if not ReadOnly and ((Key = VK_DELETE) or ((Key = VK_INSERT) and
+    (ssShift in Shift))) then
     FDataLink.Edit;
 end;
 
@@ -1890,7 +1875,8 @@ begin
       else
         Result := '';
     end
-    else {//Polaris Result := inherited GetDisplayText;}
+    else
+    //Polaris Result := inherited GetDisplayText;
     if FDataLink.Field.IsNull then
       Result := ''
     else
@@ -1913,7 +1899,6 @@ begin
 end;
 
 //Polaris
-
 procedure TJvDBCalcEdit.DataChanged;
 begin
   inherited;
@@ -2349,8 +2334,10 @@ begin
   if not (State in [Low(TDBStatusKind)..High(TDBStatusKind)]) then
   begin
     case State of
-      dsFilter: Result := dsSetKey;
-      dsNewValue, dsOldValue, dsCurValue: Result := dsEdit;
+      dsFilter:
+        Result := dsSetKey;
+      dsNewValue, dsOldValue, dsCurValue:
+        Result := dsEdit;
     else
       Result := TDBStatusKind(State);
     end;
@@ -2500,7 +2487,7 @@ begin
     FCell.Free;
     FCell := nil;
   end;
-  NeedsResize := true;
+  NeedsResize := True;
   AdjustBounds;
   Invalidate;
 end;
