@@ -30,17 +30,30 @@ unit JvOutlookBarForm;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, ToolWin,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, ToolWin,
   Menus, ActnList, ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QToolWin,
+  QMenus, QActnList, QComCtrls, QImgList,
+  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
+  {$ENDIF VisualCLX}
   JvOutlookBar;
 
 type
+  {$IFDEF VCL}
   TFrmOLBEditor = class(TDesignWindow)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TFrmOLBEditor = class(TClxDesignWindow)
+  {$ENDIF VisualCLX}
     tbTop: TToolBar;
     btnNew: TToolButton;
     btnDel: TToolButton;
@@ -111,6 +124,9 @@ type
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
+    {$IFDEF VisualCLX}
+    function UniqueName(Component: TComponent): string; override;
+    {$ENDIF}
     {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
     function UniqueName(Component: TComponent): string; override;
@@ -122,10 +138,26 @@ type
 implementation
 
 uses
-  Registry, Dialogs,
+  {$IFDEF MSWINDOWS}
+  Registry,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  JvQRegistryIniFile,
+  {$ENDIF LINUX}
+  {$IFDEF VCL}
+  Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs,
+  {$ENDIF VisualCLX}
   JvConsts, JvDsgnConsts;
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 const
   cJvOutlookBar = 'TJvOutlookBar';
@@ -191,7 +223,21 @@ begin
     UpdateItems;
 end;
 
+{$IFDEF VisualCLX}
+function TFrmOLBEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
+{$ENDIF VisualCLX}
+
 {$ELSE}
+
+function TFrmOLBEditor.UniqueName(Component: TComponent): string;
+begin
+  Result := Designer.UniqueName(Component.ClassName);
+end;
+
+
 
 procedure TFrmOLBEditor.ComponentDeleted(Component: IPersistent);
 var
@@ -219,11 +265,6 @@ procedure TFrmOLBEditor.FormModified;
 begin
   if not (csDestroying in ComponentState) then
     UpdateItems;
-end;
-
-function TFrmOLBEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
 end;
 
 {$ENDIF COMPILER6_UP}
@@ -593,6 +634,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 function TFrmOLBEditor.GetRegPath: string;
 const
   cRegKey = '\JVCL\OutlookBar Editor';
@@ -604,6 +646,14 @@ begin
   Result := SDelphiKey + RsPropertyEditors + cRegKey;
   {$ENDIF COMPILER6_UP}
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+const
+  cRegKey = '/JVCL/OutlookBar Editor';
+begin
+  Result := SDelphiKey + RsPropertyEditors + cRegKey;
+end;
+{$ENDIF LINUX}
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);
 var
