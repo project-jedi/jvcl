@@ -1570,7 +1570,7 @@ begin
       if Mode = lmCopy then
       begin
         Close;
-        CopyStructure(Source);
+        CopyStructure(Source, AutoIncAsInteger);
       end;
       FreeIndexList;
       if not Active then
