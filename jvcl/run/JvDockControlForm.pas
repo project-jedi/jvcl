@@ -616,7 +616,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure FormStartDock(var Source: TJvDockDragDockObject); virtual;
     procedure FormPositionDockRect(Source: TJvDockDragDockObject); virtual;
     procedure FormDockOver(Source: TJvDockDragDockObject; X, Y: Integer;
@@ -628,18 +627,14 @@ type
       Client: TControl; var InfluenceRect: TRect; MousePos: TPoint;
       var CanDock: Boolean); virtual;
     procedure FormGetDockEdge(Source: TJvDockDragDockObject; MousePos: TPoint; var DropAlign: TAlign); virtual;
-
     procedure Assign(Source: TPersistent); override;
-
     procedure MakeShowEvent;
     procedure MakeHideEvent;
-
     function CreateConjoinPanelClass(ConjoinHost: TForm): TJvDockConjoinPanel;
     function CreateTabDockClass(TabHost: TForm): TJvDockTabPageControl;
     function CreateConjoinHostAndDockControl(Control1, Control2: TControl;
       DockType: TAlign): TJvDockConjoinHostForm; virtual;
     function CreateTabHostAndDockControl(Control1, Control2: TControl): TJvDockTabHostForm; virtual;
-
     procedure DoNCButtonDown(Msg: TWMNCHitMessage; Button: TMouseButton;
       MouseStation: TJvDockMouseStation); virtual;
     procedure DoNCButtonUp(Msg: TWMNCHitMessage; Button: TMouseButton;
@@ -648,18 +643,14 @@ type
       MouseStation: TJvDockMouseStation); virtual;
     procedure DoNCButtonDblClk(Msg: TWMNCHitMessage; Button: TMouseButton;
       MouseStation: TJvDockMouseStation); virtual;
-
     procedure DoPaintDockGrabber(Canvas: TCanvas;
       Control: TControl; const ARect: TRect);
     procedure DoPaintDockSplitter(Canvas: TCanvas;
       Control: TControl; const ARect: TRect);
     procedure DoFormShowHint(HTFlag: Integer; var HintStr: string; var CanShow: Boolean);
-
     procedure ShowParentForm;
     procedure HideParentForm;
-
     procedure RestoreChild;
-
     property VSPaneWidth: Integer read FVSPaneWidth write SetVSPaneWidth;
     property ParentVisible: Boolean read FParentVisible write SetParentVisible;
     property CurrentDockSite: TWinControl read FCurrentDockSite write SetCurrentDockSite;
@@ -4083,7 +4074,6 @@ begin
         Right := Left + NewWidth;
         Bottom := Top + NewHeight;
       end;
-
       AdjustDockRect(DockRect);
     end
     else
