@@ -47,10 +47,14 @@ translation tool installed and want to use it with the JVCL. }
 {$DEFINE JVCL_UseQuickReport}
 
 { Enable this define if you have QReport 4 installed. This will require qr4rund7 instead
-of qrpt. JVCL_UseQuickReport must also be defined}
+of qrpt. NB! JVCL_UseQuickReport must also be defined}
 {.$DEFINE QREPORT4}
 
-{$IFNDEF JVCL_USEQuickReport}
+{$IFDEF COMPILER8_UP}
+{$UNDEF JVCL_UseQuickReport}
+{$ENDIF}
+
+{$IFNDEF JVCL_UseQuickReport}
 {$UNDEF QREPORT4}
 {$ENDIF}
 
