@@ -1,3 +1,6 @@
+2002-07-22
+- added   JvThumbImage, JvThumbNail, JvThumbView, JvMovableBevel  donated by John Kozikopulos  //MBeck
+
 2002-07-20
 - fixed a few minor bugs
 - added Ariochs fixes to JvMRU
