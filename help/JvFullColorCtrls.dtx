@@ -1,43 +1,172 @@
-##Package: Custom
-##Status: Completed, Incomplete
+##Package: MM
+##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvChart.pas
+@@JvFullColorCtrls.pas
 Summary
-  Contains the TJvChart Charting Component.
+  Contains the TJvFullColorCtrls component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Warren Postma
+  Florent Ouchet
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart
-<TITLEIMG TJvChart>
+@@AxisConfigToString
+<TITLE AxisConfigToString function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AxisConfig  - Description for this parameter
+  ItemFormat  - Description for this parameter
+  AColorSpace - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ColorSpaceToString
+<TITLE ColorSpaceToString function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AColorSpace - Description for this parameter
+  ItemFormat  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@EJvFullColorError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@EJvFullColorListError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxis
+<TITLE GetIndexAxis function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AxisConfig - Description for this parameter
+  AxisID     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxisX
+<TITLE GetIndexAxisX function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AxisConfig - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxisY
+<TITLE GetIndexAxisY function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AxisConfig - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetIndexAxisZ
+<TITLE GetIndexAxisZ function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AxisConfig - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PJvFullColorArray
+<TITLE PJvFullColorArray type>
+<COMBINE TJvFullColorArray>
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition
+<TITLE TJvArrowPosition type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition.apNormal
+  Description for apNormal
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrowPosition.apOpposite
+  Description for apOpposite
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorPoints
+<TITLE TJvCursorPoints type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormatHintEvent
+<TITLE TJvFormatHintEvent type>
+<COMBINE TJvFullColorGroup.OnFormatHint>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorArray
+<TITLE TJvFullColorArray type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisCombo
 JVCLInfo
-  GROUP=JVCL.Graphics
+  GROUP=JVCL.??
   FLAG=Component
 Summary
-  The TJvChart component is a Charting/Graphing component.
+  Write here a summary (1 line)
 Description
-  TJvChart can do line charts (also known as graphs), bar charts, pie charts, and other
-  charting/graphing/plotting.
-
-  To use it, you need to set the display/formatting options (which are sub-properties of
-  TJvChart.Options) and put data into the Data.Values property, set Data.ValuesCount to tell the chart
-  how much data to put into the chart, then call PlotGraph, to make it all appear.
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.AddGraphToOpenPrintCanvas
-Summary
-  Internal Method.
-Description
-  Internal Method.
-Parameters
-  XStartPos   - Description for this parameter
-  YStartPos   - Description for this parameter
-  GraphWidth  - Description for this parameter
-  GraphHeight - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AutoHint
+@@TJvFullColorAxisCombo.ColorID
 Summary
   Write here a summary (1 line)
 Description
@@ -47,21 +176,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.AverageData
-Summary
-  This property contains the averaging data of all the pens.
-Description
-  The average of all the pen values goes into AverageData. Only used on certain chart types.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ChartCanvas
-Summary
-  Internal. Returns the current canvas, printer or screen, that we are plotting on.
-Description
-  Internal. Only invoked by painting code.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.CursorPosition
+@@TJvFullColorAxisCombo.ItemFormat
 Summary
   Write here a summary (1 line)
 Description
@@ -71,26 +186,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.Data
-Summary
-  The actual chart data.
-Description
-  This is the data we are plotting. You must set Data.Values[pen,index], and Data.ValueCount, and if
-  the points also have a datetime value, set the Data.Timestamp[index]. After changing Data values, you
-  must call PlotGraph to cause the change to become visible on the screen.
-See Also
-  TJvChart.PlotGraph
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.GraphToClipboard
-Summary
-  Copy graph image to clipboard.
-Description
-  Copy graph image to clipboard. After that, you can paste it as an image into another document or
-  program.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnAltYAxisClick
+@@TJvFullColorAxisCombo.Selected
 Summary
   Write here a summary (1 line)
 Description
@@ -100,28 +196,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.OnChartClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender            - Description for this parameter
-  Button            - Description for this parameter
-  Shift             - Description for this parameter
-  X                 - Description for this parameter
-  Y                 - Description for this parameter
-  ChartValueIndex   - Description for this parameter
-  ChartPenIndex     - Description for this parameter
-  ShowHint          - Description for this parameter
-  HintFirstLineBold - Description for this parameter
-  HintStrs          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnTitleClick
+@@TJvFullColorAxisConfig
+<TITLE TJvFullColorAxisConfig type>
 Summary
   Write here a summary (1 line)
 Description
@@ -131,7 +207,32 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.OnXAxisClick
+@@TJvFullColorAxisConfig.acXYZ
+  Description for acXYZ
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acXZY
+  Description for acXZY
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acYXZ
+  Description for acYXZ
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acYZX
+  Description for acYZX
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acZXY
+  Description for acZXY
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfig.acZYX
+  Description for acZYX
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorAxisConfigFormat
+<TITLE TJvFullColorAxisConfigFormat type>
 Summary
   Write here a summary (1 line)
 Description
@@ -141,87 +242,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.OnYAxisClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvFullColorAxisConfigFormat.afShort
+  Description for afShort
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.Options
-Summary
-  All the options for the appearance of the chart, including X and Y axis range options and labels,
-  fonts, colors, and margins/spacing are set as sub-properties of this property.
-Description
-  Write here a description
+@@TJvFullColorAxisConfigFormat.afIndent
+  Description for afIndent
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.Picture
-Summary
-  This is the TImage generated by PlotGraph
-Description
-  This is the TImage generated by PlotGraph
-See Also
-  TJvChart.PlotGraph
+@@TJvFullColorAxisConfigFormat.afComplete
+  Description for afComplete
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.PivotData
-Summary
-  Deprecated. Will be removed.
-Description
-  Deprecated. Will be removed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.PlotGraph
-Summary
-  Draw Chart
-Description
-  Take the values in Data.Values and draw the chart. Uses options from TJvChart.Options to determine
-  the appearance and style of the chart.
-See Also
-  TJvChart.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.PrintGraph
-Summary
-  Print to current printer.
-Description
-  Print to current printer. Must call PlotGraph first.
-See Also
-  TJvChart.PlotGraph
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ResetGraphModule
-Summary
-  Clear image, clear options and internal formatting values.
-Description
-  Clear charting bbefore you begin charting a completely new chart. Erases everything in Data, but does
-  NOT delete the current Options.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ResizeChartCanvas
-Summary
-  Internal. Invoked internally when the control resizes.
-Description
-  Internal. Invoked internally when the control resizes. Replots graph with new dimensions.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.SetCursorPosition
+@@TJvFullColorAxisFormatEvent
+<TITLE TJvFullColorAxisFormatEvent type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Pos - Description for this parameter
+  Sender      - Description for this parameter
+  AAxisConfig - Description for this parameter
+  ACaption    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.XOrigin
+@@TJvFullColorCircle
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.BlueColor
 Summary
   Write here a summary (1 line)
 Description
@@ -231,7 +289,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.YOrigin
+@@TJvFullColorCircle.BlueTrackBar
 Summary
   Write here a summary (1 line)
 Description
@@ -241,28 +299,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartClickEvent
-<TITLE TJvChartClickEvent type>
-<COMBINE TJvChart.OnChartClick>
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData
-Summary
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
-Description
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.Clear
-Summary
-  Clear data.
-Description
-  Clear data.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.ClearPenValues
+@@TJvFullColorCircle.CommonTrackBar
 Summary
   Write here a summary (1 line)
 Description
@@ -272,23 +309,85 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.ClearToValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.DebugStr
+@@TJvFullColorCircle.ConvertToID
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ValueIndex - Description for this parameter
+  NewFullColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossBlueColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossCenter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossGreenColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossRedColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.CrossStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.FullColorToPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFullColor - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -296,7 +395,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.Scroll
+@@TJvFullColorCircle.GreenColor
 Summary
   Write here a summary (1 line)
 Description
@@ -306,30 +405,623 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.Timestamp
+@@TJvFullColorCircle.GreenTrackBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.InvertRadius
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.InvertRotation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.LineWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnBlueColorChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnColorSpaceChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnGreenColorChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.OnRedColorChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.PositionToFullColor
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ValueIndex - Description for this parameter
+  APoint - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.Value
+@@TJvFullColorCircle.RedColor
 Summary
-  Pen Data Values.
+  Write here a summary (1 line)
 Description
-  Array property. Access as Value[pen,values] where values is the sample index, and pen is the pen
-  index. pen and values are array indexes, and they start at 0.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.RedTrackBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircle.Styles
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle
+<TITLE TJvFullColorCircleStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowLines
+  Description for csShowLines
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowCommon
+  Description for csShowCommon
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowRed
+  Description for csShowRed
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowGreen
+  Description for csShowGreen
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.csShowBlue
+  Description for csShowBlue
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.cs3ButtonsMouse
+  Description for cs3ButtonsMouse
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyle.cs3ButtonsCommon
+  Description for cs3ButtonsCommon
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleStyles
+<TITLE TJvFullColorCircleStyles type>
+<COMBINE TJvFullColorCircleStyle>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.AutoMouse
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.AxisConfig
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.ColorSpace
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.FullColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.OnAxisConfigChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.OnColorChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.OnColorSpaceChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.OnMouseColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.WantDrawBuffer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent2D
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent2D.ValueZ
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent2D.ValueZAuto
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorEdge
+<TITLE TJvFullColorEdge type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorEdge.feRaised
+  Description for feRaised
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorEdge.feLowered
+  Description for feLowered
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorEdge.feFlat
+  Description for feFlat
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.Brush
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.ColCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.Edge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.MouseEdge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.MouseIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.OnFormatHint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.RowCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.Selected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.SelectedEdge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.SelectedIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorGroup.SquareSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Brush
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Color
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Font
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.LabelColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Pen
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.RoundShapeHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.RoundShapeWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Shape
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapeHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapePosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.ShapeWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorLabel.Spacing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  Pen        - Description for this parameter
-  ValueIndex - Description for this parameter
+  AColor - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.ValueCount
+@@TJvFullColorList.AllocBy
 Summary
   Write here a summary (1 line)
 Description
@@ -339,28 +1031,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartDataArray
-<TITLE TJvChartDataArray type>
+@@TJvFullColorList.Assign
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  array of array of Double; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartEvent
-<TITLE TJvChartEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference): TJvChart.OnAltYAxisClick TJvChart.OnTitleClick
-  TJvChart.OnXAxisClick TJvChart.OnYAxisClick
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
-  Sender - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartKind
-<TITLE TJvChartKind type>
+@@TJvFullColorList.BeginUpdate
 Summary
   Write here a summary (1 line)
 Description
@@ -370,44 +1054,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartNone
-  Description for ckChartNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartLine
-  Description for ckChartLine
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartBar
-  Description for ckChartBar
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartStackedBar
-  Description for ckChartStackedBar
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartBarAverage
-  Description for ckChartBarAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartStackedBarAverage
-  Description for ckChartStackedBarAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartPieChart
-  Description for ckChartPieChart
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartMarkers
-  Description for ckChartMarkers
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartDeltaAverage
-  Description for ckChartDeltaAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend
-<TITLE TJvChartLegend type>
+@@TJvFullColorList.Capacity
 Summary
   Write here a summary (1 line)
 Description
@@ -417,26 +1064,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendNone
-  Description for clChartLegendNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendRight
-  Description for clChartLegendRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendBelow
-  Description for clChartLegendBelow
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AutoUpdateGraph
+@@TJvFullColorList.Clear
 Summary
   Write here a summary (1 line)
 Description
@@ -446,7 +1074,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AverageLineColor
+@@TJvFullColorList.Count
 Summary
   Write here a summary (1 line)
 Description
@@ -456,7 +1084,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AverageValue
+@@TJvFullColorList.Delete
 Summary
   Write here a summary (1 line)
 Description
@@ -468,7 +1096,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisFont
+@@TJvFullColorList.DeleteRedundant
 Summary
   Write here a summary (1 line)
 Description
@@ -478,7 +1106,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisLineColor
+@@TJvFullColorList.EndUpdate
 Summary
   Write here a summary (1 line)
 Description
@@ -488,268 +1116,451 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisLineWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.ChartKind
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.CursorColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.CursorStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.DateTimeFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.DivisionLineColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.HeaderFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx> .
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-See Also
-  HotTrack
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.Legend
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendRowCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MarkerSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MouseEdit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MouseInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.NoDataMessage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PaperColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenAxis
+@@TJvFullColorList.Exchange
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  Index1 - Description for this parameter
+  Index2 - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenColor
+@@TJvFullColorList.IndexOf
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  AColor - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenLegends
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenLineWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenMarkerKind
+@@TJvFullColorList.Insert
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  Index  - Description for this parameter
+  AColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenSecondaryAxisFlag
+@@TJvFullColorList.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.List
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorList.Remove
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  AColor - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenStyle
+@@TJvFullColorList.UpdateCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListEvent
+<TITLE TJvFullColorListEvent type>
+<COMBINE TJvFullColorList.OnChange>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation
+<TITLE TJvFullColorListOperation type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foAllChanged
+  Description for foAllChanged
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foDeleted
+  Description for foDeleted
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foAdded
+  Description for foAdded
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorListOperation.foChanged
+  Description for foChanged
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorMouseEvent
+<TITLE TJvFullColorMouseEvent type>
+<COMBINE TJvFullColorComponent.OnMouseColor>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorOrientation
+<TITLE TJvFullColorOrientation type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorOrientation.coNormal
+  Description for coNormal
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorOrientation.coInverse
+  Description for coInverse
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ColorTrackBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.CrossCenter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.CrossSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.CrossStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ReverseAxisX
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorPanel.ReverseAxisY
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.AllowVariable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.ColorSpaceID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.ItemFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.MakeList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.OnFormatItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceCombo.SelectedSpace
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat
+<TITLE TJvFullColorSpaceFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfName
+  Description for cfName
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfShortName
+  Description for cfShortName
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormat.cfBoth
+  Description for cfBoth
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceFormatEvent
+<TITLE TJvFullColorSpaceFormatEvent type>
+<COMBINE TJvFullColorSpaceCombo.OnFormatItem>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ArrowColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ArrowPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ArrowWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.BarWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.ColorOrientation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.FreeLink
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.FullColorDrawing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.Linked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.LinkerName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.Orientation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorTrackBar.SetLink
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  AComponent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenUnit
+@@TJvFullColorTrackBar.ValueX
 Summary
   Write here a summary (1 line)
 Description
@@ -759,19 +1570,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenValueLabels
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PrimaryYAxis
+@@TJvFullColorTrackBar.ValueXAuto
 Summary
   Write here a summary (1 line)
 Description
@@ -781,7 +1580,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.SecondaryYAxis
+@@TJvFullColorTrackBar.ValueY
 Summary
   Write here a summary (1 line)
 Description
@@ -791,7 +1590,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.ShadowColor
+@@TJvFullColorTrackBar.ValueYAuto
 Summary
   Write here a summary (1 line)
 Description
@@ -801,7 +1600,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.Title
+@@TJvKeyCode
+<TITLE TJvKeyCode type>
 Summary
   Write here a summary (1 line)
 Description
@@ -811,7 +1611,24 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisDateTimeFormat
+@@TJvKeyCode.kcLeft
+  Description for kcLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcRight
+  Description for kcRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcUp
+  Description for kcUp
+
+----------------------------------------------------------------------------------------------------
+@@TJvKeyCode.kcDown
+  Description for kcDown
+
+----------------------------------------------------------------------------------------------------
+@@TJvShapePosition
+<TITLE TJvShapePosition type>
 Summary
   Write here a summary (1 line)
 Description
@@ -821,370 +1638,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisDateTimeMode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvShapePosition.spLeft
+  Description for spLeft
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisDivisionMarkers
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvShapePosition.spRight
+  Description for spRight
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisHeader
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvShapePosition.spTop
+  Description for spTop
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisLegendSkipBy
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XAxisValuesPerDivision
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XEnd
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XGap
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XLegendMaxTextWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XLegends
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XOrigin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XPixelGap
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XStartOffset
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.XValueCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.YAxisDivisionMarkers
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.YAxisHeader
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.YEnd
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.YOrigin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.YStartOffset
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind
-<TITLE TJvChartPenMarkerKind type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind.pmkNone
-  Description for pmkNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind.pmkDiamond
-  Description for pmkDiamond
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind.pmkCircle
-  Description for pmkCircle
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind.pmkSquare
-  Description for pmkSquare
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartPenMarkerKind.pmkCross
-  Description for pmkCross
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.Active
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.DefaultYLegends
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.MarkerValueDecimals
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.MaxYDivisions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.MinYDivisions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.Normalize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YDivisions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YGap
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YGap1
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YLegendDecimalPlaces
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YLegends
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YMax
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YMin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartYAxisOptions.YPixelGap
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvShapePosition.spBottom
+  Description for spBottom
 

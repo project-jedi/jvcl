@@ -1,87 +1,63 @@
-##Package: System
+##Package: MM
 ##Status: Generated
 ----------------------------------------------------------------------------------------------------
-@@JvThread.pas
+@@JvFullColorRotate.pas
 Summary
-  Contains the TJvThread component.
+  Contains the TJvFullColorRotate component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
-  Sébastien Buysse
+  Florent Ouchet
 
 ----------------------------------------------------------------------------------------------------
-@@Synchronize
-<TITLE Synchronize procedure>
+@@RotateBitmap
+<TITLE RotateBitmap procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Method - Description for this parameter
+  SourceBitmap - Description for this parameter
+  DestBitmap   - Description for this parameter
+  AColorDelta  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SynchronizeParams
-<TITLE SynchronizeParams procedure>
+@@RotateColor
+<TITLE RotateColor function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Method - Description for this parameter
-  P      - Description for this parameter
+  AColor      - Description for this parameter
+  AColorDelta - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread
-<TITLEIMG TJvThread>
-JVCLInfo
-  GROUP=JVCL.System.LibProcAndThread.Threads
-  FLAG=Component
+@@TJvAxisDelta
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.Exclusive
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.Execute
+@@TJvAxisDelta.Assign
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  P - Description for this parameter
-Return value
-  Describe here what the function returns
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.FreeOnTerminate
+@@TJvAxisDelta.Constituents
 Summary
   Write here a summary (1 line)
 Description
@@ -91,97 +67,112 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.GetPriority
+@@TJvColorDelta
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Thread - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.OnBegin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.OneThreadIsRunning
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.OnExecute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.OnFinish
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.OnFinishAll
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.QuitThread
+@@TJvColorDelta.Assign
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Thread - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.Resume
+@@TJvColorDelta.AxisBlue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDelta.AxisGreen
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDelta.AxisRed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDelta.ColorID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateColor
+<TITLE TJvRotateColor type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateColor.rcCommon
+  Description for rcCommon
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateColor.rcRed
+  Description for rcRed
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateColor.rcGreen
+  Description for rcGreen
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateColor.rcBlue
+  Description for rcBlue
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvRotateValue.Assign
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Thread - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.RunOnCreate
+@@TJvRotateValue.SaturationMethod
 Summary
   Write here a summary (1 line)
 Description
@@ -191,32 +182,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.SetPriority
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Thread   - Description for this parameter
-  Priority - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.Suspend
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Thread - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThread.Terminate
+@@TJvRotateValue.Value
 Summary
   Write here a summary (1 line)
 Description
@@ -226,7 +192,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.Terminated
+@@TJvRotateValueType
+<TITLE TJvRotateValueType type>
 Summary
   Write here a summary (1 line)
 Description
@@ -236,7 +203,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.ThreadDialog
+@@TJvSaturationMethod
+<TITLE TJvSaturationMethod type>
 Summary
   Write here a summary (1 line)
 Description
@@ -246,14 +214,10 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThread.Threads
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvSaturationMethod.smRange
+  Description for smRange
+
+----------------------------------------------------------------------------------------------------
+@@TJvSaturationMethod.smLoop
+  Description for smLoop
 
