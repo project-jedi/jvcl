@@ -163,6 +163,11 @@ Upcoming JVCL 3.00
    - fixed record bugs with Delphi 6
    - fixed OLE bugs
    - (rom) added fix for default properties from ivan_ra  26 Dec 2003
+   
+   - (wap) fixed bug: memory leak in local-function LeaveFunction, part of
+      TJvInterpreterFunction.InFunction.  See code marker VARLEAKFIX.
+      (Fix suggested by ivan_ra@mail.ru)
+
 }
 
 {$I jvcl.inc}
@@ -5657,7 +5662,7 @@ var
   FunArgs: TJvInterpreterArgs;
   VarNames: PNameArray;
 
-  procedure EnterFunction;
+  procedure EnterFunction;    {InFunction local: initialization/entry of function scope}
   var
     FC: PFunctionContext;
     I: Integer;
@@ -5703,12 +5708,13 @@ var
     FCurrArgs := TJvInterpreterArgs.Create;
   end;
 
-  procedure LeaveFunction(Ok: Boolean);
+  procedure LeaveFunction(Ok: Boolean);  {InFunction local: finalization of function scope}
   var
     FC: PFunctionContext;
     C: Integer;
+    varlist : TJvInterpreterVarList; //VARLEAKFIX 
 
-    procedure UpdateVarParams;
+    procedure UpdateVarParams;     // InFunction.LeaveFunction local. How bizarre.
     var
       I, C: Integer;
     begin
@@ -5736,9 +5742,18 @@ var
       FCurrArgs.Count := 0;
       if (FunctionDesc = nil) or (FunctionDesc.ResTyp > 0) then
       begin
-        PFunctionContext(FFunctionContext).LocalVars.GetValue('Result', FVResult, FCurrArgs);
-        TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VType := varEmpty;
-        TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
+        { Return the 'result' value from the local function context to the
+          FVResult:Variant property of the component }
+
+        //        PFunctionContext(FFunctionContext).LocalVars.GetValue('Result', FVResult, FCurrArgs);
+        //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VType := varEmpty;
+        //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
+
+        //VARLEAKFIX begin - Feb 2004 - Warren Postma. Fix suggested by ivan_ra@mail.ru
+        varlist := PFunctionContext(FFunctionContext).LocalVars;
+        varlist.GetValue('Result', FVResult, FCurrArgs);
+        VarClear( varlist.FindVar('', 'Result').Value );
+        //VARLEAKFIX end.
       end;
 
       FCurrArgs.Count := C;
