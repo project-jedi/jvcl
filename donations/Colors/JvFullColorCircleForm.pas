@@ -135,6 +135,7 @@ type
     procedure SetRedDelta(const Value: TJvAxisDelta); override;
     procedure SetGreenDelta(const Value: TJvAxisDelta); override;
     procedure SetBlueDelta(const Value: TJvAxisDelta); override;
+    procedure SetColorID(const Value: TJvFullColorSpaceID); override;
     procedure SetDelta(const Value: TJvColorDelta); override;
   public
     procedure UpdateDeltaValue;
@@ -310,6 +311,7 @@ begin
 
   with JvColorSpaceCombo.SelectedSpace do
   begin
+    SetColorID(ID);
     JvColorAxisConfigCombo.ColorID := ID;
 
     for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
@@ -649,10 +651,15 @@ begin
 end;
 
 procedure TJvFullColorCircleFrm.SetDelta(const Value: TJvColorDelta);
+var
+  ChangeColorSpace:Boolean;
 begin
+  ChangeColorSpace:= Value.ColorID <> Delta.ColorID;
   inherited SetDelta(Value);
   if not FUpdating then
   begin
+    if ChangeColorSpace
+      then UpdateColorSpace;
     UpdateDeltaValue;
     UpdateCheckBoxStates;
   end;
@@ -663,6 +670,19 @@ begin
   inherited SetGreenDelta(Value);
   if not FUpdating then
   begin
+    UpdateDeltaValue;
+    UpdateCheckBoxStates;
+  end;
+end;
+
+procedure TJvFullColorCircleFrm.SetColorID(
+  const Value: TJvFullColorSpaceID);
+begin
+  inherited SetColorID(Value);
+  if not FUpdating then
+  begin
+    JvColorSpaceCombo.ColorSpaceID := Value;
+    UpdateColorSpace;
     UpdateDeltaValue;
     UpdateCheckBoxStates;
   end;
