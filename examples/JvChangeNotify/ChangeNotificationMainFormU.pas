@@ -28,11 +28,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvChangeNotify, Buttons, StdCtrls, ComCtrls, ExtCtrls, JvComponent;
+  Buttons, StdCtrls, ComCtrls, ExtCtrls,
+  JvChangeNotify, JvComponent;
 
 type
   TChangeNotificationMainForm = class(TForm)
-    CN1: TJvChangeNotify;
+    JvChangeNotify1: TJvChangeNotify;
     ListBox2: TListBox;
     Label3: TLabel;
     ListView1: TListView;
@@ -50,7 +51,7 @@ type
     procedure btnAddClick(Sender: TObject);
     procedure btnStartClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
-    procedure CN1ChangeNotify(Sender: TObject; Dir: string; Actions: TJvChangeActions);
+    procedure JvChangeNotify1ChangeNotify(Sender: TObject; Dir: string; Actions: TJvChangeActions);
     procedure EditItem(li: TListItem);
     procedure DeleteItem(li: TListItem);
     procedure ListView1DblClick(Sender: TObject);
@@ -73,15 +74,15 @@ const
   aCap: array[boolean] of string = ('TJvChangeNotification demo', 'Checking...');
 begin
   if Invert then
-    Caption := aCap[not CN1.Active]
+    Caption := aCap[not JvChangeNotify1.Active]
   else
-    Caption := aCap[CN1.Active];
+    Caption := aCap[JvChangeNotify1.Active];
   Application.Title := Caption;
 end;
 
 procedure TChangeNotificationMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CN1.Active := false;
+  JvChangeNotify1.Active := false;
 end;
 
 procedure TChangeNotificationMainForm.btnDeleteClick(Sender: TObject);
@@ -119,7 +120,7 @@ end;
 procedure TChangeNotificationMainForm.btnStartClick(Sender: TObject);
 var b: boolean;
 begin
-  if CN1.Notifications.Count = 0 then
+  if JvChangeNotify1.Notifications.Count = 0 then
   begin
     ShowMessage('No notifications to monitor!');
     btnStart.Down := false;
@@ -131,7 +132,7 @@ begin
   btnDelete.Enabled := not b;
   ResetCaptions(true);
   { do this *after* setting buttons }
-  CN1.Active := b;
+  JvChangeNotify1.Active := b;
 end;
 
 procedure TChangeNotificationMainForm.btnClearClick(Sender: TObject);
@@ -140,7 +141,7 @@ begin
   ResetCaptions(false);
 end;
 
-procedure TChangeNotificationMainForm.CN1ChangeNotify(Sender: TObject; Dir: string;
+procedure TChangeNotificationMainForm.JvChangeNotify1ChangeNotify(Sender: TObject; Dir: string;
   Actions: TJvChangeActions);
 begin
   Application.Title := Format('Change in %s (%s)', [Dir, ActionsToString(Actions)]);
@@ -200,7 +201,7 @@ begin
       li.SubItems[1] := OptionsToStr(AOptions);
     end;
     if li.Data = nil then
-      li.Data := CN1.Notifications.Add;
+      li.Data := JvChangeNotify1.Notifications.Add;
     with TJvChangeItem(li.Data) do
     begin
       IncludeSubTrees := AIncludeSubDirs and (Win32Platform = VER_PLATFORM_WIN32_NT);
@@ -215,7 +216,7 @@ begin
   if li = nil then
     Exit;
   if li.Data <> nil then
-    CN1.Notifications.Delete(li.Index);
+    JvChangeNotify1.Notifications.Delete(li.Index);
   li.Delete;
 end;
 

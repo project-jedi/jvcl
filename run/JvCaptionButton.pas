@@ -420,10 +420,14 @@ const
 var
   BlockWidth, ButtonWidth, ButtonHeight, BlockMargin, InternalSpacing: Integer;
   LMargin: Integer;
+  OldFont: TFont;
 begin
   SetRect(RectText, 0, 0, 0, 0);
+  OldFont := ACanvas.Font;
+  ACanvas.Font := Font;
   DrawText(ACanvas.Handle, PChar(Caption), -1, RectText, DT_CALCRECT or
     Alignments[FAlignment]);
+  ACanvas.Font := OldFont;
   if IsImageVisible then
   begin
     with Images do
@@ -717,6 +721,7 @@ end;
 procedure TJvCaptionButton.DrawButtonText(ACanvas: TCanvas; TextBounds: TRect);
 var
   Flags: DWORD;
+  OldFont: TFont;
 begin
   Flags := DT_VCENTER or Alignments[FAlignment];
   with ACanvas do
@@ -725,16 +730,21 @@ begin
     if not Enabled then
     begin
       OffsetRect(TextBounds, 1, 1);
+      OldFont := Font;
+      Font := Self.Font;
       Font.Color := clBtnHighlight;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      Font := OldFont;
     end
     else
     begin
-      Font.Color := Self.Font.Color;
+      OldFont := Font;
+      Font := Self.Font;
       DrawText(Handle, PChar(Caption), Length(Caption), TextBounds, Flags);
+      Font := OldFont;
     end;
   end;
 end;
