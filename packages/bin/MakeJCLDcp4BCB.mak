@@ -73,7 +73,8 @@ Templates:
 Compile:
         @echo [Compiling: Packages]
         cd $(PACKAGEDIR)
-        for %f in ("C*.dpk") do $(DCC) "%f" >error.log
+        for %f in ("C*.dpk") do $(DCC) "%f"
+# >error.log
 
 Clean:
         @echo [Cleaning...]

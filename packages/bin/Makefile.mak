@@ -91,7 +91,10 @@ BuildJCLdcpFiles:
 BuildJCLdcpFilesForce:
 	# for C++ targets compile JCL .dcp files
 	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) -s -f MakeJCLDcp4BCB.mak
+	@if EXIST "$(JCLROOT)\packages\error.log"  @type "$(JCLROOT)\packages\error.log"
+	@del "$(JCLROOT)\packages\error.log" 2>NUL
 
+################################################################################
 Resources:
 	cd ..\..\images
 	$(MAKE) -f makefile.mak
