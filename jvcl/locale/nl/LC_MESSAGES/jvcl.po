@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2005-02-07 08:35\n"
+"POT-Creation-Date: 2005-02-13 17:40\n"
 "PO-Revision-Date: 2004-05-22 18:45+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -948,7 +948,7 @@ msgstr "Tijd"
 #. FoLog..ListView1......Caption
 #. Programmer's name for it: RsTitle
 #. Programmer's name for it: RsTitle
-#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:943
+#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:946
 msgid "Title"
 msgstr "Titel"
 
@@ -1409,7 +1409,7 @@ msgstr "Gebruik"
 
 #. Programmer's name for it: RsBackButtonCaption
 #. Programmer's name for it: RsBackButtonCaption
-#: JvResources.pas:42 JvWizard.pas:936
+#: JvResources.pas:42 JvWizard.pas:939
 msgid "< &Back"
 msgstr "< &Vorige"
 
@@ -1420,7 +1420,7 @@ msgstr "< &Vorige"
 
 #. Programmer's name for it: RsNextButtonCaption
 #. Programmer's name for it: RsNextButtonCaption
-#: JvResources.pas:44 JvWizard.pas:937
+#: JvResources.pas:44 JvWizard.pas:940
 msgid "&Next >"
 msgstr "&Volgende >"
 
@@ -3658,19 +3658,19 @@ msgstr ""
 msgid "can not assign System %s"
 msgstr "can geen systeem toewijzen %s"
 
-#. Programmer's name for it: RsEUnrecognizeExternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedExternalVariableMethodss
 #: JvResources.pas:727
-msgid "unrecognize external variable method %s.%s"
+msgid "unrecognized external variable method %s.%s"
 msgstr ""
 
-#. Programmer's name for it: RsEUnrecognizeInternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedInternalVariableMethodss
 #: JvResources.pas:728
-msgid "unrecognize internal variable method %s.%s"
+msgid "unrecognized internal variable method %s.%s"
 msgstr ""
 
-#. Programmer's name for it: RsEUnrecognizeSystemMethodss
+#. Programmer's name for it: RsEUnrecognizedSystemMethodss
 #: JvResources.pas:729
-msgid "unrecognize system method %s.%s"
+msgid "unrecognized system method %s.%s"
 msgstr ""
 
 #. Programmer's name for it: RsEFilesDoesNotExist
@@ -8120,45 +8120,45 @@ msgstr ""
 #. (rom) no IFDEF USEJVCL because of CLX version
 #. Programmer's name for it: RsFirstButtonCaption
 #. Programmer's name for it: RsFirstButtonCaption
-#: JvResources.pas:2194 JvWizard.pas:939
+#: JvResources.pas:2194 JvWizard.pas:942
 #, fuzzy
 msgid "To &Start Page"
 msgstr "Huidige Pagina afdrukken"
 
 #. Programmer's name for it: RsLastButtonCaption
 #. Programmer's name for it: RsLastButtonCaption
-#: JvResources.pas:2195 JvWizard.pas:940
+#: JvResources.pas:2195 JvWizard.pas:943
 #, fuzzy
 msgid "To &Last Page"
 msgstr "Huidige Pagina afdrukken"
 
 #. Programmer's name for it: RsFinishButtonCaption
 #. Programmer's name for it: RsFinishButtonCaption
-#: JvResources.pas:2196 JvWizard.pas:941
+#: JvResources.pas:2196 JvWizard.pas:944
 msgid "&Finish"
 msgstr ""
 
 #. Programmer's name for it: RsWelcome
 #. Programmer's name for it: RsWelcome
-#: JvResources.pas:2197 JvWizard.pas:942
+#: JvResources.pas:2197 JvWizard.pas:945
 msgid "Welcome"
 msgstr ""
 
 #. Programmer's name for it: RsSubtitle
 #. Programmer's name for it: RsSubtitle
-#: JvResources.pas:2199 JvWizard.pas:944
+#: JvResources.pas:2199 JvWizard.pas:947
 msgid "Subtitle"
 msgstr ""
 
 #. Programmer's name for it: RsEInvalidParentControl
 #. Programmer's name for it: RsEInvalidParentControl
-#: JvResources.pas:2201 JvWizard.pas:946
+#: JvResources.pas:2201 JvWizard.pas:949
 msgid "The Parent should be TJvWizard or a descendant"
 msgstr ""
 
 #. Programmer's name for it: RsEInvalidWizardPage
 #. Programmer's name for it: RsEInvalidWizardPage
-#: JvResources.pas:2202 JvWizard.pas:947
+#: JvResources.pas:2202 JvWizard.pas:950
 msgid "The pages belong to another wizard"
 msgstr ""
 
@@ -8211,12 +8211,6 @@ msgstr ""
 #. Programmer's name for it: RsUntitled
 #: JvResources.pas:2227 JvXPBar.pas:604
 msgid "untitled"
-msgstr ""
-
-#. Programmer's name for it: RsUntitledFmt
-#. Programmer's name for it: RsUntitledFmt
-#: JvResources.pas:2228 JvXPBar.pas:605
-msgid "(%s %d)"
 msgstr ""
 
 #. === JvXPCore.pas ===========================================================
@@ -9160,13 +9154,13 @@ msgstr "Expressie is leeg."
 #~ msgid "Unable to find SetupApi.dll"
 #~ msgstr "Kan SetupApi.dll niet vinden"
 
-#, fuzzy
-#~ msgid "LabelAxis0"
-#~ msgstr "Label"
-
 #  Programmer's name for it: SFCreateError
 #~ msgid "Unable to create file %s"
 #~ msgstr "Unable to create file %s"
 
 #~ msgid "About JEDI-VisualCLX"
 #~ msgstr "Over JEDI-VisualCLX"
+
+#, fuzzy
+#~ msgid "LabelAxis0"
+#~ msgstr "Label"

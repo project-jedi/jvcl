@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2005-02-07 08:35\n"
+"POT-Creation-Date: 2005-02-13 17:40\n"
 "PO-Revision-Date: 2004-02-01 13:36\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "MIME-Version: 1.0\n"
@@ -857,7 +857,7 @@ msgstr ""
 #. FoLog..ListView1......Caption
 #. Programmer's name for it: RsTitle
 #. Programmer's name for it: RsTitle
-#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:943
+#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:946
 msgid "Title"
 msgstr ""
 
@@ -1270,7 +1270,7 @@ msgstr ""
 
 #. Programmer's name for it: RsBackButtonCaption
 #. Programmer's name for it: RsBackButtonCaption
-#: JvResources.pas:42 JvWizard.pas:936
+#: JvResources.pas:42 JvWizard.pas:939
 msgid "< &Back"
 msgstr ""
 
@@ -1281,7 +1281,7 @@ msgstr ""
 
 #. Programmer's name for it: RsNextButtonCaption
 #. Programmer's name for it: RsNextButtonCaption
-#: JvResources.pas:44 JvWizard.pas:937
+#: JvResources.pas:44 JvWizard.pas:940
 msgid "&Next >"
 msgstr ""
 
@@ -3392,19 +3392,19 @@ msgstr ""
 msgid "can not assign System %s"
 msgstr ""
 
-#. Programmer's name for it: RsEUnrecognizeExternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedExternalVariableMethodss
 #: JvResources.pas:727
-msgid "unrecognize external variable method %s.%s"
+msgid "unrecognized external variable method %s.%s"
 msgstr ""
 
-#. Programmer's name for it: RsEUnrecognizeInternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedInternalVariableMethodss
 #: JvResources.pas:728
-msgid "unrecognize internal variable method %s.%s"
+msgid "unrecognized internal variable method %s.%s"
 msgstr ""
 
-#. Programmer's name for it: RsEUnrecognizeSystemMethodss
+#. Programmer's name for it: RsEUnrecognizedSystemMethodss
 #: JvResources.pas:729
-msgid "unrecognize system method %s.%s"
+msgid "unrecognized system method %s.%s"
 msgstr ""
 
 #. Programmer's name for it: RsEFilesDoesNotExist
@@ -7568,43 +7568,43 @@ msgstr ""
 #. (rom) no IFDEF USEJVCL because of CLX version
 #. Programmer's name for it: RsFirstButtonCaption
 #. Programmer's name for it: RsFirstButtonCaption
-#: JvResources.pas:2194 JvWizard.pas:939
+#: JvResources.pas:2194 JvWizard.pas:942
 msgid "To &Start Page"
 msgstr ""
 
 #. Programmer's name for it: RsLastButtonCaption
 #. Programmer's name for it: RsLastButtonCaption
-#: JvResources.pas:2195 JvWizard.pas:940
+#: JvResources.pas:2195 JvWizard.pas:943
 msgid "To &Last Page"
 msgstr ""
 
 #. Programmer's name for it: RsFinishButtonCaption
 #. Programmer's name for it: RsFinishButtonCaption
-#: JvResources.pas:2196 JvWizard.pas:941
+#: JvResources.pas:2196 JvWizard.pas:944
 msgid "&Finish"
 msgstr ""
 
 #. Programmer's name for it: RsWelcome
 #. Programmer's name for it: RsWelcome
-#: JvResources.pas:2197 JvWizard.pas:942
+#: JvResources.pas:2197 JvWizard.pas:945
 msgid "Welcome"
 msgstr ""
 
 #. Programmer's name for it: RsSubtitle
 #. Programmer's name for it: RsSubtitle
-#: JvResources.pas:2199 JvWizard.pas:944
+#: JvResources.pas:2199 JvWizard.pas:947
 msgid "Subtitle"
 msgstr ""
 
 #. Programmer's name for it: RsEInvalidParentControl
 #. Programmer's name for it: RsEInvalidParentControl
-#: JvResources.pas:2201 JvWizard.pas:946
+#: JvResources.pas:2201 JvWizard.pas:949
 msgid "The Parent should be TJvWizard or a descendant"
 msgstr ""
 
 #. Programmer's name for it: RsEInvalidWizardPage
 #. Programmer's name for it: RsEInvalidWizardPage
-#: JvResources.pas:2202 JvWizard.pas:947
+#: JvResources.pas:2202 JvWizard.pas:950
 msgid "The pages belong to another wizard"
 msgstr ""
 
@@ -7655,12 +7655,6 @@ msgstr ""
 #. Programmer's name for it: RsUntitled
 #: JvResources.pas:2227 JvXPBar.pas:604
 msgid "untitled"
-msgstr ""
-
-#. Programmer's name for it: RsUntitledFmt
-#. Programmer's name for it: RsUntitledFmt
-#: JvResources.pas:2228 JvXPBar.pas:605
-msgid "(%s %d)"
 msgstr ""
 
 #. === JvXPCore.pas ===========================================================
