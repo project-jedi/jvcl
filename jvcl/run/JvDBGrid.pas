@@ -1990,7 +1990,7 @@ begin
   if DefaultDrawing then
   begin
     I := GetImageIndex(Field);
-    if (I >= 0) and not EditorMode then
+    if (I >= 0) {and not EditorMode} then
     begin
       if Field.DataType = ftBoolean then
         if Field.AsBoolean then
@@ -2558,7 +2558,8 @@ begin
       Columns.Count * GridLineWidth);
     OrigWidth := 0;
     // get width currently occupied by columns
-    BeginLayout;
+    if FixedCols = 0 then
+      BeginLayout;
     try
       // autosize all columns proportionally
       if AutoSizeColumnIndex = -1 then
@@ -2615,7 +2616,8 @@ begin
           Columns[AutoSizeColumnIndex].Width := AWidth;
       end;
     finally
-      EndLayout;
+      if FixedCols = 0 then
+        EndLayout;
     end;
   finally
     FInAutoSize := False;
