@@ -255,7 +255,7 @@ begin
   J := Length(FViewItems);
   SetLength(FViewItems, Length(FViewItems) + Items.Count);
   if Index < J then
-    Move(FViewItems[Index], FViewItems[Index + Items.Count], (J - Index - 1) * SizeOf(FViewItems[0]));
+    Move(FViewItems[Index], FViewItems[Index + Items.Count], (J - Index) * SizeOf(FViewItems[0]));
   J := 0;
   if Index > 0 then
   begin
@@ -270,7 +270,11 @@ begin
       if Supports(Items.Items[I], IFillerItems, SubItems) then
       begin
         if SubItems.Count > 0 then
-          Flags := J + vifHasChildren + vifCanHaveChildren
+        begin
+          Flags := J + vifHasChildren + vifCanHaveChildren + vifExpanded;
+          InsertItems(Index + 1, SubItems);
+          Inc(Index, SubItems.Count);
+        end
         else
           Flags := J + vifCanHaveChildren
       end
