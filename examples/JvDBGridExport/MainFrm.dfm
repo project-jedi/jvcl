@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
   Left = 234
   Top = 107
-  Width = 870
-  Height = 600
+  Width = 680
+  Height = 313
   Caption = 'JvDBGridExport Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,8 +18,8 @@ object frmMain: TfrmMain
   object DBGrid1: TJvDBGrid
     Left = 0
     Top = 0
-    Width = 862
-    Height = 535
+    Width = 672
+    Height = 248
     Align = alClient
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
@@ -36,7 +36,7 @@ object frmMain: TfrmMain
     TitleFont.Name = 'MS Shell Dlg 2'
     TitleFont.Style = []
     TitleButtons = True
-    AlternRowColor = True
+    AlternateRowColor = 16768667
     TitleArrow = True
     Columns = <
       item
@@ -108,14 +108,14 @@ object frmMain: TfrmMain
         Title.Font.Height = -19
         Title.Font.Name = 'Comic Sans MS'
         Title.Font.Style = [fsUnderline]
-        Width = 100
+        Width = 150
         Visible = True
       end>
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 535
-    Width = 862
+    Top = 248
+    Width = 672
     Height = 19
     Panels = <
       item

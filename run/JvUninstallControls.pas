@@ -225,7 +225,7 @@ var
   procedure MakeProps(Reg: TRegIniFile; const Section: string; Items, Props: TStrings);
   var
     I: Integer;
-    Tmp: string;
+    BufTmp: string;
     Buf: PChar;
     BufSize: Integer;
     DValue: Cardinal;
@@ -235,30 +235,36 @@ var
     begin
       case Reg.GetDataType(Items[I]) of
         rdString:
-          Tmp := Reg.ReadString('', Items[I], '');
+          BufTmp := Reg.ReadString('', Items[I], '');
         rdExpandString:
-          Tmp := ExpandEnvVar(Reg.ReadString('', Items[I], ''));
+          BufTmp := ExpandEnvVar(Reg.ReadString('', Items[I], ''));
         rdInteger:
           begin
             BufSize := SizeOf(DValue);
             RegQueryValueEx(Reg.CurrentKey, PChar(Items[I]), nil, nil, PByte(@DValue), @BufSize);
-            Tmp := IntToStr(DValue);
+            BufTmp := IntToStr(DValue);
           end;
         rdBinary:
           begin
+            Buf := nil;
             BufSize := Reg.GetDataSize(Items[I]);
             if BufSize > 0 then
             begin
-              GetMem(Buf, BufSize);
+              try
+              UniqueString(BufTmp);
+              SetLength(BufTmp, BufSize * 2);
+              ReAllocMem(Buf, BufSize);
               Reg.ReadBinaryData(Items[I], Buf, BufSize);
-              SetLength(Tmp, BufSize * 2);
-              BinToHex(PChar(Tmp), Buf, BufSize);
+              BinToHex(PChar(BufTmp), Buf, BufSize);
               FreeMem(Buf);
+              except
+                BufTmp := '';
+              end;
             end;
           end;
       end;
-      if Tmp <> '' then
-        Props.Add(Format('%s=%s', [Items[I], Tmp]));
+      if BufTmp <> '' then
+        Props.Add(Format('%s=%s', [Items[I], BufTmp]));
     end;
     Reg.CloseKey;
   end;

@@ -9,6 +9,7 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCLVCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -48,5 +49,6 @@
     <File Name="..\..\run\JvDBGridExport.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBGridSelectColumnForm.pas" Targets="all" Formname="frmSelectColumn" Condition=""/>
     <File Name="..\..\run\JvExDBGrids.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBHTLabel.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
