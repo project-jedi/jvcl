@@ -44,14 +44,14 @@ interface
 
 {$I JVCL.INC}
 
-uses Classes, Controls, Graphics,{$IFDEF COMPILER6_UP}Types;{$ELSE}Windows;{$ENDIF}
+uses Classes, Controls, Graphics,{$IFDEF COMPILER6_UP}Types,{$ENDIF} Windows;
 
 type
   TJvWizardFrameStyle = (fsWindows, fsNone, fsFlat, fsGroove, fsBump, fsLowered,
                   fsRaised);
   TJvWizardImageAlignment = (iaLeft, iaRight, iaCenter, iaStretch);
   TJvWizardImageLeftRight = iaLeft .. iaRight;
-  TJvWizardImageLayout = (ilTop, ilBottom, ilCenter, ilStretch);
+  TJvWizardImageLayout = (ilTop, ilBottom, ilCenter, ilStretch, ilTile);
 
 const
   beAllEdges = [beLeft, beTop, beRight, beBottom];
@@ -66,7 +66,9 @@ procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
   Align: TJvWizardImageAlignment; ALayout: TJvWizardImageLayout);
 
 implementation
-
+uses
+  SysUtils;
+  
 const
 
   { Frame Style Color constant arrays }
@@ -184,6 +186,41 @@ begin
   Result := ABounds;
 end;
 
+procedure JvWizardDrawTiled(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect);
+var
+  AWidth, AHeight: Integer;
+  Bmp: Graphics.TBitmap;
+begin
+
+  if not Assigned(AGraphic) or (AGraphic.Width = 0) or  (AGraphic.Height = 0) then
+    raise Exception.Create('Tiling only works on images with dimensions > 0.');
+  // Create a temporary bitmap to draw into. This is both to speed things up a bit
+  // and also to clip the image to the ARect param (using Draw doesn't clip the image,
+  // but it does support auto-detecting transparency)
+  Bmp := Graphics.TBitmap.Create;
+  try
+    Bmp.Width := ARect.Right - ARect.Left;
+    Bmp.Height := ARect.Bottom - ARect.Top;
+    Bmp.Canvas.Brush.Color := ACanvas.Brush.Color;
+    Bmp.Canvas.FillRect(Bmp.Canvas.ClipRect);
+    AWidth := ARect.Left;
+    while AWidth <= ARect.Right do
+    begin
+      AHeight := ARect.Top;
+      while AHeight <= ARect.Bottom do
+      begin
+        Bmp.Canvas.Draw(AWidth,AHeight,AGraphic);
+        Inc(AHeight, AGraphic.Height);
+      end;
+      Inc(AWidth, AGraphic.Width);
+    end;
+    BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height,
+      Bmp.Canvas.Handle, 0,0,SRCCOPY);
+  finally
+    Bmp.Free;
+  end;
+end;
+
 procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
   Align: TJvWizardImageAlignment; ALayout: TJvWizardImageLayout);
 var
@@ -192,6 +229,11 @@ var
 begin
   if Assigned(AGraphic) then
   begin
+    if (ALayout = ilTile) then
+    begin
+      JvWizardDrawTiled(ACanvas, AGraphic, ARect);
+      Exit;
+    end;
     Offset := Point(0, 0);
     AWidth := ARect.Right - ARect.Left;
     AHeight := ARect.Bottom - ARect.Top;
