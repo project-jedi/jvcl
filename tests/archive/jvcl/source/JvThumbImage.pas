@@ -254,6 +254,8 @@ begin
       begin
         JPG := TJpegImage.Create;
         Jpg.Assign(Picture.graphic);
+        Jpg.CompressionQuality := 75;
+        jpg.Compress;
         Jpg.SaveToStream(Astream);
         FreeAndNil(Jpg);
       end;
