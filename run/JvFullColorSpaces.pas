@@ -301,9 +301,6 @@ function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte)
 function ColorToPrettyName(Value: TColor): string;
 function PrettyNameToColor(Value: string): TColor;
 
-// (outchy) move to another unit
-//function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
-
 function RGBToBGR(Value: Cardinal): Cardinal;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
@@ -1728,57 +1725,6 @@ begin
   while (FColorSpaceList.Remove(AColorSpace)>=0) do ;
 end;
 
-{var
-  CurrentModule : HMODULE = 0;
-  UnitNames : TStringList = nil;
-
-procedure PackageInfoProc(const Name: string; NameType: TNameType;
-  Flags: Byte; Param: Pointer);
-begin
-  if NameType = ntContainsUnit
-    then UnitNames.Add(Name);
-end;
-
-function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
-var
-  PackageFlags:Integer;
-  AClassTypeInfo:PTypeInfo;
-  AClassTypeData:PTypeData;
-begin
-  Result:=False;
-  if (CurrentModule <> Module) then
-    try
-      UnitNames.Clear;
-      CurrentModule:=Module;
-      GetPackageInfo(Module,nil,PackageFlags,PackageInfoProc);
-    except
-      Exit;
-    end;
-
-  AClassTypeInfo:=ObjectClass.ClassInfo;
-  if (AClassTypeInfo = nil)
-    then EJVCLException.CreateFmt(RsErr_NoTypeInfo,[ObjectClass.ClassName]);
-
-  AClassTypeData:=GetTypeData(AClassTypeInfo);
-  if (AClassTypeData = nil)
-    then EJVCLException.CreateFmt(RsErr_NoTypeInfo,[ObjectClass.ClassName]);
-
-  Result:=UnitNames.IndexOf(AClassTypeData.UnitName)<>-1;
-end;
-
-procedure ModuleUnloadProc(HInstance: Integer);
-var
-  Index: Integer;
-  CS: TJvColorSpace;
-begin
-  for Index:=ColorSpaceManager.Count-1 downto 0 do
-  begin
-    CS := ColorSpaceManager.ColorSpaceByIndex[Index];
-    if IsClassInModule(HInstance,CS.ClassType)
-      then ColorSpaceManager.UnRegisterColorSpace(CS);
-  end;
-end;  }
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1790,9 +1736,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
-//  UnitNames:=TStringList.Create;
-//  AddModuleUnloadProc(ModuleUnloadProc);
-
   ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
   ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
   ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
@@ -1809,13 +1752,11 @@ initialization
 {$ENDIF UNITVERSIONING}
 
 finalization
-//  RemoveModuleUnloadProc(ModuleUnloadProc);
   FreeAndNil(GlobalColorSpaceManager);
 {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalPrettyNameStrings);
 {$ENDIF COMPILER6_UP}
-//  CurrentModule:=0;
-//  FreeAndNil(UnitNames);
+
 {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}

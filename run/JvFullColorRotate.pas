@@ -45,8 +45,8 @@ type
     FValue: TJvRotateValueType;
     FSaturationMethod: TJvSaturationMethod;
   public
-    property Value: TJvRotateValueType read FValue write FValue;
-    property SaturationMethod: TJvSaturationMethod read FSaturationMethod write FSaturationMethod;
+    property Value: TJvRotateValueType read FValue write FValue default 0;
+    property SaturationMethod: TJvSaturationMethod read FSaturationMethod write FSaturationMethod default smRange;
 
     procedure Assign(Value: TJvRotateValue); reintroduce;
   end;
@@ -82,14 +82,12 @@ type
 
     procedure Assign(Value: TJvColorDelta); reintroduce;
 
-    property ColorID: TJvFullColorSpaceID read FColorID write FColorID;
+    property ColorID: TJvFullColorSpaceID read FColorID write FColorID default csRGB;
     property AxisRed: TJvAxisDelta read FAxisRed write SetAxisRed;
     property AxisGreen: TJvAxisDelta read FAxisGreen write SetAxisGreen;
     property AxisBlue: TJvAxisDelta read FAxisBlue write SetAxisBlue;
   end;
 
-//function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
-//  NewID: TJvFullColorSpaceID): TJvColorDelta;
 function RotateColor(AColor: TJvFullColor;
   AColorDelta: TJvColorDelta): TJvFullColor;
 procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
@@ -348,7 +346,7 @@ end;
 constructor TJvColorDelta.Create;
 begin
   inherited Create;
-
+  FColorID := csRGB;
   FAxisRed := TJvAxisDelta.Create;
   FAxisGreen := TJvAxisDelta.Create;
   FAxisBlue := TJvAxisDelta.Create;

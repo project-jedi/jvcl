@@ -67,13 +67,10 @@ type
 
   TJvFullColorEvent = procedure(Sender: TObject; AFullColor: TJvFullColor) of object;
 
-  TJvColorCircleEvent = procedure(Sender: TObject) of object;// AxisType: TJvAxisType;
-//    NewFullColor: TJvFullColor) of object;
+  TJvColorCircleEvent = procedure(Sender: TObject) of object;
 
   TJvFullColorDialog = class;
   TJvFullColorCircleDialog = class;
-  TJvBaseFullColorForm = class;
-  TJvBaseColorCircleForm = class;
 
   TJvFullColorDialog = class(TComponent)
   private
@@ -81,7 +78,7 @@ type
     FTitle: string;
     FFullColor: TJvFullColor;
     FOnApply: TJvFullColorEvent;
-    FForm: TJvBaseFullColorForm;
+    FForm: TForm;
     FOnCloseQuery: TCloseQueryEvent;
     FOnShow: TNotifyEvent;
     FHelpContext: THelpContext;
@@ -100,14 +97,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean;
-    property Form: TJvBaseFullColorForm read FForm;
+    property Form: TForm read FForm;
     property Color: TColor read GetColor;
   published
-    // (rom) set default values
-    property FullColor: TJvFullColor read GetFullColor write SetFullColor;
+    property FullColor: TJvFullColor read GetFullColor write SetFullColor default fclRGBBlack;
     property Options: TJvFullColorDialogOptions read FOptions write SetOptions default JvDefaultFullColorDialogOptions;
     property Title: string read FTitle write SetTitle;
-    property HelpContext: THelpContext read FHelpContext write SetHelpContext;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext default 0;
     property OnApply: TJvFullColorEvent read FOnApply write FOnApply;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnCloseQuery: TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery;
@@ -116,7 +112,7 @@ type
   TJvFullColorCircleDialog = class(TComponent)
   private
     FTitle: string;
-    FForm: TJvBaseColorCircleForm;
+    FForm: TForm;
     FHelpContext: THelpContext;
     FOnCloseQuery: TCloseQueryEvent;
     FOnShow: TNotifyEvent;
@@ -143,7 +139,7 @@ type
     destructor Destroy; override;
 
     function Execute: Boolean;
-    property Form: TJvBaseColorCircleForm read FForm;
+    property Form: TForm read FForm;
     property RedDelta: TJvAxisDelta read GetRedDelta write SetRedDelta;
     property GreenDelta: TJvAxisDelta read GetGreenDelta write SetGreenDelta;
     property BlueDelta: TJvAxisDelta read GetBlueDelta write SetBlueDelta;
@@ -160,59 +156,6 @@ type
     property OnCloseQuery: TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery;
   end;
 
-  TJvBaseFullColorForm = class(TForm)
-  private
-    FFullColor: TJvFullColor;
-    FOptions: TJvFullColorDialogOptions;
-    FOnApply: TNotifyEvent;
-  protected
-    procedure SetOptions(const Value: TJvFullColorDialogOptions); virtual;
-    procedure SetFullColor(const Value: TJvFullColor); virtual;
-  public
-    constructor Create(AOwner: TComponent; AFullColor: TJvFullColor;
-      AOptions: TJvFullColorDialogOptions); reintroduce;
-    property Options: TJvFullColorDialogOptions read FOptions write SetOptions;
-    property FullColor: TJvFullColor read FFullColor write SetFullColor;
-    property OnApply: TNotifyEvent read FOnApply write FOnApply;
-  end;
-
-  TFullColorFormClass = class of TJvBaseFullColorForm;
-
-  TJvBaseColorCircleForm = class(TForm)
-  private
-    FDelta: TJvColorDelta;
-    FOnApply: TNotifyEvent;
-    FOptions: TJvFullColorCircleDialogOptions;
-    function GetRedDelta: TJvAxisDelta;
-    function GetGreenDelta: TJvAxisDelta;
-    function GetBlueDelta: TJvAxisDelta;
-    function GetColorID: TJvFullColorSpaceID;
-  protected
-    procedure SetOptions(const Value: TJvFullColorCircleDialogOptions); virtual;
-    procedure SetRedDelta(const Value: TJvAxisDelta); virtual;
-    procedure SetGreenDelta(const Value: TJvAxisDelta); virtual;
-    procedure SetBlueDelta(const Value: TJvAxisDelta); virtual;
-    procedure SetColorID(const Value: TJvFullColorSpaceID); virtual;
-    procedure SetDelta(const Value: TJvColorDelta); virtual;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    property Options: TJvFullColorCircleDialogOptions read FOptions write SetOptions;
-    property RedDelta: TJvAxisDelta read GetRedDelta write SetRedDelta;
-    property GreenDelta: TJvAxisDelta read GetGreenDelta write SetGreenDelta;
-    property BlueDelta: TJvAxisDelta read GetBlueDelta write SetBlueDelta;
-    property ColorID: TJvFullColorSpaceID read GetColorID write SetColorID;
-    property Delta: TJvColorDelta read FDelta write SetDelta;
-    property OnApply: TNotifyEvent read FOnApply write FOnApply;
-  end;
-
-  TJvColorCircleBaseFormClass = class of TJvBaseColorCircleForm;
-
-var
-  FullColorFormClass: TFullColorFormClass;
-  ColorCircleBaseFormClass: TJvColorCircleBaseFormClass;
-
 implementation
 
 uses
@@ -220,7 +163,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JvResources,
-  Controls, SysUtils;
+  Controls, SysUtils, JvFullColorForm, JvFullColorCircleForm;
 
 //=== { TJvFullColorDialog } =================================================
 
@@ -228,24 +171,20 @@ constructor TJvFullColorDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions := JvDefaultFullColorDialogOptions;
-  FFullColor := fclRGBWhite;
+  FFullColor := fclRGBBlack;
 end;
 
 function TJvFullColorDialog.Execute: Boolean;
 var
   NewColor: TJvFullColor;
 begin
-  Result := False;
-  if (Form <> nil) or (FullColorFormClass = nil) then
-    Exit;
-
   FOldColorSpace := ColorSpaceManager.GetColorSpaceID(FullColor);
 
-  FForm := FullColorFormClass.Create(Application, FullColor, Options);
-  with Form do
+  FForm := TJvFullColorFrm.Create(Application, FFullColor, FOptions);
+  with TJvFullColorFrm(Form) do
   begin
     if Title <> '' then
-      Caption := Title;
+      Caption := FTitle;
     OnApply := FormApply;
     OnClose := FormClose;
     OnShow := FormShow;
@@ -269,7 +208,7 @@ var
 begin
   if Assigned(FForm) then
   begin
-    Color := Form.FullColor;
+    Color := TJvFullColorFrm(Form).FullColor;
     if foConvertToOriginalSpace in Options then
       Color := ColorSpaceManager.ConvertToID(Color, OldColorSpace);
     if Assigned(FOnApply) then
@@ -306,7 +245,7 @@ end;
 function TJvFullColorDialog.GetFullColor: TJvFullColor;
 begin
   if Form <> nil then
-    FFullColor := Form.FullColor;
+    FFullColor := TJvFullColorFrm(Form).FullColor;
   Result := FFullColor;
 end;
 
@@ -314,7 +253,7 @@ procedure TJvFullColorDialog.SetFullColor(const Value: TJvFullColor);
 begin
   FFullColor := Value;
   if Form <> nil then
-    Form.FullColor := Value;
+    TJvFullColorFrm(Form).FullColor := Value;
 end;
 
 procedure TJvFullColorDialog.SetHelpContext(const Value: THelpContext);
@@ -333,7 +272,7 @@ begin
   begin
     FOptions := Value;
     if Assigned(FForm) then
-      Form.Options := Value;
+      TJvFullColorFrm(Form).Options := Value;
   end;
 end;
 
@@ -345,92 +284,6 @@ begin
     if Assigned(FForm) then
       Form.Caption := Value;
   end;
-end;
-
-//=== { TJvBaseFullColorForm } ===============================================
-
-constructor TJvBaseFullColorForm.Create(AOwner: TComponent;
-  AFullColor: TJvFullColor; AOptions: TJvFullColorDialogOptions);
-begin
-  inherited Create(AOwner);
-  FOptions := AOptions;
-  FFullColor := AFullColor;
-end;
-
-procedure TJvBaseFullColorForm.SetFullColor(const Value: TJvFullColor);
-begin
-  FFullColor := Value;
-end;
-
-procedure TJvBaseFullColorForm.SetOptions(const Value: TJvFullColorDialogOptions);
-begin
-  FOptions := Value;
-end;
-
-//=== { TJvBaseColorCircleForm } =============================================
-
-constructor TJvBaseColorCircleForm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  FDelta := TJvColorDelta.Create;
-end;
-
-destructor TJvBaseColorCircleForm.Destroy;
-begin
-  FDelta.Free;
-
-  inherited Destroy;
-end;
-
-function TJvBaseColorCircleForm.GetBlueDelta: TJvAxisDelta;
-begin
-  Result := FDelta.AxisBlue;
-end;
-
-function TJvBaseColorCircleForm.GetColorID: TJvFullColorSpaceID;
-begin
-  Result := FDelta.ColorID;
-end;
-
-function TJvBaseColorCircleForm.GetGreenDelta: TJvAxisDelta;
-begin
-  Result := FDelta.AxisGreen;
-end;
-
-function TJvBaseColorCircleForm.GetRedDelta: TJvAxisDelta;
-begin
-  Result := FDelta.AxisRed;
-end;
-
-procedure TJvBaseColorCircleForm.SetBlueDelta(const Value: TJvAxisDelta);
-begin
-  FDelta.AxisBlue.Assign(Value);
-end;
-
-procedure TJvBaseColorCircleForm.SetColorID(const Value: TJvFullColorSpaceID);
-begin
-  FDelta.ColorID := Value;
-end;
-
-procedure TJvBaseColorCircleForm.SetDelta(const Value: TJvColorDelta);
-begin
-  FDelta.Assign(Value);
-end;
-
-procedure TJvBaseColorCircleForm.SetGreenDelta(const Value: TJvAxisDelta);
-begin
-  FDelta.AxisGreen.Assign(Value);
-end;
-
-procedure TJvBaseColorCircleForm.SetOptions(const Value: TJvFullColorCircleDialogOptions);
-begin
-  FOptions := Value;
-end;
-
-procedure TJvBaseColorCircleForm.SetRedDelta(const Value: TJvAxisDelta);
-begin
-  FDelta.AxisRed.Assign(Value);
 end;
 
 //=== { TJvColorCircleDialog } ===============================================
@@ -466,12 +319,8 @@ end;
 
 function TJvFullColorCircleDialog.Execute: Boolean;
 begin
-  Result := False;
-  if (Form <> nil) or (ColorCircleBaseFormClass = nil) then
-    Exit;
-
-  FForm := ColorCircleBaseFormClass.Create(Application);
-  with Form do
+  FForm := TJvFullColorCircleFrm.Create(Application);
+  with TJvFullColorCircleFrm(Form) do
   begin
     if Title <> '' then
       Caption := Title;
@@ -499,10 +348,10 @@ procedure TJvFullColorCircleDialog.FormApply(Sender: TObject);
 begin
   if FForm<>nil then
   begin
-    FDelta.ColorID := FForm.ColorID;
-    FDelta.AxisRed := FForm.RedDelta;
-    FDelta.AxisGreen := FForm.GreenDelta;
-    FDelta.AxisBlue := FForm.BlueDelta;
+    FDelta.ColorID := TJvFullColorCircleFrm(FForm).ColorID;
+    FDelta.AxisRed := TJvFullColorCircleFrm(FForm).RedDelta;
+    FDelta.AxisGreen := TJvFullColorCircleFrm(FForm).GreenDelta;
+    FDelta.AxisBlue := TJvFullColorCircleFrm(FForm).BlueDelta;
     if Assigned(FOnApply) then
       FOnApply(Self);
   end;
@@ -514,10 +363,10 @@ var
 begin
   if FForm<>nil then
   begin
-    FDelta.ColorID := FForm.ColorID;
-    FDelta.AxisRed := FForm.RedDelta;
-    FDelta.AxisGreen := FForm.GreenDelta;
-    FDelta.AxisBlue := FForm.BlueDelta;
+    FDelta.ColorID := TJvFullColorCircleFrm(FForm).ColorID;
+    FDelta.AxisRed := TJvFullColorCircleFrm(FForm).RedDelta;
+    FDelta.AxisGreen := TJvFullColorCircleFrm(FForm).GreenDelta;
+    FDelta.AxisBlue := TJvFullColorCircleFrm(FForm).BlueDelta;
     Allow := True;
     if Assigned(FOnCloseQuery) then
       FOnCloseQuery(Self, Allow);
@@ -532,10 +381,10 @@ procedure TJvFullColorCircleDialog.FormShow(Sender: TObject);
 begin
   if FForm<>nil then
   begin
-    FDelta.ColorID := FForm.ColorID;
-    FDelta.AxisRed := FForm.RedDelta;
-    FDelta.AxisGreen := FForm.GreenDelta;
-    FDelta.AxisBlue := FForm.BlueDelta;
+    FDelta.ColorID := TJvFullColorCircleFrm(FForm).ColorID;
+    FDelta.AxisRed := TJvFullColorCircleFrm(FForm).RedDelta;
+    FDelta.AxisGreen := TJvFullColorCircleFrm(FForm).GreenDelta;
+    FDelta.AxisBlue := TJvFullColorCircleFrm(FForm).BlueDelta;
     if Assigned(FOnShow) then
       FOnShow(Self);
   end;
@@ -565,7 +414,7 @@ procedure TJvFullColorCircleDialog.SetBlueDelta(const Value: TJvAxisDelta);
 begin
   FDelta.AxisBlue.Assign(Value);
   if FForm <> nil then
-    FForm.SetBlueDelta(Value);
+    TJvFullColorCircleFrm(FForm).BlueDelta := Value;
 end;
 
 procedure TJvFullColorCircleDialog.SetColorID(
@@ -573,7 +422,7 @@ procedure TJvFullColorCircleDialog.SetColorID(
 begin
   FDelta.ColorID := Value;
   if FForm <> nil then
-    FForm.SetColorID(Value);
+    TJvFullColorCircleFrm(FForm).ColorID :=Value;
 end;
 
 procedure TJvFullColorCircleDialog.SetGreenDelta(
@@ -581,7 +430,7 @@ procedure TJvFullColorCircleDialog.SetGreenDelta(
 begin
   FDelta.AxisGreen.Assign(Value);
   if FForm <> nil then
-    FForm.SetGreenDelta(Value);
+    TJvFullColorCircleFrm(FForm).GreenDelta := Value;
 end;
 
 procedure TJvFullColorCircleDialog.SetHelpContext(const Value: THelpContext);
@@ -595,14 +444,14 @@ procedure TJvFullColorCircleDialog.SetOptions(const Value: TJvFullColorCircleDia
 begin
   FOptions := Value;
   if FForm <> nil then
-    FForm.Options := Value;
+    TJvFullColorCircleFrm(FForm).Options := Value;
 end;
 
 procedure TJvFullColorCircleDialog.SetRedDelta(const Value: TJvAxisDelta);
 begin
   FDelta.AxisRed.Assign(Value);
   if FForm <> nil then
-    FForm.SetRedDelta(Value);
+    TJvFullColorCircleFrm(FForm).RedDelta := Value;
 end;
 
 procedure TJvFullColorCircleDialog.SetTitle(const Value: string);

@@ -1389,67 +1389,66 @@ var
   AxisX, AxisY: TJvAxisIndex;
   I, PosX, PosY: Integer;
 begin
-  if not (ssLeft in Shift) then
-    Exit;
-
-  if ColorSpace.ID = csDEF then
+  if (ssLeft in Shift) then
   begin
-    Dec(X, CrossSize);
-    Dec(Y, CrossSize);
-    PosX := 8;
-    PosY := 8;
-    for I := Low(ColorValues) to High(ColorValues) do
+    if ColorSpace.ID = csDEF then
     begin
-      if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
-        FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(ColorValues[I].Value);
-      Inc(PosX, 16 + 6);
-      if PosX > FBuffer.Width - 8 then
+      Dec(X, CrossSize);
+      Dec(Y, CrossSize);
+      PosX := 8;
+      PosY := 8;
+      for I := Low(ColorValues) to High(ColorValues) do
       begin
-        PosX := 8;
-        Inc(PosY, 16 + 6);
+        if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
+          FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(ColorValues[I].Value);
+        Inc(PosX, 16 + 6);
+        if PosX > FBuffer.Width - 8 then
+        begin
+          PosX := 8;
+          Inc(PosY, 16 + 6);
+        end;
       end;
-    end;
-    PosX := 8;
-    Inc(PosY, 16 + 6);
-    for I := Low(SysColorValues) to High(SysColorValues) do
-    begin
-      if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
-        FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(SysColorValues[I].Value);
-      Inc(PosX, 16 + 6);
-      if PosX > FBuffer.Width - 8 then
+      PosX := 8;
+      Inc(PosY, 16 + 6);
+      for I := Low(SysColorValues) to High(SysColorValues) do
       begin
-        PosX := 8;
-        Inc(PosY, 16 + 6);
+        if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
+          FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(SysColorValues[I].Value);
+        Inc(PosX, 16 + 6);
+        if PosX > FBuffer.Width - 8 then
+        begin
+          PosX := 8;
+          Inc(PosY, 16 + 6);
+        end;
       end;
-    end;
-  end
-  else
-  begin
-    AxisX := GetIndexAxisX(AxisConfig);
-    AxisY := GetIndexAxisY(AxisConfig);
-
-    with ColorSpace do
+    end
+    else
     begin
-      MinX := AxisMin[AxisX];
-      MaxX := AxisMax[AxisX];
-      MinY := AxisMin[AxisY];
-      MaxY := AxisMax[AxisY];
+      AxisX := GetIndexAxisX(AxisConfig);
+      AxisY := GetIndexAxisY(AxisConfig);
+      with ColorSpace do
+      begin
+        MinX := AxisMin[AxisX];
+        MaxX := AxisMax[AxisX];
+        MinY := AxisMin[AxisY];
+        MaxY := AxisMax[AxisY];
 
-      PosX := EnsureRange(X - CrossSize, 0, MaxX - MinX);
-      if ReverseAxisX then
-        PosX := MaxX - PosX
-      else
-        PosX := PosX - MinX;
-      PosX := PosX + MinX;
+        PosX := EnsureRange(X - CrossSize, 0, MaxX - MinX);
+        if ReverseAxisX then
+          PosX := MaxX - PosX
+        else
+          PosX := PosX - MinX;
+        PosX := PosX + MinX;
 
-      PosY := EnsureRange(Y - CrossSize, 0, MaxY - MinY);
-      if ReverseAxisY then
-        PosY := MaxY - PosY
-      else
-        PosY := PosY - MinY;
-      PosY := PosY + MinY;
+        PosY := EnsureRange(Y - CrossSize, 0, MaxY - MinY);
+        if ReverseAxisY then
+          PosY := MaxY - PosY
+        else
+          PosY := PosY - MinY;
+        PosY := PosY + MinY;
 
-      FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
+        FullColor := SetAxisValue(SetAxisValue(FullColor, AxisX, Byte(PosX)), AxisY, Byte(PosY));
+      end;
     end;
   end;
   inherited MouseColor(Shift, X, Y);
@@ -1463,7 +1462,6 @@ begin
     FColorTrackBar.AxisConfig := AxisConfig;
     FAxisConfigChanging := False;
   end;
-
   inherited AxisConfigChange;
 end;
 
@@ -3207,16 +3205,17 @@ end;
 
 function TJvFullColorAxisCombo.GetSelected: TJvFullColorAxisConfig;
 begin
-  Result := TJvFullColorAxisConfig(ItemIndex);
+  if ItemIndex=-1 then
+    Result := acXYZ
+  else
+    Result := TJvFullColorAxisConfig(ItemIndex);
 end;
 
 procedure TJvFullColorAxisCombo.MakeList;
 var
   Index: TJvFullColorAxisConfig;
   LColorSpace: TJvColorSpace;
-  OldItemIndex: Integer;
 begin
-  OldItemIndex := ItemIndex;
   LColorSpace := ColorSpaceManager.ColorSpace[ColorID];
   with Items do
   begin
@@ -3224,7 +3223,7 @@ begin
     for Index := Low(TJvFullColorAxisConfig) to High(TJvFullColorAxisConfig) do
       Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
   end;
-  ItemIndex := OldItemIndex;
+  ItemIndex := Ord(Selected);
 end;
 
 procedure TJvFullColorAxisCombo.SetColorID(const Value: TJvFullColorSpaceID);
