@@ -259,7 +259,7 @@ begin
       begin
         H := Height;
         W := Width;
-      end
+      end;
   else
     H := Min(Height, Width);
     W := H;

@@ -773,7 +773,6 @@ var
   DlgCodes: TDlgCodes;
   IdSaveDC: Integer;
   Helper: TFreeNotificationHelper;
-  f: TextFile;
 begin
   CallInherited := True;
   PMsg := @Msg;

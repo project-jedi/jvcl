@@ -54,7 +54,6 @@ type
   private
     FDataObject: IDataObject;
     FStreamedAcceptDrag: Boolean;
-
     FControl: TWinControl;
     FOnDragDrop: TJvDragDropEvent;
     FOnDragAccept: TJvDragAcceptEvent;
@@ -62,48 +61,41 @@ type
     FOnDragOver: TJvDragEvent;
     FOnDragLeave: TJvDragLeaveEvent;
     FAcceptDrag: Boolean;
-
     procedure SetControl(Value: TWinControl);
     procedure SetAcceptDrag(Value: Boolean);
     procedure RegisterControl;
     procedure UnregisterControl;
   protected
     function DragEnter(const dataObj: IDataObject; grfKeyState: Longint;
-      pt: TPoint; var dwEffect: Longint): HResult; stdcall;
+      pt: TPoint; var dwEffect: Longint): HRESULT; stdcall;
     function DragOver(grfKeyState: Longint; pt: TPoint;
-      var dwEffect: Longint): HResult; stdcall;
-    function DragLeave: HResult; stdcall;
+      var dwEffect: Longint): HRESULT; stdcall;
+    function DragLeave: HRESULT; stdcall;
     function Drop(const dataObj: IDataObject; grfKeyState: Longint; pt: TPoint;
-      var dwEffect: Longint): HResult; stdcall;
-
+      var dwEffect: Longint): HRESULT; stdcall;
     function DoDragAccept: Boolean; dynamic;
     procedure DoDragEnter(var Effect: Longint); dynamic;
     procedure DoDragOver(var Effect: Longint); dynamic;
     procedure DoDragLeave; dynamic;
     procedure DoDragDrop(var Effect: Longint; Shift: TShiftState; X, Y: Integer); dynamic;
-
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function GetFilenames(List: TStrings): Integer;
-      // GetFilenames returns the HDROP Filenames. (same as TJvDragDrop).
-      // Returnvalue: number of filenames
-
+    // GetFilenames returns the HDROP Filenames. (same as TJvDragDrop).
+    // Return value: number of filenames
     function GetFileDescrNames(List: TStrings): Integer;
-      // GetFileDescrNames returns the File Descriptor file names (not available for Explorer drag/drop)
+    // GetFileDescrNames returns the File Descriptor file names (not available for Explorer drag/drop)
     function GetFileDescrCount: Integer;
-      // GetFileDescrCount returns the number of File Descroptor file names.
+    // GetFileDescrCount returns the number of File Descroptor file names.
     function GetFileContent(Index: Integer; Stream: TStream): Boolean;
-      // GetFileContent returns the file content of the File Descriptor
-
+    // GetFileContent returns the file content of the File Descriptor
     property DataObject: IDataObject read FDataObject;
   published
     property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
     property Control: TWinControl read FControl write SetControl;
-
     property OnDragDrop: TJvDragDropEvent read FOnDragDrop write FOnDragDrop;
     property OnDragAccept: TJvDragAcceptEvent read FOnDragAccept write FOnDragAccept;
     property OnDragEnter: TJvDragEvent read FOnDragEnter write FOnDragEnter;
@@ -120,7 +112,6 @@ type
     FIsHooked: Boolean;
     FTargetStrings: TStrings;
     FDropTarget: TWinControl;
-
     procedure DropFiles(Handle: HDROP);
     function GetFiles: TStrings;
     procedure SetAcceptDrag(Value: Boolean);
@@ -155,6 +146,8 @@ implementation
 
 uses
   JvWndProcHook, JvJCLUtils;
+
+//=== TJvDragDrop ============================================================
 
 constructor TJvDragDrop.Create(AOwner: TComponent);
 begin
@@ -246,8 +239,7 @@ begin
   end;
 end;
 
-procedure TJvDragDrop.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvDragDrop.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
 
@@ -317,11 +309,11 @@ function TJvDragDrop.WndProc(var Msg: TMessage): Boolean;
 begin
   Result := Msg.Msg = WM_DROPFILES;
   if Result then
-    DropFiles(HDROP(Msg.WParam))
+    DropFiles(HDROP(Msg.WParam));
 end;
 
 
-{ TJvDropTarget }
+//=== TJvDropTarget ==========================================================
 
 procedure InitFormatEtc;
 begin
@@ -347,29 +339,38 @@ begin
   FileContentFormatEtc.tymed := TYMED_ISTREAM;
 end;
 
-procedure GetDropEffect(Effect: Longint; var eff: TJvDropEffect);
+procedure GetDropEffect(Effect: Longint; var Eff: TJvDropEffect);
 begin
-  eff := deNone;
-  if Effect and DROPEFFECT_NONE <> 0 then
-    eff := deNone
-  else if Effect and DROPEFFECT_COPY <> 0 then
-    eff := deCopy
-  else if Effect and DROPEFFECT_MOVE <> 0 then
-    eff := deMove
-  else if Effect and DROPEFFECT_LINK <> 0 then
-    eff := deLink
-  else if Effect and DROPEFFECT_SCROLL <> 0 then
-    eff := deScroll;
+  Eff := deNone;
+  if (Effect and DROPEFFECT_NONE) <> 0 then
+    Eff := deNone
+  else
+  if (Effect and DROPEFFECT_COPY) <> 0 then
+    Eff := deCopy
+  else
+  if (Effect and DROPEFFECT_MOVE) <> 0 then
+    Eff := deMove
+  else
+  if (Effect and DROPEFFECT_LINK) <> 0 then
+    Eff := deLink
+  else
+  if (Effect and DROPEFFECT_SCROLL) <> 0 then
+    Eff := deScroll;
 end;
 
-procedure SetDropEffect(var Effect: Longint; eff: TJvDropEffect);
+procedure SetDropEffect(var Effect: Longint; Eff: TJvDropEffect);
 begin
-  case eff of
-    deNone: Effect := DROPEFFECT_NONE;
-    deCopy: Effect := DROPEFFECT_COPY;
-    deMove: Effect := DROPEFFECT_MOVE;
-    deLink: Effect := DROPEFFECT_LINK;
-    deScroll: Effect := Longint(DROPEFFECT_SCROLL);
+  case Eff of
+    deNone:
+      Effect := DROPEFFECT_NONE;
+    deCopy:
+      Effect := DROPEFFECT_COPY;
+    deMove:
+      Effect := DROPEFFECT_MOVE;
+    deLink:
+      Effect := DROPEFFECT_LINK;
+    deScroll:
+      Effect := Longint(DROPEFFECT_SCROLL);
   end;
 end;
 
@@ -412,7 +413,7 @@ begin
 end;
 
 function TJvDropTarget.DragOver(grfKeyState: Longint; pt: TPoint;
-  var dwEffect: Longint): HResult;
+  var dwEffect: Longint): HRESULT;
 begin
   Result := S_OK;
   if FDataObject = nil then
@@ -431,7 +432,7 @@ begin
   end;
 end;
 
-function TJvDropTarget.DragLeave: HResult;
+function TJvDropTarget.DragLeave: HRESULT;
 begin
   try
     DoDragLeave;
@@ -443,7 +444,7 @@ begin
 end;
 
 function TJvDropTarget.Drop(const dataObj: IDataObject; grfKeyState: Longint;
-  pt: TPoint; var dwEffect: Longint): HResult;
+  pt: TPoint; var dwEffect: Longint): HRESULT;
 begin
   Result := S_OK;
   if FDataObject = nil then
@@ -472,22 +473,22 @@ end;
 
 procedure TJvDropTarget.DoDragEnter(var Effect: Longint);
 var
-  eff: TJvDropEffect;
+  Eff: TJvDropEffect;
 begin
-  GetDropEffect(Effect, eff);
+  GetDropEffect(Effect, Eff);
   if Assigned(FOnDragEnter) then
-    FOnDragEnter(Self, eff);
-  SetDropEffect(Effect, eff);
+    FOnDragEnter(Self, Eff);
+  SetDropEffect(Effect, Eff);
 end;
 
 procedure TJvDropTarget.DoDragOver(var Effect: Longint);
 var
-  eff: TJvDropEffect;
+  Eff: TJvDropEffect;
 begin
-  GetDropEffect(Effect, eff);
+  GetDropEffect(Effect, Eff);
   if Assigned(FOnDragOver) then
-    FOnDragOver(Self, eff);
-  SetDropEffect(Effect, eff);
+    FOnDragOver(Self, Eff);
+  SetDropEffect(Effect, Eff);
 end;
 
 procedure TJvDropTarget.DoDragLeave;
@@ -499,12 +500,12 @@ end;
 procedure TJvDropTarget.DoDragDrop(var Effect: Longint; Shift: TShiftState;
   X, Y: Integer);
 var
-  eff: TJvDropEffect;
+  Eff: TJvDropEffect;
 begin
-  GetDropEffect(Effect, eff);
+  GetDropEffect(Effect, Eff);
   if Assigned(FOnDragDrop) then
-    FOnDragDrop(Self, eff, Shift, X, Y);
-  SetDropEffect(Effect, eff);
+    FOnDragDrop(Self, Eff, Shift, X, Y);
+  SetDropEffect(Effect, Eff);
 end;
 
 procedure TJvDropTarget.SetControl(Value: TWinControl);
@@ -570,8 +571,8 @@ function TJvDropTarget.GetFileDescrNames(List: TStrings): Integer;
 var
   FileGroupDescr: PFileGroupDescriptor;
   Medium: TStgMedium;
-  i: Integer;
-  s: string;
+  I: Integer;
+  S: string;
 begin
   Result := 0;
   if FDataObject.GetData(FileDescriptorFormatEtc, Medium) = S_OK then
@@ -582,10 +583,10 @@ begin
         try
           if List <> nil then
           begin
-            for i := 0 to FileGroupDescr.cItems - 1 do
+            for I := 0 to FileGroupDescr.cItems - 1 do
             begin
-              SetString(s, FileGroupDescr^.fgd[i].cFileName, StrLen(FileGroupDescr^.fgd[i].cFileName));
-              List.Add(s);
+              SetString(S, FileGroupDescr^.fgd[I].cFileName, StrLen(FileGroupDescr^.fgd[I].cFileName));
+              List.Add(S);
             end;
           end;
           Result := FileGroupDescr.cItems;
@@ -608,7 +609,6 @@ var
 begin
   Result := 0;
   if FDataObject.GetData(FileDescriptorFormatEtc, Medium) = S_OK then
-  begin
     try
       try
         FileGroupDescr := GlobalLock(Medium.hGlobal);
@@ -623,7 +623,6 @@ begin
     except
       Result := 0;
     end;
-  end;
 end;
 
 function TJvDropTarget.GetFilenames(List: TStrings): Integer;
@@ -631,28 +630,25 @@ var
   DragH: Integer;
   Medium: TStgMedium;
   Name: string;
-  i, Count, Len: Integer;
+  I, Count, Len: Integer;
 begin
   Result := 0;
   if FDataObject.GetData(FileDropFormatEtc, Medium) = S_OK then
-  begin
     try
       try
         DragH := Integer(GlobalLock(Medium.hGlobal));
         try
           Count := DragQueryFile(DragH, Cardinal(-1), nil, 0);
           if List <> nil then
-          begin
-            for i := 0 to Count - 1 do
+            for I := 0 to Count - 1 do
             begin
-              Len := DragQueryFile(DragH, i, nil, 0);
+              Len := DragQueryFile(DragH, I, nil, 0);
               if Len > 0 then Inc(Len);
               SetLength(Name, Len);
               if Len > 0 then
-                DragQueryFile(DragH, i, PChar(Name), Len);
+                DragQueryFile(DragH, I, PChar(Name), Len);
               List.Add(Name);
             end;
-          end;
           Result := Count;
         finally
           GlobalUnlock(Medium.hGlobal);
@@ -663,7 +659,6 @@ begin
     except
       Result := 0;
     end;
-  end;
 end;
 
 function TJvDropTarget.GetFileContent(Index: Integer; Stream: TStream): Boolean;
@@ -685,7 +680,6 @@ begin
 
   FileContentFormatEtc.lindex := Index;
   if FDataObject.GetData(FileContentFormatEtc, Medium) = S_OK then
-  begin
     try
       try
         if Medium.tymed and TYMED_ISTREAM <> 0 then
@@ -725,7 +719,6 @@ begin
     except
       Result := False;
     end;
-  end;
 end;
 
 initialization

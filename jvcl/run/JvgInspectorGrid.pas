@@ -384,7 +384,8 @@ begin
   inherited GetCellGradientParams(Sender, ACol, ARow, CellRect, Gradient);
 end;
 
-procedure TJvgInspectorGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer; var Style: TglGridCellStyle);
+procedure TJvgInspectorGrid.GetCellStyle(Sender: TObject; var ACol, ARow: Integer;
+  var Style: TglGridCellStyle);
 var
   //  ItemNo: Integer;
   Item: TJvgGridItem;
@@ -515,8 +516,8 @@ begin
   for I := 0 to ARow - 1 do
   begin
     if Items[I].Expanded then
-      inc(Index, Items[I].Values.Count);
-    inc(Index);
+      Inc(Index, Items[I].Values.Count);
+    Inc(Index);
     if Index > ARow then
       Break;
   end;
@@ -533,7 +534,7 @@ begin
   for I := 0 to Item.Index - 1 do
   begin
     if Items[I].Expanded then
-      inc(Result, Items[I].Values.Count);
+      Inc(Result, Items[I].Values.Count);
     Inc(Result);
   end;
 end;
