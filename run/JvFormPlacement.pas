@@ -721,7 +721,7 @@ end;
 
 function TJvFormPlacement.ReadString(const Ident: string; const Default: string = ''): string;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       Result := ReadString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
@@ -730,14 +730,14 @@ end;
 
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       WriteString(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 function TJvFormPlacement.ReadBoolean(const Ident: string; Default: Boolean): Boolean;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       Result := ReadBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
@@ -746,14 +746,14 @@ end;
 
 procedure TJvFormPlacement.WriteBoolean(const Ident: string; Value: Boolean);
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       WriteBoolean(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 function TJvFormPlacement.ReadFloat(const Ident: string; Default: Double = 0): Double;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       Result := ReadFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
@@ -762,14 +762,14 @@ end;
 
 procedure TJvFormPlacement.WriteFloat(const Ident: string; Value: Double);
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       WriteFloat(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint = 0): Longint;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       Result := ReadInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
@@ -778,14 +778,14 @@ end;
 
 procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       WriteInteger(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
 
 function TJvFormPlacement.ReadDateTime(const Ident: string; Default: TDateTime = 0): TDateTime;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       Result := ReadDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, True)]), Default)
   else
@@ -794,7 +794,7 @@ end;
 
 procedure TJvFormPlacement.WriteDateTime(const Ident: string; Value: TDateTime);
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) and (Ident <> '') then
     with AppStorage do
       WriteDateTime(ConcatPaths([AppStoragePath, TranslatePropertyName(Self, Ident, False)]), Value);
 end;
