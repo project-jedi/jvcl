@@ -183,6 +183,8 @@ var
   formType : string;
   formNameAndType : string;
   incFileName : string;
+  openPos : Integer;
+  closePos : Integer;
 begin
   formNameAndType := fileNode.Properties.ItemNamed['FormName'].Value;
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
@@ -204,12 +206,28 @@ begin
              StrProper(GetUnitName(incFileName)),
              [rfReplaceAll]);
 
+  if (formType = '') or (formName = '') then
+  begin
+    openPos := Pos('/*', Lines);
+    if openPos > 0 then
+    begin
+      closePos := Pos('*/', Lines);
+      Lines := Copy(Lines, 1, openPos-1)+Copy(Lines,closePos+2,Length(Lines));
+    end;
+  end;
+
   if formName = '' then
   begin
-    StrReplace(Lines, '{', '', [rfReplaceAll]);
-    StrReplace(Lines, '}', '', [rfReplaceAll]);
-    StrReplace(Lines, '/*', '', [rfReplaceAll]);
-    StrReplace(Lines, '*/', '', [rfReplaceAll]);
+    //StrReplace(Lines, '{', '', [rfReplaceAll]);
+    //StrReplace(Lines, '}', '', [rfReplaceAll]);
+    //StrReplace(Lines, '/*', '', [rfReplaceAll]);
+    //StrReplace(Lines, '*/', '', [rfReplaceAll]);
+    openPos := Pos('{', Lines);
+    if openPos > 0 then
+    begin
+      closePos := Pos('}', Lines);
+      Lines := Copy(Lines, 1, openPos-1)+Copy(Lines,closePos+1,Length(Lines));
+    end;
     StrReplace(Lines, '%FORMNAME%', '', [rfReplaceAll]);
     StrReplace(Lines, '%FORMTYPE%', '', [rfReplaceAll]);
     StrReplace(Lines, '%FORMNAMEANDTYPE%', '', [rfReplaceAll]);
