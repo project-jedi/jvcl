@@ -15,7 +15,7 @@ ANN: JVCL 3 BETA Released!
 Body:
 The JVCL Team is proud to announce that a beta release of JVCL 3 is available for download. 
 
-JVCL is a library of approximately 500 visual and non-visual components for Delphi 5, 6, 7; C++Builder 5, 6 and (soon) Kylix 3. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) an is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
+JVCL is a library of approximately 500 visual and non-visual components for Delphi 5, 6, 7; C++Builder 5, 6 and (soon) Kylix 3. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
 This release contains changes, additions and bugfixes too numerous to list here, but here are some of the highlights:
 
@@ -50,4 +50,4 @@ The current version is JVCL 3.00 BETA 1.
 
 
 The JVCL Team
-
+http://jvcl.sourceforge.net
