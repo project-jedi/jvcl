@@ -29,13 +29,11 @@ unit JvAppEvent;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types,
+  Qt,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, Graphics, Forms, ActnList,
+  SysUtils, Classes, Controls, Graphics, Forms, ActnList,
   JvTypes, JvComponent;
 
 const
@@ -186,7 +184,6 @@ type
 implementation
 
 uses
-  Controls,
   JvFinalize;
 
 const

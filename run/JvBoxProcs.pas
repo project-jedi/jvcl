@@ -29,13 +29,7 @@ unit JvBoxProcs;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, Controls;
+  Windows, Classes, Controls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);

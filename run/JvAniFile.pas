@@ -33,13 +33,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, Types,
-  {$ENDIF VisualCLX}
-  Graphics, 
+  Windows, Graphics,
   JvTypes;
 
 type

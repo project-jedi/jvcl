@@ -49,13 +49,7 @@ unit JvColorBox;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, Menus,
+  Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   JvComponent;
 
 type
