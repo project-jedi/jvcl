@@ -46,7 +46,7 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseleave: TNotifyEvent;
 
-    fActive: boolean;
+    FActive: boolean;
     //    Image: TBitmap;
     procedure CreateImage;
     procedure DrawTextBroadwise;
@@ -158,7 +158,7 @@ end;
 
 procedure TJvgStaticText.CMMouseEnter(var Message: TMessage);
 begin
-  fActive := true;
+  FActive := true;
   paint;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(self);
@@ -166,7 +166,7 @@ end;
 
 procedure TJvgStaticText.CMMouseLeave(var Message: TMessage);
 begin
-  fActive := false;
+  FActive := false;
   paint;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(self);
@@ -186,7 +186,7 @@ begin
     exit;
   Alignment_ := FAlignment;
   SetBkMode(Canvas.Handle, integer(FTransparent));
-  if fActive then
+  if FActive then
     SetTextColor(Canvas.Handle, ColorToRGB(ActiveColor))
   else
     SetTextColor(Canvas.Handle, ColorToRGB(Font.Color));

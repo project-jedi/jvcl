@@ -211,6 +211,8 @@ type
 
 implementation
 
+uses JvThemes;
+
 {$R ..\Resources\JvgButton.res}
 
 constructor TJvgBtnGlyphs.Create;
@@ -262,6 +264,7 @@ constructor TJvgButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FGlyph := TBitmap.Create;
   FGlyphs := TJvgBtnGlyphs.Create;
   DefaultGlyphsList := TImageList.CreateSize(30, 30);
@@ -352,7 +355,7 @@ begin
       Height := Self.Height;
       Canvas.Brush.Color := clBtnFace;
       Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(Bounds(0, 0, Width, Height));
+      Canvas.FillRect(ClientRect);
     end;
     GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
       Img.Canvas.Handle);
@@ -427,6 +430,8 @@ begin
             DisabledMaskColor);
       end;
     end;
+    Img.Transparent := True;
+    Img.TransparentColor := clBtnFace;
     Canvas.Draw(0, 0, Img);
   end;
 end;
