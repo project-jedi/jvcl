@@ -61,22 +61,14 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
     [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon,
-      {$IFDEF VCL}
-      TJvApplicationHotKey, TJvTransparentForm,
-      {$ENDIF VCL}
-      TJvFormAnimation, TJvFormWallpaper,
-      {$IFDEF VCL}
-      TJvFormMagnet,
-      {$ENDIF VCL}
-      TJvFormAutoSize
-      {$IFDEF VCL}
-      , TJvGradientCaption, 
-      {$ENDIF VCL}
-      TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink
-      ]);
+     {$IFDEF VCL}
+     TJvApplicationHotKey, TJvTransparentForm, TJvFormMagnet, TJvGradientCaption,
+     {$ENDIF VCL}
+     TJvFormAnimation, TJvFormWallpaper, TJvFormAutoSize,
+     TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink]);
 
   RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
-//  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
+  //RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
 end;
 
 end.

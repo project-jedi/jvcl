@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvBandObjectDLLWizard.PAS, released on 2001-07-10.
 
-The Initial Developer of the Original Code is Chiang Seng Chang <cs@ctzen.com>
+The Initial Developer of the Original Code is Chiang Seng Chang <cs att ctzen dott com>
 Portions created by Chiang Seng Chang are Copyright (C) 2001 Chiang Seng Chang.
 All Rights Reserved.
 
