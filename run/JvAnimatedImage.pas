@@ -197,7 +197,7 @@ uses
   {$IFDEF COMPILER3_UP}
   JvHook,
   {$ENDIF}
-  JvConst, JvVCLUtils;
+  JvConsts, JvJVCLUtils;
 
 {$IFDEF COMPILER3_UP}
 

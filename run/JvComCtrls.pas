@@ -435,7 +435,7 @@ type
 implementation
 
 uses
-  JclSysUtils, JvFunctions, JvTypes;
+  JclSysUtils, JvJVCLUtils, JvTypes;
 
 const
   TVIS_CHECKED = $2000;

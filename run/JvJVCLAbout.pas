@@ -92,7 +92,7 @@ type
 implementation
 
 uses
-  JvFunctions;
+  JvJVCLUtils, JvJCLUtils;
 
 {$R *.DFM}
 

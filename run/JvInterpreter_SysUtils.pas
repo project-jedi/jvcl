@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils,
-  JvInterpreter, JvStrUtils;
+  JvInterpreter, JvJCLUtils;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 

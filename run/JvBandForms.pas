@@ -300,7 +300,7 @@ type
 implementation
 
 uses
-  JvUtils;
+  JvJVCLUtils, JvJCLUtils;
 
 constructor TJvBandForm.Create(AOwner: TComponent);
 begin

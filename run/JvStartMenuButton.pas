@@ -67,7 +67,7 @@ type
 implementation
 
 uses
-  ShellApi, JvFunctions;
+  ShellApi, JvJVCLUtils;
 
 resourcestring
   RC_EmptyItem = '<Empty>';

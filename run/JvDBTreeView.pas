@@ -274,7 +274,7 @@ type
 implementation
 
 uses
-  JvDBConst;
+  JvDBConsts;
 
 {$IFNDEF COMPILER4_UP}
 type

@@ -215,7 +215,7 @@ uses
   {$IFDEF COMPILER3_UP}
   BDEConst,
   {$ENDIF}
-  JvxRConst;
+  JvConsts;
 
 { Utility routines }
 

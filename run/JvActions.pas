@@ -100,7 +100,7 @@ type
 implementation
 
 uses
-  JvFunctions;
+  JvJVCLUtils, JvJCLUtils;
 
 //=== TJvSendMail ============================================================
 

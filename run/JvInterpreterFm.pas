@@ -58,7 +58,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms,
-  JvInterpreter, JvUtils;
+  JvInterpreter, JvJVCLUtils;
 
 type
   TJvInterpreterGetDfmFileName = procedure(Sender: TObject; UnitName: string;
@@ -145,7 +145,7 @@ implementation
 
 uses
   TypInfo,
-  JvInterpreterConst, JvStrUtil;
+  JvInterpreterConst, JvJCLUtils;
 
 function LoadTextFile(const FileName: TFileName): string;
 begin

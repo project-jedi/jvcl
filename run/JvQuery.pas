@@ -35,7 +35,7 @@ uses
   RTLConsts,
   {$ENDIF}
   Classes, SysUtils, DB, DBTables,
-  JvStrUtils, JvBdeUtils {, JvComponent};
+  JvJCLUtils, JvBdeUtils {, JvComponent};
 
 {.$DEFINE DEBUG}
 
@@ -227,7 +227,7 @@ uses
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvDBUtils, JvVCLUtils;
+  JvDBUtils, JvJVCLUtils;
 
 { Parse SQL utility routines }
 

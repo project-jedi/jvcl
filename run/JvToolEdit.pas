@@ -41,7 +41,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
-  JvComponent, JvxCtrls, JvDateUtil, JvTypes;
+  JvComponent, JvxCtrls, JvJCLutils, JvTypes;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -880,7 +880,7 @@ uses
   Themes,
   {$ENDIF}
   ExtDlgs,
-  JvxRConst, JvVCLUtils, JvStrUtils, JvFileUtil, JvPickDate, JvBrowseFolder;
+  JvConsts, JvJVCLUtils, JvPickDate, JvBrowseFolder;
 
 {$R ..\resources\JvToolEdit.res}
 
@@ -2937,7 +2937,7 @@ end;
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
-    (JvDateUtil.FourDigitYear));
+    (JvJCLUtils.FourDigitYear));
 end;
 
 function TJvCustomDateEdit.GetDateMask: string;

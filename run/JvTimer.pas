@@ -30,12 +30,8 @@ unit JvTimer;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
-  Messages, SysUtils, Classes {, JvComponent};
+  Messages, SysUtils, Classes;
 
 type
   TJvTimer = class(TComponent)
@@ -80,8 +76,7 @@ type
 implementation
 
 uses
-  Forms, Consts,
-  JvVCLUtils;
+  Forms, Consts, JvJVCLUtils;
 
 {$IFDEF WIN32}
 
@@ -248,13 +243,13 @@ begin
       KillTimer(FWindowHandle, 1);
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
       if SetTimer(FWindowHandle, 1, FInterval, nil) = 0 then
-        raise EOutOfResources.Create(ResStr(SNoTimers));
+        raise EOutOfResources.Create(SNoTimers);
   end;
   {$ELSE}
   KillTimer(FWindowHandle, 1);
   if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
     if SetTimer(FWindowHandle, 1, FInterval, nil) = 0 then
-      raise EOutOfResources.Create(ResStr(SNoTimers));
+      raise EOutOfResources.Create(SNoTimers);
   {$ENDIF}
 end;
 

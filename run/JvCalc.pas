@@ -124,7 +124,7 @@ uses
   {$IFNDEF WIN32}
   JvStr16,
   {$ENDIF}
-  JvVCLUtils, JvStrUtils, JvToolEdit;
+  JvJVCLUtils, JvJCLUtils, JvToolEdit;
 
 {$IFDEF WIN32}
 {$R ..\resources\JvCalc.res}

@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils, Classes, DBTables,
-  JvDBUtil, JvComponent;
+  JvDBUtils, JvComponent;
 
 type
   TJvaSQLScript = class;
@@ -61,7 +61,9 @@ type
   end;
 
 implementation
-
+uses
+  JvBdeUtils;
+  
 constructor TJvaSQLScript.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

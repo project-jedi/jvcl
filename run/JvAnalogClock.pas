@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvTypes, JvDateUtil, JvComponent;
+  ExtCtrls, JvTypes, JvJCLUtils, JvComponent;
 
 type
   TJvNotifyTime = procedure(Sender: TObject; Hour, Min, Sec: Integer) of object;
@@ -1144,27 +1144,27 @@ begin
           end;
         tkEachSecond:
           begin
-            jvDateUtil.IncSecond(FAlarm.Date, 1);
+            JvJCLUtils.IncSecond(FAlarm.Date, 1);
           end;
         tkEachMinute:
           begin
-            jvDateUtil.IncMinute(FAlarm.Date, 1);
+            JvJCLUtils.IncMinute(FAlarm.Date, 1);
           end;
         tkEachHour:
           begin
-            jvDateUtil.IncHour(FAlarm.Date, 1);
+            JvJCLUtils.IncHour(FAlarm.Date, 1);
           end;
         tkEachDay:
           begin
-            jvDateUtil.IncDay(FAlarm.Date, 1);
+            JvJCLUtils.IncDay(FAlarm.Date, 1);
           end;
         tkEachMonth:
           begin
-            jvDateUtil.IncMonth(FAlarm.Date, 1);
+            JvJCLUtils.IncMonth(FAlarm.Date, 1);
           end;
         tkEachYear:
           begin
-            jvDateUtil.IncYear(FAlarm.Date, 1);
+            JvJCLUtils.IncYear(FAlarm.Date, 1);
           end;
       end;
       // We set FAlarm params before call event to allow user make changes on it.

@@ -132,7 +132,7 @@ const
 implementation
 
 uses
-  JvStrUtils;
+  JvJCLUtils;
 
 const
   sCount = 'Count';

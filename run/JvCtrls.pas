@@ -275,7 +275,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
-  JvFunctions;
+  JvJVCLUtils;
 
 {$R ..\resources\JvCtrls.res}
 

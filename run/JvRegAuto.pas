@@ -232,7 +232,7 @@ var
 implementation
 
 uses
-  JvStrUtil, JvDsgnIntf, JvTypes;
+  JvJCLUtils, JvDsgnIntf, JvTypes;
 
 const
   cSlash = '/';

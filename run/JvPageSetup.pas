@@ -133,7 +133,7 @@ implementation
 
 uses
   SysUtils, Controls, Forms, Printers,
-  JvFunctions;
+  JvJVCLUtils;
 
 resourcestring
   SInvalidValue = 'Value must be greater then zero';

@@ -83,7 +83,7 @@ implementation
 
 uses
   SysUtils, Math,
-  JvVCLUtils;
+  JvJVCLUtils;
 
 var
   HintStyle: THintStyle = hsRectangle;

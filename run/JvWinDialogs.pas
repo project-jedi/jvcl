@@ -34,7 +34,7 @@ interface
 uses
   ShellAPI, Windows, Classes, Forms, SysUtils, Graphics, Dialogs,
   Controls, ShlObj, ComObj, ActiveX, CommDlg,
-  JvBaseDlg, JvTypes, JvComponent, JvFunctions; // For OSCheck
+  JvBaseDlg, JvTypes, JvComponent, JvJVCLUtils; // For OSCheck
 
 type
   EShellOleError = class(Exception);

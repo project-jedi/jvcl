@@ -169,7 +169,7 @@ uses
   {$IFDEF Debug}
   //zTrace, JclStrings,
   {$ENDIF}
-  Registry, SysUtils, Math, JvUtils;
+  Registry, SysUtils, Math, JvJVCLUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';

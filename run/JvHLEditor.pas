@@ -198,7 +198,7 @@ implementation
 
 uses
   Math,
-  JvStrUtil;
+  JvJCLUtils;
 
 const
   lgNone            = 0;

@@ -138,13 +138,8 @@ function OkToWriteModule(ModuleName: string; NewVer: Longint): Boolean;
 implementation
 
 uses
-  {$IFDEF WIN32}
   SysUtils,
-  JvFileUtil, JvDateUtil;
-  {$ELSE}
-  WinTypes, WinProcs, SysUtils,
-  JvFileUtil, JvDateUtil, JvVCLUtils;
-  {$ENDIF}
+  JvJVCLUtils, JvJCLUtils;
 
 function MemAlloc(Size: Longint): Pointer;
 {$IFDEF WIN32}

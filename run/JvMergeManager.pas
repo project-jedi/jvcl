@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, Forms,
-  JvVCLUtils {, JvComponent};
+  JvJVCLUtils {, JvComponent};
 
 type
   TFormRequestEvent = procedure(Sender: TObject; CurrentForm: TCustomForm;

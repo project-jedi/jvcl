@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Graphics, Forms,
-  JvTypes, JvRle;
+  JvTypes, JvJCLUtils;
 
 type
   TJvPcx = class(TGraphic)

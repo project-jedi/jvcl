@@ -384,10 +384,7 @@ type
     FSelMargin: Integer;
     FDisplayValues: TStrings;
     FDisplayAllFields: Boolean;
-    {$IFNDEF WIN32}
     FBtnGlyph: TBitmap;
-    FBtnDisabled: TBitmap;
-    {$ENDIF}
     {$IFDEF JVCLThemesEnabled}
     FOver: Boolean;
     {$ENDIF}
@@ -408,11 +405,9 @@ type
     procedure SetDisplayAllFields(Value: Boolean);
     function GetDisplayValues(Index: Integer): string;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
-    {$IFDEF WIN32}
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    {$ENDIF}
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     {$IFDEF JVCLThemesEnabled}
@@ -424,9 +419,7 @@ type
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$IFDEF COMPILER4_UP}
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
-    {$ENDIF}
   protected
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -459,9 +452,7 @@ type
     property DisplayValue;
     property DisplayValues[Index: Integer]: string read GetDisplayValues;
     property Value;
-    {$IFDEF WIN32}
     property KeyValue;
-    {$ENDIF}
   published
     property Align; // Polaris
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
@@ -483,19 +474,13 @@ type
     property FieldsDelimiter;
     property Font;
     property IgnoreCase;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property IndexSwitch;
     property ItemHeight;
     property ListStyle;
@@ -532,16 +517,10 @@ type
     property OnMouseUp;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
   TJvPopupDataWindow = class(TJvPopupDataList)
@@ -598,15 +577,9 @@ type
     procedure HidePopup; override;
     procedure PopupChange; override;
     procedure PopupDropDown(DisableEdit: Boolean); override;
-    {$IFDEF WIN32}
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure SetPopupValue(const Value: Variant); override;
     function GetPopupValue: Variant; override;
-    {$ELSE}
-    function AcceptPopup(var Value: string): Boolean; override;
-    procedure SetPopupValue(const Value: string); override;
-    function GetPopupValue: string; override;
-    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -636,19 +609,13 @@ type
     property Enabled;
     property Font;
     property HideSelection;
-    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
-    {$IFDEF WIN32}
-    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-    {$ENDIF}
-    {$ENDIF}
     property MaxLength;
     property OEMConvert;
     property ParentColor;
@@ -681,16 +648,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF WIN32}
     property OnStartDrag;
-    {$ENDIF}
-    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-    {$ENDIF}
-    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
   end;
 
 implementation
@@ -700,13 +661,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
-  {$IFNDEF WIN32}
-  JvStr16,
-  {$ENDIF}
-  {$IFNDEF COMPILER3_UP}
-  JvBdeUtils,
-  {$ENDIF}
-  JvVCLUtils, JvIconClipboardUtils;
+  JvJVCLUtils, JvJCLUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -2545,13 +2500,6 @@ begin
   FDropDownCount := 8;
   FDisplayValues := TStringList.Create;
   FSelImage := TPicture.Create;
-  {$IFNDEF WIN32}
-  FBtnGlyph := TBitmap.Create;
-  { Load ComboBox button glyph }
-  // (rom) needs improvement
-  FBtnGlyph.Handle := LoadBitmap(0, PChar(32738));
-  FBtnDisabled := CreateDisabledBitmap(FBtnGlyph, clBlack);
-  {$ENDIF}
   Height := {GetMinHeight} 21;
   FIgnoreCase := True;
   FEscapeClear := True;
@@ -2559,10 +2507,6 @@ end;
 
 destructor TJvDBLookupCombo.Destroy;
 begin
-  {$IFNDEF WIN32}
-  FBtnDisabled.Free;
-  FBtnGlyph.Free;
-  {$ENDIF}
   FSelImage.Free;
   FSelImage := nil;
   FDisplayValues.Free;
@@ -3327,7 +3271,6 @@ begin
     R.Right := FButtonWidth;
   end;
   {$ENDIF}
-  {$IFDEF WIN32}
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
@@ -3356,30 +3299,6 @@ begin
       Flags := DFCS_SCROLLCOMBOBOX;
     DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
   end;
-  {$ELSE}
-  if NewStyleControls then
-  begin
-    InflateRect(R, -1, -1);
-    Dec(R.Left);
-  end
-  else
-  begin
-    InflateRect(R, 1, 1);
-    Inc(R.Left);
-  end;
-  R := DrawButtonFace(Canvas, R, 1, bsWin31, False, FPressed, False);
-  { draw button glyph }
-  if (not FListActive) or (not Enabled) or ReadOnly then
-    Bmp := FBtnDisabled
-  else
-    Bmp := FBtnGlyph;
-  Target := Bounds(R.Left, R.Top, Bmp.Width, Bmp.Height);
-  OffsetRect(Target, ((R.Right - R.Left) div 2) - (Bmp.Width div 2),
-    ((R.Bottom - R.Top) div 2) - (Bmp.Height div 2));
-  { Canvas.Draw(Target.Left, Target.Top, Bmp); }
-  DrawBitmapTransparent(Canvas, Target.Left, Target.Top, Bmp,
-    TransColor[Bmp = FBtnGlyph]);
-  {$ENDIF WIN32}
 end;
 
 procedure TJvDBLookupCombo.ResetField;

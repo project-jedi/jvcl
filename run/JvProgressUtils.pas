@@ -42,27 +42,9 @@ procedure SetProgressMin(Control: TControl; MinValue: Longint);
 procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 
 implementation
-
-{$DEFINE USE_GAUGE}
-{$IFDEF WIN32}
-{$IFDEF CBUILDER}
-{$DEFINE USE_PROGRESSBAR}
-{$ENDIF}
-{$IFDEF USE_PROGRESSBAR}
-{$UNDEF USE_GAUGE}
-{$ENDIF}
-{$ENDIF}
-
 uses
   TypInfo,
-  {$IFDEF WIN32}
-  {$IFDEF USE_GAUGE}
-  Gauges,
-  {$ENDIF}
   ComCtrls;
-  {$ELSE}
-  Gauges;
-  {$ENDIF}
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
@@ -90,12 +72,7 @@ type
 constructor TJvProgressList.Create;
 begin
   inherited Create;
-  {$IFDEF WIN32}
   Add(TProgressBar, 'Max', 'Min', 'Position');
-  {$ENDIF}
-  {$IFDEF USE_GAUGE}
-  Add(TGauge, 'MaxValue', 'MinValue', 'Progress');
-  {$ENDIF}
 end;
 
 destructor TJvProgressList.Destroy;

@@ -294,7 +294,7 @@ uses
   {$ELSE}
   ThemeSrv,
   {$ENDIF COMPILER7_UP}
-  UxTheme, JvVCLUtils,
+  UxTheme, JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf;
 

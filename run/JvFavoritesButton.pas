@@ -34,7 +34,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls,
   StdCtrls, Menus, ShellApi, ImgList,
-  JvTypes, JvButton, JvDirectories, JvFunctions;
+  JvTypes, JvButton, JvDirectories, JvJVCLUtils;
 
 type
   TJvFavoritesButton = class(TJvCustomButton)

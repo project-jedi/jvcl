@@ -369,7 +369,7 @@ type
 implementation
 
 uses
-  JvFunctions;
+  JvJVCLUtils;
 
 const
   cDirPrefix = #32;

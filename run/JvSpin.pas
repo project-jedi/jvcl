@@ -432,7 +432,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   Themes, UxTheme,
   {$ENDIF}
-  JvStrUtils;
+  JvJCLUtils;
 
 {$R ..\resources\JvSpin.res}
 

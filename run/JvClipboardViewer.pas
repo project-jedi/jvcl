@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF WIN32}
-  Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
-  Messages, Classes, Graphics, Controls, Clipbrd, Forms, StdCtrls,
+  Windows, Messages, Classes, Graphics, Controls, Clipbrd, Forms, StdCtrls,
   ExtCtrls, Menus;
 
 type
@@ -117,8 +112,7 @@ implementation
 
 uses
   Grids, Math,
-  JvIconClipboardUtils, JvxRConst,
-  JvVCLUtils;
+  JvJVCLUtils, JvJCLUtils, JvConsts;
 
 { Utility routines }
 

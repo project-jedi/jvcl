@@ -78,7 +78,7 @@ uses
   {$IFDEF COMPILER3_UP}
   BdeConst,
   {$ENDIF}
-  JvVCLUtils, JvTypes;
+  JvJVCLUtils, JvTypes;
 
 {$R *.DFM}
 

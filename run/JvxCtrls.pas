@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   Buttons, Menus, IniFiles,
-  JvTimer, JvConst, JvFormPlacement, JvComponent, JVCLVer;
+  JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -960,18 +960,12 @@ implementation
 
 uses
   SysUtils, Consts, Math,
-  {$IFDEF COMPILER4_UP}
   ImgList, ActnList,
-  {$ENDIF}
   {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
-  {$IFDEF WIN32}
   CommCtrl,
-  {$ELSE}
-  JvStr16,
-  {$ENDIF}
-  JvVCLUtils, JvAppUtils;
+  JvJVCLUtils;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -1174,7 +1168,7 @@ begin
   Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(StrPCopy(Text, S)));
   {$ENDIF}
   if Result < 0 then
-    raise EOutOfResources.Create(ResStr(SInsertLineError));
+    raise EOutOfResources.Create(SInsertLineError);
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);

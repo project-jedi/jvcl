@@ -334,7 +334,7 @@ implementation
 
 uses
   Consts, Math,
-  JvStrUtils, JvCalc;
+  JvJCLUtils, JvCalc;
 
 {$R ..\resources\JvBaseEdits.res}
 

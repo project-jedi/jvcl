@@ -1125,7 +1125,7 @@ uses
   Forms,
   {$ENDIF}
   JclFileUtils, JclLogic, JclDateTime,
-  JvxRConst, JvFunctions;
+  JvConsts, JvJVCLUtils;
 
 var
   DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass = (
