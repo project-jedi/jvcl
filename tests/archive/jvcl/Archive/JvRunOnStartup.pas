@@ -80,33 +80,57 @@ end;
 
 {**************************************************}
 
-procedure TJvRunOnStartup.SetRunOnStartup(Title, CommandLine: string;
-  RunOnce, Run: Boolean);
+rocedure TJvRunOnStartup.SetRunOnStartup(Title, CommandLine: string;
+  RunOnce, Run: boolean);
 begin
-  // (rom) simplified but logic is still bad
-  // (rom) a RunOnce and a Run entry are allowed to have the same Title
-  // (rom) but may get both deleted here
-  with TRegistry.Create do
+  if RunOnce then
   begin
-    RootKey := HKEY_LOCAL_MACHINE;
-    OpenKey(RC_RunOnceKey, False);
-    if RunOnce then
-      WriteString(Title, CommandLine)
-    else
-    begin
+    with TRegistry.Create do
+    try
+      Rootkey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_RunOnceKey, false);
+      WriteString(Title, CommandLine);
+    finally
+      free;
+    end;
+  end
+  else
+  begin
+    with TRegistry.Create do
+    try
+      Rootkey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_RunOnceKey, false);
       if ValueExists(Title) then
         DeleteValue(Title);
+    finally
+      free;
     end;
-    OpenKey(RC_RunKey, False);
-    if Run then
-      WriteString(Title, CommandLine)
-    else
-    begin
+  end;
+
+  if run then
+  begin
+    with TRegistry.Create do
+    try
+      Rootkey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_RunKey, false);
+      WriteString(Title, CommandLine);
+    finally
+      free;
+    end;
+  end
+  else
+  begin
+    with TRegistry.Create do
+    try
+      Rootkey := HKEY_LOCAL_MACHINE;
+      OpenKey(RC_RunKey, false);
       if ValueExists(Title) then
         DeleteValue(Title);
+    finally
+      free;
     end;
-    Free;
   end;
 end;
 
 end.
+
