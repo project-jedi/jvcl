@@ -1,5 +1,5 @@
 ##Package: Net
-##Status: Completed (I)
+##Status: Completed (I), Updated (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvMail.pas
 Summary
@@ -487,6 +487,10 @@ See Also
 @@TJvMailLogonOption.loNewSession
   An attempt should be made to create a new session rather than acquire the environment's shared
   session. If the loNewSession flag is not set, <LINK TJvMail.Logon,Logon> uses an existing shared session.
+@@TJvMailLogonOption.loDownloadMail
+  An attempt should be made to download all of the user's messages before returning. If this flag is
+  not set, messages can be downloaded in the background after Logon returns. Set this flag when you want
+  to call <LINK TJvMail.ReadMail, ReadMail> to ensure that messages are available.
 ----------------------------------------------------------------------------------------------------
 @@TJvMailLogonOptions
 <TITLE TJvMailLogonOptions type>
