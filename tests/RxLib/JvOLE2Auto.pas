@@ -201,7 +201,7 @@ type
 
 { OLE2 Automation Controller }
 
-  TOleController = class(TObject)
+  TJvOleController = class(TObject)
   private
     FLocale: TLCID;
     FObject: Variant;
@@ -694,9 +694,9 @@ begin
 {$ENDIF}
 end;
 
-{ TOleController }
+{ TJvOleController }
 
-constructor TOleController.Create;
+constructor TJvOleController.Create;
 begin
   inherited Create;
 {$IFDEF WIN32}
@@ -711,27 +711,27 @@ begin
   end;
 end;
 
-destructor TOleController.Destroy;
+destructor TJvOleController.Destroy;
 begin
   if FOleInitialized then ClearObject;
   inherited Destroy;
 end;
 
-procedure TOleController.CreateObject(const ClassName: string);
+procedure TJvOleController.CreateObject(const ClassName: string);
 begin
   CheckOleInitialized;
   ClearObject;
   FObject := CreateOleObject(ClassName);
 end;
 
-procedure TOleController.GetActiveObject(const ClassName: string);
+procedure TJvOleController.GetActiveObject(const ClassName: string);
 begin
   CheckOleInitialized;
   ClearObject;
   FObject := GetActiveOleObject(ClassName);
 end;
 
-procedure TOleController.AssignIDispatch(V: Variant);
+procedure TJvOleController.AssignIDispatch(V: Variant);
 begin
   CheckOleInitialized;
   ClearObject;
@@ -743,7 +743,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TOleController.ClearObject;
+procedure TJvOleController.ClearObject;
 begin
 {$IFDEF WIN32}
   VarClear(FRetValue);
@@ -754,7 +754,7 @@ begin
 {$ENDIF}
 end;
 
-function TOleController.NameToDispID(const AName: string): TDispID;
+function TJvOleController.NameToDispID(const AName: string): TDispID;
 var
 {$IFDEF WIN32}
   CharBuf: array[0..255] of WideChar;
@@ -777,7 +777,7 @@ begin
     raise EOleError.CreateFmt(SOleNotSupport, [AName]);
 end;
 
-function TOleController.NameToDispIDs(const AName: string;
+function TJvOleController.NameToDispIDs(const AName: string;
   const AParams: array of string; Dest: PDispIDList): PDispIDList;
 var
 {$IFDEF WIN32}
@@ -819,7 +819,7 @@ begin
   end;
 end;
 
-function TOleController.Invoke(dispidMember: TDispID; wFlags: Word;
+function TJvOleController.Invoke(dispidMember: TDispID; wFlags: Word;
   var pdispparams: TDispParams; Res: PVariant): PVariant;
 var
   pexcepinfo: TExcepInfo;
@@ -852,7 +852,7 @@ begin
   Result := Res;
 end;
 
-function TOleController.CallMethodNoParams(ID: TDispID;
+function TJvOleController.CallMethodNoParams(ID: TDispID;
   NeedResult: Boolean): PVariant;
 const
   Disp: TDispParams = (rgvarg: nil; rgdispidNamedArgs: nil; cArgs: 0;
@@ -865,7 +865,7 @@ begin
     Result := Invoke(ID, DISPATCH_METHODNOPARAM, Disp, nil);
 end;
 
-function TOleController.CallMethod(ID: TDispID; const Params: array of const;
+function TJvOleController.CallMethod(ID: TDispID; const Params: array of const;
   NeedResult: Boolean): PVariant;
 var
   Disp: TDispParams;
@@ -902,7 +902,7 @@ begin
   end;
 end;
 
-function TOleController.CallMethodNamedParams(const IDs: TDispIDList;
+function TJvOleController.CallMethodNamedParams(const IDs: TDispIDList;
   const Params: array of const; Cnt: Byte; NeedResult: Boolean): PVariant;
 var
   Disp: TDispParams;
@@ -940,7 +940,7 @@ begin
   end;
 end;
 
-procedure TOleController.SetPropertyByID(ID: TDispID; const Prop: array of const);
+procedure TJvOleController.SetPropertyByID(ID: TDispID; const Prop: array of const);
 const
   NameArg: TDispID = DISPID_PROPERTYPUT;
 var
@@ -974,7 +974,7 @@ begin
   end;
 end;
 
-function TOleController.GetPropertyByID(ID: TDispID): PVariant;
+function TJvOleController.GetPropertyByID(ID: TDispID): PVariant;
 const
   Disp: TDispParams = (rgvarg: nil; rgdispidNamedArgs: nil;
     cArgs: 0; cNamedArgs: 0);
@@ -983,63 +983,63 @@ begin
   Result := Invoke(ID, DISPATCH_PROPERTYGET, Disp, @FRetValue);
 end;
 
-procedure TOleController.CallProcedureByID(ID: TDispID; const Params: array of const);
+procedure TJvOleController.CallProcedureByID(ID: TDispID; const Params: array of const);
 begin
   CallMethod(ID, Params, False);
 end;
 
-function TOleController.CallFunctionByID(ID: TDispID;
+function TJvOleController.CallFunctionByID(ID: TDispID;
   const Params: array of const): PVariant;
 begin
   Result := CallMethod(ID, Params, True);
 end;
 
-procedure TOleController.CallProcedureByIDsNamedParams(const IDs: TDispIDList;
+procedure TJvOleController.CallProcedureByIDsNamedParams(const IDs: TDispIDList;
   const Params: array of const; Cnt: Byte);
 begin
   CallMethodNamedParams(IDs, Params, Cnt, False);
 end;
 
-function TOleController.CallFunctionByIDsNamedParams(const IDs: TDispIDList;
+function TJvOleController.CallFunctionByIDsNamedParams(const IDs: TDispIDList;
   const Params: array of const; Cnt: Byte): PVariant;
 begin
   Result := CallMethodNamedParams(IDs, Params, Cnt, True);
 end;
 
-procedure TOleController.CallProcedureNoParamsByID(ID: TDispID);
+procedure TJvOleController.CallProcedureNoParamsByID(ID: TDispID);
 begin
   CallMethodNoParams(ID, False);
 end;
 
-function TOleController.CallFunctionNoParamsByID(ID: TDispID): PVariant;
+function TJvOleController.CallFunctionNoParamsByID(ID: TDispID): PVariant;
 begin
   Result := CallMethodNoParams(ID, True);
 end;
 
-procedure TOleController.SetProperty(const AName: string;
+procedure TJvOleController.SetProperty(const AName: string;
   const Prop: array of const);
 begin
   SetPropertyByID(NameToDispID(AName), Prop);
 end;
 
-function TOleController.GetProperty(const AName: string): PVariant;
+function TJvOleController.GetProperty(const AName: string): PVariant;
 begin
   Result := GetPropertyByID(NameToDispID(AName));
 end;
 
-procedure TOleController.CallProcedure(const AName: string;
+procedure TJvOleController.CallProcedure(const AName: string;
   const Params: array of const);
 begin
   CallProcedureByID(NameToDispID(AName), Params);
 end;
 
-function TOleController.CallFunction(const AName: string;
+function TJvOleController.CallFunction(const AName: string;
   const Params: array of const): PVariant;
 begin
   Result := CallFunctionByID(NameToDispID(AName), Params);
 end;
 
-procedure TOleController.CallProcedureNamedParams(const AName: string;
+procedure TJvOleController.CallProcedureNamedParams(const AName: string;
   const Params: array of const; const ParamNames: array of string);
 var
   DispIDs: array[0..MaxDispArgs] of TDispID;
@@ -1048,7 +1048,7 @@ begin
     Params, High(ParamNames) + 1);
 end;
 
-function TOleController.CallFunctionNamedParams(const AName: string;
+function TJvOleController.CallFunctionNamedParams(const AName: string;
   const Params: array of const; const ParamNames: array of string): PVariant;
 var
   DispIDs: array[0..MaxDispArgs] of TDispID;
@@ -1057,17 +1057,17 @@ begin
     @DispIDs)^, Params, High(ParamNames) + 1);
 end;
 
-procedure TOleController.CallProcedureNoParams(const AName: string);
+procedure TJvOleController.CallProcedureNoParams(const AName: string);
 begin
   CallProcedureNoParamsByID(NameToDispID(AName));
 end;
 
-function TOleController.CallFunctionNoParams(const AName: string): PVariant;
+function TJvOleController.CallFunctionNoParams(const AName: string): PVariant;
 begin
   Result := CallFunctionNoParamsByID(NameToDispID(AName));
 end;
 
-procedure TOleController.SetLocale(PrimaryLangID, SubLangID: Word);
+procedure TJvOleController.SetLocale(PrimaryLangID, SubLangID: Word);
 begin
   FLocale := CreateLCID(PrimaryLangID, SubLangID);
 end;

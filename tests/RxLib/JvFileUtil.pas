@@ -170,13 +170,13 @@ function SHGetSpecialFolderLocation(hwndOwner: HWND; nFolder: Integer;
 
 {$ENDIF Delphi3_Up}
 
-{ TBrowseFolderDlg }
+{ TJvBrowseFolderDlg }
 
 type
   TBrowseKind = (bfFolders, bfComputers);
   TDialogPosition = (dpDefault, dpScreenCenter);
 
-  TBrowseFolderDlg = class(TComponent)
+  TJvBrowseFolderDlg = class(TComponent)
   private
     FDefWndProc: Pointer;
     FHelpContext: THelpContext;
@@ -225,23 +225,23 @@ function ExplorerHook(Wnd: HWnd; Msg: UINT; LParam: LPARAM; Data: LPARAM): Integ
 begin
   Result := 0;
   if Msg = BFFM_INITIALIZED then begin
-    if TBrowseFolderDlg(Data).Position = dpScreenCenter then
+    if TJvBrowseFolderDlg(Data).Position = dpScreenCenter then
       CenterWindow(Wnd);
-    TBrowseFolderDlg(Data).FHandle := Wnd;
-    TBrowseFolderDlg(Data).FDefWndProc := Pointer(SetWindowLong(Wnd, GWL_WNDPROC,
-      Longint(TBrowseFolderDlg(Data).FObjectInstance)));
-    TBrowseFolderDlg(Data).DoInitialized;
+    TJvBrowseFolderDlg(Data).FHandle := Wnd;
+    TJvBrowseFolderDlg(Data).FDefWndProc := Pointer(SetWindowLong(Wnd, GWL_WNDPROC,
+      Longint(TJvBrowseFolderDlg(Data).FObjectInstance)));
+    TJvBrowseFolderDlg(Data).DoInitialized;
   end
   else if Msg = BFFM_SELCHANGED then begin
-    TBrowseFolderDlg(Data).FHandle := Wnd;
-    TBrowseFolderDlg(Data).DoSelChanged(PItemIDList(LParam));
+    TJvBrowseFolderDlg(Data).FHandle := Wnd;
+    TJvBrowseFolderDlg(Data).DoSelChanged(PItemIDList(LParam));
   end;
 end;
 
 const
   HelpButtonId = $FFFF;
 
-constructor TBrowseFolderDlg.Create(AOwner: TComponent);
+constructor TJvBrowseFolderDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FObjectInstance := Classes.MakeObjectInstance(WndProc);
@@ -251,13 +251,13 @@ begin
   SetLength(FDisplayName, MAX_PATH);
 end;
 
-destructor TBrowseFolderDlg.Destroy;
+destructor TJvBrowseFolderDlg.Destroy;
 begin
   if FObjectInstance <> nil then Classes.FreeObjectInstance(FObjectInstance);
   inherited Destroy;
 end;
 
-procedure TBrowseFolderDlg.DoInitialized;
+procedure TJvBrowseFolderDlg.DoInitialized;
 const
   SBtn = 'BUTTON';
 var
@@ -285,7 +285,7 @@ begin
   if Assigned(FOnInitialized) then FOnInitialized(Self);
 end;
 
-procedure TBrowseFolderDlg.DoSelChanged(Param: PItemIDList);
+procedure TJvBrowseFolderDlg.DoSelChanged(Param: PItemIDList);
 var
   Temp: array[0..MAX_PATH] of Char;
 begin
@@ -305,18 +305,18 @@ begin
   if Assigned(FOnSelChanged) then FOnSelChanged(Self);
 end;
 
-procedure TBrowseFolderDlg.SetSelPath(const Path: string);
+procedure TJvBrowseFolderDlg.SetSelPath(const Path: string);
 begin
   if FHandle <> 0 then
     SendMessage(FHandle, BFFM_SETSELECTION, 1, Longint(PChar(Path)));
 end;
 
-procedure TBrowseFolderDlg.SetOkEnable(Value: Boolean);
+procedure TJvBrowseFolderDlg.SetOkEnable(Value: Boolean);
 begin
   if FHandle <> 0 then SendMessage(FHandle, BFFM_ENABLEOK, 0, Ord(Value));
 end;
 
-procedure TBrowseFolderDlg.DefaultHandler(var Message);
+procedure TJvBrowseFolderDlg.DefaultHandler(var Message);
 begin
   if FHandle <> 0 then
     with TMessage(Message) do
@@ -324,12 +324,12 @@ begin
   else inherited DefaultHandler(Message);
 end;
 
-procedure TBrowseFolderDlg.WndProc(var Message: TMessage);
+procedure TJvBrowseFolderDlg.WndProc(var Message: TMessage);
 begin
   Dispatch(Message);
 end;
 
-procedure TBrowseFolderDlg.WMCommand(var Message: TMessage);
+procedure TJvBrowseFolderDlg.WMCommand(var Message: TMessage);
 begin
   if (Message.wParam = HelpButtonId) and (LongRec(Message.lParam).Hi =
     BN_CLICKED) and (FHelpContext <> 0) then
@@ -339,13 +339,13 @@ begin
   else inherited;
 end;
 
-procedure TBrowseFolderDlg.WMNCDestroy(var Message: TWMNCDestroy);
+procedure TJvBrowseFolderDlg.WMNCDestroy(var Message: TWMNCDestroy);
 begin
   inherited;
   FHandle := 0;
 end;
 
-function TBrowseFolderDlg.Execute: Boolean;
+function TJvBrowseFolderDlg.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
@@ -397,7 +397,7 @@ begin
   end;
 end;
 
-function TBrowseFolderDlg.TaskModalDialog(var Info: TBrowseInfo): PItemIDList;
+function TJvBrowseFolderDlg.TaskModalDialog(var Info: TBrowseInfo): PItemIDList;
 var
   ActiveWindow: HWnd;
   WindowList: Pointer;
@@ -421,7 +421,7 @@ function BrowseDirectory(var AFolderName: string; const DlgText: string;
   AHelpContext: THelpContext): Boolean;
 begin
   if NewStyleControls then begin
-    with TBrowseFolderDlg.Create(Application) do
+    with TJvBrowseFolderDlg.Create(Application) do
     try
       DialogText := DlgText;
       FolderName := AFolderName;
@@ -438,7 +438,7 @@ end;
 function BrowseComputer(var ComputerName: string; const DlgText: string;
   AHelpContext: THelpContext): Boolean;
 begin
-  with TBrowseFolderDlg.Create(Application) do
+  with TJvBrowseFolderDlg.Create(Application) do
   try
     BrowseKind := bfComputers;
     DialogText := DlgText;

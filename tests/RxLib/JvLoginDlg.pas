@@ -38,7 +38,7 @@ type
 
   TDialogMode = (dmAppLogin, dmDBLogin, dmUnlock);
 
-  TDBLoginDialog = class
+  TJvDBLoginDialog = class
   private
     FDialog: TJvLoginForm;
     FMode: TDialogMode;
@@ -104,9 +104,9 @@ const
   keySelectDatabase = 'SelectDatabase'; { dialog never writes this value }
   keyLastAliasName = 'LastAlias';       { used if SelectDatabase = True  }
 
-{ TDBLoginDialog }
+{ TJvDBLoginDialog }
 
-constructor TDBLoginDialog.Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);
+constructor TJvDBLoginDialog.Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);
 begin
   inherited Create;
   FMode := DialogMode;
@@ -117,13 +117,13 @@ begin
   ShowDBName := True;
 end;
 
-destructor TDBLoginDialog.Destroy;
+destructor TJvDBLoginDialog.Destroy;
 begin
   FDialog.Free;
   inherited Destroy;
 end;
 
-procedure TDBLoginDialog.OkBtnClick(Sender: TObject);
+procedure TJvDBLoginDialog.OkBtnClick(Sender: TObject);
 var
   Ok: Boolean;
   SaveLogin: TDatabaseLoginEvent;
@@ -184,7 +184,7 @@ begin
   else { dmDBLogin } FDialog.ModalResult := mrOk
 end;
 
-procedure TDBLoginDialog.FormShow(Sender: TObject);
+procedure TJvDBLoginDialog.FormShow(Sender: TObject);
 var
   S: string;
 begin
@@ -210,7 +210,7 @@ begin
   end;
 end;
 
-function TDBLoginDialog.ExecuteAppLogin: Boolean;
+function TJvDBLoginDialog.ExecuteAppLogin: Boolean;
 var
   Ini: TObject;
 begin
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-function TDBLoginDialog.ExecuteDbLogin(LoginParams: TStrings): Boolean;
+function TJvDBLoginDialog.ExecuteDbLogin(LoginParams: TStrings): Boolean;
 {$IFDEF WIN32}
 var
   CurrSession: TSession;
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-function TDBLoginDialog.ExecuteUnlock: Boolean;
+function TJvDBLoginDialog.ExecuteUnlock: Boolean;
 begin
   with FDialog.UserNameEdit do begin
     Text := LoginName;
@@ -298,7 +298,7 @@ begin
   Result := (FDialog.ShowModal = mrOk);
 end;
 
-function TDBLoginDialog.Execute(LoginParams: TStrings): Boolean;
+function TJvDBLoginDialog.Execute(LoginParams: TStrings): Boolean;
 var
   SaveCursor: TCursor;
 begin
@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-function TDBLoginDialog.GetUserName: string;
+function TJvDBLoginDialog.GetUserName: string;
 begin
   if CheckDatabaseChange then
     Result := Copy(FDialog.UserNameEdit.Text, 1,
@@ -338,7 +338,7 @@ begin
     Result := FDialog.UserNameEdit.Text;
 end;
 
-function TDBLoginDialog.CheckDatabaseChange: Boolean;
+function TJvDBLoginDialog.CheckDatabaseChange: Boolean;
 begin
   Result := (FMode in [dmAppLogin, dmDBLogin]) and
     (Pos('@', Fdialog.UserNameEdit.Text) > 0) and
@@ -346,7 +346,7 @@ begin
     (CompareText(Database.DriverName, szCFGDBSTANDARD) <> 0));
 end;
 
-procedure TDBLoginDialog.FillParams(LoginParams: TStrings);
+procedure TJvDBLoginDialog.FillParams(LoginParams: TStrings);
 begin
   LoginParams.Values[szUSERNAME] := GetUserName;
   LoginParams.Values['PASSWORD'] := FDialog.PasswordEdit.Text;
@@ -356,12 +356,12 @@ begin
   end;
 end;
 
-procedure TDBLoginDialog.Login(Database: TDatabase; LoginParams: TStrings);
+procedure TJvDBLoginDialog.Login(Database: TDatabase; LoginParams: TStrings);
 begin
   FillParams(LoginParams);
 end;
 
-function TDBLoginDialog.GetUserInfo: Boolean;
+function TJvDBLoginDialog.GetUserInfo: Boolean;
 var
   Table: TTable;
 begin
@@ -394,14 +394,14 @@ begin
   end;
 end;
 
-function TDBLoginDialog.CheckUser(Table: TTable): Boolean;
+function TJvDBLoginDialog.CheckUser(Table: TTable): Boolean;
 begin
   if Assigned(FCheckUserEvent) then
     Result := FCheckUserEvent(Table, GetUserName, FDialog.PasswordEdit.Text)
   else Result := True;
 end;
 
-function TDBLoginDialog.CheckUnlock: Boolean;
+function TJvDBLoginDialog.CheckUnlock: Boolean;
 begin
   if Assigned(FCheckUnlock) then
     Result := FCheckUnlock(FDialog.PasswordEdit.Text)
@@ -413,9 +413,9 @@ end;
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
   AttemptNumber: Integer; ShowDBName: Boolean);
 var
-  Dlg: TDBLoginDialog;
+  Dlg: TJvDBLoginDialog;
 begin
-  Dlg := TDBLoginDialog.Create(dmDBLogin, False);
+  Dlg := TJvDBLoginDialog.Create(dmDBLogin, False);
   try
     Dlg.Database := Database;
     Dlg.ShowDBName := ShowDBName;
@@ -429,9 +429,9 @@ end;
 function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent; MaxPwdLen, AttemptNumber: Integer): Boolean;
 var
-  Dlg: TDBLoginDialog;
+  Dlg: TJvDBLoginDialog;
 begin
-  Dlg := TDBLoginDialog.Create(dmUnlock, False);
+  Dlg := TJvDBLoginDialog.Create(dmUnlock, False);
   try
     Dlg.LoginName := UserName;
     Dlg.OnIconDblClick := IconDblClick;
@@ -456,9 +456,9 @@ function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   var LoginName: string; const IniFileName: string;
   UseRegistry, SelectDatabase: Boolean): Boolean;
 var
-  Dlg: TDBLoginDialog;
+  Dlg: TJvDBLoginDialog;
 begin
-  Dlg := TDBLoginDialog.Create(dmAppLogin, SelectDatabase);
+  Dlg := TJvDBLoginDialog.Create(dmAppLogin, SelectDatabase);
   try
     Dlg.LoginName := LoginName;
     Dlg.OnIconDblClick := IconDblClick;

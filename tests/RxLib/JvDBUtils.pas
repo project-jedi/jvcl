@@ -144,7 +144,7 @@ const
 {$ELSE}
   ftBlobTypes = [Low(TBlobType)..High(TBlobType)];
 {$ENDIF Delphi3_Up}
-{$IFDEF RX_V110} {$NODEFINE ftBlobTypes} {$ENDIF}
+{$IFDEF COMPILER35_UP} {$NODEFINE ftBlobTypes} {$ENDIF}
 
 {$IFNDEF Delphi4_Up}
   ftNonTextTypes = [ftBytes, ftVarBytes, ftBlob, ftMemo, ftGraphic

@@ -140,7 +140,7 @@ begin
 end;
 
 type
-  THack = class(TWinControl);
+  TJvHack = class(TWinControl);
 
 { TJvSplitter }
 
@@ -522,7 +522,7 @@ begin
     FSizing := False;
     Application.ShowHint := FAppShowHint;
     if Assigned(FActiveControl) then begin
-      THack(FActiveControl).OnKeyDown := FOldKeyDown;
+      TJvHack(FActiveControl).OnKeyDown := FOldKeyDown;
       FActiveControl := nil;
     end;
     if Apply then Changed;
@@ -549,8 +549,8 @@ begin
       with ValidParentForm(Self) do begin
         if ActiveControl <> nil then FActiveControl := ActiveControl
         else FActiveControl := GetParentForm(Self);
-        FOldKeyDown := THack(FActiveControl).OnKeyDown;
-        THack(FActiveControl).OnKeyDown := ControlKeyDown;
+        FOldKeyDown := TJvHack(FActiveControl).OnKeyDown;
+        TJvHack(FActiveControl).OnKeyDown := ControlKeyDown;
       end;
       Application.ShowHint := False;
       FOffset := Point(X, Y);

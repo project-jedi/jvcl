@@ -70,13 +70,13 @@ type
     procedure ClearBtnClick(Sender: TObject);
   private
     { Private declarations }
-    FWinMinMaxInfo: TWinMinMaxInfo;
+    FWinMinMaxInfo: TJvWinMinMaxInfo;
     FForm: TCustomForm;
-    procedure SetWinMinMaxInfo(Value: TWinMinMaxInfo);
+    procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
     procedure UpdateMinMaxInfo;
   public
     { Public declarations }
-    property WinMinMaxInfo: TWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
+    property WinMinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
   end;
 
 { TMinMaxProperty }
@@ -120,9 +120,9 @@ end;
 
 function TMinMaxProperty.GetValue: string;
 var
-  WinMinMaxInfo: TWinMinMaxInfo;
+  WinMinMaxInfo: TJvWinMinMaxInfo;
 begin
-  WinMinMaxInfo := TWinMinMaxInfo(GetOrdValue);
+  WinMinMaxInfo := TJvWinMinMaxInfo(GetOrdValue);
   with WinMinMaxInfo do begin
     if DefaultMinMaxInfo then Result := ResStr(srNone)
     else Result := Format('(%d,%d),(%d,%d),(%d,%d),(%d,%d)',
@@ -143,7 +143,7 @@ end;
 
 { TMinMaxInfoEditDialog }
 
-procedure TMinMaxInfoEditDialog.SetWinMinMaxInfo(Value: TWinMinMaxInfo);
+procedure TMinMaxInfoEditDialog.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
 begin
   FWinMinMaxInfo.Assign(Value);
   with FWinMinMaxInfo do begin
@@ -174,7 +174,7 @@ end;
 
 procedure TMinMaxInfoEditDialog.FormCreate(Sender: TObject);
 begin
-  FWinMinMaxInfo := TWinMinMaxInfo.Create;
+  FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
 end;
 
 procedure TMinMaxInfoEditDialog.FormDestroy(Sender: TObject);

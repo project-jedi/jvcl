@@ -206,15 +206,15 @@ end;
 
 {$ENDIF Delphi4_Up}
 
-{ TUserTableNameProperty }
+{ TJvUserTableNameProperty }
 { For TJvDBSecurity component }
 
 type
-  TUserTableNameProperty = class(TJvDBStringProperty)
+  TJvUserTableNameProperty = class(TJvDBStringProperty)
     procedure GetValueList(List: TStrings); override;
   end;
 
-procedure TUserTableNameProperty.GetValueList(List: TStrings);
+procedure TJvUserTableNameProperty.GetValueList(List: TStrings);
 var
   Security: TJvDBSecurity;
 begin
@@ -314,7 +314,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TFileName), TJvCustomTableItems, 'TableName',
     TJvTableNameProperty);
   RegisterPropertyEditor(TypeInfo(TFileName), TJvDBSecurity,
-    'UsersTableName', TUserTableNameProperty);
+    'UsersTableName', TJvUserTableNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity,
     'LoginNameField', TLoginNameFieldProperty);
 

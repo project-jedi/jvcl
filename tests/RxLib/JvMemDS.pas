@@ -40,9 +40,9 @@ type
   TMemBlobData = string;
   TMemBlobArray = array[0..0] of TMemBlobData;
   PMemBlobArray = ^TMemBlobArray;
-  TMemoryRecord = class;
+  TJvMemoryRecord = class;
   TLoadMode = (lmCopy, lmAppend);
-  TCompareRecords = function (Item1, Item2: TMemoryRecord): Integer of object;
+  TCompareRecords = function (Item1, Item2: TJvMemoryRecord): Integer of object;
 
   TJvMemoryData = class(TDataSet)
   private
@@ -59,29 +59,29 @@ type
     FIndexList: TList;
     FCaseInsensitiveSort: Boolean;
     FDescendingSort: Boolean;
-    function AddRecord: TMemoryRecord;
-    function InsertRecord(Index: Integer): TMemoryRecord;
-    function FindRecordID(ID: Integer): TMemoryRecord;
+    function AddRecord: TJvMemoryRecord;
+    function InsertRecord(Index: Integer): TJvMemoryRecord;
+    function FindRecordID(ID: Integer): TJvMemoryRecord;
     procedure CreateIndexList(const FieldNames: string);
     procedure FreeIndexList;
     procedure QuickSort(L, R: Integer; Compare: TCompareRecords);
     procedure Sort;
     function CalcRecordSize: Integer;
     function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
-    function GetMemoryRecord(Index: Integer): TMemoryRecord;
+    function GetMemoryRecord(Index: Integer): TJvMemoryRecord;
     function GetCapacity: Integer;
     function RecordFilter: Boolean;
     procedure SetCapacity(Value: Integer);
     procedure ClearRecords;
     procedure InitBufferPointers(GetProps: Boolean);
   protected
-    procedure AssignMemoryRecord(Rec: TMemoryRecord; Buffer: PChar);
+    procedure AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
     function GetActiveRecBuf(var RecBuf: PChar): Boolean; virtual;
     procedure InitFieldDefsFromFields;
-    procedure RecordToBuffer(Rec: TMemoryRecord; Buffer: PChar);
+    procedure RecordToBuffer(Rec: TJvMemoryRecord; Buffer: PChar);
     procedure SetMemoryRecordData(Buffer: PChar; Pos: Integer); virtual;
     procedure SetAutoIncFields(Buffer: PChar); virtual;
-    function CompareRecords(Item1, Item2: TMemoryRecord): Integer; virtual;
+    function CompareRecords(Item1, Item2: TJvMemoryRecord): Integer; virtual;
     function GetBlobData(Field: TField; Buffer: PChar): TMemBlobData;
     procedure SetBlobData(Field: TField; Buffer: PChar; Value: TMemBlobData);
     function AllocRecordBuffer: PChar; override;
@@ -122,7 +122,7 @@ type
     function GetRecordCount: Integer; override;
     function GetRecNo: Integer; override;
     procedure SetRecNo(Value: Integer); override;
-    property Records[Index: Integer]: TMemoryRecord read GetMemoryRecord;
+    property Records[Index: Integer]: TJvMemoryRecord read GetMemoryRecord;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -178,9 +178,9 @@ type
     property OnPostError;
   end;
 
-{ TMemBlobStream }
+{ TJvMemBlobStream }
 
-  TMemBlobStream = class(TStream)
+  TJvMemBlobStream = class(TStream)
   private
     FField: TBlobField;
     FDataSet: TJvMemoryData;
@@ -201,9 +201,9 @@ type
     procedure Truncate;
   end;
 
-{ TMemoryRecord }
+{ TJvMemoryRecord }
 
-  TMemoryRecord = class(TPersistent)
+  TJvMemoryRecord = class(TPersistent)
   private
     FMemoryData: TJvMemoryData;
     FID: Integer;
@@ -379,33 +379,33 @@ type
     BookmarkFlag: TBookmarkFlag;
   end;
 
-{ TMemoryRecord }
+{ TJvMemoryRecord }
 
-constructor TMemoryRecord.Create(MemoryData: TJvMemoryData);
+constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData);
 begin
   CreateEx(MemoryData, True);
 end;
 
-constructor TMemoryRecord.CreateEx(MemoryData: TJvMemoryData;
+constructor TJvMemoryRecord.CreateEx(MemoryData: TJvMemoryData;
   UpdateParent: Boolean);
 begin
   inherited Create;
   SetMemoryData(MemoryData, UpdateParent);
 end;
 
-destructor TMemoryRecord.Destroy;
+destructor TJvMemoryRecord.Destroy;
 begin
   SetMemoryData(nil, True);
   inherited Destroy;
 end;
 
-function TMemoryRecord.GetIndex: Integer;
+function TJvMemoryRecord.GetIndex: Integer;
 begin
   if FMemoryData <> nil then Result := FMemoryData.FRecords.IndexOf(Self)
   else Result := -1;
 end;
 
-procedure TMemoryRecord.SetMemoryData(Value: TJvMemoryData; UpdateParent: Boolean);
+procedure TJvMemoryRecord.SetMemoryData(Value: TJvMemoryData; UpdateParent: Boolean);
 var
   I: Integer;
   DataSize: Integer;
@@ -438,7 +438,7 @@ begin
   end;
 end;
 
-procedure TMemoryRecord.SetIndex(Value: Integer);
+procedure TJvMemoryRecord.SetIndex(Value: Integer);
 var
   CurIndex: Integer;
 begin
@@ -480,31 +480,31 @@ begin
   if FRecords <> nil then FRecords.Capacity := Value;
 end;
 
-function TJvMemoryData.AddRecord: TMemoryRecord;
+function TJvMemoryData.AddRecord: TJvMemoryRecord;
 begin
-  Result := TMemoryRecord.Create(Self);
+  Result := TJvMemoryRecord.Create(Self);
 end;
 
-function TJvMemoryData.FindRecordID(ID: Integer): TMemoryRecord;
+function TJvMemoryData.FindRecordID(ID: Integer): TJvMemoryRecord;
 var
   I: Integer;
 begin
   for I := 0 to FRecords.Count - 1 do begin
-    Result := TMemoryRecord(FRecords[I]);
+    Result := TJvMemoryRecord(FRecords[I]);
     if Result.ID = ID then Exit;
   end;
   Result := nil;
 end;
 
-function TJvMemoryData.InsertRecord(Index: Integer): TMemoryRecord;
+function TJvMemoryData.InsertRecord(Index: Integer): TJvMemoryRecord;
 begin
   Result := AddRecord;
   Result.Index := Index;
 end;
 
-function TJvMemoryData.GetMemoryRecord(Index: Integer): TMemoryRecord;
+function TJvMemoryData.GetMemoryRecord(Index: Integer): TJvMemoryRecord;
 begin
-  Result := TMemoryRecord(FRecords[Index]);
+  Result := TJvMemoryRecord(FRecords[Index]);
 end;
 
 { Field Management }
@@ -666,7 +666,7 @@ begin
   end;
 end;
 
-procedure TJvMemoryData.RecordToBuffer(Rec: TMemoryRecord; Buffer: PChar);
+procedure TJvMemoryData.RecordToBuffer(Rec: TJvMemoryRecord; Buffer: PChar);
 var
   I: Integer;
 begin
@@ -907,7 +907,7 @@ end;
 
 function TJvMemoryData.CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream;
 begin
-  Result := TMemBlobStream.Create(Field as TBlobField, Mode);
+  Result := TJvMemBlobStream.Create(Field as TBlobField, Mode);
 end;
 
 { Bookmarks }
@@ -954,7 +954,7 @@ end;
 
 procedure TJvMemoryData.InternalGotoBookmark(Bookmark: TBookmark);
 var
-  Rec: TMemoryRecord;
+  Rec: TJvMemoryRecord;
   SavePos: Integer;
   Accept: Boolean;
 begin
@@ -990,7 +990,7 @@ end;
 
 { Data Manipulation }
 
-procedure TJvMemoryData.AssignMemoryRecord(Rec: TMemoryRecord; Buffer: PChar);
+procedure TJvMemoryData.AssignMemoryRecord(Rec: TJvMemoryRecord; Buffer: PChar);
 var
   I: Integer;
 begin
@@ -1001,7 +1001,7 @@ end;
 
 procedure TJvMemoryData.SetMemoryRecordData(Buffer: PChar; Pos: Integer);
 var
-  Rec: TMemoryRecord;
+  Rec: TJvMemoryRecord;
 begin
   if State = dsFilter then Error(SNotEditing);
   Rec := Records[Pos];
@@ -1032,7 +1032,7 @@ end;
 procedure TJvMemoryData.InternalAddRecord(Buffer: Pointer; Append: Boolean);
 var
   RecPos: Integer;
-  Rec: TMemoryRecord;
+  Rec: TJvMemoryRecord;
 begin
   if Append then begin
     Rec := AddRecord;
@@ -1357,7 +1357,7 @@ end;
 procedure TJvMemoryData.QuickSort(L, R: Integer; Compare: TCompareRecords);
 var
   I, J: Integer;
-  P: TMemoryRecord;
+  P: TJvMemoryRecord;
 begin
   repeat
     I := L;
@@ -1377,7 +1377,7 @@ begin
   until I >= R;
 end;
 
-function TJvMemoryData.CompareRecords(Item1, Item2: TMemoryRecord): Integer;
+function TJvMemoryData.CompareRecords(Item1, Item2: TJvMemoryRecord): Integer;
 var
   Data1, Data2: PChar;
   F: TField;
@@ -1442,9 +1442,9 @@ begin
   FIndexList := nil;
 end;
 
-{ TMemBlobStream }
+{ TJvMemBlobStream }
 
-constructor TMemBlobStream.Create(Field: TBlobField; Mode: TBlobStreamMode);
+constructor TJvMemBlobStream.Create(Field: TBlobField; Mode: TBlobStreamMode);
 begin
   FMode := Mode;
   FField := Field;
@@ -1460,7 +1460,7 @@ begin
   if Mode = bmWrite then Truncate;
 end;
 
-destructor TMemBlobStream.Destroy;
+destructor TJvMemBlobStream.Destroy;
 begin
   if FOpened and FModified then FField.Modified := True;
   if FModified then
@@ -1471,9 +1471,9 @@ begin
   end;
 end;
 
-function TMemBlobStream.GetBlobFromRecord(Field: TField): TMemBlobData;
+function TJvMemBlobStream.GetBlobFromRecord(Field: TField): TMemBlobData;
 var
-  Rec: TMemoryRecord;
+  Rec: TJvMemoryRecord;
   Pos: Integer;
 begin
   Result := '';
@@ -1487,7 +1487,7 @@ begin
   end;
 end;
 
-function TMemBlobStream.Read(var Buffer; Count: Longint): Longint;
+function TJvMemBlobStream.Read(var Buffer; Count: Longint): Longint;
 begin
   Result := 0;
   if FOpened then begin
@@ -1508,7 +1508,7 @@ begin
   end;
 end;
 
-function TMemBlobStream.Write(const Buffer; Count: Longint): Longint;
+function TJvMemBlobStream.Write(const Buffer; Count: Longint): Longint;
 var
   Temp: TMemBlobData;
 begin
@@ -1525,7 +1525,7 @@ begin
   end;
 end;
 
-function TMemBlobStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJvMemBlobStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   case Origin of
     0: FPosition := Offset;
@@ -1535,7 +1535,7 @@ begin
   Result := FPosition;
 end;
 
-procedure TMemBlobStream.Truncate;
+procedure TJvMemBlobStream.Truncate;
 begin
   if FOpened and FCached and (FMode <> bmRead) then begin
     FDataSet.SetBlobData(FField, FBuffer, '');
@@ -1543,7 +1543,7 @@ begin
   end;
 end;
 
-function TMemBlobStream.GetBlobSize: Longint;
+function TJvMemBlobStream.GetBlobSize: Longint;
 begin
   Result := 0;
   if FOpened then

@@ -34,13 +34,13 @@ uses SysUtils, Classes, RTLConsts;
 
 type
 
-{ TObjectStrings }
+{ TJvObjectStrings }
 
   TDestroyEvent = procedure(Sender, AObject: TObject) of object;
   TObjectSortCompare = function (const S1, S2: string;
     Item1, Item2: TObject): Integer of object;
 
-  TObjectStrings = class(TStringList)
+  TJvObjectStrings = class(TStringList)
   private
     FOnDestroyObject: TDestroyEvent;
   protected
@@ -57,7 +57,7 @@ type
       write FOnDestroyObject;
   end;
 
-{ THugeList class }
+{ TJvHugeList class }
 
 const
 {$IFDEF WIN32}
@@ -68,9 +68,9 @@ const
 
 type
 {$IFDEF WIN32}
-  THugeList = class(TList);
+  TJvHugeList = class(TList);
 {$ELSE}
-  THugeList = class(TObject)
+  TJvHugeList = class(TObject)
   private
     FList: TMemoryStream;
     FCount: Longint;
@@ -87,7 +87,7 @@ type
     procedure Clear;
     procedure Delete(Index: Longint);
     procedure Exchange(Index1, Index2: Longint);
-    function Expand: THugeList;
+    function Expand: TJvHugeList;
     function First: Pointer;
     function IndexOf(Item: Pointer): Longint;
     procedure Insert(Index: Longint; Item: Pointer);
@@ -103,12 +103,12 @@ type
 
 {$IFDEF WIN32}
 
-{ TSortCollection }
+{ TJvSortCollection }
 
 type
   TItemSortCompare = function (Item1, Item2: TCollectionItem): Integer of object;
 
-  TSortCollection = class(TCollection)
+  TJvSortCollection = class(TCollection)
   protected
     procedure QuickSort(L, R: Integer; Compare: TItemSortCompare); virtual;
   public
@@ -121,7 +121,7 @@ implementation
 
 uses {$IFNDEF WIN32} JvVCLUtils, {$ENDIF} Consts, JvStrUtils;
 
-{ TObjectStrings }
+{ TJvObjectStrings }
 
 procedure QuickSort(SortList: TStrings; L, R: Integer;
   SCompare: TObjectSortCompare);
@@ -149,13 +149,13 @@ begin
   until I >= R;
 end;
 
-procedure TObjectStrings.DestroyObject(AObject: TObject);
+procedure TJvObjectStrings.DestroyObject(AObject: TObject);
 begin
   if Assigned(FOnDestroyObject) then FOnDestroyObject(Self, AObject)
   else if AObject <> nil then AObject.Free;
 end;
 
-procedure TObjectStrings.Clear;
+procedure TJvObjectStrings.Clear;
 var
   I: Integer;
 begin
@@ -172,18 +172,18 @@ begin
   end;
 end;
 
-procedure TObjectStrings.Delete(Index: Integer);
+procedure TJvObjectStrings.Delete(Index: Integer);
 begin
   Objects[Index] := nil;
   inherited Delete(Index);
 end;
 
-procedure TObjectStrings.Remove(Index: Integer);
+procedure TJvObjectStrings.Remove(Index: Integer);
 begin
   inherited Delete(Index);
 end;
 
-procedure TObjectStrings.Move(CurIndex, NewIndex: Integer);
+procedure TJvObjectStrings.Move(CurIndex, NewIndex: Integer);
 var
   TempObject: TObject;
   TempString: string;
@@ -202,7 +202,7 @@ begin
   end;
 end;
 
-procedure TObjectStrings.PutObject(Index: Integer; AObject: TObject);
+procedure TJvObjectStrings.PutObject(Index: Integer; AObject: TObject);
 begin
   Changing;
   BeginUpdate;
@@ -216,7 +216,7 @@ begin
   Changed;
 end;
 
-procedure TObjectStrings.ParseStrings(const Values: string);
+procedure TJvObjectStrings.ParseStrings(const Values: string);
 var
   Pos: Integer;
 begin
@@ -229,7 +229,7 @@ begin
   end;
 end;
 
-procedure TObjectStrings.SortList(Compare: TObjectSortCompare);
+procedure TJvObjectStrings.SortList(Compare: TObjectSortCompare);
 begin
   if Sorted then
 {$IFDEF Delphi3_Up}
@@ -249,7 +249,7 @@ end;
 
 {$IFNDEF WIN32}
 
-{ THugeList }
+{ TJvHugeList }
 
 function ReturnAddr: Pointer; assembler;
 asm
@@ -263,12 +263,12 @@ begin
     Format(' (%d)', [Index])) at ReturnAddr;
 end;
 
-destructor THugeList.Destroy;
+destructor TJvHugeList.Destroy;
 begin
   Clear;
 end;
 
-function THugeList.Add(Item: Pointer): Longint;
+function TJvHugeList.Add(Item: Pointer): Longint;
 begin
   Result := FCount;
   if Result = FCapacity then Grow;
@@ -277,13 +277,13 @@ begin
   Inc(FCount);
 end;
 
-procedure THugeList.Clear;
+procedure TJvHugeList.Clear;
 begin
   SetCount(0);
   SetCapacity(0);
 end;
 
-procedure THugeList.Delete(Index: Longint);
+procedure TJvHugeList.Delete(Index: Longint);
 begin
   if (Index < 0) or (Index >= FCount) then ListError(Index);
   Dec(FCount);
@@ -291,21 +291,21 @@ begin
     HugeMove(FList.Memory, Index, Index + 1, FCount - Index);
 end;
 
-function THugeList.Get(Index: Longint): Pointer;
+function TJvHugeList.Get(Index: Longint): Pointer;
 begin
   if (Index < 0) or (Index >= FCount) then ListError(Index);
   FList.Position := Index * SizeOf(Pointer);
   FList.ReadBuffer(Result, SizeOf(Pointer));
 end;
 
-procedure THugeList.Put(Index: Longint; Item: Pointer);
+procedure TJvHugeList.Put(Index: Longint; Item: Pointer);
 begin
   if (Index < 0) or (Index >= FCount) then ListError(Index);
   FList.Position := Index * SizeOf(Pointer);
   FList.WriteBuffer(Item, SizeOf(Pointer));
 end;
 
-procedure THugeList.Exchange(Index1, Index2: Longint);
+procedure TJvHugeList.Exchange(Index1, Index2: Longint);
 var
   Item: Pointer;
 begin
@@ -314,18 +314,18 @@ begin
   Put(Index2, Item);
 end;
 
-function THugeList.Expand: THugeList;
+function TJvHugeList.Expand: TJvHugeList;
 begin
   if FCount = FCapacity then Grow;
   Result := Self;
 end;
 
-function THugeList.First: Pointer;
+function TJvHugeList.First: Pointer;
 begin
   Result := Get(0);
 end;
 
-procedure THugeList.Grow;
+procedure TJvHugeList.Grow;
 var
   Delta: Longint;
 begin
@@ -335,7 +335,7 @@ begin
   SetCapacity(FCapacity + Delta);
 end;
 
-function THugeList.IndexOf(Item: Pointer): Longint;
+function TJvHugeList.IndexOf(Item: Pointer): Longint;
 begin
   Result := 0;
   while (Result < FCount) and (Get(Result) <> Item) do
@@ -343,7 +343,7 @@ begin
   if Result = FCount then Result := -1;
 end;
 
-procedure THugeList.Insert(Index: Longint; Item: Pointer);
+procedure TJvHugeList.Insert(Index: Longint; Item: Pointer);
 begin
   if (Index < 0) or (Index > FCount) then ListError(Index);
   if FCount = FCapacity then Grow;
@@ -354,12 +354,12 @@ begin
   Inc(FCount);
 end;
 
-function THugeList.Last: Pointer;
+function TJvHugeList.Last: Pointer;
 begin
   Result := Get(FCount - 1);
 end;
 
-procedure THugeList.Move(CurIndex, NewIndex: Longint);
+procedure TJvHugeList.Move(CurIndex, NewIndex: Longint);
 var
   Item: Pointer;
 begin
@@ -371,13 +371,13 @@ begin
   end;
 end;
 
-function THugeList.Remove(Item: Pointer): Longint;
+function TJvHugeList.Remove(Item: Pointer): Longint;
 begin
   Result := IndexOf(Item);
   if Result <> -1 then Delete(Result);
 end;
 
-procedure THugeList.Pack;
+procedure TJvHugeList.Pack;
 var
   I: Longint;
 begin
@@ -385,7 +385,7 @@ begin
     if Items[I] = nil then Delete(I);
 end;
 
-procedure THugeList.SetCapacity(NewCapacity: Longint);
+procedure TJvHugeList.SetCapacity(NewCapacity: Longint);
 var
   NewList: TMemoryStream;
 begin
@@ -407,7 +407,7 @@ begin
   end;
 end;
 
-procedure THugeList.SetCount(NewCount: Longint);
+procedure TJvHugeList.SetCount(NewCount: Longint);
 begin
   if (NewCount < 0) or (NewCount > MaxHugeListSize) then
     ListError(NewCount);
@@ -419,9 +419,9 @@ end;
 
 {$IFDEF WIN32}
 
-{ TSortCollection }
+{ TJvSortCollection }
 
-procedure TSortCollection.QuickSort(L, R: Integer; Compare: TItemSortCompare);
+procedure TJvSortCollection.QuickSort(L, R: Integer; Compare: TItemSortCompare);
 var
   I, J: Integer;
   P, P1, P2: TCollectionItem;
@@ -447,7 +447,7 @@ begin
   until I >= R;
 end;
 
-procedure TSortCollection.Sort(Compare: TItemSortCompare);
+procedure TJvSortCollection.Sort(Compare: TItemSortCompare);
 begin
   if Count > 0 then begin
     BeginUpdate;

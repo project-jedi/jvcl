@@ -63,14 +63,14 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-{ TColorComboBox }
+{ TJvColorComboBox }
 
 {$IFDEF Delphi3_Up}
   TColorComboOption = (coIncludeDefault, coIncludeNone);
   TColorComboOptions = set of TColorComboOption;
 {$ENDIF}
 
-  TColorComboBox = class(TOwnerDrawComboBox)
+  TJvColorComboBox = class(TOwnerDrawComboBox)
   private
     FColorValue: TColor;
     FDisplayNames: Boolean;
@@ -161,14 +161,14 @@ type
 {$ENDIF}
   end;
 
-{ TFontComboBox }
+{ TJvFontComboBox }
 
   TFontDevice = (fdScreen, fdPrinter, fdBoth);
   TFontListOption = (foAnsiOnly, foTrueTypeOnly, foFixedPitchOnly,
     foNoOEMFonts, foOEMFontsOnly, foScalableOnly, foNoSymbolFonts);
   TFontListOptions = set of TFontListOption;
 
-  TFontComboBox = class(TOwnerDrawComboBox)
+  TJvFontComboBox = class(TOwnerDrawComboBox)
   private
     FTrueTypeBMP: TBitmap;
     FDeviceBMP: TBitmap;
@@ -275,7 +275,7 @@ uses SysUtils, Consts, Printers {$IFNDEF GXE}, JvVCLUtils {$ENDIF};
 {$IFDEF GXE}
 procedure Register;
 begin
-  RegisterComponents('Additional', [TFontComboBox, TColorComboBox]);
+  RegisterComponents('Additional', [TJvFontComboBox, TJvColorComboBox]);
 end;
 {$ENDIF GXE}
 
@@ -383,7 +383,7 @@ begin
 end;
 {$ENDIF}
 
-{ TColorComboBox }
+{ TJvColorComboBox }
 
 const
   ColorsInList = {$IFDEF Delphi3_Up} 18 {$ELSE} 16 {$ENDIF};
@@ -392,7 +392,7 @@ const
     clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua, clWhite
     {$IFDEF Delphi3_Up}, clNone, clDefault {$ENDIF});
 
-constructor TColorComboBox.Create(AOwner: TComponent);
+constructor TJvColorComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColorValue := clBlack;  { make default color selected }
@@ -401,7 +401,7 @@ begin
   FDisplayNames := True;
 end;
 
-destructor TColorComboBox.Destroy;
+destructor TJvColorComboBox.Destroy;
 begin
   TStringList(FColorNames).OnChange := nil;
   FColorNames.Free;
@@ -409,14 +409,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TColorComboBox.CreateWnd;
+procedure TJvColorComboBox.CreateWnd;
 begin
   inherited CreateWnd;
   PopulateList;
   SetColorValue(FColorValue);
 end;
 
-procedure TColorComboBox.PopulateList;
+procedure TJvColorComboBox.PopulateList;
 var
   I: Integer;
   ColorName: string;
@@ -445,7 +445,7 @@ begin
   end;
 end;
 
-procedure TColorComboBox.ColorNamesChanged(Sender: TObject);
+procedure TJvColorComboBox.ColorNamesChanged(Sender: TObject);
 begin
   if HandleAllocated then begin
     FColorValue := ColorValue;
@@ -453,12 +453,12 @@ begin
   end;
 end;
 
-procedure TColorComboBox.SetColorNames(Value: TStrings);
+procedure TJvColorComboBox.SetColorNames(Value: TStrings);
 begin
   FColorNames.Assign(Value);
 end;
 
-procedure TColorComboBox.SetDisplayNames(Value: Boolean);
+procedure TJvColorComboBox.SetDisplayNames(Value: Boolean);
 begin
   if DisplayNames <> Value then begin
     FDisplayNames := Value;
@@ -467,7 +467,7 @@ begin
 end;
 
 {$IFDEF Delphi3_Up}
-procedure TColorComboBox.SetOptions(Value: TColorComboOptions);
+procedure TJvColorComboBox.SetOptions(Value: TColorComboOptions);
 begin
   if FOptions <> Value then begin
     FOptions := Value;
@@ -476,7 +476,7 @@ begin
 end;
 {$ENDIF}
 
-function TColorComboBox.GetColorValue: TColor;
+function TJvColorComboBox.GetColorValue: TColor;
 var
   I: Integer;
 begin
@@ -491,7 +491,7 @@ begin
   end;
 end;
 
-procedure TColorComboBox.SetColorValue(NewValue: TColor);
+procedure TJvColorComboBox.SetColorValue(NewValue: TColor);
 var
   Item: Integer;
   CurrentColor: TColor;
@@ -519,7 +519,7 @@ begin
   end;
 end;
 
-procedure TColorComboBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvColorComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 
   function ColorToBorderColor(AColor: TColor): TColor;
@@ -575,7 +575,7 @@ begin
   end;
 end;
 
-procedure TColorComboBox.Change;
+procedure TJvColorComboBox.Change;
 var
   AColor: TColor;
 begin
@@ -587,24 +587,24 @@ begin
   end;
 end;
 
-procedure TColorComboBox.Click;
+procedure TJvColorComboBox.Click;
 begin
   if ItemIndex >= 0 then ColorValue := TColor(Items.Objects[ItemIndex]);
   inherited Click;
 end;
 
-procedure TColorComboBox.DoChange;
+procedure TJvColorComboBox.DoChange;
 begin
   if not (csReading in ComponentState) then
     if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-{ TFontComboBox }
+{ TJvFontComboBox }
 
 const
   WRITABLE_FONTTYPE = 256;
 
-function IsValidFont(Box: TFontComboBox; LogFont: TLogFont;
+function IsValidFont(Box: TJvFontComboBox; LogFont: TLogFont;
   FontType: Integer): Boolean;
 begin
   Result := True;
@@ -633,9 +633,9 @@ var
   FaceName: string;
 begin
   FaceName := StrPas(EnumLogFont.elfLogFont.lfFaceName);
-  with TFontComboBox(Data) do
+  with TJvFontComboBox(Data) do
     if (Items.IndexOf(FaceName) < 0) and
-      IsValidFont(TFontComboBox(Data), EnumLogFont.elfLogFont, FontType) then
+      IsValidFont(TJvFontComboBox(Data), EnumLogFont.elfLogFont, FontType) then
     begin
       if EnumLogFont.elfLogFont.lfCharSet <> SYMBOL_CHARSET then
         FontType := FontType or WRITABLE_FONTTYPE;
@@ -649,9 +649,9 @@ end;
 function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
   FontType: Integer; Data: Pointer): Integer; export;
 begin
-  with TFontComboBox(Data) do
+  with TJvFontComboBox(Data) do
     if (Items.IndexOf(StrPas(LogFont.lfFaceName)) < 0) and
-      IsValidFont(TFontComboBox(Data), LogFont, FontType) then
+      IsValidFont(TJvFontComboBox(Data), LogFont, FontType) then
     begin
       if LogFont.lfCharSet = SYMBOL_CHARSET then
         FontType := FontType or WRITABLE_FONTTYPE;
@@ -662,7 +662,7 @@ end;
 
 {$ENDIF WIN32}
 
-constructor TFontComboBox.Create(AOwner: TComponent);
+constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTrueTypeBMP := CreateBitmap('JVTRUETYPE_FNT');
@@ -672,14 +672,14 @@ begin
   inherited ItemHeight := MinItemHeight;
 end;
 
-destructor TFontComboBox.Destroy;
+destructor TJvFontComboBox.Destroy;
 begin
   FTrueTypeBMP.Free;
   FDeviceBMP.Free;
   inherited Destroy;
 end;
 
-procedure TFontComboBox.CreateWnd;
+procedure TJvFontComboBox.CreateWnd;
 var
   OldFont: TFontName;
 begin
@@ -696,7 +696,7 @@ begin
   if AnsiCompareText(FontName, OldFont) <> 0 then DoChange;
 end;
 
-procedure TFontComboBox.PopulateList;
+procedure TJvFontComboBox.PopulateList;
 var
   DC: HDC;
 {$IFNDEF WIN32}
@@ -741,7 +741,7 @@ begin
   end;
 end;
 
-procedure TFontComboBox.SetFontName(const NewFontName: TFontName);
+procedure TJvFontComboBox.SetFontName(const NewFontName: TFontName);
 var
   Item: Integer;
 begin
@@ -763,17 +763,17 @@ begin
   end;
 end;
 
-function TFontComboBox.GetFontName: TFontName;
+function TJvFontComboBox.GetFontName: TFontName;
 begin
   Result := inherited Text;
 end;
 
-function TFontComboBox.GetTrueTypeOnly: Boolean;
+function TJvFontComboBox.GetTrueTypeOnly: Boolean;
 begin
   Result := foTrueTypeOnly in FOptions;
 end;
 
-procedure TFontComboBox.SetOptions(Value: TFontListOptions);
+procedure TJvFontComboBox.SetOptions(Value: TFontListOptions);
 begin
   if Value <> Options then begin
     FOptions := Value;
@@ -781,7 +781,7 @@ begin
   end;
 end;
 
-procedure TFontComboBox.SetTrueTypeOnly(Value: Boolean);
+procedure TJvFontComboBox.SetTrueTypeOnly(Value: Boolean);
 begin
   if Value <> TrueTypeOnly then begin
     if Value then FOptions := FOptions + [foTrueTypeOnly]
@@ -790,7 +790,7 @@ begin
   end;
 end;
 
-procedure TFontComboBox.SetDevice(Value: TFontDevice);
+procedure TJvFontComboBox.SetDevice(Value: TFontDevice);
 begin
   if Value <> FDevice then begin
     FDevice := Value;
@@ -798,7 +798,7 @@ begin
   end;
 end;
 
-procedure TFontComboBox.SetUseFonts(Value: Boolean);
+procedure TJvFontComboBox.SetUseFonts(Value: Boolean);
 begin
   if Value <> FUseFonts then begin
     FUseFonts := Value;
@@ -806,7 +806,7 @@ begin
   end;
 end;
 
-procedure TFontComboBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TJvFontComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 var
   Bitmap: TBitmap;
@@ -843,20 +843,20 @@ begin
   end;
 end;
 
-procedure TFontComboBox.WMFontChange(var Message: TMessage);
+procedure TJvFontComboBox.WMFontChange(var Message: TMessage);
 begin
   inherited;
   Reset;
 end;
 
-function TFontComboBox.MinItemHeight: Integer;
+function TJvFontComboBox.MinItemHeight: Integer;
 begin
   Result := inherited MinItemHeight;
   if Result < FTrueTypeBMP.Height - 1 then
     Result := FTrueTypeBMP.Height - 1;
 end;
 
-procedure TFontComboBox.Change;
+procedure TJvFontComboBox.Change;
 var
   I: Integer;
 begin
@@ -870,19 +870,19 @@ begin
   end;
 end;
 
-procedure TFontComboBox.Click;
+procedure TJvFontComboBox.Click;
 begin
   inherited Click;
   DoChange;
 end;
 
-procedure TFontComboBox.DoChange;
+procedure TJvFontComboBox.DoChange;
 begin
   if not (csReading in ComponentState) then
     if not FUpdate and Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TFontComboBox.Reset;
+procedure TJvFontComboBox.Reset;
 var
   SaveName: TFontName;
 begin

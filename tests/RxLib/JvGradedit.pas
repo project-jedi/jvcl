@@ -31,7 +31,8 @@ interface
 
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvToolEdit, JvGrdCpt, RTLConsts, DesignIntf, DesignEditors, VCLEditors, JvCtrls, JvPlacemnt ;
+  StdCtrls, Mask, JvToolEdit, JvGrdCpt, RTLConsts, DesignIntf, DesignEditors, VCLEditors, JvCtrls, JvPlacemnt,
+  RXCtrls ;
 
 {$IFNDEF Delphi4_Up}
 type

@@ -190,13 +190,13 @@ begin
   end;
 end;
 
-{ TPaletteGrid }
+{ TJvPaletteGrid }
 
 const
   NumPaletteEntries = 256;
 
 type
-  TPaletteGrid = class(TDrawGrid)
+  TJvPaletteGrid = class(TDrawGrid)
   private
     FPaletteEntries: array[0..NumPaletteEntries - 1] of TPaletteEntry;
     FPalette: HPALETTE;
@@ -242,7 +242,7 @@ begin
   end;
 end;
 
-constructor TPaletteGrid.Create(AOwner: TComponent);
+constructor TJvPaletteGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DefaultColWidth := 20;
@@ -257,13 +257,13 @@ begin
   ScrollBars := ssVertical;
 end;
 
-destructor TPaletteGrid.Destroy;
+destructor TJvPaletteGrid.Destroy;
 begin
   if FPalette <> 0 then DeleteObject(FPalette);
   inherited Destroy;
 end;
 
-procedure TPaletteGrid.UpdateSize;
+procedure TJvPaletteGrid.UpdateSize;
 var
   Rows: Integer;
 begin
@@ -281,13 +281,13 @@ begin
   end;
 end;
 
-function TPaletteGrid.GetPalette: HPALETTE;
+function TJvPaletteGrid.GetPalette: HPALETTE;
 begin
   if FPalette <> 0 then Result := FPalette
   else Result := inherited GetPalette;
 end;
 
-procedure TPaletteGrid.SetPalette(Value: HPALETTE);
+procedure TJvPaletteGrid.SetPalette(Value: HPALETTE);
 var
   I: Integer;
   ParentForm: TCustomForm;
@@ -307,7 +307,7 @@ begin
   end;
 end;
 
-function TPaletteGrid.CellColor(ACol, ARow: Longint): TColor;
+function TJvPaletteGrid.CellColor(ACol, ARow: Longint): TColor;
 var
   PalIndex: Integer;
 begin
@@ -318,7 +318,7 @@ begin
   else Result := clNone;
 end;
 
-procedure TPaletteGrid.DrawSquare(CellColor: TColor; CellRect: TRect;
+procedure TJvPaletteGrid.DrawSquare(CellColor: TColor; CellRect: TRect;
   ShowSelector: Boolean);
 var
   SavePal: HPalette;
@@ -347,12 +347,12 @@ begin
   end;
 end;
 
-function TPaletteGrid.SelectCell(ACol, ARow: Longint): Boolean;
+function TJvPaletteGrid.SelectCell(ACol, ARow: Longint): Boolean;
 begin
   Result := ((ACol = 0) and (ARow = 0)) or (CellColor(ACol, ARow) <> clNone);
 end;
 
-procedure TPaletteGrid.DrawCell(ACol, ARow: Longint; ARect: TRect;
+procedure TJvPaletteGrid.DrawCell(ACol, ARow: Longint; ARect: TRect;
   AState: TGridDrawState);
 var
   Color: TColor;
@@ -366,7 +366,7 @@ begin
   end;
 end;
 
-procedure TPaletteGrid.WMSize(var Message: TWMSize);
+procedure TJvPaletteGrid.WMSize(var Message: TWMSize);
 begin
   inherited;
   UpdateSize;
@@ -520,8 +520,8 @@ begin
       end;
     cvPalette:
       begin
-        FPaintControl := TPaletteGrid.Create(Self);
-        with TPaletteGrid(FPaintControl) do
+        FPaintControl := TJvPaletteGrid.Create(Self);
+        with TJvPaletteGrid(FPaintControl) do
         try
           BorderStyle := bsNone;
           Parent := Self;

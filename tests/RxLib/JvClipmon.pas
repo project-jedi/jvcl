@@ -36,7 +36,7 @@ uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   SysUtils, Classes{, JvComponent};
 
 type
-  TClipboardMonitor = class(TComponent)
+  TJvClipboardMonitor = class(TComponent)
   private
     FWindowHandle: HWnd;
     FNextWindow: HWnd;
@@ -115,16 +115,16 @@ begin
   end;
 end;
 
-{ TClipboardMonitor }
+{ TJvClipboardMonitor }
 
-constructor TClipboardMonitor.Create(AOwner: TComponent);
+constructor TJvClipboardMonitor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWindowHandle := Classes.AllocateHWnd(WndProc);
   SetEnabled(True);
 end;
 
-destructor TClipboardMonitor.Destroy;
+destructor TJvClipboardMonitor.Destroy;
 begin
   FOnChange := nil;
   SetEnabled(False);
@@ -132,13 +132,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TClipboardMonitor.ForwardMessage(var Msg: TMessage);
+procedure TJvClipboardMonitor.ForwardMessage(var Msg: TMessage);
 begin
   if FNextWindow <> 0 then
     with Msg do SendMessage(FNextWindow, Msg, WParam, LParam);
 end;
 
-procedure TClipboardMonitor.WndProc(var AMsg: TMessage);
+procedure TJvClipboardMonitor.WndProc(var AMsg: TMessage);
 begin
   with AMsg do begin
     Result := 0;
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-procedure TClipboardMonitor.SetEnabled(Value: Boolean);
+procedure TJvClipboardMonitor.SetEnabled(Value: Boolean);
 begin
   if FEnabled <> Value then begin
     if Value then begin
@@ -175,7 +175,7 @@ begin
   end;
 end;
 
-procedure TClipboardMonitor.ClipboardChanged;
+procedure TJvClipboardMonitor.ClipboardChanged;
 begin
   try
     Change;
@@ -184,7 +184,7 @@ begin
   end;
 end;
 
-procedure TClipboardMonitor.Change;
+procedure TJvClipboardMonitor.Change;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;

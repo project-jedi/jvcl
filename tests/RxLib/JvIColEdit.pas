@@ -78,7 +78,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure LoadAniClick(Sender: TObject);
   private
-    Icons: TIconList;
+    Icons: TJvIconList;
     FTopIndex, FSelected: Integer;
 {$IFDEF Delphi3_Up}
     FileDialog: TOpenPictureDialog;
@@ -107,7 +107,7 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
-procedure EditIconList(IconList: TIconList);
+procedure EditIconList(IconList: TJvIconList);
 
 implementation
 
@@ -125,7 +125,7 @@ const
   sSlot = 'Slot%d';
   sImage = 'Image%d';
 
-procedure EditIconList(IconList: TIconList);
+procedure EditIconList(IconList: TJvIconList);
 begin
   with TIconListDialog.Create(Application) do
   try
@@ -152,7 +152,7 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       Editor.Caption := TComponent(Comp).Name + '.' + GetName;
-    Editor.Icons.Assign(TIconList(Pointer(GetOrdValue)));
+    Editor.Icons.Assign(TJvIconList(Pointer(GetOrdValue)));
     Editor.Modified := False;
     CurDir := GetCurrentDir;
     try
@@ -161,7 +161,7 @@ begin
       SetCurrentDir(CurDir);
     end;
     if (Res = mrOk) and Editor.Modified then begin
-      TIconList(Pointer(GetOrdValue)).Assign(Editor.Icons);
+      TJvIconList(Pointer(GetOrdValue)).Assign(Editor.Icons);
       Designer.Modified;
     end;
   finally
@@ -176,9 +176,9 @@ end;
 
 function TIconListProperty.GetValue: string;
 var
-  List: TIconList;
+  List: TJvIconList;
 begin
-  List := TIconList(Pointer(GetOrdValue));
+  List := TJvIconList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
     Result := ResStr(srNone)
   else Result := '(' + List.ClassName + ')';
@@ -311,7 +311,7 @@ begin
     DefaultExt := GraphicExtension(TIcon);
     Filter := GraphicFilter(TIcon);
   end;
-  Icons := TIconList.Create;
+  Icons := TJvIconList.Create;
   Icons.OnChange := ListChanged;
   FTopIndex := 0;
   FSelected := 0;

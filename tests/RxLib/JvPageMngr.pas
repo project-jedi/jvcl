@@ -760,7 +760,7 @@ begin
 end;
 
 type
-  THack = class(TWinControl);
+  TJvHack = class(TWinControl);
 
 procedure TJvPageManager.DormantPages;
 var
@@ -770,7 +770,7 @@ begin
     with PageOwner do begin
       for I := 0 to Pages.Count - 1 do
         if PageIndex <> I then
-          THack(Pages.Objects[I]).DestroyHandle;
+          TJvHack(Pages.Objects[I]).DestroyHandle;
     end;
 end;
 

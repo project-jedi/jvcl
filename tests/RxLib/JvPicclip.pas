@@ -133,7 +133,7 @@ end;
 
 {$IFDEF WIN32}
 type
-  THack = class(TImageList);
+  TJvHack = class(TImageList);
 {$ENDIF}
 
 procedure TJvPicClip.AssignTo(Dest: TPersistent);
@@ -165,7 +165,7 @@ begin
       finally
         OnChange := SaveChange;
       end;
-      THack(Dest).Change;
+      TJvHack(Dest).Change;
     end;
   end
 {$ENDIF}

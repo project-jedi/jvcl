@@ -199,10 +199,10 @@ implementation
 
 uses JvAppUtils, JvVCLUtils;
 
-{ TAppEventList }
+{ TJvAppEventList }
 
 type
-  TAppEventList = class(TObject)
+  TJvAppEventList = class(TObject)
   private
     FAppEvents: TList;
     FHooked: Boolean;
@@ -251,20 +251,20 @@ type
     destructor Destroy; override;
   end;
 
-constructor TAppEventList.Create;
+constructor TJvAppEventList.Create;
 begin
   inherited Create;
   FAppEvents := TList.Create;
 end;
 
-destructor TAppEventList.Destroy;
+destructor TJvAppEventList.Destroy;
 begin
   ClearEvents;
   FAppEvents.Free;
   inherited Destroy;
 end;
 
-procedure TAppEventList.ClearEvents;
+procedure TJvAppEventList.ClearEvents;
 begin
   if FHooked then begin
     Application.OnActivate := nil;
@@ -289,7 +289,7 @@ begin
   end;
 end;
 
-procedure TAppEventList.AddEvents(App: TJvAppEvents);
+procedure TJvAppEventList.AddEvents(App: TJvAppEvents);
 begin
   if (App <> nil) and (FAppEvents.IndexOf(App) = -1) then begin
     FAppEvents.Add(App);
@@ -334,14 +334,14 @@ begin
   end;
 end;
 
-procedure TAppEventList.RemoveEvents(App: TJvAppEvents);
+procedure TJvAppEventList.RemoveEvents(App: TJvAppEvents);
 begin
   if FAppEvents.IndexOf(App) >= 0 then FAppEvents.Remove(App);
   if not (csDesigning in App.ComponentState) and (FAppEvents.Count = 0) then
     ClearEvents;
 end;
 
-procedure TAppEventList.DoActivate(Sender: TObject);
+procedure TJvAppEventList.DoActivate(Sender: TObject);
 var
   I: Integer;
 begin
@@ -353,7 +353,7 @@ begin
   if Assigned(FOnActivate) then FOnActivate(Sender);
 end;
 
-procedure TAppEventList.DoDeactivate(Sender: TObject);
+procedure TJvAppEventList.DoDeactivate(Sender: TObject);
 var
   I: Integer;
 begin
@@ -365,7 +365,7 @@ begin
   if Assigned(FOnDeactivate) then FOnDeactivate(Sender);
 end;
 
-procedure TAppEventList.DoException(Sender: TObject; E: Exception);
+procedure TJvAppEventList.DoException(Sender: TObject; E: Exception);
 var
   I: Integer;
   Handled: Boolean;
@@ -388,7 +388,7 @@ begin
   if not Handled then Application.ShowException(E);
 end;
 
-procedure TAppEventList.DoIdle(Sender: TObject; var Done: Boolean);
+procedure TJvAppEventList.DoIdle(Sender: TObject; var Done: Boolean);
 var
   I: Integer;
 begin
@@ -400,7 +400,7 @@ begin
   if Assigned(FOnIdle) then FOnIdle(Sender, Done);
 end;
 
-function TAppEventList.DoHelp(Command: Word; Data: Longint;
+function TJvAppEventList.DoHelp(Command: Word; Data: Longint;
   var CallHelp: Boolean): Boolean;
 var
   I: Integer;
@@ -414,7 +414,7 @@ begin
   if Assigned(FOnHelp) then Result := FOnHelp(Command, Data, CallHelp);
 end;
 
-procedure TAppEventList.DoHint(Sender: TObject);
+procedure TJvAppEventList.DoHint(Sender: TObject);
 var
   I: Integer;
 begin
@@ -426,7 +426,7 @@ begin
   if Assigned(FOnHint) then FOnHint(Sender);
 end;
 
-procedure TAppEventList.DoMessage(var Msg: TMsg; var Handled: Boolean);
+procedure TJvAppEventList.DoMessage(var Msg: TMsg; var Handled: Boolean);
 var
   I: Integer;
 begin
@@ -438,7 +438,7 @@ begin
   if Assigned(FOnMessage) then FOnMessage(Msg, Handled);
 end;
 
-procedure TAppEventList.DoMinimize(Sender: TObject);
+procedure TJvAppEventList.DoMinimize(Sender: TObject);
 var
   I: Integer;
 begin
@@ -450,7 +450,7 @@ begin
   if Assigned(FOnMinimize) then FOnMinimize(Sender);
 end;
 
-procedure TAppEventList.DoRestore(Sender: TObject);
+procedure TJvAppEventList.DoRestore(Sender: TObject);
 var
   I: Integer;
 begin
@@ -462,7 +462,7 @@ begin
   if Assigned(FOnRestore) then FOnRestore(Sender);
 end;
 
-procedure TAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
+procedure TJvAppEventList.DoShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
 var
   I: Integer;
@@ -475,7 +475,7 @@ begin
   if Assigned(FOnShowHint) then FOnShowHint(HintStr, CanShow, HintInfo);
 end;
 
-procedure TAppEventList.DoActiveControlChange(Sender: TObject);
+procedure TJvAppEventList.DoActiveControlChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -487,7 +487,7 @@ begin
   if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Sender);
 end;
 
-procedure TAppEventList.DoActiveFormChange(Sender: TObject);
+procedure TJvAppEventList.DoActiveFormChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -501,7 +501,7 @@ end;
 
 {$IFDEF Delphi4_Up}
 
-procedure TAppEventList.DoActionExecute(Action: TBasicAction;
+procedure TJvAppEventList.DoActionExecute(Action: TBasicAction;
   var Handled: Boolean);
 var
   I: Integer;
@@ -514,7 +514,7 @@ begin
   if Assigned(FOnActionExecute) then FOnActionExecute(Action, Handled);
 end;
 
-procedure TAppEventList.DoActionUpdate(Action: TBasicAction;
+procedure TJvAppEventList.DoActionUpdate(Action: TBasicAction;
   var Handled: Boolean);
 var
   I: Integer;
@@ -527,7 +527,7 @@ begin
   if Assigned(FOnActionUpdate) then FOnActionUpdate(Action, Handled);
 end;
 
-procedure TAppEventList.DoShortCut(var Msg: TWMKey; var Handled: Boolean);
+procedure TJvAppEventList.DoShortCut(var Msg: TWMKey; var Handled: Boolean);
 var
   I: Integer;
 begin
@@ -542,14 +542,14 @@ end;
 {$ENDIF Delphi4_Up}
 
 const
-  AppList: TAppEventList = nil;
+  AppList: TJvAppEventList = nil;
 
 { TJvAppEvents }
 
 constructor TJvAppEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if AppList = nil then AppList := TAppEventList.Create;
+  if AppList = nil then AppList := TJvAppEventList.Create;
   FChained := True;
   FHintColor := DefHintColor;
   FHintPause := DefHintPause;

@@ -189,13 +189,13 @@ type
 { TJvInplaceEdit }
 
 type
-  TPopupListbox = class;
+  TJvPopupListbox = class;
 
   TJvInplaceEdit = class(TInplaceEdit)
   private
     FAlignment: TAlignment;
     FButtonWidth: Integer;
-    FPickList: TPopupListbox;
+    FPickList: TJvPopupListbox;
     FActiveList: TWinControl;
     FEditStyle: TInplaceEditStyle;
     FListVisible: Boolean;
@@ -229,16 +229,16 @@ type
     procedure UpdateContents; override;
     procedure WndProc(var Message: TMessage); override;
     property ActiveList: TWinControl read FActiveList write FActiveList;
-    property PickList: TPopupListbox read FPickList;
+    property PickList: TJvPopupListbox read FPickList;
   public
     constructor Create(Owner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property EditStyle: TInplaceEditStyle read FEditStyle write SetEditStyle;
   end;
 
-{ TPopupListbox }
+{ TJvPopupListbox }
 
-  TPopupListbox = class(TCustomListbox)
+  TJvPopupListbox = class(TCustomListbox)
   private
     FSearchText: string;
     FSearchTickCount: Longint;
@@ -249,7 +249,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
-procedure TPopupListBox.CreateParams(var Params: TCreateParams);
+procedure TJvPopupListbox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do begin
@@ -262,14 +262,14 @@ begin
   end;
 end;
 
-procedure TPopupListbox.CreateWnd;
+procedure TJvPopupListbox.CreateWnd;
 begin
   inherited CreateWnd;
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
 end;
 
-procedure TPopupListbox.KeyPress(var Key: Char);
+procedure TJvPopupListbox.KeyPress(var Key: Char);
 var
   TickCount: Integer;
 begin
@@ -289,7 +289,7 @@ begin
   inherited KeyPress(Key);
 end;
 
-procedure TPopupListbox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvPopupListbox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
@@ -517,7 +517,7 @@ begin
     esPickList:
       begin
         if FPickList = nil then begin
-          FPickList := TPopupListbox.Create(Self);
+          FPickList := TJvPopupListbox.Create(Self);
           FPickList.Visible := False;
           FPickList.Parent := Self;
           FPickList.OnMouseUp := ListMouseUp;

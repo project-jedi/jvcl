@@ -71,7 +71,7 @@ type
     FInterval: Word;
     FIconData: TNotifyIconData;
     FIcon: TIcon;
-    FIconList: TIconList;
+    FIconList: TJvIconList;
 {$IFDEF USE_TIMER}
     FTimer: TTimer;
 {$ELSE}
@@ -96,7 +96,7 @@ type
     function CheckDefaultMenuItem: Boolean;
     procedure SetHint(const Value: string);
     procedure SetIcon(Value: TIcon);
-    procedure SetIconList(Value: TIconList);
+    procedure SetIconList(Value: TJvIconList);
     procedure SetPopupMenu(Value: TPopupMenu);
     procedure Activate;
     procedure Deactivate;
@@ -128,7 +128,7 @@ type
     property Enabled: Boolean read FEnabled write FEnabled default True;
     property Hint: string read FHint write SetHint;
     property Icon: TIcon read FIcon write SetIcon;
-    property Icons: TIconList read FIconList write SetIconList;
+    property Icons: TJvIconList read FIconList write SetIconList;
     { Ensure Icons is declared before Animated }
     property Animated: Boolean read GetAnimated write SetAnimated default False;
     property Interval: Word read FInterval write SetInterval default 150;
@@ -279,10 +279,10 @@ end;
 
 {$IFNDEF USE_TIMER}
 
-{ TTimerThread }
+{ TJvTimerThread }
 
 type
-  TTimerThread = class(TThread)
+  TJvTimerThread = class(TThread)
   private
     FOwnerTray: TJvTrayIcon;
   protected
@@ -291,14 +291,14 @@ type
     constructor Create(TrayIcon: TJvTrayIcon; CreateSuspended: Boolean);
   end;
 
-constructor TTimerThread.Create(TrayIcon: TJvTrayIcon; CreateSuspended: Boolean);
+constructor TJvTimerThread.Create(TrayIcon: TJvTrayIcon; CreateSuspended: Boolean);
 begin
   FOwnerTray := TrayIcon;
   inherited Create(CreateSuspended);
   FreeOnTerminate := True;
 end;
 
-procedure TTimerThread.Execute;
+procedure TJvTimerThread.Execute;
 
   function ThreadClosed: Boolean;
   begin
@@ -390,7 +390,7 @@ begin
   FHandle := Classes.AllocateHWnd(WndProc);
   FIcon := TIcon.Create;
   FIcon.OnChange := IconChanged;
-  FIconList := TIconList.Create;
+  FIconList := TJvIconList.Create;
   FIconList.OnChange := IconChanged;
   FIconIndex := -1;
   FEnabled := True;
@@ -499,7 +499,7 @@ begin
   FIcon.Assign(Value);
 end;
 
-procedure TJvTrayIcon.SetIconList(Value: TIconList);
+procedure TJvTrayIcon.SetIconList(Value: TJvIconList);
 begin
   FIconList.Assign(Value);
 end;
@@ -527,7 +527,7 @@ begin
       FTimer.Interval := FInterval;
       FTimer.OnTimer := Timer;
 {$ELSE}
-      FTimer := TTimerThread.Create(Self, not FAdded);
+      FTimer := TJvTimerThread.Create(Self, not FAdded);
 {$ENDIF}
       FAnimated := True;
     end
@@ -537,7 +537,7 @@ begin
       FTimer.Free;
       FTimer := nil;
 {$ELSE}
-      TTimerThread(FTimer).FOwnerTray := nil;
+      TJvTimerThread(FTimer).FOwnerTray := nil;
       while FTimer.Suspended do FTimer.Resume;
       FTimer.Terminate;
 {$ENDIF}

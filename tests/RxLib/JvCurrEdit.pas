@@ -307,7 +307,7 @@ const
   CalcBitmap: TBitmap = nil;
 
 type
-  THack = class(TJvPopupWindow);
+  TJvHack = class(TJvPopupWindow);
 
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
@@ -437,7 +437,7 @@ begin
     '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', #8, #13] -
     [ThousandSeparator]) then
   begin
-    THack(FPopup).KeyPress(Key);
+    TJvHack(FPopup).KeyPress(Key);
     Key := #0;
   end;
   if Key in ['.', ','] - [ThousandSeparator] then

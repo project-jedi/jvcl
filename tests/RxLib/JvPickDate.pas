@@ -452,10 +452,10 @@ begin
   DefaultRowHeight := (Message.Height - GridLinesH) div 7;
 end;
 
-{ TLocCalendar }
+{ TJvLocCalendar }
 
 type
-  TLocCalendar = class(TJvCalendar)
+  TJvLocCalendar = class(TJvCalendar)
   private
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CMParentColorChanged(var Message: TMessage); message CM_PARENTCOLORCHANGED;
@@ -470,7 +470,7 @@ type
     property DefaultRowHeight;
   end;
 
-constructor TLocCalendar.Create(AOwner: TComponent);
+constructor TJvLocCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
@@ -488,26 +488,26 @@ begin
   TabStop := False;
 end;
 
-procedure TLocCalendar.CMParentColorChanged(var Message: TMessage);
+procedure TJvLocCalendar.CMParentColorChanged(var Message: TMessage);
 begin
   inherited;
   if ParentColor then FixedColor := Self.Color;
 end;
 
-procedure TLocCalendar.CMEnabledChanged(var Message: TMessage);
+procedure TJvLocCalendar.CMEnabledChanged(var Message: TMessage);
 begin
   if HandleAllocated and not (csDesigning in ComponentState) then
     EnableWindow(Handle, True);
 end;
 
-procedure TLocCalendar.CreateParams(var Params: TCreateParams);
+procedure TJvLocCalendar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     Style := Style and not (WS_BORDER or WS_TABSTOP or WS_DISABLED);
 end;
 
-procedure TLocCalendar.MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
+procedure TJvLocCalendar.MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
 var
   Coord: TGridCoord;
 begin
@@ -516,7 +516,7 @@ begin
   ARow := Coord.Y;
 end;
 
-procedure TLocCalendar.DrawCell(ACol, ARow: Longint; ARect: TRect;
+procedure TJvLocCalendar.DrawCell(ACol, ARow: Longint; ARect: TRect;
   AState: TGridDrawState);
 var
   D, M, Y: Word;
@@ -530,10 +530,10 @@ begin
   end;
 end;
 
-{ TPopupCalendar }
+{ TJvPopupCalendar }
 
 type
-  TPopupCalendar = class(TJvPopupWindow)
+  TJvPopupCalendar = class(TJvPopupWindow)
   private
     FCalendar: TJvCalendar;
     FTitleLabel: TLabel;
@@ -564,15 +564,15 @@ type
 function CreatePopupCalendar(AOwner: TComponent
   {$IFDEF Delphi4_Up}; ABiDiMode: TBiDiMode = bdLeftToRight {$ENDIF}): TWinControl;
 begin
-  Result := TPopupCalendar.Create(AOwner);
+  Result := TJvPopupCalendar.Create(AOwner);
   if (AOwner <> nil) and not (csDesigning in AOwner.ComponentState) and
     (Screen.PixelsPerInch <> 96) then
   begin { scale to screen res }
     Result.ScaleBy(Screen.PixelsPerInch, 96);
     { The ScaleBy method does not scale the font well, so set the
       font back to the original info. }
-    TPopupCalendar(Result).FCalendar.ParentFont := True;
-    FontSetDefault(TPopupCalendar(Result).Font);
+    TJvPopupCalendar(Result).FCalendar.ParentFont := True;
+    FontSetDefault(TJvPopupCalendar(Result).Font);
 {$IFDEF Delphi4_Up}
     Result.BiDiMode := ABiDiMode;
 {$ENDIF}
@@ -585,11 +585,11 @@ procedure SetupPopupCalendar(PopupCalendar: TWinControl;
 var
   I: Integer;
 begin
-  if (PopupCalendar = nil) or not (PopupCalendar is TPopupCalendar) then
+  if (PopupCalendar = nil) or not (PopupCalendar is TJvPopupCalendar) then
     Exit;
-  TPopupCalendar(PopupCalendar).FFourDigitYear := FourDigitYear;
-  if TPopupCalendar(PopupCalendar).FCalendar <> nil then begin
-    with TPopupCalendar(PopupCalendar).FCalendar do begin
+  TJvPopupCalendar(PopupCalendar).FFourDigitYear := FourDigitYear;
+  if TJvPopupCalendar(PopupCalendar).FCalendar <> nil then begin
+    with TJvPopupCalendar(PopupCalendar).FCalendar do begin
       StartOfWeek := AStartOfWeek;
       WeekendColor := AWeekendColor;
       Weekends := AWeekends;
@@ -597,12 +597,12 @@ begin
     if (BtnHints <> nil) then
       for I := 0 to Min(BtnHints.Count - 1, 3) do begin
         if BtnHints[I] <> '' then
-          TPopupCalendar(PopupCalendar).FBtns[I].Hint := BtnHints[I];
+          TJvPopupCalendar(PopupCalendar).FBtns[I].Hint := BtnHints[I];
       end;
   end;
 end;
 
-constructor TPopupCalendar.Create(AOwner: TComponent);
+constructor TJvPopupCalendar.Create(AOwner: TComponent);
 const
   BtnSide = 14;
 var
@@ -641,8 +641,8 @@ begin
 {$ENDIF}
   end;
 
-  FCalendar := TLocCalendar.Create(Self);
-  with TLocCalendar(FCalendar) do begin
+  FCalendar := TJvLocCalendar.Create(Self);
+  with TJvLocCalendar(FCalendar) do begin
     Parent := BackPanel;
     Align := alClient;
     OnChange := CalendarChange;
@@ -699,24 +699,24 @@ begin
   end;
 end;
 
-procedure TPopupCalendar.CalendarMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TJvPopupCalendar.CalendarMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   Col, Row: Longint;
 begin
   if (Button = mbLeft) and (Shift = []) then begin
-    TLocCalendar(FCalendar).MouseToCell(X, Y, Col, Row);
+    TJvLocCalendar(FCalendar).MouseToCell(X, Y, Col, Row);
     if (Row > 0) and (FCalendar.CellText[Col, Row] <> '') then
       CloseUp(True);
   end;
 end;
 
-procedure TPopupCalendar.TopPanelDblClick(Sender: TObject);
+procedure TJvPopupCalendar.TopPanelDblClick(Sender: TObject);
 begin
   FCalendar.CalendarDate := Trunc(Now);
 end;
 
-procedure TPopupCalendar.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvPopupCalendar.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   if FCalendar <> nil then
@@ -731,11 +731,11 @@ begin
           if ssCtrl in Shift then FCalendar.PrevYear
           else FCalendar.PrevMonth;
         end;
-      else TLocCalendar(FCalendar).KeyDown(Key, Shift);
+      else TJvLocCalendar(FCalendar).KeyDown(Key, Shift);
     end;
 end;
 
-procedure TPopupCalendar.KeyPress(var Key: Char);
+procedure TJvPopupCalendar.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   if (FCalendar <> nil) and (Key <> #0) then
@@ -744,7 +744,7 @@ end;
 
 {$IFDEF WIN32}
 
-function TPopupCalendar.GetValue: Variant;
+function TJvPopupCalendar.GetValue: Variant;
 begin
   if (csDesigning in ComponentState) then
     Result := VarFromDateTime(SysUtils.Date)
@@ -752,7 +752,7 @@ begin
     Result := VarFromDateTime(FCalendar.CalendarDate);
 end;
 
-procedure TPopupCalendar.SetValue(const Value: Variant);
+procedure TJvPopupCalendar.SetValue(const Value: Variant);
 begin
   if not (csDesigning in ComponentState) then begin
     try
@@ -769,7 +769,7 @@ end;
 
 {$ELSE}
 
-function TPopupCalendar.GetValue: string;
+function TJvPopupCalendar.GetValue: string;
 begin
   if (csDesigning in ComponentState) then
     Result := FormatDateTime(DefDateFormat(FFourDigitYear), SysUtils.Date)
@@ -777,7 +777,7 @@ begin
     Result := FormatDateTime(DefDateFormat(FFourDigitYear), FCalendar.CalendarDate);
 end;
 
-procedure TPopupCalendar.SetValue(const Value: string);
+procedure TJvPopupCalendar.SetValue(const Value: string);
 begin
   if not (csDesigning in ComponentState) then begin
     FCalendar.CalendarDate := StrToDateFmtDef(DefDateFormat(FFourDigitYear),
@@ -788,35 +788,35 @@ end;
 
 {$ENDIF}
 
-procedure TPopupCalendar.PrevYearBtnClick(Sender: TObject);
+procedure TJvPopupCalendar.PrevYearBtnClick(Sender: TObject);
 begin
   FCalendar.PrevYear;
 end;
 
-procedure TPopupCalendar.NextYearBtnClick(Sender: TObject);
+procedure TJvPopupCalendar.NextYearBtnClick(Sender: TObject);
 begin
   FCalendar.NextYear;
 end;
 
-procedure TPopupCalendar.PrevMonthBtnClick(Sender: TObject);
+procedure TJvPopupCalendar.PrevMonthBtnClick(Sender: TObject);
 begin
   FCalendar.PrevMonth;
 end;
 
-procedure TPopupCalendar.NextMonthBtnClick(Sender: TObject);
+procedure TJvPopupCalendar.NextMonthBtnClick(Sender: TObject);
 begin
   FCalendar.NextMonth;
 end;
 
-procedure TPopupCalendar.CalendarChange(Sender: TObject);
+procedure TJvPopupCalendar.CalendarChange(Sender: TObject);
 begin
   FTitleLabel.Caption := FormatDateTime('MMMM, YYYY', FCalendar.CalendarDate);
 end;
 
-{ TSelectDateDlg }
+{ TJvSelectDateDlg }
 
 type
-  TSelectDateDlg = class(TForm)
+  TJvSelectDateDlg = class(TForm)
     Calendar: TJvCalendar;
     TitleLabel: TLabel;
     procedure PrevMonthBtnClick(Sender: TObject);
@@ -839,7 +839,7 @@ type
     property Date: TDateTime read GetDate write SetDate;
   end;
 
-constructor TSelectDateDlg.Create(AOwner: TComponent);
+constructor TJvSelectDateDlg.Create(AOwner: TComponent);
 var
   Control: TWinControl;
 begin
@@ -977,7 +977,7 @@ begin
   ActiveControl := Calendar;
 end;
 
-procedure TSelectDateDlg.SetDate(Date: TDateTime);
+procedure TJvSelectDateDlg.SetDate(Date: TDateTime);
 begin
   if Date = NullDate then Date := SysUtils.Date;
   try
@@ -988,47 +988,47 @@ begin
   end;
 end;
 
-function TSelectDateDlg.GetDate: TDateTime;
+function TJvSelectDateDlg.GetDate: TDateTime;
 begin
   Result := Calendar.CalendarDate;
 end;
 
-procedure TSelectDateDlg.TopPanelDblClick(Sender: TObject);
+procedure TJvSelectDateDlg.TopPanelDblClick(Sender: TObject);
 begin
   SetDate(Trunc(Now));
 end;
 
-procedure TSelectDateDlg.PrevYearBtnClick(Sender: TObject);
+procedure TJvSelectDateDlg.PrevYearBtnClick(Sender: TObject);
 begin
   Calendar.PrevYear;
 end;
 
-procedure TSelectDateDlg.NextYearBtnClick(Sender: TObject);
+procedure TJvSelectDateDlg.NextYearBtnClick(Sender: TObject);
 begin
   Calendar.NextYear;
 end;
 
-procedure TSelectDateDlg.PrevMonthBtnClick(Sender: TObject);
+procedure TJvSelectDateDlg.PrevMonthBtnClick(Sender: TObject);
 begin
   Calendar.PrevMonth;
 end;
 
-procedure TSelectDateDlg.NextMonthBtnClick(Sender: TObject);
+procedure TJvSelectDateDlg.NextMonthBtnClick(Sender: TObject);
 begin
   Calendar.NextMonth;
 end;
 
-procedure TSelectDateDlg.CalendarChange(Sender: TObject);
+procedure TJvSelectDateDlg.CalendarChange(Sender: TObject);
 begin
   TitleLabel.Caption := FormatDateTime('MMMM, YYYY', Calendar.CalendarDate);
 end;
 
-procedure TSelectDateDlg.CalendarDblClick(Sender: TObject);
+procedure TJvSelectDateDlg.CalendarDblClick(Sender: TObject);
 begin
   ModalResult := mrOK;
 end;
 
-procedure TSelectDateDlg.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TJvSelectDateDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
@@ -1057,9 +1057,9 @@ end;
 
 { SelectDate routines }
 
-function CreateDateDialog(const DlgCaption: TCaption): TSelectDateDlg;
+function CreateDateDialog(const DlgCaption: TCaption): TJvSelectDateDlg;
 begin
-  Result := TSelectDateDlg.Create(Application);
+  Result := TJvSelectDateDlg.Create(Application);
   try
     if DlgCaption <> '' then Result.Caption := DlgCaption;
     if Screen.PixelsPerInch <> 96 then begin { scale to screen res }
@@ -1079,7 +1079,7 @@ end;
 
 function PopupDate(var Date: TDateTime; Edit: TWinControl): Boolean;
 var
-  D: TSelectDateDlg;
+  D: TJvSelectDateDlg;
   P: TPoint;
   W, H, X, Y: Integer;
 begin
@@ -1113,7 +1113,7 @@ function SelectDate(var Date: TDateTime; const DlgCaption: TCaption;
   AStartOfWeek: TDayOfWeekName; AWeekends: TDaysOfWeek;
   AWeekendColor: TColor; BtnHints: TStrings): Boolean;
 var
-  D: TSelectDateDlg;
+  D: TJvSelectDateDlg;
   I: Integer;
 begin
   Result := False;

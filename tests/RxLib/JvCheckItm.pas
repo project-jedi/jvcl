@@ -99,7 +99,7 @@ type
 
 { CheckItems property editor }
 
-  TCheckItemsProperty = class(TClassProperty)
+  TJvCheckItemsProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
@@ -116,14 +116,14 @@ implementation
 uses {$IFDEF Delphi3_Up} JvStrLEdit, {$ELSE} StrEdit, {$ENDIF} Consts, JvConst,
   JvVCLUtils, JvBoxProcs;
 
-{ TCheckItemsProperty }
+{ TJvCheckItemsProperty }
 
-function TCheckItemsProperty.GetAttributes: TPropertyAttributes;
+function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
 end;
 
-procedure TCheckItemsProperty.Edit;
+procedure TJvCheckItemsProperty.Edit;
 var
   Comp: TPersistent;
 begin

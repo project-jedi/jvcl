@@ -82,7 +82,7 @@ type
     FGraphicClass: TGraphicClass;
     Pic: TPicture;
     FIconColor: TColor;
-    FClipMonitor: TClipboardMonitor;
+    FClipMonitor: TJvClipboardMonitor;
 {$IFDEF Delphi3_Up}
     FProgress: TProgressBar;
     FProgressPos: Integer;
@@ -510,7 +510,7 @@ begin
   Save.Enabled := False;
   Clear.Enabled := False;
   Copy.Enabled := False;
-  FClipMonitor := TClipboardMonitor.Create(Self);
+  FClipMonitor := TJvClipboardMonitor.Create(Self);
   FClipMonitor.OnChange := UpdateClipboard;
   CheckEnablePaste;
 end;

@@ -41,7 +41,7 @@ type
   TChangePasswordEvent = function(UsersTable: TTable;
     const OldPassword, NewPassword: string): Boolean of object;
 
-  TChPswdForm = class(TForm)
+  TJvChPswdForm = class(TForm)
     OldPswdLabel: TLabel;
     OldPswd: TEdit;
     NewPswdLabel: TLabel;
@@ -88,13 +88,13 @@ function ChangePasswordDialog(Database: TDatabase; AttemptNumber: Integer;
   MaxPwdLen: Integer; EnableEmptyPassword: Boolean;
   ChangePasswordEvent: TChangePasswordEvent): Boolean;
 var
-  Form: TChPswdForm;
+  Form: TJvChPswdForm;
   SaveCursor: TCursor;
 begin
   SaveCursor := Screen.Cursor;
   Screen.Cursor := crDefault;
   try
-    Form := TChPswdForm.Create(Application);
+    Form := TJvChPswdForm.Create(Application);
     try
       Form.Database := Database;
       Form.AttemptNumber := AttemptNumber;
@@ -115,14 +115,14 @@ begin
   end;
 end;
 
-{ TChPswdForm }
+{ TJvChPswdForm }
 
-procedure TChPswdForm.CreateParams(var Params: TCreateParams);
+procedure TJvChPswdForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
 end;
 
-procedure TChPswdForm.FormCreate(Sender: TObject);
+procedure TJvChPswdForm.FormCreate(Sender: TObject);
 begin
   Caption := LoadStr(SChangePassword);
   OldPswdLabel.Caption := LoadStr(SOldPasswordLabel);
@@ -132,7 +132,7 @@ begin
   CancelBtn.Caption := ResStr(SCancelButton);
 end;
 
-procedure TChPswdForm.ClearEdits;
+procedure TJvChPswdForm.ClearEdits;
 begin
   OldPswd.Text := '';
   NewPswd.Text := '';
@@ -140,13 +140,13 @@ begin
   OkBtn.Enabled := FEnableEmpty;
 end;
 
-procedure TChPswdForm.OkEnabled;
+procedure TJvChPswdForm.OkEnabled;
 begin
   OkBtn.Enabled := FEnableEmpty or ((OldPswd.Text <> '') and (NewPswd.Text <> '')
     and (ConfirmNewPswd.Text <> ''));
 end;
 
-procedure TChPswdForm.OkBtnClick(Sender: TObject);
+procedure TJvChPswdForm.OkBtnClick(Sender: TObject);
 type
   TChangePasswordError = (peMismatch, peOther);
 var
@@ -206,12 +206,12 @@ begin
   end;
 end;
 
-procedure TChPswdForm.FormShow(Sender: TObject);
+procedure TJvChPswdForm.FormShow(Sender: TObject);
 begin
   ClearEdits;
 end;
 
-procedure TChPswdForm.PswdChange(Sender: TObject);
+procedure TJvChPswdForm.PswdChange(Sender: TObject);
 begin
   OkEnabled;
 end;

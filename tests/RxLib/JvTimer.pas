@@ -83,10 +83,10 @@ uses Forms, Consts, JvVCLUtils;
 
 {$IFDEF WIN32}
 
-{ TTimerThread }
+{ TJvTimerThread }
 
 type
-  TTimerThread = class(TThread)
+  TJvTimerThread = class(TThread)
   private
     FOwner: TJvTimer;
     FInterval: Cardinal;
@@ -98,7 +98,7 @@ type
     constructor Create(Timer: TJvTimer; Enabled: Boolean);
   end;
 
-constructor TTimerThread.Create(Timer: TJvTimer; Enabled: Boolean);
+constructor TJvTimerThread.Create(Timer: TJvTimer; Enabled: Boolean);
 begin
   FOwner := Timer;
   inherited Create(not Enabled);
@@ -106,7 +106,7 @@ begin
   FreeOnTerminate := True;
 end;
 
-procedure TTimerThread.HandleException;
+procedure TJvTimerThread.HandleException;
 begin
   if not (FException is EAbort) then begin
     if Assigned(Application.OnException) then
@@ -116,7 +116,7 @@ begin
   end;
 end;
 
-procedure TTimerThread.Execute;
+procedure TJvTimerThread.Execute;
 
   function ThreadClosed: Boolean;
   begin
@@ -156,7 +156,7 @@ begin
   FSyncEvent := True;
   FThreaded := True;
   FThreadPriority := tpNormal;
-  FTimerThread := TTimerThread.Create(Self, False);
+  FTimerThread := TJvTimerThread.Create(Self, False);
 {$ELSE}
   FWindowHandle := AllocateHWnd(WndProc);
 {$ENDIF}
@@ -168,7 +168,7 @@ begin
   FEnabled := False;
   FOnTimer := nil;
 {$IFDEF WIN32}
-  {TTimerThread(FTimerThread).FOwner := nil;}
+  {TJvTimerThread(FTimerThread).FOwner := nil;}
   while FTimerThread.Suspended do FTimerThread.Resume;
   FTimerThread.Terminate;
   {if not SyncEvent then FTimerThread.WaitFor;}
@@ -204,7 +204,7 @@ begin
       FWindowHandle := 0;
     end;
     if not FTimerThread.Suspended then FTimerThread.Suspend;
-    TTimerThread(FTimerThread).FInterval := FInterval;
+    TJvTimerThread(FTimerThread).FInterval := FInterval;
     if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then begin
       FTimerThread.Priority := FThreadPriority;
       while FTimerThread.Suspended do FTimerThread.Resume;
@@ -263,9 +263,9 @@ end;
 procedure TJvTimer.Synchronize(Method: TThreadMethod);
 begin
   if (FTimerThread <> nil) then begin
-    with TTimerThread(FTimerThread) do begin
+    with TJvTimerThread(FTimerThread) do begin
       if Suspended or Terminated then Method
-      else TTimerThread(FTimerThread).Synchronize(Method);
+      else TJvTimerThread(FTimerThread).Synchronize(Method);
     end;
   end
   else Method;

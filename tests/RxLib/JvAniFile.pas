@@ -376,13 +376,13 @@ begin
         True, False)
     else Dest.Assign(nil);
   end
-  else if Dest is TIconList then begin
-    TIconList(Dest).BeginUpdate;
+  else if Dest is TJvIconList then begin
+    TJvIconList(Dest).BeginUpdate;
     try
-      TIconList(Dest).Clear;
-      for I := 0 to IconCount - 1 do TIconList(Dest).Add(Icons[I]);
+      TJvIconList(Dest).Clear;
+      for I := 0 to IconCount - 1 do TJvIconList(Dest).Add(Icons[I]);
     finally
-      TIconList(Dest).EndUpdate;
+      TJvIconList(Dest).EndUpdate;
     end;
   end
   else inherited AssignTo(Dest);

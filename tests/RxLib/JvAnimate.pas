@@ -198,15 +198,15 @@ uses JvConst, {$IFDEF Delphi3_Up} JvHook, {$ENDIF} JvVCLUtils;
 
 {$IFDEF Delphi3_Up}
 
-{ THackBitmap }
+{ TJvHackBitmap }
 
 type
-  THackBitmap = class(TBitmap)
+  TJvHackBitmap = class(TBitmap)
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
   end;
 
-procedure THackBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
+procedure TJvHackBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
   if not Empty then Canvas.Lock;
   try
@@ -217,7 +217,7 @@ begin
 end;
 
 type
-  THack = class(TBitmap);
+  TJvHack = class(TBitmap);
 
 var
   Hooked: Boolean = False;
@@ -227,8 +227,8 @@ var
   Index: Integer;
 begin
   if Hooked then Exit;
-  Index := FindVirtualMethodIndex(THack, @THack.Draw);
-  SetVirtualMethodAddress(TBitmap, Index, @THackBitmap.Draw);
+  Index := FindVirtualMethodIndex(TJvHack, @TJvHack.Draw);
+  SetVirtualMethodAddress(TBitmap, Index, @TJvHackBitmap.Draw);
   Hooked := True;
 end;
 

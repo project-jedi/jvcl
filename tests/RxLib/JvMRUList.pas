@@ -34,7 +34,7 @@ uses SysUtils, Classes, Menus, IniFiles {$IFDEF WIN32}, Registry {$ENDIF},
   JvPlacemnt{, JvComponent};
 
 type
-  TRecentStrings = class;
+  TJvRecentStrings = class;
 
 { TJvMRUManager }
 
@@ -133,9 +133,9 @@ type
     property OnWriteItem: TWriteItemEvent read FOnWriteItem write FOnWriteItem;
   end;
 
-{ TRecentStrings }
+{ TJvRecentStrings }
 
-  TRecentStrings = class(TStringList)
+  TJvRecentStrings = class(TStringList)
   private
     FMaxSize: Integer;
     FMode: TRecentMode;
@@ -163,9 +163,9 @@ const
 constructor TJvMRUManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FList := TRecentStrings.Create;
+  FList := TJvRecentStrings.Create;
   FItems := TList.Create;
-  TRecentStrings(FList).OnChange := ListChanged;
+  TJvRecentStrings(FList).OnChange := ListChanged;
   FIniLink := TJvIniLink.Create;
   FIniLink.OnSave := IniSave;
   FIniLink.OnLoad := IniLoad;
@@ -179,7 +179,7 @@ destructor TJvMRUManager.Destroy;
 begin
   ClearRecentMenu;
   FIniLink.Free;
-  TRecentStrings(FList).OnChange := nil;
+  TJvRecentStrings(FList).OnChange := nil;
   FList.Free;
   FItems.Free;
   FItems := nil;
@@ -221,22 +221,22 @@ end;
 
 function TJvMRUManager.GetCapacity: Integer;
 begin
-  Result := TRecentStrings(FList).MaxSize;
+  Result := TJvRecentStrings(FList).MaxSize;
 end;
 
 procedure TJvMRUManager.SetCapacity(Value: Integer);
 begin
-  TRecentStrings(FList).MaxSize := Value;
+  TJvRecentStrings(FList).MaxSize := Value;
 end;
 
 function TJvMRUManager.GetMode: TRecentMode;
 begin
-  Result := TRecentStrings(FList).Mode;
+  Result := TJvRecentStrings(FList).Mode;
 end;
 
 procedure TJvMRUManager.SetMode(Value: TRecentMode);
 begin
-  TRecentStrings(FList).Mode := Value;
+  TJvRecentStrings(FList).Mode := Value;
 end;
 
 function TJvMRUManager.GetStorage: TJvFormPlacement;
@@ -294,7 +294,7 @@ end;
 
 procedure TJvMRUManager.Remove(const RecentName: string);
 begin
-  TRecentStrings(FList).Remove(RecentName);
+  TJvRecentStrings(FList).Remove(RecentName);
 end;
 
 procedure TJvMRUManager.AddMenuItem(Item: TMenuItem);
@@ -440,7 +440,7 @@ begin
   try
     FList.Clear;
     Mode := rmInsert;
-    for I := TRecentStrings(FList).MaxSize - 1 downto 0 do begin
+    for I := TJvRecentStrings(FList).MaxSize - 1 downto 0 do begin
       S := '';
       UserData := 0;
       DoReadItem(Ini, Section, I, S, UserData);
@@ -483,16 +483,16 @@ begin
   InternalSave(Ini, Section);
 end;
 
-{ TRecentStrings }
+{ TJvRecentStrings }
 
-constructor TRecentStrings.Create;
+constructor TJvRecentStrings.Create;
 begin
   inherited Create;
   FMaxSize := 10;
   FMode := rmInsert;
 end;
 
-procedure TRecentStrings.SetMaxSize(Value: Integer);
+procedure TJvRecentStrings.SetMaxSize(Value: Integer);
 begin
   if FMaxSize <> Value then begin
     FMaxSize := Max(1, Value);
@@ -500,7 +500,7 @@ begin
   end;
 end;
 
-procedure TRecentStrings.DeleteExceed;
+procedure TJvRecentStrings.DeleteExceed;
 var
   I: Integer;
 begin
@@ -517,7 +517,7 @@ begin
   end;
 end;
 
-procedure TRecentStrings.Remove(const S: String);
+procedure TJvRecentStrings.Remove(const S: String);
 var
   I: Integer;
 begin
@@ -525,7 +525,7 @@ begin
   if I >= 0 then Delete(I);
 end;
 
-function TRecentStrings.Add(const S: String): Integer;
+function TJvRecentStrings.Add(const S: String): Integer;
 begin
   Result := IndexOf(S);
   if Result >= 0 then begin
@@ -546,7 +546,7 @@ begin
   else { rmAppend } Result := Count - 1;
 end;
 
-procedure TRecentStrings.AddStrings(Strings: TStrings);
+procedure TJvRecentStrings.AddStrings(Strings: TStrings);
 var
   I: Integer;
 begin

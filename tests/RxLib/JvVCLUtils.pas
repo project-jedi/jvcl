@@ -31,7 +31,7 @@ interface
 
 uses  Windows,Classes, Graphics, Forms, Controls, Dialogs
 {$IFDEF Delphi6}
-, RTLConsts, Variants,SysConst
+, RTLConsts, Variants
 {$ENDIF}
 ;
 
@@ -273,10 +273,10 @@ procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
-{ TScreenCanvas }
+{ TJvScreenCanvas }
 
 type
-  TScreenCanvas = class(TCanvas)
+  TJvScreenCanvas = class(TCanvas)
   private
     FDeviceContext: HDC;
   protected
@@ -305,9 +305,9 @@ type
     property Size: Integer read FSize write SetSize;
   end;
 
-{ TMetafileCanvas }
+{ TJvMetafileCanvas }
 
-  TMetafileCanvas = class(TCanvas)
+  TJvMetafileCanvas = class(TCanvas)
   private
     FMetafile: TMetafile;
   public
@@ -316,9 +316,9 @@ type
     property Metafile: TMetafile read FMetafile;
   end;
 
-{ TResourceStream }
+{ TJvResourceStream }
 
-  TResourceStream = class(THandleStream)
+  TJvResourceStream = class(THandleStream)
   private
     FStartPos: LongInt;
     FEndPos: LongInt;
@@ -363,7 +363,7 @@ type
 
 implementation
 
-Uses SysUtils, Messages, JvMaxMin, Consts, JvConst, {$IFDEF RX_V110} SysConst, {$ENDIF}
+Uses SysUtils, Messages, JvMaxMin, Consts, JvConst, {$IFDEF COMPILER35_UP} SysConst, {$ENDIF}
   {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvCConst;
 
 { Exceptions }
@@ -453,7 +453,7 @@ begin
 end;
 
 type
-  TParentControl = class(TWinControl);
+  TJvParentControl = class(TWinControl);
 
 procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 var
@@ -478,7 +478,7 @@ begin
       SetViewportOrgEx(DC, X, Y, nil);
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
         Control.Parent.ClientHeight);
-      with TParentControl(Control.Parent) do begin
+      with TJvParentControl(Control.Parent) do begin
         Perform(WM_ERASEBKGND, DC, 0);
         PaintWindow(DC);
       end;
@@ -943,7 +943,7 @@ end;
 { Service routines }
 
 type
-  THack = class(TCustomControl);
+  TJvHack = class(TCustomControl);
 
 function LoadDLL(const LibName: string): THandle;
 var
@@ -1244,7 +1244,7 @@ var
 begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
-  THack(AForm).DestroyHandle;
+  TJvHack(AForm).DestroyHandle;
   with AForm do begin
     BorderStyle := bsNone;
     BorderIcons := [];
@@ -2311,16 +2311,16 @@ begin
   case VertAlign of
     vaTopJustify: H := MinOffs;
     vaCenter:
-      with THack(Control) do
+      with TJvHack(Control) do
         H := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
     else {vaBottomJustify} begin
-      with THack(Control) do
+      with TJvHack(Control) do
         H := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(THack(Control).Canvas, ARect, MinOffs, H, S, Align, WordWrap,
+  WriteText(TJvHack(Control).Canvas, ARect, MinOffs, H, S, Align, WordWrap,
     ARightToLeft);
 end;
 
@@ -2345,16 +2345,16 @@ begin
   case VertAlign of
     vaTopJustify: H := MinOffs;
     vaCenter:
-      with THack(Control) do
+      with TJvHack(Control) do
         H := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
     else {vaBottomJustify} begin
-      with THack(Control) do
+      with TJvHack(Control) do
         H := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(THack(Control).Canvas, ARect, MinOffs, H, S, Align, WordWrap);
+  WriteText(TJvHack(Control).Canvas, ARect, MinOffs, H, S, Align, WordWrap);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
@@ -2370,24 +2370,24 @@ procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
 begin
   Rect.Top := (Rect.Bottom + Rect.Top - Bmp.Height) div 2;
   Rect.Left := (Rect.Right + Rect.Left - Bmp.Width) div 2;
-  THack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
+  TJvHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
-{ TScreenCanvas }
+{ TJvScreenCanvas }
 
-destructor TScreenCanvas.Destroy;
+destructor TJvScreenCanvas.Destroy;
 begin
   FreeHandle;
   inherited Destroy;
 end;
 
-procedure TScreenCanvas.CreateHandle;
+procedure TJvScreenCanvas.CreateHandle;
 begin
   if FDeviceContext = 0 then FDeviceContext := GetDC(0);
   Handle := FDeviceContext;
 end;
 
-procedure TScreenCanvas.FreeHandle;
+procedure TJvScreenCanvas.FreeHandle;
 begin
   if FDeviceContext <> 0 then begin
     Handle := 0;
@@ -2396,7 +2396,7 @@ begin
   end;
 end;
 
-procedure TScreenCanvas.SetOrigin(X, Y: Integer);
+procedure TJvScreenCanvas.SetOrigin(X, Y: Integer);
 var
   FOrigin: TPoint;
 begin
@@ -2492,7 +2492,7 @@ end;
   the image is 'playable' in the metafile object.  Like this:
 
   MyMetafile := TMetafile.Create;
-  with TMetafileCanvas.Create(MyMetafile, 0) do
+  with TJvMetafileCanvas.Create(MyMetafile, 0) do
   try
     Brush.Color := clRed;
     Ellipse(0,0,100,100);
@@ -2506,7 +2506,7 @@ end;
   and play the source metafile into the metafile canvas.  Like this:
 
   { continued from previous example, so MyMetafile contains an image }
-  with TMetafileCanvas.Create(MyMetafile, 0) do
+  with TJvMetafileCanvas.Create(MyMetafile, 0) do
   try
     Draw(0,0,MyMetafile);
     Brush.Color := clBlue;
@@ -2518,7 +2518,7 @@ end;
   Form1.Canvas.Draw(0,0,MyMetafile);  { 1 red circle and 1 blue circle }
 *)
 
-constructor TMetafileCanvas.Create(AMetafile: TMetafile; ReferenceDevice: HDC);
+constructor TJvMetafileCanvas.Create(AMetafile: TMetafile; ReferenceDevice: HDC);
 var
   Temp: HDC;
 begin
@@ -2531,7 +2531,7 @@ begin
   FMetafile.Inch := Screen.PixelsPerInch;
 end;
 
-destructor TMetafileCanvas.Destroy;
+destructor TJvMetafileCanvas.Destroy;
 var
   Temp: HDC;
   KeepInch, KeepWidth, KeepHeight: Integer;
@@ -2550,9 +2550,9 @@ begin
   inherited Destroy;
 end;
 
-{ TResourceStream }
+{ TJvResourceStream }
 
-constructor TResourceStream.Create(Instance: THandle; const ResName: string;
+constructor TJvResourceStream.Create(Instance: THandle; const ResName: string;
   ResType: PChar);
 var
   ResID: array[0..255] of Char;
@@ -2560,13 +2560,13 @@ begin
   CreateFromPChar(Instance, StrPCopy(ResID, ResName), ResType);
 end;
 
-constructor TResourceStream.CreateFromID(Instance: THandle; ResID: Integer;
+constructor TJvResourceStream.CreateFromID(Instance: THandle; ResID: Integer;
   ResType: PChar);
 begin
   CreateFromPChar(Instance, MakeIntResource(ResID), ResType);
 end;
 
-constructor TResourceStream.CreateFromPChar(Instance: THandle; ResName,
+constructor TJvResourceStream.CreateFromPChar(Instance: THandle; ResName,
   ResType: PChar);
 var
   ResInfo: THandle;
@@ -2581,18 +2581,18 @@ begin
   FEndPos := FStartPos + SizeOfResource(Instance, ResInfo);
 end;
 
-destructor TResourceStream.Destroy;
+destructor TJvResourceStream.Destroy;
 begin
   if Handle >= 0 then FileClose(Handle);
   inherited Destroy;
 end;
 
-function TResourceStream.Write(const Buffer; Count: Longint): Longint;
+function TJvResourceStream.Write(const Buffer; Count: Longint): Longint;
 begin
   raise EStreamError.CreateRes(SWriteError);
 end;
 
-function TResourceStream.Seek(Offset: Longint; Origin: Word): Longint;
+function TJvResourceStream.Seek(Offset: Longint; Origin: Word): Longint;
 begin
   case Origin of
     soFromBeginning:

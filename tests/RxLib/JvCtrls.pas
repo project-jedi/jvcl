@@ -1888,10 +1888,10 @@ begin
 end;
 {$ENDIF}
 
-{ TCheckListBoxItem }
+{ TJvCheckListBoxItem }
 
 type
-  TCheckListBoxItem = class
+  TJvCheckListBoxItem = class
   private
     FData: LongInt;
     FState: TCheckBoxState;
@@ -1904,28 +1904,28 @@ type
     property State: TCheckBoxState read FState write FState;
   end;
 
-constructor TCheckListBoxItem.Create;
+constructor TJvCheckListBoxItem.Create;
 begin
   inherited Create;
   FState := clbDefaultState;
   FEnabled := clbDefaultEnabled;
 end;
 
-function TCheckListBoxItem.GetChecked: Boolean;
+function TJvCheckListBoxItem.GetChecked: Boolean;
 begin
   Result := FState = cbChecked;
 end;
 
-{ TCheckListBoxStrings }
+{ TJvCheckListBoxStrings }
 
 type
-  TCheckListBoxStrings = class(TJvListBoxStrings)
+  TJvCheckListBoxStrings = class(TJvListBoxStrings)
   public
     procedure Exchange(Index1, Index2: Integer); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
-procedure TCheckListBoxStrings.Exchange(Index1, Index2: Integer);
+procedure TJvCheckListBoxStrings.Exchange(Index1, Index2: Integer);
 var
   TempEnabled1, TempEnabled2: Boolean;
   TempState1, TempState2: TCheckBoxState;
@@ -1943,7 +1943,7 @@ begin
   end;
 end;
 
-procedure TCheckListBoxStrings.Move(CurIndex, NewIndex: Integer);
+procedure TJvCheckListBoxStrings.Move(CurIndex, NewIndex: Integer);
 var
   TempEnabled: Boolean;
   TempState: TCheckBoxState;
@@ -2018,7 +2018,7 @@ end;
 
 function TJvCheckListBox.CreateItemList: TStrings;
 begin
-  Result := TCheckListBoxStrings.Create;
+  Result := TJvCheckListBoxStrings.Create;
 end;
 
 const
@@ -2435,11 +2435,11 @@ begin
   if (AState <> GetState(Index)) or FInUpdateStates then begin
     if (FCheckKind = ckRadioButtons) and (AState = cbUnchecked) and
       (GetCheckedIndex = Index) then Exit;
-    TCheckListBoxItem(GetCheckObject(Index)).State := AState;
+    TJvCheckListBoxItem(GetCheckObject(Index)).State := AState;
     if (FCheckKind = ckRadioButtons) and (AState = cbChecked) then
       for I := Items.Count - 1 downto 0 do begin
         if (I <> Index) and (GetState(I) = cbChecked) then begin
-          TCheckListBoxItem(GetCheckObject(I)).State := cbUnchecked;
+          TJvCheckListBoxItem(GetCheckObject(I)).State := cbUnchecked;
           InvalidateCheck(I);
         end;
       end;
@@ -2451,7 +2451,7 @@ end;
 procedure TJvCheckListBox.SetItemEnabled(Index: Integer; Value: Boolean);
 begin
   if Value <> GetItemEnabled(Index) then begin
-    TCheckListBoxItem(GetCheckObject(Index)).Enabled := Value;
+    TJvCheckListBoxItem(GetCheckObject(Index)).Enabled := Value;
     InvalidateItem(Index);
   end;
 end;
@@ -2483,14 +2483,14 @@ end;
 function TJvCheckListBox.GetChecked(Index: Integer): Boolean;
 begin
   if IsCheckObject(Index) then
-    Result := TCheckListBoxItem(GetCheckObject(Index)).GetChecked
+    Result := TJvCheckListBoxItem(GetCheckObject(Index)).GetChecked
   else Result := False;
 end;
 
 function TJvCheckListBox.GetState(Index: Integer): TCheckBoxState;
 begin
   if IsCheckObject(Index) then
-    Result := TCheckListBoxItem(GetCheckObject(Index)).State
+    Result := TJvCheckListBoxItem(GetCheckObject(Index)).State
   else Result := clbDefaultState;
   if (FCheckKind = ckRadioButtons) and (Result <> cbChecked) then
     Result := cbUnchecked;
@@ -2499,7 +2499,7 @@ end;
 function TJvCheckListBox.GetItemEnabled(Index: Integer): Boolean;
 begin
   if IsCheckObject(Index) then
-    Result := TCheckListBoxItem(GetCheckObject(Index)).Enabled
+    Result := TJvCheckListBoxItem(GetCheckObject(Index)).Enabled
   else Result := clbDefaultEnabled;
 end;
 
@@ -2581,11 +2581,11 @@ end;
 
 function TJvCheckListBox.GetItemData(Index: Integer): LongInt;
 var
-  Item: TCheckListBoxItem;
+  Item: TJvCheckListBoxItem;
 begin
   Result := 0;
   if IsCheckObject(Index) then begin
-    Item := TCheckListBoxItem(GetCheckObject(Index));
+    Item := TJvCheckListBoxItem(GetCheckObject(Index));
     if Item <> nil then Result := Item.FData;
   end;
 end;
@@ -2604,14 +2604,14 @@ begin
   ItemData := inherited GetItemData(Index);
   if ItemData = LB_ERR then ListIndexError(Index)
   else begin
-    Result := TCheckListBoxItem(ItemData);
-    if not (Result is TCheckListBoxItem) then Result := nil;
+    Result := TJvCheckListBoxItem(ItemData);
+    if not (Result is TJvCheckListBoxItem) then Result := nil;
   end;
 end;
 
 function TJvCheckListBox.CreateCheckObject(Index: Integer): TObject;
 begin
-  Result := TCheckListBoxItem.Create;
+  Result := TJvCheckListBoxItem.Create;
   inherited SetItemData(Index, LongInt(Result));
 end;
 
@@ -2622,10 +2622,10 @@ end;
 
 procedure TJvCheckListBox.SetItemData(Index: Integer; AData: LongInt);
 var
-  Item: TCheckListBoxItem;
+  Item: TJvCheckListBoxItem;
   L: Longint;
 begin
-  Item := TCheckListBoxItem(GetCheckObject(Index));
+  Item := TJvCheckListBoxItem(GetCheckObject(Index));
   Item.FData := AData;
   if (FSaveStates <> nil) and (FSaveStates.Count > 0) then begin
     L := Longint(Pointer(FSaveStates[0]));
@@ -3585,10 +3585,10 @@ begin
   FLines.Assign(Value);
 end;
 
-{ TGlyphList }
+{ TJvGlyphList }
 
 type
-  TGlyphList = class(TImageList)
+  TJvGlyphList = class(TImageList)
   private
     FUsed: TBits;
     FCount: Integer;
@@ -3607,22 +3607,22 @@ type
     property Count: Integer read FCount;
   end;
 
-{ TGlyphCache }
+{ TJvGlyphCache }
 
-  TGlyphCache = class
+  TJvGlyphCache = class
   private
     FGlyphLists: TList;
   public
     constructor Create;
     destructor Destroy; override;
-    function GetList(AWidth, AHeight: Integer): TGlyphList;
-    procedure ReturnList(List: TGlyphList);
+    function GetList(AWidth, AHeight: Integer): TJvGlyphList;
+    procedure ReturnList(List: TJvGlyphList);
     function Empty: Boolean;
   end;
 
-{ TGlyphList }
+{ TJvGlyphList }
 
-constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
+constructor TJvGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
 {$IFDEF WIN32}
   inherited CreateSize(AWidth, AHeight);
@@ -3632,13 +3632,13 @@ begin
   FUsed := TBits.Create;
 end;
 
-destructor TGlyphList.Destroy;
+destructor TJvGlyphList.Destroy;
 begin
   FUsed.Free;
   inherited Destroy;
 end;
 
-function TGlyphList.AllocateIndex: Integer;
+function TJvGlyphList.AllocateIndex: Integer;
 begin
   Result := FUsed.OpenBit;
   if Result >= FUsed.Size then begin
@@ -3650,7 +3650,7 @@ end;
 
 {$IFDEF WIN32}
 {$IFNDEF Delphi3_Up} { Delphi 2.0 bug fix }
-procedure TGlyphList.ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
+procedure TJvGlyphList.ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
 var
   TempIndex: Integer;
   Image, Mask: TBitmap;
@@ -3689,21 +3689,21 @@ end;
 {$ENDIF}
 {$ENDIF}
 
-function TGlyphList.Add(Image, Mask: TBitmap): Integer;
+function TJvGlyphList.Add(Image, Mask: TBitmap): Integer;
 begin
   Result := AllocateIndex;
   Replace(Result, Image, Mask);
   Inc(FCount);
 end;
 
-function TGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
+function TJvGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
 begin
   Result := AllocateIndex;
   ReplaceMasked(Result, Image, MaskColor);
   Inc(FCount);
 end;
 
-procedure TGlyphList.Delete(Index: Integer);
+procedure TJvGlyphList.Delete(Index: Integer);
 begin
   if FUsed[Index] then begin
     Dec(FCount);
@@ -3711,21 +3711,21 @@ begin
   end;
 end;
 
-{ TGlyphCache }
+{ TJvGlyphCache }
 
-constructor TGlyphCache.Create;
+constructor TJvGlyphCache.Create;
 begin
   inherited Create;
   FGlyphLists := TList.Create;
 end;
 
-destructor TGlyphCache.Destroy;
+destructor TJvGlyphCache.Destroy;
 begin
   FGlyphLists.Free;
   inherited Destroy;
 end;
 
-function TGlyphCache.GetList(AWidth, AHeight: Integer): TGlyphList;
+function TJvGlyphCache.GetList(AWidth, AHeight: Integer): TJvGlyphList;
 var
   I: Integer;
 begin
@@ -3734,11 +3734,11 @@ begin
     with Result do
       if (AWidth = Width) and (AHeight = Height) then Exit;
   end;
-  Result := TGlyphList.CreateSize(AWidth, AHeight);
+  Result := TJvGlyphList.CreateSize(AWidth, AHeight);
   FGlyphLists.Add(Result);
 end;
 
-procedure TGlyphCache.ReturnList(List: TGlyphList);
+procedure TJvGlyphCache.ReturnList(List: TJvGlyphList);
 begin
   if List = nil then Exit;
   if List.Count = 0 then begin
@@ -3747,13 +3747,13 @@ begin
   end;
 end;
 
-function TGlyphCache.Empty: Boolean;
+function TJvGlyphCache.Empty: Boolean;
 begin
   Result := FGlyphLists.Count = 0;
 end;
 
 const
-  GlyphCache: TGlyphCache = nil;
+  GlyphCache: TJvGlyphCache = nil;
 
 { TJvButtonGlyph }
 
@@ -3768,7 +3768,7 @@ begin
   FAlignment := taCenter;
   FNumGlyphs := 1;
   for I := Low(I) to High(I) do FIndexs[I] := -1;
-  if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+  if GlyphCache = nil then GlyphCache := TJvGlyphCache.Create;
 end;
 
 destructor TJvButtonGlyph.Destroy;
@@ -3788,10 +3788,10 @@ var
 begin
   for I := Low(I) to High(I) do begin
     if Assigned(FGlyphList) then
-      if (FIndexs[I] <> -1) then TGlyphList(FGlyphList).Delete(FIndexs[I]);
+      if (FIndexs[I] <> -1) then TJvGlyphList(FGlyphList).Delete(FIndexs[I]);
     FIndexs[I] := -1;
   end;
-  GlyphCache.ReturnList(TGlyphList(FGlyphList));
+  GlyphCache.ReturnList(TJvGlyphList(FGlyphList));
   FGlyphList := nil;
 end;
 
@@ -3855,7 +3855,7 @@ begin
   IWidth := Images.Width;
   IHeight := Images.Height;
   if FGlyphList = nil then begin
-    if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    if GlyphCache = nil then GlyphCache := TJvGlyphCache.Create;
     FGlyphList := GlyphCache.GetList(IWidth, IHeight);
   end;
   TmpImage := TBitmap.Create;
@@ -3880,7 +3880,7 @@ begin
               FillRect(Rect(0, 0, IWidth, IHeight));
               ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
             end;
-            FIndexs[State] := TGlyphList(FGlyphList).Add(TmpImage, Mask);
+            FIndexs[State] := TJvGlyphList(FGlyphList).Add(TmpImage, Mask);
           finally
             Mask.Free;
           end;
@@ -3891,7 +3891,7 @@ begin
           TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
           ImageListDrawDisabled(Images, TmpImage.Canvas, 0, 0, Index,
             clBtnHighlight, clBtnShadow, True);
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage,
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
             ColorToRGB(clBtnFace));
         end;
       rbsInactive:
@@ -3905,7 +3905,7 @@ begin
               for Y := 0 to Height - 1 do
                 Canvas.Pixels[X, Y] := MapColor(Canvas.Pixels[X, Y]);
           end;
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage,
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage,
             ColorToRGB(clBtnFace));
         end;
     end;
@@ -3930,7 +3930,7 @@ begin
   IWidth := FOriginal.Width div FNumGlyphs;
   IHeight := FOriginal.Height;
   if FGlyphList = nil then begin
-    if GlyphCache = nil then GlyphCache := TGlyphCache.Create;
+    if GlyphCache = nil then GlyphCache := TJvGlyphCache.Create;
     FGlyphList := GlyphCache.GetList(IWidth, IHeight);
   end;
   TmpImage := TBitmap.Create;
@@ -3946,17 +3946,17 @@ begin
       rbsUp, rbsDown, rbsExclusive:
         begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
         end;
       rbsDisabled:
         if NumGlyphs > 1 then begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
         end
         else begin
           MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
           try
-            FIndexs[State] := TGlyphList(FGlyphList).AddMasked(MonoBmp,
+            FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
               ColorToRGB(clBtnFace));
           finally
             MonoBmp.Free;
@@ -3965,7 +3965,7 @@ begin
       rbsInactive:
         if NumGlyphs > 4 then begin
           TmpImage.Canvas.CopyRect(IRect, FOriginal.Canvas, ORect);
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
         end
         else begin
           with TmpImage do begin
@@ -3973,7 +3973,7 @@ begin
               for Y := 0 to Height - 1 do
                 Canvas.Pixels[X, Y] := MapColor(FOriginal.Canvas.Pixels[X, Y]);
           end;
-          FIndexs[State] := TGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
+          FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(TmpImage, FTransparentColor);
         end;
     end;
   finally

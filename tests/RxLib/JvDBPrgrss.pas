@@ -245,17 +245,17 @@ end;
 
 {$IFDEF WIN32}
 
-{ TSessionLink }
+{ TJvSessionLink }
 
 type
-  TSessionLink = class(TDatabase)
+  TJvSessionLink = class(TDatabase)
   private
     FProgress: TJvDBProgress;
   public
     destructor Destroy; override;
   end;
 
-destructor TSessionLink.Destroy;
+destructor TJvSessionLink.Destroy;
 begin
   if FProgress <> nil then begin
     FProgress.FSessionLink := nil;
@@ -393,11 +393,11 @@ begin
     S := Sessions.List[SessionName];
     S.Open;
     Sessions.CurrentSession := S;
-    FSessionLink := TSessionLink.Create(S);
+    FSessionLink := TJvSessionLink.Create(S);
     try
-      TSessionLink(FSessionLink).Temporary := True;
-      TSessionLink(FSessionLink).KeepConnection := False;
-      TSessionLink(FSessionLink).FProgress := Self;
+      TJvSessionLink(FSessionLink).Temporary := True;
+      TJvSessionLink(FSessionLink).KeepConnection := False;
+      TJvSessionLink(FSessionLink).FProgress := Self;
     except
       FSessionLink.Free;
       FSessionLink := nil;
@@ -410,7 +410,7 @@ end;
 procedure TJvDBProgress.Deactivate;
 begin
   if FSessionLink <> nil then begin
-    TSessionLink(FSessionLink).FProgress := nil;
+    TJvSessionLink(FSessionLink).FProgress := nil;
     FSessionLink.Free;
     FSessionLink := nil;
   end;

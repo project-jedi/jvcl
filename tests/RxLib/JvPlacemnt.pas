@@ -44,11 +44,11 @@ type
 
   TJvIniLink = class;
 
-{ TWinMinMaxInfo }
+{ TJvWinMinMaxInfo }
 
   TJvFormPlacement = class;
 
-  TWinMinMaxInfo = class(TPersistent)
+  TJvWinMinMaxInfo = class(TPersistent)
   private
     FOwner: TJvFormPlacement;
     FMinMaxInfo: TMinMaxInfo;
@@ -88,7 +88,7 @@ type
     FRestored: Boolean;
     FDestroying: Boolean;
     FPreventResize: Boolean;
-    FWinMinMaxInfo: TWinMinMaxInfo;
+    FWinMinMaxInfo: TJvWinMinMaxInfo;
     FDefMaximize: Boolean;
     FWinHook: TJvWindowHook;
     FSaveFormShow: TNotifyEvent;
@@ -103,7 +103,7 @@ type
     procedure CheckToggleHook;
     function CheckMinMaxInfo: Boolean;
     procedure MinMaxInfoModified;
-    procedure SetWinMinMaxInfo(Value: TWinMinMaxInfo);
+    procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
     function GetIniSection: string;
     procedure SetIniSection(const Value: string);
     function GetIniFileName: string;
@@ -150,7 +150,7 @@ type
     property Active: Boolean read FActive write FActive default True;
     property IniFileName: string read GetIniFileName write SetIniFileName;
     property IniSection: string read GetIniSection write SetIniSection;
-    property MinMaxInfo: TWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
+    property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
 {$IFDEF WIN32}
@@ -316,7 +316,7 @@ begin
   else FOptions := [];
   FWinHook := TJvWindowHook.Create(Self);
   FWinHook.AfterMessage := WndMessage;
-  FWinMinMaxInfo := TWinMinMaxInfo.Create;
+  FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
   FWinMinMaxInfo.FOwner := Self;
   FLinks := TList.Create;
 end;
@@ -432,7 +432,7 @@ begin
   if not (csLoading in ComponentState) then CheckToggleHook;
 end;
 
-procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TWinMinMaxInfo);
+procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
 begin
   FWinMinMaxInfo.Assign(Value);
 end;
@@ -865,18 +865,18 @@ begin
   UpdatePlacement;
 end;
 
-{ TWinMinMaxInfo }
+{ TJvWinMinMaxInfo }
 
-procedure TWinMinMaxInfo.Assign(Source: TPersistent);
+procedure TJvWinMinMaxInfo.Assign(Source: TPersistent);
 begin
-  if Source is TWinMinMaxInfo then begin
-    FMinMaxInfo := TWinMinMaxInfo(Source).FMinMaxInfo;
+  if Source is TJvWinMinMaxInfo then begin
+    FMinMaxInfo := TJvWinMinMaxInfo(Source).FMinMaxInfo;
     if FOwner <> nil then FOwner.MinMaxInfoModified;
   end
   else inherited Assign(Source);
 end;
 
-function TWinMinMaxInfo.GetMinMaxInfo(Index: Integer): Integer;
+function TJvWinMinMaxInfo.GetMinMaxInfo(Index: Integer): Integer;
 begin
   with FMinMaxInfo do begin
     case Index of
@@ -893,7 +893,7 @@ begin
   end;
 end;
 
-procedure TWinMinMaxInfo.SetMinMaxInfo(Index: Integer; Value: Integer);
+procedure TJvWinMinMaxInfo.SetMinMaxInfo(Index: Integer; Value: Integer);
 begin
   if GetMinMaxInfo(Index) <> Value then begin
     with FMinMaxInfo do begin
@@ -912,7 +912,7 @@ begin
   end;
 end;
 
-function TWinMinMaxInfo.DefaultMinMaxInfo: Boolean;
+function TJvWinMinMaxInfo.DefaultMinMaxInfo: Boolean;
 begin
   with FMinMaxInfo do begin
     Result := not ((ptMinTrackSize.X <> 0) or (ptMinTrackSize.Y <> 0) or

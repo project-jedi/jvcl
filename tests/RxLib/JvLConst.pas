@@ -83,7 +83,7 @@ const
   srEditPicture        = MaxExtStrID - 17;
   srLoadAniCursor      = MaxExtStrID - 18;
 
-{ TIconList property editor }
+{ TJvIconList property editor }
 
   srLoadIcon           = MaxExtStrID - 19;
 

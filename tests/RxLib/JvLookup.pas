@@ -48,7 +48,7 @@ type
   TGetImageEvent = procedure (Sender: TObject; IsEmpty: Boolean;
     var Graphic: TGraphic; var TextMargin: Integer) of object;
 
-  TDataSourceLink = class(TDataLink)
+  TJvDataSourceLink = class(TDataLink)
   private
     FDataControl: TJvLookupControl;
   protected
@@ -70,7 +70,7 @@ type
   TJvLookupControl = class(TCustomControl)
   private
     FLookupSource: TDataSource;
-    FDataLink: TDataSourceLink;
+    FDataLink: TJvDataSourceLink;
     FLookupLink: TLookupSourceLink;
     FDataFieldName: string;
     FLookupFieldName: string;
@@ -520,9 +520,9 @@ type
 {$ENDIF}
 end;
 
-{ TPopupDataWindow }
+{ TJvPopupDataWindow }
 
-  TPopupDataWindow = class(TJvPopupDataList)
+  TJvPopupDataWindow = class(TJvPopupDataList)
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -678,24 +678,24 @@ implementation
 uses DBConsts, Dialogs, {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvStrUtils,
   {$IFNDEF Delphi3_Up} JvBdeUtils, {$ENDIF} JvMaxMin, JvClipIcon;
 
-{ TDataSourceLink }
+{ TJvDataSourceLink }
 
-procedure TDataSourceLink.ActiveChanged;
+procedure TJvDataSourceLink.ActiveChanged;
 begin
   if FDataControl <> nil then FDataControl.DataLinkActiveChanged;
 end;
 
-procedure TDataSourceLink.LayoutChanged;
+procedure TJvDataSourceLink.LayoutChanged;
 begin
   if FDataControl <> nil then FDataControl.CheckDataLinkActiveChanged;
 end;
 
-procedure TDataSourceLink.RecordChanged(Field: TField);
+procedure TJvDataSourceLink.RecordChanged(Field: TField);
 begin
   if FDataControl <> nil then FDataControl.DataLinkRecordChanged(Field);
 end;
 
-procedure TDataSourceLink.FocusControl(Field: TFieldRef);
+procedure TJvDataSourceLink.FocusControl(Field: TFieldRef);
 begin
   if (Field^ <> nil) and (FDataControl <> nil) and
     (Field^ = FDataControl.FDataField) and FDataControl.CanFocus then
@@ -748,7 +748,7 @@ begin
   TabStop := True;
   FFieldsDelim := DefFieldsDelim;
   FLookupSource := TDataSource.Create(Self);
-  FDataLink := TDataSourceLink.Create;
+  FDataLink := TJvDataSourceLink.Create;
   FDataLink.FDataControl := Self;
   FLookupLink := TLookupSourceLink.Create;
   FLookupLink.FDataControl := Self;
@@ -2870,9 +2870,9 @@ begin
 end;
 {$ENDIF}
 
-{ TPopupDataWindow }
+{ TJvPopupDataWindow }
 
-constructor TPopupDataWindow.Create(AOwner: TComponent);
+constructor TJvPopupDataWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FEditor := TWinControl(AOwner);
@@ -2881,7 +2881,7 @@ begin
   OnMouseUp := PopupMouseUp;
 end;
 
-procedure TPopupDataWindow.InvalidateEditor;
+procedure TJvPopupDataWindow.InvalidateEditor;
 var
   R: TRect;
 begin
@@ -2894,7 +2894,7 @@ begin
   UpdateWindow(FEditor.Handle);
 end;
 
-procedure TPopupDataWindow.Click;
+procedure TJvPopupDataWindow.Click;
 begin
   inherited Click;
   if Value <> '' then
@@ -2912,7 +2912,7 @@ begin
   InvalidateEditor;
 end;
 
-procedure TPopupDataWindow.DisplayValueChanged;
+procedure TJvPopupDataWindow.DisplayValueChanged;
 begin
   if not FLockPosition then
     if FListActive then begin
@@ -2926,24 +2926,24 @@ begin
     else FValue := FEmptyValue;
 end;
 
-procedure TPopupDataWindow.KeyPress(var Key: Char);
+procedure TJvPopupDataWindow.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   InvalidateEditor;
 end;
 
-procedure TPopupDataWindow.PopupMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TJvPopupDataWindow.PopupMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then CloseUp(PtInRect(Self.ClientRect, Point(X, Y)));
 end;
 
-procedure TPopupDataWindow.CloseUp(Accept: Boolean);
+procedure TJvPopupDataWindow.CloseUp(Accept: Boolean);
 begin
   if Assigned(FCloseUp) then FCloseUp(Self, Accept);
 end;
 
-function TPopupDataWindow.GetPicture(Current, Empty: Boolean;
+function TJvPopupDataWindow.GetPicture(Current, Empty: Boolean;
   var TextMargin: Integer): TGraphic;
 begin
   TextMargin := 0;
@@ -2951,14 +2951,14 @@ begin
   if Assigned(FOnGetImage) then FOnGetImage(FEditor, Empty, Result, TextMargin);
 end;
 
-procedure TPopupDataWindow.Hide;
+procedure TJvPopupDataWindow.Hide;
 begin
   SetWindowPos(Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
     SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
   Visible := False;
 end;
 
-procedure TPopupDataWindow.Show(Origin: TPoint);
+procedure TJvPopupDataWindow.Show(Origin: TPoint);
 begin
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
@@ -2974,8 +2974,8 @@ begin
   FPopupOnlyLocate := True;
   ControlState := ControlState + [csCreating];
   try
-    FPopup := TPopupDataWindow.Create(Self);
-    TPopupDataWindow(FPopup).OnCloseUp := PopupCloseUp;
+    FPopup := TJvPopupDataWindow.Create(Self);
+    TJvPopupDataWindow(FPopup).OnCloseUp := PopupCloseUp;
     GlyphKind := gkDropDown; { force update }
   finally
     ControlState := ControlState - [csCreating];
@@ -2985,7 +2985,7 @@ end;
 destructor TJvLookupEdit.Destroy;
 begin
   if FPopup <> nil then
-    with TPopupDataWindow(FPopup) do begin
+    with TJvPopupDataWindow(FPopup) do begin
       OnCloseUp := nil;
       OnGetImage := nil;
     end;
@@ -3003,101 +3003,101 @@ end;
 
 function TJvLookupEdit.GetListStyle: TLookupListStyle;
 begin
-  Result := TPopupDataWindow(FPopup).ListStyle;
+  Result := TJvPopupDataWindow(FPopup).ListStyle;
 end;
 
 procedure TJvLookupEdit.SetListStyle(Value: TLookupListStyle);
 begin
-  TPopupDataWindow(FPopup).ListStyle := Value;
+  TJvPopupDataWindow(FPopup).ListStyle := Value;
 end;
 
 function TJvLookupEdit.GetFieldsDelim: Char;
 begin
-  Result := TPopupDataWindow(FPopup).FieldsDelimiter;
+  Result := TJvPopupDataWindow(FPopup).FieldsDelimiter;
 end;
 
 procedure TJvLookupEdit.SetFieldsDelim(Value: Char);
 begin
-  TPopupDataWindow(FPopup).FieldsDelimiter := Value;
+  TJvPopupDataWindow(FPopup).FieldsDelimiter := Value;
 end;
 
 function TJvLookupEdit.GetLookupDisplay: string;
 begin
-  Result := TPopupDataWindow(FPopup).LookupDisplay;
+  Result := TJvPopupDataWindow(FPopup).LookupDisplay;
 end;
 
 procedure TJvLookupEdit.SetLookupDisplay(const Value: string);
 begin
-  TPopupDataWindow(FPopup).LookupDisplay := Value;
+  TJvPopupDataWindow(FPopup).LookupDisplay := Value;
 end;
 
 function TJvLookupEdit.GetDisplayIndex: Integer;
 begin
-  Result := TPopupDataWindow(FPopup).LookupDisplayIndex;
+  Result := TJvPopupDataWindow(FPopup).LookupDisplayIndex;
 end;
 
 procedure TJvLookupEdit.SetDisplayIndex(Value: Integer);
 begin
-  TPopupDataWindow(FPopup).LookupDisplayIndex := Value;
+  TJvPopupDataWindow(FPopup).LookupDisplayIndex := Value;
 end;
 
 function TJvLookupEdit.GetLookupField: string;
 begin
-  Result := TPopupDataWindow(FPopup).LookupField;
+  Result := TJvPopupDataWindow(FPopup).LookupField;
 end;
 
 procedure TJvLookupEdit.SetLookupField(const Value: string);
 begin
-  TPopupDataWindow(FPopup).LookupField := Value;
+  TJvPopupDataWindow(FPopup).LookupField := Value;
 end;
 
 function TJvLookupEdit.GetLookupSource: TDataSource;
 begin
-  Result := TPopupDataWindow(FPopup).LookupSource;
+  Result := TJvPopupDataWindow(FPopup).LookupSource;
 end;
 
 procedure TJvLookupEdit.SetLookupSource(Value: TDataSource);
 begin
-  TPopupDataWindow(FPopup).LookupSource := Value;
+  TJvPopupDataWindow(FPopup).LookupSource := Value;
 end;
 
 function TJvLookupEdit.GetOnGetImage: TGetImageEvent;
 begin
-  Result := TPopupDataWindow(FPopup).OnGetImage;
+  Result := TJvPopupDataWindow(FPopup).OnGetImage;
 end;
 
 procedure TJvLookupEdit.SetOnGetImage(Value: TGetImageEvent);
 begin
-  TPopupDataWindow(FPopup).OnGetImage := Value;
+  TJvPopupDataWindow(FPopup).OnGetImage := Value;
 end;
 
 function TJvLookupEdit.GetLookupValue: string;
 begin
-  TPopupDataWindow(FPopup).DisplayValue := Text;
-  Result := TPopupDataWindow(FPopup).Value;
+  TJvPopupDataWindow(FPopup).DisplayValue := Text;
+  Result := TJvPopupDataWindow(FPopup).Value;
 end;
 
 procedure TJvLookupEdit.SetLookupValue(const Value: string);
 begin
-  TPopupDataWindow(FPopup).Value := Value;
-  Text := TPopupDataWindow(FPopup).DisplayValue;
+  TJvPopupDataWindow(FPopup).Value := Value;
+  Text := TJvPopupDataWindow(FPopup).DisplayValue;
 end;
 
 procedure TJvLookupEdit.ShowPopup(Origin: TPoint);
 begin
-  TPopupDataWindow(FPopup).Show(Origin);
+  TJvPopupDataWindow(FPopup).Show(Origin);
 end;
 
 procedure TJvLookupEdit.HidePopup;
 begin
-  TPopupDataWindow(FPopup).Hide;
+  TJvPopupDataWindow(FPopup).Hide;
 end;
 
 procedure TJvLookupEdit.PopupDropDown(DisableEdit: Boolean);
 begin
   if not (ReadOnly or PopupVisible) then begin
     if Assigned(FOnDropDown) then FOnDropDown(Self);
-    with TPopupDataWindow(FPopup) do begin
+    with TJvPopupDataWindow(FPopup) do begin
       Color := Self.Color;
       Font := Self.Font;
       if FDropDownWidth > 0 then
@@ -3117,7 +3117,7 @@ begin
   if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN]) and
     PopupVisible then
   begin
-    TPopupDataWindow(FPopup).KeyDown(Key, Shift);
+    TJvPopupDataWindow(FPopup).KeyDown(Key, Shift);
     Key := 0;
   end;
   inherited KeyDown(Key, Shift);
@@ -3125,7 +3125,7 @@ begin
   if not (PopupVisible or ReadOnly) and (Key in [VK_UP, VK_DOWN]) and
     (Shift = []) then
   begin
-    with TPopupDataWindow(FPopup) do begin
+    with TJvPopupDataWindow(FPopup) do begin
       KeyDown(Key, Shift);
       if Value <> EmptyValue then Key := 0;
     end;
@@ -3160,13 +3160,13 @@ begin
   FChanging := True;
   try
     S := Text;
-    if TPopupDataWindow(FPopup).SearchText(S) then begin
+    if TJvPopupDataWindow(FPopup).SearchText(S) then begin
       Len := Length(Text);
-      Text := TPopupDataWindow(FPopup).DisplayValue;
+      Text := TJvPopupDataWindow(FPopup).DisplayValue;
       SelStart := Len;
       SelLength := Length(Text) - Len;
     end
-    else with TPopupDataWindow(FPopup) do Value := EmptyValue;
+    else with TJvPopupDataWindow(FPopup) do Value := EmptyValue;
   finally
     FChanging := False;
   end;
@@ -3180,10 +3180,10 @@ procedure TJvLookupEdit.SetPopupValue(const Value: string);
 begin
 {$IFDEF WIN32}
   if VarIsNull(Value) or VarIsEmpty(Value) then
-    TPopupDataWindow(FPopup).Value := TPopupDataWindow(FPopup).EmptyValue
+    TJvPopupDataWindow(FPopup).Value := TJvPopupDataWindow(FPopup).EmptyValue
   else
 {$ENDIF}
-    TPopupDataWindow(FPopup).DisplayValue := Value;
+    TJvPopupDataWindow(FPopup).DisplayValue := Value;
 end;
 
 {$IFDEF WIN32}
@@ -3192,7 +3192,7 @@ function TJvLookupEdit.GetPopupValue: Variant;
 function TJvLookupEdit.GetPopupValue: string;
 {$ENDIF}
 begin
-  with TPopupDataWindow(FPopup) do
+  with TJvPopupDataWindow(FPopup) do
     if Value <> EmptyValue then Result := DisplayValue
     else Result := Self.Text;
 end;

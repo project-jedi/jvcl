@@ -38,13 +38,13 @@ type
   TFileChangeFilter = (fnFileName, fnDirName, fnAttributes, fnSize,
     fnLastWrite, fnLastAccess, fnCreation, fnSecurity);
   TFileChangeFilters = set of TFileChangeFilter;
-  TNotifyThread = class;
+  TJvNotifyThread = class;
 
 { TJvFolderMonitor }
 
   TJvFolderMonitor = class(TComponent)
   private
-    FNotifyThread: TNotifyThread;
+    FNotifyThread: TJvNotifyThread;
     FFilter: TFileChangeFilters;
     FDelayTimer: TTimer;
     FDelayTime: Cardinal;
@@ -80,9 +80,9 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-{ TNotifyThread }
+{ TJvNotifyThread }
 
-  TNotifyThread = class(TThread)
+  TJvNotifyThread = class(TThread)
   private
     FNotifyHandle: THandle;
     FEvent: THandle;
@@ -108,7 +108,7 @@ type
   end;
 
 function CreateNotifyThread(const FolderName: string; WatchSubtree: Boolean;
-  Filter: TFileChangeFilters): TNotifyThread;
+  Filter: TFileChangeFilters): TJvNotifyThread;
 
 {$ENDIF WIN32}
 
@@ -124,9 +124,9 @@ const
   FILE_NOTIFY_CHANGE_CREATION     = $00000040;
 {$ENDIF}
 
-{ TNotifyThread }
+{ TJvNotifyThread }
 
-constructor TNotifyThread.Create(const FolderName: string;
+constructor TJvNotifyThread.Create(const FolderName: string;
   WatchSubtree: Boolean; Filter: TFileChangeFilters);
 const
   NotifyFilters: array[TFileChangeFilter] of DWORD = (
@@ -152,30 +152,30 @@ begin
   inherited Create(False);
 end;
 
-destructor TNotifyThread.Destroy;
+destructor TJvNotifyThread.Destroy;
 begin
   FOnChange := nil;
   StopWaiting;
   inherited Destroy;
 end;
 
-procedure TNotifyThread.Terminate;
+procedure TJvNotifyThread.Terminate;
 begin
   inherited Terminate;
   StopWaiting;
 end;
 
-procedure TNotifyThread.CallOnChange;
+procedure TJvNotifyThread.CallOnChange;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TNotifyThread.DoChange;
+procedure TJvNotifyThread.DoChange;
 begin
   if Assigned(FOnChange) then Synchronize(CallOnChange);
 end;
 
-procedure TNotifyThread.DoTerminate;
+procedure TJvNotifyThread.DoTerminate;
 begin
   if FNotifyHandle <> INVALID_HANDLE_VALUE then
     FindCloseChangeNotification(FNotifyHandle);
@@ -185,7 +185,7 @@ begin
   inherited DoTerminate;
 end;
 
-procedure TNotifyThread.Execute;
+procedure TJvNotifyThread.Execute;
 var
   Handles: array[0..1] of THandle;
 begin
@@ -214,15 +214,15 @@ begin
   FFinished := True;
 end;
 
-procedure TNotifyThread.StopWaiting;
+procedure TJvNotifyThread.StopWaiting;
 begin
   if FEvent <> 0 then SetEvent(FEvent);
 end;
 
 function CreateNotifyThread(const FolderName: string; WatchSubtree: Boolean;
-  Filter: TFileChangeFilters): TNotifyThread;
+  Filter: TFileChangeFilters): TJvNotifyThread;
 begin
-  Result := TNotifyThread.Create(FolderName, WatchSubtree, Filter);
+  Result := TJvNotifyThread.Create(FolderName, WatchSubtree, Filter);
   try
     if Result.LastError <> ERROR_SUCCESS then
       RaiseWin32Error(Result.LastError);

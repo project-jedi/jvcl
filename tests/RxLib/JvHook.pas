@@ -80,15 +80,15 @@ function FindVirtualMethodIndex(AClass: TClass; MethodAddr: Pointer): Integer;
 implementation
 
 type
-  THack = class(TWinControl);
+  TJvHack = class(TWinControl);
   THookOrder = (hoBeforeMsg, hoAfterMsg);
 {$IFNDEF Delphi3_Up}
   TCustomForm = TForm;
 {$ENDIF}
 
-{ TControlHook }
+{ TJvControlHook }
 
-  TControlHook = class(TObject)
+  TJvControlHook = class(TObject)
   private
     FControl: TWinControl;
     FNewWndProc: Pointer;
@@ -109,26 +109,26 @@ type
     property WinControl: TWinControl read FControl write SetWinControl;
   end;
 
-{ THookList }
+{ TJvHookList }
 
-  THookList = class(TList)
+  TJvHookList = class(TList)
   private
     FHandle: HWnd;
     procedure WndProc(var Msg: TMessage);
   public
     constructor Create;
     destructor Destroy; override;
-    function FindControlHook(AControl: TWinControl): TControlHook;
-    function GetControlHook(AControl: TWinControl): TControlHook;
+    function FindControlHook(AControl: TWinControl): TJvControlHook;
+    function GetControlHook(AControl: TWinControl): TJvControlHook;
     property Handle: HWnd read FHandle;
   end;
 
 var
-  HookList: THookList;
+  HookList: TJvHookList;
 
-function GetHookList: THookList;
+function GetHookList: TJvHookList;
 begin
-  if HookList = nil then HookList := THookList.Create;
+  if HookList = nil then HookList := TJvHookList.Create;
   Result := HookList;
 end;
 
@@ -138,9 +138,9 @@ begin
   HookList := nil;
 end;
 
-{ TControlHook }
+{ TJvControlHook }
 
-constructor TControlHook.Create;
+constructor TJvControlHook.Create;
 begin
   inherited Create;
   FList := TList.Create;
@@ -149,7 +149,7 @@ begin
   FControl := nil;
 end;
 
-destructor TControlHook.Destroy;
+destructor TJvControlHook.Destroy;
 begin
   FDestroying := True;
   if Assigned(HookList) then
@@ -162,7 +162,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TControlHook.AddHook(AHook: TJvWindowHook);
+procedure TJvControlHook.AddHook(AHook: TJvWindowHook);
 begin
   if FList.IndexOf(AHook) < 0 then begin
     FList.Add(AHook);
@@ -172,14 +172,14 @@ begin
   HookControl;
 end;
 
-procedure TControlHook.RemoveHook(AHook: TJvWindowHook);
+procedure TJvControlHook.RemoveHook(AHook: TJvWindowHook);
 begin
   AHook.FControlHook := nil;
   FList.Remove(AHook);
   if FList.Count = 0 then UnhookControl;
 end;
 
-procedure TControlHook.NotifyHooks(Order: THookOrder; var Msg: TMessage;
+procedure TJvControlHook.NotifyHooks(Order: THookOrder; var Msg: TMessage;
   var Handled: Boolean);
 var
   I: Integer;
@@ -199,7 +199,7 @@ begin
     end;
 end;
 
-procedure TControlHook.HookControl;
+procedure TJvControlHook.HookControl;
 var
   P: Pointer;
 begin
@@ -215,7 +215,7 @@ begin
   end;
 end;
 
-procedure TControlHook.UnhookControl;
+procedure TJvControlHook.UnhookControl;
 begin
   if Assigned(FControl) then begin
     if Assigned(FPrevWndProc) and FControl.HandleAllocated and
@@ -225,7 +225,7 @@ begin
   FPrevWndProc := nil;
 end;
 
-procedure TControlHook.HookWndProc(var AMsg: TMessage);
+procedure TJvControlHook.HookWndProc(var AMsg: TMessage);
 var
   Handled: Boolean;
 begin
@@ -239,7 +239,7 @@ begin
             Result := CallWindowProc(FPrevWndProc, FControl.Handle, Msg,
               WParam, LParam)
           else
-            Result := CallWindowProc(THack(FControl).DefWndProc,
+            Result := CallWindowProc(TJvHack(FControl).DefWndProc,
               FControl.Handle, Msg, WParam, LParam);
         finally
           NotifyHooks(hoAfterMsg, AMsg, Handled);
@@ -254,7 +254,7 @@ begin
   end;
 end;
 
-procedure TControlHook.SetWinControl(Value: TWinControl);
+procedure TJvControlHook.SetWinControl(Value: TWinControl);
 begin
   if Value <> FControl then begin
     UnhookControl;
@@ -263,34 +263,34 @@ begin
   end;
 end;
 
-{ THookList }
+{ TJvHookList }
 
-constructor THookList.Create;
+constructor TJvHookList.Create;
 begin
   inherited Create;
   FHandle := Classes.AllocateHWnd(WndProc);
 end;
 
-destructor THookList.Destroy;
+destructor TJvHookList.Destroy;
 begin
-  while Count > 0 do TControlHook(Last).Free;
+  while Count > 0 do TJvControlHook(Last).Free;
   Classes.DeallocateHWnd(FHandle);
   inherited Destroy;
 end;
 
-procedure THookList.WndProc(var Msg: TMessage);
+procedure TJvHookList.WndProc(var Msg: TMessage);
 var
-  Hook: TControlHook;
+  Hook: TJvControlHook;
 begin
   try
     with Msg do begin
       if Msg = CM_RECREATEWINDOW then begin
-        Hook := TControlHook(LParam);
+        Hook := TJvControlHook(LParam);
         if (Hook <> nil) and (IndexOf(Hook) >= 0) then
           Hook.HookControl;
       end
       else if Msg = CM_DESTROYHOOK then begin
-        Hook := TControlHook(LParam);
+        Hook := TJvControlHook(LParam);
         if Assigned(Hook) and (IndexOf(Hook) >= 0) and
           (Hook.FList.Count = 0) then Hook.Free;
       end
@@ -301,24 +301,24 @@ begin
   end;
 end;
 
-function THookList.FindControlHook(AControl: TWinControl): TControlHook;
+function TJvHookList.FindControlHook(AControl: TWinControl): TJvControlHook;
 var
   I: Integer;
 begin
   if Assigned(AControl) then
     for I := 0 to Count - 1 do
-      if (TControlHook(Items[I]).WinControl = AControl) then begin
-        Result := TControlHook(Items[I]);
+      if (TJvControlHook(Items[I]).WinControl = AControl) then begin
+        Result := TJvControlHook(Items[I]);
         Exit;
       end;
   Result := nil;
 end;
 
-function THookList.GetControlHook(AControl: TWinControl): TControlHook;
+function TJvHookList.GetControlHook(AControl: TWinControl): TJvControlHook;
 begin
   Result := FindControlHook(AControl);
   if Result = nil then begin
-    Result := TControlHook.Create;
+    Result := TJvControlHook.Create;
     try
       Add(Result);
       Result.WinControl := AControl;
@@ -371,7 +371,7 @@ end;
 function TJvWindowHook.DoUnhookControl: Pointer;
 begin
   Result := FControlHook;
-  if Result <> nil then TControlHook(Result).RemoveHook(Self);
+  if Result <> nil then TJvControlHook(Result).RemoveHook(Self);
   FActive := False;
 end;
 
@@ -420,7 +420,7 @@ end;
 
 function TJvWindowHook.GetWinControl: TWinControl;
 begin
-  if Assigned(FControlHook) then Result := TControlHook(FControlHook).WinControl
+  if Assigned(FControlHook) then Result := TJvControlHook(FControlHook).WinControl
   else Result := FControl;
 end;
 
@@ -446,11 +446,11 @@ end;
 procedure TJvWindowHook.SetWinControl(Value: TWinControl);
 var
   SaveActive: Boolean;
-  Hook: TControlHook;
+  Hook: TJvControlHook;
 begin
   if Value <> WinControl then begin
     SaveActive := FActive;
-    Hook := TControlHook(DoUnhookControl);
+    Hook := TJvControlHook(DoUnhookControl);
     FControl := Value;
 {$IFDEF WIN32}
     if Value <> nil then Value.FreeNotification(Self);

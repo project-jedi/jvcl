@@ -30,9 +30,6 @@ Known Issues:
 
 unit JvDBQBE;
 
-{$I RX.INC}
-{$N+,P+,S-}
-
 interface
 
 uses SysUtils, {$IFDEF WIN32} Windows, Bde, {$ELSE} WinTypes, WinProcs,
@@ -102,7 +99,7 @@ type
 {$IFDEF Delphi4_Up}
     procedure DefineProperties(Filer: TFiler); override;
 {$ENDIF}
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
     function SetDBFlag(Flag: Integer; Value: Boolean): Boolean; override;
 {$ELSE}
     procedure SetDBFlag(Flag: Integer; Value: Boolean); override;
@@ -562,7 +559,7 @@ begin
   Check(DbiQExec(StmtHandle, PCursor));
 end;
 
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
 function TJvQBEQuery.SetDBFlag(Flag: Integer; Value: Boolean): Boolean;
 {$ELSE}
 procedure TJvQBEQuery.SetDBFlag(Flag: Integer; Value: Boolean);
@@ -572,7 +569,7 @@ var
 begin
   if Value then begin
     NewConnection := DBFlags = [];
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
     Result := inherited SetDBFlag(Flag, Value);
 {$ELSE}
     inherited SetDBFlag(Flag, Value);
@@ -582,7 +579,7 @@ begin
   end
   else begin
     if DBFlags - [Flag] = [] then SetPrepared(False);
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
     Result := inherited SetDBFlag(Flag, Value);
 {$ELSE}
     inherited SetDBFlag(Flag, Value);

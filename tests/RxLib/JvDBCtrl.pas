@@ -42,7 +42,7 @@ const
   DefRxGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
     dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
 
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
  {$IFDEF CBUILDER}
   {$NODEFINE DefRxGridOptions}
  {$ENDIF}
@@ -67,7 +67,7 @@ type
 {$IFNDEF WIN32}
   TBookmarkList = class
   private
-    FList: THugeList;
+    FList: TJvHugeList;
     FGrid: TCustomDBGrid;
     FCache: TBookmark;
     FCacheIndex: Longint;
@@ -845,7 +845,7 @@ end;
 constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
 begin
   inherited Create;
-  FList := THugeList.Create;
+  FList := TJvHugeList.Create;
   FGrid := AGrid;
 end;
 
@@ -1960,7 +1960,7 @@ begin
 end;
 
 type
-  THack = class(TWinControl);
+  TJvHack = class(TWinControl);
 
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 
@@ -1972,7 +1972,7 @@ procedure TJvDBGrid.WMChar(var Msg: TWMChar);
     Result := True;
     Form := GetParentForm(Self);
     if (Form <> nil) and TForm(Form).KeyPreview and
-      THack(Form).DoKeyPress(Msg) then Exit;
+      TJvHack(Form).DoKeyPress(Msg) then Exit;
     with Msg do begin
       if Assigned(FOnKeyPress) then begin
         Ch := Char(CharCode);
@@ -3410,10 +3410,10 @@ begin
 end;
 {$ENDIF}
 
-{ TStatusDataLink }
+{ TJvStatusDataLink }
 
 type
-  TStatusDataLink = class(TDataLink)
+  TJvStatusDataLink = class(TDataLink)
   private
     FLabel: TJvDBStatusLabel;
   protected
@@ -3427,41 +3427,41 @@ type
     destructor Destroy; override;
   end;
 
-constructor TStatusDataLink.Create(ALabel: TJvDBStatusLabel);
+constructor TJvStatusDataLink.Create(ALabel: TJvDBStatusLabel);
 begin
   inherited Create;
   FLabel := ALabel;
 end;
 
-destructor TStatusDataLink.Destroy;
+destructor TJvStatusDataLink.Destroy;
 begin
   FLabel := nil;
   inherited Destroy;
 end;
 
-procedure TStatusDataLink.ActiveChanged;
+procedure TJvStatusDataLink.ActiveChanged;
 begin
   DataSetChanged;
 end;
 
-procedure TStatusDataLink.DataSetScrolled(Distance: Integer);
+procedure TJvStatusDataLink.DataSetScrolled(Distance: Integer);
 begin
   if (FLabel <> nil) and (FLabel.Style = lsRecordNo) then
     FLabel.UpdateStatus;
 end;
 
-procedure TStatusDataLink.EditingChanged;
+procedure TJvStatusDataLink.EditingChanged;
 begin
   if (FLabel <> nil) and (FLabel.Style <> lsRecordSize) then
     FLabel.UpdateStatus;
 end;
 
-procedure TStatusDataLink.DataSetChanged;
+procedure TJvStatusDataLink.DataSetChanged;
 begin
   if (FLabel <> nil) then FLabel.UpdateData;
 end;
 
-procedure TStatusDataLink.LayoutChanged;
+procedure TJvStatusDataLink.LayoutChanged;
 begin
   if (FLabel <> nil) and (FLabel.Style <> lsRecordSize) then
     DataSetChanged; { ??? }
@@ -3484,7 +3484,7 @@ begin
   FRecordNo := -1;
   ShowAccelChar := False;
   FDataSetName := EmptyStr;
-  FDataLink := TStatusDataLink.Create(Self);
+  FDataLink := TJvStatusDataLink.Create(Self);
   FStyle := lsState;
   GlyphAlign := glGlyphLeft;
   FEditColor := clRed;

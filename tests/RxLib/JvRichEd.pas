@@ -253,9 +253,9 @@ type
     property TableStyle: TParaTableStyle read GetTableStyle write SetTableStyle;
   end;
 
-{ TOEMConversion }
+{ TJvOEMConversion }
 
-  TOEMConversion = class(TConversion)
+  TJvOEMConversion = class(TConversion)
   public
     function ConvertReadStream(Stream: TStream; Buffer: PChar; BufSize: Integer): Integer; override;
     function ConvertWriteStream(Stream: TStream; Buffer: PChar; BufSize: Integer): Integer; override;
@@ -342,7 +342,7 @@ type
     function GetLangOptions: TRichLangOptions;
     function GetCanRedo: Boolean;
     function GetCanPaste: Boolean;
-{$IFNDEF RX_V110}
+{$IFNDEF COMPILER35_UP}
     function GetCanUndo: Boolean;
 {$ENDIF}
     function GetRedoName: TUndoName;
@@ -469,7 +469,7 @@ type
       StartPos, Length: Integer; Options: TRichSearchTypes): Integer;
     function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;
       {$IFDEF Delphi3_Up} override; {$ENDIF}
-    function GetCaretPos: TPoint; {$IFDEF RX_V110} override; {$ENDIF}
+    function GetCaretPos: TPoint; {$IFDEF COMPILER35_UP} override; {$ENDIF}
     function GetCharPos(CharIndex: Integer): TPoint;
     function InsertObjectDialog: Boolean;
     function ObjectPropertiesDialog: Boolean;
@@ -486,7 +486,7 @@ type
     property CanFindNext: Boolean read GetCanFindNext;
     property CanRedo: Boolean read GetCanRedo;
     property CanPaste: Boolean read GetCanPaste;
-{$IFNDEF RX_V110}
+{$IFNDEF COMPILER35_UP}
     procedure Undo;
     property CanUndo: Boolean read GetCanUndo;
     property CaretPos: TPoint read GetCaretPos;
@@ -2931,7 +2931,7 @@ begin
   Result := SendMessage(Wnd, EM_GETOLEINTERFACE, 0, Longint(@RichEditOle)) <> 0;
 end;
 
-{ TRichEditStrings }
+{ TJvRichEditStrings }
 
 const
   ReadError  = $0001;
@@ -2939,7 +2939,7 @@ const
   NoError    = $0000;
 
 type
-  TRichEditStrings = class(TStrings)
+  TJvRichEditStrings = class(TStrings)
   private
     RichEdit: TJvCustomRichEdit;
     FFormat: TRichStreamFormat;
@@ -2966,13 +2966,13 @@ type
     property Mode: TRichStreamModes read FMode write FMode;
   end;
 
-destructor TRichEditStrings.Destroy;
+destructor TJvRichEditStrings.Destroy;
 begin
   FConverter.Free;
   inherited Destroy;
 end;
 
-procedure TRichEditStrings.AddStrings(Strings: TStrings);
+procedure TJvRichEditStrings.AddStrings(Strings: TStrings);
 var
   SelChange: TNotifyEvent;
 begin
@@ -2985,7 +2985,7 @@ begin
   end;
 end;
 
-function TRichEditStrings.GetCount: Integer;
+function TJvRichEditStrings.GetCount: Integer;
 begin
   with RichEdit do begin
     Result := SendMessage(Handle, EM_GETLINECOUNT, 0, 0);
@@ -2993,7 +2993,7 @@ begin
   end;
 end;
 
-function TRichEditStrings.Get(Index: Integer): string;
+function TJvRichEditStrings.Get(Index: Integer): string;
 var
   Text: array[0..4095] of Char;
   L: Integer;
@@ -3005,7 +3005,7 @@ begin
   SetString(Result, Text, L);
 end;
 
-procedure TRichEditStrings.Put(Index: Integer; const S: string);
+procedure TJvRichEditStrings.Put(Index: Integer; const S: string);
 var
   Selection: TCharRange;
 begin
@@ -3026,7 +3026,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.Insert(Index: Integer; const S: string);
+procedure TJvRichEditStrings.Insert(Index: Integer; const S: string);
 var
   L: Integer;
   Selection: TCharRange;
@@ -3063,7 +3063,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.Delete(Index: Integer);
+procedure TJvRichEditStrings.Delete(Index: Integer);
 const
   Empty: PChar = '';
 var
@@ -3086,12 +3086,12 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.Clear;
+procedure TJvRichEditStrings.Clear;
 begin
   RichEdit.Clear;
 end;
 
-procedure TRichEditStrings.SetUpdateState(Updating: Boolean);
+procedure TJvRichEditStrings.SetUpdateState(Updating: Boolean);
 begin
   if RichEdit.Showing then
     SendMessage(RichEdit.Handle, WM_SETREDRAW, Ord(not Updating), 0);
@@ -3101,7 +3101,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.EnableChange(const Value: Boolean);
+procedure TJvRichEditStrings.EnableChange(const Value: Boolean);
 var
   EventMask: Longint;
 begin
@@ -3115,7 +3115,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.SetTextStr(const Value: string);
+procedure TJvRichEditStrings.SetTextStr(const Value: string);
 begin
   EnableChange(False);
   try
@@ -3204,7 +3204,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.LoadFromStream(Stream: TStream);
+procedure TJvRichEditStrings.LoadFromStream(Stream: TStream);
 var
   EditStream: TEditStream;
   Position: Longint;
@@ -3254,7 +3254,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.SaveToStream(Stream: TStream);
+procedure TJvRichEditStrings.SaveToStream(Stream: TStream);
 var
   EditStream: TEditStream;
   TextType: Longint;
@@ -3296,7 +3296,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.LoadFromFile(const FileName: string);
+procedure TJvRichEditStrings.LoadFromFile(const FileName: string);
 var
   Ext: string;
   Convert: PRichConversionFormat;
@@ -3333,7 +3333,7 @@ begin
   end;
 end;
 
-procedure TRichEditStrings.SaveToFile(const FileName: string);
+procedure TJvRichEditStrings.SaveToFile(const FileName: string);
 var
   Ext: string;
   Convert: PRichConversionFormat;
@@ -3370,9 +3370,9 @@ begin
   end;
 end;
 
-{ TOEMConversion }
+{ TJvOEMConversion }
 
-function TOEMConversion.ConvertReadStream(Stream: TStream; Buffer: PChar;
+function TJvOEMConversion.ConvertReadStream(Stream: TStream; Buffer: PChar;
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -3387,7 +3387,7 @@ begin
   end;
 end;
 
-function TOEMConversion.ConvertWriteStream(Stream: TStream; Buffer: PChar;
+function TJvOEMConversion.ConvertWriteStream(Stream: TStream; Buffer: PChar;
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -3414,8 +3414,8 @@ begin
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
   FWordAttributes := TJvTextAttributes.Create(Self, atWord);
   FParagraph := TJvParaAttributes.Create(Self);
-  FRichEditStrings := TRichEditStrings.Create;
-  TRichEditStrings(FRichEditStrings).RichEdit := Self;
+  FRichEditStrings := TJvRichEditStrings.Create;
+  TJvRichEditStrings(FRichEditStrings).RichEdit := Self;
   TabStop := True;
   Width := 185;
   Height := 89;
@@ -3511,8 +3511,8 @@ var
   DesignMode: Boolean;
   Mask: Longint;
 begin
-  StreamFmt := TRichEditStrings(Lines).Format;
-  Mode := TRichEditStrings(Lines).Mode;
+  StreamFmt := TJvRichEditStrings(Lines).Format;
+  Mode := TJvRichEditStrings(Lines).Mode;
   inherited CreateWnd;
 {$IFNDEF VER90}
   if (SysLocale.FarEast) and not (SysLocale.PriLangID = LANG_JAPANESE) then
@@ -3541,16 +3541,16 @@ begin
   if FMemStream <> nil then begin
     FMemStream.ReadBuffer(DesignMode, SizeOf(DesignMode));
     if DesignMode then begin
-      TRichEditStrings(Lines).Format := sfPlainText;
-      TRichEditStrings(Lines).Mode := [];
+      TJvRichEditStrings(Lines).Format := sfPlainText;
+      TJvRichEditStrings(Lines).Mode := [];
     end;
     try
       Lines.LoadFromStream(FMemStream);
       FMemStream.Free;
       FMemStream := nil;
     finally
-      TRichEditStrings(Lines).Format := StreamFmt;
-      TRichEditStrings(Lines).Mode := Mode;
+      TJvRichEditStrings(Lines).Format := StreamFmt;
+      TJvRichEditStrings(Lines).Mode := Mode;
     end;
   end;
   if RichEditVersion < 2 then
@@ -3566,20 +3566,20 @@ var
 begin
   FModified := Modified;
   FMemStream := TMemoryStream.Create;
-  StreamFmt := TRichEditStrings(Lines).Format;
-  Mode := TRichEditStrings(Lines).Mode;
+  StreamFmt := TJvRichEditStrings(Lines).Format;
+  Mode := TJvRichEditStrings(Lines).Mode;
   DesignMode := (csDesigning in ComponentState);
   FMemStream.WriteBuffer(DesignMode, SizeOf(DesignMode));
   if DesignMode then begin
-    TRichEditStrings(Lines).Format := sfPlainText;
-    TRichEditStrings(Lines).Mode := [];
+    TJvRichEditStrings(Lines).Format := sfPlainText;
+    TJvRichEditStrings(Lines).Mode := [];
   end;
   try
     Lines.SaveToStream(FMemStream);
     FMemStream.Position := 0;
   finally
-    TRichEditStrings(Lines).Format := StreamFmt;
-    TRichEditStrings(Lines).Mode := Mode;
+    TJvRichEditStrings(Lines).Format := StreamFmt;
+    TJvRichEditStrings(Lines).Mode := Mode;
   end;
   inherited DestroyWnd;
 end;
@@ -3907,7 +3907,7 @@ begin
     Result := SendMessage(Handle, EM_CANPASTE, 0, 0) <> 0;
 end;
 
-{$IFNDEF RX_V110}
+{$IFNDEF COMPILER35_UP}
 function TJvCustomRichEdit.GetCanUndo: Boolean;
 begin
   Result := False;
@@ -4058,22 +4058,22 @@ end;
 
 function TJvCustomRichEdit.GetStreamFormat: TRichStreamFormat;
 begin
-  Result := TRichEditStrings(Lines).Format;
+  Result := TJvRichEditStrings(Lines).Format;
 end;
 
 function TJvCustomRichEdit.GetStreamMode: TRichStreamModes;
 begin
-  Result := TRichEditStrings(Lines).Mode;
+  Result := TJvRichEditStrings(Lines).Mode;
 end;
 
 procedure TJvCustomRichEdit.SetStreamFormat(Value: TRichStreamFormat);
 begin
-  TRichEditStrings(Lines).Format := Value;
+  TJvRichEditStrings(Lines).Format := Value;
 end;
 
 procedure TJvCustomRichEdit.SetStreamMode(Value: TRichStreamModes);
 begin
-  TRichEditStrings(Lines).Mode := Value;
+  TJvRichEditStrings(Lines).Mode := Value;
 end;
 
 procedure TJvCustomRichEdit.SetPlainText(Value: Boolean);
@@ -4086,27 +4086,27 @@ begin
     if HandleAllocated and (RichEditVersion >= 2) then begin
       MemStream := TMemoryStream.Create;
       try
-        StreamFmt := TRichEditStrings(Lines).Format;
-        Mode := TRichEditStrings(Lines).Mode;
+        StreamFmt := TJvRichEditStrings(Lines).Format;
+        Mode := TJvRichEditStrings(Lines).Mode;
         try
           if (csDesigning in ComponentState) or Value then
-            TRichEditStrings(Lines).Format := sfPlainText
-          else TRichEditStrings(Lines).Format := sfRichText;
-          TRichEditStrings(Lines).Mode := [];
+            TJvRichEditStrings(Lines).Format := sfPlainText
+          else TJvRichEditStrings(Lines).Format := sfRichText;
+          TJvRichEditStrings(Lines).Mode := [];
           Lines.SaveToStream(MemStream);
           MemStream.Position := 0;
-          TRichEditStrings(Lines).EnableChange(False);
+          TJvRichEditStrings(Lines).EnableChange(False);
           try
             SendMessage(Handle, WM_SETTEXT, 0, 0);
             UpdateTextModes(Value);
             FPlainText := Value;
           finally
-            TRichEditStrings(Lines).EnableChange(True);
+            TJvRichEditStrings(Lines).EnableChange(True);
           end;
           Lines.LoadFromStream(MemStream);
         finally
-          TRichEditStrings(Lines).Format := StreamFmt;
-          TRichEditStrings(Lines).Mode := Mode;
+          TJvRichEditStrings(Lines).Format := StreamFmt;
+          TJvRichEditStrings(Lines).Mode := Mode;
         end;
       finally
         MemStream.Free;
@@ -4667,7 +4667,7 @@ begin
   SendMessage(Handle, EM_REDO, 0, 0);
 end;
 
-{$IFNDEF RX_V110}
+{$IFNDEF COMPILER35_UP}
 procedure TJvCustomRichEdit.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
@@ -4859,7 +4859,7 @@ begin
     if (frReplaceAll in Options) then begin
       Cnt := 0;
       SaveSelChange := FOnSelChange;
-      TRichEditStrings(Lines).EnableChange(False);
+      TJvRichEditStrings(Lines).EnableChange(False);
       try
         FOnSelChange := nil;
         while FindEditText(TFindDialog(Sender), False, False) do begin
@@ -4869,7 +4869,7 @@ begin
         if Cnt = 0 then TextNotFound(TFindDialog(Sender))
         else AdjustFindDialogPosition(TFindDialog(Sender));
       finally
-        TRichEditStrings(Lines).EnableChange(True);
+        TJvRichEditStrings(Lines).EnableChange(True);
         FOnSelChange := SaveSelChange;
         if Cnt > 0 then begin
           Change;

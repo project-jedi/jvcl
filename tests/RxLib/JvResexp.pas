@@ -580,8 +580,8 @@ type
     DIBOffset: Longint;
   end;
 
-  PIconList = ^TIconList;
-  TIconList = array[0..64] of TIconRec;
+  PIconList = ^TJvIconList;
+  TJvIconList = array[0..64] of TIconRec;
 
 procedure InvalidIcon; near;
 begin
@@ -1334,7 +1334,7 @@ var
   ResEntry: TIResourceEntry;
   TypeList: TStringList;
   ResourceFile: TIResourceFile;
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
   EditInt: TIEditorInterface;
   IsNewProject: Boolean;
 {$ENDIF}
@@ -1349,7 +1349,7 @@ begin
     if ResourceFile <> nil then
       with ResourceFile do begin
         FResFileName := FileName;
-{$IFDEF RX_V110}
+{$IFDEF COMPILER35_UP}
         EditInt := ProjectModule.GetEditorInterface;
         try
           IsNewProject := not FileExists(EditInt.FileName);

@@ -35,9 +35,9 @@ uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
 
 type
 
-{ TIconList class }
+{ TJvIconList class }
 
-  TIconList = class(TPersistent)
+  TJvIconList = class(TPersistent)
   private
     FList: TList;
     FUpdateCount: Integer;
@@ -79,15 +79,15 @@ type
 
 implementation
 
-{ TIconList }
+{ TJvIconList }
 
-constructor TIconList.Create;
+constructor TJvIconList.Create;
 begin
   inherited Create;
   FList := TList.Create;
 end;
 
-destructor TIconList.Destroy;
+destructor TJvIconList.Destroy;
 begin
   FOnChange := nil;
   Clear;
@@ -95,24 +95,24 @@ begin
   inherited Destroy;
 end;
 
-procedure TIconList.BeginUpdate;
+procedure TJvIconList.BeginUpdate;
 begin
   if FUpdateCount = 0 then SetUpdateState(True);
   Inc(FUpdateCount);
 end;
 
-procedure TIconList.Changed;
+procedure TJvIconList.Changed;
 begin
   if (FUpdateCount = 0) and Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TIconList.EndUpdate;
+procedure TJvIconList.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then SetUpdateState(False);
 end;
 
-procedure TIconList.ReadData(Stream: TStream);
+procedure TJvIconList.ReadData(Stream: TStream);
 var
   Len, Cnt: Longint;
   I: Integer;
@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-procedure TIconList.WriteData(Stream: TStream);
+procedure TJvIconList.WriteData(Stream: TStream);
 var
   I: Integer;
   Len: Longint;
@@ -175,15 +175,15 @@ begin
   end;
 end;
 
-procedure TIconList.DefineProperties(Filer: TFiler);
+procedure TJvIconList.DefineProperties(Filer: TFiler);
 
 {$IFDEF WIN32}
   function DoWrite: Boolean;
   var
     I: Integer;
-    Ancestor: TIconList;
+    Ancestor: TJvIconList;
   begin
-    Ancestor := TIconList(Filer.Ancestor);
+    Ancestor := TJvIconList(Filer.Ancestor);
     if (Ancestor <> nil) and (Ancestor.Count = Count) and (Count > 0) then
     begin
       Result := False;
@@ -201,22 +201,22 @@ begin
     {$IFDEF WIN32} DoWrite {$ELSE} Count > 0 {$ENDIF});
 end;
 
-function TIconList.Get(Index: Integer): TIcon;
+function TJvIconList.Get(Index: Integer): TIcon;
 begin
   Result := TObject(FList[Index]) as TIcon;
 end;
 
-function TIconList.GetCount: Integer;
+function TJvIconList.GetCount: Integer;
 begin
   Result := FList.Count;
 end;
 
-procedure TIconList.IconChanged(Sender: TObject);
+procedure TJvIconList.IconChanged(Sender: TObject);
 begin
   Changed;
 end;
 
-procedure TIconList.Put(Index: Integer; Icon: TIcon);
+procedure TJvIconList.Put(Index: Integer; Icon: TIcon);
 begin
   BeginUpdate;
   try
@@ -229,14 +229,14 @@ begin
   end;
 end;
 
-function TIconList.AddIcon(Icon: TIcon): Integer;
+function TJvIconList.AddIcon(Icon: TIcon): Integer;
 begin
   Result := FList.Add(Icon);
   if Icon <> nil then Icon.OnChange := IconChanged;
   Changed;
 end;
 
-function TIconList.Add(Icon: TIcon): Integer;
+function TJvIconList.Add(Icon: TIcon): Integer;
 var
   Ico: TIcon;
 begin
@@ -250,7 +250,7 @@ begin
   end;
 end;
 
-function TIconList.AddResource(Instance: THandle; ResId: PChar): Integer;
+function TJvIconList.AddResource(Instance: THandle; ResId: PChar): Integer;
 var
   Ico: TIcon;
 begin
@@ -264,17 +264,17 @@ begin
   end;
 end;
 
-procedure TIconList.Assign(Source: TPersistent);
+procedure TJvIconList.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
   if Source = nil then Clear
-  else if Source is TIconList then begin
+  else if Source is TJvIconList then begin
     BeginUpdate;
     try
       Clear;
-      for I := 0 to TIconList(Source).Count - 1 do
-        Add(TIconList(Source)[I]);
+      for I := 0 to TJvIconList(Source).Count - 1 do
+        Add(TJvIconList(Source)[I]);
     finally
       EndUpdate;
     end;
@@ -291,7 +291,7 @@ begin
   else inherited Assign(Source);
 end;
 
-procedure TIconList.Clear;
+procedure TJvIconList.Clear;
 var
   I: Integer;
 begin
@@ -303,7 +303,7 @@ begin
   end;
 end;
 
-procedure TIconList.Delete(Index: Integer);
+procedure TJvIconList.Delete(Index: Integer);
 var
   Icon: TIcon;
 begin
@@ -316,18 +316,18 @@ begin
   Changed;
 end;
 
-procedure TIconList.Exchange(Index1, Index2: Integer);
+procedure TJvIconList.Exchange(Index1, Index2: Integer);
 begin
   FList.Exchange(Index1, Index2);
   Changed;
 end;
 
-function TIconList.IndexOf(Icon: TIcon): Integer;
+function TJvIconList.IndexOf(Icon: TIcon): Integer;
 begin
   Result := FList.IndexOf(Icon);
 end;
 
-procedure TIconList.InsertResource(Index: Integer; Instance: THandle;
+procedure TJvIconList.InsertResource(Index: Integer; Instance: THandle;
   ResId: PChar);
 var
   Ico: TIcon;
@@ -344,7 +344,7 @@ begin
   Changed;
 end;
 
-procedure TIconList.Insert(Index: Integer; Icon: TIcon);
+procedure TJvIconList.Insert(Index: Integer; Icon: TIcon);
 var
   Ico: TIcon;
 begin
@@ -360,7 +360,7 @@ begin
   Changed;
 end;
 
-procedure TIconList.LoadResource(Instance: THandle; const ResIds: array of PChar);
+procedure TJvIconList.LoadResource(Instance: THandle; const ResIds: array of PChar);
 var
   I: Integer;
 begin
@@ -373,23 +373,23 @@ begin
   end;
 end;
 
-procedure TIconList.Move(CurIndex, NewIndex: Integer);
+procedure TJvIconList.Move(CurIndex, NewIndex: Integer);
 begin
   FList.Move(CurIndex, NewIndex);
   Changed;
 end;
 
-procedure TIconList.SetUpdateState(Updating: Boolean);
+procedure TJvIconList.SetUpdateState(Updating: Boolean);
 begin
   if not Updating then Changed;
 end;
 
-procedure TIconList.LoadFromStream(Stream: TStream);
+procedure TJvIconList.LoadFromStream(Stream: TStream);
 begin
   ReadData(Stream);
 end;
 
-procedure TIconList.SaveToStream(Stream: TStream);
+procedure TJvIconList.SaveToStream(Stream: TStream);
 begin
   WriteData(Stream);
 end;

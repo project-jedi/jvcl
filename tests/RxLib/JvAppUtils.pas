@@ -720,7 +720,7 @@ type
 {                                                       }
 {*******************************************************}
 
-  TNastyForm = class(TScrollingWinControl)
+  TJvNastyForm = class(TScrollingWinControl)
   private
     FActiveControl: TWinControl;
     FFocusedControl: TWinControl;
@@ -732,7 +732,7 @@ type
     FWindowState: TWindowState; { !! }
   end;
 
-  THackComponent = class(TComponent);
+  TJvHackComponent = class(TComponent);
 {$IFDEF WIN32}
   {$HINTS ON}
 {$ENDIF}
@@ -782,11 +782,11 @@ begin
           if (Position in [poScreenCenter {$IFDEF Delphi4_Up}, poDesktopCenter {$ENDIF}]) and
             not (csDesigning in ComponentState) then
           begin
-            THackComponent(Form).SetDesigning(True);
+            TJvHackComponent(Form).SetDesigning(True);
             try
               Position := poDesigned;
             finally
-              THackComponent(Form).SetDesigning(False);
+              TJvHackComponent(Form).SetDesigning(False);
             end;
           end;
           SetWindowPlacement(Handle, @Placement);
@@ -812,13 +812,13 @@ begin
       if (WinState = wsMinimized) and ((Form = Application.MainForm)
         {$IFDEF Delphi4_Up} or (Application.MainForm = nil) {$ENDIF}) then
       begin
-        TNastyForm(Form).FWindowState := wsNormal;
+        TJvNastyForm(Form).FWindowState := wsNormal;
         PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
         Exit;
       end;
 {$ENDIF}
       if FormStyle in [fsMDIChild, fsMDIForm] then
-        TNastyForm(Form).FWindowState := WinState
+        TJvNastyForm(Form).FWindowState := WinState
       else WindowState := WinState;
     end;
     Update;

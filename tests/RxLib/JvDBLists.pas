@@ -239,7 +239,7 @@ end;
 
 {$IFDEF WIN32}
 type
-  TSessionLink = class(TDatabase)
+  TJvSessionLink = class(TDatabase)
   private
     FList: TJvCustomBDEItems;
   public
@@ -247,7 +247,7 @@ type
     destructor Destroy; override;
   end;
 
-constructor TSessionLink.Create(AOwner: TComponent);
+constructor TJvSessionLink.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if (AOwner <> nil) and (AOwner is TSession) then
@@ -256,7 +256,7 @@ begin
   KeepConnection := False;
 end;
 
-destructor TSessionLink.Destroy;
+destructor TJvSessionLink.Destroy;
 begin
   if FList <> nil then begin
     FList.FSessionLink := nil;
@@ -315,9 +315,9 @@ begin
   S := Sessions.List[SessionName];
   S.Open;
   Sessions.CurrentSession := S;
-  FSessionLink := TSessionLink.Create(S);
+  FSessionLink := TJvSessionLink.Create(S);
   try
-    TSessionLink(FSessionLink).FList := Self;
+    TJvSessionLink(FSessionLink).FList := Self;
     inherited OpenCursor{$IFDEF Delphi3_Up}(InfoQuery){$ENDIF};
   except
     FSessionLink.Free;
@@ -330,7 +330,7 @@ procedure TJvCustomBDEItems.CloseCursor;
 begin
   inherited CloseCursor;
   if FSessionLink <> nil then begin
-    TSessionLink(FSessionLink).FList := nil;
+    TJvSessionLink(FSessionLink).FList := nil;
     FSessionLink.Free;
     FSessionLink := nil;
   end;

@@ -135,10 +135,10 @@ implementation
 uses {$IFDEF WIN32} Bde, {$ELSE} DbiErrs, DbiTypes, DbiProcs, {$ENDIF}
   DBConsts, JvStrUtils, JvDBUtils, JvBdeUtils;
 
-{ TKeyDataLink }
+{ TJvKeyDataLink }
 
 type
-  TKeyDataLink = class(TDataLink)
+  TJvKeyDataLink = class(TDataLink)
   private
     FCombo: TJvDBIndexCombo;
   protected
@@ -150,29 +150,29 @@ type
     destructor Destroy; override;
   end;
 
-constructor TKeyDataLink.Create(ACombo: TJvDBIndexCombo);
+constructor TJvKeyDataLink.Create(ACombo: TJvDBIndexCombo);
 begin
   inherited Create;
   FCombo := ACombo;
 end;
 
-destructor TKeyDataLink.Destroy;
+destructor TJvKeyDataLink.Destroy;
 begin
   FCombo := nil;
   inherited Destroy;
 end;
 
-procedure TKeyDataLink.ActiveChanged;
+procedure TJvKeyDataLink.ActiveChanged;
 begin
   if FCombo <> nil then FCombo.ActiveChanged;
 end;
 
-procedure TKeyDataLink.DataSetChanged;
+procedure TJvKeyDataLink.DataSetChanged;
 begin
   if FCombo <> nil then FCombo.ActiveChanged;
 end;
 
-procedure TKeyDataLink.DataSetScrolled(Distance: Integer);
+procedure TJvKeyDataLink.DataSetScrolled(Distance: Integer);
 begin
   { ignore this data event }
 end;
@@ -182,7 +182,7 @@ end;
 constructor TJvDBIndexCombo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDataLink := TKeyDataLink.Create(Self);
+  FDataLink := TJvKeyDataLink.Create(Self);
   Style := csDropDownList;
   FUpdate := False;
   FNoIndexItem := EmptyStr;

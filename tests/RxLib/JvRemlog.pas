@@ -94,7 +94,7 @@ const
   keyLastLoginUserName = 'Last User';
 
 type
-  TServer = class(TCustomRemoteServer);
+  TJvServer = class(TCustomRemoteServer);
 
 { TJvRemoteLogin }
 
@@ -145,7 +145,7 @@ end;
 procedure TJvRemoteLogin.PrepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and not FPrepared then
-    with TServer(RemoteServer) do begin
+    with TJvServer(RemoteServer) do begin
 {$IFDEF Delphi4_Up}
       if RemoteServer is TDispatchConnection then
         TDispatchConnection(RemoteServer).LoginPrompt := False;
@@ -159,7 +159,7 @@ end;
 procedure TJvRemoteLogin.UnprepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and FPrepared then
-    with TServer(RemoteServer) do begin
+    with TJvServer(RemoteServer) do begin
       AfterConnect := FSaveAfterConnect;
       FPrepared := False;
     end;
@@ -274,17 +274,17 @@ procedure TJvRemoteLogin.AbortConnection;
 var
   OnAfterDisconnect, OnBeforeDisconnect: TNotifyEvent;
 begin
-  if Assigned(FRemoteServer) and TServer(FRemoteServer).Connected then
+  if Assigned(FRemoteServer) and TJvServer(FRemoteServer).Connected then
   try
-    OnAfterDisconnect := TServer(FRemoteServer).AfterDisconnect;
-    OnBeforeDisconnect := TServer(FRemoteServer).BeforeDisconnect;
+    OnAfterDisconnect := TJvServer(FRemoteServer).AfterDisconnect;
+    OnBeforeDisconnect := TJvServer(FRemoteServer).BeforeDisconnect;
     try
-      TServer(FRemoteServer).AfterDisconnect := nil;
-      TServer(FRemoteServer).BeforeDisconnect := nil;
-      TServer(FRemoteServer).Connected := False;
+      TJvServer(FRemoteServer).AfterDisconnect := nil;
+      TJvServer(FRemoteServer).BeforeDisconnect := nil;
+      TJvServer(FRemoteServer).Connected := False;
     finally
-      TServer(FRemoteServer).AfterDisconnect := OnAfterDisconnect;
-      TServer(FRemoteServer).BeforeDisconnect := OnBeforeDisconnect;
+      TJvServer(FRemoteServer).AfterDisconnect := OnAfterDisconnect;
+      TJvServer(FRemoteServer).BeforeDisconnect := OnBeforeDisconnect;
     end;
   except
   end;
@@ -299,8 +299,8 @@ begin
   try
     FInLogin := True;
     try
-      TServer(FRemoteServer).Connected := True;
-      Result := TServer(FRemoteServer).Connected;
+      TJvServer(FRemoteServer).Connected := True;
+      Result := TJvServer(FRemoteServer).Connected;
       UserName := FUsername;
       FUsername := '';
     finally

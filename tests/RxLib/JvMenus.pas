@@ -1330,10 +1330,10 @@ begin
     end;
 end;
 
-{ TPopupList }
+{ TJvPopupList }
 
 type
-  TPopupList = class(TList)
+  TJvPopupList = class(TList)
   private
 {$IFNDEF WIN32}
     FMenuHelp: THelpContext;
@@ -1346,9 +1346,9 @@ type
   end;
 
 const
-  PopupList: TPopupList = nil;
+  PopupList: TJvPopupList = nil;
 
-procedure TPopupList.WndProc(var Message: TMessage);
+procedure TJvPopupList.WndProc(var Message: TMessage);
 var
   I: Integer;
   MenuItem: TMenuItem;
@@ -1446,13 +1446,13 @@ begin
   end;
 end;
 
-procedure TPopupList.Add(Popup: TPopupMenu);
+procedure TJvPopupList.Add(Popup: TPopupMenu);
 begin
   if Count = 0 then Window := Classes.AllocateHWnd(WndProc);
   inherited Add(Popup);
 end;
 
-procedure TPopupList.Remove(Popup: TPopupMenu);
+procedure TJvPopupList.Remove(Popup: TPopupMenu);
 begin
   inherited Remove(Popup);
   if Count = 0 then Classes.DeallocateHWnd(Window);
@@ -1464,7 +1464,7 @@ constructor TJvPopupMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if PopupList = nil then
-    PopupList := TPopupList.Create;
+    PopupList := TJvPopupList.Create;
   FShowCheckMarks := True;
   FCanvas := TControlCanvas.Create;
   FCursor := crDefault;

@@ -1,4 +1,4 @@
-object ChPswdForm: TChPswdForm
+object ChPswdForm: TJvChPswdForm
   Left = 309
   Top = 149
   ActiveControl = OldPswd

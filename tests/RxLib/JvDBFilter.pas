@@ -184,7 +184,7 @@ const
 
 {$IFNDEF Delphi3_Up} {DbCommon.pas}
 
-{ TFilterExpr }
+{ TJvFilterExpr }
 
 type
   TExprNodeKind = (enField, enConst, enOperator);
@@ -200,7 +200,7 @@ type
     FRight: PExprNode;
   end;
 
-  TFilterExpr = class
+  TJvFilterExpr = class
   private
     FDataSet: TDataSet;
     FOptions: TDBFilterOptions;
@@ -231,13 +231,13 @@ type
     function GetFilterData(Root: PExprNode): PCANExpr;
   end;
 
-constructor TFilterExpr.Create(DataSet: TDataSet; Options: TDBFilterOptions);
+constructor TJvFilterExpr.Create(DataSet: TDataSet; Options: TDBFilterOptions);
 begin
   FDataSet := DataSet;
   FOptions := Options;
 end;
 
-destructor TFilterExpr.Destroy;
+destructor TJvFilterExpr.Destroy;
 var
   Node: PExprNode;
 begin
@@ -249,14 +249,14 @@ begin
   end;
 end;
 
-function TFilterExpr.FieldFromNode(Node: PExprNode): TField;
+function TJvFilterExpr.FieldFromNode(Node: PExprNode): TField;
 begin
   Result := FDataSet.FieldByName(Node^.FData);
   if Result.Calculated then
     FilterErrorFmt(SExprBadField, [Result.FieldName]);
 end;
 
-function TFilterExpr.GetExprData(Pos, Size: Integer): PChar;
+function TJvFilterExpr.GetExprData(Pos, Size: Integer): PChar;
 begin
 {$IFDEF WIN32}
   ReallocMem(FExprBuffer, FExprBufSize + Size);
@@ -269,7 +269,7 @@ begin
   Result := PChar(FExprBuffer) + Pos;
 end;
 
-function TFilterExpr.GetFilterData(Root: PExprNode): PCANExpr;
+function TJvFilterExpr.GetFilterData(Root: PExprNode): PCANExpr;
 begin
   FExprBufSize := SizeOf(CANExpr);
   GetMem(FExprBuffer, FExprBufSize);
@@ -284,7 +284,7 @@ begin
   Result := FExprBuffer;
 end;
 
-function TFilterExpr.NewCompareNode(Field: TField; Operator: CanOp;
+function TJvFilterExpr.NewCompareNode(Field: TField; Operator: CanOp;
   const Value: string): PExprNode;
 var
   Left, Right: PExprNode;
@@ -294,7 +294,7 @@ begin
   Result := NewNode(enOperator, Operator, EmptyStr, Left, Right);
 end;
 
-function TFilterExpr.NewNode(Kind: TExprNodeKind; Operator: CanOp;
+function TJvFilterExpr.NewNode(Kind: TExprNodeKind; Operator: CanOp;
   const Data: string; Left, Right: PExprNode): PExprNode;
 begin
   New(Result);
@@ -310,7 +310,7 @@ begin
   FNodes := Result;
 end;
 
-function TFilterExpr.PutCompareNode(Node: PExprNode): Integer;
+function TJvFilterExpr.PutCompareNode(Node: PExprNode): Integer;
 const
   ReverseOperator: array[canEQ..canLE] of CanOp = (
     canEQ, canNE, canLT, canGT, canLE, canGE);
@@ -404,7 +404,7 @@ begin
   end;
 end;
 
-function TFilterExpr.PutConstNode(DataType: Integer; Data: PChar;
+function TJvFilterExpr.PutConstNode(DataType: Integer; Data: PChar;
   Size: Integer): Integer;
 begin
   Result := PutNode(nodeCONST, canCONST2, 3);
@@ -413,7 +413,7 @@ begin
   SetNodeOp(Result, 2, PutData(Data, Size));
 end;
 
-function TFilterExpr.PutConstStr(const Value: string): Integer;
+function TJvFilterExpr.PutConstStr(const Value: string): Integer;
 var
   Buffer: array[0..255] of Char;
 begin
@@ -422,14 +422,14 @@ begin
   Result := PutConstNode(fldZSTRING, Buffer, StrLen(Buffer) + 1);
 end;
 
-function TFilterExpr.PutData(Data: PChar; Size: Integer): Integer;
+function TJvFilterExpr.PutData(Data: PChar; Size: Integer): Integer;
 begin
   Move(Data^, GetExprData(FExprBufSize, Size)^, Size);
   Result := FExprDataSize;
   Inc(FExprDataSize, Size);
 end;
 
-function TFilterExpr.PutExprNode(Node: PExprNode): Integer;
+function TJvFilterExpr.PutExprNode(Node: PExprNode): Integer;
 const
   BoolFalse: WordBool = False;
 var
@@ -465,7 +465,7 @@ begin
   end; { case Node^.FKind }
 end;
 
-function TFilterExpr.PutFieldNode(Field: TField): Integer;
+function TJvFilterExpr.PutFieldNode(Field: TField): Integer;
 var
   Buffer: array[0..255] of Char;
 begin
@@ -476,7 +476,7 @@ begin
   SetNodeOp(Result, 1, PutData(Buffer, StrLen(Buffer) + 1));
 end;
 
-function TFilterExpr.PutNode(NodeType: NodeClass; OpType: CanOp;
+function TJvFilterExpr.PutNode(NodeType: NodeClass; OpType: CanOp;
   OpCount: Integer): Integer;
 var
   Size: Integer;
@@ -490,7 +490,7 @@ begin
   Inc(FExprNodeSize, Size);
 end;
 
-procedure TFilterExpr.SetNodeOp(Node, Index, Data: Integer);
+procedure TJvFilterExpr.SetNodeOp(Node, Index, Data: Integer);
 begin
   PWordArray(PChar(FExprBuffer) + (SizeOf(CANExpr) + Node +
     SizeOf(CANHdr)))^[Index] := Data;
@@ -502,12 +502,12 @@ function SetLookupFilter(DataSet: TDataSet; Field: TField;
   const Value: string; CaseSensitive, Exact: Boolean): HDBIFilter;
 var
   Options: TDBFilterOptions;
-  Filter: TFilterExpr;
+  Filter: TJvFilterExpr;
   Node: PExprNode;
 begin
   if not CaseSensitive then Options := [foNoPartialCompare, foCaseInsensitive]
   else Options := [foNoPartialCompare];
-  Filter := TFilterExpr.Create(DataSet, Options);
+  Filter := TJvFilterExpr.Create(DataSet, Options);
   try
     Node := Filter.NewCompareNode(Field, canEQ, Value);
     if not Exact then Node^.FPartial := True;
@@ -528,7 +528,7 @@ type
 
   TExprParser = class
   private
-    FFilter: TFilterExpr;
+    FFilter: TJvFilterExpr;
     FText: PChar;
     FSourcePtr: PChar;
     FTokenPtr: PChar;
@@ -557,7 +557,7 @@ constructor TExprParser.Create(DataSet: TDataSet; const Text: PChar;
 var
   Root: PExprNode;
 begin
-  FFilter := TFilterExpr.Create(DataSet, Options);
+  FFilter := TJvFilterExpr.Create(DataSet, Options);
   FText := Text;
   FSourcePtr := Text;
   NextToken;
@@ -1000,10 +1000,10 @@ begin
   TBDENastyDataSet(DataSet).FCanModify := Value;
 end;
 
-{ TFilterDataLink }
+{ TJvFilterDataLink }
 
 type
-  TFilterDataLink = class(TDataLink)
+  TJvFilterDataLink = class(TDataLink)
   private
     FFilter: TJvDBFilter;
   protected
@@ -1013,19 +1013,19 @@ type
     destructor Destroy; override;
   end;
 
-constructor TFilterDataLink.Create(Filter: TJvDBFilter);
+constructor TJvFilterDataLink.Create(Filter: TJvDBFilter);
 begin
   inherited Create;
   FFilter := Filter;
 end;
 
-destructor TFilterDataLink.Destroy;
+destructor TJvFilterDataLink.Destroy;
 begin
   FFilter := nil;
   inherited Destroy;
 end;
 
-procedure TFilterDataLink.ActiveChanged;
+procedure TJvFilterDataLink.ActiveChanged;
 begin
   if FFilter <> nil then FFilter.ActiveChanged;
 end;
@@ -1047,7 +1047,7 @@ end;
 constructor TJvDBFilter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDataLink := TFilterDataLink.Create(Self);
+  FDataLink := TJvFilterDataLink.Create(Self);
   FFilter := TStringList.Create;
   TStringList(FFilter).OnChange := FilterChanged;
   FLogicCond := flAnd;

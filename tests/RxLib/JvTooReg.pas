@@ -129,7 +129,7 @@ begin
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
 
 { TJvFormPlacement }
-  RegisterPropertyEditor(TypeInfo(TWinMinMaxInfo), TJvFormPlacement,
+  RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
 
 { TJvFormStorage }
@@ -169,7 +169,7 @@ begin
     TJvTimersItemListProperty);
 
 { TJvTrayIcon }
-  RegisterPropertyEditor(TypeInfo(TIconList), nil, '', TIconListProperty);
+  RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvTrayIcon, 'Hint',
     TStringProperty);
 {$IFDEF Delphi4_Up}
