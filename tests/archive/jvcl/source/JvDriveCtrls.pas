@@ -187,6 +187,7 @@ type
   published
     { Published declarations }
     property MultiSelect;
+    property ScrollBars;
     property ImageAlign: TJvImageAlign read FImageAlign write SetJvImageAlign default iaCentered;
     property Drive: char read FDrive write SetDrive stored false;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
@@ -349,6 +350,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
+    property ScrollBars;
     property TabOrder;
     property TabStop;
     property Visible;
