@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-12-09:
+  JvMovableBevel.TJvScrollTextDirection -> renamed elements "2" changed to "To" // (rom)
 2003-12-07:
 - Modified TJvThumbView: To be consistent with the VCL behaviour, OnChange is now triggered after the change and an OnChanging event has been added. OnChanging is triggered before the actual change  // obones
 - Modified the package generator to use an XML configuration file. // obones
