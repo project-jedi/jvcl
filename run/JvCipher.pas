@@ -41,8 +41,10 @@ type
   private
     FEncoded: string;
     FKey: string;
+    FIsStored: Boolean;
     function GetDecoded: string;
     procedure SetDecoded(const Value: string);
+    function GetIsStored: Boolean;
   protected
     procedure Decode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
     procedure Encode(const Key: string; Buf: PChar; Size: Cardinal); virtual; abstract;
@@ -55,10 +57,12 @@ type
     procedure EncodeFile(const Key: string; const FileName: string);
     function DecodeString(const Key: string; const Value: string): string;
     function EncodeString(const Key: string; const Value: string): string;
+    constructor Create(AOwner: TComponent); override;
   published
-    property Key: string read FKey write FKey;
-    property Encoded: string read FEncoded write FEncoded;
+    property Key: string read FKey write FKey stored GetIsStored;
+    property Encoded: string read FEncoded write FEncoded stored GetIsStored;
     property Decoded: string read GetDecoded write SetDecoded stored False;
+    property IsStored: Boolean read GetIsStored write FIsStored default True;
   end;
 
   TJvCaesarCipher = class(TJvCipher)
@@ -219,6 +223,17 @@ begin
   finally
     FreeMem(Tmp);
   end;
+end;
+
+function TJvCipher.GetIsStored: Boolean;
+begin
+  Result := FIsStored;
+end;
+
+constructor TJvCipher.Create(AOwner: TComponent);
+begin
+  inherited;
+  FIsStored := True;
 end;
 
 //=== TJvCaesarCipher ========================================================
