@@ -1,7 +1,8 @@
-object Form2: TForm2
+object ColorDemoMainForm: TColorDemoMainForm
   Left = 349
   Top = 137
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'ColorButton'
   ClientHeight = 119
   ClientWidth = 198
@@ -15,12 +16,12 @@ object Form2: TForm2
   PixelsPerInch = 96
   TextHeight = 13
   object ColorButton1: TJvColorButton
-    Left = 64
-    Top = 24
-    Width = 42
-    Height = 21
+    Left = 48
+    Top = 40
+    Width = 97
     OtherCaption = '&Other...'
-    Options = [cdPreventFullOpen, cdShowHelp]
+    Options = [cdAnyColor]
     Color = clNavy
+    OnChange = ColorButton1Change
   end
 end

@@ -30,47 +30,29 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvColorBox, Menus, Buttons,ExtCtrls, 
+  StdCtrls, JvColorBox, Menus, Buttons, ExtCtrls,
   JvComponent, JvExControls, JvColorButton;
 
 type
-  TForm2 = class(TForm)
+  TColorDemoMainForm = class(TForm)
     ColorButton1: TJvColorButton;
-    procedure ColorBox1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure ColorBox1ColorClick(Sender: TObject; Button: TMouseButton;
-      Color: TColor);
-  private
-    { Private declarations }
+    procedure ColorButton1Change(Sender: TObject);
   public
-    { Public declarations }
   end;
 
 var
-  Form2: TForm2;
+  ColorDemoMainForm: TColorDemoMainForm;
 
 implementation
 
 uses JvColorForm;
 
-{$R *.DFM}
+{$R *.dfm}
 
 
-procedure TForm2.ColorBox1MouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TColorDemoMainForm.ColorButton1Change(Sender: TObject);
 begin
-     if Button = mbLeft then
-       Caption := Caption + ' Left '
-     else
-       Caption := Caption + ' Right '
-end;
-
-
-procedure TForm2.ColorBox1ColorClick(Sender: TObject; Button: TMouseButton;
-  Color: TColor);
-begin
-  Caption := ColorToString(Color);
-
+  ColorDemoMainForm.Color := ColorButton1.Color;
 end;
 
 end.
