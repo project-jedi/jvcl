@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, JvComponent, JvTrayIcon, ExtCtrls,
-  JvExControls;
+  JvExControls, JvDockControlForm, ImgList;
 
 type
   TfrmMain = class(TForm)
@@ -64,6 +64,8 @@ type
     Label4: TLabel;
     cbBalloonType: TComboBox;
     chkAutoHideIcon: TCheckBox;
+    ImageList1: TImageList;
+    chkAnimated: TCheckBox;
     procedure btnUpdateClick(Sender: TObject);
     procedure mnuShowHideClick(Sender: TObject);
     procedure chkRestoreClickClick(Sender: TObject);
@@ -90,8 +92,10 @@ begin
   with JvTrayIcon1 do
   begin
     Active := false;
+    Animated := chkAnimated.Checked;
+    IconIndex := -1;
     Hint := edHint.Text;
-//    Snap := chkSnap.Checked;
+    Snap := chkSnap.Checked;
     if chkPopUp.Checked then
       PopUpMenu := popTrayIcon
     else
