@@ -1693,7 +1693,7 @@ end;
 procedure TJvDynControlVCLComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
 const
   Styles: array [Boolean] of TComboBoxStyle =
-    (csDropDown, csDropDownList);
+    (csDropDownList, csDropDown);
 begin
   Style := Styles[Value];
 end;
