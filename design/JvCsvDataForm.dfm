@@ -27,6 +27,9 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    434
+    306)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -192,7 +195,7 @@ object JvCsvDefStrDialog: TJvCsvDefStrDialog
     TabOrder = 3
   end
   object ButtonOk: TButton
-    Left = 12
+    Left = 268
     Top = 264
     Width = 75
     Height = 25

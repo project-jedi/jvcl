@@ -41,6 +41,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
   Position = poScreenCenter
   Scaled = False
   OnDestroy = FormDestroy
+  DesignSize = (
+    434
+    476)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
@@ -53,7 +56,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label30: TLabel
     Left = 16
-    Top = 103
+    Top = 104
     Width = 82
     Height = 13
     Caption = '&Components   '
@@ -66,8 +69,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     IsControl = True
   end
   object Label31: TLabel
-    Left = 265
-    Top = 103
+    Left = 264
+    Top = 104
     Width = 70
     Height = 13
     Caption = '&Properties   '
@@ -81,7 +84,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label2: TLabel
     Left = 16
-    Top = 249
+    Top = 256
     Width = 111
     Height = 13
     Caption = '&Stored Properties   '
@@ -208,8 +211,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     end
   end
   object AddButton: TButton
-    Left = 179
-    Top = 171
+    Left = 176
+    Top = 168
     Width = 77
     Height = 25
     Anchors = [akTop]
@@ -260,8 +263,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     TabOrder = 8
   end
   object ComponentsList: TListBox
-    Left = 15
-    Top = 121
+    Left = 16
+    Top = 120
     Width = 150
     Height = 120
     ItemHeight = 13
@@ -270,8 +273,8 @@ object JvFormPropsDlg: TJvFormPropsDlg
     OnClick = ListClick
   end
   object PropertiesList: TListBox
-    Left = 265
-    Top = 121
+    Left = 264
+    Top = 120
     Width = 150
     Height = 120
     Anchors = [akTop, akRight]

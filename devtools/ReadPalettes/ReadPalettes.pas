@@ -190,7 +190,7 @@ end;
 procedure SpyRegisterComponentEditor(ComponentClass: TComponentClass; ComponentEditor: TComponentEditorClass);
 begin
   if Assigned(ComponentClass) and Assigned(ComponentEditor) then
-    if (Pos('TJv', ComponentClass.ClassName) = 1) or (Pos('TJv', ComponentEditor.ClassName) = 1) then
+    if Pos('TJv', ComponentEditor.ClassName) = 1 then
       ComponentEditorList.Add(Format('"%s";"%s"',
         [ComponentClass.ClassName, ComponentEditor.ClassName]));
   if Assigned(OldSpyRegisterComponentEditor) then
@@ -202,7 +202,7 @@ procedure SpyRegisterPropertyEditor(PropertyType: PTypeInfo;
   EditorClass: TPropertyEditorClass);
 begin
   if Assigned(PropertyType) and Assigned(ComponentClass) and Assigned(EditorClass) then
-    if (Pos('TJv', PropertyType^.Name) = 1) or (Pos('TJv', ComponentClass.ClassName) = 1) or (Pos('TJv', EditorClass.ClassName) = 1) then
+    if Pos('TJv', EditorClass.ClassName) = 1 then
       PropertyEditorList.Add(Format('"%s";"%s";"%s";"%s"',
         [PropertyType^.Name, ComponentClass.ClassName, PropertyName, EditorClass.ClassName]));
   if Assigned(OldSpyRegisterPropertyEditor) then

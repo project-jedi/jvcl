@@ -248,7 +248,7 @@ begin
   inherited Create(AComponent);
   FDefaultImage := TImageList.CreateSize(16, 16);  
   Bmp := TBitmap.Create;
-  Bmp.LoadFromResourceName(hInstance, 'TJVERRORINDICATORICON');
+  Bmp.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
   FDefaultImage.AddMasked(Bmp, clFuchsia);
   Bmp.Free; 
   FBlinkStyle := ebsBlinkIfDifferentError;
