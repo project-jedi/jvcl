@@ -36,7 +36,7 @@ interface
 uses
   SysUtils, Classes, IniFiles, JvComponent;
 
-{$IFNDEF Compiler6_UP}
+{$IfNDef THashedStringList}
 type THashedStringList=TStringList;
 {$EndIf}
 
