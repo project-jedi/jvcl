@@ -21,6 +21,10 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
+  Uses the system Iconlist to display drive icons.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -28,9 +32,6 @@ Known Issues:
 {$I WINDOWSONLY.INC}
 
 unit JvDriveCtrls;
-
-{ Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
-  Uses the system Iconlist to display driveicons. }
 
 interface
 
@@ -56,7 +57,8 @@ type
     FOffset: Integer;
     FDrive: Char;
     FDriveTypes: TJvDriveTypes;
-    FSmall, FLarge: Integer;
+    FSmall: Integer;
+    FLarge: Integer;
     FDisplayName: string;
     FDirList: TJvDirectoryListBox;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
@@ -139,10 +141,11 @@ type
     FOffset: Integer;
     FDrive: Char;
     FDriveTypes: TJvDriveTypes;
-    FSmall, FLarge: Integer;
+    FSmall: Integer;
+    FLarge: Integer;
     FImageAlign: TJvImageAlign;
     FOnChange: TNotifyEvent;
-    procedure SetJvImageAlign(Value: TJvImageAlign);
+    procedure SetImageAlign(Value: TJvImageAlign);
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
@@ -167,7 +170,7 @@ type
   published
     property MultiSelect;
     property ScrollBars default ssNone;
-    property ImageAlign: TJvImageAlign read FImageAlign write SetJvImageAlign default iaCentered;
+    property ImageAlign: TJvImageAlign read FImageAlign write SetImageAlign default iaCentered;
     property Drive: Char read FDrive write SetDrive stored False;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetDriveTypes;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize;
@@ -248,11 +251,13 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-
   end;
-  TJvDriveChangeError = procedure (Sender:TObject;var NewDrive:char) of object;
+
+  TJvDriveChangeError = procedure(Sender: TObject; var NewDrive: Char) of object;
+
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FFileList: TJvFileListBox;
     FDriveCombo: TJvDriveCombo;
     FDirLabel: TLabel;
@@ -260,7 +265,6 @@ type
     FPreserveCase: Boolean;
     FCaseSensitive: Boolean;
     FAutoExpand: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     { (rb) Probably better to switch the values in FDisplayNames and the values
            in Items, see comment at TJvCustomListBox.LBAddString }
     FDisplayNames: TStringList;
@@ -292,7 +296,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click; override;
-    function DoDriveChangeError(var NewDrive:char):boolean;virtual;
+    function DoDriveChangeError(var NewDrive: Char): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -367,6 +371,7 @@ type
 implementation
 
 uses
+  Math,
   JvJCLUtils, JvJVCLUtils;
 
 const
@@ -445,6 +450,7 @@ var
   Tmp: array [0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
   P: PChar;
 begin
+  Drv := Drive;
   Items.Clear;
   FDrives.Clear;
   Options := SHGFI_SYSICONINDEX;
@@ -455,7 +461,6 @@ begin
 
   FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TSHFileInfo), Options);
   FImages.ShareImages := True;
-  Drv := Drive;
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
     FillChar(Tmp[0], SizeOf(Tmp), #0);
@@ -472,7 +477,7 @@ begin
         FDrives.Add(S[1]);
       end;
     end;
-    SetDrive(Drv);
+    Drive := Drv;
     Update;
   finally
     SetErrorMode(LastErrorMode);
@@ -483,14 +488,13 @@ procedure TJvDriveCombo.CreateWnd;
 begin
   inherited CreateWnd;
   BuildList;
-  if csDesigning in ComponentState then
-    SetDrive('C')
-  else if FDrive = #0 then
+  if FDrive = #0 then
   begin
-    if FDrives.IndexOf('C') > 0 then
-      SetDrive('C')
-    else if FDrives.Count > 0 then
-      SetDrive(FDrives[0][1]);
+    if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
+      Drive := GetCurrentDir[1]
+    else
+    if FDrives.Count > 0 then
+      Drive := FDrives[0][1];
   end;
 end;
 
@@ -588,7 +592,7 @@ begin
   if FDriveTypes = [] then
     FDriveTypes := [dtFixed];
   BuildList;
-  // SetDrive(FDrive);
+  // Drive := FDrive;
 end;
 
 procedure TJvDriveCombo.SetDrive(Value: Char);
@@ -656,7 +660,7 @@ procedure TJvDriveCombo.Change;
 begin
   if ItemIndex <> -1 then
     FItemIndex := ItemIndex;
-  SetDrive(FDrives[FItemIndex][1]);
+  Drive := FDrives[FItemIndex][1];
   if (ItemIndex > -1) and (ItemIndex < Items.Count) then
     FDisplayName := Items[ItemIndex]
   else
@@ -722,9 +726,9 @@ var
   P: PChar;
   LastErrorMode: Cardinal;
 begin
+  Drv := Drive;
   if Items.Count > 0 then
   begin
-    FItemIndex := 0;
     Items.Clear;
     FDrives.Clear;
   end;
@@ -738,7 +742,6 @@ begin
   FImages.Handle := SHGetFileInfo('', 0, Info, SizeOf(TSHFileInfo), Options);
   FImages.ShareImages := True;
   FillChar(Tmp[0], SizeOf(Tmp), #0);
-  Drv := Drive;
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
     GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
@@ -754,7 +757,7 @@ begin
         FDrives.Add(S[1]);
       end;
     end;
-    SetDrive(Drv);
+    Drive := Drv;
     Update;
   finally
     SetErrorMode(LastErrorMode);
@@ -765,8 +768,12 @@ procedure TJvDriveList.CreateWnd;
 begin
   inherited CreateWnd;
   BuildList;
-  if csDesigning in ComponentState then
-    SetDrive(GetCurrentDir[1]);
+  if Drive = #0 then
+    if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
+      Drive := GetCurrentDir[1]
+    else
+    if FDrives.Count > 0 then
+      Drive := FDrives[0][1];
 end;
 
 procedure TJvDriveList.Refresh;
@@ -864,14 +871,6 @@ begin
     DrawFocusRect(Canvas.Handle, Rect);
 end;
 
-function Max(Val1, Val2: Integer): Integer;
-begin
-  if Val2 > Val1 then
-    Result := Val2
-  else
-    Result := Val1;
-end;
-
 procedure TJvDriveList.MeasureItem(Index: Integer; var Height: Integer);
 begin
   if FImageAlign = iaCentered then
@@ -880,7 +879,7 @@ begin
     Height := Max(GetItemHeight(Font), FImageWidth);
 end;
 
-procedure TJvDriveList.SetJvImageAlign(Value: TJvImageAlign);
+procedure TJvDriveList.SetImageAlign(Value: TJvImageAlign);
 begin
   if FImageAlign <> Value then
   begin
@@ -918,7 +917,7 @@ begin
     J := FItemIndex;
 
   Value := UpCase(Value);
-  if FDrive <> Value then
+  if (FDrive <> Value) and (Value <> #0) then
   begin
     I := FDrives.IndexOf(Value);
     if I > -1 then
@@ -976,7 +975,7 @@ procedure TJvDriveList.Change;
 begin
   if ItemIndex <> -1 then
     FItemIndex := ItemIndex;
-  SetDrive(FDrives[FItemIndex][1]);
+  Drive := FDrives[FItemIndex][1];
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
@@ -1049,11 +1048,11 @@ begin
   inherited Destroy;
 end;
 
-function TJvDirectoryListBox.DoDriveChangeError(var NewDrive: char): boolean;
+function TJvDirectoryListBox.DoDriveChangeError(var NewDrive: Char): Boolean;
 begin
   Result := Assigned(FOnDriveChangeError);
   if Result then
-    FOnDriveChangeError(self,NewDrive);
+    FOnDriveChangeError(Self, NewDrive);
 end;
 
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
