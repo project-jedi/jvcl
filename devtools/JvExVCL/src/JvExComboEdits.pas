@@ -16,14 +16,17 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-19
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
+
 {$I jvcl.inc}
+{MACROINCLUDE JvExControls.macros}
+
+WARNINGHEADER
 
 {$IFDEF VCL}
 Sorry this file is for VisualCLX only
