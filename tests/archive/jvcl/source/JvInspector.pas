@@ -5435,9 +5435,9 @@ begin
     HadFocus := EditFocused;
     if DroppedDown then
       CloseUp(False);
-    FreeAndNil(FListBox);
     if not CancelEdits and EditCtrl.Modified and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
       DisplayValue := EditCtrl.Text;
+    FreeAndNil(FListBox);
     SetEditCtrl(nil);
     if HadFocus then
       SetFocus;
