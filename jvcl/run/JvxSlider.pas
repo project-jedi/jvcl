@@ -283,7 +283,13 @@ type
 implementation
 
 uses
-  Consts, Math,
+  {$IFDEF VCL}
+  Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
+  Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvTypes, JvThemes;
 
 {$IFDEF MSWINDOWS}
