@@ -40,7 +40,7 @@ unit JvQValidateEdit;
 interface
 
 uses
-  QWindows, QMessages, QControls, QGraphics,
+  QWindows, QMessages, QControls, QGraphics, 
   SysUtils, Classes,
   JvQEdit;
 
@@ -1024,7 +1024,8 @@ begin
         Font.Color := FCriticalPoints.ColorBelow
       else
         Font.Color := FStandardFontColor;
-  end;
+  end; 
+  Palette.TextColor := Font.Color; 
   Font.OnChange := FontChange;
   Invalidate;
 end;
