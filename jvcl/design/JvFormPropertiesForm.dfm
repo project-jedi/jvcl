@@ -4,7 +4,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Form Storage Designer'
-  ClientHeight = 409
+  ClientHeight = 476
   ClientWidth = 434
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -41,19 +41,22 @@ object JvFormPropsDlg: TJvFormPropsDlg
   Position = poScreenCenter
   Scaled = False
   OnDestroy = FormDestroy
+  DesignSize = (
+    434
+    476)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
     Left = 4
-    Top = 54
+    Top = 90
     Width = 425
-    Height = 317
+    Height = 348
     Anchors = [akLeft, akTop, akRight, akBottom]
     Shape = bsFrame
   end
   object Label30: TLabel
     Left = 16
-    Top = 61
+    Top = 103
     Width = 82
     Height = 13
     Caption = '&Components   '
@@ -67,7 +70,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label31: TLabel
     Left = 265
-    Top = 61
+    Top = 103
     Width = 70
     Height = 13
     Caption = '&Properties   '
@@ -81,7 +84,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object Label2: TLabel
     Left = 16
-    Top = 189
+    Top = 249
     Width = 111
     Height = 13
     Caption = '&Stored Properties   '
@@ -94,7 +97,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object UpBtn: TSpeedButton
     Left = 353
-    Top = 238
+    Top = 305
     Width = 25
     Height = 25
     Anchors = [akRight, akBottom]
@@ -111,7 +114,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object DownBtn: TSpeedButton
     Left = 386
-    Top = 238
+    Top = 305
     Width = 25
     Height = 25
     Anchors = [akRight, akBottom]
@@ -130,7 +133,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Left = 4
     Top = 2
     Width = 425
-    Height = 44
+    Height = 71
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Form Properties '
     Font.Charset = DEFAULT_CHARSET
@@ -155,29 +158,12 @@ object JvFormPropsDlg: TJvFormPropsDlg
       TabOrder = 0
       OnClick = ListClick
     end
-    object PositionBox: TCheckBox
-      Left = 144
+    object SizeBox: TCheckBox
+      Left = 232
       Top = 16
       Width = 137
       Height = 17
-      Caption = ' &Form Position'
-      Checked = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-      State = cbChecked
-      TabOrder = 1
-      OnClick = ListClick
-    end
-    object StateBox: TCheckBox
-      Left = 284
-      Top = 16
-      Width = 136
-      Height = 17
-      Caption = ' &Window State'
+      Caption = 'Form &Size'
       Checked = True
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -189,19 +175,54 @@ object JvFormPropsDlg: TJvFormPropsDlg
       TabOrder = 2
       OnClick = ListClick
     end
+    object StateBox: TCheckBox
+      Left = 12
+      Top = 40
+      Width = 136
+      Height = 17
+      Caption = ' &Window State'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      State = cbChecked
+      TabOrder = 1
+      OnClick = ListClick
+    end
+    object LocationBox: TCheckBox
+      Left = 232
+      Top = 40
+      Width = 137
+      Height = 17
+      Caption = 'Form &Location'
+      Checked = True
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      State = cbChecked
+      TabOrder = 3
+      OnClick = ListClick
+    end
   end
   object AddButton: TButton
     Left = 179
-    Top = 111
+    Top = 171
     Width = 77
     Height = 25
+    Anchors = [akTop]
     Caption = '&Add'
     TabOrder = 2
     OnClick = AddButtonClick
   end
   object DeleteButton: TButton
     Left = 344
-    Top = 300
+    Top = 367
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
@@ -211,7 +232,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object ClearButton: TButton
     Left = 344
-    Top = 330
+    Top = 397
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
@@ -221,7 +242,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object OkBtn: TButton
     Left = 257
-    Top = 378
+    Top = 445
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
@@ -232,7 +253,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object CancelBtn: TButton
     Left = 345
-    Top = 378
+    Top = 445
     Width = 77
     Height = 25
     Anchors = [akRight, akBottom]
@@ -243,9 +264,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object ComponentsList: TListBox
     Left = 15
-    Top = 79
+    Top = 121
     Width = 150
-    Height = 96
+    Height = 120
     ItemHeight = 13
     Sorted = True
     TabOrder = 1
@@ -253,9 +274,10 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object PropertiesList: TListBox
     Left = 265
-    Top = 79
+    Top = 121
     Width = 150
-    Height = 96
+    Height = 120
+    Anchors = [akTop, akRight]
     ItemHeight = 13
     Sorted = True
     TabOrder = 3
@@ -263,9 +285,9 @@ object JvFormPropsDlg: TJvFormPropsDlg
   end
   object StoredList: TListBox
     Left = 16
-    Top = 210
+    Top = 270
     Width = 322
-    Height = 153
+    Height = 160
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 13
     TabOrder = 4

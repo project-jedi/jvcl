@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvVCLUtils.PAS, released on 2002-09-24.
+The Original Code is: JvJVCLUtils.PAS, released on 2002-09-24.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -48,8 +48,8 @@ uses
   QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
 {$ENDIF VisualCLX}
   IniFiles,
-  JvTypes, JvFinalize;
-
+  JclBase, JclSysUtils, JclStrings, JvJCLUtils,
+  JvAppStorage, JvTypes, JvFinalize;
 {$IFDEF VisualCLX}
 function Icon2Bitmap(Ico: TIcon): TBitmap;
 function Bitmap2Icon(bmp: TBitmap): TIcon;
@@ -387,6 +387,9 @@ function GetDefaultIniName: string;
 
 type
   TOnGetDefaultIniName = function: string;
+  TPlacementOption = (fpState, fpSize, fpLocation, fpActiveControl);
+  TPlacementOptions = set of TPlacementOption;
+  TPlacementOperation = (poSave, poRestore);
 
 var
   OnGetDefaultIniName: TOnGetDefaultIniName = nil;
@@ -399,8 +402,17 @@ function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
 function InstantiateForm(FormClass: TFormClass; var Reference): TForm;
 
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options:TPlacementOptions);
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options:TPlacementOptions);
+
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
+
 
 // Ini Utilitie Functions
 // Added by RDB
@@ -439,6 +451,17 @@ procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 
 procedure AppTaskbarIcons(AppOnly: Boolean);
 {$ENDIF VCL}
+
+{ Internal using utilities }
+
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options:TPlacementOptions = [fpState, fpSize, fpLocation]);
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage:TJvCustomAppStorage;
+  const StorePath: string; Options:TPlacementOptions = [fpState, fpSize, fpLocation]);
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:TJvCustomAppStorage; const StorePath: string);
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:TJvCustomAppStorage;const StorePath: string);
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:TJvCustomAppStorage;const StorePath: string);
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:TJvCustomAppStorage;const StorePath: string);
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -613,7 +636,7 @@ uses
   QConsts,
 {$ENDIF VisualCLX}
   Math,
-  JvConsts, JvProgressUtils, JvResources,
+  JclSysInfo, JvConsts, JvProgressUtils, JvResources,
   JvJCLUtils;
 
 const
@@ -637,12 +660,12 @@ const
 
 function GetAppHandle: HWND;
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Result := Application.Handle;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Result := Application.AppWidget;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 type
@@ -805,7 +828,7 @@ end;
 var
   QC: QColorH;
 begin
-  QC := QColor_create(R, G, B);
+  QC := QColor_create(R, G , B);
   QColor_getHsv(QC, @H, @S, @V);
   QColor_destroy(QC);
 end;
@@ -883,7 +906,6 @@ end;
 *)
 
 {$IFDEF MSWINDOWS}
-
 procedure SetWallpaper(const Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path),
@@ -1303,7 +1325,7 @@ end;
 procedure CenterHeight(const pc, pcParent: TControl);
 begin
   pc.Top := //pcParent.Top +
-    ((pcParent.Height - pc.Height) div 2);
+  ((pcParent.Height - pc.Height) div 2);
 end;
 
 function ToRightOf(const pc: TControl; piSpace: Integer): Integer;
@@ -1324,7 +1346,7 @@ end;
 function ConvertStates(const State: Integer): TItemStates;
 begin
   Result := [];
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if HasFlag(State, LVIS_ACTIVATING) then
     Include(Result, isActivating);
   if HasFlag(State, LVIS_CUT) then
@@ -1335,7 +1357,7 @@ begin
     Include(Result, IsFocused);
   if HasFlag(State, LVIS_SELECTED) then
     Include(Result, isSelected);
-{$ENDIF VCL}
+  {$ENDIF VCL}
 end;
 
 function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
@@ -1476,7 +1498,8 @@ begin
     begin
       if Control.Parent.Controls[i] = Control then
         Break
-      else if (Control.Parent.Controls[i] <> nil) and
+      else
+        if (Control.Parent.Controls[i] <> nil) and
         (Control.Parent.Controls[i] is TGraphicControl) then
       begin
         with TGraphicControl(Control.Parent.Controls[i]) do
@@ -1520,10 +1543,10 @@ begin
     end
     else
     begin
-{$IFDEF VCL}
+      {$IFDEF VCL}
       Result.Handle := LoadBitmap(Module, ResID);
       if Result.Handle = 0 then
-{$ENDIF VCL}
+      {$ENDIF VCL}
         ResourceNotFound(ResID);
     end;
   except
@@ -1583,7 +1606,6 @@ end;
 { Transparent bitmap }
 
 {$IFDEF VCL}
-
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
   SrcDC: HDC; SrcX, SrcY, SrcW, Srch: Integer; Palette: HPALETTE;
   TransparentColor: TColorRef);
@@ -1774,18 +1796,18 @@ begin
     SrcW := Bitmap.Width;
     Srch := Bitmap.Height;
   end;
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   Dest.Start;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
   Bitmap.Canvas.Lock;
   try
     Bitmap.Canvas.OnChanging := nil;
-{$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     Bitmap.Canvas.Start;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     if TransparentColor = clNone then
     begin
       StretchBlt(Dest.Handle, DstX, DstY, DstW, DstH, Bitmap.Canvas.Handle,
@@ -1799,26 +1821,26 @@ begin
         TransparentColor := clWhite
       else
         TransparentColor := ColorToRGB(TransparentColor);
-{$IFDEF VCL}
+      {$IFDEF VCL}
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
         Bitmap.Palette, TransparentColor);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, Srch,
         0, TransparentColor);
-{$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
     end;
-{$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     Bitmap.Canvas.Stop;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
     Bitmap.Canvas.Unlock;
-{$IFDEF VisualCLX}
+    {$IFDEF VisualCLX}
     Dest.Stop;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1916,9 +1938,9 @@ begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
         Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
-{$IFDEF VCL}
+        {$IFDEF VCL}
         HandleType := bmDDB;
-{$ENDIF VCL}
+        {$ENDIF VCL}
         Canvas.Brush.Color := OutlineColor;
         if Monochrome then
         begin
@@ -1932,11 +1954,11 @@ begin
       begin
         Brush.Color := BackColor;
         FillRect(IRect);
-{$IFDEF VisualCLX}
+        {$IFDEF VisualCLX}
         MonoBmp.Canvas.Start;
         Start;
         try
-{$ENDIF VisualCLX}
+        {$ENDIF VisualCLX}
           if DrawHighlight then
           begin
             Brush.Color := HighLightColor;
@@ -1950,12 +1972,12 @@ begin
           SetBkColor(Handle, clWhite);
           BitBlt(Handle, 0, 0, RectWidth(IRect), RectHeight(IRect),
             MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-{$IFDEF VisualCLX}
+        {$IFDEF VisualCLX}
         finally
           Stop;
           MonoBmp.Canvas.Stop;
         end;
-{$ENDIF VisualCLX}
+        {$ENDIF VisualCLX}
       end;
     finally
       MonoBmp.Free;
@@ -1972,6 +1994,7 @@ begin
   Result := CreateDisabledBitmapEx(FOriginal, OutlineColor,
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
+
 
 {$IFDEF VCL}
 { ChangeBitmapColor. This function create new TBitmap object.
@@ -2015,12 +2038,12 @@ begin
     begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Images.Width, Images.Height));
-{$IFDEF VCL}
+      {$IFDEF VCL}
       ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
-{$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
     end;
     Bmp.Monochrome := True;
     if DrawHighlight then
@@ -2078,22 +2101,22 @@ end;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
   Result := TIcon.Create;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Result.Handle := LoadIcon(Module, ResID);
   if Result.Handle = 0 then
   begin
     Result.Free;
     Result := nil;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   try
     Result.LoadFromResourceName(HInstance, ResID);
   except
     Result.Free;
     Result := nil;
   end;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 { Create TBitmap object from TIcon }
@@ -2132,16 +2155,16 @@ begin
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     AllocBy := 1;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
     try
-{$IFDEF VCL}
+      {$IFDEF VCL}
       GetIcon(0, Result);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       Bmp := TBitmap.Create;
       try
         GetBitmap(0, Bmp);
@@ -2149,7 +2172,7 @@ begin
       finally
         Bmp.Free;
       end;
-{$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
     except
       Result.Free;
       raise;
@@ -2326,12 +2349,12 @@ begin
   TCustomControlHack(AForm).DestroyHandle;
   with AForm do
   begin
-{$IFDEF VCL}
+    {$IFDEF VCL}
     BorderStyle := bsNone;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     BorderStyle := fbsNone;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -2409,9 +2432,9 @@ end;
 
 function ScreenWorkArea: TRect;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     with Screen do
       Result := Bounds(0, 0, Width, Height);
 end;
@@ -2523,14 +2546,9 @@ var
   ColorBand: TRect; { Color band rectangular coordinates }
   i, Delta: Integer;
   Brush: HBRUSH;
-  TmpColor: Longint;
 begin
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   Canvas.Start;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-  Canvas.Lock;
-{$ENDIF VCL}
   try
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
@@ -2649,20 +2667,19 @@ begin
     Buffer[i] := Chr(i + Ord('A'));
   for i := 0 to 25 do
     Buffer[i + 26] := Chr(i + Ord('a'));
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   Canvas.Start;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   GetTextExtentPoint32(Canvas.Handle, Buffer, 52, TSize(Result));
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   Canvas.Stop;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   Result.X := Result.X div 52;
 end;
 
 { Cursor routines }
 
 {$IFDEF MSWINDOWS}
-
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 { Unfortunately I don't know how we can load animated cursor from
   executable resource directly. So I write this routine using temporary
@@ -2732,19 +2749,19 @@ var
   Handle: HCURSOR;
 begin
   Handle := LoadCursor(Instance, ResID);
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
-{$ENDIF VCL}
+  {$ENDIF VCL}
   if Integer(Handle) = 0 then
     ResourceNotFound(ResID);
   try
     Result := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[Result] := Handle;
   except
-{$IFDEF VCL}
+    {$IFDEF VCL}
     DestroyCursor(Handle);
-{$ENDIF VCL}
+    {$ENDIF VCL}
     raise;
   end;
 end;
@@ -2811,17 +2828,17 @@ begin
     if Handle = 0 then
       Handle := LoadLibraryEx(cOle32DLL, 0, LOAD_LIBRARY_AS_DATAFILE);
     if Handle <> 0 then // (p3) don't free the lib handle!
-    try
-      Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
-      Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
-      Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
-      Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
-      Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
-      Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
-      Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
-      Result := True;
-    except
-    end;
+      try
+        Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
+        Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
+        Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
+        Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
+        Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
+        Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
+        Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
+        Result := True;
+      except
+      end;
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -3014,7 +3031,6 @@ begin
 end;
 
 { TJvDesktopCanvas }
-
 destructor TJvDesktopCanvas.Destroy;
 begin
   FreeHandle;
@@ -3162,7 +3178,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-
 function IsForegroundTask: Boolean;
 begin
   Result := Application.Active;
@@ -3170,7 +3185,6 @@ end;
 {$ENDIF LINUX}
 
 {$IFDEF VCL}
-
 function MessageBox(const Msg: string; Caption: string; const Flags: Integer):
   Integer;
 begin
@@ -3271,78 +3285,76 @@ begin
     HelpContext, Control);
 end;
 
-function MsgYesNo(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0): Boolean;
+function MsgYesNo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNO or Flags) = IDYES;
 end;
 
-function MsgRetryCancel(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0): Boolean;
+function MsgRetryCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_RETRYCANCEL or Flags) = IDRETRY;
 end;
 
-function MsgAbortRetryIgnore(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0): Integer;
+function MsgAbortRetryIgnore(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_ABORTRETRYIGNORE or Flags);
 end;
 
-function MsgYesNoCancel(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0): Integer;
+function MsgYesNoCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Integer;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNOCANCEL or Flags);
 end;
 
-function MsgOKCancel(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0): Boolean;
+function MsgOKCancel(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0):Boolean;
 begin
   Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OKCANCEL or Flags) = IDOK;
 end;
 
-procedure MsgOK(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0);
+procedure MsgOK(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OK or Flags);
 end;
 
-procedure MsgInfo(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0);
+procedure MsgInfo(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONINFORMATION or Flags);
 end;
 
-procedure MsgWarn(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0);
+procedure MsgWarn(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONWARNING or Flags);
 end;
 
-procedure MsgQuestion(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0);
+procedure MsgQuestion(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONQUESTION or Flags);
 end;
 
-procedure MsgError(Handle: Integer; const Msg, Caption: string; Flags: DWORD = 0);
+procedure MsgError(Handle:Integer;const Msg, Caption:string; Flags:DWORD=0);
 begin
   MsgOK(Handle, Msg, Caption, MB_ICONERROR or Flags);
 end;
 
-function FindIcon(hInstance: DWORD; const IconName: string): Boolean;
+function FindIcon(hInstance:DWORD;const IconName:string):Boolean;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := (IconName <> '') and (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_GROUP_ICON))
-      <> 0)
-      or (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_ICON)) <> 0)
+    Result := (IconName <> '') and (FindResourceW(hInstance,PWideChar(WideString(IconName)),PWideChar(RT_GROUP_ICON)) <> 0)
+      or (FindResourceW(hInstance,PWideChar(WideString(IconName)),PWideChar(RT_ICON)) <> 0)
   else
-    Result := (IconName <> '') and (FindResourceA(hInstance, PChar(IconName), RT_GROUP_ICON) <> 0)
-      or (FindResourceA(hInstance, PChar(IconName), RT_ICON) <> 0)
+    Result := (IconName <> '') and (FindResourceA(hInstance,PChar(IconName),RT_GROUP_ICON) <> 0)
+      or (FindResourceA(hInstance,PChar(IconName),RT_ICON) <> 0)
 end;
+
 
 type
   TMsgBoxParamsRec = record
-    case Boolean of
-      False: (ParamsA: TMsgBoxParamsA);
-      True: (ParamsW: TMsgBoxParamsW);
+  case Boolean of
+    False:(ParamsA:TMsgBoxParamsA);
+    True:(ParamsW:TMsgBoxParamsW);
   end;
 
-procedure MsgAbout(Handle: Integer; const Msg, Caption: string; const IcoName: string = 'MAINICON'; Flags: DWORD =
-  MB_OK);
-var
-  Params: TMsgBoxParamsRec;
+procedure MsgAbout(Handle:Integer;const Msg, Caption:string; const IcoName:string='MAINICON';Flags:DWORD=MB_OK);
+var Params: TMsgBoxParamsRec;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     with Params.ParamsW do
@@ -3365,8 +3377,7 @@ begin
       dwLanguageId := GetUserDefaultLangID;
       MessageBoxIndirectW(Params.ParamsW);
     end
-  else
-    with Params.ParamsA do
+  else with Params.ParamsA do
     begin
       cbSize := sizeof(TMsgBoxParamsA);
       hwndOwner := Handle;
@@ -3407,16 +3418,16 @@ begin
   Ico.Free;
 end;
 
-function DualInputQuery(const ACaption, Prompt1, Prompt2: string;
-  var AValue1, AValue2: string; PasswordChar: char = #0): Boolean;
+function DualInputQuery(const ACaption, Prompt1, Prompt2:string;
+  var AValue1, AValue2:string; PasswordChar:char=#0):Boolean;
 var
-  AForm: TForm;
-  ALabel1, ALabel2: TLabel;
-  AEdit1, AEdit2: TEdit;
-  ASize, i: Integer;
+  AForm:TForm;
+  ALabel1, ALabel2:TLabel;
+  AEdit1, AEdit2:TEdit;
+  ASize, i:Integer;
 begin
   Result := False;
-  AForm := CreateMessageDialog(Prompt1, mtCustom, [mbOK, mbCancel]);
+  AForm := CreateMessageDialog(Prompt1,mtCustom,[mbOK	,mbCancel]);
   ASize := 0;
   if AForm <> nil then
   try
@@ -3472,15 +3483,15 @@ begin
   end;
 end;
 
-function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: char; var Value: string): Boolean;
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar:char; var Value: string): Boolean;
 var
-  AForm: TForm;
-  ALabel: TLabel;
-  AEdit: TEdit;
-  ASize: Integer;
+  AForm:TForm;
+  ALabel:TLabel;
+  AEdit:TEdit;
+  ASize:Integer;
 begin
   Result := False;
-  AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK, mbCancel]);
+  AForm := CreateMessageDialog(APrompt, mtCustom, [mbOK ,mbCancel]);
   if AForm <> nil then
   try
     AForm.Caption := ACaption;
@@ -3615,7 +3626,6 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-
 function TargetFileName(const FileName: TFileName): TFileName;
 begin
   Result := FileName;
@@ -3633,12 +3643,12 @@ var
   ppf: IPersistFile;
   wnd: Windows.HWND;
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   wnd := HWND;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   wnd := QWidget_winId(HWND);
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
   Result := CoInitialize(nil);
@@ -3789,13 +3799,13 @@ begin
   if Assigned(OnGetDefaultIniName) then
     Result := OnGetDefaultIniName
   else
-{$IFDEF LINUX}
+  {$IFDEF LINUX}
     Result := GetEnvironmentVariable('HOME') + PathDelim +
       '.' + ExtractFileName(Application.ExeName);
-{$ENDIF LINUX}
-{$IFDEF MSWINDOWS}
+  {$ENDIF LINUX}
+  {$IFDEF MSWINDOWS}
   Result := ExtractFileName(ChangeFileExt(Application.ExeName, '.ini'));
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 function GetDefaultIniRegKey: string;
@@ -3907,6 +3917,17 @@ begin
       Result := Copy(Result, 1, N - 1) + CRLF + Copy(Result, N + 2, Length(Result));
   until N = 0;
 end;
+
+{ The following strings should not be localized }
+const
+  siFlags = 'Flags';
+  siShowCmd = 'ShowCmd';
+  siMinMaxPos = 'MinMaxPos';
+  siNormPos = 'NormPos';
+  siPixels = 'PixelsPerInch';
+  siMDIChild = 'MDI Children';
+  siListCount = 'Count';
+  siItem = 'Item%d';
 
 (*
 function IniReadString(IniFile: TObject; const Section, Ident,
@@ -4031,8 +4052,310 @@ begin
 end;
 *)
 
-{$IFDEF VCL}
+{$HINTS OFF}
+type
 
+  {*******************************************************}
+  { !! ATTENTION Nasty implementation                     }
+  {*******************************************************}
+  {                                                       }
+  { This class definition was copied from FORMS.PAS.      }
+  { It is needed to access some private fields of TForm.  }
+  {                                                       }
+  { Any changes in the underlying classes may cause       }
+  { errors in this implementation!                        }
+  {                                                       }
+  {*******************************************************}
+
+  TJvNastyForm = class(TScrollingWinControl)
+  private
+    FActiveControl: TWinControl;
+    FFocusedControl: TWinControl;
+    FBorderIcons: TBorderIcons;
+    FBorderStyle: TFormBorderStyle;
+    FSizeChanging: Boolean;
+    FWindowState: TWindowState; { !! }
+  end;
+
+  TOpenComponent = class(TComponent);
+{$HINTS ON}
+
+function CrtResString: string;
+begin
+  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
+    GetSystemMetrics(SM_CYSCREEN)]);
+end;
+
+function ReadPosStr(AppStorage: TJvCustomAppStorage; const Path: string): string;
+begin
+  if AppStorage.ValueStored(Path + CrtResString) then
+    Result := AppStorage.ReadString(Path + CrtResString)
+  else
+    Result := AppStorage.ReadString(Path);
+end;
+
+procedure WritePosStr(AppStorage: TJvCustomAppStorage; const Path, Value: string);
+begin
+  AppStorage.WriteString(Path + CrtResString, Value);
+  AppStorage.WriteString(Path, Value);
+end;
+
+procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Integer;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
+  if MainForm.MDIChildCount > 0 then
+  begin
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+      siListCount]),
+        MainForm.MDIChildCount);
+    for i := 0 to MainForm.MDIChildCount - 1 do
+      AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
+        Format(siItem, [i])]),
+          MainForm.MDIChildren[i].ClassName);
+  end;
+end;
+
+procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Integer;
+  Count: Integer;
+  FormClass: TFormClass;
+begin
+  if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
+    raise EInvalidOperation.Create(SNoMDIForm);
+  StartWait;
+  try
+    Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+      siListCount]), 0);
+    if Count > 0 then
+    begin
+      for i := 0 to Count - 1 do
+      begin
+        FormClass :=
+          TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
+          siMDIChild, Format(siItem, [i])]), '')));
+        if FormClass <> nil then
+          InternalFindShowForm(FormClass, '', False);
+      end;
+    end;
+  finally
+    StopWait;
+  end;
+end;
+
+procedure SaveMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
+begin
+  InternalSaveMDIChildren(MainForm, AppStorage, '');
+end;
+
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
+  TJvCustomAppStorage);
+begin
+  InternalRestoreMDIChildren(MainForm, AppStorage, '');
+end;
+
+procedure InternalSaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options:TPlacementOptions = [fpState, fpSize, fpLocation]);
+var
+  Placement: TWindowPlacement;
+begin
+  if Options = [fpActiveControl] then
+    Exit;
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if (Form = Application.MainForm) and AppMinimized then
+      ShowCmd := SW_SHOWMINIMIZED;
+    {$IFDEF VCL}
+    if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
+      Flags := Flags or WPF_SETMINPOSITION;
+    {$ENDIF VCL}
+    if (fpState in Options) then
+      AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
+    if ([fpSize, fpLocation] * Options <> []) then
+    begin
+      AppStorage.WriteInteger(StorePath + '\' + siFlags, Flags);
+      AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
+      WritePosStr(AppStorage, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+        [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
+      WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+        [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
+        rcNormalPosition.Bottom]));
+    end;
+  end;
+end;
+
+procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
+  const StorePath: string; Options:TPlacementOptions = [fpState, fpSize, fpLocation]);
+const
+  Delims = [',', ' '];
+var
+  PosStr: string;
+  Placement: TWindowPlacement;
+  WinState: TWindowState;
+  DataFound: Boolean;
+begin
+  if Options = [fpActiveControl] then
+    Exit;
+  Placement.Length := SizeOf(TWindowPlacement);
+  GetWindowPlacement(Form.Handle, @Placement);
+  with Placement, TForm(Form) do
+  begin
+    if not IsWindowVisible(Form.Handle) then
+      ShowCmd := SW_HIDE;
+    if ([fpSize, fpLocation] * Options <> []) then
+    begin
+      DataFound := False;
+      AppStorage.ReadInteger(StorePath + '\' + siFlags, Flags);
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siMinMaxPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        if fpLocation in Options then
+        begin
+          ptMinPosition.X := StrToIntDef(ExtractWord(1, PosStr, Delims), 0);
+          ptMinPosition.Y := StrToIntDef(ExtractWord(2, PosStr, Delims), 0);
+        end;
+        if fpSize in Options then
+        begin
+          ptMaxPosition.X := StrToIntDef(ExtractWord(3, PosStr, Delims), 0);
+          ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
+        end;
+      end;
+      PosStr := ReadPosStr(AppStorage, StorePath + '\' + siNormPos);
+      if PosStr <> '' then
+      begin
+        DataFound := True;
+        if fpLocation in Options then
+        begin
+          rcNormalPosition.Left := StrToIntDef(ExtractWord(1, PosStr, Delims), Left);
+          rcNormalPosition.Top := StrToIntDef(ExtractWord(2, PosStr, Delims), Top);
+        end;
+        if fpSize in Options then
+        begin
+          rcNormalPosition.Right := StrToIntDef(ExtractWord(3, PosStr, Delims), Left + Width);
+          rcNormalPosition.Bottom := StrToIntDef(ExtractWord(4, PosStr, Delims), Top + Height);
+        end;
+      end;
+      DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
+        StorePath + '\' + siPixels, Screen.PixelsPerInch));
+      if DataFound then
+      begin
+        {$IFDEF VCL}
+        if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
+        {$ENDIF VisualCLX}
+          rcNormalPosition := Rect(rcNormalPosition.Left,
+            rcNormalPosition.Top,
+            rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
+        if rcNormalPosition.Right > rcNormalPosition.Left then
+        begin
+          if (Position in [poScreenCenter, poDesktopCenter]) and
+            not (csDesigning in ComponentState) then
+          begin
+            TOpenComponent(Form).SetDesigning(True);
+            try
+              Position := poDesigned;
+            finally
+              TOpenComponent(Form).SetDesigning(False);
+            end;
+          end;
+          SetWindowPlacement(Handle, @Placement);
+        end;
+      end;
+    end;
+    if fpState in Options then
+    begin
+      WinState := wsNormal;
+      { default maximize MDI main form }
+      if ((Application.MainForm = Form) or
+        (Application.MainForm = nil)) and ((FormStyle = fsMDIForm) or
+        ((FormStyle = fsNormal) and (Position = poDefault))) then
+        WinState := wsMaximized;
+      ShowCmd := AppStorage.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
+      case ShowCmd of
+        SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
+          WinState := wsNormal;
+        SW_MINIMIZE, SW_SHOWMINIMIZED, SW_SHOWMINNOACTIVE:
+          WinState := wsMinimized;
+        SW_MAXIMIZE:
+          WinState := wsMaximized;
+      end;
+      {$IFDEF VCL}
+      if (WinState = wsMinimized) and ((Form = Application.MainForm)
+        or (Application.MainForm = nil)) then
+      begin
+        TJvNastyForm(Form).FWindowState := wsNormal;
+        PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+        Exit;
+      end;
+      if FormStyle in [fsMDIChild, fsMDIForm] then
+        TJvNastyForm(Form).FWindowState := WinState
+      else
+      {$ENDIF VCL}
+        WindowState := WinState;
+    end;
+    Update;
+  end;
+end;
+
+procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Longint;
+begin
+  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
+      [i])]),
+      TDrawGrid(Grid).ColWidths[i]);
+end;
+
+procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage;
+  const StorePath: string);
+var
+  i: Longint;
+begin
+  for i := 0 to TDrawGrid(Grid).ColCount - 1 do
+    TDrawGrid(Grid).ColWidths[i] :=
+      AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
+      Format(siItem, [i])]), TDrawGrid(Grid).ColWidths[i]);
+end;
+
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
+  TJvCustomAppStorage);
+begin
+  InternalRestoreGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
+end;
+
+procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
+begin
+  InternalSaveGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
+end;
+
+procedure SaveFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options:TPlacementOptions);
+begin
+  InternalSaveFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
+end;
+
+procedure RestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage; Options:TPlacementOptions);
+begin
+  InternalRestoreFormPlacement(Form, AppStorage, GetDefaultSection(Form), Options);
+end;
+
+{$IFDEF VCL}
 procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
 var
   i: Integer;
@@ -4084,10 +4407,10 @@ begin
   case PixelFormat of
     pf1bit:
       Result := 2;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     pf4bit:
       Result := 16;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     pf8bit:
       Result := 256;
   else
@@ -4096,7 +4419,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 function ScreenPixelFormat: TPixelFormat;
 var
   DC: HDC;
@@ -5150,7 +5472,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure InitializeBitmapInfoHeader(Bitmap: HBITMAP; var BI: TBitmapInfoHeader;
   PixelFormat: TPixelFormat);
 var
@@ -5278,7 +5599,7 @@ var
   ImageSize, Length, Len: Longint;
   P, InitData: Pointer;
   ColorCount: Integer;
-  SourceBitmapFormat: TPixelFormat;
+  SourceBitmapFormat:TPixelFormat;
 begin
   Result := nil;
   if Bitmap.Handle = 0 then
@@ -5594,7 +5915,7 @@ var
   Button: TToolButton;
 begin
   if AForm.FormStyle = fsMDIForm then
-    raise Exception.CreateRes(@RsNotForMdi);
+    raise EJclError.CreateResRec(@RsNotForMdi);
   if AMenu = nil then
     AMenu := AForm.Menu;
   if AMenu = nil then
@@ -5602,15 +5923,15 @@ begin
   with AToolBar do
   begin
     TotalWidth := BorderWidth;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     for i := ButtonCount - 1 downto 0 do
       Buttons[i].Free;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     for i := ControlCount - 1 downto 0 do
       if Controls[i] is TToolButton then
         Controls[i].Free;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     ShowCaptions := True;
   end;
   with AMenu do
@@ -5621,10 +5942,10 @@ begin
       Button.AutoSize := True;
       Button.Caption := Items[i].Caption;
       Button.Grouped := True;
-{$IFDEF VCL}
+      {$IFDEF VCL}
       Button.MenuItem := Items[i];
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       if Items[i].Action <> nil then
         Button.Action := Items[i].Action
       else
@@ -5634,7 +5955,7 @@ begin
         Button.ImageIndex := Items[i].ImageIndex;
         Button.OnClick := Items[i].OnClick;
       end;
-{$ENDIF VisualCLX}
+      {$ENDIF VisualCLX}
       Inc(TotalWidth, Button.Width + AToolBar.BorderWidth);
     end;
   AToolBar.Width := TotalWidth;
@@ -5738,28 +6059,28 @@ procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
   DescendingSortImage: Integer);
 var
   ListView: TListView;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   i: Integer;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 begin
   ListView := TListColumns(Column.Collection).Owner as TListView;
   ListView.Columns.BeginUpdate;
   try
     with ListView.Columns do
-{$IFDEF VCL}
+    {$IFDEF VCL}
       for i := 0 to Count - 1 do
         Items[i].ImageIndex := -1;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     if ListView.Tag and $FF = Column.Index then
       ListView.Tag := ListView.Tag xor $100
     else
       ListView.Tag := Column.Index;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     if ListView.Tag and $100 = 0 then
       Column.ImageIndex := AscendingSortImage
     else
       Column.ImageIndex := DescendingSortImage;
-{$ENDIF VCL}
+    {$ENDIF VCL}
   finally
     ListView.Columns.EndUpdate;
   end;
@@ -5811,10 +6132,10 @@ end;
 procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
   i: Integer;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   h: THandle;
   Data: Integer;
-{$ENDIF VCL}
+  {$ENDIF VCL}
   SaveOnSelectItem: TLVSelectItemEvent;
 begin
   with ListView do
@@ -5824,7 +6145,7 @@ begin
       SaveOnSelectItem := OnSelectItem;
       WaitCursor;
       try
-{$IFDEF VCL}
+        {$IFDEF VCL}
         h := Handle;
         OnSelectItem := nil;
         if Deselect then
@@ -5833,11 +6154,11 @@ begin
           Data := LVIS_SELECTED;
         for i := 0 to Items.Count - 1 do
           ListView_SetItemState(h, i, Data, LVIS_SELECTED);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
         for i := 0 to Items.Count - 1 do
           Items[i].Selected := not Deselect;
-{$ENDIF VisualCLX}
+        {$ENDIF VisualCLX}
       finally
         OnSelectItem := SaveOnSelectItem;
         Items.EndUpdate;
@@ -5893,12 +6214,12 @@ begin
       TempItem.Selected := True;
     end;
     if MakeVisible and (TempItem <> nil) then
-{$IFDEF VCL}
+      {$IFDEF VCL}
       TempItem.MakeVisible(True);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-    TempItem.MakeVisible;
-{$ENDIF VisualCLX}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      TempItem.MakeVisible;
+      {$ENDIF VisualCLX}
   end;
 end;
 
@@ -5977,7 +6298,7 @@ end;
 
 function GetDefaultCheckBoxSize: TSize;
 begin
-{$IFDEF VCL}
+  {$IFDEF VCL}
   with TBitmap.Create do
   try
     Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));
@@ -5986,11 +6307,11 @@ begin
   finally
     Free;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Result.cx := 12;
   Result.cy := 12;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
@@ -6052,7 +6373,7 @@ begin
     UtilWindowExClass.lpszClassName := PChar(AClassName);
 
   ClassRegistered := Windows.GetClassInfo(HInstance, UtilWindowExClass.lpszClassName,
-    TempClass);
+     TempClass);
   if not ClassRegistered or (TempClass.lpfnWndProc <> @DefWindowProc) then
   begin
     if ClassRegistered then
@@ -6077,25 +6398,24 @@ end;
 
 function JvMakeObjectInstance(Method: TWndMethod): Pointer;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := Classes.MakeObjectInstance(Method);
-{$ELSE}
+  {$ELSE}
   Result := MakeObjectInstance(Method);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure JvFreeObjectInstance(ObjectInstance: Pointer);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Classes.FreeObjectInstance(ObjectInstance);
-{$ELSE}
+  {$ELSE}
   FreeObjectInstance(ObjectInstance);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 {$ENDIF MSWINDOWS}
 
 {$IFNDEF COMPILER6_UP}
-
 function TryStrToDateTime(const S: string; out Value: TDateTime): Boolean;
 begin
   try
@@ -6118,17 +6438,18 @@ begin
       Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
       }
       { end RxLib }
-{$IFDEF VCL}
+      {$IFDEF VCL}
       { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
       Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
       Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
-{$ENDIF VCL}
+      {$ENDIF VCL}
     end;
   except
   end;
 end;
+
 
 const
   Lefts = ['[', '{', '('];
@@ -6163,15 +6484,14 @@ begin
 end;
 
 {$IFDEF VCL}
-
 function FontToString(Font: TFont): string;
 begin
   with Font do
     Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
-      FontStylesToString(Style), Ord(Pitch), ColorToString(Color), Charset]);
+      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
 end;
 
-function StringToFont(const Str: string): TFont;
+Function StringToFont(const Str: string): TFont;
 const
   Delims = [',', ';'];
 var
@@ -6206,6 +6526,7 @@ begin
   end;
 end;
 {$ENDIF VCL}
+
 
 function RectToStr(Rect: TRect): string;
 begin

@@ -15,12 +15,13 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Last Modified: 2002-07-04
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
 
 {$I jvcl.inc}
 
@@ -60,7 +61,7 @@ type
     DownBtn: TSpeedButton;
     FormBox: TGroupBox;
     ActiveCtrlBox: TCheckBox;
-    PositionBox: TCheckBox;
+    SizeBox: TCheckBox;
     StateBox: TCheckBox;
     AddButton: TButton;
     DeleteButton: TButton;
@@ -70,6 +71,7 @@ type
     ComponentsList: TListBox;
     PropertiesList: TListBox;
     StoredList: TListBox;
+    LocationBox: TCheckBox;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);
@@ -206,7 +208,8 @@ begin
       UpdateStoredList(ACompOwner, AStoredList, False);
       SetStoredList(AStoredList);
       ActiveCtrlBox.Checked := fpActiveControl in Options;
-      PositionBox.Checked := fpPosition in Options;
+      SizeBox.Checked := fpSize in Options;
+      LocationBox.Checked := fpLocation in Options;
       StateBox.Checked := fpState in Options;
     finally
       Screen.Cursor := crDefault;
@@ -218,8 +221,10 @@ begin
       Options := [];
       if ActiveCtrlBox.Checked then
         Include(Options, fpActiveControl);
-      if PositionBox.Checked then
-        Include(Options, fpPosition);
+      if SizeBox.Checked then
+        Include(Options, fpSize);
+      if LocationBox.Checked then
+        Include(Options, fpLocation);
       if StateBox.Checked then
         Include(Options, fpState);
     end;
