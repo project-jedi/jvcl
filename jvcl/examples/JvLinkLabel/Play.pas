@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, ComCtrls, StdCtrls, JvLinkLabel, JvValidateEdit, JvEdit;
+  ExtCtrls, ComCtrls, StdCtrls, JvLinkLabel, JvValidateEdit, JvEdit,
+  JvExStdCtrls, JvExControls, JvComponent;
 
 type
   TfrmPlay = class(TForm)

@@ -71,11 +71,11 @@ object fBouncingBalls: TfBouncingBalls
     TabOrder = 3
     OnClick = Button2Click
   end
-  object ThreadManager: TJvMtManager
+  object ThreadManager: TJvMTManager
     Left = 120
     Top = 112
   end
-  object BallThread: TJvMtThread
+  object BallThread: TJvMTThread
     Manager = ThreadManager
     RunOnCreate = False
     OnExecute = BallThreadExecute
@@ -83,12 +83,12 @@ object fBouncingBalls: TfBouncingBalls
     Left = 120
     Top = 144
   end
-  object Buffer: TJvMtThreadToVCL
+  object Buffer: TJvMTThreadToVCL
     OnCanRead = JvMtThreadToVCL1CanRead
     Left = 160
     Top = 144
   end
-  object Section: TJvMtCountingSection
+  object Section: TJvMTCountingSection
     MaxCount = 3
     Left = 264
     Top = 328

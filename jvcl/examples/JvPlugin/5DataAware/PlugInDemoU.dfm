@@ -20,7 +20,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 406
-    Height = 269
+    Height = 266
     Align = alClient
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET

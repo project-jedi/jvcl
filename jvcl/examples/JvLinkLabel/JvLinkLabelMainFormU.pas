@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  CategCh, StdCtrls, ExtCtrls, JvLinkLabel, JvComponent;
+  CategCh, StdCtrls, ExtCtrls, JvLinkLabel, JvComponent, JvExControls;
 
 type
   TJvLinkLabelMainForm = class(TForm)

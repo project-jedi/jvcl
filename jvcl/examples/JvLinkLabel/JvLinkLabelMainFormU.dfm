@@ -986,7 +986,7 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   object lblClose: TLabel
     Left = 502
     Top = 8
-    Width = 18
+    Width = 17
     Height = 16
     Cursor = crHandPoint
     Anchors = [akTop, akRight]

@@ -42,7 +42,6 @@ object JvPlayListMainForm: TJvPlayListMainForm
     ScrollBars = ssNone
     TabOrder = 0
     OnClick = JvPlaylist1Click
-    ShowDrive = True
   end
   object OpenDialog1: TOpenDialog
     InitialDir = '.'

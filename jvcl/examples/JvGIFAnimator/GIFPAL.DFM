@@ -5,10 +5,13 @@ object PaletteForm: TPaletteForm
   Caption = 'Palette'
   ClientHeight = 253
   ClientWidth = 339
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -73,6 +76,7 @@ object PaletteForm: TPaletteForm
       ScrollBars = ssNone
       TabOrder = 0
       OnDrawCell = ColorGridDrawCell
+      DrawButtons = False
     end
   end
 end

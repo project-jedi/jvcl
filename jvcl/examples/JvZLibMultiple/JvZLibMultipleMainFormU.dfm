@@ -104,6 +104,8 @@ object JvZLibMultipleMainForm: TJvZLibMultipleMainForm
     Width = 368
     Height = 16
     Align = alBottom
+    Min = 0
+    Max = 100
     TabOrder = 8
   end
   object btnSrc: TButton

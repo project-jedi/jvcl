@@ -21,7 +21,7 @@ object Profiler32MainForm: TProfiler32MainForm
     Left = 0
     Top = 41
     Width = 498
-    Height = 225
+    Height = 220
     Align = alClient
     BorderStyle = bsNone
     ItemHeight = 13
@@ -145,10 +145,12 @@ object Profiler32MainForm: TProfiler32MainForm
   end
   object Progress: TProgressBar
     Left = 0
-    Top = 266
+    Top = 261
     Width = 498
     Height = 16
     Align = alBottom
+    Min = 0
+    Max = 100
     TabOrder = 2
   end
   object P: TJvProfiler

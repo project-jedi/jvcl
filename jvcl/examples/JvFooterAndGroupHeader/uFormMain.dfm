@@ -45,7 +45,7 @@ object Form1: TForm1
   end
   object JvFooter1: TJvFooter
     Left = 0
-    Top = 160
+    Top = 155
     Width = 494
     Height = 37
     Align = alBottom
@@ -103,7 +103,7 @@ object Form1: TForm1
   end
   object JvFooter2: TJvFooter
     Left = 0
-    Top = 123
+    Top = 118
     Width = 494
     Height = 37
     Align = alBottom
@@ -159,7 +159,7 @@ object Form1: TForm1
   end
   object JvFooter3: TJvFooter
     Left = 0
-    Top = 86
+    Top = 81
     Width = 494
     Height = 37
     Align = alBottom

@@ -181,7 +181,7 @@ object Form1: TForm1
     Max = 100
     TabOrder = 4
   end
-  object JvMultiHttpGrabber1: TJvMultiHttpGrabber
+  object JvMultiHttpGrabber1: TJvMultiHTTPGrabber
     Agent = 'TJvMultiHttpGrabber Component'
     OnClosingConnection = JvMultiHttpGrabber1ClosingConnection
     OnClosedConnection = JvMultiHttpGrabber1ClosedConnection

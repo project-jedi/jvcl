@@ -31,6 +31,7 @@ object MainForm: TMainForm
     DatabaseName = 'D:\EMPLOYEE.DB'
     UserName = 'SYSDBA'
     PassWord = 'masterkey'
+    LibraryName = 'gds32.dll'
     Left = 8
     Top = 8
   end
@@ -40,9 +41,9 @@ object MainForm: TMainForm
     Top = 8
   end
   object Query: TJvUIBQuery
-    Transaction = Transaction
     SQL.Strings = (
       'INSERT INTO COUNTRY (COUNTRY,CURRENCY) VALUES (?, ?)')
+    Transaction = Transaction
     CachedFetch = False
     Left = 72
     Top = 8

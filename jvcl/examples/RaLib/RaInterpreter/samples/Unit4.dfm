@@ -99,7 +99,7 @@ object Form1: TForm1
         AlignToBand = True
         AutoSize = False
         AutoStretch = False
-        Caption = 'Пробный отчет 1'
+        Caption = #207#240#238#225#237#251#233' '#238#242#247#229#242' 1'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

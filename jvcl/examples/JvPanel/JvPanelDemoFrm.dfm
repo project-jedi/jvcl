@@ -20,19 +20,19 @@ object Form1: TForm1
     Height = 60
     Active = True
     CommonAVI = aviCopyFile
-    StopFrame = 20
+    StopFrame = 26
   end
   object JvPanel1: TJvPanel
     Left = 464
     Top = 120
     Width = 257
     Height = 246
+    Sizeable = True
+    MultiLine = True
     Caption = 
       'JvPanel1 JvPanel1 JvPanel1 JvPanel1 JvPanel1 JvPanel1 JvPanel1 J' +
       'vPanel1 '
     TabOrder = 0
-    Sizeable = True
-    MultiLine = True
     object Label1: TLabel
       Left = 40
       Top = 128
@@ -54,6 +54,7 @@ object Form1: TForm1
       Top = 32
       Width = 121
       Height = 21
+      AddQuotes = False
       ButtonFlat = False
       NumGlyphs = 1
       TabOrder = 1

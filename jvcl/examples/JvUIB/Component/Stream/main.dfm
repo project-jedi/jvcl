@@ -29,7 +29,7 @@ object MainForm: TMainForm
   end
   object StringGrid: TStringGrid
     Left = 0
-    Top = 32
+    Top = 29
     Width = 689
     Height = 193
     Align = alBottom
@@ -67,10 +67,10 @@ object MainForm: TMainForm
     Left = 120
   end
   object Query: TJvUIBQuery
-    Transaction = Transaction
-    FetchBlobs = True
     SQL.Strings = (
       'select * from employee')
+    Transaction = Transaction
+    FetchBlobs = True
     Left = 152
   end
 end

@@ -36,7 +36,7 @@ object Form1: TForm1
   end
   object Memo: TMemo
     Left = 0
-    Top = 48
+    Top = 45
     Width = 247
     Height = 145
     Align = alBottom
@@ -60,12 +60,12 @@ object Form1: TForm1
     Left = 136
   end
   object Query: TJvUIBQuery
-    Transaction = Transaction
-    CachedFetch = False
     SQL.Strings = (
       
         'SELECT FIRST_NAME, LAST_NAME, SALARY FROM EMPLOYEE WHERE DEPT_NO' +
         ' = :dept')
+    Transaction = Transaction
+    CachedFetch = False
     Left = 168
   end
 end

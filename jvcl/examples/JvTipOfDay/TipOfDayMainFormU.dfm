@@ -70,6 +70,7 @@ object TipOfDayMainForm: TTipOfDayMainForm
     ButtonNext.HotTrackFont.Height = -11
     ButtonNext.HotTrackFont.Name = 'MS Sans Serif'
     ButtonNext.HotTrackFont.Style = []
+    ButtonNext.HotTrackFontOptions = []
     ButtonNext.ShowHint = False
     ButtonClose.Caption = '&Close'
     ButtonClose.Flat = False
@@ -79,6 +80,7 @@ object TipOfDayMainForm: TTipOfDayMainForm
     ButtonClose.HotTrackFont.Height = -11
     ButtonClose.HotTrackFont.Name = 'MS Sans Serif'
     ButtonClose.HotTrackFont.Style = []
+    ButtonClose.HotTrackFontOptions = []
     ButtonClose.ShowHint = False
     CheckBoxText = '&Show Tips on StartUp'
     DefaultFonts = False

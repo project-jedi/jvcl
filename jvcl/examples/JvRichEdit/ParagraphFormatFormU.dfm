@@ -150,7 +150,7 @@ object ParagraphFormatForm: TParagraphFormatForm
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
-      MaxValue = 2147483647.000000000000000000
+      MaxValue = 2147483647
       TabOrder = 0
     end
     object SpaceAfter: TJvSpinEdit
@@ -161,7 +161,7 @@ object ParagraphFormatForm: TParagraphFormatForm
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
-      MaxValue = 2147483647.000000000000000000
+      MaxValue = 2147483647
       TabOrder = 1
     end
     object LineSpacing: TJvSpinEdit
@@ -172,8 +172,8 @@ object ParagraphFormatForm: TParagraphFormatForm
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
-      Increment = 5.000000000000000000
-      MaxValue = 2147483647.000000000000000000
+      Increment = 5
+      MaxValue = 2147483647
       TabOrder = 2
     end
   end

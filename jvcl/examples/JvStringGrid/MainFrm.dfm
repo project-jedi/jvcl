@@ -18,7 +18,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 508
-    Height = 513
+    Height = 510
     Align = alClient
     ColCount = 2
     FixedCols = 0
@@ -37,7 +37,7 @@ object Form1: TForm1
     Left = 508
     Top = 0
     Width = 267
-    Height = 513
+    Height = 510
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1

@@ -28,7 +28,7 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 219
+    Top = 216
     Width = 406
     Height = 19
     Panels = <>

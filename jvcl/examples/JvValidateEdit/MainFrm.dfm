@@ -301,8 +301,8 @@ object frmValidateEditDemo: TfrmValidateEditDemo
           'clNone=None'
           'clDefault=Default')
         ColorDialogText = '(Other...)'
-        NewColorText = 'Custom'
         DroppedDownWidth = 105
+        NewColorText = 'Custom'
         TabOrder = 1
       end
       object edCPMinValue: TEdit
@@ -374,8 +374,8 @@ object frmValidateEditDemo: TfrmValidateEditDemo
           'clNone=None'
           'clDefault=Default')
         ColorDialogText = '(Other...)'
-        NewColorText = 'Custom'
         DroppedDownWidth = 105
+        NewColorText = 'Custom'
         TabOrder = 3
       end
       object cbCPCheckPoints: TComboBox

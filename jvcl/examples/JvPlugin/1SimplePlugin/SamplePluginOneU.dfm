@@ -18,6 +18,7 @@ object SampleUILPlugin: TSampleUILPlugin
       Caption = 'Command &1...'
       Hint = 'Command 1'
       Name = 'Command One'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands0Execute
     end
     item
@@ -41,6 +42,7 @@ object SampleUILPlugin: TSampleUILPlugin
       Caption = 'Command &2...'
       Hint = 'Command 2'
       Name = 'Command Two'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands1Execute
     end
     item
@@ -59,6 +61,7 @@ object SampleUILPlugin: TSampleUILPlugin
       Caption = 'Command &3...'
       Hint = 'Command 3'
       Name = 'Command Three'
+      ShortCut = 0
       OnExecute = uilPlugin1Commands2Execute
     end>
   Description = 

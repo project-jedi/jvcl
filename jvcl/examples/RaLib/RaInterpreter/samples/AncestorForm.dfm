@@ -17,7 +17,7 @@ object Ancestor: TAncestor
     Left = 0
     Top = 0
     Width = 428
-    Height = 232
+    Height = 229
     Align = alClient
     BevelInner = bvSpace
     BevelOuter = bvNone

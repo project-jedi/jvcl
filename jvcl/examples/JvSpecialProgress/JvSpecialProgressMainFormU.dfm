@@ -17,7 +17,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
     Left = 0
     Top = 0
     Width = 762
-    Height = 247
+    Height = 242
     Align = alClient
     Color = clOlive
     Constraints.MinHeight = 183
@@ -56,8 +56,14 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Height = 45
       Anchors = [akLeft, akRight, akBottom]
       Max = 100
+      Orientation = trHorizontal
       Frequency = 100
+      Position = 0
+      SelEnd = 0
+      SelStart = 0
       TabOrder = 0
+      TickMarks = tmBottomRight
+      TickStyle = tsAuto
       OnChange = TrackBar1Change
     end
     object ProgressBar1: TProgressBar
@@ -67,6 +73,8 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
       Height = 41
       Hint = 'TProgressBar'
       Anchors = [akLeft, akRight, akBottom]
+      Min = 0
+      Max = 100
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -74,7 +82,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
   end
   object Panel2: TPanel
     Left = 0
-    Top = 247
+    Top = 242
     Width = 762
     Height = 303
     Align = alBottom

@@ -4,7 +4,7 @@ object foMain: TfoMain
   BorderStyle = bsDialog
   Caption = 'Hopital'
   ClientHeight = 131
-  ClientWidth = 108
+  ClientWidth = 128
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

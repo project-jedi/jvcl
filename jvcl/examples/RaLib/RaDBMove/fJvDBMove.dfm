@@ -452,10 +452,7 @@ object Form1: TForm1
   end
   object RAProgressForm1: TJvProgressComponent
     Caption = 'TJvDBMove in progress'
-    ProgressMin = 0
     ProgressMax = 0
-    ProgressStep = 1
-    ProgressPosition = 0
     OnShow = RAProgressForm1Show
     Left = 396
     Top = 208

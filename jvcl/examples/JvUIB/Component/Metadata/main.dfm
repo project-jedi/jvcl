@@ -19,13 +19,15 @@ object MainForm: TMainForm
   object Splitter: TSplitter
     Left = 225
     Top = 0
-    Height = 396
+    Width = 3
+    Height = 393
+    Cursor = crHSplit
   end
   object TreeView: TTreeView
     Left = 0
     Top = 0
     Width = 225
-    Height = 396
+    Height = 393
     Align = alLeft
     Indent = 23
     ReadOnly = True
@@ -36,7 +38,7 @@ object MainForm: TMainForm
     Left = 228
     Top = 0
     Width = 452
-    Height = 396
+    Height = 393
     Align = alClient
     ScrollBars = ssVertical
     TabOrder = 1
