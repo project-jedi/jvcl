@@ -344,12 +344,6 @@ const
   cShadowAlpha = 100;
 
 type
-  TDynamicSetLayeredWindowAttributes = function (Hwnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
-
-var
-  DynamicSetLayeredWindowAttributes:TDynamicSetLayeredWindowAttributes = nil;
-
-type
   TOpenCanvas = class(TCanvas);
 
   TShadowWindow = class(TJvCustomControl)
@@ -419,10 +413,30 @@ end;
 
 //=== TShadowWindow ==========================================================
 
+type
+  TDynamicSetLayeredWindowAttributes = function(Hwnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+
 procedure TShadowWindow.CreateHandle;
+var
+  DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
+
+  procedure InitProcs;
+  const
+    sUser32 = 'User32.dll';
+  var
+    ModH: HMODULE;
+  begin
+    ModH := GetModuleHandle(sUser32);
+    if ModH <> 0 then
+       @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes');
+    else
+      @DynamicSetLayeredWindowAttributes := mil;
+  end;
+
 begin
   inherited CreateHandle;
   {$IFDEF COMPILER6_UP}
+  InitProcs;
   if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
   begin
     SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
@@ -1522,20 +1536,6 @@ begin
       Change;
   end;
 end;
-
-procedure InitProcs;
-const
-  sUser32 = 'User32.dll';
-var
-  ModH: HMODULE;
-begin
-  ModH := GetModuleHandle(sUser32);
-  if ModH <> 0 then
-     @DynamicSetLayeredWindowAttributes := GetProcAddress(ModH, 'SetLayeredWindowAttributes');
-end;
-
-initialization
-  InitProcs;
 
 end.
 
