@@ -42,11 +42,12 @@ uses
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
  {$IF not declared(PatchedVCLX)}
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
   
 type
   JV_CUSTOMCONTROL_EVENTS(CustomDBGrid)

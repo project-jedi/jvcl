@@ -39,11 +39,12 @@ uses
 
 {$IFDEF VCL}
  {$DEFINE NeedMouseEnterLeave}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
  {$IF not declared(PatchedVCLX)}
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 
 type
   TJvExCustomMaskEdit = class(TCustomMaskEdit,  IJvEditControlEvents, IJvWinControlEvents, IJvControlEvents)
