@@ -46,7 +46,7 @@ unit JvEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, Menus, 
   JvCaret, JvComponent, JvAutoSave, JvMaxPixel, JVCLVer, JvToolEdit;
 
 type

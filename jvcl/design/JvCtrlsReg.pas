@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvCaptionButton,
+  JvConsts, JvZoom, JvAnalogClock, JvBehaviorLabel, JvArrowButton, JvaScrollText, JvCaptionButton,
   JvClock, JvContentScroller, JvColorBox, JvColorButton, JvDice,
   JvDriveCtrls, JvFooter, JvGroupHeader, JvHint, JvHtControls, JvInstallLabel, JvItemsPanel,
   JvListComb, JvPageScroller, JvRegistryTreeView, JvRollOut, JvScrollPanel,
@@ -30,19 +30,39 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Controls',[
-    TJvZoom, TJvAnalogClock, TJvBehaviorLabel, TJvArrowButton, TJvaScrollText,
-    TJvCaptionButton, TJvClock, TJvContentScroller, TJvColorButton, TJvDice,
-    TJvDriveCombo, TJvDriveList, TJvFileListBox, TJvDirectoryListBox,
-    TJvFooter, TJvGroupHeader, TJvInstallLabel, TJvItemsPanel,
-    TJvHint, TJvHtListBox, TJvHTComboBox, TJvHTLabel, TJvHTButton, TJvComponentPanel,
-    TJvImageComboBox, TJvImageListBox, TJvPageScroller, TJvRegistryTreeView,
-    TJvRollOut, TJvScrollingWindow, TJvScrollText, TJvSpacer, TJvSpeedBar,
-    TJvSplitter, TJvxSplitter, TJvSwitch, TJvSyncSplitter,  TJvTransparentButton,
-    TJvTransparentButton2, TJvTransLED, TJvxClock, TJvRegAuto, TJvWinampLabel, TJvPlaylist,
-    TJvCaptionPanel, TJvScrollMax, TJvBehaviorLabel,
-    TJvUninstallComboBox,TJvUninstallListBox, TJvMovableBevel
+  RegisterComponents(SPaletteButton,[
+    TJvTransparentButton, TJvTransparentButton2,
+    TJvArrowButton, TJvCaptionButton, TJvColorButton, TJvHTButton,
+    TJvTransLED, TJvSpacer, TJvSwitch
+
     ]);
+  RegisterComponents(SPaletteBarPanel,[
+    TJvSpeedBar,
+    TJvCaptionPanel, TJvItemsPanel, TJvMovableBevel, TJvRollOut,
+    TJvFooter, TJvGroupHeader, TJvComponentPanel
+    ]);
+  RegisterComponents(SPaletteLabel,[
+    TJvBehaviorLabel, TJvInstallLabel, TJvHTLabel, TJvWinampLabel
+    ]);
+  RegisterComponents(SPaletteListComboTree,[
+    TJvImageComboBox, TJvImageListBox,
+    TJvHTListBox, TJvHTComboBox,
+    TJvUninstallComboBox,TJvUninstallListBox,
+    TJvDriveCombo, TJvDriveList, TJvFileListBox, TJvDirectoryListBox,
+    TJvRegistryTreeView, TJvPlaylist
+    ]);
+  RegisterComponents(SPaletteScrollerTracker,[
+    TJvScrollMax, TJvaScrollText, TJvContentScroller, TJvPageScroller,
+    TJvScrollingWindow, TJvScrollText
+    ]);
+  RegisterComponents(SPaletteSliderSplitter,[
+    TJvSplitter, TJvxSplitter, TJvSyncSplitter
+    ]);
+  RegisterComponents(SPaletteVisual,[
+    TJvAnalogClock, TJvClock, TJvxClock,
+    TJvZoom, TJvDice
+    ]);
+  RegisterComponents(SPaletteNonVisual,[TJvHint, TJvRegAuto]);
 
   RegisterPropertyEditor(typeinfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(typeinfo(TJvLabelBehaviorName),TJvBehaviorLabel,'Behavior',TJvLabelBehaviorProperty);

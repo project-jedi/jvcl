@@ -67,11 +67,11 @@ type
       procedure SetFrame(const Value: boolean);
       procedure SetCaptionLabel(const Value: TLabel);
       procedure SetDefaultStyle(const Value: boolean);
-      procedure SetEnabled(const Value: boolean);
-      function GetEnabled: boolean;
       procedure SetColor(const Value: TColor);
       procedure SetFrameColor(const Value: TColor);
    protected
+      procedure SetEnabled(Value: boolean);override;
+      function GetEnabled: boolean;override;
       procedure Paint; override;
       procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
          Integer); override;
@@ -249,7 +249,7 @@ begin
    Invalidate;
 end;
 
-procedure TJvgSpeedButton.SetEnabled(const Value: boolean);
+procedure TJvgSpeedButton.SetEnabled(Value: boolean);
 begin
    inherited Enabled := Value;
    if Assigned(FControl) then

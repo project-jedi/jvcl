@@ -105,7 +105,7 @@ procedure Register;
 implementation
 uses
   Forms, ComCtrls, Controls, SysUtils, TypInfo, Consts,
-  JvPageLinkEditorForm, JvTreeItemsEditorForm;
+  JvConsts, JvPageLinkEditorForm, JvTreeItemsEditorForm;
 
 resourcestring
   SFmtInterfaceNotSupported = '%s does not support the required interface (%s)';
@@ -119,9 +119,12 @@ type
 
 procedure Register;
 begin
+  RegisterComponents(SPaletteListComboTree, [
+    TJvSettingsTreeView, TJvPageListTreeView, TJvPageList
+    ]);
+
   RegisterPropertyEditor(typeinfo(TTreeNodes), TCustomTreeView, 'Items', TJvTreeItemsProperty);
   RegisterPropertyEditor(typeinfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);
-  RegisterComponents('Jv Lists, Combos and Trees', [TJvSettingsTreeView, TJvPageListTreeView, TJvPageList]);
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);

@@ -17,7 +17,7 @@ uses
   FiltEdit, ExptIntf, ToolsApi,
   JclSchedule,
 
-  JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
+  JvConsts, JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
   JvLookOut, JvOutlookBar, JvRadioControl, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
@@ -29,14 +29,26 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Custom',[
-    TJvTrayIcon, TJvGammaPanel, TJvLinkLabel,
-    TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter,
-    TJvLookout, {TJvLookOutPage, } TJvLookOutButton,
-    TJvExpress, TJvExpressButton, TJvValidateEdit,
-    TJvOutlookBar, TJvRadioControl, TJvScheduledEvents,
-    TJvThumbImage, TJvTimeLine, TJvTMTimeLine, TJvBalloonHint,
-    TJvEditor, TJvHLEditor, TJvHLEdPropDlg
+  RegisterComponents(SPaletteButton,[
+    TJvRadioControl, TJvLookOutButton, TJvExpressButton
+    ]);
+  RegisterComponents(SPaletteEdit,[
+    TJvValidateEdit,TJvEditor, TJvHLEditor, TJvHLEdPropDlg
+    ]);
+  RegisterComponents(SPaletteBarPanel,[
+    TJvGammaPanel,TJvOutlookBar, TJvLookout, {TJvLookOutPage, } TJvExpress
+    ]);
+  RegisterComponents(SPaletteLabel,[
+    TJvLinkLabel
+    ]);
+  RegisterComponents(SPaletteImageAnimator,[
+    TJvThumbImage
+    ]);
+  RegisterComponents(SPaletteVisual,[
+    TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine
+    ]);
+  RegisterComponents(SPaletteNonVisual,[
+    TJvTrayIcon, TJvScheduledEvents, TJvBalloonHint
     ]);
 
   RegisterPropertyEditor(TypeInfo(Integer),

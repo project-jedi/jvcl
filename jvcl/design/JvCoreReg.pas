@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
+  JvConsts, JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor;
 
 {$R ..\resources\JvCoreReg.dcr}
@@ -24,7 +24,9 @@ const
  BaseClass:TClass = TComponent;
  
 begin
-  RegisterComponents('Jv Standard',[TJvJVCLAboutComponent]);
+  RegisterComponents(SPaletteNonVisual,[
+    TJvJVCLAboutComponent
+    ]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
   {.$DEFINE JVCL_REGISTER_GLOBAL_DESIGNEDITORS} // - just for testing

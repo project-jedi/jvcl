@@ -116,7 +116,6 @@ fAboutJVCL: TJVCLAboutInfo;
       procedure SetAlign;
       procedure SetOptions(Value: TglListBoxOptions);
       function GetSelectedObject: Pointer;
-      function GetSelCount: cardinal;
 
       procedure RecalcHeights;
       procedure SmthChanged(Sender: TObject);
@@ -126,6 +125,7 @@ fAboutJVCL: TJVCLAboutInfo;
       procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
       procedure WMMouseMove(var Message: TMessage); message WM_MOUSEMOVE;
    protected
+      function GetSelCount: integer; {$IFDEF COMPILER6_UP}override;{$ENDIF}
       procedure Loaded; override;
       procedure Notification(AComponent: TComponent; Operation: TOperation);
          override;
@@ -140,7 +140,7 @@ fAboutJVCL: TJVCLAboutInfo;
          IndentRight,
          TextIndent: integer;
       property SelectedObject: Pointer read GetSelectedObject;
-      property SelCount: cardinal read GetSelCount;
+      property SelCount: integer read GetSelCount;
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
       {$IFDEF COMPILER4_UP}
@@ -229,9 +229,10 @@ fAboutJVCL: TJVCLAboutInfo;
       //    procedure ToggleClickCheck( Index: Integer );
       //    procedure InvalidateCheck( Index: Integer );
       procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+      procedure DrawCheck(R: TRect; AState: TCheckBoxState);
+   protected
       procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
          Integer); override;
-      procedure DrawCheck(R: TRect; AState: TCheckBoxState);
    public
       property Checked[Index: Integer]: TCheckBoxState read GetChecked write
          SetChecked;
@@ -940,7 +941,7 @@ begin
       Result := nil;
 end;
 
-function TJvgListBox.GetSelCount: cardinal;
+function TJvgListBox.GetSelCount: integer;
 var
    i                          : integer;
 begin

@@ -71,7 +71,7 @@ type
     property Values: TStringList read FValues write FValues;
     property Expanded: boolean read FExpanded write SetExpanded;
     property Selected: boolean read FSelected write SetSelected;
-    property Changed: boolean read GetChanged write SetChanged;
+    property Changed: boolean read GetChanged write SetChanged; 
   end;
 
   TJvgGridItems = class(TCollection)

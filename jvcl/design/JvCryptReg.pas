@@ -8,13 +8,14 @@ procedure Register;
 
 implementation
 uses
-  Classes, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic, JvSerialMaker,
+  Classes,
+  JvConsts, JvVigenereCipher, JvCabFile, JvCaesarCipher, JvGenetic, JvSerialMaker,
   JvXorCipher, JvZlibMultiple;
 {$R ..\resources\JvCryptReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv Encryption and Compression',[
+  RegisterComponents(SPaletteEncryptCompress,[
     TJvVigenereCipher, TJvXorCipher, TJvCaesarCipher, TJvGenetic,
     TJvCabFile, TJvZlibMultiple, TJvSerialMaker
     ]);

@@ -15,7 +15,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
+  JvConsts, JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
   JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
   JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,
   JvStarfield, JvWaitingGradient, JvWaitingProgress, JvWavePlayer,
@@ -28,18 +28,22 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Multimedia',[
+  RegisterComponents(SPaletteImageAnimator,[
     TJvAnimate, TJvBmpAnimator, TJvPicClip,
-    TJvGradient, TJvGradientHeaderPanel,
-    TJvId3v1, TJvId3v2, 
     TJvImageRotate, TJvImageTransform, TJvImageWindow,
-    TJvStarfield, TJvWaitingGradient, TJvWaitingProgress, TJvWavePlayer,
-    TJvSpecialProgress, TJvSlider, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage,
-    TJvSpecialImage
+    TJvStarfield, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage, TJvSpecialImage
     ]);
+  RegisterComponents(SPaletteBarPanel,[
+    TJvGradientHeaderPanel, TJvGradient, TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress
+    ]);
+  RegisterComponents(SPaletteNonVisual,[
+    TJvId3v1, TJvId3v2, TJvWavePlayer
+    ]);
+  RegisterComponents(SPaletteSliderSplitter,[
+    TJvSlider
+    ]);
+
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
-
-
 
   RegisterComponentEditor(TJvAnimatedImage, TJvAnimatedEditor);
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);

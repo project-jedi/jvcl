@@ -57,6 +57,7 @@ contains
   JvProgressForm in '..\..\run\JvProgressForm.pas' {FormProg},
   JvExceptionForm in '..\..\run\JvExceptionForm.pas',
   JvProgressDialog in '..\..\run\JvProgressDialog.pas',
+  JvFindReplace in '..\..\run\JvFindReplace.pas',
   JvDualList in '..\..\run\JvDualList.pas',
   JvDualListForm in '..\..\run\JvDualListForm.pas';
 

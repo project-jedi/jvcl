@@ -15,7 +15,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvBDEEditors,
+  JvBDEEditors, JvConsts, 
   JvBdeUtils, JvBDEFilter, JvBDEIndex, JvBDELists, JvBDEMove,
   JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable,
   JvBDEQuery, JvBDESQLScript,
@@ -26,7 +26,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv BDE Controls',[
+  RegisterComponents(SPaletteBDE,[
     TJvDBFilter, TJvDBIndexCombo, TJvDatabaseItems, TJvTableItems,
 //    TJvDBListDataSet, TJvDatabaseList, TJvLangDrivList, TJvTableList,
 //    TJvStoredProcList, TJvFieldList,  TJvIndexList,

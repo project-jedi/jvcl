@@ -150,7 +150,6 @@ type
     procedure SetGlyphsList(Value: TImageList);
     procedure SetNumGlyphs(Value: Integer);
     procedure SetTransparentColor(Value: TColor);
-    procedure SetEnabled(Value: Boolean);
     procedure SetShadowDepth(Value: Word);
     procedure SetColorHighlight(Value: TColor);
     procedure SetColorShadow(Value: TColor);
@@ -170,6 +169,7 @@ type
     procedure ApplicateGlyph(var TargetBMP: TBitmap; State: TglBtnState;
       DrawState: TglDrawState; S: Integer);
   protected
+    procedure SetEnabled(Value: Boolean); override;
     procedure Paint; override;
     procedure Paint_;
     procedure Loaded; override;

@@ -15,19 +15,21 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ActnList, JvBaseDlg, JvFindReplace,
-  JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
+  JvConsts, JvDSADialogs, JvTipOfDay, JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvCommonExecDlg,
   JvDialogActns, JvActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup, JvConnectNetwork,
   JvSelectDirectory, JvCopyError, JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
-  JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog,
+  JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog, 
   JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
 {$R ..\resources\JvDlgsReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv Dialogs',[
+  RegisterComponents(SPaletteDialog,[
      TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
-     TJvConnectNetwork, TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
+     TJvTipOfDay, TJvFindReplace, TJvDSADialog,
+     TJvPageSetupDialog, TJvPageSetupTitledDialog,
+     TJvConnectNetwork, TJvDisconnectNetwork,
      TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
      TJvColorDialog, TJvOrganizeFavoritesDialog, TJvComputerNameDialog,
      TJvAppletDialog, TJvChangeIconDialog,
@@ -35,11 +37,9 @@ begin
      TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
      TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
      TJvObjectPickerDialog, TJvDualListDialog,
-
-     TJvTipOfDay, TJvFindReplace,
-     TJvImageDlg, TJvDSADialog, TJvLoginDialog,
-     TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError,
-     TJvProgressDialog, TJvProgressComponent
+     TJvImageDlg, TJvLoginDialog,
+     TJvProgressDialog, TJvProgressComponent,
+     TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError
     ]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);

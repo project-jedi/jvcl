@@ -30,15 +30,20 @@ requires
   JvSystemD7R,
   designide,
   dclstd,
+  vcl,
+  rtl,
+  DJCL70,
+  JvCoreD7R,
   JvCoreD7D,
-  JvCustomD7D;
+  vclactnband,
+  vclx;
 
 contains
   JvSystemReg in '..\..\design\JvSystemReg.pas',
   JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
-  JvTimerListForm in '..\..\design\JvTimerListForm.pas',
-  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas',
+  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas',
   JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas',
-  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas';
+  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas',
+  JvTimerListForm in '..\..\design\JvTimerListForm.pas';
 
 end.

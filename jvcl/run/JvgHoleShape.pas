@@ -65,7 +65,6 @@ type
     fRunOnce: boolean;
     fNeedRebuildBitmapShape: boolean;
     OldX, OldY, OldW, OldH: integer;
-    procedure SetEnabled(Value: boolean);
     procedure SetEnabledDT(Value: boolean);
     procedure SetShape(Value: THoleShapeType);
     procedure SetShapeBitmap(Value: TBitmap);
@@ -81,6 +80,7 @@ type
     procedure SmthChanged(Sender: TObject);
     procedure SayAllDTEnabledState(EnabledDT: boolean);
   protected
+    procedure SetEnabled(Value: boolean);override;
     procedure Paint; override;
   public
     RGNOuter, RGNInner: HRGN;

@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
+  JvConsts, JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm,
@@ -22,10 +22,10 @@ uses
   JvDsgnEditors;
 
 {$R ..\resources\JvCmpReg.dcr}
-                            
+
 procedure Register;
 begin
-  RegisterComponents('Jv Components',[                           
+  RegisterComponents(SPaletteNonVisual,[
     TJvAlarms, TJvConverter, TJvDataEmbedded, TJvCreateProcess,
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvPrint, TJvEasterEgg

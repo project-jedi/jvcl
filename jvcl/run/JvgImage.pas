@@ -72,7 +72,6 @@ type
     procedure SmthChanged(Sender: TObject);
     function CalcAlignOffset: TPoint;
 
-    procedure SetAutoSize(Value: boolean);
     function GetBitmap: TBitmap;
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
@@ -88,6 +87,7 @@ type
     procedure SetFastDraw(Value: boolean);
 
   protected
+    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;

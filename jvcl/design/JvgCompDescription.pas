@@ -54,7 +54,7 @@ type
     PropList: PPropList;
     NumProps: word;
   public
-    constructor Create(AOwner, Component: TComponent);
+    constructor Create(AOwner, Component: TComponent);reintroduce;
     destructor Destroy; override;
     procedure LoadProperties(Component: TComponent);
   published

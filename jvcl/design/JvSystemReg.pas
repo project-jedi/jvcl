@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvClipboardMonitor,  JvClipboardViewer,  JvCommStatus,  JvComputerInfo,  JvCpuUsage,
+  JvConsts, JvClipboardMonitor,  JvClipboardViewer,  JvCommStatus,  JvComputerInfo,  JvCpuUsage,
   JvDdeCmd,  JvDeviceChanged,  JvDirectories, JvDragDrop,  JvHidControllerClass,  JvJoystick,  JvKeyboardStates,
   {JvMemoryInfos,  }JvMRUList,  JvMRUManager, JvNTEventLog,  JvRas32,
   JvScreenSaver,  JvShellHook,  JvSHFileOperation, JvSoundControl,  JvSystemColors,
@@ -28,13 +28,22 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv System',[TJvClipboardMonitor,TJvClipboardViewer,TJvCommStatus,
+  RegisterComponents(SPaletteSystem,[TJvClipboardMonitor,TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}{TJvCpuUsage,}
-    TJvAppDdeCmd, TJvDeviceChanged, TJvDirectories, TJvDragDrop, TJvHidDeviceController,
-    TJvJoystick, TJvKeyboardStates, {TJvMemoryInfos, }TJvMruList, TJvMRUManager,
-    TJvNTEventLog, TJvRas32, TJvScreenSaver, TJvShellHook, TJvSHFileOperation,
-    TJvSoundControl, TJvSystemColors, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList,
-    TJvChangeNotify, TJvSimpleXML, TJvXMLDatabase, TJvWindowHook, TJvFormStorage,TJvSearchFiles, TJvPerfStat95]);
+    TJvSHFileOperation, TJvChangeNotify, TJvDragDrop, TJvHidDeviceController,
+    TJvNTEventLog, TJvScreenSaver,
+    TJvDeviceChanged, TJvJoystick, {TJvMemoryInfos, } TJvSoundControl, 
+    TJvKeyboardStates, TJvDirectories, TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
+
+  RegisterComponents(SPaletteInternetWork,[
+    TJvSimpleXML, TJvXMLDatabase, TJvRas32, TJvCommStatus
+    ]);
+  RegisterComponents(SPaletteNonVisual,[
+    TJvFormStorage, TJvSearchFiles,
+    TJvMRUList, TJvMRUManager,
+    TJvShellHook, TJvWindowHook, 
+    TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList
+    ]);
 
   RegisterPropertyEditor(TypeInfo(TList), TJvTimerList, 'Events', TJvTimersItemListProperty);
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,

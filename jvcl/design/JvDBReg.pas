@@ -15,8 +15,8 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvMemoryDataset,
-  JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView, JvDBProgressBar, JvDBRichEdit,
+  JvConsts, 
+  JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView, JvDBProgressBar, JvDBRichEdit,
   JvDBSpinEdit, JvDBTreeView, JvDBLookup, JvCsvData, JvDBCombobox, JvDBControls,
   JvDBEditors, JvDBMemDatasetEditor
 
@@ -34,13 +34,16 @@ const
   cItemField = 'ItemField';
   cStartMasterValue = 'StartMasterValue';
 begin
-  RegisterComponents('Jv DB Controls',[TJvMemoryData,
+  RegisterComponents(SPaletteDBNonVisual,[TJvMemoryData,
+    TJvCSVDataSet {$IFDEF JV_MIDAS},TJvDBRemoteLogin{$ENDIF}
+    ]);
+  RegisterComponents(SPaletteDBVisual,[
     TJvDBDatePickerEdit, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
-    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel,
-    TJvCSVDataSet {$IFDEF JV_MIDAS},TJvDBRemoteLogin{$ENDIF}
+    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel
     ]);
+
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, 'LookupField',
     TJvLookupSourceProperty);
