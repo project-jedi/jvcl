@@ -1,6 +1,7 @@
 Changelog for JVCL 3.0
 ======================
 2003-11-08:
+- Moved JvCaret from JvSystem to JvCore for all builds to reflect Delphi 7 and BCB5 packages. //olivier
 - Updated TJvUrlListGrabber and the associated demo. Still the design time bug is not fixed. // olivier
 2003-11-07:
 - Fixed BCB build // olivier
