@@ -36,6 +36,8 @@ unit JvTimeFrameworkReg;
 
 interface
 
+{$R ..\Resources\JvTimeFrameworkReg.dcr}
+
 {$IFDEF COMPILER6_UP}
 uses 
   DesignIntf, DesignEditors, ColnEdit;
