@@ -492,7 +492,7 @@ begin
     Result := '';
 end;
 
-procedure TJvID3Owner.SetDatePurchased(const Value: TDate);
+procedure TJvID3Owner.SetDatePurchased(const Value: TDateTime);
 begin
   if FController.Active then
     TJvID3OwnershipFrame.FindOrCreate(FController).DateOfPurch := Value;
