@@ -50,6 +50,7 @@ type
     procedure Translate(const FileName: string);overload;
     procedure Translate(const FileName: string;const Form: TForm);overload;
     procedure Translate(const Form: TForm);overload;
+    function Translate(const Category, Item: string): string;overload;
   end;
 
   TJvTranslatorStrings = class(TJvComponent)
@@ -190,6 +191,14 @@ var
    end;
  end;
 
+ function IsObject(const Obj: TClass; ClassName: string):Boolean;
+ begin
+   if Obj=nil then
+     result := false
+   else
+     result := (Obj.ClassName=ClassName) or (IsObject(Obj.ClassParent,ClassName));
+ end;
+
  {$IFDEF GX_OUTLOOK}
  procedure TransOutlook;
  var
@@ -206,13 +215,13 @@ var
  {$ENDIF}
 
 begin
-  if (Component is TJvTranslatorStrings) or (Component.ClassName='TJvTranslatorStrings') then
+  if IsObject(Component.ClassType,'TJvTranslatorStrings') then
   begin
     TransVars;
     Exit;
   end;
   {$IFDEF GX_OUTLOOK}
-  if (Component is TFEGXOutlookBar) or (Component.ClassName='TFEGXOutlookBar') then
+  if IsObject(Component.ClassType,'TFEGXOutlookBar') then
   begin
     TransOutlook;
     Exit;
@@ -255,13 +264,13 @@ begin
           if prop<>nil then
           begin
             obj := GetObjectProp(Component,Elem.Items[i].Name);
-            if (obj is TStrings) or (obj.ClassName='TStrings') then
+            if IsObject(obj.ClassType,'TStrings') then
               TransStrings(obj,Elem.Items[i])
-            else if (obj is TTreeNodes) or (obj.ClassName='TTreeNodes') then
+            else if IsObject(obj.ClassType,'TTreeNodes') then
               TransTreeNodes(obj,Elem.Items[i])
-            else if (obj is TListColumns) or (obj.ClassName='TListColumns') then
+            else if IsObject(obj.ClassType,'TListColumns') then
               TransColumns(obj,Elem.Items[i])
-            else if (obj is TListItems) or (obj.ClassName='TListItems') then
+            else if IsObject(obj.ClassType,'TListItems') then
               TransListItems(obj,Elem.Items[i]);
           end;
         end;
@@ -284,6 +293,24 @@ begin
   lElem := FXml.Root.Items.ItemNamed[st];
   if lElem<>nil then
     TranslateComponent(Form,lElem);
+end;
+{*******************************************************************}
+function TJvTranslator.Translate(const Category, Item: string): string;
+var
+ lElem: TJvSimpleXmlElem;
+begin
+  result := '';
+  lElem := FXml.Root.Items.ItemNamed[Category];
+  if lElem<>nil then
+  begin
+    lElem := lElem.Items.ItemNamed[Item];
+    if lElem<>nil then
+    begin
+      result := lElem.Value;
+      if result='' then
+        result := lElem.Properties.Value('Value');
+    end;
+  end;
 end;
 {*******************************************************************}
 
