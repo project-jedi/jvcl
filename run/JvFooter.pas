@@ -69,12 +69,14 @@ type
   private
     FBevelStyle: TJvBevelStyle;
     FBevelVisible: Boolean;
+    FMargin: integer;
     procedure SetBevelStyle(Value: TJvBevelStyle);
     procedure SetBevelVisible(Value: Boolean);
     procedure UpdatePosition;
     procedure GetBtnsValues(const ABtnIndex: Integer;
       const AAlignment: TAlignment; const ADirection: Integer;
       out BtnCount, BtnTotalSpc: Integer);
+    procedure SetMargin(const Value: integer);
   protected
     procedure Paint; override;
     procedure Loaded; override;
@@ -102,6 +104,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Margin:integer read FMargin write SetMargin default 8;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground;
     {$ENDIF JVCLThemesEnabled}
@@ -146,7 +149,6 @@ uses
 const
   DefFootWidth = 350;
   DefFootHeight = 37;
-  DefFootSpace = 5;
 
 constructor TJvFooterBtn.Create(AOwner: TComponent);
 begin
@@ -249,6 +251,7 @@ end;
 constructor TJvFooter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FMargin := 8;
   Align := alBottom;
   ControlStyle := ControlStyle - [csSetCaption];
   Caption := '';
@@ -345,7 +348,7 @@ begin
 
             FBtnLeft := FBtnCount * FBtnWidth;
             if FBtnCount = 0 then
-              FBtnLeft := FBtnLeft + DefFootSpace
+              FBtnLeft := FBtnLeft + Margin
             else
               FBtnLeft := FBtnLeft + FBtnSpace +
                 TJvFooterBtn(Controls[Idx]).SpaceInterval;
@@ -360,10 +363,9 @@ begin
 
             FBtnLeft := Width - ((FBtnCount + 1) * FBtnWidth);
             if FBtnCount = 0 then
-              FBtnLeft := FBtnLeft - DefFootSpace
+              FBtnLeft := FBtnLeft - Margin
             else
-              FBtnLeft := FBtnLeft - FBtnSpace -
-                TJvFooterBtn(Controls[Idx]).SpaceInterval;
+              FBtnLeft := FBtnLeft - FBtnSpace - TJvFooterBtn(Controls[Idx]).SpaceInterval;
           end;
       else
         FBtnLeft := 0;
@@ -435,6 +437,16 @@ begin
       BevelLine(Color1, 0, 0, Width, 0);
       BevelLine(Color2, 0, 1, Width, 1);
     end;
+end;
+
+procedure TJvFooter.SetMargin(const Value: integer);
+begin
+   if FMargin <> Value then
+   begin
+     FMargin := Value;
+     if ComponentState * [csLoading, csDestroying] = [] then
+       UpdatePosition;
+   end;
 end;
 
 {$IFDEF UNITVERSIONING}
