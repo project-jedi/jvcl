@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Generated
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvAVICapture.pas
 Summary
@@ -10,112 +10,116 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat
 Summary
-  Write here a summary (1 line)
+  This class describes the Audio Format used in the video stream
 Description
-  Write here a description
+  Read the values to know what audio format is used, set the values to choose the audio
+  format you want to use. When setting values, ensure they are correct and then call Apply.
+  If some values are not correct for your configuration, Apply will return false.
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.Apply
 Summary
-  Write here a summary (1 line)
+  Tries to apply the values in the properties of the audio format object to the video stream
+  to which this audio format is linked to.
 Description
-  Write here a description
+  When you make modifications to the values of the properties, you must call this function
+  or your changes will be ignored when you start grabbing.
+  The most common and simple audio format to use is WAVE_FORMAT_PCM as it is always available
+  on all machines but it doesn't provide any compression.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the values were correct and successfuly applied
+  False otherwise
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.AvgBytesPerSec
 Summary
-  Write here a summary (1 line)
+  The average number of bytes per second in the audio stream.
 Description
-  Write here a description
+  This value must be calculated according to the provider of the audio format you want to use and
+  that you indicated by setting the value of FormatTag.
+  Please not that if FormatTag is equal to WAVE_FORMAT_PCM, the value of AvgBytesPerSec will be 
+  ignored and will be computed according to the recommandation for this format:
+     AvgBytesPerSec := SamplesPerSec * ((Channels * BitsPerSample) div 8)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, SamplesPerSec, Channels, BitsPerSample, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.BitsPerSample
 Summary
-  Write here a summary (1 line)
+  The number of bits per sample in the audio format
 Description
-  Write here a description
+  If FormatTag is set to WAVE_FORMAT_PCM, this value must be either 8 or 16.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.BlockAlign
 Summary
-  Write here a summary (1 line)
+  Block alignment in Bytes
 Description
-  Write here a description
+  This value depends on the value of FormatTag. If it is equal to WAVE_FORMAT_PCM, then the
+  value of BlockAlign will be ignored and computed according to
+    BlockAlign := (Channels * BitsPerSample) div 8
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, Channels, BitsPerSample, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.Channels
 Summary
-  Write here a summary (1 line)
+  Number of channels in the audio stream
 Description
-  Write here a description
+  1 for mono, 2 for stereo
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.Extra
 Summary
-  Write here a summary (1 line)
+  Some extra data required by the format indicated by FormatTag.
 Description
-  Write here a description
+  If FormatTag is equal to WAVE_FORMAT_PCM, then the value of Extra is ignored.
+  Please refer to the provider of the audio format you want to use for information on
+  the data to put in this buffer
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, FillWaveFormatEx
+----------------------------------------------------------------------------------------------------
+@@TJvAudioFormat.ExtraSize
+Summary
+  Size of the Extra buffer in bytes
+See Also
+  Extra, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.FillWaveFormatEx
 Summary
-  Write here a summary (1 line)
+  Fills a WAVEFORMATEX structure with the informations contained in the properties
 Description
-  Write here a description
+  The WAVEFORMATEX structure will be filled with the required informations from the
+  properties of the TJvAudioFormat object. If the FormatTag is WAVE_FORMAT_PCM, the values
+  will be set to comply with the recommandations for this format.
+  If set to another value, the properties will be copied straight into the structure without
+  any check.
 Parameters
-  wfex - Description for this parameter
+  wfex - The WAVEFORMATEX structure to be filled
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.FormatTag
 Summary
-  Write here a summary (1 line)
+  The tag identifying the audio format used
 Description
-  Write here a description
+  This value identifies the audio format used. If set to WAVE_FORMAT_PCM it will provoke
+  a different behaviour in FillWaveFormatEx
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.SamplesPerSec
 Summary
-  Write here a summary (1 line)
+  Number of samples per second in the audio stream
 Description
-  Write here a description
+  If FormatTag is set to WAVE_FORMAT_PCM, then usual values for SamplesPerSec are 8000, 11025,
+  22050, 44100 as they specify the frequency in Hertz at which the sampling will be done.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAudioFormat.Size
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FormatTag, FillWaveFormatEx
 ----------------------------------------------------------------------------------------------------
 @@TJvAudioFormat.Update
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Updates the content of the object from the TJvAVICapture it is linked to
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAviCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture
 <TITLEIMG TJvAVICapture>
@@ -123,20 +127,22 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  TJvAVICapture is an encapsulation of the AVICap API allowing to capture live video
 Description
-  Write here a description
+  This component can be dropped on any form or frame and will display the video stream
+  captured by a video device installed under Windows. You can perform live previews,
+  record movies (and save them to avi files) or even capture single frames. A direct
+  access is provided to the frames so that you can process them if you want.
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.AbortCapture
 Summary
-  Write here a summary (1 line)
+  Tries to abort the capture
 Description
-  Write here a description
+  Aborting the capture will leave the file unusable (if you captured to a file).
 Return value
-  Describe here what the function returns
+  True if abortion was successful
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StopCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.ApplyAudioFormat
 Summary
@@ -162,1014 +168,971 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.AudioFormat
 Summary
-  Write here a summary (1 line)
+  Applies the audio format
 Description
-  Write here a description
+  Calls AudioFormat.Apply
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvAudioFormat.Apply
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.CaptureFrame
 Summary
-  Write here a summary (1 line)
+  Captures a frame in a frame by frame capture session
 Description
-  Write here a description
+  Call this function to capture a frame after having started a frame by frame session
 Return value
-  Describe here what the function returns
+  True if frame was captured successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartSingleFrame, StopSingleFrame
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.CaptureSettings
 Summary
-  Write here a summary (1 line)
+  The settings of the capture
 Description
-  Write here a description
+  This property contains the property of the capture
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCaptureSettings
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.CaptureStatus
 Summary
-  Write here a summary (1 line)
+  Contains the status of the current capture
 Description
-  Write here a description
+  Please refer to CAPSTATUS in the Win32 API for details
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptureSettings, Capturing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Capturing
 Summary
-  Write here a summary (1 line)
+  Indicates whether or not a capture is in progress
 Description
-  Write here a description
+  True if a capture is in progress, false otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptureSettings, CaptureStatus
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Connect
 Summary
-  Write here a summary (1 line)
+  Tries to connect the component to the given driver
 Description
-  Write here a description
+  Generally, there is only one driver on a given system. You then choose a different
+  source depending on what you want to capture.
 Parameters
-  driver - Description for this parameter
+  driver - The index of the driver to connect to
 Return value
-  Describe here what the function returns
+  True if connection was successful, False otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DriverIndex, Connected
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Connected
 Summary
-  Write here a summary (1 line)
+  Wether or not the component is connected to a driver
 Description
-  Write here a description
+  True if connected, False otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Connect, DriverIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.CopyToClipboard
 Summary
-  Write here a summary (1 line)
+  Copy the latest frame in the clipboard
 Description
-  Write here a description
+  The latest fully captured frame is copied into the clipboard, in the format of the
+  video stream
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if copy was successful
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Disconnect
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Disconnects the component from the driver
 Return value
-  Describe here what the function returns
+  True if disconnection was successful, False otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Connect, Connected, DriverIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.DriverCaps
 Summary
-  Write here a summary (1 line)
+  The capabilities of a the driver the component is connected to
 Description
-  Write here a description
+  Please refer to TJvDriverCaps for details
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDriverCaps
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.DriverIndex
 Summary
-  Write here a summary (1 line)
+  The index of the driver to which the component is connected
 Description
-  Write here a description
+  Generally, there is only one driver on a given system. You then choose a different
+  source depending on what you want to capture.
+  Setting this value to -1 calls Disconnect
+  Setting this value to anything between 0 and 9 calls Connect with that value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Connect, Disconnect, Connected
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.DriverName
 Summary
-  Write here a summary (1 line)
+  The name of the driver the component is connected to
 Description
-  Write here a description
+  If the component is not connected to any driver, this returns the value of
+  NOT_CONNECTED (which is 'Not Connected' unless localized)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Connected
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Drivers
 Summary
-  Write here a summary (1 line)
+  Contains the list of valid drivers
 Description
-  Write here a description
+  Use this list to know how many and which drivers are available on the system
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DriverIndex, Connect, Disconnect
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.DriverVersion
 Summary
-  Write here a summary (1 line)
+  Returns the driver version of the driver connected to the component
 Description
-  Write here a description
+  This is the string returned by the driver itself and may be empty
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DriverName
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.EnumDrivers
 Summary
-  Write here a summary (1 line)
+  Enumarates the list of drivers and populates it in Drivers
 Description
-  Write here a description
+  You shouldn't have to call this function unless you want to update the list of available
+  drivers.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Drivers
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.FileName
 Summary
-  Write here a summary (1 line)
+  The name of the file to use for a capture into a file
 Description
-  Write here a description
+  This file will be created if it doesn't exists, it will be overwritten if it exists
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FileSizeAlloc, StartCapture, StopCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.FileSizeAlloc
 Summary
-  Write here a summary (1 line)
+  The minimum file size for a capture into a file
 Description
-  Write here a description
+  An empty file of that size will be created when capture starts. This prevents the system
+  from constantly reallocating space for the capture file and thus saves processing power.
+  When the capture is finished, the filesize will be truncated to the extent at which the capture
+  required it.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FileName, StartCapture, StopCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.GrabFrame
 Summary
-  Write here a summary (1 line)
+  Grabs one frame
 Description
-  Write here a description
+  The frame will be grabbed out of any capture session, just displayed in the component
 Parameters
-  stop - Description for this parameter
+  stop - True will stop Previewing and Overlaying, False will not change them
 Return value
-  Describe here what the function returns
+  True if the frame was grabbed successfully
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Previewing, Overlaying
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Hwnd
 Summary
-  Write here a summary (1 line)
+  The handle of the underlying AVICap window.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use this property if you want direct access to the underlying AVICap window.
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.MCIDevice
 Summary
-  Write here a summary (1 line)
+  The MCI device used with the component
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This has not been tested.
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.NoFile
 Summary
-  Write here a summary (1 line)
+  Indicates if capture is done into a file or not
 Description
-  Write here a description
+  If True, the capture will not be done into a file, simply into memory
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartCaptureNoFile, StartCapture, Capturing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnCapControl
 Summary
-  Write here a summary (1 line)
+  The event triggered when you want to use precise capture control
 Description
-  Write here a description
+  Please refer to the WiN32 API for details on using the precise capture control
+  Will only be triggered if ueCapControl is in UsedEvents
 Parameters
-  Sender - Description for this parameter
-  nState - Description for this parameter
-  Result - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - the TJvAVICapture component triggering the event
+  nState - the state in which the capture is (refer to API for details)
+  Result - to be set to True if capture must continue, False if it must stop
+SeeAlso
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnError
 Summary
-  Write here a summary (1 line)
+  The event triggered in case of an error
 Description
-  Write here a description
+  This event is called whenever the system encountered an error during a capture session
+  This event will only be triggered if ueError is in UsedEvents
 Parameters
-  Sender - Description for this parameter
-  nErr   - Description for this parameter
-  str    - Description for this parameter
+  Sender - the TJvAVICapture component triggering the event
+  nErr   - the error number
+  str    - the string associated with this error
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnFrame
 Summary
-  Write here a summary (1 line)
+  The event triggered when a frame is ready, in a non streaming capture session
 Description
-  Write here a description
+  A non streaming capture session is generally a frame by frame capture session.
+  This event will only be triggered if ueFrame is in UsedEvents
+Parameters
+  Sender   - the TJvAVICapture component triggering the event
+  videoHdr - A TJvVideoHdr structure containing informations about the frame
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnStatus
 Summary
-  Write here a summary (1 line)
+  The event triggered in case of a status change
 Description
-  Write here a description
+  Use this event to follow the progress of a capture session
+  This event will only be triggered if ueStatus is in UsedEvents
 Parameters
-  Sender - Description for this parameter
-  nId    - Description for this parameter
-  str    - Description for this parameter
+  Sender - the TJvAVICapture component triggering the event
+  nId    - the id of the status change (see win32 API for more details)
+  str    - the string associated with that status change
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnVideoStream
 Summary
-  Write here a summary (1 line)
+  The event triggered when a frame is ready, in a streaming capture session
 Description
-  Write here a description
+  This event is triggered just before the frame is written to disk. So if you make any
+  changes to the frame in this event, they will be written to disk
+  This event will only be triggered if ueVideoStream is in UsedEvents
 Parameters
-  Sender   - Description for this parameter
-  videoHdr - Description for this parameter
+  Sender   - the TJvAVICapture component triggering the event
+  videoHdr - A TJvVideoHdr structure containing informations about the frame
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnWaveStream
 Summary
-  Write here a summary (1 line)
+  the event trigerred when an audio buffer is ready, during streaming capture
 Description
-  Write here a description
+  This event is triggered just before the buffer is written do disk, leaving you the
+  opportunity to modify it if needed
+  This event will only be triggered if ueAudioStream is in UsedEvents
 Parameters
-  Sender  - Description for this parameter
-  waveHdr - Description for this parameter
+  Sender  - the TJvAVICapture component triggering the event
+  waveHdr - the audio header describing the buffer
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.OnYield
 Summary
-  Write here a summary (1 line)
+  The event triggerred when the driver is yielding.
 Description
-  Write here a description
+  This a good place to put a call to Application.ProcessMessages even if you must ensure
+  that this call doesn't take too long as the capture is suspended until the end of this
+  event.
+  This event will only be triggered if ueYield is in UsedEvents
 Parameters
-  Sender - Description for this parameter
+  Sender - the TJvAVICapture component triggering the event
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Overlaying
 Summary
-  Write here a summary (1 line)
+  Wether or not to use overlay display
 Description
-  Write here a description
+  True if using overlay display
+  This can only be set to True if the driver can do Overlay display. You can determine this
+  by looking at DriverCaps for the dcOverlay value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DriverCaps, Previewing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Palette
 Summary
-  Write here a summary (1 line)
+  The palette in use
 Description
-  Write here a description
+  Please refer to TJvPalette for details
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvPalette
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.PreviewFPS
 Summary
-  Write here a summary (1 line)
+  The requested number of Frames Per Second for a previewing session.
 Description
-  Write here a description
+  Do not set this value too high, as the rendering during a previewing session is done using
+  GDI calls, known to be higly CPU demanding
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PreviewFrameDelay, Previewing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.PreviewFrameDelay
 Summary
-  Write here a summary (1 line)
+  The time between two preview frames in milliseconds
 Description
-  Write here a description
+  Do not set this value too low, as the rendering during a previewing session is done using
+  GDI calls, known to be higly CPU demanding
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PreviewFPS, Previewing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Previewing
 Summary
-  Write here a summary (1 line)
+  Wether or not the component does live previewing
 Description
-  Write here a description
+  True if previewing, False otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PreviewFPS, PreviewFrameDelay, StartPreview, StopPreview
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.SaveAs
 Summary
-  Write here a summary (1 line)
+  Saves the stream under the given filename
 Description
-  Write here a description
+  Tries to save the stream under the given filename
 Parameters
-  name - Description for this parameter
+  name - The name of the file to use
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if call was successful
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.SaveDIB
 Summary
-  Write here a summary (1 line)
+  Saves the latest captured frame to a DIB file
 Description
-  Write here a description
+  The frame will be directly written into the DIB file
 Parameters
-  name - Description for this parameter
+  name - The name of the file to use
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the frame was saved successfuly
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.ScrollPos
 Summary
-  Write here a summary (1 line)
+  The scrolling position of the video stream in the window
 Description
-  Write here a description
+  You can set the position of the video in the AVICap window this property.
+  This only affects preview or overlay rendering
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvAVICapture.SetBounds
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  nLeft   - Description for this parameter
-  nTop    - Description for this parameter
-  nWidth  - Description for this parameter
-  nHeight - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  VideoLeft, VideoTop
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.SetInfoChunk
 Summary
-  Write here a summary (1 line)
+  Sets the given Information Chunk into the output file
 Description
-  Write here a description
+  Please refer to the Win32 API for detail on information chunks
 Parameters
-  chunk - Description for this parameter
+  chunk - The information chunk to set
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the information chunk was set successfuly
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.ShowDialog
 Summary
-  Write here a summary (1 line)
+  Tries to show the given dialog
 Description
-  Write here a description
+  Asks the system to show the given dialog for the currently selected driver
 Parameters
-  dialog - Description for this parameter
+  dialog - the dialog to show
 Return value
-  Describe here what the function returns
+  True if dialog was shown successfuly and user pressed Ok. False otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DriverCaps
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.SingleFrameCapturing
 Summary
-  Write here a summary (1 line)
+  Whether or not the capture is done using the single frame method
 Description
-  Write here a description
+  True if capturing using the single frame method
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartSingleFrameCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StartCapture
 Summary
-  Write here a summary (1 line)
+  Starts the capture
 Description
-  Write here a description
+  Starts the capture to Filename with the given capture options
 Return value
-  Describe here what the function returns
+  True if the capture started successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartCaptureNoFile, StopCapture, Filename
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StartCaptureNoFile
 Summary
-  Write here a summary (1 line)
+  Starts a capture without a file
 Description
-  Write here a description
+  You use this method of capture when you want to process all the frames yourself through
+  the use of the events
 Return value
-  Describe here what the function returns
+  True if capture started successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartCapture, StopCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StartOverlay
 Summary
-  Write here a summary (1 line)
+  Starts overlay rendering
 Description
-  Write here a description
+  If the driver supports it, this is the preferred method for doing live previewing
 Return value
-  Describe here what the function returns
+  True if the overaly rendering started successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Overlaying, StopOverlay, Previewing, StartPreview, DriverCaps
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StartPreview
 Summary
-  Write here a summary (1 line)
+  Starts live preview
 Description
-  Write here a description
+  Starts previewing the video stream using GDI calls. This is higly CPU intensive but is
+  sure to work on any system. You should first start to use Overlaying and if that doesn't
+  work, fallback to this method
 Return value
-  Describe here what the function returns
+  True if live preview started successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Previewing, StopPreview, Overlayin, StartOverlay, StopOverlay
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StartSingleFrameCapture
 Summary
-  Write here a summary (1 line)
+  Starts a single frame capture session
 Description
-  Write here a description
+  Call CaptureFrame any time you need a new frame
 Return value
-  Describe here what the function returns
+  True if the session started successfuly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptureFrame, SingleFrameCapturing
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StopCapture
 Summary
-  Write here a summary (1 line)
+  Stops the capture session
 Description
-  Write here a description
+  This is the call to use after a call to StartCapture has been done
 Return value
-  Describe here what the function returns
+  True if the capture session could be stopped
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Capturing, StartCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StopOverlay
 Summary
-  Write here a summary (1 line)
+  Stops overlay previewing
 Description
-  Write here a description
+  Use this to stop an overlay previewing session started with StartOverlay
 Return value
-  Describe here what the function returns
+  True if the previewing session could be stopped
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartOverlay, Overlaying
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StopPreview
 Summary
-  Write here a summary (1 line)
+  Stops the previewing session
 Description
-  Write here a description
+  Use this to stop a previewing session started with StartPreview
 Return value
-  Describe here what the function returns
+  True if the previewing session could be stopped
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Previewing, StopOverlay
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.StopSingleFrameCapture
 Summary
-  Write here a summary (1 line)
+  Stops the single frame capture session
 Description
-  Write here a description
+  Use this to stop a single frame capture session started with StartSingleFrameCapture
 Return value
-  Describe here what the function returns
+  True if the capture session could be stopped
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SingleFrameCapturing, StartSingleFrameCapture
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.Title
 Summary
-  Write here a summary (1 line)
+  The title of the AVICap window
 Description
-  Write here a description
+  This is required upon creation of the underlying AVICap window and can be used to 
+  search this window using FindWindow
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Hwnd
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.UsedEvents
 Summary
-  Write here a summary (1 line)
+  The events to be used
 Description
-  Write here a description
+  All the events indicated in this value will be triggered
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvUsedEvents
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.VideoFormat
 Summary
-  Write here a summary (1 line)
+  The video format to use for the capture session
 Description
-  Write here a description
+  This is a read-only value as it can only be modified through the use of the dialogs
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AudioFormat, ShowDialog
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.VideoLeft
 Summary
-  Write here a summary (1 line)
+  The left coordinate of the video in the AVICap window
 Description
-  Write here a description
+  This only affects preview or overlay rendering
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScrollPost, VideoTop
 ----------------------------------------------------------------------------------------------------
 @@TJvAVICapture.VideoTop
 Summary
-  Write here a summary (1 line)
+  The top coordinate of the video in the AVICap window
 Description
-  Write here a description
+  This only affects preview or overlay rendering
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ScrollPost, VideoLeft
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings
 Summary
-  Write here a summary (1 line)
+  The capture settings for the capture session
 Description
-  Write here a description
+  This contains all the properties you can set to modify the behaviour of the TJvAVICapture
+  object to which the TJvCaptureSettings is linked to
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AbortLeftMouse
 Summary
-  Write here a summary (1 line)
+  Decides if the capture is aborted by a left click
 Description
-  Write here a description
+  If set to true, any left click during the capture session will abort the capture
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AbortRightMouse, KeyAbort, LimitEnabled, TimeLimit
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AbortRightMouse
 Summary
-  Write here a summary (1 line)
+  Decides if the capture is aborted by a right click
 Description
-  Write here a description
+  If set to true, any right click during the capture session will abort the capture
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AbortLeftMouse, KeyAbort, LimitEnabled, TimeLimit
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.Apply
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Tries to apply the values set in the object to the TJvAVICapture object linked to this object
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if settings were applyed successfuly
+  False otherwise
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AudioBufferSize
 Summary
-  Write here a summary (1 line)
+  The size in bytes of each audio buffer
 Description
-  Write here a description
+  If left at the default value of 0, the size of each audio buffer will be the maximum of
+  10 kbytes and 0.5 seconds of audio data
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptureAudio, AudioMaster
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.AudioMaster
 Summary
-  Write here a summary (1 line)
+  Controls if the Audio stream is the master timer
 Description
-  Write here a description
+  If set to true, the duration of the video stream will be forced to match the audio stream
+  duration. This is generally not a good idea as it may introduce variations in the video
+  frame rate
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CaptureAudio, AudioBufferSize
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.CaptureAudio
 Summary
-  Write here a summary (1 line)
+  Controls whether or not to capture audio
 Description
-  Write here a description
+  If set to true, the audio data will be captured and saved in the stream.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AudioBufferSize, AudioMaster
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.ConfirmCapture
 Summary
-  Write here a summary (1 line)
+  Controls whether or not to confirm the capture
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If set to true, a message box will be shown to the user when you start the capture, allowing
+  to continue or cancel the capture session.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.FPS
 Summary
-  Write here a summary (1 line)
+  The requested number of Frames Per Second
 Description
-  Write here a description
+  This is only a requested number and may not be respected by the capture system if the
+  processing load is too high
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FrameDelay
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.FrameDelay
 Summary
-  Write here a summary (1 line)
+  The requested delay between two frames in microsecond
 Description
-  Write here a description
+  This is only a requested number and may not be respected by the capture system if the
+  processing load is too high
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FPS
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.KeyAbort
 Summary
-  Write here a summary (1 line)
+  The virtual key that will abort the capture session if pressed
 Description
-  Write here a description
+  Set this value to a virtual key that will cancel the capture session if pressed. This defaults
+  to the Esc key. You should use the JvVirtualKey selection frame (in JvVirtualKeySelectionFrame.pas)
+  to allow your user to choose a virtual key, while being sure the value returned is correct  
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AbortLeftMouse, AbortRightMouse, LimitEnabled, TimeLimit
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.LimitEnabled
 Summary
-  Write here a summary (1 line)
+  Controls whether or not the time limit is enabled
 Description
-  Write here a description
+  If set to true, the capture time limit is enabled
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AbortLeftMouse, AbortRightMouse, KeyAbort, TimeLimit
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.MCIControl
 Summary
-  Write here a summary (1 line)
+  The MCI Control to use to grab the stream
 Description
-  Write here a description
+  This has not been tested. You should refer to the Win32 API for more details on the usage
+  of MCI Controls with the AVICap API
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MCIStartTime, MCIStep, MCIStopTime
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.MCIStartTime
 Summary
-  Write here a summary (1 line)
+  The MCI start time
 Description
-  Write here a description
+  This has not been tested. You should refer to the Win32 API for more details on the usage
+  of MCI Controls with the AVICap API
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MCIControl, MCIStep, MCIStopTime
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.MCIStep
 Summary
-  Write here a summary (1 line)
+  Wether or not to do MCI stepping
 Description
-  Write here a description
+  This has not been tested. You should refer to the Win32 API for more details on the usage
+  of MCI Controls with the AVICap API
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+  MCIControl, MCIStartTime, MCIStopTime
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.MCIStopTime
 Summary
-  Write here a summary (1 line)
+  The MCI stop time
 Description
-  Write here a description
+  This has not been tested. You should refer to the Win32 API for more details on the usage
+  of MCI Controls with the AVICap API
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MCIControl, MCIStep, MCIStartTime
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.NumAudioBuffer
 Summary
-  Write here a summary (1 line)
+  The number of audio buffers to use
 Description
-  Write here a description
+  This is a requested value and may not be respected. The higher the value, the less chances
+  to miss on audio data, but the higher the processing load and the memory usage
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AudioBufferSize, NumVideoBuffer
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.NumVideoBuffer
 Summary
-  Write here a summary (1 line)
+  The number of video buffers to use
 Description
-  Write here a description
+  This is a requested value and may not be respected. The higher the value, the less chances
+  to miss on video data, but the higher the processing load and the memory usage.
+  Note : It seems that this value is not taken into account under Windows 32Bit
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AudioBufferSize, NumVideoBuffer
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.PercentDropForError
 Summary
-  Write here a summary (1 line)
+  The percentage of frames dropped above which the capture is aborted in error
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When capturing a video stream, the processing load may not allow to capture every frame
+  sent by the video device. Those frames are then dropped. If the ratio of dropped frames
+  on captured frames is above this percentage, the capture is ended in error. This means
+  that if you were grabbing in a file, that file will not be complete.
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.StepCapture2x
 Summary
-  Write here a summary (1 line)
+  Controls wether or not to capture at twice the size of the orignal stream
 Description
-  Write here a description
+  If set to true, the resulting stream will have its width and height doubled
+  at the expense of processing power
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StepCaptureAverageFrames
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.StepCaptureAverageFrames
 Summary
-  Write here a summary (1 line)
+  Controls the number of frames to be sampled to calculate a frame when using step capture
 Description
-  Write here a description
+  This is only taken into account when doing step capture. The given number of frames will be
+  captured and averaged to generate the resulting frame
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StepCapture2x
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.TimeLimit
 Summary
-  Write here a summary (1 line)
+  The time limit in seconds for the capture
 Description
-  Write here a description
+  This is only taken into account if LimitEnabled is true
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LimitEnabled
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.Update
 Summary
-  Write here a summary (1 line)
+  Updates the properties of the object according to the values from the TJvAVICapture object
 Description
-  Write here a description
+  This ensures synchronization between the object and the underlying system object. You 
+  shouldn't have to call this method directly
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Apply
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptureSettings.Yield
 Summary
-  Write here a summary (1 line)
+  Controls whether or not the capture will block the calling thread
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If set to true, when the capture starts, a separate thread is created allowing the thread
+  launching the capture to continue.
+  Reentrance issues must then be considered to avoid the user to launch twice the capture, 
+  for instance
 ----------------------------------------------------------------------------------------------------
 @@TJvDriverCaps
 <TITLE TJvDriverCaps type>
 Summary
-  Write here a summary (1 line)
+  The capabilities of the driver on the current system
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  This is a set of the following values. One or more may be present
+
+  dcOverlay              The driver can do overlay rendering
+  dcDlgVideoSource       The driver can display a dialog to choose video source
+  dcDlgVideoFormat       The driver can display a dialog to choose video format
+  dcDlgVideoDisplay      The driver can display a dialog to choose video display
+  dcCaptureInitialized   The capture driver is initialized
+  dcSuppliesPalettes     The driver supplies palettes
 (Value = set of ( dcOverlay , dcDlgVideoSource , dcDlgVideoFormat , dcDlgVideoDisplay , dcCaptureInitialized , dcSuppliesPalettes ) ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvDriverIndex
 <TITLE TJvDriverIndex type>
 Summary
-  Write here a summary (1 line)
+  The index of the driver to use
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  As the maximum number of drivers in the system is 10, this type has been created to ensure
+  the value is always correct. -1 specifies that no connection is established.
 (Value = -1..9 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvNumAudioBuffer
 <TITLE TJvNumAudioBuffer type>
 Summary
-  Write here a summary (1 line)
+  The number of audio buffer to use
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  As it is a system restriction to use at most 10 audio buffers, this type has been created
+  to ensure the values are always correct
 (Value = 0..10 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette
 Summary
-  Write here a summary (1 line)
+  A palette to use for the capture session
 Description
-  Write here a description
+  When capturing at a Bit Depth of 8 or less bits, a palette must be used to render the
+  frames. This class provides the encapsulation around the palette offered by the system.
+  The easiest way to use it is to let the system create a palette automatically by calling
+  AutoCreate
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.AutoCreate
 Summary
-  Write here a summary (1 line)
+  Automatically create the best palette.
 Description
-  Write here a description
+  The best possible palette will be created for a maximum number of nbColors. It will be
+  computed from the first nbFrames frames in the video stream.
 Parameters
-  nbFrames - Description for this parameter
-  nbColors - Description for this parameter
+  nbFrames - The number of frames to consider for the creation of the palette
+  nbColors - The maximum number of colors the palette can contain
 Return value
-  Describe here what the function returns
+  True if the palette was successfuly created
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ManuallyCreate, PasteFromClipboard, Load
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.Load
 Summary
-  Write here a summary (1 line)
+  Loads the palette from a file
 Description
-  Write here a description
+  Tries to load the palette from the given file
 Parameters
-  filename - Description for this parameter
+  filename - the name of the file containing the palette to load
 Return value
-  Describe here what the function returns
+  True if the palette was loaded successfuly, false otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoCreate, ManuallyCreate, PasteFromClipboard, Save
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.ManuallyCreate
 Summary
-  Write here a summary (1 line)
+  Indicates that the current frame must be taken into account to manually create the palette
 Description
-  Write here a description
+  Use this call from a frame callback and set the flag to true to indicate that the current
+  frame must be considered when creating the palette. Continue calling this method with flag
+  set to true as long as you need it.
+  Then call it again with flag set to false, to finalize the palette and pass it to the
+  capture driver that will now use it.
+
 Parameters
-  flag     - Description for this parameter
-  nbColors - Description for this parameter
+  flag     - True to continue the creation, False to stop the creation
+  nbColors - Maximum number of colors in the palette
 Return value
-  Describe here what the function returns
+  True if the call was successful
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoCreate, Load, PasteFromClipboard, Save
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.PasteFromClipboard
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Pastes the palette from the clipboard
 Return value
-  Describe here what the function returns
+  True if the call was successful
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoCreate, ManuallyCreate, Load, Save
 ----------------------------------------------------------------------------------------------------
 @@TJvPalette.Save
 Summary
-  Write here a summary (1 line)
+  Saves the current palette in a file
 Description
-  Write here a description
+  Tries to save the current palette into a file that could be loaded later with Load.
+  The usual extension for such files is .pal
 Parameters
-  filename - Description for this parameter
+  filename - The name of the file to create
 Return value
-  Describe here what the function returns
+  True if the file was created, false otherwise
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoCreate, PasteFromClipboard, ManuallyCreate, Load, Save
 ----------------------------------------------------------------------------------------------------
 @@TJvPaletteNbColors
 <TITLE TJvPaletteNbColors type>
 Summary
-  Write here a summary (1 line)
+  The number of colors in a palette
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  This type has been created to enforce the system limitation of at most 256 colours in 
+  a palette
 (Value = 0..256 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvPercent
 <TITLE TJvPercent type>
 Summary
-  Write here a summary (1 line)
+  A percentage
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  This type is defined to ensure that percentages in TJvCaptureSettings are not set to
+  more than 100% or less than 0%
 (Value = 0..100 ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvUsedEvents
 <TITLE TJvUsedEvents type>
 Summary
-  Write here a summary (1 line)
+  The events to trigger if they occur
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  You can decide to activate some events at some times. If you don't they won't be triggered
+  even if their associated handler exists. The set is made of these possible values:
+  
+  ueCapControl       the OnCapControl event will be triggered
+  ueError            the OnError event will be triggered
+  ueFrame            the OnFrame event will be triggered
+  ueStatus           the OnStatus event will be triggered
+  ueVideoStream      the OnVideoStream event will be triggered
+  ueWaveStream       the OnWaveStream event will be triggered
+  ueYield            the OnYield event will be triggered
 (Value = set of ( ueCapControl , ueError , ueFrame , ueStatus , ueVideoStream , ueWaveStream , ueYield ) ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoDialog
 <TITLE TJvVideoDialog type>
 Summary
-  Write here a summary (1 line)
+  Indicates which video dialog to display
 Description
-  Write here a description
+  Using this value doesn't ensure the corresponding dialog will be shown as the driver may
+  not provide it.
 @@TJvVideoDialog.vdSource
-  Description for vdSource
+  The video source dialog
 @@TJvVideoDialog.vdFormat
-  Description for vdFormat
+  The video format dialog
 @@TJvVideoDialog.vdDisplay
-  Description for vdDisplay
+  The video display dialog
 @@TJvVideoDialog.vdCompression
-  Description for vdCompression
+  The video compression dialog
+See Also
+  TJvDriverCaps
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat
 Summary
-  Write here a summary (1 line)
+  This contains the description of the Video format used by the device
 Description
-  Write here a description
+  The TJvAVICapture component to which the video format is related to must be connected
+  for the values of this object to make sense. Use theses values to gather information
+  about the video stream you are capturing
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.BitDepth
 Summary
-  Write here a summary (1 line)
+  The number of bits per pixel
 Description
-  Write here a description
+  Read-Only. Usually 8, 16, 24 or 32.
+  This value is to be read in conjunction with PixelFormat and Compression to determine
+  the format of the stream being grabbed
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PixelFormat, Compression
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.Compression
 Summary
-  Write here a summary (1 line)
+  The compression used by the frames
 Description
-  Write here a description
+  Each frame may be compressed using the given compression. The value can take the
+  values you can get in the biCompression member of a BITMAPINFOHEADER structure.
+  At the moment of writing, these values are:
+  BI_RGB        No compression
+  BI_RLE8       Run Length Encoding with a BitDepth equal to 8
+  BI_RLE4       Run Length Encoding with a BitDepth equal to 4
+  BI_BITFIELDS  No compression with a BitDepth equal to 16 or 32
+  BI_JPEG       JPEG compression (Win98/Me/2k/XP only)
+  BI_PNG        PNG compression (Win98/Me/2k/XP only)
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PixelFormat, BitDepth
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.Height
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The height of the frames in the video stream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Width
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.PixelFormat
 Summary
-  Write here a summary (1 line)
+  The pixel format used in the video stream
 Description
-  Write here a description
+  This can be used when copying a frame to a TImage to ensure the two pixel formats are
+  compatible. Please note however that if the video stream doesn't use RGB encoding
+  (it may use YUV), this value may not be accurate.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Compression, BitDepth
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.Update
 Summary
-  Write here a summary (1 line)
+  Updates the content of the fields of the structure
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You generally don't have to call this method directly as it will be called by the TJvAVICapture
+  component to which the video format is linked
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoFormat.Width
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The width of the frames in the video stream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Height
 ----------------------------------------------------------------------------------------------------
 @@TJvVideoHdr
 <TITLE TJvVideoHdr type>
 Summary
-  Write here a summary (1 line)
+  This type is equal to PVIDEOHDR
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  It has been created to ensure better readability
 (Value = PVIDEOHDR ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKey
 <TITLE TJvVirtualKey type>
 Summary
-  Write here a summary (1 line)
+  The type of a virtual key
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  This type is defined to allow to have a custom design editor that will ensure the
+  virtual key value is always valid
 (Value = type Integer ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvWaveHdr
 <TITLE TJvWaveHdr type>
 Summary
-  Write here a summary (1 line)
+  This type is equal to PWAVEHDR
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
+  It has been created to ensure better readability
 (Value = PWAVEHDR ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TOnCapControl
@@ -1182,13 +1145,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnFrame
 <TITLE TOnFrame type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = TOnVideoStream ; - for reference)
+<COMBINE TJvAVICapture.OnFrame>
 ----------------------------------------------------------------------------------------------------
 @@TOnStatus
 <TITLE TOnStatus type>
