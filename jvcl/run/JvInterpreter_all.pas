@@ -40,7 +40,7 @@ uses
   JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes,
   JvInterpreter_Graphics, JvInterpreter_Controls, JvInterpreter_Dialogs,
   {$IFDEF VCL}
-  JvInterpreter_Windows,
+  JvInterpreter_Windows, JvInterpreter_Buttons,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls,
   JvInterpreter_Forms, JvInterpreter_Menus, JvInterpreter_Grids,
   {$IFNDEF DelphiPersonalEdition}
@@ -82,6 +82,7 @@ initialization
   JvInterpreter_Graphics.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Controls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
+  JvInterpreter_Buttons.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_StdCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_ComCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_ExtCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);

@@ -36,6 +36,7 @@
     <File Name="..\..\run\JvInterpreterParser.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_all.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_Buttons.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Classes.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_ComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Contnrs.pas" Targets="allbutclx" Formname="" Condition=""/>

@@ -589,12 +589,10 @@ begin
     { TGroupBox }
     AddClass(cStdCtrls, TGroupBox, 'TGroupBox');
     AddGet(TGroupBox, 'Create', TGroupBox_Create, 1, [varEmpty], varEmpty);
-    
     { TTextLayout }
     AddConst(cStdCtrls, 'tlTop', Ord(tlTop));
     AddConst(cStdCtrls, 'tlCenter', Ord(tlCenter));
     AddConst(cStdCtrls, 'tlBottom', Ord(tlBottom));
-    
     { TCustomLabel }
     AddClass(cStdCtrls, TCustomLabel, 'TCustomLabel');
     AddGet(TCustomLabel, 'Create', TCustomLabel_Create, 1, [varEmpty], varEmpty);
@@ -728,7 +726,6 @@ begin
     AddClass(cStdCtrls, TScrollBar, 'TScrollBar');
     AddGet(TScrollBar, 'Create', TScrollBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TScrollBar, 'SetParams', TScrollBar_SetParams, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-    
     { TStaticBorderStyle }
     AddConst(cStdCtrls, 'sbsNone', Ord(sbsNone));
     AddConst(cStdCtrls, 'sbsSingle', Ord(sbsSingle));
@@ -740,15 +737,17 @@ begin
     AddClass(cStdCtrls, TStaticText, 'TStaticText');
     AddGet(TStaticText, 'Create', TStaticText_Create, 1, [varEmpty], varEmpty);
 
-    AddHandler(cStdCtrls, 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
+    AddHandler(cStdCtrls, 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent,
+      @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
     AddHandler(cStdCtrls, 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent,
       @TJvInterpreterStdCtrlsEvent.MeasureItemEvent);
-    AddHandler(cStdCtrls, 'TScrollEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.ScrollEvent);
+    AddHandler(cStdCtrls, 'TScrollEvent', TJvInterpreterStdCtrlsEvent,
+      @TJvInterpreterStdCtrlsEvent.ScrollEvent);
   end;
   RegisterClasses([TGroupBox, TCustomLabel, TLabel, TCustomEdit, TEdit,
     TCustomMemo, TMemo, TCustomComboBox, TComboBox, TButton, TCustomCheckBox,
-      TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar
-      , TCustomStaticText, TStaticText]);
+    TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar,
+    TCustomStaticText, TStaticText]);
 end;
 
 {$IFDEF UNITVERSIONING}
