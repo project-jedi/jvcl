@@ -6,7 +6,7 @@
     <PROJECT value="JvCoreC6R.bpl"/>
     <OBJFILES value="..\..\dcu\JvCoreC6R.obj ..\..\dcu\JvConsts.obj ..\..\dcu\JVCLVer.obj 
       ..\..\dcu\JvComponent.obj ..\..\dcu\JvVersionInfo.obj 
-      ..\..\dcu\JvTypes.obj ..\..\dcu\JvJCLUtils.obj ..\..\dcu\JvMaxPixels.obj 
+      ..\..\dcu\JvTypes.obj ..\..\dcu\JvJCLUtils.obj ..\..\dcu\JvMaxPixel.obj 
       ..\..\dcu\JvProgressUtils.obj ..\..\dcu\JvBaseDlg.obj 
       ..\..\dcu\JvActions.obj ..\..\dcu\JvMouseTimer.obj 
       ..\..\dcu\JvDsgnIntf.obj ..\..\dcu\JvDataProvider.obj 
@@ -30,7 +30,7 @@
       visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
       inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
       dbxcds.lib indy.lib bcb2kaxserver.lib"/>
-    <PACKAGES value="rtl.bpi vcl.bpi vcljpg.bpi"/>
+    <PACKAGES value="vcl.bpi vclx.bpi cjcl60.bpi rtl.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
@@ -41,20 +41,20 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6R.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source"/>
-    <LIBPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I$(BCB)\include 
-      -I$(BCB)\include\vcl -I..\..\..\JCL\source -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\resources 
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
     <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -66,7 +66,9 @@
   <FILELIST>
       <FILE FILENAME="JvCoreC6R.res" FORMNAME="" UNITNAME="JvCoreC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.cpp" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cjcl60.bpi" FORMNAME="" UNITNAME="cjcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\common\JvConsts.pas" FORMNAME="" UNITNAME="JvConsts" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JVCLVer.pas" FORMNAME="" UNITNAME="JVCLVer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComponent.pas" FORMNAME="" UNITNAME="JvComponent" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -85,10 +87,9 @@
       <FILE FILENAME="..\..\run\JvAppStore.pas" FORMNAME="" UNITNAME="JvAppStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvAppRegistryStore.pas" FORMNAME="" UNITNAME="JvAppRegistryStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvAppIniStore.pas" FORMNAME="" UNITNAME="JvAppIniStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLAboutForm.pas" FORMNAME="JvJVCLAboutForm" UNITNAME="JvJVCLAboutForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvActnResForm.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnResForm" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -106,7 +107,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1033
 CodePage=1252
 
 [Version Info Keys]
@@ -122,14 +123,18 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=2
-Item0=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
+Count=3
+Item0=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
 Item1=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
 
 [HistoryLists\hlLibraryPath]
-Count=2
-Item0=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
-Item1=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
+Count=5
+Item0=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item1=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item2=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item3=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item4=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
