@@ -81,7 +81,8 @@ type
     procedure Add(const Name: string; const Value: Int64); overload;
     procedure Add(const Name: string; const Value: Boolean); overload;
     procedure Clear;
-    procedure Delete(const Index: Integer);
+    procedure Delete(const Index: Integer);overload;
+    procedure Delete(const Name: string);overload;
     function Value(const Name: string; Default: string = ''): string;
     function IntValue(const Name: string; Default: Int64 = -1): Int64;
     function BoolValue(const Name: string; Default: Boolean = true): Boolean;
@@ -1180,7 +1181,14 @@ end;
 
 procedure TJvSimpleXmlProps.Delete(const Index: Integer);
 begin
-  FProperties.Delete(Index);
+  if (Index>=0) and (Index<FProperties.Count) then
+    FProperties.Delete(Index);
+end;
+{*************************************************}
+
+procedure TJvSimpleXmlProps.Delete(const Name: string);
+begin
+  Delete(FProperties.IndexOf(Name));
 end;
 {*************************************************}
 
