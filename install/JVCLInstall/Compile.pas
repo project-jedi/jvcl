@@ -569,7 +569,7 @@ begin
       Inc(Index);
     end;
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
-    if pkVCL in TargetConfigs[i].InstallMode then
+    if pkClx in TargetConfigs[i].InstallMode then
     begin
       Result := CompileTarget(TargetConfigs[i], Force, {CLX:=}True);
       if not Result then
