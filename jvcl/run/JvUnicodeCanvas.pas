@@ -35,7 +35,7 @@ uses
 {$IFDEF COMPLIB_CLX}
   Qt, Types, QGraphics,
 {$ENDIF}
-  Classes, JvClxUtils;
+  Classes, JvClxUtils, JvJCLUtils;
 
 type
   TExtTextOutOptionsType = (etoClipped, etoOpaque);
