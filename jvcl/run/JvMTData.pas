@@ -30,8 +30,10 @@ unit JvMTData;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ContNrs, JvMTSync, JvMTConsts, JvMTThreading, SyncObjs;
+{$IFDEF MSWINDOWS}
+  Windows, // for OutputDebugString
+{$ENDIF}
+  SysUtils, Classes, Contnrs, JvMTSync, JvMTConsts, JvMTThreading, SyncObjs;
 
 type
   TMTBoundedQueue = class (TObjectQueue)
@@ -336,9 +338,11 @@ initialization
   DataThreadsMan := TMTManager.Create;
 
 finalization
+{$IFDEF MSWINDOWS}
   if DataThreadsMan.ActiveThreads then
     OutputDebugString(
       'Memory leak detected: free MTData objects before application shutdown');
+{$ENDIF}
 
   DataThreadsMan.Free;
 end.
