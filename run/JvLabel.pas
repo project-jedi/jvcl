@@ -650,6 +650,8 @@ begin
     end
     else
     begin
+      w := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+      h := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
       TextX := 3;
       TextY := 3;
       if Angle <= 90 then
