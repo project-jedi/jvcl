@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2005-01-08 02:18\n"
+"POT-Creation-Date: 2005-02-13 17:45\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -16,97 +16,97 @@ msgstr ""
 
 #  Programmer's name for it: RsPackagesAreUpToDate
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:149
+#: Compile.pas:150
 msgid "Packages are up to date"
 msgstr "Pakiet jest w wersji bieżącej"
 
 #  Programmer's name for it: RsCompilingJCL
 #. Programmer's name for it: RsCompilingJCL
-#: Compile.pas:157
+#: Compile.pas:158
 msgid "Compiling JCL dcp files..."
 msgstr "Kompilacja plików „.dcp” z JCL..."
 
 #  Programmer's name for it: RsErrorCompilingJclDcpFiles
 #. Programmer's name for it: RsErrorCompilingJclDcpFiles
-#: Compile.pas:158
+#: Compile.pas:159
 msgid "Error while compiling .dcp files for JCL."
 msgstr "Błą podczas kompilowania plików „.dcp” dla JCL."
 
 #  Programmer's name for it: RsGeneratingTemplates
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:159
+#: Compile.pas:160
 msgid "Generating templates..."
 msgstr "Generowanie szablonów..."
 
 #  Programmer's name for it: RsGeneratingPackages
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:160
+#: Compile.pas:161
 msgid "Generating packages..."
 msgstr "Generowanie pakietów..."
 
 #  Programmer's name for it: RsGeneratingResources
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:161
+#: Compile.pas:162
 msgid "Generating resources..."
 msgstr "Generowanie zasobów..."
 
 #  Programmer's name for it: RsCompilingPackages
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:162
+#: Compile.pas:163
 msgid "Compiling packages..."
 msgstr "Kompilacja pakietów..."
 
 #  Programmer's name for it: RsCopyingFiles
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:163
+#: Compile.pas:164
 msgid "Copying files..."
 msgstr "Kopiowanie plików..."
 
 #  Programmer's name for it: RsCopyingFile
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:164
+#: Compile.pas:165
 msgid "Copying %s"
 msgstr "Kopiowanie %s"
 
 #  Programmer's name for it: RsFinished
 #. Programmer's name for it: RsFinished
-#: Compile.pas:165
+#: Compile.pas:166
 msgid "Finished."
 msgstr "Zakończone."
 
 #  Programmer's name for it: RsAbortedByUser
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:167
+#: Compile.pas:168
 msgid "Aborted by User"
 msgstr "Przerwane przez użytkownika"
 
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:168
+#: Compile.pas:169
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Błąd ładowania devtools\\bin\\pgEdit.xml"
 
 #  Programmer's name for it: RsErrorGeneratingPackages
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:169
+#: Compile.pas:170
 msgid "Error while generating packages for %s"
 msgstr "Błąd podczas generowania pakietów dla %s"
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:170
+#: Compile.pas:171
 msgid "Error while generating templates."
 msgstr "Błąd podczas generowania szablonów."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:171
+#: Compile.pas:172
 msgid "Error while compiling resources."
 msgstr "Błąd podczas kompilowania zasobów."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:172
+#: Compile.pas:173
 msgid "Error generating templates for the %s directory."
 msgstr "Błąd podczas generowania szablonów dla folderu %s."
 
@@ -114,12 +114,12 @@ msgstr "Błąd podczas generowania szablonów dla folderu %s."
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:173
+#: Compile.pas:174
 msgid "An error occured while compiling the packages."
 msgstr "Wystąpił błąd podczas kompilowania pakietów."
 
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:175
+#: Compile.pas:176
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -949,7 +949,7 @@ msgstr "Wystąpił błąd."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:85 JVCLData.pas:309
+#: InstallerConsts.pas:85 JVCLData.pas:310
 msgid "Complete."
 msgstr "Gotowe."
 
@@ -1382,37 +1382,37 @@ msgstr "Czy rzeczywiście chcesz anulować instalowanie?"
 
 #  Programmer's name for it: RsNoJVCLFound
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:302
+#: JVCLData.pas:303
 msgid "No JVCL directory found. Application terminated."
 msgstr "Nie znaleziono foldera JVCL. Aplikacja przerywa działania."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:303
+#: JVCLData.pas:304
 msgid "JVCL Installer"
 msgstr "Instalator JVCL"
 
 #  Programmer's name for it: RsCleaningPalette
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:305
+#: JVCLData.pas:306
 msgid "Cleaning Palette..."
 msgstr "Czyszczenie palety..."
 
 #  Programmer's name for it: RsCleaningPathLists
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:306
+#: JVCLData.pas:307
 msgid "Cleaning Path lists..."
 msgstr "Czyszczenie listy ścieżek..."
 
 #  Programmer's name for it: RsUnregisteringPackages
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:307
+#: JVCLData.pas:308
 msgid "Unregistering packages..."
 msgstr "Odrejestrowywanie pakietów..."
 
 #  Programmer's name for it: RsDeletingFiles
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:308
+#: JVCLData.pas:309
 msgid "Deleting files..."
 msgstr "Usuwanie plików..."
 
@@ -1461,18 +1461,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Strona domowa Jedi Visual Component Library"
 
-#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
-#~ msgid ""
-#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
-#~ "of the JvCore-R package. That means that you cannot add\n"
-#~ "it to another package."
-#~ msgstr ""
-#~ "http://dxgettext.sourceforge.net|Pobrane z <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
-#~ "<c:red>Moduł gnugettext.pas będzie dodany do listy używanych modułów\n"
-#~ "pakietu JvCore-R. Oznacza to, że nie możesz dodać go\n"
-#~ "do innego pakietu."
-
 #  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Caption
 #~ msgid "dxgettext &support (not required)"
 #~ msgstr "&Obsługa dxgettext (nie wymagane)"
@@ -1519,10 +1507,22 @@ msgstr "Strona domowa Jedi Visual Component Library"
 #~ msgid "jvcl.inc changes are global to all installed Delphi/BCB versions."
 #~ msgstr "Zmiany jvcl.inc są globalne dla wszystkich zainstalowanych wersji Delphi/BCB."
 
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"
+#  FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage....Cursor
+#~ msgid ""
+#~ "http://dxgettext.sourceforge.net|Download from <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>The gnugettext.pas unit will be added to the contains list\n"
+#~ "of the JvCore-R package. That means that you cannot add\n"
+#~ "it to another package."
+#~ msgstr ""
+#~ "http://dxgettext.sourceforge.net|Pobrane z <c:blue>http://dxgettext.sourceforge.net<c:black>\n"
+#~ "<c:red>Moduł gnugettext.pas będzie dodany do listy używanych modułów\n"
+#~ "pakietu JvCore-R. Oznacza to, że nie możesz dodać go\n"
+#~ "do innego pakietu."
 
 #  Programmer's name for it: RsComponentPalettePrefix
 #~ msgid "TJv"
 #~ msgstr "TJv"
+
+#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
