@@ -42,10 +42,10 @@ uses
   {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   {$IFDEF COMPILER6_UP}
-  DesignIntf
+  DesignIntf,
   {$ELSE}
-  DsgnIntf
-  {$ENDIF COMPILER6_UP},
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER4_UP}
   Forms,
   {$ENDIF}

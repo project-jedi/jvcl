@@ -41,11 +41,11 @@ Known Issues:
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-  {$ENDIF}
 
 unit JvComCtrls;
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 

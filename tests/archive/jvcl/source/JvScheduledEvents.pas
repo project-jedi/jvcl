@@ -46,6 +46,7 @@ type
   TScheduledEventState = (sesNotInitialized, sesWaiting, sesTriggered, sesExecuting, sesPaused,
     sesEnded);
   TScheduledEventExecute = procedure(Sender: TJvEventCollectionItem; const IsSnoozeEvent: Boolean) of object;
+  TJvStreamEvent = procedure (Sender:TObject; Event:TJvEventCollectionItem;Stream:TStream) of object;
 
   TJvCustomScheduledEvents = class(TComponent)
   private
@@ -56,6 +57,8 @@ type
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
     FWnd: HWND;
+    FOnSaveToStream: TJvStreamEvent;
+    FOnLoadFromStream: TJvStreamEvent;
   protected
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
@@ -73,9 +76,17 @@ type
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
     property SaveTo: string read GetSaveTo write SetSaveTo;
+    procedure DoSaveToStream(Sender:TObject;Event:TJvEventCollectionItem;Stream:TStream);
+    procedure DoLoadFromStream(Sender:TObject;Event:TJvEventCollectionItem;Stream:TStream);
+    property OnSaveToStream:TJvStreamEvent read FOnSaveToStream write FOnSaveToStream;
+    property OnLoadFromStream:TJvStreamEvent read FOnLoadFromStream write FOnLoadFromStream; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SaveToStream(Stream:TStream);
+    procedure LoadFromStream(Stream:TStream);
+    procedure SaveToFile(const Filename:string);
+    procedure LoadFromFile(const Filename:string);
 
     property Handle: HWND read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
@@ -89,15 +100,27 @@ type
     property Events;
     property OnStartEvent;
     property OnEndEvent;
+    property OnSaveToStream;
+    property OnLoadFromStream;
   end;
 
   TJvEventCollection = class(TOwnedCollection)
   private
+    FOnSaveToStream: TJvStreamEvent;
+    FOnLoadFromStream: TJvStreamEvent;
+    procedure DoLoadFromStream(Event: TJvEventCollectionItem;
+      Stream: TStream);
+    procedure DoSaveToStream(Event: TJvEventCollectionItem;
+      Stream: TStream);
   protected
     function GetItem(Index: Integer): TJvEventCollectionItem;
     procedure SetItem(Index: Integer; Value: TJvEventCollectionItem);
+    property OnSaveToStream:TJvStreamEvent read FOnSaveToStream write FOnSaveToStream;
+    property OnLoadFromStream:TJvStreamEvent read FOnLoadFromStream write FOnLoadFromStream; 
   public
     constructor Create(AOwner: TPersistent);
+    procedure SaveToStream(Stream:TStream);
+    procedure LoadFromStream(Stream:TStream);
 
     function Add: TJvEventCollectionItem;
     function Insert(Index: Integer): TJvEventCollectionItem;
@@ -620,6 +643,8 @@ begin
   inherited Create(AOwner);
   FSaveKey := HKEY_CURRENT_USER;
   FEvents := TJvEventCollection.Create(Self);
+  FEvents.OnSaveToStream := DoSaveToStream;
+  FEvents.OnLoadFromStream := DoLoadFromStream;
 end;
 
 destructor TJvCustomScheduledEvents.Destroy;
@@ -640,6 +665,54 @@ begin
   end;
   FEvents.Free;
   inherited Destroy;
+end;
+
+procedure TJvCustomScheduledEvents.LoadFromStream(Stream: TStream);
+begin
+  // read magic here?
+  FEvents.LoadFromStream(Stream);
+end;
+
+procedure TJvCustomScheduledEvents.SaveToStream(Stream: TStream);
+begin
+  // write magic here?
+  FEvents.SaveToStream(Stream);
+end;
+
+procedure TJvCustomScheduledEvents.DoLoadFromStream(Sender: TObject;
+  Event: TJvEventCollectionItem; Stream: TStream);
+begin
+  if Assigned(FOnLoadFromStream) then
+    FOnLoadFromStream(self,Event,Stream);
+end;
+
+procedure TJvCustomScheduledEvents.DoSaveToStream(Sender: TObject;
+  Event: TJvEventCollectionItem; Stream: TStream);
+begin
+  if Assigned(FOnSaveToStream) then
+    FOnSaveToStream(self,Event,Stream);
+end;
+
+procedure TJvCustomScheduledEvents.LoadFromFile(const Filename: string);
+var F:TFileStream;
+begin
+  F := TFileStream.Create(Filename,fmOpenRead or fmShareDenyNone);
+  try
+    LoadFromStream(F);
+  finally
+    F.Free;
+  end;
+end;
+
+procedure TJvCustomScheduledEvents.SaveToFile(const Filename: string);
+var F:TFileStream;
+begin
+  F := TFileStream.Create(Filename,fmCreate or fmShareExclusive);
+  try
+    SaveToStream(F);
+  finally
+    F.Free;
+  end;
 end;
 
 { TJvEventCollection }
@@ -667,6 +740,44 @@ end;
 function TJvEventCollection.Insert(Index: Integer): TJvEventCollectionItem;
 begin
   Result := TJvEventCollectionItem(inherited Insert(Index));
+end;
+
+procedure TJvEventCollection.DoLoadFromStream(Event:TJvEventCollectionItem;Stream:TStream);
+begin
+  if Assigned(FOnLoadFromStream) then
+    FOnLoadFromStream(self, Event,Stream);
+end;
+
+procedure TJvEventCollection.LoadFromStream(Stream: TStream);
+var ACount:integer;E:TJvEventCollectionItem;
+begin
+  Clear;
+  Stream.Read(aCount,sizeof(ACount));
+  while ACount > 0 do
+  begin
+    E := Add;
+    E.LoadFromStreamBin(Stream);
+    DoLoadFromStream(E,Stream);
+    Dec(ACount);
+  end;
+end;
+
+procedure TJvEventCollection.DoSaveToStream(Event:TJvEventCollectionItem;Stream:TStream);
+begin
+  if Assigned(FOnSaveToStream) then
+    FOnSaveToStream(self, Event,Stream);
+end;
+
+procedure TJvEventCollection.SaveToStream(Stream: TStream);
+var ACount:integer;
+begin
+  ACount := Count;
+  Stream.Write(aCount,sizeof(ACount));
+  for ACount := 0 to Count - 1 do
+  begin
+    Items[ACount].SaveToStreamBin(Stream);
+    DoSaveToStream(Items[ACount],Stream);
+  end;
 end;
 
 { TJvEventCollectionItem }

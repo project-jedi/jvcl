@@ -33,11 +33,11 @@ Known Issues:
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
+
+unit JvToolEdit;
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-unit JvToolEdit;
 
 interface
 

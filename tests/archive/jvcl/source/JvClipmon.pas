@@ -29,11 +29,11 @@ Known Issues:
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
+
+unit JvClipMon;
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-unit JvClipMon;
 
 interface
 

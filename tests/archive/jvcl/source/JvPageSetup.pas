@@ -26,11 +26,11 @@ Known Issues:
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
+
+unit JvPageSetup;
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-unit JvPageSetup;
 
 interface
 

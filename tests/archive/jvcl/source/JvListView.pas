@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  CommCtrl, Menus, JVCLVer, ClipBrd;
+  CommCtrl, Menus, ImgList, JVCLVer, ClipBrd;
 
 type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
@@ -69,6 +69,13 @@ type
     FOnVScroll: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
     FAutoClipboard: Boolean;
+    FImageChangeLink:TChangeLink;
+    FHeaderImages: TCustomImageList;
+    procedure SetHeaderImages(const Value: TCustomImageList);
+    function GetSmallImages: TCustomImageList;
+    procedure SetSmallImages(const Value: TCustomImageList);
+    function GetlargeImages: TCustomImageList;
+    procedure SetLargeImages(const Value: TCustomImageList);
   protected
     function CreateListItem: TListItem; override;
     procedure ColClick(Column: TListColumn); override;
@@ -80,11 +87,17 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);override;
+    procedure CreateWnd; override;
+    procedure DoHeaderImagesChange(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
+
     function GetColumnsOrder: string;
     procedure SetColumnsOrder(const Order: string);
+    destructor Destroy; override;
   published
+    property HeaderImages:TCustomImageList read FHeaderImages write SetHeaderImages;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -104,6 +117,8 @@ type
     property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
     property OnSaveProgress: TProgress read FOnSave write FOnSave;
     property OnAutoSort: TOnSortMethod read FOnSort write FOnSort;
+    property SmallImages:TCustomImageList read GetSmallImages write SetSmallImages;
+    property LargeImages:TCustomImageList read GetlargeImages write SetLargeImages;
 {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
 {$ENDIF}
@@ -112,6 +127,7 @@ type
 {$IFNDEF COMPILER6_UP}
     procedure DeleteSelected;
 {$ENDIF}
+
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
   end;
@@ -149,6 +165,8 @@ begin
   FAutoClipboard := True;
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := DoHeaderImagesChange;
 end;
 
 {**************************************************}
@@ -1039,6 +1057,75 @@ begin
 end;
 
 {**************************************************}
+
+procedure TJvListView.SetHeaderImages(const Value: TCustomImageList);
+var HHandle:integer;
+begin
+  if FHeaderImages <> nil then
+    FHeaderImages.UnRegisterChanges(FImageChangeLink);
+  FHeaderImages := Value;
+  HHandle := ListView_GetHeader(Handle);
+  if FHeaderImages <> nil then
+  begin
+    FHeaderImages.RegisterChanges(FImageChangeLink);
+    FHeaderImages.FreeNotification(Self);
+    Header_SetImageList(HHandle, FHeaderImages.Handle);
+  end
+  else
+    Header_SetImageList(HHandle, 0);
+  UpdateColumns;
+end;
+
+procedure TJvListView.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if (Operation = opRemove) and (AComponent = HeaderImages) then
+    HeaderImages := nil;
+end;
+
+procedure TJvListView.CreateWnd;
+begin
+  inherited;
+  if (HeaderImages <> nil) and HeaderImages.HandleAllocated then
+    Header_SetImageList(ListView_GetHeader(Handle), HeaderImages.Handle);
+end;
+
+destructor TJvListView.Destroy;
+begin
+  FImageChangeLink.Free;
+  inherited;
+end;
+
+procedure TJvListView.DoHeaderImagesChange(Sender: TObject);
+begin
+  Header_SetImageList(Handle, TCustomImageList(Sender).Handle);
+  UpdateColumns;
+end;
+
+function TJvListView.GetSmallImages: TCustomImageList;
+begin
+  Result := inherited SmallImages;
+end;
+
+procedure TJvListView.SetSmallImages(const Value: TCustomImageList);
+begin
+  inherited SmallImages := Value;
+  if (HeaderImages <> nil) and HeaderImages.HandleAllocated then
+    Header_SetImageList(ListView_GetHeader(Handle), HeaderImages.Handle);
+end;
+
+function TJvListView.GetlargeImages: TCustomImageList;
+begin
+  Result := inherited LargeImages;
+end;
+
+procedure TJvListView.SetLargeImages(const Value: TCustomImageList);
+begin
+  inherited LargeImages := Value;
+  if (HeaderImages <> nil) and HeaderImages.HandleAllocated then
+    Header_SetImageList(ListView_GetHeader(Handle), HeaderImages.Handle);
+end;
 
 end.
 

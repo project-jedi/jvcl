@@ -26,7 +26,7 @@ Known Issues:
 {$I JVCL.INC}
 
 
-Unit JvGraph;
+unit JvGraph;
 
 interface
 

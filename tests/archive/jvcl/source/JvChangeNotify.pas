@@ -29,13 +29,13 @@ Known Issues:
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-  {$ENDIF}
 
 {A wrapper for the Find[First/Next]ChangeNotification API calls. }
 
 unit JvChangeNotify;
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 

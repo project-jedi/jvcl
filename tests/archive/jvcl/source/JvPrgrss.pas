@@ -171,7 +171,7 @@ end;
 const
   ProgressList: TJvProgressList = nil;
 
-function GeTJvProgressList: TJvProgressList;
+function GetJvProgressList: TJvProgressList;
 begin
   if ProgressList = nil then ProgressList := TJvProgressList.Create;
   Result := ProgressList;
@@ -180,14 +180,14 @@ end;
 function SupportsProgressControl(Control: TControl): Boolean;
 begin
   if Control <> nil then
-    Result := GeTJvProgressList.FindClass(TControlClass(Control.ClassType)) >= 0
+    Result := GetJvProgressList.FindClass(TControlClass(Control.ClassType)) >= 0
   else Result := False;
 end;
 
 procedure RegisterProgressControl(AClass: TControlClass; const MaxPropName,
   MinPropName, ProgressPropName: string);
 begin
-  GeTJvProgressList.Add(AClass, MaxPropName, MinPropName, ProgressPropName);
+  GetJvProgressList.Add(AClass, MaxPropName, MinPropName, ProgressPropName);
 end;
 
 procedure UnRegisterProgressControl(AClass: TControlClass);
@@ -197,17 +197,17 @@ end;
 
 procedure SetProgressMax(Control: TControl; MaxValue: Longint);
 begin
-  GeTJvProgressList.SetControlProperty(Control, ppMax, MaxValue);
+  GetJvProgressList.SetControlProperty(Control, ppMax, MaxValue);
 end;
 
 procedure SetProgressMin(Control: TControl; MinValue: Longint);
 begin
-  GeTJvProgressList.SetControlProperty(Control, ppMin, MinValue);
+  GetJvProgressList.SetControlProperty(Control, ppMin, MinValue);
 end;
 
 procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 begin
-  GeTJvProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
+  GetJvProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
 end;
 
 {$IFNDEF WIN32}

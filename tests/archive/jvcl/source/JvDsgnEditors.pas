@@ -30,13 +30,13 @@ Known Issues:
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 { Various property editors }
 
 unit JvDsgnEditors;
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 

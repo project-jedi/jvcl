@@ -29,14 +29,12 @@ Known Issues:
 {$WARN UNIT_PLATFORM OFF}
 {$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
+{ Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
+      Uses the system Iconlist to display driveicons. }
+unit JvDriveCtrls;
 {$IFDEF LINUX}
 This unit is only supported on Windows!
 {$ENDIF}
-
-  { Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
-      Uses the system Iconlist to display driveicons. }
-
-unit JvDriveCtrls;
 
 interface
 

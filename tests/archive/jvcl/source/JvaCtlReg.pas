@@ -39,25 +39,25 @@ implementation
 uses            
   {$IFDEF COMPLIB_VCL}
   Windows,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF}
   Classes, JvCtlConst, JvRegAuto, JvaDsgn, JvDsgnIntf,
   {$IFDEF COMPLIB_VCL}
   SysUtils, Controls,
   JvWndProcHook, JvRegAutoEditor, JvHtControls, JvDlg,
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF}
   {$IFDEF COMPILER3_UP}
   JvIDEZoom,
-  {$ENDIF COMPILER3_UP}
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories
   {$IFDEF COMPLIB_VCL}
   , VCLEditors
-  {$ENDIF COMPLIB_VCL}
+  {$ENDIF}
   {$ELSE}
-  DsgnIntf
-  {$ENDIF COMPILER6_UP}
+  , DsgnIntf
+  {$ENDIF}
   ;
 
 {$R ..\resources\ractl.dcr}
