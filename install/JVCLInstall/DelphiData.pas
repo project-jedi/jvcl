@@ -172,13 +172,6 @@ begin
 end;
 
 procedure ConvertPathList(const Paths: string; List: TStrings); overload;
-{$IFDEF COMPILER7_UP}
-begin
-  List.Clear;
-  List.Delimiter := ';';
-  List.DelimitedText := Paths;
-end;
-{$ELSE}
 var
   F, P: PChar;
   S: string;
@@ -198,10 +191,11 @@ begin
       Inc(P);
     SetString(S, F, P - F);
     List.Add(S);
+    if P[0] = #0 then
+      Break;
     Inc(P);
   end;
 end;
-{$ENDIF COMPILR7_UP}
 
 function ConvertPathList(List: TStrings): string; overload;
 var
@@ -403,6 +397,7 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_LOCAL_MACHINE;
+
     if Reg.OpenKeyReadOnly(RegistryKey) then
     begin
       FExecutable := Reg.ReadString('App'); // do not localize
@@ -432,6 +427,35 @@ begin
     end;
 
     Reg.RootKey := HKEY_CURRENT_USER;
+
+    if Reg.OpenKeyReadOnly(RegistryKey) then
+    begin
+     // obtain updates state
+      List := TStringList.Create;
+      try
+        Reg.GetValueNames(List);
+        for i := 1 to 10 do
+        begin
+          if Reg.ValueExists('Update #' + IntToStr(i)) then // do not localize
+            if FLatestUpdate < i then
+              FLatestUpdate := i;
+          if i = 1 then
+          begin
+            if Reg.ValueExists('Pascal RTL Patch') then // do not localize
+              if FLatestRTLPatch < i then
+                FLatestRTLPatch := i;
+          end
+          else
+            if Reg.ValueExists('Pascal RTL Patch #' + IntToStr(i)) then // do not localize
+              if FLatestRTLPatch < i then
+                FLatestRTLPatch := i;
+        end;
+      finally
+        List.Free;
+      end;
+      Reg.CloseKey;
+    end;
+
    // get library paths
     if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
     begin

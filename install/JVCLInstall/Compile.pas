@@ -452,8 +452,10 @@ function TJVCLCompiler.CompileTarget(TargetConfig: TTargetConfig): Boolean;
 var
   ObjFiles: TStrings;
   i: Integer;
+  Aborted: Boolean;
 begin
   Result := True;
+  Aborted := False;
   FOutput.Clear;
 
   if TargetConfig.Target.IsBCB and TargetConfig.Build then
@@ -469,7 +471,6 @@ begin
     finally
       ObjFiles.Free;
     end;
-
   end;
 
  // VCL
@@ -488,6 +489,8 @@ begin
     if Result or not CmdOptions.KeepFiles then
       CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
                       Data.JVCLPackagesDir + '\bin', CaptureLine);
+    if Result then
+      CaptureLine('[Finished JVCL for VCL installation]', Aborted);
   end;
 
  // Clx
@@ -506,6 +509,8 @@ begin
     if Result or not CmdOptions.KeepFiles then
       CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
                       Data.JVCLPackagesDir + '\bin', CaptureLine);
+    if Result then
+      CaptureLine('[Finished JVCL for CLX installation]', Aborted);
   end;
 end;
 

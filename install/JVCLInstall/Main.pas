@@ -40,7 +40,7 @@ uses
   Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
   JvWizardRouteMapList,
   Core,
-  ShellAPI, HtHint;
+  ShellAPI, HtHint, JvWizardRouteMapSteps;
 
 type
   TFormMain = class(TForm)
