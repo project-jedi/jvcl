@@ -98,9 +98,7 @@ type
     handled by the list box as usual. }
   TJvListBoxStrings = class(TStrings)
   private
-    {$IFNDEF COMPILER6_UP}
     FListBox: TJvCustomListBox;
-    {$ENDIF COMPILER6_UP}
     FInternalList: TStrings;
     FUseInternal: Boolean;
     FUpdating: Boolean;
