@@ -33,32 +33,31 @@ interface
 
 uses
   Classes, Contnrs, Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics, SysUtils, Windows,
-  JclBase, JvComponent, JvTypes;
+  JclBase, JvConsts, JvComponent, JvTypes, JvDynControlEngine;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
 //=== TDSAMessageForm ========================================================
 
-  TDSAMessageForm = class(TForm)
+  TDSAMessageForm = class (TForm)
   private
-    FTimeout: Integer;
+    FTimeout: integer;
     FTimer: TTimer;
     FCountdown: TLabel;
   protected
-    procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure CustomKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
+    procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure CustomShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure TimerEvent(Sender: TObject);
-    procedure WriteToClipBoard(Text: String);
-    function GetFormText: String;
-    function TimeoutUnit(Secs: Integer): string;
+    procedure WriteToClipBoard(Text: string);
+    function GetFormText: string;
+    function TimeoutUnit(Secs: integer): string;
     procedure CancelAutoClose;
   public
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
-    function IsDSAChecked: Boolean;
-    property Timeout: Integer read FTimeout write FTimeout;
+    constructor CreateNew(AOwner: TComponent; Dummy: integer = 0); override;
+    function IsDSAChecked: boolean;
+    property Timeout: integer read FTimeout write FTimeout;
   end;
 
 //--------------------------------------------------------------------------------------------------
@@ -66,18 +65,19 @@ type
 //--------------------------------------------------------------------------------------------------
 
 type
-  TDSACheckTextKind = type Integer;
+  TDSACheckTextKind = type integer;
 
 const
   ctkShow = 0;
-  ctkAsk = 1;
+  ctkAsk  = 1;
   ctkWarn = 2;
 
 type
-  TDSAStorage = class;
+  TDSAStorage = class
+    ;
 
   TDSARegItem = record
-    ID: Integer;
+    ID: integer;
     Name: string;
     Description: string;
     Storage: TDSAStorage;
@@ -98,7 +98,7 @@ type
     procedure EndCustomWrite(const DSAInfo: TDSARegItem); virtual;
     procedure EndRead(const DSAInfo: TDSARegItem); virtual;
     procedure EndWrite(const DSAInfo: TDSARegItem); virtual;
-    function IsKeyNameAllowed(const Key: string): Boolean;
+    function IsKeyNameAllowed(const Key: string): boolean;
 
     function GetCheckMarkTextSuffix: string; virtual; abstract;
     procedure SetCheckMarkTextSuffix(Value: string); virtual; abstract;
@@ -106,40 +106,28 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function GetState(const DSAInfo: TDSARegItem; out LastResult: Integer;
-      const OnCustomData: TDSACustomData = nil): Boolean; virtual;
-    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; virtual; abstract;
-    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Boolean): Boolean; virtual; abstract;
-    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended; virtual; abstract;
-    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Extended): Extended; virtual; abstract;
-    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64; virtual; abstract;
-    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Int64): Int64; virtual; abstract;
-    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer; virtual; abstract;
-    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Integer): Integer; virtual; abstract;
+    function GetState(const DSAInfo: TDSARegItem; out LastResult: integer; const OnCustomData: TDSACustomData = nil): boolean; virtual;
+    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): boolean; virtual; abstract;
+    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: boolean): boolean; virtual; abstract;
+    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended; virtual; abstract;
+    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended; virtual; abstract;
+    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): int64; virtual; abstract;
+    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: int64): int64; virtual; abstract;
+    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): integer; virtual; abstract;
+    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: integer): integer; virtual; abstract;
     function ReadString(const DSAInfo: TDSARegItem; const Key: string): string; virtual; abstract;
-    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: string): string; virtual; abstract;
-    procedure SetState(const DSAInfo: TDSARegItem; const DontShowAgain: Boolean;
-      const LastResult: Integer; const OnCustomData: TDSACustomData = nil); virtual;
-    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Boolean); virtual; abstract;
-    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Extended); virtual; abstract;
-    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Int64); virtual; abstract;
-    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Integer); virtual; abstract;
-    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: string); virtual; abstract;
+    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string; virtual; abstract;
+    procedure SetState(const DSAInfo: TDSARegItem; const DontShowAgain: boolean; const LastResult: integer; const OnCustomData: TDSACustomData = nil); virtual;
+    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: boolean); virtual; abstract;
+    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: extended); virtual; abstract;
+    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64); virtual; abstract;
+    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: integer); virtual; abstract;
+    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string); virtual; abstract;
 
     property CheckMarkTextSuffix: string read GetCheckMarkTextSuffix;
   end;
 
-  TDSARegStorage = class(TDSAStorage)
+  TDSARegStorage = class (TDSAStorage)
   private
     FRootKey: HKEY;
     FKey: string;
@@ -150,80 +138,58 @@ type
   public
     constructor Create(const ARootKey: HKEY; const AKey: string);
 
-    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; override;
-    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Boolean): Boolean; override;
-    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended; override;
-    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Extended): Extended; override;
-    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64; override;
-    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Int64): Int64; override;
-    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer; override;
-    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Integer): Integer; override;
+    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): boolean; override;
+    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: boolean): boolean; override;
+    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended; override;
+    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended; override;
+    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): int64; override;
+    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: int64): int64; override;
+    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): integer; override;
+    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: integer): integer; override;
     function ReadString(const DSAInfo: TDSARegItem; const Key: string): string; override;
-    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: string): string; override;
-    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Boolean); override;
-    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Extended); override;
-    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Int64); override;
-    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Integer); override;
-    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: string); override;
+    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string; override;
+    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: boolean); override;
+    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: extended); override;
+    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64); override;
+    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: integer); override;
+    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string); override;
 
     property RootKey: HKEY read FRootKey write FRootKey;
     property Key: string read FKey write FKey;
   end;
 
-  TDSAQueueStorage = class(TDSAStorage)
+  TDSAQueueStorage = class (TDSAStorage)
   private
     FList: TStrings;
     FCheckMarkSuffix: string;
   protected
     procedure AddDSA(const DSAInfo: TDSARegItem);
-    procedure DeleteDSA(const Index: Integer);
-    function FindDSA(const DSAInfo: TDSARegItem): Integer;
+    procedure DeleteDSA(const Index: integer);
+    function FindDSA(const DSAInfo: TDSARegItem): integer;
     function GetCheckMarkTextSuffix: string; override;
-    function GetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
-      const Kind: Integer): string;
-    function HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): Boolean;
+    function GetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: integer): string;
+    function HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): boolean;
     procedure SetCheckMarkTextSuffix(Value: string); override;
-    procedure SetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
-      const Kind: Integer; const Value: string);
+    procedure SetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: integer; const Value: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; override;
-    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Boolean): Boolean; override;
-    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended; override;
-    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Extended): Extended; override;
-    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64; override;
-    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Int64): Int64; override;
-    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer; override;
-    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: Integer): Integer; override;
+    function ReadBool(const DSAInfo: TDSARegItem; const Key: string): boolean; override;
+    function ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: boolean): boolean; override;
+    function ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended; override;
+    function ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended; override;
+    function ReadInt64(const DSAInfo: TDSARegItem; const Key: string): int64; override;
+    function ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: int64): int64; override;
+    function ReadInteger(const DSAInfo: TDSARegItem; const Key: string): integer; override;
+    function ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: integer): integer; override;
     function ReadString(const DSAInfo: TDSARegItem; const Key: string): string; override;
-    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
-      const Default: string): string; override;
-    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Boolean); override;
-    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Extended); override;
-    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Int64); override;
-    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: Integer); override;
-    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string;
-      const Value: string); override;
+    function ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string; override;
+    procedure WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: boolean); override;
+    procedure WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: extended); override;
+    procedure WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64); override;
+    procedure WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: integer); override;
+    procedure WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string); override;
 
     property CheckMarkTextSuffix: string read GetCheckMarkTextSuffix write SetCheckMarkTextSuffix;
   end;
@@ -231,7 +197,7 @@ type
 const
   ssCustomRead: Pointer = @TDSAStorage.BeginCustomRead;
   ssCustomWrite: Pointer = @TDSAStorage.BeginCustomWrite;
-  ssRead: Pointer = @TDSAStorage.BeginRead;
+  ssRead: Pointer  = @TDSAStorage.BeginRead;
   ssWrite: Pointer = @TDSAStorage.BeginWrite;
 
 //--------------------------------------------------------------------------------------------------
@@ -240,120 +206,62 @@ const
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
 const
-  mbNone = TMsgDlgBtn(-1);
-  mbDefault = TMsgDlgBtn(-2);
+  mbNone    = TMsgDlgBtn( -1);
+  mbDefault = TMsgDlgBtn( -2);
 
-procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
-procedure ShowMessageFmt(const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
+procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
+procedure ShowMessageFmt(const Msg: string; const Params: array of const; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
 
-function MessageDlg(const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
-function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
-function MessageDlg(const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
+function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function MessageDlg(const Caption, Msg: string; const Picture: TGraphic; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
-function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): TModalResult; overload;
-function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): TModalResult; overload;
-function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): TModalResult; overload;
+function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
 //--------------------------------------------------------------------------------------------------
 // "Don't Show Again" (DSA) dialogs
 //--------------------------------------------------------------------------------------------------
 
-procedure DSAShowMessage(const DlgID: Integer; const Msg: string;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
-procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0);
+procedure DSAShowMessage(const DlgID: integer; const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
+procedure DSAShowMessageFmt(const DlgID: integer; const Msg: string; const Params: array of const; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const ADynControlEngine: TJvDynControlEngine = nil);
 
-function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
-function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string;
-  const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
-function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault;
-  const CancelButton: TMsgDlgBtn = mbDefault;
-  const HelpButton: TMsgDlgBtn = mbHelp): TModalResult; overload;
+function DSAMessageDlg(const DlgID: integer; const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function DSAMessageDlg(const DlgID: integer; const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function DSAMessageDlg(const DlgID: integer; const Caption, Msg: string; const Picture: TGraphic; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault; const HelpButton: TMsgDlgBtn = mbHelp; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
-function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): Integer; overload;
-function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string;
-  const DlgType: TMsgDlgType; const Buttons: array of string;
-  const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
-  const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): TModalResult; overload;
-function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1): Integer; overload;
+function DSAMessageDlgEx(const DlgID: integer; const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): integer; overload;
+function DSAMessageDlgEx(const DlgID: integer; const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
+function DSAMessageDlgEx(const DlgID: integer; const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind = dckScreen; const Timeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; const HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): integer; overload;
 
 //--------------------------------------------------------------------------------------------------
 // Generic DSA dialog
 //--------------------------------------------------------------------------------------------------
-function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
-  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  HelpButton: Integer = -1): TDSAMessageForm;
+function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: integer; const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 
 //--------------------------------------------------------------------------------------------------
 // DSA registration
 //--------------------------------------------------------------------------------------------------
 
-procedure RegisterDSA(const DlgID: Integer; const Name, Description: string;
-  const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow);
-procedure UnregisterDSA(const DlgID: Integer);
-function LocateDSAReg(const DlgID: Integer): TDSARegItem;
+procedure RegisterDSA(const DlgID: integer; const Name, Description: string; const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow);
+procedure UnregisterDSA(const DlgID: integer);
+function LocateDSAReg(const DlgID: integer): TDSARegItem;
 
 //--------------------------------------------------------------------------------------------------
 // DSA state setting/retrieving
 //--------------------------------------------------------------------------------------------------
 
-function GetDSAState(const DlgID: Integer): Boolean; overload;
-function GetDSAState(const DlgID: Integer; out ResCode: Integer;
-  const OnCustomData: TDSACustomData = nil): Boolean; overload;
-procedure SetDSAState(const DlgID: Integer; const DontShowAgain: Boolean;
-  const LastResult: Integer = mrNone; const OnCustomData: TDSACustomData = nil);
+function GetDSAState(const DlgID: integer): boolean; overload;
+function GetDSAState(const DlgID: integer; out ResCode: integer; const OnCustomData: TDSACustomData = nil): boolean; overload;
+procedure SetDSAState(const DlgID: integer; const DontShowAgain: boolean; const LastResult: integer = mrNone; const OnCustomData: TDSACustomData = nil);
 
 //--------------------------------------------------------------------------------------------------
 // Iterating the DSA registration
 //--------------------------------------------------------------------------------------------------
 
-function DSACount: Integer;
-function DSAItem(const Index: Integer): TDSARegItem;
+function DSACount: integer;
+function DSAItem(const Index: integer): TDSARegItem;
 
 //--------------------------------------------------------------------------------------------------
 // DSA check box text registration
@@ -375,23 +283,23 @@ function DSAQueueStore: TDSAQueueStorage;
 //--------------------------------------------------------------------------------------------------
 
 type
-  EJvDSADialog = class(EJVCLException);
+  EJvDSADialog = class (EJVCLException);
 
   TJvDSADataEvent = procedure(Sender: TObject; const DSAInfo: TDSARegItem; const Storage: TDSAStorage) of object;
-  TJvDSAAutoCloseEvent = procedure(Sender: TObject; var Handled: Boolean) of object;
+  TJvDSAAutoCloseEvent = procedure(Sender: TObject; var Handled: boolean) of object;
 
-  TJvDSADialog = class(TJvComponent)
+  TJvDSADialog = class (TJvComponent)
   private
     FCheckControl: TWinControl;
-    FDialogID: Integer;
-    FIgnoreDSAChkMrkTxt: Boolean;
+    FDialogID: integer;
+    FIgnoreDSAChkMrkTxt: boolean;
     FOnUpdateKeys: TJvDSADataEvent;
     FOnApplyKeys: TJvDSADataEvent;
     FOrgOwner: TComponent;
     FOrgShowModalPtr: Pointer;
-    FTimeout: Integer;
+    FTimeout: integer;
     FTimer: TTimer;
-    FTimerCount: Integer;
+    FTimerCount: integer;
     FOnCountdown: TNotifyEvent;
     FOnAutoClose: TJvDSAAutoCloseEvent;
   protected
@@ -400,10 +308,10 @@ type
     procedure ApplySavedState; virtual;
     procedure BeforeShow; virtual;
     procedure DoApplyKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem); virtual;
-    function DoAutoClose: Boolean;
+    function DoAutoClose: boolean;
     procedure DoCountDown;
     procedure DoUpdateKeys(const Storage: TDSAStorage; const DSAInfo: TDSARegItem); virtual;
-    function GetDSAStateInternal(out ModalResult: Integer): Boolean;
+    function GetDSAStateInternal(out ModalResult: integer): boolean;
     function GetOrgOwner: TComponent;
     function GetOrgShowModalPtr: Pointer;
     function GetStorage: TDSAStorage;
@@ -411,7 +319,7 @@ type
     procedure FormUnPatch;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetCheckControl(Value: TWinControl); virtual;
-    procedure SetDialogID(Value: Integer); virtual;
+    procedure SetDialogID(Value: integer); virtual;
     procedure SetOrgOwner(Value: TComponent);
     procedure SetOrgShowModalPtr(Value: Pointer);
     procedure TimerEvent(Sender: TObject);
@@ -423,16 +331,16 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetModalResult: Integer; virtual;
-    function IsDSAChecked: Boolean; virtual;
+    function GetModalResult: integer; virtual;
+    function IsDSAChecked: boolean; virtual;
     procedure Loaded; override;
     procedure CancelCountdown; virtual;
-    function SecondsLeft: Integer;
+    function SecondsLeft: integer;
   published
-    property Timeout: Integer read FTimeout write FTimeout;
+    property Timeout: integer read FTimeout write FTimeout;
     property CheckControl: TWinControl read FCheckControl write SetCheckControl;
-    property DialogID: Integer read FDialogID write SetDialogID;
-    property IgnoreDSAChkMrkTxt: Boolean read FIgnoreDSAChkMrkTxt write FIgnoreDSAChkMrkTxt;
+    property DialogID: integer read FDialogID write SetDialogID;
+    property IgnoreDSAChkMrkTxt: boolean read FIgnoreDSAChkMrkTxt write FIgnoreDSAChkMrkTxt;
     property OnApplyKeys: TJvDSADataEvent read FOnApplyKeys write FOnApplyKeys;
     property OnUpdateKeys: TJvDSADataEvent read FOnUpdateKeys write FOnUpdateKeys;
     property OnCountdown: TNotifyEvent read FOnCountdown write FOnCountdown;
@@ -444,20 +352,16 @@ implementation
 uses
   Consts, Math, TypInfo,
   JclRegistry, JclSysUtils,
-  JvConsts, JvResources;
+  JvResources, JvDynControlEngineIntf;
 
 {$IFNDEF DELPHI6_UP}
 type
-  PBoolean = ^Boolean;
+  PBoolean = ^boolean;
 {$ENDIF DELPHI6_UP}
 
 const
-  cDSAStateValueName = 'DSA_State'; // do not localize
+  cDSAStateValueName      = 'DSA_State';  // do not localize
   cDSAStateLastResultName = 'LastResult'; // do not localize
-
-  cCaption = 'Caption';
-  cChecked = 'Checked';
-  cCountdown = 'Countdown';
 
 //--------------------------------------------------------------------------------------------------
 //  CheckMarkTexts
@@ -475,7 +379,7 @@ end;
 
 function GetCheckMarkText(const ID: TDSACheckTextKind): string;
 var
-  Idx: Integer;
+  Idx: integer;
 begin
   Idx := CheckMarkTexts.IndexOfObject(TObject(ID));
   if Idx > -1 then
@@ -484,7 +388,7 @@ begin
     Result := '';
 end;
 
-constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: integer);
 var
   NonClientMetrics: TNonClientMetrics;
 begin
@@ -493,33 +397,32 @@ begin
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
   FTimer := TTimer.Create(Self);
-  FTimer.Enabled := False;
+  FTimer.Enabled  := false;
   FTimer.Interval := 1000;
-  FTimer.OnTimer := TimerEvent;
+  FTimer.OnTimer  := TimerEvent;
 end;
 
-procedure TDSAMessageForm.CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TDSAMessageForm.CustomKeyDown(Sender: TObject; var Key: word; Shift: TShiftState);
 begin
   CancelAutoClose;
-  if (Shift = [ssCtrl]) and (Key = Word('C')) then
+  if (Shift = [ssCtrl]) and (Key = word('C')) then
   begin
     SysUtils.Beep;
     WriteToClipBoard(GetFormText);
   end;
 end;
 
-procedure TDSAMessageForm.CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TDSAMessageForm.CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   CancelAutoClose;
 end;
 
 procedure TDSAMessageForm.CustomShow(Sender: TObject);
 var
-  I: Integer;
+  I: integer;
 begin
   if Timeout <> 0 then
-    FTimer.Enabled := True;
+    FTimer.Enabled := true;
   for I := 0 to ComponentCount - 1 do
   begin
     if (Components[I] is TButton) and (Components[I] as TButton).Default then
@@ -528,7 +431,7 @@ begin
       Break;
     end;
   end;
-  FCountdown := TLabel(FindComponent(cCountdown));
+  FCountdown := TLabel(FindComponent('Countdown'));
 end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
@@ -539,14 +442,14 @@ end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
 var
-  I: Integer;
+  I: integer;
 begin
   if FTimer.Enabled then
   begin
     Dec(FTimeout);
     if FTimeout = 0 then
     begin
-      FTimer.Enabled := False;
+      FTimer.Enabled := false;
       for I := 0 to ComponentCount - 1 do
       begin
         if (Components[I] is TButton) and (Components[I] as TButton).Default then
@@ -558,25 +461,24 @@ begin
       // No default button found; just close the form
       Close;
     end
-    else
-    if FCountdown <> nil then
+    else if FCountdown <> nil then
       FCountdown.Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
   end;
 end;
 
-procedure TDSAMessageForm.WriteToClipBoard(Text: String);
+procedure TDSAMessageForm.WriteToClipBoard(Text: string);
 var
-  Data: THandle;
+  Data:    THandle;
   DataPtr: Pointer;
 begin
   if OpenClipBoard(0) then
   begin
     try
-      Data := GlobalAlloc(GMEM_MOVEABLE+GMEM_DDESHARE, Length(Text) + 1);
+      Data := GlobalAlloc(GMEM_MOVEABLE + GMEM_DDESHARE, Length(Text) + 1);
       try
         DataPtr := GlobalLock(Data);
         try
-          Move(PChar(Text)^, DataPtr^, Length(Text) + 1);
+          Move(pchar(Text)^, DataPtr^, Length(Text) + 1);
           EmptyClipBoard;
           SetClipboardData(CF_TEXT, Data);
         finally
@@ -594,26 +496,23 @@ begin
     raise EJVCLException.Create(SCannotOpenClipboard);
 end;
 
-function TDSAMessageForm.GetFormText: String;
+function TDSAMessageForm.GetFormText: string;
 var
   DividerLine, ButtonCaptions: string;
-  I: Integer;
+  I: integer;
 begin
   DividerLine := StringOfChar('-', 27) + CrLf;
   for I := 0 to ComponentCount - 1 do
     if Components[I] is TButton then
-      ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption +
-        StringOfChar(' ', 3);
-  ButtonCaptions := StringReplace(ButtonCaptions,'&', '', [rfReplaceAll]);
+      ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption + StringOfChar(' ', 3);
+  ButtonCaptions := StringReplace(ButtonCaptions, '&', '', [rfReplaceAll]);
   I := ComponentCount - 1;
   while (I > -1) and not (Components[I] is TLabel) do
     Dec(I);
-  Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, CrLf,
-    DividerLine, TLabel(Components[I]).Caption, CrLf, DividerLine, ButtonCaptions,
-    CrLf, DividerLine]);
+  Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, CrLf, DividerLine, TLabel(Components[I]).Caption, CrLf, DividerLine, ButtonCaptions, CrLf, DividerLine]);
 end;
 
-function TDSAMessageForm.TimeoutUnit(Secs: Integer): string;
+function TDSAMessageForm.TimeoutUnit(Secs: integer): string;
 begin
   if Secs <> 1 then
     Result := RsCntdownSecsText
@@ -623,13 +522,13 @@ end;
 
 procedure TDSAMessageForm.CancelAutoClose;
 begin
-  FTimer.Enabled := False;
+  FTimer.Enabled := false;
   FreeAndNil(FCountdown);
 end;
 
-function TDSAMessageForm.IsDSAChecked: Boolean;
+function TDSAMessageForm.IsDSAChecked: boolean;
 var
-  I: Integer;
+  I: integer;
 begin
   I := ComponentCount - 1;
   while (I > -1) and not (Components[I] is TCustomCheckBox) do
@@ -637,13 +536,13 @@ begin
   if (I > -1) then
     Result := TCheckBox(Components[I]).Checked
   else
-    Result := False;
+    Result := false;
 end;
 
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
-  I: Integer;
-  Buffer: array [0..51] of Char;
+  I:      integer;
+  Buffer: array [0..51] of char;
 begin
   for I := 0 to 25 do
     Buffer[I] := Chr(I + Ord('A'));
@@ -653,32 +552,36 @@ begin
   Result.X := Result.X div 52;
 end;
 
-function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
-  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: Integer = 0;
-  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  HelpButton: Integer = -1): TDSAMessageForm;
+function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: integer; const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: integer = 0; const DefaultButton: integer = 0; const CancelButton: integer = 1; HelpButton: integer = -1; const ADynControlEngine: TJvDynControlEngine = nil): TDSAMessageForm;
 const
-  mcHorzMargin = 8;
-  mcVertMargin = 8;
-  mcHorzSpacing = 10;
-  mcVertSpacing = 10;
-  mcButtonWidth = 50;
-  mcButtonHeight = 14;
+  mcHorzMargin    = 8;
+  mcVertMargin    = 8;
+  mcHorzSpacing   = 10;
+  mcVertSpacing   = 10;
+  mcButtonWidth   = 50;
+  mcButtonHeight  = 14;
   mcButtonSpacing = 4;
 var
   DialogUnits: TPoint;
-  HorzMargin, VertMargin, HorzSpacing, VertSpacing, ButtonWidth,
-  ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth,
-  IconTextWidth, IconTextHeight, X, ALeft: Integer;
-  ChkTextWidth: Integer;
-  TimeoutTextWidth: Integer;
-  IconID: PChar;
+  HorzMargin, VertMargin, HorzSpacing, VertSpacing, ButtonWidth, ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth, IconTextWidth, IconTextHeight, X, ALeft: integer;
+  ChkTextWidth: integer;
+  TimeoutTextWidth: integer;
+  IconID: pchar;
   TempRect, TextRect: TRect;
-  I: Integer;
+  I:      integer;
   CenterParent: TComponent;
-  CenterParLeft, CenterParTop, CenterParWidth, CenterParHeight: Integer;
+  CenterParLeft, CenterParTop, CenterParWidth, CenterParHeight: integer;
+  DynControlEngine: TJvDynControlEngine;
+  CountDownlabel, MessageLabel: TControl;
+  Image:  TWinControl;
+  DynControlImage: IJvDynControlImage;
+  DynControlLabel: IJvDynControlLabel;
+  Panel:  TWinControl;
 begin
+  if Assigned(ADynControlEngine) then
+    DynControlEngine := ADynControlEngine
+  else
+    DynControlEngine := DefaultDynControlEngine;
   case Center of
     dckScreen:
       CenterParent := Screen;
@@ -693,67 +596,64 @@ begin
     CenterParent := Screen;
   if CenterParent is TScreen then
   begin
-    CenterParLeft := 0;
-    CenterParTop := 0;
-    CenterParWidth := TScreen(CenterParent).Width;
+    CenterParLeft   := 0;
+    CenterParTop    := 0;
+    CenterParWidth  := TScreen(CenterParent).Width;
     CenterParHeight := TScreen(CenterParent).Height;
   end
   else
   begin
     with TWinControl(CenterParent) do
     begin
-      CenterParLeft := Left;
-      CenterParTop := Top;
-      CenterParWidth := Width;
+      CenterParLeft   := Left;
+      CenterParTop    := Top;
+      CenterParWidth  := Width;
       CenterParHeight := Height;
     end;
   end;
-  if HelpButton = High(Integer) then
+  if HelpButton = High(integer) then
     HelpButton := High(Buttons);
   Result := TDSAMessageForm.CreateNew(Screen.ActiveCustomForm);
   try
     with Result do
     begin
-      BiDiMode := Application.BiDiMode;
+      BiDiMode    := Application.BiDiMode;
       BorderStyle := bsDialog;
       Canvas.Font := Font;
-      KeyPreview := True;
-      OnKeyDown := CustomKeyDown;
-      OnShow := CustomShow;
+      KeyPreview  := true;
+      OnKeyDown   := CustomKeyDown;
+      OnShow      := CustomShow;
       OnMouseDown := CustomMouseDown;
       DialogUnits := GetAveCharSize(Canvas);
-      HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
-      VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
+      HorzMargin  := MulDiv(mcHorzMargin, DialogUnits.X, 4);
+      VertMargin  := MulDiv(mcVertMargin, DialogUnits.Y, 8);
       HorzSpacing := MulDiv(mcHorzSpacing, DialogUnits.X, 4);
       VertSpacing := MulDiv(mcVertSpacing, DialogUnits.Y, 8);
       ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
-      Timeout := Abs(ATimeout);
+      Timeout     := Abs(ATimeout);
       for I := Low(Buttons) to High(Buttons) do
       begin
-        TextRect := Rect(0,0,0,0);
-        Windows.DrawText(Canvas.Handle, PChar(Buttons[I]), -1, TextRect, DT_CALCRECT or DT_LEFT or
-          DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly);
+        TextRect := Rect(0, 0, 0, 0);
+        Windows.DrawText(Canvas.Handle, pchar(Buttons[I]), -1, TextRect, DT_CALCRECT or DT_LEFT or DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly);
         with TextRect do
           if (Right - Left + 8) > ButtonWidth then
             ButtonWidth := (Right - Left + 8);
       end;
-      ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
+      ButtonHeight  := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
       ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
       if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
         SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
-      DrawText(Canvas.Handle, PChar(Msg), Length(Msg)+1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or
-        DrawTextBiDiModeFlagsReadingOnly);
-      IconTextWidth := TextRect.Right;
+      DrawText(Canvas.Handle, pchar(Msg), Length(Msg) + 1, TextRect,
+        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+      IconTextWidth  := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
       if CheckCaption <> '' then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(CheckCaption), Length(CheckCaption)+1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or
-          DrawTextBiDiModeFlagsReadingOnly);
+        DrawText(Canvas.Handle, pchar(CheckCaption), Length(CheckCaption) + 1, TempRect,
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
         ChkTextWidth := TempRect.Right;
       end
       else
@@ -761,10 +661,9 @@ begin
       if ATimeout > 0 then
       begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])),
+        DrawText(Canvas.Handle, pchar(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or
-          DrawTextBiDiModeFlagsReadingOnly);
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -772,13 +671,13 @@ begin
       if APicture <> nil then
       begin
         Inc(IconTextWidth, APicture.Width + HorzSpacing);
-        if IconTextHeight < APicture.Height then IconTextHeight := APicture.Height;
+        if IconTextHeight < APicture.Height then
+          IconTextHeight := APicture.Height;
       end;
-      ButtonCount := Length(Buttons);
+      ButtonCount      := Length(Buttons);
       ButtonGroupWidth := 0;
       if ButtonCount <> 0 then
-        ButtonGroupWidth := ButtonWidth * ButtonCount +
-          ButtonSpacing * (ButtonCount - 1);
+        ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
       ClientWidth := MAx(TimeoutTextWidth, Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth))) + HorzMargin * 2;
       ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
       if CheckCaption <> '' then
@@ -791,23 +690,25 @@ begin
         Caption := ACaption
       else
         Caption := Application.Title;
+      Panel := DynControlEngine.CreatePanelControl(Result, Result, 'Panel', '', alClient);
       if APicture <> nil then
-        with TImage.Create(Result) do
-        begin
-          Name := 'Image';
-          Parent := Result;
-          Picture.Assign(APicture);
-          SetBounds(HorzMargin, VertMargin, APicture.Width, APicture.Height);
-        end;
-      with TLabel.Create(Result) do
       begin
-        Name := 'Message';
-        Parent := Result;
-        WordWrap := True;
-        Caption := Msg;
+        Image := DynControlEngine.CreateImageControl(Result, Panel, 'Image');
+        if Supports(Image, IJvDynControlImage, DynControlImage) then
+        begin
+          DynControlImage.ControlSetGraphic(APicture);
+          DynControlImage.ControlSetCenter(true);
+        end;
+        Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
+      end;
+      MessageLabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Message', Msg, nil);
+ //      if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
+ //        DynControlLabel.ControlSetWordWrap(True);
+      with MessageLabel do
+      begin
         BoundsRect := TextRect;
-        BiDiMode := Result.BiDiMode;
-        ALeft := IconTextWidth - TextRect.Right + HorzMargin;
+        BiDiMode   := Result.BiDiMode;
+        ALeft      := IconTextWidth - TextRect.Right + HorzMargin;
         if UseRightToLeftAlignment then
           ALeft := Result.ClientWidth - ALeft - Width;
         SetBounds(ALeft, VertMargin,
@@ -815,45 +716,40 @@ begin
       end;
       X := (ClientWidth - ButtonGroupWidth) div 2;
       for I := Low(Buttons) to High(Buttons) do
-        with TButton.Create(Result) do
+      begin
+        with DynControlEngine.CreateButton(Result, Panel, 'Button' + IntToStr(I), Buttons[I], '', nil, false, false) do
         begin
-          Name := 'Button' + IntToStr(I);
-          Parent := Result;
-          Caption := Buttons[I];
           ModalResult := Results[I];
           if I = DefaultButton then
-            Default := True;
+            Default := true;
           if I = CancelButton then
-            Cancel := True;
+            Cancel := true;
           SetBounds(X, IconTextHeight + VertMargin + VertSpacing, ButtonWidth, ButtonHeight);
           Inc(X, ButtonWidth + ButtonSpacing);
           if I = HelpButton then
             OnClick := HelpButtonClick;
         end;
+      end;
       if CheckCaption <> '' then
-        with TCheckBox.Create(Result) do
+        with DynControlEngine.CreateCheckboxControl(Result, Panel, 'DontShowAgain', CheckCaption) do
         begin
-          Name := 'DontShowAgain';
-          Parent := Result;
           BiDiMode := Result.BiDiMode;
-          Caption := CheckCaption;
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
             Result.ClientWidth - 2 * HorzMargin, Height);
         end;
       if ATimeout > 0 then
-        with TLabel.Create(Result) do
+      begin
+        CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown', Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]), nil);
+        with CountDownlabel do
         begin
-          Name := cCountdown;
-          Parent := Result;
           BiDiMode := Result.BiDiMode;
-          Caption := Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]);
           if CheckCaption = '' then
             SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
               Result.ClientWidth - 2 * HorzMargin, Height)
           else
-            SetBounds(HorzMargin, IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight +
-              17, Result.ClientWidth - 2 * HorzMargin, Height);
+            SetBounds(HorzMargin, IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight + 17, Result.ClientWidth - 2 * HorzMargin, Height);
         end;
+      end;
     end;
   except
     Result.Free;
@@ -870,26 +766,25 @@ type
   private
     FList: array of TDSARegItem;
   protected
-    function AddNew: Integer;
-    procedure Remove(const Index: Integer);
-    function IndexOf(const ID: Integer): Integer; overload;
-    function IndexOf(const Name: string): Integer; overload;
-    function IndexOf(const Item: TDSARegItem): Integer; overload;
+    function AddNew: integer;
+    procedure Remove(const Index: integer);
+    function IndexOf(const ID: integer): integer; overload;
+    function IndexOf(const Name: string): integer; overload;
+    function IndexOf(const Item: TDSARegItem): integer; overload;
   public
     destructor Destroy; override;
     function Add(const Item: TDSARegItem): TAddResult; overload;
-    function Add(const ID: Integer; const Name, Description: string; const Storage: TDSAStorage;
-      const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult; overload;
+    function Add(const ID: integer; const Name, Description: string; const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult; overload;
     procedure Clear;
 //    procedure Delete(const Item: TDSARegItem); overload;
-    procedure Delete(const ID: Integer); overload;
+    procedure Delete(const ID: integer); overload;
 //    procedure Delete(const Name: string); overload;
-    function Locate(const ID: Integer): TDSARegItem; overload;
+    function Locate(const ID: integer): TDSARegItem; overload;
 //    function Locate(const Name: string): TDSARegItem; overload;
   end;
 
 const
-  EmptyItem: TDSARegItem = (ID: High(Integer); Name: ''; Storage: nil);
+  EmptyItem: TDSARegItem = (ID: High(integer); Name: ''; Storage: nil);
 
 var
   DSARegister: TDSARegister;
@@ -900,20 +795,20 @@ begin
   Clear;
 end;
 
-function TDSARegister.AddNew: Integer;
+function TDSARegister.AddNew: integer;
 begin
   Result := Length(FList);
   SetLength(FList, Result + 1);
 end;
 
-procedure TDSARegister.Remove(const Index: Integer);
+procedure TDSARegister.Remove(const Index: integer);
 var
-  I: Integer;
+  I: integer;
 begin
   for I := Index + 1 to High(FList) do
   begin
-    FList[I - 1].ID := FList[I].ID;
-    FList[I - 1].Name := FList[I].Name;
+    FList[I - 1].ID      := FList[I].ID;
+    FList[I - 1].Name    := FList[I].Name;
     FList[I - 1].Description := FList[I].Description;
     FList[I - 1].ChkTextKind := FList[I].ChkTextKind;
     FList[I - 1].Storage := FList[I].Storage;
@@ -921,21 +816,21 @@ begin
   SetLength(FList, High(FList));
 end;
 
-function TDSARegister.IndexOf(const ID: Integer): Integer;
+function TDSARegister.IndexOf(const ID: integer): integer;
 begin
   Result := High(FList);
   while (Result > -1) and (FList[Result].ID <> ID) do
     Dec(Result);
 end;
 
-function TDSARegister.IndexOf(const Name: string): Integer;
+function TDSARegister.IndexOf(const Name: string): integer;
 begin
   Result := High(FList);
   while (Result > -1) and not AnsiSameText(FList[Result].Name, Name) do
     Dec(Result);
 end;
 
-function TDSARegister.IndexOf(const Item: TDSARegItem): Integer;
+function TDSARegister.IndexOf(const Item: TDSARegItem): integer;
 begin
   Result := IndexOf(Item.ID);
   if (Result > -1) and not AnsiSameText(FList[Result].Name, Item.Name) then
@@ -944,12 +839,11 @@ end;
 
 function TDSARegister.Add(const Item: TDSARegItem): TAddResult;
 var
-  Idx: Integer;
+  Idx: integer;
 begin
   if IndexOf(Item) > -1 then
     Result := arExists
-  else
-  if IndexOf(Item.ID) > -1 then
+  else if IndexOf(Item.ID) > -1 then
   begin
     Idx := IndexOf(Item.ID);
     if AnsiSameText(FList[Idx].Name, Item.Name) then
@@ -957,12 +851,11 @@ begin
     else
       Result := arDuplicateID;
   end
-  else
-  if IndexOf(Item.Name) > -1 then
+  else if IndexOf(Item.Name) > -1 then
     Result := arDuplicateName
   else
   begin
-    Idx := AddNew;
+    Idx    := AddNew;
     FList[Idx].ID := Item.ID;
     FList[Idx].Name := Item.Name;
     FList[Idx].Description := Item.Description;
@@ -972,8 +865,7 @@ begin
   end;
 end;
 
-function TDSARegister.Add(const ID: Integer; const Name, Description: string;
-  const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult;
+function TDSARegister.Add(const ID: integer; const Name, Description: string; const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow): TAddResult;
 var
   TmpItem: TDSARegItem;
 begin
@@ -1001,9 +893,9 @@ begin
 end;
 *)
 
-procedure TDSARegister.Delete(const ID: Integer);
+procedure TDSARegister.Delete(const ID: integer);
 var
-  Idx: Integer;
+  Idx: integer;
 begin
   Idx := IndexOf(ID);
   if Idx > -1 then
@@ -1021,9 +913,9 @@ begin
 end;
 *)
 
-function TDSARegister.Locate(const ID: Integer): TDSARegItem;
+function TDSARegister.Locate(const ID: integer): TDSARegItem;
 var
-  Idx: Integer;
+  Idx: integer;
 begin
   Idx := IndexOf(ID);
   if Idx > -1 then
@@ -1107,21 +999,20 @@ begin
   FStates.Pop;
 end;
 
-function TDSAStorage.IsKeyNameAllowed(const Key: string): Boolean;
+function TDSAStorage.IsKeyNameAllowed(const Key: string): boolean;
 begin
   if AnsiSameText(Key, cDSAStateValueName) or AnsiSameText(Key, cDSAStateLastResultName) then
-    Result := Integer(FStates.Peek) in [Integer(ssRead), Integer(ssWrite)]
+    Result := integer(FStates.Peek) in [integer(ssRead), integer(ssWrite)]
   else
-    Result := Integer(FStates.Peek) in [Integer(ssCustomRead), Integer(ssCustomWrite)];
+    Result := integer(FStates.Peek) in [integer(ssCustomRead), integer(ssCustomWrite)];
 end;
 
-function TDSAStorage.GetState(const DSAInfo: TDSARegItem; out LastResult: Integer;
-  const OnCustomData: TDSACustomData = nil): Boolean;
+function TDSAStorage.GetState(const DSAInfo: TDSARegItem; out LastResult: integer; const OnCustomData: TDSACustomData = nil): boolean;
 begin
   BeginRead(DSAInfo);
   try
     LastResult := 0;
-    Result := ReadBoolDef(DSAInfo, cDSAStateValueName, False);
+    Result     := ReadBoolDef(DSAInfo, cDSAStateValueName, false);
     if Result then
     begin
       LastResult := ReadIntegerDef(DSAInfo, cDSAStateLastResultName, 0);
@@ -1140,8 +1031,7 @@ begin
   end;
 end;
 
-procedure TDSAStorage.SetState(const DSAInfo: TDSARegItem; const DontShowAgain: Boolean;
-  const LastResult: Integer; const OnCustomData: TDSACustomData = nil);
+procedure TDSAStorage.SetState(const DSAInfo: TDSARegItem; const DontShowAgain: boolean; const LastResult: integer; const OnCustomData: TDSACustomData = nil);
 begin
   BeginWrite(DSAInfo);
   try
@@ -1170,14 +1060,13 @@ constructor TDSARegStorage.Create(const ARootKey: HKEY; const AKey: string);
 begin
   inherited Create;
   FRootKey := ARootKey;
-  FKey := AKey;
+  FKey     := AKey;
 end;
 
 procedure TDSARegStorage.CreateKey(const DSAInfo: TDSARegItem);
 begin
-  if not (RegKeyExists(RootKey, Key + RegPathDelim + DSAInfo.Name) or (RegCreateKey(RootKey, Key + RegPathDelim +
-      DSAInfo.Name, '') = ERROR_SUCCESS)) then
-    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + RegPathDelim + DSAInfo.Name]);
+  if not (RegKeyExists(RootKey, Key + '\' + DSAInfo.Name) or (RegCreateKey(RootKey, Key + '\' + DSAInfo.Name, '') = ERROR_SUCCESS)) then
+    raise EJvDSADialog.CreateFmt(RsEDSARegKeyCreateError, [Key + '\' + DSAInfo.Name]);
 end;
 
 function TDSARegStorage.GetCheckMarkTextSuffix: string;
@@ -1189,122 +1078,111 @@ procedure TDSARegStorage.SetCheckMarkTextSuffix(Value: string);
 begin
 end;
 
-function TDSARegStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
+function TDSARegStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): boolean;
 begin
-  Result := RegReadBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
+  Result := RegReadBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
-function TDSARegStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Boolean): Boolean;
+function TDSARegStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: boolean): boolean;
 begin
-  Result := RegReadBoolDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
+  Result := RegReadBoolDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
+function TDSARegStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended;
 begin
-  RegReadBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended));
+  RegReadBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(extended));
 end;
 
-function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Extended): Extended;
+function TDSARegStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended;
 begin
-  if RegReadBinaryDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Result, SizeOf(Extended), 0) = 0 then
+  if RegReadBinaryDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Result, SizeOf(extended), 0) = 0 then
     Result := Default;
 end;
 
-function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
+function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): int64;
 begin
-  Result := RegReadDWORD(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
+  Result := RegReadDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
-function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Int64): Int64;
+function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: int64): int64;
 begin
-  Result := RegReadDWORDDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
+  Result := RegReadDWORDDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
+function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): integer;
 begin
-  Result := RegReadInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
+  Result := RegReadInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
-function TDSARegStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Integer): Integer;
+function TDSARegStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: integer): integer;
 begin
-  Result := RegReadIntegerDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
+  Result := RegReadIntegerDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadString(const DSAInfo: TDSARegItem; const Key: string): string;
 begin
-  Result := RegReadString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key);
+  Result := RegReadString(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
-function TDSARegStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: string): string;
+function TDSARegStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string;
 begin
-  Result := RegReadStringDef(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Default);
+  Result := RegReadStringDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
-procedure TDSARegStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Boolean);
+procedure TDSARegStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: boolean);
 begin
   CreateKey(DSAInfo);
-  RegWriteBool(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
+  RegWriteBool(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
-procedure TDSARegStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Extended);
+procedure TDSARegStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: extended);
 var
-  Temp: Extended;
+  Temp: extended;
 begin
   CreateKey(DSAInfo);
   Temp := Value;
-  RegWriteBinary(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Temp, SizeOf(Extended));
+  RegWriteBinary(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Temp, SizeOf(extended));
 end;
 
-procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Int64);
+procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64);
 begin
   CreateKey(DSAInfo);
-  RegWriteDWORD(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
+  RegWriteDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
-procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Integer);
+procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: integer);
 begin
   CreateKey(DSAInfo);
-  RegWriteInteger(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
+  RegWriteInteger(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
-procedure TDSARegStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: string);
+procedure TDSARegStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string);
 begin
   CreateKey(DSAInfo);
-  RegWriteString(RootKey, Self.Key + RegPathDelim + DSAInfo.Name, Key, Value);
+  RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
 //=== TDSAValues =============================================================
 
 const
-  DSABool = 1;
-  DSAFloat = 2;
-  DSAInt64 = 3;
-  DSAInt = 4;
+  DSABool   = 1;
+  DSAFloat  = 2;
+  DSAInt64  = 3;
+  DSAInt    = 4;
   DSAString = 5;
 
-  DSAKindTexts: array [DSABool..DSAString] of string =
-   (RsEDSAAccessBool, RsEDSAAccessFloat, RsEDSAAccessInt64,
-    RsEDSAAccessInt, RsEDSAAccessString);
+  DSAKindTexts: array [DSABool..DSAString] of string = (
+    RsEDSAAccessBool, RsEDSAAccessFloat, RsEDSAAccessInt64, RsEDSAAccessInt, RsEDSAAccessString);
 
 type
-  TDSAValues = class(TStringList)
+  TDSAValues = class (TStringList)
     constructor Create;
   end;
 
 constructor TDSAValues.Create;
 begin
   inherited Create;
-  Sorted := True;
+  Sorted := true;
 end;
 
 //=== TDSAQueueStorage =======================================================
@@ -1313,7 +1191,7 @@ constructor TDSAQueueStorage.Create;
 begin
   inherited Create;
   FList := TStringList.Create;
-  TStringList(FList).Sorted := True;
+  TStringList(FList).Sorted := true;
   FCheckMarkSuffix := RsInTheCurrentQueue;
 end;
 
@@ -1330,13 +1208,13 @@ begin
     FList.AddObject(DSAInfo.Name, TDSAValues.Create);
 end;
 
-procedure TDSAQueueStorage.DeleteDSA(const Index: Integer);
+procedure TDSAQueueStorage.DeleteDSA(const Index: integer);
 begin
   FList.Objects[Index].Free;
   FList.Delete(Index);
 end;
 
-function TDSAQueueStorage.FindDSA(const DSAInfo: TDSARegItem): Integer;
+function TDSAQueueStorage.FindDSA(const DSAInfo: TDSARegItem): integer;
 begin
   Result := FList.IndexOf(DSAInfo.Name);
 end;
@@ -1346,10 +1224,9 @@ begin
   Result := FCheckMarkSuffix;
 end;
 
-function TDSAQueueStorage.GetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
-  const Kind: Integer): string;
+function TDSAQueueStorage.GetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: integer): string;
 var
-  I: Integer;
+  I: integer;
   DSAKeys: TStrings;
 begin
   I := FindDSA(DSAInfo);
@@ -1359,22 +1236,22 @@ begin
   I := DSAKeys.IndexOfName(Key);
   if I < 0 then
     raise EJvDSADialog.CreateFmt(RsEDSAKeyNotFound, [Key]);
-  if Integer(DSAKeys.Objects[I]) <> Kind then
+  if integer(DSAKeys.Objects[I]) <> Kind then
     raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
   Result := DSAKeys.Values[Key];
 end;
 
-function TDSAQueueStorage.HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): Boolean;
+function TDSAQueueStorage.HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): boolean;
 var
-  I: Integer;
+  I: integer;
   DSAKeys: TStrings;
 begin
-  I := FindDSA(DSAInfo);
+  I      := FindDSA(DSAInfo);
   Result := I > -1;
   if Result then
   begin
     DSAKeys := TStrings(FList.Objects[I]);
-    Result := DSAKeys.IndexOfName(Key) > -1;
+    Result  := DSAKeys.IndexOfName(Key) > -1;
   end;
 end;
 
@@ -1384,10 +1261,9 @@ begin
     FCheckMarkSuffix := Value;
 end;
 
-procedure TDSAQueueStorage.SetDSAValue(const DSAInfo: TDSARegItem; const Key: string;
-  const Kind: Integer; const Value: string);
+procedure TDSAQueueStorage.SetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: integer; const Value: string);
 var
-  I: Integer;
+  I: integer;
   DSAKeys: TStrings;
 begin
   AddDSA(DSAInfo);
@@ -1400,7 +1276,7 @@ begin
     DSAKeys.AddObject(Key + '=' + Value, TObject(Kind))
   else
   begin
-    if Integer(DSAKeys.Objects[I]) <> Kind then
+    if integer(DSAKeys.Objects[I]) <> Kind then
       raise EJvDSADialog.CreateFmt(RsEDSAKeyNoAccessAs, [Key, DSAKindTexts[Kind]]);
     DSAKeys.Values[Key] := Value;
   end;
@@ -1412,16 +1288,15 @@ begin
     DeleteDSA(FList.Count - 1);
 end;
 
-function TDSAQueueStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean;
+function TDSAQueueStorage.ReadBool(const DSAInfo: TDSARegItem; const Key: string): boolean;
 var
   S: string;
 begin
-  S := GetDSAValue(DSAInfo, Key, DSABool);
+  S      := GetDSAValue(DSAInfo, Key, DSABool);
   Result := AnsiSameText(S, 'True') or AnsiSameText(S, '1');
 end;
 
-function TDSAQueueStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Boolean): Boolean;
+function TDSAQueueStorage.ReadBoolDef(const DSAInfo: TDSARegItem; const Key: string; const Default: boolean): boolean;
 begin
   if HasDSAKey(DSAInfo, Key) then
     Result := ReadBool(DSAInfo, Key)
@@ -1429,14 +1304,12 @@ begin
     Result := Default;
 end;
 
-function TDSAQueueStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
+function TDSAQueueStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): extended;
 begin
-  Result := StrToFloat(StringReplace(GetDSAValue(DSAInfo, Key, DSAFloat), ThousandSeparator,
-    DecimalSeparator, [rfReplaceAll, rfIgnoreCase]));
+  Result := StrToFloat(StringReplace(GetDSAValue(DSAInfo, Key, DSAFloat), ThousandSeparator, DecimalSeparator, [rfReplaceAll, rfIgnoreCase]));
 end;
 
-function TDSAQueueStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Extended): Extended;
+function TDSAQueueStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string; const Default: extended): extended;
 begin
   if HasDSAKey(DSAInfo, Key) then
     Result := ReadFloat(DSAInfo, Key)
@@ -1444,13 +1317,12 @@ begin
     Result := Default;
 end;
 
-function TDSAQueueStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
+function TDSAQueueStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): int64;
 begin
   Result := StrToInt64(GetDSAValue(DSAInfo, Key, DSAInt64));
 end;
 
-function TDSAQueueStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Int64): Int64;
+function TDSAQueueStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: int64): int64;
 begin
   if HasDSAKey(DSAInfo, Key) then
     Result := ReadInt64(DSAInfo, Key)
@@ -1458,13 +1330,12 @@ begin
     Result := Default;
 end;
 
-function TDSAQueueStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
+function TDSAQueueStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): integer;
 begin
   Result := StrToInt(GetDSAValue(DSAInfo, Key, DSAInt));
 end;
 
-function TDSAQueueStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: Integer): Integer;
+function TDSAQueueStorage.ReadIntegerDef(const DSAInfo: TDSARegItem; const Key: string; const Default: integer): integer;
 begin
   if HasDSAKey(DSAInfo, Key) then
     Result := ReadInteger(DSAInfo, Key)
@@ -1477,8 +1348,7 @@ begin
   Result := GetDSAValue(DSAInfo, Key, DSAString);
 end;
 
-function TDSAQueueStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string;
-  const Default: string): string;
+function TDSAQueueStorage.ReadStringDef(const DSAInfo: TDSARegItem; const Key: string; const Default: string): string;
 begin
   if HasDSAKey(DSAInfo, Key) then
     Result := ReadString(DSAInfo, Key)
@@ -1486,8 +1356,7 @@ begin
     Result := Default;
 end;
 
-procedure TDSAQueueStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Boolean);
+procedure TDSAQueueStorage.WriteBool(const DSAInfo: TDSARegItem; const Key: string; const Value: boolean);
 begin
   if Value then
     SetDSAValue(DSAInfo, Key, DSABool, '1')
@@ -1495,26 +1364,22 @@ begin
     SetDSAValue(DSAInfo, Key, DSABool, '0');
 end;
 
-procedure TDSAQueueStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Extended);
+procedure TDSAQueueStorage.WriteFloat(const DSAInfo: TDSARegItem; const Key: string; const Value: extended);
 begin
   SetDSAValue(DSAInfo, Key, DSAFloat, FloatToStr(Value));
 end;
 
-procedure TDSAQueueStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Int64);
+procedure TDSAQueueStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: string; const Value: int64);
 begin
   SetDSAValue(DSAInfo, Key, DSAInt64, IntToStr(Value));
 end;
 
-procedure TDSAQueueStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: Integer);
+procedure TDSAQueueStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string; const Value: integer);
 begin
   SetDSAValue(DSAInfo, Key, DSAInt, IntToStr(Value));
 end;
 
-procedure TDSAQueueStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string;
-  const Value: string);
+procedure TDSAQueueStorage.WriteString(const DSAInfo: TDSARegItem; const Key: string; const Value: string);
 begin
   SetDSAValue(DSAInfo, Key, DSAString, Value);
 end;
@@ -1526,15 +1391,15 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
-  IconIDs: array [TMsgDlgType] of PChar =
+  IconIDs: array [TMsgDlgType] of pchar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
   ButtonCaptions: array [TMsgDlgBtn] of string =
     (SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
-     SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
-     SMsgDlgHelp);
-  ModalResults: array [TMsgDlgBtn] of Integer =
+    SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
+    SMsgDlgHelp);
+  ModalResults: array [TMsgDlgBtn] of integer =
     (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
-     mrYesToAll, 0);
+    mrYesToAll, 0);
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1559,44 +1424,44 @@ end;
 
 function DlgButtonCaptions(const Buttons: TMsgDlgButtons): TDynStringArray;
 var
-  I: Integer;
+  I: integer;
   B: TMsgDlgBtn;
 begin
   SetLength(Result, Ord(High(TMsgDlgBtn)) + 1);
   I := 0;
   for B := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-  if B in Buttons then
-  begin
-    Result[I] := ButtonCaptions[B];
-    Inc(I);
-  end;
+    if B in Buttons then
+    begin
+      Result[I] := ButtonCaptions[B];
+      Inc(I);
+    end;
   SetLength(Result, I);
 end;
 
 function DlgButtonResults(const Buttons: TMsgDlgButtons): TDynIntegerArray;
 var
-  I: Integer;
+  I: integer;
   B: TMsgDlgBtn;
 begin
   SetLength(Result, Ord(High(TMsgDlgBtn)) + 1);
   I := 0;
   for B := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-  if B in Buttons then
-  begin
-    Result[I] := ModalResults[B];
-    Inc(I);
-  end;
+    if B in Buttons then
+    begin
+      Result[I] := ModalResults[B];
+      Inc(I);
+    end;
   SetLength(Result, I);
 end;
 
-function ButtonIndex(const Results: array of Integer; const ResCode: Integer): Integer; overload;
+function ButtonIndex(const Results: array of integer; const ResCode: integer): integer; overload;
 begin
   Result := High(Results);
   while (Result > -1) and (Results[Result] <> ResCode) do
     Dec(Result);
 end;
 
-function ButtonIndex(const Results: array of Integer; const Button: TMsgDlgBtn): Integer; overload;
+function ButtonIndex(const Results: array of integer; const Button: TMsgDlgBtn): integer; overload;
 begin
   Result := ButtonIndex(Results, Modalresults[Button]);
 end;
@@ -1605,64 +1470,51 @@ end;
 // MessageDlg replacements and extensions
 //--------------------------------------------------------------------------------------------------
 
-procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind; const Timeout: Integer);
+procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind; const Timeout: integer; const ADynControlEngine: TJvDynControlEngine);
 begin
-  MessageDlg(Msg, mtCustom, [mbOk], 0, Center, Timeout);
+  MessageDlg(Msg, mtCustom, [mbOK], 0, Center, Timeout);
 end;
 
-procedure ShowMessageFmt(const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind; const Timeout: Integer);
+procedure ShowMessageFmt(const Msg: string; const Params: array of const; const Center: TDlgCenterKind; const Timeout: integer; const ADynControlEngine: TJvDynControlEngine);
 begin
-  MessageDlg(Format(Msg, Params), mtCustom, [mbOk], 0, Center, Timeout);
+  MessageDlg(Format(Msg, Params), mtCustom, [mbOK], 0, Center, Timeout);
 end;
 
-function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
-  const HelpCtx: Longint; const Center: TDlgCenterKind; const Timeout: Integer;
-  const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function MessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlg(DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center, Timeout,
-      DefaultButton, CancelButton, HelpButton);
+    Result := MessageDlg(DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
-  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function MessageDlg(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlg(Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton,
-      CancelButton, HelpButton);
+    Result := MessageDlg(Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function MessageDlg(const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
-  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function MessageDlg(const Caption, Msg: string; const Picture: TGraphic; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
-  DefBtn: TMsgDlgBtn;
-  CanBtn: TMsgDlgBtn;
+  DefBtn:     TMsgDlgBtn;
+  CanBtn:     TMsgDlgBtn;
   BtnResults: TDynIntegerArray;
 begin
   if DefaultButton = mbDefault then
   begin
-    if mbOk in Buttons then
-      DefBtn := mbOk
-    else
-    if mbYes in Buttons then
+    if mbOK in Buttons then
+      DefBtn := mbOK
+    else if mbYes in Buttons then
       DefBtn := mbYes
     else
       DefBtn := mbRetry;
@@ -1673,129 +1525,100 @@ begin
   begin
     if mbCancel in Buttons then
       CanBtn := mbCancel
-    else
-    if mbNo in Buttons then
+    else if mbNo in Buttons then
       CanBtn := mbNo
     else
-      CanBtn := mbOk;
+      CanBtn := mbOK;
   end
   else
     CanBtn := CancelButton;
   BtnResults := DlgButtonResults(Buttons);
-  Result := MessageDlgEx(Caption, Msg, Picture, DlgButtonCaptions(Buttons),
-    BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn),
-    ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton));
+  Result := MessageDlgEx(Caption, Msg, Picture, DlgButtonCaptions(Buttons), BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn), ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton), ADynControlEngine);
 end;
 
-function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
-  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
+function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: integer; const CancelButton: integer; const HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlgEx(DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx, Center,
-      Timeout, DefaultButton, CancelButton, HelpButton);
+    Result := MessageDlgEx(DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
-  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
+function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: integer; const CancelButton: integer; const HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := MessageDlgEx(Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout,
-      DefaultButton, CancelButton, HelpButton);
+    Result := MessageDlgEx(Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
-  const CancelButton: Integer; const HelpButton: Integer): TModalResult;
+function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: integer; const CancelButton: integer; const HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 begin
-  with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx, '', Center,
-    Timeout, DefaultButton, CancelButton, HelpButton) do
-  try
-    Result := ShowModal;
-  finally
-    Free;
-  end;
+  with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx, '', Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine) do
+    try
+      Result := ShowModal;
+    finally
+      Free;
+    end;
 end;
 
 //--------------------------------------------------------------------------------------------------
 // "Don't Show Again" (DSA) dialogs
 //--------------------------------------------------------------------------------------------------
 
-procedure DSAShowMessage(const DlgID: Integer; const Msg: string;
-  const Center: TDlgCenterKind; const Timeout: Integer);
+procedure DSAShowMessage(const DlgID: integer; const Msg: string; const Center: TDlgCenterKind; const Timeout: integer; const ADynControlEngine: TJvDynControlEngine);
 begin
-  DSAMessageDlg(DlgID, Msg, mtCustom, [mbOk], 0, Center, Timeout);
+  DSAMessageDlg(DlgID, Msg, mtCustom, [mbOK], 0, Center, Timeout, mbDefault, mbDefault, mbHelp, ADynControlEngine);
 end;
 
-procedure DSAShowMessageFmt(const DlgID: Integer; const Msg: string; const Params: array of const;
-  const Center: TDlgCenterKind; const Timeout: Integer);
+procedure DSAShowMessageFmt(const DlgID: integer; const Msg: string; const Params: array of const; const Center: TDlgCenterKind; const Timeout: integer; const ADynControlEngine: TJvDynControlEngine);
 begin
-  DSAMessageDlg(DlgID, Format(Msg, Params), mtCustom, [mbOk], 0, Center, Timeout);
+  DSAMessageDlg(DlgID, Format(Msg, Params), mtCustom, [mbOK], 0, Center, Timeout, mbDefault, mbDefault, mbHelp, ADynControlEngine);
 end;
 
-function DSAMessageDlg(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
-  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function DSAMessageDlg(const DlgID: integer; const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := DSAMessageDlg(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center,
-      Timeout, DefaultButton, CancelButton, HelpButton);
+    Result := DSAMessageDlg(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
-  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function DSAMessageDlg(const DlgID: integer; const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := DSAMessageDlg(DlgID, Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout,
-      DefaultButton, CancelButton, HelpButton);
+    Result := DSAMessageDlg(DlgID, Caption, Msg, TmpPic, Buttons, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function DSAMessageDlg(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: TMsgDlgButtons; const HelpCtx: Longint; const Center: TDlgCenterKind;
-  const Timeout: Integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn;
-  const HelpButton: TMsgDlgBtn): TModalResult;
+function DSAMessageDlg(const DlgID: integer; const Caption, Msg: string; const Picture: TGraphic; const Buttons: TMsgDlgButtons; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: TMsgDlgBtn; const CancelButton: TMsgDlgBtn; const HelpButton: TMsgDlgBtn; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
-  DefBtn: TMsgDlgBtn;
-  CanBtn: TMsgDlgBtn;
+  DefBtn:     TMsgDlgBtn;
+  CanBtn:     TMsgDlgBtn;
   BtnResults: TDynIntegerArray;
 begin
   if DefaultButton = mbDefault then
   begin
-    if mbOk in Buttons then
-      DefBtn := mbOk
-    else
-    if mbYes in Buttons then
+    if mbOK in Buttons then
+      DefBtn := mbOK
+    else if mbYes in Buttons then
       DefBtn := mbYes
     else
       DefBtn := mbRetry;
@@ -1806,56 +1629,42 @@ begin
   begin
     if mbCancel in Buttons then
       CanBtn := mbCancel
-    else
-    if mbNo in Buttons then
+    else if mbNo in Buttons then
       CanBtn := mbNo
     else
-      CanBtn := mbOk;
+      CanBtn := mbOK;
   end
   else
     CanBtn := CancelButton;
   BtnResults := DlgButtonResults(Buttons);
-  Result := DSAMessageDlgEx(DlgID, Caption, Msg, Picture, DlgButtonCaptions(Buttons),
-    BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn),
-    ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton));
+  Result := DSAMessageDlgEx(DlgID, Caption, Msg, Picture, DlgButtonCaptions(Buttons), BtnResults, HelpCtx, Center, Timeout, ButtonIndex(BtnResults, DefBtn), ButtonIndex(BtnResults, CanBtn), ButtonIndex(BtnResults, HelpButton), ADynControlEngine);
 end;
 
-function DSAMessageDlgEx(const DlgID: Integer; const Msg: string; const DlgType: TMsgDlgType;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind; const Timeout: Integer; const DefaultButton: Integer;
-  const CancelButton: Integer; const HelpButton: Integer): Integer;
+function DSAMessageDlgEx(const DlgID: integer; const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout: integer; const DefaultButton: integer; const CancelButton: integer; const HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): integer;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := DSAMessageDlgEx(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx,
-      Center, Timeout, DefaultButton, CancelButton, HelpButton);
+    Result := DSAMessageDlgEx(DlgID, DlgCaption(DlgType), Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string;
-  const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of Integer;
-  const HelpCtx: Longint; const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton,
-  HelpButton: Integer): TModalResult;
+function DSAMessageDlgEx(const DlgID: integer; const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton, HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): TModalResult;
 var
   TmpPic: TGraphic;
 begin
   TmpPic := DlgPic(DlgType);
   try
-    Result := DSAMessageDlgEx(DlgID, Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center,
-      Timeout, DefaultButton, CancelButton, HelpButton);
+    Result := DSAMessageDlgEx(DlgID, Caption, Msg, TmpPic, Buttons, Results, HelpCtx, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine);
   finally
     TmpPic.Free;
   end;
 end;
 
-function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const Picture: TGraphic;
-  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Longint;
-  const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton,
-  HelpButton: Integer): Integer;
+function DSAMessageDlgEx(const DlgID: integer; const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string; const Results: array of integer; const HelpCtx: longint; const Center: TDlgCenterKind; const Timeout, DefaultButton, CancelButton, HelpButton: integer; const ADynControlEngine: TJvDynControlEngine): integer;
 var
   DSAItem: TDSARegItem;
   CheckCaption: string;
@@ -1863,7 +1672,7 @@ var
 begin
   if not GetDSAState(DlgID, Result) then
   begin
-    Result := High(Integer);
+    Result  := High(integer);
     DSAItem := LocateDSAReg(DlgID);
     CheckCaption := GetCheckMarkText(DSAItem.ChkTextKind);
     if CheckCaption = '' then
@@ -1874,15 +1683,14 @@ begin
     else
       CheckCaption := CheckCaption + '.';
     // Create and show dialog
-    with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx,
-      CheckCaption, Center, Timeout, DefaultButton, CancelButton, HelpButton) do
-    try
-      Result := ShowModal;
-      if IsDSAChecked then
-        SetDSAState(DlgID, True, Result);
-    finally
-      Free;
-    end;
+    with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx, CheckCaption, Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine) do
+      try
+        Result := ShowModal;
+        if IsDSAChecked then
+          SetDSAState(DlgID, true, Result);
+      finally
+        Free;
+      end;
   end;
 end;
 
@@ -1890,8 +1698,7 @@ end;
 // DSA registration
 //--------------------------------------------------------------------------------------------------
 
-procedure RegisterDSA(const DlgID: Integer; const Name, Description: string;
-  const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow);
+procedure RegisterDSA(const DlgID: integer; const Name, Description: string; const Storage: TDSAStorage; const CheckTextKind: TDSACheckTextKind = ctkShow);
 begin
   case DSARegister.Add(DlgID, Name, Description, Storage, CheckTextKind) of
     arDuplicateID:
@@ -1901,12 +1708,12 @@ begin
   end;
 end;
 
-procedure UnregisterDSA(const DlgID: Integer);
+procedure UnregisterDSA(const DlgID: integer);
 begin
   DSARegister.Delete(DlgID);
 end;
 
-function LocateDSAReg(const DlgID: Integer): TDSARegItem;
+function LocateDSAReg(const DlgID: integer): TDSARegItem;
 begin
   Result := DSARegister.Locate(DlgID);
 end;
@@ -1915,15 +1722,14 @@ end;
 // DSA state setting/retrieving
 //--------------------------------------------------------------------------------------------------
 
-function GetDSAState(const DlgID: Integer): Boolean;
+function GetDSAState(const DlgID: integer): boolean;
 var
-  Dummy: Integer;
+  Dummy: integer;
 begin
   Result := GetDSAState(DlgID, Dummy);
 end;
 
-function GetDSAState(const DlgID: Integer; out ResCode: Integer;
-  const OnCustomData: TDSACustomData = nil): Boolean;
+function GetDSAState(const DlgID: integer; out ResCode: integer; const OnCustomData: TDSACustomData = nil): boolean;
 var
   RegItem: TDSARegItem;
 begin
@@ -1934,8 +1740,7 @@ begin
     raise EJvDSADialog.CreateFmt(RsEDSADialogIDNotFound, [DlgID]);
 end;
 
-procedure SetDSAState(const DlgID: Integer; const DontShowAgain: Boolean;
-  const LastResult: Integer = mrNone; const OnCustomData: TDSACustomData = nil);
+procedure SetDSAState(const DlgID: integer; const DontShowAgain: boolean; const LastResult: integer = mrNone; const OnCustomData: TDSACustomData = nil);
 var
   RegItem: TDSARegItem;
 begin
@@ -1950,12 +1755,12 @@ end;
 // Iterating the DSA registration
 //--------------------------------------------------------------------------------------------------
 
-function DSACount: Integer;
+function DSACount: integer;
 begin
   Result := Length(DSARegister.FList);
 end;
 
-function DSAItem(const Index: Integer): TDSARegItem;
+function DSAItem(const Index: integer): TDSARegItem;
 begin
   Result := DSARegister.FList[Index];
 end;
@@ -1974,7 +1779,7 @@ end;
 
 procedure UnregisterDSACheckMarkText(const ID: TDSACheckTextKind);
 var
-  Idx: Integer;
+  Idx: integer;
 begin
   Idx := CheckMarkTexts.IndexOfObject(TObject(ID));
   if Idx > -1 then
@@ -2017,7 +1822,7 @@ begin
   Frm.ShowModal;
 end;
 
-function FindShowModalVMT: Integer; //  Locate the VMT index of ShowModal
+function FindShowModalVMT: integer; //  Locate the VMT index of ShowModal
 var
   Ptr: Pointer;
 begin
@@ -2029,19 +1834,19 @@ begin
   end
   else
   begin
-    Inc(Integer(Ptr), 4);
+    Inc(integer(Ptr), 4);
     Result := PInteger(Ptr)^ div 4;
   end;
 end;
 
-procedure SetVirtualMethodInstance(Instance: TObject; const VMTIdx: Integer; const MethodPtr: Pointer);
+procedure SetVirtualMethodInstance(Instance: TObject; const VMTIdx: integer; const MethodPtr: Pointer);
 // Set the virtual method pointer for an instance, nice addition for JCL?
 var
-  OldProt: Cardinal;
+  OldProt: cardinal;
 begin
   VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), PAGE_READWRITE, OldProt);
   try
-    PInteger(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer))) ^ := Integer(MethodPtr);
+    PInteger(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer))) ^ := integer(MethodPtr);
   finally
     VirtualProtect(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), SizeOf(Pointer), OldProt, OldProt);
   end;
@@ -2050,16 +1855,16 @@ end;
 //=== TPatchedForm ===========================================================
 
 type
-  TShowModalMethod = function: Integer of object; // So we can call the original ShowModal method.
+  TShowModalMethod = function: integer of object; // So we can call the original ShowModal method.
 
-  TPatchedForm = class(TCustomForm) // To replace the orignal ShowModal method.
+  TPatchedForm = class (TCustomForm) // To replace the orignal ShowModal method.
   public
-    function ShowModal: Integer; override;
+    function ShowModal: integer; override;
   end;
 
-function TPatchedForm.ShowModal: Integer;
+function TPatchedForm.ShowModal: integer;
 var
-  I: Integer;
+  I:    integer;
   JvDSADialog: TJvDSADialog;
   DSAItem: TDSARegItem;
   CheckCaption: string;
@@ -2080,7 +1885,7 @@ begin
     if (JvDSADialog.CheckControl <> nil) and not JvDSADialog.IgnoreDSAChkMrkTxt then
     begin
       // Get DSA checkmark caption
-      DSAItem := LocateDSAReg(JvDSADIalog.DialogID);
+      DSAItem      := LocateDSAReg(JvDSADIalog.DialogID);
       CheckCaption := GetDSACheckMarkText(DSAItem.ChkTextKind);
       if CheckCaption = '' then
         CheckCaption := GetDSACheckMarkText(ctkShow);
@@ -2089,7 +1894,7 @@ begin
         CheckCaption := CheckCaption + ' ' + Temp + '.'
       else
         CheckCaption := CheckCaption + '.';
-      SetStrProp(JvDSADialog.CheckControl, cCaption, CheckCaption);
+      SetStrProp(JvDSADialog.CheckControl, 'Caption', CheckCaption);
     end;
 
     { Notify the JvDSADialog component that we are about to show the form (may initialize the
@@ -2115,7 +1920,7 @@ end;
 
 constructor TJvDSADialog.Create(AOwner: TComponent);
 var
-  I: Integer;
+  I: integer;
 begin
   if AOwner is TCustomForm then
   begin
@@ -2151,7 +1956,7 @@ end;
 
 procedure TJvDSADialog.ApplySavedState;
 var
-  ResCode: Integer;
+  ResCode: integer;
 begin
   GetDSAState(DialogID, ResCode, DoApplyKeys);
   TCustomForm(Owner).ModalResult := ResCode;
@@ -2161,8 +1966,8 @@ procedure TJvDSADialog.BeforeShow;
 begin
   if FTimeout > 0 then
   begin
-    FTimer := TTimer.Create(Self);
-    FTimer.Enabled := False;
+    FTimer      := TTimer.Create(Self);
+    FTimer.Enabled := false;
     FTimer.Interval := 1000;
     FTimer.OnTimer := TimerEvent;
     FTimerCount := FTimeout;
@@ -2175,9 +1980,9 @@ begin
     OnApplyKeys(Self, DSAInfo, Storage);
 end;
 
-function TJvDSADialog.DoAutoClose: Boolean;
+function TJvDSADialog.DoAutoClose: boolean;
 begin
-  Result := False;
+  Result := false;
   if Assigned(FOnAutoClose) then
     FOnAutoClose(Self, Result);
 end;
@@ -2194,7 +1999,7 @@ begin
     OnUpdateKeys(Self, DSAInfo, Storage);
 end;
 
-function TJvDSADialog.GetDSAStateInternal(out ModalResult: Integer): Boolean;
+function TJvDSADialog.GetDSAStateInternal(out ModalResult: integer): boolean;
 begin
   Result := GetDSAState(DialogID, ModalResult);
 end;
@@ -2216,7 +2021,7 @@ end;
 
 procedure TJvDSADialog.FormPatch;
 var
-  VMTIdx: Integer;
+  VMTIdx: integer;
 begin
   VMTIdx := FindShowModalVMT;
   SetOrgShowModalPtr(GetVirtualMethod(Owner.ClassType, VMTIdx));
@@ -2226,7 +2031,7 @@ end;
 
 procedure TJvDSADialog.FormUnPatch;
 var
-  VMTIdx: Integer;
+  VMTIdx: integer;
 begin
   if GetOrgShowModalPtr <> nil then
   begin
@@ -2249,16 +2054,16 @@ begin
   begin
     if Value <> nil then
     begin
-      if GetPropInfo(Value, cChecked) = nil then
+      if GetPropInfo(Value, 'Checked') = nil then
         raise EJvDSADialog.Create(RsECtrlHasNoCheckedProp);
-      if GetPropInfo(Value, cCaption) = nil then
+      if GetPropInfo(Value, 'Caption') = nil then
         raise EJvDSADialog.Create(RsECtrlHasNoCaptionProp);
     end;
     FCheckControl := Value;
   end;
 end;
 
-procedure TJvDSADialog.SetDialogID(Value: Integer);
+procedure TJvDSADialog.SetDialogID(Value: integer);
 begin
   if Value <> DialogID then
   begin
@@ -2292,17 +2097,17 @@ begin
   SetDSAState(DialogID, IsDSAChecked, TCustomForm(Owner).ModalResult, DoUpdateKeys);
 end;
 
-function TJvDSADialog.GetModalResult: Integer;
+function TJvDSADialog.GetModalResult: integer;
 begin
   Result := TCustomForm(Owner).ModalResult;
 end;
 
-function TJvDSADialog.IsDSAChecked: Boolean;
+function TJvDSADialog.IsDSAChecked: boolean;
 begin
   if CheckControl <> nil then
-    Result := GetOrdProp(CheckControl, cChecked) <> 0
+    Result := GetOrdProp(CheckControl, 'Checked') <> 0
   else
-    Result := False;
+    Result := false;
 end;
 
 procedure TJvDSADialog.Loaded;
@@ -2316,12 +2121,12 @@ procedure TJvDSADialog.CancelCountdown;
 begin
   if FTimer <> nil then
   begin
-    FTimer.Enabled := False;
+    FTimer.Enabled := false;
     FreeAndNil(FTimer);
   end;
 end;
 
-function TJvDSADialog.SecondsLeft: Integer;
+function TJvDSADialog.SecondsLeft: integer;
 begin
   if Timeout <> 0 then
     Result := FTimerCount
@@ -2345,4 +2150,3 @@ finalization
     FreeAndNil(GCheckMarkTexts);
 
 end.
-
