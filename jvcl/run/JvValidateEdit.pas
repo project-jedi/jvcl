@@ -559,7 +559,7 @@ begin
     dfFloat, dfPercent, dfScientific:
       Result := StrToFloatDef(FEditText,0);
     dfInteger, dfYear:
-      Result := StrToIntDef(Text,0);
+      Result := StrToIntDef(FEditText,0);
     else
       Result := inherited Text;
   end;
@@ -570,8 +570,10 @@ begin
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfNone, dfCustom:
       EditText := NewValue;
-    dfBinary, dfHex, dfInteger, dfOctal, dfYear: SetAsInteger(NewValue);
-    dfCurrency, dfFloat, dfPercent, dfScientific: SetAsFloat(NewValue);
+    dfBinary, dfHex, dfInteger, dfOctal, dfYear:
+      SetAsInteger(NewValue);
+    dfCurrency, dfFloat, dfPercent, dfScientific:
+      SetAsFloat(NewValue);
   end;
 end;
 
