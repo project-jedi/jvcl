@@ -38,6 +38,7 @@ type
     DirectoryListBox1: TJvDirectoryListBox;
     DriveComboBox1: TJvDriveCombo;
     Memo1: TMemo;
+    Image2: TImage;
     procedure FileListBox1Click(Sender: TObject);
   end;
 
@@ -55,6 +56,7 @@ begin
   with TJvAni(Image1.Picture.Graphic) do
   begin
     Animated := True;
+    AssignToBitmap(Image2.Picture.Bitmap, clBtnFace, False, False);
     Memo1.Clear;
     Memo1.Lines.Add('Author: ' + Author);
     Memo1.Lines.Add('Title: ' + Title);

@@ -61,7 +61,7 @@ ActiveLang=
 ProjectLang=
 RootDir=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -74,3 +74,15 @@ Private=0
 DLL=0
 Locale=1031
 CodePage=1252
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+[Excluded Packages]
+d:\programme\borland\delphi6\Bin\dclsoap60.bpl=Borland SOAP Components

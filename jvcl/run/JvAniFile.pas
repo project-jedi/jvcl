@@ -59,14 +59,11 @@ type
     property Seq: Integer read FSeq;
   end;
 
-  TAniName = array [0..255] of Char;
-
   TJvAnimatedCursorImage = class(TPersistent)
   private
-    FData: TMemoryStream;
     FHeader: TJvAniHeader;
-    FTitle: TAniName;
-    FCreator: TAniName;
+    FTitle: string;
+    FCreator: string;
     FIcons: TList;
     FOriginalColors: Word;
     FIndex: Integer;
@@ -77,13 +74,10 @@ type
     function GetIconCount: Integer;
     function GetIcon(Index: Integer): TIcon;
     function GetFrame(Index: Integer): TJvIconFrame;
-    function GetTitle: string;
-    function GetCreator: string;
     function GetDefaultRate: Longint;
     procedure SetIndex(Value: Integer);
     procedure ReadAniStream(Stream: TStream);
-    procedure ReadStream(Size: Longint; Stream: TStream);
-    procedure WriteStream(Stream: TStream; WriteSize: Boolean);
+    procedure WriteAniStream(Stream: TStream);
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -103,8 +97,8 @@ type
     property IconCount: Integer read GetIconCount;
     property Icons[Index: Integer]: TIcon read GetIcon;
     property Frames[Index: Integer]: TJvIconFrame read GetFrame;
-    property Title: string read GetTitle;
-    property Creator: string read GetCreator;
+    property Title: string read FTitle write FTitle;
+    property Creator: string read FCreator write FCreator;
     property OriginalColors: Word read FOriginalColors;
     property Header: TJvAniHeader read FHeader;
     property Index: Integer read FIndex write SetIndex;
@@ -155,40 +149,41 @@ end;
 
 { ReadTag, ReadChunk, SkipChunk. Some handy functions for reading RIFF files. }
 
-function ReadTag(S: TStream; pTag: PJvAniTag): Boolean;
+function ReadTag(S: TStream; var Tag: TJvAniTag): Boolean;
 begin
-  pTag^.ckID := #0#0#0#0;
-  pTag^.ckSize := 0;
-  Result := S.Read(pTag^, SizeOf(TJvAniTag)) = SizeOf(TJvAniTag);
+  Tag.ckID := #0#0#0#0;
+  Tag.ckSize := 0;
+  Result := S.Read(Tag, SizeOf(TJvAniTag)) = SizeOf(TJvAniTag);
 end;
 
-function ReadChunk(S: TStream; pTag: PJvAniTag; Data: Pointer): Boolean;
+function ReadChunk(S: TStream; const Tag: TJvAniTag; Data: Pointer): Boolean;
 begin
-  Result := S.Read(Data^, pTag^.ckSize) = pTag^.ckSize;
+  Result := S.Read(Data^, Tag.ckSize) = Tag.ckSize;
   if Result then
-    Result := S.Seek(pTag^.ckSize mod 2, soFromCurrent) <> -1;
+    Result := S.Seek(Tag.ckSize mod 2, soFromCurrent) <> -1;
 end;
 
-function ReadChunkN(S: TStream; pTag: PJvAniTag; Data: Pointer;
+function ReadChunkN(S: TStream; const Tag: TJvAniTag; Data: Pointer;
   cbMax: Longint): Boolean;
 var
   cbRead: Longint;
 begin
-  cbRead := pTag^.ckSize;
+  FillChar(Data^, cbMax, #0);
+  cbRead := Tag.ckSize;
   if cbMax < cbRead then
     cbRead := cbMax;
   Result := S.Read(Data^, cbRead) = cbRead;
   if Result then
   begin
-    cbRead := PadUp(pTag^.ckSize) - cbRead;
+    cbRead := PadUp(Tag.ckSize) - cbRead;
     Result := S.Seek(cbRead, soFromCurrent) <> -1;
   end;
 end;
 
-function SkipChunk(S: TStream; pTag: PJvAniTag): Boolean;
+function SkipChunk(S: TStream; const Tag: TJvAniTag): Boolean;
 begin
   // Round pTag^.ckSize up to nearest word boundary to maintain alignment
-  Result := S.Seek(PadUp(pTag^.ckSize), soFromCurrent) <> -1;
+  Result := S.Seek(PadUp(Tag.ckSize), soFromCurrent) <> -1;
 end;
 
 { Icon and cursor types }
@@ -293,7 +288,6 @@ constructor TJvAnimatedCursorImage.Create;
 begin
   inherited Create;
   FIcons := TList.Create;
-  FData := TMemoryStream.Create;
   FIndex := 0;
 end;
 
@@ -301,7 +295,6 @@ destructor TJvAnimatedCursorImage.Destroy;
 begin
   NewImage;
   FIcons.Free;
-  FData.Free;
   inherited Destroy;
 end;
 
@@ -317,8 +310,8 @@ begin
   for I := 0 to FIcons.Count - 1 do
     TJvIconFrame(FIcons[I]).Free;
   FIcons.Clear;
-  FillChar(FTitle, SizeOf(FTitle), 0);
-  FillChar(FCreator, SizeOf(FCreator), 0);
+  FTitle := '';
+  FCreator := '';
   FillChar(FHeader, SizeOf(FHeader), 0);
   FOriginalColors := 0;
 end;
@@ -326,16 +319,6 @@ end;
 procedure TJvAnimatedCursorImage.RiffReadError;
 begin
   raise EReadError.Create(SReadError);
-end;
-
-function TJvAnimatedCursorImage.GetTitle: string;
-begin
-  Result := FTitle;
-end;
-
-function TJvAnimatedCursorImage.GetCreator: string;
-begin
-  Result := FCreator;
 end;
 
 function TJvAnimatedCursorImage.GetIconCount: Integer;
@@ -379,8 +362,8 @@ begin
       with TJvAnimatedCursorImage(Source) do
       begin
         Move(FHeader, Self.FHeader, SizeOf(FHeader));
-        Self.FTitle := FTitle;
-        Self.FCreator := FCreator;
+        Self.FTitle := Title;
+        Self.FCreator := Creator;
         Self.FOriginalColors := FOriginalColors;
         for I := 0 to FIcons.Count - 1 do
         begin
@@ -504,14 +487,18 @@ end;
 { Loads an animated cursor from a RIFF file. The RIFF file format for
   animated cursors looks like this:
 
-  RIFF('ACON'
-    LIST('INFO'
-          INAM(<name>)
-          IART(<artist>))
-      anih(<anihdr>)
-      [rate(<rateinfo>)]
-      ['seq '( <seq_info>)]
-      LIST('fram' icon(<icon_file>)))
+"RIFF" [Length of File]
+    "ACON"
+        "LIST" [Length of List]
+            "INAM" [Length of Title] [Data]
+            "IART" [Length of Author] [Data]
+        "fram"
+            "icon" [Length of Icon][Data]      ; 1st in list
+            ...
+            "icon" [Length of Icon] [Data]      ; Last in list  (1 to cFrames)
+    "anih" [Length of ANI header (36 bytes)] [Data]   ; (see ANI Header TypeDef)
+    "rate" [Length of rate block] [Data]      ; ea. rate is a long (length is 1 to cSteps)
+    "seq " [Length of sequence block] [Data] ; ea. seq is a long (length is 1 to cSteps)
 }
 
 procedure TJvAnimatedCursorImage.ReadAniStream(Stream: TStream);
@@ -523,23 +510,24 @@ var
   Icon: TIcon;
   bFound, IsIcon: Boolean;
   HotSpot: TPoint;
+  Buffer: array [0..255] of Char;
 begin
   iFrame := 0;
   iRate := 0;
   iSeq := 0;
   { Make sure it's a RIFF ANI file }
-  if not ReadTag(Stream, @Tag) or (Tag.ckID <> FOURCC_RIFF) then
+  if not ReadTag(Stream, Tag) or (Tag.ckID <> FOURCC_RIFF) then
     RiffReadError;
   if (Stream.Read(Tag.ckID, SizeOf(Tag.ckID)) < SizeOf(Tag.ckID)) or
     (Tag.ckID <> FOURCC_ACON) then
     RiffReadError;
   NewImage;
   { look for 'anih', 'rate', 'seq ', and 'icon' chunks }
-  while ReadTag(Stream, @Tag) do
+  while ReadTag(Stream, Tag) do
   begin
     if Tag.ckID = FOURCC_anih then
     begin
-      if not ReadChunk(Stream, @Tag, @FHeader) then
+      if not ReadChunk(Stream, Tag, @FHeader) then
         Break;
       if ((FHeader.dwFlags and AF_ICON) <> AF_ICON) or
         (FHeader.dwFrames = 0) then
@@ -554,7 +542,7 @@ begin
     if Tag.ckID = FOURCC_rate then
     begin
       { If we find a rate chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, @Tag, @Temp, SizeOf(Longint)) then
+      if not ReadChunkN(Stream, Tag, @Temp, SizeOf(Longint)) then
         Break;
       if iRate < FIcons.Count then
         TJvIconFrame(FIcons[iRate]).FJiffRate := Temp;
@@ -564,7 +552,7 @@ begin
     if Tag.ckID = FOURCC_seq then
     begin
       { If we find a seq chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, @Tag, @Temp, SizeOf(Longint)) then
+      if not ReadChunkN(Stream, Tag, @Temp, SizeOf(Longint)) then
         Break;
       if iSeq < FIcons.Count then
         TJvIconFrame(FIcons[iSeq]).FSeq := Temp;
@@ -583,7 +571,7 @@ begin
       begin
         while cbChunk >= SizeOf(Tag) do
         begin
-          if not ReadTag(Stream, @Tag) then
+          if not ReadTag(Stream, Tag) then
             Break;
           Dec(cbChunk, SizeOf(Tag));
           if Tag.ckID = FOURCC_icon then
@@ -617,7 +605,7 @@ begin
           end
           else
             { Unknown chunk in fram list, just ignore it }
-            SkipChunk(Stream, @Tag);
+            SkipChunk(Stream, Tag);
           Dec(cbChunk, PadUp(Tag.ckSize));
         end;
       end
@@ -627,27 +615,29 @@ begin
         { now look for INAM and IART chunks }
         while cbChunk >= SizeOf(Tag) do
         begin
-          if not ReadTag(Stream, @Tag) then
+          if not ReadTag(Stream, Tag) then
             Break;
           Dec(cbChunk, SizeOf(Tag));
           if Tag.ckID = FOURCC_INAM then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, @Tag, @FTitle, SizeOf(TANINAME) - 1) then
+              not ReadChunkN(Stream, Tag, @Buffer[0], SizeOf(Buffer)-1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
+            FTitle := Buffer;
           end
           else
           if Tag.ckID = FOURCC_IART then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, @Tag, @FCreator, SizeOf(TANINAME) - 1) then
+              not ReadChunkN(Stream, Tag, @Buffer[0], SizeOf(Buffer)-1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
+            FCreator := Buffer;
           end
           else
           begin
-            if not SkipChunk(Stream, @Tag) then
+            if not SkipChunk(Stream, Tag) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
           end;
@@ -658,13 +648,13 @@ begin
         { Not the fram list or the INFO list. Skip the rest of this
           chunk. (Do not forget that we have already skipped one dword) }
         Tag.ckSize := cbChunk;
-        SkipChunk(Stream, @Tag);
+        SkipChunk(Stream, Tag);
       end;
     end
     else
     begin
       { We are not interested in this chunk, skip it. }
-      if not SkipChunk(Stream, @Tag) then
+      if not SkipChunk(Stream, Tag) then
         Break;
     end;
   end;
@@ -683,32 +673,43 @@ begin
     RiffReadError;
 end;
 
-procedure TJvAnimatedCursorImage.ReadStream(Size: Longint; Stream: TStream);
+procedure TJvAnimatedCursorImage.WriteAniStream(Stream: TStream);
+var
+  Data: TMemoryStream;
 begin
-  FData.SetSize(Size);
-  Stream.ReadBuffer(FData.Memory^, Size);
-  if Size > 0 then
-  begin
-    FData.Position := 0;
-    ReadAniStream(FData);
+  Data := TMemoryStream.Create;
+  try
+    Stream.CopyFrom(Data, 0);
+  finally
+    Data.Free;
   end;
 end;
 
-procedure TJvAnimatedCursorImage.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  if IconCount = 0 then
-    raise EInvalidGraphicOperation.Create(SInvalidImage);
-  Stream.Write(FData.Memory^, FData.Size)
-end;
-
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);
+var
+  Data: TMemoryStream;
+  Size: Longint;
 begin
-  ReadStream(Stream.Size - Stream.Position, Stream);
+  Size := Stream.Size - Stream.Position;
+  Data := TMemoryStream.Create;
+  try
+    Data.SetSize(Size);
+    Stream.ReadBuffer(Data.Memory^, Size);
+    if Size > 0 then
+    begin
+      Data.Position := 0;
+      ReadAniStream(Data);
+    end;
+  finally
+    Data.Free;
+  end;
 end;
 
 procedure TJvAnimatedCursorImage.SaveToStream(Stream: TStream);
 begin
-  WriteStream(Stream, False);
+  if IconCount = 0 then
+    raise EInvalidGraphicOperation.Create(SInvalidImage);
+  WriteAniStream(Stream);
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromFile(const FileName: string);
@@ -731,7 +732,7 @@ end;
 procedure TJvAnimatedCursorImage.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FIcons.Count > 0 then
-    if not Icons[Index].Empty then
+    if (Icons[Index] <> nil) and not Icons[Index].Empty then
       {$IFDEF VCL}
       DrawRealSizeIcon(ACanvas, Icons[Index], ARect.Left, ARect.Top);
       {$ELSE}
@@ -745,6 +746,8 @@ procedure TJvAnimatedCursorImage.AssignToBitmap(Bitmap: TBitmap; BackColor: TCol
 var
   I: Integer;
   Temp: TBitmap;
+  Idx: Integer;
+  R: TRect;
 begin
   Temp := TBitmap.Create;
   try
@@ -765,10 +768,15 @@ begin
           Height := Icons[0].Height;
         end;
         Canvas.FillRect(Bounds(0, 0, Width, Height));
+        Idx := Index;
         for I := 0 to FIcons.Count - 1 do
-          if Icons[I] <> nil then
-            Canvas.Draw(Icons[I].Width * I * Ord(not Vertical),
-              Icons[I].Height * I * Ord(Vertical), Icons[I]);
+        begin
+          Index := I;
+          R := Rect(Icons[I].Width * I * Ord(not Vertical),
+            Icons[I].Height * I * Ord(Vertical), 0, 0);
+          Draw(Canvas, R);
+        end;
+        Index := Idx;
       end;
       if DecreaseColors then
         DecreaseBMPColors(Temp, Max(OriginalColors, 16));
