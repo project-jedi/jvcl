@@ -260,7 +260,8 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    Font.Assign(FFontSave);
+    if FHotTrack then
+      Font.Assign(FFontSave);
     FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
