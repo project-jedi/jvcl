@@ -37,6 +37,7 @@ interface
 procedure Register;
 
 implementation
+{$R ..\Resources\JvGlobusReg.dcr}
 
 uses Classes,
   {$IFDEF COMPILER6_UP}
