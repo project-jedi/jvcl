@@ -1235,7 +1235,7 @@ function CopyFileA(lpExistingFileName, lpNewFileName: PAnsiChar;
   bFailIfExists: LongBool): LongBool;
 function CopyFileW(lpExistingFileName, lpNewFileName: PWideChar;
   bFailIfExists: LongBool): LongBool;
-function CopyFile(const source: string; const destination: string;
+function CopyFile(const Source, Destination: string;
   FailIfExists: Boolean): LongBool; overload;
 
 function FileGetSize(const FileName: string): Cardinal;
@@ -5744,7 +5744,7 @@ begin
   end;
 end;
 
-function CopyFile(const source: string; const destination: string; FailIfExists: Boolean): LongBool;
+function CopyFile(const Source, Destination: string; FailIfExists: Boolean): LongBool;
 const
   ChunkSize = 8192;
 var
@@ -5789,10 +5789,10 @@ begin
           FileSetDate(DestName, FileGetDate(Src));
           Result := True;
         finally
-          FileClose(Dest);
+          FileClose(Src);
         end;
       finally
-        FileClose(Src);
+        FileClose(Dest);
       end;
     finally
       FreeMem(CopyBuffer, ChunkSize);
@@ -5834,19 +5834,17 @@ function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 var
   S: string;
 begin
+  Result := True;
   try
     SetLength(S, 255);
-    if gethostname(PChar(S), Length(S)) = -1 then
-      Result := false
-    else
+    if gethostname(PChar(S), Length(S)) <> -1 then
     begin
-      SetLength(S, StrLen(PChar(Result)));
+      SetLength(S, StrLen(PChar(S)));
       Size := Length(S) + 1;
-      Result := (S <> '');
-      if Result
-      then
+      Result := S <> '';
+      if Result and (Buffer <> nil) then
         StrLCopy(Buffer, PChar(S), Size - 1);
-    end;    
+    end;
   except
     Result := False;
   end;
@@ -5857,15 +5855,15 @@ var
   S: string;
   pwdRec: PPasswordRecord;
 begin
-  Result := false;
+  Result := False;
   try
-    pwd :=  getpwuid(getuid); // static no need to free
-    if pwd <> nil then
+    pwdRec :=  getpwuid(getuid); // static no need to free
+    if pwdRec <> nil then
     begin
-      S := pwd.pw_gecos; //  user's real name? or pwd.pw_name
+      S := pwdRec.pw_gecos; //  user's real name? or pwd.pw_name
       Size := Length(S) + 1;
       Result := S <> '';
-      if Result then
+      if Result and (Buffer <> nil) then
         StrLCopy(Buffer, PChar(S), Size - 1);
     end;
   except
@@ -5902,14 +5900,14 @@ begin
   if lpflOldProtect <> nil then
   begin
     // (ahuser) I have not found a Libc function for that
-    lpflOldProtect^ := PAGE_EXECUTE_READWRITE;
+    PCardinal(lpflOldProtect)^ := PAGE_EXECUTE_READWRITE;
   end;
 
   PageSize := Cardinal(Libc.getpagesize);
   AlignedAddress := Cardinal(lpAddress) and not (PageSize - 1); // start memory page
   // get the number of needed memory pages
   ProtectSize := PageSize;
-  while Cardinal(BaseAddress) + dwSize > AlignedAddress + ProtectSize do
+  while Cardinal(lpAddress) + dwSize > AlignedAddress + ProtectSize do
     Inc(ProtectSize, PageSize);
   Result := mprotect(Pointer(AlignedAddress), ProtectSize, flNewProtect) = 0;
 end;
