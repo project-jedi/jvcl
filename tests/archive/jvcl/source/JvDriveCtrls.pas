@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -33,8 +33,8 @@ Known Issues:
 This unit is only supported on Windows!
 {$ENDIF}
 
-{ Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
-    Uses the system Iconlist to display driveicons. }
+  { Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
+      Uses the system Iconlist to display driveicons. }
 
 unit JvDriveCtrls;
 
@@ -177,7 +177,7 @@ type
     procedure BuildList; virtual;
     procedure Change; dynamic;
     property Items stored false;
-    property Offset:integer read FOffset write SetOffset;
+    property Offset: integer read FOffset write SetOffset;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -318,7 +318,7 @@ type
     function GetItemPath(Index: Integer): string;
     procedure OpenCurrent;
     property Drive: Char read GetDrive write SetDrive stored false;
-    procedure Update;  reintroduce;
+    procedure Update; reintroduce;
     property PreserveCase: Boolean read FPreserveCase;
     property CaseSensitive: Boolean read FCaseSensitive;
   published
@@ -1323,7 +1323,7 @@ begin
   NewDrive := ExtractFileDrive(NewDirectory);
   if (Length(NewDrive) <> 2) then // we only support single char drives (no UNC's)
     Exit;
-//  ProcessPath(NewDirectory, NewDrive, DirPart, FilePart);
+  //  ProcessPath(NewDirectory, NewDrive, DirPart, FilePart);
   try
     if Drive <> NewDrive[1] then
     begin
@@ -1405,67 +1405,73 @@ var
 const
   Attributes: array[TFileAttr] of Word = (faReadOnly, faHidden, faSysFile,
     faVolumeID, faDirectory, faArchive, 0);
-var shi: TSHFileInfo; OldMode: Cardinal;
+var shi: TSHFileInfo; OldMode: Cardinal; 
 begin
   AttrWord := DDL_READWRITE;
   if HandleAllocated then
   begin
-    { Set attribute flags based on values in FileType }
-    for AttrIndex := ftReadOnly to ftArchive do
-      if AttrIndex in FileType then
-        AttrWord := AttrWord or Attributes[AttrIndex];
-    OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-    try
-      ChDir(FDirectory); { go to the directory we want }
-    finally
-      SetErrorMode(OldMode);
-    end;
-    Clear; { clear the list }
+      { Set attribute flags based on values in FileType }
+      for AttrIndex := ftReadOnly to ftArchive do
+        if AttrIndex in FileType then
+          AttrWord := AttrWord or Attributes[AttrIndex];
+      OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
+      try
+        ChDir(FDirectory); { go to the directory we want }
+      finally
+        SetErrorMode(OldMode);
+      end;
+      Clear; { clear the list }
 
-    I := 0;
-    SaveCursor := Screen.Cursor;
-    try
-      MaskPtr := PChar(FMask);
-      while MaskPtr <> nil do
-      begin
-        Ptr := StrScan(MaskPtr, ';');
-        if Ptr <> nil then
-          Ptr^ := #0;
-        if FindFirst(MaskPtr, AttrWord, FileInfo) = 0 then
+      I := 0;
+      SaveCursor := Screen.Cursor;
+      try
+        MaskPtr := PChar(FMask);
+        while MaskPtr <> nil do
         begin
-          repeat
-            if (ftNormal in FileType) or (FileInfo.Attr and AttrWord <> 0) then
-              if (FileInfo.Attr and faDirectory <> 0) then
-              begin
-                if (FileInfo.Name[1] <> '.') then
+          Ptr := StrScan(MaskPtr, ';');
+          if Ptr <> nil then
+            Ptr^ := #0;
+          if FindFirst(MaskPtr, AttrWord, FileInfo) = 0 then
+          begin
+            repeat
+              if (ftNormal in FileType) or (FileInfo.Attr and AttrWord <> 0) then
+                if (FileInfo.Attr and faDirectory <> 0) then
+                begin
+                  if (FileInfo.Name[1] <> '.') then
+                  begin
+                    SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
+                    if Items.IndexOf(Format(cDirPrefix + '%s', [shi.szDisplayName])) = -1 then
+                    begin
+                      I := Items.Add(Format(cDirPrefix + '%s', [shi.szDisplayName]));
+                      Items.Objects[I] := TObject(shi.iIcon);
+                    end;
+                  end;
+                end
+                else if (FileInfo.Name[1] <> '.') then
                 begin
                   SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-                  I := Items.Add(Format(cDirPrefix + '%s', [shi.szDisplayName]));
-                  Items.Objects[I] := TObject(shi.iIcon);
+                  if Items.IndexOf(shi.szDisplayName) = -1 then
+                  begin
+                    I := Items.Add(shi.szDisplayName);
+                    Items.Objects[I] := TObject(shi.iIcon);
+                  end;
                 end;
-              end
-              else if (FileInfo.Name[1] <> '.') then
-              begin
-                SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-                I := Items.Add(shi.szDisplayName);
-                Items.Objects[I] := TObject(shi.iIcon);
-              end;
-            if I = 100 then
-              Screen.Cursor := crHourGlass;
-          until FindNext(FileInfo) <> 0;
-          FindClose(FileInfo);
+              if I = 100 then
+                Screen.Cursor := crHourGlass;
+            until FindNext(FileInfo) <> 0;
+            FindClose(FileInfo);
+          end;
+          if Ptr <> nil then
+          begin
+            Ptr^ := ';';
+            Inc(Ptr);
+          end;
+          MaskPtr := Ptr;
         end;
-        if Ptr <> nil then
-        begin
-          Ptr^ := ';';
-          Inc(Ptr);
-        end;
-        MaskPtr := Ptr;
+      finally
+        Screen.Cursor := SaveCursor;
       end;
-    finally
-      Screen.Cursor := SaveCursor;
-    end;
-    Change;
+      Change;
   end;
 end;
 
