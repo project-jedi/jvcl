@@ -57,7 +57,6 @@ uses
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
 
 {$R ..\resources\JvCustomReg.dcr}
-{$R ..\resources\JvChart.dcr}
 
 procedure Register;
 const
