@@ -10378,7 +10378,7 @@ begin
       if AllowAddSection then
       begin
         CatItem := TJvInspectorCustomCategoryItem.Create(AParent, nil);
-        CatItem.Name := CatName;  // the internal value.
+        CatItem.Name := SL[I];  // the internal value.  <BUGFIX OCT 23, 2003: WAP.>
         CatItem.DisplayName := CatName; // The displayed value
         //AParent.Name := SL[I];
         TmpLst := TJvInspectorINIFileData.New(CatItem, SL[I], AINIFile, AOnAddKey);
