@@ -80,6 +80,8 @@ type
   end;
   TJvComboBoxStringsClass = class of TJvComboBoxStrings;
 
+  TJvComboBoxMeasureStyle = (cmsStandard, cmsAfterCreate, cmsBeforeDraw);
+
   TJvCustomComboBox = class(TCustomComboBox)
   private
     FKey: Word;
@@ -105,10 +107,13 @@ type
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
     FIsFixedHeight: Boolean;
+    FMeasureStyle: TJvComboBoxMeasureStyle;
+    FLastSetItemHeight: Integer;
     procedure MaxPixelChanged(Sender: TObject);
     procedure SetReadOnly(const Value: Boolean); // ain
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
     procedure CNMeasureItem(var Message: TWMMeasureItem); message CN_MEASUREITEM;
+    procedure WMInitDialog(var Message: TWMInitDialog); message WM_INITDialog;
   protected
     procedure Change; override;
     procedure CreateWnd; override; // ain
@@ -125,13 +130,17 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
+    procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    function GetMeasureStyle: TJvComboBoxMeasureStyle;
+    procedure SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
+    procedure PerfomMeasure;
+    procedure PerformMeasureItem(Index: Integer; var Height: Integer); virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFNDEF COMPILER6_UP}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
-    {$ELSE}
-    function GetItemCount: Integer; override;
     {$ENDIF}
+    function GetItemCount: Integer; {$IFDEF COMPILER6_UP}override;{$ELSE}virtual;{$ENDIF}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
@@ -140,11 +149,25 @@ type
     procedure DeselectProvider;
     procedure UpdateItemCount;
     function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
+    procedure Loaded; override;
+
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     {$IFNDEF COMPILER6_UP}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
+    property ItemHeight write SetItemHeight;
     {$ENDIF COMPILER6_UP}
     property IsFixedHeight: Boolean read FIsFixedHeight;
+    property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
+      default cmsStandard;
+    property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
+
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -157,30 +180,12 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-  protected
-//    property SelStart;
-//    property SelText;
-//    property SelLength;
-//    property ItemIndex;
-
-    property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
-    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvComboBox = class(TJvCustomComboBox)
   published
-//    property SelStart;
-//    property SelText;
-//    property SelLength;
     property HintColor;
     property MaxPixel;
 
@@ -210,6 +215,7 @@ type
     property ItemHeight;
     property ItemIndex default -1;
     property MaxLength;
+    property MeasureStyle;
     property ParentBiDiMode;
     property ParentColor;
     property ParentCtl3D;
@@ -604,8 +610,94 @@ begin
   FKey := Key;
 end;
 
+procedure TJvCustomComboBox.SetItemHeight(Value: Integer);
+begin
+  FLastSetItemHeight := Value;
+  {$IFDEF COMPILER6_UP}
+  inherited SetItemHeight(Value);
+  {$ELSE}
+  inherited ItemHeight := Value;
+  {$ENDIF COMPILER6_UP}
+end;
+
+function TJvCustomComboBox.GetMeasureStyle: TJvComboBoxMeasureStyle;
+begin
+  Result := FMeasureStyle;
+end;
+
+procedure TJvCustomComboBox.SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
+begin
+  if Value <> MeasureStyle then
+  begin
+    FMeasureStyle := Value;
+    RecreateWnd;
+  end;
+end;
+
+procedure TJvCustomComboBox.PerfomMeasure;
+var
+  MaxCnt: Integer;
+  Index: Integer;
+  NewHeight: Integer;
+begin
+  if FIsFixedHeight then
+    MaxCnt := 0
+  else
+    MaxCnt := GetItemCount - 1;
+  for Index := -1 to MaxCnt do
+  begin
+    NewHeight := FLastSetItemHeight;
+    PerformMeasureItem(Index, NewHeight);
+    Perform(CB_SETITEMHEIGHT, Index, NewHeight);
+  end;
+end;
+
+procedure TJvCustomComboBox.PerformMeasureItem(Index: Integer; var Height: Integer);
+var
+  tmpSize: TSize;
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+begin
+  if Assigned(OnMeasureItem) and (Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
+    OnMeasureItem(Self, Index, Height)
+  else
+  begin
+    tmpSize.cy := Height;
+    if IsProviderSelected then
+    begin
+      Provider.Enter;
+      try
+        if ((Index = -1) or IsFixedHeight or not HandleAllocated) and
+            Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
+          tmpSize := ItemsRenderer.AvgItemSize(Canvas)
+        else
+        if (Index <> -1) and not IsFixedHeight and HandleAllocated then
+        begin
+          if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+          begin
+            Item := VL.Item(Index);
+            if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+              tmpSize := ItemRenderer.Measure(Canvas)
+            else
+            if DP_FindItemsRenderer(Item, ItemsRenderer) then
+              tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
+          end;
+        end;
+        if tmpSize.cy > Height then
+          Height := tmpSize.cy;
+      finally
+        Provider.Leave;
+      end;
+    end;
+  end;
+end;
+
 procedure TJvCustomComboBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
+  HeightIndex: Integer;
+  NewHeight: Integer;
   InvokeOrgRender: Boolean;
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;
@@ -615,7 +707,17 @@ var
   DrawState: TProviderDrawStates;
 begin
   TControlCanvas(Canvas).UpdateTextFlags;
-  if Assigned(OnDrawItem) then
+  if (MeasureStyle = cmsBeforeDraw) and not FIsFixedHeight then
+  begin
+    NewHeight := FLastSetItemHeight;
+    if (odComboBoxEdit in State) then
+      HeightIndex := -1
+    else
+      HeightIndex := Index;
+    PerformMeasureItem(HeightIndex, NewHeight);
+    Perform(CB_SETITEMHEIGHT, HeightIndex, NewHeight);
+  end;
+  if Assigned(OnDrawItem) and (Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
     OnDrawItem(Self, Index, Rect, State)
   else
   begin
@@ -672,45 +774,10 @@ begin
 end;
 
 procedure TJvCustomComboBox.MeasureItem(Index: Integer; var Height: Integer);
-var
-  tmpSize: TSize;
-  VL: IJvDataConsumerViewList;
-  Item: IJvDataItem;
-  ItemsRenderer: IJvDataItemsRenderer;
-  ItemRenderer: IJvDataItemRenderer;
 begin
-  if Assigned(OnMeasureItem) then
-    OnMeasureItem(Self, Index, Height)
-  else
-  begin
-    tmpSize.cy := Height;
-    if IsProviderSelected then
-    begin
-      Provider.Enter;
-      try
-        if ((Index = -1) or IsFixedHeight or not HandleAllocated) and
-            Supports(Provider.ProviderIntf, IJvDataItemsRenderer, ItemsRenderer) then
-          tmpSize := ItemsRenderer.AvgItemSize(Canvas)
-        else
-        if (Index <> -1) and not IsFixedHeight and HandleAllocated then
-        begin
-          if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
-          begin
-            Item := VL.Item(Index);
-            if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
-              tmpSize := ItemRenderer.Measure(Canvas)
-            else
-            if DP_FindItemsRenderer(Item, ItemsRenderer) then
-              tmpSize := ItemsRenderer.MeasureItem(Canvas, Item);
-          end;
-        end;
-        if tmpSize.cy > Height then
-          Height := tmpSize.cy;
-      finally
-        Provider.Leave;
-      end;
-    end;
-  end;
+  if not (csLoading in ComponentState) and (MeasureStyle = cmsStandard) and
+      not IsProviderSelected then
+    PerformMeasureItem(Index, Height);
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -842,8 +909,7 @@ begin
     Change;
   end;
 end;
-
-{$ELSE}
+{$ENDIF COMPILER6_UP}
 
 function TJvCustomComboBox.GetItemCount: Integer;
 var
@@ -862,9 +928,12 @@ begin
     end;
   end
   else
+  {$IFDEF COMPILER6_UP}
     Result := inherited GetItemCount;
+  {$ELSE}
+    Result := Items.Count;
+  {$ENDIF COMPILER6_UP}
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
 begin
@@ -987,6 +1056,12 @@ begin
   end
   else
     Result := -1;
+end;
+
+procedure TJvCustomComboBox.Loaded;
+begin
+  inherited Loaded;
+  RecreateWnd;      // Force measuring at the correct moment
 end;
 
 function TJvCustomComboBox.GetItemText(Index: Integer): string;
@@ -1136,13 +1211,20 @@ end;
 
 procedure TJvCustomComboBox.CNMeasureItem(var Message: TWMMeasureItem);
 begin
-  with Message.MeasureItemStruct^ do
-  begin
-    if Style in [csOwnerDrawVariable, csOwnerDrawFixed] then
-      itemHeight := Self.ItemHeight;
-    if (Self.Style = csOwnerDrawVariable) or IsProviderSelected then
+  inherited; // Normal behavior, specifically setting correct itemHeight
+  { Call MeasureItem if a provider is selected and the style is not csOwnerDrawVariable.
+    if Style is set to csOwnerDrawVariable Measure will  have been called already. }
+  if (Style <> csOwnerDrawVariable) and IsProviderSelected then
+    with Message.MeasureItemStruct^ do
       MeasureItem(itemID, Integer(itemHeight));
-  end;
+end;
+
+procedure TJvCustomComboBox.WMInitDialog(var Message: TWMInitDialog);
+begin
+  inherited;
+  if (MeasureStyle = cmsAfterCreate) or (IsProviderSelected and
+      ((MeasureStyle <> cmsBeforeDraw) or FIsFixedHeight)) then
+    PerfomMeasure;
 end;
 
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
