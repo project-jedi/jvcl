@@ -745,7 +745,7 @@ begin
   if FileExists(FileName) then
   begin
     iNumberOfIcons := ExtractIcon(hInstance, PChar(FileName), Cardinal(-1));
-    if (Index > 0) and (Index < iNumberOfIcons) and (iNumberOfIcons > 0) then
+    if (Index >= 0) and (Index < iNumberOfIcons) and (iNumberOfIcons > 0) then
       Result := ExtractIcon(hInstance, PChar(FileName), Index);
   end;
 end;
