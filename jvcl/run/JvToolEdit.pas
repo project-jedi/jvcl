@@ -4983,7 +4983,7 @@ var
 {$ENDIF VCL}
 begin
   {$IFDEF VCL}
-  if GetParentForm(Self) = nil then
+  if GetParentForm(Self) <> nil then
   begin
     if Screen.ActiveCustomForm <> nil then
       Monitor := Screen.ActiveCustomForm.Monitor
@@ -4992,6 +4992,7 @@ begin
     Inc(Origin.X, Monitor.Left);
     Inc(Origin.Y, Monitor.Top);
   end;
+  SetBounds(Origin.X, Origin.Y, Width, Height);
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
   {$ENDIF VCL}
