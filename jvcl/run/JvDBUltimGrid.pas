@@ -78,11 +78,11 @@ begin
   SearchFields.Add('Common_Name');
   SearchFields.Add('Species Name');
   SearchFields.Add('Notes');
-  if not Search('fish', ResultCol, ResultField, False, True) then ...
+  if not Search('fish', ResultCol, ResultField, False, False, True) then ...
 end;
 
 // Then:
-if not MyUltimGrid.SearchNext(ResultCol, ResultField, False, True) then ...
+if not MyUltimGrid.SearchNext(ResultCol, ResultField, False, False, True) then ...
 
 ---= BCB example =---
 
@@ -95,10 +95,10 @@ MyUltimGrid->SearchFields->Add("Category");
 MyUltimGrid->SearchFields->Add("Common_Name");
 MyUltimGrid->SearchFields->Add("Species Name");
 MyUltimGrid->SearchFields->Add("Notes");
-if (!MyUltimGrid->Search("fish", ResultCol, ResultField, false, true)) ...
+if (!MyUltimGrid->Search("fish", ResultCol, ResultField, false, false, true)) ...
 
 // Then:
-if (!MyUltimGrid->SearchNext(ResultCol, ResultField, false, true)) ...
+if (!MyUltimGrid->SearchNext(ResultCol, ResultField, false, false, true)) ...
 
 -----------------------------------------------------------------------------
 Known Issues:
@@ -157,7 +157,7 @@ type
     FValueToSearch: Variant;
     FSearchFields: TStringList;
     function PrivateSearch(var ResultCol: Integer; var ResultField: TField;
-      const CaseSensitive, Next: Boolean): Boolean;
+      const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
   protected
     function SortMarkerAssigned(const AFieldName: string): Boolean; override;
     procedure DoTitleClick(ACol: Longint; AField: TField); override;
@@ -171,9 +171,9 @@ type
     procedure RestoreGridPosition;
     property SearchFields: TStringList read FSearchFields write FSearchFields;
     function Search(const ValueToSearch: Variant; var ResultCol: Integer;
-      var ResultField: TField; const CaseSensitive, Focus: Boolean): Boolean;
+      var ResultField: TField; const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
     function SearchNext(var ResultCol: Integer; var ResultField: TField;
-      const CaseSensitive, Focus: Boolean): Boolean;
+      const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
   published
     property SortedField stored False; // Property of JvDBGrid not used in JvDBUltimGrid
     property SortMarker stored False;  // Property of JvDBGrid hidden in JvDBUltimGrid
@@ -503,7 +503,7 @@ begin
 end;
 
 function TJvDBUltimGrid.PrivateSearch(var ResultCol: Integer; var ResultField: TField;
-                                      const CaseSensitive, Next: Boolean): Boolean;
+  const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
 var
   DSet: TDataSet;
   Start,
@@ -550,9 +550,19 @@ begin
 
                   // Search inside the field content
                   if CaseSensitive then
-                    Found := (StrSearch(string(FValueToSearch), FieldText) > 0)
+                  begin
+                    if WholeFieldOnly then
+                      Found := AnsiSameStr(string(FValueToSearch), FieldText)
+                    else
+                      Found := (StrSearch(string(FValueToSearch), FieldText) > 0);
+                  end
                   else
-                    Found := (StrFind(string(FValueToSearch), FieldText) > 0);
+                  begin
+                    if WholeFieldOnly then
+                      Found := AnsiSameText(string(FValueToSearch), FieldText)
+                    else
+                      Found := (StrFind(string(FValueToSearch), FieldText) > 0);
+                  end;
 
                   // Text found ! -> exit
                   if Found then
@@ -579,13 +589,13 @@ begin
 end;
 
 function TJvDBUltimGrid.Search(const ValueToSearch: Variant; var ResultCol: Integer;
-  var ResultField: TField; const CaseSensitive, Focus: Boolean): Boolean;
+  var ResultField: TField; const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
 begin
   Result := False;
   if (SearchFields.Count > 0) and (ValueToSearch <> Null) and (ValueToSearch <> '') then
   begin
     FValueToSearch := ValueToSearch;
-    Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, False);
+    Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, WholeFieldOnly, False);
     if Result and Focus then
     begin
       Self.Col := ResultCol;
@@ -598,12 +608,12 @@ begin
 end;
 
 function TJvDBUltimGrid.SearchNext(var ResultCol: Integer; var ResultField: TField;
-                                   const CaseSensitive, Focus: Boolean): Boolean;
+  const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
 begin
   Result := False;
   if (SearchFields.Count > 0) and (FValueToSearch <> Null) and (FValueToSearch <> '') then
   begin
-    Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, True);
+    Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, WholeFieldOnly, True);
     if Result and Focus then
     begin
       Self.Col := ResultCol;

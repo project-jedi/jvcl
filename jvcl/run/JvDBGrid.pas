@@ -28,7 +28,7 @@ Known Issues:
 - THE AlwaysShowEditor OPTION IS NOT COMPATIBLE WITH CUSTOM EDIT CONTROLS AND BOOLEAN EDITOR.
   Custom edit controls and boolean editor are deactivated when this option is set to True.
 
-2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser. 
+2004/07/08 - WPostma merged changes by Frédéric Leneuf-Magaud and ahuser.
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -54,8 +54,11 @@ const
   {$NODEFINE DefJvGridOptions}
   {$ENDIF BCB}
 
-
   JvDefaultAlternateRowColor = TColor($00DDDDDD);
+
+  // Consts for AutoSizeColumnIndex 
+  JvGridResizeProportionally = -1;
+  JvGridResizeLastVisibleCol = -2;
 
 type
   TSelectColumn = (scDataBase, scGrid);
@@ -74,7 +77,7 @@ type
   TJvDBEditShowEvent = procedure(Sender: TObject; Field: TField;
     var AllowEdit: Boolean) of object;
   TDrawColumnTitleEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    ARect: TRect; Field: TField; ASortMarker: TBitmap; IsDown: Boolean;
+    ARect: TRect; AColumn: TColumn; ASortMarker: TBitmap; IsDown: Boolean;
     var Offset: Integer; var DefaultDrawText,
     DefaultDrawSortMarker: Boolean) of object;
   TJvTitleHintEvent = procedure(Sender: TObject; Field: TField;
@@ -85,7 +88,6 @@ type
 
   TJvSelectDialogColumnStrings = class(TPersistent)
   private
-
     FCaption: string;
     FRealNamesOption: string;
     FOK: string;
@@ -126,6 +128,8 @@ type
     property Items[Index: Integer]: TJvDBGridControl read GetItem write SetItem;
   end;
 
+  TCharList = set of Char;
+
   TJvDBGrid = class(TJvExDBGrid)
   private
     FAutoSort: Boolean;
@@ -152,7 +156,6 @@ type
     FOnGetCellParams: TGetCellParamsEvent;
     FOnGetBtnParams: TGetBtnParamsEvent;
     FOnEditChange: TNotifyEvent;
-
     FOnTitleBtnClick: TTitleClickEvent;
     FOnTitleBtnDblClick: TTitleClickEvent;
     FOnShowEditor: TJvDBEditShowEvent;
@@ -179,6 +182,7 @@ type
     FSortMarker: TSortMarker;
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
+    FCharList: TCharList;
 
     FControls: TJvDBGridControls;
     FCurrentControl: TWinControl;
@@ -281,7 +285,7 @@ type
     procedure CalcSizingState(X, Y: Integer; var State: TGridState;
       var Index: Longint; var SizingPos, SizingOfs: Integer;
       var FixedInfo: TGridDrawInfo); override;
-    procedure DoDrawColumnTitle(Canvas: TCanvas; ARect: TRect; AField: TField;
+    procedure DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect; AColumn: TColumn;
       ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
       var DefaultDrawText, DefaultDrawSortMarker: Boolean); virtual;
     procedure ColEnter; override;
@@ -330,6 +334,8 @@ type
     procedure UpdateTabStops(ALimit: Integer = -1);
     procedure ShowColumnsDialog;
     procedure CloseControl; // Hide the current edit control and give the focus to the grid 
+    procedure InitializeColumnsWidth(const FixedWidth: Integer;
+                                     const SetMinWidth, SetMaxWidth: Boolean);
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -341,6 +347,7 @@ type
     property VisibleColCount;
     property IndicatorOffset;
     property TitleOffset: Byte read GetTitleOffset;
+    property CharList: TCharList read FCharList write FCharList;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True; // Polaris
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
@@ -385,7 +392,8 @@ type
     property MaxColumnWidth: Integer read FMaxColumnWidth write SetMaxColumnWidth default 0;
     property MinColumnWidth: Integer read FMinColumnWidth write SetMinColumnWidth default 0;
     property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default False;
-    property AutoSizeColumnIndex: Integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex default -1;
+    property AutoSizeColumnIndex: Integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex
+      default JvGridResizeProportionally;
     property SelectColumnsDialogStrings: TJvSelectDialogColumnStrings read FSelectColumnsDialogStrings write
       SetSelectColumnsDialogStrings;
 
@@ -771,8 +779,10 @@ begin
   FSelectColumn := scDataBase;
   FTitleArrow := False;
   FPostOnEnter := False;
-  FAutoSizeColumnIndex := -1;
+  FAutoSizeColumnIndex := JvGridResizeProportionally;
   FSelectColumnsDialogStrings := TJvSelectDialogColumnStrings.Create;
+  FCharList := ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
+                'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
 
   FControls := TJvDBGridControls.Create(Self);
   FCurrentControl := nil;
@@ -1684,6 +1694,10 @@ begin
     StopTracking;
   if Assigned(FOnTopLeftChanged) then
     FOnTopLeftChanged(Self);
+
+  if FCurrentControl <> nil then
+    if FCurrentControl.Visible then
+      PlaceControl(FCurrentControl, Col, Row);
 end;
 
 procedure TJvDBGrid.StopTracking;
@@ -2005,9 +2019,6 @@ begin
 end;
 
 procedure TJvDBGrid.KeyPress(var Key: Char);
-const
-  cChar = ['A'..'Z', 'a'..'z', ' ', '-', '+', '0'..'9', '.', ',',
-    'é', 'è', 'ê', 'ë', 'ô', 'û', 'ù', 'â', 'à', 'î', 'ï', 'ç', Backspace];
 var
   lWord: string;
   lMasterField: TField;
@@ -2041,7 +2052,7 @@ begin
     // characters of a word found in the list.
     // Remark: InplaceEditor is protected in TCustomGrid, published in TJvDBGrid.
     with Columns[SelectedIndex].Field do
-      if (FieldKind = fkLookup) and (Key in cChar) then
+      if (FieldKind = fkLookup) and (Key in CharList) then
       begin
         CharsToFind;
         LookupDataSet.DisableControls;
@@ -2069,7 +2080,7 @@ begin
           if Key in ['.', ','] then
             Key := DecimalSeparator;
 
-        if (Key in cChar) and (Columns[SelectedIndex].PickList.Count <> 0) then
+        if (Key in CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
           CharsToFind;
           Key := #0; // always suppress char
@@ -2391,7 +2402,7 @@ begin
           Indicator := 1;
         DefaultDrawText := True;
         DefaultDrawSortMarker := True;
-        DoDrawColumnTitle(Canvas, TitleRect, AField, Bmp, Down, Indicator,
+        DoDrawColumnTitle(Canvas, TitleRect, DrawColumn, Bmp, Down, Indicator,
           DefaultDrawText, DefaultDrawSortMarker);
         TextRect := TitleRect;
         if (ASortMarker <> smNone) and ((DrawColumn.Title.Alignment = taRightJustify) or (Canvas.TextWidth(Caption) >=
@@ -2745,13 +2756,13 @@ begin
   FSizingOfs := SizingOfs;
 end;
 
-procedure TJvDBGrid.DoDrawColumnTitle(Canvas: TCanvas; ARect: TRect;
-  AField: TField; ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
+procedure TJvDBGrid.DoDrawColumnTitle(ACanvas: TCanvas; ARect: TRect;
+  AColumn: TColumn; ASortMarker: TBitmap; IsDown: Boolean; var Offset: Integer;
   var DefaultDrawText, DefaultDrawSortMarker: Boolean);
 begin
   if Assigned(FOnDrawColumnTitle) then
   begin
-    FOnDrawColumnTitle(Self, Canvas, ARect, AField, ASortMarker, IsDown, Offset,
+    FOnDrawColumnTitle(Self, ACanvas, ARect, AColumn, ASortMarker, IsDown, Offset,
       DefaultDrawText, DefaultDrawSortMarker);
   end;
 end;
@@ -2896,14 +2907,14 @@ begin
       BeginLayout;
     try
       // autosize all columns proportionally
-      if AutoSizeColumnIndex = -1 then
+      if AutoSizeColumnIndex = JvGridResizeProportionally then
       begin
         for I := 0 to Columns.Count - 1 do
           if Columns[I].Visible then
             Inc(OrigWidth, Columns[I].Width);
         if OrigWidth = 0 then
           OrigWidth := 1;
-        // calculate the realtionship between what's available and what's in use
+        // calculate the relationship between what's available and what's in use
         ScaleFactor := TotalWidth / OrigWidth;
         if ScaleFactor = 1.0 then
           Exit; // no need to continue - resizing won't change anything
@@ -2923,9 +2934,9 @@ begin
             end;
           end;
       end
-      // a index of -2 indicates that we want to autosize the last visible column
       else
-      if AutoSizeColumnIndex = -2 then // auto size last visible
+      // autosize the last visible column
+      if AutoSizeColumnIndex = JvGridResizeLastVisibleCol then
       begin
         // reuse AUsedWidth as the actual resize column index
         AUsedWidth := LastVisibleColumn;
@@ -2939,8 +2950,8 @@ begin
         if AWidth > 0 then
           Columns[AUsedWidth].Width := AWidth;
       end
-      // only auto size one column
       else
+      // only auto size one column
       if AutoSizeColumnIndex <= LastVisibleColumn then
       begin
         OrigWidth := 0;
@@ -2962,9 +2973,6 @@ begin
 end;
 
 begin
-  if Width > (Parent.ClientWidth - Left) then
-    Width := (Parent.ClientWidth - Left);
-
   DoIt;
 
   if FCurrentControl <> nil then
@@ -3038,6 +3046,53 @@ begin
     FMinColumnWidth := Value;
     DoMinColWidth;
   end;
+end;
+
+procedure TJvDBGrid.InitializeColumnsWidth(const FixedWidth: Integer;
+                                           const SetMinWidth, SetMaxWidth: Boolean);
+var
+  I,
+  AWidth: Integer;
+begin
+  // Resize the grid columns to a fixed width (or their default width)
+  // and ensure they are wide enough for the title caption
+  // e.g. with FixedWidth = 0, columns width = default width
+  // e.g. with FixedWidth = 100, columns width = 100 or title caption width if wider
+  for I := 0 to Columns.Count - 1 do
+    if Columns[I].Visible then
+    begin
+      if FixedWidth < 1 then
+        AWidth := Columns[I].DefaultWidth
+      else
+      begin
+        AWidth := FixedWidth;
+        if dgTitles in Options then
+        begin
+          Canvas.Font.Assign(Columns[I].Title.Font);
+          if Canvas.TextWidth(Columns[I].Title.Caption) + 4 > AWidth then
+            AWidth := Canvas.TextWidth(Columns[I].Title.Caption) + 4;
+        end;
+      end;
+      if SetMinWidth and (MinColumnWidth < 1) then
+        FMinColumnWidth := AWidth
+      else
+      if AWidth < MinColumnWidth then
+      begin
+        if SetMinWidth then
+          FMinColumnWidth := AWidth
+        else
+          AWidth := MinColumnWidth;
+      end;
+      if AWidth > MaxColumnWidth then
+      begin
+        if SetMaxWidth then
+          FMaxColumnWidth := AWidth
+        else
+        if MaxColumnWidth > 0 then
+          AWidth := MaxColumnWidth;
+      end;
+      Columns[I].Width := AWidth;
+    end;
 end;
 
 procedure TJvDBGrid.Resize;
@@ -3199,7 +3254,6 @@ begin
       HintStr := Hint;
       SaveRow := DataLink.ActiveRecord;
       try
-        // Only calculation, no drawing
         CalcOptions := DT_CALCRECT or DT_LEFT or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly;
         if (ARow = -1) then
         begin
@@ -3281,8 +3335,10 @@ procedure TJvDBGrid.PlaceControl(Control: TWinControl; ACol, ARow: Integer);
 var
   R: TRect;
 begin
-  if not Assigned(Control) then
-    raise EJVCLDbGridException.CreateRes(@RsEJvDBGridControlPropertyNotAssigned);
+  // DO not test for Assigned(Control) here or you will end
+  // up with an infinite loop of error messages. This check must
+  // be done in UseDefaultEditor
+  
   if not DataLink.Edit then
     Exit;
 
