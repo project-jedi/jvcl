@@ -274,6 +274,7 @@ type
     procedure ItemMove(OldIndex, NewIndex: Integer);
     { Determines if the item is streamable. }
     function IsStreamableItem(Item: IJvDataItem): Boolean; virtual;
+    function ScanForID(Items: IJvDataItems; ID: string; Recursive: Boolean): IJvDataItem;
     { Streaming methods }
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadItems(Reader: TReader);
@@ -772,7 +773,7 @@ type
     procedure DoChanged(Reason: TJvDataConsumerChangeReason);
     { Misc. }
     procedure DoAddAttribute(Attr: Integer);
-    procedure Changed(Reason: TJvDataConsumerChangeReason);
+    procedure Changed(Reason: TJvDataConsumerChangeReason); virtual;
     procedure ProviderChanging;
     procedure ProviderChanged;
     procedure ContextChanging;
@@ -805,6 +806,7 @@ type
     procedure SetProviderIntf(Value: IJvDataProvider);
     function ContextIntf: IJvDataContext;
     procedure SetContextIntf(Value: IJvDataContext);
+    procedure Loaded; virtual;
     procedure Enter;
     procedure Leave;
 
@@ -1052,6 +1054,7 @@ implementation
 
 uses
   ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
+//  DBugIntf,
   JclStrings,
   JvTypes;
 
@@ -2071,6 +2074,27 @@ begin
   Result := (AClass <> nil) and AClass.InheritsFrom(TJvBaseDataItem);
 end;
 
+function TJvBaseDataItems.ScanForID(Items: IJvDataItems; ID: string; Recursive: Boolean): IJvDataItem;
+var
+  I: Integer;
+  SubItems: IJvDataItems;
+begin
+  if (Items <> nil) then
+  begin
+    Result := Items.GetItemByID(ID);
+    if (Result = nil) and Recursive then
+    begin
+      I := Items.GetCount - 1;
+      while (I >= 0) and (Result = nil) do
+      begin
+        if Supports(Items.GetItem(I), IJvDataItems, SubItems) then
+          Result := ScanForID(SubItems, ID, True);
+        Dec(I);
+      end;
+    end;
+  end;
+end;
+
 procedure TJvBaseDataItems.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -2156,7 +2180,7 @@ var
   Idx: Integer;
 begin
   CurItems := Self;
-  while (CurItems <> nil) and (Result <> nil) and (ID <> '') do
+  while (CurItems <> nil) and (Result = nil) and (ID <> '') do
   begin
     PathSep := Pos('\', ID);
     PathSep2 := Pos('/', ID);
@@ -2179,9 +2203,9 @@ begin
       Idx := CurItems.GetCount - 1;
       while (Idx >= 0) and not AnsiSameText(CurItems.GetItem(Idx).GetID, ThisPath) do
         Dec(Idx);
+      Delete(ID, 1, PathSep);
       if Idx >= 0 then
       begin
-        Delete(ID, 1, PathSep);
         if ID = '' then
           Result := CurItems.GetItem(Idx)
         else
@@ -2240,21 +2264,8 @@ begin
 end;
 
 function TJvBaseDataItems.FindByID(ID: string; const Recursive: Boolean): IJvDataItem;
-var
-  I: Integer;
-  SubItems: IJvDataItems;
 begin
-  Result := GetItemByID(ID);
-  if (Result = nil) and Recursive then
-  begin
-    I := GetCount - 1;
-    while (I >= 0) and (Result = nil) do
-    begin
-      if Supports(GetItem(I), IJvDataItems, SubItems) then
-        Result := SubItems.GetItemByID(ID);
-      Dec(I);
-    end;
-  end;
+  Result := ScanForID(Self, ID, Recursive);
 end;
 
 constructor TJvBaseDataItems.Create;
@@ -3433,7 +3444,8 @@ begin
     FProvider := Value;
     if FProvider <> nil then
       FProvider.RegisterChangeNotify(Self);
-    if FFixupContext <> '' then
+    if (FFixupContext <> '') and ((VCLComponent = nil) or
+      not (csLoading in VCLComponent.ComponentState)) then
     begin
       Context := FFixupContext;
       FFixupContext := '';
@@ -3446,7 +3458,7 @@ begin
         SetContextIntf(nil);
     end;
     ProviderChanged;
-    if FNeedFixups then
+    if FNeedFixups and ((VCLComponent = nil) or not (csLoading in VCLComponent.ComponentState)) then
     begin
       FixupExtensions;
       FNeedFixups := False;
@@ -3554,7 +3566,7 @@ var
 begin
   if FAdditionalIntfImpl <> nil then
   begin
-    if not FNeedFixups then
+    if not FNeedFixups and (FFixupContext = '') then
     begin
       I := 0;
       while I < ExtensionCount do
@@ -3572,7 +3584,7 @@ var
 begin
   if FAdditionalIntfImpl <> nil then
   begin
-    if not FNeedFixups then
+    if not FNeedFixups and (FFixupContext = '') then
     begin
       I := 0;
       while I < ExtensionCount do
@@ -3596,7 +3608,7 @@ var
 begin
   if FAdditionalIntfImpl <> nil then
   begin
-    if not FNeedFixups then
+    if not FNeedFixups and (FFixupContext = '') then
     begin
       I := 0;
       while I < ExtensionCount do
@@ -3614,12 +3626,12 @@ var
 begin
   if FAdditionalIntfImpl <> nil then
   begin
-    if not FNeedFixups then
+    if not FNeedFixups and (FFixupContext = '') then
     begin
       I := 0;
       while I < ExtensionCount do
       begin
-        if Extension(I).KeepOnContextChange then
+        if Extension(I).StreamedInWithoutProvider or Extension(I).KeepOnContextChange then
         begin
           Extension(I).ContextChanged;
           Inc(I);
@@ -3841,6 +3853,20 @@ begin
   end;
 end;
 
+procedure TJvDataConsumer.Loaded;
+begin
+  if FFixupContext <> '' then
+  begin
+    Context := FFixupContext;
+    FFixupContext := '';
+  end;
+  if FNeedFixups then
+  begin
+    FixupExtensions;
+    FNeedFixups := False;
+  end;
+end;
+
 procedure TJvDataConsumer.Enter;
 begin
   DP_SelectConsumerContext(ProviderIntf, Self, ContextIntf);
@@ -3885,6 +3911,7 @@ end;
 procedure TJvDataConsumerAggregatedObject.NotifyFixups;
 begin
   ConsumerImpl.FNeedFixups := True;
+  StreamedInWithoutProvider := True;
 end;
 
 procedure TJvDataConsumerAggregatedObject.ProviderChanging;
@@ -4266,13 +4293,16 @@ var
 begin
   if Item <> nil then
   begin
-    if IndexOfID(Item.GetID) < 0 then
+    if (IndexOfID(Item.GetID) >= 0) and (Item.Items.GetParent <> nil) then
     begin
       ExpandTreeTo(Item.GetItems.GetParent);
       ParIdx := IndexOfID(Item.GetItems.GetParent.GetID);
-      if ItemIsExpanded(ParIdx) then // we have a big problem <g>
-        raise EJVCLDataConsumer.Create('ViewList out of sync');
-      ToggleItem(ParIdx);
+      if ParIdx >= 0 then
+      begin
+        if ItemIsExpanded(ParIdx) then // we have a big problem <g>
+          raise EJVCLDataConsumer.Create('ViewList out of sync');
+        ToggleItem(ParIdx);
+      end;
     end;
   end;
 end;
