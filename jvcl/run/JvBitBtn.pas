@@ -37,7 +37,7 @@ uses
 {$ELSE}
   QGraphics, QControls, QForms, QButtons, QMenus,
 {$ENDIF}
-  JVCLVer;
+  JVCLVer, JvTypes;
 
 type
   TJvBitBtn = class(TBitBtn)
