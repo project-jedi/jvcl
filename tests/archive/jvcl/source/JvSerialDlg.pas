@@ -50,8 +50,8 @@ type
   published
     property FirstLabel: string read FCaption write FCaption;
     property SecondLabel: string read FCaption2 write FCaption2;
-    property Name: string read FUsername write FUsername;
-    property Serial: string read FPassword write FPassword;
+    property NameValue: string read FUsername write FUsername;
+    property SerialValue: string read FPassword write FPassword;
     property Title: string read FTitle write FTitle;
   end;
 
