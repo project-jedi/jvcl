@@ -62,14 +62,14 @@ implementation
 constructor TJvDeviceChanged.Create(AOwner: TComponent);
 begin
   inherited;
-  FHandle := Classes.AllocateHWND(WndProc);
+  FHandle := {$IFDEF DELPHI6_UP}Classes.{$ENDIF}AllocateHWND(WndProc);
 end;
 
 {************************************************************}
 
 destructor TJvDeviceChanged.Destroy;
 begin
-  Classes.DeallocateHWnd(FHandle);
+  {$IFDEF DELPHI6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
   inherited;
 end;
 

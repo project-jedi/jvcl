@@ -57,7 +57,7 @@ type
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TTransformationKind);
   protected
-    procedure SetAutoSize(Value: Boolean);override;
+    procedure SetAutoSize(Value: Boolean);{$IFDEF DELPHI6_UP}override;{$ENDIF}
     function GetPalette: HPALETTE; override;
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);

@@ -135,6 +135,11 @@ type
 function ActionsToString(Actions: TJvChangeActions): string;
 
 implementation
+{$IFNDEF DELPHI6_UP}
+uses
+  FileCtrl;
+{$ENDIF}
+
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const

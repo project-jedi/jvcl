@@ -100,7 +100,9 @@ type
     property MaxPixel;
 
     property AutoComplete default True;
+    {$IFDEF DELPHI6_UP}
     property AutoDropDown default False;
+    {$ENDIF}
     property AutoSave;
     property BevelEdges;
     property BevelInner;
@@ -138,7 +140,9 @@ type
     property Visible;
     property OnChange;
     property OnClick;
+    {$IFDEF DELPHI6_UP}
     property OnCloseUp;
+    {$ENDIF}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -153,7 +157,9 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
+    {$IFDEF DELPHI6_UP}
     property OnSelect;
+    {$ENDIF}
     property OnStartDock;
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }

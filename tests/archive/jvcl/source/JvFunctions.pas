@@ -37,7 +37,10 @@ interface
 uses
   Windows, Graphics, Classes, Messages, Controls,
   ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
-
+{$IFNDEF DELPHI6_UP}
+type
+  EOSError = class (EWin32Error);
+{$ENDIF}
 //Transform an icon to a bitmap
 function IconToBitmap(ico: HIcon): TBitmap;
 {$EXTERNALSYM IconToBitmap}
@@ -221,9 +224,14 @@ function OSCheck(RetVal: boolean): boolean;
 
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 
+{$IFNDEF DELPHI6_UP}
+procedure RaiseLastOSError;
+{$ENDIF}
+
 implementation
 uses
-  Forms, Registry, ExtCtrls, Types, MMSystem, JvDirectories,
+  Forms, Registry, ExtCtrls,
+  {$IFDEF DELPHI6_UP}Types, {$ENDIF}MMSystem, JvDirectories,
   ShlObj, CommCtrl, 
   { jcl } JCLStrings;
 
@@ -1604,6 +1612,12 @@ begin
     end;
 end;
 
+{$IFNDEF DELPHI6_UP}
+procedure RaiseLastOSError;
+begin
+  RaiseLastWin32Error;
+end;
+{$ENDIF}
 
 end.
 

@@ -51,7 +51,12 @@ type
 
 implementation
 uses
-  RTLConsts;
+{$IFDEF DELPHI6_UP}
+  RTLConsts
+{$ELSE}
+  Consts
+{$ENDIF}
+  ;
 
 {************************************************************}
 

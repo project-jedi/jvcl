@@ -57,7 +57,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure AddItem(Item: String; AObject: TObject); override;
+    procedure AddItem(Item: String; AObject: TObject); {$IFDEF DELPHI6_UP}override;{$ENDIF}
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;

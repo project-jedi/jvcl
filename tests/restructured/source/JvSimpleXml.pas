@@ -36,6 +36,9 @@ uses
   SysUtils, Classes, IniFiles, JvComponent;
 
 type
+{$IFNDEF DELPHI6_UP}
+  THashedStringlist = class(TStringlist);
+{$ENDIF}
   TJvSimpleXmlElem = class;
   TJvSimpleXmlElems = class;
   TJvSimpleXmlProps = class;
@@ -64,6 +67,7 @@ type
   TJvSimpleXmlProps = class(TObject)
   private
     FProperties: THashedStringList;
+
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXmlProp;
   protected

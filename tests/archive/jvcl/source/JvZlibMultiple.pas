@@ -76,6 +76,10 @@ type
   end;
 
 implementation
+{$IFNDEF DELPHI6_UP}
+uses
+  FileCtrl;
+{$ENDIF}
 
 {*******************************************************}
 {  Format of the File:                                  }

@@ -115,6 +115,10 @@ type
 function MakeValidMask(const Mask: string): string;
 
 implementation
+{$IFNDEF DELPHI6_UP}
+uses
+  FileCtrl;
+{$ENDIF}
 
 { adds backslash to end of path if not already there }
 

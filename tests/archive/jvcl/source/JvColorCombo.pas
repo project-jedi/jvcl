@@ -76,7 +76,9 @@ type
   published
     property Anchors;
     property AutoComplete;
+   {$IFDEF DELPHI6_UP}
     property AutoDropDown;
+   {$ENDIF}
     property AutoSave;
     property BevelEdges;
     property BevelInner;
@@ -169,7 +171,9 @@ type
   published
     property Anchors;
     property AutoComplete;
+   {$IFDEF DELPHI6_UP}
     property AutoDropDown;
+   {$ENDIF}
     property AutoSave;
     property BevelEdges;
     property BevelInner;

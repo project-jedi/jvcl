@@ -93,6 +93,17 @@ implementation
 uses
   CommCtrl;
 
+{$IFNDEF DELPHI6_UP}
+function TryStrToDateTime(const S:String;out Value:TDateTime):boolean;
+begin
+  try
+    Value := StrToDateTime(S);
+  except
+    Result := false;
+  end;
+end;
+{$ENDIF}
+
 {*****************************************************************}
 
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
@@ -145,8 +156,11 @@ begin
     or ((Kind = dtkTime) and WithinDelta(DateTime, NullDate)));
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(FNullText)))
+{$IFDEF DELPHI6_UP}
+  // (p3) the Format property doesn't exists in D5: what to do?
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(Format)));
+{$ENDIF}
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);
@@ -197,6 +211,7 @@ begin
         begin
           with PNMDateTimeString(NMHdr)^ do
           begin
+
             if not TryStrToDateTime(pszUserString, DT) then
               DT := NullDate;
             if Assigned(OnUserInput) then

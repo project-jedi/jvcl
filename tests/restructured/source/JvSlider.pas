@@ -66,7 +66,8 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean);override;
+    procedure SetAutoSize(Value: Boolean);{$IFDEF DELPHI6_UP}override;{$ENDIF}
+
   public
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
