@@ -1891,6 +1891,8 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
+  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+    exit;
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
@@ -1918,6 +1920,8 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
+  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+    exit;
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
@@ -1943,6 +1947,8 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
+  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+    exit;
   SL.BeginUpdate;
   try
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
@@ -1980,6 +1986,8 @@ var
   TargetStore: TJvCustomAppStorage;
   TargetPath: string;
 begin
+  if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+    exit;
   SL.BeginUpdate;
   try
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
