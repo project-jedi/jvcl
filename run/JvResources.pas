@@ -1910,6 +1910,12 @@ resourcestring
   RsEUnexpectedEndOfQuery = 'Unexpected end of query';
   RsEUnexpectedStatement = 'Unexpected statement %s';
 
+//=== JvXPBar.pas ============================================================
+{$IFDEF USEJVCL}
+resourcestring
+  RsUntitled = 'untitled';
+{$ENDIF USEJVCL}
+
 //=== JvYearGrid.pas =========================================================
 resourcestring
   RsYearGrid = 'YearGrid';
