@@ -1877,7 +1877,7 @@ begin
       (Cell.Y < TitleOffset) and (Cell.X >= IndicatorOffset) and
       not (csDesigning in ComponentState) then
     begin
-      if (dgColumnResize in Options) and (Button = mbRight) then
+      if ((dgColumnResize in Options) or (csDesigning in ComponentState)) and (Button = mbRight) then
       begin
         Button := mbLeft;
         FSwapButtons := True;
@@ -2827,7 +2827,7 @@ begin
   inherited CalcSizingState(X, Y, State, Index, SizingPos, SizingOfs, FixedInfo);
 
   // do nothing if not authorized to size columns
-  if not (dgColumnResize in Options) then
+  if not (dgColumnResize in Options) and not (csDesigning in ComponentState) then
     Exit;
 
   if (State = gsNormal) and (Y <= RowHeights[0]) then
