@@ -182,6 +182,9 @@ type
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    procedure InternalInsertControl(AWinControl: TWinControl);
+    procedure InternalRemoveControl(AWinControl: TWinControl);
+
     procedure ResetFontAngle; virtual;
     procedure ResetBlock; virtual;
     procedure Paint; override;
@@ -1344,7 +1347,9 @@ begin
     begin
       FVSPopupPanelSplitter := nil;
       DestroyVSPopupPanel;
-    end;
+    end
+    else if AComponent is TWinControl then
+      InternalRemoveControl(TWinControl(AComponent));
   end;
 end;
 
@@ -1455,8 +1460,10 @@ procedure TJvDockVSChannel.PopupDockForm(Pane: TJvDockVSPane);
   var
     I: Integer;
   begin
+    AForm.Visible := True;
     for I := 0 to HostDockSite.DockClientCount - 1 do
-      HostDockSite.DockClients[I].Visible := AForm = HostDockSite.DockClients[I];
+      if AForm <> HostDockSite.DockClients[I] then
+        HostDockSite.DockClients[I].Visible := False;
   end;
 
 begin
@@ -1471,9 +1478,13 @@ begin
     PopupPanelAnimate.PopupForm(Self, Pane.FWidth);
     if (Pane.FDockForm <> nil) and (Pane.FDockForm.HostDockSite.Parent is TJvDockTabHostForm) then
     begin
-      FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.FDockForm.HostDockSite.Parent);
+      // Popup is shown, but the dockform is on a pagecontrol with multiple
+      // tabs. We hide the other tabs.
       SetSingleDockFormVisible(Pane.FDockForm.HostDockSite, Pane.FDockForm);
       TJvDockTabHostForm(Pane.FDockForm.HostDockSite.Parent).Caption := Pane.FDockForm.Caption;
+
+      // Make the pagecontrol the only visible control.
+      FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.FDockForm.HostDockSite.Parent);
     end
     else
       FVSPopupPanel.JvDockManager.ShowSingleControl(Pane.FDockForm);
@@ -1982,7 +1993,8 @@ begin
     { (rb) For every call to InsertControl there must be a call to RemoveControl.
       That is not guaranteed now, so JvDockManager may be filled with dangling
       references }
-    VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
+//    VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
+    VSChannel.InternalInsertControl(Control);
     VSChannel.VSPopupPanel.JvDockManager.ShowSingleControl(Control);
     JvDockManager.HideControl(Control);
     ResetChannelBlockStartOffset(VSChannel);
@@ -2022,7 +2034,8 @@ begin
       Control.Dock(Panel, Control.BoundsRect);
 //      Control.Dock(Panel, Rect(0, 0, 0, 0));
       Panel.JvDockManager.ShowControl(Control);
-      JvDockManager.RemoveControl(Control);
+//      JvDockManager.RemoveControl(Control);
+      Panel.VSChannel.InternalRemoveControl(Control);
       Panel.VSChannel.RemoveDockControl(Control);
       Panel.ShowDockPanel(Panel.VisibleDockClientCount > 0, Control, sdfDockPanel);
       if (Panel.VSChannel.ActiveDockForm <> nil) and Panel.VSChannel.ActiveDockForm.CanFocus then
@@ -3646,6 +3659,19 @@ begin
     else
       Inc(FCurrentWidth, TJvDockVSNetStyle.GetAnimationMoveWidth);
   end;
+end;
+
+procedure TJvDockVSChannel.InternalInsertControl(AWinControl: TWinControl);
+begin
+  VSPopupPanel.JvDockManager.InsertControl(AWinControl, alNone, nil);
+  AWinControl.FreeNotification(Self);
+end;
+
+procedure TJvDockVSChannel.InternalRemoveControl(AWinControl: TWinControl);
+begin
+  AWinControl.RemoveFreeNotification(Self);
+  if Assigned(VSPopupPanel) and VSPopupPanel.UseDockManager then
+    VSPopupPanel.JvDockManager.RemoveControl(AWinControl);
 end;
 
 initialization
