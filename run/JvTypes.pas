@@ -181,6 +181,14 @@ const
   PathDelim = '\';
   DriveDelim = ':';
   PathSep    = ';';
+
+{ TStream seek origins }
+type
+  TSeekOrigin = Integer; // Delphi 6: TSeekOrigin = (soBeginning, soCurrent, soEnd);
+const
+  soBeginning = 0;
+  soCurrent = 1;
+  soEnd = 2;
 {$ENDIF}
 
 type

@@ -178,6 +178,7 @@ function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
 {**** files routines}
+procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 
 {$IFDEF MSWINDOWS}
 { GetWinDir returns Windows folder name }
@@ -2052,6 +2053,63 @@ begin
   Result := Copy(S, 1, I);
 end;
 {$ENDIF}
+
+procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
+var
+{$IFDEF COMPILER6_UP}
+  Ch: Char;
+{$ELSE}
+  S: string;
+  F, P: PChar;
+{$ENDIF}
+begin
+{$IFDEF COMPILER6_UP}
+  Ch := List.Delimiter;
+  try
+    List.Delimiter := Delimiter;
+    List.DelimitedText := Text;
+  finally
+    List.Delimiter := Ch;
+  end;
+{$ELSE}
+begin
+  List.BeginUpdate;
+  try
+    List.Clear;
+    P := PChar(Text);
+    while P^ in [#1..#32] do Inc(P);
+    while P^ <> #0 do
+    begin
+      if P^ = '"' then
+      begin
+        F := P;
+        while (P[0] <> #0) and (P[0] <> '"') do Inc(P);
+        SetString(S, F, P - F);
+      end
+      else
+      begin
+        F := P;
+        while not (P[0] < #32) and (P[0] <> Delimiter) do Inc(P);
+        SetString(S, F, P - F);
+      end;
+      List.Add(S);
+      while P[0] in [#1..#32] do Inc(P);
+      if P[0] = Delimiter then
+      begin
+        F := P;
+        Inc(F);
+        if F[0] = #0 then List.Add('');
+        repeat
+          Inc(P);
+        until not (P[0] in [#1..#32]);
+      end;
+    end;
+  finally
+    List.EndUpdate;
+  end;
+end;
+{$ENDIF}
+end;
 
 function GetComputerName: string;
 {$IFDEF MSWINDOWS}
