@@ -76,6 +76,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure StoredListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure PropertiesListDblClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FCompOwner: TComponent;
     FDesigner: IDesigner;
@@ -528,6 +529,11 @@ procedure TJvFormPropsDlg.PropertiesListDblClick(Sender: TObject);
 begin
   if AddButton.Enabled then
     AddButtonClick(nil);
+end;
+
+procedure TJvFormPropsDlg.FormCreate(Sender: TObject);
+begin
+  Font.Size := 8;
 end;
 
 end.
