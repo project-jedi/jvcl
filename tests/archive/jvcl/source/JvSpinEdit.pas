@@ -111,7 +111,8 @@ begin
 {$ENDIF}
 
 
-  FEdit.OnChange := DoEditChange;
+  FEdit.OnExit := DoEditChange;
+  FEdit.OnEnter := DoEditChange;
   FEdit.TabOrder := 0;
   FEdit.Align := alClient;
 
