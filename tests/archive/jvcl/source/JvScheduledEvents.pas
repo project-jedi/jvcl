@@ -286,41 +286,44 @@ var
   SysTime: TSystemTime;
   NowStamp: TTimeStamp;
 begin
-  FEnded := False;
-  while not Terminated do
-  begin
-    if (FCritSect <> nil) and (FEventComponents <> nil) then
+  try
+    FEnded := False;
+    while not Terminated do
     begin
-      FCritSect.Enter;
-      try
-        FEventIdx := FEventComponents.Count - 1;
-        while (FEventIdx > -1) and not Terminated do
-        begin
-          GetLocalTime(SysTime);
-          NowStamp := DateTimeToTimeStamp(Now);
-          with SysTime do
-            NowStamp.Time := wHour * 3600000 + wMinute * 60000 + wSecond * 1000 + wMilliseconds;
-          TskColl := TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Events;
-          I := 0;
-          while (I < TskColl.Count) and not Terminated do
+      if (FCritSect <> nil) and (FEventComponents <> nil) then
+      begin
+        FCritSect.Enter;
+        try
+          FEventIdx := FEventComponents.Count - 1;
+          while (FEventIdx > -1) and not Terminated do
           begin
-            if (TskColl[I].State = sesWaiting) and
-              (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
+            GetLocalTime(SysTime);
+            NowStamp := DateTimeToTimeStamp(Now);
+            with SysTime do
+              NowStamp.Time := wHour * 3600000 + wMinute * 60000 + wSecond * 1000 + wMilliseconds;
+            TskColl := TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Events;
+            I := 0;
+            while (I < TskColl.Count) and not Terminated do
             begin
-              TskColl[I].Triggered;
-              PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
-                CM_EXECEVENT, Integer(TskColl[I]), 0);
+              if (TskColl[I].State = sesWaiting) and
+                (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
+              begin
+                TskColl[I].Triggered;
+                PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
+                  CM_EXECEVENT, Integer(TskColl[I]), 0);
+              end;
+              Inc(I);
             end;
-            Inc(I);
+            Dec(FEventIdx);
           end;
-          Dec(FEventIdx);
+        finally
+          FCritSect.Leave;
         end;
-      finally
-        FCritSect.Leave;
       end;
+      if not Terminated then
+        Sleep(1);
     end;
-    if not Terminated then
-      Sleep(1);
+  except
   end;
   FEnded := True;
 end;
