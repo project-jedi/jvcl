@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDSADialogs.PAS, released on 2002-08-23.
 
-The Initial Developer of the Original Code is Marcel Bestebroer [marcelb@zeelandnet.nl]
+The Initial Developer of the Original Code is Marcel Bestebroer [marcelb att zeelandnet dott nl]
 Portions created by Marcel Bestebroer are Copyright (C) 2002 Marcel Bestebroer.
 All Rights Reserved.
 

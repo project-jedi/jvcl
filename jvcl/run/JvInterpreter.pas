@@ -94,7 +94,7 @@ Known Issues:
   1.51:
    - arrays as local and global variables. supports simple types (Integer,
      double, string, tdatetime, object).
-     Added by Andrej Olejnik (olej@asset.sk);
+     Added by Andrej Olejnik (olej att asset dott sk);
    - type conversion with Integer, string, TObject,... keywords;
   1.51.2:
    - array support was rewritten;
@@ -138,7 +138,7 @@ Known Issues:
   1.61:
    - bug fixed: variable types are not always kept the same when
      assigning values to them;
-     thanks to Ritchie Annand (RitchieA@malibugroup.com);
+     thanks to Ritchie Annand (RitchieA att malibugroup dott com);
    - bug fixed: exceptions, raised in dll calls produce AV.
      fix: exception of class Exception is raised.
    - new internal: LocalVars property in TJvInterpreterFunction (it is used in TJvInterpreterFm).
@@ -165,7 +165,7 @@ Upcoming JVCL 3.00
 
    - (wap) fixed bug: memory leak in local-function LeaveFunction, part of
       TJvInterpreterFunction.InFunction.  See code marker VARLEAKFIX.
-      (Fix suggested by ivan_ra@mail.ru)
+      (Fix suggested by ivan_ra att mail dott ru)
 
    - bug fixed: exceptions, raised in Assign nil to Method property  - dejoy-2004-3-13
    - fixed  Character '"' error in SkipToEnd from dejoy 2004-5-25;
@@ -5914,7 +5914,7 @@ var
         //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VType := varEmpty;
         //LEAKY:  TVarData(PFunctionContext(FFunctionContext).LocalVars.FindVar('', 'Result').Value).VPointer := nil;
 
-        //VARLEAKFIX begin - Feb 2004 - Warren Postma. Fix suggested by ivan_ra@mail.ru
+        //VARLEAKFIX begin - Feb 2004 - Warren Postma. Fix suggested by ivan_ra att mail dott ru
         VarList := PFunctionContext(FFunctionContext).LocalVars;
         VarList.GetValue(cResult, FVResult, FCurrArgs);
         VarClear(VarList.FindVar('', cResult).Value);

@@ -452,7 +452,7 @@ end;
 // Credit for the CalcTextPos routine goes to Joerg Lingner.    //
 // It comes from his JLLabel component (freeware - Torry's).    //
 // It is used here with his permission.  Thanks Joerg!          //
-// He can be reached at jlingner@t-online.de                    //
+// He can be reached at jlingner att t-online dott de           //
 //////////////////////////////////////////////////////////////////
 
 procedure CalcTextPos(HostRect: TRect; var TextLeft, TextTop: Integer;

@@ -46,7 +46,7 @@ object ProfReport: TProfReport
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 240
+    Top = 237
     Width = 445
     Height = 33
     Align = alBottom
@@ -102,7 +102,7 @@ object ProfReport: TProfReport
     Left = 0
     Top = 0
     Width = 445
-    Height = 240
+    Height = 237
     Hint = 'Click the top column to sort the items'
     Align = alClient
     BorderStyle = bsNone

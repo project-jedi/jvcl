@@ -574,7 +574,7 @@ type
 
   Procedures to read and write GIF files, GIF-decoding and encoding
   based on freeware C source code of GBM package by Andy Key
-  (nyangau@interalpha.co.uk). The home page of GBM author is
+  (nyangau att interalpha dott co dott uk). The home page of GBM author is
   at http://www.interalpha.net/customer/nyangau/. }
 
 type

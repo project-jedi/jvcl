@@ -23,7 +23,7 @@ Known Issues:
   - the associated TPopupMenu would also be changed during the process :(
 
 Modifications:
-  2002.11.22. by Hofi@fw.hu
+  2002.11.22. by Hofi att fw dott hu
     - REMOVED the original TMenuItemPrivateAccess hack, overwriting Handle of FPopup
       changes the original popup menu itself, not so nice ;)
     - ADDED WM_INITMENU handler and a new hack to synchronize the system menu

@@ -54,7 +54,7 @@ located at http://jvcl.sourceforge.net
   1.14:
     - selected color intialized with system colors;
   1.17:
-    some improvements and bug fixes by Rafal Smotrzyk - rsmotrzyk@mikroplan.com.pl :
+    some improvements and bug fixes by Rafal Smotrzyk - rsmotrzyk att mikroplan dott com dott pl :
     - AutoIndent now worked when SmartTab Off;
     - method GetTextLen for TMemo compatibility;
     - Indent, Unindent commands;
@@ -67,7 +67,7 @@ located at http://jvcl.sourceforge.net
     - changing RightMargin, RightMarginVisible and RightMarginColor
       Invalidates window;
   1.17.2:
-   another good stuf by Rafal Smotrzyk - rsmotrzyk@mikroplan.com.pl :
+   another good stuf by Rafal Smotrzyk - rsmotrzyk att mikroplan dott com dott pl :
     - fixed bug with backspace pressed when text selected;
     - fixed bug with disabling Backspace Unindents when SmartTab off;
     - fixed bug in GetTabStop method when SmartTab off;

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBDateTimePicker.PAS, released May 8, 2000
 
-The Initial Developer of the Original Code is Eko Subagio (ekosbg@bigfoot.com)
+The Initial Developer of the Original Code is Eko Subagio (ekosbg att bigfoot dott com)
 Portions created by Eko Subagio are Copyright (C) 2000 Eko Subagio.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
@@ -389,7 +389,7 @@ end;
 //Parameter    : Sender as TObject
 //Descriptions : To set the dataset into edit mode, when the user
 //               closing up the Calendar.
-//Revision     : October 18, 2000 ekosbg@bigfoot.com
+//Revision     : October 18, 2000 ekosbg att bigfoot dott com
 ///////////////////////////////////////////////////////////////////////////
 
 procedure TJvDBDateTimePicker.CalendarOnCloseUp(Sender: TObject);
@@ -402,7 +402,7 @@ end;
 //Parameter    : Sender as TObject
 //Descriptions : To set the dataset into edit mode, when the user
 //               dropping down the Calendar.
-//Revision     : October 18, 2000 ekosbg@bigfoot.com
+//Revision     : October 18, 2000 ekosbg att bigfoot dott com
 ///////////////////////////////////////////////////////////////////////////
 
 procedure TJvDBDateTimePicker.CalendarOnDropDown(Sender: TObject);

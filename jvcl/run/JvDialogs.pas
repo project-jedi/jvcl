@@ -15,8 +15,8 @@ Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
 Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
-Contributor(s): Debbie Gregory <Debbie.Gregory@cmsis.com>
-                Marcel van Brakel <brakelm@bart.nl>.
+Contributor(s): Debbie Gregory <Debbie.Gregory att cmsis dott com>
+                Marcel van Brakel <brakelm att bart dott nl>.
 
 Current Version: 0.50
 

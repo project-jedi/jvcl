@@ -30,7 +30,7 @@ Known Issues:
         EditMask property enables operation as masked edit, which doesn't
         work properly in a Control Grid, yet, if you set the EditMask.
         You can use it as a generic editor control inside a control grid.
-          -- Warren Postma (warrenpstma@hotmail.com)
+          -- Warren Postma (warrenpstma att hotmail dott com)
 -----------------------------------------------------------------------------}
 // $Id$
 

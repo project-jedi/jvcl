@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDBRadioPanel.pas, released .
 
-The Initial Developer of the Original Code is Steve Paris [paris.steve@tourisme.gouv.qc.ca]
+The Initial Developer of the Original Code is Steve Paris [paris.steve att tourisme dott gouv dott qc dott ca]
 Portions created by Steve Paris are Copyright (C) 2003 Steve Paris.
 All Rights Reserved.
 

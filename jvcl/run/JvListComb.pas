@@ -20,7 +20,7 @@ TJvListBox3 has been renamed TJvImageListBox and the original TJvImageListBox ha
 Contributor(s):
 Sébastien Buysse [sbuysse att buypin dott com]
 Michael Beck [mbeck att bigfoot dott com]
-Olivier Sannier [obones@meloo.com]
+Olivier Sannier [obones att meloo dott com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

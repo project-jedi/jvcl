@@ -35,7 +35,7 @@ unit JvResample;
 // Release: 3
 // Date: 15-MAR-1998
 // Target: Win32, Delphi 2 & 3
-// Author(s): anme: Anders Melander, anders@melander.dk
+// Author(s): anme: Anders Melander, anders att melander dott dk
 // Copyright (c) 1997,98 by Anders Melander
 // Formatting: 2 space indent, no tabs, 80 columns.
 // -----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ unit JvResample;
 // book Graphics Gems III, published by Academic Press, Inc.
 //
 // The edge offset problem was fixed by:
-//   * David Ullrich <ullrich@hardy.math.okstate.edu>
+//   * David Ullrich <ullrich att hardy dott math dott okstate dott edu>
 // -----------------------------------------------------------------------------
 // To do (in rough order of priority):
 // * Implement Dale Schumacher's "Optimized Bitmap Scaling Routines".

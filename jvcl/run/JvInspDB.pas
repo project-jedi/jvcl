@@ -11,7 +11,7 @@
  the specific language governing rights and limitations under the License.
 
  The Initial Developer of the Original Code is Marcel Bestebroer
-  <marcelb@zeelandnet.nl>.
+  <marcelb att zeelandnet dott nl>.
  Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
  All Rights Reserved.
 
