@@ -4,8 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvPanel, StdCtrls, ComCtrls, JvCurrEdit, Mask, JvToolEdit,
-  JvComponent, JvPlacemnt;
+  ExtCtrls, JvPanel, StdCtrls, ComCtrls, Mask, JvToolEdit,
+  JvComponent, JvFormPlacement;
 
 type
   TForm1 = class(TForm)

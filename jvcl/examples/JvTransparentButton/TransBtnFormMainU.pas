@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Menus, Buttons, JvTransBtn, JvComponent;
+  StdCtrls, ExtCtrls, Menus, Buttons, JvComponent, JvButton,
+  JvTransparentButton;
 
 type
   TTransBtnFormMain = class(TForm)

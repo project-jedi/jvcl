@@ -78,7 +78,6 @@ Rxdemo.exe \
 RunDLL32Demo.exe \
 RegEditDemo.exe \
 JvProgressDialogDemo.exe \
-ProfilerDemo.exe \
 PlugInDemo.exe \
 SamplePluginOne.dll \
 MDIPlugin.dll \
@@ -95,7 +94,7 @@ JvPanelDemo.exe \
 OLBarDemo.exe \
 JvObjPickerDemo.exe \
 EventViewer.exe \
-JvMruList.exe \
+JvMruListDemo.exe \
 MonthCalendarDemo.exe \
 MailExample.exe \
 JvLogFileDemo.exe \
@@ -382,11 +381,6 @@ JvProgressDialogDemo.exe: JvProgressDialog\JvProgressDialogDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
-ProfilerDemo.exe: JvProfiler32\ProfilerDemo.dpr
-  cd JvProfiler32
-  $(DCC) $&.dpr
-  cd ..
-
 PlugInDemo.exe: JvPlugin\1SimplePlugin\PlugInDemo.dpr
   cd JvPlugin\1SimplePlugin
   $(DCCH) $&.dpr
@@ -467,7 +461,7 @@ EventViewer.exe: JvNTEventLog\EventViewer.dpr
   $(DCC) $&.dpr
   cd ..
 
-JvMruList.exe: JvMRUList\JvMruList.dpr
+JvMruListDemo.exe: JvMRUList\JvMruListDemo.dpr
   cd JvMRUList
   $(DCC) $&.dpr
   cd ..

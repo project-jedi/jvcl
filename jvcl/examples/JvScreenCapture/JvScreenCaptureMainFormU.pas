@@ -23,7 +23,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JvFunctions;
+  JvJVCLUtils;
 
 procedure TJvScreenCaptureMainForm.Button1Click(Sender: TObject);
 var

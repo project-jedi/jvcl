@@ -16,7 +16,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
   object JvLabel6: TJvLabel
     Left = 24
     Top = 16
-    Width = 450
+    Width = 452
     Height = 32
     Caption = 
       'Here you can see the combination of a JvDriveCombo (at the top)'#13 +
@@ -28,30 +28,34 @@ object FileListBoxMainForm: TFileListBoxMainForm
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
+    ImageIndex = 0
   end
   object JvLabel8: TJvLabel
     Left = 32
     Top = 328
-    Width = 151
+    Width = 153
     Height = 13
     Caption = 'Here you can see a JvDriveList:'
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
+    ImageIndex = 0
   end
   object Label1: TLabel
     Left = 240
     Top = 352
-    Width = 196
+    Width = 15
     Height = 13
-    Caption = 'c:\Programme\Borlan...\JVCLMegaDemo'
+    Caption = 'C:\'
   end
   object Label2: TLabel
     Left = 216
@@ -72,16 +76,11 @@ object FileListBoxMainForm: TFileListBoxMainForm
     Top = 344
     Width = 121
     Height = 97
-    Style = lbOwnerDrawFixed
-    ItemHeight = 37
-    Items.Strings = (
-      'DRIVE_C (C:)'
-      'DRIVE_D (D:)'
-      'DELPHI6DG (E:)')
-    ScrollWidth = 96
-    TabOrder = 0
+    ScrollBars = ssBoth
     DriveTypes = [dtFixed, dtRemote, dtCDROM]
     ImageSize = isSmall
+    ItemHeight = 37
+    TabOrder = 0
   end
   object JvCaptionPanel1: TJvCaptionPanel
     Left = 24
@@ -98,9 +97,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
     TabOrder = 1
     object JvFileListBox1: TJvFileListBox
       Left = 217
-      Top = 21
+      Top = 23
       Width = 329
-      Height = 229
+      Height = 227
       Align = alRight
       FileEdit = Edit1
       ItemHeight = 16
@@ -109,9 +108,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
       ForceFileExtensions = False
     end
     object JvDriveCombo1: TJvDriveCombo
-      Left = 20
+      Left = 22
       Top = 1
-      Width = 526
+      Width = 524
       Height = 22
       Align = alTop
       DriveTypes = [dtFixed, dtRemote, dtCDROM]
@@ -121,29 +120,18 @@ object FileListBoxMainForm: TFileListBoxMainForm
       TabOrder = 1
     end
     object JvDirectoryListBox1: TJvDirectoryListBox
-      Left = 20
-      Top = 21
-      Width = 197
-      Height = 229
-      Style = lbOwnerDrawFixed
+      Left = 22
+      Top = 23
+      Width = 195
+      Height = 227
       Align = alClient
-      ItemHeight = 17
-      Items.Strings = (
-        'c:\'
-        'c:\Programme'
-        'c:\Programme\Borland'
-        'c:\Programme\Borland\Delphi7'
-        'c:\Programme\Borland\Delphi7\JEDI'
-        'c:\Programme\Borland\Delphi7\JEDI\jvcl'
-        'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples'
-        'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo'
-        'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\shk')
-      ScrollWidth = 387
-      TabOrder = 2
-      Directory = 'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo'
+      Directory = 'C:\'
       DirLabel = Label1
       FileList = JvFileListBox1
       DriveCombo = JvDriveCombo1
+      ItemHeight = 17
+      ScrollBars = ssBoth
+      TabOrder = 2
     end
   end
   object Edit1: TEdit

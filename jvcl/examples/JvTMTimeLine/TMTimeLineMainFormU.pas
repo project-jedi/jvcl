@@ -31,8 +31,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, ComCtrls, JvTMTL, StdCtrls, Buttons, ImgList,
-  Menus, CheckLst;
+  ExtCtrls, ComCtrls, StdCtrls, Buttons, ImgList,
+  Menus, CheckLst, JvTMTimeLine;
 
 type
   TTMTimeLineMainForm = class(TForm)

@@ -5,7 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, JvObjPickerComp, JvComponent;
+  Dialogs, StdCtrls, ComCtrls, JvObjectPickerDialog, JvComponent;
 
 type
   TForm1 = class(TForm)
@@ -24,7 +24,7 @@ var
 implementation
 
 uses
-  ActiveX, JvObjSel, ComObj;
+  ActiveX, ObjSel, ComObj;
 
 {$R *.dfm}
 
