@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvFormPlace, JvxCtrls, JvLabel;
+  JvComponent, JvFormPlace, JvLabel;
 
 type
   TfrFormplace = class(TForm)

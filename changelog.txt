@@ -1,6 +1,9 @@
 Changelog for JVCL 3.0
 ======================
 2003-10-20:
+- JvxCtrls split into several smaller unit: JvxCheckListBox (contains both TJvxCustomListBox and TJvxCheckListBox), JvSecretPanel, JvTextListBox and JvSpeedButton. // peter3
+- TJvCustomLabel moved from JvxCtrls to JvLabel // peter3
+2003-10-20:
 - JvHook.pas moved to archive // andreas
 2003-10-19:
 - Updated JvMenus and started documenting it //olivier
