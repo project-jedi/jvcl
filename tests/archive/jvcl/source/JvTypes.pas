@@ -46,11 +46,12 @@ const
   SHFMT_NOFORMAT = -3;
   TVIS_CHECKED = $2000;
   CPL_DBLCLK = 5;
-  { (rom) unused and silly
-  Oper = 120 * Pi / 180;
-  }
 
 type
+  {$IFNDEF COMPILER5_UP}
+  TAnchorKind = (akLeft, akTop, akRight, akBottom);
+  TAnchors = set of TAnchorKind;
+  {$ENDIF}
   // base JVCL Exception class to derive from
   EJVCLException = class(Exception);
   TOnUrlClick = procedure(Sender: TObject; Url: string) of object;

@@ -14,18 +14,18 @@ The Initial Developer of the Original Code is Peter Below <100113.1101@compuserv
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): 
+Rob den Braseem <>
 
-Last Modified: 2000-mm-dd
+Last Modified: 2002-07-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 * rewrite to use collection so more labels / controls can be coupled?
-* add option to select side?
+* add option to select side? DONE
 -----------------------------------------------------------------------------}
-
 {$I JVCL.INC}
 
 unit JvCoupler;
@@ -33,7 +33,8 @@ unit JvCoupler;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, stdctrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Stdctrls, JvComponent
+{$IFNDEF COMPILER5_UP}, JvTypes{$ENDIF};
 
 type
   TJvCoupler = class(TJvComponent)
@@ -42,9 +43,14 @@ type
     FLabel: TCustomLabel;
     FControl: TWinControl;
     FOldWndProc: TWndMethod;
+        {rdb}
+    FPosition: TAnchorKind;
 
     procedure SetControl(const Value: TWinControl);
     procedure SetLabel(const Value: TCustomLabel);
+    {rdb}
+    procedure SetPosition(const Value: TAnchorKind);
+    procedure SetSpacing(const Value: Integer);
     { Private declarations }
   protected
     { Protected declarations }
@@ -61,7 +67,9 @@ type
     { Published declarations }
     property DisplayLabel: TCustomLabel read FLabel write SetLabel;
     property FocusControl: TWinControl read FControl write SetControl;
-    property Spacing: Integer read FSpacing write FSpacing default 2;
+    property Spacing: Integer read FSpacing write SetSpacing default 2;
+    {rdb}
+    property Position: TAnchorKind read FPosition write SetPosition;
   end;
 
 implementation
@@ -70,10 +78,46 @@ implementation
 
 procedure TJvCoupler.AlignLabel;
 begin
-  if Assigned(FLabel) then
-    with FLabel do
-      SetBounds(FControl.Left, FControl.Top - Height - FSpacing,
-        Width, Height);
+  if (Assigned(FLabel) and Assigned(FControl)) then
+  begin
+    case FPosition of
+      AkTop:
+        with FLabel do
+        begin
+          top := FControl.Top - Height - FSpacing;
+          Left := Fcontrol.Left;
+        end;
+
+      AkLeft:
+        with FLabel do
+        begin
+          top := FControl.Top + trunc(Fcontrol.Height / 2 - Height / 2);
+          Left := Fcontrol.Left - Width - Fspacing;
+        end;
+
+      AkRight:
+        with FLabel do
+        begin
+          top := FControl.Top + trunc(Fcontrol.Height / 2 - Height / 2);
+          Left := Fcontrol.Left + Fcontrol.Width + Fspacing + 2;
+        end;
+
+      AkBottom:
+        with FLabel do
+        begin
+          top := FControl.Top + Fcontrol.Height + FSpacing;
+          Left := Fcontrol.Left;
+        end;
+
+    else
+      with FLabel do
+      begin
+        top := FControl.Top - Height - FSpacing;
+        Left := Fcontrol.Left;
+      end;
+    end;
+  end;
+
 end;
 
 constructor TJvCoupler.Create(aOWner: TComponent);
@@ -117,7 +161,7 @@ begin
       FControl.WindowProc := FOldWndProc;
       if Assigned(FLabel) then
         TLabel(FLabel).FocusControl := nil;
-    end; { If }
+    end;                                { If }
 
     FControl := Value;
     if Assigned(FControl) then
@@ -128,10 +172,11 @@ begin
       begin
         TLabel(FLabel).FocusControl := FControl;
         AlignLabel;
-      end; { If }
-    end; { If }
-  end; { If }
-end; { TJvCoupler.SetControl }
+      end;                              { If }
+    end;                                { If }
+  end;                                  { If }
+  AlignLabel;
+end;                                    { TJvCoupler.SetControl }
 
 procedure TJvCoupler.SetLabel(const Value: TCustomLabel);
 begin
@@ -145,8 +190,22 @@ begin
       TLabel(FLabel).FocusControl := FControl;
       if Assigned(FControl) then
         AlignLabel;
-    end; { If }
-  end; { If }
-end; { TJvCoupler.SetLabel }
+    end;                                { If }
+  end;                                  { If }
+  AlignLabel;
+end;                                    { TJvCoupler.SetLabel }
+
+procedure TJvCoupler.SetPosition(const Value: TAnchorKind);
+begin
+  FPosition := Value;
+  AlignLabel;
+end;
+
+procedure TJvCoupler.SetSpacing(const Value: Integer);
+begin
+  FSpacing := Value;
+  AlignLabel;
+end;
 
 end.
+
