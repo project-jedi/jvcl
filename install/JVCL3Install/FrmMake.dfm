@@ -12,6 +12,7 @@ object FormMake: TFormMake
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
+  Scaled = false
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery

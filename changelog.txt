@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-02-10
+- Added Scaled = false to all \design, \run and \install dfm's that didn't have them. This should make the dialogs work better with large fonts. // peter3
 2004-02-03
 - Added Localization.html and updated documentation // obones
 - Moved all C++ Builder packages to their new place (c?) // obones

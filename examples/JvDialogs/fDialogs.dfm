@@ -25,7 +25,6 @@ object Form1: TForm1
     Width = 401
     Height = 377
     ActivePage = TabSheet1
-    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Windows Dialogs'

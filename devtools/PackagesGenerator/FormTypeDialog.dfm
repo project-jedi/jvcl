@@ -13,6 +13,7 @@ object frmFormType: TfrmFormType
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object lblUnable: TLabel
