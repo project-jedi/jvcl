@@ -39,7 +39,7 @@ begin
   WriteLn('Error !!!');
   WriteLn(Msg);
   Writeln;
-  Help; 
+  Help;
 end;
 
 procedure WriteMsg(Msg : string);
@@ -114,7 +114,7 @@ begin
 {
     if packagesPath = '' then
       packagesPath := '..'+PathSeparator+'..'+PathSeparator+'packages';
-      
+
     if prefix = '' then
       prefix := 'Jv';
 
@@ -124,15 +124,19 @@ begin
     if incfile = '' then
       incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'JVCL.INC';}
 
-    LoadConfig(xmlconfig, modelName);      
+    LoadConfig(xmlconfig, modelName);
+
+   // EnumeratePackages() needs this 
+    if packagesPath = '' then
+      packagesPath := PackagesLocation;
+    if PathIsAbsolute(packagesPath) then
+      packagesPath := packagesPath
+    else
+      packagesPath := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + packagesPath);
+
 
     StrToStrings(targetList, ',', targets, False);
     ExpandTargets(targets);
-
-{    if PathIsAbsolute(packagesPath) then
-      packagesPath := packagesPath
-    else
-      packagesPath := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + packagesPath);}
 
     packages := TStringList.Create;
     try
