@@ -19,15 +19,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A treeview that displays the keys from the registry
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvRegistryTreeView;
 
-{A treeview that displays the keys from the registry }
+{$I jvcl.inc}
 
 interface
 
@@ -172,9 +173,9 @@ begin
     TmpNode := Node;
     while TmpNode <> nil do
     begin
-      if longint(TmpNode.Data) < 0 then
+      if Longint(TmpNode.Data) < 0 then
       begin
-        Reg.RootKey := longint(TmpNode.Data);
+        Reg.RootKey := Longint(TmpNode.Data);
         Result := True;
         Exit;
       end;
@@ -210,7 +211,7 @@ begin
     Result := TmpNode.Text + '\' + Result;
     TmpNode := TmpNode.Parent;
   end;
-  if (Length(Result) > 0) and (AnsiLastChar(Result) = '\') then
+  if (Result <> '') and (AnsiLastChar(Result) = '\') then
     SetLength(Result, Length(Result) - 1);
 end;
 

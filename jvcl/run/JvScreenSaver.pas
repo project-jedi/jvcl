@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvScreenSaver;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvScreenSaver;
 
 interface
 

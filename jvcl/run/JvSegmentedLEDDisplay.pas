@@ -27,9 +27,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSegmentedLEDDisplay;
+
+{$I jvcl.inc}
 
 interface
 
@@ -56,7 +56,6 @@ const
   NullHandle = nil;
   {$ENDIF VisualCLX}
   
-
 type
   TJvCustomSegmentedLEDDisplay = class;
   TJvSegmentedLEDDigits = class;

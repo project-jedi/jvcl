@@ -32,10 +32,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvStaticText;
+
 {$I jvcl.inc}
 {$I windowsonly.inc} // (ahuser) uses CreateSubClass('STATIC')
-
-unit JvStaticText;
 
 interface
 

@@ -37,9 +37,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSimLogic;
+
+{$I jvcl.inc}
 
 interface
 

@@ -25,9 +25,9 @@
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvScheduledEvents;
+
+{$I jvcl.inc}
 
 interface
 

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvRichEditToHtml;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvRichEditToHtml;
 
 interface
 
@@ -39,6 +39,7 @@ type
     Alignment: TAlignment;
     Numbering: TNumberingStyle;
   end;
+
   TJvRichEditParaAttributesRec = record
     Alignment: TParaAlignment;
     Numbering: TJvNumbering;

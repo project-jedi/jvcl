@@ -21,16 +21,17 @@ Remko Bonte
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Wrapper for a file search engine.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-{$I windowsonly.inc}
-
 unit JvSearchFiles;
 
-{ Wrapper for a file search engine. }
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 interface
 

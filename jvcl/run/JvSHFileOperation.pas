@@ -27,10 +27,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvSHFileOperation;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvSHFileOperation;
 
 interface
 

@@ -19,6 +19,9 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  TJvRollOut is an autoexpanding / collapsing panel.
+
 Known Issues:
   Doesn't draw an underline for speed-keys (the '&' character ) if
   Placement = plLeft. Something with DrawText ?
@@ -41,11 +44,9 @@ Changes 2003-03-23:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvRollOut;
 
-{ TJvRollOut is an autoexpanding / collapsing panel. }
+{$I jvcl.inc}
 
 interface
 

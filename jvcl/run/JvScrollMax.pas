@@ -33,9 +33,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvScrollMax;
+
+{$I jvcl.inc}
 
 interface
 

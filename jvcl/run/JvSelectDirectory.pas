@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvSelectDirectory;
+
 {$I jvcl.inc}
 {$I crossplatform.inc}
-
-unit JvSelectDirectory;
 
 interface
 
@@ -84,7 +84,7 @@ end;
 function TJvSelectDirectory.Execute: Boolean;
 {$IFDEF VisualCLX}
 var
-  dir: WideString;
+  Dir: WideString;
 {$ENDIF VisualCLX}
 begin
   FDirectory := InitialDir;
@@ -95,9 +95,9 @@ begin
     Result := SelectDirectory(Title, InitialDir, FDirectory);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  dir := FDirectory;
-  Result := SelectDirectory(Title, InitialDir, dir);
-  FDirectory := dir;
+  Dir := FDirectory;
+  Result := SelectDirectory(Title, InitialDir, Dir);
+  FDirectory := Dir;
   {$ENDIF VisualCLX}
 end;
 

@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSyncSplitter;
+
+{$I jvcl.inc}
 
 interface
 

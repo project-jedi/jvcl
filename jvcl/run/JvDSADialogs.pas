@@ -217,8 +217,6 @@ const
   mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
 
-
-
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
 procedure ShowMessageFmt(const Msg: string; const Params: array of const; const Center: TDlgCenterKind = dckScreen;

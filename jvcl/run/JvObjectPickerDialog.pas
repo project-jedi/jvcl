@@ -22,10 +22,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvObjectPickerDialog;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvObjectPickerDialog;
 
 interface
 

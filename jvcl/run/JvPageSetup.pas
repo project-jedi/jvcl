@@ -21,10 +21,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPageSetup;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvPageSetup;
 
 interface
 

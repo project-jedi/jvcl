@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvSoundControl;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvSoundControl;
 
 interface
 

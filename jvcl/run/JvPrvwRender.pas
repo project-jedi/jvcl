@@ -26,10 +26,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvPrvwRender;
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
-
-unit JvPrvwRender;
 
 interface
 

@@ -32,10 +32,10 @@ Modifications:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvSystemPopup;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvSystemPopup;
 
 interface
 

@@ -23,23 +23,22 @@ Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSimpleXml;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, IniFiles,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  IniFiles,
   JvFinalize;
 
 type
   {$IFNDEF COMPILER6_UP}
-  THashedStringList = class(TStringlist);
+  THashedStringList = class(TStringList);
   THandle = Longword;
   {$ENDIF !COMPILER6_UP}
   TJvSimpleXML = class;
