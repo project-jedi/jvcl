@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2004-06-13
+- TJvCipher is renamed to TJvCustomCipher as it is a base class  // obones
+- IsStored is introduced in TJvCustomCipher to control if Encoded and Key are stored // obones
+2004-06-12
+- Reimplemented Key, Encoded and Decoded in the ciphers // obones
 2004-06-11
 - Added Embedded Forms donation from "rossen" (in JvEmbeddedForms.pas and the JvAppFrm package) // peter3
 2004-06-02
@@ -13,7 +18,7 @@ Changelog for JVCL 3.0
 2004-05-24
 - Added new docking style, JvDockVIDVCStyle, from devedit // peter3
 2004-05-21
-- TJvZlibMultiple is now available for C++ Builder 5 and 6
+- TJvZlibMultiple is now available for C++ Builder 5 and 6  // obones
 2004-05-19
 - Moved JvComputerInfo.pas, JvDeviceChanged.pas, JvDirectories.pas, JvKeyboardStates.pas, 
   JvSystemColors.pas to archive. They are replaced by JvComputerInfoEx.pas // ahuser
