@@ -114,6 +114,7 @@ type
   TJvChartData = class(TObject)
   private
     FData: TJvChartDataArray;
+    FClearToValue:Double; // Typically either 0.0 or NaN
     FTimeStamp: array of TDateTime; // Time-series as a TDateTime
       // Dynamic array of dynamic array of Double.
       // is empty until data is stored in them.
@@ -138,6 +139,7 @@ type
     property Value[Pen, ValueIndex: Integer]: Double read GetValue write SetValue; default;
     property Timestamp[ValueIndex: Integer]: TDateTime read GetTimestamp write SetTimestamp;
     property ValueCount: Integer read FValueCount write FValueCount;
+    property ClearToValue:Double read FClearToValue write FClearToValue; // Typically either 0.0 or NaN. default 0.0
   end;
 
   TJvChart = class;
@@ -591,7 +593,10 @@ type
     { chart options}
     property Options: TJvChartOptions read FOptions write FOptions;
     { chart events}
+
+
     property OnChartClick: TJvChartClickEvent read FOnChartClick write FOnChartClick;
+
 
       { NEW: July 4, 2004 WPostma.
         ---------------------------------      
@@ -671,6 +676,7 @@ end;
 function TJvChartData.GetValue(Pen, ValueIndex: Integer): Double;
 begin
   // Grow base array
+  Assert(ValueIndex>=0);
   Grow(Pen, ValueIndex);
   Result := FData[ValueIndex, Pen]; // This will raise EInvalidOP for NaN values.
 end;
@@ -726,11 +732,15 @@ begin
 end;
 
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
+var
+  t,u,oldLength:Integer;
 begin
-  if (Pen < 0) or (ValueIndex < 0) then
+  if (Pen < 0) or (ValueIndex < 0) then begin
     raise ERangeError.CreateRes(@RsEDataIndexCannotBeNegative);
-  if (Pen > CHART_SANITY_LIMIT) or (ValueIndex > CHART_SANITY_LIMIT) then
+  end;
+  if (Pen > CHART_SANITY_LIMIT) or (ValueIndex > CHART_SANITY_LIMIT) then begin
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
+  end;
 
   if ValueIndex >= FDataAlloc then
   begin
@@ -745,11 +755,31 @@ begin
     else
       FDataAlloc := ValueIndex + 64000;
 
+    oldLength := Length(FData);
     SetLength(FData, FDataAlloc);
+
+// new: If we set FClearToValue to NaN, special handling in growing arrays:
+ if IsNan(FClearToValue) then begin
+      for t := oldLength to FDataAlloc-1 do begin
+        for u := 0 to Length(FData[t])-1 do begin
+           FData[t][u] := FClearToValue; // XXX Debug me!
+        end;{for u}
+      end;{for t}
+ end;{if}
+
+  end;
+  if Pen >= Length(FData[ValueIndex]) then begin
+    oldLength := Length(FData[ValueIndex]);
+    SetLength(FData[ValueIndex], Pen + 1);
+    if IsNan(FClearToValue) then begin
+      for t := oldLength to FDataAlloc-1 do begin
+          FData[ValueIndex][t] := FClearToValue; // XXX Debug me!
+      end;
+    end;
   end;
 
-  if Pen >= Length(FData[ValueIndex]) then
-    SetLength(FData[ValueIndex], Pen + 1);
+
+
 end;
 
 function TJvChartData.DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
@@ -782,7 +812,7 @@ var
 begin
   for I := 0 to FDataAlloc - 1 do
     for J := 0 to Length(FData[I]) - 1 do
-      FData[I, J] := 0.0;
+      FData[I, J] := FClearToValue;
   FValueCount := 0;
 end;
 
@@ -1998,16 +2028,10 @@ var
 
         // Calculate Marker position:
         X := Round(XOrigin + J * LineXPixelGap);
-        Y := Round(YOrigin - ((V / PenAxisOpt.YGap1) * PenAxisOpt.YPixelGap));
+        Y := Round(YOrigin - (((V -PenAxisOpt.YMin)/ PenAxisOpt.YGap) * PenAxisOpt.YPixelGap));
         SetLineColor(I);
-        if Y < 0 then
-        begin
-          {$IFDEF DEBUGINFO_ON}
-          OutputDebugString(PChar('TJvChart Marker Out of Visible Range.  Marker Value=' + FloatToStr(V) +
-            ', Range YMax=' + FloatToStr(PenAxisOpt.YMax)));
-          {$ENDIF DEBUGINFO_ON}
-          Y := 0; // constrain Y.
-        end;
+        if Y < (Options.YStartOffset+20) then
+          Y := (Options.YStartOffset+20); // constrain Y to stay on chart.
 
         (*
         if MinFlag or MaxFlag then // local min/max markers!
@@ -2021,9 +2045,17 @@ var
           pmkDiamond:
             PlotFilledDiamond(X, Y);
           pmkCircle:
-            PlotCircle(X, Y);
+            begin
+             ChartCanvas.Brush.Style := bsClear;
+             PlotCircle(X, Y);
+             ChartCanvas.Brush.Style := bsSolid;
+            end;
           pmkSquare:
-            PlotSquare(X, Y);
+            begin
+             ChartCanvas.Brush.Style := bsClear;
+             PlotSquare(X, Y);
+             ChartCanvas.Brush.Style := bsSolid;
+            end;
           pmkCross:
             PlotCross(X, Y);
         end;
@@ -2044,6 +2076,9 @@ var
         // Calculate Marker position:
         X := Round(XOrigin + J * LineXPixelGap);
         Y := Round(YOrigin - ((V / PenAxisOpt.YGap1) * PenAxisOpt.YPixelGap));
+        if Y < (Options.YStartOffset+10) then
+          Y := (Options.YStartOffset+10); // constrain Y to stay on chart.
+        
         // Format with fixed number of decimal places (avoid screen clutter)
         Decimals := Options.PenAxis[I].MarkerValueDecimals;
         if Decimals < 0 then // auto
@@ -2236,9 +2271,9 @@ var
     V, LineXPixelGap: Double;
     NanFlag: Boolean;
     VC: Integer;
+
     // PenAxisOpt: TJvChartYAxisOptions;
   begin
-    NanFlag := False;
     VC := Options.XValueCount;
     if VC < 2 then
       VC := 2;
@@ -2254,11 +2289,14 @@ var
       SetLineColor(I);
       J := 0;
       V := GraphConstrainedLineY(I, J);
-      if IsNaN(V) then
-        Y := 0 // what else can we do?
-      else
-        Y := Round(V);
-      ChartCanvas.MoveTo(Round(XOrigin), Y);
+      if not IsNaN(V) then begin
+          Y := Round(V);
+          ChartCanvas.MoveTo(Round(XOrigin), Y);
+          NanFlag := false;
+      end else begin
+          NanFlag := true;
+      end;
+
       for J := 1 to Options.XValueCount - 1 do
       begin
         V := GraphConstrainedLineY(I, J);
@@ -2573,6 +2611,8 @@ begin
       Options.FXLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
 
       Timestamp := FData.Timestamp[I * Options.XAxisValuesPerDivision - 1];
+      if (Timestamp<0.0000001) then
+          continue; 
 
       if Length(Options.FXAxisDateTimeFormat) = 0 then // not specified, means use Locale defaults
         TimestampStr := TimeToStr(Timestamp)
@@ -3307,7 +3347,7 @@ var
 begin
   FMouseDownHintStrs.Clear;
 
-  if Options.XAxisDateTimeMode then
+ if Options.XAxisDateTimeMode then
   begin
     if Length(Options.DateTimeFormat) = 0 then
       Str := DateTimeToStr(FData.GetTimestamp(FMouseValue))
