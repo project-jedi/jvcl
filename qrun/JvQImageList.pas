@@ -44,7 +44,8 @@ uses
   
   QGraphics, QControls, QImgList,
   
-  SysUtils, Classes, JvQFinalize;
+  SysUtils, Classes,
+  JvQFinalize;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -671,7 +672,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFileName)
-    {$IFDEF LINUX} and not DirectoryExists(FFileName){$ENDIF} then
+    {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except
@@ -948,7 +949,7 @@ end;
 
 procedure TJvImageList.ItemListError;
 begin
-  raise EJvImageListError.CreateFmt(RsEWrongImageListMode, ['imItemList']);
+  raise EJvImageListError.CreateResFmt(@RsEWrongImageListMode, ['imItemList']);
 end;
 
 
