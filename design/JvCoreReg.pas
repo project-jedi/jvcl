@@ -60,10 +60,22 @@ const
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
-  RegisterComponents(RsPalettePersistence, [TJvAppStorage, 
+  RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppRegistryStorage, TJvAppIniFileStorage, TJvAppStorageSelectList]);
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
+
+  // The TJvPersistent class needs an editor for D5 and BCB5, but for
+  // all other compilers, it doesn't need anything as it is declared as
+  // a SubComponent. However, we want to hide the Name and Tag property
+  // in this case, thus the registration of 'nil' property editors
+  {$IFDEF COMPILER6_UP}
+  RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
+  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
+  {$ELSE}
+  RegisterPropertyEditor(TypeInfo(TJvPersistent), nil, '', TJvPersistentProperty);
+  {$ENDIF COMPILER6_UP}
+
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
