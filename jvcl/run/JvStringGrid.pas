@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  JvTypes, JVCLVer;
+  JvTypes, JVCLVer, JvJCLUtils;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;
@@ -189,6 +189,7 @@ type
 implementation
 uses
   Math;
+
 const
   BufSize = 1024;
 //=== TExInplaceEdit =========================================================
