@@ -42,7 +42,13 @@ unit JvWizardRouteMapNodes;
 interface
 
 uses
-  Windows, Classes, Messages, Graphics, StdCtrls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QGraphics, QStdCtrls, Types,
+  {$ENDIF}
   JvWizard;
 
 type

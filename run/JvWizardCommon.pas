@@ -45,11 +45,16 @@ interface
 {$I jvcl.inc}
 
 uses
-  Windows,
+  {$IFDEF VCL}
+  Windows, Controls, Graphics,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QGraphics,
+  {$ENDIF}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  Classes, Controls, Graphics, SysUtils;
+  Classes, SysUtils;
 
 const
   beAllEdges = [beLeft, beTop, beRight, beBottom];
@@ -81,7 +86,7 @@ uses
 resourcestring
   RsETilingError = 'Tiling only works on images with dimensions > 0';
 {$ENDIF}
-  
+
 
 const
   { Frame Style Color constant arrays }
