@@ -293,7 +293,8 @@ begin
     if Assigned(Wizard) and (Pages[PageIndex] = Wizard.ActivePage) then
       ACanvas.Font := ActiveFont
     else
-    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack then
+    if PtInRect(ARect, MousePos) and Pages[PageIndex].Enabled and HotTrack and
+       Clickable then
       ACanvas.Font := HotTrackFont
     else
     if not Pages[PageIndex].Enabled then
