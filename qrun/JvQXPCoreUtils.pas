@@ -133,7 +133,9 @@ begin
 
   with Bitmap.Canvas do
   begin
+    {$IFDEF LINUX}
     Start;
+    {$ENDIF LINUX}
     Brush.Color := StartColor;
     FillRect(Bounds(0, 0, AWidth, AHeight));
     if Style in [gsLeft, gsRight] then
@@ -198,7 +200,9 @@ begin
         CopyRect(Bounds(xLoop * DitherDepth, 0, DitherDepth, AHeight),
           Bitmap.Canvas, Bounds(0, 0, DitherDepth, AHeight));
     end;
+    {$IFDEF LINUX}
     Stop;
+    {$ENDIF LINUX}
   end;
 end;
 
