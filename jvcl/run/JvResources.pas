@@ -1100,8 +1100,10 @@ resourcestring
 
 //=== JvPageListTreeView.pas =================================================
   {$IFNDEF COMPILER6_UP}
-resourcestring
+{ (ahuser) redefined in JvValidaters.pas }
+{ resourcestring
   RsEInterfaceNotSupported = '%s does not support the %s interface';
+}
   {$ENDIF COMPILER6_UP}
 
 //=== JvPageSetup.pas ========================================================

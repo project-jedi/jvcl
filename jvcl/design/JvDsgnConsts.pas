@@ -30,6 +30,9 @@ unit JvDsgnConsts;
 
 interface
 
+uses
+  JvConsts;
+
 //=== strings used by several editors ========================================
 resourcestring
   SPreviewEllipsis = 'Preview...';
