@@ -1,7 +1,7 @@
-JEDI VCL for D6 (beta 1.31)
+JEDI VCL for D5/D6 (Ver. 1.32 Final)
 (http://jvcl.sourceforge.net)
 
-The JEDI VCL  (JVCL) for D6 consists of a set of visual components which can be instantly reused in your Delphi 6 projects.
+The JEDI-VCL (JVCL) consists of a set of over 300 visual components which can be instantly reused in your D5/D6 projects.
 
 The library is built upon code donated from the JEDI community. Please note that this is a beta release, and as such, there is a lot of work to do. We are also aware that there is overlap between some components, and we should refactor/merge them. Your involvement and help in improving JVCL would be very much appreciated.
 
@@ -88,7 +88,8 @@ PARTICIPATION
 
 If you would like to participate in JVCL development (donate new components, refactor existing ones, write help files and documentation, develop examples), please join us at:
 
-http://groups.yahoo.com/group/JVCL-Developers/
+http://jvcl.sourceforge.net
+
 
 BUGS / WISHES
 =============

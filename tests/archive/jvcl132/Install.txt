@@ -1,4 +1,4 @@
-Install notes for JEDI-VCL (JVCL) Version 1.31 for Delphi 5/Delphi 6
+Install notes for JEDI-VCL (JVCL) Version 1.32 for Delphi 5/Delphi 6
 ==================================================
 
 1) IMPORTANT - in order to use JVCL, you need to have JCL (JEDI Code Library) INSTALLED on your computer. JCL is available from http://sourceforge.net/projects/jcl/
