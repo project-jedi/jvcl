@@ -32,14 +32,12 @@ unit JvXPCheckCtrls;
 interface
 
 uses
-  Windows, Graphics, Classes, Controls, JvXPCore, JvXPCoreUtils;
+  Windows, Graphics, Classes, Controls,
+  JvXPCore, JvXPCoreUtils;
 
 type
-{ TJvXPCustomCheckControl }
-
   TJvXPCustomCheckControl = class(TJvXPCustomStyleControl)
   private
-    { Private declarations }
     FBgGradient: TBitmap;
     FBoundLines: TJvXPBoundLines;
     FChecked: Boolean;
@@ -48,27 +46,22 @@ type
     FHlGradient: TBitmap;
     FSpacing: Byte;
   protected
-    { Protected declarations }
     procedure SetBoundLines(Value: TJvXPBoundLines); virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure SetSpacing(Value: Byte); virtual;
     procedure DrawCheckSymbol(const R: TRect); virtual; abstract;
-  public
-    { Public declarations }
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Click; override;
     procedure Paint; override;
     procedure HookResized; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
-    { Published declarations }
-
     // common properties.
     property Caption;
     property Enabled;
     property TabOrder;
     property TabStop default True;
-
     // advanced properties.
     property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines
       default [];
@@ -76,35 +69,18 @@ type
     property Spacing: Byte read FSpacing write SetSpacing default 3;
   end;
 
-{ TJvXPCheckbox }
-
   TJvXPCheckbox = class(TJvXPCustomCheckControl)
-  private
-    { Private declarations }
   protected
-    { Protected declarations }
     procedure DrawCheckSymbol(const R: TRect); override;
-  public
-    { Public declarations }
-  published
-    { Published declarations }
   end;
 
 implementation
 
-{ TJvXPCustomCheckControl }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.Create
-  Author:    mh
-  Date:      02-Mai-2002
-  Arguments: AOwner: TComponent
-  Result:    None
------------------------------------------------------------------------------}
+//=== TJvXPCustomCheckControl ================================================
 
 constructor TJvXPCustomCheckControl.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   // set default properties.
   ControlStyle := ControlStyle - [csDoubleClicks];
@@ -124,49 +100,23 @@ begin
   FHlGradient := TBitmap.Create; // Highlight gradient
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.Destroy
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
-
 destructor TJvXPCustomCheckControl.Destroy;
 begin
   FBgGradient.Free;
   FCkGradient.Free;
   FHlGradient.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.Click
-  Author:    mh
-  Date:      10-Mai-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.Click;
 begin
   FChecked := not FChecked;
-  inherited;
+  inherited Click;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.HookResized
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.HookResized;
 begin
-  //
   // create gradient rectangles for...
-  //
 
   // background.
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_BgFrom_WXP,
@@ -180,72 +130,35 @@ begin
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_HlFrom_WXP,
     dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, True, FHlGradient);
 
-  // redraw.
-  if not IsLocked then
-    Invalidate;
+  LockedInvalidate;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.SetBoundLines
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: Value: TJvXPBoundLines
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.SetBoundLines(Value: TJvXPBoundLines);
 begin
   if Value <> FBoundLines then
   begin
     FBoundLines := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.SetChecked
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: Value: Boolean
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.SetChecked(Value: Boolean);
 begin
   if Value <> FChecked then
   begin
     FChecked := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.SetSpacing
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: Value: Byte
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.SetSpacing(Value: Byte);
 begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
-    if not IsLocked then
-      Invalidate;
+    LockedInvalidate;
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCustomCheckControl.Paint
-  Author:    mh
-  Date:      08-Mai-2002
-  Arguments: None
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure TJvXPCustomCheckControl.Paint;
 var
@@ -291,26 +204,20 @@ begin
    end;
 end;
 
-{ TJvXPCheckbox }
-
-{-----------------------------------------------------------------------------
-  Procedure: TJvXPCheckbox.DrawCheckSymbol
-  Author:    mh
-  Date:      13-Mai-2002
-  Arguments: const R: TRect
-  Result:    None
------------------------------------------------------------------------------}
+//=== TJvXPCheckbox ==========================================================
 
 procedure TJvXPCheckbox.DrawCheckSymbol(const R: TRect);
+var
+  ClipW: Integer;
+  Bitmap: TBitmap;
+  Theme: TJvXPTheme;
+
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
     BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
       FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
   end;
-var
-  ClipW: Integer;
-  Bitmap: TBitmap;
-  Theme: TJvXPTheme;
+
 begin
   // get current theme.
   Theme := Style.GetTheme;
@@ -318,7 +225,7 @@ begin
   with Canvas do
   begin
     // check for highlight.
-    ClipW := Integer(dsHighlight in DrawState);
+    ClipW := Ord(dsHighlight in DrawState);
 
     // draw border.
     if (Theme = WindowsXP) or ((Theme = OfficeXP) and (ClipW = 0)) then

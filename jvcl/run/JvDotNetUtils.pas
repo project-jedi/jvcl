@@ -40,15 +40,20 @@ procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boo
 
 implementation
 
-procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl; AColor: TColor; var InControl: Boolean);
+procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl; AColor: TColor;
+  var InControl: Boolean);
 begin
-  if Msg.Msg = CM_MOUSEENTER then
-    InControl := True;
-  if Msg.Msg = CM_MOUSELEAVE then
-    InControl := False;
   case Msg.Msg of
     CM_MOUSEENTER, CM_MOUSELEAVE, WM_SETFOCUS, WM_KILLFOCUS, WM_NCPAINT:
-      DrawDotNetControl(AControl, AColor, InControl);
+      begin
+        // (rom) moved the if statements here for improved efficiency
+        if Msg.Msg = CM_MOUSEENTER then
+          InControl := True
+        else
+        if Msg.Msg = CM_MOUSELEAVE then
+          InControl := False;
+        DrawDotNetControl(AControl, AColor, InControl);
+      end;
   end;
 end;
 

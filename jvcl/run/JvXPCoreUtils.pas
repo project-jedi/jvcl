@@ -64,32 +64,17 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 
 implementation
 
-{-----------------------------------------------------------------------------
-  Procedure: JvXPMethodsEqual
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const M1, M2: TMethod
-  Result:    Boolean
------------------------------------------------------------------------------}
-
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: JvXPCreateGradientRect
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const AWidth, AHeight: Integer; const StartColor, EndColor: TColor; const Colors: TJvXPGradientColors; const Style: TJvXPGradientStyle; const Dithered: Boolean; var Bitmap: TBitmap
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColor,
   EndColor: TColor; const Colors: TJvXPGradientColors; const Style: TJvXPGradientStyle;
   const Dithered: Boolean; var Bitmap: TBitmap);
 const
   PixelCountMax = 32768;
+  DitherDepth = 16;
 type
   TGradientBand = array [0..255] of TColor;
   TRGBMap = packed record
@@ -101,13 +86,11 @@ type
   end;
   PRGBTripleArray = ^TRGBTripleArray;
   TRGBTripleArray = array [0..PixelCountMax-1] of TRGBTriple;
-const
-  DitherDepth = 16;
 var
   iLoop, xLoop, yLoop, XX, YY: Integer;
   iBndS, iBndE: Integer;
   GBand: TGradientBand;
-  Row:  pRGBTripleArray;
+  Row: pRGBTripleArray;
 
   procedure CalculateGradientBand;
   var
@@ -210,14 +193,6 @@ begin
   end;
 end;
 
-{-----------------------------------------------------------------------------
-  Procedure: JvXPDrawLine
-  Author:    mh
-  Date:      25-Okt-2002
-  Arguments: const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer; const AutoCorrect: Boolean = False
-  Result:    None
------------------------------------------------------------------------------}
-
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
 begin
   with ACanvas do
@@ -226,14 +201,6 @@ begin
     LineTo(X2, Y2);
   end;
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: JvXPAdjustBoundRect
-  Author:    M. Hoffmann
-  Date:      06-Feb-2003
-  Arguments: const BorderWidth: Byte; const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines; var Rect: TRect
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure JvXPAdjustBoundRect(const BorderWidth: Byte;
   const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines;
@@ -251,15 +218,6 @@ begin
   if blBottom in BoundLines then
     Dec(Rect.Bottom);
 end;
-
-{-----------------------------------------------------------------------------
-  Procedure: JvXPDrawBoundLines
-  Author:    M. Hoffmann
-  Date:      06-Feb-2003
-  Arguments: const ACanvas: TCanvas; const BoundLines: TJvXPBoundLines;
-    const AColor: TColor; const Rect: TRect
-  Result:    None
------------------------------------------------------------------------------}
 
 procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoundLines;
   const AColor: TColor; const Rect: TRect);
@@ -411,7 +369,8 @@ begin
     Flags or DT_CALCRECT);
   if AAlignment = taRightJustify then
     DX := OW - (Rect.Right + Rect.Left)
-  else if AAlignment = taCenter then
+  else
+  if AAlignment = taCenter then
     DX := (OW - Rect.Right) div 2
   else
     DX := 0;
