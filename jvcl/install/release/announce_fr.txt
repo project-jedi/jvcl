@@ -7,7 +7,7 @@ Developpez.com (delphi@redaction-developpez.com)
 Sujet: 
 ANN: JVCL 3 RC 1 est disponible
 Corps:
-L'équipe JVCL est fière d'annoncer la sortie de la première Release Candidate de la biliothèque de composants JVCL version 3.
+L'équipe JVCL est fière d'annoncer la sortie de la version stable de la biliothèque de composants JVCL version 3.00.
 
 La JVCL est une bibliothèque comprenant environ 500 composants visuels et non-visuels pour Delphi 5, 6, 7 et 2005; C++Builder 5, 6 et Kylix 3. La JVCL est distribué sous license Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
@@ -39,7 +39,7 @@ Cette sortie est disponible en quatre distributions :
 Nous fournirons dans un proche avenir des téléchargements séparés pour les paquets qui peuvent être installés par eux-mêmes (JvUIB, JvWizard, JvGlobus, JvManagedThreads, JvDocking, JvXPCtrls et JvDotNetCtrls)
 Pour télécharger la JVCL 3, veuillez vous rendre à http://sourceforge.net/projects/jvcl et cliquez sur le lien "Files" ou directement à cette adresse: http://sourceforge.net/project/showfiles.php?group_id=45786
 
-La version actuelle est JVCL 3.00 RC 1.
+La version actuelle est JVCL 3.00.
 
 
 
