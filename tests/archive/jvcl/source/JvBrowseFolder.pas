@@ -335,7 +335,10 @@ end;
 function TJvBrowseFolder.GetWindowHandle: THandle;
 var F: TCustomForm;
 begin
-  F := GetParentForm(TControl(Owner));
+  if Owner <> nil then
+    F := GetParentForm(TControl(Owner))
+  else
+    F := nil;
   if F <> nil then
     Result := F.Handle
   else if Assigned(Owner) and (Owner is TWinControl) then
