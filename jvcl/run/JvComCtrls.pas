@@ -52,10 +52,10 @@ const
   JvDefPageControlBorder = 4;
   TVM_SETLINECOLOR = TV_FIRST + 40;
   TVM_GETLINECOLOR = TV_FIRST + 41;
-{$IFDEF BCB6}
+  {$IFDEF BCB6}
   {$EXTERNALSYM TVM_SETLINECOLOR}
   {$EXTERNALSYM TVM_GETLINECOLOR}
-{$ENDIF}
+  {$ENDIF BCB6}
 
 type
   TJvIPAddress = class;
@@ -68,7 +68,7 @@ type
   TJvIPAddressRange = class(TPersistent)
   private
     FControl: TWinControl;
-    FRange: array[0..3] of TJvIPAddressMinMax;
+    FRange: array [0..3] of TJvIPAddressMinMax;
     function GetMaxRange(Index: Integer): Byte;
     function GetMinRange(Index: Integer): Byte;
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
@@ -95,7 +95,7 @@ type
 
   TJvIPAddressValues = class(TPersistent)
   private
-    FValues: array[0..3] of Byte;
+    FValues: array [0..3] of Byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
@@ -194,17 +194,19 @@ type
     property OnStartDock;
     property OnStartDrag;
   end;
+
   // TJvHintSource is a hint enumeration type to describe how to display hints for
   // controls that have hint properties both for the main control as well as
   // for it's subitems (like a PageControl)
   // TODO: (p3) this should really be moved to JvTypes or something...
-  TJvHintSource = (
-    hsDefault,       // use default hint behaviour (i.e as regular control)
-    hsForceMain,     // use the main hint even if subitems have hints
+  TJvHintSource =
+   (
+    hsDefault, // use default hint behaviour (i.e as regular control)
+    hsForceMain, // use the main hint even if subitems have hints
     hsForceChildren, // always use subitems hints even if empty
-    hsPreferMain,    // use main control hint unless empty then use subitems hints
+    hsPreferMain, // use main control hint unless empty then use subitems hints
     hsPreferChildren // use subitems hints unless empty then use main control hint
-    );
+   );
 
   TJvPageControl = class(TPageControl)
   private
@@ -219,7 +221,7 @@ type
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
     FHintSource: TJvHintSource;
-    FReduceMemoryUse: boolean;
+    FReduceMemoryUse: Boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -227,14 +229,12 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
-    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
+    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
-    procedure SetReduceMemoryUse(const Value: boolean);
-
+    procedure SetReduceMemoryUse(const Value: Boolean);
   protected
-
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
     procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
@@ -245,11 +245,11 @@ type
     procedure UpdateTabImages;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintSource:TJvHintSource read FHintSource write FHintSource default hsDefault;
+    property HintSource: TJvHintSource read FHintSource write FHintSource default hsDefault;
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
-    property ReduceMemoryUse:boolean read FReduceMemoryUse write SetReduceMemoryUse default false;
+    property ReduceMemoryUse: Boolean read FReduceMemoryUse write SetReduceMemoryUse default False;
     property DrawTabShadow: Boolean read FDrawTabShadow write SetDrawTabShadow default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -264,6 +264,7 @@ type
 
   TJvTrackBar = class(TTrackBar)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FToolTips: Boolean;
     FToolTipSide: TJvTrackToolTipSide;
     FToolTipText: WideString;
@@ -274,7 +275,6 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FShowRange: Boolean;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -320,14 +320,16 @@ type
     procedure SetBold(const Value: Boolean);
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
-    class function CreateEnh(AOwner: TTreeNodes) : TJvTreeNode;
+    class function CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
     property Checked: Boolean read GetChecked write SetChecked;
     property Bold: Boolean read GetBold write SetBold;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
   end;
 
-  TPageChangedEvent = procedure (Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
-  TJvTreeViewComparePageEvent = procedure (Sender: TObject; Page:TTabSheet; Node:TTreeNode; var Matches:boolean) of object;
+  TPageChangedEvent = procedure(Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
+  TJvTreeViewComparePageEvent = procedure(Sender: TObject; Page: TTabSheet;
+    Node: TTreeNode; var Matches: Boolean) of object;
+
   TJvTreeView = class(TTreeView)
   private
     FAutoDragScroll: Boolean;
@@ -358,7 +360,7 @@ type
     function GetSelectedItem(Index: Integer): TTreeNode;
     {$IFNDEF COMPILER6_UP}
     procedure SetMultiSelect(const Value: Boolean);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetScrollDirection(const Value: Integer);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
@@ -368,18 +370,18 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetCheckBoxes(const Value: Boolean);
-    function GetItemHeight: integer;
-    procedure SetItemHeight(Value: integer);
+    function GetItemHeight: Integer;
+    procedure SetItemHeight(Value: Integer);
     function GetInsertMarkColor: TColor;
     procedure SetInsertMarkColor(Value: TColor);
     function GetLineColor: TColor;
     procedure SetLineColor(Value: TColor);
-    function GetMaxScrollTime: integer;
-    procedure SetMaxScrollTime(const Value: integer);
-    function GetUseUnicode: boolean;
-    procedure SetUseUnicode(const Value: boolean);
+    function GetMaxScrollTime: Integer;
+    procedure SetMaxScrollTime(const Value: Integer);
+    function GetUseUnicode: Boolean;
+    procedure SetUseUnicode(const Value: Boolean);
   protected
-    function DoComparePage(Page: TTabSheet; Node: TTreeNode): boolean;virtual;
+    function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
@@ -415,16 +417,16 @@ type
     procedure SetChecked(Node: TTreenode; Value: Boolean);
     procedure SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
     function GetNodePopup(Node: TTreeNode): TPopupMenu;
-    procedure InsertMark(Node: TTreeNode; MarkAfter: boolean); // TVM_SETINSERTMARK
+    procedure InsertMark(Node: TTreeNode; MarkAfter: Boolean); // TVM_SETINSERTMARK
     procedure RemoveMark;
     property InsertMarkColor: TColor read GetInsertMarkColor write SetInsertMarkColor;
-    property Checked[Node: TTreeNode]: boolean read GetChecked write SetChecked;
-    property MaxScrollTime: integer read GetMaxScrollTime write SetMaxScrollTime;
+    property Checked[Node: TTreeNode]: Boolean read GetChecked write SetChecked;
+    property MaxScrollTime: Integer read GetMaxScrollTime write SetMaxScrollTime;
     // UseUnicode should only be changed on Win95 and Win98 that has IE5 or later installed
-    property UseUnicode: boolean read GetUseUnicode write SetUseUnicode default false;
+    property UseUnicode: Boolean read GetUseUnicode write SetUseUnicode default False;
   published
     property LineColor: TColor read GetLineColor write SetLineColor default clDefault;
-    property ItemHeight: integer read GetItemHeight write SetItemHeight default 16;
+    property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
 
@@ -438,8 +440,8 @@ type
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
     {$IFNDEF COMPILER6_UP}
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
-    {$ENDIF}
-    property OnComparePage:TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
+    {$ENDIF COMPILER6_UP}
+    property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -456,7 +458,7 @@ uses
 const
   TVIS_CHECKED = $2000;
 
-  // === TJvIPAddressRange =====================================================
+// === TJvIPAddressRange =====================================================
 
 constructor TJvIPAddressRange.Create(Control: TWinControl);
 var
@@ -843,8 +845,8 @@ end;
 procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
   const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
 var
-  imageindex: Integer;
-  r: TRect;
+  ImageIndex: Integer;
+  R: TRect;
   S: string;
 begin
   if not Pages[TabIndex].Enabled then
@@ -853,24 +855,23 @@ begin
     Canvas.Font.Style := [fsBold];
   if DefaultDraw then
     Exit;
-  r := Rect;
-  Canvas.Fillrect(r);
-  imageindex := GetImageIndex(tabindex);
-  if (imageindex >= 0) and Assigned(Images) then
+  R := Rect;
+  Canvas.FillRect(R);
+  ImageIndex := GetImageIndex(TabIndex);
+  if (ImageIndex >= 0) and Assigned(Images) then
   begin
-    SaveDC(canvas.handle);
-    images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      imageindex,
-      Pages[TabIndex].enabled);
+    SaveDC(Canvas.Handle);
+    Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
+      ImageIndex, Pages[TabIndex].Enabled);
     // images.draw fouls the canvas colors if it draws
     // the image disabled, thus the SaveDC/RestoreDC
-    RestoreDC(canvas.handle, -1);
-    R.Left := R.Left + images.Width + 4;
+    RestoreDC(Canvas.Handle, -1);
+    R.Left := R.Left + Images.Width + 4;
   end;
   S := Pages[TabIndex].Caption;
-  InflateRect(r, -2, -2);
-  // (p3) TODO: draw rotated when TabPosition in tbLeft,tbRight
-  DrawText(Canvas.Handle, PChar(S), Length(S), r, DT_SINGLELINE or DT_LEFT or DT_TOP);
+  InflateRect(R, -2, -2);
+  // (p3) TODO: draw rotated when TabPosition in tbLeft, tbRight
+  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_LEFT or DT_TOP);
 end;
 
 procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
@@ -898,10 +899,9 @@ begin
   ImageIndex := GetImageIndex(TabIndex);
   if (ImageIndex >= 0) and Assigned(Images) then
   begin
-    SaveDC(canvas.handle);
+    SaveDC(Canvas.Handle);
     Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-      ImageIndex,
-      Pages[TabIndex].Enabled);
+      ImageIndex, Pages[TabIndex].Enabled);
     RestoreDC(Canvas.Handle, -1);
     R.Left := R.Left + Images.Width + 4;
   end;
@@ -1000,7 +1000,7 @@ end;
 procedure TJvPageControl.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   hi: TTCHitTestInfo;
-  tabindex: Integer;
+  TabIndex: Integer;
 begin
   if csDesigning in ComponentState then
   begin
@@ -1010,9 +1010,9 @@ begin
   hi.pt.x := Msg.XPos;
   hi.pt.y := Msg.YPos;
   hi.flags := 0;
-  tabindex := Perform(TCM_HITTEST, 0, Longint(@hi));
-  if (tabindex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
-    if not Pages[tabindex].Enabled then
+  TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
+  if (TabIndex >= 0) and ((hi.flags and TCHT_ONITEM) <> 0) then
+    if not Pages[TabIndex].Enabled then
     begin
       Msg.Result := 0;
       Exit;
@@ -1071,8 +1071,8 @@ end;
 
 procedure TJvTrackBar.InternalSetToolTipSide;
 const
-  ToolTipSides: array[TJvTrackToolTipSide] of DWORD =
-  (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
+  ToolTipSides: array [TJvTrackToolTipSide] of DWORD =
+    (TBTS_LEFT, TBTS_TOP, TBTS_RIGHT, TBTS_BOTTOM);
 begin
   if HandleAllocated and (GetComCtlVersion >= ComCtlVersionIE3) then
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
@@ -1096,8 +1096,8 @@ begin
     FOnMouseLeave(Self);
 end;
 
-procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if Assigned(FOnChanged) then
@@ -1153,7 +1153,7 @@ end;
 
 // === TJvTreeNode ===========================================================
 
-class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes) : TJvTreeNode;
+class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
   Result := Create(AOwner);
   Result.FPopupMenu := TPopupMenu.Create(AOwner.Owner);
@@ -1331,7 +1331,7 @@ end;
 procedure TJvTreeView.DoEnter;
 begin
   InvalidateSelectedItems;
-  inherited;
+  inherited DoEnter;
 end;
 
 procedure TJvTreeView.DoExit;
@@ -1354,7 +1354,8 @@ begin
     Exit;
   if Y < AutoScrollMargin then
     ScrollDirection := -1
-  else if Y > ClientHeight - AutoScrollMargin then
+  else
+  if Y > ClientHeight - AutoScrollMargin then
     ScrollDirection := 1
   else
     ScrollDirection := 0;
@@ -1419,7 +1420,8 @@ begin
         Canvas.Font.Color := clHighlightText;
         Canvas.Brush.Color := clHighlight;
       end
-      else if not HideSelection then
+      else
+      if not HideSelection then
       begin
         Canvas.Font.Color := Font.Color;
         Canvas.Brush.Color := clInactiveBorder;
@@ -1480,7 +1482,7 @@ begin
     ResetPostOperationFlags;
     if not (ssAlt in Shift) then
     begin
-      if (Key = VK_SPACE) then
+      if Key = VK_SPACE then
         SelectItem(Selected, IsNodeSelected(Selected))
       else
       begin
@@ -1495,7 +1497,7 @@ end;
 
 procedure TJvTreeView.KeyPress(var Key: Char);
 begin
-  if FMultiSelect and (Key = #32) then
+  if FMultiSelect and (Key = ' ') then
     Key := #0
   else
     inherited KeyPress(Key);
@@ -1531,7 +1533,8 @@ procedure TJvTreeView.SelectItem(Node: TTreeNode; Unselect: Boolean);
 begin
   if Unselect then
     FSelectedList.Remove(Node)
-  else if not IsNodeSelected(Node) then
+  else
+  if not IsNodeSelected(Node) then
     FSelectedList.Add(Node);
   if HandleAllocated then
     InvalidateNode(Node);
@@ -1555,7 +1558,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
 begin
   if FMultiSelect <> Value then
@@ -1565,7 +1567,7 @@ begin
     ClearSelection;
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
 begin
@@ -1578,7 +1580,8 @@ begin
   begin
     if Value = 0 then
       KillTimer(Handle, AutoScrollTimerID)
-    else if (Value <> 0) and (FScrollDirection = 0) then
+    else
+    if (Value <> 0) and (FScrollDirection = 0) then
       SetTimer(Handle, AutoScrollTimerID, 200, nil);
     FScrollDirection := Value;
   end;
@@ -1663,12 +1666,12 @@ begin
     end;
 end;
 
-function TJvTreeView.DoComparePage(Page:TTabSheet;Node:TTreeNode):boolean;
+function TJvTreeView.DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean;
 begin
- if Assigned(FOnComparePage) then
-   FOnComparePage(Self, Page, Node, Result)
- else
-  Result := AnsiCompareText(Page.Caption, Node.Text) = 0;
+  if Assigned(FOnComparePage) then
+    FOnComparePage(Self, Page, Node, Result)
+  else
+    Result := AnsiCompareText(Page.Caption, Node.Text) = 0;
 end;
 
 procedure TJvTreeView.WMTimer(var Msg: TWMTimer);
@@ -1681,8 +1684,10 @@ begin
     if Assigned(DragImages) then
       DragImages.HideDragImage;
     case FScrollDirection of
-      -1: SendMessage(Handle, WM_VSCROLL, SB_LINEUP, 0);
-      1: SendMessage(Handle, WM_VSCROLL, SB_LINEDOWN, 0);
+      -1:
+        SendMessage(Handle, WM_VSCROLL, SB_LINEUP, 0);
+      1:
+        SendMessage(Handle, WM_VSCROLL, SB_LINEDOWN, 0);
     end;
     if Assigned(DragImages) then
       DragImages.ShowDragImage;
@@ -1765,7 +1770,7 @@ begin
   end;
 end;
 
-function TJvTreeView.GetItemHeight: integer;
+function TJvTreeView.GetItemHeight: Integer;
 begin
   if HandleAllocated then
     Result := SendMessage(Handle, TVM_GETITEMHEIGHT, 0, 0)
@@ -1773,7 +1778,7 @@ begin
     Result := 16;
 end;
 
-procedure TJvTreeView.SetItemHeight(Value: integer);
+procedure TJvTreeView.SetItemHeight(Value: Integer);
 begin
   if Value <= 0 then
     Value := 16;
@@ -1799,15 +1804,13 @@ begin
   end;
 end;
 
-procedure TJvTreeView.InsertMark(Node: TTreeNode; MarkAfter: boolean);
+procedure TJvTreeView.InsertMark(Node: TTreeNode; MarkAfter: Boolean);
 begin
   if HandleAllocated then
-  begin
     if Node = nil then
       RemoveMark
     else
-      SendMessage(Handle, TVM_SETINSERTMARK, integer(MarkAfter), integer(Node.ItemId));
-  end;
+      SendMessage(Handle, TVM_SETINSERTMARK, Integer(MarkAfter), Integer(Node.ItemId));
 end;
 
 procedure TJvTreeView.RemoveMark;
@@ -1834,7 +1837,7 @@ begin
   end;
 end;
 
-function TJvTreeView.GetMaxScrollTime: integer;
+function TJvTreeView.GetMaxScrollTime: Integer;
 begin
   if HandleAllocated then
     Result := SendMessage(Handle, TVM_GETSCROLLTIME, 0, 0)
@@ -1842,38 +1845,40 @@ begin
     Result := -1;
 end;
 
-procedure TJvTreeView.SetMaxScrollTime(const Value: integer);
+procedure TJvTreeView.SetMaxScrollTime(const Value: Integer);
 begin
   if HandleAllocated then
     SendMessage(Handle, TVM_SETSCROLLTIME, Value, 0);
 end;
 
-function TJvTreeView.GetUseUnicode: boolean;
+function TJvTreeView.GetUseUnicode: Boolean;
 begin
   if HandleAllocated then
-    Result := boolean(SendMessage(Handle, TVM_GETUNICODEFORMAT, 0, 0))
+    Result := Boolean(SendMessage(Handle, TVM_GETUNICODEFORMAT, 0, 0))
   else
-    Result := false;
+    Result := False;
 end;
 
-procedure TJvTreeView.SetUseUnicode(const Value: boolean);
+procedure TJvTreeView.SetUseUnicode(const Value: Boolean);
 begin
   // only try to change value if not running on NT platform
   // (see MSDN: CCM_SETUNICODEFORMAT explanation for details)
   if HandleAllocated and (Win32Platform <> VER_PLATFORM_WIN32_NT) then
-    SendMessage(Handle, TVM_SETUNICODEFORMAT, integer(Value), 0);
+    SendMessage(Handle, TVM_SETUNICODEFORMAT, Integer(Value), 0);
 end;
 
-procedure TJvPageControl.CMHintShow(var Message: TMessage);
+procedure TJvPageControl.CMHintShow(var Msg: TMessage);
 var
-  TabNo:integer;
-  Tab:TTabsheet;
+  TabNo: Integer;
+  Tab: TTabsheet;
 begin
   inherited;
 
-  if FHintSource = hsDefault then Exit;
+  if FHintSource = hsDefault then
+    Exit;
 
-  if TCMHintShow(Message).Result = 1 then Exit;
+  if TCMHintShow(Msg).Result = 1 then
+    Exit;
 (*
     hsDefault,    // use default hint behaviour (i.e as regular control)
     hsForceMain,  // use the main controls hint even if subitems have hints
@@ -1883,34 +1888,37 @@ begin
     );
 *)
 
-  with TCMHintShow(Message) do
+  with TCMHintShow(Msg) do
   begin
-    if (Result = 1) or (Self <> HintInfo^.HintControl) then Exit; // strange, hint requested by other component. Why should we deal with it?
+    if (Result = 1) or (Self <> HintInfo^.HintControl) then
+      Exit; // strange, hint requested by other component. Why should we deal with it?
     with HintInfo^.CursorPos do
       TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
 
     if (TabNo >= 0) and (TabNo < PageCount) then
-       Tab := Pages[TabNo]
+      Tab := Pages[TabNo]
     else
       Tab := nil;
     if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
       HintInfo^.HintStr := GetShortHint(Hint)
-    else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> ''))) then
+    else
+    if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
+      (GetShortHint(Tab.Hint) <> ''))) then
       HintInfo^.HintStr := GetShortHint(Tab.Hint)
   end;
 end;
 
 type
-  TAccessTabSheet = class(TTabSheet);
+  THackTabSheet = class(TTabSheet);
 
 function TJvPageControl.CanChange: Boolean;
 begin
   Result := inherited CanChange;
   if Result and (ActivePage <> nil) and ReduceMemoryUse then
-    TAccessTabSheet(ActivePage).DestroyHandle;
+    THackTabSheet(ActivePage).DestroyHandle;
 end;
 
-procedure TJvPageControl.SetReduceMemoryUse(const Value: boolean);
+procedure TJvPageControl.SetReduceMemoryUse(const Value: Boolean);
 begin
   FReduceMemoryUse := Value;
 end;

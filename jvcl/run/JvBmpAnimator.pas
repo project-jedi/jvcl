@@ -45,7 +45,6 @@ uses
   {$ENDIF VisualCLX}
   JvComponent;
 
-
 type
   TJvAnimateDirection = (tdForward, tdBack, tdFwdBack, tdBackFwd);
 

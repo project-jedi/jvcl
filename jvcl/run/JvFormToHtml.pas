@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, Forms, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

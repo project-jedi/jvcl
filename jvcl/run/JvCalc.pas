@@ -97,7 +97,7 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure CopyItemClick(Sender: TObject);
     procedure PasteItemClick(Sender: TObject);
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
   protected
     procedure OkClick(Sender: TObject);
     procedure CancelClick(Sender: TObject);
@@ -119,7 +119,7 @@ uses
   Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
-{$R ..\resources\JvCalc.res}
+{$R ..\Resources\JvCalc.res}
 
 type
   TCalcBtnKind =
@@ -184,7 +184,7 @@ type
     FKind: TCalcBtnKind;
     FFontChanging: Boolean;
   protected
-    procedure CMParentFontChanged(var Message: TMessage); message CM_PARENTFONTCHANGED;
+    procedure CMParentFontChanged(var Msg: TMessage); message CM_PARENTFONTCHANGED;
   public
     constructor CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
     property Kind: TCalcBtnKind read FKind;
@@ -201,7 +201,7 @@ begin
     Tag := -1;
 end;
 
-procedure TJvCalcButton.CMParentFontChanged(var Message: TMessage);
+procedure TJvCalcButton.CMParentFontChanged(var Msg: TMessage);
 
   function BtnColor(Kind: TCalcBtnKind): TColor;
   begin
@@ -343,7 +343,7 @@ type
     function GetDisplay: Double;
     procedure UpdateMemoryLabel;
     function FindButton(Key: Char): TJvSpeedButton;
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure BtnClick(Sender: TObject);
   protected
     procedure TextChanged; virtual;
@@ -534,7 +534,7 @@ begin
   end;
 end;
 
-procedure TJvCalculatorPanel.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCalculatorPanel.CMCtl3DChanged(var Msg: TMessage);
 const
   Ctl3DStyle: array [Boolean] of TButtonStyle = (bsWin31, bsNew);
   Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
@@ -802,7 +802,7 @@ end;
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
   private
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -818,7 +818,7 @@ begin
   TabStop := False;
 end;
 
-procedure TJvLocCalculator.CMEnabledChanged(var Message: TMessage);
+procedure TJvLocCalculator.CMEnabledChanged(var Msg: TMessage);
 begin
   if HandleAllocated and not (csDesigning in ComponentState) then
     EnableWindow(Handle, True);
@@ -1149,7 +1149,7 @@ begin
   end;
 end;
 
-procedure TJvCalculatorForm.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCalculatorForm.CMCtl3DChanged(var Msg: TMessage);
 const
   Ctl3DBevel: array [Boolean] of TPanelBevel = (bvNone, bvLowered);
 begin

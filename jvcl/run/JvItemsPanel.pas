@@ -74,7 +74,7 @@ type
     procedure SetOrientation(const Value: TJvPanelOrientation);
   protected
     {$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     {$ENDIF COMPILER6_UP}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;

@@ -40,7 +40,7 @@ interface
 {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 {$IFDEF VisualCLX}
- {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
+  {$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 {$ENDIF VisualCLX}
 
 uses
@@ -491,7 +491,7 @@ end;
 
 procedure TJvCaptionPanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
-  case FDrawPosition of //
+  case FDrawPosition of
     dpLeft:
       Rect := Classes.Rect(FCaptionWidth + FCaptionOffsetSmall, 0, ClientWidth, ClientHeight);
     dpTop:
@@ -500,7 +500,7 @@ begin
       Rect := Classes.Rect(0, 0, ClientWidth - FCaptionWidth - FCaptionOffsetSmall, ClientHeight);
     dpBottom:
       Rect := Classes.Rect(0, 0, ClientWidth, ClientHeight - FCaptionWidth - FCaptionOffsetSmall);
-  end; //case
+  end;
   inherited AlignControls(AControl, Rect);
 end;
 
@@ -584,8 +584,8 @@ end;
 procedure TJvCaptionPanel.DrawRotatedText(Rotation: Integer);
 var
   {$IFDEF VCL}
-  lf: TLogFont;
-  tf: TFont;
+  Lf: TLogFont;
+  Tf: TFont;
   Flags: Integer;
   {$ENDIF VCL}
   R: TRect;
@@ -602,17 +602,17 @@ begin
     with Canvas do
     begin
       {$IFDEF VCL}
-      tf := TFont.Create;
+      Tf := TFont.Create;
       try
-        tf.Assign(CaptionFont);
-        GetObject(tf.Handle, SizeOf(lf), @lf);
-        lf.lfEscapement := Rotation * 10;
-        lf.lfOrientation := Rotation * 10;
-        lf.lfOutPrecision := OUT_TT_PRECIS;
-        tf.Handle := CreateFontIndirect(lf);
-        Canvas.Font.Assign(tf);
+        Tf.Assign(CaptionFont);
+        GetObject(Tf.Handle, SizeOf(Lf), @Lf);
+        Lf.lfEscapement := Rotation * 10;
+        Lf.lfOrientation := Rotation * 10;
+        Lf.lfOutPrecision := OUT_TT_PRECIS;
+        Tf.Handle := CreateFontIndirect(Lf);
+        Canvas.Font.Assign(Tf);
       finally
-        tf.Free;
+        Tf.Free;
       end;
       {$ENDIF VCL}
       R := FCaptionRect;
@@ -825,28 +825,32 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     {$IFDEF VCL}
     SetCapture(Handle);
     {$ELSE}
     SetMouseGrabControl(Self);
     {$ENDIF VCL}
     FAnchorPos := Point(X, Y);
-   {$ELSE}
+    {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 
 {$IFDEF VCL}
 procedure TJvCaptionPanel.WMSize(var Msg: TWMNoParams);
-{$ELSE}
-procedure TJvCaptionPanel.BoundsChanged;
-{$ENDIF}
 begin
   inherited;
   Repaint;
 end;
+{$ELSE}
+procedure TJvCaptionPanel.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  Repaint;
+end;
+{$ENDIF VCL}
 
 function TJvCaptionPanel.CanStartDrag: Boolean;
 begin

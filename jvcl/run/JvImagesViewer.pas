@@ -28,6 +28,7 @@ unit JvImagesViewer;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
@@ -37,7 +38,6 @@ uses
   {$IFDEF VisualCLX}
   Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvCustomItemViewer;
 
 type
@@ -415,11 +415,11 @@ var
   end;
 begin
   inherited;
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     BottomRightShift := 1
   else
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
     BottomRightShift := 0;
   AItem := Items[Index];
   Canvas.Font := Font;
@@ -520,7 +520,7 @@ function TJvImagesViewer.LoadImages: boolean;
 var
   i, j: integer;
   F: TSearchRec;
-  Files, FileMasks: TStringlist;
+  Files, FileMasks: TStringList;
   tmpDir: string;
 begin
   BeginUpdate;
@@ -539,12 +539,12 @@ begin
         Files.Sorted := true;
         for i := 0 to FileMasks.Count - 1 do
         begin
-          if FindFirst(tmpDir + FileMasks[i], faAnyFile, F) = 0 then
+          if SysUtils.FindFirst(tmpDir + FileMasks[i], faAnyFile, F) = 0 then
           try
             repeat
               if F.Attr and faDirectory = 0 then
                 Files.Add(tmpDir + F.Name);
-            until FindNext(F) <> 0;
+            until SysUtils.FindNext(F) <> 0;
             Count := Files.Count;
             j := 0;
             while j < Files.Count do
@@ -553,7 +553,7 @@ begin
               Inc(j);
             end;
           finally
-            FindClose(F);
+            SysUtils.FindClose(F);
           end;
         end;
       finally

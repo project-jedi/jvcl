@@ -39,10 +39,10 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Dialogs,
   ExtCtrls, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QDialogs, QExtCtrls, QStdCtrls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -66,7 +66,7 @@ type
     FOnChangeColor: TJvChangeColorEvent;
     {$IFDEF VCL}
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure Exchange(Sender: TObject);
@@ -77,7 +77,7 @@ type
   {$IFDEF VisualCLX}
   protected
     procedure AdjustSize; override;
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -95,12 +95,12 @@ implementation
 uses
   JvResources;
 
-{$IFDEF WINDOWS}
-{$R ..\resources\JvGammaPanel.res}
-{$ENDIF}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvGammaPanel.res}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvGammaPanel.res}
-{$ENDIF}
+{$ENDIF LINUX}
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
@@ -391,10 +391,10 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvGammaPanel.AdjustSize;
-{$ENDIF}
+{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvGammaPanel.WMSize(var Msg: TWMSize);
-{$ENDIF}
+{$ENDIF VCL}
 begin
   Width := 65;
   Height := 250;
