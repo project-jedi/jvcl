@@ -1,6 +1,10 @@
 Changelog for JVCL 3.0
 ======================
 2003-08-17:
+- Added Images, ImageList and Spacing to TJvCustomLabel
+- Moved code from TJvLabel to TJvCustomLabel
+
+2003-08-17:
 - Renamed/Moved duplicate identifiers:
   * TDaysOfWeek -> moved to JvTypes
   * JvxCtrls.TJvButtonGlyph -> JvxCtrls.TJvxButtonGlyph

@@ -17,13 +17,22 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
+  Peter Thornqvist [peter3@peter3.com]
 
-Last Modified: 2002-07-04
+Last Modified: 2003-08-17
+
+Changes:
+2003-08-17:
+  * All implementation moved from TJvLabel to TJvCustomLabel. TJvLabel now only publishes
+    properties and events.
+  * Added Images and ImageIndex support to TJvCustomLabel. Currently, images are always displayed to the left
+   of the text. Spacing between image and text is set with Spacing.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+* Images are only displayed in TJvCustomLabel if Angle = 0.
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -38,8 +47,8 @@ uses
   RTLConsts,
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
-  Buttons, Menus, IniFiles,
-  JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer;
+  Buttons, Menus, IniFiles, ImgList,
+  JvTimer, JvConsts, JvFormPlacement, JvComponent, JVCLVer, JvTypes;
 
 type
   TPositiveInt = 1..MaxInt;
@@ -386,6 +395,20 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
+    FImageIndex: TImageIndex;
+    FImages: TCustomImageList;
+    FChangeLink:TChangeLink;
+    FOnCtl3DChanged: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
+    FHotTrack: Boolean;
+    FHotTrackFont: TFont;
+    FFontSave: TFont;
+    FHintColor: TColor;
+    FHintSaved: TColor;
+    FAutoOpenURL: boolean;
+    FURL: string;
+    FAngle: TJvLabelRotateAngle;
+    FSpacing: integer;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -411,8 +434,17 @@ type
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMVisibleChanged(var Msg: TMessage); message CM_VISIBLECHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
+    procedure SetImageIndex(const Value: TImageIndex);
+    procedure SetImages(const Value: TCustomImageList);
+    procedure DoImagesChange(Sender:TObject);
+    procedure DrawAngleText(Flags: Word);
+    procedure SetAngle(const Value: TJvLabelRotateAngle);
+    procedure SetHotTrackFont(const Value: TFont);
+    procedure SetSpacing(const Value: integer);
   protected
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
@@ -426,12 +458,25 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Click; override;
     procedure Paint; override;
     procedure MouseEnter; dynamic;
     procedure MouseLeave; dynamic;
+    function GetImageWidth:integer;virtual;
+    function GetImageHeight:integer;virtual;
+    property Angle: TJvLabelRotateAngle read FAngle write SetAngle default 0;
+    property AutoOpenURL: boolean read FAutoOpenURL write FAutoOpenURL;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
+    property Images:TCustomImageList read FImages write SetImages;
+    property ImageIndex:TImageIndex read FImageIndex write SetImageIndex;
+    // specifies the offset between the right edge of the image and the left edge of the text (in pixels)
+    property Spacing:integer read FSpacing write SetSpacing default 4;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property LeftMargin: Integer read FLeftMargin write SetLeftMargin default 0;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 0;
@@ -441,11 +486,15 @@ type
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
+    property URL: string read FURL write FURL;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property Canvas;
     property MouseInControl: Boolean read FMouseInControl;
   published
@@ -645,12 +694,12 @@ type
     FInactiveGrayed: Boolean;
     FMenuTracking: Boolean;
     FRepeatTimer: TTimer;
-    FAllowTimer: Boolean;
+    FAllowTimer, FOver: Boolean;
     FInitRepeatPause: Word;
     FRepeatPause: Word;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FHotTrack,FOver: Boolean;
+    FHotTrack: Boolean;
     FHotGlyph: TBitmap;
     FOldGlyph: TBitmap;
     FHintColor: TColor;
@@ -824,7 +873,7 @@ type
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
   end;
 
-  TJvButtonGlyph = class
+  TJvxButtonGlyph = class
   private
     FOriginal: TBitmap;
     FGlyphList: TImageList;
@@ -889,7 +938,7 @@ implementation
 
 uses
   SysUtils, Consts, Math,
-  ImgList, ActnList,
+  ActnList,
   {$IFDEF JVCLThemesEnabled}
   Themes,
   {$ENDIF}
@@ -2646,15 +2695,30 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csOpaque];
-  ControlStyle := ControlStyle + [csReplicatable];
+  FChangeLink := TChangeLink.Create;
+  FChangeLink.OnChange := DoImagesChange;
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  FHotTrack := False;
+  // (rom) needs better font handling
+  FHotTrackFont := TFont.Create;
+  FFontSave := TFont.Create;
+  FHintColor := clInfoBk;
   Width := 65;
   Height := 17;
   FAutoSize := True;
+  FSpacing := 4;
   FShowAccelChar := True;
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
   FShadowPos := spLeftTop;
+end;
+
+destructor TJvCustomLabel.Destroy;
+begin
+  FChangeLink.Free;
+  FHotTrackFont.Free;
+  FFontSave.Free;
+  inherited;
 end;
 
 function TJvCustomLabel.GetLabelCaption: string;
@@ -2696,11 +2760,75 @@ begin
     Canvas.Font.Color := clGrayText;
     ColorShadow := clBtnHighlight;
   end;
+  if Images <> nil then
+  begin
+    Inc(Rect.Left, GetImageWidth + Spacing);
+    if Flags and DT_CALCRECT = 0 then
+      Images.Draw(Canvas, 0,0,ImageIndex);
+  end;
   DrawShadowText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags,
     SizeShadow, ColorToRGB(ColorShadow), PosShadow);
 end;
 
+procedure TJvCustomLabel.DrawAngleText(Flags: Word);
+var
+  Text: array[0..4096] of Char;
+  LogFont, NewLogFont: TLogFont;
+  NewFont: HFont;
+  MRect: TRect;
+  TextX, TextY: Integer;
+  Phi: Real;
+  Angle10: Integer;
+begin
+  Angle10 := Angle * 10;
+  GetTextBuf(Text, SizeOf(Text));
+  if (Flags and DT_CALCRECT <> 0) and ((Text[0] = #0) or ShowAccelChar and
+    (Text[0] = '&') and (Text[1] = #0)) then
+    StrCopy(Text, ' ');
+  Canvas.Font := Font;
+  if GetObject(Font.Handle, SizeOf(TLogFont), @LogFont) = 0 then
+    RaiseLastOSError;
+  NewLogFont := LogFont;
+  MRect := ClientRect;
+  NewLogFont.lfEscapement := Angle10;
+  NewLogFont.lfOutPrecision := OUT_TT_ONLY_PRECIS;
+  NewFont := CreateFontIndirect(NewLogFont);
+  {
+    (p3) unnecessary
+    OldFont := SelectObject(Canvas.Font.Handle, NewFont);
+    DeleteObject(OldFont);
+    ...this does the same thing:
+  }
+  Canvas.Font.Handle := NewFont;
+  Phi := Angle10 * Pi / 1800;
+  if not AutoSize then
+  begin
+    TextX := Trunc(0.5 * ClientWidth - 0.5 * Canvas.TextWidth(Text) * Cos(Phi) - 0.5 * Canvas.TextHeight(Text) *
+      Sin(Phi));
+    TextY := Trunc(0.5 * ClientHeight - 0.5 * Canvas.TextHeight(Text) * Cos(Phi) + 0.5 * Canvas.TextWidth(Text) *
+      Sin(Phi));
+  end
+  else
+  begin
+    ClientWidth := 4 + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)) + Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+    ClientHeight := 4 + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)) + Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+    TextX := 2;
+    if (Angle10 > 900) and (Angle10 < 2700) then
+      TextX := TextX + Trunc(Canvas.TextWidth(Text) * Abs(Cos(Phi)));
+    if Angle10 > 1800 then
+      TextX := TextX + Trunc(Canvas.TextHeight(Text) * Abs(Sin(Phi)));
+    TextY := 2;
+    if Angle10 < 1800 then
+      TextY := TextY + Trunc(Canvas.TextWidth(Text) * Abs(Sin(Phi)));
+    if (Angle10 > 900) and (Angle10 < 2700) then
+      TextY := TextY + Trunc(Canvas.TextHeight(Text) * Abs(Cos(Phi)));
+  end;
+  Canvas.TextOut(TextX, TextY, Text);
+end;
+
 procedure TJvCustomLabel.Paint;
+const
+  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   Rect: TRect;
   DrawStyle: Integer;
@@ -2716,23 +2844,30 @@ begin
       FillRect(ClientRect);
     end;
     Brush.Style := bsClear;
-    Rect := ClientRect;
-    Inc(Rect.Left, FLeftMargin);
-    Dec(Rect.Right, FRightMargin);
-    InflateRect(Rect, -1, 0);
-    DrawStyle := DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[FAlignment];
-    { Calculate vertical layout }
-    if FLayout <> tlTop then
+    if Angle <> 0 then
+      DrawAngleText(DT_EXPANDTABS or DT_WORDBREAK or Alignments[Alignment])
+    else
     begin
-      DoDrawText(Rect, DrawStyle or DT_CALCRECT);
-      Rect.Left := ClientRect.Left + FLeftMargin;
-      Rect.Right := ClientRect.Right - FRightMargin;
-      if FLayout = tlBottom then
-        OffsetRect(Rect, 0, Height - Rect.Bottom)
-      else
-        OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2);
+      Rect := ClientRect;
+      Inc(Rect.Left, FLeftMargin);
+      Dec(Rect.Right, FRightMargin);
+      InflateRect(Rect, -1, 0);
+      DrawStyle := DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[FAlignment];
+      { Calculate vertical layout }
+      if FLayout <> tlTop then
+      begin
+        DoDrawText(Rect, DrawStyle or DT_CALCRECT);
+        Rect.Left := ClientRect.Left + FLeftMargin;
+        Rect.Right := ClientRect.Right - FRightMargin;
+//        if Images <> nil then
+//          Inc(Rect.Left,GetImageWidth + 4);
+        if FLayout = tlBottom then
+          OffsetRect(Rect, 0, Height - Rect.Bottom)
+        else
+          OffsetRect(Rect, 0, (Height - Rect.Bottom) div 2);
+      end;
+      DoDrawText(Rect, DrawStyle);
     end;
-    DoDrawText(Rect, DrawStyle);
     if FShowFocus and Assigned(FFocusControl) and FFocused and
       not (csDesigning in ComponentState) then
     begin
@@ -2768,8 +2903,11 @@ begin
     AAlignment := FAlignment;
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
-    if AAlignment = taRightJustify then
+    Rect.Bottom := Max(Rect.Bottom, Rect.Top + GetImageHeight);
+    if (AAlignment = taRightJustify) and (Images = nil) then
       Inc(X, Width - Rect.Right);
+    if Images <> nil then
+      Dec(Rect.Left,GetImageWidth + Spacing);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
 end;
@@ -2906,8 +3044,13 @@ procedure TJvCustomLabel.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FFocusControl) then
-    FocusControl := nil;
+  if (Operation = opRemove) then
+  begin
+    if (AComponent = FFocusControl) then
+      FocusControl := nil;
+    if (AComponent = Images) then
+      Images := nil;
+  end;
 end;
 
 procedure TJvCustomLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -3026,6 +3169,13 @@ begin
     Exit;
   if not FMouseInControl and Enabled and IsForegroundTask then
   begin
+    FHintSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    if HotTrack then
+    begin
+      FFontSave.Assign(Font);
+      Font.Assign(FHotTrackFont);
+    end;
     FMouseInControl := True;
     MouseEnter;
   end;
@@ -3039,10 +3189,105 @@ begin
     Exit;
   if FMouseInControl and Enabled and not FDragging then
   begin
+    Application.HintColor := FHintSaved;
+    if HotTrack then
+      Font.Assign(FFontSave);
     FMouseInControl := False;
     MouseLeave;
   end;
 end;
+
+procedure TJvCustomLabel.SetImageIndex(const Value: TImageIndex);
+begin
+  if FImageIndex <> Value then
+  begin
+    FImageIndex := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomLabel.SetImages(const Value: TCustomImageList);
+begin
+  if FImages <> Value then
+  begin
+    if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(self);
+      FImages.UnRegisterChanges(FChangeLink);
+    end;
+    FImages := Value;
+    if FImages <> nil then
+    begin
+      FImages.FreeNotification(self);
+      FImages.RegisterChanges(FChangeLink);
+    end;
+    if AutoSize then AdjustBounds else Invalidate;
+  end;
+end;
+
+function TJvCustomLabel.GetImageHeight: integer;
+begin
+  Result := 0;
+  if Images <> nil then
+    Result := Images.Height;
+end;
+
+function TJvCustomLabel.GetImageWidth: integer;
+begin
+  Result := 0;
+  if Images <> nil then
+    Result := Images.Width;
+end;
+
+procedure TJvCustomLabel.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnCtl3DChanged) then
+    FOnCtl3DChanged(Self);
+end;
+
+procedure TJvCustomLabel.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvCustomLabel.SetHotTrackFont(const Value: TFont);
+begin
+  FHotTrackFont.Assign(Value);
+end;
+
+procedure TJvCustomLabel.Click;
+begin
+  inherited;
+  if AutoOpenURL and (URL <> '') then
+    OpenObject(URL);
+end;
+
+procedure TJvCustomLabel.SetAngle(const Value: TJvLabelRotateAngle);
+begin
+  if FAngle <> Value then
+  begin
+    FAngle := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomLabel.DoImagesChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TJvCustomLabel.SetSpacing(const Value: integer);
+begin
+  if FSpacing <> Value then
+  begin
+    FSpacing := Value;
+    if AutoSize then AdjustBounds else Invalidate;
+  end;
+end;
+
 
 //=== TJvSecretPanel =========================================================
 
@@ -3725,13 +3970,13 @@ begin
   Result := FGlyphLists.Count = 0;
 end;
 
-//=== TJvButtonGlyph =========================================================
+//=== TJvxButtonGlyph =========================================================
 
 // (rom) changed to var
 var
   GlyphCache: TJvGlyphCache = nil;
 
-constructor TJvButtonGlyph.Create;
+constructor TJvxButtonGlyph.Create;
 var
   I: TJvButtonState;
 begin
@@ -3747,7 +3992,7 @@ begin
     GlyphCache := TJvGlyphCache.Create;
 end;
 
-destructor TJvButtonGlyph.Destroy;
+destructor TJvxButtonGlyph.Destroy;
 begin
   FOriginal.Free;
   Invalidate;
@@ -3759,7 +4004,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvButtonGlyph.Invalidate;
+procedure TJvxButtonGlyph.Invalidate;
 var
   I: TJvButtonState;
 begin
@@ -3774,7 +4019,7 @@ begin
   FGlyphList := nil;
 end;
 
-procedure TJvButtonGlyph.GlyphChanged(Sender: TObject);
+procedure TJvxButtonGlyph.GlyphChanged(Sender: TObject);
 var
   Glyphs: Integer;
 begin
@@ -3797,13 +4042,13 @@ begin
   end;
 end;
 
-procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
+procedure TJvxButtonGlyph.SetGlyph(Value: TBitmap);
 begin
   Invalidate;
   FOriginal.Assign(Value);
 end;
 
-procedure TJvButtonGlyph.SetNumGlyphs(Value: TJvNumGlyphs);
+procedure TJvxButtonGlyph.SetNumGlyphs(Value: TJvNumGlyphs);
 begin
   if (Value <> FNumGlyphs) and (Value > 0) then
   begin
@@ -3812,7 +4057,7 @@ begin
   end;
 end;
 
-procedure TJvButtonGlyph.SetGrayNewStyle(const Value: Boolean);
+procedure TJvxButtonGlyph.SetGrayNewStyle(const Value: Boolean);
 begin
   if Value <> FGrayNewStyle then
   begin
@@ -3821,7 +4066,7 @@ begin
   end;
 end;
 
-function TJvButtonGlyph.MapColor(Color: TColor): TColor;
+function TJvxButtonGlyph.MapColor(Color: TColor): TColor;
 var
   Index: Byte;
 begin
@@ -3836,7 +4081,7 @@ begin
   end;
 end;
 
-function TJvButtonGlyph.CreateImageGlyph(State: TJvButtonState;
+function TJvxButtonGlyph.CreateImageGlyph(State: TJvButtonState;
   Images: TImageList; Index: Integer): Integer;
 var
   TmpImage, Mask: TBitmap;
@@ -3917,7 +4162,7 @@ begin
   Result := FIndexs[State];
 end;
 
-function TJvButtonGlyph.CreateButtonGlyph(State: TJvButtonState): Integer;
+function TJvxButtonGlyph.CreateButtonGlyph(State: TJvButtonState): Integer;
 var
   TmpImage, MonoBmp: TBitmap;
   IWidth, IHeight, X, Y: Integer;
@@ -4009,7 +4254,7 @@ begin
   FOriginal.Dormant;
 end;
 
-procedure TJvButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;
+procedure TJvxButtonGlyph.DrawPopupMark(Canvas: TCanvas; X, Y: Integer;
   State: TJvButtonState);
 var
   AColor: TColor;
@@ -4050,7 +4295,7 @@ begin
   DrawMark;
 end;
 
-function TJvButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
+function TJvxButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; X, Y: Integer;
   State: TJvButtonState): TPoint;
 var
   Index: Integer;
@@ -4067,7 +4312,7 @@ begin
   end;
 end;
 
-function TJvButtonGlyph.DrawButtonImage(Canvas: TCanvas; X, Y: Integer;
+function TJvxButtonGlyph.DrawButtonImage(Canvas: TCanvas; X, Y: Integer;
   Images: TImageList; ImageIndex: Integer; State: TJvButtonState): TPoint;
 var
   Index: Integer;
@@ -4091,7 +4336,7 @@ begin
   Result := Point(Images.Width, Images.Height);
 end;
 
-procedure TJvButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string;
+procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string;
   Buffer: PChar; MaxLen, Width: Integer);
 var
   I: Integer;
@@ -4111,7 +4356,7 @@ begin
   end;
 end;
 
-procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
+procedure TJvxButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TJvButtonState; Flags: Word);
 var
   CString: array[0..255] of Char;
@@ -4135,7 +4380,7 @@ begin
     DrawText(Canvas.Handle, CString, -1, TextBounds, Flags);
 end;
 
-procedure TJvButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
+procedure TJvxButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
   var Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; var GlyphPos: TPoint; var TextBounds: TRect; Flags: Word;
   Images: TImageList; ImageIndex: Integer);
@@ -4275,7 +4520,7 @@ begin
   OffsetRect(TextBounds, TextPos.X + Client.Left, TextPos.Y + Client.Top);
 end;
 
-function TJvButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
+function TJvxButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; State: TJvButtonState; Flags: Word): TRect;
 begin
@@ -4283,7 +4528,7 @@ begin
     PopupMark, nil, -1, State, Flags);
 end;
 
-function TJvButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
+function TJvxButtonGlyph.DrawEx(Canvas: TCanvas; const Client: TRect;
   const Caption: string; Layout: TButtonLayout; Margin, Spacing: Integer;
   PopupMark: Boolean; Images: TImageList; ImageIndex: Integer;
   State: TJvButtonState; Flags: Word): TRect;
@@ -4401,7 +4646,7 @@ end;
 
 constructor TJvButtonImage.Create;
 begin
-  FGlyph := TJvButtonGlyph.Create;
+  FGlyph := TJvxButtonGlyph.Create;
   NumGlyphs := 1;
   FButtonSize := Point(24, 23);
 end;
@@ -4414,47 +4659,47 @@ end;
 
 procedure TJvButtonImage.Invalidate;
 begin
-  TJvButtonGlyph(FGlyph).Invalidate;
+  TJvxButtonGlyph(FGlyph).Invalidate;
 end;
 
 function TJvButtonImage.GetNumGlyphs: TJvNumGlyphs;
 begin
-  Result := TJvButtonGlyph(FGlyph).NumGlyphs;
+  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
 end;
 
 procedure TJvButtonImage.SetNumGlyphs(Value: TJvNumGlyphs);
 begin
-  TJvButtonGlyph(FGlyph).NumGlyphs := Value;
+  TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
 end;
 
 function TJvButtonImage.GetWordWrap: Boolean;
 begin
-  Result := TJvButtonGlyph(FGlyph).WordWrap;
+  Result := TJvxButtonGlyph(FGlyph).WordWrap;
 end;
 
 procedure TJvButtonImage.SetWordWrap(Value: Boolean);
 begin
-  TJvButtonGlyph(FGlyph).WordWrap := Value;
+  TJvxButtonGlyph(FGlyph).WordWrap := Value;
 end;
 
 function TJvButtonImage.GetGlyph: TBitmap;
 begin
-  Result := TJvButtonGlyph(FGlyph).Glyph;
+  Result := TJvxButtonGlyph(FGlyph).Glyph;
 end;
 
 procedure TJvButtonImage.SetGlyph(Value: TBitmap);
 begin
-  TJvButtonGlyph(FGlyph).Glyph := Value;
+  TJvxButtonGlyph(FGlyph).Glyph := Value;
 end;
 
 function TJvButtonImage.GetAlignment: TAlignment;
 begin
-  Result := TJvButtonGlyph(FGlyph).Alignment;
+  Result := TJvxButtonGlyph(FGlyph).Alignment;
 end;
 
 procedure TJvButtonImage.SetAlignment(Value: TAlignment);
 begin
-  TJvButtonGlyph(FGlyph).Alignment := Value;
+  TJvxButtonGlyph(FGlyph).Alignment := Value;
 end;
 
 procedure TJvButtonImage.Draw(Canvas: TCanvas; X, Y, Margin, Spacing: Integer;
@@ -4482,7 +4727,7 @@ begin
     Frame3D(Canvas, Target, clBtnHighlight, clBtnShadow, 1);
     if AFont <> nil then
       Canvas.Font := AFont;
-    TJvButtonGlyph(FGlyph).DrawEx(Canvas, Target, Caption, Layout, Margin,
+    TJvxButtonGlyph(FGlyph).DrawEx(Canvas, Target, Caption, Layout, Margin,
       Spacing, False, Images, ImageIndex, rbsUp, Flags);
   finally
     Canvas.Font.Assign(SaveFont);
@@ -4509,9 +4754,9 @@ begin
   ControlStyle := ControlStyle + [csReplicatable];
   FInactiveGrayed := True;
   FDrawImage := TBitmap.Create;
-  FGlyph := TJvButtonGlyph.Create;
-  TJvButtonGlyph(FGlyph).OnChange := GlyphChanged;
-  TJvButtonGlyph(FGlyph).GrayNewStyle := True;
+  FGlyph := TJvxButtonGlyph.Create;
+  TJvxButtonGlyph(FGlyph).OnChange := GlyphChanged;
+  TJvxButtonGlyph(FGlyph).GrayNewStyle := True;
   ParentFont := True;
   ParentShowHint := False;
   ShowHint := True;
@@ -4527,7 +4772,7 @@ end;
 
 destructor TJvSpeedButton.Destroy;
 begin
-  TJvButtonGlyph(FGlyph).Free;
+  TJvxButtonGlyph(FGlyph).Free;
   Dec(ButtonCount);
   FDrawImage.Free;
   FDrawImage := nil;
@@ -4554,7 +4799,7 @@ begin
   end
   else
     State := rbsDisabled;
-  TJvButtonGlyph(FGlyph).CreateButtonGlyph(State);
+  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
 end;
 
 procedure TJvSpeedButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
@@ -4562,7 +4807,7 @@ procedure TJvSpeedButton.PaintGlyph(Canvas: TCanvas; ARect: TRect;
 begin
   if FFlatStandard and (AState = rbsInactive) then
     AState := rbsExclusive; // Polaris
-  TJvButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
+  TJvxButtonGlyph(FGlyph).Draw(Canvas, ARect, Caption, FLayout,
     FMargin, FSpacing, DrawMark, AState, DrawTextBiDiModeFlags(Alignments[Alignment]));
 end;
 
@@ -4927,51 +5172,51 @@ end;
 
 function TJvSpeedButton.GetWordWrap: Boolean;
 begin
-  Result := TJvButtonGlyph(FGlyph).WordWrap;
+  Result := TJvxButtonGlyph(FGlyph).WordWrap;
 end;
 
 procedure TJvSpeedButton.SetWordWrap(Value: Boolean);
 begin
   if Value <> WordWrap then
   begin
-    TJvButtonGlyph(FGlyph).WordWrap := Value;
+    TJvxButtonGlyph(FGlyph).WordWrap := Value;
     Invalidate;
   end;
 end;
 
 function TJvSpeedButton.GetAlignment: TAlignment;
 begin
-  Result := TJvButtonGlyph(FGlyph).Alignment;
+  Result := TJvxButtonGlyph(FGlyph).Alignment;
 end;
 
 procedure TJvSpeedButton.SetAlignment(Value: TAlignment);
 begin
   if Alignment <> Value then
   begin
-    TJvButtonGlyph(FGlyph).Alignment := Value;
+    TJvxButtonGlyph(FGlyph).Alignment := Value;
     Invalidate;
   end;
 end;
 
 function TJvSpeedButton.GetGlyph: TBitmap;
 begin
-  Result := TJvButtonGlyph(FGlyph).Glyph;
+  Result := TJvxButtonGlyph(FGlyph).Glyph;
 end;
 
 procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
 begin
-  TJvButtonGlyph(FGlyph).Glyph := Value;
+  TJvxButtonGlyph(FGlyph).Glyph := Value;
   Invalidate;
 end;
 
 function TJvSpeedButton.GetGrayNewStyle: Boolean;
 begin
-  Result := TJvButtonGlyph(FGlyph).GrayNewStyle;
+  Result := TJvxButtonGlyph(FGlyph).GrayNewStyle;
 end;
 
 function TJvSpeedButton.GetNumGlyphs: TJvNumGlyphs;
 begin
-  Result := TJvButtonGlyph(FGlyph).NumGlyphs;
+  Result := TJvxButtonGlyph(FGlyph).NumGlyphs;
 end;
 
 procedure TJvSpeedButton.SetNumGlyphs(Value: TJvNumGlyphs);
@@ -4980,9 +5225,9 @@ begin
     Value := 1
   else if Value > Ord(High(TJvButtonState)) + 1 then
     Value := Ord(High(TJvButtonState)) + 1;
-  if Value <> TJvButtonGlyph(FGlyph).NumGlyphs then
+  if Value <> TJvxButtonGlyph(FGlyph).NumGlyphs then
   begin
-    TJvButtonGlyph(FGlyph).NumGlyphs := Value;
+    TJvxButtonGlyph(FGlyph).NumGlyphs := Value;
     Invalidate;
   end;
 end;
@@ -5131,7 +5376,7 @@ procedure TJvSpeedButton.SetGrayNewStyle(const Value: Boolean);
 begin
   if GrayNewStyle <> Value then
   begin
-    TJvButtonGlyph(FGlyph).GrayNewStyle := Value;
+    TJvxButtonGlyph(FGlyph).GrayNewStyle := Value;
     Invalidate;
   end;
 end;
@@ -5199,7 +5444,7 @@ begin
   end
   else
     State := rbsDisabled;
-  TJvButtonGlyph(FGlyph).CreateButtonGlyph(State);
+  TJvxButtonGlyph(FGlyph).CreateButtonGlyph(State);
   UpdateTracking;
   Repaint;
 end;
@@ -5351,7 +5596,7 @@ end;
 
 procedure TJvSpeedButton.CMSysColorChange(var Msg: TMessage);
 begin
-  TJvButtonGlyph(FGlyph).Invalidate;
+  TJvxButtonGlyph(FGlyph).Invalidate;
   Invalidate;
 end;
 
@@ -5431,6 +5676,7 @@ procedure TJvSpeedButton.SetHotTrackFont(const Value: TFont);
 begin
   FHotTrackFont.Assign(Value);
 end;
+
 
 initialization
   GCheckBitmap := nil;
