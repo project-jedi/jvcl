@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, extctrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF GLVER_D5}, Imglist{$ENDIF};
+  ComCtrls, extctrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF COMPILER5_UP}, Imglist{$ENDIF};
 
 //const
 

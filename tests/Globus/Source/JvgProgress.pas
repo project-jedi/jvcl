@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, SysUtils, JvgTypes,
-  JvgCommClasses, JvgUtils, ExtCtrls{$IFDEF GLVER_D5}, Imglist{$ENDIF};
+  JvgCommClasses, JvgUtils, ExtCtrls{$IFDEF COMPILER5_UP}, Imglist{$ENDIF};
 type
 
   TJvgProgress = class(TGraphicControl)
@@ -76,7 +76,7 @@ type
     destructor Destroy; override;
 
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;

@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF GLVER_D4}, Imglist, flatSB{$ENDIF};
+  ComCtrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF COMPILER4_UP}, Imglist, flatSB{$ENDIF};
 
 const
   ITEM_ENABLED = integer(true);
@@ -106,7 +106,7 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-    {$IFDEF GLVER_D3}property RightClickSelect;
+    {$IFDEF COMPILER3_UP}property RightClickSelect;
     {$ENDIF}
     property DragMode;
     property HideSelection;
@@ -156,7 +156,7 @@ type
     property Images;
     property StateImages;
     property Wallpaper;
-    {$IFDEF GLVER_D5}property Options;
+    {$IFDEF COMPILER5_UP}property Options;
     {$ENDIF}
     property BoldSelection;
     property BevelSelection;
@@ -212,7 +212,7 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-    {$IFDEF GLVER_D3}property RightClickSelect;
+    {$IFDEF COMPILER3_UP}property RightClickSelect;
     {$ENDIF}
     property DragMode;
     property HideSelection;
@@ -261,7 +261,7 @@ type
     property ShowHint;
     property Images;
     property Wallpaper;
-    {$IFDEF GLVER_D5}property Options;
+    {$IFDEF COMPILER5_UP}property Options;
     {$ENDIF}
     property BoldSelection;
     property BevelSelection;
@@ -345,7 +345,7 @@ procedure TJvgCustomTreeView.UpdateFlatScrollBar;
 var
   MinPos, MaxPos: integer;
 begin
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   try
     InitializeFlatSB(Handle);
     FlatSB_SetScrollProp(handle, WSB_PROP_VSTYLE, FSB_ENCARTA_MODE, false);

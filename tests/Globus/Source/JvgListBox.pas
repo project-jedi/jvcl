@@ -40,7 +40,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, commctrl, ExtCtrls, JvgTypes, JvgUtils, JvgCommClasses, Jvg3DColors{$IFDEF GLVER_D4}, Imglist{$ENDIF};
+  StdCtrls, commctrl, ExtCtrls, JvgTypes, JvgUtils, JvgCommClasses, Jvg3DColors{$IFDEF COMPILER4_UP}, Imglist{$ENDIF};
 
 const
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
@@ -122,13 +122,13 @@ type
     property SelCount: cardinal read GetSelCount;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     function GetDragImages: TDragImageList; override;
     {$ELSE}
     function GetDragImages: TCustomImageList; override;
     {$ENDIF}
   published
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     {$ENDIF}
     property Align;
@@ -683,7 +683,7 @@ begin
   end;
 end;
 
-{$IFDEF GLVER_D4}
+{$IFDEF COMPILER4_UP}
 
 function TJvgListBox.GetDragImages: TDragImageList;
 {$ELSE}
@@ -963,7 +963,7 @@ procedure TJvgListBox.InitState(var State: TOwnerDrawState; ByteState: Byte);
 begin
   State := [];
   if ByteState and ODS_CHECKED <> 0 then Include(State, odChecked); //TOwnerDrawState
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   if ByteState and ODS_COMBOBOXEDIT <> 0 then Include(State, odComboBoxEdit);
   if ByteState and ODS_DEFAULT <> 0 then Include(State, odDefault);
   {$ENDIF}

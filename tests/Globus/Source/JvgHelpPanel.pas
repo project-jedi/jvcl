@@ -64,7 +64,7 @@ type
   published
     property Align;
     property Alignment;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     {$ENDIF}
     property AutoSize;
@@ -78,7 +78,7 @@ type
     property Color;
     property Constraints;
     property Ctl3D;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property UseDockManager default True;
     property DockSite;
     {$ENDIF}
@@ -102,7 +102,7 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
     {$ENDIF}
     property OnDockDrop;
@@ -110,20 +110,20 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     {$ENDIF}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property OnGetSiteInfo;
     {$ENDIF}
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-    {$IFDEF GLVER_D4}
+    {$IFDEF COMPILER4_UP}
     property OnStartDock;
     property OnUnDock;
     {$ENDIF}

@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, dsgnintf,
-  StdCtrls, JvgPropertyCenter, ComCtrls, ExtCtrls, TypInfo, Buttons{$IFDEF GLVER_D5}, ImgList{$ENDIF};
+  StdCtrls, JvgPropertyCenter, ComCtrls, ExtCtrls, TypInfo, Buttons{$IFDEF COMPILER5_UP}, ImgList{$ENDIF};
 
 type
 
@@ -80,7 +80,7 @@ type
     Component: TJvgPropertyCenter;
   end;
 
-  {$IFDEF GLVER_D4}
+  {$IFDEF COMPILER4_UP}
 type
   TDesigner = IDesigner;
   TFormDesigner = IFormDesigner;

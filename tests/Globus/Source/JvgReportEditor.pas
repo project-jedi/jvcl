@@ -35,7 +35,7 @@ uses
   Windows, JvgReport, JvgCaption, JvgBevel, JvgPage, Printers,
   JvgLabel, JvgRuler, Mask, JvgListBox, dsgnintf, Spin, JvgReportParamEditorForm,
   Menus, ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls, Dialogs, Forms,
-  Classes, Sysutils, graphics{$IFDEF GLVER_D5}, Imglist{$ENDIF};
+  Classes, Sysutils, graphics{$IFDEF COMPILER5_UP}, Imglist{$ENDIF};
 
 type
 

@@ -146,7 +146,7 @@ type
     procedure Paint; override;
     property SupressPaint: boolean read FSupressPaint write FSupressPaint;
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;
@@ -219,7 +219,7 @@ type
     property ExternalCanvas;
     constructor Create(AOwner: TComponent); override;
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;

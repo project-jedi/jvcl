@@ -886,7 +886,7 @@ procedure TJvgAskListBox.InitState(var State: TOwnerDrawState; ByteState: Byte);
 begin
   State := [];
   if ByteState and ODS_CHECKED <> 0 then Include(State, odChecked); //TOwnerDrawState
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   if ByteState and ODS_COMBOBOXEDIT <> 0 then Include(State, odComboBoxEdit);
   if ByteState and ODS_DEFAULT <> 0 then Include(State, odDefault);
   {$ENDIF}

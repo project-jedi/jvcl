@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
-  JvgTypes, JvgUtils, JvgCommClasses{$IFDEF GLVER_D5}, Imglist{$ENDIF};
+  JvgTypes, JvgUtils, JvgCommClasses{$IFDEF COMPILER5_UP}, Imglist{$ENDIF};
 
 type
   TDrawMode = (dmUseImageList, dmAutoCtrl3D, dmAutoFlat, dmAutoShadow);

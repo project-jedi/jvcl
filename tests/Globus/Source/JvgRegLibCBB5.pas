@@ -62,7 +62,7 @@ uses Classes,
   JvgLogics, JvgLogicsEditor,
   JvgInspectorGrid
   {$ENDIF}
-  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF GLVER_D5}, dsgnintf{$ENDIF}{$ENDIF};
+  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF COMPILER5_UP}, dsgnintf{$ENDIF}{$ENDIF};
 
 procedure Register;
 begin

@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, ExtCtrls, JvgCommClasses{$IFDEF GLVER_D4}, Imglist{$ENDIF};
+  ComCtrls, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, ExtCtrls, JvgCommClasses{$IFDEF COMPILER4_UP}, Imglist{$ENDIF};
 
 const
   TCM_SETTEXTCOLOR = (TCM_FIRST + 36);

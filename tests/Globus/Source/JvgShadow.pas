@@ -87,7 +87,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;

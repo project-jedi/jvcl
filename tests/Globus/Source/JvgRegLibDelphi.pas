@@ -50,7 +50,7 @@ uses Classes,
   JvgBitBtn, JvgRuler, JvgStringGrid, JvgProcess, JvgSysInf, JvgSplit, {JvgShape,}
   {JvgReport, JvgReportEditor,} JvgMailSlots, JvgExceptionHandler, JvgSpeedButton,
   JvgSingleInstance, JvgHelpPanel, JvgStringContainer, JvgSysRequirements,
-  JvgSmallFontsDefence, JvgWizardHeader, {$IFDEF GLVER_D5}JvgXMLSerializer, JvgLanguageLoader, {$ENDIF}
+  JvgSmallFontsDefence, JvgWizardHeader, {$IFDEF COMPILER5_UP}JvgXMLSerializer, JvgLanguageLoader, {$ENDIF}
   JvgExportComponents, JvgShadowEditor, JvgHelpPanelEditor
 
   { alpha version units - компоненты в стадии доработки }
@@ -65,7 +65,7 @@ uses Classes,
   JvgLogics, JvgLogicsEditor,
   JvgInspectorGrid
   {$ENDIF}
-  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF GLVER_D4}, dsgnintf{$ENDIF}{$ENDIF};
+  {$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF COMPILER4_UP}, dsgnintf{$ENDIF}{$ENDIF};
 
 procedure Register;
 begin
@@ -82,7 +82,7 @@ begin
       //TJvgReport, TJvgReportEditor,
     TJvgExceptionHandler, TJvgSingleInstance, TJvgStringContainer, TJvgSysRequirements,
       TJvgSmallFontsDefence {, TJvgMultipleResources}]);
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   RegisterComponents('Gl Components', [TJvgXMLSerializer, TJvgLanguageLoader]);
   {$ENDIF}
 

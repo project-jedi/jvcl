@@ -71,7 +71,7 @@ type
     property DataSet: TDataSet read FDataSet write SetDataSet;
     property Captions: TglExportCaptions read FCaptions write SetCaptions;
     property SaveToFileName: string read FSaveToFileName write SetSaveToFileName;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property TransliterateRusToEng: boolean read FTransliterateRusToEng write SetTransliterateRusToEng;
     {$ENDIF}
     property MaxFieldSize: integer read FMaxFieldSize write SetMaxFieldSize;
@@ -121,7 +121,7 @@ type
     property DataSet;
     property Captions;
     property SaveToFileName;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property TransliterateRusToEng;
     {$ENDIF}
     property MaxFieldSize;
@@ -161,7 +161,7 @@ type
     property DataSet;
     property Captions;
     property SaveToFileName;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property TransliterateRusToEng;
     {$ENDIF}
     property MaxFieldSize;
@@ -192,7 +192,7 @@ type
     property DataSet;
     property Captions;
     property SaveToFileName;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property TransliterateRusToEng;
     {$ENDIF}
     property MaxFieldSize;
@@ -219,7 +219,7 @@ type
     property DataSet;
     property Captions;
     property SaveToFileName;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property TransliterateRusToEng;
     {$ENDIF}
     property MaxFieldSize;
@@ -295,7 +295,7 @@ begin
   Result := Field.AsString;
   if Assigned(OnExportField) then OnExportField(self, Field, Result);
 
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   if FTransliterateRusToEng then Result := Transliterate(Result, true);
   {$ENDIF}
 
@@ -411,7 +411,7 @@ begin
       if AllowExportRecord then
       begin
         for i := 0 to DataSet.FieldCount - 1 do
-          if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic, ftParadoxOle, ftDBaseOle, ftTypedBinary{$IFDEF GLVER_D5}, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface, ftIDispatch{$ENDIF}]) then
+          if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic, ftParadoxOle, ftDBaseOle, ftTypedBinary{$IFDEF COMPILER5_UP}, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface, ftIDispatch{$ENDIF}]) then
             Sheet.Cells[RecNo, ColNo + i] := GetFieldValue(DataSet.Fields[i]);
 
         inc(RecNo);
@@ -556,7 +556,7 @@ var
   AllowExportRecord: boolean;
   FieldType: TFieldType;
 const
-  {$IFDEF GLVER_D4}
+  {$IFDEF COMPILER4_UP}
   aTableTypeExt: array[TTableType] of string = ('', 'db', 'dbf', 'dbf', 'txt');
   {$ELSE}
   aTableTypeExt: array[TTableType] of string = ('', 'db', 'dbf', 'txt');

@@ -88,7 +88,7 @@ type
     procedure WriteFullHeight(Writer: TWriter);
     procedure Paint; override;
     procedure CreateParams(var Params: TCreateParams); override;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     procedure AdjustClientRect(var Rect: TRect); override;
     {$ENDIF}
     //    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
@@ -101,7 +101,7 @@ type
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;
@@ -180,7 +180,7 @@ begin
   FCaptionShift := TJvgPointClass.Create;
   //...defaults
 
-  {$IFDEF GLVER_D5}
+  {$IFDEF COMPILER5_UP}
   FColors.Caption := clBtnShadow;
   FColors.CaptionActive := clBtnShadow;
   FColors.Text := clHighlightText;
@@ -240,7 +240,7 @@ begin
   if Transparent or TransparentCaption then
     Params.ExStyle := Params.ExStyle or WS_EX_Transparent;
 end;
-{$IFDEF GLVER_D5}
+{$IFDEF COMPILER5_UP}
 
 procedure TJvgGroupBox.AdjustClientRect(var Rect: TRect);
 begin

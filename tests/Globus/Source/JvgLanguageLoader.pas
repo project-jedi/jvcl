@@ -68,7 +68,7 @@ procedure LoadLanguage(Component: TComponent; FileName: string; Options: TLangua
 procedure Register;
 
 implementation
-uses TypInfo; //{$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D5}, dsgnintf{$ENDIF} {$ENDIF};
+uses TypInfo; //{$IFDEF COMPILER6_UP}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF COMPILER5_UP}, dsgnintf{$ENDIF} {$ENDIF};
 
 procedure Register;
 begin

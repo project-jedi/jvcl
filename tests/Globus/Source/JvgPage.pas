@@ -37,7 +37,7 @@ unit JvgPage;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, ExtCtrls, JvgCommClasses{$IFDEF GLVER_D4}, Imglist{$ENDIF};
+  ComCtrls, CommCtrl, JvgTypes, JvgUtils, JvgDrawTab, JvgTabComm, ExtCtrls, JvgCommClasses{$IFDEF COMPILER4_UP}, Imglist{$ENDIF};
 
 const
   TCM_SETTEXTCOLOR = (TCM_FIRST + 36);
@@ -342,7 +342,7 @@ begin
       else
         DrawTabStr.BackgrColor_ := DrawTabStr.BoxStyle.BackgrColor;
 
-      {$IFDEF GLVER_D4}if Style = tsFlatButtons then DrawTabStr.FlatButtons := true;
+      {$IFDEF COMPILER4_UP}if Style = tsFlatButtons then DrawTabStr.FlatButtons := true;
       {$ELSE}DrawTabStr.FlatButtons := false;
       {$ENDIF}
 

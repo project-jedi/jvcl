@@ -740,7 +740,7 @@ begin
   if FContainOLE and (not Assigned(OLEContainer)) then
   begin
     if not Assigned(Parent) then exit;
-    OLEContainer := TOLEContainer.Create(parent.parent); //{$IFDEF GLVER_D3} Parent {$ELSE} Owner {$ENDIF} );
+    OLEContainer := TOLEContainer.Create(parent.parent); //{$IFDEF COMPILER3_UP} Parent {$ELSE} Owner {$ENDIF} );
     OLEContainer.AutoVerbMenu := false;
     OLEContainer.BorderStyle := bsNone;
     OLEContainer.Color := clWhite;
@@ -1330,7 +1330,7 @@ end;
 
 procedure TJvgReport.ValidateWnds;
 begin
-  {$IFDEF GLVER_D3}OwnerWnd := ParentWnd;
+  {$IFDEF COMPILER3_UP}OwnerWnd := ParentWnd;
   {$ENDIF}
   //  if (OwnerWnd=nil)or(ParentWnd=nil) then raise Exception.Create('TJvgReport: Unassigned Owner or Parent window.');
 end;

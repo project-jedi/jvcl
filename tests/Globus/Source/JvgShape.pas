@@ -111,7 +111,7 @@ begin
     OldBrush := Canvas.Brush.Style;
     Canvas.Brush.Style := bsClear;
     Canvas.Pen := Pen;
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     Canvas.Rectangle(R);
     {$ELSE}
     Canvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);

@@ -116,9 +116,9 @@ procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColor
 function CalcMathString(sExpression: string): single;
 
 function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
-{$IFDEF GLVER_D5}overload;
+{$IFDEF COMPILER5_UP}overload;
 {$ENDIF}
-{$IFDEF GLVER_D5}function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
+{$IFDEF COMPILER5_UP}function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
 {$ENDIF}
 
 function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
@@ -134,7 +134,7 @@ function UserName: string;
 function ComputerName: string;
 function CreateIniFileName: string;
 function ExpandString(const str: string; len: integer): string;
-{$IFDEF GLVER_D5}
+{$IFDEF COMPILER5_UP}
 function Transliterate(const Str: string; RusToLat: boolean): string;
 {$ENDIF}
 function IsSmallFonts: boolean;
@@ -730,7 +730,7 @@ var
               inc(r_.left);
             end;
           end;
-        {$IFDEF GLVER_D4}
+        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -774,7 +774,7 @@ var
               inc(r_.top);
             end;
           end;
-        {$IFDEF GLVER_D4}
+        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -818,7 +818,7 @@ var
             dec(r_.right);
             //.	if Bold then dec(r_.right);
           end;
-        {$IFDEF GLVER_D4}
+        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -868,7 +868,7 @@ var
             //.	if Bold then dec(r_.bottom);
             //dec(r_.bottom);
           end;
-        {$IFDEF GLVER_D4}
+        {$IFDEF COMPILER4_UP}
         bvSpace:
           begin
             SelectObject(DC, SPen);
@@ -1643,7 +1643,7 @@ end;
 }
 
 function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
-{$IFDEF GLVER_D5} overload;
+{$IFDEF COMPILER5_UP} overload;
 {$ENDIF}
 begin
   if fExpression then
@@ -1652,7 +1652,7 @@ begin
     Result := IfFalse;
 end;
 //------------------------
-{$IFDEF GLVER_D5}
+{$IFDEF COMPILER5_UP}
 
 function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
 begin
@@ -2039,7 +2039,7 @@ end;
 {
  Транслитерация строки RusToLat и обратно
 }
-{$IFDEF GLVER_D5}
+{$IFDEF COMPILER5_UP}
 
 function Transliterate(const Str: string; RusToLat: boolean): string;
 const

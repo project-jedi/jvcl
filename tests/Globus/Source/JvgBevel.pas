@@ -76,7 +76,7 @@ type
     procedure Loaded; override;
 
   published
-    {$IFDEF GLVER_D5}
+    {$IFDEF COMPILER5_UP}
     property Anchors;
     {$ENDIF}
     property Align;
@@ -205,7 +205,7 @@ var
           r_.Bottom := r_.Top + Lines.Thickness + integer(Lines.Bold);
         end;
       end;
-      {$IFDEF GLVER_D5}
+      {$IFDEF COMPILER5_UP}
       if Lines.Style = bvSpace then
         BoxSides := [fsdLeft, fsdTop];
       {$ENDIF}

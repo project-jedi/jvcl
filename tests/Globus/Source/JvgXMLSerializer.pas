@@ -155,7 +155,7 @@ type
 procedure Register;
 
 implementation
-uses JvgUtils{$IFDEF GLVER_D6}, DesignIntf{$ELSE}{$IFDEF GLVER_D5}, dsgnintf{$ENDIF}{$ENDIF};
+uses JvgUtils{$IFDEF COMPILER6_UP}, DesignIntf{$ELSE}{$IFDEF COMPILER5_UP}, dsgnintf{$ENDIF}{$ENDIF};
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];
