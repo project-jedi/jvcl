@@ -2,7 +2,7 @@ object WelcomeForm: TWelcomeForm
   Left = 341
   Top = 60
   Width = 539
-  Height = 435
+  Height = 537
   HelpContext = 1
   Caption = 'Welcome'
   Color = clBtnFace
@@ -18,8 +18,8 @@ object WelcomeForm: TWelcomeForm
   object JvImage1: TJvImage
     Left = 0
     Top = 0
-    Width = 531
-    Height = 173
+    Width = 529
+    Height = 155
     Align = alTop
     Center = True
     Picture.Data = {
@@ -407,9 +407,9 @@ object WelcomeForm: TWelcomeForm
   end
   object JvHotLink2: TJvLabel
     Left = 0
-    Top = 173
-    Width = 531
-    Height = 24
+    Top = 155
+    Width = 529
+    Height = 18
     Cursor = crHandPoint
     Align = alTop
     Alignment = taCenter
@@ -434,8 +434,8 @@ object WelcomeForm: TWelcomeForm
   end
   object JvHotLink3: TJvLabel
     Left = 0
-    Top = 197
-    Width = 531
+    Top = 173
+    Width = 529
     Height = 24
     Cursor = crHandPoint
     Align = alTop
@@ -464,21 +464,25 @@ object WelcomeForm: TWelcomeForm
   end
   object frmh_st: TJvScrollText
     Left = 8
-    Top = 221
+    Top = 203
     Width = 521
     Height = 137
     Alignment = taLeftJustify
     Items.Strings = (
       'Welcome to the Demo Program of the JEDI-VCL components.'
       ''
-      'To navigate, use the Outlook Style Bar on the left site.'
+      'Please read the text above as in introduction.'
       ''
       'This MegaDemo was created by:'
       ' '
       'Ralf Grenzing '
       'Uwe Rupprecht'
       ''
-      'of course using the existing demos ...')
+      'of course using the existing demos ...'
+      ''
+      ''
+      ''
+      'completly reworked in 2005 by Ralf Grenzing')
     BackgroundColor = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -486,7 +490,51 @@ object WelcomeForm: TWelcomeForm
     Font.Name = 'MS Sans Serif'
     Font.Style = []
   end
-  object JvJVCLAboutComponent1: TJvJVCLAboutComponent
+  object JvRichEdit1: TJvRichEdit
+    Left = 11
+    Top = 345
+    Width = 513
+    Height = 182
+    BorderStyle = bsNone
+    Color = clBtnFace
+    Lines.Strings = (
+      
+        'These MegaDemo offers you various possibilties to look at the ve' +
+        'ry many demos which are availible:'
+      ''
+      
+        '1. Right at the top you find a PageControl, in which are all com' +
+        'ponents listed as they are in'
+      
+        'the Delphi IDE! Just click at one you are in iterested in! Note ' +
+        'that only comps are listed'
+      'for which demos exists!'
+      ''
+      
+        '2. On the left you find "search by component". These is useful w' +
+        'hen you want to know if there is'
+      
+        'a demo for a specific component you are in terestedin! Type only' +
+        ' the first letter and you are done!'
+      ''
+      
+        '3. "browse all demo stuff": Beside the demos which show the usag' +
+        'e of JVCL component, the '
+      
+        'MegaDemo contains also stuff which is not specific for a compone' +
+        'nt. E.g Hidden Gems,'
+      
+        'Ressources etc. In this list are all availible MegaDemo stuff is' +
+        ' listed! So if you do not miss '
+      
+        'anyhing you should go from here! It is probably the best startin' +
+        'g point if you are new to the'
+      'JVCL MegaDemo!')
+    ReadOnly = True
+    ScrollBars = ssNone
+    TabOrder = 1
+  end
+  object JvJVCLAboutComp: TJvJVCLAboutComponent
     Left = 425
     Top = 248
   end

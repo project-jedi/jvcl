@@ -4,7 +4,7 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author: Ralf Grenzing [ralfgspam@gmx.de]
+ Original author: Ralf Grenzing [Ralf dot Grenzing@gmx.de]
                   Uwe Rupprecht [uwe-rupprecht@gmx.de]
 
  Contributor(s): Michael Beck (mbeck1@compuserve.com)
@@ -34,15 +34,16 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvLabel, JvScrollText, jpeg, ExtCtrls, JvImage,
   JvComponent, JvBaseDlg, JvJVCLAboutForm, JvExControls,
-  JvExExtCtrls;
+  JvExExtCtrls, JvExStdCtrls, JvRichEdit;
 
 type
   TWelcomeForm = class(TForm)
     frmh_st: TJvScrollText;
     JvImage1: TJvImage;
     JvHotLink2: TJvLabel;
-    JvJVCLAboutComponent1: TJvJVCLAboutComponent;
+    JvJVCLAboutComp: TJvJVCLAboutComponent;
     JvHotLink3: TJvLabel;
+    JvRichEdit1: TJvRichEdit;
     procedure FormShow(Sender: TObject);
     procedure JvHotLink3Click(Sender: TObject);
   end;
@@ -55,11 +56,12 @@ procedure TWelcomeForm.FormShow(Sender: TObject);
 begin
  //Start the scrolling of the ScollText comp
  frmh_st.active := true;
+ self.SetFocus; // Hide cursor from RichEdit
 end;
 
 procedure TWelcomeForm.JvHotLink3Click(Sender: TObject);
 begin
- JvJVCLAboutComponent1.Execute;
+ JvJVCLAboutComp.Execute;
 end;
 
 end.

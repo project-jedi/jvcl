@@ -4,7 +4,9 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author: Ralf Grenzing  [Ralf dot Grenzing@gmx.de]
+ Original author:
+
+ Contributor(s):
 
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net
@@ -22,42 +24,36 @@
 
 ******************************************************************}
 
-unit RessourcesFormMain;
+unit JvFooterAndGroupHeaderDemoForm;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvLabel, ComCtrls, JvExControls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, JvFooter, JvGroupHeader, JvComponent, JvBitBtn, Buttons,
+  JvExButtons, JvExExtCtrls, JvExControls, JvExStdCtrls, JvButton, JvCtrls;
 
 type
-  TRessourcesForm = class(TForm)
-    Label1: TLabel;
-    JvHotLink5: TJvLabel;
-    JvHotLink9: TJvLabel;
-    Label2: TLabel;
-    Label9: TLabel;
-    Label12: TLabel;
-    JvHotLink1: TJvLabel;
-    Label3: TLabel;
-    JvHotLink2: TJvLabel;
-    JvHotLink3: TJvLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    JvHotLink4: TJvLabel;
-    JvHotLink6: TJvLabel;
-    Label6: TLabel;
-    Label7: TLabel;
-    JvHotLink7: TJvLabel;
-    JvHotLink8: TJvLabel;
-    Label8: TLabel;
+  TJvFooterAndGroupHeaderDemoFrm = class(TForm)
+    JvFooter1: TJvFooter;
+    JvFooterBtn1: TJvFooterBtn;
+    JvFooterBtn2: TJvFooterBtn;
+    JvFooterBtn3: TJvFooterBtn;
+    JvFooter2: TJvFooter;
+    JvFooter3: TJvFooter;
+    JvFooterBtn4: TJvFooterBtn;
+    JvFooterBtn5: TJvFooterBtn;
+    JvFooterBtn6: TJvFooterBtn;
+    JvFooterBtn7: TJvFooterBtn;
+    JvGroupHeader1: TJvGroupHeader;
+    JvGroupHeader2: TJvGroupHeader;
   end;
 
 var
-  RessourcesForm: TRessourcesForm;
+  JvFooterAndGroupHeaderDemoFrm: TJvFooterAndGroupHeaderDemoFrm;
 
 implementation
 
-{$R *.dfm}
+{$R *.DFM}
 
 end.
