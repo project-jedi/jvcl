@@ -3,10 +3,10 @@ unit JvJVCLAbout;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF DELPHI6} Variants,{$ENDIF}
+  Windows, Messages, SysUtils, {$IFDEF DELPHI6_UP} Variants,{$ENDIF}
   Classes, Graphics, Controls, Forms,
   Dialogs, JvHotLink, StdCtrls, ExtCtrls, jpeg, JvLabel,
-  {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6} DesignEditors, DesignIntf, {$ENDIF}
+  {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6_UP} DesignEditors, DesignIntf, {$ENDIF}
   JVCLVer;
 
 type
@@ -82,7 +82,7 @@ end;
 
 function TJVCLAboutDialogProperty.GetValue: string;
 begin
-  Result := JVCL_VERSIONSTRING;
+  Result := 'Version '+ JVCL_VERSIONSTRING;
 end;
 
 { TJvJVCLAboutForm }

@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-   {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6} DesignEditors, DesignIntf, {$ENDIF}
+   {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6_UP} DesignEditors, DesignIntf, {$ENDIF}
   JvFormWallpaper;
 
 type

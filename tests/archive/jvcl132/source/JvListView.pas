@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvListView;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,  ComCtrls, CommCtrl, Menus ,JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, CommCtrl, Menus, JVCLVer;
 
 type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
@@ -82,7 +82,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL  stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -100,12 +100,12 @@ type
     property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
     property OnSaveProgress: TProgress read FOnSave write FOnSave;
     property OnAutoSort: TOnSortMethod read FOnSort write FOnSort;
-{$IFNDEF DELPHI6}
+{$IFNDEF DELPHI6_UP}
     procedure SelectAll;
 {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
-{$IFNDEF DELPHI6}
+{$IFNDEF DELPHI6_UP}
     procedure DeleteSelected;
 {$ENDIF}
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
@@ -280,8 +280,7 @@ begin
   Result := False;
   if Trim(First) = '' then
     Result := False
-  else
-  if Trim(Second) = '' then
+  else if Trim(Second) = '' then
     Result := True
   else
   begin
@@ -388,7 +387,7 @@ begin
     sortype := smAutomatic;
 
   case i of
-        {sort by caption}
+    {sort by caption}
     0:
       begin
         s1 := i1.Caption;
@@ -396,13 +395,12 @@ begin
 
         if IsBigger(s1, s2, sortype) then
           Result := +1
-        else
-          if IsSmaller(s1, s2, sortype) then
+        else if IsSmaller(s1, s2, sortype) then
           Result := -1
         else
           Result := 0;
       end;
-       {sort by Column}
+    {sort by Column}
   else
     begin
       if i > i1.SubItems.Count then
@@ -412,8 +410,7 @@ begin
         else
           Result := -1;
       end
-      else
-        if i > i2.SubItems.Count then
+      else if i > i2.SubItems.Count then
         Result := +1
       else
       begin
@@ -421,8 +418,7 @@ begin
         s2 := i2.SubItems[i - 1];
         if IsBigger(s1, s2, sortype) then
           Result := +1
-        else
-          if IsSmaller(s1, s2, sortype) then
+        else if IsSmaller(s1, s2, sortype) then
           Result := -1
         else
           Result := 0;
@@ -503,13 +499,13 @@ end;
 
 procedure TJvListView.LoadFromStream(stream: TStream);
 var
-  buf: array [0..100] of Char;
+  buf: array[0..100] of Char;
   start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
     i, j, k: Integer;
-    buf: array [0..100] of Byte;
+    buf: array[0..100] of Byte;
     st: string;
     ch1, checks: Boolean;
     t: TListItem;
@@ -569,7 +565,7 @@ var
     options: Byte;
     st: string;
     t: TListItem;
-    buf: array [0..2048] of Char;
+    buf: array[0..2048] of Char;
   begin
     try
       Self.Items.BeginUpdate;
@@ -579,23 +575,23 @@ var
       Stream.Read(options, SizeOf(options));
       CheckBoxes := (options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
 
-     //Read all lines
+      //Read all lines
       while Stream.Position < Stream.Size do
       begin
         Stream.Read(count, SizeOf(count));
 
-       //statistics
+        //statistics
         if Assigned(FOnLoad) then
           FOnLoad(Self, Stream.Position, stream.Size - start);
 
-       //Read all columns
+        //Read all columns
         t := Self.Items.Add;
         for i := 1 to count do
         begin
-         //Read Size of the string
+          //Read Size of the string
           Stream.Read(j, SizeOf(i));
 
-         //Read the string
+          //Read the string
           ZeroMemory(@buf, SizeOf(buf));
           Stream.Read(buf, j);
           st := buf;
@@ -645,7 +641,7 @@ procedure TJvListView.SaveToStream(stream: TStream; ForceOldStyle: Boolean);
     i, j, k: Integer;
     b, c, d, e: Byte;
     st: string;
-    buf: array [0..1000] of Byte;
+    buf: array[0..1000] of Byte;
   begin
     b := 0;
     c := 1;
@@ -661,7 +657,7 @@ procedure TJvListView.SaveToStream(stream: TStream; ForceOldStyle: Boolean);
       for k := 1 to Length(st) do
         buf[k - 1] := Byte(st[k]);
       k := Length(st);
-        //write checked,not
+      //write checked,not
       if Self.Items[i].Checked then
         Stream.write(d, 1)
       else
@@ -697,14 +693,14 @@ procedure TJvListView.SaveToStream(stream: TStream; ForceOldStyle: Boolean);
     LV_HASCHECKBOXES = $80;
     LV_CHECKED = $8000;
   var
-    buf: array [0..100] of Char;
+    buf: array[0..100] of Char;
     i, j: Word;
     options: Byte;
 
     procedure WriteString(Txt: string);
     var
       i: Word;
-      buf: array [1..2056] of Char;
+      buf: array[1..2056] of Char;
     begin
       i := Length(Txt);
       CopyMemory(@buf, @Txt[1], i);
@@ -774,9 +770,9 @@ begin
     for i := 1 to Length(st) do
       if st[i] = '"' then
         j := (j + 1) mod 2
-      else
-      if st[i] = Separator then
-        if j = 0 then Inc(k);
+      else if st[i] = Separator then
+        if j = 0 then
+          Inc(k);
     if k <> 1 then
     begin
       i := Pos(Separator, st);
@@ -883,7 +879,8 @@ end;
 
 {**************************************************}
 
-{$IFNDEF DELPHI6}
+{$IFNDEF DELPHI6_UP}
+
 procedure TJvListView.SelectAll;
 var
   i: Integer;
@@ -909,7 +906,8 @@ end;
 
 {**************************************************}
 
-{$IFNDEF DELPHI6}
+{$IFNDEF DELPHI6_UP}
+
 procedure TJvListView.DeleteSelected;
 var
   i: Integer;

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, {$IFDEF DELPHI5_UP}Contnrs, {$ENDIF}Registry,
-{$IFDEF DELPHI6}RTLConsts, {$ENDIF}
+{$IFDEF DELPHI6_UP}RTLConsts, {$ENDIF}
   Dialogs, Forms, JclBase, JvComponent;
 
 type

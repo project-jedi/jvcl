@@ -163,7 +163,7 @@ uses
   JvBaseDlgEditorP, JvCommonDialogDEditor,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
-{$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6}DesignEditors, DesignIntf, {$ENDIF}
+{$IFDEF DELPHI5}DsgnIntf, {$ENDIF}{$IFDEF DELPHI6_UP}DesignEditors, DesignIntf, {$ENDIF}
   JvTypes;
 
 

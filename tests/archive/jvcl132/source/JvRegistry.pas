@@ -28,14 +28,14 @@ Known Issues:
 
 unit JvRegistry;
 
-{$ObjExportAll On}
+{$OBJEXPORTALL On}
 
 interface
 
 uses
-  {$IFDEF DELPHI6}
+{$IFDEF DELPHI6_UP}
   Variants,
-  {$ENDIF}
+{$ENDIF}
   Windows, Registry;
 
 type
@@ -74,7 +74,7 @@ begin
   if ValueExists(Field) then
     case varType(Result) of
       varCurrency:
-         Result := ReadCurrency(Field);
+        Result := ReadCurrency(Field);
       varBoolean:
         Result := ReadBool(Field);
       varDate:

@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, FileCtrl,
     Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls,
-    {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6} DesignEditors, DesignIntf, {$ENDIF}
+    {$IFDEF DELPHI5} DsgnIntf, {$ENDIF} {$IFDEF DELPHI6_UP} DesignEditors, DesignIntf, {$ENDIF}
     JvMail, JvPerfMon95;
 
 type
