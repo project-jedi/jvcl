@@ -24,15 +24,31 @@
 
   <target name="help">
     <echo message="Usage: want [target]" />
+    <echo message="" />
     <echo message="Available targets:" />
-    <echo message="  jvcl_export - gets latest JVCL from CVS" />
-    <echo message="  jcl_export - gets latest JCL from CVS" />
+    <echo message="" />
+    <echo message="  jvcl_export - gets latest JVCL from CVS." />
+    <echo message="    NOTE: cvs and pserver protocol must be in PATH!" />
+    <echo message="" />
+    <echo message="  jcl_export - gets latest JCL from CVS." />
+    <echo message="    NOTE: cvs and pserver protocol must be in PATH!" />
+    <echo message="" />
     <echo message="  dist - builds JVCL zip files" />
+    <echo message="" />
     <echo message="  standalone - builds standalone zip files" />
+    <echo message="" />
     <echo message="  separate - builds separate zip files" />
+    <echo message="" />
     <echo message="  all - build all zip files" />
+    <echo message="" />
     <echo message="  release - get all from CVS and build all zip files" />
-    <echo message="  ftpupload - upload generated zip files to sourceforge ftp (incoming)" />
+    <echo message="" />
+    <echo message="  ftpupload - upload generated zip files to sourceforge" />
+    <echo message="" />
+    <echo message="  JVCLConvert - builds and packs the JVCLConvert application" />
+    <echo message="" />
+    <echo message="  convert - converts the zip files to 7z." />
+    <echo message="    NOTE: Converter program must be in PATH!" />
   </target>
 
   <target name="jcl_export" description="Get latest jcl from CVS">
@@ -56,9 +72,16 @@
     tag="HEAD"
     />
   </target>
-
-  <target name="dist" description="Build JVCL .zip files" >
-
+  <target name="JVCLConvert" description="Builds and packs the JVCLConvert application">
+    <exec executable="make.exe" basedir="./jvcl/devtools">
+      <arg value="JVCLConvert.exe" />
+    </exec>
+    <zip zipfile="JVCLConvert${shortversion}.zip" preservePath="false">
+      <include name="./jvcl/devtools/bin/JVCLConvert.exe" />
+    </zip>
+    <delete file="./jvcl/devtools/bin/JVCLConvert.exe" />
+  </target>
+  <target name="dist" description="Build JVCL .zip files">
     <delete file="${fulljclzip}" />
     <zip zipfile="${fulljclzip}">
       <fileset>
@@ -256,6 +279,7 @@
     binary
     hash
     cd /incoming
+    put ${fulljclzip}
     put ${fullzip}
     put ${srcexzip}
     put ${srczip}
@@ -272,4 +296,20 @@
       <arg value="-s:ftpupload.txt" />
     </exec>
   </target>
+  <property name="archiver" value="izarc.exe"/>
+  <target name="convert" description="Convert large zips to 7z">
+    <exec executable="${archiver}">
+      <arg value="-cv ${fulljclzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${fullzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${srcexzip}" />
+    </exec>
+    <exec executable="${archiver}">
+      <arg value="-cv ${srczip}" />
+    </exec>
+  </target>
+  
 </project>

@@ -81,6 +81,7 @@ object frmMain: TfrmMain
       ViewStyle = vsReport
       OnDeletion = lvItemsDeletion
       OnSelectItem = lvItemsSelectItem
+      ColumnsOrder = '0=180'
     end
   end
   object pnlRight: TPanel
@@ -136,6 +137,7 @@ object frmMain: TfrmMain
       PlainText = True
       TabOrder = 1
       WordWrap = False
+      Zoom = 100
       OnEnter = reAnswerEnter
     end
     object reQuestion: TJvDotNetRichEdit
@@ -147,6 +149,7 @@ object frmMain: TfrmMain
       PlainText = True
       TabOrder = 0
       WordWrap = False
+      Zoom = 100
       OnEnter = reQuestionEnter
     end
   end

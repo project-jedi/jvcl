@@ -1,5 +1,5 @@
 [FAQ]
-Count=12
+Count=15
 Q0=What is the JVCL?
 A0=The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.{CRLF}
 Q1=Where can I get it?
@@ -22,5 +22,11 @@ Q9=How do I dock a form at design-time with the JvDocking components?
 A9=You can't dock the forms at design-time. You will have to do it programmatically.{CRLF}{CRLF}
 Q10=How do I change the docking style at runtime?
 A10=You can't change it at runtime, only at design-time. We are working on resolving this issue.{CRLF}{CRLF}
-Q11="Cannot load JvMM. It contains VFW.pas which is also contained in GLSCENE."
+Q11=Cannot load JvMM. It contains VFW.pas which is also contained in GLSCENE.
 A11=Resolve it by either adding the GLSCENE package to the requires of JVMM {CRLF}or add JvMM to the requires of GLSCENE. Rebuild the packages.{CRLF}{CRLF}
+Q12=Unit zlib/zlibconst implicitly imported into JvCrypt
+A12=This message is nothing to worry about unless you have other packages also including zlib. In that case, you {CRLF}might get an error saying something like: "Unable to load JvCrypt. It contains unit zlib which is also included in package XXXX". {CRLF}{CRLF}The error message is not entirely correct but nevertheless you cannot install two packages that includes (explicitly or implicitly) the same units. {CRLF}To resolve, you have to add the other package's dcp file to the requires node of JvCrypt and rebuild JvCrypt.{CRLF}{CRLF}In some cases, this doesn't help either because the other package is using a non-standard zlib unit (JvCrypt requires the standard zlib/zlibconst.pas {CRLF}available on the Delphi CD). To resolve this issue, you can copy the Borland zlib and zlibconst unis from the Delphi CD to your computer and rename them {CRLF}(you will also need the obj files in the same folder). Open JvZLibMultiple.pas and change the uses clause to reflect the name of the renamed Borland zlib unit). {CRLF}{CRLF}If all else fails, remove JvZLibMultiple.pas from the JvCrypt runtime package and the JvZLibMultiple registration and uses from jvcl\design\JvCryptReg.pas {CRLF}and rebuild the packages (runtime as well as design-time).{CRLF}{CRLF}{CRLF}
+Q13=Why doesn't JvDotNetFilenameEdit and JvDotNetDirectoryEdit have a palette icon?
+A13=If the package containing JvFilenameEdit and JvDirectoryEdit is installed after the JvDotNet package, the icons won't be shown on the palette.{CRLF}{CRLF}<b>Fix:</b>{CRLF}<ul>{CRLF}<li>In Delphi, go to Component - Install Packages{CRLF}<li>Select the Jv DotNet package in the list{CRLF}<li>Toggle the checkbox off and then on again{CRLF}<li>Close the dialog{CRLF}</ul>{CRLF}
+Q14=After installing JVCL, my palette icons are corrupted.
+A14=This error can be caused by faulty video drivers or an old version of the common controls library. {CRLF}{CRLF}<b>Fix:</b><ul>{CRLF}<li>Get the latest Internet Explorer release from Microsoft. It will update the ComCtrl library as well. {CRLF}<li>If that doesn't help, try to find updated video drivers for your graphics card.{CRLF}<li>If it still doesn't help, try lowering the video acceleration (you do this from Control Panel-Desktop-Settings-Advanced){CRLF}</ul>{CRLF}
