@@ -68,10 +68,15 @@ type
     JvToolBar1: TJvToolBar;
     btnAddItems: TButton;
     Button1: TButton;
+    Panel1: TPanel;
+    jpmMarginPopup: TJvPopupMenu;
+    Test1: TMenuItem;
+    Testagain1: TMenuItem;
     procedure Exit1Click(Sender: TObject);
     procedure btnAddItemsClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Try1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -109,6 +114,11 @@ end;
 procedure TfrmMain.Try1Click(Sender: TObject);
 begin
   ShowMessage('Nice try !');
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  TJvStandardMenuItemPainter(jpmMarginPopup.ItemPainter).LeftMargin := 15;
 end;
 
 initialization

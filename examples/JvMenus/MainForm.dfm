@@ -17,14 +17,15 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlPopup: TPanel
     Left = 168
     Top = 56
-    Width = 185
+    Width = 201
     Height = 41
-    Caption = 'Right click here for popup'
+    Caption = 'Right click here for XP Style popup'
     PopupMenu = jpmPopup
     TabOrder = 0
   end
@@ -59,6 +60,15 @@ object frmMain: TfrmMain
     TabOrder = 3
     OnClick = Button1Click
   end
+  object Panel1: TPanel
+    Left = 168
+    Top = 116
+    Width = 201
+    Height = 41
+    Caption = 'Right click here for popup with margin'
+    PopupMenu = jpmMarginPopup
+    TabOrder = 4
+  end
   object jmnMain: TJvMainMenu
     Images = imlImages
     ImageMargin.Left = 1
@@ -68,8 +78,8 @@ object frmMain: TfrmMain
     ImageSize.Height = 0
     ImageSize.Width = 0
     Style = msOffice
-    Left = 244
-    Top = 76
+    Left = 180
+    Top = 28
     object File1: TMenuItem
       Caption = '&File'
       object Try1: TMenuItem
@@ -99,6 +109,7 @@ object frmMain: TfrmMain
       end
       object Yop1: TMenuItem
         Caption = 'Yop'
+        ShortCut = 16451
       end
     end
     object Nice1: TMenuItem
@@ -141,8 +152,8 @@ object frmMain: TfrmMain
     end
   end
   object imlImages: TImageList
-    Left = 248
-    Top = 40
+    Left = 236
+    Top = 28
     Bitmap = {
       494C010106000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
@@ -558,8 +569,8 @@ object frmMain: TfrmMain
     ImageSize.Height = 0
     ImageSize.Width = 0
     Style = msXP
-    Left = 276
-    Top = 76
+    Left = 208
+    Top = 28
     object Popup11: TMenuItem
       Caption = 'Popup1'
       ImageIndex = 2
@@ -587,6 +598,23 @@ object frmMain: TfrmMain
     end
     object AfterPSub1: TMenuItem
       Caption = 'AfterPSub'
+    end
+  end
+  object jpmMarginPopup: TJvPopupMenu
+    Images = imlImages
+    ImageMargin.Left = 2
+    ImageMargin.Top = 2
+    ImageMargin.Right = 2
+    ImageMargin.Bottom = 2
+    ImageSize.Height = 0
+    ImageSize.Width = 0
+    Left = 276
+    Top = 28
+    object Test1: TMenuItem
+      Caption = 'Test'
+    end
+    object Testagain1: TMenuItem
+      Caption = 'Test again'
     end
   end
 end
