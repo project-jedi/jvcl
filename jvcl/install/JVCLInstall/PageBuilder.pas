@@ -56,7 +56,6 @@ function CreateSingleChoosePage(Page: TJvWizardInteriorPage; Inst: ISingleChoose
 function CreateSummaryPage(Page: TJvWizardInteriorPage; Inst: ISummaryPage): TWinControl; forward;
   { returns the active control }
 
-
 type
   TSingleChooseOptionClick = class(TComponent)
   public
@@ -80,6 +79,25 @@ end;
 procedure TMultiChooseCheckBoxClick.Click(Sender: TObject);
 begin
   Page.SetCheckBox(Index, (Sender as TCheckBox).Checked);
+end;
+
+
+function GetDefaultCheckBoxSize: TSize;
+begin
+{$IFDEF VCL}
+  with TBitmap.Create do
+  try
+    Handle := LoadBitmap(0, PChar(OBM_CHECKBOXES));
+    Result.cx := Width div 4;
+    Result.cy := Height div 3;
+  finally
+    Free;
+  end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  Result.cx := 12;
+  Result.cy := 12;
+{$ENDIF VisualCLX}
 end;
 
 // -----------------------------------------------------------------------------
