@@ -63,8 +63,8 @@ const
 type
   ErrorRange = 0..TotalErrors;
 
-  TokenTypes = (Plus, Minus, Times, Divide, Expo, OParen, CParen, Num,
-    Func, EOL, Bad, ERR, Modu);
+  TokenTypes = (ttPlus, ttMinus, ttTimes, ttDivide, ttExpo, ttOParen,
+    ttCParen, ttNum, ttFunc, ttEol, ttBad, ttErr, ttModu);
 
   TokenRec = record
     State: Byte;
@@ -118,32 +118,32 @@ type
     FInsertNode: TShortCut;
     FAddChildNode: TShortCut;
     FDeleteNode: TShortCut;
-    FDuplicateNode: TshortCut;
+    FDuplicateNode: TShortCut;
     FEditNode: TShortCut;
     FSaveTree: TShortCut;
     FLoadTree: TShortCut;
     FCloseTree: TShortCut;
     FSaveTreeAs: TShortCut;
-    FFindNode: TshortCut;
+    FFindNode: TShortCut;
     procedure SetAddNode(const Value: TShortCut);
     procedure SetInsertNode(const Value: TShortCut);
     procedure SetDeleteNode(const Value: TShortCut);
     procedure SetAddChildNode(const Value: TShortCut);
     procedure SetDuplicateNode(const Value: TShortCut);
-    procedure SetEditNode(const Value: TshortCut);
+    procedure SetEditNode(const Value: TShortCut);
     procedure SetLoadTree(const Value: TShortCut);
     procedure SetSaveTree(const Value: TShortCut);
     procedure SetCloseTree(const Value: TShortCut);
     procedure SetSaveTreeAs(const Value: TShortCut);
-    procedure SetFindNode(const Value: TshortCut);
+    procedure SetFindNode(const Value: TShortCut);
   published
     property AddNode: TShortCut read FAddNode write SetAddNode;
     property DeleteNode: TShortCut read FDeleteNode write SetDeleteNode;
     property InsertNode: TShortCut read FInsertNode write SetInsertNode;
     property AddChildNode: TShortCut read FAddChildNode write SetAddChildNode;
     property DuplicateNode: TShortCut read FDuplicateNode write SetDuplicateNode;
-    property EditNode: TshortCut read FEditNode write SetEditNode;
-    property FindNode: TshortCut read FFindNode write SetFindNode;
+    property EditNode: TShortCut read FEditNode write SetEditNode;
+    property FindNode: TShortCut read FFindNode write SetFindNode;
     property LoadTree: TShortCut read FLoadTree write SetLoadTree;
     property SaveTree: TShortCut read FSaveTree write SetSaveTree;
     property SaveTreeAs: TShortCut read FSaveTreeAs write SetSaveTreeAs;
@@ -155,7 +155,7 @@ type
     FParser: TJvMathParser;
     FParseError: Boolean;
     FKeyMappings: TTreeKeyMappings;
-    FKeymappingsEnabled: Boolean;
+    FKeyMappingsEnabled: Boolean;
     FVarList: TStringList;
     FColorFormulas: Boolean;
     FFormuleColor: TColor;
@@ -166,7 +166,7 @@ type
     procedure NodeDuplicate(ATree: TJvJanTreeView; FromNode, ToNode: TTreeNode);
     procedure SetKeyMappings(const Value: TTreeKeyMappings);
     procedure SetKeyMappingsEnabled(const Value: Boolean);
-    procedure SetUpKeyMappings;
+    procedure SetupKeyMappings;
     procedure ParserGetVar(Sender: TObject; VarName: string; var Value: Extended; var Found: Boolean);
     procedure ParserParseError(Sender: TObject; ParseError: Integer);  
     procedure DoCustomDrawItem(Sender: TCustomViewControl; Node: TCustomViewItem;
@@ -200,10 +200,10 @@ type
     procedure Recalculate;
   published
     property KeyMappings: TTreeKeyMappings read FKeyMappings write SetKeyMappings;
-    property KeymappingsEnabled: Boolean read FKeyMappingsEnabled write SetKeyMappingsEnabled default True;
+    property KeyMappingsEnabled: Boolean read FKeyMappingsEnabled write SetKeyMappingsEnabled default True;
     property ColorFormulas: Boolean read FColorFormulas write SetColorFormulas default True;
     property FormuleColor: TColor read FFormuleColor write SetFormuleColor;
-    property FileName: TFileName read FFilename write SetFileName;
+    property FileName: TFileName read FFileName write SetFileName;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
   end;
 
@@ -238,7 +238,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvJanTreeView.SetUpKeyMappings;
+procedure TJvJanTreeView.SetupKeyMappings;
 begin
   with FKeyMappings do
   begin
@@ -726,7 +726,7 @@ begin
   FDefaultExt := Value;
 end;
 
-procedure TJvJanTreeView.SetFilename(const Value: TFileName);
+procedure TJvJanTreeView.SetFileName(const Value: TFileName);
 begin
   FFileName := Value;
 end;
@@ -918,20 +918,20 @@ var
   Ch: Char;
   Decimal: Boolean;
 begin
-  NextToken := Bad;
+  NextToken := ttBad;
   while (Position <= Length(FInput)) and (FInput[Position] = ' ') do
     Position := Position + 1;
   TokenLen := Position;
   if Position > Length(FInput) then
   begin
-    NextToken := EOL;
+    NextToken := ttEol;
     TokenLen := 0;
     Exit;
   end;
   Ch := UpCase(FInput[Position]);
   if Ch in ['!'] then
   begin
-    NextToken := ERR;
+    NextToken := ttErr;
     TokenLen := 0;
     Exit;
   end;
@@ -951,7 +951,7 @@ begin
     end;
     if (TLen = 2) and (Ch = '.') then
     begin
-      NextToken := BAD;
+      NextToken := ttBad;
       TokenLen := 0;
       Exit;
     end;
@@ -984,7 +984,7 @@ begin
     end
     else
     begin
-      NextToken := NUM;
+      NextToken := ttNum;
       Position := Position + System.Length(NumString);
       TokenLen := Position - TokenLen;
     end;
@@ -997,25 +997,25 @@ begin
       IsFunc('EXP') or IsFunc('LN') or IsFunc('ROUND') or
       IsFunc('SIN') or IsFunc('SQRT') or IsFunc('SQR') or IsFunc('TRUNC') then
     begin
-      NextToken := FUNC;
+      NextToken := ttFunc;
       TokenLen := Position - TokenLen;
       Exit;
     end;
     if IsFunc('MOD') then
     begin
-      NextToken := MODU;
+      NextToken := ttModu;
       TokenLen := Position - TokenLen;
       Exit;
     end;
     if IsVar(CurrToken.Value) then
     begin
-      NextToken := NUM;
+      NextToken := ttNum;
       TokenLen := Position - TokenLen;
       Exit;
     end
     else
     begin
-      NextToken := BAD;
+      NextToken := ttBad;
       TokenLen := 0;
       Exit;
     end;
@@ -1024,22 +1024,22 @@ begin
   begin
     case Ch of
       '+':
-        NextToken := PLUS;
+        NextToken := ttPlus;
       '-':
-        NextToken := MINUS;
+        NextToken := ttMinus;
       '*':
-        NextToken := TIMES;
+        NextToken := ttTimes;
       '/':
-        NextToken := DIVIDE;
+        NextToken := ttDivide;
       '^':
-        NextToken := EXPO;
+        NextToken := ttExpo;
       '(':
-        NextToken := OPAREN;
+        NextToken := ttOParen;
       ')':
-        NextToken := CPAREN;
+        NextToken := ttCParen;
     else
       begin
-        NextToken := BAD;
+        NextToken := ttBad;
         TokenLen := 0;
         Exit;
       end;
@@ -1092,19 +1092,19 @@ begin
     case Stack[StackTop].State of
       0, 9, 12..16, 20, 40:
         begin
-          if TokenType = NUM then
+          if TokenType = ttNum then
             Shift(10)
           else
-          if TokenType = FUNC then
+          if TokenType = ttFunc then
             Shift(11)
           else
-          if TokenType = MINUS then
+          if TokenType = ttMinus then
             Shift(5)
           else
-          if TokenType = OPAREN then
+          if TokenType = ttOParen then
             Shift(9)
           else
-          if TokenType = ERR then
+          if TokenType = ttErr then
           begin
             MathError := True;
             Accepted := True;
@@ -1117,13 +1117,13 @@ begin
         end;
       1:
         begin
-          if TokenType = EOL then
+          if TokenType = ttEol then
             Accepted := True
           else
-          if TokenType = PLUS then
+          if TokenType = ttPlus then
             Shift(12)
           else
-          if TokenType = MINUS then
+          if TokenType = ttMinus then
             Shift(13)
           else
           begin
@@ -1133,37 +1133,37 @@ begin
         end;
       2:
         begin
-          if TokenType = TIMES then
+          if TokenType = ttTimes then
             Shift(14)
           else
-          if TokenType = DIVIDE then
+          if TokenType = ttDivide then
             Shift(15)
           else
             Reduce(3);
         end;
       3:
         begin
-          if TokenType = MODU then
+          if TokenType = ttModu then
             Shift(40)
           else
             Reduce(6);
         end;
       4:
         begin
-          if TokenType = EXPO then
+          if TokenType = ttExpo then
             Shift(16)
           else
             Reduce(8);
         end;
       5:
         begin
-          if TokenType = NUM then
+          if TokenType = ttNum then
             Shift(10)
           else
-          if TokenType = FUNC then
+          if TokenType = ttFunc then
             Shift(11)
           else
-          if TokenType = OPAREN then
+          if TokenType = ttOParen then
             Shift(9)
           else
           begin
@@ -1180,7 +1180,7 @@ begin
       10:
         Reduce(15);
       11:
-        if TokenType = OPAREN then
+        if TokenType = ttOParen then
           Shift(20)
         else
         begin
@@ -1192,13 +1192,13 @@ begin
       18:
         raise EJVCLException.CreateRes(@RsEBadTokenState);
       19:
-        if TokenType = PLUS then
+        if TokenType = ttPlus then
           Shift(12)
         else
-        if TokenType = MINUS then
+        if TokenType = ttMinus then
           Shift(13)
         else
-        if TokenType = CPAREN then
+        if TokenType = ttCParen then
           Shift(27)
         else
         begin
@@ -1206,18 +1206,18 @@ begin
           Position := Position - TokenLen;
         end;
       21:
-        if TokenType = TIMES then
+        if TokenType = ttTimes then
           Shift(14)
         else
-        if TokenType = DIVIDE then
+        if TokenType = ttDivide then
           Shift(15)
         else
           Reduce(1);
       22:
-        if TokenType = TIMES then
+        if TokenType = ttTimes then
           Shift(14)
         else
-        if TokenType = DIVIDE then
+        if TokenType = ttDivide then
           Shift(15)
         else
           Reduce(2);
@@ -1232,13 +1232,13 @@ begin
       27:
         Reduce(14);
       28:
-        if TokenType = PLUS then
+        if TokenType = ttPlus then
           Shift(12)
         else
-        if TokenType = MINUS then
+        if TokenType = ttMinus then
           Shift(13)
         else
-        if TokenType = CPAREN then
+        if TokenType = ttCParen then
           Shift(29)
         else
         begin
@@ -1409,7 +1409,7 @@ begin
         else
         if Token1.FuncName = 'SQR' then
         begin
-          if (CurrToken.Value < -SQRLIMIT) or (CurrToken.Value > SQRLIMIT) then
+          if (CurrToken.Value < -SqrLimit) or (CurrToken.Value > SqrLimit) then
             MathError := True
           else
             CurrToken.Value := Sqr(CurrToken.Value);
@@ -1461,7 +1461,7 @@ begin
   FAddChildNode := Value;
 end;
 
-procedure TTreeKeyMappings.SetDuplicateNode(const Value: TshortCut);
+procedure TTreeKeyMappings.SetDuplicateNode(const Value: TShortCut);
 begin
   FDuplicateNode := Value;
 end;

@@ -437,7 +437,8 @@ var
 begin
   ieol := 0; // Not needed but removed Warning
   R := Rect(0, 0, FBmp.Width, FBmp.Height);
-  FBmp.Canvas.Brush.Color := BackColor;
+  FBmp.Canvas.Brush.Color := BackColor; 
+  FBmp.Canvas.Brush.Style := bsSolid; 
   FBmp.Canvas.FillRect(R);
   FBmp.TransparentColor := BackColor;
   FBmp.Transparent := True;

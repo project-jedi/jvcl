@@ -332,7 +332,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure RecreateWnd;
     procedure CreateWnd; dynamic;
-    procedure CreateWidget; override;
+    procedure CreateWidget; override;	
   private
     FDoubleBuffered: Boolean;
     function GetDoubleBuffered: Boolean;
@@ -341,7 +341,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -360,17 +360,17 @@ type
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -537,12 +537,14 @@ var
   IsDoubleBuffered: Boolean;
   R: TRect;
 begin
-  if (csDestroying in Instance.ComponentState) or not assigned(Instance.Parent)  then
+  if (csDestroying in Instance.ComponentState) or not Assigned(Instance.Parent) then
     Exit;
+
   R := Rect(0, 0, 0, 0);
   QRegion_boundingRect(EventRegion, @R);
   if IsRectEmpty(R) then
     exit;
+
   Instance.GetInterface(IJvWinControlEvents, Intf);
   IsDoubleBuffered := Intf.GetDoubleBuffered;
   Pixmap := nil;
@@ -550,7 +552,9 @@ begin
 
   with TWidgetControlAccessProtected(Instance) do
   begin
+
     TControlCanvas(Canvas).StartPaint;
+
     if IsDoubleBuffered then
     begin
       Pixmap := QPixmap_create(Instance.Width, Instance.Height, -1, QPixmapOptimization_DefaultOptim);
@@ -563,7 +567,6 @@ begin
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
     end;
-
     try
       Canvas.Brush.Assign(Brush);
       Canvas.Font.Assign(Font);
@@ -573,9 +576,9 @@ begin
 
       if IsDoubleBuffered then
       begin
-        HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
         if not HasBackground then
         begin
+          HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
           // fill with control's background
           if (QWidget_backgroundPixmap(Handle) <> nil) and
              not QPixmap_isNull(QWidget_backgroundPixmap(Handle)) then
@@ -593,14 +596,12 @@ begin
         TCustomControlAccessProtected(Instance).Paint
       else
         Intf.Paint;
-
     finally
       if Pixmap <> nil then
       begin
         TControlCanvas(Canvas).StopPaint;
         QPainter_destroy(Canvas.Handle);
         Canvas.Handle := OriginalPainter;
-//        QPainter_setClipRegion(Canvas.Handle, EventRegion);
         bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
           Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
           RasterOp_CopyROP, True);
@@ -1138,8 +1139,8 @@ begin
     Canvas.Brush.Color := Color;
     Canvas.Brush.Style := bsSolid;
     Canvas.Font.Assign(Font);
-    QPainter_setFont(Canvas.Handle, Font.Handle);
-    QPainter_setPen(Canvas.Handle, Font.FontPen);
+    QPainter_setFont(Canvas.Handle, Canvas.Font.Handle);
+    QPainter_setPen(Canvas.Handle, Canvas.Font.FontPen);
     QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
     inherited PaintRequest;
   finally

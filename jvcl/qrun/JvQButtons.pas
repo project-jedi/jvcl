@@ -70,10 +70,11 @@ unit JvQButtons;
 
 interface
 
-uses  
-  Types, QImgList, QWindows, 
-  Classes, QGraphics, QControls, QForms, QButtons,
-  JvQComponent, JvQExButtons;
+uses
+  Types, QWindows, QMessages,
+  Classes, QGraphics, QControls, QForms, QButtons, 
+  QImgList,  
+  JvQJCLUtils, JvQComponent, JvQExButtons;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph class,
@@ -588,15 +589,15 @@ begin
     if State = bsDisabled then
     begin
       OffsetRect(TextBounds, 1, 1);
-      Font.Color := clBtnHighlight;  
+      Font.Color := clBtnHighlight;
       DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags); 
+      DrawText(Canvas, Caption, Length(Caption), TextBounds, Flags);
     end
-    else  
+    else
       DrawText(Canvas, Caption, Length(Caption), TextBounds,
-        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags); 
+        DT_CENTER or DT_VCENTER or DT_SINGLELINE or Flags);
   end;
 end;
 
@@ -757,8 +758,8 @@ end;
 procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
   Caption: string);
 begin
-  TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);  
-  DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT); 
+  TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
+  DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
 end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;

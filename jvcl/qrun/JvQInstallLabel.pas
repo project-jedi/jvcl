@@ -40,9 +40,9 @@ unit JvQInstallLabel;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QImgList, Types, Qt, QWindows, 
-  JvQComponent;
+  SysUtils, Classes,
+  Types, QWindows, QGraphics, QControls, QImgList,
+  JvQJCLUtils, JvQComponent;
 
 type
   TJvInstallLabel = class(TJvGraphicControl)
@@ -253,8 +253,7 @@ end;
 procedure TJvInstallLabel.Paint;
 var
   Tmp, H, W, I: Integer;
-  aRect: TRect;  
-  aHandle: QPainterH; 
+  aRect: TRect;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -271,8 +270,7 @@ begin
 
   UpdateStyles;
   Canvas.Font := Font;
-  aHandle := Canvas.Handle;  
-  SetBkMode(aHandle, QWindows.Transparent); 
+  SetBkMode(Canvas.Handle, QWindows.Transparent);
   H := CanvasMaxTextHeight(Canvas);
   for I := 0 to Lines.Count - 1 do
   begin
@@ -280,7 +278,7 @@ begin
     W := Canvas.TextWidth(Lines[I]);
     Tmp := I * (H + FLineSpacing) + FLineSpacing;
     aRect := Rect(FTextOffset, Tmp, FTextOffset + W, Tmp + H);
-    DrawText(aHandle, PChar(Lines[I]), -1, aRect, DT_CENTER or DT_VCENTER or
+    DrawText(Canvas, Lines[I], -1, aRect, DT_CENTER or DT_VCENTER or
       DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     if Assigned(FImageList) then
     begin
