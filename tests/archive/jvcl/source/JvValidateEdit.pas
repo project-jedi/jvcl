@@ -61,7 +61,9 @@ type
     procedure SetColorBelow(NewValue: TColor);
     procedure SetCheckPoints(NewValue: TJvValidateEditCriticalPointsCheck);
   public
+    procedure Assign(Source: TPersistent); override;
     constructor Create;
+  published
     property CheckPoints: TJvValidateEditCriticalPointsCheck read FCheckPoints
         write SetCheckPoints;
     property ColorAbove: TColor read FColorAbove write SetColorAbove;
@@ -69,7 +71,6 @@ type
     property MaxValue: Double read FMaxValue write SetMaxValue;
     property MinValue: Double read FMinValue write SetMinValue;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    procedure Assign(Source: TPersistent); override;
   end;
 
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
