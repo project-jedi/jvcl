@@ -36,7 +36,7 @@ Changes:
 interface
 uses
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
-  ImgList, ComCtrls, JVCLVer;
+  ImgList, ComCtrls, JVCLVer, JvComponent, JvThemes;
 
 type
   EPageListError = class(Exception);
@@ -74,7 +74,7 @@ type
   { TJvCustomPage is the base class for pages in a TJvPageList and implements the basic behaviour of such
     a control. It has support for accepting components, propagating it's Enabled state, changing it's order in the
     page list and custom painting }
-  TJvCustomPage = class(TCustomControl)
+  TJvCustomPage = class(TJvCustomControl)
   private
     FPageList: TJvCustomPageList;
     FOnBeforePaint: TJvPageCanPaintEvent;
@@ -82,7 +82,6 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -130,8 +129,6 @@ type
     property OnBeforePaint: TJvPageCanPaintEvent read FOnBeforePaint write FOnBeforePaint;
     property OnPaint: TJvPagePaintEvent read FOnPaint write FOnPaint;
     property OnAfterPaint: TJvPagePaintEvent read FOnAfterPaint write FOnAfterPaint;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomPageClass = class of TJvCustomPage;
@@ -142,7 +139,7 @@ type
     It works like TPageControl but does not have any tabs
    }
   TJvShowDesignCaption = (sdcNone, sdcTopLeft, sdcTopCenter, sdcTopRight, sdcLeftCenter, sdcCenter, sdcRightCenter, sdcBottomLeft, sdcBottomCenter, sdcBottomRight);
-  TJvCustomPageList = class(TCustomControl, IUnknown, IPageList)
+  TJvCustomPageList = class(TJvCustomControl, IUnknown, IPageList)
   private
     FPages: TList;
     FActivePage: TJvCustomPage;
@@ -150,7 +147,6 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
@@ -208,8 +204,6 @@ type
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
     property Pages[Index:integer]:TJvCustomPage read GetPage;
     property PageCount: integer read getPageCount;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvStandardPage = class(TJvCustomPage)
@@ -248,6 +242,9 @@ type
     property OnMouseLeave;
     property OnCtl3DChanged;
     property OnParentColorChange;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+  {$ENDIF}
   end;
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
@@ -664,6 +661,9 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+  {$ENDIF}
   end;
 
 implementation
@@ -1006,6 +1006,7 @@ begin
   inherited;
   Align := alClient;
   ControlStyle := ControlStyle + [csAcceptsControls, csNoDesignVisible];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Visible := False;
   Color := clBtnFace;
   DoubleBuffered := True;
@@ -1063,7 +1064,7 @@ begin
     Font := self.Font;
     Brush.Style := bsSolid;
     Brush.Color := self.Color;
-    FillRect(ARect);
+    DrawThemedBackground(Self, Canvas, ARect);
     if (csDesigning in ComponentState) then
     begin
       Pen.Style := psDot;
@@ -1145,8 +1146,11 @@ end;
 
 procedure TJvCustomPage.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled and ParentBackground then
+    DrawThemedBackground(Self, Message.DC, ClientRect, Parent.Brush.Handle);
+{$ENDIF}
   Message.Result := 1;
-  //  inherited;
 end;
 
 procedure TJvCustomPage.CMTextchanged(var Message: TMessage);
@@ -1248,6 +1252,7 @@ constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
   inherited;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FPages := TList.Create;
   Height := 200;
   Width := 300;
@@ -1320,7 +1325,6 @@ end;
 
 procedure TJvCustomPageList.Paint;
 begin
-  inherited;
   if (csDesigning in ComponentState) and (getPageCount = 0) then
     with Canvas do
     begin
