@@ -1,12 +1,12 @@
 object Form1: TForm1
   Left = 313
   Top = 122
-  BorderIcons = [biSystemMenu, biMinimize]
-  BorderStyle = bsSingle
+  Width = 555
+  Height = 431
   Caption = 'JvCharMap Demo'
-  ClientHeight = 404
-  ClientWidth = 547
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 500
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -237,6 +237,7 @@ object Form1: TForm1
       Top = 16
       Width = 75
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Se&lect'
       TabOrder = 11
       OnClick = btnSelectClick

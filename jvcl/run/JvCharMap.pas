@@ -196,6 +196,7 @@ type
     FCharacter: WideChar;
     FEndChar: Word;
     FOldWndProc: TWndMethod;
+    FWasVisible: boolean;
     procedure SetCharacter(const Value: WideChar);
     procedure FormWindowProc(var Message: TMessage);
     procedure HookWndProc;
@@ -243,7 +244,7 @@ begin
   begin
     AWidth := DefaultColWidth * (ColCount) + ColCount;
     AHeight := DefaultRowHeight * (RowCount) + RowCount;
-    if AutoSizeWidth and (ClientWidth <> AWidth) and (Align in [alNone, alLeft, alRight])  then
+    if AutoSizeWidth and (ClientWidth <> AWidth) and (Align in [alNone, alLeft, alRight]) then
       ClientWidth := AWidth;
     if AutoSizeHeight and (ClientHeight <> AHeight) and (Align in [alNone, alTop, alBottom]) then
       ClientHeight := AHeight;
@@ -729,11 +730,30 @@ end;
 procedure TCharZoomPanel.FormWindowProc(var Message: TMessage);
 begin
   FOldWndProc(Message);
-  if Visible and not (csDestroying in ComponentState) then
+  if not (csDestroying in ComponentState) then
   begin
-    if (Message.Msg = WM_WINDOWPOSCHANGED) then
-      with TJvCharMap(Parent) do
-        ShowCharPanel(Col, Row);
+    case Message.Msg of
+      WM_MOVE:
+        if Visible or FWasVisible then
+          with TJvCharMap(Parent) do
+            ShowCharPanel(Col, Row);
+      WM_SYSCOMMAND:
+        case Message.WParam and $FFF0 of
+          SC_MINIMIZE:
+            begin
+              FWasVisible := Visible;
+              Visible := false;
+            end;
+          SC_RESTORE, SC_MAXIMIZE:
+            if FWasVisible and IsWindowVisible(GetParentForm(self).Handle) then
+              with TJvCharMap(Parent) do
+                ShowCharPanel(Col, Row);
+        end;
+      WM_WINDOWPOSCHANGED:
+        if FWasVisible and IsWindowVisible(GetParentForm(self).Handle) then
+          with TJvCharMap(Parent) do
+            ShowCharPanel(Col, Row);
+    end;
   end;
 end;
 
@@ -822,7 +842,7 @@ end;
 
 procedure TJvCharMapRange.SetStartChar(const Value: Word);
 begin
-  if FSTartChar <> Value then
+  if FStartChar <> Value then
   begin
     FStartChar := Value;
     Change;
