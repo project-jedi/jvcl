@@ -276,4 +276,6 @@ GetDockSiteSizeA=GetDockSiteSizeAlternate
 SetDockSiteSizeA=SetDockSiteSizeAlternate
 DockBaseControlListCount=Count
 TempSheet=TemporarySheet
+SetDockRectangles=InitDockRectangles
+SetDockHeightWidthArr=InitDockHeightWidth
 
