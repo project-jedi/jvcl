@@ -139,12 +139,10 @@ end;
 
 procedure TJvDragDrop.HookControl;
 begin
-  if FIsHooked then
-    Exit;
-
-  { Paranoia checks }
-  if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
-    FIsHooked := RegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+  if not FIsHooked then
+    { Paranoia checks }
+    if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+      FIsHooked := RegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
 end;
 
 procedure TJvDragDrop.Loaded;
@@ -168,7 +166,7 @@ begin
     { When loading, delay changing to active until all properties are loaded }
     FStreamedAcceptDrag := Value
   else
-    if Value <> FAcceptDrag then
+  if Value <> FAcceptDrag then
   begin
     FAcceptDrag := Value;
 
@@ -199,7 +197,7 @@ begin
   if csLoading in ComponentState then
     FDropTarget := Value
   else
-    if Value <> FDropTarget then
+  if Value <> FDropTarget then
   begin
     WasActive := AcceptDrag;
 
@@ -222,14 +220,13 @@ end;
 
 procedure TJvDragDrop.UnHookControl;
 begin
-  if not FIsHooked then
-    Exit;
-
-  FIsHooked := False;
-
-  { Paranoia checks }
-  if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
-    UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+  if FIsHooked then
+  begin
+    FIsHooked := False;
+    { Paranoia checks }
+    if Assigned(FDropTarget) and not (csDesigning in ComponentState) then
+      UnRegisterWndProcHook(FDropTarget, WndProc, hoBeforeMsg);
+  end;
 end;
 
 function TJvDragDrop.WndProc(var Msg: TMessage): Boolean;

@@ -23,20 +23,24 @@ located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
-{$I JEDI.INC}
+
+{$I JVCL.INC}
+
 unit JvMTData;
 
 interface
 
 uses
-{$IFDEF MSWINDOWS}
-  Windows, // for OutputDebugString
-{$ENDIF}
-  SysUtils, Classes, Contnrs, JvMTSync, JvMTConsts, JvMTThreading, SyncObjs;
+  SysUtils, Classes, Contnrs,
+  {$IFDEF MSWINDOWS}
+  {$IFDEF DEBUGINFO_ON}
+  Windows,   // for OutputDebugString
+  {$ENDIF DEBUGINFO_ON}
+  {$ENDIF MSWINDOWS}
+  JvMTSync, JvMTConsts, JvMTThreading, SyncObjs;
 
 type
-  TMTBoundedQueue = class (TObjectQueue)
+  TMTBoundedQueue = class(TObjectQueue)
   private
     FEmpty: TMTSemaphore;
     FFull: TMTSemaphore;
@@ -50,7 +54,7 @@ type
     procedure Push(AObject: TObject);
   end;
   
-  TMTAsyncBuffer = class (TObject)
+  TMTAsyncBuffer = class(TObject)
   private
     FBuffer: TMTBoundedQueue;
     FData: TObject;
@@ -67,11 +71,10 @@ type
     constructor Create(Size: Integer; Name: string = '');
     destructor Destroy; override;
     function Read: TObject; virtual; abstract;
-    procedure Write(AObject: TObject; FreeOnFail: Boolean = True); virtual; 
-      abstract;
+    procedure Write(AObject: TObject; FreeOnFail: Boolean = True); virtual; abstract;
   end;
   
-  TMTBufferToVCL = class (TMTAsyncBuffer)
+  TMTBufferToVCL = class(TMTAsyncBuffer)
   private
     FOnCanRead: TNotifyEvent;
   protected
@@ -85,7 +88,7 @@ type
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
   
-  TMTVCLToBuffer = class (TMTAsyncBuffer)
+  TMTVCLToBuffer = class(TMTAsyncBuffer)
   private
     FOnCanWrite: TNotifyEvent;
   protected
@@ -108,7 +111,7 @@ resourcestring
 var
   DataThreadsMan: TMTManager;
 
-{ TMTBoundedQueue }
+//=== TMTBoundedQueue ========================================================
 
 constructor TMTBoundedQueue.Create(Size: Integer; Name: string = '');
 begin
@@ -139,7 +142,7 @@ begin
   FFull.Wait;
   FMutex.Enter;
   try
-  Result := inherited Peek;
+    Result := inherited Peek;
   finally
     FMutex.Leave;
     FFull.Signal;
@@ -151,7 +154,7 @@ begin
   FFull.Wait;
   FMutex.Enter;
   try
-  Result := inherited Pop;
+    Result := inherited Pop;
   finally
     FMutex.Leave;
     FEmpty.Signal;
@@ -163,14 +166,14 @@ begin
   FEmpty.Wait;
   FMutex.Enter;
   try
-  inherited Push(AObject);
+    inherited Push(AObject);
   finally
     FMutex.Leave;
     FFull.Signal;
   end;
 end;
 
-{ TMTAsyncBuffer }
+//=== TMTAsyncBuffer =========================================================
 
 constructor TMTAsyncBuffer.Create(Size: Integer; Name: string = '');
 begin
@@ -224,17 +227,18 @@ begin
 end;
 
 
-{ TMTBufferToVCL }
+//=== TMTBufferToVCL =========================================================
 
 destructor TMTBufferToVCL.Destroy;
 begin
   FOnCanRead := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TMTBufferToVCL.DoDataEvent;
 begin
-  if Assigned(FOnCanRead) then FOnCanRead(Self);
+  if Assigned(FOnCanRead) then
+    FOnCanRead(Self);
 end;
 
 procedure TMTBufferToVCL.InitMutex;
@@ -281,17 +285,18 @@ begin
   end;
 end;
 
-{ TMTVCLToBuffer }
+//=== TMTVCLToBuffer =========================================================
 
 destructor TMTVCLToBuffer.Destroy;
 begin
   FOnCanWrite := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TMTVCLToBuffer.DoDataEvent;
 begin
-  if Assigned(FOnCanWrite) then FOnCanWrite(Self);
+  if Assigned(FOnCanWrite) then
+    FOnCanWrite(Self);
 end;
 
 procedure TMTVCLToBuffer.InitMutex;
@@ -340,11 +345,14 @@ initialization
   DataThreadsMan := TMTManager.Create;
 
 finalization
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
+  // (rom) no OutputDebugString in production code
+  {$IFDEF DEBUGINFO_ON}
   if DataThreadsMan.ActiveThreads then
     OutputDebugString(
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
-{$ENDIF}
+  {$ENDIF DEBUGINFO_ON}
+  {$ENDIF MSWINDOWS}
 
   DataThreadsMan.Free;
 end.
