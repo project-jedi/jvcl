@@ -440,6 +440,11 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER5}
+type
+  UTF8String = type string;
+{$ENDIF COMPILER5}
+
 function LoadUtf8File(const Filename: string): string;
 var
   Content: UTF8String;
@@ -452,7 +457,7 @@ begin
   finally
     Stream.Free;
   end;
-  Delete(Content, 1, 3); // This a little bit dirty but unless we mix UTF8,
+  Delete(Content, 1, 3); // This is a little bit dirty but unless we mix UTF8,
                          // UTF16 and ANSI files there is no problem.
   {$IFDEF COMPILER6_UP}
   Result := Utf8ToAnsi(Content);
