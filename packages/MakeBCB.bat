@@ -81,10 +81,10 @@ echo Usage:    MakeBCB PackageName PackageDirectory [BCBDirectory]
 echo                   [LIBDirectory] [BPLDirectory]
 echo.
 echo     PackageName       The name of the group file to use
-echo                       e.g. "BCB6 Packages"
+echo                       e.g. "C6 Packages"
 echo     PackageDirectory  The directory where the packages for the given
 echo                       group are. e.g. "c6"
-echo     BCBDirectory      The place where BCB is installed.
+echo     BCBDirectory      The place where C++ Builder is installed.
 echo                       e.g. "C:\Program Files\CBuilder6"
 echo     LIBDirectory      The place where to put the BPI and LIB files.
 echo                       Defaults to $(BCB)\Projects\Lib
