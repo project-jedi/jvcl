@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvScrollText.pas
 Summary
@@ -16,26 +16,27 @@ JVCLInfo
 Summary
   Can scroll multiple lines of text.
 Description
-  Use TJvScrollText to scroll multiple lines of text. 
-  
-  Use Items to specify the text. Use ScrollDirection to determine how text is scrolled within the 
-  control. Use Delay to specify the interval between refresh events. Set Active to True to scroll the 
-  text. 
+  Use TJvScrollText to scroll multiple lines of text.
+
+  * Use Items to specify the text.
+  * Use ScrollDirection to determine how text is scrolled within the control.
+  * Use Delay to specify the interval between refresh events.
+  * Set Active to true to scroll the text.
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Create
 Summary
   Creates and initializes a new TJvScrollText object.
 Description
-  Call \Create to create an instance of TJvScrollText at runtime. A TJvScrollText component placed on a 
+  Call \Create to create an instance of TJvScrollText at runtime. A TJvScrollText component placed on a
   form at design time is created automatically.
 
-  Pass a single Component as a parameter to provide the control with an Owner that is 
+  Pass a single Component as a parameter to provide the control with an Owner that is
   responsible for freeing it.
 
-  \Create calls the inherited \Create method, then sets the initial values for the control 
-  as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the control
+  as follows:
 
-  * Active is set to False.
+  * Active is set to false.
   * Delay is set to 50.
   * ScrollPixels is set to 1.
   * ScrollDirection is set to drFromBottom.
@@ -48,7 +49,7 @@ See Also
 Summary
   Destroys an instance of TJvScrollText.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvScrollText object is not nil and only then calls Destroy.
 See Also
    Create
@@ -60,7 +61,7 @@ See Also
 Summary
   Indicates whether the text is scrolling in the control.
 Description
-  Set Active to True to scroll the text. Set Active to False to interrupt the scrolling.
+  Set Active to true to scroll the text. Set Active to false to interrupt the scrolling.
 See Also
   Pause, Reset, Unpause
 ----------------------------------------------------------------------------------------------------
@@ -69,7 +70,6 @@ Summary
   Specifies the background color of the control.
 Description
   Use Color to read or change the background color of the control.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollText.Delay
 Summary
@@ -137,8 +137,8 @@ Summary
   Determines the amount of pixels the text is moved per scroll event.
 Description
   Use ScrollPixels to set the number of pixels that the text will move per refresh. If ScrollPixels is 0,
-  the text on the control won't move at all. 
-    
+  the text on the control won't move at all.
+
   The default value for ScrollPixels is 1.
 See Also
   Delay
@@ -172,6 +172,21 @@ See Also
 Summary
   Responds when the user resizes the control.
 Description
-  WMSize is called automatically when the user resizes the control. 
+  WMSize is called automatically when the user resizes the control.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the control of the resize event.
+----------------------------------------------------------------------------------------------------
+@@TJvScrollTextDirection
+<TITLE TJvScrollTextDirection type>
+Summary
+  Enumerates ways text can scroll on a control.
+Description
+  Use the TJvScrollTextDirection type to specify how text should scroll on a control.
+@@TJvScrollTextDirection.drFromLeft
+  Text is scrolled from left to right.
+@@TJvScrollTextDirection.drFromRight
+  Text is scrolled from right to left.
+@@TJvScrollTextDirection.drFromTop
+  Text is scrolled from top to bottom.
+@@TJvScrollTextDirection.drFromBottom
+  Text is scrolled from bottom to top.

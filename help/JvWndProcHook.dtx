@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvWndProcHook.pas
 Summary
@@ -58,9 +58,12 @@ Description
   TJvControlHook is the type for a control hook procedure that acts like a window procedure of a
   control. Like most window procedures, TJvControlHook takes a message record as an argument.
 
-  The control hook should return True if it processes the message, and False if it does not. If the
-  hook procedure is registered with parameter Order set to hoBeforeMsg, then returning True will
+  The control hook should return true if it processes the message, and false if it does not. If the
+  hook procedure is registered with parameter Order set to hoBeforeMsg, then returning true will
   prevent the hooked control to respond to the message.
+Note
+  Be careful with setting the result to true. For example, always returning true with a
+  hook procedure that is registered with parameter Order set to hoBeforeMsg, will crash your application.
 Parameters
   Msg - Represents the Windows message send to the hooked control.
 See Also
@@ -69,19 +72,19 @@ See Also
 @@TJvHookMessageEvent
 <TITLE TJvHookMessageEvent type>
 Summary
-  Type for event handlers that let an application process messages before or after the hooked control 
+  Type for event handlers that let an application process messages before or after the hooked control
   has handled it.
 Description
-  Use TJvHookMessageEvent to respond to messages send to the hooked control. 
+  Use TJvHookMessageEvent to respond to messages send to the hooked control.
 
   Use parameter Handled to specify
-  whether the message is handled; setting Handled to True will prevent other hooks or the hooked control
-  - if it has not received the message yet - to respond to this message.
+  whether the message is handled; setting Handled to true will prevent other hooks or the hooked control -
+  if it has not received the message yet - to respond to this message.
 Parameters
   Sender  - The hook component that has send this message.
-  Msg     - Represents the Windows message that is about to be send to or just has been send to the 
+  Msg     - Represents the Windows message that is about to be send to or just has been send to the
              hooked control.
-  Handled - Set Handled to True to specify that the message is handled, and that no other hooks, or
+  Handled - Set Handled to true to specify that the message is handled, and that no other hooks, or
              the hooked control itself, may respond to this message.
 ----------------------------------------------------------------------------------------------------
 @@TJvHookOrder
@@ -106,8 +109,8 @@ Summary
 Description
   Use TJvWindowHook to receive and respond to messages send to a certain control.
 
-  Set Control to specify the control to hook and set Active to True to place a hook on that control.
-  \Write BeforeMessage and AfterMessage event handlers to respond to messages before or after they
+  Set Control to specify the control to hook and set Active to true to place a hook on that control.
+  \Write BeforeMessage and/or AfterMessage event handlers to respond to messages before or after they
   are handled by the hooked control. Note that if you do not write a BeforeMessage and AfterMessage
   handler that the control won't be hooked.
 
@@ -120,13 +123,13 @@ Summary
   Indicates whether or not the control is hooked.
 Description
   Use Active to determine or set whether the control specified by Control is hooked. When Active is
-  False, no AfterMessage and BeforeMessage events will be triggered. When Active is True, the control
+  false, no AfterMessage and BeforeMessage events will be triggered. When Active is true, the control
   specified by Control is hooked; before the hooked control receives a message a BeforeMessage event with
   that message is fired; after the hooked control has handled that message an AfterMessage event will be
   fired.
 
-  At design time, set Active to True to make the control hooked when the application starts
-  running (the default value is False). At runtime, use the HookControl or UnhookControl method to
+  At design time, set Active to true to make the control hooked when the application starts
+  running (the default value is false). At run-time, use the HookControl or UnhookControl method to
   hook the control or remove the hook.
 See Also
   Control, HookControl, UnHookControl
@@ -139,10 +142,10 @@ Description
   <i>after</i> the hooked control has handled the message.
 
   Use parameter Handled to specify
-  whether the message is handled; setting Handled to True will prevent other hooks to respond to this
+  whether the message is handled; setting Handled to true will prevent other hooks to respond to this
   message.
 
-  This event is only triggered when Active is set to True.
+  This event is only triggered when Active is set to true.
 See Also
   Active, BeforeMessage, Control
 ----------------------------------------------------------------------------------------------------
@@ -154,10 +157,13 @@ Description
   fired <i>before</i> the hooked control has handled the message.
 
   Use parameter Handled to specify whether the hooked control may respond to this message. setting
-  Handled to True will prevent the hooked control or other hooks placed on the control to respond
+  Handled to true will prevent the hooked control or other hooks placed on the control to respond
   to this message.
 
-  This event is only triggered when Active is set to True.
+  This event is only triggered when Active is set to true.
+Note
+  Be careful with setting parameter Handled to true. For example, unconditionally returning true will crash
+  your application.
 See Also
   Active, AfterMessage, Control
 ----------------------------------------------------------------------------------------------------
@@ -173,7 +179,7 @@ See Also
 Summary
   Hooks the control.
 Description
-  Call HookControl to set the Active property for the hook component to True. When Active is True
+  Call HookControl to set the Active property for the hook component to true. When Active is true
   AfterMessage and BeforeMessage will be triggered when the hooked control receives a message.
 See Also
   Active, Control
@@ -182,7 +188,7 @@ See Also
 Summary
   Unhooks the control.
 Description
-  Call UnHookControl to set the Active property for the hook component to False. When Active is False,
+  Call UnHookControl to set the Active property for the hook component to false. When Active is false,
   no AfterMessage and BeforeMessage will be triggered. If no other hook components have placed a hook
   on the control, then the control will be unhooked.
 See Also

@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvColorBox.pas
 Summary
@@ -9,14 +9,16 @@ Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@TJvColorBox
-<TITLEIMG TJvColorBox>
-JVCLInfo
-  GROUP=JVCL.Graphics.Shapes, JVCL.PanelsBevelsAndGroups.Panels
-  FLAG=Component
+##<TITLEIMG TJvColorBox>
+##JVCLInfo
+##  GROUP=JVCL.Graphics.Shapes, JVCL.PanelsBevelsAndGroups.Panels
+##  FLAG=Component
 Summary
   Displays the Windows standard colors as a set of 5x4 color squares.
 Description
   Use TJvColorBox when you need to display the Windows standard colors in a control.
+See Also
+  TColorButton
 ----------------------------------------------------------------------------------------------------
 @@TJvColorBox.BorderStyle
 Summary
@@ -37,18 +39,21 @@ Description
 @@TJvColorClickEvent
 <TITLE TJvColorClickEvent type>
 Summary
-  Event type for color square click events.
+  Type of event handlers that repsond to color square click events.
 Description
+  Use TJvColorClickEvent to respond to color square click events.
 Parameters
   Sender - The object whose event handler is called.
   Button - The mouse button that was used to click the color square.
   Color  - The Color of the square
+See Also
+  TJvColorBox.OnColorClick, TJvColorSquare.OnColorClick
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare
-<TITLEIMG TJvColorSquare>
-JVCLInfo
-  GROUP=JVCL.Graphics.Shapes
-  FLAG=Component
+##<TITLEIMG TJvColorSquare>
+##JVCLInfo
+##  GROUP=JVCL.Graphics.Shapes
+##  FLAG=Component
 Summary
   A component that can display a color and optionally draw a frame around it's edge when the mouse hovers over it.
 Description
@@ -115,4 +120,11 @@ Summary
 Description
   Use DropDown to assign a popup menu to use as the drop down menu for the button. When the user clicks
   the arrow part of the button, the menu is displayed below the button.
-
+----------------------------------------------------------------------------------------------------
+@@TJvDropButton
+Summary
+  A button that can display a drop-down arrow at the side of the button.
+Description
+  The TJvDropButton is used as the basis for the TJvColorButton component.
+See Also
+  TColorButton

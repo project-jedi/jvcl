@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvStringGrid.pas
 Summary
@@ -19,29 +19,13 @@ Author
 @@TGetCellAlignmentEvent
 <TITLE TGetCellAlignmentEvent type>
 <COMBINE TJvStringGrid.OnGetCellAlignment>
----------------------------------------------------------------------------------------------------
-@@TGMActivateCell
-<TITLE TGMActivateCell type>
-Summary
-  TGMActivateCell is a message used to activate a cell message.
-Description
-  Write here a description
-@@TGMActivateCell.Msg
-  The message code.
-@@TGMActivateCell.Column
-  Indicates the column index of the cell that should get focus.
-@@TGMActivateCell.Row
-  Indicates the row index of the cell that that should get focus.
-@@TGMActivateCell.Result
-  Holds the value returned by the application processing the message.
 ----------------------------------------------------------------------------------------------------
 @@TJvSortType
 <TITLE TJvSortType type>
 Summary
-  Specifies the comparison function used to sort a \string grid.
+  Enumerates comparison methods that can be used to sort a \string grid.
 Description
-  The following are possible values of TJvSortType:
-
+  Use the TJvSortType to specify a specific comparison method to sort a \string grid.
 @@TJvSortType.stAutomatic
   The comparison function automatically determines the type of the strings when comparing two strings.
   If both strings represent a integer, floating-point value or a date, then the two strings are compared
@@ -80,7 +64,8 @@ Description
   Use Alignment to set the default alignment for the grid. \Write an OnGetCellAlignment event handler
   to provide the grid with an alignment for a specific cell.
 
-  Call InvalidateCell, InvalidateCol or InvalidateRow to repaint a cell, column or row, respectively.
+  Call <LINK InvalidateCell>, <LINK InvalidateCol> or <LINK InvalidateRow> to repaint a cell,
+  column or row, respectively.
 
   Call ActivateCell to set the input focus to a specific cell. \Write an OnExitCell event handler to
   respend when the input focus shifts away from a cell.
@@ -96,7 +81,6 @@ Description
   \Create calls the inherited \Create method, then sets the initial values for the grid as follows:
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the grid.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -109,7 +93,6 @@ Description
 Parameters
   AColumn - Indicates the column index of the cell that should get focus.
   ARow    - Indicates the row index of the cell that that should get focus.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.Alignment
 Summary
@@ -271,7 +254,7 @@ Parameters
   AColumn - Column index of the cell.
   ARow    - Row index of the cell.
 See Also
-  InvalidateCol, InvalidateRow
+  <LINK InvalidateCol>, <LINK InvalidateRow>
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateCol
 Summary
@@ -282,7 +265,7 @@ Description
 Parameters
   AColumn - Index of the column.
 See Also
-  InvalidateCell, InvalidateRow
+  <LINK InvalidateCell>, <LINK InvalidateRow>
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InvalidateRow
 Summary
@@ -293,7 +276,7 @@ Description
 Parameters
   ARow - Index of the row.
 See Also
-  InvalidateCell, InvalidateCol
+  <LINK InvalidateCell>, <LINK InvalidateCol>
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.LoadFromCSV
 Summary
@@ -624,6 +607,6 @@ Description
   Use TProgress to provide the user with feedback during load or save operations.
 Parameters
   Sender      - The grid that is in the process of loading or saving a grid.
-  Progression - Indicates how much of the load or save operation has already been completed, 
+  Progression - Indicates how much of the load or save operation has already been completed,
                  on a scale of 0 to Total.
   Total       - Specifies a value that must be reached by Progression to complete the operation.

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvSystemPopup.pas
 Summary
@@ -27,13 +27,13 @@ JVCLInfo
 Summary
   Adds menu items to the system menu.
 Description
-  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the control 
+  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the control
   menu).
 
-  Use Popup to associate a pop-up menu with TJvSystemPopup. TJvSystemPopup adds the menu items of the 
+  Use Popup to associate a pop-up menu with TJvSystemPopup. TJvSystemPopup adds the menu items of the
   pop-up menu to the system menu.
-    
-  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's 
+
+  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's
   system menu, or isn't inserted at all. Use PositionInMenu to specify where the menu items are inserted
   in the system menu: at the bottom or at the top.
 ----------------------------------------------------------------------------------------------------
@@ -42,9 +42,9 @@ Summary
   Creates and initializes a new TJvSystemPopup object.
 Description
   Use \Create to create and initialize a new TJvSystemPopup object.
-  
-  \Create calls the inherited \Create method, then sets the initial values for the component as follows: 
-  
+
+  \Create calls the inherited \Create method, then sets the initial values for the component as follows:
+
   * Position is set to ppNone.
   * PositionInMenu is set to pmTop.
 Parameters
@@ -56,7 +56,7 @@ See Also
 Summary
   Destroys an instance of TJvSystemPopup
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvSystemPopup object is not nil and only then calls Destroy.
 Parameters
   None.
@@ -67,7 +67,7 @@ See Also
 Summary
   Responds to notifications when objects are about to be created or destroyed.
 Description
-  Notification is called automatically when components are created or destroyed. After calling the 
+  Notification is called automatically when components are created or destroyed. After calling the
   inherited method, Notification checks whether the component specified by the Popup property is about
   to be destroyed. If the component is going away, Notification sets the Popup property to nil.
 Parameters
@@ -80,7 +80,7 @@ See Also
 Summary
   Identifies a pop-up menu associated with the component.
 Description
-  Use Popup to associate a pop-up menu with TJvSystemPopup. TJvSystemPopup adds the menu items of the 
+  Use Popup to associate a pop-up menu with TJvSystemPopup. The component adds the menu items of the
   pop-up menu to the system menu.
 See Also
   Position
@@ -89,7 +89,7 @@ See Also
 Summary
   Specifies in which system menu the popup menu items are inserted.
 Description
-  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's 
+  Use Position to specify whether the popup menu is inserted in the forms system menu, the application's
   system menu, or isn't inserted at all.
 
   These are the possible values of Position:
@@ -122,4 +122,4 @@ Summary
 Description
   Call Refresh to refresh the system menu. Refresh resets the window menu back to the default state,
 Parameters
-  SystemReset - Description for this parameter
+  SystemReset - Specifies whether to reset the system menu.

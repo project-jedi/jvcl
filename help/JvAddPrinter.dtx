@@ -1,9 +1,9 @@
 ##Package: Dlgs
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvAddPrinter.pas
 Summary
-  Contains the TJvAddPrinter component.
+  Contains the TJvAddPrinterDialog component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
@@ -18,9 +18,9 @@ Summary
 Description
   TJvAddPrinterDialog is wrapper around the windows "Add Printer..." dialog. To use this dialog you
   should:
-    
-  * drop TJvAddPrinterDialog on a form of data module
-  * Call the Execute method.
+
+  * drop TJvAddPrinterDialog on a form of data module.
+  * Call the Execute method at run-time.
 ----------------------------------------------------------------------------------------------------
 @@TJvAddPrinterDialog.Execute
 Summary
@@ -28,4 +28,4 @@ Summary
 Description
   Calling Execute will display the "Add Printer..." dialog.
 Return value
-  Describe here what the function returns
+  False if the dialog was canceled, otherwise True.

@@ -1,5 +1,5 @@
 ##Package: MM
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvStarfield.pas
 Summary
@@ -17,23 +17,23 @@ Summary
   A star field with moving stars.
 Description
   Use TJvStarfield to show a star field with moving stars.
-  
-  Use Stars to specify the amount of stars on the star field. Use MaxSpeed to limit the amount of
-  pixels a star will move per refresh event. Set Delay to indicate the amount of time (in milli-seconds)
-  between refresh events.
+
+  * Use Stars to specify the amount of stars on the star field.
+  * Use MaxSpeed to limit the amount of pixels a star will move per refresh event.
+  * Set Delay to indicate the amount of time (in milli-seconds) between refresh events.
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Create
 Summary
   Creates and initializes a new TJvStarField object.
 Description
-  Call \Create to create an instance of TJvStarField at runtime. A TJvStarField component placed on a 
+  Call \Create to create an instance of TJvStarField at runtime. A TJvStarField component placed on a
   form at design time is created automatically.
 
-  Pass a single Component as a parameter to provide the star field with an Owner that is 
+  Pass a single Component as a parameter to provide the star field with an Owner that is
   responsible for freeing it.
 
-  \Create calls the inherited \Create method, then sets the initial values for the star field 
-  as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the star field
+  as follows:
 
   * Active is set to False.
   * Delay is set to 50.
@@ -48,12 +48,10 @@ See Also
 Summary
   Destroys an instance of TJvStarField.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvStarfield object is not nil and only then calls Destroy.
-Parameters
-  None.
 See Also
-   Create
+  Create
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -62,9 +60,9 @@ See Also
 Summary
   Indicates whether the stars are moving on the star field.
 Description
-  Set Active to True to move the stars on the star field. Set Active to False to interrupt 
+  Set Active to True to move the stars on the star field. Set Active to False to interrupt
   the stars when they are are moving.
-  
+
   Make sure to set MaxSpeed and Stars to a value greater than 0, otherwise the stars won't move.
 See Also
   MaxSpeed, Stars
@@ -74,11 +72,11 @@ Summary
   Determines the amount of time, in milliseconds, between two refreshes of the star field.
 Description
   Set Delay to specify the amount of time (in milliseconds) between two refreshes of the star field.
- 
-  Delay determines how frequently a refresh of the star field occurs. Each time the specified time 
+
+  Delay determines how frequently a refresh of the star field occurs. Each time the specified time
   passes, the position of the stars on the star field changes.
 
-  Use Delay to specify any cardinal value as the interval between refresh events. The default value 
+  Use Delay to specify any cardinal value as the interval between refresh events. The default value
   is 50 (1/20 second).
 See Also
   MaxSpeed, Stars
@@ -87,10 +85,10 @@ See Also
 Summary
   Indicates the maximum number of pixels a star may move per refresh.
 Description
-  Set MaxSpeed to limit the number of pixels that a star can move per refresh. If MaxSpeed is 0, the 
+  Set MaxSpeed to limit the number of pixels that a star can move per refresh. If MaxSpeed is 0, the
   stars on the star field won't move at all. If MaxSpeed is set to a value greater than 0, the stars
   will move 1 to MaxSpeed pixels per refresh.
-  
+
   The default value for MaxSpeed is 10.
 See Also
   Delay, Stars
@@ -99,11 +97,8 @@ See Also
 Summary
   Responds to control resize.
 Description
-  Resize is called automatically immediately after the star field’s dimensions change. Resize 
+  Resize is called automatically immediately after the star field’s dimensions change. Resize
   resizes the star field and repositions all stars on the star field.
-Parameters
-  None.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStarfield.Stars
 Summary

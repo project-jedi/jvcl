@@ -1,8 +1,7 @@
 ##Package: Dlgs
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvDialogActns.pas
-<GROUP JVCL.FileRef>
 Summary
   Contains several actions that uses JVCL dialogs.
 <INCLUDE JVCL.UnitText.dtx>
@@ -63,11 +62,9 @@ See Also
 @@TJvCommonDialogClass
 Summary
   Defines the metaclass for TJvCommonDialog.
-  Base class type for actions that internally uses TJvCommonDialog to perform the
-  actual action.
 Description
-  TJvCommonDialogClass is the metaclass for TJvCommonDialog. Its value is the class reference for 
-  TJvCommonDialog  or for one of its descendants.
+  TJvCommonDialogClass is the metaclass for TJvCommonDialog. Its value is the class reference for
+  TJvCommonDialog or for one of its descendants.
 ----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogFAction
 Summary
@@ -93,6 +90,13 @@ Description
 See Also
   BeforeExecute
 ----------------------------------------------------------------------------------------------------
+@@TJvCommonDialogFClass
+Summary
+  Defines the metaclass for TJvCommonDialogF.
+Description
+  TJvCommonDialogFClass is the metaclass for TJvCommonDialogF. Its value is the class reference for
+  TJvCommonDialogF or for one of its descendants.
+----------------------------------------------------------------------------------------------------
 @@TJvCommonDialogPAction
 Summary
   Base action for actions that displays a dialog derived from TJvCommonDialogP.
@@ -117,14 +121,21 @@ Description
 See Also
   BeforeExecute
 ----------------------------------------------------------------------------------------------------
+@@TJvCommonDialogPClass
+Summary
+  Defines the metaclass for TJvCommonDialogP.
+Description
+  TJvCommonDialogPClass is the metaclass for TJvCommonDialogP. Its value is the class reference for
+  TJvCommonDialogP or for one of its descendants.
+----------------------------------------------------------------------------------------------------
 @@TJvConnectNetworkAction
 Summary
   Action that displays the TJvNetworkConnect dialog.
 Description
   Add TJvConnectNetworkAction to an action list to add a connect network dialog to your application.
-  Controls such as menu items and tool buttons linked to this action cause the application to
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to
   display a general browsing dialog box for connecting to network resources when invoked.
-  Use TJvConnectNetworkAction when you need to display a "connect to network" dialog to the user.
 ----------------------------------------------------------------------------------------------------
 @@TJvConnectNetworkAction.Dialog
 Summary
@@ -137,11 +148,11 @@ Summary
   Action that displays the TJvAppletDialog dialog.
 Description
   Add TJvControlPanelAction to an action list to add a specific control panel dialog to your application.
-  Controls such as menu items and tool buttons linked to this action cause the application to display a
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to display a
   specific control panel dialog.
 
   Use Dialog to specify which control panel must be shown, when Execute is called.
-  Use TJvControlPanelAction when you need to display the control panel to the user.
 ----------------------------------------------------------------------------------------------------
 @@TJvControlPanelAction.Dialog
 Summary
@@ -154,9 +165,9 @@ Summary
   Action that displays the TJvFormatDriveDialog dialog.
 Description
   Add TJvFloppyFormatAction to an action list to add a standard Shell format dialog to your application.
-  Controls such as menu items and tool buttons linked to this action cause the application to display
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to display
   the standard Shell format dialog when invoked, that allows the user to format a drive.
-  Use TJvFloppyFormatAction when you need to display a floppy format dialog to the user.
 ----------------------------------------------------------------------------------------------------
 @@TJvFloppyFormatAction.Dialog
 Summary
@@ -168,13 +179,15 @@ Description
 Summary
   Action that displays the TJvOpenDialog dialog.
 Description
-  Add TJvOpenFileAction to an action list to add a common file open dialog to your application. Controls such
-  as menu items and tool buttons linked to this action cause the application to display a file open
-  dialog when invoked. Use the OnAccept event to respond after the user selects a file name in the
+  Add TJvOpenFileAction to an action list to add a common file open dialog to your application.
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to
+  display a file open dialog when invoked.
+
+  Use the OnAccept event to respond after the user selects a file name in the
   file open dialog or the OnCancel event to respond when the user cancels from the dialog. In the
   event handler for these events, you can read the file name from the dialog specified by the Dialog
   property.
-  Use TJvOpenFileAction when you need to prompt the user for a filename in a dialog.
 ----------------------------------------------------------------------------------------------------
 @@TJvOpenFileAction.Dialog
 Summary
@@ -187,9 +200,9 @@ Summary
   Action that displays the TJvOrganizeFavoritesDialog dialog.
 Description
   Add TJvOrganizeFavoritesAction to an action list to add a Organize Favorites dialog to your application.
-  Controls such as menu items and tool buttons linked to this action cause the application to display
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to display
   a Organize Favorites dialog when invoked.
-  Use TJvOrganizeFavorites  when you need to display the "Organize Favorites" dialog to the user.
 ----------------------------------------------------------------------------------------------------
 @@TJvOrganizeFavoritesAction.Dialog
 Summary
@@ -201,10 +214,10 @@ Description
 Summary
   Action that displays the TJvPageSetupDialog dialog.
 Description
-  Add TJvPageSetupAction to an action list to add a Page Setup dialog to your application. Controls such
-  as menu items and tool buttons linked to this action cause the application to display a Page Setup
-  dialog when invoked, that enables the user to specify the attributes of a printed page.
-  Use TJvPageSetup when you need to display a printer page setup dialog to the user.
+  Add TJvPageSetupAction to an action list to add a Page Setup dialog to your application.
+
+  \Controls such  as menu items and tool buttons linked to this action cause the application to
+  display a Page Setup dialog when invoked, that enables the user to specify the attributes of a printed page.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupAction.Dialog
 Summary
@@ -216,10 +229,10 @@ Description
 Summary
   Action that displays the TJvPageSetupTitledDialog dialog.
 Description
-  Add TJvPageSetupTitledAction to an action list to add a Page Setup dialog to your application. Controls such
-  as menu items and tool buttons linked to this action cause the application to display a Page Setup
-  dialog when invoked, that enables the user to specify the attributes of a printed page.
-  Use TJvPageSetupTitledAction when you need to show a printer page setup dialog to the user.
+  Add TJvPageSetupTitledAction to an action list to add a Page Setup dialog to your application.
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to
+  display a Page Setup dialog when invoked, that enables the user to specify the attributes of a printed page.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageSetupTitledAction.Dialog
 Summary
@@ -231,13 +244,15 @@ Description
 Summary
   Action that displays the TJvSaveDialog dialog.
 Description
-  Add TJvSaveFileAction to an action list to add a common file save dialog to your application. Controls such
-  as menu items and tool buttons linked to this action cause the application to display a file save
-  dialog when invoked. Use the OnAccept event to respond after the user selects a file name in the
+  Add TJvSaveFileAction to an action list to add a common file save dialog to your application.
+
+  \Controls such as menu items and tool buttons linked to this action cause the application to
+  display a file save  dialog when invoked.
+
+  Use the OnAccept event to respond after the user selects a file name in the
   file save dialog or the OnCancel event to respond when the user cancels from the dialog. In the
   event handler for these events, you can read the file name from the dialog specified by the Dialog
   property.
-  Use TJvSaveFileAction when you need to prompt the user for a filename.
 ----------------------------------------------------------------------------------------------------
 @@TJvSaveFileAction.Dialog
 Summary
@@ -250,9 +265,10 @@ Summary
   Action that displays the TJvSelectDirectory dialog.
 Description
   Add TJvSelectDirectoryAction to an action list to add the Browse For Folder dialog or the custom
-  select directory dialog to your application. Controls such as menu items and tool buttons linked to
+  select directory dialog to your application.
+
+  \Controls such as menu items and tool buttons linked to
   this action cause the application to display a select directory dialog when invoked.
-  Use TJvSelectDirectoryAction when you need to prompt the user for a folder name.
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectoryAction.Dialog
 Summary
