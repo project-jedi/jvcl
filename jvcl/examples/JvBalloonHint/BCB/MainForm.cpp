@@ -179,7 +179,7 @@ void __fastcall TfrmMain::btnLaunchClick(TObject *Sender)
     LIcon = ikNone;
   LImageIndex = -1;
 
-  if (LIcon == ikCustom)
+  if (LIcon == Jvballoonhint::ikCustom)
   {
     LImageIndex = ilbDefaultImageIndex->ItemIndex;
     if (LImageIndex < 0)
@@ -197,7 +197,7 @@ void __fastcall TfrmMain::btnLaunchClick(TObject *Sender)
   {
     case ikNone:
       JvBalloonHint1->ActivateHint(LCtrl, memMessage->Text, edtHeader->Text, LVisibleTime);
-    case ikCustom:
+    case Jvballoonhint::ikCustom:
       JvBalloonHint1->ActivateHint(LCtrl, memMessage->Text, LImageIndex, edtHeader->Text,
         LVisibleTime);
     default:
