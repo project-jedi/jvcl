@@ -11,12 +11,23 @@ object Form1: TForm1
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'Arial'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  DesignSize = (
+    547
+    404)
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
+  object lblChars: TLabel
+    Left = 192
+    Top = 8
+    Width = 57
+    Height = 13
+    Anchors = [akTop]
+    Caption = 'C&haracters:'
+  end
   object Panel1: TPanel
     Left = 0
     Top = 248
@@ -26,38 +37,55 @@ object Form1: TForm1
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
+    DesignSize = (
+      547
+      156)
     object Label1: TLabel
       Left = 8
       Top = 8
-      Width = 55
-      Height = 14
+      Width = 57
+      Height = 13
       Caption = '&Start value:'
-      FocusControl = udStart
+      FocusControl = edStart
     end
     object Label2: TLabel
       Left = 96
       Top = 8
-      Width = 50
-      Height = 14
+      Width = 51
+      Height = 13
       Caption = '&End value:'
-      FocusControl = udEnd
+      FocusControl = edEnd
     end
     object Label3: TLabel
       Left = 192
       Top = 8
       Width = 44
-      Height = 14
+      Height = 13
       Caption = '&Columns:'
-      FocusControl = udColumns
+      FocusControl = edCols
     end
     object lblFilter: TLabel
       Left = 8
-      Top = 76
-      Width = 26
-      Height = 14
+      Top = 73
+      Width = 28
+      Height = 13
+      Hint = 
+        'Specifies the Unicode subrange to display. Set to "ufUndefined" ' +
+        'to show StartChar/EndChar range.'
       Caption = '&Filter:'
-      Enabled = False
       FocusControl = cbFilter
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object Label4: TLabel
+      Left = 160
+      Top = 73
+      Width = 34
+      Height = 13
+      Hint = 'This combo is only enabled on non-NT OS'#39'es (Win95/98/Me).'
+      Caption = '&Locale:'
+      ParentShowHint = False
+      ShowHint = True
     end
     object btnFont: TButton
       Left = 216
@@ -65,7 +93,7 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = '&Font...'
-      TabOrder = 10
+      TabOrder = 12
       OnClick = btnFontClick
     end
     object chkZoomPanel: TCheckBox
@@ -79,11 +107,11 @@ object Form1: TForm1
       TabOrder = 6
       OnClick = chkZoomPanelClick
     end
-    object Edit1: TEdit
+    object edStart: TEdit
       Left = 8
       Top = 24
       Width = 57
-      Height = 22
+      Height = 21
       TabOrder = 0
       Text = '0'
     end
@@ -92,7 +120,7 @@ object Form1: TForm1
       Top = 24
       Width = 15
       Height = 22
-      Associate = Edit1
+      Associate = edStart
       Min = 0
       Max = 32767
       Position = 0
@@ -100,11 +128,11 @@ object Form1: TForm1
       Wrap = False
       OnClick = udStartClick
     end
-    object Edit2: TEdit
+    object edEnd: TEdit
       Left = 96
       Top = 24
       Width = 65
-      Height = 22
+      Height = 21
       TabOrder = 2
       Text = '0'
     end
@@ -113,7 +141,7 @@ object Form1: TForm1
       Top = 24
       Width = 15
       Height = 22
-      Associate = Edit2
+      Associate = edEnd
       Min = 0
       Max = 32767
       Position = 0
@@ -121,23 +149,23 @@ object Form1: TForm1
       Wrap = False
       OnClick = udEndClick
     end
-    object Edit3: TEdit
+    object edCols: TEdit
       Left = 192
       Top = 24
       Width = 65
-      Height = 22
+      Height = 21
       TabOrder = 4
-      Text = '0'
+      Text = '1'
     end
     object udColumns: TUpDown
       Left = 257
       Top = 24
       Width = 15
       Height = 22
-      Associate = Edit3
-      Min = 0
+      Associate = edCols
+      Min = 1
       Max = 32767
-      Position = 0
+      Position = 1
       TabOrder = 5
       Wrap = False
       OnClick = udColumnsClick
@@ -146,7 +174,7 @@ object Form1: TForm1
       Left = 8
       Top = 126
       Width = 97
-      Height = 21
+      Height = 20
       ColorNameMap.Strings = (
         'clBlack=Black'
         'clMaroon=Maroon'
@@ -206,7 +234,7 @@ object Form1: TForm1
       NewColorText = 'Custom'
       Options = [coText, coCustomColors]
       DroppedDownWidth = 97
-      TabOrder = 8
+      TabOrder = 10
     end
     object cbFont: TJvFontComboBox
       Left = 112
@@ -216,7 +244,7 @@ object Form1: TForm1
       FontName = 'System'
       ItemIndex = 0
       Sorted = False
-      TabOrder = 9
+      TabOrder = 11
     end
     object chkUnicode: TCheckBox
       Left = 126
@@ -236,7 +264,7 @@ object Form1: TForm1
       ParentShowHint = False
       ScrollBars = ssBoth
       ShowHint = True
-      TabOrder = 12
+      TabOrder = 14
       WordWrap = False
     end
     object btnSelect: TButton
@@ -246,19 +274,29 @@ object Form1: TForm1
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Se&lect'
-      TabOrder = 11
+      TabOrder = 13
       OnClick = btnSelectClick
     end
     object cbFilter: TComboBox
       Left = 8
       Top = 90
-      Width = 289
-      Height = 22
+      Width = 145
+      Height = 21
       Style = csDropDownList
       Enabled = False
-      ItemHeight = 14
-      TabOrder = 13
+      ItemHeight = 13
+      TabOrder = 8
       OnClick = cbFilterClick
+    end
+    object cbLocales: TComboBox
+      Left = 160
+      Top = 90
+      Width = 129
+      Height = 21
+      Style = csDropDownList
+      ItemHeight = 13
+      TabOrder = 9
+      OnClick = cbLocalesClick
     end
   end
   object FontDialog1: TFontDialog

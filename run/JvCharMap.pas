@@ -22,45 +22,139 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* CharRange.Filter only works with contiguous ranges, so ubPrivateUse and ubSpecials
+* CharRange.Filter only works with contiguous ranges, so ufPrivateUse and ufSpecials
   only shows the first subrange
-  
+
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
-// If you can't use Unicode for some reason or don't want the extra overhead of JclUnicode,
-// remove this define and rebuild the package this unit is in
-// Removing this define will also remove the CharRange.Filter property
-{$DEFINE USEUNICODE}
 unit JvCharMap;
 
 interface
 uses
   Windows, Messages, Controls, SysUtils, Classes, Grids,
-  {$IFDEF USEUNICODE}
-  JclUnicode,
-  {$ENDIF}
   JVCLVer;
 
 type
+  TJvCharMapValidateEvent = procedure (Sender:TObject; AChar:WideCHar; var Valid:boolean) of object;
+  TJvCharMapUnicodeFilter = (
+    ufUndefined,
+    ufBasicLatin,
+    ufLatin1Supplement,
+    ufLatinExtendedA,
+    ufLatinExtendedB,
+    ufIPAExtensions,
+    ufSpacingModifierLetters,
+    ufCombiningDiacriticalMarks,
+    ufGreek,
+    ufCyrillic,
+    ufArmenian,
+    ufHebrew,
+    ufArabic,
+    ufSyriac,
+    ufThaana,
+    ufDevanagari,
+    ufBengali,
+    ufGurmukhi,
+    ufGujarati,
+    ufOriya,
+    ufTamil,
+    ufTelugu,
+    ufKannada,
+    ufMalayalam,
+    ufSinhala,
+    ufThai,
+    ufLao,
+    ufTibetan,
+    ufMyanmar,
+    ufGeorgian,
+    ufHangulJamo,
+    ufEthiopic,
+    ufCherokee,
+    ufUnifiedCanadianAboriginalSyllabics,
+    ufOgham,
+    ufRunic,
+    ufKhmer,
+    ufMongolian,
+    ufLatinExtendedAdditional,
+    ufGreekExtended,
+    ufGeneralPunctuation,
+    ufSuperscriptsAndSubscripts,
+    ufCurrencySymbols,
+    ufCombiningMarksForSymbols,
+    ufLetterlikeSymbols,
+    ufNumberForms,
+    ufArrows,
+    ufMathematicalOperators,
+    ufMiscellaneousTechnical,
+    ufControlPictures,
+    ufOpticalCharacterRecognition,
+    ufEnclosedAlphanumerics,
+    ufBoxDrawing,
+    ufBlockElements,
+    ufGeometricShapes,
+    ufMiscellaneousSymbols,
+    ufDingbats,
+    ufBraillePatterns,
+    ufCJKRadicalsSupplement,
+    ufKangxiRadicals,
+    ufIdeographicDescriptionCharacters,
+    ufCJKSymbolsAndPunctuation,
+    ufHiragana,
+    ufKatakana,
+    ufBopomofo,
+    ufHangulCompatibilityJamo,
+    ufKanbun,
+    ufBopomofoExtended,
+    ufEnclosedCJKLettersAndMonths,
+    ufCJKCompatibility,
+    ufCJKUnifiedIdeographsExtensionA,
+    ufCJKUnifiedIdeographs,
+    ufYiSyllables,
+    ufYiRadicals,
+    ufHangulSyllables,
+    ufHighSurrogates,
+    ufHighPrivateUseSurrogates,
+    ufLowSurrogates,
+    ufPrivateUse,
+    ufCJKCompatibilityIdeographs,
+    ufAlphabeticPresentationForms,
+    ufArabicPresentationFormsA,
+    ufCombiningHalfMarks,
+    ufCJKCompatibilityForms,
+    ufSmallFormVariants,
+    ufArabicPresentationFormsB,
+    ufSpecials,
+    ufHalfwidthAndFullwidthForms,
+    ufOldItalic,
+    ufGothic,
+    ufDeseret,
+    ufByzantineMusicalSymbols,
+    ufMusicalSymbols,
+    ufMathematicalAlphanumericSymbols,
+    ufCJKUnifiedIdeographsExtensionB,
+    ufCJKCompatibilityIdeographsSupplement,
+    ufTags
+    );
+
   TJvCharMapRange = class(TPersistent)
   private
-    FStartChar: Cardinal;
-    FEndChar: Cardinal;
+    FFilterStart, FFilterEnd, FStartChar, FEndChar: Cardinal;
     FOnChange: TNotifyEvent;
-    {$IFDEF USEUNICODE}
-    FFilter: TUnicodeBlock;
-    procedure SetFilter(const Value: TUnicodeBlock);
-    {$ENDIF}
+    FFilter: TJvCharMapUnicodeFilter;
+    procedure SetFilter(const Value: TJvCharMapUnicodeFilter);
     procedure SetEndChar(const Value: Cardinal);
     procedure SetStartChar(const Value: Cardinal);
     procedure Change;
-    procedure SetRange(AStart, AEnd:Cardinal);
+    procedure SetRange(AStart, AEnd: Cardinal);
+    function GetEndChar: Cardinal;
+    function GetStartChar: Cardinal;
+  public
+    constructor Create;
   published
-  {$IFDEF USEUNICODE}
-    property Filter: TUnicodeBlock read FFilter write SetFilter default ubUndefined;
-  {$ENDIF}
-    property StartChar: Cardinal read FStartChar write SetStartChar default 33;
-    property EndChar: Cardinal read FEndChar write SetEndChar default 255;
+    // Setting Filter to ufUndefined, resets StartChar and EndChar to their previous values
+    property Filter: TJvCharMapUnicodeFilter read FFilter write SetFilter default ufUndefined;
+    property StartChar: Cardinal read GetStartChar write SetStartChar default 33;
+    property EndChar: Cardinal read GetEndChar write SetEndChar default 255;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -85,8 +179,11 @@ type
   private
     FAutoSizeHeight: boolean;
     FAutoSizeWidth: boolean;
+    FLocale: LCID;
+    FOnValidateChar: TJvCharMapValidateEvent;
     procedure SetAutoSizeHeight(const Value: boolean);
     procedure SetAutoSizeWidth(const Value: boolean);
+    procedure SetLocale(const Value: LCID);
   protected
     procedure ShowCharPanel(ACol, ARow: integer); virtual;
     procedure RecalcCells; virtual;
@@ -103,8 +200,8 @@ type
     function SelectCell(ACol, ARow: Longint): Boolean; override;
 
     function GetChar(ACol, ARow: integer): WideChar; virtual;
-    function GetCharInfo(ACol, ARow: integer): Cardinal; overload; virtual;
-    function GetCharInfo(AChar: WideChar): Cardinal; overload; virtual;
+    function GetCharInfo(ACol, ARow: integer; InfoType: Cardinal): Cardinal; overload; virtual;
+    function GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal; overload; virtual;
     function IsValidChar(AChar: WideChar): boolean; virtual;
     procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
@@ -119,26 +216,27 @@ type
 {$ENDIF}
 
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight: Integer); override;
-{$IFNDEF COMPILER6_UP}
-    property ColCount;
-    property DefaultColWidth;
-    property DefaultRowHeight;
-    property DefaultDrawing;
-    property FixedColor;
-    property FixedCols;
-    property FixedRows;
-    property GridLineWidth;
-    property Options;
-    property RowCount;
-{$ENDIF}
   protected
+    // The locale to use when looking up character info and translating codepages to Unicode.
+    // Only effective on non-NT OS's (NT doesn't use codepages)
+    property Locale: LCID read FLocale write SetLocale default LOCALE_USER_DEFAULT;
+    // The currently selected character
     property Character: WideChar read GetCharacter;
+    // Shows/Hides the zoom panel
     property PanelVisible: boolean read GetPanelVisible write SetPanelVisible stored false;
+    // Determines whether the zoom panel is automatically shown when the user clicks a cell in the grid
     property ShowZoomPanel: boolean read FShowZoomPanel write SetShowZoomPanel default true;
+    // The range of characters to dispay in the grid
     property CharRange: TJvCharMapRange read FCharRange write SetCharRange;
+    // Determines whether the width of the grid is auto adjuzted to it' s content
     property AutoSizeWidth: boolean read FAutoSizeWidth write SetAutoSizeWidth default false;
+    // Determines whether the height of the grid is auto adjuzted to it' s content
     property AutoSizeHeight: boolean read FAutoSizeHeight write SetAutoSizeHeight default false;
+    // The number of columns in the grid. Rows are adjusted automatically. Min. value is 1
     property Columns: integer read GetColumns write SetColumns default 20;
+    // Event that is called every time the grid needs to check if a character is valid.
+    // If the character is invalid, it won't be drawn
+    property OnValidateChar:TJvCharMapValidateEvent read FOnValidateChar write FOnValidateChar;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -147,6 +245,7 @@ type
   public
     property Character;
     property PanelVisible;
+    property Locale;
   published
     property AutoSizeWidth;
     property AutoSizeHeight;
@@ -177,6 +276,8 @@ type
     property TabOrder;
     property Visible;
 
+    property OnValidateChar;
+    
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -285,10 +386,8 @@ constructor TJvCustomCharMap.Create(AOwner: TComponent);
 begin
   inherited;
   FCharRange := TJvCharMapRange.Create;
-  {$IFDEF USEUNICODE}
-  FCharRange.Filter := ubUndefined;
-  {$ENDIF}
-  FCharRange.SetRange($21,$FE);
+//  FCharRange.Filter := ufUndefined;
+//  FCharRange.SetRange($21,$FF);
   FCharRange.OnChange := DoRangeChange;
   FCharPanel := TCharZoomPanel.Create(self);
   FCharPanel.Visible := false;
@@ -300,6 +399,7 @@ begin
   FShowZoomPanel := true;
   DefaultRowHeight := abs(Font.Height) + 12;
   DefaultColWidth := DefaultRowHeight - 5;
+  FLocale := LOCALE_USER_DEFAULT;
   Columns := 20;
 end;
 
@@ -353,6 +453,11 @@ begin
   if AState * [gdSelected, gdFocused] <> [] then
   begin
     Canvas.Pen.Color := Font.Color;
+    if not ShowZoomPanel then
+    begin
+      Canvas.Brush.Color := clHighlight;
+      Canvas.FillRect(ARect);
+    end;
     InflateRect(ARect, -1, -1);
     Canvas.Rectangle(ARect);
     InflateRect(ARect, 1, 1);
@@ -360,6 +465,8 @@ begin
   else
     Canvas.FillRect(ARect);
   AChar := GetChar(ACol, ARow);
+  if not ShowZoomPanel and (AState * [gdSelected, gdFocused] <> []) then
+    Canvas.Font.Color := clHighlightText;
   SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
   if IsValidChar(AChar) then
     WideDrawText(Canvas, AChar, ARect, DT_SINGLELINE or DT_CENTER or DT_VCENTER or DT_NOPREFIX);
@@ -378,19 +485,31 @@ begin
   Result := GetChar(Col, Row);
 end;
 
-function TJvCustomCharMap.GetCharInfo(ACol, ARow: integer): Cardinal;
+function TJvCustomCharMap.GetCharInfo(ACol, ARow: integer; InfoType: Cardinal): Cardinal;
 begin
-  Result := GetCharInfo(GetChar(ACol, ARow));
+  Result := GetCharInfo(GetChar(ACol, ARow), InfoType);
 end;
 
-function TJvCustomCharMap.GetCharInfo(AChar: WideChar): Cardinal;
+function TJvCustomCharMap.GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal;
 var
   ACharInfo: Cardinal;
 begin
-  if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE3, @AChar, 1, ACharInfo) then
-    Result := ACharInfo
+  ACharInfo := 0;
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    // Locale is ignored on NT platforms
+    if GetStringTypeExW(0, InfoType, @AChar, 1, ACharInfo) then
+      Result := ACharInfo
+    else
+      Result := 0;
+  end
   else
-    Result := 0;
+  begin
+    if GetStringTypeEx(Locale, InfoType, @AChar, 1, ACharInfo) then
+      Result := ACharInfo
+    else
+      Result := 0;
+  end;
 end;
 
 function TJvCustomCharMap.GetColumns: integer;
@@ -410,8 +529,17 @@ function TJvCustomCharMap.IsValidChar(AChar: WideChar): boolean;
 var
   ACharInfo: Cardinal;
 begin
-  ACharInfo := GetCharInfo(AChar);
-  Result := (AChar >= WideChar(CharRange.StartChar)) and (AChar <= WideChar(CharRange.EndChar)) and (ACharInfo <> 0);
+  if Assigned(FOnValidateChar) then
+    FOnValidateChar(self, AChar, Result)
+  else
+  begin
+    Result := false;
+    if (AChar >= WideChar(CharRange.StartChar)) and (AChar <= WideChar(CharRange.EndChar)) then
+    begin
+      ACharInfo := GetCharInfo(AChar, CT_CTYPE1);
+      Result := (ACharInfo <> 0) and (ACharInfo and C1_CNTRL <> C1_CNTRL);
+    end;
+  end;
 end;
 
 procedure TJvCustomCharMap.KeyDown(var Key: Word; Shift: TShiftState);
@@ -601,6 +729,15 @@ begin
   end;
 end;
 
+procedure TJvCustomCharMap.SetLocale(const Value: LCID);
+begin
+  if (FLocale <> Value) and IsValidLocale(Value, LCID_SUPPORTED) then
+  begin
+    FLocale := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomCharMap.SetPanelVisible(const Value: boolean);
 begin
   if (PanelVisible <> Value) and not (csDesigning in ComponentState) then
@@ -764,12 +901,12 @@ begin
               Visible := false;
             end;
           SC_RESTORE, SC_MAXIMIZE:
-            if FWasVisible and IsWindowVisible(GetParentForm(self).Handle) then
+            if (Visible or FWasVisible) and IsWindowVisible(GetParentForm(self).Handle) then
               with TJvCharMap(Parent) do
                 ShowCharPanel(Col, Row);
         end;
       WM_WINDOWPOSCHANGED:
-        if FWasVisible and IsWindowVisible(GetParentForm(self).Handle) then
+        if (Visible or FWasVisible) and IsWindowVisible(GetParentForm(self).Handle) then
           with TJvCharMap(Parent) do
             ShowCharPanel(Col, Row);
     end;
@@ -850,227 +987,252 @@ begin
   if Assigned(FOnChange) then FOnChange(self);
 end;
 
+constructor TJvCharMapRange.Create;
+begin
+  inherited;
+  FFilter := ufUndefined;
+  FStartChar := 33;
+  FEndChar := 255;
+end;
+
+function TJvCharMapRange.GetEndChar: Cardinal;
+begin
+  if Filter = ufUndefined then
+    Result := FEndChar
+  else
+    Result := FFilterEnd;
+end;
+
+function TJvCharMapRange.GetStartChar: Cardinal;
+begin
+  if Filter = ufUndefined then
+    Result := FStartChar
+  else
+    Result := FFilterStart;
+end;
+
 procedure TJvCharMapRange.SetEndChar(const Value: Cardinal);
 begin
   if FEndChar <> Value then
   begin
     FEndChar := Value;
-    Change;
+    if Filter = ufUndefined then
+      Change;
   end;
 end;
-{$IFDEF USEUNICODE}
-procedure TJvCharMapRange.SetFilter(const Value: TUnicodeBlock);
+
+procedure TJvCharMapRange.SetFilter(const Value: TJvCharMapUnicodeFilter);
 begin
   if FFilter <> Value then
   begin
     FFilter := Value;
     case Value of
-      ubBasicLatin:
+      ufBasicLatin:
         SetRange($0000, $007F);
-      ubLatin1Supplement:
+      ufLatin1Supplement:
         SetRange($0080, $00FF);
-      ubLatinExtendedA:
+      ufLatinExtendedA:
         SetRange($0100, $017F);
-      ubLatinExtendedB:
+      ufLatinExtendedB:
         SetRange($0180, $024F);
-      ubIPAExtensions:
+      ufIPAExtensions:
         SetRange($0250, $02AF);
-      ubSpacingModifierLetters:
+      ufSpacingModifierLetters:
         SetRange($02B0, $02FF);
-      ubCombiningDiacriticalMarks:
+      ufCombiningDiacriticalMarks:
         SetRange($0300, $036F);
-      ubGreek:
+      ufGreek:
         SetRange($0370, $03FF);
-      ubCyrillic:
+      ufCyrillic:
         SetRange($0400, $04FF);
-      ubArmenian:
+      ufArmenian:
         SetRange($0530, $058F);
-      ubHebrew:
+      ufHebrew:
         SetRange($0590, $05FF);
-      ubArabic:
+      ufArabic:
         SetRange($0600, $06FF);
-      ubSyriac:
+      ufSyriac:
         SetRange($0700, $074F);
-      ubThaana:
+      ufThaana:
         SetRange($0780, $07BF);
-      ubDevanagari:
+      ufDevanagari:
         SetRange($0900, $097F);
-      ubBengali:
+      ufBengali:
         SetRange($0980, $09FF);
-      ubGurmukhi:
+      ufGurmukhi:
         SetRange($0A00, $0A7F);
-      ubGujarati:
+      ufGujarati:
         SetRange($0A80, $0AFF);
-      ubOriya:
+      ufOriya:
         SetRange($0B00, $0B7F);
-      ubTamil:
+      ufTamil:
         SetRange($0B80, $0BFF);
-      ubTelugu:
+      ufTelugu:
         SetRange($0C00, $0C7F);
-      ubKannada:
+      ufKannada:
         SetRange($0C80, $0CFF);
-      ubMalayalam:
+      ufMalayalam:
         SetRange($0D00, $0D7F);
-      ubSinhala:
+      ufSinhala:
         SetRange($0D80, $0DFF);
-      ubThai:
+      ufThai:
         SetRange($0E00, $0E7F);
-      ubLao:
+      ufLao:
         SetRange($0E80, $0EFF);
-      ubTibetan:
+      ufTibetan:
         SetRange($0F00, $0FFF);
-      ubMyanmar:
+      ufMyanmar:
         SetRange($1000, $109F);
-      ubGeorgian:
+      ufGeorgian:
         SetRange($10A0, $10FF);
-      ubHangulJamo:
+      ufHangulJamo:
         SetRange($1100, $11FF);
-      ubEthiopic:
+      ufEthiopic:
         SetRange($1200, $137F);
-      ubCherokee:
+      ufCherokee:
         SetRange($13A0, $13FF);
-      ubUnifiedCanadianAboriginalSyllabics:
+      ufUnifiedCanadianAboriginalSyllabics:
         SetRange($1400, $167F);
-      ubOgham:
+      ufOgham:
         SetRange($1680, $169F);
-      ubRunic:
+      ufRunic:
         SetRange($16A0, $16FF);
-      ubKhmer:
+      ufKhmer:
         SetRange($1780, $17FF);
-      ubMongolian:
+      ufMongolian:
         SetRange($1800, $18AF);
-      ubLatinExtendedAdditional:
+      ufLatinExtendedAdditional:
         SetRange($1E00, $1EFF);
-      ubGreekExtended:
+      ufGreekExtended:
         SetRange($1F00, $1FFF);
-      ubGeneralPunctuation:
+      ufGeneralPunctuation:
         SetRange($2000, $206F);
-      ubSuperscriptsAndSubscripts:
+      ufSuperscriptsAndSubscripts:
         SetRange($2070, $209F);
-      ubCurrencySymbols:
+      ufCurrencySymbols:
         SetRange($20A0, $20CF);
-      ubCombiningMarksForSymbols:
+      ufCombiningMarksForSymbols:
         SetRange($20D0, $20FF);
-      ubLetterlikeSymbols:
+      ufLetterlikeSymbols:
         SetRange($2100, $214F);
-      ubNumberForms:
+      ufNumberForms:
         SetRange($2150, $218F);
-      ubArrows:
+      ufArrows:
         SetRange($2190, $21FF);
-      ubMathematicalOperators:
+      ufMathematicalOperators:
         SetRange($2200, $22FF);
-      ubMiscellaneousTechnical:
+      ufMiscellaneousTechnical:
         SetRange($2300, $23FF);
-      ubControlPictures:
+      ufControlPictures:
         SetRange($2400, $243F);
-      ubOpticalCharacterRecognition:
+      ufOpticalCharacterRecognition:
         SetRange($2440, $245F);
-      ubEnclosedAlphanumerics:
+      ufEnclosedAlphanumerics:
         SetRange($2460, $24FF);
-      ubBoxDrawing:
+      ufBoxDrawing:
         SetRange($2500, $257F);
-      ubBlockElements:
+      ufBlockElements:
         SetRange($2580, $259F);
-      ubGeometricShapes:
+      ufGeometricShapes:
         SetRange($25A0, $25FF);
-      ubMiscellaneousSymbols:
+      ufMiscellaneousSymbols:
         SetRange($2600, $26FF);
-      ubDingbats:
+      ufDingbats:
         SetRange($2700, $27BF);
-      ubBraillePatterns:
+      ufBraillePatterns:
         SetRange($2800, $28FF);
-      ubCJKRadicalsSupplement:
+      ufCJKRadicalsSupplement:
         SetRange($2E80, $2EFF);
-      ubKangxiRadicals:
+      ufKangxiRadicals:
         SetRange($2F00, $2FDF);
-      ubIdeographicDescriptionCharacters:
+      ufIdeographicDescriptionCharacters:
         SetRange($2FF0, $2FFF);
-      ubCJKSymbolsAndPunctuation:
+      ufCJKSymbolsAndPunctuation:
         SetRange($3000, $303F);
-      ubHiragana:
+      ufHiragana:
         SetRange($3040, $309F);
-      ubKatakana:
+      ufKatakana:
         SetRange($30A0, $30FF);
-      ubBopomofo:
+      ufBopomofo:
         SetRange($3100, $312F);
-      ubHangulCompatibilityJamo:
+      ufHangulCompatibilityJamo:
         SetRange($3130, $318F);
-      ubKanbun:
+      ufKanbun:
         SetRange($3190, $319F);
-      ubBopomofoExtended:
+      ufBopomofoExtended:
         SetRange($31A0, $31BF);
-      ubEnclosedCJKLettersAndMonths:
+      ufEnclosedCJKLettersAndMonths:
         SetRange($3200, $32FF);
-      ubCJKCompatibility:
+      ufCJKCompatibility:
         SetRange($3300, $33FF);
-      ubCJKUnifiedIdeographsExtensionA:
+      ufCJKUnifiedIdeographsExtensionA:
         SetRange($3400, $4DB5);
-      ubCJKUnifiedIdeographs:
+      ufCJKUnifiedIdeographs:
         SetRange($4E00, $9FFF);
-      ubYiSyllables:
+      ufYiSyllables:
         SetRange($A000, $A48F);
-      ubYiRadicals:
+      ufYiRadicals:
         SetRange($A490, $A4CF);
-      ubHangulSyllables:
+      ufHangulSyllables:
         SetRange($AC00, $D7A3);
-      ubHighSurrogates:
+      ufHighSurrogates:
         SetRange($D800, $DB7F);
-      ubHighPrivateUseSurrogates:
+      ufHighPrivateUseSurrogates:
         SetRange($DB80, $DBFF);
-      ubLowSurrogates:
+      ufLowSurrogates:
         SetRange($DC00, $DFFF);
-      ubPrivateUse:
-        SetRange($E000,$F8FF);
+      ufPrivateUse:
+        SetRange($E000, $F8FF);
 //      $E000..$F8FF, $F0000..$FFFFD, $100000..$10FFFD;
-      ubCJKCompatibilityIdeographs:
+      ufCJKCompatibilityIdeographs:
         SetRange($F900, $FAFF);
-      ubAlphabeticPresentationForms:
+      ufAlphabeticPresentationForms:
         SetRange($FB00, $FB4F);
-      ubArabicPresentationFormsA:
+      ufArabicPresentationFormsA:
         SetRange($FB50, $FDFF);
-      ubCombiningHalfMarks:
+      ufCombiningHalfMarks:
         SetRange($FE20, $FE2F);
-      ubCJKCompatibilityForms:
+      ufCJKCompatibilityForms:
         SetRange($FE30, $FE4F);
-      ubSmallFormVariants:
+      ufSmallFormVariants:
         SetRange($FE50, $FE6F);
-      ubArabicPresentationFormsB:
+      ufArabicPresentationFormsB:
         SetRange($FE70, $FEFE);
-      ubSpecials:
+      ufSpecials:
 //      $FEFF..$FEFF, $FFF0..$FFFD;
         SetRange($FFF0, $FFFD);
-      ubHalfwidthAndFullwidthForms:
+      ufHalfwidthAndFullwidthForms:
         SetRange($FF00, $FFEF);
-      ubOldItalic:
+      ufOldItalic:
         SetRange($10300, $1032F);
-      ubGothic:
+      ufGothic:
         SetRange($10330, $1034F);
-      ubDeseret:
+      ufDeseret:
         SetRange($10400, $1044F);
-      ubByzantineMusicalSymbols:
+      ufByzantineMusicalSymbols:
         SetRange($1D000, $1D0FF);
-      ubMusicalSymbols:
+      ufMusicalSymbols:
         SetRange($1D100, $1D1FF);
-      ubMathematicalAlphanumericSymbols:
+      ufMathematicalAlphanumericSymbols:
         SetRange($1D400, $1D7FF);
-      ubCJKUnifiedIdeographsExtensionB:
+      ufCJKUnifiedIdeographsExtensionB:
         SetRange($20000, $2A6D6);
-      ubCJKCompatibilityIdeographsSupplement:
+      ufCJKCompatibilityIdeographsSupplement:
         SetRange($2F800, $2FA1F);
-      ubTags:
+      ufTags:
         SetRange($E0000, $E007F);
     else
-      SetRange($21, $FE);
+      SetRange(StartChar, EndChar);
     end;
   end;
 end;
-{$ENDIF}
 
 procedure TJvCharMapRange.SetRange(AStart, AEnd: Cardinal);
 begin
-  FStartChar := AStart;
-  FEndChar :=  AEnd;
-  Change;
+  FFilterStart := AStart;
+  FFilterEnd := AEnd;
+  if Filter <> ufUndefined then
+    Change;
 end;
 
 procedure TJvCharMapRange.SetStartChar(const Value: Cardinal);
@@ -1078,7 +1240,8 @@ begin
   if FStartChar <> Value then
   begin
     FStartChar := Value;
-    Change;
+    if Filter = ufUndefined then
+      Change;
   end;
 end;
 

@@ -3,15 +3,11 @@ unit MainFrm;
 interface
 // Enable this define (remove the dot) if you have Troy Wolbrink's Tnt Controls installed
 // (http://home.ccci.org/wolbrink/tnt/delphi_unicode_controls.htm)
-{$DEFINE USETNT}
-// Enable this define if you want to include JclUnicode and the TJvCharMap.CharRange.Filter functionality
-// You must enable this define in JvCharMap as well
-{$DEFINE USEUNICODE}
+{.$DEFINE USETNT}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus,
   JvColorCombo, JvCharMap, JvCombobox
-  {$IFDEF USEUNICODE}, JclUnicode{$ENDIF}
   {$IFDEF USETNT}, TntStdCtrls{$ENDIF};
 
 type
@@ -21,13 +17,13 @@ type
     btnFont: TButton;
     chkZoomPanel: TCheckBox;
     Label1: TLabel;
-    Edit1: TEdit;
+    edStart: TEdit;
     udStart: TUpDown;
     Label2: TLabel;
-    Edit2: TEdit;
+    edEnd: TEdit;
     udEnd: TUpDown;
     Label3: TLabel;
-    Edit3: TEdit;
+    edCols: TEdit;
     udColumns: TUpDown;
     cbColor: TJvColorComboBox;
     cbFont: TJvFontComboBox;
@@ -38,6 +34,9 @@ type
     btnSelect: TButton;
     lblFilter: TLabel;
     cbFilter: TComboBox;
+    Label4: TLabel;
+    cbLocales: TComboBox;
+    lblChars: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure chkZoomPanelClick(Sender: TObject);
@@ -50,6 +49,7 @@ type
     procedure cbColorChange(Sender: TObject);
     procedure cbFontChange(Sender: TObject);
     procedure cbFilterClick(Sender: TObject);
+    procedure cbLocalesClick(Sender: TObject);
   private
     { Private declarations }
 {$IFDEF USETNT}
@@ -57,9 +57,9 @@ type
 {$ELSE}
     edCharacter: TEdit;
 {$ENDIF}
-{$IFDEF USEUNICODE}
     procedure FillFilter;
-{$ENDIF}    
+    procedure FillLocales;
+    procedure DoJMResize(Sender:TObject);
     procedure DoJMKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure DoJMMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
@@ -89,18 +89,20 @@ begin
   JM := TJvCharMap.Create(self);
 //  JM.Align := alClient;
   JM.Parent := self;
-  JM.CharRange.EndChar := 512;
+  JM.CharRange.EndChar := 255;
   JM.OnKeyUp := DoJMKeyUp;
   JM.OnMouseUp := DoJMMouseUp;
   JM.OnMouseWheel := DoJMMouseWheel;
-
+  JM.OnResize := DoJMResize;
   JM.ClientWidth := JM.CellSize.cx * JM.Columns + JM.Columns;
   JM.Left := (ClientWidth - JM.Width) div 2;
-  JM.Top := 8;
+  JM.Top := lblChars.Top + lblChars.Height + 2;
   JM.Height := Panel1.Top - JM.Top - 20;
   JM.Anchors := [akTop, akBottom];
   JM.PopupMenu := PopupMenu1;
   JM.AutoSizeWidth := true;
+  lblChars.FocusControl := JM;
+
   chkZoomPanel.Checked := JM.ShowZoomPanel;
   udStart.Position := JM.CharRange.StartChar;
   udEnd.Position := JM.CharRange.EndChar;
@@ -122,12 +124,8 @@ begin
   edCharacter.Height := 22;
   edCharacter.Anchors := [akLeft, akTop, akRight];
   edCharacter.TabOrder := 11;
-  {$IFDEF USEUNICODE}
   FillFilter;
-  {$ELSE}
-  lblFilter.Visible := false;
-  cbFilter.Visible := false;
-  {$ENDIF}
+  FillLocales;
   ActiveControl := JM;
 end;
 
@@ -164,8 +162,7 @@ end;
 
 procedure TForm1.udEndClick(Sender: TObject; Button: TUDBtnType);
 begin
-  if not chkUnicode.Checked then
-    JM.CharRange.EndChar := udEnd.Position;
+  JM.CharRange.EndChar := udEnd.Position;
 end;
 
 procedure TForm1.udColumnsClick(Sender: TObject; Button: TUDBtnType);
@@ -178,6 +175,7 @@ var
   ACharInfo: word;
 begin
   Result := '';
+  ACharInfo := 0;
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE1, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C1_UPPER = C1_UPPER then
@@ -208,6 +206,7 @@ var
   ACharInfo: word;
 begin
   Result := '';
+  ACharInfo := 0;
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE2, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C2_LEFTTORIGHT = C2_LEFTTORIGHT then
@@ -242,6 +241,7 @@ var
   ACharInfo: word;
 begin
   Result := '';
+  ACharInfo := 0;
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE3, @AChar, 1, ACharInfo) then
   begin
     if ACharInfo and C3_NONSPACING = C3_NONSPACING then
@@ -277,23 +277,17 @@ begin
   reInfo.Lines.Add('Character Type: ' + GetTypeString1(JM.Character));
   reInfo.Lines.Add('Bidirectional Layout: ' + GetTypeString2(JM.Character));
   reInfo.Lines.Add('Text Processing:' + GetTypeString3(JM.Character));
-  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x', [Ord(JM.Character)]));
+  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x', [Cardinal(JM.Character)]));
   reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
 procedure TForm1.chkUnicodeClick(Sender: TObject);
 begin
-  lblFilter.Enabled := chkUnicode.Checked;
   cbFilter.Enabled := chkUnicode.Checked;
   if chkUnicode.Checked then
-  {$IFDEF USEUNICODE}
-    JM.CharRange.Filter := TUnicodeBlock(cbFilter.ItemIndex)
-  {$ELSE}
-    JM.CharRange.EndChar := $FEFF
-  {$ENDIF}
+    JM.CharRange.Filter := TJvCharMapUnicodeFilter(cbFilter.ItemIndex)
   else
     JM.CharRange.EndChar := udEnd.Position;
-
 end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
@@ -328,29 +322,60 @@ begin
     JM.Font.Name := cbFont.FontName;
 end;
 
-{$IFDEF USEUNICODE}
 procedure TForm1.FillFilter;
 var
-  i: TUnicodeBlock;
+  i: TJvCharMapUnicodeFilter;
 begin
   cbFilter.Items.BeginUpdate;
   try
     cbFilter.Items.Clear;
-    for i := Low(TUnicodeBlock) to High(TUnicodeBlock) do
-      cbFilter.Items.Add(GetEnumName(typeinfo(TUnicodeBlock), Ord(i)));
+    for i := Low(TJvCharMapUnicodeFilter) to High(TJvCharMapUnicodeFilter) do
+      cbFilter.Items.Add(GetEnumName(typeinfo(TJvCharMapUnicodeFilter), Ord(i)));
   finally
     cbFilter.Items.EndUpdate;
   end;
   cbFilter.ItemIndex := Ord(JM.CharRange.Filter);
 end;
-{$ENDIF}
 
 procedure TForm1.cbFilterClick(Sender: TObject);
 begin
-  {$IFDEF USEUNICODE}
-  if chkUnicode.Checked then
-    JM.CharRange.Filter := TUnicodeBlock(cbFilter.ItemIndex);
-  {$ENDIF}
+  if chkUnicode.Checked and (cbFilter.ItemIndex > -1) then
+    JM.CharRange.Filter := TJvCharMapUnicodeFilter(cbFilter.ItemIndex);
+  DisplayInfo;
+end;
+
+procedure TForm1.FillLocales;
+var i:integer;
+begin
+  cbLocales.Items.BeginUpdate;
+  try
+    cbLocales.Items.Clear;
+    cbLocales.Items.AddObject('System Default',TObject(LOCALE_SYSTEM_DEFAULT));
+    cbLocales.Items.AddObject('User Default',TObject(LOCALE_USER_DEFAULT));
+    for i := 0 to Languages.Count - 1 do
+      cbLocales.Items.AddObject(Languages.Name[i], TObject(Languages.LocaleID[i]));
+  finally
+    cbLocales.Items.EndUpdate;
+  end;
+  cbLocales.ItemIndex := cbLocales.Items.IndexOfObject(TObject(JM.Locale));
+  cbLocales.Enabled := Win32Platform <> VER_PLATFORM_WIN32_NT;
+end;
+
+procedure TForm1.cbLocalesClick(Sender: TObject);
+begin
+  with cbLocales do
+  begin
+    if ItemIndex > -1 then
+      JM.Locale := LCID(Items.Objects[ItemIndex]);
+  end;
+end;
+
+procedure TForm1.DoJMResize(Sender: TObject);
+begin
+  JM.Left := (ClientWidth - JM.Width) div 2;
+  lblChars.Left := JM.Left;
+  if lblChars.Left < 8 then
+    lblChars.Left := 8;
 end;
 
 end.
