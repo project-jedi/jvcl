@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvQDoubleBuffering.pas, released on 2004-09-19
+The Original Code is: JvQDoubleBuffering.pas, released on 2004-09-21
 
 The Initial Developer of the Original Code is André Snepvangers [ASnepvangers att users.sourceforge.net]
 Portions created by André Snepvangers are Copyright (C) 2004 André Snepvangers.
@@ -32,14 +32,18 @@ uses
   Qt, QWindows, QMessages, QControls, QForms;
 
 type
+  { implements double buffered painting & handles WM_ERASEBKGND }
   TJvDoubleBuffered = class(TJvEventFilter)
   private
     FDoubleBuffered: boolean;
   public
     constructor Create(AOwner: TComponent); override;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default true;
+    procedure OnEventFilter(Sender: QObjectH; Event: QEventH; var Handled: Boolean); override;
+    property Enabled: Boolean read FDoubleBuffered write FDoubleBuffered default true;
   end;
+
+var
+  DoubleBuffering: TJvDoubleBuffered;  // global doublebuffering
 
 implementation
 
@@ -52,17 +56,18 @@ begin
   FDoubleBuffered := true;
 end;
 
-function TJvDoubleBuffered.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+procedure TJvDoubleBuffered.OnEventFilter(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
 var
   Instance: TObject;
   PixMap: QPixmapH;
   R: TRect;
   PaintEvent: QPaintEventH;
 begin
-  Result := false;
+  Handled := false;
 
-  if (QEvent_type(Event) <> QEventType_Paint) then
+  if not QEvent_isQPaintEvent(Event) then
     exit;
+
   // only widgetcontrols receive a paintevent
   Instance := TWidgetControl(FindObject(Sender));
   with Instance as TWidgetControl do
@@ -72,13 +77,13 @@ begin
        ([csCreating, csRecreating]* Instance.ControlState <> []) then
     begin
       // (Re)Post the event in case of csCreating, csRecreating ?
-      Result := True;
+      Handled := True;
       exit;
     end;
 
     if csWidgetPainting in ControlState then
     begin
-      Result := SendMessage(Handle, WM_ERASEBKGND, 0, 0) <> 0;
+      Handled := SendMessage(Handle, WM_ERASEBKGND, 0, 0) <> 0;
       exit;
     end;
 
@@ -92,7 +97,7 @@ begin
         ControlState := ControlState + [csPaintCopy];
         QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
         Qt.BitBlt(THackedWidgetControl(Instance).GetPaintDevice, R.Left, R.Top, PixMap, 0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
-        Result := True;
+        Handled := True;
       finally
         ControlState := ControlState - [csPaintCopy];
         QPixMap_destroy(PixMap);
@@ -101,4 +106,9 @@ begin
   end;
 end;
 
+Initialization
+  // install global doublebuffering
+  DoubleBuffering := TJvDoubleBuffered.Create(Application);
+  { temporarely, until new JvExQControls.pas }
+  Application.OnEvent := DoubleBuffering.OnEventFilter;
 end.
