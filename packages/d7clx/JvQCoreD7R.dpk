@@ -30,7 +30,8 @@ package JvQCoreD7R;
 
 requires
   visualclx,
-  DJcl;
+  DJcl,
+  rtl;
 
 contains
   JvQConsts in '..\..\qcommon\JvQConsts.pas',
@@ -78,6 +79,7 @@ contains
   JvQDynControlEngineIntf in '..\..\qrun\JvQDynControlEngineIntf.pas',
   JvQDynControlEngine in '..\..\qrun\JvQDynControlEngine.pas',
   JvQDynControlEngineVCL in '..\..\qrun\JvQDynControlEngineVCL.pas',
-  JvQRegistryIniFile in '..\..\qrun\JvQRegistryIniFile.pas';
+  JvQRegistryIniFile in '..\..\qrun\JvQRegistryIniFile.pas',
+  QMessages in '..\..\qcommon\QMessages.pas';
 
 end.
