@@ -211,6 +211,8 @@ const
   Bool : array [boolean] of string = ('False', 'True');
 var
   T1: longword;
+  obj:TObject;
+  vtype:TVarType;
 begin
   RegAuto1AfterSave(nil);
   if (Sender = Button1) or (Sender = Button2) or (Sender = Button5) then
@@ -239,25 +241,27 @@ begin
 
   pnlTime.Caption := 'ms: ' + IntToStr(GetTickCount - T1);
 
-	case VarType(JvInterpreterProgram1.VResult) of
-		varBoolean:
-			pnlResult.Caption := Bool[boolean(JvInterpreterProgram1.VResult)];
-		varString, varInteger, varDouble :
-			pnlResult.Caption := JvInterpreterProgram1.VResult;
-		varEmpty:
-			pnlResult.Caption := 'Empty';
-		varNull:
-			pnlResult.Caption := 'Null';
-    varObject:
-      if V2O(JvInterpreterProgram1.VResult) = nil then
-  			pnlResult.Caption := 'Object: nil'
-      else
-  			pnlResult.Caption := 'Object: ' + V2O(JvInterpreterProgram1.VResult).ClassName;
-		varSet:
-			pnlResult.Caption := 'Set: ' + IntToStr(V2S(JvInterpreterProgram1.VResult));
-		else
-			pnlResult.Caption := '!Unknown!';
-	end;
+  vtype := VarType(JvInterpreterProgram1.VResult);
+  if vtype = varBoolean then
+	pnlResult.Caption := Bool[boolean(JvInterpreterProgram1.VResult)]
+  else if (vtype = varString) or (vtype = varInteger) or (vtype = varDouble) then
+	pnlResult.Caption := JvInterpreterProgram1.VResult
+  else if vtype = varEmpty then
+        pnlResult.Caption := 'Empty'
+  else if vtype = varNull then
+	pnlResult.Caption := 'Null'
+  else if vtype = varObject then begin
+           obj := V2O(JvInterpreterProgram1.VResult);
+           if Assigned(obj) then
+                            pnlResult.Caption := 'Object: nil'
+           else
+                            pnlResult.Caption := 'Object: ' + obj.ClassName;
+      end
+  else if vtype = varSet then
+        pnlResult.Caption := 'Set: ' + IntToStr(V2S(JvInterpreterProgram1.VResult))
+  else
+	pnlResult.Caption := '!Unknown!';
+  
   except
     on E : EJvInterpreterError do
     begin
