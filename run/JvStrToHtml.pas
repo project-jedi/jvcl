@@ -119,7 +119,7 @@ const
     (Ch: 'ä'; Html: '&auml;'),
     (Ch: 'å'; Html: '&aring;'),
     (Ch: 'æ'; Html: '&aelig;'),
-    (Ch: 'ç'; Html: 'ccedil;'),
+    (Ch: 'ç'; Html: '&ccedil;'),
     (Ch: 'é'; Html: '&eacute;'),
     (Ch: 'è'; Html: '&egrave;'),
     (Ch: 'ê'; Html: '&ecirc;'),
