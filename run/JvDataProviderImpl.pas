@@ -141,6 +141,7 @@ type
       AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider;
       AReason: TDataProviderChangeReason; Source: IUnknown);
+    function Consumer: IJvDataConsumer;
   public
     destructor Destroy; override;
     property OnChanging: TProviderNotifyEvent read FOnChanging write FOnChanging;
@@ -293,8 +294,8 @@ type
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
     constructor Create; virtual;
-    constructor CreateProvider(const Provider: IJvDataProvider); virtual;
-    constructor CreateParent(const Parent: IJvDataItem); virtual;
+    class function CreateProvider(const Provider: IJvDataProvider): TJvBaseDataItems; virtual;
+    class function CreateParent(const Parent: IJvDataItem): TJvBaseDataItems; virtual;
     procedure BeforeDestruction; override;
   end;
 
@@ -499,7 +500,7 @@ type
   protected
     function QueryInterface(const IID: TGUID; out Obj): HResult; override;
     procedure Changing(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
-    procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil);
+    procedure Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown = nil); 
     class function PersistentDataItems: Boolean; virtual;
     class function ItemsClass: TJvDataItemsClass; virtual;
     class function ContextsClass: TJvDataContextsClass; virtual;
@@ -532,10 +533,13 @@ type
     procedure SelectContext(Context: IJvDataContext);
     function SelectedContext: IJvDataContext;
     procedure ReleaseContext;
+    procedure ContextAdded(Context: IJvDataContext); dynamic;
     procedure ContextDestroying(Context: IJvDataContext); dynamic;
     procedure ConsumerDestroying(Consumer: IJvDataConsumer); dynamic;
     function AllowProviderDesigner: Boolean; dynamic;
     function AllowContextManager: Boolean; dynamic;
+    function GetNotifierCount: Integer;
+    function GetNotifier(Index: Integer): IJvDataProviderNotify;
 
     property DataItemsImpl: TJvBaseDataItems read GetDataItemsImpl;
     property DataContextsImpl: TJvBaseDataContexts read FDataContextsImpl;
@@ -564,11 +568,12 @@ type
     function GetCount: Integer; virtual; abstract;
     function GetContext(Index: Integer): IJvDataContext; virtual; abstract;
     function GetContextByName(Name: string): IJvDataContext; virtual;
+    function IndexOf(Ctx: IJvDataContext): Integer; virtual;
     property DsgnContext: IJvDataContext read FDsgnContext write FDsgnContext;
   public
     constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); virtual;
-    constructor CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
-      ManagerClass: TJvDataContextsManagerClass);
+    class function CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
+      ManagerClass: TJvDataContextsManagerClass): TJvBaseDataContexts; virtual;
   end;
 
   // Basic context list manager
@@ -785,6 +790,7 @@ type
     { IJvDataProviderNotify methods }
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
+    function Consumer: IJvDataConsumer;
     { IJvDataConsumer methods }
     function VCLComponent: TComponent;
     function AttributeApplies(Attr: Integer): Boolean;
@@ -2003,6 +2009,11 @@ begin
     FOnChanged(ADataProvider, AReason, Source);
 end;
 
+function TJvProviderNotification.Consumer: IJvDataConsumer;
+begin
+  Result := nil;
+end;
+
 destructor TJvProviderNotification.Destroy;
 begin
   Provider := nil;
@@ -2251,21 +2262,21 @@ begin
   inherited Create;
 end;
 
-constructor TJvBaseDataItems.CreateProvider(const Provider: IJvDataProvider);
+class function TJvBaseDataItems.CreateProvider(const Provider: IJvDataProvider): TJvBaseDataItems;
 begin
-  Create;
-  FProvider := Provider;
+  Result := TJvDataItemsClass(Self).Create;
+  Result.FProvider := Provider;
 end;
 
-constructor TJvBaseDataItems.CreateParent(const Parent: IJvDataItem);
+class function TJvBaseDataItems.CreateParent(const Parent: IJvDataItem): TJvBaseDataItems;
 begin
-  CreateProvider(Parent.GetItems.Provider);
-  FParent := Pointer(Parent);
+  Result := CreateProvider(Parent.GetItems.Provider);
+  Result.FParent := Pointer(Parent);
   if (Parent <> nil) and Parent.GetItems.IsDynamic then
-    FParentIntf := Parent;
+    Result.FParentIntf := Parent;
   if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedPersistent) then
-    FSubAggregate := TJvBaseDataItemSubItems.Create(
-      TExtensibleInterfacedPersistent(Parent.GetImplementer), Self);
+    Result.FSubAggregate := TJvBaseDataItemSubItems.Create(
+      TExtensibleInterfacedPersistent(Parent.GetImplementer), Result);
 end;
 
 procedure TJvBaseDataItems.BeforeDestruction;
@@ -2827,6 +2838,8 @@ var
 begin
   for I := FNotifiers.Count - 1 downto 0 do
     (FNotifiers[I] as IJvDataProviderNotify).DataProviderChanging(Self, ChangeReason, Source);
+  if ChangeReason = pcrContextDelete then
+    ContextDestroying(IJvDataContext(Source));
 end;
 
 procedure TJvCustomDataProvider.Changed(ChangeReason: TDataProviderChangeReason; Source: IUnknown);
@@ -2835,6 +2848,8 @@ var
 begin
   for I := FNotifiers.Count - 1 downto 0 do
     (FNotifiers[I] as IJvDataProviderNotify).DataProviderChanged(Self, ChangeReason, Source);
+  if ChangeReason = pcrContextAdd then
+    ContextAdded(IJvDataContext(Source));
 end;
 
 class function TJvCustomDataProvider.PersistentDataItems: Boolean;
@@ -3088,6 +3103,10 @@ begin
     raise EJVCLDataProvider.Create('Context stack is empty.');
 end;
 
+procedure TJvCustomDataProvider.ContextAdded(Context: IJvDataContext);
+begin
+end;
+
 procedure TJvCustomDataProvider.ContextDestroying(Context: IJvDataContext);
 begin
   DataItemsImpl.ContextDestroying(Context);
@@ -3108,6 +3127,16 @@ var
 begin
   Result := (FDataContextsImpl <> nil) and
     Supports(FDataContextsImpl as IJvDataContexts, IJvDataContextsManager, CtxMan);
+end;
+
+function TJvCustomDataProvider.GetNotifierCount: Integer;
+begin
+  Result := FNotifiers.Count;
+end;
+
+function TJvCustomDataProvider.GetNotifier(Index: Integer): IJvDataProviderNotify;
+begin
+  Result := IJvDataProviderNotify(FNotifiers[Index]);
 end;
 
 constructor TJvCustomDataProvider.Create(AOwner: TComponent);
@@ -3196,6 +3225,13 @@ begin
   end;
 end;
 
+function TJvBaseDataContexts.IndexOf(Ctx: IJvDataContext): Integer;
+begin
+  Result := GetCount - 1;
+  while (Result >= 0) and (Ctx <> GetContext(Result)) do
+    Dec(Result);
+end;
+
 constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
 begin
   inherited Create;
@@ -3203,12 +3239,12 @@ begin
   FAncestor := AAncestor;
 end;
 
-constructor TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
-  ManagerClass: TJvDataContextsManagerClass);
+class function TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider;
+  AAncestor: IJvDataContext; ManagerClass: TJvDataContextsManagerClass): TJvBaseDataContexts;
 begin
-  Create(AProvider, AAncestor);
+  Result := TJvDataContextsClass(Self).Create(AProvider, AAncestor);
   if ManagerClass <> nil then
-    ManagerClass.Create(Self);
+    ManagerClass.Create(Result);
 end;
 
 //===TJvBaseDataContextsManager=====================================================================
@@ -3742,6 +3778,11 @@ procedure TJvDataConsumer.DataProviderChanged(const ADataProvider: IJvDataProvid
 begin
   DoProviderChanged(ADataProvider, AReason, Source);
   Changed(ccrProviderChanged);
+end;
+
+function TJvDataConsumer.Consumer: IJvDataConsumer;
+begin
+  Result := Self;
 end;
 
 function TJvDataConsumer.VCLComponent: TComponent;

@@ -74,12 +74,15 @@ type
     procedure ConsumerDestroying(Consumer: IJvDataConsumer);
     function AllowProviderDesigner: Boolean;
     function AllowContextManager: Boolean;
+    function GetNotifierCount: Integer;
+    function GetNotifier(Index: Integer): IJvDataProviderNotify;
   end;
 
   IJvDataProviderNotify = interface
   ['{5B9D1847-6D35-4D9C-8BC2-2054997AB120}']
     procedure DataProviderChanging(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
     procedure DataProviderChanged(const ADataProvider: IJvDataProvider; AReason: TDataProviderChangeReason; Source: IUnknown);
+    function Consumer: IJvDataConsumer;
   end;
 
   IJvDataItems = interface
@@ -367,6 +370,9 @@ type
     { Retrieve a context by name. Returns nil if the context does not exist. Name may be a path to
       the context (e.g.: 'Context1\Context1.1\Context1.1.3' or '..\Context1.2') }
     function GetContextByName(Name: string): IJvDataContext;
+    { Retrieve the index of the specified context. If the context does not belong to this list the
+      function will return -1. }
+    function IndexOf(Ctx: IJvDataContext): Integer;
   end;
 
   { Support interface for IJvDataContexts to allow adding/deleting contexts. }
