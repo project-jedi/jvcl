@@ -221,6 +221,8 @@ type
     procedure LBFindString(var Msg: TMessage); message LB_FINDSTRING;
     procedure LBFindStringExact(var Msg: TMessage); message LB_FINDSTRINGEXACT;
     procedure LBSelectString(var Msg: TMessage); message LB_SELECTSTRING;
+    procedure LBGetText(var Msg: TMessage); message LB_GETTEXT;
+    procedure LBGetTextLen(var Msg: TMessage); message LB_GETTEXTLEN;
 
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -350,6 +352,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property Provider;
     property ScrollBars;
     property ShowHint;
     property Sorted;
@@ -986,7 +989,7 @@ var
   S: string;
   Obj: TObject;
 begin
-  if Source = Self then
+  if not IsProviderSelected and (Source = Self) then
   begin
     S := Items[FDragIndex];
     Obj := Items.Objects[FDragIndex];
@@ -1006,7 +1009,7 @@ end;
 procedure TJvCustomListBox.DefaultDragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  Accept := Source = Self;
+  Accept := not IsProviderSelected and (Source = Self);
   if Accept then
   begin
     // Handle autoscroll in the "hot zone" 5 pixels from top or bottom of
@@ -1073,7 +1076,7 @@ begin
     RestoreDC(Canvas.Handle, -1);
   end;
 
-  if Index < Items.Count then
+  if Index < ItemsShowing.Count then
   begin
     if not Background.DoDraw then
       Canvas.FillRect(ActualRect);
@@ -1088,7 +1091,7 @@ begin
       Inc(ActualRect.Left, 2)
     else
       Dec(ActualRect.Right, 2);
-    DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]), ActualRect, Flags);
+    DrawText(Canvas.Handle, PChar(ItemsShowing[Index]), Length(ItemsShowing[Index]), ActualRect, Flags);
 
     //if (Index >= 0) and (Index < Items.Count) then
     //  Canvas.TextOut(ActualRect.Left + 2, ActualRect.Top, Items[Index]);
@@ -1103,7 +1106,7 @@ end;
 procedure TJvCustomListBox.DefaultStartDrag(var DragObject: TDragObject);
 begin
   FDragIndex := ItemIndex;
-  if FDragIndex >= 0 then
+  if not IsProviderSelected and (FDragIndex >= 0) then
     CreateDragImage(Items[FDragIndex])
   else
     CancelDrag;
@@ -1113,45 +1116,54 @@ procedure TJvCustomListBox.DeleteAllButSelected;
 var
   I: Integer;
 begin
-  if not MultiSelect then
-    Exit;
-  I := 0;
-  while I < Items.Count do
-    if not Selected[I] then
-      Items.Delete(I)
-    else
-      Inc(I);
-  Changed;
+  if not IsProviderSelected and MultiSelect then
+  begin
+    I := 0;
+    while I < Items.Count do
+      if not Selected[I] then
+        Items.Delete(I)
+      else
+        Inc(I);
+    Changed;
+  end;
 end;
 
 function TJvCustomListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
-  Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
-  Changed;
+  if not IsProviderSelected then
+  begin
+    Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
+    Changed;
+  end
+  else
+    Result := 0;
 end;
 
 procedure TJvCustomListBox.DeleteSelected;
 var
   I: Integer;
 begin
-  if MultiSelect then
+  if not IsProviderSelected then
   begin
-    for I := Items.Count - 1 downto 0 do
-      if Selected[I] then
-        Items.Delete(I);
-  end
-  else
-  if ItemIndex <> -1 then
-  begin
-    I := ItemIndex;
-    Items.Delete(I);
-    if I > 0 then
-      Dec(I);
-    if Items.Count > 0 then
-      ItemIndex := I;
+    if MultiSelect then
+    begin
+      for I := Items.Count - 1 downto 0 do
+        if Selected[I] then
+          Items.Delete(I);
+    end
+    else
+    if ItemIndex <> -1 then
+    begin
+      I := ItemIndex;
+      Items.Delete(I);
+      if I > 0 then
+        Dec(I);
+      if Items.Count > 0 then
+        ItemIndex := I;
+    end;
+    Changed;
   end;
-  Changed;
 end;
 
 destructor TJvCustomListBox.Destroy;
@@ -1366,6 +1378,35 @@ begin
     inherited;
 end;
 
+procedure TJvCustomListBox.LBGetText(var Msg: TMessage);
+begin
+  if IsProviderSelected then
+  begin
+    if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
+    begin
+      StrCopy(PChar(Msg.LParam), PChar(ConsumerStrings[Msg.WParam]));
+      Msg.Result := StrLen(PChar(Msg.LParam));
+    end
+    else
+      Msg.Result := LB_ERR;
+  end
+  else
+    inherited;
+end;
+
+procedure TJvCustomListBox.LBGetTextLen(var Msg: TMessage);
+begin
+  if IsProviderSelected then
+  begin
+    if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
+      Msg.Result := Length(ConsumerStrings[Msg.WParam])
+    else
+      Msg.Result := LB_ERR;
+  end
+  else
+    inherited;
+end;
+
 function TJvCustomListBox.GetDragImages: TDragImageList;
 begin
   Result := FDragImage;
@@ -1382,10 +1423,10 @@ var
 begin
   if MultiSelect then
   begin
-    Items.BeginUpdate;
-    for I := 0 to Items.Count - 1 do
+    ItemsShowing.BeginUpdate;
+    for I := 0 to ItemsShowing.Count - 1 do
       Selected[I] := not Selected[I];
-    Items.EndUpdate;
+    ItemsShowing.EndUpdate;
   end;
 end;
 
@@ -1420,7 +1461,7 @@ begin
   InheritedCalled := False;
   if not LimitToClientWidth then
   begin
-    MeasureString(Items[Msg.WParam], 0, LSize);
+    MeasureString(ItemsShowing[Msg.WParam], 0, LSize);
     InheritedCalled := LSize.cy = FMaxWidth;
     if InheritedCalled then
     begin
@@ -1429,7 +1470,7 @@ begin
     end;
   end;
   if Assigned(FOnDeleteString) then
-    FOnDeleteString(Self, Items.Strings[Longint(Msg.WParam)]);
+    FOnDeleteString(Self, ItemsShowing.Strings[Longint(Msg.WParam)]);
   if not InheritedCalled then
     inherited;
   if Assigned(FOnChange) then
@@ -1461,15 +1502,15 @@ procedure TJvCustomListBox.MeasureItem(Index: Integer;
 var
   LSize: TSize;
 begin
-  if Assigned(OnMeasureItem) or not MultiLine or
-    (Index < 0) or (Index >= Items.Count) then
+  if Assigned(OnMeasureItem) or (not MultiLine and not IsProviderSelected) or
+    (Index < 0) or (Index >= ItemsShowing.Count) then
     inherited MeasureItem(Index, Height)
   else
   begin
     if LimitToClientWidth then
-      MeasureString(Items[Index], ClientWidth, LSize)
+      MeasureString(ItemsShowing[Index], ClientWidth, LSize)
     else
-      MeasureString(Items[Index], 0, LSize);
+      MeasureString(ItemsShowing[Index], 0, LSize);
     Height := LSize.cy;
   end;
 end;
@@ -1508,26 +1549,29 @@ procedure TJvCustomListBox.MoveSelectedDown;
 var
   I: Integer;
 begin
-  if not MultiSelect then
+  if not IsProviderSelected then
   begin
-    if (ItemIndex <> -1) and (ItemIndex < Items.Count - 1) then
+    if not MultiSelect then
     begin
-      Items.Exchange(ItemIndex, ItemIndex + 1);
-      ItemIndex := ItemIndex + 1;
-    end;
-    Exit;
-  end;
-  if (Items.Count > 0) and (SelCount > 0) and (not Selected[Items.Count - 1]) then
-  begin
-    I := Items.Count - 2;
-    while I >= 0 do
-    begin
-      if Selected[I] then
+      if (ItemIndex <> -1) and (ItemIndex < Items.Count - 1) then
       begin
-        Items.Exchange(I, I + 1);
-        Selected[I + 1] := True;
+        Items.Exchange(ItemIndex, ItemIndex + 1);
+        ItemIndex := ItemIndex + 1;
       end;
-      Dec(I);
+      Exit;
+    end;
+    if (Items.Count > 0) and (SelCount > 0) and (not Selected[Items.Count - 1]) then
+    begin
+      I := Items.Count - 2;
+      while I >= 0 do
+      begin
+        if Selected[I] then
+        begin
+          Items.Exchange(I, I + 1);
+          Selected[I + 1] := True;
+        end;
+        Dec(I);
+      end;
     end;
   end;
 end;
@@ -1536,26 +1580,29 @@ procedure TJvCustomListBox.MoveSelectedUp;
 var
   I: Integer;
 begin
-  if not MultiSelect then
+  if not IsProviderSelected then
   begin
-    if ItemIndex > 1 then
+    if not MultiSelect then
     begin
-      Items.Exchange(ItemIndex, ItemIndex - 1);
-      ItemIndex := ItemIndex - 1;
-    end;
-    Exit;
-  end;
-  if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
-  begin
-    I := 1;
-    while I < Items.Count do
-    begin
-      if Selected[I] then
+      if ItemIndex > 1 then
       begin
-        Items.Exchange(I, I - 1);
-        Selected[I - 1] := True;
+        Items.Exchange(ItemIndex, ItemIndex - 1);
+        ItemIndex := ItemIndex - 1;
       end;
-      Inc(I);
+      Exit;
+    end;
+    if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
+    begin
+      I := 1;
+      while I < Items.Count do
+      begin
+        if Selected[I] then
+        begin
+          Items.Exchange(I, I - 1);
+          Selected[I - 1] := True;
+        end;
+        Inc(I);
+      end;
     end;
   end;
 end;
@@ -1572,9 +1619,9 @@ begin
   else
     cx := 0;
 
-  for I := 0 to Items.Count - 1 do
+  for I := 0 to ItemsShowing.Count - 1 do
   begin
-    MeasureString(Items[I], cx, LItemSize);
+    MeasureString(ItemsShowing[I], cx, LItemSize);
     if MultiLine then
       Perform(LB_SETITEMHEIGHT, I, LItemSize.cy);
 
@@ -1588,19 +1635,19 @@ end;
 function TJvCustomListBox.SearchExactString(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
+  Result := FItemSearchs.SearchExactString(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 function TJvCustomListBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
+  Result := FItemSearchs.SearchPrefix(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 function TJvCustomListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean; StartIndex: Integer): Integer;
 begin
-  Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
+  Result := FItemSearchs.SearchSubString(ItemsShowing, Value, CaseSensitive, StartIndex);
 end;
 
 procedure TJvCustomListBox.SelectAll;
@@ -1609,10 +1656,10 @@ var
 begin
   if MultiSelect then
   begin
-    Items.BeginUpdate;
-    for I := 0 to Items.Count - 1 do
+    ItemsShowing.BeginUpdate;
+    for I := 0 to ItemsShowing.Count - 1 do
       Selected[I] := True;
-    Items.EndUpdate;
+    ItemsShowing.EndUpdate;
   end;
 end;
 
@@ -1752,10 +1799,10 @@ var
 begin
   if MultiSelect then
   begin
-    Items.BeginUpdate;
-    for I := 0 to Items.Count - 1 do
+    ItemsShowing.BeginUpdate;
+    for I := 0 to ItemsShowing.Count - 1 do
       Selected[I] := False;
-    Items.EndUpdate;
+    ItemsShowing.EndUpdate;
   end
   else
     ItemIndex := -1;
@@ -1875,7 +1922,7 @@ function TJvCustomListBox.ItemRect(Index: Integer): TRect;
 var
   Count: Integer;
 begin
-  Count := Items.Count;
+  Count := ItemsShowing.Count;
   if (Index >= 0) and (Index < Count) then
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
   else if Index = Count then
@@ -1909,7 +1956,7 @@ begin
       end;
     LB_DELETESTRING:
       begin
-        ItemWidth := Canvas.TextWidth(Items[Msg.WParam] + ' ');
+        ItemWidth := Canvas.TextWidth(ItemsShowing[Msg.WParam] + ' ');
         if ItemWidth = FMaxWidth then
         begin
           inherited WndProc(Msg);
