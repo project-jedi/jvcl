@@ -1,3 +1,4 @@
+{$I JEDI.INC}
 unit dcUtils;
 
 interface
@@ -6,7 +7,18 @@ procedure Run;
 
 implementation
 uses
-  SysUtils, Classes, JTools, TypInfo, RTLConsts;
+  SysUtils, Classes, JTools, TypInfo
+  {$IFNDEF DELPHI6_UP}
+  , Consts
+  {$ELSE}
+  , RTLConsts
+  {$ENDIF}
+  ;
+
+{$IFNDEF DELPHI6_UP}
+const
+  sLineBreak = #13#10;
+{$ENDIF}
 
 { format of skiplist file:
 <classname>.<property>
@@ -25,7 +37,7 @@ begin
   Stream.Seek(-sizeof(ASignature), soFromCurrent);
 end;
 
-function CleanDFM(Input, Output: TStream; SkipList: TStrings):boolean;
+function CleanDFM(Input, Output: TStream; SkipList: TStrings; SkipUnicode: boolean): boolean;
 var
   NestingLevel: Integer;
   SaveSeparator: Char;
@@ -159,7 +171,7 @@ var
         WriteStr(FloatToStr(Reader.ReadCurrency * 10000) + 'c');
       vaDate:
         WriteStr(FloatToStr(Reader.ReadDate) + 'd');
-      vaWString, vaUTF8String:
+      vaWString{$IFDEF DELPHI6_UP}, vaUTF8String{$ENDIF}:
         begin
           W := Reader.ReadWideString;
           L := Length(W);
@@ -195,7 +207,13 @@ var
                 else
                 begin
                   WriteStr('#');
-                  WriteStr(IntToStr(Ord(W[I])));
+                  if (Ord(W[I]) > 255) and SkipUnicode then
+                  begin
+                    Result := True;
+                    WriteStr('32');
+                  end
+                  else
+                    WriteStr(IntToStr(Ord(W[I])));
                   Inc(I);
                   if ((I - K) >= LineLength) then
                     LineBreak := True;
@@ -410,6 +428,7 @@ begin
   writeln('where <options> are');
   writeln('-i - replaces in-line (output overwrites input)');
   writeln('-s - recurse into subfolders');
+  writeln('-u - skip unicode chars');  
   writeln('-f<filename> - where <filename> is a text file that contains the');
   writeln('names of properties to remove.');
   writeln('');
@@ -418,7 +437,8 @@ begin
   writeln('');
 end;
 
-function ParseDFM(const Filename: string; ASkipList: TStrings; ReplaceInline: boolean):boolean;
+function ParseDFM(const Filename: string; ASkipList: TStrings; ReplaceInline,
+  SkipUnicode: boolean): boolean;
 var
   F: TFileStream;
   F2:TMemoryStream;
@@ -428,7 +448,7 @@ begin
     F := TFileStream.Create(Filename, fmOpenReadWrite or fmShareExclusive);
     F2 := TMemoryStream.Create;
     try
-      if CleanDFM(F, F2, ASkipList) then // only write if something changed
+      if CleanDFM(F, F2, ASkipList, SkipUnicode) then // only write if something changed
       begin
         Result := true;
         if ReplaceInline then
@@ -453,7 +473,8 @@ begin
   end;
 end;
 
-function ParseFiles(const Filemask: string; ASkipList: TStrings; ReplaceInline, Recurse: boolean;var FilesFound:integer):integer;
+function ParseFiles(const Filemask: string; ASkipList: TStrings; ReplaceInline,
+  Recurse, SkipUnicode: boolean; var FilesFound: integer): integer;
 var
   F: TSearchRec;
 begin
@@ -462,7 +483,7 @@ begin
   begin
     repeat
       Inc(FilesFound);
-      if ParseDFM(ExtractFilePath(Filemask) + F.Name, ASkipList, ReplaceInline) then
+      if ParseDFM(ExtractFilePath(Filemask) + F.Name, ASkipList, ReplaceInline, SkipUnicode) then
         Inc(Result)
     until FindNext(F) <> 0;
     FindClose(F);
@@ -473,7 +494,7 @@ begin
     begin
       repeat
         if (F.Attr and faDirectory = faDirectory) and (F.Name <> '.') and (F.Name <> '..') then
-          Result := Result + ParseFiles(ExtractFilePath(Filemask) + F.Name + '\' + ExtractFileName(Filemask), ASkipList, ReplaceInline, Recurse,FilesFound);
+          Result := Result + ParseFiles(ExtractFilePath(Filemask) + F.Name + '\' + ExtractFileName(Filemask), ASkipList, ReplaceInline, Recurse, SkipUnicode, FilesFound);
       until FindNext(F) <> 0;
       FindClose(F);
     end;
@@ -484,7 +505,7 @@ procedure Run;
 var
   i,ACount,FilesFound: integer;
   CmdSwitch: string;
-  ReplaceInline, Recurse: boolean;
+  ReplaceInline, Recurse, SkipUnicode: boolean;
   SkipList: TStringlist;
 begin
   ShowHeader;
@@ -498,6 +519,7 @@ begin
     FilesFound := 0;
     Recurse := GetCmdSwitchValue('s', ['-', '/'], CmdSwitch, true);
     ReplaceInline := GetCmdSwitchValue('i', ['-', '/'], CmdSwitch, true);
+    SkipUnicode := GetCmdSwitchValue('u', ['-', '/'], CmdSwitch, true);
     if not GetCmdSwitchValue('f', ['-', '/'], CmdSwitch, true) or not FileExists(ExpandUNCFileName(CmdSwitch)) then
       raise Exception.Create('Config file not found!');
     // done: add handling of skiplist and subfolders
@@ -507,7 +529,7 @@ begin
       SkipList.Sorted := true; // faster lookup
       for i := 1 to ParamCount do
         if not (ParamStr(i)[1] in ['-', '/']) then
-          ACount := ACount + ParseFiles(ExpandUNCFileName(ParamStr(i)), SkipList, ReplaceInline, Recurse,FilesFound);
+          ACount := ACount + ParseFiles(ExpandUNCFileName(ParamStr(i)), SkipList, ReplaceInline, Recurse, SkipUnicode, FilesFound);
     finally
       SkipList.Free;
     end;
