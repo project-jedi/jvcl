@@ -166,8 +166,8 @@ type
     function ClientHeight: Integer;
     function ClientRect: TRect;
     function BoundsRect: TRect;
-    function GetCanvas: TUnicodeCanvas;
-    property Canvas: TUnicodeCanvas read GetCanvas;
+    function GetCanvas: TJvUnicodeCanvas;
+    property Canvas: TJvUnicodeCanvas read GetCanvas;
   end;
 
   TJvGutter = class(TObject)
@@ -1560,9 +1560,9 @@ end;
 
 //=== TJvWideEditorClient ========================================================
 
-function TJvWideEditorClient.GetCanvas: TUnicodeCanvas;
+function TJvWideEditorClient.GetCanvas: TJvUnicodeCanvas;
 begin
-  Result := TUnicodeCanvas(FJvEditor.Canvas);
+  Result := TJvUnicodeCanvas(FJvEditor.Canvas);
 end;
 
 function TJvWideEditorClient.Left: Integer;
@@ -2129,10 +2129,10 @@ begin
           begin
             R.Right := R.Left + FCellRect.Width * Length(Ch);
             Ch := S[i] + Ch;
-            TUnicodeCanvas(Canvas).TextRectW(R, R.Left - FCellRect.Width, R.Top, Ch);
+            TJvUnicodeCanvas(Canvas).TextRectW(R, R.Left - FCellRect.Width, R.Top, Ch);
           end
           else
-            TUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
+            TJvUnicodeCanvas(Canvas).ExtTextOutW(R.Left, R.Top, [etoOpaque, etoClipped], nil, Ch, @MyDi[0]);
 //            Windows.ExtTextOutW(Canvas.Handle, R.Left, R.Top, 0, nil, PWideChar(Ch), Length(Ch), @MyDi[0]);
           i := jC - 1;
         end;
@@ -6877,16 +6877,16 @@ begin
     with (Owner as TJvCustomWideEditor).FCompletion do
       case FMode of
         cmIdentifiers:
-          TUnicodeCanvas(Canvas).TextOutW(Rect.Left + Offset, Rect.Top, SubStrW(Items[Index], 1,
+          TJvUnicodeCanvas(Canvas).TextOutW(Rect.Left + Offset, Rect.Top, SubStrW(Items[Index], 1,
             Separator));
         cmTemplates:
           begin
-            TUnicodeCanvas(Canvas).TextOutW(Rect.Left + Offset, Rect.Top, SubStrW(Items[Index], 1,
+            TJvUnicodeCanvas(Canvas).TextOutW(Rect.Left + Offset, Rect.Top, SubStrW(Items[Index], 1,
               Separator));
             Canvas.Font.Style := [fsBold];
             S := SubStrW(Items[Index], 0, Separator);
             W := Canvas.TextWidth(S);
-            TUnicodeCanvas(Canvas).TextOutW(Rect.Right - 2 * Offset - W, Rect.Top, S);
+            TJvUnicodeCanvas(Canvas).TextOutW(Rect.Right - 2 * Offset - W, Rect.Top, S);
           end;
       end;
   end;
