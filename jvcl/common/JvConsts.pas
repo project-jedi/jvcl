@@ -346,6 +346,9 @@ resourcestring
   SPaletteEncryptCompress = 'Jv Encrypt and Compress';
   SPaletteDBVisual = 'Jv Data Controls';
   SPaletteDBNonVisual = 'Jv Data Access';
+  SPaletteHMIIndicator = 'Jv HMI Indicators';
+  SPaletteHMINonVisual = 'Jv HMI Non-Visual';
+  SPaletteHMIControls = 'Jv HMI Controls';
 
   SPaletteBDE = 'Jv BDE Components';
 
