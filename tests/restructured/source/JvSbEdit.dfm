@@ -243,4 +243,9 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
       OnClick = PasteMenuClick
     end
   end
+  object FormPlacement1: TJvFormStorage
+    StoredValues = <>
+    Left = 64
+    Top = 88
+  end
 end

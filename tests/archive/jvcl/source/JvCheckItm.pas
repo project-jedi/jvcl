@@ -62,7 +62,6 @@ type
     Panel3: TPanel;
     CancelBtn: TButton;
     Panel1: TPanel;
-    FormPlacement: TJvFormPlacement;
     OkBtn: TButton;
     Popup: TPopupMenu;
     AddListBtn: TButton;
@@ -75,6 +74,7 @@ type
     CheckList: TJvxCheckListBox;
     UpBtn: TButton;
     DownBtn: TButton;
+    FormPlacement: TJvFormStorage;
     procedure EditBtnClick(Sender: TObject);
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);

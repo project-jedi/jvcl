@@ -71,7 +71,7 @@ type
     CopyMenu: TMenuItem;
     PasteMenu: TMenuItem;
     CutMenu: TMenuItem;
-    FormPlacement1: TJvFormPlacement;
+    FormPlacement1: TJvFormStorage;
     procedure DelSectionClick(Sender: TObject);
     procedure AddButtonClick(Sender: TObject);
     procedure RemoveButtonClick(Sender: TObject);

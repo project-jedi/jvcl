@@ -203,4 +203,28 @@ object JvFormPropsDlg: TJvFormPropsDlg
     ModalResult = 2
     TabOrder = 4
   end
+  object ComponentsList: TJvTextListBox
+    Left = 16
+    Top = 72
+    Width = 105
+    Height = 89
+    ItemHeight = 13
+    TabOrder = 6
+  end
+  object PropertiesList: TJvTextListBox
+    Left = 224
+    Top = 72
+    Width = 113
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 7
+  end
+  object StoredList: TJvTextListBox
+    Left = 16
+    Top = 184
+    Width = 241
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 8
+  end
 end

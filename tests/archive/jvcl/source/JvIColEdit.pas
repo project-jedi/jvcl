@@ -64,14 +64,15 @@ type
     CntLabel: TLabel;
     Label3: TLabel;
     IdxLabel: TLabel;
-    JvSpeedbar: TJvSpeedBar;
+    ScrollBar: TScrollBar;
+    JvSpeedBar1: TJvSpeedBar;
+    JvSpeedbarSection1: TJvSpeedbarSection;
     Load: TJvSpeedItem;
     LoadAni: TJvSpeedItem;
     Delete: TJvSpeedItem;
     Clear: TJvSpeedItem;
     Copy: TJvSpeedItem;
     Paste: TJvSpeedItem;
-    ScrollBar: TScrollBar;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure LoadClick(Sender: TObject);

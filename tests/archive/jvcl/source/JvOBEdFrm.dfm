@@ -1,6 +1,6 @@
 object frmOLBarEditFrm: TfrmOLBarEditFrm
-  Left = 291
-  Top = 284
+  Left = 564
+  Top = 267
   BorderStyle = bsDialog
   Caption = 'OutlookBar Page and Button Editor'
   ClientHeight = 306

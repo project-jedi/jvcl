@@ -132,7 +132,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Width = 25
     Height = 24
     Hint = 'Set from current'#13#10'form state|'
-    Caption = '¬'
+    Caption = #172
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -151,7 +151,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Width = 25
     Height = 24
     Hint = 'Set from current'#13#10'form state|'
-    Caption = '¬'
+    Caption = #172
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -170,7 +170,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Width = 25
     Height = 24
     Hint = 'Set from current'#13#10'form state|'
-    Caption = '¬'
+    Caption = #172
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -189,7 +189,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Width = 25
     Height = 24
     Hint = 'Set from current'#13#10'form state|'
-    Caption = '¬'
+    Caption = #172
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -200,6 +200,110 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     ParentShowHint = False
     ShowHint = True
     OnClick = SetCurrentBtnClick
+  end
+  object MaxPosLeftEdit: TJvxCurrencyEdit
+    Left = 162
+    Top = 10
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 3
+    ZeroEmpty = False
+  end
+  object MaxPosTopEdit: TJvxCurrencyEdit
+    Left = 242
+    Top = 10
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 4
+    ZeroEmpty = False
+  end
+  object MaxSizeWidthEdit: TJvxCurrencyEdit
+    Left = 162
+    Top = 39
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 5
+    ZeroEmpty = False
+  end
+  object MaxSizeHeightEdit: TJvxCurrencyEdit
+    Left = 242
+    Top = 39
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 6
+    ZeroEmpty = False
+  end
+  object MaxTrackWidthEdit: TJvxCurrencyEdit
+    Left = 162
+    Top = 68
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 7
+    ZeroEmpty = False
+  end
+  object MaxTrackHeightEdit: TJvxCurrencyEdit
+    Left = 242
+    Top = 68
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 8
+    ZeroEmpty = False
+  end
+  object MinTrackWidthEdit: TJvxCurrencyEdit
+    Left = 162
+    Top = 98
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 9
+    ZeroEmpty = False
+  end
+  object MinTrackHeightEdit: TJvxCurrencyEdit
+    Left = 242
+    Top = 98
+    Width = 23
+    Height = 21
+    AutoSize = False
+    CheckOnExit = True
+    DecimalPlaces = 0
+    DisplayFormat = ',0;-,0'
+    MaxValue = 10000
+    TabOrder = 10
+    ZeroEmpty = False
   end
   object OkBtn: TButton
     Left = 163

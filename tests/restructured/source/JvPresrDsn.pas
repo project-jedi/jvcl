@@ -49,10 +49,8 @@ type
     Label31: TLabel;
     Label2: TLabel;
     UpBtn: TSpeedButton;
-    DownBtn: TSpeedButton;
-    StoredList: TJvTextListBox;
-    PropertiesList: TJvTextListBox;
-    ComponentsList: TJvTextListBox;
+    DownBtn: TSpeedButton;        
+
     FormBox: TGroupBox;
     ActiveCtrlBox: TCheckBox;
     PositionBox: TCheckBox;
@@ -62,6 +60,9 @@ type
     ClearButton: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
+    ComponentsList: TJvTextListBox;
+    PropertiesList: TJvTextListBox;
+    StoredList: TJvTextListBox;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);

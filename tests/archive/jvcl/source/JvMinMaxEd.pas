@@ -33,7 +33,7 @@ uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   Buttons, Mask, JvCurrEdit, JvVCLUtils, JvPlacemnt,
  {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  Consts;
+  Consts, JvToolEdit;
 
 type
   TMinMaxInfoEditDialog = class(TForm)
@@ -56,6 +56,7 @@ type
     MaxSizeBtn: TSpeedButton;
     MaxTrackBtn: TSpeedButton;
     MinTrackBtn: TSpeedButton;
+    ClearBtn: TButton;
     MaxPosLeftEdit: TJvxCurrencyEdit;
     MaxPosTopEdit: TJvxCurrencyEdit;
     MaxSizeWidthEdit: TJvxCurrencyEdit;
@@ -64,7 +65,6 @@ type
     MaxTrackHeightEdit: TJvxCurrencyEdit;
     MinTrackWidthEdit: TJvxCurrencyEdit;
     MinTrackHeightEdit: TJvxCurrencyEdit;
-    ClearBtn: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SetCurrentBtnClick(Sender: TObject);

@@ -90,4 +90,9 @@ object JvProxyEditor: TJvProxyEditor
       162
       175)
   end
+  object FormStorage: TJvFormStorage
+    StoredValues = <>
+    Left = 128
+    Top = 112
+  end
 end

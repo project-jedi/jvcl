@@ -47,11 +47,11 @@ uses
 
 type
   TJvProxyEditor = class(TDesignWindow)
-    FormStorage: TJvFormStorage;
     BtnPanel: TPanel;
     CloseBtn: TButton;
     DeleteBtn: TButton;
     ProxyGrid: TDrawGrid;
+    FormStorage: TJvFormStorage;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ProxyGridDrawCell(Sender: TObject; Col, Row: Longint; Rect: TRect; State: TGridDrawState);
