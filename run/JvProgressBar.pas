@@ -35,7 +35,7 @@ uses
   CommCtrl,
   {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JvExComCtrls;
+  JvExComCtrls, JvComponent;
 
 type
   TJvBaseProgressBar = class(TGraphicControl)
@@ -285,7 +285,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  Windows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   if BarSize = 0 then
     Exit;
   ACanvas.Brush.Color := BarColor;
@@ -474,7 +474,7 @@ begin
   R := ClientRect;
   ACanvas.Brush.Color := Color;
   ACanvas.FillRect(R);
-  Windows.DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
+  DrawEdge(ACanvas.Handle, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT);
   InflateRect(R, -1, -1);
   if Orientation = pbHorizontal then
   begin
