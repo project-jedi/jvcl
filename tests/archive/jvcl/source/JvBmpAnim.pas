@@ -61,7 +61,7 @@ type
     FCenter: Boolean;
     FImageChangeLink: TChangeLink;
     procedure SetCenter(Value: Boolean);
-    procedure SeTJvAnimateDirection(Value: TJvAnimateDirection);
+    procedure SetDirection(Value: TJvAnimateDirection);
     procedure SetColor(Value: TColor);
     procedure SetPosition(Value: Integer);
     procedure SetStart(Value: Integer);
@@ -82,7 +82,7 @@ type
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     property Centered: Boolean read FCenter write SetCenter;
     property Color: TColor read FColor write SetColor default clBtnFace;
-    property Direction: TJvAnimateDirection read FDirection write SeTJvAnimateDirection;
+    property Direction: TJvAnimateDirection read FDirection write SetDirection;
     property Active: Boolean read FActive write SetActive default False;
     property ImageList: TImagelist read FImageList write SetImage;
     property NumFrames: Integer read FNumGlyphs write SetNumGlyphs default 0;
@@ -217,18 +217,7 @@ begin
           end;
         end;
     end;
-
-  if FCenter then
-  begin
-    dX := (Width - FImageList.Width) div 2;
-    dY := (Height - FImageList.Height) div 2;
-  end
-  else
-  begin
-    dX := 0;
-    dY := 0;
-  end;
-  Update;
+  Refresh;
 end;
 
 procedure TJvCustomBmpAnimator.SetStart(Value: Integer);
@@ -353,7 +342,7 @@ begin
   end;
 end;
 
-procedure TJvCustomBmpAnimator.SeTJvAnimateDirection(Value: TJvAnimateDirection);
+procedure TJvCustomBmpAnimator.SetDirection(Value: TJvAnimateDirection);
 begin
   if FDirection <> Value then
   begin
