@@ -1,6 +1,6 @@
 package JvPrintPreviewD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,13 +27,15 @@ package JvPrintPreviewD7D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7D,
+  JvPrintPreviewD7R,
   rtl,
   designide,
-  vclx,
-  JvPrintPreviewD7R,
-  JvCoreD7D;
+  vclx
+  ;
 
 contains
-  JvPreviewReg in '..\..\design\JvPreviewReg.pas';
+  JvPreviewReg in '..\..\design\JvPreviewReg.pas' 
+  ;
 
 end.

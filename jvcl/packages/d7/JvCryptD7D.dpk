@@ -1,6 +1,6 @@
 package JvCryptD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,9 +27,11 @@ package JvCryptD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCryptD7R;
+  JvCryptD7R
+  ;
 
 contains
-  JvCryptReg in '..\..\design\JvCryptReg.pas';
+  JvCryptReg in '..\..\design\JvCryptReg.pas' 
+  ;
 
 end.

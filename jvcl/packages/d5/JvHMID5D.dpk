@@ -2,19 +2,19 @@ package JvHMID5D;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -22,18 +22,20 @@ package JvHMID5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL HMI Design time package'}
+{$DESCRIPTION 'JVCL HMI Controls design time unit'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  vcl50,
+  JvCoreD5D,
   JvHMID5R,
-  JvCoreD5D;
+  vcl50
+  ;
 
 contains
-  JvHMIReg in '..\..\design\JvHMIReg.pas',
-  JvSegmentedLEDDisplayEditors in '..\..\design\JvSegmentedLEDDisplayEditors.pas',
-  JvSegmentedLEDDisplayMappingForm in '..\..\design\JvSegmentedLEDDisplayMappingForm.pas' {frmJvSLDMappingEditor};
+  JvSegmentedLEDDisplayMappingForm in '..\..\design\JvSegmentedLEDDisplayMappingForm.pas' {frmJvSLDMappingEditor},
+  JvHMIReg in '..\..\design\JvHMIReg.pas' ,
+  JvSegmentedLEDDisplayEditors in '..\..\design\JvSegmentedLEDDisplayEditors.pas' 
+  ;
 
 end.

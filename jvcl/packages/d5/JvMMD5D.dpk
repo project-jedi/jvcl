@@ -28,21 +28,23 @@ package JvMMD5D;
 
 requires
   JvMMD5R,
+  JvCmpD5R,
   JvCoreD5D,
-  DJCL50,
-  JvCmpD5R;
+  DJCL50
+  ;
 
 contains
-  JvMMReg in '..\..\design\JvMMReg.pas',
-  JvAnimatedEditor in '..\..\design\JvAnimatedEditor.pas',
-  JvDirectoryListForm in '..\..\design\JvDirectoryListForm.pas' {JvDirectoryListDialog},
-  JvPictureEditForm in '..\..\design\JvPictureEditForm.pas' {PictureEditDialog},
-  JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas' {ImageForm},
-  JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
-  JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
-  JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog},
+  JvPictureEditors in '..\..\design\JvPictureEditors.pas' ,
   JvVirtualKeyEditorForm in '..\..\design\JvVirtualKeyEditorForm.pas' {frmJvVirtualKeyEditor},
-  JvAVICaptureEditors in '..\..\design\JvAVICaptureEditors.pas',
-  JvPictureEditors in '..\..\design\JvPictureEditors.pas';
+  JvAnimatedEditor in '..\..\design\JvAnimatedEditor.pas' ,
+  JvAVICaptureEditors in '..\..\design\JvAVICaptureEditors.pas' ,
+  JvDirectoryListForm in '..\..\design\JvDirectoryListForm.pas' {JvDirectoryListDialog},
+  JvIconListForm in '..\..\design\JvIconListForm.pas' {IconListDialog},
+  JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
+  JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
+  JvImagePreviewForm in '..\..\design\JvImagePreviewForm.pas' {ImageForm},
+  JvMMReg in '..\..\design\JvMMReg.pas' ,
+  JvPictureEditForm in '..\..\design\JvPictureEditForm.pas' {PictureEditDialog}
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvCmpD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,17 +27,19 @@ package JvCmpD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCmpD7R,
-  designide,
-  dclstd,
   JvCoreD7D,
-  JvStdCtrlsD7R;
+  JvCmpD7R,
+  JvStdCtrlsD7R,
+  DesignIde,
+  dclstd
+  ;
 
 contains
-  JvCmpReg in '..\..\design\JvCmpReg.pas',
-  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
-  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
-  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch},
-  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor};
+  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor},
+  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas' ,
+  JvCmpReg in '..\..\design\JvCmpReg.pas' ,
+  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas' ,
+  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch}
+  ;
 
 end.

@@ -1,39 +1,40 @@
 package JvPageCompsD5R;
 
-{$R *.res}
-
-{$ASSERTIONS ON}
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Page Style Components Run Package for Delphi 6'}
+{$DESCRIPTION 'JVCL Page Style Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  
+  JvCoreD5R,
   vcl50,
-  vclx50,
   vcljpg50,
-  JvCoreD5R;
+  vclx50
+  ;
 
 contains
-  JvPageListTreeView in '..\..\run\JvPageListTreeView.pas';
+  JvPageListTreeView in '..\..\run\JvPageListTreeView.pas' 
+  ;
 
 end.

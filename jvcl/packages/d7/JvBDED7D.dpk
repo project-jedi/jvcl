@@ -1,6 +1,6 @@
 package JvBDED7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,14 +28,16 @@ package JvBDED7D;
 
 requires
   JvBDED7R,
+  JvDBD7D,
   designide,
-  dclstd,
-  JvDBD7D;
+  dclstd
+  ;
 
 contains
-  JvBDEReg in '..\..\design\JvBDEReg.pas',
-  JvBDEEditors in '..\..\design\JvBDEEditors.pas',
-  JvBDEMemTableEditor in '..\..\design\JvBDEMemTableEditor.pas',
-  JvBDESecurityEditor in '..\..\design\JvBDESecurityEditor.pas';
+  JvBDESecurityEditor in '..\..\design\JvBDESecurityEditor.pas' ,
+  JvBDEEditors in '..\..\design\JvBDEEditors.pas' ,
+  JvBDEMemTableEditor in '..\..\design\JvBDEMemTableEditor.pas' ,
+  JvBDEReg in '..\..\design\JvBDEReg.pas' 
+  ;
 
 end.

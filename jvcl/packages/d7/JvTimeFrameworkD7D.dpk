@@ -1,25 +1,25 @@
 package JvTimeFrameworkD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Time Framework'}
@@ -27,12 +27,14 @@ package JvTimeFrameworkD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   JvTimeFrameworkD7R,
   JvCoreD7D,
-  designide;
+  rtl,
+  designide
+  ;
 
 contains
-  JvTimeFrameworkReg in '..\..\design\JvTimeFrameworkReg.pas';
+  JvTimeFrameworkReg in '..\..\design\JvTimeFrameworkReg.pas' 
+  ;
 
 end.

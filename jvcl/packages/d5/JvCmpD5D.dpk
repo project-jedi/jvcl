@@ -1,7 +1,7 @@
 package JvCmpD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,17 +27,18 @@ package JvCmpD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCmpD5R,
-  
-  dclstd50,
   JvCoreD5D,
-  JvStdCtrlsD5R;
+  JvCmpD5R,
+  JvStdCtrlsD5R,
+  dclstd50
+  ;
 
 contains
-  JvCmpReg in '..\..\design\JvCmpReg.pas',
-  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
-  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
-  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch},
-  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor};
+  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas' {JvProxyEditor},
+  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas' ,
+  JvCmpReg in '..\..\design\JvCmpReg.pas' ,
+  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas' ,
+  JvPatchForm in '..\..\run\JvPatchForm.pas' {FoPatch}
+  ;
 
 end.

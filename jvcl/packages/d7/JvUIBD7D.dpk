@@ -1,6 +1,6 @@
 package JvUIBD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,11 +27,13 @@ package JvUIBD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   JvUIBD7R,
-  designide;
+  rtl,
+  designide
+  ;
 
 contains
-  JvUIBReg in '..\..\design\JvUIBReg.pas';
+  JvUIBReg in '..\..\design\JvUIBReg.pas' 
+  ;
 
 end.

@@ -2,19 +2,19 @@ package JvJansD5R;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
@@ -27,49 +27,50 @@ package JvJansD5R;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD5R,
   vcl50,
-  vclx50,
-  VclSmp50,
-  JvCoreD5R;
+  vclsmp50,
+  vclx50
+  ;
 
 contains
-  JvMarkupLabel in '..\..\run\JvMarkupLabel.pas',
-  JvSALCore in '..\..\run\JvSALCore.pas',
-  JvSALHashList in '..\..\run\JvSALHashList.pas',
-  JvSALMath in '..\..\run\JvSALMath.pas',
-  JvSAL in '..\..\run\JvSAL.pas',
-  JvSticker in '..\..\run\JvSticker.pas',
-  JvXmlTree in '..\..\run\JvXmlTree.pas',
-  JvForth in '..\..\run\JvForth.pas',
-  JvStrings in '..\..\run\JvStrings.pas',
-  JvYearGridEditForm in '..\..\run\JvYearGridEditForm.pas' {YearGridEditF},
-  JvYearGrid in '..\..\run\JvYearGrid.pas',
-  JvTurtle in '..\..\run\JvTurtle.pas',
-  JvTracker in '..\..\run\JvTracker.pas',
-  JvAirBrush in '..\..\run\JvAirBrush.pas',
-  JvGridFilter in '..\..\run\JvGridFilter.pas',
-  JvGridPreviewForm in '..\..\run\JvGridPreviewForm.pas' {JvGridPreviewF},
-  JvGridPrinter in '..\..\run\JvGridPrinter.pas',
-  JvMarkupViewer in '..\..\run\JvMarkupViewer.pas',
-  JvJanTreeView in '..\..\run\JvJanTreeView.pas',
-  JvArrayButton in '..\..\run\JvArrayButton.pas',
-  JvButtonUtils in '..\..\run\JvButtonUtils.pas',
-  JvPaintFX in '..\..\run\JvPaintFX.pas',
-  JvBitmapButton in '..\..\run\JvBitmapButton.pas',
-  JvSpellerForm in '..\..\run\JvSpellerForm.pas' {JvSpellerFrm},
-  JvSimScope in '..\..\run\JvSimScope.pas',
-  JvSimLogic in '..\..\run\JvSimLogic.pas',
-  JvSimPID in '..\..\run\JvSimPID.pas',
-  JvSimPIDLinker in '..\..\run\JvSimPIDLinker.pas',
-  JvSimIndicator in '..\..\run\JvSimIndicator.pas',
-  JvShapedButton in '..\..\run\JvShapedButton.pas',
+  JvMarkupCommon in '..\..\run\JvMarkupCommon.pas' ,
+  JvMarkupLabel in '..\..\run\JvMarkupLabel.pas' ,
+  JvMarkupViewer in '..\..\run\JvMarkupViewer.pas' ,
   JvPainterEffectsForm in '..\..\run\JvPainterEffectsForm.pas' {PainterEffectsF},
   JvPainterQBForm in '..\..\run\JvPainterQBForm.pas' {PainterQBF},
+  JvPaintFX in '..\..\run\JvPaintFX.pas' ,
   JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas' {QuickPreviewF},
-  JvResample in '..\..\run\JvResample.pas',
-  JvDrawImage in '..\..\run\JvDrawImage.pas',
-  JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas',
-  JvMarkupCommon in '..\..\run\JvMarkupCommon.pas';
+  JvResample in '..\..\run\JvResample.pas' ,
+  JvSAL in '..\..\run\JvSAL.pas' ,
+  JvSALCore in '..\..\run\JvSALCore.pas' ,
+  JvSALHashList in '..\..\run\JvSALHashList.pas' ,
+  JvSALMath in '..\..\run\JvSALMath.pas' ,
+  JvShapedButton in '..\..\run\JvShapedButton.pas' ,
+  JvSimLogic in '..\..\run\JvSimLogic.pas' ,
+  JvSimPID in '..\..\run\JvSimPID.pas' ,
+  JvSimPIDLinker in '..\..\run\JvSimPIDLinker.pas' ,
+  JvSimScope in '..\..\run\JvSimScope.pas' ,
+  JvSpellerForm in '..\..\run\JvSpellerForm.pas' {JvSpellerForm},
+  JvSticker in '..\..\run\JvSticker.pas' ,
+  JvStrings in '..\..\run\JvStrings.pas' ,
+  JvTracker in '..\..\run\JvTracker.pas' ,
+  JvTurtle in '..\..\run\JvTurtle.pas' ,
+  JvXmlTree in '..\..\run\JvXmlTree.pas' ,
+  JvYearGrid in '..\..\run\JvYearGrid.pas' ,
+  JvYearGridEditForm in '..\..\run\JvYearGridEditForm.pas' {YearGridEditF},
+  JvAirBrush in '..\..\run\JvAirBrush.pas' ,
+  JvArrayButton in '..\..\run\JvArrayButton.pas' ,
+  JvBitmapButton in '..\..\run\JvBitmapButton.pas' ,
+  JvButtonUtils in '..\..\run\JvButtonUtils.pas' ,
+  JvCSVBaseControls in '..\..\run\JvCSVBaseControls.pas' ,
+  JvDrawImage in '..\..\run\JvDrawImage.pas' ,
+  JvForth in '..\..\run\JvForth.pas' ,
+  JvGridFilter in '..\..\run\JvGridFilter.pas' ,
+  JvGridPreviewForm in '..\..\run\JvGridPreviewForm.pas' {jvGridPreviewF},
+  JvGridPrinter in '..\..\run\JvGridPrinter.pas' ,
+  JvJanTreeView in '..\..\run\JvJanTreeView.pas' ,
+  JvSimIndicator in '..\..\run\JvSimIndicator.pas' 
+  ;
 
 end.
-

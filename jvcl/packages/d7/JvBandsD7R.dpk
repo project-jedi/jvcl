@@ -1,6 +1,6 @@
 package JvBandsD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,10 +27,12 @@ package JvBandsD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R;
+  JvCoreD7R
+  ;
 
 contains
-  JvBandObject in '..\..\run\JvBandObject.pas',
-  JvBandForms in '..\..\run\JvBandForms.pas';
+  JvBandForms in '..\..\run\JvBandForms.pas' ,
+  JvBandObject in '..\..\run\JvBandObject.pas' 
+  ;
 
 end.

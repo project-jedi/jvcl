@@ -1,7 +1,7 @@
 package JvDBD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,17 +27,19 @@ package JvDBD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvDBD5R,
   JvCoreD5D,
+  JvDBD5R,
   dcldb50,
-  dclstd50;
+  dclstd50
+  ;
 
 contains
+  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm},
+  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas' ,
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},
-  JvCsvDataEditor in '..\..\design\JvCsvDataEditor.pas',
-  JvDBReg in '..\..\design\JvDBReg.pas',
-  JVDBEditors in '..\..\design\JvDBEditors.pas',
-  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas',
-  JvSelectDataSetForm in '..\..\design\JvSelectDataSetForm.pas' {JvSelectDataSetForm};
+  JvDBMemDatasetEditor in '..\..\design\JvDBMemDatasetEditor.pas' ,
+  JvDBReg in '..\..\design\JvDBReg.pas' ,
+  JvDBEditors in '..\..\design\JvDBEditors.pas' 
+  ;
 
 end.

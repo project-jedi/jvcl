@@ -1,7 +1,7 @@
 package JvBDED5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,14 +28,15 @@ package JvBDED5D;
 
 requires
   JvBDED5R,
-  
-  dclstd50,
-  JvDBD5D;
+  JvDBD5D,
+  dclstd50
+  ;
 
 contains
-  JvBDEReg in '..\..\design\JvBDEReg.pas',
-  JvBDEEditors in '..\..\design\JvBDEEditors.pas',
-  JvBDEMemTableEditor in '..\..\design\JvBDEMemTableEditor.pas',
-  JvBDESecurityEditor in '..\..\design\JvBDESecurityEditor.pas';
+  JvBDESecurityEditor in '..\..\design\JvBDESecurityEditor.pas' ,
+  JvBDEEditors in '..\..\design\JvBDEEditors.pas' ,
+  JvBDEMemTableEditor in '..\..\design\JvBDEMemTableEditor.pas' ,
+  JvBDEReg in '..\..\design\JvBDEReg.pas' 
+  ;
 
 end.

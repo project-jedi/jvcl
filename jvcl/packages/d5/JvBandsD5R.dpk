@@ -1,22 +1,22 @@
 package JvBandsD5R;
 
-{$R *.res}
-
-{$ASSERTIONS ON}
+{$R *.RES}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
@@ -27,10 +27,12 @@ package JvBandsD5R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD5R;
+  JvCoreD5R
+  ;
 
 contains
-  JvBandObject in '..\..\run\JvBandObject.pas',
-  JvBandForms in '..\..\run\JvBandForms.pas';
+  JvBandForms in '..\..\run\JvBandForms.pas' ,
+  JvBandObject in '..\..\run\JvBandObject.pas' 
+  ;
 
 end.

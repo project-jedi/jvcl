@@ -1,6 +1,6 @@
 package JvValidatorsD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,16 @@ package JvValidatorsD7D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   JvValidatorsD7R,
+  JvCoreD7D,
+  rtl,
   designide,
-  dclstd,
-  JvCoreD7D;
+  dclstd
+  ;
 
 contains
-  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor},
-  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas';
+  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas' ,
+  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor}
+  ;
 
 end.

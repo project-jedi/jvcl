@@ -1,7 +1,7 @@
 package JvCryptD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -22,14 +22,16 @@ package JvCryptD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Encryption and Compression'}
+{$DESCRIPTION 'JVCL Encryption and Compression Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCryptD5R;
+  JvCryptD5R
+  ;
 
 contains
-  JvCryptReg in '..\..\design\JvCryptReg.pas';
+  JvCryptReg in '..\..\design\JvCryptReg.pas' 
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvNetD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,14 +28,16 @@ package JvNetD7D;
 
 requires
   JvNetD7R,
-  designide,
-  JvCoreD7D;
+  JvCoreD7D,
+  designide
+  ;
 
 contains
-  JvNetReg in '..\..\design\JvNetReg.pas',
-  JvMailEditor in '..\..\design\JvMailEditor.pas',
-  JvHtmlParserEditor in '..\..\design\JvHTMLParserEditor.pas',
-  JvParserForm in '..\..\run\JvParserForm.pas' {FormParsers},
-  JvUrlListGrabberEditors in '..\..\design\JvUrlListGrabberEditors.pas';
+  JvUrlListGrabberEditors in '..\..\design\JvUrlListGrabberEditors.pas' ,
+  JvHtmlParserEditor in '..\..\design\JvHtmlParserEditor.pas' ,
+  JvMailEditor in '..\..\design\JvMailEditor.pas' ,
+  JvNetReg in '..\..\design\JvNetReg.pas' ,
+  JvParserForm in '..\..\run\JvParserForm.pas' {FormParsers}
+  ;
 
 end.

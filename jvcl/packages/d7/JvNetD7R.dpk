@@ -1,6 +1,6 @@
 package JvNetD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,20 +27,22 @@ package JvNetD7R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD7R;
+  JvCoreD7R
+  ;
 
 contains
-  JvFormToHtml       in '..\..\run\JvFormToHtml.pas',
-  JvFtpGrabber       in '..\..\run\JvFtpGrabber.pas',
-  JvHtmlParser       in '..\..\run\JvHtmlParser.pas',
-  JvHttpGrabber      in '..\..\run\JvHttpGrabber.pas',
-  JvMail             in '..\..\run\JvMail.pas',
-  JvMultiHttpGrabber in '..\..\run\JvMultiHttpGrabber.pas',
-  JvRgbToHtml        in '..\..\run\JvRgbToHtml.pas',
-  JvRichEditToHtml   in '..\..\run\JvRichEditToHtml.pas',
-  JvStringListToHtml in '..\..\run\JvStringListToHtml.pas',
-  JvStrToHtml        in '..\..\run\JvStrToHTML.pas',
-  JvUrlListGrabber   in '..\..\run\JvUrlListGrabber.pas',
-  JvUrlGrabbers      in '..\..\run\JvUrlGrabbers.pas';
+  JvUrlListGrabber in '..\..\run\JvUrlListGrabber.pas' ,
+  JvFormToHtml in '..\..\run\JvFormToHtml.pas' ,
+  JvFtpGrabber in '..\..\run\JvFtpGrabber.pas' ,
+  JvHtmlParser in '..\..\run\JvHtmlParser.pas' ,
+  JvHttpGrabber in '..\..\run\JvHttpGrabber.pas' ,
+  JvMail in '..\..\run\JvMail.pas' ,
+  JvMultiHttpGrabber in '..\..\run\JvMultiHttpGrabber.pas' ,
+  JvRgbToHtml in '..\..\run\JvRgbToHtml.pas' ,
+  JvRichEditToHtml in '..\..\run\JvRichEditToHtml.pas' ,
+  JvStringListToHtml in '..\..\run\JvStringListToHtml.pas' ,
+  JvStrToHtml in '..\..\run\JvStrToHtml.pas' ,
+  JvUrlGrabbers in '..\..\run\JvUrlGrabbers.pas' 
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvPageCompsD7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -22,18 +22,20 @@ package JvPageCompsD7R;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Page Style Components Run Package for Delphi 6'}
+{$DESCRIPTION 'JVCL Page Style Components Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7R,
   rtl,
   vcl,
   vclx,
-  vcljpg,
-  JvCoreD7R;
+  vcljpg
+  ;
 
 contains
-  JvPageListTreeView in '..\..\run\JvPageListTreeView.pas';
+  JvPageListTreeView in '..\..\run\JvPageListTreeView.pas' 
+  ;
 
 end.

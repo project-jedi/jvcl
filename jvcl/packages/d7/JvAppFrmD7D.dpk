@@ -1,6 +1,6 @@
 package JvAppFrmD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,13 +28,15 @@ package JvAppFrmD7D;
 
 requires
   JvAppFrmD7R,
-  designide,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  designide
+  ;
 
 contains
-  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
   JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor},
-  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas',
-  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas' {FoWallpaperChooser};
+  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas' ,
+  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas' ,
+  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas' {FoWallpaperChooser}
+  ;
 
 end.

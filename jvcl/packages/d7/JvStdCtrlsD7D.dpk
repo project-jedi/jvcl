@@ -1,6 +1,6 @@
 package JvStdCtrlsD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,14 +27,16 @@ package JvStdCtrlsD7D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD7D,
   JvStdCtrlsD7R,
   designide,
-  dclstd,
-  JvCoreD7D;
+  dclstd
+  ;
 
 contains
-  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
-  JvProgressEditor in '..\..\design\JvProgressEditor.pas',
-  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvTimerItemsEditor};
+  JvCheckedItemsForm in '..\..\design\JvCheckedItemsForm.pas' {JvCheckItemsEditor},
+  JvProgressEditor in '..\..\design\JvProgressEditor.pas' ,
+  JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas' 
+  ;
 
 end.

@@ -1,7 +1,7 @@
 package JvPluginD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,13 +27,15 @@ package JvPluginD5D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvPluginD5R,
   JvCoreD5R,
-  JvCoreD5D,
-  JvPluginD5R;
+  JvCoreD5D
+  ;
 
 contains
-  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas' {frmPluginParams},
-  JvPluginWizard in '..\..\design\JvPluginWizard.pas',
-  JvPluginReg in '..\..\design\JvPluginReg.pas';
+  JvPluginReg in '..\..\design\JvPluginReg.pas' ,
+  JvPluginWizard in '..\..\design\JvPluginWizard.pas' ,
+  JvPluginParamsForm in '..\..\design\JvPluginParamsForm.pas' {frmPluginParams}
+  ;
 
 end.

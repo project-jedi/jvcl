@@ -27,11 +27,14 @@ package JvAppFrmD5D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvAppFrmD5R;
+  JvAppFrmD5R
+  ;
 
 contains
-  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',
   JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor},
-  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas',
-  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas' {FoWallpaperChooser};
+  JvAppFrmReg in '..\..\design\JvAppFrmReg.pas' ,
+  JvFormWallpaperEditor in '..\..\design\JvFormWallpaperEditor.pas' ,
+  JvWallpaperEditForm in '..\..\run\JvWallpaperEditForm.pas' {FoWallpaperChooser}
+  ;
+
 end.

@@ -1,6 +1,6 @@
 package JvJansD7D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -23,14 +23,17 @@ package JvJansD7D;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Jans Components'}
+{$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
-  designide,
-  JvJansD7R;
+  JvJansD7R,
+  designide
+  ;
 
 contains
-  JvJansReg in '..\..\design\JvJansReg.pas',
-  JvCsvBaseEditor in '..\..\design\JvCsvBaseEditor.pas';
+  JvJansReg in '..\..\design\JvJansReg.pas' ,
+  JvCsvBaseEditor in '..\..\design\JvCsvBaseEditor.pas' 
+  ;
 
 end.

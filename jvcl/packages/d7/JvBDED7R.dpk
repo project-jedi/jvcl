@@ -1,6 +1,6 @@
 package JvBDED7R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,26 +28,28 @@ package JvBDED7R;
 
 requires
   JvCoreD7R,
-  bdertl,
   JvSystemD7R,
-  JvStdCtrlsD7R,
   JvDlgsD7R,
-  JvDBD7R;
+  JvStdCtrlsD7R,
+  JvDBD7R,
+  bdertl
+  ;
 
 contains
-  JvBdeUtils in '..\..\run\JvBdeUtils.pas',
+  JvBDELoginDialog in '..\..\run\JvBDELoginDialog.pas' ,
+  JvBDEMemTable in '..\..\run\JvBDEMemTable.pas' ,
+  JvBDEMove in '..\..\run\JvBDEMove.pas' ,
+  JvBDEProgress in '..\..\run\JvBDEProgress.pas' ,
+  JvBDEQBE in '..\..\run\JvBDEQBE.pas' ,
+  JvBDEQuery in '..\..\run\JvBDEQuery.pas' ,
+  JvBDESecurity in '..\..\run\JvBDESecurity.pas' ,
+  JvBDESQLScript in '..\..\run\JvBDESQLScript.pas' ,
+  JvBdeUtils in '..\..\run\JvBdeUtils.pas' ,
   JvBDECheckPasswordForm in '..\..\run\JvBDECheckPasswordForm.pas' {JvChPswdForm},
   JvBDEExceptionForm in '..\..\run\JvBDEExceptionForm.pas' {JvBdeErrorDlg},
-  JvBDEFilter in '..\..\run\JvBDEFilter.pas',
-  JvBDEIndex in '..\..\run\JvBDEIndex.pas',
-  JvBDELists in '..\..\run\JvBDELists.pas',
-  JvBDEMove in '..\..\run\JvBDEMove.pas',
-  JvBDEProgress in '..\..\run\JvBDEProgress.pas',
-  JvBDEQBE in '..\..\run\JvBDEQBE.pas',
-  JvBDESecurity in '..\..\run\JvBDESecurity.pas',
-  JvBDEMemTable in '..\..\run\JvBDEMemTable.pas',
-  JvBDEQuery in '..\..\run\JvBDEQuery.pas',
-  JvBDESQLScript in '..\..\run\JvBDESQLScript.pas',
-  JvBDELoginDialog in '..\..\run\JvBDELoginDialog.pas';
+  JvBDEFilter in '..\..\run\JvBDEFilter.pas' ,
+  JvBDEIndex in '..\..\run\JvBDEIndex.pas' ,
+  JvBDELists in '..\..\run\JvBDELists.pas' 
+  ;
 
 end.
