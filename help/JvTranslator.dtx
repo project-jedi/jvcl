@@ -160,6 +160,7 @@ Description
 
   If Category = "Variables" and Item = "Item", the \XML would have to look like the following for this
   method to find a match:
+  <AUTOLINK OFF>
   <CODE>
     \<Translation\>
       ...
@@ -179,6 +180,7 @@ Description
       ...
     \</Translation\>
   </CODE>
+  <AUTOLINK ON>
   This would return the string "YYY". if more than one node has the same name, the first one found is
   the one used.
 Parameters

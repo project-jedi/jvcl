@@ -307,14 +307,20 @@ Description
   Use StoredProps to directly determine the components and their properties that are managed by the
   storage component. The format of the list is:
 
-  <code>component.property</code>
+  <AUTOLINK OFF>
+  <CODE>
+  component.property
+  </CODE>
+  <AUTOLINK ON>
 
   Thus for example:
 
-  <code>
+  <AUTOLINK OFF>
+  <CODE>
   CheckBox1.Checked
   Button1.Caption
-  </code>
+  </CODE>
+  <AUTOLINK ON>
 
   A <LINK TJvFormStorage_StoredProps_Editor,StoredProps editor> is provided for design-time
   editing of the StoredProps property.
@@ -341,12 +347,14 @@ Description
 
   The following code assumes that the storage component has 3 stored value objects, and sets and
   stores their values:
+  <AUTOLINK OFF>
   <CODE>
   JvFormStorage1.StoredValues[0].Value := 'Germany';
   JvFormStorage1.StoredValues[1].Value := 'Berlin';
   JvFormStorage1.StoredValues[2].Value := 10331000;
   JvFormStorage1.StoredValues.SaveValues;
   </CODE>
+  <AUTOLINK ON>
 Note
   An easier way to set and retrieve values of stored value objects when the name of each stored value
   object is known is to call StoredValue; however, StoredValue cannot be used to change a stored
@@ -402,7 +410,11 @@ See Also
   3. Choose Add.
 
   The selected component and its property are displayed in the Stored Properties list box. For example,
-  <code>CheckBox1.Checked</code>
+  <AUTOLINK OFF>
+  <CODE>
+  CheckBox1.Checked
+  </CODE>
+  <AUTOLINK ON>
 See Also
   TJvFormStorage.StoredProps
 ----------------------------------------------------------------------------------------------------

@@ -125,6 +125,7 @@ Example:
   You need to be careful when working with appointment end times. To ensure the integrity of your data,
   the grid does not actually change the EndTime property of an appointment by applying AdjustEndTime.
   An example is if you would write something like:
+  <AUTOLINK OFF>
   <CODE>
     MyEndRow := TimeToRow(anAppt.EndTime);
   </CODE>
@@ -132,6 +133,7 @@ Example:
   <CODE>
     MyEndRow := TimeToRow(AdjustEndTime(anAppt.EndTime));
   </CODE>
+  <AUTOLINK ON>
   you can be assured that MyEndRow will accurately reflect what the grid is displaying.
 
   In fact, if you do need to find the start and/or end rows for an appointment you should use the

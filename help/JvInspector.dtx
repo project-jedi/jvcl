@@ -437,9 +437,11 @@ Summary
 Description
   CalcItemRect determines the displaying rectangle of the given item. Since this
   value is stored in the item itself, CalcItemRect can be replaced with:
+  <AUTOLINK OFF>
   <CODE>
     ItemRect := Item.Rects[iprItem];
   </CODE>
+  <AUTOLINK ON>
 Parameters
   Item - Description for this parameter
 ----------------------------------------------------------------------------------------------------
@@ -956,12 +958,14 @@ Summary
 Description
   Selected is the current selected item. If no item is selected, <B>nil</B> will
   be returned. Reading Selected is the same as:
+  <AUTOLINK OFF>
   <CODE>
   if SelectedIndex > -1 then
     Selected := VisibleItems[SelectedIndex]
   else
     Selected := nil;
   </CODE>
+  <AUTOLINK ON>
   When you set Selected to a new item, and that item is not visible, Selected
   and SelectedIndex will not be changed.
 See Also

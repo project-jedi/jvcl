@@ -1510,11 +1510,13 @@ Description
   underscore "_" and the page number, along with the emf extension to each file it saves.
   For example, if there are three pages and you set BaseFileName to "c:\simpl\schedule" the
   following files will be produced:
+  <AUTOLINK OFF>
   <CODE>
         c:\simpl\schedule_1.emf
         c:\simpl\schedule_2.emf
         c:\simpl\schedule_3.emf
   </CODE>
+  <AUTOLINK ON>
 
   You can access each page as a TMetafile via the Pages property.
 Parameters
@@ -1756,9 +1758,11 @@ Description
 
   Use this property along with the Windows API function GetTickCount to determine how long the
   schedule has been cached, i.e the following code:
+  <AUTOLINK OFF>
   <CODE>
     Interval := GetTickCount - CachedTime;
   </CODE>
+  <AUTOLINK ON>
   would set Interval to the number of milliseconds since the schedule was put in the cache.
 See Also
   Cached, GetTickCount
@@ -2345,9 +2349,11 @@ Summary
 Description
   Call GetScheduleID to construct an ID from the \SchedName and \SchedDate parameters. Currently, this method
   is implemented as:
+  AUTOLINK OFF>
   <CODE>
     Result := \SchedName + IntToStr(trunc(\SchedDate));
   </CODE>
+  <AUTOLINK ON>
 Parameters
   \SchedName - Name of the schedule.
   \SchedDate - Date of the schedule.
