@@ -22,7 +22,7 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl JvHMID7R.bpl JvHMID7D.bpl \
   JvManagedThreadsD7R.bpl JvManagedThreadsD7D.bpl JvXPCtrlsD7R.bpl JvXPCtrlsD7D.bpl \
   JvDockingD7R.bpl JvDockingD7D.bpl JvDotNetCtrlsD7R.bpl JvDotNetCtrlsD7D.bpl \
-  JvEDID7R.bpl JvEDID7D.bpl
+  JvEDID7R.bpl JvEDID7D.bpl JvInspectorD7R.bpl JvInspectorD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -206,5 +206,11 @@ JvEDID7R.bpl: d7\JvEDID7R.dpk
   $(DCC)
 
 JvEDID7D.bpl: d7\JvEDID7D.dpk
+  $(DCC)
+
+JvInspectorD7R.bpl: d7\JvInspectorD7R.dpk
+  $(DCC)
+
+JvInspectorD7D.bpl: d7\JvInspectorD7D.dpk
   $(DCC)
 

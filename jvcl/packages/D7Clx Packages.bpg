@@ -18,7 +18,7 @@ PROJECTS = JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl JvQSystemD7D.bpl \
   JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl JvQWizardD7R.bpl JvQWizardD7D.bpl \
   JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl JvQHMID7R.bpl JvQHMID7D.bpl JvQEDID7R.bpl \
   JvQEDID7D.bpl JvQPageCompsD7R.bpl JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl \
-  JvQXPCtrlsD7D.bpl Project1.exe
+  JvQXPCtrlsD7D.bpl  JvQInspectorD7R.bpl JvQInspectorD7D.bpl Project1.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -141,6 +141,12 @@ JvQXPCtrlsD7R.bpl: d7clx\JvQXPCtrlsD7R.dpk
   $(DCC)
 
 JvQXPCtrlsD7D.bpl: d7clx\JvQXPCtrlsD7D.dpk
+  $(DCC)
+
+JvQInspectorD7R.bpl: d7clx\JvQInspectorD7R.dpk
+  $(DCC)
+
+JvQInspectorD7D.bpl: d7clx\JvQInspectorD7D.dpk
   $(DCC)
 
 Project1.exe: ..\examples\CLX\MegaDemo\Project1.dpr

@@ -23,7 +23,7 @@ PROJECTS = JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
   JvTimeFrameworkD5D.bpl JvHMID5R.bpl JvHMID5D.bpl JvManagedThreadsD5R.bpl \
   JvManagedThreadsD5D.bpl JvXPCtrlsD5R.bpl JvXPCtrlsD5D.bpl \
   JvDockingD5R.bpl JvDockingD5D.bpl JvDotNetCtrlsD5R.bpl \
-  JvDotNetCtrlsD5D.bpl
+  JvDotNetCtrlsD5D.bpl JvInspectorD5R.bpl JvInspectorD5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -188,5 +188,11 @@ JvDotNetCtrlsD5R.bpl: d5\JvDotNetCtrlsD5R.dpk
   $(DCC)
 
 JvDotNetCtrlsD5D.bpl: d5\JvDotNetCtrlsD5D.dpk
+  $(DCC)
+
+JvInspectorD5R.bpl: d5std\JvInspectorD5R.dpk
+  $(DCC)
+
+JvInspectorD5D.bpl: d5\JvInspectorD5D.dpk
   $(DCC)
 

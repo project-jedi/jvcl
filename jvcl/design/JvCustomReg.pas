@@ -47,7 +47,7 @@ uses
   ToolsAPI,
   JclSchedule,
   JvDsgnConsts,
-  JvTrayIcon, JvGammaPanel, JvInspector, JvLinkLabel,
+  JvTrayIcon, JvGammaPanel, JvLinkLabel,
   JvLookOut, JvOutlookBar, JvScheduledEvents, JvThumbImage,
   JvThumbnails, JvThumbviews, JvTimeLine, JvTMTimeLine, JvBalloonHint,
   JvValidateEdit, JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser,
@@ -79,8 +79,7 @@ begin
   RegisterComponents(RsPaletteLabel, [TJvLinkLabel]);
   RegisterComponents(RsPaletteImageAnimator, [TJvThumbView, TJvThumbnail,
     TJvThumbImage]);
-  RegisterComponents(RsPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
-    TJvInspectorDotNETPainter, TJvTimeLine, TJvTMTimeLine, TJvChart,
+  RegisterComponents(RsPaletteVisual, [TJvTimeLine, TJvTMTimeLine, TJvChart,
       TJvImagesViewer, TJvImageListViewer,TJvOwnerDrawViewer]);
   RegisterComponents(RsPaletteNonVisual, [TJvTrayIcon, TJvScheduledEvents,
     TJvBalloonHint]);
