@@ -68,7 +68,6 @@ object frmMain: TfrmMain
           Height = 35
           Caption = 'Structure'
           Collapsed = True
-          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = 4227327
           Colors.GradientTo = 4227327
           Colors.SeparatorColor = 4227327
@@ -159,7 +158,6 @@ object frmMain: TfrmMain
           Hint = 'This bar doesn'#39't use actions'
           Caption = 'Synchronize'
           Collapsed = True
-          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = 8421631
           Colors.GradientTo = 8421631
           Colors.SeparatorColor = clRed
@@ -272,7 +270,6 @@ object frmMain: TfrmMain
           Hint = 'This is a hint'
           Caption = 'Information'
           Collapsed = True
-          Colors.ItemFrameColor = clBlack
           Colors.BodyColor = clInfoBk
           Colors.GradientFrom = clBtnFace
           Colors.GradientTo = clWindowText
@@ -340,7 +337,6 @@ object frmMain: TfrmMain
           Height = 35
           Caption = 'Settings'
           Collapsed = True
-          Colors.ItemFrameColor = clBlack
           Items = <
             item
               Action = acSettingsDatabase
@@ -438,7 +434,6 @@ object frmMain: TfrmMain
           Height = 103
           Hint = 'Click to see connection options'
           Caption = 'Connect'
-          Colors.ItemFrameColor = clBlack
           Colors.GradientTo = 16244694
           Items = <
             item
@@ -1886,7 +1881,7 @@ object frmMain: TfrmMain
     Left = 392
     Top = 198
     Bitmap = {
-      494C01010200040004000F000F00FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C01010200040004000F000F00FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000003C0000000F00000001001000000000000807
       00000000000000000000000000000000000000000000000000001A32F931F82D
       D72DD72DF82DF92D000000000000000000000000000000001A32F931F82DD72D
@@ -1950,7 +1945,8 @@ object frmMain: TfrmMain
       C007800FAAB80000800300075558000080030006AAA800000000000155500000
       00000002AAA80000000000015550000000000002AAA800000000000155500000
       00000002AAA80000000000015550000080030006AAA800008003000755580000
-      C007800FAAB80000F01FE03FD5780000}
+      C007800FAAB80000F01FE03FD578000000000000000000000000000000000000
+      000000000000}
   end
   object ilMSN2: TImageList
     Height = 15
@@ -1958,7 +1954,7 @@ object frmMain: TfrmMain
     Left = 434
     Top = 198
     Bitmap = {
-      494C01010200040004000F000F00FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C01010200040004000F000F00FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000003C0000000F00000001001000000000000807
       0000000000000000000000000000000000000000B62DB62DB62DB62DB62DB62D
       B62DB62DB62DB62DB62DB62DB62D00000000B62DB62DB62DB62DB62DB62DB62D
@@ -2022,6 +2018,7 @@ object frmMain: TfrmMain
       00000002AAA80000000000015550000000000002AAA800000000000155500000
       00000002AAA80000000000015550000000000002AAA800000000000155500000
       00000002AAA80000000000015550000000000002AAA800000000000155500000
-      00000002AAA800008003000755580000}
+      00000002AAA80000800300075558000000000000000000000000000000000000
+      000000000000}
   end
 end
