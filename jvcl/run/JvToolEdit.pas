@@ -41,7 +41,7 @@ uses
 {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
 {$ENDIF}
-  JvComponent, jvSpeedButton, JvJCLUtils, JvTypes;
+  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes;
 
 const
   scAltDown = scAlt + VK_DOWN;
