@@ -12,7 +12,7 @@ uses
   SysUtils;
 
 type
-  TJvMemDataSetEditor = class(TComponentEditor)
+  TJvAbstractMemDataSetEditor = class(TComponentEditor)
   private
     function UniqueName(Field: TField): string;
     procedure BorrowStructure;
@@ -24,14 +24,20 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+  TJvMemDataSetEditor = class(TJvAbstractMemDataSetEditor)
+  protected
+    function CopyStructure(Source, Dest: TDataSet): Boolean; override;
+  end;
+
 
 implementation
 uses
-  DsnDBCst, DSDesign, DBReg, JvJVCLUtils, JvSelectDataSetForm, JvConsts;
+  DsnDBCst, DSDesign, DBReg, Dialogs, 
+  JvJVCLUtils, JvMemoryDataSet, JvSelectDataSetForm, JvConsts;
 
-//=== TJvMemDataSetEditor ====================================================
+//=== TJvAbstractMemDataSetEditor ====================================================
 
-procedure TJvMemDataSetEditor.BorrowStructure;
+procedure TJvAbstractMemDataSetEditor.BorrowStructure;
 var
   DataSet: TDataSet;
   I: Integer;
@@ -61,7 +67,7 @@ begin
   end;
 end;
 
-function TJvMemDataSetEditor.UniqueName(Field: TField): string;
+function TJvAbstractMemDataSetEditor.UniqueName(Field: TField): string;
 const
   AlphaNumeric = ['A'..'Z', 'a'..'z', '_'] + ['0'..'9'];
 var
@@ -102,9 +108,10 @@ begin
     Inc(I);
   until (Comp = nil) or (Comp = Field);
   {$ENDIF}
+  ShowMessage(Result);
 end;
 
-procedure TJvMemDataSetEditor.ExecuteVerb(Index: Integer);
+procedure TJvAbstractMemDataSetEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -114,7 +121,7 @@ begin
   end;
 end;
 
-function TJvMemDataSetEditor.GetVerb(Index: Integer): string;
+function TJvAbstractMemDataSetEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -124,9 +131,19 @@ begin
   end;
 end;
 
-function TJvMemDataSetEditor.GetVerbCount: Integer;
+function TJvAbstractMemDataSetEditor.GetVerbCount: Integer;
 begin
   Result := 2;
+end;
+
+{ TJvMemDataSetEditor }
+
+function TJvMemDataSetEditor.CopyStructure(Source,
+  Dest: TDataSet): Boolean;
+begin
+  Result := Dest is TJvMemoryData;
+  if Result then
+    TJvMemoryData(Dest).CopyStructure(Source);
 end;
 
 end.
