@@ -95,7 +95,7 @@ type
     FName: string;
     FValue: string;
     FParent: TJvSimpleXMLProps;
-    FPointer: string;
+    FNameSpace: string;
     FData: Pointer;
     function GetBoolValue: Boolean;
     procedure SetBoolValue(const Value: Boolean);
@@ -114,7 +114,7 @@ type
     property IntValue: Int64 read GetIntValue write SetIntValue;
     property BoolValue: Boolean read GetBoolValue write SetBoolValue;
     property FloatValue: Extended read GetFloatValue write SetFloatValue;
-    property Pointer: string read FPointer write FPointer;
+    property Pointer: string read FNameSpace write FNameSpace;
 
     property Data: Pointer read FData write FData;
   end;
@@ -240,7 +240,7 @@ type
     FItems: TJvSimpleXMLElems;
     FProps: TJvSimpleXMLProps;
     FValue: string;
-    FPointer: string;
+    FNameSpace: string;
     FData: Pointer;
     FSimpleXML: TJvSimpleXML;
     FContainer: TJvSimpleXMLElems;
@@ -275,9 +275,10 @@ type
     property SimpleXML: TJvSimpleXML read GetSimpleXML;
     property Container: TJvSimpleXMLElems read FContainer write FContainer;
   published
+    function FullName:string;
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
-    property Pointer: string read FPointer write FPointer;
+    property NameSpace: string read FNameSpace write FNameSpace;
     property ChildsCount: Integer read GetChildsCount;
     property Items: TJvSimpleXMLElems read GetItems;
     property Properties: TJvSimpleXMLProps read GetProps;
@@ -1178,6 +1179,14 @@ begin
   Error(Format(S, Args));
 end;
 
+function TJvSimpleXMLElem.FullName: string;
+begin
+  if FNameSpace <> '' then
+    Result := FNameSpace + ':' + Name
+  else
+    Result := Name;
+end;
+
 procedure TJvSimpleXMLElem.GetBinaryValue(const Stream: TStream);
 var
   I, J: Integer;
@@ -1937,12 +1946,12 @@ var
   lPos: TPosType;
   I, lStreamPos, Count: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
-  lName, lValue, lPointer: string;
+  lName, lValue, lNameSpace: string;
   lPropStart: Char;
 begin
   lStreamPos := Stream.Position;
   lValue := '';
-  lPointer := '';
+  lNameSpace := '';
   lName := '';
   lPropStart := ' ';
   lPos := ptWaiting;
@@ -1967,7 +1976,7 @@ begin
               'a'..'z', 'A'..'Z', '0'..'9', '-', '_':
                 begin
                   lName := lBuf[I];
-                  lPointer := '';
+                  lNameSpace := '';
                   lPos := ptReadingName;
                 end;
               '/', '>', '?':
@@ -1987,7 +1996,7 @@ begin
               lName := lName + lBuf[I];
             ':':
               begin
-                lPointer := lName;
+                lNameSpace := lName;
                 lName := '';
               end;
             '=':
@@ -2017,7 +2026,7 @@ begin
             if (GetSimpleXML <> nil) then
               GetSimpleXML.DoDecodeValue(lValue);
             with Add(lName, lValue) do
-              Pointer := lPointer;
+              Pointer := lNameSpace;
             lPos := ptWaiting;
           end
           else
@@ -2144,12 +2153,12 @@ procedure TJvSimpleXMLElemClassic.LoadFromStream(const Stream: TStream; Parent: 
 var
   I, lStreamPos, Count, lPos: Integer;
   lBuf: array [0..cBufferSize - 1] of Char;
-  St, lName, lValue, lPointer: string;
+  St, lName, lValue, lNameSpace: string;
 begin
   lStreamPos := Stream.Position;
   St := '';
   lValue := '';
-  lPointer := '';
+  lNameSpace := '';
   lPos := 1;
 
   repeat
@@ -2195,9 +2204,9 @@ begin
                   //Load elements
                   Stream.Seek(lStreamPos, soFromBeginning);
                   St := Items.LoadFromStream(Stream, Parent);
-                  if lPointer <> '' then
+                  if lNameSpace <> '' then
                   begin
-                    if not AnsiSameText(lPointer + ':' + lName, St) then
+                    if not AnsiSameText(lNameSpace + ':' + lName, St) then
                       FmtError(RsEInvalidXMLElementErroneousEndOfTagE, [lName, St]);
                   end
                   else
@@ -2223,7 +2232,7 @@ begin
                 end;
               ':':
                 begin
-                  lPointer := St;
+                  lNameSpace := St;
                   St := '';
                 end;
             else
@@ -2242,7 +2251,7 @@ begin
   if GetSimpleXML <> nil then
     GetSimpleXML.DoDecodeValue(lValue);
   Value := lValue;
-  Pointer := lPointer;
+  NameSpace := lNameSpace;
 
   if Parent <> nil then
   begin
@@ -2258,9 +2267,9 @@ var
   St, AName, tmp: string;
   LevelAdd: string;
 begin
-  if(Pointer <> '') then
+  if(NameSpace <> '') then
   begin
-    AName := Pointer + ':' + Name;
+    AName := NameSpace + ':' + Name;
   end
   else
   begin
