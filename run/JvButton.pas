@@ -57,6 +57,7 @@ type
     FHotTrack: Boolean;
     FHotFont: TFont;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FOnDropDownMenu: TContextPopupEvent;
     function GetPattern: TBitmap;
     procedure SetFlat(const Value: Boolean);
     procedure SetDown(Value: Boolean);
@@ -107,6 +108,7 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     procedure Click; override;
+    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
 
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -123,6 +125,7 @@ type
     FWordWrap: Boolean;
     FForceSameSize: Boolean;
     FHotTrackFontOptions: TJvTrackFontOptions;
+    FOnDropDownMenu: TContextPopupEvent;
     procedure SetHotFont(const Value: TFont);
     procedure SetWordWrap(const Value: Boolean);
     procedure SetForceSameSize(const Value: Boolean);
@@ -146,6 +149,7 @@ type
       DefaultTrackFontOptions;
     property HintColor;
     property OnParentColorChange;
+    property OnDropDownMenu:TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -356,10 +360,11 @@ begin
 end;
 
 function TJvCustomGraphicButton.DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean;
-{$IFDEF VCL}
 var
+{$IFDEF VCL}
   Msg: TMsg;
 {$ENDIF VCL}
+  Handled:boolean;
 begin
   Result := (Button = mbLeft) and (DropDownMenu <> nil);
   if Result then
@@ -371,7 +376,15 @@ begin
       paCenter:
         Inc(X, Width div 2);
     end;
-    DropDownMenu.Popup(X, Y);
+    if Assigned(FOnDropDownMenu) then
+      FOnDropDownMenu(Self, Point(X,Y), Handled)
+    else
+      Handled := False;
+
+    if not Handled then
+      DropDownMenu.Popup(X, Y)
+    else
+      Exit;
     {$IFDEF VCL}
     { wait 'til menu is done }
     while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
@@ -427,6 +440,7 @@ begin
 //    else
 //      Exclude(FStates, bsMouseDown);
     UpdateExclusive;
+    Invalidate;
   end;
 end;
 
@@ -576,18 +590,29 @@ begin
 end;
 
 procedure TJvCustomButton.Click;
+var
+  Handled:Boolean;
+  MousePos:TPoint;
 begin
   inherited Click;
+  MousePos := Point(GetClientOrigin.X, GetClientOrigin.Y + Height);
   if FDropDownMenu <> nil then
   begin
     FDropDownMenu.PopupComponent := Self;
-    FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
-    {$IFDEF VCL}
-    Perform(CM_MOUSELEAVE, 0, 0);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    MouseLeave(Self);
-    {$ENDIF VisualCLX}
+    if Assigned(FOnDropDownMenu) then
+      FOnDropDownMenu(Self, MousePos, Handled)
+    else
+      Handled := False;
+    if not Handled then
+    begin
+      FDropDownMenu.Popup(MousePos.X, MousePos.Y);
+      {$IFDEF VCL}
+      Perform(CM_MOUSELEAVE, 0, 0);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      MouseLeave(Self);
+      {$ENDIF VisualCLX}
+    end;
   end;
 end;
 
