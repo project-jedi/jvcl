@@ -32,12 +32,14 @@ unit JvTFManager;
 interface
 
 uses
-  Windows, Controls, SysUtils, Messages, Graphics, ImgList,
-  ExtCtrls, Printers, JvTFUtils,
-  {$IFDEF USEJVCL}
-  JvComponent,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Windows, Controls, Messages, Graphics, ImgList, ExtCtrls, Printers,
+  {$ELSE}
+  QWindows, QControls, QGraphics, QImgList, QExtCtrls, QPrinters,
   {$ENDIF}
-  Classes;
+  JvTFUtils
+{$IFDEF USEJVCL}, JvComponent{$ENDIF};
 
 const
   CN_REQUESTREFRESH = $BD01;

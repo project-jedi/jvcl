@@ -32,8 +32,12 @@ unit JvTFGlance;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ImgList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
+  {$ELSE}
+  QGraphics, QControls, QForms, QDialogs, QImgList, Types,
+  {$ENDIF}
   JvTFUtils, JvTFManager;
 
 {$I jvcl.inc}
@@ -1397,12 +1401,14 @@ begin
     end;
 end;
 
+{$IFDEF VCL}
 procedure TJvTFCustomGlance.CMCtl3DChanged(var Message: TMessage);
 begin
   if NewStyleControls and (FBorderStyle = bsSingle) then
     RecreateWnd;
   inherited;
 end;
+{$ENDIF}
 
 constructor TJvTFCustomGlance.Create(AOwner: TComponent);
 begin
@@ -1460,6 +1466,7 @@ begin
   Cells.ConfigCells;
 end;
 
+{$IFDEF VCL}
 procedure TJvTFCustomGlance.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
@@ -1475,6 +1482,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 function TJvTFCustomGlance.DateIsSelected(aDate: TDate): Boolean;
 begin
