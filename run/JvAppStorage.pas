@@ -118,7 +118,9 @@ type
 
   TFileLocation = (
     flCustom,       // FileName property will contain full path
+    {$IFDEF MSWINDOWS}
     flWindows,      // Store in %WINDOWS%; only use file name part of FileName property.
+    {$ENDIF MSWINDOWS}
     flTemp,         // Store in %TEMP%; only use file name part of FileName property.
     flExeFile,      // Store in same folder as application's exe file; only use file name part of FileName property.
     flUserFolder);  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
@@ -2308,14 +2310,22 @@ begin
     case Location of
       flCustom:
         Result := DoGetFilename;
+      flExeFile:
+        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
+      {$IFDEF MSWINDOWS}
       flTemp:
         Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
-      flExeFile:
-        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      flTemp:
+        Result := PathAddSeparator(GetTempDir) + NameOnly;
+      flUserFolder:
+        Result := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
+      {$ENDIF LINUX}
     end;
   end;
 end;
