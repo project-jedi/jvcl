@@ -164,7 +164,7 @@ Description
 
     <I>Equivalent:</I>
 
-    JvChangeNotify1.Notifications[i] := SomeValue; 
+    JvChangeNotify1.Notifications[i] := SomeValue;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -196,7 +196,18 @@ Description
 Summary
   Specify whether monitoring is activated or not.
 Description
-  Use Active to turn on and off monitoring of the directories in Notifications.
+  Use Active to turn on and off monitoring of the directories in Notifications. Note that if
+  FreeOnTerminate is true, the call to Active will return immediately, even if the thread is not closed
+  yet. In this case you can't use code like:
+
+  <AUTOLINK OFF>
+  <CODE>
+    JvChangeNotify1.Active := false;
+    CheckForChangedFiles(); // thread might still be active here!
+  </CODE>
+  <AUTOLINK ON>
+
+  To avoid this situation, set FreeOnTerminate to false.
 See Also
   TJvChangeNotify.Notifications
 
@@ -217,7 +228,9 @@ Summary
 Description
   Set FreeOnTerminate to True if you want the component to automatically release the listening thread
   when you set Active to false. If you set FreeOnTerminate to False, the component will suspend the
-  thread and wait for it to terminate before freeing it.
+  thread and stop for it to terminate before freeing it. If you set FreeOnTerminate is true, setting
+  Active to false will eventually stop the thread, but there might be a slight delay even if the call
+  to Active returns immediately. The delay depends mostly on the number of folders that are monitored.
 
   To be able to set Active to False in the OnChangeNotify, you must set FreeOnTerminate to True. If you
   fail to do so, the program will most likely hang.

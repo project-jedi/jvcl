@@ -15,198 +15,8 @@ Author
   Andreas Hausladen
 
 ----------------------------------------------------------------------------------------------------
-@@Control_ControlsListChanged
-<TITLE Control_ControlsListChanged procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance  - Description for this parameter
-  Control   - Description for this parameter
-  Inserting - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@Control_ControlsListChanging
-<TITLE Control_ControlsListChanging procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance  - Description for this parameter
-  Control   - Description for this parameter
-  Inserting - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@Control_MouseEnter
-<TITLE Control_MouseEnter procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance   - Description for this parameter
-  Control    - Description for this parameter
-  FMouseOver - Description for this parameter
-  Event      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@Control_MouseLeave
-<TITLE Control_MouseLeave procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance   - Description for this parameter
-  Control    - Description for this parameter
-  FMouseOver - Description for this parameter
-  Event      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DefaultPaintBackground
-<TITLE DefaultPaintBackground function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-  Canvas   - Description for this parameter
-  Param    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DispatchMsg
-<TITLE DispatchMsg procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-  Msg      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents
-Summary
-  Interface to the events of TControl descendants.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.ColorChanged
-Summary
-  Responds to changes in the Color property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.EnabledChanged
-Summary
-  Responds to changes in the Enabled property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.FocusChanged
-Summary
-  Responds to changes in focus.
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.FontChanged
-Summary
-  Responds to changes in the Font property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.HintShow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HintInfo - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.HitTest
-Summary
-  Determines whether a point is in the client area.
-Description
-  Write here a description
-Parameters
-  X - Description for this parameter
-  Y - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.MouseEnter
-Summary
-  Responds when the mouse pointer moves over the control.
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.MouseLeave
-Summary
-  Responds when the mouse pointer moves off the control.
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.ParentColorChanged
-Summary
-  Responds to changes in the Color property of the parent.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.ParentFontChanged
-Summary
-  Responds to changes in the Font property of the parent.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.ParentShowHintChanged
-Summary
-  Responds to changes in the ShowHint property of the parent.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.SetAutoSize
+@@DlgCodesToDlgc
+<TITLE DlgCodesToDlgc function>
 Summary
   Write here a summary (1 line)
 Description
@@ -218,31 +28,42 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.TextChanged
-Summary
-  Responds to changes in the Text property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.VisibleChanged
-Summary
-  Responds to changes in the Visible property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvControlEvents.WantKey
+@@DlgcToDlgCodes
+<TITLE DlgcToDlgCodes function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Key     - Description for this parameter
-  Shift   - Description for this parameter
-  KeyText - Description for this parameter
-Return value
-  Describe here what the function returns
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetFocusedControl
+<TITLE GetFocusedControl function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetHintColor
+<TITLE GetHintColor procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HintInfo  - Description for this parameter
+  AControl  - Description for this parameter
+  HintColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -258,222 +79,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents
-Summary
-  Interface to the events of edit controls.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents.DoClearText
-Summary
-  Clears the current selection.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents.DoClipboardCopy
-Summary
-  Copies the current selection to the clipboard.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents.DoClipboardCut
-Summary
-  Deletes the current selection and copies the deleted text to the clipboard.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents.DoClipboardPaste
-Summary
-  Copies the current content of the clipboard at the current caret position.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvEditControlEvents.DoUndo
-Summary
-  Undoes the last operation.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents
-Summary
-  Interface to the events of TWinControl descendants.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.BoundsChanged
-Summary
-  Responds to changes in the control's size.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ControlsListChanged
+@@IJvExControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Control   - Description for this parameter
-  Inserting - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ControlsListChanging
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control   - Description for this parameter
-  Inserting - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.CursorChanged
-Summary
-  Responds to changes in the Cursor property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoKillFocus
-Summary
-  Responds when the control loses the keyboard focus.
-Description
-  Write here a description
-Parameters
-  FocusedWnd - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.DoSetFocus
-Summary
-  Responds when the control receives the keyboard focus.
-Description
-  Write here a description
-Parameters
-  FocusedWnd - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.GetDlgCode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Code - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.PaintBackground
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Param  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ShowHintChanged
-Summary
-  Responds to changes of the ShowHint property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@IJvWinControlEvents.ShowingChanged
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@InheritMessage@TControl@TMessage
-<TITLE InheritMessage procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Instance - Description for this parameter
-  Msg      - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@InheritMsg@TControl@Integer
-<TITLE InheritMsg function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Instance - Description for this parameter
-  Msg      - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@InheritMsgEx@TControl@Integer@Integer@Integer
-<TITLE InheritMsgEx function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Instance - Description for this parameter
-  Msg      - Description for this parameter
-  WParam   - Description for this parameter
-  LParam   - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@IPerformControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IPerformControl.Perform
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Msg    - Description for this parameter
-  WParam - Description for this parameter
-  LParam - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -487,58 +97,6 @@ Description
   Write here a description
 Parameters
   Shift - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TCustomEdit_Copy
-<TITLE TCustomEdit_Copy procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TCustomEdit_Cut
-<TITLE TCustomEdit_Cut procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TCustomEdit_Paste
-<TITLE TCustomEdit_Paste procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TCustomEdit_Undo
-<TITLE TCustomEdit_Undo procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -563,16 +121,20 @@ See Also
   Description for dcWantArrows
 
 ----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcWantTab
-  Description for dcWantTab
-
-----------------------------------------------------------------------------------------------------
 @@TDlgCode.dcWantChars
   Description for dcWantChars
 
 ----------------------------------------------------------------------------------------------------
 @@TDlgCode.dcButton
   Description for dcButton
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcHasSetSel
+  Description for dcHasSetSel
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcWantTab
+  Description for dcWantTab
 
 ----------------------------------------------------------------------------------------------------
 @@TDlgCode.dcNative

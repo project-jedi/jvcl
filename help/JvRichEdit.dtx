@@ -44,20 +44,20 @@ Description
         JvRichEdit1.Lines.LoadFromStream(Stream);
       finally
         Stream.Free;
-      end; 
+      end;
   </CODE>
   <AUTOLINK ON>
 
   * If you stream out the RTF content of the rich edit control, the bitmaps are <I>not</I> included.
-    Use <LINK TJvCustomRichEdit.InsertBitmap, InsertBitmap> if you want the bitmaps to be included in
+    Use <LINK TJvCustomRichEdit.InsertGraphic, InsertGraphic> if you want the bitmaps to be included in
     the streamed out RTF data.
   * <LINK TJvRichEdit.AllowObjects> must be set to true.
-  * BitmapToRTF is the fastest, <LINK TJvCustomRichEdit.InsertBitmap, InsertBitmap> the slowest.
+  * BitmapToRTF is the fastest, <LINK TJvCustomRichEdit.InsertGraphic, InsertGraphic> the slowest.
 Parameters
   ABitmap - The bitmap to convert.
   AStream - Stream where to save the RTF data to.
 See Also
-  <LINK TJvRichEdit>, <LINK TJvCustomRichEdit.InsertBitmap, InsertBitmap>
+  <LINK TJvRichEdit>, <LINK TJvCustomRichEdit.InsertGraphic, InsertGraphic>
 
 ----------------------------------------------------------------------------------------------------
 @@BitmapToRTF2
@@ -547,7 +547,7 @@ Parameters
   FontColor  - Description for this parameter
   FontHeight - Description for this parameter
 See Also
-  <LINK InsertBitmap>, <LINK InsertFormatText>
+  <LINK InsertGraphic>, <LINK InsertFormatText>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.AddFormatText@string@TFontStyles@string@TColor@Integer
@@ -638,6 +638,8 @@ Description
   * outlook:
 
   The control also recognizes standard path names that start with \\.
+
+  You can not set the Link property to true of specific text when AutoURLDetect is set to true.
 Note
   RichEdit 2.0.
 See Also
@@ -887,7 +889,7 @@ Description
   Retrieve the length of the current line:
   <AUTOLINK OFF>
   <CODE>
-    LengthCurrentLine := JvRichEdit1.GetLineLength(JvRichEdit1.GetLineIndex(-1)); 
+    LengthCurrentLine := JvRichEdit1.GetLineLength(JvRichEdit1.GetLineIndex(-1));
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -954,25 +956,6 @@ See Also
   TJvCustomRichEdit.HideScrollBars, TJvCustomRichEdit.SelectionBar
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRichEdit.InsertBitmap
-Summary
-  Inserts a bitmap at the current cursor position.
-Description
-  Call InsertBitmap to insert a bitmap at the current cursor position.
-
-  If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can drag and
-  drop the image, and then resize the image. Set OLEDragDrop to false to completly prevent the user
-  from resizing the image. Another way is to set ReadOnly to true.
-Note
-  InsertBitmap is slower than <LINK BitmapToRTF> and <LINK BitmapToRTF2>, but only with InsertBitmap
-  you can stream out RTF content that includes the inserted bitmaps.
-Parameters
-  ABitmap  - Specifies the bitmap to insert.
-  Sizeable - Specifies whether the bitmap can be resized by the user.
-See Also
-  <LINK BitmapToRTF>, <LINK BitmapToRTF2>, <LINK InsertFormatText>
-
-----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertFormatText@Integer@string@TFont
 Summary
   Inserts formatted text at a specific position.
@@ -992,11 +975,52 @@ Parameters
   FontColor  - Description for this parameter
   FontHeight - Description for this parameter
 See Also
-  <LINK AddFormatText>, <LINK InsertBitmap>
+  <LINK AddFormatText>, <LINK InsertGraphic>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertFormatText@Integer@string@TFontStyles@string@TColor@Integer
 <COMBINE TJvCustomRichEdit.InsertFormatText@Integer@string@TFont>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.InsertGraphic
+Summary
+  Inserts a graphic at the current cursor position.
+Description
+  Call InsertGraphic to insert a graphic at the current cursor position.
+
+  If parameter Sizeable is set to false, but property OLEDragDrop is true, then the user can drag and
+  drop the image, and then resize the image. Set OLEDragDrop to false to completly prevent the user
+  from resizing the image. Another way is to set ReadOnly to true.
+
+  Code example:
+  <AUTOLINK OFF>
+  <CODE>
+  procedure AddImageToRichEdit(AImageList: TImageList; const AImageIndex: Integer);
+  var
+    Bitmap: TBitmap;
+  begin
+    Bitmap := TBitmap.Create;
+    try
+      AImageList.GetBitmap(AImageIndex, Bitmap);
+      JvRichEdit1.InsertGraphic(Bitmap, False);
+
+      { Move cursor }
+      with JvRichEdit1.GetSelection do
+        JvRichEdit1.SetSelection(cpMin + 1, cpMin + 1, False);
+    finally
+      Bitmap.Free;
+    end;
+  end;
+  </CODE>
+  <AUTOLINK ON>
+Note
+  InsertGraphic is slower than <LINK BitmapToRTF> and <LINK BitmapToRTF2>, but only with InsertGraphic
+  you can stream out RTF content that includes the inserted graphics.
+Parameters
+  AGraphic - Specifies the graphic to insert.
+  Sizeable - Specifies whether the graphic can be resized by the user.
+See Also
+  <LINK BitmapToRTF>, <LINK BitmapToRTF2>, <LINK InsertFormatText>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectDialog
@@ -1084,7 +1108,7 @@ Description
   OLE drag and drop allows the user to drag data (such as text or graphics) from one control or
   application to another (or the same) control or application.
 See Also
-  TJvCustomRichEdit.InsertBitmap
+  TJvCustomRichEdit.InsertGraphic
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnCloseFindDialog
@@ -1105,7 +1129,7 @@ Description
     with JvRichEdit1 do
       if CanFocus then
         SetFocus;
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -1248,7 +1272,7 @@ Description
   procedure TForm1.JvRichEdit1TextNotFound(Sender: TObject;
     const FindText: string);
   begin
-    MessageDlg(Format('Text "%s" not found.', [FindText]), mtWarning, [mbOK], 0); end; 
+    MessageDlg(Format('Text "%s" not found.', [FindText]), mtWarning, [mbOK], 0); end;
   </CODE>
   <AUTOLINK ON>
 Parameters
@@ -1283,7 +1307,7 @@ Description
   begin
     if Button = mbLeft then
       ShellExecute(Handle, nil, PChar(URLText), nil, nil, SW_SHOW);
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Note
@@ -1435,7 +1459,7 @@ Description
   RegisterMSTextConverters registers a TJvMSTextConversion instance for each item found in:
   <AUTOLINK OFF>
   <CODE>
-  HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Shared Tools\\Text Converters 
+  HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Shared Tools\\Text Converters
   </CODE>
   <AUTOLINK ON>
 Note
@@ -1503,7 +1527,7 @@ Note
   procedure TForm1.Button1Click(Sender: TObject);
   begin
     CurrText.Style := CurrText.Style + [fsBold];
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -1548,7 +1572,7 @@ Description
   For example, call:
   <AUTOLINK OFF>
   <CODE>
-  SetSelection(0, 0, True); 
+  SetSelection(0, 0, True);
   </CODE>
   <AUTOLINK ON>
   to scroll to the first position of the rich edit control
@@ -1624,7 +1648,7 @@ Note
     Lines.SaveToFile(AFileName);
   finally
     StreamMode := [];
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 See Also
@@ -1687,7 +1711,7 @@ Description
     { Redo }
     RedoMenuItem.Enabled := JvRichEdit1.CanRedo;
     RedoMenuItem.Caption := '&Redo ' + UndoNames[JvRichEdit1.RedoName];
-  end; 
+  end;
   </CODE>
   <AUTOLINK ON>
 Note
@@ -2495,6 +2519,10 @@ Summary
 Description
   Text that represents a link is underlined and colored blue. If the user clicks on the link text an
   OnURLClick event is fired.
+
+  If you want to set the Link property for specific text, then AutoURLDetect must be set to false. When
+  AutoURLDetect is set to true, the rich edit control applies and removes the link property to specific
+  text automatically.
 
   Note that the link is not persistent, ie. if you save the text to a (RTF) file the links will not be
   saved.

@@ -26,7 +26,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@EJvSimpleXMLError
 Summary
-  Write here a summary (1 line)
+  Exception type used by TJvSimpleXML
 Description
   Write here a description
 
@@ -34,27 +34,27 @@ Description
 @@EntityDecode
 <TITLE EntityDecode function>
 Summary
-  Write here a summary (1 line)
+  Decodes XML entities
 Description
-  Write here a description
+  Decodes XML entities (&amp;apos; &amp;aquot; &amp;lt; &amp;gt; and &amp;amp;) into their
+  corresponding characters (', ", <, > and &)
 Parameters
-  S - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  S - The string with entities to decode
+Return value
+  The decoded string
 
 ----------------------------------------------------------------------------------------------------
 @@EntityEncode
 <TITLE EntityEncode function>
 Summary
-  Write here a summary (1 line)
+  Encodes special characters into XML entities
 Description
-  Write here a description
+  Encodes special characters (', ", <, > and &) into XML entities (&apos;, &quot;, &lt;,
+  &gt; and &amp;)
 Parameters
-  S - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  S - string to encode
+Return value
+  The encoded string
 
 ----------------------------------------------------------------------------------------------------
 @@PJvHashElem
@@ -481,12 +481,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Container
 Summary
-  Write here a summary (1 line)
+  Specifies the list class owning the item
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Container to determine the list class that owns this item. An item is always a child of its
+  Container
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Data
@@ -498,12 +496,18 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.FloatValue
 Summary
-  Write here a summary (1 line)
+  The nodes value as a float
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use FloatValue to read and write the nodes value as a float. If the value cannot be converted to a
+  float, 0.0 is returned.
+
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElem.FullName
+Summary
+  Returns the full name of the node
+Description
+  Call FullName to get the full name of the node. The full name consists of the NameSpace, a colon and
+  the Name. If the node doesn't have a namespace, FullName returns the Name without the colon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.GetBinaryValue
@@ -575,18 +579,20 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLElem.NameSpace
+Summary
+  Contains the namespace part of the node name.
+Description
+  USe NameSpace to determine the namespace part of the node name. The namespace part is the part before
+  the ':' in the name, like in "xsl:stylesheet'. If the node doesn't have a namespace, this property
+  contains an empty string.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Parent
 Summary
   The element parent of this one
 Description
   Unless the element is the root, there is always a parent
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLElem.Pointer
-Summary
-  This needs to be investigated
-Description
-  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Properties
@@ -631,12 +637,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Value
 Summary
-  Write here a summary (1 line)
+  The value of the node
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Value to get and set the value of the node as a string
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemCData
@@ -1010,15 +1013,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Notify
 Summary
-  Write here a summary (1 line)
+  Sends a message to all children
 Description
-  Write here a description
+  Notify is used to indicate when a given element is removed from one list and added to another. This
+  method is automatically called by AddChild and AddChildFirst if the Container property of the given
+  element is set.
 Parameters
-  Value     - Description for this parameter
-  Operation - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value     - The node that is affected
+  Operation - opAdd when the item is added, OpDelete when the item is removed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Parent
@@ -1240,6 +1242,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProp.FullName
+Summary
+  Returns the complete node name
+Description
+  Call FullName to get the full name of the node. The full name consists of the NameSpace, a colon and
+  the Name. If the node doesn't have a namespace, FullName returns the Name without the colon.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.GetSimpleXML
 Summary
   Write here a summary (1 line)
@@ -1268,18 +1278,20 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLProp.NameSpace
+Summary
+  Contains the namespace part of the node name.
+Description
+  USe NameSpace to determine the namespace part of the node name. The namespace part is the part before
+  the ':' in the name, like in "xsl:stylesheet'. If the node doesn't have a namespace, this property
+  contains an empty string.
+
+----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Parent
 Summary
   The list of properties containing this property
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvSimpleXMLProp.Pointer
-Summary
-  ????
-Description
-  A string that does something
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.SaveToString

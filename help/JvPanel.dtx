@@ -142,6 +142,9 @@ Description
   Use TJvPanel to put an empty panel on a form. TJvPanel extends the standard TPanel with new
   properties like Movable, Sizable, FlatBorder, MultiLine, Transparent, AutoArrange and new events like
   OnBeforeMove, OnAfterMove, OnParentResize, OnChangedHeight and OnChangedWidth
+Note
+  The AutoArrange functionality only works with Descendents of TWinControl, for example it will not
+  AutoArrange labels
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanel.ArrangeControls
@@ -178,12 +181,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPanel.ArrangeSettings
 Summary
-  Write here a summary (1 line)
+  Enables and controls automatic layout of components on the panel
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  These settings control how components are arranged on the panel. For Example, put components on the
+  panel, *without* carefully aligning them. Set the ArrangeSettings properties, e.g. set the
+  BorderLeft, DistanceHorizontal. Then set the ArrangeSettings.AutoArrange to true and the controls
+  will be arranged.
+Note
+  Only works with TWinControl descendents, so will not work with TLabel for instance.
+
+  Excellent for automatically arranging buttons on a panel, when the panel is likely to be resized.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanel.ArrangeWidth

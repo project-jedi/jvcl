@@ -132,11 +132,12 @@ See Also
 @@FindDockBaseControl
 <TITLE FindDockBaseControl function>
 Summary
-  Searches for a TJvDockBaseControl control.
+  Returns a TJvDockBaseControl component given its owner.
 Description
-  Call FindDockBaseControl to search for a TJvDockBaseControl control owned by Client.
+  Call FindDockBaseControl to search for a TJvDockBaseControl component owned by Client.
 Parameters
-  Client - Description for this parameter
+  Client - The control that owns a TJvDockBaseControl component. Generally, this parameter is an
+            object of TForm.
 See Also
   FindDockClient, FindDockServer
 
@@ -144,17 +145,18 @@ See Also
 @@FindDockClient
 <TITLE FindDockClient function>
 Summary
-  Returns a TJvDockClient control given its owner.
+  Returns a TJvDockClient component given its owner.
 Description
-  Call FindDockClient to search for a TJvDockClient control owned by Client.
+  Call FindDockClient to search for a TJvDockClient component owned by Client.
 
   FindDockClient searches the Client’s children and returns the first TJvDockClient component. If no
-  child control is of type TJvDockClient, FindChildControl returns nil.
+  child component is of type TJvDockClient, FindChildControl returns nil.
 
   Note that a form can have at most 1 TJvDockClient as child, and can <I>not</I> have both a
   TJvDockClient and a TJvDockServer as child.
 Parameters
-  Client - Description for this parameter
+  Client - The control that owns a TJvDockClient component. Generally, this parameter is an object of
+            TForm.
 See Also
   FindDockServer
 
@@ -162,9 +164,9 @@ See Also
 @@FindDockServer
 <TITLE FindDockServer function>
 Summary
-  Searches for a TJvDockServer control.
+  Returns a TJvDockServer component given its owner.
 Description
-  Call FindDockServer to search for a TJvDockServer control owned by Client.
+  Call FindDockServer to search for a TJvDockServer component owned by Client.
 Parameters
   Client - The control that owns a TJvDockServer component. Generally, this parameter is an object of
             TForm.
@@ -346,22 +348,13 @@ Description
   leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
   name.
 Parameters
-  Control   - Description for this parameter
-  NewTarget - Description for this parameter
+  Control    - Description for this parameter
+  DockClient - Description for this parameter
+  NewTarget  - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@ResetDockClient@TJvDockClient@TControl
-<TITLE ResetDockClient procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  DockClient - Description for this parameter
-  NewTarget  - Description for this parameter
+<COMBINE ResetDockClient@TControl@TControl>
 
 ----------------------------------------------------------------------------------------------------
 @@ReshowAllVisibleWindow
@@ -729,86 +722,102 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetBottomDocked
 Summary
-  Returns whether the BottomDocked property can be set of a docking control.
+  Returns whether the BottomDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetBottomDocked to determine whether a BottomDock properties can be
+  altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the BottomDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose BottomDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the BottomDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.BottomDock, TJvDockServer.BottomDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetEachOtherDocked
 Summary
-  Returns whether the EachOtherDocked property can be set of a docking control.
+  Returns whether the EachOtherDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetEachOtherDocked to determine whether a EachOtherDock properties can be
+  altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the EachOtherDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose EachOtherDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the EachOtherDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.EachOtherDock, TJvDockServer.EachOtherDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetEnableDocked
 Summary
-  Returns whether the EnableDocked property can be set of a docking control.
+  Returns whether the EnableDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetEnableDocked to determine whether a EnableDock properties can be
+  altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the EnableDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose EnableDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the EnableDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.EnableDock, TJvDockServer.EnableDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetLeftDocked
 Summary
-  Returns whether the LeftDocked property can be set of a docking control.
+  Returns whether the LeftDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetLeftDocked to determine whether a LeftDock properties can be altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the LeftDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose LeftDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the LeftDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.LeftDock, TJvDockServer.LeftDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetRightDocked
 Summary
-  Returns whether the RightDocked property can be set of a docking control.
+  Returns whether the RightDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetRightDocked to determine whether a RightDock properties can be
+  altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the RightDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose RightDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the RightDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.RightDock, TJvDockServer.RightDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.CanSetTopDocked
 Summary
-  Returns whether the TopDocked property can be set of a docking control.
+  Returns whether the TopDock property of a docking component can be set.
 Description
-  Write here a description
+  The dock components use CanSetTopDocked to determine whether a TopDock properties can be altered.
+
+  The docking style associated with a dock component (TJvDockClient or TJvDockServer) determines
+  whether the TopDock property of that dock component can be changed.
 Parameters
-  ADockBaseControl - Description for this parameter
+  ADockBaseControl - The docking component whose TopDock property will be changed.
 Return value
-  Describe here what the function returns
+  True if the TopDock property of ADockBaseControl can be changed, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvDockClient.TopDock, TJvDockServer.TopDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockBasicStyle.ConjoinPanelClass
@@ -1078,10 +1087,25 @@ Summary
   Manages a dockable child form.
 Description
   Drop a TJvDockClient component on a form to make it dockable: The form can be docked at run-time onto
-  another form that contains a TJvDockServer component.
+  another form that contains a TJvDockServer component. Remember to set the DockStyle property of your
+  DockServer and your DockClient to the same docking style. The DockStyle is one of the
+  "TJvDock___Style" components that is usually on the same form as your JvDockServer.
 
   A form can not contain both a TJvDockServer and a TJvDockClient component, because a form can not
-  play two roles at the same time.
+  play two roles at the same time. Both your DockClient and your DockServer can define where one form
+  can dock against or inside of another form, and in which ways the forms may not be docked together.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.BottomDock
+Summary
+  Specifies whether the form can be bottom docked.
+Description
+  Use BottomDock to specify whether the form can be docked on the bottom of a server form.
+
+  The docking style associated with the TJvDockClient component might prevent altering the BottomDock
+  property.
+See Also
+  TJvDockClient.EnableDock, TJvDockServer.BottomDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.CanFloat
@@ -1163,6 +1187,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockClient.CustomDock
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DirectDrag
 Summary
   Specifies whether docking should begin immediately
@@ -1190,7 +1224,13 @@ Description
   DockState property determines which state 'Dock Client Form' is currently, it can be floating state,
   docking state, or other state.
 
-  DS_Unknow: Unknown state DS_Docking: Docking state DS_Floating: Floating state
+  <TABLE>
+    Value              Meaning
+    -----------------  --------------
+    DS_Unknow          Unknown state
+    DS_Docking         Docking state
+    DS_Floating        Floating state
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.DoFormShowHint
@@ -1269,6 +1309,19 @@ Parameters
   ARect   - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockClient.EachOtherDock
+Summary
+  Specifies whether the form can be docked on to another dock client form.
+Description
+  Use EachOtherDock to specify whether the form can be docked onto another form that contains a
+  TJvDockClient component.
+
+  The docking style associated with the TJvDockClient component might prevent altering the
+  EachOtherDock property.
+See Also
+  TJvDockClient.EnableDock, TJvDockServer.EachOtherDock
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockClient.EnableCloseButton
 Summary
   Write here a summary (1 line)
@@ -1277,6 +1330,19 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.EnableDock
+Summary
+  Specifies whether the form can be docked.
+Description
+  Use EnableDock to specify whether the form can be docked onto another form (that is managed by a
+  server or client dock component).
+
+  The docking style associated with the TJvDockClient component might prevent altering the EnableDock
+  property.
+See Also
+  TJvDockServer.EnableDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.FindTabHostForm
@@ -1423,6 +1489,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.LeftDock
+Summary
+  Specifies whether the form can be left docked.
+Description
+  Use LeftDock to specify whether the form can be docked on the right of a server form.
+
+  The docking style associated with the TJvDockClient component might prevent altering the RightDock
+  property.
+See Also
+  TJvDockClient.EnableDock, TJvDockServer.RightDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.LRDockWidth
@@ -1580,6 +1658,19 @@ Description
   occasionally, then user may add codes here for customize repaint.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockClient.OnTabHostFormCreated
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockClient - Description for this parameter
+  TabHost    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockClient.ParentVisible
 Summary
   Write here a summary (1 line)
@@ -1597,6 +1688,18 @@ Description
   RestoreChild procedure is used to restore the previous dock state. If the current 'Dock Client Form'
   is float state and the previous dock state is docked, after invoking RestoreChild procedure, 'Dock
   Client Form' will restore as previous state which is dock state. And vice versa;
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.RightDock
+Summary
+  Specifies whether the form can be right docked.
+Description
+  Use RightDock to specify whether the form can be docked on the right of a server form.
+
+  The docking style associated with the TJvDockClient component might prevent altering the RightDock
+  property.
+See Also
+  TJvDockClient.EnableDock, TJvDockServer.RightDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.ShowHint
@@ -1632,6 +1735,18 @@ Description
   (Read TBDockHeight to get the width of the 'Dock Client Form' from the last time it was docked
   vertical. Set TBDockHeight to indicate the width the 'Dock Client Form' dock to 'Dock Server Form'
   vertically next time.)
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockClient.TopDock
+Summary
+  Specifies whether the form can be top docked.
+Description
+  Use TopDock to specify whether the form can be docked on the top of a server form.
+
+  The docking style associated with the TJvDockClient component might prevent altering the TopDock
+  property.
+See Also
+  TJvDockClient.EnableDock, TJvDockServer.TopDock
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockClient.UnDockLeft
@@ -1951,14 +2066,28 @@ JVCLInfo
   GROUP=JVCL.Docking
   FLAG=Component
 Summary
-  Manages a dock site form.
+  JvDockServer objects, in conjunction with a JvDockStyle object manage the master docking site form.
+  Allows docking to the sides, and to one central area in your form.
 Description
-  When a TJvDockServer component is put on a form, this form will be a dock site: Forms that have a
-  TJvDockClient component on it can be docked onto this dock server form at run-time.
+  JvDocking components enable you to write applications that support form docking. Form docking means
+  allowing one form to attach itself to another form, in a flexible user-customizeable way. Users can
+  drag one form onto another form, and it will attach. This behaviour is seen in many applications
+  programs. You may want to open one of the JVCL sample Docking programs to see how all this works.
+
+  When a TJvDockServer component is put on a form, the form can now have one or more dock sites. You
+  can then dock other forms that have a TJvDockClient component onto these dock sites at run-time. The
+  DockServer defines where you can dock to on this form. You can configure a DockServer to allow
+  docking to the top, bottom, left and right of a form, and also, you can define one custom docking
+  panel in the center of your main form (typically used for a document forms).
 
   Generally, the TJvDockServer component is put on the main form but it also can be put on other forms.
-  However, one form can not contain both a TJvDockServer and a TJvDockClient component, because a form
+  However, a form can not contain both a TJvDockServer and a TJvDockClient component, because a form
   can not play two roles at the same time.
+
+  It is very important to attach a DockStyle object to your DockServer. DockStyle objects contain
+  important handling code. A DockServer is minimally functional without a DockStyle being assigned, but
+  you probably should attach a JvDockStyle as the first thing you do after dropping a JvDockServer onto
+  your form.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.AutoFocusDockedForm
@@ -1971,6 +2100,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockServer.BottomDock
+Summary
+  Specifies whether bottom docking is allowed.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomDockPanel
 <COMBINE TJvDockServer.DockPanel>
 
@@ -1981,6 +2117,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.BottomSplitterStyle
 <COMBINE TJvDockServer.SplitterStyle>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockServer.CustomDock
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.CustomDockPanel
@@ -2026,6 +2172,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockServer.EnableDock
+Summary
+  Specifies whether client forms can be docked on the dock site.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockServer.GetClientAlignControl
 Summary
   Write here a summary (1 line)
@@ -2038,6 +2191,13 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockServer.LeftDock
+Summary
+  Specifies whether left docking is allowed.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.LeftDockPanel
@@ -2086,6 +2246,13 @@ Parameters
   Value - user can change it.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvDockServer.RightDock
+Summary
+  Specifies whether right docking is allowed.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TJvDockServer.RightDockPanel
 <COMBINE TJvDockServer.DockPanel>
 
@@ -2115,6 +2282,13 @@ Description
   Write here a description
 Parameters
   DockPosition - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockServer.TopDock
+Summary
+  Specifies whether top docking is allowed.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockServer.TopDockPanel
@@ -2310,6 +2484,11 @@ Summary
   Gives access to the page control maintained by the form.
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTabHostFormCreatedEvent
+<TITLE TJvDockTabHostFormCreatedEvent type>
+<COMBINE TJvDockClient.OnTabHostFormCreated>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTabPageControl

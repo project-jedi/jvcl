@@ -12,30 +12,28 @@ Author
 @@AxisConfigToString
 <TITLE AxisConfigToString function>
 Summary
-  Write here a summary (1 line)
+  Converts an axis config to a string given a colorspace.
 Description
-  Write here a description
+  if ItemFormat is afShort, the format of the result string is 'XYZ' if ItemFormat is afIndent, the
+  format of the result string is 'acXYZ' if ItemFormat is afShort and the Color space is RGB, the
+  format of the result string is 'X = Red ; Y = Green ; Z = Blue'
 Parameters
-  AxisConfig  - Description for this parameter
-  ItemFormat  - Description for this parameter
-  AColorSpace - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AxisConfig  - Axis config
+  ItemFormat  - Specify the format used to convert to string (short, long or with axis names)
+  AColorSpace - Color space used to get axis names (used only if ItemFormat is afComplete).
 
 ----------------------------------------------------------------------------------------------------
 @@ColorSpaceToString
 <TITLE ColorSpaceToString function>
 Summary
-  Write here a summary (1 line)
+  Get a string describing the color space.
 Description
-  Write here a description
+  if ItemFormat is cfName then the result is the Color space description (ie: 'True Color'). if
+  ItemFormat is cfShort then the result is the Color space short name (ie: 'RGB'). if ItemFormat is
+  cfBoth the result is 'description (short name)'.
 Parameters
-  AColorSpace - Description for this parameter
-  ItemFormat  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AColorSpace - Color space used
+  ItemFormat  - Format of the output
 
 ----------------------------------------------------------------------------------------------------
 @@EJvFullColorError
@@ -613,6 +611,16 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorComponent.FullColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorComponent.MouseDragging
 Summary
   Write here a summary (1 line)
 Description

@@ -11,12 +11,12 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@IJvDockManager
 Summary
-  Write here a summary (1 line)
+  Internal use only. Not directly accessed by end users of JvDocking. Internal use only. Not directly
+  accessed by end users of JvDocking.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Internal Interface used to interface with the base TControl docking features in the VCL.
+  IJvDockManager is the interface to the JvDockManager. Each TJvDockPanel exposes an IJvDockManager
+  interface.
 
 ----------------------------------------------------------------------------------------------------
 @@IJvDockManager.ActiveControl
@@ -543,9 +543,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTree
 Summary
-  Write here a summary (1 line)
+  Internal base class used by JvDocking. Not directly created by users of JvDocking components.
 Description
-  Write here a description
+  This is a base class, not intended to be used, but rather to inherit from.
+
+  TJvDockTree implements only a basic starting set of docking tree management behaviours.
+
+  This object is used to track the tree structure of controls which are docked inside each other. For
+  each style of docking, a subclass of TJvDockTree is create , and certain important virtual methods
+  are overloaded, in order to change details of docked-window-painting, dragging and dropping, and
+  other important aspects of your currently selected docking style.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTree.BorderWidth
@@ -969,9 +976,16 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZone
 Summary
-  Write here a summary (1 line)
+  Every item in a TJvDockTree is called a TJvDockZone, so you could thing of TJvDockZone as being
+  really TJvDockTreeItem
 Description
-  Write here a description
+  This is a base class from which you derive a subclass for each docking style that is defined.
+
+  A Zone is really a tree node in a TJvDockTree which contains the current state of the docking
+  manager's docking tree. A dock zone is a reference to a visible Control (TWinControl). Typically in
+  JvDocking each Zone is really a reference to a docked form. Your application forms which are docked
+  or floating somewhere, are located in the JvDockTree which contains somewhere one of theseobjects (a
+  zone is a tree item object) which contains reference to your form, but cast as a TWinControl.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZone.AfterApoapsisVisibleZone
