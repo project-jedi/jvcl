@@ -768,7 +768,7 @@ begin
   Params := '';
   WorkDir := '';
   {$IFDEF VCL}
-  ShellExecute(Application.Handle, 'open', PChar(Command),
+  ShellExecute(GetForegroundWindow, 'open', PChar(Command),
     PChar(Params), PChar(WorkDir), SW_SHOWNORMAL);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}

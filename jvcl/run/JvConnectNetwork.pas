@@ -61,20 +61,20 @@ uses
 
 function TJvConnectNetwork.Execute: Boolean;
 begin
-  Result := WNetConnectionDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
+  Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 function TJvDisconnectNetwork.Execute: Boolean;
 begin
-  Result := WNetDisconnectDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
+  Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 function TJvNetworkConnect.Execute: Boolean;
 begin
   if FConnect then
-    Result := WNetConnectionDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR
+    Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR
   else
-    Result := WNetDisconnectDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
+    Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 end.

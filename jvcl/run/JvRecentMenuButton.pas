@@ -138,7 +138,7 @@ begin
   if not SmallIcon then
     Result := hLarge;
   if Result = 0 then
-    ExtractAssociatedIcon(GetFocus, PChar(Filename), w);
+    ExtractAssociatedIcon(GetForegroundWindow, PChar(Filename), w);
 end;
 
 (* make Delphi 5 compiler happy // andreas

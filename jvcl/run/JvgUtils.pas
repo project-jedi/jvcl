@@ -256,7 +256,7 @@ end;
 
 procedure Msg(msg: string);
 begin
-  MessageBox(Application.Handle, PChar(msg), '',
+  MessageBox(GetForegroundWindow, PChar(msg), '',
     MB_APPLMODAL or MB_ICONINFORMATION or MB_OK);
 end;
 
