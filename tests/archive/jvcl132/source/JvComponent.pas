@@ -32,110 +32,62 @@ unit JvComponent;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, StdCtrls,Controls, ExtCtrls, JVCLVer;
+  Classes, StdCtrls, Controls, ExtCtrls, JVCLVer;
 
 type
   TJvComponent = class(TComponent)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
-  
+
   TJvCustomComboBox = class(TCustomComboBox)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvGraphicControl = class(TGraphicControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;   
-  
+  end;
+
   TJvCustomPanel = class(TCustomPanel)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomControl = class(TCustomControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvWinControl = class(TWinControl)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomEdit = class(TCustomEdit)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvCustomMemo = class(TCustomMemo)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-  protected
-    { Protected declarations }
-  public
-    { Public declarations }
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
