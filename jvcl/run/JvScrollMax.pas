@@ -1123,7 +1123,7 @@ end;
 
 procedure TJvScrollMax.SetParentBackground(Value: Boolean);
 begin
-  inherited ParentBackground := Value;
+  inherited SetParentBackground(Value);
   FPnlEdit.ParentBackground := Value;
   FScrollBar.ParentBackground := Value;
 end;
