@@ -101,6 +101,8 @@ type
     procedure Final;
     procedure Uitvoeren;
 
+    procedure InitTabs;
+
     procedure SaveEnabled;
     procedure SaveOutput;
     procedure SaveDefaultNiceName;
@@ -155,6 +157,8 @@ begin
   FSettings := TSettings.Create;
   FSettings.Assign(TSettings.Instance);
 
+  InitTabs;
+  
   (*with FSettings do
   begin
     edtRunTimePasDir.Text := RunTimePasDir;
@@ -608,6 +612,20 @@ end;
 procedure TfrmSettings.SaveRegisteredClasses;
 begin
   FSettings.RegisteredClasses.Assign(lsbRegisteredClasses.Items);
+end;
+
+procedure TfrmSettings.InitTabs;
+var
+  OutputType: TOutputType;
+begin
+  tbcOutputTypes.Tabs.BeginUpdate;
+  try
+    tbcOutputTypes.Tabs.Clear;
+    for OutputType := Low(TOutputType) to High(TOutputType) do
+      tbcOutputTypes.Tabs.Add(COutputTypeSection[OutputType]);
+  finally
+    tbcOutputTypes.Tabs.EndUpdate;
+  end;
 end;
 
 end.

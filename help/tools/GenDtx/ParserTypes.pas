@@ -14,7 +14,8 @@ type
 
   TDelphiType = (dtClass, dtConst, dtDispInterface, dtFunction, dtFunctionType,
     dtInterface, dtMethodFunc, dtMethodProc, dtProcedure, dtProcedureType,
-    dtProperty, dtRecord, dtResourceString, dtEnum, dtType, dtVar, dtClassField);
+    dtProperty, dtRecord, dtResourceString, dtEnum, dtType, dtVar,
+    dtClassField, dtMetaClass);
   TDelphiTypes = set of TDelphiType;
 
   TMethodType = (mtNormal, mtConstructor, mtDestructor);
@@ -75,22 +76,24 @@ type
     FSimpleName: string;
     FCombineList: TObjectList;
     FCombineWithList: TObjectList;
+    function GetParamString: string;
+    function GetRealParamString: string;
+
+    function GetAddDescriptionString: string; virtual;
+    function GetAddSummaryString: string; virtual;
+    function GetCanCombine: Boolean;
+    function GetClassString: string; virtual;
+    function GetCombineCount: Integer;
+    function GetCombineString: string; virtual;
+    function GetCombineWithCount: Integer;
     function GetDelphiType: TDelphiType; virtual; abstract;
     function GetItemsString: string; virtual;
-    function GetRealParamString: string; virtual;
-    function GetParamString: string; virtual;
-
+    function GetParamList: TStrings; virtual;
     function GetReferenceName: string; virtual;
     function GetSortName: string; virtual;
     function GetTitleName: string; virtual;
-
     function GetValueString: string; virtual;
-    function GetClassString: string; virtual;
-    function GetCombineString: string; virtual;
-    function GetCanCombine: Boolean;
-    function GetCombineCount: Integer;
-    function GetCombineWithCount: Integer;
-    function GetAddDescriptionString: string; virtual;
+    function GetRealParamList: TStrings; virtual;
   protected
     procedure AddCombine(AItem: TAbstractItem);
     procedure AddCombineWith(AItem: TAbstractItem);
@@ -108,10 +111,13 @@ type
     property ItemsString: string read GetItemsString;
     property ParamString: string read GetParamString;
     property RealParamString: string read GetRealParamString;
+    property ParamList: TStrings read GetParamList;
+    property RealParamList: TStrings read GetRealParamList;
     property ValueString: string read GetValueString;
     property ClassString: string read GetClassString;
     property CombineString: string read GetCombineString;
     property AddDescriptionString: string read GetAddDescriptionString;
+    property AddSummaryString: string read GetAddSummaryString;
     { Voor function of object type > 0 als > 1 dan CanCombine = false }
     property CombineCount: Integer read GetCombineCount;
     { Voor event property = 1 }
@@ -149,9 +155,10 @@ type
     FParams: TStringList;
     FParamTypes: TStringList;
     FDirectives: TDirectives;
-    function GetRealParamString: string; override;
+    //function GetRealParamString: string; override;
     function GetReferenceName: string; override;
     function GetAddDescriptionString: string; override;
+    function GetRealParamList: TStrings; override;
   public
     constructor Create(const AName: string); override;
     destructor Destroy; override;
@@ -181,7 +188,8 @@ type
     FParamTypes: TStringList;
     FDirectives: TDirectives;
     FIsClassMethod: Boolean;
-    function GetRealParamString: string; override;
+    function GetRealParamList: TStrings; override;
+    //function GetRealParamString: string; override;
     function GetReferenceName: string; override;
     function GetAddDescriptionString: string; override;
   public
@@ -251,7 +259,9 @@ type
   private
     FInheritedProp: Boolean;
     FTypeStr: string;
-    function GetParamString: string; override;
+    function GetAddDescriptionString: string; override;
+    //function GetParamList: TStrings; override;
+    function GetParamList: TStrings; override;
     function GetDelphiType: TDelphiType; override;
   public
     property InheritedProp: Boolean read FInheritedProp write FInheritedProp;
@@ -299,14 +309,21 @@ type
   TTypeItem = class(TValueItem)
   private
     function GetAddDescriptionString: string; override;
+    function GetDelphiType: TDelphiType; override;
     function GetTitleName: string; override;
+  end;
+
+  TMetaClassItem = class(TTypeItem)
+  private
+    function GetAddDescriptionString: string; override;
+    function GetAddSummaryString: string; override;
     function GetDelphiType: TDelphiType; override;
   end;
 
   TVarItem = class(TValueItem)
   private
-    function GetTitleName: string; override;
     function GetDelphiType: TDelphiType; override;
+    function GetTitleName: string; override;
   end;
 
 implementation
@@ -334,7 +351,7 @@ var
   MaxLength: Integer;
 begin
   Result := '';
-  if AStrings.Count = 0 then
+  if (AStrings = nil) or (AStrings.Count = 0) then
     Exit;
 
   MaxLength := -1;
@@ -373,6 +390,11 @@ end;
 function TAbstractItem.GetAddDescriptionString: string;
 begin
   Result := '';
+end;
+
+function TAbstractItem.GetAddSummaryString: string;
+begin
+
 end;
 
 function TAbstractItem.GetCanCombine: Boolean;
@@ -433,12 +455,26 @@ begin
   Result := '';
 end;
 
-function TAbstractItem.GetParamString: string;
+function TAbstractItem.GetParamList: TStrings;
 begin
   if CanCombine then
+    Result := nil
+  else
+    Result := RealParamList;
+end;
+
+function TAbstractItem.GetParamString: string;
+begin
+  Result := ParamListToString(ParamList);
+  {if CanCombine then
     Result := ''
   else
-    Result := RealParamString;
+    Result := RealParamString;}
+end;
+
+function TAbstractItem.GetRealParamList: TStrings;
+begin
+  Result := nil;
 end;
 
 function TAbstractItem.GetRealParamString: string;
@@ -497,10 +533,10 @@ begin
     Result := Result + '@' + FParamTypes[I];
 end;
 
-function TBaseFuncItem.GetRealParamString: string;
+{function TBaseFuncItem.GetRealParamString: string;
 begin
   Result := ParamListToString(FParams);
-end;
+end;}
 
 function TBaseFuncItem.GetAddDescriptionString: string;
 begin
@@ -512,6 +548,15 @@ begin
       '  other overloaded functions with the same name.'#13#10
   else
     Result := '';
+end;
+
+{function TBaseFuncItem.GetParamList: TStrings;
+begin
+end;}
+
+function TBaseFuncItem.GetRealParamList: TStrings;
+begin
+  Result := FParams;
 end;
 
 { TListItem }
@@ -752,23 +797,41 @@ begin
     Result := Result + '@' + FParamTypes[I];
 end;
 
-function TParamClassMethod.GetRealParamString: string;
+{function TParamClassMethod.GetRealParamString: string;
 begin
   Result := ParamListToString(FParams);
-end;
+end;}
 
 function TParamClassMethod.GetAddDescriptionString: string;
 begin
+  Result := '';
+
+  if diOverride in Directives then
+    Result := Result +
+      '  This is an overridden method, you don''t have to describe these' +
+      '  if it does the same as the inherited method'#13#10;
+
   if diOverload in Directives then
-    Result :=
+    Result := Result +
       '  This is an overloaded function/procedure, if possible you may combine the description'#13#10 +
       '  of all these functions into 1 general description. If you do so, combine all "Parameter" '#13#10 +
       '  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all'#13#10 +
-      '  other overloaded functions with the same name.'#13#10
-  else
-    Result := '';
+      '  other overloaded functions with the same name.'#13#10;
 
   Result := Result + inherited GetAddDescriptionString;
+end;
+
+{function TParamClassMethod.GetParamList: TStrings;
+begin
+  if CanCombine then
+    Result := nil
+  else
+    Result := FParams;
+end;}
+
+function TParamClassMethod.GetRealParamList: TStrings;
+begin
+  Result := FParams;
 end;
 
 { TVarItem }
@@ -874,18 +937,34 @@ end;
 
 { TClassProperty }
 
+function TClassProperty.GetAddDescriptionString: string;
+begin
+  if Position = inPrivate then
+    Result := inherited GetAddDescriptionString
+  else
+    Result := '';
+end;
+
 function TClassProperty.GetDelphiType: TDelphiType;
 begin
   Result := dtProperty;
 end;
 
-function TClassProperty.GetParamString: string;
+function TClassProperty.GetParamList: TStrings;
+begin
+  if (CombineWithCount = 1) and (TAbstractItem(FCombineWithList[0]).CombineCount = 1) then
+    Result := TAbstractItem(FCombineWithList[0]).RealParamList
+  else
+    Result := nil;
+end;
+
+{function TClassProperty.GetParamString: string;
 begin
   if (CombineWithCount = 1) and (TAbstractItem(FCombineWithList[0]).CombineCount = 1) then
     Result := TAbstractItem(FCombineWithList[0]).RealParamString
   else
     Result := '';
-end;
+end;}
 
 { TMethodProc }
 
@@ -1044,6 +1123,26 @@ end;
 function TClassField.GetDelphiType: TDelphiType;
 begin
   Result := dtClassField;
+end;
+
+{ TMetaClassItem }
+
+function TMetaClassItem.GetAddDescriptionString: string;
+begin
+  Result := Format(
+    '  %s is the metaclass for %s. Its value is the class reference for'#13#10 +
+    '  %s or for one of its descendants.', [SimpleName, Value, Value]);
+end;
+
+function TMetaClassItem.GetAddSummaryString: string;
+begin
+  Result :=
+    Format('  Defines the metaclass for %s.', [Value]);
+end;
+
+function TMetaClassItem.GetDelphiType: TDelphiType;
+begin
+  Result := dtMetaClass;
 end;
 
 end.

@@ -37,6 +37,7 @@ type
     FRecordStr: string;
     FRecording: Boolean;
     FCompilerDirectives: TStringList;
+    FLastWasNextLine: Boolean;
     procedure ReadBuffer;
     function ReadPortion: Boolean;
     procedure SkipBlanks;
@@ -158,32 +159,51 @@ type
 
   TDtxCompareTokenType = (ctHelpTag, ctText, ctParseTag, ctSeperator);
 
+  TDtxItem = class
+  private
+    FTag: string;
+    FParameters: TStrings;
+    FTitle: string;
+    FCombine: string;
+    FCombineWith: string;
+  public
+    constructor Create(const ATag: string); virtual;
+    destructor Destroy; override;
+    property Tag: string read FTag write FTag;
+    property Parameters: TStrings read FParameters;
+    property Title: string read FTitle write FTitle;
+    property Combine: string read FCombine write FCombine;
+    property CombineWith: string read FCombineWith write FCombineWith;
+  end;
+
   TDtxCompareParser = class(TBasicParser)
   private
-    FList: TStrings;
+    FList: TList;
     FErrors: TDtxCompareErrorFlags;
     FDefaultTexts: TDefaultTexts;
-    function GeTDtxCompareTokenType: TDtxCompareTokenType;
+    function GetDtxCompareTokenType: TDtxCompareTokenType;
   protected
     function ReadNextToken: Char; override;
 
-    //function Parse: Boolean;
     function Parse: Boolean;
-    procedure ReadPackage;
     procedure ReadAuthor;
-    procedure ReadStatus;
+    procedure ReadCombine(Item: TDtxItem);
+    procedure ReadCombineWith(Item: TDtxItem);
     procedure ReadJVCLINFO;
-    procedure ReadStartBlock;
-    procedure ReadSeeAlso;
+    procedure ReadPackage;
+    procedure ReadParameters(List: TStrings);
     procedure ReadRest;
+    procedure ReadSeeAlso;
+    procedure ReadStartBlock;
+    procedure ReadStatus;
 
-    property CompareTokenType: TDtxCompareTokenType read GeTDtxCompareTokenType;
+    property CompareTokenType: TDtxCompareTokenType read GetDtxCompareTokenType;
   public
     constructor Create; override;
     destructor Destroy; override;
 
     function Execute(const AFileName: string): Boolean;
-    property List: TStrings read FList;
+    property List: TList read FList;
     property Errors: TDtxCompareErrorFlags read FErrors;
     property DefaultTexts: TDefaultTexts read FDefaultTexts;
   end;
@@ -276,7 +296,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, Windows;
+  SysUtils, Dialogs, Windows, Math, Contnrs;
 
 const
   SCharExpected = '''''%s'''' expected';
@@ -426,6 +446,8 @@ end;
 
 procedure TBasicParser.SkipBlanks;
 begin
+  FLastWasNextLine := False;
+
   while True do
   begin
     case FSourcePtr^ of
@@ -441,6 +463,7 @@ begin
       #33..#255:
         Exit;
     end;
+    FLastWasNextLine := (FSourcePtr^ = #10) or (FLastWasNextLine and (FSourcePtr^ in [#0..#32]));
     Inc(FSourcePtr);
   end;
 end;
@@ -862,6 +885,7 @@ end;
 procedure TDelphiParser.ReadClass(const TypeName: string; const AddToList: Boolean);
 var
   ClassItem: TClassItem;
+  MetaClassItem: TMetaClassItem;
 begin
   { VB:
 
@@ -884,15 +908,6 @@ begin
     Exit;
   end;
 
-  { Nu pas toevoegen }
-  if AddToList then
-  begin
-    ClassItem := TClassItem.Create(TypeName);
-    FTypeList.Add(ClassItem);
-  end
-  else
-    ClassItem := nil;
-
   if Token = toHaakjeOpen then
   begin
     SkipUntilToken(toHaakjeSluiten); // SluitHaakje;
@@ -900,8 +915,37 @@ begin
     NextToken;
   end;
 
-  { TODO: Iets doen met meta-class }
-  if (Token <> toSemiColon) and not TokenSymbolIs('of') then
+  ClassItem := nil;
+  MetaClassItem := nil;
+
+  { Nu pas toevoegen }
+  if AddToList then
+  begin
+    if TokenSymbolIs('of') then
+    begin
+      MetaClassItem := TMetaClassItem.Create(TypeName);
+      FTypeList.Add(MetaClassItem);
+    end
+    else
+    begin
+      ClassItem := TClassItem.Create(TypeName);
+      FTypeList.Add(ClassItem);
+    end
+  end;
+
+  if TokenSymbolIs('of') then
+  begin
+    NextToken;
+    CheckToken(toSymbol);
+    if MetaClassItem <> nil then
+      MetaClassItem.Value := TokenString;
+
+    SkipUntilToken(toSemiColon); //SkipUntilSemiColon;
+    CheckToken(toSemiColon);
+    NextToken;
+  end
+  else
+    if Token <> toSemiColon then
     ReadClassMethods(ClassItem, AddToList)
       { Token staat op eerste token na [end]; }
   else
@@ -1503,7 +1547,7 @@ begin
             if TokenSymbolIs('property') then
           begin
             ReadClass_Property(AClassItem, Position,
-              AddToList and (Position in [inProtected, inPublic, inPublished]));
+              AddToList and (Position in AcceptVisibilities + [inProtected, inPublic, inPublished]));
             { Token is eerste token na ; }
             Continue;
           end
@@ -1804,7 +1848,7 @@ begin
     AddTokenToRecordStr;
   repeat
     Result := ReadNextToken;
-  until not SkipBlanks or (Token <> toComment);
+  until not SkipBlanks or not (Token in [toComment, #10]);
 end;
 
 procedure TBasicParser.AddTokenToRecordStr;
@@ -2474,8 +2518,7 @@ end;
 constructor TDtxCompareParser.Create;
 begin
   inherited;
-  FList := TStringList.Create;
-  TStringList(FList).Sorted := True;
+  FList := TObjectList.Create;
 end;
 
 destructor TDtxCompareParser.Destroy;
@@ -2516,7 +2559,7 @@ const
     'description for'
     );
 
-function TDtxCompareParser.GeTDtxCompareTokenType: TDtxCompareTokenType;
+function TDtxCompareParser.GetDtxCompareTokenType: TDtxCompareTokenType;
 var
   S: string;
 begin
@@ -2552,6 +2595,40 @@ begin
   NextToken;
   if CompareTokenType = ctText then
     Exclude(FErrors, defNoAuthor);
+end;
+
+procedure TDtxCompareParser.ReadCombine(Item: TDtxItem);
+var
+  S: string;
+begin
+  if Item = nil then
+    ErrorStr('ReadCombine, Item = nil');
+  NextToken;
+  if CompareTokenType = ctText then
+  begin
+    S := TokenString;
+    if (S > '') and (S[Length(S)] = '>') then
+      Delete(S, Length(S), 1);
+    Item.Combine := S;
+    NextToken;
+  end;
+end;
+
+procedure TDtxCompareParser.ReadCombineWith(Item: TDtxItem);
+var
+  S: string;
+begin
+  if Item = nil then
+    ErrorStr('ReadCombineWith, Item = nil');
+  NextToken;
+  if CompareTokenType = ctText then
+  begin
+    S := TokenString;
+    if (S > '') and (S[Length(S)] = '>') then
+      Delete(S, Length(S), 1);
+    Item.CombineWith := S;
+    NextToken;
+  end;
 end;
 
 procedure TDtxCompareParser.ReadJVCLINFO;
@@ -2623,6 +2700,41 @@ begin
   end;
 end;
 
+procedure TDtxCompareParser.ReadParameters(List: TStrings);
+var
+  S: string;
+begin
+  NextToken;
+  while True do
+  begin
+    while not FLastWasNextLine and (Token <> toEof) do
+      NextToken;
+
+    if Token = toEof then
+      Exit;
+
+    if CompareTokenType <> ctText then
+      Break;
+
+    S := TokenString;
+    NextToken;
+
+    if CompareTokenType <> ctText then
+      Break;
+
+    if SameText(S, 'See') and SameText(TokenString, 'Also') then
+    begin
+      ReadSeeAlso;
+      Break;
+    end;
+
+    if (Token <> toSymbol) or (TokenSymbolIn(['-', ':']) < 0) then
+      Continue;
+
+    List.Add(S);
+  end;
+end;
+
 procedure TDtxCompareParser.ReadRest;
 type
   TState = (stNone, stSee);
@@ -2648,9 +2760,11 @@ var
   Check: string;
   S: string;
   State: TState;
+  DtxItem: TDtxItem;
 begin
   Check := '';
   State := stNone;
+  DtxItem := nil;
 
   while Token <> toEof do
   begin
@@ -2658,7 +2772,8 @@ begin
     case CompareTokenType of
       ctHelpTag:
         begin
-          FList.Add(S);
+          DtxItem := TDtxItem.Create(S);
+          FList.Add(DtxItem);
           Check := '';
         end;
       ctText:
@@ -2671,8 +2786,25 @@ begin
           CheckDefaultText(Check);
           if Check = '' then
             Check := S;
-          if (State = stNone) and TokenSymbolIsExact('See') then
-            State := stSee
+          if (State = stNone) and FLastWasNextLine then
+          begin
+            if TokenSymbolIsExact('See') then
+              State := stSee
+            else
+              if TokenSymbolIsExact('Parameters') then
+            begin
+              if DtxItem = nil then
+                ErrorStr('''Parameters'' found but no help tag');
+
+              ReadParameters(DtxItem.Parameters);
+            end
+            else
+              if TokenSymbolIs('<COMBINE') then
+              ReadCombine(DtxItem)
+            else
+              if TokenSymbolIs('<COMBINEWith') then
+              ReadCombineWith(DtxItem)
+          end
           else
             if (State = stSee) and TokenSymbolIsExact('Also') then
           begin
@@ -2728,7 +2860,7 @@ begin
     case CompareTokenType of
       ctHelpTag:
         begin
-          FList.Add(TokenString);
+          FList.Add(TDtxItem.Create(TokenString));
           if (LState = stNone) and
             SameText(Copy(TokenString, Length(TokenString) - 3, 4), '.pas') then
             LState := stPasTagRead;
@@ -3161,6 +3293,20 @@ begin
     else
       ErrorFmt(SNotCharExpected, [T]);
     end;
+end;
+
+{ TDtxItem }
+
+constructor TDtxItem.Create(const ATag: string);
+begin
+  FParameters := TStringList.Create;
+  FTag := ATag;
+end;
+
+destructor TDtxItem.Destroy;
+begin
+  FParameters.Free;
+  inherited;
 end;
 
 end.

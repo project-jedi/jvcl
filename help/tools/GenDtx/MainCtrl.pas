@@ -7,9 +7,9 @@ uses
 
 const
   CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
-  CSummaryDescriptionOverride = CSummaryDescription +
+  {CSummaryDescriptionOverride = CSummaryDescription +
     #13#10'  This is an overridden method, you don''t have to describe these' +
-    #13#10'  if it does the same as the inherited method';
+    #13#10'  if it does the same as the inherited method';}
   CDescriptionDescription = 'Description'#13#10'  Write here a description'#13#10;
   CSeeAlsoDescription = 'See Also'#13#10'  List here other properties, methods (comma seperated)'#13#10 +
     '  Remove the ''See Also'' section if there are no references';
@@ -50,7 +50,9 @@ type
     procedure WriteDtx(ATypeList: TTypeList);
     procedure FillWithHeaders(ATypeList: TTypeList; Optional, NotOptional: TStrings);
     procedure CompareDtxFile(const AFileName: string;
-      DtxHeaders, NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
+      DtxHeaders: TList; NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
+    procedure CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
+      NotInDtx, NotInPas: TStrings);
     procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
     procedure DetermineCheckable(CheckableList, NotInPasDir, NotInRealDtxDir: TStrings);
     procedure GetAllFilesFrom(const ADir, AFilter: string; AFiles: TStrings);
@@ -109,17 +111,10 @@ uses
   DelphiParser;
 
 const
-  {TDelphiType = (dtClass, dtConst, dtDispInterface, dtFunction, dtFunctionType,
-    dtInterface, dtMethodFunc, dtMethodProc, dtProcedure, dtProcedureType,
-    dtProperty, dtRecord, dtResourceString, dtSet, dtType, dtVar);}
-  {TOutputType = (otClass, otConst, otDispInterface, otFunction, otFunctionType,
-    otInterface, otProcedure, otProcedureType, otProperty, otRecord,
-    otResourceString, otSet, otType, otVar);}
-
   CConvert: array[TDelphiType] of TOutputType =
   (otClass, otConst, otType, otFunction, otFunctionType,
     otInterface, otFunction, otProcedure, otProcedure, otProcedureType,
-    otProperty, otRecord, otResourcestring, otSet, otType, otVar, otField);
+    otProperty, otRecord, otResourcestring, otSet, otType, otVar, otField, otMetaClass);
 
   { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled,
     efNoStatusTag, efEmptySeeAlso, efNoAuthor }
@@ -244,7 +239,7 @@ begin
     if C = 0 then
     begin
       if Assigned(InBoth) then
-        InBoth.Add(Source1[Index1]);
+        InBoth.AddObject(Source1[Index1], Source1.Objects[Index1]);
       Inc(Index1);
       Inc(Index2);
     end
@@ -252,14 +247,14 @@ begin
       if C < 0 then
     begin
       if Assigned(NotInSource2) then
-        NotInSource2.Add(Source1[Index1]);
+        NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
       Inc(Index1)
     end
     else
       if C > 0 then
     begin
       if Assigned(NotInSource1) then
-        NotInSource1.Add(Source2[Index2]);
+        NotInSource1.AddObject(Source2[Index2], Source2.Objects[Index2]);
       Inc(Index2);
     end;
   end;
@@ -267,13 +262,13 @@ begin
   if Assigned(NotInSource1) then
     while Index2 < Source2.Count do
     begin
-      NotInSource1.Add(Source2[Index2]);
+      NotInSource1.AddObject(Source2[Index2], Source2.Objects[Index2]);
       Inc(Index2);
     end;
   if Assigned(NotInSource2) then
     while Index1 < Source1.Count do
     begin
-      NotInSource2.Add(Source1[Index1]);
+      NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
       Inc(Index1);
     end;
 end;
@@ -310,6 +305,27 @@ begin
   end;
 end;
 
+procedure FillWithDtxHeaders(DtxHeaders: TList; Dest: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to DtxHeaders.Count - 1 do
+    Dest.Add(TDtxItem(DtxHeaders[I]).Tag);
+end;
+
+function IndexInDtxHeaders(DtxHeaders: TList; const S: string): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to DtxHeaders.Count - 1 do
+    if SameText(TDtxItem(DtxHeaders[I]).Tag, S) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  Result := -1;
+end;
+
 function GetClassInfoStr(AItem: TAbstractItem): string;
 begin
   if (AItem.DelphiType = dtClass) and TSettings.Instance.IsRegisteredClass(AItem.SimpleName) then
@@ -327,18 +343,32 @@ begin
 end;
 
 function GetSummaryStr(AItem: TAbstractItem): string;
+const
+  CSummaryDescription = 'Summary'#13#10'  Write here a summary (1 line)';
 begin
-  if (AItem.DelphiType in [dtMethodFunc, dtMethodProc]) and (AItem is TParamClassMethod) and
+  {if (AItem.DelphiType in [dtMethodFunc, dtMethodProc]) and (AItem is TParamClassMethod) and
     (diOverride in TParamClassMethod(AItem).Directives) then
 
     Result := CSummaryDescriptionOverride
   else
-    Result := CSummaryDescription;
+    Result := CSummaryDescription;}
+
+  Result := AItem.AddSummaryString;
+  if Result = '' then
+    Result := CSummaryDescription
+  else
+    Result := 'Summary'#13#10 + Result;
 end;
 
 function GetDescriptionStr(AItem: TAbstractItem): string;
 begin
-  Result := CDescriptionDescription + AItem.AddDescriptionString;
+  //Result := CDescriptionDescription + AItem.AddDescriptionString;
+
+  Result := AItem.AddDescriptionString;
+  if Result = '' then
+    Result := CDescriptionDescription
+  else
+    Result := 'Description'#13#10 + Result;
 end;
 
 function GetCombineStr(AItem: TAbstractItem): string;
@@ -751,6 +781,10 @@ var
     if SameText(ATypeItem.SimpleName, 'create') or SameText(ATypeItem.SimpleName, 'destroy') then
       Exit;
 
+    if (ATypeItem is TTypeItem) and
+      (StrLIComp(PChar(TTypeItem(ATypeItem).Value), 'class of', 8) = 0) then
+      Exit;
+
     if not TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
       Exit;
     //S := TSettings.Instance.OutputTypeDefaults[CConvert[ATypeItem.DelphiType]];
@@ -832,6 +866,7 @@ var
   DelphiParser: TDelphiParser;
   DtxParser: TDtxCompareParser;
   NotInDtx, NotInPas: TStringList;
+  ParametersNotInDtx, ParametersNotInPas: TStringList;
   I: Integer;
   FileStatus: string;
   Error: TDtxCompareErrorFlag;
@@ -841,9 +876,13 @@ begin
   DtxParser := TDtxCompareParser.Create;
   NotInDtx := TStringList.Create;
   NotInPas := TStringList.Create;
+  ParametersNotInDtx := TStringList.Create;
+  ParametersNotInPas := TStringList.Create;
   try
     NotInDtx.Sorted := True;
     NotInPas.Sorted := True;
+    ParametersNotInDtx.Sorted := True;
+    ParametersNotInPas.Sorted := True;
 
     DelphiParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     DelphiParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
@@ -865,6 +904,7 @@ begin
     end;
 
     CompareDtxFile(AFileName, DtxParser.List, NotInDtx, NotInPas, DelphiParser.TypeList);
+    CompareParameters(DelphiParser.TypeList, DtxParser.List, ParametersNotInDtx, ParametersNotInPas);
 
     FileStatus := '';
     if (NotInDtx.Count <> 0) or (NotInPas.Count <> 0) then
@@ -879,6 +919,11 @@ begin
         FileStatus := 'Contains default texts'
       else
         FileStatus := FileStatus + ' & contains default texts';
+    if (ParametersNotInDtx.Count > 0) or (ParametersNotInPas.Count > 0) then
+      if FileStatus = '' then
+        FileStatus := 'Params diff'
+      else
+        FileStatus := FileStatus + ' & params diff';
 
     if FileStatus = '' then
       FileStatus := 'Ok';
@@ -905,7 +950,7 @@ begin
       DoMessage('--   Not in dtx file');
       for I := 0 to NotInDtx.Count - 1 do
         DoMessage(NotInDtx[I] +
-          CCaseRelatied[DtxParser.List.IndexOf(NotInDtx[I]) >= 0]);
+          CCaseRelatied[IndexInDtxHeaders(DtxParser.List, NotInDtx[I]) >= 0]);
     end;
     if NotInPas.Count > 0 then
     begin
@@ -913,12 +958,24 @@ begin
       for I := 0 to NotInPas.Count - 1 do
         DoMessage(NotInPas[I]);
     end;
+    if ParametersNotInDtx.Count > 0 then
+    begin
+      DoMessage('--   Params not in dtx file');
+      DoMessage(ParametersNotInDtx);
+    end;
+    if ParametersNotInPas.Count > 0 then
+    begin
+      DoMessage('--   Params not in pas file');
+      DoMessage(ParametersNotInPas);
+    end;
 
     Inc(FParsedOK);
     //WriteDtx(Parser.TypeList);
   finally
     NotInDtx.Free;
     NotInPas.Free;
+    ParametersNotInDtx.Free;
+    ParametersNotInPas.Free;
     DtxParser.Free;
     DelphiParser.Free;
   end;
@@ -1062,7 +1119,7 @@ end;
 
 procedure TMainCtrl.CompareDtxFile(
   const AFileName: string;
-  DtxHeaders, NotInDtx, NotInPas: TStrings;
+  DtxHeaders: TList; NotInDtx, NotInPas: TStrings;
   ATypeList: TTypeList);
 var
   Optional: TStringList;
@@ -1080,15 +1137,16 @@ begin
     NotOptional.Add('@@' + GetRealFileName(
       TSettings.Instance.RunTimePasDir,
       ChangeFileExt(AFileName, '.pas')));
-    LDtxHeaders.Assign(DtxHeaders);
+    FillWithDtxHeaders(DtxHeaders, LDtxHeaders);
+    //LDtxHeaders.Assign(DtxHeaders);
 
     NotOptional.CustomSort(CaseSensitiveSort);
     Optional.CustomSort(CaseSensitiveSort);
     LDtxHeaders.CustomSort(CaseSensitiveSort);
 
-    //Optional.SaveToFile('C:\Temp\Optional.txt');
-    //NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
-    //LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
+    Optional.SaveToFile('C:\Temp\Optional.txt');
+    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
+    LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
 
     DiffLists(LDtxHeaders, NotOptional, nil, LNotInDtx, LNotInPas, True);
 
@@ -1726,6 +1784,74 @@ begin
     end;
   finally
     Free;
+  end;
+end;
+
+procedure TMainCtrl.CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
+  NotInDtx, NotInPas: TStrings);
+var
+  I, J: Integer;
+  Index: Integer;
+  AllPasParameters, AllDtxParameters: TStringList;
+  ParamsNotInPas, ParamsNotInDtx: TStringList;
+  Params: TStrings;
+  DtxItem: TDtxItem;
+  TagName: string;
+begin
+  AllPasParameters := TStringList.Create;
+  AllDtxParameters := TStringList.Create;
+  ParamsNotInPas := TStringList.Create;
+  ParamsNotInDtx := TStringList.Create;
+  try
+    AllPasParameters.Sorted := True;
+    AllPasParameters.Duplicates := dupIgnore;
+
+    AllDtxParameters.Duplicates := dupAccept;
+
+    for I := 0 to ATypeList.Count - 1 do
+    begin
+      Params := ATypeList[I].ParamList;
+      if Params <> nil then
+      begin
+        TagName := '@@' + ATypeList[I].ReferenceName;
+        Index := IndexInDtxHeaders(DtxHeaders, TagName);
+        if Index >= 0 then
+        begin
+          DtxItem := TDtxItem(DtxHeaders[Index]);
+          if DtxItem.Combine > '' then
+            TagName := '@@' + DtxItem.Combine;
+          for J := 0 to Params.Count - 1 do
+            AllPasParameters.Add(TagName + ' - ' + Params[J]);
+        end;
+      end;
+    end;
+
+    for I := 0 to DtxHeaders.Count - 1 do
+    begin
+      Params := TDtxItem(DtxHeaders[I]).Parameters;
+      if Params <> nil then
+        for J := 0 to Params.Count - 1 do
+          AllDtxParameters.Add(TDtxItem(DtxHeaders[I]).Tag + ' - ' + Params[J]);
+    end;
+
+    AllPasParameters.Sorted := False;
+
+    AllPasParameters.CustomSort(CaseSensitiveSort);
+    AllDtxParameters.CustomSort(CaseSensitiveSort);
+
+    AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
+    AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
+
+    DiffLists(AllPasParameters, AllDtxParameters,
+      nil, ParamsNotInPas, ParamsNotInDtx, True);
+
+    NotInDtx.AddStrings(ParamsNotInDtx);
+    NotInPas.AddStrings(ParamsNotInPas);
+  finally
+    AllPasParameters.Free;
+    AllDtxParameters.Free;
+    ParamsNotInDtx.Free;
+    ParamsNotInPas.Free;
   end;
 end;
 

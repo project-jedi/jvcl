@@ -8,9 +8,32 @@ uses
 type
   TOutputType = (otClass, otClassHeader, otConst, otDispInterface,
     otField, otFunction, otFunctionType,
-    otHeader, otInterface, otProcedure, otProcedureType, otProperty, otRecord,
+    otHeader, otInterface, otMetaClass, otProcedure, otProcedureType, otProperty, otRecord,
     otResourceString, otSet, otType, otVar);
 
+const
+  COutputTypeSection: array[TOutputType] of string = (
+    'Class', {otClass}
+    'ClassHeader', {otClassHeader}
+    'Const', {otConst}
+    'DispInterface', {otDispInterface}
+    'Field', {otField}
+    'Function', {otFunction}
+    'FunctionType', {otFunctionType}
+    'Header', {otHeader}
+    'Interface', {otInterface}
+    'Metaclass', {otMetaClass}
+    'Procedure', {otProcedure}
+    'ProcedureType', {otProcedureType}
+    'Property', {otProperty}
+    'Record', {otRecord}
+    'ResourceString', {otResourceString}
+    'Set', {otSet}
+    'Type', {otType}
+    'Var' {otVar}
+    );
+
+type
   TOutputTypeBool = array[TOutputType] of Boolean;
   TOutputTypeStrs = array[TOutputType] of string;
   TOutputTypeStrings = array[TOutputType] of TStringList;
@@ -156,28 +179,7 @@ implementation
 uses
   SysUtils, Forms, IniFiles;
 
-const
-  COutputTypeSection: array[TOutputType] of string = (
-    'Class', {otClass}
-    'ClassHeader', {otClassHeader}
-    'Const', {otConst}
-    'DispInterface', {otDispInterface}
-    'Field', {otField}
-    'Function', {otFunction}
-    'FunctionType', {otFunctionType}
-    'Header', {otHeader}
-    'Interface', {otInterface}
-    'Procedure', {otProcedure}
-    'ProcedureType', {otProcedureType}
-    'Property', {otProperty}
-    'Record', {otRecord}
-    'ResourceString', {otResourceString}
-    'Set', {otSet}
-    'Type', {otType}
-    'Var' {otVar}
-    );
-
-  { TSettings }
+{ TSettings }
 
 procedure TSettings.AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
 var
