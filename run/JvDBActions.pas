@@ -659,7 +659,7 @@ begin
         if Field.Size > 0 then
           Control.Width :=
             TAccessCustomControl(AParentControl).Canvas.TextWidth(' ') * Field.Size;
-        LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
+{        LabelControl := }ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
           '', '&' + Column.Title.Caption, Control, True, 0);
 //        if (AFieldSizeStep > 0) then
 //          if ((LabelControl.Width mod AFieldSizeStep) <> 0) then
@@ -1043,8 +1043,10 @@ var MyBookmark: TBookmark;
 begin
   With DataEngine.GetDataset(DataComponent) do
   begin
+    MyBookmark := nil;
     if RefreshLastPosition then
       MyBookmark := GetBookMark;
+
     try
       if RefreshAsOpenClose then
       begin
@@ -1053,6 +1055,7 @@ begin
       end
       else
         Refresh;
+        
       if RefreshLastPosition then
         if Active then
           if Assigned (MyBookMark) then
