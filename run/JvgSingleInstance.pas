@@ -98,7 +98,8 @@ begin
   FCheckEvent := TEvent.Create(nil, False, True, ParamStr(0));
   if FCheckEvent.WaitFor(10) <> wrSignaled then
   begin
-    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
+    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.',
+      PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))),
       MB_ICONSTOP or MB_OK);
     Halt;
   end;
@@ -111,3 +112,4 @@ begin
 end;
 
 end.
+

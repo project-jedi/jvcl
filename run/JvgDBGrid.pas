@@ -51,7 +51,7 @@ type
     Glyph: TBitmap;
     FAboutJVCL: TJVCLAboutInfo;
     FFixedWidthCols: integer;
-doRecalculateWidth: boolean;
+    doRecalculateWidth: boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetCaptionHeight(Value: integer);
     function GetBitmap: TBitmap;
@@ -138,7 +138,7 @@ begin
   begin
     x := r.Left;
     y := r.top;
-//    IHeight := r.bottom - r.top;
+    //    IHeight := r.bottom - r.top;
     IWidth := r.Right - r.Left;
     x_ := x;
     y_ := y;
@@ -149,7 +149,8 @@ begin
       begin
         IHeight := r.bottom - r.top;
         if y_ + IHeight > r.bottom then IHeight := r.bottom - y_;
-        BitBlt(Canvas.Handle, x_, y_, min(IWidth, bmp.Width), min(IHeight, bmp.Height), bmp.Canvas.Handle, 0, 0, SRCCOPY);
+        BitBlt(Canvas.Handle, x_, y_, min(IWidth, bmp.Width), min(IHeight, bmp.Height), bmp.Canvas.Handle, 0, 0,
+          SRCCOPY);
         Inc(y_, min(IHeight, bmp.Height));
       end;
       Inc(x_, min(IWidth, bmp.Width));
@@ -175,7 +176,8 @@ begin
   InflateRect(ARect, -1, -1);
   R := ARect;
   InflateRect(R, 1, 1);
-  DrawBoxEx(Canvas.Handle, R, ALLGLSIDES, bvNone, bvRaised, false, Columns[ACol - 1].Title.Color, IsItAFilledBitmap(bmp) or (Columns[ACol - 1].Title.Color = Color));
+  DrawBoxEx(Canvas.Handle, R, ALLGLSIDES, bvNone, bvRaised, false, Columns[ACol - 1].Title.Color, IsItAFilledBitmap(bmp)
+    or (Columns[ACol - 1].Title.Color = Color));
 
   if Assigned(FGlyphs) then
   begin
@@ -283,13 +285,12 @@ begin
 end;
 //-------------------------------------------------------------------------------
 
-
 procedure TJvgDBGrid.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Assigned(Glyphs)and(AComponent = Glyphs) and (Operation = opRemove) then Glyphs := nil;
-  if Assigned(Image)and(AComponent = Image) and (Operation = opRemove) then Image := nil;
+  if Assigned(Glyphs) and (AComponent = Glyphs) and (Operation = opRemove) then Glyphs := nil;
+  if Assigned(Image) and (AComponent = Image) and (Operation = opRemove) then Image := nil;
 end;
 
 procedure TJvgDBGrid.UpdateSize;
@@ -316,18 +317,20 @@ begin
   doRecalculateWidth := true;
 
   try
-    if (not AutoColumnSize)or(Width=0) then exit;
+    if (not AutoColumnSize) or (Width = 0) then exit;
     TotalWidth := 0;
-    for i:=FixedWidthCols to Columns.Count-1 do inc(TotalWidth, Columns[i].Width+1);
+    for i := FixedWidthCols to Columns.Count - 1 do
+      inc(TotalWidth, Columns[i].Width + 1);
     FreeClientWidth := ClientWidth - 2;
     if dgIndicator in Options then dec(FreeClientWidth, 10);
     dec(FreeClientWidth, Columns.Count);
-    if ScrollBars in [ssVertical, ssBoth] then dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL)+2);
+    if ScrollBars in [ssVertical, ssBoth] then dec(FreeClientWidth, GetSystemMetrics(SM_CXHSCROLL) + 2);
 
-    for i:=0 to FixedWidthCols-1 do dec(FreeClientWidth, Columns[i].Width);
+    for i := 0 to FixedWidthCols - 1 do
+      dec(FreeClientWidth, Columns[i].Width);
 
-    for i:=FixedWidthCols to Columns.Count-1 do
-      Columns[i].Width := MulDiv(Columns[i].Width, FreeClientWidth, TotalWidth)-1;
+    for i := FixedWidthCols to Columns.Count - 1 do
+      Columns[i].Width := MulDiv(Columns[i].Width, FreeClientWidth, TotalWidth) - 1;
   finally
     doRecalculateWidth := false;
   end;
@@ -335,3 +338,4 @@ begin
 end;
 
 end.
+

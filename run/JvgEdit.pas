@@ -31,10 +31,10 @@ unit JvgEdit;
 
 interface
 uses Dialogs,
-  Windows, Messages, Classes, Controls, Graphics, forms,  JvMaskEdit,
+  Windows, Messages, Classes, Controls, Graphics, forms, JvMaskEdit,
   JvgTypes, JvgCommClasses, JvgUtils, StdCtrls, ExtCtrls, SysUtils, Mask, Jvg3DColors;
-type
 
+type
   TJvgMaskEdit = class(TJvMaskEdit)
   private
     FScrollBars: TScrollStyle;
@@ -206,3 +206,4 @@ begin
 end;}
 
 end.
+

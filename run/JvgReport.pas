@@ -31,20 +31,8 @@ unit JvgReport;
 
 interface
 uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  JvgTypes,
-  JvgCommClasses,
-  JvComponent,
-  JvgUtils,
-  Forms,
-  OleCtnrs,
-  ExtCtrls,
-  SysUtils,
-  Printers;
+  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses, JvComponent,
+  JvgUtils, Forms, OleCtnrs, ExtCtrls, SysUtils, Printers;
 type
 
   TJvgReport = class;
@@ -86,7 +74,7 @@ type
     FFixed: word;
     FOLELinkToFile: string;
     FOLESizeMode: word;
-//    fRepaintOnlyBorder,
+    //    fRepaintOnlyBorder,
     fSizing: boolean;
     R: array[1..8] of TRect;
     DownPos: TPoint;
@@ -146,7 +134,7 @@ type
     property ExternalCanvas: TCanvas read FExternalCanvas write
       FExternalCanvas;
     //    procedure RepaintBorder;
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
   published
@@ -1401,3 +1389,4 @@ begin
 end;
 
 end.
+

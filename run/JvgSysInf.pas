@@ -32,17 +32,8 @@ unit JvgSysInf;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  JvComponent,
-  extctrls;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, JvComponent, ExtCtrls;
 
 type
 
@@ -188,3 +179,4 @@ begin
 end;
 
 end.
+

@@ -31,19 +31,8 @@ unit JvgRuler;
 
 interface
 uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  JvgTypes,
-  JvgCommClasses,
-  JvgUtils,
-  Forms,
-  OleCtnrs,
-  ExtCtrls,
-  JVComponent,
-  SysUtils;
+  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
+  JvgUtils, Forms, OleCtnrs, ExtCtrls, JVComponent, SysUtils;
 
 type
   TglSizeUnit = (fsuSantimetres, fsuInches, fsuPixels);
@@ -186,3 +175,4 @@ begin
 end;
 
 end.
+

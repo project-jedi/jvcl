@@ -68,31 +68,31 @@ uses Classes,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
   JvgMultiResourceEditorForm, JvgMultiResources, JvgPage, JvgProgress,
   JvgLabelEditorForm;
-  // JvgStepLabel,
-  // JvgTagParser,
-  // JvgPointEditor,
+// JvgStepLabel,
+// JvgTagParser,
+// JvgPointEditor,
 
 procedure Register;
 begin
   RegisterComponents('JVCL Globus Components 1', [TJvgExportDBETable,
     TJvgDBNAvigator, TJvgPrintCrossTable, TJvgDBGrid, TJvgVertDBSGrid,
-    TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
-    TJvgGraph, TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
-    TJvgShade, TJvgButton, TJvgImageGroup, TJvgProgress, TJvgTransparentMemo,
-    TJvgWinMask, TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
-    TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
-    TJvgWizardHeader, TJvgCaption, TJvgGridHeaderControl]);
+      TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
+      TJvgGraph, TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
+      TJvgShade, TJvgButton, TJvgImageGroup, TJvgProgress, TJvgTransparentMemo,
+      TJvgWinMask, TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
+      TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
+      TJvgWizardHeader, TJvgCaption, TJvgGridHeaderControl]);
 
   RegisterComponents('JVCL Globus Components 2', [TJvgCheckBox,
     TJvgRuler, TJvgPageControl, TJvgTabControl, TJvgProcess, TJvgMailSlotServer,
-    TJvgMailSlotClient, TJvgLabel, TJvgFlyingText, TJvgDigits, TJvgStaticText,
-    TJvgHoleShape, TJvgExportExcel, TJvgExportHTML, TJvgHelpPanel,
-    TJvgExportXML, TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
-    TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
-    TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
-    TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefence,
-    TJvgMultipleResources, TJvgSingleInstance, TJvgFixFont,
-    TJvgComponentDescription, TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview]);
+      TJvgMailSlotClient, TJvgLabel, TJvgFlyingText, TJvgDigits, TJvgStaticText,
+      TJvgHoleShape, TJvgExportExcel, TJvgExportHTML, TJvgHelpPanel,
+      TJvgExportXML, TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
+      TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
+      TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
+      TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefence,
+      TJvgMultipleResources, TJvgSingleInstance, TJvgFixFont,
+      TJvgComponentDescription, TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview]);
 
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,

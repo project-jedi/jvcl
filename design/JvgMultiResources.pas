@@ -31,11 +31,8 @@ unit JvgMultiResources;
 
 interface
 
-uses Windows,
-  Controls,
-  Classes,
-  Forms,
-  SysUtils,
+uses
+  Windows, Controls, Classes, Forms, SysUtils,
   Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
@@ -44,8 +41,8 @@ uses Windows,
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JVComponent,
-  TypInfo;
+  JvComponent, TypInfo;
+
 type
 
   TJvgResStringList = class(TStringList)
@@ -59,8 +56,8 @@ type
 //    function GetName(Component: TComponent): string;
 //    procedure ProcessNewComponent(Component: TComponent);
     procedure GetComponentData(C: TComponent; SLNames: TStringList);
-//    procedure GetPropEditor(Prop: TPropertyEditor);
-//    procedure E(const S: string);
+    //    procedure GetPropEditor(Prop: TPropertyEditor);
+    //    procedure E(const S: string);
   protected
     procedure Notification(Component: TComponent; Operation: TOperation);
       override;
@@ -289,3 +286,4 @@ begin
 end;
 *)
 end.
+

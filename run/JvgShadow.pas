@@ -30,22 +30,10 @@ Known Issues:
 unit JvgShadow;
 
 interface
-uses Dialogs,
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  forms,
-  JvgTypes,
-  JvgCommClasses,
-  JVComponent,
-  JvgUtils,
-  StdCtrls,
-  ExtCtrls,
-  SysUtils,
-  Mask,
-  Jvg3DColors;
+uses
+  Dialogs, Windows, Messages, Classes, Controls, Graphics, forms, JvgTypes,
+  JvgCommClasses, JVComponent, JvgUtils, StdCtrls, ExtCtrls, SysUtils,
+  Mask, Jvg3DColors;
 type
 
   TJvgShadow = class(TJvGraphicControl)
@@ -88,7 +76,7 @@ type
     procedure OnEnter_(Sender: TObject);
     procedure OnExit_(Sender: TObject);
     procedure SmthChanged(Sender: TObject);
-//    procedure SetDigitsOnly(Value: boolean);
+    //    procedure SetDigitsOnly(Value: boolean);
   protected
     procedure Loaded; override;
     procedure Paint; override;
@@ -517,3 +505,4 @@ begin
 end;
 
 end.
+

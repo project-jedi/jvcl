@@ -32,19 +32,8 @@ unit JvgHoleShape;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  JvgTypes,
-  JvgUtils,
-  JVComponent,
-  JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, JvgTypes, JvgUtils, JVComponent, JvgCommClasses;
 
 type
   TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);
@@ -80,7 +69,7 @@ type
     procedure SmthChanged(Sender: TObject);
     procedure SayAllDTEnabledState(EnabledDT: boolean);
   protected
-    procedure SetEnabled(Value: boolean);override;
+    procedure SetEnabled(Value: boolean); override;
     procedure Paint; override;
   public
     RGNOuter, RGNInner: HRGN;
@@ -645,3 +634,4 @@ begin
 end;
 
 end.
+

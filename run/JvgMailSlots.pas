@@ -32,16 +32,8 @@ unit JvgMailSlots;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JvComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  extctrls;
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
+  Controls, Forms, Dialogs, ExtCrls;
 
 type
   TOnNewMessage = procedure(Sender: TObject; MessageText: string) of object;
@@ -235,3 +227,4 @@ begin
 end;
 
 end.
+

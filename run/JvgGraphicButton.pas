@@ -32,16 +32,9 @@ unit JvgGraphicButton;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JVComponent,
-  Graphics,
-  controls,
-  JvgTypes,
-  JvgUtils;
-
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, controls,
+  JvgTypes, JvgUtils;
+  
 type
 
   TGButtonState = (bsActive, bsPassive, bsPushed);
@@ -224,3 +217,4 @@ begin
 end;
 
 end.
+

@@ -44,17 +44,8 @@ unit JvgLanguageLoader;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JVComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  comctrls,
-  grids;
+  Windows, Messages, SysUtils, Classes, JVComponent, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, Grids;
 
 type
   TLanguageLoaderOptions = set of (lofTrimSpaces);
@@ -230,3 +221,4 @@ begin
 end;
 
 end.
+

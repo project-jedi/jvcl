@@ -32,17 +32,8 @@ unit JvgWizardHeader;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JVComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  comctrls,
-  JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, JVComponent, Graphics,
+  Controls, Forms, Dialogs, comctrls, JvgCommClasses;
 
 type
   TJvgWizardHeader = class(TJvGraphicControl)
@@ -313,3 +304,4 @@ begin
 end;
 
 end.
+

@@ -32,15 +32,9 @@ unit JvgHint;
 
 interface
 
-uses Windows,
-  Messages,
-  Controls,
-  Classes,
-  Forms,
-  JVComponent,
-  JvgCommClasses,
-  SysUtils,
-  Graphics;
+uses
+  Windows, Messages, Controls, Classes, Forms, JVComponent,
+  JvgCommClasses, SysUtils, Graphics;
 
 var
   lpFrHintComponent: Pointer;
@@ -50,14 +44,14 @@ type
 
   TJvgHint = class(TComponent)
   private
-    FOnShowHint 	: TShowHintEvent;
-    FOnHint		: TNotifyEvent;
-    FActive             : boolean;
-    AOnHintOld		: TNotifyEvent;
-    AOnShowHintOld	: TShowHintEvent;
-    FShowHint : boolean;
-    AHintWindow : THintWindow;
-    AHintControl : TControl;
+    FOnShowHint: TShowHintEvent;
+    FOnHint: TNotifyEvent;
+    FActive: boolean;
+    AOnHintOld: TNotifyEvent;
+    AOnShowHintOld: TShowHintEvent;
+    FShowHint: boolean;
+    AHintWindow: THintWindow;
+    AHintControl: TControl;
     FGlyph: TBitmap;
     FHintStyle: TJvgHintStyle;
     FSpacing: integer;
@@ -65,7 +59,7 @@ type
     FAlignment: TAlignment;
     procedure SeTJvgyph(const Value: TBitmap);
   protected
-    procedure Notification( Component: TComponent; Operation: TOperation ); override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
     procedure OnHintNew(Sender: TObject);
     procedure OnShowHintNew(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
@@ -75,24 +69,24 @@ type
     destructor Destroy; override;
     procedure ShowHintAt(x, y: integer; caption: string);
   published
-    property Active : boolean read FActive write FActive;
-    property ShowHint : boolean read FShowHint write FShowHint;
+    property Active: boolean read FActive write FActive;
+    property ShowHint: boolean read FShowHint write FShowHint;
     property Glyph: TBitmap read FGlyph write SeTJvgyph;
     property Style: TJvgHintStyle read FHintStyle write FHintStyle;
     property Spacing: integer read FSpacing write FSpacing;
     property GlyphAlign: TJvg2DAlign read FGlyphAlign write FGlyphAlign;
     property Alignment: TAlignment read FAlignment write FAlignment;
-    property OnShowHint : TShowHintEvent read FOnShowHint write FOnShowHint;
-    property OnHint : TNotifyEvent read FOnHint write FOnHint;
-//    property OnDraw : TDrawEvent read FOnDraw write FOnDraw;
-//    property OnActivateHint : THintActivateEvent read FActivateHint write FActivateHint;
-//    property OnHintHide : THintHideEvent read FOnHintHide write FOnHintHide;
+    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
+    property OnHint: TNotifyEvent read FOnHint write FOnHint;
+    //    property OnDraw : TDrawEvent read FOnDraw write FOnDraw;
+    //    property OnActivateHint : THintActivateEvent read FActivateHint write FActivateHint;
+    //    property OnHintHide : THintHideEvent read FOnHintHide write FOnHintHide;
   end;
 
   TJvgHintWindow = class(THintWindow)
   private
   protected
-    HintComponent : TJvgHint;
+    HintComponent: TJvgHint;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMKillFocus(var Message: TMessage); message WM_ACTIVATE;
     procedure Paint; override;
@@ -129,19 +123,20 @@ begin
   begin
     Application.OnShowHint := AOnShowHintOld;
     Application.OnHint := AOnHintOld;
-  end;  
+  end;
   inherited Destroy;
 end;
 
-procedure TJvgHint.Notification( Component: TComponent; Operation: TOperation );
+procedure TJvgHint.Notification(Component: TComponent; Operation: TOperation);
 begin
-  if (Component <> Self)and(Operation = opInsert)and(Component is TJvgHint ) then
+  if (Component <> Self) and (Operation = opInsert) and (Component is TJvgHint) then
     raise Exception.Create('Cannot create more than one instance of TJvgHint component');
 end;
 
 procedure TJvgHint.InitHint;
 begin
-  with Application do begin
+  with Application do
+  begin
     AOnHintOld := OnHint;
     AOnShowHintOld := OnShowHint;
     OnShowHint := OnShowHintNew;
@@ -155,7 +150,7 @@ end;
 procedure TJvgHint.Loaded;
 begin
   inherited;
-  if not (csDesigning in ComponentState)and(Active) then
+  if not (csDesigning in ComponentState) and (Active) then
   begin
     InitHint;
     Application.ShowHint := false;
@@ -171,14 +166,14 @@ begin
 end;
 
 procedure TJvgHint.OnShowHintNew(var HintStr: string;
-	     var CanShow: Boolean; var HintInfo: THintInfo);
+  var CanShow: Boolean; var HintInfo: THintInfo);
 begin
   AHintControl := HintInfo.HintControl;
   if Assigned(FOnShowHint) then FOnShowHint(HintStr, CanShow, HintInfo);
   if CanShow then
-  self.ShowHintAt(HintInfo.CursorPos.X,
-  HintInfo.CursorPos.Y,
-  HintStr);
+    self.ShowHintAt(HintInfo.CursorPos.X,
+      HintInfo.CursorPos.Y,
+      HintStr);
 end;
 
 procedure TJvgHint.ShowHintAt(x, y: integer; Caption: string);
@@ -189,10 +184,9 @@ begin
   HW := TJvgHintWindow.Create(Application);
   R := Bounds(X, Y, 10, 10);
 
-  DrawText( HW.Canvas.Handle, PChar(Caption), length(Caption), R, DT_WORDBREAK or DT_CALCRECT);
+  DrawText(HW.Canvas.Handle, PChar(Caption), length(Caption), R, DT_WORDBREAK or DT_CALCRECT);
   HW.ActivateHint(R, Caption);
 end;
-
 
 constructor TJvgHintWindow.Create(AOwner: TComponent);
 begin
@@ -204,17 +198,17 @@ begin
     begin
       Font.Assign(HintComponent.Style.Font);
       {$IFDEF GL_RUS}
-      Font.CharSet	    := RUSSIAN_CHARSET;
+      Font.CharSet := RUSSIAN_CHARSET;
       {$ENDIF}
-     end;
+    end;
   except
   end;
 end;
 
 procedure TJvgHintWindow.CreateParams(var Params: TCreateParams);
 begin
- inherited CreateParams(Params);
- Params.Style := Params.Style and not WS_BORDER;
+  inherited CreateParams(Params);
+  Params.Style := Params.Style and not WS_BORDER;
 end;
 
 procedure TJvgHintWindow.ActivateHint(Rect: TRect; const AHint: string);
@@ -232,7 +226,7 @@ begin
   if Rect.Bottom < 0 then Rect.Bottom := 0;
 
   SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, Width, Height,
-	       SWP_SHOWWINDOW or SWP_NOACTIVATE );
+    SWP_SHOWWINDOW or SWP_NOACTIVATE);
 end;
 
 procedure TJvgHintWindow.Paint;
@@ -243,41 +237,46 @@ const
   aAlignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
 begin
   R := ClientRect;
-  dec(R.right, 1); dec(R.Bottom, 1);
+  dec(R.right, 1);
+  dec(R.Bottom, 1);
   Canvas.Brush.Color := clWhite;
   Canvas.Pen.Color := 0;
-  glyphX := 0; glyphY := 0;
+  glyphX := 0;
+  glyphY := 0;
 
   with HintComponent.Style do
   begin
-    R := DrawBoxEx( Canvas.Handle, R, Bevel.Sides, Bevel.Inner, Bevel.Outer, Bevel.Bold, Color, Gradient.Active );
+    R := DrawBoxEx(Canvas.Handle, R, Bevel.Sides, Bevel.Inner, Bevel.Outer, Bevel.Bold, Color, Gradient.Active);
     if Gradient.Active then
     begin
-      inc(R.Right); inc(R.Bottom);
+      inc(R.Right);
+      inc(R.Bottom);
       Gradient.Draw(Canvas.Handle, R, integer(psSolid), 1);
-      dec(R.Right); dec(R.Bottom);
+      dec(R.Right);
+      dec(R.Bottom);
     end;
-  end;            
+  end;
 
   if Assigned(HintComponent) then
   begin
 
     case HintComponent.GlyphAlign.Vertical of
-      fvaTop:    glyphY := R.Top;
+      fvaTop: glyphY := R.Top;
       fvaCenter: glyphY := (R.Bottom - R.Top - HintComponent.Glyph.Height) div 2;
       fvaBottom: glyphY := R.Bottom - HintComponent.Glyph.Height;
     end;
     case HintComponent.GlyphAlign.Horizontal of
-      fhaLeft:   glyphX := R.Left + 1;
+      fhaLeft: glyphX := R.Left + 1;
       fhaCenter: glyphX := (R.Right - R.Left - HintComponent.Glyph.Width) div 2;
-      fhaRight:  glyphX := R.Right - HintComponent.Glyph.Width - 2;
+      fhaRight: glyphX := R.Right - HintComponent.Glyph.Width - 2;
     end;
 
-    CreateBitmapExt(Canvas.Handle, HintComponent.Glyph, R, glyphX, glyphY, fwoNone, fdsDefault, true, GetTransparentColor(HintComponent.Glyph, ftcLeftBottomPixel), 0);
+    CreateBitmapExt(Canvas.Handle, HintComponent.Glyph, R, glyphX, glyphY, fwoNone, fdsDefault, true,
+      GetTransparentColor(HintComponent.Glyph, ftcLeftBottomPixel), 0);
     case HintComponent.GlyphAlign.Horizontal of
-      fhaLeft:   inc(R.Left, HintComponent.Glyph.Width + HintComponent.Spacing);
+      fhaLeft: inc(R.Left, HintComponent.Glyph.Width + HintComponent.Spacing);
       fhaCenter: { nothing ;) };
-      fhaRight:  dec(R.Right, HintComponent.Glyph.Width + HintComponent.Spacing);
+      fhaRight: dec(R.Right, HintComponent.Glyph.Width + HintComponent.Spacing);
     end;
 
   end;
@@ -286,19 +285,18 @@ begin
 
   Canvas.Font.Assign(HintComponent.Style.Font);
   InflateRect(R, -1, -1);
-  if ClientRect.Bottom - ClientRect.Top > Canvas.TextHeight('Y')*2 then
-    DrawText( Canvas.Handle, PChar(Caption), length(Caption), R, DT_VCENTER or DT_WORDBREAK or aAlignments[HintComponent.Alignment])
+  if ClientRect.Bottom - ClientRect.Top > Canvas.TextHeight('Y') * 2 then
+    DrawText(Canvas.Handle, PChar(Caption), length(Caption), R, DT_VCENTER or DT_WORDBREAK or
+      aAlignments[HintComponent.Alignment])
   else
-    DrawText( Canvas.Handle, PChar(Caption), length(Caption), R, DT_VCENTER or DT_SINGLELINE or aAlignments[HintComponent.Alignment]);
+    DrawText(Canvas.Handle, PChar(Caption), length(Caption), R, DT_VCENTER or DT_SINGLELINE or
+      aAlignments[HintComponent.Alignment]);
 end;
-
-
 
 procedure TJvgHintWindow.WMKillFocus(var Message: TMessage);
 begin
   hide;
 end;
-
 
 function TJvgHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
 begin
@@ -318,8 +316,5 @@ begin
   FGlyph.Assign(Value);
 end;
 
-
-
 end.
-
 

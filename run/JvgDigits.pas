@@ -32,19 +32,9 @@ unit JvgDigits;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  ExtCtrls,
-  JvgTypes,
-  JVComponent,
-  JvgUtils,
-  JvgCommClasses;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, ExtCtrls,
+  JvgTypes, JvComponent, JvgUtils, JvgCommClasses;
 
 type
   TGraphDigitsElem = (_deT_, _deC_, _deB_, _deTL_, _deTR_, _deBL_, _deBR_,
@@ -615,3 +605,4 @@ begin
 end;
 
 end.
+

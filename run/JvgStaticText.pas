@@ -32,23 +32,10 @@ unit JvgStaticText;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  ExtCtrls,
-  JvgTypes,
-  JVComponent,
-  JvgCommClasses,
-  JvgUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, JvgTypes, JVComponent, JvgCommClasses, JvgUtils;
 
 type
-
   TJvgStaticText = class(TJvGraphicControl)
   private
     FActiveColor: TColor;
@@ -60,7 +47,7 @@ type
     FOnMouseleave: TNotifyEvent;
 
     fActive: boolean;
-//    Image: TBitmap;
+    //    Image: TBitmap;
     procedure CreateImage;
     procedure DrawTextBroadwise;
     procedure AdjustBounds;
@@ -71,7 +58,9 @@ type
 
   protected
     procedure CMFontChanged(var Message: TMessage);
-    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: boolean);
+    {$IFDEF COMPILER6_UP} override;
+    {$ENDIF}
     procedure Loaded; override;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -370,3 +359,4 @@ begin
 end;
 
 end.
+

@@ -109,7 +109,8 @@ begin
   G := (BaseColor and $0000FF00) shr 8;
   R := BaseColor and $000000FF;
   FShadow := RGB(Max(R - ColorShadowShift, 0), Max(G - ColorShadowShift, 0), Max(B - ColorShadowShift, 0));
-  FHighlight := RGB(Min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift, 255));
+  FHighlight := RGB(Min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift,
+    255));
 end;
 
 procedure TJvg3DLocalColors.MakeGlobal;
@@ -154,3 +155,4 @@ begin
 end;
 
 end.
+

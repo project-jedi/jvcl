@@ -93,7 +93,7 @@ var
   PropInfo: PPropInfo;
   TypeInf, PropTypeInf: PTypeInfo;
   TypeData: PTypeData;
-  i : integer;
+  i: integer;
   AName, PropName: string;
   PropList: PPropList;
   NumProps: word;
@@ -203,3 +203,4 @@ begin
 end;
 
 end.
+

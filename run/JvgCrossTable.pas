@@ -103,27 +103,9 @@ unit JvgCrossTable;
 
 interface
 uses
-  Windows,
-  Messages,
-  Classes,
-  Controls,
-  Graphics,
-  buttons,
-  Dialogs,
-  JvComponent,
-  JvgTypes,
-  JvgCommClasses,
-  JvgUtils,
-  StdCtrls,
-  ExtCtrls,
-  SysUtils,
-  Forms,
-  JvgBevel,
-  DB,
-  DBCtrls,
-  Menus,
-  DBTables,
-  Printers;
+  Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
+  StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
+  JvComponent, JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
 
 const
   MAX_COLS = 1024;
@@ -1114,3 +1096,4 @@ begin
 end;
 
 end.
+

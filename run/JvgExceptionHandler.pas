@@ -32,18 +32,8 @@ unit JvgExceptionHandler;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JvComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  JvgMailSlots,
-  jpeg,
-  JvgSysInf;
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, Controls,
+  Forms, Dialogs, JvgMailSlots, jpeg, JvgSysInf;
 
 type
   TExceptionHandlerOption = (fehActiveDesignTime, fehActiveRunTime,
@@ -380,3 +370,4 @@ initialization
   ExceptionHandler := nil;
 
 end.
+

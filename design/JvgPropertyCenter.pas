@@ -31,16 +31,8 @@ unit JvgPropertyCenter;
 
 interface
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  JVComponent,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  TypInfo;
+  Windows, Messages, SysUtils, Classes, JvComponent, Graphics,
+  Controls, Forms, Dialogs, TypInfo;
 
 type
 
@@ -63,7 +55,7 @@ type
     procedure SetFontProperty(Value: TFont);
     procedure UpdateProperties(Properties: Tgl_Properties);
   protected
-    procedure Notification(Component: TComponent; Operation: TOperation);override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
     CompList: TList;
@@ -80,7 +72,6 @@ type
       FUseProperties;
     property AutoApdate: boolean read FAutoApdate write FAutoApdate;
   end;
-
 
 implementation
 uses JvgUtils,
@@ -181,3 +172,4 @@ begin
 end;
 
 end.
+

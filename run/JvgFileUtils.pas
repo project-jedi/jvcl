@@ -40,7 +40,8 @@ function LoadTextFromFile(const FileName: string): string;
 procedure SaveTextToFile(const FileName, Text: string);
 function GetFolder(Wnd: HWND; Title: string): string;
 function GetFileSize(const FileName: string): integer;
-procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean = false);
+procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean
+  = false);
 procedure RemoveDirectories(const FilePath: string);
 
 implementation
@@ -141,7 +142,8 @@ begin
   CloseFile(f);
 end;
 
-procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean = false);
+procedure CopyFolder(const SourceFilePath, TargetFilePath: string; fOverwrite: boolean = true; fSubdirectories: boolean
+  = false);
 var
   sr: TSearchRec;
 
@@ -201,3 +203,4 @@ begin
 end;
 
 end.
+

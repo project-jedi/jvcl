@@ -32,20 +32,10 @@ unit JvgLabel;
 interface
 
 uses
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Forms,
-  Dialogs,
-  StdCtrls,
-  ExtCtrls,
-  JvgTypes,
-  JVComponent,
-  JvgCommClasses,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, JvgTypes, JVComponent, JvgCommClasses,
   JvgUtils;
+
 const
   FTextAlign = DT_LEFT or DT_SINGLELINE;
   RadianEscapments: array[TgllabelDir] of integer = (0, -1800, -900,
@@ -233,7 +223,9 @@ type
     procedure CallMouseEnter; override;
     procedure CallMouseLeave; override;
   protected
-    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: boolean);
+    {$IFDEF COMPILER6_UP} override;
+    {$ENDIF}
   public
     procedure Paint; override;
     property Canvas;
@@ -347,9 +339,9 @@ procedure TJvgCustomLabel.Notification(AComponent: TComponent; Operation:
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FocusControl) and (Operation = opRemove) then
-    begin {UnhookFocusControlWndProc;}
-      FFocusControl := nil;
-    end;
+  begin {UnhookFocusControlWndProc;}
+    FFocusControl := nil;
+  end;
 end;
 //______
 
@@ -417,11 +409,11 @@ var
 begin
   P := Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC));
   if (P <> FNewWndProc) then
-    begin
-      FPrevWndProc := P;
-      FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(FocusControlWndHookProc);
-      SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
-    end;
+  begin
+    FPrevWndProc := P;
+    FNewWndProc := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}MakeObjectInstance(FocusControlWndHookProc);
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FNewWndProc));
+  end;
 end;
 //______
 
@@ -431,10 +423,10 @@ begin
   if (FNewWndProc <> nil) and (FPrevWndProc <> nil)
     and (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) =
     FNewWndProc) then
-    begin
-      SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
-      FNewWndProc := nil;
-    end;
+  begin
+    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
+    FNewWndProc := nil;
+  end;
 end;
 //______
 
@@ -538,9 +530,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (AComponent = BackgroundImage) and (Operation = opRemove) then
     BackgroundImage := nil
-  else
-    if (AComponent = TextureImage) and (Operation = opRemove) then
-      TextureImage := nil;
+  else if (AComponent = TextureImage) and (Operation = opRemove) then
+    TextureImage := nil;
 end;
 //______
 
@@ -562,21 +553,19 @@ begin
   with TextStyles, Colors do
     if (Passive <> Active) or ((Background <> BackgroundActive) and not
       Transparent) then
-      begin
-        if floBufferedDraw in Options then
-          Paint
-        else
-          InvalidateLabel(True);
-      end
-    else
-      if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+    begin
+      if floBufferedDraw in Options then
         Paint
       else
-        if TextActive <> Text then
-          begin
-            fNeedUpdateOnlyMainText := true;
-            Paint;
-          end;
+        InvalidateLabel(True);
+    end
+    else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+      Paint
+    else if TextActive <> Text then
+    begin
+      fNeedUpdateOnlyMainText := true;
+      Paint;
+    end;
   inherited;
 end;
 //______
@@ -591,21 +580,19 @@ begin
   with TextStyles, Colors do
     if (Passive <> Active) or ((Background <> BackgroundActive) and not
       Transparent) then
-      begin
-        if floBufferedDraw in Options then
-          Paint
-        else
-          InvalidateLabel(True);
-      end
-    else
-      if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+    begin
+      if floBufferedDraw in Options then
         Paint
       else
-        if TextActive <> Text then
-          begin
-            fNeedUpdateOnlyMainText := true;
-            Paint;
-          end;
+        InvalidateLabel(True);
+    end
+    else if (floDelineatedText in Options) and (DelineateActive <> Delineate) then
+      Paint
+    else if TextActive <> Text then
+    begin
+      fNeedUpdateOnlyMainText := true;
+      Paint;
+    end;
   inherited;
 end;
 //______
@@ -631,18 +618,16 @@ begin
   inherited;
   if FTexture <> nil then
     TextureBmp := FTexture
+  else if Assigned(FTextureImage) then
+    TextureBmp := FTextureImage.Picture.Bitmap
   else
-    if Assigned(FTextureImage) then
-      TextureBmp := FTextureImage.Picture.Bitmap
-    else
-      TextureBmp := nil;
+    TextureBmp := nil;
   if FBackground <> nil then
     BackgroundBmp := FBackground
+  else if (FBackgroundImage <> nil) then
+    BackgroundBmp := FBackgroundImage.Picture.Bitmap
   else
-    if (FBackgroundImage <> nil) then
-      BackgroundBmp := FBackgroundImage.Picture.Bitmap
-    else
-      BackgroundBmp := nil;
+    BackgroundBmp := nil;
 end;
 //______
 
@@ -667,42 +652,40 @@ begin
       ComponentState);
   if fBufferedDraw then
     TargetCanvas := Img.Canvas
+  else if Assigned(ExternalCanvas) then
+    TargetCanvas := ExternalCanvas
   else
-    if Assigned(ExternalCanvas) then
-      TargetCanvas := ExternalCanvas
-    else
-      TargetCanvas := Canvas;
+    TargetCanvas := Canvas;
   fNeedUpdateOnlyMainText := fNeedUpdateOnlyMainText and not (fBufferedDraw)
     and (not IsItAFilledBitmap(BackgroundBmp));
   if not fRunOnce then
-    begin
-      fNeedUpdateOnlyMainText := false;
-      fRunOnce := true;
-    end;
+  begin
+    fNeedUpdateOnlyMainText := false;
+    fRunOnce := true;
+  end;
   TargetCanvas.Font := FreeFont;
   //...CALC POSITION
   GetTextExtentPoint32(TargetCanvas.handle, PChar(Caption),
     length(Caption), Size);
   with TextStyles, Colors do
     if fActiveNow then
-      begin
-        CurrTextStyle := Active;
-        CurrDelinColor := DelineateActive;
-        FontColor := TextActive;
-      end
+    begin
+      CurrTextStyle := Active;
+      CurrDelinColor := DelineateActive;
+      FontColor := TextActive;
+    end
+    else if Enabled then
+    begin
+      CurrTextStyle := Passive;
+      CurrDelinColor := Delineate;
+      FontColor := Text;
+    end
     else
-      if Enabled then
-        begin
-          CurrTextStyle := Passive;
-          CurrDelinColor := Delineate;
-          FontColor := Text;
-        end
-      else
-        begin
-          CurrTextStyle := Disabled;
-          CurrDelinColor := Delineate;
-          FontColor := TextDisabled;
-        end;
+    begin
+      CurrTextStyle := Disabled;
+      CurrDelinColor := Delineate;
+      FontColor := TextDisabled;
+    end;
   x := 0;
   y := 0;
   Size.cx := Size.cx + 2 + trunc(Size.cx * 0.01);
@@ -710,15 +693,15 @@ begin
   Size.cy := Size.cy + 2;
   TextSize := Size;
   if (CurrTextStyle = fstShadow) or (CurrTextStyle = fstVolumetric) then
-    begin
-      inc(Size.cy, Illumination.ShadowDepth);
-      inc(Size.cx, Illumination.ShadowDepth);
-    end;
+  begin
+    inc(Size.cy, Illumination.ShadowDepth);
+    inc(Size.cx, Illumination.ShadowDepth);
+  end;
   if floDelineatedText in Options then
-    begin
-      inc(Size.cy, 2);
-      inc(Size.cx, 2);
-    end;
+  begin
+    inc(Size.cy, 2);
+    inc(Size.cx, 2);
+  end;
 
   if (Align = alNone) and AutoSize then
     case FDirection of
@@ -727,11 +710,11 @@ begin
           width := Size.cx;
           height := Size.cy;
         end;
-      else {fldDownUp,fldUpDown:}
-        begin
-          width := Size.cy;
-          height := Size.cx;
-        end;
+    else {fldDownUp,fldUpDown:}
+      begin
+        width := Size.cy;
+        height := Size.cx;
+      end;
     end;
 
   //  pt := CalcAlignedTextPosition( TargetCanvas.handle, Caption, Size );
@@ -751,8 +734,8 @@ begin
         case Alignment of
           taCenter: x := (Width + Size.cx) div 2;
           taLeftJustify: x := Width - (Size.cx - TextSize.cx) - 2;
-          else
-            x := TextSize.cx;
+        else
+          x := TextSize.cx;
         end;
         y := TextSize.cy;
       end;
@@ -762,8 +745,8 @@ begin
           taCenter: y := (Height + TextSize.cx - (Size.cy - TextSize.cy))
             div 2;
           taRightJustify: y := TextSize.cx - 4;
-          else
-            y := Height - (Size.cy - TextSize.cy) - 2;
+        else
+          y := Height - (Size.cy - TextSize.cy) - 2;
         end;
       end;
     fldUpDown:
@@ -771,8 +754,8 @@ begin
         case Alignment of
           taCenter: y := (Height - Size.cx) div 2;
           taRightJustify: y := Height - Size.cx;
-          else
-            y := 1;
+        else
+          y := 1;
         end;
         x := TextSize.cy;
       end;
@@ -782,21 +765,21 @@ begin
 
   R := GetClientRect;
   if TargetCanvas = Img.Canvas then
-    begin
-      Img.Width := Width;
-      Img.Height := Height;
-    end;
+  begin
+    Img.Width := Width;
+    Img.Height := Height;
+  end;
 
   SetBkMode(TargetCanvas.handle, 1 {TRANSPARENT});
   if not Transparent then
-    begin
-      TargetCanvas.Brush.Style := bsSolid;
-      if fActiveNow then
-        TargetCanvas.Brush.Color := Colors.BackgroundActive
-      else
-        TargetCanvas.Brush.Color := Colors.Background;
-      TargetCanvas.FillRect(R);
-    end;
+  begin
+    TargetCanvas.Brush.Style := bsSolid;
+    if fActiveNow then
+      TargetCanvas.Brush.Color := Colors.BackgroundActive
+    else
+      TargetCanvas.Brush.Color := Colors.Background;
+    TargetCanvas.FillRect(R);
+  end;
 
   try
     fUseBackgroundBmp := IsItAFilledBitmap(BackgroundBmp);
@@ -818,37 +801,36 @@ begin
   //  ShadowColor_ := Colors.Shadow;
   //  HighlightColor_ := Colors.Highlight;
   if fUseBackgroundBmp then
-    begin //...FillBackground
-      Tx := 0;
+  begin //...FillBackground
+    Tx := 0;
+    Ty := 0;
+    while Tx < Width do
+    begin
+      while Ty < Height do
+      begin
+        BitBlt(TargetCanvas.Handle, Tx, Ty,
+          BackgroundBmp.Width, BackgroundBmp.Height,
+          BackgroundBmp.Canvas.Handle, 0, 0, SRCCOPY);
+        Inc(Ty, BackgroundBmp.Height);
+      end;
+      Inc(Tx, BackgroundBmp.Width);
       Ty := 0;
-      while Tx < Width do
-        begin
-          while Ty < Height do
-            begin
-              BitBlt(TargetCanvas.Handle, Tx, Ty,
-                BackgroundBmp.Width, BackgroundBmp.Height,
-                BackgroundBmp.Canvas.Handle, 0, 0, SRCCOPY);
-              Inc(Ty, BackgroundBmp.Height);
-            end;
-          Inc(Tx, BackgroundBmp.Width);
-          Ty := 0;
-        end;
-    end
-  else
-    if fBufferedDraw then
-      with TargetCanvas do
-        begin
-          if Transparent or (floTransparentFont in Options) then
-            try
-              Brush.Color := Parent.Brush.Color;
-              Brush.Style := bsSolid;
-              FillRect(R);
-              Brush.Style := bsClear;
-              GetParentImageRect(self, Bounds(Left, Top, Width, Height),
-                TargetCanvas.Handle);
-            except
-            end;
-        end;
+    end;
+  end
+  else if fBufferedDraw then
+    with TargetCanvas do
+    begin
+      if Transparent or (floTransparentFont in Options) then
+      try
+        Brush.Color := Parent.Brush.Color;
+        Brush.Style := bsSolid;
+        FillRect(R);
+        Brush.Style := bsClear;
+        GetParentImageRect(self, Bounds(Left, Top, Width, Height),
+          TargetCanvas.Handle);
+      except
+      end;
+    end;
 
   OldGradientFActive := Gradient.FActive;
   //...Supress Gradient if needed
@@ -856,78 +838,77 @@ begin
     if (fActiveNow and (TextActive <> Text)) or not Enabled then
       Gradient.FActive := false;
   if floDelineatedText in Options then
-    begin
-      x_ := 4;
-      y_ := 4;
-    end
+  begin
+    x_ := 4;
+    y_ := 4;
+  end
   else
-    begin
-      x_ := 2;
-      y_ := 2;
-    end;
+  begin
+    x_ := 2;
+    y_ := 2;
+  end;
 
   if CurrTextStyle = fstNone then
-    begin
-      x_ := x_ div 2 - 1;
-      y_ := y_ div 2 - 1;
-    end;
+  begin
+    x_ := x_ div 2 - 1;
+    y_ := y_ div 2 - 1;
+  end;
   if CurrTextStyle = fstShadow then
-    begin
-      x_ := x_ div 2 - 1;
-      y_ := y_ div 2 - 1;
-    end;
+  begin
+    x_ := x_ div 2 - 1;
+    y_ := y_ div 2 - 1;
+  end;
   if {fNeedRemakeTextureMask and}  fUseTextureBmp or (floTransparentFont in
     Options) then
+  begin
+    if not Assigned(TextureMask) then
+      TextureMask := TBitmap.Create;
+    with TextureMask do
     begin
-      if not Assigned(TextureMask) then
-        TextureMask := TBitmap.Create;
-      with TextureMask do
+      Width := Self.Width;
+      Height := Self.Height;
+      Canvas.Brush.Color := clBlack;
+      Canvas.Brush.Style := bsSolid;
+      Canvas.FillRect(GetClientRect);
+      Canvas.Font := FreeFont;
+      Canvas.Font.Color := clWhite;
+      if (CurrTextStyle = fstNone) or (CurrTextStyle = fstShadow) then
+        Canvas.TextOut(x + x_, y + y_, Caption)
+      else
+        Canvas.TextOut(x + x_ div 2, y + y_ div 2, Caption);
+      Tx := 0;
+      Ty := 0;
+
+      if not Self.Transparent then
+      begin
+        BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
+          0, SRCAND);
+        if fActiveNow then
+          ChangeBitmapColor(TextureMask, clBlack, Colors.BackgroundActive)
+        else
+          ChangeBitmapColor(TextureMask, clBlack, Colors.Background);
+        BitBlt(Self.Canvas.Handle, 0, 0, Width, Height, Canvas.Handle, 0, 0,
+          SRCCOPY);
+        exit;
+      end;
+
+      if floTransparentFont in Options then
+        BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
+          0, SRCAND)
+      else if fUseTextureBmp then //...fill mask with texture
+        while Tx < Width do
         begin
-          Width := Self.Width;
-          Height := Self.Height;
-          Canvas.Brush.Color := clBlack;
-          Canvas.Brush.Style := bsSolid;
-          Canvas.FillRect(GetClientRect);
-          Canvas.Font := FreeFont;
-          Canvas.Font.Color := clWhite;
-          if (CurrTextStyle = fstNone) or (CurrTextStyle = fstShadow) then
-            Canvas.TextOut(x + x_, y + y_, Caption)
-          else
-            Canvas.TextOut(x + x_ div 2, y + y_ div 2, Caption);
-          Tx := 0;
+          while Ty < Height do
+          begin
+            BitBlt(Canvas.Handle, Tx, Ty, TextureBmp.Width,
+              TextureBmp.Height, TextureBmp.canvas.Handle, 0, 0, SRCAND);
+            Inc(Ty, TextureBmp.Height);
+          end;
+          Inc(Tx, TextureBmp.Width);
           Ty := 0;
-
-          if not Self.Transparent then
-            begin
-              BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
-                0, SRCAND);
-              if fActiveNow then
-                ChangeBitmapColor(TextureMask, clBlack, Colors.BackgroundActive)
-              else
-                ChangeBitmapColor(TextureMask, clBlack, Colors.Background);
-              BitBlt(Self.Canvas.Handle, 0, 0, Width, Height, Canvas.Handle, 0, 0,
-                SRCCOPY);
-              exit;
-            end;
-
-          if floTransparentFont in Options then
-            BitBlt(Canvas.Handle, Tx, Ty, Width, Height, TargetCanvas.Handle, 0,
-              0, SRCAND)
-          else
-            if fUseTextureBmp then //...fill mask with texture
-              while Tx < Width do
-                begin
-                  while Ty < Height do
-                    begin
-                      BitBlt(Canvas.Handle, Tx, Ty, TextureBmp.Width,
-                        TextureBmp.Height, TextureBmp.canvas.Handle, 0, 0, SRCAND);
-                      Inc(Ty, TextureBmp.Height);
-                    end;
-                  Inc(Tx, TextureBmp.Width);
-                  Ty := 0;
-                end;
         end;
     end;
+  end;
 
   if IsItAFilledBitmap(TextureBmp) then
     FontColor := 0;
@@ -1031,16 +1012,15 @@ begin
     FTexture.Free;
   FTexture := nil;
   if (Value <> nil) and (Value.Handle <> 0) then
-    begin
-      FTexture := TBitmap.Create;
-      FTexture.Assign(Value);
-      TextureBmp := FTexture;
-    end
+  begin
+    FTexture := TBitmap.Create;
+    FTexture.Assign(Value);
+    TextureBmp := FTexture;
+  end
+  else if Assigned(FTextureImage) then
+    TextureBmp := FTextureImage.Picture.Bitmap
   else
-    if Assigned(FTextureImage) then
-      TextureBmp := FTextureImage.Picture.Bitmap
-    else
-      TextureBmp := nil;
+    TextureBmp := nil;
   fNeedRemakeTextureMask := true;
   InvalidateLabel(true);
 end;
@@ -1051,16 +1031,15 @@ begin
     FBackground.Free;
   FBackground := nil;
   if (Value <> nil) and (Value.Handle <> 0) then
-    begin
-      FBackground := TBitmap.Create;
-      FBackground.Assign(Value);
-      BackgroundBmp := FBackground;
-    end
+  begin
+    FBackground := TBitmap.Create;
+    FBackground.Assign(Value);
+    BackgroundBmp := FBackground;
+  end
+  else if (FBackgroundImage <> nil) then
+    BackgroundBmp := FBackgroundImage.Picture.Bitmap
   else
-    if (FBackgroundImage <> nil) then
-      BackgroundBmp := FBackgroundImage.Picture.Bitmap
-    else
-      BackgroundBmp := nil;
+    BackgroundBmp := nil;
   InvalidateLabel(true);
 end;
 
@@ -1083,14 +1062,13 @@ begin
   FTextureImage := Value;
   //mb  if (not IsItAFilledBitmap(FTexture)) and Assigned(Value) then
   if Value <> nil then
-    begin
-      TextureBmp := FTextureImage.Picture.Bitmap;
-    end
-    else
-      if FTexture <> nil then
-        TextureBmp := FTexture
-      else
-        TextureBmp := nil;
+  begin
+    TextureBmp := FTextureImage.Picture.Bitmap;
+  end
+  else if FTexture <> nil then
+    TextureBmp := FTexture
+  else
+    TextureBmp := nil;
   InvalidateLabel(true);
 end;
 
@@ -1099,15 +1077,14 @@ begin
   FBackgroundImage := Value;
   //mb  if (not IsItAFilledBitmap(FBackground)) and Assigned(Value) then
   if Value <> nil then
-    begin
-      BackgroundBmp := FBackgroundImage.Picture.Bitmap;
-      InvalidateLabel(true);
-    end
+  begin
+    BackgroundBmp := FBackgroundImage.Picture.Bitmap;
+    InvalidateLabel(true);
+  end
+  else if FBackground <> nil then
+    BackgroundBmp := FBackground
   else
-    if FBackground <> nil then
-      BackgroundBmp := FBackground
-    else
-      BackgroundBmp := nil;
+    BackgroundBmp := nil;
   InvalidateLabel(true);
 end;
 
@@ -1206,15 +1183,15 @@ begin
   //  TextOut( TargetCanvas.Handle, 0, 0, 'lpszString', 10);
   //  BitBlt( TargetCanvas.Handle, 0, 0, Width, Height, Image.TargetCanvas.Handle, Width, Height, SRCCOPY );
   if (Alignment = ftaBroadwise) then
+  begin
+    if FWordWrap then
     begin
-      if FWordWrap then
-        begin
-          DrawTextBroadwise(TargetCanvas);
-          exit;
-        end
-      else
-        Alignment_ := ftaLeftJustify;
-    end;
+      DrawTextBroadwise(TargetCanvas);
+      exit;
+    end
+    else
+      Alignment_ := ftaLeftJustify;
+  end;
   Rect := ClientRect;
   DrawText(TargetCanvas.Handle, PChar(Caption), Length(Caption), Rect,
     DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[Alignment_]);
@@ -1260,22 +1237,22 @@ var
     X_ := 0;
     LineWidth := 0;
     for i := 1 to LexemCount do
-      begin
-        Lexem := GetNextLexem(DrawPos1, DrawPos2, i = 1);
-        //      if LexemCount=1 then Lexem:=Lexem+' ';
-        GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
-        inc(LineWidth, trunc(X));
-        X := X + Size.cx;
-        if (trunc(X) > Width) and (LexemCount > 1) then
-          exit;
+    begin
+      Lexem := GetNextLexem(DrawPos1, DrawPos2, i = 1);
+      //      if LexemCount=1 then Lexem:=Lexem+' ';
+      GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
+      inc(LineWidth, trunc(X));
+      X := X + Size.cx;
+      if (trunc(X) > Width) and (LexemCount > 1) then
+        exit;
 
-        if (LexemCount > 1) and fBroadwiseLine then
-          X := X + AdditSpace / (LexemCount - 1);
-        TextOut(Canvas.Handle, trunc(X_), LineNo * TextHeight, PChar(Lexem),
-          length(Lexem));
-        X_ := X;
-        DrawPos1 := DrawPos2;
-      end;
+      if (LexemCount > 1) and fBroadwiseLine then
+        X := X + AdditSpace / (LexemCount - 1);
+      TextOut(Canvas.Handle, trunc(X_), LineNo * TextHeight, PChar(Lexem),
+        length(Lexem));
+      X_ := X;
+      DrawPos1 := DrawPos2;
+    end;
   end;
 begin
   if Text = '' then
@@ -1298,28 +1275,28 @@ begin
     if TextHeight < Size.cy then
       TextHeight := Size.cy;
     if (LineWidth > Width) or (Pos2 >= length(Caption)) then
+    begin
+      if (LineWidth > Width) then
       begin
-        if (LineWidth > Width) then
-          begin
-            if LexemCount = 1 then
-              Pos1 := Pos2;
-            if LexemCount > 1 then
-              dec(LexemCount);
-            DrawLine(Width - (LineWidth - Size.cx));
-            DrawPos := Pos1;
-            inc(LineNo);
-            LexemCount := 0;
-            LineWidth := 0;
-            fStop := Pos1 > length(Caption);
-          end
-        else
-          begin
-            fBroadwiseLine := ftoBroadwiseLastLine in Options;
-            DrawLine(Width - LineWidth);
-            inc(LineNo);
-            fStop := true;
-          end;
+        if LexemCount = 1 then
+          Pos1 := Pos2;
+        if LexemCount > 1 then
+          dec(LexemCount);
+        DrawLine(Width - (LineWidth - Size.cx));
+        DrawPos := Pos1;
+        inc(LineNo);
+        LexemCount := 0;
+        LineWidth := 0;
+        fStop := Pos1 > length(Caption);
       end
+      else
+      begin
+        fBroadwiseLine := ftoBroadwiseLastLine in Options;
+        DrawLine(Width - LineWidth);
+        inc(LineNo);
+        fStop := true;
+      end;
+    end
     else
       Pos1 := Pos2;
   until fStop;
@@ -1337,19 +1314,19 @@ var
   Rect: TRect;
 begin
   if not (csReading in ComponentState) and FAutoSize then
-    begin
-      Rect := ClientRect;
-      DC := GetDC(0);
-      Canvas.Handle := DC;
-      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
-        DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
-      Canvas.Handle := 0;
-      ReleaseDC(0, DC);
-      X := Left;
-      if FAlignment = ftaRightJustify then
-        Inc(X, Width - Rect.Right);
-      SetBounds(X, Top, Rect.Right, Rect.Bottom);
-    end;
+  begin
+    Rect := ClientRect;
+    DC := GetDC(0);
+    Canvas.Handle := DC;
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
+      DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
+    Canvas.Handle := 0;
+    ReleaseDC(0, DC);
+    X := Left;
+    if FAlignment = ftaRightJustify then
+      Inc(X, Width - Rect.Right);
+    SetBounds(X, Top, Rect.Right, Rect.Bottom);
+  end;
 end;
 //______
 
@@ -1467,18 +1444,18 @@ begin
   if FGlyphKind <> Value then
     FGlyphKind := Value;
   if (FGlyphKind = fgkCustom) and (csReading in ComponentState) then
-    begin
-      GlyphOn := nil;
-      GlyphOff := nil;
-      GlyphDisabled := nil;
-    end
+  begin
+    GlyphOn := nil;
+    GlyphOff := nil;
+    GlyphDisabled := nil;
+  end
   else
-    begin
-      FGlyphOn.LoadFromResourceName(hInstance, 'ON');
-      FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
-      FGlyphDisabled := TBitmap.Create;
-      FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
-    end;
+  begin
+    FGlyphOn.LoadFromResourceName(hInstance, 'ON');
+    FGlyphOff.LoadFromResourceName(hInstance, 'OFF');
+    FGlyphDisabled := TBitmap.Create;
+    FGlyphDisabled.LoadFromResourceName(hInstance, 'DISABLED');
+  end;
 
 end;
 
