@@ -126,7 +126,7 @@ type
     procedure CreateWnd; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    procedure InitWidget; override;
+    procedure Loaded; override;
     {$ENDIF VisualCLX}
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
     procedure FontChanged; override;
@@ -425,9 +425,9 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-procedure TJvCustomOfficeColorButton.InitWidget;
+procedure TJvCustomOfficeColorButton.Loaded;
 begin
-  inherited InitWidget;
+  inherited;
   AdjustSize;
 end;
 {$ENDIF VisualCLX}
