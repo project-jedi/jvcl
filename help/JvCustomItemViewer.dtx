@@ -1,0 +1,1190 @@
+##Package: Custom
+##Status: Locked by peter3
+----------------------------------------------------------------------------------------------------
+@@JvCustomItemViewer.pas
+Summary
+  Contains the TJvCustomItemViewer component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Thörnqvist
+----------------------------------------------------------------------------------------------------
+@@CenterRect
+<TITLE CenterRect function>
+Summary
+  Centers one TRect inside another.
+Description
+  CenterRect adjusts the bounds of the inner rect so it is centered in relation to the outer rect.
+Parameters
+  InnerRect - The rect to center.
+  OuterRect - The rect to center against.
+See Also
+----------------------------------------------------------------------------------------------------
+@@ClearBrushPatterns
+<TITLE ClearBrushPatterns procedure>
+Summary
+  Clears the internal list of brush patterns.
+Description
+ ClearBrushPatterns removes all brush patterns created by CreateBrushPattern from the internal list.
+ Normally, you should not need to call this function.
+See Also
+  CreateBrushPattern, ReleasePattern
+----------------------------------------------------------------------------------------------------
+@@CreateBrushPattern
+<TITLE CreateBrushPattern function>
+Summary
+  Creates a bitmap from a two-color pattern.
+Description
+  Call CreateBrushPattern to create and return a TBitmap object that can be assigned to
+  the Bitmap property of a TBrush and used to paint a background pattern on a control.
+
+  If the specified pattern already exist, the internal reference count is incremented
+  and the existing TBitmap is returned.
+Note
+  Do not destroy the returned TBitmap object. This is done automatically when the application closes down.
+Parameters
+  EvenColor - The color to use on even pixels in the bitmap.
+  OddColor  - The color to use on odd pixels in the bitmap.
+See Also
+  ClearBrushPatterns, ReleasePattern
+----------------------------------------------------------------------------------------------------
+@@ReleasePattern
+<TITLE ReleasePattern procedure>
+Summary
+  Frees a specific pattern if it is not in use anymore.
+Description
+  ReleasePattern decrements the internal reference count for the specified pattern and releases
+  the associated TBitmap object if the reference count is 0.
+
+  The pattern to release must have been created by a call to CreateBrushPattern for
+  ReleasePattern to find it.
+Parameters
+  EvenColor - The color used on even pixels in the bitmap.
+  OddColor  - The color used on odd pixels in the bitmap.
+See Also
+  CreateBrushPattern, ClearBrushPatterns
+----------------------------------------------------------------------------------------------------
+@@TJvBrushPattern
+Summary
+  A class that manages a brush pattern.
+Description
+  TJvBrushPattern handles a brush pattern bitmap that can be used for the Bitmap propery of a TBrush.
+  TJvBrushPattern creates the TBitmap as necessary and also makes sure that patterns not in use are
+  disposed of correctly.
+----------------------------------------------------------------------------------------------------
+@@TJvBrushPattern.Active
+Summary
+  Determines if the class is in use.
+Description
+  Set the Active property to false when you don't want to use the TBitmap pattern returned by calling
+  GetBitmap.
+
+  By convention, when Active is false, OddColor should be used to draw the background.
+See Also
+  GetBitmapm OddColor, EvenColor
+----------------------------------------------------------------------------------------------------
+@@TJvBrushPattern.EvenColor
+Summary
+  Defines the color to use for the even pixels in a pattern brush.
+Description
+  Set the value of EvenColor to define what color is used for even pixels in the brush pattern
+  returned by calling GetBitmap.
+
+Note
+  "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap is built by alternating
+  EvenColor and OddColor in such a manner that it creates a checker board pattern.
+See Also
+  OddColor, GetBitmap
+----------------------------------------------------------------------------------------------------
+@@TJvBrushPattern.GetBitmap
+Summary
+  Returns a bitmap that can be used as a brush.
+Description
+  Call GetBitmap to get a reference to a 8x8 pixel TBitmap object that is assignable to the TBrush.Bitmap
+  property.
+
+  Do not free the returned TBitmap as it is internally managed and might be shared with other controls.
+Return value
+  If Active is false, nil is returned. If Active is true, a 8x8 TBitmap object is returned.
+See Also
+  Active, EvenColor, OddColor
+----------------------------------------------------------------------------------------------------
+@@TJvBrushPattern.OddColor
+Summary
+  Defines the color to use for the odd pixels in a pattern brush.
+Description
+  Set the value of OddColor to define what color is used for odd pixels in the brush pattern
+  returned by calling GetBitmap.
+Note
+  "OddColor" and "EvenColor" aren't exactly correct terminology in this context since the bitmap is built by alternating
+  EvenColor and OddColor in such a manner that it creates a checker board pattern.
+See Also
+  EvenColor, GetBitmap
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer
+Summary
+  Base class for visual components that can display it's content in a grid like fashion.
+Description
+  Use TJvCustomItemViewer as a base class when defining components that represent information in
+  a grid like format. TJvCustomItemViewer introduces properties and methods to control the
+  appearance and behavior of the viewer, including responses to mouse, keyboard and wheel actions,
+  handling of multiselect, dragging, edge scrolling and memory conservation.
+
+  Do not create instances of TJvCustomItemViewer. Instead, put a viewer control in a form by instantiating a descendant
+  of TJvCustomItemViewer. Use TJvImagesViewer to display images from graphic files in a folder. Use a TJvImageListViewer
+  to display items from a  TCustomImageList. Use TJvOwnerDrawViewer to display arbitrary data where you are
+  responsible for drawing each item.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Add
+Summary
+  Adds an existing item to the Items list.
+Description
+  Call Add to add an existing item to the Items list. The item is added as the last item to the list. If you want to add a new item to the list,
+  increment the Count property instead.
+Parameters
+  AItem - The item to add.
+Return value
+  The index of the newly added item.
+See Also
+  Clear, Insert, Delete
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.BeginUpdate
+Summary
+  Suspends screen repainting.
+Description
+  The BeginUpdate method suspends screen repainting until the EndUpdate method is called.
+  Use BeginUpdate to speed processing and avoid flicker while items are added to, modified or deleted
+  from the control.
+See Also
+  EndUpdate, UpdateCount
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.BorderStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.BottomRightIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.CalcIndices
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Changed
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.CheckHotTrack
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Clear
+Summary
+  Clears the list.
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ColRowToIndex
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  ACol - Description for this parameter
+  ARow - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.CreateParams
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Params - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Delete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DoEndDrag
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Sender - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DoMouseWheel
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Shift      - Description for this parameter
+  WheelDelta - Description for this parameter
+  MousePos   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DoReduceMemory
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DragCanceled
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DragOver
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Source - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  State  - Description for this parameter
+  Accept - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.DrawItem
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index    - Description for this parameter
+  State    - Description for this parameter
+  Canvas   - Description for this parameter
+  ItemRect - Description for this parameter
+  TextRect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.EndUpdate
+Summary
+  Re-enables screen repainting.
+Description
+  Use EndUpdate to re-enable screen repainting that was turned off with the BeginUpdate method.
+See Also
+  BeginUpdate, UpdateCount
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.FindFirstSelected
+Summary
+  Finds and returns the index of the first selected item.
+Description
+  Call FIndFirstSlected to find and return the first selected item in the control. If Options.MultiSelect
+  is false, this is the same as SelectedIndex.
+See Also
+  SelectedIndex, FindLastSelected
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.FindLastSelected
+Summary
+  Finds and returns the index of the last selected item.
+Description
+  Call FIndFirstSlected to find and return the last selected item in the control. If Options.MultiSelect
+  is false, this is the same as SelectedIndex.
+See Also
+  SelectedIndex, FindFirstSelected
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetDragImages
+Summary
+  Returns the image list to be displayed during drag operations.
+Description
+  GetDragImages is called automatically during drag-and-drop operations to allow the control to supply
+  an image that is displayed while the one of the items is dragged. If an item is being dragged,
+  GetDragImages returns the image for the item that was selected when the DoStartDrag method was called.
+Return value
+  An imagelist containing one image representing the currently selected item.
+Note
+  GetDragImages only returns the item under the cursor even if multiple items are selected.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetItemClass
+Summary
+  Returns the class type of the items in the Items list.
+Description
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetItemState
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetOptionsClass
+Summary
+  Returns the class type of the class used for the Options property.
+Description
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetTextHeight
+Summary
+  Returns the height of text in the control.
+Description
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.GetTextRect
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  S        - Description for this parameter
+  ItemRect - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.IndexOf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.IndexToColRow
+Summary
+  Converts an index in the list to a Column/Row value.
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index - Description for this parameter
+  ACol  - Description for this parameter
+  ARow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Insert
+Summary
+  Inserts an existing item into the list.
+Description
+  Call Insert to insert an existing item in the list at a specified position.
+Parameters
+  Index - The position where the item should be inserted.
+  AItem - The tem to insert.
+See Also
+  Add, Clear, Count
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.InvalidateClipRect
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  R - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ItemAtPos
+Summary
+  Returns the index of the item indicated by the coordinates of a point on the control.
+Description
+  Use ItemAtPos to detect if an item exists at a particular point in the control.
+
+  The X and Y parameters is the point in the control in window coordinates. If C and Y is beyond the last item
+  in the control, the value of the Existing variable determines the returned value. If Existing is set to True,
+  ItemAtPos returns -1, indicating that no item exists at that point. If Existing is set to False, ItemAtPos
+  returns the index of the last item in the control plus one.
+Parameters
+  X        - The horizontal position of the item.
+  Y        - The vertical position of the item.
+  Existing - Determines if the method should return -1 or the last item plus one if there is no item at X, Y.
+Return value
+  The index of the control at X/Y or -1 if not found.
+See Also
+  IndexOf
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ItemChanged
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Item - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ItemChanging
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Item        - Description for this parameter
+  AllowChange - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ItemRect
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index          - Description for this parameter
+  IncludeSpacing - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ItemSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.KeyDown
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Key   - Description for this parameter
+  Shift - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.MouseMove
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  Shift - Description for this parameter
+  X     - Description for this parameter
+  Y     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnDrawItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  Index    - Description for this parameter
+  State    - Description for this parameter
+  Canvas   - Description for this parameter
+  ItemRect - Description for this parameter
+  TextRect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnItemChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnItemChanging
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Item   - Description for this parameter
+  Allow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnOptionsChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OnScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Options
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.OptionsChanged
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.PaintWindow
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+  This is a protected member, you don't have to describe these
+Parameters
+  DC - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ScrollIntoView
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.Selected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.SelectedIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.ToggleSelection
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  Index        - Description for this parameter
+  SetSelection - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.TopLeftIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.UnSelectItems
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Parameters
+  ExcludeIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.UpdateAll
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.UpdateCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewer.UpdateOffset
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Alignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.AutoCenter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.BrushPattern
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Change
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.DragAutoScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Height
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.HorzSpacing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.HotTrack
+Summary
+  Specifies whether the <xxx> is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font 
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual 
+  feedback when the mouse passes over the <xxx>.
+See Also 
+  HotGlyph, HotTrackFont, OnMouseEnter, OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Layout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.LazyRead
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.MultiSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Owner
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.ReduceMemoryUsage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.ScrollBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.ShowCaptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Smooth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Tracking
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.VertSpacing
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomItemViewerOptions.Width
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvItemViewerOptionsClass
+<TITLE TJvItemViewerOptionsClass type>
+Summary
+  Defines the metaclass for TJvCustomItemViewerOptions.
+Description
+  TJvItemViewerOptionsClass is the metaclass for TJvCustomItemViewerOptions. Its value is the class reference for
+  TJvCustomItemViewerOptions or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvItemViewerScrollBar
+<TITLE TJvItemViewerScrollBar type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvItemViewerScrollBar.tvHorizontal
+  Description for tvHorizontal
+@@TJvItemViewerScrollBar.tvVertical
+  Description for tvVertical
+----------------------------------------------------------------------------------------------------
+@@TJvViewerAdvancedDrawEvent
+<TITLE TJvViewerAdvancedDrawEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Sender      - Description for this parameter
+  Stage       - Description for this parameter
+  Canvas      - Description for this parameter
+  R           - Description for this parameter
+  DefaultDraw - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerAdvancedItemDrawEvent
+<TITLE TJvViewerAdvancedItemDrawEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    Nothing in this unit.
+Parameters
+  Sender      - Description for this parameter
+  Stage       - Description for this parameter
+  Index       - Description for this parameter
+  State       - Description for this parameter
+  Canvas      - Description for this parameter
+  ItemRect    - Description for this parameter
+  TextRect    - Description for this parameter
+  DefaultDraw - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerDrawStage
+<TITLE TJvViewerDrawStage type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvViewerDrawStage.vdsBeforePaint
+  Description for vdsBeforePaint
+@@TJvViewerDrawStage.vdsAfterPaint
+  Description for vdsAfterPaint
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Changed
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Changing
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Data
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Delete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Deleting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.Owner
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.ReduceMemoryUsage
+Summary
+  Write here a summary (1 line)
+Description
+  This is a protected member, you don't have to describe these
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItem.State
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItemChangedEvent
+<TITLE TJvViewerItemChangedEvent type>
+<COMBINE TJvCustomItemViewer.OnItemChanged>
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItemChangingEvent
+<TITLE TJvViewerItemChangingEvent type>
+<COMBINE TJvCustomItemViewer.OnItemChanging>
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItemClass
+<TITLE TJvViewerItemClass type>
+Summary
+  Defines the metaclass for TJvViewerItem.
+Description
+  TJvViewerItemClass is the metaclass for TJvViewerItem. Its value is the class reference for
+  TJvViewerItem or for one of its descendants.
+----------------------------------------------------------------------------------------------------
+@@TJvViewerItemDrawEvent
+<TITLE TJvViewerItemDrawEvent type>
+<COMBINE TJvCustomItemViewer.OnDrawItem>
+----------------------------------------------------------------------------------------------------
+@@TScrollEdge
+<TITLE TScrollEdge type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TScrollEdge.seNone
+  Description for seNone
+@@TScrollEdge.seLeft
+  Description for seLeft
+@@TScrollEdge.seTop
+  Description for seTop
+@@TScrollEdge.seRight
+  Description for seRight
+@@TScrollEdge.seBottom
+  Description for seBottom
+----------------------------------------------------------------------------------------------------
+@@ViewerDrawText
+<TITLE ViewerDrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas    - Description for this parameter
+  S         - Description for this parameter
+  aLength   - Description for this parameter
+  R         - Description for this parameter
+  Format    - Description for this parameter
+  Alignment - Description for this parameter
+  Layout    - Description for this parameter
+  WordWrap  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
