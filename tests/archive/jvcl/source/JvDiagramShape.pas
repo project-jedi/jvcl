@@ -648,13 +648,15 @@ var
 begin
   // Delete controls from ParentControl
   I := 0;
-  while I < ParentControl.ControlCount do
-    if ParentControl.Controls[I] is TJvCustomDiagramShape then
-      ParentControl.Controls[I].Free
-      // Note that there is no need to increment the counter, because the
-      // next component (if any) will now be at the same position in Controls[]
-    else
-      Inc(I);
+  // (rom) added Assigned for security
+  if Assigned(ParentControl) then
+    while I < ParentControl.ControlCount do
+      if ParentControl.Controls[I] is TJvCustomDiagramShape then
+        ParentControl.Controls[I].Free
+        // Note that there is no need to increment the counter, because the
+        // next component (if any) will now be at the same position in Controls[]
+      else
+        Inc(I);
 end;
 
 class procedure TJvCustomDiagramShape.DeleteSelectedShapes(ParentControl: TWinControl);
@@ -663,23 +665,27 @@ var
 begin
   // Delete controls from ParentControl if they are flagged as selected
   I := 0;
-  while I < ParentControl.ControlCount do
-    if (ParentControl.Controls[I] is TJvCustomDiagramShape) and
-      (TJvCustomDiagramShape(ParentControl.Controls[I]).Selected) then
-      ParentControl.Controls[I].Free
-      // Note that there is no need to increment the counter, because the
-      // next component (if any) will now be at the same position in Controls[]
-    else
-      Inc(I);
+  // (rom) added Assigned for security
+  if Assigned(ParentControl) then
+    while I < ParentControl.ControlCount do
+      if (ParentControl.Controls[I] is TJvCustomDiagramShape) and
+        (TJvCustomDiagramShape(ParentControl.Controls[I]).Selected) then
+        ParentControl.Controls[I].Free
+        // Note that there is no need to increment the counter, because the
+        // next component (if any) will now be at the same position in Controls[]
+      else
+        Inc(I);
 end;
 
 class procedure TJvCustomDiagramShape.UnselectAllShapes(ParentControl: TWinControl);
 var
   I: Integer;
 begin
-  for I := 0 to ParentControl.ControlCount - 1 do
-    if ParentControl.Controls[I] is TJvCustomDiagramShape then
-      TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
+  // (rom) added Assigned for security
+  if Assigned(ParentControl) then
+    for I := 0 to ParentControl.ControlCount - 1 do
+      if ParentControl.Controls[I] is TJvCustomDiagramShape then
+        TJvCustomDiagramShape(ParentControl.Controls[I]).Selected := False;
 end;
 
 //=== TJvMoveableShape =======================================================
@@ -1515,9 +1521,10 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
-    if AComponent = FStartConn.FShape then
+    // (rom) added Assigned to fix a crash
+    if Assigned(FStartConn) and (AComponent = FStartConn.FShape) then
       FStartConn.FShape := nil;
-    if AComponent = FEndConn.FShape then
+    if Assigned(FEndConn) and (AComponent = FEndConn.FShape) then
       FEndConn.FShape := nil;
   end;
 end;
@@ -2036,9 +2043,11 @@ class procedure TJvCustomDiagramShape.SetMultiSelected(
 var
   I: Integer;
 begin
-  for I := 0 to ParentControl.ControlCount - 1 do
-    if ParentControl.Controls[I] is TJvCustomDiagramShape then
-      TJvCustomDiagramShape(ParentControl.Controls[I]).MultiSelect := Value;
+  // (rom) added Assigned for security
+  if Assigned(ParentControl) then
+    for I := 0 to ParentControl.ControlCount - 1 do
+      if ParentControl.Controls[I] is TJvCustomDiagramShape then
+        TJvCustomDiagramShape(ParentControl.Controls[I]).MultiSelect := Value;
 end;
 
 initialization

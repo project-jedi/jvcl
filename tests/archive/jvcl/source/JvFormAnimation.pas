@@ -77,11 +77,14 @@ procedure TJvFormAnimation.AnimateDisappear(N: Integer);
 var
   I: Integer;
 begin
+  FForm.Visible := True;
   for I := 0 to N do
   begin
     SetWindowRgn(FForm.Handle, FRegions[I], True);
+    FForm.Repaint;
     Sleep(10);
   end;
+  FForm.Visible := False;
   SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
 end;
 
@@ -89,11 +92,13 @@ procedure TJvFormAnimation.AnimateAppear(N: Integer);
 var
   I: Integer;
 begin
+  FForm.Visible := False;
   SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
   FForm.Visible := True;
   for I := N downto 0 do
   begin
     SetWindowRgn(FForm.Handle, FRegions[I], True);
+    FForm.Repaint;
     Sleep(10);
   end;
   SetWindowRgn(FForm.Handle, 0, True);
