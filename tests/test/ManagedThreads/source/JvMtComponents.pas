@@ -70,13 +70,14 @@ type
   published
     property Manager: TJvMtManager read FManager write SetManager;
   end;
-  
+
   TJvMtThread = class (TJvMtManagedComponent)
   private
     FOnExecute: TJvMtThreadEvent;
     FOnFinished: TJvMtThreadEvent;
     FOnTerminating: TJvMtThreadEvent;
     FThread: TJvMtSingleThread;
+    FRunOnCreate: Boolean;
     function GetStatus: TMTThreadStatus;
     function GetTicket: TMTTicket;
     procedure HookThread;
@@ -89,6 +90,7 @@ type
     procedure SetOnTerminating(Value: TJvMtThreadEvent);
     procedure UnHookThread;
   protected
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure SetManager(Value: TJvMtManager); override;
@@ -107,12 +109,13 @@ type
     property Status: TMTThreadStatus read GetStatus;
     property Ticket: TMTTicket read GetTicket;
   published
+    property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property OnExecute: TJvMtThreadEvent read FOnExecute write SetOnExecute;
     property OnFinished: TJvMtThreadEvent read FOnFinished write SetOnFinished;
-    property OnTerminating: TJvMtThreadEvent read FOnTerminating write 
+    property OnTerminating: TJvMtThreadEvent read FOnTerminating write
       SetOnTerminating;
   end;
-  
+
   TJvMtSectionBase = class (TJvMtComponent)
   private
     FSync: TSynchroObject;
@@ -500,6 +503,14 @@ end;
 procedure TJvMtThread.DoTerminating(MTThread: TJvMtSingleThread);
 begin
   if Assigned(FOnTerminating) then FOnTerminating(Self, MTThread);
+end;
+
+procedure TJvMtThread.Loaded;
+begin
+  inherited;
+  // Comonent is ready. Shall we start a thread?
+  if (not (csDesigning in ComponentState)) and FRunOnCreate then
+    Run;
 end;
 
 { TJvMtSectionBase }
