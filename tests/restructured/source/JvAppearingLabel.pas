@@ -34,18 +34,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  JvLabel, JvTypes;
+  JvLabel, JvImageDrawThread, JvTypes;
 
 type
-  TJvAppearThread = class(TThread)
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-  end;
-
   TJvAppearingLabel = class(TJvLabel)
   private
     FAutoStart: Boolean;
@@ -59,7 +50,7 @@ type
     FDestLeft: Integer;
     FDestTop: Integer;
     FFirst: Cardinal;
-    FThread: TJvAppearThread;
+    FThread: TJvImageDrawThread;
     FTag: Integer;
     procedure SetAutoStart(const Value: Boolean);
     procedure SetInterval(const Value: Cardinal);
@@ -118,7 +109,7 @@ begin
         end;
     end;
     FTag := 1;
-    FThread.FDelay := FInterval;
+    FThread.Delay := FInterval;
     Visible := True;
   end;
   case FAppear of
@@ -200,10 +191,10 @@ begin
   FForm := AOwner as TControl;
   FTag := 0;
 
-  FThread := TJvAppearThread.Create(True);
+  FThread := TJvImageDrawThread.Create(True);
   FThread.FreeOnTerminate := False;
-  FThread.FDelay := FInterval;
-  FThread.FOnDraw := Appearing;
+  FThread.Delay := FInterval;
+  FThread.OnDraw := Appearing;
 end;
 
 {**************************************************}
@@ -239,7 +230,7 @@ procedure TJvAppearingLabel.SetFirst(const Value: Cardinal);
 begin
   FFirst := Value;
   if FTag = 0 then
-    FThread.FDelay := FFirst;
+    FThread.Delay := FFirst;
 end;
 
 {**************************************************}
@@ -248,27 +239,7 @@ procedure TJvAppearingLabel.SetInterval(const Value: Cardinal);
 begin
   FInterval := Value;
   if FTag <> 0 then
-    FThread.FDelay := Value;
-end;
-
-///////////////////////////////////////////////////////////
-// TJvAppearThread
-///////////////////////////////////////////////////////////
-
-procedure TJvAppearThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(nil);
-end;
-{*******************************************************}
-
-procedure TJvAppearThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Synchronize(Draw);
-    Sleep(FDelay);
-  end;
+    FThread.Delay := Value;
 end;
 
 end.

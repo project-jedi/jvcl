@@ -33,25 +33,14 @@ unit JvStarfield;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JVCLVer;
+  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, JvTypes,
+  JvImageDrawThread, JVCLVer;
 
 type
-  TJvStarfieldThread = class(TThread)
-  private
-    FTag: Integer;
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-    property Tag: Integer read FTag write FTag;
-  end;
-
   TJvStarfield = class(TGraphicControl)
   private
     FStarfield: array of TStars;
-    FThread: TJvStarfieldThread;
+    FThread: TJvImageDrawThread;
     FActive: Boolean;
     FDelay: Cardinal;
     FStars: Word;
@@ -91,10 +80,10 @@ begin
   FActive := False;
   FBmp := TBitmap.Create;
 
-  FThread := TJvStarfieldThread.Create(True);
-  FThread.FreeOnTerminate := True;
-  FThread.FDelay := 50;
-  FThread.FOnDraw := Refresh;
+  FThread := TJvImageDrawThread.Create(True);
+  FThread.FreeOnTerminate := false;
+  FThread.Delay := 50;
+  FThread.OnDraw := Refresh;
   Self.Width := 100;
   Self.Height := 100;
   FMaxSpeed := 10;
@@ -137,6 +126,8 @@ destructor TJvStarfield.Destroy;
 begin
   SetLength(FStarfield, 0);
   FThread.Terminate;
+  while not FThread.Terminated do
+    Application.ProcessMessages;
   FBmp.Free;
   inherited;
 end;
@@ -189,28 +180,7 @@ end;
 procedure TJvStarfield.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
-  FThread.FDelay := Value;
-end;
-
-///////////////////////////////////////////////////////////
-// TJvStarfieldThread
-///////////////////////////////////////////////////////////
-
-procedure TJvStarfieldThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(Self);
-end;
-
-{************************************************************}
-
-procedure TJvStarfieldThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Synchronize(Draw);
-    Sleep(FDelay);
-  end;
+  FThread.Delay := Value;
 end;
 
 end.

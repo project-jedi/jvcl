@@ -33,26 +33,15 @@ unit JvImageRotate;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, JvTypes, JVCLVer;
+  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, JvTypes,
+  JvImageDrawThread, JVCLVer;
 
 type
-  TJvImageThread = class(TThread)
-  private
-    FTag: Integer;
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-    property Tag: Integer read FTag write FTag;
-  end;
-
   TJvImageRotate = class(TImage)
   private
     FRotated: TBitmap;
     FOriginal: TBitmap;
-    FTimer: TJvImageThread;
+    FTimer: TJvImageDrawThread;
     FPosition: Integer;
     FInterval: Cardinal;
     FColor: TColor;
@@ -85,10 +74,10 @@ constructor TJvImageRotate.Create(AOwner: TComponent);
 begin
   FOriginal := TBitmap.Create;
   FRotated := TBItmap.Create;
-  FTimer := TJvImageThread.Create(True);
-  FTimer.FreeOnTerminate := True;
-  FTimer.FDelay := 20;
-  FTimer.FOnDraw := Rotate;
+  FTimer := TJvImageDrawThread.Create(True);
+  FTimer.FreeOnTerminate := false;
+  FTimer.Delay := 20;
+  FTimer.OnDraw := Rotate;
   FPosition := 0;
   FInterval := 20;
   FRotating := False;
@@ -103,6 +92,9 @@ begin
   FOriginal.Free;
   FRotated.Free;
   FTimer.Terminate;
+  while not FTimer.Terminated do
+    Application.ProcessMessages;
+  FTimer.Free;
   inherited;
 end;
 
@@ -214,28 +206,8 @@ end;
 procedure TJvImageRotate.SetInterval(Value: Cardinal);
 begin
   FInterval := Value;
-  FTimer.FDelay := Value;
+  FTimer.Delay := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvImageThread
-///////////////////////////////////////////////////////////
-
-procedure TJvImageThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(Self);
-end;
-
-{************************************************************}
-
-procedure TJvImageThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Sleep(FDelay);
-    Synchronize(Draw);
-  end;
-end;
 
 end.

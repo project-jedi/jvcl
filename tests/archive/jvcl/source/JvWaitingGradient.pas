@@ -33,18 +33,10 @@ unit JvWaitingGradient;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JvImageDrawThread, JVCLVer;
 
 type
-  TJvWaitingThread = class(TThread)
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-  end;
-
   TJvWaitingGradient = class(TGraphicControl)
   private
     FTimerTag: Integer;
@@ -60,7 +52,7 @@ type
     FLoading: Boolean;
     FInterval: Cardinal;
     FEnabled: Boolean;
-    FScroll: TJvWaitingThread;
+    FScroll: TJvImageDrawThread;
     FAboutJVCL: TJVCLAboutInfo;
     procedure Deplace(Sender: TObject);
     procedure CreateBitmap;
@@ -114,10 +106,10 @@ begin
   FDRect := Rect(0, 0, FWidth, Height);
   FTImertag := 0;
 
-  FScroll := TJvWaitingThread.Create(True);
+  FScroll := TJvImageDrawThread.Create(True);
   FScroll.FreeOnTerminate := False;
-  FScroll.FDelay := FInterval;
-  FScroll.FOnDraw := Deplace;
+  FScroll.Delay := FInterval;
+  FScroll.OnDraw := Deplace;
   FScroll.Resume;
 
   FLoading := False;
@@ -210,7 +202,7 @@ begin
     end;
     FDRect.Left := FLeft;
     FDRect.Right := FLeft + FWidth;
-    Paint;
+    Repaint;
   except
   end;
 end;
@@ -222,9 +214,8 @@ begin
   FBitmap.Free;
   FBitmap := nil;
   FScroll.Terminate;
-  // (p3) this isn't actually needed
-//  while not FScroll.Terminated do
-//    Application.ProcessMessages;
+  while not FScroll.Terminated do
+    Application.ProcessMessages;
   FScroll.Free;
   inherited;
 end;
@@ -281,7 +272,7 @@ end;
 procedure TJvWaitingGradient.SetInterval(const Value: Cardinal);
 begin
   FInterval := Value;
-  FScroll.FDelay := Value;
+  FScroll.Delay := Value;
 end;
 
 {**************************************************}
@@ -305,27 +296,6 @@ begin
     FDRect := Rect(0, 0, FWidth, Height);
     if not FLoading then
       CreateBitmap;
-  end;
-end;
-
-///////////////////////////////////////////////////////////
-// TJvWaitingThread
-///////////////////////////////////////////////////////////
-
-procedure TJvWaitingThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(nil);
-end;
-
-{**************************************************}
-
-procedure TJvWaitingThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Synchronize(Draw);
-    Sleep(FDelay);
   end;
 end;
 

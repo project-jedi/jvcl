@@ -33,25 +33,17 @@ unit JvWaitingProgress;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvSpecialProgress, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  JvSpecialProgress, JvImageDrawThread, JVCLVer;
 
 type
-  TJvProgressThread = class(TThread)
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-  end;
-
   TJvWaitingProgress = class(TWinControl)
   private
     FActive: Boolean;
     FRefresh: Cardinal;
     FLength: Cardinal;
     FOnEnded: TNotifyEvent;
-    FWait: TJvProgressThread;
+    FWait: TJvImageDrawThread;
     FProgress: TJvSpecialProgress;
     FAboutJVCL: TJVCLAboutInfo;
 
@@ -91,10 +83,10 @@ begin
   FRefresh := 500;
   FLength := 30000;
 
-  FWait := TJvProgressThread.Create(True);
+  FWait := TJvImageDrawThread.Create(True);
   FWait.FreeOnTerminate := False;
-  FWait.FDelay := FRefresh;
-  FWait.FOnDraw := OnScroll;
+  FWait.Delay := FRefresh;
+  FWait.OnDraw := OnScroll;
 
   FProgress := TJvSpecialProgress.Create(Self);
   FProgress.Parent := Self;
@@ -123,7 +115,6 @@ begin
   while not FWait.Terminated do
     Application.ProcessMessages;
   FWait.Free;
-
   FProgress.Free;
   inherited;
 end;
@@ -209,7 +200,7 @@ end;
 procedure TJvWaitingProgress.SetRefresh(const Value: Cardinal);
 begin
   FRefresh := Value;
-  FWait.FDelay := FRefresh;
+  FWait.Delay := FRefresh;
 end;
 
 {**************************************************}
@@ -218,27 +209,6 @@ procedure TJvWaitingProgress.WMSize(var Msg: TWMSize);
 begin
   FProgress.Width := Self.Width;
   FProgress.Height := Self.Height;
-end;
-
-///////////////////////////////////////////////////////////
-// TJvProgressThread
-///////////////////////////////////////////////////////////
-
-procedure TJvProgressThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(nil);
-end;
-
-{**************************************************}
-
-procedure TJvProgressThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Synchronize(Draw);
-    Sleep(FDelay);
-  end;
 end;
 
 end.

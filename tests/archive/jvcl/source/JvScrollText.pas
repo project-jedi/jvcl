@@ -33,18 +33,10 @@ unit JvScrollText;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvTypes,
+  JvImageDrawThread, JVCLVer;
 
 type
-  TJvScrollThread = class(TThread)
-  protected
-    procedure Draw;
-    procedure Execute; override;
-  public
-    FDelay: Cardinal;
-    FOnDraw: TNotifyEvent;
-  end;
-
   TJvScrollText = class(TCustomControl)
   private
     FMemo: TStaticText;
@@ -58,7 +50,7 @@ type
     FScrollSaved: Integer;
     FStrings: TStringList;
     FDeja: Cardinal;
-    FScroll: TJvScrollThread;
+    FScroll: TJvImageDrawThread;
     FFont: TFont;
     FStartY: Integer;
     FDown: Boolean;
@@ -110,27 +102,6 @@ implementation
 resourcestring
   RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-  ///////////////////////////////////////////////////////////
-  // TJvScrollThread
-  ///////////////////////////////////////////////////////////
-
-procedure TJvScrollThread.Draw;
-begin
-  if Assigned(FOnDraw) then
-    FOnDraw(nil)
-end;
-
-{*******************************************************}
-
-procedure TJvScrollThread.Execute;
-begin
-  while not Terminated do
-  begin
-    Synchronize(Draw);
-    Sleep(FDelay);
-  end;
-end;
-
 ///////////////////////////////////////////////////////////
 // TJvScrollText
 ///////////////////////////////////////////////////////////
@@ -150,6 +121,7 @@ begin
 
   FMemo := TStaticText.Create(Self);
   FMemo.Parent := Self;
+//  FMemo.SetBounds(2,2,Width-4,Height-4);
   FMemo.Width := Width;
   FMemo.Height := Height;
   FMemo.Borderstyle := sbsNone;
@@ -168,10 +140,10 @@ begin
   FDown := False;
   FDeja := Application.HintPause;
 
-  FScroll := TJvScrollThread.Create(True);
+  FScroll := TJvImageDrawThread.Create(True);
   FScroll.FreeOnTerminate := False;
-  FScroll.FDelay := FDelay;
-  FScroll.FOnDraw := OnScroll;
+  FScroll.Delay := FDelay;
+  FScroll.OnDraw := OnScroll;
 end;
 
 {*******************************************************}
@@ -212,7 +184,7 @@ begin
     FStartY := p.y
   else
     FStartY := p.x;
-  FScroll.FOnDraw := nil;
+  FScroll.OnDraw := nil;
   FDown := True;
 end;
 
@@ -266,7 +238,7 @@ end;
 procedure TJvScrollText.MouseU(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  FScroll.FOnDraw := OnScroll;
+  FScroll.OnDraw := OnScroll;
   FDown := False;
 end;
 
@@ -394,7 +366,7 @@ begin
   else
     Application.HintPause := Abs(Value - 1);
   FDelay := Value;
-  FScroll.FDelay := Value;
+  FScroll.Delay := Value;
 end;
 
 {*******************************************************}
@@ -541,3 +513,4 @@ begin
 end;
 
 end.
+
