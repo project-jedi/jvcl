@@ -387,7 +387,7 @@ begin
     Exit;
   Tag := 1;
 
- // auto installation 
+ // auto installation
   if PackageInstaller.Installer.AutoInstall then
   begin
     while True do

@@ -60,6 +60,7 @@ type
     LblBCBGuide: TLabel;
     CheckBoxCompileJclDcp: TCheckBox;
     CheckBoxVerbose: TCheckBox;
+    CheckBoxGenerateMapFiles: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -222,7 +223,9 @@ begin
     else if Sender = CheckBoxBuild then
       Installer.Data.Build := Integer(CheckBoxBuild.Checked)
     else if Sender = CheckBoxCompileOnly then
-      Installer.Data.CompileOnly := Integer(CheckBoxCompileOnly.Checked);
+      Installer.Data.CompileOnly := Integer(CheckBoxCompileOnly.Checked)
+    else if Sender = CheckBoxGenerateMapFiles then
+      Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
     ;
   end
   else
@@ -236,6 +239,8 @@ begin
       TargetConfig.Build := CheckBoxBuild.Checked
     else if Sender = CheckBoxCompileOnly then
       TargetConfig.CompileOnly := CheckBoxCompileOnly.Checked
+    else if Sender = CheckBoxGenerateMapFiles then
+      TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
     ;
   end;
   PackageInstaller.UpdatePages;
@@ -294,6 +299,7 @@ begin
       CheckBoxCleanPalettes.State := TCheckBoxState(Installer.Data.CleanPalettes);
       CheckBoxBuild.State := TCheckBoxState(Installer.Data.Build);
       CheckBoxCompileOnly.State := TCheckBoxState(Installer.Data.CompileOnly);
+      CheckBoxGenerateMapFiles.State := TCheckBoxState(Installer.Data.GenerateMapFiles);
     end
     else
     begin
@@ -303,6 +309,7 @@ begin
       CheckBoxCleanPalettes.Checked := TargetConfig.CleanPalettes;
       CheckBoxBuild.Checked := TargetConfig.Build;
       CheckBoxCompileOnly.Checked := TargetConfig.CompileOnly;
+      CheckBoxGenerateMapFiles.Checked := TargetConfig.GenerateMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
       FrameDirEditBrowseDCP.EditDirectory.Text := TargetConfig.DcpDir;

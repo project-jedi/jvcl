@@ -154,7 +154,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxDeveloperInstall: TCheckBox
       Left = 16
-      Top = 120
+      Top = 115
       Width = 225
       Height = 17
       Hint = 
@@ -169,7 +169,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxCleanPalettes: TCheckBox
       Left = 16
-      Top = 96
+      Top = 91
       Width = 225
       Height = 17
       Hint = 
@@ -195,7 +195,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxBuild: TCheckBox
       Left = 8
-      Top = 48
+      Top = 43
       Width = 233
       Height = 17
       Hint = 
@@ -211,7 +211,7 @@ object FrameConfigPage: TFrameConfigPage
     end
     object CheckBoxCompileOnly: TCheckBox
       Left = 8
-      Top = 72
+      Top = 67
       Width = 233
       Height = 17
       Hint = 
@@ -226,10 +226,10 @@ object FrameConfigPage: TFrameConfigPage
     end
     inline FrameDirEditBrowseBPL: TFrameDirEditBrowse
       Left = 2
-      Top = 152
+      Top = 160
       Width = 239
       Height = 49
-      TabOrder = 5
+      TabOrder = 6
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
@@ -250,10 +250,10 @@ object FrameConfigPage: TFrameConfigPage
     end
     inline FrameDirEditBrowseDCP: TFrameDirEditBrowse
       Left = 2
-      Top = 200
+      Top = 208
       Width = 239
       Height = 49
-      TabOrder = 6
+      TabOrder = 7
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
@@ -277,7 +277,7 @@ object FrameConfigPage: TFrameConfigPage
       Top = 264
       Width = 239
       Height = 49
-      TabOrder = 7
+      TabOrder = 8
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
@@ -302,6 +302,21 @@ object FrameConfigPage: TFrameConfigPage
       inherited BtnJCLDirBrowse: TButton
         Left = 216
       end
+    end
+    object CheckBoxGenerateMapFiles: TCheckBox
+      Left = 8
+      Top = 139
+      Width = 233
+      Height = 17
+      Hint = 
+        'Activate this option if the installer should generate'#13#10'detailed ' +
+        'map-files for each package.'
+      AllowGrayed = True
+      Caption = 'Genera&te Map files'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+      OnClick = CheckBoxDeveloperInstallClick
     end
   end
   object CheckBoxCompileJclDcp: TCheckBox
