@@ -15,15 +15,12 @@
 //----------
 {.$DEFINE IB65}
 {.$DEFINE IB7}
+{.$DEFINE IB71}
 
 //----------
 // YAFFIL
 //----------
 {.$DEFINE YF867}
-
-
-// use dynamic linking by default
-{$DEFINE INTERBASE_DYNAMIC_LINK}
 
 // Enable Multithreading,
 // Disabling Multithrading will made UIB a bit faster.
@@ -39,26 +36,27 @@
 //----------
 // Languages
 //----------
-{$DEFINE UIBLANG_EN} // English
+{$DEFINE UIBLANG_EN}  // English
 {.$DEFINE UIBLANG_FR} // French
+{.$DEFINE UIBLANG_CZ} // Czech
 
 //----------
 // OTHER
 //----------
 // Uncomment if you want to use class instead of components.
-// (will be helpfull with free pascal compiler)
 {.$DEFINE UIBNOCOMPONENT}
 
 // ***************
 // END USER DEFINE
 // ***************
 
+{$IFDEF FPC}
+  {$THREADING ON}
+{$ENDIF}
+
 {$IFDEF LINUX}
   {$DEFINE SET_TCP_NO_DELAY}
 {$ENDIF}
-
-{$ALIGN ON}
-{$MINENUMSIZE 4}
 
 // FIREBIRD
 
@@ -89,6 +87,16 @@
 {$ENDIF}
 
 // INTERBASE
+
+{$IFDEF IB71}
+  {$DEFINE INTERBASE}
+  {$DEFINE IB71_UP}
+  {$DEFINE IB7_UP}
+  {$DEFINE IB65_UP}
+
+  {$DEFINE IB7ORFB15}
+  {$DEFINE IB65ORYF867}
+{$ENDIF}
 
 {$IFDEF IB7}
   {$DEFINE INTERBASE}
