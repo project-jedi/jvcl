@@ -1095,8 +1095,7 @@ procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvN
 var
   Msg: TMsgStyleManagerChange; 
   I: Integer; 
-begin 
-  if AControl.Parent = nil then Exit; 
+begin
   Msg.Msg := CM_PARENTSTYLEMANAGERCHANGED;
   Msg.Sender := AControl;
   Msg.StyleManager := AStyleManager;
@@ -1134,7 +1133,9 @@ begin
   FDropButton.OnDropDownMenu := DoDropDownMenu;
   FColors := TJvNavPanelColors.Create;
   FColors.OnChange := DoColorsChange;
-  FParentStyleManager := True;
+  FParentStyleManager := True; 
+  ParentFont := false;
+  ParentColor := false; 
 end;
 
 destructor TJvIconPanel.Destroy;
@@ -2243,8 +2244,7 @@ end;
 procedure TJvNavPanelButton.FontChanged;
 begin
   inherited FontChanged;
-  if not (csCreating in ControlState) then
-    Invalidate;
+  Invalidate;
 end;
 
 procedure TJvNavPanelButton.Notification(AComponent: TComponent;
@@ -2348,8 +2348,7 @@ begin
   if FImageIndex <> Value then
   begin
     FImageIndex := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
+    Invalidate;
   end;
 end;
 
@@ -2358,7 +2357,6 @@ begin
   if FImages <> Value then
   begin
     FImages := Value;
-  if not (csCreating in ControlState) then
     Invalidate;
   end;
 end;
@@ -2366,8 +2364,7 @@ end;
 procedure TJvNavPanelButton.TextChanged;
 begin
   inherited TextChanged;
-  if not (csCreating in ControlState) then
-    Invalidate;
+  Invalidate;
 end;
 
 procedure TJvNavPanelButton.SetAlignment(const Value: TAlignment);
@@ -2375,7 +2372,6 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-  if not (csCreating in ControlState) then
     Invalidate;
   end;
 end;
@@ -2385,7 +2381,6 @@ begin
   if FWordWrap <> Value then
   begin
     FWordWrap := Value;
-  if not (csCreating in ControlState) then
     Invalidate;
   end;
 end;
