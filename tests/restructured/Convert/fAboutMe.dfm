@@ -454,12 +454,13 @@ object frmAboutMe: TfrmAboutMe
       Left = 16
       Top = 176
       Width = 137
-      Height = 41
+      Height = 57
       BorderStyle = bsNone
       Color = clBtnFace
       Lines.Strings = (
         'Credits: Igor Komar'
         '             Dave Jewell '
+        '             Martin Waldenburg'
         '             Michael Beck'
         '             ')
       TabOrder = 0
