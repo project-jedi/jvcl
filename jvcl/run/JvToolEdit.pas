@@ -2755,7 +2755,8 @@ end;
 
 function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
-  Result := (FYearDigits = dyFour) or (FYearDigits = dyDefault);
+  Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
+    (JvJCLUtils.FourDigitYear));
 end;
 
 function TJvCustomDateEdit.GetDateMask: string;
