@@ -59,6 +59,68 @@ type
 {$ENDIF VisualCLX}
 {$HPPEMIT '#endif'}
 
+{$IFDEF VCL}
+type
+  PCaptionChar = PChar;
+
+  // used in JvSpeedButton, JvArrowButton, JvButton CM_JVBUTTONPRESSED
+  // asn: can also be used with CM_BUTTONPRESSED
+  TCMButtonPressed = packed record
+    Msg: Cardinal;
+    Index: Integer;     { clx has Index and Control switched }
+    Control: TControl;
+    Result: Longint;
+  end;
+
+  TJvCMButtonPressed = TCMButtonPressed; { for backward compatibility }
+
+  THintString = string;
+  THintStringList = TStringList;
+
+  { JvExVCL classes }
+  TInputKey = (ikAll, ikArrows, ikChars, ikButton, ikTabs, ikEdit, ikNative{, ikNav, ikEsc});
+  TInputKeys = set of TInputKey;
+
+  TJvRGBTriple = packed record
+    rgbBlue: Byte;
+    rgbGreen: Byte;
+    rgbRed: Byte;
+  end;
+
+  TTimerProc = procedure(hwnd: HWND; Msg: Cardinal; idEvent: Cardinal; dwTime: Cardinal);
+
+const
+  NullHandle = 0;
+  { clx destinguishes between TFormBorderStyle & TBorderStyle }
+  fbsDialog      = bsDialog;
+  fbsSingle      = bsSingle;
+  fbsNone	       = bsNone;
+  fbsSizeable    = bsSizeable;
+  fbsToolWindow  = bsToolWindow;
+  fbsSizeToolWin = bsSizeToolWin;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+type
+  // used in JvSpeedButton, JvArrowButton, JvButton CM_BUTTONPRESSED
+  // can be used with (VisualCLX) CM_BUTTONPRESSED
+  TCMButtonPressed = packed record
+    Msg: Cardinal;
+    Control: TControl;  { with VCL Control & Indez are switched }
+    Index: Integer;
+    Result: Longint;    { QButtons.TCMButtonPressed has no Result }
+  end;
+
+  PCaptionChar = PWideChar;
+  THintString = WideString;
+  THintStringList = TWideStringList;
+  TJvRGBTriple = TRGBQuad; { VisualCLX does not support pf24bit }
+
+const
+  NullHandle = nil; { clx uses typed pointers ! }
+  ikButton = ikReturn;
+{$ENDIF VisualCLX}
+
 type
   {$IFNDEF COMPILER6_UP}
   EOSError = class(EWin32Error);
@@ -109,32 +171,13 @@ type
   TJvClipboardCommand = (caCopy, caCut, caPaste, caUndo);
   TJvClipboardCommands = set of TJvClipboardCommand;
 
-  // used in JvSpeedButton, JvArrowButton, JvButton
-  TJvCMButtonPressed = packed record
-    Msg: Cardinal;
-    Index: Integer;
-    Control: TControl;
-    Result: Longint;
-  end;
-
   // used in JvButton
   TCMForceSize = record
     Msg: Cardinal;
-    Sender: TControl;
     NewSize: TSmallPoint;
+    Sender: TControl;
     Result: Longint;
   end;
-
-  {$IFDEF VCL}
-  TJvRGBTriple = packed record
-    rgbBlue: Byte;
-    rgbGreen: Byte;
-    rgbRed: Byte;
-  end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-  {$ENDIF VisualCLX}
 
   PJvRGBArray = ^TJvRGBArray;
   TJvRGBArray = array [0..MaxPixelCount] of TJvRGBTriple;
@@ -281,13 +324,6 @@ const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = 0; {-693594}
 
-  {$IFDEF VCL}
-  NullHandle = 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  NullHandle = nil;
-  {$ENDIF VisualCLX}
-  
 type
   // JvDriveCtrls / JvLookOut
   TJvImageSize = (isSmall, isLarge);
@@ -310,15 +346,6 @@ type
 const
   DefaultTrackFontOptions = [hoFollowFont, hoPreserveColor, hoPreserveStyle];
 
-type
-  {$IFDEF VCL}
-  THintString = string;
-  THintStringList = TStringList;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  THintString = WideString;
-  THintStringList = TWideStringList;
-  {$ENDIF VisualCLX}
 
 type
   // from JvListView.pas
@@ -340,7 +367,7 @@ const
   SysColCount = 25;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  SysColCount = 58;
+  SysColCount = 42;
   {$ENDIF VisualCLX}
   ColorValues: array [0 .. ColCount - 1] of TDefColorItem = (
     (Value: clBlack;      Constant: 'clBlack';      Description: RsClBlack),
@@ -394,21 +421,6 @@ const
     (Value: clInfoBk;              Constant: 'clInfoBk';              Description: RsClInfoBk)
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    (Value: clForeground;              Constant: 'clForeground';              Description: RsClForeground),
-    (Value: clButton;                  Constant: 'clButton';                  Description: RsClButton),
-    (Value: clLight;                   Constant: 'clLight';                   Description: RsClLight),
-    (Value: clMidlight;                Constant: 'clMidlight';                Description: RsClMidlight),
-    (Value: clDark;                    Constant: 'clDark';                    Description: RsClDark),
-    (Value: clMid;                     Constant: 'clMid';                     Description: RsClMid),
-    (Value: clText;                    Constant: 'clText';                    Description: RsClText),
-    (Value: clBrightText;              Constant: 'clBrightText';              Description: RsClBrightText),
-    (Value: clButtonText;              Constant: 'clButtonText';              Description: RsClButtonText),
-    (Value: clBase;                    Constant: 'clBase';                    Description: RsClBase),
-    (Value: clBackground;              Constant: 'clBackground';              Description: RsClBackground),
-    (Value: clShadow;                  Constant: 'clShadow';                  Description: RsClShadow),
-    (Value: clHighlight;               Constant: 'clHighlight';               Description: RsClHighlight),
-    (Value: clHighlightedText;         Constant: 'clHighlightedText';         Description: RsClHighlightedText),
-
     (Value: clNormalForeground;        Constant: 'clNormalForeground';        Description: RsClNormalForeground),
     (Value: clNormalButton;            Constant: 'clNormalButton';            Description: RsClNormalButton),
     (Value: clNormalLight;             Constant: 'clNormalLight';             Description: RsClNormalLight),
@@ -453,20 +465,8 @@ const
     (Value: clDisabledShadow;          Constant: 'clDisabledShadow';          Description: RsClDisabledShadow),
     (Value: clDisabledHighlight;       Constant: 'clDisabledHighlight';       Description: RsClDisabledHighlight),
     (Value: clDisabledHighlightedText; Constant: 'clDisabledHighlightedText'; Description: RsClDisabledHighlightedText),
-
-    (Value: clDesktop;                 Constant: 'clDesktop';                 Description: RsClDesktop),
-    (Value: clInfoBk;                  Constant: 'clInfoBk';                  Description: RsClInfoBk)
     {$ENDIF VisualCLX}
   );
-
-{$IFDEF VCL}
-type
-  PCaptionChar = PChar;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-type
-  PCaptionChar = PWideChar;
-{$ENDIF VisualCLX}
 
 type
   TJvSizeRect = packed record
@@ -474,6 +474,162 @@ type
     Left: Integer;
     Width: Integer;
     Height: Integer;
+  end;
+
+  TJvMessage = packed record
+    Msg: Integer;
+    case Integer of
+    0:
+    (
+      WParam: Integer;
+      LParam: Integer;
+      Result: Integer
+    );
+    1:
+    (
+      WParamLo: Word;
+      WParamHi: Word;
+      LParamLo: Word;
+      LParamHi: Word;
+      ResultLo: Word;
+      ResultHi: Word
+    );
+    2:
+    ( // WM_NOPARAMS
+      Unused: array[0..3] of Word;
+      Handled: LongBool;  // "Result"
+    );
+    3:
+    ( // WM_SCROLL
+      Pos: Integer;         // Wparam
+      ScrollCode: Integer   // Lparam
+    );
+    4:
+    ( // WM_TIMER
+      TimerID: Integer;     // WParam
+      TimerProc: TTimerProc // LParam
+    );
+    5:
+    ( // WM_MOUSEACTIVATE
+      TopLevel: HWND;       // WParam
+      HitTestCode: Word;    // LParamLo
+      MouseMsg: Word        // LParamHi
+    );
+    6:
+    ( // WM_MOUSE(WHEEL) | WM_MOVE
+      case Integer of
+      0:
+      ( // WM_MOUSE
+        Keys: Integer;     // WParam
+        // LParam: Pos | (XPos, YPos)
+        case Integer of
+        0:
+        (
+          Position: TSmallPoint
+        );
+        1:
+        (
+          XPos: Smallint;
+          YPos: Smallint
+        )
+      );
+      1:
+      ( // WM_MOUSEWHEEL
+        WheelDelta: Integer // WParam
+      );
+    );
+
+    7:
+    ( // WM_ACTIVATE
+      Active: Word; { WA_INACTIVE, WA_ACTIVE, WA_CLICKACTIVE } // WParamLo
+      Minimized: WordBool;  // WParamHi
+      ActiveWindow: HWND    // LParam
+    );
+
+    8:
+    ( // WM_COMMAND
+      ItemID: Word;         // WParamLo
+      NotifyCode: Word;     // WParamHi
+      Ctl: HWND             // LParam
+    );
+
+    9:
+    ( // WM_GETICON
+      BigIcon: Longbool
+    );
+
+    10:
+    ( // CM_(FOCUS|CONTROL)CHANGED  | CM_HINTSHOW
+      Reserved: Integer;    // WParam
+
+      case Integer of
+      0:
+      ( // CM_(CONTROL)CHANGED
+        Child: TControl     // LParam
+      );
+      1:
+      ( // CM_FOCUSCHANGED | CM_FORCESIZE }
+        Sender: TControl  // LParam
+      );
+      2:
+      ( //CM_HINTSHOW
+        HintInfo: PHintInfo
+      )
+    );
+
+    11:
+    ( // CM_CONTROLLISTCHANGE | CM_(CONTROL)CHANGED (| CM_BUTTONPRESSED for clx)
+      Control: TControl;    // WParam
+      case Integer of
+      0:
+      ( // CM_(CONTROL)CHANGED
+        Inserting: LongBool     // LParam
+      );
+      1: // CM_BUTTONPRESSED (clx)
+      (
+        Index: Integer;
+      )
+    );
+
+    12:
+    ( // CM_HINTSHOWPAUSE
+      WasActive: LongBool;
+      Pause: PInteger
+    );
+
+    13:
+    ( // WM_KEY
+      CharCode: Word;
+      NotUsed: Word;
+      KeyData: Integer
+    );
+
+    14:
+    ( // WM_GETTEXT
+      TextMax: Integer;
+      Text: PChar
+    );
+
+    15:
+    ( // WM_ERASEBKGND | WM_PAINT
+      DC: HDC;
+    );
+
+    16:
+    ( // WM_KILLFOCUS
+      FocusedWnd: HWND;
+    );
+    17:
+    (
+      NewSize: TSmallPoint; //CM_FORCESIZE wParam
+    );
+    {$IFDEF VCL}
+    18:
+    ( { alternative naming for VCL CM_BUTTONPRESSED }
+      GroupIndex: Integer;
+      Button: TControl;
+    );
+    {$ENDIF VCL}
   end;
 
 implementation
