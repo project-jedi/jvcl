@@ -85,7 +85,8 @@ unit JvFixedEditPopUp;
 
 interface
 uses
-  Controls, Menus;
+  Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
+  JvComponent;
 
 type
   { IFixedPopupIntf is implemented by a component that supports the
@@ -122,8 +123,6 @@ procedure FixedDefaultEditPopUseResourceString(Value: Boolean);
 procedure FixedDefaultEditPopupUpdate(AEdit: TWinControl);
 
 implementation
-uses
-  Windows, SysUtils, Classes, Messages, JvComponent, TypInfo;
 
 resourcestring
   SDefaultPopUpUndo = '&Undo';
@@ -173,6 +172,8 @@ type
     procedure SetEdit(const Value: TWinControl);
     function GetClipboardCommands: TJvClipboardCommands;
     procedure UpdateItems;
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     property Edit: TWinControl read FEdit write SetEdit;
     property PopupMenu: TPopupMenu read GetPopupMenu;
@@ -497,6 +498,14 @@ begin
     if FEdit <> nil then
       FEdit.FreeNotification(self);
   end;
+end;
+
+procedure THiddenPopupObject.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FEdit) then
+    FEdit := nil;
 end;
 
 initialization
