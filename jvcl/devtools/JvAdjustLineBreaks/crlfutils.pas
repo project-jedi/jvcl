@@ -6,7 +6,7 @@ interface
 procedure Run;
 implementation
 uses
-  Windows, SysUtils, {$IFNDEF COMPILER&_UP} JvFunctions, {$ENDIF} Classes;
+  Windows, SysUtils, {$IFNDEF COMPILER6_UP} JvFunctions, {$ENDIF} Classes;
 
 function IsTextStream(Stream:TStream):Boolean;
 const
