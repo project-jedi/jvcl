@@ -23,7 +23,7 @@ object frmImageViewer: TfrmImageViewer
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 405
+    Top = 408
     Width = 554
     Height = 19
     Panels = <
@@ -36,7 +36,7 @@ object frmImageViewer: TfrmImageViewer
     Left = 0
     Top = 0
     Width = 554
-    Height = 405
+    Height = 408
     HorzScrollBar.Tracking = True
     VertScrollBar.Tracking = True
     Align = alClient

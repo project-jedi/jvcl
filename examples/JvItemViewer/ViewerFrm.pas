@@ -56,7 +56,7 @@ type
     procedure AdjustFormSize;
   public
     class function View(const Filename: string; Transparent: Boolean; BackColor: TColor): Boolean; overload;
-    class function View(Picture: TPicture; BackColor: TColor): Boolean; overload;
+    class function View(Picture: TPicture; Transparent: Boolean; BackColor: TColor): Boolean; overload;
   end;
 
 implementation
@@ -87,13 +87,14 @@ begin
   end;
 end;
 
-class function TfrmImageViewer.View(Picture: TPicture; BackColor: TColor): Boolean;
+class function TfrmImageViewer.View(Picture: TPicture; Transparent: Boolean; BackColor: TColor): Boolean;
 var
   frmImageViewer: TfrmImageViewer;
 begin
   frmImageViewer := Self.Create(Application);
   try
     frmImageViewer.Image1.Picture.Assign(Picture);
+    frmImageViewer.Image1.Picture.Graphic.Transparent := Transparent;
     frmImageViewer.Caption := Picture.Graphic.ClassName;
     frmImageViewer.ScrollBox1.Color := BackColor;
     frmImageViewer.StatusBar1.Panels[0].Text := Format(' (%s) - %d x %d',

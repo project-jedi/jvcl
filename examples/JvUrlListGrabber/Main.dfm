@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 191
-  Top = 107
+  Left = 267
+  Top = 113
   Width = 543
   Height = 393
   Caption = 'TJvUrlListGrabber demo'
@@ -16,6 +16,7 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poDesktopCenter
   Scaled = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel
@@ -32,10 +33,10 @@ object frmMain: TfrmMain
     WordWrap = True
   end
   object memExplanation: TMemo
-    Left = 4
+    Left = 7
     Top = 4
-    Width = 527
-    Height = 137
+    Width = 520
+    Height = 133
     Anchors = [akLeft, akTop, akRight]
     Lines.Strings = (
       'This is the demo for TJvUrlListGrabber.'
@@ -52,19 +53,17 @@ object frmMain: TfrmMain
       'It is already able to grab files though.'
       
         'The dynamic creation group allows to work with a component creat' +
-        'ed dynamically at runtime as opposed '
-      'to '
-      
-        'using the one available on the form at design time. This has bee' +
-        'n done to test both usages as there may '
-      'be '
-      'errors that only show up by using a design created component.')
+        'ed dynamically at runtime as opposed to using the one available ' +
+        'on the form at design time. This has been done to test both usag' +
+        'es as there may be errors that only show up by using a design cr' +
+        'eated component.')
     ScrollBars = ssVertical
     TabOrder = 0
+    WordWrap = False
   end
   object grbDynamic: TGroupBox
     Left = 415
-    Top = 148
+    Top = 140
     Width = 113
     Height = 65
     Anchors = [akTop, akRight]
@@ -82,9 +81,10 @@ object frmMain: TfrmMain
   end
   object grbDesign: TGroupBox
     Left = 415
-    Top = 228
+    Top = 207
     Width = 113
     Height = 125
+    Anchors = [akTop, akRight, akBottom]
     Caption = ' Design time use '
     TabOrder = 2
     object btnGoDesign: TButton
@@ -116,14 +116,28 @@ object frmMain: TfrmMain
     end
   end
   object memUrls: TMemo
-    Left = 4
+    Left = 8
     Top = 188
     Width = 389
-    Height = 162
+    Height = 142
     Anchors = [akLeft, akTop, akRight, akBottom]
     Lines.Strings = (
-      'http://jvcl.sf.net')
+      'http://jvcl.sf.net'
+      'ftp://homepages.borland.com/home/jedi/jvcl/Licensing.html'
+      'file://C:/log2.txt'
+      'C:\log2.txt')
     TabOrder = 3
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Top = 347
+    Width = 535
+    Height = 19
+    Panels = <
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object julGrabber: TJvUrlListGrabber
     Left = 384
