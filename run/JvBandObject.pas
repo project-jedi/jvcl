@@ -1,5 +1,3 @@
-//Band objects wrapper classes. }
-
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -23,6 +21,9 @@ Last Modified: 2001-mm-dd
 You may retrieve the latest version of this file at the Project JEDI home page,
 located at http://www.delphi-jedi.org
 
+Description:
+  Band objects wrapper classes.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -35,7 +36,8 @@ unit JvBandObject;
 interface
 
 uses
-  Windows, Forms, Messages, ComObj, ShlObj, ActiveX, Classes, Menus, Dialogs, Controls,
+  Windows, Forms, Messages, ComObj, ShlObj, ActiveX, Classes,
+  Menus, Dialogs, Controls,
   JvBandForms;
 
 const
@@ -54,14 +56,14 @@ type
 
   TzToolBandObjectFactory = class(TzCustomBandObjectFactory)
   public
-    procedure UpdateRegistry(Register: Boolean); override;
+    procedure UpdateRegistry(Reg: Boolean); override;
   end;
 
   TzCatBandObjectFactory = class(TzCustomBandObjectFactory)
   protected
     function GetImplCatID: TGUID; virtual; abstract;
   public
-    procedure UpdateRegistry(Register: Boolean); override;
+    procedure UpdateRegistry(Reg: Boolean); override;
   end;
 
   TzDeskBandObjectFactory = class(TzCatBandObjectFactory)
@@ -77,7 +79,7 @@ type
     function GetBarWidth: Word; virtual;
     function GetBarHeight: Word; virtual;
   public
-    procedure UpdateRegistry(Register: Boolean); override;
+    procedure UpdateRegistry(Reg: Boolean); override;
   end;
 
   TzInfoBandObjectFactory = class(TzExplorerBarObjectFactory)
@@ -108,7 +110,7 @@ type
     {$IFNDEF T2H}
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
-    {$ENDIF}
+    {$ENDIF T2H}
     function BandInfoChanged: HRESULT;
     function Maximize: HRESULT;
     function ShowAllBands: HRESULT;
@@ -223,16 +225,16 @@ begin
   end;
 end;
 
-procedure TzToolBandObjectFactory.UpdateRegistry(Register: Boolean);
+procedure TzToolBandObjectFactory.UpdateRegistry(Reg: Boolean);
 begin
-  if Register then
+  if Reg then
     inherited;
   with TRegistry.Create do
   try
     RootKey := HKEY_LOCAL_MACHINE;
     if OpenKey(cIERegistryBase + 'Toolbar', True) then
     try
-      if Register then
+      if Reg then
         WriteString(ClassIDString, Description)
       else
         DeleteValue(ClassIDString);
@@ -242,23 +244,23 @@ begin
   finally
     Free;
   end;
-  if not Register then
-    inherited;
+  if not Reg then
+    inherited UpdateRegistry(Reg);
 end;
 
 //=== TzCatBandObjectFactory =================================================
 
-procedure TzCatBandObjectFactory.UpdateRegistry(Register: Boolean);
+procedure TzCatBandObjectFactory.UpdateRegistry(Reg: Boolean);
 var
   CatRegister: ICatRegister;
   ImplCatID: TGUID;
 begin
-  if Register then
+  if Reg then
     inherited;
   ImplCatID := GetImplCatID;
   CoInitialize(nil);
   CatRegister := ComObj.CreateComObject(CLSID_StdComponentCategoryMgr) as ICatRegister;
-  if Register then
+  if Reg then
     CatRegister.RegisterClassImplCategories(ClassID, 1, @ImplCatID)
   else
   begin
@@ -266,9 +268,9 @@ begin
     DeleteRegKey(cCLSID + ClassIDString + '\Implemented Categories');
   end;
   CatRegister := nil;
-  CoUninitialize();
-  if not Register then
-    inherited;
+  CoUninitialize;
+  if not Reg then
+    inherited UpdateRegistry(Reg);
 end;
 
 //=== TzDeskBandObjectFactory ================================================
@@ -305,11 +307,11 @@ begin
   Result := '';
 end;
 
-procedure TzExplorerBarObjectFactory.UpdateRegistry(Register: Boolean);
+procedure TzExplorerBarObjectFactory.UpdateRegistry(Reg: Boolean);
 begin
-  if Register then
+  if Reg then
   begin
-    inherited;
+    inherited UpdateRegistry(Reg);
     if GetURL <> '' then
     begin
       CreateRegKey(cCLSID + ClassIDString + '\Instance\CLSID', '', '{4D5C8C2A-D075-11D0-B416-00C04FB90376}');
@@ -350,7 +352,7 @@ begin
     DeleteRegKey(cCLSID + ClassIDString + '\Instance\InitPropertyBag');
     DeleteRegKey(cCLSID + ClassIDString + '\Instance\CLSID');
     DeleteRegKey(cCLSID + ClassIDString + '\Instance');
-    inherited;
+    inherited UpdateRegistry(Reg);
   end;
 end;
 
@@ -375,7 +377,7 @@ begin
   {$IFDEF Debug}
   //zTraceLog(ClassName + '.AfterConstruction()');
   {$ENDIF}
-  inherited;
+  inherited AfterConstruction;
   FBandForm := nil;
   FSite := nil;
   FOleCommandTarget := nil;
@@ -395,7 +397,7 @@ begin
   {$IFDEF Debug}
   //zTraceLog(ClassName + '.BeforeDestruction End()');
   {$ENDIF}
-  inherited;
+  inherited BeforeDestruction;
 end;
 
 function TzCustomBandObject.BandInfoChanged: HRESULT;
