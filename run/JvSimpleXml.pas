@@ -33,8 +33,8 @@ interface
 uses
   SysUtils, Classes, IniFiles,
   {$IFDEF COMPILER6_UP}
-  Variants
-  {$ENDIF COMPILER6_UP},
+  Variants,
+  {$ENDIF COMPILER6_UP}
   JvComponent;
 
 type

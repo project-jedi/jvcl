@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2004-01-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,7 +31,13 @@ unit JvThread;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Types, QWindows,
+  {$ENDIF LINUX}
+  SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
