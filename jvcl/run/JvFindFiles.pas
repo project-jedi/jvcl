@@ -24,6 +24,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 {A function and a component to wrap access to the FindFiles Dialog
 (accessible from the Explorer by hitting F3) }
@@ -33,7 +34,7 @@ unit JvFindFiles;
 interface
 
 uses
-  SysUtils, Classes, ShlObj, ShellAPI, ActiveX, Dialogs,
+  SysUtils, Classes, ShlObj, ShellAPI, ActiveX,
   JvBaseDlg;
 
 type

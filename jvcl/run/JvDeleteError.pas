@@ -31,7 +31,7 @@ unit JvDeleteError;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, SetupApi, SysUtils, Classes,
   JvCommonDialogD, JvTypes;
 
 type
@@ -52,7 +52,6 @@ type
 implementation
 
 uses
-  SetupApi,
   JclSysUtils;
 
 constructor TJvDeleteError.Create(AOwner: TComponent);

@@ -16,6 +16,9 @@ object frmProgress: TfrmProgress
   Position = poScreenCenter
   Scaled = False
   OnPaint = FormPaint
+  DesignSize = (
+    316
+    165)
   PixelsPerInch = 96
   TextHeight = 13
   object imProgress: TImage
@@ -41,8 +44,6 @@ object frmProgress: TfrmProgress
     Width = 284
     Height = 16
     Anchors = [akLeft, akTop, akRight]
-    Min = 0
-    Max = 100
     TabOrder = 0
   end
   object btnCancel: TButton

@@ -31,7 +31,7 @@ unit JvConnectNetwork;
 interface
 
 uses
-  Forms,
+  Windows,
   JvBaseDlg;
 
 type
@@ -54,9 +54,6 @@ type
   end;
 
 implementation
-
-uses
-  Windows;
 
 function TJvConnectNetwork.Execute: Boolean;
 begin

@@ -92,10 +92,10 @@ implementation
 uses
   SysUtils,
   {$IFDEF VCL}
-  Forms, Consts,
+  Consts, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QForms, QConsts,
+  QConsts, QForms,
   {$ENDIF VisualCLX}
   JvDualListForm, JvResources, JvJVCLUtils;
 

@@ -24,13 +24,14 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvRenameError;
 
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  Windows, SetupApi, SysUtils, Classes,
   JvCommonDialogD, JvTypes;
 
 type
@@ -53,7 +54,6 @@ type
 implementation
 
 uses
-  SetupApi,
   JclSysUtils;
 
 constructor TJvRenameError.Create(AOwner: TComponent);

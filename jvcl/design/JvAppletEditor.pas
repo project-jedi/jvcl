@@ -24,18 +24,26 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I vclonly.inc}
 
 unit JvAppletEditor;
 
 interface
 
 uses
-  Windows, Classes, Controls, Forms, Dialogs,
+  Windows, Classes,
+  {$IFDEF VCL}
+  Controls, Forms, Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QDialogs,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors;
+  DesignIntf, DesignEditors,
   {$ELSE}
-  DsgnIntf;
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
+  JvWinDialogs;
 
 type
   // (p3) changed to show the "friendly" names in a list: replaces
@@ -58,7 +66,7 @@ implementation
 uses
   SysUtils,
   JclSysInfo,
-  JvWinDialogs, JvJCLUtils, JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 var
   FApplets: TStringList = nil;

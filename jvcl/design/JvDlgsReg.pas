@@ -41,16 +41,22 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvWinDialogs,
-  JvAddPrinter, JvCommonDialogD, JvCommonExecDlg, JvDesktopAlert,
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
+  {$IFDEF VCL}
+   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
-  {$ENDIF BCB5}
-  JvDialogActnResForm, JvDialogs, JvProgressComponent, JvPageSetupTitled, JvPageSetup,
-  JvConnectNetwork, JvSelectDirectory, JvCopyError, JvDeleteError,
-  JvRenameError, JvDiskPrompt, JvFindFiles, JvImageDlg, JvLoginForm, JvDualList,
-  JvProgressDialog, JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor,
-  JvCommonDialogDEditor, JvTipOfDayEditor;
+   {$ENDIF BCB5}
+  JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
+  JvAppletEditor,
+  {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
+  JvWinDialogs, JvAddPrinter, JvCommonDialogD, JvConnectNetwork, JvCopyError,
+  JvDeleteError, JvRenameError, JvDiskPrompt, JvFindFiles,
+  JvObjectPickerDialog, JvCommonDialogDEditor,
+  {$ENDIF MSWINDOWS}
+  JvBaseDlg, JvFindReplace, JvDSADialogs, JvTipOfDay, JvCommonExecDlg,
+  JvDesktopAlert, JvProgressComponent, JvSelectDirectory, JvImageDlg,
+  JvLoginForm, JvDualList, JvProgressDialog, JvBaseDlgEditor,
+  JvTipOfDayEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDlgsReg.dcr}
@@ -64,39 +70,56 @@ const
   cAppletName = 'AppletName';
   cAppletIndex = 'AppletIndex';
 begin
-  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,
-    TJvOpenDialog, TJvSaveDialog, TJvTipOfDay, TJvFindReplace, TJvDSADialog,
-    TJvPageSetupDialog, TJvPageSetupTitledDialog, TJvConnectNetwork,
+  {$IFDEF VCL}
+  RegisterComponents(RsPaletteDialog, [TJvOpenDialog, TJvSaveDialog]);
+  {$ENDIF VCL}
+  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,  TJvTipOfDay,
+    TJvFindReplace, TJvDSADialog]);
+  {$IFDEF VCL}
+  RegisterComponents(RsPaletteDialog, [TJvPageSetupDialog, TJvPageSetupTitledDialog,
+    TJvColorDialog, TJvAppletDialog]);
+  {$ENDIF VCL}
+  {$IFDEF MSWINDOWS}
+  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork,
     TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
-    TJvFormatDriveDialog, TJvColorDialog, TJvOrganizeFavoritesDialog,
-    TJvComputerNameDialog, TJvAppletDialog, TJvChangeIconDialog,
+    TJvFormatDriveDialog, TJvOrganizeFavoritesDialog,
+    TJvComputerNameDialog, TJvChangeIconDialog,
     TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
     TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
     TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
     TJvObjectPickerDialog, TJvDualListDialog, TJvImageDialog, TJvLoginDialog,
     TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
     TJvDeleteError, TJvRenameError, TJvDesktopAlert, TJvDesktopAlertStack]);
+  {$ENDIF MSWINDOWS}
 
+  {$IFDEF VCL}
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
+  {$ENDIF VCL}
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
+  {$IFDEF VCL}
   RegisterComponentEditor(TJvOpenDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvSaveDialog, TJvBaseDlgEditor);
+  {$ENDIF VCL}
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
+  {$IFDEF MSWINDOWS}
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
+  {$ENDIF MSWINDOWS}
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
+  {$IFDEF VCL}
   RegisterActions(RsJVCLActionsCategory, [TJvBrowseForFolderAction,
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
     // TJvDialogActions is a datamodule with default settings for our dialog actions
     TJvDialogActions);
+  {$ENDIF VCL}
   {$ENDIF BCB5}
 end;
 

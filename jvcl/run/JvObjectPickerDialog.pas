@@ -30,7 +30,7 @@ unit JvObjectPickerDialog;
 interface
 
 uses
-  Windows, ActiveX, Classes, ComObj, SysUtils,
+  Windows, ActiveX, ComObj, SysUtils, Classes, 
   ObjSel,
   JvBaseDlg, JvTypes;
 

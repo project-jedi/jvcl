@@ -32,6 +32,7 @@ unit JvTipOfDayEditor;
 interface
 
 uses
+  SysUtils,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
   {$ELSE}
@@ -51,7 +52,6 @@ type
 implementation
 
 uses
-  SysUtils,
   JvTipOfDay, JvDsgnConsts;
 
 procedure TJvTipOfDayEditor.Edit;
