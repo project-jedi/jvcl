@@ -278,10 +278,7 @@ begin
       else
       begin
         R := Rect(1, Height div 2 - 1, Width, Height - 1);
-        {$IFDEF VisualCLX}
-        QWindows.
-        {$ENDIF VisualCLX}
-        DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
+        {$IFDEF VisualCLX} QWindows.{$ENDIF}DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
       end;
     end;
   if csDesigning in ComponentState then
@@ -669,7 +666,7 @@ begin
   FDownRight.Kind := sbRight;
 end;
 
-procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvCustomScrollPanel.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FUpLeft = nil then

@@ -22,12 +22,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-// for FileCtrl.pas and QFileCtrls.pas
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$I crossplatform.inc}
 
 unit JvParameterListParameter;
 
@@ -533,14 +528,10 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 begin
   Result :=
-    {$IFDEF VCL}
-  JvDSADialogs.
-    {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvQDSADialogs.
-    {$ENDIF VisualCLX}
-  MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
-    CancelButton, HelpButton, ADynControlEngine);
+    {$IFDEF VCL} JvDSADialogs. {$ENDIF}
+    {$IFDEF VisualCLX} JvQDSADialogs. {$ENDIF}
+    MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
+      CancelButton, HelpButton, ADynControlEngine);
 end;
 
 //=== TJvNoDataParameter =====================================================
@@ -1064,7 +1055,7 @@ procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
   if VariantAsItemIndex then
     if VarType(Value) in [varSmallInt, varInteger, varByte
-      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
+      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord {$ENDIF}] then
       ItemIndex := Value
     else
       inherited SetAsString(Value)

@@ -72,8 +72,7 @@ type
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;
-    {$ENDIF}{$ENDIF}
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     procedure RefreshItem;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
@@ -158,8 +157,7 @@ type
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;
-    {$ENDIF}{$ENDIF}
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     procedure RefreshItem;
     procedure Rebuild;
     property Items: TStrings read GetItems;
@@ -538,7 +536,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvUninstallComboBox.CreateHandle;
 begin
   inherited CreateHandle;
@@ -546,8 +543,8 @@ begin
     Rebuild;
 end;
 {$ENDIF VCL}
-{$IFDEF VisualCLX}
 
+{$IFDEF VisualCLX}
 procedure TJvUninstallComboBox.CreateWidget;
 begin
   inherited CreateWidget;
@@ -692,7 +689,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvUninstallListBox.CreateHandle;
 begin
   inherited CreateHandle;
@@ -700,8 +696,8 @@ begin
     Rebuild;
 end;
 {$ENDIF VCL}
-{$IFDEF VisualCLX}
 
+{$IFDEF VisualCLX}
 procedure TJvUninstallListBox.CreateWidget;
 begin
   inherited CreateWidget;

@@ -1156,7 +1156,12 @@ begin
         Align := alLeft
       else
         Align := alRight;
-      Parent := Self {$IFDEF VisualCLX}.ClientArea{$ENDIF};
+      {$IFDEF VCL}
+      Parent := Self;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Parent := Self.ClientArea;
+      {$ENDIF VisualCLX}
       OnClick := UpDownClick;
     end;
   end
@@ -1164,7 +1169,12 @@ begin
   begin
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
-    FBtnWindow.Parent := Self {$IFDEF VisualCLX}.ClientArea{$ENDIF};
+    {$IFDEF VCL}
+    FBtnWindow.Parent := Self;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FBtnWindow.Parent := Self.ClientArea;
+    {$ENDIF VisualCLX}
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
@@ -1321,8 +1331,7 @@ begin
   //Polaris
   if BiDiMode = bdRightToLeft then
   begin
-    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
-      ClientHeight + 1);
+    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1);
     {$IFDEF VCL}
     SendMessage(Handle, EM_SETMARGINS, EC_LEFTMARGIN, MakeLong(GetButtonWidth, 0));
     {$ENDIF VCL}
@@ -1910,6 +1919,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvUpDown.ScrollMessage(var Msg: TWMVScroll);
 begin
   if Msg.ScrollCode = SB_THUMBPOSITION then
@@ -1941,6 +1951,7 @@ procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
 begin
   ScrollMessage(Msg);
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}

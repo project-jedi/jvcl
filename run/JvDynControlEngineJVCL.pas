@@ -1572,7 +1572,7 @@ procedure TJvDynControlJVCLCheckListBox.ControlSetHeader(Index: Integer; Value: 
 begin
   {$IFDEF VCL}
   Header[Index] := Value;
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
@@ -1594,7 +1594,7 @@ function TJvDynControlJVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean
 begin
   {$IFDEF VCL}
   Result := Header[Index];
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 function TJvDynControlJVCLCheckListBox.ControlGetState(Index: Integer): TCheckBoxState;

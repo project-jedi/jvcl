@@ -22,11 +22,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF COMPILER6_UP}
+{$I crossplatform.inc}
 
 unit JvDynControlEngineVCL;
 
@@ -1584,7 +1580,7 @@ procedure TJvDynControlVCLCheckListBox.ControlSetHeader(Index: Integer; Value: B
 begin
   {$IFDEF VCL}
   Header[Index] := Value;
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
@@ -1606,7 +1602,7 @@ function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
 begin
   {$IFDEF VCL}
   Result := Header[Index];
-  {$ENDIF}
+  {$ENDIF VCL}
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetState(Index: Integer): TCheckBoxState;

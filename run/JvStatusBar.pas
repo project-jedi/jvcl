@@ -88,7 +88,7 @@ type
     {$IFDEF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
-    function GetPanelClass: TStatusPanelClass; {$IFDEF VCL} override;{$ENDIF}
+    function GetPanelClass: TStatusPanelClass; {$IFDEF VCL} override; {$ENDIF}
     {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override;
@@ -147,7 +147,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvStatusBar.Paint;
 begin
   {if FAutoHintShown then
@@ -155,7 +154,6 @@ begin
   else}
     inherited Paint;
 end;
-
 {$ENDIF VisualCLX}
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
