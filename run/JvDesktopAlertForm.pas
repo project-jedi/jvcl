@@ -36,7 +36,10 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ImgList, ExtCtrls, ActnList, Menus, StdCtrls,
   JvButton, JvComponent, JvLabel;
-
+const
+  cDefaultAlertFormWidth = 329;
+  cDefaultAlertFormHeight = 76;
+  
 type
   TJvDesktopAlertButtonType = (abtArrowLeft, abtArrowRight, abtClose, abtMaximize,
     abtMinimize, abtDropDown, abtDropDownChevron, abtRestore, abtImage);
@@ -549,8 +552,8 @@ begin
   BorderStyle := bsNone;
   FormStyle := fsStayOnTop;
   Scaled := False;
-  Height := 76;
-  Width := 329;
+  Height := cDefaultAlertFormHeight;
+  Width := cDefaultAlertFormWidth;
   OnPaint := FormPaint;
 
   imIcon := TImage.Create(Self);
@@ -567,9 +570,10 @@ begin
 
   lblText := TJvLabel.Create(Self);
   lblText.Parent := Self;
-  lblText.SetBounds(56, 24,67,13);
+  lblText.SetBounds(56, 24, 67,13);
   lblText.Transparent := True;
   lblText.WordWrap := True;
+  lblText.Anchors := [akLeft..akBottom];
 
   acClose := TAction.Create(Self);
   acClose.Caption := 'Close';
