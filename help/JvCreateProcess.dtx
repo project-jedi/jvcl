@@ -1,5 +1,5 @@
 ##Package: Cmp
-##Status: First finish Rewrite
+##Status: Unknown: First finish rewrite
 ----------------------------------------------------------------------------------------------------
 @@JvCreateProcess.pas
 Summary
@@ -35,6 +35,18 @@ Description
 @@TJvConsoleOptions
 <TITLE TJvConsoleOptions type>
 <COMBINE TJvConsoleOption>
+----------------------------------------------------------------------------------------------------
+@@TJvCPSBuffer
+<TITLE TJvCPSBuffer type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = array [0..CCPS_BufferSize - 1] of Char; - for reference)
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSFlag
 <TITLE TJvCPSFlag type>
@@ -90,10 +102,6 @@ See Also
 @@TJvCPSFlags
 <TITLE TJvCPSFlags type>
 <COMBINE TJvCPSFlag>
-----------------------------------------------------------------------------------------------------
-@@TJvCPSRawReadEvent
-<TITLE TJvCPSRawReadEvent type>
-<COMBINE TJvCreateProcess.OnRawRead>
 ----------------------------------------------------------------------------------------------------
 @@TJvCPSReadEvent
 <TITLE TJvCPSReadEvent type>
@@ -303,6 +311,10 @@ Description
   by calling <LINK TJvCreateProcess.Terminate,Terminate>. The user cannot call <LINK TJvCreateProcess.Run,
   Run> until the process ends, or <LINK TJvCreateProcess.StopWaiting,StopWaiting> must be called to
   stop waiting for the process to end.
+----------------------------------------------------------------------------------------------------
+@@TJvCPSTerminateEvent
+<TITLE TJvCPSTerminateEvent type>
+<COMBINE TJvCreateProcess.OnTerminate>
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess
 <TITLEIMG TJvCreateProcess>
@@ -540,6 +552,15 @@ Description
   Note that it isn't allowed to add empty strings to Environment.
 See Also
   Run
+----------------------------------------------------------------------------------------------------
+@@TJvCreateProcess.Handle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.OnRawRead
 Summary
@@ -896,4 +917,33 @@ Description
   caches not to flush or cause the mouse to be unresponsive.
 See Also
   TJvCreateProcess.CreationFlags, TJvCreateProcess.Run
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+@@TJvRWEHandles
+<TITLE TJvRWEHandles type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvRWEHandles.Read
+  Description for Read
+@@TJvRWEHandles.Write
+  Description for Write
+@@TJvRWEHandles.Error
+  Description for Error
+---------------------------------------------------------------------------------------------------
+@@TJvRWHandles
+<TITLE TJvRWHandles type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+@@TJvRWHandles.Read
+  Description for Read
+@@TJvRWHandles.Write
+  Description for Write
