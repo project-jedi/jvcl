@@ -37,11 +37,11 @@ uses
   Forms, ExtCtrls, Menus,
   {$IFDEF COMPILER6}
   RTLConsts,
-  {$ELSE
+  {$ENDIF}
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF}
-  JvTimer, JvComponent;
+  JvTimer, JvComponent, JvThemes;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -102,6 +102,7 @@ type
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMTimeChange(var Msg: TMessage); message WM_TIMECHANGE;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   protected
     {$IFDEF COMPILER6_UP} // Polaris
     procedure SetAutoSize(Value: Boolean); override;
@@ -353,6 +354,7 @@ begin
   end;
   Caption := TimeToStr(Time);
   ControlStyle := ControlStyle - [csSetCaption]  - [csReplicatable];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   BevelInner := bvLowered;
   BevelOuter := bvRaised;
   FTimer := TJvTimer.Create(Self);
@@ -429,6 +431,11 @@ begin
   inherited;
   Invalidate;
   CheckAlarm;
+end;
+
+procedure TJvxClock.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 function TJvxClock.FormatSettingsChange(var Msg: TMessage): Boolean;
@@ -752,7 +759,7 @@ begin
           end;
           R.Right := R.Left + 1;
           R.Bottom := R.Top + 1;
-          Canvas.FillRect(R);
+          DrawThemedBackground(Self, Canvas, R);
         end;
       end
       else
@@ -765,12 +772,12 @@ begin
           begin
             Brush.Color := FDotsColor;
             Brush.Style := bsSolid;
-            FillRect(R);
+            DrawThemedBackground(Self, Canvas, R);
             Frame3D(Canvas, R, LightColor(FDotsColor), clWindowFrame, 1);
           end;
         Canvas.Brush.Color := Canvas.Pen.Color;
         if not (Ctl3D and MinDots) then
-          Canvas.FillRect(R);
+          DrawThemedBackground(Self, Canvas, R);
       end;
     end;
   finally
@@ -876,7 +883,7 @@ begin
   begin
     with Canvas do
     begin
-      FillRect(FClockRect);
+      DrawThemedBackground(Self, Canvas, FClockRect);
       Pen.Color := Self.Font.Color;
       DrawAnalogFace;
       DrawFatHand(HourHandPos(FDisplayTime), True);
@@ -953,7 +960,8 @@ var
       ((NewTime.Minute <> FDisplayTime.Minute) and IsPartSym(2, Num)) or
       (NewTime.Hour <> FDisplayTime.Hour) then
     begin
-      Canvas.FillRect(Rect);
+      DrawThemedBackground(Self, Canvas, Rect);
+      SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
       DrawText(Canvas.Handle, @Sym, 1, Rect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
     end;
@@ -1043,7 +1051,7 @@ begin
   with Canvas do
   begin
     Brush.Color := Color;
-    FillRect(Rect);
+    DrawThemedBackground(Self, Canvas, Rect);
   end;
   if BevelOuter <> bvNone then
   begin

@@ -125,6 +125,9 @@ type
 
 implementation
 
+uses
+  JvThemes, ImgList;
+
 {$R ..\resources\JvDice.res}
 
 const
@@ -137,6 +140,7 @@ begin
   Randomize;
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
     csOpaque, csDoubleClicks];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FValue := 1;
   FInterval := 60;
   CreateBitmap;
@@ -249,20 +253,29 @@ var
     TmpImage: TBitmap;
     IWidth, IHeight: Integer;
     IRect: TRect;
+    ImgList: TImageList;
   begin
     IWidth := FBitmap.Width;
     IHeight := FBitmap.Height;
+    if (IWidth = 0) and (IHeight = 0) then
+      Exit;
+
     IRect := Rect(0, 0, IWidth, IHeight);
     TmpImage := TBitmap.Create;
+    ImgList := TImageList.CreateSize(IWidth, IHeight);
     try
+      ImgList.AddMasked(FBitmap, FBitmap.TransparentColor);
+      ImgList.AddMasked(FBitmap, 0);
       TmpImage.Width := IWidth;
       TmpImage.Height := IHeight;
       TmpImage.Canvas.Brush.Color := Self.Brush.Color;
-      TmpImage.Canvas.BrushCopy(IRect, FBitmap, IRect, FBitmap.TransparentColor);
+      TmpImage.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
+      ImgList.Draw(TmpImage.Canvas, 0, 0, 0);
       InflateRect(ARect, -1, -1);
       Canvas.StretchDraw(ARect, TmpImage);
     finally
       TmpImage.Free;
+      ImgList.Free;
     end;
   end;
 

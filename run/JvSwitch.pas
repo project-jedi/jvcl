@@ -135,7 +135,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JvJVCLUtils, JvThemes;
 
 {$R ..\resources\JvSwitch.res}
 
@@ -150,6 +150,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
     csOpaque, csDoubleClicks];
+  IncludeThemeStyle(Self, [csParentBackground]);
   Width := 50;
   Height := 60;
   for I := 0 to 1 do
@@ -402,7 +403,7 @@ begin
   begin
     Font := Self.Font;
     Brush.Color := Self.Color;
-    FillRect(ARect);
+    DrawThemedBackground(Self, Canvas, ARect);
     if not Enabled and (FDisableBitmaps[FStateOn] <> nil) then
       DrawBitmap(FDisableBitmaps[FStateOn])
     else

@@ -75,11 +75,15 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  IncludeThemeStyle(Self, [csParentBackground]);
 end;
 
 procedure TJvAnimate.DoParentColorChange(var Msg: TMessage);

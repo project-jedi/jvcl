@@ -158,6 +158,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 {$R ..\Resources\JvCSVBase}
 
 { TJvCSVBase }
@@ -696,6 +699,7 @@ end;
 constructor TJvCSVNavigator.create(AOwner: Tcomponent);
 begin
   inherited;
+  IncludeThemeStyle(Self, [csParentBackground]);
   height := 24;
   width := 217;
   CreateButtons;

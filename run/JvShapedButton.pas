@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvButtonUtils;
+  StdCtrls, JvButtonUtils, JvThemes;
 
 type
   TJvButtonShapes = (jvSLeftArrow, jvRightArrow, jvSRound, jvSHex, jvSOctagon, jvSPar,
@@ -100,6 +100,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure SetButtonStyle(ADefault: Boolean); override;
+    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
@@ -128,6 +129,7 @@ implementation
 constructor TJvShapedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
   FAntiAlias := false;
   bm := Tbitmap.create;
   SetBounds(Left, Top, 65, 65);
@@ -231,6 +233,11 @@ begin
     IsFocused := ADefault;
     Invalidate;
   end;
+end;
+
+procedure TJvShapedButton.CMDenySubClassing(var Msg: TMessage);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvShapedButton.CMMouseEnter(var Message: TMessage);

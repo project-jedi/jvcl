@@ -61,11 +61,16 @@ type
   end;
 
 implementation
+
+uses
+  JvThemes;
+
 //________________________________________________________ Methods _
 
 constructor TJvgDBNavigator.Create(AOwner: TComponent);
 begin
   inherited;
+  IncludeThemeStyle(Self, [csParentBackground]);
   //  FocusControl := Controls[0];
   //  HookFocusControlWndProc;
 end;

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvTypes, JvJCLUtils, JvComponent;
+  ExtCtrls, JvTypes, JvJCLUtils, JvComponent, JvThemes;
 
 type
   TJvNotifyTime = procedure(Sender: TObject; Hour, Min, Sec: Integer) of object;
@@ -181,6 +181,8 @@ type
     procedure DoChangeSec(AHour, AMin, ASec: Integer);
     procedure DoChangeMin(AHour, AMin, ASec: Integer);
     procedure DoChangeHour(AHour, AMin, ASec: Integer);
+
+    procedure CMDenySubClassing(var Msg: TCMFocusChanged); message CM_DENYSUBCLASSING;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -636,6 +638,11 @@ procedure TJvAnalogClock.DoChangeHour(AHour, AMin, ASec: Integer);
 begin
   if Assigned(FOnChangeHour) and not (csDestroying in ComponentState) then
     FOnChangeHour(Self, AHour, AMin, ASec);
+end;
+
+procedure TJvAnalogClock.CMDenySubClassing(var Msg: TCMFocusChanged);
+begin
+  Msg.Result := 1;
 end;
 
 procedure TJvAnalogClock.InternalPaint;

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -129,7 +129,7 @@ type
 implementation
 
 uses
-  Consts, SysUtils;
+  Consts, SysUtils, JvThemes;
 
 type
   TGlyphList = class(TImageList)
@@ -728,6 +728,7 @@ begin
   inherited Create(AOwner);
   SetBounds(0, 0, 42, 25);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
+  IncludeThemeStyle(Self, [csParentBackground]);
   FGlyph := TButtonGlyph.Create;
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
@@ -789,7 +790,9 @@ begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if (FState in [bsDown, bsExclusive]) then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+    if IsMouseOver(Self) then
+      DrawFlags := DrawFlags or DFCS_HOT;
+    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
   begin
@@ -824,6 +827,10 @@ begin
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - FArrowWidth, 0, Width, Height);
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+    Dec(PaintRect.Left);
+{$ENDIF}
   Push := FArrowClick or (FPressBoth and (FState in [bsDown, bsExclusive]));
   if Push then
   begin
@@ -841,7 +848,9 @@ begin
     DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
     if Push then
       DrawFlags := DrawFlags or DFCS_PUSHED;
-    DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+    if IsMouseOver(Self) then
+      DrawFlags := DrawFlags or DFCS_HOT;
+    DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
@@ -1226,6 +1235,10 @@ begin
     FMouseInControl := True;
     Repaint;
   end;
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled and Enabled and not Flat then
+    Repaint;
+{$ENDIF}
 end;
 
 procedure TJvArrowButton.CMMouseLeave(var Msg: TMessage);
@@ -1236,6 +1249,10 @@ begin
     FMouseInControl := False;
     Invalidate;
   end;
+{$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled and Enabled and not Flat then
+    Invalidate;
+{$ENDIF}
 end;
 
 end.

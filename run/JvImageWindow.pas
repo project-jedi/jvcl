@@ -191,7 +191,7 @@ implementation
 
 uses
   Math,
-  JvTypes;
+  JvTypes, JvThemes;
 
 //=== TJvImageWindow =========================================================
 
@@ -627,6 +627,11 @@ begin
     Frame3d(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
   end
   else
+{$IFDEF JVCLThemesEnabled}
+  if (FBorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
+    PaintControlBorder(Self)
+  else
+{$ENDIF}
   if FBorderStyle = bsSingle then
   begin
     Frame3d(Canvas, R, clBtnFace, clBtnFace, 1);
