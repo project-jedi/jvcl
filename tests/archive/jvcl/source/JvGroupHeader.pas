@@ -270,6 +270,8 @@ var
 begin
   // D R A W  T E X T
   // ----------------
+  Color1 := 0;
+  Color2 := 0; // (p3) just to remove warnings...
   with Canvas do
   begin
     if not Transparent then
@@ -365,6 +367,7 @@ begin
       Pen.Width := 1;
 
       // Locate and draw the line
+
       BevelLine(Color1, LX1, LY, LX2);
       BevelLine(Color2, LX1, LY + 1, LX2);
       if FAlignment = taCenter then // Draw right bevel
