@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-01:
+- Modified the batch files for BCB so that it can now build from the command line // olivier
+- Modified BCB6 and BCB5 packages to allow building from the command line // olivier
 2003-10-26:
 - Added {$IFNDEF BCB5}/{$ENDIF} around the Variants unit in the uses clause of
   JvForth.pas, JvSALCore.pas and JVXmlTree.pas to avoid a BCB5 compile error.
