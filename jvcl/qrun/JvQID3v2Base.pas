@@ -42,7 +42,7 @@ uses
   Classes, SysUtils,
   
   
-  JvQWStrUtils,
+  JclUnicode,
   
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
@@ -1200,7 +1200,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  Graphics, Windows,
+  QGraphics, Windows,
   
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;
