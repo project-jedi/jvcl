@@ -103,6 +103,7 @@ type
     const List: TObject; const First, Last: Integer) of object;
   TJvAppStoragePropTranslateEvent = procedure(Sender: TJvCustomAppStorage; Instance: TPersistent;
     var Name: string; const Reading: Boolean) of object;
+  TJvAppStorageCryptEvent = procedure(var Value: string) of object;
 
   TJvAppStorageOptionsClass = class of TJvCustomAppStorageOptions;
 
@@ -127,6 +128,9 @@ type
     FStorageOptions: TJvCustomAppStorageOptions;
     FSubStorages: TJvAppSubStorages;
     FOnTranslatePropertyName: TJvAppStoragePropTranslateEvent;
+    FOnEncryptPropertyValue: TJvAppStorageCryptEvent;
+    FOnDecryptPropertyValue: TJvAppStorageCryptEvent;
+    FCryptEnabledStatus: Integer;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     //Returns the property count of an instance
@@ -288,6 +292,10 @@ type
     { Stores a set (ignores sub stores). }
     procedure WriteSetInt(const Path: string; const ATypeInfo: PTypeInfo; const Value); virtual;
 
+
+    function EncryptPropertyValue (Value : String) : String;
+    function DecryptPropertyValue (Value : String) : String;
+
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
   public
     constructor Create(AOwner: TComponent); override;
@@ -395,6 +403,12 @@ type
       represents: 1: Folder; 2: Value; 3: Both }
     procedure GetStoredValues(const Path: string; const Strings: TStrings;
       const Options: TJvAppStorageEnumOptions = [aeoValues, aeoReportListAsValue, aeoRecursive]);
+    { Enables the Cryption of Property-Values (Only String-Values) }
+    procedure EnablePropertyValueCrypt;
+    { Disables the Cryption of Property-Values (Only String-Values) }
+    procedure DisablePropertyValueCrypt;
+    { Returns the current state if Property-Value Cryption is enabled }
+    function IsPropertyValueCryptEnabled : Boolean;
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -403,6 +417,11 @@ type
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
     property OnTranslatePropertyName: TJvAppStoragePropTranslateEvent read FOnTranslatePropertyName
       write FOnTranslatePropertyName;
+    property OnEncryptPropertyValue: TJvAppStorageCryptEvent read FOnEncryptPropertyValue
+      write FOnEncryptPropertyValue;
+    property OnDecryptPropertyValue: TJvAppStorageCryptEvent read FOnDecryptPropertyValue
+      write FOnDecryptPropertyValue;
+
   end;
 
   { Generic store that can only be used to combine various other storages (only storages in the
@@ -605,7 +624,7 @@ const
 implementation
 
 uses
-  JclFileUtils, JclStrings, JclSysInfo, JclRTTI,
+  JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
   JvPropertyStore, JvConsts, JvResources;
 
 const
@@ -815,6 +834,7 @@ begin
   inherited Create(AOwner);
   FStorageOptions := GetStorageOptionsClass.Create;
   FSubStorages := TJvAppSubStorages.Create(Self);
+  FCryptEnabledStatus := 0;
 end;
 
 destructor TJvCustomAppStorage.Destroy;
@@ -1071,7 +1091,7 @@ begin
     try
       if StorageOptions.FloatAsString then
         try
-          Result := StrToFloat(DoReadString(Path, FloatToStr(Default)));
+          Result := StrToFloat(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (FloatToStr(Default)))));
         except
           on E: EConvertError do
             Result := DoReadFloat(Path, Default);
@@ -1081,7 +1101,7 @@ begin
           Result := DoReadFloat(Path, Default);
         except
           on E: EConvertError do
-            Result := StrToFloat(DoReadString(Path, FloatToStr(Default)));
+            Result := StrToFloat(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (FloatToStr(Default)))));
         end
     except
       on E: EConvertError do
@@ -1095,7 +1115,7 @@ end;
 procedure TJvCustomAppStorage.WriteFloatInt(const Path: string; Value: Extended);
 begin
   if StorageOptions.FloatAsString then
-    DoWriteString(Path, FloatToStr(Value))
+    DoWriteString(Path, EncryptPropertyValue (FloatToStr(Value)))
   else
     DoWriteFloat(Path, Value);
 end;
@@ -1106,7 +1126,7 @@ begin
     Result := Default
   else
     try
-      Result := DoReadString(Path, Default);
+      Result := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (Default)));
     except
       on E: EConvertError do
         if StorageOptions.DefaultIfReadConvertError then
@@ -1118,7 +1138,7 @@ end;
 
 procedure TJvCustomAppStorage.WriteStringInt(const Path: string; Value: string);
 begin
-  DoWriteString(Path, Value);
+  DoWriteString(Path, EncryptPropertyValue (Value));
 end;
 
 function TJvCustomAppStorage.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
@@ -1139,7 +1159,7 @@ begin
     try
       if StorageOptions.DateTimeAsString then
         try
-          Result := StrToDateTime(DoReadString(Path, DateTimeToStr(Default)));
+          Result := StrToDateTime(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (DateTimeToStr(Default)))));
         except
           on E: EConvertError do
             Result := DoReadDateTime(Path, Default);
@@ -1149,7 +1169,7 @@ begin
           Result := DoReadDateTime(Path, Default);
         except
           on E: EConvertError do
-            Result := StrToDateTime(DoReadString(Path, DateTimeToStr(Default)));
+            Result := StrToDateTime(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (DateTimeToStr(Default)))));
         end
     except
       on E: EConvertError do
@@ -1163,7 +1183,7 @@ end;
 procedure TJvCustomAppStorage.WriteDateTimeInt(const Path: string; Value: TDateTime);
 begin
   if StorageOptions.DateTimeAsString then
-    DoWriteString(Path, DateTimeToStr(Value))
+    DoWriteString(Path, EncryptPropertyValue (DateTimeToStr(Value)))
   else
     DoWriteFloat(Path, Value);
 end;
@@ -1178,9 +1198,9 @@ begin
     try
       try
         if Default then
-          Value := DoReadString(Path, StorageOptions.DefaultTrueString)
+          Value := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (StorageOptions.DefaultTrueString)))
         else
-          Value := DoReadString(Path, StorageOptions.DefaultFalseString);
+          Value := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (StorageOptions.DefaultFalseString)));
         if StorageOptions.IsValueTrueString(Value) then
           Result := True
         else
@@ -1205,9 +1225,9 @@ procedure TJvCustomAppStorage.WriteBooleanInt(const Path: string; Value: Boolean
 begin
   if StorageOptions.BooleanAsString then
     if Value then
-      DoWriteString(Path, StorageOptions.DefaultTrueString)
+      DoWriteString(Path, EncryptPropertyValue (StorageOptions.DefaultTrueString))
     else
-      DoWriteString(Path, StorageOptions.DefaultFalseString)
+      DoWriteString(Path, EncryptPropertyValue (StorageOptions.DefaultFalseString))
   else
     DoWriteBoolean(Path, Value);
 end;
@@ -1831,6 +1851,26 @@ begin
   Result := 'Int_' + IntToStr(Value);
 end;
 
+function TJvCustomAppStorage.EncryptPropertyValue (Value : String) : String;
+begin
+  if Assigned (FOnEncryptPropertyValue) and IsPropertyValueCryptEnabled then
+  begin
+    FOnEncryptPropertyValue (Value);
+    Value := MimeEncodeString(Value);
+  end;
+  Result := Value;
+end;
+
+function TJvCustomAppStorage.DecryptPropertyValue (Value : String) : String;
+begin
+  if Assigned (FOnDecryptPropertyValue) and IsPropertyValueCryptEnabled then
+  begin
+    Value := MimeDecodeString(Value);
+    FOnDecryptPropertyValue (Value);
+  end;
+  Result := Value;
+end;
+
 function TJvCustomAppStorage.TranslatePropertyName(Instance: TPersistent; const AName: string;
   const Reading: Boolean): string;
 begin
@@ -1859,6 +1899,24 @@ begin
   finally
     Strings.EndUpdate;
   end;
+end;
+
+{ Enables the Cryption of Property-Values (Only String-Values) }
+procedure TJvCustomAppStorage.EnablePropertyValueCrypt;
+begin
+  Inc (FCryptEnabledStatus);
+end;
+
+{ Disables the Cryption of Property-Values (Only String-Values) }
+procedure TJvCustomAppStorage.DisablePropertyValueCrypt;
+begin
+  Dec (FCryptEnabledStatus);
+end;
+
+{ Returns the current state if Property-Value Cryption is enabled }
+function TJvCustomAppStorage.IsPropertyValueCryptEnabled : Boolean;
+begin
+  Result := (FCryptEnabledStatus > 0);
 end;
 
 //=== TJvAppStorage ============================================================
