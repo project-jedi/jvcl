@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAlignListbox.PAS, released on 2000-11-22.
+The Original Code is: JvOneSizeFitsAllButton.PAS, released on 2000-11-22.
 
 The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): ______________________________________.
 
-Last Modified: 2000-mm-dd
+Last Modified: 2002-06-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -65,6 +65,7 @@ implementation
 
 procedure TJvOneSizeFitsAllButton.CMForceSize(var msg: TCMForceSize);
 begin
+  // (p3) this is never called AFAICS
   with msg do
     if sender <> self then
       with newsize do
@@ -76,13 +77,14 @@ procedure TJvOneSizeFitsAllButton.SetBounds(ALeft, ATop, AWidth,
 var
   form: Tcustomform;
   msg: TCMForceSize;
-  r: TRect;
+//  r: TRect;
 begin
   inherited;
   form := GetParentForm(self);
   if Assigned(form) then
   begin
-    r := Rect(aLeft, aTop, aWidth, aHeight);
+    // (p3) what is this rect doing here?
+    // r := Rect(aLeft, aTop, aWidth, aHeight);
     msg.msg := CM_FORCESIZE;
     msg.sender := Self;
     msg.newsize.x := AWidth;
