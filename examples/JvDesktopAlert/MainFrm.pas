@@ -141,7 +141,7 @@ begin
     DA.Options := FOptions;
     if chkShowDropDown.Checked then
       DA.DropDownMenu := PopupMenu1;
-    for j := 0 to udButtons.Position do
+    for j := 0 to udButtons.Position-1 do
     begin
       with DA.Buttons.Add do
       begin
