@@ -134,7 +134,6 @@ object frmMain: TfrmMain
       GradientEndColor = clAqua
       GradientStyle = grHorizontal
       LabelCaption = 'Default Values'
-      LabelColor = clBlue
       LabelFont.Charset = DEFAULT_CHARSET
       LabelFont.Color = clWhite
       LabelFont.Height = -21
@@ -142,6 +141,7 @@ object frmMain: TfrmMain
       LabelFont.Style = [fsBold]
       LabelAlignment = taLeftJustify
       Align = alTop
+      Ctl3D = False
       DoubleBuffered = False
       TabOrder = 4
     end
@@ -189,7 +189,6 @@ object frmMain: TfrmMain
       GradientEndColor = clAqua
       GradientStyle = grHorizontal
       LabelCaption = 'Balloon'
-      LabelColor = clBlue
       LabelFont.Charset = DEFAULT_CHARSET
       LabelFont.Color = clWhite
       LabelFont.Height = -21
@@ -197,6 +196,7 @@ object frmMain: TfrmMain
       LabelFont.Style = [fsBold]
       LabelAlignment = taLeftJustify
       Align = alTop
+      Ctl3D = False
       DoubleBuffered = False
       TabOrder = 0
     end
@@ -435,7 +435,6 @@ object frmMain: TfrmMain
       GradientEndColor = clAqua
       GradientStyle = grHorizontal
       LabelCaption = 'Application Hint'
-      LabelColor = clBlue
       LabelFont.Charset = DEFAULT_CHARSET
       LabelFont.Color = clWhite
       LabelFont.Height = -21
@@ -443,6 +442,7 @@ object frmMain: TfrmMain
       LabelFont.Style = [fsBold]
       LabelAlignment = taLeftJustify
       Align = alTop
+      Ctl3D = False
       DoubleBuffered = False
       TabOrder = 4
     end
