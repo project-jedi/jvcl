@@ -1,5 +1,5 @@
 [FAQ]
-Count=15
+Count=16
 Q0=What is the JVCL?
 A0=The JVCL is a library of more than 500 visual and non-visual components for Delphi, C++Builder and Kylix. The components have been donated by developers from all around the world and can be used in commercial as well as shareware and freeware and open source projects without cost.{CRLF}
 Q1=Where can I get it?
@@ -30,3 +30,5 @@ Q13=Why doesn't JvDotNetFilenameEdit and JvDotNetDirectoryEdit have a palette ic
 A13=If the package containing JvFilenameEdit and JvDirectoryEdit is installed after the JvDotNet package, the icons won't be shown on the palette.{CRLF}{CRLF}<b>Fix:</b>{CRLF}<ul>{CRLF}<li>In Delphi, go to Component - Install Packages{CRLF}<li>Select the Jv DotNet package in the list{CRLF}<li>Toggle the checkbox off and then on again{CRLF}<li>Close the dialog{CRLF}</ul>{CRLF}
 Q14=After installing JVCL, my palette icons are corrupted.
 A14=This error can be caused by faulty video drivers or an old version of the common controls library. {CRLF}{CRLF}<b>Fix:</b><ul>{CRLF}<li>Get the latest Internet Explorer release from Microsoft. It will update the ComCtrl library as well. {CRLF}<li>If that doesn't help, try to find updated video drivers for your graphics card.{CRLF}<li>If it still doesn't help, try lowering the video acceleration (you do this from Control Panel-Desktop-Settings-Advanced){CRLF}</ul>{CRLF}
+Q15=Will JVCL continue to support and develop RXLib?
+A15=Yes, we will continue to support and develop RXLib but within the constraints of JVCL. This means that RXLib components can be merged, replaced, archived and renamed at any time as we see fit (indeed, this has already happened to a few of the original RXLib components). {CRLF}{CRLF}JVCL will try to preserve backward compatibility, taking into account the cost for JVCL (maintenance, stopping of future development, not being able to fix bugs etc). If we think it is better for the JVCL as a whole to make changes that break backward compatibility, we will do the changes.{CRLF}{CRLF}This standpoint is not RXLib specific. We reserve the right to do the same with any library or component donated to JVCL.{CRLF}{CRLF}
