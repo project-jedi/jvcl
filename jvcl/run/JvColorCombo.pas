@@ -63,7 +63,7 @@ type
     FOptions: TJvColorComboOptions;
     FNewColorText: string;
     FColorDialogText: string;
-    FColorWidth: Integer;
+    FColorWidth, FUpdateCount: Integer;
     FExecutingDialog: Boolean;
     FNewColor: TJvNewColorEvent;
     FOnGetDisplayName: TJvGetColorNameEvent;
@@ -99,6 +99,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    function BeginUpdate: integer;
+    function EndUpdate: integer;
     procedure GetColors; virtual;
     procedure GetCustomColors(AList: TList);
     // Returns the current name for AColor. Note that this implicitly might call the
@@ -203,7 +205,7 @@ type
     FMRUCount: Integer;
     FWasMouse: Boolean;
     FShowMRU: Boolean;
-    FMaxMRUCount: Integer;
+    FMaxMRUCount, FUpdateCount: Integer;
     FOnDrawPreviewEvent: TJvDrawPreviewEvent;
     procedure SetUseImages(Value: Boolean);
     procedure SetDevice(Value: TFontDialogDevice);
@@ -234,13 +236,15 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     function DoDrawPreview(const AFontName: string; var APreviewText: string;
-      ATextWidth: Integer): Boolean;virtual;
+      ATextWidth: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function AddToMRU: Integer;
     procedure ClearMRU;
     procedure Click; override;
+    function BeginUpdate: integer;
+    function EndUpdate: integer;
     function FontSubstitute(const AFontName: string): string;
     property Text;
     property MRUCount: Integer read FMRUCount;
@@ -297,15 +301,15 @@ type
     property OnDrawPreviewEvent: TJvDrawPreviewEvent read FOnDrawPreviewEvent write FOnDrawPreviewEvent;
   end;
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -421,28 +425,52 @@ begin
   inherited Destroy;
 end;
 
+function TJvColorComboBox.BeginUpdate: integer;
+begin
+  Inc(FUpdateCount);
+  Result := FUpdateCount;
+end;
+
+function TJvColorComboBox.EndUpdate: integer;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    GetColors
+  else if FUpdateCount < 0 then
+    FUpdateCount := 0;
+  Result := FUpdateCount;
+end;
+
 procedure TJvColorComboBox.GetColors;
 var
   I: Integer;
   ColorName: string;
 begin
-  Clear;
-  FCustomColorCount := 0;
-  for I := Low(ColorValues) to High(ColorValues) do
+  if FUpdateCount = 0 then
   begin
-    ColorName := GetColorName(ColorValues[I].Value, '');
-    InternalInsertColor(Items.Count, ColorValues[I].Value, ColorName);
-  end;
-  if coSysColors in FOptions then
-    for I := Low(SysColorValues) to High(SysColorValues) do
-    begin
-      ColorName := GetColorName(SysColorValues[I].Value, '');
-      InternalInsertColor(Items.Count, SysColorValues[I].Value, ColorName);
+    Items.BeginUpdate;
+    try
+      Clear;
+      FCustomColorCount := 0;
+      for I := Low(ColorValues) to High(ColorValues) do
+      begin
+        ColorName := GetColorName(ColorValues[I].Value, '');
+        InternalInsertColor(Items.Count, ColorValues[I].Value, ColorName);
+      end;
+      if coSysColors in FOptions then
+        for I := Low(SysColorValues) to High(SysColorValues) do
+        begin
+          ColorName := GetColorName(SysColorValues[I].Value, '');
+          InternalInsertColor(Items.Count, SysColorValues[I].Value, ColorName);
+        end;
+      DoBeforeCustom;
+      if coCustomColors in FOptions then
+        InternalInsertColor(Items.Count, $000001, FColorDialogText);
+      SetColorValue(FColorValue);
+    finally
+      Items.EndUpdate;
     end;
-  DoBeforeCustom;
-  if coCustomColors in FOptions then
-    InternalInsertColor(Items.Count, $000001, FColorDialogText);
-  SetColorValue(FColorValue);
+  end;
 end;
 
 procedure TJvColorComboBox.SetOptions(Value: TJvColorComboOptions);
@@ -642,28 +670,28 @@ begin
     FExecutingDialog := True;
     CD := TColorDialog.Create(Self);
     with CD do
-      try
-        CD.Color := ColorValue;
-        Options := Options + [cdFullOpen, cdPreventFullOpen];
-        S := FNewColorText;
-        if Execute then
-        begin
-          if DoNewColor(CD.Color, S) then
-            Inc(FCustomColorCount);
-          Tmp := FNewColorText;
-          try
-            FNewColorText := S;
-            ColorValue := CD.Color;
-          finally
-            FNewColorText := Tmp;
-          end;
-          Change;
-        end
-        else
-          ItemIndex := Items.Count - 2;
-      finally
-        Free;
-      end;
+    try
+      CD.Color := ColorValue;
+      Options := Options + [cdFullOpen, cdPreventFullOpen];
+      S := FNewColorText;
+      if Execute then
+      begin
+        if DoNewColor(CD.Color, S) then
+          Inc(FCustomColorCount);
+        Tmp := FNewColorText;
+        try
+          FNewColorText := S;
+          ColorValue := CD.Color;
+        finally
+          FNewColorText := Tmp;
+        end;
+        Change;
+      end
+      else
+        ItemIndex := Items.Count - 2;
+    finally
+      Free;
+    end;
   end
   else
   if ItemIndex >= 0 then
@@ -887,35 +915,40 @@ var
   MRUItems: TStringList;
   I: Integer;
 begin
-  HandleNeeded;
-  if not HandleAllocated then
-    Exit;
-  MRUItems := TStringList.Create;
-  try
-    if FShowMRU then
-      for I := 0 to MRUCount - 1 do
-        MRUItems.AddObject(Items[I], Items.Objects[I]);
-    Clear;
-    DC := GetDC(HWND_DESKTOP);
+  if FUpdateCount = 0 then
+  begin
+    HandleNeeded;
+    if not HandleAllocated then
+      Exit;
+    Items.BeginUpdate;
+    MRUItems := TStringList.Create;
     try
-      if FDevice in [fdScreen, fdBoth] then
-        EnumFonts(DC, nil, @EnumFontsProc, Pointer(Self));
-      if FDevice in [fdPrinter, fdBoth] then
+      if FShowMRU then
+        for I := 0 to MRUCount - 1 do
+          MRUItems.AddObject(Items[I], Items.Objects[I]);
+      Clear;
+      DC := GetDC(HWND_DESKTOP);
       try
-        EnumFonts(Printer.Handle, nil, @EnumFontsProc, Pointer(Self));
-      except
-        // (p3) exception might be raised if no printer is installed, but ignore it here
+        if FDevice in [fdScreen, fdBoth] then
+          EnumFonts(DC, nil, @EnumFontsProc, Pointer(Self));
+        if FDevice in [fdPrinter, fdBoth] then
+        try
+          EnumFonts(Printer.Handle, nil, @EnumFontsProc, Pointer(Self));
+        except
+          // (p3) exception might be raised if no printer is installed, but ignore it here
+        end;
+      finally
+        ReleaseDC(HWND_DESKTOP, DC);
       end;
+      if FShowMRU then
+        for I := MRUCount - 1 downto 0 do
+        begin
+          Items.InsertObject(0, MRUItems[I], MRUItems.Objects[I]);
+        end;
     finally
-      ReleaseDC(HWND_DESKTOP, DC);
+      MRUItems.Free;
+      Items.EndUpdate;
     end;
-    if FShowMRU then
-      for I := MRUCount - 1 downto 0 do
-      begin
-        Items.InsertObject(0, MRUItems[I], MRUItems.Objects[I]);
-      end;
-  finally
-    MRUItems.Free;
   end;
 end;
 
@@ -1090,6 +1123,22 @@ begin
   ItemHeight := Max(GetItemHeight(Font), FTrueTypeBmp.Height);
 end;
 
+function TJvFontComboBox.BeginUpdate: integer;
+begin
+  Inc(FUpdateCount);
+  Result := FUpdateCount;
+end;
+
+function TJvFontComboBox.EndUpdate: integer;
+begin
+  Dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    GetFonts
+  else if FUpdateCount < 0 then
+    FUpdateCount := 0;
+  Result := FUpdateCount;
+end;
+
 procedure TJvFontComboBox.Click;
 begin
   inherited Click;
@@ -1140,7 +1189,6 @@ end;
 procedure TJvFontComboBox.Loaded;
 begin
   inherited Loaded;
-  HandleNeeded;
   Reset;
 end;
 
@@ -1256,7 +1304,7 @@ procedure TJvFontComboBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   FWasMouse := True;
-  inherited  MouseUp(Button, Shift, X, Y);;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvFontComboBox.CloseUp;
@@ -1313,20 +1361,18 @@ end;
 procedure TJvFontComboBox.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
-  if Parent <> nil then
-  begin
-    Reset;
+  if (Parent <> nil) then
     FontName := Font.Name;
-  end;
 end;
 
 {$IFDEF UNITVERSIONING}
+
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
