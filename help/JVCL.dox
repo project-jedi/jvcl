@@ -9,29 +9,32 @@ Copyright=Copyright (c) 2002 project JEDI. All rights reserved.
 Type=1
 
 [Source Files]
-Count=3
+Count=4
 File0=..\..\jvcl\source\JvAlarms.pas
-File1=..\..\jvcl\source\JvAngleLabel.pas
-File2=..\..\jvcl\source\JvAnimate.pas
+File1=..\..\jvcl\source\JvAlignedEdit.pas
+File2=..\..\jvcl\source\JvAngleLabel.pas
+File3=..\..\jvcl\source\JvAnimate.pas
 
 [Source Include Directories]
 Count=0
 
 [Description Files]
-Count=13
+Count=15
 File0=JvAlarms.dtx
-File1=JvAngleLabel.dtx
-File2=JvAnimate.dtx
-File3=JVCL.Acknowledge.dtx
-File4=JVCL.FileRef.dtx
-File5=JVCL.FuncRef.dtx
-File6=JVCL.Grp.AlarmsAndTimers.Alarms.dtx
-File7=JVCL.Grp.AlarmsAndTimers.dtx
-File8=JVCL.Grp.AlarmsAndTimers.Timers.dtx
-File9=JVCL.Grp.Graphics.Animation.dtx
-File10=JVCL.Grp.Graphics.dtx
-File11=JVCL.Grp.Labels.dtx
-File12=JVCL.Main.dtx
+File1=JvAlignedEdit.dtx
+File2=JvAngleLabel.dtx
+File3=JvAnimate.dtx
+File4=JVCL.Acknowledge.dtx
+File5=JVCL.FileRef.dtx
+File6=JVCL.FuncRef.dtx
+File7=JVCL.Grp.AlarmsAndTimers.Alarms.dtx
+File8=JVCL.Grp.AlarmsAndTimers.dtx
+File9=JVCL.Grp.AlarmsAndTimers.Timers.dtx
+File10=JVCL.Grp.Edits.dtx
+File11=JVCL.Grp.Graphics.Animation.dtx
+File12=JVCL.Grp.Graphics.dtx
+File13=JVCL.Grp.Labels.dtx
+File14=JVCL.Main.dtx
 
 [Description Include Directories]
 Count=2
