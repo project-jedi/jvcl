@@ -60,7 +60,7 @@ uses
   JvQFooter, JvQGroupHeader, JvQHint,
   JvQHtControls,
   JvQItemsPanel,
-  JvQRollOut,
+  JvQRollOut, JvQRollOutEditor,
   JvQScrollText, JvQSpacer, JvQSplitter, JvQNetscapeSplitter,
   JvQSwitch,
   JvQColorForm, JvQDsgnIntf,
