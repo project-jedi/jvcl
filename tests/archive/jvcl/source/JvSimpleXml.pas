@@ -31,11 +31,7 @@ unit JvSimpleXml;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF}
-  SysUtils, Classes, IniFiles,
-  JvComponent;
+  SysUtils, Classes, IniFiles, JvComponent{$IFDEF COMPILER6_UP}, Variants{$ENDIF};
 
 type
   {$IFNDEF COMPILER6_UP}
@@ -150,13 +146,15 @@ type
     property Count: Integer read GetCount;
   end;
 
+  TJvSimpleXmlElemCompare = function(Elems: TJvSimpleXmlElems; Index1, Index2: Integer): Integer of object;
   TJvSimpleXmlElems = class(TObject)
   private
-    FElems: THashedStringList;
     FParent: TJvSimpleXmlElem;
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXmlElem;
   protected
+    FElems: THashedStringList;
+    FCompare: TJvSimpleXmlElemCompare;
     function GetItem(const Index: Integer): TJvSimpleXmlElem;
     procedure AddChild(const Value: TJvSimpleXmlElem);
     procedure AddChildFirst(const Value: TJvSimpleXmlElem);
@@ -185,6 +183,8 @@ type
     procedure BinaryValue(const Name: string; const Stream: TStream);
     function LoadFromStream(const Stream: TStream; AParent: TJvSimpleXml = nil): string;
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXml = nil);
+    procedure Sort;
+    procedure CustomSort(AFunction: TJvSimpleXmlElemCompare);
     property Parent: TJvSimpleXmlElem read FParent write FParent;
     property Item[const Index: Integer]: TJvSimpleXmlElem read GetItem; default;
     property ItemNamed[const Name: string]: TJvSimpleXmlElem read GetItemNamed;
@@ -480,229 +480,209 @@ end;
 
 function SimpleXmlEncode(const Value: string): string;
 var
-  I: Integer;
+  i: Integer;
   lDiff: Boolean;
 begin
   //http://www.cs.tut.fi/~jkorpela/latin1/3.html#60
-  Result := Value;
-  lDiff := False;
-  for I := 1 to Length(Value) do
-    if Value[I] in ['<', '>', '&', '"', ''''] then
+  result := Value;
+  lDiff := false;
+  for i := 1 to Length(Value) do
+    if Value[i] in ['<','>','&','"',''''] then
     begin
       if not lDiff then
       begin
-        lDiff := True;
-        Result := Copy(Value, 1, I - 1);
+        lDiff := true;
+        result := Copy(Value,1,i-1);
       end;
-      case Value[i] of
-      '<': Result := Result + '&lt;';
-      '>': Result := Result + '&gt;';
-      '&': Result := Result + '&amp;';
-      '"': Result := Result + '&quot;';
-      '''': Result := Result + '''';
-      else
-        Result := Result + '&#' + IntToStr(Ord(Value[I])) + ';';
-      end;
+      result := result + '&#' + IntToStr(Ord(Value[i])) + ';';
     end
     else
       if lDiff then
-        Result := Result + Value[I];
+        result := result + Value[i];
 end;
 
 procedure SimpleXmlDecode(var Value: string; TrimMultiple: Boolean = True);
 var
-  I, J, K, L: Integer;
-  St: string;
+ i, j, k, l: Integer;
+ st: string;
 begin
-  St := '';
-  J := -1;
-  K := 1;
-  for I := 1 to Length(Value) do
-    case Value[I] of
-      ' ', #10, #13:
-        if (not TrimMultiple) or ((K = 1) or not (Value[K - 1] in [' ', #10, #13])) then
+  st := '';
+  j := -1;
+  k := 1;
+  for i := 1 to Length(Value) do
+    case Value[i] of
+      ' ',#10,#13:
+        if (not TrimMultiple) or ((k=1) or not (Value[k-1] in [' ',#10,#13])) then
         begin
-          if J > 0 then
-            St := St + Value[I]
+          if j>0 then
+            st := st + Value[i]
           else
           begin
-            Value[K] := Value[I];
-            Inc(K);
+            Value[k] := Value[i];
+            inc(k);
           end;
         end;
       '&':
         begin
-          if J <> -1 then
+          if j <> -1 then
           begin
-            Value[K] := '&';
-            Inc(K);
-            for L := 1 to Length(St) do
+            Value[k] := '&';
+            inc(k);
+            for l:=1 to Length(st) do
             begin
-              Value[K] := St[L];
-              Inc(K);
+              Value[k] := st[l];
+              inc(k);
             end;
           end;
-          J := 0;
-          St := '';
+          j := 0;
+          st := '';
         end;
       '#':
-        if J = 0 then
-          J := 1
-        else
-        if J <> -1 then
+        if j = 0 then
+          j := 1
+        else if (j <> -1) then
         begin
-          Value[K] := '&';
-          Inc(K);
-          for L := 1 to Length(St) do
+          Value[k] := '&';
+          inc(k);
+          for l:=1 to Length(st) do
           begin
-            Value[K] := St[L];
-            Inc(K);
+            Value[k] := st[l];
+            inc(k);
           end;
-          Value[K] := Value[I];
-          Inc(K);
-          St := '';
+          Value[k] := Value[i];
+          inc(k);
+          st := '';
         end
         else
         begin
-          for L := 1 to Length(St) do
+          for l:=1 to Length(st) do
           begin
-            Value[K] := St[L];
-            Inc(K);
+            Value[k] := st[l];
+            inc(k);
           end;
-          Value[K] := Value[I];
-          Inc(K);
-          St := '';
+          Value[k] := Value[i];
+          inc(k);
+          st := '';
         end;
       '0'..'9':
-        if J >= 1 then
+        if j >= 1 then
         begin
-          St := St + Value[I];
-          J := 2;
+          st := st + Value[i];
+          j := 2;
         end
         else
         begin
-          Value[K] := Value[I];
-          Inc(K);
+          Value[k] := Value[i];
+          inc(k);
         end;
       'a'..'z', 'A'..'Z':
-        if J >= 0 then
+        if j >= 0 then
         begin
-          St := St + Value[I];
-          Inc(J);
+          st := st + Value[i];
+          inc(j);
         end
         else
         begin
-          Value[K] := Value[I];
-          Inc(K);
+          Value[k] := Value[i];
+          inc(k);
         end;
       ';':
-        if J <> 0 then
+        if j <> 0 then
         begin
-          J := StrToIntDef(St, -1);
-          case J of
+          j := StrToIntDef(st, -1);
+          case j of
             -1:
               begin
-                st := LowerCase(St);
+                st := LowerCase(st);
                 if st = 'lt' then
                 begin
-                  Value[K] := '<';
-                  Inc(K);
+                  Value[k] := '<';
+                  inc(k);
+                end
+                else if st = 'gt' then
+                begin
+                  Value[k] := '>';
+                  inc(k);
+                end
+                else if st = 'amp' then
+                begin
+                  Value[k] := '&';
+                  inc(k);
                 end
                 else
-                if st = 'gt' then
                 begin
-                  Value[K] := '>';
-                  Inc(K);
-                end
-                else
-                if st = 'amp' then
-                begin
-                  Value[K] := '&';
-                  Inc(K);
-                end
-                else
-                if st = 'quot' then
-                begin
-                  Value[K] := '"';
-                  Inc(K);
-                end
-                else
-                if J >= 0 then
-                begin
-                  Value[K] := '&';
-                  Inc(K);
-                  for L := 1 to Length(St) do
+                  if st <> '' then
                   begin
-                    Value[K] := St[L];
-                    Inc(K);
+                    Value[k] := '&';
+                    inc(k);
+                    for l:=1 to Length(st) do
+                    begin
+                      Value[k] := st[l];
+                      inc(k);
+                    end;
+                    st := '';
                   end;
-                  Value[K] := ';';
-                  Inc(K);
-                end
-                else
-                begin
-                  Value[K] := ';';
-                  Inc(K);
+                  Value[k] := ';';
+                  inc(k);
                 end
               end;
             0..100:
               begin
-                Value[K] := Char(J);
-                Inc(K);
+                Value[k] := Char(j);
+                inc(k);
               end;
             233:
               begin
-                Value[K] := 'é';
-                Inc(K);
+                Value[k] := 'é';
+                inc(k);
               end;
             232:
               begin
-                Value[K] := 'è';
-                Inc(K);
+                Value[k] := 'è';
+                inc(k);
               end;
           end;
-          St := '';
-          J := -1;
+          st := '';
+          j := -1;
         end
         else
         begin
-          Value[K] := Value[I];
-          Inc(K);
+          Value[k] := Value[i];
+          inc(k);
         end;
-    else
-      begin
-        if J > 0 then
+      else
         begin
-          Value[K] := '&';
-          Inc(K);
-          for L := 1 to Length(St) do
+          if j > 0 then
           begin
-            Value[K] := St[L];
-            Inc(K);
+            Value[k] := '&';
+            inc(k);
+            for l:=1 to Length(st) do
+            begin
+              Value[k] := st[l];
+              inc(k);
+            end;
+          end
+          else if j = 0 then
+          begin
+            Value[k] := '&';
+            inc(k);
           end;
-        end
-        else
-        if J = 0 then
-        begin
-          Value[K] := '&';
-          Inc(K);
+          Value[k] := Value[i];
+          inc(k);
+          j := -1;
         end;
-        Value[K] := Value[I];
-        Inc(K);
-        J := -1;
-      end;
     end;
-  if J <> -1 then
+  if j <> -1 then
   begin
-    Value[K] := '&';
-    Inc(K);
-    for L := 1 to Length(St) do
+    Value[k] := '&';
+    inc(k);
+    for l:=1 to Length(st) do
     begin
-      Value[K] := St[L];
-      Inc(K);
+      Value[k] := st[l];
+      inc(k);
     end;
   end;
-  SetLength(Value, K - 1);
+  SetLength(Value,k-1);
 end;
 
 //=== TJvSimpleXml ===========================================================
@@ -1379,6 +1359,38 @@ begin
   else
     Result := Elem.Value;
 end;
+
+function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  i: Integer;
+begin
+  result := 0;
+  for i:=0 to GSorts.Count-1 do
+    if TJvSimpleXmlElems(GSorts[i]).FElems = List then
+    begin
+      result := TJvSimpleXmlElems(GSorts[i]).FCompare(TJvSimpleXmlElems(GSorts[i]), Index1, Index2);
+      Exit;
+    end;
+end;
+
+procedure TJvSimpleXmlElems.CustomSort(
+  AFunction: TJvSimpleXmlElemCompare);
+begin
+  if FElems<>nil then
+  begin
+    GSorts.Add(self);
+    FCompare := AFunction;
+    FElems.CustomSort(SortItems);
+    GSorts.Remove(self);
+  end;
+end;
+
+procedure TJvSimpleXmlElems.Sort;
+begin
+  if FElems<>nil then
+    FElems.Sort;
+end;
+
 
 //=== TJvSimpleXmlProps ======================================================
 
@@ -2670,13 +2682,17 @@ begin
     end;
   end;
 end;
-
-initialization
-  XmlVariant := TXmlVariant.Create;
-
-finalization
-  FreeAndNil(XmlVariant);
 {$ENDIF}
 
+initialization
+{$IFDEF COMPILER6_UP}
+  XmlVariant := TXmlVariant.Create;
+{$ENDIF}
+  GSorts := TList.Create;
+finalization
+{$IFDEF COMPILER6_UP}
+  FreeAndNil(XmlVariant);
+{$ENDIF}
+  FreeAndNil(GSorts);
 end.
 
