@@ -35,7 +35,7 @@ unit JvQUrlListGrabberEditors;
 interface
 
 uses
-  Windows,
+//  Windows,
   
   DesignIntf, DesignEditors, DesignMenus, {VCLEditors,}
   

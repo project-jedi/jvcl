@@ -37,7 +37,7 @@ implementation
 uses
   Classes,
 
-  DesignEditors, DesignIntf,
+  DesignEditors, DesignIntf, QGraphics,
 
   JvQDsgnConsts, JvQQtKeyEditorForm,
   JvQAni, JvQBmpAnimator, JvQPicClip, JvQIconList,
@@ -79,10 +79,10 @@ begin
   {$ENDIF LINUX}
 //  RegisterComponentEditor(TJvID3Controller, TJvID3ControllerEditor);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
-  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
-  RegisterComponentEditor(TImage, TJvGraphicsEditor);
+//  RegisterPropertyEditor(TypeInfo(TPicture),TObject,'',TJvPictProperty);
+//  RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
+//  RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
+//  RegisterComponentEditor(TImage, TJvGraphicsEditor);
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   {$IFDEF USE_JV_GIF}
