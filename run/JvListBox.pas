@@ -29,7 +29,7 @@ MERGE NOTES:
     Maybe TJvListBox should be moved here instead (or this code into JvCtrls)?
   * TJvPlaylist now inherits from JvListBox
 
-Last Modified: 2002-06-15
+Last Modified: 2004-02-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
