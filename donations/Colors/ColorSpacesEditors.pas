@@ -231,15 +231,18 @@ end;
 
 procedure TJvFullColorProperty.EditSpace(AColorID: TJvColorSpaceID);
 var
-  AColor: TJvFullColor;
+  LColor: TJvFullColor;
 begin
   with ColorSpaceManager, TJvFullColorDialog.Create(nil) do
     try
-      AColor := GetOrdValue;
-      if GetColorSpaceID(AColor) <> AColorID then
-        AColor := ConvertToID(AColor, AColorID);
+      if IsColorProperty then
+        LColor := ColorSpaceManager.ConvertFromColor(TColor(GetOrdValue))
+      else
+        LColor := TJvFullColor(GetOrdValue);
+      if GetColorSpaceID(LColor) <> AColorID then
+        LColor := ConvertToID(LColor, AColorID);
 
-      FullColor := AColor;
+      FullColor := LColor;
       Title := '';
       OnApply := DialogApply;
       Options := [foFullOpen, foAllowSpaceChange, foShowNewPreview, foShowOldPreview,
@@ -346,12 +349,10 @@ end;
 procedure TJvFullColorProperty.SetColor(AFullColor: TJvFullColor);
 begin
   with ColorSpaceManager do
-  begin
     if IsColorProperty then
       SetOrdValue(Ord(ConvertToColor(AFullColor)))
     else
       SetOrdValue(Ord(AFullColor));
-  end;
 end;
 
 procedure TJvFullColorProperty.SetValue(const Value: string);
@@ -678,7 +679,7 @@ end;
 
 procedure Register;
 begin
-  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
+  //RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvFullColorProperty);
   RegisterPropertyEditor(TypeInfo(TJvFullColor), nil, '', TJvFullColorProperty);
   RegisterSelectionEditor(TJvFullColorDialog, TJvFullColorDialogSelection);
   RegisterSelectionEditor(TJvColorCircleDialog, TJvColorCircleDialogSelection);

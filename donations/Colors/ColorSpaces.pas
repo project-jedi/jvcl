@@ -65,7 +65,7 @@ const
   fclRGBLime  = TJvFullColor((Ord(csRGB) shl 24) or $00FF00);
   fclRGBBlue  = TJvFullColor((Ord(csRGB) shl 24) or $FF0000);
 
-  fclDEFWindowText = TJvFullColor((Ord(csDEF) shl 24) or $03000000 or COLOR_WINDOWTEXT);
+  fclDEFWindowText = TJvFullColor((Ord(csDEF) shl 24) or $01000000 or COLOR_WINDOWTEXT);
 
 type
   TJvColorSpace = class(TPersistent)
@@ -203,7 +203,7 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
-function RGBToColor(const Color: TJvFullColor): TColor;
+//function RGBToColor(const Color: TJvFullColor): TColor;
 
 implementation
 
@@ -293,6 +293,7 @@ begin
   end;
 end;
 
+{
 function RGBToColor(const Color: TJvFullColor): TColor;
 begin
   Result :=
@@ -300,6 +301,7 @@ begin
     ((Color and $0000FF00)) or
     ((Color and $00FF0000) shr 16);
 end;
+}
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Cardinal);
 begin
@@ -316,7 +318,7 @@ begin
     ((Part3 and $000000FF) shl 16);
 end;
 
-//=== { TJvColorSpace } ======================================================
+//=== { TJvColorSpace } ==================================================
 
 constructor TJvColorSpace.Create(ColorID: TJvColorSpaceID);
 begin
@@ -1042,13 +1044,13 @@ begin
     AColor := clNone;
   ID := AColor shr 24;
   if AColor = clNone then
-    Result := ConvertToID(AColor, csDEF)
+    Result := ColorSpace[csDEF].ConvertFromColor(AColor)
   else
     case ID of
       $00:
-        Result := ConvertToID(AColor, csRGB);
+        Result := ColorSpace[csRGB].ConvertFromColor(AColor);
       $80:
-        Result := ConvertToID(AColor, csDEF);
+        Result := ColorSpace[csDEF].ConvertFromColor(AColor);
     else
       raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
     end;

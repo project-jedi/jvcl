@@ -1051,10 +1051,11 @@ begin
           for IndexX := MinX to MaxX do
           begin
             TempColor := SetAxisValue(TempColor, AxisX, IndexX);
+            // RGBToColor?
             if ReverseAxisX then
-              Line[MaxX - IndexX] := RGBToColor(ConvertToColor(TempColor))
+              Line[MaxX - IndexX] := ConvertToColor(TempColor)
             else
-              Line[IndexX - MinX] := RGBToColor(ConvertToColor(TempColor));
+              Line[IndexX - MinX] := ConvertToColor(TempColor);
           end;
         end;
       end;
@@ -1478,7 +1479,7 @@ begin
                 Magic3 := Radius + MinRadius;
           end;
 
-          Line[X] := RGBToColor(ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16)));
+          Line[X] := ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16));
         end;
       end;
     end;
