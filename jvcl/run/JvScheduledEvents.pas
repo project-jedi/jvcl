@@ -34,7 +34,8 @@ interface
 
 uses
   SysUtils, Windows, Classes, SyncObjs, Messages,
-  JclRegistry, JclSchedule;
+  //JclRegistry,
+  JclSchedule, JvAppStorage;
 
 const
   CM_EXECEVENT = WM_USER + $1000;
@@ -50,9 +51,11 @@ type
 
   TJvCustomScheduledEvents = class(TComponent)
   private
+    FAppStorage: TJvCustomAppStorage;
+    FAppStoragePath: string;
     FAutoSave: Boolean;
-    FSaveKey: HKEY;
-    FSavePath: string;
+//    FSaveKey: HKEY;
+//    FSavePath: string;
     FEvents: TJvEventCollection;
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
@@ -60,30 +63,45 @@ type
   protected
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
-    function GetSaveTo: string;
+    function GetAppStorage: TJvCustomAppStorage;
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
+//    function GetSaveTo: string;
     function GetEvents: TJvEventCollection;
     procedure InitEvents;
     procedure Loaded; override;
-    procedure LoadEventStates;
-    procedure SaveEventStates;
-    procedure SetSaveTo(Value: string);
+    procedure LoadSingleEvent(Sender: TJvCustomAppStorage;
+      const Path: string; const List: TObject; const Index: Integer);
+//    procedure LoadEventStatesOld;
+    procedure SaveSingleEvent(Sender: TJvCustomAppStorage;
+      const Path: string; const List: TObject; const Index: Integer);
+    procedure DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer);
+//    procedure SaveEventStatesOld;
+//    procedure SetSaveTo(Value: string);
     procedure SetEvents(Value: TJvEventCollection);
     procedure WndProc(var Msg: TMessage); virtual;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
-    property SaveTo: string read GetSaveTo write SetSaveTo;
+//    property SaveTo: string read GetSaveTo write SetSaveTo;
+    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
+    property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Handle: HWND read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
+    procedure LoadEventStates (const ClearBefore : Boolean = True);
+    procedure SaveEventStates;
+  published
   end;
 
   TJvScheduledEvents = class(TJvCustomScheduledEvents)
   published
+    property AppStorage;
+    property AppStoragePath;
     property AutoSave;
-    property SaveTo;
+//    property SaveTo;
     property Events;
     property OnStartEvent;
     property OnEndEvent;
@@ -209,39 +227,39 @@ uses
 
 { registry constants }
 
-const
-  HKEYNames: array [0..6] of PChar =
-    ('HKEY_CLASSES_ROOT', 'HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE',
-     'HKEY_USERS', 'HKEY_PERFORMANCE_DATA', 'HKEY_CURRENT_CONFIG',
-     'HKEY_DYN_DATA');
-
-  HKEYShortNames: array[0..6] of PChar =
-    ('HKCR', 'HKCU', 'HKLM', 'HKU', 'HKPD', 'HKCC', 'HKDD');
-
-function HKEYFromStringStart(Value: string): HKEY;
-var
-  I: Cardinal;
-begin
-  Result := 0;
-  I := Pos('\', Value);
-  if I = 0 then
-    I := Length(Value) + 1;
-  Delete(Value, I, Cardinal(Length(Value)) - I + Cardinal(1));
-  for I := High(HKEYNames) downto Low(HKEYNames) do
-    if AnsiSameText(HKEYNames[I], Value) or AnsiSameText(HKEYShortNames[I], Value) then
-    begin
-      Result := I + $80000000;
-      Break;
-    end;
-end;
-
-function StringFromHKEY(const Key: HKEY; const UseShortName: Boolean): string;
-begin
-  if UseShortName then
-    Result := HKEYShortNames[KEY - $80000000]
-  else
-    Result := HKEYNames[KEY - $80000000];
-end;
+//const
+//  HKEYNames: array [0..6] of PChar =
+//    ('HKEY_CLASSES_ROOT', 'HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE',
+//     'HKEY_USERS', 'HKEY_PERFORMANCE_DATA', 'HKEY_CURRENT_CONFIG',
+//     'HKEY_DYN_DATA');
+//
+//  HKEYShortNames: array[0..6] of PChar =
+//    ('HKCR', 'HKCU', 'HKLM', 'HKU', 'HKPD', 'HKCC', 'HKDD');
+//
+//function HKEYFromStringStart(Value: string): HKEY;
+//var
+//  I: Cardinal;
+//begin
+//  Result := 0;
+//  I := Pos('\', Value);
+//  if I = 0 then
+//    I := Length(Value) + 1;
+//  Delete(Value, I, Cardinal(Length(Value)) - I + Cardinal(1));
+//  for I := High(HKEYNames) downto Low(HKEYNames) do
+//    if AnsiSameText(HKEYNames[I], Value) or AnsiSameText(HKEYShortNames[I], Value) then
+//    begin
+//      Result := I + $80000000;
+//      Break;
+//    end;
+//end;
+//
+//function StringFromHKEY(const Key: HKEY; const UseShortName: Boolean): string;
+//begin
+//  if UseShortName then
+//    Result := HKEYShortNames[KEY - $80000000]
+//  else
+//    Result := HKEYNames[KEY - $80000000];
+//end;
 
 //=== TScheduleThread ========================================================
 
@@ -422,7 +440,7 @@ end;
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FSaveKey := HKEY_CURRENT_USER;
+//  FSaveKey := HKEY_CURRENT_USER;
   FEvents := TJvEventCollection.Create(Self);
 end;
 
@@ -440,6 +458,16 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomScheduledEvents.GetAppStorage: TJvCustomAppStorage;
+begin
+  Result := FAppStorage;
+end;
+
+procedure TJvCustomScheduledEvents.SetAppStorage(Value: TJvCustomAppStorage);
+begin
+  FAppStorage := Value;
+end;
+
 procedure TJvCustomScheduledEvents.DoEndEvent(const Event: TJvEventCollectionItem);
 begin
   if Assigned(FOnEndEvent) then
@@ -452,12 +480,12 @@ begin
     FOnStartEvent(Event);
 end;
 
-function TJvCustomScheduledEvents.GetSaveTo: string;
-begin
-  Result := StringFromHKEY(FSaveKey, True);
-  if FSavePath <> '' then
-    Result := Result + '\' + FSavePath;
-end;
+//function TJvCustomScheduledEvents.GetSaveTo: string;
+//begin
+//  Result := StringFromHKEY(FSaveKey, True);
+//  if FSavePath <> '' then
+//    Result := Result + '\' + FSavePath;
+//end;
 
 function TJvCustomScheduledEvents.GetEvents: TJvEventCollection;
 begin
@@ -485,53 +513,93 @@ begin
   end;
 end;
 
-procedure TJvCustomScheduledEvents.LoadEventStates;
+procedure TJvCustomScheduledEvents.LoadSingleEvent(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
 var
-  SubKey: string;
-  EventNames: TStringList;
-  I: Integer;
-  EventKey: string;
   Stamp: TTimeStamp;
   TriggerCount: Integer;
   DayCount: Integer;
   Snooze: TTimeStamp;
   SnoozeInterval: TSystemTime;
+  EventName: string;
+  Event: TJvEventCollectionItem;
 begin
-  SubKey := FSavePath + '\' + Name + '.Events';
-  if RegKeyExists(FSaveKey, SubKey) then
+  EventName := Sender.ReadString(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']));
+  if EventName <> '' then
   begin
-    EventNames := TStringList.Create;
-    try
-      RegGetKeyNames(FSaveKey, SubKey, EventNames);
-      for I := 0 to EventNames.Count - 1 do
-      begin
-        EventKey := SubKey + '\' + EventNames[I];
-        Stamp.Date := RegReadInteger(FSaveKey, EventKey, 'Stamp.Date');
-        Stamp.Time := RegReadInteger(FSaveKey, EventKey, 'Stamp.Time');
-        TriggerCount := RegReadInteger(FSaveKey, EventKey, 'TriggerCount');
-        DayCount := RegReadInteger(FSaveKey, EventKey, 'DayCount');
-        Snooze.Date := RegReadInteger(FSaveKey, EventKey, 'Snooze.Date');
-        Snooze.Time := RegReadInteger(FSaveKey, EventKey, 'Snooze.Time');
-        SnoozeInterval.wYear := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear');
-        SnoozeInterval.wMonth := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth');
-        SnoozeInterval.wDay := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay');
-        SnoozeInterval.wHour := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour');
-        SnoozeInterval.wMinute := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute');
-        SnoozeInterval.wSecond := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond');
-        SnoozeInterval.wMilliseconds := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds');
-        FEvents.Add.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
-      end;
-    finally
-      EventNames.Free;
-    end;
+    Stamp.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']));
+    Stamp.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']));
+    TriggerCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']));
+    DayCount := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']));
+    Snooze.Date := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']));
+    Snooze.Time := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']));
+    SnoozeInterval.wYear := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']));
+    SnoozeInterval.wMonth := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']));
+    SnoozeInterval.wDay := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']));
+    SnoozeInterval.wHour := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']));
+    SnoozeInterval.wMinute := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']));
+    SnoozeInterval.wSecond := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']));
+    SnoozeInterval.wMilliseconds := Sender.ReadInteger(Sender.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']));
+    Event := TJvEventCollection(List).Add;
+    Event.Name := EventName;
+    Event.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
   end;
 end;
 
-procedure TJvCustomScheduledEvents.SaveEventStates;
+procedure TJvCustomScheduledEvents.LoadEventStates (const ClearBefore : Boolean = True);
+begin
+  if ClearBefore then
+    FEvents.Clear;
+  if Assigned(AppStorage) then
+    if AppStorage.PathExists(AppStoragePath) then
+      AppStorage.ReadList(AppStoragePath, FEvents, LoadSingleEvent);
+end;
+
+//procedure TJvCustomScheduledEvents.LoadEventStatesOld;
+//var
+//  SubKey: string;
+//  EventNames: TStringList;
+//  I: Integer;
+//  EventKey: string;
+//  Stamp: TTimeStamp;
+//  TriggerCount: Integer;
+//  DayCount: Integer;
+//  Snooze: TTimeStamp;
+//  SnoozeInterval: TSystemTime;
+//begin
+//  SubKey := FSavePath + '\' + Name + '.Events';
+//  if RegKeyExists(FSaveKey, SubKey) then
+//  begin
+//    EventNames := TStringList.Create;
+//    try
+//      RegGetKeyNames(FSaveKey, SubKey, EventNames);
+//      for I := 0 to EventNames.Count - 1 do
+//      begin
+//        EventKey := SubKey + '\' + EventNames[I];
+//        Stamp.Date := RegReadInteger(FSaveKey, EventKey, 'Stamp.Date');
+//        Stamp.Time := RegReadInteger(FSaveKey, EventKey, 'Stamp.Time');
+//        TriggerCount := RegReadInteger(FSaveKey, EventKey, 'TriggerCount');
+//        DayCount := RegReadInteger(FSaveKey, EventKey, 'DayCount');
+//        Snooze.Date := RegReadInteger(FSaveKey, EventKey, 'Snooze.Date');
+//        Snooze.Time := RegReadInteger(FSaveKey, EventKey, 'Snooze.Time');
+//        SnoozeInterval.wYear := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear');
+//        SnoozeInterval.wMonth := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth');
+//        SnoozeInterval.wDay := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay');
+//        SnoozeInterval.wHour := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour');
+//        SnoozeInterval.wMinute := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute');
+//        SnoozeInterval.wSecond := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond');
+//        SnoozeInterval.wMilliseconds := RegReadInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds');
+//        FEvents.Add.LoadState(Stamp, TriggerCount, DayCount, Snooze, SnoozeInterval);
+//      end;
+//    finally
+//      EventNames.Free;
+//    end;
+//  end;
+//end;
+
+procedure TJvCustomScheduledEvents.SaveSingleEvent(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer);
 var
-  SubKey: string;
-  I: Integer;
-  EventKey: string;
   Stamp: TTimeStamp;
   TriggerCount: Integer;
   DayCount: Integer;
@@ -541,51 +609,104 @@ var
   SnoozeInterval: TSystemTime;
   SnoozeDate: Integer;
   SnoozeTime: Integer;
+
 begin
-  SubKey := FSavePath + '\' + Name + '.Events';
-  if RegKeyExists(FSaveKey, SubKey) then
-    RegDeleteKeyTree(FSaveKey, SubKey);
-  RegCreateKey(FSaveKey, SubKey, '');
-  for I := 0 to FEvents.Count - 1 do
-  begin
-    EventKey := SubKey + '\' + IntToStr(I); // + FEvents[I].Name;
-    RegCreateKey(FSaveKey, EventKey, '');
-    FEvents[I].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
-    StampDate := Stamp.Date;
-    StampTime := Stamp.Time;
-    SnoozeDate := SnoozeStamp.Date;
-    SnoozeTime := SnoozeStamp.Time;
-    RegWriteInteger(FSaveKey, EventKey, 'Stamp.Date', StampDate);
-    RegWriteInteger(FSaveKey, EventKey, 'Stamp.Time', StampTime);
-    RegWriteInteger(FSaveKey, EventKey, 'TriggerCount', TriggerCount);
-    RegWriteInteger(FSaveKey, EventKey, 'DayCount', DayCount);
-    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Date', SnoozeDate);
-    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Time', SnoozeTime);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear', SnoozeInterval.wYear);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth', SnoozeInterval.wMonth);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay', SnoozeInterval.wDay);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour', SnoozeInterval.wHour);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute', SnoozeInterval.wMinute);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond', SnoozeInterval.wSecond);
-    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds', SnoozeInterval.wMilliseconds);
-  end;
+//  Sender.WriteString(Path + '\' + cItem + IntToStr(Index), Sender.FStoreSL[Index]);
+  TJvEventCollection(List)[Index].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
+  StampDate := Stamp.Date;
+  StampTime := Stamp.Time;
+  SnoozeDate := SnoozeStamp.Date;
+  SnoozeTime := SnoozeStamp.Time;
+  AppStorage.WriteString(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Eventname']), FEvents[Index].Name);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Date']), StampDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Stamp.Time']), StampTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'TriggerCount']), TriggerCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'DayCount']), DayCount);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Date']), SnoozeDate);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'Snooze.Time']), SnoozeTime);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wYear']), SnoozeInterval.wYear);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMonth']), SnoozeInterval.wMonth);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wDay']), SnoozeInterval.wDay);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wHour']), SnoozeInterval.wHour);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMinute']), SnoozeInterval.wMinute);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wSecond']), SnoozeInterval.wSecond);
+  AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, 'Event '+inttostr(Index), 'SnoozeInterval.wMilliseconds']), SnoozeInterval.wMilliseconds);
 end;
 
-procedure TJvCustomScheduledEvents.SetSaveTo(Value: string);
+procedure TJvCustomScheduledEvents.DeleteSingleEvent(Sender: TJvCustomAppStorage; const Path: string;
+  const List: TObject; const First, Last: Integer);
+var
+  I: Integer;
 begin
-  Value := Trim(Value);
-  FSaveKey := HKEYFromStringStart(Value);
-  if FSaveKey = 0 then
-    FSaveKey := HKEY_CURRENT_USER
-  else
-  begin
-    if AnsiSameText(Copy(Value, 1, 4), 'HKEY') then
-      Delete(Value, 1, Length(StringFromHKEY(FSaveKey, False)) + 1)
-    else
-      Delete(Value, 1, Length(StringFromHKEY(FSaveKey, True)) + 1);
-  end;
-  FSavePath := Value;
+  for I := First to Last do
+    Sender.DeleteSubTree(Sender.ConcatPaths([Path, 'Event ' + IntToStr(I)]));
 end;
+
+procedure TJvCustomScheduledEvents.SaveEventStates;
+begin
+  if Assigned(AppStorage) then
+    AppStorage.WriteList(AppStoragePath, FEvents, FEvents.Count, SaveSingleEvent, DeleteSingleEvent);
+end;
+
+//procedure TJvCustomScheduledEvents.SaveEventStatesOld;
+//var
+//  SubKey: string;
+//  I: Integer;
+//  EventKey: string;
+//  Stamp: TTimeStamp;
+//  TriggerCount: Integer;
+//  DayCount: Integer;
+//  StampDate: Integer;
+//  StampTime: Integer;
+//  SnoozeStamp: TTimeStamp;
+//  SnoozeInterval: TSystemTime;
+//  SnoozeDate: Integer;
+//  SnoozeTime: Integer;
+//begin
+//  SubKey := FSavePath + '\' + Name + '.Events';
+//  if RegKeyExists(FSaveKey, SubKey) then
+//    RegDeleteKeyTree(FSaveKey, SubKey);
+//  RegCreateKey(FSaveKey, SubKey, '');
+//  for I := 0 to FEvents.Count - 1 do
+//  begin
+//    EventKey := SubKey + '\' + IntToStr(I); // + FEvents[I].Name;
+//    RegCreateKey(FSaveKey, EventKey, '');
+//    FEvents[I].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
+//    StampDate := Stamp.Date;
+//    StampTime := Stamp.Time;
+//    SnoozeDate := SnoozeStamp.Date;
+//    SnoozeTime := SnoozeStamp.Time;
+//    RegWriteInteger(FSaveKey, EventKey, 'Stamp.Date', StampDate);
+//    RegWriteInteger(FSaveKey, EventKey, 'Stamp.Time', StampTime);
+//    RegWriteInteger(FSaveKey, EventKey, 'TriggerCount', TriggerCount);
+//    RegWriteInteger(FSaveKey, EventKey, 'DayCount', DayCount);
+//    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Date', SnoozeDate);
+//    RegWriteInteger(FSaveKey, EventKey, 'Snooze.Time', SnoozeTime);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wYear', SnoozeInterval.wYear);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMonth', SnoozeInterval.wMonth);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wDay', SnoozeInterval.wDay);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wHour', SnoozeInterval.wHour);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMinute', SnoozeInterval.wMinute);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wSecond', SnoozeInterval.wSecond);
+//    RegWriteInteger(FSaveKey, EventKey, 'SnoozeInterval.wMilliseconds', SnoozeInterval.wMilliseconds);
+//  end;
+//end;
+
+//procedure TJvCustomScheduledEvents.SetSaveTo(Value: string);
+//begin
+//  Value := Trim(Value);
+//  FSaveKey := HKEYFromStringStart(Value);
+//  if FSaveKey = 0 then
+//    FSaveKey := HKEY_CURRENT_USER
+//  else
+//  begin
+//    if AnsiSameText(Copy(Value, 1, 4), 'HKEY') then
+//      Delete(Value, 1, Length(StringFromHKEY(FSaveKey, False)) + 1)
+//    else
+//      Delete(Value, 1, Length(StringFromHKEY(FSaveKey, True)) + 1);
+//  end;
+//  FSavePath := Value;
+//end;
 
 procedure TJvCustomScheduledEvents.SetEvents(Value: TJvEventCollection);
 begin
