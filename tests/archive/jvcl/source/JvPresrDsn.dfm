@@ -222,6 +222,7 @@ object JvFormPropsDlg: TJvFormPropsDlg
     Width = 113
     Height = 97
     ItemHeight = 13
+    MultiSelect = True
     Sorted = True
     TabOrder = 3
     OnDblClick = PropertiesListDblClick
