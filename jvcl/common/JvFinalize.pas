@@ -14,7 +14,7 @@ The Initial Developers of the Original Code is: Andreas Hausladen
 Copyright (c) 2004 Andreas Hausladen
 All Rights Reserved.
 
-Last Modified: 2004-02-27
+Last Modified: 2004-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -83,24 +83,20 @@ implementation
 
 type
   TFinalizeItem = class(TObject)
-  private
-    FNext: TFinalizeItem;
-    FUnitName: string;
   public
-    constructor Create(const AUnitName: string);
+    Next: TFinalizeItem;
 
-    property Next: TFinalizeItem read FNext write FNext;
-    property UnitName: string read FUnitName;
+    constructor Create(const AUnitName: string);
   end;
 
   TFinalizeUnitItem = class(TObject)
+  public
     UnitName: string;
     Items: TFinalizeItem;
     Next: TFinalizeUnitItem;
 
     constructor Create(AUnitName: string; ANext: TFinalizeUnitItem);
     destructor Destroy; override;
-    procedure FinalizeUnit;
   end;
 
 var
@@ -125,7 +121,7 @@ begin
     FinalizeUnitList := TFinalizeUnitItem.Create(AUnitName, FinalizeUnitList);
     P := FinalizeUnitList;
   end;
-  FNext := P.Items;
+  Next := P.Items;
   P.Items := Self;
 end;
 
@@ -140,12 +136,6 @@ begin
 end;
 
 destructor TFinalizeUnitItem.Destroy;
-begin
-  FinalizeUnit;
-  inherited Destroy;
-end;
-
-procedure TFinalizeUnitItem.FinalizeUnit;
 var
   P: TFinalizeItem;
 begin
@@ -155,6 +145,7 @@ begin
     Items := P.Next;
     P.Free;
   end;
+  inherited Destroy;
 end;
 
 procedure FinalizeUnits;
