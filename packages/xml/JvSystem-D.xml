@@ -26,7 +26,7 @@
     <File Name="..\..\design\JvPerfStatEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvSystemReg.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\qdesign\JvQSystemReg.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTimerListEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimerListEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all" Formname="JvFormPropsDlg" Condition=""/>
     <File Name="..\..\qdesign\JvQMinMaxForm.pas" Targets="allclx" Formname="MinMaxInfoEditDialog" Condition=""/>
