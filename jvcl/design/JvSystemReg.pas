@@ -58,7 +58,7 @@ procedure Register;
 begin
   RegisterComponents(SPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}
-    TJvSHFileOperation, TJvChangeNotify, TJvDragDrop, TJvAppInstances,
+    TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,
       TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver, TJvDeviceChanged,
       TJvJoystick, TJvSoundControl, TJvKeyboardStates, TJvDirectories,
       TJvSystemColors, TJvAppDdeCmd, TJvPerfStat95]);
