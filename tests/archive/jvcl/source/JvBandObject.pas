@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Forms, Messages, ComObj, ShlObj, ActiveX, Classes, Menus, Dialogs,
-  jvBandForms;
+  jvBandForms, Controls;
 
 const
   CATID_DESKBAND = '{00021492-0000-0000-C000-000000000046}';
@@ -97,7 +97,7 @@ type
     FViewMode: DWORD;
     FSite: IInputObjectSite;
     FOleCommandTarget: IOleCommandTarget;
-    SavedWndProc: twndmethod;
+    SavedWndProc: TWndMethod;
     HasFocus: Boolean;
   protected
     function CreateBandForm(const ParentWnd: HWnd): TjvBandForm; virtual; abstract;
@@ -1068,9 +1068,13 @@ begin
 end;
 
 procedure TzCustomBandObject.FocusChange(bHasFocus: Boolean);
+var Obj:IUnknown;
 begin
   if (Site <> nil) then
-    Site.OnFocusChangeIS(FBandForm, bHasFocus);
+  begin
+    if Supports(FBandForm,IUnknown,Obj) then
+      Site.OnFocusChangeIS(Obj, bHasFocus);
+  end;
 end;
 
 function TzCustomBandObject.MsgHookProc(nCode, wParam,
