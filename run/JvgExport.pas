@@ -34,14 +34,14 @@ interface
 
 uses
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-  QuickRpt, QRExport, DB,
-  JclUnitConv,
-  JvgTypes;
+  {$IFDEF JVCL_USEQuickReport}QuickRpt, QRExport, {$ENDIF}
+  DB,  JclUnitConv,  JvgTypes;
 
 type
   TOnExportProgress = procedure(Progress: Integer) of object;
-
+{$IFDEF JVCL_UseQuickReport}
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
+{$ENDIF}
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
 implementation
@@ -54,6 +54,7 @@ const
   cExcelApplication = 'Excel.Application';
   cReport = 'Report';
 
+{$IFDEF JVCL_UseQuickReport}
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
 var
   P: PChar;
@@ -142,6 +143,7 @@ begin
       DeleteFile(TempFileName);
   end;
 end;
+{$ENDIF}
 
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 var

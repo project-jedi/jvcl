@@ -40,7 +40,9 @@ implementation
 
 uses
   SysUtils, Classes, Controls, Forms, Graphics, Db,
+  {$IFDEF JVCL_UseQuickReport}
   QrPrntr, Quickrpt, QrCtrls,
+  {$ENDIF}
   JvInterpreterFm, JvResources, JvTypes;
 
 const

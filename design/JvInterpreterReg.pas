@@ -45,7 +45,10 @@ uses
   JvInterpreter_ComCtrls, JvInterpreter_Contnrs, JvInterpreter_Controls,
   {$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
-  JvInterpreter_DBTables, JvInterpreter_httpapp, JvInterpreter_Quickrpt,
+  JvInterpreter_DBTables, JvInterpreter_httpapp,
+  {$IFDEF JVCL_UseQuickReport}
+  JvInterpreter_Quickrpt,
+  {$ENDIF JVCL_UseQuickReport}
   {$ENDIF DelphiPersonalEdition}
   JvInterpreter_Dialogs, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Graphics, JvInterpreter_Grids, JvInterpreter_JvEditor,

@@ -31,9 +31,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF DELPHI6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF DELPHI6_UP}
+  {$ENDIF COMPILER6_UP}
   JvStrings;
 
 type

@@ -123,11 +123,11 @@ type
     glLabel4: TLabel;
     glLabel5: TLabel;
     glLabel7: TLabel;
-    se_Width: TSpinEdit;
-    se_Top: TSpinEdit;
-    se_Left: TSpinEdit;
+    se_Width: TUpDown;
+    se_Top: TUpDown;
+    se_Left: TUpDown;
     glLabel6: TLabel;
-    se_Height: TSpinEdit;
+    se_Height: TUpDown;
     cb_Components: TComboBox;
     glLabel8: TLabel;
     N4: TMenuItem;
@@ -145,7 +145,7 @@ type
     sb_BevelBold: TSpeedButton;
     glBevel2: TJvgBevel;
     Panel3: TPanel;
-    RxSpinEdit1: TSpinEdit;
+    RxSpinEdit1: TUpDown;
     Panel6: TPanel;
     sbFontColor: TSpeedButton;
     glBevel3: TJvgBevel;
@@ -167,6 +167,10 @@ type
     CheckBox1: TCheckBox;
     FontComboBox1: TComboBox;
     ColorComboBox1: TComboBox;
+    edLeft: TEdit;
+    edTop: TEdit;
+    edWidth: TEdit;
+    edHeight: TEdit;
     procedure OpenClick(Sender: TObject);
     procedure Save1Click(Sender: TObject);
     procedure ScrollBox_MouseDown(Sender: TObject; Button: TMouseButton;
@@ -175,7 +179,6 @@ type
     procedure Edit1Change(Sender: TObject);
     procedure SB_LeftClick(Sender: TObject);
     procedure FontComboBox1Change(Sender: TObject);
-    procedure RxSpinEdit1Change(Sender: TObject);
     procedure ColorComboBox1Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure sb_BookClick(Sender: TObject);
@@ -211,6 +214,7 @@ type
     procedure cb_ComponentsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure CheckBox1Click(Sender: TObject);
+    procedure se_LeftClick(Sender: TObject; Button: TUDBtnType);
   private
     FReportParamEditor: TJvgReportParamEditor;
     FMouseDown: Boolean;
@@ -748,12 +752,6 @@ begin
   //-----!  FSelectedControl.FName := TFontComboBox(Sender).FontName;
 end;
 
-procedure TJvgReportEditorForm.RxSpinEdit1Change(Sender: TObject);
-begin
-  if Assigned(FSelectedControl) then
-    FSelectedControl.FSize := Trunc(TSpinEdit(Sender).Value);
-end;
-
 procedure TJvgReportEditorForm.ColorComboBox1Change(Sender: TObject);
 begin
   // (rom) following two lines disabled
@@ -982,7 +980,7 @@ end;
 procedure TJvgReportEditorForm.se_SizeChange(Sender: TObject);
 begin
   if (not FMouseDown) and (not FSkipSizeUpdate) then
-    ResizeReportControls(se_Left.Value, IGNORE_VALUE,
+    ResizeReportControls(se_Left.Position, IGNORE_VALUE,
       IGNORE_VALUE, IGNORE_VALUE, False {fUseParamsAsShifts});
   ShowComponentPos(FSelectedControl);
   FSkipSizeUpdate := False;
@@ -991,7 +989,7 @@ end;
 procedure TJvgReportEditorForm.se_TopChange(Sender: TObject);
 begin
   if (not FMouseDown) and (not FSkipSizeUpdate) then
-    ResizeReportControls(IGNORE_VALUE, se_Top.Value,
+    ResizeReportControls(IGNORE_VALUE, se_Top.Position,
       IGNORE_VALUE, IGNORE_VALUE, False {fUseParamsAsShifts});
   ShowComponentPos(FSelectedControl);
   FSkipSizeUpdate := False;
@@ -1001,7 +999,7 @@ procedure TJvgReportEditorForm.se_WidthChange(Sender: TObject);
 begin
   if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(IGNORE_VALUE, IGNORE_VALUE,
-      se_Width.Value, IGNORE_VALUE, False {fUseParamsAsShifts});
+      se_Width.Position, IGNORE_VALUE, False {fUseParamsAsShifts});
   ShowComponentPos(FSelectedControl);
   FSkipSizeUpdate := False;
 end;
@@ -1010,7 +1008,7 @@ procedure TJvgReportEditorForm.se_HeightChange(Sender: TObject);
 begin
   if (not FMouseDown) and (not FSkipSizeUpdate) then
     ResizeReportControls(IGNORE_VALUE, IGNORE_VALUE,
-      IGNORE_VALUE, se_Height.Value, False {fUseParamsAsShifts});
+      IGNORE_VALUE, se_Height.Position, False {fUseParamsAsShifts});
   ShowComponentPos(FSelectedControl);
   FSkipSizeUpdate := False;
 end;
@@ -1071,10 +1069,10 @@ procedure TJvgReportEditorForm.ShowComponentPos(Control: TControl);
 begin
   if Component <> nil then
   begin
-    se_Left.Value := Control.Left;
-    se_Top.Value := Control.Top;
-    se_Width.Value := Control.Width;
-    se_Height.Value := Control.Height;
+    se_Left.Position := Control.Left;
+    se_Top.Position := Control.Top;
+    se_Width.Position := Control.Width;
+    se_Height.Position := Control.Height;
   end;
 end;
 
@@ -1141,7 +1139,7 @@ begin
     Edit1.Text := Text;
     Memo1.Text := Text;
     FontComboBox1.Text := FName;
-    RxSpinEdit1.Value := FSize;
+    RxSpinEdit1.Position := FSize;
     ColorComboBox1.Color := FColor;
 
     SB_Left.Down := SideLeft = 1;
@@ -1295,6 +1293,13 @@ procedure TJvgReportEditorForm.CheckBox1Click(Sender: TObject);
 begin
   if Assigned(FSelectedControl) then
     FSelectedControl.Transparent := Ord(TCheckBox(Sender).Checked);
+end;
+
+procedure TJvgReportEditorForm.se_LeftClick(Sender: TObject;
+  Button: TUDBtnType);
+begin
+  if Assigned(FSelectedControl) then
+    FSelectedControl.FSize := TUpDown(Sender).Position;
 end;
 
 end.
