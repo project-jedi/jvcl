@@ -48,7 +48,13 @@ uses
 
 {$IFDEF VisualCLX}
 const
-  SCustomColors = 'JVCLX Custom Colors';
+  // registry/ini keys
+  {$IFDEF MSWINDOWS}
+  SCustomColors = '\JVCLX\Custom Colors';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  SCustomColors = '/.JVCLX/Custom Colors';
+  {$ENDIF LINUX}
 {$ENDIF VisualCLX}
 
 type
@@ -224,8 +230,34 @@ end;
 //
 function TJvColorProperty.GetRegKey: string;
 begin
-  Result := SDelphiKey + PathDelim + SCustomColors;
+  Result := SDelphiKey + SCustomColors;
 end;
+
+const
+  DefaultColors: array['A'..'P'] of string = (
+    'F0FBFF',  // clCream
+    'C0DCC0',  // clMoneyGreen
+
+    '733800',  // border line
+    'C6CFD6',  // clicked from
+    'FFE7CE',  // focused from
+    'CEF3FF',  // highlight from
+
+    'AD9E7B',  // border edges
+    'E7EBEF',  // background to
+
+    'F0CAA6',  // clSkyBlue
+               // XP Colors:
+    '21A621',  // symbol normal
+
+    'BDC7CE',  // border line (disabled)
+    'EBF3F7',  // clicked to
+    'EF846D',  // focused to
+    '0096E7',  // highlight to
+
+    '845118',  // border line
+    'FFFFFFFF');
+
 
 procedure TJvColorProperty.Edit;
 var
@@ -240,20 +272,27 @@ var
     with TRegistry.Create do
     try
       LazyWrite := False;
-      if OpenKey(GetRegKey, True) then
-      try
-        with ColorDialog.CustomColors do
-        begin
-          Clear;
+      with ColorDialog.CustomColors do
+      begin
+        Clear;
+        if OpenKey(GetRegKey, False) then
+        try
           for Suffix := 'A' to 'P' do
           begin
-            KeyName := 'Color' + Suffix;
+            KeyName := 'Color' + Suffix;  // do not localize !!
             KeyValue := ReadString(KeyName);
             Add(KeyName + '=' + KeyValue);
           end;
-        end;
-      finally
-        CloseKey;
+        finally
+          CloseKey;
+        end
+        else // set default customcolors
+          for Suffix := 'A' to 'P' do
+          begin
+            KeyName := 'Color' + Suffix;  // do not localize !!
+            KeyValue := DefaultColors[Suffix] ;
+            Add(KeyName + '=' + KeyValue);
+          end;
       end;
     finally
       Free;
@@ -302,6 +341,7 @@ begin
   finally
     ColorDialog.Free;
   end;
+end;
 {$ENDIF VisualCLX}
 
 end.
