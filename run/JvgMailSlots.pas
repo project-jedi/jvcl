@@ -146,29 +146,36 @@ end;
 
 procedure TJvgMailSlotServer.OnTimer(Sender: TObject);
 var
-  MsgNext: DWORD;
+  MsgSize: DWORD;
   MsgNumber: DWORD;
   Read: DWORD;
   MessageText: string;
-  Buffer: array [0..249] of Char;
+  Buffer: PChar;
 begin
   //  if not FEnabled then exit;
 
   MessageText := '';
   // определение наличия сообщения в канале
   { Determining if there's message in channel [translated] }
-  if not GetMailSlotInfo(FHandle, nil, MsgNext, @MsgNumber, nil) then
+  if not GetMailSlotInfo(FHandle, nil, MsgSize, @MsgNumber, nil) then
     raise Exception.Create(RsETJvgMailSlotServerErrorGatheringInf);
-  if MsgNext <> MAILSLOT_NO_MESSAGE then
+  if MsgSize <> MAILSLOT_NO_MESSAGE then
   begin
     // (rom) deactivated  annoying
     // Beep;
-    // чтение сообщения из канала и добавление в текст протокола
-    { Reading message from channel and adding it to text of log }
-    if ReadFile(FHandle, Buffer, SizeOf(Buffer), Read, nil) then
-      MessageText := Buffer
-    else
-      raise Exception.Create(RsETJvgMailSlotServerErrorReadingMessa);
+
+    // Allocate memory for the message
+    GetMem(Buffer, MsgSize);
+    try
+      // чтение сообщения из канала и добавление в текст протокола
+      { Reading message from channel and adding it to text of log }
+      if ReadFile(FHandle, Buffer, MsgSize, Read, nil) then
+        MessageText := Buffer
+      else
+        raise Exception.Create(RsETJvgMailSlotServerErrorReadingMessa);
+    finally
+      FreeMem(Buffer);
+    end;
   end;
 
   if (MessageText <> '') and Assigned(FOnNewMessage) then
@@ -199,16 +206,26 @@ end;
 
 procedure TJvgMailSlotClient.ErrorCatch(Sender: TObject; Exc: Exception);
 var
-  UserName: array [0..99] of Char;
+  UserName: PChar;
   Size: DWORD;
 begin
   // получение имени пользователя
   { Querying user name [translated] }
-  Size := SizeOf(UserName);
+  // First query with a buffer too small, to get the required size
+  Size := 0;
   GetUserName(UserName, Size);
 
-  Send('/' + UserName + '/' + FormatDateTime('hh:mm', Time) + '/' +
-    Exc.Message);
+  // then allocate some memory for the user name
+  GetMem(UserName, Size);
+  try
+    GetUserName(UserName, Size);
+
+    Send('/' + UserName + '/' + FormatDateTime('hh:mm', Time) + '/' +
+      Exc.Message);
+  finally
+    FreeMem(UserName);
+  end;
+
   // вывод сообщения об ошибке пользователю
   { Showing message about error to user [translated] }
   Application.ShowException(Exc);
@@ -216,7 +233,7 @@ end;
 
 function TJvgMailSlotClient.Send(str: string): Boolean;
 var
-  Buffer: array [0..249] of Char;
+  Buffer: PChar;
   FHandle: THandle;
   Written: DWORD;
 begin
@@ -233,11 +250,16 @@ begin
     GENERIC_WRITE, FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if FHandle <> INVALID_HANDLE_VALUE then
   begin
-    StrCopy(Buffer, PChar(Str));
-    // передача текста ошибки (запись в канал и закрытие канала)
-    { Transmitting text of error (putting into channel and closing channel) [translated] }
-    WriteFile(FHandle, Buffer, Length(Str) + 1, Written, nil);
-    CloseHandle(FHandle);
+    GetMem(Buffer, Length(Str)+1);
+    try
+      StrCopy(Buffer, PChar(Str));
+      // передача текста ошибки (запись в канал и закрытие канала)
+      { Transmitting text of error (putting into channel and closing channel) [translated] }
+      WriteFile(FHandle, Buffer, Length(Str) + 1, Written, nil);
+    finally
+      CloseHandle(FHandle);
+      FreeMem(Buffer);
+    end;
   end;
   Result := FHandle <> INVALID_HANDLE_VALUE;
 end;
