@@ -47,7 +47,7 @@ Each design package should have it's own registration unit with a Register proce
 
 TODO:
 ====
-* Split packages into several smaller packages
+DONE - Split packages into several smaller packages
   Naming convention:
     Jv<name><compiler>(D|R).dpk/.bpk
     where 
@@ -75,33 +75,33 @@ TODO:
     JvBDE - bde specific DB components
     JvOther - deprecated, duplicated, leftover or non-conformant
 
-* Put packages for each compiler version in it's own folder
+DONE - Put packages for each compiler version in it's own folder
   Package folder names should be d5, d6, d7, bcb5, bcb6, k2 and k3
-* Put sources for design and run-time in separate folders
-* Put resources (res and dcr files mainly) in a common folder. This folder is named \resources
-* Put INC and common files (like API translations) in a common folder. This folder is named \common.
+DONE - Put sources for design and run-time in separate folders 
+DONE - Put resources (res and dcr files mainly) in a common folder. This folder is named \resources 
+DONE - Put INC and common files (like API translations) in a common folder. This folder is named \common. 
 * Merge/remove remaining duplicates
-* Change palette layout
-* Create one DCR file for each design package
+DONE - Change palette layout 
+DONE - Create one DCR file for each design package 
 * Implement IFiller (Marcel?). NOTE: IFiller has been renamed to IData.
 * Implement XP theming (Remko?)
-* Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5.
-* Merge utility units into one and put component specific routines into separate units. 
+DONE - Remove unnecessary IFDEF's (WIN32, COMPILER3, COMPILER4 etc). We don't support 16-bit and we don't support compilers before COMPILER5. 
+DONE - Merge utility units into one and put component specific routines into separate units. 
 * Split design units where editors and forms are in the same file (bad!)
-* Rename all DB related units to "JvDB", all BDE related to "JvBDE" etc
+DONE - Rename all DB related units to "JvDB", all BDE related to "JvBDE" etc 
 * Add remaining donations:
 
-  Globus (Andrey Chudin) - already compliant
-  Jans (Jan Verhoeven) - already compliant
-  UIB (Henri Gourvest) - already compliant
+DONE - Globus (Andrey Chudin) - already compliant 
+DONE - Jans (Jan Verhoeven) - already compliant 
+DONE - UIB (Henri Gourvest) - already compliant 
 
-  Print Preview (peter3) - already compliant
-  Validators (peter3) - already compliant
-  Error Provider (peter3) - already compliant
-  TreeView w. Checkbox and RadioButton support (peter3) - already compliant
-  VS.NET style TreeView and JvPageList (peter3) - already compliant
+DONE - Print Preview (peter3) - already compliant 
+DONE - Validators (peter3) - already compliant 
+DONE - Error Provider (peter3) - already compliant 
+DONE - TreeView w. Checkbox and RadioButton support (peter3) - already compliant 
+DONE - VS.NET style TreeView and JvPageList (peter3) - already compliant 
   LED control (marcelb)
-  XML Database (sebastien) - already compliant
+DONE - XML Database (sebastien) - already compliant 
   JvAviCAP (obones)
   TreeViewCombo and DirPathCombo (mbeck)
   ExpressionEdit (rbarre) (?)
