@@ -1,12 +1,15 @@
 object frmMain: TfrmMain
-  Left = 192
-  Top = 107
+  Left = 198
+  Top = 148
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
-  Caption = 'JvMenus example'
+  Caption = 'JvMenus Example'
   ClientHeight = 273
   ClientWidth = 453
   Color = clBtnFace
+  Constraints.MinHeight = 300
+  Constraints.MinWidth = 400
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,6 +18,7 @@ object frmMain: TfrmMain
   Menu = jmnMain
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object pnlPopup: TPanel
@@ -36,6 +40,7 @@ object frmMain: TfrmMain
     ButtonWidth = 39
     Caption = 'JvToolBar'
     Flat = True
+    Menu = jmnMain
     ShowCaptions = True
     TabOrder = 1
   end
@@ -82,15 +87,16 @@ object frmMain: TfrmMain
         'menu will use the Style property to create an internal painter a' +
         'nd use it.'
       
-        'However, you cannot access the properties of the painter at runt' +
-        'ime. To do that, use a '
+        'However, you cannot access the properties of the painter at desi' +
+        'gntime. To do that, '
       
-        'Painter component and associate it with the menu you wish it to ' +
-        'paint. '
+        'use a Painter component and associate it with the menu you wish ' +
+        'it to paint. '
       
         'This also allows you to write your own Item Painter to suit your' +
         ' needs. To see an '
-      'example of this, please see the JvRichEdit demo.')
+      
+        'example of this, please have a look at the TJvRichEdit demo')
     ReadOnly = True
     TabOrder = 5
   end
@@ -639,6 +645,9 @@ object frmMain: TfrmMain
     Top = 204
     object Test1: TMenuItem
       Caption = 'Test'
+    end
+    object N3: TMenuItem
+      Caption = '-'
     end
     object Testagain1: TMenuItem
       Caption = 'Test again'

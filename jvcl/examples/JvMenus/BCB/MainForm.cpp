@@ -65,6 +65,7 @@ void __fastcall TfrmMain::btnAddItemsClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::btnChangeCaptionClick(TObject *Sender)
 {
-  Try1->Caption = "ReFile";
+  // Put a tab in it to test its correct expansion
+  Try1->Caption = "1\tReFile";
 }
 //---------------------------------------------------------------------------
