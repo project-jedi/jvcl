@@ -114,7 +114,9 @@ type
     function FieldCount(ADataComponent: TComponent): Integer; virtual;
     function RecordCount(ADataComponent: TComponent): Integer; virtual;
     function RecNo(ADataComponent: TComponent): Integer; virtual;
-    function CanModify(ADataComponent: TComponent): Boolean; virtual;
+    function CanInsert(ADataComponent: TComponent): Boolean; virtual;
+    function CanUpdate(ADataComponent: TComponent): Boolean; virtual;
+    function CanDelete(ADataComponent: TComponent): Boolean; virtual;
     function Eof(ADataComponent: TComponent): Boolean; virtual;
     function Bof(ADataComponent: TComponent): Boolean; virtual;
     procedure DisableControls(ADataComponent: TComponent); virtual;
@@ -149,7 +151,12 @@ type
     function GetGridView(ADataComponent: TComponent): TcxCustomGridTableView;
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
   public
+    function Bof(ADataComponent: TComponent): Boolean; virtual;
     function RecNo(ADataComponent: TComponent): Integer; override;
+    function RecordCount(ADataComponent: TComponent): Integer; override;
+    function CanInsert(ADataComponent: TComponent): Boolean; override;
+    function CanUpdate(ADataComponent: TComponent): Boolean; override;
+    function CanDelete(ADataComponent: TComponent): Boolean; override;
     procedure First(ADataComponent: TComponent); override;
     procedure Last(ADataComponent: TComponent); override;
     procedure MoveBy(ADataComponent: TComponent; Distance: Integer); override;
@@ -177,7 +184,9 @@ type
     function EngineFieldCount: Integer;
     function EngineRecordCount: Integer;
     function EngineRecNo: Integer;
-    function EngineCanModify: Boolean;
+    function EngineCanInsert: Boolean;
+    function EngineCanUpdate: Boolean;
+    function EngineCanDelete: Boolean;
     function EngineEof: Boolean;
     function EngineBof: Boolean;
     function EngineControlsDisabled: Boolean;
@@ -202,7 +211,9 @@ type
   private
     FIsActive: Boolean;
     FHasData: Boolean;
-    FCanModify: Boolean;
+    FCanInsert: Boolean;
+    FCanUpdate: Boolean;
+    FCanDelete: Boolean;
     FEditModeActive: Boolean;
   protected
   public
@@ -211,7 +222,9 @@ type
   published
     property IsActive: Boolean read FIsActive write FIsActive default True;
     property HasData: Boolean read FHasData write FHasData default True;
-    property CanModify: Boolean read FCanModify write FCanModify default False;
+    property CanInsert: Boolean read FCanInsert write FCanInsert default False;
+    property CanUpdate: Boolean read FCanUpdate write FCanUpdate default False;
+    property CanDelete: Boolean read FCanDelete write FCanDelete default False;
     property EditModeActive: Boolean read FEditModeActive write FEditModeActive default False;
   end;
 
@@ -469,11 +482,14 @@ uses
   cxGrid, cxGridDBDataDefinitions,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$IFDEF USE_3RDPARTY_SMEXPORT}
-  sme2sql, IniFiles,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SMEEngCx,
+  SMEEngCx, 
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  sme2sql, IniFiles,
   {$ENDIF USE_3RDPARTY_SMEXPORT}
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
+  cxCustomData,
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvResources, JvParameterList, JvParameterListParameter;
 
 var
@@ -653,7 +669,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseEngine.CanModify(ADataComponent: TComponent): Boolean;
+function TJvDatabaseActionBaseEngine.CanInsert(ADataComponent: TComponent): Boolean;
 var
   DataSet: TDataSet;
 begin
@@ -663,6 +679,29 @@ begin
   else
     Result := False;
 end;
+
+function TJvDatabaseActionBaseEngine.CanUpdate(ADataComponent: TComponent): Boolean;
+var
+  DataSet: TDataSet;
+begin
+  DataSet := GetDataSet(ADataComponent);
+  if Assigned(DataSet) then
+    Result := DataSet.CanModify
+  else
+    Result := False;
+end;
+
+function TJvDatabaseActionBaseEngine.CanDelete(ADataComponent: TComponent): Boolean;
+var
+  DataSet: TDataSet;
+begin
+  DataSet := GetDataSet(ADataComponent);
+  if Assigned(DataSet) then
+    Result := DataSet.CanModify
+  else
+    Result := False;
+end;
+
 
 function TJvDatabaseActionBaseEngine.Eof(ADataComponent: TComponent): Boolean;
 var
@@ -902,14 +941,71 @@ begin
   Result := Assigned(GetGridView(ADataComponent));
 end;
 
-function TJvDatabaseActionDevExpCxGridEngine.RecNo(ADataComponent: TComponent): Integer;
-//var
-//  View: TcxCustomGridTableView;
+function TJvDatabaseActionDevExpCxGridEngine.Bof(ADataComponent: TComponent): Boolean;
+var
+  View: TcxCustomGridTableView;
 begin
-  Result := inherited RecNo(ADatacomponent);
-//  View:= GetGridView(ADataComponent);
-//  if Assigned (View) then
-//    Result := View.DataController.RowIndex+1;
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.DataController.FocusedRowIndex = 0
+  else
+    Result := inherited Bof(ADatacomponent);
+end;
+
+function TJvDatabaseActionDevExpCxGridEngine.RecNo(ADataComponent: TComponent): Integer;
+var
+  View: TcxCustomGridTableView;
+begin
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.DataController.FocusedRowIndex+1
+  else
+    Result := inherited RecNo(ADatacomponent);
+end;
+
+function TJvDatabaseActionDevExpCxGridEngine.RecordCount(ADataComponent: TComponent): Integer;
+var
+  View: TcxCustomGridTableView;
+begin
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.DataController.RecordCount
+  else
+    Result := inherited RecordCount(ADatacomponent);
+end;
+
+
+function TJvDatabaseActionDevExpCxGridEngine.CanInsert(ADataComponent: TComponent): Boolean;
+var
+  View: TcxCustomGridTableView;
+begin
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.OptionsData.Inserting and inherited CanInsert(ADatacomponent)
+  else
+    Result := inherited CanInsert(ADatacomponent);
+end;
+
+function TJvDatabaseActionDevExpCxGridEngine.CanUpdate(ADataComponent: TComponent): Boolean;
+var
+  View: TcxCustomGridTableView;
+begin
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.OptionsData.Editing and inherited CanUpdate(ADatacomponent)
+  else
+    Result := inherited CanUpdate(ADatacomponent);
+end;
+
+function TJvDatabaseActionDevExpCxGridEngine.CanDelete(ADataComponent: TComponent): Boolean;
+var
+  View: TcxCustomGridTableView;
+begin
+  View:= GetGridView(ADataComponent);
+  if Assigned (View) then
+    Result := View.OptionsData.Deleting and inherited CanDelete(ADatacomponent)
+  else
+    Result := inherited CanDelete(ADatacomponent);
 end;
 
 procedure TJvDatabaseActionDevExpCxGridEngine.First(ADataComponent: TComponent);
@@ -1023,10 +1119,26 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseBaseAction.EngineCanModify: Boolean;
+function TJvDatabaseBaseAction.EngineCanInsert: Boolean;
 begin
   if Assigned(DataEngine) then
-    Result := DataEngine.CanModify(DataComponent)
+    Result := DataEngine.CanInsert(DataComponent)
+  else
+    Result := False;
+end;
+
+function TJvDatabaseBaseAction.EngineCanUpdate: Boolean;
+begin
+  if Assigned(DataEngine) then
+    Result := DataEngine.CanUpdate(DataComponent)
+  else
+    Result := False;
+end;
+
+function TJvDatabaseBaseAction.EngineCanDelete: Boolean;
+begin
+  if Assigned(DataEngine) then
+    Result := DataEngine.CanDelete(DataComponent)
   else
     Result := False;
 end;
@@ -1100,7 +1212,9 @@ begin
   inherited Create(AOwner);
   FIsActive := True;
   FHasData := True;
-  FCanModify := False;
+  FCanInsert := False;
+  FCanUpdate := False;
+  FCanDelete := False;
   FEditModeActive := False;
 end;
 
@@ -1115,8 +1229,12 @@ begin
       Res := Res and EngineIsActive;
     if HasData then
       Res := Res and EngineHasData;
-    if CanModify then
-      Res := Res and EngineCanModify;
+    if CanInsert then
+      Res := Res and EngineCanInsert;
+    if CanUpdate then
+      Res := Res and EngineCanUpdate;
+    if CanDelete then
+      Res := Res and EngineCanDelete;
     if EditModeActive then
       Res := Res and EngineEditModeActive;
     SetEnabled(Res)
@@ -1136,7 +1254,7 @@ end;
 
 procedure TJvDatabaseBaseEditAction.UpdateTarget(Target: TObject);
 begin
-  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and EngineCanModify);
+  SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and (EngineCanInsert or EngineCanUpdate or EngineCanDelete));
 end;
 
 //=== { TJvDatabaseFirstAction } =============================================
@@ -1401,7 +1519,7 @@ end;
 procedure TJvDatabaseInsertAction.UpdateTarget(Target: TObject);
 begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and
-    EngineIsActive and EngineCanModify and not EngineEditModeActive);
+    EngineIsActive and EngineCanInsert and not EngineEditModeActive);
 end;
 
 procedure TJvDatabaseInsertAction.ExecuteTarget(Target: TObject);
@@ -1414,7 +1532,7 @@ end;
 procedure TJvDatabaseCopyAction.UpdateTarget(Target: TObject);
 begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and
-    EngineCanModify and EngineHasData and not EngineEditModeActive);
+    EngineCanInsert and EngineHasData and not EngineEditModeActive);
 end;
 
 procedure TJvDatabaseCopyAction.ExecuteTarget(Target: TObject);
@@ -1469,7 +1587,7 @@ end;
 procedure TJvDatabaseEditAction.UpdateTarget(Target: TObject);
 begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and
-    EngineCanModify and EngineHasData and not EngineEditModeActive);
+    EngineCanUpdate and EngineHasData and not EngineEditModeActive);
 end;
 
 procedure TJvDatabaseEditAction.ExecuteTarget(Target: TObject);
@@ -1482,7 +1600,7 @@ end;
 procedure TJvDatabaseDeleteAction.UpdateTarget(Target: TObject);
 begin
   SetEnabled(Assigned(DataSet) and not EngineControlsDisabled and EngineIsActive and
-    EngineCanModify and EngineHasData and not EngineEditModeActive);
+    EngineCanDelete and EngineHasData and not EngineEditModeActive);
 end;
 
 procedure TJvDatabaseDeleteAction.ExecuteTarget(Target: TObject);
