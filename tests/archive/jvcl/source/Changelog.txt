@@ -1,8 +1,14 @@
+2002-07-25
+- Changed JvFunctions and JvWinDialogs to conditionally exclude cpl.pas for D6Pe
+- Changed D6Pe packages to remove units not supported
+- Removed Forms and replaced Application.ProcessMessages from JvSearchFiles
+- TJvSearchFiles, TJvSearchFile and TJvFileTreeScan (from JvSysComp.pas) merged into TJvSearchFiles (by Remko Bonte)
+
 2002-07-24
 - TJvTrayIcon: Added mechanism to reduce hint refresh, only refreshing when user request the hint
 
 2002-07-22
-- added   JvThumbImage, JvThumbNail, JvThumbView, JvMovableBevel  donated by John Kozikopulos  //MBeck
+- added JvThumbImage, JvThumbNail, JvThumbView, JvMovableBevel  donated by John Kozikopulos  //MBeck
 
 2002-07-20
 - fixed a few minor bugs
