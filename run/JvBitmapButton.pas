@@ -31,16 +31,18 @@ unit JvBitmapButton;
 interface
 
 uses
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   Types, QWindows, QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvTypes;
 
 type
+  PJvRGBTriple = ^TJvRGBTriple;
+  TPixelTransform = procedure(Dest, Source: PJvRGBTriple);
   TJvBitmapButton = class(TJvGraphicControl)
   private
     FBitmap: TBitmap;
@@ -62,6 +64,8 @@ type
     procedure MakeNormal;
     procedure MakeDarker;
     procedure MakeLighter;
+    procedure MakeHelperBitmap(Target: TBitmap; Transform: TPixelTransform);
+    procedure MakeCaption(Target: TBitmap; FontColor: TColor);
     procedure SetLatching(const Value: Boolean);
     procedure SetDown(const Value: Boolean);
     procedure SetHotTrack(const Value: Boolean);
@@ -80,6 +84,7 @@ type
     procedure Click; override;
     procedure Loaded; override;
     procedure Resize; override;
+    procedure DoBitmapChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -106,6 +111,11 @@ type
 
 implementation
 
+function NonPaletteColor(Color: TColor): TColor;
+begin
+  Result := Color and not $02000000;
+end;
+
 constructor TJvBitmapButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -119,8 +129,10 @@ begin
   FBitmap := TBitmap.Create;
   FBitmap.Width := 24;
   FBitmap.Height := 24;
+  FBitmap.PixelFormat := pf24Bit;
   FBitmap.Canvas.Brush.Color := clGray;
   FBitmap.Canvas.FillRect(Rect(1, 1, 23, 23));
+  FBitmap.OnChange := DoBitmapChange;
   FLighter := TBitmap.Create;
   FDarker := TBitmap.Create;
   FNormal := TBitmap.Create;
@@ -147,8 +159,8 @@ end;
 procedure TJvBitmapButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  FPushDown :=
-    FBitmap.Canvas.Pixels[X, Y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height-1];
+  FPushDown := not FBitmap.Transparent and
+    (FBitmap.Canvas.Pixels[X, Y] <> FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
   Repaint;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -166,29 +178,17 @@ begin
 end;
 
 procedure TJvBitmapButton.Paint;
-var
-  AColor: TColor;
 begin
   inherited;
   if Assigned(FBitmap) then
   begin
-    AColor := FBitmap.Canvas.Pixels[0, FBitmap.Height - 1];
-    FBitmap.Transparent := True;
-    FBitmap.TransparentColor := AColor;
-    FLighter.Transparent := True;
-    Flighter.TransparentColor := AColor;
-    FDarker.Transparent := True;
-    FDarker.TransparentColor := AColor;
-    FNormal.Transparent := True;
-    FNormal.TransparentColor := AColor;
     if FPushDown then
       Canvas.Draw(1, 1, FDarker)
     else
     begin
       if Down then
         Canvas.Draw(1, 1, FDarker)
-      else
-      if FMouseOver and FHotTrack then
+      else if FMouseOver and FHotTrack then
         Canvas.Draw(0, 0, FLighter)
       else
         Canvas.Draw(0, 0, FNormal);
@@ -200,10 +200,6 @@ procedure TJvBitmapButton.SetBitmap(const Value: TBitmap);
 begin
   FBitmap.Assign(Value);
   FBitmap.Transparent := True;
-  FBitmap.TransparentColor := FBitmap.Canvas.Pixels[0, FBitmap.Height - 1];
-  Width := FBitmap.Width;
-  Height := FBitmap.Height;
-  UpdateBitmaps;
 end;
 
 procedure TJvBitmapButton.UpdateBitmaps;
@@ -214,91 +210,39 @@ begin
   Repaint;
 end;
 
-procedure TJvBitmapButton.MakeLighter;
-var
-  p1, p2: PJvRGBArray;
-  X, Y: Integer;
-  rt, gt, bt: Byte;
-  AColor: TColor;
-  ARect: TRect;
+procedure LighterTransform(Dest, Source: PJvRGBTriple);
 begin
-  FLighter.Width := FBitmap.Width;
-  FLighter.Height := FBitmap.Height;
-  AColor := ColorToRGB(FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
-  rt := GetRValue(AColor);
-  gt := GetGValue(AColor);
-  bt := GetBValue(AColor);
-  FBitmap.PixelFormat := pf24bit;
-  FLighter.PixelFormat := pf24bit;
-  for Y := 0 to FBitmap.Height - 1 do
-  begin
-    p1 := FBitmap.ScanLine[Y];
-    p2 := FLighter.ScanLine[Y];
-    for X := 0 to FBitmap.Width - 1 do
-      if (p1[X].rgbBlue = bt) and (p1[X].rgbGreen = gt) and (p1[X].rgbRed = rt) then
-        p2[X] := p1[X]
-      else
-      begin
-        p2[X].rgbBlue  := $FF - Round(0.8 * Abs($FF - p1[X].rgbBlue));
-        p2[X].rgbGreen := $FF - Round(0.8 * Abs($FF - p1[X].rgbGreen));
-        p2[X].rgbRed   := $FF - Round(0.8 * Abs($FF - p1[X].rgbRed));
-      end;
-  end;
-  if FCaption <> '' then
-  begin
-    Flighter.Canvas.Brush.Style := bsClear;
-    Flighter.Canvas.Font.Assign(FFont);
-    FLighter.Canvas.Font.Color := FLighterFontColor;
-    ARect := Rect(0, 0, Width, Height);
-    FLighter.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
-  end;
+  Dest.rgbBlue  := $FF - Round(0.8 * Abs($FF - Source.rgbBlue));
+  Dest.rgbGreen := $FF - Round(0.8 * Abs($FF - Source.rgbGreen));
+  Dest.rgbRed   := $FF - Round(0.8 * Abs($FF - Source.rgbRed));
 end;
 
-procedure TJvBitmapButton.MakeDarker;
-var
-  p1, p2: PJvRGBArray;
-  X, Y: Integer;
-  rt, gt, bt: Byte;
-  AColor: TColor;
-  ARect: TRect;
+procedure DarkerTransform(Dest, Source: PJvRGBTriple);
 begin
-  FDarker.Width := FBitmap.Width;
-  FDarker.Height := FBitmap.Height;
-  AColor := ColorToRGB(FBitmap.Canvas.Pixels[0, FBitmap.Height - 1]);
-  rt := GetRValue(AColor);
-  gt := GetGValue(AColor);
-  bt := GetBValue(AColor);
-  FBitmap.PixelFormat := pf24bit;
-  FDarker.PixelFormat := pf24bit;
-  for Y := 0 to FBitmap.Height - 1 do
-  begin
-    p1 := FBitmap.ScanLine[Y];
-    p2 := FDarker.ScanLine[Y];
-    for X := 0 to FBitmap.Width - 1 do
-    begin
-      if (p1[X].rgbBlue = bt) and (p1[X].rgbGreen = gt) and (p1[X].rgbRed = rt) then
-        p2[X] := p1[X]
-      else
-      begin
-        p2[X].rgbBlue  := Round(0.7 * p1[X].rgbBlue);
-        p2[X].rgbGreen := Round(0.7 * p1[X].rgbGreen);
-        p2[X].rgbRed   := Round(0.7 * p1[X].rgbRed);
-      end
-    end;
-  end;
-  if FCaption <> '' then
-  begin
-    FDarker.Canvas.Brush.Style := bsClear;
-    FDarker.Canvas.Font.Assign(FFont);
-    FDarker.Canvas.Font.Color := FDarkerFontColor;
-    ARect := Rect(0, 0, Width, Height);
-    FDarker.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
-  end;
+  Dest.rgbBlue  := Round(0.7 * Source.rgbBlue);
+  Dest.rgbGreen := Round(0.7 * Source.rgbGreen);
+  Dest.rgbRed   := Round(0.7 * Source.rgbRed);
 end;
+
+procedure TJvBitmapButton.MakeLighter;
+begin
+  MakeHelperBitmap(FLighter, LighterTransform);
+  MakeCaption(FLighter, FLighterFontColor);
+end;
+
+
+procedure TJvBitmapButton.MakeDarker;
+begin
+  MakeHelperBitmap(FDarker, DarkerTransform);
+  MakeCaption(FDarker, FDarkerFontColor);
+end;
+
 
 procedure TJvBitmapButton.MouseLeave(AControl: TControl);
 begin
   FMouseOver := False;
+  MakeDarker;
+  MakeNormal;
   Repaint;
 end;
 
@@ -404,17 +348,9 @@ begin
 end;
 
 procedure TJvBitmapButton.MakeNormal;
-var
-  ARect: TRect;
 begin
-  FNormal.Assign(FBitmap);
-  if FCaption <> '' then
-  begin
-    FNormal.Canvas.Brush.Style := bsclear;
-    FNormal.Canvas.Font.Assign(FFont);
-    ARect := Rect(0, 0, Width, Height);
-    FNormal.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
-  end;
+   FNormal.Assign(FBitmap);
+   MakeCaption(FNormal, Font.Color);
 end;
 
 procedure TJvBitmapButton.SetDarkerFontColor(const Value: TColor);
@@ -435,5 +371,71 @@ begin
   end;
 end;
 
+procedure TJvBitmapButton.DoBitmapChange(Sender: TObject);
+begin
+  if FBitmap.PixelFormat <> pf24Bit then
+  begin
+    FBitmap.OnChange := nil;
+    try
+      FBitmap.PixelFormat := pf24Bit;
+    finally
+      FBitmap.OnChange := DoBitmapChange;
+    end;
+  end;
+  Width := FBitmap.Width;
+  Height := FBitmap.Height;
+  UpdateBitmaps;
+end;
+
+procedure TJvBitmapButton.MakeCaption(Target: TBitmap; FontColor: TColor);
+var ARect: TRect;
+begin
+  if FCaption <> '' then
+  begin
+    Target.Canvas.Brush.Style := bsClear;
+    Target.Canvas.Font.Assign(FFont);
+    Target.Canvas.Font.Color := FontColor;
+    ARect := Rect(0, 0, Width, Height);
+    Target.Canvas.TextRect(ARect, FCaptionLeft, FCaptionTop, FCaption);
+  end;
+end;
+
+
+procedure TJvBitmapButton.MakeHelperBitmap(Target: TBitmap; Transform: TPixelTransform);
+var
+  p1, p2: PJvRGBTriple;
+  X, Y: Integer;
+  rt, gt, bt: Byte;
+  AColor: TColor;
+begin
+  Target.Width := FBitmap.Width;
+  Target.Height := FBitmap.Height;
+  Target.Transparent:= FBitmap.Transparent;
+  if FBitmap.Transparent then begin
+    AColor := FBitmap.TransparentColor;
+    Target.TransparentColor:= AColor;
+  end
+  else
+    AColor:= clNone;
+  rt := GetRValue(AColor);
+  gt := GetGValue(AColor);
+  bt := GetBValue(AColor);
+  Target.PixelFormat := pf24bit;
+  assert(FBitmap.PixelFormat = pf24Bit);
+  for Y := 0 to FBitmap.Height - 1 do
+  begin
+    p1 := FBitmap.ScanLine[Y];
+    p2 := Target.ScanLine[Y];
+    for X := 1 to FBitmap.Width do begin
+      if (AColor <> clNone) and
+           (p1.rgbBlue = bt) and (p1.rgbGreen = gt) and (p1.rgbRed = rt) then
+        p2^ := p1^
+      else
+        Transform(p2, p1);
+      Inc(p1); Inc(p2);
+    end;
+  end;
+end;
+  
 end.
 
