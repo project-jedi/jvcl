@@ -1,3 +1,6 @@
+##Package: ??
+##Status: Needs review
+----------------------------------------------------------------------------------------------------
 @@JvSyncSplitter.pas
 Summary
   Contains the TJvSyncSplitter component.
@@ -9,6 +12,7 @@ Author
 <TITLEIMG TJvSyncSplitter>
 JVCLInfo
   GROUP=JVCL.FormsAndApp.Forms.Sizing
+  FLAG=Component
 Summary
   Synchronizes two split controls.
 Description
@@ -23,9 +27,6 @@ Description
   this TJvSyncSplitter to this TJvSyncSplitter, then both TJvSyncSplitter will be synchronized. So
   if you move either of these TJvSyncSplitter at runtime, the other TJvSyncSplitter position will
   change also.
-----------------------------------------------------------------------------------------------------
-@@TJvSyncSplitter.AboutJVCL
-  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.ForcedSize
 Summary
@@ -60,4 +61,4 @@ Description
   WndProc overrides the WndProc for TWinControl to handle mouse messages, and sends all messages to 
   the inherited WndProc.
 Parameters
-  Message - Represents the Windows message.
+  Msg - Represents the Windows message.

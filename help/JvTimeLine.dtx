@@ -1,3 +1,5 @@
+##Package: ??
+##Status: Needs updating. (OnItemMoved, events)
 ----------------------------------------------------------------------------------------------------
 @@JvTimeLine.pas
 Summary
@@ -308,6 +310,7 @@ Parameters
   Sender       - The timeline view control in which an item is moved.
   Item         - The item that the user has moved.
   NewStartDate - Specifies the date where to the user has moved the item.
+  NewLevel     - Description for this parameter
 See Also
   DragLine, OnItemMoving
 ----------------------------------------------------------------------------------------------------
@@ -727,7 +730,6 @@ Description
   The value of Hint can specify both a short value for the Help Hint window and a longer \string to
   be used by the OnHint event handler. To provide both a short and a long hint, set Hint to the
   short \string, followed by a vertical bar (|), followed by the long \string.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItem.ImageIndex
 Summary
@@ -913,10 +915,6 @@ Description
 See Also
   TJvTimeItem, TJvTimeItems
 ----------------------------------------------------------------------------------------------------
-@@TJvYearWidth
-<TITLE TJvYearWidth type>
-<COMBINE TJvCustomTimeLine.YearWidth>
-----------------------------------------------------------------------------------------------------
 @@TJvTimeLineStyle
 <TITLE TJvTimeLineStyle type>
 Summary
@@ -942,3 +940,7 @@ Description
   of each item. Then the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> event occurs. The code for the
   <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> handler draws each item in the timeline control using the
   size specified by the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem> handler.
+----------------------------------------------------------------------------------------------------
+@@TJvYearWidth
+<TITLE TJvYearWidth type>
+<COMBINE TJvCustomTimeLine.YearWidth>

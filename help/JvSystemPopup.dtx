@@ -1,9 +1,23 @@
+##Package: ??
+##Status: Needs review
+----------------------------------------------------------------------------------------------------
 @@JvSystemPopup.pas
 Summary
   Contains the TJvSystemPopup component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+----------------------------------------------------------------------------------------------------
+@@TJvPositionInMenu
+<TITLE TJvPositionInMenu type>
+Summary
+  Represents different kinds of positions in a system menu.
+Description
+  Use the TJvPositionInMenu type to specify a position in a system menu.
+@@TPositionInMenu.pmTop
+  Inserts the menu items of the popup menu at the top of the system menu.
+@@TPositionInMenu.pmBottom
+  Inserts the menu items of the popup menu at the bottom of the system menu.
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup
 <TITLEIMG TJvSystemPopup>
@@ -107,15 +121,5 @@ Summary
   Refreshes the system menu.
 Description
   Call Refresh to refresh the system menu. Refresh resets the window menu back to the default state,
-  and then adds the menu items of the Popup control.
-----------------------------------------------------------------------------------------------------
-@@TPositionInMenu
-<TITLE TPositionInMenu type>
-Summary
-  Represents different kinds of positions in a system menu.
-Description
-  Use the TPositionInMenu type to specify a position in a system menu.
-@@TPositionInMenu.pmTop
-  Inserts the menu items of the popup menu at the top of the system menu.
-@@TPositionInMenu.pmBottom
-  Inserts the menu items of the popup menu at the bottom of the system menu.
+Parameters
+  SystemReset - Description for this parameter
