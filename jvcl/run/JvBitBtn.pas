@@ -56,6 +56,8 @@ type
     FHotGlyph: TBitmap;
     FOldGlyph: TBitmap;
     FDropDown: TPopupMenu;
+    FCanvas: TControlCanvas;
+    function GetCanvas: TCanvas;
     procedure SetHotGlyph(Value: TBitmap);
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
@@ -78,13 +80,11 @@ type
     procedure ParentColorChanged; override;
     procedure FontChanged; override;
     {$ENDIF VisualCLX}
-    procedure DoMouseEnter(AControl: TControl);
-    procedure DoMouseLeave(AControl: TControl);
-    procedure DoParentColorChange;
   public
-    procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
+    property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
@@ -106,6 +106,8 @@ uses
 constructor TJvBitBtn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self; //...i can draw now! :)
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -123,6 +125,13 @@ begin
   FHotGlyph.Free;
   FOldGlyph.Free;
   inherited Destroy;
+  // (rom) destroy Canvas AFTER inherited Destroy
+  FCanvas.Free;
+end;
+
+function TJvBitBtn.GetCanvas: TCanvas;
+begin
+  Result := FCanvas;
 end;
 
 procedure TJvBitBtn.Click;
@@ -186,11 +195,6 @@ begin
     end;
     FOver := True;
   end;
-  DoMouseEnter(AControl);
-end;
-
-procedure TJvBitBtn.DoMouseEnter;
-begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -220,11 +224,6 @@ begin
     if FHotTrack then
       Font.Assign(FFontSave);
   end;
-  DoMouseLeave(AControl);
-end;
-
-procedure TJvBitBtn.DoMouseLeave;
-begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
@@ -242,11 +241,6 @@ begin
   {$IFDEF VisualCLX}
   inherited ParentColorChanged;
   {$ENDIF VisualCLX}
-  DoParentColorChange;
-end;
-
-procedure TJvBitBtn.DoParentColorChange;
-begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

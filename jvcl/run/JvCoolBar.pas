@@ -31,7 +31,12 @@ unit JvCoolBar;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ComCtrls,
+  {$ELSE}
+  QGraphics, QControls, QForms, QComCtrls,
+  {$ENDIF VCL}
   JVCLVer;
 
 type
@@ -40,24 +45,40 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
+    FOver: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
+    {$IFDEF VCL}
     FOnCtl3DChanged: TNotifyEvent;
-    FOver: Boolean;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    {$ENDIF VCL}
+  protected
+    {$IFDEF VCL}
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure Ctl3DChanged; dynamic;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    {$IFDEF VCL}
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    {$ENDIF VCL}
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
   end;
 
 implementation
@@ -71,36 +92,86 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-procedure TJvCoolBar.MouseEnter(var Msg: TMessage);
-begin
-  FOver := True;
-  FSaved := Application.HintColor;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
-  Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCoolBar.MouseLeave(var Msg: TMessage);
-begin
-  Application.HintColor := FSaved;
-  FOver := False;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
+{$IFDEF VCL}
 
 procedure TJvCoolBar.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
+  Ctl3DChanged;
+end;
+
+procedure TJvCoolBar.Ctl3DChanged;
+begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
 
+{$ENDIF VCL}
+
+{$IFDEF VCL}
+procedure TJvCoolBar.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvCoolBar.MouseEnter(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseEnter(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+{$IFDEF VCL}
+procedure TJvCoolBar.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+{$ENDIF VCL}
+
+procedure TJvCoolBar.MouseLeave(AControl: TControl);
+begin
+  {$IFDEF VisualCLX}
+  inherited MouseLeave(AControl);
+  {$ENDIF VisualCLX}
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+{$IFDEF VCL}
 procedure TJvCoolBar.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  ParentColorChanged;
+end;
+{$ENDIF VCL}
+
+procedure TJvCoolBar.ParentColorChanged;
+begin
+  {$IFDEF VisualCLX}
+  inherited ParentColorChanged;
+  {$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
