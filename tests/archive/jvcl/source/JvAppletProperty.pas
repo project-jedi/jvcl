@@ -18,7 +18,7 @@ uses
 
 
 type
-  TAppletFileProperty = class(TStringProperty)
+  TJvAppletFileProperty = class(TStringProperty)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -26,7 +26,7 @@ type
 
 implementation
 
-procedure TAppletFileProperty.Edit;
+procedure TJvAppletFileProperty.Edit;
 var
   APFileOpen: TOpenDialog;
 begin
@@ -42,7 +42,7 @@ begin
   end;
 end;
 
-function TAppletFileProperty.GetAttributes: TPropertyAttributes;
+function TJvAppletFileProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
