@@ -31,17 +31,17 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   IniFiles,
   JvFinalize;
 
 type
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   THashedStringList = class(TStringlist);
   THandle = Longword;
-  {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
   TJvSimpleXML = class;
   TJvSimpleXMLInvalid = class(Exception);
   TJvSimpleXMLElem = class;
@@ -99,6 +99,7 @@ type
     function GetIntValue: Int64;
     procedure SetIntValue(const Value: Int64);
   public
+    function GetSimpleXML: TJvSimpleXML;
     function SaveToString: string;
     property Parent: TJvSimpleXMLProps read FParent write FParent;
     property Name: string read FName write SetName;
@@ -117,6 +118,7 @@ type
     function GetCount: Integer;
     function GetItemNamed(const Name: string): TJvSimpleXMLProp;
   protected
+    function GetSimpleXML: TJvSimpleXML;
     function GetItem(const Index: Integer): TJvSimpleXMLProp;
     procedure DoItemRename(var Value: TJvSimpleXMLProp; const Name: string);
     procedure Error(const S: string);
@@ -164,7 +166,7 @@ type
     property Item[const Index: Integer]: TJvSimpleXMLElem read GetItem; default;
     property Count: Integer read GetCount;
     property Encoding: string read GetEncoding write SetEncoding;
-    property StandAlone:Boolean read GetStandAlone write SetStandAlone;
+    property StandAlone: Boolean read GetStandAlone write SetStandAlone;
     property Version: string read GetVersion write SetVersion;
   end;
 
@@ -223,8 +225,9 @@ type
     FPointer: string;
     FData: Pointer;
     FSimpleXml: TJvSimpleXML;
-    function GetSimpleXml: TJvSimpleXML;
+
   protected
+    function GetSimpleXML: TJvSimpleXML;
     function GetIntValue: Int64;
     function GetBoolValue: Boolean;
     function GetChildsCount: Integer;
@@ -249,7 +252,7 @@ type
     property Data: Pointer read FData write FData;
     function GetChildIndex(const AChild: TJvSimpleXMLElem): Integer;
 
-    property SimpleXml: TJvSimpleXML read GetSimpleXml;
+    property SimpleXml: TJvSimpleXML read GetSimpleXML;
   published
     property Name: string read FName write SetName;
     property Parent: TJvSimpleXMLElem read FParent write FParent;
@@ -312,12 +315,10 @@ type
     procedure SaveToStream(const Stream: TStream; const Level: string = ''; Parent: TJvSimpleXML = nil); override;
   end;
 
-  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent);
-
+  TJvSimpleXMLOptions = set of (sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity);
+  TJvSimpleXMLEncodeEvent = procedure(Sender: TObject; var Value: string) of object;
+  TJvSimpleXMLEncodeStreamEvent = procedure(Sender: TObject; InStream, OutStream: TStream) of object;
   TJvSimpleXML = class(TComponent)
-  private
-    FIndentString: string;
-    procedure SetIndentString(const Value: string);
   protected
     FFileName: TFileName;
     FOptions: TJvSimpleXMLOptions;
@@ -328,32 +329,45 @@ type
     FOnSaveProg: TJvOnSimpleProgress;
     FProlog: TJvSimpleXMLElemsProlog;
     FSaveCount, FSaveCurrent: Integer;
+    FIndentString: string;
+    FOnEncodeValue: TJvSimpleXMLEncodeEvent;
+    FOnDecodeValue: TJvSimpleXMLEncodeEvent;
+    FOnDecodeStream: TJvSimpleXMLEncodeStreamEvent;
+    FOnEncodeStream: TJvSimpleXMLEncodeStreamEvent;
+    procedure SetIndentString(const Value: string);
     procedure SetRoot(const Value: TJvSimpleXMLElemClassic);
     procedure SetFileName(Value: TFileName);
     procedure DoLoadProgress(const APosition, ATotal: Integer);
     procedure DoSaveProgress;
     procedure DoTagParsed(const AName: string);
     procedure DoValueParsed(const AName, AValue: string);
+    procedure DoEncodeValue(var Value: string); virtual;
+    procedure DoDecodeValue(var Value: string); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure LoadFromString(const Value: string);
     procedure LoadFromFile(const FileName: TFileName);
-    procedure LoadFromStream(const Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
     procedure LoadFromResourceName(Instance: THandle; const ResName: string);
     procedure SaveToFile(FileName: TFileName);
-    procedure SaveToStream(const Stream: TStream);
+    procedure SaveToStream(Stream: TStream);
     function SaveToString: string;
     property Prolog: TJvSimpleXMLElemsProlog read FProlog write FProlog;
     property Root: TJvSimpleXMLElemClassic read FRoot write SetRoot;
+    property XMLData: string read SaveToString write LoadFromString;
   published
     property FileName: TFileName read FFileName write SetFileName;
     property IndentString: string read FIndentString write SetIndentString;
-    property Options: TJvSimpleXMLOptions read FOptions write FOptions;
+    property Options: TJvSimpleXMLOptions read FOptions write FOptions default [sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
     property OnSaveProgress: TJvOnSimpleProgress read FOnSaveProg write FOnSaveProg;
     property OnLoadProgress: TJvOnSimpleProgress read FOnLoadProg write FOnLoadProg;
     property OnTagParsed: TJvOnSimpleXmlParsed read FOnTagParsed write FOnTagParsed;
     property OnValueParsed: TJvOnValueParsed read FOnValue write FOnValue;
+    property OnEncodeValue: TJvSimpleXMLEncodeEvent read FOnEncodeValue write FOnEncodeValue;
+    property OnDecodeValue: TJvSimpleXMLEncodeEvent read FOnDecodeValue write FOnDecodeValue;
+    property OnEncodeStream: TJvSimpleXMLEncodeStreamEvent read FOnEncodeStream write FOnEncodeStream;
+    property OnDecodeStream: TJvSimpleXMLEncodeStreamEvent read FOnDecodeStream write FOnDecodeStream;
   end;
 
 {$IFDEF COMPILER6_UP}
@@ -391,11 +405,25 @@ function VarXml: TVarType;
 
 {$ENDIF COMPILER6_UP}
 
+// Encodes a string into an internal format:
+// any character <= #127 is preserved
+// all other characters are converted to hex notation except
+// for some special characters that are converted to XML entities
 function SimpleXmlEncode(const S: string): string;
-procedure SimpleXMLDecode(var S: string; TrimBlanks:Boolean);
-function XMLDecode(const S: string): string;
-function XMLEncode(const S: string): string;
+// Decodes a string encoded with SimpleXmlEncode:
+// any character <= #127 is preserved
+// all other characters and substrings are converted from
+// the special XML entities to characters or from hex to characters
+// NB! Setting TrimBlanks to true will slow down the process considerably
+procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
 
+function XMLEncode(const S: string): string;
+function XMLDecode(const S: string): string;
+
+// Encodes special characters (', ", <, > and &) into XML entities (@apos;, &quot;, &lt;, &gt; and &amp;)
+function EntityEncode(const S: string): string;
+// Decodes XML entities (@apos;, &quot;, &lt;, &gt; and &amp;) into special characters (', ", <, > and &)
+function EntityDecode(const S: string): string;
 
 implementation
 
@@ -413,14 +441,14 @@ const
 var
   GlobalSorts: TList = nil;
 
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   GlobalXmlVariant: TXmlVariant = nil;
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
-  {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
   TrueBoolStrs: array of string;
   FalseBoolStrs: array of string;
-  {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 
 function GSorts: TList;
 begin
@@ -445,6 +473,106 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
+
+function EntityEncode(const S: string): string;
+var
+  i, j, k, l: integer;
+  tmp: string;
+begin
+  SetLength(Result, Length(S) * 6); // worst case
+  j := 1;
+  i := 1;
+  l := Length(S);
+  while i <= l do
+  begin
+    case S[i] of
+      '"':
+        tmp := '&quot;';
+      '&':
+        tmp := '&amp;';
+      #39:
+        tmp := '&apos;';
+      '<':
+        tmp := '&lt;';
+      '>':
+        tmp := '&gt;';
+    else
+      tmp := S[i];
+    end;
+    for k := 1 to Length(tmp) do
+    begin
+      Result[j] := tmp[k];
+      Inc(j);
+    end;
+    Inc(i);
+  end;
+  if j > 1 then
+    SetLength(Result, j - 1)
+  else
+    SetLength(Result, 0);
+end;
+
+function EntityDecode(const S: string): string;
+var
+  i, j, l: integer;
+begin
+  Result := S;
+  i := 1;
+  j := 1;
+  l := Length(Result);
+
+  while i <= l do
+  begin
+    if Result[i] = '&' then
+    begin
+      if AnsiSameText(Copy(Result, i, 5), '&amp;') then
+      begin
+        Result[j] := '&';
+        Inc(j);
+        Inc(i, 4);
+      end
+      else if AnsiSameText(Copy(Result, i, 4), '&lt;') then
+      begin
+        Result[j] := '<';
+        Inc(j);
+        Inc(i, 3);
+      end
+      else if AnsiSameText(Copy(Result, i, 4), '&gt;') then
+      begin
+        Result[j] := '>';
+        Inc(j);
+        Inc(i, 3);
+      end
+      else if AnsiSameText(Copy(Result, i, 6), '&apos;') then
+      begin
+        Result[j] := #39;
+        Inc(j);
+        Inc(i, 5);
+      end
+      else if AnsiSameText(Copy(Result, i, 6), '&quot;') then
+      begin
+        Result[j] := '"';
+        Inc(j);
+        Inc(i, 5);
+      end
+      else
+      begin
+        Result[j] := Result[i];
+        Inc(j);
+      end;
+    end
+    else
+    begin
+      Result[j] := Result[i];
+      Inc(j);
+    end;
+    Inc(i);
+  end;
+  if j > 1 then
+    SetLength(Result, j - 1)
+  else
+    SetLength(Result, 0);
+end;
 
 {$IFNDEF COMPILER6_UP}
 
@@ -543,12 +671,6 @@ end;
 
 {$ENDIF !COMPILER6_UP}
 
-function XMLEncode(const S: string): string;
-begin
-  Result := SimpleXMLEncode(S);
-end;
-
-
 function SimpleXmlEncode(const S: string): string;
 const
   NoConversion = [#0..#127] - ['"', '&', #39, '<', '>'];
@@ -593,23 +715,17 @@ begin
     SetLength(Result, 0);
 end;
 
-function XMLDecode(const S: string): string;
-begin
-  Result := S;
-  SimpleXMLDecode(Result, True);
-end;
-
-procedure SimpleXMLDecode(var S: string; TrimBlanks:Boolean);
+procedure SimpleXMLDecode(var S: string; TrimBlanks: Boolean);
 var
   StringLength, ReadIndex, WriteIndex: Cardinal;
 
   procedure DecodeEntity(var S: string; StringLength: Cardinal;
-     var ReadIndex, WriteIndex: Cardinal);
+    var ReadIndex, WriteIndex: Cardinal);
   const
     cHexPrefix: array[Boolean] of PChar = ('', '$');
   var
     i: Cardinal;
-    Value:Integer;
+    Value: Integer;
     IsHex: Boolean;
   begin
     Inc(ReadIndex, 2);
@@ -638,9 +754,9 @@ var
     begin
       if S[ReadIndex] = #13 then
         S[ReadIndex] := #10
-      else if S[ReadIndex+1] = #13 then
-        S[ReadIndex+1] := #10;
-      if (S[ReadIndex] < #33) and (S[ReadIndex] = S[ReadIndex+1]) then
+      else if S[ReadIndex + 1] = #13 then
+        S[ReadIndex + 1] := #10;
+      if (S[ReadIndex] < #33) and (S[ReadIndex] = S[ReadIndex + 1]) then
         Inc(ReadIndex)
       else
         Exit;
@@ -672,31 +788,31 @@ begin
       begin
         S[WriteIndex] := '&';
         Inc(WriteIndex);
-        Inc(ReadIndex,4);
+        Inc(ReadIndex, 4);
       end
       else if AnsiSameText(Copy(S, ReadIndex, 4), '&lt;') then
       begin
         S[WriteIndex] := '<';
         Inc(WriteIndex);
-        Inc(ReadIndex,3);
+        Inc(ReadIndex, 3);
       end
       else if AnsiSameText(Copy(S, ReadIndex, 4), '&gt;') then
       begin
         S[WriteIndex] := '>';
         Inc(WriteIndex);
-        Inc(ReadIndex,3);
+        Inc(ReadIndex, 3);
       end
       else if AnsiSameText(Copy(S, ReadIndex, 6), '&apos;') then
       begin
         S[WriteIndex] := #39;
         Inc(WriteIndex);
-        Inc(ReadIndex,5);
+        Inc(ReadIndex, 5);
       end
       else if AnsiSameText(Copy(S, ReadIndex, 6), '&quot;') then
       begin
         S[WriteIndex] := '"';
         Inc(WriteIndex);
-        Inc(ReadIndex,5);
+        Inc(ReadIndex, 5);
       end
       else
       begin
@@ -720,131 +836,16 @@ begin
 //    S := AdjustLineBreaks(S);
 end;
 
-(*
-procedure SimpleXMLDecode(var S: string; TrimBlanks:Boolean);
-var
-  i, j, l: Integer;
-  Result: string;
-
-  function DecodeEntity(const S: string; var Index: Integer): char;
-  const
-    cHexPrefix: array[Boolean] of PChar = ('', '$');
-  var
-    i, l, Value: Integer;
-
-    IsHex: Boolean;
-  begin
-    Inc(Index, 2);
-    l := Length(S);
-    IsHex := (Index <= l) and (S[Index] in ['x', 'X']);
-    Inc(Index, Ord(IsHex));
-    i := Index;
-    while Index <= l do
-    begin
-      if S[Index] = ';' then
-      begin
-        Value := StrToIntDef(cHexPrefix[IsHex] + Copy(S, i, Index - i), -1); // no characters are less than 0
-        if Value > 0 then
-          Result := Chr(Value)
-        else
-        begin
-          Result := #0; // mark this as invalid (will be handled in main procedure)
-          Index := i - (2 + Ord(IsHex));
-        end;
-        Exit;
-      end;
-      Inc(Index);
-    end;
-    Result := #0; // not an entity so...
-    Index := i - (2 + Ord(IsHex)); // ...reset to where we were
-  end;
-  procedure SkipBlanks(var S: string; var Index:Integer);
-  var l:Integer;
-  begin
-    l := Length(S);
-    while Index < l do
-    begin
-      if S[Index] = #13 then
-        S[Index] := #10
-      else if S[Index+1] = #13 then
-        S[Index+1] := #10;
-      if (S[Index] < #33) and (S[Index] = S[Index+1]) then
-        Inc(Index)
-      else
-        Exit;
-    end;
-  end;
+function XMLEncode(const S: string): string;
 begin
-  SetLength(Result, Length(S)); // worst case (everything gets smaller)
-  j := 1;
-  i := 1;
-  l := Length(S);
-  while i <= l do
-  begin
-    if TrimBlanks then
-      SkipBlanks(S,i);
-    if S[i] = '&' then
-    begin
-      if S[i + 1] = '#' then
-      begin
-        Result[j] := DecodeEntity(S, i);
-        if Result[j] = #0 then
-          Result[j] := S[i];
-        Inc(j);
-      end
-      else if AnsiSameText(Copy(S, i, 5), '&amp;') then
-      begin
-        Result[j] := '&';
-        Inc(j);
-        Inc(i,4);
-      end
-      else if AnsiSameText(Copy(S, i, 4), '&lt;') then
-      begin
-        Result[j] := '<';
-        Inc(j);
-        Inc(i,3);
-      end
-      else if AnsiSameText(Copy(S, i, 4), '&gt;') then
-      begin
-        Result[j] := '>';
-        Inc(j);
-        Inc(i,3);
-      end
-      else if AnsiSameText(Copy(S, i, 6), '&apos;') then
-      begin
-        Result[j] := #39;
-        Inc(j);
-        Inc(i,5);
-      end
-      else if AnsiSameText(Copy(S, i, 6), '&quot;') then
-      begin
-        Result[j] := '"';
-        Inc(j);
-        Inc(i,5);
-      end
-      else
-      begin
-        Result[j] := S[i];
-        Inc(j);
-      end;
-    end
-    else
-    begin
-      Result[j] := S[i];
-      Inc(j);
-    end;
-    Inc(i);
-  end;
-  if j > 0 then
-    SetLength(Result, j - 1)
-  else
-    SetLength(Result, 0);
-  if TrimBlanks then
-    S := AdjustLineBreaks(Result)
-  else
-    S := Result;
+  Result := SimpleXMLEncode(S);
 end;
-*)
+
+function XMLDecode(const S: string): string;
+begin
+  Result := S;
+  SimpleXMLDecode(Result, False);
+end;
 
 //=== TJvSimpleXML ===========================================================
 
@@ -854,7 +855,7 @@ begin
   FRoot := TJvSimpleXMLElemClassic.Create(nil);
   FRoot.FSimpleXml := Self;
   FProlog := TJvSimpleXMLElemsProlog.Create;
-  FOptions := [sxoAutoIndent];
+  FOptions := [sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
   FIndentString := '  ';
 end;
 
@@ -863,6 +864,26 @@ begin
   FreeAndNil(FRoot);
   FreeAndNil(FProlog);
   inherited Destroy;
+end;
+
+procedure TJvSimpleXML.DoDecodeValue(var Value: string);
+begin
+  if Assigned(FOnDecodeValue) then
+    FOnDecodeValue(Self, Value)
+  else if sxoAutoEncodeValue in Options then
+    SimpleXMLDecode(Value, False)
+  else if sxoAutoEncodeEntity in Options then
+    Value := EntityDecode(Value);
+end;
+
+procedure TJvSimpleXML.DoEncodeValue(var Value: string);
+begin
+  if Assigned(FOnEncodeValue) then
+    FOnEncodeValue(Self, Value)
+  else if sxoAutoEncodeValue in Options then
+    Value := SimpleXMLEncode(Value)
+  else if sxoAutoEncodeEntity in Options then
+    Value := EntityEncode(Value);
 end;
 
 procedure TJvSimpleXML.DoLoadProgress(const APosition, ATotal: Integer);
@@ -920,31 +941,50 @@ begin
   end;
 end;
 
-procedure TJvSimpleXML.LoadFromStream(const Stream: TStream);
+procedure TJvSimpleXML.LoadFromStream(Stream: TStream);
+var
+  AOutStream: TStream;
+  DoFree: boolean;
 begin
   FRoot.Clear;
   FProlog.Clear;
-  if Assigned(FOnLoadProg) then
-  begin
-    FOnLoadProg(Self, Stream.Position, Stream.Size);
-    //Read doctype and so on
-    FProlog.LoadFromStream(Stream, Self);
-    //Read elements
-    FRoot.LoadFromStream(Stream, Self);
-    FOnLoadProg(Self, Stream.Position, Stream.Size);
-  end
-  else
-  begin
-    if Assigned(FOnTagParsed) or Assigned(FOnValue) then
+  AOutStream := nil;
+  DoFree := False;
+  try
+    if Assigned(FOnDecodeStream) then
     begin
-      FProlog.LoadFromStream(Stream, Self);
-      FRoot.LoadFromStream(Stream, Self);
+      AOutStream := TMemoryStream.Create;
+      DoFree := True;
+      FOnDecodeStream(Self, Stream, AOutStream);
+      AOutStream.Seek(0, soFromBeginning);
+    end
+    else
+      AOutStream := Stream;
+    if Assigned(FOnLoadProg) then
+    begin
+      FOnLoadProg(Self, AOutStream.Position, AOutStream.Size);
+    // Read doctype and so on
+      FProlog.LoadFromStream(AOutStream, Self);
+    // Read elements
+      FRoot.LoadFromStream(AOutStream, Self);
+      FOnLoadProg(Self, AOutStream.Position, AOutStream.Size);
     end
     else
     begin
-      FProlog.LoadFromStream(Stream);
-      FRoot.LoadFromStream(Stream);
+      if Assigned(FOnTagParsed) or Assigned(FOnValue) then
+      begin
+        FProlog.LoadFromStream(AOutStream, Self);
+        FRoot.LoadFromStream(AOutStream, Self);
+      end
+      else
+      begin
+        FProlog.LoadFromStream(AOutStream);
+        FRoot.LoadFromStream(AOutStream);
+      end;
     end;
+  finally
+    if DoFree then
+      AOutStream.Free;
   end;
 end;
 
@@ -978,24 +1018,46 @@ begin
   end;
 end;
 
-procedure TJvSimpleXML.SaveToStream(const Stream: TStream);
+procedure TJvSimpleXML.SaveToStream(Stream: TStream);
 var
   lCount: Integer;
+  AOutStream: TStream;
+  DoFree: boolean;
 begin
-  if Assigned(FOnSaveProg) then
+  if Assigned(FOnEncodeStream) then
   begin
-    lCount := Root.ChildsCount + Prolog.Count;
-    FSaveCount := lCount;
-    FSaveCurrent := 0;
-    FOnSaveProg(Self, 0, lCount);
-    Prolog.SaveToStream(Stream, Self);
-    Root.SaveToStream(Stream, '', Self);
-    FOnSaveProg(Self, lCount, lCount);
+    AOutStream := TMemoryStream.Create;
+    DoFree := True;
   end
   else
   begin
-    Prolog.SaveToStream(Stream);
-    Root.SaveToStream(Stream);
+    AOutStream := Stream;
+    DoFree := False;
+  end;
+  try
+    if Assigned(FOnSaveProg) then
+    begin
+      lCount := Root.ChildsCount + Prolog.Count;
+      FSaveCount := lCount;
+      FSaveCurrent := 0;
+      FOnSaveProg(Self, 0, lCount);
+      Prolog.SaveToStream(AOutStream, Self);
+      Root.SaveToStream(AOutStream, '', Self);
+      FOnSaveProg(Self, lCount, lCount);
+    end
+    else
+    begin
+      Prolog.SaveToStream(AOutStream);
+      Root.SaveToStream(AOutStream);
+    end;
+    if Assigned(FOnEncodeStream) then
+    begin
+      AOutStream.Seek(0, soFromBeginning);
+      FOnEncodeStream(Self, AOutStream, Stream);
+    end;
+  finally
+    if DoFree then
+      AOutStream.Free;
   end;
 end;
 
@@ -1143,12 +1205,12 @@ begin
   Result := FProps;
 end;
 
-function TJvSimpleXMLElem.GetSimpleXml: TJvSimpleXML;
+function TJvSimpleXMLElem.GetSimpleXML: TJvSimpleXML;
 begin
   if FParent <> nil then
-    Result := FParent.SimpleXml
+    Result := FParent.GetSimpleXML
   else
-    Result := FSimpleXml;
+    Result := FSimpleXML;
 end;
 
 procedure TJvSimpleXMLElem.LoadFromString(const Value: string);
@@ -1235,7 +1297,7 @@ function TJvSimpleXMLElems.Add(const Name: string;
   const Value: TStream): TJvSimpleXMLElemClassic;
 var
   Stream: TStringStream;
-  Buf: array [0..cBufferSize - 1] of Byte;
+  Buf: array[0..cBufferSize - 1] of Byte;
   St: string;
   i, Count: Integer;
 begin
@@ -1744,6 +1806,14 @@ begin
   end;
 end;
 
+function TJvSimpleXMLProps.GetSimpleXML: TJvSimpleXML;
+begin
+  if FParent <> nil then
+    Result := FParent.GetSimpleXML
+  else
+    Result := nil;
+end;
+
 function TJvSimpleXMLProps.IntValue(const Name: string; Default: Int64): Int64;
 var
   Prop: TJvSimpleXMLProp;
@@ -1843,7 +1913,8 @@ begin
         ptReadingValue: //We are reading a property
           if lBuf[i] = lPropStart then
           begin
-            SimpleXMLDecode(lValue, True);
+            if (GetSimpleXML <> nil) then
+              GetSimpleXML.DoDecodeValue(lValue);
             with Add(lName, lValue) do
               Pointer := lPointer;
             lPos := ptWaiting;
@@ -1904,12 +1975,31 @@ begin
   Result := StrToInt64Def(Value, -1);
 end;
 
-function TJvSimpleXMLProp.SaveToString: string;
+function TJvSimpleXMLProp.GetSimpleXML: TJvSimpleXML;
 begin
-  if Pointer <> '' then
-    Result := Format(' %s:%s="%s"', [Pointer, Name, SimpleXmlEncode(Value)])
+  if (FParent <> nil) and (FParent.FParent <> nil) then
+    Result := FParent.FParent.GetSimpleXml
   else
-    Result := Format(' %s="%s"', [Name, SimpleXmlEncode(Value)]);
+    Result := nil;
+end;
+
+function TJvSimpleXMLProp.SaveToString: string;
+var
+  AEncoder: TJvSimpleXML;
+begin
+  AEncoder := GetSimpleXML;
+  if Pointer <> '' then
+  begin
+    if AEncoder <> nil then
+      AEncoder.DoEncodeValue(FValue);
+    Result := Format(' %s:%s="%s"', [Pointer, FValue]);
+  end
+  else
+  begin
+    if AEncoder <> nil then
+      AEncoder.DoEncodeValue(FValue);
+    Result := Format(' %s="%s"', [Name, FValue]);
+  end;
 end;
 
 procedure TJvSimpleXMLProp.SetBoolValue(const Value: Boolean);
@@ -1974,7 +2064,7 @@ begin
             FmtError(RsEInvalidXMLElementExpectedEndOfTagBu, [lBuf[i]]);
       else
         begin
-          if lBuf[i] in [#9, #10, #13, ' '{, '.'}] then
+          if lBuf[i] in [#9, #10, #13, ' ' {, '.'}] then
           begin
             if lPos = 2 then
               Error(RsEInvalidXMLElementMalformedTagFoundn);
@@ -2030,7 +2120,8 @@ begin
   until Count = 0;
 
   Name := lName;
-  SimpleXMLDecode(lValue, True);
+  if GetSimpleXML <> nil then
+    GetSimpleXml.DoDecodeValue(lValue);
   Value := lValue;
   Pointer := lPointer;
 
@@ -2062,7 +2153,11 @@ begin
       if Value = '' then
         St := '/>' + sLineBreak
       else
-        St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + sLineBreak;
+      begin
+        if GetSimpleXml <> nil then
+          GetSimpleXml.DoEncodeValue(FValue);
+        St := '>' + Value + '</' + Name + '>' + sLineBreak;
+      end;
       Stream.Write(St[1], Length(St));
     end;
   end
@@ -2310,8 +2405,8 @@ begin
       end;
     end;
   until Count = 0;
-
-  SimpleXMLDecode(St, True);
+  if GetSimpleXML <> nil then
+    GetSimpleXml.DoDecodeValue(St);
   Value := St;
   Name := '';
 
@@ -2327,7 +2422,9 @@ var
 begin
   if Value <> '' then
   begin
-    St := Level + SimpleXmlEncode(Value) + sLineBreak;
+    if GetSimpleXml <> nil then
+      GetSimpleXml.DoEncodeValue(FValue);
+    St := Level + Value + SLineBreak;
     Stream.Write(St[1], Length(St));
   end;
   if Parent <> nil then
@@ -2976,14 +3073,15 @@ procedure TJvSimpleXML.SetRoot(const Value: TJvSimpleXMLElemClassic);
 begin
   if Value <> FRoot then
   begin
-    FRoot.FSimpleXml := nil;
+//    FRoot.FSimpleXml := nil;
     FRoot := Value;
-    FRoot.FSimpleXml := Self;
+//    FRoot.FSimpleXml := Self;
   end;
 end;
 
 function TJvSimpleXMLElemsProlog.GetEncoding: string;
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -2993,7 +3091,8 @@ begin
 end;
 
 function TJvSimpleXMLElemsProlog.GetStandAlone: Boolean;
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -3003,7 +3102,8 @@ begin
 end;
 
 function TJvSimpleXMLElemsProlog.GetVersion: string;
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -3013,7 +3113,8 @@ begin
 end;
 
 procedure TJvSimpleXMLElemsProlog.SetEncoding(const Value: string);
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -3021,7 +3122,8 @@ begin
 end;
 
 procedure TJvSimpleXMLElemsProlog.SetStandAlone(const Value: Boolean);
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -3029,7 +3131,8 @@ begin
 end;
 
 procedure TJvSimpleXMLElemsProlog.SetVersion(const Value: string);
-var elem: TJvSimpleXMLElemHeader;
+var
+  elem: TJvSimpleXMLElemHeader;
 begin
   elem := TJvSimpleXMLElemHeader(FindHeader);
   if elem <> nil then
@@ -3037,12 +3140,13 @@ begin
 end;
 
 function TJvSimpleXMLElemsProlog.FindHeader: TJvSimpleXMLElem;
-var i:Integer;
+var
+  i: Integer;
 begin
   if Count = 0 then
   begin
     Result := TJvSimpleXMLElemHeader.Create(nil);
-    FElems.AddObject('',Result);
+    FElems.AddObject('', Result);
   end
   else
   begin
