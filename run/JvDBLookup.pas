@@ -421,7 +421,7 @@ type
   published
     property Align; // Polaris
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
-    property DropDownCount: Integer read FDropDownCount write FDropDownCount default 7;
+    property DropDownCount: Integer read FDropDownCount write FDropDownCount default 8;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
     property EscapeClear: Boolean read FEscapeClear write FEscapeClear default True;
     property DisplayAllFields: Boolean read GetDisplayAllFields write SetDisplayAllFields default False;
