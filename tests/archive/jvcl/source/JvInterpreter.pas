@@ -175,7 +175,7 @@ unit JvInterpreter;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, Math,
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF MSWINDOWS}
@@ -971,6 +971,7 @@ const
   ieUnitNotFound = ieRuntimeBase + 6;
   ieEventNotRegistered = ieRuntimeBase + 7;
   ieDfmNotFound = ieRuntimeBase + 8;
+  ieDivisionByZero = ieRuntimeBase + 9; // protects us from low level math coprocessor exception
 
   { syntax errors (now run-timed) }
   ieSyntaxBase = 100;
@@ -1326,15 +1327,20 @@ end;
 
 constructor EJvInterpreterError.Create(const AErrCode: Integer;
   const AErrPos: Integer; const AErrName, AErrName2: string);
+var
+ msg:String;
 begin
-  inherited Create('');
+  inherited Create(AErrName);
   FErrCode := AErrCode;
   FErrPos := AErrPos;
   FErrName := AErrName;
   FErrName2 := AErrName2;
   { function LoadStr don't work sometimes :-( }
-  Message := Format(LoadStr2(ErrCode), [ErrName, ErrName2]);
-  FMessage1 := Message;
+  msg := Format(LoadStr2(ErrCode), [ErrName, ErrName2]);
+  if (Length(msg)>0) then begin // not in RC file, use default text! -WP.
+    Message := msg;
+    FMessage1 := Message;
+  end;
 end;
 
 procedure EJvInterpreterError.Assign(E: Exception);
@@ -2561,7 +2567,18 @@ begin
         V.VTyp := V.VTyp or VarByRef;
       end
       else
+        try
         JvInterpreterVarAssignment(V.Value, JvInterpreterVarAsType(Value, V.VTyp))
+          except
+           on E:EVariantOverflowError do begin
+            JvInterpreterVarAssignment(V.Value, NULL);
+            JvInterpreterErrorN2(ieIntegerOverflow, -1, 'VariantOverflow', 'Variant Overflow Error');
+          end;
+          on E:ERangeError do begin
+           JvInterpreterVarAssignment(V.Value, NULL);
+           JvInterpreterErrorN2(ieIntegerOverflow, -1, 'RangeOverflow', 'Array or Subrange Overflow (ERangeError)' );
+          end;
+        end;
     end
     else
       JvInterpreterVarAssignment(V.Value, Value);
@@ -4914,6 +4931,7 @@ end;
 function TJvInterpreterExpression.Expression1: Variant;
 var
   OldExpStackPtr: Integer;
+  DivZeroException:EJvInterpreterError;
 
   procedure PushExp(var Value: Variant);
   begin
@@ -4931,6 +4949,14 @@ var
     Dec(ExpStackPtr);
   end;
 
+  {NEW: Handle division by zero errors cleanly, avoids Runtime Errors. }
+  procedure DivByZero;
+  begin
+      DivZeroException := EJvInterpreterError.Create(ieDivisionByZero, PosEnd, 'Division By Zero','');
+      UpdateExceptionPos(DivZeroException, 'DivisionByZero');
+      Self.FVResult := NaN; // Use NaN as a DivByZero indicator.
+      raise DivZeroException;
+  end;
   { function Expression called recursively very often, so placing it
     as local function (not class method) improve performance }
 
@@ -5005,14 +5031,26 @@ var
           else
             Exit;
         ttDiv:
-          if priorDiv > Prior(OpTyp) then
-            Result := PopExp / Expression(TTyp)
-          else
+          if priorDiv > Prior(OpTyp) then begin
+            Tmp := Expression(TTyp);
+            if (VarType(Tmp) = varDouble) then begin
+                if (Tmp = 0.0) then DivByZero;
+            end else if (VarType(Tmp) = varInteger) then begin
+                if (Tmp = 0) then DivByZero;
+            end;
+            // Now we get here, we know that either
+            // the right hand side is nonzero or the types are wrong.
+            // If types are wrong the variant division routine will
+            // raise a runtime error. If Tmp is zero we would get
+            // a low level runtime error, sadly.
+            Result := PopExp / Tmp;
+          end else
             Exit;
         ttIntDiv:
-          if priorIntDiv > Prior(OpTyp) then
-            Result := PopExp div Expression(TTyp)
-          else
+          if priorIntDiv > Prior(OpTyp) then begin
+            Tmp := Expression(TTyp);
+            Result := PopExp div Tmp;
+          end else
             Exit;
         ttMod:
           if priorMod > Prior(OpTyp) then
