@@ -34,12 +34,11 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
+  Windows, Messages, 
   {$ENDIF VCL}
+  Graphics, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons,
-  QMenus, QImgList, QTypes, QWindows,
+  QTypes, QWindows,
   {$ENDIF VisualCLX}
   JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
@@ -504,12 +503,7 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   ActnList;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QActnList;
-  {$ENDIF VisualCLX}
 
 const
   cSpeed = 20;
@@ -1360,12 +1354,7 @@ begin
     if (csDesigning in ComponentState) and not Visible then
     begin
       Canvas.Brush.Style := bsBDiagonal;
-      {$IFDEF VCL}
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      {$ENDIF VisualCLX}
       Canvas.Brush.Style := bsSolid;
     end
     else
@@ -1377,12 +1366,7 @@ begin
     else
     begin { fill it up! }
       Canvas.Brush.Color := FFillColor;
-      {$IFDEF VCL}
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
-      {$ENDIF VisualCLX}
     end;
 
     if FDown then
@@ -2311,12 +2295,7 @@ begin
   { draw top caption }
   R := GetClientRect;
   R.Bottom := cHeight;
-  {$IFDEF VCL}
   SetBkMode(DC, Windows.Transparent);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetBkMode(DC, QWindows.Transparent);
-  {$ENDIF VisualCLX}
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2746,13 +2725,7 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    {$IFDEF VCL}
-    Windows.
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
-    GetClientRect(Handle, RC);
+    Windows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
@@ -2770,21 +2743,9 @@ begin
     else
     begin
       Canvas.Brush.Color := Color;
-      {$IFDEF VCL}
-      Windows.
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.
-      {$ENDIF VisualCLX}
-      FrameRect(DC, RW, Canvas.Brush.Handle);
+      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, -1, -1);
-      {$IFDEF VCL}
-      Windows.
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      QWindows.
-      {$ENDIF VisualCLX}
-      FrameRect(DC, RW, Canvas.Brush.Handle);
+      Windows.FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
     { Erase parts not drawn }
@@ -2993,13 +2954,7 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    {$IFDEF VCL}
-    Windows.
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    QWindows.
-    {$ENDIF VisualCLX}
-    GetClientRect(Handle, RC);
+    Windows.GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
     MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
