@@ -58,8 +58,9 @@ type
     FWait: Integer;
     FWaiting: Boolean;
     FColor: TColor;
-    FCaption: string;
     FScale: Real;
+    // (p3) renamed
+    FText: string;
     FAboutJVCL: TJVCLAboutInfo;
     function GetCol(Ch: Char): Word;
     procedure SetColor(Value: TColor);
@@ -90,7 +91,7 @@ type
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color: TColor read FColor write SetColor;
-    property Text: string read FCaption write SetText;
+    property Text: string read FText write SetText;
     property Align;
     property Alignment;
     property FocusControl;
@@ -124,7 +125,8 @@ type
 implementation
 
 const
-  Row1: string[31] = 'ABCDEFGHIJKLMN²OPQRSTUVWXYZ"@¿';
+  // (p3) fixed as suggested by Remko Bonte
+  Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@¿';
   Row2: string[31] = '0123456789. :()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
 
@@ -200,13 +202,13 @@ begin
   Deactivate;
   FBitmap.Free;
   FPicture.Free;
-    FTimer.Free;
-{  //-----------------
-  FTimer.Terminate;
-  while (not FTimer.Terminated) do
-    Application.ProcessMessages;
   FTimer.Free;
-  //-------------------}
+  {  //-----------------
+    FTimer.Terminate;
+    while (not FTimer.Terminated) do
+      Application.ProcessMessages;
+    FTimer.Free;
+    //-------------------}
   inherited Destroy;
 end;
 
@@ -224,7 +226,7 @@ begin
   FPicture.Assign(Value);
   if (FPicture.Bitmap.Width <> 155) or (FPicture.Bitmap.Height <> 18) then
     raise Exception.Create(RC_InvalidSkin);
-  FCaption := '';
+  FText := '';
   Invalidate;
 end;
 
@@ -235,7 +237,7 @@ begin
   if Value <> FColor then
   begin
     FColor := Value;
-    FCaption := '';
+    FText := '';
     Invalidate;
   end;
 end;
@@ -341,7 +343,8 @@ begin
   if index = -1 then
     Result := GetCol(' ')
   else
-    Result := index - 1 * CharWidth;
+    // (p3) fixed as suggested by Remko Bonte
+    Result := (index - 1) * CharWidth
 end;
 
 {**************************************************}
@@ -360,7 +363,7 @@ end;
 
 procedure TJvWinampLabel.FillBitmap;
 var
-  Rec: TRect;
+  Rec, SourceRect, DestRect: TRect;
   T: Word;
 begin
   try
@@ -383,8 +386,13 @@ begin
       Canvas.FillRect(Rec);
       if Self.Text <> '' then
         for T := 0 to Length(Text) - 1 do
-          BitBlt(Canvas.Handle, T * CharWidth, 0, CharWidth, CharHeight,
-            Canvas.Handle, GetCol(Text[T + 1]), GetRow(Text[T + 1]), SrcCopy);
+        begin
+          // (p3) fixed as suggested by Remko Bonte
+          SourceRect := Bounds(GetCol(Text[T + 1]),
+            GetRow(Text[T + 1]), CharWidth, CharHeight);
+          DestRect := Bounds(T * CharWidth, 0, CharWidth, CharHeight);
+          Canvas.CopyRect(DestRect, FPicture.Bitmap.Canvas, SourceRect);
+        end;
     end;
   except
   end;
@@ -466,9 +474,9 @@ procedure TJvWinampLabel.SetText(Value: string);
 var
   Rec: TRect;
 begin
-  if Value <> FCaption then
+  if Value <> FText then
   begin
-    Caption := Value;
+    FText := Value;
     FillBitmap;
     Rec.Top := 0;
     Rec.Left := 0;
@@ -479,7 +487,6 @@ begin
     Canvas.FillRect(Rec);
     FCurPos := 0;
     FScrollBy := Abs(FScrollBy);
-    FCaption := Caption;
   end;
 end;
 
