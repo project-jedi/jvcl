@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvGradientCaption;
 
-
-
 interface
 
 uses
@@ -41,8 +39,10 @@ type
   private
     FJvGradient1: TJvGradient;
     FLabel1: TLabel;
+    FLabelLeft: integer;
     FHint: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
+    FOldLabelFontChange: TNotifyEvent;
     function GetJvGradient1Cursor: TCursor;
     procedure SetJvGradient1Cursor(Value: TCursor);
     function GetJvGradient1Hint: string;
@@ -72,31 +72,85 @@ type
     procedure SetGstyle(const Value: TGradStyle);
     function GetAlignment: TAlignment;
     procedure Setalignment(const Value: TAlignment);
+    procedure AdjustLabelWidth;
   protected
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure DoLabelFontChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property GradientCursor: TCursor read GetJvGradient1Cursor write SetJvGradient1Cursor;
+    property GradientCursor: TCursor read GetJvGradient1Cursor write SetJvGradient1Cursor default crDefault;
     property GradientHint: string read GetJvGradient1Hint write SetJvGradient1Hint;
     property GradientStartColor: TColor read GetJvGradient1StartColor write SetJvGradient1StartColor default clBlack;
     property GradientEndColor: TColor read GetJvGradient1EndColor write SetJvGradient1EndColor default clWhite;
     property GradientSteps: Integer read GetJvGradient1Steps write SetJvGradient1Steps default 100;
-    property LabelLeft: Integer read GetLabel1Left write SetLabel1Left default 18;
+    property GradientStyle: TGradStyle read GetGStyle write SetGstyle;
+    property LabelLeft: Integer read GetLabel1Left write SetLabel1Left default 10;
     property LabelTop: Integer read GetLabel1Top write SetLabel1Top default 8;
-    property LabelCursor: TCursor read GetLabel1Cursor write SetLabel1Cursor;
+    property LabelCursor: TCursor read GetLabel1Cursor write SetLabel1Cursor default crDefault;
     property LabelHint: string read GetLabel1Hint write SetLabel1Hint;
     property LabelCaption: string read GetLabel1Caption write SetLabel1Caption;
-    property LabelColor: TColor read GetLabel1Color write SetLabel1Color;
-    property LabelFont: Tfont read GetFont write SetFont;
+    property LabelColor: TColor read GetLabel1Color write SetLabel1Color default clNone;
+    property LabelFont: TFont read GetFont write SetFont;
     property ShowHint: Boolean read FHint write SetHints default False;
-    property Gradientstyle: TGradStyle read GetGStyle write SetGstyle;
     property LabelAlignment: TAlignment read GetAlignment write SetAlignment;
+
     property Align;
+    property Anchors;
+    property AutoSize;
+    property BevelEdges;
+    property BevelInner;
+    property BevelKind;
+    property BevelOuter;
+    property BevelWidth;
+    property BiDiMode;
+    property BorderWidth;
+    property Constraints;
+    property Ctl3D;
+    property DockSite;
     property DoubleBuffered;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentBiDiMode;
+    property ParentShowHint;
+    property PopupMenu;
+    property TabOrder;
+    property TabStop;
     property Visible;
+
+    property OnCanResize;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetSiteInfo;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
   end;
 
 implementation
@@ -115,18 +169,20 @@ begin
   FJvGradient1 := TJvGradient.Create(Self);
   FJvGradient1.Parent := Self;
   FLabel1 := TLabel.Create(Self);
+  FLabel1.AutoSize := false;
   FLabel1.Parent := Self;
   FJvGradient1.Left := 0;
   FJvGradient1.Top := 0;
   FJvGradient1.StartColor := clBlack;
   FJvGradient1.EndColor := clWhite;
   FJvGradient1.Steps := 100;
-  FLabel1.Left := 10;
+  LabelLeft := 10;
   FLabel1.Top := 8;
-  FLabel1.Color := clBlue;
-  FLabel1.Transparent := True;
-  FLabel1.Font.color := clwhite;
-  FLabel1.caption := RC_YourTextHere;
+  LabelColor := clNone;
+  FOldLabelFontChange := FLabel1.Font.OnChange;
+  FLabel1.Font.OnChange := DoLabelFontChange;
+  FLabel1.Font.Color := clwhite;
+  FLabel1.Caption := RC_YourTextHere;
   FHint := False;
 end;
 {***************************************************}
@@ -134,8 +190,8 @@ end;
 destructor TJvGradientCaption.Destroy;
 begin
   FJvGradient1.Free;
+  //  FLabel1.OnChange := FOldLabelFontChange;
   FLabel1.Free;
-
   inherited Destroy;
 end;
 {***************************************************}
@@ -195,25 +251,26 @@ end;
 {***************************************************}
 
 procedure TJvGradientCaption.SetJvGradient1Steps(Value: Integer);
-var
-  x: TColor;
 begin
   FJvGradient1.Steps := Value;
-  x := GetLabel1Color;
-  SetLabel1color(clLime);
-  SetLabel1color(x);
 end;
 {***************************************************}
 
 function TJvGradientCaption.GetLabel1Left: Integer;
 begin
-  Result := FLabel1.Left;
+  Result := FLabelLeft;
 end;
 {***************************************************}
 
 procedure TJvGradientCaption.SetLabel1Left(Value: Integer);
 begin
-  FLabel1.Left := Value;
+  if FLabel1.Left <> Value then
+  begin
+    if Value < 0 then Value := 0;
+    FLabel1.Left := Value;
+    FLabelLeft := Value;
+    AdjustLabelWidth;
+  end;
 end;
 {***************************************************}
 
@@ -225,6 +282,7 @@ end;
 
 procedure TJvGradientCaption.SetLabel1Top(Value: Integer);
 begin
+  if Value < 0 then Value := 0;
   FLabel1.Top := Value;
 end;
 {***************************************************}
@@ -262,6 +320,7 @@ end;
 procedure TJvGradientCaption.SetLabel1Caption(Value: string);
 begin
   FLabel1.Caption := Value;
+  AdjustLabelWidth;
 end;
 {***************************************************}
 
@@ -274,6 +333,7 @@ end;
 procedure TJvGradientCaption.SetLabel1Color(Value: TColor);
 begin
   FLabel1.Color := Value;
+  FLabel1.Transparent := Value = clNone;
 end;
 {***************************************************}
 
@@ -294,6 +354,7 @@ end;
 procedure TJvGradientCaption.SetFont(const Value: Tfont);
 begin
   Flabel1.Font := Value;
+  AdjustLabelWidth;
 end;
 {***************************************************}
 
@@ -304,13 +365,8 @@ end;
 {***************************************************}
 
 procedure TJvGradientCaption.SetGStyle(const Value: TGradStyle);
-var
-  x: TColor;
 begin
   FJvGradient1.Style := Value;
-  x := GetLabel1Color;
-  SetLabel1color(clLime);
-  SetLabel1color(x);
 end;
 {***************************************************}
 
@@ -323,14 +379,46 @@ end;
 procedure TJvGradientCaption.Setalignment(const Value: TAlignment);
 begin
   FLabel1.Alignment := Value;
+  AdjustLabelWidth;
 end;
 {***************************************************}
 
 procedure TJvGradientCaption.WMSize(var Message: TWMSize);
 begin
   inherited;
-  FLabel1.Width := Message.Width - FLabel1.Left;
+  AdjustLabelWidth;
 end;
 {***************************************************}
 
+procedure TJvGradientCaption.AdjustLabelWidth;
+var W, L: integer;
+begin
+  L := FLabel1.Left;
+  // make as large as we need:
+  FLabel1.AutoSize := true;
+  FLabel1.AutoSize := false;
+  FLabel1.Left := L;
+  W := FJvGradient1.Width - FLabelLeft - FLabelLeft;
+  // make bigger if there's room
+  if W > FLabel1.Width then
+  begin
+    FLabel1.Width := W;
+    FLabel1.Left := FLabelLeft;
+  end
+  else if W < FLabel1.Width then // otherwise, just center
+  begin
+    FLabel1.Left := (Width - FLabel1.Width) div 2;
+    if FLabelLeft > FLabel1.Left then
+      FLabelLeft := FLabel1.Left;
+  end;
+end;
+
+procedure TJvGradientCaption.DoLabelFontChange(Sender: TObject);
+begin
+  if Assigned(FOldLabelFontChange) then
+    FOldLabelFontChange(Sender);
+  AdjustLabelWidth;
+end;
+
 end.
+
