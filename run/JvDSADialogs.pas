@@ -139,7 +139,7 @@ type
     property CheckMarkTextSuffix: string read GetCheckMarkTextSuffix;
   end;
 
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   TDSARegStorage = class(TDSAStorage)
   private
     FRootKey: HKEY;
@@ -168,7 +168,7 @@ type
     property RootKey: HKEY read FRootKey write FRootKey;
     property Key: string read FKey write FKey;
   end;
-  {$ENDIF WINDOWS}
+  {$ENDIF MSWINDOWS}
 
   TDSAQueueStorage = class(TDSAStorage)
   private
@@ -2045,7 +2045,7 @@ end;
 
 var
   GlobalRegStore: TDSAStorage = nil;
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 function DSARegStore: TDSARegStorage;
 begin
   if GlobalRegStore = nil then
@@ -2053,7 +2053,7 @@ begin
       TDSARegStorage.Create(HKEY_CURRENT_USER, 'Software\' + Application.Title + '\DSA');
   Result := TDSARegStorage(GlobalRegStore);
 end;
-{$ENDIF WINDOWS}
+{$ENDIF MSWINDOWS}
 
 var
   GlobalQueueStore: TDSAStorage = nil;
