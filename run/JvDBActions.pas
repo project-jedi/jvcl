@@ -771,7 +771,7 @@ begin
     else
     if ADataComponent is TcxCustomGridTableView then
       if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
-        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).DataSource
+        Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).Datasource
       else
         Result := nil
     else
