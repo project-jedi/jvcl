@@ -254,6 +254,8 @@ begin
       FArtist := tag.Artist;
       FAlbum := tag.Album;
       FYear := tag.Year;
+      // (p3) missing genre added
+      FGenre := tag.Genre;
       FComment := tag.Comment;
     end
     else
