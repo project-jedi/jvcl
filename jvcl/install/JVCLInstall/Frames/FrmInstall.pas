@@ -35,6 +35,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls,
   ShellAPI,
+  {$IFDEF USE_DXGETTEXT}
+  JvGnugettext,
+  {$ENDIF USE_DXGETTEXT}
   JVCL3Install, JVCLData, PackageUtils, Compile, Utils;
 
 type
@@ -362,6 +365,11 @@ begin
       ParentForm := ParentForm.Parent;
     FormCompileMessages.Top := ParentForm.BoundsRect.Bottom;
     FormCompileMessages.Left := ParentForm.Left + (ParentForm.Width - FormCompileMessages.Width) div 2;
+
+    {$IFDEF USE_DXGETTEXT}
+    TranslateComponent(FormCompile, 'JVCLInstall');
+    TranslateComponent(FormCompileMessages, 'JVCLInstall');
+    {$ENDIF USE_DXGETTEXT}
 
     Compiler := TJVCLCompiler.Create(Installer.Data);
     try
