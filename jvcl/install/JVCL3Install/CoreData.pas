@@ -1059,10 +1059,14 @@ begin
           FDcpDir := ExpandDirMacros(reg.ReadString('Package DCP Output'))
         else
           FDcpDir := RootDir + '\Projects\Bpl';
+        if FDcpDir = '' then // no directory
+          FDcpDir := RootDir + '\Projects\Bpl';
 
         if reg.ValueExists('Package DPL Output') then
           FBplDir := ExpandDirMacros(reg.ReadString('Package DPL Output'))
         else
+          FBplDir := RootDir + '\Projects\Bpl';
+        if FBplDir = '' then // no directory
           FBplDir := RootDir + '\Projects\Bpl';
 
         if reg.ValueExists('Search Path') then
