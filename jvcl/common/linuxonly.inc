@@ -27,4 +27,4 @@ Known Issues:
 {$ELSE}
 This unit is only supported on Linux!
 {$ENDIF COMPILER6_UP}
-{$ENDIF LINUX}
+{$ENDIF !LINUX}

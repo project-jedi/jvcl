@@ -29,7 +29,7 @@ Known Issues:
 {$IFNDEF BCB5}
 {$IFNDEF DELPHI5}
 This unit is only supported on Windows!
-{$ENDIF DELPHI5}
-{$ENDIF BCB5}
+{$ENDIF !DELPHI5}
+{$ENDIF !BCB5}
 {$ENDIF COMPILER6_UP}
-{$ENDIF MSWINDOWS}
+{$ENDIF !MSWINDOWS}
