@@ -92,14 +92,13 @@ type
     procedure EndInternalChange;
     function InternalChanging: Boolean;
   protected
+    property AutoSize default False;
     property Checked: Boolean read GetChecked write SetChecked;
     property ShowCheckBox: Boolean read GetShowCheckBox write SetShowCheckBox default False;
     property OnCheckClick: TNotifyEvent read FOnCheckClick write FOnCheckClick;
     {$IFDEF VisualCLX}
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     {$ENDIF VisualCLX}
-
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -107,35 +106,55 @@ type
 
   TJvCheckedMaskEdit = class(TJvCustomCheckedMaskEdit)
   published
+    property Action;
+    property Align;
     property Anchors;
     property AutoSelect;
-    property AutoSize default False;
+    property AutoSize;
     property BorderStyle;
+    property ButtonFlat;
+    property ButtonHint;
+    property ButtonWidth;
     property CharCase;
     property Checked;
     property ClipboardCommands;
+    property ClickKey;
     property Color;
     property Constraints;
-    property Cursor;
-    {$IFDEF VCL}
+    //property Cursor; {already published}
     property DisabledColor;
     property DisabledTextColor;
+    property GroupIndex;
+    {$IFDEF VCL}
+    {property BiDiMode;}
     property Caret;
     property DragCursor;
     property DragKind;
-    property GroupIndex;
     property HotTrack;
+    property ImeMode;
+    property ImeName;
+    property OEMConvert;
+    {property ParentBiDiMode;}
     property PasswordChar;
     property ProtectPassword;
     property OnKillFocus;
     property OnSetFocus;
+    property OnEndDock;
+    property OnStartDock;
     {$ENDIF VCL}
+    property DirectInput;
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
+    property Glyph;
+    property HideSelection;
     property HintColor;
+    property ImageIndex;
+    property ImageKind;
+    property Images;
     property MaxLength;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -145,10 +164,13 @@ type
     property ShowCheckBox;
     property Text;
     property TabOrder;
+    {property TabStop;} { (rb) Why disabled?}
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnCheckClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -181,6 +203,7 @@ begin
 
   AutoSize := False;
   Height := 21;
+  { (rb) ?? }
   TabStop := True;
 end;
 
@@ -436,6 +459,10 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomCheckedMaskEdit.UpdateControls;
 begin
+  { delay until Loaded }
+  if csLoading in ComponentState then
+    Exit;
+
   inherited UpdateControls;
 
   { propagate to child controls: }

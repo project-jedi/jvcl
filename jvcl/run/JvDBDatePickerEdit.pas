@@ -89,23 +89,29 @@ type
     property Date;
     property Dropped;
   published
+    property Action;
+    property Align; 
     property AllowNoDate;
     property AlwaysReturnEditDate;
     property Anchors;
     property AutoSelect;
-    property AutoSize default False;
+    property AutoSize;
     property BorderStyle;
+    property ButtonFlat;
+    property ButtonHint;
+    property ButtonWidth;
     property CalendarAppearance;
     property Caret;
     property CharCase;
     property ClipboardCommands;
     property Color;
     property Constraints;
-    property Cursor;
+    //property Cursor; {already published}
     property DataField;
     property DataSource;
     property DateFormat;
     property DateSeparator;
+    property DirectInput;
     property DisabledColor;
     property DisabledTextColor;
     property DragCursor;
@@ -115,13 +121,29 @@ type
     property EnableValidation;
     property EnforceRequired;
     property Font;
+    property Glyph;
     property GroupIndex;
+    property HideSelection;
     property HintColor;
     property HotTrack;
     // property MaxYear default 2900;
     // property MinYear default 1900;
+    {$IFDEF VCL}
+    {property BiDiMode;}
+    property Ctl3D;
+    {property ParentBiDiMode;}
+    property ImeMode;
+    property ImeName;
+    property OEMConvert;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
+    property ImageIndex;
+    property ImageKind;
+    property Images;
     property NoDateShortcut;
     property NoDateText;
+    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -131,10 +153,13 @@ type
     property ShowCheckBox;
     property StoreDateFormat;
     property TabOrder;
+    {property TabStop;} {(rb) Why disabled?}
     property Visible;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnCheckClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
