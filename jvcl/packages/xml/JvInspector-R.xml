@@ -2,7 +2,7 @@
 <Package Name="JvInspector" Design="0">
   <Description>JVCL Inspector Components Runtime Package</Description>
   <ClxDescription>JVCLX Inspector Components Runtime Package</ClxDescription>
-  <C5PFlags>-LUCJcl50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>

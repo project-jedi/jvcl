@@ -2,7 +2,7 @@
 <Package Name="JvNet" Design="0">
   <Description>JVCL Network Components Runtime Package</Description>
   <ClxDescription>JVCLX Network Components Runtime Package</ClxDescription>
-  <C5PFlags>-LUCJcl50</C5PFlags>
+  <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
