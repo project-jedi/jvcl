@@ -93,6 +93,7 @@ type
     FSegmentUnlitColor: TUnlitColor;
     FSlant: TSlantAngle;
     FText: string;
+    FAutosize: boolean;
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure Loaded; override;
@@ -124,7 +125,7 @@ type
     procedure UpdateText;
     procedure UpdateBounds;
 
-    property AutoSize default True;
+    property AutoSize: boolean read FAutoSize write FAutosize default True;
     property CharacterMapper: TJvSegmentedLEDCharacterMapper read FCharacterMapper;
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
@@ -381,7 +382,7 @@ implementation
 
 uses
   QControls, SysUtils,
-  JclGraphUtils,
+  JclQGraphUtils,
   JvQThemes, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
