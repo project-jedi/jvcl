@@ -2406,7 +2406,7 @@ begin
         end;
       end;
   else
-    TJvxButtonGlyph(FButton.ButtonGlyph).Glyph := nil;
+//    TJvxButtonGlyph(FButton.ButtonGlyph).Glyph := nil;
     FButton.Invalidate;
   end;
 end;
