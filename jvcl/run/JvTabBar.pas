@@ -331,6 +331,7 @@ type
     function AddTab(const Caption: string): TJvTabBarItem;
     function TabAt(X, Y: Integer): TJvTabBarItem;
     function MakeVisible(Tab: TJvTabBarItem): Boolean;
+    function FindData(Data: TObject): TJvTabBarItem;
 
     property Tabs: TJvTabBarItems read FTabs write SetTabs;
     property Painter: TJvTabBarPainter read FPainter write SetPainter;
@@ -1161,6 +1162,19 @@ begin
     UpdateScrollButtons;
     Invalidate;
   end;
+end;
+
+function TJvCustomTabBar.FindData(Data: TObject): TJvTabBarItem;
+var
+  I: Integer;
+begin
+  for I := 0 to Tabs.Count - 1 do
+    if Tabs[I].Data = Data then
+    begin
+      Result := Tabs[I];
+      Exit;
+    end;
+  Result := nil;
 end;
 
 procedure TJvCustomTabBar.SetHint(const Value: TCaption);
