@@ -465,6 +465,8 @@ procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 
 // (rom) changed API for inclusion in JCL
 
+procedure RleCompressTo(InStream, OutStream: TStream);
+procedure RleDecompressTo(InStream, OutStream: TStream);
 procedure RleCompress(Stream: TStream);
 procedure RleDecompress(Stream: TStream);
 { end JvRLE }
@@ -4142,21 +4144,17 @@ end;
 
 
 { begin JvRLE }
-procedure RleCompress(Stream: TStream);
+procedure RleCompressTo(InStream, OutStream: TStream);
 var
   Count, Count2, Count3, I: Integer;
   Buf1: array [0..1024] of Byte;
   Buf2: array [0..60000] of Byte;
   B: Byte;
-  Tmp: TMemoryStream;
 begin
-  Tmp := TMemoryStream.Create;
-  Stream.Position := 0;
-
   Count := 1024;
   while Count = 1024 do
   begin
-    Count := Stream.Read(Buf1, 1024);
+    Count := InStream.Read(Buf1, 1024);
     Count2 := 0;
     I := 0;
     while I < Count do
@@ -4169,7 +4167,7 @@ begin
         Inc(Count3);
       end;
       if (I = Count) and (Count3 in [2..$2F]) and (Count = 1024) then
-        Stream.Position := Stream.Position - Count3
+        InStream.Position := InStream.Position - Count3
       else
       begin
         if Count3 = 1 then
@@ -4194,30 +4192,21 @@ begin
         end;
       end;
     end;
-    Tmp.Write(Buf2, Count2);
+    OutStream.Write(Buf2, Count2);
   end;
-
-  Tmp.Position := 0;
-  Stream.Size := 0;
-  Stream.CopyFrom(Tmp, Tmp.Size);
-  Tmp.Free;
 end;
 
-procedure RleDecompress(Stream: TStream);
+procedure RleDecompressTo(InStream, OutStream: TStream);
 var
   Count, Count2, Count3, I: Integer;
   Buf1: array [0..1024] of Byte;
   Buf2: array [0..60000] of Byte;
   B: Byte;
-  Tmp: TMemoryStream;
 begin
-  Tmp := TMemoryStream.Create;
-  Stream.Position := 0;
-
   Count := 1024;
   while Count = 1024 do
   begin
-    Count := Stream.Read(Buf1, 1024);
+    Count := InStream.Read(Buf1, 1024);
     Count2 := 0;
     I := 0;
     while I < Count do
@@ -4225,7 +4214,7 @@ begin
       if (Buf1[I] and $C0) = $C0 then
       begin
         if I = Count - 1 then
-          Stream.Position := Stream.Position - 1
+          InStream.Position := InStream.Position - 1
         else
         begin
           B := Buf1[I] and $3F;
@@ -4242,13 +4231,40 @@ begin
       end;
       Inc(I);
     end;
-    Tmp.Write(Buf2, Count2);
+    OutStream.Write(Buf2, Count2);
   end;
+end;
 
-  Tmp.Position := 0;
-  Stream.Size := 0;
-  Stream.CopyFrom(Tmp, Tmp.Size);
-  Tmp.Free;
+procedure RleCompress(Stream: TStream);
+var
+  Tmp: TMemoryStream;
+begin
+  Stream.Position := 0;
+  Tmp := TMemoryStream.Create;
+  try
+    RleCompressTo(Stream, Tmp);
+    Tmp.Position := 0;
+    Stream.Size := 0;
+    Stream.CopyFrom(Tmp, 0);
+  finally
+    Tmp.Free;
+  end;
+end;
+
+procedure RleDecompress(Stream: TStream);
+var
+  Tmp: TMemoryStream;
+begin
+  Stream.Position := 0;
+  Tmp := TMemoryStream.Create;
+  try
+    RleDecompressTo(Stream, Tmp);
+    Tmp.Position := 0;
+    Stream.Size := 0;
+    Stream.CopyFrom(Tmp, 0);
+  finally
+    Tmp.Free;
+  end;
 end;
 { end JvRLE }
 
