@@ -70,7 +70,11 @@ begin
   {$IFDEF USEJVCL}
   RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit, TJvDotNetDirectoryEdit, TJvDotNetButton]);
   {$ENDIF USEJVCL}
+
   {$IFNDEF DelphiPersonalEdition}
+  {$IFDEF USEJVCL}
+  RegisterComponents(RsPaletteDotNetDB, [TJvDotNetDBFindEdit]);
+  {$ENDIF USEJVCL}
   RegisterComponents(RsPaletteDotNetDB, [TJvDotNetDBEdit, TJvDotNetDBListBox,
     TJvDotNetDBLookupListBox, TJvDotNetDBMemo, TJvDotNetDBRichEdit]);
   {$ENDIF !DelphiPersonalEdition}

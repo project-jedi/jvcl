@@ -41,13 +41,10 @@ interface
 
 uses
   Forms, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  ComCtrls, Mask, DBCtrls,
+  ComCtrls, Mask, DBCtrls, CheckLst
   {$IFDEF USEJVCL}
-  CheckLst,
-  JVCLVer;
-  {$ELSE}
-  CheckLst;
-  {$ENDIF USEJVCL}
+  , JvDBFindEdit, JVCLVer
+  {$ENDIF USEJVCL};
 
 type
   TJvDotNetDBEdit = class(TDBEdit)
@@ -134,6 +131,17 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   {$ENDIF USEJVCL}
   end;
+  {$IFDEF USEJVCL}
+  TJvDotNetDBFindEdit = class(TJvDBFindEdit)
+  private
+    FHighlighted: Boolean;
+    FOldWindowProc: TWndMethod;
+    procedure InternalWindowProc(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+  {$ENDIF USEJVCL}
 
 implementation
 
@@ -245,6 +253,30 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
+
+{$IFDEF USEJVCL}
+
+{ TJvDotNetDBFindEdit }
+
+constructor TJvDotNetDBFindEdit.Create(AOwner: TComponent);
+begin
+  inherited;
+  FOldWindowProc := WindowProc;
+  WindowProc := InternalWindowProc;
+end;
+
+destructor TJvDotNetDBFindEdit.Destroy;
+begin
+  WindowProc := FOldWindowProc;
+  inherited;
+end;
+
+procedure TJvDotNetDBFindEdit.InternalWindowProc(var Msg: TMessage);
+begin
+  FOldWindowProc(Msg);
+  DotNetMessageHandler(Msg, Self, Color, FHighlighted);
+end;
+{$ENDIF USEJVCL}
 {$ENDIF DelphiPersonalEdition}
 
 end.
