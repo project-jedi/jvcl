@@ -31,13 +31,7 @@ unit JvZlibMultiple;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Graphics, Controls, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QDialogs, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Graphics, Controls, Dialogs,
   JclZLib, JvComponent;
 
 // ----------------------------------------------------------------------------}
