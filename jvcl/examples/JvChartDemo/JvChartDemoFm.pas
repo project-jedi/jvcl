@@ -33,9 +33,10 @@ unit JvChartDemoFm;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, Spin,
-  JvChart, JvComponent, JvExControls, StatsClasses, Menus;
+  QWindows, SysUtils, QMessages, Classes, QGraphics, QControls,
+  QForms, QDialogs, QExtCtrls, QStdCtrls, QButtons, JvQSpinButton,
+  JvQChart, JvQComponent, JvQExControls, StatsClasses, QMenus, QExtDlgs,
+  QTypes;
 
 type
   TJvChartDemoForm = class(TForm)
@@ -75,7 +76,6 @@ type
     DateTimeAxisMode: TMenuItem;
     PrintOptions1: TMenuItem;
     PrinterSetupDialog1: TPrinterSetupDialog;
-    PrintDialog1: TPrintDialog;
     MenuSecondaryAxisMode: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure ButtonLineClick(Sender: TObject);
@@ -134,15 +134,15 @@ var
 implementation
 
 uses
-  JvJVCLAboutForm, // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
-  JVCLVer,         // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
+  JvQJVCLAboutForm, // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
+  JvQCLVer,         // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
   Math,            // Math:NaN handling, function isNan in D6 and higher.
   {$IFDEF COMPILER5}
   JclMath,   // JclMath:function isNan for Delphi 5
   {$ENDIF COMPILER5}
   ShellApi;  // ShellApi:ShellExecute function
 
-{$R *.dfm}
+{$R *.xfm}
 
 { Bogus vaguely sinusoidal signal generator }
 procedure TJvChartDemoForm._Generate;
@@ -471,7 +471,7 @@ end;
 
 procedure TJvChartDemoForm.Panel2DblClick(Sender: TObject);
 begin
- ShellExecute( HWND(nil), 'show', 'http://homepages.borland.com/jedi/jvcl/', nil,nil,SW_SHOW);
+  ShellExecute( 0, 'show', 'http://homepages.borland.com/jedi/jvcl/', nil,nil,SW_SHOW);
 end;
 
 procedure TJvChartDemoForm.ShowgapinLineChart1Click(Sender: TObject);
@@ -484,7 +484,7 @@ end;
 
 procedure TJvChartDemoForm.Print1Click(Sender: TObject);
 begin
- if PrintDialog1.Execute then 
+ if PrinterSetupDialog1.Execute then
   Chart.PrintGraph;
 end;
 
@@ -513,9 +513,9 @@ end;
 
 procedure TJvChartDemoForm.About1Click(Sender: TObject);
 begin
-  Application.MessageBox( PChar(
+  Application.MessageBox(
   'JvChart comes from AABSoft Graph written by  Mårten Henrichson, JVCL 3.0 '+
-  'version by Warren Postma.  '),'About JvChart', MB_OK);
+  'version by Warren Postma.  ','About JvChart');
 end;
 
 procedure TJvChartDemoForm.AboutJVCL301Click(Sender: TObject);

@@ -1,10 +1,9 @@
 program JvChartDemo;
 
 uses
-  Forms,
+  QForms,
   JvChartDemoFm in 'JvChartDemoFm.pas' {JvChartDemoForm},
-  StatsClasses in 'StatsClasses.pas',
-  JvChart in '..\..\run\JvChart.pas';
+  StatsClasses in 'StatsClasses.pas';
 
 {$R *.res}
 
