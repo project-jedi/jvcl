@@ -473,23 +473,24 @@ procedure TJvDockInfoTree.CreateZoneAndAddInfoFromAppStorage;
 var
   FormList: TStringList;
   cp, cp1: PChar;
-  S: string;
+  S, APath: string;
   I: Integer;
 
   procedure CreateZoneAndAddInfo(Index: Integer);
   var
     I: Integer;
     TreeZone: TJvDockInfoZone;
-    OldPath: string;
+    APath, OldPath: string;
   begin
-    if FAppStorage.PathExists(FAppStorage.ConcatPaths([AppStoragePath,'Forms', FormList[Index]])) then
+    APath := FAppStorage.ConcatPaths([AppStoragePath,'Forms', FormList[Index]]);
+    if FAppStorage.PathExists(APath) then
     begin
       TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
       with TreeZone, FAppStorage do
       begin
         try
           OldPath := Path;
-          Path := AppStorage.ConcatPaths([OldPath,AppStoragePath,'Forms', FormList[Index]]);
+          Path := APath;
           DockFormName := FormList[Index];
           ParentName := ReadString('ParentName');
           DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
@@ -534,9 +535,10 @@ begin
   FormList := TStringList.Create;
   FJvDockInfoStyle := isJVCLReadInfo;
   try
-    if FAppStorage.ValueStored(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames'])) then
+    APath := FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames']);
+    if FAppStorage.ValueStored(APath) then
     begin
-      S := FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames']));
+      S := FAppStorage.ReadString(APath);
       cp := PChar(S);
       cp1 := StrPos(cp, ';');
       while cp1 <> nil do
@@ -813,7 +815,7 @@ end;
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
-  OldPath: string;
+  APath, OldPath: string;
 begin
   if (FJvDockInfoStyle = isJVCLReadInfo) then
   begin
@@ -830,7 +832,8 @@ begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
       begin
-        WriteString(ConcatPaths([FAppStoragePath, 'Forms', 'FormNames']), ReadString(ConcatPaths([FAppStoragePath, 'Forms', 'FormNames'])) + DockFormName + ';');
+        APath := ConcatPaths([FAppStoragePath, 'Forms', 'FormNames']);
+        WriteString(APath, ReadString(APath) + DockFormName + ';');
         try
           OldPath := Path;
           Path := ConcatPaths([OldPath, FAppStoragePath, 'Forms', DockFormName]);
