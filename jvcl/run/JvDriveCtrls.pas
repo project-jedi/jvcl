@@ -250,7 +250,7 @@ type
     property OnStartDock;
 
   end;
-  TJvDriveChangeError = procedure (Sender:TObject;NewDrive:char) of object;
+  TJvDriveChangeError = procedure (Sender:TObject;var NewDrive:char) of object;
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
     FFileList: TJvFileListBox;
@@ -292,7 +292,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click; override;
-    function DoDriveChangeError(NewDrive:char):boolean;virtual;
+    function DoDriveChangeError(var NewDrive:char):boolean;virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1042,7 +1042,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvDirectoryListBox.DoDriveChangeError(NewDrive: char): boolean;
+function TJvDirectoryListBox.DoDriveChangeError(var NewDrive: char): boolean;
 begin
   Result := Assigned(FOnDriveChangeError);
   if Result then
@@ -1066,7 +1066,10 @@ begin
           if not DoDriveChangeError(NewDrive) then
             raise
           else
+          begin
+            DriveChange(NewDrive);
             Exit;
+          end;
         end;
         GetDir(0, FDirectory); { store correct directory name }
         GetVolumeInformation(PChar(NewDrive + ':\'), nil, 0, nil, MLength, VolFlags, nil, 0);
