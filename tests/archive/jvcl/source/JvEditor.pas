@@ -188,7 +188,7 @@ uses
 const
   Max_X = 1024; {max symbols per row}
   Max_X_Scroll = 256;
-  {max symbols per row for scrollbar - max кол-во символов в строке для прокрутки}
+  {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
   WM_EDITCOMMAND = WM_USER + $101;
