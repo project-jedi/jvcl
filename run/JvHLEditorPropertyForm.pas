@@ -564,7 +564,7 @@ begin
   FColorSamples := TStringList.Create;
   cbColorSettings.Clear;
   for hl:=Low(TJvHighlighter) to Pred(High(TJvHighLighter)) do
-    cbColorSettings.AddItem(HighlighterNames[hl], nil);
+    cbColorSettings.Items.AddObject(HighlighterNames[hl], nil);
 end;
 
 destructor TJvHLEditorParamsForm.Destroy;
