@@ -296,7 +296,7 @@ implementation
 uses
   {$IFDEF COMPILER5}
   Forms,
-  JvResources,
+  JvResources;
   {$ELSE}
   Forms;
   {$ENDIF COMPILER5}
