@@ -197,7 +197,7 @@ Clean:
 ################################################################################
 Installer:
 	@echo [Compiling: Installer]
-	$(MAKE) -f makefile.mak "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile >NUL
+	$(MAKE) "-DCFG=..\..\install\JVCLInstall\JVCLInstall.cfg" configfile >NUL
 	@cd ..\..\install\JVCLInstall
 	#
 	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
