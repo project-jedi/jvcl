@@ -1,11 +1,6 @@
 ##Package: Custom
 ##Status: Needs review
 ##Skip: TItemRowSizing
-##Skip: TJvInspAsFloat
-##Skip: TJvInspAsInt64
-##Skip: TJvInspAsMethod
-##Skip: TJvInspAsSet
-##Skip: TJvInspAsString
 ##Skip: TJvInspectorDataInstances
 ##Skip: TJvInspectorItemInstances
 ----------------------------------------------------------------------------------------------------
@@ -51,6 +46,7 @@ Description
   TJvCustomInspectorRegItem class or one of it's descendants.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlag
+<TITLE TInspectorClassFlag type>
 Summary
   Flags used for class type inspector items.
 Description
@@ -61,9 +57,11 @@ Description
   Show the class name, instead of the default component name.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorClassFlags
+<TITLE TInspectorClassFlags type>
 <COMBINE TInspectorClassFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorComponentFlag
+<TITLE TInspectorComponentFlag type>
 Summary
   Flags used for the TComponent type inspector items.
 Description
@@ -80,9 +78,11 @@ Description
   Indicates wether the first owner in the list should stay the first after sorting.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorComponentFlags
+<TITLE TInspectorComponentFlags type>
 <COMBINE TInspectorComponentFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorCompoundItemFlag
+<TITLE TInspectorCompoundItemFlag type>
 Summary
   Flags used for the compound inspector items.
 Description
@@ -93,9 +93,10 @@ TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
   Indicates the item's name in single name mode is obtained from the DisplayName of the item associated
   with the first column.
 @@TInspectorCompoundItemFlag.icifSingleNameUseFirstCol
-    Description for icifSingleNameUseFirstCol
+  Description for icifSingleNameUseFirstCol
 ----------------------------------------------------------------------------------------------------
 @@TInspectorCompoundItemFlags
+<TITLE TInspectorCompoundItemFlags type>
 <COMBINE TInspectorCompoundItemFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorDataEvent
@@ -137,6 +138,7 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlag
+<TITLE TInspectorItemFlag type>
 Summary
   Item flags
 Description
@@ -178,6 +180,7 @@ Description
   editing but the value should not be directly editable.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemFlags
+<TITLE TInspectorItemFlags type>
 <COMBINE TInspectorItemFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemGetValueListEvent
@@ -189,6 +192,7 @@ Description
 <COMBINE TJvCustomInspectorItem.OnCompare>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorItemSortKind
+<TITLE TInspectorItemSortKind type>
 Summary
   The sort types.
 Description
@@ -204,6 +208,7 @@ Description
   Items are sorted using an OnCompare event to dermine the order.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorPaintRect
+<TITLE TInspectorPaintRect type>
 Summary
   Specific paint rectangle
 Description
@@ -251,6 +256,7 @@ Description
   Sixth user rectangle. Usage depends on the individual item types.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorSetFlag
+<TITLE TInspectorSetFlag type>
 Summary
   Set item flags.
 Description
@@ -261,9 +267,11 @@ Description
   Indicates that for each item in the set, a member item is created as a boolean value.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorSetFlags
+<TITLE TInspectorSetFlags type>
 <COMBINE TInspectorSetFlag>
 ----------------------------------------------------------------------------------------------------
 @@TInspectorTMethodFlag
+<TITLE TInspectorTMethodFlag type>
 Summary
   Flags used for the TMethod (event) type inspector items.
 Description
@@ -280,10 +288,10 @@ Description
   Indicates wether the first instance in the list should stay the first after sorting.
 ----------------------------------------------------------------------------------------------------
 @@TInspectorTMethodFlags
+<TITLE TInspectorTMethodFlags type>
 <COMBINE TInspectorTMethodFlag>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector
-<TITLEIMG TJvCustomInspector>
 Summary
   Base inspector control.
 Description
@@ -291,8 +299,20 @@ Description
   never create an instance of this class, but rather one of the
   descendants.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomInspector.AddComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComponent  - Description for this parameter
+  DisplayName - Description for this parameter
+  Expanded    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.AfterDataCreate
-<COMBINEWITH TInspectorDataEvent>
 Summary
   Event called when the data instance has been created
 Description
@@ -303,12 +323,11 @@ Parameters
   Data -     The data instance belonging to the event
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.AfterItemCreate
-<COMBINEWITH TInspectorItemEvent>
+Summary
+  Event called when the item has been created.
 Description
   The AfterItemCreate event is called after the item has been
   constructed.
-Summary
-  Event called when the item has been created.
 Parameters
   Item -     The item that has just been created.
   Sender -   Inspector that fired the event
@@ -348,7 +367,6 @@ See Also
   UseBands
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.BeforeItemCreate
-<COMBINEWITH TInspectorItemBeforeCreateEvent>
 Summary
   Event fired before an item is constructed.
 Description
@@ -363,7 +381,6 @@ Parameters
   ItemClass - The item to be constructed for this data object.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.BeforeSelection
-<COMBINEWITH TInspectorItemBeforeSelectEvent>
 Summary
   Event fired before an item is selected.
 Description
@@ -406,11 +423,11 @@ Description
   addition it will return the rectangle for that item. If the specified position
   has no item, the function will return -1 and the Rect parameter will be
   undefined.
-Parameters:
+Parameters
   X - X-position to check
   Y - Y-position to check
   Rect - Rectangle of item found. If no item was found, Rect will be undefined.
-Returns
+Return value
   Index of the item found at the given position or -1 if no item is displayed at
   the given position.
 ----------------------------------------------------------------------------------------------------
@@ -423,6 +440,8 @@ Description
   <CODE>
     ItemRect := Item.Rects[iprItem];
   </CODE>
+Parameters
+  Item - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspector.Clear
 Summary
@@ -715,6 +734,8 @@ Description
 
   The sort requests are handled when EndUpdate is called and the lock count
   reaches 0.
+Parameters
+  Item - Description for this parameter
 See Also
   BeginUpdate, EndUpdate, SortNotificationList, RemoveNotifySort,
   TJvCustomInspectorItem.Sort
@@ -883,6 +904,8 @@ Summary
 Description
   RemoveNotifySort removes the specified item from the list of sort requests. If
   the item does not exist, RemoveNotifySort does nothing.
+Parameters
+  Item - Description for this parameter
 Note:  
   This method is usually called by the destructor of an item.
 See Also
@@ -1050,6 +1073,8 @@ Description
   the item is not displayed at all (ie. the parent is not expanded or visible or
   the item is hidden or not visible) the function will return -1. Otherwise it's
   a 0-based index into the VisibleItems property.
+Parameters
+  AItem - Description for this parameter
 See Also
   VisibleItems
 ----------------------------------------------------------------------------------------------------
@@ -1195,6 +1220,8 @@ Summary
 Description
   DoneEdits will iterate over all inspector items and call their
   <LINK TJvCustomInspectorItem.DoneEdit, DoneEdit> method.
+Parameters
+  CancelEdits - Description for this parameter
 See Also
   InitEdits
 ----------------------------------------------------------------------------------------------------
@@ -1410,6 +1437,8 @@ Summary
   Detaches an item from the data instance.
 Description
   RemoveItem will remove the specified item from the list of attached items for this data layer.
+Parameters
+  Item - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorData.SetAsSet
 Summary
@@ -1478,8 +1507,8 @@ Description
   insertion.
 Parameters
   Item  - \Item to add.
-  Data  - \Data instance to add. It is assumed the data instance already has an
-          item assigned to it.
+##  Data  - \Data instance to add. It is assumed the data instance already has an
+##          item assigned to it.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.AlphaSort
 Summary
@@ -1725,6 +1754,8 @@ Description
 
   If no handler is assigned, the method will return <B>0</B>. Otherwise the
   result of the OnCompare handler is returned.
+Parameters
+  Item - Description for this parameter
 See Also
   OnCompare, DataSort, SortKind
 ----------------------------------------------------------------------------------------------------
@@ -1750,6 +1781,9 @@ Description
 
   DoDropDownKeys is called from Edit_WndProc when the item has a value list
   and a key has been pressed.
+Parameters
+  Key   - Description for this parameter
+  Shift - Description for this parameter
 See Also
   CloseUp, DropDown, Edit_WndProc, TInspectorItemFlag.iifValueList
 ----------------------------------------------------------------------------------------------------
@@ -2005,6 +2039,8 @@ Description
   Edit_WndProc is a replacement window procedure for the edit control. The
   handler will reroute key messages to the DoDropDownKeys method and if the
   list is dropped down, also to the list box.
+Parameters
+  Message - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Expanded
 Summary
@@ -2158,8 +2194,8 @@ Parameters
   Index - 0-based index at which to insert. The new item will be inserted before
           the specified index.
   Item  - Item to insert.
-  Data  - \Data instance to insert. It is assumed the data instance already has an
-          item assigned to it.
+##  Data  - \Data instance to insert. It is assumed the data instance already has an
+##          item assigned to it.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.Inspector
 Summary
@@ -2361,7 +2397,6 @@ See Also
   SortKind, Items
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.OnCompare
-<COMBINEWITH TInspectorItemSortCompare>
 Summary
   Event to compare items for sorting purposes.
 Description
@@ -2375,13 +2410,12 @@ See Also
   SortKind
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomInspectorItem.OnGetValueList
-<COMBINEWITH TInspectorItemGetValueListEvent>
 Summary
   Event to retrieve a value list.
 Description
   OnGetValueList is the event that is called when the GetValueList is called.
 Parameters
-  Sender    - The item requesting the value list.
+  Item     - The item requesting the value list.
   Values    - TStrings instance to receive the value list. If you assign objects
               to the values, they will not be freed when the list is freed.
 ----------------------------------------------------------------------------------------------------
@@ -2710,7 +2744,86 @@ Description
 Parameters
   ADataObj - Data layer instance use for comparison
 ----------------------------------------------------------------------------------------------------
+@@TJvInspAsFloat
+<TITLE TJvInspAsFloat type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorEventData.OnGetAsFloat
+    TJvInspectorEventData.OnSetAsFloat
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspAsInt64
+<TITLE TJvInspAsInt64 type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorEventData.OnGetAsInt64
+    TJvInspectorEventData.OnGetAsOrdinal
+    TJvInspectorEventData.OnSetAsInt64
+    TJvInspectorEventData.OnSetAsOrdinal
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspAsMethod
+<TITLE TJvInspAsMethod type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorEventData.OnGetAsMethod
+    TJvInspectorEventData.OnSetAsMethod
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspAsSet
+<TITLE TJvInspAsSet type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorEventData.OnGetAsSet
+    TJvInspectorEventData.OnSetAsSet
+Parameters
+  Sender  - Description for this parameter
+  Value   - Description for this parameter
+  BufSize - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvInspAsString
+<TITLE TJvInspAsString type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference):
+    TJvInspectorEventData.OnGetAsString
+    TJvInspectorEventData.OnSetAsString
+Parameters
+  Sender - Description for this parameter
+  Value  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvInspConfKeyEvent
+<TITLE TJvInspConfKeyEvent type>
 Summary
   Event generated before a configuration key is added.
 Description
@@ -2726,6 +2839,7 @@ Parameters
   Allow -       Initially set to True. Set it to False to prevent this key from being added.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspConfSectionEvent
+<TITLE TJvInspConfSectionEvent type>
 Summary
   Event generated before a configuration section is added.
 Description
@@ -2739,7 +2853,7 @@ Parameters
   Parse -       Initially set to True. Set it to False to prevent this section from being added.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspector
-<TITLEIMG TJvCustomInspector>
+<TITLEIMG TJvInspector>
 JVCLInfo
   GROUP=JVCL.EditsMemosAndCombos.Other
   FLAG=Component
@@ -2787,6 +2901,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorBorlandPainter
 <TITLEIMG TJvInspectorBorlandPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Inspector painter class for Borland style.
 Description
@@ -3367,7 +3484,7 @@ Description
   calculate the edit based rectangles.
 Parameters
   RectKind - The rectangle kind to set.
-  Rect - The rectangle to divide.
+  Value    - The rectangle to divide.
 See Also
   TJvInspectorCompoundColumn.Width, TJvCustomInspector.Painter,
   TJvInspectorPainter.CalcEditBasedRects
@@ -3565,6 +3682,8 @@ Description
   Descendants should override this method to write the value to the
   configuration file/settings database at the location represented by the
   Section/Key pair.
+Parameters
+  Value - Description for this parameter
 See Also
   Key, Section, ReadValue
 ----------------------------------------------------------------------------------------------------
@@ -3955,7 +4074,6 @@ Parameters
   AName -       Name of the data instance.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnGetAsFloat
-<COMBINEWITH TJvInspAsFloat>
 Summary
   Event called when data needs to be read as a float.
 Description
@@ -3965,7 +4083,6 @@ Parameters
   Value - Set this parameter to the value the instance represents.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnGetAsInt64
-<COMBINEWITH TJvInspAsInt64>
 Summary
   Event called when data needs to be read as a 64-bit integer.
 Description
@@ -3975,7 +4092,6 @@ Parameters
   Value - Set this parameter to the value the instance represents.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnGetAsMethod
-<COMBINEWITH TJvInspAsMethod>
 Summary
   Event called when data needs to be read as a method pointer.
 Description
@@ -3985,7 +4101,6 @@ Parameters
   Value - Set this parameter to the value the instance represents.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnGetAsOrdinal
-<COMBINEWITH TJvInspAsInt64>
 Summary
   Event called when data needs to be read as an integer value.
 Description
@@ -3997,7 +4112,6 @@ Parameters
   Value - Set this parameter to the value the instance represents.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnGetAsSet
-<COMBINEWITH TJvInspAsSet>
 Summary
   Event called when data needs to be read as a set.
 Description
@@ -4029,7 +4143,6 @@ Parameters
   Value - The new value to assign.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnSetAsInt64
-<COMBINEWITH TJvInspAsInt64>
 Summary
   Event called when data needs to be written as a 64-bit integer.
 Description
@@ -4039,7 +4152,6 @@ Parameters
   Value - The new value to assign.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnSetAsMethod
-<COMBINEWITH TJvInspAsMethod>
 Summary
   Event called when data needs to be written as a method pointer.
 Description
@@ -4049,7 +4161,6 @@ Parameters
   Value - The new value to assign.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnSetAsOrdinal
-<COMBINEWITH TJvInspAsInt64>
 Summary
   Event called when data needs to be written as an integer value.
 Description
@@ -4060,7 +4171,6 @@ Parameters
   Value - The new value to assign.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnSetAsSet
-<COMBINEWITH TJvInspAsSet>
 Summary
   Event called when data needs to be written as a set.
 Description
@@ -4071,7 +4181,6 @@ Parameters
   BufSize - The number of bytes the buffer contains.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorEventData.OnSetAsString
-<COMBINEWITH TJvInspAsString>
 Summary
   Event called when data needs to be written as a string.
 Description
@@ -4179,12 +4288,12 @@ Parameters
   AKey - Key within the section of the configuration file/settings database.
   ATypeInfo - Type info pointer to use.
   AINIFile - TCustomIniFile derivative to be used as a data source.
-  OnAddSection - Event that will be called before a section is about to be
-                  parsed. If no event is supplied, all sections are parsed,
-                  leaving the section name as the category name.
-  OnAddKey - Event that will be called before a key is added. If no event is
-              supplied, all keys are added, leaving the key name as the display
-              name and the type info pointer set to string.
+  AOnAddSection - Event that will be called before a section is about to be
+                   parsed. If no event is supplied, all sections are parsed,
+                   leaving the section name as the category name.
+  AOnAddKey - Event that will be called before a key is added. If no event is
+               supplied, all keys are added, leaving the key name as the display
+               name and the type info pointer set to string.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@TCustomIniFile@TJvInspConfKeyEvent
 <COMBINE TJvInspectorINIFileData.New@TJvCustomInspectorItem@string@string@string@PTypeInfo@TCustomIniFile>
@@ -4274,7 +4383,6 @@ Description
   </TABLE>
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorPainter
-<TITLEIMG TJvInspectorPainter>
 Summary
   Base inspector painter class.
 Description
@@ -4481,6 +4589,8 @@ Description
   GetNameHeight will apply the name font and determine the TextHeight of 'Wy'.
   This result will be returned and the canvas is restored to it's original
   state.
+Parameters
+  AItem - Description for this parameter
 See Also
   ApplyNameFont, GetValueHeight
 ----------------------------------------------------------------------------------------------------
@@ -4491,6 +4601,8 @@ Description
   GetValueHeight will apply the value font and determine the TextHeight of 'Wy'.
   This result will be returned and the canvas is restored to it's original
   state.
+Parameters
+  AItem - Description for this parameter
 See Also
   ApplyValueFont, GetNameHeight
 ----------------------------------------------------------------------------------------------------
@@ -4703,6 +4815,8 @@ Description
   SetInspector attaches the painter to the specified inspector. If the
   inspector's Painter property is not set to this painter, an exception will be
   raised.
+Parameters
+  AInspector - Description for this parameter
 See Also
   TJvCustomInspector.Painter
 ----------------------------------------------------------------------------------------------------
@@ -4718,6 +4832,8 @@ Description
 
   Descendants can override this method to do additional initialization if
   needed.
+Parameters
+  ACanvas - Description for this parameter
 See Also
   BackgroundColor, Canvas, TJvCustomInspector.Paint
 ----------------------------------------------------------------------------------------------------
@@ -4833,6 +4949,7 @@ Parameters
   PropInfos -     Pointer to a property list. Such a list can be obtained by
                   calling GetPropList.
   PropCount -     Number of properties in the list at PropInfos.
+  PropName  - Description for this parameter
 See Also
   NewByNames
 ----------------------------------------------------------------------------------------------------
@@ -5022,6 +5139,8 @@ Description
   Delete removes a registration item from the registration database.
 Parameters
   RegItem - Registration item to remove.
+  ItemClass - Description for this parameter
+  Index - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TJvInspectorRegister.Delete@TJvCustomInspectorRegItem
 <COMBINE TJvInspectorRegister.Delete@Integer>
@@ -5058,6 +5177,7 @@ Description
   other overloaded functions with the same name.
 Parameters
   RegItem - Description for this parameter
+  ItemClass - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -5815,8 +5935,8 @@ Parameters
   AParent -       The parent to which this data should be added.
   AAddress -      The address where the data is located. Alternatively you could
                   use the overloaded version where you can specify a variable.
-  AVar -          The variable that holds the data. Alternatively you could use
-                  the overloaded version where you can specify an address.
+##  AVar -          The variable that holds the data. Alternatively you could use
+##                  the overloaded version where you can specify an address.
 ----------------------------------------------------------------------------------------------------
 @@TJvInspSupportsMethodPointers
 <TITLE TJvInspSupportsMethodPointers type>

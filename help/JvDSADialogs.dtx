@@ -23,6 +23,7 @@ Author
 <ALIAS TDSACheckTextKind>
 ----------------------------------------------------------------------------------------------------
 @@DSACount
+<TITLE DSACount function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -34,6 +35,7 @@ See Also
   DSAItem, RegisterDSA, UnregisterDSA
 ----------------------------------------------------------------------------------------------------
 @@DSAItem
+<TITLE DSAItem function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -48,6 +50,7 @@ See Also
   DSACount, RegisterDSA, UnregisterDSA
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlg@integer@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<TITLE DSAMessageDlg function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -84,6 +87,8 @@ Parameters
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
                   shown.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 Result
   Returns the modal result of the displayed dialog or the last result if the dialog was suppressed.
 Note
@@ -98,6 +103,7 @@ See Also
 <COMBINE DSAMessageDlg@integer@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlgEx@integer@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<TITLE DSAMessageDlgEx function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -126,6 +132,8 @@ Parameters
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
                   shown.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 Result
   Returns the modal result of the displayed dialog or the last result if the dialog was suppressed.
 Note
@@ -140,6 +148,7 @@ See Also
 <COMBINE DSAMessageDlgEx@integer@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@DSARegStore
+<TITLE DSARegStore function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -152,6 +161,7 @@ See Also
   TDSARegStorage
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessage
+<TITLE DSAShowMessage procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -165,10 +175,13 @@ Parameters
   Msg -     Contains the message to display.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
             you can specify to center on the main form or the active form.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 See Also
   ShowMessage, DSAShowMessageFmt
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessageFmt
+<TITLE DSAShowMessageFmt procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -183,6 +196,8 @@ Parameters
   Params -  Parameters to use for formatting.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
             you can specify to center on the main form or the active form.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 See Also
   ShowMessageFmt, DSAShowMessage
 ----------------------------------------------------------------------------------------------------
@@ -194,6 +209,7 @@ Description
   component.
 ----------------------------------------------------------------------------------------------------
 @@GetDSACheckMarkText
+<TITLE GetDSACheckMarkText function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -202,10 +218,13 @@ Summary
 Description
   GetDSACheckMarkText will locate and return the check mark text for the given ID. If the specified
   ID is not registered, an empty string will be returned.
+Parameters
+  ID - Description for this parameter
 See Also
   RegisterDSACheckMarkText, UnregisterDSACheckMarkText
 ----------------------------------------------------------------------------------------------------
 @@GetDSAState@integer
+<TITLE GetDSAState function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -227,6 +246,7 @@ See Also
 <COMBINE GetDSAState@integer>
 ----------------------------------------------------------------------------------------------------
 @@LocateDSAReg
+<TITLE LocateDSAReg function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -235,6 +255,8 @@ Summary
 Description
   LocateDSAReg will search the DSA registration database for the given dialog and return it's
   registration info record. If the specified dialog is not registered, EmptyItem will be returned.
+Parameters
+  DlgID - Description for this parameter
 See Also
   RegisterDSA, UnregisterDSA
 ----------------------------------------------------------------------------------------------------
@@ -259,6 +281,7 @@ See Also
   mbDefault
 ----------------------------------------------------------------------------------------------------
 @@MessageDlg@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
+<TITLE MessageDlg function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -294,6 +317,8 @@ Parameters
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image should be
                   shown.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 Result
   Returns the modal result of the displayed dialog.
 Note
@@ -308,6 +333,7 @@ See Also
 <COMBINE MessageDlg@string@string@TGraphic@TMsgDlgButtons@longint@TDlgCenterKind@integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@MessageDlgEx@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine
+<TITLE MessageDlgEx function>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -339,6 +365,8 @@ Parameters
   Caption -       The caption of the dialog.
   Picture -       A TGraphic descendant of the image to show or <B>nil</B> if no image
                   should be shown.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 Result
   Returns the modal result of the displayed dialog.
 Note
@@ -354,6 +382,7 @@ See Also
 <COMBINE MessageDlgEx@string@string@TGraphic@string@integer@longint@TDlgCenterKind@integer@integer@integer@integer@TJvDynControlEngine>
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSA
+<TITLE RegisterDSA procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -378,6 +407,7 @@ See Also
   UnregisterDSA
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSACheckMarkText
+<TITLE RegisterDSACheckMarkText procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -386,10 +416,14 @@ Summary
 Description
   RegisterDSACheckMarkText allows you to register additional check mark texts. When registering a
   DSA dialog you can optionally define the check mark text to use for the dialog.
+Parameters
+  ID   - Description for this parameter
+  Text - Description for this parameter
 See Also
   TDSACheckTextKind, UnregisterDSACheckMarkText
 ----------------------------------------------------------------------------------------------------
 @@SetDSAState
+<TITLE SetDSAState procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -408,6 +442,7 @@ See Also
   GetDSAState
 ----------------------------------------------------------------------------------------------------
 @@ShowMessage
+<TITLE ShowMessage procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -420,10 +455,13 @@ Parameters
   Msg -     Contains the message to display.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
             you can specify to center on the main form or the active form.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 See Also
   DSAShowMessage, ShowMessageFmt
 ----------------------------------------------------------------------------------------------------
 @@ShowMessageFmt
+<TITLE ShowMessageFmt procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -437,10 +475,13 @@ Parameters
   Params -  Parameters to use for formatting.
   Center -  Indicates how the dialog is to be centered. The default is to center on the screen, but
             you can specify to center on the main form or the active form.
+  Timeout           - Description for this parameter
+  ADynControlEngine - Description for this parameter
 See Also
   DSAShowMessageFmt, ShowMessage
 ----------------------------------------------------------------------------------------------------
 @@TDlgCenterKind
+<TITLE TDlgCenterKind type>
 Summary
   Type to indicate the way a dialog should be centered.
 Description
@@ -454,6 +495,7 @@ Description
   Center the dialog on the active form.
 ----------------------------------------------------------------------------------------------------
 @@TDSACheckTextKind
+<TITLE TDSACheckTextKind type>
 Summary
   ID of check mark text.
 Description
@@ -471,6 +513,7 @@ See Also
   RegisterDSACheckMarkText, UnregisterDSACheckMarkText
 ----------------------------------------------------------------------------------------------------
 @@TDSARegItem
+<TITLE TDSARegItem type>
 Summary
   Type used to hold DSA registration information.
 Description
@@ -1021,7 +1064,6 @@ See Also
   CheckControl
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnApplyKeys
-<COMBINEWITH TJvDSADataEvent>
 Summary
   Occurs when the DSA state is read in from the DSA storage.
 Description
@@ -1058,7 +1100,6 @@ See Also
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnUpdateKeys
-<COMBINEWITH TJvDSADataEvent>
 Summary
   Occurs when the DSA state is written to the DSA storage.
 Description
@@ -1134,6 +1175,7 @@ See Also
   ApplySavedState, OnUpdateKeys
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSA
+<TITLE UnregisterDSA procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -1151,6 +1193,7 @@ See Also
   RegisterDSA
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSACheckMarkText
+<TITLE UnregisterDSACheckMarkText procedure>
 JVCLInfo
   GROUP=JVCL.Dialogs.Custom
   FLAG=Routine,NotInParentList
@@ -1159,5 +1202,7 @@ Summary
 Description
   UnregisterDSACheckMarkText allows you to remove a check mark text. The registered dialogs are not
   checked and if a dialog was assigned to this check mark text, it will default to ctkShow.
+Parameters
+  ID - Description for this parameter
 See Also
   RegisterDSACheckMarkText, TDSACheckTextKind
