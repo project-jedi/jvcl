@@ -206,64 +206,53 @@ uses
   FileCtrl, TypInfo, Math, Dlgs, Consts,
   JvTypes, JvStringsForm, JvDateTimeForm, JvConsts, JvDsgnConsts;
 
-const
-  cMaxInt    = 'MaxInt';
-  cMinInt    = 'MinInt';
-  cMaxLong   = 'MaxLong';
-  cMinLong   = 'MinLong';
-  cMaxShort  = 'MaxShort';
-  cMinShort  = 'MinShort';
-  cMaxWord   = 'MaxWord';
-  cFilename  = '(Filename)';
-  cDirectory = '(Directory)';
-
 function ValueName(E: Extended): string;
 begin
   if E = High(Integer) then
-    Result := cMaxInt
+    Result := SMaxInt
   else
   if E = Low(Integer) then
-    Result := cMinInt
+    Result := SMinInt
   else
   if E = High(Longint) then
-    Result := cMaxLong
+    Result := SMaxLong
   else
   if E = Low(Longint) then
-    Result := cMinLong
+    Result := SMinLong
   else
   if E = High(ShortInt) then
-    Result := cMaxShort
+    Result := SMaxShort
   else
   if E = Low(ShortInt) then
-    Result := cMinShort
+    Result := SMinShort
   else
   if E = High(Word) then
-    Result := cMaxWord
+    Result := SMaxWord
   else
     Result := '';
 end;
 
 function StrToValue(const S: string): Longint;
 begin
-  if CompareText(S, cMaxLong) = 0 then
+  if CompareText(S, SMaxLong) = 0 then
     Result := High(Longint)
   else
-  if CompareText(S, cMinLong) = 0 then
+  if CompareText(S, SMinLong) = 0 then
     Result := Low(Longint)
   else
-  if CompareText(S, cMaxInt) = 0 then
+  if CompareText(S, SMaxInt) = 0 then
     Result := High(Integer)
   else
-  if CompareText(S, cMinInt) = 0 then
+  if CompareText(S, SMinInt) = 0 then
     Result := Low(Integer)
   else
-  if CompareText(S, cMaxShort) = 0 then
+  if CompareText(S, SMaxShort) = 0 then
     Result := High(Shortint)
   else
-  if CompareText(S, cMinShort) = 0 then
+  if CompareText(S, SMinShort) = 0 then
     Result := Low(Shortint)
   else
-  if CompareText(S, cMaxWord) = 0 then
+  if CompareText(S, SMaxWord) = 0 then
     Result := High(Word)
   else
     Result := 0;
@@ -305,7 +294,7 @@ function TJvFilenameProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := cFilename;
+    Result := SFileName;
 end;
 
 //=== TJvDirectoryProperty ===================================================
@@ -336,7 +325,7 @@ function TJvDirectoryProperty.GetValue: string;
 begin
   Result := inherited GetValue;
   if Result = '' then
-    Result := cDirectory;
+    Result := SDirectory;
 end;
 
 //=== TJvHintProperty ========================================================

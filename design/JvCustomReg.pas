@@ -58,6 +58,12 @@ uses
 {$R ..\resources\JvChart.dcr}
 
 procedure Register;
+const
+  cActivePageIndex = 'ActivePageIndex';
+  cImageIndex = 'ImageIndex';
+  cColors = 'Colors';
+  cSchedule = 'Schedule';
+  cFilter = 'Filter';
 begin
   RegisterComponents(SPaletteButton, [TJvLookOutButton, TJvExpressButton]);
   RegisterComponents(SPaletteEdit, [TJvValidateEdit, TJvEditor, TJvHLEditor,
@@ -73,23 +79,23 @@ begin
     TJvBalloonHint]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
-    'ActivePageIndex', TJvOutlookBarActivePageEditor);
+    cActivePageIndex, TJvOutlookBarActivePageEditor);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages), TJvCustomOutlookBar,
     '', TJvOutlookBarPagesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarButtons), TJvOutlookBarPage,
     '', TJvOutlookBarPagesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(Integer), TJvOutlookBarButton,
-    'ImageIndex', TJvOutlookBarButtonImageIndexProperty);
+    cImageIndex, TJvOutlookBarButtonImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor,
-    'Colors', TJvHLEditorColorProperty);
+    cColors, TJvHLEditorColorProperty);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem,
-    'Schedule', TJvSchedulePropertyEditor);
+    cSchedule, TJvSchedulePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton,
-    'ImageIndex', TJvLookOutImageIndexProperty);
+    cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton,
-    'ImageIndex', TJvLookOutImageIndexProperty);
+    cImageIndex, TJvLookOutImageIndexProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView,
-    'Filter', TFilterProperty);
+    cFilter, TFilterProperty);
 
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
   RegisterComponentEditor(TJvCustomOutlookBar, TJvOutlookBarComponentEditor);

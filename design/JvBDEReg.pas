@@ -51,6 +51,14 @@ uses
 {$R ..\resources\JvBDEReg.dcr}
 
 procedure Register;
+const
+  cTableName = 'TableName';
+  cUsersTableName = 'UsersTableName';
+  cLoginNameField = 'LoginNameField';
+  cDatabaseName = 'DatabaseName';
+  cSessionName = 'SessionName';
+  cSource = 'Source';
+  cDestination = 'Destination';
 begin
   RegisterComponents(SPaletteBDE, [TJvDBFilter, TJvDBIndexCombo,
     TJvDatabaseItems, TJvTableItems,
@@ -59,23 +67,23 @@ begin
     TJvDBMove, TJvDBProgress, TJvQBEQuery, TJvDBSecurity,
     TJvBDEMemoryTable, TJvQuery, TJvBDESQLScript, TJvSQLScript]);
 
-  RegisterPropertyEditor(TypeInfo(TFileName), TJvCustomTableItems, 'TableName',
+  RegisterPropertyEditor(TypeInfo(TFileName), TJvCustomTableItems, cTableName,
     TJvTableNameProperty);
-  RegisterPropertyEditor(TypeInfo(TFileName), TJvDBSecurity, 'UsersTableName',
+  RegisterPropertyEditor(TypeInfo(TFileName), TJvDBSecurity, cUsersTableName,
     TJvUserTableNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity, 'LoginNameField',
+  RegisterPropertyEditor(TypeInfo(string), TJvDBSecurity, cLoginNameField,
     TLoginNameFieldProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvBDESQLScript, 'DatabaseName',
+  RegisterPropertyEditor(TypeInfo(string), TJvBDESQLScript, cDatabaseName,
     TJvDatabaseNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvCustomBDEItems, cSessionName,
     TJvSessionNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvBDESQLScript, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvBDESQLScript, cSessionName,
     TJvSessionNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, 'SessionName',
+  RegisterPropertyEditor(TypeInfo(string), TJvDBProgress, cSessionName,
     TJvSessionNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Source',
+  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, cSource,
     TJvDatabaseNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Destination',
+  RegisterPropertyEditor(TypeInfo(string), TJvDBMove, cDestination,
     TJvDatabaseNameProperty);
 
   RegisterComponentEditor(TJvBDEMemoryTable, TJvBDEMemoryTableEditor);

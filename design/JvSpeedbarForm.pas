@@ -864,11 +864,13 @@ end;
 procedure TJvSpeedbarEditor.ButtonsListDblClick(Sender: TObject);
 const
   {$IFDEF CBUILDER}
-  sSender: string[7] = '*Sender';
+  cSender: string[7] = '*Sender';
   {$ELSE}
-  sSender: string[6] = 'Sender';
+  cSender: string[6] = 'Sender';
   {$ENDIF CBUILDER}
-  sObject: string[7] = 'TObject';
+  cObject: string[7] = 'TObject';
+  cClick = 'Click';
+  cOnClick = 'OnClick';
 type
   PParamData = ^TParamData;
   TParamData = record
@@ -893,17 +895,17 @@ begin
     for I := Candidates.Count - 1 downto 0 do
     begin
       PropInfo := Candidates[I];
-      if CompareText(PropInfo^.Name, 'OnClick') = 0 then
+      if CompareText(PropInfo^.Name, cOnClick) = 0 then
       begin
         Method := GetMethodProp(Btn, PropInfo);
         MethodName := IJvFormDesigner(Designer).GetMethodName(Method);
         if MethodName = '' then
         begin
-          MethodName := Btn.Name + 'Click';
+          MethodName := Btn.Name + cClick;
           Num := 0;
           while IJvFormDesigner(Designer).MethodExists(MethodName) do
           begin
-            MethodName := Btn.Name + 'Click' + IntToStr(Num);
+            MethodName := Btn.Name + cClick + IntToStr(Num);
             Inc(Num);
           end;
           TypeData := AllocMem(SizeOf(TTypeData));
@@ -915,11 +917,11 @@ begin
             begin
               Flags := [];
               // (rom) WARNING! Needs check against buffer overflow.
-              ParamNameAndType[0] := Char(Length(sSender));
-              Move(sSender[1], ParamNameAndType[1], Length(sSender));
-              ParamNameAndType[Length(sSender) + 1] := Char(Length(sObject));
-              Move(sObject[1], ParamNameAndType[Length(sSender) + 2],
-                Length(sObject));
+              ParamNameAndType[0] := Char(Length(cSender));
+              Move(cSender[1], ParamNameAndType[1], Length(cSender));
+              ParamNameAndType[Length(cSender) + 1] := Char(Length(cObject));
+              Move(cObject[1], ParamNameAndType[Length(cSender) + 2],
+                Length(cObject));
             end;
             Method := IJvFormDesigner(Designer).CreateMethod(MethodName, TypeData);
             Method.Data := OwnerForm;
