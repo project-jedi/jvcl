@@ -46,7 +46,7 @@ object FormMain: TFormMain
     ButtonCancel.NumGlyphs = 1
     ButtonCancel.ModalResult = 2
     ButtonCancel.Width = 75
-    ButtonHelp.Caption = '&Hilfe'
+    ButtonHelp.Caption = '&Help'
     ButtonHelp.NumGlyphs = 1
     ButtonHelp.Width = 75
     ShowRouteMap = True
@@ -54,9 +54,6 @@ object FormMain: TFormMain
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
     OnActivePageChanging = JvWizardActivePageChanging
-    DesignSize = (
-      683
-      444)
     object LblHomepage: TLabel
       Left = 8
       Top = 424
