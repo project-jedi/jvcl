@@ -52,7 +52,7 @@ uses
 
   JvQDsgnConsts,
   JvQOfficeColorButton, JvQOfficeColorPanel,
-  {JvQZoom,} JvQBehaviorLabel, JvQArrowButton,
+  JvQZoom, JvQBehaviorLabel, JvQArrowButton,
   JvQaScrollText, JvQScrollPanel, JvQScrollMax,
 
   JvQSpeedBar, JvQSpeedbarSetupForm, JvQSpeedbarForm,
@@ -93,7 +93,7 @@ begin
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
     TJvContentScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock {, TJvZoom}]);
+  RegisterComponents(RsPaletteVisual, [TJvClock , TJvZoom]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint {, TJvRegAuto}]);
   RegisterComponents('HMI Components', [TJvDice, TJvSwitch]);
 

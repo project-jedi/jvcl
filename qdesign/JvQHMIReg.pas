@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -38,9 +37,8 @@ procedure Register;
 
 implementation
 
-// (rom) is this needed?
 {$IFDEF MSWINDOWS}
-{$R ..\Resources/JvHMIReg.dcr}
+{$R ..\Resources\JvHMIReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvHMIReg.dcr}
@@ -49,16 +47,19 @@ implementation
 
 uses
   Classes,
-
+  
   DesignIntf, DesignEditors,
-
+  
   ToolsAPI,
   JvQDsgnConsts,
+  
   JvQLED, JvQDialButton;
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteHMIComponents, [TJvLED, TJvDialButton]);
+  RegisterComponents(RsPaletteHMIComponents, [
+   TJvLED, TJvDialButton]);
+  
 end;
 
 end.
