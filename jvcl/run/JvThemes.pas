@@ -1266,8 +1266,7 @@ end;
 procedure TThemeHook.ExcludeThemeStyle(Style: TThemeStyle);
 begin
   FThemeStyle := FThemeStyle - Style;
-  if (FThemeStyle = []) {or
-     (ThemeHooks.FEraseBkgndHooked and (FThemeStyle = [csParentBackground]))} then
+  if FThemeStyle = [] then
     DeleteHook;
 end;
 
