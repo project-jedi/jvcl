@@ -1493,7 +1493,9 @@ object frmMain: TfrmMain
       Action = actDelete
     end
   end
-  object jaxStore: TJvAppXmlStorage
+  object jaxStore: TJvAppXMLStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     RootNodeName = 'Configuration'
     Left = 732
     Top = 172
