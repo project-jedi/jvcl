@@ -38,7 +38,7 @@ begin
     TJvGradientHeaderPanel, TJvGradient, TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress
     ]);
   RegisterComponents(SPaletteNonVisual,[
-    TJvId3v1, TJvId3v2, TJvWavePlayer
+    TJvID3v1, TJvID3v2, TJvWavePlayer
     ]);
   RegisterComponents(SPaletteSliderSplitter,[
     TJvSlider

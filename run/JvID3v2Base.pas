@@ -1155,9 +1155,9 @@ type
     function GetFrameCountFor(const AFrameID: TJvID3FrameID): Cardinal;
 
     function CopyToID3v1(const DoOverwrite: Boolean = True): Boolean;
-    procedure CopyToID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
-    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean;
-    procedure CopyFromID3v1Ctrl(AID3v1: TJvId3v1; const DoOverwrite: Boolean = True);
+    procedure CopyToID3v1Ctrl(AID3v1: TJvID3v1; const DoOverwrite: Boolean = True);
+    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean; overload;
+    procedure CopyFromID3v1Ctrl(AID3v1: TJvID3v1; const DoOverwrite: Boolean = True);
 
     procedure EnsureExists(const FrameIDs: TJvID3FrameIDs);
 
@@ -3581,12 +3581,12 @@ end;
 function TJvID3Controller.CopyFromID3v1(
   const DoOverwrite: Boolean): Boolean;
 var
-  ID3v1Ctrl: TJvId3v1;
+  ID3v1Ctrl: TJvID3v1;
 begin
   if not Active then
     ID3Error(SID3ControllerNotActive, Self);
 
-  ID3v1Ctrl := TJvId3v1.Create(nil);
+  ID3v1Ctrl := TJvID3v1.Create(nil);
   try
     ID3v1Ctrl.FileName := FileName;
     ID3v1Ctrl.Open;
@@ -3598,7 +3598,7 @@ begin
   end;
 end;
 
-procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvId3v1;
+procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvID3v1;
   const DoOverwrite: Boolean);
 
   function GetFrame(AFrameID: TJvID3FrameID): TJvID3Frame;
@@ -3687,12 +3687,12 @@ end;
 
 function TJvID3Controller.CopyToID3v1(const DoOverwrite: Boolean): Boolean;
 var
-  ID3v1Ctrl: TJvId3v1;
+  ID3v1Ctrl: TJvID3v1;
 begin
   if not Active then
     ID3Error(SID3ControllerNotActive, Self);
 
-  ID3v1Ctrl := TJvId3v1.Create(nil);
+  ID3v1Ctrl := TJvID3v1.Create(nil);
   try
     ID3v1Ctrl.FileName := FileName;
     ID3v1Ctrl.Open;
@@ -3703,7 +3703,7 @@ begin
   end;
 end;
 
-procedure TJvID3Controller.CopyToID3v1Ctrl(AID3v1: TJvId3v1;
+procedure TJvID3Controller.CopyToID3v1Ctrl(AID3v1: TJvID3v1;
   const DoOverwrite: Boolean);
 var
   S: string;

@@ -69,16 +69,16 @@ type
   TOnEnumText = procedure(Sender: TObject; Value: string; Index: Integer) of object;
   TOnEnumUnicodeText = procedure(Sender: TObject; Value: WideString; Index: Integer) of object;
 
-  TJvMruReturnData = record
+  TJvMRUReturnData = record
     case Byte of
       0: (P: Pointer; );
       1: (S: PChar; );
       2: (Ws: PWideChar; );
   end;
-  PJvMruReturnData = ^TJvMruReturnData;
+  PJvMruReturnData = ^TJvMRUReturnData;
   TMRUCount = 0..29;
 
-  TJvMruList = class(TJvComponent)
+  TJvMRUList = class(TJvComponent)
   private
     FUnicodeAvailable: Boolean;
     FUseUnicode: Boolean;
@@ -93,7 +93,7 @@ type
     FOnEnumText: TOnEnumText;
     FOnEnumUnicodeText: TOnEnumUnicodeText;
     FItemIndex: Integer;
-    FItemData: TJvMruReturnData;
+    FItemData: TJvMRUReturnData;
     procedure SetKey(const Value: TJvRegKey);
     procedure SetMax(const Value: TMRUCount);
     function GetSubKey: string;
@@ -244,7 +244,7 @@ var
   FindMruStringW: TFindMruStringW;
   EnumMruListW: TEnumMruList;
 
-constructor TJvMruList.Create(AOwner: TComponent);
+constructor TJvMRUList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FList := 0;
@@ -260,21 +260,21 @@ begin
   Close; // since there is PUBLISHED .Active property - let it control how it will be.
 end;
 
-destructor TJvMruList.Destroy;
+destructor TJvMRUList.Destroy;
 begin
   if FList <> 0 then
     FreeMruList(FList);
   inherited Destroy;
 end;
 
-function TJvMruList.AddData(Value: Pointer; Size: Integer): Boolean;
+function TJvMRUList.AddData(Value: Pointer; Size: Integer): Boolean;
 begin
   Result := False;
   if FList <> 0 then
     Result := AddMruData(FList, Value, Size) <> -1;
 end;
 
-function TJvMruList.AddPChar(Value: string): Boolean;
+function TJvMRUList.AddPChar(Value: string): Boolean;
 begin
   Result := False;
   if FList <> 0 then
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-function TJvMruList.AddUnicodePChar(Value: PWideChar): Boolean;
+function TJvMRUList.AddUnicodePChar(Value: PWideChar): Boolean;
 begin
   NeedUnicode;
   Result := False;
@@ -300,17 +300,17 @@ begin
   end;
 end;
 
-function TJvMruList.AddString(Value: string): Boolean;
+function TJvMRUList.AddString(Value: string): Boolean;
 begin
   Result := AddPchar(PChar(Value));
 end;
 
-function TJvMruList.AddUnicodeString(Value: widestring): Boolean;
+function TJvMRUList.AddUnicodeString(Value: widestring): Boolean;
 begin
   Result := AddUnicodePChar(PWideChar(Value));
 end;
 
-function TJvMruList.DeleteItem(Index: Integer): Boolean;
+function TJvMRUList.DeleteItem(Index: Integer): Boolean;
 begin
   Result := False;
   if FList <> 0 then
@@ -320,7 +320,7 @@ begin
   end;
 end;
 
-function TJvMruList.EnumItems: Boolean;
+function TJvMRUList.EnumItems: Boolean;
 var
   Index: Integer;
 begin
@@ -335,21 +335,21 @@ begin
     Result := True;
 end;
 
-function TJvMruList.FindData(Value: Pointer; Size: Integer): Integer;
+function TJvMRUList.FindData(Value: Pointer; Size: Integer): Integer;
 begin
   Result := -1;
   if FList <> 0 then
     Result := FindMruData(FList, Value, Size, nil);
 end;
 
-function TJvMruList.FindString(Value: string): Integer;
+function TJvMRUList.FindString(Value: string): Integer;
 begin
   Result := -1;
   if FList <> 0 then
     Result := FindMruString(FList, PChar(Value), nil);
 end;
 
-function TJvMruList.FindUnicodeString(Value: widestring): Integer;
+function TJvMRUList.FindUnicodeString(Value: widestring): Integer;
 begin
   NeedUnicode;
   Result := -1;
@@ -357,12 +357,12 @@ begin
     Result := FindMruStringW(FList, PWideChar(Value), nil);
 end;
 
-function TJvMruList.GetItem(Index: Integer): Boolean;
+function TJvMRUList.GetItem(Index: Integer): Boolean;
 begin
   Result := InternalGetItem(Index);
 end;
 
-function TJvMruList.InternalGetItem(Index: Integer; FireEvent: Boolean): Boolean;
+function TJvMRUList.InternalGetItem(Index: Integer; FireEvent: Boolean): Boolean;
 var
   i: Integer;
   P: Pointer;
@@ -445,24 +445,24 @@ begin
   end;
 end;
 
-function TJvMruList.GetItemsCount: Integer;
+function TJvMRUList.GetItemsCount: Integer;
 begin
   Result := 0;
   if FList <> 0 then
     Result := EnumMruList(FList, -1, nil, 0);
 end;
 
-function TJvMruList.GetMostRecentItem: Boolean;
+function TJvMRUList.GetMostRecentItem: Boolean;
 begin
   Result := GetItem(0);
 end;
 
-function TJvMruList.GetSubKey: string;
+function TJvMRUList.GetSubKey: string;
 begin
   Result := string(FSubKey);
 end;
 
-procedure TJvMruList.MoveToTop(const Index: Integer);
+procedure TJvMRUList.MoveToTop(const Index: Integer);
 var
   b: Boolean;
 begin
@@ -483,19 +483,19 @@ begin
     FItemIndex := 0;
 end;
 
-procedure TJvMruList.NeedUnicode;
+procedure TJvMRUList.NeedUnicode;
 begin
   if not UnicodeAvailable then
     raise EMruException.Create(RC_ErrorMRU_Unicode);
 end;
 
-procedure TJvMruList.ReCreateList;
+procedure TJvMRUList.ReCreateList;
 begin
   Close;
   Open;
 end;
 
-procedure TJvMruList.SetItemData(const P: Pointer);
+procedure TJvMRUList.SetItemData(const P: Pointer);
 begin
   if P = FItemData.P then
     Exit;
@@ -504,7 +504,7 @@ begin
   FItemData.P := P;
 end;
 
-procedure TJvMruList.SetKey(const Value: TJvRegKey);
+procedure TJvMRUList.SetKey(const Value: TJvRegKey);
 begin
   if Value <> FKey then
   begin
@@ -513,7 +513,7 @@ begin
   end;
 end;
 
-procedure TJvMruList.SetMax(const Value: TMRUCount);
+procedure TJvMRUList.SetMax(const Value: TMRUCount);
 begin
   if Value <> FMax then
   begin
@@ -522,12 +522,12 @@ begin
   end;
 end;
 
-procedure TJvMruList.SetSubKey(const Value: string);
+procedure TJvMRUList.SetSubKey(const Value: string);
 begin
   SetSubKeyUnicode(WideString(Value));
 end;
 
-procedure TJvMruList.SetSubKeyUnicode(const Value: WideString);
+procedure TJvMRUList.SetSubKeyUnicode(const Value: WideString);
 begin
   if Value <> FSubKey then
   begin
@@ -536,7 +536,7 @@ begin
   end;
 end;
 
-procedure TJvMruList.SetType(const Value: TJvDataType);
+procedure TJvMRUList.SetType(const Value: TJvDataType);
 begin
   if Value <> FType then
   begin
@@ -545,7 +545,7 @@ begin
   end;
 end;
 
-procedure TJvMruList.SetUseUnicode(const Value: Boolean);
+procedure TJvMRUList.SetUseUnicode(const Value: Boolean);
 begin
   if Value then
     NeedUnicode;
@@ -554,7 +554,7 @@ begin
   FUseUnicode := Value;
 end;
 
-procedure TJvMruList.SetWantUnicode(const Value: Boolean);
+procedure TJvMRUList.SetWantUnicode(const Value: Boolean);
 begin
   if FWantUnicode = Value then
     Exit;
@@ -563,7 +563,7 @@ begin
   FUseUnicode := FWantUnicode and FUnicodeAvailable;
 end;
 
-procedure TJvMruList.Close;
+procedure TJvMRUList.Close;
 begin
   if FList <> 0 then
   begin
@@ -575,7 +575,7 @@ begin
   SetItemData(Pointer(nil));
 end;
 
-procedure TJvMruList.Open;
+procedure TJvMRUList.Open;
 var
   FLst: TMruRec;
 begin
@@ -630,7 +630,7 @@ begin
   end;
 end;
 
-function TJvMruList.ItemDataSize: Integer;
+function TJvMRUList.ItemDataSize: Integer;
 // Arioch: Here we rely on undocumemted internal structure
 // that has been used by GetMem/FreeMem for ages!
 // for example see sources for GetMem.Inc in VCL sources
@@ -645,27 +645,27 @@ begin
   Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^);
 end;
 
-procedure TJvMruList.DoEnumText;
+procedure TJvMRUList.DoEnumText;
 begin
   if Assigned(FOnEnumText) then
     FOnEnumText(Self, string(FItemData.S), ItemIndex);
 //    FOnEnumText(Self, S, Index);
 end;
 
-procedure TJvMruList.DoUnicodeEnumText;
+procedure TJvMRUList.DoUnicodeEnumText;
 begin
   if Assigned(FOnEnumUnicodeText) then
     FOnEnumUnicodeText(Self, WideString(FItemData.Ws), FItemIndex);
 //    FOnEnumUnicodeText(Self, S, Index);
 end;
 
-procedure TJvMruList.DoEnumData(DataSize: Integer);
+procedure TJvMRUList.DoEnumData(DataSize: Integer);
 begin
   if Assigned(FOnEnumData) then
     FOnEnumData(Self, FItemData.P, DataSize, FItemIndex);
 end;
 
-function TJvMruList.DeleteKey: Boolean;
+function TJvMRUList.DeleteKey: Boolean;
 begin
   Result := False;
   with TRegistry.Create do
@@ -677,12 +677,12 @@ begin
   end;
 end;
 
-function TJvMruList.GetActive: Boolean;
+function TJvMRUList.GetActive: Boolean;
 begin
   Result := FList <> 0;
 end;
 
-procedure TJvMruList.SetActive(const Value: Boolean);
+procedure TJvMRUList.SetActive(const Value: Boolean);
 begin
   if GetActive <> Value then
   begin

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvId3v2.PAS, released on 2001-02-28.
+The Original Code is: JvID3v2.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -26,13 +26,13 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvId3v2;
+unit JvID3v2;
 
 interface
 
 uses
   Classes, Graphics, Controls,
-  JvId3v2Types, JvID3v2Base, JvConsts;
+  JvID3v2Types, JvID3v2Base, JvConsts;
 
 type
   TJvID3Persistent = class(TPersistent)

@@ -1,4 +1,4 @@
-unit JvCsvData;
+unit JvCSVData;
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,8 +19,8 @@ Last Modified: 2003-07-29 by Warren Postma - New features (Sorting, Indexing, Us
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : TJvCsvDataSet in-memory-dataset component usable by any VCL Data Aware Controls.
-              TJvCsvDataSet appears in the 'Jv Data Access' tab of the Component Pallette.
+description : TJvCSVDataSet in-memory-dataset component usable by any VCL Data Aware Controls.
+              TJvCSVDataSet appears in the 'Jv Data Access' tab of the Component Pallette.
 
 Known Issues:
   May 26, 2003 - Fixed errors handling null date values.
@@ -28,7 +28,7 @@ Known Issues:
                  Booleans are stored internaly as a 16bit WordBool, inside
                  DataSets and the component was reading/writing a 32 bit value,
                  which could caused all kinds of squirrelly things to happen
-                 when the boolean (ftBoolean, csv type '!') was encountered.
+                 when the boolean (ftBoolean, CSV type '!') was encountered.
                  Search for the WordBool to see the changes.
 -----------------------------------------------------------------------------}
 
@@ -45,9 +45,9 @@ Known Issues:
 // before you can link this to any data aware controls!
 //
 //
-// TJvCsvCustomInMemoryDataSet
+// TJvCSVCustomInMemoryDataSet
 //
-// Internally, we first define a TJvCsvCustomInMemoryDataSet a base class.
+// Internally, we first define a TJvCSVCustomInMemoryDataSet a base class.
 // Nothing published.  This exists so you can easily inherit from it
 // and define your own version of the component, and publish whatever
 // properties and methods you wish to publish, and you can hide or
@@ -55,14 +55,14 @@ Known Issues:
 //
 // How To Use:
 // You *must* first set up the important Property
-// called CsvFieldDef which describes the expected fields and their types
+// called CSVFieldDef which describes the expected fields and their types
 // since the CSV file itself contains insufficient information to guess the
 // field types.
 //
 // TODO: Make it default to all string types if no field types
 // are provided.
 //
-// Example CsvFieldDef string:
+// Example CSVFieldDef string:
 //   ABC:$80,DEFG:$140,HIJKLMN:%,OPQRST:@
 //
 //   $ = string (ftString) - also used if no character is given.
@@ -71,7 +71,7 @@ Known Issues:
 //   @ = Ascii datetime value (ftDateTime) as YYYY/MM/DD HH:MM:SS (Component Specific)
 //   # = Hex-Ascii Timestamp (A93F38C9) seconds since Jan 1, 1970 GMT (Component Specific)
 //   ^ = Hex-Ascii Timestamp (A93F38CP) corrected to local timezone (Component Specific)
-//   ! = Boolean Field (0 in csv file=false, not 0 = true, blank = NULL)
+//   ! = Boolean Field (0 in CSV file=false, not 0 = true, blank = NULL)
 //
 // NOTE: YOU SHOULD PROBABLY JUST USE THE BUILT-IN PROPERTY EDITOR (CLICK ...)
 // INSTEAD OF MEMORIZING ALL THIS FIELD TYPE STUFF.
@@ -116,52 +116,52 @@ type
   {$IFNDEF COMPILER6_UP}
   PWordBool = ^WordBool;
   {$ENDIF}
-  EJvCsvDataSetError = class(EDatabaseError);
+  EJvCSVDataSetError = class(EDatabaseError);
     // Subclass DB.EDatabaseError so we can work nicely with existing Delphi apps.
 
-  EJvCsvKeyError = class(EDatabaseError); // Key Uniqueness or Key Problem
+  EJvCSVKeyError = class(EDatabaseError); // Key Uniqueness or Key Problem
 
  {  Special Event Types }
-  TJvCsvOnSpecialData = procedure(Sender: TObject; Index: integer; NonCsvData: string) of object;
+  TJvCSVOnSpecialData = procedure(Sender: TObject; Index: integer; NonCSVData: string) of object;
 
-  TJvCsvOnGetFieldData = procedure(Sender: TObject; UserTag: integer; UserData: Pointer; FieldName: string; var Value:
+  TJvCSVOnGetFieldData = procedure(Sender: TObject; UserTag: integer; UserData: Pointer; FieldName: string; var Value:
     string) of object;
-  TJvCsvOnSetFieldData = procedure(Sender: TObject; UserTag: integer; UserData: Pointer; FieldName: string; Value:
+  TJvCSVOnSetFieldData = procedure(Sender: TObject; UserTag: integer; UserData: Pointer; FieldName: string; Value:
     string) of object;
 
  { SPECIAL TYPES OF  DATABASE COLUMNS FOR THIS COMPONENT }
  { Columns are numeric, text, or one of two kinds of Specially Encoded date/time formats: }
-  TJvCsvColumnFlag = (jcsvNull, jcsvString, jcsvNumeric, jcsvAsciiDateTime, jcsvGMTDateTime, jcsvTZDateTime);
+  TJvCSVColumnFlag = (jCSVNull, jCSVString, jCSVNumeric, jCSVAsciiDateTime, jCSVGMTDateTime, jCSVTZDateTime);
 
  { pointer to special CSV COLUMN }
-  PCsvColumn = ^TJvCsvColumn;
+  PCSVColumn = ^TJvCSVColumn;
 // PFieldDef = ^TFieldDef;
 
-  TJvCsvColumn = record
-    FFlag: TJvCsvColumnFlag; // Column CSV Format Flags
+  TJvCSVColumn = record
+    FFlag: TJvCSVColumnFlag; // Column CSV Format Flags
     FKeyFlag: boolean; // This column is part of the primary key! (new May 2003-WP)
     FPhysical: integer; // Physical Column Ordering
     FFieldDef: TFieldDef; // Associated FieldDef
   end;
 
   { CSV COLUMNS are stored in a TList-Collection }
-  TJvCsvColumns = class(TList)
+  TJvCSVColumns = class(TList)
   public
-    procedure AddColumn(Item: PCsvColumn);
-    function FindByFieldNo(FieldNo: integer): PCsvColumn;
+    procedure AddColumn(Item: PCSVColumn);
+    function FindByFieldNo(FieldNo: integer): PCSVColumn;
     procedure Clear; override;
-    function FindByName(FieldName: string): PCsvColumn;
+    function FindByName(FieldName: string): PCSVColumn;
   end;
 
-  TJvCsvBookmark = record
+  TJvCSVBookmark = record
     flag: TBookmarkFlag;
     data: integer;
   end;
 
     { CSV Data File Row is not very dynamic in this version: }
-  PtrToPtrToCsvRow = ^PCsvRow; // bookmark data = double pointer indirection! Fun fun fun!
-  PCsvRow = ^TJvCsvRow; // a pointer to a record
-  TJvCsvRow = record { this MUST be a record, not a class, and must be a flag data record type }
+  PtrToPtrToCSVRow = ^PCSVRow; // bookmark data = double pointer indirection! Fun fun fun!
+  PCSVRow = ^TJvCSVRow; // a pointer to a record
+  TJvCSVRow = record { this MUST be a record, not a class, and must be a flag data record type }
     fdirty: boolean; // record is dirty (needs to be written to disk)
     columns: integer;
     Index: integer; // FData Index (-1 means not in FData)
@@ -169,7 +169,7 @@ type
       // lookup field beginning, Column Data (column dirty bit+column length) }
     Text: array[0..MAXLINELENGTH] of char; // lookup actual character data.
       // bookmark
-    Bookmark: TJvCsvBookmark;
+    Bookmark: TJvCSVBookmark;
 
       // filter flag;
     filtered: boolean; // row is hidden from view right now.
@@ -178,7 +178,7 @@ type
   end;
 
   { Row collection }
-  TJvCsvRows = class(TList)
+  TJvCSVRows = class(TList)
   protected
     FEnquoteBackslash: boolean;
       // Optional user data (only allocated if used, how efficient is that, eh.)
@@ -193,11 +193,11 @@ type
     procedure SetUserData(Index: integer; Value: Pointer);
 
   public
-    procedure AddRow(const Item: PCsvRow);
-    procedure InsertRow(const position: integer; const Item: PCsvRow);
+    procedure AddRow(const Item: PCSVRow);
+    procedure InsertRow(const position: integer; const Item: PCSVRow);
 
-    procedure AddRowStr(const Item: string); // convert String->TJvCsvRow
-    function GetRowPtr(const RowIndex: integer): PCsvRow;
+    procedure AddRowStr(const Item: string); // convert String->TJvCSVRow
+    function GetRowPtr(const RowIndex: integer): PCSVRow;
     function GetRowStr(const RowIndex: integer): string;
     procedure SetRowStr(const RowIndex: integer; Value: string);
     procedure DeleteRow(const RowIndex: integer);
@@ -211,7 +211,7 @@ type
 
   // Easily Customizeable Dataset descendant our CSV handler and
   // any other variants we create:
-  TJvCsvCustomInMemoryDataSet = class(TDataSet)
+  TJvCSVCustomInMemoryDataSet = class(TDataSet)
 
   protected
     FStoreDefs: boolean;
@@ -219,14 +219,14 @@ type
     FTimeZoneCorrection: integer; // defaults to 0 (none)
     FFileDirty: boolean; // file needs to be written back to disk?
 
-    FCsvFieldDef: string; // Our own "Csv Field Definition String"
-    FCsvKeyDef: string; // CSV Key Definition String. Required if FCsvUniqueKeys is true
-    FCsvKeyCount: integer; // Set by parsing FCsvKeyDef
-    FCsvKeyFields: array of PCsvColumn;
+    FCSVFieldDef: string; // Our own "CSV Field Definition String"
+    FCSVKeyDef: string; // CSV Key Definition String. Required if FCSVUniqueKeys is true
+    FCSVKeyCount: integer; // Set by parsing FCSVKeyDef
+    FCSVKeyFields: array of PCSVColumn;
 
-    FCsvUniqueKeys: boolean;
+    FCSVUniqueKeys: boolean;
       // CSV Key Uniqueness option.  Also requires that all fields that are part of the Unique Key be Non Null.
-    FCsvCaseInsensitiveComparison: boolean;
+    FCSVCaseInsensitiveComparison: boolean;
       // CSV Key Uniqueness and Key Comparisons - case insensitive mode if True, else case sensitive.
 
     FIsFiltered: boolean; // Filter conditions have been set.
@@ -243,28 +243,28 @@ type
     FLoadsFromFile: boolean;
     FHasHeaderRow: boolean;
     FSavesChanges: boolean;
-    FAutoBackupCount: integer; // Keep Last N Copies the Old Csv File, updated before each save?
+    FAutoBackupCount: integer; // Keep Last N Copies the Old CSV File, updated before each save?
     FInsertBlocked: boolean; // internal way to block new records but allows editing of existing ones!
     FPostBlocked: boolean; // internal way to block posting of changes, but allows inserting of new ones!
 
     { data record holder }
-    FCsvColumns: TJvCsvColumns; // Column information
-    FData: TJvCsvRows; // Rows are a Collection of data pointers.
+    FCSVColumns: TJvCSVColumns; // Column information
+    FData: TJvCSVRows; // Rows are a Collection of data pointers.
 
     { temporary holding space only, for a tstringlist of the file contents }
-    FCsvFileAsStrings: TStringlist;
+    FCSVFileAsStrings: TStringlist;
 
     {  event pointers }
-    FOnSpecialData: TJvCsvOnSpecialData;
-    FOnGetFieldData: TJvCsvOnGetFieldData;
+    FOnSpecialData: TJvCSVOnSpecialData;
+    FOnGetFieldData: TJvCSVOnGetFieldData;
       // Helps to allow you to update the contents of your CSV data from some other object in memory.
-    FOnSetFieldData: TJvCsvOnSetFieldData;
+    FOnSetFieldData: TJvCSVOnSetFieldData;
       // Helps to keep some other thing in sync with the contents of a changing CSV file.
 
     //  Internal Use Only Protected Methods
 //    function GetDataFileSize: Integer; virtual;
     function GetActiveRecordBuffer: PChar; virtual;
-    procedure CsvRowInit(RowPtr: PCsvRow);
+    procedure CSVRowInit(RowPtr: PCSVRow);
 
     // New filtering on cursor (GetRecord advances the cursor past
     // any hidden rows using InternalSkipForward).
@@ -273,11 +273,11 @@ type
     procedure InternalClearFileStrings;
     function InternalLoadFileStrings: boolean;
     // Internal methods used by sorting:
-    function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): integer;
-    function InternalCompare(SortColumns: array of PCsvColumn; SortColumnCount: integer; Left, Right: PCsvRow): integer;
+    function InternalFieldCompare(Column: PCSVColumn; Left, Right: PCSVRow): integer;
+    function InternalCompare(SortColumns: array of PCSVColumn; SortColumnCount: integer; Left, Right: PCSVRow): integer;
 
     // key uniqueness needs this:
-    function InternalFindByKey(row: PCsvRow): integer;
+    function InternalFindByKey(row: PCSVRow): integer;
 
     // Each ROW Record has an internal Data pointer (similar to the
     // user-accessible 'Data:Pointer' stored in treeviews, etc)
@@ -293,9 +293,9 @@ type
     function GetCanModify: boolean; override; //already virtual!
 
     // internal calls:
-    procedure ProcessCsvHeaderRow(const header: string);
-    procedure ProcessCsvDataRow(const datarow: string; Index: integer);
-    procedure SetCsvFieldDef(CsvFieldDefs: string);
+    procedure ProcessCSVHeaderRow(const header: string);
+    procedure ProcessCSVDataRow(const datarow: string; Index: integer);
+    procedure SetCSVFieldDef(CSVFieldDefs: string);
 
     { Mandatory VCL TDataSet Overrides - Pure Virtual Methods of Base Class }
     function AllocRecordBuffer: PChar; override;
@@ -340,7 +340,7 @@ type
     { dataset designer calls these }
     procedure DefChanged(Sender: TObject); override;
 
-    // handling functions for enquoting,dequoting string fields in csv files.
+    // handling functions for enquoting,dequoting string fields in CSV files.
     // handles using the default Excel method which is to double the quotes inside
     // quotes.
 
@@ -372,7 +372,7 @@ type
     procedure Refresh;
 
     // A fast row lookup function specific to this CSV table object.
-    function FindByCsvKey(key: string): boolean;
+    function FindByCSVKey(key: string): boolean;
 
     // Sort the table:
     procedure Sort(SortFields: string; Ascending: boolean);
@@ -393,7 +393,7 @@ type
     function GetUserData(recno: integer): Pointer;
     procedure SetUserData(recno: integer; newValue: Pointer);
 
-    function GetCsvHeader: string;
+    function GetCSVHeader: string;
 
     {  Additional Public methods }
     procedure OpenWith(Strings: TStrings); virtual; // does AssignFromStrings then opens table.
@@ -409,7 +409,7 @@ type
     procedure DeleteRows(FromRow, ToRow: integer); // NEW: Quickly zap a bunch of rows:
     procedure ExportRows(FileName: string; FromRow, ToRow: integer); // NEW: Quickly save a bunch of rows:
 
-    procedure ExportCsvFile(const FileName: string); virtual;
+    procedure ExportCSVFile(const FileName: string); virtual;
       // save out to a file. does NOT keep backups! If file exists, it will be
         // overwritten, and NO backups are made!
 
@@ -420,16 +420,16 @@ type
     function GetRowAsString(const Index: integer): string; virtual;
     function GetColumnsAsString: string; virtual;
 
-    function IsKeyUnique: boolean; // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
+    function IsKeyUnique: boolean; // Checks current row's key uniqueness. Note that FCSVKeyDef MUST be set!
 
-    property InternalData: TJvCsvRows read FData write FData;
+    property InternalData: TJvCSVRows read FData write FData;
 
     // NO published properties! This is a base class only!
 
   end;
 
-  // TJvCsvDataSet is just a TJvCsvCustomInMemoryDataSet with all properties and events exposed:
-  TJvCsvDataSet = class(TJvCsvCustomInMemoryDataSet)
+  // TJvCSVDataSet is just a TJvCSVCustomInMemoryDataSet with all properties and events exposed:
+  TJvCSVDataSet = class(TJvCSVCustomInMemoryDataSet)
 
   public
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
@@ -472,25 +472,25 @@ type
 //     property DataFileSize: Integer read GetDataFileSize;
 
      // CSV Table definition properties:
-    property CsvFieldDef: string read FCsvFieldDef write SetCsvFieldDef; // Our own "Csv Field Definition String"
-    property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
-    property CsvUniqueKeys: boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
+    property CSVFieldDef: string read FCSVFieldDef write SetCSVFieldDef; // Our own "CSV Field Definition String"
+    property CSVKeyDef: string read FCSVKeyDef write FCSVKeyDef; // Primary key definition.
+    property CSVUniqueKeys: boolean read FCSVUniqueKeys write FCSVUniqueKeys; // Rows must be unique on the primary key.
     property HasHeaderRow: boolean read FHasHeaderRow write FHasHeaderRow default true;
-    property CaseInsensitive: boolean read FCsvCaseInsensitiveComparison write FCsvCaseInsensitiveComparison;
+    property CaseInsensitive: boolean read FCSVCaseInsensitiveComparison write FCSVCaseInsensitiveComparison;
 
      // Properties for Automatically Loading/Saving CSV file when Active property is set true/false:
     property LoadsFromFile: boolean read FLoadsFromFile write FLoadsFromFile default true;
     property SavesChanges: boolean read FSavesChanges write FSavesChanges default true;
     property AutoBackupCount: integer read FAutoBackupCount write FAutoBackupCount;
-      // >0 means Keep Last N Copies the Old Csv File, updated before each save?
+      // >0 means Keep Last N Copies the Old CSV File, updated before each save?
 
      // Do field definitions "persist"?
      // Ie: do they get stored in DFM Form file along with the component
     property StoreDefs: boolean read FStoreDefs write FStoreDefs default false;
      { Additional Events }
-    property OnSpecialData: TJvCsvOnSpecialData read FOnSpecialData write FOnSpecialData;
-    property OnGetFieldData: TJvCsvOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
-    property OnSetFieldData: TJvCsvOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
+    property OnSpecialData: TJvCSVOnSpecialData read FOnSpecialData write FOnSpecialData;
+    property OnGetFieldData: TJvCSVOnGetFieldData read FOnGetFieldData write FOnGetFieldData;
+    property OnSetFieldData: TJvCSVOnSetFieldData read FOnSetFieldData write FOnSetFieldData;
 
      { value in seconds : to do GMT to EST (ie GMT-5) use value of (-3600*5)
        This is only useful if you use the Hex encoded date-time fields.
@@ -498,7 +498,7 @@ type
     property TimeZoneCorrection: integer read FTimeZoneCorrection write FTimeZoneCorrection default 0;
 
      { If false (default) we use the more normal CSV rendering of quotes, which is to double them in
-       the csv file, but if this property is true, we use backslash-quote to render quotes in the file,
+       the CSV file, but if this property is true, we use backslash-quote to render quotes in the file,
        which has the side-effect of also requiring all backslashes to themself be escaped by a backslash.
        So filenames would have to be in the form "c:\\directory\\names\\like\\c\\programmers\\do\\it".
        Not recommended behaviour, except when absolutely necessary! }
@@ -506,19 +506,19 @@ type
   end;
 
 { CSV String Processing Functions }
-procedure CsvRowToString(RowItem: PCsvRow; var RowString: string);
+procedure CSVRowToString(RowItem: PCSVRow; var RowString: string);
 
 { modified! }
-procedure StringToCsvRow(const RowString: string; RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: boolean);
+procedure StringToCSVRow(const RowString: string; RowItem: PCSVRow; permitEscapeSequences, EnquoteBackslash: boolean);
 
-function CsvRowItemCopy(Source, Dest: PCsvRow; FieldIndex, FieldSize: integer): boolean;
-procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: integer; newValue: string);
-function GetCsvRowItem(pItem: PCsvRow; ColumnIndex: integer): string;
-procedure CsvRowSetDirtyBit(row: PCsvRow; ColumnIndex: integer);
-procedure CsvRowClearDirtyBit(row: PCsvRow; ColumnIndex: integer);
-function CsvRowGetDirtyBit(row: PCsvRow; ColumnIndex: integer): boolean;
-procedure CsvRowSetColumnMarker(row: PCsvRow; ColumnIndex: integer; ColumnMarker: integer);
-function CsvRowGetColumnMarker(row: PCsvRow; ColumnIndex: integer): integer;
+function CSVRowItemCopy(Source, Dest: PCSVRow; FieldIndex, FieldSize: integer): boolean;
+procedure SetCSVRowItem(pItem: PCSVRow; ColumnIndex: integer; newValue: string);
+function GetCSVRowItem(pItem: PCSVRow; ColumnIndex: integer): string;
+procedure CSVRowSetDirtyBit(row: PCSVRow; ColumnIndex: integer);
+procedure CSVRowClearDirtyBit(row: PCSVRow; ColumnIndex: integer);
+function CSVRowGetDirtyBit(row: PCSVRow; ColumnIndex: integer): boolean;
+procedure CSVRowSetColumnMarker(row: PCSVRow; ColumnIndex: integer; ColumnMarker: integer);
+function CSVRowGetColumnMarker(row: PCSVRow; ColumnIndex: integer): integer;
 
 { Date/Time String decoding functions }
 function TimeTHexToDateTime(HexStr: string; TimeZoneCorrection: integer): TDateTime;
@@ -529,17 +529,17 @@ function DateTimeToTimeToIsoAscii(aDateTime: TDateTime): string;
 function DateTimeToTimeTHex(aDateTime: TDateTime; TimeZoneCorrection: integer): string;
 
 { Routine to keep backup copies of old data files around }
-function JvCsvBackupPreviousFiles(FileName: string; MaxFiles: integer): boolean;
+function JvCSVBackupPreviousFiles(FileName: string; MaxFiles: integer): boolean;
 
-//JvCsvWildcardMatch:
+//JvCSVWildcardMatch:
 // Recursive wildcard (%=AnyString, ?=SingleChar) matching function with
 // boolean sub expressions (|=or, &=and).
-function JvCsvWildcardMatch(data, pattern: string): boolean;
+function JvCSVWildcardMatch(data, pattern: string): boolean;
 
 implementation
 
 uses
-  Forms, Controls, JvCsvParse
+  Forms, Controls, JvCSVParse
   {$IFNDEF COMPILER6_UP}
   , JvJVCLUtils, JvJCLUtils
   {$ENDIF}
@@ -548,16 +548,16 @@ uses
 var
   CallCount: integer;
 
-procedure JvCsvDatabaseError(const TableName, Message: string);
+procedure JvCSVDatabaseError(const TableName, Message: string);
 begin
-  OutputDebugString(PChar('JvCsvDatabaseError in ' + TableName + ': ' + Message));
-  raise EJvCsvDataSetError.Create(TableName + ':' + Message);
+  OutputDebugString(PChar('JvCSVDatabaseError in ' + TableName + ': ' + Message));
+  raise EJvCSVDataSetError.Create(TableName + ':' + Message);
 end;
 
     // Each ROW Record has an internal Data pointer (similar to the
     // user-accessible 'Data:Pointer' stored in treeviews, etc)
 
-function TJvCsvCustomInMemoryDataSet.GetRowUserData: Pointer;
+function TJvCSVCustomInMemoryDataSet.GetRowUserData: Pointer;
 var
   recno: integer;
 begin
@@ -565,7 +565,7 @@ begin
   Result := FData.GetUserData(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRowUserData(UserData: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.SetRowUserData(UserData: Pointer);
 var
   recno: integer;
 begin
@@ -573,7 +573,7 @@ begin
   FData.SetUserData(recno, UserData);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRowTag: integer;
+function TJvCSVCustomInMemoryDataSet.GetRowTag: integer;
 var
   recno: integer;
 begin
@@ -581,7 +581,7 @@ begin
   Result := FData.GetUserTag(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRowTag(tagValue: integer);
+procedure TJvCSVCustomInMemoryDataSet.SetRowTag(tagValue: integer);
 var
   recno: integer;
 begin
@@ -599,7 +599,7 @@ begin
   begin
     for t := 0 to Count - 1 do
     begin
-      Result := JvCsvWildcardMatch(data, subPattern[t]);
+      Result := JvCSVWildcardMatch(data, subPattern[t]);
           // If ANY OR TRUE return TRUE;
           // if ANY AND FALSE return FALSE;
       if (boolOp = '|') = Result then
@@ -620,9 +620,9 @@ begin
     Result := true; // ALL of the AND condition were met!
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetAllUserTags(tagValue: integer);
+procedure TJvCSVCustomInMemoryDataSet.SetAllUserTags(tagValue: integer);
 var
-//  row: PCsvRow;
+//  row: PCSVRow;
   t: integer;
 begin
   FData.SetUserTag(FData.Count - 1, tagValue);
@@ -632,9 +632,9 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetAllUserData(data: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.SetAllUserData(data: Pointer);
 var
-//  row: PCsvRow;
+//  row: PCSVRow;
   t: integer;
 begin
   FData.SetUserData(FData.Count - 1, data); // Optimization. Ensures we only call SetLength ONCE!
@@ -644,29 +644,29 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetUserTag(recno: integer): integer;
+function TJvCSVCustomInMemoryDataSet.GetUserTag(recno: integer): integer;
 begin
   Result := FData.GetUserTag(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetUserTag(recno, newValue: integer);
+procedure TJvCSVCustomInMemoryDataSet.SetUserTag(recno, newValue: integer);
 begin
   FData.SetUserTag(recno, newValue);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetUserData(recno: integer): Pointer;
+function TJvCSVCustomInMemoryDataSet.GetUserData(recno: integer): Pointer;
 begin
   Result := FData.GetUserData(recno);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetUserData(recno: integer; newValue: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.SetUserData(recno: integer; newValue: Pointer);
 begin
   FData.SetUserData(recno, newValue);
 end;
 
 // Recursive wildcard matching function
 
-function JvCsvWildcardMatch(data, pattern: string): boolean;
+function JvCSVWildcardMatch(data, pattern: string): boolean;
 var
   t: integer;
   firstwildcard: integer;
@@ -756,7 +756,7 @@ begin
       t := Pos(pattern[patternposition + 1], data);
       while t > 0 do
       begin // possible resync point!
-        Result := JvCsvWildcardMatch(Copy(data, t, Length(data)),
+        Result := JvCSVWildcardMatch(Copy(data, t, Length(data)),
           Copy(pattern, patternposition + 1, patternlength)
           );
         if (Result) then
@@ -794,7 +794,7 @@ begin
   end;
 end;
 
-// NEW: TJvCsvCustomInMemoryDataSet.SetFilter
+// NEW: TJvCSVCustomInMemoryDataSet.SetFilter
 //
 // XXX Simplest possible filtering routine. Not very flexible.
 // XXX Todo: Make this more flexible.
@@ -804,17 +804,17 @@ end;
 // XXX hide rows that the user sets HideRow := true in the event handler.
 // XXX
 
-procedure TJvCsvCustomInMemoryDataSet.SetFilter(FieldName, pattern: string);
+procedure TJvCSVCustomInMemoryDataSet.SetFilter(FieldName, pattern: string);
   // Make Rows Visible Only if they match filterString
 var
   valueLen, t: integer;
-  pRow: PCsvRow;
-  fieldRec: PCsvColumn;
+  pRow: PCSVRow;
+  fieldRec: PCSVColumn;
   FieldIndex: integer;
   fieldValue: string;
 begin
-//  fieldIndex := Self.FCsvColumns.
-  fieldRec := FCsvColumns.FindByName(FieldName);
+//  fieldIndex := Self.FCSVColumns.
+  fieldRec := FCSVColumns.FindByName(FieldName);
   if not Assigned(fieldRec) then Exit;
   FieldIndex := fieldRec^.FPhysical;
   valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
@@ -823,7 +823,7 @@ begin
   // Now check if field value matches given pattern for this row.
   for t := 0 to FData.Count - 1 do
   begin
-    pRow := PCsvRow(FData[t]);
+    pRow := PCSVRow(FData[t]);
     if (not pRow^.filtered) then
     begin
       fieldValue := FData.GetARowItem(t, FieldIndex);
@@ -837,7 +837,7 @@ begin
       else
       begin
         fieldValue := UpperCase(fieldValue);
-        if not JvCsvWildcardMatch(fieldValue, pattern) then // hide row if not same prefix
+        if not JvCSVWildcardMatch(fieldValue, pattern) then // hide row if not same prefix
           pRow^.filtered := true;
       end;
 
@@ -847,14 +847,14 @@ begin
   First; // redisplay controls
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
+procedure TJvCSVCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
 var
   t: integer;
-  pRow: PCsvRow;
+  pRow: PCSVRow;
 begin
   for t := 0 to FData.Count - 1 do
   begin
-    pRow := PCsvRow(FData[t]);
+    pRow := PCSVRow(FData[t]);
     if Assigned(pRow) then
       pRow^.filtered := false; // clear all filter bits.
   end;
@@ -864,23 +864,23 @@ end;
 
 // note that file is not being locked!
 
-{ TJvCsvCustomInMemoryDataSet }
+{ TJvCSVCustomInMemoryDataSet }
 
-constructor TJvCsvCustomInMemoryDataSet.Create(AOwner: TComponent);
+constructor TJvCSVCustomInMemoryDataSet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  // FRecordSize = size of a csv text buffer and the indexes pointing
+  // FRecordSize = size of a CSV text buffer and the indexes pointing
   //               into that buffer:
 
-  FRecordSize := sizeof(TJvCsvRow) - sizeof(TJvCsvBookmark);
+  FRecordSize := sizeof(TJvCSVRow) - sizeof(TJvCSVBookmark);
 
   // FBuffer size includes CSV Text buffer, and the bookmark data, followed
   // by space for storing the binary form of a calculated-field:
 
   // initial FBufferSize size: My theory is that we should pick a conservative
   // estimate plus a margin for error:
-  FBufferSize := sizeof(TJvCsvRow) + 128; {CalcFieldsSize}
+  FBufferSize := sizeof(TJvCSVRow) + 128; {CalcFieldsSize}
   ; // our regular record + calculated field data.
 
   FReadOnly := false;
@@ -891,13 +891,13 @@ begin
   FHasHeaderRow := true;
 
   { Additional initialization }
-  FCsvColumns := TJvCsvColumns.Create;
-  FData := TJvCsvRows.Create;
+  FCSVColumns := TJvCSVColumns.Create;
+  FData := TJvCSVRows.Create;
   FData.EnquoteBackslash := FEnquoteBackslash;
 
 end;
 
-destructor TJvCsvCustomInMemoryDataSet.Destroy;
+destructor TJvCSVCustomInMemoryDataSet.Destroy;
 begin
   InternalClearFileStrings; // delete file strings
 
@@ -906,10 +906,10 @@ begin
 
   except
   end;
-  if Assigned(FCsvColumns) then
+  if Assigned(FCSVColumns) then
   begin
-    FCsvColumns.Clear;
-    FCsvColumns.Free;
+    FCSVColumns.Clear;
+    FCSVColumns.Free;
   end;
   if Assigned(FData) then
   begin
@@ -919,28 +919,28 @@ begin
   inherited Destroy;
 end;
 
-function TJvCsvCustomInMemoryDataSet.AllocRecordBuffer: PChar;
+function TJvCSVCustomInMemoryDataSet.AllocRecordBuffer: PChar;
 var
-  RowPtr: PCsvRow;
+  RowPtr: PCSVRow;
 begin
-  RowPtr := AllocMem(FBufferSize {Sizeof(TJvCsvRow)});
+  RowPtr := AllocMem(FBufferSize {Sizeof(TJvCSVRow)});
 //  Trace('AllocRecordBuffer result=$'+IntToHex(Integer(Pointer(RowPtr)),8));
   Result := PChar(RowPtr);
 end;
 
 { calc fields support }
 
-procedure TJvCsvCustomInMemoryDataSet.ClearCalcFields(Buffer: PChar);
+procedure TJvCSVCustomInMemoryDataSet.ClearCalcFields(Buffer: PChar);
 begin
-     // Assumes that our buffer is a TJvCsvRow followed by
+     // Assumes that our buffer is a TJvCSVRow followed by
      // a dynamically resized buffer used for calculated field
      // storage:
-  FillChar(Buffer[sizeof(TJvCsvRow)], CalcFieldsSize, 0);
+  FillChar(Buffer[sizeof(TJvCSVRow)], CalcFieldsSize, 0);
 end;
 
 { calc fields support and buffer support }
 
-function TJvCsvCustomInMemoryDataSet.GetActiveRecordBuffer: PChar;
+function TJvCSVCustomInMemoryDataSet.GetActiveRecordBuffer: PChar;
 begin
   case State of
     dsBrowse:
@@ -962,22 +962,22 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetCsvFieldDef(CsvFieldDefs: string);
+procedure TJvCSVCustomInMemoryDataSet.SetCSVFieldDef(CSVFieldDefs: string);
 begin
-  if (FCsvFieldDef <> CsvFieldDefs) then
+  if (FCSVFieldDef <> CSVFieldDefs) then
   begin
     CheckInActive;
-    FCsvFieldDef := CsvFieldDefs;
+    FCSVFieldDef := CSVFieldDefs;
     FHeaderRow := '';
     FieldDefs.Clear; // Clear VCL Database field definitions
-    FCsvColumns.Clear; // Clear our own CSV related field data
+    FCSVColumns.Clear; // Clear our own CSV related field data
     FData.Clear; // Clear out data
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.FreeRecordBuffer(var Buffer: PChar);
+procedure TJvCSVCustomInMemoryDataSet.FreeRecordBuffer(var Buffer: PChar);
 //var
-//  RowPtr:PCsvRow;
+//  RowPtr:PCSVRow;
 begin
   //Trace( 'FreeRecordBuffer '+IntToHex(Integer(Buffer),8) );
 // try
@@ -986,30 +986,30 @@ begin
 // except
      //Trace( 'FreeRecordBuffer - Exception freeing '+IntToHex(Integer(Buffer),8) );
 //  end;
-//  //Trace('TJvCsvCustomInMemoryDataSet.FreeRecordBuffer');
+//  //Trace('TJvCSVCustomInMemoryDataSet.FreeRecordBuffer');
 
 end;
 
 { called after the record is allocated }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalInitRecord(Buffer: PChar);
+procedure TJvCSVCustomInMemoryDataSet.InternalInitRecord(Buffer: PChar);
 var
-  RowPtr: PCsvRow;
+  RowPtr: PCSVRow;
 begin
   //Trace( 'InternalInitRecord '+IntToHex(Integer(Buffer),8) );
 
   FillChar(Buffer^, FBufferSize, 0);
-  RowPtr := PCsvRow(Buffer); // Zero out the buffer.
-  CsvRowInit(RowPtr);
+  RowPtr := PCSVRow(Buffer); // Zero out the buffer.
+  CSVRowInit(RowPtr);
 end;
 
-// CsvRowInit
+// CSVRowInit
 //
-// Internal handy dandy function to set up a new csv row.
+// Internal handy dandy function to set up a new CSV row.
 // which is intially full of just commas.
 //
 
-procedure TJvCsvCustomInMemoryDataSet.CsvRowInit(RowPtr: PCsvRow);
+procedure TJvCSVCustomInMemoryDataSet.CSVRowInit(RowPtr: PCSVRow);
 var
   t: integer;
   ColCount: integer;
@@ -1018,9 +1018,9 @@ begin
   RowPtr^.fdirty := false;
   RowPtr^.Bookmark.flag := bfEOF;
   RowPtr^.Bookmark.data := ON_BOF_CRACK; // no index into FData yet.
-  CsvRowSetColumnMarker(RowPtr, {column} 0, {marker value} 0);
+  CSVRowSetColumnMarker(RowPtr, {column} 0, {marker value} 0);
 
-  ColCount := FCsvColumns.Count;
+  ColCount := FCSVColumns.Count;
   if ColCount <= 0 then ColCount := 10;
 
   for t := 1 to ColCount do
@@ -1030,22 +1030,22 @@ begin
     else
       RowPtr^.Text[t - 1] := Chr(0);
     RowPtr^.Text[t] := Chr(0);
-    CsvRowSetColumnMarker(RowPtr, {column} t - 1, {marker value} t - 1);
-    CsvRowSetColumnMarker(RowPtr, {column} t, {marker value} COLUMN_ENDMARKER);
+    CSVRowSetColumnMarker(RowPtr, {column} t - 1, {marker value} t - 1);
+    CSVRowSetColumnMarker(RowPtr, {column} t, {marker value} COLUMN_ENDMARKER);
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.IsKeyUnique: boolean;
-  // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
+function TJvCSVCustomInMemoryDataSet.IsKeyUnique: boolean;
+  // Checks current row's key uniqueness. Note that FCSVKeyDef MUST be set!
 begin
   Result := false; // not yet implemented! XXX
 end;
 
-function TJvCsvCustomInMemoryDataSet.InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: boolean):
+function TJvCSVCustomInMemoryDataSet.InternalSkipFiltered(defaultResult: TGetResult; ForwardBackwardMode: boolean):
   TGetResult;
 var
   LimitReached: boolean;
-  RowPtr: PCsvRow;
+  RowPtr: PCSVRow;
 begin
   Result := defaultResult;
   if (FRecordPos < 0) then
@@ -1054,7 +1054,7 @@ begin
   while not LimitReached do
   begin
     { no skippage required }
-    RowPtr := PCsvRow(FData.GetRowPtr(FRecordPos));
+    RowPtr := PCSVRow(FData.GetRowPtr(FRecordPos));
     if (not RowPtr^.filtered) then
       Exit;
     { skippage ensues }
@@ -1081,10 +1081,10 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
+function TJvCSVCustomInMemoryDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
   DoCheck: boolean): TGetResult;
 var
-  RowPtr: PCsvRow;
+  RowPtr: PCSVRow;
 begin
 
   Buffer[0] := Chr(0);
@@ -1167,7 +1167,7 @@ begin
 
       // default case:
   else
-    JvCsvDatabaseError(FTableName, 'GetMode???');
+    JvCSVDatabaseError(FTableName, 'GetMode???');
   end; {end case}
 
   if Result = grOK then
@@ -1175,8 +1175,8 @@ begin
        //Trace( ' GetRecord FRecordPos='+IntToStr(FRecordPos)+'result=grOk' );
     try
         { get a record into a buffer }
-      RowPtr := PCsvRow(Buffer); // Cast to a Row Data Structure to our own type.
-      Move({source:}FData.GetRowPtr(FRecordPos)^, {dest:} RowPtr^, sizeof(TJvCsvRow));
+      RowPtr := PCSVRow(Buffer); // Cast to a Row Data Structure to our own type.
+      Move({source:}FData.GetRowPtr(FRecordPos)^, {dest:} RowPtr^, sizeof(TJvCSVRow));
       RowPtr^.Bookmark.flag := bfCurrent;
       RowPtr^.Bookmark.data := FRecordPos;
 
@@ -1185,7 +1185,7 @@ begin
       GetCalcFields(Buffer);
 
     except
-      JvCsvDatabaseError(FTableName, 'Problem reading row ' + IntToStr(FRecordPos));
+      JvCSVDatabaseError(FTableName, 'Problem reading row ' + IntToStr(FRecordPos));
     end;
   end
   else
@@ -1196,7 +1196,7 @@ begin
           RowPtr^.bookmark.data := FRecordPos;}
 
     if (Result = grError) and DoCheck then
-      JvCsvDatabaseError(FTableName, 'No records');
+      JvCSVDatabaseError(FTableName, 'No records');
   end;
 
 //    if (Result = grError) then
@@ -1208,7 +1208,7 @@ begin
 
 end;
 
-function TJvCsvCustomInMemoryDataSet._Enquote(strVal: string): string;
+function TJvCSVCustomInMemoryDataSet._Enquote(strVal: string): string;
   // puts whole string in quotes, escapes embedded commas and quote characters!
 var
   s: string;
@@ -1243,26 +1243,26 @@ begin
   Result := s;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecordSize: Word;
+function TJvCSVCustomInMemoryDataSet.GetRecordSize: Word;
 begin
  // In create:
- //    FRecordSize := Sizeof(TJvCsvRow) - Sizeof(TJvCsvBookmark);
+ //    FRecordSize := Sizeof(TJvCSVRow) - Sizeof(TJvCSVBookmark);
   Result := FRecordSize;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetFieldData(Field: TField; Buffer: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.SetFieldData(Field: TField; Buffer: Pointer);
 var
-  RowPtr: PCsvRow;
+  RowPtr: PCSVRow;
   NewVal: string;
   PhysicalLocation: integer;
   pDestination: PChar;
-  CsvColumnData: PCsvColumn;
+  CSVColumnData: PCSVColumn;
   DT: TDateTime;
 begin
 
   //Trace( 'SetFieldData '+Field.FieldName );
   pDestination := GetActiveRecordBuffer;
-  RowPtr := PCsvRow(pDestination);
+  RowPtr := PCSVRow(pDestination);
 
  // Dynamic CSV Column Ordering: If we didn't start by
  // assigning column orders when we opened the table,
@@ -1270,7 +1270,7 @@ begin
   if (Length(FHeaderRow) = 0) then
   begin
     FHeaderRow := GetColumnsAsString;
-    ProcessCsvHeaderRow(FHeaderRow);
+    ProcessCSVHeaderRow(FHeaderRow);
   end;
 
  // If this is a calculated field or lookup field then...
@@ -1278,10 +1278,10 @@ begin
   begin
     if (Field.Offset = 0) then
     begin
-      OutputDebugString('JvCsvData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+      OutputDebugString('JvCSVData.SetFieldData: Invalid field.Offset in Calculated or Lookup field.');
       Exit;
     end;
-    Inc(pDestination, sizeof(TJvCsvRow) + Field.Offset);
+    Inc(pDestination, sizeof(TJvCSVRow) + Field.Offset);
     boolean(pDestination[0]) := (Buffer <> nil);
     if boolean(pDestination[0]) then
       CopyMemory(@pDestination[1], Buffer, Field.DataSize);
@@ -1293,11 +1293,11 @@ begin
 
  // Set a field data, taking the physical to logical ordering translation into
  // account:
-  CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
-  if not Assigned(CsvColumnData) then
+  CSVColumnData := FCSVColumns.FindByFieldNo(Field.FieldNo);
+  if not Assigned(CSVColumnData) then
     Exit;
 
-  PhysicalLocation := CsvColumnData^.FPhysical;
+  PhysicalLocation := CSVColumnData^.FPhysical;
 
   if PhysicalLocation < 0 then
     Exit;
@@ -1336,9 +1336,9 @@ begin
 
          // There are two ways of handling date and time:
       ftDateTime:
-        case CsvColumnData^.FFlag of
+        case CSVColumnData^.FFlag of
               // Localized time in Ascii
-          jcsvAsciiDateTime:
+          jCSVAsciiDateTime:
             begin
               DT := TimeStampToDateTime(
                 MSecsToTimeStamp(
@@ -1349,7 +1349,7 @@ begin
             end;
 
              // GMT Times are stored in HEX
-          jcsvGMTDateTime:
+          jCSVGMTDateTime:
             begin
               DT := TimeStampToDateTime(
                 MSecsToTimeStamp(
@@ -1358,7 +1358,7 @@ begin
 
             end;
 
-          jcsvTZDateTime: // Move a GMT time into a timezone:
+          jCSVTZDateTime: // Move a GMT time into a timezone:
             begin
               DT := TimeStampToDateTime(
                 MSecsToTimeStamp(
@@ -1368,21 +1368,21 @@ begin
             end;
 
         else
-          JvCsvDatabaseError(FTableName, 'SetFieldData Error - TimeT-to-DateTime conversion error.');
+          JvCSVDatabaseError(FTableName, 'SetFieldData Error - TimeT-to-DateTime conversion error.');
         end;
     else
-      JvCsvDatabaseError(FTableName, 'SetFieldData Error - Field type not handled.');
+      JvCSVDatabaseError(FTableName, 'SetFieldData Error - Field type not handled.');
     end;
 
  // Set new data value (NewVal = String)
-  SetCsvRowItem(RowPtr, PhysicalLocation, NewVal);
+  SetCSVRowItem(RowPtr, PhysicalLocation, NewVal);
   if Assigned(FOnSetFieldData) and (RowPtr^.Index >= 0) then
   begin
     FOnSetFieldData(Self, FData.GetUserTag(RowPtr^.Index), FData.GetUserData(RowPtr^.Index), Field.FieldName, NewVal);
   end;
 
  // Set a dirty bit so we remember to write this later:
-  CsvRowSetDirtyBit(PCsvRow(pDestination), PhysicalLocation);
+  CSVRowSetDirtyBit(PCSVRow(pDestination), PhysicalLocation);
 
  // Set the file-wide dirty bit:
   FFileDirty := true;
@@ -1395,7 +1395,7 @@ end;
 // Removes first and last character of the string (assumes they are quotes,
 // to be called byGetFieldData only!)
 
-function TJvCsvCustomInMemoryDataSet._Dequote(strValue: string): string;
+function TJvCSVCustomInMemoryDataSet._Dequote(strValue: string): string;
 var
   s: string;
   t, l: integer;
@@ -1441,7 +1441,7 @@ end;
 
 // Tells controls to redraw.
 
-procedure TJvCsvCustomInMemoryDataSet.Refresh;
+procedure TJvCSVCustomInMemoryDataSet.Refresh;
 var
   m: TBookmark;
 begin
@@ -1452,15 +1452,15 @@ begin
   GotoBookmark(m); // Go back where we were. This could result in some odd scrolling behaviour but I haven't seen it yet.
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetFieldData(Field: TField; Buffer: Pointer): boolean;
+function TJvCSVCustomInMemoryDataSet.GetFieldData(Field: TField; Buffer: Pointer): boolean;
 var
-  RowPtr: PCsvRow;
-  {ActiveRowPtr:PCsvRow;}
+  RowPtr: PCSVRow;
+  {ActiveRowPtr:PCSVRow;}
   pSource: PChar;
   pTempBuffer: PChar;
   UserString, TempString: string;
   PhysicalLocation: integer;
-  CsvColumnData: PCsvColumn;
+  CSVColumnData: PCSVColumn;
   aDateTime: TDateTime;
   l: integer;
   ts: TTimeStamp;
@@ -1479,13 +1479,13 @@ begin
   if (Length(FHeaderRow) = 0) then
   begin
     FHeaderRow := GetColumnsAsString;
-    ProcessCsvHeaderRow(FHeaderRow);
+    ProcessCSVHeaderRow(FHeaderRow);
   end;
 
   pSource := GetActiveRecordBuffer;
   if (pSource = nil) then
   begin
-    //JvCsvDatabaseError('CsvDataSet.GetFieldData: Unable to get active record buffer');
+    //JvCSVDatabaseError('CSVDataSet.GetFieldData: Unable to get active record buffer');
     Exit;
   end;
 
@@ -1499,9 +1499,9 @@ begin
     if (Field.Offset = 0) then
     begin
             // Invalid offset!
-      OutputDebugString('JvCsvData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
+      OutputDebugString('JvCSVData.GetFieldData: Invalid field.Offset in Calculated or Lookup field.');
     end;
-    Inc(pSource, sizeof(TJvCsvRow) + Field.Offset);
+    Inc(pSource, sizeof(TJvCSVRow) + Field.Offset);
     if (pSource[0] = #0) or (Buffer = nil) then
       Exit
     else // Get the field data from the buffer:
@@ -1516,16 +1516,16 @@ begin
   // field that is just in internal-memory:
   //------------------------------------------------------------------------
 
-  CsvColumnData := FCsvColumns.FindByFieldNo(Field.FieldNo);
-  if not Assigned(CsvColumnData) then
+  CSVColumnData := FCSVColumns.FindByFieldNo(Field.FieldNo);
+  if not Assigned(CSVColumnData) then
   begin
-    JvCsvDatabaseError(FTableName, 'Unable to locate CSV file information for field ' + Field.Name);
+    JvCSVDatabaseError(FTableName, 'Unable to locate CSV file information for field ' + Field.Name);
     Exit;
   end;
-  PhysicalLocation := CsvColumnData^.FPhysical;
+  PhysicalLocation := CSVColumnData^.FPhysical;
   if PhysicalLocation < 0 then
   begin // does it really exist in the CSV Row?
-    JvCsvDatabaseError(FTableName, 'Physical location of CSV field ' + Field.FieldName + ' unknown.');
+    JvCSVDatabaseError(FTableName, 'Physical location of CSV field ' + Field.FieldName + ' unknown.');
     Exit;
   end;
 
@@ -1536,9 +1536,9 @@ begin
   // a CSV file can store an empty string but has no way of indicating a NULL.
   //------------------------------------------------------------------------
 
-  RowPtr := PCsvRow(pSource);
+  RowPtr := PCSVRow(pSource);
 
-  TempString := GetCsvRowItem(RowPtr, PhysicalLocation);
+  TempString := GetCSVRowItem(RowPtr, PhysicalLocation);
 
   // Strip quotes first!
   if (Field.DataType = ftString) then
@@ -1563,7 +1563,7 @@ begin
     if (UserString <> TempString) then
     begin
             // Write changed value back to row:
-      SetCsvRowItem(RowPtr, PhysicalLocation, UserString);
+      SetCSVRowItem(RowPtr, PhysicalLocation, UserString);
       TempString := UserString;
              // Notify controls of a field change:
              //DataEvent(deFieldChange, LongInt(Field));
@@ -1594,7 +1594,7 @@ begin
 
   //------------------------------------------------------------------------
   // If we get here Buffer must NOT be nil. Now we handle
-  // some csv to TField conversions:
+  // some CSV to TField conversions:
   //------------------------------------------------------------------------
   try
     case Field.DataType of
@@ -1632,9 +1632,9 @@ begin
           end;
         end;
       ftDateTime:
-        case CsvColumnData^.FFlag of
+        case CSVColumnData^.FFlag of
              // Ascii Date 1999/03/05 08:23:15
-          jcsvAsciiDateTime:
+          jCSVAsciiDateTime:
             begin
               aDateTime := TimeTAsciiToDateTime(TempString);
               if aDateTime <= 1.0 then
@@ -1656,19 +1656,19 @@ begin
             end;
 
              // GMT Times are Stored in HEX:
-          jcsvGMTDateTime:
+          jCSVGMTDateTime:
             Double(Buffer^) := TimeStampToMSecs(DateTimeToTimeStamp(TimeTHexToDateTime(TempString, 0)));
 
              // Move GMT into a Timezone:
-          jcsvTZDateTime:
+          jCSVTZDateTime:
             Double(Buffer^) := TimeStampToMSecs(DateTimeToTimeStamp(TimeTHexToDateTime(TempString,
               FTimeZoneCorrection)));
 
         else
-          JvCsvDatabaseError(FTableName, 'GetFieldData Error - TimeT-to-DateTime conversion error.');
+          JvCSVDatabaseError(FTableName, 'GetFieldData Error - TimeT-to-DateTime conversion error.');
         end; {end case}
     else // not a valid ftXXXX type for this TDataSet descendant!?
-      JvCsvDatabaseError(FTableName, 'GetFieldData Error- Field type not handled.');
+      JvCSVDatabaseError(FTableName, 'GetFieldData Error- Field type not handled.');
     end // end case.
   except
     on E: EConvertError do
@@ -1681,26 +1681,26 @@ begin
   Result := true;
 end;
 
-// Our bookmark data is a pointer to a PCsvData
+// Our bookmark data is a pointer to a PCSVData
 
-procedure TJvCsvCustomInMemoryDataSet.GetBookmarkData(Buffer: PChar; data: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.GetBookmarkData(Buffer: PChar; data: Pointer);
 //var
 //  t:Integer;
 begin
-// t:= PCsvRow(Buffer)^.bookmark.data;
-  PInteger(data)^ := PCsvRow(Buffer)^.Bookmark.data;
+// t:= PCSVRow(Buffer)^.bookmark.data;
+  PInteger(data)^ := PCSVRow(Buffer)^.Bookmark.data;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
+function TJvCSVCustomInMemoryDataSet.GetBookmarkFlag(Buffer: PChar): TBookmarkFlag;
 begin
-  Result := PCsvRow(Buffer)^.Bookmark.flag;
+  Result := PCSVRow(Buffer)^.Bookmark.flag;
 end;
 
 // nobody mentioned that I needed this to be overloaded, but I only found
 // out when I found that DBGrid and other controls that compare bookmarks
 // won't function if you don't provide a non-default implementation of this.
 
-function TJvCsvCustomInMemoryDataSet.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): integer;
+function TJvCSVCustomInMemoryDataSet.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): integer;
 var
   v1, v2: integer;
 begin
@@ -1717,39 +1717,39 @@ begin
     Result := Bookmark_Gtr;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag);
+procedure TJvCSVCustomInMemoryDataSet.SetBookmarkFlag(Buffer: PChar; Value: TBookmarkFlag);
 begin
-  PCsvRow(Buffer)^.Bookmark.flag := Value;
+  PCSVRow(Buffer)^.Bookmark.flag := Value;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalGotoBookmark(Bookmark: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.InternalGotoBookmark(Bookmark: Pointer);
 begin
   {Bookmark is just pointer to integer}
   FRecordPos := PInteger(Bookmark)^;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalSetToRecord(Buffer: PChar);
+procedure TJvCSVCustomInMemoryDataSet.InternalSetToRecord(Buffer: PChar);
 begin
-  FRecordPos := PCsvRow(Buffer)^.Bookmark.data; //Look up index from the record.
+  FRecordPos := PCSVRow(Buffer)^.Bookmark.data; //Look up index from the record.
 //  Resync([]);
 end;
 
 // Also used when inserting:
 
-procedure TJvCsvCustomInMemoryDataSet.SetBookmarkData(Buffer: PChar; data: Pointer);
+procedure TJvCSVCustomInMemoryDataSet.SetBookmarkData(Buffer: PChar; data: Pointer);
 begin
-  PCsvRow(Buffer)^.Bookmark.data := PInteger(data)^;
+  PCSVRow(Buffer)^.Bookmark.data := PInteger(data)^;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalFirst;
+procedure TJvCSVCustomInMemoryDataSet.InternalFirst;
 begin
 //  Eof := false;
   FRecordPos := ON_BOF_CRACK;
 end;
 
-// CsvFieldDef:
+// CSVFieldDef:
 //
-// A property of our Data Set called CsvFieldDef is treated as
+// A property of our Data Set called CSVFieldDef is treated as
 // declaration of the fields in the CSV table.
 //
 //   <coldef>,<coldef>,...,<coldef>
@@ -1757,127 +1757,127 @@ end;
 //
 // See top of file!
 
-procedure TJvCsvCustomInMemoryDataSet.InternalInitFieldDefs;
+procedure TJvCSVCustomInMemoryDataSet.InternalInitFieldDefs;
 var
-  CsvFieldRec: TJvCsvRow; //record type.
-  CsvFieldOption: string;
-  CsvFieldName: string;
-  pCsvFieldDef: PCsvColumn;
+  CSVFieldRec: TJvCSVRow; //record type.
+  CSVFieldOption: string;
+  CSVFieldName: string;
+  pCSVFieldDef: PCSVColumn;
   t, colnum, pos1: integer;
   // field options:
   FieldTypeChar: char;
   VclFieldType: TFieldType;
   FieldLen: integer;
-  FieldType: TJvCsvColumnFlag;
-  aCsvFieldDef: string;
-  CsvKeys: array of string;
+  FieldType: TJvCSVColumnFlag;
+  aCSVFieldDef: string;
+  CSVKeys: array of string;
 //  FDef:TFieldDef;
 begin
 
 //  FFieldsInitialized := true;
-  FieldType := jcsvString;
+  FieldType := jCSVString;
   VclFieldType := ftString;
 
   // create FieldDefs which map to each field in the data record
   FieldDefs.Clear; // Clear VCL Database field definitions
-  FCsvColumns.Clear; // Clear our own CSV related field data
+  FCSVColumns.Clear; // Clear our own CSV related field data
 
-  aCsvFieldDef := FCsvFieldDef;
-  if Length(aCsvFieldDef) = 0 then
+  aCSVFieldDef := FCSVFieldDef;
+  if Length(aCSVFieldDef) = 0 then
   begin
     if FHasHeaderRow and InternalLoadFileStrings then
-      aCsvFieldDef := FCsvFileAsStrings[0];
+      aCSVFieldDef := FCSVFileAsStrings[0];
   end;
 
-  if Length(aCsvFieldDef) > 0 then
+  if Length(aCSVFieldDef) > 0 then
   begin
-    StringToCsvRow(aCsvFieldDef, @CsvFieldRec, false, false);
+    StringToCSVRow(aCSVFieldDef, @CSVFieldRec, false, false);
 
     colnum := 0;
-    while (CsvRowGetColumnMarker(@CsvFieldRec, colnum) <> COLUMN_ENDMARKER) do
+    while (CSVRowGetColumnMarker(@CSVFieldRec, colnum) <> COLUMN_ENDMARKER) do
     begin
       FieldLen := 80; // default.
-      CsvFieldOption := GetCsvRowItem(@CsvFieldRec, colnum); // get a string in the format COLUMNAME:Options
+      CSVFieldOption := GetCSVRowItem(@CSVFieldRec, colnum); // get a string in the format COLUMNAME:Options
 
        // Look for Colon or Semicolon:
-      pos1 := Pos(':', CsvFieldOption);
-      if (pos1 <= 0) then pos1 := Pos(';', CsvFieldOption);
+      pos1 := Pos(':', CSVFieldOption);
+      if (pos1 <= 0) then pos1 := Pos(';', CSVFieldOption);
 
       if (pos1 <= 0) then
       begin
-        CsvFieldName := CsvFieldOption;
-        CsvFieldOption := '$';
+        CSVFieldName := CSVFieldOption;
+        CSVFieldOption := '$';
         FieldTypeChar := '$';
       end
       else
       begin
           // extract field name:
-        CsvFieldName := Copy(CsvFieldOption, 1, pos1 - 1);
+        CSVFieldName := Copy(CSVFieldOption, 1, pos1 - 1);
           // If character after the colon is a symbol character, grab
           // it, otherwise default to '$'.
-        if Ord(CsvFieldOption[pos1 + 1]) < Ord('A') then
+        if Ord(CSVFieldOption[pos1 + 1]) < Ord('A') then
         begin
-          FieldTypeChar := CsvFieldOption[pos1 + 1];
-          CsvFieldOption := Copy(CsvFieldOption, pos1 + 2, 80);
+          FieldTypeChar := CSVFieldOption[pos1 + 1];
+          CSVFieldOption := Copy(CSVFieldOption, pos1 + 2, 80);
         end
         else
         begin
           FieldTypeChar := '$';
-          CsvFieldOption := Copy(CsvFieldOption, pos1 + 1, 80);
+          CSVFieldOption := Copy(CSVFieldOption, pos1 + 1, 80);
         end;
-        FieldLen := StrToIntDef(CsvFieldOption, DEFAULT_CSV_STR_FIELD);
+        FieldLen := StrToIntDef(CSVFieldOption, DEFAULT_CSV_STR_FIELD);
       end;
       case FieldTypeChar of
         '$':
           begin // $=string
             VclFieldType := ftString;
-            FieldType := jcsvString;
+            FieldType := jCSVString;
           end;
         '%':
           begin // %=Integervalue
             VclFieldType := ftInteger;
-            FieldType := jcsvNumeric;
+            FieldType := jCSVNumeric;
             FieldLen := 0; // automatic.
           end;
         '&':
           begin // &=Float value
             VclFieldType := ftFloat;
-            FieldType := jcsvNumeric;
+            FieldType := jCSVNumeric;
             FieldLen := 0; // automatic.
           end;
         '@':
           begin // @=Datetime as Ascii YYYY/MM/DD HH:MM:SS
             VclFieldType := ftDateTime;
-            FieldType := jcsvAsciiDateTime;
+            FieldType := jCSVAsciiDateTime;
             FieldLen := 0; // automatic.
           end;
         '!':
           begin // != boolean field TRUE/FALSE
             VclFieldType := ftBoolean; // boolean field in dataset
-            FieldType := jcsvNumeric; // numeric field in file
+            FieldType := jCSVNumeric; // numeric field in file
             FieldLen := 0; // automatic.
           end;
         '#':
           begin // #=Datetime as Seconds since 1970 stored in HEX
             VclFieldType := ftDateTime;
-            FieldType := jcsvGMTDateTime;
+            FieldType := jCSVGMTDateTime;
             FieldLen := 0; // automatic.
           end;
 
         '-':
           begin // -=Datetime as Seconds since 1970 stored in HEX
             VclFieldType := ftDateTime;
-            FieldType := jcsvTZDateTime;
+            FieldType := jCSVTZDateTime;
             FieldLen := 0; // automatic.
           end;
 
       else
-        JvCsvDatabaseError(FTableName, 'Invalid field type character: ' + FieldTypeChar);
+        JvCSVDatabaseError(FTableName, 'Invalid field type character: ' + FieldTypeChar);
       end;
 
-      if Length(CsvFieldName) = 0 then
+      if Length(CSVFieldName) = 0 then
       begin
-        JvCsvDatabaseError(FTableName, 'Unexpected error parsing CSV Field Definitions');
+        JvCSVDatabaseError(FTableName, 'Unexpected error parsing CSV Field Definitions');
         break;
       end;
 
@@ -1890,16 +1890,16 @@ begin
        // that as necessary:
 
         //Was: TFieldDef.Create(FieldDefs, ...., colnum );
-      FieldDefs.Add(CsvFieldName, VclFieldType, FieldLen, false);
+      FieldDefs.Add(CSVFieldName, VclFieldType, FieldLen, false);
 
       // Now create our internal field data structure:
-      pCsvFieldDef := AllocMem(sizeof(TJvCsvColumn) {+ 8 BIGFudge});
-      pCsvFieldDef^.FFlag := FieldType; {jcsvString}
-      pCsvFieldDef^.FFieldDef := FieldDefs.Find(CsvFieldName);
+      pCSVFieldDef := AllocMem(sizeof(TJvCSVColumn) {+ 8 BIGFudge});
+      pCSVFieldDef^.FFlag := FieldType; {jCSVString}
+      pCSVFieldDef^.FFieldDef := FieldDefs.Find(CSVFieldName);
 
       // Note: field order is established when we open the file (later)
-      pCsvFieldDef^.FPhysical := -1; // not yet located in the physical file!
-      FCsvColumns.AddColumn(pCsvFieldDef);
+      pCSVFieldDef^.FPhysical := -1; // not yet located in the physical file!
+      FCSVColumns.AddColumn(pCSVFieldDef);
     end;
 
      // if the file doesn't contain this and we haven't
@@ -1908,36 +1908,36 @@ begin
       FHeaderRow := GetColumnsAsString;
 
     if Length(FHeaderRow) > 0 then
-      ProcessCsvHeaderRow(FHeaderRow);
+      ProcessCSVHeaderRow(FHeaderRow);
   end
   else
-    JvCsvDatabaseError(FTableName, 'Field Definition Error. CsvFieldDef, FieldDefs, and file contents must match.');
+    JvCSVDatabaseError(FTableName, 'Field Definition Error. CSVFieldDef, FieldDefs, and file contents must match.');
 
-  if Length(FCsvKeyDef) = 0 then
+  if Length(FCSVKeyDef) = 0 then
   begin
-    FCsvKeyCount := 0;
+    FCSVKeyCount := 0;
   end
   else
   begin
-    SetLength(CsvKeys, FCsvColumns.Count);
-    FCsvKeyCount := StrSplit(FCsvKeyDef, ',', {Chr(0)=No Quoting} Chr(0), CsvKeys, FCsvColumns.Count);
-    SetLength(FCsvKeyFields, FCsvKeyCount);
-    if (FCsvKeyCount < 1) or (FCsvKeyCount > FCsvColumns.Count) then
-      JvCsvDatabaseError(FTableName, 'Invalid CsvKeyDef property. InternalInitFieldDefs failed.');
-    for t := 0 to FCsvKeyCount - 1 do
+    SetLength(CSVKeys, FCSVColumns.Count);
+    FCSVKeyCount := StrSplit(FCSVKeyDef, ',', {Chr(0)=No Quoting} Chr(0), CSVKeys, FCSVColumns.Count);
+    SetLength(FCSVKeyFields, FCSVKeyCount);
+    if (FCSVKeyCount < 1) or (FCSVKeyCount > FCSVColumns.Count) then
+      JvCSVDatabaseError(FTableName, 'Invalid CSVKeyDef property. InternalInitFieldDefs failed.');
+    for t := 0 to FCSVKeyCount - 1 do
     begin
-      if (CsvKeys[t] = '') then
-        JvCsvDatabaseError(FTableName, 'Internal Error parsing CsvKeyDef. InternalInitFieldDefs failed.');
-      pCsvFieldDef := FCsvColumns.FindByName(CsvKeys[t]);
-      if not Assigned(pCsvFieldDef) then
+      if (CSVKeys[t] = '') then
+        JvCSVDatabaseError(FTableName, 'Internal Error parsing CSVKeyDef. InternalInitFieldDefs failed.');
+      pCSVFieldDef := FCSVColumns.FindByName(CSVKeys[t]);
+      if not Assigned(pCSVFieldDef) then
       begin
-        JvCsvDatabaseError(FTableName, 'CsvKeyDef contains field ''' + CsvKeys[t] +
+        JvCSVDatabaseError(FTableName, 'CSVKeyDef contains field ''' + CSVKeys[t] +
           ''' which is not defined. InternalInitFieldDefs failed.');
       end
       else
       begin
-        pCsvFieldDef^.FKeyFlag := true;
-        FCsvKeyFields[t] := pCsvFieldDef;
+        pCSVFieldDef^.FKeyFlag := true;
+        FCSVKeyFields[t] := pCSVFieldDef;
       end;
     end;
   end;
@@ -1946,7 +1946,7 @@ end; { InternalInitFieldDefs ends }
 
 { set our position onto the EOF Crack }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalLast;
+procedure TJvCSVCustomInMemoryDataSet.InternalLast;
 begin
 //  Eof := true;
   FRecordPos := ON_EOF_CRACK; // FData.Count;
@@ -1955,10 +1955,10 @@ end;
 // At shutdown or on user-calling this method, check if data has changed,
 // and write changes to the file.
 
-procedure TJvCsvCustomInMemoryDataSet.Flush;
+procedure TJvCSVCustomInMemoryDataSet.Flush;
 begin
   if Length(FTableName) = 0 then
-    raise Exception.Create('TJvCsvCustomInMemorYDataSet.FTableName is not set.');
+    raise Exception.Create('TJvCSVCustomInMemorYDataSet.FTableName is not set.');
 
   if FFileDirty and FSavesChanges and (Length(FTableName) > 0) then
   begin
@@ -1966,22 +1966,22 @@ begin
     if (FAutoBackupCount > 0) then
     begin
       if (FAutoBackupCount < 10) then FAutoBackupCount := 10; // can't be between 1 and 9, must be at least 10.
-      JvCsvBackupPreviousFiles(FTableName, FAutoBackupCount);
+      JvCSVBackupPreviousFiles(FTableName, FAutoBackupCount);
     end;
     // Now write new file.
-    ExportCsvFile(FTableName);
+    ExportCSVFile(FTableName);
     FFileDirty := false;
   end;
 end;
 
-{procedure TJvCsvCustomInMemoryDataSet.DestroyFields;
+{procedure TJvCSVCustomInMemoryDataSet.DestroyFields;
 begin
  inherited DestroyFields;
- // Clear out local TCsvFieldDefs.
- FCsvColumns.Clear;
+ // Clear out local TCSVFieldDefs.
+ FCSVColumns.Clear;
 end;}
 
-procedure TJvCsvCustomInMemoryDataSet.InternalClose;
+procedure TJvCSVCustomInMemoryDataSet.InternalClose;
 begin
   Flush;
   BindFields(false);
@@ -1991,14 +1991,14 @@ begin
   FRecordPos := ON_BOF_CRACK;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalHandleException;
+procedure TJvCSVCustomInMemoryDataSet.InternalHandleException;
 begin
   // standard implementation for this method:
   if Application <> nil then
     Application.HandleException(Self);
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalDelete;
+procedure TJvCSVCustomInMemoryDataSet.InternalDelete;
 begin
   if (FRecordPos >= 0) and (FRecordPos < FData.Count) then
   begin
@@ -2014,14 +2014,14 @@ end;
 
 { returns -1 if not found, else returns record index }
 
-function TJvCsvCustomInMemoryDataSet.InternalFindByKey(row: PCsvRow): integer;
+function TJvCSVCustomInMemoryDataSet.InternalFindByKey(row: PCSVRow): integer;
 var
   t: integer;
 begin
   Result := -1;
   for t := 0 to FData.Count - 1 do
   begin
-    if InternalCompare(FCsvKeyFields, FCsvKeyCount, {Left} row, {Right} FData.Items[t]) = 0 then
+    if InternalCompare(FCSVKeyFields, FCSVKeyCount, {Left} row, {Right} FData.Items[t]) = 0 then
     begin
       Result := t;
       break;
@@ -2029,22 +2029,22 @@ begin
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.FindByCsvKey(key: string): boolean;
+function TJvCSVCustomInMemoryDataSet.FindByCSVKey(key: string): boolean;
 var
-  logical_row, physical_row: TJvCsvRow;
+  logical_row, physical_row: TJvCSVRow;
   t, recno: integer;
   str: string;
 begin
   Result := false;
-  StringToCsvRow(key + ',', @logical_row, false, false); // initialize row and put items in their logical order.
-  CsvRowInit(@physical_row);
+  StringToCSVRow(key + ',', @logical_row, false, false); // initialize row and put items in their logical order.
+  CSVRowInit(@physical_row);
   // Move from Logical (TFieldDef order) to their physical (As found in CSV file) ordering:
-  for t := 0 to FCsvKeyCount - 1 do
+  for t := 0 to FCSVKeyCount - 1 do
   begin
-    str := GetCsvRowItem(@logical_row, t);
-    SetCsvRowItem(@physical_row, FCsvKeyFields[t].FPhysical, str);
-      //if (t <> FCsvKeyFields[t].FPhysical) then
-      //    OutputDebugString('FindByCsvKey debug');
+    str := GetCSVRowItem(@logical_row, t);
+    SetCSVRowItem(@physical_row, FCSVKeyFields[t].FPhysical, str);
+      //if (t <> FCSVKeyFields[t].FPhysical) then
+      //    OutputDebugString('FindByCSVKey debug');
   end;
   recno := InternalFindByKey(@physical_row);
   if (recno < 0) then
@@ -2055,12 +2055,12 @@ begin
   Result := true;
 end;
 
-{procedure TJvCsvCustomInMemoryDataSet.InternalInsert;
+{procedure TJvCSVCustomInMemoryDataSet.InternalInsert;
 //var
-//  pAddRec : pCsvRow;
+//  pAddRec : pCSVRow;
 begin
-// pAddRec := AllocMem(Sizeof(TJvCsvRow));
-// StringToCsvRow( FEmptyRowStr, pAddRec, false ); // initialize row.
+// pAddRec := AllocMem(Sizeof(TJvCSVRow));
+// StringToCSVRow( FEmptyRowStr, pAddRec, false ); // initialize row.
 // FData.AddRow(pAddRec);
 // FCurrentRecord := -1;
 // Resync([]);
@@ -2068,16 +2068,16 @@ begin
 //FCurrentRecord := FData.Count;
 end;}
 
-procedure TJvCsvCustomInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append: boolean);
+procedure TJvCSVCustomInMemoryDataSet.InternalAddRecord(Buffer: Pointer; Append: boolean);
 var
   RecPos: integer;
-  pAddRec: PCsvRow;
+  pAddRec: PCSVRow;
 //  keyIndex: integer;
 begin
 
   if FInsertBlocked then
   begin
-    JvCsvDatabaseError(FTableName, 'InternalAddRecord Can''t Add. Insert blocked.');
+    JvCSVDatabaseError(FTableName, 'InternalAddRecord Can''t Add. Insert blocked.');
     Exit;
   end;
 
@@ -2086,22 +2086,22 @@ begin
   if FRecordPos = ON_EOF_CRACK then
     FRecordPos := FData.Count;
 
-  pAddRec := AllocMem(sizeof(TJvCsvRow));
+  pAddRec := AllocMem(sizeof(TJvCSVRow));
   if (Buffer <> nil) then
-    Move(PCsvRow(Buffer)^, pAddRec^, sizeof(TJvCsvRow));
+    Move(PCSVRow(Buffer)^, pAddRec^, sizeof(TJvCSVRow));
 
   if (StrLen(pAddRec.Text) = 0) then
-    StringToCsvRow(FEmptyRowStr, pAddRec, false, false); // initialize row.
+    StringToCSVRow(FEmptyRowStr, pAddRec, false, false); // initialize row.
 
   pAddRec.fdirty := true;
   pAddRec.Index := -1; // Was not loaded from the file!
 
  {
- if FCsvUniqueKeys then begin
+ if FCSVUniqueKeys then begin
     keyIndex := InternalFindByKey(pAddRec);
     if keyIndex >= 0 then begin
-          JvCsvDatabaseError('Key value is not unique. Adding new record failed.');
-          exit; // never get here, since normally JvCsvDatabaseError raises an exception.
+          JvCSVDatabaseError('Key value is not unique. Adding new record failed.');
+          exit; // never get here, since normally JvCSVDatabaseError raises an exception.
     end;
  end;
   }
@@ -2136,27 +2136,27 @@ end;
 { During the parsing stage only, we have the contents of the file loaded in memory
   as a TString LIst. This creates that TString List. }
 
-function TJvCsvCustomInMemoryDataSet.InternalLoadFileStrings: boolean;
+function TJvCSVCustomInMemoryDataSet.InternalLoadFileStrings: boolean;
 begin
   Result := false;
   if not FileExists(FTableName) then Exit;
   if not FLoadsFromFile then Exit;
-  if Assigned(FCsvFileAsStrings) then
+  if Assigned(FCSVFileAsStrings) then
   begin
-    if FCsvFileAsStrings.Count > 0 then
+    if FCSVFileAsStrings.Count > 0 then
       Result := true; //loaded already
     Exit; // don't repeat!
   end;
 
   try // open data file
-    FCsvFileAsStrings := TStringlist.Create;
-    FCsvFileAsStrings.LoadFromFile(FTableName);
-    if FCsvFileAsStrings.Count > 0 then
+    FCSVFileAsStrings := TStringlist.Create;
+    FCSVFileAsStrings.LoadFromFile(FTableName);
+    if FCSVFileAsStrings.Count > 0 then
       Result := true; // it worked!
   except
           //FTableName := '';
-    FCsvFileAsStrings.Free;
-    FCsvFileAsStrings := nil;
+    FCSVFileAsStrings.Free;
+    FCSVFileAsStrings := nil;
     raise; // pass exception on in.
   end; {end except}
 end;
@@ -2164,16 +2164,16 @@ end;
 { During the parsing stage only, we have the contents of the file loaded in memory
   as a TString LIst. This cleans up that TString List. }
 
-procedure TJvCsvCustomInMemoryDataSet.InternalClearFileStrings;
+procedure TJvCSVCustomInMemoryDataSet.InternalClearFileStrings;
 begin
-  if Assigned(FCsvFileAsStrings) then
+  if Assigned(FCSVFileAsStrings) then
   begin
-    FCsvFileAsStrings.Free;
-    FCsvFileAsStrings := nil;
+    FCSVFileAsStrings.Free;
+    FCSVFileAsStrings := nil;
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalOpen;
+procedure TJvCSVCustomInMemoryDataSet.InternalOpen;
 var
 //  Strings: TStringlist;
   TempBuf: array[0..MAXCOLUMNS] of char;
@@ -2182,7 +2182,7 @@ begin
 
   FFileDirty := false;
   if (Length(FTableName) = 0) and FLoadsFromFile then
-    JvCsvDatabaseError('noTableName', 'LoadFromFile=True, so a TableName is required');
+    JvCSVDatabaseError('noTableName', 'LoadFromFile=True, so a TableName is required');
 //  Strings := nil;
 
   InternalInitFieldDefs; // initialize FieldDef objects
@@ -2192,11 +2192,11 @@ begin
     CreateFields;
   BindFields(true); // bind FieldDefs to actual data
 
-  if (FCsvColumns.Count > 1) then
+  if (FCSVColumns.Count > 1) then
   begin
      // Create a null terminated string which is just a bunch of commas:
-    FillChar(TempBuf, FCsvColumns.Count - 1, ',');
-    TempBuf[FCsvColumns.Count - 1] := Chr(0);
+    FillChar(TempBuf, FCSVColumns.Count - 1, ',');
+    TempBuf[FCSVColumns.Count - 1] := Chr(0);
       // When adding an empty row, we add this string as the ascii equivalent:
     FEmptyRowStr := string(TempBuf);
   end
@@ -2205,7 +2205,7 @@ begin
     FEmptyRowStr := ''; // nothing.
   end;
 
-  FBufferSize := sizeof(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field data.
+  FBufferSize := sizeof(TJvCSVRow) + CalcFieldsSize; // our regular record + calculated field data.
   FRecordPos := ON_BOF_CRACK; // initial record pos before BOF
   BookmarkSize := sizeof(integer); // initialize bookmark size for VCL (Integer uses 4 bytes on 32 bit operating systems)
 
@@ -2214,19 +2214,19 @@ begin
   //Trace( 'InternalOpen: FieldDefs.Count='+IntToStr(FieldDefs.Count) );
 
   if InternalLoadFileStrings then // may load the strings if they weren't loaded already!
-    AssignFromStrings(FCsvFileAsStrings); // load into memory.
+    AssignFromStrings(FCSVFileAsStrings); // load into memory.
 
   InternalClearFileStrings; // now unload 'em.
 
   FCursorOpen := true;
   if Length(FHeaderRow) > 0 then
-    ProcessCsvHeaderRow(FHeaderRow);
+    ProcessCSVHeaderRow(FHeaderRow);
 
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.InternalPost;
+procedure TJvCSVCustomInMemoryDataSet.InternalPost;
 var
-  pInsertRec: PCsvRow;
+  pInsertRec: PCSVRow;
   RecPos: integer;
   keyIndex: integer; // If unique key enforcement is on, this is the key search result.
 begin
@@ -2237,21 +2237,21 @@ begin
 
   if FPostBlocked then
   begin
-    JvCsvDatabaseError(FTableName, 'Posting to this database has been blocked.');
+    JvCSVDatabaseError(FTableName, 'Posting to this database has been blocked.');
     Exit;
   end;
 
   { Unique Key Enforcement }
-  if FCsvUniqueKeys then
+  if FCSVUniqueKeys then
   begin
-    keyIndex := InternalFindByKey(PCsvRow(ActiveBuffer));
+    keyIndex := InternalFindByKey(PCSVRow(ActiveBuffer));
     // If posting an update, keyIndex better be <0 or else equal to FRecordPos!
     // Otherwise, if adding, keyIndex better be <0.
     if keyIndex >= 0 then
       if (State = dsInsert) or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
       begin
-        raise EJvCsvKeyError.Create(FTableName + ' - Key is not unique ');
-        Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
+        raise EJvCSVKeyError.Create(FTableName + ' - Key is not unique ');
+        Exit; // never get here, since normally JvCSVDatabaseError raises an exception.
       end;
   end;
 
@@ -2259,29 +2259,29 @@ begin
   begin
     FFileDirty := true;
     RecPos := FRecordPos;
-    Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, sizeof(TJvCsvRow));
+    Move(PCSVRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, sizeof(TJvCSVRow));
     FData.GetRowPtr(RecPos)^.fdirty := true;
   end
   else if State = dsInsert then
   begin
     if FInsertBlocked then
     begin
-      JvCsvDatabaseError(FTableName, 'Can''t insert new row. Insert blocked.');
+      JvCSVDatabaseError(FTableName, 'Can''t insert new row. Insert blocked.');
       Exit;
     end;
     FFileDirty := true;
-    pInsertRec := AllocMem(sizeof(TJvCsvRow));
-    Move(PCsvRow(ActiveBuffer)^, pInsertRec^, sizeof(TJvCsvRow));
+    pInsertRec := AllocMem(sizeof(TJvCSVRow));
+    Move(PCSVRow(ActiveBuffer)^, pInsertRec^, sizeof(TJvCSVRow));
     pInsertRec^.fdirty := true;
     FData.Insert(FRecordPos, Pointer(pInsertRec));
     FRecordPos := FData.IndexOf(Pointer(pInsertRec));
     pInsertRec^.Bookmark.data := FRecordPos;
   end
   else
-    JvCsvDatabaseError(FTableName, 'Post: Can''t post. Not in not dsEdit or dsInsert mode');
+    JvCSVDatabaseError(FTableName, 'Post: Can''t post. Not in not dsEdit or dsInsert mode');
 end;
 
-function TJvCsvCustomInMemoryDataSet.IsCursorOpen: boolean;
+function TJvCSVCustomInMemoryDataSet.IsCursorOpen: boolean;
 begin
   // "Cursor" is open if data file is open.   File is open if FDataFile's
   // Mode includes the FileMode in which the file was open.
@@ -2289,7 +2289,7 @@ begin
   Result := FCursorOpen; // bogus value: Valid field definition
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecordCount: integer;
+function TJvCSVCustomInMemoryDataSet.GetRecordCount: integer;
 begin
   if (FData.Count > 0) then
     Result := FData.Count
@@ -2297,7 +2297,7 @@ begin
     Result := 0;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRecNo: integer; {RecNo := FRecordPos+1}
+function TJvCSVCustomInMemoryDataSet.GetRecNo: integer; {RecNo := FRecordPos+1}
 var
   BufPtr: PChar;
 
@@ -2319,11 +2319,11 @@ begin
   else
     BufPtr := ActiveBuffer;
 
-  Result := PCsvRow(BufPtr)^.Bookmark.data; // Record number.
+  Result := PCSVRow(BufPtr)^.Bookmark.data; // Record number.
 
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetRecNo(Value: integer);
+procedure TJvCSVCustomInMemoryDataSet.SetRecNo(Value: integer);
 begin
   if (Value >= 0) and (Value <= FData.Count - 1) then
   begin
@@ -2332,18 +2332,18 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.SetTableName(const Value: string);
+procedure TJvCSVCustomInMemoryDataSet.SetTableName(const Value: string);
 begin
   CheckInActive;
   FTableName := Value;
   if ExtractFileExt(FTableName) = '' then
-    FTableName := FTableName + '.csv';
+    FTableName := FTableName + '.CSV';
 
   { update internal filename table }
 //  FBmkFileName:= ChangeFileExt(FTableName, '.bmk' ); // bookmark file
 end;
 
-(*function TJvCsvCustomInMemoryDataSet.GetDataFileSize: Integer;
+(*function TJvCSVCustomInMemoryDataSet.GetDataFileSize: Integer;
 //var
 //  File1:TextFile;
 begin
@@ -2353,7 +2353,7 @@ begin
   result := 8192; // not implemented yet.
 end; *)
 
-procedure TJvCsvCustomInMemoryDataSet.EmptyTable;
+procedure TJvCSVCustomInMemoryDataSet.EmptyTable;
 begin
    // Erase Rows.
   while (FData.Count > 0) do
@@ -2364,24 +2364,24 @@ end;
 
 // InternalCompare of two records, of a specific field index.
 // INTERNAL USE ONLY METHOD:
-// Record comparison between two PCsvRows:
+// Record comparison between two PCSVRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCsvCustomInMemoryDataSet.InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): integer;
+function TJvCSVCustomInMemoryDataSet.InternalFieldCompare(Column: PCSVColumn; Left, Right: PCSVRow): integer;
 var
   strLeft, strRight: string;
   numLeft, numRight, diff: Double;
 begin
 
-  strLeft := GetCsvRowItem(Left, Column^.FPhysical);
-  strRight := GetCsvRowItem(Right, Column^.FPhysical);
+  strLeft := GetCSVRowItem(Left, Column^.FPhysical);
+  strRight := GetCSVRowItem(Right, Column^.FPhysical);
 
   (*if (Length(strLeft)=0) or (length(strRight)=0) then begin
       OutputDebugString('Debugging problem in InternalFieldCompare');
-      strLeft  :=GetCsvRowItem( Left, Column^.FPhysical );
+      strLeft  :=GetCSVRowItem( Left, Column^.FPhysical );
   end;*)
 
-  if (FCsvCaseInsensitiveComparison) then
+  if (FCSVCaseInsensitiveComparison) then
   begin
     strLeft := UpperCase(strLeft);
     strRight := UpperCase(strRight);
@@ -2390,7 +2390,7 @@ begin
    // everything sorts via string sort (default) or numeric sort
    // (the only special case so far!)
   case Column^.FFlag of
-    jcsvNumeric:
+    jCSVNumeric:
       begin
         numLeft := StrToFloatDef(strLeft, -99999.9);
         numRight := StrToFloatDef(strRight, -99999.9);
@@ -2410,11 +2410,11 @@ end;
 
 // InternalCompare of multiple fields.
 // INTERNAL USE ONLY METHOD:
-// Record comparison between two PCsvRows:
+// Record comparison between two PCSVRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: array of PCsvColumn; SortColumnCount: integer; Left,
-  Right: PCsvRow): integer;
+function TJvCSVCustomInMemoryDataSet.InternalCompare(SortColumns: array of PCSVColumn; SortColumnCount: integer; Left,
+  Right: PCSVRow): integer;
 var
   t: integer;
 begin
@@ -2422,13 +2422,13 @@ begin
   // null check, raise exception
   if (not Assigned(Left)) or (not Assigned(Right)) then
   begin
-    JvCsvDatabaseError(FTableName, 'InternalCompare. Nil value detected.');
+    JvCSVDatabaseError(FTableName, 'InternalCompare. Nil value detected.');
   end;
   // now check each field:
   for t := 0 to SortColumnCount - 1 do
   begin
     if not Assigned(SortColumns[t]) then
-      JvCsvDatabaseError(FTableName, 'InternalCompare. Nil value detected.'); // raise exception
+      JvCSVDatabaseError(FTableName, 'InternalCompare. Nil value detected.'); // raise exception
     Result := InternalFieldCompare(SortColumns[t], Left, Right);
     if (Result <> 0) then
     begin
@@ -2440,12 +2440,12 @@ begin
   // equal, and result is already set to 0.
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.Sort(SortFields: string; Ascending: boolean);
+procedure TJvCSVCustomInMemoryDataSet.Sort(SortFields: string; Ascending: boolean);
 var
   Index: array of Pointer;
   swap: Pointer;
   SortFieldNames: array of string;
-  SortColumns: array of PCsvColumn;
+  SortColumns: array of PCSVColumn;
   SortColumnCount: integer;
   comparison, t, u, l: integer;
 begin
@@ -2458,20 +2458,20 @@ begin
     Index[t] := FData.Items[t]; // Initial values.
   end;
 
-  SetLength(SortFieldNames, FCsvColumns.Count);
-  SortColumnCount := StrSplit(SortFields, ',', {Chr(0)=No Quoting} Chr(0), SortFieldNames, FCsvColumns.Count);
+  SetLength(SortFieldNames, FCSVColumns.Count);
+  SortColumnCount := StrSplit(SortFields, ',', {Chr(0)=No Quoting} Chr(0), SortFieldNames, FCSVColumns.Count);
   SetLength(SortColumns, SortColumnCount);
   if (SortFields = '') or (SortColumnCount = 0) then
-    JvCsvDatabaseError(FTableName, 'Sort failed. You must give a comma separated list of field names.');
+    JvCSVDatabaseError(FTableName, 'Sort failed. You must give a comma separated list of field names.');
 
   // Now check if the fields exist, and find the pointers to the fields
   for t := 0 to SortColumnCount - 1 do
   begin
     if (SortFieldNames[t] = '') then
-      JvCsvDatabaseError(FTableName, 'Sort failed. Unable to parse field names. ');
-    SortColumns[t] := FCsvColumns.FindByName(SortFieldNames[t]);
+      JvCSVDatabaseError(FTableName, 'Sort failed. Unable to parse field names. ');
+    SortColumns[t] := FCSVColumns.FindByName(SortFieldNames[t]);
     if not Assigned(SortColumns[t]) then
-      JvCsvDatabaseError(FTableName, 'Sort failed. Invalid field name in list: ' + SortFieldNames[t]);
+      JvCSVDatabaseError(FTableName, 'Sort failed. Invalid field name in list: ' + SortFieldNames[t]);
   end;
 
   //  bubble sort, compare in the middle,
@@ -2480,11 +2480,11 @@ begin
   begin
     for u := t + 1 to l - 1 do
     begin
-        // Record comparison between two PCsvRows:
+        // Record comparison between two PCSVRows:
       comparison := InternalCompare(SortColumns,
         SortColumnCount,
-        PCsvRow(Index[t]),
-        PCsvRow(Index[u])
+        PCSVRow(Index[t]),
+        PCSVRow(Index[u])
         );
       if not Ascending then
         comparison := comparison * -1; // flip sign of comparison
@@ -2507,38 +2507,38 @@ end;
 
 { Support Delphi VCL TDataSetDesigner's field persistence }
 
-procedure TJvCsvCustomInMemoryDataSet.DefChanged(Sender: TObject); //override;
+procedure TJvCSVCustomInMemoryDataSet.DefChanged(Sender: TObject); //override;
 begin
   FStoreDefs := true;
 end;
 
 { Support Delphi VCL TDataSetDesigner's field persistence }
 
-function TJvCsvCustomInMemoryDataSet.FieldDefsStored: boolean;
+function TJvCSVCustomInMemoryDataSet.FieldDefsStored: boolean;
 begin
   Result := FStoreDefs and (FieldDefs.Count > 0);
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetCanModify: boolean; //override;
+function TJvCSVCustomInMemoryDataSet.GetCanModify: boolean; //override;
 begin
   Result := not FReadOnly; // You can modify if it's NOT read only.
 end;
 
-{ CsvColumns dynamic array of pointers }
+{ CSVColumns dynamic array of pointers }
 
-procedure TJvCsvColumns.AddColumn(Item: PCsvColumn);
+procedure TJvCSVColumns.AddColumn(Item: PCSVColumn);
 begin
   Add(Pointer(Item));
 end;
 
-function TJvCsvColumns.FindByName(FieldName: string): PCsvColumn;
+function TJvCSVColumns.FindByName(FieldName: string): PCSVColumn;
 var
   t: integer;
 begin
   try
     for t := 0 to Count - 1 do
     begin
-      Result := PCsvColumn(Get(t));
+      Result := PCSVColumn(Get(t));
       if Assigned(Result.FFieldDef) then
         // Case insensitive field name matching:
         if CompareText(Result.FFieldDef.Name, FieldName) = 0 then
@@ -2550,7 +2550,7 @@ begin
   Result := nil;
 end;
 
-function TJvCsvColumns.FindByFieldNo(FieldNo: integer): PCsvColumn;
+function TJvCSVColumns.FindByFieldNo(FieldNo: integer): PCSVColumn;
 var
   t: integer;
 begin
@@ -2558,7 +2558,7 @@ begin
   try
     for t := 0 to Count - 1 do
     begin
-      Result := PCsvColumn(Get(t));
+      Result := PCSVColumn(Get(t));
       if Assigned(Result) then
         if Assigned(Result^.FFieldDef) then
           if Result^.FFieldDef.FieldNo = FieldNo then
@@ -2570,7 +2570,7 @@ begin
   end;
 end;
 
-procedure TJvCsvColumns.Clear;
+procedure TJvCSVColumns.Clear;
 var
   t: integer;
 begin
@@ -2579,9 +2579,9 @@ begin
   inherited;
 end;
 
-{ CsvRows: dynamic array of pointers }
+{ CSVRows: dynamic array of pointers }
 
-function TJvCsvRows.GetUserTag(Index: integer): integer;
+function TJvCSVRows.GetUserTag(Index: integer): integer;
 begin
   if (Index < 0) or (Index >= FUserLength) then
     Result := 0
@@ -2589,7 +2589,7 @@ begin
     Result := FUserTag[Index];
 end;
 
-procedure TJvCsvRows.SetUserTag(Index, Value: integer);
+procedure TJvCSVRows.SetUserTag(Index, Value: integer);
 begin
   if (Index < 0) or (Index >= Count) then Exit;
 
@@ -2602,7 +2602,7 @@ begin
   FUserTag[Index] := Value;
 end;
 
-function TJvCsvRows.GetUserData(Index: integer): Pointer;
+function TJvCSVRows.GetUserData(Index: integer): Pointer;
 begin
   if (Index < 0) or (Index >= FUserLength) then
     Result := nil
@@ -2610,7 +2610,7 @@ begin
     Result := FUserData[Index];
 end;
 
-procedure TJvCsvRows.SetUserData(Index: integer; Value: Pointer);
+procedure TJvCSVRows.SetUserData(Index: integer; Value: Pointer);
 begin
   if (Index < 0) or (Index >= Count) then Exit;
   if (Index >= FUserLength) then
@@ -2622,44 +2622,44 @@ begin
   FUserData[Index] := Value;
 end;
 
-procedure TJvCsvRows.AddRow(const Item: PCsvRow);
+procedure TJvCSVRows.AddRow(const Item: PCSVRow);
 begin
   Add(Pointer(Item));
 end;
 
-procedure TJvCsvRows.InsertRow(const position: integer; const Item: PCsvRow);
+procedure TJvCSVRows.InsertRow(const position: integer; const Item: PCSVRow);
 begin
   Insert(position, Pointer(Item));
 end;
 
-procedure TJvCsvRows.AddRowStr(const Item: string); // convert String->TJvCsvRow
+procedure TJvCSVRows.AddRowStr(const Item: string); // convert String->TJvCSVRow
 var
-  pNewItem: PCsvRow;
+  pNewItem: PCSVRow;
 begin
-  pNewItem := AllocMem(sizeof(TJvCsvRow));
-  StringToCsvRow(Item, pNewItem, true, FEnquoteBackslash); // decode a csv line that can contain escape sequences
+  pNewItem := AllocMem(sizeof(TJvCSVRow));
+  StringToCSVRow(Item, pNewItem, true, FEnquoteBackslash); // decode a CSV line that can contain escape sequences
   AddRow(pNewItem);
 end;
 
-function TJvCsvRows.GetRowPtr(const RowIndex: integer): PCsvRow;
+function TJvCSVRows.GetRowPtr(const RowIndex: integer): PCSVRow;
 begin
-  Result := PCsvRow(Get(RowIndex)); // return pointer to a row item.
+  Result := PCSVRow(Get(RowIndex)); // return pointer to a row item.
 end;
 
-function TJvCsvRows.GetRowStr(const RowIndex: integer): string;
+function TJvCSVRows.GetRowStr(const RowIndex: integer): string;
 var
   ResultStr: string;
 begin
-  CsvRowToString(GetRowPtr(RowIndex), ResultStr);
+  CSVRowToString(GetRowPtr(RowIndex), ResultStr);
   Result := ResultStr;
 end;
 
-procedure TJvCsvRows.SetRowStr(const RowIndex: integer; Value: string);
+procedure TJvCSVRows.SetRowStr(const RowIndex: integer; Value: string);
 begin
-  StringToCsvRow(Value, GetRowPtr(RowIndex), true, FEnquoteBackslash);
+  StringToCSVRow(Value, GetRowPtr(RowIndex), true, FEnquoteBackslash);
 end;
 
-procedure TJvCsvRows.DeleteRow(const RowIndex: integer);
+procedure TJvCSVRows.DeleteRow(const RowIndex: integer);
 var
   p: Pointer;
 begin
@@ -2671,17 +2671,17 @@ begin
   Delete(RowIndex);
 end;
 
-procedure TJvCsvRows.SetARowItem(const RowIndex, ColumnIndex: integer; Value: string);
+procedure TJvCSVRows.SetARowItem(const RowIndex, ColumnIndex: integer; Value: string);
 begin
-  SetCsvRowItem(GetRowPtr(RowIndex), ColumnIndex, Value);
+  SetCSVRowItem(GetRowPtr(RowIndex), ColumnIndex, Value);
 end;
 
-function TJvCsvRows.GetARowItem(const RowIndex, ColumnIndex: integer): string;
+function TJvCSVRows.GetARowItem(const RowIndex, ColumnIndex: integer): string;
 begin
-  Result := GetCsvRowItem(GetRowPtr(RowIndex), ColumnIndex);
+  Result := GetCSVRowItem(GetRowPtr(RowIndex), ColumnIndex);
 end;
 
-procedure TJvCsvRows.Clear;
+procedure TJvCSVRows.Clear;
 var
   t: integer;
 begin
@@ -2692,7 +2692,7 @@ end;
 
 { Call this one first, then AssignFromStrings on subsequent updates only.}
 
-procedure TJvCsvCustomInMemoryDataSet.OpenWith(Strings: TStrings);
+procedure TJvCSVCustomInMemoryDataSet.OpenWith(Strings: TStrings);
 begin
   Active := false;
   AssignFromStrings(Strings); // parse strings
@@ -2700,7 +2700,7 @@ end;
 
 { Call this one first, then AssignFromStrings on subsequent updates only.}
 
-procedure TJvCsvCustomInMemoryDataSet.AppendWith(Strings: TStrings);
+procedure TJvCSVCustomInMemoryDataSet.AppendWith(Strings: TStrings);
 //var
 //x:Integer;
 begin
@@ -2719,7 +2719,7 @@ end;
 
 { Additional Custom Methods - internal use }
 
-procedure TJvCsvCustomInMemoryDataSet.AssignFromStrings(const Strings: TStrings);
+procedure TJvCSVCustomInMemoryDataSet.AssignFromStrings(const Strings: TStrings);
 var
   HeaderRowFound: boolean;
   t: integer;
@@ -2749,18 +2749,18 @@ begin
     begin
       HeaderRowFound := true;
       FHeaderRow := Strings[t];
-         //Note: later we will call ProcessCsvHeaderRow(FHeaderRow);
+         //Note: later we will call ProcessCSVHeaderRow(FHeaderRow);
     end
     else
     begin
-      ProcessCsvDataRow(Strings[t], indexCounter);
+      ProcessCSVDataRow(Strings[t], indexCounter);
       Inc(indexCounter);
     end;
   end;
   if Active then First;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.AssignToStrings(Strings: TStrings);
+procedure TJvCSVCustomInMemoryDataSet.AssignToStrings(Strings: TStrings);
 var
   t: integer;
   Line: string;
@@ -2774,28 +2774,28 @@ begin
 
   for t := 0 to FData.Count - 1 do
   begin
-    CsvRowToString(FData.GetRowPtr(t), Line);
+    CSVRowToString(FData.GetRowPtr(t), Line);
     Strings.Add(Line);
   end;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetRowAsString(const Index: integer): string;
+function TJvCSVCustomInMemoryDataSet.GetRowAsString(const Index: integer): string;
 var
   ResultString: string;
 begin
-  CsvRowToString(FData.GetRowPtr(Index), ResultString);
+  CSVRowToString(FData.GetRowPtr(Index), ResultString);
   Result := ResultString;
 end;
 
 // Get names of all the columns as a comma-separated string:
 
-function TJvCsvCustomInMemoryDataSet.GetColumnsAsString: string;
+function TJvCSVCustomInMemoryDataSet.GetColumnsAsString: string;
 var
   ResultString: string;
   t: integer;
 begin
  // ColCount:
-  if FCsvColumns.Count = 0 then
+  if FCSVColumns.Count = 0 then
   begin
     ResultString := '';
     Result := ResultString;
@@ -2803,7 +2803,7 @@ begin
   end;
  // Build a list of column names: <item>, <item>,....,<item>
   ResultString := FieldDefs[0].Name;
-  for t := 1 to FCsvColumns.Count - 1 do
+  for t := 1 to FCSVColumns.Count - 1 do
     ResultString := ResultString + ',' + FieldDefs[t].Name;
   Result := ResultString;
 end;
@@ -2812,45 +2812,45 @@ end;
   are supposed to exist in this dataset we have a real CSV header which we
   are hoping contains header information }
 
-procedure TJvCsvCustomInMemoryDataSet.ProcessCsvHeaderRow(const header: string);
+procedure TJvCSVCustomInMemoryDataSet.ProcessCSVHeaderRow(const header: string);
 var
-  CsvFieldRec: TJvCsvRow; // CSV Field record type.
-  ptrCsvColumn: PCsvColumn;
-{  CsvFieldOption:String;}
-  CsvFieldName: string;
-{  pCsvFieldDef:PCsvColumn;}
+  CSVFieldRec: TJvCSVRow; // CSV Field record type.
+  ptrCSVColumn: PCSVColumn;
+{  CSVFieldOption:String;}
+  CSVFieldName: string;
+{  pCSVFieldDef:PCSVColumn;}
   colnum, t: integer;
 begin
   if Length(header) = 0 then
     Exit;
 
  // Initialize all CSV Column locations to a "not found yet" state:
-  for t := 0 to FCsvColumns.Count - 1 do
-    PCsvColumn(FCsvColumns.Get(t))^.FPhysical := -1;
+  for t := 0 to FCSVColumns.Count - 1 do
+    PCSVColumn(FCSVColumns.Get(t))^.FPhysical := -1;
 
-  StringToCsvRow(header, @CsvFieldRec, false, false);
+  StringToCSVRow(header, @CSVFieldRec, false, false);
   colnum := 0;
-  while (CsvRowGetColumnMarker(@CsvFieldRec, colnum) <> COLUMN_ENDMARKER) do
+  while (CSVRowGetColumnMarker(@CSVFieldRec, colnum) <> COLUMN_ENDMARKER) do
   begin
    // Get a string in the format COLUMNAME:Options
-    CsvFieldName := StrEatWhiteSpace(GetCsvRowItem(@CsvFieldRec, colnum));
+    CSVFieldName := StrEatWhiteSpace(GetCSVRowItem(@CSVFieldRec, colnum));
 
-    if (Length(CsvFieldName) = 0) then
-      JvCsvDatabaseError(FTableName, 'Error processing first line of CSV file.');
+    if (Length(CSVFieldName) = 0) then
+      JvCSVDatabaseError(FTableName, 'Error processing first line of CSV file.');
 
-    ptrCsvColumn := FCsvColumns.FindByName(CsvFieldName);
+    ptrCSVColumn := FCSVColumns.FindByName(CSVFieldName);
 
-    if (ptrCsvColumn = nil) then
+    if (ptrCSVColumn = nil) then
     begin // raise database exception:
-      JvCsvDatabaseError(FTableName, 'ProcessCsvHeaderRow:Field ' + CsvFieldName +
+      JvCSVDatabaseError(FTableName, 'ProcessCSVHeaderRow:Field ' + CSVFieldName +
         ' found in file, but not in field definitions.');
       Exit;
     end;
 
     try
-      ptrCsvColumn^.FPhysical := colnum; // numbered from 0.
+      ptrCSVColumn^.FPhysical := colnum; // numbered from 0.
     except
-      JvCsvDatabaseError(FTableName, 'Csv field location error: ' + CsvFieldName);
+      JvCSVDatabaseError(FTableName, 'CSV field location error: ' + CSVFieldName);
       break;
     end;
     Inc(colnum);
@@ -2859,20 +2859,20 @@ begin
   // Check that everything was found and physically given a location
   // in the CSV file:
 
-  for t := 0 to FCsvColumns.Count - 1 do
+  for t := 0 to FCSVColumns.Count - 1 do
   begin
-    ptrCsvColumn := PCsvColumn(FCsvColumns[t]);
-    if ptrCsvColumn^.FPhysical < 0 then
+    ptrCSVColumn := PCSVColumn(FCSVColumns[t]);
+    if ptrCSVColumn^.FPhysical < 0 then
     begin
-      JvCsvDatabaseError(FTableName, 'Field ' + ptrCsvColumn^.FFieldDef.Name + ' not found in the data file.');
+      JvCSVDatabaseError(FTableName, 'Field ' + ptrCSVColumn^.FFieldDef.Name + ' not found in the data file.');
       Exit;
     end;
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ProcessCsvDataRow(const datarow: string; Index: integer);
+procedure TJvCSVCustomInMemoryDataSet.ProcessCSVDataRow(const datarow: string; Index: integer);
 var
-  pNewRow: PCsvRow;
+  pNewRow: PCSVRow;
 begin
   if (Length(datarow) = 0) then
     Exit;
@@ -2880,17 +2880,17 @@ begin
   begin
     raise Exception.Create('CSV String is too long: ' + Copy(datarow, 1, 40) + '...');
   end;
-  pNewRow := AllocMem(sizeof(TJvCsvRow));
-  StringToCsvRow(datarow, pNewRow, true, FEnquoteBackslash);
+  pNewRow := AllocMem(sizeof(TJvCSVRow));
+  StringToCSVRow(datarow, pNewRow, true, FEnquoteBackslash);
   pNewRow^.Index := Index;
   FData.AddRow(pNewRow);
 end;
 
-{ This function is handy to save a portion of a csv table that has
+{ This function is handy to save a portion of a CSV table that has
 grown too large into a file, and then DeleteRows can be called to remove
 that section of the file. }
 
-procedure TJvCsvCustomInMemoryDataSet.ExportRows(FileName: string; FromRow, ToRow: integer);
+procedure TJvCSVCustomInMemoryDataSet.ExportRows(FileName: string; FromRow, ToRow: integer);
 var
   t: integer;
   StrList: TStringlist;
@@ -2908,7 +2908,7 @@ begin
   end;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.DeleteRows(FromRow, ToRow: integer);
+procedure TJvCSVCustomInMemoryDataSet.DeleteRows(FromRow, ToRow: integer);
 var
   Count: integer;
 begin
@@ -2932,7 +2932,7 @@ begin
   FFileDirty := true;
 end;
 
-procedure TJvCsvCustomInMemoryDataSet.ExportCsvFile(const FileName: string); // save out to a file.
+procedure TJvCSVCustomInMemoryDataSet.ExportCSVFile(const FileName: string); // save out to a file.
 var
   Strings: TStringlist;
 begin
@@ -2942,7 +2942,7 @@ begin
   Strings.Free;
 end;
 
-function TJvCsvCustomInMemoryDataSet.GetCsvHeader: string;
+function TJvCSVCustomInMemoryDataSet.GetCSVHeader: string;
 var
   f: Text;
   FirstLine: string;
@@ -2960,21 +2960,21 @@ begin
   { And finally, the pascal file close procedure }
   CloseFile(f);
   // return the first line of the file, without the junk
-  Result := StrStrip(FirstLine); // in JvCsvParse.pas
+  Result := StrStrip(FirstLine); // in JvCSVParse.pas
 end;
 
 { PROCEDURES: }
 
 // convert CSV Row buffer to a String
 
-procedure CsvRowToString(RowItem: PCsvRow; var RowString: string);
+procedure CSVRowToString(RowItem: PCSVRow; var RowString: string);
 begin
   RowString := string(RowItem.Text);
 end;
 
 // convert String into a CSV Row buffer
 
-procedure StringToCsvRow(const RowString: string; RowItem: PCsvRow; permitEscapeSequences, EnquoteBackslash: boolean);
+procedure StringToCSVRow(const RowString: string; RowItem: PCSVRow; permitEscapeSequences, EnquoteBackslash: boolean);
 var
   t, l, Col: integer;
   quoteFlag: boolean;
@@ -3021,13 +3021,13 @@ begin
         quoteFlag := not quoteFlag;
         if quoteFlag and (charsInColumn > 1) then
         begin
-          OutputDebugString('CsvDataSource.pas: StringToCsvRow - unescaped quote character in middle of string!');
+          OutputDebugString('CSVDataSource.pas: StringToCSVRow - unescaped quote character in middle of string!');
         end;
 
       end
       else
       begin
-        OutputDebugString('CsvDataSource.pas: StringToCsvRow - quote character found where no escape sequences are permitted!');
+        OutputDebugString('CSVDataSource.pas: StringToCSVRow - quote character found where no escape sequences are permitted!');
       end;
     end;
 
@@ -3040,7 +3040,7 @@ begin
     end;
     if (Col >= MAXCOLUMNS) or (t >= MAXLINELENGTH) then
     begin
-      raise ERangeError.Create('JvCsvData - Internal Limit of MAXCOLUMNS (' + IntToStr(MAXCOLUMNS) +
+      raise ERangeError.Create('JvCSVData - Internal Limit of MAXCOLUMNS (' + IntToStr(MAXCOLUMNS) +
         ') reached. CSV Data has too many columns');
       Exit;
     end;
@@ -3048,7 +3048,7 @@ begin
   Inc(Col);
   if quoteFlag then
   begin
-    OutputDebugString('CsvDataSource.pas: StringToCsvRow - Missing end quote character!');
+    OutputDebugString('CSVDataSource.pas: StringToCSVRow - Missing end quote character!');
   end;
  // Terminate the column-marker list with a special end-marker:
 {RowItem.wordfield[col]   := Word(Length(RowString)+1)AND$7FFF; // length of string
@@ -3060,22 +3060,22 @@ end;
 
 // Copy a single column from one row buffer to another row buffer:
 
-function CsvRowItemCopy(Source, Dest: PCsvRow; FieldIndex, FieldSize: integer): boolean;
+function CSVRowItemCopy(Source, Dest: PCSVRow; FieldIndex, FieldSize: integer): boolean;
 var
   TempStr: string;
 begin
-  TempStr := GetCsvRowItem(Source, FieldIndex);
+  TempStr := GetCSVRowItem(Source, FieldIndex);
    // length limiting feature:
   if (FieldSize > 0) then
     if Length(TempStr) > FieldSize then
       TempStr := Copy(TempStr, 1, FieldSize);
-  SetCsvRowItem(Dest, FieldIndex, TempStr);
+  SetCSVRowItem(Dest, FieldIndex, TempStr);
   Result := true;
 end;
 
-// Copy an item into a csv row buffer:
+// Copy an item into a CSV row buffer:
 
-procedure SetCsvRowItem(pItem: PCsvRow; ColumnIndex: integer; newValue: string);
+procedure SetCSVRowItem(pItem: PCSVRow; ColumnIndex: integer; newValue: string);
 var
   TempBuf: array[0..MAXLINELENGTH] of char;
   Copy1, Copy2: integer;
@@ -3084,13 +3084,13 @@ begin
   Dif := 0;
   if (ColumnIndex < 0) or (ColumnIndex > MAXCOLUMNS) then
     Exit;
-  Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
+  Copy1 := CSVRowGetColumnMarker(pItem, ColumnIndex);
   if (Copy1 = COLUMN_ENDMARKER) then
     Exit;
 
   if (Copy1 > MAXLINELENGTH) then
     Exit;
- // copy initial part of the csv row:
+ // copy initial part of the CSV row:
   if (Copy1 > 0) then
   begin
     StrLCopy(TempBuf, pItem.Text, Copy1);
@@ -3099,7 +3099,7 @@ begin
   else
     StrLCopy(TempBuf, PChar(newValue), MAXLINELENGTH);
 
-  Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);
+  Copy2 := CSVRowGetColumnMarker(pItem, ColumnIndex + 1);
   if (Copy2 <> COLUMN_ENDMARKER) then
   begin
    // difference in length:
@@ -3120,16 +3120,16 @@ begin
   if (Dif <> 0) then
     for t := ColumnIndex + 1 to MAXCOLUMNS do
     begin
-      Old := CsvRowGetColumnMarker(pItem, t);
+      Old := CSVRowGetColumnMarker(pItem, t);
       if (Old = COLUMN_ENDMARKER) then Exit;
-      CsvRowSetColumnMarker(pItem, t, Old + Dif);
+      CSVRowSetColumnMarker(pItem, t, Old + Dif);
     end;
 
 end;
 
-// Copy an item out of a csv row buffer:
+// Copy an item out of a CSV row buffer:
 
-function GetCsvRowItem(pItem: PCsvRow; ColumnIndex: integer): string;
+function GetCSVRowItem(pItem: PCSVRow; ColumnIndex: integer): string;
 var
   TempBuf: array[0..MAXLINELENGTH] of char;
   Copy1, Copy2: integer;
@@ -3140,8 +3140,8 @@ begin
     Exit;
   end;
 
-  Copy1 := CsvRowGetColumnMarker(pItem, ColumnIndex);
-  Copy2 := CsvRowGetColumnMarker(pItem, ColumnIndex + 1);
+  Copy1 := CSVRowGetColumnMarker(pItem, ColumnIndex);
+  Copy2 := CSVRowGetColumnMarker(pItem, ColumnIndex + 1);
   if (Copy1 = COLUMN_ENDMARKER) then
   begin
     Result := '';
@@ -3166,7 +3166,7 @@ end;
 
 {new}
 
-procedure CsvRowSetDirtyBit(row: PCsvRow; ColumnIndex: integer);
+procedure CSVRowSetDirtyBit(row: PCSVRow; ColumnIndex: integer);
 begin
   if row = nil then Exit;
   if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
@@ -3174,14 +3174,14 @@ begin
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] or $8000);
 end;
 
-procedure CsvRowClearDirtyBit(row: PCsvRow; ColumnIndex: integer);
+procedure CSVRowClearDirtyBit(row: PCSVRow; ColumnIndex: integer);
 begin
   if row = nil then Exit;
   if (ColumnIndex < 0) or (ColumnIndex >= MAXCOLUMNS) then Exit;
   row^.wordfield[ColumnIndex] := (row^.wordfield[ColumnIndex] and $7FFF);
 end;
 
-function CsvRowGetDirtyBit(row: PCsvRow; ColumnIndex: integer): boolean;
+function CSVRowGetDirtyBit(row: PCSVRow; ColumnIndex: integer): boolean;
 begin
   Result := false;
   if row = nil then Exit;
@@ -3190,7 +3190,7 @@ begin
   Result := (row^.wordfield[ColumnIndex] and $8000) <> 0;
 end;
 
-procedure CsvRowSetColumnMarker(row: PCsvRow; ColumnIndex: integer; ColumnMarker: integer);
+procedure CSVRowSetColumnMarker(row: PCSVRow; ColumnIndex: integer; ColumnMarker: integer);
 var
   Old: Word;
 begin
@@ -3211,7 +3211,7 @@ begin
   end;
 end;
 
-function CsvRowGetColumnMarker(row: PCsvRow; ColumnIndex: integer): integer;
+function CSVRowGetColumnMarker(row: PCSVRow; ColumnIndex: integer): integer;
 var
   w: Word;
 begin
@@ -3319,7 +3319,7 @@ begin
       ch := AsciiDateStr[Index];
       if (ch < '0') or (ch > '9') then
       begin
-        OutputDebugString(PChar('JvCsvData:illegal character in datetime string: ' + ch));
+        OutputDebugString(PChar('JvCSVData:illegal character in datetime string: ' + ch));
         Exit; // failed:invalid character.
       end;
       Values[t] := (Values[t] * 10) + (Ord(ch) - Ord('0'));
@@ -3405,7 +3405,7 @@ end;
 
 { Routine to keep backup copies of old data files around }
 
-function JvCsvBackupPreviousFiles(FileName: string; MaxFiles: integer): boolean;
+function JvCSVBackupPreviousFiles(FileName: string; MaxFiles: integer): boolean;
 var
   BackupFolder, filenameonly, BackupFilename, RemoveFile: string;
   t: integer;

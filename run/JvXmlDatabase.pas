@@ -7,82 +7,82 @@
 
 }
 
-unit JvXmlDatabase;
+unit JvXMLDatabase;
 
 interface
 
 uses
   SysUtils, Classes, Contnrs, Dialogs, Math,
   {$IFDEF COMPILER6_UP}DateUtils, {$ENDIF}
-  JvTypes, JvComponent, JvSimpleXml;
+  JvTypes, JvComponent, JvSimpleXML;
 
 type
-  TJvXmlDatabase = class;
-  TJvXmlQuery = class;
-  TJvXmlQueryParser = class;
-  TJvXmlDatabaseException = class(EJVCLException);
+  TJvXMLDatabase = class;
+  TJvXMLQuery = class;
+  TJvXMLQueryParser = class;
+  TJvXMLDatabaseException = class(EJVCLException);
 
-  TJvXmlTable = class
+  TJvXMLTable = class
   public
-    Xml: TJvSimpleXml;
+    XML: TJvSimpleXML;
     Locked: Boolean;
     Filename: string;
   end;
 
-  TJvXmlQueryTable = class
+  TJvXMLQueryTable = class
   public
     Name: string;
     Alias: string;
     constructor Create(AValue: string);
   end;
 
-  TJvXmlQueryColumn = class
+  TJvXMLQueryColumn = class
   public
     Name: string;
     Table: string;
     constructor Create(AValue: string);
   end;
 
-  TJvXmlOrderConvertion = (ocNone, ocDate, ocInteger, ocFloat);
-  TJvXmlQueryOrder = class
+  TJvXMLOrderConvertion = (ocNone, ocDate, ocInteger, ocFloat);
+  TJvXMLQueryOrder = class
   public
     Column: string;
     Ascending: Boolean;
-    Convertion: TJvXmlOrderConvertion;
+    Convertion: TJvXMLOrderConvertion;
     constructor Create(AValue: string);
   end;
 
-  TJvXmlSQLOperator = (opEquals, opGreater, opSmaller, opGreaterEquals,
+  TJvXMLSQLOperator = (opEquals, opGreater, opSmaller, opGreaterEquals,
     opSmallerEquals, opLike, opNot, opOr, opAnd, opXor, opLeftParenthesis,
     opRightParenthesis, opConstant, opColumn, opNull, opNone);
-  TJvXmlQueryCondition = class
+  TJvXMLQueryCondition = class
   public
     Condition: string;
-    Operator: TJvXmlSQLOperator;
-    constructor Create(AOperator: TJvXmlSQLOperator; ACondition: string = '');
+    Operator: TJvXMLSQLOperator;
+    constructor Create(AOperator: TJvXMLSQLOperator; ACondition: string = '');
   end;
 
-  TJvXmlSetKind = (skConstant, skColumn);
-  TJvXmlSetOperator = (soNone, soAdd, soMultiply, soDivide, soSubstract);
-  TJvXmlQueryAssignement = class
+  TJvXMLSetKind = (skConstant, skColumn);
+  TJvXMLSetOperator = (soNone, soAdd, soMultiply, soDivide, soSubstract);
+  TJvXMLQueryAssignement = class
   public
     Column: string;
-    ValueKind, SecondKind: TJvXmlSetKind;
-    Operator: TJvXmlSetOperator;
+    ValueKind, SecondKind: TJvXMLSetKind;
+    Operator: TJvXMLSetOperator;
     Value, SecondValue: string;
     constructor Create(AValue: string);
-    procedure UpdateElem(AElement: TJvSimpleXmlElem);
+    procedure UpdateElem(AElement: TJvSimpleXMLElem);
   end;
 
-  TJvXmlInstruction = (xiSelect, xiUpdate, xiInsert, xiDelete);
-  TJvXmlQueryParser = class
+  TJvXMLInstruction = (xiSelect, xiUpdate, xiInsert, xiDelete);
+  TJvXMLQueryParser = class
   private
     FQuery: string;
     FTables: TObjectList;
     FColumns: TObjectList;
     FConditions: TObjectList;
     FOrders: TObjectList;
-    FInstruction: TJvXmlInstruction;
+    FInstruction: TJvXMLInstruction;
     FInstructionStr: string;
     FTablesStr: string;
     FWhereStr: string;
@@ -92,17 +92,17 @@ type
     FLimitCount: Integer;
     FOrderStr: string;
     FSetStr: string;
-    FOrderTable: TJvSimpleXmlElem;
+    FOrderTable: TJvSimpleXMLElem;
     FUpdates: TObjectList;
     FValuesStr: string;
     FValues: TStringList;
-    function GetColumn(const AIndex: Integer): TJvXmlQueryColumn;
-    function GetTable(const AIndex: Integer): TJvXmlQueryTable;
+    function GetColumn(const AIndex: Integer): TJvXMLQueryColumn;
+    function GetTable(const AIndex: Integer): TJvXMLQueryTable;
     function GetColumnsCount: Integer;
     function GetTablesCount: Integer;
-    function GetCondition(const AIndex: Integer): TJvXmlQueryCondition;
+    function GetCondition(const AIndex: Integer): TJvXMLQueryCondition;
     function GetConditionsCount: Integer;
-    function OrderCallBack(Elems: TJvSimpleXmlElems; Index1, Index2: Integer): Integer;
+    function OrderCallBack(Elems: TJvSimpleXMLElems; Index1, Index2: Integer): Integer;
     function GetValue(const AIndex: Integer): string;
     function GetValuesCount: Integer;
   protected
@@ -126,50 +126,50 @@ type
     constructor Create;
     destructor Destroy;override;
     procedure Parse(AQuery: string);
-    function CheckConditions(AXmlElem: TJvSimpleXmlElem): Boolean;
-    procedure LimitTable(var ATable: TJvSimpleXmlElem);
-    procedure OrderTable(var ATable: TJvSimpleXmlElem);
-    procedure UpdateRow(ARow: TJvSimpleXmlElem);
-    property Instruction: TJvXmlInstruction read FInstruction write FInstruction;
-    property Tables[const AIndex: Integer]: TJvXmlQueryTable read GetTable;
+    function CheckConditions(AXMLElem: TJvSimpleXMLElem): Boolean;
+    procedure LimitTable(var ATable: TJvSimpleXMLElem);
+    procedure OrderTable(var ATable: TJvSimpleXMLElem);
+    procedure UpdateRow(ARow: TJvSimpleXMLElem);
+    property Instruction: TJvXMLInstruction read FInstruction write FInstruction;
+    property Tables[const AIndex: Integer]: TJvXMLQueryTable read GetTable;
     property TablesCount: Integer read GetTablesCount;
-    property Columns[const AIndex: Integer]: TJvXmlQueryColumn read GetColumn;
+    property Columns[const AIndex: Integer]: TJvXMLQueryColumn read GetColumn;
     property ColumnsCount: Integer read GetColumnsCount;
-    property Condition[const AIndex: Integer]: TJvXmlQueryCondition read GetCondition;
+    property Condition[const AIndex: Integer]: TJvXMLQueryCondition read GetCondition;
     property ConditionsCount: Integer read GetConditionsCount;
     property Value[const AIndex: Integer]: string read GetValue;
     property ValuesCount: Integer read GetValuesCount;
   end;
 
-  TJvXmlQuery = class
+  TJvXMLQuery = class
   private
-    FParser: TJvXmlQueryParser;
-    FDatabase: TJvXmlDatabase;
-    FResults: TJvSimpleXmlElem;
+    FParser: TJvXMLQueryParser;
+    FDatabase: TJvXMLDatabase;
+    FResults: TJvSimpleXMLElem;
     FTables: TList;
     FLastId: Integer;
   protected
     procedure Query(AQuery: string);
   public
-    constructor Create(AOwner: TJvXmlDatabase);
+    constructor Create(AOwner: TJvXMLDatabase);
     destructor Destroy;override;
 
-    property Results: TJvSimpleXmlElem read FResults;
+    property Results: TJvSimpleXMLElem read FResults;
     property LastId: Integer read FLastId;
   end;
 
-  TJvXmlDatabase = class(TJvComponent)
+  TJvXMLDatabase = class(TJvComponent)
   private
     FTablesPath: string;
     FTables: TObjectList;
   protected
-    function GetTable(const AName: string): TJvSimpleXml;
+    function GetTable(const AName: string): TJvSimpleXML;
   public
     constructor Create(AOwner: TComponent);override;
     destructor Destroy;override;
   published
     procedure SaveTables;
-    function Query(AQuery: string): TJvXmlQuery;
+    function Query(AQuery: string): TJvXMLQuery;
     property TablesPath:string read FTablesPath write FTablesPath;
   end;
 
@@ -225,71 +225,71 @@ var
   RS_UNEXPECTEDEND: string  = 'Unexpected end of query';
   RS_UNEXPECTEDINST: string = 'Unexpected statement %s';
 
-{ TJvXmlDatabase }
+{ TJvXMLDatabase }
 
 {**********************************************************************}
-constructor TJvXmlDatabase.Create(AOwner: TComponent);
+constructor TJvXMLDatabase.Create(AOwner: TComponent);
 begin
   inherited;
   FTables := TObjectList.Create;
 end;
 {**********************************************************************}
-destructor TJvXmlDatabase.Destroy;
+destructor TJvXMLDatabase.Destroy;
 begin
   FreeAndNil(FTables);
   inherited;
 end;
 {**********************************************************************}
-function TJvXmlDatabase.GetTable(const AName: string): TJvSimpleXml;
+function TJvXMLDatabase.GetTable(const AName: string): TJvSimpleXML;
 var
  i: Integer;
  st: string;
- lTable: TJvXmlTable;
+ lTable: TJvXMLTable;
 begin
   st := TablesPath + AName;
   for i:=0 to FTables.Count-1 do
-    if TJvXmlTable(FTables[i]).Filename = st then
+    if TJvXMLTable(FTables[i]).Filename = st then
     begin
-      result := TJvXmlTable(FTables[i]).Xml;
+      result := TJvXMLTable(FTables[i]).XML;
       Exit;
     end;
 
-  lTable := TJvXmlTable.Create;
-  lTable.Xml := TJvSimpleXml.Create(nil);
-  lTable.Xml.LoadFromFile(st);
+  lTable := TJvXMLTable.Create;
+  lTable.XML := TJvSimpleXML.Create(nil);
+  lTable.XML.LoadFromFile(st);
   lTable.Locked := false;
   lTable.Filename := st;
   FTables.Add(lTable);
-  result := lTable.Xml;
+  result := lTable.XML;
 end;
 {**********************************************************************}
-function TJvXmlDatabase.Query(AQuery: string): TJvXmlQuery;
+function TJvXMLDatabase.Query(AQuery: string): TJvXMLQuery;
 begin
-  result := TJvXmlQuery.Create(self);
+  result := TJvXMLQuery.Create(self);
   result.Query(AQuery);
 end;
 {**********************************************************************}
-procedure TJvXmlDatabase.SaveTables;
+procedure TJvXMLDatabase.SaveTables;
 var
  i: Integer;
 begin
   for i:=0 to FTables.Count-1 do
-    TJvXmlTable(FTables[i]).Xml.SaveToFile(TJvXmlTable(FTables[i]).Filename);
+    TJvXMLTable(FTables[i]).XML.SaveToFile(TJvXMLTable(FTables[i]).Filename);
 end;
 {**********************************************************************}
 
-{ TJvXmlQuery }
+{ TJvXMLQuery }
 
 {**********************************************************************}
-constructor TJvXmlQuery.Create(AOwner: TJvXmlDatabase);
+constructor TJvXMLQuery.Create(AOwner: TJvXMLDatabase);
 begin
   FDatabase := AOwner;
-  FParser := TJvXmlQueryParser.Create;
-  FResults := TJvSimpleXmlElemClassic.Create(nil);
+  FParser := TJvXMLQueryParser.Create;
+  FResults := TJvSimpleXMLElemClassic.Create(nil);
   FTables := TList.Create;
 end;
 {**********************************************************************}
-destructor TJvXmlQuery.Destroy;
+destructor TJvXMLQuery.Destroy;
 begin
   FParser.Free;
   FResults.Free;
@@ -297,10 +297,10 @@ begin
   inherited;
 end;
 {**********************************************************************}
-procedure TJvXmlQuery.Query(AQuery: string);
+procedure TJvXMLQuery.Query(AQuery: string);
 var
  i, j, lMax: Integer;
- lElem: TJvSimpleXmlElemClassic;
+ lElem: TJvSimpleXMLElemClassic;
  lValue: string;
 
   function IsColumnSelected(ATable, AColumn: string): Boolean;
@@ -317,10 +317,10 @@ var
       end;
   end;
 
-  procedure ConstructTable(AIndex: Integer; var AElem: TJvSimpleXmlElemClassic);
+  procedure ConstructTable(AIndex: Integer; var AElem: TJvSimpleXMLElemClassic);
   var
    i,j: Integer;
-   lElem: TJvSimpleXmlElemClassic;
+   lElem: TJvSimpleXMLElemClassic;
   begin
     if AIndex >= FTables.Count then
     begin
@@ -331,10 +331,10 @@ var
     end
     else
     begin
-      with TJvSimpleXml(FTables[AIndex]) do
+      with TJvSimpleXML(FTables[AIndex]) do
         for i:=0 to Root.Items.Count-1 do
         begin
-          lElem := TJvSimpleXmlElemClassic.Create(nil);
+          lElem := TJvSimpleXMLElemClassic.Create(nil);
           lElem.Assign(AElem);
 
           //Select columns to add
@@ -352,9 +352,9 @@ var
    i,j: Integer;
   begin
     for i:=0 to FTables.Count-1 do
-      for j:=TJvSimpleXml(FTables[i]).Root.Items.Count-1 downto 0 do
-        if FParser.CheckConditions(TJvSimpleXml(FTables[i]).Root.Items[j]) then
-          TJvSimpleXml(FTables[i]).Root.Items.Delete(j);
+      for j:=TJvSimpleXML(FTables[i]).Root.Items.Count-1 downto 0 do
+        if FParser.CheckConditions(TJvSimpleXML(FTables[i]).Root.Items[j]) then
+          TJvSimpleXML(FTables[i]).Root.Items.Delete(j);
   end;
 
   procedure UpdateRows;
@@ -362,9 +362,9 @@ var
    i,j: Integer;
   begin
     for i:=0 to FTables.Count-1 do
-      for j:=TJvSimpleXml(FTables[i]).Root.Items.Count-1 downto 0 do
-        if FParser.CheckConditions(TJvSimpleXml(FTables[i]).Root.Items[j]) then
-          FParser.UpdateRow(TJvSimpleXml(FTables[i]).Root.Items[j]);
+      for j:=TJvSimpleXML(FTables[i]).Root.Items.Count-1 downto 0 do
+        if FParser.CheckConditions(TJvSimpleXML(FTables[i]).Root.Items[j]) then
+          FParser.UpdateRow(TJvSimpleXML(FTables[i]).Root.Items[j]);
   end;
 
 begin
@@ -379,7 +379,7 @@ begin
   case FParser.Instruction of
     xiSelect:
       begin
-        lElem := TJvSimpleXmlElemClassic.Create(nil);
+        lElem := TJvSimpleXMLElemClassic.Create(nil);
         lElem.Name := 'Item';
         FResults.Name := 'Results';
         ConstructTable(0, lElem);
@@ -400,7 +400,7 @@ begin
     xiInsert:
       begin
         if FTables.Count = 1 then
-          with TJvSimpleXml(FTables[0]).Root.Items.Add('item') do
+          with TJvSimpleXML(FTables[0]).Root.Items.Add('item') do
             for i:=0 to FParser.ColumnsCount-1 do
               if i < FParser.ValuesCount then
               begin
@@ -408,8 +408,8 @@ begin
                 if lValue = 'NULL' then
                 begin
                   lMax := 0;
-                  for j:=0 to TJvSimpleXml(FTables[0]).Root.Items.Count-1 do
-                    lMax := Max(lMax, TJvSimpleXml(FTables[0]).Root.Items[j].Properties.IntValue(FParser.Columns[i].Name, 0));
+                  for j:=0 to TJvSimpleXML(FTables[0]).Root.Items.Count-1 do
+                    lMax := Max(lMax, TJvSimpleXML(FTables[0]).Root.Items[j].Properties.IntValue(FParser.Columns[i].Name, 0));
                   inc(lMax);
                   lValue := IntToStr(lMax);
                   FLastId := lMax;
@@ -431,24 +431,24 @@ begin
 end;
 {**********************************************************************}
 
-{ TJvXmlQueryParser }
+{ TJvXMLQueryParser }
 
 {**********************************************************************}
-function TJvXmlQueryParser.CheckConditions(
-  AXmlElem: TJvSimpleXmlElem): Boolean;
+function TJvXMLQueryParser.CheckConditions(
+  AXMLElem: TJvSimpleXMLElem): Boolean;
 var
  i: Integer;
 
   function CheckCondition(var AIndex: Integer): Boolean;
   var
-   lComp: TJvXmlSQLOperator;
+   lComp: TJvXMLSQLOperator;
    lValue, lValue2: string;
    lDate: TDateTime;
   begin
     result := true;
     while (AIndex < FConditions.Count) do
     begin
-      with TJvXmlQueryCondition(FConditions[AIndex]) do
+      with TJvXMLQueryCondition(FConditions[AIndex]) do
         case Operator of
           opLeftParenthesis:
             begin
@@ -472,7 +472,7 @@ var
                 if (Condition='daysbetweennow') then
                 begin
                   inc(AIndex, 2); // (
-                  lValue := AXmlElem.Properties.Value(TJvXmlQueryCondition(FConditions[AIndex]).Condition);
+                  lValue := AXMLElem.Properties.Value(TJvXMLQueryCondition(FConditions[AIndex]).Condition);
                   inc(AIndex); //)
                   lDate := StrToDateTimeDef(lValue, 0);
                   lValue := IntToStr(DaysBetween(Now, lDate));
@@ -480,7 +480,7 @@ var
                     lValue := '-' + lValue;
                 end
                 else
-                  lValue := AXmlElem.Properties.Value(Condition);
+                  lValue := AXMLElem.Properties.Value(Condition);
               end;
               inc(AIndex, 2);
               if not (AIndex < FConditions.Count) then
@@ -488,17 +488,17 @@ var
                 result := false;
                 Exit;
               end;
-              lComp := TJvXmlQueryCondition(FConditions[AIndex - 1]).Operator;
+              lComp := TJvXMLQueryCondition(FConditions[AIndex - 1]).Operator;
 
-              if TJvXmlQueryCondition(FConditions[AIndex]).Operator = opConstant then
-                lValue2 := TJvXmlQueryCondition(FConditions[AIndex]).Condition
-              else if TJvXmlQueryCondition(FConditions[AIndex]).Operator = opColumn then
+              if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opConstant then
+                lValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition
+              else if TJvXMLQueryCondition(FConditions[AIndex]).Operator = opColumn then
               begin
-                lValue2 := TJvXmlQueryCondition(FConditions[AIndex]).Condition;
-                if AXmlElem.Properties.ItemNamed[lValue2]<>nil then
-                  lValue2 := AXmlElem.Properties.Value(lValue2);
+                lValue2 := TJvXMLQueryCondition(FConditions[AIndex]).Condition;
+                if AXMLElem.Properties.ItemNamed[lValue2]<>nil then
+                  lValue2 := AXMLElem.Properties.Value(lValue2);
               end
-              else if (TJvXmlQueryCondition(FConditions[AIndex]).Operator = opNull) and (lComp = opEquals) then
+              else if (TJvXMLQueryCondition(FConditions[AIndex]).Operator = opNull) and (lComp = opEquals) then
               begin
                 result := result and (lValue = '');
                 lComp := opNone;
@@ -555,7 +555,7 @@ begin
   result := CheckCondition(i);
 end;
 {**********************************************************************}
-constructor TJvXmlQueryParser.Create;
+constructor TJvXMLQueryParser.Create;
 begin
   FTables := TObjectList.Create;
   FColumns := TObjectList.Create;
@@ -567,7 +567,7 @@ begin
   FLimitCount := MAXINT;
 end;
 {**********************************************************************}
-destructor TJvXmlQueryParser.Destroy;
+destructor TJvXMLQueryParser.Destroy;
 begin
   FTables.Free;
   FColumns.Free;
@@ -578,30 +578,30 @@ begin
   inherited;
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateColumns;
+procedure TJvXMLQueryParser.DoValidateColumns;
 var
  i: Integer;
- lColumn: TJvXmlQueryColumn;
+ lColumn: TJvXMLQueryColumn;
 begin
   i := pos(',', FColumnsStr);
   repeat
     if i<>0 then
     begin
-      lColumn := TJvXmlQueryColumn.Create(Trim(Copy(FColumnsStr,1,i-1)));
+      lColumn := TJvXMLQueryColumn.Create(Trim(Copy(FColumnsStr,1,i-1)));
       FColumns.Add(lColumn);
       FColumnsStr := Trim(Copy(FColumnsStr, i+1, MAXINT));
       i := pos(',', FColumnsStr);
     end
     else if FColumnsStr<>'' then
     begin
-      lColumn := TJvXmlQueryColumn.Create(Trim(FColumnsStr));
+      lColumn := TJvXMLQueryColumn.Create(Trim(FColumnsStr));
       FColumns.Add(lColumn);
       FColumnsStr := '';
     end;
   until FColumnsStr = '';
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateInstruction;
+procedure TJvXMLQueryParser.DoValidateInstruction;
 begin
   FInstructionStr := UpperCase(FInstructionStr);
 
@@ -614,13 +614,13 @@ begin
   else if FInstructionStr = 'DELETE' then
     FInstruction := xiDelete
   else
-    raise TJvXmlDatabaseException.Create(Format(RS_UNKNOWNINST,[FInstructionStr]));
+    raise TJvXMLDatabaseException.Create(Format(RS_UNKNOWNINST,[FInstructionStr]));
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateOrderBy;
+procedure TJvXMLQueryParser.DoValidateOrderBy;
 var
  i: Integer;
- lOrder: TJvXmlQueryOrder;
+ lOrder: TJvXMLQueryOrder;
 begin
   FOrderStr := Trim(UpperCase(FOrderStr));
   i := pos(' ', FOrderStr);
@@ -631,68 +631,68 @@ begin
   repeat
     if i<>0 then
     begin
-      lOrder := TJvXmlQueryOrder.Create(Trim(Copy(FOrderStr,1,i-1)));
+      lOrder := TJvXMLQueryOrder.Create(Trim(Copy(FOrderStr,1,i-1)));
       FOrders.Add(lOrder);
       FOrderStr := Trim(Copy(FOrderStr, i+1, MAXINT));
       i := pos(',', FOrderStr);
     end
     else if FOrderStr<>'' then
     begin
-      lOrder := TJvXmlQueryOrder.Create(Trim(FOrderStr));
+      lOrder := TJvXMLQueryOrder.Create(Trim(FOrderStr));
       FOrders.Add(lOrder);
       FOrderStr := '';
     end;
   until FOrderStr = '';
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateSet;
+procedure TJvXMLQueryParser.DoValidateSet;
 var
  i: Integer;
- lSet: TJvXmlQueryAssignement;
+ lSet: TJvXMLQueryAssignement;
 begin
   FSetStr := Trim(FSetStr);
   i := pos(',', FSetStr);
   repeat
     if i<>0 then
     begin
-      lSet := TJvXmlQueryAssignement.Create(Trim(Copy(FSetStr,1,i-1)));
+      lSet := TJvXMLQueryAssignement.Create(Trim(Copy(FSetStr,1,i-1)));
       FUpdates.Add(lSet);
       FSetStr := Trim(Copy(FSetStr, i+1, MAXINT));
       i := pos(',', FSetStr);
     end
     else if FSetStr<>'' then
     begin
-      lSet := TJvXmlQueryAssignement.Create(Trim(FSetStr));
+      lSet := TJvXMLQueryAssignement.Create(Trim(FSetStr));
       FUpdates.Add(lSet);
       FSetStr := '';
     end;
   until FSetStr = '';
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateTables;
+procedure TJvXMLQueryParser.DoValidateTables;
 var
  i: Integer;
- lTable: TJvXmlQueryTable;
+ lTable: TJvXMLQueryTable;
 begin
   i := pos(',', FTablesStr);
   repeat
     if i<>0 then
     begin
-      lTable := TJvXmlQueryTable.Create(Trim(Copy(FTablesStr,1,i-1)));
+      lTable := TJvXMLQueryTable.Create(Trim(Copy(FTablesStr,1,i-1)));
       FTables.Add(lTable);
       FTablesStr := Trim(Copy(FTablesStr, i+1, MAXINT));
       i := pos(',', FTablesStr);
     end
     else if FTablesStr<>'' then
     begin
-      lTable := TJvXmlQueryTable.Create(Trim(FTablesStr));
+      lTable := TJvXMLQueryTable.Create(Trim(FTablesStr));
       FTables.Add(lTable);
       FTablesStr := '';
     end;
   until FTablesStr = '';
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateValues;
+procedure TJvXMLQueryParser.DoValidateValues;
 var
  i: Integer;
 
@@ -726,7 +726,7 @@ begin
   until FValuesStr = '';
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.DoValidateWhere;
+procedure TJvXMLQueryParser.DoValidateWhere;
 var
  lToken: string;
  i: Integer;
@@ -737,19 +737,19 @@ var
     lToken := LowerCase(lToken);
 
     if (lToken = 'and') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opAnd))
+      FConditions.Add(TJvXMLQueryCondition.Create(opAnd))
     else if (lToken = 'or') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opOr))
+      FConditions.Add(TJvXMLQueryCondition.Create(opOr))
     else if (lToken = 'like') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opLike))
+      FConditions.Add(TJvXMLQueryCondition.Create(opLike))
     else if (lToken = 'xor') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opXor))
+      FConditions.Add(TJvXMLQueryCondition.Create(opXor))
     else if (lToken = 'is') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opEquals))
+      FConditions.Add(TJvXMLQueryCondition.Create(opEquals))
     else if (lToken = 'null') then
-      FConditions.Add(TJvXmlQueryCondition.Create(opNull))
+      FConditions.Add(TJvXMLQueryCondition.Create(opNull))
     else
-      FConditions.Add(TJvXmlQueryCondition.Create(opColumn,lToken));
+      FConditions.Add(TJvXMLQueryCondition.Create(opColumn,lToken));
   end;
 
 begin
@@ -766,7 +766,7 @@ begin
             AddToken(lToken);
             lToken := '';
           end;
-          FConditions.Add(TJvXmlQueryCondition.Create(opLeftParenthesis));
+          FConditions.Add(TJvXMLQueryCondition.Create(opLeftParenthesis));
         end;
       ')':
         begin
@@ -775,7 +775,7 @@ begin
             AddToken(lToken);
             lToken := '';
           end;
-          FConditions.Add(TJvXmlQueryCondition.Create(opRightParenthesis));
+          FConditions.Add(TJvXMLQueryCondition.Create(opRightParenthesis));
         end;
       'a'..'z', 'A'..'Z', '0'..'9', '_':
         lToken := lToken + FWhereStr[i];
@@ -786,17 +786,17 @@ begin
           lToken := '';
         end;
       '=':
-        FConditions.Add(TJvXmlQueryCondition.Create(opEquals));
+        FConditions.Add(TJvXMLQueryCondition.Create(opEquals));
       '>':
         begin
           inc(i);
           if i<Length(FWhereStr) then
           begin
             if FWhereStr[i] = '=' then
-              FConditions.Add(TJvXmlQueryCondition.Create(opGreaterEquals))
+              FConditions.Add(TJvXMLQueryCondition.Create(opGreaterEquals))
             else
             begin
-              FConditions.Add(TJvXmlQueryCondition.Create(opGreater));
+              FConditions.Add(TJvXMLQueryCondition.Create(opGreater));
               dec(i);
             end;
           end;
@@ -807,10 +807,10 @@ begin
           if i<Length(FWhereStr) then
           begin
             if FWhereStr[i] = '=' then
-              FConditions.Add(TJvXmlQueryCondition.Create(opSmallerEquals))
+              FConditions.Add(TJvXMLQueryCondition.Create(opSmallerEquals))
             else
             begin
-              FConditions.Add(TJvXmlQueryCondition.Create(opSmaller));
+              FConditions.Add(TJvXMLQueryCondition.Create(opSmaller));
               dec(i);
             end;
           end;
@@ -825,7 +825,7 @@ begin
             lToken := lToken + FWhereStr[i];
             inc(i);
           end;
-          FConditions.Add(TJvXmlQueryCondition.Create(opConstant,lToken));
+          FConditions.Add(TJvXMLQueryCondition.Create(opConstant,lToken));
           lToken := '';
         end;
     end;
@@ -833,50 +833,50 @@ begin
   end;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetColumn(
-  const AIndex: Integer): TJvXmlQueryColumn;
+function TJvXMLQueryParser.GetColumn(
+  const AIndex: Integer): TJvXMLQueryColumn;
 begin
-  result := TJvXmlQueryColumn(FColumns[AIndex]);
+  result := TJvXMLQueryColumn(FColumns[AIndex]);
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetColumnsCount: Integer;
+function TJvXMLQueryParser.GetColumnsCount: Integer;
 begin
   result := FColumns.Count;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetCondition(
-  const AIndex: Integer): TJvXmlQueryCondition;
+function TJvXMLQueryParser.GetCondition(
+  const AIndex: Integer): TJvXMLQueryCondition;
 begin
-  result := TJvXmlQueryCondition(FConditions[AIndex]);
+  result := TJvXMLQueryCondition(FConditions[AIndex]);
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetConditionsCount: Integer;
+function TJvXMLQueryParser.GetConditionsCount: Integer;
 begin
   result := FConditions.Count;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetTable(
-  const AIndex: Integer): TJvXmlQueryTable;
+function TJvXMLQueryParser.GetTable(
+  const AIndex: Integer): TJvXMLQueryTable;
 begin
-  result := TJvXmlQueryTable(FTables[AIndex]);
+  result := TJvXMLQueryTable(FTables[AIndex]);
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetTablesCount: Integer;
+function TJvXMLQueryParser.GetTablesCount: Integer;
 begin
   result := FTables.Count;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetValue(const AIndex: Integer): string;
+function TJvXMLQueryParser.GetValue(const AIndex: Integer): string;
 begin
   result := FValues[AIndex];
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.GetValuesCount: Integer;
+function TJvXMLQueryParser.GetValuesCount: Integer;
 begin
   result := FValues.Count;
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.LimitTable(var ATable: TJvSimpleXmlElem);
+procedure TJvXMLQueryParser.LimitTable(var ATable: TJvSimpleXMLElem);
 begin
   while (FLimitBegin > 0) and (ATable.Items.Count > 0) do
   begin
@@ -887,7 +887,7 @@ begin
     ATable.Items.Delete(ATable.Items.Count - 1);
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.OrderCallBack(Elems: TJvSimpleXmlElems; Index1,
+function TJvXMLQueryParser.OrderCallBack(Elems: TJvSimpleXMLElems; Index1,
   Index2: Integer): Integer;
 var
  i: Integer;
@@ -898,12 +898,12 @@ begin
 
   for i:=0 to FOrders.Count-1 do
   begin
-    lStr1 := FOrderTable.Items[Index1].Properties.Value(TJvXmlQueryOrder(FOrders[i]).Column);
-    lStr2 := FOrderTable.Items[Index2].Properties.Value(TJvXmlQueryOrder(FOrders[i]).Column);
+    lStr1 := FOrderTable.Items[Index1].Properties.Value(TJvXMLQueryOrder(FOrders[i]).Column);
+    lStr2 := FOrderTable.Items[Index2].Properties.Value(TJvXMLQueryOrder(FOrders[i]).Column);
     if lStr1 <> lStr2 then
     begin
       //convert to date/int
-      case TJvXmlQueryOrder(FOrders[i]).Convertion of
+      case TJvXMLQueryOrder(FOrders[i]).Convertion of
         ocNone:
           result := CompareStr(lStr1, lStr2);
         ocDate:
@@ -921,20 +921,20 @@ begin
           end;
       end;
 
-      if not TJvXmlQueryOrder(FOrders[i]).Ascending then
+      if not TJvXMLQueryOrder(FOrders[i]).Ascending then
         result := - result;
       Exit;
     end;
   end;
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.OrderTable(var ATable: TJvSimpleXmlElem);
+procedure TJvXMLQueryParser.OrderTable(var ATable: TJvSimpleXMLElem);
 begin
   FOrderTable := ATable;
   ATable.Items.CustomSort(OrderCallBack);
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.Parse(AQuery: string);
+procedure TJvXMLQueryParser.Parse(AQuery: string);
 var
  st: string;
  lStatements: array of string;
@@ -984,9 +984,9 @@ begin
         ReadToken; // Pass the into statement 
 
         //Modify query for lightness of parser
-        //INSERT INTO file.xml(Col1, Col2) VALUES(val1, val2)
+        //INSERT INTO file.XML(Col1, Col2) VALUES(val1, val2)
         // into
-        //INSERT INTO file.xml COLUMNS col1, col2 VALUES val1, val2
+        //INSERT INTO file.XML COLUMNS col1, col2 VALUES val1, val2
         FQuery := StringReplace(FQuery, '()', '', [rfReplaceAll]);
         FQuery := StringReplace(FQuery, ')', ' ', [rfReplaceAll]);
         FQuery := StringReplace(FQuery, '(', ' COLUMNS ', []);
@@ -1005,7 +1005,7 @@ begin
         Break;
       end;
     if j=-1 then
-      raise TJvXmlDatabaseException.Create(Format(RS_UNEXPECTEDINST,[st]));
+      raise TJvXMLDatabaseException.Create(Format(RS_UNEXPECTEDINST,[st]));
 
     if st = 'FROM' then
       st := ReadTables(lStatements)
@@ -1024,14 +1024,14 @@ begin
   end;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadColumns(
+function TJvXMLQueryParser.ReadColumns(
   AEndStatement: array of string; ACanTerminate: Boolean): string;
 begin
   result := ReadStatement(AEndStatement, ACanTerminate, FColumnsStr);
   DoValidateColumns;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadLimit(
+function TJvXMLQueryParser.ReadLimit(
   AEndStatement: array of string): string;
 var
  i: Integer;
@@ -1047,20 +1047,20 @@ begin
   end;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadOrderBy(
+function TJvXMLQueryParser.ReadOrderBy(
   AEndStatement: array of string): string;
 begin
   result := ReadStatement(AEndStatement, true, FOrderStr);
   DoValidateOrderBy;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadSet(AEndStatement: array of string): string;
+function TJvXMLQueryParser.ReadSet(AEndStatement: array of string): string;
 begin
   result := ReadStatement(AEndStatement, true, FSetStr);
   DoValidateSet;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadStatement(AEndStatement: array of string;
+function TJvXMLQueryParser.ReadStatement(AEndStatement: array of string;
   ACanTerminate: Boolean; var AValue: string): string;
 var
  st: string;
@@ -1091,19 +1091,19 @@ begin
     end;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadTables(
+function TJvXMLQueryParser.ReadTables(
   AEndStatement: array of string): string;
 begin
   result := ReadStatement(AEndStatement, true, FTablesStr);
   DoValidateTables;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadToken: string;
+function TJvXMLQueryParser.ReadToken: string;
 var
  i: Integer;
 begin
   if FQuery='' then
-    raise TJvXmlDatabaseException.Create(RS_UNEXPECTEDEND);
+    raise TJvXMLDatabaseException.Create(RS_UNEXPECTEDEND);
 
   FQuery := TrimLeft(FQuery);
   i := 1;
@@ -1121,33 +1121,33 @@ begin
   end;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadValues(
+function TJvXMLQueryParser.ReadValues(
   AEndStatement: array of string): string;
 begin
   result := ReadStatement(AEndStatement, true, FValuesStr);
   DoValidateValues;
 end;
 {**********************************************************************}
-function TJvXmlQueryParser.ReadWhere(
+function TJvXMLQueryParser.ReadWhere(
   AEndStatement: array of string): string;
 begin
   result := ReadStatement(AEndStatement, true, FWhereStr);
   DoValidateWhere;
 end;
 {**********************************************************************}
-procedure TJvXmlQueryParser.UpdateRow(ARow: TJvSimpleXmlElem);
+procedure TJvXMLQueryParser.UpdateRow(ARow: TJvSimpleXMLElem);
 var
  i: Integer;
 begin
   for i:=0 to FUpdates.Count-1 do
-    TJvXmlQueryAssignement(FUpdates[i]).UpdateElem(ARow);
+    TJvXMLQueryAssignement(FUpdates[i]).UpdateElem(ARow);
 end;
 {**********************************************************************}
 
-{ TJvXmlQueryColumn }
+{ TJvXMLQueryColumn }
 
 {**********************************************************************}
-constructor TJvXmlQueryColumn.Create(AValue: string);
+constructor TJvXMLQueryColumn.Create(AValue: string);
 var
  i: Integer;
 begin
@@ -1162,10 +1162,10 @@ begin
 end;
 {**********************************************************************}
 
-{ TJvXmlQueryTable }
+{ TJvXMLQueryTable }
 
 {**********************************************************************}
-constructor TJvXmlQueryTable.Create(AValue: string);
+constructor TJvXMLQueryTable.Create(AValue: string);
 var
  i: Integer;
 begin
@@ -1180,10 +1180,10 @@ begin
 end;
 {**********************************************************************}
 
-{ TJvXmlQueryCondition }
+{ TJvXMLQueryCondition }
 
 {**********************************************************************}
-constructor TJvXmlQueryCondition.Create(AOperator: TJvXmlSQLOperator;
+constructor TJvXMLQueryCondition.Create(AOperator: TJvXMLSQLOperator;
   ACondition: string);
 begin
   self.Operator := AOperator;
@@ -1191,10 +1191,10 @@ begin
 end;
 {**********************************************************************}
 
-{ TJvXmlQueryOrder }
+{ TJvXMLQueryOrder }
 
 {**********************************************************************}
-constructor TJvXmlQueryOrder.Create(AValue: string);
+constructor TJvXMLQueryOrder.Create(AValue: string);
 var
  i: Integer;
  st: string;
@@ -1228,10 +1228,10 @@ end;
 {**********************************************************************}
 
 
-{ TJvXmlQueryAssignement }
+{ TJvXMLQueryAssignement }
 
 {**********************************************************************}
-constructor TJvXmlQueryAssignement.Create(AValue: string);
+constructor TJvXMLQueryAssignement.Create(AValue: string);
 var
  i,j: Integer;
  lDelimiter: Char;
@@ -1312,7 +1312,7 @@ begin
   end;
 end;
 {**********************************************************************}
-procedure TJvXmlQueryAssignement.UpdateElem(AElement: TJvSimpleXmlElem);
+procedure TJvXMLQueryAssignement.UpdateElem(AElement: TJvSimpleXMLElem);
 var
  lValue, lValue2: string;
 

@@ -64,100 +64,100 @@ type
     Fstars: integer;
     Fstarpoints: integer;
     Fspirals: integer;
-    procedure mypaintESC(x, y: integer; shift: tshiftstate);
-    procedure copyclip;
-    procedure setclip(acolor: tcolor);
-    procedure initplasma;
-    function mixcolors(color1, color2: tcolor): tcolor;
+    procedure MyPaintESC(x, y: integer; shift: tshiftstate);
+    procedure CopyClip;
+    procedure SetClip(acolor: tcolor);
+    procedure InitPlasma;
+    function MixColors(color1, color2: tcolor): tcolor;
     function GetBlue(acolor: Tcolor): byte;
     function GetGreen(acolor: Tcolor): byte;
     function GetRed(acolor: Tcolor): byte;
-    procedure setsyms(x, y: integer);
-    function rotate(origin, endpoint: tpoint; angle: real): tpoint;
-    procedure drawplasma(x, y: integer; amount: extended);
-    procedure draweffectbrush(x, y, radius: integer; amount: extended;
+    procedure SetSyms(x, y: integer);
+    function Rotate(origin, endpoint: tpoint; angle: real): tpoint;
+    procedure DrawPlasma(x, y: integer; amount: extended);
+    procedure DrawEffectBrush(x, y, radius: integer; amount: extended;
       style: TLightbrush);
-    procedure rimple(src, dst: tbitmap; amount: extended);
-    procedure drawstretchbrush(x, y, radius: integer; amount: extended;
+    procedure Rimple(src, dst: tbitmap; amount: extended);
+    procedure DrawStretchBrush(x, y, radius: integer; amount: extended;
       style: Tmorphbrush);
-    procedure samplestretch(src, dst: tbitmap);
-    procedure drawlightbrush(x, y, radius, amount: integer;
+    procedure SampleStretch(src, dst: tbitmap);
+    procedure DrawLightBrush(x, y, radius, amount: integer;
       style: TLightBrush);
-    procedure drawcolorcircle(x, y, mode: integer);
-    procedure colorcircle(var bm: TBitmap; center: tpoint; radius,
+    procedure DrawColorCircle(x, y, mode: integer);
+    procedure ColorCircle(var bm: TBitmap; center: tpoint; radius,
       mode: integer);
-    procedure drawdarkercircle(x, y, mode: integer);
-    procedure drawlightercircle(x, y, mode: integer);
-    procedure drawgradientbrush(color1, color2: tcolor; x1, x2,
+    procedure DrawDarkerCircle(x, y, mode: integer);
+    procedure DrawLighterCircle(x, y, mode: integer);
+    procedure DrawGradientBrush(color1, color2: tcolor; x1, x2,
       y: integer);
     procedure HorGradientLine(bitmap: tbitmap; XOrigin, XFinal, y: integer;
       r1, g1, b1, r2, g2, b2: byte; smooth: boolean);
     procedure SmoothPnt(bitmap: tbitmap; xk, yk: integer);
-    procedure drawvgradientbrush(color1, color2: tcolor; y1, y2,
+    procedure DrawVGradientBrush(color1, color2: tcolor; y1, y2,
       x: integer);
     procedure VerGradientLine(bitmap: tbitmap; YOrigin, YFinal, x: integer;
       r1, g1, b1, r2, g2, b2: byte; smooth: boolean);
-    procedure drawcube;
-    function pointtoblock(x, y: integer): Trect;
-    procedure drawskew;
-    procedure drawtriangle;
-    procedure putclip(M: Trect);
-    procedure drawsyms(x, y: integer);
-    procedure drawtexlines(x0, y0, x, y: integer);
+    procedure DrawCube;
+    function PointToBlock(x, y: integer): Trect;
+    procedure DrawSkew;
+    procedure DrawTriangle;
+    procedure PutClip(M: Trect);
+    procedure DrawSyms(x, y: integer);
+    procedure DrawTexLines(x0, y0, x, y: integer);
     function BlendColors(const Color1, Color2: Integer;
       Opacity: integer): longInt;
     function TexHighlight(Colr: Integer): longInt;
-    function texShadow(Colr: Integer): longInt;
-    procedure drawtexovals(x0, y0, x, y: integer);
-    procedure drawblurovals(x0, y0, x, y: integer);
-    procedure drawtexcurves(x0, y0, x, y: integer);
-    procedure drawblurcurves(x0, y0, x, y: integer);
-    procedure drawtexpoly(x0, y0, x, y: integer);
-    procedure drawblurpoly(x0, y0, x, y: integer);
-    procedure drawtexrects(x0, y0, x, y: integer);
-    procedure drawblurrects(x0, y0, x, y: integer);
-    procedure drawblurlines(x0, y0, x, y: integer);
-    procedure interpRect(x1, y1, x2, y2: integer);
+    function TexShadow(Colr: Integer): longInt;
+    procedure DrawTexOvals(x0, y0, x, y: integer);
+    procedure DrawBlurOvals(x0, y0, x, y: integer);
+    procedure DrawTexCurves(x0, y0, x, y: integer);
+    procedure DrawBlurCurves(x0, y0, x, y: integer);
+    procedure DrawTexPoly(x0, y0, x, y: integer);
+    procedure DrawBlurPoly(x0, y0, x, y: integer);
+    procedure DrawTexRects(x0, y0, x, y: integer);
+    procedure DrawBlurRects(x0, y0, x, y: integer);
+    procedure DrawBlurLines(x0, y0, x, y: integer);
+    procedure InterpRect(x1, y1, x2, y2: integer);
     procedure InterpolateRect(Bmp: TBitmap; x1, y1, x2, y2: Integer);
-    procedure drawcolumn(x1, y1, x2, y2: integer);
+    procedure DrawColumn(x1, y1, x2, y2: integer);
     procedure Column(bitmap: tbitmap; XOrigin, XFinal, YOrigin,
       YFinal: integer; r1, g1, b1, r2, g2, b2: byte; smooth: boolean);
-    procedure drawsphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+    procedure DrawSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
     procedure Sphere(bitmap: tbitmap; xcenter, a, ycenter, b: integer; r1,
       g1, b1, r2, g2, b2: byte; smooth: boolean);
-    procedure drawmultisphere(color1, color2: tcolor; x1, y1, x2,
+    procedure DrawMultiSphere(color1, color2: tcolor; x1, y1, x2,
       y2: integer);
-    procedure drawdropletsphere(color1, color2: tcolor; x1, y1, x2,
+    procedure DrawDropletSphere(color1, color2: tcolor; x1, y1, x2,
       y2: integer);
-    procedure drawwavesphere(color1, color2: tcolor; x1, y1, x2,
+    procedure DrawWaveSphere(color1, color2: tcolor; x1, y1, x2,
       y2: integer);
-    procedure drawrisingwavesphere(color1, color2: tcolor; x1, y1, x2,
+    procedure DrawRisingWaveSphere(color1, color2: tcolor; x1, y1, x2,
       y2: integer);
 //    function GetAngle(origin, endpoint: tpoint): integer;
-//    procedure TextRotate(x, y, angle: integer; atext: string; afont: tfont);
-    function reducevector(origin, endpoint: tpoint; factor: real): tpoint;
-    procedure star(x, y: integer);
-    procedure Setpolygonchecked(const Value: boolean);
-    procedure drawspiro(center, radius: tpoint);
-    procedure drawbars(x1, y1, x2, y2: integer);
-    procedure drawborders(x1, y1, x2, y2: integer);
+//    procedure TextRotate(x, y, angle: integer; aText: string; afont: tfont);
+    function ReduceVector(origin, endpoint: tpoint; factor: real): tpoint;
+    procedure Star(x, y: integer);
+    procedure SetPolygonChecked(const Value: boolean);
+    procedure DrawSpiro(center, radius: tpoint);
+    procedure DrawBars(x1, y1, x2, y2: integer);
+    procedure Drawborders(x1, y1, x2, y2: integer);
     procedure SetonColorPicked(const Value: TColorPicked);
     procedure SetShape(const Value: string);
     procedure SetAirBrush(const Value: TJvAirBrush);
     procedure SetTransformer(const Value: TJvPaintFX);
     procedure BuildShapeList;
-    procedure Setblocks(const Value: integer);
-    procedure Setspirals(const Value: integer);
-    procedure Setstarpoints(const Value: integer);
-    procedure Setstars(const Value: integer);
-    procedure fillgonio;
-    procedure fillSinPixs;
-    procedure shear(Abitmap: Tbitmap; amount: integer);
-    procedure xformA(amount: integer);
+    procedure SetBlocks(const Value: integer);
+    procedure SetSpirals(const Value: integer);
+    procedure SetStarpoints(const Value: integer);
+    procedure SetStars(const Value: integer);
+    procedure FillGonio;
+    procedure FillSinPixs;
+    procedure Shear(Abitmap: Tbitmap; amount: integer);
+    procedure XFormA(amount: integer);
     { Private declarations }
   protected
     { Protected declarations }
-    procedure mousedown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure ColorPicked(AColor: Tcolor);
@@ -169,65 +169,65 @@ type
     FX: TJvPaintFX;
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
-    procedure clipall;
+    procedure ClipAll;
     procedure Effects;
     procedure Backgrounds;
     procedure Preview(aBitmap: Tbitmap);
     procedure ApplyFilter(var Dst: TBitmap; DF: TDigitalFilter);
-    procedure blurbarChange(Sender: TObject);
-    procedure colornoisebarChange(Sender: TObject);
-    procedure contrastbarChange(Sender: TObject);
+    procedure BlurBarChange(Sender: TObject);
+    procedure ColorNoiseBarChange(Sender: TObject);
+    procedure ContrastBarChange(Sender: TObject);
     procedure DrawBlend;
     procedure DrawMandelJulia(mandel: boolean);
     procedure DrawMap;
     procedure DrawSolarize;
-    procedure drawTriangles;
-    procedure embossbarChange;
-    procedure filterbluebarChange;
-    procedure filtergreenbarChange;
-    procedure filterredbarChange;
-    procedure filterxbluebarChange;
-    procedure filterxgreenbarChange;
-    procedure filterxredbarChange;
-    procedure fisheyebarchange;
-    procedure lightnessbarChange(Sender: TObject);
-    procedure marble2barchange;
-    procedure marble3barchange;
-    procedure marble4barchange;
-    procedure marble5barchange;
-    procedure marble6barchange;
-    procedure marble7barchange;
-    procedure marble8barchange;
-    procedure marblebarchange;
-    procedure mononoisebarChange(Sender: TObject);
-    procedure mosaicbarchange;
-    procedure plasmabarchange;
+    procedure DrawTriangles;
+    procedure EmbossBarChange;
+    procedure FilterBlueBarChange;
+    procedure FilterGreenBarChange;
+    procedure FilterRedBarChange;
+    procedure FilterXBlueBarChange;
+    procedure FilterXGreenBarChange;
+    procedure FilterXRedBarChange;
+    procedure FisheyeBarchange;
+    procedure LightnessBarChange(Sender: TObject);
+    procedure Marble2BarChange;
+    procedure Marble3BarChange;
+    procedure Marble4BarChange;
+    procedure Marble5BarChange;
+    procedure Marble6BarChange;
+    procedure Marble7BarChange;
+    procedure Marble8BarChange;
+    procedure MarbleBarChange;
+    procedure MonoNoiseBarChange(Sender: TObject);
+    procedure MosaicBarChange;
+    procedure PlasmaBarChange;
     procedure Posterize;
     procedure RippleRandom;
     procedure RippleTooth;
     procedure RippleTriangle;
     procedure RotateBar;
-    procedure saturationbarChange(Sender: TObject);
-    procedure seambarchange;
-    procedure shearbarchange;
-    procedure smoothbarChange(Sender: TObject);
-    procedure splitblurbarChange(Sender: TObject);
-    procedure splitroundbarchange;
-    procedure splitwastebarchange;
-    procedure squeezebotbarchange;
-    procedure squeezediamondbarchange;
-    procedure squeezehorbarchange;
-    procedure squeezeround2barchange;
-    procedure squeezeroundbarchange;
-    procedure squeezetopbarchange;
-    procedure squeezewastebarchange;
+    procedure SaturationBarChange(Sender: TObject);
+    procedure SeamBarChange;
+    procedure ShearBarChange;
+    procedure SmoothBarChange(Sender: TObject);
+    procedure SplitBlurBarChange(Sender: TObject);
+    procedure SplitRoundBarChange;
+    procedure SplitWasteBarChange;
+    procedure SqueezeBotBarChange;
+    procedure SqueezeDiamondBarChange;
+    procedure SqueezeHorBarChange;
+    procedure SqueezeRound2BarChange;
+    procedure SqueezeRoundBarChange;
+    procedure SqueezeTopBarChange;
+    procedure SqueezeWasteBarChange;
     procedure TexturizeOverlap;
     procedure TexturizeTile;
-    procedure twistbarchange;
-    procedure wavebarchange;
-    procedure waveextrachange;
-    procedure waveinfchange;
-    procedure xformAbarchange;
+    procedure TwistBarChange;
+    procedure WaveBarChange;
+    procedure WaveExtraChange;
+    procedure WaveInfChange;
+    procedure XFormABarChange;
     procedure Trace;
     property AirBrush: TJvAirBrush read FAirBrush write SetAirBrush;
     property Transformer: TJvPaintFX read FX write SetTransformer;
@@ -236,15 +236,15 @@ type
   published
     { Published declarations }
     property Shape: string read myshape write SetShape;
-    property polygonchecked: boolean read Fpolygonchecked write Setpolygonchecked;
-    property onColorPicked: TColorPicked read FonColorPicked write SetonColorPicked;
-    //  stars,starpoints:integer;
-    //  blocks:integer;
-    //  spirals:integer;
-    property stars: integer read Fstars write Setstars;
-    property starpoints: integer read Fstarpoints write Setstarpoints;
-    property blocks: integer read Fblocks write Setblocks;
-    property spirals: integer read Fspirals write Setspirals;
+    property PolygonChecked: boolean read FPolygonChecked write SetPolygonChecked;
+    property OnColorPicked: TColorPicked read FOnColorPicked write SetOnColorPicked;
+    //  Stars,Starpoints:integer;
+    //  Blocks:integer;
+    //  Spirals:integer;
+    property Stars: integer read FStars write SetStars;
+    property Starpoints: integer read FStarpoints write SetStarpoints;
+    property Blocks: integer read FBlocks write SetBlocks;
+    property Spirals: integer read FSpirals write SetSpirals;
   end;
 
 implementation
@@ -258,7 +258,7 @@ const
   cr = chr(13) + chr(10);
   tab = chr(9);
 
-  // texture constants
+  // Texture constants
   DarkStrength = 0.82;
   StrongBlend = 52;
   WeakBlend = 36;
@@ -287,7 +287,7 @@ var
   RangeTransColor: tcolor;
 
   NSpiro: integer;
-  wavepen, wavebrush: tcolor;
+  Wavepen, Wavebrush: tcolor;
   decoX, decoY: integer;
 
   mybezier: array[0..3] of tpoint;
@@ -296,7 +296,7 @@ var
   myorigin, myprevpoint: tpoint;
   myslinedir: string;
   myslinetol: integer;
-  mydraw: boolean;
+  myDraw: boolean;
   mypen: tpenmode;
   mypenstyle: tpenstyle;
   myoldbrushstyle: tbrushstyle;
@@ -335,9 +335,9 @@ begin
     Result := i;
 end;
 
-// start of filter procedures
+// Start of filter procedures
 
-procedure TJvDrawImage.fillgonio;
+procedure TJvDrawImage.FillGonio;
 var
   a0: extended;
   i: integer;
@@ -347,7 +347,7 @@ begin
     sincos(a0 * (i - 90), gonio[i, 0], gonio[i, 1]);
 end;
 
-procedure TJvDrawImage.fillSinPixs;
+procedure TJvDrawImage.FillSinPixs;
 var
   i: integer;
 begin
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.shear(Abitmap: Tbitmap; amount: integer);
+procedure TJvDrawImage.Shear(Abitmap: Tbitmap; amount: integer);
 var
   bm: tbitmap;
   p1, p2: pbytearray;
@@ -390,7 +390,7 @@ begin
   bm.free;
 end;
 
-procedure TJvDrawImage.xformA(amount: integer);
+procedure TJvDrawImage.XFormA(amount: integer);
 var
   x, y, i: integer;
   p1: pbytearray;
@@ -408,7 +408,7 @@ begin
     end;
 end;
 
-procedure TJvDrawImage.drawborders(x1, y1, x2, y2: integer);
+procedure TJvDrawImage.Drawborders(x1, y1, x2, y2: integer);
 var
   h, w: integer;
 begin
@@ -420,7 +420,7 @@ begin
   Canvas.FillRect(rect(w - (x2 - x1), 0, w, h));
 end;
 
-procedure TJvDrawImage.drawbars(x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawBars(x1, y1, x2, y2: integer);
 var
   h, w: integer;
 begin
@@ -433,7 +433,7 @@ begin
   Canvas.FillRect(rect(x1, y1, x2, y2));
 end;
 
-procedure TJvDrawImage.drawspiro(center, radius: tpoint);
+procedure TJvDrawImage.DrawSpiro(center, radius: tpoint);
 var
   x0, x1, y0, y1, a0, a1, da0, da1: real;
   xs, ys, x, y, r0, r1: integer;
@@ -443,7 +443,7 @@ begin
   ys := picture.Bitmap.height div 2;
   if xs <> ys then
   begin
-    showmessage('image must be square for spirographs');
+    showmessage('image must be square for Spirographs');
     exit;
   end;
   r0 := variant(sqrt(sqr(center.x - xs) + sqr(center.y - ys)));
@@ -477,7 +477,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.star(x, y: integer);
+procedure TJvDrawImage.Star(x, y: integer);
 var
   i, x0, y0, damult: integer;
   apoint: tpoint;
@@ -487,35 +487,35 @@ begin
   y0 := myorigin.y;
 //777  d := abs(y - y0);
   damult := 1;
-  if not polygonchecked then
+  if not PolygonChecked then
   begin
-    case starpoints of
+    case Starpoints of
       5: damult := 2;
       7: damult := 3;
       9: damult := 4;
       11: damult := 5;
     end;
   end;
-  da := damult * 2 * pi / starpoints;
+  da := damult * 2 * pi / Starpoints;
   with canvas do
   begin
     pointarray[0] := point(x, y);
     //   moveto(x,y);
     apoint := point(x, y);
-    for i := 1 to starpoints - 1 do
+    for i := 1 to Starpoints - 1 do
     begin
-      //      apoint:=rotate(point(x0,y0),apoint,da);
+      //      apoint:=Rotate(point(x0,y0),apoint,da);
       //      lineto(apoint.x,apoint.y);
-      apoint := rotate(point(x0, y0), apoint, da);
+      apoint := Rotate(point(x0, y0), apoint, da);
       pointarray[i] := apoint;
     end;
     //      lineto(x,y);
-    Polygon(Slice(PointArray, starpoints))
+    Polygon(Slice(PointArray, Starpoints))
   end;
 
 end;
 
-function TJvDrawImage.reducevector(origin, endpoint: tpoint;
+function TJvDrawImage.ReduceVector(origin, endpoint: tpoint;
   factor: real): tpoint;
 var
   a, d, r: real;
@@ -530,7 +530,7 @@ begin
   result.y := origin.y + variant(r * sin(a));
 end;
 (*)
-procedure TJvDrawImage.TextRotate(x, y, angle: integer; atext: string;
+procedure TJvDrawImage.TextRotate(x, y, angle: integer; aText: string;
   afont: tfont);
 var
   dc: hdc;
@@ -539,7 +539,7 @@ var
   i: integer;
   fname, s: string;
 begin
-  s := atext;
+  s := aText;
   fnt.lfEscapement := angle * 10;
   fnt.lfOrientation := angle * 10;
   if fsbold in afont.Style then
@@ -565,8 +565,8 @@ begin
   SetBkMode(dc, windows.TRANSPARENT);
   SetTextColor(dc, afont.color);
   hfntPrev := SelectObject(dc, hfnt);
-  //textout(dc,x,y,@atext[1],length(atext));
-  textout(dc, x, y, @s[1], length(s));
+  //Textout(dc,x,y,@aText[1],length(aText));
+  Textout(dc, x, y, @s[1], length(s));
   SelectObject(dc, hfntPrev);
   DeleteObject(hfnt);
   Repaint;
@@ -586,7 +586,7 @@ begin
   result := variant(-a);
 end;
 (*)
-procedure TJvDrawImage.drawrisingwavesphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawRisingWaveSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -645,19 +645,19 @@ begin
     begin
       xo := i * dx + a;
       r := abs(round(a * sin(pi * xo / (x2 - x1))));
-      sphere(clip, x1 + xo, r, ycenter, r, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, x1 + xo, r, ycenter, r, r1, g1, b1, r2, g2, b2, true);
     end
     else
     begin
       yo := i * dy + b;
       r := abs(round(b * sin(pi * yo / (y2 - y1) - pi / 2)));
-      sphere(clip, xcenter, r, y1 + yo, r, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, xcenter, r, y1 + yo, r, r1, g1, b1, r2, g2, b2, true);
     end;
   end;
   picture.bitmap.Assign(clip);
 end;
 
-procedure TJvDrawImage.drawwavesphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawWaveSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -716,19 +716,19 @@ begin
     begin
       xo := i * dx + a;
       r := abs(round(a * sin(pi * xo / (x2 - x1) - pi / 2)));
-      sphere(clip, x1 + xo, r, ycenter, r, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, x1 + xo, r, ycenter, r, r1, g1, b1, r2, g2, b2, true);
     end
     else
     begin
       yo := i * dy + b;
       r := abs(round(b * sin(pi * yo / (y2 - y1) - pi / 2)));
-      sphere(clip, xcenter, r, y1 + yo, r, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, xcenter, r, y1 + yo, r, r1, g1, b1, r2, g2, b2, true);
     end;
   end;
   picture.bitmap.Assign(clip);
 end;
 
-procedure TJvDrawImage.drawdropletsphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawDropletSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -782,14 +782,14 @@ begin
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
-      sphere(clip, x1 + i * dx + a, a, ycenter, a, r1, g1, b1, r2, g2, b2, true)
+      Sphere(clip, x1 + i * dx + a, a, ycenter, a, r1, g1, b1, r2, g2, b2, true)
     else
-      sphere(clip, xcenter, b, y1 + i * dy + b, b, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, xcenter, b, y1 + i * dy + b, b, r1, g1, b1, r2, g2, b2, true);
   end;
   picture.bitmap.Assign(clip);
 end;
 
-procedure TJvDrawImage.drawmultisphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawMultiSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -841,9 +841,9 @@ begin
   for i := 0 to bl - 1 do
   begin
     if dx > dy then
-      sphere(clip, x1 + i * dx + a, a, ycenter, a, r1, g1, b1, r2, g2, b2, true)
+      Sphere(clip, x1 + i * dx + a, a, ycenter, a, r1, g1, b1, r2, g2, b2, true)
     else
-      sphere(clip, xcenter, b, y1 + i * dy + b, b, r1, g1, b1, r2, g2, b2, true);
+      Sphere(clip, xcenter, b, y1 + i * dy + b, b, r1, g1, b1, r2, g2, b2, true);
   end;
   picture.bitmap.Assign(clip);
 end;
@@ -880,7 +880,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.drawsphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawSphere(color1, color2: tcolor; x1, y1, x2, y2: integer);
 var
   t, xcenter, a, ycenter, b: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -912,7 +912,7 @@ begin
   r2 := getrvalue(color2);
   g2 := getgvalue(color2);
   b2 := getbvalue(color2);
-  sphere(clip, xcenter, a, ycenter, b, r1, g1, b1, r2, g2, b2, true);
+  Sphere(clip, xcenter, a, ycenter, b, r1, g1, b1, r2, g2, b2, true);
   picture.bitmap.Assign(clip);
 end;
 
@@ -924,7 +924,7 @@ begin
     HorGradientLine(bitmap, XOrigin, XFinal, j, r1, g1, b1, r2, g2, b2, smooth);
 end;
 
-procedure TJvDrawImage.drawcolumn(x1, y1, x2, y2: integer);
+procedure TJvDrawImage.DrawColumn(x1, y1, x2, y2: integer);
 var
   t: integer;
   r1, g1, b1, r2, g2, b2: byte;
@@ -953,7 +953,7 @@ begin
   r2 := line[x2 * 3];
   g2 := line[x2 * 3 + 1];
   b2 := line[x2 * 3 + 2];
-  column(clip, x1, x2, y1, y2, r1, g1, b1, r2, g2, b2, true);
+  Column(clip, x1, x2, y1, y2, r1, g1, b1, r2, g2, b2, true);
   picture.bitmap.Assign(clip);
 end;
 
@@ -1035,7 +1035,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.interpRect(x1, y1, x2, y2: integer);
+procedure TJvDrawImage.InterpRect(x1, y1, x2, y2: integer);
 begin
   picture.bitmap.pixelformat := pf24bit;
   clip.assign(picture.bitmap);
@@ -1044,10 +1044,10 @@ begin
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawblurlines(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawBlurLines(x0, y0, x, y: integer);
 begin
-  drawtexlines(x0, y0, x, y);
-  clipall;
+  DrawTexLines(x0, y0, x, y);
+  ClipAll;
   clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
@@ -1055,10 +1055,10 @@ begin
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawblurrects(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawBlurRects(x0, y0, x, y: integer);
 begin
-  drawtexrects(x0, y0, x, y);
-  clipall;
+  DrawTexRects(x0, y0, x, y);
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.GaussianBlur(clip, 4);
   UserFilter := Blurfilter;
@@ -1066,7 +1066,7 @@ begin
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawtexrects(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawTexRects(x0, y0, x, y: integer);
 var
   dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   bcolor, pcolor, hcolor, scolor: tcolor;
@@ -1077,8 +1077,8 @@ begin
   bcolor := canvas.brush.color;
   canvas.brush.color := pcolor;
   canvas.brush.style := bssolid;
-  hcolor := texhighlight(pcolor);
-  scolor := texshadow(pcolor);
+  hcolor := Texhighlight(pcolor);
+  scolor := TexShadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
@@ -1116,10 +1116,10 @@ begin
   canvas.brush.color := bcolor;
 end;
 
-procedure TJvDrawImage.drawblurpoly(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawBlurPoly(x0, y0, x, y: integer);
 begin
-  drawtexpoly(x0, y0, x, y);
-  clipall;
+  DrawTexPoly(x0, y0, x, y);
+  ClipAll;
   clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
@@ -1127,7 +1127,7 @@ begin
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawtexpoly(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawTexPoly(x0, y0, x, y: integer);
 var
   dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   pcolor: tcolor;
@@ -1136,8 +1136,8 @@ begin
   w := width;
   h := height;
   pcolor := canvas.pen.color;
-//  hcolor := texhighlight(pcolor);
-//  scolor := texshadow(pcolor);
+//  hcolor := Texhighlight(pcolor);
+//  scolor := TexShadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
@@ -1175,10 +1175,10 @@ begin
   canvas.pen.color := pcolor;
 end;
 
-procedure TJvDrawImage.drawblurcurves(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawBlurCurves(x0, y0, x, y: integer);
 begin
-  drawtexcurves(x0, y0, x, y);
-  clipall;
+  DrawTexCurves(x0, y0, x, y);
+  ClipAll;
   clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
@@ -1186,7 +1186,7 @@ begin
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawtexcurves(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawTexCurves(x0, y0, x, y: integer);
 var
   dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   pcolor: tcolor;
@@ -1195,8 +1195,8 @@ begin
   w := width;
   h := height;
   pcolor := canvas.pen.color;
-//  hcolor := texhighlight(pcolor);
-//  scolor := texshadow(pcolor);
+//  hcolor := Texhighlight(pcolor);
+//  scolor := TexShadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
@@ -1292,10 +1292,10 @@ begin
   bm.free;
 end;
 
-procedure TJvDrawImage.drawblurovals(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawBlurOvals(x0, y0, x, y: integer);
 begin
-  drawtexovals(x0, y0, x, y);
-  clipall;
+  DrawTexOvals(x0, y0, x, y);
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.GaussianBlur(clip, 4);
   UserFilter := Blurfilter;
@@ -1304,7 +1304,7 @@ begin
 
 end;
 
-procedure TJvDrawImage.drawtexovals(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawTexOvals(x0, y0, x, y: integer);
 var
   dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   bcolor, pcolor, hcolor, scolor: tcolor;
@@ -1315,8 +1315,8 @@ begin
   bcolor := canvas.brush.color;
   canvas.brush.color := pcolor;
   canvas.brush.style := bssolid;
-  hcolor := texhighlight(pcolor);
-  scolor := texshadow(pcolor);
+  hcolor := Texhighlight(pcolor);
+  scolor := TexShadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
@@ -1389,7 +1389,7 @@ begin
   Result := BlendColors(Colr, tmp, WeakBlend);
 end; { Highlight }
 
-function TJvDrawImage.texShadow(Colr: longInt): longInt;
+function TJvDrawImage.TexShadow(Colr: longInt): longInt;
 var
   r, g, b: integer;
   tmp: longInt;
@@ -1402,7 +1402,7 @@ begin
   Result := BlendColors(Colr, tmp, StrongBlend);
 end; { Shadow }
 
-procedure TJvDrawImage.drawtexlines(x0, y0, x, y: integer);
+procedure TJvDrawImage.DrawTexLines(x0, y0, x, y: integer);
 var
   dx, dy, xr, yr, x1, y1, x2, y2, i, w, h, xi, yi: integer;
   pcolor, hcolor, scolor: tcolor;
@@ -1410,8 +1410,8 @@ begin
   w := width;
   h := height;
   pcolor := canvas.pen.color;
-  hcolor := texhighlight(pcolor);
-  scolor := texshadow(pcolor);
+  hcolor := Texhighlight(pcolor);
+  scolor := TexShadow(pcolor);
   xr := abs(round(sqrt(sqr(x - x0) + sqr(y - y0))));
   dx := abs(x - x0);
   dy := abs(y - y0);
@@ -1448,7 +1448,7 @@ begin
   canvas.pen.color := pcolor;
 end;
 
-procedure TJvDrawImage.drawsyms(x, y: integer);
+procedure TJvDrawImage.DrawSyms(x, y: integer);
 var
   x0, y0, i: integer;
   da: real;
@@ -1456,21 +1456,21 @@ var
 begin
   x0 := picture.bitmap.Width div 2;
   y0 := picture.Bitmap.Height div 2;
-  da := 2 * pi / starpoints;
+  da := 2 * pi / Starpoints;
   apoint := point(x, y);
-  for i := 0 to starpoints - 1 do
+  for i := 0 to Starpoints - 1 do
   begin
     with canvas do
     begin
       moveto(pointarray[i].x, pointarray[i].y);
       lineto(apoint.x, apoint.y);
       pointarray[i] := apoint;
-      apoint := rotate(point(x0, y0), apoint, da);
+      apoint := Rotate(point(x0, y0), apoint, da);
     end;
   end;
 end;
 
-procedure TJvDrawImage.putclip(M: Trect);
+procedure TJvDrawImage.PutClip(M: Trect);
 var
   dest: trect;
 begin
@@ -1482,7 +1482,7 @@ begin
   clip.canvas.CopyRect(dest, canvas, m);
 end;
 
-procedure TJvDrawImage.drawtriangle;
+procedure TJvDrawImage.DrawTriangle;
 begin
   with canvas do
   begin
@@ -1493,7 +1493,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.drawskew;
+procedure TJvDrawImage.DrawSkew;
 begin
   with canvas do
   begin
@@ -1505,21 +1505,21 @@ begin
   end;
 end;
 
-function TJvDrawImage.pointtoblock(x, y: integer): Trect;
+function TJvDrawImage.PointToBlock(x, y: integer): Trect;
 var
   xb, yb, w, h: integer;
 begin
   w := picture.bitmap.Width;
   h := Picture.bitmap.Height;
-  xb := w div blocks;
-  yb := h div blocks;
+  xb := w div Blocks;
+  yb := h div Blocks;
   result.left := (x div xb) * xb;
   result.top := (y div yb) * yb;
   result.Right := result.left + xb;
   result.Bottom := result.top + yb;
 end;
 
-procedure TJvDrawImage.drawcube;
+procedure TJvDrawImage.DrawCube;
 var
   dx, dy: integer;
 begin
@@ -1637,7 +1637,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.drawvgradientbrush(color1, color2: tcolor; y1, y2, x: integer);
+procedure TJvDrawImage.DrawVGradientBrush(color1, color2: tcolor; y1, y2, x: integer);
 var
   r1, g1, b1, r2, g2, b2: byte;
 begin
@@ -1770,7 +1770,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.drawgradientbrush(color1, color2: tcolor; x1, x2, y: integer);
+procedure TJvDrawImage.DrawGradientBrush(color1, color2: tcolor; x1, x2, y: integer);
 var
   r1, g1, b1, r2, g2, b2: byte;
 begin
@@ -1789,28 +1789,28 @@ begin
   picture.bitmap.Assign(clip);
 end;
 
-procedure TJvDrawImage.drawlightercircle(x, y, mode: integer);
+procedure TJvDrawImage.DrawLighterCircle(x, y, mode: integer);
 var
   r: integer;
 begin
   r := canvas.pen.width;
   if r < 5 then r := 5;
-  colorcircle(clip, point(x, y), r, mode);
+  ColorCircle(clip, point(x, y), r, mode);
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawdarkercircle(x, y, mode: integer);
+procedure TJvDrawImage.DrawDarkerCircle(x, y, mode: integer);
 var
   r: integer;
 begin
   r := canvas.pen.width;
   if r < 5 then r := 5;
-  colorcircle(clip, point(x, y), r, mode);
+  ColorCircle(clip, point(x, y), r, mode);
   picture.bitmap.assign(clip);
 
 end;
 
-procedure TJvDrawImage.colorcircle(var bm: TBitmap; center: tpoint; radius, mode: integer);
+procedure TJvDrawImage.ColorCircle(var bm: TBitmap; center: tpoint; radius, mode: integer);
 var
   p, p0, p1: pbytearray;
   dx, x, y, w, h, i, j, sum, c: integer;
@@ -1846,42 +1846,42 @@ begin
     for i := 0 to cm.width - 1 do
     begin
       case mode of
-        0: //blue
+        0: //Blue
           begin
             p[i * 3 + 1] := 0;
             p[i * 3 + 2] := 0;
           end;
-        1: //green
+        1: //Green
           begin
             p[i * 3] := 0;
             p[i * 3 + 2] := 0;
           end;
-        2: //red
+        2: //Red
           begin
             p[i * 3] := 0;
             p[i * 3 + 1] := 0;
           end;
-        3: //not blue
+        3: //not Blue
           begin
             p[i * 3] := 0;
           end;
-        4: //not green
+        4: //not Green
           begin
             p[i * 3 + 1] := 0;
           end;
-        5: //not red
+        5: //not Red
           begin
             p[i * 3 + 2] := 0;
           end;
-        6: //half blue
+        6: //half Blue
           begin
             p[i * 3] := p[i * 3] * 9 div 10;
           end;
-        7: //half green
+        7: //half Green
           begin
             p[i * 3 + 1] := p[i * 3 + 1] * 9 div 10;
           end;
-        8: //half red
+        8: //half Red
           begin
             p[i * 3 + 2] := p[i * 3 + 2] * 9 div 10;
           end;
@@ -1926,12 +1926,12 @@ begin
   cm.canvas.Draw(0, 0, tm);
   cm.transparent := true;
   cm.transparentcolor := clwhite;
-  bm.Canvas.draw(x - radius, y - radius, cm);
+  bm.Canvas.Draw(x - radius, y - radius, cm);
   cm.free;
   tm.free;
 end;
 
-procedure TJvDrawImage.drawcolorcircle(x, y, mode: integer);
+procedure TJvDrawImage.DrawColorCircle(x, y, mode: integer);
 var
   r: integer;
 begin
@@ -1940,11 +1940,11 @@ begin
   clip.PixelFormat := pf24bit;
   r := canvas.pen.width;
   if r < 5 then r := 5;
-  colorcircle(clip, point(x, y), r, mode);
+  ColorCircle(clip, point(x, y), r, mode);
   picture.bitmap.assign(clip);
 end;
 
-procedure TJvDrawImage.drawlightbrush(x, y, radius, amount: integer; style: TLightBrush);
+procedure TJvDrawImage.DrawLightBrush(x, y, radius, amount: integer; style: TLightBrush);
 var
   src, dst: tbitmap;
   Rclip, Rsrc: trect;
@@ -1986,14 +1986,14 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.samplestretch(src, dst: tbitmap);
+procedure TJvDrawImage.SampleStretch(src, dst: tbitmap);
 begin
   // use mitchelfilter from resample unit
   ImgStretch(src, dst,
     ResampleFilters[6].Filter, ResampleFilters[6].Width);
 end;
 
-procedure TJvDrawImage.drawstretchbrush(x, y, radius: integer; amount: extended; style: Tmorphbrush);
+procedure TJvDrawImage.DrawStretchBrush(x, y, radius: integer; amount: extended; style: Tmorphbrush);
 var
   src, dst: tbitmap;
   Rclip, Rsrc: trect;
@@ -2010,7 +2010,7 @@ begin
   Rclip := rect(x - radius, y - radius, x + radius, y + radius);
   dst.width := Rclip.right - Rclip.left;
   dst.height := RClip.bottom - Rclip.top;
-  // now change to reduce
+  // now Change to Reduce
   amount := abs(amount);
   if amount < 1 then amount := 1;
   dr := round(radius * amount / 180);
@@ -2025,7 +2025,7 @@ begin
   src.height := RClip.bottom - Rclip.top;
   Rsrc := rect(0, 0, src.width, src.height);
   src.Canvas.CopyRect(Rsrc, clip.canvas, Rclip);
-  samplestretch(src, dst);
+  SampleStretch(src, dst);
   // mask code
   // reset src dimensions for masking
   if style in [mbHorOval, mbVerOval] then
@@ -2049,7 +2049,7 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.rimple(src, dst: tbitmap; amount: extended);
+procedure TJvDrawImage.Rimple(src, dst: tbitmap; amount: extended);
 var
   ca, sa, a, dx, dy, r, sr, fr: extended;
   w, h, x, y, cx, cy, i, j, c, ci: integer;
@@ -2087,7 +2087,7 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.draweffectbrush(x, y, radius: integer; amount: extended; style: TLightbrush);
+procedure TJvDrawImage.DrawEffectBrush(x, y, radius: integer; amount: extended; style: TLightbrush);
 var
   src, dst: tbitmap;
   Rclip, Rsrc: trect;
@@ -2111,11 +2111,11 @@ begin
     lbfisheye: FX.fisheye(src, dst, amount);
     lbrotate: FX.smoothrotate(src, dst, src.width div 2, src.height div 2, amount);
     lbtwist: FX.twist(src, dst, round(amount));
-    lbrimple: rimple(src, dst, amount);
+    lbrimple: Rimple(src, dst, amount);
     mbHor, mbTop, mbBottom, mbDiamond, mbWaste, mbRound, mbRound2:
-      FX.squeezehor(src, dst, round(amount), style);
+      FX.SqueezeHor(src, dst, round(amount), style);
     mbSplitRound, mbSplitWaste:
-      FX.splitround(src, dst, round(amount), style);
+      FX.SplitRound(src, dst, round(amount), style);
   end;
   // mask code
   src.canvas.Brush.color := clwhite;
@@ -2134,7 +2134,7 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.drawplasma(x, y: integer; amount: extended);
+procedure TJvDrawImage.DrawPlasma(x, y: integer; amount: extended);
 var
   src: tbitmap;
   Rs: trect;
@@ -2158,7 +2158,7 @@ begin
   src.free;
 end;
 
-function TJvDrawImage.rotate(origin, endpoint: tpoint; angle: real): tpoint;
+function TJvDrawImage.Rotate(origin, endpoint: tpoint; angle: real): tpoint;
 var
   a, d, r: real;
 begin
@@ -2172,7 +2172,7 @@ begin
   result.y := origin.y + variant(r * sin(a));
 end;
 
-procedure TJvDrawImage.setsyms(x, y: integer);
+procedure TJvDrawImage.SetSyms(x, y: integer);
 var
   x0, y0, i: integer;
   da: real;
@@ -2180,12 +2180,12 @@ var
 begin
   x0 := picture.bitmap.Width div 2;
   y0 := picture.Bitmap.Height div 2;
-  da := 2 * pi / starpoints;
+  da := 2 * pi / Starpoints;
   apoint := point(x, y);
   pointarray[0] := apoint;
-  for i := 1 to starpoints - 1 do
+  for i := 1 to Starpoints - 1 do
   begin
-    apoint := rotate(point(x0, y0), apoint, da);
+    apoint := Rotate(point(x0, y0), apoint, da);
     pointarray[i] := apoint;
   end;
 end;
@@ -2205,19 +2205,19 @@ begin
   result := GetRValue(ColorToRGB(acolor));
 end;
 
-function TJvDrawImage.mixcolors(color1, color2: tcolor): tcolor;
+function TJvDrawImage.MixColors(color1, color2: tcolor): tcolor;
 var
   r1, g1, b1: byte;
 begin
   color1 := colortorgb(color1);
   color2 := colortorgb(color2);
-  r1 := (getred(color1) + getred(color2)) div 2;
-  g1 := (getgreen(color1) + getgreen(color2)) div 2;
-  b1 := (getblue(color1) + getblue(color2)) div 2;
+  r1 := (getRed(color1) + getRed(color2)) div 2;
+  g1 := (getGreen(color1) + getGreen(color2)) div 2;
+  b1 := (getBlue(color1) + getBlue(color2)) div 2;
   result := rgb(r1, g1, b1);
 end;
 
-procedure TJvDrawImage.initplasma;
+procedure TJvDrawImage.InitPlasma;
 var
   w, h: integer;
 begin
@@ -2232,7 +2232,7 @@ begin
   zoomclip.Canvas.Draw(0, 0, picture.bitmap);
 end;
 
-procedure TJvDrawImage.copyclip;
+procedure TJvDrawImage.CopyClip;
 var
   m, dest: trect;
 begin
@@ -2245,15 +2245,15 @@ begin
   clip.pixelformat := pf24bit;
 end;
 
-procedure TJvDrawImage.clipall;
+procedure TJvDrawImage.ClipAll;
 begin
   mycliprect := rect(0, 0, picture.bitmap.width - 1, picture.bitmap.height - 1);
   clipcm := cmsrccopy;
-  setclip(clwhite);
-  copyclip;
+  SetClip(clwhite);
+  CopyClip;
 end;
 
-procedure TJvDrawImage.setclip(acolor: tcolor);
+procedure TJvDrawImage.SetClip(acolor: tcolor);
 var
   m, dest: trect;
 begin
@@ -2265,19 +2265,19 @@ begin
   clip.Canvas.FillRect(dest);
 end;
 
-procedure TJvDrawImage.mypaintESC(x, y: integer; shift: tshiftstate);
+procedure TJvDrawImage.MyPaintESC(x, y: integer; shift: tshiftstate);
 begin
-  if myshape = 'polygon' then
+  if myshape = 'Polygon' then
   begin
     if freepolycount > 2 then
       canvas.Polygon(slice(freepoly, freepolycount));
     freepolycount := 0;
-    mydraw := false;
+    myDraw := false;
   end;
   if myshape = 'polyline' then
   begin
     freepolycount := 0;
-    mydraw := false;
+    myDraw := false;
   end;
   if myshape = 'polybezier' then
   begin
@@ -2285,7 +2285,7 @@ begin
     bezierfix2 := false;
     myorigin := point(x, y);
     myprevpoint := myorigin;
-    if ssalt in shift then mydraw := false;
+    if ssalt in shift then myDraw := false;
   end;
 
   canvas.pen.mode := mypen;
@@ -2295,11 +2295,11 @@ end;
 procedure TJvDrawImage.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  wavepen := canvas.pen.color;
-  wavebrush := canvas.brush.color;
+  Wavepen := canvas.pen.color;
+  Wavebrush := canvas.brush.color;
   if button = mbright then
   begin
-    mypaintESC(x, y, shift);
+    MyPaintESC(x, y, shift);
     exit;
   end;
   if ((ssctrl in shift) and (ssshift in shift)) then
@@ -2312,48 +2312,48 @@ begin
   myorigin := point(x, y);
   myprevpoint := myorigin;
   myslinedir := 'none';
-  mydraw := true;
+  myDraw := true;
   mypen := canvas.Pen.Mode;
   if (myshape = 'rangemove') or (myshape = 'rangesmear') then
   begin
     clipcm := cmSrcInvert;
-    setclip(clwhite);
-    copyclip;
+    SetClip(clwhite);
+    CopyClip;
     with canvas do
     begin
       copymode := cmSrcInvert;
-      draw(x, y, clip);
+      Draw(x, y, clip);
     end;
   end;
 
-  if myshape = 'darkerbrush' then clipall;
-  if myshape = 'mbHorOval' then clipall;
-  if myshape = 'mbVerOval' then clipall;
-  if myshape = 'mbVerBox' then clipall;
-  if myshape = 'mbHorBox' then clipall;
-  if myshape = 'mbHor' then clipall;
-  if myshape = 'mbTop' then clipall;
-  if myshape = 'mbBottom' then clipall;
-  if myshape = 'mbDiamond' then clipall;
-  if myshape = 'mbWaste' then clipall;
-  if myshape = 'mbRound' then clipall;
-  if myshape = 'mbRound2' then clipall;
-  if myshape = 'mbSplitRound' then clipall;
-  if myshape = 'mbSplitWaste' then clipall;
-  if myshape = 'zoombrush' then initplasma;
-  if myshape = 'zoomkeepbrush' then initplasma;
-  if myshape = 'brightnessbrush' then clipall;
-  if myshape = 'contrastbrush' then clipall;
-  if myshape = 'saturationbrush' then clipall;
-  if myshape = 'fisheyebrush' then clipall;
-  if myshape = 'fisheyefixbrush' then clipall;
-  if myshape = 'rotatebrush' then clipall;
-  if myshape = 'twistbrush' then clipall;
-  if myshape = 'rimplebrush' then clipall;
-  if myshape = 'lighterbrush' then clipall;
-  if myshape = 'graybrush' then clipall;
-  if myshape = 'rollmixbrush' then clipall;
-  if myshape = 'smoothbrush' then clipall;
+  if myshape = 'darkerbrush' then ClipAll;
+  if myshape = 'mbHorOval' then ClipAll;
+  if myshape = 'mbVerOval' then ClipAll;
+  if myshape = 'mbVerBox' then ClipAll;
+  if myshape = 'mbHorBox' then ClipAll;
+  if myshape = 'mbHor' then ClipAll;
+  if myshape = 'mbTop' then ClipAll;
+  if myshape = 'mbBottom' then ClipAll;
+  if myshape = 'mbDiamond' then ClipAll;
+  if myshape = 'mbWaste' then ClipAll;
+  if myshape = 'mbRound' then ClipAll;
+  if myshape = 'mbRound2' then ClipAll;
+  if myshape = 'mbSplitRound' then ClipAll;
+  if myshape = 'mbSplitWaste' then ClipAll;
+  if myshape = 'zoombrush' then InitPlasma;
+  if myshape = 'zoomkeepbrush' then InitPlasma;
+  if myshape = 'brightnessbrush' then ClipAll;
+  if myshape = 'contrastbrush' then ClipAll;
+  if myshape = 'saturationbrush' then ClipAll;
+  if myshape = 'fisheyebrush' then ClipAll;
+  if myshape = 'fisheyefixbrush' then ClipAll;
+  if myshape = 'rotatebrush' then ClipAll;
+  if myshape = 'twistbrush' then ClipAll;
+  if myshape = 'rimplebrush' then ClipAll;
+  if myshape = 'lighterbrush' then ClipAll;
+  if myshape = 'graybrush' then ClipAll;
+  if myshape = 'rollmixbrush' then ClipAll;
+  if myshape = 'smoothbrush' then ClipAll;
 
   if myshape = 'gradientbrush' then
   begin
@@ -2364,13 +2364,13 @@ begin
     with canvas do
     begin
       if ssalt in shift then
-        pen.color := mixcolors(pixels[x, y - pen.width], pixels[x, y + pen.width])
+        pen.color := MixColors(pixels[x, y - pen.width], pixels[x, y + pen.width])
       else
-        pen.color := mixcolors(pixels[x - pen.width, y], pixels[x + pen.width, y]);
+        pen.color := MixColors(pixels[x - pen.width, y], pixels[x + pen.width, y]);
     end;
   end;
   if myshape = 'sym' then
-    setsyms(x, y);
+    SetSyms(x, y);
   if myshape = 'chord3' then
     myshape := 'chord';
   if myshape = 'pie3' then
@@ -2441,7 +2441,7 @@ begin
   mypen := canvas.pen.mode;
   h := abs(y - myorigin.y);
 //  w := abs(x - myorigin.x);
-  if mydraw then
+  if myDraw then
   begin
     if (myshape = 'rangemove') or (myshape = 'rangesmear') then
     begin
@@ -2449,8 +2449,8 @@ begin
       begin
         copymode := cmSrcInvert;
         if myshape = 'rangemove' then
-          draw(myprevpoint.x, myprevpoint.y, clip);
-        draw(x, y, clip);
+          Draw(myprevpoint.x, myprevpoint.y, clip);
+        Draw(x, y, clip);
         myprevpoint := point(x, y);
       end;
     end;
@@ -2461,13 +2461,13 @@ begin
     begin
       w := canvas.pen.width;
       if w < 5 then w := 50;
-      drawplasma(x, y, w);
+      DrawPlasma(x, y, w);
     end;
     if myshape = 'fisheyebrush' then
     begin
       w := canvas.pen.width;
       if w < 5 then w := 50;
-      draweffectbrush(x, y, w, 0.9, lbfisheye);
+      DrawEffectBrush(x, y, w, 0.9, lbfisheye);
     end;
     if myshape = 'fisheyefixbrush' then
     begin
@@ -2478,7 +2478,7 @@ begin
       angle := arctan2(dy, dx) / pi * 0.5 + 0.5;
       if angle < 0.55 then angle := 0.55;
       if angle > 0.99 then angle := 0.99;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, lbfisheye);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, lbfisheye);
     end;
     if myshape = 'twistbrush' then
     begin
@@ -2487,7 +2487,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := abs(arctan2(dy, dx) * 25 / pi) + 1;
-      draweffectbrush(myorigin.x, myorigin.y, rr, round(angle), lbtwist);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, round(angle), lbtwist);
     end;
     if myshape = 'mbHorOval' then
     begin
@@ -2496,7 +2496,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      drawstretchbrush(myorigin.x, myorigin.y, rr, angle, mbHorOval);
+      DrawStretchBrush(myorigin.x, myorigin.y, rr, angle, mbHorOval);
     end;
     if myshape = 'mbHorBox' then
     begin
@@ -2505,7 +2505,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      drawstretchbrush(myorigin.x, myorigin.y, rr, angle, mbHorBox);
+      DrawStretchBrush(myorigin.x, myorigin.y, rr, angle, mbHorBox);
     end;
 
     if myshape = 'mbVerOval' then
@@ -2515,7 +2515,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      drawstretchbrush(myorigin.x, myorigin.y, rr, angle, mbVerOval);
+      DrawStretchBrush(myorigin.x, myorigin.y, rr, angle, mbVerOval);
     end;
 
     if myshape = 'mbVerBox' then
@@ -2525,7 +2525,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      drawstretchbrush(myorigin.x, myorigin.y, rr, angle, mbVerBox);
+      DrawStretchBrush(myorigin.x, myorigin.y, rr, angle, mbVerBox);
     end;
 
     if myshape = 'mbHor' then
@@ -2535,7 +2535,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbHor);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbHor);
     end;
 
     if myshape = 'mbTop' then
@@ -2545,7 +2545,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbTop);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbTop);
     end;
 
     if myshape = 'mbBottom' then
@@ -2555,7 +2555,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbBottom);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbBottom);
     end;
     if myshape = 'mbWaste' then
     begin
@@ -2564,7 +2564,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbWaste);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbWaste);
     end;
     if myshape = 'mbRound' then
     begin
@@ -2573,7 +2573,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbRound);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbRound);
     end;
     if myshape = 'mbRound2' then
     begin
@@ -2582,7 +2582,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbRound2);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbRound2);
     end;
 
     if myshape = 'mbDiamond' then
@@ -2592,7 +2592,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbDiamond);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbDiamond);
     end;
     if myshape = 'mbSplitRound' then
     begin
@@ -2601,7 +2601,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbSplitRound);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbSplitRound);
     end;
     if myshape = 'mbSplitWaste' then
     begin
@@ -2610,7 +2610,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, mbSplitWaste);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, mbSplitWaste);
     end;
 
     if myshape = 'rimplebrush' then
@@ -2620,7 +2620,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 10 / pi + 1;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, lbrimple);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, lbrimple);
     end;
 
     if myshape = 'rotatebrush' then
@@ -2630,7 +2630,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 180 / pi;
-      draweffectbrush(myorigin.x, myorigin.y, rr, angle, lbrotate);
+      DrawEffectBrush(myorigin.x, myorigin.y, rr, angle, lbrotate);
     end;
     if myshape = 'brightnessbrush' then
     begin
@@ -2639,7 +2639,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 100 / pi;
-      drawlightbrush(myorigin.x, myorigin.y,
+      DrawLightBrush(myorigin.x, myorigin.y,
         rr, round(angle), lbBrightness);
     end;
     if myshape = 'contrastbrush' then
@@ -2649,7 +2649,7 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 100 / pi;
-      drawlightbrush(myorigin.x, myorigin.y,
+      DrawLightBrush(myorigin.x, myorigin.y,
         rr, round(angle), lbContrast);
     end;
     if myshape = 'saturationbrush' then
@@ -2659,38 +2659,38 @@ begin
       if dx = 0 then dx := 0.01;
       dy := y - myorigin.y;
       angle := arctan2(dy, dx) * 100 / pi;
-      drawlightbrush(myorigin.x, myorigin.y,
+      DrawLightBrush(myorigin.x, myorigin.y,
         rr, round(angle), lbContrast);
     end;
 
-    if myshape = 'bluebrush' then
-      drawcolorcircle(x, y, 0);
-    if myshape = 'greenbrush' then
-      drawcolorcircle(x, y, 1);
+    if myshape = 'Bluebrush' then
+      DrawColorCircle(x, y, 0);
+    if myshape = 'Greenbrush' then
+      DrawColorCircle(x, y, 1);
     if myshape = 'redbrush' then
-      drawcolorcircle(x, y, 2);
-    if myshape = 'notbluebrush' then
-      drawcolorcircle(x, y, 3);
-    if myshape = 'notgreenbrush' then
-      drawcolorcircle(x, y, 4);
+      DrawColorCircle(x, y, 2);
+    if myshape = 'notBluebrush' then
+      DrawColorCircle(x, y, 3);
+    if myshape = 'notGreenbrush' then
+      DrawColorCircle(x, y, 4);
     if myshape = 'notredbrush' then
-      drawcolorcircle(x, y, 5);
-    if myshape = 'halfbluebrush' then
-      drawcolorcircle(x, y, 6);
-    if myshape = 'halfgreenbrush' then
-      drawcolorcircle(x, y, 7);
+      DrawColorCircle(x, y, 5);
+    if myshape = 'halfBluebrush' then
+      DrawColorCircle(x, y, 6);
+    if myshape = 'halfGreenbrush' then
+      DrawColorCircle(x, y, 7);
     if myshape = 'halfredbrush' then
-      drawcolorcircle(x, y, 8);
+      DrawColorCircle(x, y, 8);
     if myshape = 'darkerbrush' then
-      drawdarkercircle(x, y, 9);
+      DrawDarkerCircle(x, y, 9);
     if myshape = 'lighterbrush' then
-      drawlightercircle(x, y, 10);
+      DrawLighterCircle(x, y, 10);
     if myshape = 'graybrush' then
-      drawlightercircle(x, y, 11);
+      DrawLighterCircle(x, y, 11);
     if myshape = 'rollmixbrush' then
-      drawlightercircle(x, y, 12);
+      DrawLighterCircle(x, y, 12);
     if myshape = 'smoothbrush' then
-      drawlightercircle(x, y, 13);
+      DrawLighterCircle(x, y, 13);
 
     if myshape = 'gradientbrush' then
     begin
@@ -2700,17 +2700,17 @@ begin
         begin
           color1 := pixels[x, y - pen.width];
           color2 := pixels[x, y + pen.width];
-          drawvgradientbrush(color1, color2, y - pen.width, y + pen.width, x);
-          drawvgradientbrush(color1, color2, y - pen.width, y + pen.width, x - 1);
-          drawvgradientbrush(color1, color2, y - pen.width, y + pen.width, x - 2);
+          DrawVGradientBrush(color1, color2, y - pen.width, y + pen.width, x);
+          DrawVGradientBrush(color1, color2, y - pen.width, y + pen.width, x - 1);
+          DrawVGradientBrush(color1, color2, y - pen.width, y + pen.width, x - 2);
         end
         else
         begin
           color1 := pixels[x - pen.width, y];
           color2 := pixels[x + pen.width, y];
-          drawgradientbrush(color1, color2, x - pen.width, x + pen.width, y);
-          drawgradientbrush(color1, color2, x - pen.width, x + pen.width, y + 1);
-          drawgradientbrush(color1, color2, x - pen.width, x + pen.width, y + 2);
+          DrawGradientBrush(color1, color2, x - pen.width, x + pen.width, y);
+          DrawGradientBrush(color1, color2, x - pen.width, x + pen.width, y + 1);
+          DrawGradientBrush(color1, color2, x - pen.width, x + pen.width, y + 2);
         end;
       end;
     end;
@@ -2719,12 +2719,12 @@ begin
       with canvas do
       begin
         pen.mode := pmnotxor;
-        drawcube;
+        DrawCube;
         myskew[4] := point(x, y);
-        drawcube;
+        DrawCube;
       end;
     if (myshape = 'rectangle') or (myshape = 'cube') or (myshape = 'maze')
-      or (myshape = 'interprect') or (myshape = 'intercolumn') then
+      or (myshape = 'Interprect') or (myshape = 'interColumn') then
       with canvas do
       begin
         pen.mode := pmnotxor;
@@ -2741,12 +2741,12 @@ begin
         roundrect(myorigin.x, myorigin.y, x, y, myround, myround);
         myprevpoint := point(x, y);
       end;
-    if myshape = 'blocks' then
-      canvas.FillRect(pointtoblock(x, y));
+    if myshape = 'Blocks' then
+      canvas.FillRect(PointToBlock(x, y));
 
-    if (myshape = 'ellipse') or (myshape = 'globe') or (myshape = 'intersphere')
-      or (myshape = 'multisphere') or (myshape = 'dropletsphere')
-      or (myshape = 'wavesphere') or (myshape = 'risingwavesphere')
+    if (myshape = 'ellipse') or (myshape = 'globe') or (myshape = 'interSphere')
+      or (myshape = 'MultiSphere') or (myshape = 'DropletSphere')
+      or (myshape = 'WaveSphere') or (myshape = 'RisingWaveSphere')
       or (myshape = 'decooval') then
       with canvas do
       begin
@@ -2767,22 +2767,22 @@ begin
       with canvas do
       begin
         pen.mode := pmnotxor;
-        drawskew;
+        DrawSkew;
         myskew[2] := point(x, y);
         myskew[3].x := myskew[0].x + (myskew[2].x - myskew[1].x);
         myskew[3].y := myskew[0].y + (myskew[2].y - myskew[1].y);
-        drawskew;
+        DrawSkew;
       end;
 
     if myshape = 'triangle1' then
       with canvas do
       begin
         pen.mode := pmnotxor;
-        drawtriangle;
+        DrawTriangle;
         myskew[2] := point(x, y);
-        drawtriangle;
+        DrawTriangle;
       end;
-    if (myshape = 'polyline') or (myshape = 'polygon') then
+    if (myshape = 'polyline') or (myshape = 'Polygon') then
       with canvas do
       begin
         pen.mode := pmnotxor;
@@ -2835,9 +2835,9 @@ begin
         polybezier(mybezier);
         myprevpoint := point(x, y);
       end;
-    if (myshape = 'line') or (myshape = 'rotatetext') or (myshape = 'star')
+    if (myshape = 'line') or (myshape = 'rotateText') or (myshape = 'Star')
       or (myshape = 'spiral') or (myshape = 'skewrect') or (myshape = 'triangle')
-      or (myshape = 'cone') or (myshape = 'spiro') or
+      or (myshape = 'cone') or (myshape = 'Spiro') or
       (myshape = 'decobar') then
       with canvas do
       begin
@@ -2886,15 +2886,15 @@ begin
         canvas.Pixels[x + xp, y + yp] := canvas.Brush.Color;
       end;
 
-    if (myshape = 'waveline') or (myshape = 'fastwaveline')
-      or (myshape = 'colorwaveline') then
+    if (myshape = 'Waveline') or (myshape = 'fastWaveline')
+      or (myshape = 'colorWaveline') then
       with canvas do
       begin
         canvas.lineto(x, y);
         myprevpoint := point(x, y);
       end;
 
-    if myshape = 'borderwaveline' then
+    if myshape = 'borderWaveline' then
     begin
       canvas.moveto(myprevpoint.x, myprevpoint.y);
       canvas.lineto(x, y);
@@ -2908,7 +2908,7 @@ begin
       with canvas do
       begin
         pw := pen.width;
-        pen.color := wavepen;
+        pen.color := Wavepen;
         pen.mode := pmcopy;
         moveto(myprevpoint.x, myprevpoint.y);
         lineto(x, y);
@@ -2950,10 +2950,10 @@ begin
         x2 := x - x1;
         y2 := y - y1;
         i := pen.width;
-        putclip(rect(x2, y2, x2 + i, y2 + i));
+        PutClip(rect(x2, y2, x2 + i, y2 + i));
         clip.transparent := true;
         clip.TransparentColor := pixels[Targetpoint.x, Targetpoint.y];
-        draw(x, y, clip);
+        Draw(x, y, clip);
         clip.transparent := false;
       end;
 
@@ -2967,7 +2967,7 @@ begin
       canvas.CopyRect(myrect, canvas, mycliprect);
     end;
     if myshape = 'sym' then
-      drawsyms(x, y);
+      DrawSyms(x, y);
     if myshape = 'sline' then
     begin
       if myslinedir = 'none' then
@@ -3075,8 +3075,8 @@ var
   Acolor, pcolor: tcolor;
   pw: integer;
 begin
-  //canvas.pen.color:=wavepen;
-  //canvas.brush.color:=wavebrush;
+  //canvas.pen.color:=Wavepen;
+  //canvas.brush.color:=Wavebrush;
 
   if ((ssctrl in shift) and (ssalt in shift)) then exit;
   if button = mbright then exit;
@@ -3087,59 +3087,59 @@ begin
   if myshape = 'transcopy' then
   begin
     clipcm := cmSrcCopy;
-    setclip(clwhite);
-    copyclip;
+    SetClip(clwhite);
+    CopyClip;
     myrect := rect(x, y, x + clip.width - 1, y + clip.height - 1);
     canvas.brushcopy(myrect, clip,
       rect(0, 0, clip.width, clip.height), RangeTransColor);
-    mydraw := false;
+    myDraw := false;
   end;
   if myshape = 'cube1' then
   begin
     if mypen <> pmnotxor then
-      drawcube;
+      DrawCube;
     myshape := 'cube2';
   end;
 
-  if myshape = 'texlines' then
+  if myshape = 'TexLines' then
   begin
-    drawtexlines(myorigin.x, myorigin.y, x, y);
+    DrawTexLines(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'texovals' then
+  if myshape = 'Texovals' then
   begin
-    drawtexovals(myorigin.x, myorigin.y, x, y);
+    DrawTexOvals(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'blurovals' then
+  if myshape = 'Blurovals' then
   begin
-    drawblurovals(myorigin.x, myorigin.y, x, y);
+    DrawBlurOvals(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'texcurves' then
+  if myshape = 'Texcurves' then
   begin
-    drawtexcurves(myorigin.x, myorigin.y, x, y);
+    DrawTexCurves(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'blurcurves' then
+  if myshape = 'Blurcurves' then
   begin
-    drawblurcurves(myorigin.x, myorigin.y, x, y);
+    DrawBlurCurves(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'texpoly' then
+  if myshape = 'Texpoly' then
   begin
-    drawtexpoly(myorigin.x, myorigin.y, x, y);
+    DrawTexPoly(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'blurpoly' then
+  if myshape = 'Blurpoly' then
   begin
-    drawblurpoly(myorigin.x, myorigin.y, x, y);
+    DrawBlurPoly(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'texrects' then
+  if myshape = 'TexRects' then
   begin
-    drawtexrects(myorigin.x, myorigin.y, x, y);
+    DrawTexRects(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'blurrects' then
+  if myshape = 'BlurRects' then
   begin
-    drawblurrects(myorigin.x, myorigin.y, x, y);
+    DrawBlurRects(myorigin.x, myorigin.y, x, y);
   end;
-  if myshape = 'blurlines' then
+  if myshape = 'BlurLines' then
   begin
-    drawblurlines(myorigin.x, myorigin.y, x, y);
+    DrawBlurLines(myorigin.x, myorigin.y, x, y);
   end;
 
   if myshape = 'cube' then
@@ -3151,27 +3151,27 @@ begin
     myskew[1].y := myskew[0].y;
     myskew[3].x := myskew[0].x;
     myskew[3].y := myskew[2].y;
-    drawcube;
+    DrawCube;
     myshape := 'cube1';
   end;
 
-  if myshape = 'interprect' then
-    interpRect(myorigin.x, myorigin.y, x, y);
+  if myshape = 'Interprect' then
+    InterpRect(myorigin.x, myorigin.y, x, y);
 
-  if myshape = 'intercolumn' then
-    drawcolumn(myorigin.x, myorigin.y, x, y);
+  if myshape = 'interColumn' then
+    DrawColumn(myorigin.x, myorigin.y, x, y);
 
-  if myshape = 'intersphere' then
+  if myshape = 'interSphere' then
     if ((myorigin.x <> x) and (myorigin.y <> y)) then
     begin
       if ssalt in shift then
-        drawsphere(canvas.pixels[myorigin.x, myorigin.y],
+        DrawSphere(canvas.pixels[myorigin.x, myorigin.y],
           canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
       else
-        drawsphere(wavepen, wavebrush, myorigin.x, myorigin.y, x, y)
+        DrawSphere(Wavepen, Wavebrush, myorigin.x, myorigin.y, x, y)
     end;
 
-  if myshape = 'multisphere' then
+  if myshape = 'MultiSphere' then
   begin
     canvas.pen.mode := pmnotxor;
     canvas.ellipse(myorigin.x, myorigin.y, x, y);
@@ -3179,29 +3179,14 @@ begin
     if ((myorigin.x <> x) and (myorigin.y <> y)) then
     begin
       if ssalt in shift then
-        drawmultisphere(canvas.pixels[myorigin.x, myorigin.y],
+        DrawMultiSphere(canvas.pixels[myorigin.x, myorigin.y],
           canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
       else
-        drawmultisphere(wavepen, wavebrush, myorigin.x, myorigin.y, x, y)
-    end;
-  end;
-
-  if myshape = 'dropletsphere' then
-  begin
-    canvas.pen.mode := pmnotxor;
-    canvas.ellipse(myorigin.x, myorigin.y, x, y);
-    canvas.pen.mode := pmcopy;
-    if ((myorigin.x <> x) and (myorigin.y <> y)) then
-    begin
-      if ssalt in shift then
-        drawdropletsphere(canvas.pixels[myorigin.x, myorigin.y],
-          canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
-      else
-        drawdropletsphere(wavepen, wavebrush, myorigin.x, myorigin.y, x, y)
+        DrawMultiSphere(Wavepen, Wavebrush, myorigin.x, myorigin.y, x, y)
     end;
   end;
 
-  if myshape = 'wavesphere' then
+  if myshape = 'DropletSphere' then
   begin
     canvas.pen.mode := pmnotxor;
     canvas.ellipse(myorigin.x, myorigin.y, x, y);
@@ -3209,14 +3194,14 @@ begin
     if ((myorigin.x <> x) and (myorigin.y <> y)) then
     begin
       if ssalt in shift then
-        drawwavesphere(canvas.pixels[myorigin.x, myorigin.y],
+        DrawDropletSphere(canvas.pixels[myorigin.x, myorigin.y],
           canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
       else
-        drawwavesphere(wavepen, wavebrush, myorigin.x, myorigin.y, x, y)
+        DrawDropletSphere(Wavepen, Wavebrush, myorigin.x, myorigin.y, x, y)
     end;
   end;
 
-  if myshape = 'risingwavesphere' then
+  if myshape = 'WaveSphere' then
   begin
     canvas.pen.mode := pmnotxor;
     canvas.ellipse(myorigin.x, myorigin.y, x, y);
@@ -3224,10 +3209,25 @@ begin
     if ((myorigin.x <> x) and (myorigin.y <> y)) then
     begin
       if ssalt in shift then
-        drawrisingwavesphere(canvas.pixels[myorigin.x, myorigin.y],
+        DrawWaveSphere(canvas.pixels[myorigin.x, myorigin.y],
           canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
       else
-        drawrisingwavesphere(wavepen, wavebrush, myorigin.x, myorigin.y, x, y)
+        DrawWaveSphere(Wavepen, Wavebrush, myorigin.x, myorigin.y, x, y)
+    end;
+  end;
+
+  if myshape = 'RisingWaveSphere' then
+  begin
+    canvas.pen.mode := pmnotxor;
+    canvas.ellipse(myorigin.x, myorigin.y, x, y);
+    canvas.pen.mode := pmcopy;
+    if ((myorigin.x <> x) and (myorigin.y <> y)) then
+    begin
+      if ssalt in shift then
+        DrawRisingWaveSphere(canvas.pixels[myorigin.x, myorigin.y],
+          canvas.pixels[x, y], myorigin.x, myorigin.y, x, y)
+      else
+        DrawRisingWaveSphere(Wavepen, Wavebrush, myorigin.x, myorigin.y, x, y)
     end;
   end;
 
@@ -3235,11 +3235,11 @@ begin
   begin
     if mypen <> pmnotxor then
       canvas.rectangle(myorigin.x, myorigin.y, x, y);
-    if stars > 1 then
+    if Stars > 1 then
     begin
-      xs := (x - myorigin.x) div 2 div stars;
-      ys := (y - myorigin.y) div 2 div stars;
-      for i := 1 to stars - 1 do
+      xs := (x - myorigin.x) div 2 div Stars;
+      ys := (y - myorigin.y) div 2 div Stars;
+      for i := 1 to Stars - 1 do
       begin
         canvas.rectangle(myorigin.x + i * xs, myorigin.y + i * ys, x - i * xs, y - i * ys);
       end;
@@ -3271,21 +3271,21 @@ begin
   begin
     if mypen <> pmnotxor then
       canvas.roundrect(myorigin.x, myorigin.y, x, y, myround, myround);
-    if stars > 1 then
+    if Stars > 1 then
     begin
-      xs := (x - myorigin.x) div 2 div stars;
-      ys := (y - myorigin.y) div 2 div stars;
-      for i := 1 to stars - 1 do
+      xs := (x - myorigin.x) div 2 div Stars;
+      ys := (y - myorigin.y) div 2 div Stars;
+      for i := 1 to Stars - 1 do
       begin
         canvas.roundrect(myorigin.x + i * xs, myorigin.y + i * ys, x - i * xs, y - i * ys, myround, myround);
       end;
     end;
   end;
 
-  if myshape = 'blocks' then
-    canvas.FillRect(pointtoblock(x, y));
+  if myshape = 'Blocks' then
+    canvas.FillRect(PointToBlock(x, y));
 
-  if myshape = 'star' then
+  if myshape = 'Star' then
   begin
     with canvas do
     begin
@@ -3294,10 +3294,10 @@ begin
       lineto(myprevpoint.x, myprevpoint.y);
     end;
     canvas.pen.mode := mypen;
-    for i := 1 to stars do
+    for i := 1 to Stars do
     begin
-      apoint := reducevector(myorigin, point(x, y), i / stars);
-      star(apoint.x, apoint.y);
+      apoint := ReduceVector(myorigin, point(x, y), i / Stars);
+      Star(apoint.x, apoint.y);
     end;
   end;
 
@@ -3313,10 +3313,10 @@ begin
     apoint := point(100 * x, 100 * y);
     myorigin.x := 100 * myorigin.x;
     myorigin.y := 100 * myorigin.y;
-    for i := 1 to variant(spirals * 36) do
+    for i := 1 to variant(Spirals * 36) do
     begin
-      apoint := rotate(myorigin, apoint, spiraldir * pi / 18);
-      apoint := reducevector(myorigin, apoint, spiralfactor);
+      apoint := Rotate(myorigin, apoint, spiraldir * pi / 18);
+      apoint := ReduceVector(myorigin, apoint, spiralfactor);
       canvas.lineto(apoint.x div 100, apoint.y div 100);
     end;
   end;
@@ -3325,11 +3325,11 @@ begin
   begin
     if mypen <> pmnotxor then
       canvas.ellipse(myorigin.x, myorigin.y, x, y);
-    if stars > 1 then
+    if Stars > 1 then
     begin
-      xs := (x - myorigin.x) div 2 div stars;
-      ys := (y - myorigin.y) div 2 div stars;
-      for i := 1 to stars - 1 do
+      xs := (x - myorigin.x) div 2 div Stars;
+      ys := (y - myorigin.y) div 2 div Stars;
+      for i := 1 to Stars - 1 do
       begin
         canvas.ellipse(myorigin.x + i * xs, myorigin.y + i * ys, x - i * xs, y - i * ys);
       end;
@@ -3433,7 +3433,7 @@ begin
   if myshape = 'skewrect1' then
   begin
     if mypen <> pmnotxor then
-      drawskew;
+      DrawSkew;
     myshape := 'skewrect2';
   end;
 
@@ -3452,7 +3452,7 @@ begin
   if myshape = 'triangle1' then
   begin
     if mypen <> pmnotxor then
-      drawtriangle;
+      DrawTriangle;
     myshape := 'triangle2';
   end;
 
@@ -3474,17 +3474,17 @@ begin
     begin
       pw := pen.width;
       pcolor := pen.color;
-      Acolor := colortoRGB(wavebrush);
-      r1 := getred(Acolor);
+      Acolor := colortoRGB(Wavebrush);
+      r1 := getRed(Acolor);
       r := r1;
-      g1 := getgreen(acolor);
+      g1 := getGreen(acolor);
       g := g1;
-      b1 := getblue(acolor);
+      b1 := getBlue(acolor);
       b := b1;
       Acolor := colortoRGB(pen.color);
       r2 := getred(Acolor);
-      g2 := getgreen(acolor);
-      b2 := getblue(acolor);
+      g2 := getGreen(acolor);
+      b2 := getBlue(acolor);
       dr := (r1 - r2) / (pw / 3);
       dg := (g1 - g2) / (pw / 3);
       db := (b1 - b2) / (pw / 3);
@@ -3515,17 +3515,17 @@ begin
       pen.mode := pmcopy;
       pw := pen.width;
       brush.style := bsclear;
-      Acolor := colortoRGB(wavebrush);
+      Acolor := colortoRGB(Wavebrush);
       r1 := getred(Acolor);
       r := r1;
-      g1 := getgreen(acolor);
+      g1 := getGreen(acolor);
       g := g1;
-      b1 := getblue(acolor);
+      b1 := getBlue(acolor);
       b := b1;
-      Acolor := colortoRGB(wavepen);
+      Acolor := colortoRGB(Wavepen);
       r2 := getred(Acolor);
-      g2 := getgreen(acolor);
-      b2 := getblue(acolor);
+      g2 := getGreen(acolor);
+      b2 := getBlue(acolor);
       dr := (r1 - r2) / (pw / 3);
       dg := (g1 - g2) / (pw / 3);
       db := (b1 - b2) / (pw / 3);
@@ -3544,7 +3544,7 @@ begin
     end;
   end;
 
-  if (myshape = 'polyline') or (myshape = 'polygon') then
+  if (myshape = 'polyline') or (myshape = 'Polygon') then
   begin
     canvas.penpos := point(myorigin.x, myorigin.y);
     if mypen <> pmnotxor then
@@ -3571,13 +3571,13 @@ begin
     end;
   end;
 
-  if myshape = 'spiro' then
+  if myshape = 'Spiro' then
   begin
     canvas.penpos := point(myorigin.x, myorigin.y);
     canvas.pen.mode := pmnotxor;
     canvas.lineto(x, y);
     canvas.pen.mode := mypen;
-    drawspiro(myorigin, point(x, y));
+    DrawSpiro(myorigin, point(x, y));
   end;
 
   if myshape = 'cone' then
@@ -3672,7 +3672,7 @@ begin
       rectangle(myorigin.x, myorigin.y, x, y);
       pen.style := pssolid;
     end;
-    drawbars(myorigin.x, myorigin.y, x, y);
+    DrawBars(myorigin.x, myorigin.y, x, y);
   end;
 
   if myshape = 'border' then
@@ -3684,7 +3684,7 @@ begin
       rectangle(myorigin.x, myorigin.y, x, y);
       pen.style := pssolid;
     end;
-    drawborders(myorigin.x, myorigin.y, x, y);
+    Drawborders(myorigin.x, myorigin.y, x, y);
   end;
 
   if myshape = 'paste' then
@@ -3700,8 +3700,8 @@ begin
   if myshape = 'pastecolor' then
   begin
     clipcm := cmsrccopy;
-    setclip(clwhite);
-    copyclip;
+    SetClip(clwhite);
+    CopyClip;
     FX.ExtractColor(clip, canvas.brush.color);
     canvas.Draw(x, y, clip);
     clip.transparent := false;
@@ -3710,8 +3710,8 @@ begin
   if myshape = 'pastecolorx' then
   begin
     clipcm := cmsrccopy;
-    setclip(clwhite);
-    copyclip;
+    SetClip(clwhite);
+    CopyClip;
     FX.ExcludeColor(clip, canvas.brush.color);
     canvas.Draw(x, y, clip);
     clip.transparent := false;
@@ -3726,7 +3726,7 @@ begin
   if myshape = 'paintpick' then
   begin
     if ssalt in shift then
-      canvas.brush.color := mixcolors(
+      canvas.brush.color := MixColors(
         canvas.pixels[x - 5, y],
         canvas.pixels[x + 5, y])
     else
@@ -3735,11 +3735,11 @@ begin
     myshape := '';
   end;
   canvas.pen.mode := mypen;
-  if not ((myshape = 'polygon') or
+  if not ((myshape = 'Polygon') or
     (myshape = 'polyline') or
     (myshape = 'polybezier')) then
   begin
-    mydraw := false;
+    myDraw := false;
   end;
 end; // end of mouseup
 
@@ -3758,24 +3758,24 @@ begin
   zoomrect := rect(0, 0, 50, 50);
   mycliprect := rect(0, 0, 256, 256);
   //spiral number, direction and factor
-  spirals := 3;
+  Spirals := 3;
   spiralfactor := 0.99;
   spiraldir := 1;
-  // number of points for star shape
-  starpoints := 5;
-  stars := 1;
-  // tolerance for straight line drawing
+  // number of points for Star shape
+  Starpoints := 5;
+  Stars := 1;
+  // tolerance for straight line Drawing
   myslinetol := 5;
 
   mypenstyle := pssolid;
-  // number of blocks wide and heigh
-  blocks := 32;
+  // number of Blocks wide and heigh
+  Blocks := 32;
   // rounding of roundrect
   myround := 10;
-  // default drawing mode
+  // default Drawing mode
   myshape := 'line';
-  fillsinpixs;
-  fillgonio;
+  FillSinPixs;
+  FillGonio;
   TraceB := $00;
   Fshapes := TStringlist.Create;
   BuildShapeList;
@@ -3796,13 +3796,13 @@ begin
     append('arc');
     append('bars');
     append('bezier');
-    append('blocks');
-    append('bluebrush');
-    append('blurcurves');
-    append('blurlines');
-    append('blurovals');
-    append('blurpoly');
-    append('blurrects');
+    append('Blocks');
+    append('Bluebrush');
+    append('Blurcurves');
+    append('BlurLines');
+    append('Blurovals');
+    append('Blurpoly');
+    append('BlurRects');
     append('border');
     append('brightnessbrush');
     append('chord');
@@ -3815,7 +3815,7 @@ begin
     append('darkerbrush');
     append('decobar');
     append('decoval');
-    append('dropletsphere');
+    append('DropletSphere');
     append('ellipse');
     append('fisheyebrush');
     append('fisheyefixbrush');
@@ -3824,14 +3824,14 @@ begin
     append('globe');
     append('gradientbrush');
     append('graybrush');
-    append('greenbrush');
-    append('halfbluebrush');
-    append('halfgreenbrush');
+    append('Greenbrush');
+    append('halfBluebrush');
+    append('halfGreenbrush');
     append('halfredbrush');
     append('hmirror');
-    append('intercolumn');
-    append('interprect');
-    append('intersphere');
+    append('interColumn');
+    append('Interprect');
+    append('interSphere');
     append('lighterbrush');
     append('line');
     append('maze');
@@ -3850,9 +3850,9 @@ begin
     append('mbWaste');
     append('mirror4');
     append('mixbrush');
-    append('multisphere');
-    append('notbluebrush');
-    append('notgreenbrush');
+    append('MultiSphere');
+    append('notBluebrush');
+    append('notGreenbrush');
     append('notredbrush');
     append('paintpick');
     append('paste');
@@ -3860,14 +3860,14 @@ begin
     append('pastecolorx');
     append('pie');
     append('polybezier');
-    append('polygon');
+    append('Polygon');
     append('polyline');
     append('rangemove');
     append('rangesmear');
     append('rectangle');
     append('redbrush');
     append('rimplebrush');
-    append('risingwavesphere');
+    append('RisingWaveSphere');
     append('rollmixbrush');
     append('rotatebrush');
     append('roundrect');
@@ -3877,19 +3877,19 @@ begin
     append('smoothbrush');
     append('snapshot');
     append('spiral');
-    append('spiro');
-    append('star');
+    append('Spiro');
+    append('Star');
     append('sym');
-    append('texcurves');
-    append('texlines');
-    append('texovals');
-    append('texpoly');
-    append('texrects');
+    append('Texcurves');
+    append('TexLines');
+    append('Texovals');
+    append('Texpoly');
+    append('TexRects');
     append('transcopy');
     append('triangle');
     append('twistbrush');
     append('vmirror');
-    append('wavesphere');
+    append('WaveSphere');
     append('zoombrush');
     append('zoomkeepbrush');
   end;
@@ -3908,20 +3908,20 @@ begin
   inherited;
 end;
 
-procedure TJvDrawImage.Setpolygonchecked(const Value: boolean);
+procedure TJvDrawImage.SetPolygonChecked(const Value: boolean);
 begin
-  Fpolygonchecked := Value;
+  FPolygonChecked := Value;
 end;
 
 procedure TJvDrawImage.ColorPicked(AColor: Tcolor);
 begin
-  if assigned(onColorPicked) then
-    onColorPicked(self, AColor);
+  if assigned(OnColorPicked) then
+    OnColorPicked(self, AColor);
 end;
 
-procedure TJvDrawImage.SetonColorPicked(const Value: TColorPicked);
+procedure TJvDrawImage.SetOnColorPicked(const Value: TColorPicked);
 begin
-  FonColorPicked := Value;
+  FOnColorPicked := Value;
 end;
 
 procedure TJvDrawImage.SetShape(const Value: string);
@@ -3954,29 +3954,29 @@ begin
   FX.assign(Value);
 end;
 
-procedure TJvDrawImage.Setblocks(const Value: integer);
+procedure TJvDrawImage.SetBlocks(const Value: integer);
 begin
-  Fblocks := Value;
+  FBlocks := Value;
 end;
 
-procedure TJvDrawImage.Setspirals(const Value: integer);
+procedure TJvDrawImage.SetSpirals(const Value: integer);
 begin
-  Fspirals := Value;
+  FSpirals := Value;
 end;
 
-procedure TJvDrawImage.Setstarpoints(const Value: integer);
+procedure TJvDrawImage.SetStarpoints(const Value: integer);
 begin
-  Fstarpoints := Value;
+  FStarpoints := Value;
 end;
 
-procedure TJvDrawImage.Setstars(const Value: integer);
+procedure TJvDrawImage.SetStars(const Value: integer);
 begin
-  Fstars := Value;
+  FStars := Value;
 end;
 
-procedure TJvDrawImage.contrastbarChange(Sender: TObject);
+procedure TJvDrawImage.contrastBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.contrast(clip, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
@@ -3984,9 +3984,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.saturationbarChange(Sender: TObject);
+procedure TJvDrawImage.saturationBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.saturation(clip, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
@@ -3994,9 +3994,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.lightnessbarChange(Sender: TObject);
+procedure TJvDrawImage.lightnessBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.lightness(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4004,9 +4004,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.blurbarChange(Sender: TObject);
+procedure TJvDrawImage.BlurBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.GaussianBlur(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4014,9 +4014,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.splitblurbarChange(Sender: TObject);
+procedure TJvDrawImage.splitBlurBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.SplitBlur(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4024,9 +4024,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.colornoisebarChange(Sender: TObject);
+procedure TJvDrawImage.colornoiseBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.AddColorNoise(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4034,9 +4034,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.mononoisebarChange(Sender: TObject);
+procedure TJvDrawImage.mononoiseBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.AddmonoNoise(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4044,9 +4044,9 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.smoothbarChange(Sender: TObject);
+procedure TJvDrawImage.smoothBarChange(Sender: TObject);
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.smooth(clip, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
@@ -4066,9 +4066,9 @@ begin
   end;
 end;
 
-procedure TJvDrawImage.seambarchange;
+procedure TJvDrawImage.seamBarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.MakeSeamlessClip(clip, painterEffectsF.Ebar.position);
   QuickPreviewF.Show;
@@ -4076,11 +4076,11 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.mosaicbarchange;
+procedure TJvDrawImage.mosaicBarChange;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.mosaic(clip, am);
@@ -4089,12 +4089,12 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.twistbarchange;
+procedure TJvDrawImage.twistBarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
@@ -4108,12 +4108,12 @@ begin
   bm2.free;
 end;
 
-procedure TJvDrawImage.fisheyebarchange;
+procedure TJvDrawImage.fisheyeBarChange;
 var
   bm2: tbitmap;
   am: single;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
@@ -4127,41 +4127,41 @@ begin
   bm2.free;
 end;
 
-procedure TJvDrawImage.wavebarchange;
+procedure TJvDrawImage.WaveBarChange;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.wave(clip, am, 0, 0);
+  FX.Wave(clip, am, 0, 0);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.waveextrachange;
+procedure TJvDrawImage.WaveExtraChange;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.position;
-  FX.wave(clip, am, 0, 1);
+  am := painterEffectsF.EBar.position;
+  FX.Wave(clip, am, 0, 1);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.waveinfchange;
+procedure TJvDrawImage.WaveInfChange;
 var
   wa, inf: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   inf := painterEffectsF.Ebar.position;
-  wa := paintereffectsF.extrabar.Position;
-  FX.wave(clip, wa, inf, 2);
+  wa := paintereffectsF.extraBar.Position;
+  FX.Wave(clip, wa, inf, 2);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
@@ -4173,7 +4173,7 @@ var
   dst: tbitmap;
   dx, dy: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.width := clip.width;
@@ -4182,8 +4182,8 @@ begin
   with PainterEffectsF do
   begin
     am := Ebar.position;
-    dx := cxbar.position;
-    dy := cybar.position;
+    dx := cxBar.position;
+    dy := cyBar.position;
   end;
   FX.SmoothRotate(Clip, Dst, dx, dy, am);
   QuickPreviewF.Show;
@@ -4192,32 +4192,32 @@ begin
   Dst.free;
 end;
 
-procedure TJvDrawImage.xformAbarchange;
+procedure TJvDrawImage.XFormABarChange;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  xformA(am);
+  XFormA(am);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.marblebarchange;
+procedure TJvDrawImage.marbleBarChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
   dst.width := clip.width;
   dst.height := clip.height;
-  scale := painterEffectsF.extrabar.position;
+  scale := painterEffectsF.extraBar.position;
   turbulence := painterEffectsF.Ebar.position;
   FX.marble(clip, dst, scale, turbulence);
   QuickPreviewF.Show;
@@ -4226,19 +4226,19 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble2barchange;
+procedure TJvDrawImage.marble2BarChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
   dst.width := clip.width;
   dst.height := clip.height;
-  scale := painterEffectsF.extrabar.position;
+  scale := painterEffectsF.extraBar.position;
   turbulence := painterEffectsF.Ebar.position;
   FX.marble2(clip, dst, scale, turbulence);
   QuickPreviewF.Show;
@@ -4247,19 +4247,19 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble3barchange;
+procedure TJvDrawImage.marble3BarChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
   dst.width := clip.width;
   dst.height := clip.height;
-  scale := painterEffectsF.extrabar.position;
+  scale := painterEffectsF.extraBar.position;
   turbulence := painterEffectsF.Ebar.position;
   FX.marble3(clip, dst, scale, turbulence);
   QuickPreviewF.Show;
@@ -4268,19 +4268,19 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble4barchange;
+procedure TJvDrawImage.marble4BarChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
   dst.width := clip.width;
   dst.height := clip.height;
-  scale := painterEffectsF.extrabar.position;
+  scale := painterEffectsF.extraBar.position;
   turbulence := painterEffectsF.Ebar.position;
   FX.marble4(clip, dst, scale, turbulence);
   QuickPreviewF.Show;
@@ -4289,20 +4289,20 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble5barchange;
+procedure TJvDrawImage.marble5BarChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
   dst.width := clip.width;
   dst.height := clip.height;
   scale := painterEffectsF.extrabar.position;
-  turbulence := painterEffectsF.Ebar.position;
+  turbulence := painterEffectsF.EBar.position;
   FX.marble5(clip, dst, scale, turbulence);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(dst);
@@ -4310,13 +4310,13 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble6barchange;
+procedure TJvDrawImage.marble6barChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
@@ -4331,13 +4331,13 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble7barchange;
+procedure TJvDrawImage.marble7barChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
@@ -4352,13 +4352,13 @@ begin
   dst.free;
 end;
 
-procedure TJvDrawImage.marble8barchange;
+procedure TJvDrawImage.marble8barChange;
 var
   turbulence: integer;
   dst: tbitmap;
   scale: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   dst := tbitmap.create;
   dst.PixelFormat := pf24bit;
@@ -4375,7 +4375,7 @@ end;
 
 procedure TJvDrawImage.embossbarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   FX.Emboss(clip);
   QuickPreviewF.Show;
@@ -4383,256 +4383,256 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filterredbarChange;
+procedure TJvDrawImage.filterRedbarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filterred(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterRed(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filtergreenbarChange;
+procedure TJvDrawImage.filterGreenbarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filtergreen(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterGreen(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filterbluebarChange;
+procedure TJvDrawImage.filterBluebarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filterblue(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.filterBlue(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filterxredbarChange;
+procedure TJvDrawImage.FilterXRedbarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filterxred(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXRed(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filterxgreenbarChange;
+procedure TJvDrawImage.FilterXGreenbarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filterxgreen(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXGreen(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.filterxbluebarChange;
+procedure TJvDrawImage.FilterXBluebarChange;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
-  FX.filterxblue(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
+  FX.FilterXBlue(clip, paintereffectsF.extrabar.position, painterEffectsF.EBar.position);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.squeezehorbarchange;
+procedure TJvDrawImage.SqueezeHorbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbHor);
+  FX.SqueezeHor(clip, bm2, am, mbHor);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezetopbarchange;
+procedure TJvDrawImage.SqueezeTopbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbTop);
+  FX.SqueezeHor(clip, bm2, am, mbTop);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezebotbarchange;
+procedure TJvDrawImage.SqueezeBotbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbBottom);
+  FX.SqueezeHor(clip, bm2, am, mbBottom);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezediamondbarchange;
+procedure TJvDrawImage.SqueezeDiamondbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbDiamond);
+  FX.SqueezeHor(clip, bm2, am, mbDiamond);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezewastebarchange;
+procedure TJvDrawImage.SqueezeWastebarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbwaste);
+  FX.SqueezeHor(clip, bm2, am, mbwaste);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezeroundbarchange;
+procedure TJvDrawImage.SqueezeRoundbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbRound);
+  FX.SqueezeHor(clip, bm2, am, mbRound);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.squeezeround2barchange;
+procedure TJvDrawImage.SqueezeRound2barChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.squeezehor(clip, bm2, am, mbround2);
+  FX.SqueezeHor(clip, bm2, am, mbround2);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.splitroundbarchange;
+procedure TJvDrawImage.SplitRoundbarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.splitround(clip, bm2, am, mbsplitround);
+  FX.SplitRound(clip, bm2, am, mbSplitRound);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.splitwastebarchange;
+procedure TJvDrawImage.SplitWastebarChange;
 var
   bm2: tbitmap;
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   bm2 := tbitmap.create;
   bm2.width := clip.width;
   bm2.height := clip.height;
   bm2.pixelformat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  FX.splitround(clip, bm2, am, mbsplitwaste);
+  FX.SplitRound(clip, bm2, am, mbSplitWaste);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(bm2);
   QuickPreviewF.image1.update;
   bm2.free;
 end;
 
-procedure TJvDrawImage.shearbarchange;
+procedure TJvDrawImage.ShearbarChange;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
-  shear(clip, am);
+  Shear(clip, am);
   QuickPreviewF.Show;
   QuickPreviewF.Image1.picture.bitmap.assign(clip);
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.plasmabarchange;
+procedure TJvDrawImage.plasmabarChange;
 var
   am, turb, w, h: integer;
   src1, src2: tbitmap;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   w := clip.width;
   h := clip.height;
@@ -4640,12 +4640,12 @@ begin
   src1.width := w;
   src1.height := h;
   src1.PixelFormat := pf24bit;
-  src1.canvas.draw(0, 0, clip);
+  src1.canvas.Draw(0, 0, clip);
   src2 := Tbitmap.create;
   src2.width := w;
   src2.height := h;
   src2.PixelFormat := pf24bit;
-  src2.canvas.draw(0, 0, clip);
+  src2.canvas.Draw(0, 0, clip);
   am := painterEffectsF.Ebar.position;
   turb := painterEffectsF.extrabar.position;
   if turb < 10 then
@@ -4666,7 +4666,7 @@ var
   xr, yr: extended;
   x0, y0, x1, y1: extended;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   xr := painterEffectsF.Ebar.position * 0.028;
   yr := painterEffectsF.ExtraBar.Position * 0.009;
@@ -4680,11 +4680,11 @@ begin
   QuickPreviewF.image1.update;
 end;
 
-procedure TJvDrawImage.drawTriangles;
+procedure TJvDrawImage.DrawTriangles;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.Triangles(clip, am);
@@ -4697,7 +4697,7 @@ procedure TJvDrawImage.RippleTooth;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.RippleTooth(clip, am);
@@ -4710,7 +4710,7 @@ procedure TJvDrawImage.RippleTriangle;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.RippleTooth(clip, am);
@@ -4723,7 +4723,7 @@ procedure TJvDrawImage.RippleRandom;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.RippleRandom(clip, am);
@@ -4736,7 +4736,7 @@ procedure TJvDrawImage.TexturizeTile;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.TexturizeTile(clip, am);
@@ -4749,7 +4749,7 @@ procedure TJvDrawImage.TexturizeOverlap;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.TexturizeOverlap(clip, am);
@@ -4762,7 +4762,7 @@ procedure TJvDrawImage.DrawMap;
 var
   am: integer;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   FX.HeightMap(clip, am);
@@ -4776,7 +4776,7 @@ var
   am, w, h: integer;
   src2, dst: tbitmap;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   w := clip.width;
@@ -4808,7 +4808,7 @@ var
   dst: tbitmap;
 
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   w := clip.width;
@@ -4829,7 +4829,7 @@ var
   am, w, h: integer;
   dst: tbitmap;
 begin
-  clipall;
+  ClipAll;
   clip.PixelFormat := pf24bit;
   am := painterEffectsF.Ebar.position;
   w := clip.width;

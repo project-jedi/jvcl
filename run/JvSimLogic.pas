@@ -49,18 +49,18 @@ All the rest is up to the user.
 type
   TJvLogic = class;
 
-  TjanGateStyle = (jgsDI, jgsDO);
+  TJanGateStyle = (jgsDI, jgsDO);
   TJvLogicFunc = (jlfAND, jlfOR, jlfNOT);
-  TjanGate = record
-    Style: TjanGateStyle;
+  TJanGate = record
+    Style: TJanGateStyle;
     State: boolean;
     Active: Boolean;
     pos: TPoint;
   end;
 
-  TjanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
-  TjanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
-  TjanConShape = (jcsTLBR, jcsTRBL);
+  TJanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
+  TJanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
+  TJanConShape = (jcsTLBR, jcsTRBL);
 
   TJvSIMConnector = class(TGraphicControl)
   private
@@ -69,16 +69,16 @@ type
     oldp: TPoint;
     ConAnchor: TPoint;
     ConOffset: TPoint;
-    ConMode: TjanConMode;
-    ConHot: TjanConPos;
+    ConMode: TJanConMode;
+    ConHot: TJanConPos;
     doMove: boolean;
     doEdge: boolean;
     DisCon: Tcontrol;
     DisConI: integer;
-    Mode: TjanConMode;
-    Shape: TjanConShape;
+    Mode: TJanConMode;
+    Shape: TJanConShape;
     conSize: integer;
-    conPos: TjanConPos;
+    conPos: TJanConPos;
     Edge: extended;
     FFromLogic: TJvLogic;
     FToLogic: TJvLogic;
@@ -105,7 +105,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoMouseDown(x, y: integer);
     procedure DoMouseMove(dx, dy: integer);
-    procedure AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
+    procedure AnchorCorner(logTL: TPoint; ACorner: TJanConMode);
     procedure MoveConnector(logTL: TPoint);
     procedure Connect;
     procedure DisConnect;
@@ -126,7 +126,7 @@ type
     StyleDown: boolean;
     mdp: TPoint;
     oldp: TPoint;
-    FGates: array[0..5] of TjanGate;
+    FGates: array[0..5] of TJanGate;
     Connectors: TList;
     newLeft: integer;
     newTop: integer;
@@ -137,7 +137,7 @@ type
     FOutPut2: boolean;
     FInput1: boolean;
     FLogicFunc: TJvLogicFunc;
-    function GetGate(Index: Integer): TjanGate;
+    function GetGate(Index: Integer): TJanGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
     procedure PaintLed(index: integer);
@@ -158,7 +158,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TjanGate read GetGate;
+    property Gates[index: integer]: TJanGate read GetGate;
   published
     property Input1: boolean read FInput1 write SetInput1;
     property Input2: boolean read FInput2 write SetInput2;
@@ -174,7 +174,7 @@ type
     doMove: boolean;
     mdp: TPoint;
     oldp: TPoint;
-    FGates: array[0..3] of TjanGate;
+    FGates: array[0..3] of TJanGate;
     Connectors: TList;
     newLeft: integer;
     newTop: integer;
@@ -182,7 +182,7 @@ type
     FInput1: boolean;
     FOutPut3: boolean;
     FOutPut2: boolean;
-    function GetGate(Index: Integer): TjanGate;
+    function GetGate(Index: Integer): TJanGate;
     procedure AnchorConnectors;
     procedure MoveConnectors;
     procedure PaintLed(index: integer);
@@ -200,7 +200,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property Gates[index: integer]: TjanGate read GetGate;
+    property Gates[index: integer]: TJanGate read GetGate;
   published
     property Input1: boolean read FInput1 write SetInput1;
     property OutPut1: boolean read FOutPut1 write SetOutPut1;
@@ -266,15 +266,15 @@ type
     property OffColor: TColor read FOffColor write SetOffColor;
   end;
 
-  TjanSimBin = class(TGraphicControl)
+  TJanSimBin = class(TGraphicControl)
   private
     bmBin: Tbitmap;
   protected
     procedure resize; override;
   public
-    constructor create(AOwner: Tcomponent); override;
-    destructor destroy; override;
-    procedure paint; override;
+    constructor Create(AOwner: Tcomponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
   published
   end;
 
@@ -304,7 +304,7 @@ type
     procedure resize; override;
     procedure Loaded; override;
   public
-    constructor create(AOwner: Tcomponent); override;
+    constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
@@ -754,7 +754,7 @@ begin
   FToPoint := Value;
 end;
 
-procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
+procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TJanConMode);
 var
   Rc: TRect;
 begin
@@ -1387,7 +1387,7 @@ begin
   connectors := TList.create;
 end;
 
-function TJvLogic.GetGate(Index: Integer): TjanGate;
+function TJvLogic.GetGate(Index: Integer): TJanGate;
 begin
   result := FGates[index];
 end;
@@ -2134,9 +2134,9 @@ begin
   end;
 end;
 
-{ TjanSimBin }
+{ TJanSimBin }
 
-constructor TjanSimBin.create(AOwner: Tcomponent);
+constructor TJanSimBin.create(AOwner: Tcomponent);
 begin
   inherited;
   width := 65;
@@ -2145,14 +2145,14 @@ begin
   bmBin.LoadFromResourceName(HInstance, 'RBIN');
 end;
 
-destructor TjanSimBin.destroy;
+destructor TJanSimBin.destroy;
 begin
   bmBin.free;
   inherited;
 
 end;
 
-procedure TjanSimBin.paint;
+procedure TJanSimBin.paint;
 var
   Rf: trect;
 begin
@@ -2163,7 +2163,7 @@ begin
   canvas.draw(16, 16, bmBin);
 end;
 
-procedure TjanSimBin.resize;
+procedure TJanSimBin.resize;
 begin
   inherited;
   width := 65;
@@ -2452,7 +2452,7 @@ begin
   inherited;
 end;
 
-function TJvSimReverse.GetGate(Index: Integer): TjanGate;
+function TJvSimReverse.GetGate(Index: Integer): TJanGate;
 begin
   result := FGates[index];
 end;

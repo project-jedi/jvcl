@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-02:
+- Recased classes, properties and methods. This shouldn't affect Delphi but BCB users might have to make amendments. // peter3
+- Added HotTrackFontOptions to controls that have a HotTrackFont property. Basically, HotTrackFontOptions determines how changes to a control's Font i spropagated to the HotTrackFont. // peter3
 2003-08-26:
 - Renamed JvRadioControl to JvDialButton // marcelb
 - Update JVCConvert.dat file for JvRadioControl, JvTransLED and JvBlinkingLED // marcelb
