@@ -141,7 +141,7 @@ begin
   if Assigned(FOnDrop) then
   begin
     DragQueryPoint(Handle, MousePt);
-    FOnDrop(Self, MousePt, FFIles);
+    FOnDrop(Self, MousePt, FFiles);
   end;
   DragFinish(Handle);
 end;

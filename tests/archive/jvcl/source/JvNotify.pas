@@ -334,7 +334,7 @@ procedure TJvFolderMonitor.ResetNotifyThread(Activate: Boolean);
 begin
   FreeNotifyThread;
   if Activate and DirExists(FFolderName) then begin
-    FNotifyThread := CreateNotifyThread(FolderName, MonitorSubtree, Filter);
+    FNotifyThread := CreateNotifyThread(FolderName, MonitorSubtree and (Win32Platform = VER_PLATFORM_WIN32_NT), Filter);
     FNotifyThread.OnChange := ThreadNotification;
   end;
 end;
