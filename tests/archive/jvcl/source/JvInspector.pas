@@ -4631,6 +4631,13 @@ begin
                 ExecInherited := False;
             end;
           end;
+          if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and (
+            Message.WParam in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then
+          begin
+            PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
+            Message.Result := 1;
+            ExecInherited := False;
+          end;
       end;
   end;
   if ExecInherited then
