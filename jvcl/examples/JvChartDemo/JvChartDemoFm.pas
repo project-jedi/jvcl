@@ -122,7 +122,8 @@ type
   protected
     procedure _Generate;
     procedure _StoreValue(I:integer);
-  
+    function _QAProblemScatter:Integer;
+
   public
       procedure NewValues;
   end;
@@ -132,8 +133,14 @@ var
 
 implementation
 
-uses JvJVCLAboutForm, JVCLVer, JvDsgnConsts, // JVCL About box stuff
-     Math, ShellAPi; // NaN handling
+uses JvJVCLAboutForm, // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
+     JvDsgnConsts,    // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!
+     JVCLVer,         // JVCL About box stuff. COMMENT OUT THIS LINE IF NOT FOUND!  
+     Math,      // Math:NaN handling, function isNan in D6 and higher.
+  {$IFDEF COMPILER5}
+     JclMath,   // JclMath:function isNan for Delphi 5  
+  {$ENDIF COMPILER5}
+     ShellApi;  // ShellApi:ShellExecute function
 
 
 
@@ -141,6 +148,7 @@ uses JvJVCLAboutForm, JVCLVer, JvDsgnConsts, // JVCL About box stuff
 {$R *.dfm}
 
 
+{ Bogus vageuly sinusoidal signal generator }
 procedure TJvChartDemoForm._Generate;
 begin
         FHgt := Abs(Random(80)+(Random(((FGenerationIndex div foo) mod foo1) * 250) * 5 + 9500));
@@ -148,14 +156,18 @@ begin
         Inc(FGenerationIndex);
 end;
 
-{ bogus random function that looks like real world QA-problem data }
-function QAProblemScatter:Integer;
+{ Bogus random spiky-looking function to simulate a QA value,
+  which hovers within +/- 10% of perfect (100%), but
+  with relatively infrequent spiky errors }
+function TJvChartDemoForm._QAProblemScatter:Integer;
 var
- n:Double;
+ n,m:Double;
 begin
-  n := Log10(Random(10000)); // Value from 0 to ten, logarithmically curved.
-  n := n - Log10(Random(10000)); // Value from 0 to ten, logarithmically curved.
-  n := Abs(100 + (n*3));
+  n := Log10(Random(10000)+1);  // Random is my favourite function. How about you? -WP   
+  n := n * Log10(Random(10000)+1);
+  m := Log10(Random(10000)+1);
+  m := m * Log10(Random(10000)+1);
+  n := Abs(100 + n - m);
   if (n<0) then
       n := 0;
   if (n>150) then
@@ -201,7 +213,7 @@ begin
       else if (I mod 4) = 3 then begin
         //Chart.Data.Value[3,I] :=  1+ ((I mod 12) * 10) // stairstep
         //random:
-        Chart.Data.Value[3,I] :=  QAProblemScatter;
+        Chart.Data.Value[3,I] :=  _QAProblemScatter;
       end else
          Chart.Data.Value[3,I] := NaN; // leave some blanks.
 
