@@ -1,0 +1,97 @@
+package JVCLArchiveD6R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL 3 Archive components'}
+{$LIBSUFFIX '60'}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  vcl,
+  JvCoreD6R,
+  JvStdCtrlsD6R,
+  JvSystemD6R,
+  JvCmpD6R,
+  JvCtrlsD6R,
+  JvMMD6R;
+
+contains
+  JvPlacemnt in 'JvPlacemnt.pas',
+  JvProps in 'JvProps.pas',
+  JvAnalogClock in 'JvAnalogClock.pas',
+  JvAppInfo in 'JvAppInfo.pas',
+  JvAppUtils in 'JvAppUtils.pas',
+  JvArrow in 'JvArrow.pas',
+  JvAutoSave in 'JvAutoSave.pas',
+  JvBlinkingLED in 'JvBlinkingLED.pas',
+  JvBreatheSkin in 'JvBreatheSkin.pas',
+  JvChrono in 'JvChrono.pas',
+  JvCommandEdit in 'JvCommandEdit.pas',
+  JvComplex in 'JvComplex.pas',
+  JvConst in 'JvConst.pas',
+  JvCoupler in 'JvCoupler.pas',
+  JvCpuUsage in 'JvCpuUsage.pas',
+  JvCtlConst in 'JvCtlConst.pas',
+  JvCtrlUtils in 'JvCtrlUtils.pas',
+  JvDateUtil in 'JvDateUtil.pas',
+  JvDBConst in 'JvDBConst.pas',
+  JvFileInfo in 'JvFileInfo.pas',
+  JvFileUtil in 'JvFileUtil.pas',
+  JvFormLog in 'JvFormLog.pas' {FoLog},
+  JvFormProgress in 'JvFormProgress.pas' {FormProg},
+  JvFunctions in 'JvFunctions.pas',
+  JvGraph in 'JvGraph.pas',
+  JvHighlighter in 'JvHighlighter.pas',
+  JvHook in 'JvHook.pas',
+  JvIconClipboardUtils in 'JvIconClipboardUtils.pas',
+  JvImageForm in 'JvImageForm.pas' {FormImg},
+  JvImageWindow in 'JvImageWindow.pas',
+  JvIni in 'JvIni.pas',
+  JvMemoryInfos in 'JvMemoryInfos.pas',
+  JvMousePositionner in 'JvMousePositionner.pas',
+  JvNagScreen in 'JvNagScreen.pas',
+  JvObjectStrings in 'JvObjectStrings.pas',
+  JvOle2Auto in 'JvOle2Auto.pas',
+  JvParsing in 'JvParsing.pas',
+  JvPerforated in 'JvPerforated.pas',
+  JvPopupMemo in 'JvPopupMemo.pas',
+  JvRadioControl in 'JvRadioControl.pas',
+  JvRegAuto in 'JvRegAuto.pas',
+  JvRegistry in 'JvRegistry.pas',
+  JvRle in 'JvRle.pas',
+  JvScreenCanvas in 'JvScreenCanvas.pas',
+  JvStr16 in 'JvStr16.pas',
+  JvStrUtil in 'JvStrUtil.pas',
+  JvStrUtils in 'JvStrUtils.pas',
+  JvTransLED in 'JvTransLED.pas',
+  JvTransparentForm in 'JvTransparentForm.pas',
+  JvUtils in 'JvUtils.pas',
+  JvVCLUtils in 'JvVCLUtils.pas',
+  JvWinampApi in 'JvWinampApi.pas',
+  JvxCtrls in 'JvxCtrls.pas',
+  JvxDConst in 'JvxDConst.pas',
+  JvxRConst in 'JvxRConst.pas',
+  Winamp in '..\common\Winamp.pas';
+
+end.

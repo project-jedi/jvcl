@@ -28,14 +28,14 @@ Known Issues:
 
 {A TEdit that displays and reacts to command input. }
 
-unit JvCmdEdit;
+unit JvCommandEdit;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus,
-  JvEdit, JvComponent;
+  JvEdit, JvComponent, JvTypes;
 
 type
   TJvCmdEvent = procedure(Sender: TObject; Cmd: Integer; Params: TStrings; var Handled: Boolean) of object;

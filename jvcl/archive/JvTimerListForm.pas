@@ -124,7 +124,7 @@ implementation
 
 uses
   Consts,
-  JvConsts, JvTypes;
+  JvConsts, JvTypes, JvxDConst;
 
 {$R *.DFM}
 
@@ -293,7 +293,7 @@ begin
   if CheckCollection then
   begin
     Caption := Format(srTimerEvents, [TimersCollection.Name]);
-    Empty := TimersCollection.Count = 0;
+    Empty := TimersCollection.Events.Count = 0;
   end
   else
     Empty := True;
@@ -303,7 +303,7 @@ begin
     SelectItem(nil);
   end
   else
-    DrawGrid.RowCount := TimersCollection.Count + 1;
+    DrawGrid.RowCount := TimersCollection.Events.Count + 1;
   DeleteBtn.Enabled := not Empty;
   ClearBtn.Enabled := not Empty;
   DeleteMenu.Enabled := not Empty;
@@ -353,7 +353,7 @@ function TJvTimerItemsEditor.ItemByRow(Row: Integer): TJvTimerEvent;
 begin
   Result := nil;
   if CheckCollection and (Row >= 0) and
-    (Row < TimersCollection.Count) then
+    (Row < TimersCollection.Events.Count) then
   begin
     Result := TJvTimerEvent(TimersCollection.Events[Row]);
   end;
@@ -388,9 +388,9 @@ begin
   begin
     Item := ItemByRow(Row - 1);
     if Item <> nil then
-      CellText := Item.Name;
+      CellText := Item.DisplayName;
   end;
-  DrawCellText(DrawGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenter);
+  DrawCellText(DrawGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenterJustify);
 end;
 
 procedure TJvTimerItemsEditor.DrawGridSelectCell(Sender: TObject; Col,
@@ -411,7 +411,7 @@ begin
   Item := ItemByRow(DrawGrid.Row - 1);
   if Item <> nil then
   begin
-    {$IFDEF COMPILER6_UP} TCustomForm(Designer.Root).Designer {$ELSE} Designer {$ENDIF}.ValidateRename(Item, Item.Name, '');
+    {$IFDEF COMPILER6_UP} TCustomForm(Designer.Root).Designer {$ELSE} Designer {$ENDIF}.ValidateRename(Item.TimerList, Item.DisplayName, '');
     TimersCollection.Delete(Item.Handle);
     if TimersCollection.Count > 0 then
     begin

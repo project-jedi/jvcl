@@ -110,7 +110,7 @@ type
 implementation
 
 uses
-  JvConsts, TypInfo, ExptIntf, JvDsgnIntf;
+  JvConsts, JvCtlConst, TypInfo, ExptIntf, JvDsgnIntf;
 
 {$R *.DFM}
 
