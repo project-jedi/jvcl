@@ -3047,6 +3047,7 @@ var
 begin
   PaintRect := ClientRect;
   {$IFDEF VisualCLX}
+
   if FHorzScrollBar.Align <> alNone then
   begin
     FHorzScrollBar.Align := alNone;
@@ -3058,8 +3059,8 @@ begin
     FVertScrollBar.Anchors := [akTop, akRight, akBottom];
   end;
 
-  inherited Paint;
   AdjustClientRect(PaintRect);
+  inherited Paint;
   {$ENDIF VisualCLX}
   if Painter <> nil then
   begin
@@ -3076,6 +3077,9 @@ begin
     if csDesigning in Self.ComponentState then
       Canvas.TextOut(10, 10, Name + ':' + ClassName);
   end;
+  {$IFDEF VisualCLX}
+  FVertScrollBar.Align := alRight;
+  {$ENDIF VisualCLX}
 end;
 
 function ListCompare(List: TStringList; Index1, Index2: Integer): Integer;
@@ -6132,6 +6136,9 @@ var
   W, G, I: Integer;
 begin
   // This reduces the flickering when dragging the divider bar
+  {$IFDEF VisualCLX}
+  ACanvas.Start;
+  {$ENDIF VisualCLX}
   if EditCtrl <> nil then
   begin
     {$IFDEF VCL}
@@ -6146,27 +6153,23 @@ begin
   R := Rects[iprEditButton];
   if not IsRectEmpty(R) then
   begin
-    {$IFDEF VCL}
     BFlags := 0;
-    {$ENDIF VCL}
     if iifValueList in Flags then
     begin
-      {$IFDEF VCL}
       if not EditCtrl.Enabled then
         BFlags := DFCS_INACTIVE
       else
       if Pressed then
         BFlags := DFCS_FLAT or DFCS_PUSHED;
+      {$IFDEF VCL}
       DrawThemedFrameControl(Inspector, ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
       {$ELSE}
-      if EditCtrl.Enabled then
-        DrawButtonFace(ACanvas, R, 0, Pressed, EditCtrl.Focused, True);
+      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
       {$ENDIF VCL}
     end
     else
     if iifEditButton in Flags then
     begin
-      {$IFDEF VCL}
       if Pressed then
         BFlags := BF_FLAT;
       {$IFDEF JVCLThemesEnabled}
@@ -6175,10 +6178,6 @@ begin
       else
       {$ENDIF JVCLThemesEnabled}
         DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
-      {$ELSE}
-      QGraphics.DrawEdge(ACanvas, R, esRaised, esNone, [ebLeft, ebTop, ebRight, ebBottom]);
-      {$ENDIF VCL}
-
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
       if G < 1 then
@@ -6198,6 +6197,9 @@ begin
       PatBlt(ACanvas.Handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
     end;
   end;
+  {$IFDEF VisualCLX}
+  ACanvas.Stop;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomInspectorItem.DrawName(const ACanvas: TCanvas);
