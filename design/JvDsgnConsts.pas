@@ -41,7 +41,12 @@ resourcestring
   RsNone = '(none)';
   RsHelp = 'Help';
   RsConfirm = 'Confirm?';
+  {$IFDEF MSWINDOWS}
   RsAllFilesFilter = 'All Files (*.*)|*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  RsAllFilesFilter = 'All Files (*)|*';
+  {$ENDIF LINUX}
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
@@ -232,7 +237,12 @@ resourcestring
 //=== JvDsgnEditors.pas ======================================================
 resourcestring
   RsStripFilePath = '&Strip file path';
+  {$IFDEF MSWINDOWS}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
+  {$ENDIF LINUX}
   RsItems = 'Items';
   RsFmtEditEllipsis = '%s Editor...';
   RsSaveImageList = 'Save to bitmap...';
@@ -581,9 +591,15 @@ resourcestring
 
 //=== JvSegmentedLEDDisplayMappingForm.pas ===================================
 resourcestring
+  {$IFDEF MSWINDOWS}
   RsTextFilter =
     'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
   //  RsTextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  RsTextFilter =
+    'Text files (*.txt)|*.txt|All files (*)|*';
+  {$ENDIF LINUX}
   RsSingleLine = 'Line';
   RsMultipleLines = 'Lines';
 
