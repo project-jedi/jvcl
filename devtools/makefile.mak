@@ -13,7 +13,10 @@ ARCH = ..\..\Archive
 COM = ..\Common;..\..\Common
 BIN = ..\Bin
 DCU = ..\Dcu
-JCL = ..\..\..\JCL\source;..\..\..\JCL\source\common;..\..\..\JCL\source\windows;..\..\..\JCL\source\vcl;..\..\..\JCL\source\visclx
+!ifndef JCLDIR
+JCLDIR = ..\..\..\JCL
+!endif
+JCL = $(JCLDIR)\source;$(JCLDIR)\source\common;$(JCLDIR)\source\windows;$(JCLDIR)\source\vcl;$(JCLDIR)\source\visclx
 DRC = $&.drc
 SRCP = $(SRC);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
