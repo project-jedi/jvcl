@@ -65,7 +65,7 @@ type
     procedure WriteDtx(ATypeList: TTypeList);
     procedure FillWithHeaders(const UnitName: string; ATypeList: TTypeList; Optional, NotOptional: TStrings);
     procedure CompareDtxFile(const AUnitName: string;
-      DtxHeaders: TList; NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
+      DtxHeaders: TList; NotInDtx, NotInPas, DuplicatesInDtx: TStrings; ATypeList: TTypeList);
     procedure CheckJVCLInfos(DtxHeaders: TList);
     procedure CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
       NotInDtx, NotInPas: TStrings);
@@ -242,6 +242,15 @@ begin
       NotInSource2.AddObject(Source1[Index1], Source1.Objects[Index1]);
       Inc(Index1);
     end;
+end;
+
+procedure DetermineDuplicates(Source, Duplicates: TStrings);
+var
+  I: Integer;
+begin
+  for I := 1 to Source.Count-1 do
+    if SameText(Source[i-1], Source[i]) then
+      Duplicates.Add(Source[i]);
 end;
 
 procedure RemoveDoubles(AStrings: TStrings);
@@ -628,6 +637,7 @@ var
   DelphiParser: TDelphiParser;
   DtxParser: TDtxCompareParser;
   NotInDtx, NotInPas: TStringList;
+  DuplicatesInDtx: TStringList;
   ParametersNotInDtx, ParametersNotInPas: TStringList;
   I: Integer;
   Error: TDtxCompareErrorFlag;
@@ -639,11 +649,13 @@ begin
   NotInPas := TStringList.Create;
   ParametersNotInDtx := TStringList.Create;
   ParametersNotInPas := TStringList.Create;
+  DuplicatesInDtx := TStringList.Create;
   try
     NotInDtx.Sorted := True;
     NotInPas.Sorted := True;
     ParametersNotInDtx.Sorted := True;
     ParametersNotInPas.Sorted := True;
+    DuplicatesInDtx.Sorted := True;
 
     DelphiParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
     DelphiParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
@@ -664,7 +676,7 @@ begin
       Exit;
     end;
 
-    CompareDtxFile(AFileName, DtxParser.List, NotInDtx, NotInPas, DelphiParser.TypeList);
+    CompareDtxFile(AFileName, DtxParser.List, NotInDtx, NotInPas, DuplicatesInDtx, DelphiParser.TypeList);
     CompareParameters(DelphiParser.TypeList, DtxParser.List, ParametersNotInDtx, ParametersNotInPas);
 
     StartComparing(AFileName);
@@ -689,6 +701,11 @@ begin
         for DefaultText := Low(TDefaultText) to High(TDefaultText) do
           if DefaultText in DtxParser.DefaultTexts then
             DoError(CDefaultTextNice[DefaultText]);
+      end;
+      if DuplicatesInDtx.Count > 0 then
+      begin
+        StartErrorGroup('Duplicates in dtx file');
+        DoError(DuplicatesInDtx);
       end;
       if NotInDtx.Count > 0 then
       begin
@@ -720,6 +737,7 @@ begin
     Inc(FParsedOK);
     //WriteDtx(Parser.TypeList);
   finally
+    DuplicatesInDtx.Free;
     NotInDtx.Free;
     NotInPas.Free;
     ParametersNotInDtx.Free;
@@ -966,12 +984,13 @@ end;
 
 procedure TMainCtrl.CompareDtxFile(
   const AUnitName: string;
-  DtxHeaders: TList; NotInDtx, NotInPas: TStrings;
+  DtxHeaders: TList; NotInDtx, NotInPas, DuplicatesInDtx: TStrings;
   ATypeList: TTypeList);
 var
   Optional: TStringList;
   NotOptional: TStringList;
   LDtxHeaders, LNotInPas, LNotInDtx: TStringList;
+  LDtxHeadersNonCaseSensitive: TStringList;
 begin
   Optional := TCaseSensitiveStringList.Create;
   NotOptional := TCaseSensitiveStringList.Create;
@@ -990,10 +1009,20 @@ begin
     Optional.Sort;
     LDtxHeaders.Sort;
 
-    //Optional.SaveToFile('C:\Temp\Optional.txt');
-    //NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
-    //LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
+//    Optional.SaveToFile('C:\Temp\Optional.txt');
+//    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
+//    LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
 
+    LDtxHeadersNonCaseSensitive := TStringList.Create;
+    try
+      LDtxHeadersNonCaseSensitive.CaseSensitive := False;
+      LDtxHeadersNonCaseSensitive.Duplicates := dupIgnore;
+      LDtxHeadersNonCaseSensitive.Assign(LDtxHeaders);
+      LDtxHeadersNonCaseSensitive.Sorted := True;
+      DetermineDuplicates(LDtxHeadersNonCaseSensitive, DuplicatesInDtx);
+    finally
+      LDtxHeadersNonCaseSensitive.Free;
+    end;
     DiffLists(LDtxHeaders, NotOptional, nil, LNotInDtx, LNotInPas, True);
 
     LNotInDtx.Sort;
@@ -1082,14 +1111,14 @@ begin
     //AllDtxParameters.CustomSort(CaseSensitiveSort);
     AllDtxParameters.Sort;
 
-    //AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
-    //AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
+//    AllPasParameters.SaveToFile('C:\temp\AllPasParameters.txt');
+//    AllDtxParameters.SaveToFile('C:\temp\AllDtxParameters.txt');
 
     DiffLists(AllPasParameters, AllDtxParameters,
       nil, ParamsNotInPas, ParamsNotInDtx, True);
     { Remove optionals }
-    ExcludeList(NotInDtx, AllOptionalPasParameters, True);
-    ExcludeList(NotInPas, AllOptionalPasParameters, True);
+    ExcludeList(ParamsNotInPas, AllOptionalPasParameters, True);
+    ExcludeList(ParamsNotInDtx, AllOptionalPasParameters, True);
 
     NotInDtx.AddStrings(ParamsNotInDtx);
     NotInPas.AddStrings(ParamsNotInPas);
