@@ -12,7 +12,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
   end
   inherited pnMain: TPanel
     Width = 558
-    Height = 475
+    Height = 472
     object splJvgSplitter1: TJvgSplitter [0]
       Left = 1
       Top = 81
@@ -27,7 +27,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
     inherited pgMain: TJvgPageControl
       Top = 89
       Width = 556
-      Height = 385
+      Height = 382
       ActivePage = tbsTabSheet1
       TabIndex = 1
       inherited tabMain: TTabSheet
@@ -1817,7 +1817,7 @@ inherited JvgLabelEditorDlg: TJvgLabelEditorDlg
     end
   end
   inherited pnBottom: TPanel
-    Top = 508
+    Top = 505
     Width = 558
     inherited glShadowOK: TJvgShadow
       Left = 490

@@ -78,9 +78,6 @@ object FormJvclIncConfig: TFormJvclIncConfig
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 2
-    DesignSize = (
-      744
-      44)
     object PaintBoxWhite: TPaintBox
       Left = 0
       Top = 0

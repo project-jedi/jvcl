@@ -14,9 +14,6 @@ object frmOptions: TfrmOptions
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    322
-    367)
   PixelsPerInch = 96
   TextHeight = 13
   object btnOK: TButton
@@ -52,9 +49,6 @@ object frmOptions: TfrmOptions
     TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      DesignSize = (
-        310
-        287)
       object gbShapes: TGroupBox
         Left = 8
         Top = 0
@@ -435,9 +429,6 @@ object frmOptions: TfrmOptions
       Caption = 'Paths'
       ImageIndex = 1
       OnShow = tabPathsShow
-      DesignSize = (
-        310
-        287)
       object Label9: TLabel
         Left = 8
         Top = 16

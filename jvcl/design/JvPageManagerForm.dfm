@@ -52,9 +52,6 @@ object JvProxyEditor: TJvProxyEditor
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      97
-      301)
     object CloseBtn: TButton
       Left = 11
       Top = 12
