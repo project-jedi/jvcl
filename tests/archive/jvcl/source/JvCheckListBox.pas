@@ -390,7 +390,7 @@ var
   I: Integer;
 begin
   for I := 0 to Items.Count - 1 do
-    Checked[v] := True;
+    Checked[I] := True;
 end;
 
 {**************************************************}

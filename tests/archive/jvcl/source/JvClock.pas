@@ -28,20 +28,17 @@ Known Issues:
 
 unit JvClock;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  JvTypes, JvComponent;
 
 type
   TClockStyle = (csTime, csTimeDate, csDateTime, csDate);
-{$EXTERNALSYM TClockStyle}
   TOnUpdate = procedure(Sender: TObject; Value: string) of object;
-{$EXTERNALSYM TOnUpdate}
 
-  TJvClock = class(TWinControl)
+  TJvClock = class(TJvWinControl)
   private
     FLabel: TLabel;
     FTimer: TTimer;
@@ -52,11 +49,10 @@ type
     FSaved: TColor;
     FOver: Boolean;
     FClock: TClockStyle;
-    FAboutJVCL: TJVCLAboutInfo;
     function GetFont: TFont;
     procedure SetFont(const Value: TFont);
     procedure OnUpdate(Sender: TObject);
-    procedure Setclock(const Value: TClockStyle);
+    procedure SetClockStyle(const Value: TClockStyle);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -65,15 +61,16 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property ClockStyle: TClockStyle read FClock write SetClockStyle default csTime;
     property Font: TFont read GetFont write SetFont;
-    property OnTime: TOnUpdate read FOnUpdate write FOnUpdate;
+    property Height default 50;
     property HintColor: TColor read FColor write FColor default clInfoBk;
+    property OnTime: TOnUpdate read FOnUpdate write FOnUpdate;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property ClockStyle: TClockStyle read FClock write SetClock default csTime;
     property ShowHint;
     property Visible;
+    property Width default 100;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -87,8 +84,6 @@ type
 
 implementation
 
-{*******************************************************}
-
 constructor TJvClock.Create(AOwner: TComponent);
 begin
   inherited;
@@ -99,9 +94,9 @@ begin
   Width := 100;
   Height := 50;
 
-  FLabel := TLabel.Create(self);
+  FLabel := TLabel.Create(Self);
   FLabel.Caption := TimeToStr(Time);
-  FLabel.Parent := self;
+  FLabel.Parent := Self;
   FLabel.AutoSize := True;
   FLabel.Left := (Width div 2) - (FLabel.Width div 2);
   FLabel.Top := (Height div 2) - (FLabel.Height div 2);
@@ -171,7 +166,8 @@ begin
   FOver := True;
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -189,7 +185,7 @@ end;
 
 {**************************************************}
 
-procedure TJvClock.Setclock(const Value: TClockStyle);
+procedure TJvClock.SetClockStyle(const Value: TClockStyle);
 begin
   FClock := Value;
   OnUpdate(Self);

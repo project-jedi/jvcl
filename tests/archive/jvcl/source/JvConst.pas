@@ -25,11 +25,9 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvConst;
 
 interface
-
 
 uses Controls;
 
@@ -37,72 +35,67 @@ uses Controls;
 //  RX_VERSION = $0002004B;  { 2.75 }
 
 const
-{ Command message for JvSpeedbar editor }
+  { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_BASE + 80;
-{ Command message for TJvxSpeedButton }
+  { Command message for TJvxSpeedButton }
   CM_JVBUTTONPRESSED = CM_BASE + 81;
-{ Command messages for TJvWindowHook }
+  { Command messages for TJvWindowHook }
   CM_RECREATEWINDOW  = CM_BASE + 82;
   CM_DESTROYHOOK     = CM_BASE + 83;
-{ Notify message for TJvxTrayIcon }
+  { Notify message for TJvxTrayIcon }
   CM_TRAYICON        = CM_BASE + 84;
 
-const
   crHand     = TCursor(14000);
   crDragHand = TCursor(14001);
 
-const
-{ TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
+  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
   PaletteMask = $02000000;
 
-{$IFDEF VER90}
-const
+  {$IFDEF VER90}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER93}
-const
+  {$IFDEF VER93}
   SDelphiKey = 'Software\Borland\C++Builder\1.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER100}
-const
+  {$IFDEF VER100}
   SDelphiKey = 'Software\Borland\Delphi\3.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER110}
-const
+  {$IFDEF VER110}
   SDelphiKey = 'Software\Borland\C++Builder\3.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER120}
-const
+  {$IFDEF VER120}
   SDelphiKey = 'Software\Borland\Delphi\4.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER125}
-const
+  {$IFDEF VER125}
   SDelphiKey = 'Software\Borland\C++Builder\4.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER130}
-const
+  {$IFDEF VER130}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER140}
-const
+  {$IFDEF VER140}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF VER150}
-const
+  {$IFDEF VER150}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
-{$ENDIF}
+  {$ENDIF}
 
 implementation
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinProcs, {$ENDIF} Forms;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinProcs,
+  {$ENDIF}
+  Forms;
 
 {$IFDEF WIN32}
  {$R *.Res}

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -34,61 +34,59 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, JvEdit, JvComponent;
+  StdCtrls, Menus,
+  JvEdit, JvComponent;
 
 type
-  TJvCmdEvent = procedure (Sender:TObject;Cmd:integer;Params:Tstrings;var Handled:boolean) of object;
+  TJvCmdEvent = procedure(Sender: TObject; Cmd: Integer; Params: TStrings; var Handled: Boolean) of object;
 
   TJvCustomCommandEdit = class(TJvCustomEdit)
   private
-    FShift:TShiftState;
-    FKey:Word;
-    FSuppress:boolean;
+    FShift: TShiftState;
+    FKey: Word;
+    FSuppress: Boolean;
     FCurrCmd: string;
-    FCurrCmdIndex:integer;
+    FCurrCmdIndex: Integer;
     FPrompt: string;
     FOnCommand: TJvCmdEvent;
     FExecuteKey: TShortCut;
     FHistory: TStrings;
     FCommands: TStrings;
-    FArrowKeys: boolean;
-    { Private declarations }
-    procedure WMPaste(var Msg:TWMPaste);message WM_PASTE;
-    procedure WMCopy(var Msg:TWMCopy);message WM_COPY;
-    procedure WMCut(var Msg:TWMCut);message WM_CUT;
+    FArrowKeys: Boolean;
+    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
+    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
+    procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure SetCommands(const Value: TStrings);
     procedure SetCurrCmd(const Value: string);
     procedure SetExecuteKey(const Value: TShortCut);
     procedure SetHistory(const Value: TStrings);
     procedure SetPrompt(const Value: string);
-    procedure CheckLimits(var Key:word);
+    procedure CheckLimits(var Key: word);
     procedure ResetHistory;
 //    procedure UpdateState;
     function GetCurrCmd: string;
-    procedure SetArrowKeys(const Value: boolean);
+    procedure SetArrowKeys(const Value: Boolean);
   protected
-    { Protected declarations }
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState);override;
-    procedure KeyUp(var Key: Word; Shift: TShiftState);override;
-    procedure KeyPress(var Key: Char);override;
-    function DoCommand(Cmd:integer;Params:Tstrings):boolean;virtual;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    function DoCommand(Cmd: Integer; Params: TStrings): Boolean; virtual;
 
-    property CurrCmd:string read GetCurrCmd write SetCurrCmd;
-    property Prompt:string read FPrompt write SetPrompt;
-    property History:TStrings read FHistory write SetHistory;
-    property Commands:TStrings read FCommands write SetCommands;
-    property ExecuteKey:TShortCut read FExecuteKey write SetExecuteKey default VK_RETURN;
-    property OnCommand:TJvCmdEvent read FOnCommand write FOnCommand;
-    property ArrowKeys:boolean read FArrowKeys write SetArrowKeys default true;
+    property CurrCmd: string read GetCurrCmd write SetCurrCmd;
+    property Prompt: string read FPrompt write SetPrompt;
+    property History: TStrings read FHistory write SetHistory;
+    property Commands: TStrings read FCommands write SetCommands;
+    property ExecuteKey: TShortCut read FExecuteKey write SetExecuteKey default VK_RETURN;
+    property OnCommand: TJvCmdEvent read FOnCommand write FOnCommand;
+    property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
   public
-    { Public declarations }
-    constructor Create(AOwner:TComponent);override;
-    destructor Destroy;override;
-    function GotoCmd(Index:integer;RelToCurr:boolean):boolean;
-    function Execute:boolean;
-    function ExecuteCommand(const Cmd:string):boolean;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function GotoCmd(Index: Integer; RelToCurr: Boolean): Boolean;
+    function Execute: Boolean;
+    function ExecuteCommand(const Cmd: string): Boolean;
   end;
 
   TJvCommandEdit = class(TJvCustomCommandEdit)
@@ -151,21 +149,19 @@ type
     property OnStartDock;
   end;
 
-
 implementation
+
 // uses
 //  utilsString;
-
-{ TJvCustomCommandEdit }
 
 constructor TJvCustomCommandEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHistory := TStringlist.Create;
-  FCommands := TStringlist.Create;
-  FArrowKeys := true;
+  FHistory := TStringList.Create;
+  FCommands := TStringList.Create;
+  FArrowKeys := True;
   FExecuteKey := VK_RETURN;
-  ShortCutToKey(FExecuteKey,FKey,FShift);
+  ShortCutToKey(FExecuteKey, FKey, FShift);
   FCurrCmd := '';
   Prompt := ':';
 end;
@@ -181,13 +177,13 @@ end;
 procedure TJvCustomCommandEdit.UpdateState;
 begin
   Text := FPrompt;
-  FSuppress := false;
+  FSuppress := False;
   if CanFocus and HasParent then
     SelStart := length(FPrompt);
 end;
 }
 
-procedure TJvCustomCommandEdit.CheckLimits(var Key:word);
+procedure TJvCustomCommandEdit.CheckLimits(var Key: word);
 var
   P: TPoint;
 begin
@@ -197,7 +193,7 @@ begin
     P.X := SelStart + SelLength;
     P.Y := Length(FPrompt);
     SendMessage(Handle, EM_SETSEL, P.X, P.Y);
-    SendMessage(Handle, EM_SCROLLCARET, 0,0);
+    SendMessage(Handle, EM_SCROLLCARET, 0, 0);
   end;
 end;
 
@@ -207,15 +203,16 @@ begin
   FCurrCmdIndex := 0;
 end;
 
-{$IFOPT J- }
+{$IFOPT J-}
 {$DEFINE RESETJ}
 {$ENDIF}
-{$J+ }
-function strtok(Search,Delim:string):string;
+{$J+}
+
+function strtok(Search, Delim: string): string;
 const
-   I:integer = 1;
-   Len:integer = 0;
-   PrvStr:string = '';
+  I: Integer = 1;
+  Len: Integer = 0;
+  PrvStr: string = '';
 begin
   Result := '';
   if Search <> '' then
@@ -224,41 +221,45 @@ begin
     PrvStr := Search;
     Len := Length(PrvStr);
   end;
-  if PrvStr = '' then Exit;
-  while (i <= Len) and (Pos(PrvStr[i],Delim)> 0) do
+  if PrvStr = '' then
+    Exit;
+  while (I <= Len) and (Pos(PrvStr[I], Delim) > 0) do
     Inc(I);
-  while (i <= Len) and (Pos(PrvStr[i],Delim) = 0) do
+  while (I <= Len) and (Pos(PrvStr[I], Delim) = 0) do
   begin
-    Result := Result + PrvStr[i];
-    Inc(i);
+    Result := Result + PrvStr[I];
+    Inc(I);
   end;
 end;
+
 {$IFDEF RESETJ}
 {$UNDEF RESETJ}
 {$J- }
 {$ENDIF}
 
-function TJvCustomCommandEdit.Execute: boolean;
-var Params:TStringlist;FCmd:string;
+function TJvCustomCommandEdit.Execute: Boolean;
+var
+  Params: TStringList;
+  Cmd: string;
 begin
-  FCurrCmd := Copy(Text,Length(Prompt) + 1,MaxInt);
-  FCmd := FCurrCmd;
-  FCmd := strtok(FCmd,' ');
-  Params := TStringlist.Create;
+  FCurrCmd := Copy(Text, Length(Prompt) + 1, MaxInt);
+  Cmd := FCurrCmd;
+  Cmd := strtok(Cmd, ' ');
+  Params := TStringList.Create;
   try
-    while FCmd <> '' do
+    while Cmd <> '' do
     begin
-      Params.Add(FCmd);
-      FCmd := strtok('',' ');
+      Params.Add(Cmd);
+      Cmd := strtok('', ' ');
     end;
     if Params.Count > 0 then
     begin
-      FCmd := Params[0];
+      Cmd := Params[0];
       Params.Delete(0);
     end
     else
-      FCmd := '';
-    Result := DoCommand(FCommands.IndexOf(FCmd),Params);
+      Cmd := '';
+    Result := DoCommand(FCommands.IndexOf(Cmd), Params);
     if Result then
     begin
       FHistory.Add(CurrCmd);
@@ -270,13 +271,12 @@ begin
 //  UpdateState;
 end;
 
-
-function TJvCustomCommandEdit.GotoCmd(Index: integer;
-  RelToCurr: boolean): boolean;
+function TJvCustomCommandEdit.GotoCmd(Index: Integer;
+  RelToCurr: Boolean): Boolean;
 begin
-  Result := false;
+  Result := False;
   if RelToCurr then
-    Inc(FCurrCmdIndex,Index)
+    Inc(FCurrCmdIndex, Index)
   else
     FCurrCmdIndex := Index;
   if FCurrCmdIndex < 0 then
@@ -287,13 +287,12 @@ begin
   if (Index > -1) and (Index < FHistory.Count) then
   begin
     CurrCmd := History[Index];
-    Result := true;
+    Result := True;
     SelStart := Length(Text) + 1;
   end
   else
-   Beep;
+    Beep;
 end;
-
 
 procedure TJvCustomCommandEdit.KeyPress(var Key: Char);
 begin
@@ -305,24 +304,25 @@ begin
     ReadOnly := (SelStart < Length(Prompt)) or ((SelStart <= Length(Prompt)) and (Key = #8));
   end;
   inherited KeyPress(Key);
-  FSuppress := false;
+  FSuppress := False;
 end;
 
 procedure TJvCustomCommandEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   CheckLimits(Key);
   ReadOnly := (SelStart < Length(Prompt)) or ((SelStart <= Length(Prompt)) and (Key = VK_BACK));
-  if (FArrowKeys and (Shift = []) and (Key in [VK_UP,VK_DOWN,VK_F3,VK_ESCAPE])) or
+  if (FArrowKeys and (Shift = []) and (Key in [VK_UP, VK_DOWN, VK_F3, VK_ESCAPE])) or
     ((Key = FKey) and (FShift = Shift)) or ((Key = VK_LEFT) and (SelStart + SelLength <= Length(Prompt))) then
   begin
-//    FSuppress := true;
+//    FSuppress := True;
     Key := 0;
   end;
-  inherited KeyDown(Key,Shift);
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvCustomCommandEdit.KeyUp(var Key: Word; Shift: TShiftState);
-var K2:word;
+var
+  K2: Word;
 begin
   CheckLimits(Key);
   K2 := Key;
@@ -330,27 +330,32 @@ begin
   ReadOnly := (SelStart + SelLength < Length(Prompt)) or ((SelStart + SelLength <= Length(Prompt)) and (Key = VK_BACK));
   if (K2 = FKey) and (FShift = Shift) then
     Execute
-  else if FArrowKeys and (Shift = []) then
+  else
+  if FArrowKeys and (Shift = []) then
   begin
-    FSuppress := true;
+    FSuppress := True;
     case K2 of
-      VK_UP:     GotoCmd(-1,true);
-      VK_DOWN:   GotoCmd(1,true);
-      VK_F3:     GotoCmd(FHistory.Count - 1,false);
-      VK_ESCAPE: CurrCmd := '';
-      else
+      VK_UP:
+        GotoCmd(-1, True);
+      VK_DOWN:
+        GotoCmd(1, True);
+      VK_F3:
+        GotoCmd(FHistory.Count - 1, False);
+      VK_ESCAPE:
+        CurrCmd := '';
+    else
       begin
         Key := K2;
-        FSuppress := false;
-        inherited KeyUp(Key,Shift);
+        FSuppress := False;
+        inherited KeyUp(Key, Shift);
       end
     end // case
   end
   else
   begin
-    FSuppress := false;
+    FSuppress := False;
     Key := K2;
-    inherited KeyUp(Key,Shift);
+    inherited KeyUp(Key, Shift);
   end;
 end;
 
@@ -373,7 +378,7 @@ begin
   if FExecuteKey <> Value then
   begin
     FExecuteKey := Value;
-    ShortCutToKey(FExecuteKey,FKey,FShift);
+    ShortCutToKey(FExecuteKey, FKey, FShift);
   end;
 end;
 
@@ -382,7 +387,6 @@ begin
   FHistory.Assign(Value);
 end;
 
-
 procedure TJvCustomCommandEdit.SetPrompt(const Value: string);
 begin
   FPrompt := Value;
@@ -390,7 +394,8 @@ begin
 end;
 
 procedure TJvCustomCommandEdit.WMCopy(var Msg: TWMCopy);
-var Key:word;
+var
+  Key: Word;
 begin
   if caCopy in ClipboardCommands then
   begin
@@ -401,7 +406,8 @@ begin
 end;
 
 procedure TJvCustomCommandEdit.WMCut(var Msg: TWMCut);
-var Key:word;
+var
+  Key: Word;
 begin
   if caCut in ClipboardCommands then
   begin
@@ -412,7 +418,8 @@ begin
 end;
 
 procedure TJvCustomCommandEdit.WMPaste(var Msg: TWMPaste);
-var Key:word;
+var
+  Key: Word;
 begin
   if caPaste in ClipboardCommands then
   begin
@@ -422,47 +429,48 @@ begin
   end;
 end;
 
-function TJvCustomCommandEdit.DoCommand(Cmd: integer; Params: TStrings): boolean;
+function TJvCustomCommandEdit.DoCommand(Cmd: Integer; Params: TStrings): Boolean;
 begin
-  Result := true;
-//  FSuppress := true;
-  if Assigned(FOnCommand) then FOnCommand(self,Cmd,Params,Result);
+  Result := True;
+//  FSuppress := True;
+  if Assigned(FOnCommand) then
+    FOnCommand(Self, Cmd, Params, Result);
 end;
-
 
 procedure TJvCustomCommandEdit.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-var Key:word;
+var
+  Key: word;
 begin
-  inherited MouseDown(Button,Shift,X,y);
+  inherited MouseDown(Button, Shift, X, y);
   CheckLimits(Key);
 end;
 
 procedure TJvCustomCommandEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var Key:word;
+var
+  Key: Word;
 begin
-  inherited MouseUp(Button,Shift,X,Y);
+  inherited MouseUp(Button, Shift, X, Y);
   CheckLimits(Key);
 end;
 
 function TJvCustomCommandEdit.GetCurrCmd: string;
 begin
-  Result := Copy(Text,Length(FPrompt) + 1,MaxInt);
+  Result := Copy(Text, Length(FPrompt) + 1, MaxInt);
 end;
 
-procedure TJvCustomCommandEdit.SetArrowKeys(const Value: boolean);
+procedure TJvCustomCommandEdit.SetArrowKeys(const Value: Boolean);
 begin
   if FArrowKeys <> Value then
     FArrowKeys := Value;
 end;
 
-function TJvCustomCommandEdit.ExecuteCommand(const Cmd: string): boolean;
+function TJvCustomCommandEdit.ExecuteCommand(const Cmd: string): Boolean;
 begin
   CurrCmd := Cmd;
   Result := Execute;
 end;
 
 end.
-
 

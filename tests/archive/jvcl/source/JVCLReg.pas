@@ -28,7 +28,6 @@ Known Issues:
 
 unit JVCLReg;
 
-
 interface
 
 procedure Register;
@@ -42,84 +41,87 @@ uses
   Dlgs, ToolsApi, ActnList, 
 
   JvDSADialogs,JvComponent,
-  //About JVCL
+  // About JVCL
   JvJVCLAbout, JVCLVer,
 
-  //Additional
+  // Additional
   JvImage, JvBitBtn, JvSpeedButton, JvMaskEdit, JvStaticText, JvCheckListBox,
   JvBevel, JvScrollBox, JvStringGrid, JvDrawGrid, JvShape, JvControlBar,
   JvSplitter,
 
-  //Standard
+  // Standard
   JvEdit, JvCombobox, JvCheckBox, JvRadioButton, JvButton,
   JvLabel, JvScrollBar, JvRadioGroup, JvPanel, JvMemo,
 
-  //Edits
+  // Edits
 {  JvCustomBox, JvFileNameBox, JvDirectoryBox, JvImageBox, JvButtonBox,
   JvCalculatorBox, }
   JvTypedEdit, JvFloatEdit,
 
-  //Controls
+  // Controls
   JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
-  JvScrollText, JvRecentMenuBtn, {$IFNDEF DelphiPersonalEdition}JvControlPanel,{$ENDIF}
+  JvScrollText, JvRecentMenuBtn,
+  {$IFNDEF DelphiPersonalEdition}
+  JvControlPanel,
+  {$ENDIF}
   JvGradientCaption,
   JvZoom, JvWaitingGradient, JvSpecialProgress, JvWaitingProgress,
   JvGammaPanel, JvSlider, JvSpin,
 
-  //Mp3
+  // Mp3
   JvBreatheSkin, JvId3v2, JvVisualId3v2, JvWinampApi, JvId3v1, JvVisualId3v1,
 
-  //Multimedia
+  // Multimedia
   JvSoundControl, JvDeviceChanged, JvImageTransform, JvImageRotate,
   JvWavePlayer, JvStarfield, JvJoystick, JvSpecialImage,
   JvThumbImage, JvThumbnails, JvThumbViews, JvMovableBevel,
 
-  //Labels
+  // Labels
   JvHotLink, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
   JvRealLabel, JvSpecialLabel, JvWinampLabel, JvAngleLabel, JvBouncingLabel,
   JvAppearingLabel, JvLinkLabel,
 
-  //Forms
+  // Forms
   JvFormWallpaper, JvAnimTitle, JvPerforated,
   JvTransparentForm, JvTrayIcon, JvFormAnimatedIcon,
   JvAppAnimatedIcon, JvFormPlace, JvFormAnimation,
   JvAutoSizeCompo, JvMagnet, JvGradient,
 
-  //Convert
+  // Convert
   JvStringListToHtml, JvRgbToHtml, JvStrToHtml, JvRichEditToHtml, JvFormToHtml,
 
-  //Internet
+  // Internet
   JvHttpGrabber, JvFtpGrabber, JvHtmlParser, JvMultiHttpGrabber,
 
   JvSimpleXml,
 
-  //Utils
+  // Utils
   JvDirectories, JvMemoryInfos, JvSerialMaker, JvThread, JvRegistry,
   JvApplication, JvAlarms, JvKeyboardStates, JvDragDrop, 
 
-  //Utils 2
+  // Utils 2
   JvMru, JvRas32, JvSystemPopup, JvMousePositionner,
   JvWinHelp, JvEasterEgg, JvPrint, JvThreadTimer,
   JvTimeLimit, JvScreenSaver, JvClipboardViewer, JvSystemColors,
   JvPatchFile, JvComputerInfo, JvCommStatus, JvLogFile,
   JvCabFile, JvDataEmbedded,
 
-  //Utils 3
+  // Utils 3
   JvCaesarCipher, JvVigenereCipher, JvXorCipher, JvGenetic,
   JvTranslator,
 
-  //Dialogs
+  // Dialogs
   JvCommonDialogD, JvBaseDlg,
   JvSelectDirectory, JvPasswordForm,
   JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
   JvTipOfDay, JvImageDlg, JvProgressDlg, JvDiskPrompt,
   JvCopyError, JvDeleteError, JvRenameError, JvPageSetupTitled, JvPageSetup,
 
-  //WinDialogs
-  JvBrowseFolder, JvObjPickerComp, jvConnectNetwork, jvDisconnectNetwork,
-  jvAddPrinter, jvWinDialogs,
+  // WinDialogs
+  JvBrowseFolder, JvObjPickerComp, JvConnectNetwork, JvDisconnectNetwork,
+  JvAddPrinter, JvWinDialogs,
 
-  //Win32
+  // Win32
   JvStatusBar, JvProgressBar,
   JvTabControl, JvRichEdit,
   JvUpDown, JvHotKey, JvAnimate, JvDateTimePicker,
@@ -127,42 +129,47 @@ uses
   JvCoolBar, JvPageScroller,
   JvHotKeyEx,
 
-  //Image types
+  // Image types
   JvPcx, JvAni,
 
-  //Shapes
+  // Shapes
   JvArrow,
 
-  //Peter Below Goodies
+  // Peter Below Goodies
   JvBMPListBox, JvButtonDrawGrid,
   JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvMultilineListbox, JvMultiselectChecklistbox, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
   JvReorderListBox, JvPopupMemo,
   JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
 
-  //Petr Vones Components
+  // Petr Vones Components
   JVCLMiscal,
   JvComCtrls, JvCtrls, JvDdeCmd, JvDialogs, JvMail, JvPerfMon95, JvSysComp,
 
 
-  //JvBands
+  // JvBands
   JvBandForms, JvBandObjectDLLWizard,
 
-{$IFNDEF DelphiPersonalEdition}
-  //DB-Aware components
+  {$IFNDEF DelphiPersonalEdition}
+  // DB-Aware components
   JvDBDateTimePicker,
   JvDBProgressBar,
   JvDBSpinEdit,
-{$ENDIF}
+  {$ENDIF}
 
-  //Editors
+  // Editors
   JvDataEmbeddedEditor, JvFormWallpaperEditor, JvPatcherEditor,
   JvHtmlParserEditor, JvAlarmsEditor,
   JvBaseDlgEditor, JvCommonDialogDEditor, JvAppletProperty,
 
   Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls, Buttons,
-{$IFDEF COMPILER5}DsgnIntf, {$ENDIF}{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf, {$ENDIF}
-FiltEdit,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
+  FiltEdit,
   JvTypes, JvArrowBtn, JvBmpAnim, JvCaptionButton,
   JvColorCombo, JvDriveCtrls, JvFindReplace, JvInstallLabel, JvRollOut, JvScrollPanel,
   JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey, JvBalloonHint,
@@ -175,17 +182,17 @@ FiltEdit,
   JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBEditor, JvSHFmt,
   JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
+
   // Fernando Silva
   JvFooter, JvGroupHeader, JvNTEventLog,
 
-  //JvPlugin
+  //  JvPlugin
   JvPlugin,
   JvPluginMan,
   JvPluginWizard,
 
-  //Actions
+  // Actions
   JvActions;
-
 
 {******************************************************************************}
 
@@ -209,12 +216,12 @@ begin
   RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
 
-    {Thumbview.filter editor}
+  {Thumbview.filter editor}
   RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
 //  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
   RegisterPropertyEditor(typeinfo(TShortCut),TJvComponent,'',TShortCutProperty);
 
-//JvPlugin
+// JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
 //   RegisterPropertyEditor(TypeInfo(string), TJvPluginManager, 'Version', TVersionEditor);
 end;
@@ -240,398 +247,170 @@ end;
 
 procedure RegComps;
 begin
-  // ===========================================
   // Jv Standard
-  // ===========
-  RegisterComponents('Jv Standard', [
-    TJvLabel,
-      TJvEdit,
-      TJvMemo,
-      TJvButton,
-      TJvCheckBox,
-      TJvRadioButton,
-      TJvListBox,
-      TJvCombobox,
-      TJvScrollBar,
-      TJvGroupBox,
-      TJvRadioGroup,
-      TJvPanel
-      ]);
-
+  RegisterComponents('Jv Standard',
+    [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox, TJvRadioButton,
+     TJvListBox, TJvCombobox, TJvScrollBar, TJvGroupBox, TJvRadioGroup,
+     TJvPanel]);
 
   // Jv Additional
-  // =============
-  RegisterComponents('Jv Additional', [
-    TJvBitBtn,
-      TJvImgBtn,
-      TJvSpeedButton,
-      TJvMultilineButton,
-      TJvOneSizeFitsAllButton,
-      TJvButtonShaped,
-      TJvArrowButton,
-      TJvTransparentButton,
-      TJvTransparentButton2,
+  RegisterComponents('Jv Additional',
+    [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvMultilineButton,
+     TJvOneSizeFitsAllButton, TJvButtonShaped, TJvArrowButton,
+     TJvTransparentButton, TJvTransparentButton2,
 
-    TJvPopupMemo,
-      TJvStringGrid,
-      TJvDrawGrid,
-      TJvButtonDrawGrid,
+     TJvPopupMemo, TJvStringGrid, TJvDrawGrid, TJvButtonDrawGrid,
 
-    TJvMultilineListbox,
-      TJvReorderListBox,
-      TJvBMPListBox,
-      TJvCheckListBox,
-      TJvImageListBox,
+     TJvMultilineListbox, TJvReorderListBox, TJvBMPListBox,
+     TJvCheckListBox, TJvImageListBox, TJvFontComboBox,
+     TJvColorComboBox, TJvImageComboBox,
 
-    TJvFontComboBox,
-      TJvColorComboBox,
-      TJvImageComboBox,
+     TJvScrollBox, TJvImage, TJvImageWindow, TJvImageSquare,
+     TJvShape, TJvBevel, TJvSplitter, TJvSyncSplitter,
 
-    TJvScrollBox,
-      TJvImage,
-      TJvImageWindow,
-      TJvImageSquare,
-      TJvShape,
-      TJvBevel,
-      TJvSplitter,
-      TJvSyncSplitter,
+     TJvControlBar,
 
-    TJvControlBar,
+     TJvStaticText, TJvScrollText, TJvContentScroller, TJvZoom,
 
-    TJvStaticText,
-      TJvScrollText,
-      TJvContentScroller,
-      TJvZoom,
+     TJvMaskEdit, TJvCommandEdit,
+     TJvSpinEdit, TJvSpinButton, TJvCoupler,
 
-    TJvMaskEdit,
-      TJvCommandEdit,
-      TJvSpinEdit,
-      TJvSpinButton,
-      TJvCoupler,
+     TJvInstallLabel, TJvObserverLabel, TJvObservibleCheckBox,
 
-    TJvInstallLabel,
-      TJvObserverLabel,
-      TJvObservibleCheckBox,
+     TJvMousePanel, TJvSizeablePanel, TJvTransparentPanel,
+     TJvCaptionPanel, TJvItemsPanel, TJvRollout,
 
-    TJvMousePanel,
-      TJvSizeablePanel,
-      TJvTransparentPanel,
-      TJvCaptionPanel,
-      TJvItemsPanel,
-      TJvRollout,
+     JvSpacer.TJvSpacer, TJvDivider, TJvArrow, TJvHighlighter, TJvRadioControl,
 
-    JvSpacer.TJvSpacer,
-      TJvDivider,
-      TJvArrow,
-      TJvHighlighter,
-      TJvRadioControl,
-
-    TJvGroupHeader,
-      TJvFooter
-      ]);
+     TJvGroupHeader, TJvFooter]);
 
   // Jv Win32
-  // ========
-  RegisterComponents('Jv Win32', [
-
-    TJvTabControl,
-      TJvPageControl,
-      TJvRichEdit,
-      TJvTrackBar,
-      {$IFNDEF DelphiPersonalEdition}
-      TJvProgressBar,
-      {$ENDIF}
-      TJvUpDown,
-      TJvHotKey,
-      TJvHotKeyEx,
-      TJvApplicationHotKey,
-      TJvAnimate,
-      TJvDateTimePicker,
-      TJvMonthCalendar,
-      TJvMonthCalendar2,
-      TJvTreeView,
-      TJvListView,
-      TJvHeaderControl,
-      TJvStatusBar,
-      TJvToolBar,
-      TJvCoolBar,
-      TJvPageScroller,
-      TJvScrollingWindow,
-      TJvIpAddress,
-      TJvSHFileOperation,
-      TJvTrayIcon,
-    TJvHidDeviceController
-      ]);
+  RegisterComponents('Jv Win32',
+    [TJvTabControl, TJvPageControl, TJvRichEdit, TJvTrackBar,
+     {$IFNDEF DelphiPersonalEdition}
+     TJvProgressBar,
+     {$ENDIF}
+     TJvUpDown, TJvHotKey, TJvHotKeyEx, TJvApplicationHotKey,
+     TJvAnimate, TJvDateTimePicker, TJvMonthCalendar, TJvMonthCalendar2,
+     TJvTreeView, TJvListView, TJvHeaderControl, TJvStatusBar, TJvToolBar,
+     TJvCoolBar, TJvPageScroller, TJvScrollingWindow, TJvIpAddress,
+     TJvSHFileOperation, TJvTrayIcon, TJvHidDeviceController]);
 
   // Jv System
-  // =========
-  RegisterComponents('Jv System', [
-    TJvDriveCombo,
-      TJvDriveList,
-      TJvDirectoryListBox,
-      TJvFileListBox,
-      TJvCaptionButton,
-      TJvColorButton,
-      TJvColorBox,
-      TJvColorSquare,
-      TJvRegistryTreeView,
-      TJvUninstallListBox,
-      TJvUninstallComboBox,
+  RegisterComponents('Jv System',
+    [TJvDriveCombo, TJvDriveList, TJvDirectoryListBox, TJvFileListBox,
+     TJvCaptionButton, TJvColorButton, TJvColorBox, TJvColorSquare,
+     TJvRegistryTreeView, TJvUninstallListBox, TJvUninstallComboBox,
 
-    TJvDragDrop,
-      TJvAppDdeCmd,
-      TJvPerfStat95,
-      TJvCreateProcess,
-      TJvChangeNotify,
-      TJvFileInfo,
-      TJvComputerInfo,
-      TJvDirectories,
-      TJvSystemColors,
-      TJvClipboardViewer,
-      TJvSystemPopup,
+     TJvDragDrop, TJvAppDdeCmd, TJvPerfStat95, TJvCreateProcess,
+     TJvChangeNotify, TJvFileInfo, TJvComputerInfo, TJvDirectories,
+     TJvSystemColors, TJvClipboardViewer, TJvSystemPopup, TJvNTEventLog]);
 
-    TJvNTEventLog
-      ]);
-
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   // Jv Data Controls
-  // ================
-  RegisterComponents('Jv Data Controls', [
-    TJvDBDateTimePicker,
-      TJvDBProgressBar,
-      TJvDBSpinEdit
-      ]);
-{$ENDIF}
+  RegisterComponents('Jv Data Controls',
+    [TJvDBDateTimePicker, TJvDBProgressBar, TJvDBSpinEdit]);
+  {$ENDIF}
 
   // Jv Dialogs
-  // ==========
-  RegisterComponents('Jv Dialogs', [
-    TJvBrowseFolder,
-      TJvSelectDirectory,
-      TJvOpenDialog,
-      TJvSaveDialog,
-      TJvOpenDialog2000,
-      TJvSaveDialog2000,
-      TJvConnectNetwork,
-      TJvDisconnectNetwork,
-      TJvPageSetupDialog,
-      TJvPageSetupTitledDialog,
-      TJvAddPrinterDialog,
-      TJvFindFilesDialog,
-      TJvFormatDrive,
-      TJvColorDialog,
-      TJvOrganizeFavoritesDialog,
-      TJvComputerNameDialog,
-      TJvControlPanelDialog,
-      TJvAppletDialog,
-      TJvChangeIconDialog,
-      TJvShellAboutDialog,
-      TJvRunDialog,
-      TJvObjectPropertiesDialog,
-      TJvNewLinkDialog,
-      TJvAddHardwareDialog,
-      TJvOpenWithDialog,
-      TJvDiskFullDialog,
-      TJvExitWindowsDialog,
-      TJvOutOfMemoryDialog,
-      TJvObjectPickerDialog,
+  RegisterComponents('Jv Dialogs',
+    [TJvBrowseFolder, TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
+     TJvOpenDialog2000, TJvSaveDialog2000,TJvConnectNetwork,
+     TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
+     TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDrive,
+     TJvColorDialog, TJvOrganizeFavoritesDialog, TJvComputerNameDialog,
+     TJvControlPanelDialog, TJvAppletDialog, TJvChangeIconDialog,
+     TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
+     TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
+     TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
+     TJvObjectPickerDialog,
 
-    TJvPasswordForm,
-      TJvExchListboxes,
-      TJvLoginDlg,
-      TJvSerialDlg,
-      TJvNagScreen,
-      TJvTipOfDay,
-      TJvProgressDlg,
-      TJvFindReplace,
-      TJvImageDlg,
-      TJvDiskPrompt,
-      TJvCopyError,
-      TJvDeleteError,
-      TJvRenameError,
-      TJvDSADialog 
-      ]);
+     TJvPasswordForm, TJvExchListboxes, TJvLoginDlg, TJvSerialDlg,
+     TJvNagScreen, TJvTipOfDay, TJvProgressDlg, TJvFindReplace,
+     TJvImageDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError,
+     TJvRenameError, TJvDSADialog]);
 
   // Jv Internet
-  // ===========
-  RegisterComponents('Jv Internet', [
-    TJvHotLink,
-      TJvHtmlParser,
-      TJvHttpGrabber,
-      TJvMultiHttpGrabber,
-      TJvFtpGrabber,
-      TJvSimpleXml,
-      TJvStringListToHtml,
-      TJvRichEditToHtml,
-      TJvRgbToHtml,
-      TJvStrToHtml,
-      TJvFormToHtml,
-      TJvMail,
-      TJvRas32,
-      TJvCommStatus
-      ]);
+  RegisterComponents('Jv Internet',
+    [TJvHotLink, TJvHtmlParser, TJvHttpGrabber, TJvMultiHttpGrabber,
+     TJvFtpGrabber, TJvSimpleXml, TJvStringListToHtml, TJvRichEditToHtml,
+     TJvRgbToHtml, TJvStrToHtml, TJvFormToHtml, TJvMail, TJvRas32,
+     TJvCommStatus]);
 
   // Jv Custom
-  // =========
-  RegisterComponents('Jv Custom', [
-    TJvLinkLabel,
-      TJvGammaPanel,
-      TJvOutlookBar,
-      TJvLookOut,
-      TJvLookOutButton,
-      TJvExpress,
-      TJvExpressButton,
-      TJvTimeLine,
-      TJvTMTimeline,
-      TJvInspector,
-      TJvInspectorBorlandPainter,
-      TJvInspectorDotNetPainter,
-      TJvBalloonHint
-      ]);
+  RegisterComponents('Jv Custom',
+    [TJvLinkLabel, TJvGammaPanel, TJvOutlookBar, TJvLookOut, TJvLookOutButton,
+     TJvExpress, TJvExpressButton, TJvTimeLine, TJvTMTimeline, TJvInspector,
+     TJvInspectorBorlandPainter, TJvInspectorDotNetPainter, TJvBalloonHint]);
 
   // Jv Labels
-  // =========
-  RegisterComponents('Jv Labels', [
-    TJvBlinkingLabel,
-      TJvScrollingLabel,
-      TJvReversedLabel,
-      TJvRealLabel,
-      TJvSpecialLabel,
-      TJvAngleLabel,
-      TJvBouncingLabel,
-      TJvAppearingLabel
-      ]);
+  RegisterComponents('Jv Labels',
+    [TJvBlinkingLabel, TJvScrollingLabel, TJvReversedLabel, TJvRealLabel,
+     TJvSpecialLabel, TJvAngleLabel, TJvBouncingLabel, TJvAppearingLabel]);
 
   // Jv Multimedia
-  // =============
-  RegisterComponents('Jv Multimedia', [
-    TJvPlaylist,
-      TJvSoundControl,
-      TJvDeviceChanged,
-      TJvJoystick,
-      TJvWavePlayer,
-      TJvBmpAnimator,
+  RegisterComponents('Jv Multimedia',
+    [TJvPlaylist, TJvSoundControl, TJvDeviceChanged, TJvJoystick,
+     TJvWavePlayer, TJvBmpAnimator,
 
-    TJvFormWallpaper,
-      TJvStarfield,
-      TJvImageTransform,
-      TJvImageRotate,
-      TJvSpecialImage,
-      TJvSlider,
+     TJvFormWallpaper, TJvStarfield, TJvImageTransform,
+     TJvImageRotate, TJvSpecialImage, TJvSlider,
 
-    TJvGradient,
-      TJvGradientCaption,
-      TJvWaitingGradient,
-      TJvSpecialProgress,
-      TJvWaitingProgress,
+     TJvGradient, TJvGradientCaption, TJvWaitingGradient,
+     TJvSpecialProgress, TJvWaitingProgress,
 
-    TJvId3v1,
-      TJvId3v2,
-      TJvVisualId3v1,
-      TJvVisualId3v2,
+     TJvId3v1, TJvId3v2, TJvVisualId3v1, TJvVisualId3v2,
 
-    TJvWinampLabel,
-      TJvBreatheSkin,
-      TJvWinampApi,
+     TJvWinampLabel, TJvBreatheSkin, TJvWinampApi,
 
-    TjvThumbImage,
-      TjvThumbNail,
-      TjvThumbView,
-      TJvMovableBevel
-      ]);
+     TJvThumbImage, TJvThumbNail, TJvThumbView, TJvMovableBevel]);
 
   // Jv Forms
-  // ========
-  RegisterComponents('Jv Forms', [
-    TJvFormMagnet,
-      TJvAppAnimatedIcon,
-      TJvFormAnimatedIcon,
-      TJvAnimTitle,
-      TJvTransparentForm,
-      TJvPerforated,
-      TJvFormPlace,
-      TJvFormAnimation,
-      TJvAutoSizeCompo
-      ]);
+  RegisterComponents('Jv Forms',
+    [TJvFormMagnet, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvAnimTitle,
+     TJvTransparentForm, TJvPerforated, TJvFormPlace,
+     TJvFormAnimation, TJvAutoSizeCompo]);
 
   // Jv Utils
-  // ========
-  RegisterComponents('Jv Utils', [
-    TJvTranslator,
-      TJvTranslatorStrings,
+  RegisterComponents('Jv Utils',
+    [TJvTranslator, TJvTranslatorStrings,
 
-    TJvFavoritesButton,
-      TJvStartMenuBtn,
-      TJvRecentMenuBtn,
-{$IFNDEF DelphiPersonalEdition}
-      TJvControlPanel,
-{$ENDIF}      
+     TJvFavoritesButton, TJvStartMenuBtn, TJvRecentMenuBtn,
+     {$IFNDEF DelphiPersonalEdition}
+     TJvControlPanel,
+     {$ENDIF}
 
-    TJvSerialMaker,
-      TJvTimeLimit,
+     TJvSerialMaker, TJvTimeLimit,
 
-    TJvScreenSaver,
-      TJvPatchFile,
-      TJvThread,
-      TJvThreadTimer,
-      TJvAlarms,
-      TJvClock,
-      TjvAnalogClock,
+     TJvScreenSaver, TJvPatchFile, TJvThread, TJvThreadTimer, TJvAlarms,
+     TJvClock, TJvAnalogClock,
 
-    TJvMruList,
-      TJvWinHelp,
-      TJvEasterEgg,
-      TJvPrint,
-      TJvMousePositionner,
+     TJvMruList, TJvWinHelp, TJvEasterEgg, TJvPrint, TJvMousePositionner,
 
-    TJvDataEmbedded,
+     TJvDataEmbedded,
 
-    TJvCaesarCipher,
-      TJvVigenereCipher,
-      TJvXorCipher,
-      TJvGenetic,
+     TJvCaesarCipher, TJvVigenereCipher, TJvXorCipher, TJvGenetic,
 
-      TJvSearchFiles,
-      TJvLogFile,
-      TJvCabFile,
-      TJvProfiler,
-      TJvApplication,
-      TJvEnterAsTab,
-      TJvKeyboardStates
-      ]);
+     TJvSearchFiles, TJvLogFile, TJvCabFile, TJvProfiler,
+     TJvApplication, TJvEnterAsTab, TJvKeyboardStates ]);
 
   // Jv Convert
-  // ==========
-  RegisterComponents('Jv Convert', [
-    TJvFloatEdit,
-      TJvFloatEdit2,
-      TJvCurrencyEdit,
-      TJvIntegerEdit,
-      TJvYearEdit
-      ]);
+  RegisterComponents('Jv Convert',
+    [TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvIntegerEdit, TJvYearEdit]);
 
-// JvBands
-//============
-  RegisterCustomModule(TjvBandForm, TCustomModule);
-  RegisterPackageWizard(TjvBandObjectDLLWizard.Create);
+  // JvBands
+  RegisterCustomModule(TJvBandForm, TCustomModule);
+  RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
 
 
-   //JvPlugin
-  // ==========
-  RegisterComponents('Jv Plugin', [
-    TJvPluginManager
-      ]);
+  //JvPlugin
+  RegisterComponents('Jv Plugin',
+    [TJvPluginManager]);
 
   // Jv Composites
-  // =============
-{  RegisterComponents('Jv Composites', [
-    TJvDirectoryBox,
-      TJvFileNameBox,
-      TJvImageBox,
-      TJvButtonBox,
-      TJvCalculatorBox
-      ]); }
-
+{  RegisterComponents('Jv Composites',
+     [TJvDirectoryBox, TJvFileNameBox, TJvImageBox,
+      TJvButtonBox, TJvCalculatorBox]); }
 end;
 
 procedure RegExperts;
@@ -641,7 +420,7 @@ end;
 
 procedure RegActions;
 begin
-  RegisterActions('JVCL',[TJvSendMail, TJvWebAction],nil);
+  RegisterActions('JVCL', [TJvSendMail, TJvWebAction], nil);
 end;
 
 procedure Register;

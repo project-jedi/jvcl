@@ -27,7 +27,7 @@ Known Issues:
 ----------------------------------------------------------------------------- }
 
 {$I JVCL.INC}
-{$I JVCL.INC}
+
 {$IFDEF COMPILER6_UP}
 {$WARN UNIT_PLATFORM OFF}
 {$ENDIF}
@@ -37,13 +37,18 @@ This unit is only supported on Windows!
 
 unit JVCLMiscal;
 
-
 interface
+
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, 
-    Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls,
-    {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
-    JvMail, JvPerfMon95;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs,
+  Dialogs, ExptIntf, ToolIntf, ExtDlgs, StdCtrls,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
+  JvMail, JvPerfMon95;
 
 type
   TJvNosortEnumProperty = class(TEnumProperty)
@@ -97,10 +102,9 @@ type
 
 
 implementation
+
 uses
   FileCtrl;
-  
-{ TJvNosortEnumProperty }
 
 function TJvNosortEnumProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -108,25 +112,22 @@ begin
 end;
 
 
-{ TJvOpenDialogEditor }
-
 procedure TJvOpenDialogEditor.ExecuteVerb(Index: Integer);
 begin
-  if (Index = 0) and (Component is TCommonDialog) then TCommonDialogHack(Component).Execute;
+  if (Index = 0) and (Component is TCommonDialog) then
+    TCommonDialogHack(Component).Execute;
 end;
 
 function TJvOpenDialogEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := 'Dialog Test';
+  if Index = 0 then
+    Result := 'Dialog Test';
 end;
 
 function TJvOpenDialogEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
-
-{ TJvMailEditor }
 
 procedure TJvMailEditor.Address;
 begin
@@ -141,16 +142,20 @@ end;
 procedure TJvMailEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: SendMail;
-    1: Address;
+    0:
+      SendMail;
+    1:
+      Address;
   end;
 end;
 
 function TJvMailEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Send';
-    1: Result := 'Address';
+    0:
+      Result := 'Send';
+    1:
+      Result := 'Address';
   end;
 end;
 
@@ -169,9 +174,6 @@ begin
   end;
 end;
 
-
-{ TJvPerfStatProperty }
-
 function TJvPerfStatProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSortList, paMultiSelect];
@@ -185,14 +187,12 @@ begin
   Values := TStringList.Create;
   try
     JvGetPerfStatItems(Values);
-    for I := 0 to Values.Count - 1 do Proc(Values[I]);
+    for I := 0 to Values.Count - 1 do
+      Proc(Values[I]);
   finally
     Values.Free;
   end;
 end;
-
-
-{ TJvExeNameProperty }
 
 procedure TJvExeNameProperty.Edit;
 begin
@@ -204,12 +204,10 @@ begin
     Options := Options - [ofHideReadOnly];
     OnShow := OnDialogShow;
     if Execute then
-    begin
       if ofReadOnly in Options then
         SetValue(ExtractFileName(FileName))
       else
         SetValue(FileName);
-    end;
   finally
     Free;
   end;
@@ -225,21 +223,17 @@ begin
   SetDlgItemText(GetParent(TOpenDialog(Sender).Handle), chx1, '&Strip file path');
 end;
 
-{ TJvDirectoryProperty }
-
 procedure TJvDirectoryProperty.Edit;
 var
   FolderName: string;
 begin
-  if SelectDirectory((GetComponent(0) as TComponent).Name + '.' + GetName, '',
-    FolderName) then SetValue(FolderName);
+  if SelectDirectory((GetComponent(0) as TComponent).Name + '.' + GetName, '', FolderName) then
+    SetValue(FolderName);
 end;
 
 function TJvDirectoryProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paRevertable];
 end;
-
-
 
 end.

@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvConnectNetwork;
 
-
-
 interface
 
 uses
-  Forms, JvBaseDlg;
+  Forms,
+  JvBaseDlg;
 
 type
   TJvConnectNetwork = class(TJvCommonDialog)
@@ -48,17 +47,16 @@ type
 
   TJvNetworkConnect = class(TJvCommonDialog)
   private
-    FConnect: boolean;
+    FConnect: Boolean;
   published
-    property Connect:boolean read FConnect write FConnect;
+    property Connect: Boolean read FConnect write FConnect;
     function Execute: Boolean; override;
   end;
 
 implementation
+
 uses
   Windows;
-
-{**************************************************}
 
 function TJvConnectNetwork.Execute: Boolean;
 begin
@@ -69,8 +67,6 @@ function TJvDisconnectNetwork.Execute: Boolean;
 begin
   Result := WNetDisconnectDialog(Application.Handle, RESOURCETYPE_DISK) = NO_ERROR;
 end;
-
-{ TJvNetworkConnect }
 
 function TJvNetworkConnect.Execute: Boolean;
 begin
