@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 3.4 project file.
+; This is a Doc-O-Matic version 3.6 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [{51AFC76F-1628-478C-88DB-FA76DB55F3BE}\Basic]
@@ -10753,14 +10753,17 @@ VSpaceAfter=0
 VSpaceBefore=300
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images]
-Count=7
+Count=10
 FilterImage_0=@CONTENT
 FilterImage_1=@GLOSSARY
 FilterImage_2=@INDEX
 FilterImage_3=@NEXT
 FilterImage_4=@PREVIOUS
 FilterImage_5=@REFERENCE
-FilterImage_6=@UP
+FilterImage_6=@TOCLEAF
+FilterImage_7=@TOCMINUS
+FilterImage_8=@TOCPLUS
+FilterImage_9=@UP
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images\@CONTENT]
 Active=1
@@ -10804,6 +10807,27 @@ Height=-1
 Transparent=1
 Width=-1
 
+[{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images\@TOCLEAF]
+Active=1
+Filename=tocleaf.gif
+Height=-1
+Transparent=1
+Width=-1
+
+[{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images\@TOCMINUS]
+Active=1
+Filename=tocminus.gif
+Height=-1
+Transparent=1
+Width=-1
+
+[{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images\@TOCPLUS]
+Active=1
+Filename=tocplus.gif
+Height=-1
+Transparent=1
+Width=-1
+
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\Filter Images\@UP]
 Active=1
 Filename=up.gif
@@ -10839,10 +10863,12 @@ GenerateHEADContent=1
 HelpKind=1
 HTMLCharacterSet=Western (ISO-8859-1)
 HTMLFileExtension=.html
+HTMLFilenaming=0
 InsertCustomHEADCode=0
 OutputDir=output\HTML
 PrintFlagsInIndex=0
 PrintFlagsInTOC=1
+UseDHTMLForTOC=1
 
 [{D3A588E0-9472-11D3-BDD1-0080C8BA053D}\General Build Options]
 ShowDocumentation=1
@@ -11485,639 +11511,30 @@ UseTopicVersionInfo=0
 Vars=1
 
 [External Topic Properties]
-Count=113
+Count=6
 ID0=!!SYMREF
-ID1=$JVCL
-ID10=$JVCL.Buttons.Check
-ID100=$JVCL.System.LibProcAndThread.Libraries
-ID101=$JVCL.System.LibProcAndThread.Processes
-ID102=$JVCL.System.LibProcAndThread.Threads
-ID103=Acknowledge
-ID104=Donators
-ID105=JVCL.Info.Dialogs.DSA.Chk
-ID106=JVCL.Info.Dialogs.DSA.Reg
-ID107=JVCL.Info.Dialogs.DSA.Storage
-ID108=JVCL.Info.Inspector.Data
-ID109=JVCL.Info.Inspector.Paint
-ID11=$JVCL.Buttons.Push
-ID110=JVCL.Info.Inspector.Reg
-ID111=Team
-ID112=TJvSearchFiles_Example
-ID12=$JVCL.Buttons.Radio
-ID13=$JVCL.CommCtrl
-ID14=$JVCL.DateTime
-ID15=$JVCL.DateTime.EditsCombos
-ID16=$JVCL.DateTime.Other
-ID17=$JVCL.DBAware
-ID18=$JVCL.DBAware.DateTime
-ID19=$JVCL.DBAware.DateTime.EditsCombos
-ID2=$JVCL.Bars
-ID20=$JVCL.DBAware.DateTime.Other
-ID21=$JVCL.DBAware.EditsMemosAndCombos
-ID22=$JVCL.DBAware.EditsMemosAndCombos.Combos
-ID23=$JVCL.DBAware.EditsMemosAndCombos.Edits
-ID24=$JVCL.DBAware.EditsMemosAndCombos.Memos
-ID25=$JVCL.DBAware.EditsMemosAndCombos.Other
-ID26=$JVCL.DBAware.Graphics
-ID27=$JVCL.DBAware.GridsTreesLists
-ID28=$JVCL.DBAware.GridsTreesLists.Grids
-ID29=$JVCL.DBAware.GridsTreesLists.Lists
-ID3=$JVCL.Bars.MenusAndTools
-ID30=$JVCL.DBAware.GridsTreesLists.Trees
-ID31=$JVCL.DBAware.LabelsAndStatic
-ID32=$JVCL.DBAware.NavAndStatus
-ID33=$JVCL.DBAware.NavAndStatus.Navigational
-ID34=$JVCL.DBAware.NavAndStatus.Status
-ID35=$JVCL.DBAware.Providers
-ID36=$JVCL.DBAware.Providers.Datasets
-ID37=$JVCL.DBAware.Providers.DataSources
-ID38=$JVCL.Dialogs
-ID39=$JVCL.Dialogs.Common
-ID4=$JVCL.Bars.SideBars
-ID40=$JVCL.Dialogs.Custom
-ID41=$JVCL.EditsMemosAndCombos
-ID42=$JVCL.EditsMemosAndCombos.Combos
-ID43=$JVCL.EditsMemosAndCombos.Edits
-ID44=$JVCL.EditsMemosAndCombos.Memos
-ID45=$JVCL.EditsMemosAndCombos.Other
-ID46=$JVCL.FileRef
-ID47=$JVCL.FormsAndApp
-ID48=$JVCL.FormsAndApp.Application
-ID49=$JVCL.FormsAndApp.Application.HotKeys
-ID5=$JVCL.Bars.SlideAndProgress
-ID50=$JVCL.FormsAndApp.Application.Tray
-ID51=$JVCL.FormsAndApp.Forms
-ID52=$JVCL.FormsAndApp.Forms.DecoratingAndEffects
-ID53=$JVCL.FormsAndApp.Forms.Shaping
-ID54=$JVCL.FormsAndApp.Forms.Sizing
-ID55=$JVCL.FuncRef
-ID56=$JVCL.Graphics
-ID57=$JVCL.Graphics.Animations
-ID58=$JVCL.Graphics.Shapes
-ID59=$JVCL.Graphics.Static
-ID6=$JVCL.Bars.SlideAndProgress.Progress
-ID60=$JVCL.GridsAndContent
-ID61=$JVCL.GridsAndContent.Grids
-ID62=$JVCL.GridsAndContent.Scrollbars
-ID63=$JVCL.GridsAndContent.ScrollBoxes
-ID64=$JVCL.Info
-ID65=$JVCL.Info.Dialogs
-ID66=$JVCL.Info.Dialogs.DSA
-ID67=$JVCL.Info.Inspector
-ID68=$JVCL.Info.Inspector.Item
-ID69=$JVCL.Internet
-ID7=$JVCL.Bars.SlideAndProgress.Sliders
-ID70=$JVCL.Internet.ConvertersAndParsers
-ID71=$JVCL.Internet.ConvertersAndParsers.HTML
-ID72=$JVCL.Internet.ConvertersAndParsers.XML
-ID73=$JVCL.Internet.Other
-ID74=$JVCL.Internet.Protocols
-ID75=$JVCL.Internet.Protocols.FTP
-ID76=$JVCL.Internet.Protocols.HTTP
-ID77=$JVCL.Internet.Protocols.Mail
-ID78=$JVCL.LabelsAndStatic
-ID79=$JVCL.ListsAndTrees
-ID8=$JVCL.Bars.Statusbars
-ID80=$JVCL.ListsAndTrees.Lists
-ID81=$JVCL.ListsAndTrees.Trees
-ID82=$JVCL.Miscel
-ID83=$JVCL.Multimedia
-ID84=$JVCL.Multimedia.Audio
-ID85=$JVCL.Multimedia.Players
-ID86=$JVCL.Multimedia.Video
-ID87=$JVCL.PagesAndTabs
-ID88=$JVCL.PanelsBevelsAndGroups
-ID89=$JVCL.PanelsBevelsAndGroups.Bevels
-ID9=$JVCL.Buttons
-ID90=$JVCL.PanelsBevelsAndGroups.Groups
-ID91=$JVCL.PanelsBevelsAndGroups.Panels
-ID92=$JVCL.SelectAndChoose
-ID93=$JVCL.System
-ID94=$JVCL.System.AlarmsAndTimers
-ID95=$JVCL.System.AlarmsAndTimers.Alarms
-ID96=$JVCL.System.AlarmsAndTimers.Timers
-ID97=$JVCL.System.Encryption
-ID98=$JVCL.System.FilesAndFolders
-ID99=$JVCL.System.LibProcAndThread
+ID1=$JVCL.FuncRef
+ID2=$JVCL.Info
+ID3=Acknowledge
+ID4=Donators
+ID5=Team
 
 [External Topic Properties\!!SYMREF]
-Count=3
+Count=2
 ETPCommand0=2
 ETPCommand1=3
-ETPCommand2=13
-ETPContentsEntry2=1
 ETPGroup1=$JVCL
-ETPTopicOrder0=6
-
-[External Topic Properties\$JVCL]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=102
-
-[External Topic Properties\$JVCL.Bars]
-Count=1
-ETPCommand0=2
 ETPTopicOrder0=5
-
-[External Topic Properties\$JVCL.Bars.MenusAndTools]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=25
-
-[External Topic Properties\$JVCL.Bars.SideBars]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=31
-
-[External Topic Properties\$JVCL.Bars.SlideAndProgress]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=47
-
-[External Topic Properties\$JVCL.Bars.SlideAndProgress.Progress]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=75
-
-[External Topic Properties\$JVCL.Bars.SlideAndProgress.Sliders]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=48
-
-[External Topic Properties\$JVCL.Bars.Statusbars]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=76
-
-[External Topic Properties\$JVCL.Buttons]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=6
-
-[External Topic Properties\$JVCL.Buttons.Check]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=32
-
-[External Topic Properties\$JVCL.Buttons.Push]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=49
-
-[External Topic Properties\$JVCL.Buttons.Radio]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=77
-
-[External Topic Properties\$JVCL.CommCtrl]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=7
-
-[External Topic Properties\$JVCL.DateTime]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=10
-
-[External Topic Properties\$JVCL.DateTime.EditsCombos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=56
-
-[External Topic Properties\$JVCL.DateTime.Other]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=84
-
-[External Topic Properties\$JVCL.DBAware]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=8
-
-[External Topic Properties\$JVCL.DBAware.DateTime]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=21
-
-[External Topic Properties\$JVCL.DBAware.DateTime.EditsCombos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=51
-
-[External Topic Properties\$JVCL.DBAware.DateTime.Other]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=79
-
-[External Topic Properties\$JVCL.DBAware.EditsMemosAndCombos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=23
-
-[External Topic Properties\$JVCL.DBAware.EditsMemosAndCombos.Combos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=26
-
-[External Topic Properties\$JVCL.DBAware.EditsMemosAndCombos.Edits]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=33
-
-[External Topic Properties\$JVCL.DBAware.EditsMemosAndCombos.Memos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=52
-
-[External Topic Properties\$JVCL.DBAware.EditsMemosAndCombos.Other]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=80
-
-[External Topic Properties\$JVCL.DBAware.Graphics]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=27
-
-[External Topic Properties\$JVCL.DBAware.GridsTreesLists]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=34
-
-[External Topic Properties\$JVCL.DBAware.GridsTreesLists.Grids]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=35
-
-[External Topic Properties\$JVCL.DBAware.GridsTreesLists.Lists]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=81
-
-[External Topic Properties\$JVCL.DBAware.GridsTreesLists.Trees]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=53
-
-[External Topic Properties\$JVCL.DBAware.LabelsAndStatic]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=54
-
-[External Topic Properties\$JVCL.DBAware.NavAndStatus]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=82
-
-[External Topic Properties\$JVCL.DBAware.NavAndStatus.Navigational]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=55
-
-[External Topic Properties\$JVCL.DBAware.NavAndStatus.Status]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=83
-
-[External Topic Properties\$JVCL.DBAware.Providers]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=19
-
-[External Topic Properties\$JVCL.DBAware.Providers.Datasets]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=50
-
-[External Topic Properties\$JVCL.DBAware.Providers.DataSources]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=78
-
-[External Topic Properties\$JVCL.Dialogs]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=11
-
-[External Topic Properties\$JVCL.Dialogs.Common]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=57
-
-[External Topic Properties\$JVCL.Dialogs.Custom]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=85
-
-[External Topic Properties\$JVCL.EditsMemosAndCombos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=12
-
-[External Topic Properties\$JVCL.EditsMemosAndCombos.Combos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=28
-
-[External Topic Properties\$JVCL.EditsMemosAndCombos.Edits]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=36
-
-[External Topic Properties\$JVCL.EditsMemosAndCombos.Memos]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=58
-
-[External Topic Properties\$JVCL.EditsMemosAndCombos.Other]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=86
-
-[External Topic Properties\$JVCL.FileRef]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=5
-
-[External Topic Properties\$JVCL.FormsAndApp]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=13
-
-[External Topic Properties\$JVCL.FormsAndApp.Application]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=59
-
-[External Topic Properties\$JVCL.FormsAndApp.Application.HotKeys]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=60
-
-[External Topic Properties\$JVCL.FormsAndApp.Application.Tray]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=87
-
-[External Topic Properties\$JVCL.FormsAndApp.Forms]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=88
-
-[External Topic Properties\$JVCL.FormsAndApp.Forms.DecoratingAndEffects]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=37
-
-[External Topic Properties\$JVCL.FormsAndApp.Forms.Shaping]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=61
-
-[External Topic Properties\$JVCL.FormsAndApp.Forms.Sizing]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=89
 
 [External Topic Properties\$JVCL.FuncRef]
 Count=1
 ETPCommand0=2
 ETPTopicOrder0=4
 
-[External Topic Properties\$JVCL.Graphics]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=14
-
-[External Topic Properties\$JVCL.Graphics.Animations]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=38
-
-[External Topic Properties\$JVCL.Graphics.Shapes]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=62
-
-[External Topic Properties\$JVCL.Graphics.Static]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=90
-
-[External Topic Properties\$JVCL.GridsAndContent]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=16
-
-[External Topic Properties\$JVCL.GridsAndContent.Grids]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=39
-
-[External Topic Properties\$JVCL.GridsAndContent.Scrollbars]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=63
-
-[External Topic Properties\$JVCL.GridsAndContent.ScrollBoxes]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=91
-
 [External Topic Properties\$JVCL.Info]
 Count=1
 ETPCommand0=2
 ETPTopicOrder0=3
-
-[External Topic Properties\$JVCL.Info.Dialogs]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=111
-
-[External Topic Properties\$JVCL.Info.Dialogs.DSA]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=3
-
-[External Topic Properties\$JVCL.Info.Inspector]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=110
-
-[External Topic Properties\$JVCL.Info.Inspector.Item]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=105
-
-[External Topic Properties\$JVCL.Internet]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=17
-
-[External Topic Properties\$JVCL.Internet.ConvertersAndParsers]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=40
-
-[External Topic Properties\$JVCL.Internet.ConvertersAndParsers.HTML]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=64
-
-[External Topic Properties\$JVCL.Internet.ConvertersAndParsers.XML]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=92
-
-[External Topic Properties\$JVCL.Internet.Other]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=94
-
-[External Topic Properties\$JVCL.Internet.Protocols]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=65
-
-[External Topic Properties\$JVCL.Internet.Protocols.FTP]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=41
-
-[External Topic Properties\$JVCL.Internet.Protocols.HTTP]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=66
-
-[External Topic Properties\$JVCL.Internet.Protocols.Mail]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=93
-
-[External Topic Properties\$JVCL.LabelsAndStatic]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=18
-
-[External Topic Properties\$JVCL.ListsAndTrees]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=20
-
-[External Topic Properties\$JVCL.ListsAndTrees.Lists]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=67
-
-[External Topic Properties\$JVCL.ListsAndTrees.Trees]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=95
-
-[External Topic Properties\$JVCL.Miscel]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=22
-
-[External Topic Properties\$JVCL.Multimedia]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=24
-
-[External Topic Properties\$JVCL.Multimedia.Audio]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=42
-
-[External Topic Properties\$JVCL.Multimedia.Players]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=68
-
-[External Topic Properties\$JVCL.Multimedia.Video]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=96
-
-[External Topic Properties\$JVCL.PagesAndTabs]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=29
-
-[External Topic Properties\$JVCL.PanelsBevelsAndGroups]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=43
-
-[External Topic Properties\$JVCL.PanelsBevelsAndGroups.Bevels]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=44
-
-[External Topic Properties\$JVCL.PanelsBevelsAndGroups.Groups]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=69
-
-[External Topic Properties\$JVCL.PanelsBevelsAndGroups.Panels]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=97
-
-[External Topic Properties\$JVCL.SelectAndChoose]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=70
-
-[External Topic Properties\$JVCL.System]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=98
-
-[External Topic Properties\$JVCL.System.AlarmsAndTimers]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=30
-
-[External Topic Properties\$JVCL.System.AlarmsAndTimers.Alarms]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=71
-
-[External Topic Properties\$JVCL.System.AlarmsAndTimers.Timers]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=99
-
-[External Topic Properties\$JVCL.System.Encryption]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=72
-
-[External Topic Properties\$JVCL.System.FilesAndFolders]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=45
-
-[External Topic Properties\$JVCL.System.LibProcAndThread]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=100
-
-[External Topic Properties\$JVCL.System.LibProcAndThread.Libraries]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=46
-
-[External Topic Properties\$JVCL.System.LibProcAndThread.Processes]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=73
-
-[External Topic Properties\$JVCL.System.LibProcAndThread.Threads]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=101
 
 [External Topic Properties\Acknowledge]
 Count=1
@@ -12129,45 +11546,10 @@ Count=1
 ETPCommand0=2
 ETPTopicOrder0=0
 
-[External Topic Properties\JVCL.Info.Dialogs.DSA.Chk]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=0
-
-[External Topic Properties\JVCL.Info.Dialogs.DSA.Reg]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=1
-
-[External Topic Properties\JVCL.Info.Dialogs.DSA.Storage]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=2
-
-[External Topic Properties\JVCL.Info.Inspector.Data]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=107
-
-[External Topic Properties\JVCL.Info.Inspector.Paint]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=108
-
-[External Topic Properties\JVCL.Info.Inspector.Reg]
-Count=1
-ETPCommand0=2
-ETPTopicOrder0=106
-
 [External Topic Properties\Team]
 Count=1
 ETPCommand0=2
 ETPTopicOrder0=1
-
-[External Topic Properties\TJvSearchFiles_Example]
-Count=1
-ETPCommand0=15
-ETPHasTOCEntry0=0
 
 [File Extensions]
 ID1=.cs
@@ -12203,7 +11585,7 @@ WriteMissingFlagsAsText=1
 Author=
 Copyright=
 Summary=
-Title=JEDI-VCL 3.0 help system
+Title=JEDI-VCL 3.0 BEAT help system
 VersionMajor=2
 VersionMinor=0
 
@@ -12249,6 +11631,9 @@ AdditionalInformationFormatStr=%NAME% %NUMBER%
 ClassHierarchyLayoutFlatSeparator='    |'
 ClassHierarchyLayoutHangingIndent='    '
 ClassHierarchyLayoutOptions=2
+CustomBuildStepApp=
+CustomBuildStepAppIgnoreExitCode=1
+FunctionDeclarationOption=0
 HidePropertyDetails=1
 IndexOptions=11
 IndexTitlePrefixes=
@@ -12480,7 +11865,7 @@ Width=7
 
 [Parsing]
 AssignedCommentsToFollowingSymbols=1
-AssociateEarlyCommentsWithFiles=1
+AssociateEarlyCommentsWithFiles=0
 CommentDistance=5
 HeaderUnderlineCharactersCenter==
 HeaderUnderlineCharactersLeft=-
@@ -12499,7 +11884,7 @@ NamespaceOption=1
 ParameterDelimiterChars=:-
 ParameterDescriptionMode=0
 ParametersAllowSpaceAsDelimiter=0
-ParseImplementationSection=0
+ParseImplementationSection=1
 ParseSystemIncludes=0
 RawTextOrder_Location_0=0
 RawTextOrder_Location_1=1
@@ -12530,7 +11915,7 @@ Count=1
 File_0=..\jvcl\source\jedi.inc
 
 [Project File Info]
-Version=304
+Version=306
 
 [QAChecks]
 QACheckForAutomaticTopics=0
@@ -12956,6 +12341,7 @@ XMLDocTags=
 
 [Sections]
 AutoCreateSummary=0
+AutoSummaryForGenericTopics=0
 Count=30
 DefID=0
 ID0=0
@@ -12991,18 +12377,17 @@ ID9=9
 SavedValues=1
 
 [Source Files]
-Count=11
+Count=10
 File0=generated includes\JVCL.FuncRef.dtx
 File1=generic\eventstypes.pas
-File10=generic\JVCL.Team.Help.dtx
 File2=generic\JVCL.Acknowledge.dtx
-File3=generic\JVCL.FileRef.dtx
-File4=generic\JVCL.InfoGrp.dtx
-File5=generic\JVCL.Main.AboutJVCL.dtx
-File6=generic\JVCL.Main.dtx
-File7=generic\JVCL.Team.Coord.dtx
-File8=generic\JVCL.Team.Develop.dtx
-File9=generic\JVCL.Team.Global.dtx
+File3=generic\JVCL.InfoGrp.dtx
+File4=generic\JVCL.Main.AboutJVCL.dtx
+File5=generic\JVCL.Main.dtx
+File6=generic\JVCL.Team.Coord.dtx
+File7=generic\JVCL.Team.Develop.dtx
+File8=generic\JVCL.Team.Global.dtx
+File9=generic\JVCL.Team.Help.dtx
 
 [Source Include Directories]
 Count=0
