@@ -415,28 +415,32 @@ procedure TJvChangeThread.Execute;
 var
   I: Integer;
 begin
-  while not Terminated do
-  begin
-    I := WaitForMultipleObjects(FCount, PWOHandleArray(@FNotifyArray), False, FInterval);
-    if (I >= 0) and (I < FCount) then
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated do
     begin
-      try
-        Change(I);
-      finally
-        // (rom) raising an exception in a thread is not a good idea
-        // (rom) Assert removed
-        //Assert(FindNextChangeNotification(FNotifyArray[I]));
-        FindNextChangeNotification(FNotifyArray[I]);
+      I := WaitForMultipleObjects(FCount, PWOHandleArray(@FNotifyArray), False, FInterval);
+      if (I >= 0) and (I < FCount) then
+      begin
+        try
+          Change(I);
+        finally
+          // (rom) raising an exception in a thread is not a good idea
+          // (rom) Assert removed
+          //Assert(FindNextChangeNotification(FNotifyArray[I]));
+          FindNextChangeNotification(FNotifyArray[I]);
+        end;
       end;
     end;
+    if Terminated then
+      for I := 0 to FCount - 1 do
+        if FNotifyArray[I] <> INVALID_HANDLE_VALUE then
+        begin
+          FindCloseChangeNotification(FNotifyArray[I]);
+          FNotifyArray[I] := INVALID_HANDLE_VALUE;
+        end;
+  except
   end;
-  if Terminated then
-    for I := 0 to FCount - 1 do
-      if FNotifyArray[I] <> INVALID_HANDLE_VALUE then
-      begin
-        FindCloseChangeNotification(FNotifyArray[I]);
-        FNotifyArray[I] := INVALID_HANDLE_VALUE;
-      end;
 end;
 
 procedure TJvChangeThread.SynchChange;

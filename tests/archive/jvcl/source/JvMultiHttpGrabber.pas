@@ -412,55 +412,56 @@ end;
 procedure TJvMultiHttpThread.Execute;
 var
   Infos: PRequestInfos;
-  buffer: array [0..512] of Byte;
-  ReadedBytes: DWORD;
+  Buffer: array [0..512] of Byte;
+  BytesRead: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin
-  Infos := PRequestInfos(FInfos);
-
-  //Send the request
-  if not HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0) then
-  begin
-    Synchronize(Error);
-    Exit;
-  end;
-
-  //Get the Size
-  dLength := SizeOf(dSize);
-  dReserved := 0;
-  if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
-    @dSize, dLength, dReserved) then
-  begin
-    Infos^.FileSize := dSize;
-  end
-  else
-    Infos^.FileSize := -1;
-
-  //Download the stuff
-  Synchronize(Progress);
-  if not FContinue then
-    Exit;
-
-  FStream := TMemoryStream.Create;
+  // (rom) secure thread against exceptions
+  FStream := nil;
   try
-    repeat
-      if not InternetReadFile(Infos^.hRequest, @buffer, SizeOf(buffer), ReadedBytes) then
-        ReadedBytes := 0
-      else
+    try
+      Infos := PRequestInfos(FInfos);
+
+      //Send the request
+      if not HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0) then
       begin
-        Inc(FPosition, ReadedBytes);
-        FStream.Write(buffer, ReadedBytes);
-        Synchronize(Progress);
-        if not FContinue then
-        begin
-          FStream.Free;
-          FStream := nil;
-          Exit;
-        end;
+        Synchronize(Error);
+        Exit;
       end;
-    until ReadedBytes = 0;
-    FStream.Position := 0;
-  except
+
+      //Get the Size
+      dLength := SizeOf(dSize);
+      dReserved := 0;
+      if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_CONTENT_LENGTH or HTTP_QUERY_FLAG_NUMBER,
+        @dSize, dLength, dReserved) then
+      begin
+        Infos^.FileSize := dSize;
+      end
+      else
+        Infos^.FileSize := -1;
+
+      //Download the stuff
+      Synchronize(Progress);
+      if not FContinue then
+        Exit;
+
+      FStream := TMemoryStream.Create;
+      repeat
+        if not InternetReadFile(Infos^.hRequest, @Buffer[0], SizeOf(Buffer), BytesRead) then
+          BytesRead := 0
+        else
+        begin
+          Inc(FPosition, BytesRead);
+          FStream.Write(buffer, BytesRead);
+          Synchronize(Progress);
+          if not FContinue then
+            Exit;
+        end;
+      until BytesRead = 0;
+      FStream.Position := 0;
+    except
+    end;
+  finally
     FStream.Free;
     FStream := nil;
   end;
@@ -494,18 +495,22 @@ var
   STime: TSystemTime;
   dLength, dReserved: DWORD;
 begin
-  Infos := PRequestInfos(FInfos);
+  // (rom) secure thread against exceptions
+  try
+    Infos := PRequestInfos(FInfos);
 
-  dLength := SizeOf(TSystemTime);
-  dReserved := 0;
+    dLength := SizeOf(TSystemTime);
+    dReserved := 0;
 
-  HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0);
+    HttpSendRequest(Infos^.hRequest, nil, 0, nil, 0);
 
-  if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_LAST_MODIFIED or HTTP_QUERY_FLAG_SYSTEMTIME,
-    @STime, dLength, dReserved) then
-    FValue := SystemTimeToDateTime(STime)
-  else
-    FValue := -1;
+    if HttpQueryInfo(Infos^.hRequest, HTTP_QUERY_LAST_MODIFIED or HTTP_QUERY_FLAG_SYSTEMTIME,
+      @STime, dLength, dReserved) then
+      FValue := SystemTimeToDateTime(STime)
+    else
+      FValue := -1;
+  except
+  end;
 end;
 
 end.

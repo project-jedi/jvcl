@@ -185,18 +185,22 @@ procedure TJvCommWatcher.Execute;
 var
   Mask: Cardinal;
 begin
-  while not Terminated do
-  begin
-    if FHandle <> 0 then
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated do
     begin
-      GetCommModemStatus(FHandle, Mask);
-      if Mask <> FStat then
+      if FHandle <> 0 then
       begin
-        FStat := Mask;
-        Synchronize(Changed);
+        GetCommModemStatus(FHandle, Mask);
+        if Mask <> FStat then
+        begin
+          FStat := Mask;
+          Synchronize(Changed);
+        end;
       end;
+      Sleep(50);
     end;
-    Sleep(50);
+  except
   end;
 end;
 

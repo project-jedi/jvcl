@@ -41,7 +41,7 @@ type
   TJvFtpThread = class(TThread)
   private
     FSender: TObject; //acp
-    Stream: TMemoryStream;
+    FStream: TMemoryStream;
     FUrl: string;
     FUserName: string;
     FFileName: string;
@@ -309,13 +309,13 @@ end;
 
 procedure TJvFtpThread.Ended;
 begin
-  Stream.Position := 0;
+  FStream.Position := 0;
   if FOutputMode = omStream then
-    FOnDoneStream(Self, Stream, Stream.Size, FUrl)
+    FOnDoneStream(Self, FStream, FStream.Size, FUrl)
   else
   begin
-    Stream.SaveToFile(FFileName);
-    FOnDoneFile(Self, FFileName, Stream.Size, FUrl);
+    FStream.SaveToFile(FFileName);
+    FOnDoneFile(Self, FFileName, FStream.Size, FUrl);
   end;
 end;
 
@@ -366,102 +366,110 @@ var
   end;
 
 begin
-  FErrorText := '';
-  ParseUrl(FUrl);
+  // (rom) secure thread against exceptions
+  FStream := nil;
+  hSession := nil;
+  hHostConnection := nil;
+  hDownload := nil;
+  try
+    try
+      FErrorText := '';
+      ParseUrl(FUrl);
 
-  //Connect to the web
-  hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
-  if hSession = nil then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
+      //Connect to the web
+      hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+      if hSession = nil then
+      begin
+        FErrorText := GetLastErrorMsg;
+        Synchronize(Error);
+        Exit;
+      end;
 
-  //Connect to the hostname
-  if FUserName = '' then
-    UserName := nil
-  else
-    UserName := PChar(FUserName);
-  if FPassword = '' then
-    Password := nil
-  else
-    Password := PChar(FPassword);
-  hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_FTP_PORT,
-    UserName, Password, INTERNET_SERVICE_FTP, 0, 0);
-  if hHostConnection = nil then
-  begin
-    dwIndex := 0;
-    dwBufLen := 1024;
-    GetMem(Buffer, dwBufLen);
-    InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
-    FErrorText := StrPas(Buffer);
-    FreeMem(Buffer);
+      //Connect to the hostname
+      if FUserName = '' then
+        UserName := nil
+      else
+        UserName := PChar(FUserName);
+      if FPassword = '' then
+        Password := nil
+      else
+        Password := PChar(FPassword);
+      hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_FTP_PORT,
+        UserName, Password, INTERNET_SERVICE_FTP, 0, 0);
+      if hHostConnection = nil then
+      begin
+        dwIndex := 0;
+        dwBufLen := 1024;
+        GetMem(Buffer, dwBufLen);
+        InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+        FErrorText := StrPas(Buffer);
+        FreeMem(Buffer);
 
-    Synchronize(Error);
-    Exit;
-  end;
+        Synchronize(Error);
+        Exit;
+      end;
 
-  InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@FtpDownloadCallBack));
+      InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@FtpDownloadCallBack));
 
-  //Request the file
-  if FMode = hmBinary then
-    hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
-      INTERNET_FLAG_DONT_CACHE, 0)
-  else
-    hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_ASCII or
-      INTERNET_FLAG_DONT_CACHE, 0);
+      //Request the file
+      if FMode = hmBinary then
+        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
+          INTERNET_FLAG_DONT_CACHE, 0)
+      else
+        hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_ASCII or
+          INTERNET_FLAG_DONT_CACHE, 0);
 
-  if hDownload = nil then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
-  (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
+      if hDownload = nil then
+      begin
+        FErrorText := GetLastErrorMsg;
+        Synchronize(Error);
+        Exit;
+      end;
+      (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
 
-  Stream := TMemoryStream.Create;
+      FStream := TMemoryStream.Create;
 
-  TotalBytes := 0;
-  BytesRead := 1;
-  while (BytesRead <> 0) and (not Terminated) do // acp
-  begin
-    if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
-      BytesRead := 0
-    else
-    begin
-      Inc(TotalBytes, BytesRead);
-      FBytesRead := TotalBytes;
-      Stream.Write(Buf, BytesRead);
-      Synchronize(Progress);
+      TotalBytes := 0;
+      BytesRead := 1;
+      while (BytesRead <> 0) and (not Terminated) do // acp
+      begin
+        if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
+          BytesRead := 0
+        else
+        begin
+          Inc(TotalBytes, BytesRead);
+          FBytesRead := TotalBytes;
+          FStream.Write(Buf, BytesRead);
+          Synchronize(Progress);
+        end;
+      end;
+      if not Terminated then // acp
+        Synchronize(Ended);
+    except
     end;
-  end;
-  if not Terminated then // acp
-    Synchronize(Ended);
+  finally
+    //Free all stuff's
+    FStream.Free;
 
-  //Free all stuff's
-  Stream.Free;
-
-  //Release all handles
-  if not InternetCloseHandle(hDownload) then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
+    //Release all handles
+    // (rom) now all connections get closed and Closed is always signalled
+    if (hDownload <> nil) and not InternetCloseHandle(hDownload) then
+    begin
+      FErrorText := GetLastErrorMsg;
+      Synchronize(Error);
+    end;
+    if (hHostConnection <> nil) and not InternetCloseHandle(hHostConnection) then
+    begin
+      FErrorText := GetLastErrorMsg;
+      Synchronize(Error);
+    end;
+    if (hSession <> nil) and not InternetCloseHandle(hSession) then
+    begin
+      FErrorText := GetLastErrorMsg;
+      Synchronize(Error);
+    end;
+    Synchronize(Closed);
   end;
-  if not InternetCloseHandle(hHostConnection) then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
-  if not InternetCloseHandle(hSession) then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
-  Synchronize(Closed);
 end;
 
 procedure TJvFtpThread.Progress;

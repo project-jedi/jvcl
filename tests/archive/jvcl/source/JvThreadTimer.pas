@@ -75,10 +75,14 @@ end;
 
 procedure TJvThreadTimerClass.Execute;
 begin
-  while not Terminated do
-  begin
-    Sleep(FDelay);
-    Synchronize(Call);
+  // (rom) ecure thread against exceptions
+  try
+    while not Terminated do
+    begin
+      Sleep(FDelay);
+      Synchronize(Call);
+    end;
+  except
   end;
 end;
 

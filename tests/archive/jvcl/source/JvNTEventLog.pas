@@ -363,19 +363,23 @@ procedure TNotifyChangeEventLog.Execute;
 var
   lResult: DWORD;
 begin
-  while not Terminated do
-  begin
-    // reset event signal, so we can get it again
-    ResetEvent(FEventHandle);
-    // wait for event to happen
-    lResult := WaitForSingleObject(FEventHandle, INFINITE);
-    // check event Result
-    case lResult of
-      WAIT_OBJECT_0:
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated do
+    begin
+      // reset event signal, so we can get it again
+      ResetEvent(FEventHandle);
+      // wait for event to happen
+      lResult := WaitForSingleObject(FEventHandle, INFINITE);
+      // check event Result
+      case lResult of
+        WAIT_OBJECT_0:
+          Synchronize(DoChange);
+      else
         Synchronize(DoChange);
-    else
-      Synchronize(DoChange);
+      end;
     end;
+  except
   end;
 end;
 

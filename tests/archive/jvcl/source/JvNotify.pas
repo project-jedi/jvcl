@@ -193,31 +193,35 @@ procedure TJvNotifyThread.Execute;
 var
   Handles: array [0..1] of THandle;
 begin
-  while not Terminated and (FNotifyHandle <> INVALID_HANDLE_VALUE) do
-  begin
-    Handles[0] := FNotifyHandle;
-    Handles[1] := FEvent;
-    case WaitForMultipleObjects(2, PWOHandleArray(@Handles), False, INFINITE) of
-      WAIT_OBJECT_0: { notification }
-        if not Terminated then
-        begin
-          DoChange;
-          if not FindNextChangeNotification(FNotifyHandle) then
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated and (FNotifyHandle <> INVALID_HANDLE_VALUE) do
+    begin
+      Handles[0] := FNotifyHandle;
+      Handles[1] := FEvent;
+      case WaitForMultipleObjects(2, PWOHandleArray(@Handles), False, INFINITE) of
+        WAIT_OBJECT_0: { notification }
+          if not Terminated then
+          begin
+            DoChange;
+            if not FindNextChangeNotification(FNotifyHandle) then
+            begin
+              FLastError := GetLastError;
+              Break;
+            end;
+          end;
+        WAIT_OBJECT_0 + 1: { event is signaled }
+          Break;
+        WAIT_FAILED:
           begin
             FLastError := GetLastError;
             Break;
           end;
-        end;
-      WAIT_OBJECT_0 + 1: { event is signaled }
-        Break;
-      WAIT_FAILED:
-        begin
-          FLastError := GetLastError;
-          Break;
-        end;
+      end;
     end;
+    FFinished := True;
+  except
   end;
-  FFinished := True;
 end;
 
 procedure TJvNotifyThread.StopWaiting;

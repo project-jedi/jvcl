@@ -64,10 +64,14 @@ end;
 
 procedure TJvImageDrawThread.Execute;
 begin
-  while not Terminated do
-  begin
-    Sleep(FDelay);
-    Synchronize(Draw);
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated do
+    begin
+      Sleep(FDelay);
+      Synchronize(Draw);
+    end;
+  except
   end;
 end;
 

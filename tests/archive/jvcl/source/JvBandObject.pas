@@ -694,7 +694,8 @@ begin
       FSavedWndProc := FBandform.WindowProc;
       FBandform.WindowProc := BandWndProc;
 
-      FHook := SetWindowsHookEx(WH_GETMESSAGE, MethodToProcedure(self,self.MethodAddress('MsgHookProc')),HInstance,GetCurrentThreadID);
+      FHook := SetWindowsHookEx(WH_GETMESSAGE,
+        MethodToProcedure(Self, Self.MethodAddress('MsgHookProc')), HInstance, GetCurrentThreadID);
     end;
     if Site.QueryInterface(IInputObjectSite, FSite) <> S_OK then // implicit FSite.AddRef;
     begin

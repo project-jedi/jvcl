@@ -360,104 +360,120 @@ var
   end;
 
 begin
-  ParseUrl(FUrl);
-  FErrorText := '';
+  // (rom) secure thread against exceptions
+  Buffer := nil;
 
-  //Connect to the web
-  hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, DWORD(Self));
-  if hSession = nil then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
+  FStream := nil;
+  hSession := nil;
+  hHostConnection := nil;
+  hDownload := nil;
+  try
+    try
+      ParseUrl(FUrl);
+      FErrorText := '';
 
-  //Connect to the hostname
-  if FUsername = '' then
-    Username := nil
-  else
-    Username := PChar(FUsername);
-  if FPassword = '' then
-    Password := nil
-  else
-    Password := PChar(FPassword);
-  hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT,
-    Username, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
-  if hHostConnection = nil then
-  begin
-    dwIndex := 0;
-    dwBufLen := 1024;
-    GetMem(Buffer, dwBufLen);
-    InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
-    FErrorText := Buffer;
-    FreeMem(Buffer);
-    Synchronize(Error);
-    Exit;
-  end;
-
-  InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
-
-  //Request the file
-  // (rom) any difference here?
-  {$IFDEF D5}
-  hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
-    nil, INTERNET_FLAG_RELOAD, 0);
-  {$ELSE}
-  hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
-    nil, INTERNET_FLAG_RELOAD, 0);
-  {$ENDIF}
-
-  if hDownload = nil then
-  begin
-    FErrorText := GetLastErrorMsg;
-    Synchronize(Error);
-    Exit;
-  end;
-
-  //Send the request
-  HttpSendRequest(hDownload, nil, 0, nil, 0);
-
-  FStream := TMemoryStream.Create;
-
-  dwIndex := 0;
-  dwBufLen := 1024;
-  GetMem(Buffer, dwBufLen);
-  HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
-  if HasSize then
-    FTotalBytes := StrToInt(StrPas(Buffer))
-  else
-    FTotalBytes := 0;
-
-  TotalBytes := 0;
-  if HasSize then
-  begin
-    BytesRead := 1;
-    while BytesRead > 0 do
-    begin
-      if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
-        BytesRead := 0
-      else
+      //Connect to the web
+      hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, DWORD(Self));
+      if hSession = nil then
       begin
-        Inc(TotalBytes, BytesRead);
-        FBytesReaded := TotalBytes;
-        FStream.Write(Buf, BytesRead);
-        Synchronize(Progress);
+        FErrorText := GetLastErrorMsg;
+        Synchronize(Error);
+        Exit;
       end;
+
+      //Connect to the hostname
+      if FUsername = '' then
+        Username := nil
+      else
+        Username := PChar(FUsername);
+      if FPassword = '' then
+        Password := nil
+      else
+        Password := PChar(FPassword);
+      hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT,
+        Username, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
+      if hHostConnection = nil then
+      begin
+        dwIndex := 0;
+        dwBufLen := 1024;
+        GetMem(Buffer, dwBufLen);
+        InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+        FErrorText := Buffer;
+        FreeMem(Buffer);
+        Synchronize(Error);
+        Exit;
+      end;
+
+      InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
+
+      //Request the file
+      // (rom) any difference here?
+      {$IFDEF D5}
+      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
+        nil, INTERNET_FLAG_RELOAD, 0);
+      {$ELSE}
+      hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
+        nil, INTERNET_FLAG_RELOAD, 0);
+      {$ENDIF}
+
+      if hDownload = nil then
+      begin
+        FErrorText := GetLastErrorMsg;
+        Synchronize(Error);
+        Exit;
+      end;
+
+      //Send the request
+      HttpSendRequest(hDownload, nil, 0, nil, 0);
+
+      FStream := TMemoryStream.Create;
+
+      dwIndex := 0;
+      dwBufLen := 1024;
+      GetMem(Buffer, dwBufLen);
+      HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
+      if HasSize then
+        FTotalBytes := StrToInt(StrPas(Buffer))
+      else
+        FTotalBytes := 0;
+
+      TotalBytes := 0;
+      if HasSize then
+      begin
+        BytesRead := 1;
+        while BytesRead > 0 do
+        begin
+          if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
+            BytesRead := 0
+          else
+          begin
+            Inc(TotalBytes, BytesRead);
+            FBytesReaded := TotalBytes;
+            FStream.Write(Buf, BytesRead);
+            Synchronize(Progress);
+          end;
+        end;
+        if FContinue then
+          Synchronize(Ended);
+      end
+      else
+        Synchronize(Error);
+    except
     end;
-    if FContinue then
-      Synchronize(Ended);
-  end
-  else
-    Synchronize(Error);
+  finally
+    //Free all stuff's
+    if Buffer <> nil then
+    FreeMem(Buffer);
+    FStream.Free;
 
-  //Free all stuff's
-  FreeMem(Buffer);
-  FStream.Free;
-
-  //Release all handles
-  InternetCloseHandle(hDownload);
-  InternetCloseHandle(hHostConnection);
-  InternetCloseHandle(hSession);
+    //Release all handles
+    if hDownload <> nil then
+      InternetCloseHandle(hDownload);
+    if hHostConnection <> nil then
+      InternetCloseHandle(hHostConnection);
+    if hSession <> nil then
+      InternetCloseHandle(hSession);
+  end;
 end;
 
 procedure TJvHttpThread.Progress;

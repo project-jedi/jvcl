@@ -150,11 +150,15 @@ end;
 
 procedure TJvWinampThread.Execute;
 begin
-  while not Terminated do
-  begin
-    // (rom) all other threads of this kind draw first then sleep
-    Synchronize(Draw);
-    Sleep(FDelay);
+  // (rom) secure thread against exceptions
+  try
+    while not Terminated do
+    begin
+      // (rom) all other threads of this kind draw first then sleep
+      Synchronize(Draw);
+      Sleep(FDelay);
+    end;
+  except
   end;
 end;
 
