@@ -28,58 +28,57 @@ Known Issues:
 
 unit JvLoginDlg;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormLogin, JvBaseDlg, JvTypes;
+  SysUtils, Classes, Dialogs,
+  JvFormLogin, JvBaseDlg;
 
 type
   TJvLoginDlg = class(TJvCommonDialog)
   private
-    FCaption: string;
-    FCaption2: string;
+    FFirstLabel: string;
+    FSecondLabel: string;
     FTitle: string;
     FUsername: string;
     FPassword: string;
+    FPasswordChar: Char;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
-    property FirstLabel: string read FCaption write FCaption;
-    property SecondLabel: string read FCaption2 write FCaption2;
+    property FirstLabel: string read FFirstLabel write FFirstLabel;
+    property SecondLabel: string read FSecondLabel write FSecondLabel;
     property Username: string read FUsername write FUsername;
     property Password: string read FPassword write FPassword;
     property Title: string read FTitle write FTitle;
+    // (rom) added PasswordChar
+    property PasswordChar: Char read FPasswordChar write FPasswordChar default '*';
   end;
 
 implementation
 
 resourcestring
-  RC_LabelPassCaption = '&Username:';
-  RC_Label2Caption = '&Password:';
+  RC_FirstLabelCaption = '&Username:';
+  RC_SecondLabelCaption = '&Password:';
   RC_TitleLogin = 'Login';
-
-  {**************************************************}
 
 constructor TJvLoginDlg.Create(AOwner: TComponent);
 begin
-  FCaption := RC_LabelPassCaption;
-  FCaption2 := RC_Label2Caption;
+  inherited Create(AOwner);
+  FFirstLabel := RC_FirstLabelCaption;
+  FSecondLabel := RC_SecondLabelCaption;
   FTitle := RC_TitleLogin;
   FUsername := '';
   FPassword := '';
-  inherited;
+  FPasswordChar := '*';
 end;
-{**************************************************}
 
-function TJvLoginDlg.Execute: boolean;
+function TJvLoginDlg.Execute: Boolean;
 begin
-  Result := TFormLogi.Execute(FUsername,FPassword,
-    FTitle,FCaption,FCaption2,'*');
+  Result := TFormLogi.Execute(FUsername, FPassword,
+    Title, FirstLabel, SecondLabel, PasswordChar);
 end;
-{**************************************************}
+
 end.
 

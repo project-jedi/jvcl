@@ -28,20 +28,19 @@ Known Issues:
 
 unit JvImageTransform;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, JvTypes, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JvTypes, JVCLVer;
 
 type
   TJvImageTransform = class(TGraphicControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FPicture1: TPicture;
     FPicture2: TPicture;
     FAutoSize: Boolean;
-
     FTimer: TTimer;
     FInterval: Integer;
     FImageShown: Byte;
@@ -49,7 +48,6 @@ type
     FType: TTransformationKind;
     StepNum: Integer;
     FOnFinished: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure PictureChanged(Sender: TObject);
     procedure SetPicture1(Value: TPicture);
     procedure SetPicture2(Value: TPicture);
@@ -57,7 +55,7 @@ type
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TTransformationKind);
   protected
-    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetPalette: HPALETTE; override;
     procedure Paint; override;
     procedure TimerTick(Sender: TObject);
@@ -94,12 +92,9 @@ type
 
 implementation
 
-{************************************************************}
-
 constructor TJvImageTransform.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   FImageShown := 1;
   FPicture1 := TPicture.Create;
   FPicture1.OnChange := PictureChanged;
@@ -115,8 +110,6 @@ begin
   Width := 105;
 end;
 
-{************************************************************}
-
 destructor TJvImageTransform.Destroy;
 begin
   FPicture1.Free;
@@ -125,8 +118,6 @@ begin
   inherited Destroy;
 end;
 
-{************************************************************}
-
 function TJvImageTransform.GetPalette: HPALETTE;
 begin
   Result := 0;
@@ -134,29 +125,21 @@ begin
     Result := TBitmap(FPicture1.Graphic).Palette;
 end;
 
-{************************************************************}
-
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   PictureChanged(Self);
 end;
 
-{************************************************************}
-
 procedure TJvImageTransform.SetPicture1(Value: TPicture);
 begin
   FPicture1.Assign(Value);
 end;
 
-{************************************************************}
-
 procedure TJvImageTransform.SetPicture2(Value: TPicture);
 begin
   FPicture2.Assign(Value);
 end;
-
-{************************************************************}
 
 procedure TJvImageTransform.SetImageShown(Value: Byte);
 begin
@@ -166,8 +149,6 @@ begin
     Invalidate;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvImageTransform.SetInterval(Value: Integer);
 begin
@@ -180,14 +161,11 @@ begin
   if FTimer <> nil then
     FTimer.Interval := FInterval;
 end;
-{************************************************************}
 
 procedure TJvImageTransform.SetType(Value: TTransformationKind);
 begin
   FType := Value;
 end;
-
-{************************************************************}
 
 procedure TJvImageTransform.PictureChanged(Sender: TObject);
 begin
@@ -200,8 +178,6 @@ begin
   Invalidate;
 end;
 
-{************************************************************}
-
 procedure TJvImageTransform.Transform;
 begin
   StepNum := 0;
@@ -212,8 +188,6 @@ begin
     FTimer.Enabled := True;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvImageTransform.TimerTick;
 begin
@@ -234,8 +208,6 @@ begin
           FOnFinished(Self);
       end;
 end;
-
-{************************************************************}
 
 procedure TJvImageTransform.Paint;
 var
@@ -328,3 +300,4 @@ begin
 end;
 
 end.
+

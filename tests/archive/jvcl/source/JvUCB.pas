@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -28,12 +28,12 @@ Known Issues:
 
 unit JvUCB;
 
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvComponent, JvCtrls;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  StdCtrls,
+  JvComponent;
 
 type
   TJvUCBDisplayMode = (dmCurrentUser, dmLocalMachine);
@@ -43,20 +43,17 @@ type
   private
     FFolders: TStringList;
     FDisplayMode: TJvUCBDisplayModes;
-    FShowAll: boolean;
+    FShowAll: Boolean;
     procedure GetUninstallApps;
     function GetItems: TStrings;
     function GetDisplayName: string;
     function GetSection: string;
     function GetUninstallString: string;
-    procedure SetShowAll(const Value: boolean);
+    procedure SetShowAll(const Value: Boolean);
     procedure SetDisplayMode(const Value: TJvUCBDisplayModes);
-    { Private declarations }
   protected
-    { Protected declarations }
     procedure CreateWnd; override;
   public
-    { Public declarations }
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
     property Items: TStrings read GetItems;
@@ -64,11 +61,9 @@ type
     property UninstallString: string read GetUninstallString;
     property DisplayName: string read GetDisplayName;
   published
-    { Published declarations }
-
-    property ShowAll: boolean read FShowAll write SetShowAll;
-    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [dmCurrentUser, dmLocalMachine];
-
+    property ShowAll: Boolean read FShowAll write SetShowAll;
+    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
+      default [dmCurrentUser, dmLocalMachine];
     property Color;
     property Ctl3D;
     property DragCursor;
@@ -110,27 +105,23 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-
   end;
 
   TJvUninstallListBox = class(TCustomListBox)
   private
     FFolders: TStringList;
-    FShowAll: boolean;
+    FShowAll: Boolean;
     FDisplayMode: TJvUCBDisplayModes;
     procedure GetUninstallApps;
     function GetItems: TStrings;
     function GetDisplayName: string;
     function GetSection: string;
     function GetUninstallString: string;
-    procedure SetShowAll(const Value: boolean);
+    procedure SetShowAll(const Value: Boolean);
     procedure SetDisplayMode(const Value: TJvUCBDisplayModes);
-    { Private declarations }
   protected
-    { Protected declarations }
     procedure CreateWnd; override;
   public
-    { Public declarations }
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
     property Items: TStrings read GetItems;
@@ -138,10 +129,10 @@ type
     property UninstallString: string read GetUninstallString;
     property DisplayName: string read GetDisplayName;
   published
-    { Published declarations }
     property Align;
-    property ShowAll: boolean read FShowAll write SetShowAll;
-    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode default [dmCurrentUser, dmLocalMachine];
+    property ShowAll: Boolean read FShowAll write SetShowAll;
+    property DisplayMode: TJvUCBDisplayModes read FDisplayMode write SetDisplayMode
+      default [dmCurrentUser, dmLocalMachine];
     property Color;
     property Ctl3D;
     property DragCursor;
@@ -183,50 +174,52 @@ type
   end;
 
 implementation
+
 uses
-  Registry, ShellAPI;
+  Registry;
 
 const
   cUninstallPath = 'Software\Microsoft\Windows\CurrentVersion\Uninstall';
-  FKey: array[TJvUCBDisplayMode] of DWORD = (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
+  FKey: array [TJvUCBDisplayMode] of DWORD =
+    (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
 
 function UninstallStr(Reg: TRegIniFile; Section: string): string;
 begin
-  if reg.OpenKey('\' + cUninstallPath, false) then
-    Result := reg.ReadString(Section, 'UninstallString', '')
+  if Reg.OpenKey('\' + cUninstallPath, False) then
+    Result := Reg.ReadString(Section, 'UninstallString', '')
   else
     Result := '';
 end;
 
 function DispName(Reg: TRegIniFile; Section: string): string;
 begin
-  if reg.OpenKey('\' + cUninstallPath, false) then
-    Result := reg.ReadString(Section, 'DisplayName', '')
+  if Reg.OpenKey('\' + cUninstallPath, False) then
+    Result := Reg.ReadString(Section, 'DisplayName', '')
   else
     Result := '';
 end;
 
-{ TJvUninstallComboBox }
+//=== TJvUninstallComboBox ===================================================
 
 constructor TJvUninstallComboBox.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
-  FFolders := TStringlist.Create;
+  FFolders := TStringList.Create;
   Style := csDropDownList;
   FDisplayMode := [dmCurrentUser, dmLocalMachine];
-end;
-
-procedure TJvUninstallComboBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Sorted := true;
-  GetUninstallApps;
 end;
 
 destructor TJvUninstallComboBox.Destroy;
 begin
   FFolders.Free;
   inherited Destroy;
+end;
+
+procedure TJvUninstallComboBox.CreateWnd;
+begin
+  inherited CreateWnd;
+  Sorted := True;
+  GetUninstallApps;
 end;
 
 function TJvUninstallComboBox.GetDisplayName: string;
@@ -247,38 +240,42 @@ begin
   Result := '';
   if ItemIndex < 0 then
     Exit;
-  Result := cUninstallPath + '\' + FFolders[integer(Items.Objects[ItemIndex])];
+  Result := cUninstallPath + '\' + FFolders[Integer(Items.Objects[ItemIndex])];
 end;
 
 procedure TJvUninstallComboBox.GetUninstallApps;
-var i, j: integer; S, FTmpFolders: TStringlist; tmp: string; reg: TReginifile;
-  dm: TJvUCBDisplayMode;
+var
+  I, J: Integer;
+  S, FTmpFolders: TStringList;
+  Tmp: string;
+  Reg: TReginifile;
+  Dm: TJvUCBDisplayMode;
 begin
-  S := TStringlist.Create;
-  FTmpFolders := TStringlist.Create;
+  S := TStringList.Create;
+  FTmpFolders := TStringList.Create;
   FFolders.Clear;
-  reg := TRegIniFile.Create('');
+  Reg := TRegIniFile.Create('');
   Items.Clear;
-  with reg do
+  with Reg do
   try
-    for dm := Low(FKey) to High(FKey) do
-      if dm in FDisplayMode then
+    for Dm := Low(FKey) to High(FKey) do
+      if Dm in FDisplayMode then
       begin
-        j := Items.Count;
-        RootKey := FKey[dm];
-        if OpenKey(cUninstallPath, false) then
+        J := Items.Count;
+        RootKey := FKey[Dm];
+        if OpenKey(cUninstallPath, False) then
         begin
           ReadSections(FFolders);
           FTmpFolders.AddStrings(FFolders);
-          for i := FFolders.Count - 1 downto 0 do
-            if (DispName(reg, FFolders[i]) = '') and not FShowAll then
-              FFolders.Delete(i);
-          for i := 0 to FFolders.Count - 1 do
+          for I := FFolders.Count - 1 downto 0 do
+            if (DispName(Reg, FFolders[I]) = '') and not FShowAll then
+              FFolders.Delete(I);
+          for I := 0 to FFolders.Count - 1 do
           begin
-            tmp := DispName(reg, FFolders[i]);
-            if (tmp = '') and FShowAll then
-              tmp := FFolders[i];
-            S.AddObject(tmp, TObject(i + j));
+            Tmp := DispName(Reg, FFolders[I]);
+            if (Tmp = '') and FShowAll then
+              Tmp := FFolders[I];
+            S.AddObject(Tmp, TObject(I + J));
           end;
         end;
         // peter3: this shouldn't be called
@@ -298,20 +295,22 @@ begin
 end;
 
 function TJvUninstallComboBox.GetUninstallString: string;
-var reg: TReginifile; dm: TJvUCBDisplayMode;
+var
+  Reg: TReginifile;
+  Dm: TJvUCBDisplayMode;
 begin
   Result := '';
   if ItemIndex < 0 then
     Exit;
-  reg := TRegIniFile.Create('');
-  with reg do
+  Reg := TRegIniFile.Create('');
+  with Reg do
   try
-    for dm := Low(FKey) to High(FKey) do
-      if dm in FDisplayMode then
+    for Dm := Low(FKey) to High(FKey) do
+      if Dm in FDisplayMode then
       begin
-        RootKey := FKey[dm];
-        Result := FFolders[integer(Items.Objects[ItemIndex])];
-        Result := UninstallStr(reg, Result);
+        RootKey := FKey[Dm];
+        Result := FFolders[Integer(Items.Objects[ItemIndex])];
+        Result := UninstallStr(Reg, Result);
         if Result <> '' then
           Break;
       end;
@@ -330,7 +329,7 @@ begin
   end;
 end;
 
-procedure TJvUninstallComboBox.SetShowAll(const Value: boolean);
+procedure TJvUninstallComboBox.SetShowAll(const Value: Boolean);
 begin
   if FShowAll <> Value then
   begin
@@ -339,20 +338,13 @@ begin
   end;
 end;
 
-{ TJvUninstallListBox }
+//=== TJvUninstallListBox ====================================================
 
 constructor TJvUninstallListBox.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
-  FFolders := TStringlist.Create;
+  FFolders := TStringList.Create;
   FDisplayMode := [dmCurrentUser, dmLocalMachine];
-end;
-
-procedure TJvUninstallListBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Sorted := true;
-  GetUninstallApps;
 end;
 
 destructor TJvUninstallListBox.Destroy;
@@ -361,10 +353,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvUninstallListBox.CreateWnd;
+begin
+  // (rom) strange place to call it
+  inherited CreateWnd;
+  Sorted := True;
+  GetUninstallApps;
+end;
+
 function TJvUninstallListBox.GetDisplayName: string;
 begin
   Result := '';
-  if (ItemIndex < 0) then
+  if ItemIndex < 0 then
     Exit;
   Result := Items[ItemIndex];
 end;
@@ -379,38 +379,43 @@ begin
   Result := '';
   if ItemIndex < 0 then
     Exit;
-  Result := cUninstallPath + '\' + FFolders[integer(Items.Objects[ItemIndex])];
+  Result := cUninstallPath + '\' + FFolders[Integer(Items.Objects[ItemIndex])];
 end;
 
 procedure TJvUninstallListBox.GetUninstallApps;
-var i, j: integer; S, FTmpFolders: TStringlist; tmp: string; reg: TReginifile; dm: TJvUCBDisplayMode;
+var
+  I, J: Integer;
+  S, FTmpFolders: TStringList;
+  Tmp: string;
+  Reg: TReginifile;
+  Dm: TJvUCBDisplayMode;
 begin
-  S := TStringlist.Create;
-  FTmpFolders := TStringlist.Create;
+  S := TStringList.Create;
+  FTmpFolders := TStringList.Create;
   FFolders.Clear;
-  reg := TRegIniFile.Create('');
+  Reg := TRegIniFile.Create('');
   Items.Clear;
-  with reg do
+  with Reg do
   try
-    for dm := Low(FKey) to High(FKey) do
-      if dm in FDisplayMode then
+    for Dm := Low(FKey) to High(FKey) do
+      if Dm in FDisplayMode then
       begin
         FFolders.Clear;
-        RootKey := FKey[dm];
-        j := Items.Count;
-        if OpenKey(cUninstallPath, false) then
+        RootKey := FKey[Dm];
+        J := Items.Count;
+        if OpenKey(cUninstallPath, False) then
         begin
           ReadSections(FFolders);
           FTmpFolders.AddStrings(FFolders);
-          for i := FFolders.Count - 1 downto 0 do
-            if (DispName(reg, FFolders[i]) = '') and not FShowAll then
-              FFolders.Delete(i);
-          for i := 0 to FFolders.Count - 1 do
+          for I := FFolders.Count - 1 downto 0 do
+            if (DispName(Reg, FFolders[I]) = '') and not FShowAll then
+              FFolders.Delete(I);
+          for I := 0 to FFolders.Count - 1 do
           begin
-            tmp := DispName(reg, FFolders[i]);
-            if (tmp = '') and FShowAll then
-              tmp := FFolders[i];
-            S.AddObject(tmp, TObject(i + j));
+            Tmp := DispName(Reg, FFolders[I]);
+            if (Tmp = '') and FShowAll then
+              Tmp := FFolders[I];
+            S.AddObject(Tmp, TObject(I + J));
           end;
           Items.AddStrings(S);
           S.Clear;
@@ -428,20 +433,22 @@ begin
 end;
 
 function TJvUninstallListBox.GetUninstallString: string;
-var reg: TReginifile; dm: TJvUCBDisplayMode;
+var
+  Reg: TReginifile;
+  Dm: TJvUCBDisplayMode;
 begin
   Result := '';
   if ItemIndex < 0 then
     Exit;
-  reg := TRegIniFile.Create('');
-  with reg do
+  Reg := TRegIniFile.Create('');
+  with Reg do
   try
-    for dm := Low(FKey) to High(FKey) do
-      if dm in FDisplayMode then
+    for Dm := Low(FKey) to High(FKey) do
+      if Dm in FDisplayMode then
       begin
-        RootKey := FKey[dm];
-        Result := FFolders[integer(Items.Objects[ItemIndex])];
-        Result := UninstallStr(reg, Result);
+        RootKey := FKey[Dm];
+        Result := FFolders[Integer(Items.Objects[ItemIndex])];
+        Result := UninstallStr(Reg, Result);
         if Result <> '' then
           Break;
       end;
@@ -450,8 +457,7 @@ begin
   end;
 end;
 
-procedure TJvUninstallListBox.SetDisplayMode(
-  const Value: TJvUCBDisplayModes);
+procedure TJvUninstallListBox.SetDisplayMode(const Value: TJvUCBDisplayModes);
 begin
   if FDisplayMode <> Value then
   begin
@@ -460,7 +466,7 @@ begin
   end;
 end;
 
-procedure TJvUninstallListBox.SetShowAll(const Value: boolean);
+procedure TJvUninstallListBox.SetShowAll(const Value: Boolean);
 begin
   if FShowAll <> Value then
   begin

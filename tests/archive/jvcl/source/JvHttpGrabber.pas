@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvHttpGrabber;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, WinInet,
+  JvTypes, JvComponent;
 
 type
   TJvHttpThread = class(TThread)
@@ -103,7 +102,6 @@ type
     procedure Progress(Sender: TObject; Position: Integer; TotalSize: Integer; Url: string; var Continue: Boolean);
     procedure Status(Sender: TObject; Position: Integer; Url: string);
     function GetWorking: Boolean;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -139,9 +137,30 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvHttpGrabber
-///////////////////////////////////////////////////////////
+//=== TJvHttpGrabber =========================================================
+
+constructor TJvHttpGrabber.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FUrl := '';
+  FUsername := '';
+  FPassword := '';
+  FReferer := '';
+  FFileName := '';
+  FOutputMode := omStream;
+  FAgent := 'TJvHttpGrabber Component';
+  FThread := nil;
+end;
+
+destructor TJvHttpGrabber.Destroy;
+begin
+  if FThread <> nil then
+  begin
+    FThread.FreeOnTerminate := True;
+    FThread.Terminate;
+  end;
+  inherited Destroy;
+end;
 
 procedure TJvHttpGrabber.Abort;
 begin
@@ -157,35 +176,6 @@ begin
   end;
 end;
 
-{*************************************************}
-
-constructor TJvHttpGrabber.Create(AOwner: TComponent);
-begin
-  inherited;
-  FUrl := '';
-  FUsername := '';
-  FPassword := '';
-  FReferer := '';
-  FFileName := '';
-  FOutputMode := omStream;
-  FAgent := 'TJvHttpGrabber Component';
-  FThread := nil;
-end;
-
-{*************************************************}
-
-destructor TJvHttpGrabber.Destroy;
-begin
-  if FThread <> nil then
-  begin
-    FThread.FreeOnTerminate := True;
-    FThread.Terminate;
-  end;
-  inherited;
-end;
-
-{*************************************************}
-
 procedure TJvHttpGrabber.DoneFile(Sender: TObject; FileName: string;
   FileSize: Integer; Url: string);
 begin
@@ -193,8 +183,6 @@ begin
     FOnDoneFile(Self, FileName, FileSize, Url);
   FThread := nil;
 end;
-
-{*************************************************}
 
 procedure TJvHttpGrabber.DoneStream(Sender: TObject; FStream: TStream;
   StreamSize: Integer; Url: string);
@@ -204,15 +192,11 @@ begin
   FThread := nil;
 end;
 
-{*************************************************}
-
 procedure TJvHttpGrabber.Error(Sender: TObject; ErrorMsg: string);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ErrorMsg);
 end;
-
-{*************************************************}
 
 procedure TJvHttpGrabber.Execute;
 begin
@@ -226,14 +210,10 @@ begin
   end;
 end;
 
-{*************************************************}
-
 function TJvHttpGrabber.GetWorking: Boolean;
 begin
   Result := FThread <> nil;
 end;
-
-{*************************************************}
 
 procedure TJvHttpGrabber.Progress(Sender: TObject; Position,
   TotalSize: Integer; Url: string; var Continue: Boolean);
@@ -241,8 +221,6 @@ begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Position, TotalSize, Url, Continue);
 end;
-
-{*************************************************}
 
 procedure TJvHttpGrabber.Status(Sender: TObject; Position: Integer;
   Url: string);
@@ -290,16 +268,12 @@ begin
   end;
 end;
 
-{*************************************************}
-
 procedure TJvHttpGrabber.ThreadFinished(Sender: TObject);
 begin
   FThread := nil;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvHttpThread
-///////////////////////////////////////////////////////////
+//=== TJvHttpThread ==========================================================
 
 constructor TJvHttpThread.Create(Url, Referer, Username, FileName,
   Password: string; OutPutMode: TJvOutputMode; OnError: TOnError;
@@ -322,8 +296,6 @@ begin
   FContinue := True;
 end;
 
-{*************************************************}
-
 procedure TJvHttpThread.Ended;
 begin
   FStream.Position := 0;
@@ -340,25 +312,19 @@ begin
   end;
 end;
 
-{*************************************************}
-
 procedure TJvHttpThread.Error;
 begin
   if Assigned(FOnError) then
     FOnError(Self, FErrorText);
 end;
 
-{**************************************************}
-
 function TJvHttpThread.GetLastErrorMsg: string;
 var
-  msg: array[0..1000] of Char;
+  Msg: array [0..1023] of Char;
 begin
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, msg, 1000, nil);
-  Result := msg;
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, Msg, SizeOf(Msg), nil);
+  Result := Msg;
 end;
-
-{*************************************************}
 
 procedure DownloadCallBack(Handle: HInternet; Context: DWord;
   Status: DWord; Info: Pointer; StatLen: DWord); stdcall;
@@ -367,17 +333,16 @@ begin
     if Assigned(FOnStatus) then
       FOnStatus(TJvHttpThread(Context), Status, FUrl);
 end;
-{*************************************************}
 
 procedure TJvHttpThread.Execute;
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
-  username, password: PChar;
-  buffer: Pointer;
-  dwBufLen, dwIndex, ReadedBytes, TotalBytes: DWORD;
+  Username, Password: PChar;
+  Buffer: PChar;
+  dwBufLen, dwIndex, BytesRead, TotalBytes: DWORD;
   HasSize: Boolean;
-  Buf: array[0..1024] of Byte;
+  Buf: array [0..1024] of Byte;
 
   procedure ParseUrl(Value: string);
   begin
@@ -409,38 +374,38 @@ begin
 
   //Connect to the hostname
   if FUsername = '' then
-    username := nil
+    Username := nil
   else
-    username := PChar(FUsername);
+    Username := PChar(FUsername);
   if FPassword = '' then
-    password := nil
+    Password := nil
   else
-    password := PChar(FPassword);
+    Password := PChar(FPassword);
   hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_HTTP_PORT,
-    username, password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
+    Username, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
   if hHostConnection = nil then
   begin
     dwIndex := 0;
     dwBufLen := 1024;
     GetMem(Buffer, dwBufLen);
-    InternetGetLastResponseInfo(dwIndex, buffer, dwBufLen);
-    FErrorText := strpas(Buffer);
+    InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+    FErrorText := Buffer;
     FreeMem(Buffer);
-
     Synchronize(Error);
     Exit;
   end;
 
-  InternetSetStatusCallback(hHostConnection, @DownloadCallBack);
+  InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@DownloadCallBack));
 
   //Request the file
-{$IFDEF D5}
+  // (rom) any difference here?
+  {$IFDEF D5}
   hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
     nil, INTERNET_FLAG_RELOAD, 0);
-{$ELSE}
+  {$ELSE}
   hDownload := HttpOpenRequest(hHostConnection, 'GET', PChar(FileName), 'HTTP/1.0', PChar(FReferer),
     nil, INTERNET_FLAG_RELOAD, 0);
-{$ENDIF}
+  {$ENDIF}
 
   if hDownload = nil then
   begin
@@ -457,25 +422,25 @@ begin
   dwIndex := 0;
   dwBufLen := 1024;
   GetMem(Buffer, dwBufLen);
-  HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, buffer, dwBufLen, dwIndex);
+  HasSize := HttpQueryInfo(hDownload, HTTP_QUERY_CONTENT_LENGTH, Buffer, dwBufLen, dwIndex);
   if HasSize then
-    FTotalBytes := StrToInt(StrPas(buffer))
+    FTotalBytes := StrToInt(StrPas(Buffer))
   else
     FTotalBytes := 0;
 
   TotalBytes := 0;
   if HasSize then
   begin
-    ReadedBytes := 1;
-    while ReadedBytes > 0 do
+    BytesRead := 1;
+    while BytesRead > 0 do
     begin
-      if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), ReadedBytes) then
-        ReadedBytes := 0
+      if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
+        BytesRead := 0
       else
       begin
-        Inc(TotalBytes, ReadedBytes);
+        Inc(TotalBytes, BytesRead);
         FBytesReaded := TotalBytes;
-        FStream.Write(Buf, ReadedBytes);
+        FStream.Write(Buf, BytesRead);
         Synchronize(Progress);
       end;
     end;
@@ -495,8 +460,6 @@ begin
   InternetCloseHandle(hSession);
 end;
 
-{*************************************************}
-
 procedure TJvHttpThread.Progress;
 begin
   if Assigned(FOnProgress) then
@@ -504,3 +467,4 @@ begin
 end;
 
 end.
+

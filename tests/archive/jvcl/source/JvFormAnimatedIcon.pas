@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvFormAnimatedIcon;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JvComponent;
+  SysUtils, Classes, Controls, Forms, ExtCtrls,
+  JvComponent;
 
 type
   TJvFormAnimatedIcon = class(TJvComponent)
@@ -41,7 +40,7 @@ type
     FForm: TCustomForm;
     FActive: Boolean;
     FDelay: Cardinal;
-    FImgList: TImageList;
+    FImageList: TImageList;
     FTimer: TTimer;
     FNumber: Integer;
     procedure SetActive(const Value: Boolean);
@@ -52,18 +51,16 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Icons: TImageList read FImgList write FImgList;
+    property Icons: TImageList read FImageList write FImageList;
     property Active: Boolean read FActive write SetActive;
     property Delay: Cardinal read FDelay write SetDelay default 100;
   end;
 
 implementation
 
-{**************************************************}
-
 constructor TJvFormAnimatedIcon.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
 
   FForm := GetParentForm(TControl(AOwner));
   FNumber := 0;
@@ -75,30 +72,24 @@ begin
     FTimer := TTimer.Create(Self);
     FTimer.OnTimer := Animate;
     FTimer.Interval := FDelay;
-    FTimer.Enabled := Factive;
+    FTimer.Enabled := FActive;
   end;
 end;
-
-{**************************************************}
 
 destructor TJvFormAnimatedIcon.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimatedIcon.Animate(Sender: TObject);
 begin
-  if (FImglist <> nil) and (FImgList.Count <> 0) then
+  if (FImageList <> nil) and (FImageList.Count <> 0) then
   begin
-    FNumber := (FNumber + 1) mod FimgList.Count;
-    FimgList.GetIcon(FNumber, TForm(FForm).Icon);
+    FNumber := (FNumber + 1) mod FImageList.Count;
+    FImageList.GetIcon(FNumber, TForm(FForm).Icon);
   end;
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimatedIcon.SetActive(const Value: Boolean);
 begin
@@ -106,8 +97,6 @@ begin
   if not (csDesigning in ComponentState) then
     FTimer.Enabled := FActive;
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimatedIcon.SetDelay(const Value: Cardinal);
 begin
@@ -117,3 +106,4 @@ begin
 end;
 
 end.
+

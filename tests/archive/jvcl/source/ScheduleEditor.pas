@@ -1,14 +1,15 @@
+{$I JEDI.INC}
+
 unit ScheduleEditor;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,
-  jclSchedule, ComCtrls, ExtCtrls, AppEvnts;
+  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
+  JclSchedule;
 
 type
-  TfrmScheduleEditor = class(TForm)
+  TFrmScheduleEditor = class(TForm)
     pnlStartInfo: TPanel;
     lblStartDate: TLabel;
     lblStartTime: TLabel;
@@ -110,7 +111,6 @@ type
     procedure AppEventsIdle(Sender: TObject; var Done: Boolean);
     procedure btnOkClick(Sender: TObject);
   private
-    { Private declarations }
     FTestSchedule: IJclSchedule;
     FSchedule: IJclSchedule;
     FBusy: Boolean;
@@ -126,24 +126,21 @@ type
     procedure InitSchedule(const ASchedule: IJclSchedule);
     procedure ScheduleToUI(const ASchedule: IJclSchedule);
   public
-    { Public declarations }
     property Schedule: IJclSchedule read FSchedule write SetSchedule;
   end;
 
 var
-  frmScheduleEditor: TfrmScheduleEditor;
+  FrmScheduleEditor: TFrmScheduleEditor;
 
 implementation
 
 {$R *.dfm}
 
-{$I JEDI.INC}
-
 uses
   JclDateTime;
-  
-procedure DecodeTimeStampTime(const Stamp: TTimeStamp; var ADays, AHour, AMinute, ASecond,
-  AMSec: Word);
+
+procedure DecodeTimeStampTime(const Stamp: TTimeStamp;
+  var ADays, AHour, AMinute, ASecond, AMSec: Word);
 var
   TempTime: Integer;
 begin
@@ -166,13 +163,13 @@ begin
     Dec(Result);
 end;
 
-procedure TfrmScheduleEditor.SetSchedule(Value: IJclSchedule);
+procedure TFrmScheduleEditor.SetSchedule(Value: IJclSchedule);
 begin
   FSchedule := Value;
   ScheduleToUI(FSchedule);
 end;
 
-procedure TfrmScheduleEditor.SelectRecurringInfoPage;
+procedure TFrmScheduleEditor.SelectRecurringInfoPage;
 begin
   pnlDailySchedule.Visible := rbDaily.Checked;
   pnlWeeklySchedule.Visible := rbWeekly.Checked;
@@ -180,16 +177,16 @@ begin
   pnlYearlySchedule.Visible := rbYearly.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateDailyPageInfo;
+procedure TFrmScheduleEditor.UpdateDailyPageInfo;
 begin
   edDailyInterval.Enabled := rbDailyInterval.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateWeeklyPageInfo;
+procedure TFrmScheduleEditor.UpdateWeeklyPageInfo;
 begin
 end;
 
-procedure TfrmScheduleEditor.UpdateMonthlyPageInfo;
+procedure TFrmScheduleEditor.UpdateMonthlyPageInfo;
 begin
   edMonthlyDay.Enabled := rbMonthlyDay.Checked;
   edMonthlyEveryMonth.Enabled := rbMonthlyDay.Checked;
@@ -199,19 +196,19 @@ begin
   edMonthlyIndexInterval.Enabled := rbMonthlyEveryIndex.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateYearlyPageInfo;
+procedure TFrmScheduleEditor.UpdateYearlyPageInfo;
 begin
   edYearlyDateDay.Enabled := rbYearlyDate.Checked;
   cbYearlyDateMonth.Enabled := rbYearlyDate.Checked;
-  edYearlyDateInterval.Enabled  := rbYearlyDate.Checked;
+  edYearlyDateInterval.Enabled := rbYearlyDate.Checked;
 
   cbYearlyIndexValue.Enabled := rbYearlyIndex.Checked;
-  cbYearlyIndexKind.Enabled  := rbYearlyIndex.Checked;
-  cbYearlyIndexMonth.Enabled  := rbYearlyIndex.Checked;
-  edYearlyIndexInterval.Enabled  := rbYearlyIndex.Checked;
+  cbYearlyIndexKind.Enabled := rbYearlyIndex.Checked;
+  cbYearlyIndexMonth.Enabled := rbYearlyIndex.Checked;
+  edYearlyIndexInterval.Enabled := rbYearlyIndex.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateFrequencyPageInfo;
+procedure TFrmScheduleEditor.UpdateFrequencyPageInfo;
 begin
   pnlDailyFreq.Visible := not rbSingleShot.Checked;
 
@@ -223,7 +220,7 @@ begin
   dtpFreqTo.Enabled := rbFreqInterval.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateEndPageInfo;
+procedure TFrmScheduleEditor.UpdateEndPageInfo;
 begin
   pnlEndInfo.Visible := not rbSingleShot.Checked;
 
@@ -235,12 +232,12 @@ begin
   dtpEndTime.Enabled := rbDate.Checked;
 end;
 
-procedure TfrmScheduleEditor.UpdateTestSettings;
+procedure TFrmScheduleEditor.UpdateTestSettings;
 begin
   cxCountMissedEvents.Enabled := cxStartToday.Checked;
 end;
 
-procedure TfrmScheduleEditor.InitSchedule(const ASchedule: IJclSchedule);
+procedure TFrmScheduleEditor.InitSchedule(const ASchedule: IJclSchedule);
 var
   TempDOW: TScheduleWeekDays;
 begin
@@ -390,7 +387,7 @@ begin
   end;
 end;
 
-procedure TfrmScheduleEditor.ScheduleToUI(const ASchedule: IJclSchedule);
+procedure TFrmScheduleEditor.ScheduleToUI(const ASchedule: IJclSchedule);
 var
   TempStamp: TTimeStamp;
 begin
@@ -443,21 +440,15 @@ begin
                   edMonthlyDay.Text := IntToStr(Day);
                   edMonthlyEveryMonth.Text := IntToStr(Interval);
                 end;
-              sikDay,
-              sikWeekDay,
-              sikWeekendDay,
-              sikMonday,
-              sikTuesday,
-              sikWednesday,
-              sikThursday,
-              sikFriday,
-              sikSaturday,
+              sikDay, sikWeekDay, sikWeekendDay, sikMonday, sikTuesday,
+              sikWednesday, sikThursday, sikFriday, sikSaturday,
               sikSunday:
                 begin
                   rbMonthlyEveryIndex.Checked := True;
                   if (IndexValue > 0) and (IndexValue < 5) then
                     cbMonthlyIndexValue.ItemIndex := IndexValue - 1
-                  else if IndexValue = sivLast then
+                  else
+                  if IndexValue = sivLast then
                     cbMonthlyIndexValue.ItemIndex := 4
                   else
                   begin
@@ -467,8 +458,8 @@ begin
                   cbMonthlyIndexType.ItemIndex := Ord(IndexKind) - 1;
                   edMonthlyIndexInterval.Text := IntToStr(Interval);
                 end;
-              else
-                raise ESchedule.Create('Invalid schedule settings found.');
+            else
+              raise ESchedule.Create('Invalid schedule settings found.');
             end;
           end;
         end;
@@ -481,25 +472,19 @@ begin
               sikNone:
                 begin
                   rbYearlyDate.Checked := True;
-                  edYearlyDateDay.Text:= IntToStr(Day);
+                  edYearlyDateDay.Text := IntToStr(Day);
                   cbYearlyDateMonth.ItemIndex := Month - 1;
                   edYearlyDateInterval.Text := IntToStr(Interval);
                 end;
-              sikDay,
-              sikWeekDay,
-              sikWeekendDay,
-              sikMonday,
-              sikTuesday,
-              sikWednesday,
-              sikThursday,
-              sikFriday,
-              sikSaturday,
-              sikSunday:
+              sikDay, sikWeekDay, sikWeekendDay, sikMonday, sikTuesday,
+                sikWednesday, sikThursday, sikFriday, sikSaturday,
+                sikSunday:
                 begin
                   rbYearlyIndex.Checked := True;
                   if (IndexValue > 0) and (IndexValue < 5) then
                     cbYearlyIndexValue.ItemIndex := IndexValue - 1
-                  else if IndexValue = sivLast then
+                  else
+                  if IndexValue = sivLast then
                     cbYearlyIndexValue.ItemIndex := 4
                   else
                   begin
@@ -510,8 +495,8 @@ begin
                   cbYearlyIndexMonth.ItemIndex := Month - 1;
                   edYearlyIndexInterval.Text := IntToStr(Interval);
                 end;
-              else
-                raise ESchedule.Create('Invalid schedule settings found.');
+            else
+              raise ESchedule.Create('Invalid schedule settings found.');
             end;
           end;
         end;
@@ -561,12 +546,14 @@ begin
             cbFreqIntervalUnit.ItemIndex := 3;
             edFreqInterval.Text := IntToStr(Interval div (60 * 60 * 1000));
           end
-          else if Interval mod (60*1000) = 0 then
+          else
+          if Interval mod (60 * 1000) = 0 then
           begin
             cbFreqIntervalUnit.ItemIndex := 2;
             edFreqInterval.Text := IntToStr(Interval div (60 * 1000));
           end
-          else if Interval mod 1000 = 0 then
+          else
+          if Interval mod 1000 = 0 then
           begin
             cbFreqIntervalUnit.ItemIndex := 1;
             edFreqInterval.Text := IntToStr(Interval div 1000);
@@ -582,7 +569,7 @@ begin
   end;
 end;
 
-procedure TfrmScheduleEditor.FormCreate(Sender: TObject);
+procedure TFrmScheduleEditor.FormCreate(Sender: TObject);
 begin
   FTestSchedule := CreateSchedule;
   {$IFNDEF COMPILER6_UP}
@@ -609,7 +596,7 @@ begin
   cbFreqIntervalUnit.ItemIndex := 2;
 end;
 
-procedure TfrmScheduleEditor.btnTestClick(Sender: TObject);
+procedure TFrmScheduleEditor.btnTestClick(Sender: TObject);
 var
   Stamp: TTimeStamp;
   AYear, AMonth, ADay: Word;
@@ -634,9 +621,9 @@ begin
       begin
         JclDateTime.DecodeDate(TimeStampToDateTime(Stamp), AYear, AMonth, ADay);
         DecodeTimeStampTime(Stamp, ADays, AHour, AMinute, ASecond, AMSec);
-        mmLog.Lines.Add(Format('%.5d (%.4d): %.2d-%.2d-%.4d@%.2d:%.2d:%.2d.%.3d', [
-          FTestSchedule.TriggerCount, FTestSchedule.DayCount, ADay, AMonth, AYear, AHour, AMinute,
-          ASecond, AMSec]));
+        mmLog.Lines.Add(Format('%.5d (%.4d): %.2d-%.2d-%.4d@%.2d:%.2d:%.2d.%.3d',
+          [FTestSchedule.TriggerCount, FTestSchedule.DayCount, ADay, AMonth,
+           AYear, AHour, AMinute, ASecond, AMSec]));
         Application.ProcessMessages;
         Stamp := FTestSchedule.NextEvent(True);
       end;
@@ -649,17 +636,20 @@ begin
   end;
 end;
 
-procedure TfrmScheduleEditor.AppEventsIdle(Sender: TObject;
+procedure TFrmScheduleEditor.AppEventsIdle(Sender: TObject;
   var Done: Boolean);
 begin
   SelectRecurringInfoPage;
   if rbDaily.Checked then
     UpdateDailyPageInfo
-  else if rbWeekly.Checked then
+  else
+  if rbWeekly.Checked then
     UpdateWeeklyPageInfo
-  else if rbMonthly.Checked then
+  else
+  if rbMonthly.Checked then
     UpdateMonthlyPageInfo
-  else if rbYearly.Checked then
+  else
+  if rbYearly.Checked then
     UpdateYearlyPageInfo;
   UpdateFrequencyPageInfo;
   UpdateEndPageInfo;
@@ -667,9 +657,10 @@ begin
   UpdateTestSettings;
 end;
 
-procedure TfrmScheduleEditor.btnOkClick(Sender: TObject);
+procedure TFrmScheduleEditor.btnOkClick(Sender: TObject);
 begin
   InitSchedule(Schedule);
 end;
 
 end.
+

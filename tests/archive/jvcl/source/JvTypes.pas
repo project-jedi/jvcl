@@ -25,6 +25,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  (rom) all types from a single file should be put back in their file
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -35,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls;
-  
+
 const
   MaxPixelCount = 32768;
   SHFMT_ID_DEFAULT = $FFFF;
@@ -52,9 +53,8 @@ const
   {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF}
-  AF_ICON     = $00000001;
+  AF_ICON = $00000001;
   AF_SEQUENCE = $00000002;
-
 
 type
   {$IFNDEF COMPILER5_UP}
@@ -80,9 +80,8 @@ type
     var Continue: Boolean) of object;
   TOnFtpProgress = procedure(Sender: TObject; Position: Integer; Url: string) of object;
 
-
   PRGBArray = ^TRGBArray;
-  TRGBArray = array[0..MaxPixelCount - 1] of TRGBTriple;
+  TRGBArray = array [0..MaxPixelCount - 1] of TRGBTriple;
   TBalance = 0..100;
   TVolumeRec = record
     case Byte of
@@ -132,7 +131,7 @@ type
   EJvDirectoryError = class(EJVCLException);
   TListEvent = procedure(Sender: TObject; Title: string; Handle: THandle) of object;
 
-  TOnPrnProgress = procedure(Sender: TObject; Current, Total: Integer) of object;
+  TOnPrintProgress = procedure(Sender: TObject; Current, Total: Integer) of object;
   TOnNextPage = procedure(Sender: TObject; PageNumber: Integer) of object;
   TBitmapStyle = (bsNormal, bsCentered, bsStretched);
 
@@ -181,7 +180,6 @@ type
   TDeleteStyle = (idNoBeep, idNoForeground);
   TDeleteStyles = set of TDeleteStyle;
   TOnOk = procedure(Sender: TObject; Password: string; var Accept: Boolean) of object;
-
 
   TCoordChanged = procedure(Sender: TObject; Coord: string) of object;
   TNotifyEventParams = procedure(Sender: TObject; params: Pointer) of object;
@@ -238,3 +236,4 @@ type
 implementation
 
 end.
+

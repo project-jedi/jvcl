@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvMultiHttpGrabber;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, WinInet, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, WinInet,
+  JvTypes, JvComponent;
 
 type
   TUrlEvent = procedure(Sender: TObject; UserData: Integer;
@@ -61,14 +60,14 @@ type
     FUrl: string;
     FReferer: string;
     FPassword: string;
-    FUsername: string;
+    FUserName: string;
     FOutputMode: TJvOutputMode;
     FFileName: TFileName;
     FOnDoneFile: TOnDoneFile;
     FOnDoneStream: TOnDoneStream;
     FOnProgress: TOnProgress;
     FOnReceived: TUrlSent;
-    FOnReceiving: TUrlEvent;
+    FOnReceivingResponse: TUrlEvent;
     FOnClosed: TUrlEvent;
     FOnConnecting: TUrlEvent;
     FOnResolving: TUrlEvent;
@@ -76,12 +75,12 @@ type
     FOnConnected: TUrlEvent;
     FOnResolved: TUrlResolved;
     FOnClosing: TUrlEvent;
-    FOnRequest: TUrlEvent;
-    FOnSent: TUrlSent;
-    FOnSending: TUrlEvent;
+    FOnRequestComplete: TUrlEvent;
+    FOnRequestSent: TUrlSent;
+    FOnSendingRequest: TUrlEvent;
     FOnError: TUrlEventError;
     FCount: Integer;
-    FOnDate: TDateEvent;
+    FOnDateRetrieved: TDateEvent;
     function GetWorking: Boolean;
     procedure RaiseWebError(Infos: Pointer);
   protected
@@ -92,7 +91,6 @@ type
     procedure ThreadDateTerminated(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-
     procedure Download(UserData: Integer = 0);
     procedure GetFileAge(UserData: Integer = 0);
     property DownloadCount: Integer read FCount;
@@ -103,7 +101,7 @@ type
     property Password: string read FPassword write FPassword;
     property Referer: string read FReferer write FReferer;
     property Url: string read FUrl write FUrl;
-    property UserName: string read FUsername write FUsername;
+    property UserName: string read FUserName write FUserName;
     property Working: Boolean read GetWorking;
 
     property OnClosingConnection: TUrlEvent read FOnClosing write FOnClosing;
@@ -114,16 +112,15 @@ type
     property OnDoneStream: TOnDoneStream read FOnDoneStream write FOnDoneStream;
     property OnError: TUrlEventError read FOnError write FOnError;
     property OnProgress: TOnProgress read FOnProgress write FOnProgress;
-    property OnReceivingResponse: TUrlEvent read FOnReceiving write FOnReceiving;
+    property OnReceivingResponse: TUrlEvent read FOnReceivingResponse write FOnReceivingResponse;
     property OnReceivedResponse: TUrlSent read FOnReceived write FOnReceived;
     property OnRedirect: TUrlRedirect read FOnRedirect write FOnRedirect;
-    property OnRequestComplete: TUrlEvent read FOnRequest write FOnRequest;
-    property OnRequestSent: TUrlSent read FOnSent write FOnSent;
+    property OnRequestComplete: TUrlEvent read FOnRequestComplete write FOnRequestComplete;
+    property OnRequestSent: TUrlSent read FOnRequestSent write FOnRequestSent;
     property OnResolvingName: TUrlEvent read FOnResolving write FOnResolving;
     property OnResolvedName: TUrlResolved read FOnResolved write FOnResolved;
-    property OnSendingRequest: TUrlEvent read FOnSending write FOnSending;
-
-    property OnDateRetrieved: TDateEvent read FOnDate write FOnDate;
+    property OnSendingRequest: TUrlEvent read FOnSendingRequest write FOnSendingRequest;
+    property OnDateRetrieved: TDateEvent read FOnDateRetrieved write FOnDateRetrieved;
   end;
 
   TJvMultiHttpThread = class(TThread)
@@ -162,31 +159,24 @@ type
   TRequestInfos = record
     Url: string;
     OutputMode: TJvOutputMode;
-
     hSession: HINTERNET;
     hHostConnect: HINTERNET;
     hRequest: HINTERNET;
-
     FileSize: Integer;
-
     IgnoreMsg: Boolean;
     Grabber: TJvMultiHttpGrabber;
     UserData: Integer;
   end;
 
-  ///////////////////////////////////////////////////////////
-  // TJvMultiHttpGrabber
-  ///////////////////////////////////////////////////////////
+//=== TJvMultiHttpGrabber ====================================================
 
 constructor TJvMultiHttpGrabber.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FOutputMode := omStream;
   FAgent := RES_Agent;
   FCount := 0;
 end;
-
-{*************************************************}
 
 procedure StatusCallback(Handle: HInternet; Context: DWord;
   Status: DWord; Info: Pointer; StatLen: DWord); stdcall;
@@ -197,50 +187,38 @@ begin
         INTERNET_STATUS_CLOSING_CONNECTION:
           if Assigned(Grabber.FOnClosing) then
             Grabber.FOnClosing(Grabber, UserData, Url);
-
         INTERNET_STATUS_CONNECTED_TO_SERVER:
           if Assigned(Grabber.FOnConnected) then
             Grabber.FOnConnected(Grabber, UserData, Url);
-
         INTERNET_STATUS_CONNECTING_TO_SERVER:
           if Assigned(Grabber.FOnConnecting) then
             Grabber.FOnConnecting(Grabber, UserData, Url);
-
         INTERNET_STATUS_NAME_RESOLVED:
           if Assigned(Grabber.FOnResolved) then
             Grabber.FOnResolved(Grabber, UserData, Url, StrPas(PChar(Info)));
-
-        INTERNET_STATUS_RECEIVING_RESPONSE:
-          if Assigned(Grabber.FOnReceiving) then
-            Grabber.FOnReceiving(Grabber, UserData, Url);
-
+         INTERNET_STATUS_RECEIVING_RESPONSE:
+          if Assigned(Grabber.FOnReceivingResponse) then
+            Grabber.FOnReceivingResponse(Grabber, UserData, Url);
         INTERNET_STATUS_REDIRECT:
           if Assigned(Grabber.FOnRedirect) then
             Grabber.FOnRedirect(Grabber, UserData, Url, StrPas(PChar(Info)));
-
         INTERNET_STATUS_REQUEST_COMPLETE:
-          if Assigned(Grabber.FOnRequest) then
-            Grabber.FOnRequest(Grabber, UserData, Url);
-
+          if Assigned(Grabber.FOnRequestComplete) then
+            Grabber.FOnRequestComplete(Grabber, UserData, Url);
         INTERNET_STATUS_REQUEST_SENT:
-          if Assigned(Grabber.FOnSent) then
-            Grabber.FOnSent(Grabber, UserData, Url, DWORD(Info^));
-
+          if Assigned(Grabber.FOnRequestSent) then
+            Grabber.FOnRequestSent(Grabber, UserData, Url, DWORD(Info^));
         INTERNET_STATUS_RESOLVING_NAME:
           if Assigned(Grabber.FOnResolving) then
             Grabber.FOnResolving(Grabber, UserData, Url);
-
         INTERNET_STATUS_RESPONSE_RECEIVED:
           if Assigned(Grabber.FOnReceived) then
             Grabber.FOnReceived(Grabber, UserData, Url, DWORD(Info^));
-
         INTERNET_STATUS_SENDING_REQUEST:
-          if Assigned(Grabber.FOnSending) then
-            Grabber.FOnSending(Grabber, UserData, Url);
+          if Assigned(Grabber.FOnSendingRequest) then
+            Grabber.FOnSendingRequest(Grabber, UserData, Url);
       end;
 end;
-
-{*************************************************}
 
 procedure TJvMultiHttpGrabber.Download(UserData: Integer);
 var
@@ -257,14 +235,11 @@ begin
     end;
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpGrabber.GetFileAge(UserData: Integer = 0);
 var
   Infos: PrequestInfos;
 begin
   Infos := StartConnection(UserData, True);
-
   if Infos <> nil then
     with TJvMultiDateHttpThread.Create(Infos) do
     begin
@@ -273,17 +248,14 @@ begin
     end;
 end;
 
-{*************************************************}
-
 function TJvMultiHttpGrabber.GetWorking: Boolean;
 begin
   Result := FCount > 0;
 end;
-{*************************************************}
 
 procedure TJvMultiHttpGrabber.RaiseError(Value: Pointer);
 var
-  Msg: array[0..256] of Char;
+  Msg: array [0..256] of Char;
 begin
   if Assigned(FOnError) then
     with (PRequestInfos(Value))^ do
@@ -294,24 +266,20 @@ begin
     end;
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpGrabber.RaiseWebError(Infos: Pointer);
 var
   dwIndex, dwBufLen: DWORD;
-  buf: array[0..1024] of Char;
+  Buf: array [0..1024] of Char;
 begin
   if Assigned(FOnError) then
   begin
     dwIndex := 0;
-    dwBufLen := SizeOf(buf);
-    InternetGetLastResponseInfo(dwIndex, buf, dwBufLen);
+    dwBufLen := SizeOf(Buf);
+    InternetGetLastResponseInfo(dwIndex, Buf, dwBufLen);
     with PRequestInfos(Infos)^ do
       FOnError(Self, UserData, Url, StrPas(buf));
   end;
 end;
-
-{*************************************************}
 
 function TJvMultiHttpGrabber.StartConnection(UserData: Integer; IgnoreMessages: Boolean): Pointer;
 var
@@ -354,12 +322,12 @@ begin
   end;
 
   //Setting callback function
-  InternetSetStatusCallback(Infos^.hSession, @StatusCallback);
+  InternetSetStatusCallback(Infos^.hSession, PFNInternetStatusCallback(@StatusCallback));
 
   //Open the internet connection
   ParseUrl(Url);
   Infos^.hHostConnect := InternetConnect(Infos^.hSession, PChar(HostName),
-    INTERNET_DEFAULT_HTTP_PORT, PChar(FUsername), PChar(FPassword), INTERNET_SERVICE_HTTP,
+    INTERNET_DEFAULT_HTTP_PORT, PChar(FUserName), PChar(FPassword), INTERNET_SERVICE_HTTP,
     0, Cardinal(Infos));
   if Infos^.hHostConnect = nil then
   begin
@@ -376,8 +344,6 @@ begin
   Result := Infos;
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpGrabber.StopConnection(Infos: Pointer);
 begin
   InternetCloseHandle(PRequestInfos(Infos)^.hRequest);
@@ -385,23 +351,19 @@ begin
   InternetCloseHandle(PRequestInfos(Infos)^.hSession);
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpGrabber.ThreadDateTerminated(Sender: TObject);
 begin
   with Sender as TJvMultiDateHttpThread do
   begin
     with PRequestInfos(FInfos)^ do
-      if Assigned(FOnDate) then
-        FOnDate(Self, UserData, FValue, Url);
+      if Assigned(FOnDateRetrieved) then
+        FOnDateRetrieved(Self, UserData, FValue, Url);
 
     StopConnection(FInfos);
     Dispose(FInfos);
     Free;
   end;
 end;
-
-{*************************************************}
 
 procedure TJvMultiHttpGrabber.ThreadTerminated(Sender: TObject);
 begin
@@ -412,7 +374,7 @@ begin
         if OutputMode = omStream then
         begin
           if Assigned(FOnDoneStream) then
-            FOnDoneStream(Self, UserData, FStream, FStream.Size, Url)
+            FOnDoneStream(Self, UserData, FStream, FStream.Size, Url);
         end
         else
         begin
@@ -427,9 +389,7 @@ begin
   Dec(FCount);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvMultiHttpThread
-///////////////////////////////////////////////////////////
+//=== TJvMultiHttpThread =====================================================
 
 constructor TJvMultiHttpThread.Create(Value: Pointer);
 begin
@@ -440,8 +400,6 @@ begin
   FStream := nil;
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpThread.Error;
 var
   Infos: TRequestInfos;
@@ -451,12 +409,10 @@ begin
     Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RES_ErrorConnection);
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpThread.Execute;
 var
   Infos: PRequestInfos;
-  buffer: array[0..512] of Byte;
+  buffer: array [0..512] of Byte;
   ReadedBytes: DWORD;
   dLength, dReserved, dSize: DWORD;
 begin
@@ -510,8 +466,6 @@ begin
   end;
 end;
 
-{*************************************************}
-
 procedure TJvMultiHttpThread.Progress;
 begin
   with PRequestInfos(FInfos)^ do
@@ -519,17 +473,11 @@ begin
       Grabber.OnProgress(Grabber, UserData, FPosition, FileSize, Url, FContinue);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvMultiDateHttpThread
-///////////////////////////////////////////////////////////
-
 constructor TJvMultiDateHttpThread.Create(Value: Pointer);
 begin
   inherited Create(True);
   FInfos := Value;
 end;
-
-{*************************************************}
 
 procedure TJvMultiDateHttpThread.Error;
 var
@@ -539,8 +487,6 @@ begin
   if Assigned(Infos.Grabber.FOnError) then
     Infos.Grabber.FOnError(Self, Infos.UserData, Infos.Url, RES_ErrorConnection);
 end;
-
-{*************************************************}
 
 procedure TJvMultiDateHttpThread.Execute;
 var
@@ -563,3 +509,4 @@ begin
 end;
 
 end.
+

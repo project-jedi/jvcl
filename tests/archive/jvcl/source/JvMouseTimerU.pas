@@ -30,55 +30,69 @@ unit JvMouseTimerU;
 
 interface
 
-uses classes, controls;
+uses
+  Controls;
 
 type
   IMouseTimer = interface
     ['{94757B20-A74B-11D4-8CF8-CABD69ABF116}']
-    procedure Attach(aControl: TControl);
-    procedure Detach(aControl: TControl);
-  end; { IMouseTimer }
+    procedure Attach(AControl: TControl);
+    procedure Detach(AControl: TControl);
+  end;
 
-  { Returns interface to mousetimer singleton. This interface can be used
-    by objects relying on CM_MOUSEENTER/CM_MOUSELEAVE messages to make sure
-    they get a CM_MOUSELEAVE under all circumstances if the mouse leaves
-    their area. }
+{ Returns interface to mousetimer singleton. This interface can be used
+  by objects relying on CM_MOUSEENTER/CM_MOUSELEAVE messages to make sure
+  they get a CM_MOUSELEAVE under all circumstances if the mouse leaves
+  their area. }
 function MouseTimer: IMouseTimer;
 
 implementation
-uses Windows, Sysutils, extctrls;
+
+uses
+  Windows, SysUtils, ExtCtrls;
 
 type
-  TJvMousetimer = class(TInterfacedObject, IMousetimer)
+  TJvMouseTimer = class(TInterfacedObject, IMouseTimer)
   private
     FTimer: TTimer;
     FCurrentControl: TControl;
-
     procedure TimerTick(Sender: TObject);
   protected
-    { Methods of the IMousetimer interface }
-    procedure Attach(aControl: TControl);
-    procedure Detach(aControl: TControl);
+    { Methods of the IMouseTimer interface }
+    procedure Attach(AControl: TControl);
+    procedure Detach(AControl: TControl);
   public
     constructor Create;
     destructor Destroy; override;
-  end; { TJvMousetimer }
+  end;
 
 var
-  InternalMouseTimer: IMousetimer;
+  InternalMouseTimer: IMouseTimer;
 
-function Mousetimer: IMousetimer;
+function MouseTimer: IMouseTimer;
 begin
-  if not Assigned(InternalMousetimer) then
-    InternalMousetimer := TJvMousetimer.Create;
+  if not Assigned(InternalMouseTimer) then
+    InternalMouseTimer := TJvMouseTimer.Create;
   { Note: object will be destroyed automatically during unit finalization
     through reference counting. }
-  Result := InternalMousetimer;
+  Result := InternalMouseTimer;
 end;
 
-{ TJvMousetimer }
+constructor TJvMouseTimer.Create;
+begin
+  FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
+  FTimer.Interval := 200;
+  FTimer.OnTimer := TimerTick;
+end;
 
-procedure TJvMousetimer.Attach(aControl: TControl);
+destructor TJvMouseTimer.Destroy;
+begin
+  FTimer.Free;
+  inherited;
+end;
+
+procedure TJvMouseTimer.Attach(AControl: TControl);
 begin
   FTimer.Enabled := False;
   if FCurrentControl <> nil then
@@ -87,51 +101,37 @@ begin
   except
     { Ignore exception in case control has been destroyed already }
   end;
-  FCurrentControl := aControl;
+  FCurrentControl := AControl;
   if FCurrentControl <> nil then
     FTimer.Enabled := true;
 end;
 
-constructor TJvMousetimer.Create;
+procedure TJvMouseTimer.Detach(AControl: TControl);
 begin
-  FTimer := TTimer.Create(nil);
-  FTimer.Enabled := False;
-  FTimer.Interval := 200;
-  FTimer.OnTimer := TimerTick;
-end;
-
-destructor TJvMousetimer.Destroy;
-begin
-  FTimer.Free;
-  inherited;
-end;
-
-procedure TJvMousetimer.Detach(aControl: TControl);
-begin
-  if aControl = FCurrentControl then
+  if AControl = FCurrentControl then
   begin
     FTimer.Enabled := False;
     FCurrentControl := nil;
   end;
 end;
 
-procedure TJvMousetimer.TimerTick(Sender: TObject);
+procedure TJvMouseTimer.TimerTick(Sender: TObject);
 var
-  pt: TPoint;
-  r: TRect;
+  Pt: TPoint;
+  R: TRect;
 begin
   try
     { control may have been destroyed, so operations on it may crash.
       trap that and detach the control on exception. }
     if FCurrentControl = nil then
-      FTimer.Enabled := false // paranoia
+      FTimer.Enabled := False // paranoia
     else
     begin
-      GetCursorPos(pt);
-      r := FCurrentControl.BoundsRect;
+      GetCursorPos(Pt);
+      R := FCurrentControl.BoundsRect;
       if Assigned(FCurrentControl.Parent) then
-        MapWindowPoints(FCurrentControl.Parent.handle, HWND_DESKTOP, r, 2);
-      if not PtInRect(r, pt) then
+        MapWindowPoints(FCurrentControl.Parent.Handle, HWND_DESKTOP, R, 2);
+      if not PtInRect(R, Pt) then
         FCurrentControl.Perform(CM_MOUSELEAVE, 0, 0);
     end;
   except
@@ -140,3 +140,4 @@ begin
 end;
 
 end.
+

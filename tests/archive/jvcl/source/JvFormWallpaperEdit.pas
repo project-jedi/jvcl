@@ -31,25 +31,24 @@ unit JvFormWallpaperEdit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, StdCtrls,
-  JvSpeedButton, JvToolEdit, JvComponent, Mask, JvSearchFiles;
+  SysUtils, Classes, Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
+  JvSpeedButton, JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 
 type
-  TfoWallpaperChooser = class(TForm)
+  TFoWallpaperChooser = class(TForm)
     GroupBox1: TGroupBox;
-    BUSpeedButton1: TJvSpeedButton;
-    BUSpeedButton2: TJvSpeedButton;
-    BUDirectoryBox1: TJvDirectoryEdit;
+    Button1: TJvButton;
+    Button2: TJvButton;
+    Button3: TJvButton;
+    DirectoryBox1: TJvDirectoryEdit;
     Label1: TLabel;
     ScrollBox1: TScrollBox;
-    BUSpeedButton3: TJvSpeedButton;
-    BUSearchFiles1: TJvSearchFiles;
+    SearchFiles1: TJvSearchFiles;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure BUSearchFile1Found(Sender: TObject; Path: string);
-    procedure BUSpeedButton3Click(Sender: TObject);
-    procedure BUDirectoryBox1AfterDialog(Sender: TObject; var Name: String;
+    procedure SearchFile1Found(Sender: TObject; Path: string);
+    procedure Button3Click(Sender: TObject);
+    procedure DirectoryBox1AfterDialog(Sender: TObject; var Name: string;
       var Action: Boolean);
   private
     FList: TList;
@@ -65,35 +64,25 @@ implementation
 
 {$R *.DFM}
 
-{******************************************************}
-
-procedure TfoWallpaperChooser.FormCreate(Sender: TObject);
+procedure TFoWallpaperChooser.FormCreate(Sender: TObject);
 begin
   Image := TPicture.Create;
   FList := TList.Create;
 end;
 
-{******************************************************}
-
-procedure TfoWallpaperChooser.FormDestroy(Sender: TObject);
+procedure TFoWallpaperChooser.FormDestroy(Sender: TObject);
 begin
   Image.Free;
   FList.Free;
 end;
 
-{******************************************************}
-
-
-{******************************************************}
-
-procedure TfoWallpaperChooser.BUSearchFile1Found(Sender: TObject;
+procedure TFoWallpaperChooser.SearchFile1Found(Sender: TObject;
   Path: string);
 var
   Btn: TSpeedButton;
 begin
   Btn := TSpeedButton.Create(ScrollBox1);
   Btn.Parent := ScrollBox1;
-  Btn.Flat := True;
   Btn.ShowHint := True;
   Btn.Hint := ChangeFileExt(ExtractFileName(Path), '');
   try
@@ -131,36 +120,32 @@ begin
     FMaxHeight := Btn.Height;
 end;
 
-{******************************************************}
-
-procedure TfoWallpaperChooser.GlyphClick(Sender: TObject);
+procedure TFoWallpaperChooser.GlyphClick(Sender: TObject);
 begin
   Image.Bitmap.Assign((Sender as TSpeedButton).Glyph);
   if Assigned(OnGlyph) then
     OnGlyph(Image.Bitmap);
 end;
 
-{******************************************************}
-
-procedure TfoWallpaperChooser.BUSpeedButton3Click(Sender: TObject);
+procedure TFoWallpaperChooser.Button3Click(Sender: TObject);
 begin
   Image.Assign(nil);
   if Assigned(OnGlyph) then
     OnGlyph(nil);
 end;
 
-procedure TfoWallpaperChooser.BUDirectoryBox1AfterDialog(Sender: TObject;
-  var Name: String; var Action: Boolean);
+procedure TFoWallpaperChooser.DirectoryBox1AfterDialog(Sender: TObject;
+  var Name: string; var Action: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FList.Count - 1 do
-    TSpeedButton(FList.Items[i]).Free;
+  for I := 0 to FList.Count - 1 do
+    TSpeedButton(FList.Items[I]).Free;
   FList.Clear;
   FLastBtn := nil;
   { TODO : Test if this works }
-  BUSearchFiles1.RootDirectory := Name;
-  BUSearchFiles1.Search;
+  SearchFiles1.RootDirectory := Name;
+  SearchFiles1.Search;
 end;
 
 end.

@@ -26,71 +26,74 @@ Known Issues:
 
 {$I JVCL.INC}
 
+unit JvLCProperty;
+
 { Property editor for the TJvComboBox and TJvListBox2 components }
 
-unit JvLCProperty;
 interface
+
 uses
-{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
-
   TJvListCombProperty = class(TDefaultEditor)
   protected
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-{$ELSE}
+    {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-{$ENDIF}
-
+    {$ENDIF}
   public
-    procedure ExecuteVerb(Index: integer); override;
+    procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-resourcestring
-  SEditProperty = 'Items editor...';
-
 implementation
+
 uses
   SysUtils;
 
-{ TJvListCombProperty }
+resourcestring
+  SEditProperty = 'Items editor...';
 
 {$IFDEF COMPILER6_UP}
-
 procedure TJvListCombProperty.EditProperty(const Prop: IProperty; var Continue: Boolean);
-var PropName: string;
+var
+  PropName: string;
 begin
   PropName := Prop.GetName;
   if SameText(PropName, 'Items') then // do not localize
   begin
     Prop.Edit;
-    Continue := false;
+    Continue := False;
   end;
 end;
 {$ELSE}
-
 procedure TJvListCombProperty.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
-var PropName: string;
+var
+  PropName: string;
 begin
   PropName := PropertyEditor.GetName;
   if SameText(PropName, 'Items') then
   begin
     PropertyEditor.Edit;
-    Continue := false;
+    Continue := False;
   end;
 end;
 {$ENDIF}
 
-procedure TJvListCombProperty.ExecuteVerb(Index: integer);
+procedure TJvListCombProperty.ExecuteVerb(Index: Integer);
 begin
   if Index = 0 then
     Edit
   else
-    inherited;
+    inherited ExecuteVerb(Index);
 end;
 
 function TJvListCombProperty.GetVerb(Index: Integer): string;

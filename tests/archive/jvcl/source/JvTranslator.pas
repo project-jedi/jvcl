@@ -31,8 +31,8 @@ unit JvTranslator;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
-  Menus, JvComponent, IniFiles, Dialogs;
+  SysUtils, Classes, Forms, TypInfo, ComCtrls, Menus, IniFiles, Dialogs,
+  JvSimpleXml, JvComponent;
 
 type
   TJvTranslator = class(TJvComponent)
@@ -40,16 +40,16 @@ type
     FXml: TJvSimpleXml;
   protected
     procedure TranslateComponent(const Component: TComponent;
-      const Elem: TJvSimpleXmlElem);virtual;
+      const Elem: TJvSimpleXmlElem); virtual;
   public
-    constructor Create(AOwner: TComponent);override;
-    destructor Destroy;override;
-
-    procedure Translate(const FileName: string);overload;
-    procedure Translate(const Stream: TStream);overload;
-    procedure Translate(const FileName: string;const Form: TForm);overload;
-    procedure Translate(const Form: TForm);overload;
-    function Translate(const Category, Item: string): string;overload;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Translate(const FileName: string); overload;
+    procedure Translate(const Stream: TStream); overload;
+    { (RB) Use TCustomForm }
+    procedure Translate(const FileName: string; const Form: TForm); overload;
+    procedure Translate(const Form: TForm); overload;
+    function Translate(const Category, Item: string): string; overload;
   end;
 
   TJvTranslatorStrings = class(TJvComponent)
@@ -58,49 +58,49 @@ type
     function GetString(const Index: Integer): string;
     procedure SetString(const Index: Integer; const Value: string);
   public
-    constructor Create(AOwner: TComponent);override;
-    destructor Destroy;override;
-
-    function IndexOf(const Name: string):Integer;
-    function Add(const Name: string;var Value: string):Integer;
-    property Strings[const Index: Integer]:string read GetString write SetString;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function IndexOf(const Name: string): Integer;
+    function Add(const Name: string; var Value: string): Integer;
+    // (rom) add default?
+    property Strings[const Index: Integer]: string read GetString write SetString;
   end;
 
 implementation
 
-{*******************************************************************}
+//=== TJvTranslator ==========================================================
+
+constructor TJvTranslator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FXml := TJvSimpleXml.Create(nil);
+end;
+
+destructor TJvTranslator.Destroy;
+begin
+  FXml.Free;
+  inherited Destroy;
+end;
+
 procedure TJvTranslator.Translate(const FileName: string);
 begin
   try
     FXml.LoadFromFile(FileName);
-    TranslateComponent(Application,FXml.Root);
+    TranslateComponent(Application, FXml.Root);
   except
   end;
 end;
-{*******************************************************************}
+
 procedure TJvTranslator.Translate(const Stream: TStream);
 begin
   try
     FXml.LoadFromStream(Stream);
-    TranslateComponent(Application,FXml.Root);
+    TranslateComponent(Application, FXml.Root);
   except
   end;
 end;
-{*******************************************************************}
-constructor TJvTranslator.Create(AOwner: TComponent);
-begin
-  inherited;
-  FXml := TJvSimpleXml.Create(nil);
-end;
-{*******************************************************************}
-destructor TJvTranslator.Destroy;
-begin
-  FXml.Free;
-  inherited;
-end;
-{*******************************************************************}
-procedure TJvTranslator.Translate(const FileName: string;
-  const Form: TForm);
+
+procedure TJvTranslator.Translate(const FileName: string; const Form: TForm);
 begin
   try
     FXml.LoadFromFile(FileName);
@@ -108,201 +108,200 @@ begin
   except
   end;
 end;
-{*******************************************************************}
+
 procedure TJvTranslator.TranslateComponent(const Component: TComponent;
   const Elem: TJvSimpleXmlElem);
 var
- i,j: Integer;
- prop: PPropInfo;
- obj: TObject;
- ok: Boolean;
- st: string;
+  I, J: Integer;
+  Prop: PPropInfo;
+  Obj: TObject;
+  Ok: Boolean;
+  S: string;
 
-  procedure TransObject(const Obj: TObject;const Elem: TJvSimpleXmlElem);forward;
+  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXmlElem); forward;
 
-  function AnalyseCRLF(Value: string):string;
+  function AnalyseCRLF(Value: string): string;
   begin
-    result := StringReplace(Value,'\n',#13#10,[rfReplaceAll]);
+    Result := StringReplace(Value, '\n', #13#10, [rfReplaceAll]);
   end;
 
-  function IsObject(const Obj: TClass; ClassName: string):Boolean;
+  function IsObject(const Obj: TClass; ClassName: string): Boolean;
   begin
-    if Obj=nil then
-      result := false
+    if Obj = nil then
+      Result := False
     else
-      result := (Obj.ClassName=ClassName) or (IsObject(Obj.ClassParent,ClassName));
+      Result := (Obj.ClassName = ClassName) or (IsObject(Obj.ClassParent, ClassName));
   end;
 
-  procedure TransStrings(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  procedure TransStrings(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
+    I, J: Integer;
   begin
-    for i:=0 to Elem.Items.Count-1 do
+    for I := 0 to Elem.Items.Count - 1 do
     begin
-      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-      if j<TStrings(obj).Count then
-        TStrings(obj).Strings[j] := Elem.Items[i].Properties.Value('Value');
+      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+      if J < TStrings(Obj).Count then
+        TStrings(Obj).Strings[J] := Elem.Items[I].Properties.Value('Value');
     end;
   end;
 
-  procedure TransTreeNodes(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  procedure TransTreeNodes(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
+    I, J: Integer;
   begin
-    for i:=0 to Elem.Items.Count-1 do
+    for I := 0 to Elem.Items.Count - 1 do
     begin
-      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-      if j<TTreeNodes(obj).Count then
-        TTreeNodes(obj).Item[j].Text := Elem.Items[i].Properties.Value('Value');
+      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+      if J < TTreeNodes(Obj).Count then
+        TTreeNodes(Obj).Item[J].Text := Elem.Items[I].Properties.Value('Value');
     end;
   end;
 
   procedure TransVars;
   var
-   i,j: Integer;
+    I, J: Integer;
   begin
     with TJvTranslatorStrings(Component) do
-      for i:=0 to Elem.Items.Count-1 do
+      for I := 0 to Elem.Items.Count - 1 do
       begin
-        j := TJvTranslatorStrings(Component).IndexOf(Elem.Items[i].Properties.Value('Name'));
-        if j<>-1 then
-          TJvTranslatorStrings(Component).Strings[j] := AnalyseCRLF(Elem.Items[i].Properties.Value('Value'));
+        J := TJvTranslatorStrings(Component).IndexOf(Elem.Items[I].Properties.Value('Name'));
+        if J <> -1 then
+          TJvTranslatorStrings(Component).Strings[J] := AnalyseCRLF(Elem.Items[I].Properties.Value('Value'));
       end;
   end;
 
-  procedure TransListItems(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  procedure TransListItems(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
+    I, J: Integer;
   begin
-    for i:=0 to Elem.Items.Count-1 do
+    for I := 0 to Elem.Items.Count - 1 do
     begin
-      j := Elem.Items[i].Properties.IntValue('Index',MAXINT);
-      if j<TListItems(obj).Count then
-        with TListItems(obj).Item[j] do
+      J := Elem.Items[I].Properties.IntValue('Index', MaxInt);
+      if J < TListItems(Obj).Count then
+        with TListItems(Obj).Item[J] do
         begin
-
-          j := Elem.Items[i].Properties.IntValue('Column',MAXINT);
-          if j=0 then
-            Caption := Elem.Items[i].Properties.Value('Value')
+          J := Elem.Items[I].Properties.IntValue('Column', MaxInt);
+          if J = 0 then
+            Caption := Elem.Items[I].Properties.Value('Value')
           else
           begin
-            dec(j);
-            if j<SubItems.Count then
-              SubItems[j] := Elem.Items[i].Properties.Value('Value');
+            Dec(J);
+            if J < SubItems.Count then
+              SubItems[J] := Elem.Items[I].Properties.Value('Value');
           end;
         end;
     end;
   end;
 
-  procedure TransProperties(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  procedure TransProperties(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
-   prop: PPropInfo;
-   st: string;
+    I, J: Integer;
+    Prop: PPropInfo;
+    S: string;
   begin
-    if Obj=nil then
+    if Obj = nil then
       Exit;
-    for i:=0 to Elem.Properties.Count-1 do
+    for I := 0 to Elem.Properties.Count - 1 do
     try
-      prop := GetPropInfo(Obj,Elem.Properties[i].Name,[tkInteger,
+      Prop := GetPropInfo(Obj, Elem.Properties[I].Name, [tkInteger,
         tkEnumeration, tkSet, tkString, tkLString, tkWString]);
-      if prop<>nil then
-       case Prop^.PropType^.Kind of
-         tkstring, tkLString, tkWString:
-           SetStrProp(Obj, Prop, StringReplace(Elem.Properties[i].Value,'\n',#13#10,[]));
-         tkSet:
-           SetSetProp(Obj, Prop, Elem.Properties[i].Value);
-         tkEnumeration:
-           begin
-             st := Elem.Properties[i].Value;
-             if (StrToIntDef(st,0)=0) and (st<>'0') then
-             begin
-               try
-                 j := GetEnumValue(Prop.PropType^,st);
-               except
-                 j := 0;
-               end;
-             end
-             else
-               j := StrToIntDef(st,0);
-             SetOrdProp(Obj, Prop, j);
-           end;
-         tkInteger:
-           if prop^.Name='ShortCut' then
-             SetOrdProp(Obj, Prop, TextToShortcut(Elem.Properties[i].Value))
-           else
-             SetOrdProp(Obj, Prop, Elem.Properties[i].IntValue);
-       end;
+      if Prop <> nil then
+        case Prop^.PropType^.Kind of
+          tkstring, tkLString, tkWString:
+            SetStrProp(Obj, Prop, StringReplace(Elem.Properties[I].Value, '\n', #13#10, []));
+          tkSet:
+            SetSetProp(Obj, Prop, Elem.Properties[I].Value);
+          tkEnumeration:
+            begin
+              S := Elem.Properties[I].Value;
+              if (StrToIntDef(S, 0) = 0) and (S <> '0') then
+              begin
+                try
+                  J := GetEnumValue(Prop.PropType^, S);
+                except
+                  J := 0;
+                end;
+              end
+              else
+                J := StrToIntDef(S, 0);
+              SetOrdProp(Obj, Prop, J);
+            end;
+          tkInteger:
+            if Prop^.Name = 'ShortCut' then
+              SetOrdProp(Obj, Prop, TextToShortcut(Elem.Properties[I].Value))
+            else
+              SetOrdProp(Obj, Prop, Elem.Properties[I].IntValue);
+        end;
     except
     end;
   end;
 
-  procedure TranslateCollection(const Collection: TCollection;const Elem: TJvSimpleXmlElem);
+  procedure TranslateCollection(const Collection: TCollection; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
+    I, J: Integer;
   begin
-    for i:=0 to Elem.Items.Count-1 do
+    for I := 0 to Elem.Items.Count - 1 do
     begin
-      j := Elem.Items[i].Properties.IntValue('Index',-1);
-      if j=-1 then
+      J := Elem.Items[I].Properties.IntValue('Index', -1);
+      if J = -1 then
         Continue;
-      TransProperties(Collection.Items[j],Elem.Items[i]);
-      TransObject(Collection.Items[j],Elem.Items[i]);
+      TransProperties(Collection.Items[J], Elem.Items[I]);
+      TransObject(Collection.Items[J], Elem.Items[I]);
     end;
   end;
 
-  procedure TransObject(const Obj: TObject;const Elem: TJvSimpleXmlElem);
+  procedure TransObject(const Obj: TObject; const Elem: TJvSimpleXmlElem);
   var
-   i,j: Integer;
-   prop: PPropInfo;
-   st: string;
-   lObj: TObject;
+    I, J: Integer;
+    Prop: PPropInfo;
+    S: string;
+    lObj: TObject;
   begin
-    if Obj=nil then
+    if Obj = nil then
       Exit;
-    if IsObject(Obj.ClassType,'TCollection') then
-      TranslateCollection(TCollection(Obj),Elem)
+    if IsObject(Obj.ClassType, 'TCollection') then
+      TranslateCollection(TCollection(Obj), Elem)
     else
-      for i:=0 to Elem.Items.Count-1 do
+      for I := 0 to Elem.Items.Count - 1 do
       try
-        prop := GetPropInfo(Obj,Elem.Items[i].Name,[tkInteger,
+        Prop := GetPropInfo(Obj, Elem.Items[I].Name, [tkInteger,
           tkEnumeration, tkSet, tkString, tkLString, tkClass]);
-        if prop<>nil then
-         case Prop^.PropType^.Kind of
-           tkString, tkLString:
-             SetStrProp(Obj, Prop, StringReplace(Elem.Items[i].Value,'\n',#13#10,[]));
-           tkSet:
-             SetSetProp(Obj, Prop, Elem.Items[i].Value);
-           tkEnumeration:
-             begin
-               st := Elem.Items[i].Value;
-               if (StrToIntDef(st,0)=0) and (st<>'0') then
-               begin
-                 try
-                   j := GetEnumValue(Prop.PropType^,st);
-                 except
-                   j := 0;
-                 end;
-               end
-               else
-                 j := StrToIntDef(st,0);
-               SetOrdProp(Obj, Prop, j);
-             end;
-           tkInteger:
-             SetOrdProp(Obj, Prop, Elem.Items[i].IntValue);
-           tkClass:
-             begin
-               lObj := GetObjectProp(Obj,Elem.Items[i].Name);
-               TransProperties(lObj,Elem.Items[i]);
-               TransObject(lObj,Elem.Items[i]);
-             end;
-         end;
+        if Prop <> nil then
+          case Prop^.PropType^.Kind of
+            tkString, tkLString:
+              SetStrProp(Obj, Prop, StringReplace(Elem.Items[I].Value, '\n', #13#10, []));
+            tkSet:
+              SetSetProp(Obj, Prop, Elem.Items[I].Value);
+            tkEnumeration:
+              begin
+                S := Elem.Items[I].Value;
+                if (StrToIntDef(S, 0) = 0) and (S <> '0') then
+                begin
+                  try
+                    J := GetEnumValue(Prop.PropType^, S);
+                  except
+                    J := 0;
+                  end;
+                end
+                else
+                  J := StrToIntDef(S, 0);
+                SetOrdProp(Obj, Prop, J);
+              end;
+            tkInteger:
+              SetOrdProp(Obj, Prop, Elem.Items[I].IntValue);
+            tkClass:
+              begin
+                lObj := GetObjectProp(Obj, Elem.Items[I].Name);
+                TransProperties(lObj, Elem.Items[I]);
+                TransObject(lObj, Elem.Items[I]);
+              end;
+          end;
       except
       end;
   end;
 
 begin
-  if IsObject(Component.ClassType,'TJvTranslatorStrings') then
+  if IsObject(Component.ClassType, 'TJvTranslatorStrings') then
   begin
     TransVars;
     Exit;
@@ -310,41 +309,43 @@ begin
 
   try
     //Transform properties
-    TransProperties(Component,Elem);
+    TransProperties(Component, Elem);
 
     //Transform childs
     with Component do
-      for i:=0 to Elem.Items.Count-1 do
+      for I := 0 to Elem.Items.Count - 1 do
       begin
-        ok := false;
-        for j:=0 to ComponentCount-1 do
+        Ok := False;
+        for J := 0 to ComponentCount - 1 do
         begin
-          st := LowerCase(Elem.Items[i].Name);
-          if LowerCase(Components[j].Name) = st then
+          S := LowerCase(Elem.Items[I].Name);
+          if LowerCase(Components[J].Name) = S then
           begin
-            TranslateComponent(Components[j],Elem.Items[i]);
-            ok := true;
-            break;
+            TranslateComponent(Components[J], Elem.Items[I]);
+            Ok := True;
+            Break;
           end;
         end;
-        if not ok then
+        if not Ok then
         begin
-          prop := GetPropInfo(Component,Elem.Items[i].Name,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
+          Prop := GetPropInfo(Component, Elem.Items[I].Name, [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat,
             tkString, tkSet, tkClass, tkMethod, tkWChar, tkLString, tkWString,
-            tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray]);
-          if prop<>nil then
+              tkVariant, tkArray, tkRecord, tkInterface, tkInt64, tkDynArray]);
+          if Prop <> nil then
           begin
-            obj := GetObjectProp(Component,Elem.Items[i].Name);
-            if IsObject(obj.ClassType,'TStrings') then
-              TransStrings(obj,Elem.Items[i])
-            else if IsObject(obj.ClassType,'TTreeNodes') then
-              TransTreeNodes(obj,Elem.Items[i])
-            else if IsObject(obj.ClassType,'TListItems') then
-              TransListItems(obj,Elem.Items[i])
+            Obj := GetObjectProp(Component, Elem.Items[I].Name);
+            if IsObject(Obj.ClassType, 'TStrings') then
+              TransStrings(Obj, Elem.Items[I])
+            else
+            if IsObject(Obj.ClassType, 'TTreeNodes') then
+              TransTreeNodes(Obj, Elem.Items[I])
+            else
+            if IsObject(Obj.ClassType, 'TListItems') then
+              TransListItems(Obj, Elem.Items[I])
             else
             begin
-              TransProperties(obj,Elem.Items[i]);
-              TransObject(obj,Elem.Items[i]);
+              TransProperties(Obj, Elem.Items[I]);
+              TransObject(Obj, Elem.Items[I]);
             end;
           end;
         end;
@@ -352,76 +353,75 @@ begin
   except
   end;
 end;
-{*******************************************************************}
+
 procedure TJvTranslator.Translate(const Form: TForm);
 var
- j: Integer;
- st: string;
- lElem: TJvSimpleXmlElem;
+  J: Integer;
+  S: string;
+  lElem: TJvSimpleXmlElem;
 begin
-  j := pos('_',Form.Name);
-  if j=0 then
-    st := Form.Name
+  J := Pos('_', Form.Name);
+  if J = 0 then
+    S := Form.Name
   else
-    st := Copy(Form.Name,1,j-1);
-  lElem := FXml.Root.Items.ItemNamed[st];
-  if lElem<>nil then
-    TranslateComponent(Form,lElem);
+    S := Copy(Form.Name, 1, J - 1);
+  lElem := FXml.Root.Items.ItemNamed[S];
+  if lElem <> nil then
+    TranslateComponent(Form, lElem);
 end;
-{*******************************************************************}
+
 function TJvTranslator.Translate(const Category, Item: string): string;
 var
- lElem: TJvSimpleXmlElem;
+  lElem: TJvSimpleXmlElem;
 begin
-  result := '';
+  Result := '';
   lElem := FXml.Root.Items.ItemNamed[Category];
-  if lElem<>nil then
+  if lElem <> nil then
   begin
     lElem := lElem.Items.ItemNamed[Item];
-    if lElem<>nil then
+    if lElem <> nil then
     begin
-      result := lElem.Value;
-      if result='' then
-        result := lElem.Properties.Value('Value');
+      Result := lElem.Value;
+      if Result = '' then
+        Result := lElem.Properties.Value('Value');
     end;
   end;
 end;
-{*******************************************************************}
 
-{ TJvTranslatorStrings }
+//=== TJvTranslatorStrings ===================================================
 
-{*******************************************************************}
-function TJvTranslatorStrings.Add(const Name: string;var Value: string): Integer;
-begin
-  result := FList.AddObject(Name,@Value);
-end;
-{*******************************************************************}
 constructor TJvTranslatorStrings.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FList := THashedStringList.Create;
 end;
-{*******************************************************************}
+
 destructor TJvTranslatorStrings.Destroy;
 begin
   FList.Free;
-  inherited;
+  inherited Destroy;
 end;
-{*******************************************************************}
+
+function TJvTranslatorStrings.Add(const Name: string; var Value: string): Integer;
+begin
+  // (rom) AddObject? Strange.
+  Result := FList.AddObject(Name, TObject(@Value));
+end;
+
 function TJvTranslatorStrings.GetString(const Index: Integer): string;
 begin
-  result := FList[Index];
+  Result := FList[Index];
 end;
-{*******************************************************************}
+
 function TJvTranslatorStrings.IndexOf(const Name: string): Integer;
 begin
-  result := FList.IndexOf(Name);
+  Result := FList.IndexOf(Name);
 end;
-{*******************************************************************}
+
 procedure TJvTranslatorStrings.SetString(const Index: Integer; const Value: string);
 begin
   PString(FList.Objects[Index])^ := Value;
 end;
-{*******************************************************************}
 
 end.
+

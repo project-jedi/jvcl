@@ -31,21 +31,19 @@ unit JvMultiselectChecklistbox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, CheckLst, JVCLVer;
-
+  Classes, Controls, StdCtrls, CheckLst,
+  JVCLVer;
 
 type
-  TJvMultiselectChecklistBox = class(TChecklistbox)
+  TJvMultiselectCheckListBox = class(TCheckListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    { Published declarations }
-    property AboutJVCL:TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
-
-    property Multiselect;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
+    property MultiSelect;
   end;
 
 implementation
 
 end.
+

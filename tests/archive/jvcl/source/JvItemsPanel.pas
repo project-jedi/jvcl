@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,88 +26,80 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ A Panel that is divided into items defined by the Items property }
 unit JvItemsPanel;
+
+{ A Panel that is divided into items defined by the Items property }
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JvComponent;
 
 type
-  TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: integer) of object;
+  TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
   TJvPanelOrientation = (poHorizontal, poVertical);
 
   TJvItemsPanel = class(TJvCustomPanel)
   private
     FItems: TStrings;
-    FItemHeight: integer;
-    FAutoSize: boolean;
-    FAutoGrow: boolean;
-    FDown: boolean;
-    FClickable: boolean;
+    FItemHeight: Integer;
+    FAutoSize: Boolean;
+    FAutoGrow: Boolean;
+    FDown: Boolean;
+    FClickable: Boolean;
     FDownRect: TRect;
-    FHotTrack: boolean;
+    FHotTrack: Boolean;
     FHotTrackColor: TColor;
     FOnItemClick: TJvPanelItemClickEvent;
     FOrientation: TJvPanelOrientation;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     function GetCaption: TCaption;
     procedure SetItems(const Value: TStrings);
-    procedure SetItemHeight(const Value: integer);
-    procedure SetAutoGrow(const Value: boolean);
-    procedure SetHotTrack(const Value: boolean);
+    procedure SetItemHeight(const Value: Integer);
+    procedure SetAutoGrow(const Value: Boolean);
+    procedure SetHotTrack(const Value: Boolean);
     procedure SetHotTrackColor(const Value: TColor);
-    procedure SetClickable(const Value: boolean);
+    procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
-
-    { Private declarations }
   protected
-    { Protected declarations }
-{$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: boolean); override;
-{$ENDIF}
+    {$IFDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF}
     procedure Grow;
     procedure PaintDown;
     procedure PaintUp;
     procedure PaintHi;
-    procedure DrawItemText(Index: integer; R: TRect; HighLight: boolean);
-
+    procedure DrawItemText(Index: Integer; R: TRect; HighLight: Boolean);
     procedure Paint; override;
-    procedure DoItemClick(ItemIndex: integer); dynamic;
+    procedure DoItemClick(ItemIndex: Integer); dynamic;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetItemAt(X, Y: integer): integer;
-    function GetItemRect(Index: integer): Trect;
+    function GetItemAt(X, Y: Integer): Integer;
+    function GetItemRect(Index: Integer): Trect;
     property Canvas;
   published
-    { Published declarations }
-    property AutoGrow: boolean read FAutoGrow write SetAutoGrow;
-{$IFDEF COMPILER6_UP}
-    property AutoSize: boolean read FAutoSize write SetAutoSize;
-{$ENDIF}
+    property AutoGrow: Boolean read FAutoGrow write SetAutoGrow;
+    {$IFDEF COMPILER6_UP}
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    {$ENDIF}
     property Items: TStrings read FItems write SetItems;
-    property ItemHeight: integer read FItemHeight write SetItemHeight default 16;
-    property HotTrack: boolean read FHotTrack write SetHotTrack;
+    property ItemHeight: Integer read FItemHeight write SetItemHeight default 16;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clHighLight;
     property Caption: TCaption read GetCaption; // hide
-    property Clickable: boolean read FClickable write SetClickable default true;
+    property Clickable: Boolean read FClickable write SetClickable default True;
     property Orientation: TJvPanelOrientation read FOrientation write SetOrientation default poVertical;
-    //    property Images:TImageList;
-    //    property ImageIndex[ItemIndex:integer]:integer;
+    //    property Images: TImageList;
+    //    property ImageIndex[ItemIndex: Integer]: Integer;
     property OnItemClick: TJvPanelItemClickEvent read FOnItemClick write FOnItemClick;
-
-    // redeclared
     property Align;
     property Alignment;
     property Anchors;
@@ -158,12 +150,10 @@ type
 
 implementation
 
-function GetFontHeight(Canvas: TCanvas): integer;
+function GetFontHeight(Canvas: TCanvas): Integer;
 begin
   Result := Canvas.TextHeight('Wq');
 end;
-
-{ TJvItemsPanel }
 
 constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
@@ -174,7 +164,7 @@ begin
   FItemHeight := 16;
   FItems := TStringlist.Create;
   FHotTrackColor := clHighLight;
-  FClickable := true;
+  FClickable := True;
   FOrientation := poVertical;
   inherited Caption := '';
 end;
@@ -192,13 +182,15 @@ begin
 end;
 
 procedure TJvItemsPanel.Paint;
-var i, Rest: integer; R: TRect;
+var
+  I, Rest: Integer;
+  R: TRect;
 begin
   inherited Paint;
   Canvas.FillRect(ClientRect);
   if FItems.Count = 0 then
     Exit;
-  rest := 0;
+  Rest := 0;
   if AutoSize then
   begin
     if Orientation = poVertical then
@@ -213,10 +205,10 @@ begin
     end;
   end;
 
-  for i := 0 to FItems.Count - 1 do
+  for I := 0 to FItems.Count - 1 do
   begin
-    R := GetItemRect(i);
-    if (i = FItems.Count - 1) then
+    R := GetItemRect(I);
+    if I = FItems.Count - 1 then
     begin
       if Orientation = poVertical then
         R.Bottom := R.Bottom + Rest
@@ -225,37 +217,41 @@ begin
     end;
     Frame3d(Canvas, R, clBtnHighLight, clBtnShadow, 1);
     InflateRect(R, 1, 1);
-    DrawItemText(i, R, false);
+    DrawItemText(I, R, False);
   end;
 end;
 
-procedure TJvItemsPanel.DrawItemText(Index: integer; R: TRect; HighLight: boolean);
-var flags: integer;
+procedure TJvItemsPanel.DrawItemText(Index: Integer; R: TRect; HighLight: Boolean);
+var
+  Flags: Integer;
 begin
   if (Index < 0) or (Index >= FItems.Count) then
     Exit;
-  flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_END_ELLIPSIS or DT_EDITCONTROL;
+  Flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_END_ELLIPSIS or DT_EDITCONTROL;
   case Alignment of
-    taLeftJustify: flags := flags or DT_LEFT;
-    taCenter: flags := flags or DT_CENTER;
-    taRightJustify: flags := flags or DT_RIGHT;
+    taLeftJustify:
+      Flags := Flags or DT_LEFT;
+    taCenter:
+      Flags := Flags or DT_CENTER;
+    taRightJustify:
+      Flags := Flags or DT_RIGHT;
   end;
   R.Left := R.Left + Canvas.TextWidth(' ');
   R.Right := R.Right - Canvas.TextWidth('  ');
   Canvas.Font := Font;
   if FHotTrack and HighLight then
     Canvas.Font.Color := FHotTrackColor;
-  DrawText(Canvas.Handle, PChar(FItems[Index]), -1, R, flags);
+  DrawText(Canvas.Handle, PChar(FItems[Index]), -1, R, Flags);
 end;
 
-procedure TJvItemsPanel.SetAutoGrow(const Value: boolean);
+procedure TJvItemsPanel.SetAutoGrow(const Value: Boolean);
 begin
   if FAutoGrow <> Value then
   begin
     FAutoGrow := Value;
     if FAutoGrow then
     begin
-      AutoSize := false;
+      AutoSize := False;
       Align := alNone;
     end;
     Grow;
@@ -263,7 +259,7 @@ begin
 end;
 
 {$IFDEF COMPILER6_UP}
-procedure TJvItemsPanel.SetAutoSize(Value: boolean);
+procedure TJvItemsPanel.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
@@ -279,7 +275,8 @@ begin
   end;
 end;
 {$ENDIF}
-procedure TJvItemsPanel.SetItemHeight(const Value: integer);
+
+procedure TJvItemsPanel.SetItemHeight(const Value: Integer);
 begin
   if FItemHeight <> Value then
   begin
@@ -294,7 +291,7 @@ begin
   Grow;
 end;
 
-procedure TJvItemsPanel.WMSize(var Message: TWMSize);
+procedure TJvItemsPanel.WMSize(var Msg: TWMSize);
 begin
   inherited;
   Grow;
@@ -308,7 +305,7 @@ begin
     Invalidate;
 end;
 
-function TJvItemsPanel.GetItemAt(X, Y: integer): integer;
+function TJvItemsPanel.GetItemAt(X, Y: Integer): Integer;
 begin
   if Orientation = poVertical then
   begin
@@ -326,7 +323,7 @@ begin
   end;
 end;
 
-function TJvItemsPanel.GetItemRect(Index: integer): Trect;
+function TJvItemsPanel.GetItemRect(Index: Integer): Trect;
 begin
   Result := Rect(0, 0, 0, 0);
   if (Index < 0) or (Index >= Items.Count) then
@@ -340,24 +337,25 @@ end;
 procedure TJvItemsPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if Button <> mbLeft then
     Exit;
-  FDown := true;
+  FDown := True;
   FDownRect := GetItemRect(GetItemAt(X, Y));
   PaintDown;
 end;
 
 procedure TJvItemsPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   if FDown then
   begin
     PaintUp;
     FDownRect := GetItemRect(GetItemAt(X, Y));
     PaintDown;
   end
-  else if FHotTrack then
+  else
+  if FHotTrack then
   begin
     PaintUp;
     FDownRect := GetItemRect(GetItemAt(X, Y));
@@ -365,16 +363,17 @@ begin
   end;
 end;
 
-procedure TJvItemsPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-var i: integer;
+procedure TJvItemsPanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  I: Integer;
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   PaintUp;
-  i := GetItemAt(X, Y);
-  if (i <> -1) and FDown then
-    DoItemClick(i);
-  FDown := false;
+  I := GetItemAt(X, Y);
+  if (I <> -1) and FDown then
+    DoItemClick(I);
+  FDown := False;
   FDownRect := Rect(0, 0, 0, 0);
 end;
 
@@ -385,9 +384,9 @@ begin
   Frame3d(Canvas, FDownRect, clBtnShadow, clBtnHighLight, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
-    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, true)
+    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
   else
-    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, true);
+    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, True);
 end;
 
 procedure TJvItemsPanel.PaintUp;
@@ -395,9 +394,9 @@ begin
   Frame3d(Canvas, FDownRect, clBtnHighLight, clBtnShadow, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
-    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, true)
+    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
   else
-    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, true);
+    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, True);
 end;
 
 procedure TJvItemsPanel.PaintHi;
@@ -405,18 +404,18 @@ begin
   Frame3d(Canvas, FDownRect, clWhite, clBlack, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
-    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, true)
+    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
   else
-    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, true);
+    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, True);
 end;
 
-procedure TJvItemsPanel.CMMouseLeave(var Message: TMessage);
+procedure TJvItemsPanel.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   PaintUp;
 end;
 
-procedure TJvItemsPanel.SetHotTrack(const Value: boolean);
+procedure TJvItemsPanel.SetHotTrack(const Value: Boolean);
 begin
   if FHotTrack <> Value then
   begin
@@ -434,7 +433,7 @@ begin
   end;
 end;
 
-procedure TJvItemsPanel.SetClickable(const Value: boolean);
+procedure TJvItemsPanel.SetClickable(const Value: Boolean);
 begin
   if FClickable <> Value then
   begin
@@ -443,7 +442,7 @@ begin
   end;
 end;
 
-procedure TJvItemsPanel.DoItemClick(ItemIndex: integer);
+procedure TJvItemsPanel.DoItemClick(ItemIndex: Integer);
 begin
   if Assigned(FOnItemClick) then
     FOnItemClick(self, ItemIndex);

@@ -28,26 +28,25 @@ Known Issues:
 
 unit JvScrollBar;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JVCLVer;
 
 type
   TJvScrollBar = class(TScrollBar)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAutoCtl3d: Boolean;
+    FHotTrack: Boolean;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure SetAutoCtl3d(Value: Boolean);
+    procedure SetHotTrack(Value: Boolean);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -57,9 +56,8 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HotTrack: Boolean read FAutoCtl3d write SetAutoCtl3d default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -68,18 +66,14 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvScrollBar.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   FOver := False;
-  FAutoCtl3d := False;
+  FHotTrack := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{**************************************************}
 
 procedure TJvScrollBar.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -88,8 +82,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollBar.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -97,46 +89,42 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollBar.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
-    if FAutoCtl3d then
-      Ctl3d := True;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
+    if FHotTrack then
+      Ctl3D := True;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollBar.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    if FAutoCtl3d then
-      Ctl3d := False;
+    if FHotTrack then
+      Ctl3D := False;
     FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvScrollBar.SetAutoCtl3d(Value: Boolean);
+procedure TJvScrollBar.SetHotTrack(Value: Boolean);
 begin
-  FAutoCtl3d := Value;
-  if FAutoCtl3d then
-    Ctl3d := False;
+  FHotTrack := Value;
+  if FHotTrack then
+    Ctl3D := False;
 end;
 
 end.
+

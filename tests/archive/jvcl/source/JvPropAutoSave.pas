@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvPropAutoSave;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  SysUtils, Classes,
   Registry;
 
 type
@@ -71,24 +69,19 @@ type
 
 implementation
 
-{***********************************************}
-
 constructor TJvAutoSave.Create(Parent: TComponent);
 begin
+  inherited Create;
   FAutoSave := False;
   FRegistry := TJvRegAutoSave.Create;
   FParent := Parent;
 end;
 
-{***********************************************}
-
 destructor TJvAutoSave.Destroy;
 begin
   FRegistry.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{***********************************************}
 
 function TJvAutoSave.CanLoadSave: Boolean;
 begin
@@ -97,8 +90,6 @@ begin
     if (FAutoSave) and (Registry.Key <> '') and (Registry.Path <> '') then
       Result := True;
 end;
-
-{***********************************************}
 
 procedure TJvAutoSave.SaveValue(Value: Double);
 begin
@@ -111,8 +102,6 @@ begin
     end;
 end;
 
-{***********************************************}
-
 procedure TJvAutoSave.SaveValue(Value: Integer);
 begin
   if CanLoadSave then
@@ -123,8 +112,6 @@ begin
       Free;
     end;
 end;
-
-{***********************************************}
 
 function TJvAutoSave.LoadValue(var Default: Integer): Boolean;
 begin
@@ -143,8 +130,6 @@ begin
     end;
 end;
 
-{***********************************************}
-
 function TJvAutoSave.LoadValue(var Default: Double): Boolean;
 begin
   Result := False;
@@ -161,8 +146,6 @@ begin
       Free;
     end;
 end;
-
-{***********************************************}
 
 function TJvAutoSave.LoadValue(var Default: Boolean): Boolean;
 begin
@@ -181,8 +164,6 @@ begin
     end;
 end;
 
-{***********************************************}
-
 function TJvAutoSave.LoadValue(var Default: string): Boolean;
 begin
   Result := False;
@@ -200,8 +181,6 @@ begin
     end;
 end;
 
-{***********************************************}
-
 procedure TJvAutoSave.SaveValue(Value: string);
 begin
   if CanLoadSave then
@@ -212,8 +191,6 @@ begin
       Free;
     end;
 end;
-
-{***********************************************}
 
 procedure TJvAutoSave.SaveValue(Value: Boolean);
 begin
@@ -227,3 +204,4 @@ begin
 end;
 
 end.
+

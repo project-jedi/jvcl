@@ -31,41 +31,39 @@ unit JvSyncSplitter;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Messages, SysUtils, Classes, Controls, ExtCtrls,
+  JVCLVer;
 
 type
   TJvSyncSplitter = class(TSplitter)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FPartner: TJvSyncSplitter;
     FForcedSize: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetPartner(const Value: TJvSyncSplitter);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
     property ForcedSize: Boolean read FForcedSize write FForcedSize;
   public
-    procedure WndProc(var Message: TMessage); override;
+    procedure WndProc(var Msg: TMessage); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
-
   end;
 
 implementation
+
 uses
   JvTypes;
 
-{ TJvSyncSplitter }
 resourcestring
   eInvalidPartner = 'TJvSyncSplitter.SetPartner: cannot set Partner to Self!';
 
-procedure TJvSyncSplitter.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvSyncSplitter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   if (Operation = opRemove) and (aComponent = FPartner) then
     FPartner := nil;
-  inherited;
+  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvSyncSplitter.SetPartner(const Value: TJvSyncSplitter);
@@ -76,17 +74,17 @@ begin
     raise EJVCLException.Create(eInvalidPartner);
 end;
 
-procedure TJvSyncSplitter.WndProc(var Message: TMessage);
+procedure TJvSyncSplitter.WndProc(var Msg: TMessage);
 begin
   if Assigned(FPartner) and not FForcedSize then
-    case Message.Msg of
+    case Msg.Msg of
       WM_MOUSEFIRST..WM_MOUSELAST:
         begin
-          FPartner.FForcedSize := true;
+          FPartner.FForcedSize := True;
           try
-            FPartner.perform(Message.msg, Message.wparam, Message.lparam);
+            FPartner.Perform(Msg.Msg, Msg.WParam, Msg.LParam);
           finally
-            FPartner.FForcedSize := false;
+            FPartner.FForcedSize := False;
           end;
         end;
     end;
@@ -94,3 +92,4 @@ begin
 end;
 
 end.
+

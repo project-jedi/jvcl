@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInterpreterFm.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,7 +26,6 @@ Component   : form runner for JvInterpreter
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
 
 {$I JVCL.INC}
 
@@ -50,20 +49,18 @@ Known Issues:
      this bug prevented MDI forms from "Action := caFree" code to work
      (thanks to Ivan Ravin);
   2.00:
-    - loading of inherited forms added by Cerny Robert; 
-
+    - loading of inherited forms added by Cerny Robert;
 }
-
 
 unit JvInterpreterFm;
 
 interface
 
-uses Windows, SysUtils, Classes, Controls, Forms,
-  JvInterpreter, JvInterpreterParser;
+uses
+  SysUtils, Classes, Controls, Forms,
+  JvInterpreter, JvUtils;
 
 type
-
   TJvInterpreterGetDfmFileName = procedure(Sender: TObject; UnitName: string;
     var FileName: string; var Done: Boolean) of object;
   TJvInterpreterCreateDfmStream = procedure(Sender: TObject; UnitName: string;
@@ -76,7 +73,7 @@ type
   private
     FJvInterpreterFm: TJvInterpreterFm;
     FMethodList: TList;
-    FreeFJvInterpreterFm: Boolean;
+    FFreeJvInterpreterFm: Boolean;
     FClassIdentifer: string;
     FUnitName: string;
     procedure FixupMethods;
@@ -102,11 +99,11 @@ type
     FOnFreeDfmStream: TJvInterpreterFreeDfmStream;
     procedure LoadForm(AForm: TJvInterpreterForm);
   protected
-    function GetValue(Identifer: string; var Value: Variant; var Args: TArgs)
-      : Boolean; override;
-    function SetValue(Identifer: string; const Value: Variant; var Args: TArgs)
-      : Boolean; override;
-    function GetUnitSource(UnitName: string; var Source: string): boolean;
+    function GetValue(Identifer: string; var Value: Variant;
+      var Args: TJvInterpreterArgs): Boolean; override;
+    function SetValue(Identifer: string; const Value: Variant;
+      var Args: TJvInterpreterArgs): Boolean; override;
+    function GetUnitSource(UnitName: string; var Source: string): Boolean;
       override;
     procedure CreateDfmStream(const UnitName: string; var Stream: TStream); dynamic;
     procedure FreeDfmStream(Stream: TStream); dynamic;
@@ -128,30 +125,29 @@ type
     property InterfaceUses: Boolean read FInterfaceUses write FInterfaceUses default False;
   end;
 
-  function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult;
-  function JvInterpreterRunForm(const FileName: TFileName): TForm;
-  function JvInterpreterMakeForm(const FileName: TFileName): TForm;
-  function JvInterpreterRunUnit(const FileName: TFileName): Variant;
-  procedure JvInterpreterRunReportPreview(const FileName: string);
-  procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
+function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult;
+function JvInterpreterRunForm(const FileName: TFileName): TForm;
+function JvInterpreterMakeForm(const FileName: TFileName): TForm;
+function JvInterpreterRunUnit(const FileName: TFileName): Variant;
+procedure JvInterpreterRunReportPreview(const FileName: string);
+procedure JvInterpreterRunReportPreview2(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
 
-  procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
-
+procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 const
   ieImplementationNotFound = 401;
 
-
 var
-  JvInterpreterRunReportPreviewProc: procedure (const FileName: string);
-  JvInterpreterRunReportPreview2Proc: procedure (const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
+  JvInterpreterRunReportPreviewProc: procedure(const FileName: string);
+  JvInterpreterRunReportPreview2Proc: procedure(const FileName: string; JvInterpreterProgram: TJvInterpreterFm);
 
 implementation
 
-uses Consts, TypInfo, JvInterpreterConst;
+uses
+  TypInfo,
+  JvInterpreterConst;
 
-
-function LoadTextFile(const FileName : TFileName): string;
+function LoadTextFile(const FileName: TFileName): string;
 begin
   with TStringList.Create do
   try
@@ -162,34 +158,34 @@ begin
   end;
 end;
 
-function AddSlash2(const Dir : TFileName) : string;
+function AddSlash2(const Dir: TFileName): string;
 begin
   Result := Dir;
   if (Length(Dir) > 0) and (Dir[Length(Dir)] <> '\') then
-    Result := Dir +'\';
+    Result := Dir + '\';
 end;
 
 function FindInPath(const FileName, PathList: string): TFileName;
 var
-  i: Integer;
+  I: Integer;
   S: string;
 begin
-  i := 0;
-  S := SubStr(PathList, i, ';');
-  while S <> '' do                  
+  I := 0;
+  S := SubStr(PathList, I, ';');
+  while S <> '' do
   begin
     Result := AddSlash2(S) + FileName;
     if FileExists(Result) then
       Exit;
-    inc(i);
-    S := SubStr(PathList, i, ';');
+    Inc(I);
+    S := SubStr(PathList, I, ';');
   end;
   Result := '';
 end;
 
+//=== TJvInterpreterReader ===================================================
 
 type
-
   TJvInterpreterReader = class(TReader)
   protected
     function FindMethod(Root: TComponent; const MethodName: string): Pointer;
@@ -197,14 +193,15 @@ type
   end;
 
   THackAdapter = class(TJvInterpreterAdapter);
-  
 
-function TJvInterpreterReader.FindMethod(Root: TComponent; const MethodName: string)
-  : Pointer;
+function TJvInterpreterReader.FindMethod(Root: TComponent;
+  const MethodName: string): Pointer;
 begin
   Result := NewStr(MethodName);
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
+
+//=== TJvInterpreterForm =====================================================
 
 {$IFDEF COMPILER4_UP}
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
@@ -213,71 +210,71 @@ constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 {$ENDIF COMPILER4_UP}
 begin
   FMethodList := TList.Create;
- {$IFDEF Delphi}
+  {$IFDEF Delphi}
   inherited CreateNew(AOwner);
- {$ELSE}
+  {$ELSE}
   inherited CreateNew(AOwner, Dummy);
- {$ENDIF}
-end;    { Create }
+  {$ENDIF}
+end;
 
 destructor TJvInterpreterForm.Destroy;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FMethodList.Count - 1 do    { Iterate }
-    DisposeStr(FMethodList[i]);
+  for I := 0 to FMethodList.Count - 1 do
+    DisposeStr(FMethodList[I]);
   FMethodList.Free;
   inherited Destroy;
-  if FreeFJvInterpreterFm then
+  if FFreeJvInterpreterFm then
     FJvInterpreterFm.Free;
-end;    { Destroy }
+end;
 
 procedure TJvInterpreterForm.FixupMethods;
 
   procedure ReadProps(Com: TComponent);
   var
-    TypeInf  : PTypeInfo;
-    TypeData : PTypeData;
-    PropList : PPropList;
-    NumProps : word;
-    i: Integer;
+    TypeInf: PTypeInfo;
+    TypeData: PTypeData;
+    PropList: PPropList;
+    NumProps: word;
+    I: Integer;
     F: Integer;
     Method: TMethod;
   begin
     TypeInf := Com.ClassInfo;
     TypeData := GetTypeData(TypeInf);
     NumProps := TypeData^.PropCount;
-    GetMem(PropList, NumProps*sizeof(pointer));
+    GetMem(PropList, NumProps * sizeof(pointer));
     try
       GetPropInfos(TypeInf, PropList);
-      for i := 0 to NumProps-1 do
-        if PropList^[i].PropType^.Kind = tkMethod then
+      for I := 0 to NumProps - 1 do
+        if PropList^[I].PropType^.Kind = tkMethod then
         begin
-          Method := GetMethodProp(Com, PropList^[i]);
+          Method := GetMethodProp(Com, PropList^[I]);
           if Method.Data = Self then
           begin
             F := FMethodList.IndexOf(Method.Code);
             if F > -1 then
             begin
-              SetMethodProp(Com, PropList^[i], TMethod(FJvInterpreterFm.NewEvent(
-                FUnitName,
-                PString(FMethodList[F])^, PropList^[i]^.PropType^.Name,
-                Self)));
+              SetMethodProp(Com, PropList^[I],
+                TMethod(FJvInterpreterFm.NewEvent(FUnitName,
+                PString(FMethodList[F])^, PropList^[I]^.PropType^.Name, Self)));
             end;
           end;
         end;
     finally
-      FreeMem(PropList, NumProps*sizeof(pointer));
+      FreeMem(PropList, NumProps * sizeof(pointer));
     end;
   end;
 
 var
-  i: Integer;
+  I: Integer;
 begin
-  if FJvInterpreterFm = nil then Exit; {+RWare}
+  if FJvInterpreterFm = nil then
+    Exit; {+RWare}
   ReadProps(Self);
-  for i := 0 to ComponentCount - 1 do    { Iterate }
-    ReadProps(Components[i]);
+  for I := 0 to ComponentCount - 1 do
+    ReadProps(Components[I]);
 end;
 
 procedure TJvInterpreterForm.ReadState(Reader: TReader);
@@ -286,15 +283,15 @@ begin
   FixupMethods;
 end;
 
-function JvInterpreterReadComponentRes(var Stream: TStream; Instance: TComponent)
-  : TComponent;
+function JvInterpreterReadComponentRes(var Stream: TStream;
+  Instance: TComponent): TComponent;
 var
   JvInterpreterReader: TJvInterpreterReader;
- {$IFDEF COMPILER5_UP}
+  {$IFDEF COMPILER5_UP}
   TmpStream: TMemoryStream;
- {$ENDIF COMPILER5_UP}
+  {$ENDIF COMPILER5_UP}
 begin
- {$IFDEF COMPILER5_UP}
+  {$IFDEF COMPILER5_UP}
   if TestStreamFormat(Stream) = sofText then
   begin
     TmpStream := TMemoryStream.Create;
@@ -303,7 +300,7 @@ begin
     Stream := TmpStream;
     Stream.Position := 0;
   end;
- {$ENDIF COMPILER5_UP}
+  {$ENDIF COMPILER5_UP}
 
   Stream.ReadResHeader;
   JvInterpreterReader := TJvInterpreterReader.Create(Stream, 4096);
@@ -314,17 +311,17 @@ begin
   end;
 end;
 
+//=== TJvInterpreterFm =======================================================
 
-{ ********************* TJvInterpreterFm **********************}
 constructor TJvInterpreterFm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-end;    { Create }
+end;
 
 destructor TJvInterpreterFm.Destroy;
 begin
   inherited Destroy;
-end;    { Destroy }
+end;
 
 function TJvInterpreterFm.MakeForm(const FileName: TFileName): TForm;
 var
@@ -345,7 +342,7 @@ begin
   FForm.FUnitName := UnitName;
   LoadForm(FForm);
   Result := FForm;
-end;    { MakeForm }
+end; { MakeForm }
 
 function TJvInterpreterFm.MakeInheritedForm(F: TJvInterpreterForm; const FileName: TFileName): TForm;
 var
@@ -362,7 +359,7 @@ begin
   FForm.FUnitName := UnitName;
   LoadForm(FForm);
   Result := FForm;
-end;    { MakeInheritedForm }
+end;
 
 procedure TJvInterpreterFm.CreateDfmStream(const UnitName: string; var Stream: TStream);
 var
@@ -409,7 +406,8 @@ begin
     FreeDfmStream(Stream);
   end;
   try
-    if Assigned(Form.OnCreate) then Form.OnCreate(Form);
+    if Assigned(Form.OnCreate) then
+      Form.OnCreate(Form);
   except
     Application.HandleException(Form);
   end;
@@ -418,7 +416,10 @@ begin
 end;
 
 function TJvInterpreterFm.GetValue(Identifer: string; var Value: Variant;
-  var Args: TArgs): Boolean;
+  var Args: TJvInterpreterArgs): Boolean;
+var
+  JvInterpreterSrcClass: TJvInterpreterIdentifer;
+  JvInterpreterForm: TJvInterpreterForm;
 
   function GetFromForm(Form: TJvInterpreterForm): Boolean;
   var
@@ -438,7 +439,7 @@ function TJvInterpreterFm.GetValue(Identifer: string; var Value: Variant;
         Result := LocalVars.GetValue(Identifer, Value, Args);
         Exit;
       end;
-     { may be TForm method or published property }
+      { may be TForm method or published property }
       Args.Obj := Form;
       Args.ObjTyp := varObject;
       try
@@ -455,22 +456,19 @@ function TJvInterpreterFm.GetValue(Identifer: string; var Value: Variant;
     end;
   end;
 
-var
-  JvInterpreterSrcClass: TJvInterpreterIdentifer;
-  JvInterpreterForm: TJvInterpreterForm;
 begin
   if (Args.Obj = nil) and (CurInstance is TJvInterpreterForm) then
     Result := GetFromForm(CurInstance as TJvInterpreterForm)
   else
   if (Args.Obj <> nil) and (Args.ObjTyp = varObject) and
-     (Args.Obj is TJvInterpreterForm) then
+    (Args.Obj is TJvInterpreterForm) then
   begin
-   { run-time form creation }
+    { run-time form creation }
     if Cmp(Identifer, 'Create') then
     begin
       JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(
         (Args.Obj as TJvInterpreterForm).FClassIdentifer);
-      (Args.Obj as TJvInterpreterForm).FUnitName := JvInterpreterSrcClass.UnitName;  
+      (Args.Obj as TJvInterpreterForm).FUnitName := JvInterpreterSrcClass.UnitName;
       LoadForm(Args.Obj as TJvInterpreterForm);
       Value := O2V(Args.Obj);
       Result := True;
@@ -482,7 +480,8 @@ begin
   else
     Result := False;
 
-  if Result then Exit;
+  if Result then
+    Exit;
 
   { run-time form creation }
   JvInterpreterSrcClass := THackAdapter(Adapter).GetSrcClass(Identifer);
@@ -500,10 +499,10 @@ begin
   end;
 
   Result := Result or inherited GetValue(Identifer, Value, Args);
-end;    { GetValue }
+end;
 
 function TJvInterpreterFm.SetValue(Identifer: string; const Value: Variant;
-  var Args: TArgs): Boolean;
+  var Args: TJvInterpreterArgs): Boolean;
 begin
   if (Args.Obj = nil) and (CurInstance is TJvInterpreterForm) then
   begin
@@ -512,7 +511,7 @@ begin
       Result := LocalVars.SetValue(Identifer, Value, Args);
       Exit;
     end;
-   { may be TForm method or published property }
+    { may be TForm method or published property }
     Args.Obj := CurInstance;
     Args.ObjTyp := varObject;
     try
@@ -525,9 +524,9 @@ begin
   else
     Result := False;
   Result := Result or inherited SetValue(Identifer, Value, Args);
-end;    { SetValue }
+end;
 
-function TJvInterpreterFm.GetUnitSource(UnitName: string; var Source: string): boolean;
+function TJvInterpreterFm.GetUnitSource(UnitName: string; var Source: string): Boolean;
 var
   FN: TFileName;
 begin
@@ -568,11 +567,11 @@ end;
 function TJvInterpreterFm.RunFormModal(const FileName: TFileName): TModalResult;
 begin
   with MakeForm(FileName) do
-    try
-      Result := ShowModal;
-    finally { wrap up }
-      Free;
-    end;    { try/finally }
+  try
+    Result := ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 function TJvInterpreterFm.RunUnit(const FileName: TFileName): Variant;
@@ -600,11 +599,11 @@ end;
 function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult;
 begin
   with TJvInterpreterFm.Create(Application) do
-    try
-      Result := RunFormModal(FileName);
-    finally { wrap up }
-      Free;
-    end;    { try/finally }
+  try
+    Result := RunFormModal(FileName);
+  finally
+    Free;
+  end;
 end;
 
 function JvInterpreterRunForm(const FileName: TFileName): TForm;
@@ -612,7 +611,7 @@ begin
   with TJvInterpreterFm.Create(Application) do
   begin
     Result := RunForm(FileName);
-    (Result as TJvInterpreterForm).FreeFJvInterpreterFm := True;
+    (Result as TJvInterpreterForm).FFreeJvInterpreterFm := True;
   end;
 end;
 
@@ -621,41 +620,45 @@ begin
   with TJvInterpreterFm.Create(Application) do
   begin
     Result := MakeForm(FileName);
-    (Result as TJvInterpreterForm).FreeFJvInterpreterFm := True;
+    (Result as TJvInterpreterForm).FFreeJvInterpreterFm := True;
   end;
 end;
 
 function JvInterpreterRunUnit(const FileName: TFileName): Variant;
 begin
   with TJvInterpreterFm.Create(Application) do
-    try
-      Result := RunUnit(FileName);
-    finally { wrap up }
-      Free;
-    end;    { try/finally }
+  try
+    Result := RunUnit(FileName);
+  finally
+    Free;
+  end;
 end;
 
 { adapter to self }
 { function JvInterpreterRunFormModal(const FileName: TFileName): TModalResult; }
-procedure JvInterpreter_JvInterpreterRunFormModal(var Value: Variant; Args: TArgs);
+
+procedure JvInterpreter_JvInterpreterRunFormModal(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := JvInterpreterRunFormModal(Args.Values[0]);
 end;
 
 { function JvInterpreterRunForm(const FileName: TFileName): TForm; }
-procedure JvInterpreter_JvInterpreterRunForm(var Value: Variant; Args: TArgs);
+
+procedure JvInterpreter_JvInterpreterRunForm(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(JvInterpreterRunForm(Args.Values[0]));
 end;
 
 { function JvInterpreterMakeForm(const FileName: TFileName): TForm; }
-procedure JvInterpreter_JvInterpreterMakeForm(var Value: Variant; Args: TArgs);
+
+procedure JvInterpreter_JvInterpreterMakeForm(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(JvInterpreterMakeForm(Args.Values[0]));
 end;
 
 { function JvInterpreterRunUnit(const FileName: TFileName): Variant }
-procedure JvInterpreter_JvInterpreterRunUnit(var Value: Variant; Args: TArgs);
+
+procedure JvInterpreter_JvInterpreterRunUnit(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := JvInterpreterRunUnit(Args.Values[0]);
 end;
@@ -675,14 +678,18 @@ begin
 end;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+const
+  cJvInterpreterFm = 'JvInterpreterFm';
 begin
   with JvInterpreterAdapter do
   begin
-    AddFun('JvInterpreterFm', 'JvInterpreterRunFormModal', JvInterpreter_JvInterpreterRunFormModal, 1, [varString], varEmpty);
-    AddFun('JvInterpreterFm', 'JvInterpreterRunForm', JvInterpreter_JvInterpreterRunForm, 1, [varString], varEmpty);
-    AddFun('JvInterpreterFm', 'JvInterpreterMakeForm', JvInterpreter_JvInterpreterMakeForm, 1, [varString], varEmpty);
-    AddFun('JvInterpreterFm', 'JvInterpreterRunUnit', JvInterpreter_JvInterpreterRunUnit, 1, [varString], varEmpty);
-  end;    { with }
-end;    { RegisterJvInterpreterAdapter }
+    AddFun(cJvInterpreterFm, 'JvInterpreterRunFormModal', JvInterpreter_JvInterpreterRunFormModal, 1, [varString],
+      varEmpty);
+    AddFun(cJvInterpreterFm, 'JvInterpreterRunForm', JvInterpreter_JvInterpreterRunForm, 1, [varString], varEmpty);
+    AddFun(cJvInterpreterFm, 'JvInterpreterMakeForm', JvInterpreter_JvInterpreterMakeForm, 1, [varString], varEmpty);
+    AddFun(cJvInterpreterFm, 'JvInterpreterRunUnit', JvInterpreter_JvInterpreterRunUnit, 1, [varString], varEmpty);
+  end;
+end;
 
 end.
+

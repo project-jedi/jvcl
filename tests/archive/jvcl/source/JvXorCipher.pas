@@ -28,99 +28,94 @@ Known Issues:
 
 unit JvXorCipher;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
+  SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
+  { (RB) Construct a abstract base class for encoders/decoders }
   TJvXorCipher = class(TJvComponent)
   private
     FDecoded: string;
     FEncoded: string;
     FPivot: Byte;
-    procedure SetDecoded(st: string);
-    procedure SetEncoded(st: string);
-    function Crypt(St: string): string;
-  published
-    property Encoded: string read Fencoded write SetEncoded;
-    property Decoded: string read FDecoded write SetDecoded;
-    property Pivot: Byte read FPivot write FPivot;
-    procedure Decode(It: TStrings);
-    procedure Encode(It: TStrings);
+    procedure SetDecoded(S: string);
+    procedure SetEncoded(S: string);
+    function Crypt(S: string): string;
+  public
+    procedure Decode(Strings: TStrings);
+    procedure Encode(Strings: TStrings);
     function EncodeStream(Value: TStream): TStream;
     function DecodeStream(Value: TStream): TStream;
+  published
+    { (RB) At most one of Encoded, Decoded should be stored, ie not both }
+    { (RB) Pivot should be read before Encoded/Decoded from the stream; otherwise
+           Encoded = Decoded after loading values from the stream because
+           Pivot = 0
+    }
+    property Encoded: string read FEncoded write SetEncoded;
+    property Decoded: string read FDecoded write SetDecoded;
+    property Pivot: Byte read FPivot write FPivot;
   end;
 
 implementation
 
-{***********************************************************}
-
-function TJvXorCipher.Crypt(St: string): string;
+function TJvXorCipher.Crypt(S: string): string;
 var
-  i: Byte;
+  I: Byte;
 begin
   Result := '';
-  for i := 1 to Length(st) do
-    Result := Result + Char((Ord(st[i])) xor FPivot);
+  for I := 1 to Length(S) do
+    Result := Result + Char(Ord(S[I]) xor FPivot);
 end;
 
-{***********************************************************}
-
-procedure TJvXorCipher.SetDecoded(st: string);
+procedure TJvXorCipher.SetDecoded(S: string);
 begin
-  FDecoded := st;
-  FEncoded := Crypt(st);
+  FDecoded := S;
+  FEncoded := Crypt(S);
 end;
 
-{***********************************************************}
-
-procedure TJvXorCipher.SetEncoded(st: string);
+procedure TJvXorCipher.SetEncoded(S: string);
 begin
-  FEncoded := st;
-  FDecoded := Crypt(st);
+  FEncoded := S;
+  FDecoded := Crypt(S);
 end;
 
-{***********************************************************}
-
-procedure TJvXorCipher.Decode(It: TStrings);
+procedure TJvXorCipher.Decode(Strings: TStrings);
 var
-  j: Integer;
+  I: Integer;
 begin
-  for j := 1 to It.Count - 1 do
-    It[j] := Crypt(It[j]);
+  for I := 1 to Strings.Count - 1 do
+    Strings[I] := Crypt(Strings[I]);
 end;
 
-{***********************************************************}
-
-procedure TJvXorCipher.Encode(It: TStrings);
+procedure TJvXorCipher.Encode(Strings: TStrings);
 begin
-  Decode(It);
+  Decode(Strings);
 end;
-
-{***********************************************************}
 
 function TJvXorCipher.DecodeStream(Value: TStream): TStream;
 var
-  buffer: array[0..1024] of Byte;
-  i, count: Integer;
+  Buffer: array [0..1023] of Byte;
+  I, Count: Integer;
 begin
+  { (RB) Letting this function create a stream is not a good idea; }
   Result := TMemoryStream.Create;
   while Value.Position < Value.Size do
   begin
-    count := Value.Read(buffer, 1024);
-    for i := 0 to count - 1 do
-      buffer[i] := buffer[i] xor FPivot;
-    Result.Write(buffer, count);
+    Count := Value.Read(Buffer, SizeOf(Buffer));
+    for I := 0 to Count - 1 do
+      Buffer[I] := Buffer[I] xor FPivot;
+    Result.Write(Buffer, Count);
   end;
 end;
-
-{***********************************************************}
 
 function TJvXorCipher.EncodeStream(Value: TStream): TStream;
 begin
   Result := DecodeStream(Value);
 end;
+
 end.
+

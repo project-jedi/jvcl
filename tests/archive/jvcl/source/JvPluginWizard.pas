@@ -44,8 +44,9 @@ unit JvPluginWizard;
 
 interface
 
-uses Windows, ExptIntf, EditIntf,
-  toolsapi; // minimized list !
+uses
+  Windows, ExptIntf, EditIntf,
+  ToolsApi; // minimized list !
 
 type
   TJvPluginWizard = class(TIExpert) // found in exptintf.pas
@@ -61,10 +62,10 @@ type
     function GetGlyph: HICON; override;
     procedure Execute; override;
   end;
-  // TNotifierObject,
-type // TInterfacedObject,
+
   TJvPluginProjectCreator = class(TInterfacedObject, IOTACreator, IOTAProjectCreator) // both interfaces needed !!!!
   public
+    { 0 = dll; 1 = dpk }
     PlugType: Integer;
     PlugName: string;
     function GetFileName: string;
@@ -74,7 +75,6 @@ type // TInterfacedObject,
     function NewOptionSource(const ProjectName: string): IOTAFile;
     procedure NewProjectResource(const Project: IOTAProject);
     function NewProjectSource(const ProjectName: string): IOTAFile;
-
     function GetCreatorType: string;
     function GetExisting: Boolean;
     function GetFileSystem: string;
@@ -82,13 +82,13 @@ type // TInterfacedObject,
     function GetUnnamed: Boolean;
   end;
 
-type
-{$IFDEF COMPILER3}
+  {$IFDEF COMPILER3}
   TSxPluginModuleCreator = class(TIModuleCreator)
-{$ELSE}
+  {$ELSE}
   TSxPluginModuleCreator = class(TIModuleCreatorEx) // found in editintf.pas
-{$ENDIF}
+  {$ENDIF}
   public
+    { 0 = dll; 1 = dpk }
     PlugType: Integer;
     PlugName: string;
     constructor Create;
@@ -97,21 +97,20 @@ type
     function GetFileName: string; override;
     function GetFileSystem: string; override;
     function GetFormName: string; override;
-{$IFNDEF COMPILER3}
+    {$IFNDEF COMPILER3}
     function GetIntfName: string; override;
     function NewIntfSource(const UnitIdent, Form, Ancestor: string): string; override;
     function NewModuleSource(const UnitIdent, Form, Ancestor: string): string; override;
-{$ELSE}
+    {$ELSE}
     function NewModuleSource(UnitIdent, FormIdent, AncestorIdent: string): string; override;
-{$ENDIF}
+    {$ENDIF}
     procedure FormCreated(Form: TIFormInterface); override;
   end;
 
   // from http://www.gexperts.org/opentools/GXModuleCreator.pas
-type
   TJvOTAFile = class(TInterfacedObject, IOTAFile)
   private
-    fSource: string;
+    FSource: string;
   public
     constructor Create(const Source: string);
     function GetSource: string;
@@ -122,23 +121,26 @@ implementation
 
 {$R JvPluginWiz.res}
 
-uses JvPlugin, JvPluginParams,
+uses
   ToolIntf,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-{$ELSE}
+  {$ELSE}
   DsgnIntf,
-{$ENDIF COMPILER6_UP}
-  Controls, SysUtils;
-//     Dialogs, Sysutils;
+  {$ENDIF COMPILER6_UP}
+  Controls, SysUtils,
+  JvPlugin, JvPluginParams;
 
-// ###################################
-// ######   TJvPluginWizard
-// ###################################
+const
+  cJediPuginWizard = 'JEDI Plugin Wizard';
+  cPlgDir = '\plg';
+  cPluginDir = '\Plugin';
+
+//=== TJvPluginWizard ========================================================
 
 function TJvPluginWizard.GetIDString: string;
 begin
-  Result := 'JEDI Plugin Wizard';
+  Result := cJediPuginWizard;
 end;
 
 function TJvPluginWizard.GetStyle: TExpertStyle;
@@ -153,12 +155,12 @@ end;
 
 function TJvPluginWizard.GetMenuText: string;
 begin
-  Result := 'JEDI Plugin Wizard';
+  Result := cJediPuginWizard;
 end;
 
 function TJvPluginWizard.GetName: string;
 begin
-  Result := 'JEDI Plugin Wizard';
+  Result := cJediPuginWizard;
 end;
 
 function TJvPluginWizard.GetPage: string;
@@ -187,7 +189,6 @@ var
   ProjectCreator: TJvPluginProjectCreator;
 begin
   with TfrmPluginParams.Create(nil) do
-  begin
     try
       if ShowModal = mrOk then
       begin
@@ -195,31 +196,30 @@ begin
           (BorlandIDEServices.QueryInterface(IOTAModuleServices, ModuleServices) = S_OK) then
         begin
           ProjectCreator := TJvPluginProjectCreator.Create;
-
-          ProjectCreator.PlugType := 1 - Ord(rbPackage.Checked);//  radPluginType.ItemIndex;
+          { rbDll checked     => dll     => PlugType = 0 = Ord(False)
+            rbPackage checked => package => PlugType = 1 = Ord(True)
+          }
+          ProjectCreator.PlugType := Ord(rbPackage.Checked); //  radPluginType.ItemIndex;
           ProjectCreator.PlugName := Trim(edName.Text);
-
           ModuleServices.CreateModule(ProjectCreator);
         end;
       end;
     finally
       Free;
     end;
-  end;
 end;
 
-// ###################################
-// ######   TJvPluginProjectCreator
-// ###################################
+//=== TJvPluginProjectCreator ================================================
 
 // left empty this makes problems !!
 
 function TJvPluginProjectCreator.GetFileName: string;
 begin
+  { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    Result := GetCurrentDir + '\plg' + PlugName + '.dpr'
+    Result := GetCurrentDir + cPlgDir + PlugName + '.dpr'
   else
-    Result := GetCurrentDir + '\plg' + PlugName + '.dpk';
+    Result := GetCurrentDir + cPlgDir + PlugName + '.dpk';
 end;
 
 function TJvPluginProjectCreator.GetOptionFileName: string;
@@ -237,17 +237,15 @@ var
   ModuleCreator: TSxPluginModuleCreator;
 begin
   ModuleCreator := TSxPluginModuleCreator.Create;
-
   ModuleCreator.PlugType := PlugType;
   ModuleCreator.PlugName := PlugName;
-
+  { 0 = dll; 1 = dpk }
   if PlugType = 0 then
-    ToolServices.ModuleCreate(ModuleCreator, [cmAddToProject, cmMainForm, cmMarkModified, cmShowSource, cmShowForm,
-      cmUnNamed])
+    ToolServices.ModuleCreate(ModuleCreator,
+      [cmAddToProject, cmMainForm, cmMarkModified, cmShowSource, cmShowForm, cmUnNamed])
   else
-    ToolServices.ModuleCreate(ModuleCreator, [cmAddToProject, cmMainForm, cmMarkModified, cmShowSource, cmShowForm,
-      cmUnNamed]);
-
+    ToolServices.ModuleCreate(ModuleCreator,
+      [cmAddToProject, cmMainForm, cmMarkModified, cmShowSource, cmShowForm, cmUnNamed]);
   ModuleCreator.Free;
 end;
 
@@ -264,7 +262,8 @@ function TJvPluginProjectCreator.NewProjectSource(const ProjectName: string): IO
 var
   S: string;
 begin
-  if PlugType = 0 then // DLL-Library
+  { 0 = dll; 1 = dpk }
+  if PlugType = 0 then
     S := 'library ' + ProjectName + ';' + #13#10 +
       #13#10 +
       'uses' + #13#10 +
@@ -281,25 +280,24 @@ begin
       '{$RUNONLY}' + #13#10 +
       '{$IMPLICITBUILD ON}' + #13#10 + #13#10 +
       'requires' + #13#10 +
-{$IFDEF COMPILER5}
+    {$IFDEF COMPILER5}
     '  vcl50,' + #13#10 + '  JVCL200_R50;' +
-{$ENDIF COMPILER5}
-{$IFDEF COMPILER6}
+    {$ENDIF COMPILER5}
+    {$IFDEF COMPILER6}
     '  vcl,' + #13#10 + '  JVCL200_R60;' +
-{$ENDIF COMPILER6}
-{$IFDEF COMPILER7}
+    {$ENDIF COMPILER6}
+    {$IFDEF COMPILER7}
     '  vcl,' + #13#10 + '  JVCL200_R70;' +
-{$ENDIF COMPILER7}
+    {$ENDIF COMPILER7}
 
     #13#10 + #13#10 + 'end.';
 
   Result := TJvOTAFile.Create(S);
 end;
 
-// ######  IOTACreator Interface
-
 function TJvPluginProjectCreator.GetCreatorType: string;
 begin
+  { 0 = dll; 1 = dpk }
   if PlugType = 0 then
     Result := sLibrary
   else
@@ -348,9 +346,7 @@ begin
   Result := True;
 end;
 
-// ###################################
-// ######   TSxPluginModuleCreator
-// ###################################
+//=== TSxPluginModuleCreator =================================================
 
 constructor TSxPluginModuleCreator.Create;
 begin
@@ -370,7 +366,7 @@ end;
 function TSxPluginModuleCreator.GetFileName: string;
 begin
   //  Result := '';
-  Result := GetCurrentDir + '\Plugin' + PlugName + '.pas'
+  Result := GetCurrentDir + cPluginDir + PlugName + '.pas'
 end;
 
 function TSxPluginModuleCreator.GetFileSystem: string;
@@ -384,7 +380,6 @@ begin
 end;
 
 {$IFNDEF COMPILER3}
-
 function TSxPluginModuleCreator.GetIntfName: string;
 begin
   Result := '';
@@ -397,14 +392,12 @@ end;
 {$ENDIF}
 
 {$IFNDEF COMPILER3}
-
 function TSxPluginModuleCreator.NewModuleSource(const UnitIdent, Form, Ancestor: string): string;
 var
   TypeName: string;
 begin
   TypeName := Form;
 {$ELSE}
-
 function TSxPluginModuleCreator.NewModuleSource(UnitIdent, FormIdent, AncestorIdent: string): string;
 var
   TypeName: string;
@@ -439,6 +432,7 @@ begin
 
   'function RegisterPlugin : T' + TypeName + '; stdcall;' + #13#10 + #13#10;
 
+  { 0 = dll; 1 = dpk }
   if PlugType <> 0 then
     Result := Result + 'exports RegisterPlugin;' + #13#10 + #13#10;
 
@@ -463,13 +457,13 @@ procedure TSxPluginModuleCreator.FormCreated(Form: TIFormInterface);
 begin
 end;
 
-// ###################################
-// ######   TJvOTAFile - from Stefaan Lesage
-// ###################################
+//=== TJvOTAFile =============================================================
+
+// TJvOTAFile - from Stefaan Lesage
 
 constructor TJvOTAFile.Create(const Source: string);
 begin
-  fSource := Source;
+  FSource := Source;
 end;
 
 function TJvOTAFile.GetAge: TDateTime;
@@ -479,12 +473,8 @@ end;
 
 function TJvOTAFile.GetSource: string;
 begin
-  Result := fSource;
+  Result := FSource;
 end;
-
-// ###################################
-// ######  registration...
-// ###################################
 
 procedure RegisterContainerModule;
 begin
@@ -493,8 +483,6 @@ end;
 
 initialization
   RegisterContainerModule;
-
-finalization
 
 end.
 

@@ -31,14 +31,15 @@ unit JvReorderListBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  JVCLVer;
 
 type
   TJvReorderListBox = class(TListBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FDragIndex: Integer;
     FDragImage: TDragImagelist;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -48,14 +49,12 @@ type
       var Accept: Boolean); virtual;
     procedure DefaultStartDrag(var DragObject: TDragObject); virtual;
     procedure DefaultDragDrop(Source: TObject; X, Y: Integer); virtual;
-
     procedure CreateDragImage(const S: string);
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     function GetDragImages: TDragImagelist; override;
     property DragIndex: Integer read FDragIndex;
     property DragImages: TDragImageList read GetDragImages;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
@@ -63,60 +62,59 @@ implementation
 
 procedure TJvReorderListBox.CreateDragImage(const S: string);
 var
-  size: TSize;
-  bmp: TBitmap;
+  Size: TSize;
+  Bmp: TBitmap;
 begin
   if not Assigned(FDragImage) then
     FDragImage := TDragImagelist.Create(self)
   else
     FDragImage.Clear;
   Canvas.Font := Font;
-  size := Canvas.TextExtent(S);
-  FDragImage.Width := size.cx;
-  FDragImage.Height := size.cy;
-  bmp := TBitmap.Create;
+  Size := Canvas.TextExtent(S);
+  FDragImage.Width := Size.cx;
+  FDragImage.Height := Size.cy;
+  Bmp := TBitmap.Create;
   try
-    bmp.Width := size.cx;
-    bmp.Height := size.cy;
-    bmp.Canvas.Font := Font;
-    bmp.Canvas.Font.Color := clBlack;
-    bmp.Canvas.Brush.Color := clWhite;
-    bmp.Canvas.Brush.Style := bsSolid;
-    bmp.Canvas.TextOut(0, 0, S);
-    FDragImage.AddMasked(bmp, clWhite);
+    Bmp.Width := Size.cx;
+    Bmp.Height := Size.cy;
+    Bmp.Canvas.Font := Font;
+    Bmp.Canvas.Font.Color := clBlack;
+    Bmp.Canvas.Brush.Color := clWhite;
+    Bmp.Canvas.Brush.Style := bsSolid;
+    Bmp.Canvas.TextOut(0, 0, S);
+    FDragImage.AddMasked(Bmp, clWhite);
   finally
-    bmp.free
+    Bmp.Free;
   end;
   ControlStyle := ControlStyle + [csDisplayDragImage];
 end;
 
-procedure TJvReorderListBox.DefaultDragDrop(Source: TObject; X,
-  Y: Integer);
+procedure TJvReorderListBox.DefaultDragDrop(Source: TObject;
+  X, Y: Integer);
 var
-  dropindex, ti: Integer;
+  DropIndex, Ti: Integer;
   S: string;
-  obj: TObject;
+  Obj: TObject;
 begin
   if Source = Self then
   begin
     S := Items[FDragIndex];
-    obj := Items.Objects[FDragIndex];
-    dropIndex := ItemAtPos(Point(X, Y), true);
-    ti := TopIndex;
-    if dropIndex > FDragIndex then
-      Dec(dropIndex);
+    Obj := Items.Objects[FDragIndex];
+    DropIndex := ItemAtPos(Point(X, Y), true);
+    Ti := TopIndex;
+    if DropIndex > FDragIndex then
+      Dec(DropIndex);
     Items.Delete(FDragIndex);
-    if dropIndex < 0 then
-      items.AddObject(S, obj)
+    if DropIndex < 0 then
+      Items.AddObject(S, Obj)
     else
-      items.InsertObject(dropIndex, S, obj);
-    TopIndex := ti;
+      Items.InsertObject(DropIndex, S, Obj);
+    TopIndex := Ti;
   end;
 end;
 
 procedure TJvReorderListBox.DefaultDragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
-// var i:integer;
 begin
   Accept := Source = Self;
   if Accept then
@@ -132,7 +130,8 @@ begin
           Perform(WM_VSCROLL, SB_LINEUP, 0);
           Perform(WM_VSCROLL, SB_ENDSCROLL, 0);
         end
-        else if (ClientHeight - Y) <= 5 then
+        else
+        if (ClientHeight - Y) <= 5 then
         begin
           Perform(WM_VSCROLL, SB_LINEDOWN, 0);
           Perform(WM_VSCROLL, SB_ENDSCROLL, 0);
@@ -158,7 +157,7 @@ end;
 procedure TJvReorderListBox.DoStartDrag(var DragObject: TDragObject);
 begin
   if Assigned(OnStartDrag) then
-    inherited
+    inherited DoStartDrag(DragObject)
   else
     DefaultStartDrag(DragObject);
 end;
@@ -166,7 +165,7 @@ end;
 procedure TJvReorderListBox.DragDrop(Source: TObject; X, Y: Integer);
 begin
   if Assigned(OnDragDrop) then
-    inherited
+    inherited DragDrop(Source, X, Y)
   else
     DefaultDragDrop(Source, X, Y);
 end;
@@ -175,7 +174,7 @@ procedure TJvReorderListBox.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   if Assigned(OnDragOver) then
-    inherited
+    inherited DragOver(Source, X, Y, State, Accept)
   else
     DefaultDragOver(Source, X, Y, State, Accept);
 end;
@@ -186,3 +185,4 @@ begin
 end;
 
 end.
+

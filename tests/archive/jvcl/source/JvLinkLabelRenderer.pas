@@ -39,7 +39,8 @@ unit JvLinkLabelRenderer;
 interface
 
 uses
-  Windows, Graphics, JvLinkLabelTree, Classes, SysUtils, JvLinkLabelTextHandler, JvTypes;
+  Windows, Graphics, Classes, SysUtils,
+  JvLinkLabelTree, JvLinkLabelTextHandler, JvTypes;
 
 type
   ERendererError = class(EJVCLException);
@@ -98,8 +99,6 @@ type
 
 implementation
 
-{ TDefaultRenderer }
-
 procedure TDefaultRenderer.DoRenderNode(const Node: TAreaNode;
   Styles: TFontStyles; Color: TColor);
 var
@@ -125,16 +124,13 @@ begin
     case ChildNode.GetNodeType of
       ntStringNode:
         FTextHandler.TextOut(ChildNode as TStringNode, NewStyles, NewColor);
-
       ntActionNode:
         case (ChildNode as TActionNode).Action of
           atLineBreak: FTextHandler.DoLineBreak;
           atParagraphBreak: FTextHandler.DoParagraphBreak;
         end;
-
       ntStyleNode:
         NewStyles := Styles + [(ChildNode as TStyleNode).Style];
-
       ntLinkNode:
         begin
           NewStyles := Styles + FLinkStyle;
@@ -142,7 +138,7 @@ begin
         end;
     end;
 
-    if (ChildNode is TAreaNode) then
+    if ChildNode is TAreaNode then
       DoRenderNode(TAreaNode(ChildNode), NewStyles, NewColor);
   end;
 end;
@@ -167,7 +163,6 @@ procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
 begin
   FTextHandler := TTextHandler.Create(Rect, Node.StartingPoint.X,
     Node.StartingPoint.Y, Canvas);
-
   try
     DoRenderNode(Node, Node.Styles, Node.Color);
     FTextHandler.EmptyBuffer;
@@ -213,9 +208,12 @@ end;
 function TDefaultRenderer.TranslateColor(const Color: TColor): TColor;
 begin
   case Color of
-    clNormalLink: Result := FLinkColor;
-    clClickedLink: Result := FLinkColorClicked;
-    clHotLink: Result := FLinkColorHot;
+    clNormalLink:
+      Result := FLinkColor;
+    clClickedLink:
+      Result := FLinkColorClicked;
+    clHotLink:
+      Result := FLinkColorHot;
   else
     Result := Color;
   end;

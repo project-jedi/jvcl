@@ -27,7 +27,6 @@ Known Issues:
 -----------------------------------------------------------------------------
 Doesn't work with Paegasus Mail because it has no MAPI support at all.      }
 
-
 {$I JVCL.INC}
 
 unit JvMail;
@@ -35,44 +34,49 @@ unit JvMail;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Mapi, {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}JclBase, JclMapi, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms,
+  Mapi,
+  JclBase, JclMapi,
+  JvComponent;
 
 type
   TJvMail = class;
 
-  TJvMailRecip = class(TCollectionItem)
+  // (rom) renamed
+  TJvMailRecipient = class(TCollectionItem)
   private
     FAddress: string;
     FName: string;
-    function GetAdrAndName: string;
+    function GetAddressAndName: string;
     function GetValid: Boolean;
   protected
     function GetDisplayName: string; override;
   public
-    property AdrAndName: string read GetAdrAndName;
+    // (rom) renamed
+    property AddressAndName: string read GetAddressAndName;
   published
     property Address: string read FAddress write FAddress;
     property Name: string read FName write FName;
     property Valid: Boolean read GetValid;
   end;
 
-  TJvMailRecips = class(TCollection)
+  // (rom) renamed
+  TJvMailRecipients = class(TCollection)
   private
     FOwner: TJvMail;
-    FRecipClass: DWORD;
-    function GetItem(Index: Integer): TJvMailRecip;
-    procedure SetItem(Index: Integer; const Value: TJvMailRecip);
+    FRecipientClass: DWORD;
+    function GetItem(Index: Integer): TJvMailRecipient;
+    procedure SetItem(Index: Integer; const Value: TJvMailRecipient);
   protected
     procedure AssignTo(Dest: TPersistent); override;
     function GetOwner: TPersistent; override;
   public
-    constructor Create(AOwner: TJvMail; ARecipClass: DWORD);
-    function Add: TJvMailRecip;
-    function AddRecip(const Address: string; const Name: string = ''): Integer;
+    constructor Create(AOwner: TJvMail; ARecipientClass: DWORD);
+    function Add: TJvMailRecipient;
+    function AddRecipient(const Address: string; const Name: string = ''): Integer;
     procedure Assign(Source: TPersistent); override;
-    property Items[Index: Integer]: TJvMailRecip read GetItem write SetItem; default;
-    property RecipClass: DWORD read FRecipClass;
+    property Items[Index: Integer]: TJvMailRecipient read GetItem write SetItem; default;
+    property RecipientClass: DWORD read FRecipientClass;
   end;
 
   TJvMailLogonOptions = set of (loLogonUI, loNewSession);
@@ -80,7 +84,8 @@ type
     roAttachments);
 
   TJvMailReadedData = record
-    RecipientAddress, RecipientName: string;
+    RecipientAddress: string;
+    RecipientName: string;
     ConversationID: string;
     DateReceived: TDateTime;
   end;
@@ -91,11 +96,11 @@ type
   private
     FAttachment: TStrings;
     FAttachArray: array of TMapiFileDesc;
-    FBlindCopy: TJvMailRecips;
+    FBlindCopy: TJvMailRecipients;
     FBody: TStrings;
     FBodyText: string;
-    FCarbonCopy: TJvMailRecips;
-    FRecipient: TJvMailRecips;
+    FCarbonCopy: TJvMailRecipients;
+    FRecipient: TJvMailRecipients;
     FSimpleMapi: TJclSimpleMapi;
     FSubject: string;
     FSessionHandle: THandle;
@@ -112,9 +117,9 @@ type
     FReadedMail: TJvMailReadedData;
     FOnError: TJvMailErrorEvent;
     procedure BeforeClientLibUnload(Sender: TObject);
-    procedure SetBlindCopy(const Value: TJvMailRecips);
-    procedure SetCarbonCopy(const Value: TJvMailRecips);
-    procedure SetRecipient(const Value: TJvMailRecips);
+    procedure SetBlindCopy(const Value: TJvMailRecipients);
+    procedure SetCarbonCopy(const Value: TJvMailRecipients);
+    procedure SetRecipient(const Value: TJvMailRecipients);
     procedure SetBody(const Value: TStrings);
     function GetUserLogged: Boolean;
     procedure SetAttachment(const Value: TStrings);
@@ -126,7 +131,7 @@ type
     procedure CreateMapiMessage;
     procedure CreateRecips;
     procedure DecodeAttachments(Attachments: PMapiFileDesc; AttachCount: Integer);
-    procedure DecodeRecips(Recips: PMapiRecipDesc; RecipCount: Integer);
+    procedure DecodeRecipients(Recips: PMapiRecipDesc; RecipCount: Integer);
     procedure FreeMapiMessage;
     function LogonFlags: DWORD;
     procedure RestoreTaskWindowsState;
@@ -153,24 +158,22 @@ type
     property UserLogged: Boolean read GetUserLogged;
   published
     property Attachment: TStrings read FAttachment write SetAttachment;
-    property BlindCopy: TJvMailRecips read FBlindCopy write SetBlindCopy;
+    property BlindCopy: TJvMailRecipients read FBlindCopy write SetBlindCopy;
     property Body: TStrings read FBody write SetBody;
-    property CarbonCopy: TJvMailRecips read FCarbonCopy write SetCarbonCopy;
-    property LogonOptions: TJvMailLogonOptions read FLogonOptions write FLogonOptions default [loLogonUI,
-      loNewSession];
+    property CarbonCopy: TJvMailRecipients read FCarbonCopy write SetCarbonCopy;
+    property LogonOptions: TJvMailLogonOptions read FLogonOptions write FLogonOptions
+      default [loLogonUI, loNewSession];
     property LongMsgId: Boolean read FLongMsgId write FLongMsgId default True;
     property Password: string read FPassword write FPassword;
     property ProfileName: string read FProfileName write FProfileName;
-    property ReadOptions: TJvMailReadOptions read FReadOptions write FReadOptions default [roFifo, roPeek];
-    property Recipient: TJvMailRecips read FRecipient write SetRecipient;
+    property ReadOptions: TJvMailReadOptions read FReadOptions write FReadOptions
+      default [roFifo, roPeek];
+    property Recipient: TJvMailRecipients read FRecipient write SetRecipient;
     property Subject: string read FSubject write FSubject;
     property OnError: TJvMailErrorEvent read FOnError write FOnError;
   end;
 
 implementation
-
-uses
-  JclSysUtils;
 
 resourcestring
   RsAttachmentNotFound = 'Attached file "%s" not found';
@@ -178,9 +181,9 @@ resourcestring
   RsNoClientInstalled = 'There is no MAPI-enabled client on the machine';
   RsNoUserLogged = 'There must be a user logged before call this function';
 
-  { TJvMailRecip }
+//=== TJvMailRecipient =======================================================
 
-function TJvMailRecip.GetAdrAndName: string;
+function TJvMailRecipient.GetAddressAndName: string;
 var
   N: string;
 begin
@@ -191,29 +194,29 @@ begin
   Result := Format('"%s" <%s>', [N, Address]);
 end;
 
-function TJvMailRecip.GetDisplayName: string;
+function TJvMailRecipient.GetDisplayName: string;
 begin
   if Valid then
-    Result := AdrAndName
+    Result := AddressAndName
   else
     Result := inherited GetDisplayName;
 end;
 
-function TJvMailRecip.GetValid: Boolean;
+function TJvMailRecipient.GetValid: Boolean;
 begin
   Result := FAddress <> '';
 end;
 
-{ TJvMailRecips }
+//=== TJvMailRecipients ======================================================
 
-function TJvMailRecips.Add: TJvMailRecip;
+function TJvMailRecipients.Add: TJvMailRecipient;
 begin
-  Result := TJvMailRecip(inherited Add);
+  Result := TJvMailRecipient(inherited Add);
 end;
 
-function TJvMailRecips.AddRecip(const Address, Name: string): Integer;
+function TJvMailRecipients.AddRecipient(const Address, Name: string): Integer;
 var
-  Item: TJvMailRecip;
+  Item: TJvMailRecipient;
 begin
   Item := Add;
   Result := Item.Index;
@@ -226,7 +229,7 @@ begin
   end;
 end;
 
-procedure TJvMailRecips.Assign(Source: TPersistent);
+procedure TJvMailRecipients.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
@@ -235,16 +238,16 @@ begin
     BeginUpdate;
     try
       for I := 0 to TStrings(Source).Count - 1 do
-        AddRecip(TStrings(Source)[I]);
+        AddRecipient(TStrings(Source)[I]);
     finally
       EndUpdate;
     end;
   end
   else
-    inherited;
+    inherited Assign(Source);
 end;
 
-procedure TJvMailRecips.AssignTo(Dest: TPersistent);
+procedure TJvMailRecipients.AssignTo(Dest: TPersistent);
 var
   I: Integer;
 begin
@@ -259,32 +262,32 @@ begin
     end;
   end
   else
-    inherited;
+    inherited AssignTo(Dest);
 end;
 
-constructor TJvMailRecips.Create(AOwner: TJvMail; ARecipClass: DWORD);
+constructor TJvMailRecipients.Create(AOwner: TJvMail; ARecipientClass: DWORD);
 begin
-  inherited Create(TJvMailRecip);
+  inherited Create(TJvMailRecipient);
   FOwner := AOwner;
-  FRecipClass := ARecipClass;
+  FRecipientClass := ARecipientClass;
 end;
 
-function TJvMailRecips.GetItem(Index: Integer): TJvMailRecip;
+function TJvMailRecipients.GetItem(Index: Integer): TJvMailRecipient;
 begin
-  Result := TJvMailRecip(inherited GetItem(Index));
+  Result := TJvMailRecipient(inherited GetItem(Index));
 end;
 
-function TJvMailRecips.GetOwner: TPersistent;
+function TJvMailRecipients.GetOwner: TPersistent;
 begin
   Result := FOwner;
 end;
 
-procedure TJvMailRecips.SetItem(Index: Integer; const Value: TJvMailRecip);
+procedure TJvMailRecipients.SetItem(Index: Integer; const Value: TJvMailRecipient);
 begin
   inherited SetItem(Index, Value);
 end;
 
-{ TJvMail }
+//=== TJvMail ================================================================
 
 function TJvMail.Address(const Caption: string; EditFields: Integer): Boolean;
 var
@@ -302,7 +305,7 @@ begin
     RestoreTaskWindowsState;
   end;
   if Result then
-    DecodeRecips(NewRecips, NewRecipCount);
+    DecodeRecipients(NewRecips, NewRecipCount);
   FSimpleMapi.MapiFreeBuffer(NewRecips);
 end;
 
@@ -317,13 +320,17 @@ begin
   GetSimpleMapi;
   FSimpleMapi.LoadClientLib;
   if not FSimpleMapi.ClientLibLoaded then
+    {$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoClientInstalled);
+    {$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.CheckUserLogged;
 begin
   if not UserLogged then
+    {$TYPEDADDRESS OFF}
     raise EJclMapiError.CreateResRec(@RsNoUserLogged);
+    {$TYPEDADDRESS ON}
 end;
 
 procedure TJvMail.Clear;
@@ -345,12 +352,12 @@ end;
 
 constructor TJvMail.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FAttachment := TStringList.Create;
   FBody := TStringList.Create;
-  FBlindCopy := TJvMailRecips.Create(Self, MAPI_BCC);
-  FCarbonCopy := TJvMailRecips.Create(Self, MAPI_CC);
-  FRecipient := TJvMailRecips.Create(Self, MAPI_TO);
+  FBlindCopy := TJvMailRecipients.Create(Self, MAPI_BCC);
+  FCarbonCopy := TJvMailRecipients.Create(Self, MAPI_CC);
+  FRecipient := TJvMailRecipients.Create(Self, MAPI_TO);
   FLongMsgId := True;
   FLogonOptions := [loLogonUI, loNewSession];
   FReadOptions := [roFifo, roPeek];
@@ -368,8 +375,10 @@ procedure TJvMail.CreateMapiMessage;
       for I := 0 to FAttachment.Count - 1 do
       begin
         if not FileExists(FAttachment[I]) then
+          {$TYPEDADDRESS OFF}
           raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [FAttachment[I]]);
-        ZeroMemory(@FAttachArray[I], Sizeof(TMapiFileDesc));
+          {$TYPEDADDRESS ON}
+        FillChar(FAttachArray[I], Sizeof(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
         FAttachArray[I].lpszFileName := PChar(FAttachment[I]);
         FAttachArray[I].lpszPathName := PChar(FAttachment[I]);
@@ -384,7 +393,7 @@ begin
     CreateRecips;
     MakeAttachments;
     FBodyText := FBody.Text;
-    ZeroMemory(@FMapiMessage, Sizeof(FMapiMessage));
+    FillChar(FMapiMessage, Sizeof(FMapiMessage), #0);
     FMapiMessage.lpszSubject := PChar(FSubject);
     FMapiMessage.lpszNoteText := PChar(FBodyText);
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
@@ -401,18 +410,20 @@ procedure TJvMail.CreateRecips;
 var
   RecipIndex: Integer;
 
-  procedure MakeRecips(RecipList: TJvMailRecips);
+  procedure MakeRecips(RecipList: TJvMailRecipients);
   var
     I: Integer;
   begin
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
+        {$TYPEDADDRESS OFF}
         raise EJclMapiError.CreateResRecFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
-      ZeroMemory(@FRecipArray[RecipIndex], Sizeof(TMapiRecipDesc));
+        {$TYPEDADDRESS ON}
+      FillChar(FRecipArray[RecipIndex], Sizeof(TMapiRecipDesc), #0);
       with FRecipArray[RecipIndex], RecipList[I] do
       begin
-        ulRecipClass := RecipList.RecipClass;
+        ulRecipClass := RecipList.RecipientClass;
         if Name = '' then // some clients requires Name item always filled
           lpszName := PChar(Address)
         else
@@ -445,7 +456,7 @@ begin
   end;
 end;
 
-procedure TJvMail.DecodeRecips(Recips: PMapiRecipDesc; RecipCount: Integer);
+procedure TJvMail.DecodeRecipients(Recips: PMapiRecipDesc; RecipCount: Integer);
 var
   I: Integer;
 begin
@@ -459,11 +470,11 @@ begin
     with Recips^ do
       case ulRecipClass of
         MAPI_BCC:
-          BlindCopy.AddRecip(lpszAddress, lpszName);
+          BlindCopy.AddRecipient(lpszAddress, lpszName);
         MAPI_CC:
-          CarbonCopy.AddRecip(lpszAddress, lpszName);
+          CarbonCopy.AddRecipient(lpszAddress, lpszName);
         MAPI_TO:
-          Recipient.AddRecip(lpszAddress, lpszName);
+          Recipient.AddRecipient(lpszAddress, lpszName);
       end;
     Inc(Recips);
   end;
@@ -477,7 +488,7 @@ begin
   FreeAndNil(FBlindCopy);
   FreeAndNil(FCarbonCopy);
   FreeAndNil(FRecipient);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvMail.ErrorCheck(Res: DWORD): DWORD;
@@ -500,7 +511,7 @@ end;
 
 function TJvMail.FindNextMail: Boolean;
 var
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   Flags, Res: ULONG;
 begin
   CheckUserLogged;
@@ -531,7 +542,7 @@ begin
   FAttachArray := nil;
   FRecipArray := nil;
   FBodyText := '';
-  ZeroMemory(@FMapiMessage, Sizeof(FMapiMessage));
+  FillChar(FMapiMessage, Sizeof(FMapiMessage), #0);
 end;
 
 procedure TJvMail.FreeSimpleMapi;
@@ -613,7 +624,7 @@ begin
       FReadedMail.RecipientAddress := lpOriginator^.lpszAddress;
       FReadedMail.RecipientName := lpOriginator^.lpszName;
     end;
-    DecodeRecips(lpRecips, nRecipCount);
+    DecodeRecipients(lpRecips, nRecipCount);
     FSubject := lpszSubject;
     FBody.Text := lpszNoteText;
     //    FDateReceived := StrToDateTime(lpszDateReceived);
@@ -650,13 +661,13 @@ begin
     for I := 0 to Screen.FormCount - 1 do
       EnableWindow(Screen.Forms[I].Handle, FSaveTaskWindows[I]);
   FSaveTaskWindows := nil;
-  if (FSaveTaskActiveForm <> nil) then
+  if FSaveTaskActiveForm <> nil then
     SetFocus(FSaveTaskActiveForm.Handle);
 end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
 var
-  MsgID: array[0..512] of AnsiChar;
+  MsgID: array [0..512] of AnsiChar;
   Flags: ULONG;
 begin
   Result := '';
@@ -722,7 +733,7 @@ begin
   FAttachment.Assign(Value);
 end;
 
-procedure TJvMail.SetBlindCopy(const Value: TJvMailRecips);
+procedure TJvMail.SetBlindCopy(const Value: TJvMailRecipients);
 begin
   FBlindCopy.Assign(Value);
 end;
@@ -732,12 +743,12 @@ begin
   FBody.Assign(Value);
 end;
 
-procedure TJvMail.SetCarbonCopy(const Value: TJvMailRecips);
+procedure TJvMail.SetCarbonCopy(const Value: TJvMailRecipients);
 begin
   FCarbonCopy.Assign(Value);
 end;
 
-procedure TJvMail.SetRecipient(const Value: TJvMailRecips);
+procedure TJvMail.SetRecipient(const Value: TJvMailRecipients);
 begin
   FRecipient.Assign(Value);
 end;
@@ -748,3 +759,4 @@ begin
 end;
 
 end.
+

@@ -30,28 +30,27 @@ unit JvScrollBox;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  JVCLVer;
 
 type
   TJvScrollBox = class(TScrollBox)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
-    FAutoCtl3d: Boolean;
+    FHotTrack: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    FOnHScroll: TNotifyEvent;
-    FOnVScroll: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure SetAutoCtl3d(const Value: Boolean);
+    FOnHorizontalScroll: TNotifyEvent;
+    FOnVerticalScroll: TNotifyEvent;
+    procedure SetHotTrack(const Value: Boolean);
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
-    procedure WMGetDlgCode(var msg: TWMGetDlgCode);message WM_GETDLGCODE;
+    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -64,15 +63,14 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HotTrack: Boolean read FAutoCtl3d write SetAutoCtl3d default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
-    property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
+    property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyup;
@@ -81,7 +79,14 @@ type
 
 implementation
 
-{**************************************************}
+constructor TJvScrollBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FHotTrack := False;
+  FOver := False;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+end;
 
 procedure TJvScrollBox.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -90,8 +95,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -99,36 +102,19 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-constructor TJvScrollBox.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FColor := clInfoBk;
-  FAutoCtl3d := False;
-  FOver := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-{**************************************************}
-
 procedure TJvScrollBox.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
-  if Assigned(FOnHScroll) then
-    FOnHScroll(Self);
+  if Assigned(FOnHorizontalScroll) then
+    FOnHorizontalScroll(Self);
 end;
-
-{**************************************************}
 
 procedure TJvScrollBox.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
-  if Assigned(FOnVScroll) then
-    FOnVScroll(Self);
+  if Assigned(FOnVerticalScroll) then
+    FOnVerticalScroll(Self);
 end;
-
-{**************************************************}
 
 procedure TJvScrollBox.CMMouseEnter(var Msg: TMessage);
 begin
@@ -136,43 +122,40 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
-    if FAutoCtl3d then
-      Ctl3d := True;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
+    if FHotTrack then
+      Ctl3D := True;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollBox.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    if FAutoCtl3d then
-      Ctl3d := False;
+    if FHotTrack then
+      Ctl3D := False;
     FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvScrollBox.SetAutoCtl3d(const Value: Boolean);
+procedure TJvScrollBox.SetHotTrack(const Value: Boolean);
 begin
-  FAutoCtl3d := Value;
+  FHotTrack := Value;
   if Value then
-    Ctl3d := False;
+    Ctl3D := False;
 end;
 
-procedure TJvScrollBox.WMGetDlgCode(var msg: TWMGetDlgCode);
+procedure TJvScrollBox.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
-  msg.result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
+  Msg.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
 end;
 
 procedure TJvScrollBox.WndProc(var Msg: TMessage);
@@ -180,31 +163,39 @@ begin
   if Msg.Msg = WM_LBUTTONDOWN then
     if not Focused and not (csDesigning in ComponentState) then
       SetFocus;
-  inherited;
+  inherited WndProc(Msg);
 end;
 
 procedure TJvScrollBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited;
+  inherited KeyDown(Key, Shift);
   if Key <> 0 then
     case Key of
-      VK_UP: Perform(WM_VSCROLL, SB_LINEUP, 0);
-      VK_DOWN: Perform(WM_VSCROLL, SB_LINEDOWN, 0);
-      VK_LEFT: Perform(WM_HSCROLL, SB_LINELEFT, 0);
-      VK_RIGHT: Perform(WM_HSCROLL, SB_LINERIGHT, 0);
-      VK_NEXT: if ssShift in Shift then
+      VK_UP:
+        Perform(WM_VSCROLL, SB_LINEUP, 0);
+      VK_DOWN:
+        Perform(WM_VSCROLL, SB_LINEDOWN, 0);
+      VK_LEFT:
+        Perform(WM_HSCROLL, SB_LINELEFT, 0);
+      VK_RIGHT:
+        Perform(WM_HSCROLL, SB_LINERIGHT, 0);
+      VK_NEXT:
+        if ssShift in Shift then
           Perform(WM_HSCROLL, SB_PAGERIGHT, 0)
         else
           Perform(WM_VSCROLL, SB_PAGEDOWN, 0);
-      VK_PRIOR: if ssShift in Shift then
+      VK_PRIOR:
+        if ssShift in Shift then
           Perform(WM_HSCROLL, SB_PAGELEFT, 0)
         else
           Perform(WM_VSCROLL, SB_PAGEUP, 0);
-      VK_HOME: if ssCtrl in Shift then
+      VK_HOME:
+        if ssCtrl in Shift then
           Perform(WM_VSCROLL, SB_TOP, 0)
         else
           Perform(WM_HSCROLL, SB_LEFT, 0);
-      VK_END: if ssCtrl in Shift then
+      VK_END:
+        if ssCtrl in Shift then
           Perform(WM_VSCROLL, SB_BOTTOM, 0)
         else
           Perform(WM_HSCROLL, SB_RIGHT, 0);
@@ -212,3 +203,4 @@ begin
 end;
 
 end.
+

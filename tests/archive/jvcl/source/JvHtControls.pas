@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvHtControls.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,49 +26,45 @@ description : Ht Controls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
-             
 
 unit JvHtControls;
 
-interface                          
+interface
 
 uses
   SysUtils, Classes,
-{$IFDEF COMPLIB_VCL}
-  Windows, Messages, Graphics, Controls, StdCtrls
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
-  QGraphics, QControls, QStdCtrls, Types
-{$ENDIF COMPLIB_CLX}
-  ;
+  {$IFDEF COMPLIB_VCL}
+  Windows, Messages, Graphics, Controls, StdCtrls;
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
+  QGraphics, QControls, QStdCtrls, Types;
+  {$ENDIF COMPLIB_CLX}
 
 type
-
-  TJvhtListBox = class(TCustomListBox)
+  TJvHtListBox = class(TCustomListBox)
   private
     FHideSel: Boolean;
-  {$IFDEF COMPLIB_VCL}
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-  {$ENDIF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    {$ENDIF COMPLIB_VCL}
     procedure SetHideSel(Value: Boolean);
-    function GetPlainItems(index: integer): string;
+    function GetPlainItems(Index: Integer): string;
   protected
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
+    {$ENDIF COMPLIB_VCL}
+    {$IFDEF COMPLIB_CLX}
     function DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState): Boolean; override;
-  {$ENDIF COMPLIB_CLX}
-  {$IFDEF COMPLIB_CLX}
+    {$ENDIF COMPLIB_CLX}
+    {$IFDEF COMPLIB_CLX}
     procedure FontChanged; override;
-  {$ENDIF COMPLIB_CLX}
+    {$ENDIF COMPLIB_CLX}
   public
     constructor Create(AOwner: TComponent); override;
-    property PlainItems [index: Integer] : string read GetPlainItems;
+    property PlainItems[Index: Integer]: string read GetPlainItems;
   published
     property HideSel: Boolean read FHideSel write SetHideSel;
 
@@ -76,10 +72,10 @@ type
     property BorderStyle;
     property Color;
     property Columns;
-{$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property Ctl3D;
     property DragCursor;
-{$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property DragMode;
     property Enabled;
     property ExtendedSelect;
@@ -89,9 +85,9 @@ type
     property Items;
     property MultiSelect;
     property ParentColor;
-{$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property ParentCtl3D;
-{$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -100,9 +96,9 @@ type
   //  property Style;
     property TabOrder;
     property TabStop;
-{$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property TabWidth;
-{$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -120,61 +116,61 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-  {$IFDEF COMPILER3_UP}
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
-  {$ENDIF COMPLIB_VCL}
-  {$ENDIF COMPILER3_UP}
-  {$IFDEF COMPILER4_UP}
+    {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property AutoSize;
     property BiDiMode;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property Constraints;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-  {$ENDIF COMPLIB_VCL}
-  {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTComboBox = class(TCustomComboBox)
   private
     FHideSel: Boolean;
-    FDropWidth : integer;
+    FDropWidth: Integer;
     procedure SetHideSel(Value: Boolean);
-    function GetPlainItems(index: integer): string;
-    procedure SetDropWidth(ADropWidth : integer);
+    function GetPlainItems(Index: Integer): string;
+    procedure SetDropWidth(ADropWidth: Integer);
   protected
-   {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure CreateWnd; override;
-   {$ENDIF COMPLIB_VCL}
-   {$IFDEF COMPLIB_CLX}
+    {$ENDIF COMPLIB_VCL}
+    {$IFDEF COMPLIB_CLX}
     function DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState): Boolean; override;
     procedure CreateWidget; override;
-   {$ENDIF COMPLIB_CLX}
+    {$ENDIF COMPLIB_CLX}
   public
     constructor Create(AOwner: TComponent); override;
-    property PlainItems [index: Integer] : string read GetPlainItems;
+    property PlainItems[Index: Integer]: string read GetPlainItems;
   published
     property HideSel: Boolean read FHideSel write SetHideSel;
-    property DropWidth : integer read FDropWidth write SetDropWidth;
+    property DropWidth: Integer read FDropWidth write SetDropWidth;
   published
     property Color;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property Ctl3D;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property DragMode;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property DragCursor;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property DropDownCount;
     property Enabled;
     property Font;
@@ -182,9 +178,9 @@ type
     property Items;
     property MaxLength;
     property ParentColor;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property ParentCtl3D;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -209,39 +205,39 @@ type
     property OnKeyUp;
   //  property OnMeasureItem;
     property OnStartDrag;
-  {$IFDEF COMPILER3_UP}
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPLIB_VCL}
     property ImeMode;
     property ImeName;
-  {$ENDIF COMPLIB_VCL}
-  {$ENDIF COMPILER3_UP}
-  {$IFDEF COMPILER4_UP}
-  {$IFDEF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPLIB_VCL}
     property AutoSize;
     property BiDiMode;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property Constraints;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-  {$ENDIF COMPLIB_VCL}
-  {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPILER4_UP}
   end;
 
   TJvHTLabel = class(TCustomLabel)
   private
-  {$IFNDEF COMPILER4_UP}
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-  {$ENDIF}
-  {$IFDEF COMPLIB_VCL}
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-  {$ENDIF COMPLIB_VCL}
+    {$IFNDEF COMPILER4_UP}
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    {$ENDIF}
+    {$IFDEF COMPLIB_VCL}
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    {$ENDIF COMPLIB_VCL}
   protected
-  {$IFDEF COMPLIB_CLX}
+    {$IFDEF COMPLIB_CLX}
     procedure FontChanged; override;
-  {$ENDIF COMPLIB_CLX}
+    {$ENDIF COMPLIB_CLX}
     procedure AdjustBounds; {$IFDEF COMPILER35_Up} override; {$ENDIF}
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
@@ -252,9 +248,9 @@ type
     property AutoSize;
     property Caption;
     property Color;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property DragCursor;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -277,153 +273,162 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-  {$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property Layout;
-  {$ENDIF COMPILER3_UP}
-  {$IFDEF COMPILER4_UP}
-  {$IFDEF COMPLIB_VCL}
+    {$ENDIF COMPILER3_UP}
+    {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPLIB_VCL}
     property BiDiMode;
-  {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPLIB_VCL}
     property Constraints;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-  {$ENDIF COMPLIB_VCL}
-  {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPLIB_VCL}
+    {$ENDIF COMPILER4_UP}
   end;
 
-  procedure ItemHtDrawEx(Canvas : TCanvas; Rect: TRect;
-    const State: TOwnerDrawState; const Text : string;
-    const HideSelColor: Boolean; var PlainItem: string;
-    var Width: Integer; CalcWidth: Boolean);
+procedure ItemHtDrawEx(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
+  const HideSelColor: Boolean; var PlainItem: string;
+  var Width: Integer; CalcWidth: Boolean);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <c:Red>red <c:Green>green <c:blue>blue </i>' }
 
-  function ItemHtDraw(Canvas : TCanvas; Rect: TRect;
-    const State: TOwnerDrawState; const Text : string;
-    const HideSelColor: Boolean): string;
+function ItemHtDraw(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
+  const HideSelColor: Boolean): string;
 
-  function ItemHtWidth(Canvas : TCanvas; Rect: TRect;
-    const State: TOwnerDrawState; const Text : string;
-    const HideSelColor: Boolean): Integer;
+function ItemHtWidth(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
+  const HideSelColor: Boolean): Integer;
 
-  function ItemHtPlain(const Text : string): string;
-
+function ItemHtPlain(const Text: string): string;
 
 implementation
 
-uses JvStrUtil;
+uses
+  JvStrUtil;
 
-
-function Max(x,y:integer):integer;
+function Max(X, Y: Integer): Integer;
 begin
-  if x > y then Result := x else Result := y;
+  if X > Y then
+    Result := X
+  else
+    Result := Y;
 end;
 
-procedure ItemHtDrawEx(Canvas : TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text : string;
+procedure ItemHtDrawEx(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
   const HideSelColor: Boolean; var PlainItem: string;
   var Width: Integer; CalcWidth: Boolean);
 var
-  CL : string;
-  i : integer;
-  M1 : string;
+  CL: string;
+  I: Integer;
+  M1: string;
   OriRect: TRect; // it's added
 
-  function Cmp(M1 : string) : boolean;
+  function Cmp(M1: string): Boolean;
   begin
-    Result := ANSIStrLIComp(PChar(Text)+ i, PChar(M1), Length(M1)) = 0;
+    Result := AnsiStrLIComp(PChar(Text) + I, PChar(M1), Length(M1)) = 0;
   end;
 
-  function Cmp1(M1 : string) : boolean;
+  function Cmp1(M1: string): Boolean;
   begin
-    Result := ANSIStrLIComp(PChar(Text)+ i, PChar(M1), Length(M1)) = 0;
-    if Result then inc(i, Length(M1));
+    Result := AnsiStrLIComp(PChar(Text) + I, PChar(M1), Length(M1)) = 0;
+    if Result then
+      Inc(I, Length(M1));
   end;
 
-  function CmpL(M1 : string) : boolean;
+  function CmpL(M1: string): Boolean;
   begin
     Result := Cmp(M1 + '>');
   end;
 
-  function CmpL1(M1 : string) : boolean;
+  function CmpL1(M1: string): Boolean;
   begin
     Result := Cmp1(M1 + '>');
   end;
 
-  procedure Draw(const M : string);
+  procedure Draw(const M: string);
   begin
-    if not Assigned(Canvas) then Exit;
+    if not Assigned(Canvas) then
+      Exit;
     if not CalcWidth then
       Canvas.TextOut(Rect.Left, Rect.Top, M);
-    Rect.Left :=  Rect.Left + Canvas.TextWidth(M);
+    Rect.Left := Rect.Left + Canvas.TextWidth(M);
   end;
 
-  procedure Style(const Style: TFontStyle; const Include: boolean);
+  procedure Style(const Style: TFontStyle; const Include: Boolean);
   begin
-    if not Assigned(Canvas) then Exit;
-    if Include then
-      Canvas.Font.Style := Canvas.Font.Style + [Style]
-    else
-      Canvas.Font.Style := Canvas.Font.Style - [Style];
-  end;    { if }
+    if Assigned(Canvas) then
+      if Include then
+        Canvas.Font.Style := Canvas.Font.Style + [Style]
+      else
+        Canvas.Font.Style := Canvas.Font.Style - [Style];
+  end;
 
 var
-  oldFontStyles: TFontStyles;
-  oldFontColor: TColor;
+  OldFontStyles: TFontStyles;
+  OldFontColor: TColor;
 begin
   PlainItem := '';
-  oldFontColor := 0; { satisfy compiler }
+  OldFontColor := 0; { satisfy compiler }
   if Canvas <> nil then
   begin
-    oldFontStyles := Canvas.Font.Style;
-    oldFontColor := Canvas.Font.Color;
+    OldFontStyles := Canvas.Font.Style;
+    OldFontColor := Canvas.Font.Color;
   end;
   try
-  if HideSelColor and Assigned(Canvas) then
-  begin
-    Canvas.Brush.Color := clWindow;
-    Canvas.Font.Color := clWindowText;
-  end;
-  if Assigned(Canvas) then
-    Canvas.FillRect(Rect);
-
-  Width := Rect.Left;
-  Rect.Left := Rect.Left + 2;
-
-  OriRect := Rect;  //save origin rectangle
-
-
-  M1 := '';
-  i := 1;
-  while i <= Length(Text) do
-  begin
-    if (Text[i] = '<') and
-      (CmpL('b') or CmpL('/b') or
-       CmpL('i') or CmpL('/i') or
-       CmpL('u') or CmpL('/u') or
-       Cmp('c:') )then
+    if HideSelColor and Assigned(Canvas) then
     begin
-      Draw(M1);
-      PlainItem := PlainItem + M1;
+      Canvas.Brush.Color := clWindow;
+      Canvas.Font.Color := clWindowText;
+    end;
+    if Assigned(Canvas) then
+      Canvas.FillRect(Rect);
 
-      if CmpL1('b') then
-        Style(fsBold, True)
-      else if CmpL1('/b') then
-        Style(fsBold, False)
-      else if CmpL1('i') then
-        Style(fsItalic, True)
-      else if CmpL1('/i') then
-        Style(fsItalic, False)
-      else if CmpL1('u') then
-        Style(fsUnderline, True)
-      else if CmpL1('/u') then
-        Style(fsUnderline, False)
-      else if Cmp1('c:') then
+    Width := Rect.Left;
+    Rect.Left := Rect.Left + 2;
+
+    OriRect := Rect; //save origin rectangle
+
+    M1 := '';
+    I := 1;
+    while I <= Length(Text) do
+    begin
+      if (Text[I] = '<') and
+        (CmpL('b') or CmpL('/b') or
+        CmpL('i') or CmpL('/i') or
+        CmpL('u') or CmpL('/u') or
+        Cmp('c:')) then
       begin
-        CL := SubStr(PChar(Text)+ i, 0, '>');
-        if (HideSelColor or not (odSelected in State)) and Assigned(Canvas) then
+        Draw(M1);
+        PlainItem := PlainItem + M1;
+
+        if CmpL1('b') then
+          Style(fsBold, True)
+        else
+        if CmpL1('/b') then
+          Style(fsBold, False)
+        else
+        if CmpL1('i') then
+          Style(fsItalic, True)
+        else
+        if CmpL1('/i') then
+          Style(fsItalic, False)
+        else
+        if CmpL1('u') then
+          Style(fsUnderline, True)
+        else
+        if CmpL1('/u') then
+          Style(fsUnderline, False)
+        else
+        if Cmp1('c:') then
+        begin
+          CL := SubStr(PChar(Text) + I, 0, '>');
+          if (HideSelColor or not (odSelected in State)) and Assigned(Canvas) then
           try
             if (Length(CL) > 0) and (CL[1] <> '$') then
               Canvas.Font.Color := StringToColor('cl' + CL)
@@ -431,43 +436,45 @@ begin
               Canvas.Font.Color := StringToColor(CL);
           except
           end;
-        inc(i, Length(CL) + 1 {'>'});
-      end;
+          Inc(I, Length(CL) + 1 {'>'});
+        end;
 
-      M1 := '';
-    end else
-        // next lines were added
-        if (Text[i] = chr(13)) AND (Cmp1(string(chr(10)))) then
-        begin
+        M1 := '';
+      end
+      else
+      // next lines were added
+      if (Text[I] = chr(13)) and (Cmp1(string(chr(10)))) then
+      begin
           // new line
-          Draw(M1);
-          PlainItem := PlainItem + M1;
-          if (Canvas <> nil) then
-          begin
-            Rect.Left := OriRect.Left;
-            Rect.Top := Rect.Top + Canvas.TextHeight(M1);
-          end;
-          M1 := '';
-        end else
-          // add text
-          M1 := M1 + Text[i];
-    inc(i);
-  end;    { for }
-  Draw(M1);
-  PlainItem := PlainItem + M1;
+        Draw(M1);
+        PlainItem := PlainItem + M1;
+        if (Canvas <> nil) then
+        begin
+          Rect.Left := OriRect.Left;
+          Rect.Top := Rect.Top + Canvas.TextHeight(M1);
+        end;
+        M1 := '';
+      end
+      else
+        // add text
+        M1 := M1 + Text[I];
+      Inc(I);
+    end;
+    Draw(M1);
+    PlainItem := PlainItem + M1;
   finally
     if Canvas <> nil then
     begin
-      Canvas.Font.Style := oldFontStyles;
-      Canvas.Font.Color := oldFontColor;
+      Canvas.Font.Style := OldFontStyles;
+      Canvas.Font.Color := OldFontColor;
     end;
   end;
   Width := Rect.Left - Width + 2;
 end;
 
-function ItemHtDraw(Canvas : TCanvas; Rect: TRect;
- const State: TOwnerDrawState; const Text : string;
- const HideSelColor: Boolean): string;
+function ItemHtDraw(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
+  const HideSelColor: Boolean): string;
 var
   S: string;
   W: Integer;
@@ -475,7 +482,7 @@ begin
   ItemHtDrawEx(Canvas, Rect, State, Text, HideSelColor, S, W, False);
 end;
 
-function ItemHtPlain(const Text : string): string;
+function ItemHtPlain(const Text: string): string;
 var
   S: string;
   W: Integer;
@@ -484,8 +491,8 @@ begin
   Result := S;
 end;
 
-function ItemHtWidth(Canvas : TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text : string;
+function ItemHtWidth(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string;
   const HideSelColor: Boolean): Integer;
 var
   S: string;
@@ -495,75 +502,75 @@ begin
   Result := W;
 end;
 
+//=== TJvHtListBox ===========================================================
 
-{ TJvhtListBox }
-
-constructor TJvhtListBox.Create(AOwner: TComponent);
+constructor TJvHtListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := lbOwnerDrawFixed;
-end;    { Create }
-
-{$IFDEF COMPLIB_VCL}
-procedure TJvhtListBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TOwnerDrawState);
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
-function TJvhtListBox.DrawItem(Index: Integer; Rect: TRect;
-  State: TOwnerDrawState): Boolean;
-{$ENDIF COMPLIB_CLX}
-begin
-  ItemHtDraw(Canvas, Rect, State, Items[index], FHideSel);
-{$IFDEF COMPLIB_CLX}
-  Result := True;
-{$ENDIF COMPLIB_CLX}
 end;
 
 {$IFDEF COMPLIB_VCL}
-procedure TJvhtListBox.CMFontChanged(var Message: TMessage);
+procedure TJvHtListBox.DrawItem(Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
+begin
+  ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
+end;
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
-procedure TJvhtListBox.FontChanged;
+function TJvHtListBox.DrawItem(Index: Integer; Rect: TRect;
+  State: TOwnerDrawState): Boolean;
+begin
+  ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
+  Result := True;
+end;
+{$ENDIF COMPLIB_CLX}
+
+{$IFDEF COMPLIB_VCL}
+procedure TJvHtListBox.CMFontChanged(var Msg: TMessage);
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMPLIB_CLX}
+procedure TJvHtListBox.FontChanged;
 {$ENDIF COMPLIB_CLX}
 begin
   Canvas.Font := Font;
   ItemHeight := Canvas.TextHeight('W');
 end;
 
-procedure TJvhtListBox.SetHideSel(Value: Boolean);
+procedure TJvHtListBox.SetHideSel(Value: Boolean);
 begin
   FHideSel := Value;
   Invalidate;
 end;
 
-function TJvhtListBox.GetPlainItems(index: integer): string;
+function TJvHtListBox.GetPlainItems(Index: Integer): string;
 begin
-  Result := ItemHtPlain(Items[index]);
+  Result := ItemHtPlain(Items[Index]);
 end;
 
-
-{ TJvHTComboBox }
+//=== TJvHTComboBox ==========================================================
 
 constructor TJvHTComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := csOwnerDrawFixed;
-end;    { Create }
+end;
 
 {$IFDEF COMPLIB_VCL}
 procedure TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
+begin
+  ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
+end;
 {$ENDIF COMPLIB_VCL}
 {$IFDEF COMPLIB_CLX}
 function TJvHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
-{$ENDIF COMPLIB_CLX}
 begin
-  ItemHtDraw(Canvas, Rect, State, Items[index], FHideSel);
-{$IFDEF COMPLIB_CLX}
+  ItemHtDraw(Canvas, Rect, State, Items[Index], FHideSel);
   Result := True;
-{$ENDIF COMPLIB_CLX}
 end;
+{$ENDIF COMPLIB_CLX}
 
 procedure TJvHTComboBox.SetHideSel(Value: Boolean);
 begin
@@ -571,26 +578,17 @@ begin
   Invalidate;
 end;
 
-function TJvHTComboBox.GetPlainItems(index: integer): string;
+function TJvHTComboBox.GetPlainItems(Index: Integer): string;
 begin
-  Result := ItemHtPlain(Items[index]);
+  Result := ItemHtPlain(Items[Index]);
 end;
 
 {$IFDEF COMPLIB_VCL}
 procedure TJvHTComboBox.CreateWnd;
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
-procedure TJvHTComboBox.CreateWidget;
-{$ENDIF COMPLIB_CLX}
 var
-  Tmp : integer;
+  Tmp: Integer;
 begin
-  {$IFDEF COMPLIB_VCL}
-    inherited CreateWnd;
-  {$ENDIF COMPLIB_VCL}
-  {$IFDEF COMPLIB_CLX}
-    inherited CreateWidget;
-  {$ENDIF COMPLIB_CLX}
+  inherited CreateWnd;
   if DropWidth = 0 then
     DropWidth := Width
   else
@@ -600,10 +598,28 @@ begin
     DropWidth := Tmp;
   end;
 end;
-
-procedure TJvHTComboBox.SetDropWidth(ADropWidth : integer);
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMPLIB_CLX}
+procedure TJvHTComboBox.CreateWidget;
+var
+  Tmp: Integer;
 begin
-  if FDropWidth <> ADropWidth then begin
+  inherited CreateWidget;
+  if DropWidth = 0 then
+    DropWidth := Width
+  else
+  begin
+    Tmp := DropWidth;
+    DropWidth := 0;
+    DropWidth := Tmp;
+  end;
+end;
+{$ENDIF COMPLIB_CLX}
+
+procedure TJvHTComboBox.SetDropWidth(ADropWidth: Integer);
+begin
+  if FDropWidth <> ADropWidth then
+  begin
     FDropWidth := ADropWidth;
     {$IFDEF COMPLIB_VCL}
     Perform(CB_SETDROPPEDWIDTH, FDropWidth, 0);
@@ -611,11 +627,10 @@ begin
   end;
 end;
 
-
-{ TJvHTLabel }
+//=== TJvHTLabel =============================================================
 
 {$IFNDEF COMPILER4_UP}
-procedure TJvHTLabel.CMTextChanged(var Message: TMessage);
+procedure TJvHTLabel.CMTextChanged(var Msg: TMessage);
 begin
   Invalidate;
   AdjustBounds;
@@ -623,16 +638,17 @@ end;
 {$ENDIF COMPILER4_UP}
 
 {$IFDEF COMPLIB_VCL}
-procedure TJvHTLabel.CMFontChanged(var Message: TMessage);
+procedure TJvHTLabel.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
 end;
 {$ENDIF COMPLIB_VCL}
+
 {$IFDEF COMPLIB_CLX}
 procedure TJvHTLabel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   AdjustSize;
 end;
 {$ENDIF COMPLIB_CLX}
@@ -645,7 +661,7 @@ end;
 
 procedure TJvHTLabel.AdjustBounds;
 var
-  i: integer;
+  I: Integer;
   DC: HDC;
   X: Integer;
   Rect: TRect;
@@ -664,21 +680,22 @@ begin
       try
         Ss.Text := Caption;
         Rect.Bottom := Canvas.TextHeight('W') * Ss.Count;
-        for i := 0 to Ss.Count - 1 do
+        for I := 0 to Ss.Count - 1 do
         begin
           MaxWidth := Max(MaxWidth, ItemHtWidth(Canvas, Bounds(0, 0, 0, 0), [],
-            Ss[i], False));
-        end;    { for }
+            Ss[I], False));
+        end;
       finally
         Ss.Free;
-      end;    { try/finally }
+      end;
     finally
       Canvas.Handle := 0;
       ReleaseDC(0, DC);
-    end;    { try/finally }
+    end;
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
-    if Alignment = taRightJustify then Inc(X, Width - Rect.Right);
+    if Alignment = taRightJustify then
+      Inc(X, Width - Rect.Right);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;
 end;
@@ -696,38 +713,40 @@ end;
 procedure TJvHTLabel.Paint;
 var
   S: string;
-  H, W, i: Integer;
+  H, W, I: Integer;
   Rect: TRect;
   Ss: TStrings;
 begin
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
   if Transparent then
-    Canvas.Brush.Style := bsClear else
+    Canvas.Brush.Style := bsClear
+  else
     Canvas.Brush.Style := bsSolid;
   Canvas.FillRect(ClientRect);
   H := Canvas.TextHeight('W');
   Ss := TStringList.Create;
   Ss.Text := Caption;
   try
-    for i := 0 to Ss.Count - 1 do    { Iterate }
+    for I := 0 to Ss.Count - 1 do
     begin
-      S := Ss[i];
+      S := Ss[I];
       Rect := ClientRect;
-     {$IFDEF COMPILER3_UP}
-      case Layout of    { }
+      {$IFDEF COMPILER3_UP}
+      case Layout of
         tlTop:
-          inc(Rect.Top, H * i);
+          Inc(Rect.Top, H * I);
         tlBottom:
-          Rect.Top := Rect.Bottom - (Ss.Count - i) * H;
+          Rect.Top := Rect.Bottom - (Ss.Count - I) * H;
         tlCenter:
-          Rect.Top := (Rect.Bottom - Rect.Top - Ss.Count * H) div 2 + H * i;
-      end;    { case }
-     {$ELSE}
-      inc(Rect.Top, H * i);
-     {$ENDIF COMPILER3_UP}
-      case Alignment of    { }
-        taLeftJustify: {nothing};
+          Rect.Top := (Rect.Bottom - Rect.Top - Ss.Count * H) div 2 + H * I;
+      end;
+      {$ELSE}
+      Inc(Rect.Top, H * I);
+      {$ENDIF COMPILER3_UP}
+      case Alignment of { }
+        taLeftJustify:
+          {nothing};
         taRightJustify:
           begin
             W := ItemHtWidth(Canvas, Rect, [], S, False);
@@ -738,7 +757,7 @@ begin
             W := ItemHtWidth(Canvas, Rect, [], S, False);
             Rect.Left := Rect.Left + (Rect.Right - Rect.Left - W) div 2;
           end;
-      end;    { case }
+      end;
       ItemHtDraw(Canvas, Rect, [], S, False);
     end;
   finally
@@ -747,3 +766,4 @@ begin
 end;
 
 end.
+

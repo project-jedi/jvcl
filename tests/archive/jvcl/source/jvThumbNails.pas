@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-
 Last Modified: 2002-07-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -24,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvThumbnails;
@@ -32,7 +32,7 @@ interface
 
 {Thumbimage, ThumbNail components
  Thumbimage is a TImage descentant wich passes the control of the mouse events
- to the ThumbNail and have the ability to change an images look buy changing
+ to the ThumbNail and have the ability to change an images look by changing
  the rgb values with the changergb,changergbcurve procedures.
  You can have precise control over the images look.
  The changergb procedure just adds the values you pass to its rgb variables to
@@ -41,594 +41,581 @@ interface
  accordingly with the values that passed in the the arrays.
  e.g.
  the r array in the position 15 has a value of 35 this meens that wherever in
- the picture there is a pixels which has a red value equall to 15 it will be ]
+ the Picture there is a pixels which has a red value equall to 15 it will be ]
  replaced with the value 35.
 
  ThumbNail is what the name says a component to simply shrink an image
  proportionaly to fit in a portion of the screen with some extra mouse handling
- to create a button like effect.Just give it a filename and it will do the work
+ to Create a Button like effect.Just give it a FileName and it will do the work
  for you.
 }
 uses
-  Classes, Controls, ExtCtrls, sysutils, messages, graphics, windows, forms,
+  Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Windows, Forms,
   JvThumbImage, JvBaseThumbnail, Dialogs;
 
 const
-  TH_ImageSizeChanged = WM_user + 1;
+  TH_IMAGESIZECHANGED = WM_USER + 1;
+
 type
-  TTitlePos = (T_Up, T_Down, T_None);
+  // (rom) elements renamed
+  TTitlePos = (tpUp, tpDown, tpNone);
 
   TTitleNotify = procedure(Sender: TObject; FileName: string;
-    var ThumbNailTitle: string) of object;
+    var ThumbnailTitle: string) of object;
 
-
-
-  PJvThumbNail = ^TJVThumbNail;
-  TJVThumbNail = class(TJvBaseThumbNail)
+  TJvThumbnail = class(TJvBaseThumbnail)
   private
-    { Private declarations }
-    V_Title: string;
-    V_TitlePanel: TJvThumbTitle;
-    V_TitlePanelColor: TColor;
-    V_TitlePanelFont: TFont;
-    TStreamfiletype: Tgrf_type;
-    FDFilecreated: string;
-    FDFilechanged: string;
+    FTitle: string;
+    FTitlePanel: TJvThumbTitle;
+    FTitleColor: TColor;
+    FTitleFont: TFont;
+    FStreamFileKind: TGRFKind;
+    FDFileCreated: string;
+    FDFileChanged: string;
     FDFileAccessed: string;
-    TShowTitle: Boolean;
+    FShowTitle: Boolean;
     FDFileSize: Longint;
-    Pstream: TStream;
-    IGWidth: longint;
-    IGHeight: longint;
-    THClientHeight: word;
-    THClientWidth: word;
-    VShadowObj: TShape;
-    {Other}
-    V_Updated: boolean;
-    V_ImageReady: boolean;
-    V_TitlePos: TTitlePos;
-    VPhotoName: TFilename;
-    VPhoto: TJvThumbimage;
-    {Event Related}
-    V_OnGetTitle: TTitleNotify;
-    MousePressed: Boolean;
-    Destroying: Boolean;
-    PAsButton: Boolean;
-    VMinimize: Boolean;
-    VAutoLoad: Boolean; // if true then load the image either from a thum file or create it from the filename
-    VShadowColor: TColor;
-    VShowShadow: Boolean;
-    VHShadowOffset: Word;
-    VVShadowOffset: Word;
-    {Event Related}
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    FStream: TStream;
+    FImageWidth: Longint;
+    FImageHeight: Longint;
+    FClientHeight: Word;
+    FClientWidth: Word;
+    FShadowObj: TShape;
+    FUpdated: Boolean;
+    FImageReady: Boolean;
+    FTitlePlacement: TTitlePos;
+    FPhotoName: TFileName;
+    FPhoto: TJvThumbImage;
+    FOnGetTitle: TTitleNotify;
+    FMousePressed: Boolean;
+    FDestroying: Boolean;
+    FAsButton: Boolean;
+    FMinimizeMemory: Boolean;
+    FAutoLoad: Boolean; // if True then load the image either from a thumb file or Create it from the FileName
+    FShadowColor: TColor;
+    FShowShadow: Boolean;
+    FHShadowOffset: Word;
+    FVShadowOffset: Word;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure PhotoOnProgress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean;
       const R: TRect; const Msg: string);
     procedure RefreshFont(Sender: TObject);
-    {Normal Procedures}
-    procedure SetFile(const Afile: string);
-    function LoadFile(Afile: string): string;
-    function GetFilename: string;
+    procedure SetFileName(const AFile: string);
+    function LoadFile(AFile: string): string;
+    function GetFileName: string;
     procedure CalculateImageSize; virtual;
-    procedure setClientWidth(Awidth: word);
-    procedure setdummystr(AnStr: string);
-    procedure Setminimize(Min: boolean);
-    procedure setdummyCard(AnInt: Longint);
-    procedure SetClientHeight(aheight: word);
-    procedure SetVisibleTitle(const Astate: boolean);
-    procedure SetTitlePos(const Astate: TtitlePos);
-    {Property Procedures}
-    procedure PSetV_Title(const Value: string);
-    procedure PSetV_TitlePanelColor(const Value: TColor);
-    procedure SetStream(const AStream: Tstream);
-    procedure PSetV_TitlePanelFont(const Value: TFont);
-    procedure GetFileInfo(Aname: string);
+    procedure SetClientWidth(AWidth: Word);
+    procedure SetDummyStr(AStr: string);
+    procedure SetMinimizeMemory(Min: Boolean);
+    procedure SetDummyCard(AInt: Longint);
+    procedure SetClientHeight(AHeight: Word);
+    procedure SetShowTitle(const AState: Boolean);
+    procedure SetTitlePlacement(const AState: TTitlePos);
+    procedure SetTitle(const Value: string);
+    procedure SetTitleColor(const Value: TColor);
+    procedure SetStream(const AStream: TStream);
+    procedure SetTitleFont(const Value: TFont);
+    procedure GetFileInfo(AName: string);
     procedure SetShowShadow(Show: Boolean);
 //    procedure SetShadowColor(aColor: TColor);
   protected
-    procedure THSizechanged(var Message: tmessage); message TH_ImagesizeChanged;
+    procedure THSizeChanged(var Msg: TMessage); message TH_IMAGESIZECHANGED;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Resize; override;
-
   public
-    { Public declarations }
-    constructor Create(Aowner: Tcomponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetTitlePanel(P_Title: string; P_Font: TFont; P_Color: TColor);
+    procedure SetTitlePanel(ATitle: string; AFont: TFont; AColor: TColor);
     procedure Refresh;
-    property Stream: Tstream read Pstream write setstream;
-    property Photo: TJvTHumbImage read VPhoto write VPhoto;
+    property Stream: TStream read FStream write SetStream;
+    property Photo: TJvThumbImage read FPhoto write FPhoto;
   published
-    { Published declarations }
-    property Filename: string read GetFileName write SetFile;
-    property Title: string read V_Title write PSetV_Title;
-    property TitleColor: TColor read V_TitlePanelColor write PSetV_TitlePanelColor;
-    property TitleFont: TFont read V_TitlePanelFont write PSetV_TitlePanelFont;
-    property ImageReady: boolean read V_ImageReady;
-    property OnGetTitle: TTitleNotify read V_OnGetTitle write V_OnGetTitle;
-    property ClientWidth: word read THClientWidth write setClientWidth;
-    property ClientHeight: word read THClientHeight write setClientHeight;
-    property FileSize: Longint read FDFileSize write SetDummyCard;
-    property FileAccessed: string read FDFileAccessed write SetDummyStr;
-    property FileCreated: string read FDFileCreated write SetDummyStr;
-    property FileChanged: string read FDFileChanged write SetDummyStr;
-    property ImageWidth: longint read IGWIdth default 0;
-    property ImageHeight: Longint read IGHeight default 0;
-    property Asbutton: boolean read PAsbutton write PAsbutton;
-    property MinimizeMemory: Boolean read VMinimize write SetMinimize;
-    property StreamFileType: Tgrf_type read Tstreamfiletype write tstreamfiletype;
-    property ShowTitle: boolean read TshowTitle write SetVisibleTitle;
-    property TitlePlacement: TTitlePos read V_titlePos write SetTitlePos;
-    property Autoload: Boolean read VAutoload write VAutoload;
-    property ShadowColor: TColor read VShadowColor write VShadowColor;
-    property ShowShadow: Boolean read VShowShadow write SetShowShadow;
+    property FileName: string read GetFileName write SetFileName;
+    property Title: string read FTitle write SetTitle;
+    property TitleColor: TColor read FTitleColor write SetTitleColor;
+    property TitleFont: TFont read FTitleFont write SetTitleFont;
+    property ImageReady: Boolean read FImageReady;
+    property OnGetTitle: TTitleNotify read FOnGetTitle write FOnGetTitle;
+    property ClientWidth: Word read FClientWidth write SetClientWidth;
+    property ClientHeight: Word read FClientHeight write SetClientHeight;
+    { Do not store dummies }
+    property FileSize: Longint read FDFileSize write SetDummyCard stored False;
+    property FileAccessed: string read FDFileAccessed write SetDummyStr stored False;
+    property FileCreated: string read FDFileCreated write SetDummyStr stored False;
+    property FileChanged: string read FDFileChanged write SetDummyStr stored False;
+    property ImageWidth: Longint read FImageWidth default 0;
+    property ImageHeight: Longint read FImageHeight default 0;
+    property AsButton: Boolean read FAsButton write FAsButton;
+    property MinimizeMemory: Boolean read FMinimizeMemory write SetMinimizeMemory;
+    property StreamFileType: TGRFKind read FStreamFileKind write FStreamFileKind;
+    property ShowTitle: Boolean read FShowTitle write SetShowTitle;
+    property TitlePlacement: TTitlePos read FTitlePlacement write SetTitlePlacement;
+    property AutoLoad: Boolean read FAutoLoad write FAutoLoad;
+    property ShadowColor: TColor read FShadowColor write FShadowColor;
+    property ShowShadow: Boolean read FShowShadow write SetShowShadow;
   end;
-
-
 
 implementation
 
-uses jvThumbViews, jpeg;
+uses
+  jpeg,
+  JvThumbViews;
+
 //uses {$IFNDEF COMPILER6_UP}Gifimage,{$ENDIF} Pcx_unit, Targa, PngImage, jpeg;
 
-
-//***********************ThumbNail procedure and functions;****************
-
-procedure TJVThumbNail.SetVisibleTitle(const AState: boolean);
+constructor TJvThumbnail.Create(AOwner: TComponent);
 begin
-  if astate <> Tshowtitle then
-  begin
-    TshowTitle := astate;
-    v_titlePanel.Visible := astate;
-  end
-end;
-
-procedure TJVThumbNail.resize;
-begin
-  Calculateimagesize;
-end;
-
-procedure TJVThumbNail.SetStream(const Astream: Tstream);
-var
-  bmp: Graphics.Tbitmap;
-  size: tpoint;
-  img2: Tjpegimage;
-begin
-  case StreamFileType of
-    gr_bmp: photo.Picture.bitmap.LoadFromStream(Astream);
-    gr_emf,
-      gr_wmf: photo.Picture.metafile.LoadFromStream(Astream);
-    gr_jpg:
-      begin
-        img2 := Tjpegimage.create;
-        img2.LoadFromStream(Astream);
-        photo.picture.assign(img2);
-        FreeAndNil(img2);
-      end;
-  end;
-
-  if VMinimize then
-  begin
-    bmp := GRaphics.TBitmap.Create;
-    if parent is TJvTHumbview then
-      size := proportionalsize(point(photo.picture.width, photo.picture.height),
-        point(TJvThumbView(parent).maxWidth, TJvThumbView(parent).MAxheight))
-    else
-      size := proportionalsize(point(photo.picture.width, photo.picture.height),
-        point(width, height)); {}
-    bmp.width := size.x;
-    bmp.Height := size.y;
-    bmp.handletype := bmDib;
-    bmp.pixelformat := pf24bit;
-    bmp.canvas.stretchdraw(rect(0, 0, bmp.width, bmp.height),
-      photo.picture.graphic);
-    photo.picture.graphic.Free;
-    photo.picture.graphic := nil;
-    photo.picture.Assign(bmp);
-    bmp.free;
-  end;
-end;
-
-
-procedure TJVThumbNail.setClientWidth(Awidth: word);
-begin
-  THClientWidth := (width - (borderwidth * 2)) - 8;
-end;
-
-procedure TJVThumbNail.SetClientHeight(aheight: word);
-begin
-  if assigned(V_titlepanel) then
-    THClientHeight := Height - (V_TitlePanel.Height + 8)
-  else THClientHeight := Height - 8;
-end;
-
-// dummy property functions to alow the object inspector to
-// show the properties and there values
-
-procedure TJVThumbNail.setdummystr(AnStr: string);
-begin
-end;
-
-procedure TJVThumbNail.SetDummyCard(AnInt: Longint);
-begin
-end;
-// Dummy Properties Values end;
-
-procedure TJVThumbNail.PhotoOnProgress(Sender: TObject; Stage: TProgressStage;
-  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-begin
-  if Stage = psEnding then
-  begin
-    V_ImageReady := True;
-//    RedrawNow := true;
-    exit;
-  end;
-  V_ImageReady := False;
-end;
-
-procedure TJVThumbNail.mousedown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if asbutton then
-    if button = mbleft then
-    begin
-      MousePressed := True;
-      BevelOuter := bvlowered;
-      V_TitlePanel.BevelOuter := BVRaised;
-    end;
-  inherited;
-end;
-
-procedure TJVThumbNail.SetShowShadow(Show: Boolean);
-begin
-  VShadowObj.Visible := Show;
-  VShowShadow := Show;
-end;
-
-{procedure TJVThumbNail.SetShadowColor(aColor: TColor);
-begin
-  VShadowObj.Brush.Color := aColor;
-  VShadowColor := aColor;
-end;}
-
-procedure TJVThumbNail.mousemove(Shift: TShiftState; X, Y: Integer);
-begin
-  if asbutton then
-    if MousePressed then
-    begin
-      if (x < 0) or (x > width) or (y < 0) or (y > height) then
-      begin
-        bevelouter := bvraised;
-        V_TitlePanel.BevelOuter := bvlowered
-      end
-      else
-      begin
-        bevelouter := bvlowered;
-        V_TitlePanel.BevelOuter := BVRaised;
-      end;
-    end;
-  inherited;
-end;
-
-procedure TJVThumbNail.mouseup(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  if asbutton then
-    if button = mbleft then
-    begin
-      MousePressed := false;
-      bevelouter := bvraised;
-      V_TitlePanel.BevelOuter := bvlowered;
-    end;
-  inherited;
-end;
-
-procedure TJVThumbNail.Getfileinfo(Aname: string);
-var
-  FileInfo: Twin32finddata;
-  h: Thandle;
-  dft: dword;
-  lft: tfiletime;
-begin
-  h := windows.findfirstfile(pchar(Aname), fileinfo);
-  if (invalid_handle_value <> h) then
-  begin
-    windows.findclose(h);
-    filetimetolocalfiletime(fileinfo.ftLastAccessTime, lft);
-    filetimetodosdatetime(lft, longrec(dft).hi, longrec(dft).lo);
-    try
-      fdFileAccessed := datetimetostr(filedatetodatetime(dft));
-    except
-      fdFileAccessed := 'Unknown'
-    end;
-    filetimetolocalfiletime(fileinfo.ftLastwriteTime, lft);
-    filetimetodosdatetime(lft, longrec(dft).hi, longrec(dft).lo);
-    try
-      fdFilechanged := datetimetostr(filedatetodatetime(dft));
-    except
-      fdFileChanged := 'Unknown';
-    end;
-    filetimetolocalfiletime(fileinfo.ftCreationTime, lft);
-    filetimetodosdatetime(lft, longrec(dft).hi, longrec(dft).lo);
-    try
-      fdFileCreated := datetimetostr(filedatetodatetime(dft));
-    except
-      fdFilecreated := 'Unknown';
-    end;
-    FDfilesize := (fileinfo.nfilesizehigh * maxdword) + fileinfo.nfilesizelow;
-  end;
-end;
-
-function TJVThumbNail.GetFilename: string;
-begin
-  REsult := VPhotoName.Filename;
-end;
-
-function TJVThumbNail.LoadFile(Afile: string): string;
-var
-  Fname: string;
-begin
-  try
-    Fname := Afile;
-    photo.LoadFromFile(afile);
-    Igwidth := photo.picture.width;
-    IGHeight := photo.picture.height;
-    v_updated := false;
-    Calculateimagesize;
-    photo.visible := true;
-  except
-    on E: Exception do
-    begin
-      Fname := '';
-      ShowMessage(E.Message);
-    end;
-  end;
-  if minimizememory and (VPhotoName.Filename <> '') then
-  begin
-    if owner is TJvThumbView then
-      photo.scaledown(TJvThumbView(owner).maxWidth, TJvThumbView(owner).maxheight)
-    else
-      Photo.scaledown(width, height); {}
-  end;
-  Result := Fname;
-end;
-
-procedure TJVThumbNail.SetFile(const Afile: string);
-var
-  Fname: string;
-//  Pos: Longint;
-//  tmp: TJvThumbImage;
-//  D1, D2: TdateTime;
-begin
-  if afile <> '' then
-  begin
-    getfileinfo(Afile);
-    if Vautoload then Fname := LoadFile(Afile);
-  end
-  else
-    fname := ''; {}
-  if fname = afile then
-    if (title = extractfilename(VPhotoName.filename)) or (title = '') then
-      title := extractfilename(Fname);
-  VPhotoName.filename := Fname;
-end;
-
-procedure TJVThumbNail.CalculateImageSize;
-var
-  Percent: Byte;
-  tempx, tempy: Single;
-begin
-  setclientheight(15);
-  setclientwidth(15);
-  if (photo.picture.width > clientwidth) or (photo.picture.height > clientheight)
-    then
-  begin
-    tempx := ((clientwidth) / photo.picture.width) * 100;
-    tempy := ((clientheight) / photo.picture.height) * 100;
-  end
-  else
-  begin
-    tempx := 100;
-    tempy := 100;
-  end;
-  if tempx <= tempy then
-    percent := trunc(tempx)
-  else
-    percent := trunc(tempy);
-  photo.width := trunc((photo.picture.width / 100) * percent);
-  photo.height := trunc((photo.picture.height / 100) * percent);
-  photo.Left := trunc(width / 2 - photo.width / 2);
-  photo.top := (Height div 2) - (photo.height div 2);
-  case V_TitlePos of
-    T_UP: Photo.top := Photo.Top + (v_TitlePanel.height div 2);
-    T_Down: photo.top := Photo.Top - (v_TitlePanel.height div 2);
-  end;
-  VShadowObj.Setbounds(Photo.Left + VHShadowOffset, Photo.Top + VVShadowOffset,
-    Photo.Width, Photo.Height);
-end;
-
-constructor TJVThumbNail.Create(Aowner: Tcomponent);
-begin
-  inherited create(Aowner);
-  VPhotoName := TfileName.create;
-  VHShadowOffset := 3;
-  VVShadowOffset := 3;
-  VShowShadow := False;
-  VShadowColor := clsilver;
-  VShadowObj := Tshape.Create(Self);
-  VShadowObj.Visible := VShowShadow;
-  VshadowObj.Brush.Color := VShadowColor;
-  VshadowObj.Parent := Self;
-  VShadowObj.Pen.Style := psClear;
-  Photo := tJvThumbimage.Create(self);
+  inherited Create(AOwner);
+  FPhotoName := TFileName.Create;
+  FHShadowOffset := 3;
+  FVShadowOffset := 3;
+  FShowShadow := False;
+  FShadowColor := clSilver;
+  FShadowObj := TShape.Create(Self);
+  FShadowObj.Visible := FShowShadow;
+  FShadowObj.Brush.Color := FShadowColor;
+  FShadowObj.Parent := Self;
+  FShadowObj.Pen.Style := psClear;
+  Photo := TJvThumbImage.Create(Self);
   Photo.AutoSize := False;
   Photo.Align := alNone;
   Photo.Stretch := True;
   Photo.OnProgress := PhotoOnProgress;
 
-  VShadowObj.Width := Photo.Width;
-  VShadowObj.Height := Photo.Height;
-  VShadowObj.Left := Photo.Left + VHShadowOffset;
-  VShadowObj.Top := Photo.Top + VVShadowOffset;
-  V_TitlePanel := TJvThumbTitle.Create(Self);
-  V_TitlePanel.Align := alTop;
-  V_TitlePanel.Height := 15;
-  V_TitlePanel.Alignment := taCenter;
-  V_TitlePanelColor := clBtnFace;
-  V_TitlePanel.Color := V_TitlePanelColor;
-  V_TitlePanelFont := TFont.Create;
-  V_TitlePanelFont.OnChange := RefreshFont;
-  v_titlepanel.bevelouter := bvlowered;
-  V_titlePanel.ParentColor := true;
-  V_titlePanel.Color := self.Color;
-  if V_titlepos = T_None then V_titlePanel.visible := false;
-  V_Title := '';
-  V_Updated := False;
+  FShadowObj.Width := Photo.Width;
+  FShadowObj.Height := Photo.Height;
+  FShadowObj.Left := Photo.Left + FHShadowOffset;
+  FShadowObj.Top := Photo.Top + FVShadowOffset;
+  FTitlePanel := TJvThumbTitle.Create(Self);
+  FTitlePanel.Align := alTop;
+  FTitlePanel.Height := 15;
+  FTitlePanel.Alignment := taCenter;
+  FTitleColor := clBtnFace;
+  FTitlePanel.Color := FTitleColor;
+  FTitleFont := TFont.Create;
+  FTitleFont.OnChange := RefreshFont;
+  FTitlePanel.BevelOuter := bvLowered;
+  FTitlePanel.ParentColor := True;
+  FTitlePanel.Color := Self.Color;
+  if FTitlePlacement = tpNone then
+    FTitlePanel.Visible := False;
+  FTitle := '';
+  FUpdated := False;
   InsertControl(Photo);
-  InsertControl(V_TitlePanel);
+  InsertControl(FTitlePanel);
   Align := alNone;
-  if aowner is TJvThumbView then
+  if AOwner is TJvThumbView then
   begin
-    width := TJvThumbView(owner).maxwidth;
-    height := TJvThumbView(owner).maxheight;
+    Width := TJvThumbView(Owner).MaxWidth;
+    Height := TJvThumbView(Owner).MaxHeight;
   end
   else
   begin
-    width := 120;
-    height := 120;
-  end; {}
-  VMinimize := true;
-  Asbutton := false;
+    Width := 120;
+    Height := 120;
+  end;
+  FMinimizeMemory := True;
+  AsButton := False;
   Left := 10;
   Top := 10;
   Visible := True;
-  Bevelouter := bvraised;
-  streamfiletype := gr_bmp;
-  VAutoLoad := True;
+  BevelOuter := bvRaised;
+  StreamFileType := grBMP;
+  FAutoLoad := True;
 end;
 
-procedure TJVThumbNail.THSizechanged(var Message: tmessage);
+destructor TJvThumbnail.Destroy;
 begin
-  calculateimagesize;
-end;
-
-destructor TJVThumbNail.destroy;
-begin
-  destroying := true;
+  FDestroying := True;
   Photo.OnProgress := nil;
-  VPhotoName.Free;
-  V_TitlePanelFont.Onchange := nil;
-  V_TitlePanelFont.Free;
-  inherited destroy;
+  FPhotoName.Free;
+  FTitleFont.Onchange := nil;
+  FTitleFont.Free;
+  inherited Destroy;
 end;
 
-procedure TJVThumbNail.PSetV_Title(const Value: string);
+procedure TJvThumbnail.SetShowTitle(const AState: Boolean);
 begin
-  if Value <> V_Title then
+  if AState <> FShowTitle then
   begin
-    V_Title := Value;
-    V_TitlePanel.Caption := Value;
+    FShowTitle := AState;
+    FTitlePanel.Visible := AState;
+  end
+end;
+
+procedure TJvThumbnail.Resize;
+begin
+  CalculateImageSize;
+end;
+
+procedure TJvThumbnail.SetStream(const AStream: TStream);
+var
+  Bmp: Graphics.TBitmap;
+  Size: TPoint;
+  Img2: TJPEGImage;
+begin
+  case StreamFileType of
+    grBMP:
+      Photo.Picture.Bitmap.LoadFromStream(AStream);
+    grEMF, grWMF:
+      Photo.Picture.Metafile.LoadFromStream(AStream);
+    grJPG:
+      begin
+        Img2 := TJPEGImage.Create;
+        Img2.LoadFromStream(AStream);
+        Photo.Picture.Assign(Img2);
+        FreeAndNil(Img2);
+      end;
+  end;
+
+  if FMinimizeMemory then
+  begin
+    Bmp := Graphics.TBitmap.Create;
+    if Parent is TJvThumbView then
+      Size := ProportionalSize(Point(Photo.Picture.Width, Photo.Picture.Height),
+        Point(TJvThumbView(Parent).MaxWidth, TJvThumbView(Parent).MaxHeight))
+    else
+      Size := ProportionalSize(Point(Photo.Picture.Width, Photo.Picture.Height),
+        Point(Width, Height));
+    Bmp.Width := Size.X;
+    Bmp.Height := Size.Y;
+    Bmp.handletype := bmDIB;
+    Bmp.pixelformat := pf24bit;
+    Bmp.Canvas.StretchDraw(rect(0, 0, Bmp.Width, Bmp.Height),
+      Photo.Picture.Graphic);
+    //Photo.Picture.Graphic.Free; // (rom) not needed
+    //Photo.Picture.Graphic := nil;
+    Photo.Picture.Assign(Bmp);
+    Bmp.Free;
   end;
 end;
 
-procedure TJVThumbNail.WMPaint(var Message: TWMPaint);
-var
-  ThumbNailTitle: string;
+procedure TJvThumbnail.SetClientWidth(AWidth: Word);
 begin
-  if not V_Updated then
-  begin
-    ThumbNailTitle := Title;
-    if Assigned(V_OnGetTitle) then
+  FClientWidth := (Width - (BorderWidth * 2)) - 8;
+end;
+
+procedure TJvThumbnail.SetClientHeight(AHeight: Word);
+begin
+  if Assigned(FTitlePanel) then
+    FClientHeight := Height - (FTitlePanel.Height + 8)
+  else
+    FClientHeight := Height - 8;
+end;
+
+// dummy property functions to allow the object inspector to
+// show the properties and their values
+
+procedure TJvThumbnail.SetDummyStr(AStr: string);
+begin
+end;
+
+procedure TJvThumbnail.SetDummyCard(AInt: Longint);
+begin
+end;
+
+procedure TJvThumbnail.PhotoOnProgress(Sender: TObject; Stage: TProgressStage;
+  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
+begin
+  FImageReady := (Stage = psEnding);
+end;
+
+procedure TJvThumbnail.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if AsButton then
+    if Button = mbLeft then
     begin
-      V_OnGetTitle(Self, filename, ThumbNailTitle);
-      PSetV_Title(ThumbNailTitle);
+      FMousePressed := True;
+      BevelOuter := bvLowered;
+      FTitlePanel.BevelOuter := bvRaised;
+    end;
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TJvThumbnail.SetShowShadow(Show: Boolean);
+begin
+  FShadowObj.Visible := Show;
+  FShowShadow := Show;
+end;
+
+{procedure TJvThumbnail.SetShadowColor(aColor: TColor);
+begin
+  FShadowObj.Brush.Color := aColor;
+  FShadowColor := aColor;
+end;}
+
+procedure TJvThumbnail.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  if AsButton then
+    if FMousePressed then
+    begin
+      if (X < 0) or (X > Width) or (Y < 0) or (Y > Height) then
+      begin
+        BevelOuter := bvRaised;
+        FTitlePanel.BevelOuter := bvLowered
+      end
+      else
+      begin
+        BevelOuter := bvLowered;
+        FTitlePanel.BevelOuter := bvRaised;
+      end;
+    end;
+  inherited MouseMove(Shift, X, Y);
+end;
+
+procedure TJvThumbnail.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if AsButton then
+    if Button = mbLeft then
+    begin
+      FMousePressed := False;
+      BevelOuter := bvRaised;
+      FTitlePanel.BevelOuter := bvLowered;
+    end;
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TJvThumbnail.GetFileInfo(AName: string);
+var
+  FileInfo: TWin32FindData;
+  H: THandle;
+  Dft: DWORD;
+  Lft: TFileTime;
+begin
+  H := Windows.FindFirstFile(PChar(AName), FileInfo);
+  if H <> INVALID_HANDLE_VALUE then
+  begin
+    Windows.FindClose(H);
+    FileTimeToLocalFileTime(FileInfo.ftLastAccessTime, Lft);
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    try
+      FDFileAccessed := DateTimeToStr(FileDateToDateTime(Dft));
+    except
+      FDFileAccessed := 'Unknown'
+    end;
+    FileTimeToLocalFileTime(FileInfo.ftLastwriteTime, Lft);
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    try
+      FDFileChanged := DateTimeToStr(FileDateToDateTime(Dft));
+    except
+      FDFileChanged := 'Unknown';
+    end;
+    FileTimeToLocalFileTime(FileInfo.ftCreationTime, Lft);
+    FileTimeToDosDateTime(Lft, LongRec(Dft).Hi, LongRec(Dft).Lo);
+    try
+      FDFileCreated := DateTimeToStr(FileDateToDateTime(Dft));
+    except
+      FDFileCreated := 'Unknown';
+    end;
+    FDFileSize := (FileInfo.nFileSizeHigh * MAXDWORD) + FileInfo.nFileSizeLow;
+  end;
+end;
+
+function TJvThumbnail.GetFileName: string;
+begin
+  Result := FPhotoName.FileName;
+end;
+
+function TJvThumbnail.LoadFile(AFile: string): string;
+var
+  FName: string;
+begin
+  try
+    FName := AFile;
+    Photo.LoadFromFile(AFile);
+    FImageWidth := Photo.Picture.Width;
+    FImageHeight := Photo.Picture.Height;
+    FUpdated := False;
+    CalculateImageSize;
+    Photo.Visible := True;
+  except
+    // (rom) ShowMessage removed
+    FName := '';
+  end;
+  if MinimizeMemory and (FPhotoName.FileName <> '') then
+  begin
+    if Owner is TJvThumbView then
+      Photo.ScaleDown(TJvThumbView(Owner).MaxWidth, TJvThumbView(Owner).MaxHeight)
+    else
+      Photo.ScaleDown(Width, Height);
+  end;
+  Result := FName;
+end;
+
+procedure TJvThumbnail.SetFileName(const AFile: string);
+var
+  FName: string;
+//  Pos: Longint;
+//  tmp: TJvThumbImage;
+//  D1, D2: TdateTime;
+begin
+  if AFile <> '' then
+  begin
+    GetFileInfo(AFile);
+    if FAutoLoad then
+      FName := LoadFile(AFile);
+  end
+  else
+    FName := ''; {}
+  if FName = AFile then
+    if (Title = ExtractFileName(FPhotoName.FileName)) or (Title = '') then
+      Title := ExtractFileName(FName);
+  FPhotoName.FileName := FName;
+end;
+
+procedure TJvThumbnail.CalculateImageSize;
+var
+  Percent: Byte;
+  TempX, TempY: Single;
+begin
+  SetClientHeight(15);
+  SetClientWidth(15);
+  if (Photo.Picture.Width > ClientWidth) or (Photo.Picture.Height > ClientHeight) then
+  begin
+    TempX := ((ClientWidth) / Photo.Picture.Width) * 100;
+    TempY := ((ClientHeight) / Photo.Picture.Height) * 100;
+  end
+  else
+  begin
+    TempX := 100;
+    TempY := 100;
+  end;
+  if TempX <= TempY then
+    Percent := Trunc(TempX)
+  else
+    Percent := Trunc(TempY);
+  Photo.Width := Trunc((Photo.Picture.Width / 100) * Percent);
+  Photo.Height := Trunc((Photo.Picture.Height / 100) * Percent);
+  Photo.Left := Trunc(Width / 2 - Photo.Width / 2);
+  Photo.Top := (Height div 2) - (Photo.Height div 2);
+  case FTitlePlacement of
+    tpUp:
+      Photo.Top := Photo.Top + (FTitlePanel.Height div 2);
+    tpDown:
+      Photo.Top := Photo.Top - (FTitlePanel.Height div 2);
+  end;
+  FShadowObj.SetBounds(Photo.Left + FHShadowOffset, Photo.Top + FVShadowOffset,
+    Photo.Width, Photo.Height);
+end;
+
+procedure TJvThumbnail.THSizeChanged(var Msg: TMessage);
+begin
+  CalculateImageSize;
+end;
+
+procedure TJvThumbnail.SetTitle(const Value: string);
+begin
+  if Value <> FTitle then
+  begin
+    FTitle := Value;
+    FTitlePanel.Caption := Value;
+  end;
+end;
+
+procedure TJvThumbnail.WMPaint(var Msg: TWMPaint);
+var
+  ThumbnailTitle: string;
+begin
+  if not FUpdated then
+  begin
+    ThumbnailTitle := Title;
+    if Assigned(FOnGetTitle) then
+    begin
+      FOnGetTitle(Self, FileName, ThumbnailTitle);
+      SetTitle(ThumbnailTitle);
     end
     else
     begin
-      if ThumbNailtitle = '' then PSetV_Title(ExtractFileName(filename))
-      else PSetV_Title(ThumbNailtitle);
+      if ThumbnailTitle = '' then
+        SetTitle(ExtractFileName(FileName))
+      else
+        SetTitle(ThumbnailTitle);
     end;
-    V_Updated := True;
+    FUpdated := True;
   end;
   inherited;
 end;
 
-procedure TJVThumbNail.PSetV_TitlePanelColor(const Value: TColor);
+procedure TJvThumbnail.SetTitleColor(const Value: TColor);
 begin
-  if Value <> V_TitlePanelColor then
+  if Value <> FTitleColor then
   begin
-    V_TitlePanelColor := Value;
-    V_TitlePanel.Color := Value;
+    FTitleColor := Value;
+    FTitlePanel.Color := Value;
   end;
 end;
 
-procedure TJVThumbNail.PSetV_TitlePanelFont(const Value: TFont);
+procedure TJvThumbnail.SetTitleFont(const Value: TFont);
 begin
-  V_TitlePanelFont.Assign(Value);
+  FTitleFont.Assign(Value);
 end;
 
-procedure TJVThumbNail.Refreshfont(Sender: TObject);
+procedure TJvThumbnail.Refreshfont(Sender: TObject);
 begin
-  V_TitlePanel.Font.Assign(V_TitlePanelFont);
+  FTitlePanel.Font.Assign(FTitleFont);
 end;
 
-procedure TJVThumbNail.SetTitlePanel(P_Title: string; P_Font: TFont;
-  P_Color: TColor);
+procedure TJvThumbnail.SetTitlePanel(ATitle: string; AFont: TFont;
+  AColor: TColor);
 begin
-  PSetV_TitlePanelFont(P_Font);
-  PSetV_TitlePanelColor(P_Color);
-  PSetV_Title(P_Title);
-  V_Updated := True;
+  SetTitleFont(AFont);
+  SetTitleColor(AColor);
+  SetTitle(ATitle);
+  FUpdated := True;
 end;
 
-procedure TJVThumbNail.SetTitlePos(const aState: Ttitlepos);
+procedure TJvThumbnail.SetTitlePlacement(const AState: TTitlePos);
 begin
-  if astate <> V_TitlePos then case astate of
-      T_up: V_TitlePanel.Align := alTop;
-      T_Down: V_TitlePanel.Align := alBottom;
-      T_None:
-        begin
-          V_TitlePanel.Visible := False;
-        end;
+  if AState <> FTitlePlacement then
+    case AState of
+      tpUp:
+        FTitlePanel.Align := alTop;
+      tpDown:
+        FTitlePanel.Align := alBottom;
+      tpNone:
+        FTitlePanel.Visible := False;
     end;
-  if V_TitlePos = T_None then
-    v_TitlePanel.Visible := True;
-  V_titlePos := AState;
+  if FTitlePlacement = tpNone then
+    FTitlePanel.Visible := True;
+  FTitlePlacement := AState;
   CalculateImageSize;
 end;
 
-procedure TJVThumbNail.setminimize(min: boolean);
+procedure TJvThumbnail.SetMinimizeMemory(Min: Boolean);
 begin
-  if assigned(photo.picture.graphic) then
+  if Assigned(Photo.Picture.Graphic) then
   begin
-    if VMinimize <> min then
+    if FMinimizeMemory <> Min then
     begin
-      if (min) then
+      if Min then
       begin
-        if owner is TJvThumbView then
-          photo.ScaleDown(TJvThumbView(owner).MaxWidth, TJvThumbView(owner).MaxHeight)
+        if Owner is TJvThumbView then
+          Photo.ScaleDown(TJvThumbView(Owner).MaxWidth, TJvThumbView(Owner).MaxHeight)
         else
-          photo.ScaleDown(Width, Height); {}
+          Photo.ScaleDown(Width, Height);
       end
       else
-        if VMinimize then photo.picture.loadfromfile(filename);
-      VMinimize := min;
+      if FMinimizeMemory then
+        Photo.Picture.LoadFromFile(FileName);
+      FMinimizeMemory := Min;
     end;
   end
-  else VMinimize := min;
+  else
+    FMinimizeMemory := Min;
 end;
 
-procedure TJVThumbNail.Refresh;
+procedure TJvThumbnail.Refresh;
 begin
   CalculateImageSize;
-  inherited refresh;
+  inherited Refresh;
 end;
-
 
 end.
 

@@ -38,13 +38,12 @@ unit JvLinkLabel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer, JvTypes;
 
 type
   ELinkLabelError = class(EJVCLException);
 
-  TJvCustomLinkLabel = class;
   TLinkClickEvent = procedure(Sender: TObject; LinkNumber: Integer;
     LinkText: string) of object;
   TDynamicTagInitEvent = procedure(Sender: TObject; out Source: string;
@@ -52,6 +51,7 @@ type
 
   TJvCustomLinkLabel = class(TGraphicControl, IDynamicNodeHandler)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FCaption: TCaption;
     FText: TStrings;
     FRenderer: IRenderer;
@@ -66,7 +66,6 @@ type
     FOnLinkClick: TLinkClickEvent;
     FOnDynamicTagInit: TDynamicTagInitEvent;
     FParser: IParser;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetTransparent(const Value: Boolean);
     function GetLinkColor: TColor;
     function GetLinkStyle: TFontStyles;
@@ -83,14 +82,13 @@ type
     procedure SetCaption(const Value: TCaption);
     function GetTransparent: Boolean;
     function IsActiveLinkNodeClicked: Boolean;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetAutoHeight(const Value: Boolean);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
     procedure SetText(const Value: TStrings);
-
   protected
     FNodeTree: TNodeTree;
     procedure Paint; override;
@@ -107,11 +105,6 @@ type
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
-
-    property OnDynamicTagInit: TDynamicTagInitEvent read FOnDynamicTagInit write FOnDynamicTagInit;
-    property OnCaptionChanged: TNotifyEvent read FOnCaptionChanged write FOnCaptionChanged;
-    property OnLinkClick: TLinkClickEvent read FOnLinkClick write FOnLinkClick;
-
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Caption: TCaption read FCaption write SetCaption;
     property Text: TStrings read FText write SetText;
@@ -124,6 +117,9 @@ type
     property AutoHeight: Boolean read FAutoHeight write SetAutoHeight;
     property MarginWidth: Integer read FMarginWidth write SetMarginWidth;
     property MarginHeight: Integer read FMarginHeight write SetMarginHeight;
+    property OnDynamicTagInit: TDynamicTagInitEvent read FOnDynamicTagInit write FOnDynamicTagInit;
+    property OnCaptionChanged: TNotifyEvent read FOnCaptionChanged write FOnCaptionChanged;
+    property OnLinkClick: TLinkClickEvent read FOnLinkClick write FOnLinkClick;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -133,10 +129,8 @@ type
   end;
 
   TJvLinkLabel = class(TJvCustomLinkLabel)
-    property OnDynamicTagInit;
-    property OnCaptionChanged;
-    property OnLinkClick;
-
+  // (rom) published was missing here
+  published
     property AboutJVCL;
     property Caption;
     property Text;
@@ -150,6 +144,10 @@ type
     property AutoHeight;
     property MarginWidth;
     property MarginHeight;
+
+    property OnDynamicTagInit;
+    property OnCaptionChanged;
+    property OnLinkClick;
 
     property Align;
     property Color;
@@ -178,13 +176,8 @@ implementation
 
 {$R *.res}
 
-uses
-  JvLinkLabelTools;
-
 const
   crNewLinkHand = 1;
-
-  { TJvLinkLabel }
 
 procedure TJvCustomLinkLabel.ActivateLinkNodeAtPos(const P: TPoint; State: TLinkState);
 var
@@ -214,7 +207,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLinkLabel.CMFontChanged(var Message: TMessage);
+procedure TJvCustomLinkLabel.CMFontChanged(var Msg: TMessage);
 
   procedure ClearWordInfo;
   var
@@ -232,14 +225,14 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomLinkLabel.CMMouseLeave(var Message: TMessage);
+procedure TJvCustomLinkLabel.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FHotLinks and not IsActiveLinkNodeClicked then
     DeactivateActiveLinkNode;
 end;
 
-procedure TJvCustomLinkLabel.CMTextChanged(var Message: TMessage);
+procedure TJvCustomLinkLabel.CMTextChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
@@ -379,7 +372,7 @@ end;
 
 procedure TJvCustomLinkLabel.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   FOriginalCursor := Cursor;
   Resize;
 end;
@@ -387,13 +380,13 @@ end;
 procedure TJvCustomLinkLabel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   ActivateLinkNodeAtPos(Point(X, Y), lsClicked);
 end;
 
 procedure TJvCustomLinkLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   if FNodeTree.IsPointInNodeClass(Point(X, Y), TLinkNode) then
   begin
     Cursor := crNewLinkHand;
@@ -408,12 +401,12 @@ begin
   end;
 end;
 
-procedure TJvCustomLinkLabel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvCustomLinkLabel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   NodeAtPoint: TLinkNode;
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   if FNodeTree.IsPointInNodeClass(Point(X, Y), TLinkNode) then
   begin
     NodeAtPoint := FNodeTree.GetNodeAtPointOfClass(Point(X, Y), TLinkNode) as TLinkNode;
@@ -426,7 +419,7 @@ end;
 
 procedure TJvCustomLinkLabel.Paint;
 begin
-  inherited;
+  inherited Paint;
   if Assigned(FNodeTree) then
   begin
     with Canvas do
@@ -437,7 +430,6 @@ begin
         Brush.Style := bsSolid;
         FillRect(ClientRect);
       end;
-
       Brush.Style := bsClear;
     end;
 
@@ -451,7 +443,7 @@ end;
 
 procedure TJvCustomLinkLabel.Resize;
 begin
-  inherited;
+  inherited Resize;
   FRect := Rect(ClientRect.Left + FMarginWidth, ClientRect.Top + FMarginHeight,
     ClientRect.Right - FMarginWidth, ClientRect.Bottom);
 end;
@@ -579,3 +571,4 @@ begin
 end;
 
 end.
+

@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvWinampLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  JVCLVer;
 
 type
   TJvWinampThread = class(TThread)
@@ -47,10 +46,11 @@ type
 
   TJvWinampLabel = class(TCustomLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FBitmap: TBitmap;
     FPicture: TPicture;
     FTimer: TJvWinampThread;
-    FInterval: Cardinal;
+    FScrollInterval: Cardinal;
     FActive: Boolean;
     FStretch: Boolean;
     FScrollBy: Integer;
@@ -61,7 +61,6 @@ type
     FScale: Real;
     // (p3) renamed
     FText: string;
-    FAboutJVCL: TJVCLAboutInfo;
     function GetCol(Ch: Char): Word;
     procedure SetColor(Value: TColor);
     function GetScrollBy: Integer;
@@ -77,9 +76,11 @@ type
     function GetRow(Ch: Char): Word;
     procedure SetText(Value: string);
   protected
-    procedure paint; override;
+    // (rom) made protected
+    CharWidth: Integer;
+    CharHeight: Integer;
+    procedure Paint; override;
   public
-    CharWidth, CharHeight: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -87,7 +88,7 @@ type
     property Active: Boolean read FActive write SetActive;
     property Stretch: Boolean read FStretch write SetStretch;
     property ScrollBy: Integer read GetScrollBy write FScrollBy;
-    property ScrollInterval: Cardinal read FInterval write SetInterval;
+    property ScrollInterval: Cardinal read FScrollInterval write SetInterval;
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
     property Color: TColor read FColor write SetColor;
@@ -123,6 +124,7 @@ type
   end;
 
 implementation
+
 uses
   JvTypes;
 
@@ -138,17 +140,13 @@ resourcestring
 
 {$R RES_WinampLabel.res}
 
-  ///////////////////////////////////////////////////////////
-  // TJvWinampThread
-  ///////////////////////////////////////////////////////////
+//=== TJvWinampThread ========================================================
 
 procedure TJvWinampThread.Draw;
 begin
   if Assigned(FOnDraw) then
     FOnDraw(Self);
 end;
-
-{**************************************************}
 
 procedure TJvWinampThread.Execute;
 begin
@@ -160,15 +158,13 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvWinampLabel
-///////////////////////////////////////////////////////////
+//=== TJvWinampLabel =========================================================
 
 constructor TJvWinampLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   AutoSize := False;
-  FInterval := 100;
+  FScrollInterval := 100;
   CharWidth := 5;
   CharHeight := 6;
   FPicture := TPicture.Create;
@@ -184,7 +180,7 @@ begin
   with FTimer do
   begin
     FreeOnTerminate := False;
-    FDelay := FInterval;
+    FDelay := FScrollInterval;
     FOnDraw := DoOnTimer;
   end;
   Width := 100;
@@ -196,8 +192,6 @@ begin
   FWait := 1000;
   Color := clBlack;
 end;
-
-{**************************************************}
 
 destructor TJvWinampLabel.Destroy;
 begin
@@ -214,14 +208,10 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
-
 function TJvWinampLabel.GetScrollBy: Integer;
 begin
   Result := Abs(FScrollBy);
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.SetPicture(Value: TPicture);
 begin
@@ -232,8 +222,6 @@ begin
   Invalidate;
 end;
 
-{**************************************************}
-
 procedure TJvWinampLabel.SetColor(Value: TColor);
 begin
   if Value <> FColor then
@@ -243,8 +231,6 @@ begin
     Invalidate;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.SetActive(Value: Boolean);
 begin
@@ -258,8 +244,6 @@ begin
     FWaiting := False;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.SetStretch(Value: Boolean);
 var
@@ -281,33 +265,27 @@ begin
     FScale := 1;
 end;
 
-{**************************************************}
-
 procedure TJvWinampLabel.SetInterval(Value: Cardinal);
 begin
-  if Value <> FInterval then
+  if Value <> FScrollInterval then
   begin
-    FInterval := Value;
+    FScrollInterval := Value;
     FTimer.FDelay := Value;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.Activate;
 begin
   FActive := True;
   if not (csDesigning in ComponentState) then
     FTimer.Resume;
-  FTimer.FDelay := FInterval;
+  FTimer.FDelay := FScrollInterval;
   FWaiting := False;
 
   FCurPos := 0;
   FScrollBy := Abs(FScrollBy);
   FillBitmap;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.Deactivate;
 begin
@@ -317,40 +295,34 @@ begin
   Invalidate;
 end;
 
-{**************************************************}
-
 procedure TJvWinampLabel.DoOnTimer(Sender: TObject);
 begin
   if FWaiting then
   begin
-    FTimer.FDelay := FInterval;
+    FTimer.FDelay := FScrollInterval;
     FWaiting := False;
   end;
   UpdatePos;
   Paint;
 end;
 
-{**************************************************}
-
 function TJvWinampLabel.GetCol(Ch: Char): Word;
 var
-  index: Integer;
+  Index: Integer;
 begin
   Ch := UpCase(Ch);
-  index := Pos(Ch, Row1);
+  Index := Pos(Ch, Row1);
   // (p3) Pos returns 0 on failure, not -1
-  if index = 0 then
-    index := Pos(Ch, Row2);
-  if index = 0 then
-    index := Pos(Ch, Row3);
-  if index = 0 then
+  if Index = 0 then
+    Index := Pos(Ch, Row2);
+  if Index = 0 then
+    Index := Pos(Ch, Row3);
+  if Index = 0 then
     Result := GetCol(' ')
   else
     // (p3) fixed as suggested by Remko Bonte
-    Result := (index-1) * CharWidth
+    Result := (Index - 1) * CharWidth;
 end;
-
-{**************************************************}
 
 function TJvWinampLabel.GetRow(Ch: Char): Word;
 begin
@@ -358,11 +330,10 @@ begin
   Result := 0;
   if Pos(Ch, Row2) <> 0 then
     Result := CharHeight
-  else if Pos(Ch, Row3) <> 0 then
+  else
+    if Pos(Ch, Row3) <> 0 then
     Result := 2 * CharHeight;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.FillBitmap;
 var
@@ -401,8 +372,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvWinampLabel.UpdatePos;
 begin
   try
@@ -433,8 +402,6 @@ begin
   except
   end;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.Paint;
 var
@@ -470,8 +437,6 @@ begin
   except
   end;
 end;
-
-{**************************************************}
 
 procedure TJvWinampLabel.SetText(Value: string);
 var

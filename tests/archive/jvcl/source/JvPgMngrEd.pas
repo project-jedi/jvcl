@@ -25,25 +25,24 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvPgMngrEd;
 
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows,
-{$ELSE}
+  {$ELSE}
   WinTypes, WinProcs,
-{$ENDIF}
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, Grids,
-{$IFDEF COMPILER6_UP}
-    RTLConsts, DesignIntf, DesignEditors,  VCLEditors, DesignWindows,
-{$ELSE}
+  {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors, DesignWindows,
+  {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
-{$ENDIF}
-  JvPageMngr, StdCtrls, JvPlacemnt, ExtCtrls,
-  JvVCLUtils;
+  {$ENDIF}
+  StdCtrls, ExtCtrls,
+  JvPageMngr, JvPlacemnt, JvVCLUtils;
 
 type
   TJvProxyEditor = class(TDesignWindow)
@@ -64,7 +63,7 @@ type
   private
     FPageManager: TJvPageManager;
     FDeleting: Boolean;
-    procedure SeTJvPageManager(Value: TJvPageManager);
+    procedure SetPageManager(Value: TJvPageManager);
     function GetForm: TCustomForm;
     procedure UpdateData;
     function CheckPageManager: Boolean;
@@ -75,34 +74,30 @@ type
     procedure Activated; override;
   public
     procedure NameProxy(Sender: TObject);
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
-{$ELSE}
+    {$ELSE}
     procedure FormModified; override;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
-{$ELSE}
+    {$ELSE}
     procedure FormClosed(Form: TForm); override;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     function GetEditState: TEditState; override;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
-{$ELSE}
-{$IFDEF COMPILER4_UP}
+    {$ELSE}
+    {$IFDEF COMPILER4_UP}
     procedure ComponentDeleted(Component: IPersistent); override;
-{$ELSE}
+    {$ELSE}
     procedure ComponentDeleted(Component: TComponent); override;
-{$ENDIF}
-{$ENDIF}
-
-
-    property PageManager: TJvPageManager read FPageManager write SeTJvPageManager;
+    {$ENDIF}
+    {$ENDIF}
+    property PageManager: TJvPageManager read FPageManager write SetPageManager;
     property OwnerForm: TCustomForm read GetForm;
   end;
-
-{ TJvProxyListProperty }
 
   TJvProxyListProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
@@ -110,22 +105,16 @@ type
     procedure Edit; override;
   end;
 
-{ TJvPageManagerEditor }
-
   TJvPageManagerEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-{ TJvPageNameProperty }
-
   TJvPageNameProperty = class(TStringProperty)
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-
-{ TJvPageBtnProperty }
 
   TJvPageBtnProperty = class(TComponentProperty)
     procedure GetValues(Proc: TGetStrProc); override;
@@ -133,12 +122,14 @@ type
 
 implementation
 
-uses Consts, Buttons, JvxCtrls, JvConst, JvxConst, JvDsgn;
+uses
+  Consts, Buttons,
+  JvxCtrls, JvConst, JvxConst;
 
 {$R *.DFM}
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 {$IFDEF COMPILER6_UP}
@@ -153,34 +144,35 @@ type
 {$ENDIF}
 {$ENDIF}
 
-
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
 var
   I: Integer;
 begin
   Result := nil;
-  for I := 0 to Screen.FormCount - 1 do begin
-    if Screen.Forms[I] is TJvProxyEditor then begin
+  for I := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[I] is TJvProxyEditor then
       if TJvProxyEditor(Screen.Forms[I]).PageManager = Manager then
       begin
         Result := TJvProxyEditor(Screen.Forms[I]);
         Break;
       end;
-    end;
-  end;
 end;
 
 procedure ShowProxyEditor(Designer: TDesigner; Manager: TJvPageManager);
 var
   Editor: TJvProxyEditor;
 begin
-  if Manager = nil then Exit;
+  if Manager = nil then
+    Exit;
   Editor := FindEditor(Manager);
-  if Editor <> nil then begin
+  if Editor <> nil then
+  begin
     Editor.Show;
-    if Editor.WindowState = wsMinimized then Editor.WindowState := wsNormal;
+    if Editor.WindowState = wsMinimized then
+      Editor.WindowState := wsNormal;
   end
-  else begin
+  else
+  begin
     Editor := TJvProxyEditor.Create(Application);
     try
       Editor.Designer := TFormDesigner(Designer);
@@ -193,7 +185,7 @@ begin
   end;
 end;
 
-{ TJvProxyListProperty }
+//=== TJvProxyListProperty ===================================================
 
 function TJvProxyListProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -207,7 +199,8 @@ begin
   List := TList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
     Result := ResStr(srNone)
-  else FmtStr(Result, '(%s)', [GetPropType^.Name]);
+  else
+    FmtStr(Result, '(%s)', [GetPropType^.Name]);
 end;
 
 procedure TJvProxyListProperty.Edit;
@@ -215,24 +208,34 @@ begin
   ShowProxyEditor(Designer, TJvPageManager(GetComponent(0)));
 end;
 
-{ TJvPageBtnProperty }
+//=== TJvPageBtnProperty =====================================================
 
 procedure TJvPageBtnProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   Component: TComponent;
 begin
-  for I := 0 to Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF}.ComponentCount - 1 do begin
-    Component := Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF}.Components[I];
+  {$IFDEF COMPILER6_UP}
+  for I := 0 to Designer.Root.ComponentCount - 1 do
+  {$ELSE}
+  for I := 0 to Designer.Form.ComponentCount - 1 do
+  {$ENDIF}
+  begin
+    {$IFDEF COMPILER6_UP}
+    Component := Designer.Root.Components[I];
+    {$ELSE}
+    Component := Designer.Form.Components[I];
+    {$ENDIF}
 
-    if (Component.InheritsFrom(TButtonControl) or 
-      Component.InheritsFrom(TSpeedButton) or 
-      Component.InheritsFrom(TJvxSpeedButton)) and 
-      (Component.Name <> '') then Proc(Component.Name);
+    if (Component.InheritsFrom(TButtonControl) or
+      Component.InheritsFrom(TSpeedButton) or
+      Component.InheritsFrom(TJvxSpeedButton)) and
+      (Component.Name <> '') then
+      Proc(Component.Name);
   end;
 end;
 
-{ TJvPageNameProperty }
+//=== TJvPageNameProperty ====================================================
 
 function TJvPageNameProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -247,26 +250,25 @@ begin
   PageProxy := GetComponent(0) as TJvPageProxy;
   if (PageProxy <> nil) and (PageProxy.PageManager <> nil) and
     (PageProxy.PageManager.PageOwner <> nil) then
-  begin
-    for I := 0 to PageProxy.PageManager.PageCount - 1 do begin
+    for I := 0 to PageProxy.PageManager.PageCount - 1 do
       Proc(PageProxy.PageManager.PageNames[I]);
-    end;
-  end;
 end;
 
-{ TJvPageManagerEditor }
+//=== TJvPageManagerEditor ===================================================
 
 procedure TJvPageManagerEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowProxyEditor(Designer, TJvPageManager(Component));
+    0:
+      ShowProxyEditor(Designer, TJvPageManager(Component));
   end;
 end;
 
 function TJvPageManagerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := srProxyEditor;
+    0:
+      Result := srProxyEditor;
   end;
 end;
 
@@ -275,14 +277,17 @@ begin
   Result := 1;
 end;
 
-{ TJvProxyEditor }
+//=== TJvProxyEditor =========================================================
 
-procedure TJvProxyEditor.SeTJvPageManager(Value: TJvPageManager);
+procedure TJvProxyEditor.SetPageManager(Value: TJvPageManager);
 begin
-  if FPageManager <> Value then begin
-    if FPageManager <> nil then FPageManager.OnCheckProxy := nil;
+  if FPageManager <> Value then
+  begin
+    if FPageManager <> nil then
+      FPageManager.OnCheckProxy := nil;
     FPageManager := Value;
-    if FPageManager <> nil then FPageManager.OnCheckProxy := NameProxy;
+    if FPageManager <> nil then
+      FPageManager.OnCheckProxy := NameProxy;
     UpdateData;
   end;
 end;
@@ -290,26 +295,28 @@ end;
 function TJvProxyEditor.UniqueName(Component: TComponent): string;
 var
   Temp: string;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   I: Integer;
   Comp: TComponent;
-{$ENDIF}
+  {$ENDIF}
 begin
   Result := '';
-  if (Component <> nil) then Temp := Component.ClassName
-  else Temp := TJvPageProxy.ClassName;
+  if (Component <> nil) then
+    Temp := Component.ClassName
+  else
+    Temp := TJvPageProxy.ClassName;
   if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
     System.Delete(Temp, 1, 1);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := Designer.UniqueName(Temp);
-{$ELSE}
+  {$ELSE}
   I := 1;
   repeat
     Result := Temp + IntToStr(I);
     Comp := OwnerForm.FindComponent(Result);
     Inc(I);
   until (Comp = nil) or (Comp = Component);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function TJvProxyEditor.GetEditState: TEditState;
@@ -323,7 +330,6 @@ begin
     TJvPageProxy(Sender).Name := UniqueName(TJvPageProxy(Sender));
 end;
 
-
 {$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
@@ -334,7 +340,12 @@ procedure TJvProxyEditor.FormClosed(Form: TForm);
 {$ENDIF}
 {$ENDIF}
 begin
-  if {$IFDEF COMPILER6_UP}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
+  {$IFDEF COMPILER6_UP}
+  if ADesigner.Root = OwnerForm then
+  {$ELSE}
+  if ADesigner.Form = OwnerForm then
+  {$ENDIF}
+    Free;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -343,10 +354,9 @@ procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
 procedure TJvProxyEditor.FormModified;
 {$ENDIF}
 begin
-  if not (csDestroying in ComponentState) then UpdateData;
+  if not (csDestroying in ComponentState) then
+    UpdateData;
 end;
-
-
 
 procedure TJvProxyEditor.Activated;
 begin
@@ -356,16 +366,19 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 begin
-  if Item = FPageManager then begin
+  if Item = FPageManager then
+  begin
 {$ELSE}
 {$IFDEF COMPILER4_UP}
 procedure TJvProxyEditor.ComponentDeleted(Component: IPersistent);
 begin
-  if ExtractPersistent(Component) = FPageManager then begin
+  if ExtractPersistent(Component) = FPageManager then
+  begin
 {$ELSE}
 procedure TJvProxyEditor.ComponentDeleted(Component: TComponent);
 begin
-  if Component = FPageManager then begin
+  if Component = FPageManager then
+  begin
 {$ENDIF}
 {$ENDIF}
     FPageManager := nil;
@@ -377,14 +390,18 @@ procedure TJvProxyEditor.UpdateData;
 var
   ProxyCount: Integer;
 begin
-  if CheckPageManager then begin
-    if not FDeleting then FPageManager.Resync;
+  if CheckPageManager then
+  begin
+    if not FDeleting then
+      FPageManager.Resync;
     ProxyCount := FPageManager.PageProxies.Count;
-    if ProxyCount = 0 then begin
+    if ProxyCount = 0 then
+    begin
       ProxyGrid.RowCount := 2;
       SelectProxy(nil);
     end
-    else begin
+    else
+    begin
       ProxyGrid.RowCount := 1 + ProxyCount;
     end;
     DeleteBtn.Enabled := ProxyCount > 0;
@@ -394,18 +411,24 @@ end;
 
 function TJvProxyEditor.GetForm: TCustomForm;
 begin
-  Result := {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF}; { GetParentForm(FBar) }
+  {$IFDEF COMPILER6_UP}
+  Result := TCustomForm(Designer.Root); { GetParentForm(FBar) }
+  {$ELSE}
+  Result := Designer.Form; { GetParentForm(FBar) }
+  {$ENDIF}
 end;
 
 procedure TJvProxyEditor.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
-  if FPageManager <> nil then FPageManager.OnCheckProxy := nil;
+  if FPageManager <> nil then
+    FPageManager.OnCheckProxy := nil;
 end;
 
 procedure TJvProxyEditor.FormShow(Sender: TObject);
 begin
-  if FPageManager.PageOwner <> nil then begin
+  if FPageManager.PageOwner <> nil then
+  begin
     Caption := Format(srPageProxies, [FPageManager.PageOwner.Name]);
   end;
 end;
@@ -413,7 +436,11 @@ end;
 function TJvProxyEditor.CheckPageManager: Boolean;
 begin
   Result := (FPageManager <> nil) and (FPageManager.Owner <> nil) and
-    (Designer.{$IFDEF COMPILER6_UP}Root{$ELSE}Form{$ENDIF} <> nil);
+    {$IFDEF COMPILER6_UP}
+    (Designer.Root <> nil);
+    {$ELSE}
+    (Designer.Form <> nil);
+    {$ENDIF}
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -425,8 +452,13 @@ procedure TJvProxyEditor.SelectProxy(Proxy: TJvPageProxy);
 var
   FComponents: TDesignerSelectionList;
 begin
-  if CheckPageManager and Active then begin
-    FComponents := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
+  if CheckPageManager and Active then
+  begin
+    {$IFDEF COMPILER6_UP}
+    FComponents := TDesignerSelections.Create;
+    {$ELSE}
+    FComponents := TDesignerSelectionList.Create;
+    {$ENDIF}
     if Proxy <> nil then
       FComponents.Add(Proxy)
     else
@@ -452,18 +484,25 @@ var
   Proxy: TJvPageProxy;
 begin
   CellText := '';
-  if gdFixed in State then begin
+  if gdFixed in State then
+  begin
     case Col of
-      0: CellText := srProxyName;
-      1: CellText := srPageName;
+      0:
+        CellText := srProxyName;
+      1:
+        CellText := srPageName;
     end;
   end
-  else begin
+  else
+  begin
     Proxy := ProxyByRow(Row - 1);
-    if Proxy <> nil then begin
+    if Proxy <> nil then
+    begin
       case Col of
-        0: CellText := Proxy.Name;
-        1: CellText := Proxy.PageName;
+        0:
+          CellText := Proxy.Name;
+        1:
+          CellText := Proxy.PageName;
       end;
     end;
   end;
@@ -486,8 +525,13 @@ var
   Proxy: TJvPageProxy;
 begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
-  if Proxy <> nil then begin
-    {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Proxy, Proxy.Name, '');
+  if Proxy <> nil then
+  begin
+    {$IFDEF COMPILER6_UP}
+    TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
+    {$ELSE}
+    Designer.ValidateRename(Proxy, Proxy.Name, '');
+    {$ENDIF}
     FDeleting := True;
     try
       Proxy.Free;
@@ -501,12 +545,12 @@ end;
 procedure TJvProxyEditor.ProxyGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Shift = [] then begin
+  if Shift = [] then
+  begin
     case Key of
       VK_RETURN:
-        if ProxyByRow(ProxyGrid.Row - 1) <> nil then begin
+        if ProxyByRow(ProxyGrid.Row - 1) <> nil then
           ActivateInspector(#0);
-        end;
       VK_DELETE:
         DeleteBtnClick(nil);
     end;
@@ -515,7 +559,8 @@ end;
 
 procedure TJvProxyEditor.FormResize(Sender: TObject);
 begin
-  with ProxyGrid do begin
+  with ProxyGrid do
+  begin
     DefaultColWidth := (ClientWidth - 1) div 2;
     ColWidths[1] := ClientWidth - ColWidths[0] - 1;
   end;
@@ -523,13 +568,16 @@ end;
 
 procedure TJvProxyEditor.FormCreate(Sender: TObject);
 begin
-  if NewStyleControls then Font.Style := [];
-{$IFDEF WIN32}
-  with FormStorage do begin
+  if NewStyleControls then
+    Font.Style := [];
+  {$IFDEF WIN32}
+  with FormStorage do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 end.
+

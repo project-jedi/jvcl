@@ -19,7 +19,6 @@ Contributor(s): Michael Beck [mbeck@bigfoot.com],
                 Oliver Giesen [ogware@gmx.net],
                 Peter Thornqvist [peter3@peter3.com].
 
-
 Last Modified: 2002-12-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -35,21 +34,13 @@ unit JvMaskEdit;
 interface
 
 uses
-  JvComponent,
-  JvTypes,
-  Windows,
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
-  Controls,
-  Mask,
-  Forms,
-  JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Mask, Forms,
+  JvCaret, JvComponent, JvTypes, JVCLVer;
 
 type
   TJvCustomMaskEdit = class(TCustomMaskEdit)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnEnabledChanged: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -58,50 +49,45 @@ type
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     FSaved: TColor;
-    FColor: TColor;
+    FHintColor: TColor;
     FOver: Boolean;
     FEffect: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     FCaret: TJvCaret;
-    FEntering,
+    FEntering: Boolean;
     FLeaving: Boolean;
-
     (* ++ RDB ++ *)
     FClipBoardCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FDisabledColor: TColor;
     FDisabledTextColor: TColor;
-
     FProtectPassword: Boolean;
     (* -- RDB -- *)
-
-    procedure SetCtl3d(Value: Boolean);
+    procedure SetCtl3D(Value: Boolean);
     (* ++ RDB ++ *)
     procedure UpdateEdit;
     function GetPasswordChar: Char;
-    function GetText: String;
+    function GetText: string;
     procedure SetPasswordChar(const Value: Char);
-    procedure SetText(const Value: String);
+    procedure SetText(const Value: string);
     (* -- RDB -- *)
   protected
-    procedure CMEnabledchanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CaretChanged(sender: TObject); dynamic;
-    procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     (* ++ RDB ++ *)
-    procedure WMPaint(var msg: TWMPaint); message WM_PAINT;
-    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd); message WM_ERASEBKGND;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     (* -- RDB -- *)
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-
     procedure DoCtl3DChanged; virtual;
     procedure DoEnabledChanged; virtual;
     procedure DoMouseEnter; dynamic;
@@ -109,7 +95,6 @@ type
     procedure DoParentColorChanged; dynamic;
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
-
     procedure SetCaret(const Value: TJvCaret);
     (* ++ RDB ++ *)
     procedure SetDisabledColor(const Value: TColor); virtual;
@@ -117,22 +102,19 @@ type
     procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
     procedure SetGroupIndex(const Value: Integer);
     (* -- RDB -- *)
-
   public
-    procedure DefaultHandler(var Msg);override;
+    procedure DefaultHandler(var Msg); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
   protected
-    property Text:string read GetText write SetText;
-    property PasswordChar:char read GetPasswordChar write SetPasswordChar;
-    // set to true to disable read/write of PasswordChar and read of Text
-    property ProtectPassword:boolean read FProtectPassword write FProtectPassword default false;
-
-    property HotTrack: Boolean read FEffect write SetCtl3d default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property Text: string read GetText write SetText;
+    property PasswordChar: Char read GetPasswordChar write SetPasswordChar;
+    // set to True to disable read/write of PasswordChar and read of Text
+    property ProtectPassword: Boolean read FProtectPassword write FProtectPassword default False;
+    property HotTrack: Boolean read FEffect write SetCtl3D default False;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Caret: TJvCaret read FCaret write SetCaret;
     (* ++ RDB ++ *)
     property ClipboardCommands: TJvClipboardCommands read FClipBoardCommands
@@ -141,18 +123,12 @@ type
       SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor
       default clWindow;
-
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
     (* -- RDB -- *)
-
-    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged
-      write FOnEnabledChanged;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write
-      FOnCtl3DChanged;
+    property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write
       FOnParentColorChanged;
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
@@ -233,23 +209,17 @@ type
 
 implementation
 
-{**************************************************}
-
 procedure TJvCustomMaskEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   DoCtl3DChanged;
 end;
 
-{**************************************************}
-
 procedure TJvCustomMaskEdit.DoCtl3DChanged;
 begin
-  if Assigned(OnCtl3DChanged) then
-    OnCtl3DChanged(Self);
+  if Assigned(FOnCtl3DChanged) then
+    FOnCtl3DChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCustomMaskEdit.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -257,23 +227,19 @@ begin
   DoParentColorChanged;
 end;
 
-{***********************************************}
-
 procedure TJvCustomMaskEdit.DoParentColorChanged;
 begin
-  if Assigned(OnParentColorChange) then
-    OnParentColorChange(Self);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
-
-{***********************************************}
 
 constructor TJvCustomMaskEdit.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FEffect := False;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
-  FCaret := TJvCaret.Create(self);
+  FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
   ControlStyle := ControlStyle + [csAcceptsControls];
   (* ++ RDB ++ *)
@@ -282,37 +248,29 @@ begin
   FClipBoardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
   (* -- RDB -- *)
-  FEntering:= False;
-  FLeaving:= False;
+  FEntering := False;
+  FLeaving := False;
 end;
-
-{**************************************************}
 
 destructor TJvCustomMaskEdit.Destroy;
 begin
-  FCaret.OnChanged := NIL;
+  FCaret.OnChanged := nil;
   FreeAndNil(FCaret);
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-procedure TJvCustomMaskEdit.CMEnabledchanged(var Message: TMessage);
+procedure TJvCustomMaskEdit.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
   DoEnabledChanged;
 end;
 
-{**************************************************}
-
 procedure TJvCustomMaskEdit.DoEnabledChanged;
 begin
-  if Assigned(OnEnabledChanged) then
-    OnEnabledChanged(Self);
+  if Assigned(FOnEnabledChanged) then
+    FOnEnabledChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCustomMaskEdit.CMMouseEnter(var Msg: TMessage);
 begin
@@ -323,23 +281,19 @@ begin
     // for D7...
     if csDesigning in ComponentState then
       Exit;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     if HotTrack then
-      Ctl3d := True;
+      Ctl3D := True;
     FOver := True;
   end;
   DoMouseEnter;
 end;
 
-{**************************************************}
-
 procedure TJvCustomMaskEdit.DoMouseEnter;
 begin
-  if Assigned(OnMouseEnter) then
-    OnMouseEnter(Self);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCustomMaskEdit.CMMouseLeave(var Msg: TMessage);
 begin
@@ -347,28 +301,24 @@ begin
   begin
     Application.HintColor := FSaved;
     if FEffect then
-      Ctl3d := False;
+      Ctl3D := False;
     FOver := False;
   end;
   inherited;
   DoMouseLeave;
 end;
 
-{***********************************************}
-
 procedure TJvCustomMaskEdit.DoMouseLeave;
 begin
-  if Assigned(OnMouseLeave) then
-    OnMouseLeave(Self);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
-{***********************************************}
-
-procedure TJvCustomMaskEdit.SetCtl3d(Value: Boolean);
+procedure TJvCustomMaskEdit.SetCtl3D(Value: Boolean);
 begin
   FEffect := Value;
   if Value then
-    Ctl3d := False;
+    Ctl3D := False;
 end;
 
 procedure TJvCustomMaskEdit.CaretChanged(Sender: TObject);
@@ -381,8 +331,7 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMaskEdit.SetClipBoardCommands(
-  const Value: TJvClipboardCommands);
+procedure TJvCustomMaskEdit.SetClipBoardCommands(const Value: TJvClipboardCommands);
 begin
   if FClipBoardCommands <> Value then
   begin
@@ -399,16 +348,15 @@ end;
 
 procedure TJvCustomMaskEdit.UpdateEdit;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for I := 0 to Self.Owner.ComponentCount - 1 do
+  for I := 0 to Owner.ComponentCount - 1 do
   begin
-    if (Self.Owner.Components[i] is TJvCustomMaskEdit) then
-      with TJvCustomMaskEdit(Self.Owner.Components[i]) do
+    if (Owner.Components[i] is TJvCustomMaskEdit) then
+      with TJvCustomMaskEdit(Owner.Components[i]) do
       begin
-        if (Name <> Self.Name)
-        and(GroupIndex <> -1)
-        and(GroupIndex = Self.GroupIndex) then
+        if (Name <> Self.Name) and (GroupIndex <> -1) and
+        (GroupIndex = Self.GroupIndex) then
           Clear;
       end;
   end;
@@ -459,54 +407,54 @@ begin
     inherited;
 end;
 
-procedure TJvCustomMaskEdit.WMPaint(var msg: TWMPaint);
+procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
 var
-  canvas: TCanvas;
-  ps: TPaintStruct;
-  callEndPaint: Boolean;
+  Canvas: TCanvas;
+  Ps: TPaintStruct;
+  CallEndPaint: Boolean;
 begin
   if Enabled then
     inherited
   else
   begin
-    callEndPaint := False;
-    canvas := TCanvas.Create;
+    CallEndPaint := False;
+    Canvas := TCanvas.Create;
     try
-      if msg.DC <> 0 then
+      if Msg.DC <> 0 then
       begin
-        canvas.Handle := msg.DC;
-        ps.fErase := true;
+        Canvas.Handle := Msg.DC;
+        Ps.fErase := True;
       end
       else
       begin
-        BeginPaint(handle, ps);
-        callEndPaint := true;
-        canvas.handle := ps.hdc;
+        BeginPaint(Handle, Ps);
+        CallEndPaint := True;
+        Canvas.Handle := Ps.hdc;
       end;
 
-      if ps.fErase then
-        Perform(WM_ERASEBKGND, canvas.handle, 0);
+      if Ps.fErase then
+        Perform(WM_ERASEBKGND, Canvas.Handle, 0);
 
-      SaveDC(canvas.handle);
+      SaveDC(Canvas.Handle);
       try
-        canvas.Brush.Style := bsClear;
-        canvas.Font := Font;
-        canvas.Font.Color := FDisabledTextColor;
-        canvas.TextOut(1, 1, Text);
+        Canvas.Brush.Style := bsClear;
+        Canvas.Font := Font;
+        Canvas.Font.Color := FDisabledTextColor;
+        Canvas.TextOut(1, 1, Text);
       finally
-        RestoreDC(canvas.handle, -1);
+        RestoreDC(Canvas.Handle, -1);
       end;
     finally
-      if callEndPaint then
-        EndPaint(handle, ps);
-      canvas.free
+      if CallEndPaint then
+        EndPaint(Handle, Ps);
+      Canvas.Free;
     end;
   end;
 end;
 
-procedure TJvCustomMaskEdit.WMEraseBkGnd(var msg: TWMEraseBkGnd);
+procedure TJvCustomMaskEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 var
-  canvas: TCanvas;
+  Canvas: TCanvas;
 begin
   if Enabled then
     inherited
@@ -514,49 +462,49 @@ begin
   begin
     Canvas := TCanvas.Create;
     try
-      Canvas.Handle := msg.DC;
-      SaveDC(msg.DC);
+      Canvas.Handle := Msg.DC;
+      SaveDC(Msg.DC);
       try
         Canvas.Brush.Color := FDisabledColor;
         Canvas.Brush.Style := bsSolid;
         Canvas.Fillrect(clientrect);
-        Msg.result := 1;
+        Msg.Result := 1;
       finally
-        RestoreDC(msg.DC, -1);
+        RestoreDC(Msg.DC, -1);
       end;
     finally
-      canvas.free
+      Canvas.Free;
     end;
-  end;                                 { Else }
+  end;
 end;
 
-procedure TJvCustomMaskEdit.WMSetFocus(var msg: TMessage);
+procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);
 begin
-  FEntering:= True;
+  FEntering := True;
   try
     inherited;
     FCaret.CreateCaret;
     DoSetFocus(FindControl(Msg.WParam));
   finally
-    FEntering:= False;
+    FEntering := False;
   end;
 end;
 
 procedure TJvCustomMaskEdit.WMKillFocus(var Msg: TMessage);
 begin
-  FLeaving:= True;
+  FLeaving := True;
   try
     inherited;
     DoKillFocus(FindControl(Msg.WParam));
   finally
-    FLeaving:= False;
+    FLeaving := False;
   end;
 end;
 
 procedure TJvCustomMaskEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   UpdateEdit;
-  inherited;
+  inherited KeyDown(Key, Shift);
 end;
 
 function TJvCustomMaskEdit.GetPasswordChar: Char;
@@ -564,31 +512,33 @@ begin
   Result := inherited PasswordChar;
 end;
 
-function TJvCustomMaskEdit.GetText: String;
-var tmp:boolean;
+function TJvCustomMaskEdit.GetText: string;
+var
+  Tmp: Boolean;
 begin
-  tmp := ProtectPassword;
+  Tmp := ProtectPassword;
   try
-    ProtectPassword := false;
+    ProtectPassword := False;
     Result := inherited Text;
   finally
-    ProtectPassword := tmp;
+    ProtectPassword := Tmp;
   end;
 end;
 
 procedure TJvCustomMaskEdit.SetPasswordChar(const Value: Char);
-var tmp:boolean;
+var
+  Tmp: Boolean;
 begin
-  tmp := ProtectPassword;
+  Tmp := ProtectPassword;
   try
-    ProtectPassword := false;
+    ProtectPassword := False;
     inherited PasswordChar := Value;
   finally
-    ProtectPassword := tmp;
+    ProtectPassword := Tmp;
   end;
 end;
 
-procedure TJvCustomMaskEdit.SetText(const Value: String);
+procedure TJvCustomMaskEdit.SetText(const Value: string);
 begin
   inherited Text := Value;
 end;
@@ -596,24 +546,26 @@ end;
 procedure TJvCustomMaskEdit.DefaultHandler(var Msg);
 begin
   case TMessage(Msg).Msg of
-    WM_CUT,WM_PASTE,EM_SETPASSWORDCHAR,WM_GETTEXT,WM_GETTEXTLENGTH:
-      if not ProtectPassword then inherited;
+    WM_CUT, WM_PASTE, EM_SETPASSWORDCHAR, WM_GETTEXT, WM_GETTEXTLENGTH:
+      if not ProtectPassword then
+        inherited DefaultHandler(Msg);
   else
-    inherited;
+    inherited DefaultHandler(Msg);
   end;
 end;
 
 procedure TJvCustomMaskEdit.DoKillFocus(const ANextControl: TWinControl);
 begin
-  if Assigned(OnKillFocus) then
-    OnKillFocus(Self, ANextControl);
+  if Assigned(FOnKillFocus) then
+    FOnKillFocus(Self, ANextControl);
 end;
 
 procedure TJvCustomMaskEdit.DoSetFocus(
   const APreviousControl: TWinControl);
 begin
-  if Assigned(OnSetFocus) then
-    OnSetFocus(Self, APreviousControl);
+  if Assigned(FOnSetFocus) then
+    FOnSetFocus(Self, APreviousControl);
 end;
 
 end.
+

@@ -12,7 +12,7 @@ The Original Code is: JvGIFCtrl.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,15 +29,17 @@ unit JvGIFCtrl;
 
 interface
 
-
-uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Menus, ExtCtrls,
+uses
+  Messages,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms, Menus,
   JvxAnimate, JvGIF, JvTimer;
 
 type
-
-{ TJvGIFAnimator }
-
   TJvGIFAnimator = class(TJvImageControl)
   private
     FAnimate: Boolean;
@@ -52,12 +54,12 @@ type
     FCache: TBitmap;
     FCacheIndex: Integer;
     FTransColor: TColor;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     FAsyncDrawing: Boolean;
-{$ENDIF}
-{$IFNDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFNDEF COMPILER4_UP}
     FAutoSize: Boolean;
-{$ENDIF}
+    {$ENDIF}
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     FOnChange: TNotifyEvent;
@@ -65,12 +67,12 @@ type
     procedure TimerDeactivate;
     function GetFrameBitmap(Index: Integer; var TransColor: TColor): TBitmap;
     function GetDelayTime(Index: Integer): Cardinal;
-{$IFNDEF COMPILER4_UP}
+    {$IFNDEF COMPILER4_UP}
     procedure SetAutoSize(Value: Boolean);
-{$ENDIF}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER3_UP}
     procedure SetAsyncDrawing(Value: Boolean);
-{$ENDIF}
+    {$ENDIF}
     procedure SetAnimate(Value: Boolean);
     procedure SetCenter(Value: Boolean);
     procedure SetImage(Value: TJvGIFImage);
@@ -79,11 +81,11 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure ImageChanged(Sender: TObject);
     procedure TimerExpired(Sender: TObject);
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
-{$ENDIF}
+    {$ENDIF}
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
     procedure Paint; override;
@@ -96,26 +98,27 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
-{$ENDIF}
+    {$ENDIF}
+    // (rom) why Jvx ?
     property JvxAnimate: Boolean read FAnimate write SetAnimate default False;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property AutoSize default True;
-{$ELSE}
+    {$ELSE}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-{$ENDIF}
+    {$ENDIF}
     property Center: Boolean read FCenter write SetCenter default False;
     property FrameIndex: Integer read FFrameIndex write SetFrameIndex default 0;
     property Image: TJvGIFImage read FImage write SetImage;
     property Loop: Boolean read FLoop write FLoop default True;
     property Stretch: Boolean read FStretch write SetStretch default False;
     property Transparent: Boolean read FTransparent write SetTransparent default True;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-{$ENDIF}
+    {$ENDIF}
     property Align;
     property Cursor;
     property DragCursor;
@@ -137,33 +140,32 @@ type
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
-{$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF WIN32}
+    {$ENDIF}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
 
 implementation
 
-uses JvVCLUtils, JvMaxMin, JvGraph;
+uses
+  JvVCLUtils, JvMaxMin;
 
-{ Maximum delay (10 sec) guarantees that a very long and slow
-  GIF does not hang the system }
 const
+  { Maximum delay (10 sec) guarantees that a very long and slow
+    GIF does not hang the system }
   MaxDelayTime = 10000;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   MinDelayTime = 50;
-{$ELSE}
+  {$ELSE}
   MinDelayTime = 1;
-{$ENDIF}
-
-{ TJvGIFAnimator }
+  {$ENDIF}
 
 constructor TJvGIFAnimator.Create(AOwner: TComponent);
 begin
@@ -195,7 +197,8 @@ end;
 
 procedure TJvGIFAnimator.AdjustSize;
 begin
-  if not (csReading in ComponentState) then begin
+  if not (csReading in ComponentState) then
+  begin
     if AutoSize and Assigned(FImage) and not FImage.Empty then
       SetBounds(Left, Top, FImage.ScreenWidth, FImage.ScreenHeight);
   end;
@@ -222,69 +225,84 @@ begin
     (FImage.Count > 1) then
   begin
     Result := FImage.Frames[FFrameIndex].AnimateInterval;
-    if Result < MinDelayTime then Result := MinDelayTime
-    else if Result > MaxDelayTime then Result := MaxDelayTime;
+    if Result < MinDelayTime then
+      Result := MinDelayTime
+    else
+    if Result > MaxDelayTime then
+      Result := MaxDelayTime;
   end
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TJvGIFAnimator.GetFrameBitmap(Index: Integer;
   var TransColor: TColor): TBitmap;
 var
   I, Last, First: Integer;
-  SavePal: HPalette;
+  SavePal: HPALETTE;
   UseCache: Boolean;
 begin
   Index := Min(Index, FImage.Count - 1);
   UseCache := (FCache <> nil) and (FCacheIndex = Index - 1) and (FCacheIndex >= 0) and
     (FImage.Frames[FCacheIndex].DisposalMethod <> dmRestorePrevious);
-  if UseCache then begin
+  if UseCache then
+  begin
     Result := FCache;
     TransColor := FTransColor;
   end
-  else begin
+  else
+  begin
     FCache.Free;
     FCache := nil;
     Result := TBitmap.Create;
   end;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   Result.Canvas.Lock;
-{$ENDIF}
+  {$ENDIF}
   try
-    with Result do begin
-      if not UseCache then begin
+    with Result do
+    begin
+      if not UseCache then
+      begin
         Width := FImage.ScreenWidth;
         Height := FImage.ScreenHeight;
       end;
       Last := Index;
       First := Max(0, Last);
       SavePal := 0;
-      if FImage.Palette <> 0 then begin
+      if FImage.Palette <> 0 then
+      begin
         SavePal := SelectPalette(Canvas.Handle, FImage.Palette, False);
         RealizePalette(Canvas.Handle);
       end;
-      if not UseCache then begin
+      if not UseCache then
+      begin
         if (FImage.Frames[FImage.FrameIndex].TransparentColor <> clNone) then
         begin
           TransColor := GetNearestColor(Canvas.Handle,
             ColorToRGB(FImage.Frames[FImage.FrameIndex].TransparentColor));
           Canvas.Brush.Color := PaletteColor(TransColor);
         end
-        else if (FImage.BackgroundColor <> clNone) and FImage.Transparent then
+        else
+        if (FImage.BackgroundColor <> clNone) and FImage.Transparent then
           Canvas.Brush.Color := PaletteColor(FImage.BackgroundColor)
-        else Canvas.Brush.Color := PaletteColor(clWindow);
+        else
+          Canvas.Brush.Color := PaletteColor(clWindow);
         Canvas.FillRect(Bounds(0, 0, Width, Height));
-        while First > 0 do begin
+        while First > 0 do
+        begin
           if (FImage.ScreenWidth = FImage.Frames[First].Width) and
             (FImage.ScreenHeight = FImage.Frames[First].Height) then
           begin
             if (FImage.Frames[First].TransparentColor = clNone) or
               ((FImage.Frames[First].DisposalMethod = dmRestoreBackground) and
-              (First < Last)) then Break;
+              (First < Last)) then
+              Break;
           end;
           Dec(First);
         end;
-        for I := First to Last - 1 do begin
+        for I := First to Last - 1 do
+        begin
           with FImage.Frames[I] do
             case DisposalMethod of
               dmUndefined, dmLeave:
@@ -293,38 +311,41 @@ begin
                 if I > First then
                   Canvas.FillRect(Bounds(Origin.X, Origin.Y, Width, Height));
               dmRestorePrevious:
-                begin { do nothing } end;
+                begin { do nothing }
+                end;
             end;
         end;
       end
-      else begin
+      else
+      begin
         with FImage.Frames[FCacheIndex] do
           if DisposalMethod = dmRestoreBackground then
             Canvas.FillRect(Bounds(Origin.X, Origin.Y, Width, Height));
-      end; { UseCache }
+      end;
       with FImage.Frames[Last] do
         Draw(Canvas, Bounds(Origin.X, Origin.Y, Width, Height), True);
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       if (not UseCache) and (TransColor <> clNone) and FTransparent then
       begin
         TransparentColor := PaletteColor(TransColor);
         Transparent := True;
       end;
-{$ENDIF}
+      {$ENDIF}
       if FImage.Palette <> 0 then
         SelectPalette(Canvas.Handle, SavePal, False);
     end;
     FCache := Result;
     FCacheIndex := Index;
     FTransColor := TransColor;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Result.Canvas.Unlock;
-{$ENDIF}
+    {$ENDIF}
   except
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Result.Canvas.Unlock;
-{$ENDIF}
-    if not UseCache then Result.Free;
+    {$ENDIF}
+    if not UseCache then
+      Result.Free;
     raise;
   end;
 end;
@@ -332,7 +353,8 @@ end;
 function TJvGIFAnimator.GetPalette: HPALETTE;
 begin
   Result := 0;
-  if not FImage.Empty then Result := FImage.Palette;
+  if not FImage.Empty then
+    Result := FImage.Palette;
 end;
 
 procedure TJvGIFAnimator.ImageChanged(Sender: TObject);
@@ -365,7 +387,8 @@ end;
 
 procedure TJvGIFAnimator.SetCenter(Value: Boolean);
 begin
-  if Value <> FCenter then begin
+  if Value <> FCenter then
+  begin
     Lock;
     try
       FCenter := Value;
@@ -373,13 +396,15 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if JvxAnimate then Repaint;
+    if JvxAnimate then
+      Repaint;
   end;
 end;
 
 procedure TJvGIFAnimator.SetStretch(Value: Boolean);
 begin
-  if Value <> FStretch then begin
+  if Value <> FStretch then
+  begin
     Lock;
     try
       FStretch := Value;
@@ -387,13 +412,15 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if JvxAnimate then Repaint;
+    if JvxAnimate then
+      Repaint;
   end;
 end;
 
 procedure TJvGIFAnimator.SetTransparent(Value: Boolean);
 begin
-  if Value <> FTransparent then begin
+  if Value <> FTransparent then
+  begin
     Lock;
     try
       FTransparent := Value;
@@ -401,14 +428,17 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if JvxAnimate then Repaint;
+    if JvxAnimate then
+      Repaint;
   end;
 end;
 
 procedure TJvGIFAnimator.SetFrameIndex(Value: Integer);
 begin
-  if Value <> FFrameIndex then begin
-    if (Value < FImage.Count) and (Value >= 0) then begin
+  if Value <> FFrameIndex then
+  begin
+    if (Value < FImage.Count) and (Value >= 0) then
+    begin
       Lock;
       try
         FFrameIndex := Value;
@@ -433,32 +463,35 @@ begin
   if FImage.Transparent or FImage.Empty then
     CopyParentImage(Self, Canvas);
   if (not FImage.Empty) and (FImage.ScreenWidth > 0) and
-    (FImage.ScreenHeight> 0) then
+    (FImage.ScreenHeight > 0) then
   begin
     TransColor := clNone;
     Frame := GetFrameBitmap(FrameIndex, TransColor);
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Frame.Canvas.Lock;
     try
-{$ENDIF}
-      if Stretch then Dest := ClientRect
-      else if Center then
+    {$ENDIF}
+      if Stretch then
+        Dest := ClientRect
+      else
+      if Center then
         Dest := Bounds((ClientWidth - Frame.Width) div 2,
           (ClientHeight - Frame.Height) div 2, Frame.Width, Frame.Height)
       else
         Dest := Rect(0, 0, Frame.Width, Frame.Height);
       if (TransColor = clNone) or not FTransparent then
         Canvas.StretchDraw(Dest, Frame)
-      else begin
+      else
+      begin
         StretchBitmapRectTransparent(Canvas, Dest.Left, Dest.Top,
           WidthOf(Dest), HeightOf(Dest), Bounds(0, 0, Frame.Width,
           Frame.Height), Frame, TransColor);
       end;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     finally
       Frame.Canvas.Unlock;
     end;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -474,7 +507,8 @@ var
   F: TCustomForm;
 begin
   SetAnimate(False);
-  if (csDesigning in ComponentState) then begin
+  if csDesigning in ComponentState then
+  begin
     F := GetParentForm(Self);
     if (F <> nil) and (F.Designer <> nil) then
       F.Designer.Modified;
@@ -483,23 +517,27 @@ end;
 
 procedure TJvGIFAnimator.TimerExpired(Sender: TObject);
 begin
-{$IFDEF COMPILER3_UP}
-  if csPaintCopy in ControlState then Exit;
-{$ENDIF}
+  {$IFDEF COMPILER3_UP}
+  if csPaintCopy in ControlState then
+    Exit;
+  {$ENDIF}
   if Visible and (FImage.Count > 1) and (Parent <> nil) and
     Parent.HandleAllocated then
   begin
     Lock;
     try
-      if FFrameIndex < FImage.Count - 1 then Inc(FFrameIndex)
-      else FFrameIndex := 0;
-{$IFDEF COMPILER3_UP}
+      if FFrameIndex < FImage.Count - 1 then
+        Inc(FFrameIndex)
+      else
+        FFrameIndex := 0;
+      {$IFDEF COMPILER3_UP}
       Canvas.Lock;
       try
         FTimerRepaint := True;
         if AsyncDrawing and Assigned(FOnFrameChanged) then
           FTimer.Synchronize(FrameChanged)
-        else FrameChanged;
+        else
+          FrameChanged;
         DoPaintControl;
       finally
         FTimerRepaint := False;
@@ -508,9 +546,11 @@ begin
           FTimer.Interval := GetDelayTime(FFrameIndex);
       end;
       if not FLoop and (FFrameIndex = 0) then
-        if AsyncDrawing then FTimer.Synchronize(TimerDeactivate)
-        else TimerDeactivate;
-{$ELSE}
+        if AsyncDrawing then
+          FTimer.Synchronize(TimerDeactivate)
+        else
+          TimerDeactivate;
+      {$ELSE}
       FTimerRepaint := True;
       try
         FrameChanged;
@@ -520,8 +560,9 @@ begin
         if (FFrameIndex >= 0) and (FFrameIndex < FImage.Count) then
           FTimer.Interval := GetDelayTime(FFrameIndex);
       end;
-      if not FLoop and (FFrameIndex = 0) then TimerDeactivate;
-{$ENDIF}
+      if not FLoop and (FFrameIndex = 0) then
+        TimerDeactivate;
+      {$ENDIF}
     finally
       Unlock;
     end;
@@ -530,28 +571,33 @@ end;
 
 procedure TJvGIFAnimator.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvGIFAnimator.FrameChanged;
 begin
-  if Assigned(FOnFrameChanged) then FOnFrameChanged(Self);
+  if Assigned(FOnFrameChanged) then
+    FOnFrameChanged(Self);
 end;
 
 procedure TJvGIFAnimator.Stop;
 begin
-  if Assigned(FOnStop) then FOnStop(Self);
+  if Assigned(FOnStop) then
+    FOnStop(Self);
 end;
 
 procedure TJvGIFAnimator.Start;
 begin
-  if Assigned(FOnStart) then FOnStart(Self);
+  if Assigned(FOnStart) then
+    FOnStart(Self);
 end;
 
 {$IFNDEF COMPILER4_UP}
 procedure TJvGIFAnimator.SetAutoSize(Value: Boolean);
 begin
-  if Value <> FAutoSize then begin
+  if Value <> FAutoSize then
+  begin
     FAutoSize := Value;
     PictureChanged;
   end;
@@ -561,11 +607,14 @@ end;
 {$IFDEF COMPILER3_UP}
 procedure TJvGIFAnimator.SetAsyncDrawing(Value: Boolean);
 begin
-  if FAsyncDrawing <> Value then begin
+  if FAsyncDrawing <> Value then
+  begin
     Lock;
     try
-      if Value then HookBitmap;
-      if Assigned(FTimer) then FTimer.SyncEvent := not Value;
+      if Value then
+        HookBitmap;
+      if Assigned(FTimer) then
+        FTimer.SyncEvent := not Value;
       FAsyncDrawing := Value;
     finally
       Unlock;
@@ -576,14 +625,17 @@ end;
 
 procedure TJvGIFAnimator.SetAnimate(Value: Boolean);
 begin
-  if FAnimate <> Value then begin
-    if Value then begin
+  if FAnimate <> Value then
+  begin
+    if Value then
+    begin
       FTimer.OnTimer := TimerExpired;
       FTimer.Enabled := True;
       FAnimate := FTimer.Enabled;
       Start;
     end
-    else begin
+    else
+    begin
       FTimer.Enabled := False;
       FTimer.OnTimer := nil;
       FAnimate := False;
@@ -593,12 +645,13 @@ begin
   end;
 end;
 
-procedure TJvGIFAnimator.WMSize(var Message: TWMSize);
+procedure TJvGIFAnimator.WMSize(var Msg: TWMSize);
 begin
   inherited;
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   AdjustSize;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 end.
+

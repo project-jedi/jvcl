@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvKeyboardStates;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, ExtCtrls,
+  JvTypes, JvComponent;
 
 type
   TJvKeyboardStates = class(TJvComponent)
@@ -43,7 +42,7 @@ type
     F1: Boolean;
     F2: Boolean;
     F3: Boolean;
-    FCtrl: Boolean;
+    FSystemKeysEnabled: Boolean;
     procedure SetNumLock(Value: Boolean);
     function GetNumLock: Boolean;
     procedure SetScroll(Value: Boolean);
@@ -52,12 +51,12 @@ type
     function GetCapsLock: Boolean;
     procedure OnAnimation(Sender: TObject);
     function GetState(Value: Integer): Boolean;
-    procedure SetState(key: Integer; Value: Boolean);
+    procedure SetState(Key: Integer; Value: Boolean);
     function GetEnabled: Boolean;
     procedure SetEnabled(Value: Boolean);
     function GetInterval: Cardinal;
     procedure SetInterval(Value: Cardinal);
-    procedure SetCtrl(Value: Boolean);
+    procedure SetSystemKeysEnabled(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -68,12 +67,10 @@ type
     property NumLock: Boolean read GetNumLock write SetNumLock;
     property ScrollLock: Boolean read GetScroll write SetScroll;
     property CapsLock: Boolean read GetCapsLock write SetCapsLock;
-    property SystemKeys_Enabled: Boolean read FCtrl write SetCtrl;
+    property SystemKeysEnabled: Boolean read FSystemKeysEnabled write SetSystemKeysEnabled;
   end;
 
 implementation
-
-{*****************************************************}
 
 procedure TJvKeyboardStates.OnAnimation(Sender: TObject);
 begin
@@ -116,10 +113,9 @@ begin
   end;
 end;
 
-{*****************************************************}
-
 constructor TJvKeyboardStates.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 100;
@@ -127,39 +123,30 @@ begin
   F1 := GetNumLock;
   F2 := GetCapsLock;
   F3 := GetScroll;
-  FCtrl := True;
-  inherited;
+  FSystemKeysEnabled := True;
 end;
-
-{*****************************************************}
-
-procedure TJvKeyboardStates.SetCtrl(Value: Boolean);
-var
-  dummy: LongInt;
-begin
-  FCtrl := Value;
-  // (rom) improved
-  SystemParametersInfo(SPI_SCREENSAVERRUNNING, Ord(not Value), @Dummy, 0)
-end;
-
-{*****************************************************}
 
 destructor TJvKeyboardStates.Destroy;
 begin
   if FTimer.Enabled then
     SetEnabled(False);
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{*****************************************************}
+procedure TJvKeyboardStates.SetSystemKeysEnabled(Value: Boolean);
+var
+  Dummy: Longint;
+begin
+  FSystemKeysEnabled := Value;
+  // (rom) improved
+  SystemParametersInfo(SPI_SCREENSAVERRUNNING, Ord(not Value), @Dummy, 0);
+end;
 
 function TJvKeyboardStates.GetEnabled: Boolean;
 begin
   Result := FTimer.Enabled;
 end;
-
-{*****************************************************}
 
 procedure TJvKeyboardStates.SetEnabled(Value: Boolean);
 begin
@@ -183,81 +170,62 @@ begin
   end;
 end;
 
-{*****************************************************}
-
 function TJvKeyboardStates.GetInterval: Cardinal;
 begin
   Result := FTimer.Interval;
 end;
-
-{*****************************************************}
 
 procedure TJvKeyboardStates.SetInterval(Value: Cardinal);
 begin
   FTimer.Interval := Value;
 end;
 
-{*****************************************************}
-
 function TJvKeyboardStates.GetState(Value: Integer): Boolean;
 var
   KeyState: TKeyboardState;
 begin
   GetKeyboardState(KeyState);
-  Result := KeyState[Value] = 1; 
+  Result := KeyState[Value] = 1;
 end;
 
-{*****************************************************}
-
-procedure TJvKeyboardStates.SetState(key: Integer; Value: Boolean);
+procedure TJvKeyboardStates.SetState(Key: Integer; Value: Boolean);
 begin
-  if Odd(GetAsyncKeyState( key )) <> Value Then
+  if Odd(GetAsyncKeyState(Key)) <> Value then
   begin
-    keybd_event(key, MapVirtualkey(key, 0), KEYEVENTF_EXTENDEDKEY, 0);
-    keybd_event(key, MapVirtualkey(key, 0), KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
+    keybd_event(Key, MapVirtualkey(Key, 0), KEYEVENTF_EXTENDEDKEY, 0);
+    keybd_event(Key, MapVirtualkey(Key, 0), KEYEVENTF_EXTENDEDKEY or KEYEVENTF_KEYUP, 0);
   end;
 end;
-
-{*****************************************************}
 
 procedure TJvKeyboardStates.SetNumLock(Value: Boolean);
 begin
   SetState(VK_NUMLOCK, Value);
 end;
 
-{*****************************************************}
-
 function TJvKeyboardStates.GetNumLock: Boolean;
 begin
   Result := GetState(VK_NUMLOCK);
 end;
-
-{*****************************************************}
 
 procedure TJvKeyboardStates.SetScroll(Value: Boolean);
 begin
   SetState(VK_SCROLL, Value);
 end;
 
-{*****************************************************}
-
 function TJvKeyboardStates.GetScroll: Boolean;
 begin
   Result := GetState(VK_SCROLL);
 end;
 
-{*****************************************************}
-
 procedure TJvKeyboardStates.SetCapsLock(Value: Boolean);
 begin
-  SetState(20, Value);
+  SetState(VK_CAPITAL, Value);
 end;
-
-{*****************************************************}
 
 function TJvKeyboardStates.GetCapsLock: Boolean;
 begin
-  Result := GetState(20);
+  Result := GetState(VK_CAPITAL);
 end;
 
 end.
+

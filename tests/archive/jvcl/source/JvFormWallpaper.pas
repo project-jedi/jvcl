@@ -28,18 +28,17 @@ Known Issues:
 
 unit JvFormWallpaper;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JVCLVer;
+  SysUtils, Classes, Graphics, Controls,
+  JVCLVer;
 
 type
   TJvFormWallpaper = class(TGraphicControl)
   private
-    FImage: TPicture;
     FAboutJVCL: TJVCLAboutInfo;
+    FImage: TPicture;
     procedure SetImage(Value: TPicture);
     procedure FormPaint(Sender: TObject);
   protected
@@ -55,57 +54,49 @@ type
 
 implementation
 
-{*******************************************************}
-
 constructor TJvFormWallpaper.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FImage := TPicture.Create;
   FImage.OnChange := FormPaint;
   Align := alClient;
 end;
 
-{*******************************************************}
-
 destructor TJvFormWallpaper.Destroy;
 begin
   FImage.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{*******************************************************}
 
 procedure TJvFormWallpaper.SetImage(Value: TPicture);
 begin
   FImage.Assign(Value);
-  Repaint;
+  Invalidate;
 end;
-
-{*******************************************************}
 
 procedure TJvFormWallpaper.Paint;
 var
-  c, l: Integer;
-  bmp: TBitmap;
+  C, L: Integer;
+  Bmp: TBitmap;
 begin
   inherited;
   if (FImage <> nil) and (FImage.Width > 0) and (FImage.Height > 0) then
   begin
-    bmp := TBitmap.Create;
-    bmp.Width := Width;
-    bmp.Height := Height;
-    for c := 0 to (Width div FImage.Width) do
-      for l := 0 to (Height div FImage.Height) do
-        bmp.Canvas.Draw(c * FImage.Width, l * FImage.Height, FImage.Graphic);
-    Canvas.Draw(0, 0, bmp);
-    bmp.Free;
+    Bmp := TBitmap.Create;
+    Bmp.Width := Width;
+    Bmp.Height := Height;
+    for C := 0 to (Width div FImage.Width) do
+      for L := 0 to (Height div FImage.Height) do
+        Bmp.Canvas.Draw(C * FImage.Width, L * FImage.Height, FImage.Graphic);
+    Canvas.Draw(0, 0, Bmp);
+    Bmp.Free;
   end;
 end;
-{*******************************************************}
 
 procedure TJvFormWallpaper.FormPaint(Sender: TObject);
 begin
-  Repaint;
+  Invalidate;
 end;
 
 end.
+

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,22 +26,24 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{A treeview that displays the keys from the registry }
 unit JvRegTV;
+
+{A treeview that displays the keys from the registry }
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Registry, ImgList, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms,
+  ComCtrls, Registry, ImgList,
+  JVCLVer;
 
 type
-  TJvRegistryKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData, hkCurrentConfig, hkDynData);
+  TJvRegistryKey =
+    (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData, hkCurrentConfig, hkDynData);
   TJvRegistryKeys = set of TJvRegistryKey;
 
   TJvRegistryTreeView = class(TCustomTreeView)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
     FRegistryKeys: TJvRegistryKeys;
     FInternalImages: TImageList;
@@ -55,44 +57,41 @@ type
     procedure SetRootCaption(Value: string);
     procedure SetRegistryKeys(Value: TJvRegistryKeys);
     procedure BuildTree;
-    function FillListView(Node: TTreeNode): boolean;
+    function FillListView(Node: TTreeNode): Boolean;
     procedure SetDefaultImages;
     function GetCurrentPath: string;
     function GetShortPath: string;
     function GetCurrentKey: HKEY;
-    function GetShowHint: boolean;
-    procedure SetShowHint(Value: boolean);
+    function GetShowHint: Boolean;
+    procedure SetShowHint(Value: Boolean);
     procedure OpenRegistry(Node: TTreeNode);
     procedure CloseRegistry;
     function FindChildNode(ParentNode: TTreeNode;
       const Name: string): TTreeNode;
   protected
-    { Protected declarations }
-    procedure RefreshSubTrees(aNode: TTreeNode; Key, OldKey: string; Level: integer); virtual;
+    procedure RefreshSubTrees(ANode: TTreeNode; Key, OldKey: string; Level: Integer); virtual;
     function CanCollapse(Node: TTreeNode): Boolean; override;
     function CanExpand(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function SaveKey(const Filename: string): boolean;
-    function LoadKey(const Filename: string): boolean;
+    function SaveKey(const Filename: string): Boolean;
+    function LoadKey(const Filename: string): Boolean;
     procedure RefreshNode(Node: TTreeNode);
     function AddKey(ParentNode: TTreeNode; const KeyName: string): TTreeNode;
     function AddStringValue(ParentNode: TTreeNode; const Name, Value: string): TTreeNode;
-    function AddBinaryValue(ParentNode: TTreeNode; const Name: string; var Buf; BufSize: integer): TTreeNode;
+    function AddBinaryValue(ParentNode: TTreeNode; const Name: string; var Buf; BufSize: Integer): TTreeNode;
     function AddDWORDValue(ParentNode: TTreeNode; const Name: string; Value: DWORD): TTreeNode;
     property CurrentPath: string read GetCurrentPath;
     property ShortPath: string read GetShortPath;
     property CurrentKey: HKEY read GetCurrentKey;
-    property Items stored false;
+    property Items stored False;
   published
-    { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;	
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Color;
     property BorderStyle;
@@ -100,14 +99,15 @@ type
     property ParentFont;
     property ParentShowHint;
     property ShowButtons;
-    property ShowHint: boolean read GetShowHint write SetShowHint;
+    property ShowHint: Boolean read GetShowHint write SetShowHint;
     property ShowLines;
     property ShowRoot;
-    property ReadOnly default true;
+    property ReadOnly default True;
     property RightClickSelect;
     property Indent;
     property HideSelection;
-    property RegistryKeys: TJvRegistryKeys read FRegistryKeys write SetRegistryKeys default [hkCurrentUser, hkLocalMachine];
+    property RegistryKeys: TJvRegistryKeys read FRegistryKeys write SetRegistryKeys default
+      [hkCurrentUser, hkLocalMachine];
     property ListView: TListView read FListView write FListView;
     property RootCaption: string read FRootCaption write SetRootCaption;
     property DefaultCaption: string read FDefaultCaption write SetDefaultCaption;
@@ -120,7 +120,6 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-
     property OnDragOver;
     property OnStartDrag;
     property OnEndDrag;
@@ -128,7 +127,6 @@ type
     property OnStartDock;
     property OnEndDock;
     property OnDockDrop;
-
     property OnEditing;
     property OnEdited;
     property OnExpanding;
@@ -155,6 +153,7 @@ resourcestring
   SUnknown = '(Unknown)';
 
 implementation
+
 {$R JvRegTree.res }
 
 const
@@ -163,27 +162,27 @@ const
   imOpen = 2;
   imText = 3;
   imBin = 4;
+
 type
   THackRegistry = class(TRegistry);
 
-  { utility }
-
-function SetRootKey(Reg: TRegistry; Node: TTreeNode): boolean;
-var tmpNode: TTreeNode;
+function SetRootKey(Reg: TRegistry; Node: TTreeNode): Boolean;
+var
+  TmpNode: TTreeNode;
 begin
-  Result := false;
-  if (Node <> nil) then
+  Result := False;
+  if Node <> nil then
   begin
-    tmpNode := Node;
-    while (tmpNode <> nil) do
+    TmpNode := Node;
+    while TmpNode <> nil do
     begin
-      if longint(tmpNode.Data) < 0 then
+      if longint(TmpNode.Data) < 0 then
       begin
-        Reg.RootKey := longint(tmpNode.Data);
-        Result := true;
+        Reg.RootKey := longint(TmpNode.Data);
+        Result := True;
         Exit;
       end;
-      tmpNode := tmpNode.Parent;
+      TmpNode := TmpNode.Parent;
     end;
   end;
 end;
@@ -192,7 +191,8 @@ function FixupPath(Key: string): string;
 begin
   if Key = '' then
     Result := '\'
-  else if AnsiLastChar(Key) <> '\' then
+  else
+  if AnsiLastChar(Key) <> '\' then
     Result := Key + '\'
   else
     Result := Key;
@@ -201,14 +201,15 @@ begin
       Result := Copy(Result, 2, Length(Result));
 end;
 
-function GetFullPath(aNode: TTreeNode): string;
-var TmpNode: TTreeNode;
+function GetFullPath(ANode: TTreeNode): string;
+var
+  TmpNode: TTreeNode;
 begin
   Result := '';
-  if (aNode = nil) then
+  if ANode = nil then
     Exit;
-  TmpNode := aNode;
-  while (TmpNode <> nil) do
+  TmpNode := ANode;
+  while TmpNode <> nil do
   begin
     Result := TmpNode.Text + '\' + Result;
     TmpNode := TmpNode.Parent;
@@ -217,13 +218,14 @@ begin
     SetLength(Result, Length(Result) - 1);
 end;
 
-function GetKeyPath(aNode: TTreeNode): string;
-var TmpNode: TTreeNode;
+function GetKeyPath(ANode: TTreeNode): string;
+var
+  TmpNode: TTreeNode;
 begin
   Result := '';
-  if aNode = nil then
+  if ANode = nil then
     Exit;
-  TmpNode := aNode;
+  TmpNode := ANode;
   while (TmpNode.Parent <> nil) and (TmpNode.Parent.Parent <> nil) do
   begin
     Result := TmpNode.Text + '\' + Result;
@@ -235,39 +237,38 @@ end;
 
 {
 function GetPreviousKey(Key:string):string;
-var i:integer;
+var I:Integer;
 begin
   Result := Key;
   if (Result = '') or (Result = '\') then Exit;
-  for i := Length(Result) - 1 downto 1 do
-    if Result[i] = '\' then
+  for I := Length(Result) - 1 downto 1 do
+    if Result[I] = '\' then
     begin
-      Result := Copy(Result,1,i - 1);
+      Result := Copy(Result,1,I - 1);
       Exit;
     end;
 end;
 
 function StripChars(Str:string;Ch:Char):string;
-var i:integer;
+var I:Integer;
 begin
   Result := '';
-  for i := 1 to Length(Str) do
+  for I := 1 to Length(Str) do
   begin
-    if Str[i] = Ch then Continue;
-    AppendStr(Result,str[i]);
+    if Str[I] = Ch then Continue;
+    AppendStr(Result,str[I]);
   end;
 end;
 }
 
-function BufToStr(Buffer: array of byte; BufSize: integer): string;
-var i: integer;
+function BufToStr(Buffer: array of byte; BufSize: Integer): string;
+var
+  I: Integer;
 begin
   Result := '';
-  for i := 0 to BufSize - 1 do
-    Result := Result + ' ' + IntToHex(Buffer[i], 2);
+  for I := 0 to BufSize - 1 do
+    Result := Result + ' ' + IntToHex(Buffer[I], 2);
 end;
-
-{ private }
 
 function TJvRegistryTreeView.GetCurrentPath: string;
 begin
@@ -286,12 +287,12 @@ begin
   CloseRegistry;
 end;
 
-function TJvRegistryTreeView.GetShowHint: boolean;
+function TJvRegistryTreeView.GetShowHint: Boolean;
 begin
   Result := inherited ShowHint;
 end;
 
-procedure TJvRegistryTreeView.SetShowHint(Value: boolean);
+procedure TJvRegistryTreeView.SetShowHint(Value: Boolean);
 begin
   if inherited ShowHint <> Value then
   begin
@@ -316,51 +317,64 @@ begin
   Images := FInternalImages;
 end;
 
-procedure TJvRegistryTreeView.RefreshSubTrees(aNode: TTreeNode; Key, OldKey: string; Level: integer);
-var aStrings: TStringlist; i: integer; NewNode: TTreeNode; aKey: string;
+procedure TJvRegistryTreeView.RefreshSubTrees(ANode: TTreeNode; Key, OldKey: string; Level: Integer);
+var
+  AStrings: TStringList;
+  I: Integer;
+  NewNode: TTreeNode;
+  AKey: string;
 begin
-  aKey := FixupPath(OldKey);
+  AKey := FixupPath(OldKey);
   if FReg.OpenKeyReadOnly(Key) and FReg.HasSubKeys then
   begin
-    aNode.HasChildren := true;
+    ANode.HasChildren := True;
     Dec(Level);
     if Level = 1 then
     begin
-      aStrings := TStringlist.Create;
+      AStrings := TStringlist.Create;
       try
-        FReg.GetKeyNames(aStrings);
-        for i := 0 to aStrings.Count - 1 do
+        FReg.GetKeyNames(AStrings);
+        for I := 0 to AStrings.Count - 1 do
         begin
-          NewNode := Items.AddChild(aNode, aStrings[i]);
+          NewNode := Items.AddChild(ANode, AStrings[I]);
           NewNode.ImageIndex := imClosed;
           NewNode.SelectedIndex := imOpen;
-          RefreshSubTrees(NewNode, aStrings[i], aKey + Key, Level);
+          RefreshSubTrees(NewNode, AStrings[I], AKey + Key, Level);
         end;
       finally
-        aStrings.Free;
+        AStrings.Free;
       end;
     end;
   end;
-  FReg.OpenKeyReadOnly(aKey);
+  FReg.OpenKeyReadOnly(AKey);
 end;
 
 function RegDataTypeToString(Value: TRegDataType): string;
 begin
   case Value of
-    rdString: Result := 'REG_SZ';
-    rdExpandString: Result := 'REG_EXPAND_SZ';
-    rdInteger: Result := 'REG_DWORD';
-    rdBinary: Result := 'REG_BINARY';
+    rdString:
+      Result := 'REG_SZ';
+    rdExpandString:
+      Result := 'REG_EXPAND_SZ';
+    rdInteger:
+      Result := 'REG_DWORD';
+    rdBinary:
+      Result := 'REG_BINARY';
   else
     Result := 'REG_NONE';
   end;
 end;
 
-function TJvRegistryTreeView.FillListView(Node: TTreeNode): boolean;
-var aStrings: TStrings; i: integer; TmpItem: TListItem;
-  Buffer: array[0..4095] of byte; S: string; DefaultSet: boolean;
+function TJvRegistryTreeView.FillListView(Node: TTreeNode): Boolean;
+var
+  AStrings: TStrings;
+  I: Integer;
+  TmpItem: TListItem;
+  Buffer: array [0..4095] of Byte;
+  S: string;
+  DefaultSet: Boolean;
 begin
-  Result := false;
+  Result := False;
   if not Assigned(FListView) then
     Exit;
   OpenRegistry(Node);
@@ -372,28 +386,28 @@ begin
     if (Node = nil) or (Node = Items.GetFirstNode) then
       Exit;
     { set current root }
-    DefaultSet := false;
+    DefaultSet := False;
     if FReg.OpenKeyReadOnly(GetKeyPath(Node)) then
     begin
-      aStrings := TStringList.Create;
-      FReg.GetValueNames(aStrings);
+      AStrings := TStringList.Create;
+      FReg.GetValueNames(AStrings);
 
-      for i := 0 to aStrings.Count - 1 do
+      for I := 0 to AStrings.Count - 1 do
       begin
         { set default item }
-        if (aStrings[i] = '') and not DefaultSet then
+        if (AStrings[I] = '') and not DefaultSet then
         begin
           TmpItem := FListView.Items.Insert(0);
           TmpItem.Caption := FDefaultCaption;
-          DefaultSet := true;
+          DefaultSet := True;
         end
         else
         begin
           TmpItem := FListView.Items.Add;
-          TmpItem.Caption := aStrings[i];
+          TmpItem.Caption := AStrings[I];
         end;
 
-        case FReg.GetDataType(aStrings[i]) of
+        case FReg.GetDataType(AStrings[I]) of
           rdUnknown:
             begin
               TmpItem.ImageIndex := imText;
@@ -401,7 +415,7 @@ begin
             end;
           rdString, rdExpandString:
             begin
-              S := FReg.ReadString(aStrings[i]);
+              S := FReg.ReadString(AStrings[I]);
               if (S = '') and AnsiSameText(TmpItem.Caption, FDefaultCaption) then
                 S := FDefaultNoValue
               else
@@ -412,18 +426,19 @@ begin
           rdInteger:
             begin
               TmpItem.ImageIndex := imBin;
-              TmpItem.SubItems.Add(Format('0x%.8x (%d)', [FReg.ReadInteger(aStrings[i]), FReg.ReadInteger(aStrings[i])]));
+              TmpItem.SubItems.Add(Format('0x%.8x (%d)', [FReg.ReadInteger(AStrings[I]),
+                FReg.ReadInteger(AStrings[I])]));
             end;
           rdBinary:
             begin
               TmpItem.ImageIndex := imBin;
-              FReg.ReadBinaryData(aStrings[i], Buffer, 4095);
-              TmpItem.SubItems.Add(BufToStr(Buffer, FReg.GetDataSize(aStrings[i])));
+              FReg.ReadBinaryData(AStrings[I], Buffer, SizeOf(Buffer));
+              TmpItem.SubItems.Add(BufToStr(Buffer, FReg.GetDataSize(AStrings[I])));
             end;
-        end; // case
-        TmpItem.SubItems.Add(RegDataTypeToString(FReg.GetDataType(aStrings[i])));
+        end;
+        TmpItem.SubItems.Add(RegDataTypeToString(FReg.GetDataType(AStrings[I])));
       end;
-      Result := true;
+      Result := True;
     end;
     { set default item }
     if (Node.Parent <> nil) and not DefaultSet then
@@ -466,19 +481,20 @@ begin
 end;
 
 procedure TJvRegistryTreeView.BuildTree;
-var NewNode, aNode: TTreeNode;
+var
+  NewNode, ANode: TTreeNode;
 begin
   OpenRegistry(nil);
   Items.BeginUpdate;
   try
     Items.Clear;
-    aNode := Items.Add(nil, FRootCaption);
-    aNode.ImageIndex := imMyPC;
-    aNode.SelectedIndex := imMyPC;
+    ANode := Items.Add(nil, FRootCaption);
+    ANode.ImageIndex := imMyPC;
+    ANode.SelectedIndex := imMyPC;
     if hkClassesRoot in FRegistryKeys then
     begin
       FReg.RootKey := HKEY_CLASSES_ROOT;
-      NewNode := Items.AddChild(aNode, 'HKEY_CLASSES_ROOT');
+      NewNode := Items.AddChild(ANode, 'HKEY_CLASSES_ROOT');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -489,7 +505,7 @@ begin
     if hkCurrentUser in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_CURRENT_USER;
-      NewNode := Items.AddChild(aNode, 'HKEY_CURRENT_USER');
+      NewNode := Items.AddChild(ANode, 'HKEY_CURRENT_USER');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -500,7 +516,7 @@ begin
     if hkLocalMachine in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_LOCAL_MACHINE;
-      NewNode := Items.AddChild(aNode, 'HKEY_LOCAL_MACHINE');
+      NewNode := Items.AddChild(ANode, 'HKEY_LOCAL_MACHINE');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -511,7 +527,7 @@ begin
     if hkUsers in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_USERS;
-      NewNode := Items.AddChild(aNode, 'HKEY_USERS');
+      NewNode := Items.AddChild(ANode, 'HKEY_USERS');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -522,7 +538,7 @@ begin
     if hkPerformanceData in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_PERFORMANCE_DATA;
-      NewNode := Items.AddChild(aNode, 'HKEY_PERFORMANCE_DATA');
+      NewNode := Items.AddChild(ANode, 'HKEY_PERFORMANCE_DATA');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -533,7 +549,7 @@ begin
     if hkCurrentConfig in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_CURRENT_CONFIG;
-      NewNode := Items.AddChild(aNode, 'HKEY_CURRENT_CONFIG');
+      NewNode := Items.AddChild(ANode, 'HKEY_CURRENT_CONFIG');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
@@ -543,21 +559,20 @@ begin
     if hkDynData in FRegistryKeys then
     begin
       FReg.Rootkey := HKEY_DYN_DATA;
-      NewNode := Items.AddChild(aNode, 'HKEY_DYN_DATA');
+      NewNode := Items.AddChild(ANode, 'HKEY_DYN_DATA');
       NewNode.ImageIndex := imClosed;
       NewNode.SelectedIndex := imOpen;
       NewNode.Data := Pointer(FReg.RootKey);
       if not (csDesigning in ComponentState) then
         RefreshSubTrees(NewNode, '\', '', 1);
     end;
-    aNode.Expand(false);
-    aNode.Selected := true;
+    ANode.Expand(False);
+    ANode.Selected := True;
   finally
     CloseRegistry;
     Items.EndUpdate;
   end;
 end;
-{ protected }
 
 function TJvRegistryTreeView.CanCollapse(Node: TTreeNode): Boolean;
 begin
@@ -619,8 +634,6 @@ begin
     SetDefaultImages;
 end;
 
-{ public }
-
 constructor TJvRegistryTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -641,11 +654,12 @@ begin
 end;
 
 procedure TJvRegistryTreeView.RefreshNode(Node: TTreeNode);
-var b: boolean;
+var
+  b: Boolean;
 begin
   Items.BeginUpdate;
   try
-    b := false;
+    b := False;
     if Node <> nil then
       b := Node.Expanded;
     OpenRegistry(Node);
@@ -670,7 +684,8 @@ begin
 end;
 
 function TJvRegistryTreeView.FindChildNode(ParentNode: TTreeNode; const Name: string): TTreeNode;
-var N: TTreeNode;
+var
+  N: TTreeNode;
 begin
   Result := nil;
   if ParentNode = nil then
@@ -688,7 +703,7 @@ begin
 end;
 
 function TJvRegistryTreeView.AddBinaryValue(ParentNode: TTreeNode;
-  const Name: string; var Buf; BufSize: integer): TTreeNode;
+  const Name: string; var Buf; BufSize: Integer): TTreeNode;
 begin
   Result := nil;
   if ParentNode = nil then
@@ -721,7 +736,7 @@ begin
   if ParentNode = nil then
     Exit;
   OpenRegistry(ParentNode);
-  FReg.OpenKey(FixupPath(GetKeyPath(ParentNode)) + KeyName, true);
+  FReg.OpenKey(FixupPath(GetKeyPath(ParentNode)) + KeyName, True);
   CloseRegistry;
   RefreshNode(ParentNode);
   Result := FindChildNode(ParentNode, KeyName);
@@ -753,14 +768,14 @@ begin
   SetRootKey(FReg, Node);
 end;
 
-function TJvRegistryTreeView.LoadKey(const Filename: string): boolean;
+function TJvRegistryTreeView.LoadKey(const Filename: string): Boolean;
 begin
   OpenRegistry(Selected);
   Result := FReg.LoadKey(ShortPath, ChangeFileExt(Filename, ''));
   CloseRegistry;
 end;
 
-function TJvRegistryTreeView.SaveKey(const Filename: string): boolean;
+function TJvRegistryTreeView.SaveKey(const Filename: string): Boolean;
 begin
   OpenRegistry(Selected);
   Result := FReg.SaveKey(ShortPath, Filename);

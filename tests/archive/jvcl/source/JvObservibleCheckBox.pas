@@ -31,50 +31,44 @@ unit JvObservibleCheckBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvObserverMessages, JVCLVer;
+  SysUtils, Classes, Controls, StdCtrls,
+  JvObserverMessages, JVCLVer;
 
 type
   TJvObservibleCheckBox = class(TCheckBox)
   private
-    { Private declarations }
-    FObserver: TControl;
     FAboutJVCL: TJVCLAboutInfo;
+    FObserver: TControl;
   protected
-    { Protected declarations }
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure NotifyObserver;
   public
-    { Public declarations }
     procedure Click; override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-
-    property Observer: TControl read FObserver write Fobserver;
+    property Observer: TControl read FObserver write FObserver;
   end;
 
 implementation
 
-{ TJvObservibleCheckBox }
-
 procedure TJvObservibleCheckBox.Click;
 begin
   NotifyObserver;
-  inherited;
+  inherited Click;
 end;
 
 procedure TJvObservibleCheckBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
-  if (Acomponent = FObserver) and (Operation = opRemove) then
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FObserver) and (Operation = opRemove) then
     FObserver := nil;
 end;
 
 procedure TJvObservibleCheckBox.NotifyObserver;
 begin
-  if Assigned(Observer) then
-    Observer.Perform(UM_OBSERVIBLE_CHANGED, 0, Integer(self));
+  if Assigned(FObserver) then
+    FObserver.Perform(UM_OBSERVIBLE_CHANGED, 0, Integer(Self));
 end;
 
 end.

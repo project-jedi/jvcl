@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvMousePositionner;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus,
+  Windows, SysUtils, Classes, Controls,
   JvTypes, JvComponent;
 
 type
@@ -52,49 +50,46 @@ type
 
 implementation
 
-{**************************************************}
-
 procedure TJvMousePositionner.Execute(Steps: Integer; Delay: Integer);
 var
-  src, dest, tmp: TPoint;
-  diffx, diffy: Real;
+  Src, Dest, Tmp: TPoint;
+  DiffX, DiffY: Real;
 begin
   if Assigned(Control) then
   begin
     while Steps > 0 do
     begin
-      GetCursorPos(src);
-      dest.x := Control.ClientRect.Left + Control.ClientWidth div 2;
-      dest.y := Control.ClientRect.Top + Control.ClientHeight div 2;
-      dest := FControl.ClientToScreen(Dest);
-      diffx := (dest.x - src.x) / Steps;
-      diffy := (dest.y - src.y) / Steps;
-      tmp.x := Round(src.x + diffx);
-      tmp.y := Round(src.y + diffy);
-      SetCursorPos(tmp.x, tmp.y);
+      GetCursorPos(Src);
+      Dest.X := Control.ClientRect.Left + Control.ClientWidth div 2;
+      Dest.Y := Control.ClientRect.Top + Control.ClientHeight div 2;
+      Dest := FControl.ClientToScreen(Dest);
+      DiffX := (Dest.X - Src.X) / Steps;
+      DiffY := (Dest.Y - Src.Y) / Steps;
+      Tmp.X := Round(Src.X + DiffX);
+      Tmp.Y := Round(Src.Y + DiffY);
+      SetCursorPos(Tmp.X, Tmp.Y);
 
       Sleep(Delay);
       Dec(Steps);
     end;
   end;
 end;
-{**************************************************}
 
 procedure TJvMousePositionner.ExecuteEx(Dest: TPoint; Steps, Delay: Integer);
 var
-  src, tmp: TPoint;
-  diffx, diffy: Real;
+  Src, Tmp: TPoint;
+  DiffX, DiffY: Real;
 begin
   while Steps > 0 do
   begin
-    GetCursorPos(src);
-    diffx := (dest.x - src.x) / Steps;
-    diffy := (dest.y - src.y) / Steps;
-    if (Round(diffx) <> 0) or (Round(diffy) <> 0) then
+    GetCursorPos(Src);
+    DiffX := (Dest.X - Src.X) / Steps;
+    DiffY := (Dest.Y - Src.Y) / Steps;
+    if (Round(DiffX) <> 0) or (Round(DiffY) <> 0) then
     begin
-      tmp.x := Round(src.x + diffx);
-      tmp.y := Round(src.y + diffy);
-      SetCursorPos(tmp.x, tmp.y);
+      Tmp.X := Round(Src.X + DiffX);
+      Tmp.Y := Round(Src.Y + DiffY);
+      SetCursorPos(Tmp.X, Tmp.Y);
 
       Sleep(Delay);
     end;
@@ -102,14 +97,15 @@ begin
   end;
 end;
 
-procedure TJvMousePositionner.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvMousePositionner.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Control) then
     Control := nil;
 end;
 
 initialization
   RegisterClass(TJvMousePositionner);
+
 end.
+

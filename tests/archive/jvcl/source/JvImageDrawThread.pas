@@ -30,8 +30,8 @@ Known Issues:
 
 unit JvImageDrawThread;
 
-
 interface
+
 uses
   Classes;
 
@@ -46,16 +46,16 @@ type
     procedure Execute; override;
   public
     property Tag: Integer read FTag write FTag;
-    property Delay:Cardinal read FDelay write FDelay;
-    property OnDraw:TNotifyEvent read FOnDraw write FOnDraw;
+    property Delay: Cardinal read FDelay write FDelay;
+    property OnDraw: TNotifyEvent read FOnDraw write FOnDraw;
     property Terminated;
   end;
 
-
 implementation
+
 uses
   Windows;
-  
+
 procedure TJvImageDrawThread.Draw;
 begin
   if not Terminated and Assigned(FOnDraw) then

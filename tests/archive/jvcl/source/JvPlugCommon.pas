@@ -14,7 +14,6 @@ The Initial Developer of the Original Code is Ralf Steinhaeusser [ralfiii@gmx.ne
 Portions created by Ralf Steinhaeusser are Copyright (C) 2001 Ralf Steinhaeusser.
 All Rights Reserved.
 
-
 Contributor(s):
 
 Last Modified: 2002-09-02
@@ -57,14 +56,15 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvPlugCommon ;
-
+unit JvPlugCommon;
 
 interface
 
-const C_VersionString = '5.10';
-      C_REGISTER_PLUGIN = 'RegisterPlugin';
+const
+  C_VersionString = '5.10';
+  C_REGISTER_PLUGIN = 'RegisterPlugin';
 
 implementation
 
 end.
+

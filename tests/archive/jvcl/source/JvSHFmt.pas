@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,43 +26,41 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ A component that shows the "format floppy" dialog in windows }
 unit JvSHFmt;
+
+{ A component that shows the "format floppy" dialog in Windows }
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer;
+  Windows, SysUtils, Classes, Controls, Forms, Dialogs,
+  JVCLVer;
 
 type
   TJvFormatType = (ftQuick, ftStandard, ftBootable);
-  TJvDriveLetters = 'A'..'z';
+  //TJvDriveLetters = 'A'..'Z';
   TJvDriveCapacity = (dcDefault, dcSize360kB, dcSize720kB);
   TJvFormatDriveError = (errParams, errSysError, errAborted, errCannotFormat, errOther);
   TJvFormatDriveErrorEvent = procedure(Sender: TObject; Error: TJvFormatDriveError) of object;
 
   TJvFormatDrive = class(TCommonDialog)
   private
-    { Private declarations }
-   FAboutJVCL: TJVCLAboutInfo;
-    FDrive: TJvDriveLetters;
+    FAboutJVCL: TJVCLAboutInfo;
+    FDrive: Char;
     FFormatType: TJvFormatType;
     FCapacity: TJvDriveCapacity;
-    FHandle: integer;
-    IsNT: boolean;
+    FHandle: Integer;
+    FIsNT: Boolean;
     FOnError: TJvFormatDriveErrorEvent;
-    procedure SetDrive(Value: TJvDriveLetters);
+    procedure SetDrive(Value: Char);
   protected
-    { Protected declarations }
-    procedure DoError(ErrValue: integer);
+    procedure DoError(ErrValue: Integer);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Drive: TJvDriveLetters read FDrive write SetDrive default 'A';
+    property Drive: Char read FDrive write SetDrive default 'A';
     property FormatType: TJvFormatType read FFormatType write FFormatType;
     property Capacity: TJvDriveCapacity read FCapacity write FCapacity;
     property OnError: TJvFormatDriveErrorEvent read FOnError write FOnError;
@@ -77,30 +75,30 @@ type
   lParam - FormatType (Win95: 0 - quick, 1 - full, 2 - bootable
                        WinNT: 1 - quick, 0 - full, - )
   }
-resourcestring
-  SNotSupported = 'SHFormatDrive not supported on the current OS';
-  
+
 function SHFormatDrive(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
 
 implementation
 
-{ TJvFormatDrive }
+resourcestring
+  SNotSupported = 'SHFormatDrive not supported on current OS';
 
 constructor TJvFormatDrive.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDrive := 'A';
-  IsNt := Win32Platform = VER_PLATFORM_WIN32_NT;
+  FIsNT := Win32Platform = VER_PLATFORM_WIN32_NT;
   if AOwner is TCustomForm then
     FHandle := TCustomForm(AOwner).Handle
   else
     FHandle := 0;
 end;
 
-function TJvFormatDrive.Execute: boolean;
-var iDrive, iCapacity, iFormatType, RetVal: integer;
+function TJvFormatDrive.Execute: Boolean;
+var
+  iDrive, iCapacity, iFormatType, RetVal: Integer;
 begin
-  if IsNT then
+  if FIsNT then
   begin
     iDrive := Ord(FDrive) - Ord('A');
     iCapacity := 0; // other styles not supported
@@ -113,16 +111,18 @@ begin
   begin
     iDrive := Ord(FDrive) - Ord('A');
     case FCapacity of
-      dcSize360kB: iCapacity := 3;
-      dcSize720kB: iCapacity := 5;
+      dcSize360kB:
+        iCapacity := 3;
+      dcSize720kB:
+        iCapacity := 5;
     else
       iCapacity := 0;
-    end; // case
+    end;
     iFormatType := Ord(FFormatType);
   end;
 
   RetVal := SHFormatDrive(FHandle, iDrive, iCapacity, iFormatType);
-  if IsNT then
+  if FIsNT then
     Result := RetVal = 0
   else
     Result := RetVal = 6;
@@ -130,29 +130,36 @@ begin
     DoError(RetVal);
 end;
 
-procedure TJvFormatDrive.DoError(ErrValue: integer);
-var err: TJvFormatDriveError;
+procedure TJvFormatDrive.DoError(ErrValue: Integer);
+var
+  Err: TJvFormatDriveError;
 begin
   if Assigned(FOnError) then
   begin
-    if IsNT then
-      err := errOther
+    if FIsNT then
+      Err := errOther
     else
-      case ErrValue of //
-        0: err := errParams;
-        -1: err := errSysError;
-        -2: err := errAborted;
-        -3: err := errCannotFormat;
+      case ErrValue of
+        0:
+          Err := errParams;
+        -1:
+          Err := errSysError;
+        -2:
+          Err := errAborted;
+        -3:
+          Err := errCannotFormat;
       else
-        err := errOther;
+        Err := errOther;
       end; // case
-    FOnError(self, err);
+    FOnError(Self, Err);
   end;
 end;
 
-procedure TJvFormatDrive.SetDrive(Value: TJvDriveLetters);
+procedure TJvFormatDrive.SetDrive(Value: Char);
 begin
-  if FDrive <> UpCase(Value) then
+  // (rom) secured
+  Value := UpCase(Value);
+  if Value in ['A'..'Z'] then
     FDrive := UpCase(Value);
 end;
 

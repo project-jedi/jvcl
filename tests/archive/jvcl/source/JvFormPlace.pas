@@ -28,224 +28,228 @@ Known Issues:
 
 unit JvFormPlace;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, Registry, JvComponent;
+  ExtCtrls, Registry,
+  JvComponent;
 
 type
   TJvFormPlace = class(TJvComponent)
   private
-    FBoolean: Boolean;
+    FRemember: Boolean;
     FForm: TCustomForm;
     FTImer: TTimer;
     procedure Rememb(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Remember: Boolean read FBoolean write FBoolean default True;
+    property Remember: Boolean read FRemember write FRemember default True;
   end;
 
 implementation
+
 uses
   MultiMon, JvMaxMin;
 
 resourcestring
-  RC_FormPlace = 'Software\BuyPin\FormPlace\';
-
-  {**************************************************}
+  // (rom) changed to JVCL
+  RC_FormPlace = 'Software\JVCL\FormPlace\';
 
 constructor TJvFormPlace.Create(AOwner: TComponent);
 begin
-  inherited;
-  FBoolean := True;
+  inherited Create(AOwner);
+  FRemember := True;
   FTimer := TTimer.Create(Self);
   FForm := GetParentForm(TControl(AOwner));
-  if not (csDesigning in ComponentState) and FBoolean then
+  if not (csDesigning in ComponentState) and FRemember then
   begin
+    // (rom) i do not like this. a tight timer is not a good idea
     FTimer.OnTimer := Rememb;
     FTimer.Interval := 10;
     FTimer.Enabled := True;
   end;
 end;
 
-{**************************************************}
-
 destructor TJvFormPlace.Destroy;
 var
-  nam: string;
-  fleft, ftop, fwidth, fheight: Integer;
+  Nam: string;
+  NLeft, NTop, NWidth, NHeight: Integer;
 begin
-  if FBoolean then
+  if FRemember then
     if not (csDesigning in ComponentState) then
       with TRegistry.Create do
       begin
         OpenKey(RC_FormPlace, True);
-        nam := Application.Title + '_' + FForm.Name;
-        fwidth := FForm.Width;
-        fheight := FForm.Height;
-        fleft := FForm.Left;
-        ftop := FForm.Top;
-        WriteInteger(nam + '_left', fleft);
-        WriteInteger(nam + '_top', ftop);
-        WriteInteger(nam + '_width', fwidth);
-        WriteInteger(nam + '_height', fheight);
+        Nam := Application.Title + '_' + FForm.Name;
+        NWidth := FForm.Width;
+        NHeight := FForm.Height;
+        NLeft := FForm.Left;
+        NTop := FForm.Top;
+        WriteInteger(Nam + '_left', NLeft);
+        WriteInteger(Nam + '_top', NTop);
+        WriteInteger(Nam + '_width', NWidth);
+        WriteInteger(Nam + '_height', NHeight);
         Free;
       end;
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-function MinMonitorLeft:integer;
-var i:integer;
+function MinMonitorLeft: integer;
+var
+  I: Integer;
 begin
   Result := 0;
   with Screen do
-    for i := 0 to MonitorCount - 1 do
-      Result := Min(Result,Monitors[i].Left);
+    for I := 0 to MonitorCount - 1 do
+      Result := Min(Result, Monitors[I].Left);
 end;
 
-function MaxMonitorRight:integer;
-var i:integer;
+function MaxMonitorRight: integer;
+var
+  I: Integer;
 begin
   with Screen do
   begin
     Result := Width;
-    for i := 0 to MonitorCount - 1 do
-      Result := Max(Result,Monitors[i].Left + Monitors[i].Width);
+    for I := 0 to MonitorCount - 1 do
+      Result := Max(Result, Monitors[I].Left + Monitors[I].Width);
   end;
 end;
 
-function MinMonitorTop:integer;
-var i:integer;
+function MinMonitorTop: integer;
+var
+  I: Integer;
 begin
   with Screen do
   begin
     Result := 0;
-    for i := 0 to MonitorCount - 1 do
-      Result := Min(Result,Monitors[i].Top);
+    for I := 0 to MonitorCount - 1 do
+      Result := Min(Result, Monitors[I].Top);
   end;
 end;
 
-function MaxMonitorBottom:integer;
-var i:integer;
+function MaxMonitorBottom: integer;
+var
+  I: Integer;
 begin
   with Screen do
   begin
     Result := Height;
-    for i := 0 to MonitorCount - 1 do
-      Result := Max(Result,Monitors[i].Top + Monitors[i].Height);
+    for I := 0 to MonitorCount - 1 do
+      Result := Max(Result, Monitors[I].Top + Monitors[I].Height);
   end;
 end;
 
-function MonitorFromPoint(APoint:TPoint):TMonitor;
-{$IFNDEF COMPILER6_UP}var H:HMONITOR;i:integer;{$ENDIF}
+function MonitorFromPoint(APoint: TPoint): TMonitor;
+{$IFNDEF COMPILER6_UP}
+var
+  H: HMONITOR;
+  I: Integer;
+{$ENDIF}
 begin
   {$IFDEF COMPILER6_UP}
   Result := Screen.MonitorFromPoint(APoint);
   {$ELSE}
-  H := MultiMon.MonitorFromPoint(APoint,MONITOR_DEFAULTTONEAREST);
+  H := MultiMon.MonitorFromPoint(APoint, MONITOR_DEFAULTTONEAREST);
   Result := nil;
-  for i := 0 to Screen.MonitorCount - 1 do
-    if Screen.Monitors[i].Handle = H then
-      begin
-        Result := Screen.Monitors[i];
-        Exit;
-      end;
+  for I := 0 to Screen.MonitorCount - 1 do
+    if Screen.Monitors[I].Handle = H then
+    begin
+      Result := Screen.Monitors[I];
+      Exit;
+    end;
   {$ENDIF}
 end;
 
 procedure TJvFormPlace.Rememb(Sender: TObject);
 var
-  nam: string;
-  fleft, ftop, fwidth, fheight: Integer;
-  M:TMonitor;
+  Nam: string;
+  NLeft, NTop, NWidth, NHeight: Integer;
+  M: TMonitor;
 begin
-  Ftimer.Enabled := False;
-  if FBoolean then
+  FTimer.Enabled := False;
+  if FRemember then
   begin
     with TRegistry.Create do
     begin
       OpenKey(RC_FormPlace, True);
-      nam := Application.Title + '_' + FForm.Name;
+      Nam := Application.Title + '_' + FForm.Name;
 
       if TForm(FForm).FormStyle = fsMdiChild then
       begin
-        if ValueExists(nam + '_left') then
-          fleft := ReadInteger(nam + '_left')
+        if ValueExists(Nam + '_left') then
+          NLeft := ReadInteger(Nam + '_left')
         else
-          fleft := Application.MainForm.Width + 1;
-        if ValueExists(nam + '_top') then
-          ftop := ReadInteger(nam + '_top')
+          NLeft := Application.MainForm.Width + 1;
+        if ValueExists(Nam + '_top') then
+          NTop := ReadInteger(Nam + '_top')
         else
-          ftop := Application.MainForm.Height + 1;
-        if ValueExists(nam + '_width') then
-          fwidth := ReadInteger(nam + '_width')
+          NTop := Application.MainForm.Height + 1;
+        if ValueExists(Nam + '_width') then
+          NWidth := ReadInteger(Nam + '_width')
         else
-          fwidth := Application.MainForm.Width + 1;
-        if ValueExists(nam + '_height') then
-          fheight := ReadInteger(nam + '_height')
+          NWidth := Application.MainForm.Width + 1;
+        if ValueExists(Nam + '_height') then
+          NHeight := ReadInteger(Nam + '_height')
         else
-          fheight := Application.MainForm.Height + 1;
-        if (fleft > Application.MainForm.Width) or (ftop > Application.MainForm.Height) or
-          (fleft < 0) or (ftop < 0) then
+          NHeight := Application.MainForm.Height + 1;
+        if (NLeft > Application.MainForm.Width) or (NTop > Application.MainForm.Height) or
+          (NLeft < 0) or (NTop < 0) then
         begin
-          fwidth := FForm.Width;
-          fheight := FForm.Height;
-          fleft := (Application.MainForm.Width - fwidth) div 2;
-          ftop := (Application.MainForm.Height - fheight) div 2;
+          NWidth := FForm.Width;
+          NHeight := FForm.Height;
+          NLeft := (Application.MainForm.Width - NWidth) div 2;
+          NTop := (Application.MainForm.Height - NHeight) div 2;
         end;
       end
       else
       begin
-        if ValueExists(nam + '_left') then
-          fleft := ReadInteger(nam + '_left')
+        if ValueExists(Nam + '_left') then
+          NLeft := ReadInteger(Nam + '_left')
         else
-          fleft := Screen.Width + 1;
-        if ValueExists(nam + '_top') then
-          ftop := ReadInteger(nam + '_top')
+          NLeft := Screen.Width + 1;
+        if ValueExists(Nam + '_top') then
+          NTop := ReadInteger(Nam + '_top')
         else
-          ftop := Screen.Height + 1;
-        if ValueExists(nam + '_width') then
-          fwidth := ReadInteger(nam + '_width')
+          NTop := Screen.Height + 1;
+        if ValueExists(Nam + '_width') then
+          NWidth := ReadInteger(Nam + '_width')
         else
-          fwidth := Screen.Width + 1;
-        if ValueExists(nam + '_height') then
-          fheight := ReadInteger(nam + '_height')
+          NWidth := Screen.Width + 1;
+        if ValueExists(Nam + '_height') then
+          NHeight := ReadInteger(Nam + '_height')
         else
-          fheight := Screen.Height + 1;
-        if (fleft > MaxMonitorRight) or (ftop > MaxMonitorBottom) or
-          (fleft < MinMonitorLeft) or (ftop < MinMonitorTop) then
+          NHeight := Screen.Height + 1;
+        if (NLeft > MaxMonitorRight) or (NTop > MaxMonitorBottom) or
+          (NLeft < MinMonitorLeft) or (NTop < MinMonitorTop) then
         begin
-          fwidth := FForm.Width;
-          fheight := FForm.Height;
-          M := MonitorFromPoint(Point(fleft,ftop));
+          NWidth := FForm.Width;
+          NHeight := FForm.Height;
+          M := MonitorFromPoint(Point(NLeft, NTop));
           if M <> nil then
           begin
-            fleft := M.Left + (M.Width - fwidth) div 2;
-            ftop := M.Top + (M.Height - fheight) div 2;
+            NLeft := M.Left + (M.Width - NWidth) div 2;
+            NTop := M.Top + (M.Height - NHeight) div 2;
           end
           else
           begin
-            fleft := (Screen.Width - fwidth) div 2;
-            ftop := (Screen.Height - fheight) div 2;
+            NLeft := (Screen.Width - NWidth) div 2;
+            NTop := (Screen.Height - NHeight) div 2;
           end;
         end;
       end;
-      FForm.Left := fleft;
-      FForm.Width := fwidth;
-      FForm.Height := fheight;
-      FForm.Top := ftop;
+      FForm.Left := NLeft;
+      FForm.Width := NWidth;
+      FForm.Height := NHeight;
+      FForm.Top := NTop;
       Free;
     end;
   end;
 end;
 
 end.
+

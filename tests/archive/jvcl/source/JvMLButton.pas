@@ -31,19 +31,20 @@ unit JvMLButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Windows, SysUtils, Classes, Controls, StdCtrls,
+  JVCLVer;
 
 type
   TJvMultilineButton = class(TButton)
   private
-    FMultiline: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
+    FMultiline: Boolean;
     function GetCaption: string;
     procedure SetCaption(const Value: string);
     procedure SetMultiline(const Value: Boolean);
   public
-    procedure CreateParams(var params: TCreateParams); override;
-    constructor Create(aOwner: TComponent); override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Multiline: Boolean read FMultiline write SetMultiline default True;
@@ -52,31 +53,29 @@ type
 
 implementation
 
-{ TJvMultilineButton }
-
-constructor TJvMultilineButton.Create(aOwner: TComponent);
+constructor TJvMultilineButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FMultiline := True;
 end;
 
-procedure TJvMultilineButton.CreateParams(var params: TCreateParams);
+procedure TJvMultilineButton.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   if FMultiline then
-    params.Style := params.Style or BS_MULTILINE;
+    Params.Style := Params.Style or BS_MULTILINE;
 end;
 
 function TJvMultilineButton.GetCaption: string;
 begin
-  Result := Stringreplace(inherited Caption, #13, '|', [rfReplaceAll]);
+  Result := StringReplace(inherited Caption, #13, '|', [rfReplaceAll]);
 end;
 
 procedure TJvMultilineButton.SetCaption(const Value: string);
 begin
-  if value <> Caption then
+  if Value <> Caption then
   begin
-    inherited Caption := Stringreplace(value, '|', #13, [rfReplaceAll]);
+    inherited Caption := StringReplace(value, '|', #13, [rfReplaceAll]);
     Invalidate;
   end;
 end;
@@ -91,3 +90,4 @@ begin
 end;
 
 end.
+

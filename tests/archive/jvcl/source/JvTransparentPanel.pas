@@ -31,117 +31,112 @@ unit JvTransparentPanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JvPanel;
 
 type
   TJvTransparentPanel = class(TJvPanel)
   private
-    { Private declarations }
     FBackground: TBitmap;
-    procedure WMEraseBkGnd(var msg: TWMEraseBkGnd);
-      message WM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
-    { Protected declarations }
     procedure CaptureBackground;
     procedure Paint; override;
   public
-    { Public declarations }
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    { Published declarations }
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
 implementation
 
-{ TJvTransparentPanel }
-
-procedure TJvTransparentPanel.CaptureBackground;
-var
-  canvas: TCanvas;
-  dc: HDC;
-  sourcerect: TRect;
+constructor TJvTransparentPanel.Create(AOwner: TComponent);
 begin
-  FBackground := TBitmap.Create;
-  with Fbackground do
-  begin
-    width := clientwidth;
-    height := clientheight;
-  end; { with }
-  sourcerect.TopLeft := ClientToScreen(clientrect.TopLeft);
-  sourcerect.BottomRight := ClientToScreen(clientrect.BottomRight);
-  dc := CreateDC('DISPLAY', nil, nil, nil);
-  try
-    canvas := TCanvas.Create;
-    try
-      canvas.handle := dc;
-      Fbackground.Canvas.CopyRect(clientrect, canvas, sourcerect);
-    finally
-      canvas.handle := 0;
-      canvas.free;
-    end; { finally }
-  finally
-    DeleteDC(dc);
-  end; { finally }
-end;
-
-constructor TJvTransparentPanel.Create(aOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := controlStyle - [csSetCaption];
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csSetCaption];
 end;
 
 destructor TJvTransparentPanel.Destroy;
 begin
-  FBackground.free;
-  inherited;
+  FBackground.Free;
+  inherited Destroy;
+end;
+
+procedure TJvTransparentPanel.CaptureBackground;
+var
+  Canvas: TCanvas;
+  DC: HDC;
+  SourceRect: TRect;
+begin
+  // (rom) check here to secure against misuse
+  if Assigned(FBackground) then
+    Exit;
+  FBackground := TBitmap.Create;
+  with FBackground do
+  begin
+    Width := ClientWidth;
+    Height := ClientHeight;
+  end;
+  SourceRect.TopLeft := ClientToScreen(ClientRect.TopLeft);
+  SourceRect.BottomRight := ClientToScreen(ClientRect.BottomRight);
+  DC := CreateDC('DISPLAY', nil, nil, nil);
+  try
+    Canvas := TCanvas.Create;
+    try
+      Canvas.Handle := DC;
+      FBackground.Canvas.CopyRect(ClientRect, Canvas, SourceRect);
+    finally
+      Canvas.Handle := 0;
+      Canvas.Free;
+    end;
+  finally
+    DeleteDC(DC);
+  end;
 end;
 
 procedure TJvTransparentPanel.Paint;
 begin
   if csDesigning in ComponentState then
-    inherited
+    inherited Paint;
       // would need to draw frame and optional caption here
-  // do NOT call inherited, the control fills its client area if you do!
+// do NOT call inherited, the control fills its client area if you do!
 end;
 
-procedure TJvTransparentPanel.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
+procedure TJvTransparentPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if Visible and HandleAllocated and not (csDesigning in ComponentState) then
   begin
-    Fbackground.Free;
-    Fbackground := nil;
+    FBackground.Free;
+    FBackground := nil;
     Hide;
-    inherited;
+    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
     Parent.Update;
     Show;
   end
   else
-    inherited;
+    inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-procedure TJvTransparentPanel.WMEraseBkGnd(var msg: TWMEraseBkGnd);
+procedure TJvTransparentPanel.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 var
-  canvas: TCanvas;
+  Canvas: TCanvas;
 begin
   if csDesigning in ComponentState then
     inherited
   else
   begin
-    if not Assigned(FBackground) then
-      Capturebackground;
-    canvas := TCanvas.create;
+    CaptureBackground;
+    Canvas := TCanvas.Create;
     try
-      canvas.handle := msg.DC;
-      canvas.draw(0, 0, FBackground);
+      Canvas.Handle := Msg.DC;
+      Canvas.Draw(0, 0, FBackground);
     finally
-      canvas.handle := 0;
-      canvas.free;
-    end; { finally }
-    msg.result := 1;
+      Canvas.Handle := 0;
+      Canvas.Free;
+    end;
+    Msg.Result := 1;
   end;
 end;
 
 end.
+

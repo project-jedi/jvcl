@@ -1,6 +1,7 @@
 object FormListb: TFormListb
   Left = 379
   Top = 317
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'JEDI - Listboxes'
   ClientHeight = 352
@@ -23,7 +24,7 @@ object FormListb: TFormListb
     Align = alBottom
     Shape = bsTopLine
   end
-  object lblColumn1: TJvLabel
+  object LblColumn1: TJvLabel
     Left = 8
     Top = 4
     Width = 56
@@ -35,12 +36,12 @@ object FormListb: TFormListb
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object lblColumn2: TJvLabel
+  object LblColumn2: TJvLabel
     Left = 258
     Top = 4
-    Width = 75
+    Width = 74
     Height = 13
-    Caption = 'Second Column'
+    Caption = 'Second column'
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -56,7 +57,7 @@ object FormListb: TFormListb
     ItemHeight = 13
     MultiSelect = True
     TabOrder = 0
-    OnDblClick = btnRightClick
+    OnDblClick = BtnRightClick
   end
   object ListBox2: TListBox
     Left = 258
@@ -67,27 +68,27 @@ object FormListb: TFormListb
     ItemHeight = 13
     MultiSelect = True
     TabOrder = 1
-    OnDblClick = btnLeftClick
+    OnDblClick = BtnLeftClick
   end
-  object btnLeft: TButton
+  object BtnLeft: TButton
     Left = 225
     Top = 96
     Width = 25
     Height = 25
     Caption = '<'
     TabOrder = 3
-    OnClick = btnLeftClick
+    OnClick = BtnLeftClick
   end
-  object btnRight: TButton
+  object BtnRight: TButton
     Left = 225
     Top = 64
     Width = 25
     Height = 25
     Caption = '>'
     TabOrder = 2
-    OnClick = btnRightClick
+    OnClick = BtnRightClick
   end
-  object btnOK: TButton
+  object BtnOK: TButton
     Left = 309
     Top = 315
     Width = 75
@@ -98,7 +99,7 @@ object FormListb: TFormListb
     ModalResult = 1
     TabOrder = 4
   end
-  object btnCancel: TButton
+  object BtnCancel: TButton
     Left = 389
     Top = 315
     Width = 75

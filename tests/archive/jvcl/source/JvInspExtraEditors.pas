@@ -1,38 +1,41 @@
 {-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
- Project JEDI Visible Component Library (J-VCL)
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
 
- The contents of this file are subject to the Mozilla Public License Version
- 1.1 (the "License"); you may not use this file except in compliance with the
- License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+The Original Code is: JvInspExtraEditors.pas, released on 2001-02-28.
 
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- the specific language governing rights and limitations under the License.
+The Initial Developer of the Original Code is Marcel Bestebroer
+ <marcelb@zeelandnet.nl>.
+Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2001 mbeSoft.
+All Rights Reserved.
 
- The Initial Developer of the Original Code is Marcel Bestebroer
-  <marcelb@zeelandnet.nl>.
- Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
- All Rights Reserved.
+Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
- ******************************************************************************
+Last Modified: 2000-02-28
 
- Additional editors for JvInspector.
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
- You may retrieve the latest version of this file at the Project JEDI home
- page, located at http://www.delphi-jedi.org
+Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvInspExtraEditors;
 
 interface
 
-uses
-  SysUtils, Windows, Classes, Controls, Graphics, imglist,
-  JvInspector;
+{ Additional editors for JvInspector. }
 
-{$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
-{$I JVCL.INC}
+uses
+  SysUtils, Windows, Classes, Controls, Graphics, ImgList,
+  JvInspector;
 
 type
   { TAlign item editor. Descents from the enumeration item to keep DisplayValue available }
@@ -51,10 +54,8 @@ type
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     procedure InitEdit; override;
-
     class procedure RegisterAsDefaultItem;
     class procedure UnregisterAsDefaultItem;
-
     property UnassignedColor: TColor read FUnassignedColor;
     property NormalColor: TColor read FNormalColor;
     property ActiveColor: TColor read FActiveColor;
@@ -71,7 +72,6 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure SetFlags(const Value: TInspectorItemFlags); override;
     procedure SetItemSetFlags(const Value: TInspectorSetFlags); override;
-
     procedure PaintAnchorsBox(const Anchors: TAnchors; const ACanvas: TCanvas; const ARect: TRect;
       const UseUnassigned: Boolean);
   public
@@ -79,10 +79,8 @@ type
     procedure DoneEdit(const CancelEdits: Boolean = False); override;
     procedure DrawValue(const ACanvas: TCanvas); override;
     procedure InitEdit; override;
-
     class procedure RegisterAsDefaultItem;
     class procedure UnregisterAsDefaultItem;
-
     property UnassignedColor: TColor read FUnassignedColor;
     property NormalColor: TColor read FNormalColor;
     property ActiveColor: TColor read FActiveColor;
@@ -100,7 +98,6 @@ type
     function NameForColor(const Color: TColor): string;
     procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
@@ -116,7 +113,6 @@ type
     procedure DrawValue(const ACanvas: TCanvas); override;
     class procedure RegisterAsDefaultItem;
     class procedure UnregisterAsDefaultItem;
-
     property IncludeStdColors: Boolean read FIncludeStdColors write FIncludeStdColors;
   end;
 
@@ -127,7 +123,6 @@ type
   protected
     procedure PaintValue(const ImgNum: Integer; const ImgName: string; const ACanvas: TCanvas;
       const ARect: TRect);
-
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
@@ -141,7 +136,6 @@ type
     procedure DrawValue(const ACanvas: TCanvas); override;
     class procedure RegisterAsDefaultItem;
     class procedure UnregisterAsDefaultItem;
-
     property ImageList: TCustomImageList read FImageList write FImageList;
   end;
 
@@ -156,13 +150,13 @@ type
   TOpenPainter = class(TJvInspectorPainter);
 
   TColorQuad = packed record
-    Red,
-    Green,
-    Blue,
+    Red: Byte;
+    Green: Byte;
+    Blue: Byte;
     Alpha: Byte;
   end;
 
-{ TJvInspectorAlignItem }
+//=== TJvInspectorAlignItem ==================================================
 
 procedure TJvInspectorAlignItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -181,28 +175,32 @@ begin
       else
         NewAlign := alTop;
     end
-    else if Key in [VK_RIGHT, VK_NUMPAD6] then
+    else
+    if Key in [VK_RIGHT, VK_NUMPAD6] then
     begin
       if NewAlign = alRight then
         NewAlign := alNone
       else
         NewAlign := alRight;
     end
-    else if Key in [VK_DOWN, VK_NUMPAD2] then
+    else
+    if Key in [VK_DOWN, VK_NUMPAD2] then
     begin
       if NewAlign = alBottom then
         NewAlign := alNone
       else
         NewAlign := alBottom;
     end
-    else if Key in [VK_LEFT, VK_NUMPAD4] then
+    else
+    if Key in [VK_LEFT, VK_NUMPAD4] then
     begin
       if NewAlign = alLeft then
         NewAlign := alNone
       else
         NewAlign := alLeft;
     end
-    else if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    else
+    if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
     begin
       if NewAlign = alClient then
         NewAlign := alNone
@@ -240,28 +238,32 @@ begin
         else
           NewAlign := alTop;
       end
-      else if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
       begin
         if NewAlign = alRight then
           NewAlign := alNone
         else
           NewAlign := alRight;
       end
-      else if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
       begin
         if NewAlign = alBottom then
           NewAlign := alNone
         else
           NewAlign := alBottom;
       end
-      else if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
       begin
         if NewAlign = alLeft then
           NewAlign := alNone
         else
           NewAlign := alLeft;
       end
-      else if PtInRect(ValueRect, Point(X, Y)) then
+      else
+      if PtInRect(ValueRect, Point(X, Y)) then
       begin
         if NewAlign = alClient then
           NewAlign := alNone
@@ -354,7 +356,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-{ TJvInspectorColorItem }
+//=== TJvInspectorColorItem ==================================================
 
 procedure TJvInspectorColorItem.AddStdColor(const S: string);
 begin
@@ -377,7 +379,8 @@ begin
   ColRGB := ColorToRGB(AInternalColor);
   if IsLightColor(BckRGB) and IsLightColor(ColRGB) then
     Result := clBlack
-  else if not IsLightColor(BckRGB) and not IsLightColor(ColRGB) then
+  else
+  if not IsLightColor(BckRGB) and not IsLightColor(ColRGB) then
     Result := clWhite
   else
     Result := AInternalColor;
@@ -548,9 +551,11 @@ begin
   try
     if not Data.IsInitialized then
       S := sJvInspItemUnInitialized
-    else if not Data.HasValue then
+    else
+    if not Data.HasValue then
       S := sJvInspItemNoValue
-    else if not Data.IsAssigned then
+    else
+    if not Data.IsAssigned then
       S := sJvInspItemUnassigned
     else
     begin
@@ -558,8 +563,8 @@ begin
       Color := Data.AsOrdinal;
     end;
   except
-      S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
-        Exception(ExceptObject).Message;
+    S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+      Exception(ExceptObject).Message;
   end;
   ARect := Rects[iprValueArea];
   SafeColor := ACanvas.Brush.Color;
@@ -579,10 +584,8 @@ end;
 class procedure TJvInspectorColorItem.RegisterAsDefaultItem;
 begin
   with TJvCustomInspectorData.ItemRegister do
-  begin
     if IndexOf(Self) = -1 then
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TColor)));
-  end;
 end;
 
 class procedure TJvInspectorColorItem.UnregisterAsDefaultItem;
@@ -590,7 +593,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-{ TJvInspectorAnchorsItem }
+//=== TJvInspectorAnchorsItem ================================================
 
 procedure TJvInspectorAnchorsItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -613,13 +616,17 @@ begin
       NewAnchors := [];
     if Key in [VK_UP, VK_NUMPAD8] then
       Toggle(akTop)
-    else if Key in [VK_RIGHT, VK_NUMPAD6] then
+    else
+    if Key in [VK_RIGHT, VK_NUMPAD6] then
       Toggle(akRight)
-    else if Key in [VK_DOWN, VK_NUMPAD2] then
+    else
+    if Key in [VK_DOWN, VK_NUMPAD2] then
       Toggle(akBottom)
-    else if Key in [VK_LEFT, VK_NUMPAD4] then
+    else
+    if Key in [VK_LEFT, VK_NUMPAD4] then
       Toggle(akLeft)
-    else if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    else
+    if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
     begin
       if NewAnchors <> [] then
         NewAnchors := []
@@ -663,13 +670,17 @@ begin
     begin
       if PtInRect(Rect(Left + 5, Top, Right - 5, Top + 5), Point(X, Y)) then
         Toggle(akTop)
-      else if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
         Toggle(akRight)
-      else if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
         Toggle(akBottom)
-      else if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
+      else
+      if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
         Toggle(akLeft)
-      else if PtInRect(ValueRect, Point(X, Y)) then
+      else
+      if PtInRect(ValueRect, Point(X, Y)) then
       begin
         if NewAnchors <> [] then
           NewAnchors := []
@@ -738,7 +749,6 @@ var
   IsValid: Boolean;
   Anchors: TAnchors;
   ARect: TRect;
-
 begin
   IsValid := Data.IsInitialized and Data.IsAssigned and Data.HasValue;
   if IsValid then
@@ -762,10 +772,8 @@ end;
 class procedure TJvInspectorAnchorsItem.RegisterAsDefaultItem;
 begin
   with TJvCustomInspectorData.ItemRegister do
-  begin
     if IndexOf(Self) = -1 then
       Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TAnchors)));
-  end;
 end;
 
 class procedure TJvInspectorAnchorsItem.UnregisterAsDefaultItem;
@@ -773,7 +781,7 @@ begin
   TJvCustomInspectorData.ItemRegister.Delete(Self);
 end;
 
-{ TJvInspectorTImageIndexItem }
+//=== TJvInspectorTImageIndexItem ============================================
 
 procedure TJvInspectorTImageIndexItem.PaintValue(const ImgNum: Integer; const ImgName: string;
   const ACanvas: TCanvas; const ARect: TRect);
@@ -883,9 +891,11 @@ begin
   try
     if not Data.IsInitialized then
       S := sJvInspItemUnInitialized
-    else if not Data.HasValue then
+    else
+    if not Data.HasValue then
       S := sJvInspItemNoValue
-    else if not Data.IsAssigned then
+    else
+    if not Data.IsAssigned then
       S := sJvInspItemUnassigned
     else
     begin

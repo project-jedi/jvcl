@@ -1,3 +1,5 @@
+// (rom) no Jedi header because thi file will die soon
+
 unit JvTransLedReg;
 
 interface
@@ -7,7 +9,8 @@ procedure Register;
 implementation
 
 uses
-  Classes, JvTransLed;
+  Classes,
+  JvTransLED;
   
 {$R ..\resources\JvTransLed.dcr}
 

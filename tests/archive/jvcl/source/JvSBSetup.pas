@@ -12,7 +12,7 @@ The Original Code is: JvSbSetup.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,19 +25,19 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvSbSetup;
 
 interface
 
 uses
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Windows,
-{$ELSE}
+  {$ELSE}
   WinTypes, WinProcs,
-{$ENDIF WIN32}
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, Grids, JvxCtrls, JvSpeedbar, ExtCtrls, JvConst;
+  {$ENDIF WIN32}
+  SysUtils, Messages, Classes, Graphics, Controls, Forms,
+  StdCtrls, Grids, ExtCtrls,
+  JvxCtrls, JvSpeedBar, JvConst;
 
 type
   TJvSpeedbarSetupWindow = class(TForm)
@@ -56,8 +56,8 @@ type
       Rect: TRect; State: TGridDrawState);
     procedure ButtonsListMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure ButtonsListMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer);
+    procedure ButtonsListMouseMove(Sender: TObject; Shift: TShiftState;
+      X, Y: Integer);
     procedure ButtonsListMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonsListSelectCell(Sender: TObject; Col, Row: Longint;
@@ -70,7 +70,6 @@ type
     procedure HelpBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
     FButton: TJvBtnControl;
     FImage: TJvButtonImage;
     FBar: TJvSpeedBar;
@@ -83,30 +82,33 @@ type
     procedure UpdateCurrentSection;
     procedure UpdateData(Section: Integer);
     procedure UpdateListHeight;
-    procedure SeTJvSpeedBar(Value: TJvSpeedBar);
+    procedure SetJvSpeedBar(Value: TJvSpeedBar);
     function ItemByRow(Row: Integer): TJvSpeedItem;
-    procedure CMSpeedBarChanged(var Message: TMessage); message CM_SPEEDBARCHANGED;
+    procedure CMSpeedBarChanged(var Msg: TMessage); message CM_SPEEDBARCHANGED;
   public
-    { Public declarations }
-    property JvSpeedbar: TJvSpeedBar read FBar write SeTJvSpeedBar;
+    property JvSpeedBar: TJvSpeedBar read FBar write SetJvSpeedBar;
   end;
 
-procedure ShowSpeedbarSetupWindow(JvSpeedbar: TJvSpeedBar; HelpCtx: THelpContext);
+procedure ShowSpeedbarSetupWindow(JvSpeedBar: TJvSpeedBar; HelpCtx: THelpContext);
 
 implementation
 
-uses JvVCLUtils, JvMaxMin, Consts, JvxConst;
+uses
+  Consts,
+  JvVCLUtils, JvMaxMin, JvxConst;
 
 {$R *.DFM}
 
-function FindEditor(JvSpeedbar: TJvSpeedBar): TJvSpeedbarSetupWindow;
+function FindEditor(JvSpeedBar: TJvSpeedBar): TJvSpeedbarSetupWindow;
 var
   I: Integer;
 begin
   Result := nil;
-  for I := 0 to Screen.FormCount - 1 do begin
-    if Screen.Forms[I] is TJvSpeedbarSetupWindow then begin
-      if TJvSpeedbarSetupWindow(Screen.Forms[I]).JvSpeedbar = JvSpeedbar then
+  for I := 0 to Screen.FormCount - 1 do
+  begin
+    if Screen.Forms[I] is TJvSpeedbarSetupWindow then
+    begin
+      if TJvSpeedbarSetupWindow(Screen.Forms[I]).JvSpeedBar = JvSpeedBar then
       begin
         Result := TJvSpeedbarSetupWindow(Screen.Forms[I]);
         Break;
@@ -115,31 +117,33 @@ begin
   end;
 end;
 
-procedure ShowSpeedbarSetupWindow(JvSpeedbar: TJvSpeedBar; HelpCtx: THelpContext);
+procedure ShowSpeedbarSetupWindow(JvSpeedBar: TJvSpeedBar; HelpCtx: THelpContext);
 var
   Editor: TJvSpeedbarSetupWindow;
 begin
-  if JvSpeedbar = nil then Exit;
-  Editor := FindEditor(JvSpeedbar);
-  if Editor = nil then begin
+  if JvSpeedBar = nil then
+    Exit;
+  Editor := FindEditor(JvSpeedBar);
+  if Editor = nil then
+  begin
     Editor := TJvSpeedbarSetupWindow.Create(Application);
-    Editor.JvSpeedbar := JvSpeedbar;
+    Editor.JvSpeedBar := JvSpeedBar;
   end;
   try
-    if HelpCtx > 0 then Editor.HelpContext := HelpCtx;
-{$IFDEF WIN32}
+    if HelpCtx > 0 then
+      Editor.HelpContext := HelpCtx;
+    {$IFDEF WIN32}
     Editor.BorderIcons := [biSystemMenu];
-{$ENDIF}
+    {$ENDIF}
     Editor.HelpBtn.Visible := (HelpCtx > 0);
     Editor.Show;
-    if Editor.WindowState = wsMinimized then Editor.WindowState := wsNormal;
+    if Editor.WindowState = wsMinimized then
+      Editor.WindowState := wsNormal;
   except
     Editor.Free;
     raise;
   end;
 end;
-
-{ TJvSpeedbarSetupWindow }
 
 const
   MaxBtnListHeight = 186;
@@ -154,18 +158,21 @@ function TJvSpeedbarSetupWindow.CurrentSection: Integer;
 begin
   if CheckSpeedBar and (FBar.SectionCount > 0) then
     Result := SectionList.Row
-  else Result := -1;
+  else
+    Result := -1;
 end;
 
 procedure TJvSpeedbarSetupWindow.SetSection(Section: Integer);
 var
   I: Integer;
 begin
-  if CheckSpeedBar then begin
+  if CheckSpeedBar then
+  begin
     I := Section;
     if (I >= 0) and (FBar.SectionCount > 0) then
       ButtonsList.RowCount := FBar.ItemsCount(I)
-    else ButtonsList.RowCount := 0;
+    else
+      ButtonsList.RowCount := 0;
     SectionList.DefaultColWidth := SectionList.ClientWidth;
     ButtonsList.DefaultColWidth := ButtonsList.ClientWidth;
     UpdateHint(I, ButtonsList.Row);
@@ -179,13 +186,15 @@ end;
 
 procedure TJvSpeedbarSetupWindow.UpdateData(Section: Integer);
 begin
-  if CheckSpeedBar then begin
+  if CheckSpeedBar then
+  begin
     SectionList.RowCount := FBar.SectionCount;
     UpdateCurrentSection;
     if (Section >= 0) and (Section < SectionList.RowCount) then
       SectionList.Row := Section;
   end
-  else begin
+  else
+  begin
     SectionList.RowCount := 0;
     ButtonsList.RowCount := 0;
   end;
@@ -207,12 +216,15 @@ begin
   SectionList.DefaultRowHeight := Canvas.TextHeight('Wg') + 2;
 end;
 
-procedure TJvSpeedbarSetupWindow.SeTJvSpeedBar(Value: TJvSpeedBar);
+procedure TJvSpeedbarSetupWindow.SetJvSpeedBar(Value: TJvSpeedBar);
 begin
-  if FBar <> Value then begin
-    if FBar <> nil then FBar.SetEditing(0);
+  if FBar <> Value then
+  begin
+    if FBar <> nil then
+      FBar.SetEditing(0);
     FBar := Value;
-    if FBar <> nil then begin
+    if FBar <> nil then
+    begin
       FBar.SetEditing(Handle);
       UpdateListHeight;
     end;
@@ -220,13 +232,18 @@ begin
   end;
 end;
 
-procedure TJvSpeedbarSetupWindow.CMSpeedBarChanged(var Message: TMessage);
+procedure TJvSpeedbarSetupWindow.CMSpeedBarChanged(var Msg: TMessage);
 begin
-  if Pointer(Message.LParam) = FBar then begin
-    case Message.WParam of
-      SBR_CHANGED: UpdateData(CurrentSection);
-      SBR_DESTROYED: Close;
-      SBR_BTNSIZECHANGED: if FBar <> nil then UpdateListHeight;
+  if Pointer(Msg.LParam) = FBar then
+  begin
+    case Msg.WParam of
+      SBR_CHANGED:
+        UpdateData(CurrentSection);
+      SBR_DESTROYED:
+        Close;
+      SBR_BTNSIZECHANGED:
+        if FBar <> nil then
+          UpdateListHeight;
     end;
   end;
 end;
@@ -241,8 +258,10 @@ var
   Item: TJvSpeedItem;
 begin
   Item := FBar.Items(Section, Row);
-  if Item <> nil then Hint := Item.Hint
-  else Hint := '';
+  if Item <> nil then
+    Hint := Item.Hint
+  else
+    Hint := '';
 end;
 
 procedure TJvSpeedbarSetupWindow.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -250,7 +269,8 @@ begin
   Action := caFree;
   FButton.Free;
   FButton := nil;
-  if FBar <> nil then FBar.SetEditing(0);
+  if FBar <> nil then
+    FBar.SetEditing(0);
   FBar := nil;
 end;
 
@@ -265,8 +285,10 @@ end;
 procedure TJvSpeedbarSetupWindow.SectionListDrawCell(Sender: TObject; Col,
   Row: Longint; Rect: TRect; State: TGridDrawState);
 begin
-  if CheckSpeedBar then begin
-    if Row < FBar.SectionCount then begin
+  if CheckSpeedBar then
+  begin
+    if Row < FBar.SectionCount then
+    begin
       DrawCellText(Sender as TDrawGrid, Col, Row,
         FBar.Sections[Row].Caption, Rect, taLeftJustify, vaCenter
         {$IFDEF COMPILER4_UP}, TDrawGrid(Sender).IsRightToLeft {$ENDIF});
@@ -283,10 +305,13 @@ begin
   if (Item <> nil) and (X < FBar.BtnWidth + 2) and (Button = mbLeft) then
   begin
     FDrag := True;
-    if Item.Visible then FDragItem := nil
-    else begin
+    if Item.Visible then
+      FDragItem := nil
+    else
+    begin
       FDragItem := Item;
-      if FButton = nil then begin
+      if FButton = nil then
+      begin
         FButton := TJvBtnControl.Create(Self);
         FButton.AssignSpeedItem(Item);
       end;
@@ -299,13 +324,16 @@ procedure TJvSpeedbarSetupWindow.ButtonsListMouseMove(Sender: TObject;
 var
   P: TPoint;
 begin
-  if FDrag and (FButton <> nil) and (FDragItem <> nil) then begin
+  if FDrag and (FButton <> nil) and (FDragItem <> nil) then
+  begin
     P := (Sender as TControl).ClientToScreen(Point(X, Y));
-    X := P.X - (FButton.Width {div 2});
-    Y := P.Y - (FButton.Height {div 2});
+    X := P.X - FButton.Width {div 2};
+    Y := P.Y - FButton.Height {div 2};
     FButton.Activate(Bounds(X, Y, FBar.BtnWidth, FBar.BtnHeight));
   end
-  else if FDrag then SetCursor(Screen.Cursors[crNoDrop]);
+  else
+  if FDrag then
+    SetCursor(Screen.Cursors[crNoDrop]);
 end;
 
 procedure TJvSpeedbarSetupWindow.ButtonsListMouseUp(Sender: TObject;
@@ -315,19 +343,22 @@ var
 begin
   if FDrag and (Button = mbLeft) then
   try
-    if (FDragItem <> nil) and (FButton <> nil) then begin
+    if (FDragItem <> nil) and (FButton <> nil) then
+    begin
       Dec(X, FButton.Width {div 2});
       Dec(Y, FButton.Height {div 2});
       P := (Sender as TControl).ClientToScreen(Point(X, Y));
       FButton.Free;
       FButton := nil;
-      if CheckSpeedBar and (FBar = FindSpeedBar(P)) then begin
+      if CheckSpeedBar and (FBar = FindSpeedBar(P)) then
+      begin
         P := FBar.ScreenToClient(P);
         if FBar.AcceptDropItem(FDragItem, P.X, P.Y) then
           UpdateCurrentSection;
       end;
     end
-    else SetCursor(Screen.Cursors[ButtonsList.Cursor]);
+    else
+      SetCursor(Screen.Cursors[ButtonsList.Cursor]);
   finally
     FDrag := False;
     FDragItem := nil;
@@ -338,8 +369,10 @@ procedure TJvSpeedbarSetupWindow.ButtonsListSelectCell(Sender: TObject; Col,
   Row: Longint; var CanSelect: Boolean);
 begin
   CanSelect := not FDrag or (Row = ButtonsList.Row);
-  if CanSelect then UpdateHint(CurrentSection, Row)
-  else Hint := '';
+  if CanSelect then
+    UpdateHint(CurrentSection, Row)
+  else
+    Hint := '';
 end;
 
 procedure TJvSpeedbarSetupWindow.FormCreate(Sender: TObject);
@@ -349,7 +382,8 @@ begin
   FBar := nil;
   FDrag := False;
   CloseBtn.Default := False;
-  if NewStyleControls then Font.Style := [];
+  if NewStyleControls then
+    Font.Style := [];
   { Load string resources }
   CloseBtn.Caption := ResStr(SOKButton);
   HelpBtn.Caption := ResStr(SHelpButton);
@@ -387,9 +421,11 @@ end;
 
 procedure TJvSpeedbarSetupWindow.FormShow(Sender: TObject);
 begin
-  if FBar <> nil then UpdateListHeight;
+  if FBar <> nil then
+    UpdateListHeight;
   SectionList.DefaultColWidth := SectionList.ClientWidth;
   ButtonsList.DefaultColWidth := ButtonsList.ClientWidth;
 end;
 
 end.
+

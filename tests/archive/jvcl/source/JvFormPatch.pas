@@ -31,21 +31,21 @@ unit JvFormPatch;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, StdCtrls, JvSpeedButton, JvToolEdit, Mask;
+  SysUtils, Classes, Controls, Forms, StdCtrls, Mask,
+  JvToolEdit;
 
 type
-  TfoPatch = class(TForm)
-    BUSpeedButton1: TJvSpeedButton;
-    BUSpeedButton2: TJvSpeedButton;
+  TFoPatch = class(TForm)
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Edit1: TEdit;
-    BUFileNameBox1: TJvFileNameEdit;
-    BUFileNameBox2: TJvFileNameEdit;
-    procedure BUButton1Click(Sender: TObject);
+    FileNameBox1: TJvFilenameEdit;
+    FileNameBox2: TJvFilenameEdit;
+    OkBtn: TButton;
+    CancelBtn: TButton;
+    procedure OkBtnClick(Sender: TObject);
   private
     FPos: Integer;
     function Crypt(Value: Byte): Byte;
@@ -59,27 +59,21 @@ implementation
 
 {$R *.DFM}
 
-{*********************************************************************}
-
-procedure TfoPatch.LoadFromStr(Value: TStringList);
+procedure TFoPatch.LoadFromStr(Value: TStringList);
 begin
   if Value.Count > 2 then
   begin
-    BUFileNameBox1.FileName := Value[0];
-    BUFileNameBox2.FileName := Value[1];
+    FileNameBox1.FileName := Value[0];
+    FileNameBox2.FileName := Value[1];
   end;
 end;
 
-{*********************************************************************}
-
-function TfoPatch.SetFromStr: TStringList;
+function TFoPatch.SetFromStr: TStringList;
 begin
   Result := Res;
 end;
 
-{*********************************************************************}
-
-function TfoPatch.Crypt(Value: Byte): Byte;
+function TFoPatch.Crypt(Value: Byte): Byte;
 begin
   if Edit1.Text = '' then
     Result := Value
@@ -90,12 +84,12 @@ begin
   end;
 end;
 
-{*********************************************************************}
+// (rom) needs modernizing
 
-procedure TfoPatch.BUButton1Click(Sender: TObject);
+procedure TFoPatch.OkBtnClick(Sender: TObject);
 var
   f, g: file of Byte;
-  buf1, buf2: array[0..1024] of Byte;
+  buf1, buf2: array [0..1024] of Byte;
   i, l: Integer;
   res1, res2: Integer;
   icount, lastcount: Integer;
@@ -103,13 +97,13 @@ begin
   FPos := -1;
   Tag := 0;
   Res := TStringList.Create;
-  Res.Add(BUFileNameBox1.FileName);
-  Res.Add(BUFileNameBox2.FileName);
-  AssignFile(f, BUFileNameBox1.FileName);
-  AssignFile(g, BUFileNameBox2.FileName);
+  Res.Add(FileNameBox1.FileName);
+  Res.Add(FileNameBox2.FileName);
+  AssignFile(f, FileNameBox1.FileName);
+  AssignFile(g, FileNameBox2.FileName);
   Reset(f);
   Reset(g);
-  Caption := 'BU - Patcher Editor : Comparing files 0%';
+  Caption := 'Jv - Patcher Editor : Comparing files 0%';
   Application.ProcessMessages;
   l := Res.Add(IntToStr(FileSize(f)));
   Res.Add(IntToStr(FileSize(g)));
@@ -117,7 +111,7 @@ begin
   lastcount := 0;
   while not Eof(f) and not Eof(g) do
   begin
-    Caption := 'BU - Patcher Editor : Comparing files ' + IntToStr(icount div l) + '%';
+    Caption := 'Jv - Patcher Editor : Comparing files ' + IntToStr(icount div l) + '%';
     Application.ProcessMessages;
     BlockRead(f, buf1, 1024, res1); //f = original file
     BlockRead(g, buf2, 1024, res2); //g = patched file
@@ -135,7 +129,7 @@ begin
     end;
   end;
 
-  Caption := 'BU - Patcher Editor : end step ...';
+  Caption := 'Jv - Patcher Editor : end step ...';
   Application.ProcessMessages;
   if res1 > res2 then
   begin

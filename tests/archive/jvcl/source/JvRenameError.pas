@@ -28,14 +28,12 @@ Known Issues:
 
 unit JvRenameError;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   SetupApi,
-  JvCommonDialogD, JvBaseDlg, JvTypes;
+  JvCommonDialogD, JvTypes;
 
 type
   TJvRenameError = class(TJvCommonDialogD)
@@ -59,8 +57,6 @@ implementation
 uses
   JclSysUtils;
 
-{**************************************************}
-
 constructor TJvRenameError.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -69,8 +65,6 @@ begin
   FDestFile := '';
   FSourceFile := '';
 end;
-
-{**************************************************}
 
 function TJvRenameError.Execute: TDiskRes;
 var
@@ -83,7 +77,7 @@ begin
     Sty := Sty or IDF_NOFOREGROUND;
 
   case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
-      PChar(FDestFile), FWin32ErrorCode, Sty) of
+    PChar(FDestFile), FWin32ErrorCode, Sty) of
     DPROMPT_SUCCESS:
       Result := dsSuccess;
     DPROMPT_CANCEL:
@@ -96,3 +90,4 @@ begin
 end;
 
 end.
+

@@ -34,18 +34,18 @@ unit JvGammaPanel;
 {               (Request of Brad T.)                    }
 {*******************************************************}
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, StdCtrls, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs, ExtCtrls, StdCtrls,
+  JvTypes, JVCLVer;
 
 type
   TJvGammaPanel = class(TWinControl)
   private
-    FCol1: TColor;
-    FCol2: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FForegroundColor: TColor;
+    FBackgroundColor: TColor;
     LastCol: TColor;
     FPanel1: TPanel;
     FPanel2: TPanel;
@@ -57,19 +57,17 @@ type
     FXLabel: TLabel;
     FGamma: TImage;
     FChoosed: TImage;
-    FColor1: TImage;
-    FColor2: TImage;
-    FOnChangeCol: TOnChangeColor;
-    FAboutJVCL: TJVCLAboutInfo;
+    FForegroundColorImg: TImage;
+    FBackgroundColorImg: TImage;
+    FOnChangeColor: TOnChangeColor;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure Exchange(Sender: TObject);
-    procedure SetCol1(const Value: TColor);
-    procedure Setcol2(const Value: TColor);
+    procedure SetForegroundColor(const Value: TColor);
+    procedure SetBackgroundColor(const Value: TColor);
     procedure Color1Click(Sender: TObject);
     procedure Color2Click(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,9 +75,9 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoSize;
-    property OnChangeColor: TOnChangeColor read FOnChangeCol write FOnChangeCol;
-    property ForegroundColor: TColor read FCol1 write SetCol1 default clBlack;
-    property BackgroundColor: TColor read FCol2 write Setcol2 default clWhite;
+    property OnChangeColor: TOnChangeColor read FOnChangeColor write FOnChangeColor;
+    property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWhite;
   end;
 
 implementation
@@ -100,80 +98,13 @@ resourcestring
   RC_DefaultG = 'G : ---';
   RC_DefaultR = 'R : ---';
 
-  {*******************************************************}
-
-procedure TJvGammaPanel.ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbLeft then
-  begin
-    FCol1 := LastCol;
-    FColor1.Canvas.Brush.Color := FCol1;
-    FColor1.Canvas.Brush.Style := bsSolid;
-    FColor1.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-    if Assigned(FOnChangeCol) then
-      FOnChangeCol(Self, FCol1, FCol2);
-  end
-  else if Button = mbRight then
-  begin
-    FCol2 := LastCol;
-    FColor2.Canvas.Brush.Color := FCol2;
-    FColor2.Canvas.Brush.Style := bsSolid;
-    FColor2.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-    if Assigned(FOnChangeCol) then
-      FOnChangeCol(Self, FCol1, FCol2);
-  end;
-end;
-
-{*******************************************************}
-
-procedure TJvGammaPanel.Color1Click(Sender: TObject);
-begin
-
-  with TColorDialog.Create(Self) do
-  begin
-    if Execute then
-      SetCol1(Color);
-    Free;
-  end;
-end;
-
-{*******************************************************}
-
-procedure TJvGammaPanel.Color2Click(Sender: TObject);
-begin
-  with TColorDialog.Create(Self) do
-  begin
-    if Execute then
-      SetCol2(Color);
-    Free;
-  end;
-end;
-
-{*******************************************************}
-
-procedure TJvGammaPanel.ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-var
-  col: TColor;
-begin
-  col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
-  LastCol := col;
-  FRLabel.Caption := Format(RC_RedFormat, [GetRValue(col)]);
-  FGLabel.Caption := Format(RC_GreenFormat, [GetGValue(col)]);
-  FBLabel.Caption := Format(RC_BlueFormat, [GetBValue(col)]);
-  FChoosed.Canvas.Brush.Color := col;
-  FChoosed.Canvas.Brush.Style := bsSolid;
-  FChoosed.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-end;
-
-{*******************************************************}
-
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Width := 65;
   Height := 250;
-  FCOl1 := clBlack;
-  FCol2 := clWhite;
+  FForegroundColor := clBlack;
+  FBackgroundColor := clWhite;
 
   FPanel1 := TPanel.Create(Self);
   FPanel1.Parent := Self;
@@ -274,41 +205,41 @@ begin
   FChoosed.Canvas.Brush.Style := bsSolid;
   FChoosed.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
 
-  FColor1 := TImage.Create(FPanel3);
-  FColor2 := TImage.Create(FPanel3);
-  FColor1.Left := 5;
-  FColor1.Top := 5;
-  FColor1.Width := 25;
-  FColor1.Height := 25;
+  FForegroundColorImg := TImage.Create(FPanel3);
+  FBackgroundColorImg := TImage.Create(FPanel3);
+  FForegroundColorImg.Left := 5;
+  FForegroundColorImg.Top := 5;
+  FForegroundColorImg.Width := 25;
+  FForegroundColorImg.Height := 25;
 
-  FColor2.Left := 25;
-  FColor2.Top := 20;
-  FColor2.Height := 25;
-  FColor2.Width := 25;
-  FColor2.Visible := True;
-  FColor1.Visible := True;
-  FColor1.Parent := FPanel3;
-  FColor2.Parent := FPanel3;
+  FBackgroundColorImg.Left := 25;
+  FBackgroundColorImg.Top := 20;
+  FBackgroundColorImg.Height := 25;
+  FBackgroundColorImg.Width := 25;
+  FBackgroundColorImg.Visible := True;
+  FForegroundColorImg.Visible := True;
+  FForegroundColorImg.Parent := FPanel3;
+  FBackgroundColorImg.Parent := FPanel3;
 
-  FColor2.Picture.Bitmap := TBItmap.Create;
-  FColor2.Picture.Bitmap.Width := FChoosed.Width;
-  FColor2.Picture.Bitmap.Height := FChoosed.Height;
-  FColor2.Canvas.Brush.Color := clWhite;
-  FColor2.Canvas.Brush.Style := bsSolid;
-  FColor2.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FCOlor2.Hint := RC_Hint1;
-  FColor2.ShowHint := True;
-  FColor2.OnClick := Color2Click;
+  FBackgroundColorImg.Picture.Bitmap := TBItmap.Create;
+  FBackgroundColorImg.Picture.Bitmap.Width := FChoosed.Width;
+  FBackgroundColorImg.Picture.Bitmap.Height := FChoosed.Height;
+  FBackgroundColorImg.Canvas.Brush.Color := clWhite;
+  FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
+  FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  FBackgroundColorImg.Hint := RC_Hint1;
+  FBackgroundColorImg.ShowHint := True;
+  FBackgroundColorImg.OnClick := Color2Click;
 
-  FColor1.Picture.Bitmap := TBItmap.Create;
-  FColor1.Picture.Bitmap.Width := FChoosed.Width;
-  FColor1.Picture.Bitmap.Height := FChoosed.Height;
-  FColor1.Canvas.Brush.Color := clBlack;
-  FColor1.Canvas.Brush.Style := bsSolid;
-  FColor1.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  FCOlor1.Hint := RC_Hint2;
-  FColor1.ShowHint := True;
-  FColor1.OnClick := Color1Click;
+  FForegroundColorImg.Picture.Bitmap := TBItmap.Create;
+  FForegroundColorImg.Picture.Bitmap.Width := FChoosed.Width;
+  FForegroundColorImg.Picture.Bitmap.Height := FChoosed.Height;
+  FForegroundColorImg.Canvas.Brush.Color := clBlack;
+  FForegroundColorImg.Canvas.Brush.Style := bsSolid;
+  FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  FForegroundColorImg.Hint := RC_Hint2;
+  FForegroundColorImg.ShowHint := True;
+  FForegroundColorImg.OnClick := Color1Click;
 
   FXLabel := TLabel.Create(FPanel3);
   FXLabel.Left := 7;
@@ -322,13 +253,11 @@ begin
   FXLabel.Parent := FPanel3;
 end;
 
-{*******************************************************}
-
 destructor TJvGammaPanel.Destroy;
 begin
   FXLabel.Free;
-  FColor2.Free;
-  FColor1.Free;
+  FBackgroundColorImg.Free;
+  FForegroundColorImg.Free;
   FGamma.Free;
   FChoosed.Free;
   FRLabel.Free;
@@ -338,63 +267,113 @@ begin
   FPanel3.Free;
   FPanel4.Free;
   FPanel1.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{*******************************************************}
+procedure TJvGammaPanel.ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+  begin
+    FForegroundColor := LastCol;
+    FForegroundColorImg.Canvas.Brush.Color := FForegroundColor;
+    FForegroundColorImg.Canvas.Brush.Style := bsSolid;
+    FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+    if Assigned(FOnChangeColor) then
+      FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+  end
+  else
+  if Button = mbRight then
+  begin
+    FBackgroundColor := LastCol;
+    FBackgroundColorImg.Canvas.Brush.Color := FBackgroundColor;
+    FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
+    FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+    if Assigned(FOnChangeColor) then
+      FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
+  end;
+end;
+
+procedure TJvGammaPanel.Color1Click(Sender: TObject);
+begin
+  with TColorDialog.Create(Self) do
+  begin
+    if Execute then
+      SetForegroundColor(Color);
+    Free;
+  end;
+end;
+
+procedure TJvGammaPanel.Color2Click(Sender: TObject);
+begin
+  with TColorDialog.Create(Self) do
+  begin
+    if Execute then
+      SetBackgroundColor(Color);
+    Free;
+  end;
+end;
+
+procedure TJvGammaPanel.ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  Col: TColor;
+begin
+  Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
+  LastCol := col;
+  FRLabel.Caption := Format(RC_RedFormat, [GetRValue(Col)]);
+  FGLabel.Caption := Format(RC_GreenFormat, [GetGValue(Col)]);
+  FBLabel.Caption := Format(RC_BlueFormat, [GetBValue(Col)]);
+  FChoosed.Canvas.Brush.Color := Col;
+  FChoosed.Canvas.Brush.Style := bsSolid;
+  FChoosed.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+end;
 
 procedure TJvGammaPanel.Exchange(Sender: TObject);
 var
-  t: TColor;
+  Col: TColor;
 begin
-  //exchange colors
-  t := FCol1;
-  FCol1 := FCol2;
-  FCol2 := t;
+  // exchange colors
+  Col := FForegroundColor;
+  FForegroundColor := FBackgroundColor;
+  FBackgroundColor := Col;
 
-  FColor1.Canvas.Brush.Color := FCol1;
-  FColor1.Canvas.Brush.Style := bsSolid;
-  FColor1.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  FForegroundColorImg.Canvas.Brush.Color := FForegroundColor;
+  FForegroundColorImg.Canvas.Brush.Style := bsSolid;
+  FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
 
-  FColor2.Canvas.Brush.Color := FCol2;
-  FColor2.Canvas.Brush.Style := bsSolid;
-  FColor2.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  FBackgroundColorImg.Canvas.Brush.Color := FBackgroundColor;
+  FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
+  FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
 
-  if Assigned(FOnChangeCol) then
-    FOnChangeCol(Self, FCol1, FCol2);
+  if Assigned(FOnChangeColor) then
+    FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
-{*******************************************************}
-
-procedure TJvGammaPanel.SetCol1(const Value: TColor);
+procedure TJvGammaPanel.SetForegroundColor(const Value: TColor);
 begin
-  FCol1 := Value;
-  FColor1.Canvas.Brush.Color := FCol1;
-  FColor1.Canvas.Brush.Style := bsSolid;
-  FColor1.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  if Assigned(FOnChangeCol) then
-    FOnChangeCol(Self, FCol1, FCol2);
+  FForegroundColor := Value;
+  FForegroundColorImg.Canvas.Brush.Color := FForegroundColor;
+  FForegroundColorImg.Canvas.Brush.Style := bsSolid;
+  FForegroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  if Assigned(FOnChangeColor) then
+    FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
-{*******************************************************}
-
-procedure TJvGammaPanel.Setcol2(const Value: TColor);
+procedure TJvGammaPanel.SetBackgroundColor(const Value: TColor);
 begin
-  FCol2 := Value;
-  FColor2.Canvas.Brush.Color := FCol2;
-  FColor2.Canvas.Brush.Style := bsSolid;
-  FColor2.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
-  if Assigned(FOnChangeCol) then
-    FOnChangeCol(Self, FCol1, FCol2);
+  FBackgroundColor := Value;
+  FBackgroundColorImg.Canvas.Brush.Color := FBackgroundColor;
+  FBackgroundColorImg.Canvas.Brush.Style := bsSolid;
+  FBackgroundColorImg.Canvas.FillRect(Rect(0, 0, FChoosed.Width, FChoosed.Height));
+  if Assigned(FOnChangeColor) then
+    FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
-
-{*******************************************************}
 
 procedure TJvGammaPanel.WMSize(var Msg: TWMSize);
 begin
   Self.Width := 65;
   Self.Height := 250;
-  Self.FColor1.BringToFront;
+  Self.FForegroundColorImg.BringToFront;
 end;
 
 end.
+

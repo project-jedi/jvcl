@@ -12,7 +12,7 @@ The Original Code is: JvGIF.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -24,33 +24,33 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
+{$I WINDOWSONLY.INC}
 
 unit JvGIF;
 
 interface
 
-uses Windows,
-{$IFDEF COMPILER6_UP}
-RTLConsts,
-{$ENDIF}
-SysUtils, Classes, Graphics, JvGraph;
+uses
+  Windows,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  SysUtils, Classes, Graphics,
+  JvGraph;
 
 const
   RT_GIF = 'GIF'; { GIF Resource Type }
 
 type
 
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
 
   TProgressStage = (psStarting, psRunning, psEnding);
-  TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
+  TProgressEvent = procedure(Sender: TObject; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
     const Msg: string) of object;
 
-{ TSharedImage }
-
-  TSharedImage = class
+  TSharedImage = class(TObject)
   private
     FRefCount: Integer;
   protected
@@ -60,7 +60,7 @@ type
     property RefCount: Integer read FRefCount;
   end;
 
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 
   TGIFVersion = (gvUnknown, gv87a, gv89a);
   TGIFBits = 1..8;
@@ -68,19 +68,19 @@ type
     dmRestorePrevious, dmReserved4, dmReserved5, dmReserved6, dmReserved7);
 
   TGIFColorItem = packed record
-    Red, Green, Blue: Byte;
+    Red: Byte;
+    Green: Byte;
+    Blue: Byte;
   end;
 
   TGIFColorTable = packed record
     Count: Integer;
-    Colors: packed array[Byte] of TGIFColorItem;
+    Colors: packed array [Byte] of TGIFColorItem;
   end;
 
   TJvGIFFrame = class;
   TGIFData = class;
   TGIFItem = class;
-
-{ TJvGIFImage }
 
   TJvGIFImage = class(TGraphic)
   private
@@ -94,9 +94,9 @@ type
     FLooping: Boolean;
     FCorrupted: Boolean;
     FRepeatCount: Word;
-{$IFNDEF COMPILER3_UP}
+    {$IFNDEF COMPILER3_UP}
     FOnProgress: TProgressEvent;
-{$ENDIF}
+    {$ENDIF}
     function GetBitmap: TBitmap;
     function GetCount: Integer;
     function GetComment: TStrings;
@@ -123,27 +123,31 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function Equals(Graphic: TGraphic): Boolean; override;
-{$ENDIF}
+    {$ENDIF}
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetWidth: Integer; override;
-    function GetPalette: HPALETTE; {$IFDEF COMPILER3_UP} override; {$ENDIF}
-    function GetTransparent: Boolean; {$IFDEF COMPILER3_UP} override; {$ENDIF}
+    function GetPalette: HPALETTE;
+    {$IFDEF COMPILER3_UP} override;
+    {$ENDIF}
+    function GetTransparent: Boolean;
+    {$IFDEF COMPILER3_UP} override;
+    {$ENDIF}
     procedure ClearItems;
     procedure NewImage;
     procedure UniqueImage;
-{$IFNDEF COMPILER3_UP}
+    {$IFNDEF COMPILER3_UP}
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
       const Msg: string); dynamic;
-{$ENDIF}
+    {$ENDIF}
     procedure ReadData(Stream: TStream); override;
     procedure SetHeight(Value: Integer); override;
     procedure SetWidth(Value: Integer); override;
     procedure WriteData(Stream: TStream); override;
-    property Bitmap: TBitmap read GetBitmap;   { volatile }
+    property Bitmap: TBitmap read GetBitmap; { volatile }
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -179,14 +183,12 @@ type
     property ScreenHeight: Integer read GetScreenHeight;
     property TransparentColor: TColor read GetTransparentColor;
     property Version: TGIFVersion read FVersion;
-{$IFNDEF COMPILER3_UP}
+    {$IFNDEF COMPILER3_UP}
     property Palette: HPALETTE read GetPalette;
     property Transparent: Boolean read GetTransparent;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
-{$ENDIF}
+    {$ENDIF}
   end;
-
-{ TJvGIFFrame }
 
   TJvGIFFrame = class(TPersistent)
   private
@@ -245,8 +247,6 @@ type
     property Width: Integer read GetWidth;
   end;
 
-{ TGIFData }
-
   TGIFData = class(TSharedImage)
   private
     FComment: TStrings;
@@ -261,8 +261,6 @@ type
     destructor Destroy; override;
   end;
 
-{ TGIFItem }
-
   TGIFItem = class(TSharedImage)
   private
     FImageData: TMemoryStream;
@@ -276,50 +274,55 @@ type
     destructor Destroy; override;
   end;
 
-{ Clipboard format for GIF image }
-
 var
-  CF_GIF: Word;
+  CF_GIF: Word; { Clipboard format for GIF image }
 
 { Load incomplete or corrupted images without exceptions }
 
-const
+// (rom) changed to var to allow changes
+var
   GIFLoadCorrupted: Boolean = True;
 
 function GIFVersionName(Version: TGIFVersion): string;
-procedure Jvgif_dummy;
+procedure JvGif_Dummy;
 
 implementation
 
-uses Consts, {$IFNDEF WIN32} JvStr16, {$ENDIF} JvVCLUtils, JvAniFile, JvConst,
-  JvMaxMin, JvxConst;
+uses
+  Consts,
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  JvVCLUtils, JvAniFile, JvMaxMin, JvxConst;
 
 {$R-}
 
-procedure Jvgif_dummy;
+procedure JvGif_Dummy;
 begin
 end;
 
 procedure GifError(const Msg: string);
-{$IFDEF WIN32}
+
+  {$IFDEF WIN32}
   function ReturnAddr: Pointer;
   asm
           MOV     EAX,[EBP+4]
   end;
-{$ELSE}
+  {$ELSE}
   function ReturnAddr: Pointer; assembler;
   asm
           MOV     AX,[BP].Word[2]
           MOV     DX,[BP].Word[4]
   end;
-{$ENDIF}
+  {$ENDIF}
+
 begin
   raise EInvalidGraphicOperation.Create(Msg) at ReturnAddr;
 end;
 
-{$IFNDEF COMPILER3_UP}
+//=== TSharedImage ===========================================================
 
-{ TSharedImage }
+{$IFNDEF COMPILER3_UP}
 
 procedure TSharedImage.Reference;
 begin
@@ -328,9 +331,11 @@ end;
 
 procedure TSharedImage.Release;
 begin
-  if Pointer(Self) <> nil then begin
+  if Pointer(Self) <> nil then
+  begin
     Dec(FRefCount);
-    if FRefCount = 0 then begin
+    if FRefCount = 0 then
+    begin
       FreeHandle;
       Free;
     end;
@@ -341,7 +346,7 @@ end;
 
 const
   GIFSignature = 'GIF';
-  GIFVersionStr: array[TGIFVersion] of PChar = (#0#0#0, '87a', '89a');
+  GIFVersionStr: array [TGIFVersion] of PChar = (#0#0#0, '87a', '89a');
 
 function GIFVersionName(Version: TGIFVersion): string;
 begin
@@ -350,45 +355,45 @@ end;
 
 const
   CODE_TABLE_SIZE = 4096;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   HASH_TABLE_SIZE = 17777;
-{$ELSE}
+  {$ELSE}
   HASH_TABLE_SIZE = MaxListSize - $10;
-{$ENDIF}
-  MAX_LOOP_COUNT  = 30000;
+  {$ENDIF}
+  MAX_LOOP_COUNT = 30000;
 
-  CHR_EXT_INTRODUCER    = '!';
-  CHR_IMAGE_SEPARATOR   = ',';
-  CHR_TRAILER           = ';';  { indicates the end of the GIF Data stream }
+  CHR_EXT_INTRODUCER = '!';
+  CHR_IMAGE_SEPARATOR = ',';
+  CHR_TRAILER = ';'; { indicates the end of the GIF Data stream }
 
-{ Image descriptor bit masks }
+  { Image descriptor bit masks }
 
-  ID_LOCAL_COLOR_TABLE  = $80;  { set if a local color table follows }
-  ID_INTERLACED         = $40;  { set if image is interlaced }
-  ID_SORT               = $20;  { set if color table is sorted }
-  ID_RESERVED           = $0C;  { reserved - must be set to $00 }
-  ID_COLOR_TABLE_SIZE   = $07;  { Size of color table as above }
+  ID_LOCAL_COLOR_TABLE = $80; { set if a local color table follows }
+  ID_INTERLACED = $40; { set if image is interlaced }
+  ID_SORT = $20; { set if color table is sorted }
+  ID_RESERVED = $0C; { reserved - must be set to $00 }
+  ID_COLOR_TABLE_SIZE = $07; { Size of color table as above }
 
-{ Logical screen descriptor packed field masks }
+  { Logical screen descriptor packed field masks }
 
   LSD_GLOBAL_COLOR_TABLE = $80; { set if global color table follows L.S.D. }
-  LSD_COLOR_RESOLUTION   = $70; { Color resolution - 3 bits }
-  LSD_SORT               = $08; { set if global color table is sorted - 1 bit }
-  LSD_COLOR_TABLE_SIZE   = $07; { Size of global color table - 3 bits }
+  LSD_COLOR_RESOLUTION = $70; { Color resolution - 3 bits }
+  LSD_SORT = $08; { set if global color table is sorted - 1 bit }
+  LSD_COLOR_TABLE_SIZE = $07; { Size of global color table - 3 bits }
                                 { Actual Size = 2^value+1    - value is 3 bits }
 
-{ Graphic control extension packed field masks }
+  { Graphic control extension packed field masks }
 
-  GCE_TRANSPARENT     = $01; { whether a transparency Index is given }
-  GCE_USER_INPUT      = $02; { whether or not user input is expected }
+  GCE_TRANSPARENT = $01; { whether a transparency Index is given }
+  GCE_USER_INPUT = $02; { whether or not user input is expected }
   GCE_DISPOSAL_METHOD = $1C; { the way in which the graphic is to be treated after being displayed }
-  GCE_RESERVED        = $E0; { reserved - must be set to $00 }
+  GCE_RESERVED = $E0; { reserved - must be set to $00 }
 
-{ Application extension }
+  { Application extension }
 
-  AE_LOOPING          = $01; { looping Netscape extension }
+  AE_LOOPING = $01; { looping Netscape extension }
 
-  GIFColors: array[TGIFBits] of Word = (2, 4, 8, 16, 32, 64, 128, 256);
+  GIFColors: array [TGIFBits] of Word = (2, 4, 8, 16, 32, 64, 128, 256);
 
 function ColorsToBits(ColorCount: Word): Byte; near;
 var
@@ -396,7 +401,8 @@ var
 begin
   Result := 0;
   for I := Low(TGIFBits) to High(TGIFBits) do
-    if ColorCount = GIFColors[I] then begin
+    if ColorCount = GIFColors[I] then
+    begin
       Result := I;
       Exit;
     end;
@@ -405,15 +411,22 @@ end;
 
 function ColorsToPixelFormat(Colors: Word): TPixelFormat;
 begin
-  if Colors <= 2 then Result := pf1bit
-  else if Colors <= 16 then Result := pf4bit
-  else if Colors <= 256 then Result := pf8bit
-  else Result := pf24bit;
+  if Colors <= 2 then
+    Result := pf1bit
+  else
+  if Colors <= 16 then
+    Result := pf4bit
+  else
+  if Colors <= 256 then
+    Result := pf8bit
+  else
+    Result := pf24bit;
 end;
 
 function ItemToRGB(Item: TGIFColorItem): Longint; near;
 begin
-  with Item do Result := RGB(Red, Green, Blue);
+  with Item do
+    Result := RGB(Red, Green, Blue);
 end;
 
 function GrayColor(Color: TColor): TColor;
@@ -430,8 +443,10 @@ var
   I: Byte;
   Index: Integer;
 begin
-  for I := 0 to ColorTable.Count - 1 do begin
-    with ColorTable.Colors[I] do begin
+  for I := 0 to ColorTable.Count - 1 do
+  begin
+    with ColorTable.Colors[I] do
+    begin
       Index := Byte(Longint(Word(Red) * 77 + Word(Green) * 150 +
         Word(Blue) * 29) shr 8);
       Red := Index;
@@ -444,9 +459,10 @@ end;
 function FindColorIndex(const ColorTable: TGIFColorTable;
   Color: TColor): Integer;
 begin
-  if (Color <> clNone) then
+  if Color <> clNone then
     for Result := 0 to ColorTable.Count - 1 do
-      if ItemToRGB(ColorTable.Colors[Result]) = ColorToRGB(Color) then Exit;
+      if ItemToRGB(ColorTable.Colors[Result]) = ColorToRGB(Color) then
+        Exit;
   Result := -1;
 end;
 
@@ -456,23 +472,23 @@ end;
 
 type
   TGIFHeader = packed record
-    Signature: array[0..2] of Char; { contains 'GIF' }
-    Version: array[0..2] of Char;   { '87a' or '89a' }
+    Signature: array [0..2] of Char; { contains 'GIF' }
+    Version: array [0..2] of Char; { '87a' or '89a' }
   end;
 
   TScreenDescriptor = packed record
-    ScreenWidth: Word;            { logical screen width }
-    ScreenHeight: Word;           { logical screen height }
+    ScreenWidth: Word; { logical screen width }
+    ScreenHeight: Word; { logical screen height }
     PackedFields: Byte;
-    BackgroundColorIndex: Byte;   { Index to global color table }
-    AspectRatio: Byte;            { actual ratio = (AspectRatio + 15) / 64 }
+    BackgroundColorIndex: Byte; { Index to global color table }
+    AspectRatio: Byte; { actual ratio = (AspectRatio + 15) / 64 }
   end;
 
   TImageDescriptor = packed record
-    ImageLeftPos: Word;   { column in pixels in respect to left of logical screen }
-    ImageTopPos: Word;    { row in pixels in respect to top of logical screen }
-    ImageWidth: Word;     { width of image in pixels }
-    ImageHeight: Word;    { height of image in pixels }
+    ImageLeftPos: Word; { column in pixels in respect to left of logical screen }
+    ImageTopPos: Word; { row in pixels in respect to top of logical screen }
+    ImageWidth: Word; { width of image in pixels }
+    ImageHeight: Word; { height of image in pixels }
     PackedFields: Byte;
   end;
 
@@ -482,9 +498,9 @@ type
   TExtensionType = (etGraphic, etPlainText, etApplication, etComment);
 
 const
-  ExtLabels: array[TExtensionType] of Byte = ($F9, $01, $FF, $FE);
-  LoopExtNS: string[11] = 'NETSCAPE2.0';
-  LoopExtAN: string[11] = 'ANIMEXTS1.0';
+  ExtLabels: array [TExtensionType] of Byte = ($F9, $01, $FF, $FE);
+  LoopExtNS: string [11] = 'NETSCAPE2.0';
+  LoopExtAN: string [11] = 'ANIMEXTS1.0';
 
 type
   TGraphicControlExtension = packed record
@@ -497,25 +513,33 @@ type
 
   TPlainTextExtension = packed record
     BlockSize: Byte; { should be 12 }
-    Left, Top, Width, Height: Word;
-    CellWidth, CellHeight: Byte;
-    FGColorIndex, BGColorIndex: Byte;
+    Left: Word;
+    Top: Word;
+    Width: Word;
+    Height: Word;
+    CellWidth: Byte;
+    CellHeight: Byte;
+    FGColorIndex: Byte;
+    BGColorIndex: Byte;
   end;
 
   TAppExtension = packed record
     BlockSize: Byte; { should be 11 }
-    AppId: array[1..8] of Byte;
-    Authentication: array[1..3] of Byte;
+    AppId: array [1..8] of Byte;
+    Authentication: array [1..3] of Byte;
   end;
 
   TExtensionRecord = packed record
     case ExtensionType: TExtensionType of
-      etGraphic: (GCE: TGraphicControlExtension);
-      etPlainText: (PTE: TPlainTextExtension);
-      etApplication: (APPE: TAppExtension);
+      etGraphic:
+        (GCE: TGraphicControlExtension);
+      etPlainText:
+        (PTE: TPlainTextExtension);
+      etApplication:
+        (APPE: TAppExtension);
   end;
 
-{ TExtension }
+//=== TExtension =============================================================
 
   TExtension = class(TPersistent)
   private
@@ -536,29 +560,35 @@ end;
 
 procedure TExtension.Assign(Source: TPersistent);
 begin
-  if (Source <> nil) and (Source is TExtension) then begin
+  if (Source <> nil) and (Source is TExtension) then
+  begin
     FExtType := TExtension(Source).FExtType;
     FExtRec := TExtension(Source).FExtRec;
-    if TExtension(Source).FData <> nil then begin
-      if FData = nil then FData := TStringList.Create;
+    if TExtension(Source).FData <> nil then
+    begin
+      if FData = nil then
+        FData := TStringList.Create;
       FData.Assign(TExtension(Source).FData);
     end;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 function TExtension.IsLoopExtension: Boolean;
 begin
   Result := (FExtType = etApplication) and (FData.Count > 0) and
     (CompareMem(@FExtRec.APPE.AppId, @LoopExtNS[1], FExtRec.APPE.BlockSize) or
-    CompareMem(@FExtRec.APPE.AppId, @LoopExtAN[1], FExtRec.APPE.BlockSize)) and
+     CompareMem(@FExtRec.APPE.AppId, @LoopExtAN[1], FExtRec.APPE.BlockSize)) and
     (Length(FData[0]) >= 3) and (Byte(FData[0][1]) = AE_LOOPING);
 end;
 
 procedure FreeExtensions(Extensions: TList); near;
 begin
-  if Extensions <> nil then begin
-    while Extensions.Count > 0 do begin
+  if Extensions <> nil then
+  begin
+    while Extensions.Count > 0 do
+    begin
       TObject(Extensions[0]).Free;
       Extensions.Delete(0);
     end;
@@ -571,9 +601,11 @@ var
   I: Integer;
 begin
   if Extensions <> nil then
-    for I := Extensions.Count - 1 downto 0 do begin
+    for I := Extensions.Count - 1 downto 0 do
+    begin
       Result := TExtension(Extensions[I]);
-      if (Result <> nil) and (Result.FExtType = ExtType) then Exit;
+      if (Result <> nil) and (Result.FExtType = ExtType) then
+        Exit;
     end;
   Result := nil;
 end;
@@ -605,7 +637,7 @@ end;
 }
 
 type
-  TProgressProc = procedure (Stage: TProgressStage; PercentDone: Byte;
+  TProgressProc = procedure(Stage: TProgressStage; PercentDone: Byte;
     const Msg: string) of object;
 
 { GIF reading/writing routines
@@ -617,12 +649,13 @@ type
 
 type
   PIntCodeTable = ^TIntCodeTable;
-  TIntCodeTable = array[0..CODE_TABLE_SIZE - 1] of Word;
+  TIntCodeTable = array [0..CODE_TABLE_SIZE - 1] of Word;
 
   PReadContext = ^TReadContext;
   TReadContext = record
-    Inx, Size: Longint;
-    Buf: array[0..255 + 4] of Byte;
+    Inx: Longint;
+    Size: Longint;
+    Buf: array [0..255 + 4] of Byte;
     CodeSize: Longint;
     ReadMask: Longint;
   end;
@@ -631,25 +664,31 @@ type
   TWriteContext = record
     Inx: Longint;
     CodeSize: Longint;
-    Buf: array[0..255 + 4] of Byte;
+    Buf: array [0..255 + 4] of Byte;
   end;
 
   TOutputContext = record
-    W, H, X, Y: Longint;
-    BitsPerPixel, Pass: Integer;
+    W: Longint;
+    H: Longint;
+    X: Longint;
+    Y: Longint;
+    BitsPerPixel: Integer;
+    Pass: Integer;
     Interlace: Boolean;
     LineIdent: Longint;
-    Data, CurrLineData: Pointer;
+    Data: Pointer;
+    CurrLineData: Pointer;
   end;
 
   PImageDict = ^TImageDict;
   TImageDict = record
-    Tail, Index: Word;
+    Tail: Word;
+    Index: Word;
     Col: Byte;
   end;
 
   PDictTable = ^TDictTable;
-  TDictTable = array[0..CODE_TABLE_SIZE - 1] of TImageDict;
+  TDictTable = array [0..CODE_TABLE_SIZE - 1] of TImageDict;
 
   PRGBPalette = ^TRGBPalette;
   TRGBPalette = array [Byte] of TRGBQuad;
@@ -663,21 +702,33 @@ function InterlaceStep(Y, Height: Integer; var Pass: Integer): Integer;
 begin
   Result := Y;
   case Pass of
-    0, 1: Inc(Result, 8);
-    2: Inc(Result, 4);
-    3: Inc(Result, 2);
+    0, 1:
+      Inc(Result, 8);
+    2:
+      Inc(Result, 4);
+    3:
+      Inc(Result, 2);
   end;
-  if Result >= Height then begin
-    if Pass = 0 then begin
-      Pass := 1; Result := 4;
-      if (Result < Height) then Exit;
+  if Result >= Height then
+  begin
+    if Pass = 0 then
+    begin
+      Pass := 1;
+      Result := 4;
+      if Result < Height then
+        Exit;
     end;
-    if Pass = 1 then begin
-      Pass := 2; Result := 2;
-      if (Result < Height) then Exit;
+    if Pass = 1 then
+    begin
+      Pass := 2;
+      Result := 2;
+      if Result < Height then
+        Exit;
     end;
-    if Pass = 2 then begin
-      Pass := 3; Result := 1;
+    if Pass = 2 then
+    begin
+      Pass := 3;
+      Result := 1;
     end;
   end;
 end;
@@ -700,7 +751,8 @@ begin
     Stream.ReadBuffer(ColorTable.Colors[0],
       ColorTable.Count * SizeOf(TGIFColorItem));
   end
-  else begin
+  else
+  begin
     LocalColors := False;
     FillChar(ColorTable, SizeOf(ColorTable), 0);
   end;
@@ -708,17 +760,20 @@ begin
   Dest.Write(CodeSize, 1);
   repeat
     Stream.Read(BlockSize, 1);
-    if (Stream.Position + BlockSize) > Stream.Size then begin
+    if (Stream.Position + BlockSize) > Stream.Size then
+    begin
       Corrupted := True;
       Stream.Position := Stream.Size;
       Exit;
     end;
     Dest.Write(BlockSize, 1);
-    if (Stream.Position + BlockSize) > Stream.Size then begin
+    if (Stream.Position + BlockSize) > Stream.Size then
+    begin
       BlockSize := Stream.Size - Stream.Position;
       Corrupted := True;
     end;
-    if BlockSize > 0 then Dest.CopyFrom(Stream, BlockSize);
+    if BlockSize > 0 then
+      Dest.CopyFrom(Stream, BlockSize);
   until (BlockSize = 0) or (Stream.Position >= Stream.Size);
 end;
 
@@ -728,7 +783,8 @@ var
   I: Byte;
 begin
   FillChar(Colors, SizeOf(Colors), $80);
-  for I := 0 to ColorTable.Count - 1 do begin
+  for I := 0 to ColorTable.Count - 1 do
+  begin
     Colors[I].rgbRed := ColorTable.Colors[I].Red;
     Colors[I].rgbGreen := ColorTable.Colors[I].Green;
     Colors[I].rgbBlue := ColorTable.Colors[I].Blue;
@@ -772,30 +828,39 @@ procedure Output(Value: Byte; var Context: TOutputContext);
 var
   P: PByte;
 begin
-  if (Context.Y >= Context.H) then Exit;
+  if Context.Y >= Context.H then
+    Exit;
   case Context.BitsPerPixel of
-    1: begin
-         P := HugeOffset(Context.CurrLineData, Context.X shr 3);
-         if (Context.X and $07 <> 0) then
-           P^ := P^ or Word(value shl (7 - (Word(Context.X and 7))))
-         else P^ := Byte(value shl 7);
-       end;
-    4: begin
-         P := HugeOffset(Context.CurrLineData, Context.X shr 1);
-         if (Context.X and 1 <> 0) then P^ := P^ or Value
-         else P^ := Byte(value shl 4);
-       end;
-    8: begin
-         P := HugeOffset(Context.CurrLineData, Context.X);
-         P^ := Value;
-       end;
+    1:
+      begin
+        P := HugeOffset(Context.CurrLineData, Context.X shr 3);
+        if (Context.X and $07) <> 0 then
+          P^ := P^ or Word(Value shl (7 - (Word(Context.X and 7))))
+        else
+          P^ := Byte(Value shl 7);
+      end;
+    4:
+      begin
+        P := HugeOffset(Context.CurrLineData, Context.X shr 1);
+        if (Context.X and 1) <> 0 then
+          P^ := P^ or Value
+        else
+          P^ := Byte(Value shl 4);
+      end;
+    8:
+      begin
+        P := HugeOffset(Context.CurrLineData, Context.X);
+        P^ := Value;
+      end;
   end;
   Inc(Context.X);
-  if Context.X < Context.W then Exit;
+  if Context.X < Context.W then
+    Exit;
   Context.X := 0;
   if Context.Interlace then
     Context.Y := InterlaceStep(Context.Y, Context.H, Context.Pass)
-  else Inc(Context.Y);
+  else
+    Inc(Context.Y);
   Context.CurrLineData := HugeOffset(Context.Data,
     (Context.H - 1 - Context.Y) * Context.LineIdent);
 end;
@@ -815,7 +880,9 @@ var
   TableFull: Boolean;
 begin
   Corrupted := False;
-  OutCount := 0; OldCode := 0; FinalChar := 0;
+  OutCount := 0;
+  OldCode := 0;
+  FinalChar := 0;
   TableFull := False;
   Prefix := AllocMem(SizeOf(TIntCodeTable));
   try
@@ -823,15 +890,19 @@ begin
     try
       OutCode := AllocMem(SizeOf(TIntCodeTable) + SizeOf(Word));
       try
-        if Assigned(ProgressProc) then ProgressProc(psStarting, 0, '');
+        if Assigned(ProgressProc) then
+          ProgressProc(psStarting, 0, '');
         try
           Stream.ReadBuffer(MinCodeSize, 1);
-          if (MinCodeSize < 2) or (MinCodeSize > 9) then begin
-            if LoadCorrupt then begin
+          if (MinCodeSize < 2) or (MinCodeSize > 9) then
+          begin
+            if LoadCorrupt then
+            begin
               Corrupted := True;
               MinCodeSize := Max(2, Min(MinCodeSize, 9));
             end
-            else GifError(SBadGIFCodeSize);
+            else
+              GifError(SBadGIFCodeSize);
           end;
           { Initial read context }
           ReadCtxt.Inx := 0;
@@ -839,7 +910,8 @@ begin
           ReadCtxt.CodeSize := MinCodeSize + 1;
           ReadCtxt.ReadMask := (1 shl ReadCtxt.CodeSize) - 1;
           { Initialise pixel-output context }
-          OutCtxt.X := 0; OutCtxt.Y := 0;
+          OutCtxt.X := 0;
+          OutCtxt.Y := 0;
           OutCtxt.Pass := 0;
           OutCtxt.W := Header.biWidth;
           OutCtxt.H := Header.biHeight;
@@ -863,41 +935,51 @@ begin
           while (Code <> EndingCode) and (Code <> $FFFF) and
             (OutCtxt.Y < OutCtxt.H) do
           begin
-            if (Code = ClearCode) then begin
+            if Code = ClearCode then
+            begin
               ReadCtxt.CodeSize := InitCodeSize;
               MaxCode := 1 shl ReadCtxt.CodeSize;
               ReadCtxt.ReadMask := MaxCode - 1;
               FreeCode := FirstFreeCode;
               Code := ReadCode(Stream, ReadCtxt);
-              CurCode := Code; OldCode := Code;
-              if (Code = $FFFF) then Break;
+              CurCode := Code;
+              OldCode := Code;
+              if Code = $FFFF then
+                Break;
               FinalChar := (CurCode and BitMask);
               Output(Byte(FinalChar), OutCtxt);
               TableFull := False;
             end
-            else begin
+            else
+            begin
               CurCode := Code;
               InCode := Code;
-              if CurCode >= FreeCode then begin
+              if CurCode >= FreeCode then
+              begin
                 CurCode := OldCode;
                 OutCode^[OutCount] := FinalChar;
                 Inc(OutCount);
               end;
-              while (CurCode > BitMask) do begin
-                if (OutCount > CODE_TABLE_SIZE) then begin
-                  if LoadCorrupt then begin
+              while CurCode > BitMask do
+              begin
+                if OutCount > CODE_TABLE_SIZE then
+                begin
+                  if LoadCorrupt then
+                  begin
                     CurCode := BitMask;
                     OutCount := 1;
                     Corrupted := True;
                     Break;
                   end
-                  else GifError(SGIFDecodeError);
+                  else
+                    GifError(SGIFDecodeError);
                 end;
                 OutCode^[OutCount] := Suffix^[CurCode];
                 Inc(OutCount);
                 CurCode := Prefix^[CurCode];
               end;
-              if Corrupted then Break;
+              if Corrupted then
+                Break;
               FinalChar := CurCode and BitMask;
               OutCode^[OutCount] := FinalChar;
               Inc(OutCount);
@@ -905,33 +987,43 @@ begin
                 Output(Byte(OutCode^[I]), OutCtxt);
               OutCount := 0;
               { Update dictionary }
-              if not TableFull then begin
+              if not TableFull then
+              begin
                 Prefix^[FreeCode] := OldCode;
                 Suffix^[FreeCode] := FinalChar;
                 { Advance to next free slot }
                 Inc(FreeCode);
-                if (FreeCode >= MaxCode) then begin
-                  if (ReadCtxt.CodeSize < 12) then begin
+                if FreeCode >= MaxCode then
+                begin
+                  if ReadCtxt.CodeSize < 12 then
+                  begin
                     Inc(ReadCtxt.CodeSize);
                     MaxCode := MaxCode shl 1;
                     ReadCtxt.ReadMask := (1 shl ReadCtxt.CodeSize) - 1;
                   end
-                  else TableFull := True;
+                  else
+                    TableFull := True;
                 end;
               end;
               OldCode := InCode;
             end;
             Code := ReadCode(Stream, ReadCtxt);
-            if Stream.Size > 0 then begin
+            if Stream.Size > 0 then
+            begin
               Temp := Trunc(100.0 * (Stream.Position / Stream.Size));
-              if Assigned(ProgressProc) then ProgressProc(psRunning, Temp, '');
+              if Assigned(ProgressProc) then
+                ProgressProc(psRunning, Temp, '');
             end;
           end; { while }
-          if Code = $FFFF then GifError(ResStr(SReadError));
+          if Code = $FFFF then
+            GifError(ResStr(SReadError));
         finally
-          if Assigned(ProgressProc) then begin
-            if ExceptObject = nil then ProgressProc(psEnding, 100, '')
-            else ProgressProc(psEnding, 0, Exception(ExceptObject).Message);
+          if Assigned(ProgressProc) then
+          begin
+            if ExceptObject = nil then
+              ProgressProc(psEnding, 100, '')
+            else
+              ProgressProc(psEnding, 0, Exception(ExceptObject).Message);
           end;
         end;
       finally
@@ -953,11 +1045,12 @@ var
 begin
   BufIndex := Context.Inx shr 3;
   Code := Code shl (Context.Inx and 7);
-  Context.Buf[BufIndex] := Context.Buf[BufIndex] or (Code);
+  Context.Buf[BufIndex] := Context.Buf[BufIndex] or Code;
   Context.Buf[BufIndex + 1] := (Code shr 8);
   Context.Buf[BufIndex + 2] := (Code shr 16);
   Context.Inx := Context.Inx + Context.CodeSize;
-  if Context.Inx >= 255 * 8 then begin
+  if Context.Inx >= 255 * 8 then
+  begin
     { Flush out full buffer }
     Bytes := 255;
     Stream.WriteBuffer(Bytes, 1);
@@ -973,7 +1066,8 @@ var
   Bytes: Byte;
 begin
   Bytes := (Context.Inx + 7) shr 3;
-  if Bytes > 0 then begin
+  if Bytes > 0 then
+  begin
     Stream.WriteBuffer(Bytes, 1);
     Stream.WriteBuffer(Context.Buf, Bytes);
   end;
@@ -989,7 +1083,8 @@ var
 begin
   FillChar(ColorTable, SizeOf(ColorTable), 0);
   ColorTable.Count := Min(256, Count);
-  for I := 0 to ColorTable.Count - 1 do begin
+  for I := 0 to ColorTable.Count - 1 do
+  begin
     ColorTable.Colors[I].Red := Colors[I].rgbRed;
     ColorTable.Colors[I].Green := Colors[I].rgbGreen;
     ColorTable.Colors[I].Blue := Colors[I].rgbBlue;
@@ -1014,15 +1109,18 @@ var
   WriteCtxt: TWriteContext;
 begin
   LineIdent := ((Header.biWidth * Header.biBitCount + 31) div 32) * 4;
-  Tail := 0; HashValue := 0;
+  Tail := 0;
+  HashValue := 0;
   Dict := AllocMem(SizeOf(TDictTable));
   try
     HashTable := TList.Create;
     try
-      for I := 0 to HASH_TABLE_SIZE - 1 do HashTable.Add(nil);
+      for I := 0 to HASH_TABLE_SIZE - 1 do
+        HashTable.Add(nil);
       { Initialise encoder variables }
       InitCodeSize := Header.biBitCount + 1;
-      if InitCodeSize = 2 then Inc(InitCodeSize);
+      if InitCodeSize = 2 then
+        Inc(InitCodeSize);
       MinCodeSize := InitCodeSize - 1;
       Stream.WriteBuffer(MinCodeSize, 1);
       ClearCode := 1 shl MinCodeSize;
@@ -1035,41 +1133,54 @@ begin
       WriteCtxt.CodeSize := InitCodeSize;
       FillChar(WriteCtxt.Buf, SizeOf(WriteCtxt.Buf), 0);
       WriteCode(Stream, ClearCode, WriteCtxt);
-      for I := 0 to HASH_TABLE_SIZE - 1 do HashTable[I] := nil;
+      for I := 0 to HASH_TABLE_SIZE - 1 do
+        HashTable[I] := nil;
       Data := HugeOffset(Data, (Header.biHeight - 1) * LineIdent);
-      Y := 0; Pass := 0;
-      if Assigned(ProgressProc) then ProgressProc(psStarting, 0, '');
+      Y := 0;
+      Pass := 0;
+      if Assigned(ProgressProc) then
+        ProgressProc(psStarting, 0, '');
       try
-        while (Y < Header.biHeight) do begin
+        while Y < Header.biHeight do
+        begin
           PData := HugeOffset(Data, -(Y * LineIdent));
-          for X := 0 to Header.biWidth - 1 do begin
+          for X := 0 to Header.biWidth - 1 do
+          begin
             case Header.biBitCount of
-              8: begin
-                   Col := PData^;
-                   PData := HugeOffset(PData, 1);
-                 end;
-              4: begin
-                   if X and 1 <> 0 then begin
-                     Col := PData^ and $0F;
-                     PData := HugeOffset(PData, 1);
-                   end
-                   else Col := PData^ shr 4;
-                 end;
-              else { must be 1 }
+              8:
                 begin
-                  if X and 7 = 7 then begin
-                    Col := PData^ and 1;
+                  Col := PData^;
+                  PData := HugeOffset(PData, 1);
+                end;
+              4:
+                begin
+                  if X and 1 <> 0 then
+                  begin
+                    Col := PData^ and $0F;
                     PData := HugeOffset(PData, 1);
                   end
-                  else Col := (PData^ shr (7 - (X and $07))) and $01;
+                  else
+                    Col := PData^ shr 4;
                 end;
-            end; { case }
+            else { must be 1 }
+              begin
+                if X and 7 = 7 then
+                begin
+                  Col := PData^ and 1;
+                  PData := HugeOffset(PData, 1);
+                end
+                else
+                  Col := (PData^ shr (7 - (X and $07))) and $01;
+              end;
+            end;
             Inc(LenString);
-            if LenString = 1 then begin
+            if LenString = 1 then
+            begin
               Tail := Col;
               HashValue := InitHash(Col);
             end
-            else begin
+            else
+            begin
               HashValue := HashValue * (Col + LenString + 4);
               I := HashValue mod HASH_TABLE_SIZE;
               HashValue := HashValue mod HASH_TABLE_SIZE;
@@ -1078,11 +1189,13 @@ begin
                 (PImageDict(HashTable[I])^.Col <> Col)) do
               begin
                 Inc(I);
-                if (I >= HASH_TABLE_SIZE) then I := 0;
+                if I >= HASH_TABLE_SIZE then
+                  I := 0;
               end;
-              if (HashTable[I] <> nil) then { Found in the strings table }
+              if HashTable[I] <> nil then { Found in the strings table }
                 Tail := PImageDict(HashTable[I])^.Index
-              else begin
+              else
+              begin
                 { Not found }
                 WriteCode(Stream, Tail, WriteCtxt);
                 Inc(LastCode);
@@ -1093,12 +1206,15 @@ begin
                 Tail := Col;
                 HashValue := InitHash(Col);
                 LenString := 1;
-                if (LastCode >= MaxCode) then begin
+                if LastCode >= MaxCode then
+                begin
                   { Next Code will be written longer }
                   MaxCode := MaxCode shl 1;
                   Inc(WriteCtxt.CodeSize);
                 end
-                else if (LastCode >= CODE_TABLE_SIZE - 2) then begin
+                else
+                if LastCode >= CODE_TABLE_SIZE - 2 then
+                begin
                   { Reset tables }
                   WriteCode(Stream, Tail, WriteCtxt);
                   WriteCode(Stream, ClearCode, WriteCtxt);
@@ -1106,23 +1222,30 @@ begin
                   LastCode := EndingCode;
                   WriteCtxt.CodeSize := InitCodeSize;
                   MaxCode := 1 shl InitCodeSize;
-                  for I := 0 to HASH_TABLE_SIZE - 1 do HashTable[I] := nil;
+                  for I := 0 to HASH_TABLE_SIZE - 1 do
+                    HashTable[I] := nil;
                 end;
               end;
             end;
           end; { for X loop }
-          if Interlaced then Y := InterlaceStep(Y, Header.biHeight, Pass)
-          else Inc(Y);
+          if Interlaced then
+            Y := InterlaceStep(Y, Header.biHeight, Pass)
+          else
+            Inc(Y);
           Temp := Trunc(100.0 * (Y / Header.biHeight));
-          if Assigned(ProgressProc) then ProgressProc(psRunning, Temp, '');
+          if Assigned(ProgressProc) then
+            ProgressProc(psRunning, Temp, '');
         end; { while Y loop }
         WriteCode(Stream, Tail, WriteCtxt);
         WriteCode(Stream, EndingCode, WriteCtxt);
         FlushCode(Stream, WriteCtxt);
       finally
-        if Assigned(ProgressProc) then begin
-          if ExceptObject = nil then ProgressProc(psEnding, 100, '')
-          else ProgressProc(psEnding, 0, Exception(ExceptObject).Message);
+        if Assigned(ProgressProc) then
+        begin
+          if ExceptObject = nil then
+            ProgressProc(psEnding, 100, '')
+          else
+            ProgressProc(psEnding, 0, Exception(ExceptObject).Message);
         end;
       end;
     finally
@@ -1133,7 +1256,7 @@ begin
   end;
 end;
 
-{ TGIFItem }
+//=== TGIFItem ===============================================================
 
 destructor TGIFItem.Destroy;
 begin
@@ -1143,10 +1266,11 @@ end;
 
 procedure TGIFItem.FreeHandle;
 begin
-  if FImageData <> nil then FImageData.SetSize(0);
+  if FImageData <> nil then
+    FImageData.SetSize(0);
 end;
 
-{ TGIFData }
+//=== TGIFData ===============================================================
 
 constructor TGIFData.Create;
 begin
@@ -1162,10 +1286,11 @@ end;
 
 procedure TGIFData.FreeHandle;
 begin
-  if FComment <> nil then FComment.Clear;
+  if FComment <> nil then
+    FComment.Clear;
 end;
 
-{ TJvGIFFrame }
+//=== TJvGIFFrame ============================================================
 
 constructor TJvGIFFrame.Create(AOwner: TJvGIFImage);
 begin
@@ -1184,25 +1309,30 @@ end;
 
 procedure TJvGIFFrame.SetAnimateInterval(Value: Word);
 begin
-  if FAnimateInterval <> Value then begin
+  if FAnimateInterval <> Value then
+  begin
     FAnimateInterval := Value;
-    if Value > 0 then FOwner.FVersion := gv89a;
+    if Value > 0 then
+      FOwner.FVersion := gv89a;
     FOwner.Changed(FOwner);
   end;
 end;
 
 procedure TJvGIFFrame.SetDisposalMethod(Value: TDisposalMethod);
 begin
-  if FDisposal <> Value then begin
+  if FDisposal <> Value then
+  begin
     FDisposal := Value;
-    if Value <> dmUndefined then FOwner.FVersion := gv89a;
+    if Value <> dmUndefined then
+      FOwner.FVersion := gv89a;
     FOwner.Changed(FOwner);
   end;
 end;
 
 procedure TJvGIFFrame.SetTopLeft(const Value: TPoint);
 begin
-  if (FTopLeft.X <> Value.X) or (FTopLeft.Y <> Value.Y) then begin
+  if (FTopLeft.X <> Value.X) or (FTopLeft.Y <> Value.Y) then
+  begin
     FTopLeft.X := Value.X;
     FTopLeft.Y := Value.Y;
     FOwner.FScreenWidth := Max(FOwner.FScreenWidth,
@@ -1215,9 +1345,11 @@ end;
 
 procedure TJvGIFFrame.SetTransparentColor(Value: TColor);
 begin
-  if FTransparentColor <> Value then begin
+  if FTransparentColor <> Value then
+  begin
     FTransparentColor := Value;
-    if Value <> clNone then FOwner.FVersion := gv89a;
+    if Value <> clNone then
+      FOwner.FVersion := gv89a;
     FOwner.Changed(FOwner);
   end;
 end;
@@ -1227,7 +1359,8 @@ var
   Mem: TMemoryStream;
 begin
   Result := FBitmap;
-  if (Result = nil) or Result.Empty then begin
+  if (Result = nil) or Result.Empty then
+  begin
     NewBitmap;
     Result := FBitmap;
     if Assigned(FImage.FImageData) then
@@ -1236,9 +1369,10 @@ begin
       try
         SaveToBitmapStream(Mem);
         FBitmap.LoadFromStream(Mem);
-{$IFDEF COMPILER3_UP}
-        if not FBitmap.Monochrome then FBitmap.HandleType := bmDDB;
-{$ENDIF}
+        {$IFDEF COMPILER3_UP}
+        if not FBitmap.Monochrome then
+          FBitmap.HandleType := bmDDB;
+        {$ENDIF}
       finally
         Mem.Free;
       end;
@@ -1252,14 +1386,16 @@ function TJvGIFFrame.GetHeight: Integer;
 begin
   if Assigned(FBitmap) or Assigned(FImage.FImageData) then
     Result := Bitmap.Height
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TJvGIFFrame.GetWidth: Integer;
 begin
   if Assigned(FBitmap) or Assigned(FImage.FImageData) then
     Result := Bitmap.Width
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TJvGIFFrame.GetColorCount: Integer;
@@ -1277,29 +1413,35 @@ begin
   if not FGrayscale and (Assigned(FBitmap) or
     Assigned(FImage.FImageData)) then
   begin
-    if Assigned(FImage.FImageData) and (FImage.FColorMap.Count > 0) then begin
+    if Assigned(FImage.FImageData) and (FImage.FColorMap.Count > 0) then
+    begin
       FBitmap.Free;
       FBitmap := nil;
       TransIndex := FindColorIndex(FImage.FColorMap, FTransparentColor);
       GrayColorTable(FImage.FColorMap);
       if TransIndex >= 0 then
         FTransparentColor := ItemToRGB(FImage.FColorMap.Colors[TransIndex])
-      else FTransparentColor := clNone;
+      else
+        FTransparentColor := clNone;
       FGrayscale := True;
       try
         GetBitmap;
       except
-        on EAbort do;
-        else raise;
+        on EAbort do
+          ;
+      else
+        raise;
       end;
     end
-    else begin
+    else
+    begin
       Mem := BitmapToMemoryStream(Bitmap, pf8bit, mmGrayscale);
       try
         FImage.Release;
         FImage := TGIFItem.Create;
         FImage.Reference;
-        if ForceEncoding then EncodeBitmapStream(Mem);
+        if ForceEncoding then
+          EncodeBitmapStream(Mem);
         FGrayscale := True;
         if FTransparentColor <> clNone then
           FTransparentColor := GrayColor(FTransparentColor);
@@ -1315,21 +1457,28 @@ procedure TJvGIFFrame.Assign(Source: TPersistent);
 var
   AComment: TStrings;
 begin
-  if Source = nil then begin
+  if Source = nil then
+  begin
     NewImage;
     FBitmap.Free;
     FBitmap := nil;
   end
-  else if (Source is TJvGIFFrame) then begin
-    if Source <> Self then begin
+  else
+  if Source is TJvGIFFrame then
+  begin
+    if Source <> Self then
+    begin
       FImage.Release;
       FImage := TJvGIFFrame(Source).FImage;
-      if TJvGIFFrame(Source).FOwner <> FOwner then FLocalColors := True
-      else FLocalColors := TJvGIFFrame(Source).FLocalColors;
+      if TJvGIFFrame(Source).FOwner <> FOwner then
+        FLocalColors := True
+      else
+        FLocalColors := TJvGIFFrame(Source).FLocalColors;
       FImage.Reference;
       FTopLeft := TJvGIFFrame(Source).FTopLeft;
       FInterlaced := TJvGIFFrame(Source).FInterlaced;
-      if TJvGIFFrame(Source).FBitmap <> nil then begin
+      if TJvGIFFrame(Source).FBitmap <> nil then
+      begin
         NewBitmap;
         FBitmap.Assign(TJvGIFFrame(Source).FBitmap);
       end;
@@ -1343,18 +1492,25 @@ begin
         SetComment(AComment);
     end;
   end
-  else if Source is TJvGIFImage then begin
-    if (TJvGIFImage(Source).Count > 0) then begin
-      if (TJvGIFImage(Source).FrameIndex >= 0) then
+  else
+  if Source is TJvGIFImage then
+  begin
+    if TJvGIFImage(Source).Count > 0 then
+    begin
+      if TJvGIFImage(Source).FrameIndex >= 0 then
         Assign(TJvGIFImage(Source).Frames[TJvGIFImage(Source).FrameIndex])
       else
         Assign(TJvGIFImage(Source).Frames[0]);
     end
-    else Assign(nil);
+    else
+      Assign(nil);
   end
-  else if Source is TGraphic then begin
+  else
+  if Source is TGraphic then
+  begin
     { TBitmap, TJPEGImage... }
-    if TGraphic(Source).Empty then begin
+    if TGraphic(Source).Empty then
+    begin
       Assign(nil);
       Exit;
     end;
@@ -1370,37 +1526,46 @@ begin
       FBitmap.Height := TGraphic(Source).Height;
       FBitmap.Canvas.Draw(0, 0, TGraphic(Source));
     end;
-{$IFDEF COMPILER3_UP}
-    if TGraphic(Source).Transparent then begin
+    {$IFDEF COMPILER3_UP}
+    if TGraphic(Source).Transparent then
+    begin
       if Source is TBitmap then
         FTransparentColor := TBitmap(Source).TransparentColor
-      else FTransparentColor := GetNearestColor(FBitmap.Canvas.Handle,
-        ColorToRGB(FBitmap.Canvas.Brush.Color));
+      else
+        FTransparentColor := GetNearestColor(FBitmap.Canvas.Handle,
+          ColorToRGB(FBitmap.Canvas.Brush.Color));
     end;
-{$ELSE}
+    {$ELSE}
     if (Source is TIcon) or (Source is TMetafile) then
       FTransparentColor := GetNearestColor(FBitmap.Canvas.Handle,
         ColorToRGB(FBitmap.Canvas.Brush.Color));
-{$ENDIF}
+    {$ENDIF}
   end
-  else inherited Assign(Source);
-  if FOwner <> nil then FOwner.UpdateScreenSize;
+  else
+    inherited Assign(Source);
+  if FOwner <> nil then
+    FOwner.UpdateScreenSize;
 end;
 
 procedure TJvGIFFrame.AssignTo(Dest: TPersistent);
 begin
-  if (Dest is TJvGIFFrame) or (Dest is TJvGIFImage) then Dest.Assign(Self)
-  else if Dest is TGraphic then begin
+  if (Dest is TJvGIFFrame) or (Dest is TJvGIFImage) then
+    Dest.Assign(Self)
+  else
+  if Dest is TGraphic then
+  begin
     Dest.Assign(Bitmap);
-{$IFDEF COMPILER3_UP}
-    if (Dest is TBitmap) and (FTransparentColor <> clNone) then begin
+    {$IFDEF COMPILER3_UP}
+    if (Dest is TBitmap) and (FTransparentColor <> clNone) then
+    begin
       TBitmap(Dest).TransparentColor := GetNearestColor(
         TBitmap(Dest).Canvas.Handle, ColorToRGB(FTransparentColor));
       TBitmap(Dest).Transparent := True;
     end;
-{$ENDIF}
+    {$ENDIF}
   end
-  else inherited AssignTo(Dest);
+  else
+    inherited AssignTo(Dest);
 end;
 
 procedure TJvGIFFrame.NewBitmap;
@@ -1411,7 +1576,8 @@ end;
 
 procedure TJvGIFFrame.NewImage;
 begin
-  if FImage <> nil then FImage.Release;
+  if FImage <> nil then
+    FImage.Release;
   FImage := TGIFItem.Create;
   FImage.Reference;
   FGrayscale := False;
@@ -1429,23 +1595,27 @@ var
   Ext: TExtension;
 begin
   Ext := FindExtension(FExtensions, etComment);
-  if (Ext = nil) and ForceCreate then begin
+  if (Ext = nil) and ForceCreate then
+  begin
     Ext := TExtension.Create;
     try
       Ext.FExtType := etComment;
-      if FExtensions = nil then FExtensions := TList.Create;
+      if FExtensions = nil then
+        FExtensions := TList.Create;
       FExtensions.Add(Ext);
     except
       Ext.Free;
       raise;
     end;
   end;
-  if (Ext <> nil) then begin
+  if Ext <> nil then
+  begin
     if (Ext.FData = nil) and ForceCreate then
       Ext.FData := TStringList.Create;
     Result := Ext.FData;
   end
-  else Result := nil;
+  else
+    Result := nil;
 end;
 
 function TJvGIFFrame.GetComment: TStrings;
@@ -1467,12 +1637,15 @@ begin
   if (FAnimateInterval > 0) or (FTransparentColor <> clNone) or
     (FDisposal <> dmUndefined) then
   begin
-    if Ext = nil then begin
+    if Ext = nil then
+    begin
       Ext := TExtension.Create;
       Ext.FExtType := etGraphic;
-      if FExtensions = nil then FExtensions := TList.Create;
+      if FExtensions = nil then
+        FExtensions := TList.Create;
       FExtensions.Add(Ext);
-      with Ext.FExtRec.GCE do begin
+      with Ext.FExtRec.GCE do
+      begin
         BlockSize := 4;
         PackedFields := 0;
         Terminator := 0;
@@ -1480,19 +1653,23 @@ begin
     end;
   end;
   if Ext <> nil then
-    with Ext.FExtRec.GCE do begin
+    with Ext.FExtRec.GCE do
+    begin
       DelayTime := FAnimateInterval div 10;
       I := FindColorIndex(FImage.FColorMap, FTransparentColor);
-      if I >= 0 then begin
+      if I >= 0 then
+      begin
         TransparentColorIndex := I;
         PackedFields := PackedFields or GCE_TRANSPARENT;
       end
-      else PackedFields := PackedFields and not GCE_TRANSPARENT;
+      else
+        PackedFields := PackedFields and not GCE_TRANSPARENT;
       PackedFields := (PackedFields and not GCE_DISPOSAL_METHOD) or
         (Ord(FDisposal) shl 2);
     end;
   if FExtensions <> nil then
-    for I := FExtensions.Count - 1 downto 0 do begin
+    for I := FExtensions.Count - 1 downto 0 do
+    begin
       Ext := TExtension(FExtensions[I]);
       if (Ext <> nil) and (Ext.FExtType = etComment) and
         ((Ext.FData = nil) or (Ext.FData.Count = 0)) then
@@ -1514,38 +1691,50 @@ begin
   ColorCount := 0;
   Stream.Position := 0;
   BI := PBitmapInfoHeader(Longint(Stream.Memory) + SizeOf(TBitmapFileHeader));
-  W := BI^.biWidth; H := BI^.biHeight;
+  W := BI^.biWidth;
+  H := BI^.biHeight;
   Pal := PRGBPalette(Longint(BI) + SizeOf(TBitmapInfoHeader));
   Bits := Pointer(Longword(Stream.Memory) + PBitmapFileHeader(Stream.Memory)^.bfOffBits);
   case BI^.biBitCount of
-    1: ColorCount := 2;
-    4: ColorCount := 16;
-    8: ColorCount := 256;
-    else GifError(SGIFEncodeError);
+    1:
+      ColorCount := 2;
+    4:
+      ColorCount := 16;
+    8:
+      ColorCount := 256;
+  else
+    GifError(SGIFEncodeError);
   end;
   FInterlaced := False;
   FillColorTable(FImage.FColorMap, PRGBPalette(Pal)^, ColorCount);
-  if FImage.FImageData = nil then FImage.FImageData := TMemoryStream.Create
-  else FImage.FImageData.SetSize(0);
+  if FImage.FImageData = nil then
+    FImage.FImageData := TMemoryStream.Create
+  else
+    FImage.FImageData.SetSize(0);
   try
     WriteGIFData(FImage.FImageData, BI^, FInterlaced, Bits, FOwner.DoProgress);
   except
-    on EAbort do begin
+    on EAbort do
+    begin
       NewImage; { OnProgress can raise EAbort to cancel image save }
       raise;
     end
-    else raise;
+  else
+    raise;
   end;
   FImage.FBitsPerPixel := 1;
   while FImage.FColorMap.Count > 1 shl FImage.FBitsPerPixel do
     Inc(FImage.FBitsPerPixel);
-  if FOwner.FImage.FColorMap.Count = 0 then begin
+  if FOwner.FImage.FColorMap.Count = 0 then
+  begin
     FOwner.FImage.FColorMap := FImage.FColorMap;
     FOwner.FImage.FBitsPerPixel := FImage.FBitsPerPixel;
     FLocalColors := False;
   end
-  else FLocalColors := True;
-  FImage.FSize.X := W; FImage.FSize.Y := H;
+  else
+    FLocalColors := True;
+  FImage.FSize.X := W;
+  FImage.FSize.Y := H;
   FOwner.FScreenWidth := Max(FOwner.FScreenWidth, FImage.FSize.X + FTopLeft.X);
   FOwner.FScreenHeight := Max(FOwner.FScreenHeight, FImage.FSize.Y + FTopLeft.Y);
 end;
@@ -1555,17 +1744,23 @@ var
   Method: TMappingMethod;
   Mem: TMemoryStream;
 begin
-  if not Assigned(FBitmap) or FBitmap.Empty then GifError(SNoGIFData);
+  if not Assigned(FBitmap) or FBitmap.Empty then
+    GifError(SNoGIFData);
   if not (GetBitmapPixelFormat(FBitmap) in [pf1bit, pf4bit, pf8bit]) then
   begin
-    if FGrayscale then Method := mmGrayscale
-    else Method := DefaultMappingMethod;
+    if FGrayscale then
+      Method := mmGrayscale
+    else
+      Method := DefaultMappingMethod;
     Mem := BitmapToMemoryStream(FBitmap, pf8bit, Method);
-    if (Method = mmGrayscale) then FGrayscale := True;
+    if Method = mmGrayscale then
+      FGrayscale := True;
   end
-  else Mem := TMemoryStream.Create;
+  else
+    Mem := TMemoryStream.Create;
   try
-    if Mem.Size = 0 then FBitmap.SaveToStream(Mem);
+    if Mem.Size = 0 then
+      FBitmap.SaveToStream(Mem);
     EncodeBitmapStream(Mem);
   finally
     Mem.Free;
@@ -1576,16 +1771,19 @@ procedure TJvGIFFrame.WriteImageDescriptor(Stream: TStream);
 var
   ImageDesc: TImageDescriptor;
 begin
-  with ImageDesc do begin
+  with ImageDesc do
+  begin
     PackedFields := 0;
-    if FLocalColors then begin
+    if FLocalColors then
+    begin
       FImage.FBitsPerPixel := 1;
       while FImage.FColorMap.Count > 1 shl FImage.FBitsPerPixel do
         Inc(FImage.FBitsPerPixel);
       PackedFields := (PackedFields or ID_LOCAL_COLOR_TABLE) +
         (FImage.FBitsPerPixel - 1);
     end;
-    if FInterlaced then PackedFields := PackedFields or ID_INTERLACED;
+    if FInterlaced then
+      PackedFields := PackedFields or ID_INTERLACED;
     ImageLeftPos := FTopLeft.X;
     ImageTopPos := FTopLeft.Y;
     ImageWidth := FImage.FSize.X;
@@ -1612,10 +1810,14 @@ procedure TJvGIFFrame.SaveToBitmapStream(Stream: TMemoryStream);
   begin
     Result := pfDevice;
     case FImage.FBitsPerPixel of
-      1: Result := pf1bit;
-      2..4: Result := pf4bit;
-      5..8: Result := pf8bit;
-      else GifError(SWrongGIFColors);
+      1:
+        Result := pf1bit;
+      2..4:
+        Result := pf4bit;
+      5..8:
+        Result := pf8bit;
+    else
+      GifError(SWrongGIFColors);
     end;
   end;
 
@@ -1628,16 +1830,20 @@ var
   Bits: Pointer;
   Corrupt: Boolean;
 begin
-  with BI do begin
-    biSize := Sizeof(TBitmapInfoHeader);
+  with BI do
+  begin
+    biSize := SizeOf(TBitmapInfoHeader);
     biWidth := FImage.FSize.X;
     biHeight := FImage.FSize.Y;
     biPlanes := 1;
     biBitCount := 0;
     case ConvertBitsPerPixel of
-      pf1bit: biBitCount := 1;
-      pf4bit: biBitCount := 4;
-      pf8bit: biBitCount := 8;
+      pf1bit:
+        biBitCount := 1;
+      pf4bit:
+        biBitCount := 4;
+      pf8bit:
+        biBitCount := 8;
     end;
     biCompression := BI_RGB;
     biSizeImage := (((biWidth * biBitCount + 31) div 32) * 4) * biHeight;
@@ -1651,7 +1857,8 @@ begin
   Length := HeaderSize + BI.biSizeImage;
   Stream.SetSize(0);
   Stream.Position := 0;
-  with BitFile do begin
+  with BitFile do
+  begin
     bfType := $4D42; { BM }
     bfSize := Length;
     bfOffBits := HeaderSize;
@@ -1662,7 +1869,7 @@ begin
   Stream.Write(Colors, SizeOf(TRGBQuad) * (1 shl BI.biBitCount));
   Bits := AllocMemo(BI.biSizeImage);
   try
-    ZeroMemory(Bits, BI.biSizeImage);
+    FillChar(Bits^, BI.biSizeImage, #0);
     FImage.FImageData.Position := 0;
     ReadGIFData(FImage.FImageData, BI, FInterlaced, GIFLoadCorrupted,
       FImage.FBitsPerPixel, Bits, Corrupt, FOwner.DoProgress);
@@ -1683,28 +1890,36 @@ begin
   try
     ReadImageStream(Stream, FImage.FImageData, ImageDesc, FInterlaced,
       FLocalColors, FCorrupted, FImage.FBitsPerPixel, FImage.FColorMap);
-    if FCorrupted and not GIFLoadCorrupted then GifError(ResStr(SReadError));
+    if FCorrupted and not GIFLoadCorrupted then
+      GifError(ResStr(SReadError));
     FImage.FImageData.Position := 0;
-    with ImageDesc do begin
-      if ImageHeight = 0 then ImageHeight := FOwner.FScreenHeight;
-      if ImageWidth = 0 then ImageWidth := FOwner.FScreenWidth;
+    with ImageDesc do
+    begin
+      if ImageHeight = 0 then
+        ImageHeight := FOwner.FScreenHeight;
+      if ImageWidth = 0 then
+        ImageWidth := FOwner.FScreenWidth;
       FTopLeft := Point(ImageLeftPos, ImageTopPos);
       FImage.FSize := Point(ImageWidth, ImageHeight);
       FImage.FPackedFields := PackedFields;
     end;
-    if not FLocalColors then FImage.FColorMap := FOwner.FImage.FColorMap;
+    if not FLocalColors then
+      FImage.FColorMap := FOwner.FImage.FColorMap;
     FAnimateInterval := 0;
-    if FExtensions <> nil then begin
+    if FExtensions <> nil then
+    begin
       for I := 0 to FExtensions.Count - 1 do
         with TExtension(FExtensions[I]) do
-          if FExtType = etGraphic then begin
+          if FExtType = etGraphic then
+          begin
             if (FExtRec.GCE.PackedFields and GCE_TRANSPARENT) <> 0 then
             begin
               TransIndex := FExtRec.GCE.TransparentColorIndex;
               if FImage.FColorMap.Count > TransIndex then
                 FTransparentColor := ItemToRGB(FImage.FColorMap.Colors[TransIndex]);
             end
-            else FTransparentColor := clNone;
+            else
+              FTransparentColor := clNone;
             FAnimateInterval := Max(FExtRec.GCE.DelayTime * 10,
               FAnimateInterval);
             FDisposal := TDisposalMethod((FExtRec.GCE.PackedFields and
@@ -1721,24 +1936,26 @@ end;
 procedure TJvGIFFrame.Draw(ACanvas: TCanvas; const ARect: TRect;
   Transparent: Boolean);
 begin
-  if (FTransparentColor <> clNone) and Transparent then begin
+  if (FTransparentColor <> clNone) and Transparent then
+  begin
     with ARect do
       StretchBitmapRectTransparent(ACanvas, Left, Top, Right - Left,
         Bottom - Top, Bounds(0, 0, Bitmap.Width, Bitmap.Height), Bitmap,
         FTransparentColor);
   end
-  else ACanvas.StretchDraw(ARect, Bitmap);
+  else
+    ACanvas.StretchDraw(ARect, Bitmap);
 end;
 
-{ TJvGIFImage }
+//=== TJvGIFImage ============================================================
 
 constructor TJvGIFImage.Create;
 begin
   inherited Create;
   NewImage;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   inherited SetTransparent(True);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 destructor TJvGIFImage.Destroy;
@@ -1758,7 +1975,8 @@ end;
 procedure TJvGIFImage.ClearItems;
 begin
   if FItems <> nil then
-    while FItems.Count > 0 do begin
+    while FItems.Count > 0 do
+    begin
       TObject(FItems[0]).Free;
       FItems.Delete(0);
     end;
@@ -1769,11 +1987,14 @@ var
   I: Integer;
   AFrame: TJvGIFFrame;
 begin
-  if (Source = nil) then begin
+  if Source = nil then
+  begin
     NewImage;
     Changed(Self);
   end
-  else if (Source is TJvGIFImage) and (Source <> Self) then begin
+  else
+  if (Source is TJvGIFImage) and (Source <> Self) then
+  begin
     FImage.Release;
     FImage := TJvGIFImage(Source).FImage;
     FImage.Reference;
@@ -1782,10 +2003,14 @@ begin
     FRepeatCount := TJvGIFImage(Source).FRepeatCount;
     FLooping := TJvGIFImage(Source).FLooping;
     FCorrupted := TJvGIFImage(Source).FCorrupted;
-    if FItems = nil then FItems := TList.Create
-    else ClearItems;
-    with TJvGIFImage(Source) do begin
-      for I := 0 to FItems.Count - 1 do begin
+    if FItems = nil then
+      FItems := TList.Create
+    else
+      ClearItems;
+    with TJvGIFImage(Source) do
+    begin
+      for I := 0 to FItems.Count - 1 do
+      begin
         AFrame := TJvGIFFrame.Create(Self);
         try
           AFrame.FImage.FBitsPerPixel :=
@@ -1804,9 +2029,12 @@ begin
     FFrameIndex := TJvGIFImage(Source).FFrameIndex;
     Changed(Self);
   end
-  else if Source is TJvGIFFrame then begin
+  else
+  if Source is TJvGIFFrame then
+  begin
     NewImage;
-    with TJvGIFFrame(Source).FOwner.FImage do begin
+    with TJvGIFFrame(Source).FOwner.FImage do
+    begin
       FImage.FAspectRatio := FAspectRatio;
       FImage.FBitsPerPixel := FBitsPerPixel;
       FImage.FColorResBits := FColorResBits;
@@ -1814,19 +2042,26 @@ begin
     end;
     FFrameIndex := FItems.Add(TJvGIFFrame.Create(Self));
     TJvGIFFrame(FItems[FFrameIndex]).Assign(Source);
-    if FVersion = gvUnknown then FVersion := gv87a;
+    if FVersion = gvUnknown then
+      FVersion := gv87a;
     Changed(Self);
   end
-  else if Source is TBitmap then begin
+  else
+  if Source is TBitmap then
+  begin
     NewImage;
     AddFrame(TBitmap(Source));
     Changed(Self);
   end
-  else if Source is TJvAnimatedCursorImage then begin
+  else
+  if Source is TJvAnimatedCursorImage then
+  begin
     NewImage;
     FBackgroundColor := clWindow;
-    with TJvAnimatedCursorImage(Source) do begin
-      for I := 0 to IconCount - 1 do begin
+    with TJvAnimatedCursorImage(Source) do
+    begin
+      for I := 0 to IconCount - 1 do
+      begin
         AddFrame(TIcon(Icons[I]));
         Self.Frames[FrameIndex].FAnimateInterval :=
           Longint(Frames[I].JiffRate * 100) div 6;
@@ -1834,20 +2069,27 @@ begin
     end;
     Changed(Self);
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvGIFImage.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TJvGIFImage then Dest.Assign(Self)
-  else if Dest is TGraphic then begin
+  if Dest is TJvGIFImage then
+    Dest.Assign(Self)
+  else
+  if Dest is TGraphic then
+  begin
     if Empty then
       Dest.Assign(nil)
-    else if FFrameIndex >= 0 then
+    else
+    if FFrameIndex >= 0 then
       TJvGIFFrame(FItems[FFrameIndex]).AssignTo(Dest)
-    else Dest.Assign(Bitmap);
+    else
+      Dest.Assign(Bitmap);
   end
-  else inherited AssignTo(Dest);
+  else
+    inherited AssignTo(Dest);
 end;
 
 procedure TJvGIFImage.Draw(ACanvas: TCanvas; const ARect: TRect);
@@ -1863,7 +2105,8 @@ end;
 
 procedure TJvGIFImage.SetBackgroundColor(Value: TColor);
 begin
-  if Value <> FBackgroundColor then begin
+  if Value <> FBackgroundColor then
+  begin
     FBackgroundColor := Value;
     Changed(Self);
   end;
@@ -1871,7 +2114,8 @@ end;
 
 procedure TJvGIFImage.SetLooping(Value: Boolean);
 begin
-  if Value <> FLooping then begin
+  if Value <> FLooping then
+  begin
     FLooping := Value;
     Changed(Self);
   end;
@@ -1879,7 +2123,8 @@ end;
 
 procedure TJvGIFImage.SetRepeatCount(Value: Word);
 begin
-  if Min(Value, MAX_LOOP_COUNT) <> FRepeatCount then begin
+  if Min(Value, MAX_LOOP_COUNT) <> FRepeatCount then
+  begin
     FRepeatCount := Min(Value, MAX_LOOP_COUNT);
     Changed(Self);
   end;
@@ -1890,18 +2135,22 @@ var
   I: Integer;
 begin
   Result := pfDevice;
-  if not Empty then begin
+  if not Empty then
+  begin
     Result := ColorsToPixelFormat(FImage.FColorMap.Count);
-    for I := 0 to FItems.Count - 1 do begin
+    for I := 0 to FItems.Count - 1 do
+    begin
       if (Frames[I].FImage.FImageData = nil) or
         (Frames[I].FImage.FImageData.Size = 0) then
       begin
         if Assigned(Frames[I].FBitmap) then
           Result := TPixelFormat(Max(Ord(Result),
             Ord(GetBitmapPixelFormat(Frames[I].FBitmap))))
-        else Result := TPixelFormat(Max(Ord(Result), Ord(pfDevice)));
+        else
+          Result := TPixelFormat(Max(Ord(Result), Ord(pfDevice)));
       end
-      else if Frames[I].FLocalColors then
+      else
+      if Frames[I].FLocalColors then
         Result := TPixelFormat(Max(Ord(Result),
           Ord(ColorsToPixelFormat(Frames[I].FImage.FColorMap.Count))));
     end;
@@ -1915,7 +2164,8 @@ begin
   Result := FCorrupted;
   if not Result then
     for I := 0 to FItems.Count - 1 do
-      if Frames[I].Corrupted then begin
+      if Frames[I].Corrupted then
+      begin
         Result := True;
         Exit;
       end;
@@ -1925,7 +2175,8 @@ function TJvGIFImage.GetTransparentColor: TColor;
 begin
   if (FItems.Count > 0) and (FFrameIndex >= 0) then
     Result := TJvGIFFrame(FItems[FFrameIndex]).FTransparentColor
-  else Result := clNone;
+  else
+    Result := clNone;
 end;
 
 function TJvGIFImage.GetCount: Integer;
@@ -1941,11 +2192,12 @@ end;
 procedure TJvGIFImage.SetFrameIndex(Value: Integer);
 begin
   Value := Min(FItems.Count - 1, Max(-1, Value));
-  if FFrameIndex <> Value then begin
+  if FFrameIndex <> Value then
+  begin
     FFrameIndex := Value;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     PaletteModified := True;
-{$ENDIF}
+    {$ENDIF}
     Changed(Self);
   end;
 end;
@@ -1962,12 +2214,15 @@ function TJvGIFImage.GetBitmap: TBitmap;
 var
   Bmp: TBitmap;
 begin
-  if (FItems.Count > 0) then begin
+  if FItems.Count > 0 then
+  begin
     if (FFrameIndex >= 0) and (FFrameIndex < FItems.Count) then
       Result := TJvGIFFrame(FItems[FFrameIndex]).Bitmap
-    else Result := TJvGIFFrame(FItems[0]).Bitmap
+    else
+      Result := TJvGIFFrame(FItems[0]).Bitmap
   end
-  else begin
+  else
+  begin
     FFrameIndex := 0;
     Bmp := TBitmap.Create;
     try
@@ -1998,19 +2253,22 @@ end;
 
 function TJvGIFImage.GetPalette: HPalette;
 begin
-  if FItems.Count > 0 then Result := Bitmap.Palette
-  else Result := 0;
+  if FItems.Count > 0 then
+    Result := Bitmap.Palette
+  else
+    Result := 0;
 end;
 
 function TJvGIFImage.GetTransparent: Boolean;
 var
   I: Integer;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   if inherited GetTransparent then
-{$ENDIF}
+  {$ENDIF}
     for I := 0 to FItems.Count - 1 do
-      if Frames[I].TransparentColor <> clNone then begin
+      if Frames[I].TransparentColor <> clNone then
+      begin
         Result := True;
         Exit;
       end;
@@ -2021,26 +2279,32 @@ function TJvGIFImage.GetHeight: Integer;
 begin
   if not Empty and (FFrameIndex >= 0) and (FFrameIndex < Count) then
     Result := TJvGIFFrame(FItems[FFrameIndex]).Bitmap.Height
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TJvGIFImage.GetWidth: Integer;
 begin
   if not Empty and (FFrameIndex >= 0) and (FFrameIndex < Count) then
     Result := TJvGIFFrame(FItems[FFrameIndex]).Bitmap.Width
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TJvGIFImage.GetScreenWidth: Integer;
 begin
-  if Empty then Result := 0
-  else Result := FScreenWidth;
+  if Empty then
+    Result := 0
+  else
+    Result := FScreenWidth;
 end;
 
 function TJvGIFImage.GetScreenHeight: Integer;
 begin
-  if Empty then Result := 0
-  else Result := FScreenHeight;
+  if Empty then
+    Result := 0
+  else
+    Result := FScreenHeight;
 end;
 
 procedure TJvGIFImage.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
@@ -2054,7 +2318,8 @@ var
 begin
   { !! check for gif clipboard Data, mime type image/gif }
   Data := GetClipboardData(CF_GIF);
-  if Data <> 0 then begin
+  if Data <> 0 then
+  begin
     Buffer := GlobalLock(Data);
     try
       Stream := TMemoryStream.Create;
@@ -2063,10 +2328,12 @@ begin
         Stream.Position := 0;
         Stream.Read(Size, SizeOf(Size));
         ReadStream(Size, Stream, False);
-        if Count > 0 then begin
+        if Count > 0 then
+        begin
           FFrameIndex := 0;
           AData := GetClipboardData(CF_BITMAP);
-          if AData <> 0 then begin
+          if AData <> 0 then
+          begin
             Frames[0].NewBitmap;
             Frames[0].FBitmap.LoadFromClipboardFormat(CF_BITMAP,
               AData, APalette);
@@ -2079,7 +2346,8 @@ begin
       GlobalUnlock(Data);
     end;
   end
-  else begin
+  else
+  begin
     Bmp := TBitmap.Create;
     try
       Bmp.LoadFromClipboardFormat(AFormat, AData, APalette);
@@ -2128,7 +2396,8 @@ begin
   FScreenWidth := 0;
   FScreenHeight := 0;
   for I := 0 to FItems.Count - 1 do
-    if Frames[I] <> nil then begin
+    if Frames[I] <> nil then
+    begin
       FScreenWidth := Max(FScreenWidth, Frames[I].Width +
         Frames[I].FTopLeft.X);
       FScreenHeight := Max(FScreenHeight, Frames[I].Height +
@@ -2140,8 +2409,10 @@ function TJvGIFImage.AddFrame(Value: TGraphic): Integer;
 begin
   FFrameIndex := FItems.Add(TJvGIFFrame.Create(Self));
   TJvGIFFrame(FItems[FFrameIndex]).Assign(Value);
-  if FVersion = gvUnknown then FVersion := gv87a;
-  if FItems.Count > 1 then FVersion := gv89a;
+  if FVersion = gvUnknown then
+    FVersion := gv87a;
+  if FItems.Count > 1 then
+    FVersion := gv89a;
   Result := FFrameIndex;
 end;
 
@@ -2150,7 +2421,8 @@ begin
   Frames[Index].Free;
   FItems.Delete(Index);
   UpdateScreenSize;
-  if FFrameIndex >= FItems.Count then Dec(FFrameIndex);
+  if FFrameIndex >= FItems.Count then
+    Dec(FFrameIndex);
   Changed(Self);
 end;
 
@@ -2163,10 +2435,12 @@ end;
 
 procedure TJvGIFImage.NewImage;
 begin
-  if FImage <> nil then FImage.Release;
+  if FImage <> nil then
+    FImage.Release;
   FImage := TGIFData.Create;
   FImage.Reference;
-  if FItems = nil then FItems := TList.Create;
+  if FItems = nil then
+    FItems := TList.Create;
   ClearItems;
   FCorrupted := False;
   FFrameIndex := -1;
@@ -2180,8 +2454,11 @@ procedure TJvGIFImage.UniqueImage;
 var
   Temp: TGIFData;
 begin
-  if FImage = nil then NewImage
-  else if FImage.RefCount > 1 then begin
+  if FImage = nil then
+    NewImage
+  else
+  if FImage.RefCount > 1 then
+  begin
     Temp := TGIFData.Create;
     with Temp do
     try
@@ -2216,19 +2493,22 @@ var
   FrameNo, I: Integer;
 begin
   for FrameNo := 0 to FItems.Count - 1 do
-    try
-      TJvGIFFrame(FItems[FrameNo]).GetBitmap;
-    except
-      on EAbort do begin { OnProgress can raise EAbort to cancel image load }
-        for I := FItems.Count - 1 downto FrameNo do begin
-          TObject(FItems[I]).Free;
-          FItems.Delete(I);
-        end;
-        FCorrupted := True;
-        Break;
+  try
+    TJvGIFFrame(FItems[FrameNo]).GetBitmap;
+  except
+    on EAbort do
+    begin { OnProgress can raise EAbort to cancel image load }
+      for I := FItems.Count - 1 downto FrameNo do
+      begin
+        TObject(FItems[I]).Free;
+        FItems.Delete(I);
       end;
-      else raise;
+      FCorrupted := True;
+      Break;
     end;
+  else
+    raise;
+  end;
 end;
 
 procedure TJvGIFImage.EncodeFrames(ReverseDecode: Boolean);
@@ -2236,20 +2516,24 @@ var
   FrameNo: Integer;
 begin
   for FrameNo := 0 to FItems.Count - 1 do
-    with TJvGIFFrame(FItems[FrameNo]) do begin
+    with TJvGIFFrame(FItems[FrameNo]) do
+    begin
       if (FImage.FImageData = nil) or (FImage.FImageData.Size = 0) then
       begin
         FImage.FImageData.Free;
         FImage.FImageData := nil;
         EncodeRasterData;
-        if ReverseDecode and (FBitmap.Palette = 0) then begin
+        if ReverseDecode and (FBitmap.Palette = 0) then
+        begin
           FBitmap.Free;
           FBitmap := nil;
           try
             GetBitmap;
           except
-            on EAbort do; { OnProgress can raise EAbort to cancel encoding }
-            else raise;
+            on EAbort do
+              ; { OnProgress can raise EAbort to cancel encoding }
+          else
+            raise;
           end;
         end;
       end;
@@ -2278,15 +2562,18 @@ begin
   FVersion := gvUnknown;
   SetLength(S, 3);
   Stream.Read(S[1], 3);
-  if CompareText(GIFSignature, S) <> 0 then GifError(SGIFVersion);
+  if CompareText(GIFSignature, S) <> 0 then
+    GifError(SGIFVersion);
   SetLength(S, 3);
   Stream.Read(S[1], 3);
   for I := Low(TGIFVersion) to High(TGIFVersion) do
-    if CompareText(S, StrPas(GIFVersionStr[I])) = 0 then begin
+    if CompareText(S, StrPas(GIFVersionStr[I])) = 0 then
+    begin
       FVersion := I;
       Break;
     end;
-  if FVersion = gvUnknown then GifError(SGIFVersion);
+  if FVersion = gvUnknown then
+    GifError(SGIFVersion);
 end;
 
 procedure TJvGIFImage.ReadStream(Size: Longint; Stream: TStream;
@@ -2303,7 +2590,8 @@ var
     Stream.Read(ScreenDesc, SizeOf(ScreenDesc));
     FScreenWidth := ScreenDesc.ScreenWidth;
     FScreenHeight := ScreenDesc.ScreenHeight;
-    with FImage do begin
+    with FImage do
+    begin
       FAspectRatio := ScreenDesc.AspectRatio;
       FBitsPerPixel := 1 + (ScreenDesc.PackedFields and
         LSD_COLOR_TABLE_SIZE);
@@ -2315,7 +2603,8 @@ var
   procedure ReadGlobalColorMap(Stream: TStream);
   begin
     if (ScreenDesc.PackedFields and LSD_GLOBAL_COLOR_TABLE) <> 0 then
-      with FImage.FColorMap do begin
+      with FImage.FColorMap do
+      begin
         Count := 1 shl FImage.FBitsPerPixel;
         Stream.Read(Colors[0], Count * SizeOf(TGIFColorItem));
         if Count > ScreenDesc.BackgroundColorIndex then
@@ -2332,7 +2621,8 @@ var
     try
       repeat
         Stream.Read(BlockSize, SizeOf(Byte));
-        if BlockSize <> 0 then begin
+        if BlockSize <> 0 then
+        begin
           SetLength(S, BlockSize);
           Stream.Read(S[1], BlockSize);
           Result.Add(S);
@@ -2352,29 +2642,37 @@ var
     try
       Stream.Read(ExtensionLabel, SizeOf(Byte));
       with Result do
-        if ExtensionLabel = ExtLabels[etGraphic] then begin
+        if ExtensionLabel = ExtLabels[etGraphic] then
+        begin
           { graphic control extension }
           FExtType := etGraphic;
           Stream.Read(FExtRec.GCE, SizeOf(TGraphicControlExtension));
         end
-        else if ExtensionLabel = ExtLabels[etComment] then begin
+        else
+        if ExtensionLabel = ExtLabels[etComment] then
+        begin
           { comment extension }
           FExtType := etComment;
           FData := ReadDataBlock(Stream);
         end
-        else if ExtensionLabel = ExtLabels[etPlainText] then begin
+        else
+        if ExtensionLabel = ExtLabels[etPlainText] then
+        begin
           { plain text extension }
           FExtType := etPlainText;
           Stream.Read(FExtRec.PTE, SizeOf(TPlainTextExtension));
           FData := ReadDataBlock(Stream);
         end
-        else if ExtensionLabel = ExtLabels[etApplication] then begin
+        else
+        if ExtensionLabel = ExtLabels[etApplication] then
+        begin
           { application extension }
           FExtType := etApplication;
           Stream.Read(FExtRec.APPE, SizeOf(TAppExtension));
           FData := ReadDataBlock(Stream);
         end
-        else GifError(Format(SUnrecognizedGIFExt, [ExtensionLabel]));
+        else
+          GifError(Format(SUnrecognizedGIFExt, [ExtensionLabel]));
     except
       Result.Free;
       raise;
@@ -2394,17 +2692,21 @@ var
   begin
     Result := nil;
     try
-      while SeparatorChar = CHR_EXT_INTRODUCER do begin
+      while SeparatorChar = CHR_EXT_INTRODUCER do
+      begin
         NewExt := ReadExtension(Stream);
-        if (NewExt.FExtType = etPlainText) then begin
+        if NewExt.FExtType = etPlainText then
+        begin
           { plain text data blocks are not supported,
             clear all previous readed extensions }
           FreeExtensions(Result);
           Result := nil;
         end;
-        if (NewExt.FExtType in [etPlainText, etApplication]) then begin
+        if NewExt.FExtType in [etPlainText, etApplication] then
+        begin
           { check for loop extension }
-          if NewExt.IsLoopExtension then begin
+          if NewExt.IsLoopExtension then
+          begin
             FLooping := True;
             FRepeatCount := Min(MakeWord(Byte(NewExt.FData[0][2]),
               Byte(NewExt.FData[0][3])), MAX_LOOP_COUNT);
@@ -2412,20 +2714,25 @@ var
           { not supported yet, must be ignored }
           NewExt.Free;
         end
-        else begin
-          if Result = nil then Result := TList.Create;
+        else
+        begin
+          if Result = nil then
+            Result := TList.Create;
           Result.Add(NewExt);
         end;
         if Stream.Size > Stream.Position then
           SeparatorChar := ReadSeparator(Stream)
-        else SeparatorChar := CHR_TRAILER;
+        else
+          SeparatorChar := CHR_TRAILER;
       end;
-      if (Result <> nil) and (Result.Count = 0) then begin
+      if (Result <> nil) and (Result.Count = 0) then
+      begin
         Result.Free;
         Result := nil;
       end;
     except
-      if Result <> nil then Result.Free;
+      if Result <> nil then
+        Result.Free;
       raise;
     end;
   end;
@@ -2435,12 +2742,14 @@ var
   Ext: TExtension;
 begin
   NewImage;
-  with FImage do begin
+  with FImage do
+  begin
     Data := TMemoryStream.Create;
     try
       TMemoryStream(Data).SetSize(Size);
       Stream.ReadBuffer(Data.Memory^, Size);
-      if Size > 0 then begin
+      if Size > 0 then
+      begin
         Data.Position := 0;
         ReadSignature(Data);
         ReadScreenDescriptor(Data);
@@ -2451,40 +2760,46 @@ begin
         begin
           Extensions := ReadExtensionBlock(Data, SeparatorChar);
           if SeparatorChar = CHR_IMAGE_SEPARATOR then
+          try
+            NewItem := TJvGIFFrame.Create(Self);
             try
-              NewItem := TJvGIFFrame.Create(Self);
-              try
-                if FImage.FColorMap.Count > 0 then
-                  NewItem.FImage.FBitsPerPixel :=
-                    ColorsToBits(FImage.FColorMap.Count);
-                NewItem.FExtensions := Extensions;
-                Extensions := nil;
-                NewItem.LoadFromStream(Data);
-                FItems.Add(NewItem);
-              except
-                NewItem.Free;
-                raise;
-              end;
-              if not (Data.Position >= Data.Size) then begin
-                SeparatorChar := ReadSeparator(Data);
-              end
-              else SeparatorChar := CHR_TRAILER;
-              if not (SeparatorChar in [CHR_EXT_INTRODUCER,
-                CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
-              begin
-                SeparatorChar := #0;
-                {GifError(SGIFDecodeError);}
-              end;
+              if FImage.FColorMap.Count > 0 then
+                NewItem.FImage.FBitsPerPixel :=
+                  ColorsToBits(FImage.FColorMap.Count);
+              NewItem.FExtensions := Extensions;
+              Extensions := nil;
+              NewItem.LoadFromStream(Data);
+              FItems.Add(NewItem);
             except
-              FreeExtensions(Extensions);
+              NewItem.Free;
               raise;
+            end;
+            if not (Data.Position >= Data.Size) then
+            begin
+              SeparatorChar := ReadSeparator(Data);
             end
-          else if (FComment.Count = 0) and (Extensions <> nil) then begin
+            else
+              SeparatorChar := CHR_TRAILER;
+            if not (SeparatorChar in [CHR_EXT_INTRODUCER,
+              CHR_IMAGE_SEPARATOR, CHR_TRAILER]) then
+            begin
+              SeparatorChar := #0;
+                {GifError(SGIFDecodeError);}
+            end;
+          except
+            FreeExtensions(Extensions);
+            raise;
+          end
+          else
+          if (FComment.Count = 0) and (Extensions <> nil) then
+          begin
             try
               { trailig extensions }
-              for I := 0 to Extensions.Count - 1 do begin
+              for I := 0 to Extensions.Count - 1 do
+              begin
                 Ext := TExtension(Extensions[I]);
-                if (Ext <> nil) and (Ext.FExtType = etComment) then begin
+                if (Ext <> nil) and (Ext.FExtType = etComment) then
+                begin
                   if FComment.Count > 0 then
                     FComment.Add(#13#10#13#10);
                   FComment.AddStrings(Ext.FData);
@@ -2494,7 +2809,8 @@ begin
               FreeExtensions(Extensions);
             end;
           end
-          else if not (SeparatorChar in [CHR_TRAILER, #0]) then
+          else
+          if not (SeparatorChar in [CHR_TRAILER, #0]) then
             GifError(ResStr(SReadError));
         end;
       end;
@@ -2502,7 +2818,8 @@ begin
       Data.Free;
     end;
   end;
-  if Count > 0 then begin
+  if Count > 0 then
+  begin
     FFrameIndex := 0;
     if ForceDecode then
     try
@@ -2513,9 +2830,9 @@ begin
       raise;
     end;
   end;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   PaletteModified := True;
-{$ENDIF}
+  {$ENDIF}
   Changed(Self);
 end;
 
@@ -2528,10 +2845,12 @@ var
   I: Integer;
 begin
   { !! check for gif clipboard format, mime type image/gif }
-  if FItems.Count = 0 then Exit;
+  if FItems.Count = 0 then
+    Exit;
   Frames[0].Bitmap.SaveToClipboardFormat(AFormat, AData, APalette);
   for I := 0 to FItems.Count - 1 do
-    with Frames[I] do begin
+    with Frames[I] do
+    begin
       if (FImage.FImageData = nil) or (FImage.FImageData.Size = 0) then
         Exit;
     end;
@@ -2541,7 +2860,8 @@ begin
     Stream.Position := 0;
     Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
     try
-      if Data <> 0 then begin
+      if Data <> 0 then
+      begin
         Buffer := GlobalLock(Data);
         try
           Stream.Read(Buffer^, Stream.Size);
@@ -2600,13 +2920,15 @@ var
     I: Integer;
   begin
     UpdateScreenSize;
-    with ScreenDesc do begin
+    with ScreenDesc do
+    begin
       ScreenWidth := Self.FScreenWidth;
       ScreenHeight := Self.FScreenHeight;
       AspectRatio := FImage.FAspectRatio;
       PackedFields := 0;
       BackgroundColorIndex := 0;
-      if FImage.FColorMap.Count > 0 then begin
+      if FImage.FColorMap.Count > 0 then
+      begin
         PackedFields := PackedFields or LSD_GLOBAL_COLOR_TABLE;
         ColorResBits := ColorsToBits(FImage.FColorMap.Count);
         if FBackgroundColor <> clNone then
@@ -2630,10 +2952,12 @@ var
     S: string;
     BlockSize: Byte;
   begin
-    for I := 0 to Data.Count - 1 do begin
+    for I := 0 to Data.Count - 1 do
+    begin
       S := Data[I];
       BlockSize := Min(Length(S), 255);
-      if BlockSize > 0 then begin
+      if BlockSize > 0 then
+      begin
         Stream.Write(BlockSize, SizeOf(Byte));
         Stream.Write(S[1], BlockSize);
       end;
@@ -2650,9 +2974,11 @@ var
     SeparateChar: Char;
   begin
     SeparateChar := CHR_EXT_INTRODUCER;
-    for I := 0 to Extensions.Count - 1 do begin
+    for I := 0 to Extensions.Count - 1 do
+    begin
       Ext := TExtension(Extensions[I]);
-      if Ext <> nil then begin
+      if Ext <> nil then
+      begin
         Stream.Write(SeparateChar, SizeOf(Byte));
         ExtensionLabel := ExtLabels[Ext.FExtType];
         Stream.Write(ExtensionLabel, SizeOf(Byte));
@@ -2661,7 +2987,8 @@ var
             begin
               Stream.Write(Ext.FExtRec.GCE, SizeOf(TGraphicControlExtension));
             end;
-          etComment: WriteDataBlock(Stream, Ext.FData);
+          etComment:
+            WriteDataBlock(Stream, Ext.FData);
           etPlainText:
             begin
               Stream.Write(Ext.FExtRec.PTE, SizeOf(TPlainTextExtension));
@@ -2678,18 +3005,22 @@ var
   end;
 
 begin
-  if FItems.Count = 0 then GifError(SNoGIFData);
+  if FItems.Count = 0 then
+    GifError(SNoGIFData);
   EncodeFrames(False);
   Mem := TMemoryStream.Create;
   try
-    if FImage.FComment.Count > 0 then FVersion := gv89a;
+    if FImage.FComment.Count > 0 then
+      FVersion := gv89a;
     WriteSignature(Mem);
     WriteScreenDescriptor(Mem);
-    if FImage.FColorMap.Count > 0 then begin
+    if FImage.FColorMap.Count > 0 then
+    begin
       with FImage.FColorMap do
         Mem.Write(Colors[0], Count * SizeOf(TGIFColorItem));
     end;
-    if FLooping and (FItems.Count > 1) then begin
+    if FLooping and (FItems.Count > 1) then
+    begin
       { write looping extension }
       Separator := CHR_EXT_INTRODUCER;
       Mem.Write(Separator, SizeOf(Byte));
@@ -2708,7 +3039,8 @@ begin
       end;
     end;
     Separator := CHR_IMAGE_SEPARATOR;
-    for FrameNo := 0 to FItems.Count - 1 do begin
+    for FrameNo := 0 to FItems.Count - 1 do
+    begin
       Frame := TJvGIFFrame(FItems[FrameNo]);
       if Frame.FExtensions <> nil then
         WriteExtensionBlock(Mem, Frame.FExtensions);
@@ -2717,7 +3049,8 @@ begin
       Frame.WriteLocalColorMap(Mem);
       Frame.WriteRasterData(Mem);
     end;
-    if FImage.FComment.Count > 0 then begin
+    if FImage.FComment.Count > 0 then
+    begin
       Separator := CHR_EXT_INTRODUCER;
       Mem.Write(Separator, SizeOf(Byte));
       Temp := ExtLabels[etComment];
@@ -2727,7 +3060,8 @@ begin
     Separator := CHR_TRAILER;
     Mem.Write(Separator, SizeOf(Byte));
     Size := Mem.Size;
-    if WriteSize then Stream.Write(Size, SizeOf(Size));
+    if WriteSize then
+      Stream.Write(Size, SizeOf(Size));
     Stream.Write(Mem.Memory^, Size);
   finally
     Mem.Free;
@@ -2738,22 +3072,27 @@ procedure TJvGIFImage.Grayscale(ForceEncoding: Boolean);
 var
   I: Integer;
 begin
-  if FItems.Count = 0 then GifError(SNoGIFData);
+  if FItems.Count = 0 then
+    GifError(SNoGIFData);
   for I := 0 to FItems.Count - 1 do
     Frames[I].GrayscaleImage(ForceEncoding);
-  if FBackgroundColor <> clNone then begin
-    if FImage.FColorMap.Count > 0 then begin
+  if FBackgroundColor <> clNone then
+  begin
+    if FImage.FColorMap.Count > 0 then
+    begin
       I := FindColorIndex(FImage.FColorMap, FBackgroundColor);
       GrayColorTable(FImage.FColorMap);
       if I >= 0 then
         FBackgroundColor := ItemToRGB(FImage.FColorMap.Colors[I])
-      else FBackgroundColor := GrayColor(FBackgroundColor);
+      else
+        FBackgroundColor := GrayColor(FBackgroundColor);
     end
-    else FBackgroundColor := GrayColor(FBackgroundColor);
+    else
+      FBackgroundColor := GrayColor(FBackgroundColor);
   end;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   PaletteModified := True;
-{$ENDIF}
+  {$ENDIF}
   Changed(Self);
 end;
 
@@ -2783,9 +3122,10 @@ initialization
 {$IFDEF USE_Jv_GIF}
   TPicture.RegisterFileFormat('gif', SGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);
- {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
 finalization
   TPicture.UnRegisterGraphicClass(TJvGIFImage);
- {$ENDIF}
+{$ENDIF}
 {$ENDIF}
 end.
+

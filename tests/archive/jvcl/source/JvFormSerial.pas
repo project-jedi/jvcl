@@ -31,9 +31,8 @@ unit JvFormSerial;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons,
-  JvSpeedButton;
+  SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls,
+  JvComponent, JvButton;
 
 type
   TFormSer = class(TForm)
@@ -45,9 +44,9 @@ type
     Edit1: TEdit;
     Label2: TLabel;
     Edit2: TEdit;
-    BUButton1: TJvSpeedButton;
-    BUButton2: TJvSpeedButton;
-    BUButton3: TJvSpeedButton;
+    Button1: TJvButton;
+    Button2: TJvButton;
+    Button3: TJvButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
   public
@@ -59,8 +58,6 @@ var
 implementation
 
 {$R *.DFM}
-
-{************************************************************}
 
 procedure TFormSer.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin

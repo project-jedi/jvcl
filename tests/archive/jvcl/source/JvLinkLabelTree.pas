@@ -37,7 +37,8 @@ unit JvLinkLabelTree;
 interface
 
 uses
-  Graphics, Windows, Classes, SysUtils, JvLinkLabelTools, JvTypes;
+  Graphics, Windows, Classes, SysUtils,
+  JvLinkLabelTools, JvTypes;
 
 type
   ENodeError = class(EJVCLException);
@@ -61,6 +62,7 @@ type
     ntDynamicNode, ntRootNode, ntStringNode, ntActionNode,
     ntUnknownNode);
   TParentNode = class;
+
   TNode = class(TObject)
   private
     FParent: TParentNode;
@@ -165,6 +167,7 @@ type
     Width: Integer;
   end;
   TWordInfoArray = array of TWordInfo;
+
   TStringNode = class(TNode)
   private
     FText: string;
@@ -292,17 +295,11 @@ begin
   TDynamicNode.ResetCount;
 end;
 
-{ TNodeTree }
-
-procedure TNodeTree.Clear;
-begin
-  FRoot.DestroyChildren;
-  inherited;
-end;
+//=== TNodeTree ==============================================================
 
 constructor TNodeTree.Create;
 begin
-  inherited;
+  inherited Create;
   FRoot := TRootNode.Create;
   FRoot.Styles := [];
   FRoot.Color := clWindowText;
@@ -312,7 +309,12 @@ destructor TNodeTree.Destroy;
 begin
   Clear;
   FRoot.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TNodeTree.Clear;
+begin
+  FRoot.DestroyChildren;
 end;
 
 function TNodeTree.GetNodeAtPointOfClass(const P: TPoint; NodeClass: TNodeClass): TNode;
@@ -343,17 +345,11 @@ begin
   Result := FRoot.IsPointInNode(P);
 end;
 
-{ TParentNode }
-
-procedure TParentNode.AddChild(const Node: TNode);
-begin
-  FChildren.Add(Node);
-  Node.Parent := Self;
-end;
+//=== TParentNode ============================================================
 
 constructor TParentNode.Create;
 begin
-  inherited;
+  inherited Create;
   FChildren := TNodeList.Create;
   FOwnsChildren := True;
 end;
@@ -362,7 +358,13 @@ destructor TParentNode.Destroy;
 begin
   DestroyChildren;
   FChildren.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TParentNode.AddChild(const Node: TNode);
+begin
+  FChildren.Add(Node);
+  Node.Parent := Self;
 end;
 
 procedure TParentNode.DestroyChildren;
@@ -391,7 +393,8 @@ function TParentNode.GetFirstNodeOfClass(NodeClass: TNodeClass): TNode;
         Result := CurrentRoot.FChildren[I];
         Break;
       end
-      else if CurrentRoot.Children[I] is TParentNode then
+      else
+      if CurrentRoot.Children[I] is TParentNode then
         Result := RecurseTree(TParentNode(CurrentRoot.Children[I]));
     end;
   end;
@@ -419,8 +422,7 @@ begin
   end;
 end;
 
-function TParentNode.GetTopLevelNodeEnumerator(
-  const NodeClass: TNodeClass): INodeEnumerator;
+function TParentNode.GetTopLevelNodeEnumerator(const NodeClass: TNodeClass): INodeEnumerator;
 begin
   Result := TTopLevelNodeEnumerator.Create(Self, NodeClass);
 end;
@@ -430,7 +432,7 @@ begin
   Result := FChildren.IndexOf(Node);
 end;
 
-{ TNodeList }
+//=== TNodeList ==============================================================
 
 function TNodeList.Add(Item: TNode): Integer;
 begin
@@ -462,7 +464,13 @@ begin
   Result := inherited Remove(Item);
 end;
 
-{ TStringNode }
+//=== TStringNode ============================================================
+
+constructor TStringNode.Create(const Text: string);
+begin
+  inherited Create;
+  FText := ConvertEntities(Text);
+end;
 
 procedure TStringNode.AddRect(const Rect: TRect);
 begin
@@ -490,14 +498,14 @@ end;
 function TStringNode.ConvertEntities(Text: string): string;
 type
   TEntity = record
-    Entity: string;
-    Str: string;
+    Entity: PChar;
+    Str: PChar;
   end;
 const
-  NmrOfEntities = 2;
-  Entities: array[0..NmrOfEntities - 1] of TEntity = (
-    (Entity: '&lt;'; Str: '<'),
-    (Entity: '&gt;'; Str: '>'));
+  NumberOfEntities = 2;
+  Entities: array [0..NumberOfEntities - 1] of TEntity =
+    ((Entity: '&lt;'; Str: '<'),
+     (Entity: '&gt;'; Str: '>'));
 var
   I: Integer;
 begin
@@ -507,16 +515,10 @@ begin
     to revise this simple implementation, which only handles simple string
     replacement (the renderer is oblivious to entities). For our uses, however,
     it's sufficient. }
-  for I := 0 to NmrOfEntities - 1 do
+  for I := Low(Entities) to High(Entities) do
     with Entities[I] do
       TStringTools.Replace(Entity, Str, Text);
   Result := Text;
-end;
-
-constructor TStringNode.Create(const Text: string);
-begin
-  inherited Create;
-  FText := ConvertEntities(Text);
 end;
 
 function TStringNode.GetWordInfo(const Pos: Integer): TWordInfo;
@@ -545,7 +547,7 @@ begin
   Result := Pos <= High(FWordInfoArray);
 end;
 
-{ TStyleNode }
+//=== TStyleNode =============================================================
 
 constructor TStyleNode.Create(const Style: TFontStyle);
 begin
@@ -553,7 +555,7 @@ begin
   FStyle := Style;
 end;
 
-{ TUnknownNode }
+//=== TUnknownNode ===========================================================
 
 constructor TUnknownNode.Create(const Tag: string);
 begin
@@ -561,7 +563,7 @@ begin
   FTag := Tag;
 end;
 
-{ TActionNode }
+//=== TActionNode ============================================================
 
 constructor TActionNode.Create(const Action: TActionType);
 begin
@@ -569,11 +571,11 @@ begin
   FAction := Action;
 end;
 
-{ TAreaNode }
+//=== TAreaNode ==============================================================
 
 constructor TAreaNode.Create;
 begin
-  inherited;
+  inherited Create;
   FStartingPoint := Point(0, 0);
 end;
 
@@ -683,15 +685,15 @@ begin
   end;
 end;
 
-{ TNode }
+//=== TNode ==================================================================
 
 function TNode.GetNodeType: TNodeType;
 var
   NodeClass: TClass;
 const
-  NodeClasses: array[TNodeType] of TClass =
-  (TNode, TParentNode, TAreaNode, TStyleNode, TLinkNode, TDynamicNode,
-    TRootNode, TStringNode, TActionNode, TUnknownNode);
+  NodeClasses: array [TNodeType] of TClass =
+    (TNode, TParentNode, TAreaNode, TStyleNode, TLinkNode, TDynamicNode,
+     TRootNode, TStringNode, TActionNode, TUnknownNode);
 begin
   { We get the dynamic type using TObject.ClassType, which returns a pointer to
     the class' virtual memory table, instead of testing using the "is" reserved
@@ -708,30 +710,7 @@ begin
   raise ENodeError.Create('TNode.GetNodeType: Unknown class');
 end;
 
-{ TTopLevelNodeEnumerator }
-
-procedure TTopLevelNodeEnumerator.BuildList;
-
-  procedure RecurseTree(CurrentRoot: TParentNode);
-  var
-    I: Integer;
-  begin
-    for I := 0 to CurrentRoot.Children.Count - 1 do
-    begin
-      { If we find a child that is of the requested type, add it to the list.
-        Don't continue to recurse, as we're not interested in this node's
-        children (after all, we're a top level enumerator!). }
-      if CurrentRoot.Children[I] is FNodeClass then
-        FList.Add(CurrentRoot.FChildren[I])
-      else if CurrentRoot.Children[I] is TParentNode then
-        RecurseTree(TParentNode(CurrentRoot.Children[I]));
-    end;
-  end;
-
-begin
-  FList.Clear;
-  RecurseTree(FRoot);
-end;
+//=== TTopLevelNodeEnumerator ================================================
 
 constructor TTopLevelNodeEnumerator.Create(const Root: TParentNode;
   NodeClass: TNodeClass);
@@ -748,7 +727,31 @@ end;
 destructor TTopLevelNodeEnumerator.Destroy;
 begin
   FList.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TTopLevelNodeEnumerator.BuildList;
+
+  procedure RecurseTree(CurrentRoot: TParentNode);
+  var
+    I: Integer;
+  begin
+    for I := 0 to CurrentRoot.Children.Count - 1 do
+    begin
+      { If we find a child that is of the requested type, add it to the list.
+        Don't continue to recurse, as we're not interested in this node's
+        children (after all, we're a top level enumerator!). }
+      if CurrentRoot.Children[I] is FNodeClass then
+        FList.Add(CurrentRoot.FChildren[I])
+      else
+      if CurrentRoot.Children[I] is TParentNode then
+        RecurseTree(TParentNode(CurrentRoot.Children[I]));
+    end;
+  end;
+
+begin
+  FList.Clear;
+  RecurseTree(FRoot);
 end;
 
 function TTopLevelNodeEnumerator.GetNext: TNode;
@@ -772,7 +775,7 @@ begin
   FIndex := 0;
 end;
 
-{ TRectEnumerator }
+//=== TRectEnumerator ========================================================
 
 constructor TRectEnumerator.Create(const List: TRectList);
 begin
@@ -784,7 +787,7 @@ end;
 destructor TRectEnumerator.Destroy;
 begin
   FList.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TRectEnumerator.GetNext: TRect;
@@ -808,20 +811,18 @@ begin
   FIndex := 0;
 end;
 
-{ TRectList }
+//=== TRectList ==============================================================
 
 procedure TRectList.AddRect(const Rect: TRect);
 var
   NewRecord: PRect;
 begin
   New(NewRecord);
-
   try
     NewRecord^.Left := Rect.Left;
     NewRecord^.Top := Rect.Top;
     NewRecord^.Right := Rect.Right;
     NewRecord^.Bottom := Rect.Bottom;
-
     FList.Add(NewRecord);
   except
     Dispose(NewRecord);
@@ -834,7 +835,7 @@ begin
   Result := FList[Index];
 end;
 
-{ TLinkNode }
+//=== TLinkNode ==============================================================
 
 constructor TLinkNode.Create;
 begin
@@ -846,9 +847,12 @@ end;
 function TLinkNode.GetColor: TColor;
 begin
   case State of
-    lsNormal: Result := clNormalLink;
-    lsClicked: Result := clClickedLink;
-    lsHot: Result := clHotLink;
+    lsNormal:
+      Result := clNormalLink;
+    lsClicked:
+      Result := clClickedLink;
+    lsHot:
+      Result := clHotLink;
   else
     Result := inherited GetColor; // To get rid of a compiler warning
   end;
@@ -859,7 +863,7 @@ begin
   LinkNodeCount := 0;
 end;
 
-{ TRootNode }
+//=== TRootNode ==============================================================
 
 procedure TRootNode.AddRect(const Rect: TRect);
 begin
@@ -908,7 +912,7 @@ begin
   end;
 end;
 
-{ TDynamicNode }
+//=== TDynamicNode ===========================================================
 
 constructor TDynamicNode.Create;
 begin

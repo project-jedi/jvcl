@@ -1,9 +1,10 @@
-object profreport: Tprofreport
+object ProfReport: TProfReport
   Left = 200
   Top = 114
   Width = 453
   Height = 300
   ActiveControl = lvReport
+  BorderIcons = [biSystemMenu]
   Caption = 'Profiler Report'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -44,18 +45,22 @@ object profreport: Tprofreport
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 240
+    Top = 237
     Width = 445
     Height = 33
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      445
+      33)
     object SaveBtn: TButton
       Left = 8
       Top = 5
       Width = 75
       Height = 25
       Hint = 'Save report to a file (compatible with Excel)'
+      Anchors = [akLeft, akBottom]
       Caption = '&Save...'
       TabOrder = 0
       OnClick = SaveBtnClick
@@ -68,12 +73,16 @@ object profreport: Tprofreport
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
+      DesignSize = (
+        175
+        33)
       object OKBtn: TButton
         Left = 60
         Top = 6
         Width = 75
         Height = 25
         Hint = 'Close report window'
+        Anchors = [akRight, akBottom]
         Cancel = True
         Caption = '&Close'
         Default = True
@@ -88,6 +97,7 @@ object profreport: Tprofreport
       Width = 75
       Height = 25
       Hint = 'Remove unused calls from the list'
+      Anchors = [akLeft, akBottom]
       Caption = '&Trim'
       TabOrder = 2
       OnClick = TrimBtnClick
@@ -97,7 +107,7 @@ object profreport: Tprofreport
     Left = 0
     Top = 0
     Width = 445
-    Height = 240
+    Height = 237
     Hint = 'Click the top column to sort the items'
     Align = alClient
     BorderStyle = bsNone

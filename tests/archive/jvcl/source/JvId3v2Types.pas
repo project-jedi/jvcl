@@ -53,33 +53,23 @@ ignored:
  MLLT
 }
 
-{
- TJvId3v2
-}
-
-
-
 interface
-
-uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, extctrls;
 
 type
   TId3v2Header = packed record
-    Identifier: array[0..2] of Char;
+    Identifier: array [0..2] of Char;
     Version: Word;
     Flags: Byte;
     Size: Cardinal;
   end;
-{$EXTERNALSYM TId3v2Header}
 
   TId3v2Frame = packed record
-    Id: array[0..3] of Char;
+    Id: array [0..3] of Char;
     Size: Integer;
     Flags: Word;
   end;
-{$EXTERNALSYM TId3v2Frame}
 
 implementation
 
 end.
+

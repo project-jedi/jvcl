@@ -28,19 +28,17 @@ Known Issues:
 
 unit JvSerialDlg;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Dialogs,
   JvFormLogin, JvBaseDlg, JvTypes;
 
 type
   TJvSerialDlg = class(TJvCommonDialog)
   private
-    FCaption: string;
-    FCaption2: string;
+    FFirstLabel: string;
+    FSecondLabel: string;
     FTitle: string;
     FUsername: string;
     FPassword: string;
@@ -48,8 +46,8 @@ type
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
   published
-    property FirstLabel: string read FCaption write FCaption;
-    property SecondLabel: string read FCaption2 write FCaption2;
+    property FirstLabel: string read FFirstLabel write FFirstLabel;
+    property SecondLabel: string read FSecondLabel write FSecondLabel;
     property NameValue: string read FUsername write FUsername;
     property SerialValue: string read FPassword write FPassword;
     property Title: string read FTitle write FTitle;
@@ -62,23 +60,21 @@ resourcestring
   RC_Serial2Caption = '&Serial:';
   RC_SerialTitle = 'Enter Serial';
 
-  {**************************************************}
-
 constructor TJvSerialDlg.Create(AOwner: TComponent);
 begin
-  inherited;
-  FCaption := RC_Serial1Caption;
-  FCaption2 := RC_Serial2Caption;
+  inherited Create(AOwner);
+  FFirstLabel := RC_Serial1Caption;
+  FSecondLabel := RC_Serial2Caption;
   FTitle := RC_SerialTitle;
   FUsername := '';
   FPassword := '';
 end;
-{**************************************************}
 
 function TJvSerialDlg.Execute: Boolean;
 begin
-  Result := TFormLogi.Execute(FUsername,FPassword,
-    FTitle,FCaption,FCaption2,#0);
+  Result := TFormLogi.Execute(FUsername, FPassword,
+    FTitle, FFirstLabel, FSecondLabel, #0);
 end;
 
 end.
+

@@ -31,81 +31,75 @@ unit JvHighlighter;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JVCLVer;
-
+  SysUtils, Classes, Graphics, Controls,
+  JVCLVer;
+  
 type
   TJvHighlighter = class(TGraphicControl)
   private
-    { Private declarations }
+    FAboutJVCL: TJVCLAboutInfo;
     FFocusControl: TWinControl;
     FExtraBorder: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
-    { Protected declarations }
-    procedure SetFocusControl(value: TWinControl);
-    procedure SetExtraBorder(value: Integer);
+    procedure SetFocusControl(Value: TWinControl);
+    procedure SetExtraBorder(Value: Integer);
   public
-    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
-    constructor Create(aOwner: TComponent); override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Color;
-    property ExtraBorder: Integer read FExtraBorder write SetExtraBorder
-      default 4;
+    property ExtraBorder: Integer read FExtraBorder write SetExtraBorder default 4;
+    property Height default 30;
+    property Width default 30;
   end;
 
 implementation
 
-{+-------------------------
- | Methods of TJvHighlighter
- +------------------------}
-
-procedure TJvHighlighter.SetFocusControl(value: TWinControl);
+constructor TJvHighlighter.Create(AOwner: TComponent);
 begin
-  if value = FFocusControl then
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque];
+  FExtraBorder := 4;
+  Width := 30;
+  Height := 30;
+  Color := clBlue;
+end;
+
+procedure TJvHighlighter.SetFocusControl(Value: TWinControl);
+begin
+  if Value = FFocusControl then
     Exit;
   Hide;
-  if value <> nil then
+  if Value <> nil then
   begin
-    FFocusControl := value;
-    Parent := value.Parent;
-    SetBounds(value.Left - FExtraBorder,
-      value.Top - FExtraBorder,
-      value.Width + 2 * FExtraBorder,
-      value.Height + 2 * FExtraBorder);
+    FFocusControl := Value;
+    Parent := Value.Parent;
+    SetBounds(Value.Left - FExtraBorder,
+      Value.Top - FExtraBorder,
+      Value.Width + 2 * FExtraBorder,
+      Value.Height + 2 * FExtraBorder);
     Show;
-  end { If }
+  end
   else
     Parent := nil;
-end; { TJvHighlighter.SetFocusControl }
+end;
 
-procedure TJvHighlighter.SetExtraBorder(value: Integer);
+procedure TJvHighlighter.SetExtraBorder(Value: Integer);
 begin
-  if value <> FExtraBorder then
+  if Value <> FExtraBorder then
   begin
-    FExtraBorder := value;
+    FExtraBorder := Value;
     Invalidate;
-  end; { If }
-end; { TJvHighlighter.SetExtraBorder }
+  end;
+end;
 
 procedure TJvHighlighter.Paint;
 begin
   Canvas.Brush.Color := Color;
   Canvas.Brush.Style := bsSolid;
   Canvas.FillRect(ClientRect);
-end; { TJvHighlighter.Paint }
-
-constructor TJvHighlighter.Create(aOwner: TComponent);
-begin
-  inherited Create(aOwner);
-  ControlStyle := ControlStyle + [csOpaque];
-  FExtraBorder := 4;
-  Width := 30;
-  Height := 30;
-  Color := clBlue;
-end; { TJvHighlighter.Create }
+end;
 
 end.

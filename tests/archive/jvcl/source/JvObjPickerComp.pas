@@ -20,18 +20,21 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+   TODO OWNER
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvObjPickerComp;
 
-// TODO OWNER
-
 interface
-uses
-  Windows, ActiveX, Classes, ComObj, JvObjSel, SysUtils, JvBaseDlg, JvTypes;
 
+uses
+  Windows, ActiveX, Classes, ComObj, SysUtils,
+  JvObjSel, JvBaseDlg, JvTypes;
+
+// (rom) Jv the type names?
 type
   // indicates the type of scope
   TScopeType = (
@@ -39,16 +42,13 @@ type
     stUpLevelJoinedDomain, // an uplevel domain joined by the target computer
     stDownLevelJoinedDomain, // a downlevel domain joined by the target computer
     stEnterpriseDomain, // all Windows 2000 domains of which the target computer is a member
-    stGlobalCatalog,                    // all domains in the enterprise
+    stGlobalCatalog, // all domains in the enterprise
     stExternalUpLevelDomain, // all trusted, uplevel domains external to the enterprise
     stExternalDownLevelDomain, // all trusted, downlevel domains external to the enterprise
     stWorkGroup, // a workgroup joined by the target computer
     stUserEnteredUpLevelScope, // enables the user to enter an up level scope
-    stUserEnteredDownLevelScope // enables the user to enter a down level scope
-    );
+    stUserEnteredDownLevelScope); // enables the user to enter a down level scope
   TScopeTypes = set of TScopeType;
-
-  // scope flags
 
   TScopeFlag = (
     sfStartingScope, // scope should be initially selected (only one scope can have this flag set)
@@ -56,8 +56,7 @@ type
     sfProviderLDAP, // ADSPath is converted to use the LDAP provider
     sfProviderGC, // ADSPath is converted to use the GC provider
     sfSidPath, // ADSPath with an objectSID attribute are converted to the form LDAP://<SID=x>
-    sfDownLevelBuiltInPath // If not specified, ADSPath for downlevel, well-known objects are empty
-    );
+    sfDownLevelBuiltInPath); // If not specified, ADSPath for downlevel, well-known objects are empty
   TScopeFlags = set of TScopeFlag;
 
   // up level filter flags. if a flag is set, the object picker includes the specified object when the scope is
@@ -75,8 +74,7 @@ type
     ulDomainLocalDistributionListGroups,
     ulDomainLocalSecurityGroups,
     ulContacts,
-    ulComputers
-    );
+    ulComputers);
   TUpLevelFilters = set of TUpLevelFilter;
 
   // down level filter flags. if a flag is set, the object picker includes the specified object when the scope is
@@ -103,8 +101,7 @@ type
     dlAllWellKnownSids,
     dlLocalService,
     dlNetworkService,
-    dlRemoteLogon
-    );
+    dlRemoteLogon);
   TDownLevelFilters = set of TDownLevelFilter;
 
   // represents a single scope and it's associated filter
@@ -130,11 +127,9 @@ type
     // indicates whether this scope was succesfully initialized
     property Result: HRESULT read FResult default S_OK;
     // the type of scope (e.g. enterprise domain, global catalog or computer)
-    property ScopeTypes: TScopeTypes read FScopeTypes write FScopeTypes default
-      [];
+    property ScopeTypes: TScopeTypes read FScopeTypes write FScopeTypes default [];
     // flags  that indicate the format of the returned ADSPath and whether this scope should be initially selected
-    property ScopeFlags: TScopeFlags read FScopeFlags write FScopeFlags default
-      [];
+    property ScopeFlags: TScopeFlags read FScopeFlags write FScopeFlags default [];
     // filter flags for up level scope in either mode (native or mixed)
     property UpLevelFilterBoth: TUpLevelFilters read FUpLevelFilterBoth write
       FUpLevelFilterBoth default [];
@@ -164,8 +159,7 @@ type
     // the owner of this class
     //OWNER function Owner: TComponent;
     // list of scopes
-    property Items[Index: Integer]: TObjectPickerScope read GetItem write
-      SetItem; default;
+    property Items[Index: Integer]: TObjectPickerScope read GetItem write SetItem; default;
   end;
 
   TObjectPickerSelection = class(TObject)
@@ -179,8 +173,7 @@ type
     function GetScopeTypes: TScopeTypes;
     function GetUPN: string;
   public
-    constructor Create(const Selection: PDsSelection; const AttributeCount:
-      Integer);
+    constructor Create(const Selection: PDsSelection; const AttributeCount: Integer);
     // the Relative Distinquishged Name (RDN) of the object
     property Name: string read GetName;
     // the object's ADSPath. format depends on what flags you specified for the scope the object was selected from
@@ -219,15 +212,14 @@ type
     property Count: Integer read GetCount;
     // list of objects, each represents a single selected object
     property Items[Index: Integer]: TObjectPickerSelection read GetItem;
-      default;
+    default;
   end;
 
   // Global Object Picker options
 
   TObjectPickerOption = (
-    opAllowMultiSelect,                 // allow selection of multiple objects
-    opSkipTargetComputerDCCheck // skip DC check if target computer is a domain controller
-    );
+    opAllowMultiSelect, // allow selection of multiple objects
+    opSkipTargetComputerDCCheck); // skip DC check if target computer is a domain controller
   TObjectPickerOptions = set of TObjectPickerOption;
 
   // the Object Picker dialog component
@@ -255,8 +247,7 @@ type
     // list of additional attributes the Object Picker should retrieve for all selected objects
     property Attributes: TStrings read FAttributes write SetAttributes;
     // global options, see TObjectPickerOptions
-    property Options: TObjectPickerOptions read FOptions write FOptions default
-      [];
+    property Options: TObjectPickerOptions read FOptions write FOptions default [];
     // the available scopes and their filters
     property Scopes: TObjectPickerScopes read FScopes write SetScopes;
     // the target computer the Object Picker uses to determine the joined domain and enterprise. the Object Picker
@@ -265,10 +256,8 @@ type
   end;
 
   // object picker exception class
-
-  EObjectPickerError = class(EJVCLException)
-    // just to be able to distinquish between exceptions raised by the Object Picker specifically and all others
-  end;
+  // just to be able to distinquish between exceptions raised by the Object Picker specifically and all others
+  EObjectPickerError = class(EJVCLException);
 
 resourcestring
   RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
@@ -282,8 +271,6 @@ procedure Register;
 begin
   RegisterComponents('Jv Dialogs', [TJvObjectPickerDialog]);
 end;
-
-{ Utility functions }
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;
 begin
@@ -441,7 +428,7 @@ begin
     Result := Result or DSOP_FLAG_SKIP_TARGET_COMPUTER_DC_CHECK;
 end;
 
-{ TObjectPickerScope }
+//=== TObjectPickerScope =====================================================
 
 procedure TObjectPickerScope.Assign(Source: TPersistent);
 begin
@@ -460,7 +447,13 @@ begin
     inherited Assign(Source);
 end;
 
-{ TObjectPickerScopes }
+//=== TObjectPickerScopes ====================================================
+
+constructor TObjectPickerScopes.Create({OWNER AOwner: TComponent});
+begin
+  inherited Create(TObjectPickerScope);
+  //OWNER FOwner := AOwner;
+end;
 
 function TObjectPickerScopes.Add: TObjectPickerScope;
 begin
@@ -480,19 +473,12 @@ begin
     inherited Assign(Source);
 end;
 
-constructor TObjectPickerScopes.Create({OWNER AOwner: TComponent});
-begin
-  inherited Create(TObjectPickerScope);
-  //OWNER FOwner := AOwner;
-end;
-
 function TObjectPickerScopes.GetItem(Index: Integer): TObjectPickerScope;
 begin
   Result := TObjectPickerScope(inherited Items[Index]);
 end;
 
-procedure TObjectPickerScopes.Initialize(var ScopesInitInfo: array of
-  TDsOpScopeInitInfo);
+procedure TObjectPickerScopes.Initialize(var ScopesInitInfo: array of TDsOpScopeInitInfo);
 var
   I: Integer;
 begin
@@ -527,10 +513,10 @@ begin
   TObjectPickerScope(inherited Items[Index]).Assign(Value);
 end;
 
-{ TObjectPickerSelection }
+//=== TObjectPickerSelection =================================================
 
-constructor TObjectPickerSelection.Create(const Selection: PDsSelection; const
-  AttributeCount: Integer);
+constructor TObjectPickerSelection.Create(const Selection: PDsSelection;
+  const AttributeCount: Integer);
 begin
   inherited Create;
   FAttributeCount := AttributeCount;
@@ -544,13 +530,13 @@ end;
 
 function TObjectPickerSelection.GetAttribute(Index: Integer): OleVariant;
 type
-  TOleVariantArray = array[0..(MaxInt div SizeOf(OleVariant)) - 1] of
-    OleVariant;
+  TOleVariantArray = array [0..(MaxInt div SizeOf(OleVariant)) - 1] of OleVariant;
   POleVariantArray = ^TOleVariantArray;
 begin
   if (Index < 0) or (Index >= AttributeCount) then
-    raise EObjectPickerError.CreateResFmt(@RsAttributeIndexOutOfBounds,
-      [Index]);
+    {$TYPEDADDRESS OFF}
+    raise EObjectPickerError.CreateResFmt(@RsAttributeIndexOutOfBounds, [Index]);
+    {$TYPEDADDRESS ON}
   Result := POleVariantArray(FSelection^.pvarFetchedAttributes)^[Index];
 end;
 
@@ -574,12 +560,12 @@ begin
   Result := WideCharToString(FSelection^.pwzUPN);
 end;
 
-{ TObjectPickerSelections }
+//=== TObjectPickerSelections ================================================
 
 destructor TObjectPickerSelections.Destroy;
 begin
   FreeSelection;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TObjectPickerSelections.FreeSelection;
@@ -601,7 +587,7 @@ function TObjectPickerSelections.GetAttributeCount: Integer;
 begin
   Result := -1;
   if FSelections <> nil then
-    Result := FSelections^.cFetchedAttributes
+    Result := FSelections^.cFetchedAttributes;
 end;
 
 function TObjectPickerSelections.GetCount: Integer;
@@ -618,8 +604,9 @@ begin
   if FSelections <> nil then
   begin
     if (Index < 0) or (Index >= Count) then
-      raise EObjectPickerError.CreateResFmt(@RsSelectionIndexOutOfBounds,
-        [Index]);
+      {$TYPEDADDRESS OFF}
+      raise EObjectPickerError.CreateResFmt(@RsSelectionIndexOutOfBounds, [Index]);
+      {$TYPEDADDRESS ON}
     Result := FItems[Index];
   end;
 end;
@@ -629,7 +616,7 @@ var
   Format: TFormatEtc;
   I: Integer;
   Selection: PDsSelection;
-  HR: HResult;
+  HR: HRESULT;
 begin
   FreeSelection;
   Format.cfFormat := RegisterClipboardFormat(CFSTR_DSOP_DS_SELECTION_LIST);
@@ -640,14 +627,15 @@ begin
   FillChar(FMedium, SizeOf(FMedium), 0);
   FMedium.tymed := TYMED_HGLOBAL;
   HR := DataObj.GetData(Format, FMedium);
-  if SUCCEEDED(HR) then
+  if Succeeded(HR) then
   begin
     FSelections := GlobalLock(FMedium.hGlobal);
     SetLength(FItems, FSelections^.cItems);
     for I := 0 to FSelections^.cItems - 1 do
     begin
-{$R-}Selection := @FSelections^.aDsSelection[I];
-{$R+}
+      {$R-}
+      Selection := @FSelections^.aDsSelection[I];
+      {$R+}
       FItems[I] := TObjectPickerSelection.Create(Selection,
         FSelections^.cFetchedAttributes);
     end;
@@ -656,7 +644,7 @@ begin
     OleCheck(HR);
 end;
 
-{ TObjectPicker }
+//=== TJvObjectPickerDialog ==================================================
 
 constructor TJvObjectPickerDialog.Create(AOwner: TComponent);
 begin
@@ -675,14 +663,15 @@ begin
   FScopes.Free;
   FAttributes.Free;
   FObjectPicker := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvObjectPickerDialog.Execute: Boolean;
 var
   InitInfo: TDsOpInitInfo;
   ScopesInitInfo: array of TDsOpScopeInitInfo;
-  Attrs: array of WideString;
+  Attrs: array of PWideChar;
+  AttrStrs: array of WideString;
   HR: HRESULT;
   DataObj: IDataObject;
 
@@ -696,8 +685,12 @@ var
     else
     begin
       SetLength(Attrs, Attributes.Count);
+      SetLength(AttrStrs, Attributes.Count);
       for I := 0 to Attributes.Count - 1 do
-        Attrs[I] := WideString(Attributes[I]);
+      begin
+        AttrStrs[I] := WideString(Attributes[I]);
+        Attrs[I] := PWideChar(AttrStrs[I]);
+      end;
       InitInfo.apwzAttributeNames := @Attrs[0];
     end;
   end;

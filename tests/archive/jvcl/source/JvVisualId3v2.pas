@@ -28,13 +28,12 @@ Known Issues:
 
 unit JvVisualId3v2;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, extctrls,
-  Dialogs, JPEG, ShellApi, comctrls, stdctrls, Menus, extdlgs, JvId3v2, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  Dialogs, ShellApi, ComCtrls, StdCtrls, Menus, ExtDlgs,
+  JvId3v2, JVCLVer;
 
 type
   TJvPInformation = class(TPersistent)
@@ -325,6 +324,8 @@ type
 
   TJvVisualId3v2 = class(TWinControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
+
     FId3v2: TJvId3v2;
     FPhotosTypes: TStringList;
     FDatas: TJvPId3v2Editor;
@@ -418,7 +419,6 @@ type
     FText2Sheet: TTabSheet;
     FText3Sheet: TTabSheet;
     FText4Sheet: TTabSheet;
-    FAboutJVCL: TJVCLAboutInfo;
 
     procedure CreateControls;
     procedure CreateMenu;
@@ -461,13 +461,11 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvVisualId3v2
-///////////////////////////////////////////////////////////
+//=== TJvVisualId3v2 =========================================================
 
 constructor TJvVisualId3v2.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Width := 430;
   Height := 300;
   Parent := TWinControl(AOwner);
@@ -493,11 +491,21 @@ begin
   FTreeEdit.FParent := Self;
 end;
 
-{**************************************************}
+destructor TJvVisualId3v2.Destroy;
+begin
+  FTreeView.Free;
+  FPageControl.Free;
+  FId3v2.Free;
+  FPhotosTypes.Free;
+  FDatas.Free;
+  FTreeEdit.Free;
+
+  inherited Destroy;
+end;
 
 procedure TJvVisualId3v2.CreateControls;
 var
-  it: TMenuItem;
+  It: TMenuItem;
 begin
   FTreeView := TTreeView.Create(Self);
   FTreeView.Parent := Self;
@@ -513,21 +521,20 @@ begin
 
   FImagePopup := TPopupMenu.Create(Self);
 
-  it := TMenuItem.Create(FImagePopup);
-  it.Caption := '&Save...';
-  it.OnClick := SaveImage;
-  FImagePopup.Items.Add(it);
+  It := TMenuItem.Create(FImagePopup);
+  It.Caption := '&Save...';
+  It.OnClick := SaveImage;
+  FImagePopup.Items.Add(It);
 
-  it := TMenuItem.Create(FImagePopup);
-  it.Caption := 'Stretch';
-  it.OnClick := StretchImage;
-  FImagePopup.Items.Add(it);
+  It := TMenuItem.Create(FImagePopup);
+  It.Caption := 'Stretch';
+  It.OnClick := StretchImage;
+  FImagePopup.Items.Add(It);
 end;
-
-{**************************************************}
 
 procedure TJvVisualId3v2.CreateMenu;
 var
+  I: Integer;
   Node: TTreeNode;
 begin
   Node := FTreeView.Items.AddChild(nil, 'Informations');
@@ -535,15 +542,11 @@ begin
   FTreeView.Items.AddChild(nil, 'Misc');
   FTreeView.Items.AddChild(nil, 'Photos');
   Node := FTreeView.Items.AddChild(nil, 'Texts');
-  FTreeView.Items.AddChild(Node, 'Part 1');
-  FTreeView.Items.AddChild(Node, 'Part 2');
-  FTreeView.Items.AddChild(Node, 'Part 3');
-  FTreeView.Items.AddChild(Node, 'Part 4');
+  for I := 1 to 4 do
+    FTreeView.Items.AddChild(Node, Format('Part %d', [I]));
   FTreeView.Items.AddChild(nil, 'Urls');
   FTreeView.OnChange := TreeChange;
 end;
-
-{**************************************************}
 
 procedure TJvVisualId3v2.CreatePages;
 
@@ -560,19 +563,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FInfoSheet) do
       begin
         Parent := FInfoSheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -580,8 +583,8 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
@@ -621,19 +624,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FUrlSheet) do
       begin
         Parent := FUrlSheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -641,8 +644,8 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
@@ -776,19 +779,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FMiscSheet) do
       begin
         Parent := FMiscSheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -796,8 +799,8 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
@@ -865,19 +868,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FText1Sheet) do
       begin
         Parent := FText1Sheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -885,19 +888,19 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateCombo2(vTop: Integer): TComboBox;
+    function CreateCombo2(ATop: Integer): TComboBox;
     begin
       Result := TComboBox.Create(FPanel);
       with Result do
       begin
         Parent := FPanel;
         Left := 6;
-        Top := vTop;
+        Top := ATop;
         Width := FPanel.Width - 12;
         Style := csDropDownList;
       end;
@@ -949,19 +952,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FText2Sheet) do
       begin
         Parent := FText2Sheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -969,19 +972,19 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateCombo2(vTop: Integer): TComboBox;
+    function CreateCombo2(ATop: Integer): TComboBox;
     begin
       Result := TComboBox.Create(FPanel);
       with Result do
       begin
         Parent := FPanel;
         Left := 6;
-        Top := vTop;
+        Top := ATop;
         Width := FPanel.Width - 12;
         Style := csDropDownList;
       end;
@@ -1033,19 +1036,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FText3Sheet) do
       begin
         Parent := FText3Sheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -1053,19 +1056,19 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateCombo2(vTop: Integer): TComboBox;
+    function CreateCombo2(ATop: Integer): TComboBox;
     begin
       Result := TComboBox.Create(FPanel);
       with Result do
       begin
         Parent := FPanel;
         Left := 6;
-        Top := vTop;
+        Top := ATop;
         Width := FPanel.Width - 12;
         Style := csDropDownList;
       end;
@@ -1117,19 +1120,19 @@ procedure TJvVisualId3v2.CreatePages;
   var
     FPanel: TPanel;
 
-    procedure CreateLabel1(vTop: Integer; vCaption: string);
+    procedure CreateLabel1(ATop: Integer; ACaption: string);
     begin
       with TLabel.Create(FText4Sheet) do
       begin
         Parent := FText4Sheet;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateLabel2(vTop: Integer; vCaption: string): TLabel;
+    function CreateLabel2(ATop: Integer; ACaption: string): TLabel;
     begin
       Result := TLabel.Create(FPanel);
       with Result do
@@ -1137,19 +1140,19 @@ procedure TJvVisualId3v2.CreatePages;
         Parent := FPanel;
         AutoSize := True;
         Left := 6;
-        Top := vTop;
-        Caption := vCaption;
+        Top := ATop;
+        Caption := ACaption;
       end;
     end;
 
-    function CreateCombo2(vTop: Integer): TComboBox;
+    function CreateCombo2(ATop: Integer): TComboBox;
     begin
       Result := TComboBox.Create(FPanel);
       with Result do
       begin
         Parent := FPanel;
         Left := 6;
-        Top := vTop;
+        Top := ATop;
         Width := FPanel.Width - 12;
         Style := csDropDownList;
       end;
@@ -1208,32 +1211,14 @@ begin
   FPageControl.ActivePage := FInfoSheet;
 end;
 
-{**************************************************}
-
-destructor TJvVisualId3v2.Destroy;
-begin
-  FTreeView.Free;
-  FPageControl.Free;
-  FId3v2.Free;
-  FPhotosTypes.Free;
-  FDatas.Free;
-  FTreeEdit.Free;
-
-  inherited;
-end;
-
-{**************************************************}
-
 function TJvVisualId3v2.GetFileName: TFileName;
 begin
   Result := FId3v2.FileName;
 end;
 
-{**************************************************}
-
 procedure TJvVisualId3v2.PhotoChange(Sender: TObject);
 var
-  i: Integer;
+  I: Integer;
 
   procedure SetIt(Value: TPicture; Text: string);
   begin
@@ -1246,37 +1231,57 @@ begin
     SetIt(nil, '')
   else
   begin
-    i := FPhotosTypes.IndexOf(FPhotoTypes.Items[FPhotoTypes.ItemIndex]);
-    if FPhotoTypes.Tag = i then
+    I := FPhotosTypes.IndexOf(FPhotoTypes.Items[FPhotoTypes.ItemIndex]);
+    if FPhotoTypes.Tag = I then
       Exit;
-    FPhotoTypes.Tag := i;
-    case i of
-      0: SetIt(FId3v2.Images.Pictures.Artist, FId3v2.Images.Infos.Artist);
-      1: SetIt(FId3v2.Images.Pictures.Band, FId3v2.Images.Infos.Band);
-      2: SetIt(FId3v2.Images.Pictures.BandLogo, FId3v2.Images.Infos.BandLogo);
-      3: SetIt(FId3v2.Images.Pictures.ColouredFish, FId3v2.Images.Infos.ColouredFish);
-      4: SetIt(FId3v2.Images.Pictures.Composer, FId3v2.Images.Infos.Composer);
-      5: SetIt(FId3v2.Images.Pictures.Conductor, FId3v2.Images.Infos.Conductor);
-      6: SetIt(FId3v2.Images.Pictures.CoverBack, FId3v2.Images.Infos.CoverBack);
-      7: SetIt(FId3v2.Images.Pictures.CoverFront, FId3v2.Images.Infos.CoverFront);
-      8: SetIt(FId3v2.Images.Pictures.DuringPerformance, FId3v2.Images.Infos.DuringPerformance);
-      9: SetIt(FId3v2.Images.Pictures.DuringRecording, FId3v2.Images.Infos.DuringRecording);
-      10: SetIt(FId3v2.Images.Pictures.FileIcon, FId3v2.Images.Infos.FileIcon);
-      11: SetIt(FId3v2.Images.Pictures.Illustration, FId3v2.Images.Infos.Illustration);
-      12: SetIt(FId3v2.Images.Pictures.LeadArtist, FId3v2.Images.Infos.LeadArtist);
-      13: SetIt(FId3v2.Images.Pictures.Leaflet, FId3v2.Images.Infos.Leaflet);
-      14: SetIt(FId3v2.Images.Pictures.Lyricist, FId3v2.Images.Infos.Lyricist);
-      15: SetIt(FId3v2.Images.Pictures.Media, FId3v2.Images.Infos.Media);
-      16: SetIt(FId3v2.Images.Pictures.MovieCapture, FId3v2.Images.Infos.MovieCapture);
-      17: SetIt(FId3v2.Images.Pictures.Other, FId3v2.Images.Infos.Other);
-      18: SetIt(FId3v2.Images.Pictures.OtherIcon, FId3v2.Images.Infos.OtherIcon);
-      19: SetIt(FId3v2.Images.Pictures.PublisherLogo, FId3v2.Images.Infos.PublisherLogo);
-      20: SetIt(FId3v2.Images.Pictures.RecordingLocation, FId3v2.Images.Infos.RecordingLocation);
-    end;
+    FPhotoTypes.Tag := I;
+    with FId3v2.Images do
+      case I of
+        0:
+          SetIt(Pictures.Artist, Infos.Artist);
+        1:
+          SetIt(Pictures.Band, Infos.Band);
+        2:
+          SetIt(Pictures.BandLogo, Infos.BandLogo);
+        3:
+          SetIt(Pictures.ColouredFish, Infos.ColouredFish);
+        4:
+          SetIt(Pictures.Composer, Infos.Composer);
+        5:
+          SetIt(Pictures.Conductor, Infos.Conductor);
+        6:
+          SetIt(Pictures.CoverBack, Infos.CoverBack);
+        7:
+          SetIt(Pictures.CoverFront, Infos.CoverFront);
+        8:
+          SetIt(Pictures.DuringPerformance, Infos.DuringPerformance);
+        9:
+          SetIt(Pictures.DuringRecording, Infos.DuringRecording);
+        10:
+          SetIt(Pictures.FileIcon, Infos.FileIcon);
+        11:
+          SetIt(Pictures.Illustration, Infos.Illustration);
+        12:
+          SetIt(Pictures.LeadArtist, Infos.LeadArtist);
+        13:
+          SetIt(Pictures.Leaflet, Infos.Leaflet);
+        14:
+          SetIt(Pictures.Lyricist, Infos.Lyricist);
+        15:
+          SetIt(Pictures.Media, Infos.Media);
+        16:
+          SetIt(Pictures.MovieCapture, Infos.MovieCapture);
+        17:
+          SetIt(Pictures.Other, Infos.Other);
+        18:
+          SetIt(Pictures.OtherIcon, Infos.OtherIcon);
+        19:
+          SetIt(Pictures.PublisherLogo, Infos.PublisherLogo);
+        20:
+          SetIt(Pictures.RecordingLocation, Infos.RecordingLocation);
+      end;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvVisualId3v2.SaveImage(Sender: TObject);
 begin
@@ -1294,11 +1299,9 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvVisualId3v2.SetFileName(const Value: TFileName);
 var
-  i: Integer;
+  I: Integer;
 
   function MediaTypeToStr(Value: TJvID3MediaType): string;
   begin
@@ -1555,9 +1558,9 @@ begin
   SetUrl(FPayment, FId3v2.Web.Payment);
   SetUrl(FPublishers, FId3v2.Web.Publishers);
   FUserD.Items.Clear;
-  for i := 0 to FId3v2.UserDefinedWeb.ItemCount - 1 do
+  for I := 0 to FId3v2.UserDefinedWeb.ItemCount - 1 do
   begin
-    FId3v2.UserDefinedWeb.ItemIndex := i;
+    FId3v2.UserDefinedWeb.ItemIndex := I;
     FUserD.Items.Add(FId3v2.UserDefinedWeb.URL);
   end;
   if FUserD.items.Count > 0 then
@@ -1565,9 +1568,9 @@ begin
 
   //Involved
   FInvolved.Items.Clear;
-  for i := 0 to FId3v2.InvolvedPeople.ItemCount - 1 do
+  for I := 0 to FId3v2.InvolvedPeople.ItemCount - 1 do
   begin
-    FId3v2.InvolvedPeople.ItemIndex := i;
+    FId3v2.InvolvedPeople.ItemIndex := I;
     FInvolved.Items.Add(FId3v2.InvolvedPeople.Person + ' (' + FId3v2.InvolvedPeople.Job + ')');
   end;
   if FInvolved.Items.Count > 0 then
@@ -1576,7 +1579,7 @@ begin
   FPrice.Caption := FId3v2.Owner.Price;
   FDatePur.Caption := DateToStr(FId3v2.Owner.DatePurchased);
 
-  //Text part1
+  //Text part 1
   FCreation.Caption := FId3v2.Texts.Date;
   FTitle.Caption := FId3v2.Texts.Album;
   FSubTitle.Caption := FId3v2.Texts.SubTitle;
@@ -1622,7 +1625,7 @@ begin
 
   //Text part 4
   FOAlbum.Caption := FId3v2.Texts.OriginalTitle;
-  FOArtists.Text := FId3v2.Texts.OriginalArtist.Text;
+  FOArtists.Text := FId3v2.Texts.OriginalArtists.Text;
   if FOArtists.Items.Count > 0 then
     FOArtists.ItemIndex := 0;
   FOLyricists.Text := FId3v2.Texts.OriginalLyricists.Text;
@@ -1635,9 +1638,9 @@ begin
   FRadioOwner.Caption := FId3v2.Texts.InternetRadioOwner;
 
   FUserTexts.Clear;
-  for i := 0 to FId3v2.UserDefinedText.ItemCount - 1 do
+  for I := 0 to FId3v2.UserDefinedText.ItemCount - 1 do
   begin
-    FId3v2.UserDefinedText.ItemIndex := i;
+    FId3v2.UserDefinedText.ItemIndex := I;
     FUserTexts.Items.Add(FId3v2.UserDefinedText.Value + ' (' + FId3v2.UserDefinedText.Description + ')');
   end;
   if FUserTexts.Items.Count > 0 then
@@ -1649,40 +1652,30 @@ begin
   FUserMail.Caption := FId3v2.Popularimeter.UserEmail;
 end;
 
-{**************************************************}
-
 procedure TJvVisualId3v2.StretchImage(Sender: TObject);
 begin
   (FImagePopup.PopupComponent as TImage).Stretch := not (FImagePopup.PopupComponent as TImage).Stretch;
 end;
 
-{**************************************************}
-
 procedure TJvVisualId3v2.TreeChange(Sender: TObject; Node: TTreeNode);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to FPageControl.PageCount - 1 do
-    if FPageControl.Pages[i].Caption = Node.Text then
-      FPageControl.ActivePage := FPageControl.Pages[i];
+  for I := 0 to FPageControl.PageCount - 1 do
+    if FPageControl.Pages[I].Caption = Node.Text then
+      FPageControl.ActivePage := FPageControl.Pages[I];
 end;
-
-{**************************************************}
 
 procedure SurfTo(Url: string);
 begin
   ShellExecute(0, nil, PChar(Url), nil, nil, SW_NORMAL);
 end;
 
-{**************************************************}
-
 procedure TJvVisualId3v2.UrlClick(Sender: TObject);
 begin
   with (Sender as TLabel) do
     SurfTo(Caption);
 end;
-
-{**************************************************}
 
 procedure TJvVisualId3v2.UrlCombo(Sender: TObject);
 begin
@@ -1691,19 +1684,16 @@ begin
       SurfTo(Items[ItemIndex]);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPId3v2Editor
-///////////////////////////////////////////////////////////
+//=== TJvPId3v2Editor ========================================================
 
 constructor TJvPId3v2Editor.Create;
 begin
+  inherited Create;
   FInformations := TJvPInformation.Create;
   FMisc := TJvPMisc.Create;
   FTexts := TJvPTexts.Create;
   FUrls := TJvPUrls.Create;
 end;
-
-{**************************************************}
 
 destructor TJvPId3v2Editor.Destroy;
 begin
@@ -1711,168 +1701,122 @@ begin
   FMisc.Free;
   FTexts.Free;
   FUrls.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPInformation
-///////////////////////////////////////////////////////////
+//=== TJvPInformation ========================================================
 
 function TJvPInformation.GetExperimental: string;
 begin
   Result := (FParent as TJvVisualId3v2).FExperimental.Caption;
 end;
 
-{**************************************************}
-
 function TJvPInformation.GetExtended: string;
 begin
   Result := (FParent as TJvVisualId3v2).FExtended.Caption;
 end;
-
-{**************************************************}
 
 function TJvPInformation.GetFileName: string;
 begin
   Result := (FParent as TJvVisualId3v2).FFileName.Caption;
 end;
 
-{**************************************************}
-
 function TJvPInformation.GetPresent: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPresent.Caption;
 end;
-
-{**************************************************}
 
 function TJvPInformation.GetSize: string;
 begin
   Result := (FParent as TJvVisualId3v2).FTagSize.Caption;
 end;
 
-{**************************************************}
-
 function TJvPInformation.GetSynchro: string;
 begin
   Result := (FParent as TJvVisualId3v2).FUnsynchro.Caption;
 end;
-
-{**************************************************}
 
 function TJvPInformation.GetTagVersion: string;
 begin
   Result := (FParent as TJvVisualId3v2).FTagVersion.Caption;
 end;
 
-{**************************************************}
-
 procedure TJvPInformation.SetExperimental(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FExperimental.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPInformation.SetExtended(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FExtended.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPInformation.SetFileName(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FFileName.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPInformation.SetPresent(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPresent.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPInformation.SetSize(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FTagSize.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPInformation.SetSynchro(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FUnsynchro.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPInformation.SetTagVersion(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FTagVersion.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPUrls
-///////////////////////////////////////////////////////////
+//=== TJvPUrls ===============================================================
 
 function TJvPUrls.GetArtistPage: string;
 begin
   Result := (FParent as TJvVisualId3v2).FArtistPage.Caption;
 end;
 
-{**************************************************}
-
 function TJvPUrls.GetAudioFile: string;
 begin
   Result := (FParent as TJvVisualId3v2).FAudioFile.Caption;
 end;
-
-{**************************************************}
 
 function TJvPUrls.GetAudioSource: string;
 begin
   Result := (FParent as TJvVisualId3v2).FAudioSource.Caption;
 end;
 
-{**************************************************}
-
 function TJvPUrls.GetCommercial: string;
 begin
   Result := (FParent as TJvVisualId3v2).FCommercial.Caption;
 end;
-
-{**************************************************}
 
 function TJvPUrls.GetCopyright: string;
 begin
   Result := (FParent as TJvVisualId3v2).FCommercial.Caption;
 end;
 
-{**************************************************}
-
 function TJvPUrls.GetPayment: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPayment.Caption;
 end;
-
-{**************************************************}
 
 function TJvPUrls.GetPublishers: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPublishers.Caption;
 end;
 
-{**************************************************}
-
 function TJvPUrls.GetRadioStation: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRadioStation.Caption;
 end;
-
-{**************************************************}
 
 function TJvPUrls.GetUserDefined: TStringList;
 begin
@@ -1880,79 +1824,59 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FUserD.Items.Text;
 end;
 
-{**************************************************}
-
 procedure TJvPUrls.SetArtistPage(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FArtistPage.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPUrls.SetAudioFile(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FAudioFile.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPUrls.SetAudioSource(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FAudioSource.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPUrls.SetCommercial(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FCommercial.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPUrls.SetCopyright(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FCopyright.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPUrls.SetPayment(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPayment.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPUrls.SetPublishers(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPublishers.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPUrls.SetRadioStation(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRadioStation.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPUrls.SetUserDefined(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FUserD.Items.Text := Value.Text;
 end;
-
-///////////////////////////////////////////////////////////
-// TJvPMisc
-///////////////////////////////////////////////////////////
 
 function TJvPMisc.GetCounter: string;
 begin
   Result := (FParent as TJvVisualId3v2).FCounter.Caption;
 end;
 
-{**************************************************}
+//=== TJvPMisc ===============================================================
+
+// (rom) not a good idea to create s TStringList
 
 function TJvPMisc.GetInvolved: TStringList;
 begin
@@ -1960,103 +1884,76 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FInvolved.Text;
 end;
 
-{**************************************************}
-
 function TJvPMisc.GetPrice: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPrice.Caption;
 end;
-
-{**************************************************}
 
 function TJvPMisc.GetPurchased: string;
 begin
   Result := (FParent as TJvVisualId3v2).FDatePur.Caption;
 end;
 
-{**************************************************}
-
 function TJvPMisc.GetRating: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRating.Caption;
 end;
-
-{**************************************************}
 
 function TJvPMisc.GetSeller: string;
 begin
   Result := (FParent as TJvVisualId3v2).FSeller.Caption;
 end;
 
-{**************************************************}
-
 function TJvPMisc.GetUserEmail: string;
 begin
   Result := (FParent as TJvVisualId3v2).FUserMail.Caption;
 end;
-
-{**************************************************}
 
 procedure TJvPMisc.SetCounter(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FCounter.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPMisc.SetInvolved(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FInvolved.Text := Value.Text;
 end;
-
-{**************************************************}
 
 procedure TJvPMisc.SetPrice(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPrice.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPMisc.SetPurchased(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FDatePur.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPMisc.SetRating(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRating.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPMisc.SetSeller(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FSeller.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPMisc.SetUserEmail(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FUserMail.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPTexts
-///////////////////////////////////////////////////////////
+//=== TJvPTexts ==============================================================
 
 constructor TJvPTexts.Create;
 begin
+  inherited Create;
   FJvText1 := TJvPText1.Create;
   FJvText2 := TJvPText2.Create;
   FJvText3 := TJvPText3.Create;
   FJvText4 := TJvPText4.Create;
 end;
-
-{**************************************************}
 
 destructor TJvPTexts.Destroy;
 begin
@@ -2064,12 +1961,10 @@ begin
   FJvText2.Free;
   FJvText3.Free;
   FJvText4.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPText1
-///////////////////////////////////////////////////////////
+//=== TJvPText1 ==============================================================
 
 function TJvPText1.GetArtists: TStringList;
 begin
@@ -2077,14 +1972,10 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FArtists.Text;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetBand: string;
 begin
   Result := (FParent as TJvVisualId3v2).FBand.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText1.GetComposers: TStringList;
 begin
@@ -2092,21 +1983,15 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FPublishersLst.Text;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetConductor: string;
 begin
   Result := (FParent as TJvVisualId3v2).FConductor.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetCreation: string;
 begin
   Result := (FParent as TJvVisualId3v2).FCreation.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText1.GetLanguages: TStringList;
 begin
@@ -2114,412 +1999,297 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FLanguages.Text;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetLyricists: TStringList;
 begin
   Result := TStringList.Create;
   Result.Text := (FParent as TJvVisualId3v2).FLyricists.Text;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetRemixed: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRemixed.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText1.GetSubTitle: string;
 begin
   Result := (FParent as TJvVisualId3v2).FSubTitle.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText1.GetTitle: string;
 begin
   Result := (FParent as TJvVisualId3v2).FTitle.Caption;
 end;
-
-{**************************************************}
 
 procedure TJvPText1.SetArtists(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FArtists.Text := Value.Text;
 end;
 
-{**************************************************}
-
 procedure TJvPText1.SetBand(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FBand.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText1.SetComposers(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FPublishersLst.Text := Value.Text;
 end;
 
-{**************************************************}
-
 procedure TJvPText1.SetConductor(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FConductor.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText1.SetCreation(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FCreation.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText1.SetLanguages(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FLanguages.Text := Value.Text;
 end;
-
-{**************************************************}
 
 procedure TJvPText1.SetLyricists(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FLyricists.Text := Value.Text;
 end;
 
-{**************************************************}
-
 procedure TJvPText1.SetRemixed(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRemixed.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText1.SetSubTitle(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FSubTitle.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText1.SetTitle(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FTitle.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPText2
-///////////////////////////////////////////////////////////
+//=== TJvPText2 ==============================================================
 
 function TJvPText2.GetAlbum: string;
 begin
   Result := (FParent as TJvVisualId3v2).FAlbum.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText2.GetContentType: string;
 begin
   Result := (FParent as TJvVisualId3v2).FContent.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText2.GetDate: string;
 begin
   Result := (FParent as TJvVisualId3v2).FDate.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText2.GetISRC: string;
 begin
   Result := (FParent as TJvVisualId3v2).FISRC.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText2.GetMediaType: string;
 begin
   Result := (FParent as TJvVisualId3v2).FMediaType.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText2.GetPart: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPart.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText2.GetRecorded: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRecordedAt.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText2.GetTime: string;
 begin
   Result := (FParent as TJvVisualId3v2).FTime.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText2.GetTrack: string;
 begin
   Result := (FParent as TJvVisualId3v2).FTrack.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText2.GetYear: string;
 begin
   Result := (FParent as TJvVisualId3v2).FYear.Caption;
 end;
-
-{**************************************************}
 
 procedure TJvPText2.SetAlbum(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FAlbum.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText2.SetContentType(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FContent.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText2.SetDate(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FDate.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText2.SetISRC(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FISRC.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText2.SetMediaType(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FMediaType.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText2.SetPart(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPart.Caption := Value;
 end;
-{**************************************************}
 
 procedure TJvPText2.SetRecorded(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRecordedAt.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText2.SetTime(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FTime.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText2.SetTrack(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FTrack.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText2.SetYear(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FYear.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPText3
-///////////////////////////////////////////////////////////
+//=== TJvPText3 ==============================================================
 
 function TJvPText3.GetBPM: string;
 begin
   Result := (FParent as TJvVisualId3v2).FBPM.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText3.GetCopyright: string;
 begin
   Result := (FParent as TJvVisualId3v2).FCopyright.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText3.GetDelay: string;
 begin
   Result := (FParent as TJvVisualId3v2).FDelay.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText3.GetEncodedBy: string;
 begin
   Result := (FParent as TJvVisualId3v2).FEncoded.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText3.GetEncoder: string;
 begin
   Result := (FParent as TJvVisualId3v2).FEncoder.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText3.GetInitialKey: string;
 begin
   Result := (FParent as TJvVisualId3v2).FInitialKey.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText3.GetLength: string;
 begin
   Result := (FParent as TJvVisualId3v2).FLength.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText3.GetOFileName: string;
 begin
   Result := (FParent as TJvVisualId3v2).FOFileName.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText3.GetPublisher: string;
 begin
   Result := (FParent as TJvVisualId3v2).FPublisher.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText3.GetSize: string;
 begin
   Result := (FParent as TJvVisualId3v2).FSize.Caption;
 end;
-
-{**************************************************}
 
 procedure TJvPText3.SetBPM(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FBPM.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText3.SetCopyright(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FCopyright.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText3.SetDelay(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FDelay.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText3.SetEncodedBy(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FEncoded.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText3.SetEncoder(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FEncoder.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText3.SetInitialKey(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FInitialKey.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText3.SetLength(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FLength.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText3.SetOFileName(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FOFileName.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText3.SetPublisher(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FPublisher.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText3.SetSize(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FSize.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPText4
-///////////////////////////////////////////////////////////
+//=== TJvPText4 ==============================================================
 
 function TJvPText4.GetFileOwner: string;
 begin
   Result := (FParent as TJvVisualId3v2).FFileOwner.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetFileType: string;
 begin
   Result := (FParent as TJvVisualId3v2).FFileType.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetOAlbum: string;
 begin
   Result := (FParent as TJvVisualId3v2).FOAlbum.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText4.GetOArtists: TStringList;
 begin
@@ -2527,29 +2297,21 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FOArtists.Text;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetOLyricists: TStringList;
 begin
   Result := TStringList.Create;
   Result.Text := (FParent as TJvVisualId3v2).FOLyricists.Text;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetRadioName: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRadioName.Caption;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetRadioOwner: string;
 begin
   Result := (FParent as TJvVisualId3v2).FRadioOwner.Caption;
 end;
-
-{**************************************************}
 
 function TJvPText4.GetUserDefined: TStringList;
 begin
@@ -2557,128 +2319,92 @@ begin
   Result.Text := (FParent as TJvVisualId3v2).FUserTexts.Text;
 end;
 
-{**************************************************}
-
 function TJvPText4.GetYear: string;
 begin
   Result := (FParent as TJvVisualId3v2).FOYear.Caption;
 end;
-
-{**************************************************}
 
 procedure TJvPText4.SetFileOwner(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FFileOwner.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText4.SetFileType(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FFileType.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText4.SetOAlbum(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FOAlbum.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText4.SetOArtists(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FOArtists.Text := Value.Text;
 end;
-
-{**************************************************}
 
 procedure TJvPText4.SetOLyricists(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FOLyricists.Text := Value.Text;
 end;
 
-{**************************************************}
-
 procedure TJvPText4.SetRadioName(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRadioName.Caption := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPText4.SetRadioOwner(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FRadioOwner.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPText4.SetUserDefined(const Value: TStringList);
 begin
   (FParent as TJvVisualId3v2).FUserTexts.Text := Value.Text;
 end;
-
-{**************************************************}
 
 procedure TJvPText4.SetYear(const Value: string);
 begin
   (FParent as TJvVisualId3v2).FOYear.Caption := Value;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPId3v2TreeView
-///////////////////////////////////////////////////////////
+//=== TJvPId3v2TreeView ======================================================
 
 function TJvPId3v2TreeView.GetHideSelection: Boolean;
 begin
   Result := (FParent as TJvVisualId3v2).FTreeView.HideSelection;
 end;
 
-{**************************************************}
-
 function TJvPId3v2TreeView.GetHotTrack: Boolean;
 begin
   Result := (FParent as TJvVisualId3v2).FTreeView.HotTrack;
 end;
-
-{**************************************************}
 
 function TJvPId3v2TreeView.GetReadOnly: Boolean;
 begin
   Result := (FParent as TJvVisualId3v2).FTreeView.ReadOnly;
 end;
 
-{**************************************************}
-
 function TJvPId3v2TreeView.GetWidth: Integer;
 begin
   Result := (FParent as TJvVisualId3v2).FTreeView.Width;
 end;
-
-{**************************************************}
 
 procedure TJvPId3v2TreeView.SetHideSelection(const Value: Boolean);
 begin
   (FParent as TJvVisualId3v2).FTreeView.HideSelection := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPId3v2TreeView.SetHotTrack(const Value: Boolean);
 begin
   (FParent as TJvVisualId3v2).FTreeView.HotTrack := Value;
 end;
 
-{**************************************************}
-
 procedure TJvPId3v2TreeView.SetReadOnly(const Value: Boolean);
 begin
   (FParent as TJvVisualId3v2).FTreeView.ReadOnly := Value;
 end;
-
-{**************************************************}
 
 procedure TJvPId3v2TreeView.SetWidth(const Value: Integer);
 begin
@@ -2686,3 +2412,4 @@ begin
 end;
 
 end.
+

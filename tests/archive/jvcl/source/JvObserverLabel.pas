@@ -31,32 +31,29 @@ unit JvObserverLabel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JvObserverMessages, JVCLVer;
+  SysUtils, Classes, Controls, StdCtrls,
+  JvObserverMessages, JVCLVer;
 
 type
   TJvObserverLabel = class(TLabel)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    { Private declarations }
-    procedure UMObservibleChanged(var msg: TUMObservibleChanged);
-      message UM_OBSERVIBLE_CHANGED;
+    procedure UMObservibleChanged(var Msg: TUMObservibleChanged); message UM_OBSERVIBLE_CHANGED;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
-{ TJvObserverLabel }
-
-procedure TJvObserverLabel.UMObservibleChanged(var msg: TUMObservibleChanged);
+procedure TJvObserverLabel.UMObservibleChanged(var Msg: TUMObservibleChanged);
 const
-  checkstrings: array[Boolean] of string = ('unchecked', 'checked');
+  CheckStrings: array [Boolean] of PChar =
+    ('unchecked', 'checked');
 begin
-  if msg.sender is TCheckbox then
-    with TCheckbox(msg.sender) do
-      Self.Caption := Format('Checkbox %s is %s',
-        [Name, Checkstrings[Checked]]);
+  if Msg.Sender is TCheckBox then
+    with TCheckbox(Msg.Sender) do
+      Self.Caption := Format('Checkbox %s is %s', [Name, CheckStrings[Checked]]);
 end;
 
 end.
+

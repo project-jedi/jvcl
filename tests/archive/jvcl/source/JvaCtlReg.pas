@@ -39,26 +39,26 @@ implementation
 uses            
   {$IFDEF COMPLIB_VCL}
   Windows,
-  {$ENDIF}
-  Classes, JvCtlConst, JvRegAuto, JvaDsgn, JvDsgnIntf,
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_VCL}
   SysUtils, Controls,
-  JvWndProcHook, JvRegAutoEditor, JvHtControls, JvDlg,
+  JvRegAutoEditor, JvHtControls, JvDlg,
   JvButtons, JvComponentPanel, JvScrollMax,
   JvEditor, JvHLEditor, JvHLEdPropDlg, JvaScrollText, JvHTHintEditor,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPILER3_UP}
   JvIDEZoom,
-  {$ENDIF}
+  {$ENDIF COMPILER3_UP}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, PropertyCategories
+  DesignIntf, DesignEditors, PropertyCategories,
   {$IFDEF COMPLIB_VCL}
-  , VCLEditors
-  {$ENDIF}
+  VCLEditors,
+  {$ENDIF COMPLIB_VCL}
   {$ELSE}
-  DsgnIntf
-  {$ENDIF}
-  ;
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  Classes,
+  JvRegAuto;
 
 {$R ..\resources\ractl.dcr}
 
@@ -91,7 +91,7 @@ type
     procedure Edit; override;
   end;
 
-{ TJvScrollMaxEditor }
+//=== TJvScrollMaxEditor =====================================================
 
 function TJvScrollMaxEditor.GetVerbCount: Integer;
 begin
@@ -119,7 +119,7 @@ begin
   // We don't need to add band on double click
 end;
 
-{ TJvHLEdPropDlgEditor }
+//=== TJvHLEdPropDlgEditor ===================================================
 
 function TJvHLEdPropDlgEditor.GetVerbCount: Integer;
 begin
@@ -196,13 +196,13 @@ end;
 
 {$IFDEF COMPILER5}
 
+//=== TJvEditorCategory ======================================================
+
 type
   TJvEditorCategory = class(TPropertyCategory)
   public
     class function Name: string; override;
   end;
-
-{ TEditorCategory }
 
 class function TJvEditorCategory.Name: string;
 begin
@@ -222,7 +222,6 @@ const
 procedure Register;
 begin
   {$IFDEF COMPLIB_VCL}
-
   {JvEditor unit}
   RegisterComponents(cJvCustomPallette, [TJvEditor]);
   {JvHLEditor unit}

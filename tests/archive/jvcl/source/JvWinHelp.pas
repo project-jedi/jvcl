@@ -31,8 +31,8 @@ unit JvWinHelp;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, Menus, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms, Menus,
+  JvTypes, JvComponent;
 
 type
   TJvWinHelp = class(TJvComponent)
@@ -61,37 +61,30 @@ type
 implementation
 
 resourcestring
-  RC_OwnerForm = 'Owner must be of type TForm';
-
-  {**************************************************}
+  RC_OwnerForm = 'Owner must be of type TCustomForm';
 
 constructor TJvWinHelp.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHelpFile := '';
   FOwner := AOwner;
+  // (rom) this is silly
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
   if not (FOwner is TForm) then
     raise EJVCLException.Create(RC_OwnerForm);
 end;
 
-{**************************************************}
-
 destructor TJvWinHelp.Destroy;
 begin
   WinHelp(GetOwnerHandle, GetHelpFile, HELP_QUIT, 0);
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 function TJvWinHelp.ExecuteCommand(MacroCommand: string): Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_COMMAND, Longint(PChar(MacroCommand)));
 end;
-
-{**************************************************}
 
 function TJvWinHelp.GetHelpFile: PChar;
 begin
@@ -101,26 +94,26 @@ begin
     Result := PChar(FHelpFile);
 end;
 
-{**************************************************}
-
 function TJvWinHelp.GetOwnerHandle: THandle;
 begin
   Result := 0;
   if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
     Result := TWinControl(FOwner).Handle
-  else if (Application <> nil) then
+  else
+  if Application <> nil then
   begin
     if (Screen <> nil) and (Screen.ActiveForm <> nil) then
       Result := Screen.ActiveForm.Handle
-    else if Application.MainForm <> nil then
+    else
+    if Application.MainForm <> nil then
       Result := Application.MainForm.Handle
-    else if not (csDestroying in Application.ComponentState) then
+    else
+    if not (csDestroying in Application.ComponentState) then
       Result := Application.Handle;
   end;
 end;
 
-function TJvWinHelp.SetWindowPos(Left, Top, Width, Height,
-  Visibility: Integer): Boolean;
+function TJvWinHelp.SetWindowPos(Left, Top, Width, Height, Visibility: Integer): Boolean;
 var
   HelpInfo: HELPWININFO;
 begin
@@ -130,53 +123,38 @@ begin
   HelpInfo.dx := Width;
   HelpInfo.dy := Height;
   HelpInfo.wMax := Visibility;
-
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_SETWINPOS, Longint(@HelpInfo));
 end;
-
-{**************************************************}
 
 function TJvWinHelp.ShowContents: Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTENTS, 0);
 end;
 
-{**************************************************}
-
 function TJvWinHelp.ShowContextualHelp(Control: TWinControl): Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTEXTPOPUP, Control.HelpContext);
 end;
-
-{**************************************************}
 
 function TJvWinHelp.ShowHelp(Control: TWinControl): Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTEXT, Control.HelpContext);
 end;
 
-{**************************************************}
-
 function TJvWinHelp.ShowHelpOnHelp: Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_HELPONHELP, 0);
 end;
-
-{**************************************************}
 
 function TJvWinHelp.ShowIndex: Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_INDEX, 0);
 end;
 
-{**************************************************}
-
 function TJvWinHelp.ShowKeyword(Keyword: string): Boolean;
 begin
   Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, Longint(PChar(KeyWord)));
 end;
-
-{**************************************************}
 
 function TJvWinHelp.ShowPartialKeyWord(Keyword: string): Boolean;
 begin

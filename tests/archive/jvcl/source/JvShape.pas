@@ -30,22 +30,21 @@ unit JvShape;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  JVCLVer;
 
 type
   TJvShape = class(TShape)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -57,12 +56,11 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Anchors;
     property Constraints;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -86,7 +84,12 @@ type
 
 implementation
 
-{**************************************************}
+constructor TJvShape.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+end;
 
 procedure TJvShape.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -95,8 +98,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvShape.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -104,32 +105,20 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-constructor TJvShape.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FColor := clInfoBk;
-  FOver := False;
-end;
-
-{**************************************************}
-
 procedure TJvShape.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvShape.CMMouseLeave(var Msg: TMessage);
 begin
@@ -143,3 +132,4 @@ begin
 end;
 
 end.
+

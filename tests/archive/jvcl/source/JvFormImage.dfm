@@ -1,6 +1,7 @@
 object FormImg: TFormImg
   Left = 448
   Top = 308
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Image Viewer'
   ClientHeight = 274

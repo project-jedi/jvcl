@@ -12,7 +12,7 @@ The Original Code is: JvGradEdit.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -30,16 +30,14 @@ unit JvGradEdit;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Mask, JvToolEdit, JvGrdCpt,
-    {$IFDEF COMPILER6_UP}
-RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
-{$ELSE}
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, Mask,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
   LibIntf, DsgnIntf,
-{$ENDIF}
-
-
-  JvxCtrls, JvPlacemnt;
+  {$ENDIF}
+  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt;
 
 {$IFNDEF COMPILER4_UP}
 type
@@ -84,7 +82,6 @@ type
     procedure CaptionFontButtonClick(Sender: TObject);
     procedure CheckBoxClick(Sender: TObject);
   private
-    { Private declarations }
     FComponent: TJvxGradientCaption;
     FDesigner: IDesigner;
     FUpdating: Boolean;
@@ -97,13 +94,10 @@ type
     function GetActiveCaption: TJvCaption;
     procedure ApplyChanges;
   public
-    { Public declarations }
     procedure SetGradientCaption(Component: TJvxGradientCaption;
       Designer: IDesigner);
     property ActiveCaption: TJvCaption read GetActiveCaption;
   end;
-
-{ TGradientCaptionEditor }
 
   TGradientCaptionEditor = class(TComponentEditor)
     procedure Edit; override;
@@ -112,39 +106,35 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-{$IFNDEF COMPILER3_UP}
-
-{ TGradientCaptionsProperty }
-
+  {$IFNDEF COMPILER3_UP}
   TGradientCaptionsProperty = class(TClassProperty)
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
-  
-{$ENDIF}
+  {$ENDIF}
 
 function EditGradientCaption(Component: TJvxGradientCaption;
-  Designer: IDesigner): Boolean;
+  ADesigner: IDesigner): Boolean;
 
 implementation
 
-uses JvVCLUtils, JvBoxProcs, JvConst, JvxConst;
+uses
+  JvVCLUtils, JvBoxProcs, JvConst, JvxConst;
 
 {$R *.DFM}
 
-function EditGradientCaption(Component: TJvxGradientCaption; Designer: IDesigner): Boolean;
-  var gce : TGradCaptionsEditor;
+function EditGradientCaption(Component: TJvxGradientCaption; ADesigner: IDesigner): Boolean;
 begin
-  gce := TGradCaptionsEditor.Create(Application);
-  try
-    gce.SetGradientCaption(Component, Designer);
-    Result := gce.ShowModal = mrOk;
-  finally
-    gce.Free;
-  end;
+  with TGradCaptionsEditor.Create(Application) do
+    try
+      SetGradientCaption(Component, ADesigner);
+      Result := ShowModal = mrOk;
+    finally
+      Free;
+    end;
 end;
 
-{ TGradientCaptionEditor }
+//=== TGradientCaptionEditor =================================================
 
 procedure TGradientCaptionEditor.Edit;
 begin
@@ -153,13 +143,16 @@ end;
 
 procedure TGradientCaptionEditor.ExecuteVerb(Index: Integer);
 begin
-  if Index = 0 then Edit;
+  if Index = 0 then
+    Edit;
 end;
 
 function TGradientCaptionEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := srCaptionDesigner
-  else Result := '';
+  if Index = 0 then
+    Result := srCaptionDesigner
+  else
+    Result := '';
 end;
 
 function TGradientCaptionEditor.GetVerbCount: Integer;
@@ -167,9 +160,9 @@ begin
   Result := 1;
 end;
 
-{$IFNDEF COMPILER3_UP}
+//=== TGradientCaptionsProperty ==============================================
 
-{ TGradientCaptionsProperty }
+{$IFNDEF COMPILER3_UP}
 
 function TGradientCaptionsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -184,20 +177,23 @@ end;
 
 {$ENDIF COMPILER3_UP}
 
-{ TGradCaptionsEditor }
+//=== TGradCaptionsEditor ====================================================
 
 procedure TGradCaptionsEditor.UpdateCaptionList(Index: Integer);
 var
   I, Save: Integer;
 begin
-  if Index >= 0 then Save := Index
-  else Save := CaptionList.ItemIndex;
+  if Index >= 0 then
+    Save := Index
+  else
+    Save := CaptionList.ItemIndex;
   CaptionList.Items.BeginUpdate;
   try
     CaptionList.Items.Clear;
     for I := 0 to GradientCaption.Captions.Count - 1 do
       CaptionList.Items.Add(Format('%s[%d]', [srGradientCaptions, I]));
-    if Save < 0 then Save := 0;
+    if Save < 0 then
+      Save := 0;
     if Save >= CaptionList.Items.Count then
       Save := CaptionList.Items.Count - 1;
   finally
@@ -221,8 +217,10 @@ procedure TGradCaptionsEditor.SetGradientCaption(Component: TJvxGradientCaption;
 begin
   FComponent := Component;
   FDesigner := Designer;
-  if Component <> nil then begin
-    with GradientCaption do begin
+  if Component <> nil then
+  begin
+    with GradientCaption do
+    begin
       Active := False;
       Font := Component.Font;
       DefaultFont := Component.DefaultFont;
@@ -234,11 +232,9 @@ begin
       GradientSteps := Component.GradientSteps;
       Captions := Component.Captions;
       if Component.Name <> '' then
-        FormCaption := Format('%s.%s', [Component.Name,
-          srGradientCaptions])
+        FormCaption := Format('%s.%s', [Component.Name, srGradientCaptions])
       else
-        FormCaption := Format('%s.%s', [Component.ClassName,
-          srGradientCaptions]);
+        FormCaption := Format('%s.%s', [Component.ClassName, srGradientCaptions]);
       Active := True;
     end;
   end;
@@ -249,9 +245,11 @@ end;
 procedure TGradCaptionsEditor.ApplyChanges;
 begin
   ReadControls;
-  if Assigned(FComponent) then begin
+  if Assigned(FComponent) then
+  begin
     FComponent.Captions := GradientCaption.Captions;
-    if Assigned(FDesigner) then FDesigner.Modified;
+    if Assigned(FDesigner) then
+      FDesigner.Modified;
   end;
 end;
 
@@ -262,26 +260,29 @@ end;
 
 procedure TGradCaptionsEditor.UpdateControls;
 begin
-  if ActiveCaption = nil then begin
+  if ActiveCaption = nil then
+  begin
     ClearControls;
     EnableControls(False);
-  end else
-  with ActiveCaption do begin
-    FUpdating := True;
-    try
-      FontDialog.Font := Font;
-      CaptionText.Text := Caption;
-      CaptionInactiveColor.ItemIndex := -1;
-      CaptionInactiveColor.Text := ColorToString(InactiveColor);
-      CaptionFont.Text := Font.Name;
-      CaptionParentFont.Checked := ParentFont;
-      CaptionGlueNext.Checked := GlueNext;
-      CaptionVisible.Checked := Visible;
-      EnableControls(True);
-    finally
-      FUpdating := False;
+  end
+  else
+    with ActiveCaption do
+    begin
+      FUpdating := True;
+      try
+        FontDialog.Font := Font;
+        CaptionText.Text := Caption;
+        CaptionInactiveColor.ItemIndex := -1;
+        CaptionInactiveColor.Text := ColorToString(InactiveColor);
+        CaptionFont.Text := Font.Name;
+        CaptionParentFont.Checked := ParentFont;
+        CaptionGlueNext.Checked := GlueNext;
+        CaptionVisible.Checked := Visible;
+        EnableControls(True);
+      finally
+        FUpdating := False;
+      end;
     end;
-  end;
 end;
 
 procedure TGradCaptionsEditor.EnableControls(Enable: Boolean);
@@ -307,17 +308,19 @@ begin
     CaptionGlueNext.Checked := False;
     CaptionVisible.Checked := False;
   finally
-    FUpdating := False;  
+    FUpdating := False;
   end;
 end;
 
 procedure TGradCaptionsEditor.ReadControls;
 begin
-  if not FUpdating and (ActiveCaption <> nil) then begin
+  if not FUpdating and (ActiveCaption <> nil) then
+  begin
     GradientCaption.Captions.BeginUpdate;
     FUpdating := True;
     try
-      with ActiveCaption do begin
+      with ActiveCaption do
+      begin
         Caption := CaptionText.Text;
         InactiveColor := StringToColor(CaptionInactiveColor.Text);
         ParentFont := CaptionParentFont.Checked;
@@ -344,11 +347,12 @@ end;
 
 procedure TGradCaptionsEditor.CaptionListClick(Sender: TObject);
 begin
-  if not FUpdating then UpdateControls;
+  if not FUpdating then
+    UpdateControls;
 end;
 
-procedure TGradCaptionsEditor.CaptionListDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TGradCaptionsEditor.CaptionListDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
 var
   I: Integer;
 begin
@@ -358,28 +362,32 @@ begin
   begin
     GradientCaption.MoveCaption(CaptionList.ItemIndex, I);
     CaptionList.ItemIndex := I;
-    if not FUpdating then UpdateControls;
+    if not FUpdating then
+      UpdateControls;
   end;
 end;
 
-procedure TGradCaptionsEditor.CaptionListDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
+procedure TGradCaptionsEditor.CaptionListDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   BoxDragOver(CaptionList, Source, X, Y, State, Accept, CaptionList.Sorted);
 end;
 
 procedure TGradCaptionsEditor.NewButtonClick(Sender: TObject);
 begin
-  if GradientCaption.Captions.Add <> nil then begin
+  if GradientCaption.Captions.Add <> nil then
+  begin
     UpdateCaptionList(GradientCaption.Captions.Count - 1);
     UpdateControls;
-    if CaptionText.CanFocus then ActiveControl := CaptionText; 
+    if CaptionText.CanFocus then
+      ActiveControl := CaptionText;
   end;
 end;
 
 procedure TGradCaptionsEditor.DeleteButtonClick(Sender: TObject);
 begin
-  if ActiveCaption <> nil then begin
+  if ActiveCaption <> nil then
+  begin
     ActiveCaption.Free;
     UpdateCaptionList(-1);
     UpdateControls;
@@ -397,12 +405,13 @@ begin
   ApplyChanges;
 end;
 
-procedure TGradCaptionsEditor.CaptionInactiveColorDblClick(
-  Sender: TObject);
+procedure TGradCaptionsEditor.CaptionInactiveColorDblClick(Sender: TObject);
 begin
-  with ColorDialog do begin
+  with ColorDialog do
+  begin
     Color := StringToColor(CaptionInactiveColor.Text);
-    if Execute then begin
+    if Execute then
+    begin
       CaptionInactiveColor.Text := ColorToString(Color);
       if not FUpdating and (ActiveCaption <> nil) then
         ActiveCaption.InactiveColor := Color;
@@ -412,7 +421,8 @@ end;
 
 procedure TGradCaptionsEditor.ControlExit(Sender: TObject);
 begin
-  if not FUpdating then ReadControls;
+  if not FUpdating then
+    ReadControls;
 end;
 
 procedure TGradCaptionsEditor.CaptionTextChange(Sender: TObject);
@@ -423,11 +433,14 @@ end;
 
 procedure TGradCaptionsEditor.CaptionFontButtonClick(Sender: TObject);
 begin
-  if ActiveCaption <> nil then begin
-    with FontDialog do begin
+  if ActiveCaption <> nil then
+  begin
+    with FontDialog do
+    begin
       Font := ActiveCaption.Font;
       Font.Color := ColorToRGB(ActiveCaption.Font.Color);
-      if Execute then begin
+      if Execute then
+      begin
         FUpdating := True;
         try
           CaptionFont.Text := Font.Name;
@@ -439,12 +452,15 @@ begin
       end;
     end;
   end
-  else Beep;
+  else
+    Beep;
 end;
 
 procedure TGradCaptionsEditor.CheckBoxClick(Sender: TObject);
 begin
-  if not FUpdating then ReadControls;
+  if not FUpdating then
+    ReadControls;
 end;
 
 end.
+

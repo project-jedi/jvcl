@@ -12,7 +12,7 @@ The Original Code is: JvMaxMin.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -27,17 +27,19 @@ Known Issues:
 
 unit JvMaxMin;
 
+// (rom) definitely hand over to JCL
+
 interface
 
-function Ceil(X: Extended): integer;
-function Floor(X:Extended):integer;
+function Ceil(X: Extended): Integer;
+function Floor(X: Extended): Integer;
 function Max(Val1, Val2: Longint): Longint;
 function Min(Val1, Val2: Longint): Longint;
 function MaxInteger(const Values: array of Longint): Longint;
 function MinInteger(const Values: array of Longint): Longint;
 {$IFDEF COMPILER4_UP}
-function MaxInt64(const Values: array of int64): int64;
-function MinInt64(const Values: array of int64): int64;
+function MaxInt64(const Values: array of Int64): Int64;
+function MinInt64(const Values: array of Int64): Int64;
 {$ENDIF}
 
 function MaxFloat(const Values: array of Extended): Extended;
@@ -72,7 +74,9 @@ procedure SwapInt(var Int1, Int2: Integer);
 var
   I: Integer;
 begin
-  I := Int1; Int1 := Int2; Int2 := I;
+  I := Int1;
+  Int1 := Int2;
+  Int2 := I;
 end;
 
 {$IFDEF COMPILER4_UP}
@@ -80,7 +84,9 @@ procedure SwapInt64(var Int1, Int2: Int64);
 var
   I: Int64;
 begin
-  I := Int1; Int1 := Int2; Int2 := I;
+  I := Int1;
+  Int1 := Int2;
+  Int2 := I;
 end;
 {$ENDIF}
 
@@ -88,33 +94,33 @@ procedure SwapLong(var Int1, Int2: Longint);
 var
   I: Longint;
 begin
-  I := Int1; Int1 := Int2; Int2 := I;
+  I := Int1;
+  Int1 := Int2;
+  Int2 := I;
 end;
-
-{ utility }
 
 function Ceil(X: Extended): Integer;
 begin
   Result := Trunc(X);
-  if frac(X) > 0 then
+  if Frac(X) > 0 then
     Inc(Result);
 end;
 
-function Floor(X:Extended):integer;
+function Floor(X: Extended): Integer;
 begin
-  Result := trunc(X);
-  if frac(X) < 0 then
+  Result := Trunc(X);
+  if Frac(X) < 0 then
     Dec(Result);
 end;
 
-function Min(Val1, Val2: integer): integer;
+function Min(Val1, Val2: Integer): Integer;
 begin
   Result := Val1;
   if Val2 < Val1 then
     Result := Val2;
 end;
 
-function Max(Val1, Val2: integer): integer;
+function Max(Val1, Val2: Integer): Integer;
 begin
   Result := Val1;
   if Val2 > Val1 then
@@ -126,8 +132,9 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] > Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
 end;
 
 function MinInteger(const Values: array of Longint): Longint;
@@ -135,28 +142,31 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
 
 {$IFDEF COMPILER4_UP}
 
-function MaxInt64(const Values: array of int64): int64; 
+function MaxInt64(const Values: array of Int64): Int64;
 var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] > Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
 end;
 
-function MinInt64(const Values: array of int64): int64;
+function MinInt64(const Values: array of Int64): Int64;
 var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
 
 {$ENDIF COMPILER4_UP}
@@ -166,8 +176,9 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] > Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
 end;
 
 function MinFloat(const Values: array of Extended): Extended;
@@ -175,8 +186,9 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
 
 function MaxDateTime(const Values: array of TDateTime): TDateTime;
@@ -184,8 +196,9 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
 
 function MinDateTime(const Values: array of TDateTime): TDateTime;
@@ -193,18 +206,21 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
 
 {$IFDEF WIN32}
+
 function MaxOf(const Values: array of Variant): Variant;
 var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] > Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] > Result then
+      Result := Values[I];
 end;
 
 function MinOf(const Values: array of Variant): Variant;
@@ -212,9 +228,12 @@ var
   I: Cardinal;
 begin
   Result := Values[Low(Values)];
-  for I := Succ(Low(Values)) to High(Values) do
-    if Values[I] < Result then Result := Values[I];
+  for I := Low(Values)+1 to High(Values) do
+    if Values[I] < Result then
+      Result := Values[I];
 end;
+
 {$ENDIF WIN32}
 
 end.
+

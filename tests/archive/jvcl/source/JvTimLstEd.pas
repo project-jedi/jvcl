@@ -12,7 +12,7 @@ The Original Code is: JvTimLstEd.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,17 +29,19 @@ unit JvTimLstEd;
 
 interface
 
-
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} SysUtils,
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  Grids,
-{$IFDEF COMPILER6_UP}
-RTLConsts,  DesignIntf, DesignEditors, DesignWindows, VCLEditors,
-{$ELSE}
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Grids, Menus,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, DesignWindows, VCLEditors,
+  {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
-{$ENDIF}
-  Menus, JvxCtrls, JvVCLUtils, JvPlacemnt,
-  JvTimerLst;
+  {$ENDIF}
+  JvVCLUtils, JvPlacemnt, JvTimerLst;
 
 type
   TJvTimerItemsEditor = class(TDesignWindow)
@@ -90,43 +92,39 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure Activated; override;
   public
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     function EditAction(Action: TEditAction): Boolean; override;
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
-{$ELSE}
+    {$ELSE}
     procedure EditAction(Action: TEditAction); override;
     procedure FormModified; override;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure FormClosed(Form: TCustomForm); override;
-{$ELSE}
+    {$ELSE}
     procedure FormClosed(Form: TForm); override;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     function GetEditState: TEditState; override;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
-{$ELSE}
-{$IFDEF COMPILER4_UP}
+    {$ELSE}
+    {$IFDEF COMPILER4_UP}
     procedure ComponentDeleted(Component: IPersistent); override;
-{$ELSE}
+    {$ELSE}
     procedure ComponentDeleted(Component: TComponent); override;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property TimersCollection: TJvTimerList read FTimersCollection
       write SetTimersCollection;
     property OwnerForm: TCustomForm read GetForm;
   end;
-
-{ TJvTimersItemListProperty }
 
   TJvTimersItemListProperty = class(TPropertyEditor)
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure Edit; override;
   end;
-
-{ TJvTimersCollectionEditor }
 
   TJvTimersCollectionEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
@@ -136,12 +134,17 @@ type
 
 implementation
 
-uses Consts, {$IFDEF WIN32} JvConst, {$ENDIF} JvxConst, JvDsgn, JvTypes;
+uses
+  Consts,
+  {$IFDEF WIN32}
+  JvConst,
+  {$ENDIF}
+  JvxConst, JvTypes;
 
 {$R *.DFM}
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 {$IFDEF COMPILER6_UP}
@@ -161,15 +164,13 @@ var
   I: Integer;
 begin
   Result := nil;
-  for I := 0 to Screen.FormCount - 1 do begin
-    if Screen.Forms[I] is TJvTimerItemsEditor then begin
+  for I := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[I] is TJvTimerItemsEditor then
       if TJvTimerItemsEditor(Screen.Forms[I]).TimersCollection = ATimersCollection then
       begin
         Result := TJvTimerItemsEditor(Screen.Forms[I]);
         Break;
       end;
-    end;
-  end;
 end;
 
 procedure ShowItemsEditor(Designer: TDesigner;
@@ -177,9 +178,11 @@ procedure ShowItemsEditor(Designer: TDesigner;
 var
   Editor: TJvTimerItemsEditor;
 begin
-  if ATimersCollection = nil then Exit;
+  if ATimersCollection = nil then
+    Exit;
   Editor := FindEditor(ATimersCollection);
-  if Editor = nil then begin
+  if Editor = nil then
+  begin
     Editor := TJvTimerItemsEditor.Create(Application);
     try
       Editor.Designer := TFormDesigner(Designer);
@@ -190,14 +193,15 @@ begin
       raise;
     end;
   end
-  else begin
+  else
+  begin
     Editor.Show;
     if Editor.WindowState = wsMinimized then
       Editor.WindowState := wsNormal;
   end;
 end;
 
-{ TJvTimersItemListProperty }
+//=== TJvTimersItemListProperty ==============================================
 
 function TJvTimersItemListProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -211,7 +215,8 @@ begin
   List := TList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
     Result := ResStr(srNone)
-  else FmtStr(Result, '(%s)', [GetPropType^.Name]);
+  else
+    FmtStr(Result, '(%s)', [GetPropType^.Name]);
 end;
 
 procedure TJvTimersItemListProperty.Edit;
@@ -219,19 +224,21 @@ begin
   ShowItemsEditor(Designer, TJvTimerList(GetComponent(0)));
 end;
 
-{ TJvTimersCollectionEditor }
+//=== TJvTimersCollectionEditor ==============================================
 
 procedure TJvTimersCollectionEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-    0: ShowItemsEditor(Designer, TJvTimerList(Component));
+    0:
+      ShowItemsEditor(Designer, TJvTimerList(Component));
   end;
 end;
 
 function TJvTimersCollectionEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := srTimerDesigner;
+    0:
+      Result := srTimerDesigner;
   end;
 end;
 
@@ -240,11 +247,12 @@ begin
   Result := 1;
 end;
 
-{ TJvTimerItemsEditor }
+//=== TJvTimerItemsEditor ====================================================
 
 procedure TJvTimerItemsEditor.SetTimersCollection(Value: TJvTimerList);
 begin
-  if FTimersCollection <> Value then begin
+  if FTimersCollection <> Value then
+  begin
     FTimersCollection := Value;
     UpdateData;
   end;
@@ -253,32 +261,36 @@ end;
 function TJvTimerItemsEditor.UniqueName(Component: TComponent): string;
 var
   Temp: string;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   I: Integer;
   Comp: TComponent;
-{$ENDIF}
+  {$ENDIF}
 begin
-  if (Component <> nil) then Temp := Component.ClassName
-  else Temp := TJvTimerEvent.ClassName;
+  if Component <> nil then
+    Temp := Component.ClassName
+  else
+    Temp := TJvTimerEvent.ClassName;
   if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
     System.Delete(Temp, 1, 1);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := Designer.UniqueName(Temp);
-{$ELSE}
+  {$ELSE}
   I := 1;
   repeat
     Result := Temp + IntToStr(I);
     Comp := OwnerForm.FindComponent(Result);
     Inc(I);
   until (Comp = nil) or (Comp = Component);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function TJvTimerItemsEditor.GetEditState: TEditState;
 begin
   Result := [];
-  if DeleteBtn.Enabled then Result := [esCanDelete, esCanCut, esCanCopy];
-  if ClipboardComponents then Include(Result, esCanPaste);
+  if DeleteBtn.Enabled then
+    Result := [esCanDelete, esCanCut, esCanCopy];
+  if ClipboardComponents then
+    Include(Result, esCanPaste);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -291,7 +303,8 @@ procedure TJvTimerItemsEditor.FormClosed(Form: TForm);
 {$ENDIF}
 {$ENDIF}
 begin
-  if {$IFDEF COMPILER6_UP}ADesigner.Root{$ELSE}Form{$ENDIF} = OwnerForm then Free;
+  if {$IFDEF COMPILER6_UP} ADesigner.Root {$ELSE} Form {$ENDIF} = OwnerForm then
+    Free;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -300,7 +313,8 @@ procedure TJvTimerItemsEditor.ItemsModified(const Designer: IDesigner);
 procedure TJvTimerItemsEditor.FormModified;
 {$ENDIF}
 begin
-  if not (csDestroying in ComponentState) then UpdateData;
+  if not (csDestroying in ComponentState) then
+    UpdateData;
 end;
 
 procedure TJvTimerItemsEditor.Activated;
@@ -312,16 +326,20 @@ procedure TJvTimerItemsEditor.UpdateData;
 var
   Empty: Boolean;
 begin
-  if CheckCollection then begin
+  if CheckCollection then
+  begin
     Caption := Format(srTimerEvents, [TimersCollection.Name]);
     Empty := TimersCollection.Count = 0;
   end
-  else Empty := True;
-  if Empty then begin
+  else
+    Empty := True;
+  if Empty then
+  begin
     DrawGrid.RowCount := 2;
     SelectItem(nil);
   end
-  else DrawGrid.RowCount := TimersCollection.Count + 1;
+  else
+    DrawGrid.RowCount := TimersCollection.Count + 1;
   DeleteBtn.Enabled := not Empty;
   ClearBtn.Enabled := not Empty;
   DeleteMenu.Enabled := not Empty;
@@ -333,7 +351,7 @@ end;
 
 function TJvTimerItemsEditor.GetForm: TCustomForm;
 begin
-  Result := {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root){$ELSE}Designer.Form{$ENDIF};
+  Result := {$IFDEF COMPILER6_UP} TCustomForm(Designer.Root) {$ELSE} Designer.Form {$ENDIF};
 end;
 
 procedure TJvTimerItemsEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -344,7 +362,7 @@ end;
 function TJvTimerItemsEditor.CheckCollection: Boolean;
 begin
   Result := (TimersCollection <> nil) and (TimersCollection.Owner <> nil)
-    and ({$IFDEF COMPILER6_UP}Designer.Root{$ELSE}Designer.Form{$ENDIF} <> nil);
+    and ({$IFDEF COMPILER6_UP} Designer.Root {$ELSE} Designer.Form {$ENDIF} <> nil);
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -352,15 +370,17 @@ type
   TDesignerSelectionList = IDesignerSelections;
 {$ENDIF}
 
-
 procedure TJvTimerItemsEditor.SelectItem(Item: TJvTimerEvent);
 var
   FComponents: TDesignerSelectionList;
 begin
-  if CheckCollection and Active then begin
-    FComponents := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-    if Item <> nil then FComponents.Add(Item)
-    else FComponents.Add(TimersCollection);
+  if CheckCollection and Active then
+  begin
+    FComponents := {$IFDEF COMPILER6_UP} TDesignerSelections {$ELSE} TDesignerSelectionList {$ENDIF}.Create;
+    if Item <> nil then
+      FComponents.Add(Item)
+    else
+      FComponents.Add(TimersCollection);
     SetSelection(FComponents);
   end;
 end;
@@ -378,23 +398,25 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvTimerItemsEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 begin
-  if Item = TimersCollection then begin
+  if Item = TimersCollection then
+  begin
 {$ELSE}
 {$IFDEF COMPILER4_UP}
 procedure TJvTimerItemsEditor.ComponentDeleted(Component: IPersistent);
 begin
-  if ExtractPersistent(Component) = TimersCollection then begin
+  if ExtractPersistent(Component) = TimersCollection then
+  begin
 {$ELSE}
 procedure TJvTimerItemsEditor.ComponentDeleted(Component: TComponent);
 begin
-  if Component = TimersCollection then begin
+  if Component = TimersCollection then
+  begin
 {$ENDIF}
 {$ENDIF}
     TimersCollection := nil;
     Close;
   end;
 end;
-
 
 procedure TJvTimerItemsEditor.DrawGridDrawCell(Sender: TObject; Col,
   Row: Longint; Rect: TRect; State: TGridDrawState);
@@ -403,10 +425,13 @@ var
   Item: TJvTimerEvent;
 begin
   CellText := '';
-  if gdFixed in State then CellText := 'Item name'
-  else begin
+  if gdFixed in State then
+    CellText := 'Item name'
+  else
+  begin
     Item := ItemByRow(Row - 1);
-    if Item <> nil then CellText := Item.Name;
+    if Item <> nil then
+      CellText := Item.Name;
   end;
   DrawCellText(DrawGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenter);
 end;
@@ -427,14 +452,17 @@ var
   Item: TJvTimerEvent;
 begin
   Item := ItemByRow(DrawGrid.Row - 1);
-  if Item <> nil then begin
-    {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
+  if Item <> nil then
+  begin
+    {$IFDEF COMPILER6_UP} TCustomForm(Designer.Root).Designer {$ELSE} Designer {$ENDIF}.ValidateRename(Item, Item.Name, '');
     TimersCollection.Delete(Item.Handle);
-    if TimersCollection.Count > 0 then begin
+    if TimersCollection.Count > 0 then
+    begin
       Item := ItemByRow(DrawGrid.Row - 1);
       SelectItem(Item);
     end
-    else SelectItem(nil);
+    else
+      SelectItem(nil);
     UpdateData;
     Designer.Modified;
   end;
@@ -445,26 +473,32 @@ procedure TJvTimerItemsEditor.DrawGridKeyDown(Sender: TObject; var Key: Word;
 begin
   if Shift = [] then
     case Key of
-      VK_RETURN: if ItemByRow(DrawGrid.Row - 1) <> nil then ActivateInspector(#0);
-      VK_DELETE: DeleteClick(nil);
+      VK_RETURN:
+        if ItemByRow(DrawGrid.Row - 1) <> nil then
+          ActivateInspector(#0);
+      VK_DELETE:
+        DeleteClick(nil);
     end;
 end;
 
 procedure TJvTimerItemsEditor.FormCreate(Sender: TObject);
 begin
   TimersCollection := nil;
-  if NewStyleControls then Font.Style := [];
-{$IFDEF WIN32}
-  with FormStorage do begin
+  if NewStyleControls then
+    Font.Style := [];
+  {$IFDEF WIN32}
+  with FormStorage do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvTimerItemsEditor.FormResize(Sender: TObject);
 begin
-  with DrawGrid do ColWidths[0] := ClientWidth;
+  with DrawGrid do
+    ColWidths[0] := ClientWidth;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -476,10 +510,14 @@ procedure TJvTimerItemsEditor.EditAction(Action: TEditAction);
 begin
 {$ENDIF}
   case Action of
-    eaCut: Cut;
-    eaCopy: Copy;
-    eaPaste: Paste;
-    eaDelete: DeleteClick(Self);
+    eaCut:
+      Cut;
+    eaCopy:
+      Copy;
+    eaPaste:
+      Paste;
+    eaDelete:
+      DeleteClick(Self);
   end;
 end;
 
@@ -490,19 +528,20 @@ var
 begin
   Item := TJvTimerEvent.Create(TimersCollection.Owner);
   if Item <> nil then
-    try
-      Item.Name := UniqueName(Item);
-      with TimersCollection do
-        I := ItemIndexByHandle(AddItem(Item));
-      SelectItem(Item);
-      Designer.Modified;
-      ActivateInspector(#0);
-      DrawGrid.Row := I + 1;
-    except
-      Item.Free;
-      raise;
-    end
-  else raise EJVCLException.Create(srEventNotCreate);
+  try
+    Item.Name := UniqueName(Item);
+    with TimersCollection do
+      I := ItemIndexByHandle(AddItem(Item));
+    SelectItem(Item);
+    Designer.Modified;
+    ActivateInspector(#0);
+    DrawGrid.Row := I + 1;
+  except
+    Item.Free;
+    raise;
+  end
+  else
+    raise EJVCLException.Create(srEventNotCreate);
 end;
 
 procedure TJvTimerItemsEditor.CutClick(Sender: TObject);
@@ -534,49 +573,53 @@ var
   CompList: TDesignerSelectionList;
   Item: TJvTimerEvent;
 begin
-  CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF COMPILER6_UP}
+  CompList := {$IFDEF COMPILER6_UP} TDesignerSelections {$ELSE} TDesignerSelectionList {$ENDIF}.Create;
+  {$IFNDEF COMPILER6_UP}
   try
-{$ENDIF}
+  {$ENDIF}
     Item := ItemByRow(DrawGrid.Row - 1);
-    if Item <> nil then begin
+    if Item <> nil then
+    begin
       CompList.Add(Item);
       CopyComponents(OwnerForm, CompList);
     end;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   finally
     CompList.Free;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
-
 
 procedure TJvTimerItemsEditor.Paste;
 var
   CompList: TDesignerSelectionList;
 begin
-  if CheckCollection then begin
-    CompList := {$IFDEF COMPILER6_UP}TDesignerSelections{$ELSE}TDesignerSelectionList{$ENDIF}.Create;
-{$IFNDEF COMPILER6_UP}
+  if CheckCollection then
+  begin
+    CompList := {$IFDEF COMPILER6_UP} TDesignerSelections {$ELSE} TDesignerSelectionList {$ENDIF}.Create;
+    {$IFNDEF COMPILER6_UP}
     try
-{$ENDIF}
+    {$ENDIF}
       PasteComponents(OwnerForm, TimersCollection, CompList);
       UpdateData;
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     finally
       CompList.Free;
     end;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
+
 procedure TJvTimerItemsEditor.ClearBtnClick(Sender: TObject);
 var
   Item: TJvTimerEvent;
 begin
-  while TimersCollection.Events.Count > 0 do begin
+  while TimersCollection.Events.Count > 0 do
+  begin
     Item := TJvTimerEvent(TimersCollection.Events[0]);
     if Item <> nil then
-          {$IFDEF COMPILER6_UP}TCustomForm(Designer.Root).Designer{$ELSE}Designer{$ENDIF}.ValidateRename(Item, Item.Name, '');
+      {$IFDEF COMPILER6_UP} TCustomForm(Designer.Root).Designer {$ELSE} Designer {$ENDIF}.ValidateRename(Item,
+        Item.Name, '');
     TimersCollection.Events.Delete(0);
     Item.Free;
   end;
@@ -584,3 +627,4 @@ begin
 end;
 
 end.
+

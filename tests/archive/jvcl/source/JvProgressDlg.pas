@@ -28,13 +28,11 @@ Known Issues:
 
 unit JvProgressDlg;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormProgress, JvBaseDlg, JvTypes, JvComponent;
+  SysUtils, Classes, Controls, Forms,
+  JvFormProgress, JvTypes, JvComponent;
 
 type
   TJvProgressDlg = class(TJvComponent)
@@ -43,26 +41,25 @@ type
     FValue: Integer;
     FMaximum: Integer;
     FText: string;
-    FStay: Boolean;
+    FStayOnTop: Boolean;
     FAutoTimeLeft: Boolean;
     FLast: TDateTime;
     FLastVal: TDateTime;
     procedure SetMaximum(const Value: Integer);
     procedure SetValue(const Value: Integer);
     procedure SetText(const Value: string);
-    procedure SetStay(const Value: Boolean);
+    procedure SetStayOnTop(const Value: Boolean);
     procedure ApplyText(Value: string);
     function GetShowing: boolean;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Showing:boolean read GetShowing;
+    property Showing: boolean read GetShowing;
   published
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Value: Integer read FValue write SetValue default 0;
     property Text: string read FText write SetText;
-    property StayOnTop: Boolean read FStay write SetStay default True;
+    property StayOnTop: Boolean read FStayOnTop write SetStayOnTop default True;
     procedure Show;
     procedure Close;
     property AutoTimeLeft: Boolean read FAutoTimeLeft write FAutoTimeLeft default False;
@@ -76,7 +73,24 @@ resourcestring
   RC_EstimatedTime = 'Estimated time left : ';
   RC_Days = ' day(s) ';
 
-  {**************************************************}
+constructor TJvProgressDlg.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPForm := TFormProg.Create(Self);
+  FText := RC_ProgressText;
+  FMaximum := 100;
+  FValue := 0;
+  FStayOnTop := True;
+  FAutoTimeLeft := False;
+  FLast := Now;
+  FLastVal := Now;
+end;
+
+destructor TJvProgressDlg.Destroy;
+begin
+  FPForm.Free;
+  inherited Destroy;
+end;
 
 procedure TJvProgressDlg.Close;
 begin
@@ -84,37 +98,10 @@ begin
   FPForm.Close;
 end;
 
-{**************************************************}
-
 procedure TJvProgressDlg.StartProgression;
 begin
   FLast := Now;
 end;
-
-{**************************************************}
-
-constructor TJvProgressDlg.Create(AOwner: TComponent);
-begin
-  inherited;
-  FPForm := TFormProg.Create(Self);
-  FText := RC_ProgressText;
-  FMaximum := 100;
-  FValue := 0;
-  FStay := True;
-  FAutoTimeLeft := False;
-  FLast := Now;
-  FLastVal := Now;
-end;
-
-{**************************************************}
-
-destructor TJvProgressDlg.Destroy;
-begin
-  FPForm.Free;
-  inherited;
-end;
-
-{**************************************************}
 
 procedure TJvProgressDlg.SetMaximum(const Value: Integer);
 begin
@@ -124,18 +111,14 @@ begin
   FLast := Now;
 end;
 
-{**************************************************}
-
-procedure TJvProgressDlg.SetStay(const Value: Boolean);
+procedure TJvProgressDlg.SetStayOnTop(const Value: Boolean);
 begin
-  FStay := Value;
+  FStayOnTop := Value;
   if Value then
-    FPForm.FormStyle := fsStayOntop
+    FPForm.FormStyle := fsStayOnTop
   else
     FPForm.FormStyle := fsNormal;
 end;
-
-{**************************************************}
 
 procedure TJvProgressDlg.SetText(const Value: string);
 begin
@@ -146,25 +129,22 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvProgressDlg.ApplyText(Value: string);
 begin
   FPForm.Label1.Caption := Value;
 end;
 
-{**************************************************}
-
 procedure TJvProgressDlg.SetValue(const Value: Integer);
 var
-  days: Integer;
+  Days: Integer;
   OldDate: TDateTime;
-  st: string;
+  St: string;
 begin
   if FValue <> Value then
   begin
     FValue := Value;
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+      Exit;
     FPForm.ProgressBar1.Position := Value;
     if FAutoTimeLeft then
     begin
@@ -173,44 +153,43 @@ begin
       OldDate := (Now - FLast) / (FPForm.ProgressBar1.Position) * FPForm.ProgressBar1.Max;
       OldDate := OldDate - (Now - FLast);
 
-      days := Round(Int(OldDate));
+      Days := Round(Int(OldDate));
 
       if FText <> '' then
-        st := FText + ' (' + RC_EstimatedTime
+        St := FText + ' (' + RC_EstimatedTime
       else
-        st := RC_EstimatedTime;
+        St := RC_EstimatedTime;
       if Abs(FLastVal - OldDate) > EncodeTime(0, 0, 1, 0) then
       begin
         FLastVal := OldDate;
-        if days = 0 then
-          st := st + FormatDateTime('hh:nn:ss', OldDate)
+        if Days = 0 then
+          St := St + FormatDateTime('hh:nn:ss', OldDate)
         else
-          st := st + IntToStr(days) + RC_Days + FormatDateTime('hh:nn:ss', OldDate);
+          St := St + IntToStr(Days) + RC_Days + FormatDateTime('hh:nn:ss', OldDate);
         if FText <> '' then
-          st := st + ')';
-        ApplyText(st)
+          St := St + ')';
+        ApplyText(St)
       end;
     end;
   end;
 end;
 
-{**************************************************}
-
 procedure TJvProgressDlg.Show;
 begin
-  if FStay then
+  if FStayOnTop then
     FPForm.FormStyle := fsStayOnTop
   else
-    FPForm.Formstyle := fsNormal;
+    FPForm.FormStyle := fsNormal;
   FPForm.Label1.Caption := FText;
   FPForm.Tag := 0;
   FPForm.Show;
   FPForm.Update;
 end;
 
-function TJvProgressDlg.GetShowing: boolean;
+function TJvProgressDlg.GetShowing: Boolean;
 begin
   Result := FPForm.Visible;
 end;
 
 end.
+

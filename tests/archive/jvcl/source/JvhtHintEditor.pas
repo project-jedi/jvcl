@@ -26,7 +26,6 @@ description : Design-time Hint Editor
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvHTHintEditor;
@@ -34,29 +33,27 @@ unit JvHTHintEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes, Controls, Forms,
   StdCtrls,
   {$IFDEF COMPILER6_UP}
-   DesignIntf, DesignEditors,
+  DesignIntf, DesignEditors,
   {$ELSE}
-   DsgnIntf,
+  DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvHint;
 
 type
   TJvHintEditor = class(TForm)
-    Memo1: TMemo;
+    HintMemo: TMemo;
     Label1: TLabel;
-    bOk: TButton;
-    bCancel: TButton;
-    Label2: TLabel;
-    procedure Memo1Change(Sender: TObject);
-    procedure Memo1KeyDown(Sender: TObject; var Key: Word;
+    BtnOk: TButton;
+    BtnCancel: TButton;
+    HintLabel: TLabel;
+    procedure HintMemoChange(Sender: TObject);
+    procedure HintMemoKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
   TJvHintProperty = class(TStringProperty)
@@ -69,6 +66,8 @@ implementation
 
 {$R *.DFM}
 
+//=== TJvHintProperty ========================================================
+
 procedure TJvHintProperty.Edit;
 var
   OldHintWindowClass: THintWindowClass;
@@ -76,17 +75,17 @@ begin
   OldHintWindowClass := HintWindowClass;
   with TJvHintEditor.Create(Application) do
     try
-      Memo1.Text := GetValue;
+      HintMemo.Text := GetValue;
       HintWindowClass := TJvHTHintWindow;
       if ShowModal = mrOk then
-        SetValue(Memo1.Text);
+        SetValue(HintMemo.Text);
     finally 
       Free;
       HintWindowClass := OldHintWindowClass;
-     { recreate hint window }
+      { recreate hint window }
       Application.ShowHint := not Application.ShowHint;
       Application.ShowHint := not Application.ShowHint;
-    end;    { try/finally }
+    end;
 end;
 
 function TJvHintProperty.GetAttributes: TPropertyAttributes;
@@ -94,16 +93,18 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
+//=== TJvHintEditor ==========================================================
 
-procedure TJvHintEditor.Memo1Change(Sender: TObject);
+procedure TJvHintEditor.HintMemoChange(Sender: TObject);
 begin
-  Label2.Hint := Memo1.Text;
+  HintLabel.Hint := HintMemo.Text;
 end;
 
-procedure TJvHintEditor.Memo1KeyDown(Sender: TObject; var Key: Word;
+procedure TJvHintEditor.HintMemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then bCancel.Click;
+  if Key = VK_ESCAPE then
+    BtnCancel.Click;
 end;
 
 end.

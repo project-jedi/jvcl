@@ -28,80 +28,73 @@ Known Issues:
 
 unit JvPrint;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Printers, JvTypes, JvComponent;
+  SysUtils, Classes, Graphics, Printers,
+  JvTypes, JvComponent;
 
 type
   TJvPrint = class(TJvComponent)
   private
-    FOnBegin: TNotifyEvent;
-    FOnEnded: TNotifyEvent;
-    FOnProgress: TOnPrnProgress;
-    FOnNextP: TOnNextPage;
+    FOnBeginPrint: TNotifyEvent;
+    FOnFinishedPrint: TNotifyEvent;
+    FOnProgress: TOnPrintProgress;
+    FOnNextPage: TOnNextPage;
   published
     procedure Print(Value: TStringList);
     procedure PrintImage(Value: TBitmap; Style: TBitmapStyle);
     procedure Abort;
-    property OnBeginPrint: TNotifyEvent read FOnBegin write FOnBegin;
-    property OnFinishedPrint: TNotifyEvent read FOnEnded write FOnEnded;
-    property OnProgress: TOnPrnProgress read FOnProgress write FOnProgress;
-    property OnNextPage: TOnNextPage read FOnNextP write FOnNextP;
+    property OnBeginPrint: TNotifyEvent read FOnBeginPrint write FOnBeginPrint;
+    property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
+    property OnProgress: TOnPrintProgress read FOnProgress write FOnProgress;
+    property OnNextPage: TOnNextPage read FOnNextPage write FOnNextPage;
   end;
 
 implementation
-
-{**************************************************}
 
 procedure TJvPrint.Abort;
 begin
   Printer.Abort;
 end;
 
-{**************************************************}
-
 procedure TJvPrint.Print(Value: TStringList);
 var
   I, Line, Pagenum: Integer;
 begin
   //let's print
-  if Assigned(FOnBegin) then
-    FOnBegin(Self);
+  if Assigned(FOnBeginPrint) then
+    FOnBeginPrint(Self);
   line := 0;
   Printer.BeginDoc;
   Pagenum := 1;
-  for i := 0 to Value.Count - 1 do
+  for I := 0 to Value.Count - 1 do
   begin
     if Assigned(FOnProgress) then
-      FOnProgress(Self, i + 1, Value.Count);
+      FOnProgress(Self, I + 1, Value.Count);
 
-    Line := Line + Printer.Canvas.TextHeight(Value[i]);
-    if Line + Printer.Canvas.TextHeight(Value[i]) > Printer.PageHeight then
+    Line := Line + Printer.Canvas.TextHeight(Value[I]);
+    if Line + Printer.Canvas.TextHeight(Value[I]) > Printer.PageHeight then
     begin
-      Line := Printer.Canvas.TextHeight(Value[i]);
+      Line := Printer.Canvas.TextHeight(Value[I]);
       Printer.NewPage;
       Inc(PageNum);
-      if Assigned(FonNextP) then
-        FonNextP(Self, PageNum);
+      if Assigned(FOnNextPage) then
+        FOnNextPage(Self, PageNum);
     end;
 
     Printer.Canvas.TextOut(0, Line, Value[I]);
   end;
   Printer.EndDoc;
-  if Assigned(FOnEnded) then
-    FOnEnded(Self);
+  if Assigned(FOnFinishedPrint) then
+    FOnFinishedPrint(Self);
 end;
-
-{**************************************************}
 
 procedure TJvPrint.PrintImage(Value: TBitmap; Style: TBitmapStyle);
 begin
   //let's print too :)
-  if Assigned(FOnBegin) then
-    FOnBegin(Self);
+  if Assigned(FOnBeginPrint) then
+    FOnBeginPrint(Self);
   case Style of
     bsNormal:
       begin
@@ -131,8 +124,9 @@ begin
         end;
       end;
   end;
-  if Assigned(FOnEnded) then
-    FOnEnded(Self);
+  if Assigned(FOnFinishedPrint) then
+    FOnFinishedPrint(Self);
 end;
 
 end.
+

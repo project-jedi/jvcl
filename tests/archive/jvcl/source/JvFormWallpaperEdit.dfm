@@ -1,4 +1,4 @@
-object foWallpaperChooser: TfoWallpaperChooser
+object FoWallpaperChooser: TFoWallpaperChooser
   Left = 479
   Top = 330
   BorderStyle = bsDialog
@@ -17,45 +17,42 @@ object foWallpaperChooser: TfoWallpaperChooser
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object BUSpeedButton1: TJvSpeedButton
+  object Button1: TJvButton
     Left = 6
     Top = 200
     Width = 75
     Height = 25
     Caption = '&Ok'
-    Flat = True
-    NumGlyphs = 2
+    ModalResult = 1
+    TabOrder = 2
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-    ModalResult = 1
   end
-  object BUSpeedButton2: TJvSpeedButton
+  object Button2: TJvButton
     Left = 102
     Top = 200
     Width = 75
     Height = 25
     Caption = '&Cancel'
-    Flat = True
-    NumGlyphs = 2
+    ModalResult = 2
+    TabOrder = 3
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-    ModalResult = 2
   end
-  object BUSpeedButton3: TJvSpeedButton
+  object Button3: TJvButton
     Left = 238
     Top = 198
     Width = 75
     Height = 25
     Caption = '&Clear'
-    Flat = True
-    NumGlyphs = 2
-    OnClick = BUSpeedButton3Click
+    TabOrder = 4
+    OnClick = Button3Click
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -75,12 +72,13 @@ object foWallpaperChooser: TfoWallpaperChooser
       Height = 13
       Caption = 'Directory'
     end
-    object BUDirectoryBox1: TJvDirectoryEdit
+    object DirectoryBox1: TJvDirectoryEdit
       Left = 58
       Top = 12
       Width = 243
-      Height = 20
-      OnAfterDialog = BUDirectoryBox1AfterDialog
+      Height = 21
+      OnAfterDialog = DirectoryBox1AfterDialog
+      ButtonFlat = False
       NumGlyphs = 1
       TabOrder = 0
     end
@@ -92,16 +90,12 @@ object foWallpaperChooser: TfoWallpaperChooser
     Height = 141
     TabOrder = 1
   end
-  object BUSearchFiles1: TJvSearchFiles
+  object SearchFiles1: TJvSearchFiles
     DirOption = doExcludeSubDirs
-    DirParams.LastChangeAfter = 29221
-    DirParams.LastChangeBefore = 29221
     FileParams.SearchTypes = [stFileMask]
-    FileParams.LastChangeAfter = 29221
-    FileParams.LastChangeBefore = 29221
     FileParams.FileMasks.Strings = (
       '*.bmp')
-    OnFindFile = BUSearchFile1Found
+    OnFindFile = SearchFile1Found
     Left = 112
     Top = 64
   end

@@ -23,22 +23,23 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvJVCLAboutProperty;
 
 interface
+
 uses
-  Classes, SysUtils,
+  SysUtils,
   {$IFDEF COMPILER6_UP}
-  DesignEditors, DesignIntf
+  DesignEditors, DesignIntf;
   {$ELSE}
-  DsgnIntf
+  DsgnIntf;
   {$ENDIF}
-  ;
 
 type
   TJVCLAboutDialogProperty = class(TPropertyEditor)
-  private
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -46,14 +47,13 @@ type
   end;
 
 implementation
+
 uses
   JvJVCLAbout, JVCLVer;
 
-{ TJVCLAboutDialogProperty }
-
 procedure TJVCLAboutDialogProperty.Edit;
 begin
-  TJvJVCLAboutForm.Execute(true);
+  TJvJVCLAboutForm.Execute(True);
 end;
 
 function TJVCLAboutDialogProperty.GetAttributes: TPropertyAttributes;
@@ -65,6 +65,5 @@ function TJVCLAboutDialogProperty.GetValue: string;
 begin
   Result := 'Version ' + JVCL_VERSIONSTRING;
 end;
-
 
 end.

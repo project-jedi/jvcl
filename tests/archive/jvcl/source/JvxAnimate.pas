@@ -12,7 +12,7 @@ The Original Code is: JvxAnimate.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,28 +29,29 @@ unit JvxAnimate;
 
 interface
 
-
-uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, Menus, JvTimer;
+uses
+  {$IFDEF WIN32}
+  Windows,{$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
+  JvTimer;
 
 type
-
-{ TJvImageControl }
-
   TJvImageControl = class(TGraphicControl)
   private
     FDrawing: Boolean;
     FPaintBuffered: Boolean;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     FLock: TRTLCriticalSection;
-{$ENDIF}
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    {$ENDIF}
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
     FGraphic: TGraphic;
     function DoPaletteChange: Boolean;
-{$IFNDEF COMPILER4_UP}
+    {$IFNDEF COMPILER4_UP}
     procedure AdjustSize; virtual; abstract;
-{$ENDIF}
+    {$ENDIF}
     procedure DoPaintImage; virtual; abstract;
     procedure DoPaintControl;
     procedure PaintDesignRect;
@@ -62,8 +63,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-
-{ TJvAnimatedImage }
 
   TGlyphOrientation = (goHorizontal, goVertical);
 
@@ -86,21 +85,21 @@ type
     FOnFrameChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     FAsyncDrawing: Boolean;
-{$ENDIF}
-{$IFNDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFNDEF COMPILER4_UP}
     FAutoSize: Boolean;
     procedure SetAutoSize(Value: Boolean);
-{$ENDIF}
+    {$ENDIF}
     procedure DefineBitmapSize;
     procedure ResetImageBounds;
     function GetInterval: Cardinal;
     procedure SetInterval(Value: Cardinal);
     procedure SetActive(Value: Boolean);
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure SetAsyncDrawing(Value: Boolean);
-{$ENDIF}
+    {$ENDIF}
     procedure SetCenter(Value: Boolean);
     procedure SetOrientation(Value: TGlyphOrientation);
     procedure SetGlyph(Value: TBitmap);
@@ -114,11 +113,11 @@ type
     procedure UpdateInactive;
     procedure TimerExpired(Sender: TObject);
     function TransparentStored: Boolean;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
-{$ENDIF}
+    {$ENDIF}
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
     procedure Loaded; override;
@@ -132,17 +131,17 @@ type
     destructor Destroy; override;
   published
     property Align;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
     property AutoSize default True;
-{$ELSE}
+    {$ELSE}
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-{$ENDIF}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER3_UP}
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
-{$ENDIF}
+    {$ENDIF}
     property Active: Boolean read FActive write SetActive default False;
     property Center: Boolean read FCenter write SetCenter default False;
     property Orientation: TGlyphOrientation read FOrientation write SetOrientation
@@ -173,16 +172,16 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
+    {$ENDIF}
     property OnFrameChanged: TNotifyEvent read FOnFrameChanged write FOnFrameChanged;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
@@ -194,11 +193,15 @@ procedure HookBitmap;
 
 implementation
 
-uses JvConst, {$IFDEF COMPILER3_UP} JvHook, {$ENDIF} JvVCLUtils;
+uses
+  {$IFDEF COMPILER3_UP}
+  JvHook,
+  {$ENDIF}
+  JvConst, JvVCLUtils;
 
 {$IFDEF COMPILER3_UP}
 
-{ TJvHackBitmap }
+//=== TJvHackBitmap ==========================================================
 
 type
   TJvHackBitmap = class(TBitmap)
@@ -208,11 +211,13 @@ type
 
 procedure TJvHackBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
-  if not Empty then Canvas.Lock;
+  if not Empty then
+    Canvas.Lock;
   try
     inherited Draw(ACanvas, Rect);
   finally
-    if not Empty then Canvas.Unlock;
+    if not Empty then
+      Canvas.Unlock;
   end;
 end;
 
@@ -226,7 +231,8 @@ procedure HookBitmap;
 var
   Index: Integer;
 begin
-  if Hooked then Exit;
+  if Hooked then
+    Exit;
   Index := FindVirtualMethodIndex(TJvHack, @TJvHack.Draw);
   SetVirtualMethodAddress(TBitmap, Index, @TJvHackBitmap.Draw);
   Hooked := True;
@@ -234,14 +240,14 @@ end;
 
 {$ENDIF COMPILER3_UP}
 
-{ TJvImageControl }
+//=== TJvImageControl ========================================================
 
 constructor TJvImageControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   InitializeCriticalSection(FLock);
-{$ENDIF}
+  {$ENDIF}
   ControlStyle := ControlStyle + [csClickEvents, csCaptureMouse, csOpaque,
     {$IFDEF WIN32} csReplicatable, {$ENDIF} csDoubleClicks];
   Height := 105;
@@ -251,31 +257,32 @@ end;
 
 destructor TJvImageControl.Destroy;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   DeleteCriticalSection(FLock);
-{$ENDIF}
+  {$ENDIF}
   inherited Destroy;
 end;
 
 procedure TJvImageControl.Lock;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   EnterCriticalSection(FLock);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvImageControl.Unlock;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   LeaveCriticalSection(FLock);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvImageControl.PaintImage;
 var
   Save: Boolean;
 begin
-  with Canvas do begin
+  with Canvas do
+  begin
     Brush.Color := Color;
     FillRect(Bounds(0, 0, ClientWidth, ClientHeight));
   end;
@@ -288,19 +295,21 @@ begin
   end;
 end;
 
-procedure TJvImageControl.WMPaint(var Message: TWMPaint);
+procedure TJvImageControl.WMPaint(var Msg: TWMPaint);
 var
   DC, MemDC: HDC;
   MemBitmap, OldBitmap: HBITMAP;
 begin
   if FPaintBuffered then
     inherited
-  else if Message.DC <> 0 then begin
-{$IFDEF COMPILER3_UP}
+  else
+  if Msg.DC <> 0 then
+  begin
+    {$IFDEF COMPILER3_UP}
     Canvas.Lock;
     try
-{$ENDIF}
-      DC := Message.DC;
+    {$ENDIF}
+      DC := Msg.DC;
       MemDC := GetDC(0);
       MemBitmap := CreateCompatibleBitmap(MemDC, ClientWidth, ClientHeight);
       ReleaseDC(0, MemDC);
@@ -309,9 +318,9 @@ begin
       try
         FPaintBuffered := True;
         try
-          Message.DC := MemDC;
-          WMPaint(Message);
-          Message.DC := 0;
+          Msg.DC := MemDC;
+          WMPaint(Msg);
+          Msg.DC := 0;
         finally
           FPaintBuffered := False;
         end;
@@ -321,18 +330,19 @@ begin
         DeleteDC(MemDC);
         DeleteObject(MemBitmap);
       end;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     finally
       Canvas.Unlock;
     end;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
 procedure TJvImageControl.PaintDesignRect;
 begin
   if csDesigning in ComponentState then
-    with Canvas do begin
+    with Canvas do
+    begin
       Pen.Style := psDash;
       Brush.Style := bsClear;
       Rectangle(0, 0, Width, Height);
@@ -343,12 +353,13 @@ procedure TJvImageControl.DoPaintControl;
 var
   DC: HDC;
 begin
-{$IFDEF COMPILER3_UP}
-  if GetCurrentThreadID = MainThreadID then begin
+  {$IFDEF COMPILER3_UP}
+  if GetCurrentThreadID = MainThreadID then
+  begin
     Repaint;
     Exit;
   end;
-{$ENDIF}
+  {$ENDIF}
   DC := GetDC(Parent.Handle);
   try
     IntersectClipRect(DC, Left, Top, Left + Width, Top + Height);
@@ -367,9 +378,10 @@ begin
   Result := False;
   Tmp := FGraphic;
   if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil)
-    {$IFDEF COMPILER3_UP} and (Tmp.PaletteModified) {$ENDIF} then
+    {$IFDEF COMPILER3_UP} and Tmp.PaletteModified {$ENDIF} then
   begin
-    if (GetPalette <> 0) then begin
+    if (GetPalette <> 0) then
+    begin
       ParentForm := GetParentForm(Self);
       if Assigned(ParentForm) and ParentForm.Active and ParentForm.HandleAllocated then
       begin
@@ -378,36 +390,39 @@ begin
         else
           PostMessage(ParentForm.Handle, WM_QUERYNEWPALETTE, 0, 0);
         Result := True;
-{$IFDEF COMPILER3_UP}
+        {$IFDEF COMPILER3_UP}
         Tmp.PaletteModified := False;
-{$ENDIF}
+        {$ENDIF}
       end;
     end
-{$IFDEF COMPILER3_UP}
-    else begin
+    {$IFDEF COMPILER3_UP}
+    else
       Tmp.PaletteModified := False;
-    end;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
 procedure TJvImageControl.PictureChanged;
 begin
-  if not (csDestroying in ComponentState) then begin
+  if not (csDestroying in ComponentState) then
+  begin
     AdjustSize;
-    if (FGraphic <> nil) then
-      if DoPaletteChange and FDrawing then Update;
-    if not FDrawing then Invalidate;
+    if FGraphic <> nil then
+      if DoPaletteChange and FDrawing then
+        Update;
+    if not FDrawing then
+      Invalidate;
   end;
 end;
 
-{ TJvAnimatedImage }
+//=== TJvAnimatedImage =======================================================
 
 constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTimer := TJvTimer.Create(Self);
-  with FTimer do begin
+  with FTimer do
+  begin
     Enabled := False;
     Interval := 100;
   end;
@@ -444,7 +459,8 @@ end;
 function TJvAnimatedImage.GetPalette: HPALETTE;
 begin
   Result := 0;
-  if not FGlyph.Empty then Result := FGlyph.Palette;
+  if not FGlyph.Empty then
+    Result := FGlyph.Palette;
 end;
 
 procedure TJvAnimatedImage.ImageChanged(Sender: TObject);
@@ -482,7 +498,8 @@ end;
 
 procedure TJvAnimatedImage.SetOpaque(Value: Boolean);
 begin
-  if Value <> FOpaque then begin
+  if Value <> FOpaque then
+  begin
     Lock;
     try
       FOpaque := Value;
@@ -495,7 +512,8 @@ end;
 
 procedure TJvAnimatedImage.SetTransparentColor(Value: TColor);
 begin
-  if Value <> TransparentColor then begin
+  if Value <> TransparentColor then
+  begin
     Lock;
     try
       FTransparentColor := Value;
@@ -508,7 +526,8 @@ end;
 
 procedure TJvAnimatedImage.SetOrientation(Value: TGlyphOrientation);
 begin
-  if FOrientation <> Value then begin
+  if FOrientation <> Value then
+  begin
     Lock;
     try
       FOrientation := Value;
@@ -531,7 +550,8 @@ end;
 
 procedure TJvAnimatedImage.SetStretch(Value: Boolean);
 begin
-  if Value <> FStretch then begin
+  if Value <> FStretch then
+  begin
     Lock;
     try
       FStretch := Value;
@@ -539,13 +559,15 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if Active then Repaint;
+    if Active then
+      Repaint;
   end;
 end;
 
 procedure TJvAnimatedImage.SetCenter(Value: Boolean);
 begin
-  if Value <> FCenter then begin
+  if Value <> FCenter then
+  begin
     Lock;
     try
       FCenter := Value;
@@ -553,14 +575,17 @@ begin
       Unlock;
     end;
     PictureChanged;
-    if Active then Repaint;
+    if Active then
+      Repaint;
   end;
 end;
 
 procedure TJvAnimatedImage.SetGlyphNum(Value: Integer);
 begin
-  if Value <> FGlyphNum then begin
-    if (Value < FNumGlyphs) and (Value >= 0) then begin
+  if Value <> FGlyphNum then
+  begin
+    if (Value < FNumGlyphs) and (Value >= 0) then
+    begin
       Lock;
       try
         FGlyphNum := Value;
@@ -576,9 +601,12 @@ end;
 
 procedure TJvAnimatedImage.SetInactiveGlyph(Value: Integer);
 begin
-  if Value < 0 then Value := -1;
-  if Value <> FInactiveGlyph then begin
-    if (Value < FNumGlyphs) or (csLoading in ComponentState) then begin
+  if Value < 0 then
+    Value := -1;
+  if Value <> FInactiveGlyph then
+  begin
+    if (Value < FNumGlyphs) or (csLoading in ComponentState) then
+    begin
       Lock;
       try
         FInactiveGlyph := Value;
@@ -597,11 +625,13 @@ begin
   Lock;
   try
     FNumGlyphs := Value;
-    if FInactiveGlyph >= FNumGlyphs then begin
+    if FInactiveGlyph >= FNumGlyphs then
+    begin
       FInactiveGlyph := -1;
       FGlyphNum := 0;
     end
-    else UpdateInactive;
+    else
+      UpdateInactive;
     ResetImageBounds;
   finally
     Unlock;
@@ -621,7 +651,8 @@ begin
     if (FOrientation = goHorizontal) and (FGlyph.Height > 0) and
       (FGlyph.Width mod FGlyph.Height = 0) then
       FNumGlyphs := FGlyph.Width div FGlyph.Height
-    else if (FOrientation = goVertical) and (FGlyph.Width > 0) and
+    else
+    if (FOrientation = goVertical) and (FGlyph.Width > 0) and
       (FGlyph.Height mod FGlyph.Width = 0) then
       FNumGlyphs := FGlyph.Height div FGlyph.Width;
     ResetImageBounds;
@@ -632,12 +663,15 @@ end;
 
 procedure TJvAnimatedImage.ResetImageBounds;
 begin
-  if FNumGlyphs < 1 then FNumGlyphs := 1;
-  if FOrientation = goHorizontal then begin
+  if FNumGlyphs < 1 then
+    FNumGlyphs := 1;
+  if FOrientation = goHorizontal then
+  begin
     FImageHeight := FGlyph.Height;
     FImageWidth := FGlyph.Width div FNumGlyphs;
   end
-  else {if Orientation = goVertical then} begin
+  else {if Orientation = goVertical then}
+  begin
     FImageWidth := FGlyph.Width;
     FImageHeight := FGlyph.Height div FNumGlyphs;
   end;
@@ -645,7 +679,8 @@ end;
 
 procedure TJvAnimatedImage.AdjustSize;
 begin
-  if not (csReading in ComponentState) then begin
+  if not (csReading in ComponentState) then
+  begin
     if AutoSize and (FImageWidth > 0) and (FImageHeight > 0) then
       SetBounds(Left, Top, FImageWidth, FImageHeight);
   end;
@@ -658,17 +693,23 @@ var
   {Origin: TPoint;}
 begin
   if (not Active) and (FInactiveGlyph >= 0) and
-    (FInactiveGlyph < FNumGlyphs) then BmpIndex := FInactiveGlyph
-  else BmpIndex := FGlyphNum;
+    (FInactiveGlyph < FNumGlyphs) then
+    BmpIndex := FInactiveGlyph
+  else
+    BmpIndex := FGlyphNum;
   { copy image from parent and back-level controls }
-  if not FOpaque then CopyParentImage(Self, Canvas);
-  if (FImageWidth > 0) and (FImageHeight > 0) then begin
+  if not FOpaque then
+    CopyParentImage(Self, Canvas);
+  if (FImageWidth > 0) and (FImageHeight > 0) then
+  begin
     if Orientation = goHorizontal then
       SrcRect := Bounds(BmpIndex * FImageWidth, 0, FImageWidth, FImageHeight)
     else {if Orientation = goVertical then}
       SrcRect := Bounds(0, BmpIndex * FImageHeight, FImageWidth, FImageHeight);
-    if Stretch then DstRect := ClientRect
-    else if Center then
+    if Stretch then
+      DstRect := ClientRect
+    else
+    if Center then
       DstRect := Bounds((ClientWidth - FImageWidth) div 2,
         (ClientHeight - FImageHeight) div 2, FImageWidth, FImageHeight)
     else
@@ -688,33 +729,38 @@ end;
 
 procedure TJvAnimatedImage.TimerExpired(Sender: TObject);
 begin
-{$IFDEF COMPILER3_UP}
-  if csPaintCopy in ControlState then Exit;
-{$ENDIF}
+  {$IFDEF COMPILER3_UP}
+  if csPaintCopy in ControlState then
+    Exit;
+  {$ENDIF}
   if Visible and (FNumGlyphs > 1) and (Parent <> nil) and
     Parent.HandleAllocated then
   begin
     Lock;
     try
-      if FGlyphNum < FNumGlyphs - 1 then Inc(FGlyphNum)
-      else FGlyphNum := 0;
-      if (FGlyphNum = FInactiveGlyph) and (FNumGlyphs > 1) then begin
-        if FGlyphNum < FNumGlyphs - 1 then Inc(FGlyphNum)
-        else FGlyphNum := 0;
-      end;
-{$IFDEF COMPILER3_UP}
+      if FGlyphNum < FNumGlyphs - 1 then
+        Inc(FGlyphNum)
+      else
+        FGlyphNum := 0;
+      if (FGlyphNum = FInactiveGlyph) and (FNumGlyphs > 1) then
+        if FGlyphNum < FNumGlyphs - 1 then
+          Inc(FGlyphNum)
+        else
+          FGlyphNum := 0;
+      {$IFDEF COMPILER3_UP}
       Canvas.Lock;
       try
         FTimerRepaint := True;
         if AsyncDrawing and Assigned(FOnFrameChanged) then
           FTimer.Synchronize(FrameChanged)
-        else FrameChanged;
+        else
+          FrameChanged;
         DoPaintControl;
       finally
         FTimerRepaint := False;
         Canvas.Unlock;
       end;
-{$ELSE}
+      {$ELSE}
       FTimerRepaint := True;
       try
         FrameChanged;
@@ -722,7 +768,7 @@ begin
       finally
         FTimerRepaint := False;
       end;
-{$ENDIF}
+      {$ENDIF}
     finally
       Unlock;
     end;
@@ -731,25 +777,29 @@ end;
 
 procedure TJvAnimatedImage.FrameChanged;
 begin
-  if Assigned(FOnFrameChanged) then FOnFrameChanged(Self);
+  if Assigned(FOnFrameChanged) then
+    FOnFrameChanged(Self);
 end;
 
 procedure TJvAnimatedImage.Stop;
 begin
   if not (csReading in ComponentState) then
-    if Assigned(FOnStop) then FOnStop(Self);
+    if Assigned(FOnStop) then
+      FOnStop(Self);
 end;
 
 procedure TJvAnimatedImage.Start;
 begin
   if not (csReading in ComponentState) then
-    if Assigned(FOnStart) then FOnStart(Self);
+    if Assigned(FOnStart) then
+      FOnStart(Self);
 end;
 
 {$IFNDEF COMPILER4_UP}
 procedure TJvAnimatedImage.SetAutoSize(Value: Boolean);
 begin
-  if Value <> FAutoSize then begin
+  if Value <> FAutoSize then
+  begin
     FAutoSize := Value;
     PictureChanged;
   end;
@@ -783,14 +833,17 @@ end;
 
 procedure TJvAnimatedImage.SetActive(Value: Boolean);
 begin
-  if FActive <> Value then begin
-    if Value then begin
+  if FActive <> Value then
+  begin
+    if Value then
+    begin
       FTimer.OnTimer := TimerExpired;
       FTimer.Enabled := True;
       FActive := FTimer.Enabled;
       Start;
     end
-    else begin
+    else
+    begin
       FTimer.Enabled := False;
       FTimer.OnTimer := nil;
       FActive := False;
@@ -805,11 +858,14 @@ end;
 {$IFDEF COMPILER3_UP}
 procedure TJvAnimatedImage.SetAsyncDrawing(Value: Boolean);
 begin
-  if FAsyncDrawing <> Value then begin
+  if FAsyncDrawing <> Value then
+  begin
     Lock;
     try
-      if Value then HookBitmap;
-      if Assigned(FTimer) then FTimer.SyncEvent := not Value;
+      if Value then
+        HookBitmap;
+      if Assigned(FTimer) then
+        FTimer.SyncEvent := not Value;
       FAsyncDrawing := Value;
     finally
       Unlock;
@@ -818,12 +874,13 @@ begin
 end;
 {$ENDIF}
 
-procedure TJvAnimatedImage.WMSize(var Message: TWMSize);
+procedure TJvAnimatedImage.WMSize(var Msg: TWMSize);
 begin
   inherited;
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   AdjustSize;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 end.
+

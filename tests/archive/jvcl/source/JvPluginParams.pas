@@ -31,8 +31,7 @@ unit JvPluginParams;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmPluginParams = class(TForm)
@@ -45,10 +44,6 @@ type
     lblCreateInfo: TLabel;
     procedure SettingsChanged(Sender: TObject);
     procedure FormShow(Sender: TObject);
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
   end;
 
 var

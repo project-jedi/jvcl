@@ -28,17 +28,19 @@ Known Issues:
 
 unit JvFormAnimation;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms, JvComponent;
 
 type
   TJvFormAnimation = class(TJvComponent)
   private
     FForm: TCustomForm;
+    FRegions: array of HRGN;
+    // (rom) simplified
+    procedure AnimateDisappear(N: Integer);
+    procedure AnimateAppear(N: Integer);
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -62,598 +64,499 @@ type
 
 implementation
 
-{**************************************************}
+uses
+  Math;
 
 constructor TJvFormAnimation.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FForm := GetParentForm(TControl(AOwner));
 end;
 
-{**************************************************}
+procedure TJvFormAnimation.AnimateDisappear(N: Integer);
+var
+  I: Integer;
+begin
+  for I := 0 to N do
+  begin
+    SetWindowRgn(FForm.Handle, FRegions[I], True);
+    Sleep(10);
+  end;
+  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+end;
+
+procedure TJvFormAnimation.AnimateAppear(N: Integer);
+var
+  I: Integer;
+begin
+  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  FForm.Visible := True;
+  for I := N downto 0 do
+  begin
+    SetWindowRgn(FForm.Handle, FRegions[I], True);
+    Sleep(10);
+  end;
+  SetWindowRgn(FForm.Handle, 0, True);
+end;
 
 procedure TJvFormAnimation.DisappearEllipse;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateEllipticRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateEllipticRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearRectangle;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearRoundedRectangle(EllipseX,
   EllipseY: Integer);
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRoundRectRgn(i, j, FForm.Width - i, FForm.Height - j, EllipseX, EllipseY);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRoundRectRgn(I, J, FForm.Width - I, FForm.Height - J, EllipseX, EllipseY);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearHorizontally;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  l := 0;
-  i := 0;
+  J := 0;
+  L := 0;
+  I := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearVertically;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < (FForm.Height div 2) then
+    if J < (FForm.Height div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearTelevision;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j + 2 < (FForm.Height div 2) then
+    if J + 2 < (FForm.Height div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
-    else if i + 6 < (FForm.Width div 2) then
+    else
+    if I + 6 < (FForm.Width div 2) then
     begin
-      i := i + 8;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      I := I + 8;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(5);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearToBottom;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < FForm.Height then
+    if J < FForm.Height then
     begin
-      j := j + 2;
-      hs[k] := CreateRectRgn(i, j, FForm.Width, FForm.Height);
+      J := J + 2;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width, FForm.Height);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.DisappearToTop;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < FForm.Height then
+    if J < FForm.Height then
     begin
-      j := j + 2;
-      hs[k] := CreateRectRgn(i, 0, FForm.Width, FForm.Height - j);
+      J := J + 2;
+      FRegions[K] := CreateRectRgn(I, 0, FForm.Width, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  for i := 0 to l do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
+  AnimateDisappear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearEllipse;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateEllipticRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateEllipticRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearRectangle;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
 
-{**************************************************}
-
-procedure TJvFormAnimation.AppearRoundedRectangle(EllipseX,
-  EllipseY: Integer);
+procedure TJvFormAnimation.AppearRoundedRectangle(EllipseX, EllipseY: Integer);
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRoundRectRgn(i, j, FForm.Width - i, FForm.Height - j, EllipseX, EllipseY);
-      i := i + 2;
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRoundRectRgn(I, J, FForm.Width - I, FForm.Height - J, EllipseX, EllipseY);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearHorizontally;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  l := 0;
-  i := 0;
+  J := 0;
+  L := 0;
+  I := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if i < (FForm.Width div 2) then
+    if I < (FForm.Width div 2) then
     begin
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
-      i := i + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
+      I := I + 2;
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearVertically;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < (FForm.Height div 2) then
+    if J < (FForm.Height div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearTelevision;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j + 2 < (FForm.Height div 2) then
+    if J + 2 < (FForm.Height div 2) then
     begin
-      j := j + 2;
-      if j > (FForm.Height div 2) then
-        i := FForm.Width;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      J := J + 2;
+      if J > (FForm.Height div 2) then
+        I := FForm.Width;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
-    else if i + 6 < (FForm.Width div 2) then
+    else
+    if I + 6 < (FForm.Width div 2) then
     begin
-      i := i + 8;
-      hs[k] := CreateRectRgn(i, j, FForm.Width - i, FForm.Height - j);
+      I := I + 8;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width - I, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearToBottom;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < FForm.Height then
+    if J < FForm.Height then
     begin
-      j := j + 2;
-      hs[k] := CreateRectRgn(i, j, FForm.Width, FForm.Height);
+      J := J + 2;
+      FRegions[K] := CreateRectRgn(I, J, FForm.Width, FForm.Height);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
-
-{**************************************************}
 
 procedure TJvFormAnimation.AppearToTop;
 var
-  i, j, k, l: Integer;
-  hs: array[0..600] of HRGN;
+  I, J, K, L: Integer;
 begin
-  j := 0;
-  i := 0;
-  l := 0;
+  J := 0;
+  I := 0;
+  L := 0;
 
-  for k := 0 to 599 do
+  SetLength(FRegions, Max(FForm.Width, FForm.Height));
+  for K := 0 to High(FRegions) do
   begin
-    if j < FForm.Height then
+    if J < FForm.Height then
     begin
-      j := j + 2;
-      hs[k] := CreateRectRgn(i, 0, FForm.Width, FForm.Height - j);
+      J := J + 2;
+      FRegions[K] := CreateRectRgn(I, 0, FForm.Width, FForm.Height - J);
     end
     else
     begin
-      l := k;
+      L := K;
       Break;
     end;
   end;
 
-  SetWindowRgn(FForm.Handle, CreateRectRgn(0, 0, 0, 0), True);
-  FForm.Visible := True;
-  for i := l downto 0 do
-  begin
-    SetWindowRgn(FForm.Handle, hs[i], True);
-    Sleep(10);
-  end;
-  SetWindowRgn(FForm.Handle, 0, True);
+  AnimateAppear(L);
 end;
 
 end.
+

@@ -28,31 +28,29 @@ Known Issues:
 
 unit JvMonthCalendar;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvMonthCalendar = class(TMonthCalendar)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure MouseEnter(var Msg: Tmessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: Tmessage); message CM_MOUSELEAVE;
+    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -63,16 +61,12 @@ type
 
 implementation
 
-{*****************************************************************}
-
 constructor TJvMonthCalendar.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{**************************************************}
 
 procedure TJvMonthCalendar.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -81,21 +75,18 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-procedure TJvMonthCalendar.MouseEnter(var Msg: Tmessage);
+procedure TJvMonthCalendar.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
-procedure TJvMonthCalendar.MouseLeave(var Msg: Tmessage);
+procedure TJvMonthCalendar.MouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   if Assigned(FOnMouseLeave) then
@@ -103,3 +94,4 @@ begin
 end;
 
 end.
+

@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvFooter;
@@ -30,8 +31,8 @@ unit JvFooter;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, stdctrls, CommCtrl,
-  ComCtrls, extctrls, JvComponent, JvButton, JvTypes;
+  Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
+  JvComponent, JvButton, JvTypes;
 
 type
   EJvFooterError = class(EJVCLException);
@@ -43,22 +44,19 @@ type
     FAlignment: TAlignment;
     FButtonIndex: Integer;
     FSpaceInterval: Integer;
-
-    function GetButtonIndex: integer;
-    procedure SetButtonIndex(const Value: integer);
+    function GetButtonIndex: Integer;
+    procedure SetButtonIndex(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
     procedure SetSpaceInterval(const Value: Integer);
-
-    procedure WMMove(var Message: TWMMove); message WM_MOVE;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMMove(var Msg: TWMMove); message WM_MOVE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Alignment: TAlignment read FAlignment write SetAlignment default
-      taRightJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taRightJustify;
     property ButtonIndex: Integer read GetButtonIndex write SetButtonIndex;
     property SpaceInterval: Integer read FSpaceInterval write SetSpaceInterval;
   end;
@@ -67,14 +65,12 @@ type
   private
     FBevelStyle: TJvBevelStyle;
     FBevelVisible: Boolean;
-
     procedure SetBevelStyle(Value: TJvBevelStyle);
     procedure SetBevelVisible(Value: Boolean);
-
     procedure UpdatePosition;
-    procedure GetBtnsValues(const ABtnIndex: Integer; const AAlignment:
-      TAlignment;
-      const ADirection: Integer; out BtnCount, BtnTotalSpc: Integer);
+    procedure GetBtnsValues(const ABtnIndex: Integer;
+      const AAlignment: TAlignment; const ADirection: Integer;
+      out BtnCount, BtnTotalSpc: Integer);
   protected
     procedure Paint; override;
     procedure Loaded; override;
@@ -130,16 +126,13 @@ type
     property OnStartDock;
     property OnStartDrag;
     //property OnUnDock;
-    property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle
-      default bsLowered;
-    property BevelVisible: Boolean read FBevelVisible write SetBevelVisible
-      default False;
+    property BevelStyle: TJvBevelStyle read FBevelStyle write SetBevelStyle default bsLowered;
+    property BevelVisible: Boolean read FBevelVisible write SetBevelVisible default False;
   end;
-
 
 implementation
 
-{ TJvFooterBtn }
+//=== TJvFooterBtn ===========================================================
 
 const
   DefFootWidth = 350;
@@ -158,47 +151,44 @@ end;
 
 destructor TJvFooterBtn.Destroy;
 begin
-  inherited Destroy;
   FCanvas.Free;
+  inherited Destroy;
 end;
 
-function TJvFooterBtn.GetButtonIndex: integer;
+function TJvFooterBtn.GetButtonIndex: Integer;
 var
-  i: integer;
-
+  I: Integer;
 begin
   Result := FButtonIndex;
   if Parent <> nil then
   begin
-    for i := 0 to Parent.ControlCount - 1 do
-      if Parent.Controls[i] = Self then
+    for I := 0 to Parent.ControlCount - 1 do
+      if Parent.Controls[I] = Self then
       begin
-        Result := i;
-        break;
+        Result := I;
+        Break;
       end;
   end;
 end;
 
-procedure TJvFooterBtn.SetButtonIndex(const Value: integer);
+procedure TJvFooterBtn.SetButtonIndex(const Value: Integer);
 begin
   if FButtonIndex <> Value then
   begin
     if Parent <> nil then
       TJvFooter(Parent).SetChildOrder(Self, Value);
     FButtonIndex := GetButtonIndex;
-
-    if (ComponentState * [csLoading, csDestroying] = []) then
+    if ComponentState * [csLoading, csDestroying] = [] then
       TJvFooter(Parent).UpdatePosition;
   end;
 end;
 
 procedure TJvFooterBtn.SetAlignment(const Value: TAlignment);
 begin
-  if (FAlignment <> Value) then
+  if FAlignment <> Value then
   begin
     FAlignment := Value;
-
-    if (ComponentState * [csLoading, csDestroying] = []) then
+    if ComponentState * [csLoading, csDestroying] = [] then
       TJvFooter(Parent).UpdatePosition;
   end;
 end;
@@ -208,24 +198,23 @@ begin
   if FSpaceInterval <> Value then
   begin
     FSpaceInterval := Value;
-
-    if (ComponentState * [csLoading, csDestroying] = []) then
+    if ComponentState * [csLoading, csDestroying] = [] then
       TJvFooter(Parent).UpdatePosition;
   end;
 end;
 
-procedure TJvFooterBtn.WMMove(var Message: TWMMove);
+procedure TJvFooterBtn.WMMove(var Msg: TWMMove);
 begin
   // Avoid running at runtime
   // if (csDesigning in ComponentState) then
   TJvFooter(Parent).UpdatePosition;
 end;
 
-procedure TJvFooterBtn.WMSize(var Message: TWMSize);
+procedure TJvFooterBtn.WMSize(var Msg: TWMSize);
 begin
   // Does not allow SizeChange
   // Avoid running at runtime
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     SetBounds(Left, Top, Width, Height);
 end;
 
@@ -239,7 +228,7 @@ begin
   inherited SetParent(AParent);
 end;
 
-{ TJvFooter }
+//=== TJvFooter ==============================================================
 
 constructor TJvFooter.Create(AOwner: TComponent);
 begin
@@ -263,111 +252,108 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvFooter.GetBtnsValues(const ABtnIndex: Integer; const AAlignment:
-  TAlignment;
-  const ADirection: Integer; out BtnCount, BtnTotalSpc: Integer);
-// This function returns some total values about the buttons in use
-// BtnCount and BtnTotalSpc return values not considering the current index,
-//   except when searching all values;
+procedure TJvFooter.GetBtnsValues(const ABtnIndex: Integer;
+  const AAlignment: TAlignment; const ADirection: Integer;
+  out BtnCount, BtnTotalSpc: Integer);
+var
+  Idx: Integer;
 
-  procedure DoTheCount(idx: Integer);
+  // This function returns some total values about the buttons in use
+  // BtnCount and BtnTotalSpc return values not considering the current index,
+  //   except when searching all values;
+  procedure DoTheCount(Idx: Integer);
   begin
-    if (Controls[idx] is TJvFooterBtn) and
-      (TJvFooterBtn(Controls[idx]).Alignment = AAlignment) then
+    if (Controls[Idx] is TJvFooterBtn) and
+      (TJvFooterBtn(Controls[Idx]).Alignment = AAlignment) then
     begin
       Inc(BtnCount);
-      Inc(BtnTotalSpc, TJvFooterBtn(Controls[idx]).SpaceInterval);
+      Inc(BtnTotalSpc, TJvFooterBtn(Controls[Idx]).SpaceInterval);
     end;
   end;
-
-var
-  idx: Integer;
 
 begin
   BtnCount := 0;
   BtnTotalSpc := 0;
   case ADirection of
     1: // Forward
-      for idx := ABtnIndex + 1 to ControlCount - 1 do
-        DoTheCount(idx);
+      for Idx := ABtnIndex + 1 to ControlCount - 1 do
+        DoTheCount(Idx);
     0: // All
-      for idx := 0 to ControlCount - 1 do
-        DoTheCount(idx);
+      for Idx := 0 to ControlCount - 1 do
+        DoTheCount(Idx);
     -1: // Backward
-      for idx := ABtnIndex - 1 downto 0 do
-        DoTheCount(idx);
-  end; { case ADirection of }
+      for Idx := ABtnIndex - 1 downto 0 do
+        DoTheCount(Idx);
+  end;
 end;
 
 procedure TJvFooter.UpdatePosition;
 var
-  idx: Integer;
+  Idx: Integer;
   FBtnLeft, FBtnTop, FBtnWidth, FBtnHeight: Integer;
-
   FBtnCount, FBtnCount_2, FBtnSpace, FBtnSpace_2: Integer;
-
 begin
-  for idx := 0 to ControlCount - 1 do
-    if Controls[idx] is TJvFooterBtn then
+  for Idx := 0 to ControlCount - 1 do
+    if Controls[Idx] is TJvFooterBtn then
     begin
-      FBtnTop := Self.Height - TJvFooterBtn(Controls[idx]).Height - 5;
-      FBtnWidth := TJvFooterBtn(Controls[idx]).Width;
-      FBtnHeight := TJvFooterBtn(Controls[idx]).Height;
+      FBtnTop := Self.Height - TJvFooterBtn(Controls[Idx]).Height - 5;
+      FBtnWidth := TJvFooterBtn(Controls[Idx]).Width;
+      FBtnHeight := TJvFooterBtn(Controls[Idx]).Height;
 
-      case TJvFooterBtn(Controls[idx]).Alignment of
+      case TJvFooterBtn(Controls[Idx]).Alignment of
         taCenter:
           begin
             // Set anchors
-            TJvFooterBtn(Controls[idx]).Anchors := [akBottom];
+            TJvFooterBtn(Controls[Idx]).Anchors := [akBottom];
             // Normal return
-            GetBtnsValues(TJvFooterBtn(Controls[idx]).ButtonIndex,
-              TJvFooterBtn(Controls[idx]).Alignment, -1, FBtnCount_2,
+            GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
+              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount_2,
               FBtnSpace_2);
             // Get all buttons
-            GetBtnsValues(0, TJvFooterBtn(Controls[idx]).Alignment, 0,
+            GetBtnsValues(0, TJvFooterBtn(Controls[Idx]).Alignment, 0,
               FBtnCount, FBtnSpace);
 
             FBtnLeft := (Width div 2) -
               ((FBtnCount * FBtnWidth) + FBtnSpace) div 2 +
               (FBtnCount_2 * FBtnWidth) + FBtnSpace_2;
-          end; { taCenter }
+          end;
         taLeftJustify:
           begin
             // Set anchors
-            TJvFooterBtn(Controls[idx]).Anchors := [akLeft, akBottom];
+            TJvFooterBtn(Controls[Idx]).Anchors := [akLeft, akBottom];
 
             // get the number of backward buttons
-            GetBtnsValues(TJvFooterBtn(Controls[idx]).ButtonIndex,
-              TJvFooterBtn(Controls[idx]).Alignment, -1, FBtnCount, FBtnSpace);
+            GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
+              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount, FBtnSpace);
 
             FBtnLeft := FBtnCount * FBtnWidth;
             if FBtnCount = 0 then
               FBtnLeft := FBtnLeft + DefFootSpace
             else
               FBtnLeft := FBtnLeft + FBtnSpace +
-                TJvFooterBtn(Controls[idx]).SpaceInterval;
-          end; { taLeftJustify }
+                TJvFooterBtn(Controls[Idx]).SpaceInterval;
+          end;
         taRightJustify:
           begin
             // Set anchors
-            TJvFooterBtn(Controls[idx]).Anchors := [akRight, akBottom];
+            TJvFooterBtn(Controls[Idx]).Anchors := [akRight, akBottom];
             // get the number of forward buttons
-            GetBtnsValues(TJvFooterBtn(Controls[idx]).ButtonIndex,
-              TJvFooterBtn(Controls[idx]).Alignment, 1, FBtnCount, FBtnSpace);
+            GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
+              TJvFooterBtn(Controls[Idx]).Alignment, 1, FBtnCount, FBtnSpace);
 
             FBtnLeft := Width - ((FBtnCount + 1) * FBtnWidth);
             if FBtnCount = 0 then
               FBtnLeft := FBtnLeft - DefFootSpace
             else
               FBtnLeft := FBtnLeft - FBtnSpace -
-                TJvFooterBtn(Controls[idx]).SpaceInterval;
-          end; { taRightJustify }
+                TJvFooterBtn(Controls[Idx]).SpaceInterval;
+          end;
       else
         FBtnLeft := 0;
-      end; { case Alignment of }
+      end;
 
-      Controls[idx].SetBounds(FBtnLeft, FBtnTop, FBtnWidth, FBtnHeight);
-    end; { if Controls[idx] is TJvFooterBtn then }
+      Controls[Idx].SetBounds(FBtnLeft, FBtnTop, FBtnWidth, FBtnHeight);
+    end;
 end;
 
 procedure TJvFooter.SetBevelStyle(Value: TJvBevelStyle);
@@ -408,7 +394,7 @@ begin
   if FBevelVisible then
     with Canvas do
     begin
-      if (csDesigning in ComponentState) then
+      if csDesigning in ComponentState then
       begin
         Pen.Style := psSolid;
         Pen.Mode := pmCopy;

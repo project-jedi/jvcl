@@ -28,35 +28,30 @@ Known Issues:
 
 unit JvWaitingGradient;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls,
   JvImageDrawThread, JVCLVer;
 
 type
   TJvWaitingGradient = class(TGraphicControl)
   private
-    FTimerTag: Integer;
+    FAboutJVCL: TJVCLAboutInfo;
+    FFromLeftToRight: Boolean; { Indicates direction }
     FBitmap: TBitmap;
-    FLeft: Integer;
-    FWidth: Integer;
+    FLeftOffset: Integer;
+    FGradientWidth: Integer;
     FStartColor: TColor;
     FEndColor: TColor;
-    FStart: TColor;
-    FEnd: TColor;
-    FRect: TRect;
-    FDRect: TRect;
-    FLoading: Boolean;
+    FSourceRect: TRect;
+    FDestRect: TRect;
     FInterval: Cardinal;
     FEnabled: Boolean;
     FScroll: TJvImageDrawThread;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure Deplace(Sender: TObject);
-    procedure CreateBitmap;
-    procedure SetWidth(const Value: Integer);
+    procedure UpdateBitmap;
+    procedure SetGradientWidth(const Value: Integer);
     procedure SetEndColor(const Value: TColor);
     procedure SetStartColor(const Value: TColor);
     procedure SetInterval(const Value: Cardinal);
@@ -64,229 +59,235 @@ type
   protected
     procedure Paint; override;
     procedure Resize; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Color;
-    property GradientWidth: Integer read FWidth write SetWidth;
-    property StartColor: TColor read FStart write SetStartColor default clBtnFace;
-    property EndColor: TColor read Fend write SetEndColor default clBlack;
-    property Interval: Cardinal read FInterval write SetInterval default 50;
-    property Enabled: Boolean read FEnabled write SetEnable default True;
-    property Visible;
     property Align;
+    property Color;
+    property Height default 10;
+    property Width default 100;
+    property EndColor: TColor read FEndColor write SetEndColor default clBlack;
+    {(rb) consistently use Active or Enabled }
+    property Enabled: Boolean read FEnabled write SetEnable default False;
+    property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
+    property Interval: Cardinal read FInterval write SetInterval default 50;
+    property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
+    {(rb) ParentColor included }
+    property ParentColor;
+    property Visible;
   end;
 
 implementation
+
 uses
-  JvTypes; 
-///////////////////////////////////////////////////////////
-// TJvWaitingGradient
-///////////////////////////////////////////////////////////
+  JvTypes;
 
 constructor TJvWaitingGradient.Create(AOwner: TComponent);
 begin
-  FLoading := True;
-  inherited;
-  Parent := TWinControl(AOwner);
-  Color := clBtnFace;
-  Width := 100;
-  Height := 10;
-  FInterval := 50;
-  FEnabled := True;
+  inherited Create(AOwner);
+  {(rb) csOpaque included }
+  ControlStyle := ControlStyle + [csOpaque];
 
-  FStart := clBtnFace;
-  FEnd := clBlack;
-  FWidth := 50;
-  FLeft := -FWidth;
   FBitmap := TBitmap.Create;
-  CreateBitmap;
-  FRect := Rect(0, 0, FWidth, Height);
-  FDRect := Rect(0, 0, FWidth, Height);
-  FTImertag := 0;
+
+  FInterval := 50;
+  FEnabled := False;
+
+  FStartColor := clBtnFace;
+  FEndColor := clBlack;
+  FGradientWidth := 50;
+  FLeftOffset := -FGradientWidth;
+  FSourceRect := Rect(0, 0, FGradientWidth, Height);
+  FDestRect := Rect(0, 0, FGradientWidth, Height);
+  FFromLeftToRight := True;
 
   FScroll := TJvImageDrawThread.Create(True);
   FScroll.FreeOnTerminate := False;
   FScroll.Delay := FInterval;
   FScroll.OnDraw := Deplace;
-  FScroll.Resume;
 
-  FLoading := False;
+  Color := clBtnFace;
+
+  { (rb) Set the size properties last; will trigger Resize }
+  // (rom) also always set the default values
+  Height := 10;
+  Width := 100;
 end;
-
-{**************************************************}
-
-procedure TJvWaitingGradient.CreateBitmap;
-var
-  i: Integer;
-  j: Real;
-  Deltas: array[0..2] of Real; //R,G,B
-  r: TRect;
-  FSteps: Integer;
-begin
-  if FTimerTag = 0 then
-  begin  
-    FStartColor := ColorToRGB(FStart);
-    FEndColor   := ColorToRGB(FEnd);
-  end
-  else
-  begin
-    FStartColor := ColorToRGB(FEnd);
-    FEndColor   := ColorToRGB(FStart);
-  end;
-
-  FBitmap.Width := FWidth;
-  FBitmap.Height := Height;
-
-  FSteps := FWidth;
-  if FSteps > Width then
-    FSteps := Width;
-  Deltas[0] := (GetRValue(FEndColor) - GetRValue(FStartColor)) / FSteps;
-  Deltas[1] := (GetGValue(FEndColor) - GetGValue(FStartColor)) / FSteps;
-  Deltas[2] := (GetBValue(FEndColor) - GetBValue(FStartColor)) / FSteps;
-  FBitmap.Canvas.Brush.Style := bsSolid;
-  j := FWidth / FSteps;
-  for i := 0 to FSteps do
-  begin
-    r.Top := 0;
-    r.Bottom := Height;
-    r.Left := Round(i * j);
-    r.Right := Round((i + 1) * j);
-    FBitmap.Canvas.Brush.Color := RGB(Round(GetRValue(FStartColor) + i * Deltas[0]), Round(GetGValue(FStartColor) + i *
-      Deltas[1]), Round(GetBValue(FStartColor) + i * Deltas[2]));
-    FBitmap.Canvas.FillRect(r);
-  end;
-end;
-
-{**************************************************}
-
-procedure TJvWaitingGradient.Deplace(Sender: TObject);
-begin
-  if FBitmap = nil then
-    Exit;
-  try
-    if FTimerTag = 0 then
-    begin
-      if FLeft + FWidth >= Width then
-      begin
-        FTimerTag := 1;
-        CreateBitmap;
-        FLeft := Width;
-      end
-      else
-        FLeft := FLeft + 2;
-    end
-    else
-    begin
-      if FLeft <= 0 then
-      begin
-        FTimerTag := 0;
-        CreateBitmap;
-        FLeft := -FWidth;
-      end
-      else
-        FLeft := FLeft - 2;
-    end;
-    FDRect.Left := FLeft;
-    FDRect.Right := FLeft + FWidth;
-    Repaint;
-  except
-  end;
-end;
-
-{**************************************************}
 
 destructor TJvWaitingGradient.Destroy;
 begin
   FScroll.OnDraw := nil;
   FScroll.Terminate;
-//  FScroll.WaitFor;
+  //  FScroll.WaitFor;
   FreeAndNil(FScroll);
 
   FBitmap.Free;
   FBitmap := nil;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-procedure TJvWaitingGradient.Paint;
+procedure TJvWaitingGradient.Loaded;
 begin
-  if Canvas <> nil then
-  begin
-    //paint
-    Canvas.Brush.Style := bsSolid;
-    Canvas.Brush.Color := Color;
-    Canvas.FillRect(Rect(0, 0, FLeft, Height));
-    Canvas.FillRect(Rect(FLeft + FBitmap.Width, 0, Width, Height));
+  inherited Loaded;
+  UpdateBitmap;
+  if FEnabled then
+    FScroll.Resume;
+end;
 
-    Canvas.CopyRect(FDRect, FBItmap.Canvas, FRect);
+procedure TJvWaitingGradient.UpdateBitmap;
+var
+  I: Integer;
+  J: Real;
+  Deltas: array [0..2] of Real; //R,G,B
+  Rect: TRect;
+  Steps: Integer;
+  LStartColor, LEndColor: Longint;
+begin
+  if not Assigned(FBitmap) then
+    Exit;
+  if csLoading in ComponentState then
+    Exit;
+
+  if FFromLeftToRight then
+  begin
+    LStartColor := ColorToRGB(FStartColor);
+    LEndColor := ColorToRGB(FEndColor);
+  end
+  else
+  begin
+    LStartColor := ColorToRGB(FEndColor);
+    LEndColor := ColorToRGB(FStartColor);
+  end;
+
+  FBitmap.Width := FGradientWidth;
+  FBitmap.Height := Height;
+
+  Steps := FGradientWidth;
+  if Steps > Width then
+    Steps := Width;
+  Deltas[0] := (GetRValue(LEndColor) - GetRValue(LStartColor)) / Steps;
+  Deltas[1] := (GetGValue(LEndColor) - GetGValue(LStartColor)) / Steps;
+  Deltas[2] := (GetBValue(LEndColor) - GetBValue(LStartColor)) / Steps;
+  FBitmap.Canvas.Brush.Style := bsSolid;
+  J := FGradientWidth / Steps;
+  for I := 0 to Steps do
+  begin
+    Rect.Top := 0;
+    Rect.Bottom := Height;
+    Rect.Left := Round(I * J);
+    Rect.Right := Round((I + 1) * J);
+    FBitmap.Canvas.Brush.Color :=
+      RGB(
+        Round(GetRValue(LStartColor) + I * Deltas[0]),
+        Round(GetGValue(LStartColor) + I * Deltas[1]),
+        Round(GetBValue(LStartColor) + I * Deltas[2]));
+    FBitmap.Canvas.FillRect(Rect);
   end;
 end;
 
-{**************************************************}
+procedure TJvWaitingGradient.Deplace(Sender: TObject);
+begin
+  if FFromLeftToRight then
+  begin
+    if FLeftOffset + FGradientWidth >= Width then
+    begin
+      FFromLeftToRight := False;
+      UpdateBitmap;
+      FLeftOffset := Width;
+    end
+    else
+      FLeftOffset := FLeftOffset + 2;
+  end
+  else
+  begin
+    if FLeftOffset <= 0 then
+    begin
+      FFromLeftToRight := True;
+      UpdateBitmap;
+      FLeftOffset := -FGradientWidth;
+    end
+    else
+      FLeftOffset := FLeftOffset - 2;
+  end;
+  FDestRect.Left := FLeftOffset;
+  FDestRect.Right := FLeftOffset + FGradientWidth;
+
+  Repaint;
+end;
+
+procedure TJvWaitingGradient.Paint;
+begin
+  if not Assigned(FBitmap) then
+    Exit;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(Rect(0, 0, FLeftOffset, Height));
+  Canvas.FillRect(Rect(FLeftOffset + FBitmap.Width, 0, Width, Height));
+
+  Canvas.CopyRect(FDestRect, FBitmap.Canvas, FSourceRect);
+end;
 
 procedure TJvWaitingGradient.Resize;
 begin
-  inherited;
-  FRect := Rect(0, 0, FWidth, Height);
-  FDRect := Rect(0, 0, FWidth, Height);
-  if not FLoading then
-    CreateBitmap;
+  inherited Resize;
+  FSourceRect := Rect(0, 0, FGradientWidth, Height);
+  FDestRect := Rect(0, 0, FGradientWidth, Height);
+  UpdateBitmap;
 end;
-
-{**************************************************}
 
 procedure TJvWaitingGradient.SetEnable(const Value: Boolean);
 begin
+  {(rb) why keep a copy of enabled in FEnabled (already in FScroll.Suspended)? }
   FEnabled := Value;
-  if Value then
+
+  if csLoading in ComponentState then
+    Exit;
+
+  if FEnabled then
     FScroll.Resume
   else
     FScroll.Suspend;
 end;
 
-{**************************************************}
-
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);
 begin
-  Fend := Value;
-  if not FLoading then
-    CreateBitmap;
+  if FEndColor <> Value then
+  begin
+    FEndColor := Value;
+    UpdateBitmap;
+  end;
 end;
-
-{**************************************************}
 
 procedure TJvWaitingGradient.SetInterval(const Value: Cardinal);
 begin
+  {(rb) why keep a copy of interval in FInterval (already in FScroll.Delay)? }
   FInterval := Value;
   FScroll.Delay := Value;
 end;
 
-{**************************************************}
-
 procedure TJvWaitingGradient.SetStartColor(const Value: TColor);
 begin
-  FStart := Value;
-  if not FLoading then
-    CreateBitmap;
+  if Value <> FStartColor then
+  begin
+    FStartColor := Value;
+    UpdateBitmap;
+  end;
 end;
 
-{**************************************************}
-
-procedure TJvWaitingGradient.SetWidth(const Value: Integer);
+procedure TJvWaitingGradient.SetGradientWidth(const Value: Integer);
 begin
   if Value > 0 then
   begin
-    FWidth := Value;
-    FLeft := -FWidth;
-    FRect := Rect(0, 0, FWidth, Height);
-    FDRect := Rect(0, 0, FWidth, Height);
-    if not FLoading then
-      CreateBitmap;
+    FGradientWidth := Value;
+    FLeftOffset := -FGradientWidth;
+    FSourceRect := Rect(0, 0, FGradientWidth, Height);
+    FDestRect := Rect(0, 0, FGradientWidth, Height);
+    UpdateBitmap;
   end;
 end;
 
 end.
+

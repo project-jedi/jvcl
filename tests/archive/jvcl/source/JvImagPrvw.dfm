@@ -3,7 +3,7 @@ object ImageForm: TImageForm
   Top = 98
   ActiveControl = FileEdit
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
+  BorderStyle = bsSingle
   Caption = 'Select Image'
   ClientHeight = 262
   ClientWidth = 485
@@ -50,7 +50,7 @@ object ImageForm: TImageForm
     Width = 146
     Height = 15
     AutoSize = False
-    Caption = 'C:\...\JEDI\JVCL\packages'
+    Caption = 'D:\...\JVCL\source'
   end
   object ImageName: TLabel
     Left = 319

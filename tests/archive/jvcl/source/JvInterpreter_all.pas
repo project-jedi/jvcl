@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInterpreter_all.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,9 +26,7 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
-
 
 unit JvInterpreter_all;
 
@@ -36,34 +34,32 @@ interface
 
 implementation
 
-uses JvInterpreter,
+uses
   JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes, JvInterpreter_Graphics,
-  JvInterpreter_Controls, JvInterpreter_Dialogs,
-  JvInterpreter_JvInterpreter, JvInterpreter_JvRegAuto,
-{$IFDEF COMPLIB_VCL}
+  JvInterpreter_Controls, JvInterpreter_Dialogs, JvInterpreter_JvRegAuto,
+  {$IFDEF COMPLIB_VCL}
   JvInterpreter_Windows,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls, JvInterpreter_Forms,
   JvInterpreter_Menus, JvInterpreter_Grids,
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db, JvInterpreter_DBTables, JvInterpreter_DbCtrls, JvInterpreter_DbGrids,
   JvInterpreter_Quickrpt,
-{$ENDIF}
+  {$ENDIF}
   JvInterpreter_JvEditor,
-  JvInterpreterFm
-{$ENDIF COMPLIB_VCL}
-{$IFDEF COMPLIB_CLX}
-  JvInterpreter_Types
-{$ENDIF COMPLIB_CLX}
-  ;
+  JvInterpreterFm,
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
+  JvInterpreter_Types,
+  {$ENDIF COMPLIB_CLX}
+  JvInterpreter;
 
 initialization
-
   JvInterpreter_System.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_SysUtils.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Classes.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   JvInterpreter_Windows.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Graphics.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Controls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
@@ -76,17 +72,19 @@ initialization
   JvInterpreter_Menus.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Grids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
-{$IFNDEF DelphiPersonalEdition}
+  {$IFNDEF DelphiPersonalEdition}
   JvInterpreter_Db.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DBTables.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DbCtrls.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_DbGrids.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreter_Quickrpt.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-{$ENDIF}
+  {$ENDIF}
 
   JvInterpreter_JvEditor.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreterFm.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-{$ENDIF COMPLIB_VCL}
+  {$ENDIF COMPLIB_VCL}
+
 end.
+

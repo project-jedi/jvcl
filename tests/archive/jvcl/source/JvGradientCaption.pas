@@ -31,42 +31,42 @@ unit JvGradientCaption;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, JvGradient, JvTypes, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
+  JvGradient, JvTypes, JVCLVer;
 
 type
   TJvGradientCaption = class(TWinControl)
   private
-    FJvGradient1: TJvGradient;
-    FLabel1: TLabel;
-    FLabelLeft: integer;
+    FGradient: TJvGradient;
+    FLabel: TLabel;
+    FLabelLeft: Integer;
     FHint: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
     FOldLabelFontChange: TNotifyEvent;
-    function GetJvGradient1Cursor: TCursor;
-    procedure SetJvGradient1Cursor(Value: TCursor);
-    function GetJvGradient1Hint: string;
-    procedure SetJvGradient1Hint(Value: string);
-    function GetJvGradient1StartColor: TColor;
-    procedure SetJvGradient1StartColor(Value: TColor);
-    function GetJvGradient1EndColor: TColor;
-    procedure SetJvGradient1EndColor(Value: TColor);
-    function GetJvGradient1Steps: Integer;
-    procedure SetJvGradient1Steps(Value: Integer);
-    function GetLabel1Left: Integer;
-    procedure SetLabel1Left(Value: Integer);
-    function GetLabel1Top: Integer;
-    procedure SetLabel1Top(Value: Integer);
-    function GetLabel1Cursor: TCursor;
-    procedure SetLabel1Cursor(Value: TCursor);
-    function GetLabel1Hint: string;
-    procedure SetLabel1Hint(Value: string);
-    function GetLabel1Caption: string;
-    procedure SetLabel1Caption(Value: string);
-    function GetLabel1Color: TColor;
-    procedure SetLabel1Color(Value: TColor);
+    function GetGradientCursor: TCursor;
+    procedure SetGradientCursor(Value: TCursor);
+    function GetGradientHint: string;
+    procedure SetGradientHint(Value: string);
+    function GetGradientStartColor: TColor;
+    procedure SetGradientStartColor(Value: TColor);
+    function GetGradientEndColor: TColor;
+    procedure SetGradientEndColor(Value: TColor);
+    function GetGradientSteps: Integer;
+    procedure SetGradientSteps(Value: Integer);
+    function GetLabelLeft: Integer;
+    procedure SetLabelLeft(Value: Integer);
+    function GetLabelTop: Integer;
+    procedure SetLabelTop(Value: Integer);
+    function GetLabelCursor: TCursor;
+    procedure SetLabelCursor(Value: TCursor);
+    function GetLabelHint: string;
+    procedure SetLabelHint(Value: string);
+    function GetLabelCaption: string;
+    procedure SetLabelCaption(Value: string);
+    function GetLabelColor: TColor;
+    procedure SetLabelColor(Value: TColor);
     procedure SetHints(const Value: Boolean);
-    function GetFont: Tfont;
+    function GetFont: TFont;
     procedure SetFont(const Value: Tfont);
     function GetGStyle: TGradStyle;
     procedure SetGstyle(const Value: TGradStyle);
@@ -74,32 +74,30 @@ type
     procedure Setalignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
   protected
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure DoLabelFontChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property GradientCursor: TCursor read GetJvGradient1Cursor write SetJvGradient1Cursor default crDefault;
-    property GradientHint: string read GetJvGradient1Hint write SetJvGradient1Hint;
-    property GradientStartColor: TColor read GetJvGradient1StartColor write SetJvGradient1StartColor default clBlack;
-    property GradientEndColor: TColor read GetJvGradient1EndColor write SetJvGradient1EndColor default clWhite;
-    property GradientSteps: Integer read GetJvGradient1Steps write SetJvGradient1Steps default 100;
+    property GradientCursor: TCursor read GetGradientCursor write SetGradientCursor default crDefault;
+    property GradientHint: string read GetGradientHint write SetGradientHint;
+    property GradientStartColor: TColor read GetGradientStartColor write SetGradientStartColor default clBlack;
+    property GradientEndColor: TColor read GetGradientEndColor write SetGradientEndColor default clWhite;
+    property GradientSteps: Integer read GetGradientSteps write SetGradientSteps default 100;
     property GradientStyle: TGradStyle read GetGStyle write SetGstyle;
-    property LabelLeft: Integer read GetLabel1Left write SetLabel1Left default 10;
-    property LabelTop: Integer read GetLabel1Top write SetLabel1Top default 8;
-    property LabelCursor: TCursor read GetLabel1Cursor write SetLabel1Cursor default crDefault;
-    property LabelHint: string read GetLabel1Hint write SetLabel1Hint;
-    property LabelCaption: string read GetLabel1Caption write SetLabel1Caption;
+    property LabelLeft: Integer read GetLabelLeft write SetLabelLeft default 10;
+    property LabelTop: Integer read GetLabelTop write SetLabelTop default 8;
+    property LabelCursor: TCursor read GetLabelCursor write SetLabelCursor default crDefault;
+    property LabelHint: string read GetLabelHint write SetLabelHint;
+    property LabelCaption: string read GetLabelCaption write SetLabelCaption;
     // LabelColor sets the background Color of the label (used for text in the control).
     // To get a transparent text background, set LabelColor to clNone
-    property LabelColor: TColor read GetLabel1Color write SetLabel1Color default clNone;
+    property LabelColor: TColor read GetLabelColor write SetLabelColor default clNone;
     property LabelFont: TFont read GetFont write SetFont;
     property ShowHint: Boolean read FHint write SetHints default False;
     property LabelAlignment: TAlignment read GetAlignment write SetAlignment;
-
     property Align;
     property Anchors;
     property AutoSize;
@@ -125,7 +123,6 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
@@ -160,258 +157,227 @@ implementation
 resourcestring
   RC_YourTextHere = 'Put your text here ...';
 
-  {***************************************************}
-
 constructor TJvGradientCaption.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   Self.Width := 285;
   Self.Height := 30;
-  FJvGradient1 := TJvGradient.Create(Self);
-  FJvGradient1.Parent := Self;
-  FLabel1 := TLabel.Create(Self);
-  FLabel1.AutoSize := false;
-  FLabel1.Parent := Self;
-  FJvGradient1.Left := 0;
-  FJvGradient1.Top := 0;
-  FJvGradient1.StartColor := clBlack;
-  FJvGradient1.EndColor := clWhite;
-  FJvGradient1.Steps := 100;
+  FGradient := TJvGradient.Create(Self);
+  FGradient.Parent := Self;
+  FLabel := TLabel.Create(Self);
+  FLabel.AutoSize := false;
+  FLabel.Parent := Self;
+  FGradient.Left := 0;
+  FGradient.Top := 0;
+  FGradient.StartColor := clBlack;
+  FGradient.EndColor := clWhite;
+  FGradient.Steps := 100;
   LabelLeft := 10;
-  FLabel1.Top := 8;
+  FLabel.Top := 8;
   LabelColor := clNone;
-  FOldLabelFontChange := FLabel1.Font.OnChange;
-  FLabel1.Font.OnChange := DoLabelFontChange;
-  FLabel1.Font.Color := clwhite;
-  FLabel1.Caption := RC_YourTextHere;
+  FOldLabelFontChange := FLabel.Font.OnChange;
+  FLabel.Font.OnChange := DoLabelFontChange;
+  FLabel.Font.Color := clWhite;
+  FLabel.Caption := RC_YourTextHere;
   FHint := False;
 end;
-{***************************************************}
 
 destructor TJvGradientCaption.Destroy;
 begin
-  FJvGradient1.Free;
-  //  FLabel1.OnChange := FOldLabelFontChange;
-  FLabel1.Free;
+  FGradient.Free;
+  //  FLabel.OnChange := FOldLabelFontChange;
+  FLabel.Free;
   inherited Destroy;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetJvGradient1Cursor: TCursor;
+function TJvGradientCaption.GetGradientCursor: TCursor;
 begin
-  Result := FJvGradient1.Cursor;
+  Result := FGradient.Cursor;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1Cursor(Value: TCursor);
+procedure TJvGradientCaption.SetGradientCursor(Value: TCursor);
 begin
-  FJvGradient1.Cursor := Value;
+  FGradient.Cursor := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetJvGradient1Hint: string;
+function TJvGradientCaption.GetGradientHint: string;
 begin
-  Result := FJvGradient1.Hint;
+  Result := FGradient.Hint;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1Hint(Value: string);
+procedure TJvGradientCaption.SetGradientHint(Value: string);
 begin
-  FJvGradient1.Hint := Value;
+  FGradient.Hint := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetJvGradient1StartColor: TColor;
+function TJvGradientCaption.GetGradientStartColor: TColor;
 begin
-  Result := FJvGradient1.StartColor;
+  Result := FGradient.StartColor;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1StartColor(Value: TColor);
+procedure TJvGradientCaption.SetGradientStartColor(Value: TColor);
 begin
-  FJvGradient1.StartColor := Value;
+  FGradient.StartColor := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetJvGradient1EndColor: TColor;
+function TJvGradientCaption.GetGradientEndColor: TColor;
 begin
-  Result := FJvGradient1.EndColor;
+  Result := FGradient.EndColor;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1EndColor(Value: TColor);
+procedure TJvGradientCaption.SetGradientEndColor(Value: TColor);
 begin
-  FJvGradient1.EndColor := Value;
+  FGradient.EndColor := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetJvGradient1Steps: Integer;
+function TJvGradientCaption.GetGradientSteps: Integer;
 begin
-  Result := FJvGradient1.Steps;
+  Result := FGradient.Steps;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetJvGradient1Steps(Value: Integer);
+procedure TJvGradientCaption.SetGradientSteps(Value: Integer);
 begin
-  FJvGradient1.Steps := Value;
+  FGradient.Steps := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Left: Integer;
+function TJvGradientCaption.GetLabelLeft: Integer;
 begin
   Result := FLabelLeft;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Left(Value: Integer);
+procedure TJvGradientCaption.SetLabelLeft(Value: Integer);
 begin
-  if FLabel1.Left <> Value then
+  if FLabel.Left <> Value then
   begin
-    if Value < 0 then Value := 0;
-    FLabel1.Left := Value;
+    if Value < 0 then
+      Value := 0;
+    FLabel.Left := Value;
     FLabelLeft := Value;
     AdjustLabelWidth;
   end;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Top: Integer;
+function TJvGradientCaption.GetLabelTop: Integer;
 begin
-  Result := FLabel1.Top;
+  Result := FLabel.Top;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Top(Value: Integer);
+procedure TJvGradientCaption.SetLabelTop(Value: Integer);
 begin
-  if Value < 0 then Value := 0;
-  FLabel1.Top := Value;
+  if Value < 0 then
+    Value := 0;
+  FLabel.Top := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Cursor: TCursor;
+function TJvGradientCaption.GetLabelCursor: TCursor;
 begin
-  Result := FLabel1.Cursor;
+  Result := FLabel.Cursor;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Cursor(Value: TCursor);
+procedure TJvGradientCaption.SetLabelCursor(Value: TCursor);
 begin
-  FLabel1.Cursor := Value;
+  FLabel.Cursor := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Hint: string;
+function TJvGradientCaption.GetLabelHint: string;
 begin
-  Result := FLabel1.Hint;
+  Result := FLabel.Hint;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Hint(Value: string);
+procedure TJvGradientCaption.SetLabelHint(Value: string);
 begin
-  FLabel1.Hint := Value;
+  FLabel.Hint := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Caption: string;
+function TJvGradientCaption.GetLabelCaption: string;
 begin
-  Result := FLabel1.Caption;
+  Result := FLabel.Caption;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Caption(Value: string);
+procedure TJvGradientCaption.SetLabelCaption(Value: string);
 begin
-  FLabel1.Caption := Value;
+  FLabel.Caption := Value;
   AdjustLabelWidth;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetLabel1Color: TColor;
+function TJvGradientCaption.GetLabelColor: TColor;
 begin
-  Result := FLabel1.Color;
+  Result := FLabel.Color;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.SetLabel1Color(Value: TColor);
+procedure TJvGradientCaption.SetLabelColor(Value: TColor);
 begin
-  FLabel1.Color := Value;
-  FLabel1.Transparent := Value = clNone;
+  FLabel.Color := Value;
+  FLabel.Transparent := (Value = clNone);
 end;
-{***************************************************}
 
 procedure TJvGradientCaption.SetHints(const Value: Boolean);
 begin
   FHint := Value;
-  FLabel1.ShowHint := Value;
-  FJvGradient1.showhint := Value;
+  FLabel.ShowHint := Value;
+  FGradient.showhint := Value;
 end;
-{***************************************************}
 
-function TJvGradientCaption.GetFont: Tfont;
+function TJvGradientCaption.GetFont: TFont;
 begin
-  Result := FLabel1.Font;
+  Result := FLabel.Font;
 end;
-{***************************************************}
 
 procedure TJvGradientCaption.SetFont(const Value: Tfont);
 begin
-  Flabel1.Font := Value;
+  FLabel.Font := Value;
   AdjustLabelWidth;
 end;
-{***************************************************}
 
 function TJvGradientCaption.GetGStyle: TGradStyle;
 begin
-  Result := FJvGradient1.Style;
+  Result := FGradient.Style;
 end;
-{***************************************************}
 
 procedure TJvGradientCaption.SetGStyle(const Value: TGradStyle);
 begin
-  FJvGradient1.Style := Value;
+  FGradient.Style := Value;
 end;
-{***************************************************}
 
 function TJvGradientCaption.GetAlignment: TAlignment;
 begin
-  Result := FLabel1.Alignment;
+  Result := FLabel.Alignment;
 end;
-{***************************************************}
 
 procedure TJvGradientCaption.Setalignment(const Value: TAlignment);
 begin
-  FLabel1.Alignment := Value;
+  FLabel.Alignment := Value;
   AdjustLabelWidth;
 end;
-{***************************************************}
 
-procedure TJvGradientCaption.WMSize(var Message: TWMSize);
+procedure TJvGradientCaption.WMSize(var Msg: TWMSize);
 begin
   inherited;
   AdjustLabelWidth;
 end;
-{***************************************************}
 
 procedure TJvGradientCaption.AdjustLabelWidth;
-var W, L: integer;
+var
+  W, L: Integer;
 begin
-  L := FLabel1.Left;
+  L := FLabel.Left;
   // make as large as we need:
-  FLabel1.AutoSize := true;
-  FLabel1.AutoSize := false;
-  FLabel1.Left := L;
-  W := FJvGradient1.Width - FLabelLeft - FLabelLeft;
+  FLabel.AutoSize := true;
+  FLabel.AutoSize := false;
+  FLabel.Left := L;
+  W := FGradient.Width - FLabelLeft - FLabelLeft;
   // make bigger if there's room
-  if W > FLabel1.Width then
+  if W > FLabel.Width then
   begin
-    FLabel1.Width := W;
-    FLabel1.Left := FLabelLeft;
+    FLabel.Width := W;
+    FLabel.Left := FLabelLeft;
   end
-  else if W < FLabel1.Width then // otherwise, just center
+  else
+  if W < FLabel.Width then // otherwise, just center
   begin
-    FLabel1.Left := (Width - FLabel1.Width) div 2;
-//    if (FLabelLeft > FLabel1.Left) and  then
-//      FLabelLeft := FLabel1.Left;
+    FLabel.Left := (Width - FLabel.Width) div 2;
+//    if (FLabelLeft > FLabel.Left) and  then
+//      FLabelLeft := FLabel.Left;
   end;
 end;
 

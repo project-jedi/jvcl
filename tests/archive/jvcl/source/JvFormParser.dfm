@@ -1,16 +1,28 @@
 object FormParsers: TFormParsers
   Left = 437
   Top = 279
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'Parser - Edit '
-  ClientHeight = 222
-  ClientWidth = 426
+  ClientHeight = 242
+  ClientWidth = 423
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
   ShowHint = True
@@ -19,8 +31,8 @@ object FormParsers: TFormParsers
   object ListBox1: TListBox
     Left = 8
     Top = 120
-    Width = 317
-    Height = 97
+    Width = 321
+    Height = 121
     ItemHeight = 13
     TabOrder = 4
     OnClick = ListBox1Click
@@ -30,7 +42,7 @@ object FormParsers: TFormParsers
     Top = 10
     Width = 407
     Height = 107
-    Caption = '[ Properties ]'
+    Caption = 'Properties'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
@@ -129,8 +141,8 @@ object FormParsers: TFormParsers
       OnChange = Edit4Change
     end
   end
-  object BUButton1: TJvButton
-    Left = 336
+  object AddBtn: TJvButton
+    Left = 339
     Top = 120
     Width = 75
     Height = 25
@@ -144,9 +156,9 @@ object FormParsers: TFormParsers
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton2: TJvButton
-    Left = 336
-    Top = 144
+  object RemoveBtn: TJvButton
+    Left = 339
+    Top = 152
     Width = 75
     Height = 25
     Hint = 'Delete the selected item '#13#10'from the list'
@@ -159,32 +171,32 @@ object FormParsers: TFormParsers
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton3: TJvButton
-    Left = 336
-    Top = 168
+  object OkBtn: TJvButton
+    Left = 339
+    Top = 184
     Width = 75
     Height = 25
     Hint = 'Apply changes'
     Caption = '&Ok'
     Default = True
     TabOrder = 0
-    OnClick = BUButton3Click
+    OnClick = OkBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton4: TJvButton
-    Left = 336
-    Top = 192
+  object CancelBtn: TJvButton
+    Left = 339
+    Top = 216
     Width = 75
     Height = 25
     Hint = 'Cancel Changes'
     Cancel = True
     Caption = '&Cancel'
     TabOrder = 1
-    OnClick = BUButton4Click
+    OnClick = CancelBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11

@@ -29,16 +29,19 @@ unit JvPageSetupTitled;
 interface
 
 uses
-  Classes, Messages, JvPageSetup;
+  Classes, Messages,
+  JvPageSetup;
 
 type
   TJvPageSetupTitledDialog = class(TJvPageSetupDialog)
   private
-    FHeader, FFooter: string;
-    FHelpHeader, FHelpFooter: Integer;
-    procedure SetEditText(aEditId: Integer; aText: string);
-    function GetEditText(aEditId: Integer): string;
-    procedure WMHelp(var aMessage: TWMHelp); message WM_HELP;
+    FHeader: string;
+    FFooter: string;
+    FHelpHeader: Integer;
+    FHelpFooter: Integer;
+    procedure SetEditText(EditId: Integer; Text: string);
+    function GetEditText(EditId: Integer): string;
+    procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
   protected
     procedure DoShow; override;
     procedure DoClose; override;
@@ -51,9 +54,7 @@ type
     property HelpContextFooter: Integer read FHelpFooter write FHelpFooter default 0;
   end;
 
-  ///////////////////////////////////////////////////////////////////////////////
 implementation
-///////////////////////////////////////////////////////////////////////////////
 
 {.$R JvPageSetupTitledRus.res}
 {$R JvPageSetupTitledEng.res}
@@ -68,69 +69,53 @@ const
   DLGHEADERLABEL = 32;
   DLGFOOTERLABEL = 33;
 
-  { TJvPageSetupTitledDialog }
-
-  //-----------------------------------------------------------------------------
-
 constructor TJvPageSetupTitledDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Template := MakeIntResource(14); // Template id
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupTitledDialog.SetEditText(aEditId: Integer; aText: string);
+procedure TJvPageSetupTitledDialog.SetEditText(EditId: Integer; Text: string);
 begin
-  SetDlgItemText(Handle, aEditId, PChar(aText));
+  SetDlgItemText(Handle, EditId, PChar(Text));
 end;
 
-//-----------------------------------------------------------------------------
-
-function TJvPageSetupTitledDialog.GetEditText(aEditId: Integer): string;
+function TJvPageSetupTitledDialog.GetEditText(EditId: Integer): string;
 var
-  eLen: Integer;
+  Len: Integer;
 begin
-  eLen := SendDlgItemMessage(Handle, aEditId, WM_GETTEXTLENGTH, 0, 0);
-  SetLength(Result, eLen);
-  GetDlgItemText(Handle, aEditId, PChar(Result), eLen + 1);
+  Len := SendDlgItemMessage(Handle, EditId, WM_GETTEXTLENGTH, 0, 0);
+  SetLength(Result, Len);
+  GetDlgItemText(Handle, EditId, PChar(Result), Len + 1);
 end;
-
-//-----------------------------------------------------------------------------
 
 procedure TJvPageSetupTitledDialog.DoShow;
 begin
   SetEditText(DLGHEADER, FHeader);
   SetEditText(DLGFOOTER, FFooter);
-  inherited;
+  inherited DoShow;
 end;
-
-//-----------------------------------------------------------------------------
 
 procedure TJvPageSetupTitledDialog.DoClose;
 begin
   FHeader := GetEditText(DLGHEADER);
   FFooter := GetEditText(DLGFOOTER);
-  inherited;
+  inherited DoClose;
 end;
 
-//-----------------------------------------------------------------------------
+procedure TJvPageSetupTitledDialog.WMHelp(var Msg: TWMHelp);
 
-procedure TJvPageSetupTitledDialog.WMHelp(var aMessage: TWMHelp);
-
-// show popup help
-//---------------------------------------------------------------------------
-  procedure ShowHelp(aContextID: Integer);
+  procedure ShowHelp(ContextID: Integer);
   var
-    ePt: TSmallPoint;
+    Pt: TSmallPoint;
   begin
-    ePt := PointToSmallPoint(aMessage.HelpInfo^.MousePos);
-    Application.HelpCommand(HELP_SETPOPUP_POS, LongInt(ePt));
-    Application.HelpCommand(HELP_CONTEXTPOPUP, aContextID);
+    Pt := PointToSmallPoint(Msg.HelpInfo^.MousePos);
+    Application.HelpCommand(HELP_SETPOPUP_POS, LongInt(Pt));
+    Application.HelpCommand(HELP_CONTEXTPOPUP, ContextID);
   end;
 
 begin
-  case aMessage.HelpInfo^.iCtrlId of
+  case Msg.HelpInfo^.iCtrlId of
     DLGHEADER, DLGHEADERLABEL:
       if FHelpHeader <> 0 then
         ShowHelp(FHelpHeader)
@@ -147,3 +132,4 @@ begin
 end;
 
 end.
+

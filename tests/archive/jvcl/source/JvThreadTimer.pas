@@ -28,15 +28,14 @@ Known Issues:
 
 unit JvThreadTimer;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JvComponent;
+  Windows, SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
-  TJvThreadTimerclass = class(TThread)
+  TJvThreadTimerClass = class(TThread)
   protected
     procedure Call;
     procedure Execute; override;
@@ -55,7 +54,6 @@ type
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Integer);
     procedure SetOnTimer(const Value: TNotifyEvent);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,19 +65,13 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvThreadTimerClass
-///////////////////////////////////////////////////////////
-
-{**************************************************}
+//=== TJvThreadTimerClass ====================================================
 
 procedure TJvThreadTimerClass.Call;
 begin
   if Assigned(FOnCall) then
     FOnCall(FSender);
 end;
-
-{**************************************************}
 
 procedure TJvThreadTimerClass.Execute;
 begin
@@ -90,13 +82,11 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvThreadTimer
-///////////////////////////////////////////////////////////
+//=== TJvThreadTimer =========================================================
 
 constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FThread := TJvThreadTimerClass.Create(True);
   FThread.FreeOnTerminate := True;
   FThread.FDelay := 100;
@@ -105,15 +95,11 @@ begin
   FThread.FSender := Self;
 end;
 
-{**************************************************}
-
 destructor TJvThreadTimer.Destroy;
 begin
   FThread.Terminate;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvThreadTimer.SetActive(const Value: Boolean);
 begin
@@ -127,15 +113,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvThreadTimer.SetDelay(const Value: Integer);
 begin
   FDelay := Value;
   FThread.FDelay := FDelay;
 end;
-
-{**************************************************}
 
 procedure TJvThreadTimer.SetOnTimer(const Value: TNotifyEvent);
 begin
@@ -144,3 +126,4 @@ begin
 end;
 
 end.
+

@@ -28,16 +28,15 @@ Known Issues:
 
 unit JvScrollingLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, ExtCtrls, JvTypes, JVCLVer;
 
 type
   TJvScrollingLabel = class(TCustomLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FTimer: TTimer;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -48,11 +47,10 @@ type
     FScrolling: Boolean;
     FScrollText: string;
     FNoGrap: Boolean;
-    FDirection: TLabelDirection;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure FSetInterval(Value: Cardinal);
+    FScrollDirection: TLabelDirection;
+    procedure SetInterval(Value: Cardinal);
     procedure SetScrolling(Value: Boolean);
-    procedure FSetScrollText(Value: string);
+    procedure SetScrollText(Value: string);
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -91,11 +89,11 @@ type
     property Cursor;
     property Enabled;
     property Hint;
-    property ScrollInterval: Cardinal read FInterval write FSetInterval default 50;
+    property ScrollInterval: Cardinal read FInterval write SetInterval default 50;
     property Scrolling: Boolean read FScrolling write SetScrolling default True;
     property NoGrap: Boolean read FNoGrap write SetGrap default False;
-    property Text: string read FScrollText write FSetScrollText;
-    property ScrollDirection: TLabelDirection read FDirection write FDirection default sdLeftToRight;
+    property Text: string read FScrollText write SetScrollText;
+    property ScrollDirection: TLabelDirection read FScrollDirection write FScrollDirection default sdLeftToRight;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -117,16 +115,14 @@ resourcestring
   // (rom) changed
   RC_UrlSite = 'http://delphi-jedi.org';
 
-  {**************************************************}
-
 constructor TJvScrollingLabel.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FInterval := 50;
   FScrolling := True;
   FNoGrap := False;
   FScrollText := RC_UrlSite;
-  FDirection := sdLeftToRight;
-  inherited;
+  FScrollDirection := sdLeftToRight;
   FTimer := TTimer.Create(Self);
   FTimer.OnTimer := Scroll;
   FTimer.Interval := FInterval;
@@ -136,15 +132,11 @@ begin
   AutoSize := False;
 end;
 
-{**************************************************}
-
 destructor TJvScrollingLabel.Destroy;
 begin
   FTimer.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvScrollingLabel.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -153,16 +145,12 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollingLabel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvScrollingLabel.MouseEnter(var Msg: TMessage);
 begin
@@ -171,8 +159,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvScrollingLabel.MouseLeave(var Msg: TMessage);
 begin
   inherited;
@@ -180,23 +166,17 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvScrollingLabel.FSetInterval(Value: Cardinal);
+procedure TJvScrollingLabel.SetInterval(Value: Cardinal);
 begin
   FTimer.Interval := Value;
   FInterval := Value;
 end;
 
-{**************************************************}
-
 procedure TJvScrollingLabel.Resize;
 begin
-  inherited;
+  inherited Resize;
   SetGrap(FNoGrap);
 end;
-
-{**************************************************}
 
 procedure TJvScrollingLabel.SetScrolling(Value: Boolean);
 begin
@@ -205,15 +185,13 @@ begin
   FScrolling := Value;
 end;
 
-{**************************************************}
-
 procedure TJvScrollingLabel.Scroll(Sender: TObject);
 begin
   if csDesigning in ComponentState then
     Exit;
   if Length(FText) <> 0 then
   begin
-    if FDirection = sdLeftToRight then
+    if FScrollDirection = sdLeftToRight then
       FText := FText[Length(FText)] + Copy(FText, 1, Length(FText) - 1)
     else
       FText := Copy(FText, 2, Length(FText) - 1) + FText[1];
@@ -221,9 +199,7 @@ begin
   end;
 end;
 
-{**************************************************}
-
-procedure TJvScrollingLabel.FSetScrollText(Value: string);
+procedure TJvScrollingLabel.SetScrollText(Value: string);
 begin
   if Pos(#10, Value) <> 0 then
     Value := #10 + Value;
@@ -233,11 +209,9 @@ begin
   SetGrap(FNoGrap);
 end;
 
-{**************************************************}
-
 procedure TJvScrollingLabel.SetGrap(Value: Boolean);
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
   FNoGrap := Value;
   if FNoGrap then
@@ -249,13 +223,13 @@ begin
     begin
       Handle := GetDC(HWND_DESKTOP);
       Font.Assign(Self.Font);
-      j := 0;
-      i := 0;
-      while (j < Self.Width) and (i < 10000) do
+      J := 0;
+      I := 0;
+      while (J < Self.Width) and (I < 10000) do
       begin
         FText := FText + ' ';
-        j := TextWidth(FText);
-        Inc(i);
+        J := TextWidth(FText);
+        Inc(I);
       end;
       ReleaseDC(HWND_DESKTOP, Handle);
     end;
@@ -263,3 +237,4 @@ begin
 end;
 
 end.
+

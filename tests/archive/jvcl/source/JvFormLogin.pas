@@ -31,46 +31,43 @@ unit JvFormLogin;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, JvBitBtn, JvEdit;
+  SysUtils, Classes, Controls, Forms, StdCtrls,
+  JvEdit;
 
 type
   TFormLogi = class(TForm)
     Label1: TLabel;
-    edValue1: TJvEdit;
+    EdValue1: TJvEdit;
     Label2: TLabel;
-    edValue2: TJvEdit;
-    btnOK: TButton;
-    btnCancel: TButton;
-    class function Execute(var Edit1Text,Edit2Text:string;const FormCaption,Label1Caption,Label2Caption:string;PasswordChar:char):boolean;
+    EdValue2: TJvEdit;
+    BtnOK: TButton;
+    BtnCancel: TButton;
+    class function Execute(var Edit1Text, Edit2Text: string;
+      const FormCaption, Label1Caption, Label2Caption: string;
+      PasswordChar: Char): Boolean;
   end;
-
 
 implementation
 
 {$R *.DFM}
 
-
-
-{ TFormLogi }
-
 class function TFormLogi.Execute(var Edit1Text, Edit2Text: string;
   const FormCaption, Label1Caption, Label2Caption: string;
-  PasswordChar: char): boolean;
+  PasswordChar: Char): Boolean;
 begin
-  with self.Create(Application) do
+  with Self.Create(Application) do
   try
     Caption := FormCaption;
     Label1.Caption := Label1Caption;
     Label2.Caption := Label2Caption;
-    edValue1.Text := Edit1Text;
-    edValue2.PasswordChar := PasswordChar;
-    edValue2.Text := Edit2Text;
+    EdValue1.Text := Edit1Text;
+    EdValue2.PasswordChar := PasswordChar;
+    EdValue2.Text := Edit2Text;
     Result := ShowModal = mrOK;
     if Result then
     begin
-      Edit1Text := edValue1.Text;
-      Edit2Text := edValue2.Text;
+      Edit1Text := EdValue1.Text;
+      Edit2Text := EdValue2.Text;
     end;
   finally
     Free;

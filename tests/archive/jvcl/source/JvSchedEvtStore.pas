@@ -22,6 +22,9 @@
  You may retrieve the latest version of this file at the Project JEDI home
  page, located at http://www.delphi-jedi.org
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvSchedEvtStore;
 
 interface
@@ -34,45 +37,22 @@ type
   TSchedEvtStoreAttribute = (sesaStructured, sesaIdentifiers);
   TSchedEvtStoreAttributes = set of TSchedEvtStoreAttribute;
 
-  TSchedEvtStructKind = (
-    seskState,
-    seskEvent,
-    seskSchedule,
-    seskScheduleRecurInfo,
-    seskScheduleEndInfo,
-    seskScheduleDayFreq,
-    seskScheduleDaily,
-    seskScheduleWeekly,
-    seskScheduleMonthly,
-    seskScheduleMonthlyIndex,
-    seskScheduleYearly,
-    seskScheduleYearlyIndex
-  );
+  TSchedEvtStructKind =
+    (seskState, seskEvent, seskSchedule, seskScheduleRecurInfo,
+     seskScheduleEndInfo, seskScheduleDayFreq, seskScheduleDaily,
+     seskScheduleWeekly, seskScheduleMonthly, seskScheduleMonthlyIndex,
+     seskScheduleYearly, seskScheduleYearlyIndex);
 
-  TSchedEvtItemKind = (
-    seikUnknown,
-    seikScheduleStart,
-    seikScheduleRecurType,
-    seikScheduleEndType,
-    seikScheduleEndCount,
-    seikScheduleEndDate,
-    seikFreqStart,
-    seikFreqEnd,
-    seikFreqInterval,
-    seikScheduleDailyWeekdays,
-    seikScheduleDailyInterval,
-    seikScheduleWeeklyDays,
-    seikScheduleWeeklyInterval,
-    seikScheduleMonthlyDay,
-    seikScheduleMonthlyIndexType,
-    seikScheduleMonthlyIndex,
-    seikScheduleMonthlyInterval,
-    seikScheduleYearlyDay,
-    seikScheduleYearlyMonth,
-    seikScheduleYearlyIndexType,
-    seikScheduleYearlyIndex,
-    seikScheduleYearlyInterval
-  );
+  TSchedEvtItemKind =
+    (seikUnknown, seikScheduleStart, seikScheduleRecurType,
+    seikScheduleEndType, seikScheduleEndCount, seikScheduleEndDate,
+    seikFreqStart, seikFreqEnd, seikFreqInterval, seikScheduleDailyWeekdays,
+    seikScheduleDailyInterval, seikScheduleWeeklyDays,
+    seikScheduleWeeklyInterval, seikScheduleMonthlyDay,
+    seikScheduleMonthlyIndexType, seikScheduleMonthlyIndex,
+    seikScheduleMonthlyInterval, seikScheduleYearlyDay,
+    seikScheduleYearlyMonth, seikScheduleYearlyIndexType,
+    seikScheduleYearlyIndex, seikScheduleYearlyInterval);
 
   IJvScheduledEventsStore = interface
     ['{FD6437D8-B951-4C72-AA5F-B96911D51B65}']
@@ -95,10 +75,8 @@ type
     procedure PushStruct(const StructType: TSchedEvtStructKind);
     function PeekStruct: TSchedEvtStructKind;
     function PopStruct: TSchedEvtStructKind;
-
     // property access methods
     function GetEvent: TJvEventCollectionItem;
-
     // Retrieving items: Schedule
     procedure CheckSignature; virtual; abstract;
     procedure CheckVersion; virtual; abstract;
@@ -124,7 +102,6 @@ type
     procedure RestoreScheduleYearlyIndexType; virtual; abstract;
     procedure RestoreScheduleYearlyIndex; virtual; abstract;
     procedure RestoreScheduleYearlyInterval; virtual; abstract;
-
     // Storing items: signature (only for unstructured storages) and versioning
     procedure StoreSignature; virtual;
     procedure StoreVersion; virtual; abstract;
@@ -150,25 +127,20 @@ type
     procedure StoreScheduleYearlyIndexType; virtual; abstract;
     procedure StoreScheduleYearlyIndex; virtual; abstract;
     procedure StoreScheduleYearlyInterval; virtual; abstract;
-
     // Structure stack managment: high level
     procedure BeginStruct(const StructType: TSchedEvtStructKind); virtual;
     procedure EndStruct; virtual;
     procedure CheckBeginStruct(const StructType: TSchedEvtStructKind); virtual;
     procedure CheckEndStruct; virtual;
-
     property Event: TJvEventCollectionItem read GetEvent;
   public
     function IsStructured: Boolean;
     function UsesIdentifiers: Boolean;
     function GetAttributes: TSchedEvtStoreAttributes; virtual;
-
     procedure LoadState(const Event: TJvEventCollectionItem);
     procedure SaveState(const Event: TJvEventCollectionItem);
-
     procedure LoadSchedule(const Event: TJvEventCollectionItem);
     procedure SaveSchedule(const Event: TJvEventCollectionItem);
-
     procedure LoadEventSettings(const Event: TJvEventCollectionItem);
     procedure SaveEventSettings(const Event: TJvEventCollectionItem);
   end;
@@ -180,10 +152,10 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  JclRTTI, JclSchedule, 
+  JclRTTI, JclSchedule,
   JvTypes;
 
-{ TJvSchedEvtStore }
+//=== TJvSchedEvtStore =======================================================
 
 procedure TJvSchedEvtStore.PushStruct(const StructType: TSchedEvtStructKind);
 begin
@@ -293,82 +265,83 @@ begin
       if not IsStructured then
         CheckSignature;
       CheckBeginStruct(seskSchedule);
-        CheckVersion;
+      CheckVersion;
         // Generic schedule info
-        RestoreScheduleStart;
-        CheckBeginStruct(seskScheduleRecurInfo);
-          RestoreScheduleRecurType;
-        if Schedule.RecurringType <> srkOneShot then
+      RestoreScheduleStart;
+      CheckBeginStruct(seskScheduleRecurInfo);
+      RestoreScheduleRecurType;
+      if Schedule.RecurringType <> srkOneShot then
+      begin
+        CheckBeginStruct(seskScheduleEndInfo);
+        RestoreScheduleEndType;
+        if Schedule.EndType = sekDate then
+          RestoreScheduleEndDate
+        else
+        if Schedule.EndType in [sekTriggerCount, sekDayCount] then
+          RestoreScheduleEndCount;
+        CheckEndStruct; {seskScheduleEndInfo}
+
+        CheckBeginStruct(seskScheduleDayFreq);
+        RestoreFreqStart;
+        if not UsesIdentifiers or (NextItemKind = seikFreqEnd) then
         begin
-          CheckBeginStruct(seskScheduleEndInfo);
-            RestoreScheduleEndType;
-            if Schedule.EndType = sekDate then
-              RestoreScheduleEndDate
-            else if Schedule.EndType in [sekTriggerCount, sekDayCount] then
-              RestoreScheduleEndCount;
-          CheckEndStruct; {seskScheduleEndInfo}
-
-          CheckBeginStruct(seskScheduleDayFreq);
-            RestoreFreqStart;
-            if not UsesIdentifiers or (NextItemKind = seikFreqEnd) then
-            begin
-              RestoreFreqEnd;
-              RestoreFreqInterval;
-            end;
-          CheckEndStruct; {seskScheduleDayFreq}
-
-          case Schedule.RecurringType of
-            srkDaily:
-              begin
-                CheckBeginStruct(seskScheduleDaily);
-                  if not UsesIdentifiers or (NextItemKind = seikScheduleDailyWeekdays) then
-                    RestoreScheduleDailyWeekdays;
-                  if not UsesIdentifiers or (NextItemKind = seikScheduleDailyInterval) then
-                    RestoreScheduleDailyInterval;
-                CheckEndStruct; {seskScheduleDaily}
-              end;
-            srkWeekly:
-              begin
-                CheckBeginStruct(seskScheduleWeekly);
-                  RestoreScheduleWeeklyDays;
-                  RestoreScheduleWeeklyInterval;
-                CheckEndStruct; {seskScheduleWeekly}
-              end;
-            srkMonthly:
-              begin
-                CheckBeginStruct(seskScheduleMonthly);
-                  CheckBeginStruct(seskScheduleMonthlyIndex);
-                    RestoreScheduleMonthlyIndexType;
-                    if (Schedule as IJclMonthlySchedule).IndexKind <> sikNone then
-                      RestoreScheduleMonthlyIndex;
-                  CheckEndStruct; {seskScheduleMonthlyIndex}
-                  if (Schedule as IJclMonthlySchedule).IndexKind = sikNone then
-                    RestoreScheduleMonthlyDay;
-                  RestoreScheduleMonthlyInterval;
-                CheckEndStruct; {seskScheduleMonthly}
-              end;
-            srkYearly:
-              begin
-                CheckBeginStruct(seskScheduleYearly);
-                  CheckBeginStruct(seskScheduleYearlyIndex);
-                    RestoreScheduleYearlyIndexType;
-                    if (Schedule as IJclYearlySchedule).IndexKind <> sikNone then
-                      RestoreScheduleYearlyIndex;
-                  CheckEndStruct; {seskScheduleYearlyIndex}
-                  if (Schedule as IJclYearlySchedule).IndexKind = sikNone then
-                    RestoreScheduleYearlyDay;
-                  RestoreScheduleYearlyMonth;
-                  RestoreScheduleYearlyInterval;
-                CheckEndStruct; {seskScheduleYearly}
-              end;
-          end;
+          RestoreFreqEnd;
+          RestoreFreqInterval;
         end;
-        CheckEndStruct; {seskScheduleRecurInfo}
+        CheckEndStruct; {seskScheduleDayFreq}
+
+        case Schedule.RecurringType of
+          srkDaily:
+            begin
+              CheckBeginStruct(seskScheduleDaily);
+              if not UsesIdentifiers or (NextItemKind = seikScheduleDailyWeekdays) then
+                RestoreScheduleDailyWeekdays;
+              if not UsesIdentifiers or (NextItemKind = seikScheduleDailyInterval) then
+                RestoreScheduleDailyInterval;
+              CheckEndStruct; {seskScheduleDaily}
+            end;
+          srkWeekly:
+            begin
+              CheckBeginStruct(seskScheduleWeekly);
+              RestoreScheduleWeeklyDays;
+              RestoreScheduleWeeklyInterval;
+              CheckEndStruct; {seskScheduleWeekly}
+            end;
+          srkMonthly:
+            begin
+              CheckBeginStruct(seskScheduleMonthly);
+              CheckBeginStruct(seskScheduleMonthlyIndex);
+              RestoreScheduleMonthlyIndexType;
+              if (Schedule as IJclMonthlySchedule).IndexKind <> sikNone then
+                RestoreScheduleMonthlyIndex;
+              CheckEndStruct; {seskScheduleMonthlyIndex}
+              if (Schedule as IJclMonthlySchedule).IndexKind = sikNone then
+                RestoreScheduleMonthlyDay;
+              RestoreScheduleMonthlyInterval;
+              CheckEndStruct; {seskScheduleMonthly}
+            end;
+          srkYearly:
+            begin
+              CheckBeginStruct(seskScheduleYearly);
+              CheckBeginStruct(seskScheduleYearlyIndex);
+              RestoreScheduleYearlyIndexType;
+              if (Schedule as IJclYearlySchedule).IndexKind <> sikNone then
+                RestoreScheduleYearlyIndex;
+              CheckEndStruct; {seskScheduleYearlyIndex}
+              if (Schedule as IJclYearlySchedule).IndexKind = sikNone then
+                RestoreScheduleYearlyDay;
+              RestoreScheduleYearlyMonth;
+              RestoreScheduleYearlyInterval;
+              CheckEndStruct; {seskScheduleYearly}
+            end;
+        end;
+      end;
+      CheckEndStruct; {seskScheduleRecurInfo}
       CheckEndStruct; {seskSchedule}
       // we succeeded in reading in the schedule.
     except
-      { uh-oh! reading of the schedule failed. Better restore the original schedule so the end user
-        won't miss it ;) }
+      { uh-oh! reading of the schedule failed. Better restore the original
+        schedule so the end user won't miss it ;) }
       Schedule := OrgSchedule;
       raise;
     end;
@@ -387,77 +360,78 @@ begin
     if not IsStructured then
       StoreSignature;
     BeginStruct(seskSchedule);
-      StoreVersion;
-      // Generic schedule info
-      StoreScheduleStart;
-      BeginStruct(seskScheduleRecurInfo);
-        StoreScheduleRecurType;
-        if Schedule.RecurringType <> srkOneShot then
-        begin
-          BeginStruct(seskScheduleEndInfo);
-            StoreScheduleEndType;
-            if Schedule.EndType = sekDate then
-              StoreScheduleEndDate
-            else if Schedule.EndType in [sekTriggerCount, sekDayCount] then
-              StoreScheduleEndCount;
-          EndStruct; {seskScheduleEndInfo}
+    StoreVersion;
+    // Generic schedule info
+    StoreScheduleStart;
+    BeginStruct(seskScheduleRecurInfo);
+    StoreScheduleRecurType;
+    if Schedule.RecurringType <> srkOneShot then
+    begin
+      BeginStruct(seskScheduleEndInfo);
+      StoreScheduleEndType;
+      if Schedule.EndType = sekDate then
+        StoreScheduleEndDate
+      else
+      if Schedule.EndType in [sekTriggerCount, sekDayCount] then
+        StoreScheduleEndCount;
+      EndStruct; {seskScheduleEndInfo}
 
-          BeginStruct(seskScheduleDayFreq);
-            StoreFreqStart;
-            if not UsesIdentifiers or ((Schedule as IJclScheduleDayFrequency).Interval <> 0) then
-            begin
-              StoreFreqEnd;
-              StoreFreqInterval;
-            end;
-          EndStruct; {seskScheduleDayFreq}
+      BeginStruct(seskScheduleDayFreq);
+      StoreFreqStart;
+      if not UsesIdentifiers or ((Schedule as IJclScheduleDayFrequency).Interval <> 0) then
+      begin
+        StoreFreqEnd;
+        StoreFreqInterval;
+      end;
+      EndStruct; {seskScheduleDayFreq}
 
-          case Schedule.RecurringType of
-            srkDaily:
-              begin
-                BeginStruct(seskScheduleDaily);
-                  if not UsesIdentifiers or (Schedule as IJclDailySchedule).EveryWeekDay then
-                    StoreScheduleDailyWeekdays;
-                  if not UsesIdentifiers or not (Schedule as IJclDailySchedule).EveryWeekDay then
-                    StoreScheduleDailyInterval;
-                EndStruct; {seskScheduleDaily}
-              end;
-            srkWeekly:
-              begin
-                BeginStruct(seskScheduleWeekly);
-                  StoreScheduleWeeklyDays;
-                  StoreScheduleWeeklyInterval;
-                EndStruct; {seskScheduleWeekly}
-              end;
-            srkMonthly:
-              begin
-                BeginStruct(seskScheduleMonthly);
-                  BeginStruct(seskScheduleMonthlyIndex);
-                    StoreScheduleMonthlyIndexType;
-                    if (Schedule as IJclMonthlySchedule).IndexKind <> sikNone then
-                      StoreScheduleMonthlyIndex;
-                  EndStruct; {seskScheduleMonthlyIndex}
-                  if (Schedule as IJclMonthlySchedule).IndexKind = sikNone then
-                    StoreScheduleMonthlyDay;
-                  StoreScheduleMonthlyInterval;
-                EndStruct; {seskScheduleMonthly}
-              end;
-            srkYearly:
-              begin
-                BeginStruct(seskScheduleYearly);
-                  BeginStruct(seskScheduleYearlyIndex);
-                    StoreScheduleYearlyIndexType;
-                    if (Schedule as IJclYearlySchedule).IndexKind <> sikNone then
-                      StoreScheduleYearlyIndex;
-                  EndStruct; {seskScheduleYearlyIndex}
-                  if (Schedule as IJclYearlySchedule).IndexKind = sikNone then
-                    StoreScheduleYearlyDay;
-                  StoreScheduleYearlyMonth;
-                  StoreScheduleYearlyInterval;
-                EndStruct; {seskScheduleYearly}
-              end;
+      case Schedule.RecurringType of
+        srkDaily:
+          begin
+            BeginStruct(seskScheduleDaily);
+            if not UsesIdentifiers or (Schedule as IJclDailySchedule).EveryWeekDay then
+              StoreScheduleDailyWeekdays;
+            if not UsesIdentifiers or not (Schedule as IJclDailySchedule).EveryWeekDay then
+              StoreScheduleDailyInterval;
+            EndStruct; {seskScheduleDaily}
           end;
-        end;
-      EndStruct; {seskScheduleRecurInfo}
+        srkWeekly:
+          begin
+            BeginStruct(seskScheduleWeekly);
+            StoreScheduleWeeklyDays;
+            StoreScheduleWeeklyInterval;
+            EndStruct; {seskScheduleWeekly}
+          end;
+        srkMonthly:
+          begin
+            BeginStruct(seskScheduleMonthly);
+            BeginStruct(seskScheduleMonthlyIndex);
+            StoreScheduleMonthlyIndexType;
+            if (Schedule as IJclMonthlySchedule).IndexKind <> sikNone then
+              StoreScheduleMonthlyIndex;
+            EndStruct; {seskScheduleMonthlyIndex}
+            if (Schedule as IJclMonthlySchedule).IndexKind = sikNone then
+              StoreScheduleMonthlyDay;
+            StoreScheduleMonthlyInterval;
+            EndStruct; {seskScheduleMonthly}
+          end;
+        srkYearly:
+          begin
+            BeginStruct(seskScheduleYearly);
+            BeginStruct(seskScheduleYearlyIndex);
+            StoreScheduleYearlyIndexType;
+            if (Schedule as IJclYearlySchedule).IndexKind <> sikNone then
+              StoreScheduleYearlyIndex;
+            EndStruct; {seskScheduleYearlyIndex}
+            if (Schedule as IJclYearlySchedule).IndexKind = sikNone then
+              StoreScheduleYearlyDay;
+            StoreScheduleYearlyMonth;
+            StoreScheduleYearlyInterval;
+            EndStruct; {seskScheduleYearly}
+          end;
+      end;
+    end;
+    EndStruct; {seskScheduleRecurInfo}
     EndStruct; {seskSchedule}
   end;
 end;
@@ -472,14 +446,14 @@ begin
   raise EJVCLException.Create('not implemented.');
 end;
 
-{ TBinStore }
-
 const
   BinStreamID = 'JVSE';
   BinStreamVer = Word($0001);
 
+//=== TBinStore ==============================================================
+
 type
-  TBinStore = class (TJvSchedEvtStore)
+  TBinStore = class(TJvSchedEvtStore)
   private
     Stream: TStream;
     OwnsStream: Boolean;
@@ -509,7 +483,6 @@ type
     procedure RestoreScheduleYearlyIndexType; override;
     procedure RestoreScheduleYearlyIndex; override;
     procedure RestoreScheduleYearlyInterval; override;
-
     // Storing items: signature (only for unstructured storages) and versioning
     procedure StoreSignature; override;
     procedure StoreVersion; override;
@@ -539,6 +512,20 @@ type
     constructor Create(const AStream: TStream; const AOwnsStream: Boolean = True);
     destructor Destroy; override;
   end;
+
+constructor TBinStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
+begin
+  inherited Create;
+  Stream := AStream;
+  OwnsStream := AOwnsStream;
+end;
+
+destructor TBinStore.Destroy;
+begin
+  if OwnsStream then
+    FreeAndNil(Stream);
+  inherited Destroy;
+end;
 
 procedure TBinStore.CheckSignature;
 var
@@ -909,47 +896,30 @@ begin
   Stream.WriteBuffer(I, SizeOf(I));
 end;
 
-constructor TBinStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
-begin
-  inherited Create;
-  Stream := AStream;
-  OwnsStream := AOwnsStream;
-end;
-
-destructor TBinStore.Destroy;
-begin
-  if OwnsStream then
-    FreeAndNil(Stream);
-  inherited Destroy;
-end;
-
-{ TTxtStore }
-
 const
-  TxtIdentifiers: array[TSchedEvtItemKind] of string = (
-    '', {seikUnknown}
-    'Start', {seikScheduleStart}
-    'Recur type', {seikScheduleRecurType}
-    'End type', {seikScheduleEndType}
-    'End count', {seikScheduleEndCount}
-    'End', {seikScheduleEndDate}
-    'Frequency start', {seikFreqStart}
-    'Frequency end', {seikFreqEnd}
-    'Frequency interval', {seikFreqInterval}
-    'Daily every weekday', {seikScheduleDailyWeekdays}
-    'Daily interval', {seikScheduleDailyInterval}
-    'Weekly days', {seikScheduleWeeklyDays}
-    'Weekly interval', {seikScheduleWeeklyInterval}
-    'Monthly day', {seikScheduleMonthlyDay}
-    'Monthly index type', {seikScheduleMonthlyIndexType}
-    'Monthly index', {seikScheduleMonthlyIndex}
-    'Monthly interval', {seikScheduleMonthlyInterval}
-    'Yearly day', {seikScheduleYearlyDay}
-    'Yearly month', {seikScheduleYearlyMonth}
-    'Yearly index type', {seikScheduleYearlyIndexType}
-    'Yearly index', {seikScheduleYearlyIndex}
-    'Yearly interval' {seikScheduleYearlyInterval}
-  );
+  TxtIdentifiers: array [TSchedEvtItemKind] of PChar =
+    ('', {seikUnknown}
+     'Start', {seikScheduleStart}
+     'Recur type', {seikScheduleRecurType}
+     'End type', {seikScheduleEndType}
+     'End count', {seikScheduleEndCount}
+     'End', {seikScheduleEndDate}
+     'Frequency start', {seikFreqStart}
+     'Frequency end', {seikFreqEnd}
+     'Frequency interval', {seikFreqInterval}
+     'Daily every weekday', {seikScheduleDailyWeekdays}
+     'Daily interval', {seikScheduleDailyInterval}
+     'Weekly days', {seikScheduleWeeklyDays}
+     'Weekly interval', {seikScheduleWeeklyInterval}
+     'Monthly day', {seikScheduleMonthlyDay}
+     'Monthly index type', {seikScheduleMonthlyIndexType}
+     'Monthly index', {seikScheduleMonthlyIndex}
+     'Monthly interval', {seikScheduleMonthlyInterval}
+     'Yearly day', {seikScheduleYearlyDay}
+     'Yearly month', {seikScheduleYearlyMonth}
+     'Yearly index type', {seikScheduleYearlyIndexType}
+     'Yearly index', {seikScheduleYearlyIndex}
+     'Yearly interval'); {seikScheduleYearlyInterval}
 
   sTXTID_SchedGeneric = '# Schedule: Generic';
   sTXTID_SchedRecur = '# Schedule: Recurring info';
@@ -960,8 +930,10 @@ const
   sTXTID_SchedMonthly = '# Schedule: Monthly info';
   sTXTID_SchedYearly = '# Schedule: Yearly info';
 
+//=== TTxtStore ==============================================================
+
 type
-  TTxtStore = class (TJvSchedEvtStore)
+  TTxtStore = class(TJvSchedEvtStore)
   private
     Stream: TStream;
     OwnsStream: Boolean;
@@ -991,7 +963,6 @@ type
     procedure RestoreScheduleYearlyIndexType; override;
     procedure RestoreScheduleYearlyIndex; override;
     procedure RestoreScheduleYearlyInterval; override;
-
     // Storing items: signature (only for unstructured storages) and versioning
     procedure StoreSignature; override;
     procedure StoreVersion; override;
@@ -1017,24 +988,20 @@ type
     procedure StoreScheduleYearlyIndexType; override;
     procedure StoreScheduleYearlyIndex; override;
     procedure StoreScheduleYearlyInterval; override;
-
     procedure BeginStruct(const StructType: TSchedEvtStructKind); override;
     procedure EndStruct; override;
     procedure CheckBeginStruct(const StructType: TSchedEvtStructKind); override;
     procedure CheckEndStruct; override;
-
     function ReadLn: string;
     function ReadNextLine: string;
     function ReadItem(out AName: string): string;
     procedure WriteLn(const S: string);
-
     function ReadEnum(const AName: string; const TypeInfo: PTypeInfo): Integer;
     function ReadInt(const AName: string): Int64;
     procedure ReadSet(const AName: string; out Value; const TypeInfo: PTypeInfo);
     function ReadStamp(const AName: string): TTimeStamp;
     function ReadStampDate(const AName: string): Integer;
     function ReadStampTime(const AName: string): Integer;
-
     procedure WriteEnum(const AName: string; const Ordinal: Integer; const TypeInfo: PTypeInfo);
     procedure WriteInt(const AName: string; const Value: Int64);
     procedure WriteSet(const AName: string; const Value; const TypeInfo: PTypeInfo);
@@ -1046,6 +1013,20 @@ type
     constructor Create(const AStream: TStream; const AOwnsStream: Boolean = True);
     destructor Destroy; override;
   end;
+
+constructor TTxtStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
+begin
+  inherited Create;
+  Stream := AStream;
+  OwnsStream := AOwnsStream;
+end;
+
+destructor TTxtStore.Destroy;
+begin
+  if OwnsStream then
+    FreeAndNil(Stream);
+  inherited Destroy;
+end;
 
 procedure TTxtStore.CheckSignature;
 begin
@@ -1068,7 +1049,8 @@ begin
     if I > 0 then
       ItemName := Copy(ItemName, 1, I - 1);
     Result := High(TSchedEvtItemKind);
-    while (Result > Low(TSchedEvtItemKind)) and not AnsiSameText(ItemName, TxtIdentifiers[Result]) do
+    while (Result > Low(TSchedEvtItemKind)) and
+      not AnsiSameText(ItemName, TxtIdentifiers[Result]) do
       Dec(Result);
   finally
     Stream.Position := SPos;
@@ -1119,7 +1101,8 @@ end;
 
 procedure TTxtStore.RestoreScheduleDailyWeekdays;
 begin
-  (Event.Schedule as IJclDailySchedule).EveryWeekDay := Boolean(ReadEnum(TxtIdentifiers[seikScheduleDailyWeekdays], TypeInfo(Boolean)));
+  (Event.Schedule as IJclDailySchedule).EveryWeekDay := Boolean(ReadEnum(TxtIdentifiers[seikScheduleDailyWeekdays],
+    TypeInfo(Boolean)));
 end;
 
 procedure TTxtStore.RestoreScheduleDailyInterval;
@@ -1147,7 +1130,8 @@ end;
 
 procedure TTxtStore.RestoreScheduleMonthlyIndexType;
 begin
-  (Event.Schedule as IJclMonthlySchedule).IndexKind := TScheduleIndexKind(ReadEnum(TxtIdentifiers[seikScheduleMonthlyIndexType], TypeInfo(TScheduleIndexKind)));
+  (Event.Schedule as IJclMonthlySchedule).IndexKind :=
+    TScheduleIndexKind(ReadEnum(TxtIdentifiers[seikScheduleMonthlyIndexType], TypeInfo(TScheduleIndexKind)));
 end;
 
 procedure TTxtStore.RestoreScheduleMonthlyIndex;
@@ -1172,7 +1156,8 @@ end;
 
 procedure TTxtStore.RestoreScheduleYearlyIndexType;
 begin
-  (Event.Schedule as IJclYearlySchedule).IndexKind := TScheduleIndexKind(ReadEnum(TxtIdentifiers[seikScheduleYearlyIndexType], TypeInfo(TScheduleIndexKind)));
+  (Event.Schedule as IJclYearlySchedule).IndexKind :=
+    TScheduleIndexKind(ReadEnum(TxtIdentifiers[seikScheduleYearlyIndexType], TypeInfo(TScheduleIndexKind)));
 end;
 
 procedure TTxtStore.RestoreScheduleYearlyIndex;
@@ -1235,7 +1220,8 @@ end;
 
 procedure TTxtStore.StoreScheduleDailyWeekdays;
 begin
-  WriteEnum(TxtIdentifiers[seikScheduleDailyWeekdays], Ord((Event.Schedule as IJclDailySchedule).EveryWeekDay), TypeInfo(Boolean));
+  WriteEnum(TxtIdentifiers[seikScheduleDailyWeekdays], Ord((Event.Schedule as IJclDailySchedule).EveryWeekDay),
+    TypeInfo(Boolean));
 end;
 
 procedure TTxtStore.StoreScheduleDailyInterval;
@@ -1263,7 +1249,8 @@ end;
 
 procedure TTxtStore.StoreScheduleMonthlyIndexType;
 begin
-  WriteEnum(TxtIdentifiers[seikScheduleMonthlyIndexType], Ord((Event.Schedule as IJclMonthlySchedule).IndexKind), TypeInfo(TScheduleIndexKind));
+  WriteEnum(TxtIdentifiers[seikScheduleMonthlyIndexType], Ord((Event.Schedule as IJclMonthlySchedule).IndexKind),
+    TypeInfo(TScheduleIndexKind));
 end;
 
 procedure TTxtStore.StoreScheduleMonthlyIndex;
@@ -1288,7 +1275,8 @@ end;
 
 procedure TTxtStore.StoreScheduleYearlyIndexType;
 begin
-  WriteEnum(TxtIdentifiers[seikScheduleYearlyIndexType], Ord((Event.Schedule as IJclYearlySchedule).IndexKind), TypeInfo(TScheduleIndexKind));
+  WriteEnum(TxtIdentifiers[seikScheduleYearlyIndexType], Ord((Event.Schedule as IJclYearlySchedule).IndexKind),
+    TypeInfo(TScheduleIndexKind));
 end;
 
 procedure TTxtStore.StoreScheduleYearlyIndex;
@@ -1321,8 +1309,8 @@ begin
       WriteLn(sTXTID_SchedMonthly);
     seskScheduleYearly:
       WriteLn(sTXTID_SchedYearly);
-    else
-      raise EJVCLException.Create('Unexpected structure.');
+  else
+    raise EJVCLException.Create('Unexpected structure.');
   end;
 end;
 
@@ -1332,6 +1320,8 @@ begin
 end;
 
 procedure TTxtStore.CheckBeginStruct(const StructType: TSchedEvtStructKind);
+const
+  cIncorrectStructure = 'Incorrect structure found.';
 var
   S: string;
 begin
@@ -1339,31 +1329,31 @@ begin
   S := ReadNextLine;
   case StructType of
     seskSchedule:
-      if not AnsisameText(S, sTXTID_SchedGeneric) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedGeneric) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleRecurInfo:
-      if not AnsisameText(S, sTXTID_SchedRecur) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedRecur) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleEndInfo:
-      if not AnsisameText(S, sTXTID_SchedEnd) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedEnd) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleDayFreq:
-      if not AnsisameText(S, sTXTID_SchedFreq) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedFreq) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleDaily:
-      if not AnsisameText(S, sTXTID_SchedDaily) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedDaily) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleWeekly:
-      if not AnsisameText(S, sTXTID_SchedWeekly) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedWeekly) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleMonthly:
-      if not AnsisameText(S, sTXTID_SchedMonthly) then
-        raise EJVCLException.Create('Incorrect structure found.');
+      if not AnsiSameText(S, sTXTID_SchedMonthly) then
+        raise EJVCLException.Create(cIncorrectStructure);
     seskScheduleYearly:
-      if not AnsisameText(S, sTXTID_SchedYearly) then
-        raise EJVCLException.Create('Incorrect structure found.');
-    else
-      raise EJVCLException.Create('Unexpected structure.');
+      if not AnsiSameText(S, sTXTID_SchedYearly) then
+        raise EJVCLException.Create(cIncorrectStructure);
+  else
+    raise EJVCLException.Create('Unexpected structure.');
   end;
 end;
 
@@ -1500,7 +1490,7 @@ begin
   Value := ReadItem(ItemName);
   if not AnsiSameText(AName, ItemName) then
     raise EJVCLException.Create('Incorrect identifier found.');
-  if (Length(Value) < 3) or (Value[3] in ['0' .. '9']) then
+  if (Length(Value) < 3) or (Value[3] in ['0'..'9']) then
     Result := StrToInt(Value)
   else
   begin
@@ -1552,9 +1542,9 @@ begin
   WriteLn(AName + ' = ' + Format(
     '%.2d:%.2d:%.2d.%.3d',
     [(Time div 3600000) mod 24,
-     (Time div 60000) mod 60,
-     (Time div 1000) mod 60,
-     Time mod 1000]));
+    (Time div 60000) mod 60,
+      (Time div 1000) mod 60,
+      Time mod 1000]));
 end;
 
 function TTxtStore.GetAttributes: TSchedEvtStoreAttributes;
@@ -1562,24 +1552,10 @@ begin
   Result := [sesaStructured, sesaIdentifiers];
 end;
 
-constructor TTxtStore.Create(const AStream: TStream; const AOwnsStream: Boolean);
-begin
-  inherited Create;
-  Stream := AStream;
-  OwnsStream := AOwnsStream;
-end;
-
-destructor TTxtStore.Destroy;
-begin
-  if OwnsStream then
-    FreeAndNil(Stream);
-  inherited Destroy;
-end;
-
 { schedule persistency factories }
 
-function ScheduledEventStore_Stream(const Stream: TStream; const Binary,
-  OwnsStream: Boolean): IJvScheduledEventsStore;
+function ScheduledEventStore_Stream(const Stream: TStream;
+  const Binary, OwnsStream: Boolean): IJvScheduledEventsStore;
 begin
   if Binary then
     Result := TBinStore.Create(Stream, OwnsStream)
@@ -1588,3 +1564,4 @@ begin
 end;
 
 end.
+

@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvPasswordForm;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes, Controls, Forms,
   JvFormPass, JvBaseDlg, JvTypes;
 
 type
@@ -50,7 +48,6 @@ type
     FPassChar: Char;
     procedure OnOkClick(Sender: TObject);
     procedure OnCancelClick(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -74,7 +71,16 @@ resourcestring
   RC_PassChar = '*';
   RC_LabelPassCaption = '&Password:';
 
-  {**************************************************}
+constructor TJvPasswordForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTitle := RC_PassEnter;
+  FOkCaption := RC_OkCaption;
+  FCancelCaption := RC_CancelCaption;
+  FLabelCaption := RC_LabelPassCaption;
+  FTextValue := '';
+  FPassChar := RC_PassChar[1];
+end;
 
 procedure TJvPasswordForm.OnOkClick(Sender: TObject);
 var
@@ -93,28 +99,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvPasswordForm.OnCancelClick(Sender: TObject);
 begin
   if Assigned(FOnCancel) then
-    FOnCancel(self);
+    FOnCancel(Self);
 end;
-
-{**************************************************}
-
-constructor TJvPasswordForm.Create(AOwner: TComponent);
-begin
-  inherited;
-  FTitle := RC_PassEnter;
-  FOkCaption := RC_OkCaption;
-  FCancelCaption := RC_CancelCaption;
-  FLabelCaption := RC_LabelPassCaption;
-  FTextValue := '';
-  FPassChar := RC_PassChar[1];
-end;
-
-{**************************************************}
 
 procedure TJvPasswordForm.Execute;
 begin
@@ -137,3 +126,4 @@ begin
 end;
 
 end.
+

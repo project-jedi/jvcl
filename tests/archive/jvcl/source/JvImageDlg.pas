@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvImageDlg;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Jpeg,
+  SysUtils, Classes, Graphics, Controls, Forms,
   JvFormImage, JvBaseDlg, JvTypes;
 
 type
@@ -57,24 +55,18 @@ implementation
 resourcestring
   RC_ImageTitle = 'Image Viewer';
 
-  {**************************************************}
-
 constructor TJvImageDlg.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FPicture := TPicture.Create;
   FTitle := RC_ImageTitle;
 end;
 
-{**************************************************}
-
 destructor TJvImageDlg.Destroy;
 begin
   FPicture.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvImageDlg.Execute;
 begin
@@ -90,11 +82,10 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvImageDlg.SetPicture(const Value: TPicture);
 begin
   FPicture.Assign(Value);
 end;
 
 end.
+

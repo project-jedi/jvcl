@@ -38,7 +38,8 @@ unit JvLinkLabelParser;
 interface
 
 uses
-  JvLinkLabelTree, Classes, JvLinkLabelTools, SysUtils, Graphics;
+  Classes, SysUtils, Graphics,
+  JvLinkLabelTree, JvLinkLabelTools;
 
 type
   IDynamicNodeHandler = interface
@@ -85,6 +86,8 @@ type
 
 implementation
 
+//=== TElementEnumerator =====================================================
+
 type
   TElementEnumerator = class(TInterfacedObject, IElementEnumerator)
   private
@@ -101,184 +104,6 @@ type
     function IsEndReached: Boolean;
   end;
 
-  { TDefaultParser }
-
-procedure TDefaultParser.AddSourceTreeToDynamicNode(
-  const Node: TDynamicNode; const Source: string);
-var
-  Parser: TDefaultParser;
-  Tree: TNodeTree;
-  I: Integer;
-begin
-  Tree := nil;
-  try
-    Parser := TDefaultParser.Create;
-    try
-      Tree := Parser.Parse(Source);
-    finally
-      Parser.Free;
-    end;
-
-    Tree.Root.OwnsChildren := False;
-    for I := 0 to Tree.Root.Children.Count - 1 do
-      Node.AddChild(Tree.Root.Children[I]);
-  finally
-    Tree.Free;
-  end;
-end;
-
-function TDefaultParser.GetNodeFromTag(const Tag: string): TNode;
-type
-  TTag = (ttBold, ttItalic, ttUnderline, ttLink, ttLineBreak, ttParagraphBreak,
-    ttDynamic);
-var
-  CurrentTag: TTag;
-  UnknownTag: Boolean;
-
-  function GetTagFromString: TTag;
-  const
-    TagStrings: array[TTag] of string = ('B', 'I', 'U', 'LINK', 'BR', 'P',
-      'DYNAMIC');
-    DontCare = 0;
-  begin
-    UnknownTag := False;
-    for Result := Low(TTag) to High(TTag) do
-      if AnsiUppercase(Tag) = TagStrings[Result] then
-        Exit;
-
-    Result := TTag(DontCare); // To get rid of a compiler warning
-    UnknownTag := True;
-  end;
-
-begin
-  { Descendant parsers should override this routine, call inherited and add
-    support for proprietary tags (using custom node objects, which descend from
-    TNode). Note that appropriate modifications need to be made to the renderer
-    as well, either by creating a new class which implements the IRenderer
-    interface, or by extending the TDefaultRenderer class. See this class for
-    more information. }
-  CurrentTag := GetTagFromString;
-
-  if not UnknownTag then
-    case CurrentTag of
-      ttBold: Result := TStyleNode.Create(fsBold);
-      ttItalic: Result := TStyleNode.Create(fsItalic);
-      ttUnderline: Result := TStyleNode.Create(fsUnderline);
-      ttLink: Result := TLinkNode.Create;
-      ttLineBreak: Result := TActionNode.Create(atLineBreak);
-      ttParagraphBreak: Result := TActionNode.Create(atParagraphBreak);
-      ttDynamic: Result := TDynamicNode.Create;
-    else
-      Result := TUnknownNode.Create(Tag);
-    end
-  else
-    Result := TUnknownNode.Create(Tag);
-
-  if CurrentTag = ttDynamic then
-    HandleDynamicTag(Result as TDynamicNode);
-end;
-
-procedure TDefaultParser.HandleDynamicTag(const Node: TDynamicNode);
-var
-  Source: string;
-begin
-  if Assigned(FDynamicNodeHandler) then
-  begin
-    FDynamicNodeHandler.HandleDynamicNode(Source, Node);
-    if Source <> '' then
-      AddSourceTreeToDynamicNode(Node, Source);
-  end;
-end;
-
-function TDefaultParser.Parse(const List: TStringList): TNodeTree;
-begin
-  Result := Parse(List.Text);
-end;
-
-function TDefaultParser.Parse(const Text: string): TNodeTree;
-begin
-  Result := TNodeTree.Create;
-  FEnum := TElementEnumerator.Create(TStringTools.RemoveCRLF(Text));
-
-  try
-    ParseNode(Result.Root);
-  finally
-    FEnum := nil;
-  end;
-end;
-
-procedure TDefaultParser.ParseNode(const Node: TParentNode);
-var
-  Element: TElement;
-  NewNode: TNode;
-
-  function EndReached: Boolean;
-  begin
-    Result := FEnum.IsEndReached or (FEnum.PeekNextElement.Kind = ekEndTag);
-  end;
-
-  function IsNodeContainer(const Node: TNode; const Element: TElement): Boolean;
-  begin
-    { Returns whether the given node is can contain other elements and thus
-      descends from TParentNode. Descendants from this class begin with <?> and
-      end with </?> (for example, <B> and </B>. Nodes that descend from
-      TActionNode shouldn't be terminated with </?> (for example, <P>). Note
-      that TDynamicNode is special; while it descends from TParentNode, it never
-      contains children at parse-time, thus we shouldn't wait for a redundant
-      </DYNAMIC>. Instead, its contents are supplied before it's rendered by
-      compiled program code. }
-    Result :=
-      (Element.Kind = ekBeginTag) and
-      (Node is TParentNode) and not (Node is TDynamicNode);
-  end;
-
-begin
-  while not EndReached do
-  begin
-    Element := FEnum.PopNextElement;
-
-    case Element.Kind of
-      ekString: NewNode := TStringNode.Create(Element.Text);
-      ekBeginTag: NewNode := GetNodeFromTag(Element.Text);
-    else
-      raise EParserError.Create('TDefaultParser.ParseNode: Unsupported state');
-    end;
-
-    Node.AddChild(NewNode);
-
-    if IsNodeContainer(NewNode, Element) then
-      ParseNode(NewNode as TParentNode);
-  end;
-
-  { When we have reached the end of a tag (</LINK> for example) we don't enter
-    the main body. We have called FEnum.PeekElement and have determined (in
-    EndReached in this routine) that the next element to be returned by FEnum.
-    PopElement will be an end-tag. Thus, we exit this routine and return either
-    to another copy of ParseNode (if we've been called recursively) or to Parse.
-
-    However, if we only check the next element to be returned using PeekElement,
-    it won't be popped off our "stack", which is what we do here. If we hadn't
-    popped it here, EndReached would've returned True in all other incarnations
-    of this routine in the call stack; thus, one single end-tag would've caused
-    the whole parse process to stop. This is obviously not what we want. }
-  if not FEnum.IsEndReached then
-    FEnum.PopNextElement;
-end;
-
-procedure TDefaultParser.SetDynamicNodeHandler(
-  Handler: IDynamicNodeHandler);
-begin
-  FDynamicNodeHandler := Handler;
-end;
-
-procedure TDefaultParser.SetElementEnumerator(NewEnum: IElementEnumerator);
-begin
-  if Assigned(NewEnum) then
-    FEnum := NewEnum;
-end;
-
-{ TElementEnumerator }
-
 const
   OpenTag: Char = '<';
   CloseTag: Char = '>';
@@ -292,8 +117,7 @@ begin
   FText := Text;
 end;
 
-function TElementEnumerator.GetNextElement(
-  const IncrementPos: Boolean): TElement;
+function TElementEnumerator.GetNextElement(const IncrementPos: Boolean): TElement;
 
   function GetElementKind: TElementKind;
   var
@@ -303,7 +127,8 @@ function TElementEnumerator.GetNextElement(
 
     if Copy(TempString, 1, 2) = OpenTag + EndMarker then // "</..."
       Result := ekEndTag
-    else if Copy(TempString, 1, 1) = OpenTag then // "<..."
+    else
+    if Copy(TempString, 1, 1) = OpenTag then // "<..."
       Result := ekBeginTag
     else
       Result := ekString;
@@ -380,4 +205,189 @@ begin
   Result := GetNextElement(True);
 end;
 
+//=== TDefaultParser =========================================================
+
+procedure TDefaultParser.AddSourceTreeToDynamicNode(
+  const Node: TDynamicNode; const Source: string);
+var
+  Parser: TDefaultParser;
+  Tree: TNodeTree;
+  I: Integer;
+begin
+  Tree := nil;
+  try
+    Parser := TDefaultParser.Create;
+    try
+      Tree := Parser.Parse(Source);
+    finally
+      Parser.Free;
+    end;
+
+    Tree.Root.OwnsChildren := False;
+    for I := 0 to Tree.Root.Children.Count - 1 do
+      Node.AddChild(Tree.Root.Children[I]);
+  finally
+    Tree.Free;
+  end;
+end;
+
+function TDefaultParser.GetNodeFromTag(const Tag: string): TNode;
+type
+  TTag =
+    (ttBold, ttItalic, ttUnderline, ttLink, ttLineBreak, ttParagraphBreak, ttDynamic);
+var
+  CurrentTag: TTag;
+  UnknownTag: Boolean;
+
+  function GetTagFromString: TTag;
+  const
+    TagStrings: array [TTag] of PChar =
+      ('B', 'I', 'U', 'LINK', 'BR', 'P', 'DYNAMIC');
+    DontCare = 0;
+  begin
+    UnknownTag := False;
+    for Result := Low(TTag) to High(TTag) do
+      if AnsiUppercase(Tag) = TagStrings[Result] then
+        Exit;
+
+    Result := TTag(DontCare); // To get rid of a compiler warning
+    UnknownTag := True;
+  end;
+
+begin
+  { Descendant parsers should override this routine, call inherited and add
+    support for proprietary tags (using custom node objects, which descend from
+    TNode). Note that appropriate modifications need to be made to the renderer
+    as well, either by creating a new class which implements the IRenderer
+    interface, or by extending the TDefaultRenderer class. See this class for
+    more information. }
+  CurrentTag := GetTagFromString;
+
+  if not UnknownTag then
+    case CurrentTag of
+      ttBold:
+        Result := TStyleNode.Create(fsBold);
+      ttItalic:
+        Result := TStyleNode.Create(fsItalic);
+      ttUnderline:
+        Result := TStyleNode.Create(fsUnderline);
+      ttLink:
+        Result := TLinkNode.Create;
+      ttLineBreak:
+        Result := TActionNode.Create(atLineBreak);
+      ttParagraphBreak:
+        Result := TActionNode.Create(atParagraphBreak);
+      ttDynamic:
+        Result := TDynamicNode.Create;
+    else
+      Result := TUnknownNode.Create(Tag);
+    end
+  else
+    Result := TUnknownNode.Create(Tag);
+
+  if CurrentTag = ttDynamic then
+    HandleDynamicTag(Result as TDynamicNode);
+end;
+
+procedure TDefaultParser.HandleDynamicTag(const Node: TDynamicNode);
+var
+  Source: string;
+begin
+  if Assigned(FDynamicNodeHandler) then
+  begin
+    FDynamicNodeHandler.HandleDynamicNode(Source, Node);
+    if Source <> '' then
+      AddSourceTreeToDynamicNode(Node, Source);
+  end;
+end;
+
+function TDefaultParser.Parse(const List: TStringList): TNodeTree;
+begin
+  Result := Parse(List.Text);
+end;
+
+function TDefaultParser.Parse(const Text: string): TNodeTree;
+begin
+  Result := TNodeTree.Create;
+  FEnum := TElementEnumerator.Create(TStringTools.RemoveCRLF(Text));
+  try
+    ParseNode(Result.Root);
+  finally
+    FEnum := nil;
+  end;
+end;
+
+procedure TDefaultParser.ParseNode(const Node: TParentNode);
+var
+  Element: TElement;
+  NewNode: TNode;
+
+  function EndReached: Boolean;
+  begin
+    Result := FEnum.IsEndReached or (FEnum.PeekNextElement.Kind = ekEndTag);
+  end;
+
+  function IsNodeContainer(const Node: TNode; const Element: TElement): Boolean;
+  begin
+    { Returns whether the given node is can contain other elements and thus
+      descends from TParentNode. Descendants from this class begin with <?> and
+      end with </?> (for example, <B> and </B>. Nodes that descend from
+      TActionNode shouldn't be terminated with </?> (for example, <P>). Note
+      that TDynamicNode is special; while it descends from TParentNode, it never
+      contains children at parse-time, thus we shouldn't wait for a redundant
+      </DYNAMIC>. Instead, its contents are supplied before it's rendered by
+      compiled program code. }
+    Result :=
+      (Element.Kind = ekBeginTag) and
+      (Node is TParentNode) and not (Node is TDynamicNode);
+  end;
+
+begin
+  while not EndReached do
+  begin
+    Element := FEnum.PopNextElement;
+
+    case Element.Kind of
+      ekString:
+        NewNode := TStringNode.Create(Element.Text);
+      ekBeginTag:
+        NewNode := GetNodeFromTag(Element.Text);
+    else
+      raise EParserError.Create('TDefaultParser.ParseNode: Unsupported state');
+    end;
+
+    Node.AddChild(NewNode);
+
+    if IsNodeContainer(NewNode, Element) then
+      ParseNode(NewNode as TParentNode);
+  end;
+
+  { When we have reached the end of a tag (</LINK> for example) we don't enter
+    the main body. We have called FEnum.PeekElement and have determined (in
+    EndReached in this routine) that the next element to be returned by FEnum.
+    PopElement will be an end-tag. Thus, we exit this routine and return either
+    to another copy of ParseNode (if we've been called recursively) or to Parse.
+
+    However, if we only check the next element to be returned using PeekElement,
+    it won't be popped off our "stack", which is what we do here. If we hadn't
+    popped it here, EndReached would've returned True in all other incarnations
+    of this routine in the call stack; thus, one single end-tag would've caused
+    the whole parse process to stop. This is obviously not what we want. }
+  if not FEnum.IsEndReached then
+    FEnum.PopNextElement;
+end;
+
+procedure TDefaultParser.SetDynamicNodeHandler(
+  Handler: IDynamicNodeHandler);
+begin
+  FDynamicNodeHandler := Handler;
+end;
+
+procedure TDefaultParser.SetElementEnumerator(NewEnum: IElementEnumerator);
+begin
+  if Assigned(NewEnum) then
+    FEnum := NewEnum;
+end;
+
 end.
+

@@ -31,16 +31,12 @@ unit JvFormImage;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Controls, Forms,
   ExtCtrls, Jpeg;
 
 type
   TFormImg = class(TForm)
     Image1: TImage;
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var

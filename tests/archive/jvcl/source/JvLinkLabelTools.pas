@@ -35,10 +35,8 @@ unit JvLinkLabelTools;
 interface
 
 uses
-  Windows, SysUtils, Classes, JvTypes;
-
-const
-  Space = ' ';
+  Windows, SysUtils, Classes,
+  JvTypes;
 
 type
   EGenericToolsError = class(EJVCLException);
@@ -54,16 +52,15 @@ type
       const Chars: array of Char): string;
   public
     class function RemoveCRLF(const S: string): string;
-    class function EndsWith(const S: string; const SubS: string = Space): Boolean;
-    class function BeginsWith(const S: string; const SubS: string = Space): Boolean;
+    class function EndsWith(const S: string; const SubS: string = ' '): Boolean;
+    class function BeginsWith(const S: string; const SubS: string = ' '): Boolean;
     class function EscapeBackslashes(const S: string): string;
     class function Replace(OldSubstr, NewSubstr: string; var S: string): Boolean;
   end;
 
   TGraphicTools = class(TStaticObject)
   public
-    class function IsPointInRect(const Rect: TRect;
-      const Point: TPoint): Boolean;
+    class function IsPointInRect(const Rect: TRect; const Point: TPoint): Boolean;
   end;
 
   TConversionTools = class(TStaticObject)
@@ -94,7 +91,14 @@ implementation
 uses
   ShellAPI;
 
-{ TStringTools }
+//=== TStaticObject ==========================================================
+
+constructor TStaticObject.Create;
+begin
+  raise EGenericToolsError.Create('This class cannot be instantiated');
+end;
+
+//=== TStringTools ===========================================================
 
 class function TStringTools.BeginsWith(const S, SubS: string): Boolean;
 begin
@@ -146,14 +150,7 @@ begin
   end;
 end;
 
-{ TStaticObject }
-
-constructor TStaticObject.Create;
-begin
-  raise EGenericToolsError.Create('This class cannot be instantiated');
-end;
-
-{ TGraphicTools }
+//=== TGraphicTools ==========================================================
 
 class function TGraphicTools.IsPointInRect(const Rect: TRect;
   const Point: TPoint): Boolean;
@@ -163,7 +160,7 @@ begin
     (Point.Y >= Rect.Top) and (Point.Y <= Rect.Bottom);
 end;
 
-{ TConversionTools }
+//=== TConversionTools =======================================================
 
 class function TConversionTools.BoolToStr(const B: Boolean): string;
 begin
@@ -181,7 +178,27 @@ begin
     Result := 'No';
 end;
 
-{ TOwnerPointerList }
+//=== TWebTools ==============================================================
+
+class function TWebTools.OpenWebPage(const URI: string): Boolean;
+begin
+  Result := ShellExecute(0, 'open', PChar(URI), nil, nil, SW_SHOWNORMAL) > 32;
+end;
+
+//=== TOwnerPointerList ======================================================
+
+constructor TOwnerPointerList.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TOwnerPointerList.Destroy;
+begin
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
 
 procedure TOwnerPointerList.Clear;
 var
@@ -192,30 +209,9 @@ begin
   FList.Clear;
 end;
 
-constructor TOwnerPointerList.Create;
-begin
-  inherited;
-  FList := TList.Create;
-end;
-
-destructor TOwnerPointerList.Destroy;
-begin
-  Clear;
-  FList.Free;
-  inherited;
-end;
-
 function TOwnerPointerList.GetCount: Integer;
 begin
   Result := FList.Count;
-end;
-
-{ TWebTools }
-
-class function TWebTools.OpenWebPage(const URI: string): Boolean;
-begin
-  Result :=
-    ShellExecute(0, 'open', PChar(URI), nil, nil, SW_SHOWNORMAL) > 32;
 end;
 
 end.

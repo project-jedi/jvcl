@@ -12,7 +12,7 @@ The Original Code is: JvPicClip.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,20 +25,18 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvPicClip;
 
 interface
 
-uses Messages, Classes, Controls, Windows,
-{$IFDEF COMPILER6_UP}
-RTLConsts,
-{$ENDIF}
-Graphics{, JvComponent};
+uses
+  Windows, Classes, Controls, 
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  Graphics {, JvComponent};
 
 type
-
-{ TJvPicClip }
   TCellRange = 1..MaxInt;
 
   TJvPicClip = class(TComponent)
@@ -92,11 +90,9 @@ type
 
 implementation
 
-{$B-}
-
-uses SysUtils, JvVCLUtils, Consts, JvConst;
-
-{ TJvPicClip }
+uses
+  SysUtils, Consts,
+  JvVCLUtils, JvConst;
 
 constructor TJvPicClip.Create(AOwner: TComponent);
 begin
@@ -121,8 +117,10 @@ end;
 
 procedure TJvPicClip.Assign(Source: TPersistent);
 begin
-  if Source is TJvPicClip then begin
-    with TJvPicClip(Source) do begin
+  if Source is TJvPicClip then
+  begin
+    with TJvPicClip(Source) do
+    begin
       Self.FRows := Rows;
       Self.FCols := Cols;
       Self.FMasked := Masked;
@@ -130,9 +128,11 @@ begin
       Self.FPicture.Assign(FPicture);
     end;
   end
-  else if (Source is TPicture) or (Source is TGraphic) then
+  else
+  if (Source is TPicture) or (Source is TGraphic) then
     FPicture.Assign(Source)
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 {$IFDEF WIN32}
@@ -147,24 +147,29 @@ var
   SaveChange: TNotifyEvent;
 {$ENDIF}
 begin
-  if (Dest is TPicture) then Dest.Assign(FPicture)
-  else if (Dest is TGraphic) and (FPicture.Graphic <> nil) and
+  if (Dest is TPicture) then
+    Dest.Assign(FPicture)
+  else
+  if (Dest is TGraphic) and (FPicture.Graphic <> nil) and
     (FPicture.Graphic is TGraphic(Dest).ClassType) then
     Dest.Assign(FPicture.Graphic)
-{$IFDEF WIN32}
-  else if (Dest is TImageList) and not IsEmpty then begin
-    with TImageList(Dest) do begin
+  {$IFDEF WIN32}
+  else
+  if (Dest is TImageList) and not IsEmpty then
+  begin
+    with TImageList(Dest) do
+    begin
       SaveChange := OnChange;
       try
         OnChange := nil;
         Clear;
         Width := Self.Width;
         Height := Self.Height;
-        for I := 0 to Self.Count - 1 do begin
+        for I := 0 to Self.Count - 1 do
           if Self.Masked and (MaskColor <> clNone) then
             TImageList(Dest).AddMasked(GraphicCell[I], MaskColor)
-          else TImageList(Dest).Add(GraphicCell[I], nil);
-        end;
+          else
+            TImageList(Dest).Add(GraphicCell[I], nil);
         Masked := Self.Masked;
       finally
         OnChange := SaveChange;
@@ -172,13 +177,15 @@ begin
       TJvHack(Dest).Change;
     end;
   end
-{$ENDIF}
-  else inherited AssignTo(Dest);
+  {$ENDIF}
+  else
+    inherited AssignTo(Dest);
 end;
 
 procedure TJvPicClip.Changed;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 function TJvPicClip.GetIsEmpty: Boolean;
@@ -188,22 +195,26 @@ end;
 
 function TJvPicClip.GetCount: Integer;
 begin
-  if IsEmpty then Result := 0
-  else Result := Cols * Rows;
+  if IsEmpty then
+    Result := 0
+  else
+    Result := Cols * Rows;
 end;
 
 procedure TJvPicClip.Draw(Canvas: TCanvas; X, Y, Index: Integer);
 var
   Image: TGraphic;
 begin
-  if Index < 0 then Image := Picture.Graphic
-  else Image := GraphicCell[Index];
-  if (Image <> nil) and not Image.Empty then begin
+  if Index < 0 then
+    Image := Picture.Graphic
+  else
+    Image := GraphicCell[Index];
+  if (Image <> nil) and not Image.Empty then
     if FMasked and (FMaskColor <> clNone) and
       (Picture.Graphic is TBitmap) then
       DrawBitmapTransparent(Canvas, X, Y, TBitmap(Image), FMaskColor)
-    else Canvas.Draw(X, Y, Image);
-  end;
+    else
+      Canvas.Draw(X, Y, Image);
 end;
 
 procedure TJvPicClip.DrawCenter(Canvas: TCanvas; Rect: TRect; Index: Integer);
@@ -230,17 +241,18 @@ end;
 procedure TJvPicClip.CheckIndex(Index: Integer);
 begin
   if (Index >= Cols * Rows) or (Index < 0) then
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     raise EListError.CreateFmt(SListIndexError, [Index]);
-{$ELSE}
+    {$ELSE}
     raise EListError.CreateFmt('%s (%d)', [LoadStr(SListIndexError), Index]);
-{$ENDIF}
+    {$ENDIF}
 end;
 
 function TJvPicClip.GetIndex(Col, Row: Cardinal): Integer;
 begin
   Result := Col + (Row * Cols);
-  if (Result >= Cols * Rows) or IsEmpty then Result := -1;
+  if (Result >= Cols * Rows) or IsEmpty then
+    Result := -1;
 end;
 
 function TJvPicClip.GetCell(Col, Row: Cardinal): TBitmap;
@@ -252,17 +264,18 @@ function TJvPicClip.GetGraphicCell(Index: Integer): TBitmap;
 begin
   CheckIndex(Index);
   AssignBitmapCell(Picture.Graphic, FBitmap, Cols, Rows, Index);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   if Picture.Graphic is TBitmap then
     if FBitmap.PixelFormat <> pfDevice then
       FBitmap.PixelFormat := TBitmap(Picture.Graphic).PixelFormat;
   FBitmap.TransparentColor := FMaskColor or PaletteMask;
   FBitmap.Transparent := (FMaskColor <> clNone) and Masked;
-{$ELSE}
+  {$ELSE}
   if Masked and (FMaskColor <> clNone) then
     with FBitmap do
-      if not Empty then Canvas.Pixels[0, Height - 1] := FMaskColor;
-{$ENDIF}
+      if not Empty then
+        Canvas.Pixels[0, Height - 1] := FMaskColor;
+  {$ENDIF}
   Result := FBitmap;
 end;
 
@@ -291,7 +304,8 @@ end;
 
 procedure TJvPicClip.SetMaskColor(Value: TColor);
 begin
-  if Value <> FMaskColor then begin
+  if Value <> FMaskColor then
+  begin
     FMaskColor := Value;
     Changed;
   end;
@@ -300,7 +314,8 @@ end;
 procedure TJvPicClip.PictureChanged(Sender: TObject);
 begin
   FMaskColor := GetDefaultMaskColor;
-  if not (csReading in ComponentState) then Changed;
+  if not (csReading in ComponentState) then
+    Changed;
 end;
 
 procedure TJvPicClip.SetHeight(Value: Integer);
@@ -321,3 +336,4 @@ begin
 end;
 
 end.
+

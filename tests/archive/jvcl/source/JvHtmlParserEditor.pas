@@ -31,8 +31,13 @@ unit JvHtmlParserEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-   {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
+  SysUtils, Classes, Forms,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvFormParser;
 
 type
@@ -47,50 +52,40 @@ type
 
 implementation
 
-{*************************************************}
-
 function TJvHtmlParserEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
-
-{*************************************************}
 
 function TJvHtmlParserEditor.GetValue: string;
 begin
   Result := GetStrValue;
 end;
 
-{*************************************************}
-
 procedure TJvHtmlParserEditor.SetValue(const Value: string);
 begin
   SetStrValue(Value);
 end;
-
-{*************************************************}
 
 procedure TJvHtmlParserEditor.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue('Click to edit...');
 end;
 
-{*************************************************}
-
 procedure TJvHtmlParserEditor.Edit;
 var
   Dlg: TFormParsers;
-  res: TStringList;
+  Res: TStringList;
 begin
-  res := TStringList(GetOrdValue);
+  Res := TStringList(GetOrdValue);
   Dlg := TFormParsers.Create(Application);
-  Dlg.LoadFromStr(res);
+  Dlg.LoadFromStr(Res);
   try
     Dlg.ShowModal;
     if Dlg.Tag = 0 then
     begin
-      res.Assign(Dlg.SetFromStr);
-      SetOrdValue(Integer(res));
+      Res.Assign(Dlg.SetFromStr);
+      SetOrdValue(Integer(Res));
     end;
   finally
     Dlg.Free;
@@ -98,3 +93,4 @@ begin
 end;
 
 end.
+

@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvGenetic;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
+  Windows, SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TOnTest = function(Sender: TObject; Index: Integer; Member: PByte): Byte of object;
@@ -44,9 +43,9 @@ type
     FGeneration: Integer;
     FSize: Integer;
     FNumbers: Integer;
-    FOnTest: TOnTest;
+    FOnTestMember: TOnTest;
     FCrossover: Real;
-    FMutate: Real;
+    FMutateProbability: Real;
     procedure SetNumbers(const Value: Integer);
     procedure SetSize(const Value: Integer);
     procedure KillThemAll(Value: TStringList);
@@ -66,9 +65,9 @@ type
     property Generation: Integer read FGeneration;
     property MemberSize: Integer read FSize write SetSize default 4;
     property Numbers: Integer read FNumbers write SetNumbers default 10;
-    property OnTestMember: TOnTest read FOnTest write FOnTest;
+    property OnTestMember: TOnTest read FOnTestMember write FOnTestMember;
     property CrossoverProbability: Real read FCrossover write FCrossover;
-    property MutateProbability: Real read FMutate write FMutate;
+    property MutateProbability: Real read FMutateProbability write FMutateProbability;
   end;
 
 implementation
@@ -80,71 +79,60 @@ type
   end;
 
 resourcestring
-  RC_NoTest = 'TJvGenetic : OnTestMember must be Assigned !';
-
-  {***************************************************}
+  RC_NoTest = 'TJvGenetic: OnTestMember must be Assigned !';
 
 constructor TJvGenetic.Create(AOwner: TComponent);
 begin
-  inherited;
-
+  inherited Create(AOwner);
   FMembers := TStringList.Create;
   Randomize;
   FGeneration := 0;
   FNumbers := 10;
   FSize := 4;
   FCrossover := 0.6;
-  FMutate := 0.003;
+  FMutateProbability := 0.003;
 end;
-
-{***************************************************}
 
 destructor TJvGenetic.Destroy;
 begin
   KillThemAll(FMembers);
   FMembers.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{***************************************************}
 
 function TJvGenetic.DoCrossover: Boolean;
 begin
   Result := Random < FCrossover;
 end;
 
-{***************************************************}
-
 function TJvGenetic.Generate(Father, Mother: PByte; Size: Integer): PByte;
 var
-  i, count: Integer;
+  i, Count: Integer;
   p, s: PByte;
 begin
   if DoCrossover then
-    count := Random(Size - 1)
+    Count := Random(Size - 1)
   else
-    count := Size;
+    Count := Size;
 
   Result := AllocMem(Size);
   p := Result;
   s := Father;
-  for i := 0 to count - 1 do
+  for i := 0 to Count - 1 do
   begin
     p^ := Mutate(s^);
     Inc(p);
     Inc(s);
   end;
   s := Mother;
-  Inc(s, count);
-  for i := count to Size - 1 do
+  Inc(s, Count);
+  for i := Count to Size - 1 do
   begin
     p^ := Mutate(s^);
     Inc(p);
     Inc(s);
   end;
 end;
-
-{***************************************************}
 
 function TJvGenetic.GetAverage: Real;
 var
@@ -159,14 +147,10 @@ begin
   end;
 end;
 
-{***************************************************}
-
 function TJvGenetic.GetMember(Index: Integer): PByte;
 begin
   Result := TGeneticMember(FMembers.Objects[Index]).Data;
 end;
-
-{***************************************************}
 
 procedure TJvGenetic.KillThemAll(Value: TStringList);
 begin
@@ -178,8 +162,6 @@ begin
   end;
 end;
 
-{***************************************************}
-
 function TJvGenetic.Mutate(Value: Byte): Byte;
 var
   b: Byte;
@@ -189,7 +171,7 @@ begin
   Result := Value;
   for i := 0 to 7 do
   begin
-    if Random < FMutate then
+    if Random < FMutateProbability then
     begin
       if (Result and b) = 0 then
         Result := Result or b
@@ -199,8 +181,6 @@ begin
     b := b shr 1;
   end;
 end;
-
-{***************************************************}
 
 procedure TJvGenetic.NewGeneration;
 var
@@ -222,15 +202,13 @@ begin
         Byte(p^) := Random(256);
         Inc(p);
       end;
-      if not Assigned(FOnTest) then
+      if not Assigned(FOnTestMember) then
         raise EJVCLException.Create(RC_NoTest);
-      Member.Points := FOnTest(Self, i, Member.Data);
+      Member.Points := FOnTestMember(Self, i, Member.Data);
       FMembers.AddObject('', TObject(Member));
     end;
   end;
 end;
-
-{***************************************************}
 
 procedure TJvGenetic.NextGeneration;
 var
@@ -277,8 +255,8 @@ begin
         TGeneticMember(FMembers.Objects[Father]).Data,
         FSize);
 
-      if Assigned(FOnTest) then
-        Member.Points := FOnTest(Self, i, Member.Data)
+      if Assigned(FOnTestMember) then
+        Member.Points := FOnTestMember(Self, i, Member.Data)
       else
         raise EJVCLException.Create(RC_NoTest);
 
@@ -291,8 +269,6 @@ begin
   end;
 end;
 
-{***************************************************}
-
 procedure TJvGenetic.SetNumbers(const Value: Integer);
 begin
   if FNumbers <> Value then
@@ -302,8 +278,6 @@ begin
     FGeneration := 0;
   end;
 end;
-
-{***************************************************}
 
 procedure TJvGenetic.SetSize(const Value: Integer);
 begin
@@ -316,3 +290,4 @@ begin
 end;
 
 end.
+

@@ -1,19 +1,24 @@
-{******************************************************************************
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
- Project JEDI Visible Component Library (J-VCL)
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
 
- The contents of this file are subject to the Mozilla Public License Version
- 1.1 (the "License"); you may not use this file except in compliance with the
- License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+The Initial Developer of the Original Code is Marcel Bestebroer
+ <marcelb@zeelandnet.nl>.
+Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2001 mbeSoft.
+All Rights Reserved.
 
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- the specific language governing rights and limitations under the License.
+Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
- The Initial Developer of the Original Code is Marcel Bestebroer
-  <marcelb@zeelandnet.nl>.
- Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2001 mbeSoft.
- All Rights Reserved.
+Last Modified: 2000-02-28
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
 ******************************************************************************
 
@@ -21,10 +26,11 @@
  XVCL can be onbtained from the XVCL home page, located at
  http://xvcl.sourceforge.net
 
- You may retrieve the latest version of this file at the Project JEDI home
- page, located at http://www.delphi-jedi.org
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
 
-******************************************************************************}
+Known Issues:
+-----------------------------------------------------------------------------}
 
 unit JvInspXVCL;
 
@@ -59,7 +65,6 @@ type
     function IsInitialized: Boolean; override;
     class function New(const AParent: TJvCustomInspectorItem; const AName: string; const AJvxNode: TJvxNode): TJvCustomInspectorItem;
     procedure SetAsSet(const Buf); override;
-
     property JvxNode: TJvxNode read GetJvxNode write SetJvxNode;
   end;
 
@@ -67,8 +72,6 @@ implementation
 
 uses
   Consts, SysUtils, TypInfo;
-
-{ TJvInspectorxNodeData }
 
 function TJvInspectorxNodeData.GetAsFloat: Extended;
 begin
@@ -217,7 +220,8 @@ begin
       {$ENDIF COMPILER5_UP}
     end;
   end
-  else if TypeInfo.Kind = tkClass then
+  else
+  if TypeInfo.Kind = tkClass then
     JvxNode.AsInteger := Integer(Value)
   else
     raise EJvInspectorData.CreateFmt(sJvInspDataNoAccessAs, ['Ordinal']);

@@ -28,32 +28,30 @@ Known Issues:
 
 unit JvPatchFile;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JvComponent;
+  SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TJvPatchFile = class(TJvComponent)
   private
-    FEnd: TFileName;
-    FStart: TFileName;
-    FDiff: TStringList;
-    FChange: Boolean;
+    FEndFile: TFileName;
+    FStartFile: TFileName;
+    FDifferences: TStringList;
+    FChangeInFile: Boolean;
     FPos: Integer;
     FPass: string;
     function Decrypt(Value: Byte): Byte;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property StartFile: TFileName read FStart write FStart;
-    property EndFile: TFileName read Fend write FEnd;
-    property ChangeInFile: Boolean read FChange write FChange default True;
-    property Differences: TStringList read FDiff write FDiff;
+    property StartFile: TFileName read FStartFile write FStartFile;
+    property EndFile: TFileName read FEndFile write FEndFile;
+    property ChangeInFile: Boolean read FChangeInFile write FChangeInFile default True;
+    property Differences: TStringList read FDifferences write FDifferences;
     function Patch(Password: string = ''): Boolean;
     function IsPatched(FileName: string): Boolean;
     function IsPatchable(FileName: string): Boolean;
@@ -61,16 +59,18 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvPatchFile.Create(AOwner: TComponent);
 begin
-  inherited;
-  FDiff := TStringList.Create;
-  FChange := True;
+  inherited Create(AOwner);
+  FDifferences := TStringList.Create;
+  FChangeInFile := True;
 end;
 
-{**************************************************}
+destructor TJvPatchFile.Destroy;
+begin
+  FDifferences.Free;
+  inherited Destroy;
+end;
 
 function TJvPatchFile.Decrypt(Value: Byte): Byte;
 begin
@@ -83,130 +83,119 @@ begin
   end;
 end;
 
-{**************************************************}
-
-destructor TJvPatchFile.Destroy;
-begin
-  FDiff.Free;
-  inherited;
-end;
-
-{**************************************************}
-
 function TJvPatchFile.IsPatchable(FileName: string): Boolean;
 var
-  f: file of Byte;
+  F: file of Byte;
 begin
   Result := False;
   if FileExists(FileName) then
   begin
-    AssignFile(f, FileName);
-    Reset(f);
-    Result := (FDiff.Count > 3) and (FileSize(f) = StrToInt(FDiff[2]));
-    CloseFile(f);
+    AssignFile(F, FileName);
+    Reset(F);
+    Result := (FDifferences.Count > 3) and (FileSize(F) = StrToInt(FDifferences[2]));
+    CloseFile(F);
   end;
 end;
-
-{**************************************************}
 
 function TJvPatchFile.IsPatched(FileName: string): Boolean;
 var
-  f: file of Byte;
+  F: file of Byte;
 begin
   Result := False;
   if FileExists(FileName) then
   begin
-    AssignFile(f, FileName);
-    Reset(f);
-    Result := (FDiff.Count > 3) and (FileSize(f) = StrToInt(FDiff[3]));
-    CloseFile(f);
+    AssignFile(F, FileName);
+    Reset(F);
+    Result := (FDifferences.Count > 3) and (FileSize(F) = StrToInt(FDifferences[3]));
+    CloseFile(F);
   end;
 end;
 
-{**************************************************}
-
 function TJvPatchFile.Patch(Password: string): Boolean;
 var
-  i: Integer;
-  ind, tmp: longint;
-  c: Byte;
-  b: array[0..65000] of Byte;
-  t, tend: TFileStream;
-  t2: TMemoryStream;
+  I: Integer;
+  Ind, Tmp: Longint;
+  C: Byte;
+  Bytes: array [0..65000] of Byte;
+  T, EndT: TFileStream;
+  T2: TMemoryStream;
 begin
   FPos := -1;
   FPass := Password;
 
   //patch it !:)
   Result := False;
-  if (FDiff.Count = 0) or (FStart = '') or not FileExists(FStart) then
+  if (FDifferences.Count = 0) or (FStartFile = '') or not FileExists(FStartFile) then
     Exit;
 
-  t := TFileStream.Create(FStart, fmOpenRead or fmShareDenyWrite);
-  t2 := TMemoryStream.Create;
+  T := TFileStream.Create(FStartFile, fmOpenRead or fmShareDenyWrite);
+  T2 := TMemoryStream.Create;
 
-  if (FDiff.Count > 3) and (t.Size = StrToInt(FDiff[2])) then
+  if (FDifferences.Count > 3) and (T.Size = StrToInt(FDifferences[2])) then
   begin
     Result := True;
-    i := 4;
-    while i < FDiff.Count do
+    I := 4;
+    while I < FDifferences.Count do
     begin
-      if (Length(FDiff[i]) > 2) and (Pos('|', FDiff[i]) <> 0) then
+      if (Length(FDifferences[I]) > 2) and (Pos('|', FDifferences[I]) <> 0) then
       begin
-        ind := StrToInt(Copy(FDiff[i], 1, Pos('|', FDiff[i]) - 1));
-        while ind > 65000 do
+        Ind := StrToInt(Copy(FDifferences[I], 1, Pos('|', FDifferences[I]) - 1));
+        while Ind > 65000 do
         begin
-          t.Read(b, 60000);
-          t2.Write(b, 60000);
-          Dec(ind, 60000);
+          T.Read(Bytes, 60000);
+          T2.Write(Bytes, 60000);
+          Dec(Ind, 60000);
         end;
-        t.Read(b, ind - 1);
-        t.Read(c, 1);
-        t2.Write(b, ind - 1);
-        c := Byte(FDiff[i][Pos('|', FDiff[i]) + 1]);
-        c := Decrypt(c);
-        t2.Write(c, 1);
+        T.Read(Bytes, Ind - 1);
+        T.Read(C, 1);
+        T2.Write(Bytes, Ind - 1);
+        C := Byte(FDifferences[I][Pos('|', FDifferences[I]) + 1]);
+        C := Decrypt(C);
+        T2.Write(C, 1);
       end
-      else if Length(FDiff[i]) = 1 then
+      else
+      if Length(FDifferences[I]) = 1 then
       begin
         //File is greater
-        t.Position := t2.Position;
-        while t.Position < t.Size do
+        T.Position := T2.Position;
+        while T.Position < T.Size do
         begin
-          ind := t.Read(b, 10000);
-          t2.Write(b, ind);
+          Ind := T.Read(Bytes, 10000);
+          T2.Write(Bytes, Ind);
         end;
-        c := Byte(FDiff[i][1]);
-        c := Decrypt(c);
-        t2.Write(c, 1);
+        C := Byte(FDifferences[I][1]);
+        C := Decrypt(C);
+        T2.Write(C, 1);
       end
-      else if (Pos('%', FDiff[i]) = 4) then
+      else
+      if Pos('%', FDifferences[I]) = 4 then
       begin
         //File is smaller
-        ind := StrToInt(Copy(FDiff[i], Pos('%', FDiff[i]) + 1, Length(FDiff[i])));
-        while t.Position < ind do
+        Ind := StrToInt(Copy(FDifferences[I], Pos('%', FDifferences[I]) + 1, Length(FDifferences[I])));
+        while T.Position < Ind do
         begin
-          tmp := t.Read(b, 10000);
-          if tmp + t.position > ind then
-            t2.Write(b, t2.position - ind)
+          Tmp := T.Read(Bytes, 10000);
+          if Tmp + T.Position > Ind then
+            T2.Write(Bytes, T2.Position - Ind)
           else
-            t2.Write(b, tmp);
+            T2.Write(Bytes, Tmp);
         end;
       end;
-      Inc(i);
+      Inc(I);
     end;
-    t.Free;
-    if FChange then
-      tend := TFileStream.Create(FStart, fmCreate or fmShareExclusive)
+    T.Free;
+    if FChangeInFile then
+      EndT := TFileStream.Create(FStartFile, fmCreate or fmShareExclusive)
     else
-      tend := TFileStream.Create(FEnd, fmCreate or fmShareExclusive);
-    t2.Position := 0;
-    tend.CopyFrom(t2, t2.Size);
-    tend.Free;
+      EndT := TFileStream.Create(FEndFile, fmCreate or fmShareExclusive);
+    T2.Position := 0;
+    EndT.CopyFrom(T2, T2.Size);
+    EndT.Free;
   end
   else
-    t.Free;
-  t2.Free;
+    T.Free;
+  T2.Free;
 end;
 
 end.
+

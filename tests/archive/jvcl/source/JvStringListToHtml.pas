@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvStringListToHtml;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Printers, ComCtrls, JvComponent;
+  SysUtils, Classes,
+  JvComponent;
 
 type
   TJvStringListToHtml = class(TJvComponent)
@@ -52,27 +51,32 @@ resourcestring
   RC_Html5 = '</BODY>';
   RC_Html6 = '</HTML>';
 
-  {**************************************************}
-
 procedure TJvstringListToHtml.ConvertToHtml(Value: TStringList; Path: string);
+var
+  List: TStringList;
 begin
-  ConvertToHtmlStringList(Value).SaveToFile(Path);
+  // (rom) classic memory leak fixed
+  List := ConvertToHtmlStringList(Value);
+  try
+    List.SaveToFile(Path);
+  finally
+    List.Free;
+  end;
 end;
-
-{**************************************************}
 
 function TJvstringListToHtml.ConvertToHtmlStringList(Value: TStringList): TStringList;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := TStringList.Create;
   Result.Add(RC_Html1);
   Result.Add(RC_Html2);
   Result.Add(RC_Html3);
-  for i := 0 to Value.Count - 1 do
-    Result.Add(RC_Html4 + Value[i]);
+  for I := 0 to Value.Count - 1 do
+    Result.Add(RC_Html4 + Value[I]);
   Result.Add(RC_Html5);
   Result.Add(RC_Html6);
 end;
 
 end.
+

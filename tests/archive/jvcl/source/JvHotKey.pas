@@ -28,34 +28,32 @@ Known Issues:
 
 unit JvHotKey;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvHotKey = class(THotKey)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
+    FOnParentColorChange: TNotifyEvent;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
     property Color;
     property Ctl3d;
     property Font;
@@ -75,36 +73,30 @@ type
 
 implementation
 
-{*****************************************************************}
-
 constructor TJvHotKey.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{**************************************************}
 
 procedure TJvHotKey.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  if Assigned(FOnParentColorChange) then
+    FOnParentColorChange(Self);
 end;
-
-{**************************************************}
 
 procedure TJvHotKey.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-{**************************************************}
 
 procedure TJvHotKey.MouseLeave(var Msg: TMessage);
 begin
@@ -114,3 +106,4 @@ begin
 end;
 
 end.
+

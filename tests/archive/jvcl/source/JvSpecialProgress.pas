@@ -33,8 +33,8 @@ unit JvSpecialProgress;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  ExtCtrls, // for Frame3d
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  ExtCtrls, // for Frame3D
   JVCLVer;
 
 type
@@ -55,20 +55,17 @@ type
     FStep: Integer;
     FTextCentered: Boolean;
     FTextOption: TJvTextOption;
-
     FOnMouseEnter: TNotifyEvent;
     FOnParentColorChange: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-
     FBuffer: TBitmap;
     FSavedHintColor: TColor;
     FTaille: Integer;
     { FIsChanged indicates if the buffer needs to be redrawn }
     FIsChanged: Boolean;
-    FEnd, FStart: TColor;
-
+    FStart: TColor;
+    FEnd: TColor;
     { If Solid = False then the values of the following vars are valid: }
-
     { FBlockCount is # of blocks }
     FBlockCount: Integer;
     { FBlockWidth is length of block in pixels + 1 {seperator }
@@ -93,14 +90,12 @@ type
     procedure SetStartColor(const Value: TColor);
     procedure SetTextCentered(const Value: Boolean);
     procedure SetTextOption(const Value: TJvTextOption);
-
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-
     procedure PaintRectangle;
     procedure PaintNonSolid;
     procedure PaintSolid;
@@ -158,7 +153,37 @@ type
 
 implementation
 
-{ TJvSpecialProgress }
+constructor TJvSpecialProgress.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBuffer := TBitmap.Create;
+
+  ControlStyle := ControlStyle + [csOpaque]; // SMM 20020604
+  FBorderStyle := bsNone;
+  FHintColor := clInfoBk;
+  FMaximum := 100;
+  FMinimum := 0;
+  FStartColor := clWhite;
+  FStart := clWhite;
+  FEndColor := clBlack;
+  FEnd := clBlack;
+  FPosition := 0;
+  FSolid := False;
+  FTextOption := toNoText;
+  FTextCentered := False;
+  FGradientBlocks := False;
+  FStep := 10;
+
+  Width := 150;
+  Height := 15;
+  FIsChanged := True;
+end;
+
+destructor TJvSpecialProgress.Destroy;
+begin
+  FBuffer.Free;
+  inherited Destroy;
+end;
 
 procedure TJvSpecialProgress.CMColorChanged(var Msg: TMessage);
 begin
@@ -197,38 +222,6 @@ begin
   end;
 end;
 
-constructor TJvSpecialProgress.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FBuffer := TBitmap.Create;
-
-  ControlStyle := ControlStyle + [csOpaque]; // SMM 20020604
-  FBorderStyle := bsNone;
-  FHintColor := clInfoBk;
-  FMaximum := 100;
-  FMinimum := 0;
-  FStartColor := clWhite;
-  FStart := clWhite;
-  FEndColor := clBlack;
-  FEnd := clBlack;
-  FPosition := 0;
-  FSolid := False;
-  FTextOption := toNoText;
-  FTextCentered := False;
-  FGradientBlocks := False;
-  FStep := 10;
-
-  Width := 150;
-  Height := 15;
-  FIsChanged := True;
-end;
-
-destructor TJvSpecialProgress.Destroy;
-begin
-  FBuffer.Free;
-  inherited Destroy;
-end;
-
 function TJvSpecialProgress.GetPercentDone: Longint;
 begin
   if FMaximum - FMinimum = 0 then
@@ -239,7 +232,7 @@ end;
 
 procedure TJvSpecialProgress.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   UpdateTaille;
   UpdateBuffer;
 end;
@@ -404,9 +397,9 @@ begin
   end
   else
   begin
-    Frame3d(FBuffer.Canvas, Rect, clBtnFace, clBtnFace, 1);
-    Frame3d(FBuffer.Canvas, Rect, clBtnShadow, clBtnHighlight, 1);
-    Frame3d(FBuffer.Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
+    Frame3D(FBuffer.Canvas, Rect, clBtnFace, clBtnFace, 1);
+    Frame3D(FBuffer.Canvas, Rect, clBtnShadow, clBtnHighlight, 1);
+    Frame3D(FBuffer.Canvas, Rect, cl3DDkShadow, clBtnFace, 1);
   end;
 end;
 
@@ -570,7 +563,8 @@ begin
     FPosition := Value;
     if FPosition > FMaximum then
       FPosition := FMaximum
-    else if FPosition < FMinimum then
+    else
+    if FPosition < FMinimum then
       FPosition := FMinimum;
 
     { If the percentage has changed we must update, otherwise check in
@@ -586,7 +580,6 @@ begin
   if FSolid <> Value then
   begin
     FSolid := Value;
-
     FIsChanged := True;
     UpdateTaille;
     UpdateBuffer;
@@ -599,7 +592,6 @@ begin
   begin
     FStartColor := Value;
     FStart := ColorToRGB(FStartColor);
-
     FIsChanged := True;
     UpdateBuffer;
   end;
@@ -610,7 +602,6 @@ begin
   if FTextCentered <> Value then
   begin
     FTextCentered := Value;
-
     if TextOption <> toNoText then
     begin
       FIsChanged := True;
@@ -624,7 +615,6 @@ begin
   if FTextOption <> Value then
   begin
     FTextOption := Value;
-
     FIsChanged := True;
     UpdateBuffer;
   end;
@@ -634,7 +624,8 @@ procedure TJvSpecialProgress.StepIt;
 begin
   if FPosition + FStep > FMaximum then
     Position := FMaximum
-  else if FPosition + FStep < FMinimum then
+  else
+  if FPosition + FStep < FMinimum then
     Position := FMinimum
   else
     Position := FPosition + FStep;

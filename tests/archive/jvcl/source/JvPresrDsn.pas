@@ -30,18 +30,19 @@ unit JvPresrDsn;
 interface
 
 uses
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, 
-  Buttons, ExtCtrls, JvxCtrls, JvPlacemnt, JvProps, Consts,
- {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  JvVCLUtils;
+  SysUtils, Classes, Controls, Forms, StdCtrls,
+  Buttons, ExtCtrls, Consts,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  JvVCLUtils, JvxCtrls, JvPlacemnt, JvProps;
 
 type
-
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   IDesigner = TDesigner;
-{$ENDIF}
-
-{ TJvFormPropsDlg }
+  {$ENDIF}
 
   TJvFormPropsDlg = class(TForm)
     Bevel1: TBevel;
@@ -49,8 +50,7 @@ type
     Label31: TLabel;
     Label2: TLabel;
     UpBtn: TSpeedButton;
-    DownBtn: TSpeedButton;        
-
+    DownBtn: TSpeedButton;
     FormBox: TGroupBox;
     ActiveCtrlBox: TCheckBox;
     PositionBox: TCheckBox;
@@ -76,7 +76,6 @@ type
     procedure StoredListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure PropertiesListDblClick(Sender: TObject);
   private
-    { Private declarations }
     FCompOwner: TComponent;
     FDesigner: IDesigner;
     procedure ListToIndex(List: TCustomListBox; Idx: Integer);
@@ -90,19 +89,13 @@ type
     procedure BuildLists(StoredProps: TStrings);
     procedure CheckButtons;
     procedure SetStoredList(AList: TStrings);
-  public
-    { Public declarations }
   end;
-
-{ TJvFormStorageEditor }
 
   TJvFormStorageEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-
-{ TJvStoredPropsProperty }
 
   TJvStoredPropsProperty = class(TClassProperty)
   public
@@ -111,25 +104,28 @@ type
     procedure Edit; override;
   end;
 
-{ Show component editor }
 function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
   AStoredList: TStrings; var Options: TPlacementOptions): Boolean;
 
 implementation
 
 {$IFDEF WIN32}
-uses Windows, JvBoxProcs, TypInfo, JvxConst;
+uses
+  TypInfo,
+  JvBoxProcs, JvxConst;
 {$ELSE}
-uses WinTypes, WinProcs, JvStr16, JvBoxProcs, TypInfo, JvxConst;
+uses
+  WinTypes, WinProcs, TypInfo,
+  JvStr16, JvBoxProcs, JvxConst;
 {$ENDIF}
 
 {$R *.DFM}
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
-{ TJvFormStorageEditor }
+//=== TJvFormStorageEditor ===================================================
 
 procedure TJvFormStorageEditor.ExecuteVerb(Index: Integer);
 var
@@ -137,15 +133,16 @@ var
   Opt: TPlacementOptions;
 begin
   Storage := Component as TJvFormStorage;
-  if Index = 0 then begin
+  if Index = 0 then
+  begin
     Opt := Storage.Options;
     if ShowStorageDesigner(TComponent(Storage.Owner), Designer,
       Storage.StoredProps, Opt) then
     begin
       Storage.Options := Opt;
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       Storage.SetNotification;
-{$ENDIF}
+      {$ENDIF}
     end;
   end;
 end;
@@ -153,8 +150,10 @@ end;
 function TJvFormStorageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := srStorageDesigner;
-    else Result := '';
+    0:
+      Result := srStorageDesigner;
+  else
+    Result := '';
   end;
 end;
 
@@ -163,7 +162,7 @@ begin
   Result := 1;
 end;
 
-{ TJvStoredPropsProperty }
+//=== TJvStoredPropsProperty =================================================
 
 function TJvStoredPropsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -172,8 +171,10 @@ end;
 
 function TJvStoredPropsProperty.GetValue: string;
 begin
-  if TStrings(GetOrdValue).Count > 0 then Result := inherited GetValue
-  else Result := ResStr(srNone);
+  if TStrings(GetOrdValue).Count > 0 then
+    Result := inherited GetValue
+  else
+    Result := ResStr(srNone);
 end;
 
 procedure TJvStoredPropsProperty.Edit;
@@ -187,13 +188,11 @@ begin
     Storage.StoredProps, Opt) then
   begin
     Storage.Options := Opt;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     Storage.SetNotification;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
-
-{ Show component editor }
 
 function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
   AStoredList: TStrings; var Options: TPlacementOptions): Boolean;
@@ -213,19 +212,23 @@ begin
       Screen.Cursor := crDefault;
     end;
     Result := ShowModal = mrOk;
-    if Result then begin
+    if Result then
+    begin
       AStoredList.Assign(StoredList.Items);
       Options := [];
-      if ActiveCtrlBox.Checked then Include(Options, fpActiveControl);
-      if PositionBox.Checked then Include(Options, fpPosition);
-      if StateBox.Checked then Include(Options, fpState);
+      if ActiveCtrlBox.Checked then
+        Include(Options, fpActiveControl);
+      if PositionBox.Checked then
+        Include(Options, fpPosition);
+      if StateBox.Checked then
+        Include(Options, fpState);
     end;
   finally
     Free;
   end;
 end;
 
-{ TJvFormPropsDlg }
+//=== TJvFormPropsDlg ========================================================
 
 procedure TJvFormPropsDlg.ListToIndex(List: TCustomListBox; Idx: Integer);
 
@@ -239,9 +242,11 @@ procedure TJvFormPropsDlg.ListToIndex(List: TCustomListBox; Idx: Integer);
 begin
   if Idx < List.Items.Count then
     SetItemIndex(Idx)
-  else if Idx - 1 < List.Items.Count then
+  else
+  if Idx - 1 < List.Items.Count then
     SetItemIndex(Idx - 1)
-  else if (List.Items.Count > 0) then
+  else
+  if List.Items.Count > 0 then
     SetItemIndex(0);
 end;
 
@@ -251,17 +256,20 @@ var
   List: TStrings;
 begin
   IdxProp := PropertiesList.ItemIndex;
-  if IdxProp < 0 then IdxProp := 0;
+  if IdxProp < 0 then
+    IdxProp := 0;
   if ComponentsList.Items.Count <= 0 then
   begin
     PropertiesList.Clear;
     Exit;
   end;
-  if (ComponentsList.ItemIndex < 0) then
+  if ComponentsList.ItemIndex < 0 then
     ComponentsList.ItemIndex := 0;
   List := TStrings(ComponentsList.Items.Objects[ComponentsList.ItemIndex]);
-  if List.Count > 0 then PropertiesList.Items := List
-  else PropertiesList.Clear;
+  if List.Count > 0 then
+    PropertiesList.Items := List
+  else
+    PropertiesList.Clear;
   ListToIndex(PropertiesList, IdxProp);
   CheckButtons;
 end;
@@ -273,13 +281,17 @@ var
   StrList: TStringList;
 begin
   Idx := StoredList.ItemIndex;
-  if ParseStoredItem(StoredList.Items[I], CompName, PropName) then begin
+  if ParseStoredItem(StoredList.Items[I], CompName, PropName) then
+  begin
     StoredList.Items.Delete(I);
-    if FDesigner <> nil then FDesigner.Modified;
+    if FDesigner <> nil then
+      FDesigner.Modified;
     ListToIndex(StoredList, Idx);
     {I := ComponentsList.ItemIndex;}
-    if not FindProp(CompName, PropName, IdxComp, IdxProp) then begin
-      if IdxComp < 0 then begin
+    if not FindProp(CompName, PropName, IdxComp, IdxProp) then
+    begin
+      if IdxComp < 0 then
+      begin
         StrList := TStringList.Create;
         try
           StrList.Add(PropName);
@@ -290,7 +302,8 @@ begin
           raise;
         end;
       end
-      else begin
+      else
+      begin
         TStrings(ComponentsList.Items.Objects[IdxComp]).Add(PropName);
       end;
       UpdateCurrent;
@@ -298,14 +311,16 @@ begin
   end;
 end;
 
-function TJvFormPropsDlg.FindProp(const CompName, PropName: string; var IdxComp,
-  IdxProp: Integer): Boolean;
+function TJvFormPropsDlg.FindProp(const CompName, PropName: string;
+  var IdxComp, IdxProp: Integer): Boolean;
 begin
   Result := False;
   IdxComp := ComponentsList.Items.IndexOf(CompName);
-  if IdxComp >= 0 then begin
+  if IdxComp >= 0 then
+  begin
     IdxProp := TStrings(ComponentsList.Items.Objects[IdxComp]).IndexOf(PropName);
-    if IdxProp >= 0 then Result := True;
+    if IdxProp >= 0 then
+      Result := True;
   end;
 end;
 
@@ -313,7 +328,8 @@ procedure TJvFormPropsDlg.ClearLists;
 var
   I: Integer;
 begin
-  for I := 0 to ComponentsList.Items.Count - 1 do begin
+  for I := 0 to ComponentsList.Items.Count - 1 do
+  begin
     ComponentsList.Items.Objects[I].Free;
   end;
   ComponentsList.Items.Clear;
@@ -331,20 +347,24 @@ var
 begin
   CompName := ComponentsList.Items[IdxComp];
   Component := FCompOwner.FindComponent(CompName);
-  if Component = nil then Exit;
+  if Component = nil then
+    Exit;
   StrList := TStringList(ComponentsList.Items.Objects[IdxComp]);
   PropName := StrList[IdxProp];
   StrList.Delete(IdxProp);
-  if StrList.Count = 0 then begin
+  if StrList.Count = 0 then
+  begin
     Idx := ComponentsList.ItemIndex;
     StrList.Free;
     ComponentsList.Items.Delete(IdxComp);
     ListToIndex(ComponentsList, Idx);
   end;
   StoredList.Items.AddObject(CreateStoredItem(CompName, PropName), Component);
-  if FDesigner <> nil then FDesigner.Modified;
+  if FDesigner <> nil then
+    FDesigner.Modified;
   StoredList.ItemIndex := StoredList.Items.Count - 1;
-  if AUpdate then UpdateCurrent;
+  if AUpdate then
+    UpdateCurrent;
 end;
 
 procedure TJvFormPropsDlg.CheckAddItem(const CompName, PropName: string);
@@ -364,10 +384,13 @@ var
   CompName, PropName: string;
 begin
   ClearLists;
-  if FCompOwner <> nil then begin
-    for I := 0 to FCompOwner.ComponentCount - 1 do begin
+  if FCompOwner <> nil then
+  begin
+    for I := 0 to FCompOwner.ComponentCount - 1 do
+    begin
       C := FCompOwner.Components[I];
-      if (C is TJvFormPlacement) or (C.Name = '') then Continue;
+      if (C is TJvFormPlacement) or (C.Name = '') then
+        Continue;
       List := TJvPropInfoList.Create(C, tkProperties);
       try
         StrList := TStringList.Create;
@@ -384,15 +407,18 @@ begin
         List.Free;
       end;
     end;
-    if StoredProps <> nil then begin
-      for I := 0 to StoredProps.Count - 1 do begin
+    if StoredProps <> nil then
+    begin
+      for I := 0 to StoredProps.Count - 1 do
+      begin
         if ParseStoredItem(StoredProps[I], CompName, PropName) then
           CheckAddItem(CompName, PropName);
       end;
       ListToIndex(StoredList, 0);
     end;
   end
-  else StoredList.Items.Clear;
+  else
+    StoredList.Items.Clear;
   UpdateCurrent;
 end;
 
@@ -422,22 +448,27 @@ procedure TJvFormPropsDlg.AddButtonClick(Sender: TObject);
 var
   I: Integer;
 begin
-  if PropertiesList.SelCount > 0 then begin
-    for I := PropertiesList.Items.Count - 1 downto 0 do begin
+  if PropertiesList.SelCount > 0 then
+  begin
+    for I := PropertiesList.Items.Count - 1 downto 0 do
+    begin
       if PropertiesList.Selected[I] then
         AddItem(ComponentsList.ItemIndex, I, False);
     end;
     UpdateCurrent;
   end
-  else AddItem(ComponentsList.ItemIndex, PropertiesList.ItemIndex, True);
+  else
+    AddItem(ComponentsList.ItemIndex, PropertiesList.ItemIndex, True);
   CheckButtons;
 end;
 
 procedure TJvFormPropsDlg.ClearButtonClick(Sender: TObject);
 begin
-  if StoredList.Items.Count > 0 then begin
+  if StoredList.Items.Count > 0 then
+  begin
     SetStoredList(nil);
-    if FDesigner <> nil then FDesigner.Modified;
+    if FDesigner <> nil then
+      FDesigner.Modified;
   end;
 end;
 
@@ -448,8 +479,10 @@ end;
 
 procedure TJvFormPropsDlg.ListClick(Sender: TObject);
 begin
-  if Sender = ComponentsList then UpdateCurrent
-  else CheckButtons;
+  if Sender = ComponentsList then
+    UpdateCurrent
+  else
+    CheckButtons;
 end;
 
 procedure TJvFormPropsDlg.FormDestroy(Sender: TObject);
@@ -465,14 +498,16 @@ end;
 procedure TJvFormPropsDlg.UpBtnClick(Sender: TObject);
 begin
   BoxMoveFocusedItem(StoredList, StoredList.ItemIndex - 1);
-  if FDesigner <> nil then FDesigner.Modified;
+  if FDesigner <> nil then
+    FDesigner.Modified;
   CheckButtons;
 end;
 
 procedure TJvFormPropsDlg.DownBtnClick(Sender: TObject);
 begin
   BoxMoveFocusedItem(StoredList, StoredList.ItemIndex + 1);
-  if FDesigner <> nil then FDesigner.Modified;
+  if FDesigner <> nil then
+    FDesigner.Modified;
   CheckButtons;
 end;
 
@@ -487,13 +522,16 @@ procedure TJvFormPropsDlg.StoredListDragDrop(Sender, Source: TObject; X,
   Y: Integer);
 begin
   BoxMoveFocusedItem(StoredList, StoredList.ItemAtPos(Point(X, Y), True));
-  if FDesigner <> nil then FDesigner.Modified;
+  if FDesigner <> nil then
+    FDesigner.Modified;
   CheckButtons;
 end;
 
 procedure TJvFormPropsDlg.PropertiesListDblClick(Sender: TObject);
 begin
-  if AddButton.Enabled then AddButtonClick(nil);
+  if AddButton.Enabled then
+    AddButtonClick(nil);
 end;
 
 end.
+

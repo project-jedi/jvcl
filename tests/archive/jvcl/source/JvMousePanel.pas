@@ -31,98 +31,99 @@ unit JvMousePanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JVCLVer;
 
 type
   TJvMousePanel = class(TPanel)
   private
-    { Private declarations }
     FAboutJVCL: TJVCLAboutInfo;
-    FMouseEnter, FMouseLeave: TNotifyEvent;
-    FMouseInControl: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOver: Boolean;
     FOldColor: TColor;
     FMouseOverColor: TColor;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetMouseOverColor(const Value: TColor);
   protected
-    { Protected declarations }
     procedure DoMouseEnter; dynamic;
     procedure DoMouseLeave; dynamic;
-
-    property MouseInControl: Boolean read FMouseInControl;
+    // (rom) renamed needs further work
+    property MouseOver: Boolean read FOver;
   public
-    { Public declarations }
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property MouseOverColor: TColor read FMouseoverColor write SetMouseOverColor;
-    property OnMouseEnter: TNotifyEvent read FMouseEnter write FMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FMouseLeave write FMouseLeave;
+    property MouseOverColor: TColor read FMouseOverColor write SetMouseOverColor;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   end;
 
 implementation
 
-uses JvMouseTimerU;
+uses
+  JvMouseTimerU;
 
-{ TJvMousePanel }
-
-procedure TJvMousePanel.CMMouseEnter(var Message: TMessage);
+constructor TJvMousePanel.Create(AOwner: TComponent);
 begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then Exit;
-  if not MouseInControl then
-  begin
-    FOldColor := Color;
-    FMouseInControl := true;
-    Color := MouseOverColor; // invalidates control
-    Mousetimer.Attach(self);
-  end;
-  DoMouseEnter;
-end;
-
-procedure TJvMousePanel.CMMouseLeave(var Message: TMessage);
-begin
-  inherited;
-  // for D7...
-  if csDesigning in ComponentState then Exit;
-  if MouseInControl then
-  begin
-    FMouseInControl := false;
-    Color := FOldColor; // invalidates control
-    Mousetimer.Detach(self);
-  end;
-  DoMouseLeave;
-end;
-
-constructor TJvMousePanel.Create(aOwner: TComponent);
-begin
-  inherited;
+  inherited Create(AOwner);
   // set default for mouse over color
   FMouseOverColor := Color;
 end;
 
+procedure TJvMousePanel.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not MouseOver then
+  begin
+    FOldColor := Color;
+    FOver := True;
+    Color := MouseOverColor; // invalidates control
+    MouseTimer.Attach(Self);
+  end;
+  DoMouseEnter;
+end;
+
+procedure TJvMousePanel.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if MouseOver then
+  begin
+    FOver := False;
+    Color := FOldColor; // invalidates control
+    MouseTimer.Detach(Self);
+  end;
+  DoMouseLeave;
+end;
+
 procedure TJvMousePanel.DoMouseEnter;
 begin
-  if Assigned(FMouseEnter) then
-    FMouseEnter(self);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end;
 
 procedure TJvMousePanel.DoMouseLeave;
 begin
-  if Assigned(FMouseLeave) then
-    FMouseLeave(self);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
 procedure TJvMousePanel.SetMouseOverColor(const Value: TColor);
 begin
-  if FMouseoverColor <> Value then
+  if FMouseOverColor <> Value then
   begin
-    FMouseoverColor := Value;
-    if MouseInControl then
+    FMouseOverColor := Value;
+    if MouseOver then
       Color := value;
   end;
 end;
 
 end.
+

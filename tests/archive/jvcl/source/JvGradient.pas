@@ -28,16 +28,16 @@ Known Issues:
 
 unit JvGradient;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvTypes, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  JvTypes, JVCLVer;
 
 type
   TJvGradient = class(TGraphicControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FStyle: TGradStyle;
     FStartColor: TColor;
     FEndColor: TColor;
@@ -45,7 +45,6 @@ type
     FOldB: TBitmap;
     FOldX: Integer;
     FOldY: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetSteps(Value: Word);
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
@@ -71,10 +70,9 @@ type
 
 implementation
 
-{***********************************************}
-
 constructor TJvGradient.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FOldX := 0;
   FOldY := 0;
   FSteps := 100;
@@ -82,27 +80,22 @@ begin
   FStyle := grHorizontal;
   FEndColor := clBlack;
   FStartColor := clBlue;
-  inherited;
-  Align := AlClient;
+  Align := alClient;
   ControlStyle := ControlStyle + [csOpaque];
 end;
-
-{***********************************************}
 
 destructor TJvGradient.Destroy;
 begin
   FOldB.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{***********************************************}
 
 procedure TJvGradient.Paint;
 var
   bt: TBitmap;
   i: Integer;
   j, k: Real;
-  Deltas: array[0..2] of Real; //R,G,B
+  Deltas: array [0..2] of Real; //R,G,B
   r: TRect;
   FStart, FEnd: TColor;
 begin
@@ -254,16 +247,12 @@ begin
   Canvas.Draw(0, 0, FOldB);
 end;
 
-{***********************************************}
-
 procedure TJvGradient.SetStyle(Value: TGradStyle);
 begin
   FStyle := Value;
   FOldX := 0;
   Invalidate;
 end;
-
-{***********************************************}
 
 procedure TJvGradient.SetStartColor(Value: TColor);
 begin
@@ -272,16 +261,12 @@ begin
   Invalidate;
 end;
 
-{***********************************************}
-
 procedure TJvGradient.SetSteps(Value: Word);
 begin
   FSteps := Value;
   FOldX := 0;
   Invalidate;
 end;
-
-{***********************************************}
 
 procedure TJvGradient.SetEndColor(Value: TColor);
 begin

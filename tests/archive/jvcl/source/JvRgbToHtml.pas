@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvRgbToHtml;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvComponent;
+  Windows, SysUtils, Classes, Graphics,
+  JvComponent;
 
 type
   TJvRgbToHtml = class(TJvComponent)
@@ -52,10 +51,6 @@ type
 function RgbToHtml(Value: TColor): string;
 
 implementation
-uses
-  JvTypes;
-  
-{**************************************************}
 
 function RgbToHtml(Value: TColor): string;
 begin
@@ -67,16 +62,12 @@ begin
   end;
 end;
 
-{**************************************************}
-
 constructor TJvRgbToHtml.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FColor := clBlack;
   FHtml := '000000';
 end;
-
-{**************************************************}
 
 procedure TJvRgbToHtml.SetColor(const Value: TColor);
 var
@@ -86,21 +77,20 @@ begin
   Clr := ColorToRGB(Value);
   FHtml := IntToHex(GetRValue(Clr), 2) + IntToHex(GetGValue(Clr), 2) + IntToHex(GetBValue(Clr), 2);
 end;
-{**************************************************}
 
 procedure TJvRgbToHtml.SetHtml(const Value: string);
 var
-  c: TColor;
-  r, g, b: Byte;
+  C: TColor;
+  R, G, B: Byte;
 begin
   try
     if Length(Value) = 6 then
     begin
-      r := StrToInt('$' + Copy(Value, 1, 2));
-      g := StrToInt('$' + Copy(Value, 3, 2));
-      b := StrToInt('$' + Copy(Value, 5, 2));
-      c := Rgb(r, g, b);
-      FColor := c;
+      R := StrToInt('$' + Copy(Value, 1, 2));
+      G := StrToInt('$' + Copy(Value, 3, 2));
+      B := StrToInt('$' + Copy(Value, 5, 2));
+      C := RGB(R, G, B);
+      FColor := C;
 
       FHtml := Value;
     end;
@@ -109,3 +99,4 @@ begin
 end;
 
 end.
+

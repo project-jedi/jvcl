@@ -12,7 +12,7 @@ The Original Code is: JvVCLUtils.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -30,11 +30,11 @@ unit JvVCLUtils;
 
 interface
 
-uses  Windows,Classes, Graphics, Forms, Controls, Dialogs
-{$IFDEF COMPILER6_UP}
-, RTLConsts, Variants
-{$ENDIF}
-;
+uses
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, Variants,
+  {$ENDIF}
+  Windows, Classes, Graphics, Forms, Controls, Dialogs;
 
 { Windows resources (bitmaps and icons) VCL-oriented routines }
 
@@ -86,17 +86,17 @@ procedure CenterControl(Control: TControl);
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 function MakeVariant(const Values: array of Variant): Variant;
 {$ENDIF}
-function CreateRotatedFont(Font: TFont; Angle: Integer): HFont;
+function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
 function MsgDlg(const Msg: string; AType: TMsgDlgType;
   AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 {$IFDEF CBUILDER}
 function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWnd;
+  const ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
 {$ELSE}
-function FindPrevInstance(const MainFormClass, ATitle: string): HWnd;
+function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF CBUILDER}
 function IsForegroundTask: Boolean;
@@ -159,10 +159,10 @@ procedure FillMemory(Ptr: Pointer; Length: Longint; Fill: Byte);
 { Standard Windows colors that are not defined by Delphi }
 
 const
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   clInfoBk = TColor($02E1FFFF);
   clNone = TColor($02FFFFFF);
-{$ENDIF}
+  {$ENDIF}
   clCream = TColor($A6CAF0);
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($FFFBF0);
@@ -171,7 +171,7 @@ const
 
 {$IFNDEF COMPILER3_UP}
 const
-  mrNoToAll  = mrAll + 1;
+  mrNoToAll = mrAll + 1;
   mrYesToAll = mrNoToAll + 1;
 {$ENDIF}
 
@@ -180,17 +180,16 @@ const
 { Mouse Wheel message }
 
 {$IFDEF WIN32}
-
-{$IFDEF VER90}
+{$IFDEF COMPILER2}
 const
-  WM_MOUSEWHEEL    =    $020A;
-  WHEEL_DELTA      =      120;
+  WM_MOUSEWHEEL = $020A;
+  WHEEL_DELTA = 120;
   WHEEL_PAGESCROLL = MAXDWORD;
 
-  SM_MOUSEWHEELPRESENT    =    75;
-  MOUSEEVENTF_WHEEL       = $0800;
-  SPI_GETWHEELSCROLLLINES =   104;
-  SPI_SETWHEELSCROLLLINES =   105;
+  SM_MOUSEWHEELPRESENT = 75;
+  MOUSEEVENTF_WHEEL = $0800;
+  SPI_GETWHEELSCROLLLINES = 104;
+  SPI_SETWHEELSCROLLLINES = 105;
 {$ENDIF}
 
 type
@@ -220,28 +219,28 @@ procedure StartWait;
 procedure StopWait;
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 {$IFDEF WIN32}
-function LoadAniCursor(Instance: THandle; ResID: PChar): HCursor;
+function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 {$ENDIF}
 
 { Windows API level routines }
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
-  SrcDC: HDC; SrcX, SrcY, SrcW, SrcH: Integer; Palette: HPalette;
+  SrcDC: HDC; SrcX, SrcY, SrcW, SrcH: Integer; Palette: HPALETTE;
   TransparentColor: TColorRef);
-procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBitmap;
+procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 function PaletteEntries(Palette: HPALETTE): Integer;
-function WindowClassName(Wnd: HWnd): string;
+function WindowClassName(Wnd: HWND): string;
 function ScreenWorkArea: TRect;
 {$IFNDEF WIN32}
 procedure MoveWindowOrg(DC: HDC; DX, DY: Integer);
 {$ENDIF}
-procedure SwitchToWindow(Wnd: HWnd; Restore: Boolean);
-procedure ActivateWindow(Wnd: HWnd);
-procedure ShowWinNoAnimate(Handle: HWnd; CmdShow: Integer);
-procedure CenterWindow(Wnd: HWnd);
+procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
+procedure ActivateWindow(Wnd: HWND);
+procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
+procedure CenterWindow(Wnd: HWND);
 procedure ShadeRect(DC: HDC; const Rect: TRect);
-procedure KillMessage(Wnd: HWnd; Msg: Cardinal);
+procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 
 { Convert dialog units to pixels and backwards }
 
@@ -260,10 +259,12 @@ procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   {$IFDEF COMPILER4_UP}; ARightToLeft: Boolean = False {$ENDIF});
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
-  VertAlign: TVertAlignment); {$IFDEF COMPILER4_UP} overload; {$ENDIF}
+  VertAlign: TVertAlignment);
+  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
-  VertAlign: TVertAlignment; WordWrap: Boolean); {$IFDEF COMPILER4_UP} overload; {$ENDIF}
+  VertAlign: TVertAlignment; WordWrap: Boolean);
+  {$IFDEF COMPILER4_UP} overload; {$ENDIF}
 {$IFDEF COMPILER4_UP}
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
@@ -274,8 +275,6 @@ procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
 {$ENDIF}
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
-
-{ TJvScreenCanvas }
 
 type
   TJvScreenCanvas = class(TCanvas)
@@ -291,9 +290,7 @@ type
 
 {$IFNDEF WIN32}
 
-{ TBits }
-
-  TBits = class
+  TBits = class(TObject)
   private
     FSize: Integer;
     FBits: Pointer;
@@ -307,8 +304,6 @@ type
     property Size: Integer read FSize write SetSize;
   end;
 
-{ TMetafileCanvas }
-
   TMetafileCanvas = class(TCanvas)
   private
     FMetafile: TMetafile;
@@ -317,8 +312,6 @@ type
     destructor Destroy; override;
     property Metafile: TMetafile read FMetafile;
   end;
-
-{ TResourceStream }
 
   TResourceStream = class(THandleStream)
   private
@@ -365,8 +358,17 @@ type
 
 implementation
 
-Uses SysUtils, Messages, JvMaxMin, Consts, JvConst, {$IFDEF COMPILER35_UP} SysConst, {$ENDIF}
-  {$IFDEF WIN32} CommCtrl, {$ELSE} JvStr16, {$ENDIF} JvxConst, JvFunctions;
+uses
+  SysUtils, Messages, Consts,
+  {$IFDEF COMPILER35_UP}
+  SysConst,
+  {$ENDIF}
+  {$IFDEF WIN32}
+  CommCtrl,
+  {$ELSE}
+  JvStr16,
+  {$ENDIF}
+  JvMaxMin, JvConst, JvxConst, JvFunctions;
 
 { Exceptions }
 
@@ -374,8 +376,10 @@ procedure ResourceNotFound(ResID: PChar);
 var
   S: string;
 begin
-  if LongRec(ResID).Hi = 0 then S := IntToStr(LongRec(ResID).Lo)
-  else S := StrPas(ResID);
+  if LongRec(ResID).Hi = 0 then
+    S := IntToStr(LongRec(ResID).Lo)
+  else
+    S := StrPas(ResID);
   raise EResNotFound.CreateFmt(ResStr(SResNotFound), [S]);
 end;
 
@@ -389,21 +393,25 @@ var
 begin
   Result := TBitmap.Create;
   try
-{$IFDEF WIN32}
-    if Module <> 0 then begin
+    {$IFDEF WIN32}
+    if Module <> 0 then
+    begin
       if LongRec(ResID).Hi = 0 then
         Result.LoadFromResourceID(Module, LongRec(ResID).Lo)
       else
         Result.LoadFromResourceName(Module, StrPas(ResID));
     end
-    else begin
+    else
+    begin
       Result.Handle := LoadBitmap(Module, ResID);
-      if Result.Handle = 0 then ResourceNotFound(ResID);
+      if Result.Handle = 0 then
+        ResourceNotFound(ResID);
     end;
-{$ELSE}
+    {$ELSE}
     Result.Handle := LoadBitmap(Module, ResID);
-    if Result.Handle = 0 then ResourceNotFound(ResID);
-{$ENDIF}
+    if Result.Handle = 0 then
+      ResourceNotFound(ResID);
+    {$ENDIF}
   except
     Result.Free;
     Result := nil;
@@ -420,37 +428,45 @@ begin
   Result := MakeModuleBitmap(hInstance, MakeIntResource(ResID));
 end;
 
-procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
-  Index: Integer);
+procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap;
+  Cols, Rows, Index: Integer);
 var
   CellWidth, CellHeight: Integer;
 begin
-  if (Source <> nil) and (Dest <> nil) then begin
-    if Cols <= 0 then Cols := 1;
-    if Rows <= 0 then Rows := 1;
-    if Index < 0 then Index := 0;
+  if (Source <> nil) and (Dest <> nil) then
+  begin
+    if Cols <= 0 then
+      Cols := 1;
+    if Rows <= 0 then
+      Rows := 1;
+    if Index < 0 then
+      Index := 0;
     CellWidth := Source.Width div Cols;
     CellHeight := Source.Height div Rows;
-    with Dest do begin
-      Width := CellWidth; Height := CellHeight;
+    with Dest do
+    begin
+      Width := CellWidth;
+      Height := CellHeight;
     end;
-    if Source is TBitmap then begin
+    if Source is TBitmap then
+    begin
       Dest.Canvas.CopyRect(Bounds(0, 0, CellWidth, CellHeight),
         TBitmap(Source).Canvas, Bounds((Index mod Cols) * CellWidth,
         (Index div Cols) * CellHeight, CellWidth, CellHeight));
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       Dest.TransparentColor := TBitmap(Source).TransparentColor;
-{$ENDIF COMPILER3_UP}
+      {$ENDIF COMPILER3_UP}
     end
-    else begin
+    else
+    begin
       Dest.Canvas.Brush.Color := clSilver;
       Dest.Canvas.FillRect(Bounds(0, 0, CellWidth, CellHeight));
       Dest.Canvas.Draw(-(Index mod Cols) * CellWidth,
         -(Index div Cols) * CellHeight, Source);
     end;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Dest.Transparent := Source.Transparent;
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
   end;
 end;
 
@@ -463,16 +479,20 @@ var
   DC: HDC;
   R, SelfR, CtlR: TRect;
 begin
-  if (Control = nil) or (Control.Parent = nil) then Exit;
+  if (Control = nil) or (Control.Parent = nil) then
+    Exit;
   Count := Control.Parent.ControlCount;
   DC := Dest.Handle;
-{$IFDEF WIN32}
-  with Control.Parent do ControlState := ControlState + [csPaintCopy];
+  {$IFDEF WIN32}
+  with Control.Parent do
+    ControlState := ControlState + [csPaintCopy];
   try
-{$ENDIF}
-    with Control do begin
+    {$ENDIF}
+    with Control do
+    begin
       SelfR := Bounds(Left, Top, Width, Height);
-      X := -Left; Y := -Top;
+      X := -Left;
+      Y := -Top;
     end;
     { Copy parent control image }
     SaveIndex := SaveDC(DC);
@@ -480,7 +500,8 @@ begin
       SetViewportOrgEx(DC, X, Y, nil);
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
         Control.Parent.ClientHeight);
-      with TJvParentControl(Control.Parent) do begin
+      with TJvParentControl(Control.Parent) do
+      begin
         Perform(WM_ERASEBKGND, DC, 0);
         PaintWindow(DC);
       end;
@@ -488,17 +509,22 @@ begin
       RestoreDC(DC, SaveIndex);
     end;
     { Copy images of graphic controls }
-    for I := 0 to Count - 1 do begin
-      if Control.Parent.Controls[I] = Control then Break
-      else if (Control.Parent.Controls[I] <> nil) and
+    for I := 0 to Count - 1 do
+    begin
+      if Control.Parent.Controls[I] = Control then
+        Break
+      else
+      if (Control.Parent.Controls[I] <> nil) and
         (Control.Parent.Controls[I] is TGraphicControl) then
       begin
-        with TGraphicControl(Control.Parent.Controls[I]) do begin
+        with TGraphicControl(Control.Parent.Controls[I]) do
+        begin
           CtlR := Bounds(Left, Top, Width, Height);
-          if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then begin
-{$IFDEF WIN32}
+          if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then
+          begin
+            {$IFDEF WIN32}
             ControlState := ControlState + [csPaintCopy];
-{$ENDIF}
+            {$ENDIF}
             SaveIndex := SaveDC(DC);
             try
               SaveIndex := SaveDC(DC);
@@ -507,32 +533,33 @@ begin
               Perform(WM_PAINT, DC, 0);
             finally
               RestoreDC(DC, SaveIndex);
-{$IFDEF WIN32}
+              {$IFDEF WIN32}
               ControlState := ControlState - [csPaintCopy];
-{$ENDIF}
+              {$ENDIF}
             end;
           end;
         end;
       end;
     end;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
   finally
-    with Control.Parent do ControlState := ControlState - [csPaintCopy];
+    with Control.Parent do
+      ControlState := ControlState - [csPaintCopy];
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 { Transparent bitmap }
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
-  SrcDC: HDC; SrcX, SrcY, SrcW, SrcH: Integer; Palette: HPalette;
+  SrcDC: HDC; SrcX, SrcY, SrcW, SrcH: Integer; Palette: HPALETTE;
   TransparentColor: TColorRef);
 var
   Color: TColorRef;
-  bmAndBack, bmAndObject, bmAndMem, bmSave: HBitmap;
-  bmBackOld, bmObjectOld, bmMemOld, bmSaveOld: HBitmap;
+  bmAndBack, bmAndObject, bmAndMem, bmSave: HBITMAP;
+  bmBackOld, bmObjectOld, bmMemOld, bmSaveOld: HBITMAP;
   MemDC, BackDC, ObjectDC, SaveDC: HDC;
-  palDst, palMem, palSave, palObj: HPalette;
+  palDst, palMem, palSave, palObj: HPALETTE;
 begin
   { Create some DCs to hold temporary data }
   BackDC := CreateCompatibleDC(DstDC);
@@ -550,8 +577,12 @@ begin
   bmMemOld := SelectObject(MemDC, bmAndMem);
   bmSaveOld := SelectObject(SaveDC, bmSave);
   { Select palette }
-  palDst := 0; palMem := 0; palSave := 0; palObj := 0;
-  if Palette <> 0 then begin
+  palDst := 0;
+  palMem := 0;
+  palSave := 0;
+  palObj := 0;
+  if Palette <> 0 then
+  begin
     palDst := SelectPalette(DstDC, Palette, True);
     RealizePalette(DstDC);
     palSave := SelectPalette(SaveDC, Palette, False);
@@ -585,10 +616,10 @@ begin
   { XOR the bitmap with the background on the destination DC }
   StretchBlt(MemDC, 0, 0, DstW, DstH, SaveDC, 0, 0, SrcW, SrcH, SRCPAINT);
   { Copy the destination to the screen }
-  BitBlt(DstDC, DstX, DstY, DstW, DstH, MemDC, 0, 0,
-    SRCCOPY);
+  BitBlt(DstDC, DstX, DstY, DstW, DstH, MemDC, 0, 0, SRCCOPY);
   { Restore palette }
-  if Palette <> 0 then begin
+  if Palette <> 0 then
+  begin
     SelectPalette(MemDC, palMem, False);
     SelectPalette(ObjectDC, palObj, False);
     SelectPalette(SaveDC, palSave, False);
@@ -606,7 +637,7 @@ begin
   DeleteDC(SaveDC);
 end;
 
-procedure DrawTransparentBitmapRect(DC: HDC; Bitmap: HBitmap; DstX, DstY,
+procedure DrawTransparentBitmapRect(DC: HDC; Bitmap: HBITMAP; DstX, DstY,
   DstW, DstH: Integer; SrcRect: TRect; TransparentColor: TColorRef);
 var
   hdcTemp: HDC;
@@ -622,7 +653,7 @@ begin
   end;
 end;
 
-procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBitmap;
+procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 var
   BM: {$IFDEF WIN32} Windows.TBitmap {$ELSE} WinTypes.TBitmap {$ENDIF};
@@ -638,41 +669,49 @@ procedure StretchBitmapTransparent(Dest: TCanvas; Bitmap: TBitmap;
 var
   CanvasChanging: TNotifyEvent;
 begin
-  if DstW <= 0 then DstW := Bitmap.Width;
-  if DstH <= 0 then DstH := Bitmap.Height;
-  if (SrcW <= 0) or (SrcH <= 0) then begin
-    SrcX := 0; SrcY := 0;
+  if DstW <= 0 then
+    DstW := Bitmap.Width;
+  if DstH <= 0 then
+    DstH := Bitmap.Height;
+  if (SrcW <= 0) or (SrcH <= 0) then
+  begin
+    SrcX := 0;
+    SrcY := 0;
     SrcW := Bitmap.Width;
     SrcH := Bitmap.Height;
   end;
   if not Bitmap.Monochrome then
     SetStretchBltMode(Dest.Handle, STRETCH_DELETESCANS);
   CanvasChanging := Bitmap.Canvas.OnChanging;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   Bitmap.Canvas.Lock;
-{$ENDIF}
+  {$ENDIF}
   try
     Bitmap.Canvas.OnChanging := nil;
-    if TransparentColor = clNone then begin
+    if TransparentColor = clNone then
+    begin
       StretchBlt(Dest.Handle, DstX, DstY, DstW, DstH, Bitmap.Canvas.Handle,
         SrcX, SrcY, SrcW, SrcH, Dest.CopyMode);
     end
-    else begin
-{$IFDEF COMPILER3_UP}
+    else
+    begin
+      {$IFDEF COMPILER3_UP}
       if TransparentColor = clDefault then
         TransparentColor := Bitmap.Canvas.Pixels[0, Bitmap.Height - 1];
-{$ENDIF}
-      if Bitmap.Monochrome then TransparentColor := clWhite
-      else TransparentColor := ColorToRGB(TransparentColor);
+      {$ENDIF}
+      if Bitmap.Monochrome then
+        TransparentColor := clWhite
+      else
+        TransparentColor := ColorToRGB(TransparentColor);
       StretchBltTransparent(Dest.Handle, DstX, DstY, DstW, DstH,
         Bitmap.Canvas.Handle, SrcX, SrcY, SrcW, SrcH, Bitmap.Palette,
         TransparentColor);
     end;
   finally
     Bitmap.Canvas.OnChanging := CanvasChanging;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Bitmap.Canvas.Unlock;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -682,7 +721,7 @@ procedure StretchBitmapRectTransparent(Dest: TCanvas; DstX, DstY,
 begin
   with SrcRect do
     StretchBitmapTransparent(Dest, Bitmap, TransparentColor,
-    DstX, DstY, DstW, DstH, Left, Top, Right - Left, Bottom - Top);
+      DstX, DstY, DstW, DstH, Left, Top, Right - Left, Bottom - Top);
 end;
 
 procedure DrawBitmapRectTransparent(Dest: TCanvas; DstX, DstY: Integer;
@@ -690,8 +729,8 @@ procedure DrawBitmapRectTransparent(Dest: TCanvas; DstX, DstY: Integer;
 begin
   with SrcRect do
     StretchBitmapTransparent(Dest, Bitmap, TransparentColor,
-    DstX, DstY, Right - Left, Bottom - Top, Left, Top, Right - Left,
-    Bottom - Top);
+      DstX, DstY, Right - Left, Bottom - Top, Left, Top, Right - Left,
+      Bottom - Top);
 end;
 
 procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
@@ -710,7 +749,8 @@ var
 begin
   Result := TBitmap.Create;
   try
-    with Result do begin
+    with Result do
+    begin
       Height := Bitmap.Height;
       Width := Bitmap.Width;
       R := Bounds(0, 0, Width, Height);
@@ -765,7 +805,7 @@ begin
       DestDC := Result.Canvas.Handle;
       Windows.SetTextColor(DestDC, clWhite);
       Windows.SetBkColor(DestDC, clBlack);
-      BitBlt(DestDC, 0, 0 , FOriginal.Width, FOriginal.Height, SrcDC, 0, 0, ROP_DSPDxax);
+      BitBlt(DestDC, 0, 0, FOriginal.Width, FOriginal.Height, SrcDC, 0, 0, ROP_DSPDxax);
     finally
       MonoBmp.Free;
     end;
@@ -788,25 +828,29 @@ begin
     Result.Height := FOriginal.Height;
     MonoBmp := TBitmap.Create;
     try
-      with MonoBmp do begin
+      with MonoBmp do
+      begin
         Width := FOriginal.Width;
         Height := FOriginal.Height;
         Canvas.CopyRect(IRect, FOriginal.Canvas, IRect);
-{$IFDEF COMPILER3_UP}
+        {$IFDEF COMPILER3_UP}
         HandleType := bmDDB;
-{$ENDIF}
+        {$ENDIF}
         Canvas.Brush.Color := OutlineColor;
-        if Monochrome then begin
+        if Monochrome then
+        begin
           Canvas.Font.Color := clWhite;
           Monochrome := False;
           Canvas.Brush.Color := clWhite;
         end;
         Monochrome := True;
       end;
-      with Result.Canvas do begin
+      with Result.Canvas do
+      begin
         Brush.Color := BackColor;
         FillRect(IRect);
-        if DrawHighlight then begin
+        if DrawHighlight then
+        begin
           Brush.Color := HighlightColor;
           SetTextColor(Handle, clBlack);
           SetBkColor(Handle, clWhite);
@@ -846,13 +890,15 @@ begin
   try
     Bmp.Width := Images.Width;
     Bmp.Height := Images.Height;
-    with Bmp.Canvas do begin
+    with Bmp.Canvas do
+    begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Images.Width, Images.Height));
       ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
     end;
     Bmp.Monochrome := True;
-    if DrawHighlight then begin
+    if DrawHighlight then
+    begin
       Canvas.Brush.Color := HighlightColor;
       SetTextColor(Canvas.Handle, clWhite);
       SetBkColor(Canvas.Handle, clBlack);
@@ -887,8 +933,8 @@ begin
     FillRect(Rect(0, 0, Result.Width, Result.Height));
     for Y := 0 to 7 do
       for X := 0 to 7 do
-        if (Y mod 2) = (X mod 2) then  { toggles between even/odd pixles }
-          Pixels[X, Y] := Color2;      { on even/odd rows }
+        if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
+          Pixels[X, Y] := Color2; { on even/odd rows }
   end;
 end;
 
@@ -908,7 +954,8 @@ function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
   Result := TIcon.Create;
   Result.Handle := LoadIcon(Module, ResID);
-  if Result.Handle = 0 then begin
+  if Result.Handle = 0 then
+  begin
     Result.Free;
     Result := nil;
   end;
@@ -926,15 +973,16 @@ begin
   try
     Result.Width := IWidth;
     Result.Height := IHeight;
-    with Result.Canvas do begin
+    with Result.Canvas do
+    begin
       Brush.Color := BackColor;
       FillRect(Rect(0, 0, IWidth, IHeight));
       Draw(0, 0, Icon);
     end;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Result.TransparentColor := BackColor;
     Result.Transparent := True;
-{$ENDIF}
+    {$ENDIF}
   except
     Result.Free;
     raise;
@@ -946,10 +994,10 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
-{$ENDIF}
+    {$ENDIF}
     AllocBy := 1;
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
@@ -995,23 +1043,23 @@ type
 function LoadDLL(const LibName: string): THandle;
 var
   ErrMode: Cardinal;
-{$IFNDEF WIN32}
-  P: array[0..255] of Char;
-{$ENDIF}
+  {$IFNDEF WIN32}
+  P: array [0..255] of Char;
+  {$ENDIF}
 begin
   ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := LoadLibrary(PChar(LibName));
-{$ELSE}
+  {$ELSE}
   Result := LoadLibrary(StrPCopy(P, LibName));
-{$ENDIF}
+  {$ENDIF}
   SetErrorMode(ErrMode);
   if Result < HINSTANCE_ERROR then
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     OSCheck(False);
-{$ELSE}
+    {$ELSE}
     raise EOutOfResources.CreateResFmt(SLoadLibError, [LibName]);
-{$ENDIF}
+    {$ENDIF}
 end;
 
 function RegisterServer(const ModuleName: string): Boolean;
@@ -1026,7 +1074,8 @@ begin
   Handle := LoadDLL(ModuleName);
   try
     DllRegServ := GetProcAddress(Handle, 'DllRegisterServer');
-    if Assigned(DllRegServ) then begin
+    if Assigned(DllRegServ) then
+    begin
       TProc(DllRegServ);
       Result := True;
     end;
@@ -1042,9 +1091,9 @@ end;
 
 procedure FreeUnusedOle;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   FreeLibrary(GetModuleHandle('OleAut32'));
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure NotImplemented;
@@ -1092,7 +1141,8 @@ var
 begin
   DC := GetDC(0);
   try
-    for I := 1 to Width do begin
+    for I := 1 to Width do
+    begin
       DrawFocusRect(DC, ScreenRect);
       InflateRect(ScreenRect, -1, -1);
     end;
@@ -1121,7 +1171,7 @@ end;
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 type
   PPoints = ^TPoints;
-  TPoints = array[0..0] of TPoint;
+  TPoints = array [0..0] of TPoint;
 var
   Rgn: HRgn;
 begin
@@ -1138,7 +1188,7 @@ begin
   Result := ColorToRGB(Color) or PaletteMask;
 end;
 
-procedure KillMessage(Wnd: HWnd; Msg: Cardinal);
+procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
 { Copied from DbGrid.pas                                      }
@@ -1150,42 +1200,48 @@ begin
     PostQuitMessage(M.WParam);
 end;
 
-function CreateRotatedFont(Font: TFont; Angle: Integer): HFont;
+function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 var
   LogFont: TLogFont;
 begin
   FillChar(LogFont, SizeOf(LogFont), 0);
-  with LogFont do begin
+  with LogFont do
+  begin
     lfHeight := Font.Height;
     lfWidth := 0;
     lfEscapement := Angle * 10;
     lfOrientation := 0;
-    if fsBold in Font.Style then lfWeight := FW_BOLD
-    else lfWeight := FW_NORMAL;
+    if fsBold in Font.Style then
+      lfWeight := FW_BOLD
+    else
+      lfWeight := FW_NORMAL;
     lfItalic := Ord(fsItalic in Font.Style);
     lfUnderline := Ord(fsUnderline in Font.Style);
     lfStrikeOut := Byte(fsStrikeOut in Font.Style);
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     lfCharSet := Byte(Font.Charset);
     if AnsiCompareText(Font.Name, 'Default') = 0 then
       StrPCopy(lfFaceName, DefFontData.Name)
     else
       StrPCopy(lfFaceName, Font.Name);
-{$ELSE}
-  {$IFDEF VER93}
+    {$ELSE}
+    {$IFDEF VER93}
     lfCharSet := Byte(Font.Charset);
-  {$ELSE}
+    {$ELSE}
     lfCharSet := DEFAULT_CHARSET;
-  {$ENDIF}
+    {$ENDIF}
     StrPCopy(lfFaceName, Font.Name);
-{$ENDIF}
+    {$ENDIF}
     lfQuality := DEFAULT_QUALITY;
     lfOutPrecision := OUT_DEFAULT_PRECIS;
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     case Font.Pitch of
-      fpVariable: lfPitchAndFamily := VARIABLE_PITCH;
-      fpFixed: lfPitchAndFamily := FIXED_PITCH;
-      else lfPitchAndFamily := DEFAULT_PITCH;
+      fpVariable:
+        lfPitchAndFamily := VARIABLE_PITCH;
+      fpFixed:
+        lfPitchAndFamily := FIXED_PITCH;
+    else
+      lfPitchAndFamily := DEFAULT_PITCH;
     end;
   end;
   Result := CreateFontIndirect(LogFont);
@@ -1214,30 +1270,39 @@ var
 begin
   X := Control.Left;
   Y := Control.Top;
-  if Control is TForm then begin
-    with Control do begin
+  if Control is TForm then
+  begin
+    with Control do
+    begin
       if (TForm(Control).FormStyle = fsMDIChild) and
         (Application.MainForm <> nil) then
       begin
         X := (Application.MainForm.ClientWidth - Width) div 2;
         Y := (Application.MainForm.ClientHeight - Height) div 2;
       end
-      else begin
+      else
+      begin
         X := (Screen.Width - Width) div 2;
         Y := (Screen.Height - Height) div 2;
       end;
     end;
   end
-  else if Control.Parent <> nil then begin
-    with Control do begin
+  else
+  if Control.Parent <> nil then
+  begin
+    with Control do
+    begin
       Parent.HandleNeeded;
       X := (Parent.ClientWidth - Width) div 2;
       Y := (Parent.ClientHeight - Height) div 2;
     end;
   end;
-  if X < 0 then X := 0;
-  if Y < 0 then Y := 0;
-  with Control do SetBounds(X, Y, Width, Height);
+  if X < 0 then
+    X := 0;
+  if Y < 0 then
+    Y := 0;
+  with Control do
+    SetBounds(X, Y, Width, Height);
 end;
 
 procedure FitRectToScreen(var Rect: TRect);
@@ -1246,23 +1311,28 @@ var
 begin
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  with Rect do begin
-    if Right > X then begin
+  with Rect do
+  begin
+    if Right > X then
+    begin
       Delta := Right - Left;
       Right := X;
       Left := Right - Delta;
     end;
-    if Left < 0 then begin
+    if Left < 0 then
+    begin
       Delta := Right - Left;
       Left := 0;
       Right := Left + Delta;
     end;
-    if Bottom > Y then begin
+    if Bottom > Y then
+    begin
       Delta := Bottom - Top;
       Bottom := Y;
       Top := Bottom - Delta;
     end;
-    if Top < 0 then begin
+    if Top < 0 then
+    begin
       Delta := Bottom - Top;
       Top := 0;
       Bottom := Top + Delta;
@@ -1270,7 +1340,7 @@ begin
   end;
 end;
 
-procedure CenterWindow(Wnd: HWnd);
+procedure CenterWindow(Wnd: HWND);
 var
   R: TRect;
 begin
@@ -1292,15 +1362,18 @@ begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
   TJvHack(AForm).DestroyHandle;
-  with AForm do begin
+  with AForm do
+  begin
     BorderStyle := bsNone;
     BorderIcons := [];
     Parent := AControl;
   end;
   AControl.DisableAlign;
   try
-    if Align <> alNone then AForm.Align := Align
-    else begin
+    if Align <> alNone then
+      AForm.Align := Align
+    else
+    begin
       R := AControl.ClientRect;
       AForm.SetBounds(R.Left + AForm.Left, R.Top + AForm.Top, AForm.Width,
         AForm.Height);
@@ -1316,6 +1389,7 @@ end;
 
 { ShowMDIClientEdge function has been copied from Inprise's FORMS.PAS unit,
   Delphi 4 version }
+
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 var
   Style: Longint;
@@ -1328,12 +1402,13 @@ begin
         Style := Style or WS_EX_CLIENTEDGE
       else
         Exit
-    else if Style and WS_EX_CLIENTEDGE <> 0 then
+    else
+    if Style and WS_EX_CLIENTEDGE <> 0 then
       Style := Style and not WS_EX_CLIENTEDGE
     else
       Exit;
     SetWindowLong(ClientHandle, GWL_EXSTYLE, Style);
-    SetWindowPos(ClientHandle, 0, 0,0,0,0, SWP_FRAMECHANGED or SWP_NOACTIVATE or
+    SetWindowPos(ClientHandle, 0, 0, 0, 0, 0, SWP_FRAMECHANGED or SWP_NOACTIVATE or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
@@ -1342,9 +1417,11 @@ function MakeVariant(const Values: array of Variant): Variant;
 begin
   if High(Values) - Low(Values) > 1 then
     Result := VarArrayOf(Values)
-  else if High(Values) - Low(Values) = 1 then
+  else
+  if High(Values) - Low(Values) = 1 then
     Result := Values[Low(Values)]
-  else Result := Null;
+  else
+    Result := Null;
 end;
 
 {$ENDIF WIN32}
@@ -1353,9 +1430,9 @@ end;
 
 procedure ShadeRect(DC: HDC; const Rect: TRect);
 const
-  HatchBits: array[0..7] of Word = ($11, $22, $44, $88, $11, $22, $44, $88);
+  HatchBits: array [0..7] of Word = ($11, $22, $44, $88, $11, $22, $44, $88);
 var
-  Bitmap: HBitmap;
+  Bitmap: HBITMAP;
   SaveBrush: HBrush;
   SaveTextColor, SaveBkColor: TColorRef;
 begin
@@ -1364,7 +1441,8 @@ begin
   try
     SaveTextColor := SetTextColor(DC, clWhite);
     SaveBkColor := SetBkColor(DC, clBlack);
-    with Rect do PatBlt(DC, Left, Top, Right - Left, Bottom - Top, $00A000C9);
+    with Rect do
+      PatBlt(DC, Left, Top, Right - Left, Bottom - Top, $00A000C9);
     SetBkColor(DC, SaveBkColor);
     SetTextColor(DC, SaveTextColor);
   finally
@@ -1380,12 +1458,13 @@ const
 {$ENDIF}
 begin
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
-    with Screen do Result := Bounds(0, 0, Width, Height);
+    with Screen do
+      Result := Bounds(0, 0, Width, Height);
 end;
 
-function WindowClassName(Wnd: HWnd): string;
+function WindowClassName(Wnd: HWND): string;
 var
-  Buffer: array[0..255] of Char;
+  Buffer: array [0..255] of Char;
 begin
   SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
 end;
@@ -1398,12 +1477,13 @@ var
 begin
   Info.cbSize := SizeOf(TAnimationInfo);
   if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     Result := Info.iMinAnimate <> 0
-{$ELSE}
+    {$ELSE}
     Result := Info.iMinAnimate
-{$ENDIF}
-  else Result := False;
+    {$ENDIF}
+  else
+    Result := False;
 end;
 
 procedure SetAnimation(Value: Boolean);
@@ -1415,79 +1495,87 @@ begin
   SystemParametersInfo(SPI_SETANIMATION, SizeOf(Info), @Info, 0);
 end;
 
-procedure ShowWinNoAnimate(Handle: HWnd; CmdShow: Integer);
+procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
 var
   Animation: Boolean;
 begin
   Animation := GetAnimation;
-  if Animation then SetAnimation(False);
+  if Animation then
+    SetAnimation(False);
   ShowWindow(Handle, CmdShow);
-  if Animation then SetAnimation(True);
+  if Animation then
+    SetAnimation(True);
 end;
 
 {$ELSE}
 
-procedure ShowWinNoAnimate(Handle: HWnd; CmdShow: Integer);
+procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
 begin
   ShowWindow(Handle, CmdShow);
 end;
 
-procedure SwitchToThisWindow(Wnd: HWnd; Restore: Bool); far; external 'USER'
-  index 172;
+procedure SwitchToThisWindow(Wnd: HWND; Restore: Bool); far; external 'USER' index 172;
 
 {$ENDIF WIN32}
 
-procedure SwitchToWindow(Wnd: HWnd; Restore: Boolean);
+procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
 begin
-  if IsWindowEnabled(Wnd) then begin
-{$IFDEF WIN32}
+  if IsWindowEnabled(Wnd) then
+  begin
+    {$IFDEF WIN32}
     SetForegroundWindow(Wnd);
-    if Restore and IsWindowVisible(Wnd) then begin
+    if Restore and IsWindowVisible(Wnd) then
+    begin
       if not IsZoomed(Wnd) then
         SendMessage(Wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
       SetFocus(Wnd);
     end;
-{$ELSE}
+    {$ELSE}
     SwitchToThisWindow(Wnd, Restore);
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
-function GetWindowParent(Wnd: HWnd): HWnd;
+function GetWindowParent(Wnd: HWND): HWND;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := GetWindowLong(Wnd, GWL_HWNDPARENT);
-{$ELSE}
+  {$ELSE}
   Result := GetWindowWord(Wnd, GWW_HWNDPARENT);
-{$ENDIF}
+  {$ENDIF}
 end;
 
-procedure ActivateWindow(Wnd: HWnd);
+procedure ActivateWindow(Wnd: HWND);
 begin
-  if Wnd <> 0 then begin
+  if Wnd <> 0 then
+  begin
     ShowWinNoAnimate(Wnd, SW_SHOW);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     SetForegroundWindow(Wnd);
-{$ELSE}
+    {$ELSE}
     SwitchToThisWindow(Wnd, True);
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
 {$IFDEF CBUILDER}
 function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWnd;
+  const ATitle: string): HWND;
 {$ELSE}
-function FindPrevInstance(const MainFormClass, ATitle: string): HWnd;
+function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 {$ENDIF CBUILDER}
 var
   BufClass, BufTitle: PChar;
 begin
   Result := 0;
-  if (MainFormClass = '') and (ATitle = '') then Exit;
-  BufClass := nil; BufTitle := nil;
-  if (MainFormClass <> '') then BufClass := StrPAlloc(MainFormClass);
-  if (ATitle <> '') then BufTitle := StrPAlloc(ATitle);
+  if (MainFormClass = '') and (ATitle = '') then
+    Exit;
+  BufClass := nil;
+  BufTitle := nil;
+  if (MainFormClass <> '') then
+    BufClass := StrPAlloc(MainFormClass);
+  if (ATitle <> '') then
+    BufTitle := StrPAlloc(ATitle);
   try
     Result := FindWindow(BufClass, BufTitle);
   finally
@@ -1497,13 +1585,15 @@ begin
 end;
 
 {$IFDEF WIN32}
-function WindowsEnum(Handle: HWnd; Param: Longint): Bool; export; stdcall;
+function WindowsEnum(Handle: HWND; Param: Longint): Bool; export; stdcall;
 begin
-  if WindowClassName(Handle) = 'TAppBuilder' then begin
+  if WindowClassName(Handle) = 'TAppBuilder' then
+  begin
     Result := False;
     PLongint(Param)^ := 1;
   end
-  else Result := True;
+  else
+    Result := True;
 end;
 {$ENDIF}
 
@@ -1514,50 +1604,59 @@ function ActivatePrevInstance(const MainFormClass: ShortString;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF CBUILDER}
 var
-  PrevWnd, PopupWnd, ParentWnd: HWnd;
-{$IFDEF WIN32}
+  PrevWnd, PopupWnd, ParentWnd: HWND;
+  {$IFDEF WIN32}
   IsDelphi: Longint;
-{$ELSE}
-  S: array[0..255] of Char;
-{$ENDIF}
+  {$ELSE}
+  S: array [0..255] of Char;
+  {$ENDIF}
 begin
   Result := False;
   PrevWnd := FindPrevInstance(MainFormClass, ATitle);
-  if PrevWnd <> 0 then begin
+  if PrevWnd <> 0 then
+  begin
     ParentWnd := GetWindowParent(PrevWnd);
-    while (ParentWnd <> GetDesktopWindow) and (ParentWnd <> 0) do begin
+    while (ParentWnd <> GetDesktopWindow) and (ParentWnd <> 0) do
+    begin
       PrevWnd := ParentWnd;
       ParentWnd := GetWindowParent(PrevWnd);
     end;
-    if WindowClassName(PrevWnd) = 'TApplication' then begin
-{$IFDEF WIN32}
+    if WindowClassName(PrevWnd) = 'TApplication' then
+    begin
+      {$IFDEF WIN32}
       IsDelphi := 0;
       EnumThreadWindows(GetWindowTask(PrevWnd), @WindowsEnum,
         LPARAM(@IsDelphi));
-      if Boolean(IsDelphi) then Exit;
-{$ELSE}
+      if Boolean(IsDelphi) then
+        Exit;
+      {$ELSE}
       GetModuleFileName(GetWindowTask(PrevWnd), S, SizeOf(S) - 1);
-      if AnsiUpperCase(ExtractFileName(StrPas(S))) = 'DELPHI.EXE' then Exit;
-{$ENDIF}
-      if IsIconic(PrevWnd) then begin { application is minimized }
+      if AnsiUpperCase(ExtractFileName(StrPas(S))) = 'DELPHI.EXE' then
+        Exit;
+      {$ENDIF}
+      if IsIconic(PrevWnd) then
+      begin { application is minimized }
         SendMessage(PrevWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
         Result := True;
         Exit;
       end
-      else ShowWinNoAnimate(PrevWnd, SW_SHOWNOACTIVATE);
+      else
+        ShowWinNoAnimate(PrevWnd, SW_SHOWNOACTIVATE);
     end
-    else ActivateWindow(PrevWnd);
+    else
+      ActivateWindow(PrevWnd);
     PopupWnd := GetLastActivePopup(PrevWnd);
     if (PrevWnd <> PopupWnd) and IsWindowVisible(PopupWnd) and
       IsWindowEnabled(PopupWnd) then
     begin
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       SetForegroundWindow(PopupWnd);
-{$ELSE}
+      {$ELSE}
       BringWindowToTop(PopupWnd);
-{$ENDIF}
+      {$ENDIF}
     end
-    else ActivateWindow(PopupWnd);
+    else
+      ActivateWindow(PopupWnd);
     Result := True;
   end;
 end;
@@ -1577,17 +1676,20 @@ end;
 { Gradient fill procedure - displays a gradient beginning with a chosen    }
 { color and ending with another chosen color. Based on TGradientFill       }
 { component source code written by Curtis White, cwhite@teleport.com.      }
+
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
   EndColor: TColor; Direction: TFillDirection; Colors: Byte);
 var
-  StartRGB: array[0..2] of Byte;    { Start RGB values }
-  RGBDelta: array[0..2] of Integer; { Difference between start and end RGB values }
-  ColorBand: TRect;                 { Color band rectangular coordinates }
+  StartRGB: array [0..2] of Byte; { Start RGB values }
+  RGBDelta: array [0..2] of Integer; { Difference between start and end RGB values }
+  ColorBand: TRect; { Color band rectangular coordinates }
   I, Delta: Integer;
   Brush: HBrush;
 begin
-  if IsRectEmpty(ARect) then Exit;
-  if Colors < 2 then begin
+  if IsRectEmpty(ARect) then
+    Exit;
+  if Colors < 2 then
+  begin
     Brush := CreateSolidBrush(ColorToRGB(StartColor));
     FillRect(Canvas.Handle, ARect, Brush);
     DeleteObject(Brush);
@@ -1596,58 +1698,67 @@ begin
   StartColor := ColorToRGB(StartColor);
   EndColor := ColorToRGB(EndColor);
   case Direction of
-    fdTopToBottom, fdLeftToRight: begin
-      { Set the Red, Green and Blue colors }
-      StartRGB[0] := GetRValue(StartColor);
-      StartRGB[1] := GetGValue(StartColor);
-      StartRGB[2] := GetBValue(StartColor);
-      { Calculate the difference between begin and end RGB values }
-      RGBDelta[0] := GetRValue(EndColor) - StartRGB[0];
-      RGBDelta[1] := GetGValue(EndColor) - StartRGB[1];
-      RGBDelta[2] := GetBValue(EndColor) - StartRGB[2];
-    end;
-    fdBottomToTop, fdRightToLeft: begin
-      { Set the Red, Green and Blue colors }
-      { Reverse of TopToBottom and LeftToRight directions }
-      StartRGB[0] := GetRValue(EndColor);
-      StartRGB[1] := GetGValue(EndColor);
-      StartRGB[2] := GetBValue(EndColor);
-      { Calculate the difference between begin and end RGB values }
-      { Reverse of TopToBottom and LeftToRight directions }
-      RGBDelta[0] := GetRValue(StartColor) - StartRGB[0];
-      RGBDelta[1] := GetGValue(StartColor) - StartRGB[1];
-      RGBDelta[2] := GetBValue(StartColor) - StartRGB[2];
-    end;
-  end; {case}
+    fdTopToBottom, fdLeftToRight:
+      begin
+        { Set the Red, Green and Blue colors }
+        StartRGB[0] := GetRValue(StartColor);
+        StartRGB[1] := GetGValue(StartColor);
+        StartRGB[2] := GetBValue(StartColor);
+        { Calculate the difference between begin and end RGB values }
+        RGBDelta[0] := GetRValue(EndColor) - StartRGB[0];
+        RGBDelta[1] := GetGValue(EndColor) - StartRGB[1];
+        RGBDelta[2] := GetBValue(EndColor) - StartRGB[2];
+      end;
+    fdBottomToTop, fdRightToLeft:
+      begin
+        { Set the Red, Green and Blue colors }
+        { Reverse of TopToBottom and LeftToRight directions }
+        StartRGB[0] := GetRValue(EndColor);
+        StartRGB[1] := GetGValue(EndColor);
+        StartRGB[2] := GetBValue(EndColor);
+        { Calculate the difference between begin and end RGB values }
+        { Reverse of TopToBottom and LeftToRight directions }
+        RGBDelta[0] := GetRValue(StartColor) - StartRGB[0];
+        RGBDelta[1] := GetGValue(StartColor) - StartRGB[1];
+        RGBDelta[2] := GetBValue(StartColor) - StartRGB[2];
+      end;
+  end;
   { Calculate the color band's coordinates }
   ColorBand := ARect;
-  if Direction in [fdTopToBottom, fdBottomToTop] then begin
+  if Direction in [fdTopToBottom, fdBottomToTop] then
+  begin
     Colors := Max(2, Min(Colors, HeightOf(ARect)));
     Delta := HeightOf(ARect) div Colors;
   end
-  else begin
+  else
+  begin
     Colors := Max(2, Min(Colors, WidthOf(ARect)));
     Delta := WidthOf(ARect) div Colors;
   end;
-  with Canvas.Pen do begin { Set the pen style and mode }
+  with Canvas.Pen do
+  begin { Set the pen style and mode }
     Style := psSolid;
     Mode := pmCopy;
   end;
   { Perform the fill }
-  if Delta > 0 then begin
-    for I := 0 to Colors do begin
+  if Delta > 0 then
+  begin
+    for I := 0 to Colors do
+    begin
       case Direction of
         { Calculate the color band's top and bottom coordinates }
-        fdTopToBottom, fdBottomToTop: begin
-          ColorBand.Top := ARect.Top + I * Delta;
-          ColorBand.Bottom := ColorBand.Top + Delta;
-        end;
+        fdTopToBottom, fdBottomToTop:
+          begin
+            ColorBand.Top := ARect.Top + I * Delta;
+            ColorBand.Bottom := ColorBand.Top + Delta;
+          end;
         { Calculate the color band's left and right coordinates }
-        fdLeftToRight, fdRightToLeft: begin
-          ColorBand.Left := ARect.Left + I * Delta;
-          ColorBand.Right := ColorBand.Left + Delta;
-        end;
-      end; {case}
+        fdLeftToRight, fdRightToLeft:
+          begin
+            ColorBand.Left := ARect.Left + I * Delta;
+            ColorBand.Right := ColorBand.Left + Delta;
+          end;
+      end;
       { Calculate the color band's color }
       Brush := CreateSolidBrush(RGB(
         StartRGB[0] + MulDiv(I, RGBDelta[0], Colors - 1),
@@ -1659,25 +1770,29 @@ begin
   end;
   if Direction in [fdTopToBottom, fdBottomToTop] then
     Delta := HeightOf(ARect) mod Colors
-  else Delta := WidthOf(ARect) mod Colors;
-  if Delta > 0 then begin
+  else
+    Delta := WidthOf(ARect) mod Colors;
+  if Delta > 0 then
+  begin
     case Direction of
       { Calculate the color band's top and bottom coordinates }
-      fdTopToBottom, fdBottomToTop: begin
-        ColorBand.Top := ARect.Bottom - Delta;
-        ColorBand.Bottom := ColorBand.Top + Delta;
-      end;
+      fdTopToBottom, fdBottomToTop:
+        begin
+          ColorBand.Top := ARect.Bottom - Delta;
+          ColorBand.Bottom := ColorBand.Top + Delta;
+        end;
       { Calculate the color band's left and right coordinates }
-      fdLeftToRight, fdRightToLeft: begin
-        ColorBand.Left := ARect.Right - Delta;
-        ColorBand.Right := ColorBand.Left + Delta;
-      end;
-    end; {case}
+      fdLeftToRight, fdRightToLeft:
+        begin
+          ColorBand.Left := ARect.Right - Delta;
+          ColorBand.Right := ColorBand.Left + Delta;
+        end;
+    end;
     case Direction of
       fdTopToBottom, fdLeftToRight:
         Brush := CreateSolidBrush(EndColor);
-      else {fdBottomToTop, fdRightToLeft }
-        Brush := CreateSolidBrush(StartColor);
+    else {fdBottomToTop, fdRightToLeft }
+      Brush := CreateSolidBrush(StartColor);
     end;
     FillRect(Canvas.Handle, ColorBand, Brush);
     DeleteObject(Brush);
@@ -1691,7 +1806,8 @@ var
 begin
   Result := Text;
   I := 1;
-  while (I <= Length(Text)) and (Canvas.TextWidth(Result) > MaxWidth) do begin
+  while (I <= Length(Text)) and (Canvas.TextWidth(Result) > MaxWidth) do
+  begin
     Inc(I);
     Result := Copy(Text, 1, Max(0, Length(Text) - I)) + '...';
   end;
@@ -1700,10 +1816,12 @@ end;
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
   I: Integer;
-  Buffer: array[0..51] of Char;
+  Buffer: array [0..51] of Char;
 begin
-  for I := 0 to 25 do Buffer[I] := Chr(I + Ord('A'));
-  for I := 0 to 25 do Buffer[I + 26] := Chr(I + Ord('a'));
+  for I := 0 to 25 do
+    Buffer[I] := Chr(I + Ord('A'));
+  for I := 0 to 25 do
+    Buffer[I + 26] := Chr(I + Ord('a'));
   GetTextExtentPoint(Canvas.Handle, Buffer, 52, TSize(Result));
   Result.X := Result.X div 52;
 end;
@@ -1714,7 +1832,8 @@ function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-  else Result := nil;
+  else
+    Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
@@ -1725,7 +1844,8 @@ end;
 
 procedure FreeMemo(var fpBlock: Pointer);
 begin
-  if fpBlock <> nil then begin
+  if fpBlock <> nil then
+  begin
     GlobalFreePtr(fpBlock);
     fpBlock := nil;
   end;
@@ -1736,13 +1856,15 @@ var
   hMem: THandle;
 begin
   Result := 0;
-  if fpBlock <> nil then begin
-{$IFDEF WIN32}
+  if fpBlock <> nil then
+  begin
+    {$IFDEF WIN32}
     hMem := GlobalHandle(fpBlock);
-{$ELSE}
+    {$ELSE}
     hMem := LoWord(GlobalHandle(SelectorOf(fpBlock)));
-{$ENDIF}
-    if hMem <> 0 then Result := GlobalSize(hMem);
+    {$ENDIF}
+    if hMem <> 0 then
+      Result := GlobalSize(hMem);
   end;
 end;
 
@@ -1829,6 +1951,7 @@ end;
 procedure __AHSHIFT; far; external 'KERNEL' index 113;
 
 { Increment a huge pointer }
+
 procedure HugeInc(var HugePtr: Pointer; Amount: Longint); assembler;
 asm
         MOV     AX,Amount.Word[0]
@@ -1843,6 +1966,7 @@ asm
 end;
 
 { Decrement a huge pointer }
+
 procedure HugeDec(var HugePtr: Pointer; Amount: Longint); assembler;
 asm
         LES     BX,HugePtr
@@ -1857,6 +1981,7 @@ asm
 end;
 
 { ADD an offset to a huge pointer and return the result }
+
 function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer; assembler;
 asm
         MOV     AX,Amount.Word[0]
@@ -1873,6 +1998,7 @@ end;
   You could use FillChar, which fills by bytes, but, as DoMove
   is to Move, ZeroBytes is to FillChar, except that it always
   fill with zero valued words }
+
 procedure FillWords(DstPtr: Pointer; Size: Word; Fill: Word); assembler;
 asm
         MOV     AX,Fill
@@ -1885,6 +2011,7 @@ end;
 { Fill Length bytes of memory with Fill, starting at Ptr.
   This is just like the procedure in the Win32 API. The memory
   can be larger than 64K and can cross segment boundaries }
+
 procedure FillMemory(Ptr: Pointer; Length: Longint; Fill: Byte);
 var
   NBytes: Cardinal;
@@ -1893,11 +2020,15 @@ var
 begin
   WordRec(FillWord).Hi := Fill;
   WordRec(FillWord).Lo := Fill;
-  while Length > 1 do begin
+  while Length > 1 do
+  begin
     { Determine the number of bytes remaining in the segment }
-    if Ofs(Ptr^) = 0 then NBytes := $FFFE
-    else NBytes := $10000 - Ofs(Ptr^);
-    if NBytes > Length then NBytes := Length;
+    if Ofs(Ptr^) = 0 then
+      NBytes := $FFFE
+    else
+      NBytes := $10000 - Ofs(Ptr^);
+    if NBytes > Length then
+      NBytes := Length;
     { Filling by words is faster than filling by bytes }
     NWords := NBytes div 2;
     FillWords(Ptr, NWords, FillWord);
@@ -1906,7 +2037,8 @@ begin
     Ptr := HugeOffset(Ptr, NBytes);
   end;
   { If the fill size is odd, then fill the remaining byte }
-  if Length > 0 then PByte(Ptr)^ := Fill;
+  if Length > 0 then
+    PByte(Ptr)^ := Fill;
 end;
 
 procedure ZeroMemory(Ptr: Pointer; Length: Longint);
@@ -1914,32 +2046,46 @@ begin
   FillMemory(Ptr, Length, 0);
 end;
 
-procedure cld; inline ($FC);
-procedure std; inline ($FD);
+// (rom) Ouch. so old DelForExp failed to format the indents
+
+procedure cld;
+  inline($FC);
+
+procedure std;
+  inline($FD);
 
 function ComputeDownMoveSize(SrcOffset, DstOffset: Word): Word;
 begin
-  if SrcOffset > DstOffset then Result := Word($10000 - SrcOffset) div 2
-  else Result := Word($10000 - DstOffset) div 2;
-  if Result = 0 then Result := $7FFF;
+  if SrcOffset > DstOffset then
+    Result := Word($10000 - SrcOffset) div 2
+  else
+    Result := Word($10000 - DstOffset) div 2;
+  if Result = 0 then
+    Result := $7FFF;
 end;
 
 function ComputeUpMoveSize(SrcOffset, DstOffset: Word): Word;
 begin
-  if SrcOffset = $FFFF then Result := DstOffset div 2
-  else if DstOffset = $FFFF then Result := SrcOffset div 2
-  else if SrcOffset > DstOffset then Result := DstOffset div 2 + 1
-  else Result := SrcOffset div 2 + 1;
+  if SrcOffset = $FFFF then
+    Result := DstOffset div 2
+  else
+  if DstOffset = $FFFF then
+    Result := SrcOffset div 2
+  else
+  if SrcOffset > DstOffset then
+    Result := DstOffset div 2 + 1
+  else
+    Result := SrcOffset div 2 + 1;
 end;
 
 procedure MoveWords(SrcPtr, DstPtr: Pointer; Size: Word); assembler;
 asm
-        PUSH    DS
-        LDS     SI,SrcPtr
-        LES     DI,DstPtr
-        MOV     CX,Size.Word[0]
-        REP     MOVSW
-        POP     DS
+    PUSH    DS
+    LDS     SI,SrcPtr
+    LES     DI,DstPtr
+    MOV     CX,Size.Word[0]
+    REP     MOVSW
+    POP     DS
 end;
 
 procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
@@ -1951,15 +2097,18 @@ begin
   DstPtr := HugeOffset(Base, Dst * SizeOf(Pointer));
   { Convert longword size to words }
   Size := Size * (SizeOf(Longint) div SizeOf(Word));
-  if Src < Dst then begin
+  if Src < Dst then
+  begin
     { Start from the far end and work toward the front }
     std;
     HugeInc(SrcPtr, (Size - 1) * SizeOf(Word));
     HugeInc(DstPtr, (Size - 1) * SizeOf(Word));
-    while Size > 0 do begin
+    while Size > 0 do
+    begin
       { Compute how many bytes to move in the current segment }
       MoveSize := ComputeUpMoveSize(Word(SrcPtr), Word(DstPtr));
-      if MoveSize > Size then MoveSize := Word(Size);
+      if MoveSize > Size then
+        MoveSize := Word(Size);
       { Move the bytes }
       MoveWords(SrcPtr, DstPtr, MoveSize);
       { Update the number of bytes left to move }
@@ -1970,13 +2119,16 @@ begin
     end;
     cld; { reset the direction flag }
   end
-  else begin
+  else
+  begin
     { Start from the beginning and work toward the end }
     cld;
-    while Size > 0 do begin
+    while Size > 0 do
+    begin
       { Compute how many bytes to move in the current segment }
       MoveSize := ComputeDownMoveSize(Word(SrcPtr), Word(DstPtr));
-      if MoveSize > Size then MoveSize := Word(Size);
+      if MoveSize > Size then
+        MoveSize := Word(Size);
       { Move the bytes }
       MoveWords(SrcPtr, DstPtr, MoveSize);
       { Update the number of bytes left to move }
@@ -1992,49 +2144,21 @@ end;
 
 { String routines }
 
-{$W+}
-function GetEnvVar(const VarName: string): string;
-var
-{$IFDEF WIN32}
-  S: array[0..2048] of Char;
-{$ELSE}
-  S: array[0..255] of Char;
-  L: Cardinal;
-  P: PChar;
-{$ENDIF}
-begin
-{$IFDEF WIN32}
-  if GetEnvironmentVariable(PChar(VarName), S, SizeOf(S) - 1) > 0 then
-    Result := StrPas(S)
-  else Result := '';
-{$ELSE}
-  L := Length(VarName);
-  P := GetDosEnvironment;
-  StrPLCopy(S, VarName, 255);
-  while P^ <> #0 do begin
-    if (StrLIComp(P, {$IFDEF WIN32} PChar(VarName) {$ELSE} S {$ENDIF}, L) = 0) and
-      (P[L] = '=') then
-    begin
-      Result := StrPas(P + L + 1);
-      Exit;
-    end;
-    Inc(P, StrLen(P) + 1);
-  end;
-  Result := '';
-{$ENDIF}
-end;
-{$W-}
-
 { function GetParamStr copied from SYSTEM.PAS unit of Delphi 2.0 }
+
 function GetParamStr(P: PChar; var Param: string): PChar;
 var
   Len: Integer;
-  Buffer: array[Byte] of Char;
+  Buffer: array [Byte] of Char;
 begin
   while True do
   begin
-    while (P[0] <> #0) and (P[0] <= ' ') do Inc(P);
-    if (P[0] = '"') and (P[1] = '"') then Inc(P, 2) else Break;
+    while (P[0] <> #0) and (P[0] <= ' ') do
+      Inc(P);
+    if (P[0] = '"') and (P[1] = '"') then
+      Inc(P, 2)
+    else
+      Break;
   end;
   Len := 0;
   while P[0] > ' ' do
@@ -2047,8 +2171,10 @@ begin
         Inc(Len);
         Inc(P);
       end;
-      if P[0] <> #0 then Inc(P);
-    end else
+      if P[0] <> #0 then
+        Inc(P);
+    end
+    else
     begin
       Buffer[Len] := P[0];
       Inc(Len);
@@ -2068,7 +2194,8 @@ begin
   while True do
   begin
     P := GetParamStr(P, S);
-    if S = '' then Break;
+    if S = '' then
+      Break;
     Inc(Result);
   end;
 end;
@@ -2081,7 +2208,8 @@ begin
   while True do
   begin
     P := GetParamStr(P, Result);
-    if (Index = 0) or (Result = '') then Break;
+    if (Index = 0) or (Result = '') then
+      Break;
     Dec(Index);
   end;
 end;
@@ -2098,13 +2226,17 @@ begin
   Buffer := StrPAlloc(CmdLine);
   try
     Cnt := ParamCountFromCommandLine(Buffer);
-    if Cnt > 0 then begin
+    if Cnt > 0 then
+    begin
       ExeName := ParamStrFromCommandLine(Buffer, 0);
-      for I := 1 to Cnt - 1 do begin
+      for I := 1 to Cnt - 1 do
+      begin
         S := ParamStrFromCommandLine(Buffer, I);
-        if Pos(' ', S) > 0 then S := '"' + S + '"';
+        if Pos(' ', S) > 0 then
+          S := '"' + S + '"';
         Params := Params + S;
-        if I < Cnt - 1 then Params := Params + ' ';
+        if I < Cnt - 1 then
+          Params := Params + ' ';
       end;
     end;
   finally
@@ -2117,7 +2249,8 @@ var
   Temp: string[1];
 begin
   Result := AnsiLowerCase(S);
-  if S <> '' then begin
+  if S <> '' then
+  begin
     Temp := Result[1];
     Temp := AnsiUpperCase(Temp);
     Result[1] := Temp[1];
@@ -2131,43 +2264,46 @@ end;
 
 function StringToPChar(var S: string): PChar;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := PChar(S);
-{$ELSE}
-  if Length(S) = High(S) then Dec(S[0]);
+  {$ELSE}
+  if Length(S) = High(S) then
+    Dec(S[0]);
   S[Length(S) + 1] := #0;
   Result := @(S[1]);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function DropT(const S: string): string;
 begin
   if (UpCase(S[1]) = 'T') and (Length(S) > 1) then
     Result := Copy(S, 2, MaxInt)
-  else Result := S;
+  else
+    Result := S;
 end;
 
 { Cursor routines }
 
 {$IFDEF WIN32}
+function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
+{ Unfortunately I don't know how we can load animated cursor from
+  executable resource directly. So I write this routine using temporary
+  file and LoadCursorFromFile function. }
 {$IFNDEF COMPILER3_UP}
 const
   RT_ANICURSOR = MakeIntResource(21);
 {$ENDIF}
-function LoadAniCursor(Instance: THandle; ResID: PChar): HCursor;
-{ Unfortunately I don't know how we can load animated cursor from
-  executable resource directly. So I write this routine using temporary
-  file and LoadCursorFromFile function. }
 var
   S: TFileStream;
-  Path, FileName: array[0..MAX_PATH] of Char;
+  Path, FileName: array [0..MAX_PATH] of Char;
   Rsrc: HRSRC;
   Res: THandle;
   Data: Pointer;
 begin
   Result := 0;
   Rsrc := FindResource(Instance, ResID, RT_ANICURSOR);
-  if Rsrc <> 0 then begin
+  if Rsrc <> 0 then
+  begin
     OSCheck(GetTempPath(MAX_PATH, Path) <> 0);
     OSCheck(GetTempFileName(Path, 'ANI', 0, FileName) <> 0);
     try
@@ -2198,16 +2334,18 @@ end;
 
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 var
-  Handle: HCursor;
+  Handle: HCURSOR;
 begin
   Handle := LoadCursor(Instance, ResID);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
-{$ENDIF}
-  if Handle = 0 then ResourceNotFound(ResID);
+  {$ENDIF}
+  if Handle = 0 then
+    ResourceNotFound(ResID);
   for Result := 100 to High(TCursor) do { Look for an unassigned cursor index }
-    if (Screen.Cursors[Result] = Screen.Cursors[crDefault]) then begin
+    if (Screen.Cursors[Result] = Screen.Cursors[crDefault]) then
+    begin
       Screen.Cursors[Result] := Handle;
       Exit;
     end;
@@ -2215,13 +2353,15 @@ begin
   raise EOutOfResources.Create(ResStr(SOutOfResources));
 end;
 
-const
+// (rom) changed to var
+var
   WaitCount: Integer = 0;
   SaveCursor: TCursor = crDefault;
 
 procedure StartWait;
 begin
-  if WaitCount = 0 then begin
+  if WaitCount = 0 then
+  begin
     SaveCursor := Screen.Cursor;
     Screen.Cursor := WaitCursor;
   end;
@@ -2230,25 +2370,30 @@ end;
 
 procedure StopWait;
 begin
-  if WaitCount > 0 then begin
+  if WaitCount > 0 then
+  begin
     Dec(WaitCount);
-    if WaitCount = 0 then Screen.Cursor := SaveCursor;
+    if WaitCount = 0 then
+      Screen.Cursor := SaveCursor;
   end;
 end;
 
 { Grid drawing }
 
-const
+// (rom) changed to var
+var
   DrawBitmap: TBitmap = nil;
 
 procedure UsesBitmap;
 begin
-  if DrawBitmap = nil then DrawBitmap := TBitmap.Create;
+  if DrawBitmap = nil then
+    DrawBitmap := TBitmap.Create;
 end;
 
 procedure ReleaseBitmap; far;
 begin
-  if DrawBitmap <> nil then DrawBitmap.Free;
+  if DrawBitmap <> nil then
+    DrawBitmap.Free;
   DrawBitmap := nil;
 end;
 
@@ -2260,14 +2405,14 @@ const
     (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
      DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
      DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
-  WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-{$IFDEF COMPILER4_UP}
+  WrapFlags: array [Boolean] of Integer = (0, DT_WORDBREAK);
+  {$IFDEF COMPILER4_UP}
   RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
-{$ENDIF}
+  {$ENDIF}
 var
-{$IFNDEF WIN32}
-  S: array[0..255] of Char;
-{$ENDIF}
+  {$IFNDEF WIN32}
+  S: array [0..255] of Char;
+  {$ENDIF}
   B, R: TRect;
   I, Left: Integer;
 begin
@@ -2276,72 +2421,76 @@ begin
   if not WordWrap and (Integer(GetNearestColor(ACanvas.Handle, I)) = I) and
     (Pos(#13, Text) = 0) then
   begin { Use ExtTextOut for solid colors }
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     { In BiDi, because we changed the window origin, the text that does not
-      change alignment, actually gets its alignment changed. }
+    change alignment, actually gets its alignment changed. }
     if (ACanvas.CanvasOrientation = coRightToLeft) and (not ARightToLeft) then
       ChangeBiDiModeAlignment(Alignment);
-{$ENDIF}
+    {$ENDIF}
     case Alignment of
-      taLeftJustify: Left := ARect.Left + DX;
-      taRightJustify: Left := ARect.Right - ACanvas.TextWidth(Text) - 3;
-      else { taCenter }
-        Left := ARect.Left + (ARect.Right - ARect.Left) shr 1
-          - (ACanvas.TextWidth(Text) shr 1);
+      taLeftJustify:
+        Left := ARect.Left + DX;
+      taRightJustify:
+        Left := ARect.Right - ACanvas.TextWidth(Text) - 3;
+    else { taCenter }
+      Left := ARect.Left + (ARect.Right - ARect.Left) shr 1
+        - (ACanvas.TextWidth(Text) shr 1);
     end;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     ACanvas.TextRect(ARect, Left, ARect.Top + DY, Text);
-{$ELSE}
-  {$IFDEF WIN32}
+    {$ELSE}
+    {$IFDEF WIN32}
     ExtTextOut(ACanvas.Handle, Left, ARect.Top + DY, ETO_OPAQUE or
       ETO_CLIPPED, @ARect, PChar(Text), Length(Text), nil);
-  {$ELSE}
+    {$ELSE}
     ExtTextOut(ACanvas.Handle, Left, ARect.Top + DY, ETO_OPAQUE or
       ETO_CLIPPED, @ARect, StrPCopy(S, Text), Length(Text), nil);
-  {$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
   end
-  else begin { Use FillRect and DrawText for dithered colors }
-{$IFDEF COMPILER3_UP}
+  else
+  begin { Use FillRect and DrawText for dithered colors }
+    {$IFDEF COMPILER3_UP}
     DrawBitmap.Canvas.Lock;
     try
-{$ENDIF}
+    {$ENDIF}
       with DrawBitmap, ARect do { Use offscreen bitmap to eliminate flicker and }
-      begin                     { brush origin tics in painting / scrolling.    }
+      begin { brush origin tics in painting / scrolling.    }
         Width := Max(Width, Right - Left);
         Height := Max(Height, Bottom - Top);
-        R := Rect(DX, DY, Right - Left - {$IFDEF WIN32} 1 {$ELSE} 2 {$ENDIF},
+        R := Rect(DX, DY, Right - Left - {$IFDEF WIN32}1{$ELSE}2{$ENDIF},
           Bottom - Top - 1);
         B := Rect(0, 0, Right - Left, Bottom - Top);
       end;
-      with DrawBitmap.Canvas do begin
+      with DrawBitmap.Canvas do
+      begin
         Font := ACanvas.Font;
         Font.Color := ACanvas.Font.Color;
         Brush := ACanvas.Brush;
         Brush.Style := bsSolid;
         FillRect(B);
         SetBkMode(Handle, TRANSPARENT);
-{$IFDEF COMPILER4_UP}
+        {$IFDEF COMPILER4_UP}
         if (ACanvas.CanvasOrientation = coRightToLeft) then
           ChangeBiDiModeAlignment(Alignment);
         DrawText(Handle, PChar(Text), Length(Text), R, AlignFlags[Alignment]
           or RTL[ARightToLeft] or WrapFlags[WordWrap]);
-{$ELSE}
-  {$IFDEF WIN32}
+        {$ELSE}
+        {$IFDEF WIN32}
         DrawText(Handle, PChar(Text), Length(Text), R,
           AlignFlags[Alignment] or WrapFlags[WordWrap]);
-  {$ELSE}
+        {$ELSE}
         DrawText(Handle, StrPCopy(S, Text), Length(Text), R,
           AlignFlags[Alignment] or WrapFlags[WordWrap]);
-  {$ENDIF}
-{$ENDIF}
+        {$ENDIF}
+        {$ENDIF}
       end;
       ACanvas.CopyRect(ARect, DrawBitmap.Canvas, B);
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     finally
       DrawBitmap.Canvas.Unlock;
     end;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -2356,12 +2505,14 @@ var
   H: Integer;
 begin
   case VertAlign of
-    vaTopJustify: H := MinOffs;
+    vaTopJustify:
+      H := MinOffs;
     vaCenter:
       with TJvHack(Control) do
         H := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
-    else {vaBottomJustify} begin
+  else {vaBottomJustify}
+    begin
       with TJvHack(Control) do
         H := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
@@ -2390,12 +2541,14 @@ var
   H: Integer;
 begin
   case VertAlign of
-    vaTopJustify: H := MinOffs;
+    vaTopJustify:
+      H := MinOffs;
     vaCenter:
       with TJvHack(Control) do
         H := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
-    else {vaBottomJustify} begin
+  else {vaBottomJustify}
+    begin
       with TJvHack(Control) do
         H := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
@@ -2420,8 +2573,6 @@ begin
   TJvHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
-{ TJvScreenCanvas }
-
 destructor TJvScreenCanvas.Destroy;
 begin
   FreeHandle;
@@ -2430,13 +2581,15 @@ end;
 
 procedure TJvScreenCanvas.CreateHandle;
 begin
-  if FDeviceContext = 0 then FDeviceContext := GetDC(0);
+  if FDeviceContext = 0 then
+    FDeviceContext := GetDC(0);
   Handle := FDeviceContext;
 end;
 
 procedure TJvScreenCanvas.FreeHandle;
 begin
-  if FDeviceContext <> 0 then begin
+  if FDeviceContext <> 0 then
+  begin
     Handle := 0;
     ReleaseDC(0, FDeviceContext);
     FDeviceContext := 0;
@@ -2461,7 +2614,7 @@ type
   TBitEnum = 0..BitsPerInt - 1;
   TBitSet = set of TBitEnum;
   PBitArray = ^TBitArray;
-  TBitArray = array[0..4096] of TBitSet;
+  TBitArray = array [0..4096] of TBitSet;
 
 destructor TBits.Destroy;
 begin
@@ -2475,17 +2628,22 @@ var
   NewMemSize: Integer;
   OldMemSize: Integer;
 begin
-  if Value <> Size then begin
+  if Value <> Size then
+  begin
     NewMemSize := ((Value + BitsPerInt - 1) div BitsPerInt) * SizeOf(Integer);
     OldMemSize := ((Size + BitsPerInt - 1) div BitsPerInt) * SizeOf(Integer);
-    if NewMemSize <> OldMemSize then begin
+    if NewMemSize <> OldMemSize then
+    begin
       NewMem := nil;
-      if NewMemSize <> 0 then begin
+      if NewMemSize <> 0 then
+      begin
         GetMem(NewMem, NewMemSize);
         FillChar(NewMem^, NewMemSize, 0);
       end
-      else NewMem := nil;
-      if OldMemSize <> 0 then begin
+      else
+        NewMem := nil;
+      if OldMemSize <> 0 then
+      begin
         if NewMem <> nil then
           Move(FBits^, NewMem^, Min(OldMemSize, NewMemSize));
         FreeMem(FBits, OldMemSize);
@@ -2518,12 +2676,16 @@ var
 begin
   E := (Size + BitsPerInt - 1) div BitsPerInt - 1;
   for I := 0 to E do
-    if PBitArray(FBits)^[I] <> [0..BitsPerInt - 1] then begin
+    if PBitArray(FBits)^[I] <> [0..BitsPerInt - 1] then
+    begin
       B := PBitArray(FBits)^[I];
-      for J := Low(J) to High(J) do begin
-        if not (J in B) then begin
+      for J := Low(J) to High(J) do
+      begin
+        if not (J in B) then
+        begin
           Result := I * BitsPerInt + J;
-          if Result >= Size then Result := Size;
+          if Result >= Size then
+            Result := Size;
           Exit;
         end;
       end;
@@ -2585,7 +2747,8 @@ var
 begin
   Temp := Handle;
   Handle := 0;
-  with FMetafile do begin
+  with FMetafile do
+  begin
     KeepWidth := Width;
     KeepHeight := Height;
     KeepInch := Inch;
@@ -2602,7 +2765,7 @@ end;
 constructor TResourceStream.Create(Instance: THandle; const ResName: string;
   ResType: PChar);
 var
-  ResID: array[0..255] of Char;
+  ResID: array [0..255] of Char;
 begin
   CreateFromPChar(Instance, StrPCopy(ResID, ResName), ResType);
 end;
@@ -2620,9 +2783,11 @@ var
   Handle: Integer;
 begin
   ResInfo := FindResource(Instance, ResName, ResType);
-  if ResInfo = 0 then ResourceNotFound(ResName);
+  if ResInfo = 0 then
+    ResourceNotFound(ResName);
   Handle := AccessResource(Instance, ResInfo);
-  if Handle < 0 then ResourceNotFound(ResName);
+  if Handle < 0 then
+    ResourceNotFound(ResName);
   inherited Create(Handle);
   FStartPos := inherited Seek(0, soFromCurrent);
   FEndPos := FStartPos + SizeOfResource(Instance, ResInfo);
@@ -2630,7 +2795,8 @@ end;
 
 destructor TResourceStream.Destroy;
 begin
-  if Handle >= 0 then FileClose(Handle);
+  if Handle >= 0 then
+    FileClose(Handle);
   inherited Destroy;
 end;
 
@@ -2649,7 +2815,8 @@ begin
     soFromEnd:
       Result := inherited Seek(FEndPos + Offset, soFromBeginning) - FStartPos;
   end;
-  if Result > FEndPos then raise EStreamError.CreateRes(SReadError);
+  if Result > FEndPos then
+    raise EStreamError.CreateRes(SReadError);
 end;
 
 function GetCurrentDir: string;
@@ -2657,7 +2824,9 @@ begin
   GetDir(0, Result);
 end;
 
+// (rom) needs better implementation
 {$I-}
+
 function SetCurrentDir(const Dir: string): Boolean;
 begin
   ChDir(Dir);
@@ -2671,20 +2840,21 @@ end;
 procedure RaiseWin32Error(ErrorCode: DWORD);
 {$IFDEF COMPILER3_UP}
 var
-  Error: {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF};
+  Error: {$IFDEF COMPILER6_UP} EOSError {$ELSE}E Win32Error {$ENDIF};
 {$ENDIF}
 begin
-  if ErrorCode <> ERROR_SUCCESS then begin
-{$IFDEF COMPILER3_UP}
-    Error := {$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}.CreateFmt(
-      {$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF}, [ErrorCode,
-      SysErrorMessage(ErrorCode)]);
+  if ErrorCode <> ERROR_SUCCESS then
+  begin
+    {$IFDEF COMPILER3_UP}
+    Error := {$IFDEF COMPILER6_UP} EOSError {$ELSE} EWin32Error {$ENDIF}.CreateFmt(
+      {$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
+      [ErrorCode, SysErrorMessage(ErrorCode)]);
     Error.ErrorCode := ErrorCode;
     raise Error;
-{$ELSE}
+    {$ELSE}
     raise EJVCLException.CreateFmt('%s (%d)', [SysErrorMessage(ErrorCode),
       ErrorCode]);
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -2696,7 +2866,8 @@ function Win32Check(RetVal: Bool): Bool;
 var
   LastError: DWORD;
 begin
-  if not RetVal then begin
+  if not RetVal then
+  begin
     LastError := GetLastError;
     raise EJVCLException.CreateFmt('%s (%d)', [SysErrorMessage(LastError),
       LastError]);
@@ -2730,15 +2901,16 @@ end;
 type
   PCheckTaskInfo = ^TCheckTaskInfo;
   TCheckTaskInfo = record
-    FocusWnd: HWnd;
+    FocusWnd: HWND;
     Found: Boolean;
   end;
 
-function CheckTaskWindow(Window: HWnd; Data: Longint): WordBool;
+function CheckTaskWindow(Window: HWND; Data: Longint): WordBool;
   {$IFDEF WIN32} stdcall {$ELSE} export {$ENDIF};
 begin
   Result := True;
-  if PCheckTaskInfo(Data)^.FocusWnd = Window then begin
+  if PCheckTaskInfo(Data)^.FocusWnd = Window then
+  begin
     Result := False;
     PCheckTaskInfo(Data)^.Found := True;
   end;
@@ -2747,22 +2919,22 @@ end;
 function IsForegroundTask: Boolean;
 var
   Info: TCheckTaskInfo;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   Proc: TFarProc;
-{$ENDIF}
+  {$ENDIF}
 begin
   Info.FocusWnd := GetActiveWindow;
   Info.Found := False;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
-{$ELSE}
+  {$ELSE}
   Proc := MakeProcInstance(@CheckTaskWindow, HInstance);
   try
     EnumTaskWindows(GetCurrentTask, Proc, Longint(@Info));
   finally
     FreeProcInstance(Proc);
   end;
-{$ENDIF}
+  {$ENDIF}
   Result := Info.Found;
 end;
 
@@ -2772,30 +2944,34 @@ const
   sWindowsVersion = 'Windows %s %d.%.2d.%.3d %s';
 var
   Ver: TOsVersionInfo;
-  Platform: string[4];
+  Platfrm: string[4];
 begin
   Ver.dwOSVersionInfoSize := SizeOf(Ver);
   GetVersionEx(Ver);
-  with Ver do begin
+  with Ver do
+  begin
     case dwPlatformId of
-      VER_PLATFORM_WIN32s: Platform := '32s';
+      VER_PLATFORM_WIN32s:
+        Platfrm := '32s';
       VER_PLATFORM_WIN32_WINDOWS:
         begin
           dwBuildNumber := dwBuildNumber and $0000FFFF;
           if (dwMajorVersion > 4) or ((dwMajorVersion = 4) and
-            (dwMinorVersion >= 10)) then Platform := '98'
-          else Platform := '95';
+            (dwMinorVersion >= 10)) then
+            Platfrm := '98'
+          else
+            Platfrm := '95';
         end;
-      VER_PLATFORM_WIN32_NT: Platform := 'NT';
+      VER_PLATFORM_WIN32_NT: Platfrm := 'NT';
     end;
-    Result := Trim(Format(sWindowsVersion, [Platform, dwMajorVersion,
+    Result := Trim(Format(sWindowsVersion, [Platfrm, dwMajorVersion,
       dwMinorVersion, dwBuildNumber, szCSDVersion]));
   end;
 end;
 {$ELSE}
 const
   sWindowsVersion = 'Windows%s %d.%d';
-  sNT: array[Boolean] of string[3] = ('', ' NT');
+  sNT: array [Boolean] of string[3] = ('', ' NT');
 var
   Ver: Longint;
 begin
@@ -2805,11 +2981,51 @@ begin
 end;
 {$ENDIF WIN32}
 
+// (rom) moved to file end to minimize W- switch impact at end of function
+
+{$W+}
+function GetEnvVar(const VarName: string): string;
+var
+  {$IFDEF WIN32}
+  S: array [0..2048] of Char;
+  {$ELSE}
+  S: array [0..255] of Char;
+  L: Cardinal;
+  P: PChar;
+  {$ENDIF}
+begin
+  {$IFDEF WIN32}
+  if GetEnvironmentVariable(PChar(VarName), S, SizeOf(S) - 1) > 0 then
+    Result := StrPas(S)
+  else
+    Result := '';
+  {$ELSE}
+  L := Length(VarName);
+  P := GetDosEnvironment;
+  StrPLCopy(S, VarName, 255);
+  while P^ <> #0 do
+  begin
+    if (StrLIComp(P, {$IFDEF WIN32} PChar(VarName) {$ELSE} S {$ENDIF}, L) = 0) and
+      (P[L] = '=') then
+    begin
+      Result := StrPas(P + L + 1);
+      Exit;
+    end;
+    Inc(P, StrLen(P) + 1);
+  end;
+  Result := '';
+  {$ENDIF}
+end;
+{$W-}
+
 initialization
+
 {$IFDEF WIN32}
 finalization
   ReleaseBitmap;
 {$ELSE}
   AddExitProc(ReleaseBitmap);
 {$ENDIF}
+
 end.
+

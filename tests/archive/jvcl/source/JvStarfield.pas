@@ -28,17 +28,16 @@ Known Issues:
 
 unit JvStarfield;
 
-
-
 interface
 
 uses
-  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, JvTypes,
+  Windows, SysUtils, Classes, Graphics, Controls, JvTypes,
   JvImageDrawThread, JVCLVer;
 
 type
   TJvStarfield = class(TGraphicControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FStarfield: array of TStars;
     FThread: TJvImageDrawThread;
     FActive: Boolean;
@@ -46,7 +45,6 @@ type
     FStars: Word;
     FMaxSpeed: Byte;
     FBmp: TBitmap;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure Refresh(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
@@ -54,9 +52,9 @@ type
   protected
     procedure Paint; override;
   public
-    procedure Resize; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Resize; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
@@ -70,13 +68,9 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvStarfield
-///////////////////////////////////////////////////////////
-
 constructor TJvStarfield.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Randomize;
 
   FDelay := 50;
@@ -84,46 +78,15 @@ begin
   FBmp := TBitmap.Create;
 
   FThread := TJvImageDrawThread.Create(True);
-  FThread.FreeOnTerminate := false;
+  FThread.FreeOnTerminate := False;
   FThread.Delay := 50;
   FThread.OnDraw := Refresh;
   Self.Width := 100;
   Self.Height := 100;
   FMaxSpeed := 10;
 
-  SetStars(100);
+  Stars := 100;
 end;
-
-{************************************************************}
-
-procedure TJvStarfield.Resize;
-begin
-  inherited;
-  FBmp.Width := Width;
-  FBmp.Height := Height;
-  SetStars(FStars);
-end;
-
-{************************************************************}
-
-procedure TJvStarfield.SetStars(const Value: Word);
-var
-  i, j: Integer;
-begin
-  FStars := Value;
-
-  SetLength(FStarfield, Value);
-  for i := 0 to FStars - 1 do
-  begin
-    FStarfield[i].X := Random(Width div 2) + Width;
-    FStarfield[i].Y := Random(Height);
-    FStarfield[i].Speed := Random(FMaxSpeed) + 1;
-    j := Random(120) + 120;
-    FStarfield[i].Color := RGB(j, j, j);
-  end;
-end;
-
-{************************************************************}
 
 destructor TJvStarfield.Destroy;
 begin
@@ -131,16 +94,39 @@ begin
   FThread.OnDraw := nil;
   FThread.Terminate;
 //  FThread.WaitFor;
-  FreeAndnil(FThread);
+  FreeAndNil(FThread);
   FBmp.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{************************************************************}
+procedure TJvStarfield.Resize;
+begin
+  inherited Resize;
+  FBmp.Width := Width;
+  FBmp.Height := Height;
+  Stars := FStars;
+end;
+
+procedure TJvStarfield.SetStars(const Value: Word);
+var
+  I, J: Integer;
+begin
+  FStars := Value;
+
+  SetLength(FStarfield, Value);
+  for I := 0 to FStars - 1 do
+  begin
+    FStarfield[I].X := Random(Width div 2) + Width;
+    FStarfield[I].Y := Random(Height);
+    FStarfield[I].Speed := Random(FMaxSpeed) + 1;
+    J := Random(120) + 120;
+    FStarfield[I].Color := RGB(J, J, J);
+  end;
+end;
 
 procedure TJvStarfield.Refresh(Sender: TObject);
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
   if (FBmp.Height <> Height) or (FBmp.Width <> Width) then
     Resize
@@ -149,30 +135,28 @@ begin
     FBmp.Canvas.Brush.Color := clBlack;
     FBmp.Canvas.Brush.Style := bsSolid;
     FBmp.Canvas.FillRect(Rect(0, 0, Width, Height));
-    for i := 0 to FStars - 1 do
+    for I := 0 to FStars - 1 do
     begin
-      if FStarfield[i].x < Width then
-        FBmp.Canvas.Pixels[Fstarfield[i].x, FStarfield[i].y] := FStarfield[i].Color;
-      FStarfield[i].X := FStarfield[i].X - FStarfield[i].Speed;
-      if FStarfield[i].x < 0 then
+      if FStarfield[I].X < Width then
+        FBmp.Canvas.Pixels[Fstarfield[I].X, FStarfield[I].Y] := FStarfield[I].Color;
+      FStarfield[I].X := FStarfield[I].X - FStarfield[I].Speed;
+      if FStarfield[I].X < 0 then
       begin
-        FStarfield[i].x := Width;
-        FStarfield[i].y := Random(Height);
-        FStarfield[i].Speed := Random(FMaxSpeed) + 1;
-        j := Random(120) + 120;
-        FStarfield[i].Color := RGB(j, j, j);
+        FStarfield[I].X := Width;
+        FStarfield[I].Y := Random(Height);
+        FStarfield[I].Speed := Random(FMaxSpeed) + 1;
+        J := Random(120) + 120;
+        FStarfield[I].Color := RGB(J, J, J);
       end;
     end;
     Canvas.Lock;
     try
-      Canvas.Draw(0,0,FBMP);
+      Canvas.Draw(0, 0, FBmp);
     finally
       Canvas.Unlock;
     end;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvStarfield.SetActive(const Value: Boolean);
 begin
@@ -184,8 +168,6 @@ begin
       FThread.Suspend;
 end;
 
-{************************************************************}
-
 procedure TJvStarfield.SetDelay(const Value: Cardinal);
 begin
   FDelay := Value;
@@ -194,8 +176,8 @@ end;
 
 procedure TJvStarfield.Paint;
 begin
-  inherited;
-  if (csDesigning in ComponentState) then
+  inherited Paint;
+  if csDesigning in ComponentState then
   begin
     Canvas.Brush.Style := bsClear;
     Canvas.Pen.Style := psDot;
@@ -205,3 +187,4 @@ begin
 end;
 
 end.
+

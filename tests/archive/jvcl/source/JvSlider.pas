@@ -28,21 +28,20 @@ Known Issues:
 
 unit JvSlider;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JVCLVer;
 
 type
   TJvSlider = class(TCustomControl)
   private
-    FRuler: TBitmap;
-    FThumb: TBitmap;
+    FImageRuler: TBitmap;
+    FImageThumb: TBitmap;
     FThumb1: TBitmap;
     FThumb2: TBitmap;
-    FHor: Boolean;
+    FHorizontal: Boolean;
     FClicked: Boolean;
     FTracking: Boolean;
     FMaximum: Integer;
@@ -52,13 +51,13 @@ type
     FChanged: Boolean;
     FChanging: Boolean;
     FOnChanged: TNotifyEvent;
-    FOnStop: TNotifyEvent;
-    FOnBegin: TNotifyEvent;
+    FOnStopChanged: TNotifyEvent;
+    FOnBeginChange: TNotifyEvent;
     FAutoSize: Boolean;
     FTimer: TTimer;
     FAboutJVCL: TJVCLAboutInfo;
-    procedure SetThumb(Value: TBitmap);
-    procedure SetFRuler(Value: TBitmap);
+    procedure SetImageThumb(Value: TBitmap);
+    procedure SetImageRuler(Value: TBitmap);
     procedure ThumbChanged(Sender: TObject);
     procedure SetMaximum(Value: Integer);
     procedure Calculate;
@@ -66,8 +65,8 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
-
+    procedure SetAutoSize(Value: Boolean);
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
   public
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -77,8 +76,8 @@ type
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ImageRuler: TBitmap read FRuler write SetFRuler;
-    property ImageThumb: TBitmap read FThumb write SetThumb;
+    property ImageRuler: TBitmap read FImageRuler write SetImageRuler;
+    property ImageThumb: TBitmap read FImageThumb write SetImageThumb;
     property Align;
     property Visible;
     property Enabled;
@@ -88,8 +87,10 @@ type
     property ParentShowHint;
     property ShowHint;
     property TabOrder;
+    property Width default 191;
+    property Height default 11;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property Horizontal: Boolean read FHor write FHor default True;
+    property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
     property OnClick;
@@ -103,27 +104,63 @@ type
     property OnDragDrop;
     property OnEndDrag;
     property OnStartDrag;
-    property OnBeginChange: TNotifyEvent read FOnBegin write FOnBegin;
+    property OnBeginChange: TNotifyEvent read FOnBeginChange write FOnBeginChange;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
-    property OnStopChanged: TNotifyEvent read FOnStop write FOnStop;
+    property OnStopChanged: TNotifyEvent read FOnStopChanged write FOnStopChanged;
   end;
 
 implementation
 
 {$R RES_Slider.res}
 
-{***************************************************}
+constructor TJvSlider.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 191;
+  Height := 11;
+  FImageRuler := TBitmap.Create;
+  FImageThumb := TBitmap.Create;
+  FThumb1 := TBitmap.Create;
+  FThumb2 := TBitmap.Create;
+  FClicked := False;
+  FMaximum := 100;
+  FTracking := False;
+  FPosition := 0;
+  FFrom := 0;
+  FChanged := False;
+  FHorizontal := True;
+  FChanging := False;
+  FImageThumb.LoadFromResourceName(hInstance, 'THUMB');
+  FImageRuler.LoadFromResourceName(hInstance, 'RULER');
+  Calculate;
+  FImageThumb.OnChange := ThumbChanged;
+  Self.OnResize := ReCalcule;
+  Calculate;
+  FTimer := TTimer.Create(Self);
+  FTimer.Interval := 10;
+  FTimer.OnTimer := Loading;
+  FTimer.Enabled := True;
+end;
+
+destructor TJvSlider.Destroy;
+begin
+  FImageRuler.Free;
+  FImageThumb.Free;
+  FThumb1.Free;
+  FThumb2.Free;
+  inherited Destroy;
+end;
 
 procedure TJvSlider.Paint;
 var
-  t: Trect;
+  T: TRect;
 begin
   T.Left := 0;
   T.Top := 0;
   T.Right := Width;
   T.Bottom := Height;
-  Canvas.StretchDraw(T, FRuler);
-  if FHor then
+  Canvas.StretchDraw(T, FImageRuler);
+  if FHorizontal then
   begin
     //horizontal
     T.Left := Round(FDifference * FPosition);
@@ -149,8 +186,6 @@ begin
   end;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.SetMaximum(Value: Integer);
 begin
   FMaximum := Value;
@@ -159,8 +194,6 @@ begin
   Calculate;
   SetPosition(FPosition);
 end;
-
-{******************************************************}
 
 procedure TJvSlider.SetPosition(Value: Integer);
 begin
@@ -178,86 +211,38 @@ begin
   end;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.Calculate;
 begin
-  //calculate the difference between pixel
-  if FHor then
+  // calculate the difference between pixel
+  if FHorizontal then
     FDifference := (Width - FThumb1.Width) / FMaximum
   else
     FDifference := (Height - FThumb1.Height) / FMaximum;
 end;
-
-{******************************************************}
 
 procedure TJvSlider.ReCalcule(Sender: TObject);
 begin
   Calculate;
 end;
 
-{******************************************************}
-
-constructor TJvSlider.Create(AOwner: TComponent);
-begin
-  Width := 191;
-  Height := 11;
-  FRuler := TBitmap.Create;
-  FThumb := TBitmap.Create;
-  FThumb1 := TBitmap.Create;
-  FThumb2 := TBitmap.Create;
-  FClicked := False;
-  FMaximum := 100;
-  FTracking := False;
-  FPosition := 0;
-  FFrom := 0;
-  FChanged := False;
-  FHor := True;
-  FChanging := False;
-  inherited;
-  FThumb.LoadFromResourceName(hInstance, 'THUMB');
-  FRuler.LoadFromResourceName(hInstance, 'RULER');
-  Calculate;
-  FThumb.OnChange := ThumbChanged;
-  Self.OnResize := ReCalcule;
-  Calculate;
-  FTimer := TTimer.Create(Self);
-  FTImer.Interval := 10;
-  FTimer.OnTimer := Loading;
-  FTimer.Enabled := True;
-end;
-
-{******************************************************}
-
-destructor TJvSlider.Destroy;
-begin
-  FRuler.Free;
-  FThumb.Free;
-  FThumb1.Free;
-  FThumb2.Free;
-  inherited;
-end;
-
-{******************************************************}
-
 procedure TJvSlider.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if FTracking and (ssLeft in Shift) then
   begin
-    if FHor then
+    if FHorizontal then
     begin
-      if (y in [0..FThumb1.Height]) or FChanging then
+      if (Y in [0..FThumb1.Height]) or FChanging then
       begin
-        i := x - FThumb1.Width div 2;
-        if i > 0 then
+        I := X - FThumb1.Width div 2;
+        if I > 0 then
         begin
           FChanging := True;
-          i := Round(i / FDifference);
-          if i > FMaximum then
-            i := FMaximum;
-          FPosition := i;
+          I := Round(I / FDifference);
+          if I > FMaximum then
+            I := FMaximum;
+          FPosition := I;
           if Assigned(FOnChanged) then
             FOnChanged(Self);
           Paint;
@@ -266,16 +251,16 @@ begin
     end
     else
     begin
-      if (x in [0..FThumb1.Width]) or FChanging then
+      if (X in [0..FThumb1.Width]) or FChanging then
       begin
-        i := y - FThumb1.Height div 2;
-        if i > 0 then
+        I := Y - FThumb1.Height div 2;
+        if I > 0 then
         begin
           FChanging := True;
-          i := Round(i / FDifference);
-          if i > FMaximum then
-            i := FMaximum;
-          FPosition := i;
+          I := Round(I / FDifference);
+          if I > FMaximum then
+            I := FMaximum;
+          FPosition := I;
           if Assigned(FOnChanged) then
             FOnChanged(Self);
           Paint;
@@ -286,49 +271,44 @@ begin
   end;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  tmp: TBitmap;
+  Tmp: TBitmap;
 begin
   FTracking := True;
-  if Assigned(FOnBegin) then
-    FOnBegin(Self);
+  if Assigned(FOnBeginChange) then
+    FOnBeginChange(Self);
   if not FChanged then
   begin
-    tmp := TBitmap.Create;
-    tmp.Assign(FThumb1);
+    Tmp := TBitmap.Create;
+    Tmp.Assign(FThumb1);
     Fthumb1.Assign(FThumb2);
-    Fthumb2.Assign(tmp);
-    tmp.Free;
+    Fthumb2.Assign(Tmp);
+    Tmp.Free;
     FChanged := True;
   end;
   Paint;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  tmp: TBitmap;
+  Tmp: TBitmap;
 begin
   FTracking := False;
   FChanging := False;
   if FChanged then
   begin
-    tmp := TBitmap.Create;
-    tmp.Assign(Fthumb1);
+    Tmp := TBitmap.Create;
+    Tmp.Assign(FThumb1);
     FThumb1.Assign(FThumb2);
-    FThumb2.Assign(tmp);
-    tmp.Free;
+    FThumb2.Assign(Tmp);
+    Tmp.Free;
     FChanged := False;
   end;
   Paint;
-  if Assigned(FOnStop) then
-    FOnStop(Self);
+  if Assigned(FOnStopChanged) then
+    FOnStopChanged(Self);
 end;
-{******************************************************}
 
 procedure TJvSlider.ThumbChanged(Sender: TObject);
 var
@@ -336,39 +316,35 @@ var
 begin
   Dest.Left := 0;
   Dest.Top := 0;
-  Dest.Right := Fthumb.Width div 2;
-  Dest.Bottom := FThumb.Height;
+  Dest.Right := FImageThumb.Width div 2;
+  Dest.Bottom := FImageThumb.Height;
   FThumb1.Width := Dest.Right;
   FThumb1.Height := Dest.Bottom;
-  FThumb1.Canvas.CopyRect(Dest, FThumb.Canvas, Dest);
+  FThumb1.Canvas.CopyRect(Dest, FImageThumb.Canvas, Dest);
   FThumb2.Width := Dest.Right;
   FThumb2.Height := Dest.Bottom;
   Dest.Left := Dest.Right;
   Dest.Top := 0;
-  Dest.Bottom := FThumb.Height;
-  Dest.Right := FThumb.Width;
+  Dest.Bottom := FImageThumb.Height;
+  Dest.Right := FImageThumb.Width;
   Src.Left := 0;
   Src.Top := 0;
   Src.Right := Dest.Left;
-  Src.Bottom := Fthumb.Height;
-  FThumb2.Canvas.CopyRect(Src, FThumb.Canvas, Dest);
+  Src.Bottom := FImageThumb.Height;
+  FThumb2.Canvas.CopyRect(Src, FImageThumb.Canvas, Dest);
   Paint;
   Calculate;
 end;
 
-{******************************************************}
-
-procedure TJvSlider.SetThumb(Value: TBitmap);
+procedure TJvSlider.SetImageThumb(Value: TBitmap);
 begin
-  FThumb.Assign(Value);
+  FImageThumb.Assign(Value);
   ThumbChanged(nil);
 end;
 
-{******************************************************}
-
-procedure TJvSlider.SetFRuler(Value: TBitmap);
+procedure TJvSlider.SetImageRuler(Value: TBitmap);
 begin
-  FRuler.Assign(Value);
+  FImageRuler.Assign(Value);
   if (Value.Width > 0) and (Value.Height > 0) and FAutoSize then
   begin
     Self.Height := Value.Height;
@@ -378,30 +354,27 @@ begin
   Calculate;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   if Value then
   begin
-    if (FRuler.Width > 0) and (FRuler.Height > 0) then
+    if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then
     begin
-      Height := FRuler.Height;
-      Width := FRuler.Width;
+      Height := FImageRuler.Height;
+      Width := FImageRuler.Width;
     end;
   end;
 end;
 
-{******************************************************}
-
 procedure TJvSlider.Loading(Sender: TObject);
 begin
   FTimer.Enabled := False;
-  SetThumb(FThumb);
+  SetImageThumb(FImageThumb);
   ThumbChanged(Self);
   Calculate;
   FTimer.Free;
 end;
 
 end.
+

@@ -12,7 +12,7 @@ The Original Code is: JvSplshWnd.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,21 +29,24 @@ unit JvSplshWnd;
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, 
-  JvxAnimate, JvVCLUtils;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  JvxAnimate;
 
 type
   TJvSplashWindow = class(TForm)
   private
-    { Private declarations }
     FTextMessage: TLabel;
     function GetMessageText: string;
     procedure SetMessageText(const Value: string);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    { Public declarations }
     Image: TImage;
     Animation: TJvAnimatedImage;
     procedure CenterFor(Form: TCustomForm);
@@ -53,12 +56,14 @@ type
 function ShowSplashWindow(Graphic: TGraphic; const MsgText: string;
   JvxAnimate: Boolean; AlignForm: TCustomForm): TJvSplashWindow;
 
-const
-  SplashStayOnTop: Boolean = True;  
+// (rom) changed to var (otherwise it makes no sense)
+var
+  SplashStayOnTop: Boolean = True;
 
 implementation
 
-uses JvMaxMin;
+uses
+  JvMaxMin;
 
 const
   defSplashHeight = 64;
@@ -70,15 +75,16 @@ const
 
 function CreateSplashWindow: TJvSplashWindow;
 begin
-{$IFDEF CBUILDER}
+  {$IFDEF CBUILDER}
   Result := TJvSplashWindow.CreateNew(Application, 0);
-{$ELSE}
+  {$ELSE}
   Result := TJvSplashWindow.CreateNew(Application);
-{$ENDIF}
-  with Result do begin
+  {$ENDIF}
+  with Result do
+  begin
     BorderIcons := [];
     BorderStyle := bsNone;
-    if SplashStayOnTop then 
+    if SplashStayOnTop then
       FormStyle := fsStayOnTop
     else
       FormStyle := fsNormal;
@@ -127,22 +133,25 @@ function ShowSplashWindow(Graphic: TGraphic; const MsgText: string;
   JvxAnimate: Boolean; AlignForm: TCustomForm): TJvSplashWindow;
 begin
   Result := CreateSplashWindow;
-  with Result do begin
-    if JvxAnimate and (Graphic <> nil) then begin
+  with Result do
+  begin
+    if JvxAnimate and (Graphic <> nil) then
+    begin
       Animation.Glyph := Graphic as TBitmap;
       Animation.Visible := True;
-{$IFDEF COMPILER3_UP}
+      {$IFDEF COMPILER3_UP}
       Animation.AsyncDrawing := True;
-{$ENDIF}
+      {$ENDIF}
       Animation.Active := True;
     end
-    else if (Graphic <> nil) then begin
+    else
+    if Graphic <> nil then
+    begin
       Image.Picture.Graphic := Graphic;
       Image.Visible := True;
     end
-    else begin
+    else
       FTextMessage.Left := defImageLeft;
-    end;
     FTextMessage.Caption := MsgText;
     MessageText := MsgText;
     CenterFor(AlignForm);
@@ -165,24 +174,26 @@ end;
 procedure TJvSplashWindow.SetMessageText(const Value: string);
 var
   TextRect: TRect;
-{$IFNDEF WIN32}
-  C: array[0..255] of Char;
-{$ENDIF WIN32}
+  {$IFNDEF WIN32}
+  C: array [0..255] of Char;
+  {$ENDIF WIN32}
   VertOff: Integer;
 begin
   TextRect := Rect(FTextMessage.Left, 0, Max(Screen.Width div 2 - 64,
     defTextWidth), 0);
   DrawText(Canvas.Handle,
-    {$IFDEF WIN32} PChar(Value), {$ELSE} StrPCopy(C, Value), {$ENDIF WIN32}
-    -1, TextRect, DT_CALCRECT or DT_WORDBREAK);
+    {$IFDEF WIN32} PChar(Value), {$ELSE}StrPCopy(C, Value), {$ENDIF WIN32}
+    - 1, TextRect, DT_CALCRECT or DT_WORDBREAK);
   VertOff := (ClientHeight div 2) - ((TextRect.Bottom - TextRect.Top) div 2);
-  if VertOff < 0 then VertOff := 10;
+  if VertOff < 0 then
+    VertOff := 10;
   TextRect.Top := VertOff;
   TextRect.Bottom := TextRect.Bottom + VertOff;
   FTextMessage.BoundsRect := TextRect;
   ClientWidth := Max(ClientWidth, TextRect.Right + defTextRight);
   ClientHeight := Max(ClientHeight, VertOff * 2);
-  if Value <> FTextMessage.Caption then begin
+  if Value <> FTextMessage.Caption then
+  begin
     FTextMessage.Caption := Value;
     Update;
   end;
@@ -193,11 +204,14 @@ var
   NewLeft, NewTop: Integer;
   DstRect: TRect;
 begin
-  if Form = nil then DstRect := Rect(0, 0, Screen.Width, Screen.Height)
-  else DstRect := Form.BoundsRect;
+  if Form = nil then
+    DstRect := Rect(0, 0, Screen.Width, Screen.Height)
+  else
+    DstRect := Form.BoundsRect;
   NewLeft := DstRect.Left + ((DstRect.Right - DstRect.Left) div 2) - (Width div 2);
   NewTop := DstRect.Top + ((DstRect.Bottom - DstRect.Top) div 2) - (Height div 2);
   SetBounds(NewLeft, NewTop, Width, Height);
 end;
 
 end.
+

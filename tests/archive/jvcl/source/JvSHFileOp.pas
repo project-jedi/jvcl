@@ -26,9 +26,9 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{A wrapper component for the SHFileOperation function }
-
 unit JvSHFileOp;
+
+{A wrapper component for the SHFileOperation function }
 {  Notes:
     fofConfirmMouse does nothing
 }
@@ -36,7 +36,9 @@ unit JvSHFileOp;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ShellAPI, JvBaseDlg;
+  Windows, SysUtils, Classes, Controls, Dialogs, ShellAPI,
+  JvBaseDlg;
+
 const
   // new supported constants
   FOF_NOCOPYSECURITYATTRIBS = $800;
@@ -54,13 +56,12 @@ type
 
   TJvSHFileOption = (fofAllowUndo, fofConfirmMouse, fofFilesOnly, fofMultiDestFiles,
     fofNoConfirmation, fofNoConfirmMkDir, fofRenameOnCollision, fofSilent,
-    fofSimpleProgress, fofWantMappingHandle, fofNoErrorUI,fofNoCopySecurityAttributes,
-    fofNoRecursion,fofNoConnectedElements,fofNoRecurseParse,fofWantNukeWarning);
+    fofSimpleProgress, fofWantMappingHandle, fofNoErrorUI, fofNoCopySecurityAttributes,
+    fofNoRecursion, fofNoConnectedElements, fofNoRecurseParse, fofWantNukeWarning);
   TJvSHFileOptions = set of TJvSHFileOption;
 
   TJvSHFileOperation = class(TJvCommonDialog)
   private
-    { Private declarations }
     FSourceFiles: TStrings;
     FDestFiles: TStrings;
     FOperation: TJvSHFileOpType;
@@ -70,18 +71,15 @@ type
     procedure SetSourceFiles(Value: TStrings);
     procedure SetDestFiles(Value: TStrings);
   protected
-    { Protected declarations }
     // returns a Handle to the window that owns this dialog
     function GetWinHandle: THandle; virtual;
     procedure DoFileMapping(const OldFilename, NewFilename: string); virtual;
   public
-    { Public declarations }
-    // performs the Operation and returns true if no errors occurred
-    function Execute: boolean; override;
+    // performs the Operation and returns True if no errors occurred
+    function Execute: Boolean; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { Published declarations }
     // the files to perform the operation on (one file on each row).
     // Filenames can contain wildcards
     property SourceFiles: TStrings read FSourceFiles write SetSourceFiles;
@@ -94,11 +92,12 @@ type
     property Options: TJvSHFileOptions read FOptions write FOptions default [fofAllowUndo, fofFilesOnly];
     // Title of the progress dialog
     property Title: string read FTitle write FTitle;
-    // Called when a file was renamed (but only if fofRenameOnCollision and fofWantMappingHandle are both true)
+    // Called when a file was renamed (but only if fofRenameOnCollision and fofWantMappingHandle are both True)
     property OnFileMapping: TJvShFileMappingEvent read FOnFileMapping write FOnFileMapping;
   end;
 
 implementation
+
 uses
   JvTypes;
 
@@ -110,15 +109,13 @@ type
     pNameMappings: PShNameMapping;
   end;
 
-{ TJvSHFileOperation }
-
 constructor TJvSHFileOperation.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FSourceFiles := TStringlist.Create;
   FDestFiles := TStringlist.Create;
   FOperation := foCopy;
   FOptions := [fofAllowUndo, fofFilesOnly];
-  inherited Create(AOwner);
 end;
 
 destructor TJvSHFileOperation.Destroy;
@@ -128,19 +125,22 @@ begin
   inherited Destroy;
 end;
 
-{** returns true if no error occurred and user didn't abort }
-function TJvSHFileOperation.Execute: boolean;
+{** returns True if no error occurred and user didn't abort }
+
+function TJvSHFileOperation.Execute: Boolean;
 const
-  aOperation: array[TJvSHFileOpType] of UINT = (FO_COPY, FO_DELETE, FO_MOVE, FO_RENAME);
-  aOption: array[TJvSHFileOption] of word = (FOF_ALLOWUNDO, FOF_CONFIRMMOUSE, FOF_FILESONLY, FOF_MULTIDESTFILES,
-    FOF_NOCONFIRMATION, FOF_NOCONFIRMMKDIR, FOF_RENAMEONCOLLISION,
-    FOF_SILENT, FOF_SIMPLEPROGRESS, FOF_WANTMAPPINGHANDLE, FOF_NOERRORUI,
-    FOF_NOCOPYSECURITYATTRIBS,FOF_NORECURSION,FOF_NO_CONNECTED_ELEMENTS,
-    FOF_NORECURSEREPARSE, FOF_WANTNUKEWARNING );
+  AOperation: array [TJvSHFileOpType] of UINT =
+    (FO_COPY, FO_DELETE, FO_MOVE, FO_RENAME);
+  AOption: array [TJvSHFileOption] of Word =
+    (FOF_ALLOWUNDO, FOF_CONFIRMMOUSE, FOF_FILESONLY, FOF_MULTIDESTFILES,
+     FOF_NOCONFIRMATION, FOF_NOCONFIRMMKDIR, FOF_RENAMEONCOLLISION,
+     FOF_SILENT, FOF_SIMPLEPROGRESS, FOF_WANTMAPPINGHANDLE, FOF_NOERRORUI,
+     FOF_NOCOPYSECURITYATTRIBS, FOF_NORECURSION, FOF_NO_CONNECTED_ELEMENTS,
+     FOF_NORECURSEREPARSE, FOF_WANTNUKEWARNING);
 var
   SFOS: TShFileOpStruct;
-  i: TJvSHFileOption;
-  j: integer;
+  I: TJvSHFileOption;
+  J: integer;
   ppFrom, ppTo: string;
   PNameMapping: PSHNameMapping;
   PNameCount: UINT;
@@ -149,32 +149,32 @@ begin
   if Length(FSourceFiles.Text) = 0 then
     EJVCLException.Create('No files specified to TJvSHFileOperation Execute function');
 
-  FillChar(SFOS, sizeof(TShFileOpStruct), #0);
+  FillChar(SFOS, SizeOf(TShFileOpStruct), #0);
 
   with SFOS do
   begin
-    fAnyOperationsAborted := false;
+    fAnyOperationsAborted := False;
     fFlags := 0;
-    for i := Low(TJvSHFileOption) to High(TJvSHFileOption) do // Iterate
-      if i in FOptions then
-        fFlags := fFlags or aOption[i];
-    hNameMappings := nil;               // this is never used ???
+    for I := Low(TJvSHFileOption) to High(TJvSHFileOption) do // Iterate
+      if I in FOptions then
+        fFlags := fFlags or AOption[I];
+    hNameMappings := nil; // this is never used ???
     lpszProgressTitle := PChar(FTitle);
     ppFrom := '';
     ppTo := '';
-    for j := 0 to FSourceFiles.Count - 1 do
-      ppFrom := ppFrom + ExpandUNCFilename(FSourceFiles[j]) + #0;
+    for J := 0 to FSourceFiles.Count - 1 do
+      ppFrom := ppFrom + ExpandUNCFilename(FSourceFiles[J]) + #0;
     ppFrom := ppFrom + #0;
     pFrom := PChar(ppFrom);
 
-    for j := 0 to FDestFiles.Count - 1 do
-      ppTo := ppTo + ExpandUNCFilename(FDestFiles[j]) + #0;
+    for J := 0 to FDestFiles.Count - 1 do
+      ppTo := ppTo + ExpandUNCFilename(FDestFiles[J]) + #0;
     ppTo := ppTo + #0;
     pTo := PChar(ppTo);
 
-    wFunc := aOperation[FOperation];
-    Wnd := GetWinHandle;                // (Owner as TForm).Handle;
-  end;                                  // with
+    wFunc := AOperation[FOperation];
+    Wnd := GetWinHandle; // (Owner as TForm).Handle;
+  end;
   Result := SHFileOperation(SFOS) = 0;
   Result := Result and not SFOS.fAnyOperationsAborted;
 
@@ -200,10 +200,10 @@ begin
         if Win32Platform = VER_PLATFORM_WIN32_NT then
         begin
           // (p3) ShFileOp returns widechars on NT platforms
-{$WARNINGS OFF}
+          {$WARNINGS OFF}
           S := WideCharToString(PWideChar(S + #0));
           D := WideCharToString(PWideChar(D + #0));
-{$WARNINGS ON}
+          {$WARNINGS ON}
         end;
         DoFileMapping(S, D);
       end;
@@ -214,7 +214,6 @@ begin
   end;
 end;
 
-{ private }
 procedure TJvSHFileOperation.SetSourceFiles(Value: TStrings);
 begin
   FSourceFiles.Assign(Value);
@@ -227,7 +226,7 @@ end;
 
 function TJvSHFileOperation.GetWinHandle: THandle;
 begin
-  if (Owner is TWinControl) then
+  if Owner is TWinControl then
     Result := TWinControl(Owner).Handle
   else
     Result := GetFocus;
@@ -237,7 +236,7 @@ procedure TJvSHFileOperation.DoFileMapping(const OldFilename,
   NewFilename: string);
 begin
   if Assigned(FOnFileMapping) then
-    FOnFileMapping(self, OldFilename, NewFilename);
+    FOnFileMapping(Self, OldFilename, NewFilename);
 end;
 
 end.

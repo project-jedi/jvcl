@@ -29,13 +29,13 @@ unit JvLogFile;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls,   Forms ,JvComponent;
+  SysUtils, Classes, Controls, Forms,
+  JvComponent;
 
 type
-  TLogRecord = class
+  // (rom) added Jv
+  TJvLogRecord = class(TObject)
   public
     Time: string;
     Title: string;
@@ -47,28 +47,27 @@ type
     FList: TList;
     FOnClose: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    function GetElement(Index: Integer): TLogRecord;
-  protected
+    function GetElement(Index: Integer): TJvLogRecord;
   public
-    constructor Create(AOwner: TComponent);override;
-    destructor Destroy;override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     procedure LoadFromFile(FileName: TFileName);
     procedure SaveToFile(FileName: TFileName);
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
-    procedure Add(const Time, Title: string; const Description: string);overload;
-    procedure Add(const Title: string; const Description: string='');overload;
+    procedure Add(const Time, Title: string; const Description: string); overload;
+    procedure Add(const Title: string; const Description: string = ''); overload;
     procedure Delete(Index: Integer);
     procedure Clear;
     function Count: Integer;
-    property Elements[Index: Integer]: TLogRecord read GetElement;default;
+    property Elements[Index: Integer]: TJvLogRecord read GetElement; default;
 
     procedure ShowLog(Title: string);
   published
-    property OnShow:TNotifyEvent read FOnShow write FOnShow;
-    property OnClose:TNotifyEvent read FOnClose write FOnClose;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
   end;
 
 implementation
@@ -76,175 +75,179 @@ implementation
 uses
   JvFormLog;
 
-{*******************************************************}
+constructor TJvLogFile.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FList := TList.Create;
+end;
+
+destructor TJvLogFile.Destroy;
+begin
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
+
 procedure TJvLogFile.Add(const Time, Title, Description: string);
 var
- LogRecord: TLogRecord;
+  LogRecord: TJvLogRecord;
 begin
-  LogRecord := TLogRecord.Create;
+  LogRecord := TJvLogRecord.Create;
   LogRecord.Time := Time;
   LogRecord.Title := Title;
   LogRecord.Description := Description;
   FList.Add(LogRecord);
 end;
-{*******************************************************}
+
 procedure TJvLogFile.Add(const Title, Description: string);
 begin
   Add(DateTimeToStr(Now), Title, Description);
 end;
-{*******************************************************}
+
 procedure TJvLogFile.Clear;
 var
- i: Integer;
+  I: Integer;
 begin
-  for i:=0 to FList.Count-1 do
-    Delete(0);
+  // (rom) improved
+  for I := 0 to FList.Count - 1 do
+  begin
+    TJvLogRecord(FList.Items[I]).Free;
+    FList.Items[I] := nil;
+  end;
+  FList.Clear;
 end;
-{*******************************************************}
+
 function TJvLogFile.Count: Integer;
 begin
-  result := FList.Count;
+  Result := FList.Count;
 end;
-{*******************************************************}
-constructor TJvLogFile.Create(AOwner: TComponent);
-begin
-  inherited;
-  FList := TList.Create;
-end;
-{*******************************************************}
+
 procedure TJvLogFile.Delete(Index: Integer);
 begin
-  TLogRecord(FList.Items[Index]).Free;
+  TJvLogRecord(FList.Items[Index]).Free;
   FList.Delete(Index);
 end;
-{*******************************************************}
-destructor TJvLogFile.Destroy;
+
+function TJvLogFile.GetElement(Index: Integer): TJvLogRecord;
 begin
-  Clear;
-  FList.Free;
-  inherited;
+  Result := TJvLogRecord(FList.Items[Index]);
 end;
-{*******************************************************}
-function TJvLogFile.GetElement(Index: Integer): TLogRecord;
-begin
-  result := TLogRecord(FList.Items[Index]);
-end;
-{*******************************************************}
+
 procedure TJvLogFile.LoadFromFile(FileName: TFileName);
 var
- Stream: TFileStream;
+  Stream: TFileStream;
 begin
-  Stream := TFileStream.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream(Stream);
   finally
     Stream.Free;
   end;
 end;
-{*******************************************************}
+
 procedure TJvLogFile.LoadFromStream(Stream: TStream);
 var
-  i, j, L: Integer;
-  LogRecord: TLogRecord;
-  Found: boolean;
+  I, J, L: Integer;
+  LogRecord: TJvLogRecord;
+  Found: Boolean;
 begin
   Clear;
   with TStringList.Create do
   try
     LoadFromStream(Stream);
-    for i:=0 to Count-1 do
+    for I := 0 to Count - 1 do
     begin
-      LogRecord := TLogRecord.Create;
+      LogRecord := TJvLogRecord.Create;
 
       //Extract time
-      j := pos('[',Strings[i]);
-      if j=0 then
+      J := Pos('[', Strings[I]);
+      if J = 0 then
       begin
         LogRecord.Free;
         Continue;
       end;
-      LogRecord.Time := Copy(Strings[i], j+1, MaxInt);
-      j := pos(']',LogRecord.Time);
-      if j=0 then
+      LogRecord.Time := Copy(Strings[I], J + 1, MaxInt);
+      J := Pos(']', LogRecord.Time);
+      if J = 0 then
       begin
         LogRecord.Free;
         Continue;
       end;
-      LogRecord.Title := Copy(LogRecord.Time, j+1, MaxInt);
-      System.Delete(LogRecord.Time, j, MaxInt);
+      LogRecord.Title := Copy(LogRecord.Time, J + 1, MaxInt);
+      System.Delete(LogRecord.Time, J, MaxInt);
 
       //Extract title and description
-      j := 1;
+      J := 1;
       L := Length(LogRecord.Title);
-      Found := false;
-      while (j <= L) and not Found do
+      Found := False;
+      while (J <= L) and not Found do
       begin
-        if LogRecord.Title[j]='>' then
+        if LogRecord.Title[J] = '>' then
         begin
-          if (j < L) and (LogRecord.Title[j+1]='>') then
-            Inc(j, 2)
+          if (J < L) and (LogRecord.Title[J + 1] = '>') then
+            Inc(J, 2)
           else
-            Found := true;
+            Found := True;
         end
         else
-          Inc(j);
+          Inc(J);
       end;
       // if there's '>', get description field, otherwise assume there's no description
       if Found then
-        LogRecord.Description := Copy(LogRecord.Title, j+1, MaxInt);
-      // if j = L (nothing was found), then nothing is deleted,
+        LogRecord.Description := Copy(LogRecord.Title, J + 1, MaxInt);
+      // if J = L (nothing was found), then nothing is deleted,
       // otherwise everything is deleted starting with '>' found
-      System.Delete(LogRecord.Title, j, L);
-      LogRecord.Title := StringReplace(LogRecord.Title,'>>','>',[rfReplaceAll]);
+      System.Delete(LogRecord.Title, J, L);
+      LogRecord.Title := StringReplace(LogRecord.Title, '>>', '>', [rfReplaceAll]);
       FList.Add(LogRecord);
     end;
   finally
     Free;
   end;
 end;
-{*******************************************************}
+
 procedure TJvLogFile.SaveToFile(FileName: TFileName);
 var
- Stream: TFileStream;
+  Stream: TFileStream;
 begin
-  Stream := TFileStream.Create(FileName,fmCreate or fmShareExclusive);
+  Stream := TFileStream.Create(FileName, fmCreate or fmShareExclusive);
   try
     SaveToStream(Stream);
   finally
     Stream.Free;
   end;
 end;
-{*******************************************************}
+
 procedure TJvLogFile.SaveToStream(Stream: TStream);
 var
-  i: Integer;
+  I: Integer;
   St: string;
 begin
   with TStringList.Create do
   try
-    for i:=0 to FList.Count-1 do
-      with TLogRecord(FList.Items[i]) do
+    for I := 0 to FList.Count - 1 do
+      with TJvLogRecord(FList.Items[I]) do
       begin
-        St := '['+Time+']'+StringReplace(Title,'>','>>',[rfReplaceAll])+'>'+Description+#13#10;
+        St := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) + '>' + Description + #13#10;
         Stream.WriteBuffer(Pointer(St)^, Length(St));
       end;
   finally
     Free;
   end;
 end;
-{*******************************************************}
+
 procedure TJvLogFile.ShowLog(Title: string);
 var
- i: Integer;
+  I: Integer;
 begin
-  with TfoLog.Create(nil) do
+  with TFoLog.Create(nil) do
   try
     Caption := Title;
-    with buListView1 do
+    with ListView1 do
     begin
       Items.BeginUpdate;
-      for i:=0 to FList.Count-1 do
-        with TLogRecord(FList[i]) do
+      for I := 0 to FList.Count - 1 do
+        with TJvLogRecord(FList[I]) do
           with Items.Add do
           begin
             Caption := Time;
@@ -255,14 +258,14 @@ begin
     end;
 
     if Assigned(FOnShow) then
-      FOnShow(self);
+      FOnShow(Self);
     ShowModal;
     if Assigned(FOnClose) then
-      FOnClose(self);
+      FOnClose(Self);
   finally
     Free;
   end;
 end;
-{*******************************************************}
+
 end.
 

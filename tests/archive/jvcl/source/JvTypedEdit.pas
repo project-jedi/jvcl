@@ -28,7 +28,7 @@ Known Issues:
 
 unit JvTypedEdit;
 
-{Comments - controls to capure numbers of various kinds (Int, Float, Money)
+{Comments - controls to capture numbers of various kinds (Int, Float, Money)
  The money edit also does some display formatting
 
    Still to do
@@ -49,95 +49,70 @@ unit JvTypedEdit;
      The code in these controls is a bit repetitive, but unfortunately
      you can't have a base class property with polymorphic type   }
 
-
 interface
 
 uses
-  { delphi } Classes,
-  { local } JvEdit;
+  Classes,
+  JvEdit;
 
 type
   TCustomIntegerEdit = class(TJvCustomEdit)
   private
-    { property implementation }
-    fiMaxValue, fiMinValue: integer;
-    fbHasMaxValue, fbHasMinValue: boolean;
-
+    FMinValue: Integer;
+    FMaxValue: Integer;
+    FHasMinValue: Boolean;
+    FHasMaxValue: Boolean;
   protected
-    { overrides }
-    procedure KeyPress(var key: char); override;
-
-    { property implementation }
-    procedure SetValue(iNewValue: integer); virtual;
-    function GetValue: integer; virtual;
-
-    procedure SetMinValue(iNewValue: integer);
-    procedure SetMaxValue(iNewValue: integer);
-
-   { worker procs }
-    function ChopToRange(iValue: integer): integer;
-    function IsInRange(iValue: integer): boolean; overload;
-    function IsInRange(sValue: string): boolean; overload;
-
-    property MaxValue: integer read fiMaxValue write fiMaxValue;
-    property MinValue: integer read fiMinValue write fiMinValue;
-
-    property HasMaxValue: boolean read fbHasMaxValue write fbHasMaxValue;
-    property HasMinValue: boolean read fbHasMinValue write fbHasMinValue;
-
+    procedure KeyPress(var Key: Char); override;
+    procedure SetValue(iNewValue: Integer); virtual;
+    function GetValue: Integer; virtual;
+    procedure SetMinValue(iNewValue: Integer);
+    procedure SetMaxValue(iNewValue: Integer);
+    function ChopToRange(iValue: Integer): Integer;
+    function IsInRange(iValue: Integer): Boolean; overload;
+    function IsInRange(sValue: string): Boolean; overload;
+    property MaxValue: Integer read FMaxValue write FMaxValue;
+    property MinValue: Integer read FMinValue write FMinValue;
+    property HasMaxValue: Boolean read FHasMaxValue write FHasMaxValue;
+    property HasMinValue: Boolean read FHasMinValue write FHasMinValue;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Assign(Source: TPersistent); override;
-
-    property Value: integer read GetValue write SetValue;
+    property Value: Integer read GetValue write SetValue;
   published
-    property AutoSize default true;
-
-
+    property AutoSize default True;
   end;
 
   { to capture and display float values }
   TCustomFloatEdit2 = class(TJvCustomEdit)
   private
-    { property implementation }
-    feMaxValue, feMinValue: extended;
-    fbHasMaxValue, fbHasMinValue: boolean;
-    fiMaxDecimals: integer;
-
+    FMaxValue: Extended;
+    FMinValue: Extended;
+    FHasMaxValue: Boolean;
+    FHasMinValue: Boolean;
+    FMaxDecimals: Integer;
   protected
-    { overrides }
-    procedure KeyPress(var key: char); override;
-
-    { property implementation }
-    procedure SetValue(eNewValue: extended);
-    function GetValue: extended;
-
-    procedure SetMinValue(eNewValue: extended);
-    procedure SetMaxValue(eNewValue: extended);
-
-    procedure SetMaxDecimals(iNewValue: integer);
-
-   { worker procs }
-    function ChopToRange(eValue: extended): extended;
-    function IsInRange(eValue: extended): boolean; overload;
-    function IsInRange(sValue: string): boolean; overload;
-
-    property MaxValue: extended read feMaxValue write feMaxValue;
-    property MinValue: extended read feMinValue write feMinValue;
-    property MaxDecimals: integer read fiMaxDecimals write SetMaxDecimals;
-
-    property HasMaxValue: boolean read fbHasMaxValue write fbHasMaxValue;
-    property HasMinValue: boolean read fbHasMinValue write fbHasMinValue;
-
+    procedure KeyPress(var Key: Char); override;
+    procedure SetValue(eNewValue: Extended);
+    function GetValue: Extended;
+    procedure SetMinValue(eNewValue: Extended);
+    procedure SetMaxValue(eNewValue: Extended);
+    procedure SetMaxDecimals(iNewValue: Integer);
+    function ChopToRange(eValue: Extended): Extended;
+    function IsInRange(eValue: Extended): Boolean; overload;
+    function IsInRange(sValue: string): Boolean; overload;
+    property MaxValue: Extended read FMaxValue write FMaxValue;
+    property MinValue: Extended read FMinValue write FMinValue;
+    property MaxDecimals: Integer read FMaxDecimals write SetMaxDecimals;
+    property HasMaxValue: Boolean read FHasMaxValue write FHasMaxValue;
+    property HasMinValue: Boolean read FHasMinValue write FHasMinValue;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Assign(Source: TPersistent); override;
-
-    property Value: extended read GetValue write SetValue;
+    property Value: Extended read GetValue write SetValue;
   published
-    property AutoSize default true;
+    property AutoSize default True;
   end;
-
 
   { control to capture a year
     int edit with automatic 2 digit -> 4 digit expansion
@@ -145,72 +120,53 @@ type
     which is initialised from the program/system settings  }
   TCustomYearEdit = class(TCustomIntegerEdit)
   private
-    fiWindowsillYear: integer;
+    FWindowsillYear: Integer;
   protected
     procedure DoExit; override;
-
-    procedure SetValue(iNewValue: integer); override;
-    function GetValue: integer; override;
-
+    procedure SetValue(iNewValue: Integer); override;
+    function GetValue: Integer; override;
     procedure FixYear;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure Assign(Source: TPersistent); override;
-
-    property WindowsillYear: integer read fiWindowsillYear write fiWindowsillYear;
-
+    property WindowsillYear: Integer read FWindowsillYear write FWindowsillYear;
   end;
 
-{ to capture and display currency values
+  { to capture and display Currency values
     when the control has focus, the number is displayed simply
     when the control does not have focus, the number is formatted
-    as per control panel currency settings
-  }
+    as per control panel Currency settings }
   TCustomCurrencyEdit = class(TJvCustomEdit)
   private
-    { property implementation }
-    feMaxValue, feMinValue: currency;
-    fbHasMaxValue, fbHasMinValue: boolean;
-    fcOriginalValue: Currency;
-    fbOriginalValueOK: Boolean;
-
+    FMaxValue: Currency;
+    FMinValue: Currency;
+    FHasMaxValue: Boolean;
+    FHasMinValue: Boolean;
+    FOriginalValue: Currency;
+    FOriginalValueOK: Boolean;
   protected
-
-    { overrides }
-    procedure KeyPress(var key: char); override;
-
-    { property implementation }
-    procedure SetValue(const peNewValue: currency); virtual;
-    function GetValue: currency;
-
-    procedure SetMinValue(const peNewValue: currency);
-    procedure SetMaxValue(const peNewValue: currency);
-
-
-   { worker procs }
-    function ChopToRange(eValue: currency): currency;
-    function IsInRange(eValue: currency): boolean; overload;
-    function IsInRange(sValue: string): boolean; overload;
-
-    property MaxValue: currency read feMaxValue write feMaxValue;
-    property MinValue: currency read feMinValue write feMinValue;
-
-    property HasMaxValue: boolean read fbHasMaxValue write fbHasMaxValue;
-    property HasMinValue: boolean read fbHasMinValue write fbHasMinValue;
-
+    procedure KeyPress(var Key: Char); override;
+    procedure SetValue(const peNewValue: Currency); virtual;
+    function GetValue: Currency;
+    procedure SetMinValue(const peNewValue: Currency);
+    procedure SetMaxValue(const peNewValue: Currency);
+    function ChopToRange(eValue: Currency): Currency;
+    function IsInRange(eValue: Currency): Boolean; overload;
+    function IsInRange(sValue: string): Boolean; overload;
+    property MaxValue: Currency read FMaxValue write FMaxValue;
+    property MinValue: Currency read FMinValue write FMinValue;
+    property HasMaxValue: Boolean read FHasMaxValue write FHasMaxValue;
+    property HasMinValue: Boolean read FHasMinValue write FHasMinValue;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Assign(Source: TPersistent); override;
-
-    property Value: currency read GetValue write SetValue;
+    property Value: Currency read GetValue write SetValue;
   published
-    property AutoSize default true;
+    property AutoSize default True;
   end;
 
-
- { another bit of functionality
-    - when the control does not have focus, display a formatted currency string
+  { another bit of functionality
+    - when the control does not have focus, display a formatted Currency string
      (as per control panel)
     - when it has focus, display a raw number string for editing
 
@@ -224,35 +180,27 @@ type
     but I don't want to go there until I am convinced that there is no other way
 
     - Make the format mask a published property, not a constant?
-      this is more applicable to Int & Float edits
-    }
+      this is more applicable to Int & Float edits }
   TCustomFormattedCurrencyEdit = class(TCustomCurrencyEdit)
   private
-    fbSupressOnChange: boolean;
-    fbChanging: Boolean;
-
+    FSupressOnChange: Boolean;
+    FChanging: Boolean;
   protected
     procedure UnFormatText; virtual;
-
-    procedure SetValue(const peNewValue: currency); override;
-
+    procedure SetValue(const peNewValue: Currency); override;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Change; override;
-
   public
+    constructor Create(AOwner: TComponent); override;
     procedure Loaded; override;
     procedure FormatText; virtual;
-    constructor Create(AOwner: TComponent); override;
-
   end;
-
-type
 
   TJvIntegerEdit = class(TCustomIntegerEdit)
   published
     { most properties of TMemo
-     no Text or WordWrap properties }
+      no Text or WordWrap properties }
     property Align;
     property Alignment;
     property Anchors;
@@ -303,7 +251,6 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-
     { new properties }
     property AutoSelect;
     property Value;
@@ -316,14 +263,12 @@ type
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
-
   end;
-
 
   TJvFloatEdit2 = class(TCustomFloatEdit2)
   published
     { most properties of TMemo
-     no Text or WordWrap properties }
+      no Text or WordWrap properties }
     property Align;
     property Alignment;
     property Anchors;
@@ -374,14 +319,12 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-
     { new properties }
     property AutoSelect;
     property Value;
     property MaxValue;
     property MinValue;
     property MaxDecimals;
-
     property HasMaxValue;
     property HasMinValue;
     (* ++ RDB ++ *)
@@ -389,13 +332,12 @@ type
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
-
   end;
 
   TJvYearEdit = class(TCustomYearEdit)
   published
     { most properties of TMemo
-     no Text or WordWrap properties }
+      no Text or WordWrap properties }
     property Align;
     property Alignment;
     property Anchors;
@@ -446,7 +388,6 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-
     { new properties }
     property AutoSelect;
     property Value;
@@ -460,7 +401,6 @@ type
     property DisabledTextColor;
     property DisabledColor;
     (* -- RDB -- *)
-
   end;
 
   { surface class }
@@ -518,13 +458,11 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-
     { new properties }
     property AutoSelect;
     property Value;
     property MaxValue;
     property MinValue;
-
     property HasMaxValue;
     property HasMinValue;
     (* ++ RDB ++ *)
@@ -537,59 +475,55 @@ type
 implementation
 
 uses
-  { delphi } SysUtils,
-  { jcl } JclStrings, JclDateTime,
-  { local } JvFunctions;
+  SysUtils,
+  JclStrings, JclDateTime,
+  JvFunctions;
 
 const
   MONEY_FORMAT = '%m'; // see help on "format strings"
-{--------------------------------------------------------------------------------
-  Custom Integer Edit }
 
-function TCustomIntegerEdit.ChopToRange(iValue: integer): integer;
-begin
-  Result := iValue;
-
-  if HasMaxValue and (iValue > MaxValue) then
-    Result := fiMaxValue;
-
-  if HasMinValue and (iValue < MinValue) then
-    Result := fiMinValue;
-end;
+//=== TCustomIntegerEdit =====================================================
 
 constructor TCustomIntegerEdit.Create(AOwner: TComponent);
 begin
-  inherited;
-
+  inherited Create(AOwner);
   { default is right aligned }
   Alignment := taRightJustify;
-  Text      := '';
-  AutoSize  := true;
-
+  Text := '';
+  AutoSize := True;
   { by default no min & max }
-  fiMinValue    := 0;
-  fiMaxValue    := 0;
-  fbHasMinValue := False;
-  fbHasMaxValue := False;
+  FMinValue := 0;
+  FMaxValue := 0;
+  FHasMinValue := False;
+  FHasMaxValue := False;
+end;
+
+function TCustomIntegerEdit.ChopToRange(iValue: Integer): Integer;
+begin
+  Result := iValue;
+  if HasMaxValue and (iValue > MaxValue) then
+    Result := FMaxValue;
+  if HasMinValue and (iValue < MinValue) then
+    Result := FMinValue;
 end;
 
 procedure TCustomIntegerEdit.Assign(Source: TPersistent);
 var
   lcSource: TCustomIntegerEdit;
 begin
-  inherited;
-
+  inherited Assign(Source);
   if Source is TCustomIntegerEdit then
   begin
-    lcSource    := Source as TCustomIntegerEdit;
-    MinValue    := lcSource.MinValue;
-    MaxValue    := lcSource.MaxValue;
+    lcSource := Source as TCustomIntegerEdit;
+    MinValue := lcSource.MinValue;
+    MaxValue := lcSource.MaxValue;
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
   end;
+  // (rom) why not else inherited Assign?
 end;
 
-function TCustomIntegerEdit.GetValue: integer;
+function TCustomIntegerEdit.GetValue: Integer;
 begin
   if Text = '' then
     Result := 0
@@ -597,39 +531,38 @@ begin
     Result := StrToIntDef(Text, 0);
 end;
 
-function TCustomIntegerEdit.IsInRange(iValue: integer): boolean;
+function TCustomIntegerEdit.IsInRange(iValue: Integer): Boolean;
 begin
   Result := True;
-
   if HasMaxValue and (iValue > MaxValue) then
     Result := False;
-
   if HasMinValue and (iValue < MinValue) then
     Result := False;
 end;
 
-function TCustomIntegerEdit.IsInRange(sValue: string): boolean;
+function TCustomIntegerEdit.IsInRange(sValue: string): Boolean;
 var
-  liValue: integer;
+  liValue: Integer;
 begin
   if sValue = '' then
     liValue := 0
   else
     liValue := StrToIntDef(sValue, 0);
-
   Result := IsInRange(liValue);
 end;
 
-procedure TCustomIntegerEdit.KeyPress(var key: char);
+procedure TCustomIntegerEdit.KeyPress(var Key: Char);
 var
   lsNewText: string;
 begin
-  { not intersted in control chars }
-  if (Ord(Key)) < Ord(' ') then
+  { not interested in control chars }
+  if Ord(Key) < Ord(' ') then
   begin
-    if Key = #13 then Key := #0 else
-    inherited KeyPress(Key);
-    exit;
+    if Key = #13 then
+      Key := #0
+    else
+      inherited KeyPress(Key);
+    Exit;
   end;
 
   { allow only digits and minus sign }
@@ -641,8 +574,9 @@ begin
     { are any neg. numbers in range ? }
     if HasMinValue and (MinValue >= 0) then
       Key := #0
-    { minus sign only as first char }
-    else if SelStart <> 0 then
+    { minus sign only as first Char }
+    else
+    if SelStart <> 0 then
       Key := #0;
 
     { only 1 minus sign }
@@ -664,93 +598,82 @@ begin
     Key := #0;
 
   if Key <> #0 then
-    inherited;
+    inherited KeyPress(Key);
 end;
 
-procedure TCustomIntegerEdit.SetMaxValue(iNewValue: integer);
+procedure TCustomIntegerEdit.SetMaxValue(iNewValue: Integer);
 begin
-  fiMaxValue := iNewValue;
-
+  FMaxValue := iNewValue;
   { make min value consistent }
   if MinValue > MaxValue then
-    fiMinValue := MaxValue;
+    FMinValue := MaxValue;
 end;
 
-procedure TCustomIntegerEdit.SetMinValue(iNewValue: integer);
+procedure TCustomIntegerEdit.SetMinValue(iNewValue: Integer);
 begin
-  fiMinValue := iNewValue;
-
+  FMinValue := iNewValue;
   { make max value consistent }
   if MaxValue < MaxValue then
-    fiMaxValue := MinValue;
+    FMaxValue := MinValue;
 end;
 
-procedure TCustomIntegerEdit.SetValue(iNewValue: integer);
+procedure TCustomIntegerEdit.SetValue(iNewValue: Integer);
 begin
   Text := IntToStr(ChopToRange(iNewValue));
 end;
 
-{-------------------------------------------------------------------------------
-   TCustomFloatEdit2 }
-
 const
-{ The extended data type handles up to 20 digits - no point in
-   setting max decimals to more than this }
+  { The Extended data type handles up to 20 digits - no point in
+    setting max decimals to more than this }
   FLOAT_EDIT_MAX_MAX_DECIMALS = 20;
 
-{ most data capture is more like this -
- typing in 19 decimal digits usually indicates forehead-on-the-keyboard syndrome }
+  { most data capture is more like this -
+    typing in 19 decimal digits usually indicates forehead-on-the-keyboard syndrome }
   FLOAT_EDIT_DEFAULT_MAX_DECIMALS = 5;
 
+//=== TCustomFloatEdit2 ======================================================
 
+constructor TCustomFloatEdit2.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  { default is right aligned }
+  Alignment := taRightJustify;
+  AutoSize := True;
+  Text := '';
+  { by default no min & max }
+  FMinValue := 0.0;
+  FMaxValue := 0.0;
+  FHasMinValue := False;
+  FHasMaxValue := False;
+  FMaxDecimals := FLOAT_EDIT_DEFAULT_MAX_DECIMALS;
+end;
 
 procedure TCustomFloatEdit2.Assign(Source: TPersistent);
 var
   lcSource: TCustomFloatEdit2;
 begin
-  inherited;
-
+  inherited Assign(Source);
   if Source is TCustomFloatEdit2 then
   begin
-    lcSource    := Source as TCustomFloatEdit2;
-    MinValue    := lcSource.MinValue;
-    MaxValue    := lcSource.MaxValue;
+    lcSource := Source as TCustomFloatEdit2;
+    MinValue := lcSource.MinValue;
+    MaxValue := lcSource.MaxValue;
     MaxDecimals := lcSource.MaxDecimals;
-
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
   end;
 end;
 
-function TCustomFloatEdit2.ChopToRange(eValue: extended): extended;
+function TCustomFloatEdit2.ChopToRange(eValue: Extended): Extended;
 begin
   Result := eValue;
-
   if HasMaxValue and (eValue > MaxValue) then
     Result := MaxValue;
-
   if HasMinValue and (eValue < MinValue) then
     Result := MinValue;
 end;
 
-constructor TCustomFloatEdit2.Create(AOwner: TComponent);
-begin
-  inherited;
-
-  { default is right aligned }
-  Alignment := taRightJustify;
-  AutoSize  := true;
-  Text      := '';
-
-  { by default no min & max }
-  feMinValue    := 0.0;
-  feMaxValue    := 0.0;
-  fbHasMinValue := False;
-  fbHasMaxValue := False;
-  fiMaxDecimals := FLOAT_EDIT_DEFAULT_MAX_DECIMALS;
-end;
-
-function TCustomFloatEdit2.GetValue: extended;
+function TCustomFloatEdit2.GetValue: Extended;
 begin
   if Text = '' then
     Result := 0.0
@@ -758,39 +681,36 @@ begin
     Result := StrToFloatDef(Text, 0.0);
 end;
 
-function TCustomFloatEdit2.IsInRange(eValue: extended): boolean;
+function TCustomFloatEdit2.IsInRange(eValue: Extended): Boolean;
 begin
   Result := True;
-
   if HasMaxValue and (eValue > MaxValue) then
     Result := False;
-
   if HasMinValue and (eValue < MinValue) then
     Result := False;
 end;
 
-function TCustomFloatEdit2.IsInRange(sValue: string): boolean;
+function TCustomFloatEdit2.IsInRange(sValue: string): Boolean;
 var
-  leValue: extended;
+  leValue: Extended;
 begin
   if sValue = '' then
     leValue := 0.0
   else
     leValue := StrToFloatDef(sValue, 0.0);
-
   Result := IsInRange(leValue);
 end;
 
-procedure TCustomFloatEdit2.KeyPress(var key: char);
+procedure TCustomFloatEdit2.KeyPress(var Key: Char);
 var
   lsNewText: string;
-  iDotPos:   integer;
+  iDotPos: Integer;
 begin
   { not intersted in control chars }
   if (Ord(Key)) < Ord(' ') then
   begin
     inherited KeyPress(Key);
-    exit;
+    Exit;
   end;
 
   { allow only digits, '.' and minus sign }
@@ -802,8 +722,9 @@ begin
     { are any neg. numbers in range ? }
     if HasMinValue and (MinValue >= 0) then
       Key := #0
-    { minus sign only as first char }
-    else if SelStart <> 0 then
+    { minus sign only as first Char }
+    else
+    if SelStart <> 0 then
       Key := #0;
 
     { only 1 minus sign }
@@ -841,85 +762,78 @@ begin
     Key := #0;
 
   if Key <> #0 then
-    inherited;
+    inherited KeyPress(Key);
 end;
 
-procedure TCustomFloatEdit2.SetMaxDecimals(iNewValue: integer);
+procedure TCustomFloatEdit2.SetMaxDecimals(iNewValue: Integer);
 begin
   if iNewValue < 0 then
     iNewValue := 0;
   if iNewValue > FLOAT_EDIT_MAX_MAX_DECIMALS then
     iNewValue := FLOAT_EDIT_MAX_MAX_DECIMALS;
-
-  fiMaxDecimals := iNewValue;
+  FMaxDecimals := iNewValue;
 end;
 
-procedure TCustomFloatEdit2.SetMaxValue(eNewValue: extended);
+procedure TCustomFloatEdit2.SetMaxValue(eNewValue: Extended);
 begin
-  feMaxValue := eNewValue;
-
+  FMaxValue := eNewValue;
   { make min value consistent }
   if MinValue > MaxValue then
-    feMinValue := MaxValue;
+    FMinValue := MaxValue;
 end;
 
-procedure TCustomFloatEdit2.SetMinValue(eNewValue: extended);
+procedure TCustomFloatEdit2.SetMinValue(eNewValue: Extended);
 begin
-  feMinValue := eNewValue;
-
+  FMinValue := eNewValue;
   { make max value consistent }
   if MaxValue < MaxValue then
-    feMaxValue := MinValue;
+    FMaxValue := MinValue;
 end;
 
-procedure TCustomFloatEdit2.SetValue(eNewValue: extended);
+procedure TCustomFloatEdit2.SetValue(eNewValue: Extended);
 begin
   Text := FloatToStr(ChopToRange(eNewValue));
 end;
 
-{-------------------------------------------------------------------------------
-  TCustomYearEdit }
+//=== TCustomYearEdit ========================================================
+
+constructor TCustomYearEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  { the system var is 'TwoDigitYearCenturyWindow', which by default will have a value of 50
+    we then want FWindowsillYear to be 1950,
+    if current date is 2020, and TwoDigitYearCenturyWindow is 90,
+      then FWindowsillYear should be 1990
+    if current date is 2120, and TwoDigitYearCenturyWindow is 90, (this code may last that long?)
+      then FWindowsillYear should be 2090.
+    It helps that FWindowsillYear is assumed to be in the past 100 years
+  }
+  FWindowsillYear := CenturyOfDate(now) + TwoDigitYearCenturyWindow;
+  if FWindowsillYear > YearOfDate(now) then
+    FWindowsillYear := FWindowsillYear - 100;
+  HasMinValue := True;
+  MinValue := 0;
+  HasMaxValue := True;
+  MaxValue := 9999;
+end;
 
 procedure TCustomYearEdit.Assign(Source: TPersistent);
 var
   lcSource: TCustomYearEdit;
 begin
-  inherited;
-
+  inherited Assign(Source);
   if Source is TCustomYearEdit then
   begin
-    lcSource       := Source as TCustomYearEdit;
+    lcSource := Source as TCustomYearEdit;
     WindowsillYear := lcSource.WindowsillYear;
   end;
-end;
-
-constructor TCustomYearEdit.Create(AOwner: TComponent);
-begin
-  inherited;
-
-  { the system var is 'TwoDigitYearCenturyWindow', which by default will have a value of 50
-    we then want fiWindowsillYear to be 1950,
-    if current date is 2020, and TwoDigitYearCenturyWindow is 90,
-      then fiWindowsillYear should be 1990
-    if current date is 2120, and TwoDigitYearCenturyWindow is 90, (this code may last that long?)
-      then fiWindowsillYear should be 2090.
-    It helps that fiWindowsillYear is assumed to be in the past 100 years
-  }
-  fiWindowsillYear := CenturyOfDate(now) + TwoDigitYearCenturyWindow;
-  if fiWindowsillYear > YearOfDate(now) then
-    fiWindowsillYear := fiWindowsillYear - 100;
-
-  HasMinValue := True;
-  MinValue    := 0;
-  HasMaxValue := True;
-  MaxValue    := 9999;
 end;
 
 procedure TCustomYearEdit.DoExit;
 begin
   { allow the user to type & on exit, translate any 2 digit years to 4 digits }
   FixYear;
-  inherited;
+  inherited DoExit;
 end;
 
 procedure TCustomYearEdit.FixYear;
@@ -927,130 +841,114 @@ begin
   Value := MakeYear4Digit(Value, WindowsillYear);
 end;
 
-function TCustomYearEdit.GetValue: integer;
+function TCustomYearEdit.GetValue: Integer;
 var
-  li: integer;
+  li: Integer;
 begin
   li := inherited GetValue;
   Result := MakeYear4Digit(li, WindowsillYear);
 end;
 
-procedure TCustomYearEdit.SetValue(iNewValue: integer);
+procedure TCustomYearEdit.SetValue(iNewValue: Integer);
 var
-  li: integer;
+  li: Integer;
 begin
   li := MakeYear4Digit(iNewValue, WindowsillYear);
   inherited SetValue(li);
 end;
 
-{ TCustomCurrencyEdit }
+//=== TCustomCurrencyEdit ====================================================
 
 constructor TCustomCurrencyEdit.Create(AOwner: TComponent);
 begin
-  inherited;
-
+  inherited Create(AOwner);
   { default is right aligned }
   Alignment := taRightJustify;
-  AutoSize  := true;
-  Text      := '';
-
+  AutoSize := True;
+  Text := '';
   { by default no min & max }
-  feMinValue    := 0.0;
-  feMaxValue    := 0.0;
-  fbHasMinValue := False;
-  fbHasMaxValue := False;
-
-  fcOriginalValue := 0;
-  fbOriginalValueOK := False;
+  FMinValue := 0.0;
+  FMaxValue := 0.0;
+  FHasMinValue := False;
+  FHasMaxValue := False;
+  FOriginalValue := 0;
+  FOriginalValueOK := False;
 end;
-
 
 procedure TCustomCurrencyEdit.Assign(Source: TPersistent);
 var
   lcSource: TCustomCurrencyEdit;
 begin
-  inherited;
-
+  inherited Assign(Source);
   if Source is TCustomCurrencyEdit then
   begin
-    lcSource    := Source as TCustomCurrencyEdit;
-    MinValue    := lcSource.MinValue;
-    MaxValue    := lcSource.MaxValue;
+    lcSource := Source as TCustomCurrencyEdit;
+    MinValue := lcSource.MinValue;
+    MaxValue := lcSource.MaxValue;
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
   end;
 end;
 
-function TCustomCurrencyEdit.ChopToRange(eValue: currency): currency;
+function TCustomCurrencyEdit.ChopToRange(eValue: Currency): Currency;
 begin
   Result := eValue;
-
   if HasMaxValue and (eValue > MaxValue) then
     Result := MaxValue;
-
   if HasMinValue and (eValue < MinValue) then
     Result := MinValue;
 end;
 
-function TCustomCurrencyEdit.GetValue: currency;
+function TCustomCurrencyEdit.GetValue: Currency;
 var
   lsText: string;
 begin
-  if fbOriginalValueOK then
+  if FOriginalValueOK then
   begin
-    Result := fcOriginalValue;
-    exit;
+    Result := FOriginalValue;
+    Exit;
   end;
-
-  { currency string may include a decimal dot (.) so remove it wholesesale }
+  { Currency string may include a decimal dot (.) so remove it wholesesale }
   lsText := StrDelete(CurrencyString, Text);
-
   lsText := StrStripNonNumberChars(lsText);
-
   if lsText = '' then
     Result := 0.0
   else
     Result := StrToCurrDef(lsText, 0.0);
 end;
 
-function TCustomCurrencyEdit.IsInRange(eValue: currency): boolean;
+function TCustomCurrencyEdit.IsInRange(eValue: Currency): Boolean;
 begin
   Result := True;
-
   if HasMaxValue and (eValue > MaxValue) then
     Result := False;
-
   if HasMinValue and (eValue < MinValue) then
     Result := False;
 end;
 
-function TCustomCurrencyEdit.IsInRange(sValue: string): boolean;
+function TCustomCurrencyEdit.IsInRange(sValue: string): Boolean;
 var
-  leValue: extended;
+  leValue: Extended;
 begin
   if sValue = '' then
     leValue := 0.0
   else
     leValue := StrToCurrDef(sValue, 0.0);
-
   Result := IsInRange(leValue);
 end;
 
-
-procedure TCustomCurrencyEdit.KeyPress(var key: char);
+procedure TCustomCurrencyEdit.KeyPress(var Key: Char);
 var
   lsNewText: string;
-  iDotPos:   integer;
+  iDotPos: Integer;
 begin
-
   { not interested in control chars }
   if (Ord(Key)) < Ord(' ') then
   begin
     inherited KeyPress(Key);
     if Key <> #0 then
-      fbOriginalValueOK := False;
-
-    exit;
+      FOriginalValueOK := False;
+    Exit;
   end;
 
   { allow only digits, '.' and minus sign }
@@ -1058,15 +956,16 @@ begin
     Key := #0;
 
   if Key <> #0 then
-    fbOriginalValueOK := False;
+    FOriginalValueOK := False;
 
   if Key = '-' then
   begin
     { are any neg. numbers in range ? }
     if HasMinValue and (MinValue >= 0) then
       Key := #0
-    { minus sign only as first char }
-    else if SelStart <> 0 then
+    { minus sign only as first Char }
+    else
+    if SelStart <> 0 then
       Key := #0;
 
     { only 1 minus sign }
@@ -1104,74 +1003,82 @@ begin
     Key := #0;
 
   if Key <> #0 then
-    inherited;
+    inherited KeyPress(Key);
 end;
 
-procedure TCustomCurrencyEdit.SetMaxValue(const peNewValue: currency);
+procedure TCustomCurrencyEdit.SetMaxValue(const peNewValue: Currency);
 begin
-  feMaxValue := peNewValue;
-
+  FMaxValue := peNewValue;
   { make min value consistent }
   if MinValue > MaxValue then
-    feMinValue := MaxValue;
+    FMinValue := MaxValue;
 end;
 
-procedure TCustomCurrencyEdit.SetMinValue(const peNewValue: currency);
+procedure TCustomCurrencyEdit.SetMinValue(const peNewValue: Currency);
 begin
-  feMinValue := peNewValue;
-
+  FMinValue := peNewValue;
   { make max value consistent }
   if MaxValue < MaxValue then
-    feMaxValue := MinValue;
+    FMaxValue := MinValue;
 end;
 
-procedure TCustomCurrencyEdit.SetValue(const peNewValue: currency);
+procedure TCustomCurrencyEdit.SetValue(const peNewValue: Currency);
 begin
-  fcOriginalValue := peNewValue;
+  FOriginalValue := peNewValue;
   Text := Format(MONEY_FORMAT, [ChopToRange(peNewValue)]);
-  fbOriginalValueOK := True;
+  FOriginalValueOK := True;
 end;
 
-{-------------------------------------------------------------------------------
- TFormattedCurrencyEdit }
+//=== TCustomFormattedCurrencyEdit ===========================================
+
+constructor TCustomFormattedCurrencyEdit.Create(AOwner: TComponent);
+begin
+  FSupressOnChange := True;
+  FChanging := False;
+  inherited Create(AOwner);
+end;
+
+procedure TCustomFormattedCurrencyEdit.Loaded;
+begin
+  inherited Loaded;
+  FSupressOnChange := False;
+end;
 
 procedure TCustomFormattedCurrencyEdit.Change;
 begin
-  if not fbSupressOnChange then
-    inherited;
-
+  if not FSupressOnChange then
+    inherited Change;
   { change after lose focus? o-er! }
-  if not Focused and (not fbChanging) then
+  if not Focused and not FChanging then
   begin
-    fbChanging := True;
+    FChanging := True;
     try
       FormatText;
     finally
-      fbChanging := False;
+      FChanging := False;
     end;
   end;
-
 end;
 
 procedure TCustomFormattedCurrencyEdit.DoEnter;
 begin
-  fbSupressOnChange := True;
+  FSupressOnChange := True;
   try
     UnFormatText;
-    inherited;
+    inherited DoEnter;
   finally
-    fbSupressOnChange := False;
+    FSupressOnChange := False;
   end;
 end;
 
 procedure TCustomFormattedCurrencyEdit.DoExit;
 begin
-  fbSupressOnChange := True;
+  FSupressOnChange := True;
   try
-    inherited;
+    inherited DoExit;
     FormatText;
   finally
-    fbSupressOnChange := False;
+    FSupressOnChange := False;
   end;
 end;
 
@@ -1186,31 +1093,19 @@ var
 begin
   lsText := StrDelete(CurrencyString, Text);
   lsText := StrStripNonNumberChars(lsText);
-
   Text := lsText;
 end;
 
 { this sets the text to then non-formatted value, the reads it, then
   sets it to the formatted value. This could be improved }
-procedure TCustomFormattedCurrencyEdit.SetValue(const peNewValue: currency);
+
+procedure TCustomFormattedCurrencyEdit.SetValue(const peNewValue: Currency);
 begin
-  inherited;
+  inherited SetValue(peNewValue);
   FormatText;
  { what if the control has focus? It won't if this occurs as the result of a button click }
- fbOriginalValueOK := True;
-end;
-
-constructor TCustomFormattedCurrencyEdit.Create(AOwner: TComponent);
-begin
-  fbSupressOnChange := True;
-  fbChanging := False;
-  inherited;
-end;
-
-procedure TCustomFormattedCurrencyEdit.Loaded;
-begin
-  inherited;
-  fbSupressOnChange := False;
+  FOriginalValueOK := True;
 end;
 
 end.
+

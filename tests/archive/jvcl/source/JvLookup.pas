@@ -15,6 +15,9 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+  Polaris Software
+
 Copyright (c) 1995,1997 Borland International
 Portions copyright (c) 1995, 1996 AO ROSNO
 Portions copyright (c) 1997, 1998 Master-Bank
@@ -33,20 +36,22 @@ unit JvLookup;
 
 interface
 
-uses SysUtils, Windows, DBCtrls,
-{$IFDEF COMPILER6_UP}
+uses
+  SysUtils, Windows, DBCtrls,
+  {$IFDEF COMPILER6_UP}
   Variants, VDBConsts,
-{$ENDIF}
-  Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask,
-  Buttons, StdCtrls, JvDBUtils, JvToolEdit;
+  {$ENDIF}
+  Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
+  {$IFNDEF COMPILER3_UP}
+  DBTables,
+  {$ENDIF}
+  JvDBUtils, JvToolEdit;
 
 const
-  DefFieldsDelim = ',';
+  // (rom) renamed
+  DefFieldsDelimiter = ',';
 
 type
-
-  { TJvLookupControl }
-
   TLookupListStyle = (lsFixed, lsDelimited);
   TJvLookupControl = class;
   TGetImageEvent = procedure(Sender: TObject; IsEmpty: Boolean;
@@ -90,6 +95,7 @@ type
     FDisplayEmpty: string;
     FSearchText: string;
     FEmptyValue: string;
+    FEmptyStrIsNull: Boolean; // Polaris
     FEmptyItemColor: TColor;
     FListActive: Boolean;
     FPopup: Boolean;
@@ -98,18 +104,18 @@ type
     FIndexSwitch: Boolean;
     FIgnoreCase: Boolean;
     FItemHeight: Integer;
-    FFieldsDelim: Char;
+    FFieldsDelimiter: Char;
     FListStyle: TLookupListStyle;
+    FLookupFormat: string;
     FOnChange: TNotifyEvent;
     FOnGetImage: TGetImageEvent;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     FLookupMode: Boolean;
-    FLookupFormat: string;
     procedure CheckNotFixed;
     procedure SetLookupMode(Value: Boolean);
     function GetKeyValue: Variant;
     procedure SetKeyValue(const Value: Variant);
-{$ENDIF}
+    {$ENDIF}
     function CanModify: Boolean;
     procedure CheckNotCircular;
     procedure DataLinkActiveChanged;
@@ -135,13 +141,14 @@ type
     procedure SetDataSource(Value: TDataSource);
     procedure SetDisplayEmpty(const Value: string);
     procedure SetEmptyValue(const Value: string);
+    procedure SetEmptyStrIsNull(const Value: Boolean); // Polaris
     procedure SetEmptyItemColor(Value: TColor);
     procedure SetLookupField(const Value: string);
     procedure SetValueKey(const Value: string);
     procedure SetValue(const Value: string);
     procedure SetDisplayValue(const Value: string);
     procedure SetListStyle(Value: TLookupListStyle); virtual;
-    procedure SetFieldsDelim(Value: Char); virtual;
+    procedure SetFieldsDelimiter(Value: Char); virtual;
     procedure SetLookupDisplay(const Value: string);
     procedure SetLookupFormat(const Value: string);
     procedure SetLookupSource(Value: TDataSource);
@@ -151,9 +158,9 @@ type
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
     procedure UpdateDisplayValue;
     function EmptyRowVisible: Boolean;
-    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
-    procedure WMKillFocus(var Message: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Message: TMessage); message WM_SETFOCUS;
+    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
     procedure Change; dynamic;
     procedure KeyValueChanged; virtual;
@@ -171,13 +178,14 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DisplayEmpty: string read FDisplayEmpty write SetDisplayEmpty;
     property EmptyValue: string read FEmptyValue write SetEmptyValue stored StoreEmpty;
+    property EmptyStrIsNull: Boolean read FEmptyStrIsNull write SetEmptyStrIsNull default True; // Polaris
     property EmptyItemColor: TColor read FEmptyItemColor write SetEmptyItemColor default clWindow;
     property IgnoreCase: Boolean read FIgnoreCase write FIgnoreCase default True;
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch default True;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight
       stored ItemHeightStored;
     property ListStyle: TLookupListStyle read FListStyle write SetListStyle default lsFixed;
-    property FieldsDelimiter: Char read FFieldsDelim write SetFieldsDelim default DefFieldsDelim;
+    property FieldsDelimiter: Char read FFieldsDelimiter write SetFieldsDelimiter default DefFieldsDelimiter;
     property LookupDisplay: string read FLookupDisplay write SetLookupDisplay;
     property LookupDisplayIndex: Integer read FDisplayIndex write FDisplayIndex default 0;
     property LookupField: string read GetLookupField write SetLookupField;
@@ -188,9 +196,10 @@ type
     property TabStop default True;
     property Value: string read FValue write SetValue stored False;
     property DisplayValue: string read FDisplayValue write SetDisplayValue stored False;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property KeyValue: Variant read GetKeyValue write SetKeyValue stored False;
-{$ENDIF}
+    {$ENDIF}
+    procedure SetFieldValue(Field: TField; const Value: string); // Polaris
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnGetImage: TGetImageEvent read FOnGetImage write FOnGetImage;
   public
@@ -200,15 +209,13 @@ type
     function Locate(const SearchField: TField; const AValue: string;
       Exact: Boolean): Boolean;
     procedure ResetField; virtual;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
-{$ENDIF}
+    {$ENDIF}
     property Field: TField read GetField;
   end;
-
-  { TJvDBLookupList }
 
   TJvDBLookupList = class(TJvLookupControl)
   private
@@ -233,12 +240,12 @@ type
     procedure TimerScroll;
     procedure UpdateScrollBar;
     procedure UpdateBufferCount(Rows: Integer);
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    procedure WMTimer(var Message: TMessage); message WM_TIMER;
-    procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
+    procedure WMTimer(var Msg: TMessage); message WM_TIMER;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -256,10 +263,10 @@ type
       X, Y: Integer); override;
     procedure Paint; override;
     procedure UpdateDisplayEmpty(const Value: string); override;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -268,9 +275,9 @@ type
     property RowCount: Integer read FRowCount write SetRowCount stored False;
     property DisplayValue;
     property Value;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property KeyValue;
-{$ENDIF}
+    {$ENDIF}
   published
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Align;
@@ -283,23 +290,24 @@ type
     property DragMode;
     property EmptyItemColor;
     property EmptyValue;
+    property EmptyStrIsNull; // Polaris
     property Enabled;
     property FieldsDelimiter;
     property Font;
     property IgnoreCase;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-{$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property IndexSwitch;
     property ItemHeight;
     property ListStyle;
@@ -332,40 +340,38 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
-
-  { TJvDBLookupCombo }
 
   TJvPopupDataList = class(TJvDBLookupList)
   private
     FCombo: TJvLookupControl;
-    procedure WMMouseActivate(var Message: TMessage); message WM_MOUSEACTIVATE;
+    procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   protected
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     procedure CreateWnd; override;
-{$ENDIF}
+    {$ENDIF}
     procedure KeyPress(var Key: Char); override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
 
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   TDropDownAlign = (daLeft, daRight, daCenter);
-{$ENDIF}
+  {$ENDIF}
 
   TJvDBLookupCombo = class(TJvLookupControl)
   private
@@ -382,14 +388,14 @@ type
     FSelImage: TPicture;
     FSelMargin: Integer;
     FDisplayValues: TStrings;
-    FDisplayAll: Boolean;
-{$IFNDEF WIN32}
+    FDisplayAllFields: Boolean;
+    {$IFNDEF WIN32}
     FBtnGlyph: TBitmap;
     FBtnDisabled: TBitmap;
-{$ENDIF}
-{$IFDEF COMPILER7_UP}
-    FMouseInControl: Boolean;
-{$ENDIF}
+    {$ENDIF}
+    {$IFDEF COMPILER7_UP}
+    FOver: Boolean;
+    {$ENDIF}
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -401,31 +407,31 @@ type
     procedure InvalidateText;
     procedure UpdateCurrentImage;
     procedure PaintDisplayValues(Canvas: TCanvas; R: TRect; ALeft: Integer);
-    procedure SetFieldsDelim(Value: Char); override;
+    procedure SetFieldsDelimiter(Value: Char); override;
     procedure SetListStyle(Value: TLookupListStyle); override;
-    function GetDisplayAll: Boolean;
-    procedure SetDisplayAll(Value: Boolean);
+    function GetDisplayAllFields: Boolean;
+    procedure SetDisplayAllFields(Value: Boolean);
     function GetDisplayValues(Index: Integer): string;
-    procedure CMCancelMode(var Message: TCMCancelMode); message CM_CANCELMODE;
-{$IFDEF WIN32}
-    procedure CNKeyDown(var Message: TWMKeyDown); message CN_KEYDOWN;
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-{$ENDIF}
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-{$IFDEF COMPILER7_UP}
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-{$ENDIF}
-    procedure WMCancelMode(var Message: TMessage); message WM_CANCELMODE;
-    procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
-    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSetCursor(var Message: TWMSetCursor); message WM_SETCURSOR;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
-{$IFDEF COMPILER4_UP}
-    procedure CMBiDiModeChanged(var Message: TMessage); message CM_BIDIMODECHANGED;
-{$ENDIF}
+    procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
+    {$IFDEF WIN32}
+    procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    {$ENDIF}
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    {$IFDEF COMPILER7_UP}
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    {$ENDIF}
+    procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
+    procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$IFDEF COMPILER4_UP}
+    procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
+    {$ENDIF}
   protected
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -456,15 +462,16 @@ type
     property DisplayValue;
     property DisplayValues[Index: Integer]: string read GetDisplayValues;
     property Value;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property KeyValue;
-{$ENDIF}
+    {$ENDIF}
   published
+    property Align; // Polaris
     property DropDownAlign: TDropDownAlign read FDropDownAlign write FDropDownAlign default daLeft;
     property DropDownCount: Integer read FDropDownCount write FDropDownCount default 7;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
     property EscapeClear: Boolean read FEscapeClear write FEscapeClear default True;
-    property DisplayAllFields: Boolean read GetDisplayAll write SetDisplayAll default False;
+    property DisplayAllFields: Boolean read GetDisplayAllFields write SetDisplayAllFields default False;
     property Color;
     property Ctl3D;
     property DataField;
@@ -473,24 +480,25 @@ type
     property DragCursor;
     property DragMode;
     property EmptyValue;
+    property EmptyStrIsNull; // Polaris
     property EmptyItemColor;
     property Enabled;
     property FieldsDelimiter;
     property Font;
     property IgnoreCase;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-{$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property IndexSwitch;
     property ItemHeight;
     property ListStyle;
@@ -525,19 +533,17 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
-
-  { TJvPopupDataWindow }
 
   TJvPopupDataWindow = class(TJvPopupDataList)
   private
@@ -559,8 +565,6 @@ type
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
 
-  { TJvLookupEdit }
-
   TJvLookupEdit = class(TJvCustomComboEdit)
   private
     FChanging: Boolean;
@@ -572,8 +576,8 @@ type
     FOnDropDown: TNotifyEvent;
     function GetListStyle: TLookupListStyle;
     procedure SetListStyle(Value: TLookupListStyle);
-    function GetFieldsDelim: Char;
-    procedure SetFieldsDelim(Value: Char);
+    function GetFieldsDelimiter: Char;
+    procedure SetFieldsDelimiter(Value: Char);
     function GetLookupDisplay: string;
     procedure SetLookupDisplay(const Value: string);
     function GetDisplayIndex: Integer;
@@ -595,15 +599,15 @@ type
     procedure HidePopup; override;
     procedure PopupChange; override;
     procedure PopupDropDown(DisableEdit: Boolean); override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function AcceptPopup(var Value: Variant): Boolean; override;
     procedure SetPopupValue(const Value: Variant); override;
     function GetPopupValue: Variant; override;
-{$ELSE}
+    {$ELSE}
     function AcceptPopup(var Value: string): Boolean; override;
     procedure SetPopupValue(const Value: string); override;
     function GetPopupValue: string; override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -612,7 +616,7 @@ type
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 0;
     property ListStyle: TLookupListStyle read GetListStyle write SetListStyle default lsFixed;
-    property FieldsDelimiter: Char read GetFieldsDelim write SetFieldsDelim default DefFieldsDelim;
+    property FieldsDelimiter: Char read GetFieldsDelimiter write SetFieldsDelimiter default DefFieldsDelimiter;
     property LookupDisplay: string read GetLookupDisplay write SetLookupDisplay;
     property LookupDisplayIndex: Integer read GetDisplayIndex write SetDisplayIndex default 0;
     property LookupField: string read GetLookupField write SetLookupField;
@@ -633,19 +637,19 @@ type
     property Enabled;
     property Font;
     property HideSelection;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property BiDiMode;
     property Constraints;
     property DragKind;
     property ParentBiDiMode;
-{$ENDIF}
-{$IFDEF WIN32}
-{$IFNDEF VER90}
+    {$ENDIF}
+    {$IFDEF WIN32}
+    {$IFDEF COMPILER3_UP}
     property ImeMode;
     property ImeName;
-{$ENDIF}
-{$ENDIF}
+    {$ENDIF}
+    {$ENDIF}
     property MaxLength;
     property OEMConvert;
     property ParentColor;
@@ -678,23 +682,32 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
   end;
 
 implementation
 
-uses DBConsts, Dialogs, {$IFNDEF WIN32}JvStr16, {$ENDIF}JvVCLUtils, JvStrUtils,
-{$IFNDEF COMPILER3_UP}JvBdeUtils, {$ENDIF}JvMaxMin, JvClipIcon
-{$IFDEF COMPILER7_UP}, Themes{$ENDIF};
+uses
+  DBConsts, Dialogs,
+  {$IFDEF COMPILER7_UP}
+  Themes,
+  {$ENDIF}
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  {$IFNDEF COMPILER3_UP}
+  JvBdeUtils,
+  {$ENDIF}
+  JvVCLUtils, JvMaxMin, JvClipIcon;
 
 procedure CheckLookupFormat(const AFormat: string);
 var
@@ -708,7 +721,8 @@ begin
     Inc(P);
     if P^ = #0 then
       raise Exception.Create('Invalid format: % not allowed')
-    else if not (P^ in ['%', 's', 'S']) then
+    else
+    if not (P^ in ['%', 's', 'S']) then
       raise Exception.Create(Format('Invalid format: %s not allowed',
         [QuotedStr('%' + P^)]));
     P := StrScan(P + 1, '%');
@@ -727,13 +741,14 @@ begin
     Inc(P);
     if P^ = #0 then
       Exit
-    else if P^ in ['s', 'S'] then
+    else
+    if P^ in ['s', 'S'] then
       Inc(Result);
     P := StrScan(P + 1, '%');
   end;
 end;
 
-{ TJvDataSourceLink }
+//=== TJvDataSourceLink ======================================================
 
 procedure TJvDataSourceLink.ActiveChanged;
 begin
@@ -763,7 +778,7 @@ begin
   end;
 end;
 
-{ TLookupSourceLink }
+//=== TLookupSourceLink ======================================================
 
 procedure TLookupSourceLink.ActiveChanged;
 begin
@@ -783,15 +798,14 @@ begin
     FDataControl.ListLinkDataChanged;
 end;
 
-{ TJvLookupControl }
+//=== TJvLookupControl =======================================================
 
-const
+// (rom) changed to var
+var
   SearchTickCount: Longint = 0;
 
 {$IFNDEF WIN32}
-
-procedure GeTJvFieldList(DataSet: TDataSet; List: TList;
-  const FieldNames: string);
+procedure GetFieldList(DataSet: TDataSet; List: TList; const FieldNames: string);
 var
   Pos: Integer;
 begin
@@ -805,16 +819,16 @@ constructor TJvLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if NewStyleControls then
-{$IFDEF COMPILER7_UP}
+    {$IFDEF COMPILER7_UP}
     ControlStyle := [csOpaque, csNeedsBorderPaint]
-{$ELSE}
+    {$ELSE}
     ControlStyle := [csOpaque]
-{$ENDIF}
+    {$ENDIF}
   else
     ControlStyle := [csOpaque, csFramed];
   ParentColor := False;
   TabStop := True;
-  FFieldsDelim := DefFieldsDelim;
+  FFieldsDelimiter := DefFieldsDelimiter;
   FLookupSource := TDataSource.Create(Self);
   FDataLink := TJvDataSourceLink.Create;
   FDataLink.FDataControl := Self;
@@ -822,13 +836,14 @@ begin
   FLookupLink.FDataControl := Self;
   FListFields := TList.Create;
   FEmptyValue := EmptyStr;
+  FEmptyStrIsNull := True; // Polaris
   FEmptyItemColor := clWindow;
   FValue := FEmptyValue;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FLocate := CreateLocate(nil);
-{$ELSE}
+  {$ELSE}
   FLocate := TJvDBLocate.Create;
-{$ENDIF}
+  {$ENDIF}
   FIndexSwitch := True;
   FIgnoreCase := True;
 end;
@@ -903,16 +918,25 @@ end;
 
 function TJvLookupControl.GetKeyValue: Variant;
 begin
+  { (rb) EmptyStr is provided for backwards compatibility only in D7 }
   if ValueIsEmpty(Value) then
-    Result := NULL
+    if (Value = EmptyStr) and FEmptyStrIsNull then
+      Result := Null // Polaris
+    else
+      Result := FEmptyValue // Polaris
   else
     Result := Value;
 end;
 
 procedure TJvLookupControl.SetKeyValue(const Value: Variant);
 begin
-  Self.Value := Value;
+  if VarIsNull(Value) then
+    Self.Value := FEmptyValue // Polaris
+  else
+    Self.Value := Value;
+  //  Self.Value := Value;
 end;
+
 {$ENDIF}
 
 procedure TJvLookupControl.CheckNotCircular;
@@ -955,9 +979,9 @@ begin
     FDataField := FDataLink.DataSet.FieldByName(FDataFieldName);
     FMasterField := FDataField;
   end;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   SetLookupMode((FDataField <> nil) and FDataField.Lookup);
-{$ENDIF}
+  {$ENDIF}
   DataLinkRecordChanged(nil);
 end;
 
@@ -992,6 +1016,7 @@ function TJvLookupControl.UseRightToLeftAlignment: Boolean;
 begin
   Result := DBUseRightToLeftAlignment(Self, Field);
 end;
+
 {$ENDIF}
 
 function TJvLookupControl.GetBorderSize: Integer;
@@ -1001,14 +1026,14 @@ var
 begin
   CreateParams(Params);
   SetRect(R, 0, 0, 0, 0);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   AdjustWindowRectEx(R, Params.Style, False, Params.ExStyle);
-{$ELSE}
+  {$ELSE}
   AdjustWindowRect(R, Params.Style, False);
   if (csFramed in ControlStyle) and Ctl3D and
     (Params.Style and WS_BORDER <> 0) then
     Inc(R.Bottom, 2);
-{$ENDIF}
+  {$ENDIF}
   Result := R.Bottom - R.Top;
 end;
 
@@ -1019,21 +1044,21 @@ end;
 
 function TJvLookupControl.GetLookupField: string;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if FLookupMode then
     Result := ''
   else
-{$ENDIF}
+  {$ENDIF}
     Result := FLookupFieldName;
 end;
 
 function TJvLookupControl.GetLookupSource: TDataSource;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if FLookupMode then
     Result := nil
   else
-{$ENDIF}
+  {$ENDIF}
     Result := FLookupLink.DataSource;
 end;
 
@@ -1050,10 +1075,12 @@ begin
     Result := nil;
 end;
 
+// (rom) is this useful for other ocmponents? It seems superior.
+
 function TJvLookupControl.DefaultTextHeight: Integer;
 var
   DC: HDC;
-  SaveFont: HFont;
+  SaveFont: HFONT;
   Metrics: TTextMetric;
 begin
   DC := GetDC(0);
@@ -1080,9 +1107,9 @@ end;
 procedure TJvLookupControl.ListLinkActiveChanged;
 var
   DataSet: TDataSet;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ResultField: TField;
-{$ENDIF}
+  {$ENDIF}
 begin
   FListActive := False;
   FKeyField := nil;
@@ -1093,12 +1120,12 @@ begin
     CheckNotCircular;
     DataSet := FLookupLink.DataSet;
     FKeyField := DataSet.FieldByName(FLookupFieldName);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     DataSet.GetFieldList(FListFields, FLookupDisplay);
-{$ELSE}
+    {$ELSE}
     GetFieldList(DataSet, FListFields, FLookupDisplay);
-{$ENDIF}
-{$IFDEF WIN32}
+    {$ENDIF}
+    {$IFDEF WIN32}
     if FLookupMode then
     begin
       ResultField := DataSet.FieldByName(FDataField.LookupResultField);
@@ -1115,14 +1142,14 @@ begin
       else
         FDisplayField := FListFields[0];
     end;
-{$ELSE}
+    {$ELSE}
     if FListFields.Count = 0 then
       FListFields.Add(FKeyField);
     if (FDisplayIndex >= 0) and (FDisplayIndex < FListFields.Count) then
       FDisplayField := FListFields[FDisplayIndex]
     else
       FDisplayField := FListFields[0];
-{$ENDIF}
+    {$ENDIF}
 
     { Reset LookupFormat if the number of specifiers > fields count
       else function Format will raise an error }
@@ -1172,14 +1199,15 @@ end;
 function TJvLookupControl.SearchText(var AValue: string): Boolean;
 begin
   Result := False;
-  if (FDisplayField <> nil) then
+  if FDisplayField <> nil then
     if (AValue <> '') and Locate(FDisplayField, AValue, False) then
     begin
       SelectKeyValue(FKeyField.AsString);
       AValue := Copy(FDisplayField.AsString, 1, Length(AValue));
       Result := True;
     end
-    else if AValue = '' then
+    else
+    if AValue = '' then
     begin
       FLookupLink.DataSet.First;
       SelectKeyValue(FKeyField.AsString);
@@ -1195,7 +1223,8 @@ begin
   S := '';
   if (FDisplayField <> nil) {and (FDisplayField.DataType = ftString)} then
     case Key of
-      #9, #27: FSearchText := '';
+      #9, #27:
+        FSearchText := '';
       Char(VK_BACK), #32..#255:
         if CanModify then
         begin
@@ -1206,9 +1235,10 @@ begin
               FSearchText := '';
             SearchTickCount := TickCount;
           end;
-          if (Key = Char(VK_BACK)) then
+          if Key = Char(VK_BACK) then
             S := Copy(FSearchText, 1, Length(FSearchText) - 1)
-          else if Length(FSearchText) < 32 then
+          else
+          if Length(FSearchText) < 32 then
             S := FSearchText + Key;
           if SearchText(S) or (S = '') then
             FSearchText := S;
@@ -1218,7 +1248,7 @@ end;
 
 procedure TJvLookupControl.ResetField;
 begin
-  if (FDataLink.DataSource = nil) or
+  { if (FDataLink.DataSource = nil) or
     ((FDataLink.DataSource <> nil) and CanModify) then
   begin
     if (FDataLink.DataSource <> nil) and (FMasterField <> nil) and
@@ -1228,7 +1258,12 @@ begin
         FMasterField.Clear
       else
         FMasterField.AsString := FEmptyValue;
-    end;
+                  end; }// Polaris
+  if (FDataLink.DataSource = nil) or
+    (FMasterField = nil) or FDataLink.Edit then
+  begin
+    if FDataLink.Edit then
+      SetFieldValue(FMasterField, FEmptyValue); // Polaris
     FValue := FEmptyValue;
     FDisplayValue := EmptyStr;
     inherited Text := DisplayEmpty;
@@ -1250,7 +1285,8 @@ begin
     begin
       if FDataField = FMasterField then
         FDataField.DataSet.Edit;
-      FMasterField.AsString := Value;
+      // FMasterField.AsString := Value;
+      SetFieldValue(FMasterField, Value); // Polaris
     end
     else
       Exit;
@@ -1274,10 +1310,10 @@ end;
 procedure TJvLookupControl.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvLookupControl.SetListStyle(Value: TLookupListStyle);
@@ -1289,11 +1325,11 @@ begin
   end;
 end;
 
-procedure TJvLookupControl.SetFieldsDelim(Value: Char);
+procedure TJvLookupControl.SetFieldsDelimiter(Value: Char);
 begin
-  if FFieldsDelim <> Value then
+  if FFieldsDelimiter <> Value then
   begin
-    FFieldsDelim := Value;
+    FFieldsDelimiter := Value;
     if ListStyle = lsDelimited then
       Invalidate;
   end;
@@ -1301,9 +1337,9 @@ end;
 
 procedure TJvLookupControl.SetLookupField(const Value: string);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   CheckNotFixed;
-{$ENDIF}
+  {$ENDIF}
   if FLookupFieldName <> Value then
   begin
     FLookupFieldName := Value;
@@ -1334,6 +1370,33 @@ begin
   end;
 end;
 
+// Polaris begin
+
+procedure TJvLookupControl.SetFieldValue(Field: TField; const Value: string);
+begin
+  if Value = FEmptyValue then
+    if (FEmptyValue = EmptyStr) and FEmptyStrIsNull then
+      Field.Clear
+    else
+      Field.AsString := FEmptyValue
+  else
+    Field.AsString := Value;
+end;
+
+procedure TJvLookupControl.SetEmptyStrIsNull(const Value: Boolean);
+begin
+  if FEmptyStrIsNull <> Value then
+  begin
+    FEmptyStrIsNull := Value;
+    if CanModify and (FDataLink.DataSource <> nil) and FDataLink.Edit then
+      if FMasterField <> nil then
+        SetFieldValue(FMasterField, FValue)
+      else
+        SetFieldValue(FDataField, FValue);
+  end;
+end;
+// Polaris end
+
 procedure TJvLookupControl.SetEmptyItemColor(Value: TColor);
 begin
   if FEmptyItemColor <> Value then
@@ -1349,23 +1412,24 @@ begin
 end;
 
 procedure TJvLookupControl.SetDisplayValue(const Value: string);
-var
-  S: string;
+{var S: string; }// Polaris
 begin
-  if (FDisplayValue <> Value) and CanModify and (FDataLink.DataSource <> nil)
-    and
+  if (FDisplayValue <> Value) and CanModify and (FDataLink.DataSource <> nil) and
     Locate(FDisplayField, Value, True) then
   begin
-    S := FValue;
+    // S := FValue;  // Polaris
     if FDataLink.Edit then
     begin
+      // if FMasterField <> nil then FMasterField.AsString := S
+      //   else FDataField.AsString := S;
       if FMasterField <> nil then
-        FMasterField.AsString := S
+        SetFieldValue(FMasterField, FValue) // Polaris
       else
-        FDataField.AsString := S;
+        SetFieldValue(FDataField, FValue); // Polaris
     end;
   end
-  else if (FDisplayValue <> Value) then
+  else
+  if FDisplayValue <> Value then
   begin
     FDisplayValue := Value;
     DisplayValueChanged;
@@ -1393,19 +1457,21 @@ end;
 
 procedure TJvLookupControl.SetValue(const Value: string);
 begin
-  if (Value <> FValue) then
+  if Value <> FValue then
+  begin // Polaris // begin added
     if CanModify and (FDataLink.DataSource <> nil) and FDataLink.Edit then
     begin
+      // if FMasterField <> nil then FMasterField.AsString := Value
+      //   else FDataField.AsString := Value;
       if FMasterField <> nil then
-        FMasterField.AsString := Value
+        SetFieldValue(FMasterField, Value) // Polaris
       else
-        FDataField.AsString := Value;
+        SetFieldValue(FDataField, Value); // Polaris
     end
-    else
-    begin
+    else // begin  // Polaris
       SetValueKey(Value);
-      Change;
-    end;
+    Change;
+  end;
 end;
 
 procedure TJvLookupControl.SetLookupDisplay(const Value: string);
@@ -1421,14 +1487,14 @@ end;
 
 procedure TJvLookupControl.SetLookupSource(Value: TDataSource);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   CheckNotFixed;
-{$ENDIF}
+  {$ENDIF}
   FLookupLink.DataSource := Value;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-{$ENDIF}
+  {$ENDIF}
   if Value <> nil then
     FLocate.DataSet := Value.DataSet
   else
@@ -1465,10 +1531,10 @@ procedure TJvLookupControl.DrawPicture(Canvas: TCanvas; Rect: TRect;
   Image: TGraphic);
 var
   X, Y, SaveIndex: Integer;
-{$IFDEF WIN32}
-  Ico: HIcon;
+  {$IFDEF WIN32}
+  Ico: HICON;
   W, H: Integer;
-{$ENDIF}
+  {$ENDIF}
 begin
   if Image <> nil then
   begin
@@ -1481,8 +1547,9 @@ begin
       if Image is TBitmap then
         DrawBitmapTransparent(Canvas, X, Y, TBitmap(Image),
           TBitmap(Image).TransparentColor)
-{$IFDEF WIN32}
-      else if Image is TIcon then
+      {$IFDEF WIN32}
+      else
+      if Image is TIcon then
       begin
         Ico := CreateRealSizeIcon(TIcon(Image));
         try
@@ -1493,7 +1560,7 @@ begin
           DestroyIcon(Ico);
         end;
       end
-{$ENDIF}
+      {$ENDIF}
       else
         Canvas.Draw(X, Y, Image);
     finally
@@ -1511,18 +1578,18 @@ begin
     FOnGetImage(Self, Empty, Result, TextMargin);
 end;
 
-procedure TJvLookupControl.WMGetDlgCode(var Message: TMessage);
+procedure TJvLookupControl.WMGetDlgCode(var Msg: TMessage);
 begin
-  Message.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
 end;
 
-procedure TJvLookupControl.WMKillFocus(var Message: TMessage);
+procedure TJvLookupControl.WMKillFocus(var Msg: TMessage);
 begin
   FFocused := False;
   Invalidate;
 end;
 
-procedure TJvLookupControl.WMSetFocus(var Message: TMessage);
+procedure TJvLookupControl.WMSetFocus(var Msg: TMessage);
 begin
   FFocused := True;
   Invalidate;
@@ -1536,8 +1603,7 @@ begin
   try
     if not ValueIsEmpty(AValue) and (SearchField <> nil) then
     begin
-      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact,
-        not IgnoreCase);
+      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase);
       if Result then
       begin
         if SearchField = FDisplayField then
@@ -1619,11 +1685,11 @@ begin
       Field := FListFields[J];
       Result := Result + Field.DisplayText;
       if J < LastFieldIndex then
-        Result := Result + FFieldsDelim + ' ';
+        Result := Result + FFieldsDelimiter + ' ';
     end;
 end;
 
-{ TJvDBLookupList }
+//=== TJvDBLookupList ========================================================
 
 constructor TJvDBLookupList.Create(AOwner: TComponent);
 begin
@@ -1631,11 +1697,11 @@ begin
   Width := 121;
   Ctl3D := True;
   FBorderStyle := bsSingle;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ControlStyle := [csOpaque, csDoubleClicks];
-{$ELSE}
+  {$ELSE}
   ControlStyle := [csFramed, csOpaque, csDoubleClicks];
-{$ENDIF}
+  {$ENDIF}
   RowCount := 7;
 end;
 
@@ -1646,14 +1712,14 @@ begin
   begin
     Style := Style or WS_VSCROLL;
     if FBorderStyle = bsSingle then
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       if NewStyleControls and Ctl3D then
         ExStyle := ExStyle or WS_EX_CLIENTEDGE
       else
         Style := Style or WS_BORDER;
-{$ELSE}
+      {$ELSE}
       Style := Style or WS_BORDER;
-{$ENDIF}
+      {$ENDIF}
   end;
 end;
 
@@ -1696,21 +1762,28 @@ begin
   begin
     Delta := 0;
     case Key of
-      VK_UP, VK_LEFT: Delta := -1;
-      VK_DOWN, VK_RIGHT: Delta := 1;
-      VK_PRIOR: Delta := 1 - (FRowCount - EmptyRow);
-      VK_NEXT: Delta := (FRowCount - EmptyRow) - 1;
-      VK_HOME: Delta := -Maxint;
-      VK_END: Delta := Maxint;
+      VK_UP, VK_LEFT:
+        Delta := -1;
+      VK_DOWN, VK_RIGHT:
+        Delta := 1;
+      VK_PRIOR:
+        Delta := 1 - (FRowCount - EmptyRow);
+      VK_NEXT:
+        Delta := (FRowCount - EmptyRow) - 1;
+      VK_HOME:
+        Delta := -MaxInt;
+      VK_END:
+        Delta := MaxInt;
     end;
     if Delta <> 0 then
     begin
       if ValueIsEmpty(Value) and (EmptyRow > 0) and (Delta < 0) then
         FSelectEmpty := True;
       FSearchText := '';
-      if Delta = -Maxint then
+      if Delta = -MaxInt then
         FLookupLink.DataSet.First
-      else if Delta = Maxint then
+      else
+      if Delta = MaxInt then
         FLookupLink.DataSet.Last
       else
       begin
@@ -1725,7 +1798,7 @@ begin
           Delta := 0;
         end;
         FLookupLink.DataSet.MoveBy(Delta);
-        if FLookupLink.DataSet.BOF and (Delta < 0) and (EmptyRow > 0) then
+        if FLookupLink.DataSet.Bof and (Delta < 0) and (EmptyRow > 0) then
           FSelectEmpty := True;
       end;
       SelectCurrent;
@@ -1776,7 +1849,7 @@ begin
   begin
     FRecordIndex := FLookupLink.ActiveRecord;
     FRecordCount := FLookupLink.RecordCount;
-    FKeySelected := not ValueIsEmpty(FValue) or not FLookupLink.DataSet.BOF;
+    FKeySelected := not ValueIsEmpty(FValue) or not FLookupLink.DataSet.Bof;
   end
   else
   begin
@@ -1883,22 +1956,24 @@ begin
         S := Field.DisplayText;
       X := 2;
       AAlignment := Field.Alignment;
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       if UseRightToLeftAlignment then
         ChangeBiDiModeAlignment(AAlignment);
-{$ENDIF}
+      {$ENDIF}
       case AAlignment of
-        taRightJustify: X := W - Canvas.TextWidth(S) - 3;
-        taCenter: X := (W - Canvas.TextWidth(S)) div 2;
+        taRightJustify:
+          X := W - Canvas.TextWidth(S) - 3;
+        taCenter:
+          X := (W - Canvas.TextWidth(S)) div 2;
       end;
       R.Left := R.Right;
       R.Right := R.Right + W;
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       if SysLocale.MiddleEast and UseRightToLeftReading then
         Canvas.TextFlags := Canvas.TextFlags or ETO_RTLREADING
       else
         Canvas.TextFlags := Canvas.TextFlags and not ETO_RTLREADING;
-{$ENDIF}
+      {$ENDIF}
       Canvas.TextRect(R, R.Left + X, ATop, S);
       if J < LastFieldIndex then
       begin
@@ -1909,20 +1984,21 @@ begin
           Break;
       end;
     end
-  else {if FListStyle = lsDelimited then} if not IsEmpty then
+  else
+  if not IsEmpty then
     S := DoFormatLine;
-  if (FListStyle = lsDelimited) then
+  if FListStyle = lsDelimited then
   begin
     if IsEmpty then
       S := DisplayEmpty;
     R.Left := Rect.Left;
     R.Right := Rect.Right;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     if SysLocale.MiddleEast and UseRightToLeftReading then
       Canvas.TextFlags := Canvas.TextFlags or ETO_RTLREADING
     else
       Canvas.TextFlags := Canvas.TextFlags and not ETO_RTLREADING;
-{$ENDIF}
+    {$ENDIF}
     Canvas.TextRect(R, R.Left + 2, ATop, S);
   end;
 end;
@@ -1980,8 +2056,7 @@ begin
             Bmp.Canvas.FillRect(ImageRect);
             if Image <> nil then
               DrawPicture(Bmp.Canvas, ImageRect, Image);
-            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) -
-              TextMargin,
+            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) - TextMargin,
               HeightOf(R)), Selected, True);
             Canvas.Draw(R.Left, R.Top, Bmp);
           end
@@ -2014,8 +2089,7 @@ begin
             Bmp.Canvas.FillRect(ImageRect);
             if Image <> nil then
               DrawPicture(Bmp.Canvas, ImageRect, Image);
-            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) -
-              TextMargin,
+            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) - TextMargin,
               HeightOf(R)), Selected, False);
             Canvas.Draw(R.Left, R.Top, Bmp);
           end
@@ -2042,9 +2116,7 @@ begin
   FLockPosition := True;
   try
     if FSelectEmpty then
-    begin
-      ResetField;
-    end
+      ResetField
     else
       SelectKeyValue(FKeyField.AsString);
   finally
@@ -2063,9 +2135,7 @@ begin
     Y := ClientHeight - 1;
   Delta := Y div GetTextHeight;
   if (Delta = 0) and EmptyRowVisible then
-  begin
-    FSelectEmpty := True;
-  end
+    FSelectEmpty := True
   else
   begin
     Delta := Delta - FRecordIndex;
@@ -2133,6 +2203,7 @@ procedure TJvDBLookupList.StopTimer;
 begin
   if FTimerActive then
   begin
+    // (rom) why not a TTimer?
     KillTimer(Handle, 1);
     FTimerActive := False;
   end;
@@ -2202,8 +2273,8 @@ begin
         SINew.nPage := 0;
         if Self.FRecordCount = (FRowCount - Ord(EmptyRowVisible)) then begin
           SINew.nMax := 4;
-          if BOF then SINew.nPos := 0
-          else if EOF then SINew.nPos := 4
+          if Bof then SINew.nPos := 0
+          else if Eof then SINew.nPos := 4
           else SINew.nPos := 2;
         end
         else begin
@@ -2234,8 +2305,8 @@ begin
     if FRecordCount = (FRowCount - Ord(EmptyRowVisible)) then
     begin
       Max := 4;
-      if not FLookupLink.DataSet.BOF then
-        if not FLookupLink.DataSet.EOF then
+      if not FLookupLink.DataSet.Bof then
+        if not FLookupLink.DataSet.Eof then
           Pos := 2
         else
           Pos := 4;
@@ -2256,9 +2327,9 @@ begin
   end;
 end;
 
-procedure TJvDBLookupList.CMCtl3DChanged(var Message: TMessage);
+procedure TJvDBLookupList.CMCtl3DChanged(var Msg: TMessage);
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if NewStyleControls and (FBorderStyle = bsSingle) then
   begin
     RecreateWnd;
@@ -2266,28 +2337,28 @@ begin
       RowCount := RowCount;
   end;
   inherited;
-{$ELSE}
+  {$ELSE}
   inherited;
   Invalidate;
   if not (csReading in ComponentState) then
     RowCount := RowCount;
-{$ENDIF}
+  {$ENDIF}
 end;
 
-procedure TJvDBLookupList.CMFontChanged(var Message: TMessage);
+procedure TJvDBLookupList.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   if not (csReading in ComponentState) then
     Height := Height;
 end;
 
-procedure TJvDBLookupList.WMCancelMode(var Message: TMessage);
+procedure TJvDBLookupList.WMCancelMode(var Msg: TMessage);
 begin
   StopTracking;
   inherited;
 end;
 
-procedure TJvDBLookupList.WMTimer(var Message: TMessage);
+procedure TJvDBLookupList.WMTimer(var Msg: TMessage);
 begin
   TimerScroll;
 end;
@@ -2328,44 +2399,56 @@ begin
       Result := MoveBy(-FRecordIndex - 1) <> 0;
   end;
 end;
+
 {$ENDIF COMPILER4_UP}
 
-procedure TJvDBLookupList.WMVScroll(var Message: TWMVScroll);
+procedure TJvDBLookupList.WMVScroll(var Msg: TWMVScroll);
 begin
   FSearchText := '';
-  with Message, FLookupLink.DataSet do
+  with Msg, FLookupLink.DataSet do
     case ScrollCode of
-      SB_LINEUP: MoveBy(-FRecordIndex - 1);
-      SB_LINEDOWN: MoveBy(FRecordCount - FRecordIndex);
-      SB_PAGEUP: MoveBy(-FRecordIndex - FRecordCount + 1);
-      SB_PAGEDOWN: MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
+      SB_LINEUP:
+        MoveBy(-FRecordIndex - 1);
+      SB_LINEDOWN:
+        MoveBy(FRecordCount - FRecordIndex);
+      SB_PAGEUP:
+        MoveBy(-FRecordIndex - FRecordCount + 1);
+      SB_PAGEDOWN:
+        MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
       SB_THUMBPOSITION:
         begin
           case Pos of
-            0: First;
-            1: MoveBy(-FRecordIndex - FRecordCount + 1);
-            2: Exit;
-            3: MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
-            4: Last;
+            0:
+              First;
+            1:
+              MoveBy(-FRecordIndex - FRecordCount + 1);
+            2:
+              Exit;
+            3:
+              MoveBy(FRecordCount - FRecordIndex + FRecordCount - 2);
+            4:
+              Last;
           end;
         end;
-      SB_BOTTOM: Last;
-      SB_TOP: First;
+      SB_BOTTOM:
+        Last;
+      SB_TOP:
+        First;
     end;
 end;
 
-{ TJvPopupDataList }
+//=== TJvPopupDataList =======================================================
 
 constructor TJvPopupDataList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AOwner is TJvLookupControl then
     FCombo := TJvLookupControl(AOwner);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable];
-{$ELSE}
+  {$ELSE}
   ControlStyle := [csOpaque];
-{$ENDIF}
+  {$ENDIF}
   FPopup := True;
   TabStop := False;
   ParentCtl3D := False;
@@ -2378,29 +2461,28 @@ begin
   with Params do
   begin
     Style := WS_POPUP or WS_BORDER;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     ExStyle := WS_EX_TOOLWINDOW;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     AddBiDiModeExStyle(ExStyle);
-{$ENDIF}
+    {$ENDIF}
     WindowClass.Style := CS_SAVEBITS;
   end;
 end;
 
 {$IFNDEF WIN32}
-
 procedure TJvPopupDataList.CreateWnd;
 begin
   inherited CreateWnd;
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     SetParent(nil);
 end;
 {$ENDIF}
 
-procedure TJvPopupDataList.WMMouseActivate(var Message: TMessage);
+procedure TJvPopupDataList.WMMouseActivate(var Msg: TMessage);
 begin
-  Message.Result := MA_NOACTIVATE;
+  Msg.Result := MA_NOACTIVATE;
 end;
 
 procedure TJvPopupDataList.Click;
@@ -2417,16 +2499,16 @@ begin
     TJvDBLookupCombo(FCombo).InvalidateText;
 end;
 
-{ TJvDBLookupCombo }
+//=== TJvDBLookupCombo =======================================================
 
 constructor TJvDBLookupCombo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   ControlStyle := ControlStyle + [csReplicatable] - [csSetCaption];
-{$ELSE}
+  {$ELSE}
   ControlStyle := [csFramed, csOpaque];
-{$ENDIF}
+  {$ENDIF}
   Width := 145;
   Height := 0;
   FDataList := TJvPopupDataList.Create(Self);
@@ -2437,12 +2519,13 @@ begin
   FDropDownCount := 8;
   FDisplayValues := TStringList.Create;
   FSelImage := TPicture.Create;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   FBtnGlyph := TBitmap.Create;
   { Load ComboBox button glyph }
+  // (rom) needs improvement
   FBtnGlyph.Handle := LoadBitmap(0, PChar(32738));
   FBtnDisabled := CreateDisabledBitmap(FBtnGlyph, clBlack);
-{$ENDIF}
+  {$ENDIF}
   Height := {GetMinHeight} 21;
   FIgnoreCase := True;
   FEscapeClear := True;
@@ -2450,10 +2533,10 @@ end;
 
 destructor TJvDBLookupCombo.Destroy;
 begin
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   FBtnDisabled.Free;
   FBtnGlyph.Free;
-{$ENDIF}
+  {$ENDIF}
   FSelImage.Free;
   FSelImage := nil;
   FDisplayValues.Free;
@@ -2465,14 +2548,14 @@ procedure TJvDBLookupCombo.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     if NewStyleControls and Ctl3D then
       ExStyle := ExStyle or WS_EX_CLIENTEDGE
     else
       Style := Style or WS_BORDER;
-{$ELSE}
+  {$ELSE}
     Style := Style or WS_BORDER;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvDBLookupCombo.CloseUp(Accept: Boolean);
@@ -2517,16 +2600,15 @@ begin
     FDataList.EmptyValue := EmptyValue;
     FDataList.DisplayEmpty := DisplayEmpty;
     FDataList.EmptyItemColor := EmptyItemColor;
-    FDataList.RowCount := FDropDownCount;
+    FDataList.RowCount := DropDownCount;
     FDataList.LookupField := FLookupFieldName;
     FDataList.LookupFormat := FLookupFormat;
     FDataList.ListStyle := FListStyle;
-    FDataList.FieldsDelimiter := FFieldsDelim;
+    FDataList.FieldsDelimiter := FFieldsDelimiter;
     FDataList.IgnoreCase := FIgnoreCase;
     FDataList.IndexSwitch := FIndexSwitch;
     FDataList.OnGetImage := OnGetImage;
-    if FDisplayField <> nil then
-      FAlignment := FDisplayField.Alignment;
+    // polaris    if FDisplayField <> nil then FAlignment := FDisplayField.Alignment;
     S := '';
     for I := 0 to FListFields.Count - 1 do
       S := S + TField(FListFields[I]).FieldName + ';';
@@ -2542,7 +2624,8 @@ begin
     {FDataList.KeyValueChanged;}
     if FDropDownWidth > 0 then
       FDataList.Width := FDropDownWidth
-    else if FDropDownWidth < 0 then
+    else
+    if FDropDownWidth < 0 then
       FDataList.Width := Max(Width, FDataList.GetWindowWidth)
     else
       FDataList.Width := Width;
@@ -2551,8 +2634,10 @@ begin
     if Y + FDataList.Height > Screen.Height then
       Y := P.Y - FDataList.Height;
     case FDropDownAlign of
-      daRight: Dec(P.X, FDataList.Width - Width);
-      daCenter: Dec(P.X, (FDataList.Width - Width) div 2);
+      daRight:
+        Dec(P.X, FDataList.Width - Width);
+      daCenter:
+        Dec(P.X, (FDataList.Width - Width) div 2);
     end;
     if P.X + FDataList.Width > Screen.Width then
       P.X := Screen.Width - FDataList.Width;
@@ -2583,7 +2668,7 @@ begin
       for I := 0 to FListFields.Count - 1 do
         //begin
           //if S <> '' then
-          //  S := S + FFieldsDelim + ' ';
+          //  S := S + FFieldsDelimiter + ' ';
           //S := S + TField(FListFields[I]).DisplayText;
         //  begin
         with TField(FListFields[I]) do
@@ -2618,9 +2703,9 @@ var
   R: TRect;
 begin
   SetRect(R, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   InflateRect(R, -1, -1);
-{$ENDIF}
+  {$ENDIF}
   InvalidateRect(Self.Handle, @R, False);
   UpdateWindow(Self.Handle);
 end;
@@ -2638,7 +2723,8 @@ begin
         DropDown;
       Key := 0;
     end
-    else if (not FListVisible) and (not ReadOnly) then
+    else
+    if (not FListVisible) and (not ReadOnly) then
     begin
       if not LocateKey then
         FLookupLink.DataSet.First
@@ -2678,15 +2764,17 @@ begin
       if FListVisible then
         FDataList.KeyPress(Key);
     end
-    else if (Key = #27) and FEscapeClear and (not ValueIsEmpty(FValue)) and
-      CanModify then
+    else
+    if (Key = #27) and FEscapeClear and (not ValueIsEmpty(FValue)) and CanModify then
     begin
       ResetField;
-      Key := #0;
+      // Key := #0;
+      if FValue = FEmptyValue then
+        Key := #0; // Polaris
     end;
   end;
   inherited KeyPress(Key);
-  if (Key in [#13, #27]) then
+  if Key in [#13, #27] then
     GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
 end;
 
@@ -2712,46 +2800,60 @@ end;
 
 procedure TJvDBLookupCombo.KeyValueChanged;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if FLookupMode then
   begin
     if FDisplayValues <> nil then
       FDisplayValues.Clear;
-    if FDataLink.Active and (FDataField <> nil) then
-    begin
+    if FDataLink.Active and (FDataField <> nil) then {begin
       inherited Text := FDataField.DisplayText;
       FAlignment := FDataField.Alignment;
-    end
+    end}
+      if ValueIsEmpty(FValue) then
+      begin // Polaris
+        inherited Text := DisplayEmpty;
+        FAlignment := taLeftJustify;
+      end
+      else
+      begin
+        inherited Text := FDataField.DisplayText;
+        FAlignment := FDataField.Alignment;
+      end
     else
       inherited Text := '';
   end
   else
-{$ENDIF}if FListActive and LocateKey then
-      UpdateFieldText
-    else if FListActive then
-    begin
-      FValue := FEmptyValue;
-      inherited Text := DisplayEmpty;
-      if FDisplayValues <> nil then
-        FDisplayValues.Clear;
-      FAlignment := taLeftJustify;
-    end
-    else
-    begin
+  {$ENDIF}
+  if FListActive and LocateKey then
+    UpdateFieldText
+  else
+  if FListActive then
+  begin
+    FValue := FEmptyValue;
+    inherited Text := DisplayEmpty;
+    if FDisplayValues <> nil then
+      FDisplayValues.Clear;
+    FAlignment := taLeftJustify;
+  end
+  else
+  begin
+    if csDesigning in ComponentState then // Polaris
+      inherited Text := DisplayEmpty // Polaris
+    else // Polaris
       inherited Text := '';
-      if FDisplayValues <> nil then
-        FDisplayValues.Clear;
-    end;
+    if FDisplayValues <> nil then
+      FDisplayValues.Clear;
+  end;
   UpdateDisplayValue;
   UpdateCurrentImage;
   Invalidate;
 end;
 
-procedure TJvDBLookupCombo.SetFieldsDelim(Value: Char);
+procedure TJvDBLookupCombo.SetFieldsDelimiter(Value: Char);
 begin
-  if (FFieldsDelim <> Value) then
+  if FFieldsDelimiter <> Value then
   begin
-    inherited SetFieldsDelim(Value);
+    inherited SetFieldsDelimiter(Value);
     if (ListStyle = lsDelimited) and DisplayAllFields and
       not (csReading in ComponentState) then
       KeyValueChanged;
@@ -2760,7 +2862,7 @@ end;
 
 procedure TJvDBLookupCombo.SetListStyle(Value: TLookupListStyle);
 begin
-  if (FListStyle <> Value) then
+  if FListStyle <> Value then
   begin
     FListStyle := Value;
     if DisplayAllFields and not (csReading in ComponentState) then
@@ -2768,28 +2870,27 @@ begin
   end;
 end;
 
-function TJvDBLookupCombo.GetDisplayAll: Boolean;
+function TJvDBLookupCombo.GetDisplayAllFields: Boolean;
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if FLookupMode then
     Result := False
   else
-{$ENDIF}
-    Result := FDisplayAll;
+  {$ENDIF}
+    Result := FDisplayAllFields;
 end;
 
-procedure TJvDBLookupCombo.SetDisplayAll(Value: Boolean);
+procedure TJvDBLookupCombo.SetDisplayAllFields(Value: Boolean);
 begin
-  if FDisplayAll <> Value then
+  if FDisplayAllFields <> Value then
   begin
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     if FLookupMode then
-      FDisplayAll := False
+      FDisplayAllFields := False
     else
-{$ENDIF}
-      FDisplayAll := Value;
-    if not (csReading in ComponentState)
-{$IFDEF WIN32} and not FLookupMode{$ENDIF} then
+    {$ENDIF}
+      FDisplayAllFields := Value;
+    if not (csReading in ComponentState) {$IFDEF WIN32} and not FLookupMode {$ENDIF} then
       KeyValueChanged
     else
       Invalidate;
@@ -2830,7 +2931,8 @@ begin
       Exit;
     if FListVisible then
       CloseUp(False)
-    else if {FListActive} CanModify then
+    else
+    if {FListActive} CanModify then
     begin
       MouseCapture := True;
       FTracking := True;
@@ -2924,8 +3026,10 @@ begin
     X := 2;
     R.Right := R.Left + W;
     case TAlignment(HiWord(Longint(FDisplayValues.Objects[I]))) of
-      taRightJustify: X := W - Canvas.TextWidth(S) - 3;
-      taCenter: X := (W - Canvas.TextWidth(S)) div 2;
+      taRightJustify:
+        X := W - Canvas.TextWidth(S) - 3;
+      taCenter:
+        X := (W - Canvas.TextWidth(S)) div 2;
     end;
     Canvas.TextRect(R, R.Left + Max(0, X), ATop, S);
     Inc(R.Left, W);
@@ -2951,38 +3055,38 @@ var
   Image: TGraphic;
   Bmp: TBitmap;
   Alignment: TAlignment;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   Target: TRect;
-{$ENDIF}
-{$IFDEF COMPILER7_UP}
+  {$ENDIF}
+  {$IFDEF COMPILER7_UP}
   State: TThemedComboBox;
   Details: TThemedElementDetails;
-{$ENDIF}
+  {$ENDIF}
 begin
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
-  Selected := FFocused and not FListVisible{$IFDEF WIN32} and
-  not (csPaintCopy in ControlState){$ENDIF};
+  Selected := FFocused and not FListVisible {$IFDEF WIN32} and  not (csPaintCopy in ControlState){$ENDIF};
   if Selected then
   begin
     Canvas.Font.Color := clHighlightText;
     Canvas.Brush.Color := clHighlight;
   end
-  else if not Enabled and NewStyleControls then
+  else
+  if not Enabled and NewStyleControls then
     Canvas.Font.Color := clGrayText;
   AText := inherited Text;
   Alignment := FAlignment;
   Image := nil;
   IsEmpty := False;
   DrawList := DisplayAllFields;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if (csPaintCopy in ControlState) and (FDataField <> nil) then
   begin
     DrawList := False;
     AText := FDataField.DisplayText;
     Alignment := FDataField.Alignment;
   end;
-{$ENDIF}
+  {$ENDIF}
   TextMargin := 0;
   if FListVisible then
   begin
@@ -2999,7 +3103,8 @@ begin
         IsEmpty := True;
         Image := GetPicture(False, True, TextMargin);
       end
-      else if (FDataList.FKeyField.AsString = FDataList.Value) then
+      else
+    if FDataList.FKeyField.AsString = FDataList.Value then
       begin
         AText := FDataList.FDisplayField.DisplayText;
         Image := FDataList.GetPicture(False, False, TextMargin);
@@ -3012,34 +3117,36 @@ begin
   end
   else
   begin
-{$IFDEF WIN32}
-    if (csPaintCopy in ControlState) then
+    {$IFDEF WIN32}
+    if csPaintCopy in ControlState then
       Image := nil
     else
-{$ENDIF}
+    {$ENDIF}
     begin
       IsEmpty := ValueIsEmpty(Value);
       Image := GetPicture(True, IsEmpty, TextMargin);
     end;
   end;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   if UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(Alignment);
-{$ENDIF}
+  {$ENDIF}
   W := ClientWidth - FButtonWidth;
   if W > 4 then
   begin
     SetRect(R, 1, 1, W - 1, ClientHeight - 1);
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     InflateRect(R, -1, -1);
-{$ENDIF}
+    {$ENDIF}
     if TextMargin > 0 then
       Inc(TextMargin);
-    X := 2 + TextMargin;
+    X := 0 {2} + TextMargin; // Polaris
     if not (FListVisible and (FDataList.FSearchText <> '')) and not DrawList then
       case Alignment of
-        taRightJustify: X := W - Canvas.TextWidth(AText) - 6;
-        taCenter: X := (W + TextMargin - Canvas.TextWidth(AText)) div 2;
+        taRightJustify:
+          X := W - Canvas.TextWidth(AText) - 6;
+        taCenter:
+          X := (W + TextMargin - Canvas.TextWidth(AText)) div 2;
       end;
     Bmp := TBitmap.Create;
     try
@@ -3049,8 +3156,8 @@ begin
         Brush := Self.Canvas.Brush;
         Pen := Self.Canvas.Pen;
       end;
-{$IFDEF COMPILER4_UP}
-      if (BiDiMode = bdRightToLeft) then
+      {$IFDEF COMPILER4_UP}
+      if BiDiMode = bdRightToLeft then
       begin
         Inc(X, FButtonWidth);
         Inc(R.Left, FButtonWidth);
@@ -3061,7 +3168,7 @@ begin
         TControlCanvas(Self.Canvas).UpdateTextFlags;
         Bmp.Canvas.TextFlags := Self.Canvas.TextFlags;
       end;
-{$ENDIF}
+      {$ENDIF}
       Bmp.Width := WidthOf(R);
       Bmp.Height := HeightOf(R);
       ImageRect := Rect(0, 0, WidthOf(R), HeightOf(R));
@@ -3095,22 +3202,24 @@ begin
       Canvas.DrawFocusRect(R);
   end;
   SetRect(R, W, 0, ClientWidth, ClientHeight);
-{$IFDEF COMPILER4_UP}
-  if (BiDiMode = bdRightToLeft) then
+  {$IFDEF COMPILER4_UP}
+  if BiDiMode = bdRightToLeft then
   begin
     R.Left := 0;
     R.Right := FButtonWidth;
   end;
-{$ENDIF}
-{$IFDEF WIN32}
-{$IFDEF COMPILER7_UP}
+  {$ENDIF}
+  {$IFDEF WIN32}
+  {$IFDEF COMPILER7_UP}
   if ThemeServices.ThemesEnabled then
   begin
     if (not FListActive) or (not Enabled) or ReadOnly then
       State := tcDropDownButtonDisabled
-    else if FPressed then
+    else
+    if FPressed then
       State := tcDropDownButtonPressed
-    else if FMouseInControl and not FListVisible then
+    else
+    if FOver and not FListVisible then
       State := tcDropDownButtonHot
     else
       State := tcDropDownButtonNormal;
@@ -3118,17 +3227,18 @@ begin
     ThemeServices.DrawElement(Canvas.Handle, Details, R);
   end
   else
-{$ENDIF COMPILER7_UP}
+  {$ENDIF COMPILER7_UP}
   begin
     if (not FListActive) or (not Enabled) or ReadOnly then
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
-    else if FPressed then
+    else
+    if FPressed then
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
     else
       Flags := DFCS_SCROLLCOMBOBOX;
     DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
   end;
-{$ELSE}
+  {$ELSE}
   if NewStyleControls then
   begin
     InflateRect(R, -1, -1);
@@ -3151,7 +3261,7 @@ begin
   { Canvas.Draw(Target.Left, Target.Top, Bmp); }
   DrawBitmapTransparent(Canvas, Target.Left, Target.Top, Bmp,
     TransColor[Bmp = FBtnGlyph]);
-{$ENDIF WIN32}
+  {$ENDIF WIN32}
 end;
 
 procedure TJvDBLookupCombo.ResetField;
@@ -3198,15 +3308,15 @@ begin
   Change;
 end;
 
-procedure TJvDBLookupCombo.CMCancelMode(var Message: TCMCancelMode);
+procedure TJvDBLookupCombo.CMCancelMode(var Msg: TCMCancelMode);
 begin
-  if (Message.Sender <> Self) and (Message.Sender <> FDataList) then
+  if (Msg.Sender <> Self) and (Msg.Sender <> FDataList) then
     CloseUp(False);
 end;
 
 {$IFDEF WIN32}
 
-procedure TJvDBLookupCombo.CMCtl3DChanged(var Message: TMessage);
+procedure TJvDBLookupCombo.CMCtl3DChanged(var Msg: TMessage);
 begin
   if NewStyleControls then
   begin
@@ -3217,21 +3327,22 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupCombo.CNKeyDown(var Message: TWMKeyDown);
+procedure TJvDBLookupCombo.CNKeyDown(var Msg: TWMKeyDown);
 begin
   if not (csDesigning in ComponentState) then
-    if (Message.CharCode in [VK_RETURN, VK_ESCAPE]) and FListVisible and
+    if (Msg.CharCode in [VK_RETURN, VK_ESCAPE]) and FListVisible and
       FLookupMode and FDataLink.DataSourceFixed then
     begin
-      CloseUp(Message.CharCode = VK_RETURN);
-      Message.Result := 1;
+      CloseUp(Msg.CharCode = VK_RETURN);
+      Msg.Result := 1;
       Exit;
     end;
   inherited;
 end;
+
 {$ENDIF WIN32}
 
-procedure TJvDBLookupCombo.CMFontChanged(var Message: TMessage);
+procedure TJvDBLookupCombo.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   if not (csReading in ComponentState) then
@@ -3240,63 +3351,61 @@ end;
 
 {$IFDEF COMPILER7_UP}
 
-procedure TJvDBLookupCombo.CMMouseEnter(var Message: TMessage);
+procedure TJvDBLookupCombo.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
-  if ThemeServices.ThemesEnabled and not (FMouseInControl) and not (csDesigning in
-    ComponentState) then
+  if ThemeServices.ThemesEnabled and not FOver and not (csDesigning in ComponentState) then
   begin
-    FMouseInControl := True;
+    FOver := True;
     Invalidate;
   end;
 end;
 
-procedure TJvDBLookupCombo.CMMouseLeave(var Message: TMessage);
+procedure TJvDBLookupCombo.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  if ThemeServices.ThemesEnabled and FMouseInControl then
+  if ThemeServices.ThemesEnabled and FOver then
   begin
-    FMouseInControl := False;
+    FOver := False;
     Invalidate;
   end;
 end;
+
 {$ENDIF COMPILER7_UP}
 
-procedure TJvDBLookupCombo.CMEnabledChanged(var Message: TMessage);
+procedure TJvDBLookupCombo.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
 {$IFDEF WIN32}
-
-procedure TJvDBLookupCombo.CMGetDataLink(var Message: TMessage);
+procedure TJvDBLookupCombo.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 {$ENDIF}
 
-procedure TJvDBLookupCombo.WMCancelMode(var Message: TMessage);
+procedure TJvDBLookupCombo.WMCancelMode(var Msg: TMessage);
 begin
   StopTracking;
   inherited;
 end;
 
-procedure TJvDBLookupCombo.WMGetDlgCode(var Message: TMessage);
+procedure TJvDBLookupCombo.WMGetDlgCode(var Msg: TMessage);
 begin
   inherited;
-  Message.Result := DLGC_BUTTON or DLGC_WANTALLKEYS or DLGC_WANTARROWS
-    or DLGC_WANTCHARS;
+  Msg.Result := DLGC_BUTTON or DLGC_WANTALLKEYS or DLGC_WANTARROWS or DLGC_WANTCHARS;
 end;
 
-procedure TJvDBLookupCombo.WMKillFocus(var Message: TWMKillFocus);
+procedure TJvDBLookupCombo.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
   CloseUp(False);
 end;
 
-procedure TJvDBLookupCombo.WMSetCursor(var Message: TWMSetCursor);
+procedure TJvDBLookupCombo.WMSetCursor(var Msg: TWMSetCursor);
 var
   P: TPoint;
 begin
@@ -3304,37 +3413,36 @@ begin
   with ClientRect do
     if PtInRect(Bounds(Right - FButtonWidth, Top, FButtonWidth, Bottom - Top),
       ScreenToClient(P)) then
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       Windows.SetCursor(LoadCursor(0, IDC_ARROW))
-{$ELSE}
+      {$ELSE}
       WinProcs.SetCursor(LoadCursor(0, IDC_ARROW))
-{$ENDIF}
+      {$ENDIF}
     else
       inherited;
 end;
 
-procedure TJvDBLookupCombo.WMSize(var Message: TWMSize);
+procedure TJvDBLookupCombo.WMSize(var Msg: TWMSize);
 begin
   inherited;
   if not (csReading in ComponentState) and (Height < GetMinHeight) then
     Height := GetMinHeight
   else
   begin
-    if (csDesigning in ComponentState) then
+    if csDesigning in ComponentState then
       FDataList.SetBounds(0, Height + 1, 10, 10);
   end;
 end;
 
 {$IFDEF COMPILER4_UP}
-
-procedure TJvDBLookupCombo.CMBiDiModeChanged(var Message: TMessage);
+procedure TJvDBLookupCombo.CMBiDiModeChanged(var Msg: TMessage);
 begin
   inherited;
   FDataList.BiDiMode := BiDiMode;
 end;
 {$ENDIF}
 
-{ TJvPopupDataWindow }
+//=== TJvPopupDataWindow =====================================================
 
 constructor TJvPopupDataWindow.Create(AOwner: TComponent);
 begin
@@ -3349,11 +3457,9 @@ procedure TJvPopupDataWindow.InvalidateEditor;
 var
   R: TRect;
 begin
-  if (FEditor is TJvCustomComboEdit) then
-  begin
+  if FEditor is TJvCustomComboEdit then
     with TJvComboEdit(FEditor) do
-      SetRect(R, 0, 0, ClientWidth - Button.Width - 2, ClientHeight + 1);
-  end
+      SetRect(R, 0, 0, ClientWidth - Button.Width - 2, ClientHeight + 1)
   else
     R := FEditor.ClientRect;
   InvalidateRect(FEditor.Handle, @R, False);
@@ -3365,7 +3471,6 @@ begin
   inherited Click;
   if Value <> '' then
     with TJvLookupEdit(FEditor) do
-    begin
       if not (FChanging or ReadOnly) then
       begin
         FChanging := True;
@@ -3377,7 +3482,6 @@ begin
           FChanging := False;
         end;
       end;
-    end;
   InvalidateEditor;
 end;
 
@@ -3440,7 +3544,7 @@ begin
   Visible := True;
 end;
 
-{ TJvLookupEdit }
+//=== TJvLookupEdit ==========================================================
 
 constructor TJvLookupEdit.Create(AOwner: TComponent);
 begin
@@ -3489,12 +3593,12 @@ begin
   TJvPopupDataWindow(FPopup).ListStyle := Value;
 end;
 
-function TJvLookupEdit.GetFieldsDelim: Char;
+function TJvLookupEdit.GetFieldsDelimiter: Char;
 begin
   Result := TJvPopupDataWindow(FPopup).FieldsDelimiter;
 end;
 
-procedure TJvLookupEdit.SetFieldsDelim(Value: Char);
+procedure TJvLookupEdit.SetFieldsDelimiter(Value: Char);
 begin
   TJvPopupDataWindow(FPopup).FieldsDelimiter := Value;
 end;
@@ -3583,7 +3687,8 @@ begin
       Font := Self.Font;
       if FDropDownWidth > 0 then
         Width := FDropDownWidth
-      else if FDropDownWidth < 0 then
+      else
+      if FDropDownWidth < 0 then
         Width := Max(Self.Width, GetWindowWidth)
       else
         Width := Self.Width;
@@ -3596,8 +3701,7 @@ end;
 
 procedure TJvLookupEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN]) and
-    PopupVisible then
+  if (Key in [VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN]) and PopupVisible then
   begin
     TJvPopupDataWindow(FPopup).KeyDown(Key, Shift);
     Key := 0;
@@ -3662,26 +3766,22 @@ begin
 end;
 
 {$IFDEF WIN32}
-
 procedure TJvLookupEdit.SetPopupValue(const Value: Variant);
 {$ELSE}
-
 procedure TJvLookupEdit.SetPopupValue(const Value: string);
 {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if VarIsNull(Value) or VarIsEmpty(Value) then
     TJvPopupDataWindow(FPopup).Value := TJvPopupDataWindow(FPopup).EmptyValue
   else
-{$ENDIF}
+  {$ENDIF}
     TJvPopupDataWindow(FPopup).DisplayValue := Value;
 end;
 
 {$IFDEF WIN32}
-
 function TJvLookupEdit.GetPopupValue: Variant;
 {$ELSE}
-
 function TJvLookupEdit.GetPopupValue: string;
 {$ENDIF}
 begin
@@ -3693,10 +3793,8 @@ begin
 end;
 
 {$IFDEF WIN32}
-
 function TJvLookupEdit.AcceptPopup(var Value: Variant): Boolean;
 {$ELSE}
-
 function TJvLookupEdit.AcceptPopup(var Value: string): Boolean;
 {$ENDIF}
 begin

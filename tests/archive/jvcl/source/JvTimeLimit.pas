@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvTimeLimit;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Dialogs, Forms, JvComponent;
+  SysUtils, Classes, Controls, Dialogs, Forms,
+  JvComponent;
 
 type
   TJvTimeLimit = class(TJvComponent)
@@ -42,7 +41,6 @@ type
     FOnExpire: TNotifyEvent;
   protected
     procedure Loaded; override;
-  public
   published
     property EndDate: TDate read FDate write FDate;
     property OnExpire: TNotifyEvent read FOnExpire write FOnExpire;
@@ -52,8 +50,6 @@ implementation
 
 resourcestring
   RC_Expired = 'The test period has expired, please register this application';
-
-  {**************************************************}
 
 procedure TJvTimeLimit.Loaded;
 begin
@@ -69,3 +65,4 @@ begin
 end;
 
 end.
+

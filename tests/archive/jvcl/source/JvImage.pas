@@ -30,26 +30,24 @@ unit JvImage;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, ExtCtrls, Controls, Forms,
+  JVCLVer;
 
 type
   TPicState = (stDefault, stEntered, stClicked1, stClicked2, stDown);
-{$EXTERNALSYM TPicState}
 
   TJvPictures = class(TPersistent)
   private
     FOnChanged: TNotifyEvent;
-    FPictureClicked1: TPicture;
-    FPictureClicked2: TPicture;
-    FPictureDown: TPicture;
-    FPictureEnter: TPicture;
-    procedure SetPictureCLicked(const Value: TPicture);
-    procedure SetPictureCLicked2(const Value: TPicture);
-    procedure SetPictureDown(const Value: TPicture);
-    procedure SetPictureEnter(const Value: TPicture);
+    FPicClicked1: TPicture;
+    FPicClicked2: TPicture;
+    FPicDown: TPicture;
+    FPicEnter: TPicture;
+    procedure SetPicClicked(const Value: TPicture);
+    procedure SetPicClicked2(const Value: TPicture);
+    procedure SetPicDown(const Value: TPicture);
+    procedure SetPicEnter(const Value: TPicture);
   protected
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     procedure Changed;
@@ -57,15 +55,16 @@ type
     constructor Create;
     destructor Destroy; override;
   published
-    property PicEnter: TPicture read FPictureEnter write SetPictureEnter;
-    property PicClicked1: TPicture read FPictureClicked1 write SetPictureCLicked;
-    property PicClicked2: TPicture read FPictureClicked2 write SetPictureCLicked2;
-    property PicDown: TPicture read FPictureDown write SetPictureDown;
+    property PicEnter: TPicture read FPicEnter write SetPicEnter;
+    property PicClicked1: TPicture read FPicClicked1 write SetPicClicked;
+    property PicClicked2: TPicture read FPicClicked2 write SetPicClicked2;
+    property PicDown: TPicture read FPicDown write SetPicDown;
   end;
 
   TJvImage = class(TImage)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -75,7 +74,6 @@ type
     FOver: Boolean;
     FPicture: TPicture;
     FClickCount: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetState(Value: TPicState);
     procedure PicturesChanged(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
@@ -94,11 +92,10 @@ type
     procedure Loaded; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Pictures: TJvPictures read FPictures write FPictures;
     property Picture: TPicture read FPicture write SetPicture;
     property State: TPicState read FState write SetState default stDefault;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStateChanged: TNotifyEvent read FOnStateChanged write FOnStateChanged;
@@ -106,9 +103,32 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvImage
-///////////////////////////////////////////////////////////
+//=== TJvImage ===============================================================
+
+constructor TJvImage.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FState := stDefault;
+  FOver := False;
+  FPictures := TJvPictures.Create;
+  FPictures.OnChanged := PicturesChanged;
+  FPicture := TPicture.Create;
+end;
+
+destructor TJvImage.Destroy;
+begin
+  FPictures.Free;
+  FPicture.Free;
+  inherited Destroy;
+end;
+
+procedure TJvImage.Loaded;
+begin
+  // (rom) added inherited Loaded
+  inherited Loaded;
+  inherited Picture.Assign(FPicture);
+end;
 
 procedure TJvImage.ApplyClick;
 begin
@@ -139,54 +159,35 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvImage.Click;
 begin
-  inherited;
+  inherited Click;
   Inc(FClickCount);
   ApplyClick;
 end;
 
-{**************************************************}
-
-constructor TJvImage.Create(AOwner: TComponent);
+procedure TJvImage.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  inherited;
-  FColor := clInfoBk;
-  FState := stDefault;
-  FOver := False;
-  FPictures := TJvPictures.Create;
-  FPictures.OnChanged := PicturesChanged;
-  FPicture := TPicture.Create;
-end;
-
-{**************************************************}
-
-destructor TJvImage.Destroy;
-begin
-  FPictures.Free;
-  FPicture.Free;
-  inherited;
-end;
-
-{**************************************************}
-
-procedure TJvImage.Loaded;
-begin
-  inherited Picture.Assign(FPicture);
-end;
-
-{**************************************************}
-
-procedure TJvImage.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   State := stDown;
 end;
 
-{**************************************************}
+procedure TJvImage.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  if (State = stClicked1) or (State = stClicked2) then
+    Exit;
+  if (X > 0) and (X < Width) and (Y > 0) and (Y < Height) then
+  begin
+    SetState(stEntered);
+    if State <> stEntered then
+      ApplyClick;
+  end
+  else
+    ApplyClick;
+end;
 
 procedure TJvImage.CMMouseEnter(var Msg: TMessage);
 begin
@@ -195,15 +196,15 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     State := stEntered;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-{**************************************************}
 
 procedure TJvImage.CMMouseLeave(var Msg: TMessage);
 begin
@@ -218,40 +219,16 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvImage.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-begin
-  inherited;
-  if (State = stClicked1) or (State = stClicked2) then
-    Exit;
-  if (X > 0) and (X < Width) and (Y > 0) and (Y < Height) then
-  begin
-    SetState(stEntered);
-    if State <> stEntered then
-      ApplyClick;
-  end
-  else
-    ApplyClick;
-end;
-
-{**************************************************}
-
 procedure TJvImage.PicturesChanged(Sender: TObject);
 begin
   SetState(State);
 end;
-
-{**************************************************}
 
 procedure TJvImage.SetPicture(const Value: TPicture);
 begin
   FPicture.Assign(Value);
   inherited Picture.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvImage.SetState(Value: TPicState);
 
@@ -297,9 +274,25 @@ begin
     FOnStateChanged(Self);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvPictures
-///////////////////////////////////////////////////////////
+//=== TJvPictures ============================================================
+
+constructor TJvPictures.Create;
+begin
+  inherited Create;
+  FPicClicked1 := TPicture.Create;
+  FPicClicked2 := TPicture.Create;
+  FPicDown := TPicture.Create;
+  FPicEnter := TPicture.Create;
+end;
+
+destructor TJvPictures.Destroy;
+begin
+  FPicClicked1.Free;
+  FPicClicked2.Free;
+  FPicDown.Free;
+  FPicEnter.Free;
+  inherited Destroy;
+end;
 
 procedure TJvPictures.Changed;
 begin
@@ -307,57 +300,29 @@ begin
     FOnChanged(Self);
 end;
 
-{*******************************************************}
-
-constructor TJvPictures.Create;
+procedure TJvPictures.SetPicClicked(const Value: TPicture);
 begin
-  FPictureClicked1 := TPicture.Create;
-  FPictureClicked2 := TPicture.Create;
-  FPictureDown := TPicture.Create;
-  FPictureEnter := TPicture.Create;
-end;
-
-{*******************************************************}
-
-destructor TJvPictures.Destroy;
-begin
-  FPictureClicked1.Free;
-  FPictureClicked2.Free;
-  FPictureDown.Free;
-  FPictureEnter.Free;
-  inherited;
-end;
-
-{*******************************************************}
-
-procedure TJvPictures.SetPictureCLicked(const Value: TPicture);
-begin
-  FPictureClicked1.Assign(Value);
+  FPicClicked1.Assign(Value);
   Changed;
 end;
 
-{*******************************************************}
-
-procedure TJvPictures.SetPictureCLicked2(const Value: TPicture);
+procedure TJvPictures.SetPicClicked2(const Value: TPicture);
 begin
-  FPictureClicked2.Assign(Value);
+  FPicClicked2.Assign(Value);
   Changed;
 end;
 
-{*******************************************************}
-
-procedure TJvPictures.SetPictureDown(const Value: TPicture);
+procedure TJvPictures.SetPicDown(const Value: TPicture);
 begin
-  FPictureDown.Assign(Value);
+  FPicDown.Assign(Value);
   Changed;
 end;
 
-{*******************************************************}
-
-procedure TJvPictures.SetPictureEnter(const Value: TPicture);
+procedure TJvPictures.SetPicEnter(const Value: TPicture);
 begin
-  FPictureEnter.Assign(Value);
+  FPicEnter.Assign(Value);
   Changed;
 end;
 
 end.
+

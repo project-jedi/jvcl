@@ -20,7 +20,7 @@ object FormSer: TFormSer
     Left = 10
     Top = 16
     Width = 120
-    Height = 260
+    Height = 252
   end
   object Bevel1: TBevel
     Left = 4
@@ -28,42 +28,39 @@ object FormSer: TFormSer
     Width = 381
     Height = 3
   end
-  object BUButton1: TJvSpeedButton
+  object Button1: TJvButton
     Left = 150
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Previous'
+    TabOrder = 2
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton2: TJvSpeedButton
+  object Button2: TJvButton
     Left = 230
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Next'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
+    TabOrder = 3
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton3: TJvSpeedButton
+  object Button3: TJvButton
     Left = 310
     Top = 288
     Width = 75
     Height = 25
     Caption = '&Cancel'
+    TabOrder = 4
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -74,16 +71,16 @@ object FormSer: TFormSer
     Left = 136
     Top = 16
     Width = 247
-    Height = 73
+    Height = 161
     AutoSize = False
     TabOrder = 1
   end
   object GroupBox1: TGroupBox
     Left = 134
-    Top = 132
+    Top = 188
     Width = 253
     Height = 81
-    Caption = '[ Username and serial ]'
+    Caption = 'Registration data'
     TabOrder = 0
     object Label1: TLabel
       Left = 10
@@ -93,7 +90,7 @@ object FormSer: TFormSer
       Caption = 'Username'
     end
     object Label2: TLabel
-      Left = 22
+      Left = 32
       Top = 48
       Width = 26
       Height = 13

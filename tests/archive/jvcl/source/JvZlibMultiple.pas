@@ -25,8 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$INCLUDE WINDOWSONLY.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvZlibMultiple;
 
@@ -76,6 +75,7 @@ type
   end;
 
 implementation
+
 {$IFNDEF COMPILER6_UP}
 uses
   FileCtrl;

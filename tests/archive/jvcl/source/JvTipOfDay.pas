@@ -61,24 +61,20 @@ type
     FCurrentTip: Integer;
     FOnAfterExecute: TNotifyEvent;
     FOnCanShow: TJvCanShowEvent;
-
     { For reentrance check: }
     FRunning: Boolean;
     { FIsAutoExecute = False  -> User called Execute
       FIsAutoExecute = True   -> Execute is called in method Loaded }
     FIsAutoExecute: Boolean;
-
     { Maybe a bit overkill, but use a generic base class to access the
       visual components, thus enabling you to easily extend the
       'Tip of the Day' component }
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;
-
     { Parent form: }
     FForm: TCustomForm;
     FDummyMsgSend: Boolean;
-
     procedure FontChanged(Sender: TObject);
     function GetRegKey: string;
     function IsFontStored: Boolean;
@@ -97,68 +93,51 @@ type
     { Determines whether the dialog can be shown; user can write an
       event handler to override the default behaviour: }
     function CanShow: Boolean; virtual;
-
     { Initializes the "Standard Component Gallery" Tip of the Day dialog: }
     procedure InitStandard(AForm: TForm);
     { Initializes the "New VC++ look" Tip of the Day dialog: }
     procedure InitVC(AForm: TForm);
-
     { Called in Loaded method; sets flag FIsAutoExecute to True to indicate
       that the Execute was automatically called, thus not by the user: }
     procedure AutoExecute;
-
     { Functions to read/write from a default location a value that
       determines whether the dialog must be shown; if the user wants
       to store this value in another location he must write an OnCanShow
       and an OnAfterExecute event handler: }
     function ReadRegistry: Boolean; virtual;
     procedure WriteRegistry(DoShowOnStartUp: Boolean); virtual;
-
     { Sets the fonts (HeaderFont and TipFont) to the default fonts
       associated with Style: }
     procedure UpdateFonts;
-
     { Places a new tip on the dialog: }
     procedure UpdateTip;
-
     { Handles button clicks on the 'Next' button: }
     procedure HandleNextClick(Sender: TObject);
-
     { Hooks/Unhooks the parent form, this is done if
       toShowWhenFormShown is in Options }
     procedure HookForm;
     procedure UnHookForm;
     { The hook; responds when the parent form activates }
-    function HookProc(var Message: TMessage): Boolean;
-
+    function HookProc(var Msg: TMessage): Boolean;
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Execute; override;
-
     procedure LoadFromFile(const AFileName: string);
     procedure SaveToFile(const AFileName: string);
-
     property IsAutoExecute: Boolean read FIsAutoExecute;
   published
-    property ButtonNext: TJvButtonPersistent read FButtonNext write
-      SetButtonNext;
-    property ButtonClose: TJvButtonPersistent read FButtonClose write
-      SetButtonClose;
+    property ButtonNext: TJvButtonPersistent read FButtonNext write SetButtonNext;
+    property ButtonClose: TJvButtonPersistent read FButtonClose write SetButtonClose;
     property CheckBoxText: string read FCheckBoxText write FCheckBoxText;
     property Color: TColor read FColor write FColor default clWhite;
-    property DefaultFonts: Boolean read FDefaultFonts write SetDefaultFonts
-      default True;
-    property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored
-      IsFontStored;
+    property DefaultFonts: Boolean read FDefaultFonts write SetDefaultFonts default True;
+    property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
     property HeaderText: string read FHeaderText write FHeaderText;
-    property OnAfterExecute: TNotifyEvent read FOnAfterExecute write
-      FOnAfterExecute;
+    property OnAfterExecute: TNotifyEvent read FOnAfterExecute write FOnAfterExecute;
     property OnCanShow: TJvCanShowEvent read FOnCanShow write FOnCanShow;
-    property Options: TJvTipOfDayOptions read FOptions write FOptions default
-      [toShowOnStartUp];
+    property Options: TJvTipOfDayOptions read FOptions write FOptions default [toShowOnStartUp];
     property Style: TJvTipOfDayStyle read FStyle write SetStyle default tsVC;
     property TipFont: TFont read FTipFont write SetTipFont stored IsFontStored;
     property Tips: TStrings read FTips write SetTips;
@@ -174,43 +153,21 @@ uses
 {$R JvTipOfDay.res}
 
 resourcestring
+  // (rom) Jedi registry keys need rework
   RC_KeyStartup = 'Software\JEDI-VCL\TipsStartup';
   RC_CloseCaption = '&Close';
   RC_NextCaption = '&Next Tip';
   RC_TipsTitle = 'Tips and Tricks';
   RC_TipsHeaderText = 'Did you know...';
-  RC_TipsCheckBoxText = '&Show Tips on StartUp';
+  RC_TipsCheckBoxText = '&Show Tips on Startup';
 
 type
   TControlAccess = class(TControl);
   TButtonControlAccess = class(TButtonControl);
 
-  { TJvTipOfDay }
-
-procedure TJvTipOfDay.AutoExecute;
-begin
-  FIsAutoExecute := True;
-  try
-    Execute;
-  finally
-    FIsAutoExecute := False;
-  end;
-end;
-
-function TJvTipOfDay.CanShow: Boolean;
-begin
-  // Show the dialog if the user called Execute (FIsAutoExecute=False) or
-  // if flag toShowOnStartUp is in Options..
-  Result := not FIsAutoExecute or (toShowOnStartUp in Options);
-
-  // ..but enable the user to override this behaviour
-  if not (csDesigning in ComponentState) and Assigned(FOnCanShow) then
-    FOnCanShow(Self, Result);
-end;
-
 constructor TJvTipOfDay.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FTips := TStringList.Create;
 
   FTipFont := TFont.Create;
@@ -249,14 +206,34 @@ begin
   FHeaderFont.Free;
   FButtonNext.Free;
   FButtonClose.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvTipOfDay.AutoExecute;
+begin
+  FIsAutoExecute := True;
+  try
+    Execute;
+  finally
+    FIsAutoExecute := False;
+  end;
+end;
+
+function TJvTipOfDay.CanShow: Boolean;
+begin
+  // Show the dialog if the user called Execute (FIsAutoExecute=False) or
+  // if flag toShowOnStartUp is in Options..
+  Result := not FIsAutoExecute or (toShowOnStartUp in Options);
+
+  // ..but enable the user to override this behaviour
+  if not (csDesigning in ComponentState) and Assigned(FOnCanShow) then
+    FOnCanShow(Self, Result);
 end;
 
 procedure TJvTipOfDay.DoAfterExecute;
 begin
   if csDesigning in ComponentState then
     Exit;
-
   if Assigned(FOnAfterExecute) then
     FOnAfterExecute(Self);
 end;
@@ -344,10 +321,10 @@ begin
   JvWndProcHook.RegisterWndProcHook(FForm, HookProc, hoAfterMsg);
 end;
 
-function TJvTipOfDay.HookProc(var Message: TMessage): Boolean;
+function TJvTipOfDay.HookProc(var Msg: TMessage): Boolean;
 begin
   Result := False;
-  case Message.Msg of
+  case Msg.Msg of
     WM_ACTIVATEAPP:
       begin
         { Maybe the form is hooked by other components that are also
@@ -358,6 +335,7 @@ begin
         PostMessage(FForm.Handle, WM_NULL, 0, 0);
         FDummyMsgSend := True;
       end;
+    // (rom) better use a private message value
     WM_NULL:
       if not FRunning and FDummyMsgSend then
       begin
@@ -598,7 +576,7 @@ end;
 
 procedure TJvTipOfDay.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if csDesigning in ComponentState then
     Exit;
 
@@ -621,7 +599,8 @@ begin
     finally
       Free;
     end
-  else if FileExists(AFileName) then
+  else
+  if FileExists(AFileName) then
     Tips.LoadFromFile(AFileName);
 end;
 

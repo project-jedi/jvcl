@@ -1,4 +1,4 @@
-object foPatch: TfoPatch
+object FoPatch: TFoPatch
   Left = 419
   Top = 323
   Width = 300
@@ -13,35 +13,6 @@ object foPatch: TfoPatch
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object BUSpeedButton1: TJvSpeedButton
-    Left = 36
-    Top = 132
-    Width = 75
-    Height = 25
-    Caption = '&OK'
-    Flat = True
-    OnClick = BUButton1Click
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-    ModalResult = 1
-  end
-  object BUSpeedButton2: TJvSpeedButton
-    Left = 168
-    Top = 132
-    Width = 75
-    Height = 25
-    Caption = '&Cancel'
-    Flat = True
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-    ModalResult = 2
-  end
   object GroupBox1: TGroupBox
     Left = 4
     Top = 2
@@ -74,23 +45,43 @@ object foPatch: TfoPatch
       Top = 66
       Width = 207
       Height = 21
-      TabOrder = 0
+      TabOrder = 2
     end
-    object BUFileNameBox1: TJvFilenameEdit
+    object FileNameBox1: TJvFilenameEdit
       Left = 68
       Top = 14
       Width = 207
-      Height = 20
+      Height = 21
+      ButtonFlat = False
       NumGlyphs = 1
-      TabOrder = 1
+      TabOrder = 0
     end
-    object BUFileNameBox2: TJvFilenameEdit
+    object FileNameBox2: TJvFilenameEdit
       Left = 68
       Top = 38
       Width = 207
-      Height = 20
+      Height = 21
+      ButtonFlat = False
       NumGlyphs = 1
-      TabOrder = 2
+      TabOrder = 1
     end
+  end
+  object OkBtn: TButton
+    Left = 48
+    Top = 128
+    Width = 75
+    Height = 25
+    Caption = 'Ok'
+    Default = True
+    TabOrder = 1
+    OnClick = OkBtnClick
+  end
+  object CancelBtn: TButton
+    Left = 168
+    Top = 128
+    Width = 75
+    Height = 25
+    Caption = 'Cancel'
+    TabOrder = 2
   end
 end

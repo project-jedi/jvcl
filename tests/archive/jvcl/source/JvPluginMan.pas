@@ -116,7 +116,7 @@ implementation
 
 uses
   Forms,
-  JvPlugCommon;
+  JvPlugCommon, JvFunctions; // for IncludeTrailingPathDelimiter (only <D6)
 
 const
   C_Extensions: array [plgDLL..plgPackage] of PChar = ('dll', 'bpl');
@@ -143,7 +143,7 @@ begin
   if (FExtension <> NewValue) then
   begin
     // (rb) No reason to block this
-    if {(Length(newValue) > 3) or}  Length(NewValue) < 1 then
+    if {(Length(newValue) > 3) or} Length(NewValue) < 1 then
       raise Exception.Create('Extension may not be empty')
     else
       FExtension := NewValue;
@@ -310,7 +310,7 @@ begin
   else
     Path := FPluginFolder;
 
-  Path := IncludeTrailingBackslash(Path);
+  Path := IncludeTrailingPathDelimiter(Path);
 
   try
     Found := FindFirst(Path + '*.' + FExtension, 0, Sr);

@@ -31,15 +31,15 @@ unit JvFormPass;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons,JvBitBtn, JvEdit;
+  SysUtils, Classes, Controls, Forms, StdCtrls,
+  JvEdit;
 
 type
   TPassForm = class(TForm)
     Label1: TLabel;
-    edPassword: TJvEdit;
-    btnOK: TButton;
-    btnCancel: TButton;
+    EdPassword: TJvEdit;
+    BtnOK: TButton;
+    BtnCancel: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   end;
 
@@ -50,12 +50,10 @@ implementation
 
 {$R *.DFM}
 
-{**************************************************}
-
 procedure TPassForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
-  btnCancel.Click;
+  BtnCancel.Click;
 end;
 
 end.

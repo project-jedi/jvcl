@@ -33,7 +33,8 @@ unit JvLinkLabelDebug;
 interface
 
 uses
-  ComCtrls, JvLinkLabelTree, JvLinkLabelTools, JvLinkLabel, TypInfo, Graphics, SysUtils;
+  ComCtrls, TypInfo, Graphics, SysUtils,
+  JvLinkLabelTree, JvLinkLabelTools, JvLinkLabel;
 
 type
   TDebugLinkLabelTools = class(TStaticObject)
@@ -42,30 +43,30 @@ type
       const Tree: TTreeNodes);
   end;
 
-  TJvLinkLabelAccess = class(TJvLinkLabel)
-  end;
+  TJvLinkLabelAccess = class(TJvLinkLabel);
 
 implementation
 
-{ TDebugLinkLabelTools }
-
-class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(
-  const LinkLabel: TJvLinkLabel; const Tree: TTreeNodes);
+class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLinkLabel;
+ const Tree: TTreeNodes);
 
   function GetNodeDescription(const Node: TNode): string;
   begin
     Result := Node.ClassName;
     case Node.GetNodeType of
-      ntStyleNode:   Result := Result + ' (' +
-        GetEnumName(TypeInfo(TFontStyle), Integer((Node as TStyleNode).Style)) + ')';
-      ntLinkNode:    Result := Result + ' (' +
-        GetEnumName(TypeInfo(TLinkState), Integer((Node as TLinkNode).State)) + ')';
-      ntStringNode:  Result := Result + ' ("' +
-        (Node as TStringNode).Text + '")';
-      ntActionNode:  Result := Result + ' (' +
-        GetEnumName(TypeInfo(TActionType), Integer((Node as TActionNode).Action)) + ')';
-      ntUnknownNode: Result := Result + ' ("' +
-        (Node as TUnknownNode).Tag + '")';
+      ntStyleNode:
+        Result := Result + ' (' +
+          GetEnumName(TypeInfo(TFontStyle), Integer((Node as TStyleNode).Style)) + ')';
+      ntLinkNode:
+        Result := Result + ' (' +
+          GetEnumName(TypeInfo(TLinkState), Integer((Node as TLinkNode).State)) + ')';
+      ntStringNode:
+        Result := Result + ' ("' + (Node as TStringNode).Text + '")';
+      ntActionNode:
+        Result := Result + ' (' +
+          GetEnumName(TypeInfo(TActionType), Integer((Node as TActionNode).Action)) + ')';
+      ntUnknownNode:
+        Result := Result + ' ("' + (Node as TUnknownNode).Tag + '")';
     end;
 
     if Node is TAreaNode then

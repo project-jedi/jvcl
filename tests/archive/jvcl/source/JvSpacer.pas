@@ -31,25 +31,23 @@ unit JvSpacer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvComponent;
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JvComponent;
 
 type
   TJvSpacer = class(TJvCustomPanel)
   private
     FSpacing: Integer;
     procedure SetSpacing(const Value: Integer);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
-    { Public declarations }
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    { Published declarations }
     property Spacing: Integer read FSpacing write SetSpacing default 4;
-
     property Align;
+    property BevelInner default bvNone;
+    property BevelOuter default bvNone;
+    property BorderStyle default bsNone;
     property Color;
     property DragCursor;
     property DragKind;
@@ -71,11 +69,9 @@ type
 
 implementation
 
-{ TJvSpacer }
-
-constructor TJvSpacer.Create(aOwner: TComponent);
+constructor TJvSpacer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle - [csAcceptsControls, csSetCaption];
   FSpacing := 4;
   BevelInner := bvNone;
@@ -87,9 +83,10 @@ procedure TJvSpacer.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if Align in [alTop, alBottom] then
     AHeight := FSpacing
-  else if Align in [alLeft, alRight] then
-    aWidth := FSpacing;
-  inherited Setbounds(aLeft, Atop, aWidth, AHeight);
+  else
+  if Align in [alLeft, alRight] then
+    AWidth := FSpacing;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 procedure TJvSpacer.SetSpacing(const Value: Integer);
@@ -102,3 +99,4 @@ begin
 end;
 
 end.
+

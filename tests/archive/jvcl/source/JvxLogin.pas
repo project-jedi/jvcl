@@ -12,7 +12,7 @@ The Original Code is: JvxLogin.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,9 +29,14 @@ unit JvxLogin;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} SysUtils,
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  Buttons{, JvComponent};
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  JvComponent;
 
 type
   TUpdateCaption = (ucNoChange, ucAppTitle, ucFormCaption);
@@ -43,17 +48,15 @@ type
 
   TJvLoginForm = class;
 
-{ TJvCustomLogin }
-
-  TJvCustomLogin = class(TComponent)
+  TJvCustomLogin = class(TJvComponent)
   private
     FActive: Boolean;
     FAttemptNumber: Integer;
-    FLoggedUser: String;
+    FLoggedUser: string;
     FMaxPasswordLen: Integer;
-    FAllowEmpty: Boolean;
+    FAllowEmptyPassword: Boolean;
     FUpdateCaption: TUpdateCaption;
-    FIniFileName: String;
+    FIniFileName: string;
     FUseRegistry: Boolean;
     FLocked: Boolean;
     FUnlockDlgShowing: Boolean;
@@ -66,7 +69,7 @@ type
     function GetLoggedUser: string;
     function GetIniFileName: string;
     procedure SetIniFileName(const Value: string);
-    function UnlockHook(var Message: TMessage): Boolean;
+    function UnlockHook(var Msg: TMessage): Boolean;
   protected
     function CheckUnlock(const UserName, Password: string): Boolean; dynamic;
     function CreateLoginForm(UnlockMode: Boolean): TJvLoginForm; virtual;
@@ -79,7 +82,7 @@ type
     procedure DoUpdateCaption;
     procedure UnlockOkClick(Sender: TObject);
     property Active: Boolean read FActive write FActive default True;
-    property AllowEmptyPassword: Boolean read FAllowEmpty write FAllowEmpty default True;
+    property AllowEmptyPassword: Boolean read FAllowEmptyPassword write FAllowEmptyPassword default True;
     property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber default 3;
     property IniFileName: string read GetIniFileName write SetIniFileName;
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
@@ -98,8 +101,6 @@ type
     procedure Lock;
     property LoggedUser: string read GetLoggedUser;
   end;
-
-{ TJvLoginDialog }
 
   TJvLoginDialog = class(TJvCustomLogin)
   private
@@ -125,9 +126,7 @@ type
     property OnIconDblClick;
   end;
 
-{ TJvLoginForm }
-
-  TJvLoginForm = class(TForm)
+  TJvLoginForm = class(TJvForm)
     AppIcon: TImage;
     KeyImage: TImage;
     HintLabel: TLabel;
@@ -144,14 +143,12 @@ type
     procedure OkBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
     FSelectDatabase: Boolean;
     FUnlockMode: Boolean;
     FAttempt: Integer;
     FOnFormShow: TNotifyEvent;
     FOnOkClick: TNotifyEvent;
   public
-    { Public declarations }
     AttemptNumber: Integer;
     property Attempt: Integer read FAttempt;
     property SelectDatabase: Boolean read FSelectDatabase write FSelectDatabase;
@@ -164,35 +161,41 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 
 implementation
 
-uses {$IFDEF WIN32} Registry, {$ENDIF} IniFiles, JvAppUtils, JvxConst,
-  Consts, JvVCLUtils, JvConst;
+uses
+  {$IFDEF WIN32}
+  Registry,
+  {$ENDIF}
+  Consts, IniFiles,
+  JvAppUtils, JvxConst,
+  JvVCLUtils, JvConst;
 
 {$R *.DFM}
 
 const
-  keyLoginSection  = 'Login Dialog';
+  keyLoginSection = 'Login Dialog';
   keyLastLoginUserName = 'Last Logged User';
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;
 begin
   Result := TJvLoginForm.Create(Application);
-  with Result do begin
+  with Result do
+  begin
     FSelectDatabase := ASelectDatabase;
     FUnlockMode := UnlockMode;
-    if FUnlockMode then begin
+    if FUnlockMode then
+    begin
       FormStyle := fsNormal;
       FSelectDatabase := False;
     end
-    else begin
+    else
       FormStyle := fsStayOnTop;
-    end;
     OnFormShow := FormShowEvent;
     OnOkClick := OkClickEvent;
   end;
 end;
 
-{ TJvCustomLogin }
+//=== TJvCustomLogin =========================================================
 
 constructor TJvCustomLogin.Create(AOwner: TComponent);
 begin
@@ -201,13 +204,14 @@ begin
   FLoggedUser := EmptyStr;
   FActive := True;
   FAttemptNumber := 3;
-  FAllowEmpty := True;
+  FAllowEmptyPassword := True;
   FUseRegistry := False;
 end;
 
 destructor TJvCustomLogin.Destroy;
 begin
-  if FLocked then begin
+  if FLocked then
+  begin
     Application.UnhookMainWindow(UnlockHook);
     FLocked := False;
   end;
@@ -219,13 +223,16 @@ end;
 function TJvCustomLogin.GetIniFileName: string;
 begin
   Result := FIniFileName;
-  if (Result = '') and not (csDesigning in ComponentState) then begin
-{$IFDEF WIN32}
-    if UseRegistry then Result := GetDefaultIniRegKey
-    else Result := GetDefaultIniName;
-{$ELSE}
+  if (Result = '') and not (csDesigning in ComponentState) then
+  begin
+    {$IFDEF WIN32}
+    if UseRegistry then
+      Result := GetDefaultIniRegKey
+    else
+      Result := GetDefaultIniName;
+    {$ELSE}
     Result := GetDefaultIniName;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -246,17 +253,20 @@ end;
 
 procedure TJvCustomLogin.DoAfterLogin;
 begin
-  if Assigned(FAfterLogin) then FAfterLogin(Self);
+  if Assigned(FAfterLogin) then
+    FAfterLogin(Self);
 end;
 
 procedure TJvCustomLogin.DoBeforeLogin;
 begin
-  if Assigned(FBeforeLogin) then FBeforeLogin(Self);
+  if Assigned(FBeforeLogin) then
+    FBeforeLogin(Self);
 end;
 
 procedure TJvCustomLogin.DoIconDblCLick(Sender: TObject);
 begin
-  if Assigned(FOnIconDblClick) then FOnIconDblClick(Self);
+  if Assigned(FOnIconDblClick) then
+    FOnIconDblClick(Self);
 end;
 
 procedure TJvCustomLogin.DoUpdateCaption;
@@ -264,7 +274,8 @@ var
   F: TForm;
 begin
   F := Application.MainForm;
-  if (F = nil) and (Owner is TForm) then F := Owner as TForm;
+  if (F = nil) and (Owner is TForm) then
+    F := Owner as TForm;
   if (F <> nil) and (LoggedUser <> '') then
     case UpdateCaption of
       ucAppTitle:
@@ -284,7 +295,8 @@ begin
   LoginName := EmptyStr;
   DoBeforeLogin;
   Result := DoLogin(LoginName);
-  if Result then begin
+  if Result then
+  begin
     SetLoggedUser(LoginName);
     DoUpdateCaption;
     DoAfterLogin;
@@ -301,34 +313,39 @@ end;
 
 procedure TJvCustomLogin.TerminateApplication;
 begin
-  with Application do begin
-{$IFDEF WIN32}
+  with Application do
+  begin
+    {$IFDEF WIN32}
     ShowMainForm := False;
-{$ENDIF}
-    if Handle <> 0 then ShowOwnedPopups(Handle, False);
+    {$ENDIF}
+    if Handle <> 0 then
+      ShowOwnedPopups(Handle, False);
     Terminate;
   end;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   CallTerminateProcs;
-{$ENDIF}
-{$IFNDEF COMPILER3_UP}
+  {$ENDIF}
+  {$IFNDEF COMPILER3_UP}
   Halt(10);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvCustomLogin.UnlockOkClick(Sender: TObject);
 var
   Ok: Boolean;
 begin
-  with TJvLoginForm(Sender) do begin
+  with TJvLoginForm(Sender) do
+  begin
     Ok := False;
     try
       Ok := CheckUnlock(UserNameEdit.Text, PasswordEdit.Text);
     except
       Application.HandleException(Self);
     end;
-    if Ok then ModalResult := mrOk
-    else ModalResult := mrCancel;
+    if Ok then
+      ModalResult := mrOk
+    else
+      ModalResult := mrCancel;
   end;
 end;
 
@@ -337,26 +354,33 @@ begin
   Result := True;
   if Assigned(FOnUnlockApp) then
     FOnUnlockApp(Self, UserName, Password, Result)
-  else if Assigned(FOnUnlock) then
+  else
+  if Assigned(FOnUnlock) then
     Result := FOnUnlock(Password);
 end;
 
 function TJvCustomLogin.CreateLoginForm(UnlockMode: Boolean): TJvLoginForm;
 begin
   Result := TJvLoginForm.Create(Application);
-  with Result do begin
+  with Result do
+  begin
     FUnlockMode := UnlockMode;
-    if FUnlockMode then begin
+    if FUnlockMode then
+    begin
       FormStyle := fsNormal;
       FSelectDatabase := False;
     end
-    else FormStyle := fsStayOnTop;
-    if Assigned(Self.FOnIconDblClick) then begin
-      with AppIcon do begin
+    else
+      FormStyle := fsStayOnTop;
+    if Assigned(Self.FOnIconDblClick) then
+    begin
+      with AppIcon do
+      begin
         OnDblClick := DoIconDblClick;
         Cursor := crHand;
       end;
-      with KeyImage do begin
+      with KeyImage do
+      begin
         OnDblClick := DoIconDblClick;
         Cursor := crHand;
       end;
@@ -372,7 +396,8 @@ begin
   try
     OnFormShow := nil;
     OnOkClick := UnlockOkClick;
-    with UserNameEdit do begin
+    with UserNameEdit do
+    begin
       Text := LoggedUser;
       ReadOnly := True;
       Font.Color := clGrayText;
@@ -383,29 +408,30 @@ begin
   end;
 end;
 
-function TJvCustomLogin.UnlockHook(var Message: TMessage): Boolean;
+function TJvCustomLogin.UnlockHook(var Msg: TMessage): Boolean;
 
   function DoUnlock: Boolean;
   var
-    Popup: HWnd;
+    Popup: HWND;
   begin
     with Application do
       if IsWindowVisible(Handle) and IsWindowEnabled(Handle) then
-{$IFDEF WIN32}
+        {$IFDEF WIN32}
         SetForegroundWindow(Handle);
-{$ELSE}
+        {$ELSE}
         BringWindowToTop(Handle);
-{$ENDIF}
-    if FUnlockDlgShowing then begin
+        {$ENDIF}
+    if FUnlockDlgShowing then
+    begin
       Popup := GetLastActivePopup(Application.Handle);
       if (Popup <> 0) and IsWindowVisible(Popup) and
         (WindowClassName(Popup) = TJvLoginForm.ClassName) then
       begin
-{$IFDEF WIN32}
+        {$IFDEF WIN32}
         SetForegroundWindow(Popup);
-{$ELSE}
+        {$ELSE}
         BringWindowToTop(Popup);
-{$ENDIF}
+        {$ENDIF}
       end;
       Result := False;
       Exit;
@@ -416,7 +442,8 @@ function TJvCustomLogin.UnlockHook(var Message: TMessage): Boolean;
     finally
       FUnlockDlgShowing := False;
     end;
-    if Result then begin
+    if Result then
+    begin
       Application.UnhookMainWindow(UnlockHook);
       FLocked := False;
     end;
@@ -424,15 +451,18 @@ function TJvCustomLogin.UnlockHook(var Message: TMessage): Boolean;
 
 begin
   Result := False;
-  if not FLocked then Exit;
-  with Message do begin
+  if not FLocked then
+    Exit;
+  with Msg do
+  begin
     case Msg of
       WM_QUERYOPEN:
         begin
           UnlockHook := not DoUnlock;
         end;
       WM_SHOWWINDOW:
-        if Bool(WParam) then begin
+        if Bool(WParam) then
+        begin
           UnlockHook := not DoUnlock;
         end;
       WM_SYSCOMMAND:
@@ -445,7 +475,7 @@ begin
   end;
 end;
 
-{ TJvLoginDialog }
+//=== TJvLoginDialog =========================================================
 
 procedure TJvLoginDialog.Loaded;
 var
@@ -453,7 +483,8 @@ var
 begin
   Loading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) and Loading then begin
+  if not (csDesigning in ComponentState) and Loading then
+  begin
     if Active and not Login then
       TerminateApplication;
   end;
@@ -463,20 +494,24 @@ procedure TJvLoginDialog.OkButtonClick(Sender: TObject);
 var
   SetCursor: Boolean;
 begin
-  with TJvLoginForm(Sender) do begin
-{$IFDEF WIN32}
+  with TJvLoginForm(Sender) do
+  begin
+    {$IFDEF WIN32}
     SetCursor := GetCurrentThreadID = MainThreadID;
-{$ELSE}
+    {$ELSE}
     SetCursor := True;
-{$ENDIF}
+    {$ENDIF}
     try
-      if SetCursor then Screen.Cursor := crHourGlass;
+      if SetCursor then
+        Screen.Cursor := crHourGlass;
       try
         if DoCheckUser(UserNameEdit.Text, PasswordEdit.Text) then
           ModalResult := mrOk
-        else ModalResult := mrNone;
+        else
+          ModalResult := mrNone;
       finally
-        if SetCursor then Screen.Cursor := crDefault;
+        if SetCursor then
+          Screen.Cursor := crDefault;
       end;
     except
       Application.HandleException(Self);
@@ -496,12 +531,14 @@ var
   Ini: TObject;
 begin
   try
-{$IFDEF WIN32}
-    if UseRegistry then Ini := TRegIniFile.Create(IniFileName)
-    else Ini := TIniFile.Create(IniFileName);
-{$ELSE}
+    {$IFDEF WIN32}
+    if UseRegistry then
+      Ini := TRegIniFile.Create(IniFileName)
+    else
+      Ini := TIniFile.Create(IniFileName);
+    {$ELSE}
     Ini := TIniFile.Create(IniFileName);
-{$ENDIF}
+    {$ENDIF}
     try
       IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, UserName);
     finally
@@ -516,18 +553,19 @@ var
   Ini: TObject;
 begin
   try
-{$IFDEF WIN32}
-    if UseRegistry then begin
+    {$IFDEF WIN32}
+    if UseRegistry then
+    begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF COMPILER5_UP}
+      {$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
-{$ENDIF}
+      {$ENDIF}
     end
-    else 
+    else
       Ini := TIniFile.Create(IniFileName);
-{$ELSE}
+    {$ELSE}
     Ini := TIniFile.Create(IniFileName);
-{$ENDIF}
+    {$ENDIF}
     try
       Result := IniReadString(Ini, keyLoginSection, keyLastLoginUserName,
         UserName);
@@ -548,7 +586,8 @@ begin
       UserName := ReadUserName(UserName);
       UserNameEdit.Text := UserName;
       Result := (ShowModal = mrOk);
-      if Result then begin
+      if Result then
+      begin
         UserName := UserNameEdit.Text;
         WriteUserName(UserName);
       end;
@@ -561,12 +600,13 @@ begin
   end;
 end;
 
-{ TJvLoginForm }
+//=== TJvLoginForm ===========================================================
 
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin
   Icon := Application.Icon;
-  if Icon.Empty then Icon.Handle := LoadIcon(0, IDI_APPLICATION);
+  if Icon.Empty then
+    Icon.Handle := LoadIcon(0, IDI_APPLICATION);
   AppIcon.Picture.Assign(Icon);
   AppTitleLabel.Caption := Format(SAppTitleLabel, [Application.Title]);
   PasswordLabel.Caption := SPasswordLabel;
@@ -578,8 +618,10 @@ end;
 procedure TJvLoginForm.OkBtnClick(Sender: TObject);
 begin
   Inc(FAttempt);
-  if Assigned(FOnOkClick) then FOnOkClick(Self)
-  else ModalResult := mrOk;
+  if Assigned(FOnOkClick) then
+    FOnOkClick(Self)
+  else
+    ModalResult := mrOk;
   if (ModalResult <> mrOk) and (FAttempt >= AttemptNumber) then
     ModalResult := mrCancel;
 end;
@@ -589,32 +631,39 @@ var
   I: Integer;
   S: string;
 begin
-  if FSelectDatabase then begin
+  if FSelectDatabase then
+  begin
     ClientHeight := CustomCombo.Top + PasswordEdit.Top - UserNameEdit.Top;
     S := SDatabaseName;
     I := Pos(':', S);
-    if I = 0 then I := Length(S);
+    if I = 0 then
+      I := Length(S);
     CustomLabel.Caption := '&' + Copy(S, 1, I);
   end
-  else begin
+  else
+  begin
     ClientHeight := PasswordEdit.Top + PasswordEdit.Top - UserNameEdit.Top;
     CustomLabel.Visible := False;
     CustomCombo.Visible := False;
   end;
-  if not FUnlockMode then begin
+  if not FUnlockMode then
+  begin
     HintLabel.Caption := SHintLabel;
     Caption := SRegistration;
   end
-  else begin
+  else
+  begin
     HintLabel.Caption := SUnlockHint;
     Caption := SUnlockCaption;
   end;
   if (UserNameEdit.Text = EmptyStr) and not FUnlockMode then
     ActiveControl := UserNameEdit
-  else 
+  else
     ActiveControl := PasswordEdit;
-  if Assigned(FOnFormShow) then FOnFormShow(Self);
+  if Assigned(FOnFormShow) then
+    FOnFormShow(Self);
   FAttempt := 0;
 end;
 
 end.
+

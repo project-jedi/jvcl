@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -22,131 +22,127 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  Doesn't draw an underline for speed-keys (the '&' character ) if
+  Placement = plLeft. Something with DrawText ?
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-{ TJvRollout is an autoexpanding / collapsing panel. }
-
 unit JvRollOut;
 
-{  TODO:
-    Doesn't draw an underline for speed-keys (the '&' character ) if
-    Placement = plLeft. Something with DrawText ?
-}
+{ TJvRollout is an autoexpanding / collapsing panel. }
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,ExtCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JvComponent;
+
 const
   CM_EXPANDED = WM_USER + 155;
 
 type
-  TJvPlacement=(plTop,plLeft);
+  TJvPlacement = (plTop, plLeft);
 
   TJvCustomRollOut = class(TJvCustomPanel)
   private
-    { Private declarations }
-    FGroupIndex      :Integer;
-    FImageList       :TImageList;
-    FButtonRect      :TRect;
-    FPlacement       :TJvPlacement;
-    FExpandedImage   :integer;
-    FCollapsedImage  :integer;
-    FCollapsed       :boolean;
-    FMouseDown       :boolean;
-    FInsideButton    :boolean;
-    FCWidth          :integer;
-    FCHeight         :integer;
-    FAWidth          :integer;
-    FAHeight         :integer;
-    FImageOffset     :integer;
-    FButtonHeight    :integer;
-    FChildOffset     :integer;
-    FCaption         :TCaption;
-    FTopColor        :TColor;
-    FBottomColor     :TColor;
-    FBTopColor       :TColor;
-    FBBottomColor    :TColor;
-    FButtonColor     :TColor;
-    FHiText          :TColor;
-    FOnExpand        :TNotifyEvent;
-    FOnCollapse      :TNotifyEvent;
+    FGroupIndex: Integer;
+    FImageList: TImageList;
+    FButtonRect: TRect;
+    FPlacement: TJvPlacement;
+    FExpandedImage: Integer;
+    FCollapsedImage: Integer;
+    FCollapsed: Boolean;
+    FMouseDown: Boolean;
+    FInsideButton: Boolean;
+    FCWidth: Integer;
+    FCHeight: Integer;
+    FAWidth: Integer;
+    FAHeight: Integer;
+    FImageOffset: Integer;
+    FButtonHeight: Integer;
+    FChildOffset: Integer;
+    FCaption: TCaption;
+    FTopColor: TColor;
+    FBottomColor: TColor;
+    FBTopColor: TColor;
+    FBBottomColor: TColor;
+    FButtonColor: TColor;
+    FHiText: TColor;
+    FOnExpand: TNotifyEvent;
+    FOnCollapse: TNotifyEvent;
     procedure SetGroupIndex(Value: Integer);
-    procedure SetPlacement(Value:TJvPlacement);
-    procedure SetExpandedImage(Value:integer);
-    procedure SetCollapsedImage(Value:integer);
-    procedure WriteAWidth(Writer:TWriter);
-    procedure WriteAHeight(Writer:TWriter);
-    procedure WriteCWidth(Writer:TWriter);
-    procedure WriteCHeight(Writer:TWriter);
-    procedure ReadAWidth(Reader:TReader);
-    procedure ReadAHeight(Reader:TReader);
-    procedure ReadCWidth(Reader:TReader);
-    procedure ReadCHeight(Reader:TReader);
-    procedure SetHiTextColor(Value:TColor);
-    procedure SetCollapsed(Value:boolean);
-    procedure SetImageList(Value:TImageList);
-    procedure SetImageOffset(Value:integer);
-    procedure SetButtonHeight(Value:integer);
-    procedure SetChildOffset(Value:integer);
-    procedure SetCaption(Value:TCaption);
-    procedure SetTopColor(Value:TColor);
-    procedure SetBottomColor(Value:TColor);
-    procedure SetBTopColor(Value:TColor);
-    procedure SetBBottomColor(Value:TColor);
-    procedure SetButtonColor(Value:TColor);
-    procedure RedrawControl(DrawAll:boolean);
+    procedure SetPlacement(Value: TJvPlacement);
+    procedure SetExpandedImage(Value: Integer);
+    procedure SetCollapsedImage(Value: Integer);
+    procedure WriteAWidth(Writer: TWriter);
+    procedure WriteAHeight(Writer: TWriter);
+    procedure WriteCWidth(Writer: TWriter);
+    procedure WriteCHeight(Writer: TWriter);
+    procedure ReadAWidth(Reader: TReader);
+    procedure ReadAHeight(Reader: TReader);
+    procedure ReadCWidth(Reader: TReader);
+    procedure ReadCHeight(Reader: TReader);
+    procedure SetHiTextColor(Value: TColor);
+    procedure SetCollapsed(Value: Boolean);
+    procedure SetImageList(Value: TImageList);
+    procedure SetImageOffset(Value: Integer);
+    procedure SetButtonHeight(Value: Integer);
+    procedure SetChildOffset(Value: Integer);
+    procedure SetCaption(Value: TCaption);
+    procedure SetTopColor(Value: TColor);
+    procedure SetBottomColor(Value: TColor);
+    procedure SetBTopColor(Value: TColor);
+    procedure SetBBottomColor(Value: TColor);
+    procedure SetButtonColor(Value: TColor);
+    procedure RedrawControl(DrawAll: Boolean);
     procedure DrawButtonFrame;
     procedure UpdateGroup;
-    procedure CMExpanded(var Message:TMessage); message CM_EXPANDED;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMEraseBkgnd(var Message:TMessage);message WM_ERASEBKGND;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
   protected
-    { Protected declarations }
-    procedure CreateWnd;override;
-    procedure AlignControls(AControl: TControl; var Rect: TRect);override;
+    procedure CreateWnd; override;
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer);override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
-    procedure DefineProperties(Filer:TFiler);override;
-    procedure Expanding;virtual;
-    procedure Collapsing;virtual;
-    procedure Paint;override;
-    procedure Click;override;
-    property ButtonColor:TColor read FButtonColor write SetButtonColor default clBtnFace;
-    property ButtonHeight:integer read FButtonHeight write SetButtonHeight default 20;
-    property ButtonColTop:TColor read FBTopColor write SetBTopColor default clBtnHighLight;
-    property ButtonColBtm:TColor read FBBottomColor write SetBBottomColor default clBtnShadow;
-    property ColHiText:TColor read FHiText write SetHiTextColor default clBlack;
-    property ChildOffset:integer read FChildOffset write SetChildOffset default 0;
-    property Collapsed:boolean read FCollapsed write SetCollapsed default false;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure Expanding; virtual;
+    procedure Collapsing; virtual;
+    procedure Paint; override;
+    procedure Click; override;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor default clBtnFace;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
+    property ButtonColTop: TColor read FBTopColor write SetBTopColor default clBtnHighLight;
+    property ButtonColBtm: TColor read FBBottomColor write SetBBottomColor default clBtnShadow;
+    property ColHiText: TColor read FHiText write SetHiTextColor default clBlack;
+    property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
+    property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
-    property ImageExpanded:integer read FExpandedImage write SetExpandedImage default 0;
-    property ImageCollapsed:integer read FCollapsedImage write SetCollapsedImage default 0;
-    property ImageList:TImageList read FImageList write SetImageList;
-    property ImageOffset:integer read FImageOffset write SetImageOffset default 5;
-    property FrameColTop:TColor read FTopColor write SetTopColor default clBtnShadow;
-    property FrameColBtm:TColor read FBottomColor write SetBottomColor default clBtnHighLight;
-    property Placement:TJvPlacement read FPlacement write SetPlacement default plTop;
-    property OnCollapse:TNotifyEvent read FOnCollapse write FOnCollapse;
-    property OnExpand:TNotifyEvent read FOnExpand write FOnExpand;
+    property ImageExpanded: Integer read FExpandedImage write SetExpandedImage default 0;
+    property ImageCollapsed: Integer read FCollapsedImage write SetCollapsedImage default 0;
+    property ImageList: TImageList read FImageList write SetImageList;
+    property ImageOffset: Integer read FImageOffset write SetImageOffset default 5;
+    property FrameColTop: TColor read FTopColor write SetTopColor default clBtnShadow;
+    property FrameColBtm: TColor read FBottomColor write SetBottomColor default clBtnHighLight;
+    property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
+    property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
+    property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
   public
-    { Public declarations }
-    constructor Create(AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
-    procedure Collapse;virtual;
-    procedure Expand;virtual;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    procedure Collapse; virtual;
+    procedure Expand; virtual;
   published
-    { Published declarations }
-    property Caption:TCaption read FCaption write SetCaption;
+    // (rom) why published?
+    property Caption: TCaption read FCaption write SetCaption;
   end;
 
-  TJvRollout=class(TJvCustomRollOut)
+  TJvRollout = class(TJvCustomRollOut)
   published
     property Align;
     property BevelWidth;
@@ -197,14 +193,13 @@ type
     property OnCollapse;
   end;
 
-
 implementation
 
 const
-  FIncrement=24;
-  FSmooth:boolean = false;
+  cIncrement = 24;
+  cSmooth = False;
 
-procedure SetTextAngle(Cnv: TCanvas; Angle: integer);
+procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
   FntLogRec: TLogFont;
 begin
@@ -214,26 +209,28 @@ begin
   Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
 end;
 
-procedure SmoothHeight(Instance:TWinControl;NewHeight,Increment:integer;Smooth:boolean);
-var oldHeight:integer;
+procedure SmoothHeight(Instance: TWinControl; NewHeight, Increment: Integer; Smooth: Boolean);
+var
+  OldHeight: Integer;
 begin
   Instance.Parent.DisableAlign;
   Instance.DisableAlign;
   if Smooth then
   begin
-    oldHeight := Instance.Height;
-    if oldHeight < NewHeight then
-      while oldHeight < NewHeight do
+    OldHeight := Instance.Height;
+    if OldHeight < NewHeight then
+      while OldHeight < NewHeight do
       begin
-        oldHeight := oldHeight + Increment;
-        Instance.Height := oldHeight;
+        OldHeight := OldHeight + Increment;
+        Instance.Height := OldHeight;
         Instance.Invalidate;
       end
-    else if oldHeight > NewHeight then
-      while oldHeight > NewHeight do
+    else
+    if OldHeight > NewHeight then
+      while OldHeight > NewHeight do
       begin
-        oldHeight := oldHeight - Increment;
-        Instance.Height := oldHeight;
+        OldHeight := OldHeight - Increment;
+        Instance.Height := OldHeight;
         Instance.Invalidate;
       end;
   end;
@@ -242,7 +239,7 @@ begin
   Instance.Parent.EnableAlign;
 end;
 
-procedure SmoothWidth(Instance:TWinControl;NewWidth,Increment:integer;Smooth:boolean);
+procedure SmoothWidth(Instance: TWinControl; NewWidth, Increment: Integer; Smooth: Boolean);
 begin
   Instance.Parent.DisableAlign;
   Instance.DisableAlign;
@@ -251,7 +248,8 @@ begin
     if Instance.Width < NewWidth then
       while Instance.Width < NewWidth do
         Instance.Width := Instance.Width + Increment
-    else if Instance.Width > NewWidth then
+    else
+    if Instance.Width > NewWidth then
       while Instance.Width > NewWidth do
         Instance.Width := Instance.Width - Increment;
   end;
@@ -260,16 +258,13 @@ begin
   Instance.Parent.EnableAlign;
 end;
 
-
-{ TJvCustomRollOut }
-
-constructor TJvCustomRollOut.Create(AOwner:TComponent);
+constructor TJvCustomRollOut.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGroupIndex := 0;
   Caption := 'Rollout';
   FHiText := clBlack;
-  FCollapsed := false;
+  FCollapsed := False;
   FMouseDown := False;
   FInsideButton := False;
   FImageOffset := 5;
@@ -281,7 +276,7 @@ begin
   FBottomColor := clBtnHighLight;
   FBTopColor := clBtnHighLight;
   FBBottomColor := clBtnShadow;
-  SetBounds(0,0,145,170);
+  SetBounds(0, 0, 145, 170);
   FAWidth := 145;
   FAHeight := 170;
   FCWidth := 22;
@@ -297,9 +292,8 @@ procedure TJvCustomRollOut.Click;
 begin
   SetCollapsed(not FCollapsed);
   inherited Click;
-  RedrawControl(false);
+  RedrawControl(False);
 end;
-
 
 procedure TJvCustomRollOut.CreateWnd;
 begin
@@ -315,40 +309,41 @@ begin
     Rect.Top := Rect.Top + FButtonHeight
   else
     Rect.Left := Rect.Left + FButtonHeight;
-  inherited AlignControls(AControl,Rect);
+  inherited AlignControls(AControl, Rect);
 end;
 
 procedure TJvCustomRollOut.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  inherited MouseDown(Button,Shift,X,Y);
+  inherited MouseDown(Button, Shift, X, Y);
   if not FMouseDown then
   begin
-    FMouseDown := true;
-    RedrawControl(false);
+    FMouseDown := True;
+    RedrawControl(False);
   end;
 end;
 
 procedure TJvCustomRollOut.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  inherited MouseUp(Button,Shift,X,Y);
+  inherited MouseUp(Button, Shift, X, Y);
   if FMouseDown then
   begin
     FMouseDown := False;
-    RedrawControl(false);
+    RedrawControl(False);
   end;
 end;
 
 procedure TJvCustomRollOut.MouseMove(Shift: TShiftState; X, Y: Integer);
-var b1:boolean;
+var
+  B: Boolean;
 begin
-  b1 := FInsideButton;
-  inherited MouseMove(Shift,X,Y);
-  FInsideButton := PtInRect(FButtonRect,Point(X,Y));
-  if (FInsideButton <> b1) then
-    RedrawControl(false);
+  B := FInsideButton;
+  inherited MouseMove(Shift, X, Y);
+  FInsideButton := PtInRect(FButtonRect, Point(X, Y));
+  if FInsideButton <> B then
+    RedrawControl(False);
 end;
 
-procedure TJvCustomRollOut.RedrawControl(DrawAll:boolean);
+procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
     Invalidate
@@ -361,11 +356,12 @@ begin
   if FGroupIndex <> Value then
   begin
     FGroupIndex := Value;
-    if not Collapsed then UpdateGroup;
+    if not Collapsed then
+      UpdateGroup;
   end;
 end;
 
-procedure TJvCustomRollOut.SetPlacement(Value:TJvPlacement);
+procedure TJvCustomRollOut.SetPlacement(Value: TJvPlacement);
 begin
   if FPlacement <> Value then
   begin
@@ -385,15 +381,15 @@ begin
         Width := FAWidth;
     end;
     if FPlacement = plTop then
-      FButtonRect := Rect(1,1,Width - 1,FButtonHeight - 1)
+      FButtonRect := Rect(1, 1, Width - 1, FButtonHeight - 1)
     else
-      FButtonRect := Rect(1,1,FButtonHeight - 1,Height - 1);
+      FButtonRect := Rect(1, 1, FButtonHeight - 1, Height - 1);
     Realign;
     RedrawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.SetExpandedImage(Value:integer);
+procedure TJvCustomRollOut.SetExpandedImage(Value: Integer);
 begin
   if FExpandedImage <> Value then
   begin
@@ -402,13 +398,13 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.SetImageList(Value:TImageList);
+procedure TJvCustomRollOut.SetImageList(Value: TImageList);
 begin
   FImageList := Value;
-  RedrawControl(true);
+  RedrawControl(True);
 end;
 
-procedure TJvCustomRollOut.SetCollapsedImage(Value:integer);
+procedure TJvCustomRollOut.SetCollapsedImage(Value: Integer);
 begin
   if FCollapsedImage <> Value then
   begin
@@ -417,16 +413,16 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.SetHiTextColor(Value:TColor);
+procedure TJvCustomRollOut.SetHiTextColor(Value: TColor);
 begin
   if FHiText <> Value then
   begin
     FHiText := Value;
-    RedrawControl(false);
+    RedrawControl(False);
   end;
 end;
 
-procedure TJvCustomRollOut.SetCollapsed(Value:boolean);
+procedure TJvCustomRollOut.SetCollapsed(Value: Boolean);
 begin
   if FCollapsed <> Value then
   begin
@@ -434,34 +430,37 @@ begin
     if Value then
     begin
       if FPlacement = plTop then
-        SmoothHeight(self,FCHeight,FIncrement,FSmooth)
+        SmoothHeight(Self, FCHeight, cIncrement, cSmooth)
       else
-        SmoothWidth(self,FCWidth,FIncrement,FSmooth);
+        SmoothWidth(Self, FCWidth, cIncrement, cSmooth);
       Collapsing;
     end
     else
     begin
       if FPlacement = plTop then
-        SmoothHeight(self,FAHeight,FIncrement,FSmooth)
+        SmoothHeight(Self, FAHeight, cIncrement, cSmooth)
       else
-        SmoothWidth(self,FAWidth,FIncrement,FSmooth);
+        SmoothWidth(Self, FAWidth, cIncrement, cSmooth);
       Expanding;
     end;
-    if not Value then UpdateGroup;
+    if not Value then
+      UpdateGroup;
   end;
 end;
 
 procedure TJvCustomRollOut.Expanding;
 begin
-  if Assigned(FOnExpand) then FOnExpand(self);
-end;    //
+  if Assigned(FOnExpand) then
+    FOnExpand(Self);
+end;
 
 procedure TJvCustomRollOut.Collapsing;
 begin
-  if Assigned(FOnCollapse) then FOnCollapse(self);
-end;    //
+  if Assigned(FOnCollapse) then
+    FOnCollapse(Self);
+end;
 
-procedure TJvCustomRollOut.SetBounds(ALeft,ATop,AWidth,AHeight:integer);
+procedure TJvCustomRollOut.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   if FCollapsed then
   begin
@@ -477,68 +476,69 @@ begin
     else
       FAWidth := AWidth;
   end;
-  inherited SetBounds(ALeft,ATop,AWidth,AHeight);
-  if not Collapsed then UpdateGroup;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  if not Collapsed then
+    UpdateGroup;
 end;
 
-procedure TJvCustomRollOut.DefineProperties(Filer:TFiler);
+procedure TJvCustomRollOut.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
-  Filer.DefineProperty('FAWidth',ReadAWidth,WriteAWidth,true);
-  Filer.DefineProperty('FAHeight',ReadAHeight,WriteAHeight,true);
-  Filer.DefineProperty('FCWidth',ReadCWidth,WriteCWidth,true);
-  Filer.DefineProperty('FCHeight',ReadCHeight,WriteCHeight,true);
+  Filer.DefineProperty('FAWidth', ReadAWidth, WriteAWidth, True);
+  Filer.DefineProperty('FAHeight', ReadAHeight, WriteAHeight, True);
+  Filer.DefineProperty('FCWidth', ReadCWidth, WriteCWidth, True);
+  Filer.DefineProperty('FCHeight', ReadCHeight, WriteCHeight, True);
 end;
 
-procedure TJvCustomRollOut.WriteAWidth(Writer:TWriter);
+procedure TJvCustomRollOut.WriteAWidth(Writer: TWriter);
 begin
   Writer.WriteInteger(FAWidth);
 end;
 
-procedure TJvCustomRollOut.WriteAHeight(Writer:TWriter);
+procedure TJvCustomRollOut.WriteAHeight(Writer: TWriter);
 begin
   Writer.WriteInteger(FAHeight);
 end;
 
-procedure TJvCustomRollOut.WriteCWidth(Writer:TWriter);
+procedure TJvCustomRollOut.WriteCWidth(Writer: TWriter);
 begin
   Writer.WriteInteger(FCWidth);
 end;
 
-procedure TJvCustomRollOut.WriteCHeight(Writer:TWriter);
+procedure TJvCustomRollOut.WriteCHeight(Writer: TWriter);
 begin
   Writer.WriteInteger(FCHeight);
 end;
 
-procedure TJvCustomRollOut.ReadAWidth(Reader:TReader);
+procedure TJvCustomRollOut.ReadAWidth(Reader: TReader);
 begin
   FAWidth := Reader.ReadInteger;
   if not Collapsed and (Placement = plLeft) then
-    SetBounds(Left,Top,FAWidth,Height);
+    SetBounds(Left, Top, FAWidth, Height);
 end;
 
-procedure TJvCustomRollOut.ReadAHeight(Reader:TReader);
+procedure TJvCustomRollOut.ReadAHeight(Reader: TReader);
 begin
   FAHeight := Reader.ReadInteger;
   if not Collapsed and (Placement = plTop) then
-    SetBounds(Left,Top,Width,FAHeight);
+    SetBounds(Left, Top, Width, FAHeight);
 end;
 
-procedure TJvCustomRollOut.ReadCWidth(Reader:TReader);
+procedure TJvCustomRollOut.ReadCWidth(Reader: TReader);
 begin
   FCWidth := Reader.ReadInteger;
   if Collapsed and (Placement = plLeft) then
-    SetBounds(Left,Top,FCWidth,Height);
+    SetBounds(Left, Top, FCWidth, Height);
 end;
 
-procedure TJvCustomRollOut.ReadCHeight(Reader:TReader);
+procedure TJvCustomRollOut.ReadCHeight(Reader: TReader);
 begin
   FCHeight := Reader.ReadInteger;
   if Collapsed and (Placement = plTop) then
-    SetBounds(Left,Top,Width,FCHeight);
+    SetBounds(Left, Top, Width, FCHeight);
 end;
 
-procedure TJvCustomRollOut.SetImageOffset(Value:integer);
+procedure TJvCustomRollOut.SetImageOffset(Value: Integer);
 begin
   if FImageOffset <> Value then
   begin
@@ -547,30 +547,30 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.SetButtonColor(Value:TColor);
+procedure TJvCustomRollOut.SetButtonColor(Value: TColor);
 begin
   if FButtonColor <> Value then
   begin
     FButtonColor := Value;
-    RedrawControl(false);
+    RedrawControl(False);
   end;
 end;
 
-procedure TJvCustomRollOut.SetButtonHeight(Value:integer);
+procedure TJvCustomRollOut.SetButtonHeight(Value: Integer);
 begin
   if FButtonHeight <> Value then
   begin
     FButtonHeight := Value;
     if FPlacement = plTop then
-      FButtonRect := Rect(BevelWidth,BevelWidth,Width - BevelWidth,FButtonHeight + BevelWidth)
+      FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
     else
-      FButtonRect := Rect(BevelWidth,BevelWidth,FButtonHeight + BevelWidth,Height - BevelWidth);
+      FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
     ReAlign;
     RedrawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.SetChildOffset(Value:integer);
+procedure TJvCustomRollOut.SetChildOffset(Value: Integer);
 begin
   if FChildOffset <> Value then
   begin
@@ -581,78 +581,81 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.SetCaption(Value:TCaption);
+procedure TJvCustomRollOut.SetCaption(Value: TCaption);
 begin
   FCaption := Value;
   ReDrawControl(True);
 end;
 
-procedure TJvCustomRollOut.SetTopColor(Value:TColor);
+procedure TJvCustomRollOut.SetTopColor(Value: TColor);
 begin
   if FTopColor <> Value then
   begin
     FTopColor := Value;
-    ReDRawControl(true);
+    ReDRawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.SetBTopColor(Value:TColor);
+procedure TJvCustomRollOut.SetBTopColor(Value: TColor);
 begin
   if FBTopColor <> Value then
   begin
     FBTopColor := Value;
-    RedrawControl(true);
+    RedrawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.SetBottomColor(Value:TColor);
+procedure TJvCustomRollOut.SetBottomColor(Value: TColor);
 begin
   if FBottomColor <> Value then
   begin
     FBottomColor := Value;
-    RedrawControl(true);
+    RedrawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.SetBBottomColor(Value:TColor);
+procedure TJvCustomRollOut.SetBBottomColor(Value: TColor);
 begin
   if FBBottomColor <> Value then
   begin
     FBBottomColor := Value;
-    ReDrawControl(true);
+    ReDrawControl(True);
   end;
 end;
 
-procedure TJvCustomRollOut.CMMouseEnter(var Message: TMessage);
+procedure TJvCustomRollOut.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  RedrawControl(false);
+  RedrawControl(False);
 end;
 
-procedure TJvCustomRollOut.CMMouseLeave(var Message: TMessage);
+procedure TJvCustomRollOut.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FInsideButton then
   begin
-    FInsideButton := false;
+    FInsideButton := False;
     FMouseDown := False;
   end;
-  RedrawControl(false);
+  RedrawControl(False);
 end;
 
-procedure TJvCustomRollOut.WMEraseBkgnd(var Message:TMessage);
+procedure TJvCustomRollOut.WMEraseBkgnd(var Msg: TMessage);
 begin
 //  inherited;
-  Message.Result := 0;
+  Msg.Result := 0;
 end;
 
 procedure TJvCustomRollOut.DrawButtonFrame;
-var R:TRect;TopC,BottomC:TColor;FIndex:integer;
+var
+  R: TRect;
+  TopC, BottomC: TColor;
+  FIndex: Integer;
 begin
   if FPlacement = plTop then
-    FButtonRect := Rect(BevelWidth,BevelWidth,Width - BevelWidth,FButtonHeight + BevelWidth)
+    FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
   else
-    FButtonRect := Rect(BevelWidth,BevelWidth,FButtonHeight + BevelWidth,Height - BevelWidth);
+    FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
 
   R := FButtonRect;
   Canvas.Brush.Color := ButtonColor;
@@ -663,7 +666,8 @@ begin
     TopC := FBBottomColor;
     BottomC := FBTopColor;
   end
-  else if FInsideButton then
+  else
+  if FInsideButton then
   begin
     TopC := FBTopColor;
     BottomC := FBBottomColor;
@@ -674,7 +678,7 @@ begin
     BottomC := Color;
   end;
 
-  Frame3D(Canvas,R,TopC,BottomC,1);
+  Frame3D(Canvas, R, TopC, BottomC, 1);
   if Collapsed then
     FIndex := FCollapsedImage
   else
@@ -685,7 +689,8 @@ begin
   begin
     if Assigned(FImageList) then
     begin
-      FImageList.Draw(Canvas,FImageOffset + BevelWidth,BevelWidth + (FButtonHeight - FImageList.Height) div 2,FIndex);
+      FImageList.Draw(Canvas, FImageOffset + BevelWidth, BevelWidth + (FButtonHeight - FImageList.Height) div 2,
+        FIndex);
       R.Left := FImageList.Width + FImageOffset * 2 + BevelWidth;
     end
     else
@@ -696,7 +701,8 @@ begin
   begin
     if Assigned(FImageList) then
     begin
-      FImageList.Draw(Canvas,BevelWidth + (FButtonHeight + - FImageList.Width) div 2,FImageOffset + BevelWidth,FIndex);
+      FImageList.Draw(Canvas, BevelWidth + (FButtonHeight + -FImageList.Width) div 2, FImageOffset + BevelWidth,
+        FIndex);
       R.Top := FImageList.Height + FImageOffset * 2 + BevelWidth;
     end
     else
@@ -709,24 +715,25 @@ begin
 
   if Length(FCaption) > 0 then
   begin
-    SetBkMode(Canvas.Handle,Transparent);
+    SetBkMode(Canvas.Handle, Transparent);
     if Placement = plLeft then
-      SetTextAngle(Canvas,270);
+      SetTextAngle(Canvas, 270);
     if FMouseDown and FInsideButton then
-      OffsetRect(R,1,1);
-    DrawText(Canvas.Handle,PChar(FCaption),-1,R,DT_NOCLIP);
+      OffsetRect(R, 1, 1);
+    DrawText(Canvas.Handle, PChar(FCaption), -1, R, DT_NOCLIP);
     if Placement = plLeft then
-      SetTextAngle(Canvas,0);
+      SetTextAngle(Canvas, 0);
   end;
 end;
 
 procedure TJvCustomRollOut.Paint;
-var R:TRect;
+var
+  R: TRect;
 begin
   R := ClientRect;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(R);
-  Frame3D(Canvas,R,FTopColor,FBottomColor,BevelWidth);
+  Frame3D(Canvas, R, FTopColor, FBottomColor, BevelWidth);
   DrawButtonFrame;
 end;
 
@@ -754,16 +761,16 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.CMExpanded(var Message: TMessage);
+procedure TJvCustomRollOut.CMExpanded(var Msg: TMessage);
 var
   Sender: TJvCustomRollOut;
 begin
-  if Message.WParam = FGroupIndex then
+  if Msg.WParam = FGroupIndex then
   begin
-    Sender := TJvCustomRollOut(Message.LParam);
+    Sender := TJvCustomRollOut(Msg.LParam);
     if Sender <> Self then
     begin
-      SetCollapsed(true);
+      SetCollapsed(True);
       Invalidate;
     end;
   end;
@@ -778,18 +785,17 @@ begin
     (AnsiCompareText(Str[P + 1], Char(VK)) = 0);
 end;
 
-procedure TJvCustomRollOut.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvCustomRollOut.CMDialogChar(var Msg: TCMDialogChar);
 begin
-  with Message do
+  with Msg do
     if IsAccel(CharCode, FCaption) and Enabled then
     begin
       Click;
       Result := 1;
-    end else
+    end
+    else
       inherited;
 end;
 
-
 end.
-
 

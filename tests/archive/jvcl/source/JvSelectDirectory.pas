@@ -25,21 +25,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvSelectDirectory;
-
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Classes, JvBaseDlg, FileCtrl;
+  Classes, FileCtrl,
+  JvBaseDlg;
 
 type
   { TODO -opeter3 : Rewrite to not depend on FileCtrl? }
@@ -65,8 +59,6 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvSelectDirectory.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -78,8 +70,6 @@ begin
   FTitle := '';
 end;
 
-{**************************************************}
-
 function TJvSelectDirectory.Execute: Boolean;
 begin
   FDirectory := InitialDir;
@@ -90,3 +80,4 @@ begin
 end;
 
 end.
+

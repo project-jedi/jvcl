@@ -29,45 +29,50 @@ Known Issues:
 
 unit JvZoom;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JVCLVer;
 
 type
   TJvZoom = class(TCustomControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FTimer: TTimer;
     FActive: Boolean;
-    FZoom: Integer;
+    FZoomLevel: Integer;
     FDelay: Cardinal;
-    FZCanvas: TControlCanvas;
-    FCanvas: TCanvas;
+    FDesktopCanvas: TCanvas;
     FLastPoint: TPoint;
-    FAboutJVCL: TJVCLAboutInfo;
     FCrosshair: Boolean;
     FCrosshairColor: TColor;
     FCrosshairSize: Integer;
     FOnContentsChanged: TNotifyEvent;
-    procedure PaintMe(Sender: TObject);
+    FCacheOnDeactivate: Boolean;
+    FCacheBitmap: TBitmap;
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
+    procedure SetCacheOnDeactivate(const Value: Boolean);
+    procedure PaintMe(Sender: TObject);
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     procedure Paint; override;
+    procedure PaintZoom;
+    procedure Loaded; override;
+    procedure Cache;
+    procedure FlushCache;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Active: Boolean read FActive write SetActive default True;
-    property ZoomLevel: Integer read FZoom write FZoom default 100;
+    property ZoomLevel: Integer read FZoomLevel write FZoomLevel default 100;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Crosshair: Boolean read FCrosshair write FCrosshair default False;
-    property CrosshairColor: TColor read FCrosshairColor write FCrosshairColor;
+    property CrosshairColor: TColor read FCrosshairColor write FCrosshairColor default clBlack;
     property CrosshairSize: Integer read FCrosshairSize write FCrosshairSize default 20;
+    property CacheOnDeactivate: Boolean read FCacheOnDeactivate write SetCacheOnDeactivate default True;
     property OnContentsChanged: TNotifyEvent read FOnContentsChanged write FOnContentsChanged;
     property OnMouseDown;
     property OnClick;
@@ -84,141 +89,188 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvZoom.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Height := 100;
   Width := 100;
   FDelay := 100;
-  FZoom := 100;
+  FZoomLevel := 100;
+  FCrosshairSize := 20;
+  FCrosshairColor := clBlack;
+  FCacheOnDeactivate := True;
   FActive := True;
 
-  //Create canvas to write to the control
-  FZCanvas := TControlCanvas.Create;
-  FZCanvas.Control := Self;
-
   //Create the canvas to retrieve informations
-  FCanvas := TCanvas.Create;
-  FCanvas.Handle := GetDC(HWND_DESKTOP);
+  FDesktopCanvas := TCanvas.Create;
+  FDesktopCanvas.Handle := GetDC(HWND_DESKTOP);
 
-  Ftimer := TTimer.Create(Self);
+  FTimer := TTimer.Create(Self);
   FTimer.OnTimer := PaintMe;
   FTimer.Interval := 100;
-
-  //Assign the Parent, or it's impossible to draw on it
-  Parent := TWinControl(AOwner);
-
-  FTimer.Enabled := True;
 end;
-
-{**************************************************}
 
 destructor TJvZoom.Destroy;
 begin
-  ReleaseDc(HWND_DESKTOP, FCanvas.Handle);
-  FCanvas.Free;
-  FZCanvas.Free;
-  inherited;
+  ReleaseDC(HWND_DESKTOP, FDesktopCanvas.Handle);
+  FDesktopCanvas.Free;
+  inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvZoom.Cache;
+begin
+  if not Assigned(FCacheBitmap) then
+    FCacheBitmap := TBitmap.Create;
+  FCacheBitmap.Width := Width;
+  FCacheBitmap.Height := Height;
+  FCacheBitmap.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
+end;
+
+procedure TJvZoom.FlushCache;
+begin
+  FreeAndNil(FCacheBitmap);
+end;
+
+procedure TJvZoom.Loaded;
+begin
+  inherited Loaded;
+  FTimer.Enabled := FActive;
+end;
 
 procedure TJvZoom.Paint;
 begin
-  inherited;
+  if Active then
+    PaintZoom
+  else
+  begin
+    if Assigned(FCacheBitmap) then
+      Canvas.Draw(0, 0, FCacheBitmap)
+    else
+    begin
+      Canvas.Brush.Color := Color;
+      Canvas.FillRect(Rect(0, 0, Width, Height));
+    end;
+  end;
   if csDesigning in ComponentState then
-    with inherited Canvas do
+    with Canvas do
     begin
       Pen.Style := psDash;
+      Pen.Color := clBlack;
       Brush.Style := bsClear;
       Rectangle(0, 0, Width, Height);
     end;
 end;
 
 procedure TJvZoom.PaintMe(Sender: TObject);
-var
-  p: TPoint;
-  x, y, dx, dy: Integer;
-  t: TRect;
 begin
-  GetCursorPos(p);
-  //Only draw if on a different position
-  if (p.x <> FLastPoint.x) or (p.y <> FLastPoint.y) then
-  begin
-    //if it's the first time, get the DC of the control to be able
-    //to draw on it.
-    if FTimer.Tag = 0 then
-    begin
-      try
-        FZCanvas.Handle := GetDC(Handle);
-      except
-        Exit;
-      end;
-      FTimer.Tag := 1;
-    end;
-
-    //Analyse the point
-    FLastPoint := p;
-    //Create the area to Copy
-    x := (Width div 2) * FZoom div 100;
-    y := (Height div 2) * FZoom div 100;
-
-    dx := 0;
-    dy := 0;
-    
-    if p.x < x then
-    begin
-      dx := (p.x - x - 1) * 100 div FZoom;
-      p.x := x
-    end
-    else if p.x + x > Screen.Width then
-    begin
-      dx := (x - (Screen.Width - p.x) + 1) * 100 div FZoom;
-      p.x := Screen.Width - x;
-    end;
-    if p.y < y then
-    begin
-      dy := (p.y - y - 1) * 100 div FZoom;
-      p.y := y
-    end
-    else if p.y + y > Screen.Height then
-    begin
-      dy := (y - (Screen.Height - p.y) + 1) * 100 div FZoom;
-      p.y := Screen.Height - y;
-    end;
-    t.Left := p.x - x;
-    t.Top := p.y - y;
-    t.Right := p.x + x;
-    t.Bottom := p.y + y;
-
-
-    //Draw the area around the mouse
-    FZCanvas.CopyRect(Rect(0, 0, Width, Height), FCanvas, t);
-    if FCrosshair then
-      with FZCanvas do
-      begin
-        Pen.Color := FCrosshairColor;
-        MoveTo(Width div 2 + dx, Height div 2 - FCrosshairSize div 2 + dy);
-        LineTo(Width div 2 + dx, Height div 2 + FCrosshairSize div 2 + dy);
-        MoveTo(Width div 2 - FCrosshairSize div 2 + dx, Height div 2 + dy);
-        LineTo(Width div 2 + FCrosshairSize div 2 + dx, Height div 2 + dy);
-      end;
-    if Assigned(FOnContentsChanged) then
-      FOnContentsChanged(Self);
-  end;
+  { Reading Canvas.Handle will implicitly set the canvas handle to the
+    control's device context
+    Calling PaintWindow will lock the canvas and call Paint
+  }
+  PaintWindow(Canvas.Handle);
 end;
 
-{**************************************************}
+procedure TJvZoom.PaintZoom;
+var
+  P: TPoint;
+  X, Y, Dx, Dy: Integer;
+  SourceRect: TRect;
+begin
+  GetCursorPos(P);
+
+  //Only draw if on a different position
+  if (P.X = FLastPoint.X) and (P.Y = FLastPoint.Y) then
+    Exit;
+
+  //Analyse the point
+  FLastPoint := P;
+
+  //Create the area to Copy
+  X := (Width div 2) * FZoomLevel div 100;
+  Y := (Height div 2) * FZoomLevel div 100;
+
+  Dx := 0;
+  Dy := 0;
+
+  if P.X < X then
+  begin
+    Dx := (P.X - X - 1) * 100 div FZoomLevel;
+    P.X := X
+  end
+  else
+  if P.X + X > Screen.Width then
+  begin
+    Dx := (X - (Screen.Width - P.X) + 1) * 100 div FZoomLevel;
+    P.X := Screen.Width - X;
+  end;
+  if P.Y < Y then
+  begin
+    Dy := (P.Y - Y - 1) * 100 div FZoomLevel;
+    P.Y := Y
+  end
+  else
+  if P.Y + Y > Screen.Height then
+  begin
+    Dy := (Y - (Screen.Height - P.Y) + 1) * 100 div FZoomLevel;
+    P.Y := Screen.Height - Y;
+  end;
+
+  SourceRect.Left := P.X - X;
+  SourceRect.Top := P.Y - Y;
+  SourceRect.Right := P.X + X;
+  SourceRect.Bottom := P.Y + Y;
+
+  //Draw the area around the mouse
+  Canvas.CopyRect(Rect(0, 0, Width, Height), FDesktopCanvas, SourceRect);
+
+  if FCrosshair then
+    with Canvas do
+    begin
+      Pen.Color := FCrosshairColor;
+      Pen.Style := psSolid;
+      MoveTo(Width div 2 + Dx, Height div 2 - FCrosshairSize div 2 + Dy);
+      LineTo(Width div 2 + Dx, Height div 2 + FCrosshairSize div 2 + Dy);
+      MoveTo(Width div 2 - FCrosshairSize div 2 + Dx, Height div 2 + Dy);
+      LineTo(Width div 2 + FCrosshairSize div 2 + Dx, Height div 2 + Dy);
+    end;
+
+  if Assigned(FOnContentsChanged) then
+    FOnContentsChanged(Self);
+end;
 
 procedure TJvZoom.SetActive(const Value: Boolean);
 begin
+  if FActive = Value then
+    Exit;
+
   FActive := Value;
-  FTimer.Enabled := Value;
+
+  if not (csReading in ComponentState) then
+    FTimer.Enabled := FActive;
+
+  if not FActive then
+  begin
+    if FCacheOnDeactivate then
+      Cache
+    else
+      Invalidate;
+  end;
 end;
 
-{**************************************************}
+procedure TJvZoom.SetCacheOnDeactivate(const Value: Boolean);
+begin
+  if Value = FCacheOnDeactivate then
+    Exit;
+
+  FCacheOnDeactivate := Value;
+
+  if not FCacheOnDeactivate then
+  begin
+    FlushCache;
+    if not Active then
+      Invalidate;
+  end;
+end;
 
 procedure TJvZoom.SetDelay(const Value: Cardinal);
 begin
@@ -226,12 +278,12 @@ begin
   FTimer.Interval := Value;
 end;
 
-{**************************************************}
-
 procedure TJvZoom.WMSize(var Msg: TWMSize);
 begin
   //On resize, refresh it
   inherited;
+  { Forget the old point; thus force repaint }
+  FLastPoint := Point(High(LongInt), High(LongInt));
   PaintMe(Self);
 end;
 

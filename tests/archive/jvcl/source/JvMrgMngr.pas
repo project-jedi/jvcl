@@ -29,7 +29,9 @@ unit JvMrgMngr;
 
 interface
 
-uses Classes, Controls, Forms, JvVCLUtils{, JvComponent};
+uses
+  Classes, Controls, Forms,
+  JvVCLUtils {, JvComponent};
 
 type
   TFormRequestEvent = procedure(Sender: TObject; CurrentForm: TCustomForm;
@@ -38,8 +40,6 @@ type
     Activated, Deactivated: TCustomForm) of object;
   TJvFormHistory = class;
   TFormHistoryCommand = (hcNone, hcAdd, hcBack, hcForward, hcGoto);
-
-{ TJvMergeManager }
 
   TJvMergeManager = class(TComponent)
   private
@@ -79,17 +79,13 @@ type
     property HistoryCommand: TFormHistoryCommand read FHistoryCommand
       write FHistoryCommand;
   published
-    property MergeFrame: TWinControl read FMergeFrame write SetMergeFrame
-      stored NotIsForm;
-    property OnGetBackForm: TFormRequestEvent read FOnGetBackForm
-      write FOnGetBackForm;
+    property MergeFrame: TWinControl read FMergeFrame write SetMergeFrame stored NotIsForm;
+    property OnGetBackForm: TFormRequestEvent read FOnGetBackForm write FOnGetBackForm;
     property OnGetForwardForm: TFormRequestEvent read FOnGetForwardForm
       write FOnGetForwardForm;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnReorder: TFormReorderEvent read FOnReorder write FOnReorder;
   end;
-
-{ TJvFormHistory }
 
   TJvFormHistory = class(TList)
   private
@@ -106,14 +102,13 @@ type
     function RemoveItem(Item: TComponent): Boolean;
     procedure ResetHistory;
     property Current: Integer read FCurrent write SetCurrent;
-    property HistoryCapacity: Integer read FHistoryCapacity
-      write SetHistoryCapacity;
+    property HistoryCapacity: Integer read FHistoryCapacity write SetHistoryCapacity;
     property Forms[Index: Integer]: TCustomForm read GetForm;
   end;
 
 implementation
 
-{ TJvMergeManager }
+//=== TJvMergeManager ========================================================
 
 constructor TJvMergeManager.Create(AOwner: TComponent);
 begin
@@ -142,7 +137,8 @@ end;
 procedure TJvMergeManager.ReadForm(Reader: TReader);
 begin
   if Reader.ReadBoolean then
-    if Owner is TCustomForm then MergeFrame := TWinControl(Owner);
+    if Owner is TCustomForm then
+      MergeFrame := TWinControl(Owner);
 end;
 
 procedure TJvMergeManager.WriteForm(Writer: TWriter);
@@ -151,14 +147,17 @@ begin
 end;
 
 procedure TJvMergeManager.DefineProperties(Filer: TFiler);
-{$IFDEF WIN32}
+
+  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
       Result := IsForm <> TJvMergeManager(Filer.Ancestor).IsForm
-    else Result := IsForm;
+    else
+      Result := IsForm;
   end;
-{$ENDIF}
+  {$ENDIF}
+
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('IsForm', ReadForm, WriteForm,
@@ -167,11 +166,13 @@ end;
 
 procedure TJvMergeManager.SetMergeFrame(Value: TWinControl);
 begin
-  if FMergeFrame <> Value then begin
+  if FMergeFrame <> Value then
+  begin
     FMergeFrame := Value;
-{$IFDEF WIN32}
-    if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
+    {$IFDEF WIN32}
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    {$ENDIF}
     FFormHistory.ResetHistory;
   end;
 end;
@@ -180,15 +181,16 @@ function TJvMergeManager.GetActiveForm: TCustomForm;
 var
   I: Integer;
 begin
-  if (MergeFrame <> nil) and (MergeFrame.ControlCount > 0) then begin
-    for I := MergeFrame.ControlCount - 1 downto 0 do begin
-      if MergeFrame.Controls[I] is TCustomForm then begin
+  Result := nil;
+  if (MergeFrame <> nil) and (MergeFrame.ControlCount > 0) then
+    for I := MergeFrame.ControlCount - 1 downto 0 do
+    begin
+      if MergeFrame.Controls[I] is TCustomForm then
+      begin
         Result := TCustomForm(MergeFrame.Controls[I]);
-        Exit;
+        Break;
       end;
     end;
-  end;
-  Result := nil;
 end;
 
 procedure TJvMergeManager.SetActiveForm(Value: TCustomForm);
@@ -202,7 +204,8 @@ begin
     Result := nil
   else
     Result := FormHistory.Forms[FormHistory.Current - 1];
-  if Assigned(FOnGetBackForm) then FOnGetBackForm(Self, ActiveForm, Result);
+  if Assigned(FOnGetBackForm) then
+    FOnGetBackForm(Self, ActiveForm, Result);
 end;
 
 function TJvMergeManager.GetForwardForm: TCustomForm;
@@ -211,27 +214,33 @@ begin
     Result := nil
   else
     Result := FormHistory.Forms[FormHistory.Current + 1];
-  if Assigned(FOnGetForwardForm) then FOnGetForwardForm(Self, ActiveForm, Result);
+  if Assigned(FOnGetForwardForm) then
+    FOnGetForwardForm(Self, ActiveForm, Result);
 end;
 
 procedure TJvMergeManager.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then begin
-    if AComponent = MergeFrame then MergeFrame := nil;
-    if FormHistory.RemoveItem(AComponent) then DoChange;
+  if Operation = opRemove then
+  begin
+    if AComponent = MergeFrame then
+      MergeFrame := nil;
+    if FormHistory.RemoveItem(AComponent) then
+      DoChange;
   end;
 end;
 
 procedure TJvMergeManager.DoChange;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvMergeManager.DoReorder(Deactivated: TCustomForm);
 begin
-  if Assigned(FOnReorder) then FOnReorder(Self, ActiveForm, Deactivated);
+  if Assigned(FOnReorder) then
+    FOnReorder(Self, ActiveForm, Deactivated);
 end;
 
 procedure TJvMergeManager.Merge(AForm: TCustomForm; Show: Boolean);
@@ -247,16 +256,24 @@ var
 begin
   Result := False;
   OldActiveForm := ActiveForm;
-  if MergeFrame = nil then Exit;
-  for I := 0 to MergeFrame.ControlCount - 1 do begin
-    if MergeFrame.Controls[I] = AForm then begin
+  if MergeFrame = nil then
+    Exit;
+  for I := 0 to MergeFrame.ControlCount - 1 do
+  begin
+    if MergeFrame.Controls[I] = AForm then
+    begin
       AForm.BringToFront;
       case HistoryCommand of
-        hcNone: ;
-        hcAdd: FormHistory.AddForm(AForm);
-        hcBack: FormHistory.Current := FormHistory.Current - 1;
-        hcForward: FormHistory.Current := FormHistory.Current + 1;
-        hcGoto: ;
+        hcNone:
+          ;
+        hcAdd:
+          FormHistory.AddForm(AForm);
+        hcBack:
+          FormHistory.Current := FormHistory.Current - 1;
+        hcForward:
+          FormHistory.Current := FormHistory.Current + 1;
+        hcGoto:
+          ;
       end;
       HistoryCommand := hcAdd;
       DoReorder(OldActiveForm);
@@ -272,10 +289,13 @@ var
   I: Integer;
 begin
   Result := False;
-  if MergeFrame = nil then Exit;
-  for I := 0 to MergeFrame.ControlCount - 1 do begin
-    if MergeFrame.Controls[I] is AFormClass then begin
-      Result := GotoForm(MergeFrame.Controls[I] as TCustomForm);     
+  if MergeFrame = nil then
+    Exit;
+  for I := 0 to MergeFrame.ControlCount - 1 do
+  begin
+    if MergeFrame.Controls[I] is AFormClass then
+    begin
+      Result := GotoForm(MergeFrame.Controls[I] as TCustomForm);
       Exit;
     end;
   end;
@@ -308,7 +328,7 @@ begin
   end;
 end;
 
-{ TJvFormHistory }
+//=== TJvFormHistory =========================================================
 
 constructor TJvFormHistory.Create;
 begin
@@ -324,9 +344,12 @@ end;
 
 procedure TJvFormHistory.SetCurrent(Value: Integer);
 begin
-  if Value < 0 then Value := -1;
-  if Value > Count - 1 then Value := Count - 1;
-  if FCurrent <> Value then begin
+  if Value < 0 then
+    Value := -1;
+  if Value > Count - 1 then
+    Value := Count - 1;
+  if FCurrent <> Value then
+  begin
     FCurrent := Value;
   end;
 end;
@@ -335,11 +358,11 @@ procedure TJvFormHistory.SetHistoryCapacity(Value: Integer);
 var
   I: Integer;
 begin
-  if Value < FHistoryCapacity then begin
-    for I := 0 to Count - Value do begin
+  if Value < FHistoryCapacity then
+    for I := 0 to Count - Value do
+    begin
       RemoveItem(Forms[0]);
     end;
-  end;
   FHistoryCapacity := Value;
 end;
 
@@ -352,23 +375,22 @@ procedure TJvFormHistory.AddForm(AForm: TCustomForm);
 var
   I: Integer;
 begin
-  for I := Count - 1 downto Current + 1 do begin
+  for I := Count - 1 downto Current + 1 do
     DeleteHistoryItem(I);
-  end;
-  for I := 0 to Count - HistoryCapacity do begin
+  for I := 0 to Count - HistoryCapacity do
     DeleteHistoryItem(0);
-  end;
-  if Count < HistoryCapacity then begin
+  if Count < HistoryCapacity then
     Add(AForm);
-  end;
   Current := Count - 1;
 end;
 
 procedure TJvFormHistory.DeleteHistoryItem(Index: Integer);
 begin
-  if (Index >= 0) and (Index < Count) then begin
+  if (Index >= 0) and (Index < Count) then
+  begin
     Delete(Index);
-    if Current > Count - 1 then Current := Count - 1;
+    if Current > Count - 1 then
+      Current := Count - 1;
   end;
 end;
 
@@ -377,12 +399,12 @@ var
   I: Integer;
 begin
   Result := False;
-  for I := Count - 1 downto 0 do begin
-    if Items[I] = Item then begin
+  for I := Count - 1 downto 0 do
+    if Items[I] = Item then
+    begin
       DeleteHistoryItem(I);
       Result := True;
     end;
-  end;
 end;
 
 procedure TJvFormHistory.ResetHistory;
@@ -392,3 +414,4 @@ begin
 end;
 
 end.
+

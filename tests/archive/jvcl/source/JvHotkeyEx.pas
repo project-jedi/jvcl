@@ -31,7 +31,8 @@ unit JvHotkeyEx;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, StdCtrls, Menus, JVCLVer;
+  Windows, SysUtils, Classes, Controls, StdCtrls, Menus,
+  JVCLVer;
 
 type
   TJvHotKeyEx = class(TEdit)
@@ -44,62 +45,62 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Change; override;
   public
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Shortcut:TShortcut read GetShortcut write SetShortcut;
+    property Shortcut: TShortcut read GetShortcut write SetShortcut;
   end;
 
 implementation
 
-{**************************************************************************}
-procedure TJvHotKeyEx.Change;
-var
- st: string;
-begin
-  inherited;
-  st := ShortCutToText(TextToShortcut(Text));
-  if st<>Text then
-    Text := st;
-end;
-{**************************************************************************}
 constructor TJvHotKeyEx.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Text := '';
 end;
-{**************************************************************************}
+
+procedure TJvHotKeyEx.Change;
+var
+  St: string;
+begin
+  inherited Change;
+  St := ShortCutToText(TextToShortcut(Text));
+  if St <> Text then
+    Text := St;
+end;
+
 function TJvHotKeyEx.GetShortcut: TShortcut;
 begin
-  result := TextToShortCut(Text);
+  Result := TextToShortCut(Text);
 end;
-{**************************************************************************}
+
 procedure TJvHotKeyEx.KeyDown(var Key: Word; Shift: TShiftState);
 var
- s: TShortCut;
+  S: TShortCut;
 begin
-  inherited;
-  if (Key=VK_CONTROL) then
-    Shift := Shift-[ssCtrl];
-  if (Key=VK_MENU) then
-    Shift := Shift-[ssAlt];
-  if (Key=VK_SHIFT) then
-    Shift := Shift-[ssShift];
-  s := Menus.Shortcut(Key,Shift);
-  Text := ShortCutToText(s);
+  inherited KeyDown(Key, Shift);
+  if Key = VK_CONTROL then
+    Shift := Shift - [ssCtrl];
+  if Key = VK_MENU then
+    Shift := Shift - [ssAlt];
+  if Key = VK_SHIFT then
+    Shift := Shift - [ssShift];
+  S := Menus.Shortcut(Key, Shift);
+  Text := ShortCutToText(S);
   Key := 0;
   Shift := [];
 end;
-{**************************************************************************}
+
 procedure TJvHotKeyEx.KeyPress(var Key: Char);
 begin
-  inherited;
+  inherited KeyPress(Key);
   Key := #0;
 end;
-{**************************************************************************}
+
 procedure TJvHotKeyEx.SetShortcut(const Value: TShortcut);
 begin
   Text := ShortCutToText(Value);
 end;
-{**************************************************************************}
+
 end.
+

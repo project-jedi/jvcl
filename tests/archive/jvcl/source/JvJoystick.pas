@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvJoystick;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, MMSystem, Forms, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, MMSystem, Forms,
+  JvTypes, JvComponent;
 
 // (rom) in the time of USB this unit may have to support more than 2 joysticks
 
@@ -42,16 +41,16 @@ type
   private
     FJoyInfo: JOYINFO;
     FJoy: JOYCAPS;
-    FBidon: Cardinal;
-    FBIdonw: Word;
-    FBidonS: string;
+    FDummy: Cardinal;
+    FDummyW: Word;
+    FDummyS: string;
     FCap: JvTypes.TJoyCaps;
     FCaps2: JvTypes.TJoyCaps;
     FszRegKey: string;
     FszOEMVxD: string;
     FszPName: string;
-    FBidonI: Integer;
-    FBidonB: Boolean;
+    FDummyI: Integer;
+    FDummyB: Boolean;
     FJoyNumber: Integer;
     function GetButton1: Boolean;
     function GetButton2: Boolean;
@@ -61,41 +60,42 @@ type
     function GetYPosition: Integer;
     function GetZPosition: Integer;
     procedure RefreshJoy;
-  protected
   public
     constructor CreateJoy(AOwner: TComponent; Joy: Integer);
   published
-    property XPosition: Integer read GetXPosition write FBidonI;
-    property YPosition: Integer read GetYPosition write FBidonI;
-    property ZPosition: Integer read GetZPosition write FBidonI;
-    property Button1Pressed: Boolean read GetButton1 write FBidonB;
-    property Button2Pressed: Boolean read GetButton2 write FBidonB;
-    property Button3Pressed: Boolean read GetButton3 write FBidonB;
-    property Button4Pressed: Boolean read GetButton4 write FBidonB;
-    property Manufacturer: Word read FJoy.wMid write FBidonW;
-    property ProductIdentifier: Word read FJoy.wPid write FBidonW;
-    property ProductName: string read FszPName write FbidonS;
-    property XMin: Cardinal read FJoy.wXMin;
-    property XMax: Cardinal read FJoy.wXMax write FBidon;
-    property YMin: Cardinal read FJoy.wYMin write FBidon;
-    property YMax: Cardinal read FJoy.wYMax write FBidon;
-    property Zmin: Cardinal read FJoy.wZmin write FBidon;
-    property Zmax: Cardinal read FJoy.wZmax write FBidon;
-    property NumButtons: Cardinal read FJoy.wNumButtons write FBidon;
-    property PeriodMin: Cardinal read FJoy.wPeriodMin write FBidon;
-    property PeriodMax: Cardinal read FJoy.wPeriodMax write FBidon;
-    property RudderMin: Cardinal read FJoy.wRmin write FBidon;
-    property RudderMax: Cardinal read FJoy.wRmax write FBidon;
-    property UMin: Cardinal read FJoy.wUMin write FBidon;
-    property UMax: Cardinal read FJoy.wUMax write FBidon;
-    property VMin: Cardinal read FJoy.wVMin write FBidon;
-    property VMax: Cardinal read FJoy.wVMax write FBidon;
-    property Capabilities: JvTypes.TJoyCaps read FCap write FCaps2;
-    property MaxAxis: Cardinal read FJoy.wMaxAxes write FBidon;
-    property NumAxis: Cardinal read FJoy.wNumAxes write FBidon;
-    property MaxButtons: Cardinal read FJoy.wMaxButtons write FBidon;
-    property RegKey: string read FszRegKey write FBidonS;
-    property OemVXD: string read FszOEMVxD write FBidonS;
+    { Do not store dummies }
+    property XPosition: Integer read GetXPosition write FDummyI stored False;
+    property YPosition: Integer read GetYPosition write FDummyI stored False;
+    property ZPosition: Integer read GetZPosition write FDummyI stored False;
+    property Button1Pressed: Boolean read GetButton1 write FDummyB stored False;
+    property Button2Pressed: Boolean read GetButton2 write FDummyB stored False;
+    property Button3Pressed: Boolean read GetButton3 write FDummyB stored False;
+    property Button4Pressed: Boolean read GetButton4 write FDummyB stored False;
+    property Manufacturer: Word read FJoy.wMid write FDummyW stored False;
+    property ProductIdentifier: Word read FJoy.wPid write FDummyW stored False;
+    property ProductName: string read FszPName write FDummyS stored False;
+    property XMin: Cardinal read FJoy.wXMin write FDummy stored False;
+    property XMax: Cardinal read FJoy.wXMax write FDummy stored False;
+    property YMin: Cardinal read FJoy.wYMin write FDummy stored False;
+    property YMax: Cardinal read FJoy.wYMax write FDummy stored False;
+    property Zmin: Cardinal read FJoy.wZmin write FDummy stored False;
+    property Zmax: Cardinal read FJoy.wZmax write FDummy stored False;
+    property NumButtons: Cardinal read FJoy.wNumButtons write FDummy stored False;
+    property PeriodMin: Cardinal read FJoy.wPeriodMin write FDummy stored False;
+    property PeriodMax: Cardinal read FJoy.wPeriodMax write FDummy stored False;
+    property RudderMin: Cardinal read FJoy.wRmin write FDummy stored False;
+    property RudderMax: Cardinal read FJoy.wRmax write FDummy stored False;
+    property UMin: Cardinal read FJoy.wUMin write FDummy stored False;
+    property UMax: Cardinal read FJoy.wUMax write FDummy stored False;
+    property VMin: Cardinal read FJoy.wVMin write FDummy stored False;
+    property VMax: Cardinal read FJoy.wVMax write FDummy stored False;
+    { (rb) FCaps2 is also a dummy, weird name }
+    property Capabilities: JvTypes.TJoyCaps read FCap write FCaps2 stored False;
+    property MaxAxis: Cardinal read FJoy.wMaxAxes write FDummy stored False;
+    property NumAxis: Cardinal read FJoy.wNumAxes write FDummy stored False;
+    property MaxButtons: Cardinal read FJoy.wMaxButtons write FDummy stored False;
+    property RegKey: string read FszRegKey write FDummyS stored False;
+    property OemVXD: string read FszOEMVxD write FDummyS stored False;
   end;
 
   TJvJoystick = class(TJvComponent)
@@ -122,22 +122,22 @@ type
     procedure SetCapture2(const Value: Boolean);
     function GetJoystick1: Boolean;
     function GetJoystick2: Boolean;
-    function GetThreshold1: Integer;
-    function GetThreshold2: Integer;
-    procedure SetThreshold1(const Value: Integer);
-    procedure SetThreshold2(const Value: Integer);
+    function GetThreshold1: MMRESULT;
+    function GetThreshold2: MMRESULT;
+    procedure SetThreshold1(const Value: MMRESULT);
+    procedure SetThreshold2(const Value: MMRESULT);
     procedure RaiseErrorCapture(Value: MMRESULT);
     procedure RaiseErrorRelease(Value: MMRESULT);
-  protected
   public
     procedure WndProc(var Msg: TMessage);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Joy1Threshold: Integer read GetThreshold1 write SetThreshold1;
-    property Joy2Threshold: Integer read GetThreshold2 write SetThreshold2;
-    property HasJoystick1: Boolean read GetJoystick1 write FJoy;
-    property HasJoystick2: Boolean read GetJoystick2 write FJoy;
+    property Joy1Threshold: MMRESULT read GetThreshold1 write SetThreshold1;
+    property Joy2Threshold: MMRESULT read GetThreshold2 write SetThreshold2;
+    { (rb) FJoy is a dummy, weird name }
+    property HasJoystick1: Boolean read GetJoystick1 write FJoy stored False;
+    property HasJoystick2: Boolean read GetJoystick2 write FJoy stored False;
     property PollTime: Cardinal read FPoll write FPoll default 50;
     property CaptureJoystick1: Boolean read FCapture1 write SetCapture1 default False;
     property CaptureJoystick2: Boolean read FCapture2 write SetCapture2 default False;
@@ -158,13 +158,10 @@ implementation
 
 resourcestring
   RC_NoJoystickDriver = 'The joystick driver is not present.';
-  RC_CanntCaptureJoystick = 'Can''t capture the joystick';
+  RC_CannotCaptureJoystick = 'Can''t capture the joystick';
   RC_JoystickUnplugged = 'The specified joystick is not connected to the system.';
   RC_JoystickErrorParam = 'The specified joystick device identifier is invalid.';
-
-  ///////////////////////////////////////////////////////////
-  // TJvJoystick
-  ///////////////////////////////////////////////////////////
+  RC_JoystickError = 'Unable to initialize joystick driver';
 
 constructor TJvJoystick.Create(AOwner: TComponent);
 begin
@@ -173,19 +170,25 @@ begin
   FJoystick2 := joyGetNumDevs > 1;
   FJoy1 := TJoystick.CreateJoy(Self, JOYSTICKID1);
   FJoy2 := TJoystick.CreateJoy(Self, JOYSTICKID2);
-  FHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWND(WndProc);
+  {$IFDEF COMPILER6_UP}
+  FHandle := Classes.AllocateHWND(WndProc);
+  {$ELSE}
+  FHandle := AllocateHWND(WndProc);
+  {$ENDIF}
   FCapture1 := False;
   FCapture2 := False;
   FPoll := 50;
 end;
 
-{************************************************************}
-
 destructor TJvJoystick.Destroy;
 begin
   FJoy1.Free;
   FJoy2.Free;
-  {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FHandle);
+  {$IFDEF COMPILER6_UP}
+  Classes.DeallocateHWnd(FHandle);
+  {$ELSE}
+  DeallocateHWnd(FHandle);
+  {$ENDIF}
   if FCapture1 then
     joyReleaseCapture(JOYSTICKID1);
   if FCapture2 then
@@ -193,39 +196,29 @@ begin
   inherited;
 end;
 
-{************************************************************}
-
 function TJvJoystick.GetJoystick1: Boolean;
 var
-  j: JOYINFO;
+  J: JOYINFO;
 begin
-  Result := joyGetPos(JOYSTICKID1, @j) = JOYERR_NOERROR;
+  Result := joyGetPos(JOYSTICKID1, @J) = JOYERR_NOERROR;
 end;
-
-{************************************************************}
 
 function TJvJoystick.GetJoystick2: Boolean;
 var
-  j: JOYINFO;
+  J: JOYINFO;
 begin
-  Result := joyGetPos(JOYSTICKID2, @j) = JOYERR_NOERROR;
+  Result := joyGetPos(JOYSTICKID2, @J) = JOYERR_NOERROR;
 end;
 
-{************************************************************}
-
-function TJvJoystick.GetThreshold1: Integer;
+function TJvJoystick.GetThreshold1: MMRESULT;
 begin
   joyGetThreshold(JOYSTICKID1, @Result);
 end;
 
-{************************************************************}
-
-function TJvJoystick.GetThreshold2: Integer;
+function TJvJoystick.GetThreshold2: MMRESULT;
 begin
   joyGetThreshold(JOYSTICKID2, @Result);
 end;
-
-{************************************************************}
 
 procedure TJvJoystick.RaiseErrorCapture(Value: MMRESULT);
 begin
@@ -235,14 +228,12 @@ begin
         FOnError(Self, MMSYSERR_NODRIVER, RC_NoJoystickDriver);
     JOYERR_NOCANDO:
       if Assigned(FOnError) then
-        FOnError(Self, JOYERR_NOCANDO, RC_CanntCaptureJoystick);
+        FOnError(Self, JOYERR_NOCANDO, RC_CannotCaptureJoystick);
     JOYERR_UNPLUGGED:
       if Assigned(FOnError) then
         FOnError(Self, JOYERR_NOCANDO, RC_JoystickUnplugged);
   end;
 end;
-
-{************************************************************}
 
 procedure TJvJoystick.RaiseErrorRelease(Value: MMRESULT);
 begin
@@ -255,7 +246,6 @@ begin
         FOnError(Self, JOYERR_PARMS, RC_JoystickErrorParam);
   end;
 end;
-{************************************************************}
 
 procedure TJvJoystick.SetCapture1(const Value: Boolean);
 begin
@@ -266,8 +256,6 @@ begin
     RaiseErrorRelease(joyReleaseCapture(JOYSTICKID1));
 end;
 
-{************************************************************}
-
 procedure TJvJoystick.SetCapture2(const Value: Boolean);
 begin
   FCapture2 := Value;
@@ -277,49 +265,46 @@ begin
     RaiseErrorRelease(joyReleaseCapture(JOYSTICKID2));
 end;
 
-{************************************************************}
-
-procedure TJvJoystick.SetThreshold1(const Value: Integer);
+procedure TJvJoystick.SetThreshold1(const Value: MMRESULT);
 begin
   joySetThreshold(JOYSTICKID1, Value);
 end;
 
-{************************************************************}
-
-procedure TJvJoystick.SetThreshold2(const Value: Integer);
+procedure TJvJoystick.SetThreshold2(const Value: MMRESULT);
 begin
   joySetThreshold(JOYSTICKID2, Value);
 end;
 
-{************************************************************}
-
 procedure TJvJoystick.WndProc(var Msg: TMessage);
 var
-  x, y: Byte;
-  i: Integer;
-  b1, b2, b3, b4: Boolean;
+  X, Y: Byte;
+  I: Integer;
+  B1, B2, B3, B4: Boolean;
 
   procedure TestButtonDown(Value: TJoyButtonDown);
   begin
     if Assigned(Value) then
     begin
-      x := msg.LParamLo;
-      y := msg.LParamHi;
-      if (msg.WParam and JOY_BUTTON1CHG) = JOY_BUTTON1CHG then
-        i := 1
-      else if (msg.WParam and JOY_BUTTON2CHG) = JOY_BUTTON2CHG then
-        i := 2
-      else if (msg.WParam and JOY_BUTTON3CHG) = JOY_BUTTON3CHG then
-        i := 3
-      else if (msg.WParam and JOY_BUTTON4CHG) = JOY_BUTTON4CHG then
-        i := 4
+      X := Msg.LParamLo;
+      Y := Msg.LParamHi;
+      if (Msg.WParam and JOY_BUTTON1CHG) = JOY_BUTTON1CHG then
+        I := 1
       else
-        i := 0;
-      b1 := (msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
-      b2 := (msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
-      b3 := (msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
-      b4 := (msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
-      Value(Self, x, y, i, b1, b2, b3, b4);
+      if (Msg.WParam and JOY_BUTTON2CHG) = JOY_BUTTON2CHG then
+        I := 2
+      else
+      if (Msg.WParam and JOY_BUTTON3CHG) = JOY_BUTTON3CHG then
+        I := 3
+      else
+      if (Msg.WParam and JOY_BUTTON4CHG) = JOY_BUTTON4CHG then
+        I := 4
+      else
+        I := 0;
+      B1 := (Msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
+      B2 := (Msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
+      B3 := (Msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
+      B4 := (Msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
+      Value(Self, X, Y, I, B1, B2, B3, B4);
     end;
   end;
 
@@ -327,13 +312,13 @@ var
   begin
     if Assigned(Value) then
     begin
-      x := msg.LParamLo;
-      y := msg.LParamHi;
-      b1 := (msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
-      b2 := (msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
-      b3 := (msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
-      b4 := (msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
-      Value(Self, x, y, b1, b2, b3, b4);
+      X := Msg.LParamLo;
+      Y := Msg.LParamHi;
+      B1 := (Msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
+      B2 := (Msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
+      B3 := (Msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
+      B4 := (Msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
+      Value(Self, X, Y, B1, B2, B3, B4);
     end;
   end;
 
@@ -341,12 +326,12 @@ var
   begin
     if Assigned(Value) then
     begin
-      x := msg.LParamLo;
-      b1 := (msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
-      b2 := (msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
-      b3 := (msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
-      b4 := (msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
-      Value(Self, x, b1, b2, b3, b4);
+      X := Msg.LParamLo;
+      B1 := (Msg.WParam and JOY_BUTTON1) = JOY_BUTTON1;
+      B2 := (Msg.WParam and JOY_BUTTON2) = JOY_BUTTON2;
+      B3 := (Msg.WParam and JOY_BUTTON3) = JOY_BUTTON3;
+      B4 := (Msg.WParam and JOY_BUTTON4) = JOY_BUTTON4;
+      Value(Self, X, B1, B2, B3, B4);
     end;
   end;
 
@@ -373,15 +358,11 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvJoystick
-///////////////////////////////////////////////////////////
-
 constructor TJoystick.CreateJoy(AOwner: TComponent; Joy: Integer);
 begin
   FJoyNumber := Joy;
   if joyGetDevCaps(Joy, @FJoy, SizeOf(FJoy)) = MMSYSERR_NODRIVER then
-    raise EJVCLException.Create('Unable to initialize joystick driver');
+    raise EJVCLException.Create(RC_JoystickError);
   FCap := [];
   if (JOYCAPS_HASZ and FJoy.wCaps) = JOYCAPS_HASZ then
     FCap := FCap + [joHasZCoordinate];
@@ -402,15 +383,11 @@ begin
   FszPName := FJoy.szPName;
 end;
 
-{************************************************************}
-
 function TJoystick.GetButton1: Boolean;
 begin
   RefreshJoy;
   Result := (FJoyInfo.wButtons and JOY_BUTTON1) = JOY_BUTTON1;
 end;
-
-{************************************************************}
 
 function TJoystick.GetButton2: Boolean;
 begin
@@ -418,15 +395,11 @@ begin
   Result := (FJoyInfo.wButtons and JOY_BUTTON2) = JOY_BUTTON2;
 end;
 
-{************************************************************}
-
 function TJoystick.GetButton3: Boolean;
 begin
   RefreshJoy;
   Result := (FJoyInfo.wButtons and JOY_BUTTON3) = JOY_BUTTON3;
 end;
-
-{************************************************************}
 
 function TJoystick.GetButton4: Boolean;
 begin
@@ -434,15 +407,11 @@ begin
   Result := (FJoyInfo.wButtons and JOY_BUTTON4) = JOY_BUTTON4;
 end;
 
-{************************************************************}
-
 function TJoystick.GetXPosition: Integer;
 begin
   RefreshJoy;
   Result := FJoyInfo.wXpos;
 end;
-
-{************************************************************}
 
 function TJoystick.GetYPosition: Integer;
 begin
@@ -450,15 +419,11 @@ begin
   Result := FJoyInfo.wYpos;
 end;
 
-{************************************************************}
-
 function TJoystick.GetZPosition: Integer;
 begin
   RefreshJoy;
   Result := FJoyInfo.wZpos;
 end;
-
-{************************************************************}
 
 procedure TJoystick.RefreshJoy;
 begin
@@ -466,3 +431,4 @@ begin
 end;
 
 end.
+

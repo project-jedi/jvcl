@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvHotLink;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvFunctions, JvLabel;
+  SysUtils, Classes, Graphics, Controls,
+  JvFunctions, JvLabel;
 
 type
   TJvHotLink = class(TJvLabel)
@@ -51,11 +50,9 @@ implementation
 resourcestring
   RC_UrlSite = 'http://delphi-jedi.org';
 
-  {**************************************************}
-
 constructor TJvHotLink.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FUrl := RC_UrlSite;
   Cursor := crHandPoint;
   HotTrack := True;
@@ -63,12 +60,11 @@ begin
   HotTrackFont.Style := [fsUnderline];
 end;
 
-{**************************************************}
-
 procedure TJvHotLink.Click;
 begin
-  inherited;
+  inherited Click;
   OpenObject(Url);
 end;
 
 end.
+

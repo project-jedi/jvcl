@@ -31,11 +31,12 @@ unit JvFormLog;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ToolWin, ActnList, ImgList, JvListView, JvPrint, JvComponent;
+  SysUtils, Classes, Controls, Forms, Dialogs,
+  ComCtrls, ActnList, ImgList,
+  JvListView, JvPrint, JvComponent, ToolWin;
 
 type
-  TfoLog = class(TForm)
+  TFoLog = class(TForm)
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -43,44 +44,42 @@ type
     ActionList1: TActionList;
     Save: TAction;
     Print: TAction;
-    BUListView1: TJvListView;
+    ListView1: TJvListView;
     SaveDialog1: TSaveDialog;
-    BUPrint1: TJvPrint;
+    Print1: TJvPrint;
     procedure SaveExecute(Sender: TObject);
     procedure PrintExecute(Sender: TObject);
-  private
-  public
   end;
 
 implementation
 
 {$R *.DFM}
 
-{*******************************************************}
-procedure TfoLog.SaveExecute(Sender: TObject);
+procedure TFoLog.SaveExecute(Sender: TObject);
 begin
-  if not(SaveDialog1.Execute) then
+  if not SaveDialog1.Execute then
     Exit;
   if SaveDialog1.FilterIndex = 1 then
-    BUListView1.SaveToCSV(SaveDialog1.FileName)
+    ListView1.SaveToCSV(SaveDialog1.FileName)
   else
-    BUListView1.SaveToFile(SaveDialog1.FileName)
+    ListView1.SaveToFile(SaveDialog1.FileName)
 end;
-{*******************************************************}
-procedure TfoLog.PrintExecute(Sender: TObject);
+
+procedure TFoLog.PrintExecute(Sender: TObject);
 var
- i: Integer;
- ts: TStringList;
+ I: Integer;
+ Ts: TStringList;
 begin
-  ts := TStringList.Create;
-  with ts do
-  begin
-    for i:=0 to BUListView1.Items.Count-1 do
-      with BUListView1.Items[i] do
-       Add('['+Caption+']'+SubItems[0]+' > '+SubItems[1]);
-    BUPrint1.Print(ts);
-    Free;
-  end;
+  Ts := TStringList.Create;
+  with Ts do
+    try
+      for I := 0 to ListView1.Items.Count-1 do
+        with ListView1.Items[I] do
+         Add('[' + Caption + ']' + SubItems[0] + ' > ' + SubItems[1]);
+      Print1.Print(Ts);
+    finally
+      Free;
+    end;
 end;
-{*******************************************************}
+
 end.

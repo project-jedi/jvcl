@@ -119,11 +119,15 @@ begin
   {$ENDIF BCB}
 end;
 
+//=== EJvIParserError ========================================================
+
 constructor EJvIParserError.Create(AErrCode: Integer; APos: Integer);
 begin
   ErrCode := AErrCode;
   Pos := APos;
 end;
+
+//=== TJvIParser =============================================================
 
 constructor TJvIParser.Create;
 begin

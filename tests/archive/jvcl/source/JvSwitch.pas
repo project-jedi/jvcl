@@ -12,7 +12,7 @@ The Original Code is: JvSwitch.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,21 +29,23 @@ unit JvSwitch;
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Menus;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus;
 
 type
-
-{ TJvSwitch }
-
   TTextPos = (tpNone, tpLeft, tpRight, tpAbove, tpBelow);
   TSwitchBitmaps = set of Boolean;
 
   TJvSwitch = class(TCustomControl)
   private
     FActive: Boolean;
-    FBitmaps: array[Boolean] of TBitmap;
-    FDisableBitmaps: array[Boolean] of TBitmap;
+    FBitmaps: array [Boolean] of TBitmap;
+    FDisableBitmaps: array [Boolean] of TBitmap;
     FOnOn: TNotifyEvent;
     FOnOff: TNotifyEvent;
     FStateOn: Boolean;
@@ -63,10 +65,10 @@ type
     procedure CreateDisabled(Index: Integer);
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -109,11 +111,11 @@ type
     property TabStop default True;
     property TextPosition: TTextPos read FTextPosition write SetTextPosition
       default tpNone;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     property Anchors;
     property Constraints;
     property DragKind;
-{$ENDIF}
+    {$ENDIF}
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -128,35 +130,34 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnEndDrag;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property OnStartDrag;
-{$ENDIF}
-{$IFDEF COMPILER5_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER5_UP}
     property OnContextPopup;
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     property OnEndDock;
     property OnStartDock;
-{$ENDIF}
+    {$ENDIF}
     property OnOn: TNotifyEvent read FOnOn write FOnOn;
     property OnOff: TNotifyEvent read FOnOff write FOnOff;
   end;
 
 implementation
 
-uses JvVCLUtils;              
+uses
+  JvVCLUtils;
 
 {$IFDEF WIN32}
- {$R *.Res}
+{$R *.Res}
 {$ELSE}
- {$R *.R16}
+{$R *.R16}
 {$ENDIF}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
-  BorderStyles: array[TBorderStyle] of Longint = (0, WS_BORDER);
-
-{ TJvSwitch component }
+  BorderStyles: array [TBorderStyle] of Longint = (0, WS_BORDER);
 
 constructor TJvSwitch.Create(AOwner: TComponent);
 var
@@ -167,7 +168,8 @@ begin
     csOpaque, csDoubleClicks];
   Width := 50;
   Height := 60;
-  for I := 0 to 1 do begin
+  for I := 0 to 1 do
+  begin
     FBitmaps[Boolean(I)] := TBitmap.Create;
     SetSwitchGlyph(I, nil);
     FBitmaps[Boolean(I)].OnChange := GlyphChanged;
@@ -185,7 +187,8 @@ destructor TJvSwitch.Destroy;
 var
   I: Byte;
 begin
-  for I := 0 to 1 do begin
+  for I := 0 to 1 do
+  begin
     FBitmaps[Boolean(I)].OnChange := nil;
     FDisableBitmaps[Boolean(I)].Free;
     FBitmaps[Boolean(I)].Free;
@@ -196,7 +199,8 @@ end;
 procedure TJvSwitch.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  with Params do begin
+  with Params do
+  begin
     WindowClass.Style := WindowClass.Style or CS_HREDRAW or CS_VREDRAW;
     Style := Style or Longword(BorderStyles[FBorderStyle]);
   end;
@@ -204,14 +208,15 @@ end;
 
 procedure TJvSwitch.DefineProperties(Filer: TFiler);
 
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   function DoWrite: Boolean;
   begin
     if Assigned(Filer.Ancestor) then
       Result := FUserBitmaps <> TJvSwitch(Filer.Ancestor).FUserBitmaps
-    else Result := FUserBitmaps <> [];
+    else
+      Result := FUserBitmaps <> [];
   end;
-{$ENDIF}
+  {$ENDIF}
 
 begin
   inherited DefineProperties(Filer);
@@ -221,7 +226,10 @@ end;
 
 function TJvSwitch.GetPalette: HPALETTE;
 begin
-  if Enabled then Result := FBitmaps[FStateOn].Palette else Result := 0;
+  if Enabled then
+    Result := FBitmaps[FStateOn].Palette
+  else
+    Result := 0;
 end;
 
 procedure TJvSwitch.ReadBinaryData(Stream: TStream);
@@ -236,24 +244,26 @@ end;
 
 function TJvSwitch.StoreBitmap(Index: Integer): Boolean;
 begin
-  Result := Boolean(Index) in FUserBitmaps;
+  // (rom) this is using Pascal to the full!
+  Result := (Index <> 0) in FUserBitmaps;
 end;
 
 function TJvSwitch.GetSwitchGlyph(Index: Integer): TBitmap;
 begin
-  if csLoading in ComponentState then Include(FUserBitmaps, Boolean(Index));
-  Result := FBitmaps[Boolean(Index)]
+  if csLoading in ComponentState then
+    Include(FUserBitmaps, Index <> 0);
+  Result := FBitmaps[Index <> 0];
 end;
 
 procedure TJvSwitch.CreateDisabled(Index: Integer);
 begin
-  if FDisableBitmaps[Boolean(Index)] <> nil then
-    FDisableBitmaps[Boolean(Index)].Free;
+  if FDisableBitmaps[Index <> 0] <> nil then
+    FDisableBitmaps[Index <> 0].Free;
   try
-    FDisableBitmaps[Boolean(Index)] :=
-      CreateDisabledBitmap(FBitmaps[Boolean(Index)], clBlack);
+    FDisableBitmaps[Index <> 0] :=
+      CreateDisabledBitmap(FBitmaps[Index <> 0], clBlack);
   except
-    FDisableBitmaps[Boolean(Index)] := nil;
+    FDisableBitmaps[Index <> 0] := nil;
     raise;
   end;
 end;
@@ -263,7 +273,8 @@ var
   I: Boolean;
 begin
   for I := False to True do
-    if Sender = FBitmaps[I] then begin
+    if Sender = FBitmaps[I] then
+    begin
       CreateDisabled(Ord(I));
     end;
   Invalidate;
@@ -271,54 +282,62 @@ end;
 
 procedure TJvSwitch.SetSwitchGlyph(Index: Integer; Value: TBitmap);
 begin
-  if Value <> nil then begin
-    FBitmaps[Boolean(Index)].Assign(Value);
-    Include(FUserBitmaps, Boolean(Index));
+  if Value <> nil then
+  begin
+    FBitmaps[Index <> 0].Assign(Value);
+    Include(FUserBitmaps, Index <> 0);
   end
-  else begin
-    FBitmaps[Boolean(Index)].Handle := LoadBitmap(HInstance,
-      ResName[Boolean(Index)]);
-    Exclude(FUserBitmaps, Boolean(Index));
+  else
+  begin
+    FBitmaps[Index <> 0].Handle := LoadBitmap(HInstance,
+      ResName[Index <> 0]);
+    Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
 
-procedure TJvSwitch.CMFocusChanged(var Message: TCMFocusChanged);
+procedure TJvSwitch.CMFocusChanged(var Msg: TCMFocusChanged);
 var
   Active: Boolean;
 begin
-  with Message do Active := (Sender = Self);
-  if Active <> FActive then begin
+  with Msg do
+    Active := (Sender = Self);
+  if Active <> FActive then
+  begin
     FActive := Active;
-    if FShowFocus then Invalidate;
+    if FShowFocus then
+      Invalidate;
   end;
   inherited;
 end;
 
-procedure TJvSwitch.CMEnabledChanged(var Message: TMessage);
+procedure TJvSwitch.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvSwitch.CMTextChanged(var Message: TMessage);
+procedure TJvSwitch.CMTextChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvSwitch.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvSwitch.CMDialogChar(var Msg: TCMDialogChar);
 begin
-  if IsAccel(Message.CharCode, Caption) and CanFocus then begin
+  if IsAccel(Msg.CharCode, Caption) and CanFocus then
+  begin
     SetFocus;
-    Message.Result := 1;
+    Msg.Result := 1;
   end;
 end;
 
 procedure TJvSwitch.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then begin
-    if TabStop and CanFocus then SetFocus;
+  if Button = mbLeft then
+  begin
+    if TabStop and CanFocus then
+      SetFocus;
     ToggleSwitch;
   end;
   inherited MouseDown(Button, Shift, X, Y);
@@ -327,7 +346,8 @@ end;
 procedure TJvSwitch.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if FToggleKey = ShortCut(Key, Shift) then begin
+  if FToggleKey = ShortCut(Key, Shift) then
+  begin
     ToggleSwitch;
     Key := 0;
   end;
@@ -336,7 +356,7 @@ end;
 procedure TJvSwitch.Paint;
 var
   ARect: TRect;
-  Text: array[0..255] of Char;
+  Text: array [0..255] of Char;
   FontHeight: Integer;
 
   procedure DrawBitmap(Bmp: TBitmap);
@@ -354,7 +374,8 @@ var
       TmpImage.Height := IHeight;
       TmpImage.Canvas.Brush.Color := Self.Brush.Color;
       TmpImage.Canvas.BrushCopy(IRect, Bmp, IRect, Bmp.TransparentColor);
-      X := 0; Y := 0;
+      X := 0;
+      Y := 0;
       case FTextPosition of
         tpNone:
           begin
@@ -396,14 +417,17 @@ var
 
 begin
   ARect := GetClientRect;
-  with Canvas do begin
+  with Canvas do
+  begin
     Font := Self.Font;
     Brush.Color := Self.Color;
     FillRect(ARect);
     if not Enabled and (FDisableBitmaps[FStateOn] <> nil) then
       DrawBitmap(FDisableBitmaps[FStateOn])
-    else DrawBitmap(FBitmaps[FStateOn]);
-    if FTextPosition <> tpNone then begin
+    else
+      DrawBitmap(FBitmaps[FStateOn]);
+    if FTextPosition <> tpNone then
+    begin
       FontHeight := TextHeight('W');
       with ARect do
       begin
@@ -411,25 +435,27 @@ begin
         Bottom := Top + FontHeight;
       end;
       StrPCopy(Text, Caption);
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       Windows.DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER);
-{$ELSE}
+      {$ELSE}
       WinProcs.DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER);
-{$ENDIF}
+      {$ENDIF}
     end;
   end;
 end;
 
 procedure TJvSwitch.DoOn;
 begin
-  if Assigned(FOnOn) then FOnOn(Self);
+  if Assigned(FOnOn) then
+    FOnOn(Self);
 end;
 
 procedure TJvSwitch.DoOff;
 begin
-  if Assigned(FOnOff) then FOnOff(Self);
+  if Assigned(FOnOff) then
+    FOnOff(Self);
 end;
 
 procedure TJvSwitch.ToggleSwitch;
@@ -439,7 +465,8 @@ end;
 
 procedure TJvSwitch.SetBorderStyle(Value: TBorderStyle);
 begin
-  if FBorderStyle <> Value then begin
+  if FBorderStyle <> Value then
+  begin
     FBorderStyle := Value;
     RecreateWnd;
   end;
@@ -447,17 +474,21 @@ end;
 
 procedure TJvSwitch.SetStateOn(Value: Boolean);
 begin
-  if FStateOn <> Value then begin
+  if FStateOn <> Value then
+  begin
     FStateOn := Value;
     Invalidate;
-    if Value then DoOn
-    else DoOff;
+    if Value then
+      DoOn
+    else
+      DoOff;
   end;
 end;
 
 procedure TJvSwitch.SetTextPosition(Value: TTextPos);
 begin
-  if FTextPosition <> Value then begin
+  if FTextPosition <> Value then
+  begin
     FTextPosition := Value;
     Invalidate;
   end;
@@ -465,10 +496,13 @@ end;
 
 procedure TJvSwitch.SetShowFocus(Value: Boolean);
 begin
-  if FShowFocus <> Value then begin
+  if FShowFocus <> Value then
+  begin
     FShowFocus := Value;
-    if not (csDesigning in ComponentState) then Invalidate;
+    if not (csDesigning in ComponentState) then
+      Invalidate;
   end;
 end;
 
 end.
+

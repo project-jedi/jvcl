@@ -12,7 +12,7 @@ The Original Code is: JvHook.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,8 +29,14 @@ unit JvHook;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, SysUtils, Classes, Controls, Forms, JvConst{, JvComponent};
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils;
+  {, JvComponent}
 
 type
   PClass = ^TClass;
@@ -65,23 +71,23 @@ const
 {$ENDIF}
 var
   Table: PPointer;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   SaveFlag: DWORD;
-{$ELSE}
+  {$ELSE}
   Block: Pointer;
-{$ENDIF}
+  {$ENDIF}
 begin
   Table := PPointer(AClass);
   Inc(Table, AIndex - 1);
   Result := Table^;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if VirtualProtect(Table, PageSize, PAGE_EXECUTE_READWRITE, @SaveFlag) then
   try
     Table^ := NewAddress;
   finally
     VirtualProtect(Table, PageSize, SaveFlag, @SaveFlag);
   end;
-{$ELSE}
+  {$ELSE}
   PtrRec(Block).Ofs := PtrRec(Table).Ofs;
   PtrRec(Block).Seg := AllocCSToDSAlias(PtrRec(Table).Seg);
   try
@@ -89,7 +95,7 @@ begin
   finally
     FreeSelector(PtrRec(Block).Seg);
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 function FindVirtualMethodIndex(AClass: TClass; MethodAddr: Pointer): Integer;
@@ -97,7 +103,8 @@ begin
   Result := 0;
   repeat
     Inc(Result);
-  until (GetVirtualMethodAddress(AClass, Result) = MethodAddr);
+  until GetVirtualMethodAddress(AClass, Result) = MethodAddr;
 end;
 
 end.
+

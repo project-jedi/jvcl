@@ -16,7 +16,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-
 Last Modified: 2002-07-12
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -31,27 +30,26 @@ unit JvMovableBevel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
   ExtCtrls;
 
 type
-  TDirection = (TDNone, TDUp2Down, TDDown2Up, TDLeft2Right, TDRight2Left,
-    TDTopLeft2BottomRight, TDTopRight2BottomLeft, TDBottomLeft2TopRight,
-    TDBottomRight2TopLeft);
+  TDirection = (tdNone, tdUp2Down, tdDown2Up, tdLeft2Right, tdRight2Left,
+    tdTopLeft2BottomRight, tdTopRight2BottomLeft, tdBottomLeft2TopRight,
+    tdBottomRight2TopLeft);
 
   TJvMovableBevel = class(TBevel)
   private
-    { Private declarations }
-    VStartX, VStartY: Integer;
-    VStartPoint: Tpoint;
-    VMoving: Boolean; // If true then we are moving the object around.
-    vMinSize: Integer;
-    VSizing: Boolean; // if true then we are sizing the object;
-    VDirection: TDirection;
-    VBorderSize: Byte;
+    FStartX: Integer;
+    FStartY: Integer;
+    FStartPoint: TPoint;
+    FMoving: Boolean; // If True then we are moving the object around.
+    FMinSize: Integer;
+    FSizing: Boolean; // if True then we are sizing the object;
+    FDirection: TDirection;
+    FBorderSize: Byte;
   protected
-    { Protected declarations }
-    procedure DoMove(Shift: TShiftState; DeltaX, DeltaY: integer);
+    procedure DoMove(Shift: TShiftState; DeltaX, DeltaY: Integer);
     procedure DoSize(Shift: TShiftState; DeltaX, DeltaY: Integer);
     procedure SelectCursor(X, Y: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -62,252 +60,255 @@ type
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
   published
-    { Published declarations }
-    property BorderSize: Byte read VBorderSize write VBorderSize;
+    property BorderSize: Byte read FBorderSize write FBorderSize default 4;
   end;
 
 implementation
 
-procedure TJvMovableBevel.DoMove(Shift: TShiftState; DeltaX, DeltaY: integer);
+constructor TJvMovableBevel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Shape := bsFrame;
+  Style := bsRaised;
+  FBorderSize := 4;
+  FMinSize := 8;
+end;
+
+procedure TJvMovableBevel.DoMove(Shift: TShiftState; DeltaX, DeltaY: Integer);
 begin
   // Must work on it in order to make expand and shrink the way coreldraw does when
   // shift and ctrl keys are pressed.
   {  If ssCtrl in shift then begin
-      if abs(VStartPoint.x - Left) < abs(VStartPoint.y - Top) then begin
-         top := top + deltay;
-         Left:=VStartX;
+      if Abs(FStartPoint.X - Left) < Abs(FStartPoint.Y - Top) then begin
+         Top := Top + DeltaY;
+         Left:=FStartX;
       end;
-      if abs(VStartPoint.x - Left) > abs(VStartPoint.y - Top) then begin
-        Left := left + DeltaX;
-        Top := VStartY;
+      if Abs(FStartPoint.X - Left) > Abs(FStartPoint.Y - Top) then begin
+        Left := Left + DeltaX;
+        Top := FStartY;
       end;
-      if abs(VStartPoint.x - Left) = abs(VStartPoint.y - Top) then begin
-        top := top + deltay;
-        Left := left + DeltaX;
+      if Abs(FStartPoint.X - Left) = Abs(FStartPoint.Y - Top) then begin
+        Top := Top + DeltaY;
+        Left := Left + DeltaX;
       end
     end else begin{}
-  top := top + deltay;
-  Left := left + DeltaX;
+  Top := Top + DeltaY;
+  Left := Left + DeltaX;
   //  end
 end;
 
-procedure TJvMovableBevel.DoSize(Shift: TShiftState; DeltaX, DeltaY: integer);
+procedure TJvMovableBevel.DoSize(Shift: TShiftState; DeltaX, DeltaY: Integer);
 begin
-  case VDirection of
-    TDUp2Down:
+  case FDirection of
+    tdUp2Down:
       begin
         Height := Height + DeltaY;
-        top := top - deltay;
-      end;
-    TDDown2Up:
-      begin
-        Height := VStartY - deltay
-      end;
-    TDLeft2Right:
-      begin
-        Width := Width + DeltaX;
-        left := left - deltaX;
-      end;
-    TDRight2Left:
-      begin
-        Width := VStartX - deltaX
-      end;
-    TDTopLeft2BottomRight:
-      begin
-        top := top - deltay;
-        left := left - deltaX;
-        Height := Height + DeltaY;
-        Width := Width + DeltaX;
-      end;
-    TDTopRight2BottomLeft:
-      begin
-        Height := Height + DeltaY;
-        Width := VStartX - DeltaX;
         Top := Top - DeltaY;
       end;
-    TDBottomLeft2TopRight:
+    tdDown2Up:
+        Height := FStartY - DeltaY;
+    tdLeft2Right:
       begin
+        Width := Width + DeltaX;
         Left := Left - DeltaX;
-        Height := VStartY - DeltaY;
+      end;
+    tdRight2Left:
+        Width := FStartX - DeltaX;
+    tdTopLeft2BottomRight:
+      begin
+        Top := Top - DeltaY;
+        Left := Left - DeltaX;
+        Height := Height + DeltaY;
         Width := Width + DeltaX;
       end;
-    TDBottomRight2TopLeft:
+    tdTopRight2BottomLeft:
       begin
-        Height := VStartY - DeltaY;
-        Width := VStartX - DeltaX;
+        Height := Height + DeltaY;
+        Width := FStartX - DeltaX;
+        Top := Top - DeltaY;
+      end;
+    tdBottomLeft2TopRight:
+      begin
+        Left := Left - DeltaX;
+        Height := FStartY - DeltaY;
+        Width := Width + DeltaX;
+      end;
+    tdBottomRight2TopLeft:
+      begin
+        Height := FStartY - DeltaY;
+        Width := FStartX - DeltaX;
       end;
   end;
 end;
 
 procedure TJvMovableBevel.SelectCursor(X, Y: longint);
 begin
-  if (y > 0) and (y <= VBorderSize) then
+  if (Y > 0) and (Y <= FBorderSize) then
   begin
-    if (x > 0) and (x <= VBorderSize) then
+    if (X > 0) and (X <= FBorderSize) then
     begin
-      screen.cursor := crsizenwse;
-      VDirection := TDTopLeft2BottomRight;
-    end else
-      if (x >= Width - VBorderSize) and (x < Width) then
-      begin
-        screen.cursor := crsizenesw;
-        Vdirection := TDTopRight2BottomLeft;
-      end else
-      begin
-        screen.cursor := crsizens;
-        VDirection := TDUp2Down;
-      end;
-  end else
-    if (y >= height - VBorderSize) and (y < height) then
+      Screen.Cursor := crSizeNWSE;
+      FDirection := tdTopLeft2BottomRight;
+    end
+    else
+    if (X >= Width - FBorderSize) and (X < Width) then
     begin
-      if (x > 0) and (x <= VBorderSize) then
-      begin
-        screen.cursor := crsizenesw;
-        Vdirection := TDBottomLeft2TopRight;
-      end else
-        if (x >= width - VBorderSize) and (x < width) then
-        begin
-          screen.cursor := crsizenwse;
-          Vdirection := TDBottomRight2TopLeft;
-        end else
-        begin
-          screen.cursor := crsizens;
-          VDirection := TDDown2Up;
-        end;
-    end else
-      if (x >= 1) and (x <= VBorderSize) then
-      begin
-        screen.Cursor := crsizeWE;
-        VDirection := TDLeft2Right;
-      end else if (x >= Width - VBorderSize) and (x < width) then
-      begin
-        screen.Cursor := crsizeWE;
-        VDirection := TDRight2Left;
-      end else
-      begin
-        screen.Cursor := crdefault;
-        Vdirection := TDNone;
-      end
-end; {}
+      Screen.Cursor := crSizeNESW;
+      FDirection := tdTopRight2BottomLeft;
+    end
+    else
+    begin
+      Screen.Cursor := crSizeNS;
+      FDirection := tdUp2Down;
+    end;
+  end
+  else
+  if (Y >= Height - FBorderSize) and (Y < Height) then
+  begin
+    if (X > 0) and (X <= FBorderSize) then
+    begin
+      Screen.Cursor := crSizeNESW;
+      FDirection := tdBottomLeft2TopRight;
+    end
+    else
+    if (X >= Width - FBorderSize) and (X < Width) then
+    begin
+      Screen.Cursor := crSizeNWSE;
+      FDirection := tdBottomRight2TopLeft;
+    end
+    else
+    begin
+      Screen.Cursor := crSizeNS;
+      FDirection := tdDown2Up;
+    end;
+  end
+  else
+  if (X >= 1) and (X <= FBorderSize) then
+  begin
+    Screen.Cursor := crSizeWE;
+    FDirection := tdLeft2Right;
+  end
+  else
+  if (X >= Width - FBorderSize) and (X < Width) then
+  begin
+    Screen.Cursor := crSizeWE;
+    FDirection := tdRight2Left;
+  end
+  else
+  begin
+    Screen.Cursor := crDefault;
+    FDirection := tdNone;
+  end
+end;
 
 procedure TJvMovableBevel.MouseMove(Shift: TShiftState; X, Y: Integer);
 const
   SC_DragMove = $F012;
   WM_MOVE = $0003;
 begin
-  if VMoving then
-    DoMove(Shift, x - VStartX, y - Vstarty)
+  if FMoving then
+    DoMove(Shift, X - FStartX, Y - FStartY)
   else
-    if VSizing then
-      DoSize(Shift, VStartX - X, VStartY - Y)
-    else
-      SelectCursor(x, y);
-  inherited;
+  if FSizing then
+    DoSize(Shift, FStartX - X, FStartY - Y)
+  else
+    SelectCursor(X, Y);
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvMovableBevel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if VDirection > TDNone then
-    VSizing := true
+  if FDirection > tdNone then
+    FSizing := True
   else
-    VMoving := true;
-  VStartPoint := point(left, top);
-  VStartX := X;
-  VStartY := Y;
-  inherited;
+    FMoving := True;
+  FStartPoint := Point(Left, Top);
+  FStartX := X;
+  FStartY := Y;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvMovableBevel.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  VMoving := False;
-  VSizing := False;
-  SelectCursor(x, y);
-  VStartX := 0;
-  VStartY := 0;
+  FMoving := False;
+  FSizing := False;
+  SelectCursor(X, Y);
+  FStartX := 0;
+  FStartY := 0;
   if Height < 0 then
   begin
-    top := Top + Height;
-    Height := ABS(Height);
+    Top := Top + Height;
+    Height := Abs(Height);
   end;
   if Width < 0 then
   begin
     Left := Left + Width;
-    Width := ABS(Width);
+    Width := Abs(Width);
   end;
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 //Procedure TJvMovableBevel.SelectCursor(X,Y:longint);
 //begin
-//  if y in[0..VBorderSize] then
+//  if Y in[0..FBorderSize] then
 //  begin
-//    If x in[0..VBorderSize] then
+//    If X in[0..FBorderSize] then
 //    begin
-//      screen.cursor:= crsizenwse;
-//      VDirection := TDTopLeft2BottomRight;
+//      Screen.Cursor:= crsizenwse;
+//      FDirection := tdTopLeft2BottomRight;
 //    end
 //    else
-//      if x in[Width-VBorderSize..Width] then
+//      if X in[Width-FBorderSize..Width] then
 //      begin
-//        screen.cursor := crsizenesw;
-//        Vdirection := TDTopRight2BottomLeft;
+//        Screen.Cursor := crsizenesw;
+//        FDirection := tdTopRight2BottomLeft;
 //      end
 //      else
 //      begin
-//        screen.cursor := crsizens;
-//        VDirection := TDUp2Down;
+//        Screen.Cursor := crsizens;
+//        FDirection := tdUp2Down;
 //      end;
 //  end
 //  else
-//    if y in [height-VBorderSize..height] then
+//    if Y in [Height-FBorderSize..Height] then
 //    begin
-//      If x in[0..VBorderSize] then
+//      If X in[0..FBorderSize] then
 //      begin
-//        screen.cursor:= crsizenesw;
-//        Vdirection := TDBottomLeft2TopRight;
+//        Screen.Cursor:= crsizenesw;
+//        FDirection := tdBottomLeft2TopRight;
 //      end
 //      else
-//        if x in[Width-VBorderSize..Width] then
+//        if X in[Width-FBorderSize..Width] then
 //        begin
-//          screen.cursor := crsizenwse;
-//          Vdirection := TDBottomRight2TopLeft;
+//          Screen.Cursor := crsizenwse;
+//          FDirection := tdBottomRight2TopLeft;
 //        end
 //        else
 //        begin
-//          screen.cursor := crsizens;
-//          VDirection := TDDown2Up;
+//          Screen.Cursor := crsizens;
+//          FDirection := tdDown2Up;
 //        end;
 //  end
 //  else
-//    if (x in [1..VBorderSize]) then
+//    if (X in [1..FBorderSize]) then
 //    begin
-//      screen.Cursor := crsizeWE;
-//      VDirection := TDLeft2Right;
+//      Screen.Cursor := crsizeWE;
+//      FDirection := tdLeft2Right;
 //    end
 //    else
-//      if  (x in [Width-VBorderSize..width]) then
+//      if  (X in [Width-FBorderSize..Width]) then
 //      begin
-//        screen.Cursor := crsizeWE;
-//        VDirection := TDRight2Left;
+//        Screen.Cursor := crsizeWE;
+//        FDirection := tdRight2Left;
 //      end
 //      else
 //      begin
-//        screen.Cursor := crdefault;
-//        Vdirection := TDNone;
+//        Screen.Cursor := crdefault;
+//        FDirection := tdNone;
 //      end
 //end;{}
-
-constructor TJvMovableBevel.Create(AOwner: TComponent);
-begin
-  inherited;
-  Shape := bsFrame;
-  Style := bsRaised;
-  VBorderSize := 4;
-  vMinSize := 8;
-end;
 
 procedure TJvMovableBevel.CMMouseEnter(var Msg: TMessage);
 var
@@ -319,10 +320,10 @@ end;
 
 procedure TJvMovableBevel.CMMouseLeave(var Msg: TMessage);
 begin
-  if (not VMoving) and (not VSizing) then
+  if (not FMoving) and (not FSizing) then
   begin
-    Screen.Cursor := crdefault;
-    VDirection := TDNone;
+    Screen.Cursor := crDefault;
+    FDirection := tdNone;
   end;
 end;
 

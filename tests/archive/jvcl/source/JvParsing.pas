@@ -25,24 +25,24 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvParsing;
 
 interface
 
 uses
-  SysUtils, Classes, JvTypes;
+  SysUtils, Classes,
+  JvTypes;
 
 type
   TParserFunc = (pfArcTan, pfCos, pfSin, pfTan, pfAbs, pfExp, pfLn, pfLog,
     pfSqrt, pfSqr, pfInt, pfFrac, pfTrunc, pfRound, pfArcSin, pfArcCos,
     pfSign, pfNot);
   EJvParserError = class(EJVCLException);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   TUserFunction = function(Value: Extended): Extended;
-{$ELSE}
+  {$ELSE}
   TUserFunction = Pointer;
-{$ENDIF}
+  {$ENDIF}
 
   TJvMathParser = class(TObject)
   private
@@ -58,9 +58,9 @@ type
     function SubTerm: Extended;
     function Calculate: Extended;
   public
-    function Exec(const AFormula: string): Extended;
-    class procedure RegisterUserFunction(const Name: string; Proc:
-      TUserFunction);
+    // (rom) renamed from Exec
+    function Execute(const AFormula: string): Extended;
+    class procedure RegisterUserFunction(const Name: string; Proc: TUserFunction);
     class procedure UnregisterUserFunction(const Name: string);
   end;
 
@@ -72,15 +72,17 @@ function Power(Base, Exponent: Extended): Extended;
 
 implementation
 
-uses JvxConst;
+uses
+  JvxConst;
 
 const
-  SpecialChars = [#0..' ', '+', '-', '/', '*', ')', '^'];
+  cSpecialChars = [#0..' ', '+', '-', '/', '*', ')', '^'];
+  cIdentifierChars = ['A'..'Z', 'a'..'z', '_'];
 
-  FuncNames: array[TParserFunc] of PChar =
-  ('ARCTAN', 'COS', 'SIN', 'TAN', 'ABS', 'EXP', 'LN', 'LOG',
-    'SQRT', 'SQR', 'INT', 'FRAC', 'TRUNC', 'ROUND', 'ARCSIN', 'ARCCOS',
-    'SIGN', 'NOT');
+  FuncNames: array [TParserFunc] of PChar =
+    ('ARCTAN', 'COS', 'SIN', 'TAN', 'ABS', 'EXP', 'LN', 'LOG',
+     'SQRT', 'SQR', 'INT', 'FRAC', 'TRUNC', 'ROUND', 'ARCSIN', 'ARCCOS',
+     'SIGN', 'NOT');
 
 { Parser errors }
 
@@ -91,8 +93,8 @@ end;
 
 { IntPower and Power functions are copied from Borland's MATH.PAS unit }
 
-function IntPower(Base: Extended; Exponent: Integer): Extended;
 {$IFDEF WIN32}
+function IntPower(Base: Extended; Exponent: Integer): Extended;
 asm
         mov     ecx, eax
         cdq
@@ -116,6 +118,7 @@ asm
         fwait
 end;
 {$ELSE}
+function IntPower(Base: Extended; Exponent: Integer): Extended;
 var
   Y: Longint;
 begin
@@ -140,9 +143,11 @@ function Power(Base, Exponent: Extended): Extended;
 begin
   if Exponent = 0.0 then
     Result := 1.0
-  else if (Base = 0.0) and (Exponent > 0.0) then
+  else
+  if (Base = 0.0) and (Exponent > 0.0) then
     Result := 0.0
-  else if (Frac(Exponent) = 0.0) and (Abs(Exponent) <= MaxInt) then
+  else
+  if (Frac(Exponent) = 0.0) and (Abs(Exponent) <= MaxInt) then
     Result := IntPower(Base, Trunc(Exponent))
   else
     Result := Exp(Exponent * Ln(Base))
@@ -151,11 +156,11 @@ end;
 { User defined functions }
 
 type
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   TFarUserFunction = TUserFunction;
-{$ELSE}
+  {$ELSE}
   TFarUserFunction = function(Value: Extended): Extended;
-{$ENDIF}
+  {$ENDIF}
 
 var
   UserFuncList: TStrings;
@@ -186,13 +191,11 @@ function GetFormulaValue(const Formula: string): Extended;
 begin
   with TJvMathParser.Create do
   try
-    Result := Exec(Formula);
+    Result := Execute(Formula);
   finally
     Free;
   end;
 end;
-
-{ TJvMathParser }
 
 function TJvMathParser.GetChar: Char;
 begin
@@ -231,7 +234,8 @@ begin
     IsHex := True;
     Result := (Length(TmpStr) > 1) and (Length(TmpStr) <= 9);
   end
-  else if C in ['+', '-', '0'..'9', '.', DecimalSeparator] then
+  else
+  if C in ['+', '-', '0'..'9', '.', DecimalSeparator] then
   begin
     if (C in ['.', DecimalSeparator]) then
       TmpStr := '0' + '.'
@@ -269,11 +273,11 @@ begin
     Val(TmpStr, AValue, Code);
     Result := (Code = 0);
   end;
-  Result := Result and (FParseText[FCurPos] in SpecialChars);
+  Result := Result and (FParseText[FCurPos] in cSpecialChars);
   if Result then
   begin
     if IsHex then
-      AValue := StrToInt(TmpStr)
+      AValue := StrToInt(TmpStr);
     { else AValue := StrToFloat(TmpStr) };
   end
   else
@@ -288,7 +292,7 @@ begin
   Result := False;
   case FParseText[FCurPos] of
     'E':
-      if FParseText[FCurPos + 1] in SpecialChars then
+      if FParseText[FCurPos + 1] in cSpecialChars then
       begin
         AValue := Exp(1);
         Inc(FCurPos);
@@ -296,7 +300,7 @@ begin
       end;
     'P':
       if (FParseText[FCurPos + 1] = 'I') and
-        (FParseText[FCurPos + 2] in SpecialChars) then
+        (FParseText[FCurPos + 2] in cSpecialChars) then
       begin
         AValue := Pi;
         Inc(FCurPos, 2);
@@ -311,7 +315,7 @@ var
   I: Integer;
 begin
   Result := False;
-  if (FParseText[FCurPos] in ['A'..'Z', 'a'..'z', '_']) and
+  if (FParseText[FCurPos] in cIdentifierChars) and
     Assigned(UserFuncList) then
   begin
     with UserFuncList do
@@ -341,7 +345,7 @@ var
 begin
   Result := False;
   AValue := Low(TParserFunc);
-  if FParseText[FCurPos] in ['A'..'Z', 'a'..'z', '_'] then
+  if FParseText[FCurPos] in cIdentifierChars then
   begin
     for I := Low(TParserFunc) to High(TParserFunc) do
     begin
@@ -388,22 +392,28 @@ begin
             InvalidCondition(SParseNotCramp);
           Inc(FCurPos);
         end
-        else if GetFunction(NoFunc) then
+        else
+        if GetFunction(NoFunc) then
         begin
           Inc(FCurPos);
           Value := Calculate;
           try
             case NoFunc of
-              pfArcTan: Value := ArcTan(Value);
-              pfCos: Value := Cos(Value);
-              pfSin: Value := Sin(Value);
+              pfArcTan:
+                Value := ArcTan(Value);
+              pfCos:
+                Value := Cos(Value);
+              pfSin:
+                Value := Sin(Value);
               pfTan:
                 if Cos(Value) = 0 then
                   InvalidCondition(SParseDivideByZero)
                 else
                   Value := Sin(Value) / Cos(Value);
-              pfAbs: Value := Abs(Value);
-              pfExp: Value := Exp(Value);
+              pfAbs:
+                Value := Abs(Value);
+              pfExp:
+                Value := Exp(Value);
               pfLn:
                 if Value <= 0 then
                   InvalidCondition(SParseLogError)
@@ -419,11 +429,16 @@ begin
                   InvalidCondition(SParseSqrError)
                 else
                   Value := Sqrt(Value);
-              pfSqr: Value := Sqr(Value);
-              pfInt: Value := Round(Value);
-              pfFrac: Value := Frac(Value);
-              pfTrunc: Value := Trunc(Value);
-              pfRound: Value := Round(Value);
+              pfSqr:
+                Value := Sqr(Value);
+              pfInt:
+                Value := Round(Value);
+              pfFrac:
+                Value := Frac(Value);
+              pfTrunc:
+                Value := Trunc(Value);
+              pfRound:
+                Value := Round(Value);
               pfArcSin:
                 if Value = 1 then
                   Value := Pi / 2
@@ -437,9 +452,11 @@ begin
               pfSign:
                 if Value > 0 then
                   Value := 1
-                else if Value < 0 then
+                else
+                if Value < 0 then
                   Value := -1;
-              pfNot: Value := not Trunc(Value);
+              pfNot:
+                Value := not Trunc(Value);
             end;
           except
             on E: EJvParserError do
@@ -467,9 +484,11 @@ begin
     Inc(FCurPos);
     if FParseText[FCurPos - 1] = '*' then
       Value := Value * Term
-    else if FParseText[FCurPos - 1] = '^' then
+    else
+    if FParseText[FCurPos - 1] = '^' then
       Value := Power(Value, Term)
-    else if FParseText[FCurPos - 1] = '/' then
+    else
+    if FParseText[FCurPos - 1] = '/' then
     try
       Value := Value / Term;
     except
@@ -497,7 +516,7 @@ begin
   Result := Value;
 end;
 
-function TJvMathParser.Exec(const AFormula: string): Extended;
+function TJvMathParser.Execute(const AFormula: string): Extended;
 var
   I, J: Integer;
 begin
@@ -507,8 +526,10 @@ begin
   for I := 1 to Length(AFormula) do
   begin
     case AFormula[I] of
-      '(': Inc(J);
-      ')': Dec(J);
+      '(':
+        Inc(J);
+      ')':
+        Dec(J);
     end;
     if AFormula[I] > ' ' then
       FParseText := FParseText + UpCase(AFormula[I]);
@@ -530,7 +551,7 @@ class procedure TJvMathParser.RegisterUserFunction(const Name: string;
 var
   I: Integer;
 begin
-  if (Length(Name) > 0) and (Name[1] in ['A'..'Z', 'a'..'z', '_']) then
+  if (Length(Name) > 0) and (Name[1] in cIdentifierChars) then
   begin
     if not Assigned(Proc) then
       UnregisterUserFunction(Name)
@@ -541,11 +562,11 @@ begin
         I := IndexOf(Name);
         if I < 0 then
           I := Add(Name);
-{$IFDEF WIN32}
+        {$IFDEF WIN32}
         Objects[I] := @Proc;
-{$ELSE}
+        {$ELSE}
         Objects[I] := Proc;
-{$ENDIF}
+        {$ENDIF}
       end;
     end;
   end
@@ -576,5 +597,6 @@ finalization
 {$ELSE}
   AddExitProc(FreeUserFunc);
 {$ENDIF}
+
 end.
 

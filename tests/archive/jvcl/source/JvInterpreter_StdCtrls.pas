@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInterpreter_StdCtrls.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,465 +26,533 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvInterpreter_StdCtrls;
 
 interface
 
-uses JvInterpreter;
+uses
+  JvInterpreter;
 
-  procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
-uses Windows, Classes, Controls, StdCtrls, JvInterpreter_Windows;
+uses
+  Windows, Classes, Controls, StdCtrls,
+  JvInterpreter_Windows;
 
-
-  { TGroupBox }
+{ TGroupBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TGroupBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TGroupBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TGroupBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCustomLabel }
+{ TCustomLabel }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomLabel_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomLabel_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomLabel.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
 { property Read Canvas: TCanvas }
-procedure TCustomLabel_Read_Canvas(var Value: Variant; Args: TArgs);
+
+procedure TCustomLabel_Read_Canvas(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomLabel(Args.Obj).Canvas);
 end;
 
-  { TLabel }
+{ TLabel }
 
 { constructor Create(AOwner: TComponent) }
-procedure TLabel_Create(var Value: Variant; Args: TArgs);
+
+procedure TLabel_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TLabel.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCustomEdit }
+{ TCustomEdit }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomEdit_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomEdit.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure Clear; }
-procedure TCustomEdit_Clear(var Value: Variant; Args: TArgs);
+{ procedure Clear; }
+
+procedure TCustomEdit_Clear(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).Clear;
 end;
 
-{  procedure ClearSelection; }
-procedure TCustomEdit_ClearSelection(var Value: Variant; Args: TArgs);
+{ procedure ClearSelection; }
+
+procedure TCustomEdit_ClearSelection(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).ClearSelection;
 end;
 
-{  procedure CopyToClipboard; }
-procedure TCustomEdit_CopyToClipboard(var Value: Variant; Args: TArgs);
+{ procedure CopyToClipboard; }
+
+procedure TCustomEdit_CopyToClipboard(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).CopyToClipboard;
 end;
 
-{  procedure CutToClipboard; }
-procedure TCustomEdit_CutToClipboard(var Value: Variant; Args: TArgs);
+{ procedure CutToClipboard; }
+
+procedure TCustomEdit_CutToClipboard(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).CutToClipboard;
 end;
 
-{  procedure PasteFromClipboard; }
-procedure TCustomEdit_PasteFromClipboard(var Value: Variant; Args: TArgs);
+{ procedure PasteFromClipboard; }
+
+procedure TCustomEdit_PasteFromClipboard(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).PasteFromClipboard;
 end;
 
-{  function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer; }
-procedure TCustomEdit_GetSelTextBuf(var Value: Variant; Args: TArgs);
+{ function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer; }
+
+procedure TCustomEdit_GetSelTextBuf(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomEdit(Args.Obj).GetSelTextBuf(PChar(string(Args.Values[0])), Args.Values[1]);
 end;
 
-{  procedure SelectAll; }
-procedure TCustomEdit_SelectAll(var Value: Variant; Args: TArgs);
+{ procedure SelectAll; }
+
+procedure TCustomEdit_SelectAll(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).SelectAll;
 end;
 
-{  procedure SetSelTextBuf(Buffer: PChar); }
-procedure TCustomEdit_SetSelTextBuf(var Value: Variant; Args: TArgs);
+{ procedure SetSelTextBuf(Buffer: PChar); }
+
+procedure TCustomEdit_SetSelTextBuf(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).SetSelTextBuf(PChar(string(Args.Values[0])));
 end;
 
 { property Read Modified: Boolean }
-procedure TCustomEdit_Read_Modified(var Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Read_Modified(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomEdit(Args.Obj).Modified;
 end;
 
 { property Write Modified(Value: Boolean) }
-procedure TCustomEdit_Write_Modified(const Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Write_Modified(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).Modified := Value;
 end;
 
 { property Read SelLength: Integer }
-procedure TCustomEdit_Read_SelLength(var Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Read_SelLength(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomEdit(Args.Obj).SelLength;
 end;
 
 { property Write SelLength(Value: Integer) }
-procedure TCustomEdit_Write_SelLength(const Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Write_SelLength(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).SelLength := Value;
 end;
 
 { property Read SelStart: Integer }
-procedure TCustomEdit_Read_SelStart(var Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Read_SelStart(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomEdit(Args.Obj).SelStart;
 end;
 
 { property Write SelStart(Value: Integer) }
-procedure TCustomEdit_Write_SelStart(const Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Write_SelStart(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).SelStart := Value;
 end;
 
 { property Read SelText: string }
-procedure TCustomEdit_Read_SelText(var Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Read_SelText(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomEdit(Args.Obj).SelText;
 end;
 
 { property Write SelText(Value: string) }
-procedure TCustomEdit_Write_SelText(const Value: Variant; Args: TArgs);
+
+procedure TCustomEdit_Write_SelText(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomEdit(Args.Obj).SelText := Value;
 end;
 
-  { TEdit }
+{ TEdit }
 
 { constructor Create(AOwner: TComponent) }
-procedure TEdit_Create(var Value: Variant; Args: TArgs);
+
+procedure TEdit_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TEdit.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCustomMemo }
+{ TCustomMemo }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomMemo_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomMemo_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomMemo.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
 { property Read Lines: TStrings }
-procedure TCustomMemo_Read_Lines(var Value: Variant; Args: TArgs);
+
+procedure TCustomMemo_Read_Lines(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomMemo(Args.Obj).Lines);
 end;
 
 { property Write Lines(Value: TStrings) }
-procedure TCustomMemo_Write_Lines(const Value: Variant; Args: TArgs);
+
+procedure TCustomMemo_Write_Lines(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomMemo(Args.Obj).Lines := V2O(Value) as TStrings;
 end;
 
-  { TMemo }
+{ TMemo }
 
 { constructor Create(AOwner: TComponent) }
-procedure TMemo_Create(var Value: Variant; Args: TArgs);
+
+procedure TMemo_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TMemo.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCustomComboBox }
+{ TCustomComboBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomComboBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomComboBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure Clear; }
-procedure TCustomComboBox_Clear(var Value: Variant; Args: TArgs);
+{ procedure Clear; }
+
+procedure TCustomComboBox_Clear(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).Clear;
 end;
 
-{  procedure SelectAll; }
-procedure TCustomComboBox_SelectAll(var Value: Variant; Args: TArgs);
+{ procedure SelectAll; }
+
+procedure TCustomComboBox_SelectAll(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).SelectAll;
 end;
 
 { property Read Canvas: TCanvas }
-procedure TCustomComboBox_Read_Canvas(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_Canvas(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomComboBox(Args.Obj).Canvas);
 end;
 
 { property Read DroppedDown: Boolean }
-procedure TCustomComboBox_Read_DroppedDown(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_DroppedDown(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomComboBox(Args.Obj).DroppedDown;
 end;
 
 { property Write DroppedDown(Value: Boolean) }
-procedure TCustomComboBox_Write_DroppedDown(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_DroppedDown(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).DroppedDown := Value;
 end;
 
 { property Read Items: TStrings }
-procedure TCustomComboBox_Read_Items(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_Items(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomComboBox(Args.Obj).Items);
 end;
 
 { property Write Items(Value: TStrings) }
-procedure TCustomComboBox_Write_Items(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_Items(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).Items := V2O(Value) as TStrings;
 end;
 
 { property Read ItemIndex: Integer }
-procedure TCustomComboBox_Read_ItemIndex(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_ItemIndex(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomComboBox(Args.Obj).ItemIndex;
 end;
 
 { property Write ItemIndex(Value: Integer) }
-procedure TCustomComboBox_Write_ItemIndex(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_ItemIndex(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).ItemIndex := Value;
 end;
 
 { property Read SelLength: Integer }
-procedure TCustomComboBox_Read_SelLength(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_SelLength(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomComboBox(Args.Obj).SelLength;
 end;
 
 { property Write SelLength(Value: Integer) }
-procedure TCustomComboBox_Write_SelLength(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_SelLength(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).SelLength := Value;
 end;
 
 { property Read SelStart: Integer }
-procedure TCustomComboBox_Read_SelStart(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_SelStart(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomComboBox(Args.Obj).SelStart;
 end;
 
 { property Write SelStart(Value: Integer) }
-procedure TCustomComboBox_Write_SelStart(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_SelStart(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).SelStart := Value;
 end;
 
 { property Read SelText: string }
-procedure TCustomComboBox_Read_SelText(var Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Read_SelText(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomComboBox(Args.Obj).SelText;
 end;
 
 { property Write SelText(Value: string) }
-procedure TCustomComboBox_Write_SelText(const Value: Variant; Args: TArgs);
+
+procedure TCustomComboBox_Write_SelText(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomComboBox(Args.Obj).SelText := Value;
 end;
 
-  { TComboBox }
+{ TComboBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TComboBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TComboBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TComboBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TButton }
+{ TButton }
 
 { constructor Create(AOwner: TComponent) }
-procedure TButton_Create(var Value: Variant; Args: TArgs);
+
+procedure TButton_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TButton.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure Click; }
-procedure TButton_Click(var Value: Variant; Args: TArgs);
+{ procedure Click; }
+
+procedure TButton_Click(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TButton(Args.Obj).Click;
 end;
 
-  { TCustomCheckBox }
+{ TCustomCheckBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomCheckBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomCheckBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomCheckBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCheckBox }
+{ TCheckBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCheckBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TCheckBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCheckBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TRadioButton }
+{ TRadioButton }
 
 { constructor Create(AOwner: TComponent) }
-procedure TRadioButton_Create(var Value: Variant; Args: TArgs);
+
+procedure TRadioButton_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TRadioButton.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TCustomListBox }
+{ TCustomListBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomListBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomListBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure Clear; }
-procedure TCustomListBox_Clear(var Value: Variant; Args: TArgs);
+{ procedure Clear; }
+
+procedure TCustomListBox_Clear(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomListBox(Args.Obj).Clear;
 end;
 
-{  function ItemAtPos(Pos: TPoint; Existing: Boolean): Integer; }
-procedure TCustomListBox_ItemAtPos(var Value: Variant; Args: TArgs);
+{ function ItemAtPos(Pos: TPoint; Existing: Boolean): Integer; }
+
+procedure TCustomListBox_ItemAtPos(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomListBox(Args.Obj).ItemAtPos(Var2Point(Args.Values[0]), Args.Values[1]);
 end;
 
-{  function ItemRect(Index: Integer): TRect; }
-procedure TCustomListBox_ItemRect(var Value: Variant; Args: TArgs);
+{ function ItemRect(Index: Integer): TRect; }
+
+procedure TCustomListBox_ItemRect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(TCustomListBox(Args.Obj).ItemRect(Args.Values[0]));
 end;
 
 { property Read Canvas: TCanvas }
-procedure TCustomListBox_Read_Canvas(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_Canvas(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomListBox(Args.Obj).Canvas);
 end;
 
 { property Read Items: TStrings }
-procedure TCustomListBox_Read_Items(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_Items(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomListBox(Args.Obj).Items);
 end;
 
 { property Write Items(Value: TStrings) }
-procedure TCustomListBox_Write_Items(const Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Write_Items(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomListBox(Args.Obj).Items := V2O(Value) as TStrings;
 end;
 
 { property Read ItemIndex: Integer }
-procedure TCustomListBox_Read_ItemIndex(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_ItemIndex(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomListBox(Args.Obj).ItemIndex;
 end;
 
 { property Write ItemIndex(Value: Integer) }
-procedure TCustomListBox_Write_ItemIndex(const Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Write_ItemIndex(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomListBox(Args.Obj).ItemIndex := Value;
 end;
 
 { property Read SelCount: Integer }
-procedure TCustomListBox_Read_SelCount(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_SelCount(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomListBox(Args.Obj).SelCount;
 end;
 
 { property Read Selected[Integer]: Boolean }
-procedure TCustomListBox_Read_Selected(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_Selected(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomListBox(Args.Obj).Selected[Args.Values[0]];
 end;
 
 { property Write Selected[Integer]: Boolean }
-procedure TCustomListBox_Write_Selected(const Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Write_Selected(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomListBox(Args.Obj).Selected[Args.Values[0]] := Value;
 end;
 
 { property Read TopIndex: Integer }
-procedure TCustomListBox_Read_TopIndex(var Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Read_TopIndex(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TCustomListBox(Args.Obj).TopIndex;
 end;
 
 { property Write TopIndex(Value: Integer) }
-procedure TCustomListBox_Write_TopIndex(const Value: Variant; Args: TArgs);
+
+procedure TCustomListBox_Write_TopIndex(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TCustomListBox(Args.Obj).TopIndex := Value;
 end;
 
-  { TListBox }
+{ TListBox }
 
 { constructor Create(AOwner: TComponent) }
-procedure TListBox_Create(var Value: Variant; Args: TArgs);
+
+procedure TListBox_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TListBox.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TScrollBar }
+{ TScrollBar }
 
 { constructor Create(AOwner: TComponent) }
-procedure TScrollBar_Create(var Value: Variant; Args: TArgs);
+
+procedure TScrollBar_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TScrollBar.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure SetParams(APosition, AMin, AMax: Integer); }
-procedure TScrollBar_SetParams(var Value: Variant; Args: TArgs);
+{ procedure SetParams(APosition, AMin, AMax: Integer); }
+
+procedure TScrollBar_SetParams(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TScrollBar(Args.Obj).SetParams(Args.Values[0], Args.Values[1], Args.Values[2]);
 end;
 
 {$IFDEF COMPILER3_UP}
-  { TCustomStaticText }
+
+{ TCustomStaticText }
 
 { constructor Create(AOwner: TComponent) }
-procedure TCustomStaticText_Create(var Value: Variant; Args: TArgs);
+
+procedure TCustomStaticText_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TCustomStaticText.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-  { TStaticText }
+{ TStaticText }
 
 { constructor Create(AOwner: TComponent) }
-procedure TStaticText_Create(var Value: Variant; Args: TArgs);
+
+procedure TStaticText_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TStaticText.Create(V2O(Args.Values[0]) as TComponent));
 end;
+
 {$ENDIF COMPILER3_UP}
 
-
 type
-  
   TJvInterpreterStdCtrlsEvent = class(TJvInterpreterEvent)
   private
     procedure DrawItemEvent(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -492,13 +560,14 @@ type
     procedure ScrollEvent(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
   end;
 
-procedure TJvInterpreterStdCtrlsEvent.DrawItemEvent(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+procedure TJvInterpreterStdCtrlsEvent.DrawItemEvent(Control: TWinControl; Index: Integer; Rect: TRect; State:
+  TOwnerDrawState);
 begin
- {$IFDEF COMPILER5_UP}
+  {$IFDEF COMPILER5_UP}
   CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Word(State))]);
- {$ELSE}
+  {$ELSE}
   CallFunction(nil, [O2V(Control), Index, Rect2Var(Rect), S2V(Byte(State))]);
- {$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvInterpreterStdCtrlsEvent.MeasureItemEvent(Control: TWinControl; Index: Integer; var Height: Integer);
@@ -513,33 +582,34 @@ begin
   ScrollPos := Args.Values[2];
 end;
 
-
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+const
+  cStdCtrls = 'StdCtrls';
 begin
   with JvInterpreterAdapter do
   begin
-   { TGroupBox }
-    AddClass('StdCtrls', TGroupBox, 'TGroupBox');
+    { TGroupBox }
+    AddClass(cStdCtrls, TGroupBox, 'TGroupBox');
     AddGet(TGroupBox, 'Create', TGroupBox_Create, 1, [varEmpty], varEmpty);
-   {$IFDEF COMPILER3_UP}
-   { TTextLayout }
-    AddConst('StdCtrls', 'tlTop', tlTop);
-    AddConst('StdCtrls', 'tlCenter', tlCenter);
-    AddConst('StdCtrls', 'tlBottom', tlBottom);
-   {$ENDIF COMPILER3_UP}
-   { TCustomLabel }
-    AddClass('StdCtrls', TCustomLabel, 'TCustomLabel');
+    {$IFDEF COMPILER3_UP}
+    { TTextLayout }
+    AddConst(cStdCtrls, 'tlTop', tlTop);
+    AddConst(cStdCtrls, 'tlCenter', tlCenter);
+    AddConst(cStdCtrls, 'tlBottom', tlBottom);
+    {$ENDIF COMPILER3_UP}
+    { TCustomLabel }
+    AddClass(cStdCtrls, TCustomLabel, 'TCustomLabel');
     AddGet(TCustomLabel, 'Create', TCustomLabel_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomLabel, 'Canvas', TCustomLabel_Read_Canvas, 0, [0], varEmpty);
-   { TLabel }
-    AddClass('StdCtrls', TLabel, 'TLabel');
+    { TLabel }
+    AddClass(cStdCtrls, TLabel, 'TLabel');
     AddGet(TLabel, 'Create', TLabel_Create, 1, [varEmpty], varEmpty);
-   { TEditCharCase }
-    AddConst('StdCtrls', 'ecNormal', ecNormal);
-    AddConst('StdCtrls', 'ecUpperCase', ecUpperCase);
-    AddConst('StdCtrls', 'ecLowerCase', ecLowerCase);
-   { TCustomEdit }
-    AddClass('StdCtrls', TCustomEdit, 'TCustomEdit');
+    { TEditCharCase }
+    AddConst(cStdCtrls, 'ecNormal', ecNormal);
+    AddConst(cStdCtrls, 'ecUpperCase', ecUpperCase);
+    AddConst(cStdCtrls, 'ecLowerCase', ecLowerCase);
+    { TCustomEdit }
+    AddClass(cStdCtrls, TCustomEdit, 'TCustomEdit');
     AddGet(TCustomEdit, 'Create', TCustomEdit_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomEdit, 'Clear', TCustomEdit_Clear, 0, [0], varEmpty);
     AddGet(TCustomEdit, 'ClearSelection', TCustomEdit_ClearSelection, 0, [0], varEmpty);
@@ -557,36 +627,36 @@ begin
     AddSet(TCustomEdit, 'SelStart', TCustomEdit_Write_SelStart, 0, [0]);
     AddGet(TCustomEdit, 'SelText', TCustomEdit_Read_SelText, 0, [0], varEmpty);
     AddSet(TCustomEdit, 'SelText', TCustomEdit_Write_SelText, 0, [0]);
-   { TEdit }
-    AddClass('StdCtrls', TEdit, 'TEdit');
+    { TEdit }
+    AddClass(cStdCtrls, TEdit, 'TEdit');
     AddGet(TEdit, 'Create', TEdit_Create, 1, [varEmpty], varEmpty);
-   { TScrollStyle }
-    AddConst('StdCtrls', 'ssNone', ssNone);
-    AddConst('StdCtrls', 'ssHorizontal', ssHorizontal);
-    AddConst('StdCtrls', 'ssVertical', ssVertical);
-    AddConst('StdCtrls', 'ssBoth', ssBoth);
-   { TCustomMemo }
-    AddClass('StdCtrls', TCustomMemo, 'TCustomMemo');
+    { TScrollStyle }
+    AddConst(cStdCtrls, 'ssNone', ssNone);
+    AddConst(cStdCtrls, 'ssHorizontal', ssHorizontal);
+    AddConst(cStdCtrls, 'ssVertical', ssVertical);
+    AddConst(cStdCtrls, 'ssBoth', ssBoth);
+    { TCustomMemo }
+    AddClass(cStdCtrls, TCustomMemo, 'TCustomMemo');
     AddGet(TCustomMemo, 'Create', TCustomMemo_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomMemo, 'Lines', TCustomMemo_Read_Lines, 0, [0], varEmpty);
     AddSet(TCustomMemo, 'Lines', TCustomMemo_Write_Lines, 0, [0]);
-   { TMemo }
-    AddClass('StdCtrls', TMemo, 'TMemo');
+    { TMemo }
+    AddClass(cStdCtrls, TMemo, 'TMemo');
     AddGet(TMemo, 'Create', TMemo_Create, 1, [varEmpty], varEmpty);
-   { TComboBoxStyle }
-    AddConst('StdCtrls', 'csDropDown', csDropDown);
-    AddConst('StdCtrls', 'csSimple', csSimple);
-    AddConst('StdCtrls', 'csDropDownList', csDropDownList);
-    AddConst('StdCtrls', 'csOwnerDrawFixed', csOwnerDrawFixed);
-    AddConst('StdCtrls', 'csOwnerDrawVariable', csOwnerDrawVariable);
-   { TOwnerDrawState }
-    AddConst('StdCtrls', 'odSelected', odSelected);
-    AddConst('StdCtrls', 'odGrayed', odGrayed);
-    AddConst('StdCtrls', 'odDisabled', odDisabled);
-    AddConst('StdCtrls', 'odChecked', odChecked);
-    AddConst('StdCtrls', 'odFocused', odFocused);
-   { TCustomComboBox }
-    AddClass('StdCtrls', TCustomComboBox, 'TCustomComboBox');
+    { TComboBoxStyle }
+    AddConst(cStdCtrls, 'csDropDown', csDropDown);
+    AddConst(cStdCtrls, 'csSimple', csSimple);
+    AddConst(cStdCtrls, 'csDropDownList', csDropDownList);
+    AddConst(cStdCtrls, 'csOwnerDrawFixed', csOwnerDrawFixed);
+    AddConst(cStdCtrls, 'csOwnerDrawVariable', csOwnerDrawVariable);
+    { TOwnerDrawState }
+    AddConst(cStdCtrls, 'odSelected', odSelected);
+    AddConst(cStdCtrls, 'odGrayed', odGrayed);
+    AddConst(cStdCtrls, 'odDisabled', odDisabled);
+    AddConst(cStdCtrls, 'odChecked', odChecked);
+    AddConst(cStdCtrls, 'odFocused', odFocused);
+    { TCustomComboBox }
+    AddClass(cStdCtrls, TCustomComboBox, 'TCustomComboBox');
     AddGet(TCustomComboBox, 'Create', TCustomComboBox_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomComboBox, 'Clear', TCustomComboBox_Clear, 0, [0], varEmpty);
     AddGet(TCustomComboBox, 'SelectAll', TCustomComboBox_SelectAll, 0, [0], varEmpty);
@@ -603,32 +673,32 @@ begin
     AddSet(TCustomComboBox, 'SelStart', TCustomComboBox_Write_SelStart, 0, [0]);
     AddGet(TCustomComboBox, 'SelText', TCustomComboBox_Read_SelText, 0, [0], varEmpty);
     AddSet(TCustomComboBox, 'SelText', TCustomComboBox_Write_SelText, 0, [0]);
-   { TComboBox }
-    AddClass('StdCtrls', TComboBox, 'TComboBox');
+    { TComboBox }
+    AddClass(cStdCtrls, TComboBox, 'TComboBox');
     AddGet(TComboBox, 'Create', TComboBox_Create, 1, [varEmpty], varEmpty);
-   { TButton }
-    AddClass('StdCtrls', TButton, 'TButton');
+    { TButton }
+    AddClass(cStdCtrls, TButton, 'TButton');
     AddGet(TButton, 'Create', TButton_Create, 1, [varEmpty], varEmpty);
     AddGet(TButton, 'Click', TButton_Click, 0, [0], varEmpty);
-   { TCheckBoxState }
-    AddConst('StdCtrls', 'cbUnchecked', cbUnchecked);
-    AddConst('StdCtrls', 'cbChecked', cbChecked);
-    AddConst('StdCtrls', 'cbGrayed', cbGrayed);
-   { TCustomCheckBox }
-    AddClass('StdCtrls', TCustomCheckBox, 'TCustomCheckBox');
+    { TCheckBoxState }
+    AddConst(cStdCtrls, 'cbUnchecked', cbUnchecked);
+    AddConst(cStdCtrls, 'cbChecked', cbChecked);
+    AddConst(cStdCtrls, 'cbGrayed', cbGrayed);
+    { TCustomCheckBox }
+    AddClass(cStdCtrls, TCustomCheckBox, 'TCustomCheckBox');
     AddGet(TCustomCheckBox, 'Create', TCustomCheckBox_Create, 1, [varEmpty], varEmpty);
-   { TCheckBox }
-    AddClass('StdCtrls', TCheckBox, 'TCheckBox');
+    { TCheckBox }
+    AddClass(cStdCtrls, TCheckBox, 'TCheckBox');
     AddGet(TCheckBox, 'Create', TCheckBox_Create, 1, [varEmpty], varEmpty);
-   { TRadioButton }
-    AddClass('StdCtrls', TRadioButton, 'TRadioButton');
+    { TRadioButton }
+    AddClass(cStdCtrls, TRadioButton, 'TRadioButton');
     AddGet(TRadioButton, 'Create', TRadioButton_Create, 1, [varEmpty], varEmpty);
-   { TListBoxStyle }
-    AddConst('StdCtrls', 'lbStandard', lbStandard);
-    AddConst('StdCtrls', 'lbOwnerDrawFixed', lbOwnerDrawFixed);
-    AddConst('StdCtrls', 'lbOwnerDrawVariable', lbOwnerDrawVariable);
-   { TCustomListBox }
-    AddClass('StdCtrls', TCustomListBox, 'TCustomListBox');
+    { TListBoxStyle }
+    AddConst(cStdCtrls, 'lbStandard', lbStandard);
+    AddConst(cStdCtrls, 'lbOwnerDrawFixed', lbOwnerDrawFixed);
+    AddConst(cStdCtrls, 'lbOwnerDrawVariable', lbOwnerDrawVariable);
+    { TCustomListBox }
+    AddClass(cStdCtrls, TCustomListBox, 'TCustomListBox');
     AddGet(TCustomListBox, 'Create', TCustomListBox_Create, 1, [varEmpty], varEmpty);
     AddGet(TCustomListBox, 'Clear', TCustomListBox_Clear, 0, [0], varEmpty);
     AddGet(TCustomListBox, 'ItemAtPos', TCustomListBox_ItemAtPos, 2, [varEmpty, varEmpty], varEmpty);
@@ -643,44 +713,46 @@ begin
     AddSet(TCustomListBox, 'Selected', TCustomListBox_Write_Selected, 1, [1]);
     AddGet(TCustomListBox, 'TopIndex', TCustomListBox_Read_TopIndex, 0, [0], varEmpty);
     AddSet(TCustomListBox, 'TopIndex', TCustomListBox_Write_TopIndex, 0, [0]);
-   { TListBox }
-    AddClass('StdCtrls', TListBox, 'TListBox');
+    { TListBox }
+    AddClass(cStdCtrls, TListBox, 'TListBox');
     AddGet(TListBox, 'Create', TListBox_Create, 1, [varEmpty], varEmpty);
-   { TScrollCode }
-    AddConst('StdCtrls', 'scLineUp', scLineUp);
-    AddConst('StdCtrls', 'scLineDown', scLineDown);
-    AddConst('StdCtrls', 'scPageUp', scPageUp);
-    AddConst('StdCtrls', 'scPageDown', scPageDown);
-    AddConst('StdCtrls', 'scPosition', scPosition);
-    AddConst('StdCtrls', 'scTrack', scTrack);
-    AddConst('StdCtrls', 'scTop', scTop);
-    AddConst('StdCtrls', 'scBottom', scBottom);
-    AddConst('StdCtrls', 'scEndScroll', scEndScroll);
-   { TScrollBar }
-    AddClass('StdCtrls', TScrollBar, 'TScrollBar');
+    { TScrollCode }
+    AddConst(cStdCtrls, 'scLineUp', scLineUp);
+    AddConst(cStdCtrls, 'scLineDown', scLineDown);
+    AddConst(cStdCtrls, 'scPageUp', scPageUp);
+    AddConst(cStdCtrls, 'scPageDown', scPageDown);
+    AddConst(cStdCtrls, 'scPosition', scPosition);
+    AddConst(cStdCtrls, 'scTrack', scTrack);
+    AddConst(cStdCtrls, 'scTop', scTop);
+    AddConst(cStdCtrls, 'scBottom', scBottom);
+    AddConst(cStdCtrls, 'scEndScroll', scEndScroll);
+    { TScrollBar }
+    AddClass(cStdCtrls, TScrollBar, 'TScrollBar');
     AddGet(TScrollBar, 'Create', TScrollBar_Create, 1, [varEmpty], varEmpty);
     AddGet(TScrollBar, 'SetParams', TScrollBar_SetParams, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
-   {$IFDEF COMPILER3_UP}
-   { TStaticBorderStyle }
-    AddConst('StdCtrls', 'sbsNone', sbsNone);
-    AddConst('StdCtrls', 'sbsSingle', sbsSingle);
-    AddConst('StdCtrls', 'sbsSunken', sbsSunken);
-   { TCustomStaticText }
-    AddClass('StdCtrls', TCustomStaticText, 'TCustomStaticText');
+    {$IFDEF COMPILER3_UP}
+    { TStaticBorderStyle }
+    AddConst(cStdCtrls, 'sbsNone', sbsNone);
+    AddConst(cStdCtrls, 'sbsSingle', sbsSingle);
+    AddConst(cStdCtrls, 'sbsSunken', sbsSunken);
+    { TCustomStaticText }
+    AddClass(cStdCtrls, TCustomStaticText, 'TCustomStaticText');
     AddGet(TCustomStaticText, 'Create', TCustomStaticText_Create, 1, [varEmpty], varEmpty);
-   { TStaticText }
-    AddClass('StdCtrls', TStaticText, 'TStaticText');
+    { TStaticText }
+    AddClass(cStdCtrls, TStaticText, 'TStaticText');
     AddGet(TStaticText, 'Create', TStaticText_Create, 1, [varEmpty], varEmpty);
-   {$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
 
-    AddHandler('StdCtrls', 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
-    AddHandler('StdCtrls', 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.MeasureItemEvent);
-    AddHandler('StdCtrls', 'TScrollEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.ScrollEvent);
-  end;    { with }
+    AddHandler(cStdCtrls, 'TDrawItemEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.DrawItemEvent);
+    AddHandler(cStdCtrls, 'TMeasureItemEvent', TJvInterpreterStdCtrlsEvent,
+      @TJvInterpreterStdCtrlsEvent.MeasureItemEvent);
+    AddHandler(cStdCtrls, 'TScrollEvent', TJvInterpreterStdCtrlsEvent, @TJvInterpreterStdCtrlsEvent.ScrollEvent);
+  end;
   RegisterClasses([TGroupBox, TCustomLabel, TLabel, TCustomEdit, TEdit,
     TCustomMemo, TMemo, TCustomComboBox, TComboBox, TButton, TCustomCheckBox,
-    TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar
-   {$IFDEF COMPILER3_UP}, TCustomStaticText, TStaticText {$ENDIF COMPILER3_UP} ]);
-end;    { RegisterJvInterpreterAdapter }
+      TCheckBox, TRadioButton, TCustomListBox, TListBox, TScrollBar
+      {$IFDEF COMPILER3_UP}, TCustomStaticText, TStaticText {$ENDIF COMPILER3_UP}]);
+end;
 
 end.
+

@@ -28,23 +28,22 @@ Known Issues:
 
 unit JvSpecialLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  JVCLVer;
 
 type
   TJvSpecialLabel = class(TCustomLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FText: string;
     FSleep: Integer;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -80,6 +79,7 @@ type
     property Cursor;
     property Enabled;
     property Hint;
+    // (rom) this should be the Caption
     property Text: string read FText write SetText;
     property SleepTime: Integer read FSleep write FSleep default 20;
     property OnClick;
@@ -99,17 +99,13 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvSpecialLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FSleep := 20;
   FText := Caption;
   SetText(FText);
 end;
-
-{**************************************************}
 
 procedure TJvSpecialLabel.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -118,16 +114,12 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvSpecialLabel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvSpecialLabel.MouseEnter(var Msg: TMessage);
 begin
@@ -136,8 +128,6 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvSpecialLabel.MouseLeave(var Msg: TMessage);
 begin
   inherited;
@@ -145,30 +135,29 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvSpecialLabel.SetText(Value: string);
 var
-  i, j: Integer;
-  cap: string;
+  I, J: Integer;
+  Cap: string;
 begin
-  Ftext := Value;
+  FText := Value;
   if not (csLoading in ComponentState) and not (csDesigning in ComponentState) then
   begin
     Caption := '';
-    cap := '';
-    for i := 1 to Length(Value) do
+    Cap := '';
+    for I := 1 to Length(Value) do
     begin
-      for j := 10 to Ord(Value[i]) - 1 do
+      for J := 10 to Ord(Value[I]) - 1 do
       begin
-        Caption := cap + Char(j);
+        Caption := Cap + Char(J);
         Application.ProcessMessages;
         Sleep(FSleep);
       end;
-      cap := cap + Value[i];
+      Cap := Cap + Value[I];
     end;
   end;
   Caption := Value;
 end;
 
 end.
+

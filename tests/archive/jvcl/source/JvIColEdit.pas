@@ -12,7 +12,7 @@ The Original Code is: JvIcoLEdit.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,22 +29,27 @@ unit JvIcoLEdit;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons, JvIcoList,
-{$IFDEF COMPILER6_UP}
-RTLConsts,  DesignIntf, DesignEditors,  VCLEditors,
-{$ELSE}
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, Classes, Graphics, Forms, Controls, Dialogs,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
   LibIntf, DsgnIntf,
-{$ENDIF}
-
-  StdCtrls, ExtCtrls, JvPlacemnt,
-  {$IFDEF COMPILER3_UP} ExtDlgs, {$ELSE}
-  ImagPrvw, {$ENDIF} Menus, JvSpeedbar, JvComponent;
+  {$ENDIF}
+  StdCtrls, ExtCtrls,
+  {$IFDEF COMPILER3_UP}
+  ExtDlgs,
+  {$ELSE}
+  ImagPrvw,
+  {$ENDIF}
+  JvIcoList, JvSpeedbar, JvComponent;
 
 type
-
-{ TIconListDialog }
-
   TIconListDialog = class(TForm)
     OK: TButton;
     Cancel: TButton;
@@ -86,13 +91,14 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure LoadAniClick(Sender: TObject);
   private
-    Icons: TJvIconList;
-    FTopIndex, FSelected: Integer;
-{$IFDEF COMPILER3_UP}
+    FIcons: TJvIconList;
+    FTopIndex: Integer;
+    FSelected: Integer;
+    {$IFDEF COMPILER3_UP}
     FileDialog: TOpenPictureDialog;
-{$ELSE}
+    {$ELSE}
     FileDialog: TOpenDialog;
-{$ENDIF}
+    {$ENDIF}
     procedure SetSelectedIndex(Index: Integer; Force: Boolean);
     procedure ListChanged(Sender: TObject);
     function GetSelectedIcon: TIcon;
@@ -104,8 +110,6 @@ type
   public
     Modified: Boolean;
   end;
-
-{ TIconListProperty }
 
   TIconListProperty = class(TClassProperty)
   public
@@ -119,12 +123,13 @@ procedure EditIconList(IconList: TJvIconList);
 
 implementation
 
-uses TypInfo, SysUtils, Clipbrd, Consts, JvClipIcon, JvVCLUtils, JvAppUtils,
-  JvConst, JvxConst, JvMaxMin, JvAniFile;
+uses
+  SysUtils, Clipbrd, Consts,
+  JvClipIcon, JvVCLUtils, JvxConst, JvMaxMin, JvAniFile;
 
 {$B-}
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 {$R *.DFM}
@@ -137,16 +142,16 @@ procedure EditIconList(IconList: TJvIconList);
 begin
   with TIconListDialog.Create(Application) do
   try
-    Icons.Assign(IconList);
+    FIcons.Assign(IconList);
     Modified := False;
     if (ShowModal = mrOk) and Modified then
-      IconList.Assign(Icons);
+      IconList.Assign(FIcons);
   finally
     Free;
   end;
 end;
 
-{ TIconListProperty }
+//=== TIconListProperty ======================================================
 
 procedure TIconListProperty.Edit;
 var
@@ -160,7 +165,7 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       Editor.Caption := TComponent(Comp).Name + '.' + GetName;
-    Editor.Icons.Assign(TJvIconList(Pointer(GetOrdValue)));
+    Editor.FIcons.Assign(TJvIconList(Pointer(GetOrdValue)));
     Editor.Modified := False;
     CurDir := GetCurrentDir;
     try
@@ -168,8 +173,9 @@ begin
     finally
       SetCurrentDir(CurDir);
     end;
-    if (Res = mrOk) and Editor.Modified then begin
-      TJvIconList(Pointer(GetOrdValue)).Assign(Editor.Icons);
+    if (Res = mrOk) and Editor.Modified then
+    begin
+      TJvIconList(Pointer(GetOrdValue)).Assign(Editor.FIcons);
       Designer.Modified;
     end;
   finally
@@ -189,15 +195,17 @@ begin
   List := TJvIconList(Pointer(GetOrdValue));
   if (List = nil) or (List.Count = 0) then
     Result := ResStr(srNone)
-  else Result := '(' + List.ClassName + ')';
+  else
+    Result := '(' + List.ClassName + ')';
 end;
 
 procedure TIconListProperty.SetValue(const Value: string);
 begin
-  if Value = '' then SetOrdValue(0);
+  if Value = '' then
+    SetOrdValue(0);
 end;
 
-{ TIconListDialog }
+//=== TIconListDialog ========================================================
 
 procedure TIconListDialog.LoadAniFile;
 var
@@ -206,15 +214,17 @@ var
 begin
   Dialog := TOpenDialog.Create(Application);
   try
-    with Dialog do begin
+    with Dialog do
+    begin
       Options := [ofHideReadOnly, ofFileMustExist];
       DefaultExt := 'ani';
       Filter := srAniCurFilter;
-      if Execute then begin
+      if Execute then
+      begin
         AniCursor := TJvAnimatedCursorImage.Create;
         try
           AniCursor.LoadFromFile(FileName);
-          Icons.Assign(AniCursor);
+          FIcons.Assign(AniCursor);
         finally
           AniCursor.Free;
         end;
@@ -228,8 +238,8 @@ end;
 function TIconListDialog.GetSelectedIcon: TIcon;
 begin
   Result := nil;
-  if (Icons.Count > 0) and (FSelected < Icons.Count) then
-    Result := Icons[FSelected];
+  if (FIcons.Count > 0) and (FSelected < FIcons.Count) then
+    Result := FIcons[FSelected];
 end;
 
 procedure TIconListDialog.CheckEnablePaste;
@@ -239,19 +249,23 @@ end;
 
 procedure TIconListDialog.SetSelectedIndex(Index: Integer; Force: Boolean);
 begin
-  if Force or (Index <> FSelected) then begin
-    Index := Min(Icons.Count, Max(Index, 0));
-    while (FTopIndex < Index - 4) do Inc(FTopIndex);
-    if Index < FTopIndex then FTopIndex := Index;
+  if Force or (Index <> FSelected) then
+  begin
+    Index := Min(FIcons.Count, Max(Index, 0));
+    while (FTopIndex < Index - 4) do
+      Inc(FTopIndex);
+    if Index < FTopIndex then
+      FTopIndex := Index;
     FSelected := Index;
-    if FSelected <> ScrollBar.Position then ScrollBar.Position := FSelected;
+    if FSelected <> ScrollBar.Position then
+      ScrollBar.Position := FSelected;
     ValidateImage;
   end;
 end;
 
 procedure TIconListDialog.ListChanged(Sender: TObject);
 begin
-  ScrollBar.Max := Icons.Count;
+  ScrollBar.Max := FIcons.Count;
   SetSelectedIndex(FSelected, True);
   Modified := True;
 end;
@@ -260,9 +274,9 @@ procedure TIconListDialog.CheckButtons;
 var
   Enable: Boolean;
 begin
-  Enable := (Icons.Count > 0) and (FSelected < Icons.Count) and
+  Enable := (FIcons.Count > 0) and (FSelected < FIcons.Count) and
     (FSelected >= 0);
-  Clear.Enabled := Icons.Count > 0;
+  Clear.Enabled := FIcons.Count > 0;
   Delete.Enabled := Enable;
   Copy.Enabled := Enable;
   CheckEnablePaste;
@@ -274,26 +288,34 @@ var
   I: Integer;
   Image, Slot: TComponent;
 begin
-  for I := 0 to 4 do begin
+  for I := 0 to 4 do
+  begin
     Image := FindComponent(Format(sImage, [I]));
     Slot := FindComponent(Format(sSlot, [I]));
     if Image <> nil then
-      with TImage(Image).Picture do begin
-        if FTopIndex + I < Icons.Count then Assign(Icons[FTopIndex + I])
-        else Assign(nil);
-{$IFDEF COMPILER3_UP}
+      with TImage(Image).Picture do
+      begin
+        if FTopIndex + I < FIcons.Count then
+          Assign(FIcons[FTopIndex + I])
+        else
+          Assign(nil);
+        {$IFDEF COMPILER3_UP}
         TImage(Image).Transparent := True;
-{$ENDIF}
+        {$ENDIF}
       end;
-    if Slot <> nil then TPanel(Slot).ParentColor := True;
+    if Slot <> nil then
+      TPanel(Slot).ParentColor := True;
   end;
   Slot := FindComponent(Format(sSlot, [FSelected - FTopIndex]));
-  if Slot <> nil then TPanel(Slot).Color := clActiveCaption;
-  CntLabel.Caption := IntToStr(Icons.Count);
-  Enable := (Icons.Count > 0) and (FSelected <= Icons.Count) and
+  if Slot <> nil then
+    TPanel(Slot).Color := clActiveCaption;
+  CntLabel.Caption := IntToStr(FIcons.Count);
+  Enable := (FIcons.Count > 0) and (FSelected <= FIcons.Count) and
     (FSelected >= 0);
-  if Enable then IdxLabel.Caption := IntToStr(FSelected)
-  else IdxLabel.Caption := '';
+  if Enable then
+    IdxLabel.Caption := IntToStr(FSelected)
+  else
+    IdxLabel.Caption := '';
   CheckButtons;
 end;
 
@@ -304,23 +326,26 @@ var
   Image: TComponent;
 {$ENDIF}
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FileDialog := TOpenPictureDialog.Create(Self);
-  for I := 0 to 4 do begin
+  for I := 0 to 4 do
+  begin
     Image := FindComponent(Format(sImage, [I]));
-    if Image <> nil then TImage(Image).Transparent := True;
+    if Image <> nil then
+      TImage(Image).Transparent := True;
   end;
-{$ELSE}
+  {$ELSE}
   FileDialog := TOpenDialog.Create(Self);
-{$ENDIF}
-  with FileDialog do begin
+  {$ENDIF}
+  with FileDialog do
+  begin
     Title := srLoadIcon;
     Options := [ofHideReadOnly, ofFileMustExist];
     DefaultExt := GraphicExtension(TIcon);
     Filter := GraphicFilter(TIcon);
   end;
-  Icons := TJvIconList.Create;
-  Icons.OnChange := ListChanged;
+  FIcons := TJvIconList.Create;
+  FIcons.OnChange := ListChanged;
   FTopIndex := 0;
   FSelected := 0;
   Clear.Enabled := False;
@@ -331,8 +356,8 @@ end;
 
 procedure TIconListDialog.FormDestroy(Sender: TObject);
 begin
-  Icons.OnChange := nil;
-  Icons.Free;
+  FIcons.OnChange := nil;
+  FIcons.Free;
 end;
 
 procedure TIconListDialog.UpdateClipboard(Sender: TObject);
@@ -344,23 +369,24 @@ procedure TIconListDialog.LoadClick(Sender: TObject);
 var
   Ico: TIcon;
   I: Integer;
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
   FileName: string;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
   FileName := '';
   if SelectImage(FileName, GraphicExtension(TIcon), GraphicFilter(TIcon)) then
   begin
     FileDialog.Filename := FileName;
-{$ELSE}
-  if FileDialog.Execute then begin
-{$ENDIF}
+  {$ELSE}
+  if FileDialog.Execute then
+  begin
+  {$ENDIF}
     Ico := TIcon.Create;
     try
       Ico.LoadFromFile(FileDialog.Filename);
-      I := Min(FSelected + 1, Icons.Count);
-      Icons.Insert(I, Ico);
+      I := Min(FSelected + 1, FIcons.Count);
+      FIcons.Insert(I, Ico);
       SetSelectedIndex(I, True);
     finally
       Ico.Free;
@@ -378,10 +404,11 @@ procedure TIconListDialog.PasteClick(Sender: TObject);
 var
   Ico: TIcon;
 begin
-  if Clipboard.HasFormat(CF_ICON) then begin
+  if Clipboard.HasFormat(CF_ICON) then
+  begin
     Ico := CreateIconFromClipboard;
     try
-      Icons[FSelected] := Ico;
+      FIcons[FSelected] := Ico;
     finally
       Ico.Free;
     end;
@@ -390,13 +417,14 @@ end;
 
 procedure TIconListDialog.WMActivate(var Msg: TWMActivate);
 begin
-  if Msg.Active <> WA_INACTIVE then CheckEnablePaste;
+  if Msg.Active <> WA_INACTIVE then
+    CheckEnablePaste;
   inherited;
 end;
 
 procedure TIconListDialog.ClearClick(Sender: TObject);
 begin
-  Icons.Clear;
+  FIcons.Clear;
 end;
 
 procedure TIconListDialog.ScrollBarChange(Sender: TObject);
@@ -406,7 +434,7 @@ end;
 
 procedure TIconListDialog.DeleteClick(Sender: TObject);
 begin
-  Icons.Delete(FSelected);
+  FIcons.Delete(FSelected);
 end;
 
 procedure TIconListDialog.ImageMouseDown(Sender: TObject;
@@ -414,10 +442,14 @@ procedure TIconListDialog.ImageMouseDown(Sender: TObject;
 var
   Index: Integer;
 begin
-  if Button = mbLeft then begin
-    for Index := 0 to 4 do begin
-      if TComponent(Sender).Name = Format(sImage, [Index]) then Break;
-      if TComponent(Sender).Name = Format(sSlot, [Index]) then Break;
+  if Button = mbLeft then
+  begin
+    for Index := 0 to 4 do
+    begin
+      if TComponent(Sender).Name = Format(sImage, [Index]) then
+        Break;
+      if TComponent(Sender).Name = Format(sSlot, [Index]) then
+        Break;
     end;
     SetSelectedIndex(FTopIndex + Index, True);
   end;
@@ -429,3 +461,4 @@ begin
 end;
 
 end.
+

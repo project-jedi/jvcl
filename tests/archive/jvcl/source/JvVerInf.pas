@@ -12,7 +12,7 @@ The Original Code is: JvVerInf.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,11 +25,10 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvVerInf;
 
 {$IFDEF COMPILER3_UP}
-  {$WEAKPACKAGEUNIT}
+{$WEAKPACKAGEUNIT}
 {$ENDIF}
 
 interface
@@ -37,33 +36,35 @@ interface
 uses Windows;
 
 type
-  TVersionLanguage = (vlArabic, vlBulgarian, vlCatalan, vlTraditionalChinese,
-    vlCzech, vlDanish, vlGerman, vlGreek, vlUSEnglish, vlCastilianSpanish,
-    vlFinnish, vlFrench, vlHebrew, vlHungarian, vlIcelandic, vlItalian,
-    vlJapanese, vlKorean, vlDutch, vlNorwegianBokmel, vlPolish,
-    vlBrazilianPortuguese, vlRhaetoRomanic, vlRomanian, vlRussian,
-    vlCroatoSerbian, vlSlovak, vlAlbanian, vlSwedish, vlThai, vlTurkish,
-    vlUrdu, vlBahasa, vlSimplifiedChinese, vlSwissGerman, vlUKEnglish,
-    vlMexicanSpanish, vlBelgianFrench, vlSwissItalian, vlBelgianDutch,
-    vlNorwegianNynorsk, vlPortuguese, vlSerboCroatian, vlCanadianFrench,
-    vlSwissFrench, vlUnknown);
+  TVersionLanguage =
+   (vlArabic, vlBulgarian, vlCatalan, vlTraditionalChinese,
+     vlCzech, vlDanish, vlGerman, vlGreek, vlUSEnglish, vlCastilianSpanish,
+     vlFinnish, vlFrench, vlHebrew, vlHungarian, vlIcelandic, vlItalian,
+     vlJapanese, vlKorean, vlDutch, vlNorwegianBokmel, vlPolish,
+     vlBrazilianPortuguese, vlRhaetoRomanic, vlRomanian, vlRussian,
+     vlCroatoSerbian, vlSlovak, vlAlbanian, vlSwedish, vlThai, vlTurkish,
+     vlUrdu, vlBahasa, vlSimplifiedChinese, vlSwissGerman, vlUKEnglish,
+     vlMexicanSpanish, vlBelgianFrench, vlSwissItalian, vlBelgianDutch,
+     vlNorwegianNynorsk, vlPortuguese, vlSerboCroatian, vlCanadianFrench,
+     vlSwissFrench, vlUnknown);
 
-  TVersionCharSet = (vcsASCII, vcsJapan, vcsKorea, vcsTaiwan, vcsUnicode,
-    vcsEasternEuropean, vcsCyrillic, vcsMultilingual, vcsGreek, vcsTurkish,
-    vcsHebrew, vcsArabic, vcsUnknown);
+  TVersionCharSet =
+    (vcsASCII, vcsJapan, vcsKorea, vcsTaiwan, vcsUnicode,
+     vcsEasternEuropean, vcsCyrillic, vcsMultilingual, vcsGreek, vcsTurkish,
+     vcsHebrew, vcsArabic, vcsUnknown);
 
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   PVSFixedFileInfo = Pvs_FixedFileInfo;
   DWORD = Longint;
-{$ENDIF}
+  {$ENDIF}
 
   TLongVersion = record
     case Integer of
-    0: (All: array[1..4] of Word);
-    1: (MS, LS: LongInt);
+      0:
+        (All: array [1..4] of Word);
+      1:
+        (MS, LS: LongInt);
   end;
-
-{ TJvVersionInfo }
 
   TJvVersionInfo = class(TObject)
   private
@@ -136,11 +137,14 @@ function OkToWriteModule(ModuleName: string; NewVer: Longint): Boolean;
 
 implementation
 
-{$IFDEF WIN32}
-uses SysUtils, JvFileUtil, JvDateUtil;
-{$ELSE}
-uses WinTypes, WinProcs, SysUtils, JvFileUtil, JvDateUtil, JvVCLUtils;
-{$ENDIF}
+uses
+  {$IFDEF WIN32}
+  SysUtils,
+  JvFileUtil, JvDateUtil;
+  {$ELSE}
+  WinTypes, WinProcs, SysUtils,
+  JvFileUtil, JvDateUtil, JvVCLUtils;
+  {$ENDIF}
 
 function MemAlloc(Size: Longint): Pointer;
 {$IFDEF WIN32}
@@ -151,8 +155,10 @@ end;
 var
   Handle: THandle;
 begin
-  if Size < 65535 then GetMem(Result, Size)
-  else begin
+  if Size < 65535 then
+    GetMem(Result, Size)
+  else
+  begin
     Handle := GlobalAlloc(HeapAllocFlags, Size);
     Result := GlobalLock(Handle);
   end;
@@ -160,18 +166,16 @@ end;
 {$ENDIF WIN32}
 
 const
-  LanguageValues: array[TVersionLanguage] of Word = ($0401, $0402, $0403,
-    $0404, $0405, $0406, $0407, $0408, $0409, $040A, $040B, $040C, $040D,
-    $040E, $040F, $0410, $0411, $0412, $0413, $0414, $0415, $0416, $0417,
-    $0418, $0419, $041A, $041B, $041C, $041D, $041E, $041F, $0420, $0421,
-    $0804, $0807, $0809, $080A, $080C, $0810, $0813, $0814, $0816, $081A,
-    $0C0C, $100C, $0000);
+  LanguageValues: array [TVersionLanguage] of Word =
+    ($0401, $0402, $0403, $0404, $0405, $0406, $0407, $0408, $0409, $040A,
+     $040B, $040C, $040D, $040E, $040F, $0410, $0411, $0412, $0413, $0414,
+     $0415, $0416, $0417, $0418, $0419, $041A, $041B, $041C, $041D, $041E,
+     $041F, $0420, $0421, $0804, $0807, $0809, $080A, $080C, $0810, $0813,
+     $0814, $0816, $081A, $0C0C, $100C, $0000);
 
 const
-  CharacterSetValues: array[TVersionCharSet] of Integer = (0, 932, 949, 950,
-    1200, 1250, 1251, 1252, 1253, 1254, 1255, 1256, -1);
-
-{ TJvVersionInfo }
+  CharacterSetValues: array [TVersionCharSet] of Integer =
+    (0, 932, 949, 950, 1200, 1250, 1251, 1252, 1253, 1254, 1255, 1256, -1);
 
 constructor TJvVersionInfo.Create(const AFileName: string);
 begin
@@ -182,7 +186,8 @@ end;
 
 destructor TJvVersionInfo.Destroy;
 begin
-  if FBuffer <> nil then FreeMem(FBuffer, FSize);
+  if FBuffer <> nil then
+    FreeMem(FBuffer, FSize);
   StrDispose(FFileName);
   inherited Destroy;
 end;
@@ -192,13 +197,13 @@ begin
   FValid := False;
   FSize := GetFileVersionInfoSize(FFileName, FHandle);
   if FSize > 0 then
-    try
-      FBuffer := MemAlloc(FSize);
-      FValid := GetFileVersionInfo(FFileName, FHandle, FSize, FBuffer);
-    except
-      FValid := False;
-      raise;
-    end;
+  try
+    FBuffer := MemAlloc(FSize);
+    FValid := GetFileVersionInfo(FFileName, FHandle, FSize, FBuffer);
+  except
+    FValid := False;
+    raise;
+  end;
 end;
 
 function TJvVersionInfo.GetFileName: string;
@@ -208,7 +213,8 @@ end;
 
 procedure TJvVersionInfo.SetFileName(const Value: string);
 begin
-  if FBuffer <> nil then FreeMem(FBuffer, FSize);
+  if FBuffer <> nil then
+    FreeMem(FBuffer, FSize);
   FBuffer := nil;
   StrDispose(FFileName);
   FFileName := StrPCopy(StrAlloc(Length(Value) + 1), Value);
@@ -217,15 +223,17 @@ end;
 
 function TJvVersionInfo.GetTranslation: Pointer;
 var
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Len: UINT;
-{$ELSE}
+  {$ELSE}
   Len: Cardinal;
-{$ENDIF}
+  {$ENDIF}
 begin
   Result := nil;
-  if Valid then VerQueryValue(FBuffer, '\VarFileInfo\Translation', Result, Len)
-  else Result := nil;
+  if Valid then
+    VerQueryValue(FBuffer, '\VarFileInfo\Translation', Result, Len)
+  else
+    Result := nil;
 end;
 
 function TJvVersionInfo.GetTranslationString: string;
@@ -244,7 +252,8 @@ var
 begin
   P := GetTranslation;
   for Result := vlArabic to vlUnknown do
-    if LoWord(Longint(P^)) = LanguageValues[Result] then Break;
+    if LoWord(Longint(P^)) = LanguageValues[Result] then
+      Break;
 end;
 
 function TJvVersionInfo.GetVersionCharSet: TVersionCharSet;
@@ -253,20 +262,23 @@ var
 begin
   P := GetTranslation;
   for Result := vcsASCII to vcsUnknown do
-    if HiWord(Longint(P^)) = CharacterSetValues[Result] then Break;
+    if HiWord(Longint(P^)) = CharacterSetValues[Result] then
+      Break;
 end;
 
 function TJvVersionInfo.GetFixedFileInfo: PVSFixedFileInfo;
 var
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Len: UINT;
-{$ELSE}
+  {$ELSE}
   Len: Cardinal;
-{$ENDIF}
+  {$ENDIF}
 begin
   Result := nil;
-  if Valid then VerQueryValue(FBuffer, '\', Pointer(Result), Len)
-  else Result := nil;
+  if Valid then
+    VerQueryValue(FBuffer, '\', Pointer(Result), Len)
+  else
+    Result := nil;
 end;
 
 function TJvVersionInfo.GetProductLongVersion: TLongVersion;
@@ -283,22 +295,25 @@ end;
 
 function TJvVersionInfo.GetVersionNum: Longint;
 begin
-  if Valid then Result := FixedFileInfo^.dwFileVersionMS
-  else Result := 0;
+  if Valid then
+    Result := FixedFileInfo^.dwFileVersionMS
+  else
+    Result := 0;
 end;
 
 function TJvVersionInfo.GetVerValue(const VerName: string): string;
 var
-  szName: array[0..255] of Char;
+  szName: array [0..255] of Char;
   Value: Pointer;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Len: UINT;
-{$ELSE}
+  {$ELSE}
   Len: Cardinal;
-{$ENDIF}
+  {$ENDIF}
 begin
   Result := '';
-  if Valid then begin
+  if Valid then
+  begin
     StrPCopy(szName, '\StringFileInfo\' + GetTranslationString + '\' + VerName);
     if VerQueryValue(FBuffer, szName, Value, Len) then
       Result := StrPas(PChar(Value));
@@ -373,7 +388,8 @@ function TJvVersionInfo.GetVerFileDate: TDateTime;
 begin
   if FileExists(FileName) then
     Result := FileDateTime(FileName)
-  else Result := NullDate;
+  else
+    Result := NullDate;
 end;
 
 { Long version string routines }
@@ -391,16 +407,22 @@ var
   I: Word;
 begin
   Tmp := Str;
-  for I := 1 to 4 do begin
+  for I := 1 to 4 do
+  begin
     Sep := Pos('.', Tmp);
-    if Sep = 0 then Sep := Pos(',', Tmp);
-    if Sep = 0 then Fragment := Tmp
-    else begin
+    if Sep = 0 then
+      Sep := Pos(',', Tmp);
+    if Sep = 0 then
+      Fragment := Tmp
+    else
+    begin
       Fragment := Copy(Tmp, 1, Sep - 1);
       Tmp := Copy(Tmp, Sep + 1, MaxInt);
     end;
-    if Fragment = '' then Result.All[I] := 0
-    else Result.All[I] := StrToInt(Fragment);
+    if Fragment = '' then
+      Result.All[I] := 0
+    else
+      Result.All[I] := StrToInt(Fragment);
   end;
   I := Result.All[1];
   Result.All[1] := Result.All[2];
@@ -412,13 +434,15 @@ end;
 
 function AppFileName: string;
 var
-  FileName: array[0..255] of Char;
+  FileName: array [0..255] of Char;
 begin
-  if IsLibrary then begin
+  if IsLibrary then
+  begin
     GetModuleFileName(HInstance, FileName, SizeOf(FileName) - 1);
     Result := StrPas(FileName);
   end
-  else Result := ParamStr(0);
+  else
+    Result := ParamStr(0);
 end;
 
 function AppVerInfo: TJvVersionInfo;
@@ -433,7 +457,8 @@ function OkToWriteModule(ModuleName: string; NewVer: Longint): Boolean;
 begin
   {Assume we should overwrite}
   OkToWriteModule := True;
-  with TJvVersionInfo.Create(ModuleName) do begin
+  with TJvVersionInfo.Create(ModuleName) do
+  begin
     try
       if Valid then {Should we overwrite?}
         OkToWriteModule := NewVer > VersionNum;
@@ -444,3 +469,4 @@ begin
 end;
 
 end.
+

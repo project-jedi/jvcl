@@ -1,7 +1,8 @@
 object GradCaptionsEditor: TGradCaptionsEditor
   Left = 391
   Top = 254
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'Caption Editor'
   ClientHeight = 210
   ClientWidth = 393
@@ -11,6 +12,17 @@ object GradCaptionsEditor: TGradCaptionsEditor
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -130,6 +142,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
       Top = 66
       Width = 133
       Height = 21
+      ButtonFlat = False
       GlyphKind = gkEllipsis
       ButtonWidth = 17
       NumGlyphs = 1
@@ -144,6 +157,9 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Height = 157
     Caption = '&Captions'
     TabOrder = 0
+    DesignSize = (
+      137
+      157)
     object NewButton: TButton
       Left = 8
       Top = 124

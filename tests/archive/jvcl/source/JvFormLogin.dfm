@@ -1,7 +1,8 @@
 object FormLogi: TFormLogi
   Left = 457
   Top = 339
-  ActiveControl = edValue1
+  ActiveControl = EdValue1
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Enter Login'
   ClientHeight = 149
@@ -22,7 +23,7 @@ object FormLogi: TFormLogi
     Width = 36
     Height = 13
     Caption = 'Value&1:'
-    FocusControl = edValue1
+    FocusControl = EdValue1
   end
   object Label2: TLabel
     Left = 8
@@ -30,13 +31,14 @@ object FormLogi: TFormLogi
     Width = 33
     Height = 13
     Caption = 'Value&2'
-    FocusControl = edValue2
+    FocusControl = EdValue2
   end
-  object edValue1: TJvEdit
+  object EdValue1: TJvEdit
     Left = 8
     Top = 27
     Width = 281
     Height = 21
+    GroupIndex = -1
     MaxPixel.Font.Charset = DEFAULT_CHARSET
     MaxPixel.Font.Color = clWindowText
     MaxPixel.Font.Height = -11
@@ -48,14 +50,16 @@ object FormLogi: TFormLogi
     Anchors = [akLeft, akTop, akRight]
     Ctl3D = True
     ParentCtl3D = False
+    PasswordChar = #0
     ReadOnly = False
     TabOrder = 0
   end
-  object edValue2: TJvEdit
+  object EdValue2: TJvEdit
     Left = 8
     Top = 72
     Width = 281
     Height = 21
+    GroupIndex = -1
     MaxPixel.Font.Charset = DEFAULT_CHARSET
     MaxPixel.Font.Color = clWindowText
     MaxPixel.Font.Height = -11
@@ -67,11 +71,12 @@ object FormLogi: TFormLogi
     Anchors = [akLeft, akTop, akRight]
     Ctl3D = True
     ParentCtl3D = False
+    PasswordChar = #0
     ReadOnly = False
     TabOrder = 1
   end
-  object btnOK: TButton
-    Left = 120
+  object BtnOK: TButton
+    Left = 128
     Top = 114
     Width = 75
     Height = 25
@@ -81,8 +86,8 @@ object FormLogi: TFormLogi
     ModalResult = 1
     TabOrder = 2
   end
-  object btnCancel: TButton
-    Left = 200
+  object BtnCancel: TButton
+    Left = 216
     Top = 114
     Width = 75
     Height = 25

@@ -16,7 +16,6 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck
 
-
 Last Modified: 2002-05-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -24,19 +23,18 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvWinDialogs;
-
-{$IFDEF COMPILER6}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
 
 interface
 
 uses
   ShellAPI, Windows, Classes, Forms, SysUtils, Graphics, Dialogs,
-  Controls, ShlOBJ, ComObj, ActiveX, CommDlg, JvComponent, JvBaseDlg;
+  Controls, ShlOBJ, ComObj, ActiveX, CommDlg,
+  JvBaseDlg, JvFunctions; // For OSCheck
 
 type
   EShellOleError = class(Exception);
@@ -48,9 +46,9 @@ type
     Description: string;
     WorkingDirectory: string;
     IconLocation: string;
-    IconIndex: integer;
-    ShowCmd: integer;
-    HotKey: word;
+    IconIndex: Integer;
+    ShowCmd: Integer;
+    HotKey: Word;
   end;
 
   TSpecialFolderInfo = record
@@ -59,10 +57,9 @@ type
   end;
 
 const
+  OFN_EX_NOPLACESBAR = 1; // for new style of standard Windows dialogs
 
-  OFN_EX_NOPLACESBAR = 1;               // for new style of standard Windows dialogs
-
-  SpecialFolders: array[0..29] of TSpecialFolderInfo = (
+  SpecialFolders: array [0..29] of TSpecialFolderInfo = (
     (Name: 'Alt Startup'; ID: CSIDL_ALTSTARTUP),
     (Name: 'Application Data'; ID: CSIDL_APPDATA),
     (Name: 'Recycle Bin'; ID: CSIDL_BITBUCKET),
@@ -99,52 +96,32 @@ const
   OPF_PATHNAME = $02;
 
 type
-
   TOpenFileNameEx = packed record
-    // Size of the structure in bytes.
-    lStructSize: DWORD;
-    // Handle that is the parent of the dialog.
-    hWndOwner: HWND;
-    // Application instance handle.
-    hInstance: HINST;
-    // String containing filter information.
-    lpstrFilter: PAnsiChar;
-    // Will hold the filter chosen by the user.
-    lpstrCustomFilter: PAnsiChar;
-    // Size of lpstrCustomFilter, in bytes.
-    nMaxCustFilter: DWORD;
-    // Index of the filter to be shown.
-    nFilterIndex: DWORD;
-    // File name to start with (and retrieve).
-    lpstrFile: PAnsiChar;
-    // Size of lpstrFile, in bytes.
-    nMaxFile: DWORD;
-    // File name without path will be returned.
-    lpstrFileTitle: PAnsiChar;
-    // Size of lpstrFileTitle, in bytes.
-    nMaxFileTitle: DWORD;
-    // Starting directory.
-    lpstrInitialDir: PansiChar;
-    // Title of the open dialog.
-    lpstrTitle: PAnsiChar;
-    // Controls user selection options.
-    Flags: DWORD;
-    // Offset of file name in filepath=lpstrFile.
-    nFileOffset: Word;
-    // Offset of extension in filepath=lpstrFile.
-    nFileExtension: Word;
-    // Default extension if no extension typed.
-    lpstrDefExt: PAnsiChar;
-    // Custom data to be passed to hook.
-    lCustData: LPARAM;
+    lStructSize: DWORD;            // Size of the structure in bytes.
+    hWndOwner: HWND;               // Handle that is the parent of the dialog.
+    hInstance: HINST;              // Application instance handle.
+    lpstrFilter: PAnsiChar;        // String containing filter information.
+    lpstrCustomFilter: PAnsiChar;  // Will hold the filter chosen by the user.
+    nMaxCustFilter: DWORD;         // Size of lpstrCustomFilter, in bytes.
+    nFilterIndex: DWORD;           // Index of the filter to be shown.
+    lpstrFile: PAnsiChar;          // File name to start with (and retrieve).
+    nMaxFile: DWORD;               // Size of lpstrFile, in bytes.
+    lpstrFileTitle: PAnsiChar;     // File name without path will be returned.
+    nMaxFileTitle: DWORD;          // Size of lpstrFileTitle, in bytes.
+    lpstrInitialDir: PAnsiChar;    // Starting directory.
+    lpstrTitle: PAnsiChar;         // Title of the open dialog.
+    Flags: DWORD;                  // Controls user selection Options.
+    nFileOffset: Word;             // Offset of file name in filepath=lpstrFile.
+    nFileExtension: Word;          // Offset of extension in filepath=lpstrFile.
+    lpstrDefExt: PAnsiChar;        // Default extension if no extension typed.
+    lCustData: LPARAM;             // Custom data to be passed to hook.
     lpfnHook: function(Wnd: HWND; Msg: UINT; wParam: WPARAM;
-      lParam: LPARAM): UINT stdcall;    // Hook.
-    // Template dialog, if applicable.
-    lpTemplateName: PAnsiChar;
+      lParam: LPARAM): UINT stdcall; // Hook.
+    lpTemplateName: PAnsiChar;     // Template dialog, if applicable.
     // Extended structure starts here.
-    pvReserved: Pointer;                // Reserved, use nil.
-    dwReserved: DWORD;                  // Reserved, use 0.
-    FlagsEx: DWORD;                     // Extended Flags.
+    pvReserved: Pointer;           // Reserved, use nil.
+    dwReserved: DWORD;             // Reserved, use 0.
+    FlagsEx: DWORD;                // Extended Flags.
   end;
 
   TJvFormatType = (ftFull, ftQuick);
@@ -152,11 +129,10 @@ type
   TShellObjectTypes = set of TShellObjectType;
 
 type
-  {Format drive dialog}
-  TJvFormatDialog = class(TjvCommonDialogP)
+  TJvFormatDialog = class(TJvCommonDialogP)
   private
     FFormatType: TJvFormatType;
-    FDrive: integer;
+    FDrive: Integer;
     FDriveChar: Char;
     procedure SetDriveChar(Value: Char);
   public
@@ -164,79 +140,73 @@ type
     procedure Execute; override;
   published
     property FormatType: TJvFormatType read FFormatType write FFormatType;
-    property DriveChar: char read FDriveChar write SetDriveChar;
+    property DriveChar: Char read FDriveChar write SetDriveChar default 'A';
   end;
 
-  {Organize Favorites dialog}
-  TJvOrganizeFavoritesDialog = class(TjvCommonDialog)
+  TJvOrganizeFavoritesDialog = class(TJvCommonDialog)
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   end;
 
-  {Show control panel}
-  TJvControlPanelDialog = class(TjvCommonDialogP)
+  TJvControlPanelDialog = class(TJvCommonDialogP)
   public
     procedure Execute; override;
   end;
 
-  {execute Control Panel applet}
-  TJvAppletDialog = class(TjvCommonDialog)
+  TJvAppletDialog = class(TJvCommonDialog)
   private
     FAppletName: string;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
     property AppletName: string read FAppletName write FAppletName;
   end;
 
-  {browse network}
-  TJvComputerNameDialog = class(TjvCommonDialog)
+  TJvComputerNameDialog = class(TJvCommonDialog)
   private
     FComputerName: string;
     FCaption: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
     property ComputerName: string read FComputerName;
   published
     property Caption: string read FCaption write FCaption;
   end;
 
-  {selection folder from tree}
-  TJvBrowseFolderDialog = class(TjvCommonDialog)
+  TJvBrowseFolderDialog = class(TJvCommonDialog)
   private
     FFolderName: string;
     FCaption: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
     property FolderName: string read FFolderName;
   published
     property Caption: string read FCaption write FCaption;
   end;
 
-  {"Out of memory" dialog}
-  TJvOutOfMemoryDialog = class(TjvCommonDialog)
+  TJvOutOfMemoryDialog = class(TJvCommonDialog)
   private
     FCaption: string;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
     property Caption: string read FCaption write FCaption;
   end;
 
-  TJvChangeIconDialog = class(TjvCommonDialogP)
+  TJvChangeIconDialog = class(TJvCommonDialogP)
   private
-    FIconIndex: integer;
+    FIconIndex: Integer;
     FFilename: string;
   public
     procedure Execute; override;
   published
-    property IconIndex: integer read FIconIndex write FIconIndex;
+    property IconIndex: Integer read FIconIndex write FIconIndex;
     property Filename: string read FFilename write FFilename;
   end;
 
-  TJvShellAboutDialog = class(TjvCommonDialog)
+  TJvShellAboutDialog = class(TJvCommonDialog)
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -258,7 +228,7 @@ type
     property Product: string read FProduct write FProduct;
   end;
 
-  TJvRunDialog = class(TjvCommonDialogP)
+  TJvRunDialog = class(TJvCommonDialogP)
   private
     FCaption: string;
     FDescription: string;
@@ -274,20 +244,20 @@ type
     property Icon: TIcon read FIcon write SetIcon;
   end;
 
-  TJvObjectPropertiesDialog = class(TjvCommonDialog)
+  TJvObjectPropertiesDialog = class(TJvCommonDialog)
   private
     FObjectName: TFileName;
     FObjectType: TShellObjectType;
     FInitialTab: string;
   public
-    function Execute: boolean; override;
+    function Execute: Boolean; override;
   published
     property ObjectName: TFileName read FObjectName write FObjectName;
     property ObjectType: TShellObjectType read FObjectType write FObjectType;
     property InitialTab: string read FInitialTab write FInitialTab;
   end;
 
-  TJvNewLinkDialog = class(TjvCommonDialogP)
+  TJvNewLinkDialog = class(TJvCommonDialogP)
   private
     FDestinationFolder: string;
   public
@@ -297,12 +267,12 @@ type
       FDestinationFolder;
   end;
 
-  TJvAddHardwareDialog = class(TjvCommonDialogP)
+  TJvAddHardwareDialog = class(TJvCommonDialogP)
   public
     procedure Execute; override;
   end;
 
-  TJvOpenWithDialog = class(TjvCommonDialogP)
+  TJvOpenWithDialog = class(TJvCommonDialogP)
   private
     FFileName: string;
   public
@@ -311,7 +281,7 @@ type
     property FileName: string read FFileName write FFileName;
   end;
 
-  TJvDiskFullDialog = class(TjvCommonDialog)
+  TJvDiskFullDialog = class(TJvCommonDialog)
   private
     FDriveChar: Char;
     procedure SetDriveChar(Value: Char);
@@ -320,15 +290,14 @@ type
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
   published
-    property DriveChar: char read FDriveChar write SetDriveChar;
+    property DriveChar: Char read FDriveChar write SetDriveChar default 'C';
   end;
 
-  TJvExitWindowsDialog = class(TjvCommonDialogP)
+  TJvExitWindowsDialog = class(TJvCommonDialogP)
   public
     procedure Execute; override;
   end;
 
-  //Common dialogs with Windows 2000 style support
   TJvOpenDialog2000 = class(TOpenDialog)
   public
     function Execute: Boolean; override;
@@ -339,56 +308,56 @@ type
     function Execute: Boolean; override;
   end;
 
-  // Tools routines
+// Tools routines
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 procedure AddToRecentDocs(const Filename: string);
 procedure ClearRecentDocs;
-function ExtractIconFromFile(FileName: string; Index: integer): HIcon;
+function ExtractIconFromFile(FileName: string; Index: Integer): HICON;
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
 procedure GetShellLinkInfo(const LinkFile: WideString; var SLI: TShellLinkInfo);
 procedure SetShellLinkInfo(const LinkFile: WideString; const SLI:
   TShellLinkInfo);
-function RecycleFile(FileToRecycle: string): boolean;
-function CopyFile(FromFile, ToDir: string): boolean;
+function RecycleFile(FileToRecycle: string): Boolean;
+function CopyFile(FromFile, ToDir: string): Boolean;
 procedure ExecuteApplet(AppletName: string);
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption:
-  PChar;
-  Style: UINT; Parameters: array of Pointer): Integer; cdecl;
+function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
+  Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer; cdecl;
 
 type
   FreePIDLProc = procedure(PIDL: PItemIDList); stdcall;
-  SHChangeIconProc = function(wnd: HWND; szFileName: PChar; reserved: integer;
-    var lpIconIndex: integer): DWORD; stdcall;
-  SHChangeIconProcW = function(wnd: HWND; szFileName: PWideChar; reserved:
-    integer; var lpIconIndex: integer): DWORD; stdcall;
-  SHFormatDriveProc = function(wnd: HWND; drive: UINT; fmtID: UINT; options:
-    UINT): DWORD; stdcall;
-  SHShutDownDialogProc = procedure(wnd: HWND); stdcall;
-  SHRunDialogProc = function(wnd: HWND; Unknown1: integer; Unknown2: Pointer;
-    szTitle: PChar; szPrompt: PChar; uiFlages: integer): DWORD; stdcall;
-  SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList):
-    LongBool; stdcall;
-  SHFindComputerProc = function(Reserved1: PItemIDList; Reserved2: PItemIDList):
-    LongBool; stdcall;
-  SHObjectPropertiesProc = function(Owner: HWND; Flags: UINT; ObjectName:
-    Pointer; InitialTabName: Pointer): LongBool; stdcall;
+  SHChangeIconProc = function(Wnd: HWND; szFileName: PChar; Reserved: Integer;
+    var lpIconIndex: Integer): DWORD; stdcall;
+  SHChangeIconProcW = function(Wnd: HWND; szFileName: PWideChar;
+    Reserved: Integer; var lpIconIndex: Integer): DWORD; stdcall;
+  SHFormatDriveProc = function(Wnd: HWND; drive: UINT; fmtID: UINT;
+    Options: UINT): DWORD; stdcall;
+  SHShutDownDialogProc = procedure(Wnd: HWND); stdcall;
+  SHRunDialogProc = function(Wnd: HWND; Unknown1: Integer; Unknown2: Pointer;
+    szTitle: PChar; szPrompt: PChar; uiFlages: Integer): DWORD; stdcall;
+  SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList): LongBool; stdcall;
+  SHFindComputerProc = function(Reserved1: PItemIDList; Reserved2: PItemIDList): LongBool; stdcall;
+  SHObjectPropertiesProc = function(Owner: HWND; Flags: UINT;
+    ObjectName: Pointer; InitialTabName: Pointer): LongBool; stdcall;
   SHNetConnectionDialogProc = function(Owner: HWND; ResourceName: Pointer;
     ResourceType: DWORD): DWORD; stdcall;
-  SHStartNetConnectionDialogProc = function(Owner: HWND; ResourceName:
-    PWideChar; ResourceType: DWORD): DWORD; stdcall;
-  SHOutOfMemoryMessageBoxProc = function(Owner: HWND; Caption: Pointer; Style:
-    UINT): Integer; stdcall;
+  SHStartNetConnectionDialogProc = function(Owner: HWND;
+    ResourceName: PWideChar; ResourceType: DWORD): DWORD; stdcall;
+  SHOutOfMemoryMessageBoxProc = function(Owner: HWND; Caption: Pointer;
+    Style: UINT): Integer; stdcall;
   SHHandleDiskFullProc = procedure(Owner: HWND; uDrive: UINT); stdcall;
-  NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: Pchar;
-    cmdShow: integer); stdcall;
+  NewLinkHereProc = procedure(HWND: THandle; HInstance: THandle; CmdLine: PChar;
+    cmdShow: Integer); stdcall;
   SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; cmdLine: PChar;
-    cmdShow: integer); stdcall;
-  GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): Bool;
-  stdcall;
-  GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): bool;
-  stdcall;
+    cmdShow: Integer); stdcall;
+  GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): BOOL; stdcall;
+  GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
+
+implementation
+
+uses
+  JvTypes;
 
 var
   FreePIDL: FreePIDLProc = nil;
@@ -417,12 +386,8 @@ resourcestring
   SUnsupportedDisk =
     'Unsupported drive (%s): JvDiskFullDialog only supports fixed drives.';
 
-implementation
-uses
-  JvTypes;
-  
 const
-  shell32 = 'shell32.dll';
+  Shell32 = 'shell32.dll';
 
 var
   ShellHandle: THandle = 0;
@@ -431,7 +396,7 @@ var
 
 procedure LoadJvDialogs;
 begin
-  ShellHandle := Windows.LoadLibrary(PChar(shell32));
+  ShellHandle := Windows.LoadLibrary(PChar(Shell32));
   if ShellHandle <> 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
@@ -450,7 +415,6 @@ begin
     SHHandleDiskFull := GetProcAddress(ShellHandle, PChar(185));
     SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PChar(215));
     SHOpenWith := GetProcAddress(ShellHandle, PChar('OpenAs_RunDLLA'));
-
   end;
 
   CommHandle := Windows.LoadLibrary('comdlg32.dll');
@@ -467,7 +431,7 @@ end;
 
 procedure UnloadJvDialogs;
 begin
-  if Shellhandle <> 0 then
+  if ShellHandle <> 0 then
     FreeLibrary(ShellHandle);
   if CommHandle <> 0 then
     FreeLibrary(CommHandle);
@@ -498,7 +462,7 @@ end;
 
       fmtID   = Currently must be set to SHFMT_ID_DEFAULT.
 
-      options = There are currently only two option bits defined.
+      Options = There are currently only two option bits defined.
 
                    SHFMT_OPT_FULL
                    SHFMT_OPT_SYSONLY
@@ -510,7 +474,7 @@ end;
                 users that detect "unformatted" disks and want
                 to bring up the format dialog box).
 
-                If options is set to zero (0), then the "Quick Format"
+                If Options is set to zero (0), then the "Quick Format"
                 setting is set by default. In addition, if the user leaves
                 it set, a quick format is performed. Under Windows NT 4.0,
                 this flag is ignored and the "Quick Format" box is always
@@ -520,7 +484,7 @@ end;
                 The SHFMT_OPT_SYSONLY initializes the dialog to
                 default to just sys the disk.
 
-                All other bits are reserved for future expansion
+                All other bits are Reserved for future expansion
                 and must be 0.
 
                 Please note that this is a bit field and not a
@@ -540,32 +504,30 @@ const
   SHFMT_OPT_FULL = $0001;
   SHFMT_OPT_SYSONLY = $0002;
   // Special return values. PLEASE NOTE that these are DWORD values.
-  SHFMT_ERROR = $FFFFFFFF;              // Error on last format
+  SHFMT_ERROR = $FFFFFFFF; // Error on last format
   // drive may be formatable
-  SHFMT_CANCEL = $FFFFFFFE;             // Last format wascanceled
-  SHFMT_NOFORMAT = $FFFFFFFD;           // Drive is not formatable
+  SHFMT_CANCEL = $FFFFFFFE; // Last format wascanceled
+  SHFMT_NOFORMAT = $FFFFFFFD; // Drive is not formatable
 
 type
-  LPFNORGFAV = function(Wnd: hWnd; Str: lptStr): integer; stdcall;
+  LPFNORGFAV = function(Wnd: hWnd; Str: LPTSTR): Integer; stdcall;
 
-function ExtractIconFromFile(FileName: string; Index: integer): HIcon;
+function ExtractIconFromFile(FileName: string; Index: Integer): HICON;
 var
-  iNumberOfIcons: integer;
+  iNumberOfIcons: Integer;
 begin
   Result := 0;
   if FileExists(FileName) then
   begin
     iNumberOfIcons := ExtractIcon(hInstance, PChar(FileName), Cardinal(-1));
-    if ((Index > 0) and
-      (Index < iNumberOfIcons) and
-      (iNumberOfIcons > 0)) then
+    if (Index > 0) and (Index < iNumberOfIcons) and (iNumberOfIcons > 0) then
       Result := ExtractIcon(hInstance, PChar(FileName), Index);
   end;
 end;
 
-{ TJvOrganizeFavoritesDialog }
+//=== TJvOrganizeFavoritesDialog =============================================
 
-function TJvOrganizeFavoritesDialog.Execute: boolean;
+function TJvOrganizeFavoritesDialog.Execute: Boolean;
 var
   SHModule: THandle;
   Path: string;
@@ -579,7 +541,7 @@ begin
       Result := False;
       Exit;
     end;
-    Path := GetSpecialFolderPath('Favorites', true) + #0#0;
+    Path := GetSpecialFolderPath('Favorites', True) + #0#0;
     lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHModule,
       'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
@@ -588,27 +550,24 @@ begin
   finally
     FreeLibrary(SHModule);
   end;
-  Result := true;
+  Result := True;
 end;
 
-{ TJvControlPanelDialog }
+//=== TJvControlPanelDialog ==================================================
 
 procedure TJvControlPanelDialog.Execute;
 begin
-  ShellExecute(0, 'open',
-    'Control.exe',
-    nil,
-    nil,
-    SW_SHOWDEFAULT);
+  ShellExecute(0, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
 end;
 
-{ TJvAppletDialog }
+//=== TJvAppletDialog ========================================================
 
-function TJvAppletDialog.Execute: boolean;
-var APModule: THandle;
+function TJvAppletDialog.Execute: Boolean;
+var
+  APModule: THandle;
   Applet: TCplApplet;
 begin
-  if FAppletName = EmptyStr then
+  if FAppletName = '' then
   begin
     Result := False;
     Exit;
@@ -622,22 +581,22 @@ begin
   Applet := TCplApplet(GetProcAddress(APModule, 'CPlApplet'));
   Applet(0, CPL_DBLCLK, 0, 0);
   FreeLibrary(ApModule);
-  Result := true;
+  Result := True;
 end;
 
-{ TJvComputerNameDialog }
+//=== TJvComputerNameDialog ==================================================
 
 constructor TJvComputerNameDialog.Create(AOwner: TComponent);
 begin
-  inherited;
-  FComputerName := EmptyStr;
+  inherited Create(AOwner);
+  FComputerName := '';
 end;
 
-function TJvComputerNameDialog.Execute: boolean;
+function TJvComputerNameDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
+  NameBuffer: array [0..MAX_PATH] of Char;
   WindowList: Pointer;
 begin
   Result := False;
@@ -663,23 +622,23 @@ begin
     FComputerName := NameBuffer;
 end;
 
-{ TJvBrowseFolderDialog }
+//=== TJvBrowseFolderDialog ==================================================
 
 constructor TJvBrowseFolderDialog.Create(AOwner: TComponent);
 begin
-  inherited;
-  FFolderName := EmptyStr;
+  inherited Create(AOwner);
+  FFolderName := '';
 end;
 
-function TJvBrowseFolderDialog.Execute: boolean;
+function TJvBrowseFolderDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char;
+  NameBuffer: array [0..MAX_PATH] of Char;
   WindowList: Pointer;
 begin
-  itemIDList := nil;
+  ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
   BrowseInfo.hwndOwner := Application.Handle;
   BrowseInfo.pidlRoot := ItemIDList;
@@ -699,38 +658,39 @@ begin
     SHGetPathFromIDList(ItemSelected, NameBuffer);
     FFolderName := NameBuffer;
   end;
-  Freepidl(BrowseInfo.pidlRoot);
+  FreePIDL(BrowseInfo.pidlRoot);
 end;
 
-{ TJvFormatDialog }
+//=== TJvFormatDialog ========================================================
 
 constructor TJvFormatDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDriveChar := 'A';
 end;
 
 procedure TJvFormatDialog.Execute;
-var options: UINT;
+var
+  Options: UINT;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-  begin
     case FFormatType of
-      ftFull: options := 0;
-      ftQuick: options := SHFMT_OPT_FULL;
+      ftFull:
+        Options := 0;
+      ftQuick:
+        Options := SHFMT_OPT_FULL;
     else
-      options := 0;
-    end;
-  end
+      Options := 0;
+    end
   else
-  begin
     case FFormatType of
-      ftFull: options := SHFMT_OPT_FULL;
-      ftQuick: options := 0;
+      ftFull:
+        Options := SHFMT_OPT_FULL;
+      ftQuick:
+        Options := 0;
     else
-      options := 0;
+      Options := 0;
     end;
-  end;
   if not Assigned(SHFormatDrive) then
     raise EWinDialogError.Create(SNotSupported);
   SHFormatDrive(Application.Handle, FDrive, SHFMT_ID_DEFAULT, Options);
@@ -738,30 +698,30 @@ end;
 
 procedure TJvFormatDialog.SetDriveChar(Value: Char);
 begin
-  if (Value in ['a'..'z']) then
-    Value := Char(ord(Value) - $20);
-  if (not (Value in ['A'..'Z'])) then
+  if Value in ['a'..'z'] then
+    Value := Char(Ord(Value) - $20);
+  if not (Value in ['A'..'Z']) then
     raise EWinDialogError.CreateFmt(SInvalidDriveChar, [Value]);
   FDriveChar := Value;
-  FDrive := ord(FDriveChar) - ord('A');
+  FDrive := Ord(FDriveChar) - Ord('A');
 end;
 
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
 var
   Folder: Integer;
   Found: Boolean;
-  i: Integer;
+  I: Integer;
   PIDL: PItemIDList;
-  buf: array[0..MAX_PATH] of Char;
+  Buf: array [0..MAX_PATH] of Char;
 begin
-  Found := false;
+  Found := False;
   Folder := 0;
-  Result := EmptyStr;
-  for i := Low(SpecialFolders) to High(SpecialFolders) do
+  Result := '';
+  for I := Low(SpecialFolders) to High(SpecialFolders) do
   begin
-    if AnsiCompareText(FolderName,SpecialFolders[i].Name) = 0 then
+    if AnsiCompareText(FolderName, SpecialFolders[I].Name) = 0 then
     begin
-      Folder := SpecialFolders[i].ID;
+      Folder := SpecialFolders[I].ID;
       Found := True;
       Break;
     end;
@@ -769,12 +729,11 @@ begin
   if not Found then
     Exit;
   { Get path of selected location }
-
- {JPR}
+  {JPR}
   if Succeeded(SHGetSpecialFolderLocation(0, Folder, PIDL)) then
   begin
-    if SHGetPathFromIDList(PIDL, buf) then
-      Result := buf;
+    if SHGetPathFromIDList(PIDL, Buf) then
+      Result := Buf;
     CoTaskMemFree(PIDL);
   end;
  {JPR}
@@ -790,10 +749,9 @@ begin
   SHAddToRecentDocs(SHARD_PATH, nil);
 end;
 
-function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle; Owner:
-  HWND; Text: Pointer; Caption: Pointer; Style: UINT; Parameters: array of
-  Pointer): Integer;
-
+function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle;
+  Owner: HWND; Text: Pointer; Caption: Pointer; Style: UINT;
+  Parameters: array of Pointer): Integer;
 type
   PPointer = ^Pointer;
 var
@@ -801,7 +759,7 @@ var
   ParamBuffer: PChar;
   BufferIndex: Integer;
 begin
-  ParamCount := (High(Parameters) + 1);
+  ParamCount := High(Parameters) + 1;
   GetMem(ParamBuffer, ParamCount * SizeOf(Pointer));
   try
     for BufferIndex := 0 to High(Parameters) do
@@ -833,17 +791,15 @@ begin
   end;
 end;
 
-function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar; Caption:
-  PChar;
-  Style: UINT; Parameters: array of Pointer):
-  Integer; cdecl;
+function ShellMessageBox(Instance: THandle; Owner: HWND; Text: PChar;
+  Caption: PChar;  Style: UINT; Parameters: array of Pointer): Integer;
 var
   MethodPtr: Pointer;
   ShellDLL: HMODULE;
 begin
-  ShellDLL := LoadLibrary(PChar(shell32));
+  ShellDLL := LoadLibrary(PChar(Shell32));
   MethodPtr := GetProcAddress(ShellDLL, PChar(183));
-  if (MethodPtr <> nil) then
+  if MethodPtr <> nil then
   begin
     Result := ExecuteShellMessageBox(MethodPtr, Instance, Owner, Text, Caption,
       Style, Parameters);
@@ -854,26 +810,24 @@ begin
   end;
 end;
 
-{ TJvOutOfMemoryDialog }
+//=== TJvOutOfMemoryDialog ===================================================
 
-function TJvOutOfMemoryDialog.Execute: boolean;
+function TJvOutOfMemoryDialog.Execute: Boolean;
 var
   CaptionBuffer: Pointer;
-
 begin
   CaptionBuffer := nil;
-  if (FCaption <> '') then
+  if FCaption <> '' then
     GetMem(CaptionBuffer, (Length(FCaption) + 1) * SizeOf(WideChar));
 
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-    if (CaptionBuffer <> nil) then
-      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) +
-        1));
+    if CaptionBuffer <> nil then
+      StringToWideChar(FCaption, PWideChar(CaptionBuffer), Length(FCaption) + 1);
   end
   else
   begin
-    if (CaptionBuffer <> nil) then
+    if CaptionBuffer <> nil then
       StrPCopy(PChar(CaptionBuffer), FCaption);
   end;
   if Assigned(SHOutOfMemoryMessageBox) then
@@ -883,11 +837,11 @@ begin
     raise EWinDialogError.Create(sNotSupported);
 end;
 
-{ TJvShellAboutDialog }
+//=== TJvShellAboutDialog ====================================================
 
 constructor TJvShellAboutDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FIcon := TIcon.Create;
 end;
 
@@ -914,29 +868,23 @@ const
 var
   CaptionText: string;
 begin
-  if (Caption = EmptyStr) then
-  begin
-    CaptionText := AboutText;
-  end
+  if Caption = '' then
+    CaptionText := AboutText
   else
-  begin
     CaptionText := Caption;
-  end;
 
   CaptionText := CaptionText + CaptionSeparator + Product;
 
-  Win32Check(LongBool(ShellAbout(Application.MainForm.Handle,
-    PChar(CaptionText),
-    PChar(OtherText),
-    FIcon.Handle)));
+  OSCheck(LongBool(ShellAbout(Application.MainForm.Handle,
+    PChar(CaptionText), PChar(OtherText), FIcon.Handle)));
   Result := True;
 end;
 
-{ TJvRunDialog }
+//=== TJvRunDialog ===========================================================
 
 constructor TJvRunDialog.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FCaption := '';
   FDescription := '';
   FIcon := TIcon.Create;
@@ -945,7 +893,7 @@ end;
 destructor TJvRunDialog.Destroy;
 begin
   FIcon.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvRunDialog.Execute;
@@ -956,26 +904,25 @@ begin
   CaptionBuffer := nil;
   DescriptionBuffer := nil;
 
-  if (FCaption <> '') then
+  if FCaption <> '' then
     GetMem(CaptionBuffer, (Length(FCaption) + 1) * SizeOf(WideChar));
 
-  if (FDescription <> '') then
+  if FDescription <> '' then
     GetMem(DescriptionBuffer, (Length(FDescription) + 1) * SizeOf(WideChar));
 
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
   begin
-    if (CaptionBuffer <> nil) then
-      StringToWideChar(FCaption, PWideChar(CaptionBuffer), (Length(FCaption) +
-        1));
-    if (DescriptionBuffer <> nil) then
+    if CaptionBuffer <> nil then
+      StringToWideChar(FCaption, PWideChar(CaptionBuffer), Length(FCaption) + 1);
+    if DescriptionBuffer <> nil then
       StringToWideChar(FDescription, PWideChar(DescriptionBuffer),
-        (Length(FDescription) + 1));
+        Length(FDescription) + 1);
   end
   else
   begin
-    if (CaptionBuffer <> nil) then
+    if CaptionBuffer <> nil then
       StrPCopy(PChar(CaptionBuffer), FCaption);
-    if (DescriptionBuffer <> nil) then
+    if DescriptionBuffer <> nil then
       StrPCopy(PChar(DescriptionBuffer), FDescription);
   end;
 
@@ -991,19 +938,19 @@ begin
   FIcon.Assign(Value);
 end;
 
-{ TJvObjectPropertiesDialog }
+//=== TJvObjectPropertiesDialog ==============================================
 
-function TJvObjectPropertiesDialog.Execute: boolean;
+function TJvObjectPropertiesDialog.Execute: Boolean;
 var
   ObjectNameBuffer: Pointer;
   TabNameBuffer: Pointer;
 begin
   GetMem(ObjectNameBuffer, (Length(ObjectName) + 1) * SizeOf(WideChar));
   try
-    if (SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT) then
+    if SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT then
     begin
       StringToWideChar(ObjectName, PWideChar(ObjectNameBuffer),
-        (Length(ObjectName) + 1));
+        Length(ObjectName) + 1);
     end
     else
     begin
@@ -1012,10 +959,10 @@ begin
 
     GetMem(TabNameBuffer, (Length(InitialTab) + 1) * SizeOf(WideChar));
     try
-      if (SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT) then
+      if SysUtils.Win32Platform = VER_PLATFORM_WIN32_NT then
       begin
         StringToWideChar(InitialTab, PWideChar(TabNameBuffer),
-          (Length(InitialTab) + 1));
+          Length(InitialTab) + 1);
       end
       else
       begin
@@ -1032,39 +979,42 @@ begin
   end;
 end;
 
-function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType):
-  UINT;
+function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 begin
-  case (ShellObjectType) of
-    sdPathObject: Result := OPF_PATHNAME;
-    sdPrinterObject: Result := OPF_PRINTERNAME;
+  case ShellObjectType of
+    sdPathObject:
+      Result := OPF_PATHNAME;
+    sdPrinterObject:
+      Result := OPF_PRINTERNAME;
   else
     Result := 0;
   end;
 end;
 
-function ShellObjectTypeConstToEnum(ShellObjectType: UINT):
-  TShellObjectType;
+function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
 begin
-  case (ShellObjectType) of
-    OPF_PATHNAME: Result := sdPathObject;
-    OPF_PRINTERNAME: Result := sdPrinterObject;
+  case ShellObjectType of
+    OPF_PATHNAME:
+      Result := sdPathObject;
+    OPF_PRINTERNAME:
+      Result := sdPrinterObject;
   else
     Result := sdPathObject;
   end;
 end;
 
-{ TNewLinkDialog }
+//=== TJvNewLinkDialog =======================================================
 
 procedure TJvNewLinkDialog.Execute;
 begin
   NewLinkHere(0, 0, PChar(DestinationFolder), 0);
 end;
 
-{ TJvAddHardwareDialog }
+//=== TJvAddHardwareDialog ===================================================
 
 procedure TJvAddHardwareDialog.Execute;
-var APModule: THandle;
+var
+  APModule: THandle;
   Applet: TCplApplet;
 begin
   APModule := LoadLibrary('hdwwiz.cpl');
@@ -1097,7 +1047,7 @@ begin
   { create a path location and filename for link file }
   LnkName := GetSpecialFolderPath(Dest, True) + '\' +
     ChangeFileExt(AppName, 'lnk');
-  PF.Save(PWideChar(LnkName), True);    // save link file
+  PF.Save(PWideChar(LnkName), True); // save link file
   Result := LnkName;
 end;
 
@@ -1107,7 +1057,7 @@ var
   SL: IShellLink;
   PF: IPersistFile;
   FindData: TWin32FindData;
-  AStr: array[0..MAX_PATH] of char;
+  AStr: array [0..MAX_PATH] of Char;
 begin
   OleCheck(CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
     IShellLink, SL));
@@ -1163,36 +1113,38 @@ begin
     OleCheck(SetShowCmd(ShowCmd));
     OleCheck(SetHotKey(HotKey));
   end;
-  PF.Save(PWideChar(LinkFile), True);   // save file
+  PF.Save(PWideChar(LinkFile), True); // save file
 end;
 
-function RecycleFile(FileToRecycle: string): boolean;
-var Struct: TSHFileOpStruct;
-  pFromc: PChar;
-  Resultval: integer;
+function RecycleFile(FileToRecycle: string): Boolean;
+var
+  OpStruct: TSHFileOpStruct;
+  PFromC: PChar;
+  ResultVal: Integer;
 begin
   if not FileExists(FileToRecycle) then
   begin
     RecycleFile := False;
-    exit;
+    Exit;
   end
   else
   begin
-    pfromc := PChar(ExpandFileName(FileToRecycle) + #0#0);
-    Struct.wnd := 0;
-    Struct.wFunc := FO_DELETE;
-    Struct.pFrom := pFromC;
-    Struct.pTo := nil;
-    Struct.fFlags := FOF_ALLOWUNDO;
-    Struct.fAnyOperationsAborted := false;
-    Struct.hNameMappings := nil;
-    Resultval := ShFileOperation(Struct);
-    RecycleFile := (Resultval = 0);
+    PFromC := PChar(ExpandFileName(FileToRecycle) + #0#0);
+    OpStruct.Wnd := 0;
+    OpStruct.wFunc := FO_DELETE;
+    OpStruct.pFrom := PFromC;
+    OpStruct.pTo := nil;
+    OpStruct.fFlags := FOF_ALLOWUNDO;
+    OpStruct.fAnyOperationsAborted := False;
+    OpStruct.hNameMappings := nil;
+    ResultVal := ShFileOperation(OpStruct);
+    RecycleFile := (ResultVal = 0);
   end;
 end;
 
-function CopyFile(FromFile, ToDir: string): boolean;
-var F: TShFileOpStruct;
+function CopyFile(FromFile, ToDir: string): Boolean;
+var
+  F: TShFileOpStruct;
 begin
   F.Wnd := 0;
   F.wFunc := FO_COPY;
@@ -1201,14 +1153,16 @@ begin
   ToDir := ToDir + #0;
   F.pTo := pchar(ToDir);
   F.fFlags := FOF_ALLOWUNDO or FOF_NOCONFIRMATION;
-  result := ShFileOperation(F) = 0;
+  Result := ShFileOperation(F) = 0;
 end;
 
-type CPLApplet = function(hwndCPL: HWND; uMsg: UINT;
-    lParam1: LPARAM; lParam2: LPARAM): LongInt; stdcall;
+type
+  CPLApplet = function(hwndCPL: HWND; uMsg: UINT;
+    lParam1: LPARAM; lParam2: LPARAM): Longint; stdcall;
 
 procedure ExecuteApplet(AppletName: string);
-var APModule: THandle;
+var
+  APModule: THandle;
   Applet: CPLApplet;
 begin
   APModule := LoadLibrary(Pchar(AppletName));
@@ -1219,14 +1173,14 @@ begin
   FreeLibrary(ApModule);
 end;
 
-{ TJvOpenWithDialog }
+//=== TJvOpenWithDialog ======================================================
 
 procedure TJvOpenWithDialog.Execute;
 begin
   SHOpenWith(0, 0, PChar(FFileName), SW_SHOW);
 end;
 
-{ TJvDiskFullDialog }
+//=== TJvDiskFullDialog ======================================================
 
 constructor TJvDiskFullDialog.Create(AOwner: TComponent);
 begin
@@ -1239,7 +1193,7 @@ begin
   Result := Ord(FDriveChar) - Ord('A');
 end;
 
-function TJvDiskFullDialog.Execute: boolean;
+function TJvDiskFullDialog.Execute: Boolean;
 begin
   if not Assigned(SHHandleDiskFull) then
     raise EWinDialogError.Create(SNotSupported);
@@ -1252,45 +1206,45 @@ end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
 begin
-  if (Value in ['a'..'z']) then
-    Value := Char(ord(Value) - $20);
-  if (not (Value in ['A'..'Z'])) then
+  if Value in ['a'..'z'] then
+    Value := Char(Ord(Value) - $20);
+  if not (Value in ['A'..'Z']) then
     raise EWinDialogError.CreateFmt(SInvalidDriveChar, [Value]);
   FDriveChar := Value;
 end;
 
-{ TJvExitWindowsDialog }
+//=== TJvExitWindowsDialog ===================================================
 
 procedure TJvExitWindowsDialog.Execute;
 begin
   SHShutDownDialog(Application.Handle);
 end;
 
-{ TJvChangeIconDialog }
+//=== TJvChangeIconDialog ====================================================
 
 procedure TJvChangeIconDialog.Execute;
 var
-  buf: array[0..MAX_PATH] of char;
-  bufW: array[0..MAX_PATH] of WideChar;
+  Buf: array [0..MAX_PATH] of Char;
+  BufW: array [0..MAX_PATH] of WideChar;
 begin
   if Assigned(SHChangeIconW) then
   begin
-    StringToWideChar(Filename, bufW, sizeof(bufW));
-    if SHChangeIconW(Application.Handle, bufW, sizeof(bufW), FIconIndex) = 1 then
-      Filename := bufW;
+    StringToWideChar(Filename, BufW, SizeOf(BufW));
+    if SHChangeIconW(Application.Handle, BufW, SizeOf(BufW), FIconIndex) = 1 then
+      Filename := BufW;
   end
-  else if Assigned(SHChangeIcon) then
+  else
+  if Assigned(SHChangeIcon) then
   begin
-    StrPCopy(buf, Filename);
-    if SHChangeIcon(Application.Handle, buf, sizeof(buf), FIconIndex) = 1 then
-      Filename := buf;
+    StrPCopy(Buf, Filename);
+    if SHChangeIcon(Application.Handle, Buf, SizeOf(Buf), FIconIndex) = 1 then
+      Filename := Buf;
   end
   else
     raise EWinDialogError.Create(SNotSupported);
 end;
 
-function OpenInterceptor(var DialogData: TOpenFileName):
-  Bool; stdcall;
+function OpenInterceptor(var DialogData: TOpenFileName): BOOL; stdcall;
 var
   DialogDataEx: TOpenFileNameEx;
 begin
@@ -1300,8 +1254,7 @@ begin
   Result := GetOpenFileNameEx(DialogDataEx);
 end;
 
-function SaveInterceptor(var DialogData: TOpenFileName):
-  Bool; stdcall;
+function SaveInterceptor(var DialogData: TOpenFileName): BOOL; stdcall;
 var
   DialogDataEx: TOpenFileNameEx;
 begin
@@ -1311,32 +1264,29 @@ begin
   Result := GetSaveFileNameEx(DialogDataEx);
 end;
 
-{ TJvOpenDialog2000 }
+//=== TJvOpenDialog2000 ======================================================
 
 function TJvOpenDialog2000.Execute: Boolean;
 begin
   if (Win32MajorVersion >= 5) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
-  begin
-    Result := DoExecute(@OpenInterceptor);
-  end
+    Result := DoExecute(@OpenInterceptor)
   else
     Result := inherited Execute;
 end;
 
-{ TJvSaveDialog2000 }
+//=== TJvSaveDialog2000 ======================================================
 
 function TJvSaveDialog2000.Execute: Boolean;
 begin
   if (Win32MajorVersion >= 5) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
-  begin
-    Result := DoExecute(@SaveInterceptor);
-  end
+    Result := DoExecute(@SaveInterceptor)
   else
     Result := inherited Execute;
 end;
 
 initialization
   LoadJvDialogs;
+
 finalization
   UnloadJvDialogs;
 

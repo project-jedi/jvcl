@@ -35,23 +35,23 @@ unit JvRegAutoEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvRegAuto, ExtCtrls, ComCtrls, Grids,
-  Buttons,
-{$IFDEF COMPILER6_UP}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, ExtCtrls, ComCtrls, Buttons, Menus,
+  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-{$ELSE}
+  {$ELSE}
   DsgnIntf,
-{$ENDIF COMPILER6_UP}
-{$IFDEF COMPILER4_UP}ImgList, {$ENDIF COMPILER4_UP}
-  Menus, JvComponent;
+  {$ENDIF COMPILER6_UP}
+  {$IFDEF COMPILER4_UP}
+  ImgList,
+  {$ENDIF COMPILER4_UP}
+  JvRegAuto, JvComponent;
 
 type
-
   TJvRegAutoEditor = class(TComponentEditor)
-    function GetVerbCount: integer; override;
-    function GetVerb(Index: integer): string; override;
-    procedure ExecuteVerb(Index: integer); override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
 
   TJvRegEditor = class(TForm)
@@ -93,36 +93,35 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Sort1Click(Sender: TObject);
   private
-    { Private declarations }
     Component: TJvRegAuto;
     FProps: string;
-    FModified: boolean;
+    FModified: Boolean;
     procedure Apply;
     procedure TreeLoad;
     procedure ListLoad;
     procedure PropAdd;
     procedure PropDelete;
-    procedure WMGetMinMaxInfo(var M: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
+    procedure WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo); message WM_GETMINMAXINFO;
   public
     constructor Create1(AOwner: TComponent; lComponent: TComponent);
-    property Modified: boolean read FModified;
+    property Modified: Boolean read FModified;
   end;
-
-var
-  RegEditor: TJvRegEditor;
 
 implementation
 
-uses JvCtlConst, TypInfo, ExptIntf, JvDsgnIntf;
+uses
+  JvCtlConst, TypInfo, ExptIntf, JvDsgnIntf;
 
 {$R *.DFM}
 
-function TJvRegAutoEditor.GetVerbCount: integer;
+//=== TJvRegAutoEditor =======================================================
+
+function TJvRegAutoEditor.GetVerbCount: Integer;
 begin
   Result := inherited GetVerbCount + 1;
 end;
 
-function TJvRegAutoEditor.GetVerb(Index: integer): string;
+function TJvRegAutoEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
     Result := 'Editor'
@@ -130,7 +129,9 @@ begin
     Result := inherited GetVerb(Index);
 end;
 
-procedure TJvRegAutoEditor.ExecuteVerb(Index: integer);
+procedure TJvRegAutoEditor.ExecuteVerb(Index: Integer);
+var
+  RegEditor: TJvRegEditor;
 begin
   if Index = GetVerbCount - 1 then
   begin
@@ -147,14 +148,17 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
+//=== TJvLoadProgress ========================================================
+
 type
   TJvLoadProgress = class(TForm)
     ProgressBar: TProgressBar;
     procedure btnCancelClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   public
-    Canceled: boolean;
+    Canceled: Boolean;
   end;
+
 var
   LoadProgress: TJvLoadProgress;
 
@@ -170,15 +174,16 @@ const
 
 function LoadProgressCreate: TJvLoadProgress;
 begin
-{$IFDEF Delphi}
+  {$IFDEF DELPHI}
   Result := TJvLoadProgress.CreateNew(Application);
-{$ELSE}
+  {$ELSE}
   Result := TJvLoadProgress.CreateNew(Application, 1);
-{$ENDIF}
+  {$ENDIF}
   with Result do
   begin
     OnClose := FormClose;
-    Width := 279; Height := 148;
+    Width := 279;
+    Height := 148;
     BorderStyle := bsDialog;
     Position := poScreenCenter;
     Caption := 'JvRegAuto Editor';
@@ -194,7 +199,8 @@ begin
     with TButton.Create(Result) do
     begin
       Parent := Result;
-      Left := 96; Top := 88;
+      Left := 96;
+      Top := 88;
       Caption := 'Cancel';
       OnClick := btnCancelClick;
     end;
@@ -204,13 +210,13 @@ begin
       Parent := Result;
       SetBounds(7, 56, 257, 18);
     end;
-    Canceled := false;
+    Canceled := False;
   end;
 end;
 
 procedure TJvLoadProgress.btnCancelClick(Sender: TObject);
 begin
-  Canceled := true;
+  Canceled := True;
 end;
 
 procedure TJvLoadProgress.FormClose(Sender: TObject;
@@ -219,12 +225,14 @@ begin
   Action := caFree;
 end;
 
+//=== TJvRegEditor ===========================================================
+
 constructor TJvRegEditor.Create1(AOwner: TComponent; lComponent: TComponent);
 begin
   inherited Create(AOwner);
   Component := lComponent as TJvRegAuto;
   FProps := Component.Props.Text;
-  FModified := false;
+  FModified := False;
 end;
 
 procedure TJvRegEditor.btnOkClick(Sender: TObject);
@@ -260,19 +268,22 @@ begin
   List.Items.Assign(Component.Props);
 end;
 
-function IsEnabled(S: ShortString): boolean;
-var P: integer;
+function IsEnabled(S: ShortString): Boolean;
+var
+  P: Integer;
 begin
   P := Pos(#0, S);
-  if (P = 0) or (Length(S) <= P) or (S[P + 1] = 'N') then
-    Result := false
-  else
-    Result := true;
+  Result := not ((P = 0) or (Length(S) <= P) or (S[P + 1] = 'N'));
 end;
 
 procedure TJvRegEditor.TreeLoad;
+const
+  SOrdType: array [0..5] of PChar =
+    ('Shortint', 'Byte', 'Integer', 'Word', 'Longint', 'Cardinal');
+  SFloatType: array [0..4] of PChar =
+    ('Single', 'Double', 'Extended', 'Comp', 'Currency');
 var
-  i, j: integer;
+  I, J: Integer;
   ANode: TTreeNode;
   TypeInf: PTypeInfo;
   TypeData: PTypeData;
@@ -280,25 +291,21 @@ var
   NumProps: word;
   AName: string;
   CompList: TList;
-const
-  SOrdType: array[0..5] of string =
-  ('ShortInt', 'Byte', 'Integer', 'Word', 'Longint', 'Cardinal');
-  SFloatType: array[0..4] of string =
-  ('Single', 'Double', 'Extended', 'Comp', 'Curr');
+  Comp: TComponent;
 
   procedure AddToTree(AComponent: TComponent; APropInfo: PPropInfo; Node: TTreeNode);
   var
     ATypeInfo: PTypeInfo;
     aPropList: PPropList;
-    aNumProps: word;
-    i: integer;
+    aNumProps: Word;
+    I: Integer;
     MyNode: TTreeNode;
   begin
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     ATypeInfo := APropInfo^.PropType^;
-{$ELSE}
+    {$ELSE}
     ATypeInfo := APropInfo^.PropType;
-{$ENDIF}
+    {$ENDIF}
     TypeData := GetTypeData(ATypeInfo);
     MyNode := nil;
     with ATypeInfo^ do
@@ -339,9 +346,7 @@ const
               + ATypeInfo^.Name + #0 + 'Y');
             MyNode.ImageIndex := imEnumeration; // Picture - Possible to select [translated]
           end;
-        tkString,
-          tkLString {,
-        tkWString}:
+        tkString, tkLString {, tkWString}:
           begin
             MyNode :=
               Tree.Items.AddChild(Node, AName + ' : '
@@ -366,23 +371,20 @@ const
             GetMem(aPropList, aNumProps * sizeof(pointer));
             try
               GetPropInfos(ATypeInfo, aPropList);
-              for i := 0 to aNumProps - 1 do
+              for I := 0 to aNumProps - 1 do
               begin
-                AName := aPropList^[i]^.Name;
-                AddToTree(AComponent, aPropList^[i], MyNode);
+                AName := aPropList^[I]^.Name;
+                AddToTree(AComponent, aPropList^[I], MyNode);
               end;
             finally
               FreeMem(aPropList, aNumProps * sizeof(pointer));
             end;
           end;
-        // tkSet    // - Not yet supported [translated] 
+        // tkSet    // - Not yet supported [translated]
       end;
     if MyNode <> nil then
       MyNode.SelectedIndex := MyNode.ImageIndex;
   end;
-
-var
-  Comp: TComponent;
 
   procedure LoadBitmap;
   var
@@ -416,23 +418,23 @@ begin
   try
     Tree.Items.Clear;
     LoadProgress.ProgressBar.Max := Component.Owner.ComponentCount + 2;
-    for j := -1 to Component.Owner.ComponentCount - 1 do
+    for J := -1 to Component.Owner.ComponentCount - 1 do
     begin
-      if j = -1 then
+      if J = -1 then
         Comp := Component.Owner
       else
-        Comp := Component.Owner.Components[j];
-      //__________________________
-      LoadProgress.ProgressBar.Position := j + 1;
+        Comp := Component.Owner.Components[J];
+
+      LoadProgress.ProgressBar.Position := J + 1;
       Application.ProcessMessages;
       if LoadProgress.Canceled then
         exit;
       //ODS('Read ' + Comp.Name + ':' + Comp.ClassName);
-     //__________________________
+
       LoadBitmap;
       ANode := Tree.Items.Add(nil, Comp.Name + ' : ' + Comp.ClassName);
-      //    else ANode := Tree.Items.Add(nil, Component.Owner.Components[j].Name +' : '+ Component.Owner.Components[j].ClassName);
-      ANode.ImageIndex := imComponent + j + 1;
+      //    else ANode := Tree.Items.Add(nil, Component.Owner.Components[J].Name +' : '+ Component.Owner.Components[J].ClassName);
+      ANode.ImageIndex := imComponent + J + 1;
       ANode.SelectedIndex := ANode.ImageIndex;
       try
         TypeInf := Comp.ClassInfo;
@@ -442,12 +444,12 @@ begin
         GetMem(PropList, NumProps * sizeof(pointer));
         try
           GetPropInfos(TypeInf, PropList);
-          for i := 0 to NumProps - 1 do
+          for I := 0 to NumProps - 1 do
           begin
-            AName := PropList^[i]^.Name;
+            AName := PropList^[I]^.Name;
             CompList.Clear;
             CompList.Add(Comp);
-            AddToTree(Comp, PropList^[i], ANode);
+            AddToTree(Comp, PropList^[I], ANode);
           end;
         finally
           FreeMem(PropList, NumProps * sizeof(pointer));
@@ -458,8 +460,8 @@ begin
           E.Message := 'JvRegAutoEditor error:' + E.Message;
           raise;
         end;
-      end; {except}
-    end; {for}
+      end;
+    end;
     //  Tree.AlphaSort;
   finally
     CompList.Free;
@@ -472,17 +474,17 @@ begin
   edtProp.Width := panelButtons.Left - edtProp.Left * 2 - 2;
 end;
 
-procedure TJvRegEditor.WMGetMinMaxInfo(var M: TWMGetMinMaxInfo);
+procedure TJvRegEditor.WMGetMinMaxInfo(var Msg: TWMGetMinMaxInfo);
 begin
   inherited;
-  M.MinMaxInfo^.ptMinTrackSize.X := panelOKCancelApply.Width + 15;
-  M.MinMaxInfo^.ptMinTrackSize.Y := 200;
+  Msg.MinMaxInfo^.ptMinTrackSize.X := panelOKCancelApply.Width + 15;
+  Msg.MinMaxInfo^.ptMinTrackSize.Y := 200;
 end;
 
 procedure TJvRegEditor.TreeChange(Sender: TObject; Node: TTreeNode);
 var
   Text, Text1: string;
-  P: integer;
+  P: Integer;
 begin
   if Node = nil then
     exit;
@@ -507,12 +509,14 @@ begin
 end;
 
 procedure TJvRegEditor.btnAddPropClick(Sender: TObject);
-var Ind: integer;
+var
+  Ind: Integer;
 begin
   Ind := List.Items.IndexOf(edtProp.Text);
   if Ind = -1 then
     PropAdd
-  else if ActiveControl = List then
+  else
+  if ActiveControl = List then
     PropDelete
   else
   begin
@@ -531,7 +535,8 @@ begin
 end;
 
 procedure TJvRegEditor.PropDelete;
-var It: integer;
+var
+  It: Integer;
 begin
   It := List.ItemIndex;
   List.Items.Delete(List.ItemIndex);
@@ -567,7 +572,7 @@ procedure TJvRegEditor.ListDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   Offset: Integer; { text offset width }
-  BitmapIndex: integer;
+  BitmapIndex: Integer;
   ComponentName: string[100];
   Obj: TComponent;
 begin
@@ -596,33 +601,34 @@ begin
   end
   else
     Offset := 2;
-  (Control as TListBox).Canvas.TextOut(Rect.Left + Offset, Rect.Top, (Control as TListBox).Items[Index]); { display the text }
+  (Control as TListBox).Canvas.TextOut(Rect.Left + Offset, Rect.Top, (Control as TListBox).Items[Index]);
+    { display the text }
   //Note that the Rect parameter automatically provides the proper location of the item within the control's canvas.
 end;
 
 procedure TJvRegEditor.FormCreate(Sender: TObject);
 begin
   //  if Tree.Images = nil then List.Style := lbStandard;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   with TSplitter.Create(Self) do
   begin
     Parent := Self;
     Align := alLeft;
     Left := 201;
-    Beveled := false;
-    Visible := true;
+    Beveled := False;
+    Visible := True;
   end;
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
   with TJvRegAuto.Create(Self) do
   begin
-{$IFDEF Delphi}
+    {$IFDEF DELPHI}
     RegPath := 'Software\Borland\Delphi\JVCL\JvRegAutoEditor';
-{$ENDIF Delphi}
-{$IFDEF BCB}
+    {$ENDIF DELPHI}
+    {$IFDEF BCB}
     RegPath := 'Software\Borland\C++Builder\JVCL\JvRegAutoEditor';
-{$ENDIF BCB}
-    AutoMode := true;
-    SaveWindowPlace := true;
+    {$ENDIF BCB}
+    AutoMode := True;
+    SaveWindowPlace := True;
     Props.Add('Tree.Width');
     Load;
   end;
@@ -635,7 +641,7 @@ end;
 
 procedure TJvRegEditor.edtPropChange(Sender: TObject);
 var
-  Ind: integer;
+  Ind: Integer;
 begin
   Ind := List.Items.IndexOf(edtProp.Text);
   if Ind <> -1 then
@@ -679,19 +685,19 @@ end;
 
 procedure TJvRegEditor.ListEnter(Sender: TObject);
 begin
-  btnAddProp.Enabled := true;
+  btnAddProp.Enabled := True;
 end;
 
 procedure TJvRegEditor.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if FProps <> Component.Props.Text then
-    FModified := true;
+    FModified := True;
 end;
 
 procedure TJvRegEditor.Sort1Click(Sender: TObject);
 begin
-  List.Sorted := true;
-  //  List.Sorted := false;
+  List.Sorted := True;
+  //  List.Sorted := False;
 end;
 
 function GetProjectName: string;
@@ -704,5 +710,6 @@ end;
 
 initialization
   GetProjectNameProc := GetProjectName;
+  
 end.
 

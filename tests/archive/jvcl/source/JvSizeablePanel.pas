@@ -31,96 +31,93 @@ unit JvSizeablePanel;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JvPanel;
 
 type
   TJvSizeablePanel = class(TJvPanel)
   private
     FDragging: Boolean;
     FLastPos: TPoint;
-
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
-  public
-    { Public declarations }
-  published
-    { Published declarations }
   end;
 
 implementation
 
-procedure TJvSizeablePanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvSizeablePanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
-  if (Button = mbLeft) and
-    ((Width - x) < 10) and
-    ((Height - y) < 10) then
+  if (Button = mbLeft) and ((Width - X) < 10) and ((Height - Y) < 10) then
   begin
     FDragging := TRue;
-    FLastPos := Point(x, y);
-    MouseCapture := true;
+    FLastPos := Point(X, Y);
+    MouseCapture := True;
     Screen.cursor := crSizeNWSE;
   end
   else
-    inherited;
+    inherited MouseDown(Button, Shift, X, Y);
 end;
 
 procedure TJvSizeablePanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  r: TRect;
+  R: TRect;
 begin
   if FDragging then
   begin
-    r := BoundsRect;
-    SetBounds(r.left, r.top,
-      r.right - r.left + X - FlastPos.X,
-      r.bottom - r.top + Y - Flastpos.Y);
-    FLastPos := Point(x, y);
+    R := BoundsRect;
+    SetBounds(R.Left, R.Top,
+      R.Right - R.Left + X - FLastPos.X,
+      R.Bottom - R.Top + Y - FLastPos.Y);
+    FLastPos := Point(X, Y);
   end
   else
   begin
-    inherited;
-    if ((Width - x) < 10) and ((Height - y) < 10) then
+    inherited MouseMove(Shift, X, Y);
+    if ((Width - X) < 10) and ((Height - Y) < 10) then
       Cursor := crSizeNWSE
     else
       Cursor := crDefault;
   end;
 end;
 
-procedure TJvSizeablePanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvSizeablePanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if FDragging then
   begin
     FDragging := False;
-    MouseCapture := false;
+    MouseCapture := False;
     Screen.Cursor := crDefault;
   end
   else
-    inherited;
+    inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvSizeablePanel.Paint;
 var
-  x, y: Integer;
+  X, Y: Integer;
 begin
-  inherited;
+  inherited Paint;
   with Canvas do
   begin
     Font.Name := 'Marlett';
-    Font.Charset := default_Charset;
+    Font.Charset := DEFAULT_CHARSET;
     Font.Size := 10;
-    if fsBold in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsBold];
-    if fsItalic in Canvas.Font.Style then Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
+    if fsBold in Canvas.Font.Style then
+      Canvas.Font.Style := Canvas.Font.Style - [fsBold];
+    if fsItalic in Canvas.Font.Style then
+      Canvas.Font.Style := Canvas.Font.Style - [fsItalic];
     Brush.Style := bsClear;
-    x := clientwidth - canvas.textwidth('o');
-    y := clientheight - canvas.textheight('o');
-    textout(x, y, 'o');
+    X := ClientWidth - Canvas.TextWidth('o');
+    Y := ClientHeight - Canvas.TextWidth('o');
+    TextOut(X, Y, 'o');
   end;
 end;
+
 end.
 

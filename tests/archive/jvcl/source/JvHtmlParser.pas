@@ -29,140 +29,131 @@ Known Issues:
 
 unit JvHtmlParser;
 
-
-
 interface
 
 uses
-  Windows, SysUtils, Classes, JvTypes, JclStrings, JvComponent;
+  SysUtils, Classes,
+  JclStrings,
+  JvTypes, JvComponent;
 
 type
   PTagInfo = ^TTagInfo;
 
   TTagInfo = record
-    BeginPos: integer;
-    EndPos: integer;
-    BeginContext: integer;
-    EndContext: integer;
+    BeginPos: Integer;
+    EndPos: Integer;
+    BeginContext: Integer;
+    EndContext: Integer;
     Key: Integer;
   end;
 
   TTagInfoList = class(TList)
   public
-    procedure AddValue(Value: TTagInfo);
+    procedure AddValue(const Value: TTagInfo);
     procedure Clear; override;
   end;
 
   TJvHtmlParser = class(TJvComponent)
   private
     FOnKeyFound: TOnKeyFound;
-    FInfos: TParserInfos;
+    FParser: TParserInfos;
     FKeys: TStringList;
     FFile: TFileName;
     FTagList: TTagInfoList;
-    procedure SetInfos(Value: TParserInfos);
+    procedure SetParser(Value: TParserInfos);
     procedure SetFile(Value: TFileName);
     procedure SetTagList(const Value: TTagInfoList);
-    function GetConditionsCount: integer;
+    function GetConditionsCount: Integer;
   protected
     procedure Loaded; override;
     property TagList: TTagInfoList read FTagList write SetTagList;
   public
     procedure AnalyseString(Str: string);
     procedure AnalyseFile;
-    procedure AddCondition(Keyword, StartTag, EndTag: string; TextSelection:
-      integer = 0);
-    procedure RemoveCondition(index: Integer);
+    procedure AddCondition(Keyword, StartTag, EndTag: string;
+      TextSelection: Integer = 0);
+    procedure RemoveCondition(Index: Integer);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ConditionsCount: integer read GetConditionsCount;
+    property ConditionsCount: Integer read GetConditionsCount;
     procedure ClearConditions;
-    procedure GetCondition(Index: Integer; var Keyword: string; var StartTag:
-      string; var EndTag: string); overload;
-    procedure GetCondition(Index: Integer; var Keyword: string; var StartTag:
-      string; var EndTag: string; var TextSelection: integer); overload;
-
+    procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string); overload;
+    procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string; var TextSelection: Integer); overload;
   published
     property OnKeyFound: TOnKeyFound read FOnKeyFound write FOnKeyFound;
     property FileName: TFileName read Ffile write SetFile;
-    property Parser: TParserInfos read FInfos write SetInfos;
+    property Parser: TParserInfos read FParser write SetParser;
   end;
 
-  {Comparison function. Used internally  for  observance of the sequences tags}
+{Comparison function. Used internally  for  observance of the sequences tags}
+// (rom) keep it local?
 function CompareTags(Item1, Item2: Pointer): Integer;
 
 implementation
-{*************************************************}
 
 function CompareTags(Item1, Item2: Pointer): Integer;
 begin
   Result := (PTagInfo(Item1).BeginPos - PTagInfo(Item2).BeginPos);
 end;
 
-{*************************************************}
+//=== TJvHtmlParser ==========================================================
 
 constructor TJvHtmlParser.Create(AOwner: TComponent);
 begin
-  inherited;
-  Finfos := TStringList.Create;
+  inherited Create(AOwner);
+  FParser := TStringList.Create;
   FKeys := TStringList.Create;
   FTagList := TTagInfoList.Create;
 end;
 
-{*************************************************}
-
 destructor TJvHtmlParser.Destroy;
 begin
-  FInfos.Free;
+  FParser.Free;
   FKeys.Free;
   FTagList.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{*************************************************}
 
 procedure TJvHtmlParser.SetFile(Value: TFileName);
 begin
   if FFile <> Value then
   begin
     FFile := Value;
-    if not (csDesigning in Self.ComponentState) then
+    if not (csDesigning in ComponentState) then
       AnalyseFile;
   end;
 end;
 
-{*************************************************}
-
-procedure TJvHtmlParser.SetInfos(Value: TParserInfos);
+procedure TJvHtmlParser.SetParser(Value: TParserInfos);
 var
-  i: Integer;
+  I: Integer;
   ob: TParserInf;
   cap: string;
 begin
-  FInfos := Value;
+  FParser := Value;
   FKeys.Clear;
-  i := 0;
-  while i < Finfos.Count do
+  I := 0;
+  while I < FParser.Count do
   begin
     ob := TParserInf.Create;
     try
-      cap := FInfos[i];
-      Inc(i);
-      ob.StartTag := FInfos[i];
-      Inc(i);
-      ob.EndTag := FInfos[i];
-      Inc(i);
-      ob.MustBe := StrToInt(FInfos[i]);
-      Inc(i);
-      ob.TakeText := StrToInt(FInfos[i]);
-      Inc(i);
+      cap := FParser[I];
+      Inc(I);
+      ob.StartTag := FParser[I];
+      Inc(I);
+      ob.EndTag := FParser[I];
+      Inc(I);
+      ob.MustBe := StrToInt(FParser[I]);
+      Inc(I);
+      ob.TakeText := StrToInt(FParser[I]);
+      Inc(I);
     finally
       FKeys.AddObject(cap, TObject(ob));
     end;
   end;
 end;
 
-{*************************************************}
+// (rom) better use a TStringList
 
 procedure TJvHtmlParser.AnalyseFile;
 var
@@ -185,78 +176,75 @@ begin
   AnalyseString(st);
 end;
 
-{*************************************************}
-
 procedure TJvHtmlParser.AnalyseString(Str: string);
 var
   st2: string;
-  i, j, k, index: Integer;
+  I, J, K, Index: Integer;
   TagInfo: TTagInfo;
 begin
-  if (FKeys.Count = 0) and (FInfos.Count <> 0) then
-    SetInfos(FInfos);
+  if (FKeys.Count = 0) and (FParser.Count <> 0) then
+    SetParser(FParser);
   if FKeys.Count > 0 then
   begin
     FTagList.Clear;
-    for i := 0 to FKeys.Count - 1 do
+    for I := 0 to FKeys.Count - 1 do
     begin
-      j := 1;
-      while (j <> 0) do
+      J := 1;
+      while J <> 0 do
       begin
-        j := StrSearch(TParserInf(FKeys.Objects[i]).StartTag, Str, j);
-        if j > 0 then
+        J := StrSearch(TParserInf(FKeys.Objects[I]).StartTag, Str, J);
+        if J > 0 then
         begin
-          k := StrSearch(TParserInf(FKeys.Objects[i]).EndTag, Str, j);
-          TagInfo.BeginPos := j;
-          TagInfo.EndPos := k + length(TParserInf(FKeys.Objects[i]).EndTag);
-          TagInfo.Key := i;
-          case TParserInf(FKeys.Objects[i]).TakeText of
+          K := StrSearch(TParserInf(FKeys.Objects[I]).EndTag, Str, J);
+          TagInfo.BeginPos := J;
+          TagInfo.EndPos := K + length(TParserInf(FKeys.Objects[I]).EndTag);
+          TagInfo.Key := I;
+          case TParserInf(FKeys.Objects[I]).TakeText of
             0: //Between limits
               begin
-                TagInfo.BeginContext := j +
-                  Length(TParserInf(FKeys.Objects[i]).StartTag);
-                TagInfo.EndContext := k;
+                TagInfo.BeginContext := J +
+                  Length(TParserInf(FKeys.Objects[I]).StartTag);
+                TagInfo.EndContext := K;
               end;
             1: //All before start tag
               begin
                 TagInfo.BeginContext := 1;
-                TagInfo.EndContext := j;
+                TagInfo.EndContext := J;
               end;
             2: //All after start tag
               begin
-                TagInfo.BeginContext := j +
-                  Length(TParserInf(FKeys.Objects[i]).StartTag);
+                TagInfo.BeginContext := J +
+                  Length(TParserInf(FKeys.Objects[I]).StartTag);
                 TagInfo.EndContext := Length(Str);
               end;
             3: //The whole line if containing start tag
               begin
-                TagInfo.BeginContext := j;
-                TagInfo.EndContext := StrSearch('#1310', Str, j);
+                TagInfo.BeginContext := J;
+                TagInfo.EndContext := StrSearch('#1310', Str, J);
               end;
           end;
           FTagList.AddValue(TagInfo);
-          j := j + Length(TParserInf(FKeys.Objects[i]).StartTag);
+          J := J + Length(TParserInf(FKeys.Objects[I]).StartTag);
         end;
       end;
     end;
   end;
-  FTagList.Sort(@CompareTags);
+  FTagList.Sort(CompareTags);
   with FTagList do
   begin
-    for index := 0 to (Count - 1) do
+    for Index := 0 to (Count - 1) do
     begin
-      st2 := Copy(Str, PTagInfo(Items[index]).BeginContext,
-        PTagInfo(Items[index]).EndContext -
-          PTagInfo(Items[index]).BeginContext);
+      st2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
+        PTagInfo(Items[Index]).EndContext -
+        PTagInfo(Items[Index]).BeginContext);
       if Assigned(FOnKeyFound) then
-        FOnKeyFound(Self, FKeys[PTagInfo(Items[index]).Key], st2, Str);
+        FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], st2, Str);
     end;
   end;
 end;
-{*************************************************}
 
 procedure TJvHtmlParser.AddCondition(Keyword, StartTag, EndTag: string;
-  TextSelection: integer = 0);
+  TextSelection: Integer = 0);
 var
   ob: TParserInf;
 begin
@@ -267,90 +255,69 @@ begin
   FKeys.AddObject(Keyword, TObject(ob));
 end;
 
-{*************************************************}
-
-procedure TJvHtmlParser.RemoveCondition(index: Integer);
+procedure TJvHtmlParser.RemoveCondition(Index: Integer);
 begin
-  FKeys.Delete(index);
+  FKeys.Delete(Index);
 end;
-
-{*************************************************}
 
 procedure TJvHtmlParser.ClearConditions;
 begin
-  FInfos.Clear;
+  FParser.Clear;
   FKeys.Clear;
 end;
 
-{*************************************************}
-
-procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword: string; var
-  StartTag: string; var EndTag: string);
+procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string);
 begin
   Keyword := FKeys[Index];
   StartTag := TParserInf(FKeys.Objects[Index]).StartTag;
   EndTag := TParserInf(FKeys.Objects[Index]).EndTag;
 end;
-{*************************************************}
-procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag,
-  EndTag: string; var TextSelection: integer);
+
+procedure TJvHtmlParser.GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string;
+  var TextSelection: Integer);
 begin
-  Self.GetCondition(Index, Keyword, StartTag, EndTag);
+  GetCondition(Index, Keyword, StartTag, EndTag);
   TextSelection := TParserInf(FKeys.Objects[Index]).TakeText;
 end;
-{*************************************************}
 
-function TJvHtmlParser.GetConditionsCount: integer;
+function TJvHtmlParser.GetConditionsCount: Integer;
 begin
   Result := FKeys.Count;
 end;
-{*************************************************}
 
 procedure TJvHtmlParser.SetTagList(const Value: TTagInfoList);
 begin
   FTagList := Value;
 end;
-{*************************************************}
 
 procedure TJvHtmlParser.Loaded;
 begin
-  inherited;
-  SetInfos(FInfos);
+  inherited Loaded;
+  SetParser(FParser);
 end;
 
-{ TTagInfoList }
+//=== TTagInfoList ===========================================================
 
-{*************************************************}
-
-procedure TTagInfoList.AddValue(Value: TTagInfo);
+procedure TTagInfoList.AddValue(const Value: TTagInfo);
 var
   P: PTagInfo;
 begin
   GetMem(P, SizeOf(TTagInfo));
   if P <> nil then
   begin
-    with P^ do
-    begin
-      BeginPos := Value.BeginPos;
-      EndPos := Value.EndPos;
-      BeginContext := Value.BeginContext;
-      EndContext := Value.EndContext;
-      Key := Value.Key;
-    end;
-    Self.Add(P);
+    // (rom) simplified
+    System.Move(Value, P^, SizeOf(TTagInfo));
+    Add(P);
   end;
 end;
-{*************************************************}
 
 procedure TTagInfoList.Clear;
 var
-  i: integer;
+  I: Integer;
 begin
-  for i := 0 to Self.Count - 1 do
-  begin
-    FreeMem(Self.Items[i], SizeOf(TTagInfo));
-  end;
-  inherited;
+  for I := 0 to Count - 1 do
+    FreeMem(Items[I], SizeOf(TTagInfo));
+  inherited Clear;
 end;
 
 end.

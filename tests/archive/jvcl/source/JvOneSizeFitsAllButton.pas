@@ -31,66 +31,60 @@ unit JvOneSizeFitsAllButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, StdCtrls,
+  JVCLVer;
 
 const
   CM_FORCESIZE = WM_USER + 777;
 
 type
   TCmForceSize = record
-    msg: cardinal;
-    sender: TWinControl;
-    newsize: TSmallPoint;
-    result: Longint;
+    Msg: Cardinal;
+    Sender: TWinControl;
+    NewSize: TSmallPoint;
+    Result: Longint;
   end;
 
   TJvOneSizeFitsAllButton = class(TButton)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    { Private declarations }
-    procedure CMForceSize(var msg: TCMForceSize); message CM_FORCESIZE;
-  protected
-    { Protected declarations }
+    procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
   public
-    { Public declarations }
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
 
-{ TJvOneSizeFitsAllButton }
-
-procedure TJvOneSizeFitsAllButton.CMForceSize(var msg: TCMForceSize);
+procedure TJvOneSizeFitsAllButton.CMForceSize(var Msg: TCMForceSize);
 begin
   // (p3) this is never called AFAICS
-  with msg do
-    if sender <> self then
-      with newsize do
-        inherited SetBounds(left, top, x, y);
+  with Msg do
+    if Sender <> Self then
+      with NewSize do
+        inherited SetBounds(Left, Top, X, Y);
 end;
 
-procedure TJvOneSizeFitsAllButton.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
+procedure TJvOneSizeFitsAllButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
-  form: Tcustomform;
-  msg: TCMForceSize;
+  Form: TCustomForm;
+  Msg: TCMForceSize;
 //  r: TRect;
 begin
   inherited;
-  form := GetParentForm(self);
-  if Assigned(form) then
+  Form := GetParentForm(Self);
+  if Assigned(Form) then
   begin
     // (p3) what is this rect doing here?
     // r := Rect(aLeft, aTop, aWidth, aHeight);
-    msg.msg := CM_FORCESIZE;
-    msg.sender := Self;
-    msg.newsize.x := AWidth;
-    msg.newsize.y := AHeight;
-    form.Broadcast(msg);
+    Msg.Msg := CM_FORCESIZE;
+    Msg.Sender := Self;
+    Msg.NewSize.x := AWidth;
+    Msg.NewSize.y := AHeight;
+    Form.Broadcast(Msg);
   end;
 end;
 
 end.
+

@@ -28,41 +28,40 @@ Known Issues:
 
 unit JvScreenResolution;
 
-
-
 interface
 
+// (rom) definitely JCL or Archive
+
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls;
+  Windows, SysUtils;
 
 type
   TJvScreenResolution = class(TObject)
   private
-    FCount:integer;
-    function GetCount: integer;
-    function GetMode(Index: integer): TDevMode;
+    FCount: Integer;
+    function GetCount: Integer;
+    function GetMode(Index: Integer): TDevMode;
   public
     procedure GetSupportedModes(var Modes: array of TDevMode; var Count: Integer);
     function SetMode(Value: TDevMode): Boolean;
     // simpler access to DevModes
-    property Modes[Index:integer]:TDevMode read GetMode;
-    property Count:integer read GetCount;
+    property Modes[Index: Integer]: TDevMode read GetMode;
+    property Count: Integer read GetCount;
   end;
 
 implementation
+
 uses
-  Jvtypes,
-{$IFDEF COMPILER6_UP}
-  RTLConsts
-{$ELSE}
-  Consts
-{$ENDIF}
-  ;
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ELSE}
+  Consts,
+  {$ENDIF}
+  JvTypes;
 
-{************************************************************}
-
-function TJvScreenResolution.GetCount: integer;
-var DevMode:TDevMode;
+function TJvScreenResolution.GetCount: Integer;
+var
+  DevMode: TDevMode;
 begin
   if FCount = 0 then
     while EnumDisplaySettings(nil, FCount, DevMode) do
@@ -70,27 +69,26 @@ begin
   Result := FCount;
 end;
 
-function TJvScreenResolution.GetMode(Index: integer): TDevMode;
+function TJvScreenResolution.GetMode(Index: Integer): TDevMode;
 begin
   if (Index < 0) or (Index >= Count) then
-    raise EJVCLException.CreateFmt(SListIndexError,[Index]);
-  EnumDisplaySettings(nil,Index,Result);
+    raise EJVCLException.CreateFmt(SListIndexError, [Index]);
+  EnumDisplaySettings(nil, Index, Result);
 end;
 
-procedure TJvScreenResolution.GetSupportedModes(var Modes: array of TDevMode; var Count: Integer);
+procedure TJvScreenResolution.GetSupportedModes(var Modes: array of TDevMode;
+  var Count: Integer);
 var
-  i: Integer;
+  I: Integer;
   DevMode: TDevMode;
 begin
-  i := 0;
-  while EnumDisplaySettings(nil, i, DevMode) do
-    Inc(i);
-  Count := i;
-  for i := 0 to Count - 1 do
-    EnumDisplaySettings(nil, i, Modes[i])
+  I := 0;
+  while EnumDisplaySettings(nil, I, DevMode) do
+    Inc(I);
+  Count := I;
+  for I := 0 to Count - 1 do
+    EnumDisplaySettings(nil, I, Modes[I]);
 end;
-
-{************************************************************}
 
 function TJvScreenResolution.SetMode(Value: TDevMode): Boolean;
 begin
@@ -99,3 +97,4 @@ begin
 end;
 
 end.
+

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,15 +26,17 @@ Known Issues:
 
 {$I JVCL.INC}
 
+unit JvScrollPanel;
+
 { A scrolling TToolWindow like the ones in IE 4.0 with popup scrollbuttons
    either on top/bottom or left/right edge. }
-unit JvScrollPanel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ToolWin, ExtCtrls, JvComponent, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  ToolWin, ExtCtrls,
+  JvComponent, JVCLVer;
 
 type
   TJvCustomScrollPanel = class;
@@ -42,53 +44,55 @@ type
   TJvScrollKind = (sbUp, sbDown, sbLeft, sbRight);
   /// (DFCS_SCROLLUP,DFCS_SCROLLDOWN,DFCS_SCROLLLEFT,DFCS_SCROLLRIGHT);
   TJvScrollDirection = (sdHorizontal, sdVertical);
-  TJvScrollingEvent = procedure(Sender: TObject; var AllowChange: boolean; Kind: TJvScrollKind) of object;
+  TJvScrollingEvent = procedure(Sender: TObject; var AllowChange: Boolean; Kind: TJvScrollKind) of object;
   TJvScrolledEvent = procedure(Sender: TObject; Kind: TJvScrollKind) of object;
 
   TJvDivider = class(TJvGraphicControl)
   private
     FKind: TJvDivideKind;
-    FVertical: boolean;
+    FVertical: Boolean;
     procedure SetKind(Value: TJvDivideKind);
-    procedure SetVertical(Value: boolean);
+    procedure SetVertical(Value: Boolean);
   protected
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property Align;
-    property Vertical: boolean read FVertical write SetVertical default true;
+    property Vertical: Boolean read FVertical write SetVertical default True;
     property Kind: TJvDivideKind read FKind write SetKind default dkDivider;
   end;
 
   TJvScrollButton = class(TJvCustomControl)
   private
-    FInsideButton: boolean;
-    FDown, FRepeat: boolean;
-    FFlat: boolean;
-    FAutoRepeat: boolean;
-    FScrollAmount: word;
+    FOver: Boolean;
+    FDown: Boolean;
+    FRepeat: Boolean;
+    FFlat: Boolean;
+    FAutoRepeat: Boolean;
+    FScrollAmount: Word;
     FTimer: TTimer;
     FKind: TJvScrollKind;
     procedure SetKind(Value: TJvScrollKind);
-    procedure SetFlat(Value: boolean);
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure OnTime(Sender: TObject); protected
+    procedure SetFlat(Value: Boolean);
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure OnTime(Sender: TObject);
+  protected
     procedure SetPosition; virtual;
     procedure Paint; override;
     procedure Click; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure CMEnabledchanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property AutoRepeat: boolean read FAutoRepeat write FAutoRepeat;
-    property Flat: boolean read FFlat write SetFlat;
+    property AutoRepeat: Boolean read FAutoRepeat write FAutoRepeat;
+    property Flat: Boolean read FFlat write SetFlat;
     property Kind: TJvScrollKind read FKind write SetKind;
-    property Increment: word read FScrollAmount write FScrollAmount;
+    property Increment: Word read FScrollAmount write FScrollAmount;
     property Width default 16;
     property Height default 16;
   end;
@@ -97,55 +101,52 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
     FScrollDirection: TJvScrollDirection;
-    FScrollAmount: word;
-    FAutoHide: boolean;
-    FAutoRepeat: boolean;
-    FAutoArrange: boolean;
+    FScrollAmount: Word;
+    FAutoHide: Boolean;
+    FAutoRepeat: Boolean;
+    FAutoArrange: Boolean;
     FUpLeft: TJvScrollButton;
     FDownRight: TJvScrollButton;
     FOnScrolling: TJvScrollingEvent;
     FOnScrolled: TJvScrolledEvent;
-    FFlat: boolean;
-    procedure SetAutoArrange(Value: boolean);
-    procedure SetAutoHide(Value: boolean);
+    FFlat: Boolean;
+    procedure SetAutoArrange(Value: Boolean);
+    procedure SetAutoHide(Value: Boolean);
     procedure SetScrollDirection(Value: TJvScrollDirection);
-    procedure SetFlat(Value: boolean);
+    procedure SetFlat(Value: Boolean);
     procedure AlignArrows;
     procedure UpdateVisible;
     procedure ArrangeChildren;
     procedure SetupArrows;
-    procedure CMVisiblechanged(var Message: TMessage); message CM_VISIBLECHANGED;
-    procedure CMEnabledchanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMVisiblechanged(var Msg: TMessage); message CM_VISIBLECHANGED;
+    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure SetParent(AParent: TWinControl); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Align default alTop;
     property Height default 35;
-    property AutoHide: boolean read FAutoHide write SetAutoHide;
-    property AutoRepeat: boolean read FAutoRepeat write FAutoRepeat;
-    property AutoArrange: boolean read FAutoArrange write SetAutoArrange default False;
-    property Flat: boolean read FFlat write SetFlat;
+    property AutoHide: Boolean read FAutoHide write SetAutoHide;
+    property AutoRepeat: Boolean read FAutoRepeat write FAutoRepeat;
+    property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
+    property Flat: Boolean read FFlat write SetFlat;
     property ScrollDirection: TJvScrollDirection read FScrollDirection write SetScrollDirection;
-    property ScrollAmount: word read FScrollAmount write FScrollAmount default 16;
+    property ScrollAmount: Word read FScrollAmount write FScrollAmount default 16;
     property OnScrolling: TJvScrollingEvent read FOnScrolling write FOnScrolling;
     property OnScrolled: TJvScrolledEvent read FOnScrolled write FOnScrolled;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
-
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   TJvScrollingWindow = class(TJvCustomScrollPanel)
   public
-    constructor Create(AComponent:TComponent);override;
+    constructor Create(AComponent: TComponent); override;
   published
     property AboutJVCL;
     property AutoArrange;
-    property AutoHide default true;
-    property AutoRepeat default false;
+    property AutoHide default True;
+    property AutoRepeat default False;
     property Flat;
     property ScrollDirection default sdHorizontal;
     property ScrollAmount;
@@ -183,6 +184,7 @@ type
   end;
 
 implementation
+
 uses
   JvMaxMin;
 
@@ -232,17 +234,17 @@ begin
 end;
 }
 
-{ TJvDivider }
+//=== TJvDivider =============================================================
 
 constructor TJvDivider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   SetBounds(0, 0, 16, 16);
-  FVertical := true;
+  FVertical := True;
   FKind := dkDivider;
 end;
 
-procedure TJvDivider.SetVertical(Value: boolean);
+procedure TJvDivider.SetVertical(Value: Boolean);
 begin
   if FVertical <> Value then
   begin
@@ -261,10 +263,12 @@ begin
 end;
 
 procedure TJvDivider.Paint;
-var R: TRect;
+var
+  R: TRect;
 begin
-  if not Visible then Exit;
-  if (FKind = dkDivider) then
+  if not Visible then
+    Exit;
+  if FKind = dkDivider then
     with Canvas do
     begin
       if FVertical then
@@ -278,7 +282,7 @@ begin
         DrawEdge(Handle, R, EDGE_ETCHED, BF_TOP);
       end;
     end;
-  if (csDesigning in ComponentState) then
+  if csDesigning in ComponentState then
     with Canvas do
     begin
       Pen.Style := psDot;
@@ -288,7 +292,7 @@ begin
     end;
 end;
 
-{ TJvScrollButton }
+//=== TJvScrollButton ========================================================
 
 constructor TJvScrollButton.Create(AOwner: TComponent);
 begin
@@ -296,7 +300,7 @@ begin
   ControlStyle := ControlStyle - [csDoubleClicks, csSetCaption];
   FDown := False;
   FScrollAmount := 16;
-  FInsideButton := False;
+  FOver := False;
   FAutoRepeat := False;
   Width := 16;
   Height := 16;
@@ -311,7 +315,7 @@ begin
   end;
 end;
 
-procedure TJvScrollButton.SetFlat(Value: boolean);
+procedure TJvScrollButton.SetFlat(Value: Boolean);
 begin
   if FFlat <> Value then
   begin
@@ -320,16 +324,16 @@ begin
   end;
 end;
 
-procedure TJvScrollButton.CMMouseEnter(var Message: TMessage);
+procedure TJvScrollButton.CMMouseEnter(var Msg: TMessage);
 begin
-  FInsideButton := True;
+  FOver := True;
   if FFlat then
     Invalidate;
 end;
 
-procedure TJvScrollButton.CMMouseLeave(var Message: TMessage);
+procedure TJvScrollButton.CMMouseLeave(var Msg: TMessage);
 begin
-  FInsideButton := False;
+  FOver := False;
   FDown := False;
   if FFlat then
     Invalidate;
@@ -337,28 +341,31 @@ end;
 
 procedure TJvScrollButton.Paint;
 const
-  aKind: array[TJvScrollKind] of integer =
-  (DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
-var Flags: integer; R: TRect;
+  aKind: array [TJvScrollKind] of Integer =
+    (DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT);
+var
+  Flags: Integer;
+  R: TRect;
 begin
-  if not Visible then Exit;
+  if not Visible then
+    Exit;
   R := GetClientRect;
   Flags := aKind[FKind];
 
   if not Enabled then
   begin
     FDown := False;
-    FInsideButton := false;
+    FOver := False;
     Flags := Flags or DFCS_INACTIVE or DFCS_FLAT;
   end;
 
   if FDown then
     Flags := Flags or DFCS_PUSHED;
 
-  if FFlat and not FInsideButton then
+  if FFlat and not FOver then
     Flags := Flags or DFCS_FLAT;
 
-  if FInsideButton then
+  if FOver then
   begin
     if FKind in [sbUp, sbDown] then
       OffsetRect(R, 0, 1)
@@ -391,7 +398,7 @@ begin
   if FAutoRepeat then
   begin
     if not Assigned(FTimer) then
-      FTimer := TTimer.Create(self);
+      FTimer := TTimer.Create(Self);
     with FTimer do
     begin
       OnTimer := OnTime;
@@ -407,7 +414,7 @@ procedure TJvScrollButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   if not FRepeat then
     SetPosition;
-  FRepeat := false;
+  FRepeat := False;
   inherited MouseUp(Button, Shift, X, Y);
   FreeAndNil(FTimer);
   FDown := False;
@@ -415,30 +422,32 @@ begin
 end;
 
 procedure TJvScrollButton.SetPosition;
-var AllowScroll: boolean; sp: TJvCustomScrollPanel;
+var
+  AllowScroll: Boolean;
+  Sp: TJvCustomScrollPanel;
 begin
   if (Parent = nil) or not (Parent is TJvCustomScrollPanel) or not Parent.Visible then
     Exit;
-  sp := TJvCustomScrollPanel(Parent);
+  Sp := TJvCustomScrollPanel(Parent);
   AllowScroll := True;
-  if Assigned(sp.OnScrolling) then
-    sp.OnScrolling(self, AllowScroll, FKind);
+  if Assigned(Sp.OnScrolling) then
+    Sp.OnScrolling(Self, AllowScroll, FKind);
   if not AllowScroll then
     Exit;
 
   case FKind of
     sbUp:
-      sp.ScrollBy(0, FScrollAmount);
+      Sp.ScrollBy(0, FScrollAmount);
     sbDown:
-      sp.ScrollBy(0, -FScrollAmount);
+      Sp.ScrollBy(0, -FScrollAmount);
     sbLeft:
-      sp.ScrollBy(FScrollAmount, 0);
+      Sp.ScrollBy(FScrollAmount, 0);
     sbRight:
-      sp.ScrollBy(-FScrollAmount, 0);
+      Sp.ScrollBy(-FScrollAmount, 0);
   end;
-  if Assigned(sp.OnScrolled) then
-    sp.OnScrolled(self, FKind);
-  sp.UpdateVisible;
+  if Assigned(Sp.OnScrolled) then
+    Sp.OnScrolled(Self, FKind);
+  Sp.UpdateVisible;
 end;
 
 procedure TJvScrollButton.OnTime(Sender: TObject);
@@ -447,13 +456,13 @@ begin
   if FDown and MouseCapture then
   begin
     SetPosition;
-    FRepeat := true;
+    FRepeat := True;
     if Parent <> nil then
       Parent.Invalidate;
   end;
 end;
 
-procedure TJvScrollButton.CMEnabledchanged(var Message: TMessage);
+procedure TJvScrollButton.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(Parent) then
@@ -461,7 +470,7 @@ begin
   Invalidate;
 end;
 
-{ TJvScrollingWindow }
+//=== TJvCustomScrollPanel ===================================================
 
 constructor TJvCustomScrollPanel.Create(AOwner: TComponent);
 begin
@@ -514,13 +523,13 @@ begin
   UpdateVisible;
 end;
 
-procedure TJvCustomScrollPanel.SetAutoArrange(Value: boolean);
+procedure TJvCustomScrollPanel.SetAutoArrange(Value: Boolean);
 begin
   if FAutoArrange <> Value then
     FAutoArrange := Value;
 end;
 
-procedure TJvCustomScrollPanel.SetAutoHide(Value: boolean);
+procedure TJvCustomScrollPanel.SetAutoHide(Value: Boolean);
 begin
   if FAutoHide <> Value then
   begin
@@ -544,7 +553,8 @@ begin
 end;
 
 procedure TJvCustomScrollPanel.ArrangeChildren;
-var i: integer;
+var
+  i: Integer;
 begin
   if FUpLeft = nil then
     Exit;
@@ -554,7 +564,7 @@ begin
     begin
       if (Controls[i] = FUpLeft) or (Controls[i] = FDownRight) then
         Continue;
-      Controls[i].SetBounds(Controls[i].Top,Controls[i].Left,Controls[i].Height,Controls[i].Width);
+      Controls[i].SetBounds(Controls[i].Top, Controls[i].Left, Controls[i].Height, Controls[i].Width);
     end;
     if not (csLoading in ComponentState) and (Align = alNone) then
       SetBounds(0, 0, Height, Width);
@@ -564,13 +574,14 @@ begin
 end;
 
 procedure TJvCustomScrollPanel.UpdateVisible;
-var Less, More, i: integer;
+var
+  Less, More, i: Integer;
 begin
   if FUpLeft = nil then
     Exit;
   DisableAlign;
   try
-    if (FAutoHide) then
+    if FAutoHide then
     begin
       if FScrollDirection = sdVertical then
       begin
@@ -586,7 +597,8 @@ begin
         FUpLeft.Visible := Less < 0;
         FDownRight.Visible := More > ClientHeight;
       end
-      else if FScrollDirection = sdHorizontal then
+      else
+      if FScrollDirection = sdHorizontal then
       begin
         Less := ClientHeight;
         More := 0;
@@ -603,15 +615,15 @@ begin
     end
     else { always show }
     begin
-      FUpLeft.Visible := true;
-      FDownRight.Visible := true;
+      FUpLeft.Visible := True;
+      FDownRight.Visible := True;
     end;
   finally
     EnableAlign;
   end;
 end;
 
-procedure TJvCustomScrollPanel.SetFlat(Value: boolean);
+procedure TJvCustomScrollPanel.SetFlat(Value: Boolean);
 begin
   if FFlat <> Value then
   begin
@@ -625,10 +637,9 @@ begin
   end;
 end;
 
-procedure TJvCustomScrollPanel.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
+procedure TJvCustomScrollPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   AlignArrows;
   UpdateVisible;
 end;
@@ -637,30 +648,30 @@ procedure TJvCustomScrollPanel.SetupArrows;
 begin
   if FUpLeft <> nil then
     Exit;
-  FUpLeft := TJvScrollButton.Create(self);
-  FUpLeft.FreeNotification(self);
+  FUpLeft := TJvScrollButton.Create(Self);
+  FUpLeft.FreeNotification(Self);
   FUpLeft.Kind := sbLeft;
 
-  FDownRight := TJvScrollButton.Create(self);
-  FDownRight.FreeNotification(self);
+  FDownRight := TJvScrollButton.Create(Self);
+  FDownRight.FreeNotification(Self);
   FDownRight.Kind := sbRight;
 end;
 
 procedure TJvCustomScrollPanel.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
-  if (FUpLeft = nil) then
+  if FUpLeft = nil then
     Exit;
-  FUpLeft.Parent := self;
+  FUpLeft.Parent := Self;
   FUpLeft.Visible := True;
-  FDownRight.Parent := self;
+  FDownRight.Parent := Self;
   FDownRight.Visible := True;
 end;
 
 procedure TJvCustomScrollPanel.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
   begin
     if AComponent = FUpLeft then
@@ -670,27 +681,30 @@ begin
   end;
 end;
 
-procedure TJvCustomScrollPanel.CMEnabledchanged(var Message: TMessage);
+procedure TJvCustomScrollPanel.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   FUpLeft.Enabled := Enabled;
   FDownRight.Enabled := Enabled;
-  if AutoHide then UpdateVisible else Invalidate;
+  if AutoHide then
+    UpdateVisible
+  else
+    Invalidate;
 end;
 
-procedure TJvCustomScrollPanel.CMVisiblechanged(var Message: TMessage);
+procedure TJvCustomScrollPanel.CMVisibleChanged(var Msg: TMessage);
 begin
   inherited;
   FUpLeft.Visible := Visible;
   FDownRight.Visible := Visible;
 end;
 
-{ TJvScrollingWindow }
+//=== TJvScrollingWindow =====================================================
 
 constructor TJvScrollingWindow.Create(AComponent: TComponent);
 begin
-  inherited;
-  AutoHide := true;
+  inherited Create(AComponent);
+  AutoHide := True;
 end;
 
 end.

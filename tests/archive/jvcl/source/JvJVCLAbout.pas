@@ -31,10 +31,9 @@ unit JvJVCLAbout;
 interface
 
 uses
-  Windows, Messages, SysUtils,
-  Classes, Graphics, Controls, Forms, Buttons, IniFiles,
-  Dialogs, StdCtrls, ExtCtrls, jpeg,
-  JvBaseDlg, JclSysInfo, JclWin32, JVCLVer, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, IniFiles, StdCtrls, ExtCtrls,
+  JclSysInfo, JclWin32,
+  JVCLVer, JvBaseDlg, JvHotLink, Dialogs, jpeg, Buttons, JvLabel;
 
 type
   TJvJVCLAboutForm = class(TForm)
@@ -43,9 +42,9 @@ type
     pnlImage: TPanel;
     imgStarfield: TImage;
     btnOK: TButton;
-    JvHotLink1: TLabel;
-    JvHotLink4: TLabel;
-    lblNews: TLabel;
+    JvHotLink1: TJvHotLink;
+    JvHotLink4: TJvHotLink;
+    lblNews: TJvHotLink;
     Label1: TLabel;
     Label2: TLabel;
     lblCopyRight: TLabel;
@@ -56,9 +55,12 @@ type
     lblVisitJedi: TLabel;
     lblMailingList: TLabel;
     lblNewsgroup: TLabel;
-    lblJvHotLink2: TLabel;
+    lblJvHotLink2: TJvHotLink;
     lblBugs: TLabel;
-    lblBugsURL: TLabel;
+    lblBugsURL: TJvHotLink;
+    btnHelp: TSpeedButton;
+    btnOptions: TSpeedButton;
+    OpenDialog1: TOpenDialog;
     Bevel3: TBevel;
     lblWindowsVersion: TLabel;
     Label4: TLabel;
@@ -67,30 +69,41 @@ type
     procedure FormShow(Sender: TObject);
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnHelpClick(Sender: TObject);
+    procedure btnOptionsClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure JvHotLink1Click(Sender: TObject);
   private
+    FHelpFile: string;
+    FHelpDirectory: string;
   public
     procedure LoadOptions;
     procedure SaveOptions;
-    class procedure Execute(StoreSettings:boolean);
+    class procedure Execute(StoreSettings: Boolean);
   end;
-  
+
   TJvJVCLAboutComponent = class(TJvCommonDialogP)
   private
-    FStoreSettings: boolean;
+    FStoreSettings: Boolean;
   public
-    procedure Execute;override;
+    procedure Execute; override;
   published
-    property StoreSettings:boolean read FStoreSettings write FStoreSettings default false;
+    property StoreSettings: Boolean read FStoreSettings write FStoreSettings default false;
   end;
 
 implementation
+
 uses
   JvFunctions;
 
 {$R *.dfm}
 
+const
+  cOptions = 'Options';
+  cBoundsLeft = 'Bounds.Left';
+  cBoundsTop = 'Bounds.Top';
+  cHelpFile = 'Help.File';
+  cHelpDirectory = 'Help.Directory';
+  cJVCLIni = '\JVCL.ini';
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
 var
@@ -109,7 +122,7 @@ begin
   lblMemory.Caption := Format('%u KB', [GetTotalPhysicalMemory div 1024]);
   lblCopyRight.Caption := 'Copyright © Project JEDI, 1999 - ' + FormatDateTime('yyyy', Now);
 //  LoadOptions;
-
+  btnHelp.Enabled := FHelpFile <> '';
 end;
 
 procedure TJvJVCLAboutForm.Panel1MouseDown(Sender: TObject;
@@ -119,14 +132,34 @@ begin
   Perform(WM_SYSCOMMAND, SC_MOVE + 2, 0);
 end;
 
+procedure TJvJVCLAboutForm.btnHelpClick(Sender: TObject);
+begin
+  Exec(FHelpFile, '', FHelpDirectory);
+  Close;
+end;
+
+procedure TJvJVCLAboutForm.btnOptionsClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+  begin
+    FHelpFile := ExtractFileName(OpenDialog1.FileName);
+    FHelpDirectory := ExtractFileDir(OpenDialog1.FileName);
+//    SaveOptions;
+    btnHelp.Enabled := FHelpFile <> '';
+  end;
+end;
+
 procedure TJvJVCLAboutForm.LoadOptions;
 var
   l, t: Integer;
 begin
-  with TIniFile.Create(ExtractFileDir(Application.ExeName) + '\JVCL.ini') do
+  with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
   try
-    l := ReadInteger('Options', 'Bounds.Left', -1);
-    t := ReadInteger('Options', 'Bounds.Top', -1);
+    l := ReadInteger(cOptions, cBoundsLeft, -1);
+    t := ReadInteger(cOptions, cBoundsTop, -1);
+
+    FHelpFile := ReadString(cOptions, cHelpFile, '');
+    FHelpDirectory := ReadString(cOptions, cHelpDirectory, '');
   finally
     Free;
   end;
@@ -142,13 +175,16 @@ end;
 
 procedure TJvJVCLAboutForm.SaveOptions;
 begin
-  with TIniFile.Create(ExtractFileDir(Application.ExeName) + '\JVCL.ini') do
+  with TIniFile.Create(ExtractFileDir(Application.ExeName) + cJVCLIni) do
   try
     if WindowState = wsNormal then
     begin
-      WriteInteger('Options', 'Bounds.Left', Left);
-      WriteInteger('Options', 'Bounds.Top', Top);
+      WriteInteger(cOptions, cBoundsLeft, Left);
+      WriteInteger(cOptions, cBoundsTop, Top);
     end;
+
+    WriteString(cOptions, cHelpFile, FHelpFile);
+    WriteString(cOptions, cHelpDirectory, FHelpDirectory);
   finally
     Free;
   end;
@@ -164,28 +200,26 @@ begin
   Close;
 end;
 
-{ TJvJVCLAboutComponent }
-
 procedure TJvJVCLAboutComponent.Execute;
 begin
   TJvJVCLAboutForm.Execute(StoreSettings);
 end;
 
-class procedure TJvJVCLAboutForm.Execute(StoreSettings: boolean);
+class procedure TJvJVCLAboutForm.Execute(StoreSettings: Boolean);
 begin
   with self.Create(Application) do
   try
-    if StoreSettings then LoadOptions;
+    if StoreSettings then
+      LoadOptions;
+    // (rom) used as component outside the IDE the buttons are not useful
+    btnHelp.Visible := StoreSettings;
+    btnOptions.Visible := StoreSettings;
     ShowModal;
-    if StoreSettings then SaveOptions;
+    if StoreSettings then
+      SaveOptions;
   finally
     Free;
   end;
-end;
-
-procedure TJvJVCLAboutForm.JvHotLink1Click(Sender: TObject);
-begin
-  OpenObject((Sender as TLabel).Caption);
 end;
 
 end.

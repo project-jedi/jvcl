@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -33,8 +33,9 @@ unit JvImageWindow;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Math,
-  Controls, Forms, Dialogs, ExtCtrls, CommCtrl, ImgList, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, ExtCtrls, CommCtrl, ImgList,
+  JvComponent;
 
 type
   TJvMargin = 2..24;
@@ -42,60 +43,66 @@ type
 
   TJvImageWindow = class(TJvGraphicControl)
   private
-    { Private declarations }
     FImageList: TImageList;
-    FIndex, OldX, OldY, imWidth, imHeight: integer;
-    FBackColor, FFrontColor, FGridColor: TColor;
+    FIndex: Integer;
+    OldX: Integer;
+    OldY: Integer;
+    imWidth: Integer;
+    imHeight: Integer;
+    FBackColor: TColor;
+    FFrontColor: TColor;
+    FGridColor: TColor;
     FMargin: TJvMargin;
     FColCount: TJvPositive;
-    FImageCount: integer;
-    FShowFrame, FShowGrid, FGhost, FAutoSize, FOptimal: Boolean;
+    FImageCount: Integer;
+    FShowFrame: Boolean;
+    FShowGrid: Boolean;
+    FGhost: Boolean;
+    FAutoSize: Boolean;
+    FOptimal: Boolean;
     FImageChangeLink: TChangeLink;
-    procedure DrawFocusFrame(X, Y: integer);
+    procedure DrawFocusFrame(X, Y: Integer);
     procedure SetBackColor(Value: TColor);
     procedure SetFrontColor(Value: TColor);
     procedure SetGridColor(Value: TColor);
     procedure SetJvMargin(Value: TJvMargin);
     procedure SetColCount(Value: TJvPositive);
-    procedure SetImageCount(Value: integer);
+    procedure SetImageCount(Value: Integer);
     procedure SetShowFrame(Value: Boolean);
-    procedure SetShowGrid(Value: boolean);
-    procedure SetGhost(Value: boolean);
+    procedure SetShowGrid(Value: Boolean);
+    procedure SetGhost(Value: Boolean);
     procedure SetImageList(Value: TImageList);
     procedure ImageListChange(Sender: Tobject);
   protected
-    { Protected declarations }
     procedure Paint; override;
     procedure Changed; dynamic;
-{$IFDEF COMPILER6_UP}
-    procedure SetAutoSize(Value: boolean); override;
-{$ENDIF}
+    {$IFDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SaveImage(Index: integer; Filename: string; AsBmp: boolean);
+    procedure SaveImage(Index: Integer; Filename: string; AsBmp: Boolean);
     procedure SaveImageList(Filename: string);
-    property ImageIndex: integer read FIndex default -1; { read-only }
+    property ImageIndex: Integer read FIndex default -1; { read-only }
   published
-    { Published declarations }
-    property Optimal: boolean read FOptimal write FOptimal default false;
-{$IFDEF COMPILER6_UP}
-    property AutoSize: boolean read FAutoSize write SetAutoSize default false;
-{$ENDIF}
+    property Optimal: Boolean read FOptimal write FOptimal default False;
+    {$IFDEF COMPILER6_UP}
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    {$ENDIF}
     property BackColor: TColor read FBackColor write SetBackColor default clWindow;
-    //    property Filled: boolean read FFilled write SetFilled default false;
+    //    property Filled: Boolean read FFilled write SetFilled default False;
     property FrontColor: TColor read FFrontColor write SetFrontColor default clWindowText;
-    property Ghost: boolean read FGhost write SetGhost;
+    property Ghost: Boolean read FGhost write SetGhost;
     property Margin: TJvMargin read FMargin write SetJvMargin default 2;
     property ColCount: TJvPositive read FColCount write SetColCount default 4;
-    property ImageCount: integer read FImageCount write SetImageCount default 0;
+    property ImageCount: Integer read FImageCount write SetImageCount default 0;
     property ImageList: TImageList read FImageList write SetImageList;
-    property ShowFrame: boolean read FShowFrame write SetShowFrame default True;
-    property ShowGrid: boolean read FShowGrid write SetShowGrid default True;
+    property ShowFrame: Boolean read FShowFrame write SetShowFrame default True;
+    property ShowGrid: Boolean read FShowGrid write SetShowGrid default True;
     property GridColor: TColor read FGridColor write SetGridColor default clActiveCaption;
     property Width default 64;
     property Height default 64;
@@ -118,28 +125,27 @@ type
     property OnStartDrag;
   end;
 
-  { TJvImageSquare }
   TJvImageSquare = class(TJvGraphicControl)
   private
-    FHiColor,
-      FBackColor,
-      TmpColor: TColor;
+    FHiColor: TColor;
+    FBackColor: TColor;
+    TmpColor: TColor;
     FBorderStyle: TBorderStyle;
     FImageList: TImageList;
-    FIndex: integer;
+    FIndex: Integer;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
-    FDown: boolean;
-    FShowClick: boolean;
+    FDown: Boolean;
+    FShowClick: Boolean;
     FImageChangeLink: TChangeLink;
     procedure SetBkColor(Value: TColor);
     procedure SetHiColor(Value: TColor);
     procedure SetBorderStyle(Value: TBorderStyle);
-    procedure SetIndex(Value: integer);
+    procedure SetIndex(Value: Integer);
     procedure SetImageList(Value: TImageList);
     procedure ImageListChange(Sender: Tobject);
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -150,13 +156,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    { Published declarations }
     property HiColor: TColor read FHiColor write SetHiColor default clActiveCaption;
     property BackColor: TColor read FBackColor write SetBkColor default clWindow;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property ImageList: TImageList read FImageList write SetImageList;
-    property ImageIndex: integer read FIndex write SetIndex default 0;
-    property ShowClick: boolean read FShowClick write FShowClick default False;
+    property ImageIndex: Integer read FIndex write SetIndex default 0;
+    property ShowClick: Boolean read FShowClick write FShowClick default False;
     property Width default 36;
     property Height default 36;
     property Align;
@@ -182,11 +187,11 @@ type
   end;
 
 implementation
+
 uses
   JvTypes, JvMaxMin;
 
-
-{ TJvImageWindow }
+//=== TJvImageWindow =========================================================
 
 constructor TJvImageWindow.Create(AOwner: TComponent);
 begin
@@ -200,8 +205,8 @@ begin
   FShowGrid := True;
   FIndex := -1;
   FMargin := 2;
-  FAutoSize := false;
-  FOptimal := false;
+  FAutoSize := False;
+  FOptimal := False;
   OldX := -1;
   OldY := -1;
   FImageChangeLink := TChangeLink.Create;
@@ -217,7 +222,9 @@ begin
 end;
 
 procedure TJvImageWindow.SaveImageList(Filename: string);
-var TmpBmp, Bmp: TBitmap; i: integer;
+var
+  TmpBmp, Bmp: TBitmap;
+  I: Integer;
 begin
   if not Assigned(FImageList) then
   begin
@@ -230,10 +237,10 @@ begin
   try
     Bmp.Height := FImageList.Height;
     Bmp.Width := FImageList.Width * FImageList.Count;
-    for i := 0 to FImageList.Count - 1 do
+    for I := 0 to FImageList.Count - 1 do
     begin
-      FImageList.GetBitmap(i, TmpBmp);
-      Bmp.Canvas.Draw(FImageList.Width * i, 0, TmpBmp);
+      FImageList.GetBitmap(I, TmpBmp);
+      Bmp.Canvas.Draw(FImageList.Width * I, 0, TmpBmp);
     end;
     Bmp.SaveToFile(Filename);
   finally
@@ -242,8 +249,10 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.SaveImage(Index: integer; Filename: string; AsBmp: boolean);
-var Bmp: TBitmap; Ico: TIcon;
+procedure TJvImageWindow.SaveImage(Index: Integer; Filename: string; AsBmp: Boolean);
+var
+  Bmp: TBitmap;
+  Ico: TIcon;
 begin
   if Assigned(FImageList) then
     if AsBmp then
@@ -273,7 +282,8 @@ begin
 end;
 
 procedure TJvImageWindow.Paint;
-var i, X, Y: integer;
+var
+  I, X, Y: Integer;
 begin
   with Canvas do
   begin
@@ -289,14 +299,14 @@ begin
   begin
     X := 0;
     Y := 0;
-    for i := 0 to Min(FImageCount - 1, FImageList.Count - 1) do
+    for I := 0 to Min(FImageCount - 1, FImageList.Count - 1) do
     begin
       if FShowGrid then
         DrawFocusFrame(X + FMargin, Y + FMargin);
-      ImageList_DrawEx(FImageList.Handle, i,
+      ImageList_DrawEx(FImageList.Handle, I,
         Canvas.Handle, X + FMargin * 2, Y + Fmargin * 2, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
       Inc(X, imWidth + FMargin * 2);
-      if (i mod FColCount = FColCount - 1) then
+      if I mod FColCount = FColCount - 1 then
       begin
         Inc(Y, imHeight + FMargin * 2);
         X := 0;
@@ -305,8 +315,12 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.DrawFocusFrame(X, Y: integer);
-var iWidth, iHeight: integer; Rec: TRect; Leaving: boolean; FRows: integer;
+procedure TJvImageWindow.DrawFocusFrame(X, Y: Integer);
+var
+  iWidth, iHeight: Integer;
+  Rec: TRect;
+  Leaving: Boolean;
+  FRows: Integer;
 begin
   Leaving := False;
 
@@ -364,15 +378,16 @@ begin
   OldY := Y;
 end;
 
-procedure TJvImageWindow.MouseMove(Shift: TShiftState; X, Y: integer);
+procedure TJvImageWindow.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
   if FShowFrame and Assigned(FImageList) then
     DrawFocusFrame(X, Y);
 end;
 
-procedure TJvImageWindow.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-var iWidth, iHeight: integer;
+procedure TJvImageWindow.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  iWidth, iHeight: Integer;
 begin
   if Assigned(FImageList) then
   begin
@@ -391,12 +406,12 @@ begin
   end;
 
   if Assigned(OnClick) then
-    OnClick(self);
+    OnClick(Self);
   //  inherited MouseUp(Button,Shift,X,Y);
 end;
 
 {$IFDEF COMPILER6_UP}
-procedure TJvImageWindow.SetAutoSize(Value: boolean);
+procedure TJvImageWindow.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
@@ -405,9 +420,10 @@ begin
   end;
 end;
 {$ENDIF}
+
 { draw a ghost frame too }
 
-procedure TJvImageWindow.SetGhost(Value: boolean);
+procedure TJvImageWindow.SetGhost(Value: Boolean);
 begin
   if FGhost <> Value then
   begin
@@ -498,9 +514,9 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.SetImageCount(Value: integer);
+procedure TJvImageWindow.SetImageCount(Value: Integer);
 begin
-  if (FImageCount <> Value) then
+  if FImageCount <> Value then
   begin
     if Assigned(FImageList) then
       FImageCount := Min(Value, FImageList.Count)
@@ -519,7 +535,7 @@ begin
   end;
 end;
 
-procedure TJvImageWindow.SetShowGrid(Value: boolean);
+procedure TJvImageWindow.SetShowGrid(Value: Boolean);
 begin
   if FShowGrid <> Value then
   begin
@@ -529,14 +545,15 @@ begin
 end;
 
 procedure TJvImageWindow.Changed;
-var tmp, FNewHeight, FNewWidth: integer;
+var
+  tmp, FNewHeight, FNewWidth: Integer;
 begin
   if FOptimal and Assigned(FImageList) then
   begin
     if ImageCount < 3 then
       ColCount := 1
     else
-      ColCount := Max(ceil(Sqrt(ImageCount)), 1);
+      ColCount := Max(Ceil(Sqrt(ImageCount)), 1);
   end;
 
   if FAutoSize and Assigned(FImageList) then
@@ -560,7 +577,7 @@ begin
   Invalidate;
 end;
 
-{ TJvImageSquare }
+//=== TJvImageSquare =========================================================
 
 constructor TJvImageSquare.Create(AOwner: TComponent);
 begin
@@ -576,18 +593,17 @@ begin
   FBorderStyle := bsSingle;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-
-end;
-
-procedure TJvImageSquare.ImageListChange(Sender: Tobject);
-begin
-  Repaint;
 end;
 
 destructor TJvImageSquare.Destroy;
 begin
   FImageChangeLink.Free;
   inherited Destroy;
+end;
+
+procedure TJvImageSquare.ImageListChange(Sender: Tobject);
+begin
+  Repaint;
 end;
 
 procedure TJvImageSquare.Notification(AComponent: TComponent; Operation: TOperation);
@@ -597,7 +613,8 @@ begin
 end;
 
 procedure TJvImageSquare.PaintFrame;
-var R: TRect;
+var
+  R: TRect;
 begin
   R := GetClientRect;
   if FDown and FShowClick then
@@ -606,7 +623,8 @@ begin
     Frame3d(Canvas, R, clBtnHighLight, clBtnHighLight, 1);
     Frame3d(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
   end
-  else if (FBorderStyle = bsSingle) then
+  else
+  if FBorderStyle = bsSingle then
   begin
     Frame3d(Canvas, R, clBtnFace, clBtnFace, 1);
     Frame3d(Canvas, R, clBtnShadow, clBtnHighLight, 1);
@@ -617,7 +635,9 @@ begin
 end;
 
 procedure TJvImageSquare.Paint;
-var R: TRect; dX, dY: integer;
+var
+  R: TRect;
+  dX, dY: Integer;
 begin
   R := Rect(0, 0, Width, Height);
 
@@ -673,7 +693,7 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.SetIndex(Value: integer);
+procedure TJvImageSquare.SetIndex(Value: Integer);
 begin
   if FIndex <> Value then
   begin
@@ -708,11 +728,11 @@ begin
     PaintFrame;
 end;
 
-procedure TJvImageSquare.CMMouseEnter(var Message: TMessage);
+procedure TJvImageSquare.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnEnter) then
-    FOnEnter(self);
+    FOnEnter(Self);
   if ColorToRGB(TmpColor) <> ColorToRGB(FHiColor) then
   begin
     TmpColor := FHiColor;
@@ -720,12 +740,12 @@ begin
   end;
 end;
 
-procedure TJvImageSquare.CMMouseLeave(var Message: TMessage);
+procedure TJvImageSquare.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   FDown := False;
   if Assigned(FOnExit) then
-    FOnExit(self);
+    FOnExit(Self);
   if ColorToRGB(TmpColor) <> ColorToRGB(FBackColor) then
   begin
     TmpColor := FBackColor;

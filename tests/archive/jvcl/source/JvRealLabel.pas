@@ -28,16 +28,16 @@ Known Issues:
 
 unit JvRealLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  JVCLVer;
 
 type
   TJvRealLabel = class(TCustomLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -45,9 +45,8 @@ type
     FText: string;
     FSleep: Integer;
     FError: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetText(Value: string);
@@ -100,18 +99,14 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvRealLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FSleep := 100;
   FError := True;
   FText := Caption;
   SetText(Caption);
 end;
-
-{**************************************************}
 
 procedure TJvRealLabel.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -120,56 +115,51 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRealLabel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
-{**************************************************}
 
-procedure TJvRealLabel.MouseEnter(var Msg: TMessage);
+procedure TJvRealLabel.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
-procedure TJvRealLabel.MouseLeave(var Msg: TMessage);
+procedure TJvRealLabel.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
+// (rom) needs reimplementation with timer
 
 procedure TJvRealLabel.SetText(Value: string);
 var
-  i, j: Integer;
-  cap: string;
+  I, J: Integer;
+  Cap: string;
 begin
   FText := Value;
   if not (csLoading in ComponentState) and not (csDesigning in ComponentState) then
   begin
     Randomize;
-    cap := '';
-    for i := 1 to Length(Value) do
+    Cap := '';
+    for I := 1 to Length(Value) do
     begin
-      Caption := Copy(Value, 1, i - 1);
-      cap := Caption;
-      j := Random(10);
-      if (j = 7) and (FError) then
-        cap := cap + Char(Ord(Value[i]) - Random(10))
+      Caption := Copy(Value, 1, I - 1);
+      Cap := Caption;
+      J := Random(10);
+      if (J = 7) and (FError) then
+        Cap := Cap + Char(Ord(Value[I]) - Random(10))
       else
-        cap := cap + Value[i];
-      Caption := cap;
+        Cap := Cap + Value[I];
+      Caption := Cap;
       Application.ProcessMessages;
-      if (FError) and (j <> 7) then
+      if (FError) and (J <> 7) then
         Sleep(FSleep)
       else
         Sleep(2 * FSleep);
@@ -179,3 +169,4 @@ begin
 end;
 
 end.
+

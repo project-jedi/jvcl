@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvId3v1;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, JvTypes, JvComponent;
+  Windows, SysUtils, Classes,
+  JvComponent;
 
 type
   TGenre = (grBlues, grClassicRock, grCountry, grDance, grDisco, grFunk, grGrunge,
@@ -62,13 +61,13 @@ type
     grNone);
 
   TId3v1Tag = packed record
-    Identifier: array[0..2] of Char;
-    SongName: array[1..30] of Char;
-    Artist: array[1..30] of Char;
-    Album: array[1..30] of Char;
-    Year: array[0..3] of Char;
-    Comment: array[1..30] of Char;
-    Genre: TGenre;
+    Identifier: array [0..2] of Char;
+    SongName: array [0..29] of Char;
+    Artist: array [0..29] of Char;
+    Album: array [0..29] of Char;
+    Year: array [0..3] of Char;
+    Comment: array [0..29] of Char;
+    Genre: Byte;
   end;
 
   TJvId3v1 = class(TJvComponent)
@@ -79,221 +78,200 @@ type
     FComment: string;
     FYear: string;
     FGenre: TGenre;
-    FBidonS: string;
-    FBidonG: TGenre;
+    FDummyS: string;
+    FDummyG: TGenre;
     FFileName: TFileName;
     procedure SetFileName(const Value: TFileName);
-  published
+  public
     function ReadTag(FileName: string): Boolean;
     function WriteTag(FileName, SongName, Artist, Album, Year, Comment: string; Genre: TGenre): Boolean;
     procedure RemoveTag(FileName: string);
     function TagPresent(FileName: string): Boolean;
-    property FileName: TFileName read FFileName write SetFileName;
     function GenreToString(Genre: TGenre): string;
-    property SongName: string read FSongName write FBidonS;
-    property Artist: string read FArtist write FBidonS;
-    property Album: string read FAlbum write FBidonS;
-    property Year: string read FYear write FBidonS;
-    property Comment: string read FComment write FBidonS;
-    property Genre: TGenre read FGenre write FBidonG;
+  published
+    property FileName: TFileName read FFileName write SetFileName;
+    { Do not store dummies }
+    property SongName: string read FSongName write FDummyS stored False;
+    property Artist: string read FArtist write FDummyS stored False;
+    property Album: string read FAlbum write FDummyS stored False;
+    property Year: string read FYear write FDummyS stored False;
+    property Comment: string read FComment write FDummyS stored False;
+    property Genre: TGenre read FGenre write FDummyG stored False;
   end;
+
+function HasID3v1Tag(const AFileName: string): Boolean;
+function ReadID3v1Tag(const AFileName: string; var ATag: TId3v1Tag): Boolean;
+procedure RemoveID3v1Tag(const AFileName: string);
+function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
 
 implementation
 
-{******************************************************************************}
+uses
+  JvMaxMin;
 
-function TJvId3v1.GenreToString(Genre: TGenre): string;
-begin
-  case Byte(Genre) of
-    0: Result := 'Blues';
-    1: Result := 'Classic Rock';
-    2: Result := 'Country';
-    3: Result := 'Dance';
-    4: Result := 'Disco';
-    5: Result := 'Funk';
-    6: Result := 'Grunge';
-    7: Result := 'Hip-Hop';
-    8: Result := 'Jazz';
-    9: Result := 'Metal';
-    10: Result := 'New Age';
-    11: Result := 'Oldies';
-    12: Result := 'Other';
-    13: Result := 'Pop';
-    14: Result := 'R&B';
-    15: Result := 'Rap';
-    16: Result := 'Reggae';
-    17: Result := 'Rock';
-    18: Result := 'Techno';
-    19: Result := 'Industrial';
-    20: Result := 'Alternative';
-    21: Result := 'Ska';
-    22: Result := 'Death Metal';
-    23: Result := 'Pranks';
-    24: Result := 'Soundtrack';
-    25: Result := 'Euro-Techno';
-    26: Result := 'Ambient';
-    27: Result := 'Trip-Hop';
-    28: Result := 'Vocal';
-    29: Result := 'Jazz+Funk';
-    30: Result := 'Fusion';
-    31: Result := 'Trance';
-    32: Result := 'Classical';
-    33: Result := 'Instrumental';
-    34: Result := 'Acid';
-    35: Result := 'House';
-    36: Result := 'Game';
-    37: Result := 'Sound Clip';
-    38: Result := 'Gospel';
-    39: Result := 'Noise';
-    40: Result := 'AlternRock';
-    41: Result := 'Bass';
-    42: Result := 'Soul';
-    43: Result := 'Punk';
-    44: Result := 'Space';
-    45: Result := 'Meditative';
-    46: Result := 'Instrumental Pop';
-    47: Result := 'Instrumental Rock';
-    48: Result := 'Ethnic';
-    49: Result := 'Gothic';
-    50: Result := 'Darkwave';
-    51: Result := 'Techno-Industrial';
-    52: Result := 'Electronic';
-    53: Result := 'Pop-Folk';
-    54: Result := 'Eurodance';
-    55: Result := 'Dream';
-    56: Result := 'Southern Rock';
-    57: Result := 'Comedy';
-    58: Result := 'Cult';
-    59: Result := 'Gangsta';
-    60: Result := 'Top 40';
-    61: Result := 'Christian Rap';
-    62: Result := 'Pop/Funk';
-    63: Result := 'Jungle';
-    64: Result := 'Native American';
-    65: Result := 'Cabaret';
-    66: Result := 'New Wave';
-    67: Result := 'Psychadelic';
-    68: Result := 'Rave';
-    69: Result := 'Showtunes';
-    70: Result := 'Trailer';
-    71: Result := 'Lo-Fi';
-    72: Result := 'Tribal';
-    73: Result := 'Acid Punk';
-    74: Result := 'Acid Jazz';
-    75: Result := 'Polka';
-    76: Result := 'Retro';
-    77: Result := 'Musical';
-    78: Result := 'Rock & Roll';
-    79: Result := 'Hard Rock';
-    80: Result := 'Folk';
-    81: Result := 'Folk/Rock';
-    82: Result := 'National Folk';
-    83: Result := 'Swing';
-    84: Result := 'Fast Fusion';
-    85: Result := 'Bebob';
-    86: Result := 'Latin';
-    87: Result := 'Revival';
-    88: Result := 'Celtic';
-    89: Result := 'Bluegrass';
-    90: Result := 'Avantgarde';
-    91: Result := 'Gothic Rock';
-    92: Result := 'Progressive Rock';
-    93: Result := 'Psychedelic Rock';
-    94: Result := 'Symphonic Rock';
-    95: Result := 'Slow Rock';
-    96: Result := 'Big Band';
-    97: Result := 'Chorus';
-    98: Result := 'Easy Listening';
-    99: Result := 'Acoustic';
-    100: Result := 'Humour';
-    101: Result := 'Speech';
-    102: Result := 'Chanson';
-    103: Result := 'Opera';
-    104: Result := 'Chamber Music';
-    105: Result := 'Sonata';
-    106: Result := 'Symphony';
-    107: Result := 'Booty Bass';
-    108: Result := 'Primus';
-    109: Result := 'Porn Groove';
-    110: Result := 'Satire';
-    111: Result := 'Slow Jam';
-    112: Result := 'Club';
-    113: Result := 'Tango';
-    114: Result := 'Samba';
-    115: Result := 'Folklore';
-    116: Result := 'Ballad';
-    117: Result := 'Power Ballad';
-    118: Result := 'Rhythmic Soul';
-    119: Result := 'Freestyle';
-    120: Result := 'Duet';
-    121: Result := 'Punk Rock';
-    122: Result := 'Drum Solo';
-    123: Result := 'Acapella';
-    124: Result := 'Euro-House';
-    125: Result := 'Dance Hall';
-  else
-    Result := '';
-  end;
-end;
+const
+  CID3v1Tag = 'TAG';
+  CTagSize = 128;
+  CTagIDSize = 3;
 
-{******************************************************************************}
-
-function TJvId3v1.ReadTag(FileName: string): Boolean;
+function HasID3v1Tag(const AFileName: string): Boolean;
 var
-  fich: TFileStream;
-  tag: TId3v1Tag;
+  TagID: array [0..CTagIDSize - 1] of Char;
 begin
   try
-    fich := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+    with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareDenyWrite) do
+    try
+      Result := Size >= CTagSize;
+      if not Result then
+        Exit;
 
-    fich.Position := fich.Size - 128;
-    fich.Read(tag, SizeOf(tag));
-    if tag.Identifier = 'TAG' then
-    begin
-      FSongName := tag.SongName;
-      FArtist := tag.Artist;
-      FAlbum := tag.Album;
-      FYear := tag.Year;
-      // (p3) missing genre added
-      FGenre := tag.Genre;
-      FComment := tag.Comment;
-    end
-    else
-    begin
-      FSongName := '';
-      FArtist := '';
-      FAlbum := '';
-      FYear := '';
-      FComment := '';
-      FGenre := grNone;
+      Seek(-CTagSize, soFromEnd);
+      Result := (Read(TagID, CTagIDSize) = CTagIDSize) and (TagID = CID3v1Tag);
+    finally
+      Free;
     end;
-
-    fich.Free;
-
-    Result := True;
   except
     Result := False;
   end;
 end;
 
-{*****************************************************************************}
-
-procedure TJvId3v1.RemoveTag(FileName: string);
-var
-  fich: TFileStream;
-  tag: array[0..2] of Char;
+function ReadID3v1Tag(const AFileName: string; var ATag: TId3v1Tag): Boolean;
 begin
-  fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite);
-  fich.Position := fich.Size - 128;
-  fich.Read(tag, 3);
-
-  if tag = 'TAG' then
-    fich.Size := fich.Size - 128;
-
-  fich.Free;
+  try
+    with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
+    try
+      Seek(-CTagSize, soFromEnd);
+      Result := (Read(ATag, CTagSize) = CTagSize) and (ATag.Identifier = CID3v1Tag);
+    finally
+      Free;
+    end;
+  except
+    Result := False;
+  end;
 end;
 
-{*****************************************************************************}
+procedure RemoveID3v1Tag(const AFileName: string);
+var
+  TagID: array [0..CTagIDSize - 1] of Char;
+begin
+  with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareDenyWrite) do
+  try
+    Seek(-CTagSize, soFromEnd);
+
+    if (Read(TagID, CTagIDSize) = CTagIDSize) and (TagID = CID3v1Tag) then
+      Size := Size - CTagSize;
+  finally
+    Free;
+  end;
+end;
+
+function TagToStr(P: PChar; MaxLength: Integer): string;
+var
+  Q: PChar;
+begin
+  Q := P;
+  while (P - Q < MaxLength) and (P^ <> #0) do
+    Inc(P);
+  { [Q..P) is valid }
+  SetLength(Result, P - Q);
+  if P - Q > 0 then
+    Move(Q[0], Result[1], P - Q);
+end;
+
+function WriteID3v1Tag(const AFileName: string; const ATag: TId3v1Tag): Boolean;
+var
+  TagID: array [0..CTagIDSize - 1] of Char;
+begin
+  try
+    Result := FileExists(AFileName);
+    if not Result then
+      Exit;
+
+    with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareExclusive) do
+    try
+      //Remove old Tag ?
+      if Size >= CTagSize then
+      begin
+        Seek(-CTagSize, soFromEnd);
+        if (Read(TagID, CTagIDSize) = CTagIDSize) and (TagID = CID3v1Tag) then
+          Seek(-CTagIDSize, soFromCurrent)
+        else
+          Seek(0, soFromEnd);
+      end;
+
+      //Write it
+      Result := Write(ATag, CTagSize) = CTagSize;
+    finally
+      Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+//=== TJvId3v1 ===============================================================
+
+function TJvId3v1.GenreToString(Genre: TGenre): string;
+const
+  cGenreTexts: array [TGenre] of PChar =
+  ('Blues', 'Classic Rock', 'Country', 'Dance', 'Disco', 'Funk', 'Grunge',
+    'Hip-Hop', 'Jazz', 'Metal', 'New Age', 'Oldies', 'Other', 'Pop',
+    'R&B', 'Rap', 'Reggae', 'Rock', 'Techno', 'Industrial', 'Alternative',
+    'Ska', 'Death Metal', 'Pranks', 'Soundtrack', 'Euro-Techno', 'Ambient',
+    'Trip-Hop', 'Vocal', 'Jazz+Funk', 'Fusion', 'Trance', 'Classical',
+    'Instrumental', 'Acid', 'House', 'Game', 'Sound Clip', 'Gospel',
+    'Noise', 'AlternRock', 'Bass', 'Soul', 'Punk', 'Space', 'Meditative',
+    'Instrumental Pop', 'Instrumental Rock', 'Ethnic', 'Gothic', 'Darkwave',
+    'Techno-Industrial', 'Electronic', 'Pop-Folk', 'Eurodance', 'Dream',
+    'Southern Rock', 'Comedy', 'Cult', 'Gangsta', 'Top 40', 'Christian Rap',
+    'Pop/Funk', 'Jungle', 'Native American', 'Cabaret', 'New Wave', 'Psychadelic',
+    'Rave', 'Showtunes', 'Trailer', 'Lo-Fi', 'Tribal', 'Acid Punk', 'Acid Jazz',
+    'Polka', 'Retro', 'Musical', 'Rock & Roll', 'Hard Rock', 'Folk', 'Folk/Rock',
+    'National Folk', 'Swing', 'Fast Fusion', 'Bebob', 'Latin', 'Revival',
+    'Celtic', 'Bluegrass', 'Avantgarde', 'Gothic Rock', 'Progressive Rock',
+    'Psychedelic Rock', 'Symphonic Rock', 'Slow Rock', 'Big Band', 'Chorus',
+    'Easy Listening', 'Acoustic', 'Humour', 'Speech', 'Chanson', 'Opera',
+    'Chamber Music', 'Sonata', 'Symphony', 'Booty Bass', 'Primus',
+    'Porn Groove', 'Satire', 'Slow Jam', 'Club', 'Tango', 'Samba', 'Folklore',
+    'Ballad', 'Power Ballad', 'Rhythmic Soul', 'Freestyle', 'Duet', 'Punk Rock',
+    'Drum Solo', 'Acapella', 'Euro-House', 'Dance Hall', 'none');
+begin
+  Result := cGenreTexts[Genre];
+end;
+
+function TJvId3v1.ReadTag(FileName: string): Boolean;
+var
+  Tag: TId3v1Tag;
+begin
+  Result := ReadID3v1Tag(FileName, Tag);
+  if Result then
+  begin
+    FSongName := TagToStr(PChar(@Tag.SongName), 30);
+    FArtist := TagToStr(PChar(@Tag.Artist), 30);
+    FAlbum := TagToStr(PChar(@Tag.Album), 30);
+    FYear := TagToStr(PChar(@Tag.Year), 4);
+    FComment := TagToStr(PChar(@Tag.Comment), 30);
+    // (p3) missing genre added
+    if Tag.Genre <= Integer(High(TGenre)) then
+      FGenre := TGenre(Tag.Genre)
+    else
+      FGenre := grNone;
+  end
+  else
+  begin
+    FSongName := '';
+    FArtist := '';
+    FAlbum := '';
+    FYear := '';
+    FComment := '';
+    FGenre := grNone;
+  end;
+end;
+
+procedure TJvId3v1.RemoveTag(FileName: string);
+begin
+  RemoveID3v1Tag(FileName);
+end;
 
 procedure TJvId3v1.SetFileName(const Value: TFileName);
 begin
@@ -301,67 +279,28 @@ begin
   ReadTag(Value);
 end;
 
-{*****************************************************************************}
-
 function TJvId3v1.TagPresent(FileName: string): Boolean;
-var
-  fich: TFileStream;
-  tag: array[0..2] of Char;
 begin
-  try
-    fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite);
-    fich.Position := fich.Size - 128;
-    fich.Read(tag, 3);
-    Result := tag = 'TAG';
-    fich.Free;
-  except
-    Result := False;
-  end;
+  Result := HasID3v1Tag(FileName);
 end;
-
-{*****************************************************************************}
 
 function TJvId3v1.WriteTag(FileName, SongName, Artist, Album, Year, Comment: string; Genre: TGenre): Boolean;
 var
-  fich: TFileStream;
-  tag: TId3v1Tag;
+  Tag: TId3v1Tag;
 begin
-  try
-    ZeroMemory(@tag, SizeOf(tag));
-    if FileExists(FileName) then
-    begin
-      fich := TFileStream.Create(FileName, fmOpenReadWrite or fmShareExclusive);
+  FillChar(Tag, CTagSize, #0);
 
-      //Remove old tag ?
-      if fich.Size > 128 then
-      begin
-        fich.Position := fich.Size - 128;
-        fich.Read(tag, SizeOf(tag));
-        if tag.Identifier = 'TAG' then
-          fich.Position := fich.Size - 128;
-      end;
+  //Set new Tag
+  Tag.Identifier := CID3v1Tag;
+  Move(SongName[1], Tag.SongName[0], Min(30, 1 + Length(SongName)));
+  Move(Artist[1], Tag.Artist[0], Min(30, 1 + Length(Artist)));
+  Move(Album[1], Tag.Album[0], Min(30, 1 + Length(Album)));
+  Move(Year[1], Tag.Year[0], Min(4, 1 + Length(Year)));
+  Move(Comment[1], Tag.Comment[0], Min(30, 1 + Length(Comment)));
+  Tag.Genre := Byte(Genre);
 
-      //Set new tag
-      tag.Identifier := 'TAG';
-      CopyMemory(@tag.SongName, @SongName[1], 30);
-      CopyMemory(@tag.Artist, @Artist[1], 30);
-      CopyMemory(@tag.Album, @Album[1], 30);
-      CopyMemory(@tag.Year, @Year[1], 4);
-      CopyMemory(@tag.Comment, @Comment[1], 30);
-      tag.Genre := Genre;
-
-      //Write it
-      fich.Write(tag, SizeOf(tag));
-
-      fich.Free;
-
-      Result := True;
-    end
-    else
-      Result := False;
-  except
-    Result := False;
-  end;
+  Result := WriteID3v1Tag(FileName, Tag);
 end;
 
 end.
+

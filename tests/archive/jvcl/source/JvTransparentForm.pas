@@ -28,103 +28,91 @@ Known Issues:
 
 unit JvTransparentForm;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
+  Windows, SysUtils, Classes, Graphics, Controls, Forms,
+  JvComponent;
 
 type
   TJvTransparentForm = class(TJvComponent)
   private
     FMask: TBitmap;
     FComponentOwner: TCustomForm;
-    FRegion: HRGN;
     FAutoSize: Boolean;
     FEnable: Boolean;
+    procedure SetAutoSize(Value: Boolean);
     procedure SetEnable(Value: Boolean);
     procedure SetMask(Value: TBitmap);
-    procedure SetAutoSize(Value: Boolean);
   protected
+    procedure UpdateRegion;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    { (RB) Must be published before Enable; better enable in Loaded }
     property Mask: TBitmap read FMask write SetMask;
+    { (RB) Rename Enable to Active? }
     property Enable: Boolean read FEnable write SetEnable;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
   end;
 
 implementation
+
 uses
   JvFunctions;
-{***********************************************************}
 
 constructor TJvTransparentForm.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FComponentOwner := GetParentForm(TControl(AOwner));
   FMask := TBitmap.Create;
 end;
-
-{***********************************************************}
 
 destructor TJvTransparentForm.Destroy;
 begin
   if not (csDestroying in FComponentOwner.ComponentState) then
   begin
+    { Enable caption }
     SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
       GetWindowLong(FComponentOwner.Handle, GWL_STYLE) or WS_CAPTION);
+    { Remove region }
     SetWindowRgn(FComponentOwner.Handle, 0, True);
   end;
   FMask.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{***********************************************************}
 
 procedure TJvTransparentForm.SetMask(Value: TBitmap);
 begin
   FMask.Assign(Value);
-  FRegion := RegionFromBitmap(Value);
   if FEnable then
-    SetWindowRgn(FComponentOwner.Handle, FRegion, True)
+    UpdateRegion
   else
+    { Remove region }
     SetWindowRgn(FComponentOwner.Handle, 0, True);
-  if FEnable and FAutoSize then
-  begin
-    FComponentOwner.Width := FMask.Width;
-    FComponentOwner.Height := FMask.Height;
-  end;
 end;
-
-{***********************************************************}
 
 procedure TJvTransparentForm.SetEnable(Value: Boolean);
 begin
   FEnable := Value;
   if Value then
   begin
-    SetWindowLong(FComponentOwner.Handle, GWL_style,
-      GetWindowLong(FComponentOwner.Handle, GWL_style) and not WS_CAPTION);
-    FRegion := RegionFromBitmap(FMask);
-    SetWindowRgn(FComponentOwner.Handle, FRegion, True);
-    if FAutoSize then
-    begin
-      FComponentOwner.Width := FMask.Width;
-      FComponentOwner.Height := FMask.Height;
-    end;
+    { Remove caption }
+    SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
+      GetWindowLong(FComponentOwner.Handle, GWL_STYLE) and not WS_CAPTION);
+    { Set region }
+    UpdateRegion;
   end
   else
   begin
+    { Enable caption }
     SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
       GetWindowLong(FComponentOwner.Handle, GWL_STYLE) or WS_CAPTION);
+    { Remove region }
     SetWindowRgn(FComponentOwner.Handle, 0, True);
   end;
 end;
-
-{***********************************************************}
 
 procedure TJvTransparentForm.SetAutoSize(Value: Boolean);
 begin
@@ -136,4 +124,20 @@ begin
   end;
 end;
 
+procedure TJvTransparentForm.UpdateRegion;
+var
+  Region: HRGN;
+begin
+  Region := RegionFromBitmap(FMask);
+  if SetWindowRgn(FComponentOwner.Handle, Region, True) = 0 then
+    DeleteObject(Region);
+  { Region is now no longer valid }
+  if FAutoSize then
+  begin
+    FComponentOwner.Width := FMask.Width;
+    FComponentOwner.Height := FMask.Height;
+  end;
+end;
+
 end.
+

@@ -33,7 +33,12 @@ unit JvTipOfDayProp;
 interface
 
 uses
-{$IFDEF COMPILER6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
+
 type
   { a component editor that shows the 'Tip of the Day' dialog }
   TJvTipOfDayEditor = class(TComponentEditor)
@@ -50,22 +55,21 @@ resourcestring
 implementation
 
 uses
-  SysUtils, JvTipOfDay;
-
-{ TJvTipOfDayEditor }
+  SysUtils,
+  JvTipOfDay;
 
 procedure TJvTipOfDayEditor.Edit;
 var
   SavedOptions: TJvTipOfDayOptions;
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   with GetComponent as TJvTipOfDay do
   begin
-{$ELSE}
+  {$ELSE}
   if Component is TJvTipOfDay then
     with TJvTipOfDay(Component) do
     begin
-{$ENDIF}
+  {$ENDIF}
       SavedOptions := Options;
       Options := [toShowOnStartUp];
       try
@@ -81,7 +85,7 @@ begin
   if Index = 0 then
     Edit
   else
-    inherited;
+    inherited ExecuteVerb(Index);
 end;
 
 function TJvTipOfDayEditor.GetVerb(Index: Integer): string;

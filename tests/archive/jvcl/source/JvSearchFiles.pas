@@ -24,23 +24,18 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+{$I WINDOWSONLY.INC}
+
 unit JvSearchFiles;
 
-{$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
-
-  { Wrapper for a file search engine. }
+{ Wrapper for a file search engine. }
 
 interface
 
 uses
-  Classes, SysUtils, Windows, JvComponent, JvFunctions;
+  Classes, SysUtils, Windows,
+  JvComponent, JvFunctions;
 
 const
   { Taken from WinNT.h }
@@ -100,10 +95,8 @@ type
     stLastChangeAfter, stLastChangeBefore, stMaxSize, stMinSize);
   TJvSearchTypes = set of TJvSearchType;
 
-  TJvFileSearchEvent = procedure(Sender: TObject; const AName: string) of
-    object;
-  TJvSearchFilesError = procedure(Sender: TObject; var Handled: Boolean) of
-    object;
+  TJvFileSearchEvent = procedure(Sender: TObject; const AName: string) of object;
+  TJvSearchFilesError = procedure(Sender: TObject; var Handled: Boolean) of object;
   TJvCheckEvent = procedure(Sender: TObject; var Result: Boolean) of object;
 
   TJvErrorResponse = (erAbort, erIgnore, erRaise);
@@ -148,8 +141,7 @@ type
     property OffLine: TJvAttrFlagKind index FILE_ATTRIBUTE_OFFLINE
       read GetAttr write SetAttr stored False;
     property NotContentIndexed: TJvAttrFlagKind index
-      FILE_ATTRIBUTE_NOT_CONTENT_INDEXED read GetAttr write SetAttr stored
-      False;
+      FILE_ATTRIBUTE_NOT_CONTENT_INDEXED read GetAttr write SetAttr stored False;
     property Encrypted: TJvAttrFlagKind index FILE_ATTRIBUTE_ENCRYPTED read
       GetAttr write SetAttr stored False;
   end;
@@ -169,19 +161,21 @@ type
     FCaseFileMasks: TStrings;
     FFileMaskSeperator: Char;
     FAttributes: TJvSearchAttributes;
-    function GetMaxSize: Int64;
-    function GetMinSize: Int64;
-    procedure SetMaxSize(const Value: Int64);
-    procedure SetMinSize(const Value: Int64);
-    procedure SetLastChangeAfter(const Value: TDateTime);
-    procedure SetLastChangeBefore(const Value: TDateTime);
-    procedure SetFileMasks(const Value: TStrings);
-    procedure SetFileMask(const Value: string);
     procedure FileMasksChange(Sender: TObject);
     function GetFileMask: string;
-    procedure UpdateCaseMasks;
-    procedure SetSearchTypes(const Value: TJvSearchTypes);
+    function GetMaxSize: Int64;
+    function GetMinSize: Int64;
+    function IsLastChangeAfterStored: Boolean;
+    function IsLastChangeBeforeStored: Boolean;
     procedure SetAttributes(const Value: TJvSearchAttributes);
+    procedure SetFileMasks(const Value: TStrings);
+    procedure SetFileMask(const Value: string);
+    procedure SetLastChangeAfter(const Value: TDateTime);
+    procedure SetLastChangeBefore(const Value: TDateTime);
+    procedure SetMaxSize(const Value: Int64);
+    procedure SetMinSize(const Value: Int64);
+    procedure SetSearchTypes(const Value: TJvSearchTypes);
+    procedure UpdateCaseMasks;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -191,16 +185,14 @@ type
     property FileMaskSeperator: Char read FFileMaskSeperator write
       FFileMaskSeperator default ';';
   published
-    property Attributes: TJvSearchAttributes read FAttributes write
-      SetAttributes;
-    property SearchTypes: TJvSearchTypes read FSearchTypes write SetSearchTypes
-      default [];
+    property Attributes: TJvSearchAttributes read FAttributes write SetAttributes;
+    property SearchTypes: TJvSearchTypes read FSearchTypes write SetSearchTypes default [];
     property MinSize: Int64 read GetMinSize write SetMinSize;
     property MaxSize: Int64 read GetMaxSize write SetMaxSize;
-    property LastChangeAfter: TDateTime read FLastChangeAfter write
-      SetLastChangeAfter;
-    property LastChangeBefore: TDateTime read FLastChangeBefore write
-      SetLastChangeBefore;
+    property LastChangeAfter: TDateTime read FLastChangeAfter write SetLastChangeAfter
+      stored IsLastChangeAfterStored;
+    property LastChangeBefore: TDateTime read FLastChangeBefore write SetLastChangeBefore
+      stored IsLastChangeBeforeStored;
     property FileMasks: TStrings read FFileMasks write SetFileMasks;
   end;
 
@@ -226,10 +218,10 @@ type
     FDirOption: TJvDirOption;
     FDirParams: TJvSearchParams;
     FFileParams: TJvSearchParams;
-    procedure SetOptions(const Value: TJvSearchOptions);
+    function GetIsRootDirValid: Boolean;
     procedure SetDirParams(const Value: TJvSearchParams);
     procedure SetFileParams(const Value: TJvSearchParams);
-    function GetIsRootDirValid: Boolean;
+    procedure SetOptions(const Value: TJvSearchOptions);
   protected
     procedure DoBeginScanDir(const ADirName: string); virtual;
     procedure DoFindFile(const APath: string); virtual;
@@ -238,7 +230,6 @@ type
     function DoCheckDir: Boolean; virtual;
     function DoCheckFile: Boolean; virtual;
     function HandleError: Boolean; virtual;
-
     procedure Init; virtual;
     function EnumFiles(const ADirectoryName: string; Dirs: TStrings;
       const Search: Boolean): Boolean;
@@ -247,10 +238,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Abort;
     function Search: Boolean;
-
     property FindData: TWin32FindData read FFindData;
     property Files: TStrings read FFiles;
     property Directories: TStrings read FDirs;
@@ -263,8 +252,7 @@ type
     property DirOption: TJvDirOption read FDirOption write FDirOption default
       doIncludeSubDirs;
     property RootDirectory: string read FRootDirectory write FRootDirectory;
-    property Options: TJvSearchOptions read FOptions write SetOptions default
-      [soSearchFIles];
+    property Options: TJvSearchOptions read FOptions write SetOptions default [soSearchFiles];
     property ErrorResponse: TJvErrorResponse read FErrorResponse write
       FErrorResponse default erAbort;
     property DirParams: TJvSearchParams read FDirParams write SetDirParams;
@@ -283,38 +271,38 @@ type
 implementation
 
 uses
-  JclFileUtils, JclStrings, JclDateTime, Math;
+  JclStrings, JclDateTime;
+
 //  Forms; // Application.ProcessMessages
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
   There isn't a good reason to use FindFirstFile, FindNextFile instead of
   FindFirst, FindNext; except to prevent a little overhead perhaps. }
 
-// (p3)  
+const
+  CDate1_1_1980 = 29221;
+
+//=== TJvSearchFiles =========================================================
+
+// (p3)
+
+// (rom) better implement an OnProgress where the user can handle it
+// (rom) OnProgress is an abstract concept and this ProcessMessages is not good
+
 procedure ProcessMessages;
-var M: TMsg;
+var
+  M: TMsg;
 begin
-  if PeekMessage(M,0,0,0,pm_Remove) then
+  if PeekMessage(M, 0, 0, 0, PM_REMOVE) then
   begin
     TranslateMessage(M);
     DispatchMessage(M);
   end;
 end;
-  
-{ TJvSearchFiles }
-
-procedure TJvSearchFiles.Abort;
-begin
-  if not FSearching then
-    Exit;
-
-  FAborting := True;
-  DoAbort;
-end;
 
 constructor TJvSearchFiles.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FFiles := TStringList.Create;
   FDirs := TStringList.Create;
   FDirParams := TJvSearchParams.Create;
@@ -324,7 +312,7 @@ begin
   Options := [soSearchFiles];
   DirOption := doIncludeSubDirs;
   ErrorResponse := erAbort;
-  FFileParams.SearchTypes := [stFileMask];
+  //FFileParams.SearchTypes := [stFileMask];
 end;
 
 destructor TJvSearchFiles.Destroy;
@@ -333,7 +321,15 @@ begin
   FDirs.Free;
   FFileParams.Free;
   FDirParams.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvSearchFiles.Abort;
+begin
+  if not FSearching then
+    Exit;
+  FAborting := True;
+  DoAbort;
 end;
 
 procedure TJvSearchFiles.DoAbort;
@@ -344,7 +340,7 @@ end;
 
 procedure TJvSearchFiles.DoBeginScanDir(const ADirName: string);
 begin
-  if Assigned(OnBeginScanDir) then
+  if Assigned(FOnBeginScanDir) then
     FOnBeginScanDir(Self, ADirName);
 end;
 
@@ -376,13 +372,12 @@ var
   FileSize: Int64;
 begin
   Inc(FTotalDirectories);
-
   with FindData do
   begin
     if soStripDirs in Options then
-      DirName := cFilename
+      DirName := cFileName
     else
-      DirName := APath + cFilename;
+      DirName := APath + cFileName;
 
     if not (soOwnerData in Options) then
       FDirs.Add(DirName);
@@ -407,9 +402,9 @@ begin
   with FindData do
   begin
     if soStripDirs in Options then
-      FileName := cFilename
+      FileName := cFileName
     else
-      FileName := APath + cFilename;
+      FileName := APath + cFileName;
 
     if not (soOwnerData in Options) then
       FFiles.Add(FileName);
@@ -429,13 +424,12 @@ function TJvSearchFiles.EnumFiles(const ADirectoryName: string;
 var
   Handle: THandle;
   Finished: Boolean;
-  DirOk: Boolean;
+  DirOK: Boolean;
 begin
   DoBeginScanDir(ADirectoryName);
 
   { Always scan the full directory - ie use * as mask - this seems faster
     then first using a mask, and then scanning the directory for subdirs }
-
   Handle := Windows.FindFirstFile(PChar(ADirectoryName + '*'), FFindData);
   Result := Handle <> INVALID_HANDLE_VALUE;
   if not Result then
@@ -451,7 +445,6 @@ begin
       // (p3) no need to bring in the Forms unit for this:
       if not IsConsole then
         ProcessMessages;
-
       { After ProcessMessages, the user can have called Abort,
         so check it }
       if FAborting then
@@ -482,9 +475,7 @@ begin
               True                  |   Y       Y           Y
               False                 |   N       N           N
           }
-
           if cFileName[0] <> '.' then
-
             { Use case to prevent unnecessary calls to DoCheckDir }
             case DirOption of
               doExcludeSubDirs, doIncludeSubDirs:
@@ -496,16 +487,17 @@ begin
                 end;
               doExcludeInvalidDirs, doExcludeCompleteInvalidDirs:
                 begin
-                  DirOk := DoCheckDir;
-                  if Search and (soSearchDirs in Options) and DirOk then
+                  DirOK := DoCheckDir;
+                  if Search and (soSearchDirs in Options) and DirOK then
                     DoFindDir(ADirectoryName);
 
-                  if (DirOption = doExcludeInvalidDirs) or DirOk then
-                    Dirs.AddObject(cFileName, TObject(DirOk));
+                  if (DirOption = doExcludeInvalidDirs) or DirOK then
+                    Dirs.AddObject(cFileName, TObject(DirOK));
                 end;
             end;
         end
-        else if Search and (soSearchFiles in Options) and DoCheckFile then
+        else
+        if Search and (soSearchFiles in Options) and DoCheckFile then
           DoFindFile(ADirectoryName);
 
       if not Windows.FindNextFile(Handle, FFindData) then
@@ -548,7 +540,6 @@ begin
     If a user implements an OnError event handler, these results can be
     overridden.
   }
-
   if FAborting then
   begin
     Result := False;
@@ -577,7 +568,7 @@ function TJvSearchFiles.InternalSearch(const ADirectoryName: string;
 var
   List: TStringList;
   DirSep: string;
-  i: Integer;
+  I: Integer;
 begin
   List := TStringList.Create;
   try
@@ -586,13 +577,12 @@ begin
     Result := EnumFiles(DirSep, List, Search) or HandleError;
     if not Result then
       Exit;
-
     { I think it would be better to do no recursion; Don't know if it can
       be easy implemented - if you want to keep the depth first search -
       and without doing a lot of TList moves }
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Result := InternalSearch(DirSep + List[i], Boolean(List.Objects[i]));
+      Result := InternalSearch(DirSep + List[I], Boolean(List.Objects[I]));
       if not Result then
         Exit;
     end;
@@ -669,6 +659,7 @@ begin
   { (p3) you could also do:
     if Searching then Exit;
   }
+  // (rom) even better the search should use a local copy which stays unchanged
 
   if FOptions <> Value then
   begin
@@ -695,12 +686,11 @@ begin
         TStringList(FFiles).Duplicates := dupIgnore;
       end;
     end;
-
     // soStripDirs; soIncludeSubDirs; soOwnerData
   end;
 end;
 
-{ TJvSearchAttributes }
+//=== TJvSearchAttributes ====================================================
 
 procedure TJvSearchAttributes.Assign(Source: TPersistent);
 begin
@@ -710,7 +700,7 @@ begin
     ExcludeAttr := TJvSearchAttributes(Source).ExcludeAttr;
     Exit;
   end;
-  inherited;
+  inherited Assign(Source);
 end;
 
 procedure TJvSearchAttributes.DefineProperties(Filer: TFiler);
@@ -734,7 +724,8 @@ function TJvSearchAttributes.GetAttr(const Index: Integer): TJvAttrFlagKind;
 begin
   if FIncludeAttr and Index > 0 then
     Result := tsMustBeSet
-  else if FExcludeAttr and Index > 0 then
+  else
+  if FExcludeAttr and Index > 0 then
     Result := tsMustBeUnSet
   else
     Result := tsDontCare;
@@ -782,7 +773,31 @@ begin
   Writer.WriteInteger(FIncludeAttr);
 end;
 
-{ TJvSearchParams }
+//=== TJvSearchParams ========================================================
+
+constructor TJvSearchParams.Create;
+begin
+  // (rom) added inherited Create
+  inherited Create;
+  FAttributes := TJvSearchAttributes.Create;
+  FFileMasks := TStringList.Create;
+  TStringList(FFileMasks).OnChange := FileMasksChange;
+  FCaseFileMasks := TStringList.Create;
+
+  { defaults }
+  FFileMaskSeperator := ';';
+  { Set to 1-1-1980 }
+  FLastChangeBefore := CDate1_1_1980;
+  FLastChangeAfter := CDate1_1_1980;
+end;
+
+destructor TJvSearchParams.Destroy;
+begin
+  FAttributes.Free;
+  FFileMasks.Free;
+  FCaseFileMasks.Free;
+  inherited Destroy;
+end;
 
 procedure TJvSearchParams.Assign(Source: TPersistent);
 var
@@ -799,14 +814,14 @@ begin
     FileMasks.Assign(Src.FileMasks);
     FileMaskSeperator := Src.FileMaskSeperator;
     Attributes.Assign(Src.Attributes);
-    Exit;
-  end;
-  inherited;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvSearchParams.Check(const AFindData: TWin32FindData): Boolean;
 var
-  i: Integer;
+  I: Integer;
   FileName: string;
 begin
   Result := False;
@@ -818,33 +833,24 @@ begin
         the search always returns False }
       if dwFileAttributes and Attributes.ExcludeAttr > 0 then
         Exit;
-      if dwFileAttributes and Attributes.IncludeAttr <> Attributes.IncludeAttr
-        then
+      if dwFileAttributes and Attributes.IncludeAttr <> Attributes.IncludeAttr then
         Exit;
     end;
 
     if stMinSize in FSearchTypes then
-    begin
       if (nFileSizeHigh < FMinSizeHigh) or
         ((nFileSizeHigh = FMinSizeHigh) and (nFileSizeLow < FMinSizeLow)) then
         Exit;
-    end;
     if stMaxSize in FSearchTypes then
-    begin
       if (nFileSizeHigh > FMaxSizeHigh) or
         ((nFileSizeHigh = FMaxSizeHigh) and (nFileSizeLow > FMaxSizeLow)) then
         Exit;
-    end;
     if stLastChangeAfter in FSearchTypes then
-    begin
       if Windows.CompareFileTime(ftLastWriteTime, FLastChangeAfterFT) < 0 then
         Exit;
-    end;
     if stLastChangeBefore in FSearchTypes then
-    begin
       if Windows.CompareFileTime(ftLastWriteTime, FLastChangeBeforeFT) > 0 then
         Exit;
-    end;
     if (stFileMask in FSearchTypes) and (FFileMasks.Count > 0) then
     begin
       { StrMatches in JclStrings.pas is case-sensitive, thus for non case-
@@ -863,37 +869,15 @@ begin
       else
         FileName := UpperCase(cFileName);
 
-      i := 0;
-      while (i < FFileMasks.Count) and
-        not JclStrings.StrMatches(FCaseFileMasks[i], FileName) do
-        Inc(i);
-      if i >= FFileMasks.Count then
+      I := 0;
+      while (I < FFileMasks.Count) and
+        not JclStrings.StrMatches(FCaseFileMasks[I], FileName) do
+        Inc(I);
+      if I >= FFileMasks.Count then
         Exit;
     end;
   end;
   Result := True;
-end;
-
-constructor TJvSearchParams.Create;
-begin
-  FAttributes := TJvSearchAttributes.Create;
-  FFileMasks := TStringList.Create;
-  TStringList(FFileMasks).OnChange := FileMasksChange;
-  FCaseFileMasks := TStringList.Create;
-
-  { defaults }
-  FFileMaskSeperator := ';';
-  { Set to 1-1-1980 }
-  FLastChangeBefore := 29221;
-  FLastChangeAfter := 29221;
-end;
-
-destructor TJvSearchParams.Destroy;
-begin
-  FAttributes.Free;
-  FFileMasks.Free;
-  FCaseFileMasks.Free;
-  inherited;
 end;
 
 procedure TJvSearchParams.FileMasksChange(Sender: TObject);
@@ -916,6 +900,16 @@ function TJvSearchParams.GetMinSize: Int64;
 begin
   Int64Rec(Result).Lo := FMinSizeLow;
   Int64Rec(Result).Hi := FMinSizeHigh;
+end;
+
+function TJvSearchParams.IsLastChangeAfterStored: Boolean;
+begin
+  Result := FLastChangeBefore <> CDate1_1_1980;
+end;
+
+function TJvSearchParams.IsLastChangeBeforeStored: Boolean;
+begin
+  Result := FLastChangeBefore <> CDate1_1_1980;
 end;
 
 procedure TJvSearchParams.SetAttributes(const Value: TJvSearchAttributes);
@@ -991,13 +985,13 @@ end;
 
 procedure TJvSearchParams.UpdateCaseMasks;
 var
-  i: Integer;
+  I: Integer;
 begin
   FCaseFileMasks.Assign(FFileMasks);
 
   if not (stFileMaskCaseSensitive in SearchTypes) then
-    for i := 0 to FCaseFileMasks.Count - 1 do
-      FCaseFileMasks[i] := UpperCase(FCaseFileMasks[i]);
+    for I := 0 to FCaseFileMasks.Count - 1 do
+      FCaseFileMasks[I] := UpperCase(FCaseFileMasks[I]);
 end;
 
 end.

@@ -27,16 +27,23 @@ Known Issues:
 {$I JVCL.INC}
 
 unit JvObserverMessages;
+
 interface
-uses Messages, Windows;
+
+uses
+  Messages, Windows;
+
 const
   UM_OBSERVIBLE_CHANGED = WM_USER + 2000;
+
 type
   TUMObservibleChanged = record
-    msg: Cardinal;
-    unused: WPARAM;
-    sender: TObject;
-    result: longint;
+    Msg: Cardinal;
+    Unused: WPARAM;
+    Sender: TObject;
+    Result: Longint;
   end;
+
 implementation
+
 end.

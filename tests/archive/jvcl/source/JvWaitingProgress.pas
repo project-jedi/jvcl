@@ -28,64 +28,65 @@ Known Issues:
 
 unit JvWaitingProgress;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvSpecialProgress, JvImageDrawThread, JVCLVer;
 
 type
   TJvWaitingProgress = class(TWinControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FActive: Boolean;
-    FRefresh: Cardinal;
+    FRefreshInterval: Cardinal;
     FLength: Cardinal;
     FOnEnded: TNotifyEvent;
     FWait: TJvImageDrawThread;
     FProgress: TJvSpecialProgress;
-    FAboutJVCL: TJVCLAboutInfo;
-
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    function GetProgressColor: TColor;
     procedure SetActive(const Value: Boolean);
     procedure SetLength(const Value: Cardinal);
-    procedure SetRefresh(const Value: Cardinal);
+    procedure SetRefreshInterval(const Value: Cardinal);
+    procedure SetProgressColor(const Value: TColor);
     procedure OnScroll(Sender: TObject);
-    function GetColor: TColor;
-    procedure SetColor(const Value: TColor);
-    function GetBColor: TColor;
-    procedure SetBColor(const Value: TColor);
+    //function GetBColor: TColor;
+    //procedure SetBColor(const Value: TColor);
   protected
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Length: Cardinal read FLength write SetLength default 30000;
+    {(rb) When Active is read from the stream, RefreshInterval is 500 (as set
+          in the constructor); Better set Active in Loaded }
     property Active: Boolean read FActive write SetActive default False;
-    property RefreshInterval: Cardinal read FRefresh write SetRefresh default 500;
+    property RefreshInterval: Cardinal read FRefreshInterval write SetRefreshInterval default 500;
     property OnEnded: TNotifyEvent read FOnEnded write FOnEnded;
-    property ProgressColor: TColor read GetColor write SetColor;
-    property Color: TColor read GetBColor write SetBColor;
+    property ProgressColor: TColor read GetProgressColor write SetProgressColor default clBlack;
+    {(rb) no need to override Color property }
+    //property Color: TColor read GetBColor write SetBColor;
+    property Color;
+    property ParentColor;
+    property Height default 10;
+    property Width default 100;
   end;
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvWaitingProgress
-///////////////////////////////////////////////////////////
-
 constructor TJvWaitingProgress.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FActive := False;
-  FRefresh := 500;
+  FRefreshInterval := 500;
   FLength := 30000;
 
   FWait := TJvImageDrawThread.Create(True);
   FWait.FreeOnTerminate := False;
-  FWait.Delay := FRefresh;
+  FWait.Delay := FRefreshInterval;
   FWait.OnDraw := OnScroll;
 
   FProgress := TJvSpecialProgress.Create(Self);
@@ -96,49 +97,41 @@ begin
   FProgress.EndColor := clBlack;
   FProgress.Solid := True;
 
-  Width := 100;
-  Height := 10;
-
   FProgress.Left := 0;
   FProgress.Top := 0;
   FProgress.Width := Width;
   FProgress.Height := Height;
 
-  inherited Color := FProgress.Color;
+  //inherited Color := FProgress.Color;
+  // (rom) always set default values also
+  Height := 10;
+  Width := 100;
 end;
-
-{**************************************************}
 
 destructor TJvWaitingProgress.Destroy;
 begin
   FWait.OnDraw := nil;
   FWait.Terminate;
-//  FWait.WaitFor;
+  //  FWait.WaitFor;
   FreeAndNil(FWait);
   FProgress.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-function TJvWaitingProgress.GetBColor: TColor;
+{function TJvWaitingProgress.GetBColor: TColor;
 begin
   Result := FProgress.Color;
-end;
+end;}
 
-{**************************************************}
-
-function TJvWaitingProgress.GetColor: TColor;
+function TJvWaitingProgress.GetProgressColor: TColor;
 begin
   Result := FProgress.StartColor;
 end;
 
-{**************************************************}
-
 procedure TJvWaitingProgress.OnScroll(Sender: TObject);
 begin
   //Step
-  if Integer(FProgress.Position) + Integer(FRefresh) > Integer(FLength) then
+  if Integer(FProgress.Position) + Integer(FRefreshInterval) > Integer(FLength) then
   begin
     FProgress.Position := FLength;
     SetActive(False);
@@ -146,11 +139,9 @@ begin
       FOnEnded(Self);
   end
   else
-    FProgress.Position := FProgress.Position + Integer(FRefresh);
+    FProgress.Position := FProgress.Position + Integer(FRefreshInterval);
   Application.ProcessMessages;
 end;
-
-{**************************************************}
 
 procedure TJvWaitingProgress.SetActive(const Value: Boolean);
 begin
@@ -167,26 +158,20 @@ begin
   end;
 end;
 
-{**************************************************}
-
-procedure TJvWaitingProgress.SetBColor(const Value: TColor);
+{procedure TJvWaitingProgress.SetBColor(const Value: TColor);
 begin
   if FProgress.Color <> Value then
   begin
     FProgress.Color := Value;
     inherited Color := Value;
   end;
-end;
+end;}
 
-{**************************************************}
-
-procedure TJvWaitingProgress.SetColor(const Value: TColor);
+procedure TJvWaitingProgress.SetProgressColor(const Value: TColor);
 begin
   FProgress.StartColor := Value;
   FProgress.EndColor := Value;
 end;
-
-{**************************************************}
 
 procedure TJvWaitingProgress.SetLength(const Value: Cardinal);
 begin
@@ -195,20 +180,24 @@ begin
   FProgress.Maximum := FLength;
 end;
 
-{**************************************************}
-
-procedure TJvWaitingProgress.SetRefresh(const Value: Cardinal);
+procedure TJvWaitingProgress.SetRefreshInterval(const Value: Cardinal);
 begin
-  FRefresh := Value;
-  FWait.Delay := FRefresh;
+  FRefreshInterval := Value;
+  FWait.Delay := FRefreshInterval;
 end;
-
-{**************************************************}
 
 procedure TJvWaitingProgress.WMSize(var Msg: TWMSize);
 begin
+  inherited;
   FProgress.Width := Self.Width;
   FProgress.Height := Self.Height;
 end;
 
+procedure TJvWaitingProgress.CMColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  FProgress.Color := Color;
+end;
+
 end.
+

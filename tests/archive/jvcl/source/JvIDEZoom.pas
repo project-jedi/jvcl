@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvIDEZoom.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,7 +26,6 @@ description : Dephi IDE enhancement tool
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 {$UNDEF COMPILER5_UP}
@@ -36,27 +35,29 @@ unit JvIDEZoom;
 interface
 
 uses
-  Windows, Classes, SysUtils, Forms, Dialogs, Menus;
+  Classes, SysUtils, Forms, Menus;
 
-  procedure RegisterZoom;
+procedure RegisterZoom;
 
 implementation
 
-
 type
-
-  TJvEEditorZoom = class
-   {$IFDEF COMPILER5_UP}
-    (TNotifierObject, IUnknown, IOTAKeyboardBinding)
-   {$ENDIF COMPILER5_UP}
+  {$IFDEF COMPILER5_UP}
+  TJvEEditorZoom = class(TNotifierObject, IUnknown, IOTAKeyboardBinding)
   private
-    procedure Zoom(Sender : TObject);
+    procedure Zoom(Sender: TObject);
   public
-   {$IFDEF COMPILER5_UP}
+    {$IFDEF COMPILER5_UP}
     procedure BindKeyboard(const BindingServices: IOTAKeyBindingServices);
-   {$ENDIF COMPILER5_UP}
+    {$ENDIF COMPILER5_UP}
   end;
-
+  {$ELSE}
+  TJvEEditorZoom = class(TObject)
+  private
+    procedure Zoom(Sender: TObject);
+  public
+  end;
+  {$ENDIF COMPILER5_UP}
 
 {$IFDEF COMPILER5_UP}
 procedure TJvEEditorZoom.BindKeyboard(const BindingServices: IOTAKeyBindingServices);
@@ -67,33 +68,37 @@ end;
 
 procedure Unregister;
 var
-  F : TForm;
-  MenuItem : TMenuItem;
+  F: TForm;
+  MenuItem: TMenuItem;
 begin
   F := Application.FindComponent('AppBuilder') as TForm;
-  if F <> nil then begin
+  if F <> nil then
+  begin
     MenuItem := F.FindComponent('RAZoomEditor') as TMenuItem;
-    if MenuItem <> nil then MenuItem.Free;
+    if MenuItem <> nil then
+      MenuItem.Free;
     MenuItem := F.FindComponent('RAZoomEditor2') as TMenuItem;
-    if MenuItem <> nil then MenuItem.Free;
+    if MenuItem <> nil then
+      MenuItem.Free;
   end;
 end;
 
 procedure RegisterZoom;
 var
-  F : TForm;
-  ViewsMenu, ViewNewEditorItem : TMenuItem;
-  MenuItem : TMenuItem;
-  Zoom : TJvEEditorZoom;
+  F: TForm;
+  ViewsMenu, ViewNewEditorItem: TMenuItem;
+  MenuItem: TMenuItem;
+  Zoom: TJvEEditorZoom;
 begin
   Unregister;
   Zoom := nil; {avoid warning}
   F := Application.FindComponent('AppBuilder') as TForm;
   if F <> nil then
   begin
-   // ShowMessage('Found AppBuilder');
+    // ShowMessage('Found AppBuilder');
     ViewsMenu := F.FindComponent('ViewsMenu') as TMenuItem;
-    if ViewsMenu = nil then exit; {error}
+    if ViewsMenu = nil then
+      Exit; {error}
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
@@ -104,14 +109,14 @@ begin
     end;
     ViewNewEditorItem := F.FindComponent('ViewNewEditorItem') as TMenuItem;
     if ViewNewEditorItem <> nil then
-      ViewsMenu.Insert(ViewNewEditorItem.MenuIndex+1, MenuItem)
+      ViewsMenu.Insert(ViewNewEditorItem.MenuIndex + 1, MenuItem)
     else
       ViewsMenu.Add(MenuItem);
-   {Additional shortcut}
+    {Additional shortcut}
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      ShortCut := Menus.ShortCut(ord('1'), [ssAlt]);
+      ShortCut := Menus.ShortCut(Ord('1'), [ssAlt]);
       Name := 'RAZoomEditor2';
       OnClick := Zoom.Zoom;
       Visible := false;
@@ -123,35 +128,37 @@ begin
   {$ENDIF COMPILER5_UP}
 end;
 
-
-procedure TJvEEditorZoom.Zoom(Sender : TObject);
+procedure TJvEEditorZoom.Zoom(Sender: TObject);
 var
-  F : TForm;
-  i : integer;
+  F: TForm;
+  I: Integer;
  // MenuItem: TMenuItem;
 begin
   F := Screen.ActiveForm;
-  if not F.ClassNameIs('TEditWindow') then begin
+  if not F.ClassNameIs('TEditWindow') then
+  begin
     F := nil;
-    for i := 0 to Screen.FormCount - 1 do
-      if Screen.Forms[i].ClassNameIs('TEditWindow') then begin
-        F := Screen.Forms[i];
-        break;
+    for I := 0 to Screen.FormCount - 1 do
+      if Screen.Forms[I].ClassNameIs('TEditWindow') then
+      begin
+        F := Screen.Forms[I];
+        Break;
       end;
   end;
-  if F <> nil then begin
+  if F <> nil then
     if F.WindowState <> wsMaximized then
       F.WindowState := wsMaximized
     else
       F.WindowState := wsNormal;
-  end;
  { MenuItem := F.FindComponent('RAZoomEditor') as TMenuItem;
   if MenuItem <> nil then
     MenuItem.ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]); }
 end;
 
-
 initialization
+
 finalization
   Unregister;
+
 end.
+

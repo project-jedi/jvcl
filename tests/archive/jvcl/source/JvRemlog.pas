@@ -12,7 +12,7 @@ The Original Code is: JvRemLog.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -30,12 +30,12 @@ unit JvRemLog;
 interface
 
 {$IFDEF COMPILER3_UP}
-{$IFDEF Jv_MIDAS}
+{$IFDEF JV_MIDAS}
 
-uses SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
-  Dialogs, JvxLogin, DBClient;
-
-{ TJvRemoteLogin }
+uses
+  SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
+  Dialogs, DBClient,
+  JvxLogin;
 
 type
   TJvRemoteLogin = class(TJvCustomLogin)
@@ -79,24 +79,27 @@ type
     property OnIconDblClick;
   end;
 
-{$ENDIF Jv_MIDAS}
+{$ENDIF JV_MIDAS}
 {$ENDIF COMPILER3_UP}
 
 implementation
 
 {$IFDEF COMPILER3_UP}
-{$IFDEF Jv_MIDAS}
+{$IFDEF JV_MIDAS}
 
-uses IniFiles, Registry, JvAppUtils, JvVCLUtils {$IFDEF COMPILER4_UP}, MConnect {$ENDIF};
+uses
+  IniFiles, Registry,
+  {$IFDEF COMPILER4_UP}
+  MConnect,
+  {$ENDIF}
+  JvAppUtils, JvVCLUtils;
 
 const
-  keyLoginSection  = 'Remote Login';
-  keyLastLoginUserName = 'Last User';
+  cKeyLoginSection = 'Remote Login';
+  cKeyLastLoginUserName = 'Last User';
 
 type
   TJvServer = class(TCustomRemoteServer);
-
-{ TJvRemoteLogin }
 
 constructor TJvRemoteLogin.Create(AOwner: TComponent);
 begin
@@ -125,19 +128,25 @@ begin
   if not (csDesigning in ComponentState) and Loading and
     Assigned(FRemoteServer) then
   begin
-    if not Active then PrepareRemoteServer
-    else if not Login then TerminateApplication;
+    if not Active then
+      PrepareRemoteServer
+    else
+    if not Login then
+      TerminateApplication;
   end;
 end;
 
 procedure TJvRemoteLogin.SetRemoteServer(Value: TCustomRemoteServer);
 begin
-  if FRemoteServer <> Value then begin
+  if FRemoteServer <> Value then
+  begin
     UnprepareRemoteServer;
     FRemoteServer := Value;
-    if Value <> nil then begin
+    if Value <> nil then
+    begin
       Value.FreeNotification(Self);
-      if not (csLoading in ComponentState) then PrepareRemoteServer;
+      if not (csLoading in ComponentState) then
+        PrepareRemoteServer;
     end;
   end;
 end;
@@ -145,11 +154,12 @@ end;
 procedure TJvRemoteLogin.PrepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and not FPrepared then
-    with TJvServer(RemoteServer) do begin
-{$IFDEF COMPILER4_UP}
+    with TJvServer(RemoteServer) do
+    begin
+      {$IFDEF COMPILER4_UP}
       if RemoteServer is TDispatchConnection then
         TDispatchConnection(RemoteServer).LoginPrompt := False;
-{$ENDIF}
+      {$ENDIF}
       FSaveAfterConnect := AfterConnect;
       AfterConnect := ServerAfterConnect;
       FPrepared := True;
@@ -159,7 +169,8 @@ end;
 procedure TJvRemoteLogin.UnprepareRemoteServer;
 begin
   if Assigned(FRemoteServer) and FPrepared then
-    with TJvServer(RemoteServer) do begin
+    with TJvServer(RemoteServer) do
+    begin
       AfterConnect := FSaveAfterConnect;
       FPrepared := False;
     end;
@@ -169,16 +180,20 @@ procedure TJvRemoteLogin.OkButtonClick(Sender: TObject);
 var
   SetCursor: Boolean;
 begin
-  with TJvLoginForm(Sender) do begin
+  with TJvLoginForm(Sender) do
+  begin
     SetCursor := GetCurrentThreadID = MainThreadID;
     try
-      if SetCursor then Screen.Cursor := crHourGlass;
+      if SetCursor then
+        Screen.Cursor := crHourGlass;
       try
         if DoCheckUser(UserNameEdit.Text, PasswordEdit.Text) then
           ModalResult := mrOk
-        else ModalResult := mrNone;
+        else
+          ModalResult := mrNone;
       finally
-        if SetCursor then Screen.Cursor := crDefault;
+        if SetCursor then
+          Screen.Cursor := crDefault;
       end;
     except
       Application.HandleException(Self);
@@ -192,29 +207,36 @@ var
   OnGetUser: TGetUsernameEvent;
 {$ENDIF}
 begin
-  if Sender = FRemoteServer then begin
-    if not FInLogin then DoBeforeLogin;
+  if Sender = FRemoteServer then
+  begin
+    if not FInLogin then
+      DoBeforeLogin;
     with CreateLoginForm(False) do
     try
       OnOkClick := Self.OkButtonClick;
       FUsername := ReadUserName(FUsername);
-{$IFDEF COMPILER4_UP}
-      if FRemoteServer is TDispatchConnection then begin
+      {$IFDEF COMPILER4_UP}
+      if FRemoteServer is TDispatchConnection then
+      begin
         OnGetUser := TDispatchConnection(FRemoteServer).OnGetUsername;
-        if Assigned(OnGetUser) then OnGetUser(FRemoteServer, FUsername);
+        if Assigned(OnGetUser) then
+          OnGetUser(FRemoteServer, FUsername);
       end;
-{$ENDIF}
+      {$ENDIF}
       UserNameEdit.Text := FUsername;
-      if ShowModal = mrOk then begin
+      if ShowModal = mrOk then
+      begin
         FUsername := UserNameEdit.Text;
         WriteUserName(FUsername);
-        if not FInLogin then begin
+        if not FInLogin then
+        begin
           SetLoggedUser(FUsername);
           DoUpdateCaption;
           DoAfterLogin;
         end;
       end
-      else begin
+      else
+      begin
         AbortConnection;
         SysUtils.Abort;
       end;
@@ -236,10 +258,12 @@ var
   Ini: TObject;
 begin
   try
-    if UseRegistry then Ini := TRegIniFile.Create(IniFileName)
-    else Ini := TIniFile.Create(IniFileName);
+    if UseRegistry then
+      Ini := TRegIniFile.Create(IniFileName)
+    else
+      Ini := TIniFile.Create(IniFileName);
     try
-      IniWriteString(Ini, keyLoginSection, keyLastLoginUserName, UserName);
+      IniWriteString(Ini, cKeyLoginSection, cKeyLastLoginUserName, UserName);
     finally
       Ini.Free;
     end;
@@ -252,15 +276,17 @@ var
   Ini: TObject;
 begin
   try
-    if UseRegistry then begin
+    if UseRegistry then
+    begin
       Ini := TRegIniFile.Create(IniFileName);
-{$IFDEF COMPILER5_UP}
+      {$IFDEF COMPILER5_UP}
       TRegIniFile(Ini).Access := KEY_READ;
-{$ENDIF}
+      {$ENDIF}
     end
-    else Ini := TIniFile.Create(IniFileName);
+    else
+      Ini := TIniFile.Create(IniFileName);
     try
-      Result := IniReadString(Ini, keyLoginSection, keyLastLoginUserName,
+      Result := IniReadString(Ini, cKeyLoginSection, cKeyLastLoginUserName,
         UserName);
     finally
       Ini.Free;
@@ -293,7 +319,8 @@ end;
 function TJvRemoteLogin.DoLogin(var UserName: string): Boolean;
 begin
   Result := False;
-  if not Assigned(FRemoteServer) then Exit;
+  if not Assigned(FRemoteServer) then
+    Exit;
   PrepareRemoteServer;
   FUsername := UserName;
   try
@@ -316,7 +343,8 @@ begin
     FSaveAfterConnect(FRemoteServer);
 end;
 
-{$ENDIF Jv_MIDAS}
+{$ENDIF JV_MIDAS}
 {$ENDIF COMPILER3_UP}
 
 end.
+

@@ -31,8 +31,7 @@ unit JvFormProgress;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls;
+  SysUtils, Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls;
 
 type
   TFormProg = class(TForm)
@@ -41,10 +40,6 @@ type
     ProgressBar1: TProgressBar;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   end;
 
 var
@@ -54,14 +49,10 @@ implementation
 
 {$R *.DFM}
 
-{************************************************************}
-
 procedure TFormProg.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := Tag = 1;
 end;
-
-{************************************************************}
 
 procedure TFormProg.FormClose(Sender: TObject; var Action: TCloseAction);
 begin

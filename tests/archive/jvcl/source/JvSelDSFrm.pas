@@ -25,20 +25,21 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvSelDSFrm;
 
 interface
 
 {$IFNDEF DelphiPersonalEdition}
 
-uses Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, DB, StdCtrls,
-  {$IFDEF COMPILER6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,{$else}DsgnIntf, {$ENDIF}JvDsgn;
+uses
+  SysUtils, Classes, Controls, Forms, DB, StdCtrls,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
-
-{ TJvSelectDataSetForm }
-
   TJvSelectDataSetForm = class(TForm)
     GroupBox: TGroupBox;
     DataSetList: TListBox;
@@ -47,16 +48,11 @@ type
     procedure DataSetListDblClick(Sender: TObject);
     procedure DataSetListKeyPress(Sender: TObject; var Key: Char);
   private
-    { Private declarations }
     FDesigner: IDesigner;
     FExclude: string;
     procedure FillDataSetList(ExcludeDataSet: TDataSet);
     procedure AddDataSet(const S: string);
-  public
-    { Public declarations }
   end;
-
-{ TJvMemDataSetEditor }
 
   TJvMemDataSetEditor = class(TComponentEditor)
   private
@@ -82,9 +78,17 @@ implementation
 
 {$IFNDEF DelphiPersonalEdition}
 
-uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvxConst,
-  {$IFDEF COMPILER3_UP}{$IFDEF COMPILER5_UP} DsnDbCst, {$ELSE} BdeConst, {$ENDIF}{$ENDIF}
-  DSDesign;
+uses
+  TypInfo,
+  {$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER5_UP}
+  DsnDbCst,
+  {$ELSE}
+  BdeConst,
+  {$ENDIF}
+  {$ENDIF}
+  DSDesign,
+  JvVCLUtils, JvxConst;
 
 {$R *.DFM}
 
@@ -97,24 +101,26 @@ begin
   Result := nil;
   with TJvSelectDataSetForm.Create(Application) do
   try
-    if ACaption <> '' then Caption := ACaption;
+    if ACaption <> '' then
+      Caption := ACaption;
     FDesigner := ADesigner;
     FillDataSetList(ExcludeDataSet);
     if ShowModal = mrOk then
-      if DataSetList.ItemIndex >= 0 then begin
-        with DataSetList do  
-{$IFDEF COMPILER6_UP}
+      if DataSetList.ItemIndex >= 0 then
+      begin
+        with DataSetList do
+          {$IFDEF COMPILER6_UP}
           Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
-{$ELSE}
+          {$ELSE}
           Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
-{$ENDIF}
+          {$ENDIF}
       end;
   finally
     Free;
   end;
 end;
 
-{ TJvMemDataSetEditor }
+//=== TJvMemDataSetEditor ====================================================
 
 procedure TJvMemDataSetEditor.BorrowStructure;
 var
@@ -127,13 +133,16 @@ begin
     Caption := Format({$IFDEF CBUILDER} '%s->%s' {$ELSE} '%s.%s' {$ENDIF},
       [Component.Owner.Name, Caption]);
   DataSet := SelectDataSet(Designer, Caption, TDataSet(Component));
-  if DataSet <> nil then begin
+  if DataSet <> nil then
+  begin
     StartWait;
     try
-      if not CopyStructure(DataSet, Component as TDataSet) then Exit;
-      with TDataSet(Component) do begin
+      if not CopyStructure(DataSet, Component as TDataSet) then
+        Exit;
+      with TDataSet(Component) do
+      begin
         for I := 0 to FieldCount - 1 do
-          if Fields[I].Name = '' then 
+          if Fields[I].Name = '' then
             Fields[I].Name := UniqueName(Fields[I]);
       end;
     finally
@@ -152,50 +161,62 @@ var
   I: Integer;
 begin
   Result := '';
-  if (Field <> nil) then begin
+  if (Field <> nil) then
+  begin
     Temp := Field.FieldName;
     for I := Length(Temp) downto 1 do
-      if not (Temp[I] in AlphaNumeric) then System.Delete(Temp, I, 1);
-    if (Temp = '') or not IsValidIdent(Temp) then begin
+      if not (Temp[I] in AlphaNumeric) then
+        System.Delete(Temp, I, 1);
+    if (Temp = '') or not IsValidIdent(Temp) then
+    begin
       Temp := Field.ClassName;
       if (UpCase(Temp[1]) = 'T') and (Length(Temp) > 1) then
         System.Delete(Temp, 1, 1);
     end;
   end
-  else Exit;
+  else
+    Exit;
   Temp := Component.Name + Temp;
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Comp := Designer.GetComponent(Temp);
-  if (Comp = nil) or (Comp = Field) then Result := Temp
-  else Result := Designer.UniqueName(Temp);
-{$ELSE}
+  if (Comp = nil) or (Comp = Field) then
+    Result := Temp
+  else
+    Result := Designer.UniqueName(Temp);
+  {$ELSE}
   I := 0;
   repeat
     Result := Temp;
-    if I > 0 then Result := Result + IntToStr(I);
+    if I > 0 then
+      Result := Result + IntToStr(I);
     Comp := Designer.Form.FindComponent(Result);
     Inc(I);
   until (Comp = nil) or (Comp = Field);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvMemDataSetEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-{$IFDEF COMPILER5_UP}
-    0: ShowFieldsEditor(Designer, TDataSet(Component), TDSDesigner);
-{$ELSE}
-    0: ShowDatasetDesigner(Designer, TDataSet(Component));
-{$ENDIF}
-    1: BorrowStructure;
+    {$IFDEF COMPILER5_UP}
+    0:
+      ShowFieldsEditor(Designer, TDataSet(Component), TDSDesigner);
+    {$ELSE}
+    0:
+      ShowDatasetDesigner(Designer, TDataSet(Component));
+    {$ENDIF}
+    1:
+      BorrowStructure;
   end;
 end;
 
 function TJvMemDataSetEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := ResStr(SDatasetDesigner);
-    1: Result := srBorrowStructure;
+    0:
+      Result := ResStr(SDatasetDesigner);
+    1:
+      Result := srBorrowStructure;
   end;
 end;
 
@@ -204,11 +225,12 @@ begin
   Result := 2;
 end;
 
-{ TJvSelectDataSetForm }
+//=== TJvSelectDataSetForm ===================================================
 
 procedure TJvSelectDataSetForm.AddDataSet(const S: string);
 begin
-  if (S <> '') and (S <> FExclude) then DataSetList.Items.Add(S);
+  if (S <> '') and (S <> FExclude) then
+    DataSetList.Items.Add(S);
 end;
 
 procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
@@ -222,18 +244,22 @@ begin
   try
     DataSetList.Clear;
     FExclude := '';
-    if ExcludeDataSet <> nil then FExclude := ExcludeDataSet.Name;
-{$IFDEF COMPILER6_UP}
+    if ExcludeDataSet <> nil then
+      FExclude := ExcludeDataSet.Name;
+    {$IFDEF COMPILER6_UP}
     FDesigner.GetComponentNames(GetTypeData(TypeInfo(TDataSet)), AddDataSet);
-{$ELSE}
-    for I := 0 to FDesigner.Form.ComponentCount - 1 do begin
+    {$ELSE}
+    for I := 0 to FDesigner.Form.ComponentCount - 1 do
+    begin
       Component := FDesigner.Form.Components[I];
       if (Component is TDataSet) and (Component <> ExcludeDataSet) then
         AddDataSet(Component.Name);
     end;
-{$ENDIF}
-    with DataSetList do begin
-      if Items.Count > 0 then ItemIndex := 0;
+    {$ENDIF}
+    with DataSetList do
+    begin
+      if Items.Count > 0 then
+        ItemIndex := 0;
       Enabled := Items.Count > 0;
       OkBtn.Enabled := (ItemIndex >= 0);
     end;
@@ -244,7 +270,8 @@ end;
 
 procedure TJvSelectDataSetForm.DataSetListDblClick(Sender: TObject);
 begin
-  if DataSetList.ItemIndex >= 0 then ModalResult := mrOk;
+  if DataSetList.ItemIndex >= 0 then
+    ModalResult := mrOk;
 end;
 
 procedure TJvSelectDataSetForm.DataSetListKeyPress(Sender: TObject;
@@ -257,6 +284,4 @@ end;
 {$ENDIF}
 
 end.
-
-
 

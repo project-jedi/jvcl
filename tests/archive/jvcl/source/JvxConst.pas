@@ -13,6 +13,9 @@ The Original Code is: JvxConst.PAS, released on 2002-11-23.
 The Initial Developers of the Original Code are: Peter Thörnqvist
 All Rights Reserved.
 
+Contributor(s):
+  Polaris Software
+
 Last Modified: 2002-11-23
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -34,99 +37,83 @@ interface
 
 resourcestring
   // JvLConst
-{ Component pages }
+  { Component pages }
   srJvControls         = 'Jv Controls';
   srJvDBAware          = 'Jv DBAware';
   srJvTools            = 'Jv Tools';
 
-{ TImageList component editor }
-
+  { TImageList component editor }
   srSaveImageList      = 'Save to bitmap...';
 
-{ TJvFormStorage component editor }
-
+  { TJvFormStorage component editor }
   srStorageDesigner    = 'Form Storage Designer...';
 
-{ TJvPageManager component editor }
-
+  { TJvPageManager component editor }
   srProxyEditor        = 'Edit Proxies...';
   srPageProxies        = '%s Page Proxies';
   srProxyName          = 'Page Proxy Name';
   srPageName           = 'Page Name';
 
-{ TJvSpeedBar component editor }
-
+  { TJvSpeedBar component editor }
   srSBItemNotCreate    = 'Cannot create a new Speedbar button';
   srConfirmSBDelete    = 'Are you sure you want to delete current section?';
   srSpeedbarDesigner   = 'Speedbar designer...';
   srNewSectionName     = 'Untitled (%d)';
 
-{ TJvTimerList component editor }
-
+  { TJvTimerList component editor }
   srEventNotCreate     = 'Cannot create a new event';
   srTimerDesigner      = 'Edit Events...';
   srTimerEvents        = '%s.Events';
 
-{ TJvAnimatedImage component editor }
-
+  { TJvAnimatedImage component editor }
   srAniCurFilter       = 'Animated Cursors (*.ani)|*.ani|Any files (*.*)|*.*';
   srEditPicture        = 'Edit picture...';
   srLoadAniCursor      = 'Load from ANI...';
 
-{ TJvIconList property editor }
-
+  { TJvIconList property editor }
   srLoadIcon           = 'Load Icon';
 
-{ TJvxGradientCaption component editor }
-
+  { TJvxGradientCaption component editor }
   srCaptionDesigner    = 'Edit Captions...';
   srGradientCaptions   = 'Captions';
 
-{ TJvMemoryTable & TJvMemoryData component editor }
-
+ { TJvMemoryTable & TJvMemoryData component editor }
   srBorrowStructure    = 'Borrow structure...';
 
   // JvCConst
-{ JvToolEdit }
-
+  { JvToolEdit }
   SBrowse                = 'Browse';
   SDefaultFilter         = 'All files (*.*)|*.*';
 
-{ JvPickDate }
-
+  { JvPickDate }
   SDateDlgTitle          = 'Select a Date';
   SNextYear              = 'Next Year|';
   SNextMonth             = 'Next Month|';
   SPrevYear              = 'Previous Year|';
   SPrevMonth             = 'Previous Month|';
 
-{ JvVCLUtils }
-
+  { JvVCLUtils }
   SNotImplemented        = 'Function not yet implemented';
   SFileNotExec           = 'File specified is not an executable file, dynamic-link library, or icon file';
   SLoadLibError          = 'Could not load library ''%s''';
   SDetails               = 'Details';
 
   // JvTConst
-{ JvDualList }
-
+  { JvDualList }
   SDualListSrcCaption         = '&Source';
   SDualListDestCaption        = '&Destination';
 
-{ JvClipView }
-
+  { JvClipView }
   SClipbrdUnknown             = 'Cannot display. Data in Clipboard is in an unknown format.';
   SClipbrdEmpty               = 'Clipboard is empty';
 
-{ JvSpeedbar }
-
+  { JvSpeedbar }
   SCustomizeSpeedbar          = 'Customize Speedbar';
   SAvailButtons               = '&Available buttons:';
   SSpeedbarCategories         = '&Categories:';
   SSpeedbarEditHint           = 'To add command buttons, drag and drop buttons onto the SpeedBar. To remove command buttons, drag them off of the SpeedBar.';
 
-{ MathParser }
-
+  { MathParser }
   SParseSyntaxError           = 'Syntax error';
   SParseNotCramp              = 'Invalid condition (no cramp)';
   SParseDivideByZero          = 'Divide by zero';
@@ -146,24 +133,20 @@ resourcestring
   SGIFVersion          = 'Unknown GIF version';
 
   // JvDConst
-{ JvDBLists }
-
+  { JvDBLists }
   SLocalDatabase          = 'Cannot perform this operation on a local database';
 
-{ JvDBUtils }
-
+  { JvDBUtils }
   SRetryLogin             = 'Do you wish to retry the connect to database?';
 
-{ JvDBFilter }
-
+  { JvDBFilter }
   SExprNotBoolean         = 'Field ''%s'' is not of type Boolean';
   SExprBadNullTest        = 'NULL only allowed with ''='' and ''<>''';
   SExprBadField           = 'Field ''%s'' cannot be used in a filter expression';
   SCaptureFilter          = 'Cannot perform this operation when controls are captured';
   SNotCaptureFilter       = 'Cannot perform this operation when controls are not captured';
 
-{ JvDBCtrl }
-
+  { JvDBCtrl }
   SInactiveData           = 'Closed';
   SBrowseData             = 'Browse';
   SEditData               = 'Edit';
@@ -171,8 +154,7 @@ resourcestring
   SSetKeyData             = 'Search';
   SCalcFieldsData         = 'Calculate';
 
-{ LoginDlg }
-
+  { LoginDlg }
   SRegistration           = 'Registration';
   SAppTitleLabel          = 'Application "%s"';
   SHintLabel              = 'Type your user name and password';
@@ -180,8 +162,7 @@ resourcestring
   SPasswordLabel          = '&Password:';
   SInvalidUserName        = 'Invalid user name or password';
 
-{ JvChPswDlg }
-
+  { JvChPswDlg }
   SChangePassword         = 'Change password';
   SOldPasswordLabel       = '&Old password:';
   SNewPasswordLabel       = '&New password:';
@@ -190,8 +171,7 @@ resourcestring
   SPasswordNotChanged     = 'Password has not been changed';
   SPasswordsMismatch      = 'The new and confirmed passwords do not match';
 
-{ JvDbExcpt }
-
+  { JvDbExcpt }
   SDBExceptCaption        = 'Database Engine Error';
   SBDEErrorLabel          = 'BDE Error';
   SServerErrorLabel       = 'Server Error';
@@ -199,8 +179,7 @@ resourcestring
   SNextButton             = '&Next';
   SPrevButton             = '&Prev';
 
-{ JvDBFilter expression parser }
-
+  { JvDBFilter expression parser }
   SExprIncorrect          = 'Incorrectly formed filter expression';
   SExprTermination        = 'Filter expression incorrectly terminated';
   SExprNameError          = 'Unterminated field name';
@@ -210,20 +189,23 @@ resourcestring
   SExprExpected           = 'Expression expected but %s found';
   SExprBadCompare         = 'Relational operators require a field and a constant';
 
-{ JvDBUtils }
-
+  { JvDBUtils }
   SConfirmSave            = 'The data were changed. Save them?';
   SDatabaseName           = 'Database name: %s';
 
-{ LoginDlg }
-
+  { LoginDlg }
   SUnlockCaption          = 'Unlock application';
   SUnlockHint             = 'Type your password';
 
-{ JvDBCtrl }
-
+  { JvDBCtrl }
   SDeleteMultipleRecords  = 'Delete all selected records?';
 
+  { Polaris patch }
+  SDateMinLimit           = 'Enter a date before "%s"';
+  SDateMaxLimit           = 'Enter a date after "%s"'; 
+  SDateOutOfRange         = '%s - Enter a date between "%s" and "%s"';
+  SDateOutOfMin           = '%s - Enter a date after "%s"';
+  SDateOutOfMax           = '%s - Enter a date before "%s"';
 
 implementation
 

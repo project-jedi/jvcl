@@ -12,7 +12,7 @@ The Original Code is: JvGrdCpt.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,24 +25,19 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvGrdCpt;
-
 
 interface
 
-{$IFDEF WIN32}
-
-uses Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  JvWndProcHook, JvVCLUtils{, JvComponent};
+uses
+  Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
+  JvWndProcHook, JvVCLUtils;
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);
 
   TJvCaption = class;
   TJvCaptionList = class;
-
-{ TJvxGradientCaption }
 
   TJvxGradientCaption = class(TComponent)
   private
@@ -76,10 +71,8 @@ type
     function GetForm: TForm;
     function GetFormCaption: string;
     procedure SetFormCaption(const Value: string);
-    procedure BeforeMessage(Sender: TObject; var Msg: TMessage;
-      var Handled: Boolean);
-    procedure AfterMessage(Sender: TObject; var Msg: TMessage;
-      var Handled: Boolean);
+    procedure BeforeMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
+    procedure AfterMessage(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
     function CheckMenuPopup(X, Y: Integer): Boolean;
     procedure SetFont(Value: TFont);
     procedure FontChanged(Sender: TObject);
@@ -97,9 +90,9 @@ type
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     function IsRightToLeft: Boolean;
-{$ENDIF}
+    {$ENDIF}
     property Form: TForm read GetForm;
     property TextWidth: Integer read GetTextWidth;
   public
@@ -120,8 +113,7 @@ type
       write SetGradientActive default True;
     property GradientInactive: Boolean read FGradientInactive
       write SetGradientInactive default False;
-    property GradientSteps: Integer read FGradientSteps write SetGradientSteps
-      default 64;
+    property GradientSteps: Integer read FGradientSteps write SetGradientSteps default 64;
     property HideDirection: THideDirection read FHideDirection
       write SetHideDirection default hdLeftToRight;
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
@@ -131,17 +123,15 @@ type
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
 
-{ TJvCaptionList }
-
   TJvCaptionList = class(TCollection)
   private
     FParent: TJvxGradientCaption;
     function GetCaption(Index: Integer): TJvCaption;
     procedure SetCaption(Index: Integer; Value: TJvCaption);
   protected
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     function GetOwner: TPersistent; override;
-{$ENDIF}
+    {$ENDIF}
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AParent: TJvxGradientCaption);
@@ -150,8 +140,6 @@ type
     property Parent: TJvxGradientCaption read FParent;
     property Items[Index: Integer]: TJvCaption read GetCaption write SetCaption; default;
   end;
-
-{ TJvCaption }
 
   TJvCaption = class(TCollectionItem)
   private
@@ -182,41 +170,35 @@ type
   published
     property Caption: string read FCaption write SetCaption;
     property Font: TFont read FFont write SetFont stored IsFontStored;
-    property ParentFont: Boolean read FParentFont write SetParentFont
-      default True;
+    property ParentFont: Boolean read FParentFont write SetParentFont default True;
     property InactiveColor: TColor read FInactiveColor write SetInactiveColor
       default clInactiveCaptionText;
     property GlueNext: Boolean read FGlueNext write SetGlueNext default False;
     property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
-function GradientFormCaption(AForm: TCustomForm;
-  AStartColor: TColor): TJvxGradientCaption;
-
-{$ENDIF WIN32}
+function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvxGradientCaption;
 
 implementation
 
-{$IFDEF WIN32}
+uses
+  SysUtils;
 
-uses SysUtils, JvAppUtils;
-
-function GradientFormCaption(AForm: TCustomForm;
-  AStartColor: TColor): TJvxGradientCaption;
+function GradientFormCaption(AForm: TCustomForm; AStartColor: TColor): TJvxGradientCaption;
 begin
   Result := TJvxGradientCaption.Create(AForm);
   with Result do
-    try
-      FStartColor := AStartColor;
-      FormCaption := AForm.Caption;
-      Update;
-    except
-      Free;
-      raise;
-    end;
+  try
+    FStartColor := AStartColor;
+    FormCaption := AForm.Caption;
+    Update;
+  except
+    Free;
+    raise;
+  end;
 end;
 
-{ TJvCaptionList }
+//=== TJvCaptionList =========================================================
 
 constructor TJvCaptionList.Create(AParent: TJvxGradientCaption);
 begin
@@ -247,7 +229,7 @@ var
 begin
   BeginUpdate;
   try
-    for I := 0 to Count-1 do
+    for I := 0 to Count - 1 do
       Items[I].RestoreDefaults;
   finally
     EndUpdate;
@@ -262,10 +244,11 @@ end;
 procedure TJvCaptionList.Update(Item: TCollectionItem);
 begin
   if (FParent <> nil) and not (csLoading in FParent.ComponentState) then
-    if FParent.Active then FParent.Update;
+    if FParent.Active then
+      FParent.Update;
 end;
 
-{ TJvCaption }
+//=== TJvCaption =============================================================
 
 constructor TJvCaption.Create(Collection: TCollection);
 var
@@ -277,11 +260,13 @@ begin
   try
     inherited Create(Collection);
     FFont := TFont.Create;
-    if Assigned(Parent) then begin
+    if Assigned(Parent) then
+    begin
       FFont.Assign(Parent.Font);
       FFont.Color := Parent.Font.Color;
     end
-    else FFont.Color := clCaptionText;
+    else
+      FFont.Color := clCaptionText;
     FFont.OnChange := FontChanged;
     FCaption := '';
     FParentFont := True;
@@ -289,7 +274,8 @@ begin
     FGlueNext := False;
     FInactiveColor := clInactiveCaptionText;
   finally
-    if Assigned(Parent) then Changed(False);
+    if Assigned(Parent) then
+      Changed(False);
   end;
 end;
 
@@ -302,8 +288,10 @@ end;
 
 procedure TJvCaption.Assign(Source: TPersistent);
 begin
-  if Source is TJvCaption then begin
-    if Assigned(Collection) then Collection.BeginUpdate;
+  if Source is TJvCaption then
+  begin
+    if Assigned(Collection) then
+      Collection.BeginUpdate;
     try
       RestoreDefaults;
       Caption := TJvCaption(Source).Caption;
@@ -314,10 +302,12 @@ begin
       GlueNext := TJvCaption(Source).GlueNext;
       Visible := TJvCaption(Source).Visible;
     finally
-      if Assigned(Collection) then Collection.EndUpdate;
+      if Assigned(Collection) then
+        Collection.EndUpdate;
     end;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvCaption.RestoreDefaults;
@@ -354,7 +344,8 @@ end;
 
 procedure TJvCaption.SetParentFont(Value: Boolean);
 begin
-  if Value and (GradientCaption <> nil) then begin
+  if Value and (GradientCaption <> nil) then
+  begin
     FFont.OnChange := nil;
     try
       FFont.Assign(GradientCaption.Font);
@@ -393,7 +384,8 @@ end;
 
 procedure TJvCaption.SetVisible(Value: Boolean);
 begin
-  if FVisible <> Value then begin
+  if FVisible <> Value then
+  begin
     FVisible := Value;
     Changed(False);
   end;
@@ -401,7 +393,8 @@ end;
 
 procedure TJvCaption.SetInactiveColor(Value: TColor);
 begin
-  if FInactiveColor <> Value then begin
+  if FInactiveColor <> Value then
+  begin
     FInactiveColor := Value;
     if (GradientCaption = nil) or not GradientCaption.FWindowActive then
       Changed(False);
@@ -410,17 +403,20 @@ end;
 
 procedure TJvCaption.SetGlueNext(Value: Boolean);
 begin
-  if FGlueNext <> Value then begin
+  if FGlueNext <> Value then
+  begin
     FGlueNext := Value;
     Changed(False);
   end;
 end;
 
+//=== TJvxGradientCaption ====================================================
+
 {$IFNDEF COMPILER4_UP}
 const
-  COLOR_GRADIENTACTIVECAPTION   =    27;
-  COLOR_GRADIENTINACTIVECAPTION =    28;
-  SPI_GETGRADIENTCAPTIONS       = $1008;
+  COLOR_GRADIENTACTIVECAPTION = 27;
+  COLOR_GRADIENTINACTIVECAPTION = 28;
+  SPI_GETGRADIENTCAPTIONS = $1008;
 {$ENDIF}
 
 const
@@ -433,10 +429,9 @@ var
 begin
   if SystemParametersInfo(SPI_GETGRADIENTCAPTIONS, SizeOf(Info), @Info, 0) then
     Result := Info
-  else Result := False;
+  else
+    Result := False;
 end;
-
-{ TJvxGradientCaption }
 
 constructor TJvxGradientCaption.Create(AOwner: TComponent);
 begin
@@ -474,8 +469,10 @@ var
 begin
   Loading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) then begin
-    if Loading and (Owner is TCustomForm) then Update;
+  if not (csDesigning in ComponentState) then
+  begin
+    if Loading and (Owner is TCustomForm) then
+      Update;
   end;
 end;
 
@@ -490,7 +487,8 @@ end;
 procedure TJvxGradientCaption.SetPopupMenu(Value: TPopupMenu);
 begin
   FPopupMenu := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvxGradientCaption.SetCaptions(Value: TJvCaptionList);
@@ -500,10 +498,13 @@ end;
 
 procedure TJvxGradientCaption.SetDefaultFont(Value: Boolean);
 begin
-  if FDefaultFont <> Value then begin
-    if Value then SetFontDefault;
+  if FDefaultFont <> Value then
+  begin
+    if Value then
+      SetFontDefault;
     FDefaultFont := Value;
-    if Active then Update;
+    if Active then
+      Update;
   end;
 end;
 
@@ -511,7 +512,8 @@ procedure TJvxGradientCaption.SetFontDefault;
 var
   NCMetrics: TNonClientMetrics;
 begin
-  with FFont do begin
+  with FFont do
+  begin
     OnChange := nil;
     try
       NCMetrics.cbSize := SizeOf(NCMetrics);
@@ -523,15 +525,16 @@ begin
         else
           Handle := CreateFontIndirect(NCMetrics.lfCaptionFont);
       end
-      else begin
+      else
+      begin
         Name := 'MS Sans Serif';
         Size := 8;
         Style := [fsBold];
       end;
       Color := clCaptionText;
-{$IFNDEF VER90}
+      {$IFNDEF DELPHI2}
       Charset := DEFAULT_CHARSET;
-{$ENDIF}
+      {$ENDIF}
     finally
       OnChange := FontChanged;
     end;
@@ -561,11 +564,13 @@ end;
 
 procedure TJvxGradientCaption.SetFormCaption(const Value: string);
 begin
-  if FFormCaption <> Value then begin
+  if FFormCaption <> Value then
+  begin
     FFormCaption := Value;
     if (Form <> nil) and (csDesigning in ComponentState) then
       Form.Caption := FFormCaption;
-    if Active then Update;
+    if Active then
+      Update;
   end;
 end;
 
@@ -583,8 +588,10 @@ end;
 
 procedure TJvxGradientCaption.CheckToggleHook;
 begin
-  if Active then SetHook
-  else ReleaseHook;
+  if Active then
+    SetHook
+  else
+    ReleaseHook;
 end;
 
 function TJvxGradientCaption.CheckMenuPopup(X, Y: Integer): Boolean;
@@ -594,7 +601,8 @@ begin
     FPopupMenu.AutoPopup then
   begin
     FPopupMenu.PopupComponent := Self;
-    if Form <> nil then begin
+    if Form <> nil then
+    begin
       Form.SendCancelMode(nil);
       FPopupMenu.Popup(X, Y);
       Result := True;
@@ -605,27 +613,31 @@ end;
 procedure TJvxGradientCaption.BeforeMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 var
-  DrawRgn: HRgn;
+  DrawRgn: HRGN;
   R: TRect;
   Icons: TBorderIcons;
 begin
-  if Active then begin
+  if Active then
+  begin
     case Msg.Msg of
       WM_NCACTIVATE:
         begin
           FWindowActive := (Msg.wParam <> 0);
         end;
       WM_NCRBUTTONDOWN:
-        if Assigned(FPopupMenu) and FPopupMenu.AutoPopup then begin
+        if Assigned(FPopupMenu) and FPopupMenu.AutoPopup then
+        begin
           FClicked := True;
           Msg.Result := 0;
           Handled := True;
         end;
       WM_NCRBUTTONUP:
         with TWMMouse(Msg) do
-          if FClicked then begin
+          if FClicked then
+          begin
             FClicked := False;
-            if CheckMenuPopup(XPos, YPos) then begin
+            if CheckMenuPopup(XPos, YPos) then
+            begin
               Result := 0;
               Handled := True;
             end;
@@ -635,7 +647,8 @@ begin
           FSaveRgn := Msg.wParam;
           FRgnChanged := False;
           CalculateGradientParams(R, Icons);
-          if RectInRegion(FSaveRgn, R) then begin
+          if RectInRegion(FSaveRgn, R) then
+          begin
             DrawRgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
             try
               Msg.WParam := CreateRectRgn(0, 0, 1, 1);
@@ -656,7 +669,8 @@ var
   DC: HDC;
   S: string;
 begin
-  if Active then begin
+  if Active then
+  begin
     case Msg.Msg of
       WM_NCACTIVATE:
         begin
@@ -669,7 +683,8 @@ begin
         end;
       WM_NCPAINT:
         begin
-          if FRgnChanged then begin
+          if FRgnChanged then
+          begin
             DeleteObject(Msg.WParam);
             Msg.WParam := FSaveRgn;
             FRgnChanged := False;
@@ -686,9 +701,11 @@ begin
           so we need to handle WM_GETTEXT to redraw non-client area
           when form's caption changed }
         begin
-          if csDesigning in ComponentState then begin
+          if csDesigning in ComponentState then
+          begin
             SetString(S, PChar(Msg.LParam), Msg.Result);
-            if AnsiCompareStr(S, FFormCaption) <> 0 then begin
+            if AnsiCompareStr(S, FFormCaption) <> 0 then
+            begin
               FormCaption := S;
               PostMessage(Form.Handle, WM_NCPAINT, 0, 0);
             end;
@@ -700,9 +717,11 @@ end;
 
 procedure TJvxGradientCaption.SetStartColor(Value: TColor);
 begin
-  if FStartColor <> Value then begin
+  if FStartColor <> Value then
+  begin
     FStartColor := Value;
-    if Active then Update;
+    if Active then
+      Update;
   end;
 end;
 
@@ -715,16 +734,22 @@ end;
 
 procedure TJvxGradientCaption.SetActive(Value: Boolean);
 begin
-  if FActive <> Value then begin
+  if FActive <> Value then
+  begin
     FActive := Value;
     FClicked := False;
     Update;
-    if ([csDestroying, csReading] * ComponentState = []) then begin
-      if FActive then begin
-        if Assigned(FOnActivate) then FOnActivate(Self);
+    if [csDestroying, csReading] * ComponentState = [] then
+    begin
+      if FActive then
+      begin
+        if Assigned(FOnActivate) then
+          FOnActivate(Self);
       end
-      else begin
-        if Assigned(FOnDeactivate) then FOnDeactivate(Self);
+      else
+      begin
+        if Assigned(FOnDeactivate) then
+          FOnDeactivate(Self);
       end;
     end;
   end;
@@ -732,7 +757,8 @@ end;
 
 procedure TJvxGradientCaption.Clear;
 begin
-  if FCaptions <> nil then FCaptions.Clear;
+  if FCaptions <> nil then
+    FCaptions.Clear;
 end;
 
 procedure TJvxGradientCaption.MoveCaption(FromIndex, ToIndex: Integer);
@@ -742,15 +768,17 @@ end;
 
 procedure TJvxGradientCaption.Update;
 var
-  Rgn: HRgn;
+  Rgn: HRGN;
 begin
   if not (csDesigning in ComponentState) and (Owner is TCustomForm) and
     not (csLoading in ComponentState) then
   begin
     CheckToggleHook;
     FWindowActive := False;
-    if (Form <> nil) and Form.HandleAllocated and Form.Visible then begin
-      if Active then begin
+    if (Form <> nil) and Form.HandleAllocated and Form.Visible then
+    begin
+      if Active then
+      begin
         FWindowActive := (GetActiveWindow = Form.Handle) and
           IsForegroundTask;
       end;
@@ -776,19 +804,22 @@ begin
   case Form.BorderStyle of
     bsDialog: Icons := Icons * [biSystemMenu, biHelp];
     bsToolWindow, bsSizeToolWin: Icons := Icons * [biSystemMenu];
-    else begin
+  else
+    begin
       if not (biSystemMenu in Icons) then
         Icons := Icons - [biMaximize, biMinimize];
-      if (Icons * [biMaximize, biMinimize] <> []) then
+      if Icons * [biMaximize, biMinimize] <> [] then
         Icons := Icons - [biHelp];
     end;
   end;
   BtnCount := 0;
   for I := Low(TBorderIcon) to High(TBorderIcon) do
-    if I in Icons then Inc(BtnCount);
+    if I in Icons then
+      Inc(BtnCount);
   if (biMinimize in Icons) and not (biMaximize in Icons) then
     Inc(BtnCount)
-  else if not (biMinimize in Icons) and (biMaximize in Icons) then
+  else
+  if not (biMinimize in Icons) and (biMaximize in Icons) then
     Inc(BtnCount);
   case Form.BorderStyle of
     bsToolWindow, bsSingle, bsDialog:
@@ -798,11 +829,13 @@ begin
       InflateRect(R, -GetSystemMetrics(SM_CXSIZEFRAME),
         -GetSystemMetrics(SM_CYSIZEFRAME));
   end;
-  if Form.BorderStyle in [bsToolWindow, bsSizeToolWin] then begin
+  if Form.BorderStyle in [bsToolWindow, bsSizeToolWin] then
+  begin
     R.Bottom := R.Top + GetSystemMetrics(SM_CYSMCAPTION) - 1;
     Dec(R.Right, BtnCount * GetSystemMetrics(SM_CXSMSIZE));
   end
-  else begin
+  else
+  begin
     R.Bottom := R.Top + GetSystemMetrics(SM_CYCAPTION) - 1;
     Dec(R.Right, BtnCount * GetSystemMetrics(SM_CXSIZE));
   end;
@@ -814,8 +847,10 @@ var
   F: TForm;
 begin
   F := Form;
-  if F <> nil then Result := F.IsRightToLeft
-  else Result := Application.IsRightToLeft;
+  if F <> nil then
+    Result := F.IsRightToLeft
+  else
+    Result := Application.IsRightToLeft;
 end;
 {$ENDIF}
 
@@ -834,8 +869,10 @@ var
   begin
     if (Index < 0) or Captions[Index].ParentFont then
       Image.Canvas.Font.Assign(Self.Font)
-    else Image.Canvas.Font.Assign(Captions[Index].Font);
-    if not FWindowActive then begin
+    else
+      Image.Canvas.Font.Assign(Captions[Index].Font);
+    if not FWindowActive then
+    begin
       if Index < 0 then
         Image.Canvas.Font.Color := FFontInactiveColor
       else
@@ -850,18 +887,26 @@ var
     Text: string;
     Flags: Longint;
   begin
-    if Length(S) > 0 then begin
+    if Length(S) > 0 then
+    begin
       Text := MinimizeText(S, Image.Canvas, R.Right - R.Left);
-      if GlueNext and (Text = S) then begin
-        if (Image.Canvas.TextWidth(Text + '.') >= R.Right - R.Left) then begin
-          if GluePrev then Text := Points
-          else Text := Text + Points;
+      if GlueNext and (Text = S) then
+      begin
+        if Image.Canvas.TextWidth(Text + '.') >= R.Right - R.Left then
+        begin
+          if GluePrev then
+            Text := Points
+          else
+            Text := Text + Points;
         end;
       end;
-      if (Text <> Points) or GluePrev then begin
-        if (Text = Points) and GluePrev then begin
+      if (Text <> Points) or GluePrev then
+      begin
+        if (Text = Points) and GluePrev then
+        begin
           SetCaptionFont(-1);
-          if PrevIndex > 0 then begin
+          if PrevIndex > 0 then
+          begin
             if FWindowActive then
               Image.Canvas.Font.Color := Captions[PrevIndex].Font.Color
             else
@@ -869,25 +914,29 @@ var
           end;
         end;
         Flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX;
-{$IFDEF COMPILER4_UP}
+        {$IFDEF COMPILER4_UP}
         if IsRightToLeft then
-          Flags := Flags or DT_RIGHT or DT_RTLREADING else
-{$ENDIF}
-        Flags := Flags or DT_LEFT;
+          Flags := Flags or DT_RIGHT or DT_RTLREADING
+        else
+        {$ENDIF}
+          Flags := Flags or DT_LEFT;
         DrawText(Image.Canvas.Handle, PChar(Text), -1, R, Flags);
-{$IFDEF COMPILER4_UP}
+        {$IFDEF COMPILER4_UP}
         if IsRightToLeft then
-          Dec(R.Right, Image.Canvas.TextWidth(Text)) else
-{$ENDIF}
-        Inc(R.Left, Image.Canvas.TextWidth(Text));
+          Dec(R.Right, Image.Canvas.TextWidth(Text))
+        else
+        {$ENDIF}
+          Inc(R.Left, Image.Canvas.TextWidth(Text));
       end;
       Result := (Text = S);
     end
-    else Result := True;
+    else
+      Result := True;
   end;
 
 begin
-  if Form.BorderStyle = bsNone then Exit;
+  if Form.BorderStyle = bsNone then
+    Exit;
   Image := TBitmap.Create;
   try
     CalculateGradientParams(R, Icons);
@@ -897,13 +946,19 @@ begin
     Image.Width := WidthOf(R);
     Image.Height := HeightOf(R);
     R := Rect(-Image.Width div 4, 0, Image.Width, Image.Height);
-    if SysGradient then begin
-      if FWindowActive then C := clGradientActiveCaption
-      else C := clGradientInactiveCaption;
+    if SysGradient then
+    begin
+      if FWindowActive then
+        C := clGradientActiveCaption
+      else
+        C := clGradientInactiveCaption;
     end
-    else begin
-      if FWindowActive then C := clActiveCaption
-      else C := clInactiveCaption;
+    else
+    begin
+      if FWindowActive then
+        C := clActiveCaption
+      else
+        C := clInactiveCaption;
     end;
     if (FWindowActive and GradientActive) or
       (not FWindowActive and GradientInactive) then
@@ -911,30 +966,35 @@ begin
       GradientFillRect(Image.Canvas, R, FStartColor, C, fdLeftToRight,
         FGradientSteps);
     end
-    else begin
+    else
+    begin
       Image.Canvas.Brush.Color := C;
-      Image.Canvas. FillRect(R);
+      Image.Canvas.FillRect(R);
     end;
     R.Left := 0;
-    if (biSystemMenu in Icons) and (Form.BorderStyle in [bsSizeable,
-      bsSingle]) then
+    if (biSystemMenu in Icons) and (Form.BorderStyle in [bsSizeable, bsSingle]) then
     begin
       IconCreated := False;
       if Form.Icon.Handle <> 0 then
         Ico := Form.Icon.Handle
-      else if Application.Icon.Handle <> 0 then begin
+      else
+      if Application.Icon.Handle <> 0 then
+      begin
         Ico := LoadImage(HInstance, 'MAINICON', IMAGE_ICON,
           GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0);
         IconCreated := Ico <> 0;
-        if not IconCreated then Ico := Application.Icon.Handle;
+        if not IconCreated then
+          Ico := Application.Icon.Handle;
       end
-      else Ico := LoadIcon(0, IDI_APPLICATION);
+      else
+        Ico := LoadIcon(0, IDI_APPLICATION);
       DrawIconEx(Image.Canvas.Handle, R.Left + 1 + (R.Bottom + R.Top -
         GetSystemMetrics(SM_CXSMICON)) div 2, (R.Bottom + R.Top -
         GetSystemMetrics(SM_CYSMICON)) div 2, Ico,
         GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON),
         0, 0, DI_NORMAL);
-      if IconCreated then DestroyIcon(Ico);
+      if IconCreated then
+        DestroyIcon(Ico);
       Inc(R.Left, R.Bottom - R.Top);
     end;
     if (FFormCaption <> '') or ((Captions <> nil) and (Captions.Count > 0)) then
@@ -942,7 +1002,8 @@ begin
       SumWidth := 2;
       SetBkMode(Image.Canvas.Handle, TRANSPARENT);
       Inc(R.Left, 2);
-      if FHideDirection = hdLeftToRight then begin
+      if FHideDirection = hdLeftToRight then
+      begin
         for I := 0 to Captions.Count - 1 do
           if Captions[I].Visible then
             SumWidth := SumWidth + Captions[I].TextWidth;
@@ -951,34 +1012,43 @@ begin
         while (SumWidth > (R.Right - R.Left)) and (J < Captions.Count) do
         begin
           SumWidth := SumWidth - Captions[J].TextWidth;
-          while (J < Captions.Count - 1) and Captions[J].GlueNext do begin
+          while (J < Captions.Count - 1) and Captions[J].GlueNext do
+          begin
             SumWidth := SumWidth - Captions[J + 1].TextWidth;
             Inc(J);
           end;
           Inc(J);
         end;
-        for I := J to Captions.Count do begin
-          if I < Captions.Count then begin
-            if Captions[I].Visible then begin
+        for I := J to Captions.Count do
+        begin
+          if I < Captions.Count then
+          begin
+            if Captions[I].Visible then
+            begin
               S := Captions[I].Caption;
               SetCaptionFont(I);
             end
-            else S := '';
+            else
+              S := '';
           end
-          else begin
+          else
+          begin
             S := FFormCaption;
             SetCaptionFont(-1);
           end;
           DrawStr(I = Captions.Count, False, -1);
         end;
       end
-      else begin
+      else
+      begin
         DrawNext := True;
         J := 0;
-        if Captions <> nil then begin
+        if Captions <> nil then
+        begin
           while (SumWidth < (R.Right - R.Left)) and (J < Captions.Count) do
           begin
-            if Captions[J].Visible then begin
+            if Captions[J].Visible then
+            begin
               SumWidth := SumWidth + Captions[J].TextWidth;
               while Captions[J].GlueNext and (J < Captions.Count - 1) do
               begin
@@ -988,10 +1058,13 @@ begin
             end;
             Inc(J);
           end;
-          for I := 0 to J - 1 do begin
-            if Captions[I].Visible and DrawNext then begin
+          for I := 0 to J - 1 do
+          begin
+            if Captions[I].Visible and DrawNext then
+            begin
               S := Captions[I].Caption;
-              if S <> '' then begin
+              if S <> '' then
+              begin
                 SetCaptionFont(I);
                 DrawNext := DrawStr(((I > 0) and Captions[I - 1].GlueNext) or
                   (I = 0), Captions[I].GlueNext, I - 1) and
@@ -1025,16 +1098,20 @@ var
   I: Integer;
 begin
   FDefaultFont := False;
-  if (Captions <> nil) then begin
+  if Captions <> nil then
+  begin
     Captions.BeginUpdate;
     try
       for I := 0 to Captions.Count - 1 do
-        if Captions[I].ParentFont then Captions[I].SetParentFont(True);
+        if Captions[I].ParentFont then
+          Captions[I].SetParentFont(True);
     finally
       Captions.EndUpdate;
     end;
   end
-  else if Active then Update;
+  else
+  if Active then
+    Update;
 end;
 
 function TJvxGradientCaption.GetTextWidth: Integer;
@@ -1059,45 +1136,54 @@ end;
 
 procedure TJvxGradientCaption.SetGradientSteps(Value: Integer);
 begin
-  if FGradientSteps <> Value then begin
+  if FGradientSteps <> Value then
+  begin
     FGradientSteps := Value;
     if Active and ((FWindowActive and GradientActive) or
-      (not FWindowActive and GradientInactive)) then Update;
+      (not FWindowActive and GradientInactive)) then
+      Update;
   end;
 end;
 
 procedure TJvxGradientCaption.SetGradientActive(Value: Boolean);
 begin
-  if FGradientActive <> Value then begin
+  if FGradientActive <> Value then
+  begin
     FGradientActive := Value;
-    if Active and FWindowActive then Update;
+    if Active and FWindowActive then
+      Update;
   end;
 end;
 
 procedure TJvxGradientCaption.SetGradientInactive(Value: Boolean);
 begin
-  if FGradientInactive <> Value then begin
+  if FGradientInactive <> Value then
+  begin
     FGradientInactive := Value;
-    if Active and not FWindowActive then Update;
+    if Active and not FWindowActive then
+      Update;
   end;
 end;
 
 procedure TJvxGradientCaption.SetFontInactiveColor(Value: TColor);
 begin
-  if FFontInactiveColor <> Value then begin
+  if FFontInactiveColor <> Value then
+  begin
     FFontInactiveColor := Value;
-    if Active and not FWindowActive then Update;
+    if Active and not FWindowActive then
+      Update;
   end;
 end;
 
 procedure TJvxGradientCaption.SetHideDirection(Value: THideDirection);
 begin
-  if FHideDirection <> Value then begin
+  if FHideDirection <> Value then
+  begin
     FHideDirection := Value;
-    if Active then Update;
+    if Active then
+      Update;
   end;
 end;
 
-{$ENDIF WIN32}
-
 end.
+

@@ -12,7 +12,7 @@ The Original Code is: JvIcoList.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,14 +29,15 @@ unit JvIcoList;
 
 interface
 
-
-uses Messages, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
   SysUtils, Classes, Graphics;
 
 type
-
-{ TJvIconList class }
-
   TJvIconList = class(TPersistent)
   private
     FList: TList;
@@ -79,8 +80,6 @@ type
 
 implementation
 
-{ TJvIconList }
-
 constructor TJvIconList.Create;
 begin
   inherited Create;
@@ -97,19 +96,22 @@ end;
 
 procedure TJvIconList.BeginUpdate;
 begin
-  if FUpdateCount = 0 then SetUpdateState(True);
+  if FUpdateCount = 0 then
+    SetUpdateState(True);
   Inc(FUpdateCount);
 end;
 
 procedure TJvIconList.Changed;
 begin
-  if (FUpdateCount = 0) and Assigned(FOnChange) then FOnChange(Self);
+  if (FUpdateCount = 0) and Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvIconList.EndUpdate;
 begin
   Dec(FUpdateCount);
-  if FUpdateCount = 0 then SetUpdateState(False);
+  if FUpdateCount = 0 then
+    SetUpdateState(False);
 end;
 
 procedure TJvIconList.ReadData(Stream: TStream);
@@ -125,9 +127,11 @@ begin
     Mem := TMemoryStream.Create;
     try
       Stream.Read(Cnt, SizeOf(Longint));
-      for I := 0 to Cnt - 1 do begin
+      for I := 0 to Cnt - 1 do
+      begin
         Stream.Read(Len, SizeOf(Longint));
-        if Len > 0 then begin
+        if Len > 0 then
+        begin
           Icon := TIcon.Create;
           try
             Mem.SetSize(Len);
@@ -140,7 +144,8 @@ begin
             raise;
           end;
         end
-        else AddIcon(nil);
+        else
+          AddIcon(nil);
       end;
     finally
       Mem.Free;
@@ -160,15 +165,19 @@ begin
   try
     Len := FList.Count;
     Stream.Write(Len, SizeOf(Longint));
-    for I := 0 to FList.Count - 1 do begin
+    for I := 0 to FList.Count - 1 do
+    begin
       Mem.Clear;
-      if (Icons[I] <> nil) and not Icons[I].Empty then begin
+      if (Icons[I] <> nil) and not Icons[I].Empty then
+      begin
         Icons[I].SaveToStream(Mem);
         Len := Mem.Size;
       end
-      else Len := 0;
+      else
+        Len := 0;
       Stream.Write(Len, SizeOf(Longint));
-      if Len > 0 then Stream.Write(Mem.Memory^, Mem.Size);
+      if Len > 0 then
+        Stream.Write(Mem.Memory^, Mem.Size);
     end;
   finally
     Mem.Free;
@@ -177,7 +186,7 @@ end;
 
 procedure TJvIconList.DefineProperties(Filer: TFiler);
 
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   function DoWrite: Boolean;
   var
     I: Integer;
@@ -187,14 +196,17 @@ procedure TJvIconList.DefineProperties(Filer: TFiler);
     if (Ancestor <> nil) and (Ancestor.Count = Count) and (Count > 0) then
     begin
       Result := False;
-      for I := 0 to Count - 1 do begin
+      for I := 0 to Count - 1 do
+      begin
         Result := Icons[I] <> Ancestor.Icons[I];
-        if Result then Break;
+        if Result then
+          Break;
       end
     end
-    else Result := Count > 0;
+    else
+      Result := Count > 0;
   end;
-{$ENDIF}
+  {$ENDIF}
 
 begin
   Filer.DefineBinaryProperty('Icons', ReadData, WriteData,
@@ -220,8 +232,10 @@ procedure TJvIconList.Put(Index: Integer; Icon: TIcon);
 begin
   BeginUpdate;
   try
-    if Index = Count then Add(nil);
-    if Icons[Index] = nil then FList[Index] := TIcon.Create;
+    if Index = Count then
+      Add(nil);
+    if Icons[Index] = nil then
+      FList[Index] := TIcon.Create;
     Icons[Index].OnChange := IconChanged;
     Icons[Index].Assign(Icon);
   finally
@@ -232,7 +246,8 @@ end;
 function TJvIconList.AddIcon(Icon: TIcon): Integer;
 begin
   Result := FList.Add(Icon);
-  if Icon <> nil then Icon.OnChange := IconChanged;
+  if Icon <> nil then
+    Icon.OnChange := IconChanged;
   Changed;
 end;
 
@@ -268,8 +283,11 @@ procedure TJvIconList.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
-  if Source = nil then Clear
-  else if Source is TJvIconList then begin
+  if Source = nil then
+    Clear
+  else
+  if Source is TJvIconList then
+  begin
     BeginUpdate;
     try
       Clear;
@@ -279,7 +297,9 @@ begin
       EndUpdate;
     end;
   end
-  else if Source is TIcon then begin
+  else
+  if Source is TIcon then
+  begin
     BeginUpdate;
     try
       Clear;
@@ -288,7 +308,8 @@ begin
       EndUpdate;
     end;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvIconList.Clear;
@@ -297,7 +318,8 @@ var
 begin
   BeginUpdate;
   try
-    for I := FList.Count - 1 downto 0 do Delete(I);
+    for I := FList.Count - 1 downto 0 do
+      Delete(I);
   finally
     EndUpdate;
   end;
@@ -308,7 +330,8 @@ var
   Icon: TIcon;
 begin
   Icon := Icons[Index];
-  if Icon <> nil then begin
+  if Icon <> nil then
+  begin
     Icon.OnChange := nil;
     Icon.Free;
   end;
@@ -381,7 +404,8 @@ end;
 
 procedure TJvIconList.SetUpdateState(Updating: Boolean);
 begin
-  if not Updating then Changed;
+  if not Updating then
+    Changed;
 end;
 
 procedure TJvIconList.LoadFromStream(Stream: TStream);
@@ -395,3 +419,4 @@ begin
 end;
 
 end.
+

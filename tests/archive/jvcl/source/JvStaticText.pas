@@ -42,7 +42,8 @@ unit JvStaticText;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
+  JVCLVer;
 
 type
   TJvTextMargins = class(TPersistent)
@@ -66,12 +67,12 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
     FFontSave: TFont;
     FHotTrack: Boolean;
-    FHotFont: TFont;
+    FHotTrackFont: TFont;
     FAboutJVCL: TJVCLAboutInfo;
     FLayout: TTextLayout;
     FAlignment: TAlignment;
@@ -80,49 +81,44 @@ type
     FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
     FTextMargins: TJvTextMargins;
-    FWordWrap: boolean;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    FWordWrap: Boolean;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBorderStyle(Value: TStaticBorderStyle);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetShowAccelChar(Value: Boolean);
-    procedure SetHotFont(const Value: TFont);
+    procedure SetHotTrackFont(const Value: TFont);
     procedure SetLayout(const Value: TTextLayout);
-
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure SetTextMargins(const Value: TJvTextMargins);
-    procedure SetWordWrap(const Value: boolean);
+    procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
   protected
     procedure Loaded; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetAutoSize(Value: boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean);
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
     function GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
     procedure CreateParams(var Params: TCreateParams); override;
-    property Alignment: TAlignment read FAlignment write SetAlignment
-      default taLeftJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property BorderStyle: TStaticBorderStyle read FBorderStyle
-      write SetBorderStyle default sbsNone;
+    property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
-    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar
-      default True;
-
+    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
-    property WordWrap: boolean read FWordWrap write SetWordWrap;
-
+    property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -177,7 +173,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-
     property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
@@ -192,16 +187,16 @@ type
 
 implementation
 
-{**************************************************}
+//=== TJvCustomStaticText ====================================================
 
 constructor TJvCustomStaticText.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FTextMargins := TJvTextMargins.Create;
   FTextMargins.OnChange := DoMarginsChange;
 
-  FColor := clInfoBk;
-  FHotFont := TFont.Create;
+  FHintColor := clInfoBk;
+  FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
   FOver := False;
   FLayout := tlTop;
@@ -215,7 +210,13 @@ begin
   //  ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-{**************************************************}
+destructor TJvCustomStaticText.Destroy;
+begin
+  FHotTrackFont.Free;
+  FFontSave.Free;
+  FTextMargins.Free;
+  inherited Destroy;
+end;
 
 procedure TJvCustomStaticText.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -224,8 +225,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomStaticText.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -233,20 +232,19 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomStaticText.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
-      Font.Assign(FHotFont);
+      Font.Assign(FHotTrackFont);
     end;
     FOver := True;
   end;
@@ -255,12 +253,11 @@ begin
   inherited;
 end;
 
-{**************************************************}
-
 procedure TJvCustomStaticText.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -273,21 +270,9 @@ begin
   inherited;
 end;
 
-{**************************************************}
-
-destructor TJvCustomStaticText.Destroy;
+procedure TJvCustomStaticText.SetHotTrackFont(const Value: TFont);
 begin
-  FHotFont.Free;
-  FFontSave.Free;
-  FTextMargins.Free;
-  inherited;
-end;
-
-{**************************************************}
-
-procedure TJvCustomStaticText.SetHotFont(const Value: TFont);
-begin
-  FHotFont.Assign(Value);
+  FHotTrackFont.Assign(Value);
 end;
 
 procedure TJvCustomStaticText.CreateParams(var Params: TCreateParams);
@@ -307,15 +292,14 @@ begin
   end;
 end;
 
-procedure TJvCustomStaticText.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvCustomStaticText.CNDrawItem(var Msg: TWMDrawItem);
 begin
-  DrawItem(Message.DrawItemStruct^);
+  DrawItem(Msg.DrawItemStruct^);
 end;
 
 procedure TJvCustomStaticText.DrawItem(const DrawItemStruct: TDrawItemStruct);
 const
-  cBorders: array[TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
-
+  cBorders: array [TStaticBorderStyle] of DWORD = (0, BF_MONO, BF_SOFT);
 var
   R: TRect;
   DrawStyle: Cardinal;
@@ -354,7 +338,7 @@ begin
   end;
 end;
 
-procedure TJvCustomStaticText.SetAutoSize(Value: boolean);
+procedure TJvCustomStaticText.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
@@ -393,25 +377,25 @@ begin
   end;
 end;
 
-procedure TJvCustomStaticText.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvCustomStaticText.CMDialogChar(var Msg: TCMDialogChar);
 begin
   if (FFocusControl <> nil) and Enabled and ShowAccelChar and
-    IsAccel(Message.CharCode, Caption) then
+    IsAccel(Msg.CharCode, Caption) then
     with FFocusControl do
       if CanFocus then
       begin
         SetFocus;
-        Message.Result := 1;
+        Msg.Result := 1;
       end;
 end;
 
-procedure TJvCustomStaticText.CMFontChanged(var Message: TMessage);
+procedure TJvCustomStaticText.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
 end;
 
-procedure TJvCustomStaticText.CMTextChanged(var Message: TMessage);
+procedure TJvCustomStaticText.CMTextChanged(var Msg: TMessage);
 begin
   inherited;
   AdjustBounds;
@@ -419,7 +403,7 @@ end;
 
 procedure TJvCustomStaticText.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   AdjustBounds;
 end;
 
@@ -484,7 +468,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomStaticText.SetWordWrap(const Value: boolean);
+procedure TJvCustomStaticText.SetWordWrap(const Value: Boolean);
 begin
   if FWordWrap <> Value then
   begin
@@ -496,11 +480,11 @@ end;
 
 function TJvCustomStaticText.GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
 const
-  cAlignment: array[Boolean, TAlignment] of DWORD =
-  ((DT_LEFT, DT_RIGHT, DT_CENTER), (DT_RIGHT, DT_LEFT, DT_CENTER));
-  cLayout: array[TTextLayout] of DWORD = (DT_TOP, DT_VCENTER, DT_BOTTOM);
-  cDrawAccel: array[boolean] of DWORD = (DT_NOPREFIX, 0);
-  cWordWrap: array[boolean] of DWORD = (DT_SINGLELINE, DT_WORDBREAK);
+  cAlignment: array [Boolean, TAlignment] of DWORD =
+    ((DT_LEFT, DT_RIGHT, DT_CENTER), (DT_RIGHT, DT_LEFT, DT_CENTER));
+  cLayout: array [TTextLayout] of DWORD = (DT_TOP, DT_VCENTER, DT_BOTTOM);
+  cDrawAccel: array [Boolean] of DWORD = (DT_NOPREFIX, 0);
+  cWordWrap: array [Boolean] of DWORD = (DT_SINGLELINE, DT_WORDBREAK);
 begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
     cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
@@ -508,13 +492,13 @@ begin
   DrawText(aDC, PChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
 end;
 
-procedure TJvCustomStaticText.WMSize(var Message: TWMSize);
+procedure TJvCustomStaticText.WMSize(var Msg: TWMSize);
 begin
   inherited;
   Invalidate;
 end;
 
-{ TJvTextMargins }
+//=== TJvTextMargins =========================================================
 
 procedure TJvTextMargins.Change;
 begin

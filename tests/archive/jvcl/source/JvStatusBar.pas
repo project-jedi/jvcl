@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvStatusBar;
 
-
-
 interface
 
 uses
@@ -40,7 +38,7 @@ type
   TJvStatusBar = class(TStatusBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
@@ -48,7 +46,7 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FAutoHintShown: Boolean;
     FHiddenControls: array of TControl;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -64,7 +62,7 @@ type
     property Color;
     property Font;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -73,16 +71,12 @@ type
 
 implementation
 
-{*****************************************************************}
-
 constructor TJvStatusBar.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
-
-{*****************************************************************}
 
 procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
@@ -91,16 +85,12 @@ begin
     WindowClass.Style := WindowClass.Style and not CS_HREDRAW;
 end;
 
-{*****************************************************************}
-
 procedure TJvStatusBar.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
-
-{**************************************************}
 
 procedure TJvStatusBar.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -109,8 +99,6 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvStatusBar.WMSize(var Msg: TMessage);
 begin
   inherited;
@@ -118,19 +106,16 @@ begin
   Invalidate; //Force full redraw, cause it's a lot buggy on XP without that!!!
 end;
 
-{**************************************************}
-
 procedure TJvStatusBar.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvStatusBar.MouseLeave(var Msg: TMessage);
 begin
@@ -138,8 +123,6 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 function TJvStatusBar.ExecuteAction(Action: TBasicAction): Boolean;
 var
@@ -205,14 +188,13 @@ begin
   end;
 end;
 
-{**************************************************}
-
-procedure TJvStatusBar.WMPaint(var Message: TWMPaint);
+procedure TJvStatusBar.WMPaint(var Msg: TWMPaint);
 begin
   if FAutoHintShown then
-    DefaultHandler(Message)
+    DefaultHandler(Msg)
   else
     inherited;
 end;
 
 end.
+

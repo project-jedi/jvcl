@@ -30,23 +30,22 @@ Known Issues:
 
 unit JvTabControl;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvTabControl = class(TTabControl)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
+    procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -54,7 +53,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -63,15 +62,11 @@ type
 
 implementation
 
-{*****************************************************************}
-
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
 end;
-
-{**************************************************}
 
 procedure TJvTabControl.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -80,19 +75,16 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvTabControl.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvTabControl.MouseLeave(var Msg: TMessage);
 begin
@@ -101,9 +93,9 @@ begin
     FOnMouseLeave(Self);
 end;
 
-procedure TJvTabControl.CMDialogKey(var msg: TWMKey);
+procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
-  if (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
+  if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
     IsChild(handle, Windows.getFocus) then
   begin
     if GetKeyState(VK_SHIFT) < 0 then
@@ -115,10 +107,11 @@ begin
     end
     else
       TabIndex := (TabIndex + 1) mod Tabs.Count;
-    msg.result := 1;
+    Msg.Result := 1;
   end
   else
     inherited;
 end;
 
 end.
+

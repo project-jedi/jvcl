@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvStrToHtml;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvComponent;
+  SysUtils, Classes,
+  JvComponent;
 
 type
   TJvStrToHtml = class(TJvComponent)
@@ -42,7 +41,6 @@ type
     FValue: string;
     procedure SetHtml(const Value: string);
     procedure SetValue(const Value: string);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -56,17 +54,16 @@ function StringToHtml(Value: string): string;
 function HtmlToString(Value: string): string;
 function CharToHtml(Ch: Char): string;
 
-
 implementation
 
 type
-  TJvHtmlCodeRec = record
+  TJvHtmlCodeRec = packed record
     Ch: Char;
-    Html: string;
+    Html: PChar;
   end;
 
 const
-  Conversions: array[1..79] of TJvHtmlCodeRec = (
+  Conversions: array [1..79] of TJvHtmlCodeRec = (
     (Ch: '"'; Html: '&quot;'),
     (Ch: 'à'; Html: '&agrave;'),
     (Ch: 'ç'; Html: '&ccedil;'),
@@ -148,58 +145,42 @@ const
     (Ch: 'ÿ'; Html: '&#255;')
     );
 
-
-
-{**************************************************}
-
 constructor TJvStrToHtml.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FValue := '';
   FHtml := '';
 end;
 
-{**************************************************}
-
 function TJvStrToHtml.HtmlToText(Text: string): string;
 begin
-  Result := HTMLToString(Text);
+  Result := HtmlToString(Text);
 end;
-
-{**************************************************}
 
 procedure TJvStrToHtml.SetHtml(const Value: string);
 begin
   FValue := HtmlToText(Value);
 end;
 
-{**************************************************}
-
 procedure TJvStrToHtml.SetValue(const Value: string);
 begin
   FHtml := TextToHtml(Value);
 end;
 
-{**************************************************}
-
 function TJvStrToHtml.TextToHtml(Text: string): string;
 begin
-  Result := StringToHTML(Text);
+  Result := StringToHtml(Text);
 end;
-
-{**************************************************}
 
 function StringToHtml(Value: string): string;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := Value;
-  for i := Low(Conversions) to High(Conversions) do
-    Result := StringReplace(Result, Conversions[i].Html, Conversions[i].Ch,
+  for I := Low(Conversions) to High(Conversions) do
+    Result := StringReplace(Result, Conversions[I].Html, Conversions[I].Ch,
       [rfReplaceAll, rfIgnoreCase]);
 end;
-
-{**************************************************}
 
 function HtmlToString(Value: string): string;
 var
@@ -224,3 +205,4 @@ begin
 end;
 
 end.
+

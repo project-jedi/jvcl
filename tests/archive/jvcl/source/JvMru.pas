@@ -26,6 +26,12 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
+unit JvMru;
+
+interface
+
 {*******************************************************}
 {   This unit is an interface to the MRU List (comctl32)}
 {   Informations from :                                 }
@@ -52,38 +58,33 @@ Changes are:
 xx) why keep UnicodeAvailable in every component? I wish Delphi could map
     property to a global variable :(
 *)
-{$I JVCL.INC}
-
-unit JvMru;
-
-interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes,
   JvComponent, JvTypes;
 
 type
   TJvHKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkCurrentConfig);
-{.$EXTERNALSYM TJvHKey}
   TJvDataType = (dtString, dtBinary);
-{.$EXTERNALSYM TJvDataType}
   TOnEnumData = procedure(Sender: TObject; Data: Pointer; Size: Integer; Index: Integer) of object;
   TOnEnumText = procedure(Sender: TObject; Value: string; Index: Integer) of object;
   TOnEnumUnicodeText = procedure(Sender: TObject; Value: WideString; Index: Integer) of object;
 
   TJvMruReturnData = record
-    case byte of
-      0: (p: pointer; );
-      1: (s: PChar; );
-      2: (ws: PWideChar; );
+    case Byte of
+      0: (P: Pointer; );
+      1: (S: PChar; );
+      2: (Ws: PWideChar; );
   end;
   PJvMruReturnData = ^TJvMruReturnData;
   TMRUCount = 0..29;
 
   TJvMruList = class(TJvComponent)
   private
-    FUnicodeAvailable, FUseUnicode, FDelayedWrite, FWantUnicode: boolean;
-
+    FUnicodeAvailable: Boolean;
+    FUseUnicode: Boolean;
+    FDelayedWrite: Boolean;
+    FWantUnicode: Boolean;
     FMax: TMRUCount;
     FSubKey: WideString;
     FKey: TJvHKey;
@@ -92,7 +93,7 @@ type
     FOnEnumData: TOnEnumData;
     FOnEnumText: TOnEnumText;
     FOnEnumUnicodeText: TOnEnumUnicodeText;
-    FItemIndex: integer;
+    FItemIndex: Integer;
     FItemData: TJvMruReturnData;
     procedure SetKey(const Value: TJvHKey);
     procedure SetMax(const Value: TMRUCount);
@@ -100,34 +101,34 @@ type
     procedure SetSubKeyUnicode(const Value: WideString);
     procedure SetSubKey(const Value: string);
     procedure SetType(const Value: TJvDataType);
-    procedure SetUseUnicode(const Value: boolean);
-    procedure SetWantUnicode(const Value: boolean);
-    procedure SetItemData(const p: pointer);
-    function GetActive: boolean;
-    procedure SetActive(const Value: boolean);
+    procedure SetUseUnicode(const Value: Boolean);
+    procedure SetWantUnicode(const Value: Boolean);
+    procedure SetItemData(const P: Pointer);
+    function GetActive: Boolean;
+    procedure SetActive(const Value: Boolean);
   protected
-    function InternalGetItem(Index: Integer; FireEvent: boolean = true): Boolean;
+    function InternalGetItem(Index: Integer; FireEvent: Boolean = True): Boolean;
     procedure ReCreateList;
     procedure NeedUnicode;
     procedure DoEnumText; virtual;
     procedure DoUnicodeEnumText; virtual;
     // Arioch: even DataSize can be retained later from properties - but let 'em be.
-    procedure DoEnumData(DataSize: integer); virtual;
+    procedure DoEnumData(DataSize: Integer); virtual;
   public
     procedure Close;
     procedure Open;
-    function ItemDataSize: integer;
-    property ItemDataAsPointer: pointer read FItemData.p;
-    property ItemDataAsPChar: PChar read FItemData.s;
-    property ItemDataAsPWideChar: pWideChar read FItemData.ws;
-    property ItemIndex: integer read FItemIndex;
+    function ItemDataSize: Integer;
+    property ItemDataAsPointer: Pointer read FItemData.P;
+    property ItemDataAsPChar: PChar read FItemData.S;
+    property ItemDataAsPWideChar: pWideChar read FItemData.Ws;
+    property ItemIndex: Integer read FItemIndex;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure MoveToTop(const index: integer);
+    procedure MoveToTop(const Index: Integer);
 
-    property UnicodeAvailable: boolean read FUnicodeAvailable;
-    property UseUnicode: boolean read FUseUnicode write SetUseUnicode;
+    property UnicodeAvailable: Boolean read FUnicodeAvailable;
+    property UseUnicode: Boolean read FUseUnicode write SetUseUnicode;
 
     // Arioch: the methods below are not public but published in original code
     function AddString(Value: string): Boolean;
@@ -141,20 +142,19 @@ type
     function FindData(Value: Pointer; Size: Integer): Integer;
 
     function DeleteItem(Index: Integer = 0): Boolean;
-    function DeleteKey:boolean;
+    function DeleteKey: Boolean;
 
-   // Arioch: the following are function for Unicode Enabling
+    // Arioch: the following are function for Unicode Enabling
     function AddUnicodeString(Value: widestring): Boolean;
     function AddUnicodePChar(Value: PWideChar): Boolean;
     function FindUnicodeString(Value: widestring): Integer;
-
   published
-    property DelayedWrite: boolean read FDelayedWrite write FDelayedWrite default false;
-    property WantUnicode: boolean read FWantUnicode write SetWantUnicode default false;
+    property DelayedWrite: Boolean read FDelayedWrite write FDelayedWrite default False;
+    property WantUnicode: Boolean read FWantUnicode write SetWantUnicode default False;
     property RootKey: TJvHKey read FKey write SetKey default hkCurrentUser;
-    property SubKey: string read GetSubKey write SetSubKey stored false;
+    property SubKey: string read GetSubKey write SetSubKey stored False;
     // Arioch: it will be read from RCDATA for compatiblility, but unicode value should be stored!
-    property SubKeyUnicode: WideString read FSubKey write SetSubKeyUnicode stored true;
+    property SubKeyUnicode: WideString read FSubKey write SetSubKeyUnicode stored True;
 
     property MaxItems: TMRUCount read FMax write SetMax default 10;
     property DataType: TJvDataType read FType write SetType default dtstring;
@@ -162,29 +162,31 @@ type
     property OnEnumText: TOnEnumText read FOnEnumText write FOnEnumText;
     property OnEnumUnicodeText: TOnEnumUnicodeText read FOnEnumUnicodeText write FOnEnumUnicodeText;
     property OnEnumData: TOnEnumData read FOnEnumData write FOnEnumData;
-    property Active:boolean read GetActive write SetActive;
+    property Active: Boolean read GetActive write SetActive;
   end;
 
   EMruException = class(EJVCLException);
 
-implementation 
-uses 
-  JvFunctions, Registry;
+implementation
+
+uses
+  Registry,
+  JvFunctions;
 
 resourcestring
   RC_ErrorMRU_Creating = 'Unable to create MRU';
   RC_ErrorMRU_Unicode = 'Windows NT required for Unicode in MRU';
 
 var
-  hComCtlDll: THandle = 0;
+  hComCtlDll: HMODULE = 0;
 
 const
   DllComCtlName = 'COMCTL32.DLL';
 
 type
-  MruCompareString = function(lpszstring1, lpszstring2: PChar): Integer;
+  MruCompareString = function(lpszString1, lpszString2: PChar): Integer;
   MruCompareData = function(lpData1, lpData2: Pointer; cbData: DWORD): Integer;
-  MruCompareStringW = function(lpszstring1, lpszstring2: PWideChar): Integer;
+  MruCompareStringW = function(lpszString1, lpszString2: PWideChar): Integer;
 
   TMruRec = packed record
     cbSize: DWORD;
@@ -192,15 +194,15 @@ type
     dwFlags: DWORD;
     hKey: HKEY;
     case Boolean of
-      false: (
+      False: (
         lpszSubKey: PChar;
         case Boolean of
-          false:
-          (lpfnCompareString: MruCompareString; );
-          true:
-          (lpfnCompareData: MruCompareData; );
+          False:
+            (lpfnCompareString: MruCompareString; );
+          True:
+            (lpfnCompareData: MruCompareData; );
           );
-      true: (
+      True: (
         lpszSubKeyW: PWideChar;
         lpfnCompareStringW: MruCompareStringW; );
   end;
@@ -215,16 +217,16 @@ type
   TCreateMruList = function(lpCreateInfo: PMruRec): THandle; stdcall;
   TFreeMruList = procedure(hList: THandle); stdcall;
 
-  TAddMruString = function(hList: THandle; lpszstring: PChar): Integer; stdcall;
-  TAddMruStringW = function(hList: THandle; lpszstring: PWideChar): Integer; stdcall;
+  TAddMruString = function(hList: THandle; lpszString: PChar): Integer; stdcall;
+  TAddMruStringW = function(hList: THandle; lpszString: PWideChar): Integer; stdcall;
   TAddMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD): Integer; stdcall;
 
   TDelMruString = function(hList: THandle; nItemPos: Integer): Boolean; stdcall;
 
   TEnumMruList = function(hList: THandle; nItemPos: Integer; lpBuffer: Pointer; nBufferSize: DWord): Integer; stdcall;
 
-  TFindMruString = function(hList: THandle; lpszstring: PChar; lpRegNum: Pinteger): Integer; stdcall;
-  TFindMruStringW = function(hList: THandle; lpszstring: PWideChar; lpRegNum: Pinteger): Integer; stdcall;
+  TFindMruString = function(hList: THandle; lpszString: PChar; lpRegNum: Pinteger): Integer; stdcall;
+  TFindMruStringW = function(hList: THandle; lpszString: PWideChar; lpRegNum: Pinteger): Integer; stdcall;
   TFindMruData = function(hList: THandle; lpData: Pointer; cbData: DWORD; lpRegNum: Pinteger): Integer; stdcall;
 
 var
@@ -243,22 +245,39 @@ var
   FindMruStringW: TFindMruStringW;
   EnumMruListW: TEnumMruList;
 
+constructor TJvMruList.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FList := 0;
+  FMax := 10;
+  FType := dtString;
+  FKey := hkCurrentUser;
+  FUnicodeAvailable := Win32Platform = VER_PLATFORM_Win32_NT;
+  FDelayedWrite := False;
+  SetWantUnicode(False);
+  FItemData.P := nil;
 
+  // ReCreateList;
+  Close; // since there is PUBLISHED .Active property - let it control how it will be.
+end;
 
-  {**************************************************}
+destructor TJvMruList.Destroy;
+begin
+  if FList <> 0 then
+    FreeMruList(FList);
+  inherited Destroy;
+end;
 
 function TJvMruList.AddData(Value: Pointer; Size: Integer): Boolean;
 begin
-    Result := False;
+  Result := False;
   if FList <> 0 then
     Result := AddMruData(FList, Value, Size) <> -1;
 end;
 
-{**************************************************}
-
 function TJvMruList.AddPChar(Value: string): Boolean;
 begin
-    Result := False;
+  Result := False;
   if FList <> 0 then
   begin
     Result := AddMruString(FList, PChar(Value)) <> -1;
@@ -266,8 +285,8 @@ begin
     //  Arioch: Why? What for?
     //  Whether You want them - make a special sepearate set of events
     //  And there's danger that eventHandler tries to get a list of items,
-    //  thus, killing current section! 
-  end
+    //  thus, killing current section!
+  end;
 end;
 
 function TJvMruList.AddUnicodePChar(Value: PWideChar): Boolean;
@@ -292,84 +311,49 @@ begin
   Result := AddUnicodePChar(PWideChar(Value));
 end;
 
-{**************************************************}
-
-constructor TJvMruList.Create(AOwner: TComponent);
-begin
-  inherited;
-  FList := 0;
-  FMax := 10;
-  FType := dtstring;
-  FKey := hkCurrentUser;
-  FUnicodeAvailable := Win32Platform = VER_PLATFORM_Win32_NT;
-  FDelayedWrite := false;
-  SetWantUnicode(false);
-  FItemData.p := nil;
-
-  // ReCreateList;
-  Close; // since there is PUBLISHED .Active property - let it control how it will be.
-end;
-
-{**************************************************}
-
 function TJvMruList.DeleteItem(Index: Integer): Boolean;
 begin
   Result := False;
-  
   if FList <> 0 then
   begin
     Result := DelMruString(FList, Index);
-    ReCreateList;                       // Arioch: fixes MS's bug
+    ReCreateList; // Arioch: fixes MS's bug
   end;
 end;
 
-{**************************************************}
-
-destructor TJvMruList.Destroy;
-begin
-  if FList <> 0 then
-    FreeMruList(FList);
-  inherited;
-end;
-
-{**************************************************}
-
 function TJvMruList.EnumItems: Boolean;
-var index: Integer;
+var
+  Index: Integer;
 begin
   Result := False;
   if FList = 0 then
     Exit;
 
   Index := 0;
-    while GetItem(Index) do inc(Index);
-  If Index>0 then Result:=true;
+  while GetItem(Index) do
+    Inc(Index);
+  if Index > 0 then
+    Result := True;
 end;
-
-{**************************************************}
 
 function TJvMruList.FindData(Value: Pointer; Size: Integer): Integer;
 begin
-    Result := -1;
+  Result := -1;
   if FList <> 0 then
     Result := FindMruData(FList, Value, Size, nil);
 end;
 
-{**************************************************}
-
 function TJvMruList.FindString(Value: string): Integer;
 begin
-    Result := -1;
+  Result := -1;
   if FList <> 0 then
     Result := FindMruString(FList, PChar(Value), nil);
 end;
 
-{**************************************************}
-
 function TJvMruList.FindUnicodeString(Value: widestring): Integer;
 begin
   NeedUnicode;
-    Result := -1;
+  Result := -1;
   if FList <> 0 then
     Result := FindMruStringW(FList, PWideChar(Value), nil);
 end;
@@ -379,80 +363,82 @@ begin
   Result := InternalGetItem(Index);
 end;
 
-function TJvMruList.InternalGetItem(Index: Integer; FireEvent: boolean): Boolean;
+function TJvMruList.InternalGetItem(Index: Integer; FireEvent: Boolean): Boolean;
 var
   i: Integer;
-  p: Pointer;
+  P: Pointer;
   EnP: TEnumMruList;
 begin
   Result := False;
   if FList = 0 then
     Exit;
-  p := nil;
+  P := nil;
 
   if FType = dtString then
   begin
     if not UseUnicode then
     begin
-      ReAllocMem(p, 256);
-      i := EnumMruList(FList, Index, p, 256);
+      ReAllocMem(P, 256);
+      i := EnumMruList(FList, Index, P, 256);
       if i > 255 then
       begin
-        ReAllocMem(p, i + 1);
-        i := EnumMruList(FList, Index, p, i + 1);
+        ReAllocMem(P, i + 1);
+        i := EnumMruList(FList, Index, P, i + 1);
       end;
       if i <> -1 then
       begin
         Result := True;
-        SetItemData(p);
+        SetItemData(P);
         FItemIndex := Index;
         if FireEvent then
-          DoEnumText()
-        end;
+          DoEnumText
+      end;
     end
     else
-    begin                               // Unicode
-      ReAllocMem(p, 512);
-      i := EnumMruListW(FList, Index, p, 256);
+    begin // Unicode
+      ReAllocMem(P, 512);
+      i := EnumMruListW(FList, Index, P, 256);
       if i > 255 then
       begin
-        ReAllocMem(p, (i + 1)*2);
-        i := EnumMruListW(FList, Index, p, i + 1);
+        ReAllocMem(P, (i + 1) * 2);
+        i := EnumMruListW(FList, Index, P, i + 1);
       end;
       if i <> -1 then
       begin
         Result := True;
-        SetItemData(p);
+        SetItemData(P);
         FItemIndex := Index;
         if FireEvent then
-          DoUnicodeEnumText();
+          DoUnicodeEnumText;
       end;
     end
   end
-  else                                  // FType = dtBinary
+  else // FType = dtBinary
   begin
-    ReAllocMem(p, 1024);
+    ReAllocMem(P, 1024);
 
-    if UnicodeAvailable then EnP := EnumMruListW else EnP := EnumMruList;
+    if UnicodeAvailable then
+      EnP := EnumMruListW
+    else
+      EnP := EnumMruList;
     //Arioch: work-around MS bug
 
-    i := EnP(FList, Index, p, 1024);
+    i := EnP(FList, Index, P, 1024);
 
     if i >= 1024 then
     begin
-      ReAllocMem(p, 64000);             // Arioch: Hmmm We'll never guess how much may there appear :)
-
-      i := EnP(FList, 0, p, 64000);
+      ReAllocMem(P, 64000); // Arioch: Hmmm We'll never guess how much may there appear :)
+      i := EnP(FList, 0, P, 64000);
     end;
 
     if i <> -1 then
     begin
       Result := True;
-      ReAllocMem(p, i);
+      ReAllocMem(P, i);
       // Arioch: should we waste more memory than we need?
       // and we can know the size of memory allocated
       // with GetMem and ReAllocMem, so we know how big Data was
-      SetItemData(p);
+      SetItemData(P);
       FItemIndex := Index;
       if FireEvent then
         DoEnumData(i);
@@ -460,33 +446,29 @@ begin
   end;
 end;
 
-{**************************************************}
-
 function TJvMruList.GetItemsCount: Integer;
 begin
-    Result := 0;
+  Result := 0;
   if FList <> 0 then
     Result := EnumMruList(FList, -1, nil, 0);
 end;
-{**************************************************}
 
 function TJvMruList.GetMostRecentItem: Boolean;
 begin
   Result := GetItem(0);
 end;
 
-{**************************************************}
-
 function TJvMruList.GetSubKey: string;
 begin
   Result := string(FSubKey);
 end;
 
-procedure TJvMruList.MoveToTop(const index: integer);
-var b: boolean;
+procedure TJvMruList.MoveToTop(const Index: Integer);
+var
+  b: Boolean;
 begin
-  b := false;
-  if InternalGetItem(index, false) then
+  b := False;
+  if InternalGetItem(Index, False) then
   begin
     if FType = dtString then
     begin
@@ -498,7 +480,8 @@ begin
     else
       b := AddData(ItemDataAsPointer, ItemDataSize);
   end;
-  if b then FItemIndex := 0;
+  if b then
+    FItemIndex := 0;
 end;
 
 procedure TJvMruList.NeedUnicode;
@@ -513,15 +496,13 @@ begin
   Open;
 end;
 
-{**************************************************}
-
-procedure TJvMruList.SetItemData(const p: pointer);
+procedure TJvMruList.SetItemData(const P: Pointer);
 begin
-  if p = FItemData.p then
+  if P = FItemData.P then
     Exit;
-  if FItemData.p <> nil then
-    FreeMem(FItemData.p);
-  FItemData.p := p;
+  if FItemData.P <> nil then
+    FreeMem(FItemData.P);
+  FItemData.P := P;
 end;
 
 procedure TJvMruList.SetKey(const Value: TJvHKey);
@@ -533,8 +514,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvMruList.SetMax(const Value: TMRUCount);
 begin
   if Value <> FMax then
@@ -544,14 +523,10 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvMruList.SetSubKey(const Value: string);
 begin
   SetSubKeyUnicode(WideString(Value));
 end;
-
-{**************************************************}
 
 procedure TJvMruList.SetSubKeyUnicode(const Value: WideString);
 begin
@@ -571,16 +546,19 @@ begin
   end;
 end;
 
-procedure TJvMruList.SetUseUnicode(const Value: boolean);
+procedure TJvMruList.SetUseUnicode(const Value: Boolean);
 begin
-  if Value then NeedUnicode;
-  if FUseUnicode = Value then exit; 
+  if Value then
+    NeedUnicode;
+  if FUseUnicode = Value then
+    Exit;
   FUseUnicode := Value;
 end;
 
-procedure TJvMruList.SetWantUnicode(const Value: boolean);
+procedure TJvMruList.SetWantUnicode(const Value: Boolean);
 begin
-  if FWantUnicode = Value then exit;
+  if FWantUnicode = Value then
+    Exit;
 
   FWantUnicode := Value;
   FUseUnicode := FWantUnicode and FUnicodeAvailable;
@@ -589,27 +567,31 @@ end;
 procedure TJvMruList.Close;
 begin
   if FList <> 0 then
-     begin FreeMruList(FList); FList:=0; end;
+  begin
+    FreeMruList(FList);
+    FList := 0;
+  end;
 
   FItemIndex := -1;
-  SetItemData(pointer(nil));
+  SetItemData(Pointer(nil));
 end;
 
 procedure TJvMruList.Open;
 var
   FLst: TMruRec;
 begin
-  if csDesigning in ComponentState then exit;
+  if csDesigning in ComponentState then
+    Exit;
 
   if FSubKey <> '' then
   begin
     FLst.cbSize := SizeOf(FList);
     FLst.nMaxItems := FMax;
     case FType of
-      dtstring:
+      dtString:
         begin
           FLst.dwFlags := MRUF_STRING_LIST;
-          FLst.lpfnComparestring := nil;
+          FLst.lpfnCompareString := nil;
         end;
       dtBinary:
         begin
@@ -617,7 +599,8 @@ begin
           FLst.lpfnCompareData := nil;
         end;
     end;
-    if FDelayedWrite then with FLst do
+    if FDelayedWrite then
+      with FLst do
         dwFlags := MRUF_DELAYED_SAVE or dwFlags;
     case FKey of
       hkClassesRoot:
@@ -648,44 +631,44 @@ begin
   end;
 end;
 
-function TJvMruList.ItemDataSize: integer;
+function TJvMruList.ItemDataSize: Integer;
 // Arioch: Here we rely on undocumemted internal structure
 // that has been used by GetMem/FreeMem for ages!
-// for example see sources for GetMem.inc in VCL sources
+// for example see sources for GetMem.Inc in VCL sources
 //
 // JVCL should have a list were it relies upon undocumented parts of Delphi,
 //  Windows, etc..., so when new version of D,Win,... is realeased we could
 //  check the list instead of hunting for misty bug;
 begin
   Result := 0;
-  if ItemDataAsPointer = nil then exit;
-  Result := integer(pointer(integer(ItemDataAsPointer) - sizeof(integer))^);
+  if ItemDataAsPointer = nil then
+    Exit;
+  Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^);
 end;
 
-
-procedure TJvMruList.DoEnumText();
+procedure TJvMruList.DoEnumText;
 begin
   if Assigned(FOnEnumText) then
-    FOnEnumText(self, string(FItemData.s), ItemIndex);
-//    FOnEnumText(self, S, Index);
+    FOnEnumText(Self, string(FItemData.S), ItemIndex);
+//    FOnEnumText(Self, S, Index);
 end;
 
-procedure TJvMruList.DoUnicodeEnumText();
+procedure TJvMruList.DoUnicodeEnumText;
 begin
   if Assigned(FOnEnumUnicodeText) then
-    FOnEnumUnicodeText(Self, widestring(FItemData.ws), FItemIndex);
+    FOnEnumUnicodeText(Self, WideString(FItemData.Ws), FItemIndex);
 //    FOnEnumUnicodeText(Self, S, Index);
 end;
 
-procedure TJvMruList.DoEnumData(DataSize: integer);
+procedure TJvMruList.DoEnumData(DataSize: Integer);
 begin
   if Assigned(FOnEnumData) then
-    FOnEnumData(Self, FItemData.p, DataSize, FItemIndex);
+    FOnEnumData(Self, FItemData.P, DataSize, FItemIndex);
 end;
 
-function TJvMruList.DeleteKey: boolean;
+function TJvMruList.DeleteKey: Boolean;
 begin
-  Result := false;
+  Result := False;
   with TRegistry.Create do
   try
     if (FList = 0) and (SubKey <> '') and KeyExists(SubKey) then
@@ -695,26 +678,27 @@ begin
   end;
 end;
 
-function TJvMruList.GetActive: boolean;
+function TJvMruList.GetActive: Boolean;
 begin
   Result := FList <> 0;
 end;
 
-procedure TJvMruList.SetActive(const Value: boolean);
+procedure TJvMruList.SetActive(const Value: Boolean);
 begin
   if GetActive <> Value then
   begin
-    if Value then 
-      Open 
-    else 
+    if Value then
+      Open
+    else
       Close;
-  end;  
+  end;
 end;
 
 initialization
   hComCtlDll := LoadLibrary(DllComCtlName);
   if hComCtlDll <> 0 then
   begin
+    // (rom) can we get them by name?
     CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
     FreeMruList := GetProcAddress(hComCtlDll, PChar(152));
     AddMruString := GetProcAddress(hComCtlDll, PChar(153));
@@ -730,7 +714,8 @@ initialization
       AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
       FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
       EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
-    end (* else  Since TurboPascal 7.0 all the global vars are filled with Zero'es at the start, yes?
+    end;
+    (* else  Since TurboPascal 7.0 all the global vars are filled with Zero'es at the start, yes?
     begin
       CreateMRUListW := nil;
       AddMRUStringW := nil;
@@ -744,5 +729,6 @@ initialization
 finalization
   if hComCtlDll <> 0 then
     FreeLibrary(hComCtlDll);
+
 end.
 

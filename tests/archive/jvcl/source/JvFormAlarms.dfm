@@ -1,8 +1,9 @@
 object FormAlarm: TFormAlarm
-  Left = 438
-  Top = 382
-  BorderStyle = bsDialog
-  Caption = 'Jv - Alarms editor'
+  Left = 400
+  Top = 223
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
+  Caption = 'JvAlarms editor'
   ClientHeight = 296
   ClientWidth = 285
   Color = clBtnFace
@@ -11,11 +12,22 @@ object FormAlarm: TFormAlarm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object ListBox1: TListBox
+  object AlarmListBox: TListBox
     Left = 8
     Top = 112
     Width = 173
@@ -30,25 +42,25 @@ object FormAlarm: TFormAlarm
     Top = 6
     Width = 173
     Height = 97
-    Caption = '[ Datas ]'
+    Caption = 'Data'
     Enabled = False
     TabOrder = 5
     object Label1: TLabel
-      Left = 12
+      Left = 8
       Top = 20
       Width = 41
       Height = 13
       Caption = 'Keyword'
     end
-    object Edit1: TEdit
+    object NameEdit: TEdit
       Left = 60
       Top = 16
       Width = 101
       Height = 21
       TabOrder = 0
-      OnChange = Edit1Change
+      OnChange = NameEditChange
     end
-    object DateTimePicker2: TDateTimePicker
+    object TimePick: TDateTimePicker
       Left = 8
       Top = 42
       Width = 153
@@ -61,9 +73,9 @@ object FormAlarm: TFormAlarm
       Kind = dtkTime
       ParseInput = False
       TabOrder = 1
-      OnChange = DateTimePicker2Change
+      OnChange = TimePickChange
     end
-    object DateTimePicker1: TDateTimePicker
+    object DatePick: TDateTimePicker
       Left = 8
       Top = 66
       Width = 153
@@ -77,38 +89,38 @@ object FormAlarm: TFormAlarm
       MaxDate = 2958464.91192396
       ParseInput = False
       TabOrder = 2
-      OnChange = DateTimePicker2Change
+      OnChange = TimePickChange
     end
   end
-  object BUButton1: TJvButton
+  object AddBtn: TJvButton
     Left = 200
     Top = 14
     Width = 75
     Height = 25
     Caption = '&Add'
     TabOrder = 2
-    OnClick = BUButton1Click
+    OnClick = AddBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton2: TJvButton
+  object RemoveBtn: TJvButton
     Left = 200
     Top = 46
     Width = 75
     Height = 25
     Caption = '&Remove'
     TabOrder = 3
-    OnClick = BUButton2Click
+    OnClick = RemoveBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton3: TJvButton
+  object CancelBtn: TJvButton
     Left = 200
     Top = 256
     Width = 75
@@ -116,14 +128,14 @@ object FormAlarm: TFormAlarm
     Cancel = True
     Caption = '&Cancel'
     TabOrder = 1
-    OnClick = BUButton3Click
+    OnClick = CancelBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
   end
-  object BUButton4: TJvButton
+  object OkBtn: TJvButton
     Left = 200
     Top = 220
     Width = 75
@@ -131,7 +143,7 @@ object FormAlarm: TFormAlarm
     Caption = '&Ok'
     Default = True
     TabOrder = 0
-    OnClick = BUButton4Click
+    OnClick = OkBtnClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11

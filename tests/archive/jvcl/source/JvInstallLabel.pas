@@ -27,72 +27,64 @@ Known Issues:
 {$I JVCL.INC}
 
 { A component that makes it dead easy to have those nifty installation screens
-    with a list of tasks to perform and some formatting and icons to make sure the
-    user don't get lost when the big software company is stuffing his PC with rubbish. }
+  with a list of tasks to perform and some formatting and icons to make sure the
+  user don't get lost when the big software company is stuffing his PC with rubbish. }
 
 unit JvInstallLabel;
-
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ImgList, JvComponent;
+  Windows, SysUtils, Classes, Graphics, Controls, ImgList,
+  JvComponent;
 
 type
   TJvInstallLabel = class(TJvGraphicControl)
   private
-    { Private declarations }
     FImageList: TImageList;
     FImageChangeLink: TChangeLink;
     FLines: TStrings;
     FStyles: TList;
-    FTextOffset: integer;
-    FImageOffset: integer;
-    FLineSpacing: integer;
-    FIndex: integer;
-    procedure SetIndex(Value: integer);
-    procedure SetStyles(Index: integer; Value: TFontStyles);
-    function GetStyles(Index: integer): TFontStyles;
+    FTextOffset: Integer;
+    FImageOffset: Integer;
+    FLineSpacing: Integer;
+    FIndex: Integer;
+    procedure SetIndex(Value: Integer);
+    procedure SetStyles(Index: Integer; Value: TFontStyles);
+    function GetStyles(Index: Integer): TFontStyles;
     procedure SetImageList(Value: TImageList);
     procedure SetLines(Value: TStrings);
-    procedure SetImageOffset(Value: integer);
-    procedure SetTextOffset(Value: integer);
-    procedure SetLineSpacing(Value: integer);
+    procedure SetImageOffset(Value: Integer);
+    procedure SetTextOffset(Value: Integer);
+    procedure SetLineSpacing(Value: Integer);
     procedure ImageListChange(Sender: TObject);
     procedure UpdateStyles;
-    function CheckBounds(INdex: integer): boolean;
+    function CheckBounds(INdex: Integer): Boolean;
   protected
-    { Protected declarations }
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetStyle(LineIndex, ImageIndex: integer; LineStyle: TFontStyles);
-    procedure SetExclusive(LineIndex, ImageIndex: integer; LineStyle:
+    procedure SetStyle(LineIndex, ImageIndex: Integer; LineStyle: TFontStyles);
+    procedure SetExclusive(LineIndex, ImageIndex: Integer; LineStyle:
       TFontStyles);
-    procedure SetImage(LineIndex, ImageIndex: integer);
-    property Styles[Index: integer]: TFontStyles read GetStyles write SetStyles;
+    procedure SetImage(LineIndex, ImageIndex: Integer);
+    property Styles[Index: Integer]: TFontStyles read GetStyles write SetStyles;
   published
-    { Published declarations }
     property Align;
     property Font;
     property Color default clBtnFace;
-    property DefaultImage: integer read FIndex write SetIndex default -1;
+    property DefaultImage: Integer read FIndex write SetIndex default -1;
     property ImageList: TImageList read FImageList write SetImageList;
     property Lines: TStrings read FLines write SetLines;
-    property LineSpacing: integer read FLineSpacing write SetLineSpacing default
-      10;
+    property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 10;
     property ShowHint;
     property ParentShowHint;
     property ParentFont;
-    property TextOffset: integer read FTextOffset write SetTextOffset default
-      24;
-    property ImageOffset: integer read FImageOffset write SetImageOffset default
-      2;
+    property TextOffset: Integer read FTextOffset write SetTextOffset default 24;
+    property ImageOffset: Integer read FImageOffset write SetImageOffset default 2;
     property DragCursor;
     property DragMode;
     property PopupMenu;
@@ -110,6 +102,7 @@ resourcestring
   SListOutOfBounds = 'List index out of bounds (%d)';
 
 implementation
+
 uses
   JvTypes;
 
@@ -117,7 +110,7 @@ type
   PStyles = ^TStyles;
   TStyles = record
     Style: TFontStyles;
-    Index: integer;
+    Index: Integer;
   end;
 
 procedure Error(Msg: string; Args: array of const);
@@ -140,13 +133,14 @@ begin
 end;
 
 destructor TJvInstallLabel.Destroy;
-var i: integer;
+var
+  I: Integer;
 begin
   FLines.Free;
   FImageChangeLink.Free;
-  for i := 0 to FStyles.Count - 1 do
-    if FStyles[i] <> nil then
-      Dispose(PStyles(FStyles[i]));
+  for I := 0 to FStyles.Count - 1 do
+    if FStyles[I] <> nil then
+      Dispose(PStyles(FStyles[I]));
   FStyles.Free;
   inherited Destroy;
 end;
@@ -154,7 +148,8 @@ end;
 { make sure FLines.Count = FStyles.Count }
 
 procedure TJvInstallLabel.UpdateStyles;
-var aStyle: PStyles;
+var
+  aStyle: PStyles;
 begin
   while FStyles.Count > FLines.Count do
   begin
@@ -166,31 +161,32 @@ begin
   while FStyles.Count < FLines.Count do
   begin
     New(aStyle);
-    aStyle^.Style := Font.Style;        { default }
+    aStyle^.Style := Font.Style; { default }
     aStyle^.Index := FIndex;
     FStyles.Add(aStyle);
   end;
 end;
 
-procedure TJvInstallLabel.SetIndex(Value: integer);
-var i: integer;
+procedure TJvInstallLabel.SetIndex(Value: Integer);
+var
+  I: Integer;
 begin
   if FIndex <> Value then
   begin
-    for i := 0 to FStyles.Count - 1 do
-      if PStyles(FStyles[i])^.Index = FIndex then
-        PStyles(FStyles[i])^.Index := Value;
+    for I := 0 to FStyles.Count - 1 do
+      if PStyles(FStyles[I])^.Index = FIndex then
+        PStyles(FStyles[I])^.Index := Value;
     FIndex := Value;
     Invalidate;
   end;
 end;
 
-procedure TJvInstallLabel.SetStyles(Index: integer; Value: TFontStyles);
+procedure TJvInstallLabel.SetStyles(Index: Integer; Value: TFontStyles);
 begin
   SetStyle(Index, FIndex, Value);
 end;
 
-function TJvInstallLabel.GetStyles(Index: integer): TFontStyles;
+function TJvInstallLabel.GetStyles(Index: Integer): TFontStyles;
 begin
   if not CheckBounds(Index) then
     Error(SListOutOfBounds, [Index])
@@ -214,7 +210,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvInstallLabel.SetImageOffset(Value: integer);
+procedure TJvInstallLabel.SetImageOffset(Value: Integer);
 begin
   if FImageOffset <> Value then
   begin
@@ -225,7 +221,7 @@ end;
 
 { offset from left edge }
 
-procedure TJvInstallLabel.SetTextOffset(Value: integer);
+procedure TJvInstallLabel.SetTextOffset(Value: Integer);
 begin
   if FTextOffset <> Value then
   begin
@@ -236,7 +232,7 @@ end;
 
 { space between lines }
 
-procedure TJvInstallLabel.SetLineSpacing(Value: integer);
+procedure TJvInstallLabel.SetLineSpacing(Value: Integer);
 begin
   if FLineSpacing <> Value then
   begin
@@ -254,7 +250,8 @@ begin
 end;
 
 procedure TJvInstallLabel.Paint;
-var tmp, H, W, i: integer;
+var
+  Tmp, H, W, I: Integer;
   aRect: TRect;
   aHandle: THandle;
 begin
@@ -282,26 +279,26 @@ begin
   SetBkMode(aHandle, Windows.Transparent);
 
   H := Canvas.TextHeight('Wg');
-  for i := 0 to FLines.Count - 1 do
+  for I := 0 to FLines.Count - 1 do
   begin
-    Canvas.Font.Style := PStyles(FStyles[i])^.Style;
-    W := Canvas.TextWidth(FLines[i]);
-    tmp := i * (H + FLineSpacing) + FLineSpacing;
-    aRect := Rect(FTextOffset, tmp, FTextOffset + W, tmp + H);
-    DrawText(aHandle, PChar(FLines[i]), -1, aRect, DT_CENTER or DT_VCENTER or
+    Canvas.Font.Style := PStyles(FStyles[I])^.Style;
+    W := Canvas.TextWidth(FLines[I]);
+    Tmp := I * (H + FLineSpacing) + FLineSpacing;
+    aRect := Rect(FTextOffset, Tmp, FTextOffset + W, Tmp + H);
+    DrawText(aHandle, PChar(FLines[I]), -1, aRect, DT_CENTER or DT_VCENTER or
       DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP);
     if Assigned(FImageList) then
     begin
       aRect.Top := aRect.Top + ((aRect.Bottom - aRect.Top) div 2);
       FImageList.Draw(Canvas, FImageOffset, aRect.Top - FImageList.Height div 2,
-        PStyles(FStyles[i])^.Index);
+        PStyles(FStyles[I])^.Index);
     end;
   end;
 end;
 
 { set the style of this line without affecting any others }
 
-procedure TJvInstallLabel.SetStyle(LineIndex, ImageIndex: integer; LineStyle:
+procedure TJvInstallLabel.SetStyle(LineIndex, ImageIndex: Integer; LineStyle:
   TFontStyles);
 begin
   CheckBounds(LineIndex);
@@ -313,16 +310,17 @@ end;
 
 { reset all lines to default style except this one  }
 
-procedure TJvInstallLabel.SetExclusive(LineIndex, ImageIndex: integer;
+procedure TJvInstallLabel.SetExclusive(LineIndex, ImageIndex: Integer;
   LineStyle: TFontStyles);
-var i: integer;
+var
+  I: Integer;
 begin
   CheckBounds(LineIndex);
   UpdateStyles;
-  for i := 0 to FStyles.Count - 1 do
+  for I := 0 to FStyles.Count - 1 do
   begin
-    PStyles(FStyles[i])^.Style := Font.Style;
-    PStyles(FStyles[i])^.Index := FIndex;
+    PStyles(FStyles[I])^.Style := Font.Style;
+    PStyles(FStyles[I])^.Index := FIndex;
   end;
 
   PStyles(FStyles[LineIndex])^.Style := LineStyle;
@@ -330,7 +328,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvInstallLabel.SetImage(LineIndex, ImageIndex: integer);
+procedure TJvInstallLabel.SetImage(LineIndex, ImageIndex: Integer);
 begin
   CheckBounds(LineIndex);
   UpdateStyles;
@@ -343,7 +341,7 @@ begin
   Invalidate;
 end;
 
-function TJvInstallLabel.CheckBounds(Index: integer): boolean;
+function TJvInstallLabel.CheckBounds(Index: Integer): Boolean;
 begin
   Result := (Index > -1) and (Index < FLines.Count);
   if not Result then

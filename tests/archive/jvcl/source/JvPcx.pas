@@ -28,25 +28,24 @@ Known Issues:
 
 unit JvPcx;
 
-
+// (rom) Warning! This file seems riddled with bugs
+// (rom) Warning! My changes to Rle handling are completely untested
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvTypes, JvRle;
-
-// (rom) Warning. File seems buggy.
+  Windows, SysUtils, Classes, Graphics, Forms,
+  JvTypes, JvRle;
 
 type
   TJvPcx = class(TGraphic)
   private
     FBitmap: TBitmap;
   public
-    procedure Assign(Source: TPersistent); override;
-    procedure AssignTo(Dest: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     function Equals(Graphic: TGraphic): Boolean; override;
     function GetBitmap: TBitmap;
@@ -82,53 +81,6 @@ resourcestring
   RC_PcxExtension = 'pcx';
   RC_PcxFilterName = 'PCX Image';
 
-  {**************************************************}
-
-procedure TJvPcx.Assign(Source: TPersistent);
-var
-  ts: TStream;
-begin
-  if Source = nil then
-    FreeAndNil(FBitmap)
-  else if (Source is TJvPcx) and (Source <> Self) then
-  begin
-    FreeAndNil(FBitmap);
-    FBitmap := TBitmap.Create;
-
-    ts := TMemoryStream.Create;
-    TJvPcx(Source).SaveToStream(ts);
-    ts.Position := 0;
-    LoadFromStream(ts);
-  end
-  else if Source is TBitmap then
-  begin
-    FreeAndNil(FBitmap);
-    FBitmap := TBitmap.Create;
-    FBitmap.Assign(TBitmap(Source));
-  end
-  else
-    inherited Assign(Source);
-end;
-
-{**************************************************}
-
-procedure TJvPcx.AssignTo(Dest: TPersistent);
-begin
-  if Dest is TJvPcx then
-    Dest.Assign(Self)
-  else if Dest is TGraphic then
-  begin
-    if Empty then
-      Dest.Assign(nil)
-    else
-      (Dest as TGraphic).Assign(FBitmap);
-  end
-  else
-    inherited AssignTo(Dest);
-end;
-
-{**************************************************}
-
 constructor TJvPcx.Create;
 begin
   inherited Create;
@@ -138,8 +90,6 @@ begin
   FBitmap.Height := 0;
   FBitmap.Palette := 0;
 end;
-
-{**************************************************}
 
 destructor TJvPcx.Destroy;
 begin
@@ -153,15 +103,55 @@ begin
   inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvPcx.Assign(Source: TPersistent);
+var
+  Stream: TMemoryStream;
+begin
+  if Source = nil then
+    FreeAndNil(FBitmap)
+  else
+  if (Source is TJvPcx) and (Source <> Self) then
+  begin
+    FreeAndNil(FBitmap);
+    FBitmap := TBitmap.Create;
+
+    Stream := TMemoryStream.Create;
+    TJvPcx(Source).SaveToStream(Stream);
+    Stream.Position := 0;
+    LoadFromStream(Stream);
+  end
+  else
+  if Source is TBitmap then
+  begin
+    FreeAndNil(FBitmap);
+    FBitmap := TBitmap.Create;
+    FBitmap.Assign(TBitmap(Source));
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvPcx.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TJvPcx then
+    Dest.Assign(Self)
+  else
+  if Dest is TGraphic then
+  begin
+    if Empty then
+      Dest.Assign(nil)
+    else
+      (Dest as TGraphic).Assign(FBitmap);
+  end
+  else
+    inherited AssignTo(Dest);
+end;
 
 procedure TJvPcx.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FBitmap <> nil then
     ACanvas.StretchDraw(ARect, FBitmap);
 end;
-
-{**************************************************}
 
 function TJvPcx.Equals(Graphic: TGraphic): Boolean;
 begin
@@ -171,22 +161,16 @@ begin
     Result := (Graphic is TJvPcx) and (FBitmap = TJvPcx(TJvPcx).FBitmap);
 end;
 
-{**************************************************}
-
 function TJvPcx.GetBitmap: TBitmap;
 begin
   Result := FBitmap;
 end;
-
-{**************************************************}
 
 function TJvPcx.GetEmpty: Boolean;
 begin
   // (rom) does this test match the constructor?
   Result := FBitmap = nil;
 end;
-
-{**************************************************}
 
 function TJvPcx.GetHeight: Integer;
 begin
@@ -196,8 +180,6 @@ begin
     Result := -1;
 end;
 
-{**************************************************}
-
 function TJvPcx.GetPalette: HPALETTE;
 begin
   if FBitmap <> nil then
@@ -205,8 +187,6 @@ begin
   else
     Result := 0;
 end;
-
-{**************************************************}
 
 function TJvPcx.GetPixelFormat: TPixelFormat;
 begin
@@ -216,8 +196,6 @@ begin
     Result := pfCustom;
 end;
 
-{**************************************************}
-
 function TJvPcx.GetTransparent: Boolean;
 begin
   if FBitmap <> nil then
@@ -225,8 +203,6 @@ begin
   else
     Result := False;
 end;
-
-{**************************************************}
 
 function TJvPcx.GetWidth: Integer;
 begin
@@ -237,14 +213,10 @@ begin
     Result := -1;
 end;
 
-{**************************************************}
-
 function TJvPcx.HasBitmap: Boolean;
 begin
-  Result := FBItmap <> nil;
+  Result := FBitmap <> nil;
 end;
-
-{**************************************************}
 
 procedure TJvPcx.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
   APalette: HPALETTE);
@@ -254,18 +226,14 @@ begin
     FBitmap.LoadFromClipboardFormat(AFormat, AData, APalette);
 end;
 
-{**************************************************}
-
 procedure TJvPcx.LoadFromFile(const FileName: string);
 var
-  t: TFileStream;
+  Stream: TFileStream;
 begin
-  t := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  Self.LoadFromStream(t);
-  t.Free;
+  Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  Self.LoadFromStream(Stream);
+  Stream.Free;
 end;
-
-{**************************************************}
 
 procedure TJvPcx.LoadFromResourceID(Instance: THandle; ResID: Integer;
   ResType: PChar);
@@ -277,56 +245,52 @@ begin
   Stream.Free;
 end;
 
-{**************************************************}
-
 procedure TJvPcx.LoadFromResourceName(Instance: THandle;
   const ResName: string; ResType: PChar);
 var
-  Stream: TStream;
+  Stream: TResourceStream;
 begin
   Stream := TResourceStream.Create(Instance, ResName, ResType);
   Self.LoadFromStream(Stream);
   Stream.Free;
 end;
 
-{**************************************************}
-
 procedure TJvPcx.LoadFromStream(Stream: TStream);
 var
-  i, j, k, l, m: Integer;
-  w1, w2, w3, w4: Word;
+  I, J, K, L, M: Integer;
+  W1, W2, W3, W4: Word;
   BytesPerLine: Integer;
   Bpp, Planes: Integer;
-  Decompressed: TStream;
-  Buf: array[0..128] of Byte;
-  ibuf2: PRGBArray;
-  ibuf: array[0..MaxPixelCount - 1] of Byte;
-  ibuftmp: PByteArray;
-  rpal: TMaxLogPalette;
+  Decompressed: TMemoryStream;
+  Buf: array [0..128] of Byte;
+  IBuf2: PRGBArray;
+  IBuf: array [0..MaxPixelCount - 1] of Byte;
+  IBufTmp: PByteArray;
+  RPal: TMaxLogPalette;
 begin
   // (rom) changed from <> to =
   if FBitmap = nil then
     FBitmap := TBitmap.Create;
 
-  i := Stream.Read(Buf, 128);
+  I := Stream.Read(Buf, 128);
 
   FBitmap.Width := 0;
   FBitmap.Height := 0;
-  if i = 128 then
+  if I = 128 then
   begin
     if Buf[0] = 10 then
     begin
-      w1 := Buf[4] + Buf[5] * 256;
-      w2 := Buf[6] + Buf[7] * 256;
-      w3 := Buf[8] + Buf[9] * 256;
-      w4 := Buf[10] + Buf[11] * 256;
-      FBitmap.Width := (w3 - w1) + 1;
-      FBitmap.Height := (w4 - w2) + 1;
+      W1 := Buf[4] + Buf[5] * 256;
+      W2 := Buf[6] + Buf[7] * 256;
+      W3 := Buf[8] + Buf[9] * 256;
+      W4 := Buf[10] + Buf[11] * 256;
+      FBitmap.Width := (W3 - W1) + 1;
+      FBitmap.Height := (W4 - W2) + 1;
       // (rom) FloodFill seems silly
       FBitmap.Canvas.FloodFill(0, 0, clWhite, fsSurface);
       BytesPerLine := (Buf[66] + Buf[67] * 256) * Buf[65];
-      l := FBitmap.Width * 2;
-      m := FBitmap.Width;
+      L := FBitmap.Width * 2;
+      M := FBitmap.Width;
       Bpp := Buf[3];
       Planes := Buf[65];
       case Bpp of
@@ -372,129 +336,127 @@ begin
 
       Decompressed := TMemoryStream.Create;
       Decompressed.CopyFrom(Stream, Stream.Size - Stream.Position);
-      Decompressed.Position := 0;
-      with TJvRle.Create do
-      begin
-        Decompressed := Decompress(Decompressed);
-        Free;
-      end;
+      RleDecompress(Decompressed);
 
       if (Bpp = 1) and (Planes = 1) then
       begin
         //monochrome okay
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuftmp := FBitmap.ScanLine[i];
-          Decompressed.Read(ibuf, BytesPerLine);
-          CopyMemory(ibuftmp, @ibuf, BytesPerLine);
+          IBufTmp := FBitmap.ScanLine[I];
+          Decompressed.Read(IBuf, BytesPerLine);
+          CopyMemory(IBufTmp, @IBuf, BytesPerLine);
         end;
       end
-      else if (Bpp = 1) and (Planes = 4) then
+      else
+      if (Bpp = 1) and (Planes = 4) then
       begin
         //16 colors
         //palette
         Stream.Position := 16;
-        if Stream.Read(ibuf, 48) <> 48 then
+        if Stream.Read(IBuf, 48) <> 48 then
           raise EPcxError.Create(RC_PcxPaletteProblem)
         else
         begin
-          rpal.palVersion := $300;
-          rpal.palNumEntries := 16;
-          for m := 0 to 15 do
+          RPal.palVersion := $300;
+          RPal.palNumEntries := 16;
+          for M := 0 to 15 do
           begin
-            i := m * 3;
-            rpal.palPalEntry[m].peRed := ibuf[i];
-            rpal.palPalEntry[m].peGreen := ibuf[i + 1];
-            rpal.palPalEntry[m].peBlue := ibuf[i + 2];
-            rpal.palPalEntry[m].peFlags := 0;
+            I := M * 3;
+            RPal.palPalEntry[M].peRed := IBuf[I];
+            RPal.palPalEntry[M].peGreen := IBuf[I + 1];
+            RPal.palPalEntry[M].peBlue := IBuf[I + 2];
+            RPal.palPalEntry[M].peFlags := 0;
           end;
           // (rom) why not like in the following 256 color block?
-          FBitmap.Palette := CreatePalette(tagLogPalette((@rpal)^));
+          FBitmap.Palette := CreatePalette(PLogPalette(@RPal)^);
           PaletteModified := True;
         end;
 
         //Reading data
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          Decompressed.Read(ibuf, BytesPerLine);
-          ibuftmp := FBitmap.Scanline[i];
-          FillChar(ibuftmp^, (FBitmap.Width div 2) + 1, #0);
+          Decompressed.Read(IBuf, BytesPerLine);
+          IBufTmp := FBitmap.Scanline[I];
+          FillChar(IBufTmp^, (FBitmap.Width div 2) + 1, #0);
 
-          l := 0;
-          for k := 0 to FBitmap.Width - 1 do
-            if ((ibuf[l + k div 8]) and (1 shl (7 - (k mod 8)))) <> 0 then
-              if k mod 2 <> 0 then
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $01
+          L := 0;
+          for K := 0 to FBitmap.Width - 1 do
+            if ((IBuf[L + K div 8]) and (1 shl (7 - (K mod 8)))) <> 0 then
+              if K mod 2 <> 0 then
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $01
               else
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $10;
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $10;
 
-          l := BytesPerLine div 4;
-          for k := 0 to FBitmap.Width - 1 do
-            if ((ibuf[l + k div 8]) and (1 shl (7 - (k mod 8)))) <> 0 then
-              if k mod 2 <> 0 then
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $02
+          L := BytesPerLine div 4;
+          for K := 0 to FBitmap.Width - 1 do
+            if ((IBuf[L + K div 8]) and (1 shl (7 - (K mod 8)))) <> 0 then
+              if K mod 2 <> 0 then
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $02
               else
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $20;
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $20;
 
-          l := (BytesPerLine div 4) * 2;
-          for k := 0 to FBitmap.Width - 1 do
-            if ((ibuf[l + k div 8]) and (1 shl (7 - (k mod 8)))) <> 0 then
-              if k mod 2 <> 0 then
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $04
+          L := (BytesPerLine div 4) * 2;
+          for K := 0 to FBitmap.Width - 1 do
+            if ((IBuf[L + K div 8]) and (1 shl (7 - (K mod 8)))) <> 0 then
+              if K mod 2 <> 0 then
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $04
               else
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $40;
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $40;
 
-          l := (BytesPerLine div 4) * 3;
-          for k := 0 to FBitmap.Width - 1 do
-            if ((ibuf[l + k div 8]) and (1 shl (7 - (k mod 8)))) <> 0 then
-              if k mod 2 <> 0 then
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $08
+          L := (BytesPerLine div 4) * 3;
+          for K := 0 to FBitmap.Width - 1 do
+            if ((IBuf[L + K div 8]) and (1 shl (7 - (K mod 8)))) <> 0 then
+              if K mod 2 <> 0 then
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $08
               else
-                ibuftmp^[k div 2] := ibuftmp^[k div 2] + $80;
+                IBufTmp^[K div 2] := IBufTmp^[K div 2] + $80;
         end;
       end
-      else if (Bpp = 8) and (Planes = 1) then
+      else
+      if (Bpp = 8) and (Planes = 1) then
       begin
         //256 Colors. Okay
         Stream.Position := Stream.Size - (256 * 3 + 1);
-        Stream.Read(ibuf, 1000);
-        if ibuf[0] = 12 then
+        Stream.Read(IBuf, 1000);
+        if IBuf[0] = 12 then
         begin
-          rpal.palVersion := $300;
-          rpal.palNumEntries := 256;
-          for m := 0 to 255 do
+          RPal.palVersion := $300;
+          RPal.palNumEntries := 256;
+          for M := 0 to 255 do
           begin
-            i := m * 3 + 1;
-            rpal.palPalEntry[m].peRed := ibuf[i];
-            rpal.palPalEntry[m].peGreen := ibuf[i + 1];
-            rpal.palPalEntry[m].peBlue := ibuf[i + 2];
-            rpal.palPalEntry[m].peFlags := 0;
+            I := M * 3 + 1;
+            RPal.palPalEntry[M].peRed := IBuf[I];
+            RPal.palPalEntry[M].peGreen := IBuf[I + 1];
+            RPal.palPalEntry[M].peBlue := IBuf[I + 2];
+            RPal.palPalEntry[M].peFlags := 0;
           end;
-          FBitmap.Palette := CreatePalette(tagLogPalette((@rpal)^));
+          FBitmap.Palette := CreatePalette(PLogPalette(@RPal)^);
           FBitmap.PaletteModified := True;
           // (rom) this is also done at function exit
           PaletteModified := True;
           Changed(Self);
         end;
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuftmp := FBitmap.ScanLine[i];
-          Decompressed.Read(ibuf, BytesPerLine);
-          CopyMemory(ibuftmp, @ibuf, BytesPerLine);
+          IBufTmp := FBitmap.ScanLine[I];
+          Decompressed.Read(IBuf, BytesPerLine);
+          CopyMemory(IBufTmp, @IBuf, BytesPerLine);
         end;
       end
-      else if (Bpp = 8) and (Planes = 3) then
+      else
+      if (Bpp = 8) and (Planes = 3) then
       begin
         //24 bit. Okey
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuf2 := Fbitmap.ScanLine[i];
-          Decompressed.Read(ibuf, BytesPerLine);
-          for j := 0 to FBitmap.Width - 1 do
+          IBuf2 := Fbitmap.ScanLine[I];
+          Decompressed.Read(IBuf, BytesPerLine);
+          for J := 0 to FBitmap.Width - 1 do
           begin
-            ibuf2[j].rgbtRed := ibuf[j];
-            ibuf2[j].rgbtGreen := ibuf[j + m];
-            ibuf2[j].rgbtBlue := ibuf[j + l];
+            IBuf2[J].rgbtRed := IBuf[J];
+            IBuf2[J].rgbtGreen := IBuf[J + M];
+            IBuf2[J].rgbtBlue := IBuf[J + L];
           end;
         end;
         // (rom) why not remove the palette here?
@@ -511,16 +473,12 @@ begin
   Changed(Self);
 end;
 
-{**************************************************}
-
 procedure TJvPcx.SaveToClipboardFormat(var AFormat: Word;
   var AData: THandle; var APalette: HPALETTE);
 begin
   if FBitmap <> nil then
     FBitmap.SaveToClipboardFormat(AFormat, AData, APalette);
 end;
-
-{**************************************************}
 
 procedure TJvPcx.SaveToFile(const FileName: string);
 var
@@ -531,18 +489,16 @@ begin
   Stream.Free;
 end;
 
-{**************************************************}
-
 procedure TJvPcx.SaveToStream(Stream: TStream);
 var
-  i, j, k, l: Integer;
+  I, J, K, L: Integer;
   BytesPerLine: Word;
-  st: TStream;
-  b: Byte;
-  ibuf2: PRGBArray;
-  ibuf: array[0..MaxPixelCount - 1] of Byte;
-  ibuftmp: PByteArray;
-  wpal: array[0..255] of PALETTEENTRY;
+  MemStream: TMemoryStream;
+  B: Byte;
+  IBuf2: PRGBArray;
+  IBuf: array [0..MaxPixelCount - 1] of Byte;
+  IBufTmp: PByteArray;
+  WPal: array [0..255] of PALETTEENTRY;
 begin
   if FBitmap = nil then
     Exit;
@@ -550,216 +506,210 @@ begin
     and (FBitmap.PixelFormat <> pf24Bit) then
     FBItmap.PixelFormat := pf24bit;
 
-  //St is the temporary Stream to put the data
-  st := TMemoryStream.Create;
+  // Stream is the temporary Stream to put the data
+  MemStream := TMemoryStream.Create;
 
-  //Creating header first
-  FillChar(ibuf, 128, 0);
-  ibuf[0] := $A;
-  ibuf[1] := 5;
-  ibuf[2] := 1;
-  ibuf[8] := Lo(FBitmap.Width) - 1;
-  ibuf[9] := Hi(FBitmap.Width);
-  ibuf[10] := Lo(FBitmap.Height) - 1;
-  ibuf[11] := Hi(FBitmap.Height);
-  ibuf[12] := 1;
-  ibuf[13] := 300 - 256;
-  ibuf[14] := 1;
-  ibuf[15] := 300 - 256;
-  ibuf[69] := 1;
-  ibuf[70] := Hi(Screen.Height);
-  ibuf[71] := Lo(Screen.Height);
-  ibuf[72] := Hi(Screen.Width);
-  ibuf[73] := Lo(Screen.Width);
+  // Creating header first
+  FillChar(IBuf, 128, 0);
+  IBuf[0] := $A;
+  IBuf[1] := 5;
+  IBuf[2] := 1;
+  IBuf[8] := Lo(FBitmap.Width) - 1;
+  IBuf[9] := Hi(FBitmap.Width);
+  IBuf[10] := Lo(FBitmap.Height) - 1;
+  IBuf[11] := Hi(FBitmap.Height);
+  IBuf[12] := 1;
+  IBuf[13] := 300 - 256;
+  IBuf[14] := 1;
+  IBuf[15] := 300 - 256;
+  IBuf[69] := 1;
+  IBuf[70] := Hi(Screen.Height);
+  IBuf[71] := Lo(Screen.Height);
+  IBuf[72] := Hi(Screen.Width);
+  IBuf[73] := Lo(Screen.Width);
 
   case FBitmap.PixelFormat of
     pf1bit:
       begin
-        ibuf[3] := 1;
-        ibuf[65] := 1;
+        IBuf[3] := 1;
+        IBuf[65] := 1;
         BytesPerLine := FBitmap.Width div 8;
         if FBitmap.Width mod 8 <> 0 then
           Inc(BytesPerLine);
-        ibuf[66] := Lo(BytesPerLine);
-        ibuf[67] := Hi(BytesPerLine);
-        Stream.Write(ibuf, 128);
+        IBuf[66] := Lo(BytesPerLine);
+        IBuf[67] := Hi(BytesPerLine);
+        Stream.Write(IBuf, 128);
 
         //Write data
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuftmp := FBitmap.ScanLine[i];
-          CopyMemory(@ibuf, ibuftmp, BytesPerLine);
-          st.Write(ibuf, BytesPerLine);
+          IBufTmp := FBitmap.ScanLine[I];
+          CopyMemory(@IBuf, IBufTmp, BytesPerLine);
+          MemStream.Write(IBuf, BytesPerLine);
         end;
       end;
     pf4bit:
       begin
-        ibuf[3] := 1;
-        ibuf[65] := 4;
+        IBuf[3] := 1;
+        IBuf[65] := 4;
         BytesPerLine := FBitmap.Width div 8;
         if FBitmap.Width mod 8 <> 0 then
           Inc(BytesPerLine);
-        i := BytesPerLine;
+        I := BytesPerLine;
         BytesPerLine := BytesPerLine * 4;
-        ibuf[66] := Lo(i);
-        ibuf[67] := Hi(i);
+        IBuf[66] := Lo(I);
+        IBuf[67] := Hi(I);
 
         //Write palette
         if FBitmap.Palette <> 0 then
         begin
-          GetPaletteEntries(FBitmap.Palette, 0, 16, wpal);
-          for i := 0 to 15 do
+          GetPaletteEntries(FBitmap.Palette, 0, 16, WPal);
+          for I := 0 to 15 do
           begin
-            ibuf[16 + i * 3] := wpal[i].peRed;
-            ibuf[16 + i * 3 + 1] := wpal[i].peGreen;
-            ibuf[16 + i * 3 + 2] := wpal[i].peBlue;
+            IBuf[16 + I * 3] := WPal[I].peRed;
+            IBuf[16 + I * 3 + 1] := WPal[I].peGreen;
+            IBuf[16 + I * 3 + 2] := WPal[I].peBlue;
           end;
         end;
-        Stream.Write(ibuf, 128);
+        Stream.Write(IBuf, 128);
 
         //Write data
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuftmp := FBitmap.Scanline[i];
-          FillChar(ibuf, BytesPerLine, #0);
+          IBufTmp := FBitmap.Scanline[I];
+          FillChar(IBuf, BytesPerLine, #0);
 
           //Red
-          l := 0;
-          for j := 0 to FBitmap.Width - 1 do
-            if (j mod 2) = 0 then
+          L := 0;
+          for J := 0 to FBitmap.Width - 1 do
+            if (J mod 2) = 0 then
             begin
-              if (ibuftmp^[j div 2] and $10) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $10) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end
             else
             begin
-              if (ibuftmp^[j div 2] and $01) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $01) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end;
 
           //Green
-          l := BytesPerLine div 4;
-          for j := 0 to FBitmap.Width - 1 do
-            if (j mod 2) = 0 then
+          L := BytesPerLine div 4;
+          for J := 0 to FBitmap.Width - 1 do
+            if (J mod 2) = 0 then
             begin
-              if (ibuftmp^[j div 2] and $20) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $20) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end
             else
             begin
-              if (ibuftmp^[j div 2] and $02) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $02) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end;
 
           //Blue
-          l := BytesPerLine div 2;
-          for j := 0 to FBitmap.Width - 1 do
-            if (j mod 2) = 0 then
+          L := BytesPerLine div 2;
+          for J := 0 to FBitmap.Width - 1 do
+            if (J mod 2) = 0 then
             begin
-              if (ibuftmp^[j div 2] and $40) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $40) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end
             else
             begin
-              if (ibuftmp^[j div 2] and $04) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $04) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end;
 
           //Intensity
-          l := (BytesPerLine div 4) * 3;
-          for j := 0 to FBitmap.Width - 1 do
-            if (j mod 2) = 0 then
+          L := (BytesPerLine div 4) * 3;
+          for J := 0 to FBitmap.Width - 1 do
+            if (J mod 2) = 0 then
             begin
-              if (ibuftmp^[j div 2] and $80) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $80) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end
             else
             begin
-              if (ibuftmp^[j div 2] and $08) <> 0 then
-                ibuf[l + j div 8] := ibuf[l + j div 8] + (1 shl (7 - (j mod 8)));
+              if (IBufTmp^[J div 2] and $08) <> 0 then
+                IBuf[L + J div 8] := IBuf[L + J div 8] + (1 shl (7 - (J mod 8)));
             end;
 
-          st.Write(ibuf, BytesPerLine);
+          MemStream.Write(IBuf, BytesPerLine);
         end;
       end;
     pf8bit:
       begin
-        ibuf[3] := 8;
-        ibuf[65] := 1;
+        IBuf[3] := 8;
+        IBuf[65] := 1;
         BytesPerLine := FBitmap.Width;
-        ibuf[66] := Lo(BytesPerLine);
-        ibuf[67] := Hi(BytesPerLine);
-        Stream.Write(ibuf, 128);
+        IBuf[66] := Lo(BytesPerLine);
+        IBuf[67] := Hi(BytesPerLine);
+        Stream.Write(IBuf, 128);
 
         //Write Data
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuftmp := Fbitmap.ScanLine[i];
-          CopyMemory(@ibuf, ibuftmp, BytesPerLine);
-          st.Write(ibuf, BytesPerLine);
+          IBufTmp := Fbitmap.ScanLine[I];
+          CopyMemory(@IBuf, IBufTmp, BytesPerLine);
+          MemStream.Write(IBuf, BytesPerLine);
         end;
       end;
     pf24bit:
       begin
-        ibuf[3] := 8;
-        ibuf[65] := 3;
+        IBuf[3] := 8;
+        IBuf[65] := 3;
         BytesPerLine := FBitmap.Width * 3;
-        i := FBitmap.Width;
-        ibuf[66] := lo(i);
-        ibuf[67] := hi(i);
-        Stream.Write(ibuf, 128);
+        I := FBitmap.Width;
+        IBuf[66] := lo(I);
+        IBuf[67] := hi(I);
+        Stream.Write(IBuf, 128);
 
         //Write data
-        for i := 0 to FBitmap.Height - 1 do
+        for I := 0 to FBitmap.Height - 1 do
         begin
-          ibuf2 := FBitmap.ScanLine[i];
+          IBuf2 := FBitmap.ScanLine[I];
 
-          for j := 0 to FBitmap.Width - 1 do
-            ibuf[j] := ibuf2[j].rgbtRed;
+          for J := 0 to FBitmap.Width - 1 do
+            IBuf[J] := IBuf2[J].rgbtRed;
 
-          k := FBitmap.Width;
-          for j := 0 to FBitmap.Width - 1 do
-            ibuf[j + k] := ibuf2[j].rgbtGreen;
+          K := FBitmap.Width;
+          for J := 0 to FBitmap.Width - 1 do
+            IBuf[J + K] := IBuf2[J].rgbtGreen;
 
-          k := FBitmap.Width * 2;
-          for j := 0 to FBitmap.Width - 1 do
-            ibuf[j + k] := ibuf2[j].rgbtBlue;
+          K := FBitmap.Width * 2;
+          for J := 0 to FBitmap.Width - 1 do
+            IBuf[J + K] := IBuf2[J].rgbtBlue;
 
-          st.Write(ibuf, BytesPerLine);
+          MemStream.Write(IBuf, BytesPerLine);
         end;
       end;
   end;
 
   //RLE Compress temporary Stream
-  st.Position := 0;
-  with TJvRle.Create do
-  begin
-    st := Compress(st);
-    Free;
-  end;
+  // (rom) palette stays uncompressed because it has been written to Stream
+  RleCompress(MemStream);
   //Copy temporary Stream to final Stream
-  st.Position := 0;
-  Stream.CopyFrom(st, st.Size);
+  MemStream.Position := 0;
+  Stream.CopyFrom(MemStream, MemStream.Size);
 
   //Write palette if mode 256 color.
   if (FBitmap.PixelFormat = pf8bit) and (FBitmap.Palette <> 0) then
   begin
-    GetPaletteEntries(FBitmap.Palette, 0, 256, wpal);
-    for i := 0 to 255 do
+    GetPaletteEntries(FBitmap.Palette, 0, 256, WPal);
+    for I := 0 to 255 do
     begin
-      ibuf[i * 3] := wpal[i].peRed;
-      ibuf[i * 3 + 1] := wpal[i].peGreen;
-      ibuf[i * 3 + 2] := wpal[i].peBlue;
+      IBuf[I * 3] := WPal[I].peRed;
+      IBuf[I * 3 + 1] := WPal[I].peGreen;
+      IBuf[I * 3 + 2] := WPal[I].peBlue;
     end;
-    b := 12;
-    Stream.Write(b, 1);
-    Stream.Write(ibuf, 256 * 3);
+    B := 12;
+    Stream.Write(B, 1);
+    Stream.Write(IBuf, 256 * 3);
   end;
 
-  st.Free;
+  MemStream.Free;
 end;
-
-{**************************************************}
 
 procedure TJvPcx.SetHeight(Value: Integer);
 begin
@@ -770,8 +720,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvPcx.SetWidth(Value: Integer);
 begin
   if FBitmap <> nil then
@@ -781,14 +729,10 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvPcx.WriteData(Stream: TStream);
 begin
   SaveToStream(Stream);
 end;
-
-{**************************************************}
 
 initialization
   RegisterClass(TJvPcx);
@@ -798,3 +742,4 @@ finalization
   TPicture.UnRegisterGraphicClass(TJvPcx);
 
 end.
+

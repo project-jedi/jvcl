@@ -12,7 +12,7 @@ The Original Code is: JvPlacemnt.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,30 +25,27 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvPlacemnt;
 
 interface
 
 uses
- {$IFDEF COMPILER6_UP}
-RTLConsts, Variants,
-{$ENDIF}
-Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
-Dialogs, JvVCLUtils, JvWndProcHook{, JvComponent};
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, Variants,
+  {$ENDIF}
+  Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
+  JvWndProcHook {, JvComponent};
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
   TPlacementOptions = set of TPlacementOption;
   TPlacementOperation = (poSave, poRestore);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   TPlacementRegRoot = (prCurrentUser, prLocalMachine, prCurrentConfig,
     prClassesRoot, prUsers, prDynData);
-{$ENDIF}
+  {$ENDIF}
 
   TJvIniLink = class;
-
-{ TJvWinMinMaxInfo }
 
   TJvFormPlacement = class;
 
@@ -72,19 +69,17 @@ type
     property MinTrackWidth: Integer index 7 read GetMinMaxInfo write SetMinMaxInfo default 0;
   end;
 
-{ TJvFormPlacement }
-
   TJvFormPlacement = class(TComponent)
   private
     FActive: Boolean;
-    FIniFileName: String;
-    FIniSection: String;
+    FIniFileName: string;
+    FIniSection: string;
     FIniFile: TIniFile;
     FUseRegistry: Boolean;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     FRegIniFile: TRegIniFile;
     FRegistryRoot: TPlacementRegRoot;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     FLinks: TList;
     FOptions: TPlacementOptions;
     FVersion: Integer;
@@ -147,9 +142,9 @@ type
     procedure EraseSections;
     property IniFileObject: TObject read GetIniFile;
     property IniFile: TIniFile read FIniFile;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property RegIniFile: TRegIniFile read FRegIniFile;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
   published
     property Active: Boolean read FActive write FActive default True;
     property IniFileName: string read GetIniFileName write SetIniFileName;
@@ -157,9 +152,9 @@ type
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpPosition];
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property RegistryRoot: TPlacementRegRoot read FRegistryRoot write FRegistryRoot default prCurrentUser;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
     property Version: Integer read FVersion write FVersion default 0;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement
@@ -168,25 +163,23 @@ type
       write FOnRestorePlacement;
   end;
 
-{ TJvFormStorage }
-
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   TJvStoredValues = class;
   TJvStoredValue = class;
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 
   TJvFormStorage = class(TJvFormPlacement)
   private
     FStoredProps: TStrings;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     FStoredValues: TJvStoredValues;
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
     procedure SetStoredProps(Value: TStrings);
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure SeTJvStoredValues(Value: TJvStoredValues);
     function GeTJvStoredValue(const Name: string): Variant;
     procedure SeTJvStoredValue(const Name: string; Value: Variant);
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -198,20 +191,18 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure SetNotification;
-{$ENDIF WIN32}
-{$IFDEF COMPILER3_UP}
+    {$ENDIF WIN32}
+    {$IFDEF COMPILER3_UP}
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
   published
     property StoredProps: TStrings read FStoredProps write SetStoredProps;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     property StoredValues: TJvStoredValues read FStoredValues write SeTJvStoredValues;
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
   end;
-
-{ TJvIniLink }
 
   TJvIniLink = class(TPersistent)
   private
@@ -233,9 +224,7 @@ type
     property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
   end;
 
-{$IFDEF COMPILER3_UP}
-
-{ TJvStoredValue }
+  {$IFDEF COMPILER3_UP}
 
   TJvStoredValueEvent = procedure(Sender: TJvStoredValue; var Value: Variant) of object;
 
@@ -266,9 +255,11 @@ type
     property OnRestore: TJvStoredValueEvent read FOnRestore write FOnRestore;
   end;
 
-{ TJvStoredValues }
-
-  TJvStoredValues = class({$IFDEF COMPILER4_UP}TOwnedCollection{$ELSE}TCollection{$ENDIF})
+  {$IFDEF COMPILER4_UP}
+  TJvStoredValues = class(TOwnedCollection)
+  {$ELSE}
+  TJvStoredValues = class(TCollection)
+  {$ENDIF}
   private
     FStorage: TJvFormPlacement;
     function GetValue(const Name: string): TJvStoredValue;
@@ -278,11 +269,11 @@ type
     function GetItem(Index: Integer): TJvStoredValue;
     procedure SetItem(Index: Integer; StoredValue: TJvStoredValue);
   public
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     constructor Create(AOwner: TPersistent);
-{$ELSE}
+    {$ELSE}
     constructor Create;
-{$ENDIF}
+    {$ENDIF}
     function IndexOf(const Name: string): Integer;
     procedure SaveValues; virtual;
     procedure RestoreValues; virtual;
@@ -292,23 +283,24 @@ type
     property StoredValue[const Name: string]: Variant read GeTJvStoredValue write SeTJvStoredValue;
   end;
 
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 
 implementation
 
-uses SysUtils,
-{$IFDEF COMPILER3_UP}
+uses
+  SysUtils,
+  {$IFDEF COMPILER3_UP}
   Consts,
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
   JvAppUtils, JvStrUtils, JvProps, JvTypes;
 
 const
-{ The following string should not be localized }
+  { The following string should not be localized }
   siActiveCtrl = 'ActiveControl';
   siVisible = 'Visible';
   siVersion = 'FormVersion';
 
-{ TJvFormPlacement }
+//=== TJvFormPlacement =======================================================
 
 constructor TJvFormPlacement.Create(AOwner: TComponent);
 begin
@@ -316,8 +308,10 @@ begin
   FIniFileName := EmptyStr;
   FIniSection := EmptyStr;
   FActive := True;
-  if AOwner is TForm then FOptions := [fpState, fpPosition]
-  else FOptions := [];
+  if AOwner is TForm then
+    FOptions := [fpState, fpPosition]
+  else
+    FOptions := [];
   FWinHook := TJvWindowHook.Create(Self);
   FWinHook.AfterMessage := WndMessage;
   FWinMinMaxInfo := TJvWinMinMaxInfo.Create;
@@ -328,9 +322,11 @@ end;
 destructor TJvFormPlacement.Destroy;
 begin
   IniFree;
-  while FLinks.Count > 0 do RemoveLink(FLinks.Last);
+  while FLinks.Count > 0 do
+    RemoveLink(FLinks.Last);
   FLinks.Free;
-  if not (csDesigning in ComponentState) then begin
+  if not (csDesigning in ComponentState) then
+  begin
     ReleaseHook;
     RestoreEvents;
   end;
@@ -346,8 +342,10 @@ var
 begin
   Loading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) then begin
-    if Loading then SetEvents;
+  if not (csDesigning in ComponentState) then
+  begin
+    if Loading then
+      SetEvents;
     CheckToggleHook;
   end;
 end;
@@ -365,8 +363,10 @@ begin
   for I := 0 to FLinks.Count - 1 do
     with TJvIniLink(FLinks[I]) do
       case Operation of
-        poSave: SaveToIni;
-        poRestore: LoadFromIni;
+        poSave:
+          SaveToIni;
+        poRestore:
+          LoadFromIni;
       end;
 end;
 
@@ -378,14 +378,18 @@ end;
 
 function TJvFormPlacement.GetForm: TForm;
 begin
-  if Owner is TCustomForm then Result := TForm(Owner as TCustomForm)
-  else Result := nil;
+  if Owner is TCustomForm then
+    Result := TForm(Owner as TCustomForm)
+  else
+    Result := nil;
 end;
 
 procedure TJvFormPlacement.SetEvents;
 begin
-  if Owner is TCustomForm then begin
-    with TForm(Form) do begin
+  if Owner is TCustomForm then
+  begin
+    with TForm(Form) do
+    begin
       FSaveFormShow := OnShow;
       OnShow := FormShow;
       FSaveFormCloseQuery := OnCloseQuery;
@@ -394,14 +398,16 @@ begin
       OnDestroy := FormDestroy;
       FDefMaximize := (biMaximize in BorderIcons);
     end;
-    if FPreventResize then UpdatePreventResize;
+    if FPreventResize then
+      UpdatePreventResize;
   end;
 end;
 
 procedure TJvFormPlacement.RestoreEvents;
 begin
   if (Owner <> nil) and (Owner is TCustomForm) then
-    with TForm(Form) do begin
+    with TForm(Form) do
+    begin
       OnShow := FSaveFormShow;
       OnCloseQuery := FSaveFormCloseQuery;
       OnDestroy := FSaveFormDestroy;
@@ -422,7 +428,10 @@ end;
 
 procedure TJvFormPlacement.CheckToggleHook;
 begin
-  if CheckMinMaxInfo or PreventResize then SetHook else ReleaseHook;
+  if CheckMinMaxInfo or PreventResize then
+    SetHook
+  else
+    ReleaseHook;
 end;
 
 function TJvFormPlacement.CheckMinMaxInfo: Boolean;
@@ -433,7 +442,8 @@ end;
 procedure TJvFormPlacement.MinMaxInfoModified;
 begin
   UpdatePlacement;
-  if not (csLoading in ComponentState) then CheckToggleHook;
+  if not (csLoading in ComponentState) then
+    CheckToggleHook;
 end;
 
 procedure TJvFormPlacement.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
@@ -444,18 +454,22 @@ end;
 procedure TJvFormPlacement.WndMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
 begin
-  if FPreventResize and (Owner is TCustomForm) then begin
+  if FPreventResize and (Owner is TCustomForm) then
+  begin
     case Msg.Msg of
       WM_GETMINMAXINFO:
-        if Form.HandleAllocated and IsWindowVisible(Form.Handle) then begin
-          with TWMGetMinMaxInfo(Msg).MinMaxInfo^ do begin
+        if Form.HandleAllocated and IsWindowVisible(Form.Handle) then
+        begin
+          with TWMGetMinMaxInfo(Msg).MinMaxInfo^ do
+          begin
             ptMinTrackSize := Point(Form.Width, Form.Height);
             ptMaxTrackSize := Point(Form.Width, Form.Height);
           end;
           Msg.Result := 1;
         end;
       WM_INITMENUPOPUP:
-        if TWMInitMenuPopup(Msg).SystemMenu then begin
+        if TWMInitMenuPopup(Msg).SystemMenu then
+        begin
           if Form.Menu <> nil then
             Form.Menu.DispatchPopup(TWMInitMenuPopup(Msg).MenuPopup);
           EnableMenuItem(TWMInitMenuPopup(Msg).MenuPopup, SC_SIZE,
@@ -468,32 +482,38 @@ begin
         begin
           if Msg.Result in [HTLEFT, HTRIGHT, HTBOTTOM, HTBOTTOMRIGHT,
             HTBOTTOMLEFT, HTTOP, HTTOPRIGHT, HTTOPLEFT]
-          then Msg.Result := HTNOWHERE;
+            then
+            Msg.Result := HTNOWHERE;
         end;
     end;
   end
-  else if (Msg.Msg = WM_GETMINMAXINFO) then begin
-    if CheckMinMaxInfo then begin
-      with TWMGetMinMaxInfo(Msg).MinMaxInfo^ do begin
-         if FWinMinMaxInfo.MinTrackWidth <> 0 then
-           ptMinTrackSize.X := FWinMinMaxInfo.MinTrackWidth;
-         if FWinMinMaxInfo.MinTrackHeight <> 0 then
-           ptMinTrackSize.Y := FWinMinMaxInfo.MinTrackHeight;
-         if FWinMinMaxInfo.MaxTrackWidth <> 0 then
-           ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
-         if FWinMinMaxInfo.MaxTrackHeight <> 0 then
-           ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
-         if FWinMinMaxInfo.MaxSizeWidth <> 0 then
-           ptMaxSize.X := FWinMinMaxInfo.MaxSizeWidth;
-         if FWinMinMaxInfo.MaxSizeHeight <> 0 then
-           ptMaxSize.Y := FWinMinMaxInfo.MaxSizeHeight;
-         if FWinMinMaxInfo.MaxPosLeft <> 0 then
-           ptMaxPosition.X := FWinMinMaxInfo.MaxPosLeft;
-         if FWinMinMaxInfo.MaxPosTop <> 0 then
-           ptMaxPosition.Y := FWinMinMaxInfo.MaxPosTop;
+  else
+  if Msg.Msg = WM_GETMINMAXINFO then
+  begin
+    if CheckMinMaxInfo then
+    begin
+      with TWMGetMinMaxInfo(Msg).MinMaxInfo^ do
+      begin
+        if FWinMinMaxInfo.MinTrackWidth <> 0 then
+          ptMinTrackSize.X := FWinMinMaxInfo.MinTrackWidth;
+        if FWinMinMaxInfo.MinTrackHeight <> 0 then
+          ptMinTrackSize.Y := FWinMinMaxInfo.MinTrackHeight;
+        if FWinMinMaxInfo.MaxTrackWidth <> 0 then
+          ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
+        if FWinMinMaxInfo.MaxTrackHeight <> 0 then
+          ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
+        if FWinMinMaxInfo.MaxSizeWidth <> 0 then
+          ptMaxSize.X := FWinMinMaxInfo.MaxSizeWidth;
+        if FWinMinMaxInfo.MaxSizeHeight <> 0 then
+          ptMaxSize.Y := FWinMinMaxInfo.MaxSizeHeight;
+        if FWinMinMaxInfo.MaxPosLeft <> 0 then
+          ptMaxPosition.X := FWinMinMaxInfo.MaxPosLeft;
+        if FWinMinMaxInfo.MaxPosTop <> 0 then
+          ptMaxPosition.Y := FWinMinMaxInfo.MaxPosTop;
       end;
     end
-    else begin
+    else
+    begin
       TWMGetMinMaxInfo(Msg).MinMaxInfo^.ptMaxPosition.X := 0;
       TWMGetMinMaxInfo(Msg).MinMaxInfo^.ptMaxPosition.Y := 0;
     end;
@@ -504,12 +524,13 @@ end;
 procedure TJvFormPlacement.FormShow(Sender: TObject);
 begin
   if Active then
-    try
-      RestoreFormPlacement;
-    except
-      Application.HandleException(Self);
-    end;
-  if Assigned(FSaveFormShow) then FSaveFormShow(Sender);
+  try
+    RestoreFormPlacement;
+  except
+    Application.HandleException(Self);
+  end;
+  if Assigned(FSaveFormShow) then
+    FSaveFormShow(Sender);
 end;
 
 procedure TJvFormPlacement.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -517,16 +538,17 @@ begin
   if Assigned(FSaveFormCloseQuery) then
     FSaveFormCloseQuery(Sender, CanClose);
   if CanClose and Active and (Owner is TCustomForm) and (Form.Handle <> 0) then
-    try
-      SaveFormPlacement;
-    except
-      Application.HandleException(Self);
-    end;
+  try
+    SaveFormPlacement;
+  except
+    Application.HandleException(Self);
+  end;
 end;
 
 procedure TJvFormPlacement.FormDestroy(Sender: TObject);
 begin
-  if Active and not FSaved then begin
+  if Active and not FSaved then
+  begin
     FDestroying := True;
     try
       SaveFormPlacement;
@@ -535,33 +557,37 @@ begin
     end;
     FDestroying := False;
   end;
-  if Assigned(FSaveFormDestroy) then FSaveFormDestroy(Sender);
+  if Assigned(FSaveFormDestroy) then
+    FSaveFormDestroy(Sender);
 end;
 
 procedure TJvFormPlacement.UpdatePlacement;
 const
-{$IFDEF WIN32}
-  Metrics: array[bsSingle..bsSizeToolWin] of Word =
+  {$IFDEF WIN32}
+  Metrics: array [bsSingle..bsSizeToolWin] of Word =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME, SM_CXBORDER, SM_CXFRAME);
-{$ELSE}
-  Metrics: array[bsSingle..bsDialog] of Word =
+  {$ELSE}
+  Metrics: array [bsSingle..bsDialog] of Word =
     (SM_CXBORDER, SM_CXFRAME, SM_CXDLGFRAME);
-{$ENDIF}
+  {$ENDIF}
 var
   Placement: TWindowPlacement;
 begin
   if (Owner <> nil) and (Owner is TCustomForm) and Form.HandleAllocated and
-  not (csLoading in ComponentState) then
-    if not (FPreventResize or CheckMinMaxInfo) then begin
+    not (csLoading in ComponentState) then
+    if not (FPreventResize or CheckMinMaxInfo) then
+    begin
       Placement.Length := SizeOf(TWindowPlacement);
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
-      if Form.BorderStyle <> bsNone then begin
+      if Form.BorderStyle <> bsNone then
+      begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
         Placement.ptMaxPosition.Y := -GetSystemMetrics(Metrics[Form.BorderStyle] + 1);
       end
-      else Placement.ptMaxPosition := Point(0, 0);
+      else
+        Placement.ptMaxPosition := Point(0, 0);
       SetWindowPlacement(Form.Handle, @Placement);
     end;
 end;
@@ -580,17 +606,20 @@ begin
       if (not FPreventResize) and FDefMaximize and
         (Form.BorderStyle <> bsDialog) then
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
-      else Form.BorderIcons := Form.BorderIcons - [biMaximize];
+      else
+        Form.BorderIcons := Form.BorderIcons - [biMaximize];
     finally
       Active := IsActive;
     end;
-    if not (csLoading in ComponentState) then CheckToggleHook;
+    if not (csLoading in ComponentState) then
+      CheckToggleHook;
   end;
 end;
 
 procedure TJvFormPlacement.SetPreventResize(Value: Boolean);
 begin
-  if (Form <> nil) and (FPreventResize <> Value) then begin
+  if (Form <> nil) and (FPreventResize <> Value) then
+  begin
     FPreventResize := Value;
     UpdatePlacement;
     UpdatePreventResize;
@@ -599,24 +628,29 @@ end;
 
 function TJvFormPlacement.GetIniFile: TObject;
 begin
-{$IFDEF WIN32}
-  if UseRegistry then Result := FRegIniFile
-  else Result := FIniFile;
-{$ELSE}
+  {$IFDEF WIN32}
+  if UseRegistry then
+    Result := FRegIniFile
+  else
+    Result := FIniFile;
+  {$ELSE}
   Result := FIniFile;
-{$ENDIF WIN32}
+  {$ENDIF WIN32}
 end;
 
 function TJvFormPlacement.GetIniFileName: string;
 begin
   Result := FIniFileName;
-  if (Result = '') and not (csDesigning in ComponentState) then begin
-{$IFDEF WIN32}
-    if UseRegistry then Result := GetDefaultIniRegKey
-    else Result := GetDefaultIniName;
-{$ELSE}
+  if (Result = '') and not (csDesigning in ComponentState) then
+  begin
+    {$IFDEF WIN32}
+    if UseRegistry then
+      Result := GetDefaultIniRegKey
+    else
+      Result := GetDefaultIniName;
+    {$ELSE}
     Result := GetDefaultIniName;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -639,55 +673,64 @@ end;
 
 procedure TJvFormPlacement.Save;
 begin
-  if Assigned(FOnSavePlacement) then FOnSavePlacement(Self);
+  if Assigned(FOnSavePlacement) then
+    FOnSavePlacement(Self);
 end;
 
 procedure TJvFormPlacement.Restore;
 begin
-  if Assigned(FOnRestorePlacement) then FOnRestorePlacement(Self);
+  if Assigned(FOnRestorePlacement) then
+    FOnRestorePlacement(Self);
 end;
 
 procedure TJvFormPlacement.SavePlacement;
 begin
-  if Owner is TCustomForm then begin
-{$IFDEF WIN32}
-    if UseRegistry then begin
-      if (Options * [fpState, fpPosition] <> []) then begin
+  if Owner is TCustomForm then
+  begin
+    {$IFDEF WIN32}
+    if UseRegistry then
+    begin
+      if Options * [fpState, fpPosition] <> [] then
+      begin
         WriteFormPlacementReg(Form, FRegIniFile, IniSection);
         FRegIniFile.WriteBool(IniSection, siVisible, FDestroying);
       end;
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         FRegIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
     end
-    else begin
-      if (Options * [fpState, fpPosition] <> []) then begin
+    else
+    begin
+      if Options * [fpState, fpPosition] <> [] then
+      begin
         WriteFormPlacement(Form, FIniFile, IniSection);
         FIniFile.WriteBool(IniSection, siVisible, FDestroying);
       end;
       if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
         FIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
     end;
-{$ELSE}
-    if (Options * [fpState, fpPosition] <> []) then begin
+    {$ELSE}
+    if Options * [fpState, fpPosition] <> [] then
+    begin
       WriteFormPlacement(Form, FIniFile, IniSection);
       FIniFile.WriteBool(IniSection, siVisible, FDestroying);
     end;
     if (fpActiveControl in Options) and (Form.ActiveControl <> nil) then
       FIniFile.WriteString(IniSection, siActiveCtrl, Form.ActiveControl.Name);
-{$ENDIF}
+    {$ENDIF}
   end;
   NotifyLinks(poSave);
 end;
 
 procedure TJvFormPlacement.RestorePlacement;
 begin
-  if Owner is TCustomForm then begin
-{$IFDEF WIN32}
+  if Owner is TCustomForm then
+  begin
+    {$IFDEF WIN32}
     if UseRegistry then
       ReadFormPlacementReg(Form, FRegIniFile, IniSection, fpState in Options,
         fpPosition in Options)
     else
-{$ENDIF}
+    {$ENDIF}
       ReadFormPlacement(Form, FIniFile, IniSection, fpState in Options,
         fpPosition in Options);
   end;
@@ -696,21 +739,24 @@ end;
 
 procedure TJvFormPlacement.IniNeeded(ReadOnly: Boolean);
 begin
-  if IniFileObject = nil then begin
-{$IFDEF WIN32}
-    if UseRegistry then begin
+  if IniFileObject = nil then
+  begin
+    {$IFDEF WIN32}
+    if UseRegistry then
+    begin
       FRegIniFile := TRegIniFile.Create(IniFileName);
-{$IFDEF COMPILER5_UP}
-      if ReadOnly then FRegIniFile.Access := KEY_READ;
-{$ENDIF}
+      {$IFDEF COMPILER5_UP}
+      if ReadOnly then
+        FRegIniFile.Access := KEY_READ;
+      {$ENDIF}
       case FRegistryRoot of
         prLocalMachine:
           FRegIniFile.RootKey := HKEY_LOCAL_MACHINE;
-        prClassesRoot: 
+        prClassesRoot:
           FRegIniFile.RootKey := HKEY_CLASSES_ROOT;
-        prCurrentConfig: 
+        prCurrentConfig:
           FRegIniFile.RootKey := HKEY_CURRENT_CONFIG;
-        prUsers: 
+        prUsers:
           FRegIniFile.RootKey := HKEY_USERS;
         prDynData:
           FRegIniFile.RootKey := HKEY_DYN_DATA;
@@ -719,19 +765,20 @@ begin
         FRegIniFile.OpenKey(FRegIniFile.FileName, not ReadOnly);
     end
     else
-{$ENDIF}
-    FIniFile := TIniFile.Create(IniFileName);
+    {$ENDIF}
+      FIniFile := TIniFile.Create(IniFileName);
   end;
 end;
 
 procedure TJvFormPlacement.IniFree;
 begin
-  if IniFileObject <> nil then begin
+  if IniFileObject <> nil then
+  begin
     IniFileObject.Free;
     FIniFile := nil;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     FRegIniFile := nil;
-{$ENDIF}
+    {$ENDIF}
   end;
 end;
 
@@ -740,7 +787,8 @@ function TJvFormPlacement.DoReadString(const Section, Ident,
 begin
   if IniFileObject <> nil then
     Result := IniReadString(IniFileObject, Section, Ident, Default)
-  else begin
+  else
+  begin
     IniNeeded(True);
     try
       Result := IniReadString(IniFileObject, Section, Ident, Default);
@@ -759,7 +807,8 @@ procedure TJvFormPlacement.DoWriteString(const Section, Ident, Value: string);
 begin
   if IniFileObject <> nil then
     IniWriteString(IniFileObject, Section, Ident, Value)
-  else begin
+  else
+  begin
     IniNeeded(False);
     try
       IniWriteString(IniFileObject, Section, Ident, Value);
@@ -778,7 +827,8 @@ function TJvFormPlacement.ReadInteger(const Ident: string; Default: Longint): Lo
 begin
   if IniFileObject <> nil then
     Result := IniReadInteger(IniFileObject, IniSection, Ident, Default)
-  else begin
+  else
+  begin
     IniNeeded(True);
     try
       Result := IniReadInteger(IniFileObject, IniSection, Ident, Default);
@@ -792,7 +842,8 @@ procedure TJvFormPlacement.WriteInteger(const Ident: string; Value: Longint);
 begin
   if IniFileObject <> nil then
     IniWriteInteger(IniFileObject, IniSection, Ident, Value)
-  else begin
+  else
+  begin
     IniNeeded(False);
     try
       IniWriteInteger(IniFileObject, IniSection, Ident, Value);
@@ -807,13 +858,15 @@ var
   Lines: TStrings;
   I: Integer;
 begin
-  if IniFileObject = nil then begin
+  if IniFileObject = nil then
+  begin
     IniNeeded(False);
     try
       Lines := TStringList.Create;
       try
         IniReadSections(IniFileObject, Lines);
-        for I := 0 to Lines.Count - 1 do begin
+        for I := 0 to Lines.Count - 1 do
+        begin
           if (Lines[I] = IniSection) or
             (IsWild(Lines[I], IniSection + '.*', False) or
             IsWild(Lines[I], IniSection + '\*', False)) then
@@ -830,7 +883,8 @@ end;
 
 procedure TJvFormPlacement.SaveFormPlacement;
 begin
-  if FRestored or not Active then begin
+  if FRestored or not Active then
+  begin
     IniNeeded(False);
     try
       WriteInteger(siVersion, FVersion);
@@ -850,16 +904,18 @@ begin
   FSaved := False;
   IniNeeded(True);
   try
-    if ReadInteger(siVersion, 0) >= FVersion then begin
+    if ReadInteger(siVersion, 0) >= FVersion then
+    begin
       RestorePlacement;
       FRestored := True;
       Restore;
-      if (fpActiveControl in Options) and (Owner is TCustomForm) then begin
+      if (fpActiveControl in Options) and (Owner is TCustomForm) then
+      begin
         cActive := Form.FindComponent(IniReadString(IniFileObject,
           IniSection, siActiveCtrl, ''));
         if (cActive <> nil) and (cActive is TWinControl) and
           TWinControl(cActive).CanFocus then
-            Form.ActiveControl := TWinControl(cActive);
+          Form.ActiveControl := TWinControl(cActive);
       end;
     end;
     FRestored := True;
@@ -869,56 +925,81 @@ begin
   UpdatePlacement;
 end;
 
-{ TJvWinMinMaxInfo }
+//=== TJvWinMinMaxInfo =======================================================
 
 procedure TJvWinMinMaxInfo.Assign(Source: TPersistent);
 begin
-  if Source is TJvWinMinMaxInfo then begin
+  if Source is TJvWinMinMaxInfo then
+  begin
     FMinMaxInfo := TJvWinMinMaxInfo(Source).FMinMaxInfo;
-    if FOwner <> nil then FOwner.MinMaxInfoModified;
+    if FOwner <> nil then
+      FOwner.MinMaxInfoModified;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 function TJvWinMinMaxInfo.GetMinMaxInfo(Index: Integer): Integer;
 begin
-  with FMinMaxInfo do begin
+  with FMinMaxInfo do
+  begin
     case Index of
-      0: Result := ptMaxPosition.X;
-      1: Result := ptMaxPosition.Y;
-      2: Result := ptMaxSize.Y;
-      3: Result := ptMaxSize.X;
-      4: Result := ptMaxTrackSize.Y;
-      5: Result := ptMaxTrackSize.X;
-      6: Result := ptMinTrackSize.Y;
-      7: Result := ptMinTrackSize.X;
-      else Result := 0;
+      0:
+        Result := ptMaxPosition.X;
+      1:
+        Result := ptMaxPosition.Y;
+      2:
+        Result := ptMaxSize.Y;
+      3:
+        Result := ptMaxSize.X;
+      4:
+        Result := ptMaxTrackSize.Y;
+      5:
+        Result := ptMaxTrackSize.X;
+      6:
+        Result := ptMinTrackSize.Y;
+      7:
+        Result := ptMinTrackSize.X;
+    else
+      Result := 0;
     end;
   end;
 end;
 
 procedure TJvWinMinMaxInfo.SetMinMaxInfo(Index: Integer; Value: Integer);
 begin
-  if GetMinMaxInfo(Index) <> Value then begin
-    with FMinMaxInfo do begin
+  if GetMinMaxInfo(Index) <> Value then
+  begin
+    with FMinMaxInfo do
+    begin
       case Index of
-        0: ptMaxPosition.X := Value;
-        1: ptMaxPosition.Y := Value;
-        2: ptMaxSize.Y := Value;
-        3: ptMaxSize.X := Value;
-        4: ptMaxTrackSize.Y := Value;
-        5: ptMaxTrackSize.X := Value;
-        6: ptMinTrackSize.Y := Value;
-        7: ptMinTrackSize.X := Value;
+        0:
+          ptMaxPosition.X := Value;
+        1:
+          ptMaxPosition.Y := Value;
+        2:
+          ptMaxSize.Y := Value;
+        3:
+          ptMaxSize.X := Value;
+        4:
+          ptMaxTrackSize.Y := Value;
+        5:
+          ptMaxTrackSize.X := Value;
+        6:
+          ptMinTrackSize.Y := Value;
+        7:
+          ptMinTrackSize.X := Value;
       end;
     end;
-    if FOwner <> nil then FOwner.MinMaxInfoModified;
+    if FOwner <> nil then
+      FOwner.MinMaxInfoModified;
   end;
 end;
 
 function TJvWinMinMaxInfo.DefaultMinMaxInfo: Boolean;
 begin
-  with FMinMaxInfo do begin
+  with FMinMaxInfo do
+  begin
     Result := not ((ptMinTrackSize.X <> 0) or (ptMinTrackSize.Y <> 0) or
       (ptMaxTrackSize.X <> 0) or (ptMaxTrackSize.Y <> 0) or
       (ptMaxSize.X <> 0) or (ptMaxSize.Y <> 0) or
@@ -926,26 +1007,26 @@ begin
   end;
 end;
 
-{ TJvFormStorage }
+//=== TJvFormStorage =========================================================
 
 constructor TJvFormStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStoredProps := TStringList.Create;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FStoredValues := TJvStoredValues.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF COMPILER4_UP};
   FStoredValues.Storage := Self;
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
 end;
 
 destructor TJvFormStorage.Destroy;
 begin
   FStoredProps.Free;
   FStoredProps := nil;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   FStoredValues.Free;
   FStoredValues := nil;
-{$ENDIF COMPILER3_UP}
+  {$ENDIF COMPILER3_UP}
   inherited Destroy;
 end;
 
@@ -955,9 +1036,11 @@ var
   I: Integer;
   Component: TComponent;
 begin
-  for I := FStoredProps.Count - 1 downto 0 do begin
+  for I := FStoredProps.Count - 1 downto 0 do
+  begin
     Component := TComponent(FStoredProps.Objects[I]);
-    if Component <> nil then Component.FreeNotification(Self);
+    if Component <> nil then
+      Component.FreeNotification(Self);
   end;
 end;
 {$ENDIF WIN32}
@@ -965,12 +1048,13 @@ end;
 procedure TJvFormStorage.SetStoredProps(Value: TStrings);
 begin
   FStoredProps.Assign(Value);
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   SetNotification;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF COMPILER3_UP}
+
 procedure TJvFormStorage.SeTJvStoredValues(Value: TJvStoredValues);
 begin
   FStoredValues.Assign(Value);
@@ -1008,9 +1092,11 @@ begin
   inherited Notification(AComponent, Operation);
   if not (csDestroying in ComponentState) and (Operation = opRemove) and
     (FStoredProps <> nil) then
-    for I := FStoredProps.Count - 1 downto 0 do begin
+    for I := FStoredProps.Count - 1 downto 0 do
+    begin
       Component := TComponent(FStoredProps.Objects[I]);
-      if Component = AComponent then FStoredProps.Delete(I);
+      if Component = AComponent then
+        FStoredProps.Delete(I);
     end;
 end;
 
@@ -1020,12 +1106,14 @@ begin
   try
     Section := IniSection;
     OnWriteString := DoWriteString;
-{$IFDEF WIN32}
-    if UseRegistry then OnEraseSection := FRegIniFile.EraseSection
-    else OnEraseSection := FIniFile.EraseSection;
-{$ELSE}
+    {$IFDEF WIN32}
+    if UseRegistry then
+      OnEraseSection := FRegIniFile.EraseSection
+    else
+      OnEraseSection := FIniFile.EraseSection;
+    {$ELSE}
     OnEraseSection := FIniFile.EraseSection;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     StoreObjectsProps(Owner, FStoredProps);
   finally
     Free;
@@ -1052,9 +1140,9 @@ procedure TJvFormStorage.SavePlacement;
 begin
   inherited SavePlacement;
   SaveProperties;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   StoredValues.SaveValues;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvFormStorage.RestorePlacement;
@@ -1062,12 +1150,12 @@ begin
   inherited RestorePlacement;
   FRestored := True;
   RestoreProperties;
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   StoredValues.RestoreValues;
-{$ENDIF}
+  {$ENDIF}
 end;
 
-{ TJvIniLink }
+//=== TJvIniLink =============================================================
 
 destructor TJvIniLink.Destroy;
 begin
@@ -1079,37 +1167,48 @@ end;
 
 function TJvIniLink.GetIniObject: TObject;
 begin
-  if Assigned(FStorage) then Result := FStorage.IniFileObject
-  else Result := nil;
+  if Assigned(FStorage) then
+    Result := FStorage.IniFileObject
+  else
+    Result := nil;
 end;
 
 function TJvIniLink.GetRootSection: string;
 begin
-  if Assigned(FStorage) then Result := FStorage.FIniSection else Result := '';
-  if Result <> '' then Result := Result + '\';
+  if Assigned(FStorage) then
+    Result := FStorage.FIniSection
+  else
+    Result := '';
+  if Result <> '' then
+    Result := Result + '\';
 end;
 
 procedure TJvIniLink.SetStorage(Value: TJvFormPlacement);
 begin
-  if FStorage <> Value then begin
-    if FStorage <> nil then FStorage.RemoveLink(Self);
-    if Value <> nil then Value.AddLink(Self);
+  if FStorage <> Value then
+  begin
+    if FStorage <> nil then
+      FStorage.RemoveLink(Self);
+    if Value <> nil then
+      Value.AddLink(Self);
   end;
 end;
 
 procedure TJvIniLink.SaveToIni;
 begin
-  if Assigned(FOnSave) then FOnSave(Self);
+  if Assigned(FOnSave) then
+    FOnSave(Self);
 end;
 
 procedure TJvIniLink.LoadFromIni;
 begin
-  if Assigned(FOnLoad) then FOnLoad(Self);
+  if Assigned(FOnLoad) then
+    FOnLoad(Self);
 end;
 
-{$IFDEF COMPILER3_UP}
+//=== TJvStoredValue =========================================================
 
-{ TJvStoredValue }
+{$IFDEF COMPILER3_UP}
 
 constructor TJvStoredValue.Create(Collection: TCollection);
 begin
@@ -1119,7 +1218,8 @@ end;
 
 procedure TJvStoredValue.Assign(Source: TPersistent);
 begin
-  if (Source is TJvStoredValue) and (Source <> nil) then begin
+  if (Source is TJvStoredValue) and (Source <> nil) then
+  begin
     if VarIsEmpty(TJvStoredValue(Source).FValue) then
       Clear
     else
@@ -1192,10 +1292,10 @@ begin
   RestoreValue := RestoreStrValue;
   if Assigned(FOnRestore) then
     FOnRestore(Self, RestoreValue);
-  Value := RestoreValue;  
+  Value := RestoreValue;
 end;
 
-{ TJvStoredValues }
+//=== TJvStoredValues ========================================================
 
 {$IFDEF COMPILER4_UP}
 constructor TJvStoredValues.Create(AOwner: TPersistent);
@@ -1212,7 +1312,8 @@ end;
 function TJvStoredValues.IndexOf(const Name: string): Integer;
 begin
   for Result := 0 to Count - 1 do
-    if AnsiCompareText(Items[Result].Name, Name) = 0 then Exit;
+    if AnsiCompareText(Items[Result].Name, Name) = 0 then
+      Exit;
   Result := -1;
 end;
 
@@ -1231,8 +1332,10 @@ var
   StoredValue: TJvStoredValue;
 begin
   StoredValue := GetValue(Name);
-  if StoredValue = nil then Result := Null
-  else Result := StoredValue.Value;
+  if StoredValue = nil then
+    Result := Null
+  else
+    Result := StoredValue.Value;
 end;
 
 procedure TJvStoredValues.SeTJvStoredValue(const Name: string; Value: Variant);
@@ -1240,12 +1343,14 @@ var
   StoredValue: TJvStoredValue;
 begin
   StoredValue := GetValue(Name);
-  if StoredValue = nil then begin
+  if StoredValue = nil then
+  begin
     StoredValue := TJvStoredValue(Add);
-    StoredValue.Name := Name; 
+    StoredValue.Name := Name;
     StoredValue.Value := Value;
   end
-  else StoredValue.Value := Value;
+  else
+    StoredValue.Value := Value;
 end;
 
 function TJvStoredValues.GetValue(const Name: string): TJvStoredValue;
@@ -1287,3 +1392,4 @@ end;
 {$ENDIF COMPILER3_UP}
 
 end.
+

@@ -23,20 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvPageSetup;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Classes, Dialogs, Messages, Graphics, CommDlg,
-  JVCLVer, JvComponent, JvBaseDlg;
+  Windows, Classes, Messages, Graphics, CommDlg, Dialogs,
+  JVCLVer, JvBaseDlg;
 
 const
   // Internal events
@@ -50,30 +45,30 @@ const
 
 type
   // Available options
-  TJvPageSetupFlags = (
-    poDefaultMinMargins, poMargins, poMinMargins, poDisableMargins,
-    poDisableOrientation, poDisablePagePainting, poDisablePaper, poDisablePrinter,
-    poHundredthsOfMillimeters, poThousandthsOfInches, poNoWarning);
+  TJvPageSetupFlags =
+    (poDefaultMinMargins, poMargins, poMinMargins, poDisableMargins,
+     poDisableOrientation, poDisablePagePainting, poDisablePaper, poDisablePrinter,
+     poHundredthsOfMillimeters, poThousandthsOfInches, poNoWarning);
   TJvPageOptions = set of TJvPageSetupFlags;
 
   // Areas of drawing
-  TJvPSPaintWhat = (
-    pwFullPage, pwMinimumMargins,
-    pwMargins, pwGreekText,
-    pwEnvStamp, pwYAFullPage);
+  TJvPSPaintWhat =
+    (pwFullPage, pwMinimumMargins,
+     pwMargins, pwGreekText,
+     pwEnvStamp, pwYAFullPage);
 
   TJvMarginSize = class(TPersistent)
   private
     FMargin: TRect;
     procedure AssignError;
-    function GetValue(aIndex: Integer): Integer;
-    procedure SetValue(aIndex: Integer; aValue: Integer);
-    procedure SetRect(aValue: TRect);
+    function GetValue(Index: Integer): Integer;
+    procedure SetValue(Index: Integer; Value: Integer);
+    procedure SetRect(Value: TRect);
   protected
-    procedure AssignTo(aDest: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
   public
     function IsNull: Boolean;
-    function MarginsEqu(aMargin: TJvMarginSize): Boolean;
+    function MarginsEqu(AMargin: TJvMarginSize): Boolean;
     property AsRect: TRect read FMargin write SetRect;
   published
     property Left: Integer index 0 read GetValue write SetValue stored False;
@@ -84,7 +79,7 @@ type
 
   TJvPageSetupDialog = class;
 
-  TJvPSPaintEvent = procedure(Sender: TJvPageSetupDialog; aPaper, aFlags: Integer;
+  TJvPSPaintEvent = procedure(Sender: TJvPageSetupDialog; Paper, Flags: Integer;
     PageSetupRec: TPageSetupDlg; PaintWhat: TJvPSPaintWhat; Canvas: TCanvas;
     Rect: TRect; var NoDefaultPaint: Boolean) of object;
 
@@ -92,33 +87,33 @@ type
   private
     FOptions: TJvPageOptions;
     FFlags: DWORD;
-    FMargin, FMinMargin: TJvMarginSize;
+    FMargin: TJvMarginSize;
+    FMinMargin: TJvMarginSize;
     FPaperSize: TPoint;
     FOnPrinter: TNotifyEvent;
     FOnPaint: TJvPSPaintEvent;
-    FInitPaper, FInitFlags: Integer;
+    FInitPaper: Integer;
+    FInitFlags: Integer;
     FPageSetupRec: TPageSetupDlg;
     FPaintWhat: TJvPSPaintWhat;
-    procedure SetOptions(aValue: TJvPageOptions);
-    function DoExecute(aShow: Boolean): Boolean;
-
-    procedure ReadMargin(aMargin: TJvMarginSize; Reader: TReader);
-    procedure WriteMargin(aMargin: TJvMarginSize; Writer: TWriter);
-    procedure ReadValues(aReader: TReader);
-    procedure WriteValues(aWriter: TWriter);
-    procedure ReadMinValues(aReader: TReader);
-    procedure WriteMinValues(aWriter: TWriter);
-
-    procedure WMHelp(var aMessage: TWMHelp); message WM_HELP;
-    procedure WMCommand(var aMessage: TMessage); message WM_COMMAND;
-    procedure WMPaintInit(var aMessage: TMessage); message CM_PAINTINIT;
-    procedure WMPaintPage(var aMessage: TMessage); message CM_PAINTPAGE;
+    procedure SetOptions(Value: TJvPageOptions);
+    function DoExecute(Show: Boolean): Boolean;
+    procedure ReadMargin(AMargin: TJvMarginSize; Reader: TReader);
+    procedure WriteMargin(AMargin: TJvMarginSize; Writer: TWriter);
+    procedure ReadValues(AReader: TReader);
+    procedure WriteValues(AWriter: TWriter);
+    procedure ReadMinValues(AReader: TReader);
+    procedure WriteMinValues(AWriter: TWriter);
+    procedure WMHelp(var Msg: TWMHelp); message WM_HELP;
+    procedure WMCommand(var Msg: TMessage); message WM_COMMAND;
+    procedure WMPaintInit(var Msg: TMessage); message CM_PAINTINIT;
+    procedure WMPaintPage(var Msg: TMessage); message CM_PAINTPAGE;
   protected
-    procedure DefineProperties(aFiler: TFiler); override;
+    procedure DefineProperties(AFiler: TFiler); override;
     function DoPrinter: Boolean; virtual;
-    function DoPaint(aInitPaper, aInitFlags: Integer; aPageSetupRec: TPageSetupDlg;
-      aPaintWhat: TJvPSPaintWhat; aCanvas: TCanvas; aRect: TRect): Boolean; virtual;
-    function TaskModalDialog(aDialogFunc: Pointer; var aDialogData): Bool; override;
+    function DoPaint(InitPaper, InitFlags: Integer; PageSetupRec: TPageSetupDlg;
+      PaintWhat: TJvPSPaintWhat; Canvas: TCanvas; Rect: TRect): Boolean; virtual;
+    function TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -134,17 +129,7 @@ type
     property OnPrinter: TNotifyEvent read FOnPrinter write FOnPrinter;
   end;
 
-  // Internal routines
-procedure CenterWindow(Wnd: HWnd);
-procedure GetPrinter(var DeviceMode, DeviceNames: THandle);
-procedure SetPrinter(DeviceMode, DeviceNames: THandle);
-function CopyData(Handle: THandle): THandle;
-function DialogHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
-function PageDrawHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
-
-///////////////////////////////////////////////////////////////////////////////
 implementation
-///////////////////////////////////////////////////////////////////////////////
 
 uses
   SysUtils, Controls, Forms, Printers,
@@ -153,27 +138,21 @@ uses
 resourcestring
   SInvalidValue = 'Value must be greater then zero';
 
-  { TJvMarginSize }
-
-  //-----------------------------------------------------------------------------
+//=== TJvMarginSize ==========================================================
 
 procedure TJvMarginSize.AssignError;
 begin
   raise ERangeError.Create(SInvalidValue);
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvMarginSize.AssignTo(aDest: TPersistent);
+procedure TJvMarginSize.AssignTo(Dest: TPersistent);
 begin
-  if aDest is TJvMarginSize then
-    with aDest as TJvMarginSize do
+  if Dest is TJvMarginSize then
+    with Dest as TJvMarginSize do
       FMargin := Self.FMargin
   else
-    inherited AssignTo(aDest);
+    inherited AssignTo(Dest);
 end;
-
-//-----------------------------------------------------------------------------
 
 function TJvMarginSize.IsNull: Boolean;
 begin
@@ -181,64 +160,63 @@ begin
     Result := (Left = 0) and (Top = 0) and (Right = 0) and (Bottom = 0);
 end;
 
-//-----------------------------------------------------------------------------
-
-function TJvMarginSize.MarginsEqu(aMargin: TJvMarginSize): Boolean;
+function TJvMarginSize.MarginsEqu(AMargin: TJvMarginSize): Boolean;
 begin
-  Result := (FMargin.Left = aMargin.Left) and (FMargin.Top = aMargin.Top)
-    and (FMargin.Right = aMargin.Right) and (FMargin.Bottom = aMargin.Bottom);
+  Result := (FMargin.Left = AMargin.Left) and (FMargin.Top = AMargin.Top)
+    and (FMargin.Right = AMargin.Right) and (FMargin.Bottom = AMargin.Bottom);
 end;
 
-//-----------------------------------------------------------------------------
-
-function TJvMarginSize.GetValue(aIndex: Integer): Integer;
+function TJvMarginSize.GetValue(Index: Integer): Integer;
 begin
-  case aIndex of
-    0: Result := FMargin.Left;
-    1: Result := FMargin.Top;
-    2: Result := FMargin.Right;
+  case Index of
+    0:
+      Result := FMargin.Left;
+    1:
+      Result := FMargin.Top;
+    2:
+      Result := FMargin.Right;
   else
     Result := FMargin.Bottom;
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvMarginSize.SetValue(aIndex: Integer; aValue: Integer);
+procedure TJvMarginSize.SetValue(Index: Integer; Value: Integer);
 begin
-  if aValue < 0 then
+  if Value < 0 then
     AssignError;
-  case aIndex of
-    0: FMargin.Left := aValue;
-    1: FMargin.Top := aValue;
-    2: FMargin.Right := aValue;
+  case Index of
+    0:
+      FMargin.Left := Value;
+    1:
+      FMargin.Top := Value;
+    2:
+      FMargin.Right := Value;
   else
-    FMargin.Bottom := aValue;
+    FMargin.Bottom := Value;
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvMarginSize.SetRect(aValue: TRect);
+procedure TJvMarginSize.SetRect(Value: TRect);
 begin
-  with aValue do
+  with Value do
     if (Left < 0) or (Top < 0) or (Right < 0) or (Bottom < 0) then
       AssignError;
-  FMargin := aValue;
+  FMargin := Value;
 end;
 
 { Private globals - some routines copied from dialogs.pas }
 
-//-----------------------------------------------------------------------------
 type
   THackCommonDialog = class(TComponent)
   private
-{$HINTS OFF}FCtl3D: Boolean;
-{$HINTS ON}
+    {$HINTS OFF}
+    FCtl3D: Boolean;
+    {$HINTS ON}
     FDefWndProc: Pointer;
-{$HINTS OFF}FHelpContext: THelpContext;
-{$HINTS ON}
-    FHandle: HWnd;
+    {$HINTS OFF}
+    FHelpContext: THelpContext;
+    {$HINTS ON}
+    FHandle: HWND;
     FObjectInstance: Pointer;
   end;
 
@@ -246,23 +224,22 @@ var
   CreationControl: TCommonDialog = nil;
   PageSetupControl: TJvPageSetupDialog = nil;
 
-  // Center the given window on the screen - D3/D4/D5
-  //-----------------------------------------------------------------------------
+// Center the given window on the screen - D3/D4/D5
 
-procedure CenterWindow(Wnd: HWnd);
+procedure CenterWindow(Wnd: HWND);
 var
   Rect: TRect;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   Monitor: TMonitor;
-{$ENDIF}
+  {$ENDIF}
 begin
   GetWindowRect(Wnd, Rect);
-{$IFNDEF COMPILER4_UP}
+  {$IFNDEF COMPILER4_UP}
   SetWindowPos(Wnd, 0,
     (GetSystemMetrics(SM_CXSCREEN) - Rect.Right + Rect.Left) div 2,
     (GetSystemMetrics(SM_CYSCREEN) - Rect.Bottom + Rect.Top) div 3,
     0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
-{$ELSE}
+  {$ELSE}
   if Application.MainForm <> nil then
     Monitor := Application.MainForm.Monitor
   else
@@ -271,14 +248,13 @@ begin
     Monitor.Left + ((Monitor.Width - Rect.Right + Rect.Left) div 2),
     Monitor.Top + ((Monitor.Height - Rect.Bottom + Rect.Top) div 3),
     0, 0, SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOZORDER);
-{$ENDIF}
+  {$ENDIF}
 end;
 
 // Generic dialog hook. Centers the dialog on the screen in response to
 // the WM_INITDIALOG message
-//-----------------------------------------------------------------------------
 
-function DialogHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT;
+function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT; stdcall;
 begin
   Result := 0;
   if Msg = WM_INITDIALOG then
@@ -289,31 +265,25 @@ begin
       Pointer(SetWindowLong(Wnd, GWL_WNDPROC,
       Longint(THackCommonDialog(CreationControl).FObjectInstance)));
     CallWindowProc(THackCommonDialog(CreationControl).FObjectInstance, Wnd,
-      Msg, WParam, LParam);
+      Msg, AWParam, ALParam);
     CreationControl := nil;
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
-function PageDrawHook(Wnd: HWnd; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT;
+function PageDrawHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT; stdcall;
 const
-  PagePaintWhat: array[WM_PSD_FULLPAGERECT..WM_PSD_YAFULLPAGERECT] of TJvPSPaintWhat = (
-    pwFullPage, pwMinimumMargins, pwMargins,
+  PagePaintWhat: array [WM_PSD_FULLPAGERECT..WM_PSD_YAFULLPAGERECT] of TJvPSPaintWhat =
+   (pwFullPage, pwMinimumMargins, pwMargins,
     pwGreekText, pwEnvStamp, pwYAFullPage);
 begin
   case Msg of
     WM_PSD_PAGESETUPDLG:
-      Result := SendMessage(PageSetupControl.Handle, CM_PAINTINIT, WParam, LParam);
-    WM_PSD_FULLPAGERECT,
-      WM_PSD_MINMARGINRECT,
-      WM_PSD_MARGINRECT,
-      WM_PSD_GREEKTEXTRECT,
-      WM_PSD_ENVSTAMPRECT,
-      WM_PSD_YAFULLPAGERECT:
+      Result := SendMessage(PageSetupControl.Handle, CM_PAINTINIT, AWParam, ALParam);
+    WM_PSD_FULLPAGERECT, WM_PSD_MINMARGINRECT, WM_PSD_MARGINRECT,
+      WM_PSD_GREEKTEXTRECT, WM_PSD_ENVSTAMPRECT, WM_PSD_YAFULLPAGERECT:
       begin
         PageSetupControl.FPaintWhat := PagePaintWhat[Msg];
-        Result := SendMessage(PageSetupControl.Handle, CM_PAINTPAGE, WParam, LParam);
+        Result := SendMessage(PageSetupControl.Handle, CM_PAINTPAGE, AWParam, ALParam);
       end;
   else
     Result := 0;
@@ -322,11 +292,9 @@ end;
 
 { Printer dialog routines }
 
-//-----------------------------------------------------------------------------
-
 procedure GetPrinter(var DeviceMode, DeviceNames: THandle);
 var
-  Device, Driver, Port: array[0..79] of Char;
+  Device, Driver, Port: array [0..79] of Char;
   DevNames: PDevNames;
   Offset: PChar;
 begin
@@ -353,8 +321,6 @@ begin
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
 procedure SetPrinter(DeviceMode, DeviceNames: THandle);
 var
   DevNames: PDevNames;
@@ -365,11 +331,11 @@ begin
   DevNames := PDevNames(GlobalLock(DeviceNames));
   try
     with DevNames^ do
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
         PChar(DevNames) + wDriverOffset,
         PChar(DevNames) + wOutputOffset, DeviceMode);
-{$ELSE} // D3+NT bugfix
+    {$ELSE} // D3+NT bugfix
       if Win32Platform = VER_PLATFORM_WIN32_NT then
         Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
           PChar(DevNames) + wDriverOffset, '', DeviceMode)
@@ -377,14 +343,12 @@ begin
         Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
           PChar(DevNames) + wDriverOffset,
           PChar(DevNames) + wOutputOffset, DeviceMode);
-{$ENDIF}
+    {$ENDIF}
   finally
     GlobalUnlock(DeviceNames);
     GlobalFree(DeviceNames);
   end;
 end;
-
-//-----------------------------------------------------------------------------
 
 function CopyData(Handle: THandle): THandle;
 var
@@ -410,9 +374,7 @@ begin
     Result := 0;
 end;
 
-{ TJvPageSetupDialog }
-
-//-----------------------------------------------------------------------------
+//=== TJvPageSetupDialog =====================================================
 
 constructor TJvPageSetupDialog.Create(AOwner: TComponent);
 begin
@@ -422,43 +384,38 @@ begin
   Options := [poDefaultMinMargins, poHundredthsOfMillimeters];
 end;
 
-//-----------------------------------------------------------------------------
-
 destructor TJvPageSetupDialog.Destroy;
 begin
   FMargin.Free;
   FMinMargin.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 // Determination of streamed properties
-//-----------------------------------------------------------------------------
 
-procedure TJvPageSetupDialog.DefineProperties(aFiler: TFiler);
+procedure TJvPageSetupDialog.DefineProperties(AFiler: TFiler);
 
-// Rule 1
-//---------------------------------------------------------------------------
+  // Rule 1
   function DoWriteMargin1: Boolean;
   begin
-    if aFiler.Ancestor <> nil then
-      Result := not TJvPageSetupDialog(aFiler.Ancestor).FMargin.MarginsEqu(FMargin)
+    if AFiler.Ancestor <> nil then
+      Result := not TJvPageSetupDialog(AFiler.Ancestor).FMargin.MarginsEqu(FMargin)
     else
       Result := (FMargin <> nil) and (not FMargin.IsNull);
   end;
 
   // Rule 2
-  //---------------------------------------------------------------------------
   function DoWriteMargin2: Boolean;
   begin
-    if aFiler.Ancestor <> nil then
-      Result := not TJvPageSetupDialog(aFiler.Ancestor).FMinMargin.MarginsEqu(FMinMargin)
+    if AFiler.Ancestor <> nil then
+      Result := not TJvPageSetupDialog(AFiler.Ancestor).FMinMargin.MarginsEqu(FMinMargin)
     else
       Result := (FMinMargin <> nil) and (not FMinMargin.IsNull);
   end;
 
 begin
-  inherited DefineProperties(aFiler);
-  with aFiler do
+  inherited DefineProperties(AFiler);
+  with AFiler do
   begin
     DefineProperty('MarginData', ReadValues, WriteValues, DoWriteMargin1);
     DefineProperty('MinMarginData', ReadMinValues, WriteMinValues, DoWriteMargin2);
@@ -466,11 +423,10 @@ begin
 end;
 
 // Reading from stream
-//-----------------------------------------------------------------------------
 
-procedure TJvPageSetupDialog.ReadMargin(aMargin: TJvMarginSize; Reader: TReader);
+procedure TJvPageSetupDialog.ReadMargin(AMargin: TJvMarginSize; Reader: TReader);
 begin
-  with aMargin, Reader do
+  with AMargin, Reader do
   begin
     ReadListBegin;
     Left := ReadInteger;
@@ -482,11 +438,10 @@ begin
 end;
 
 // Writing to stream
-//-----------------------------------------------------------------------------
 
-procedure TJvPageSetupDialog.WriteMargin(aMargin: TJvMarginSize; Writer: TWriter);
+procedure TJvPageSetupDialog.WriteMargin(AMargin: TJvMarginSize; Writer: TWriter);
 begin
-  with aMargin, Writer do
+  with AMargin, Writer do
   begin
     WriteListBegin;
     WriteInteger(Left);
@@ -497,38 +452,29 @@ begin
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.ReadValues(aReader: TReader);
+procedure TJvPageSetupDialog.ReadValues(AReader: TReader);
 begin
-  ReadMargin(FMargin, aReader);
+  ReadMargin(FMargin, AReader);
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.WriteValues(aWriter: TWriter);
+procedure TJvPageSetupDialog.WriteValues(AWriter: TWriter);
 begin
-  WriteMargin(FMargin, aWriter);
+  WriteMargin(FMargin, AWriter);
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.ReadMinValues(aReader: TReader);
+procedure TJvPageSetupDialog.ReadMinValues(AReader: TReader);
 begin
-  ReadMargin(FMinMargin, aReader);
+  ReadMargin(FMinMargin, AReader);
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.WriteMinValues(aWriter: TWriter);
+procedure TJvPageSetupDialog.WriteMinValues(AWriter: TWriter);
 begin
-  WriteMargin(FMinMargin, aWriter);
+  WriteMargin(FMinMargin, AWriter);
 end;
 
 // Processing Help commands
-//-----------------------------------------------------------------------------
 
-procedure TJvPageSetupDialog.WMHelp(var aMessage: TWMHelp);
+procedure TJvPageSetupDialog.WMHelp(var Msg: TWMHelp);
 begin
   if HelpContext <> 0 then
     Application.HelpContext(HelpContext)
@@ -537,50 +483,43 @@ begin
 end;
 
 // Processing <Printer> button
-//-----------------------------------------------------------------------------
 
-procedure TJvPageSetupDialog.WMCommand(var aMessage: TMessage);
+procedure TJvPageSetupDialog.WMCommand(var Msg: TMessage);
 const
   IDPRINTERBTN = $0402;
 begin
-  if not ((LongRec(aMessage.WParam).Lo = IDPRINTERBTN) and
-    (LongRec(aMessage.WParam).Hi = BN_CLICKED) and DoPrinter) then
+  if not ((LongRec(Msg.WParam).Lo = IDPRINTERBTN) and
+    (LongRec(Msg.WParam).Hi = BN_CLICKED) and DoPrinter) then
     inherited;
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.WMPaintInit(var aMessage: TMessage);
+procedure TJvPageSetupDialog.WMPaintInit(var Msg: TMessage);
 begin
-  FInitPaper := LoWord(aMessage.WParam);
-  FInitFlags := HiWord(aMessage.WParam);
-  FPageSetupRec := PPageSetupDlg(aMessage.LParam)^;
-  aMessage.Result := Ord(not Assigned(FOnPaint));
+  FInitPaper := LoWord(Msg.WParam);
+  FInitFlags := HiWord(Msg.WParam);
+  FPageSetupRec := PPageSetupDlg(Msg.LParam)^;
+  Msg.Result := Ord(not Assigned(FOnPaint));
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.WMPaintPage(var aMessage: TMessage);
+procedure TJvPageSetupDialog.WMPaintPage(var Msg: TMessage);
 var
-  ePaintRect: TRect;
-  ePaintCanvas: TCanvas;
+  PaintRect: TRect;
+  PaintCanvas: TCanvas;
 begin
-  if aMessage.LParam <> 0 then
-    ePaintRect := PRect(aMessage.LParam)^
+  if Msg.LParam <> 0 then
+    PaintRect := PRect(Msg.LParam)^
   else
-    ePaintRect := Rect(0, 0, 0, 0);
+    PaintRect := Rect(0, 0, 0, 0);
 
-  ePaintCanvas := TCanvas.Create;
-  ePaintCanvas.Handle := HDC(aMessage.WParam);
+  PaintCanvas := TCanvas.Create;
+  PaintCanvas.Handle := HDC(Msg.WParam);
   try
-    aMessage.Result := Ord(DoPaint(FInitPaper, FInitFlags, FPageSetupRec,
-      FPaintWhat, ePaintCanvas, ePaintRect));
+    Msg.Result := Ord(DoPaint(FInitPaper, FInitFlags, FPageSetupRec,
+      FPaintWhat, PaintCanvas, PaintRect));
   finally
-    ePaintCanvas.Free;
+    PaintCanvas.Free;
   end;
 end;
-
-//-----------------------------------------------------------------------------
 
 function TJvPageSetupDialog.DoPrinter: Boolean;
 begin
@@ -589,80 +528,74 @@ begin
     FOnPrinter(Self);
 end;
 
-//-----------------------------------------------------------------------------
-
-function TJvPageSetupDialog.DoPaint(aInitPaper, aInitFlags: Integer;
-  aPageSetupRec: TPageSetupDlg; aPaintWhat: TJvPSPaintWhat; aCanvas: TCanvas;
-  aRect: TRect): Boolean;
+function TJvPageSetupDialog.DoPaint(InitPaper, InitFlags: Integer;
+  PageSetupRec: TPageSetupDlg; PaintWhat: TJvPSPaintWhat; Canvas: TCanvas;
+  Rect: TRect): Boolean;
 begin
   Result := False;
   if Assigned(FOnPaint) then
-    FOnPaint(Self, aInitPaper, aInitFlags, aPageSetupRec, aPaintWhat, aCanvas,
-      aRect, Result);
+    FOnPaint(Self, InitPaper, InitFlags, PageSetupRec, PaintWhat, Canvas, Rect, Result);
 end;
 
 // Show modal dialog
-//-----------------------------------------------------------------------------
 
-function TJvPageSetupDialog.TaskModalDialog(aDialogFunc: Pointer; var aDialogData): Bool;
+function TJvPageSetupDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 type
   TDialogFunc = function(var aDialogData): Bool; stdcall;
 var
-  eActiveWindow: HWnd;
-  eWindowList: Pointer;
-  eFPUControlWord: Word;
+  ActiveWindow: HWND;
+  WindowList: Pointer;
+  FPUControlWord: Word;
 begin
-  eActiveWindow := GetActiveWindow;
-  eWindowList := DisableTaskWindows(0);
+  ActiveWindow := GetActiveWindow;
+  WindowList := DisableTaskWindows(0);
   try
     Application.HookMainWindow(MessageHook);
     asm
       // Avoid FPU control word change in NETRAP.dll, NETAPI32.dll, etc
-      FNSTCW  eFPUControlWord
+      FNSTCW  FPUControlWord
     end;
     try
       CreationControl := Self;
       PageSetupControl := Self;
-      Result := TDialogFunc(aDialogFunc)(aDialogData);
+      Result := TDialogFunc(DialogFunc)(DialogData);
     finally
       PageSetupControl := nil;
       asm
         FNCLEX
-        FLDCW eFPUControlWord
+        FLDCW FPUControlWord
       end;
       Application.UnhookMainWindow(MessageHook);
     end;
   finally
-    EnableTaskWindows(eWindowList);
-    SetActiveWindow(eActiveWindow);
+    EnableTaskWindows(WindowList);
+    SetActiveWindow(ActiveWindow);
   end;
 end;
 
-//-----------------------------------------------------------------------------
-
-function TJvPageSetupDialog.DoExecute(aShow: Boolean): Boolean;
+function TJvPageSetupDialog.DoExecute(Show: Boolean): Boolean;
 var
-  ePageDlgRec: TPageSetupDlg;
-  eDevHandle: THandle;
-  eErr: Integer;
+  PageDlgRec: TPageSetupDlg;
+  DevHandle: THandle;
+  Err: Integer;
 begin
   // fill record
-  FillChar(ePageDlgRec, SizeOf(ePageDlgRec), 0);
-  with ePageDlgRec do
+  FillChar(PageDlgRec, SizeOf(PageDlgRec), 0);
+  with PageDlgRec do
   begin
-    lStructSize := SizeOf(ePageDlgRec);
-    hWndOwner := Application.Handle;
+    lStructSize := SizeOf(PageDlgRec);
+    hwndOwner := Application.Handle;
     Flags := FFlags;
     rtMinMargin := Rect(FMinMargin.Left, FMinMargin.Top, FMinMargin.Right,
       FMinMargin.Bottom);
     rtMargin := Rect(FMargin.Left, FMargin.Top, FMargin.Right, FMargin.Bottom);
     hInstance := SysInit.HInstance;
-    if aShow then
+    if Show then
     begin
       lpfnPageSetupHook := DialogHook;
       Flags := FFlags or PSD_ENABLEPAGESETUPHOOK;
-      GetPrinter(eDevHandle, hDevNames);
-      hDevMode := CopyData(eDevHandle);
+      GetPrinter(DevHandle, hDevNames);
+      hDevMode := CopyData(DevHandle);
     end
     else
     begin
@@ -679,11 +612,11 @@ begin
       lpfnPagePaintHook := PageDrawHook;
     end;
 
-    if aShow then
-      Result := TaskModalDialog(@PageSetupDlg, ePageDlgRec)
+    if Show then
+      Result := TaskModalDialog(@PageSetupDlg, PageDlgRec)
     else
-      Result := PageSetupDlg(ePageDlgRec);
-    eErr := CommDlgExtendedError;
+      Result := PageSetupDlg(PageDlgRec);
+    Err := CommDlgExtendedError;
 
     if Result then
       SetPrinter(hDevMode, hDevNames)
@@ -694,14 +627,12 @@ begin
       if hDevNames <> 0 then
         GlobalFree(hDevNames);
     end;
-    OSCheck(eErr = 0);
+    OSCheck(Err = 0);
 
     FMargin.AsRect := rtMargin;
     FPaperSize := ptPaperSize;
   end;
 end;
-
-//-----------------------------------------------------------------------------
 
 function TJvPageSetupDialog.Execute: Boolean;
 begin
@@ -709,41 +640,39 @@ begin
 end;
 
 // Get default margin values
-//-----------------------------------------------------------------------------
 
 procedure TJvPageSetupDialog.GetDefaults;
 begin
   DoExecute(False);
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure TJvPageSetupDialog.SetOptions(aValue: TJvPageOptions);
+procedure TJvPageSetupDialog.SetOptions(Value: TJvPageOptions);
 const
-  WinFlags: array[TJvPageSetupFlags] of DWORD = (
-    PSD_DEFAULTMINMARGINS, PSD_MARGINS, PSD_MINMARGINS,
+  WinFlags: array [TJvPageSetupFlags] of DWORD =
+    (PSD_DEFAULTMINMARGINS, PSD_MARGINS, PSD_MINMARGINS,
     PSD_DISABLEMARGINS, PSD_DISABLEORIENTATION,
     PSD_DISABLEPAGEPAINTING, PSD_DISABLEPAPER, PSD_DISABLEPRINTER,
     PSD_INHUNDREDTHSOFMILLIMETERS, PSD_INTHOUSANDTHSOFINCHES,
     PSD_NOWARNING);
 var
-  i: TJvPageSetupFlags;
+  I: TJvPageSetupFlags;
 begin
-  if (poDefaultMinMargins in aValue) and not (poDefaultMinMargins in FOptions) then
-    aValue := aValue - [poMinMargins];
-  if (poMinMargins in aValue) and not (poMinMargins in FOptions) then
-    aValue := aValue - [poDefaultMinMargins];
-  if (poHundredthsOfMillimeters in aValue) and not (poHundredthsOfMillimeters in FOptions) then
-    aValue := aValue - [poThousandthsOfInches];
-  if (poThousandthsOfInches in aValue) and not (poThousandthsOfInches in FOptions) then
-    aValue := aValue - [poHundredthsOfMillimeters];
-  FOptions := aValue;
+  if (poDefaultMinMargins in Value) and not (poDefaultMinMargins in FOptions) then
+    Value := Value - [poMinMargins];
+  if (poMinMargins in Value) and not (poMinMargins in FOptions) then
+    Value := Value - [poDefaultMinMargins];
+  if (poHundredthsOfMillimeters in Value) and not (poHundredthsOfMillimeters in FOptions) then
+    Value := Value - [poThousandthsOfInches];
+  if (poThousandthsOfInches in Value) and not (poThousandthsOfInches in FOptions) then
+    Value := Value - [poHundredthsOfMillimeters];
+  FOptions := Value;
 
   // set flags
   FFlags := 0;
-  for i := Low(TJvPageSetupFlags) to High(TJvPageSetupFlags) do
-    if i in FOptions then
-      FFlags := FFlags or WinFlags[i];
+  for I := Low(TJvPageSetupFlags) to High(TJvPageSetupFlags) do
+    if I in FOptions then
+      FFlags := FFlags or WinFlags[I];
 end;
 
 end.
+

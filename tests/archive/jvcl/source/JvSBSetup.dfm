@@ -1,9 +1,9 @@
-object SpeedbarSetupWindow: TJvSpeedbarSetupWindow
+object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
   Left = 231
   Top = 121
   ActiveControl = SectionList
-  BorderIcons = []
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   ClientHeight = 262
   ClientWidth = 421
   Color = clBtnFace
@@ -11,7 +11,7 @@ object SpeedbarSetupWindow: TJvSpeedbarSetupWindow
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  Font.Style = []
   FormStyle = fsStayOnTop
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
@@ -56,7 +56,7 @@ object SpeedbarSetupWindow: TJvSpeedbarSetupWindow
   object ButtonsLabel: TLabel
     Left = 146
     Top = 11
-    Width = 119
+    Width = 96
     Height = 13
     Caption = '&Available buttons:    '
     FocusControl = ButtonsList
@@ -64,19 +64,19 @@ object SpeedbarSetupWindow: TJvSpeedbarSetupWindow
   object CategoriesLabel: TLabel
     Left = 12
     Top = 11
-    Width = 81
+    Width = 65
     Height = 13
     Caption = '&Categories:    '
   end
   object HintLabel: TLabel
-    Left = 8
+    Left = 0
     Top = 231
-    Width = 407
+    Width = 425
     Height = 29
     AutoSize = False
     Caption = 
-      'To add command buttons, drag and drop buttons onto the JvSpeedbar.' +
-      ' To remove command buttons, drag them off of the JvSpeedbar.'
+      'To add command buttons, drag and drop buttons onto the JvSpeedba' +
+      'r. To remove command buttons, drag them off of the JvSpeedbar.'
     WordWrap = True
   end
   object ButtonsList: TDrawGrid

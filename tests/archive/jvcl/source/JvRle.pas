@@ -28,122 +28,126 @@ Known Issues:
 
 unit JvRle;
 
-
-
 interface
-uses
-  Windows, Messages, SysUtils, Classes, Graphics;
 
-type
-  TJvRle = class(TObject)
-  public
-    function Compress(Stream: TStream): TStream;
-    function Decompress(Stream: TStream): TStream;
-  end;
+uses
+  SysUtils, Classes;
+
+// (rom) changed API for inclusion in JCL
+
+procedure RleCompress(Stream: TStream);
+procedure RleDecompress(Stream: TStream);
 
 implementation
 
-{******************************************************************************}
-
-function TJvRle.Compress(Stream: TStream): TStream;
+procedure RleCompress(Stream: TStream);
 var
-  count, count2, count3, i: Integer;
-  buf: array[0..1024] of Byte;
-  buf2: array[0..60000] of Byte;
-  b: Byte;
+  Count, Count2, Count3, I: Integer;
+  Buf1: array [0..1024] of Byte;
+  Buf2: array [0..60000] of Byte;
+  B: Byte;
+  Tmp: TMemoryStream;
 begin
-  Result := TMemoryStream.Create;
+  Tmp := TMemoryStream.Create;
+  Stream.Position := 0;
 
-  count := 1024;
-  while count = 1024 do
+  Count := 1024;
+  while Count = 1024 do
   begin
-    count := Stream.Read(buf, 1024);
-    count2 := 0;
-    i := 0;
-    while i < count do
+    Count := Stream.Read(Buf1, 1024);
+    Count2 := 0;
+    I := 0;
+    while I < Count do
     begin
-      b := buf[i];
-      count3 := 0;
-      while (buf[i] = b) and (i < count) and (count3 < $30) do
+      B := Buf1[I];
+      Count3 := 0;
+      while (Buf1[I] = B) and (I < Count) and (Count3 < $30) do
       begin
-        Inc(i);
-        Inc(count3);
+        Inc(I);
+        Inc(Count3);
       end;
-      if (i = count) and (count3 in [2..$2F]) and (count = 1024) then
-        Stream.Position := Stream.Position - count3
+      if (I = Count) and (Count3 in [2..$2F]) and (Count = 1024) then
+        Stream.Position := Stream.Position - Count3
       else
       begin
-        if count3 = 1 then
+        if Count3 = 1 then
         begin
-          if (b and $C0) = $C0 then
+          if (B and $C0) = $C0 then
           begin
-            buf2[count2] := $C1;
-            buf2[count2 + 1] := b;
-            Inc(count2, 2);
+            Buf2[Count2] := $C1;
+            Buf2[Count2 + 1] := B;
+            Inc(Count2, 2);
           end
           else
           begin
-            buf2[count2] := b;
-            Inc(count2);
+            Buf2[Count2] := B;
+            Inc(Count2);
           end;
         end
         else
         begin
-          buf2[count2] := count3 or $C0;
-          buf2[count2 + 1] := b;
-          Inc(count2, 2);
+          Buf2[Count2] := Count3 or $C0;
+          Buf2[Count2 + 1] := B;
+          Inc(Count2, 2);
         end;
       end;
     end;
-    Result.Write(buf2, count2);
+    Tmp.Write(Buf2, Count2);
   end;
 
-  Result.Position := 0;
+  Tmp.Position := 0;
+  Stream.Size := 0;
+  Stream.CopyFrom(Tmp, Tmp.Size);
+  Tmp.Free;
 end;
 
-{******************************************************************************}
-
-function TJvRle.Decompress(Stream: TStream): TStream;
+procedure RleDecompress(Stream: TStream);
 var
-  count, count2, count3, i: Integer;
-  buf: array[0..1024] of Byte;
-  buf2: array[0..60000] of Byte;
-  b: Byte;
+  Count, Count2, Count3, I: Integer;
+  Buf1: array [0..1024] of Byte;
+  Buf2: array [0..60000] of Byte;
+  B: Byte;
+  Tmp: TMemoryStream;
 begin
-  Result := TMemoryStream.Create;
+  Tmp := TMemoryStream.Create;
+  Stream.Position := 0;
 
-  count := 1024;
-  while count = 1024 do
+  Count := 1024;
+  while Count = 1024 do
   begin
-    count := Stream.Read(buf, 1024);
-    count2 := 0;
-    i := 0;
-    while i < count do
+    Count := Stream.Read(Buf1, 1024);
+    Count2 := 0;
+    I := 0;
+    while I < Count do
     begin
-      if (buf[i] and $C0) = $C0 then
+      if (Buf1[I] and $C0) = $C0 then
       begin
-        if i = count - 1 then
+        if I = Count - 1 then
           Stream.Position := Stream.Position - 1
         else
         begin
-          b := buf[i] and $3F;
-          Inc(i);
-          for count3 := count2 to count2 + b - 1 do
-            buf2[count3] := buf[i];
-          count2 := count2 + b;
+          B := Buf1[I] and $3F;
+          Inc(I);
+          for Count3 := Count2 to Count2 + B - 1 do
+            Buf2[Count3] := Buf1[I];
+          Count2 := Count2 + B;
         end;
       end
       else
       begin
-        buf2[count2] := buf[i];
-        Inc(count2);
+        Buf2[Count2] := Buf1[I];
+        Inc(Count2);
       end;
-      Inc(i);
+      Inc(I);
     end;
-    Result.Write(buf2, count2);
+    Tmp.Write(Buf2, Count2);
   end;
 
-  Result.Position := 0;
+  Tmp.Position := 0;
+  Stream.Size := 0;
+  Stream.CopyFrom(Tmp, Tmp.Size);
+  Tmp.Free;
 end;
 
 end.
+

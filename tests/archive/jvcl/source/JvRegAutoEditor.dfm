@@ -3,6 +3,7 @@ object JvRegEditor: TJvRegEditor
   Top = 120
   Width = 460
   Height = 359
+  BorderIcons = [biSystemMenu]
   Caption = 'RegAuto Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,6 +11,17 @@ object JvRegEditor: TJvRegEditor
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   ShowHint = True
   OnClose = FormClose
@@ -20,7 +32,7 @@ object JvRegEditor: TJvRegEditor
   TextHeight = 13
   object panelBottom: TPanel
     Left = 0
-    Top = 302
+    Top = 299
     Width = 452
     Height = 30
     Align = alBottom
@@ -34,11 +46,15 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        158
+        30)
       object btnOk: TButton
         Left = 1
         Top = 4
         Width = 73
         Height = 24
+        Anchors = [akLeft, akRight, akBottom]
         Caption = '&OK'
         TabOrder = 0
         OnClick = btnOkClick
@@ -48,6 +64,7 @@ object JvRegEditor: TJvRegEditor
         Top = 4
         Width = 73
         Height = 24
+        Anchors = [akRight, akBottom]
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
@@ -79,12 +96,16 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
+      DesignSize = (
+        28
+        32)
       object btnAddProp: TSpeedButton
         Left = 2
         Top = 3
         Width = 25
         Height = 25
-        Hint = #196#238#225#224#226#232#242#252'/'#211#228#224#235#232#242#252' '#241#226#238#233#241#242#226#238
+        Hint = 'Add / Delete property'
+        Anchors = [akTop, akRight]
         Glyph.Data = {
           36060000424D3606000000000000360400002800000020000000100000000100
           0800000000000002000000000000000000000001000000010000000000000000
@@ -145,7 +166,7 @@ object JvRegEditor: TJvRegEditor
       Top = 7
       Width = 312
       Height = 21
-      Hint = #200#236#255' '#241#226#238#233#241#242#226#224' '#236#238#230#237#238' '#226#226#229#241#242#232' '#239#240#255#236#238' '#231#228#229#241#252
+      Hint = 'The name of property can be entered directly here'
       TabOrder = 1
       OnChange = edtPropChange
       OnEnter = ListEnter
@@ -156,8 +177,8 @@ object JvRegEditor: TJvRegEditor
     Left = 0
     Top = 36
     Width = 201
-    Height = 266
-    Hint = #196#238#241#242#243#239#237#251#229' '#241#226#238#233#241#242#226#224
+    Height = 263
+    Hint = 'Accessible properties'
     Align = alLeft
     Ctl3D = True
     DragMode = dmAutomatic
@@ -180,8 +201,8 @@ object JvRegEditor: TJvRegEditor
     Left = 201
     Top = 36
     Width = 251
-    Height = 266
-    Hint = #209#239#232#241#238#234' '#241#238#245#240#224#237#255#229#236#251#245' '#241#226#238#233#241#242#226
+    Height = 263
+    Hint = 'List of saved properties'
     Align = alClient
     Ctl3D = True
     DragMode = dmAutomatic
@@ -205,8 +226,8 @@ object JvRegEditor: TJvRegEditor
     Top = 134
   end
   object PopupMenu1: TPopupMenu
-    Left = 240
-    Top = 96
+    Left = 248
+    Top = 136
     object Sort1: TMenuItem
       Caption = 'Sort'
       OnClick = Sort1Click

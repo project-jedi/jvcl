@@ -12,7 +12,7 @@ The Original Code is: JvTimerLst.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,12 +29,16 @@ unit JvTimerLst;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes{, JvComponent};
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, Classes {, JvComponent};
 
 const
   DefaultInterval = 1000;
-  HInvalidEvent = -1;
 
 type
   TAllTimersEvent = procedure(Sender: TObject; Handle: Longint) of object;
@@ -44,7 +48,7 @@ type
   TJvTimerList = class(TComponent)
   private
     FEvents: TList;
-    FWndHandle: hWnd;
+    FWndHandle: HWND;
     FActive: Boolean;
     FInterval: Longint;
     FSequence: Longint;
@@ -63,26 +67,26 @@ type
     procedure TimerWndProc(var Msg: TMessage);
     procedure UpdateTimer;
   protected
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
       Root: TComponent {$ENDIF}); override;
-{$ELSE}
+    {$ELSE}
     procedure WriteComponents(Writer: TWriter); override;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
-    function NextHandle: Longint; virtual;
+    function NextHandle: THandle; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Add(AOnTimer: TNotifyEvent; AInterval: Longint;
-      ACycled: Boolean): Longint; virtual;
-    function AddItem(Item: TJvTimerEvent): Longint;
+      ACycled: Boolean): THandle; virtual;
+    function AddItem(Item: TJvTimerEvent): THandle;
     procedure Clear;
-    procedure Delete(AHandle: Longint); virtual;
+    procedure Delete(AHandle: THandle); virtual;
     procedure Activate;
     procedure Deactivate;
-    function ItemByHandle(AHandle: Longint): TJvTimerEvent;
-    function ItemIndexByHandle(AHandle: Longint): Integer;
+    function ItemByHandle(AHandle: THandle): TJvTimerEvent;
+    function ItemIndexByHandle(AHandle: THandle): Integer;
     property Count: Integer read GetCount;
     property EnabledCount: Integer read GetEnabledCount;
   published
@@ -92,12 +96,14 @@ type
     property OnTimers: TAllTimersEvent read FOnTimers write FOnTimers;
   end;
 
+  // (rom) used THandle where needed
+  
   TJvTimerEvent = class(TComponent)
   private
     FCycled: Boolean;
     FEnabled: Boolean;
     FExecCount: Integer;
-    FHandle: Longint;
+    FHandle: THandle;
     FInterval: Longint;
     FLastExecute: Longint;
     FParentList: TJvTimerList;
@@ -108,24 +114,24 @@ type
     procedure SetRepeatCount(Value: Integer);
     procedure SetEnabled(Value: Boolean);
     procedure SetInterval(Value: Longint);
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     procedure SetParentList(Value: TJvTimerList);
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
   protected
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure SetParentComponent(Value: TComponent); override;
-{$ELSE}
+    {$ELSE}
     procedure ReadState(Reader: TReader); override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
-{$ENDIF}
+    {$ENDIF}
     property AsSeconds: Cardinal read GetAsSeconds write SetAsSeconds;
-    property Handle: Longint read FHandle;
+    property Handle: THandle read FHandle;
     property ExecCount: Integer read FExecCount;
     property TimerList: TJvTimerList read FParentList;
   published
@@ -138,21 +144,27 @@ type
 
 implementation
 
-uses Consts, Controls, Forms, SysUtils, JvVCLUtils, JvMaxMin;
+uses
+  Consts, Forms, SysUtils,
+  JvVCLUtils, JvMaxMin;
 
 const
   MinInterval = 100; { 0.1 sec }
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   MaxTimerInterval: Longint = High(Longint);
-{$ELSE}
+  {$ELSE}
   MaxTimerInterval: Longint = High(Cardinal);
-{$ENDIF}
-{$IFNDEF WIN32}
+  {$ENDIF}
+  {$IFNDEF WIN32}
+  // (rom) is this correct?
   INVALID_HANDLE_VALUE = 0;
-{$ENDIF}
+  {$ENDIF}
+
+// (rom) changed to var
+var
   Registered: Boolean = False;
 
-{ TJvTimerEvent }
+//=== TJvTimerEvent ==========================================================
 
 constructor TJvTimerEvent.Create(AOwner: TComponent);
 begin
@@ -164,7 +176,7 @@ begin
   FExecCount := 0;
   FInterval := DefaultInterval;
   FLastExecute := GetTickCount;
-  FHandle := HInvalidEvent;
+  FHandle := INVALID_HANDLE_VALUE;
 end;
 
 destructor TJvTimerEvent.Destroy;
@@ -176,8 +188,10 @@ end;
 {$IFNDEF WIN32}
 procedure TJvTimerEvent.SetParentList(Value: TJvTimerList);
 begin
-  if FParentList <> nil then FParentList.RemoveItem(Self);
-  if Value <> nil then Value.AddItem(Self);
+  if FParentList <> nil then
+    FParentList.RemoveItem(Self);
+  if Value <> nil then
+    Value.AddItem(Self);
 end;
 {$ENDIF}
 
@@ -195,7 +209,8 @@ end;
 
 procedure TJvTimerEvent.SetParentComponent(Value: TComponent);
 begin
-  if FParentList <> nil then FParentList.RemoveItem(Self);
+  if FParentList <> nil then
+    FParentList.RemoveItem(Self);
   if (Value <> nil) and (Value is TJvTimerList) then
     TJvTimerList(Value).AddItem(Self);
 end;
@@ -213,13 +228,16 @@ end;
 
 procedure TJvTimerEvent.SetEnabled(Value: Boolean);
 begin
-  if Value <> FEnabled then begin
+  if Value <> FEnabled then
+  begin
     FEnabled := Value;
-    if FEnabled then begin
+    if FEnabled then
+    begin
       FExecCount := 0;
       FLastExecute := GetTickCount;
       if FParentList <> nil then
-        with FParentList do begin
+        with FParentList do
+        begin
           CalculateInterval(GetTickCount);
           UpdateTimer;
         end;
@@ -229,10 +247,12 @@ end;
 
 procedure TJvTimerEvent.SetInterval(Value: Longint);
 begin
-  if Value <> FInterval then begin
+  if Value <> FInterval then
+  begin
     FInterval := Value;
     if FParentList <> nil then
-      with FParentList do begin
+      with FParentList do
+      begin
         CalculateInterval(GetTickCount);
         UpdateTimer;
       end;
@@ -241,10 +261,12 @@ end;
 
 procedure TJvTimerEvent.SetRepeatCount(Value: Integer);
 begin
-  if FRepeatCount <> Value then begin
+  if FRepeatCount <> Value then
+  begin
     Value := Max(Value, Integer(not FCycled));
     if not (csDesigning in ComponentState) then
-      if FEnabled and (Value <= FExecCount) then Enabled := False;
+      if FEnabled and (Value <= FExecCount) then
+        Enabled := False;
     FRepeatCount := Value;
   end;
 end;
@@ -259,7 +281,7 @@ begin
   Interval := Value * 1000;
 end;
 
-{ TJvTimerList }
+//=== TJvTimerList ===========================================================
 
 constructor TJvTimerList.Create(AOwner: TComponent);
 begin
@@ -269,7 +291,8 @@ begin
   FSequence := 0;
   FStartInterval := 0;
   Deactivate;
-  if not Registered then begin
+  if not Registered then
+  begin
     RegisterClasses([TJvTimerEvent]);
     Registered := True;
   end;
@@ -292,7 +315,8 @@ end;
 
 procedure TJvTimerList.Deactivate;
 begin
-  if not (csLoading in ComponentState) then Active := False;
+  if not (csLoading in ComponentState) then
+    Active := False;
 end;
 
 procedure TJvTimerList.SetEvents(StartTicks: Longint);
@@ -308,21 +332,34 @@ procedure TJvTimerList.SetActive(Value: Boolean);
 var
   StartTicks: Longint;
 begin
-  if FActive <> Value then begin
-    if not (csDesigning in ComponentState) then begin
-      if Value then begin
-        FWndHandle := {$IFDEF COMPILER6_UP}Classes.{$ENDIF}AllocateHWnd(TimerWndProc);
+  if FActive <> Value then
+  begin
+    if not (csDesigning in ComponentState) then
+    begin
+      if Value then
+      begin
+        {$IFDEF COMPILER6_UP}
+        FWndHandle := Classes.AllocateHWnd(TimerWndProc);
+        {$ELSE}
+        FWndHandle := AllocateHWnd(TimerWndProc);
+        {$ENDIF}
         StartTicks := GetTickCount;
         SetEvents(StartTicks);
         CalculateInterval(StartTicks);
         Sort;
         UpdateTimer;
       end
-      else begin
+      else
+      begin
         KillTimer(FWndHandle, 1);
-        {$IFDEF COMPILER6_UP}Classes.{$ENDIF}DeallocateHWnd(FWndHandle);
+        {$IFDEF COMPILER6_UP}
+        Classes.DeallocateHWnd(FWndHandle);
+        {$ELSE}
+        DeallocateHWnd(FWndHandle);
+        {$ENDIF}
         FWndHandle := INVALID_HANDLE_VALUE;
-        if Assigned(FOnFinish) then FOnFinish(Self);
+        if Assigned(FOnFinish) then
+          FOnFinish(Self);
       end;
       FStartInterval := 0;
     end;
@@ -347,9 +384,11 @@ var
   Item: TJvTimerEvent;
 begin
   inherited WriteComponents(Writer);
-  for I := 0 to FEvents.Count - 1 do begin
+  for I := 0 to FEvents.Count - 1 do
+  begin
     Item := TJvTimerEvent(FEvents[I]);
-    if Item.Owner = Writer.Root then Writer.WriteComponent(Item);
+    if Item.Owner = Writer.Root then
+      Writer.WriteComponent(Item);
   end;
 end;
 {$ENDIF WIN32}
@@ -362,7 +401,8 @@ begin
   if not (csDesigning in ComponentState) then
     repeat
       ExitLoop := True;
-      for I := 0 to Count - 2 do begin
+      for I := 0 to Count - 2 do
+      begin
         if TJvTimerEvent(FEvents[I]).Interval > TJvTimerEvent(FEvents[I + 1]).Interval then
         begin
           FEvents.Exchange(I, I + 1);
@@ -372,7 +412,7 @@ begin
     until ExitLoop;
 end;
 
-function TJvTimerList.NextHandle: Longint;
+function TJvTimerList.NextHandle: THandle;
 begin
   Inc(FSequence);
   Result := FSequence;
@@ -383,9 +423,10 @@ begin
   Result := TJvTimerEvent.Create(Owner);
 end;
 
-function TJvTimerList.AddItem(Item: TJvTimerEvent): Longint;
+function TJvTimerList.AddItem(Item: TJvTimerEvent): THandle;
 begin
-  if FEvents.Add(Item) >= 0 then begin
+  if FEvents.Add(Item) >= 0 then
+  begin
     Item.FHandle := NextHandle;
     Item.FParentList := Self;
     Result := Item.FHandle;
@@ -393,18 +434,22 @@ begin
     Sort;
     UpdateTimer;
   end
-  else Result := HInvalidEvent; { invalid handle }
+  else
+    Result := INVALID_HANDLE_VALUE;
 end;
 
 { Create a new timer event and returns a handle }
+
 function TJvTimerList.Add(AOnTimer: TNotifyEvent; AInterval: Longint;
-  ACycled: Boolean): Longint;
+  ACycled: Boolean): THandle;
 var
   T: TJvTimerEvent;
 begin
   T := CreateNewEvent;
-  if (FEvents.Add(T) >= 0) then begin
-    with T do begin
+  if FEvents.Add(T) >= 0 then
+  begin
+    with T do
+    begin
       OnTimer := AOnTimer;
       FParentList := Self;
       FHandle := NextHandle;
@@ -416,39 +461,46 @@ begin
     Sort;
     UpdateTimer;
   end
-  else begin
+  else
+  begin
     T.Free;
-    Result := HInvalidEvent; { invalid handle }
+    Result := INVALID_HANDLE_VALUE;
   end;
 end;
 
-function TJvTimerList.ItemIndexByHandle(AHandle: Longint): Integer;
+function TJvTimerList.ItemIndexByHandle(AHandle: THandle): Integer;
 begin
   for Result := 0 to FEvents.Count - 1 do
-    if TJvTimerEvent(FEvents[Result]).Handle = AHandle then Exit;
+    if TJvTimerEvent(FEvents[Result]).Handle = AHandle then
+      Exit;
   Result := -1;
 end;
 
-function TJvTimerList.ItemByHandle(AHandle: Longint): TJvTimerEvent;
+function TJvTimerList.ItemByHandle(AHandle: THandle): TJvTimerEvent;
 var
   I: Integer;
 begin
   I := ItemIndexByHandle(AHandle);
-  if I >= 0 then Result := TJvTimerEvent(FEvents[I])
-  else Result := nil;
+  if I >= 0 then
+    Result := TJvTimerEvent(FEvents[I])
+  else
+    Result := nil;
 end;
 
-procedure TJvTimerList.Delete(AHandle: Longint);
+procedure TJvTimerList.Delete(AHandle: THandle);
 var
   I: Integer;
   Item: TJvTimerEvent;
 begin
   I := ItemIndexByHandle(AHandle);
-  if I >= 0 then begin
+  if I >= 0 then
+  begin
     Item := TJvTimerEvent(FEvents[I]);
     RemoveItem(Item);
-    if not (csDestroying in Item.ComponentState) then Item.Free;
-    if Active then begin
+    if not (csDestroying in Item.ComponentState) then
+      Item.Free;
+    if Active then
+    begin
       CalculateInterval(GetTickCount);
       UpdateTimer;
     end;
@@ -466,7 +518,8 @@ var
 begin
   Result := 0;
   for I := 0 to Count - 1 do
-    if TJvTimerEvent(FEvents[I]).Enabled then Inc(Result);
+    if TJvTimerEvent(FEvents[I]).Enabled then
+      Inc(Result);
 end;
 
 procedure TJvTimerList.RemoveItem(Item: TJvTimerEvent);
@@ -480,18 +533,22 @@ var
   I: Integer;
   Item: TJvTimerEvent;
 begin
-  for I := FEvents.Count - 1 downto 0 do begin
+  for I := FEvents.Count - 1 downto 0 do
+  begin
     Item := TJvTimerEvent(FEvents[I]);
     RemoveItem(Item);
-    if not (csDestroying in Item.ComponentState) then Item.Free;
+    if not (csDestroying in Item.ComponentState) then
+      Item.Free;
   end;
 end;
 
 procedure TJvTimerList.DoTimer(Event: TJvTimerEvent);
 begin
-  with Event do 
-    if Assigned(FOnTimer) then FOnTimer(Event);
-  if Assigned(FOnTimers) then FOnTimers(Self, Event.Handle);
+  with Event do
+    if Assigned(FOnTimer) then
+      FOnTimer(Event);
+  if Assigned(FOnTimers) then
+    FOnTimers(Self, Event.Handle);
 end;
 
 function TJvTimerList.ProcessEvents: Boolean;
@@ -501,9 +558,11 @@ var
   StartTicks: Longint;
 begin
   Result := False;
-  if not (csDesigning in ComponentState) then begin
+  if not (csDesigning in ComponentState) then
+  begin
     StartTicks := GetTickCount;
-    for I := Count - 1 downto 0 do begin
+    for I := Count - 1 downto 0 do
+    begin
       Item := TJvTimerEvent(FEvents[I]);
       if (Item <> nil) and Item.Enabled then
         with Item do
@@ -512,7 +571,8 @@ begin
             FLastExecute := StartTicks;
             Inc(FExecCount);
             Enabled := not ((not Cycled) and (FExecCount >= RepeatCount));
-            if not Enabled then Result := True;
+            if not Enabled then
+              Result := True;
             DoTimer(Item);
           end;
     end;
@@ -521,26 +581,32 @@ end;
 
 procedure TJvTimerList.TimerWndProc(var Msg: TMessage);
 begin
-  if not (csDesigning in ComponentState) then begin
+  if not (csDesigning in ComponentState) then
+  begin
     with Msg do
       if Msg = WM_TIMER then
-        try
-          if (not (csDesigning in ComponentState)) and
-            (FStartInterval = 0) and Active then 
+      try
+        if (not (csDesigning in ComponentState)) and
+          (FStartInterval = 0) and Active then
+        begin
+          if ProcessEvents then
           begin
-            if ProcessEvents then begin
-              if EnabledCount = 0 then Deactivate
-              else begin
-                CalculateInterval(GetTickCount);
-                UpdateTimer;
-              end;
+            if EnabledCount = 0 then
+              Deactivate
+            else
+            begin
+              CalculateInterval(GetTickCount);
+              UpdateTimer;
             end;
-          end else
-            UpdateTimer;
-        except
-          Application.HandleException(Self);
+          end;
         end
-      else Result := DefWindowProc(FWndHandle, Msg, wParam, lParam);
+        else
+          UpdateTimer;
+      except
+        Application.HandleException(Self);
+      end
+      else
+        Result := DefWindowProc(FWndHandle, Msg, WParam, LParam);
   end;
 end;
 
@@ -549,32 +615,42 @@ var
   I: Integer;
   ExitLoop: Boolean;
 begin
-  if not (csDesigning in ComponentState) then begin
-    if Count = 0 then FInterval := 0
-    else begin
+  if not (csDesigning in ComponentState) then
+  begin
+    if Count = 0 then
+      FInterval := 0
+    else
+    begin
       FStartInterval := 0;
       FInterval := MaxLongInt;
       for I := 0 to Count - 1 do
         with TJvTimerEvent(FEvents[I]) do
-          if Enabled and (Interval > 0) then begin
-            if Interval < Self.FInterval then Self.FInterval := Interval;
+          if Enabled and (Interval > 0) then
+          begin
+            if Interval < Self.FInterval then
+              Self.FInterval := Interval;
             if Self.FInterval > (Interval - (StartTicks - FLastExecute)) then
               Self.FInterval := (Interval - (StartTicks - FLastExecute));
           end;
-      if FInterval < MinInterval then FInterval := MinInterval;
-      if FInterval = MaxLongint then FInterval := 0
-      else begin
+      if FInterval < MinInterval then
+        FInterval := MinInterval;
+      if FInterval = MaxLongint then
+        FInterval := 0
+      else
+      begin
         repeat
           ExitLoop := True;
           for I := 0 to Count - 1 do
             with TJvTimerEvent(FEvents[I]) do
-              if (Interval mod Self.FInterval) <> 0 then begin
+              if (Interval mod Self.FInterval) <> 0 then
+              begin
                 Dec(Self.FInterval, Interval mod Self.FInterval);
                 ExitLoop := False;
                 Break;
               end;
         until ExitLoop or (FInterval <= MinInterval);
-        if FInterval < MinInterval then FInterval := MinInterval;
+        if FInterval < MinInterval then
+          FInterval := MinInterval;
       end;
     end;
   end;
@@ -584,23 +660,30 @@ procedure TJvTimerList.UpdateTimer;
 var
   FTimerInterval: Cardinal;
 begin
-  if not (csDesigning in ComponentState) then begin
-    if FInterval <= MaxTimerInterval then FTimerInterval := FInterval
+  if not (csDesigning in ComponentState) then
+  begin
+    if FInterval <= MaxTimerInterval then
+      FTimerInterval := FInterval
     else
-      if (FInterval - FStartInterval) <= MaxTimerInterval then begin
-        FTimerInterval := Cardinal(FInterval - FStartInterval);
-        FStartInterval := 0;
-      end
-      else begin
-        FTimerInterval := MaxTimerInterval;
-        FStartInterval := FStartInterval + MaxTimerInterval;
-      end;
+    if (FInterval - FStartInterval) <= MaxTimerInterval then
+    begin
+      FTimerInterval := Cardinal(FInterval - FStartInterval);
+      FStartInterval := 0;
+    end
+    else
+    begin
+      FTimerInterval := MaxTimerInterval;
+      FStartInterval := FStartInterval + MaxTimerInterval;
+    end;
     if not (csDesigning in ComponentState) and (FWndHandle <> INVALID_HANDLE_VALUE) then
     begin
       KillTimer(FWndHandle, 1);
-      if EnabledCount = 0 then Deactivate
-      else if FInterval > 0 then
-        if SetTimer(FWndHandle, 1, FTimerInterval, nil) = 0 then begin
+      if EnabledCount = 0 then
+        Deactivate
+      else
+      if FInterval > 0 then
+        if SetTimer(FWndHandle, 1, FTimerInterval, nil) = 0 then
+        begin
           Deactivate;
           raise EOutOfResources.Create(ResStr(SNoTimers));
         end;
@@ -609,3 +692,4 @@ begin
 end;
 
 end.
+

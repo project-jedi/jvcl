@@ -28,17 +28,15 @@ Known Issues:
 
 unit JvMaxPixel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms;
+  SysUtils, Classes, Graphics, Controls, Forms;
 
 type
   TJvMaxPixel = class(TPersistent)
   private
-    FUseControl: Boolean;
+    FUseControlFont: Boolean;
     FLength: Integer;
     FFont: TFont;
     FOnChanged: TNotifyEvent;
@@ -56,13 +54,27 @@ type
     destructor Destroy; override;
   published
     property Length: Integer read FLength write SetLength default 0;
-    property UseControlFont: Boolean read FUseControl write SetUseControl default True;
+    property UseControlFont: Boolean read FUseControlFont write SetUseControl default True;
     property Font: TFont read FFont write SetFont;
   end;
 
 implementation
 
-{***********************************************}
+constructor TJvMaxPixel.Create(AOwner: TControl);
+begin
+  inherited Create;
+  FFont := TFont.Create;
+  FFont.OnChange := FontChanged;
+  FUseControlFont := True;
+  FLength := 0;
+  FParent := AOwner;
+end;
+
+destructor TJvMaxPixel.Destroy;
+begin
+  FFont.Free;
+  inherited Destroy;
+end;
 
 procedure TJvMaxPixel.Changed;
 begin
@@ -70,33 +82,10 @@ begin
     FOnChanged(Self);
 end;
 
-{***********************************************}
-
-constructor TJvMaxPixel.Create(AOwner: TControl);
-begin
-  FFont := TFont.Create;
-  FFont.OnChange := FontChanged;
-  FUseControl := True;
-  FLength := 0;
-  FParent := AOwner;
-end;
-
-{***********************************************}
-
-destructor TJvMaxPixel.Destroy;
-begin
-  FFont.Free;
-  inherited;
-end;
-
-{***********************************************}
-
 procedure TJvMaxPixel.FontChanged(Sender: TObject);
 begin
   Changed;
 end;
-
-{***********************************************}
 
 procedure TJvMaxPixel.SetFont(const Value: TFont);
 begin
@@ -104,23 +93,17 @@ begin
   Changed;
 end;
 
-{***********************************************}
-
 procedure TJvMaxPixel.SetLength(const Value: Integer);
 begin
   FLength := Value;
   Changed;
 end;
 
-{***********************************************}
-
 procedure TJvMaxPixel.SetUseControl(const Value: Boolean);
 begin
-  FUseControl := Value;
+  FUseControlFont := Value;
   Changed;
 end;
-
-{***********************************************}
 
 procedure TJvMaxPixel.Test(var Value: string; ParentFont: TFont);
 begin
@@ -130,11 +113,12 @@ begin
   with TControlCanvas.Create do
   begin
     Control := FParent;
-    if FUseControl then
+    if FUseControlFont then
       Font.Assign(ParentFont)
     else
       Font.Assign(FFont);
 
+    // (rom) possible improvement property to switch off Beep
     if TextWidth(Value) > FLength then
       Beep;
     while (TextWidth(Value) > FLength) and (Value <> '') do
@@ -144,3 +128,4 @@ begin
 end;
 
 end.
+

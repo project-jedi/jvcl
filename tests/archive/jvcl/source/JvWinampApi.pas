@@ -29,16 +29,15 @@ unit JvWinampApi;
 
 interface
 
-// (rom) this file definitely needs some local helper functions
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvHWinamp, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls,
+  JvHWinamp, JvTypes, JvComponent;
 
 type
   TWStatus = (wsNotAvailable, wsStopped, wsPlaying, wsPaused);
 
   TWinampEqualizer = record
-    Bands: array[0..9] of Integer;
+    Bands: array [0..9] of Integer;
     Preamp: Integer;
     Enabled, AutoLoad: Boolean;
   end;
@@ -49,10 +48,10 @@ type
   TJvWinampApi = class(TJvComponent)
   private
     FWinampHandle: THandle;
-    FBidon: Boolean;
-    FBidonI: Integer;
-    FBidonW: TWStatus;
-    FBidonT: TTime;
+    FDummy: Boolean;
+    FDummyI: Integer;
+    FDummyW: TWStatus;
+    FDummyT: TTime;
     function GetBitRate: Integer;
     function GetChannels: Integer;
     function GetListLength: Integer;
@@ -78,6 +77,8 @@ type
     procedure RefreshHandle;
     { Raises an error when the winamp handle = 0 }
     procedure CheckHandle;
+    // (rom) added helper
+    procedure RefreshAndCheckHandle;
   public
     procedure ClearPlaylist;
     procedure SavePlaylist;
@@ -104,21 +105,20 @@ type
     procedure StartOfList;
     procedure EndOfList;
     procedure StopWithFadeout;
-
     property WinampHandle: THandle read GetWinampHandle;
     property Equalizer: TWinampEqualizer read GetEqualizer write SetEqualizer;
   published
-    property WinampPresent: Boolean read GetWinampPresent write FBidon stored False;
-    property WinampMajorVersion: Integer read GetMajorVersion write FBidonI stored False;
-    property WinampMinorVersion: Integer read GetMinorVersion write FBidonI stored False;
-    property WinampStatus: TWStatus read GetWinampStatus write FBidonW stored False;
+    property WinampPresent: Boolean read GetWinampPresent write FDummy stored False;
+    property WinampMajorVersion: Integer read GetMajorVersion write FDummyI stored False;
+    property WinampMinorVersion: Integer read GetMinorVersion write FDummyI stored False;
+    property WinampStatus: TWStatus read GetWinampStatus write FDummyW stored False;
     property SongPosition: TTime read GetSongPosition write SetSongPosition stored False;
-    property SongLength: TTime read GetSongLength write FBidonT stored False;
+    property SongLength: TTime read GetSongLength write FDummyT stored False;
     property PlaylistPos: Integer read GetPlaylistPos write SetPlaylistPos stored False;
-    property SampleRate: Integer read GetSampleRate write FBidonI stored False;
-    property BitRate: Integer read GetBitRate write FBidonI stored False;
-    property Channels: Integer read GetChannels write FBidonI stored False;
-    property ListLength: Integer read GetListLength write FBidonI stored False;
+    property SampleRate: Integer read GetSampleRate write FDummyI stored False;
+    property BitRate: Integer read GetBitRate write FDummyI stored False;
+    property Channels: Integer read GetChannels write FDummyI stored False;
+    property ListLength: Integer read GetListLength write FDummyI stored False;
     property PlayOptions: TJvPlayOptions read GetPlayOptions write SetPlayOptions stored False;
   end;
 
@@ -134,10 +134,8 @@ resourcestring
 
 procedure TJvWinampApi.ClearPlaylist;
 begin
-  RefreshHandle;
-  CheckHandle;
-
-  SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_DELETE)
+  RefreshAndCheckHandle;
+  SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_DELETE);
 end;
 
 function TJvWinampApi.GetBitRate: Integer;
@@ -263,17 +261,13 @@ end;
 
 procedure TJvWinampApi.Play;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_STARTPLAY)
 end;
 
 procedure TJvWinampApi.SavePlaylist;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   if CheckWinampHigher(1, 66) then
     SendMessage(WinampHandle, WM_WA_IPC, 0, IPC_WRITEPLAYLIST);
 end;
@@ -286,9 +280,7 @@ end;
 
 procedure TJvWinampApi.SetPanning(Value: Byte);
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   if CheckWinampHigher(2, 0) then
     SendMessage(WinampHandle, WM_WA_IPC, Value, IPC_SETPANNING);
 end;
@@ -304,9 +296,7 @@ end;
 
 procedure TJvWinampApi.SetVolume(Value: Byte);
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   if CheckWinampHigher(2, 0) then
     SendMessage(WinampHandle, WM_WA_IPC, Value, IPC_SETVOLUME);
 end;
@@ -315,7 +305,6 @@ function TJvWinampApi.CheckWinampHigher(Major, Minor: Integer): Boolean;
 begin
   Result := (WinampMajorVersion > Major) or
     ((WinampMajorVersion = Major) and (WinampMinorVersion >= Minor));
-
   if not Result and not (csDesigning in ComponentState) then
     raise EWinampError.Create(Format(RC_WinampFormat, [Major, Minor]));
 end;
@@ -361,11 +350,9 @@ end;
 procedure TJvWinampApi.OpenFile(FileName: string);
 var
   CopyData: TCopyDataStruct;
-  Data: array[0..255] of Char;
+  Data: array [0..255] of Char;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   CopyData.dwData := IPC_PLAYFILE;
   StrPCopy(Data, FileName);
   CopyData.lpData := @Data;
@@ -376,11 +363,9 @@ end;
 procedure TJvWinampApi.SetDirectory(Directory: string);
 var
   CopyData: TCopyDataStruct;
-  Data: array[0..255] of Char;
+  Data: array [0..255] of Char;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   CopyData.dwData := IPC_CHDIR;
   StrPCopy(Data, Directory);
   CopyData.lpData := @Data;
@@ -453,9 +438,7 @@ function TJvWinampApi.GetEqualizer: TWinampEqualizer;
 var
   I: Integer;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   if CheckWinampHigher(2, 5) then
   begin
     for I := 0 to 9 do
@@ -468,16 +451,13 @@ end;
 
 procedure TJvWinampApi.SetEqualizer(const Value: TWinampEqualizer);
 const
-  CBool: array[Boolean] of Integer = (0, 1);
+  CBool: array [Boolean] of Integer = (0, 1);
 var
   I: Integer;
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   if not CheckWinampHigher(2, 5) then
     Exit;
-
   for I := 0 to 9 do
   begin
     SendMessage(WinampHandle, WM_WA_IPC, I, IPC_GETEQDATA);
@@ -496,20 +476,14 @@ end;
 
 procedure TJvWinampApi.SendCommand(Value: Integer);
 begin
-  RefreshHandle;
-  CheckHandle;
-
+  RefreshAndCheckHandle;
   SendMessage(WinampHandle, WM_COMMAND, Value, 0)
 end;
 
 function TJvWinampApi.GetWinampHandle: THandle;
 begin
   if FWinampHandle = 0 then
-  begin
-    RefreshHandle;
-    CheckHandle;
-  end;
-
+    RefreshAndCheckHandle;
   Result := FWinampHandle;
 end;
 
@@ -524,9 +498,15 @@ begin
     raise EWinampError.Create(RC_ErrorFinding);
 end;
 
+procedure TJvWinampApi.RefreshAndCheckHandle;
+begin
+  RefreshHandle;
+  CheckHandle;
+end;
+
 procedure TJvWinampApi.SetPlayOptions(const Value: TJvPlayOptions);
 const
-  CBool: array[Boolean] of Integer = (0, 1);
+  CBool: array [Boolean] of Integer = (0, 1);
 begin
   CheckWinampHigher(2, 40);
 

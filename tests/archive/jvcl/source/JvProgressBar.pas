@@ -28,35 +28,34 @@ Known Issues:
 
 unit JvProgressBar;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  JVCLVer;
 
 type
   TJvProgressBar = class(TProgressBar)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     FBarColor: TColor;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetBarColor(const Value: TColor);
   protected
-    procedure CreateWnd;override;
+    procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property BarColor: TColor read FBarColor write SetBarColor default clNavy;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -64,20 +63,17 @@ type
   end;
 
 implementation
+
 const
   PBM_SETBARCOLOR = WM_USER + 9; // lParam = bar color
 
-{*****************************************************************}
-
 constructor TJvProgressBar.Create(AOwner: TComponent);
 begin
-  inherited;
-  FColor := clInfoBk;
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FBarColor := clNavy;
 end;
-
-{**************************************************}
 
 procedure TJvProgressBar.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -86,19 +82,16 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvProgressBar.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  Application.HintColor := FColor;
+  if csDesigning in ComponentState then
+    Exit;
+  Application.HintColor := FHintColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvProgressBar.MouseLeave(var Msg: TMessage);
 begin
@@ -118,8 +111,9 @@ end;
 
 procedure TJvProgressBar.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FBarColor));
 end;
 
 end.
+

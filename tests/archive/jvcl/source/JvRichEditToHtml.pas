@@ -28,19 +28,17 @@ Known Issues:
 
 unit JvRichEditToHtml;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, JvRgbToHtml, JvStrToHtml, JvComponent;
+  SysUtils, Classes, Graphics, Forms, ComCtrls,
+  JvRgbToHtml, JvStrToHtml, JvComponent;
 
 type
   TJvParaAttributes = record
     Alignment: TAlignment;
     Numbering: TNumberingStyle;
   end;
-{$EXTERNALSYM TJvParaAttributes}
 
   TJvRichEditToHtml = class(TJvComponent)
   private
@@ -49,12 +47,12 @@ type
     FEndSection: string;
     FEndPara: string;
     FTitle: string;
-    function AttToHtml(Value: Tfont): string;
+    function AttToHtml(Value: TFont): string;
     function ParaToHtml(Value: TJvParaAttributes): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ConvertToHtml(Value: TRichEdit; const Filename: string);
+    procedure ConvertToHtml(Value: TRichEdit; const FileName: string);
     procedure ConvertToHtmlStringList(Value: TRichEdit; Strings: TStringList);
   published
     property Title: string read FTitle write FTitle;
@@ -62,13 +60,14 @@ type
 
 implementation
 
+// (rom) why resourcestrings?
 resourcestring
+  // (rom) needs renaming?
   RC_Html1 = '<HTML>';
   RC_Html3 = '<BODY>';
   RC_Html4 = '<BR>';
   RC_Html5 = '</BODY>';
   RC_Html6 = '</HTML>';
-  // (rom) needs renaming?
   RC_Html7 = '<TITLE>%s</TITLE>';
 
   RC_EndFont = '</FONT>';
@@ -97,23 +96,34 @@ resourcestring
   RC_LeftIndent = '<LI>';
   RC_EndLeftIndent = '</LI>';
 
-  {**************************************************}
-
-procedure TJvRichEditToHtml.ConvertToHtml(Value: TRichEdit; const Filename: string);
-var S: Tstringlist;
+constructor TJvRichEditToHtml.Create(AOwner: TComponent);
 begin
-  S := TStringlist.Create;
+  inherited Create(AOwner);
+  FCToH := TJvRgbToHtml.Create(Self);
+  FCharToH := TJvStrToHtml.Create(Self);
+end;
+
+destructor TJvRichEditToHtml.Destroy;
+begin
+  FCToH.Free;
+  FCharToH.Free;
+  inherited Destroy;
+end;
+
+procedure TJvRichEditToHtml.ConvertToHtml(Value: TRichEdit; const FileName: string);
+var
+  S: TStringList;
+begin
+  S := TStringList.Create;
   try
     ConvertToHtmlStringList(Value, S);
-    S.SaveToFile(Filename);
+    S.SaveToFile(FileName);
   finally
     S.Free;
   end;
 end;
 
-{**************************************************}
-
-function TJvRichEditToHtml.AttToHtml(Value: tfont): string;
+function TJvRichEditToHtml.AttToHtml(Value: TFont): string;
 begin
   FEndSection := RC_EndFont;
   FCToH.RgbColor := Value.Color;
@@ -141,8 +151,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributes): string;
 begin
   FEndPara := RC_EndPar;
@@ -161,29 +169,23 @@ begin
   end;
 end;
 
-{**************************************************}
-
 function Diff(One, Two: TFont): Boolean;
 begin
   Result := (One.Color <> Two.Color) or (One.Style <> Two.Style) or
     (One.Name <> Two.Name) or (One.Size <> Two.Size);
 end;
 
-{**************************************************}
-
 function DiffPara(One, Two: TJvParaAttributes): Boolean;
 begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
 
-{**************************************************}
-
 procedure TJvRichEditToHtml.ConvertToHtmlStringList(Value: TRichEdit; Strings: TStringList);
 var
-  i, j, k: Integer;
-  datt, att, currat: TFont;
-  dpara, para, currpara: TJvParaAttributes;
-  st: string;
+  I, J, K: Integer;
+  Datt, Att, CurrAt: TFont;
+  DPara, Para, CurrPara: TJvParaAttributes;
+  St: string;
   FEnd: string;
 begin
   Strings.BeginUpdate;
@@ -193,62 +195,62 @@ begin
     Strings.Add(RC_Html1);
     Strings.Add(Format(RC_Html7, [Title]));
     Strings.Add(RC_Html3);
-    datt := TFont.Create;
-    att := TFont.Create;
-    currat := TFont.Create;
+    Datt := TFont.Create;
+    Att := TFont.Create;
+    CurrAt := TFont.Create;
 
-    dpara.Alignment := taLeftJustify;
-    dpara.Numbering := nsNone;
-    currpara.Alignment := dpara.Alignment;
-    currpara.Numbering := dpara.Numbering;
+    DPara.Alignment := taLeftJustify;
+    DPara.Numbering := nsNone;
+    CurrPara.Alignment := DPara.Alignment;
+    CurrPara.Numbering := DPara.Numbering;
     FendPara := '';
 
-    datt.Assign(Value.DefAttributes);
-    Strings.Add(AttToHtml(datt));
+    Datt.Assign(Value.DefAttributes);
+    Strings.Add(AttToHtml(Datt));
     FEnd := FEndSection;
 
-    k := 0;
-    Currat.Assign(datt);
+    K := 0;
+    CurrAt.Assign(Datt);
     FEndSection := '';
-    for i := 0 to Value.Lines.Count - 1 do
+    for I := 0 to Value.Lines.Count - 1 do
     begin
-      st := '';
-      currpara.Numbering := nsNone;
-      if Length(Value.lines[i]) > 0 then
+      St := '';
+      CurrPara.Numbering := nsNone;
+      if Length(Value.lines[I]) > 0 then
       begin
-        for j := 1 to Length(Value.Lines[i]) do
+        for J := 1 to Length(Value.Lines[I]) do
         begin
-          Value.SelStart := k + j - 1;
+          Value.SelStart := K + J - 1;
           Value.SelLength := 1;
-          att.Assign(Value.SelAttributes);
-          para.Alignment := Value.Paragraph.Alignment;
-          para.Numbering := Value.Paragraph.Numbering;
-          if Diff(att, currat) then
+          Att.Assign(Value.SelAttributes);
+          Para.Alignment := Value.Paragraph.Alignment;
+          Para.Numbering := Value.Paragraph.Numbering;
+          if Diff(Att, CurrAt) then
           begin
-            st := st + FEndSection;
-            currat.Assign(att);
-            st := st + AttToHtml(att);
+            St := St + FEndSection;
+            CurrAt.Assign(Att);
+            St := St + AttToHtml(Att);
           end;
-          if DiffPara(para, currpara) then
+          if DiffPara(Para, CurrPara) then
           begin
-            st := st + FEndPara;
-            currpara.Alignment := para.Alignment;
-            currpara.Numbering := para.Numbering;
-            st := st + ParaToHtml(para);
+            St := St + FEndPara;
+            CurrPara.Alignment := Para.Alignment;
+            CurrPara.Numbering := Para.Numbering;
+            St := St + ParaToHtml(Para);
           end;
-          st := st + CharToHtml(Value.Lines[i][j]);
+          St := St + CharToHtml(Value.Lines[I][J]);
         end;
       end;
-      k := k + Length(Value.Lines[i]) + 2;
-      Strings.Add(RC_Html4 + st);
+      K := K + Length(Value.Lines[I]) + 2;
+      Strings.Add(RC_Html4 + St);
       Application.ProcessMessages;
     end;
     Strings.Add(FEndSection);
     Strings.Add(FEndPara);
 
-    datt.Free;
-    att.Free;
-    currat.Free;
+    Datt.Free;
+    Att.Free;
+    CurrAt.Free;
 
     Strings.Add(FEnd);
     Strings.Add(RC_Html5);
@@ -257,24 +259,6 @@ begin
     Strings.EndUpdate;
     Value.Lines.EndUpdate;
   end;
-end;
-
-{**************************************************}
-
-constructor TJvRichEditToHtml.Create(AOwner: TComponent);
-begin
-  inherited;
-  FCToH := TJvRgbToHtml.Create(Self);
-  FCharToH := TJvStrToHtml.Create(Self);
-end;
-
-{**************************************************}
-
-destructor TJvRichEditToHtml.Destroy;
-begin
-  FCToH.Free;
-  FCharToH.Free;
-  inherited;
 end;
 
 end.

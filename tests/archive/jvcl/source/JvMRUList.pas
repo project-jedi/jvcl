@@ -29,13 +29,15 @@ unit JvMRUList;
 
 interface
 
-uses SysUtils, Classes, Menus, IniFiles{$IFDEF WIN32}, Registry{$ENDIF},
+uses
+  SysUtils, Classes, Menus, IniFiles,
+  {$IFDEF WIN32}
+  Registry,
+  {$ENDIF}
   JvPlacemnt {, JvComponent};
 
 type
   TJvRecentStrings = class;
-
-{ TJvMRUManager }
 
   TGetItemEvent = procedure(Sender: TObject; var Caption: string;
     var ShortCut: TShortCut; UserData: Longint) of object;
@@ -117,10 +119,10 @@ type
     procedure Remove(const RecentName: string);
     procedure UpdateRecentMenu;
     procedure RemoveInvalid;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure LoadFromRegistry(Ini: TRegIniFile; const Section: string);
     procedure SaveToRegistry(Ini: TRegIniFile; const Section: string);
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     procedure LoadFromIni(Ini: TIniFile; const Section: string);
     procedure SaveToIni(Ini: TIniFile; const Section: string);
     property Strings: TStrings read FList;
@@ -154,8 +156,6 @@ type
     property OnGetItemInfo: TGetItemInfoEvent read FOnItemInfo write FOnItemInfo;
   end;
 
-{ TJvRecentStrings }
-
   TJvRecentStrings = class(TStringList)
   private
     FMaxSize: Integer;
@@ -173,13 +173,15 @@ type
 
 implementation
 
-uses Controls, JvMaxMin, JvAppUtils;
+uses
+  Controls,
+  JvMaxMin, JvAppUtils;
 
 const
   siRecentItem = 'Item_%d';
   siRecentData = 'User_%d';
 
-{ TJvMRUManager }
+//=== TJvMRUManager ==========================================================
 
 constructor TJvMRUManager.Create(AOwner: TComponent);
 begin
@@ -315,7 +317,8 @@ begin
 end;
 
 procedure TJvMRUManager.Add(const RecentName: string; UserData: Longint);
-var i:integer;
+var
+  I: Integer;
 begin
   if not (Duplicates = dupAccept) and (FList.IndexOf(RecentName) > -1) then
   begin
@@ -324,8 +327,8 @@ begin
   end
   else
   begin
-    i := TJvRecentStrings(FList).Add(RecentName);
-    FList.Objects[i] := TObject(UserData);
+    I := TJvRecentStrings(FList).Add(RecentName);
+    FList.Objects[I] := TObject(UserData);
   end;
 end;
 
@@ -349,35 +352,36 @@ begin
 end;
 
 procedure TJvMRUManager.DoDuplicateFixUp;
-var i, j: integer;
-  tmp: boolean;
+var
+  I, J: Integer;
+  Tmp: Boolean;
 begin
   if Duplicates = dupAccept then
     Exit;
-  tmp := AutoUpdate;
+  Tmp := AutoUpdate;
   try
-    AutoUpdate := false;
-    i := FList.Count - 1;
-    while i >= 0 do
+    AutoUpdate := False;
+    I := FList.Count - 1;
+    while I >= 0 do
     begin
-    // we don't raise an error here even if Duplicates is dupError
-      j := FList.IndexOf(FList[i]);
-      while (j > -1) and (j <> i) do
+      // we don't raise an error here even if Duplicates is dupError
+      J := FList.IndexOf(FList[I]);
+      while (J > -1) and (J <> I) do
       begin
-        FList.Delete(j);
-        Dec(i);
-        j := FList.IndexOf(FList[i]);
+        FList.Delete(J);
+        Dec(I);
+        J := FList.IndexOf(FList[I]);
       end;
-      Dec(i);
+      Dec(I);
     end;
   finally
-    AutoUpdate := tmp;
+    AutoUpdate := Tmp;
   end;
 end;
 
 procedure TJvMRUManager.UpdateRecentMenu;
 const
-  AccelDelimChars: array[TAccelDelimiter] of Char = (#9, ' ');
+  AccelDelimChars: array [TAccelDelimiter] of Char = (#9, ' ');
 var
   I: Integer;
   L: Cardinal;
@@ -408,7 +412,8 @@ begin
         L := Cardinal(I) + FStartAccel;
         if L < 10 then
           C := '&' + Char(Ord('0') + L)
-        else if L <= (Ord('Z') + 10) then
+        else
+        if L <= (Ord('Z') + 10) then
           C := '&' + Char(L + Ord('A') - 10)
         else
           C := ' ';
@@ -443,10 +448,10 @@ procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
 begin
   ClearRecentMenu;
   FRecentMenu := Value;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   if Value <> nil then
     Value.FreeNotification(Self);
-{$ENDIF}
+  {$ENDIF}
   UpdateRecentMenu;
 end;
 
@@ -550,6 +555,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 procedure TJvMRUManager.LoadFromRegistry(Ini: TRegIniFile; const Section: string);
 begin
   InternalLoad(Ini, Section);
@@ -559,6 +565,7 @@ procedure TJvMRUManager.SaveToRegistry(Ini: TRegIniFile; const Section: string);
 begin
   InternalSave(Ini, Section);
 end;
+
 {$ENDIF WIN32}
 
 procedure TJvMRUManager.LoadFromIni(Ini: TIniFile; const Section: string);
@@ -574,27 +581,28 @@ end;
 procedure TJvMRUManager.DoAfterUpdate;
 begin
   if Assigned(FOnAfterUpdate) then
-    FOnAfterUpdate(self);
+    FOnAfterUpdate(Self);
 end;
 
 procedure TJvMRUManager.DoBeforeUpdate;
 begin
   if Assigned(FOnBeforeUpdate) then
-    FOnBeforeUpdate(self);
+    FOnBeforeUpdate(Self);
 end;
 
 procedure TJvMRUManager.RemoveInvalid;
-var i: integer;
+var
+  I: Integer;
 begin
-  for i := FList.Count - 1 downto 0 do
-    if not FileExists(FList[i]) then
-      FList.Delete(i);
+  for I := FList.Count - 1 downto 0 do
+    if not FileExists(FList[I]) then
+      FList.Delete(I);
 end;
 
 procedure TJvMRUManager.GetItemInfo(Item: TMenuItem);
 begin
   if Assigned(FOnItemInfo) then
-    FOnItemInfo(self, Item);
+    FOnItemInfo(Self, Item);
 end;
 
 procedure TJvMRUManager.SetDuplicates(const Value: TDuplicates);
@@ -607,7 +615,7 @@ begin
   end;
 end;
 
-{ TJvRecentStrings }
+//=== TJvRecentStrings =======================================================
 
 constructor TJvRecentStrings.Create;
 begin
@@ -632,12 +640,10 @@ begin
   BeginUpdate;
   try
     if FMode = rmInsert then
-    begin
       for I := Count - 1 downto FMaxSize do
-        Delete(I);
-    end
+        Delete(I)
     else
-    begin                               { rmAppend }
+    begin { rmAppend }
       while Count > FMaxSize do
         Delete(0);
     end;
@@ -662,7 +668,7 @@ begin
   begin
     if FMode = rmInsert then
       Move(Result, 0)
-    else                                { rmAppend }
+    else { rmAppend }
       Move(Result, Count - 1);
   end
   else
@@ -671,7 +677,7 @@ begin
     try
       if FMode = rmInsert then
         Insert(0, S)
-      else                              { rmAppend }
+      else { rmAppend }
         Insert(Count, S);
       DeleteExceed;
     finally
@@ -680,7 +686,7 @@ begin
   end;
   if FMode = rmInsert then
     Result := 0
-  else                                  { rmAppend }
+  else { rmAppend }
     Result := Count - 1;
 end;
 
@@ -695,11 +701,9 @@ begin
       for I := Min(Strings.Count, FMaxSize) - 1 downto 0 do
         AddObject(Strings[I], Strings.Objects[I]);
     end
-    else
-    begin                               { rmAppend }
+    else { rmAppend }
       for I := 0 to Min(Strings.Count, FMaxSize) - 1 do
         AddObject(Strings[I], Strings.Objects[I]);
-    end;
     DeleteExceed;
   finally
     EndUpdate;

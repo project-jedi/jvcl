@@ -1,27 +1,31 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI VCL                                                             }
-{ HID component for complete HID access                                        }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.1 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JvHidControllerClass.pas.                               }
-{                                                                              }
-{ The Initial Developer of the Original Code is Robert Marquardt.              }
-{ (robert_marquardt@gmx.de)                                                    }
-{                                                                              }
-{ Portions created by Robert Marquardt are                                     }
-{ Copyright (c) 1999-2003 Robert Marquardt.                                    }
-{                                                                              }
-{ Last modified: December 15, 2002                                             }
-{                                                                              }
-{******************************************************************************}
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvHidControllerClass.PAS, released on 2001-02-28.
+
+The Initial Developer of the Original Code is Robert Marquardt [robert_marquardt@gmx.de]
+Portions created by Robert Marquardt are Copyright (C) 1999-2003 Robert Marquardt.
+All Rights Reserved.
+
+Contributor(s): Michael Beck [mbeck@bigfoot.com].
+
+Last Modified: 2003-01-26
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+  I do not clean the source style for this file ;-)
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvHidControllerClass;
 
@@ -31,11 +35,12 @@ uses
   Windows, Messages, Classes, Forms, SysUtils,
   DBT, SetupApi, Hid, ModuleLoader;
 
+// (rom) switch to make this component independent of JVCL
 {.DEFINE STANDALONE}
 
 const
   // a version string for the component
-  cHidControllerClassVersion = '1.0.7';
+  cHidControllerClassVersion = '1.0.8';
 
   // strings from the registry for CheckOutByClass
   cHidKeyboardClass = 'Keyboard';
@@ -186,12 +191,10 @@ type
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
     constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
                           const Controller: TJvHidDeviceController);
-
   protected
     // internal event implementors
     procedure DoUnplug;
     procedure SetUnplug(const Event: TJvHidUnplugEvent);
-
   public
     // dummy constructor
     constructor Create;
@@ -461,7 +464,7 @@ begin
   RegDataType   := 0;
   Buffer[0]     := #0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, @Buffer[0], SizeOf(Buffer), BytesReturned);
+    RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := Buffer;
 end;
 
@@ -478,7 +481,7 @@ begin
   RegDataType   := 0;
   Buffer[0]     := #0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, @Buffer[0], SizeOf(Buffer), BytesReturned);
+    RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := TStringList.Create;
   P := @Buffer[0];
   while P[0] <> #0 do
@@ -499,7 +502,7 @@ begin
   RegDataType   := 0;
   Result        := 0;
   SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, @Result, SizeOf(Result), BytesReturned);
+    RegDataType, PBYTE(@Result), SizeOf(Result), BytesReturned);
 end;
 
 //== TJvHidDevice ==============================================================
@@ -867,7 +870,7 @@ function TJvHidDevice.GetProductName: WideString;
 var
   Buffer: array [0..253] of WideChar;
 begin
-  if FVendorName = '' then
+  if FProductName = '' then
     if OpenFile then
     begin
       FillChar(Buffer, SizeOf(Buffer), #0);

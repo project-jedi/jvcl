@@ -25,31 +25,23 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvRecentMenuBtn;
-
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, SysUtils, Classes, Graphics, Controls,
   StdCtrls, Menus, ShellApi,
-  JvButton, JvDirectories, JvTypes, JvFunctions, JvWinDialogs;
+  JvButton, JvDirectories, JvTypes, JvFunctions;
 
 type
   TJvRecentMenuBtn = class(TJvButton)
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnUrl: TOnLinkClick;
+    FOnLinkClick: TOnLinkClick;
     FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
     procedure InternalFileFind(const Path, FileMask: string; Strings: TStringList);
@@ -58,94 +50,88 @@ type
     procedure DynBuild(Item: TMenuItem; Directory: string);
     procedure DeleteItem(Item: TMenuItem; LookTag: Boolean = False);
   public
-    procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
   published
-    property OnLinkClick: TOnLinkClick read FOnUrl write FOnUrl;
+    property OnLinkClick: TOnLinkClick read FOnLinkClick write FOnLinkClick;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 
 implementation
+
 uses
-  JvMaxMin, ShlObj, ActiveX;
+  ShlObj, ActiveX,
+  JvMaxMin;
 
 resourcestring
   RC_EmptyItem = '<Empty>';
+
 const
   cMaxItems = 15;
 
-  {*******************************************************}
-
 constructor TJvRecentMenuBtn.Create(AOwner: TComponent);
 var
-  it: TMenuItem;
+  It: TMenuItem;
 begin
-  inherited;
+  inherited Create(AOwner);
   FDirs := TJvDirectories.Create(Self);
 
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
-  it := TMenuItem.Create(FPopup);
-  with it do
+  It := TMenuItem.Create(FPopup);
+  with It do
   begin
     Enabled := False;
     Caption := RC_EmptyItem;
     Tag := 1;
   end;
-  FPopup.Items.Add(it);
+  FPopup.Items.Add(It);
   FPopup.OnPopup := CreatePopup;
 end;
-
-{*******************************************************}
 
 destructor TJvRecentMenuBtn.Destroy;
 begin
   FDirs.Free;
   DeleteItem(FPopup.Items);
   FPopup.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{*******************************************************}
 
 procedure TJvRecentMenuBtn.Click;
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  inherited;
-  p.x := 0;
-  p.y := Height;
-  p := ClientToScreen(p);
-  FPopup.Popup(p.x, p.y);
+  inherited Click;
+  P.X := 0;
+  P.Y := Height;
+  P := ClientToScreen(P);
+  FPopup.Popup(P.X, P.Y);
   if Assigned(FOnPopup) then
     FOnPopup(Self);
 end;
 
-{*******************************************************}
-
 procedure TJvRecentMenuBtn.UrlClick(Sender: TObject);
 begin
-  if Assigned(FOnUrl) then
-    FOnUrl(Self, (Sender as TMenuItem).Hint);
+  if Assigned(FOnLinkClick) then
+    FOnLinkClick(Self, (Sender as TMenuItem).Hint);
 end;
-
-{*******************************************************}
 
 procedure TJvRecentMenuBtn.CreatePopup(Sender: TObject);
 begin
   DynBuild(FPopup.Items, FDirs.Recent);
 end;
 
-{*******************************************************}
-
 function GetAssociatedIcon(const Filename: string; SmallIcon: boolean): HICON;
 const
-  cSmall: array[boolean] of Cardinal = (SHGFI_LARGEICON, SHGFI_SMALLICON);
-var pfsi: TShFileInfo; hLarge: HICON; w: word;
+  cSmall: array [Boolean] of Cardinal = (SHGFI_LARGEICON, SHGFI_SMALLICON);
+var
+  pfsi: TShFileInfo;
+  hLarge: HICON;
+  w: Word;
 begin
-  FillChar(pfsi, sizeof(pfsi), 0);
-  ShGetFileInfo(PChar(Filename), 0, pfsi, sizeof(pfsi),
+  FillChar(pfsi, SizeOf(pfsi), 0);
+  ShGetFileInfo(PChar(Filename), 0, pfsi, SizeOf(pfsi),
     SHGFI_ICONLOCATION or SHGFI_ATTRIBUTES or SHGFI_ICON or cSmall[SmallIcon] or SHGFI_USEFILEATTRIBUTES);
   Result := pfsi.hIcon;
   if Result = 0 then
@@ -164,12 +150,12 @@ end;
 function SortByObject(List: TStringList; Index1, Index2: Integer): Integer;
 begin
   // note: higher values sorted at the top
-  Result := integer(List.Objects[Index2]) - integer(List.Objects[Index1]);
+  Result := Integer(List.Objects[Index2]) - Integer(List.Objects[Index1]);
 end;
 
 const
-  IID_IShellLink: TGUID = ({ IID_IShellLinkA }
-    D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
+  IID_IShellLink: TGUID = { IID_IShellLinkA }
+    (D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
 type
   TUnicodePath = array[0..MAX_PATH - 1] of WideChar;
@@ -208,25 +194,28 @@ begin
 end;
 
 procedure TJvRecentMenuBtn.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
-var H: THandle; sr: TSearchRec; tmp: string;
+var
+  H: THandle;
+  Sr: TSearchRec;
+  Tmp: string;
 begin
   Strings.BeginUpdate;
   try
     Strings.Clear;
-    H := FindFirst(Path + FileMask, faAnyFile, sr);
+    H := FindFirst(Path + FileMask, faAnyFile, Sr);
     try
       while H = 0 do
       begin
-        if (sr.FindData.cFilename[0] <> '.') then
+        if (Sr.FindData.cFilename[0] <> '.') then
         begin
-          tmp := GetLinkFilename(Path + sr.FindData.cFilename);
-          if (tmp <> '') and (ExtractFileExt(tmp) <> '') then
-            Strings.AddObject(tmp, TObject(sr.Time));
+          Tmp := GetLinkFilename(Path + Sr.FindData.cFilename);
+          if (Tmp <> '') and (ExtractFileExt(Tmp) <> '') then
+            Strings.AddObject(Tmp, TObject(Sr.Time));
         end;
-        H := FindNext(sr);
+        H := FindNext(Sr);
       end;
     finally
-      FindClose(sr);
+      FindClose(Sr);
     end;
     Strings.CustomSort(SortByObject);
     while Strings.Count > cMaxItems do // delete any older files
@@ -239,27 +228,27 @@ end;
 
 procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
 var
-  it: TMenuItem;
-  bmp: TBitmap;
-  S: TStringlist;
-  i: integer;
+  It: TMenuItem;
+  Bmp: TBitmap;
+  S: TStringList;
+  I: Integer;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
-  S := TStringlist.Create;
+  S := TStringList.Create;
   try
     InternalFileFind(Directory, '*.*', S);
-    for i := 0 to Min(S.Count - 1, cMaxItems - 1) do
+    for I := 0 to Min(S.Count - 1, cMaxItems - 1) do
     begin
-      it := TMenuItem.Create(Item);
-      it.Caption := ExtractFilename(S[i]);
-      it.OnClick := UrlClick;
-      it.Hint := S[i];
-      bmp := IconToBitmap2(GetAssociatedIcon(S[i], true), 16, clMenu);
-      it.Bitmap.Assign(bmp);
-      bmp.Free;
-      Item.Add(it);
+      It := TMenuItem.Create(Item);
+      It.Caption := ExtractFilename(S[I]);
+      It.OnClick := UrlClick;
+      It.Hint := S[I];
+      Bmp := IconToBitmap2(GetAssociatedIcon(S[I], true), 16, clMenu);
+      It.Bitmap.Assign(Bmp);
+      Bmp.Free;
+      Item.Add(It);
     end;
   finally
     S.Free;
@@ -267,17 +256,15 @@ begin
   Item.Items[0].Visible := (Item.Count = 1);
 end;
 
-{*******************************************************}
-
 procedure TJvRecentMenuBtn.DeleteItem(Item: TMenuItem; LookTag: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Item.Count - 1 downto 0 do
-    if (not LookTag) or (Item[i].Tag = 0) then
+  for I := Item.Count - 1 downto 0 do
+    if (not LookTag) or (Item[I].Tag = 0) then
     begin
-      DeleteItem(Item[i]);
-      Item[i].Free;
+      DeleteItem(Item[I]);
+      Item[I].Free;
     end;
 end;
 

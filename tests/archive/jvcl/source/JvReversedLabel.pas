@@ -28,26 +28,22 @@ Known Issues:
 
 unit JvReversedLabel;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvLabel;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  JvLabel;
 
 type
   TJvReversedLabel = class(TJvLabel)
   private
     FFont: TFont;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-  published
   end;
 
 implementation
-
-{**************************************************}
 
 constructor TJvReversedLabel.Create(AOwner: TComponent);
 var
@@ -72,17 +68,18 @@ begin
   FFont.Handle := CreateFontIndirect(ALogFont);
 end;
 
-{**************************************************}
-
 procedure TJvReversedLabel.WMPaint(var Msg: TWMPaint);
-var
-  R: TRect;
+//var
+  //R: TRect;
 begin
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(ClientRect);
+  // (rom) preliminary changes
+  //Canvas.Brush.Color := Color;
+  //Canvas.FillRect(ClientRect);
   Canvas.Font := FFont;
-  R := ClientRect;
-  Canvas.TextRect(R, Width - 5, Height - 2, Caption);
+  //R := ClientRect;
+  //Canvas.TextRect(R, Width - 5, Height - 2, Caption);
+  inherited;
 end;
 
 end.
+

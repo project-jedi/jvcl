@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvMemoryInfos;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  Windows, SysUtils, Classes, ExtCtrls, Forms,
   JvTypes, JvComponent;
 
 type
@@ -42,61 +40,62 @@ type
     FTotalMemory: string;
     FFreeMemory: string;
     FTotalPages: string;
-    FDispoPages: string;
-    FRegions: string;
-    FDispoRegions: string;
+    FDisponiblePages: string;
+    FNumberOfRegions: string;
+    FDisponibleRegions: string;
     FMemoryLoad: string;
     FTimer: TTimer;
-    FDelay: Integer;
+    FRefreshDelay: Integer;
     FAutoRefresh: Boolean;
     FDummy: string;
     procedure SetAuto(Auto: Boolean);
-    procedure SetDelay(Speed: Integer);
-  protected
+    procedure SetRefreshDelay(Speed: Integer);
   public
     constructor Create(AOwner: TComponent); override;
   published
     procedure Refresh(Sender: TObject);
-    property AutoRefresh: Boolean read FAutoRefresh write SetAuto;
-    property RefreshDelay: Integer read FDelay write SetDelay;
-    property TotalMemory: string read FTotalMemory write FDummy;
-    property FreeMemory: string read FfreeMemory write FDummy;
-    property NumberOfPages: string read FTotalPages write FDummy;
-    property DisponiblePages: string read FDispoPages write FDummy;
-    property NumberOfRegions: string read FRegions write FDummy;
-    property DisponibleRegions: string read FDispoRegions write FDummy;
-    property MemoryLoad: string read FMemoryLoad write FDummy;
+    property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
+    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    property TotalMemory: string read FTotalMemory write FDummy stored False;
+    property FreeMemory: string read FfreeMemory write FDummy  stored False;
+    property NumberOfPages: string read FTotalPages write FDummy  stored False;
+    property DisponiblePages: string read FDisponiblePages write FDummy stored False;
+    property NumberOfRegions: string read FNumberOfRegions write FDummy stored False;
+    property DisponibleRegions: string read FDisponibleRegions write FDummy stored False;
+    property MemoryLoad: string read FMemoryLoad write FDummy stored False;
   end;
 
 implementation
 
-{*************************************************}
+constructor TJvMemoryInfos.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTimer := TTimer.Create(Self);
+  FTimer.Interval := 500;
+  FTimer.OnTimer := Refresh;
+  FTimer.Enabled := AutoRefresh;
+  Refresh(Self);
+end;
 
 procedure TJvMemoryInfos.Refresh(Sender: TObject);
 var
-  MemoryStatus: Tmemorystatus;
+  MemoryStatus: TMemoryStatus;
 begin
   GlobalMemoryStatus(MemoryStatus);
-  Application.ProcessMessages;
   FTotalMemory := IntToStr(MemoryStatus.dwTotalPhys);
   FFreeMemory := IntToStr(MemoryStatus.dwAvailPhys);
   FTotalPages := IntToStr(MemoryStatus.dwTotalPageFile);
-  FDispoPages := IntToStr(MemoryStatus.dwAvailPageFile);
-  FRegions := IntToStr(MemoryStatus.dwTotalVirtual);
-  FDispoRegions := IntToStr(MemoryStatus.dwAvailVirtual);
+  FDisponiblePages := IntToStr(MemoryStatus.dwAvailPageFile);
+  FNumberOfRegions := IntToStr(MemoryStatus.dwTotalVirtual);
+  FDisponibleRegions := IntToStr(MemoryStatus.dwAvailVirtual);
   FMemoryLoad := IntToStr(MemoryStatus.dwMemoryLoad);
-  Application.ProcessMessages;
 end;
 
-{*************************************************}
-
-procedure TJvMemoryInfos.SetDelay(Speed: Integer);
+procedure TJvMemoryInfos.SetRefreshDelay(Speed: Integer);
 begin
   FTimer.Interval := Speed;
-  FDelay := Speed;
+  FRefreshDelay := Speed;
 end;
-
-{*************************************************}
 
 procedure TJvMemoryInfos.SetAuto(Auto: Boolean);
 begin
@@ -104,15 +103,5 @@ begin
   FAutoRefresh := Auto;
 end;
 
-{*************************************************}
-
-constructor TJvMemoryInfos.Create(AOwner: TComponent);
-begin
-  inherited Create(Aowner);
-  FTimer := TTimer.Create(Self);
-  FTimer.Interval := 500;
-  FTimer.OnTimer := Refresh;
-  FTimer.Enabled := AutoRefresh;
-end;
-
 end.
+

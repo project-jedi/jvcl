@@ -25,8 +25,8 @@ Contributor(s):
   MERGE NOTES:
     * TjvCustomMemo has been removed from JvComponent and put here instead.
     * The HotTrack property only works if BorderStyle := bsSingle
-    * To simulate the behaviour of JvDisplayMemo, set HideCaret to true,
-      Readonly to true, Color to $C0FFFF and Cursor to crArrow
+    * To simulate the behaviour of JvDisplayMemo, set HideCaret to True,
+      Readonly to True, Color to $C0FFFF and Cursor to crArrow
     * The combination of HideCaret and a custom Caret hasn't been tested
     * The MaxLines property has changed: it stills displays only the selected number of lines,
       but now saves the original content in an internal stringlist that can be restored by
@@ -45,13 +45,11 @@ Known Issues:
 
 unit JvMemo;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, JVCLVer, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JvCaret, JVCLVer, JvComponent;
 
 const
   WM_AUTOBAR = WM_USER + 43;
@@ -60,78 +58,76 @@ type
   TJvCustomMemo = class(TCustomMemo)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FMaxLines: integer;
+    FMaxLines: Integer;
     FHotTrack: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    FOnHScroll: TNotifyEvent;
-    FOnVScroll: TNotifyEvent;
+    FOnHorizontalScroll: TNotifyEvent;
+    FOnVerticalScroll: TNotifyEvent;
     FCaret: TJvCaret;
-    FHideCaret: boolean;
+    FHideCaret: Boolean;
     FOrigLines: TStrings;
     FClipboardCommands: TJvClipBoardCommands;
-
     procedure SetHotTrack(const Value: Boolean);
-    procedure CaretChanged(sender: TObject); dynamic;
+    procedure CaretChanged(Sender: TObject); dynamic;
     procedure SetCaret(const Value: TJvCaret);
-    procedure WMKillFocus(var msg: TWMKillFocus); message WM_KILLFOCUS;
-    procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure WMPaste(var Msg:TWMPaste);message WM_PASTE;
-    procedure WMCopy(var Msg:TWMCopy);message WM_COPY;
-    procedure WMCut(var Msg:TWMCut);message WM_CUT;
-    procedure WMUndo(var Msg:TWMUndo);message WM_UNDO;
-    procedure SetMaxLines(const Value: integer);
+    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
+    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
+    procedure WMCut(var Msg: TWMCut); message WM_CUT;
+    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
+    procedure SetMaxLines(const Value: Integer);
     function GetLines: TStrings;
     procedure SetLines(const Value: TStrings);
-    procedure SetHideCaret(const Value: boolean);
-    function GetReadOnly: boolean;
-    procedure SetReadOnly(const Value: boolean);
+    procedure SetHideCaret(const Value: Boolean);
+    function GetReadOnly: Boolean;
+    procedure SetReadOnly(const Value: Boolean);
     procedure SetClipboardCommands(const Value: TJvClipBoardCommands);
   protected
-    procedure WndProc(var Message: TMessage); override;
-    procedure KeyPress(var key: char); override;
+    procedure WndProc(var Msg: TMessage); override;
+    procedure KeyPress(var Key: Char); override;
     procedure Change; override;
-    function GetCurrentLine: integer;
-    procedure SetCurrentLine(iNewLine: integer);
-
+    function GetCurrentLine: Integer;
+    procedure SetCurrentLine(iNewLine: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     { these wrap the windows messages }
-    procedure LineScroll(ix, iy: integer);
-    function CharOfLine(iLine: integer): integer;
-    property CurrentLine: integer read GetCurrentLine write SetCurrentLine;
+    procedure LineScroll(ix, iy: Integer);
+    function CharOfLine(iLine: Integer): Integer;
+    property CurrentLine: Integer read GetCurrentLine write SetCurrentLine;
   protected
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property ClipboardCommands:TJvClipBoardCommands read FClipboardCommands write SetClipboardCommands default [caCopy..caUndo];
+    property ClipboardCommands: TJvClipBoardCommands read FClipboardCommands write SetClipboardCommands default
+      [caCopy..caUndo];
     property Caret: TJvCaret read FCaret write SetCaret;
-    property HideCaret: boolean read FHideCaret write SetHideCaret;
-    property MaxLines: integer read FMaxLines write SetMaxLines;
+    property HideCaret: Boolean read FHideCaret write SetHideCaret;
+    property MaxLines: Integer read FMaxLines write SetMaxLines;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Lines: TStrings read GetLines write SetLines;
-    property ReadOnly:boolean read GetReadOnly write SetReadOnly;
-
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
-    property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
+    property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
 
-  TJvMemo = class(TjvCustomMemo)
+  TJvMemo = class(TJvCustomMemo)
   published
     property AboutJVCL;
     property AutoSize;
@@ -205,25 +201,26 @@ type
   end;
 
 implementation
+
 uses
   JclStrings;
 
-function GetFontHeight(phFont: hFont): integer;
+function GetFontHeight(phFont: hFont): Integer;
 var
   hWin: HDC;
   tm: TTextMetric;
-  hOldFont: HFont;
+  hOldFont: HFONT;
 begin
   Result := -1;
 
   if phFont = 0 then
-    exit;
+    Exit;
 
-  hWin := GetDC(0); // use the main screen window handle
+  hWin := GetDC(0); // use the main screen window Handle
 
   { according to the API help for GetDC, a return value of 'null' is error }
   if hWin = 0 then
-    exit;
+    Exit;
 
   try
     hOldFont := SelectObject(hWin, phFont);
@@ -236,17 +233,17 @@ begin
   Result := tm.tmHeight;
 end;
 
-function AddVScrollbar(sb: TScrollStyle): TScrollStyle;
+function AddVScrollbar(Sb: TScrollStyle): TScrollStyle;
 begin
-  if sb = ssHorizontal then
+  if Sb = ssHorizontal then
     Result := ssBoth
   else
     Result := ssVertical;
 end;
 
-function RemoveVScrollbar(sb: TScrollStyle): TScrollStyle;
+function RemoveVScrollbar(Sb: TScrollStyle): TScrollStyle;
 begin
-  if sb = ssBoth then
+  if Sb = ssBoth then
     Result := ssHorizontal
   else
     Result := ssNone;
@@ -256,7 +253,7 @@ constructor TJvCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOrigLines := TStringlist.Create;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FHotTrack := False;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
@@ -265,71 +262,80 @@ begin
   FClipboardCommands := [caCopy..caUndo];
 end;
 
-{***********************************************}
+destructor TJvCustomMemo.Destroy;
+begin
+  if FMaxLines > 0 then
+    Lines.Assign(FOrigLines);
+  FOrigLines.Free;
+  FCaret.Free;
+  inherited Destroy;
+end;
 
 procedure TJvCustomMemo.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FonCtl3DChanged) then
+  if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
 
 procedure TJvCustomMemo.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FonParentColorChanged) then
+  if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
 procedure TJvCustomMemo.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
-  if Assigned(FOnHScroll) then
-    FOnHScroll(Self);
+  if Assigned(FOnHorizontalScroll) then
+    FOnHorizontalScroll(Self);
 end;
 
 procedure TJvCustomMemo.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
-  if Assigned(FOnVScroll) then
-    FOnVScroll(Self);
+  if Assigned(FOnVerticalScroll) then
+    FOnVerticalScroll(Self);
 end;
 
 procedure TJvCustomMemo.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3d := True;
     FOver := True;
   end;
-  if Assigned(FonMouseEnter) then
+  if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
 procedure TJvCustomMemo.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
     if FHotTrack then
-      Ctl3d := False;
+      Ctl3D := False;
     FOver := False;
   end;
-  if Assigned(FonMouseLeave) then
+  if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
 procedure TJvCustomMemo.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
-  Ctl3d := not FHotTrack;
+  Ctl3D := not FHotTrack;
 end;
 
 { This does not recurse it seems }
@@ -339,23 +345,23 @@ begin
   { only process if maxlines is set - truncate }
   if MaxLines > 0 then
   begin
-    while (Lines.Count > MaxLines) do
+    while Lines.Count > MaxLines do
       Lines.Delete(Lines.Count - 1);
   end;
-  inherited;
+  inherited Change;
 end;
 
-function TJvCustomMemo.CharOfLine(iLine: integer): integer;
+function TJvCustomMemo.CharOfLine(iLine: Integer): Integer;
 begin
   Result := Perform(EM_LINEINDEX, iLine, 0);
 end;
 
-function TJvCustomMemo.GetCurrentLine: integer;
+function TJvCustomMemo.GetCurrentLine: Integer;
 begin
   Result := Perform(EM_LINEFROMCHAR, -1, 0);
 end;
 
-procedure TJvCustomMemo.KeyPress(var key: char);
+procedure TJvCustomMemo.KeyPress(var Key: Char);
 begin
   { only process if maxlines is set }
   if MaxLines > 0 then
@@ -369,7 +375,7 @@ begin
         Key := #0;
 
       { no text at the end except for delete & backspace }
-      if (CurrentLine >= MaxLines) and not (key = AnsiBackSpace) then
+      if (CurrentLine >= MaxLines) and not (Key = AnsiBackSpace) then
         Key := #0;
     end;
   end;
@@ -377,14 +383,14 @@ begin
   inherited;
 end;
 
-procedure TJvCustomMemo.LineScroll(ix, iy: integer);
+procedure TJvCustomMemo.LineScroll(ix, iy: Integer);
 begin
   Perform(EM_LINESCROLL, ix, iy);
 end;
 
-procedure TJvCustomMemo.SetCurrentLine(iNewLine: integer);
+procedure TJvCustomMemo.SetCurrentLine(iNewLine: Integer);
 var
-  iDelta: integer;
+  iDelta: Integer;
 begin
   { truncate the range }
   if iNewLine >= Lines.Count then
@@ -404,18 +410,9 @@ begin
   end;
 end;
 
-procedure TJvCustomMemo.CaretChanged(sender: TObject);
+procedure TJvCustomMemo.CaretChanged(Sender: TObject);
 begin
   FCaret.CreateCaret;
-end;
-
-destructor TJvCustomMemo.Destroy;
-begin
-  if FMaxLines > 0 then
-    Lines.Assign(FOrigLines);
-  FOrigLines.Free;
-  FCaret.Free;
-  inherited;
 end;
 
 procedure TJvCustomMemo.SetCaret(const Value: TJvCaret);
@@ -423,15 +420,15 @@ begin
   FCaret.Assign(Value);
 end;
 
-procedure TJvCustomMemo.WMSetFocus(var msg: TMessage);
+procedure TJvCustomMemo.WMSetFocus(var Msg: TMessage);
 begin
   inherited;
   FCaret.CreateCaret;
   if FHideCaret then
-    Windows.HideCaret(handle);
+    Windows.HideCaret(Handle);
 end;
 
-procedure TJvCustomMemo.SetMaxLines(const Value: integer);
+procedure TJvCustomMemo.SetMaxLines(const Value: Integer);
 begin
   if FMaxLines <> Value then
   begin
@@ -460,56 +457,65 @@ begin
   Change;
 end;
 
-procedure TJvCustomMemo.SetHideCaret(const Value: boolean);
+procedure TJvCustomMemo.SetHideCaret(const Value: Boolean);
 begin
   if FHideCaret <> Value then
     FHideCaret := Value;
 end;
 
-procedure TJvCustomMemo.WMKillFocus(var msg: TWMKillFocus);
+procedure TJvCustomMemo.WMKillFocus(var Msg: TWMKillFocus);
 begin
   if FHideCaret then
-    ShowCaret(handle);
-  inherited;  
+    ShowCaret(Handle);
+  inherited;
 end;
 
-procedure TJvCustomMemo.WndProc(var Message: TMessage);
-  procedure Scroll(msg, scrollcode: Integer);
+procedure TJvCustomMemo.WndProc(var Msg: TMessage);
+
+  procedure Scroll(Msg, ScrollCode: Integer);
   begin
-    Perform(msg, scrollcode, 0);
-    Perform(msg, SB_ENDSCROLL, 0);
+    Perform(Msg, ScrollCode, 0);
+    Perform(Msg, SB_ENDSCROLL, 0);
   end;
+
 begin
   if FHideCaret and not (csDesigning in ComponentState) then
   begin
-    case Message.Msg of
+    case Msg.Msg of
       WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MOUSEMOVE, WM_LBUTTONDBLCLK,
         WM_CHAR, WM_KEYUP:
         begin
-          Message.Result := 0;
-          if Message.Msg = WM_LBUTTONDOWN then
+          Msg.Result := 0;
+          if Msg.Msg = WM_LBUTTONDOWN then
             if not Focused then
               SetFocus;
           Exit;
         end;
       WM_KEYDOWN:
         begin
-          case Message.WParam of
-            VK_DOWN: Scroll(WM_VSCROLL, SB_LINEDOWN);
-            VK_UP: Scroll(WM_VSCROLL, SB_LINEUP);
-            VK_LEFT: Scroll(WM_HSCROLL, SB_LINELEFT);
-            VK_RIGHT: Scroll(WM_HSCROLL, SB_LINERIGHT);
-            VK_NEXT: Scroll(WM_VSCROLL, SB_PAGEDOWN);
-            VK_PRIOR: Scroll(WM_VSCROLL, SB_PAGEUP);
+          case Msg.WParam of
+            VK_DOWN:
+              Scroll(WM_VSCROLL, SB_LINEDOWN);
+            VK_UP:
+              Scroll(WM_VSCROLL, SB_LINEUP);
+            VK_LEFT:
+              Scroll(WM_HSCROLL, SB_LINELEFT);
+            VK_RIGHT:
+              Scroll(WM_HSCROLL, SB_LINERIGHT);
+            VK_NEXT:
+              Scroll(WM_VSCROLL, SB_PAGEDOWN);
+            VK_PRIOR:
+              Scroll(WM_VSCROLL, SB_PAGEUP);
             VK_HOME: Scroll(WM_VSCROLL, SB_TOP);
-            VK_END: Scroll(WM_VSCROLL, SB_BOTTOM);
+            VK_END:
+              Scroll(WM_VSCROLL, SB_BOTTOM);
           end;
-          Message.Result := 0;
+          Msg.Result := 0;
           Exit;
         end;
     end;
   end;
-  inherited;
+  inherited WndProc(Msg);
 end;
 
 procedure TJvCustomMemo.WMCopy(var Msg: TWMCopy);
@@ -536,18 +542,17 @@ begin
     inherited;
 end;
 
-function TJvCustomMemo.GetReadOnly: boolean;
+function TJvCustomMemo.GetReadOnly: Boolean;
 begin
   Result := inherited ReadOnly;
 end;
 
-procedure TJvCustomMemo.SetReadOnly(const Value: boolean);
+procedure TJvCustomMemo.SetReadOnly(const Value: Boolean);
 begin
   inherited ReadOnly := Value;
   if Value then
     FClipBoardCommands := [caCopy];
 end;
-
 
 procedure TJvCustomMemo.SetClipboardCommands(
   const Value: TJvClipBoardCommands);

@@ -12,7 +12,7 @@ The Original Code is: JvQuery.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,19 +29,19 @@ unit JvQuery;
 
 interface
 
-uses Bde, Windows,
-{$IFDEF COMPILER6_UP}
-RTLConsts,
-{$ENDIF}
-Classes, SysUtils, DB, DBTables, JvStrUtils, JvBdeUtils{, JvComponent};
+uses
+  Bde,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  Classes, SysUtils, DB, DBTables,
+  JvStrUtils, JvBdeUtils {, JvComponent};
 
 {.$DEFINE DEBUG}
 
 const
   DefaultMacroChar = '%';
-  DefaultTermChar  = '/';
-
-{ TJvQuery }
+  DefaultTermChar = '/';
 
 type
   TQueryOpenStatus = (qsOpened, qsExecuted, qsFailed);
@@ -56,9 +56,9 @@ type
     FStreamPatternChanged: Boolean;
     FPatternChanged: Boolean;
     FOpenStatus: TQueryOpenStatus;
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     FParamCheck: Boolean;
-{$ENDIF}
+    {$ENDIF}
     function GetMacros: TParams;
     procedure SetMacros(Value: TParams);
     procedure SetSQL(Value: TStrings);
@@ -70,25 +70,24 @@ type
     function GetMacroCount: Word;
     procedure SetMacroChar(Value: Char);
     function GetRealSQL: TStrings;
-{$IFDEF DEBUG}
+    {$IFDEF DEBUG}
     procedure SetRealSQL(Value: TStrings);
-{$ENDIF DEBUG}
+    {$ENDIF DEBUG}
   protected
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure InternalFirst; override;
     function GetRecord(Buffer: PChar; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
-{$ENDIF}
+    {$ENDIF}
     procedure Loaded; override;
     function CreateHandle: HDBICur; override;
-    procedure OpenCursor {$IFDEF COMPILER3_UP} (InfoQuery: Boolean) {$ENDIF}; override;
+    procedure OpenCursor{$IFDEF COMPILER3_UP}(InfoQuery: Boolean){$ENDIF}; override;
     procedure Disconnect; override;
-{$IFDEF COMPILER5_UP}
-  protected
+    {$IFDEF COMPILER5_UP}
     { IProviderSupport }
     procedure PSExecute; override;
     function PSGetDefaultOrder: TIndexDef; override;
     function PSGetTableName: string; override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -98,29 +97,27 @@ type
     procedure OpenOrExec(ChangeLive: Boolean);
     procedure ExecDirect;
     function MacroByName(const Value: string): TParam;
-{$IFNDEF COMPILER3_UP}
+    {$IFNDEF COMPILER3_UP}
     function IsEmpty: Boolean;
-{$ENDIF COMPILER3_UP}
+    {$ENDIF COMPILER3_UP}
     property MacroCount: Word read GetMacroCount;
     property OpenStatus: TQueryOpenStatus read FOpenStatus;
-{$IFNDEF DEBUG}
+    {$IFNDEF DEBUG}
     property RealSQL: TStrings read GetRealSQL;
-{$ENDIF DEBUG}
+    {$ENDIF DEBUG}
   published
-{$IFNDEF WIN32}
+    {$IFNDEF WIN32}
     property ParamCheck: Boolean read FParamCheck write FParamCheck default True;
-{$ENDIF}
+    {$ENDIF}
     property MacroChar: Char read FMacroChar write SetMacroChar default DefaultMacroChar;
     property SQL: TStrings read FSQLPattern write SetSQL;
-{$IFDEF DEBUG}
+    {$IFDEF DEBUG}
     property RealSQL: TStrings read GetRealSQL write SetRealSQL stored False;
-{$ENDIF DEBUG}
+    {$ENDIF DEBUG}
     property Macros: TParams read GetMacros write SetMacros;
   end;
 
-{$IFDEF WIN32}
-
-{ TJvQueryThread }
+  {$IFDEF WIN32}
 
   TRunQueryMode = (rqOpen, rqExecute, rqExecDirect, rqOpenOrExec);
 
@@ -141,9 +138,7 @@ type
       Prepare, CreateSuspended: Boolean);
   end;
 
-{$ENDIF WIN32}
-
-{ TJvSQLScript }
+  {$ENDIF WIN32}
 
   TScriptAction = (saFail, saAbort, saRetry, saIgnore, saContinue);
 
@@ -162,16 +157,16 @@ type
     FBeforeExec: TNotifyEvent;
     FAfterExec: TNotifyEvent;
     FOnScriptError: TScriptErrorEvent;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function GetSessionName: string;
     procedure SetSessionName(const Value: string);
     function GetDBSession: TSession;
     function GetText: string;
-{$ENDIF WIN32}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF WIN32}
+    {$IFDEF COMPILER4_UP}
     procedure ReadParamData(Reader: TReader);
     procedure WriteParamData(Writer: TWriter);
-{$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
     function GetDatabase: TDatabase;
     function GetDatabaseName: string;
     procedure SetDatabaseName(const Value: string);
@@ -181,9 +176,9 @@ type
     procedure SetParamsList(Value: TParams);
     function GetParamsCount: Cardinal;
   protected
-{$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
     procedure DefineProperties(Filer: TFiler); override;
-{$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
     procedure CheckExecQuery(LineNo, StatementNo: Integer);
     procedure ExecuteScript(StatementNo: Integer); virtual;
   public
@@ -192,24 +187,24 @@ type
     procedure ExecSQL;
     procedure ExecStatement(StatementNo: Integer);
     function ParamByName(const Value: string): TParam;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property DBSession: TSession read GetDBSession;
     property Text: string read GetText;
-{$ELSE}
+    {$ELSE}
     function GetText: PChar;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     property Database: TDatabase read GetDatabase;
     property ParamCount: Cardinal read GetParamsCount;
   published
     property DatabaseName: string read GetDatabaseName write SetDatabaseName;
     property IgnoreParams: Boolean read FIgnoreParams write FIgnoreParams default False;
     property SemicolonTerm: Boolean read FSemicolonTerm write FSemicolonTerm default True;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     property SessionName: string read GetSessionName write SetSessionName;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     property Term: Char read FTerm write FTerm default DefaultTermChar;
     property SQL: TStrings read FSQL write SetQuery;
-    property Params: TParams read FParams write SetParamsList {$IFDEF COMPILER4_UP} stored False {$ENDIF};
+    property Params: TParams read FParams write SetParamsList{$IFDEF COMPILER4_UP} stored False{$ENDIF};
     property Transaction: Boolean read FTransaction write FTransaction;
     property BeforeExec: TNotifyEvent read FBeforeExec write FBeforeExec;
     property AfterExec: TNotifyEvent read FAfterExec write FAfterExec;
@@ -224,8 +219,15 @@ procedure CreateQueryParams(List: TParams; const Value: PChar; Macro: Boolean;
 
 implementation
 
-uses JvDBUtils, Consts, DBConsts, Forms {$IFDEF COMPILER3_UP}, BDEConst {$ENDIF}
-  {$IFNDEF WIN32}, JvStr16 {$ENDIF}, JvVCLUtils;
+uses
+  Consts, Forms,
+  {$IFDEF COMPILER3_UP}
+  BDEConst,
+  {$ENDIF}
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  JvDBUtils, JvVCLUtils;
 
 { Parse SQL utility routines }
 
@@ -276,7 +278,8 @@ var
   end;
 
 begin
-  if SpecialChar = #0 then Exit;
+  if SpecialChar = #0 then
+    Exit;
   CurPos := Value;
   Literal := False;
   EmbeddedLiteral := False;
@@ -285,30 +288,38 @@ begin
     if (CurChar = SpecialChar) and not Literal and ((CurPos + 1)^ <> SpecialChar) then
     begin
       StartPos := CurPos;
-      while (CurChar <> #0) and (Literal or not NameDelimiter(CurChar, Delims)) do begin
+      while (CurChar <> #0) and (Literal or not NameDelimiter(CurChar, Delims)) do
+      begin
         Inc(CurPos);
         CurChar := CurPos^;
-        if IsLiteral(CurChar) then begin
+        if IsLiteral(CurChar) then
+        begin
           Literal := Literal xor True;
-          if CurPos = StartPos + 1 then EmbeddedLiteral := True;
+          if CurPos = StartPos + 1 then
+            EmbeddedLiteral := True;
         end;
       end;
       CurPos^ := #0;
-      if EmbeddedLiteral then begin
+      if EmbeddedLiteral then
+      begin
         Name := StripLiterals(StartPos + 1);
         EmbeddedLiteral := False;
       end
-      else Name := StrPas(StartPos + 1);
-      if Assigned(List) then begin
-{$IFDEF COMPILER4_UP}
-        if List.FindParam(Name) = nil then begin
-{$ENDIF COMPILER4_UP}
+      else
+        Name := StrPas(StartPos + 1);
+      if Assigned(List) then
+      begin
+        {$IFDEF COMPILER4_UP}
+        if List.FindParam(Name) = nil then
+        begin
+        {$ENDIF COMPILER4_UP}
           if Macro then
             List.CreateParam(ftString, Name, ptInput).AsString := TrueExpr
-          else List.CreateParam(ftUnknown, Name, ptUnknown);
-{$IFDEF COMPILER4_UP}
+          else
+            List.CreateParam(ftUnknown, Name, ptUnknown);
+        {$IFDEF COMPILER4_UP}
         end;
-{$ENDIF COMPILER4_UP}
+        {$ENDIF COMPILER4_UP}
       end;
       CurPos^ := CurChar;
       StartPos^ := '?';
@@ -316,21 +327,24 @@ begin
       StrMove(StartPos, CurPos, StrLen(CurPos) + 1);
       CurPos := StartPos;
     end
-    else if (CurChar = SpecialChar) and not Literal and ((CurPos + 1)^ = SpecialChar) then
+    else
+    if (CurChar = SpecialChar) and not Literal and ((CurPos + 1)^ = SpecialChar) then
       StrMove(CurPos, CurPos + 1, StrLen(CurPos) + 1)
-    else if IsLiteral(CurChar) then Literal := Literal xor True;
+    else
+    if IsLiteral(CurChar) then
+      Literal := Literal xor True;
     Inc(CurPos);
   until CurChar = #0;
 end;
 
-{ TJvQuery }
+//=== TJvQuery ===============================================================
 
 constructor TJvQuery.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   FParamCheck := True;
-{$ENDIF WIN32}
+  {$ENDIF WIN32}
   FOpenStatus := qsFailed;
   FSaveQueryChanged := TStringList(inherited SQL).OnChange;
   TStringList(inherited SQL).OnChange := QueryChanged;
@@ -367,7 +381,8 @@ function TJvQuery.GetRecord(Buffer: PChar; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 begin
   //!!!!!!
-  if UniDirectional and (GetMode in [gmPrior, gmNext]) then DoCheck := False;
+  if UniDirectional and (GetMode in [gmPrior, gmNext]) then
+    DoCheck := False;
   Result := inherited GetRecord(Buffer, GetMode, DoCheck);
 end;
 
@@ -377,8 +392,10 @@ function TJvQuery.CreateHandle: HDBICur;
 begin
   FOpenStatus := qsFailed;
   Result := inherited CreateHandle;
-  if Result = nil then FOpenStatus := qsExecuted
-  else FOpenStatus := qsOpened;
+  if Result = nil then
+    FOpenStatus := qsExecuted
+  else
+    FOpenStatus := qsOpened;
 end;
 
 procedure TJvQuery.OpenCursor;
@@ -406,7 +423,8 @@ procedure TJvQuery.OpenOrExec(ChangeLive: Boolean);
     try
       Open;
     except
-      if OpenStatus <> qsExecuted then raise;
+      if OpenStatus <> qsExecuted then
+        raise;
     end;
   end;
 
@@ -415,7 +433,8 @@ begin
     TryOpen;
   except
     on E: EDatabaseError do
-      if RequestLive and ChangeLive then begin
+      if RequestLive and ChangeLive then
+      begin
         RequestLive := False;
         try
           TryOpen;
@@ -423,22 +442,27 @@ begin
           on E: EDatabaseError do
             if OpenStatus <> qsOpened then
               ExecDirect
-            else begin
+            else
+            begin
               FOpenStatus := qsFailed;
               raise;
             end;
-          else raise;
+        else
+          raise;
         end;
       end
-      else begin
+      else
+      begin
         if OpenStatus <> qsOpened then
           ExecDirect
-        else begin
+        else
+        begin
           FOpenStatus := qsFailed;
           raise;
         end;
       end;
-    else raise;
+  else
+    raise;
   end;
 end;
 
@@ -451,22 +475,24 @@ begin
   CheckInactive;
   SetDBFlag(dbfExecSQL, True);
   try
-    if SQL.Count > 0 then begin
+    if SQL.Count > 0 then
+    begin
       FOpenStatus := qsFailed;
-{$IFDEF WIN32}
+      {$IFDEF WIN32}
       Check(DbiQExecDirect(DBHandle, qryLangSQL, PChar(inherited SQL.Text),
         nil));
-{$ELSE}
+      {$ELSE}
       P := inherited SQL.GetText;
       try
         Check(DbiQExecDirect(DBHandle, qryLangSQL, P, nil));
       finally
         StrDispose(P);
       end;
-{$ENDIF WIN32}
+      {$ENDIF WIN32}
       FOpenStatus := qsExecuted;
     end
-    else _DBError(SEmptySQLStatement);
+    else
+      _DBError(SEmptySQLStatement);
   finally
     SetDBFlag(dbfExecSQL, False);
   end;
@@ -478,19 +504,23 @@ var
   Event1, Event2: TNotifyEvent;
 begin
   inherited Disconnect;
-  if (csDestroying in ComponentState) then Exit;
+  if csDestroying in ComponentState then
+    Exit;
   Strings := inherited SQL;
   Event1 := TStringList(Strings).OnChange;
   Event2 := QueryChanged;
-  if @Event1 <> @Event2 then begin
-    if not FDisconnectExpected then SQL := inherited SQL;
+  if @Event1 <> @Event2 then
+  begin
+    if not FDisconnectExpected then
+      SQL := inherited SQL;
     TStringList(inherited SQL).OnChange := QueryChanged;
   end;
 end;
 
 procedure TJvQuery.SetMacroChar(Value: Char);
 begin
-  if Value <> FMacroChar then begin
+  if Value <> FMacroChar then
+  begin
     FMacroChar := Value;
     RecreateMacros;
   end;
@@ -498,7 +528,8 @@ end;
 
 function TJvQuery.GetMacros: TParams;
 begin
-  if FStreamPatternChanged then begin
+  if FStreamPatternChanged then
+  begin
     FStreamPatternChanged := False;
     PatternChanged(nil);
   end;
@@ -521,7 +552,8 @@ end;
 
 procedure TJvQuery.PatternChanged(Sender: TObject);
 begin
-  if (csLoading in ComponentState) then begin
+  if csLoading in ComponentState then
+  begin
     FStreamPatternChanged := True;
     Exit;
   end;
@@ -542,20 +574,25 @@ var
   SaveParams: Boolean;
 {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   FSaveQueryChanged(Sender);
-{$ELSE}
+  {$ELSE}
   SaveParams := not (ParamCheck or (csDesigning in ComponentState));
-  if SaveParams then List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
+  if SaveParams then
+    List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
   try
-    if SaveParams then List.Assign(Params);
+    if SaveParams then
+      List.Assign(Params);
     FSaveQueryChanged(Sender);
-    if SaveParams then Params.Assign(List);
+    if SaveParams then
+      Params.Assign(List);
   finally
-    if SaveParams then List.Free;
+    if SaveParams then
+      List.Free;
   end;
-{$ENDIF WIN32}
-  if not FDisconnectExpected then begin
+  {$ENDIF WIN32}
+  if not FDisconnectExpected then
+  begin
     SQL := inherited SQL;
   end;
 end;
@@ -565,7 +602,8 @@ var
   ExpandedSQL: TStringList;
 begin
   if not FPatternChanged and not FStreamPatternChanged and
-    (MacroCount = 0) then Exit;
+    (MacroCount = 0) then
+    Exit;
   ExpandedSQL := TStringList.Create;
   try
     Expand(ExpandedSQL);
@@ -583,44 +621,46 @@ end;
 procedure TJvQuery.RecreateMacros;
 var
   List: TParams;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   P: PChar;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFDEF COMPILER4_UP}
-  if not (csReading in ComponentState) then begin
-{$ENDIF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
+  if not (csReading in ComponentState) then
+  begin
+    {$ENDIF COMPILER4_UP}
     List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
     try
-  {$IFDEF WIN32}
+      {$IFDEF WIN32}
       CreateMacros(List, PChar(FSQLPattern.Text));
-  {$ELSE}
+      {$ELSE}
       P := FSQLPattern.GetText;
       try
         CreateMacros(List, P);
       finally
         StrDispose(P);
       end;
-  {$ENDIF WIN32}
+      {$ENDIF WIN32}
       List.AssignValues(FMacros);
-  {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
       FMacros.Clear;
       FMacros.Assign(List);
     finally
-  {$ELSE}
+      {$ELSE}
       FMacros.Free;
       FMacros := List;
     except
-  {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   end
-  else begin
+  else
+  begin
     FMacros.Clear;
     CreateMacros(FMacros, PChar(FSQLPattern.Text));
   end;
-{$ENDIF COMPILER4_UP}
+  {$ENDIF COMPILER4_UP}
 end;
 
 procedure TJvQuery.CreateMacros(List: TParams; const Value: PChar);
@@ -629,6 +669,8 @@ begin
 end;
 
 procedure TJvQuery.Expand(Query: TStrings);
+var
+  I: Integer;
 
   function ReplaceString(const S: string): string;
   var
@@ -637,19 +679,24 @@ procedure TJvQuery.Expand(Query: TStrings);
     Found: Boolean;
   begin
     Result := S;
-    for I := Macros.Count - 1 downto 0 do begin
+    for I := Macros.Count - 1 downto 0 do
+    begin
       Param := Macros[I];
-      if Param.DataType = ftUnknown then Continue;
+      if Param.DataType = ftUnknown then
+        Continue;
       repeat
         P := Pos(MacroChar + Param.Name, Result);
         Found := (P > 0) and ((Length(Result) = P + Length(Param.Name)) or
           NameDelimiter(Result[P + Length(Param.Name) + 1], ['.']));
-        if Found then begin
+        if Found then
+        begin
           LiteralChars := 0;
           for J := 1 to P - 1 do
-            if IsLiteral(Result[J]) then Inc(LiteralChars);
+            if IsLiteral(Result[J]) then
+              Inc(LiteralChars);
           Found := LiteralChars mod 2 = 0;
-          if Found then begin
+          if Found then
+          begin
             Result := Copy(Result, 1, P - 1) + Param.Text + Copy(Result,
               P + Length(Param.Name) + 1, MaxInt);
           end;
@@ -658,8 +705,6 @@ procedure TJvQuery.Expand(Query: TStrings);
     end;
   end;
 
-var
-  I: Integer;
 begin
   for I := 0 to FSQLPattern.Count - 1 do
     Query.Add(ReplaceString(FSQLPattern[I]));
@@ -693,8 +738,6 @@ end;
 
 {$IFDEF COMPILER5_UP}
 
-{ TJvQuery.IProviderSupport }
-
 function TJvQuery.PSGetDefaultOrder: TIndexDef;
 begin
   ExpandMacros;
@@ -720,9 +763,9 @@ begin
 end;
 {$ENDIF DEBUG}
 
-{$IFDEF WIN32}
+//=== TJvQueryThread =========================================================
 
-{ TJvQueryThread }
+{$IFDEF WIN32}
 
 constructor TJvQueryThread.Create(Data: TBDEDataSet; RunMode: TRunQueryMode;
   Prepare, CreateSuspended: Boolean);
@@ -733,7 +776,8 @@ begin
   FPrepare := Prepare;
   FreeOnTerminate := True;
   FData.DisableControls;
-  if not CreateSuspended then Resume;
+  if not CreateSuspended then
+    Resume;
 end;
 
 procedure TJvQueryThread.DoTerminate;
@@ -749,7 +793,8 @@ end;
 
 procedure TJvQueryThread.DoHandleException;
 begin
-  if (FException is Exception) and not (FException is EAbort) then begin
+  if (FException is Exception) and not (FException is EAbort) then
+  begin
     if Assigned(Application.OnException) then
       Application.OnException(FData, Exception(FException))
     else
@@ -766,30 +811,46 @@ end;
 procedure TJvQueryThread.Execute;
 begin
   try
-    if FPrepare and not (FMode in [rqExecDirect]) then begin
-      if FData is TJvQuery then TJvQuery(FData).Prepare
-      else if FData is TQuery then TQuery(FData).Prepare
-      else if FData is TStoredProc then TStoredProc(FData).Prepare;
+    if FPrepare and not (FMode in [rqExecDirect]) then
+    begin
+      if FData is TJvQuery then
+        TJvQuery(FData).Prepare
+      else
+      if FData is TQuery then
+        TQuery(FData).Prepare
+      else
+      if FData is TStoredProc then
+        TStoredProc(FData).Prepare;
     end;
     case FMode of
       rqOpen:
         FData.Open;
       rqExecute:
         begin
-          if FData is TJvQuery then TJvQuery(FData).ExecSQL
-          else if FData is TQuery then TQuery(FData).ExecSQL
-          else if FData is TStoredProc then TStoredProc(FData).ExecProc
-          else ModeError;
+          if FData is TJvQuery then
+            TJvQuery(FData).ExecSQL
+          else
+          if FData is TQuery then
+            TQuery(FData).ExecSQL
+          else
+          if FData is TStoredProc then
+            TStoredProc(FData).ExecProc
+          else
+            ModeError;
         end;
       rqExecDirect:
         begin
-          if FData is TJvQuery then TJvQuery(FData).ExecDirect
-          else ModeError;
+          if FData is TJvQuery then
+            TJvQuery(FData).ExecDirect
+          else
+            ModeError;
         end;
       rqOpenOrExec:
         begin
-          if FData is TJvQuery then TJvQuery(FData).OpenOrExec(True)
-          else FData.Open;
+          if FData is TJvQuery then
+            TJvQuery(FData).OpenOrExec(True)
+          else
+            FData.Open;
         end;
     end;
   except
@@ -799,7 +860,7 @@ end;
 
 {$ENDIF WIN32}
 
-{ TJvSQLScript }
+//=== TJvSQLScript ===========================================================
 
 constructor TJvSQLScript.Create(AOwner: TComponent);
 begin
@@ -836,6 +897,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvSQLScript.GetSessionName: string;
 begin
   Result := FQuery.SessionName;
@@ -850,6 +912,7 @@ function TJvSQLScript.GetDBSession: TSession;
 begin
   Result := FQuery.DBSession;
 end;
+
 {$ENDIF WIN32}
 
 procedure TJvSQLScript.CheckExecQuery(LineNo, StatementNo: Integer);
@@ -858,17 +921,20 @@ var
   Action: TScriptAction;
   I: Integer;
   Param: TParam;
-{$IFNDEF WIN32}
-  Msg: array[0..255] of Char;
-{$ENDIF}
+  {$IFNDEF WIN32}
+  Msg: array [0..255] of Char;
+  {$ENDIF}
   S: string;
 begin
   Done := False;
   repeat
     try
-      if IgnoreParams then FQuery.ExecDirect
-      else begin
-        for I := 0 to FQuery.Params.Count - 1 do begin
+      if IgnoreParams then
+        FQuery.ExecDirect
+      else
+      begin
+        for I := 0 to FQuery.Params.Count - 1 do
+        begin
           Param := FQuery.Params[I];
           Param.Assign(Params.ParamByName(Param.Name));
         end;
@@ -876,25 +942,33 @@ begin
       end;
       Done := True;
     except
-      on E: EDatabaseError do begin
+      on E: EDatabaseError do
+      begin
         Action := saFail;
         S := Format(ResStr(SParseError), [ResStr(SMsgdlgError), LineNo]);
         if E is EDBEngineError then
           TDBError.Create(EDBEngineError(E), 0, LineNo,
             {$IFDEF WIN32} PChar(S) {$ELSE} StrPCopy(Msg, S) {$ENDIF})
-        else begin
-          if E.Message <> '' then E.Message := E.Message + '. ';
+        else
+        begin
+          if E.Message <> '' then
+            E.Message := E.Message + '. ';
           E.Message := E.Message + S;
         end;
         if Assigned(FOnScriptError) then
           FOnScriptError(Self, E, LineNo, StatementNo, Action);
-        if Action = saFail then raise;
-        if Action = saAbort then SysUtils.Abort;
-        if Action = saContinue then begin
+        if Action = saFail then
+          raise;
+        if Action = saAbort then
+          SysUtils.Abort;
+        if Action = saContinue then
+        begin
           Application.HandleException(Self);
           Done := True;
         end
-        else if Action = saIgnore then Done := True;
+        else
+        if Action = saIgnore then
+          Done := True;
       end;
     end;
   until Done;
@@ -907,14 +981,15 @@ var
   I, P, CurrStatement: Integer;
 begin
   IsTrans := FTransaction {$IFNDEF WIN32} and Database.IsSQLBased {$ENDIF}
-    and not TransActive(Database) and (StatementNo < 0);
+  and not TransActive(Database) and (StatementNo < 0);
   LastStr := '';
   try
-    if IsTrans then begin
-{$IFDEF WIN32}
+    if IsTrans then
+    begin
+      {$IFDEF WIN32}
       if not Database.IsSQLBased then
         Database.TransIsolation := tiDirtyRead;
-{$ENDIF}
+      {$ENDIF}
       Database.StartTransaction;
     end;
   except
@@ -924,68 +999,88 @@ begin
     I := 0;
     CurrStatement := 0;
     StmtFound := False;
-    while I < SQL.Count do begin
+    while I < SQL.Count do
+    begin
       FQuery.SQL.BeginUpdate;
       try
         FQuery.SQL.Clear;
         SQLFilled := False;
         repeat
-          if LastStr <> '' then begin
+          if LastStr <> '' then
+          begin
             FQuery.SQL.Add(LastStr);
             LastStr := '';
           end;
-          if I < SQL.Count then begin
+          if I < SQL.Count then
+          begin
             S := Trim(SQL[I]);
             Inc(I);
             P := Pos(';', S);
-            if (P > 0) and FSemicolonTerm then begin
+            if (P > 0) and FSemicolonTerm then
+            begin
               LastStr := Trim(Copy(S, P + 1, MaxInt));
               S := Copy(S, 1, P - 1);
-              if S <> '' then FQuery.SQL.Add(S);
+              if S <> '' then
+                FQuery.SQL.Add(S);
               SQLFilled := True;
             end
-            else begin
-              if (S = Term) then SQLFilled := True
-              else if S <> '' then FQuery.SQL.Add(S);
+            else
+            begin
+              if S = Term then
+                SQLFilled := True
+              else
+              if S <> '' then
+                FQuery.SQL.Add(S);
             end;
           end
-          else SQLFilled := True;
+          else
+            SQLFilled := True;
         until SQLFilled;
       finally
         FQuery.SQL.EndUpdate;
       end;
-      if FQuery.SQL.Count > 0 then begin
-        if (StatementNo < 0) or (StatementNo = CurrStatement) then begin
+      if FQuery.SQL.Count > 0 then
+      begin
+        if (StatementNo < 0) or (StatementNo = CurrStatement) then
+        begin
           StmtFound := True;
           CheckExecQuery(I - 1, CurrStatement);
-          if StatementNo = CurrStatement then Break;
+          if StatementNo = CurrStatement then
+            Break;
         end;
         Inc(CurrStatement);
       end;
     end;
-    if not StmtFound then begin
-{$IFDEF COMPILER3_UP}
+    if not StmtFound then
+    begin
+      {$IFDEF COMPILER3_UP}
       DatabaseError(Format(SListIndexError, [StatementNo]));
-{$ELSE}
+      {$ELSE}
       DatabaseError(Format('%s: %d', [LoadStr(SListIndexError), StatementNo]));
-{$ENDIF COMPILER3_UP}
+      {$ENDIF COMPILER3_UP}
     end;
-    if IsTrans then Database.Commit;
+    if IsTrans then
+      Database.Commit;
   except
-    if IsTrans then Database.Rollback;
+    if IsTrans then
+      Database.Rollback;
     raise;
   end;
 end;
 
 procedure TJvSQLScript.ExecStatement(StatementNo: Integer);
 begin
-  if FSQL.Count = 0 then _DBError(SEmptySQLStatement);
+  if FSQL.Count = 0 then
+    _DBError(SEmptySQLStatement);
   FQuery.SetDBFlag(dbfExecScript, True);
   try
-    if not Database.Connected then _DBError(SDatabaseClosed);
-    if Assigned(FBeforeExec) then FBeforeExec(Self);
+    if not Database.Connected then
+      _DBError(SDatabaseClosed);
+    if Assigned(FBeforeExec) then
+      FBeforeExec(Self);
     ExecuteScript(StatementNo);
-    if Assigned(FAfterExec) then FAfterExec(Self);
+    if Assigned(FAfterExec) then
+      FAfterExec(Self);
   finally
     FQuery.SetDBFlag(dbfExecScript, False);
   end;
@@ -1011,54 +1106,56 @@ end;
 
 function TJvSQLScript.GetText: {$IFDEF WIN32} string {$ELSE} PChar {$ENDIF};
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Result := SQL.Text;
-{$ELSE}
+  {$ELSE}
   Result := SQL.GetText;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TJvSQLScript.QueryChanged(Sender: TObject);
 var
   List: TParams;
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   P: PChar;
-{$ENDIF}
+  {$ENDIF}
 begin
-{$IFDEF COMPILER4_UP}
-  if not (csReading in ComponentState) then begin
-{$ENDIF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
+  if not (csReading in ComponentState) then
+  begin
+    {$ENDIF COMPILER4_UP}
     List := TParams.Create{$IFDEF COMPILER4_UP}(Self){$ENDIF};
     try
-  {$IFDEF WIN32}
+      {$IFDEF WIN32}
       CreateParams(List, PChar(Text));
-  {$ELSE}
+      {$ELSE}
       P := GetText;
       try
         CreateParams(List, P);
       finally
         StrDispose(P);
       end;
-  {$ENDIF WIN32}
+      {$ENDIF WIN32}
       List.AssignValues(FParams);
-  {$IFDEF COMPILER4_UP}
+    {$IFDEF COMPILER4_UP}
       FParams.Clear;
       FParams.Assign(List);
     finally
-  {$ELSE}
+    {$ELSE}
       FParams.Free;
       FParams := List;
     except
-  {$ENDIF COMPILER4_UP}
+    {$ENDIF COMPILER4_UP}
       List.Free;
     end;
-{$IFDEF COMPILER4_UP}
+  {$IFDEF COMPILER4_UP}
   end
-  else begin
+  else
+  begin
     FParams.Clear;
     CreateParams(FParams, PChar(Text));
   end;
-{$ENDIF COMPILER4_UP}
+  {$ENDIF COMPILER4_UP}
 end;
 
 function TJvSQLScript.ParamByName(const Value: string): TParam;
@@ -1077,6 +1174,7 @@ begin
 end;
 
 {$IFDEF COMPILER4_UP}
+
 procedure TJvSQLScript.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
@@ -1093,6 +1191,8 @@ procedure TJvSQLScript.WriteParamData(Writer: TWriter);
 begin
   Writer.WriteCollection(Params);
 end;
+
 {$ENDIF COMPILER4_UP}
 
 end.
+

@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvThread;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, JvTypes, JvComponent;
+  Windows, SysUtils, Classes,
+  JvTypes, JvComponent;
 
 type
   TJvThread = class(TJvComponent)
@@ -53,17 +52,17 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    function Execute(p: Pointer): Thandle;
+    function Execute(P: Pointer): THandle;
     function OneThreadIsRunning: Boolean;
-    function GetPriority(Thread: Thandle): TThreadPriority;
+    function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
-    procedure QuitThread(Thread: Thandle);
-    procedure Suspend(Thread: Thandle);
-    procedure Resume(Thread: Thandle);
+    procedure QuitThread(Thread: THandle);
+    procedure Suspend(Thread: THandle);
+    procedure Resume(Thread: THandle);
     property Exclusive: Boolean read FExclusive write FExclusive;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
-    property Onbegin: TNotifyEvent read FOnBegin write FOnBegin;
+    property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
     property OnExecute: TNotifyEventParams read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
@@ -74,39 +73,33 @@ type
     FExecuteEvent: TNotifyEventParams;
     FParams: Pointer;
   public
-    constructor Create(event: TNotifyEventParams; params: Pointer); virtual;
+    constructor Create(Event: TNotifyEventParams; Params: Pointer); virtual;
     procedure Execute; override;
   end;
 
 procedure Synchronize(Method: TNotifyEvent);
-procedure SynchronizeParams(Method: TNotifyEventParams; p: Pointer);
+procedure SynchronizeParams(Method: TNotifyEventParams; P: Pointer);
 
 implementation
 
 var
-  mtx: THandle;
-
-  {*****************************************************}
+  Mtx: THandle;
 
 procedure Synchronize(Method: TNotifyEvent);
 begin
-  WaitForSingleObject(mtx, INFINITE);
+  WaitForSingleObject(Mtx, INFINITE);
   Method(nil);
-  ReleaseMutex(mtx);
+  ReleaseMutex(Mtx);
 end;
 
-{*****************************************************}
-
-procedure SynchronizeParams(Method: TNotifyEventParams; p: Pointer);
+procedure SynchronizeParams(Method: TNotifyEventParams; P: Pointer);
 begin
-  WaitForSingleObject(mtx, INFINITE);
-  Method(nil, p);
-  ReleaseMutex(mtx);
+  WaitForSingleObject(Mtx, INFINITE);
+  Method(nil, P);
+  ReleaseMutex(Mtx);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvThread
-///////////////////////////////////////////////////////////
+//=== TJvThread ==============================================================
 
 constructor TJvThread.Create(AOwner: TComponent);
 begin
@@ -117,16 +110,12 @@ begin
   FreeOnTerminate := True;
 end;
 
-{*****************************************************}
-
 destructor TJvThread.Destroy;
 begin
   inherited Destroy;
 end;
 
-{*****************************************************}
-
-function TJvThread.Execute(p: Pointer): Thandle;
+function TJvThread.Execute(P: Pointer): THandle;
 var
   HideThread: TJvHideThread;
 begin
@@ -137,7 +126,7 @@ begin
       if OneThreadIsRunning then
         Exit;
     Inc(FThreadCount);
-    HideThread := TJvHideThread.Create(FOnExecute, p);
+    HideThread := TJvHideThread.Create(FOnExecute, P);
     HideThread.FreeOnTerminate := FFreeOnTerminate;
     HideThread.OnTerminate := DoTerminate;
     DoCreate;
@@ -147,52 +136,38 @@ begin
   end;
 end;
 
-{*****************************************************}
-
-function TJvThread.GetPriority(Thread: Thandle): TThreadPriority;
+function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
 begin
   Result := tpIdle;
   if Thread <> 0 then
     Result := TThreadPriority(GetThreadPriority(Thread));
 end;
 
-{*****************************************************}
-
 procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
 
-{*****************************************************}
-
-procedure TJvThread.QuitThread(Thread: Thandle);
+procedure TJvThread.QuitThread(Thread: THandle);
 begin
   TerminateThread(Thread, 0);
 end;
 
-{*****************************************************}
-
-procedure TJvThread.Suspend(Thread: Thandle);
+procedure TJvThread.Suspend(Thread: THandle);
 begin
   SuspendThread(Thread);
 end;
 
-{*****************************************************}
-
-procedure TJvThread.Resume(Thread: Thandle);
+procedure TJvThread.Resume(Thread: THandle);
 begin
-  ResumeThread(thread);
+  ResumeThread(Thread);
 end;
-
-{*****************************************************}
 
 procedure TJvThread.DoCreate;
 begin
   if Assigned(FOnBegin) then
     FOnBegin(nil);
 end;
-
-{*****************************************************}
 
 procedure TJvThread.DoTerminate;
 begin
@@ -204,37 +179,30 @@ begin
       FOnFinishAll(nil);
 end;
 
-{*****************************************************}
-
 function TJvThread.OneThreadIsRunning: Boolean;
 begin
   Result := FThreadCount > 0;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvHideThread
-///////////////////////////////////////////////////////////
+//=== TJvHideThread ==========================================================
 
-constructor TJvHideThread.Create(event: TNotifyEventParams; params: Pointer);
+constructor TJvHideThread.Create(Event: TNotifyEventParams; Params: Pointer);
 begin
   inherited Create(True);
-  FExecuteEvent := event;
-  FParams := params;
+  FExecuteEvent := Event;
+  FParams := Params;
 end;
-
-{*****************************************************}
 
 procedure TJvHideThread.Execute;
 begin
   FExecuteEvent(nil, FParams);
 end;
 
-{*****************************************************}
-
 initialization
-  mtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
+  Mtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization
-  CloseHandle(mtx);
+  CloseHandle(Mtx);
 
 end.
+

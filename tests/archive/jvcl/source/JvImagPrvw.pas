@@ -12,7 +12,7 @@ The Original Code is: JvImagPrvw.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -24,22 +24,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$I WINDOWSONLY.INC}
 
 unit JvImagPrvw;
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons,
-  JvxCtrls, JvPicClip, JvPlacemnt, JvObjStr, JvSpeedButton, FileCtrl;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, FileCtrl,
+  JvxCtrls, JvPicClip, JvPlacemnt, JvComponent;
 
 type
   TImageForm = class(TForm)
@@ -81,26 +79,25 @@ type
     property FileName: string read GetFileName write SetFileName;
   end;
 
-function SelectImage(var AFileName: string; const Extensions,
-  Filter: string): Boolean;
+function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 
 implementation
 
-uses Consts, JvMaxMin, JvConst, JvVCLUtils, JvGraph;
+uses
+  JvMaxMin, JvConst, JvVCLUtils, JvGraph;
 
 {$R *.DFM}
 
 {$I+}
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 const
   SAllFiles = 'All files';
   SPreview = 'Preview';
 
-function SelectImage(var AFileName: string; const Extensions,
-  Filter: string): Boolean;
+function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var
   ErrMode: Cardinal;
 begin
@@ -108,18 +105,22 @@ begin
   try
     FileListBox.Mask := Extensions;
     FilterCombo.Filter := Filter;
-    if Pos('*.*', Filter) = 0 then begin
-      if Length(Filter) > 0 then FilterCombo.Filter := Filter + '|';
+    if Pos('*.*', Filter) = 0 then
+    begin
+      if Length(Filter) > 0 then
+        FilterCombo.Filter := Filter + '|';
       FilterCombo.Filter := FilterCombo.Filter + SAllFiles + ' (*.*)|*.*';
     end;
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
     try
-      if AFileName <> '' then FileName := AFileName;
+      if AFileName <> '' then
+        FileName := AFileName;
       Result := ShowModal = mrOk;
     finally
       SetErrorMode(ErrMode);
     end;
-    if Result then AFileName := FileName;
+    if Result then
+      AFileName := FileName;
   finally
     Free;
   end;
@@ -136,8 +137,6 @@ begin
     (Pict.Width > 0) and (Pict.Height > 0);
 end;
 
-{ TImageForm }
-
 function TImageForm.GetFileName: string;
 begin
   Result := FileListBox.FileName;
@@ -150,7 +149,8 @@ end;
 
 procedure TImageForm.ZoomImage;
 begin
-  if ValidPicture(Image.Picture) then begin
+  if ValidPicture(Image.Picture) then
+  begin
     with JvGraph.ZoomImage(Image.Picture.Width, Image.Picture.Height,
       ImagePanel.ClientWidth - 4, ImagePanel.ClientHeight - 4,
       StretchCheck.Checked) do
@@ -186,7 +186,8 @@ begin
   if FileExt <> '' then
     Caption := FormCaption + ' - ' + MinimizeName(FileExt, PathLabel.Canvas,
       PathLabel.Width)
-  else Caption := FormCaption;
+  else
+    Caption := FormCaption;
   PreviewBtn.Enabled := ValidPicture(Image.Picture);
 end;
 
@@ -202,24 +203,29 @@ begin
   Image.Align := alNone;
   FBmpImage := TBitmap.Create;
   FBmpImage.Assign(FilePics.GraphicCell[5]);
-  if not NewStyleControls then Font.Style := [fsBold];
-{$IFDEF WIN32}
-  with FormStorage do begin
+  if not NewStyleControls then
+    Font.Style := [fsBold];
+  {$IFDEF WIN32}
+  with FormStorage do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ENDIF}
-  with TDirList(DirectoryList) do begin
+  {$ENDIF}
+  with TDirList(DirectoryList) do
+  begin
     ClosedBmp.Assign(FilePics.GraphicCell[0]);
     OpenedBmp.Assign(FilePics.GraphicCell[1]);
     CurrentBmp.Assign(FilePics.GraphicCell[2]);
   end;
-  with TFileList(FileListBox) do begin
+  with TFileList(FileListBox) do
+  begin
     DirBmp.Assign(FilePics.GraphicCell[0]);
     ExeBmp.Assign(FilePics.GraphicCell[3]);
     UnknownBmp.Assign(FilePics.GraphicCell[4]);
   end;
-  with TDriveCombo(DriveCombo) do begin
+  with TDriveCombo(DriveCombo) do
+  begin
     FloppyBMP.Assign(FilePics.GraphicCell[6]);
     FixedBMP.Assign(FilePics.GraphicCell[7]);
     CDROMBMP.Assign(FilePics.GraphicCell[8]);
@@ -243,7 +249,8 @@ var
   I: Integer;
   FileExt: string;
 begin
-  for I := 0 to TFileList(FileListBox).Items.Count - 1 do begin
+  for I := 0 to TFileList(FileListBox).Items.Count - 1 do
+  begin
     FileExt := ExtractFileExt(TFileList(FileListBox).Items[I]);
     if (TFileList(FileListBox).Items[I][1] <> '[') and
       (CompareText(FileExt, '.bmp') = 0) then
@@ -253,7 +260,8 @@ end;
 
 procedure TImageForm.FileListBoxDblClick(Sender: TObject);
 begin
-  if ValidPicture(Image.Picture) then ModalResult := mrOk;
+  if ValidPicture(Image.Picture) then
+    ModalResult := mrOk;
 end;
 
 procedure TImageForm.FormDestroy(Sender: TObject);
@@ -264,39 +272,44 @@ end;
 
 procedure TImageForm.PreviewKeyPress(Sender: TObject; var Key: Char);
 begin
-  if Key = #27 then TForm(Sender).Close;
+  if Key = #27 then
+    TForm(Sender).Close;
 end;
 
 procedure TImageForm.PreviewBtnClick(Sender: TObject);
 var
   PreviewForm: TForm;
 begin
-  if not ValidPicture(Image.Picture) then Exit;
-{$IFDEF CBUILDER}
+  if not ValidPicture(Image.Picture) then
+    Exit;
+  {$IFDEF CBUILDER}
   PreviewForm := TForm.CreateNew(Self, 0);
-{$ELSE}
+  {$ELSE}
   PreviewForm := TForm.CreateNew(Self);
-{$ENDIF}
+  {$ENDIF}
   with PreviewForm do
   try
     Caption := SPreview;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     BorderStyle := bsSizeToolWin;
-{$ELSE}
+    {$ELSE}
     BorderIcons := [biSystemMenu];
-{$ENDIF}
+    {$ENDIF}
     Icon := Self.Icon;
     KeyPreview := True;
     Position := poScreenCenter;
     OnKeyPress := PreviewKeyPress;
-    with TImage.Create(PreviewForm) do begin
-      Left := 0; Top := 0;
+    with TImage.Create(PreviewForm) do
+    begin
+      Left := 0;
+      Top := 0;
       Stretch := False;
       AutoSize := True;
       Picture.Assign(Image.Picture);
       Parent := PreviewForm;
     end;
-    if Image.Picture.Width > 0 then begin
+    if Image.Picture.Width > 0 then
+    begin
       ClientWidth := Image.Picture.Width;
       ClientHeight := Image.Picture.Height;
     end;
@@ -308,9 +321,14 @@ end;
 
 procedure TImageForm.OkBtnClick(Sender: TObject);
 begin
-  if (ActiveControl = FileEdit) then FileListBox.ApplyFilePath(FileEdit.Text)
-  else if ValidPicture(Image.Picture) then ModalResult := mrOk
-  else Beep;
+  if ActiveControl = FileEdit then
+    FileListBox.ApplyFilePath(FileEdit.Text)
+  else
+  if ValidPicture(Image.Picture) then
+    ModalResult := mrOk
+  else
+    Beep;
 end;
 
 end.
+

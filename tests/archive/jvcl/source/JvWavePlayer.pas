@@ -28,112 +28,91 @@ Known Issues:
 
 unit JvWavePlayer;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, MMSystem, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, MMSystem,
+  JvTypes, JvComponent;
 
 type
   TJvWavePlayer = class(TJvComponent)
   private
-    FAsync: Boolean;
+    FAsynchronous: Boolean;
     FLoop: Boolean;
-    FWaveName: TFileName;
+    FFileName: TFileName;
     FWavePointer: Pointer;
-    FWaveLocation: TJvWaveLocation;
-    FBeforePlay: TNotifyEvent;
-    FAfterPlay: TNotifyEvent;
-    procedure SetAsync(Value: Boolean);
+    FSourceType: TJvWaveLocation;
+    FBeforePlaying: TNotifyEvent;
+    FAfterPlaying: TNotifyEvent;
+    procedure SetAsynchronous(Value: Boolean);
     procedure SetLoop(Value: Boolean);
-  protected
   public
-    property WavePointer: Pointer read FWavePointer write FWavePointer;
     destructor Destroy; override;
-  published
-    property Asynchronous: Boolean read FAsync write SetAsync;
-    property Loop: Boolean read FLoop write SetLoop;
-    property SourceType: TJvWaveLocation read FWaveLocation write FWaveLocation default frFile;
-    property FileName: TFileName read FWaveName write FWaveName;
-    property BeforePlaying: TNotifyEvent read FBeforePlay write FBeforePlay;
-    property AfterPlaying: TNotifyEvent read FAfterPlay write FAfterPlay;
     function Play: Boolean;
     procedure Stop;
+    property WavePointer: Pointer read FWavePointer write FWavePointer;
+  published
+    property Asynchronous: Boolean read FAsynchronous write SetAsynchronous;
+    property Loop: Boolean read FLoop write SetLoop;
+    property SourceType: TJvWaveLocation read FSourceType write FSourceType default frFile;
+    property FileName: TFileName read FFileName write FFileName;
+    property BeforePlaying: TNotifyEvent read FBeforePlaying write FBeforePlaying;
+    property AfterPlaying: TNotifyEvent read FAfterPlaying write FAfterPlaying;
   end;
 
 implementation
 
-{************************************************************}
-
-procedure TJvWavePlayer.SetAsync(Value: Boolean);
-begin
-  FAsync := Value;
-  if not FAsync then
-    FLoop := False;
-end;
-
-{************************************************************}
-
-procedure TJvWavePlayer.SetLoop(Value: Boolean);
-begin
-  if (FLoop <> Value) and FAsync then
-    FLoop := Value;
-end;
-
-{************************************************************}
-
-function TJvWavePlayer.Play;
-var
-  Flags: DWORD;
-begin
-  if Assigned(FBeforePlay) then
-    FBeforePlay(Self);
-  case FWaveLocation of
-    frFile:
-      Flags := SND_FileName;
-    frResource:
-      Flags := SND_RESOURCE;
-  else
-    Flags := SND_MEMORY;
-  end;
-  if FLoop then
-    Flags := Flags or SND_LOOP;
-  if FAsync then
-    Flags := Flags or SND_ASYNC
-  else
-    Flags := Flags or SND_SYNC;
-  if FWaveLocation = frRAM then
-    Result := PlaySound(FWavePointer, 0, Flags)
-  else
-    Result := PlaySound(PChar(FWaveName), 0, Flags);
-  if Assigned(FAfterPlay) then
-    FAfterPlay(Self);
-end;
-
-{************************************************************}
-
-procedure TJvWavePlayer.Stop;
-var
-  Flags: DWORD;
-begin
-  case FWaveLocation of
-    frFile:
-      Flags := SND_FileName;
-    frResource:
-      Flags := SND_RESOURCE;
-  else
-    Flags := SND_MEMORY;
-  end;
-  PlaySound(nil, 0, Flags);
-end;
-
-{************************************************************}
-
 destructor TJvWavePlayer.Destroy;
 begin
   Stop;
-  inherited;
+  inherited Destroy;
+end;
+
+function TJvWavePlayer.Play;
+const
+  { TJvWaveLocation = (frFile, frResource, frRAM); }
+  CSourceTypes: array [TJvWaveLocation] of DWORD =
+    (SND_FILENAME, SND_RESOURCE, SND_MEMORY);
+  CLoops: array [Boolean] of DWORD = (0, SND_LOOP);
+  CAsynchronous: array [Boolean] of DWORD = (SND_SYNC, SND_ASYNC);
+var
+  Flags: DWORD;
+begin
+  if Assigned(FBeforePlaying) then
+    FBeforePlaying(Self);
+
+  Flags := CSourceTypes[FSourceType] or CLoops[FLoop] or CAsynchronous[FAsynchronous];
+
+  if FSourceType = frRAM then
+    Result := PlaySound(FWavePointer, 0, Flags)
+  else
+    Result := PlaySound(PChar(FFileName), 0, Flags);
+
+  if Assigned(FAfterPlaying) then
+    FAfterPlaying(Self);
+end;
+
+procedure TJvWavePlayer.SetAsynchronous(Value: Boolean);
+begin
+  FAsynchronous := Value;
+  if not FAsynchronous then
+    FLoop := False;
+end;
+
+procedure TJvWavePlayer.SetLoop(Value: Boolean);
+begin
+  if (FLoop <> Value) and FAsynchronous then
+    FLoop := Value;
+end;
+
+procedure TJvWavePlayer.Stop;
+const
+  { TJvWaveLocation = (frFile, frResource, frRAM); }
+  CSourceTypes: array [TJvWaveLocation] of DWORD =
+    (SND_FILENAME, SND_RESOURCE, SND_MEMORY);
+begin
+  PlaySound(nil, 0, CSourceTypes[FSourceType]);
 end;
 
 end.
+

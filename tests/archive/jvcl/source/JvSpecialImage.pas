@@ -28,23 +28,22 @@ Known Issues:
 
 unit JvSpecialImage;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms, JvTypes, JVCLVer;
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  JvTypes, JVCLVer;
 
 type
   TJvSpecialImage = class(TImage)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FInverted: Boolean;
     FFlipped: Boolean;
-    FBright: TBright;
+    FBrightness: TBright;
     FOriginal: TPicture;
     FMirrored: Boolean;
     FWorking: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetBright(Value: TBright);
     procedure SetFlipped(const Value: Boolean);
     procedure SetInverted(const Value: Boolean);
@@ -54,13 +53,13 @@ type
     function GetPicture: TPicture;
     procedure SetPicture(const Value: TPicture);
   protected
-    procedure Loaded; override;  
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Brightness: TBright read FBright write SetBright default 100;
+    property Brightness: TBright read FBrightness write SetBright default 100;
     property Inverted: Boolean read FInverted write SetInverted default False;
     property Flipped: Boolean read FFlipped write SetFlipped default False;
     property Mirrored: Boolean read FMirrored write SetMirrored default False;
@@ -72,39 +71,62 @@ type
 
 implementation
 
-{************************************************************}
+constructor TJvSpecialImage.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FOriginal := TPicture.Create;
+  FBrightness := 100;
+  FInverted := False;
+  FFlipped := False;
+  FMirrored := False;
+  FWorking := False;
+  Picture.OnChange := PictureChanged;
+end;
+
+destructor TJvSpecialImage.Destroy;
+begin
+  Picture.Assign(FOriginal);
+  FOriginal.Free;
+  inherited Destroy;
+end;
+
+procedure TJvSpecialImage.Loaded;
+begin
+  inherited Loaded;
+  FOriginal.Assign(Picture);
+end;
 
 procedure TJvSpecialImage.ApplyChanges;
 var
-  i, j: Integer;
+  I, J: Integer;
   Line, Line2: PRGBarray;
-  dest: TBitmap;
-  val: Integer;
-  tmp: TRgbTriple;
+  Dest: TBitmap;
+  Val: Integer;
+  Tmp: TRgbTriple;
 begin
   if FWorking or (csLoading in ComponentState) or (csDestroying in ComponentState) then
     Exit;
   FWorking := True;
-  dest := TBitmap.Create;
+  Dest := TBitmap.Create;
   try
 
     //Copy original bitmap
-    dest.Width := FOriginal.Width;
-    dest.Height := FOriginal.Height;
-    dest.Canvas.Draw(0, 0, FOriginal.Graphic);
-    dest.PixelFormat := pf24Bit;
+    Dest.Width := FOriginal.Width;
+    Dest.Height := FOriginal.Height;
+    Dest.Canvas.Draw(0, 0, FOriginal.Graphic);
+    Dest.PixelFormat := pf24Bit;
 
-    if not dest.Empty then
+    if not Dest.Empty then
     begin
       //Set brightness
-      Val := (FBright - 100) * 255 div 100;
+      Val := (FBrightness - 100) * 255 div 100;
       if Val > 0 then
       begin
-        for i := 0 to dest.Height - 1 do
+        for I := 0 to Dest.Height - 1 do
         begin
-          Line := dest.ScanLine[i];
-          for j := 0 to dest.Width - 1 do
-            with Line[j] do
+          Line := Dest.ScanLine[I];
+          for J := 0 to Dest.Width - 1 do
+            with Line[J] do
             begin
               if rgbtBlue + Val > 255 then
                 rgbtBlue := 255
@@ -121,13 +143,14 @@ begin
             end;
         end;
       end
-      else if Val < 0 then
+      else
+      if Val < 0 then
       begin
-        for i := 0 to dest.Height - 1 do
+        for I := 0 to Dest.Height - 1 do
         begin
-          Line := dest.ScanLine[i];
-          for j := 0 to dest.Width - 1 do
-            with Line[j] do
+          Line := Dest.ScanLine[I];
+          for J := 0 to Dest.Width - 1 do
+            with Line[J] do
             begin
               if rgbtBlue + Val < 0 then
                 rgbtBlue := 0
@@ -148,15 +171,15 @@ begin
       //Set Flipped
       if FFlipped then
       begin
-        for i := 0 to (dest.Height - 1) div 2 do
+        for I := 0 to (Dest.Height - 1) div 2 do
         begin
-          Line := dest.ScanLine[i];
-          Line2 := dest.ScanLine[dest.Height - i - 1];
-          for j := 0 to dest.Width - 1 do
+          Line := Dest.ScanLine[I];
+          Line2 := Dest.ScanLine[Dest.Height - I - 1];
+          for J := 0 to Dest.Width - 1 do
           begin
-            tmp := Line[j];
-            Line[j] := Line2[j];
-            Line2[j] := tmp;
+            Tmp := Line[J];
+            Line[J] := Line2[J];
+            Line2[J] := Tmp;
           end;
         end;
       end;
@@ -164,11 +187,11 @@ begin
       //Set inverted
       if FInverted then
       begin
-        for i := 0 to dest.Height - 1 do
+        for I := 0 to Dest.Height - 1 do
         begin
-          Line := dest.ScanLine[i];
-          for j := 0 to dest.Width - 1 do
-            with Line[j] do
+          Line := Dest.ScanLine[I];
+          for J := 0 to Dest.Width - 1 do
+            with Line[J] do
             begin
               rgbtBlue := not rgbtBlue;
               rgbtGreen := not rgbtGreen;
@@ -180,95 +203,58 @@ begin
       //Set mirrored
       if FMirrored then
       begin
-        for i := 0 to dest.Height - 1 do
+        for I := 0 to Dest.Height - 1 do
         begin
-          Line := Dest.ScanLine[i];
-          for j := 0 to (Dest.Width - 1) div 2 do
+          Line := Dest.ScanLine[I];
+          for J := 0 to (Dest.Width - 1) div 2 do
           begin
-            tmp := Line[j];
-            Line[j] := Line[dest.Width - j - 1];
-            Line[dest.Width - j - 1] := tmp;
+            Tmp := Line[J];
+            Line[J] := Line[Dest.Width - J - 1];
+            Line[Dest.Width - J - 1] := Tmp;
           end;
         end;
       end;
     end;
-    inherited Picture.Assign(dest);
+    inherited Picture.Assign(Dest);
   finally
-    dest.Free;
+    Dest.Free;
     FWorking := False;
   end;
 end;
 
-{************************************************************}
-
-constructor TJvSpecialImage.Create(AOwner: TComponent);
-begin
-  inherited;
-  FOriginal := TPicture.Create;
-  FBright := 100;
-  FInverted := False;
-  FFlipped := False;
-  FMirrored := False;
-  FWorking := False;
-  Picture.OnChange := PictureChanged;
-end;
-
-{************************************************************}
-
-destructor TJvSpecialImage.Destroy;
-begin
-  Picture.Assign(FOriginal);
-  FOriginal.Free;
-  inherited;
-end;
-
-{************************************************************}
-
 procedure TJvSpecialImage.FadeIn;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to 50 do
+  for I := 0 to 50 do
   begin
-    SetBright(i * 2);
+    Brightness := I * 2;
     Application.ProcessMessages;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvSpecialImage.FadeOut;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 50 downto 0 do
+  for I := 50 downto 0 do
   begin
-    SetBright(i * 2);
+    Brightness := I * 2;
     Application.ProcessMessages;
   end;
 end;
-
-{************************************************************}
 
 function TJvSpecialImage.GetPicture: TPicture;
 begin
   Result := inherited Picture;
 end;
 
-procedure TJvSpecialImage.Loaded;
-begin
-  inherited;
-  FOriginal.Assign(Picture);
-end;
-
 procedure TJvSpecialImage.PictureChanged(Sender: TObject);
 begin
   if FWorking = False then
-    ApplyChanges; // SetBright(FBright);
+    ApplyChanges; // SetBright(FBrightness);
   Invalidate;
 end;
-
-{************************************************************}
 
 procedure TJvSpecialImage.Reset;
 begin
@@ -277,19 +263,15 @@ begin
   Inverted := False;
   Flipped := False;
   Mirrored := False;
-  FWorking := false;
+  FWorking := False;
   Picture.Assign(FOriginal);
 end;
 
-{************************************************************}
-
 procedure TJvSpecialImage.SetBright(Value: TBright);
 begin
-  FBright := Value;
+  FBrightness := Value;
   ApplyChanges;
 end;
-
-{************************************************************}
 
 procedure TJvSpecialImage.SetFlipped(const Value: Boolean);
 begin
@@ -300,8 +282,6 @@ begin
   end;
 end;
 
-{************************************************************}
-
 procedure TJvSpecialImage.SetInverted(const Value: Boolean);
 begin
   if Value <> FInverted then
@@ -310,8 +290,6 @@ begin
     ApplyChanges;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvSpecialImage.SetMirrored(const Value: Boolean);
 begin

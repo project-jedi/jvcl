@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvInterpreter_Grids.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -26,158 +26,179 @@ Description : adapter unit - converts JvInterpreter calls to delphi calls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvInterpreter_Grids;
 
 interface
 
-uses JvInterpreter;
+uses
+  JvInterpreter;
 
-  procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
-uses Windows, Classes, Grids, JvInterpreter_Windows;
+uses
+  Windows, Classes, Grids,
+  JvInterpreter_Windows;
 
+{ EInvalidGridOperation }
 
-  { EInvalidGridOperation }
-
-  { TInplaceEdit }
+{ TInplaceEdit }
 
 { constructor Create(AOwner: TComponent) }
-procedure TInplaceEdit_Create(var Value: Variant; Args: TArgs);
+
+procedure TInplaceEdit_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TInplaceEdit.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  procedure Deselect; }
-procedure TInplaceEdit_Deselect(var Value: Variant; Args: TArgs);
+{ procedure Deselect; }
+
+procedure TInplaceEdit_Deselect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).Deselect;
 end;
 
-{  procedure Hide; }
-procedure TInplaceEdit_Hide(var Value: Variant; Args: TArgs);
+{ procedure Hide; }
+
+procedure TInplaceEdit_Hide(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).Hide;
 end;
 
-{  procedure Invalidate; }
-procedure TInplaceEdit_Invalidate(var Value: Variant; Args: TArgs);
+{ procedure Invalidate; }
+
+procedure TInplaceEdit_Invalidate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).Invalidate;
 end;
 
-{  procedure Move(const Loc: TRect); }
-procedure TInplaceEdit_Move(var Value: Variant; Args: TArgs);
+{ procedure Move(const Loc: TRect); }
+
+procedure TInplaceEdit_Move(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).Move(Var2Rect(Args.Values[0]));
 end;
 
 {  function PosEqual(const Rect: TRect): Boolean; }
-procedure TInplaceEdit_PosEqual(var Value: Variant; Args: TArgs);
+
+procedure TInplaceEdit_PosEqual(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TInplaceEdit(Args.Obj).PosEqual(Var2Rect(Args.Values[0]));
 end;
 
-{  procedure SetFocus; }
-procedure TInplaceEdit_SetFocus(var Value: Variant; Args: TArgs);
+{ procedure SetFocus; }
+
+procedure TInplaceEdit_SetFocus(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).SetFocus;
 end;
 
-{  procedure UpdateLoc(const Loc: TRect); }
-procedure TInplaceEdit_UpdateLoc(var Value: Variant; Args: TArgs);
+{ procedure UpdateLoc(const Loc: TRect); }
+
+procedure TInplaceEdit_UpdateLoc(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TInplaceEdit(Args.Obj).UpdateLoc(Var2Rect(Args.Values[0]));
 end;
 
-{  function Visible: Boolean; }
-procedure TInplaceEdit_Visible(var Value: Variant; Args: TArgs);
+{ function Visible: Boolean; }
+
+procedure TInplaceEdit_Visible(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := TInplaceEdit(Args.Obj).Visible;
 end;
 
-  { TCustomGrid }
+{ TCustomGrid }
+
+{ function MouseCoord(X, Y: Integer): TGridCoord; }
 
 {$IFDEF COMPILER3_UP}
-{  function MouseCoord(X, Y: Integer): TGridCoord; }
-procedure TCustomGrid_MouseCoord(var Value: Variant; Args: TArgs);
+procedure TCustomGrid_MouseCoord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Point2Var(TPoint(TCustomGrid(Args.Obj).MouseCoord(Args.Values[0], Args.Values[1])));
 end;
 {$ENDIF}
 
-  { TDrawGrid }
+{ TDrawGrid }
 
 { constructor Create(AOwner: TComponent) }
-procedure TDrawGrid_Create(var Value: Variant; Args: TArgs);
+
+procedure TDrawGrid_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TDrawGrid.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
-{  function CellRect(ACol, ARow: Longint): TRect; }
-procedure TDrawGrid_CellRect(var Value: Variant; Args: TArgs);
+{ function CellRect(ACol, ARow: Longint): TRect; }
+
+procedure TDrawGrid_CellRect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Rect2Var(TDrawGrid(Args.Obj).CellRect(Args.Values[0], Args.Values[1]));
 end;
 
-{  procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint); }
-procedure TDrawGrid_MouseToCell(var Value: Variant; Args: TArgs);
+{ procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint); }
+
+procedure TDrawGrid_MouseToCell(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TDrawGrid(Args.Obj).MouseToCell(Args.Values[0], Args.Values[1], Longint(TVarData(Args.Values[2]).vInteger), Longint(TVarData(Args.Values[3]).vInteger));
+  TDrawGrid(Args.Obj).MouseToCell(Args.Values[0], Args.Values[1], Longint(TVarData(Args.Values[2]).vInteger),
+    Longint(TVarData(Args.Values[3]).vInteger));
 end;
 
-  { TStringGrid }
+{ TStringGrid }
 
 { constructor Create(AOwner: TComponent) }
-procedure TStringGrid_Create(var Value: Variant; Args: TArgs);
+
+procedure TStringGrid_Create(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TStringGrid.Create(V2O(Args.Values[0]) as TComponent));
 end;
 
 { property Read Cols[Integer]: TStrings }
-procedure TStringGrid_Read_Cols(var Value: Variant; Args: TArgs);
+
+procedure TStringGrid_Read_Cols(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TStringGrid(Args.Obj).Cols[Args.Values[0]]);
 end;
 
 { property Write Cols[Integer]: TStrings }
-procedure TStringGrid_Write_Cols(const Value: Variant; Args: TArgs);
+
+procedure TStringGrid_Write_Cols(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TStringGrid(Args.Obj).Cols[Args.Values[0]] := V2O(Value) as TStrings;
 end;
 
 { property Read Rows[Integer]: TStrings }
-procedure TStringGrid_Read_Rows(var Value: Variant; Args: TArgs);
+
+procedure TStringGrid_Read_Rows(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := O2V(TStringGrid(Args.Obj).Rows[Args.Values[0]]);
 end;
 
 { property Write Rows[Integer]: TStrings }
-procedure TStringGrid_Write_Rows(const Value: Variant; Args: TArgs);
+
+procedure TStringGrid_Write_Rows(const Value: Variant; Args: TJvInterpreterArgs);
 begin
   TStringGrid(Args.Obj).Rows[Args.Values[0]] := V2O(Value) as TStrings;
 end;
 
-
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
+const
+  cGrids = 'Grids';
 begin
   with JvInterpreterAdapter do
   begin
-   { EInvalidGridOperation }
-    AddClass('Grids', EInvalidGridOperation, 'EInvalidGridOperation');
-   { TGridState }
-    AddConst('Grids', 'gsNormal', gsNormal);
-    AddConst('Grids', 'gsSelecting', gsSelecting);
-    AddConst('Grids', 'gsRowSizing', gsRowSizing);
-    AddConst('Grids', 'gsColSizing', gsColSizing);
-    AddConst('Grids', 'gsRowMoving', gsRowMoving);
-    AddConst('Grids', 'gsColMoving', gsColMoving);
-   { TInplaceEdit }
-    AddClass('Grids', TInplaceEdit, 'TInplaceEdit');
+    { EInvalidGridOperation }
+    AddClass(cGrids, EInvalidGridOperation, 'EInvalidGridOperation');
+    { TGridState }
+    AddConst(cGrids, 'gsNormal', gsNormal);
+    AddConst(cGrids, 'gsSelecting', gsSelecting);
+    AddConst(cGrids, 'gsRowSizing', gsRowSizing);
+    AddConst(cGrids, 'gsColSizing', gsColSizing);
+    AddConst(cGrids, 'gsRowMoving', gsRowMoving);
+    AddConst(cGrids, 'gsColMoving', gsColMoving);
+    { TInplaceEdit }
+    AddClass(cGrids, TInplaceEdit, 'TInplaceEdit');
     AddGet(TInplaceEdit, 'Create', TInplaceEdit_Create, 1, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'Deselect', TInplaceEdit_Deselect, 0, [0], varEmpty);
     AddGet(TInplaceEdit, 'Hide', TInplaceEdit_Hide, 0, [0], varEmpty);
@@ -187,49 +208,50 @@ begin
     AddGet(TInplaceEdit, 'SetFocus', TInplaceEdit_SetFocus, 0, [0], varEmpty);
     AddGet(TInplaceEdit, 'UpdateLoc', TInplaceEdit_UpdateLoc, 1, [varEmpty], varEmpty);
     AddGet(TInplaceEdit, 'Visible', TInplaceEdit_Visible, 0, [0], varEmpty);
-   { TGridOption }
-    AddConst('Grids', 'goFixedVertLine', goFixedVertLine);
-    AddConst('Grids', 'goFixedHorzLine', goFixedHorzLine);
-    AddConst('Grids', 'goVertLine', goVertLine);
-    AddConst('Grids', 'goHorzLine', goHorzLine);
-    AddConst('Grids', 'goRangeSelect', goRangeSelect);
-    AddConst('Grids', 'goDrawFocusSelected', goDrawFocusSelected);
-    AddConst('Grids', 'goRowSizing', goRowSizing);
-    AddConst('Grids', 'goColSizing', goColSizing);
-    AddConst('Grids', 'goRowMoving', goRowMoving);
-    AddConst('Grids', 'goColMoving', goColMoving);
-    AddConst('Grids', 'goEditing', goEditing);
-    AddConst('Grids', 'goTabs', goTabs);
-    AddConst('Grids', 'goRowSelect', goRowSelect);
-    AddConst('Grids', 'goAlwaysShowEditor', goAlwaysShowEditor);
-    AddConst('Grids', 'goThumbTracking', goThumbTracking);
-   { TGridDrawState }
-    AddConst('Grids', 'gdSelected', gdSelected);
-    AddConst('Grids', 'gdFocused', gdFocused);
-    AddConst('Grids', 'gdFixed', gdFixed);
-   { TGridScrollDirection }
-    AddConst('Grids', 'sdLeft', sdLeft);
-    AddConst('Grids', 'sdRight', sdRight);
-    AddConst('Grids', 'sdUp', sdUp);
-    AddConst('Grids', 'sdDown', sdDown);
-   { TCustomGrid }
-    AddClass('Grids', TCustomGrid, 'TCustomGrid');
-   {$IFDEF COMPILER3_UP}
+    { TGridOption }
+    AddConst(cGrids, 'goFixedVertLine', goFixedVertLine);
+    AddConst(cGrids, 'goFixedHorzLine', goFixedHorzLine);
+    AddConst(cGrids, 'goVertLine', goVertLine);
+    AddConst(cGrids, 'goHorzLine', goHorzLine);
+    AddConst(cGrids, 'goRangeSelect', goRangeSelect);
+    AddConst(cGrids, 'goDrawFocusSelected', goDrawFocusSelected);
+    AddConst(cGrids, 'goRowSizing', goRowSizing);
+    AddConst(cGrids, 'goColSizing', goColSizing);
+    AddConst(cGrids, 'goRowMoving', goRowMoving);
+    AddConst(cGrids, 'goColMoving', goColMoving);
+    AddConst(cGrids, 'goEditing', goEditing);
+    AddConst(cGrids, 'goTabs', goTabs);
+    AddConst(cGrids, 'goRowSelect', goRowSelect);
+    AddConst(cGrids, 'goAlwaysShowEditor', goAlwaysShowEditor);
+    AddConst(cGrids, 'goThumbTracking', goThumbTracking);
+    { TGridDrawState }
+    AddConst(cGrids, 'gdSelected', gdSelected);
+    AddConst(cGrids, 'gdFocused', gdFocused);
+    AddConst(cGrids, 'gdFixed', gdFixed);
+    { TGridScrollDirection }
+    AddConst(cGrids, 'sdLeft', sdLeft);
+    AddConst(cGrids, 'sdRight', sdRight);
+    AddConst(cGrids, 'sdUp', sdUp);
+    AddConst(cGrids, 'sdDown', sdDown);
+    { TCustomGrid }
+    AddClass(cGrids, TCustomGrid, 'TCustomGrid');
+    {$IFDEF COMPILER3_UP}
     AddGet(TCustomGrid, 'MouseCoord', TCustomGrid_MouseCoord, 2, [varEmpty, varEmpty], varEmpty);
-   {$ENDIF BCB1}
-   { TDrawGrid }
-    AddClass('Grids', TDrawGrid, 'TDrawGrid');
+    {$ENDIF BCB1}
+    { TDrawGrid }
+    AddClass(cGrids, TDrawGrid, 'TDrawGrid');
     AddGet(TDrawGrid, 'Create', TDrawGrid_Create, 1, [varEmpty], varEmpty);
     AddGet(TDrawGrid, 'CellRect', TDrawGrid_CellRect, 2, [varEmpty, varEmpty], varEmpty);
     AddGet(TDrawGrid, 'MouseToCell', TDrawGrid_MouseToCell, 4, [varEmpty, varEmpty, varByRef, varByRef], varEmpty);
-   { TStringGrid }
-    AddClass('Grids', TStringGrid, 'TStringGrid');
+    { TStringGrid }
+    AddClass(cGrids, TStringGrid, 'TStringGrid');
     AddGet(TStringGrid, 'Create', TStringGrid_Create, 1, [varEmpty], varEmpty);
     AddGet(TStringGrid, 'Cols', TStringGrid_Read_Cols, 1, [0], varEmpty);
     AddSet(TStringGrid, 'Cols', TStringGrid_Write_Cols, 1, [1]);
     AddGet(TStringGrid, 'Rows', TStringGrid_Read_Rows, 1, [0], varEmpty);
     AddSet(TStringGrid, 'Rows', TStringGrid_Write_Rows, 1, [1]);
-  end;    { with }
-end;    { RegisterJvInterpreterAdapter }
+  end;
+end;
 
 end.
+

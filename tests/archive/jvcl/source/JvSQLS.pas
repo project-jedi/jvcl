@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvSQLS.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -27,7 +27,6 @@ Description : db-aware component
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvSQLS;
@@ -35,38 +34,37 @@ unit JvSQLS;
 interface
 
 uses
-  Windows, Messages, Bde, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, DB, DBTables, DBCtrls, JvDBUtil, JvComponent;
+  SysUtils, Classes, DBTables,
+  JvDBUtil, JvComponent;
 
 type
   TJvaSQLScript = class;
-  TOnScriptProgress = procedure(Sender : TJvaSQLScript; var Cancel : boolean; Line : integer) of object;
+  TOnScriptProgress = procedure(Sender: TJvaSQLScript; var Cancel: Boolean; Line: Integer) of object;
 
   TJvaSQLScript = class(TJvComponent)
   private
-    FOnProgress : TOnScriptProgress;
-    FScript : TStrings;
-    FCommit : TCommit;
-    FDatabase : TDatabase;
-    procedure SetScript(AValue : TStrings);
-    procedure Progress(UserData : integer; var Cancel : boolean; Line : integer);
+    FOnProgress: TOnScriptProgress;
+    FScript: TStrings;
+    FCommit: TCommit;
+    FDatabase: TDatabase;
+    procedure SetScript(AValue: TStrings);
+    procedure Progress(UserData: Integer; var Cancel: Boolean; Line: Integer);
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     procedure Execute;
-    property OnProgress : TOnScriptProgress read FOnProgress write FOnProgress;
-    property Script : TStrings read FScript write SetScript;
-    property Commit : TCommit read FCommit write FCommit;
-    property Database : TDatabase read FDatabase write FDatabase;
+    property OnProgress: TOnScriptProgress read FOnProgress write FOnProgress;
+    property Script: TStrings read FScript write SetScript;
+    property Commit: TCommit read FCommit write FCommit;
+    property Database: TDatabase read FDatabase write FDatabase;
   end;
 
 implementation
 
-{******************* TJvaSQLScript ********************}
-constructor TJvaSQLScript.Create(AOwner : TComponent);
+constructor TJvaSQLScript.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);          
+  inherited Create(AOwner);
   FScript := TStringList.Create;
 end;
 
@@ -76,7 +74,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvaSQLScript.SetScript(AValue : TStrings);
+procedure TJvaSQLScript.SetScript(AValue: TStrings);
 begin
   FScript.Assign(AValue);
 end;
@@ -86,9 +84,11 @@ begin
   ExecuteSQLScript(FDatabase, FScript.Text, FCommit, Progress, 0);
 end;
 
-procedure TJvaSQLScript.Progress(UserData : integer; var Cancel : boolean; Line : integer);
+procedure TJvaSQLScript.Progress(UserData: Integer; var Cancel: Boolean; Line: Integer);
 begin
-  if Assigned(FOnProgress) then FOnProgress(Self, Cancel, Line);
+  if Assigned(FOnProgress) then
+    FOnProgress(Self, Cancel, Line);
 end;
 
 end.
+

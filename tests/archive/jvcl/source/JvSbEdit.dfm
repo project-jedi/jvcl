@@ -2,8 +2,8 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   Left = 222
   Top = 126
   ActiveControl = SectionList
-  BorderIcons = [biSystemMenu, biMinimize]
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'JvSpeedbar Designer'
   ClientHeight = 277
   ClientWidth = 437
@@ -12,7 +12,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  Font.Style = []
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
     0000010004000000000000020000000000000000000000000000000000000000
@@ -48,7 +48,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   object SectionNameLabel: TLabel
     Left = 180
     Top = 10
-    Width = 86
+    Width = 71
     Height = 13
     Caption = '&Section name: '
     FocusControl = SectionName

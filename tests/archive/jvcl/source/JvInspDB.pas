@@ -58,12 +58,14 @@ type
     procedure SetDataSource(const Value: TDataSource); virtual;
     procedure SetField(const Value: TField); virtual;
     procedure SetFieldName(const Value: string); virtual;
-
     property DataLink: TFieldDataLink read FDataLink;
   public
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string): TJvCustomInspectorItem; overload;
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource): TJvInspectorItemInstances; overload;
-    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldNames: array of string): TJvInspectorItemInstances; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string):
+      TJvCustomInspectorItem; overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource): TJvInspectorItemInstances;
+      overload;
+    class function New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldNames: array of
+      string): TJvInspectorItemInstances; overload;
     destructor Destroy; override;
     class function FieldTypeMapping: TJvInspectorRegister;
     procedure GetAsSet(var Buf); override;
@@ -72,7 +74,6 @@ type
     function IsInitialized: Boolean; override;
     class function ItemRegister: TJvInspectorRegister; override;
     procedure SetAsSet(const Buf); override;
-
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Field: TField read GetField write SetField;
     property FieldName: string read GetFieldName write SetFieldName;
@@ -84,13 +85,11 @@ type
     FFieldTable: string;
     FFieldType: TFieldType;
     FTypeInfo: PTypeInfo;
-  protected
   public
     constructor Create(const AFieldName, AFieldTable: string; const AFieldType: TFieldType;
       const ATypeInfo: PTypeInfo);
     function MatchValue(const ADataObj: TJvCustomInspectorData): Integer; override;
     function MatchPercent(const ADataObj: TJvCustomInspectorData): Integer; override;
-
     property FieldName: string read FFieldName;
     property FieldTable: string read FFieldTable;
     property FieldType: TFieldType read FFieldType;
@@ -133,7 +132,14 @@ begin
     Result := AField.FieldName;
 end;
 
-{ TJvInspectorDBData }
+//=== TJvInspectorDBData =====================================================
+
+destructor TJvInspectorDBData.Destroy;
+begin
+  inherited Destroy;
+  DataLink.Free;
+  FDataLink := nil;
+end;
 
 procedure TJvInspectorDBData.ActiveChange(Sender: TObject);
 begin
@@ -197,7 +203,8 @@ begin
   CheckReadAccess;
   if Field is TBooleanField then
     Result := Ord(TBooleanField(Field).AsBoolean)
-  else if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkClass] then
+  else
+  if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkSet, tkWChar, tkClass] then
   begin
     if GetTypeData(TypeInfo).OrdType = otULong then
       Result := Cardinal(Field.AsInteger)
@@ -316,7 +323,8 @@ begin
     DataLink.Edit;
     TBooleanField(Field).AsBoolean := Value <> 0;
   end
-  else if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkWChar] then
+  else
+  if TypeInfo.Kind in [tkInteger, tkChar, tkEnumeration, tkWChar] then
   begin
     case GetTypeData(TypeInfo).OrdType of
       otSByte:
@@ -375,7 +383,8 @@ begin
         end;
     end;
   end
-  else if TypeInfo.Kind = tkClass then
+  else
+  if TypeInfo.Kind = tkClass then
   begin
     DataLink.Edit;
     Field.AsInteger := Integer(Value);
@@ -398,14 +407,14 @@ end;
 
 procedure TJvInspectorDBData.SetDataSource(const Value: TDataSource);
 var
-  OrgFldName: string;
+  OrgFieldName: string;
 begin
   if DataSource <> Value then
   begin
-    OrgFldName := FieldName;
+    OrgFieldName := FieldName;
     DataLink.DataSource := Value;
-    if FieldName <> OrgFldName then
-      FieldName := OrgFldName
+    if FieldName <> OrgFieldName then
+      FieldName := OrgFieldName
     else
       Invalidate;
   end;
@@ -427,13 +436,6 @@ begin
     TFieldDataLink(DataLink).FieldName := Value;
     Invalidate;
   end;
-end;
-
-destructor TJvInspectorDBData.Destroy;
-begin
-  inherited Destroy;
-  DataLink.Free;
-  FDataLink := nil;
 end;
 
 class function TJvInspectorDBData.FieldTypeMapping: TJvInspectorRegister;
@@ -487,7 +489,8 @@ begin
   Result := FDBReg;
 end;
 
-class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem; const ADataSource: TDataSource; const AFieldName: string): TJvCustomInspectorItem;
+class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem;
+  const ADataSource: TDataSource; const AFieldName: string): TJvCustomInspectorItem;
 var
   Data: TJvInspectorDBData;
 begin
@@ -532,7 +535,7 @@ var
 begin
   SetLength(Result, Length(AFieldNames));
   IArr := 0;
-  for I :=  Low(AFieldNames) to High(AFieldNames) do
+  for I := Low(AFieldNames) to High(AFieldNames) do
   begin
     TmpItem := New(AParent, ADataSource, AFieldNames[I]);
     if TmpItem <> nil then
@@ -566,7 +569,7 @@ begin
   Field.AsInteger := TmpInt;
 end;
 
-{ TJvInspectorTFieldTypeRegItem }
+//=== TJvInspectorTFieldTypeRegItem ==========================================
 
 constructor TJvInspectorTFieldTypeRegItem.Create(const AFieldName, AFieldTable: string;
   const AFieldType: TFieldType; const ATypeInfo: PTypeInfo);
@@ -674,6 +677,6 @@ end;
 
 initialization
   RegisterDBTypes;
-end.
 
+end.
 

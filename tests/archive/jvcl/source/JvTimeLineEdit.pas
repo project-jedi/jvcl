@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,79 +26,94 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Property editor(s) for the @link(TJvTimeLine) component }
 unit JvTimeLineEdit;
 
+{ Property editor(s) for the @link(TJvTimeLine) component }
+
 interface
+
 uses
-  {$IFDEF COMPILER6_UP}DesignEditors,DesignIntf{$ELSE}DsgnIntf{$ENDIF};
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
+
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TTimeLineEditor = class(TDefaultEditor)
   public
- {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-  {$ELSE}
-   procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-  {$ENDIF}
-    procedure ExecuteVerb(Index:integer);override;
+    {$ELSE}
+    procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
+    {$ENDIF}
+    procedure ExecuteVerb(Index: integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-const
-  SEditProperty = 'Items Editor...';
-
 procedure Register;
 
 implementation
-uses
-  JvTimeLine, SysUtils;
-  
-procedure Register;
-begin
-  RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
-end;
 
-{ TTimeLineEditor }
+uses
+  SysUtils,
+  JvTimeLine;
+
+const
+  SEditProperty = 'Items Editor...';
 
 {$IFDEF COMPILER6_UP}
-procedure TTimeLineEditor.EditProperty(const Prop: IProperty;  var Continue: Boolean);
-var PropName:string;
+procedure TTimeLineEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
+var
+  PropName: string;
 begin
   PropName := Prop.GetName;
-  if SameText(PropName,'Items') then
+  if SameText(PropName, 'Items') then
   begin
     Prop.Edit;
-    Continue := false;
+    Continue := False;
   end;
 end;
 {$ELSE}
 procedure TTimeLineEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
-var PropName:string;
+var
+  PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName,'Items') then
+  if SameText(PropName, 'Items') then
   begin
     PropertyEditor.Edit;
-    Continue := false;
+    Continue := False;
   end;
 end;
 {$ENDIF}
 
 procedure TTimeLineEditor.ExecuteVerb(Index: integer);
 begin
-  if Index = 0 then Edit else inherited ExecuteVerb(Index);
+  if Index = 0 then
+    Edit
+  else
+    inherited ExecuteVerb(Index);
 end;
 
 function TTimeLineEditor.GetVerb(Index: Integer): string;
 begin
-  if Index = 0 then Result := SEditProperty else Result := inherited GetVerb(Index);
+  if Index = 0 then
+    Result := SEditProperty
+  else
+    Result := inherited GetVerb(Index);
 end;
 
 function TTimeLineEditor.GetVerbCount: Integer;
 begin
   Result := 1;
+end;
+
+procedure Register;
+begin
+  RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
 end;
 
 end.

@@ -28,36 +28,33 @@ Known Issues:
 
 unit JvPlaylist;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  Messages, SysUtils, Classes, Controls, StdCtrls,
   JvCtrls;
 
 type
-  TJvPlaylist = class(TJvListbox)
+  TJvPlaylist = class(TJvListBox)
   private
-    FShow: Boolean;
+    FShowNumbers: Boolean;
     FItems: TStringList;
-    FShowExt: Boolean;
+    FShowExtension: Boolean;
     FRefresh: Boolean;
-    procedure SetShow(const Value: Boolean);
+    procedure SetShowNumbers(const Value: Boolean);
     procedure SetItems(const Value: TStringList);
-    procedure SetShowExt(const Value: Boolean);
+    procedure SetShowExtension(const Value: Boolean);
   protected
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
     procedure Changed; override;
-
     function GetPath(Value: string; Position: Integer): string;
     procedure Refresh;
     procedure ItemsChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    procedure AddItem(Item: String; AObject: TObject); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure AddItem(Item: string; AObject: TObject);
+      {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure AddItems(Value: TStrings);
     function GetItem(Index: Integer): string;
     procedure DeleteDeadFiles;
@@ -72,77 +69,61 @@ type
     procedure SavePlaylist(FileName: string);
     procedure LoadPlaylist(FileName: string);
   published
-    property ShowNumbers: Boolean read FShow write SetShow default False;
-    property ShowExtension: Boolean read FShowExt write SetShowExt default False;
+    property ShowNumbers: Boolean read FShowNumbers write SetShowNumbers default False;
+    property ShowExtension: Boolean read FShowExtension write SetShowExtension default False;
     property Items: TStringList read FItems write SetItems;
   end;
 
 implementation
 
-{**************************************************}
-
 constructor TJvPlaylist.Create(AOwner: TComponent);
 begin
-  inherited;
-  FShow := False;
-  FShowExt := False;
+  inherited Create(AOwner);
+  FShowNumbers := False;
+  FShowExtension := False;
   FRefresh := False;
   FItems := TStringList.Create;
   FItems.OnChange := ItemsChanged;
 end;
 
-{**************************************************}
-
 destructor TJvPlaylist.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 function TJvPlayList.GetPath(Value: string; Position: Integer): string;
 begin
   Result := ExtractFileName(Value);
-  if not FShowExt then
+  if not FShowExtension then
     Result := ChangeFileExt(Result, '');
-  if FShow then
+  if FShowNumbers then
     Result := IntToStr(Position + 1) + '. ' + Result;
 end;
 
-{**************************************************}
-
-procedure TJvPlaylist.AddItem(Item: String; AObject: TObject); 
+procedure TJvPlaylist.AddItem(Item: string; AObject: TObject);
 begin
-  Items.AddObject(Item,AObject);
+  Items.AddObject(Item, AObject);
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.AddItems(Value: TStrings);
 begin
   Items.Text := Items.Text + Value.Text;
 end;
 
-{**************************************************}
-
 function TJvPlaylist.GetItem(Index: Integer): string;
 begin
   Result := Items[Index];
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.DeleteDeadFiles;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := Items.Count - 1 downto 0 do
-    if not FileExists(Items[i]) then
-      Items.Delete(i);
+  for I := Items.Count - 1 downto 0 do
+    if not FileExists(Items[I]) then
+      Items.Delete(I);
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.SortBySongName;
 var
@@ -161,14 +142,10 @@ begin
   Refresh;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.SortByPath;
 begin
   FItems.Sort;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.SortByPathInverted;
 begin
@@ -176,108 +153,92 @@ begin
   ReverseOrder;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.SortBySongNameInverted;
 begin
   SortBySongName;
   ReverseOrder;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.ReverseOrder;
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
-  j := FItems.Count - 1;
-  for i := 0 to FItems.Count div 2 - 1 do
-    FItems.Exchange(i, j - i);
+  J := FItems.Count - 1;
+  for I := 0 to FItems.Count div 2 - 1 do
+    FItems.Exchange(I, J - I);
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.RandomOrder;
 var
-  i, j, k: Integer;
+  I, J, K: Integer;
 begin
   Randomize;
-  for i := 0 to FItems.Count div 2 do
+  for I := 0 to FItems.Count div 2 do
   begin
-    j := Random(FItems.Count);
-    k := Random(FItems.Count);
-    FItems.Exchange(j, k);
+    J := Random(FItems.Count);
+    K := Random(FItems.Count);
+    FItems.Exchange(J, K);
   end;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.SavePlaylist(FileName: string);
 begin
   FItems.SaveToFile(FileName);
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.LoadPlaylist(FileName: string);
 var
-  st, st2: string;
-  i: Integer;
+  St, St2: string;
+  I: Integer;
 begin
   FItems.Clear;
   with TStringList.Create do
   begin
     LoadFromFile(FileName);
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      st := Strings[i];
-      if Length(st) > 0 then
-        if st[1] <> '#' then
+      St := Strings[I];
+      if Length(St) > 0 then
+        if St[1] <> '#' then
         begin
-          st2 := ExtractFilePath(FileName);
-          if st2[Length(st2)] <> '\' then
-            st2 := st2 + '\';
-          if ((not (FileExists(st))) or (Pos('\', st) = 0)) then
-            if FileExists(st2 + st) then
-              st := st2 + st;
-          FItems.Add(st);
+          St2 := ExtractFilePath(FileName);
+          if St2[Length(St2)] <> '\' then
+            St2 := St2 + '\';
+          if (not FileExists(St)) or (Pos('\', St) = 0) then
+            if FileExists(St2 + St) then
+              St := St2 + St;
+          FItems.Add(St);
         end;
     end;
     Free;
   end;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.Refresh;
 var
-  i: Integer;
+  I: Integer;
 begin
   FRefresh := True;
   if Items.Count <> inherited Items.Count then
   begin
     inherited Items.Clear;
-    for i := 0 to Items.Count - 1 do
-      inherited Items.Add(GetPath(Items[i], i));
+    for I := 0 to Items.Count - 1 do
+      inherited Items.Add(GetPath(Items[I], I));
   end
   else
-    for i := 0 to Items.Count - 1 do
-      inherited Items[i] := GetPath(Items[i], i);
+    for I := 0 to Items.Count - 1 do
+      inherited Items[I] := GetPath(Items[I], I);
   FRefresh := False;
 end;
 
-{**************************************************}
-
-procedure TJvPlaylist.SetShow(const Value: Boolean);
+procedure TJvPlaylist.SetShowNumbers(const Value: Boolean);
 begin
-  if Value <> FShow then
+  if Value <> FShowNumbers then
   begin
-    FShow := Value;
+    FShowNumbers := Value;
     Refresh;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.SetItems(const Value: TStringList);
 begin
@@ -285,25 +246,19 @@ begin
   Refresh;
 end;
 
-{**************************************************}
-
-procedure TJvPlaylist.SetShowExt(const Value: Boolean);
+procedure TJvPlaylist.SetShowExtension(const Value: Boolean);
 begin
-  if Value <> FShowExt then
+  if Value <> FShowExtension then
   begin
-    FShowExt := Value;
+    FShowExtension := Value;
     Refresh;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.ItemsChanged(Sender: TObject);
 begin
   Refresh;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.LBDeleteString(var Msg: TMessage);
 begin
@@ -311,23 +266,19 @@ begin
   if not FRefresh then
   begin
     Items.OnChange := nil;
-    Items.Delete(LongInt(Msg.wParam));
+    Items.Delete(LongInt(Msg.WParam));
     Items.OnChange := ItemsChanged;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvPlaylist.Changed;
 begin
   Refresh;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.MoveSelectedDown;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect = False then
   begin
@@ -342,15 +293,15 @@ begin
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[Items.Count - 1] then
   begin
-    i := Items.Count - 2;
-    while i >= 0 do
+    I := Items.Count - 2;
+    while I >= 0 do
     begin
-      if Selected[i] then
+      if Selected[I] then
       begin
-        Items.Exchange(i, i + 1);
-        Selected[i + 1] := True;
+        Items.Exchange(I, I + 1);
+        Selected[I + 1] := True;
       end;
-      Dec(i);
+      Dec(I);
     end;
   end;
   FRefresh := False;
@@ -358,11 +309,9 @@ begin
   Refresh;
 end;
 
-{**************************************************}
-
 procedure TJvPlaylist.MoveSelectedUp;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect = False then
   begin
@@ -377,15 +326,15 @@ begin
   FRefresh := True;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
   begin
-    i := 1;
-    while i < Items.Count do
+    I := 1;
+    while I < Items.Count do
     begin
-      if Selected[i] then
+      if Selected[I] then
       begin
-        Items.Exchange(i, i - 1);
-        Selected[i - 1] := True;
+        Items.Exchange(I, I - 1);
+        Selected[I - 1] := True;
       end;
-      Inc(i);
+      Inc(I);
     end;
   end;
   FRefresh := False;
@@ -394,3 +343,4 @@ begin
 end;
 
 end.
+

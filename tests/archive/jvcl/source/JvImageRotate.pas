@@ -31,7 +31,7 @@ unit JvImageRotate;
 interface
 
 uses
-  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls, ExtCtrls,
   JvTypes, JvImageDrawThread, JVCLVer;
 
 type

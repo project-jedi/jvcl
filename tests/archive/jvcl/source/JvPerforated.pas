@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvPerforated;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, Forms, ExtCtrls,
+  JvComponent;
 
 type
   TJvPerforated = class(TJvCustomPanel)
@@ -50,11 +49,10 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure WMMove(var Msg: TWMMove); message WM_MOVE;
     function FormPosSizeChange(var Msg: TMessage): Boolean;
-  protected
   public
-    procedure Resize; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Resize; override;
   published
     property Transparent: Boolean read FTransparent write SetTransparent default False;
   end;
@@ -64,11 +62,9 @@ implementation
 uses
   JvWndProcHook;
 
-{*******************************************************}
-
 constructor TJvPerforated.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FTransparent := False;
   FForm := GetParentForm(TControl(AOwner));
   FHandle := FForm.Handle;
@@ -84,8 +80,6 @@ begin
   RegisterWndProcHook(FForm, FormPosSizeChange, hoAfterMsg);
 end;
 
-{*******************************************************}
-
 destructor TJvPerforated.Destroy;
 begin
   if not (csDestroying in FForm.ComponentState) then
@@ -93,18 +87,14 @@ begin
     SetTransparent(False);
     UnRegisterWndProcHook(FForm, FormPosSizeChange, hoAfterMsg);
   end;
-  inherited;
+  inherited Destroy;
 end;
-
-{*******************************************************}
 
 procedure TJvPerforated.Resize;
 begin
-  inherited;
+  inherited Resize;
   SetTransparent(FTransparent);
 end;
-
-{*******************************************************}
 
 procedure TJvPerforated.WMMove(var Msg: TWMMove);
 begin
@@ -112,16 +102,12 @@ begin
   SetTransparent(FTransparent);
 end;
 
-{*******************************************************}
-
 function TJvPerforated.FormPosSizeChange(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_MOVE) or (Msg.Msg = WM_SIZE) then
     SetTransparent(FTransparent);
-  Result := false;
+  Result := False;
 end;
-
-{*******************************************************}
 
 procedure TJvPerforated.SetTransparent(Value: Boolean);
 var
@@ -156,3 +142,4 @@ begin
 end;
 
 end.
+

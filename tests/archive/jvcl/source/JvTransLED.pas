@@ -45,12 +45,10 @@ type
     procedure SetColor(Value: TColor);
   protected
     procedure Paint; override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
-
   published
     property Align;
     property Anchors;
@@ -144,7 +142,6 @@ begin
     Repaint;
   end;
 end;
-
 
 procedure TJvTransLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin

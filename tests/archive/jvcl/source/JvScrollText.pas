@@ -29,17 +29,16 @@ Known Issues:
 
 unit JvScrollText;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, JvTypes,
-  JvImageDrawThread, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JvTypes, JvImageDrawThread, JVCLVer;
 
 type
   TJvScrollText = class(TCustomControl)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FMemo: TStaticText;
     FTimerTag: Integer;
     FActive: Boolean;
@@ -47,7 +46,7 @@ type
     FPixel: Integer;
     FCurrPos: Integer;
     FSelectable: Boolean;
-    FDirection: TDirection;
+    FScrollDirection: TDirection;
     FScrollSaved: Integer;
     FStrings: TStringList;
     FDeja: Cardinal;
@@ -55,17 +54,15 @@ type
     FFont: TFont;
     FStartY: Integer;
     FDown: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
-
     procedure SetItems(const Value: TStringList);
     procedure OnScroll(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetPixel(const Value: Integer);
-    procedure SetDirection(const Value: TDirection);
+    procedure SetScrollDirection(const Value: TDirection);
     procedure CalculateMemo(Sender: TObject);
     function GetAlignment: TAlignment;
-    procedure Setalignment(const Value: TAlignment);
+    procedure SetAlignment(const Value: TAlignment);
     function GetColor: TColor;
     procedure SetColor(const Value: TColor);
     procedure FontChanged(Sender: TObject);
@@ -82,12 +79,12 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     // (p3) this should be just Alignment
-    property TextAlignment: TAlignment read GetAlignment write Setalignment;
+    property TextAlignment: TAlignment read GetAlignment write SetAlignment;
     property Items: TStringList read FStrings write SetItems;
     property Active: Boolean read FActive write SetActive default False;
     property Delay: Cardinal read FDelay write SetDelay default 50;
     property ScrollPixels: Integer read FPixel write SetPixel default 1;
-    property ScrollDirection: TDirection read FDirection write SetDirection default drFromBottom;
+    property ScrollDirection: TDirection read FScrollDirection write SetScrollDirection default drFromBottom;
     property BackgroundColor: TColor read GetColor write SetColor;
     property Font: TFont read GetFont write SetFont;
     procedure Pause;
@@ -96,6 +93,8 @@ type
     property Align;
     property ShowHint;
     property ParentShowHint;
+    property Height default 150;
+    property Width default 200;
   end;
 
 implementation
@@ -103,13 +102,9 @@ implementation
 resourcestring
   RC_TestText = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-///////////////////////////////////////////////////////////
-// TJvScrollText
-///////////////////////////////////////////////////////////
-
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   Width := 200;
   Height := 150;
   FActive := False;
@@ -117,7 +112,7 @@ begin
   FPixel := 1;
   FCurrPos := 0;
   FSelectable := True;
-  FDirection := drFromBottom;
+  FScrollDirection := drFromBottom;
   FStrings := TStringList.Create;
 
   FMemo := TStaticText.Create(Self);
@@ -147,63 +142,67 @@ begin
   FScroll.OnDraw := OnScroll;
 end;
 
-{*******************************************************}
+destructor TJvScrollText.Destroy;
+begin
+  FScroll.OnDraw := nil;
+  FScroll.Terminate;
+//  FScroll.WaitFor;
+  FreeAndNil(FScroll);
+  Application.HintPause := FDeja;
+  FStrings.Free;
+  FMemo.Free;
+  inherited Destroy;
+end;
 
 function TJvScrollText.GetFont: TFont;
 begin
   Result := FMemo.Font;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.SetFont(const Value: TFont);
 var
-  FAl: TAlignment;
+  Al: TAlignment;
 begin
   FMemo.Font.Assign(Value);
   CalculateMemo(Self);
-  Fal := FMemo.Alignment;
+  Al := FMemo.Alignment;
   if FMemo.Alignment = taCenter then
     FMemo.Alignment := taLeftJustify
   else
     FMemo.Alignment := taCenter;
-  FMemo.Alignment := FAl;
+  FMemo.Alignment := Al;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.MouseD(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  p: TPoint;
+  P: TPoint;
 begin
-  p.x := x;
-  p.y := y;
-  p := FMemo.ClientToScreen(p);
+  P.X := X;
+  P.Y := Y;
+  P := FMemo.ClientToScreen(P);
 
   if ScrollDirection in [drFromTop, drFromBottom] then
-    FStartY := p.y
+    FStartY := P.Y
   else
-    FStartY := p.x;
+    FStartY := P.X;
   FScroll.OnDraw := nil;
   FDown := True;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.MouseM(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   NewY: Integer;
-  p: TPoint;
+  P: TPoint;
 begin
   if FDown then
   begin
     //if NewY>0, going up, NewY<0, going down
-    p.x := x;
-    p.y := y;
-    p := FMemo.ClientToScreen(p);
-    y := p.y;
-    x := p.x;
+    P.X := X;
+    P.Y := Y;
+    P := FMemo.ClientToScreen(P);
+    Y := P.Y;
+    X := P.X;
 
     if ScrollDirection in [drFromTop, drFromBottom] then
     begin
@@ -213,28 +212,28 @@ begin
 
       if FCurrPos < -FMemo.Height then
         FCurrPos := Height
-      else if FCurrPos > Height then
+      else
+      if FCurrPos > Height then
         FCurrPos := -FMemo.Height;
 
       FMemo.Top := FCurrPos;
     end
     else
     begin
-      NewY := FStartY - x;
-      FStartY := x;
+      NewY := FStartY - X;
+      FStartY := X;
       FCurrPos := FCurrPos - NewY;
 
       if FCurrPos < -FMemo.Width then
         FCurrPos := Width
-      else if FCurrPos > Width then
+      else
+      if FCurrPos > Width then
         FCurrPos := -FMemo.Width;
 
       FMemo.Left := FCurrPos;
     end;
   end;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.MouseU(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -243,25 +242,9 @@ begin
   FDown := False;
 end;
 
-{*******************************************************}
-
-destructor TJvScrollText.Destroy;
-begin
-  FScroll.OnDraw := nil;
-  FScroll.Terminate;
-//  FScroll.WaitFor;
-  FreeAndnil(FScroll);
-  Application.HintPause := FDeja;
-  FStrings.Free;
-  FMemo.Free;
-  inherited;
-end;
-
-{*******************************************************}
-
 procedure TJvScrollText.OnScroll(Sender: TObject);
 var
-  t: Integer;
+  T: Integer;
 begin
   //tag=1 pause
   if FTimerTag = 1 then
@@ -274,28 +257,29 @@ begin
     end
     else
     begin
-      t := FScrollSaved;
+      T := FScrollSaved;
       Dec(FScrollSaved);
     end;
   end
-  else if FTimerTag = 2 then
+  else
+  if FTimerTag = 2 then
   begin
     if FScrollSaved >= FPixel then
     begin
       FTimerTag := 0;
-      t := FPixel;
+      T := FPixel;
     end
     else
     begin
-      t := FScrollSaved;
+      T := FScrollSaved;
       Inc(FSCrollSaved);
     end;
   end
   else
-    t := FPixel;
+    T := FPixel;
 
   //tag=2 unpause
-  //FDirection
+  //FScrollDirection
 
   case ScrollDirection of
     drFromTop:
@@ -303,7 +287,7 @@ begin
         if FCurrPos > Height then
           FCurrPos := -FMemo.Height
         else
-          FCurrPos := FCurrPos + t;
+          FCurrPos := FCurrPos + T;
         FMemo.Top := FCurrPos;
       end;
     drFromLeft:
@@ -311,29 +295,27 @@ begin
         if - FCurrPos > FMemo.Width then
           FCurrPos := Width
         else
-          FCurrpos := FCurrPos - t;
-        Fmemo.Left := FCurrPos;
+          FCurrpos := FCurrPos - T;
+        FMemo.Left := FCurrPos;
       end;
     drFromRight:
       begin
         if FCurrPos > Width then
           FCurrPos := -Width
         else
-          FCurrpos := FCurrPos + t;
-        Fmemo.Left := FCurrPos;
+          FCurrpos := FCurrPos + T;
+        FMemo.Left := FCurrPos;
       end;
     drFromBottom:
       begin
         if - FCurrPos > FMemo.Height then
           FCurrPos := Height
         else
-          FCurrPos := FCurrPos - t;
+          FCurrPos := FCurrPos - T;
         FMemo.Top := FCurrPos;
       end;
   end;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.Pause;
 begin
@@ -343,8 +325,6 @@ begin
     FTimerTag := 1;
   end;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.SetActive(const Value: Boolean);
 begin
@@ -356,13 +336,12 @@ begin
     FScroll.Suspend;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.SetDelay(const Value: Cardinal);
 begin
   if Value > FDeja then
     Application.HintPause := FDeja
-  else if Value > 10 then
+  else
+  if Value > 10 then
     Application.HintPause := Value - 10
   else
     Application.HintPause := Abs(Value - 1);
@@ -370,52 +349,46 @@ begin
   FScroll.Delay := Value;
 end;
 
-{*******************************************************}
-
-procedure TJvScrollText.SetDirection(const Value: TDirection);
+procedure TJvScrollText.SetScrollDirection(const Value: TDirection);
 begin
-  FDirection := Value;
+  FScrollDirection := Value;
   FMemo.Left := 0;
   FMemo.Top := 0;
   Reset;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.CalculateMemo(Sender: TObject);
 var
-  i, j: Integer;
-  ts: TStringList;
+  I, J: Integer;
+  Ts: TStringList;
 begin
   //calculate the Size of the memo (vertically)
   with TCanvas.Create do
   begin
     Handle := GetDC(HWND_DESKTOP);
     Font.Assign(FMemo.Font);
-    j := 0;
-    ts := TStringList.Create;
-    ts.Text := FMemo.Caption;
-    for i := 0 to ts.Count - 1 do
+    J := 0;
+    Ts := TStringList.Create;
+    Ts.Text := FMemo.Caption;
+    for I := 0 to Ts.Count - 1 do
     try
-      if ts[i] <> '' then
-        j := j + TextHeight(ts[i])*((TextWidth(ts[i]) div Width) + 1)
+      if Ts[I] <> '' then
+        J := J + TextHeight(Ts[I]) * ((TextWidth(Ts[I]) div Width) + 1)
       else
-        j := j + TextHeight(RC_TestText);
+        J := J + TextHeight(RC_TestText);
     except
     end;
-    if j <= 0 then
-      j := Height;
-    FMemo.Height := j;
+    if J <= 0 then
+      J := Height;
+    FMemo.Height := J;
     ReleaseDC(HWND_DESKTOP, Handle);
-    ts.Free;
+    Ts.Free;
     Free;
   end;
   if FMemo.Height < Height then
     FMemo.Height := Height;
   Reset;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.SetItems(const Value: TStringList);
 begin
@@ -424,14 +397,10 @@ begin
   CalculateMemo(Self);
 end;
 
-{*******************************************************}
-
 function TJvScrollText.GetColor: TColor;
 begin
   Result := FMemo.Color;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.SetColor(const Value: TColor);
 begin
@@ -440,29 +409,23 @@ begin
   Invalidate;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.FontChanged(Sender: TObject);
 var
-  FAl: TAlignment;
+  Al: TAlignment;
 begin
   CalculateMemo(Self);
-  FAl := FMemo.Alignment;
+  Al := FMemo.Alignment;
   if FMemo.Alignment = taCenter then
     FMemo.Alignment := taLeftJustify
   else
     FMemo.Alignment := taCenter;
-  FMemo.Alignment := FAl;
+  FMemo.Alignment := Al;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.SetPixel(const Value: Integer);
 begin
   FPixel := Value;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.Reset;
 begin
@@ -478,8 +441,6 @@ begin
   end;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.Unpause;
 begin
   if not FActive then
@@ -490,8 +451,6 @@ begin
   end;
 end;
 
-{*******************************************************}
-
 procedure TJvScrollText.WMSize(var Msg: TWMSize);
 begin
   FMemo.Width := Width;
@@ -499,14 +458,10 @@ begin
     FMemo.Height := Height;
 end;
 
-{*******************************************************}
-
 function TJvScrollText.GetAlignment: TAlignment;
 begin
   Result := FMemo.Alignment;
 end;
-
-{*******************************************************}
 
 procedure TJvScrollText.SetAlignment(const Value: TAlignment);
 begin

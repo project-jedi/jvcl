@@ -12,7 +12,7 @@ The Original Code is: JvMinMaxEd.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -23,17 +23,28 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I JVCL.INC}   
 
 unit JvMinMaxEd;
 
 interface
 
-uses SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+uses
+  SysUtils,
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  Buttons, Mask, JvCurrEdit, JvVCLUtils, JvPlacemnt,
- {$IFDEF COMPILER6_UP}RTLConsts,DesignIntf, VCLEditors, DesignEditors,{$ELSE}DsgnIntf,{$ENDIF}
-  Consts, JvToolEdit;
+  Buttons, Mask,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, VCLEditors, DesignEditors,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF}
+  Consts,
+  JvCurrEdit, JvVCLUtils, JvPlacemnt, JvToolEdit;
 
 type
   TMinMaxInfoEditDialog = class(TForm)
@@ -71,17 +82,13 @@ type
     procedure OkBtnClick(Sender: TObject);
     procedure ClearBtnClick(Sender: TObject);
   private
-    { Private declarations }
     FWinMinMaxInfo: TJvWinMinMaxInfo;
     FForm: TCustomForm;
     procedure SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
     procedure UpdateMinMaxInfo;
   public
-    { Public declarations }
     property WinMinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
   end;
-
-{ TMinMaxProperty }
 
   TMinMaxProperty = class(TClassProperty)
   public
@@ -97,13 +104,14 @@ implementation
 {$R *.DFM}
 
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 function EditMinMaxInfo(AComponent: TJvFormPlacement): Boolean;
 begin
   Result := False;
-  if AComponent = nil then Exit;
+  if AComponent = nil then
+    Exit;
   with TMinMaxInfoEditDialog.Create(Application) do
   try
     WinMinMaxInfo := AComponent.MinMaxInfo;
@@ -112,24 +120,28 @@ begin
     if AComponent.Name <> '' then
       Caption := Format('%s.MinMaxInfo', [AComponent.Name]);
     Result := ShowModal = mrOk;
-    if Result then AComponent.MinMaxInfo := WinMinMaxInfo;
+    if Result then
+      AComponent.MinMaxInfo := WinMinMaxInfo;
   finally
     Free;
   end;
 end;
 
-{ TMinMaxProperty }
+//=== TMinMaxProperty ========================================================
 
 function TMinMaxProperty.GetValue: string;
 var
   WinMinMaxInfo: TJvWinMinMaxInfo;
 begin
   WinMinMaxInfo := TJvWinMinMaxInfo(GetOrdValue);
-  with WinMinMaxInfo do begin
-    if DefaultMinMaxInfo then Result := ResStr(srNone)
-    else Result := Format('(%d,%d),(%d,%d),(%d,%d),(%d,%d)',
-      [MaxPosLeft, MaxPosTop, MaxSizeWidth, MaxSizeHeight,
-      MaxTrackWidth, MaxTrackHeight, MinTrackWidth, MinTrackHeight]);
+  with WinMinMaxInfo do
+  begin
+    if DefaultMinMaxInfo then
+      Result := ResStr(srNone)
+    else
+      Result := Format('(%d,%d),(%d,%d),(%d,%d),(%d,%d)',
+        [MaxPosLeft, MaxPosTop, MaxSizeWidth, MaxSizeHeight,
+        MaxTrackWidth, MaxTrackHeight, MinTrackWidth, MinTrackHeight]);
   end;
 end;
 
@@ -140,15 +152,17 @@ end;
 
 procedure TMinMaxProperty.Edit;
 begin
-  if EditMinMaxInfo(GetComponent(0) as TJvFormPlacement) then Modified;
+  if EditMinMaxInfo(GetComponent(0) as TJvFormPlacement) then
+    Modified;
 end;
 
-{ TMinMaxInfoEditDialog }
+//=== TMinMaxInfoEditDialog ==================================================
 
 procedure TMinMaxInfoEditDialog.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
 begin
   FWinMinMaxInfo.Assign(Value);
-  with FWinMinMaxInfo do begin
+  with FWinMinMaxInfo do
+  begin
     MaxPosLeftEdit.AsInteger := MaxPosLeft;
     MaxPosTopEdit.AsInteger := MaxPosTop;
     MaxSizeWidthEdit.AsInteger := MaxSizeWidth;
@@ -162,7 +176,8 @@ end;
 
 procedure TMinMaxInfoEditDialog.UpdateMinMaxInfo;
 begin
-  with FWinMinMaxInfo do begin
+  with FWinMinMaxInfo do
+  begin
     MaxPosLeft := MaxPosLeftEdit.AsInteger;
     MaxPosTop := MaxPosTopEdit.AsInteger;
     MaxSizeWidth := MaxSizeWidthEdit.AsInteger;
@@ -188,23 +203,28 @@ procedure TMinMaxInfoEditDialog.SetCurrentBtnClick(Sender: TObject);
 begin
   if FForm <> nil then
     case TComponent(Sender).Tag of
-      1: begin
-           MaxPosLeftEdit.AsInteger := TForm(FForm).Left;
-           MaxPosTopEdit.AsInteger := TForm(FForm).Top;
-         end;
-      2: begin
-           MaxSizeWidthEdit.AsInteger := TForm(FForm).Width;
-           MaxSizeHeightEdit.AsInteger := TForm(FForm).Height;
-         end;
-      3: begin
-           MaxTrackWidthEdit.AsInteger := TForm(FForm).Width;
-           MaxTrackHeightEdit.AsInteger := TForm(FForm).Height;
-         end;
-      4: begin
-           MinTrackWidthEdit.AsInteger := TForm(FForm).Width;
-           MinTrackHeightEdit.AsInteger := TForm(FForm).Height;
-         end;
-      else Exit;
+      1:
+        begin
+          MaxPosLeftEdit.AsInteger := TForm(FForm).Left;
+          MaxPosTopEdit.AsInteger := TForm(FForm).Top;
+        end;
+      2:
+        begin
+          MaxSizeWidthEdit.AsInteger := TForm(FForm).Width;
+          MaxSizeHeightEdit.AsInteger := TForm(FForm).Height;
+        end;
+      3:
+        begin
+          MaxTrackWidthEdit.AsInteger := TForm(FForm).Width;
+          MaxTrackHeightEdit.AsInteger := TForm(FForm).Height;
+        end;
+      4:
+        begin
+          MinTrackWidthEdit.AsInteger := TForm(FForm).Width;
+          MinTrackHeightEdit.AsInteger := TForm(FForm).Height;
+        end;
+    else
+      Exit;
     end;
 end;
 
@@ -226,3 +246,4 @@ begin
 end;
 
 end.
+

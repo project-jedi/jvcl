@@ -28,166 +28,144 @@ Known Issues:
 
 unit JvVigenereCipher;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, JvTypes, JvComponent;
+  SysUtils, Classes,
+  JvComponent;
 
 type
+  { (rb) Construct a abstract base class for encoders/decoders }
   TJvVigenereCipher = class(TJvComponent)
   private
     FKey: string;
     FDecoded: string;
     FEncoded: string;
-    procedure SetDecoded(st: string);
-    procedure SetEncoded(st: string);
-    function Trans(Ch: Char; k: Byte): Char;
-    function Decrypt(St: string; Ke: string): string;
-    function Crypt(St: string; Ke: string): string;
-  protected
+    procedure SetDecoded(S: string);
+    procedure SetEncoded(S: string);
+    function Trans(Ch: Char; K: Byte): Char;
+    function Decrypt(const S, AKey: string): string;
+    function Crypt(const S, AKey: string): string;
   public
-  published
-    property Key: string read FKey write FKey;
-    property Encoded: string read Fencoded write SetEncoded;
-    property Decoded: string read FDecoded write SetDecoded;
-    procedure Decode(It: TStrings);
-    procedure Encode(It: TStrings);
+    procedure Decode(Strings: TStrings);
+    procedure Encode(Strings: TStrings);
     function EncodeStream(Value: TStream): TStream;
     function DecodeStream(Value: TStream): TStream;
+  published
+    { (rb) Only property Key should be stored to the stream? }
+    property Key: string read FKey write FKey;
+    property Encoded: string read FEncoded write SetEncoded;
+    property Decoded: string read FDecoded write SetDecoded;
   end;
 
 implementation
 
-{***********************************************************}
+function TJvVigenereCipher.Trans(Ch: Char; K: Byte): Char;
+begin
+  Result := Char((256 + Ord(Ch) + K) mod 256);
+end;
 
-function TJvVigenereCipher.Trans(Ch: Char; k: Byte): Char;
+function TJvVigenereCipher.Decrypt(const S, AKey: string): string;
 var
-  i: Integer;
+  I, J: Byte;
 begin
-  i := Ord(ch) + k;
-  if i < 0 then
-    i := i + 256
-  else if i > 255 then
-    i := i - 256;
-  Result := Char(i);
-end;
-
-{***********************************************************}
-
-function TJvVigenereCipher.Decrypt(St: string; Ke: string): string;
-var
-  i, j: Byte;
-begin
-  Result := '';
-  j := 1;
-  if Length(Ke) > 0 then
-    for i := 1 to Length(St) do
-    begin
-      Result := Result + Trans(St[i], -Ord(Ke[j]));
-      if j = Length(Ke) then
-        j := 1
-      else
-        Inc(j);
-    end;
-end;
-
-{***********************************************************}
-
-function TJvVigenereCipher.Crypt(St: string; Ke: string): string;
-var
-  i, j: Byte;
-begin
-  Result := '';
-  j := 1;
-  if Length(Ke) > 0 then
-    for i := 1 to Length(St) do
-    begin
-      Result := Result + Trans(St[i], Ord(Ke[j]));
-      if j = Length(Ke) then
-        j := 1
-      else
-        Inc(j);
-    end;
-end;
-
-{***********************************************************}
-
-procedure TJvVigenereCipher.SetDecoded(st: string);
-begin
-  FDecoded := st;
-  FEncoded := Crypt(st, FKey);
-end;
-
-{***********************************************************}
-
-procedure TJvVigenereCipher.SetEncoded(st: string);
-begin
-  FEncoded := st;
-  FDecoded := Decrypt(st, FKey);
-end;
-
-{***********************************************************}
-
-procedure TJvVigenereCipher.Decode(It: TStrings);
-begin
-  It.Text := Decrypt(It.Text, FKey);
-end;
-
-{***********************************************************}
-
-procedure TJvVigenereCipher.Encode(it: TStrings);
-begin
-  It.Text := Crypt(It.Text, FKey);
-end;
-
-{***********************************************************}
-
-function TJvVigenereCipher.DecodeStream(Value: TStream): TStream;
-var
-  buffer: array[0..1024] of Byte;
-  i, j, count: Integer;
-begin
-  Result := TMemoryStream.Create;
-  j := 1;
-  while Value.Position < Value.Size do
+  if AKey = '' then
   begin
-    count := Value.Read(buffer, 1024);
-    for i := 0 to count - 1 do
-    begin
-      buffer[i] := Ord(Trans(Char(buffer[i]), -Ord(FKey[j])));
-      if j = Length(FKey) then
-        j := 1
-      else
-        Inc(j);
-    end;
-    Result.Write(buffer, count);
+    Result := '';
+    Exit;
+  end;
+
+  J := 1;
+  SetLength(Result, Length(S));
+  for I := 1 to Length(S) do
+  begin
+    Result[I] := Trans(S[I], -Ord(AKey[J]));
+    J := (J mod Length(AKey)) + 1;
   end;
 end;
 
-{***********************************************************}
+function TJvVigenereCipher.Crypt(const S, AKey: string): string;
+var
+  I, J: Byte;
+begin
+  if AKey = '' then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  J := 1;
+  SetLength(Result, Length(S));
+  for I := 1 to Length(S) do
+  begin
+    Result[I] := Trans(S[I], Ord(AKey[J]));
+    J := (J mod Length(AKey)) + 1;
+  end;
+end;
+
+procedure TJvVigenereCipher.SetDecoded(S: string);
+begin
+  FDecoded := S;
+  FEncoded := Crypt(S, FKey);
+end;
+
+procedure TJvVigenereCipher.SetEncoded(S: string);
+begin
+  FEncoded := S;
+  FDecoded := Decrypt(S, FKey);
+end;
+
+procedure TJvVigenereCipher.Decode(Strings: TStrings);
+begin
+  Strings.Text := Decrypt(Strings.Text, FKey);
+end;
+
+procedure TJvVigenereCipher.Encode(Strings: TStrings);
+begin
+  Strings.Text := Crypt(Strings.Text, FKey);
+end;
+
+function TJvVigenereCipher.DecodeStream(Value: TStream): TStream;
+var
+  { (rb) Why array [] of _Byte_ not Char? }
+  Buffer: array [0..1023] of Byte; { (RB) should be const }
+  I, J, Count: Integer;
+begin
+  { (RB) Letting this function create a stream is not a good idea; }
+  Result := TMemoryStream.Create;
+  J := 1;
+  while Value.Position < Value.Size do
+  begin
+    Count := Value.Read(Buffer, SizeOf(Buffer));
+    for I := 0 to Count - 1 do
+    begin
+      Buffer[I] := Ord(Trans(Char(Buffer[I]), -Ord(FKey[J])));
+      J := (J mod Length(FKey)) + 1;
+    end;
+    Result.Write(Buffer, Count);
+  end;
+end;
 
 function TJvVigenereCipher.EncodeStream(Value: TStream): TStream;
 var
-  buffer: array[0..1024] of Byte;
-  i, j, count: Integer;
+  { (rb) Why array [] of _Byte_ not Char? }
+  Buffer: array[0..1023] of Byte; { (RB) should be const}
+  I, J, Count: Integer;
 begin
+  { (RB) Letting this function create a stream is not a good idea; }
   Result := TMemoryStream.Create;
-  j := 1;
+  J := 1;
   while Value.Position < Value.Size do
   begin
-    count := Value.Read(buffer, 1024);
-    for i := 0 to count - 1 do
+    Count := Value.Read(Buffer, SizeOf(Buffer));
+    for I := 0 to Count - 1 do
     begin
-      buffer[i] := Ord(Trans(Char(buffer[i]), Ord(FKey[j])));
-      if j = Length(FKey) then
-        j := 1
-      else
-        Inc(j);
+      Buffer[I] := Ord(Trans(Char(Buffer[I]), Ord(FKey[J])));
+      J := (J mod Length(FKey)) + 1;
     end;
-    Result.Write(buffer, count);
+    Result.Write(Buffer, Count);
   end;
 end;
 
 end.
+

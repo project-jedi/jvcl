@@ -31,23 +31,23 @@ unit JvGroupBox;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  JVCLVer;
 
 type
   TJvGroupBox = class(TGroupBox)
   private
-    { Private declarations }
-    FOnHotkey: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
+    FOnHotKey: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    FColor, FSaved: TColor;
+    FHintColor, FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
+    FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
-    FPropagate: Boolean;
-    procedure SetPropagate(const Value: Boolean);
-    procedure CMDialogChar(var msg: TCMDialogChar);
+    FPropagateEnable: Boolean;
+    procedure SetPropagateEnable(const Value: Boolean);
+    procedure CMDialogChar(var Msg: TCMDialogChar);
       message CM_DIALOGCHAR;
     procedure CMEnabledChanged(var Msg: TMsg); message CM_ENABLEDCHANGED;
     procedure CMMouseEnter(var Msg: TMsg); message CM_MOUSEENTER;
@@ -55,30 +55,23 @@ type
     procedure CMCtl3DChanged(var Msg: TMsg); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMsg); message CM_PARENTCOLORCHANGED;
   protected
-    { Protected declarations }
-    procedure DoHotkey; dynamic;
+    procedure DoHotKey; dynamic;
     procedure Paint; override;
-
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     property Canvas;
   published
-    { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-    property PropagateEnable: Boolean read FPropagate write SetPropagate default False;
-
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable default False;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnHotkey: TNotifyEvent read FOnHotkey write FOnHotkey;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
+    property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
   end;
 
 implementation
-
-{ TJvGroupBox }
 
 procedure TJvGroupBox.CMCtl3DChanged(var Msg: TMsg);
 begin
@@ -87,21 +80,21 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-procedure TJvGroupBox.CMDialogChar(var msg: TCMDialogChar);
+procedure TJvGroupBox.CMDialogChar(var Msg: TCMDialogChar);
 begin
   inherited;
-  if msg.result <> 0 then
-    DoHotkey;
+  if Msg.Result <> 0 then
+    DoHotKey;
 end;
 
 procedure TJvGroupBox.CMEnabledChanged(var Msg: TMsg);
 var
-  i: Integer;
+  I: Integer;
 begin
   inherited;
   if PropagateEnable then
-    for i := 0 to ControlCount - 1 do
-      Controls[i].Enabled := Enabled;
+    for I := 0 to ControlCount - 1 do
+      Controls[I].Enabled := Enabled;
   Invalidate;
 end;
 
@@ -111,8 +104,9 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -133,23 +127,23 @@ end;
 procedure TJvGroupBox.CMParentColorChanged(var Msg: TMsg);
 begin
   inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+  if Assigned(FOnParentColorChange) then
+    FOnParentColorChange(Self);
 end;
 
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
-  FPropagate := False;
+  FPropagateEnable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
-procedure TJvGroupBox.DoHotkey;
+procedure TJvGroupBox.DoHotKey;
 begin
-  if Assigned(FOnHotkey) then
-    FOnHotkey(self);
+  if Assigned(FOnHotKey) then
+    FOnHotKey(Self);
 end;
 
 procedure TJvGroupBox.Paint;
@@ -171,7 +165,8 @@ begin
       FrameRect(R);
       OffsetRect(R, -1, -1);
       Brush.Color := clBtnShadow;
-    end else
+    end
+    else
       Brush.Color := clWindowFrame;
     FrameRect(R);
     if Text <> '' then
@@ -191,7 +186,7 @@ begin
         DrawText(Handle, PChar(Text), Length(Text), R, Flags);
         OffsetRect(R, -1, -1);
         Font.Color := clBtnShadow;
-        SetBkMode(Handle,Windows.TRANSPARENT);
+        SetBkMode(Handle, Windows.TRANSPARENT);
         DrawText(Handle, PChar(Text), Length(Text), R, Flags);
       end
       else
@@ -200,13 +195,13 @@ begin
   end;
 end;
 
-procedure TJvGroupBox.SetPropagate(const Value: Boolean);
+procedure TJvGroupBox.SetPropagateEnable(const Value: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
-  FPropagate := Value;
-  for i := 0 to ControlCount - 1 do
-    Controls[i].Enabled := Enabled;
+  FPropagateEnable := Value;
+  for I := 0 to ControlCount - 1 do
+    Controls[I].Enabled := Enabled;
 end;
 
 end.

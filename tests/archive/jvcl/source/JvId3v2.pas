@@ -57,200 +57,203 @@ ignored:
  TJvId3v2
 }
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, extctrls, Dialogs, JPEG, JvId3v2Types, JvComponent;
+  Windows, SysUtils, Classes, Graphics, Controls,
+  JvId3v2Types, JvComponent;
 
 type
-  TJvID3FileType = (ftUNKNOWN, ftMPG, ftMPG1, ftMPG2, ftMPG3, ftMPG2_5, ftMPG_AAC, ftVQF, ftPCM);
-{$EXTERNALSYM TJvID3FileType}
-  TJvID3MediaType = (mtUNKNOWN, mtDIG, mtDIG_ANALOG_TRANSFER, mtANA, mtANA_WAX_CYLINDER, mtANA_8_TRACK_TAPE, mtCD,
-    mtCD_ANALOG, mtCD_DDD, mtCD_ADD, mtCD_AAD, mtLASERDISC, mtLASERDISC_ANALOG_TRANSFER, mtTURNTABLE,
-    mtTURNTABLE_33, mtTURNTABLE_45, mtTURNTABLE_71, mtTURNTABLE_76, mtTURNTABLE_78, mtTURNTABLE_80,
-    mtMINIDISC, mtMINIDISC_ANALOG_TRANSFER, mtDAT, mtDAT_ANALOG_TRANSFER, mtDAT_48KHZ_16B, mtDAT_32KHZ_16B,
-    mtDAT_32KHZ_12B, mtDAT_44KHZ_16B, mtDAT_44KHZ_16B_WIDE, mtDCC, mtDCC_ANALOG_TRANSFER, mtDVD,
-    mtDVD_ANALOG_TRANSFER, mtTV, mtTV_PAL, mtTV_NTSC, mtTV_SECAM,
-    mtVID, mtVID_PAL, mtVID_NTSC, mtVID_SECAM, mtVID_VHS, mtVID_SVHS, mtVID_BETA, mtRAD, mtRAD_FM,
-    mtRAD_AM, mtRAD_LW, mtRAD_MW, mtTEL, mtTEL_ISDN, mtMC, mtMC_4, mtMC_9, mtMC_I, mtMC_II, mtMC_III,
-    mtMC_IV, mtREE, mtREE_9, mtREE_19, mtREE_38, mtREE_76, mtREE_I, mtREE_II, mtREE_III, mtREE_IV,
-    mtDAT_32KHZ_12B_4CH);
-{$EXTERNALSYM TJvID3MediaType}
+  TJvID3FileType =
+    (ftUNKNOWN, ftMPG, ftMPG1, ftMPG2, ftMPG3, ftMPG2_5, ftMPG_AAC, ftVQF, ftPCM);
+
+  TJvID3MediaType =
+    (mtUNKNOWN, mtDIG, mtDIG_ANALOG_TRANSFER, mtANA, mtANA_WAX_CYLINDER, mtANA_8_TRACK_TAPE, mtCD,
+     mtCD_ANALOG, mtCD_DDD, mtCD_ADD, mtCD_AAD, mtLASERDISC, mtLASERDISC_ANALOG_TRANSFER, mtTURNTABLE,
+     mtTURNTABLE_33, mtTURNTABLE_45, mtTURNTABLE_71, mtTURNTABLE_76, mtTURNTABLE_78, mtTURNTABLE_80,
+     mtMINIDISC, mtMINIDISC_ANALOG_TRANSFER, mtDAT, mtDAT_ANALOG_TRANSFER, mtDAT_48KHZ_16B, mtDAT_32KHZ_16B,
+     mtDAT_32KHZ_12B, mtDAT_44KHZ_16B, mtDAT_44KHZ_16B_WIDE, mtDCC, mtDCC_ANALOG_TRANSFER, mtDVD,
+     mtDVD_ANALOG_TRANSFER, mtTV, mtTV_PAL, mtTV_NTSC, mtTV_SECAM,
+     mtVID, mtVID_PAL, mtVID_NTSC, mtVID_SECAM, mtVID_VHS, mtVID_SVHS, mtVID_BETA, mtRAD, mtRAD_FM,
+     mtRAD_AM, mtRAD_LW, mtRAD_MW, mtTEL, mtTEL_ISDN, mtMC, mtMC_4, mtMC_9, mtMC_I, mtMC_II, mtMC_III,
+     mtMC_IV, mtREE, mtREE_9, mtREE_19, mtREE_38, mtREE_76, mtREE_I, mtREE_II, mtREE_III, mtREE_IV,
+     mtDAT_32KHZ_12B_4CH);
 
   TJvId3Text = class(TPersistent)
   private
     FBPM: Integer;
     FAlbum: string;
-    FComposer: TStringList;
-    FDelay: Integer;
+    FComposer: TStrings;
+    FPlaylistDelay: Integer;
     FCopyright: string;
     FEncodedBy: string;
     FDate: string;
-    FLyricist: TStringList;
+    FLyricists: TStrings;
     FFileType: TJvID3FileType;
     FTime: string;
     FInitialKey: string;
-    FContent: string;
+    FContentGroup: string;
     FSubTitle: string;
-    FContentD: string;
-    FLanguages: TStringList;
+    FContentDescription: string;
+    FLanguages: TStrings;
     FLength: string;
     FMediaType: TJvID3MediaType;
-    FOriginal: string;
-    FFileName: string;
-    FOLyricists: TStringList;
-    FOArtist: TStringList;
+    FOriginalTitle: string;
+    FOriginalFileName: string;
+    FOriginalLyricists: TStrings;
+    FOriginalArtists: TStrings;
     FOwner: string;
-    FOYear: string;
-    FPerformers: TStringList;
+    FOriginalReleaseYear: string;
+    FPerformers: TStrings;
     FConductor: string;
-    FModified: string;
+    FModifiedBy: string;
     FBand: string;
-    FPart: string;
+    FPartOf: string;
     FPublisher: string;
     FTrackNumber: string;
-    FRecording: string;
-    FInternet: string;
-    FIOwner: string;
+    FRecordingDate: string;
+    FInternetRadioName: string;
+    FInternetRadioOwner: string;
     FSize: Integer;
     FISRC: string;
-    FEncoding: string;
+    FEncodingSoftware: string;
     FYear: string;
+    FContent: string;
     procedure ResetFields;
   public
     constructor Create;
     destructor Destroy; override;
   published
-    property Album: string read FAlbum write FAlbum;
-    property BPM: Integer read FBPM write FBPM;
-    property Composer: TStringList read FComposer write FComposer;
-    property Copyright: string read FCopyright write FCopyright;
-    property Date: string read FDate write FDate;
-    property PlaylistDelay: Integer read FDelay write FDelay;
-    property EncodedBy: string read FEncodedBy write FEncodedBy;
-    property Lyricists: TStringList read FLyricist write FLyricist;
-    property FileType: TJvID3FileType read FFileType write FFileType;
-    property Time: string read FTime write FTime;
-    property ContentGroup: string read FContent write FContent;
-    property ContentDescription: string read FContentD write FContentD;
-    property SubTitle: string read FSubTitle write FSubTitle;
-    property InitialKey: string read FInitialKey write FInitialKey;
-    property Languages: TStringList read FLanguages write FLanguages;
-    property Length: string read FLength write FLength;
-    property MediaType: TJvID3MediaType read FMediaType write FMediaType;
-    property OriginalTitle: string read FOriginal write FOriginal;
-    property OriginalFileName: string read FFileName write FFileName;
-    property OriginalLyricists: TStringList read FOLyricists write FOLyricists;
-    property OriginalArtist: TStringList read FOArtist write FOArtist;
-    property OriginalReleaseYear: string read FOYear write FOYear;
-    property FileOwner: string read FOwner write FOwner;
-    property Performers: TStringList read FPerformers write FPerformers;
-    property Band: string read FBand write FBand;
-    property Conductor: string read FConductor write FConductor;
-    property ModifiedBy: string read FModified write FModified;
-    property PartOf: string read FPart write FPart;
-    property Publisher: string read FPublisher write FPublisher;
-    property TrackNumber: string read FTrackNumber write FTrackNumber;
-    property RecordingDate: string read FRecording write FRecording;
-    property InternetRadioName: string read FInternet write FInternet;
-    property InternetRadioOwner: string read FIOwner write FIOwner;
-    property Size: Integer read FSize write FSize;
-    property ISRC: string read FISRC write FISRC;
-    property EncodingSoftware: string read FEncoding write FEncoding;
-    property Year: string read FYear write FYear;
-    property Content: string read FContent write FContent;
+    { Do not store dummies }
+    property Album: string read FAlbum write FAlbum stored False;
+    property BPM: Integer read FBPM write FBPM stored False;
+    property Composer: TStrings read FComposer write FComposer stored False;
+    property Copyright: string read FCopyright write FCopyright stored False;
+    property Date: string read FDate write FDate stored False;
+    property PlaylistDelay: Integer read FPlaylistDelay write FPlaylistDelay stored False;
+    property EncodedBy: string read FEncodedBy write FEncodedBy stored False;
+    property Lyricists: TStrings read FLyricists write FLyricists stored False;
+    property FileType: TJvID3FileType read FFileType write FFileType stored False;
+    property Time: string read FTime write FTime stored False;
+    property ContentGroup: string read FContentGroup write FContentGroup stored False;
+    property ContentDescription: string read FContentDescription write FContentDescription stored False;
+    property SubTitle: string read FSubTitle write FSubTitle stored False;
+    property InitialKey: string read FInitialKey write FInitialKey stored False;
+    property Languages: TStrings read FLanguages write FLanguages stored False;
+    property Length: string read FLength write FLength stored False;
+    property MediaType: TJvID3MediaType read FMediaType write FMediaType stored False;
+    property OriginalTitle: string read FOriginalTitle write FOriginalTitle stored False;
+    property OriginalFileName: string read FOriginalFileName write FOriginalFileName stored False;
+    property OriginalLyricists: TStrings read FOriginalLyricists write FOriginalLyricists stored False;
+    property OriginalArtists: TStrings read FOriginalArtists write FOriginalArtists stored False;
+    property OriginalReleaseYear: string read FOriginalReleaseYear write FOriginalReleaseYear stored False;
+    property FileOwner: string read FOwner write FOwner stored False;
+    property Performers: TStrings read FPerformers write FPerformers stored False;
+    property Band: string read FBand write FBand stored False;
+    property Conductor: string read FConductor write FConductor stored False;
+    property ModifiedBy: string read FModifiedBy write FModifiedBy stored False;
+    property PartOf: string read FPartOf write FPartOf stored False;
+    property Publisher: string read FPublisher write FPublisher stored False;
+    property TrackNumber: string read FTrackNumber write FTrackNumber stored False;
+    property RecordingDate: string read FRecordingDate write FRecordingDate stored False;
+    property InternetRadioName: string read FInternetRadioName write FInternetRadioName stored False;
+    property InternetRadioOwner: string read FInternetRadioOwner write FInternetRadioOwner stored False;
+    property Size: Integer read FSize write FSize stored False;
+    property ISRC: string read FISRC write FISRC stored False;
+    property EncodingSoftware: string read FEncodingSoftware write FEncodingSoftware stored False;
+    property Year: string read FYear write FYear stored False;
+    property Content: string read FContent write FContent stored False;
   end;
 
   TJvId3Web = class(TPersistent)
   private
-    FAudio: string;
-    FStation: string;
+    FOfficialAudio: string;
+    FInternetRadioStation: string;
     FPublishers: string;
-    FASource: string;
+    FOfficialAudioSource: string;
     FPayment: string;
-    FLegal: string;
-    FCommercial: string;
-    FArtist: string;
+    FLegalInfo: string;
+    FCommercialInfo: string;
+    FOfficialArtist: string;
     procedure ResetFields;
   published
-    property CommercialInfo: string read FCommercial write FCommercial;
-    property LegalInfo: string read FLegal write FLegal;
-    property OfficialAudio: string read FAudio write FAudio;
-    property OfficialArtist: string read FArtist write FArtist;
-    property OfficialAudioSource: string read FASource write FASource;
-    property InternetRadioStation: string read FStation write FStation;
-    property Payment: string read FPayment write FPayment;
-    property Publishers: string read FPublishers write FPublishers;
+    { Do not store dummies }
+    property CommercialInfo: string read FCommercialInfo write FCommercialInfo stored False;
+    property LegalInfo: string read FLegalInfo write FLegalInfo stored False;
+    property OfficialAudio: string read FOfficialAudio write FOfficialAudio stored False;
+    property OfficialArtist: string read FOfficialArtist write FOfficialArtist stored False;
+    property OfficialAudioSource: string read FOfficialAudioSource write FOfficialAudioSource stored False;
+    property InternetRadioStation: string read FInternetRadioStation write FInternetRadioStation stored False;
+    property Payment: string read FPayment write FPayment stored False;
+    property Publishers: string read FPublishers write FPublishers stored False;
   end;
 
   TJvID3UDText = class(TPersistent)
   private
-    FCount: Integer;
-    FItems: Integer;
+    FItemCount: Integer;
+    FItemIndex: Integer;
     FDescription: string;
     FValue: string;
-    FBidonI: Integer;
+    FDummyI: Integer;
     FStrings: TStringList;
     FDescriptions: TStringList;
-
     procedure ResetFields;
     procedure SetItem(const Value: Integer);
-    procedure AddItem(desc, Value: string);
+    procedure AddItem(Desc, Value: string);
   public
     constructor Create;
     destructor Destroy; override;
   published
-    property ItemIndex: Integer read FItems write SetItem;
-    property Description: string read FDescription write FDescription;
-    property Value: string read FValue write FValue;
-    property ItemCount: Integer read FCount write FBidonI;
+    property ItemIndex: Integer read FItemIndex write SetItem;
+    { Do not store dummies }
+    property Description: string read FDescription write FDescription stored False;
+    property Value: string read FValue write FValue stored False;
+    property ItemCount: Integer read FItemCount write FDummyI stored False;
   end;
 
   TJvID3UDUrl = class(TPersistent)
   private
-    FCount: Integer;
-    FItems: Integer;
+    FItemCount: Integer;
+    FItemIndex: Integer;
     FDescription: string;
-    FValue: string;
-    FBidonI: Integer;
-    FStrings: TStringList;
+    FURL: string;
+    FDummyI: Integer;
+    FURLList: TStringList;
     FDescriptions: TStringList;
-
     procedure ResetFields;
     procedure SetItem(const Value: Integer);
-    procedure AddItem(desc, Value: string);
+    procedure AddItem(Desc, Value: string);
   public
     constructor Create;
     destructor Destroy; override;
   published
-    property ItemIndex: Integer read FItems write SetItem;
-    property Description: string read FDescription write FDescription;
-    property URL: string read FValue write FValue;
-    property ItemCount: Integer read FCount write FBidonI;
+    property ItemIndex: Integer read FItemIndex write SetItem;
+    { Do not store dummies }
+    property Description: string read FDescription write FDescription stored False;
+    property URL: string read FURL write FURL stored False;
+    property ItemCount: Integer read FItemCount write FDummyI stored False;
   end;
 
   TJvIdPictures = class(TPersistent)
   private
     FMedia: TPicture;
     FLyricist: TPicture;
-    FIcon: TPicture;
+    FFileIcon: TPicture;
     FComposer: TPicture;
-    FRLocation: TPicture;
+    FRecordingLocation: TPicture;
     FOther: TPicture;
-    FFish: TPicture;
+    FColouredFish: TPicture;
     FCoverFront: TPicture;
     FBandLogo: TPicture;
     FConductor: TPicture;
     FPublisherLogo: TPicture;
-    FDRecording: TPicture;
+    FDuringRecording: TPicture;
     FArtist: TPicture;
     FLeaflet: TPicture;
     FDPerformance: TPicture;
     FIllustration: TPicture;
     FBand: TPicture;
-    FMove: TPicture;
+    FMovieCapture: TPicture;
     FCoverBack: TPicture;
     FOtherIcon: TPicture;
     FLeadArtist: TPicture;
@@ -261,15 +264,15 @@ type
     procedure SetConductor(const Value: TPicture);
     procedure SetCoverBack(const Value: TPicture);
     procedure SetCoverFront(const Value: TPicture);
-    procedure SetDRecording(const Value: TPicture);
-    procedure SetFish(const Value: TPicture);
-    procedure SetIcon(const Value: TPicture);
+    procedure SetDuringRecording(const Value: TPicture);
+    procedure SetColouredFish(const Value: TPicture);
+    procedure SetFileIcon(const Value: TPicture);
     procedure SetIllustration(const Value: TPicture);
     procedure SetLeaflet(const Value: TPicture);
-    procedure SetLocation(const Value: TPicture);
+    procedure SetRecordingLocation(const Value: TPicture);
     procedure SetLyricist(const Value: TPicture);
     procedure SetMedia(const Value: TPicture);
-    procedure SetMovie(const Value: TPicture);
+    procedure SetMovieCapture(const Value: TPicture);
     procedure SetOther(const Value: TPicture);
     procedure SetPerformance(const Value: TPicture);
     procedure SetPublisherLogo(const Value: TPicture);
@@ -279,27 +282,28 @@ type
     constructor Create;
     destructor Destroy; override;
   published
-    property Other: TPicture read FOther write SetOther;
-    property FileIcon: TPicture read FIcon write SetIcon;
-    property OtherIcon: TPicture read FOtherIcon write SetOtherIcon;
-    property CoverFront: TPicture read FCoverFront write SetCoverFront;
-    property CoverBack: TPicture read FCoverBack write SetCoverBack;
-    property Leaflet: TPicture read FLeaflet write SetLeaflet;
-    property Media: TPicture read FMedia write SetMedia;
-    property Artist: TPicture read FArtist write SetArtist;
-    property Conductor: TPicture read FConductor write SetConductor;
-    property Band: TPicture read FBand write SetBand;
-    property Composer: TPicture read FComposer write SetComposer;
-    property Lyricist: TPicture read FLyricist write SetLyricist;
-    property recordingLocation: TPicture read FRLocation write SetLocation;
-    property DuringRecording: TPicture read FDRecording write SetDRecording;
-    property DuringPerformance: TPicture read FDPerformance write SetPerformance;
-    property MovieCapture: TPicture read FMove write SetMovie;
-    property ColouredFish: TPicture read FFish write SetFish;
-    property Illustration: TPicture read FIllustration write SetIllustration;
-    property BandLogo: TPicture read FBandLogo write SetBandLogo;
-    property PublisherLogo: TPicture read FPublisherLogo write SetPublisherLogo;
-    property LeadArtist: TPicture read FLeadArtist write SetLeadArtist;
+    { Do not store dummies }
+    property Other: TPicture read FOther write SetOther stored False;
+    property FileIcon: TPicture read FFileIcon write SetFileIcon stored False;
+    property OtherIcon: TPicture read FOtherIcon write SetOtherIcon stored False;
+    property CoverFront: TPicture read FCoverFront write SetCoverFront stored False;
+    property CoverBack: TPicture read FCoverBack write SetCoverBack stored False;
+    property Leaflet: TPicture read FLeaflet write SetLeaflet stored False;
+    property Media: TPicture read FMedia write SetMedia stored False;
+    property Artist: TPicture read FArtist write SetArtist stored False;
+    property Conductor: TPicture read FConductor write SetConductor stored False;
+    property Band: TPicture read FBand write SetBand stored False;
+    property Composer: TPicture read FComposer write SetComposer stored False;
+    property Lyricist: TPicture read FLyricist write SetLyricist stored False;
+    property RecordingLocation: TPicture read FRecordingLocation write SetRecordingLocation stored False;
+    property DuringRecording: TPicture read FDuringRecording write SetDuringRecording stored False;
+    property DuringPerformance: TPicture read FDPerformance write SetPerformance stored False;
+    property MovieCapture: TPicture read FMovieCapture write SetMovieCapture stored False;
+    property ColouredFish: TPicture read FColouredFish write SetColouredFish stored False;
+    property Illustration: TPicture read FIllustration write SetIllustration stored False;
+    property BandLogo: TPicture read FBandLogo write SetBandLogo stored False;
+    property PublisherLogo: TPicture read FPublisherLogo write SetPublisherLogo stored False;
+    property LeadArtist: TPicture read FLeadArtist write SetLeadArtist stored False;
   end;
 
   TJvIdPicturesDesc = class(TPersistent)
@@ -307,49 +311,50 @@ type
     FLeaflet: string;
     FOtherIcon: string;
     FArtist: string;
-    FIcon: string;
+    FFileIcon: string;
     FCoverFront: string;
     FPublisherLogo: string;
     FLeadArtist: string;
     FConductor: string;
-    FDRecording: string;
+    FDuringRecording: string;
     FBandLogo: string;
     FLyricist: string;
     FCoverBack: string;
     FIllustration: string;
     FBand: string;
-    FMovie: string;
-    FDPerformance: string;
+    FMovieCapture: string;
+    FDuringPerformance: string;
     FComposer: string;
     FMedia: string;
-    FFish: string;
-    FRLocation: string;
+    FColouredFish: string;
+    FRecordingLocation: string;
     FOther: string;
   published
-    property Other: string read FOther write FOther;
-    property FileIcon: string read FIcon write FICon;
-    property OtherIcon: string read FOtherIcon write FOtherIcon;
-    property CoverFront: string read FCoverFront write FCoverFront;
-    property CoverBack: string read FCoverBack write FCoverBack;
-    property Leaflet: string read FLeaflet write FLeaflet;
-    property Media: string read FMedia write FMedia;
-    property Artist: string read FArtist write FArtist;
-    property Conductor: string read FConductor write FConductor;
-    property Band: string read FBand write FBand;
-    property Composer: string read FComposer write FComposer;
-    property Lyricist: string read FLyricist write FLyricist;
-    property recordingLocation: string read FRLocation write FRLocation;
-    property DuringRecording: string read FDRecording write FDRecording;
-    property DuringPerformance: string read FDPerformance write FDPerformance;
-    property MovieCapture: string read FMovie write FMovie;
-    property ColouredFish: string read FFish write FFish;
-    property Illustration: string read FIllustration write FIllustration;
-    property BandLogo: string read FBandLogo write FBandLogo;
-    property PublisherLogo: string read FPublisherLogo write FPublisherLogo;
-    property LeadArtist: string read FLeadArtist write FLeadArtist;
+    { Do not store dummies }
+    property Other: string read FOther write FOther stored False;
+    property FileIcon: string read FFileIcon write FFileIcon stored False;
+    property OtherIcon: string read FOtherIcon write FOtherIcon stored False;
+    property CoverFront: string read FCoverFront write FCoverFront stored False;
+    property CoverBack: string read FCoverBack write FCoverBack stored False;
+    property Leaflet: string read FLeaflet write FLeaflet stored False;
+    property Media: string read FMedia write FMedia stored False;
+    property Artist: string read FArtist write FArtist stored False;
+    property Conductor: string read FConductor write FConductor stored False;
+    property Band: string read FBand write FBand stored False;
+    property Composer: string read FComposer write FComposer stored False;
+    property Lyricist: string read FLyricist write FLyricist stored False;
+    property RecordingLocation: string read FRecordingLocation write FRecordingLocation stored False;
+    property DuringRecording: string read FDuringRecording write FDuringRecording stored False;
+    property DuringPerformance: string read FDuringPerformance write FDuringPerformance stored False;
+    property MovieCapture: string read FMovieCapture write FMovieCapture stored False;
+    property ColouredFish: string read FColouredFish write FColouredFish stored False;
+    property Illustration: string read FIllustration write FIllustration stored False;
+    property BandLogo: string read FBandLogo write FBandLogo stored False;
+    property PublisherLogo: string read FPublisherLogo write FPublisherLogo stored False;
+    property LeadArtist: string read FLeadArtist write FLeadArtist stored False;
   end;
 
-  TJvIdImages = class(TPErsistent)
+  TJvIdImages = class(TPersistent)
   private
     FPictures: TJvIdPictures;
     FInfos: TJvIdPicturesDesc;
@@ -358,54 +363,57 @@ type
     constructor Create;
     destructor Destroy; override;
   published
-    property Pictures: TJvIdPictures read FPictures write FPictures;
-    property Infos: TJvIdPicturesDesc read FInfos write FInfos;
+    property Pictures: TJvIdPictures read FPictures;
+    property Infos: TJvIdPicturesDesc read FInfos;
   end;
 
   TJvIdIpl = class(TPersistent)
   private
-    FBidonI: Integer;
-    FCount: Integer;
-    FItems: Integer;
+    FDummyI: Integer;
+    FItemCount: Integer;
+    FItemIndex: Integer;
     FJob: string;
     FPerson: string;
     FJobs: TStringList;
     FPersons: TStringList;
-    procedure SetItem(const Value: Integer);
+    procedure SetItemIndex(const Value: Integer);
     procedure AddItem(Job, Person: string);
     procedure ResetFields;
   public
     constructor Create;
     destructor Destroy; override;
   published
-    property ItemIndex: Integer read FItems write SetItem;
-    property Job: string read FJob write FJob;
-    property Person: string read FPerson write FPerson;
-    property ItemCount: Integer read FCount write FBidonI;
+    property ItemIndex: Integer read FItemIndex write SetItemIndex;
+    { Do not store dummies }
+    property Job: string read FJob write FJob stored False;
+    property Person: string read FPerson write FPerson stored False;
+    property ItemCount: Integer read FItemCount write FDummyI stored False;
   end;
 
   TJvId3Owner = class(TPersistent)
   private
-    FSeller: string;
     FPrice: string;
-    FDate: TDate;
+    FDatePurchased: TDate;
+    FSeller: string;
     procedure ResetFields;
   published
-    property Price: string read FPrice write FPrice;
-    property DatePurchased: TDate read FDate write FDate;
-    property Seller: string read FSeller write FSeller;
+    { Do not store dummies }
+    property Price: string read FPrice write FPrice stored False;
+    property DatePurchased: TDate read FDatePurchased write FDatePurchased stored False;
+    property Seller: string read FSeller write FSeller stored False;
   end;
 
   TJvId3Popularimeter = class(TPersistent)
   private
-    FRating: Byte;
     FCounter: Integer;
-    FEmail: string;
+    FRating: Byte;
+    FUserEmail: string;
     procedure ResetFields;
   published
-    property UserEmail: string read FEmail write FEmail;
-    property Rating: Byte read FRating write FRating;
-    property Counter: Integer read FCounter write FCounter;
+    { Do not store dummies }
+    property UserEmail: string read FUserEmail write FUserEmail stored False;
+    property Rating: Byte read FRating write FRating stored False;
+    property Counter: Integer read FCounter write FCounter stored False;
   end;
 
   TJvId3EventType = (etPADDING, etEND_OF_INITIAL_SILENCE, etINTRO_START, etMAINPART_START,
@@ -413,7 +421,6 @@ type
     etTHEME_START, etVARIATION_START, etKEY_CHANGE, eTTime_CHANGE, etUNWANTED_NOISE,
     etSUSTAINED_NOISE, etSUSTAINED_NOISE_END, etINTRO_END, etMAINPART_END, etVERSE_END,
     etREFRAIN_END, etTHEME_END, etAUDIO_END, etFILE_END);
-{$EXTERNALSYM TJvId3EventType}
 
   TEventTiming = procedure(Sender: TObject; TimeStamp: Integer; EventType: TJvId3EventType) of object;
 
@@ -421,1004 +428,579 @@ type
     TimeStamp: Integer;
     EventType: TJvId3EventType;
   end;
-{$EXTERNALSYM TJvId3Events}
 
   TJvId3v2 = class(TJvComponent)
   private
-    FEvents: array[0..1000] of TJvId3Events;
+    FEvents: array [0..1000] of TJvId3Events;
     FEventsCount: Integer;
     FEventsTiming: Integer;
     FCount: Integer;
-
-    FPresent: Boolean;
+    FTagPresent: Boolean;
     FVersion: Real;
     FFileName: TFileName;
-    FUnsynchro: Boolean;
+    FUnsynchronisation: Boolean;
     FExperimental: Boolean;
-    FExtended: Boolean;
+    FExtendedHeader: Boolean;
     FSize: Integer;
-    FId3Text: TJvId3Text;
+    FTexts: TJvId3Text;
     FWeb: TJvId3Web;
-    FUDText: TJvID3UDText;
-    FUDWeb: TJvID3UDUrl;
-    FInvolved: TJvIdIpl;
+    FUserDefinedText: TJvID3UDText;
+    FUserDefinedWeb: TJvID3UDUrl;
+    FInvolvedPeople: TJvIdIpl;
     FImages: TJvIdImages;
     FOwner: TJvId3Owner;
-    FCounter: Cardinal;
-    FPopula: TJvId3Popularimeter;
+    FPlayCounter: Cardinal;
+    FPopularimeter: TJvId3Popularimeter;
     FEventTiming: TEventTiming;
-
-    //unusefull variables
-    FBidonB: Boolean;
-    FBidonR: Real;
-    FBIdonI: Integer;
+    // unuseful variables
+    FDummyB: Boolean;
+    FDummyR: Real;
+    FDummyI: Integer;
     FTagSize: Integer;
     procedure LoadFromFile(FileName: string);
     procedure SetFileName(const Value: TFileName);
     procedure ResetProp;
-    procedure ReadAndUnsynchro(var source, dest: TStream; taille: Integer);
-
-    procedure ReadText(frame: TId3v2Frame; source: TStream);
-    procedure ReadWeb(frame: TId3v2Frame; source: TStream);
-    procedure ReadIpls(frame: TId3v2Frame; source: TStream);
-    procedure ReadImg(frame: TId3v2Frame; source: TStream);
-    procedure ReadCounter(frame: TId3v2Frame; source: TStream);
-    procedure ReadPop(frame: TId3v2Frame; source: TStream);
-    procedure ReadOwner(frame: TId3v2Frame; source: TStream);
-    procedure ReadEvent(frame: TId3v2Frame; source: TStream);
-
-    procedure SkipFrame(frame: TId3v2Frame; var source: TStream);
+    procedure ReadAndUnsynchro(var Source, Dest: TStream; taille: Integer);
+    procedure ReadText(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadWeb(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadIpls(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadImg(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadCounter(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadPop(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadOwner(Frame: TId3v2Frame; Source: TStream);
+    procedure ReadEvent(Frame: TId3v2Frame; Source: TStream);
+    procedure SkipFrame(Frame: TId3v2Frame; var Source: TStream);
     function Iso639ToName(code: string): string;
-  protected
   public
-    MusicCDIdentifier: array[0..803] of Byte;
+    MusicCDIdentifier: array [0..803] of Byte;
     MusicCDIdentifierLength: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property TagPresent: Boolean read FPresent write FBidonB;
-    property FileName: TFileName read FFileName write SetFileName;
-    property Version: Real read FVersion write FBidonR;
-    property Unsynchronisation: Boolean read FUnsynchro write FBidonB;
-    property ExtendedHeader: Boolean read FExtended write FBidonB;
-    property Experimental: Boolean read FExperimental write FBidonB;
-    property Texts: TJvId3Text read FId3Text write FId3Text;
-    property UserDefinedText: TJvID3UDText read FUDText write FUDText;
-    property Web: TJvId3Web read FWeb write FWeb;
-    property UserDefinedWeb: TJvID3UDUrl read FUDWeb write FUDWeb;
-    property InvolvedPeople: TJvIdIpl read FInvolved write FInvolved;
-    property Images: TJvIdImages read FImages write FImages;
-    property PlayCounter: Cardinal read FCounter write FCounter;
-    property Owner: TJvId3Owner read FOwner write FOwner;
-    property Popularimeter: TJvId3Popularimeter read FPopula write FPopula;
-    property TagSize: Integer read FTagSize write FBidonI;
-
-    procedure LoadFromStream(stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
     procedure CheckEvent(CurrentTime: Integer);
+  published
+    { Do not store dummies }
+    property TagPresent: Boolean read FTagPresent write FDummyB stored False;
+    property FileName: TFileName read FFileName write SetFileName;
+    property Version: Real read FVersion write FDummyR stored False;
+    property Unsynchronisation: Boolean read FUnsynchronisation write FDummyB stored False;
+    property ExtendedHeader: Boolean read FExtendedHeader write FDummyB stored False;
+    property Experimental: Boolean read FExperimental write FDummyB stored False;
+    property Texts: TJvId3Text read FTexts;
+    property UserDefinedText: TJvID3UDText read FUserDefinedText;
+    property Web: TJvId3Web read FWeb;
+    property UserDefinedWeb: TJvID3UDUrl read FUserDefinedWeb;
+    property InvolvedPeople: TJvIdIpl read FInvolvedPeople;
+    property Images: TJvIdImages read FImages;
+    property PlayCounter: Cardinal read FPlayCounter write FPlayCounter stored False;
+    property Owner: TJvId3Owner read FOwner;
+    property Popularimeter: TJvId3Popularimeter read FPopularimeter;
+    property TagSize: Integer read FTagSize write FDummyI stored False;
     property OnEventTiming: TEventTiming read FEventTiming write FEventTiming;
   end;
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvId3v2
-///////////////////////////////////////////////////////////
+//=== TJvId3v2 ===============================================================
+
+constructor TJvId3v2.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTagSize := 0;
+  FCount := 0;
+  FTagPresent := False;
+  FTexts := TJvId3Text.Create;
+  FWeb := TJvId3Web.Create;
+  FUserDefinedText := TJvID3UDText.Create;
+  FUserDefinedWeb := TJvID3UDUrl.Create;
+  FInvolvedPeople := TJvIdIpl.Create;
+  FImages := TJvIdImages.Create;
+  FOwner := TJvId3Owner.Create;
+  FPopularimeter := TJvId3Popularimeter.Create;
+  ResetProp;
+end;
+
+destructor TJvId3v2.Destroy;
+begin
+  FTexts.Free;
+  FWeb.Free;
+  FUserDefinedText.Free;
+  FUserDefinedWeb.Free;
+  FInvolvedPeople.Free;
+  FImages.Free;
+  FOwner.Free;
+  FPopularimeter.Free;
+  inherited Destroy;
+end;
 
 procedure TJvId3v2.CheckEvent(CurrentTime: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if (FEventsCount > 0) and Assigned(FEventTiming) then
   begin
     if CurrentTime < FCount then
       FCount := 0;
-    for i := 0 to FEventsCount - 1 do
-      if FEvents[i].TimeStamp in [FCount..CurrentTime] then
-        FEventTiming(Self, FEvents[i].TimeStamp, FEvents[i].EventType);
+    for I := 0 to FEventsCount - 1 do
+      if FEvents[I].TimeStamp in [FCount..CurrentTime] then
+        FEventTiming(Self, FEvents[I].TimeStamp, FEvents[I].EventType);
   end;
   FCount := CurrentTime;
 end;
 
-{**************************************************}
+type
+  TShortToLongName = record
+    S: PChar;
+    L: PChar;
+  end;
 
-constructor TJvId3v2.Create(AOwner: TComponent);
-begin
-  inherited;
-  FTagSize := 0;
-  FCount := 0;
-  FPresent := False;
-  FId3Text := TJvId3Text.Create;
-  FWeb := TJvId3Web.Create;
-  FUDText := TJvID3UDText.Create;
-  FUDWeb := TJvID3UDUrl.Create;
-  FInvolved := TJvIdIpl.Create;
-  FImages := TJvIdImages.Create;
-  FOwner := TJvId3Owner.Create;
-  FPopula := TJvId3Popularimeter.Create;
-  ResetProp;
-end;
-
-{**************************************************}
-
-destructor TJvId3v2.Destroy;
-begin
-  FId3Text.Free;
-  FWeb.Free;
-  FUDText.Free;
-  FUDWeb.Free;
-  FInvolved.Free;
-  FImages.Free;
-  FOwner.Free;
-  FPopula.Free;
-  inherited;
-end;
-
-{**************************************************}
-
-// (rom) this function is clumsy
+const
+  cShortToLongNameTable: array [1..427] of TShortToLongName =
+    (
+     (S: 'aar'; L: 'Afar'),
+     (S: 'abk'; L: 'Abkhazian'),
+     (S: 'ace'; L: 'Achinese'),
+     (S: 'ach'; L: 'Acoli'),
+     (S: 'ada'; L: 'Adangme'),
+     (S: 'afa'; L: 'Afro-Asiatic (Other)'),
+     (S: 'afh'; L: 'Afrihili'),
+     (S: 'afr'; L: 'Afrikaans'),
+     (S: 'aka'; L: 'Akan'),
+     (S: 'akk'; L: 'Akkadian'),
+     (S: 'alb'; L: 'Albanian'),
+     (S: 'ale'; L: 'Aleut'),
+     (S: 'alg'; L: 'Algonquian Languages'),
+     (S: 'amh'; L: 'Amharic'),
+     (S: 'ang'; L: 'English, Old (ca. 450-1100)'),
+     (S: 'apa'; L: 'Apache Languages'),
+     (S: 'ara'; L: 'Arabic'),
+     (S: 'arc'; L: 'Aramaic'),
+     (S: 'arm'; L: 'Armenian'),
+     (S: 'arn'; L: 'Araucanian'),
+     (S: 'arp'; L: 'Arapaho'),
+     (S: 'art'; L: 'Artificial (Other)'),
+     (S: 'arw'; L: 'Arawak'),
+     (S: 'asm'; L: 'Assamese'),
+     (S: 'ath'; L: 'Athapascan Languages'),
+     (S: 'ava'; L: 'Avaric'),
+     (S: 'ave'; L: 'Avestan'),
+     (S: 'awa'; L: 'Awadhi'),
+     (S: 'aym'; L: 'Aymara'),
+     (S: 'aze'; L: 'Azerbaijani'),
+     (S: 'bad'; L: 'Banda'),
+     (S: 'bai'; L: 'Bamileke Languages'),
+     (S: 'bak'; L: 'Bashkir'),
+     (S: 'bal'; L: 'Baluchi'),
+     (S: 'bam'; L: 'Bambara'),
+     (S: 'ban'; L: 'Balinese'),
+     (S: 'baq'; L: 'Basque'),
+     (S: 'bas'; L: 'Basa'),
+     (S: 'bat'; L: 'Baltic (Other)'),
+     (S: 'bej'; L: 'Beja'),
+     (S: 'bel'; L: 'Byelorussian'),
+     (S: 'bem'; L: 'Bemba'),
+     (S: 'ben'; L: 'Bengali'),
+     (S: 'ber'; L: 'Berber (Other)'),
+     (S: 'bho'; L: 'Bhojpuri'),
+     (S: 'bih'; L: 'Bihari'),
+     (S: 'bik'; L: 'Bikol'),
+     (S: 'bin'; L: 'Bini'),
+     (S: 'bis'; L: 'Bislama'),
+     (S: 'bla'; L: 'Siksika'),
+     (S: 'bnt'; L: 'Bantu (Other)'),
+     (S: 'bod'; L: 'Tibetan'),
+     (S: 'bra'; L: 'Braj'),
+     (S: 'bre'; L: 'Breton'),
+     (S: 'bua'; L: 'Buriat'),
+     (S: 'bug'; L: 'Buginese'),
+     (S: 'bul'; L: 'Bulgarian'),
+     (S: 'bur'; L: 'Burmese'),
+     (S: 'cad'; L: 'Caddo'),
+     (S: 'cai'; L: 'Central American Indian (Other)'),
+     (S: 'car'; L: 'Carib'),
+     (S: 'cat'; L: 'Catalan'),
+     (S: 'cau'; L: 'Caucasian (Other)'),
+     (S: 'ceb'; L: 'Cebuano'),
+     (S: 'cel'; L: 'Celtic (Other)'),
+     (S: 'ces'; L: 'Czech'),
+     (S: 'cha'; L: 'Chamorro'),
+     (S: 'chb'; L: 'Chibcha'),
+     (S: 'che'; L: 'Chechen'),
+     (S: 'chg'; L: 'Chagatai'),
+     (S: 'chi'; L: 'Chinese'),
+     (S: 'chm'; L: 'Mari'),
+     (S: 'chn'; L: 'Chinook jargon'),
+     (S: 'cho'; L: 'Choctaw'),
+     (S: 'chr'; L: 'Cherokee'),
+     (S: 'chu'; L: 'Church Slavic'),
+     (S: 'chv'; L: 'Chuvash'),
+     (S: 'chy'; L: 'Cheyenne'),
+     (S: 'cop'; L: 'Coptic'),
+     (S: 'cor'; L: 'Cornish'),
+     (S: 'cos'; L: 'Corsican'),
+     (S: 'cpe'; L: 'Creoles and Pidgins, English-based (Other)'),
+     (S: 'cpf'; L: 'Creoles and Pidgins, French-based (Other)'),
+     (S: 'cpp'; L: 'Creoles and Pidgins, Portuguese-based (Other)'),
+     (S: 'cre'; L: 'Cree'),
+     (S: 'crp'; L: 'Creoles and Pidgins (Other)'),
+     (S: 'cus'; L: 'Cushitic (Other)'),
+     (S: 'cym'; L: 'Welsh'),
+     (S: 'cze'; L: 'Czech'),
+     (S: 'dak'; L: 'Dakota'),
+     (S: 'dan'; L: 'Danish'),
+     (S: 'del'; L: 'Delaware'),
+     (S: 'deu'; L: 'German'),
+     (S: 'din'; L: 'Dinka'),
+     (S: 'div'; L: 'Divehi'),
+     (S: 'doi'; L: 'Dogri'),
+     (S: 'dra'; L: 'Dravidian (Other)'),
+     (S: 'dua'; L: 'Duala'),
+     (S: 'dum'; L: 'Dutch, Middle (ca. 1050-1350)'),
+     (S: 'dut'; L: 'Dutch'),
+     (S: 'dyu'; L: 'Dyula'),
+     (S: 'dzo'; L: 'Dzongkha'),
+     (S: 'efi'; L: 'Efik'),
+     (S: 'egy'; L: 'Egyptian (Ancient)'),
+     (S: 'eka'; L: 'Ekajuk'),
+     (S: 'ell'; L: 'Greek, Modern (1453-)'),
+     (S: 'elx'; L: 'Elamite'),
+     (S: 'eng'; L: 'English'),
+     (S: 'enm'; L: 'English, Middle (ca. 1100-1500)'),
+     (S: 'epo'; L: 'Esperanto'),
+     (S: 'esk'; L: 'Eskimo (Other)'),
+     (S: 'esl'; L: 'Spanish'),
+     (S: 'est'; L: 'Estonian'),
+     (S: 'eus'; L: 'Basque'),
+     (S: 'ewe'; L: 'Ewe'),
+     (S: 'ewo'; L: 'Ewondo'),
+     (S: 'fan'; L: 'Fang'),
+     (S: 'fao'; L: 'Faroese'),
+     (S: 'fas'; L: 'Persian'),
+     (S: 'fat'; L: 'Fanti'),
+     (S: 'fij'; L: 'Fijian'),
+     (S: 'fin'; L: 'Finnish'),
+     (S: 'fiu'; L: 'Finno-Ugrian (Other)'),
+     (S: 'fon'; L: 'Fon'),
+     (S: 'fra'; L: 'French'),
+     (S: 'fre'; L: 'French'),
+     (S: 'frm'; L: 'French, Middle (ca. 1400-1600)'),
+     (S: 'fro'; L: 'French, Old (842- ca. 1400)'),
+     (S: 'fry'; L: 'Frisian'),
+     (S: 'ful'; L: 'Fulah'),
+     (S: 'gaa'; L: 'Ga'),
+     (S: 'gae'; L: 'Gaelic (Scots)'),
+     (S: 'gai'; L: 'Irish'),
+     (S: 'gay'; L: 'Gayo'),
+     (S: 'gdh'; L: 'Gaelic (Scots)'),
+     (S: 'gem'; L: 'Germanic (Other)'),
+     (S: 'geo'; L: 'Georgian'),
+     (S: 'ger'; L: 'German'),
+     (S: 'gez'; L: 'Geez'),
+     (S: 'gil'; L: 'Gilbertese'),
+     (S: 'glg'; L: 'Gallegan'),
+     (S: 'gmh'; L: 'German, Middle High (ca. 1050-1500)'),
+     (S: 'goh'; L: 'German, Old High (ca. 750-1050)'),
+     (S: 'gon'; L: 'Gondi'),
+     (S: 'got'; L: 'Gothic'),
+     (S: 'grb'; L: 'Grebo'),
+     (S: 'grc'; L: 'Greek, Ancient (to 1453)'),
+     (S: 'gre'; L: 'Greek, Modern (1453-)'),
+     (S: 'grn'; L: 'Guarani'),
+     (S: 'guj'; L: 'Gujarati'),
+     (S: 'hai'; L: 'Haida'),
+     (S: 'hau'; L: 'Hausa'),
+     (S: 'haw'; L: 'Hawaiian'),
+     (S: 'heb'; L: 'Hebrew'),
+     (S: 'her'; L: 'Herero'),
+     (S: 'hil'; L: 'Hiligaynon'),
+     (S: 'him'; L: 'Himachali'),
+     (S: 'hin'; L: 'Hindi'),
+     (S: 'hmo'; L: 'Hiri Motu'),
+     (S: 'hun'; L: 'Hungarian'),
+     (S: 'hup'; L: 'Hupa'),
+     (S: 'hye'; L: 'Armenian'),
+     (S: 'iba'; L: 'Iban'),
+     (S: 'ibo'; L: 'Igbo'),
+     (S: 'ice'; L: 'Icelandic'),
+     (S: 'ijo'; L: 'Ijo'),
+     (S: 'iku'; L: 'Inuktitut'),
+     (S: 'ilo'; L: 'Iloko'),
+     (S: 'ina'; L: 'Interlingua (International Auxiliary language Association)'),
+     (S: 'Inc'; L: 'Indic (Other)'),
+     (S: 'ind'; L: 'Indonesian'),
+     (S: 'ine'; L: 'Indo-European (Other)'),
+     (S: 'ine'; L: 'Interlingue'),
+     (S: 'ipk'; L: 'Inupiak'),
+     (S: 'ira'; L: 'Iranian (Other)'),
+     (S: 'iri'; L: 'Irish'),
+     (S: 'iro'; L: 'Iroquoian uages'),
+     (S: 'isl'; L: 'Icelandic'),
+     (S: 'ita'; L: 'Italian'),
+     (S: 'jav'; L: 'Javanese'),
+     (S: 'jaw'; L: 'Javanese'),
+     (S: 'jpn'; L: 'Japanese'),
+     (S: 'jpr'; L: 'Judeo-Persian'),
+     (S: 'jrb'; L: 'Judeo-Arabic'),
+     (S: 'kaa'; L: 'Kara-Kalpak'),
+     (S: 'kab'; L: 'Kabyle'),
+     (S: 'kac'; L: 'Kachin'),
+     (S: 'kal'; L: 'Greenlandic'),
+     (S: 'kam'; L: 'Kamba'),
+     (S: 'kan'; L: 'Kannada'),
+     (S: 'kar'; L: 'Karen'),
+     (S: 'kas'; L: 'Kashmiri'),
+     (S: 'kat'; L: 'Georgian'),
+     (S: 'kau'; L: 'Kanuri'),
+     (S: 'kaw'; L: 'Kawi'),
+     (S: 'kaz'; L: 'Kazakh'),
+     (S: 'kha'; L: 'Khasi'),
+     (S: 'khi'; L: 'Khoisan (Other)'),
+     (S: 'khm'; L: 'Khmer'),
+     (S: 'kho'; L: 'Khotanese'),
+     (S: 'kik'; L: 'Kikuyu'),
+     (S: 'kin'; L: 'Kinyarwanda'),
+     (S: 'kir'; L: 'Kirghiz'),
+     (S: 'kok'; L: 'Konkani'),
+     (S: 'kom'; L: 'Komi'),
+     (S: 'kon'; L: 'Kongo'),
+     (S: 'kor'; L: 'Korean'),
+     (S: 'kpe'; L: 'Kpelle'),
+     (S: 'kro'; L: 'Kru'),
+     (S: 'kru'; L: 'Kurukh'),
+     (S: 'kua'; L: 'Kuanyama'),
+     (S: 'kum'; L: 'Kumyk'),
+     (S: 'kur'; L: 'Kurdish'),
+     (S: 'kus'; L: 'Kusaie'),
+     (S: 'kut'; L: 'Kutenai'),
+     (S: 'lad'; L: 'Ladino'),
+     (S: 'lah'; L: 'Lahnda'),
+     (S: 'lam'; L: 'Lamba'),
+     (S: 'lao'; L: 'Lao'),
+     (S: 'lat'; L: 'Latin'),
+     (S: 'lav'; L: 'Latvian'),
+     (S: 'lez'; L: 'Lezghian'),
+     (S: 'lin'; L: 'Lingala'),
+     (S: 'lit'; L: 'Lithuanian'),
+     (S: 'lol'; L: 'Mongo'),
+     (S: 'loz'; L: 'Lozi'),
+     (S: 'ltz'; L: 'Letzeburgesch'),
+     (S: 'lub'; L: 'Luba-Katanga'),
+     (S: 'lug'; L: 'Ganda'),
+     (S: 'lui'; L: 'Luiseno'),
+     (S: 'lun'; L: 'Lunda'),
+     (S: 'luo'; L: 'Luo (Kenya and Tanzania)'),
+     (S: 'mac'; L: 'Macedonian'),
+     (S: 'mad'; L: 'Madurese'),
+     (S: 'mag'; L: 'Magahi'),
+     (S: 'mah'; L: 'Marshall'),
+     (S: 'mai'; L: 'Maithili'),
+     (S: 'mak'; L: 'Macedonian'),
+     (S: 'mak'; L: 'Makasar'),
+     (S: 'mal'; L: 'Malayalam'),
+     (S: 'man'; L: 'Mandingo'),
+     (S: 'mao'; L: 'Maori'),
+     (S: 'map'; L: 'Austronesian (Other)'),
+     (S: 'mar'; L: 'Marathi'),
+     (S: 'mas'; L: 'Masai'),
+     (S: 'max'; L: 'Manx'),
+     (S: 'may'; L: 'Malay'),
+     (S: 'men'; L: 'Mende'),
+     (S: 'mga'; L: 'Irish, Middle (900 - 1200)'),
+     (S: 'mic'; L: 'Micmac'),
+     (S: 'min'; L: 'Minangkabau'),
+     (S: 'mis'; L: 'Miscellaneous (Other)'),
+     (S: 'mkh'; L: 'Mon-Kmer (Other)'),
+     (S: 'mlg'; L: 'Malagasy'),
+     (S: 'mlt'; L: 'Maltese'),
+     (S: 'mni'; L: 'Manipuri'),
+     (S: 'mno'; L: 'Manobo Languages'),
+     (S: 'moh'; L: 'Mohawk'),
+     (S: 'mol'; L: 'Moldavian'),
+     (S: 'mon'; L: 'Mongolian'),
+     (S: 'mos'; L: 'Mossi'),
+     (S: 'mri'; L: 'Maori'),
+     (S: 'msa'; L: 'Malay'),
+     (S: 'mul'; L: 'Multiple Languages'),
+     (S: 'mun'; L: 'Munda Languages'),
+     (S: 'mus'; L: 'Creek'),
+     (S: 'mwr'; L: 'Marwari'),
+     (S: 'mya'; L: 'Burmese'),
+     (S: 'myn'; L: 'Mayan Languages'),
+     (S: 'nah'; L: 'Aztec'),
+     (S: 'nai'; L: 'North American Indian (Other)'),
+     (S: 'nau'; L: 'Nauru'),
+     (S: 'nav'; L: 'Navajo'),
+     (S: 'nbl'; L: 'Ndebele, South'),
+     (S: 'nde'; L: 'Ndebele, North'),
+     (S: 'ndo'; L: 'Ndongo'),
+     (S: 'nep'; L: 'Nepali'),
+     (S: 'new'; L: 'Newari'),
+     (S: 'nic'; L: 'Niger-Kordofanian (Other)'),
+     (S: 'niu'; L: 'Niuean'),
+     (S: 'nla'; L: 'Dutch'),
+     (S: 'nno'; L: 'Norwegian (Nynorsk)'),
+     (S: 'non'; L: 'Norse, Old'),
+     (S: 'nor'; L: 'Norwegian'),
+     (S: 'nso'; L: 'Sotho, Northern'),
+     (S: 'nub'; L: 'Nubian Languages'),
+     (S: 'nya'; L: 'Nyanja'),
+     (S: 'nym'; L: 'Nyamwezi'),
+     (S: 'nyn'; L: 'Nyankole'),
+     (S: 'nyo'; L: 'Nyoro'),
+     (S: 'nzi'; L: 'Nzima'),
+     (S: 'oci'; L: 'Langue d''Oc (post 1500)'),
+     (S: 'oji'; L: 'Ojibwa'),
+     (S: 'ori'; L: 'Oriya'),
+     (S: 'orm'; L: 'Oromo'),
+     (S: 'osa'; L: 'Osage'),
+     (S: 'oss'; L: 'Ossetic'),
+     (S: 'ota'; L: 'Turkish, Ottoman (1500 - 1928)'),
+     (S: 'oto'; L: 'Otomian Languages'),
+     (S: 'paa'; L: 'Papuan-Australian (Other)'),
+     (S: 'pag'; L: 'Pangasinan'),
+     (S: 'pal'; L: 'Pahlavi'),
+     (S: 'pam'; L: 'Pampanga'),
+     (S: 'pan'; L: 'Panjabi'),
+     (S: 'pap'; L: 'Papiamento'),
+     (S: 'pau'; L: 'Palauan'),
+     (S: 'peo'; L: 'Persian, Old (ca 600 - 400 B.C.)'),
+     (S: 'per'; L: 'Persian'),
+     (S: 'phn'; L: 'Phoenician'),
+     (S: 'pli'; L: 'Pali'),
+     (S: 'pol'; L: 'Polish'),
+     (S: 'pon'; L: 'Ponape'),
+     (S: 'por'; L: 'Portuguese'),
+     (S: 'pra'; L: 'Prakrit uages'),
+     (S: 'pro'; L: 'Provencal, Old (to 1500)'),
+     (S: 'pus'; L: 'Pushto'),
+     (S: 'que'; L: 'Quechua'),
+     (S: 'raj'; L: 'Rajasthani'),
+     (S: 'rar'; L: 'Rarotongan'),
+     (S: 'roa'; L: 'Romance (Other)'),
+     (S: 'roh'; L: 'Rhaeto-Romance'),
+     (S: 'rom'; L: 'Romany'),
+     (S: 'ron'; L: 'Romanian'),
+     (S: 'rum'; L: 'Romanian'),
+     (S: 'run'; L: 'Rundi'),
+     (S: 'rus'; L: 'Russian'),
+     (S: 'sad'; L: 'Sandawe'),
+     (S: 'sag'; L: 'Sango'),
+     (S: 'sah'; L: 'Yakut'),
+     (S: 'sai'; L: 'South American Indian (Other)'),
+     (S: 'sal'; L: 'Salishan Languages'),
+     (S: 'sam'; L: 'Samaritan Aramaic'),
+     (S: 'san'; L: 'Sanskrit'),
+     (S: 'sco'; L: 'Scots'),
+     (S: 'scr'; L: 'Serbo-Croatian'),
+     (S: 'sel'; L: 'Selkup'),
+     (S: 'sem'; L: 'Semitic (Other)'),
+     (S: 'sga'; L: 'Irish, Old (to 900)'),
+     (S: 'shn'; L: 'Shan'),
+     (S: 'sid'; L: 'Sidamo'),
+     (S: 'sin'; L: 'Singhalese'),
+     (S: 'sio'; L: 'Siouan Languages'),
+     (S: 'sit'; L: 'Sino-Tibetan (Other)'),
+     (S: 'sla'; L: 'Slavic (Other)'),
+     (S: 'slk'; L: 'Slovak'),
+     (S: 'slo'; L: 'Slovak'),
+     (S: 'slv'; L: 'Slovenian'),
+     (S: 'smi'; L: 'Sami Languages'),
+     (S: 'smo'; L: 'Samoan'),
+     (S: 'sna'; L: 'Shona'),
+     (S: 'snd'; L: 'Sindhi'),
+     (S: 'sog'; L: 'Sogdian'),
+     (S: 'som'; L: 'Somali'),
+     (S: 'son'; L: 'Songhai'),
+     (S: 'sot'; L: 'Sotho, Southern'),
+     (S: 'spa'; L: 'Spanish'),
+     (S: 'sqi'; L: 'Albanian'),
+     (S: 'srd'; L: 'Sardinian'),
+     (S: 'srr'; L: 'Serer'),
+     (S: 'ssa'; L: 'Nilo-Saharan (Other)'),
+     (S: 'ssw'; L: 'Siswant'),
+     (S: 'ssw'; L: 'Swazi'),
+     (S: 'suk'; L: 'Sukuma'),
+     (S: 'sun'; L: 'Sudanese'),
+     (S: 'sus'; L: 'Susu'),
+     (S: 'sux'; L: 'Sumerian'),
+     (S: 'sve'; L: 'Swedish'),
+     (S: 'swa'; L: 'Swahili'),
+     (S: 'swe'; L: 'Swedish'),
+     (S: 'syr'; L: 'Syriac'),
+     (S: 'tah'; L: 'Tahitian'),
+     (S: 'tam'; L: 'Tamil'),
+     (S: 'tat'; L: 'Tatar'),
+     (S: 'tel'; L: 'Telugu'),
+     (S: 'tem'; L: 'Timne'),
+     (S: 'ter'; L: 'Tereno'),
+     (S: 'tgk'; L: 'Tajik'),
+     (S: 'tgl'; L: 'Tagalog'),
+     (S: 'tha'; L: 'Thai'),
+     (S: 'tib'; L: 'Tibetan'),
+     (S: 'tig'; L: 'Tigre'),
+     (S: 'tir'; L: 'Tigrinya'),
+     (S: 'tiv'; L: 'Tivi'),
+     (S: 'tli'; L: 'Tlingit'),
+     (S: 'tmh'; L: 'Tamashek'),
+     (S: 'tog'; L: 'Tonga (Nyasa)'),
+     (S: 'ton'; L: 'Tonga (Tonga Islands)'),
+     (S: 'tru'; L: 'Truk'),
+     (S: 'tsi'; L: 'Tsimshian'),
+     (S: 'tsn'; L: 'Tswana'),
+     (S: 'tso'; L: 'Tsonga'),
+     (S: 'tuk'; L: 'Turkmen'),
+     (S: 'tum'; L: 'Tumbuka'),
+     (S: 'tur'; L: 'Turkish'),
+     (S: 'tut'; L: 'Altaic (Other)'),
+     (S: 'twi'; L: 'Twi'),
+     (S: 'tyv'; L: 'Tuvinian'),
+     (S: 'uga'; L: 'Ugaritic'),
+     (S: 'uig'; L: 'Uighur'),
+     (S: 'ukr'; L: 'Ukrainian'),
+     (S: 'umb'; L: 'Umbundu'),
+     (S: 'und'; L: 'Undetermined'),
+     (S: 'urd'; L: 'Urdu'),
+     (S: 'uzb'; L: 'Uzbek'),
+     (S: 'vai'; L: 'Vai'),
+     (S: 'ven'; L: 'Venda'),
+     (S: 'vie'; L: 'Vietnamese'),
+     (S: 'vol'; L: 'Volapük'),
+     (S: 'vot'; L: 'Votic'),
+     (S: 'wak'; L: 'Wakashan Languages'),
+     (S: 'wal'; L: 'Walamo'),
+     (S: 'war'; L: 'Waray'),
+     (S: 'was'; L: 'Washo'),
+     (S: 'wel'; L: 'Welsh'),
+     (S: 'wen'; L: 'Sorbian Languages'),
+     (S: 'wol'; L: 'Wolof'),
+     (S: 'xho'; L: 'Xhosa'),
+     (S: 'yao'; L: 'Yao'),
+     (S: 'yap'; L: 'Yap'),
+     (S: 'yid'; L: 'Yiddish'),
+     (S: 'yor'; L: 'Yoruba'),
+     (S: 'zap'; L: 'Zapotec'),
+     (S: 'zen'; L: 'Zenaga'),
+     (S: 'zha'; L: 'Zhuang'),
+     (S: 'zho'; L: 'Chinese'),
+     (S: 'zul'; L: 'Zulu'),
+     (S: 'zun'; L: 'Zuni')
+    );
 
 function TJvId3v2.Iso639ToName(code: string): string;
+var
+  I: Integer;
 begin
+  Result := '';
+  if Length(code) <> 3 then
+    Exit;
   code := LowerCase(code);
-  if code = 'aar' then
-    Result := 'Afar'
-  else if code = 'abk' then
-    Result := 'Abkhazian'
-  else if code = 'ace' then
-    Result := 'Achinese'
-  else if code = 'ach' then
-    Result := 'Acoli'
-  else if code = 'ada' then
-    Result := 'Adangme'
-  else if code = 'afa' then
-    Result := 'Afro-Asiatic (Other)'
-  else if code = 'afh' then
-    Result := 'Afrihili'
-  else if code = 'afr' then
-    Result := 'Afrikaans'
-  else if code = 'aka' then
-    Result := 'Akan'
-  else if code = 'akk' then
-    Result := 'Akkadian'
-  else if code = 'alb' then
-    Result := 'Albanian'
-  else if code = 'ale' then
-    Result := 'Aleut'
-  else if code = 'alg' then
-    Result := 'Algonquian Languages'
-  else if code = 'amh' then
-    Result := 'Amharic'
-  else if code = 'ang' then
-    Result := 'English, Old (ca. 450-1100)'
-  else if code = 'apa' then
-    Result := 'Apache Languages'
-  else if code = 'ara' then
-    Result := 'Arabic'
-  else if code = 'arc' then
-    Result := 'Aramaic'
-  else if code = 'arm' then
-    Result := 'Armenian'
-  else if code = 'arn' then
-    Result := 'Araucanian'
-  else if code = 'arp' then
-    Result := 'Arapaho'
-  else if code = 'art' then
-    Result := 'Artificial (Other)'
-  else if code = 'arw' then
-    Result := 'Arawak'
-  else if code = 'asm' then
-    Result := 'Assamese'
-  else if code = 'ath' then
-    Result := 'Athapascan Languages'
-  else if code = 'ava' then
-    Result := 'Avaric'
-  else if code = 'ave' then
-    Result := 'Avestan'
-  else if code = 'awa' then
-    Result := 'Awadhi'
-  else if code = 'aym' then
-    Result := 'Aymara'
-  else if code = 'aze' then
-    Result := 'Azerbaijani'
-  else if code = 'bad' then
-    Result := 'Banda'
-  else if code = 'bai' then
-    Result := 'Bamileke Languages'
-  else if code = 'bak' then
-    Result := 'Bashkir'
-  else if code = 'bal' then
-    Result := 'Baluchi'
-  else if code = 'bam' then
-    Result := 'Bambara'
-  else if code = 'ban' then
-    Result := 'Balinese'
-  else if code = 'baq' then
-    Result := 'Basque'
-  else if code = 'bas' then
-    Result := 'Basa'
-  else if code = 'bat' then
-    Result := 'Baltic (Other)'
-  else if code = 'bej' then
-    Result := 'Beja'
-  else if code = 'bel' then
-    Result := 'Byelorussian'
-  else if code = 'bem' then
-    Result := 'Bemba'
-  else if code = 'ben' then
-    Result := 'Bengali'
-  else if code = 'ber' then
-    Result := 'Berber (Other)'
-  else if code = 'bho' then
-    Result := 'Bhojpuri'
-  else if code = 'bih' then
-    Result := 'Bihari'
-  else if code = 'bik' then
-    Result := 'Bikol'
-  else if code = 'bin' then
-    Result := 'Bini'
-  else if code = 'bis' then
-    Result := 'Bislama'
-  else if code = 'bla' then
-    Result := 'Siksika'
-  else if code = 'bnt' then
-    Result := 'Bantu (Other)'
-  else if code = 'bod' then
-    Result := 'Tibetan'
-  else if code = 'bra' then
-    Result := 'Braj'
-  else if code = 'bre' then
-    Result := 'Breton'
-  else if code = 'bua' then
-    Result := 'Buriat'
-  else if code = 'bug' then
-    Result := 'Buginese'
-  else if code = 'bul' then
-    Result := 'Bulgarian'
-  else if code = 'bur' then
-    Result := 'Burmese'
-  else if code = 'cad' then
-    Result := 'Caddo'
-  else if code = 'cai' then
-    Result := 'Central American Indian (Other)'
-  else if code = 'car' then
-    Result := 'Carib'
-  else if code = 'cat' then
-    Result := 'Catalan'
-  else if code = 'cau' then
-    Result := 'Caucasian (Other)'
-  else if code = 'ceb' then
-    Result := 'Cebuano'
-  else if code = 'cel' then
-    Result := 'Celtic (Other)'
-  else if code = 'ces' then
-    Result := 'Czech'
-  else if code = 'cha' then
-    Result := 'Chamorro'
-  else if code = 'chb' then
-    Result := 'Chibcha'
-  else if code = 'che' then
-    Result := 'Chechen'
-  else if code = 'chg' then
-    Result := 'Chagatai'
-  else if code = 'chi' then
-    Result := 'Chinese'
-  else if code = 'chm' then
-    Result := 'Mari'
-  else if code = 'chn' then
-    Result := 'Chinook jargon'
-  else if code = 'cho' then
-    Result := 'Choctaw'
-  else if code = 'chr' then
-    Result := 'Cherokee'
-  else if code = 'chu' then
-    Result := 'Church Slavic'
-  else if code = 'chv' then
-    Result := 'Chuvash'
-  else if code = 'chy' then
-    Result := 'Cheyenne'
-  else if code = 'cop' then
-    Result := 'Coptic'
-  else if code = 'cor' then
-    Result := 'Cornish'
-  else if code = 'cos' then
-    Result := 'Corsican'
-  else if code = 'cpe' then
-    Result := 'Creoles and Pidgins, English-based (Other)'
-  else if code = 'cpf' then
-    Result := 'Creoles and Pidgins, French-based (Other)'
-  else if code = 'cpp' then
-    Result := 'Creoles and Pidgins, Portuguese-based (Other)'
-  else if code = 'cre' then
-    Result := 'Cree'
-  else if code = 'crp' then
-    Result := 'Creoles and Pidgins (Other)'
-  else if code = 'cus' then
-    Result := 'Cushitic (Other)'
-  else if code = 'cym' then
-    Result := 'Welsh'
-  else if code = 'cze' then
-    Result := 'Czech'
-  else if code = 'dak' then
-    Result := 'Dakota'
-  else if code = 'dan' then
-    Result := 'Danish'
-  else if code = 'del' then
-    Result := 'Delaware'
-  else if code = 'deu' then
-    Result := 'German'
-  else if code = 'din' then
-    Result := 'Dinka'
-  else if code = 'div' then
-    Result := 'Divehi'
-  else if code = 'doi' then
-    Result := 'Dogri'
-  else if code = 'dra' then
-    Result := 'Dravidian (Other)'
-  else if code = 'dua' then
-    Result := 'Duala'
-  else if code = 'dum' then
-    Result := 'Dutch, Middle (ca. 1050-1350)'
-  else if code = 'dut' then
-    Result := 'Dutch'
-  else if code = 'dyu' then
-    Result := 'Dyula'
-  else if code = 'dzo' then
-    Result := 'Dzongkha'
-  else if code = 'efi' then
-    Result := 'Efik'
-  else if code = 'egy' then
-    Result := 'Egyptian (Ancient)'
-  else if code = 'eka' then
-    Result := 'Ekajuk'
-  else if code = 'ell' then
-    Result := 'Greek, Modern (1453-)'
-  else if code = 'elx' then
-    Result := 'Elamite'
-  else if code = 'eng' then
-    Result := 'English'
-  else if code = 'enm' then
-    Result := 'English, Middle (ca. 1100-1500)'
-  else if code = 'epo' then
-    Result := 'Esperanto'
-  else if code = 'esk' then
-    Result := 'Eskimo (Other)'
-  else if code = 'esl' then
-    Result := 'Spanish'
-  else if code = 'est' then
-    Result := 'Estonian'
-  else if code = 'eus' then
-    Result := 'Basque'
-  else if code = 'ewe' then
-    Result := 'Ewe'
-  else if code = 'ewo' then
-    Result := 'Ewondo'
-  else if code = 'fan' then
-    Result := 'Fang'
-  else if code = 'fao' then
-    Result := 'Faroese'
-  else if code = 'fas' then
-    Result := 'Persian'
-  else if code = 'fat' then
-    Result := 'Fanti'
-  else if code = 'fij' then
-    Result := 'Fijian'
-  else if code = 'fin' then
-    Result := 'Finnish'
-  else if code = 'fiu' then
-    Result := 'Finno-Ugrian (Other)'
-  else if code = 'fon' then
-    Result := 'Fon'
-  else if code = 'fra' then
-    Result := 'French'
-  else if code = 'fre' then
-    Result := 'French'
-  else if code = 'frm' then
-    Result := 'French, Middle (ca. 1400-1600)'
-  else if code = 'fro' then
-    Result := 'French, Old (842- ca. 1400)'
-  else if code = 'fry' then
-    Result := 'Frisian'
-  else if code = 'ful' then
-    Result := 'Fulah'
-  else if code = 'gaa' then
-    Result := 'Ga'
-  else if code = 'gae' then
-    Result := 'Gaelic (Scots)'
-  else if code = 'gai' then
-    Result := 'Irish'
-  else if code = 'gay' then
-    Result := 'Gayo'
-  else if code = 'gdh' then
-    Result := 'Gaelic (Scots)'
-  else if code = 'gem' then
-    Result := 'Germanic (Other)'
-  else if code = 'geo' then
-    Result := 'Georgian'
-  else if code = 'ger' then
-    Result := 'German'
-  else if code = 'gez' then
-    Result := 'Geez'
-  else if code = 'gil' then
-    Result := 'Gilbertese'
-  else if code = 'glg' then
-    Result := 'Gallegan'
-  else if code = 'gmh' then
-    Result := 'German, Middle High (ca. 1050-1500)'
-  else if code = 'goh' then
-    Result := 'German, Old High (ca. 750-1050)'
-  else if code = 'gon' then
-    Result := 'Gondi'
-  else if code = 'got' then
-    Result := 'Gothic'
-  else if code = 'grb' then
-    Result := 'Grebo'
-  else if code = 'grc' then
-    Result := 'Greek, Ancient (to 1453)'
-  else if code = 'gre' then
-    Result := 'Greek, Modern (1453-)'
-  else if code = 'grn' then
-    Result := 'Guarani'
-  else if code = 'guj' then
-    Result := 'Gujarati'
-  else if code = 'hai' then
-    Result := 'Haida'
-  else if code = 'hau' then
-    Result := 'Hausa'
-  else if code = 'haw' then
-    Result := 'Hawaiian'
-  else if code = 'heb' then
-    Result := 'Hebrew'
-  else if code = 'her' then
-    Result := 'Herero'
-  else if code = 'hil' then
-    Result := 'Hiligaynon'
-  else if code = 'him' then
-    Result := 'Himachali'
-  else if code = 'hin' then
-    Result := 'Hindi'
-  else if code = 'hmo' then
-    Result := 'Hiri Motu'
-  else if code = 'hun' then
-    Result := 'Hungarian'
-  else if code = 'hup' then
-    Result := 'Hupa'
-  else if code = 'hye' then
-    Result := 'Armenian'
-  else if code = 'iba' then
-    Result := 'Iban'
-  else if code = 'ibo' then
-    Result := 'Igbo'
-  else if code = 'ice' then
-    Result := 'Icelandic'
-  else if code = 'ijo' then
-    Result := 'Ijo'
-  else if code = 'iku' then
-    Result := 'Inuktitut'
-  else if code = 'ilo' then
-    Result := 'Iloko'
-  else if code = 'ina' then
-    Result := 'Interlingua (International Auxiliary language Association)'
-  else if code = 'Inc' then
-    Result := 'Indic (Other)'
-  else if code = 'ind' then
-    Result := 'Indonesian'
-  else if code = 'ine' then
-    Result := 'Indo-European (Other)'
-  else if code = 'ine' then
-    Result := 'Interlingue'
-  else if code = 'ipk' then
-    Result := 'Inupiak'
-  else if code = 'ira' then
-    Result := 'Iranian (Other)'
-  else if code = 'iri' then
-    Result := 'Irish'
-  else if code = 'iro' then
-    Result := 'Iroquoian uages'
-  else if code = 'isl' then
-    Result := 'Icelandic'
-  else if code = 'ita' then
-    Result := 'Italian'
-  else if code = 'jav' then
-    Result := 'Javanese'
-  else if code = 'jaw' then
-    Result := 'Javanese'
-  else if code = 'jpn' then
-    Result := 'Japanese'
-  else if code = 'jpr' then
-    Result := 'Judeo-Persian'
-  else if code = 'jrb' then
-    Result := 'Judeo-Arabic'
-  else if code = 'kaa' then
-    Result := 'Kara-Kalpak'
-  else if code = 'kab' then
-    Result := 'Kabyle'
-  else if code = 'kac' then
-    Result := 'Kachin'
-  else if code = 'kal' then
-    Result := 'Greenlandic'
-  else if code = 'kam' then
-    Result := 'Kamba'
-  else if code = 'kan' then
-    Result := 'Kannada'
-  else if code = 'kar' then
-    Result := 'Karen'
-  else if code = 'kas' then
-    Result := 'Kashmiri'
-  else if code = 'kat' then
-    Result := 'Georgian'
-  else if code = 'kau' then
-    Result := 'Kanuri'
-  else if code = 'kaw' then
-    Result := 'Kawi'
-  else if code = 'kaz' then
-    Result := 'Kazakh'
-  else if code = 'kha' then
-    Result := 'Khasi'
-  else if code = 'khi' then
-    Result := 'Khoisan (Other)'
-  else if code = 'khm' then
-    Result := 'Khmer'
-  else if code = 'kho' then
-    Result := 'Khotanese'
-  else if code = 'kik' then
-    Result := 'Kikuyu'
-  else if code = 'kin' then
-    Result := 'Kinyarwanda'
-  else if code = 'kir' then
-    Result := 'Kirghiz'
-  else if code = 'kok' then
-    Result := 'Konkani'
-  else if code = 'kom' then
-    Result := 'Komi'
-  else if code = 'kon' then
-    Result := 'Kongo'
-  else if code = 'kor' then
-    Result := 'Korean'
-  else if code = 'kpe' then
-    Result := 'Kpelle'
-  else if code = 'kro' then
-    Result := 'Kru'
-  else if code = 'kru' then
-    Result := 'Kurukh'
-  else if code = 'kua' then
-    Result := 'Kuanyama'
-  else if code = 'kum' then
-    Result := 'Kumyk'
-  else if code = 'kur' then
-    Result := 'Kurdish'
-  else if code = 'kus' then
-    Result := 'Kusaie'
-  else if code = 'kut' then
-    Result := 'Kutenai'
-  else if code = 'lad' then
-    Result := 'Ladino'
-  else if code = 'lah' then
-    Result := 'Lahnda'
-  else if code = 'lam' then
-    Result := 'Lamba'
-  else if code = 'lao' then
-    Result := 'Lao'
-  else if code = 'lat' then
-    Result := 'Latin'
-  else if code = 'lav' then
-    Result := 'Latvian'
-  else if code = 'lez' then
-    Result := 'Lezghian'
-  else if code = 'lin' then
-    Result := 'Lingala'
-  else if code = 'lit' then
-    Result := 'Lithuanian'
-  else if code = 'lol' then
-    Result := 'Mongo'
-  else if code = 'loz' then
-    Result := 'Lozi'
-  else if code = 'ltz' then
-    Result := 'Letzeburgesch'
-  else if code = 'lub' then
-    Result := 'Luba-Katanga'
-  else if code = 'lug' then
-    Result := 'Ganda'
-  else if code = 'lui' then
-    Result := 'Luiseno'
-  else if code = 'lun' then
-    Result := 'Lunda'
-  else if code = 'luo' then
-    Result := 'Luo (Kenya and Tanzania)'
-  else if code = 'mac' then
-    Result := 'Macedonian'
-  else if code = 'mad' then
-    Result := 'Madurese'
-  else if code = 'mag' then
-    Result := 'Magahi'
-  else if code = 'mah' then
-    Result := 'Marshall'
-  else if code = 'mai' then
-    Result := 'Maithili'
-  else if code = 'mak' then
-    Result := 'Macedonian'
-  else if code = 'mak' then
-    Result := 'Makasar'
-  else if code = 'mal' then
-    Result := 'Malayalam'
-  else if code = 'man' then
-    Result := 'Mandingo'
-  else if code = 'mao' then
-    Result := 'Maori'
-  else if code = 'map' then
-    Result := 'Austronesian (Other)'
-  else if code = 'mar' then
-    Result := 'Marathi'
-  else if code = 'mas' then
-    Result := 'Masai'
-  else if code = 'max' then
-    Result := 'Manx'
-  else if code = 'may' then
-    Result := 'Malay'
-  else if code = 'men' then
-    Result := 'Mende'
-  else if code = 'mga' then
-    Result := 'Irish, Middle (900 - 1200)'
-  else if code = 'mic' then
-    Result := 'Micmac'
-  else if code = 'min' then
-    Result := 'Minangkabau'
-  else if code = 'mis' then
-    Result := 'Miscellaneous (Other)'
-  else if code = 'mkh' then
-    Result := 'Mon-Kmer (Other)'
-  else if code = 'mlg' then
-    Result := 'Malagasy'
-  else if code = 'mlt' then
-    Result := 'Maltese'
-  else if code = 'mni' then
-    Result := 'Manipuri'
-  else if code = 'mno' then
-    Result := 'Manobo Languages'
-  else if code = 'moh' then
-    Result := 'Mohawk'
-  else if code = 'mol' then
-    Result := 'Moldavian'
-  else if code = 'mon' then
-    Result := 'Mongolian'
-  else if code = 'mos' then
-    Result := 'Mossi'
-  else if code = 'mri' then
-    Result := 'Maori'
-  else if code = 'msa' then
-    Result := 'Malay'
-  else if code = 'mul' then
-    Result := 'Multiple Languages'
-  else if code = 'mun' then
-    Result := 'Munda Languages'
-  else if code = 'mus' then
-    Result := 'Creek'
-  else if code = 'mwr' then
-    Result := 'Marwari'
-  else if code = 'mya' then
-    Result := 'Burmese'
-  else if code = 'myn' then
-    Result := 'Mayan Languages'
-  else if code = 'nah' then
-    Result := 'Aztec'
-  else if code = 'nai' then
-    Result := 'North American Indian (Other)'
-  else if code = 'nau' then
-    Result := 'Nauru'
-  else if code = 'nav' then
-    Result := 'Navajo'
-  else if code = 'nbl' then
-    Result := 'Ndebele, South'
-  else if code = 'nde' then
-    Result := 'Ndebele, North'
-  else if code = 'ndo' then
-    Result := 'Ndongo'
-  else if code = 'nep' then
-    Result := 'Nepali'
-  else if code = 'new' then
-    Result := 'Newari'
-  else if code = 'nic' then
-    Result := 'Niger-Kordofanian (Other)'
-  else if code = 'niu' then
-    Result := 'Niuean'
-  else if code = 'nla' then
-    Result := 'Dutch'
-  else if code = 'nno' then
-    Result := 'Norwegian (Nynorsk)'
-  else if code = 'non' then
-    Result := 'Norse, Old'
-  else if code = 'nor' then
-    Result := 'Norwegian'
-  else if code = 'nso' then
-    Result := 'Sotho, Northern'
-  else if code = 'nub' then
-    Result := 'Nubian Languages'
-  else if code = 'nya' then
-    Result := 'Nyanja'
-  else if code = 'nym' then
-    Result := 'Nyamwezi'
-  else if code = 'nyn' then
-    Result := 'Nyankole'
-  else if code = 'nyo' then
-    Result := 'Nyoro'
-  else if code = 'nzi' then
-    Result := 'Nzima'
-  else if code = 'oci' then
-    Result := 'Langue d''Oc (post 1500)'
-  else if code = 'oji' then
-    Result := 'Ojibwa'
-  else if code = 'ori' then
-    Result := 'Oriya'
-  else if code = 'orm' then
-    Result := 'Oromo'
-  else if code = 'osa' then
-    Result := 'Osage'
-  else if code = 'oss' then
-    Result := 'Ossetic'
-  else if code = 'ota' then
-    Result := 'Turkish, Ottoman (1500 - 1928)'
-  else if code = 'oto' then
-    Result := 'Otomian Languages'
-  else if code = 'paa' then
-    Result := 'Papuan-Australian (Other)'
-  else if code = 'pag' then
-    Result := 'Pangasinan'
-  else if code = 'pal' then
-    Result := 'Pahlavi'
-  else if code = 'pam' then
-    Result := 'Pampanga'
-  else if code = 'pan' then
-    Result := 'Panjabi'
-  else if code = 'pap' then
-    Result := 'Papiamento'
-  else if code = 'pau' then
-    Result := 'Palauan'
-  else if code = 'peo' then
-    Result := 'Persian, Old (ca 600 - 400 B.C.)'
-  else if code = 'per' then
-    Result := 'Persian'
-  else if code = 'phn' then
-    Result := 'Phoenician'
-  else if code = 'pli' then
-    Result := 'Pali'
-  else if code = 'pol' then
-    Result := 'Polish'
-  else if code = 'pon' then
-    Result := 'Ponape'
-  else if code = 'por' then
-    Result := 'Portuguese'
-  else if code = 'pra' then
-    Result := 'Prakrit uages'
-  else if code = 'pro' then
-    Result := 'Provencal, Old (to 1500)'
-  else if code = 'pus' then
-    Result := 'Pushto'
-  else if code = 'que' then
-    Result := 'Quechua'
-  else if code = 'raj' then
-    Result := 'Rajasthani'
-  else if code = 'rar' then
-    Result := 'Rarotongan'
-  else if code = 'roa' then
-    Result := 'Romance (Other)'
-  else if code = 'roh' then
-    Result := 'Rhaeto-Romance'
-  else if code = 'rom' then
-    Result := 'Romany'
-  else if code = 'ron' then
-    Result := 'Romanian'
-  else if code = 'rum' then
-    Result := 'Romanian'
-  else if code = 'run' then
-    Result := 'Rundi'
-  else if code = 'rus' then
-    Result := 'Russian'
-  else if code = 'sad' then
-    Result := 'Sandawe'
-  else if code = 'sag' then
-    Result := 'Sango'
-  else if code = 'sah' then
-    Result := 'Yakut'
-  else if code = 'sai' then
-    Result := 'South American Indian (Other)'
-  else if code = 'sal' then
-    Result := 'Salishan Languages'
-  else if code = 'sam' then
-    Result := 'Samaritan Aramaic'
-  else if code = 'san' then
-    Result := 'Sanskrit'
-  else if code = 'sco' then
-    Result := 'Scots'
-  else if code = 'scr' then
-    Result := 'Serbo-Croatian'
-  else if code = 'sel' then
-    Result := 'Selkup'
-  else if code = 'sem' then
-    Result := 'Semitic (Other)'
-  else if code = 'sga' then
-    Result := 'Irish, Old (to 900)'
-  else if code = 'shn' then
-    Result := 'Shan'
-  else if code = 'sid' then
-    Result := 'Sidamo'
-  else if code = 'sin' then
-    Result := 'Singhalese'
-  else if code = 'sio' then
-    Result := 'Siouan Languages'
-  else if code = 'sit' then
-    Result := 'Sino-Tibetan (Other)'
-  else if code = 'sla' then
-    Result := 'Slavic (Other)'
-  else if code = 'slk' then
-    Result := 'Slovak'
-  else if code = 'slo' then
-    Result := 'Slovak'
-  else if code = 'slv' then
-    Result := 'Slovenian'
-  else if code = 'smi' then
-    Result := 'Sami Languages'
-  else if code = 'smo' then
-    Result := 'Samoan'
-  else if code = 'sna' then
-    Result := 'Shona'
-  else if code = 'snd' then
-    Result := 'Sindhi'
-  else if code = 'sog' then
-    Result := 'Sogdian'
-  else if code = 'som' then
-    Result := 'Somali'
-  else if code = 'son' then
-    Result := 'Songhai'
-  else if code = 'sot' then
-    Result := 'Sotho, Southern'
-  else if code = 'spa' then
-    Result := 'Spanish'
-  else if code = 'sqi' then
-    Result := 'Albanian'
-  else if code = 'srd' then
-    Result := 'Sardinian'
-  else if code = 'srr' then
-    Result := 'Serer'
-  else if code = 'ssa' then
-    Result := 'Nilo-Saharan (Other)'
-  else if code = 'ssw' then
-    Result := 'Siswant'
-  else if code = 'ssw' then
-    Result := 'Swazi'
-  else if code = 'suk' then
-    Result := 'Sukuma'
-  else if code = 'sun' then
-    Result := 'Sudanese'
-  else if code = 'sus' then
-    Result := 'Susu'
-  else if code = 'sux' then
-    Result := 'Sumerian'
-  else if code = 'sve' then
-    Result := 'Swedish'
-  else if code = 'swa' then
-    Result := 'Swahili'
-  else if code = 'swe' then
-    Result := 'Swedish'
-  else if code = 'syr' then
-    Result := 'Syriac'
-  else if code = 'tah' then
-    Result := 'Tahitian'
-  else if code = 'tam' then
-    Result := 'Tamil'
-  else if code = 'tat' then
-    Result := 'Tatar'
-  else if code = 'tel' then
-    Result := 'Telugu'
-  else if code = 'tem' then
-    Result := 'Timne'
-  else if code = 'ter' then
-    Result := 'Tereno'
-  else if code = 'tgk' then
-    Result := 'Tajik'
-  else if code = 'tgl' then
-    Result := 'Tagalog'
-  else if code = 'tha' then
-    Result := 'Thai'
-  else if code = 'tib' then
-    Result := 'Tibetan'
-  else if code = 'tig' then
-    Result := 'Tigre'
-  else if code = 'tir' then
-    Result := 'Tigrinya'
-  else if code = 'tiv' then
-    Result := 'Tivi'
-  else if code = 'tli' then
-    Result := 'Tlingit'
-  else if code = 'tmh' then
-    Result := 'Tamashek'
-  else if code = 'tog' then
-    Result := 'Tonga (Nyasa)'
-  else if code = 'ton' then
-    Result := 'Tonga (Tonga Islands)'
-  else if code = 'tru' then
-    Result := 'Truk'
-  else if code = 'tsi' then
-    Result := 'Tsimshian'
-  else if code = 'tsn' then
-    Result := 'Tswana'
-  else if code = 'tso' then
-    Result := 'Tsonga'
-  else if code = 'tuk' then
-    Result := 'Turkmen'
-  else if code = 'tum' then
-    Result := 'Tumbuka'
-  else if code = 'tur' then
-    Result := 'Turkish'
-  else if code = 'tut' then
-    Result := 'Altaic (Other)'
-  else if code = 'twi' then
-    Result := 'Twi'
-  else if code = 'tyv' then
-    Result := 'Tuvinian'
-  else if code = 'uga' then
-    Result := 'Ugaritic'
-  else if code = 'uig' then
-    Result := 'Uighur'
-  else if code = 'ukr' then
-    Result := 'Ukrainian'
-  else if code = 'umb' then
-    Result := 'Umbundu'
-  else if code = 'und' then
-    Result := 'Undetermined'
-  else if code = 'urd' then
-    Result := 'Urdu'
-  else if code = 'uzb' then
-    Result := 'Uzbek'
-  else if code = 'vai' then
-    Result := 'Vai'
-  else if code = 'ven' then
-    Result := 'Venda'
-  else if code = 'vie' then
-    Result := 'Vietnamese'
-  else if code = 'vol' then
-    Result := 'Volapük'
-  else if code = 'vot' then
-    Result := 'Votic'
-  else if code = 'wak' then
-    Result := 'Wakashan Languages'
-  else if code = 'wal' then
-    Result := 'Walamo'
-  else if code = 'war' then
-    Result := 'Waray'
-  else if code = 'was' then
-    Result := 'Washo'
-  else if code = 'wel' then
-    Result := 'Welsh'
-  else if code = 'wen' then
-    Result := 'Sorbian Languages'
-  else if code = 'wol' then
-    Result := 'Wolof'
-  else if code = 'xho' then
-    Result := 'Xhosa'
-  else if code = 'yao' then
-    Result := 'Yao'
-  else if code = 'yap' then
-    Result := 'Yap'
-  else if code = 'yid' then
-    Result := 'Yiddish'
-  else if code = 'yor' then
-    Result := 'Yoruba'
-  else if code = 'zap' then
-    Result := 'Zapotec'
-  else if code = 'zen' then
-    Result := 'Zenaga'
-  else if code = 'zha' then
-    Result := 'Zhuang'
-  else if code = 'zho' then
-    Result := 'Chinese'
-  else if code = 'zul' then
-    Result := 'Zulu'
-  else if code = 'zun' then
-    Result := 'Zuni'
-  else
-    Result := '';
+  for I := Low(cShortToLongNameTable) to High(cShortToLongNameTable) do
+    if code = cShortToLongNameTable[I].S then
+    begin
+      Result := cShortToLongNameTable[I].L;
+      Break;
+    end;
 end;
-
-{**************************************************}
 
 procedure TJvId3v2.LoadFromFile(FileName: string);
 var
@@ -1433,32 +1015,30 @@ begin
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.LoadFromStream(stream: TStream);
+procedure TJvId3v2.LoadFromStream(Stream: TStream);
 var
-  header: TId3v2Header;
-  frame: TId3v2Frame;
-  tag: TStream;
+  Header: TId3v2Header;
+  Frame: TId3v2Frame;
+  TagesNode: TStream;
 begin
   FEventsCount := 0;
   ResetProp;
 
-  stream.ReadBuffer(header, 10);
-  FPresent := header.Identifier = 'ID3';
-  if FPresent then
+  Stream.ReadBuffer(Header, 10);
+  FTagPresent := Header.Identifier = 'ID3';
+  if FTagPresent then
   begin
     //Version
-    FVersion := (header.Version and $00FF);
-    FVersion := FVersion + ((header.Version and $FF00) / 256 / 100);
+    FVersion := (Header.Version and $00FF);
+    FVersion := FVersion + ((Header.Version and $FF00) / 256 / 100);
 
     //Flags
-    FUnsynchro := (header.Flags and $80) <> 0;
-    FExtended := (header.Flags and $40) <> 0;
-    FExperimental := (header.Flags and $20) <> 0;
+    FUnsynchronisation := (Header.Flags and $80) <> 0;
+    FExtendedHeader := (Header.Flags and $40) <> 0;
+    FExperimental := (Header.Flags and $20) <> 0;
     // (rom) undocumented assembler. EEK!
     asm
-         mov eax,header.Size
+         mov eax,Header.Size
 
          xor ecx,ecx
          mov cl,al
@@ -1470,31 +1050,31 @@ begin
          shl ecx,7
          or cl,ah
 
-         mov header.Size,ecx
+         mov Header.Size,ecx
     end;
-    FSize := header.Size;
+    FSize := Header.Size;
     FTagSize := FSize;
 
-    tag := TMemoryStream.Create;
-    ReadAndUnsynchro(stream, tag, header.Size);
+    TagesNode := TMemoryStream.Create;
+    ReadAndUnsynchro(Stream, TagesNode, Header.Size);
 
-    //Read extended tag
-    if FExtended then
+    //Read extended TagesNode
+    if FExtendedHeader then
     begin
 
     end;
 
-    while (tag.Size - tag.position > 10) do
+    while TagesNode.Size - TagesNode.Position > 10 do
     begin
-      tag.Read(frame, 10);
+      TagesNode.Read(Frame, 10);
       asm
-            mov ax,frame.Flags
+            mov ax,Frame.Flags
             mov dh,al
             mov al,ah
             mov ah,dh
-            mov frame.Flags,ax
+            mov Frame.Flags,ax
 
-            mov eax,frame.Size
+            mov eax,Frame.Size
             mov cl,al
             shl ecx,8
             mov cl,ah
@@ -1503,106 +1083,109 @@ begin
             mov cl,al
             shl ecx,8
             mov cl,ah
-            mov frame.Size,ecx
+            mov Frame.Size,ecx
       end;
 
-      if frame.Id[0] = 'T' then
-        ReadText(frame, tag)
-      else if frame.Id[0] = 'W' then
-        ReadWeb(frame, tag)
-      else if frame.Id = 'IPLS' then
-        ReadIpls(frame, tag)
-      else if frame.Id = 'MCDI' then
-      begin
-        tag.Read(MusicCDIdentifier, frame.Size);
-        MusicCDIdentifierLength := frame.Size;
-      end
-      else if frame.Id = 'APIC' then
-        ReadImg(frame, tag)
-      else if frame.Id = 'PCNT' then
-        ReadCounter(frame, tag)
-      else if frame.Id = 'POPM' then
-        ReadPop(frame, tag)
-      else if frame.Id = 'OWNE' then
-        ReadOwner(frame, tag)
-      else if frame.Id = 'ETCO' then
-        ReadEvent(frame, tag)
+      if Frame.Id[0] = 'T' then
+        ReadText(Frame, TagesNode)
       else
-        SkipFrame(frame, tag);
-
+      if Frame.Id[0] = 'W' then
+        ReadWeb(Frame, TagesNode)
+      else
+      if Frame.Id = 'IPLS' then
+        ReadIpls(Frame, TagesNode)
+      else
+      if Frame.Id = 'MCDI' then
+      begin
+        TagesNode.Read(MusicCDIdentifier, Frame.Size);
+        MusicCDIdentifierLength := Frame.Size;
+      end
+      else
+      if Frame.Id = 'APIC' then
+        ReadImg(Frame, TagesNode)
+      else
+      if Frame.Id = 'PCNT' then
+        ReadCounter(Frame, TagesNode)
+      else
+      if Frame.Id = 'POPM' then
+        ReadPop(Frame, TagesNode)
+      else
+      if Frame.Id = 'OWNE' then
+        ReadOwner(Frame, TagesNode)
+      else
+      if Frame.Id = 'ETCO' then
+        ReadEvent(Frame, TagesNode)
+      else
+        SkipFrame(Frame, TagesNode);
       //XXX
     end;
 
-    tag.Free;
+    TagesNode.Free;
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadAndUnsynchro(var source, dest: TStream; taille: Integer);
+procedure TJvId3v2.ReadAndUnsynchro(var Source, Dest: TStream; taille: Integer);
 var
-  i, j, cnt: Integer;
-  buf: array[0..499] of Byte;
-  buf2: array[0..999] of Byte;
+  I, J, Cnt: Integer;
+  Buf: array [0..499] of Byte;
+  buf2: array [0..999] of Byte;
 begin
   while taille > 0 do
   begin
     if taille > 500 then
     begin
-      cnt := source.Read(buf, 500);
-      if cnt < 500 then
+      Cnt := Source.Read(Buf, 500);
+      if Cnt < 500 then
         taille := 0
       else
-        taille := taille - cnt;
+        taille := taille - Cnt;
     end
     else
     begin
-      cnt := source.Read(buf, taille);
+      Cnt := Source.Read(Buf, taille);
       taille := 0;
     end;
-    j := 0;
-    i := 0;
-    while i < cnt do
+    J := 0;
+    I := 0;
+    while I < Cnt do
     begin
-      if buf[i] = $FF then
+      if Buf[I] = $FF then
       begin
-        if i + 1 < cnt then
+        if I + 1 < Cnt then
         begin
-          if buf[i + 1] = $00 then
+          if Buf[I + 1] = $00 then
           begin
-            buf2[j] := $FF;
-            Inc(i);
+            buf2[J] := $FF;
+            Inc(I);
           end
           else
-            buf2[j] := $FF;
+            buf2[J] := $FF;
         end
         else
         begin
           Inc(taille);
-          source.Position := source.Position - 1;
+          Source.Position := Source.Position - 1;
         end;
       end
       else
-        buf2[j] := buf[i];
-      Inc(j);
-      Inc(i);
+        buf2[J] := Buf[I];
+      Inc(J);
+      Inc(I);
     end;
-    dest.Write(buf2, j);
+    Dest.Write(buf2, J);
   end;
-  dest.Position := 0;
+  Dest.Position := 0;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadCounter(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadCounter(Frame: TId3v2Frame; Source: TStream);
 begin
-  if frame.Size > 4 then
-    FCounter := 0
+  if Frame.Size > 4 then
+    FPlayCounter := 0
   else
   begin
-    source.Read(FCounter, 4);
+    Source.Read(FPlayCounter, 4);
     asm
-         mov eax,FCounter
+         mov eax,FPlayCounter
          mov cl,al
          shl ecx,8
          mov cl,ah
@@ -1611,57 +1194,78 @@ begin
          mov cl,al
          shl ecx,8
          mov cl,ah
-         mov ebx,offset FCounter
+         mov ebx,offset FPlayCounter
          mov [ebx],ecx
     end;
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadEvent(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadEvent(Frame: TId3v2Frame; Source: TStream);
 var
-  b: Byte;
-  i: Integer;
+  B: Byte;
+  I: Integer;
 begin
-  source.Read(b, 1);
-  Dec(frame.Size);
+  Source.Read(B, 1);
+  Dec(Frame.Size);
 
   FEventsCount := 0;
-  FEventsTiming := b;
+  FEventsTiming := B;
 
-  while frame.Size > 0 do
+  while Frame.Size > 0 do
   begin
-    source.Read(b, 1);
-    Dec(frame.Size, 5);
-    case b of
-      $00: FEvents[FEventsCount].EventType := etPADDING;
-      $01: FEvents[FEventsCount].EventType := etEND_OF_INITIAL_SILENCE;
-      $02: FEvents[FEventsCount].EventType := etINTRO_START;
-      $03: FEvents[FEventsCount].EventType := etMAINPART_START;
-      $04: FEvents[FEventsCount].EventType := etOUTRO_START;
-      $05: FEvents[FEventsCount].EventType := etOUTRO_END;
-      $06: FEvents[FEventsCount].EventType := etVERSE_START;
-      $07: FEvents[FEventsCount].EventType := etREFRAIN_START;
-      $08: FEvents[FEventsCount].EventType := etINTERLUDE_START;
-      $09: FEvents[FEventsCount].EventType := etTHEME_START;
-      $0A: FEvents[FEventsCount].EventType := etVARIATION_START;
-      $0B: FEvents[FEventsCount].EventType := etKEY_CHANGE;
-      $0C: FEvents[FEventsCount].EventType := eTTime_CHANGE;
-      $0D: FEvents[FEventsCount].EventType := etUNWANTED_NOISE;
-      $0E: FEvents[FEventsCount].EventType := etSUSTAINED_NOISE;
-      $0F: FEvents[FEventsCount].EventType := etSUSTAINED_NOISE_END;
-      $10: FEvents[FEventsCount].EventType := etINTRO_END;
-      $11: FEvents[FEventsCount].EventType := etMAINPART_END;
-      $12: FEvents[FEventsCount].EventType := etVERSE_END;
-      $13: FEvents[FEventsCount].EventType := etREFRAIN_END;
-      $14: FEvents[FEventsCount].EventType := etTHEME_END;
-      $FD: FEvents[FEventsCount].EventType := etAUDIO_END;
-      $FE: FEvents[FEventsCount].EventType := etFILE_END;
+    Source.Read(B, 1);
+    Dec(Frame.Size, 5);
+    case B of
+      $00:
+        FEvents[FEventsCount].EventType := etPADDING;
+      $01:
+       FEvents[FEventsCount].EventType := etEND_OF_INITIAL_SILENCE;
+      $02:
+        FEvents[FEventsCount].EventType := etINTRO_START;
+      $03:
+        FEvents[FEventsCount].EventType := etMAINPART_START;
+      $04:
+        FEvents[FEventsCount].EventType := etOUTRO_START;
+      $05:
+        FEvents[FEventsCount].EventType := etOUTRO_END;
+      $06:
+        FEvents[FEventsCount].EventType := etVERSE_START;
+      $07:
+        FEvents[FEventsCount].EventType := etREFRAIN_START;
+      $08:
+        FEvents[FEventsCount].EventType := etINTERLUDE_START;
+      $09:
+        FEvents[FEventsCount].EventType := etTHEME_START;
+      $0A:
+        FEvents[FEventsCount].EventType := etVARIATION_START;
+      $0B:
+        FEvents[FEventsCount].EventType := etKEY_CHANGE;
+      $0C:
+        FEvents[FEventsCount].EventType := eTTime_CHANGE;
+      $0D:
+        FEvents[FEventsCount].EventType := etUNWANTED_NOISE;
+      $0E:
+        FEvents[FEventsCount].EventType := etSUSTAINED_NOISE;
+      $0F:
+        FEvents[FEventsCount].EventType := etSUSTAINED_NOISE_END;
+      $10:
+        FEvents[FEventsCount].EventType := etINTRO_END;
+      $11:
+        FEvents[FEventsCount].EventType := etMAINPART_END;
+      $12:
+        FEvents[FEventsCount].EventType := etVERSE_END;
+      $13:
+        FEvents[FEventsCount].EventType := etREFRAIN_END;
+      $14:
+        FEvents[FEventsCount].EventType := etTHEME_END;
+      $FD:
+        FEvents[FEventsCount].EventType := etAUDIO_END;
+      $FE:
+        FEvents[FEventsCount].EventType := etFILE_END;
     end;
-    source.Read(i, 4);
+    Source.Read(I, 4);
     asm
-          mov eax,i
+          mov eax,I
           mov cl,al
           shl ecx,8
           mov cl,ah
@@ -1670,93 +1274,91 @@ begin
           mov cl,al
           shl ecx,8
           mov cl,ah
-          mov ebx,offset i
+          mov ebx,offset I
           mov [ebx],ecx
     end;
-    FEvents[FEventsCount].TimeStamp := i;
+    FEvents[FEventsCount].TimeStamp := I;
     Inc(FEventsCount);
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadImg(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadImg(Frame: TId3v2Frame; Source: TStream);
 var
-  b, c, encoding: Byte;
-  buf: array[0..64000] of Char;
-  mime, description: string;
-  ptype: Byte;
-  picture: TMemoryStream;
-  sizeleft: Integer;
-  TempPath: array[0..250] of Char;
+  B, C, Encoding: Byte;
+  Buf: array [0..64000] of Char;
+  Mime, Description: string;
+  TypeByte: Byte;
+  Picture: TMemoryStream;
+  SizeLeft: Integer;
+  TempPath: array [0..250] of Char;
   TempPat: string;
   FilePath: string;
 begin
-  source.Read(encoding, 1);
-  sizeleft := frame.Size - 1;
+  Source.Read(Encoding, 1);
+  SizeLeft := Frame.Size - 1;
 
-  //Read mime type
-  mime := '';
-  source.Read(b, 1);
-  Dec(sizeleft);
-  while b <> $00 do
+  //Read Mime type
+  Mime := '';
+  Source.Read(B, 1);
+  Dec(SizeLeft);
+  while B <> $00 do
   begin
-    mime := mime + Char(b);
-    source.Read(b, 1);
-    Dec(sizeleft);
+    Mime := Mime + Char(B);
+    Source.Read(B, 1);
+    Dec(SizeLeft);
   end;
 
-  //Read picture type
-  source.Read(ptype, 1);
-  Dec(sizeleft);
+  //Read Picture type
+  Source.Read(TypeByte, 1);
+  Dec(SizeLeft);
 
-  //Read description
-  if encoding = $00 then
+  //Read Description
+  if Encoding = $00 then
   begin
     //ISO
-    description := '';
-    source.Read(b, 1);
-    Dec(sizeleft);
-    while b <> $00 do
+    Description := '';
+    Source.Read(B, 1);
+    Dec(SizeLeft);
+    while B <> $00 do
     begin
-      description := description + Char(b);
-      source.Read(b, 1);
-      Dec(sizeleft);
+      Description := Description + Char(B);
+      Source.Read(B, 1);
+      Dec(SizeLeft);
     end;
   end
   else
   begin
     //Unicode
-    description := '';
-    source.Read(b, 1);
-    source.Read(c, 1);
-    if c <> $00 then
+    Description := '';
+    Source.Read(B, 1);
+    Source.Read(C, 1);
+    if C <> $00 then
     begin
-      source.Read(c, 1);
-      Dec(sizeleft, 3);
-      while b <> $00 do
+      Source.Read(C, 1);
+      Dec(SizeLeft, 3);
+      while B <> $00 do
       begin
-        description := description + Char(b);
-        source.Read(b, 1);
-        source.Read(c, 1);
-        Dec(sizeleft, 2);
+        Description := Description + Char(B);
+        Source.Read(B, 1);
+        Source.Read(C, 1);
+        Dec(SizeLeft, 2);
       end;
     end
     else
-      Dec(sizeleft, 2);
+      Dec(SizeLeft, 2);
   end;
 
   //Picture data
-  picture := TMemoryStream.Create;
+  Picture := TMemoryStream.Create;
 
-  while (sizeleft > 64000) do
+  while SizeLeft > 64000 do
   begin
-    source.Read(buf, 64000);
-    Dec(sizeleft, 64000);
-    picture.Write(buf, 64000);
+    Source.Read(Buf, 64000);
+    Dec(SizeLeft, 64000);
+    Picture.Write(Buf, 64000);
   end;
-  source.Read(buf, sizeleft);
-  picture.Write(buf, sizeleft);
+  Source.Read(Buf, SizeLeft);
+  Picture.Write(Buf, SizeLeft);
 
   GetTempPath(250, TempPath);
   TempPat := TempPath;
@@ -1764,14 +1366,14 @@ begin
     TempPat := TempPat + '\';
 
   FilePath := temppat + 'tmp.';
-  mime := Copy(mime, Pos('/', mime) + 1, Length(mime));
-  if UpperCase(mime) = 'JPEG' then
+  Mime := Copy(Mime, Pos('/', Mime) + 1, Length(Mime));
+  if UpperCase(Mime) = 'JPEG' then
     filePath := FilePath + 'jpg'
   else
-    FilePath := FilePath + mime;
+    FilePath := FilePath + Mime;
   Picture.SaveToFile(FilePath);
 
-  case ptype of
+  case TypeByte of
     $00:
       begin
         FImages.Pictures.Other.LoadFromFile(FilePath);
@@ -1879,139 +1481,136 @@ begin
       end;
   end;
   DeleteFile(FilePath);
-
-  picture.Free;
+  Picture.Free;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadIpls(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadIpls(Frame: TId3v2Frame; Source: TStream);
 var
-  encoding: Byte;
-  buf: array[0..64000] of Char;
-  st, st2: string;
-  i: Integer;
-  second: Boolean;
+  Encoding: Byte;
+  Buf: array [0..64000] of Char;
+  St, St2: string;
+  I: Integer;
+  Second: Boolean;
 begin
-  source.Read(encoding, 1);
-  source.Read(buf, frame.Size - 1);
-  if encoding = 0 then
+  Source.Read(Encoding, 1);
+  Source.Read(Buf, Frame.Size - 1);
+  if Encoding = 0 then
   begin
     //Iso
-    st := '';
-    st2 := '';
-    second := False;
-    for i := 0 to frame.Size - 2 do
+    St := '';
+    St2 := '';
+    Second := False;
+    for I := 0 to Frame.Size - 2 do
     begin
-      if buf[i] = #0 then
+      if Buf[I] = #0 then
       begin
-        if second then
+        if Second then
         begin
-          FInvolved.AddItem(st, st2);
-          st := '';
-          st2 := '';
+          FInvolvedPeople.AddItem(St, St2);
+          St := '';
+          St2 := '';
         end;
-        second := not second;
+        Second := not Second;
       end
-      else if second then
-        st2 := st2 + buf[i]
       else
-        st := st + buf[i];
+        if Second then
+        St2 := St2 + Buf[I]
+      else
+        St := St + Buf[I];
     end;
-    if (st <> '') or (st2 <> '') then
-      FInvolved.AddItem(st, st2);
+    if (St <> '') or (St2 <> '') then
+      FInvolvedPeople.AddItem(St, St2);
   end
   else
   begin
     //unicode
-    st := '';
-    st2 := '';
-    second := False;
-    i := 2;
-    while i < frame.Size - 1 do
+    St := '';
+    St2 := '';
+    Second := False;
+    I := 2;
+    while I < Frame.Size - 1 do
     begin
-      if buf[i] = #0 then
+      if Buf[I] = #0 then
       begin
-        if second then
+        if Second then
         begin
-          FInvolved.AddItem(st, st2);
-          st := '';
-          st2 := '';
+          FInvolvedPeople.AddItem(St, St2);
+          St := '';
+          St2 := '';
         end;
-        second := not second;
-        Inc(i, 2);
+        Second := not Second;
+        Inc(I, 2);
       end
-      else if second then
-        st2 := st2 + buf[i]
       else
-        st := st + buf[i];
-      Inc(i, 2);
+      if Second then
+        St2 := St2 + Buf[I]
+      else
+        St := St + Buf[I];
+      Inc(I, 2);
     end;
-    if (st <> '') or (st2 <> '') then
-      FInvolved.AddItem(st, st2);
+    if (St <> '') or (St2 <> '') then
+      FInvolvedPeople.AddItem(St, St2);
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadOwner(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadOwner(Frame: TId3v2Frame; Source: TStream);
 var
-  encoding: Byte;
-  st: string;
-  b: Byte;
+  Encoding: Byte;
+  St: string;
+  B: Byte;
   y, d, m: Integer;
 begin
-  source.Read(encoding, 1);
-  Dec(frame.Size);
-  st := '';
+  Source.Read(Encoding, 1);
+  Dec(Frame.Size);
+  St := '';
 
   //Read price payed
-  source.Read(b, 1);
-  while b <> $00 do
+  Source.Read(B, 1);
+  while B <> $00 do
   begin
-    st := st + Char(b);
-    source.Read(b, 1);
-    Dec(frame.Size);
+    St := St + Char(B);
+    Source.Read(B, 1);
+    Dec(Frame.Size);
   end;
-  FOwner.Price := st;
+  FOwner.Price := St;
 
   //Read date of purchased
-  source.Read(b, 1);
-  y := b - Ord('0');
+  Source.Read(B, 1);
+  y := B - Ord('0');
   y := y * 10;
-  source.Read(b, 1);
-  y := y + (b - Ord('0'));
+  Source.Read(B, 1);
+  y := y + (B - Ord('0'));
   y := y * 10;
-  source.Read(b, 1);
-  y := y + (b - Ord('0'));
+  Source.Read(B, 1);
+  y := y + (B - Ord('0'));
   y := y * 10;
-  source.Read(b, 1);
-  y := y + (b - Ord('0'));
+  Source.Read(B, 1);
+  y := y + (B - Ord('0'));
 
-  source.Read(b, 1);
-  m := b - Ord('0');
+  Source.Read(B, 1);
+  m := B - Ord('0');
   m := m * 10;
-  source.Read(b, 1);
-  m := m + (b - Ord('0'));
+  Source.Read(B, 1);
+  m := m + (B - Ord('0'));
 
-  source.Read(b, 1);
-  d := b - Ord('0');
+  Source.Read(B, 1);
+  d := B - Ord('0');
   d := d * 10;
-  source.Read(b, 1);
-  d := d + (b - Ord('0'));
+  Source.Read(B, 1);
+  d := d + (B - Ord('0'));
 
   FOwner.DatePurchased := EncodeDate(y, m, d);
   Dec(Frame.Size, 8);
 
   //Read seller
-  st := '';
-  if encoding = $00 then
+  St := '';
+  if Encoding = $00 then
   begin
     while Frame.Size > 0 do
     begin
-      source.Read(b, 1);
-      st := st + Char(b);
-      Dec(frame.Size);
+      Source.Read(B, 1);
+      St := St + Char(B);
+      Dec(Frame.Size);
     end;
   end
   else
@@ -2019,44 +1618,42 @@ begin
     //Unicode
     if Frame.Size > 2 then
     begin
-      source.Read(b, 1);
-      source.Read(b, 1);
-      Dec(frame.Size, 2);
+      Source.Read(B, 1);
+      Source.Read(B, 1);
+      Dec(Frame.Size, 2);
       while Frame.Size > 0 do
       begin
-        source.Read(b, 1);
-        st := st + Char(b);
-        source.Read(b, 1);
-        Dec(frame.Size, 2);
+        Source.Read(B, 1);
+        St := St + Char(B);
+        Source.Read(B, 1);
+        Dec(Frame.Size, 2);
       end;
     end;
   end;
-  FOwner.Seller := st;
+  FOwner.Seller := St;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadPop(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadPop(Frame: TId3v2Frame; Source: TStream);
 var
-  st: string;
-  b: Byte;
-  i: Integer;
+  St: string;
+  B: Byte;
+  I: Integer;
 begin
-  source.Read(b, 1);
-  st := '';
-  while b <> $00 do
+  Source.Read(B, 1);
+  St := '';
+  while B <> $00 do
   begin
-    st := st + Char(b);
-    source.Read(b, 1);
+    St := St + Char(B);
+    Source.Read(B, 1);
   end;
-  FPopula.UserEmail := st;
+  FPopularimeter.UserEmail := St;
 
-  source.Read(b, 1);
-  FPopula.Rating := b;
+  Source.Read(B, 1);
+  FPopularimeter.Rating := B;
 
-  source.Read(i, 4);
+  Source.Read(I, 4);
   asm
-      mov eax,i
+      mov eax,I
       mov cl,al
       shl ecx,8
       mov cl,ah
@@ -2065,458 +1662,569 @@ begin
       mov cl,al
       shl ecx,8
       mov cl,ah
-      mov ebx,offset i
+      mov ebx,offset I
       mov [ebx],ecx
   end;
-  FPopula.Counter := i;
+  FPopularimeter.Counter := I;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadText(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadText(Frame: TId3v2Frame; Source: TStream);
 var
-  encoding: Byte;
-  buf: array[0..64000] of Char;
-  stw, stw2: WideString;
-  st, st2: string;
-  i: Integer;
-  second: Boolean;
+  Encoding: Byte;
+  Buf: array [0..64000] of Char;
+  Stw, Stw2: WideString;
+  St, St2: string;
+  I: Integer;
+  Second: Boolean;
 begin
-  if frame.Id = 'TXXX' then
+  if Frame.Id = 'TXXX' then
   begin
-    source.Read(encoding, 1);
-    second := False;
-    if encoding = 1 then
+    Source.Read(Encoding, 1);
+    Second := False;
+    if Encoding = 1 then
     begin
       //Unicode
-      source.Read(buf, frame.Size - 1);
-      stw := '';
-      stw2 := '';
-      i := 2;
-      while i < frame.Size - 2 do
+      Source.Read(Buf, Frame.Size - 1);
+      Stw := '';
+      Stw2 := '';
+      I := 2;
+      while I < Frame.Size - 2 do
       begin
-        if second then
-          stw2 := stw2 + buf[i]
-        else if buf[i] = #0 then
+        if Second then
+          Stw2 := Stw2 + Buf[I]
+        else
+          if Buf[I] = #0 then
         begin
-          second := True;
-          Inc(i, 2);
+          Second := True;
+          Inc(I, 2);
         end
         else
-          stw := stw + buf[i];
-        Inc(i, 2);
+          Stw := Stw + Buf[I];
+        Inc(I, 2);
       end;
-      st := stw;
-      st2 := stw2;
+      St := Stw;
+      St2 := Stw2;
     end
     else
     begin
-      source.Read(buf, frame.Size - 1);
-      st := '';
-      st2 := '';
-      for i := 0 to frame.Size - 2 do
+      Source.Read(Buf, Frame.Size - 1);
+      St := '';
+      St2 := '';
+      for I := 0 to Frame.Size - 2 do
       begin
-        if second then
-          st2 := st2 + buf[i]
-        else if buf[i] = #0 then
-          second := True
+        if Second then
+          St2 := St2 + Buf[I]
         else
-          st := st + buf[i];
+          if Buf[I] = #0 then
+          Second := True
+        else
+          St := St + Buf[I];
       end;
     end;
-    FUDText.AddItem(st, st2);
+    FUserDefinedText.AddItem(St, St2);
   end
   else
   begin
-    source.Read(encoding, 1);
-    if encoding = 0 then
+    Source.Read(Encoding, 1);
+    if Encoding = 0 then
     begin
       //ISO-8859-1
-      source.Read(buf, frame.Size - 1);
-      st := '';
-      for i := 0 to frame.Size - 2 do
-        st := st + buf[i];
+      Source.Read(Buf, Frame.Size - 1);
+      St := '';
+      for I := 0 to Frame.Size - 2 do
+        St := St + Buf[I];
     end
     else
     begin
       //Unicode
    // (rom) better do real Unicode conversion here
-      source.Read(buf, frame.Size - 1);
-      stw := '';
-      i := 2;
-      while i < frame.Size - 2 do
+      Source.Read(Buf, Frame.Size - 1);
+      Stw := '';
+      I := 2;
+      while I < Frame.Size - 2 do
       begin
-        stw := stw + buf[i];
-        Inc(i, 2);
+        Stw := Stw + Buf[I];
+        Inc(I, 2);
       end;
-      st := stw;
+      St := Stw;
     end;
 
-    if frame.Id = 'TALB' then
-      FId3Text.Album := st
-    else if frame.id = 'TBPM' then
-      FID3Text.BPM := StrToInt(st)
-    else if frame.id = 'TCOM' then
+    if Frame.Id = 'TALB' then
+      FTexts.Album := St
+    else
+      if Frame.id = 'TBPM' then
+      FTexts.BPM := StrToInt(St)
+    else
+      if Frame.id = 'TCOM' then
     begin
-      while Pos('/', st) <> 0 do
+      while Pos('/', St) <> 0 do
       begin
-        FId3Text.Composer.Add(Copy(st, 1, Pos('/', st) - 1));
-        st := Copy(st, Pos('/', st) + 1, Length(st));
+        FTexts.Composer.Add(Copy(St, 1, Pos('/', St) - 1));
+        St := Copy(St, Pos('/', St) + 1, Length(St));
       end;
-      FId3Text.Composer.Add(st);
+      FTexts.Composer.Add(St);
     end
-    else if frame.id = 'TCON' then
-      FId3Text.Content := st
-    else if frame.id = 'TCOP' then
-      FId3Text.Copyright := st
-    else if frame.id = 'TDAT' then
-      FId3Text.Date := st
-    else if frame.id = 'TDLY' then
-      FId3Text.PlaylistDelay := StrToInt(st)
-    else if frame.id = 'TENC' then
-      FId3Text.EncodedBy := st
-    else if frame.id = 'TEXT' then
+    else
+    if Frame.id = 'TCON' then
+      FTexts.Content := St
+    else
+    if Frame.id = 'TCOP' then
+      FTexts.Copyright := St
+    else
+    if Frame.id = 'TDAT' then
+      FTexts.Date := St
+    else
+    if Frame.id = 'TDLY' then
+      FTexts.PlaylistDelay := StrToInt(St)
+    else
+    if Frame.id = 'TENC' then
+      FTexts.EncodedBy := St
+    else
+    if Frame.id = 'TEXT' then
     begin
-      while Pos('/', st) <> 0 do
+      while Pos('/', St) <> 0 do
       begin
-        FId3Text.Lyricists.Add(Copy(st, 1, Pos('/', st) - 1));
-        st := Copy(st, Pos('/', st) + 1, Length(st));
+        FTexts.Lyricists.Add(Copy(St, 1, Pos('/', St) - 1));
+        St := Copy(St, Pos('/', St) + 1, Length(St));
       end;
-      FId3Text.Lyricists.Add(st);
+      FTexts.Lyricists.Add(St);
     end
-    else if frame.id = 'TFLT' then
+    else
+    if Frame.id = 'TFLT' then
     begin
-      if st = 'MPG' then
-        FId3Text.FileType := ftMPG
-      else if st = 'MPG/1' then
-        FId3Text.FileType := ftMPG1
-      else if st = 'MPG/2' then
-        FId3Text.FileType := ftMPG2
-      else if st = 'MPG/3' then
-        FId3Text.FileType := ftMPG3
-      else if st = 'MPG/2.5' then
-        FId3Text.FileType := ftMPG2_5
-      else if st = 'MPG/AAC' then
-        FId3Text.FileType := ftMPG_AAC
-      else if st = 'VQF' then
-        FId3Text.FileType := ftVQF
-      else if st = 'PCM' then
-        FId3Text.FileType := ftPCM
+      if St = 'MPG' then
+        FTexts.FileType := ftMPG
       else
-        FId3Text.FileType := ftUNKNOWN;
-    end
-    else if frame.id = 'TIME' then
-      FId3Text.Time := st
-    else if frame.id = 'TIT1' then
-      FId3Text.ContentGroup := st
-    else if frame.id = 'TIT2' then
-      FId3Text.ContentDescription := st
-    else if frame.id = 'TIT3' then
-      FId3Text.SubTitle := st
-    else if frame.id = 'TKEY' then
-      FId3Text.InitialKey := st
-    else if frame.id = 'TLAN' then
-    begin
-      while Length(st) > 3 do
-      begin
-        st2 := Copy(st, 1, 3);
-        Fid3Text.Languages.Add(Iso639ToName(st2));
-        st := Copy(st, 4, Length(st));
-      end;
-      Fid3Text.Languages.Add(Iso639ToName(st));
-    end
-    else if frame.id = 'TLEN' then
-      FId3Text.Length := st
-    else if frame.id = 'TMED' then
-    begin
-      if st = 'DIG' then
-        FId3Text.MediaType := mtDIG
-      else if st = 'DIG/A' then
-        FId3Text.MediaType := mtDIG_ANALOG_TRANSFER
-      else if st = 'ANA' then
-        FId3Text.MediaType := mtANA
-      else if st = 'ANA/WAC' then
-        FId3Text.MediaType := mtANA_WAX_CYLINDER
-      else if st = 'ANA/8CA' then
-        FId3Text.MediaType := mtANA_8_TRACK_TAPE
-      else if st = 'CD' then
-        FId3Text.MediaType := mtCD
-      else if st = 'CD/A' then
-        FId3Text.MediaType := mtCD_ANALOG
-      else if st = 'CD/DD' then
-        FId3Text.MediaType := mtCD_DDD
-      else if st = 'CD/AD' then
-        FId3Text.MediaType := mtCD_ADD
-      else if st = 'CD/AA' then
-        FId3Text.MediaType := mtCD_AAD
-      else if st = 'LD' then
-        FId3Text.MediaType := mtLASERDISC
-      else if st = 'LD/A' then
-        FId3Text.MediaType := mtLASERDISC_ANALOG_TRANSFER
-      else if st = 'TT' then
-        FId3Text.MediaType := mtTURNTABLE
-      else if st = 'TT/33' then
-        FId3Text.MediaType := mtTURNTABLE_33
-      else if st = 'TT/45' then
-        FId3Text.MediaType := mtTURNTABLE_45
-      else if st = 'TT/71' then
-        FId3Text.MediaType := mtTURNTABLE_71
-      else if st = 'TT/76' then
-        FId3Text.MediaType := mtTURNTABLE_76
-      else if st = 'TT/78' then
-        FId3Text.MediaType := mtTURNTABLE_78
-      else if st = 'TT/80' then
-        FId3Text.MediaType := mtTURNTABLE_80
-      else if st = 'MD' then
-        FId3Text.MediaType := mtMINIDISC
-      else if st = 'MD/A' then
-        FId3Text.MediaType := mtMINIDISC_ANALOG_TRANSFER
-      else if st = 'DAT' then
-        FId3Text.MediaType := mtDAT
-      else if st = 'DAT/A' then
-        FId3Text.MediaType := mtDAT_ANALOG_TRANSFER
-      else if st = 'DAT/1' then
-        FId3Text.MediaType := mtDAT_48KHZ_16B
-      else if st = 'DAT/2' then
-        FId3Text.MediaType := mtDAT_32KHZ_16B
-      else if st = 'DAT/3' then
-        FId3Text.MediaType := mtDAT_32KHZ_12B
-      else if st = 'DAT/4' then
-        FId3Text.MediaType := mtDAT_32KHZ_12B_4CH
-      else if st = 'DAT/5' then
-        FId3Text.MediaType := mtDAT_44KHZ_16B
-      else if st = 'DAT/6' then
-        FId3Text.MediaType := mtDAT_44KHZ_16B_WIDE
-      else if st = 'DCC' then
-        FId3Text.MediaType := mtDCC
-      else if st = 'DCC/A' then
-        FId3Text.MediaType := mtDCC_ANALOG_TRANSFER
-      else if st = 'DVD' then
-        FId3Text.MediaType := mtDVD
-      else if st = 'DVD/A' then
-        FId3Text.MediaType := mtDVD_ANALOG_TRANSFER
-      else if st = 'TV' then
-        FId3Text.MediaType := mtTV
-      else if st = 'TV/PAL' then
-        FId3Text.MediaType := mtTV_PAL
-      else if st = 'TV/NTSC' then
-        FId3Text.MediaType := mtTV_NTSC
-      else if st = 'TV/SECAM' then
-        FId3Text.MediaType := mtTV_SECAM
-      else if st = 'VID' then
-        FId3Text.MediaType := mtVID
-      else if st = 'VID/PAL' then
-        FId3Text.MediaType := mtVID_PAL
-      else if st = 'VID/NTSC' then
-        FId3Text.MediaType := mtVID_NTSC
-      else if st = 'VID/SECAM' then
-        FId3Text.MediaType := mtVID_SECAM
-      else if st = 'VID/VHS' then
-        FId3Text.MediaType := mtVID_VHS
-      else if st = 'VID/SVHS' then
-        FId3Text.MediaType := mtVID_SVHS
-      else if st = 'VID/BETA' then
-        FId3Text.MediaType := mtVID_BETA
-      else if st = 'RAD' then
-        FId3Text.MediaType := mtRAD
-      else if st = 'RAD/FM' then
-        FId3Text.MediaType := mtRAD_FM
-      else if st = 'RAD/AM' then
-        FId3Text.MediaType := mtRAD_AM
-      else if st = 'RAD/LW' then
-        FId3Text.MediaType := mtRAD_LW
-      else if st = 'RAD/MW' then
-        FId3Text.MediaType := mtRAD_MW
-      else if st = 'TEL' then
-        FId3Text.MediaType := mtTEL
-      else if st = 'TEL/I' then
-        FId3Text.MediaType := mtTEL_ISDN
-      else if st = 'MC' then
-        FId3Text.MediaType := mtMC
-      else if st = 'MC/4' then
-        FId3Text.MediaType := mtMC_4
-      else if st = 'MC/9' then
-        FId3Text.MediaType := mtMC_9
-      else if st = 'MC/I' then
-        FId3Text.MediaType := mtMC_I
-      else if st = 'MC/II' then
-        FId3Text.MediaType := mtMC_II
-      else if st = 'MC/III' then
-        FId3Text.MediaType := mtMC_III
-      else if st = 'MC/IV' then
-        FId3Text.MediaType := mtMC_IV
-      else if st = 'REE' then
-        FId3Text.MediaType := mtREE
-      else if st = 'REE/9' then
-        FId3Text.MediaType := mtREE_9
-      else if st = 'REE/19' then
-        FId3Text.MediaType := mtREE_19
-      else if st = 'REE/38' then
-        FId3Text.MediaType := mtREE_38
-      else if st = 'REE/76' then
-        FId3Text.MediaType := mtREE_76
-      else if st = 'REE/I' then
-        FId3Text.MediaType := mtREE_I
-      else if st = 'REE/II' then
-        FId3Text.MediaType := mtREE_II
-      else if st = 'REE/III' then
-        FId3Text.MediaType := mtREE_III
-      else if st = 'REE/IV' then
-        FId3Text.MediaType := mtREE_IV
+      if St = 'MPG/1' then
+        FTexts.FileType := ftMPG1
       else
-        FId3Text.MediaType := mtUNKNOWN;
+      if St = 'MPG/2' then
+        FTexts.FileType := ftMPG2
+      else
+      if St = 'MPG/3' then
+        FTexts.FileType := ftMPG3
+      else
+      if St = 'MPG/2.5' then
+        FTexts.FileType := ftMPG2_5
+      else
+      if St = 'MPG/AAC' then
+        FTexts.FileType := ftMPG_AAC
+      else
+      if St = 'VQF' then
+        FTexts.FileType := ftVQF
+      else
+      if St = 'PCM' then
+        FTexts.FileType := ftPCM
+      else
+        FTexts.FileType := ftUNKNOWN;
     end
-    else if frame.id = 'TOAL' then
-      FId3Text.OriginalTitle := st
-    else if frame.id = 'TOFN' then
-      FId3Text.OriginalFileName := st
-    else if frame.id = 'TOLY' then
+    else
+    if Frame.id = 'TIME' then
+      FTexts.Time := St
+    else
+    if Frame.id = 'TIT1' then
+      FTexts.ContentGroup := St
+    else
+    if Frame.id = 'TIT2' then
+      FTexts.ContentDescription := St
+    else
+    if Frame.id = 'TIT3' then
+      FTexts.SubTitle := St
+    else
+    if Frame.id = 'TKEY' then
+      FTexts.InitialKey := St
+    else
+    if Frame.id = 'TLAN' then
     begin
-      while Pos('/', st) <> 0 do
+      while Length(St) > 3 do
       begin
-        FId3Text.OriginalLyricists.Add(Copy(st, 1, Pos('/', st) - 1));
-        st := Copy(st, Pos('/', st) + 1, Length(st));
+        St2 := Copy(St, 1, 3);
+        FTexts.Languages.Add(Iso639ToName(St2));
+        St := Copy(St, 4, Length(St));
       end;
-      FId3Text.OriginalLyricists.Add(st);
+      FTexts.Languages.Add(Iso639ToName(St));
     end
-    else if frame.id = 'TOPE' then
+    else
+    if Frame.id = 'TLEN' then
+      FTexts.Length := St
+    else
+    if Frame.id = 'TMED' then
     begin
-      while Pos('/', st) <> 0 do
-      begin
-        FId3Text.OriginalArtist.Add(Copy(st, 1, Pos('/', st) - 1));
-        st := Copy(st, Pos('/', st) + 1, Length(st));
-      end;
-      FId3Text.OriginalArtist.Add(st);
+      if St = 'DIG' then
+        FTexts.MediaType := mtDIG
+      else
+      if St = 'DIG/A' then
+        FTexts.MediaType := mtDIG_ANALOG_TRANSFER
+      else
+      if St = 'ANA' then
+        FTexts.MediaType := mtANA
+      else
+      if St = 'ANA/WAC' then
+        FTexts.MediaType := mtANA_WAX_CYLINDER
+      else
+      if St = 'ANA/8CA' then
+        FTexts.MediaType := mtANA_8_TRACK_TAPE
+      else
+      if St = 'CD' then
+        FTexts.MediaType := mtCD
+      else
+      if St = 'CD/A' then
+        FTexts.MediaType := mtCD_ANALOG
+      else
+      if St = 'CD/DD' then
+        FTexts.MediaType := mtCD_DDD
+      else
+      if St = 'CD/AD' then
+        FTexts.MediaType := mtCD_ADD
+      else
+      if St = 'CD/AA' then
+        FTexts.MediaType := mtCD_AAD
+      else
+      if St = 'LD' then
+        FTexts.MediaType := mtLASERDISC
+      else
+      if St = 'LD/A' then
+        FTexts.MediaType := mtLASERDISC_ANALOG_TRANSFER
+      else
+      if St = 'TT' then
+        FTexts.MediaType := mtTURNTABLE
+      else
+      if St = 'TT/33' then
+        FTexts.MediaType := mtTURNTABLE_33
+      else
+      if St = 'TT/45' then
+        FTexts.MediaType := mtTURNTABLE_45
+      else
+      if St = 'TT/71' then
+        FTexts.MediaType := mtTURNTABLE_71
+      else
+      if St = 'TT/76' then
+        FTexts.MediaType := mtTURNTABLE_76
+      else
+      if St = 'TT/78' then
+        FTexts.MediaType := mtTURNTABLE_78
+      else
+      if St = 'TT/80' then
+        FTexts.MediaType := mtTURNTABLE_80
+      else
+      if St = 'MD' then
+        FTexts.MediaType := mtMINIDISC
+      else
+      if St = 'MD/A' then
+        FTexts.MediaType := mtMINIDISC_ANALOG_TRANSFER
+      else
+      if St = 'DAT' then
+        FTexts.MediaType := mtDAT
+      else
+      if St = 'DAT/A' then
+        FTexts.MediaType := mtDAT_ANALOG_TRANSFER
+      else
+      if St = 'DAT/1' then
+        FTexts.MediaType := mtDAT_48KHZ_16B
+      else
+      if St = 'DAT/2' then
+        FTexts.MediaType := mtDAT_32KHZ_16B
+      else
+      if St = 'DAT/3' then
+        FTexts.MediaType := mtDAT_32KHZ_12B
+      else
+      if St = 'DAT/4' then
+        FTexts.MediaType := mtDAT_32KHZ_12B_4CH
+      else
+      if St = 'DAT/5' then
+        FTexts.MediaType := mtDAT_44KHZ_16B
+      else
+      if St = 'DAT/6' then
+        FTexts.MediaType := mtDAT_44KHZ_16B_WIDE
+      else
+      if St = 'DCC' then
+        FTexts.MediaType := mtDCC
+      else
+      if St = 'DCC/A' then
+        FTexts.MediaType := mtDCC_ANALOG_TRANSFER
+      else
+      if St = 'DVD' then
+        FTexts.MediaType := mtDVD
+      else
+      if St = 'DVD/A' then
+        FTexts.MediaType := mtDVD_ANALOG_TRANSFER
+      else
+      if St = 'TV' then
+        FTexts.MediaType := mtTV
+      else
+      if St = 'TV/PAL' then
+        FTexts.MediaType := mtTV_PAL
+      else
+      if St = 'TV/NTSC' then
+        FTexts.MediaType := mtTV_NTSC
+      else
+      if St = 'TV/SECAM' then
+        FTexts.MediaType := mtTV_SECAM
+      else
+      if St = 'VID' then
+        FTexts.MediaType := mtVID
+      else
+      if St = 'VID/PAL' then
+        FTexts.MediaType := mtVID_PAL
+      else
+      if St = 'VID/NTSC' then
+        FTexts.MediaType := mtVID_NTSC
+      else
+      if St = 'VID/SECAM' then
+        FTexts.MediaType := mtVID_SECAM
+      else
+      if St = 'VID/VHS' then
+        FTexts.MediaType := mtVID_VHS
+      else
+      if St = 'VID/SVHS' then
+        FTexts.MediaType := mtVID_SVHS
+      else
+      if St = 'VID/BETA' then
+        FTexts.MediaType := mtVID_BETA
+      else
+      if St = 'RAD' then
+        FTexts.MediaType := mtRAD
+      else
+      if St = 'RAD/FM' then
+        FTexts.MediaType := mtRAD_FM
+      else
+      if St = 'RAD/AM' then
+        FTexts.MediaType := mtRAD_AM
+      else
+      if St = 'RAD/LW' then
+        FTexts.MediaType := mtRAD_LW
+      else
+      if St = 'RAD/MW' then
+        FTexts.MediaType := mtRAD_MW
+      else
+      if St = 'TEL' then
+        FTexts.MediaType := mtTEL
+      else
+      if St = 'TEL/I' then
+        FTexts.MediaType := mtTEL_ISDN
+      else
+      if St = 'MC' then
+        FTexts.MediaType := mtMC
+      else
+      if St = 'MC/4' then
+        FTexts.MediaType := mtMC_4
+      else
+      if St = 'MC/9' then
+        FTexts.MediaType := mtMC_9
+      else
+      if St = 'MC/I' then
+        FTexts.MediaType := mtMC_I
+      else
+      if St = 'MC/II' then
+        FTexts.MediaType := mtMC_II
+      else
+      if St = 'MC/III' then
+        FTexts.MediaType := mtMC_III
+      else
+      if St = 'MC/IV' then
+        FTexts.MediaType := mtMC_IV
+      else
+      if St = 'REE' then
+        FTexts.MediaType := mtREE
+      else
+      if St = 'REE/9' then
+        FTexts.MediaType := mtREE_9
+      else
+      if St = 'REE/19' then
+        FTexts.MediaType := mtREE_19
+      else
+      if St = 'REE/38' then
+        FTexts.MediaType := mtREE_38
+      else
+      if St = 'REE/76' then
+        FTexts.MediaType := mtREE_76
+      else
+      if St = 'REE/I' then
+        FTexts.MediaType := mtREE_I
+      else
+      if St = 'REE/II' then
+        FTexts.MediaType := mtREE_II
+      else
+      if St = 'REE/III' then
+        FTexts.MediaType := mtREE_III
+      else
+      if St = 'REE/IV' then
+        FTexts.MediaType := mtREE_IV
+      else
+        FTexts.MediaType := mtUNKNOWN;
     end
-    else if frame.id = 'TORY' then
-      FId3Text.OriginalReleaseYear := st
-    else if frame.id = 'TOWN' then
-      FId3Text.FileOwner := st
-    else if frame.id = 'TPE1' then
+    else
+    if Frame.id = 'TOAL' then
+      FTexts.OriginalTitle := St
+    else
+    if Frame.id = 'TOFN' then
+      FTexts.OriginalFileName := St
+    else
+    if Frame.id = 'TOLY' then
     begin
-      while Pos('/', st) <> 0 do
+      while Pos('/', St) <> 0 do
       begin
-        FId3Text.Performers.Add(Copy(st, 1, Pos('/', st) - 1));
-        st := Copy(st, Pos('/', st) + 1, Length(st));
+        FTexts.OriginalLyricists.Add(Copy(St, 1, Pos('/', St) - 1));
+        St := Copy(St, Pos('/', St) + 1, Length(St));
       end;
-      FId3Text.Performers.Add(st);
+      FTexts.OriginalLyricists.Add(St);
     end
-    else if frame.id = 'TPE2' then
-      FId3Text.Band := st
-    else if frame.id = 'TPE3' then
-      FId3Text.Conductor := st
-    else if frame.id = 'TPE4' then
-      FId3Text.ModifiedBy := st
-    else if frame.id = 'TPOS' then
-      FId3Text.PartOf := st
-    else if frame.id = 'TPUB' then
-      FId3Text.Publisher := st
-    else if frame.id = 'TRCK' then
-      FId3Text.TrackNumber := st
-    else if frame.id = 'TRDA' then
-      FId3Text.RecordingDate := st
-    else if frame.id = 'TRSN' then
-      FId3Text.InternetRadioName := st
-    else if frame.id = 'TRSO' then
-      FId3Text.InternetRadioOwner := st
-    else if frame.id = 'TSIZ' then
-      FId3Text.Size := StrToInt(st)
-    else if frame.id = 'TSRC' then
-      FId3Text.ISRC := st
-    else if frame.id = 'TSSE' then
-      FId3Text.EncodingSoftware := st
-    else if frame.id = 'TYER' then
-      FId3Text.Year := st;
+    else
+    if Frame.id = 'TOPE' then
+    begin
+      while Pos('/', St) <> 0 do
+      begin
+        FTexts.OriginalArtists.Add(Copy(St, 1, Pos('/', St) - 1));
+        St := Copy(St, Pos('/', St) + 1, Length(St));
+      end;
+      FTexts.OriginalArtists.Add(St);
+    end
+    else
+    if Frame.id = 'TORY' then
+      FTexts.OriginalReleaseYear := St
+    else
+    if Frame.id = 'TOWN' then
+      FTexts.FileOwner := St
+    else
+    if Frame.id = 'TPE1' then
+    begin
+      while Pos('/', St) <> 0 do
+      begin
+        FTexts.Performers.Add(Copy(St, 1, Pos('/', St) - 1));
+        St := Copy(St, Pos('/', St) + 1, Length(St));
+      end;
+      FTexts.Performers.Add(St);
+    end
+    else
+    if Frame.id = 'TPE2' then
+      FTexts.Band := St
+    else
+    if Frame.id = 'TPE3' then
+      FTexts.Conductor := St
+    else
+    if Frame.id = 'TPE4' then
+      FTexts.ModifiedBy := St
+    else
+    if Frame.id = 'TPOS' then
+      FTexts.PartOf := St
+    else
+    if Frame.id = 'TPUB' then
+      FTexts.Publisher := St
+    else
+    if Frame.id = 'TRCK' then
+      FTexts.TrackNumber := St
+    else
+    if Frame.id = 'TRDA' then
+      FTexts.RecordingDate := St
+    else
+    if Frame.id = 'TRSN' then
+      FTexts.InternetRadioName := St
+    else
+    if Frame.id = 'TRSO' then
+      FTexts.InternetRadioOwner := St
+    else
+    if Frame.id = 'TSIZ' then
+      FTexts.Size := StrToInt(St)
+    else
+    if Frame.id = 'TSRC' then
+      FTexts.ISRC := St
+    else
+    if Frame.id = 'TSSE' then
+      FTexts.EncodingSoftware := St
+    else
+    if Frame.id = 'TYER' then
+      FTexts.Year := St;
   end;
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.ReadWeb(frame: TId3v2Frame; source: TStream);
+procedure TJvId3v2.ReadWeb(Frame: TId3v2Frame; Source: TStream);
 var
-  buf: array[0..64000] of Char;
-  st, st2: string;
-  i: Integer;
+  Buf: array [0..64000] of Char;
+  St, St2: string;
+  I: Integer;
 begin
-  source.Read(buf, frame.Size - 1);
-  st := '';
-  st2 := '';
-  if frame.Id = 'WXXX' then
+  Source.Read(Buf, Frame.Size - 1);
+  St := '';
+  St2 := '';
+  if Frame.Id = 'WXXX' then
   begin
-    if buf[0] = #0 then
+    if Buf[0] = #0 then
     begin
-      i := 1;
-      while buf[i] <> #0 do
+      I := 1;
+      while Buf[I] <> #0 do
       begin
-        st := st + buf[i];
-        Inc(i);
+        St := St + Buf[I];
+        Inc(I);
       end;
     end
     else
     begin
-      //unicode description
-      i := 3;
-      while buf[i] <> #0 do
+      //unicode Description
+      I := 3;
+      while Buf[I] <> #0 do
       begin
-        st := st + buf[i];
-        Inc(i, 2);
+        St := St + Buf[I];
+        Inc(I, 2);
       end;
     end;
-    Inc(i);
-    while i < frame.Size do
+    Inc(I);
+    while I < Frame.Size do
     begin
-      st2 := st2 + buf[i];
-      Inc(i);
+      St2 := St2 + Buf[I];
+      Inc(I);
     end;
-    FUDWeb.AddItem(st, st2);
+    FUserDefinedWeb.AddItem(St, St2);
   end
   else
   begin
-    for i := 0 to frame.Size - 2 do
-      st := st + buf[i];
-    if frame.Id = 'WCOM' then
-      FWeb.CommercialInfo := st
-    else if frame.Id = 'WCOP' then
-      FWeb.LegalInfo := st
-    else if frame.Id = 'WOAF' then
-      FWeb.OfficialAudio := st
-    else if frame.Id = 'WOAR' then
-      FWeb.OfficialArtist := st
-    else if frame.Id = 'WOAS' then
-      FWeb.OfficialAudioSource := st
-    else if frame.Id = 'WORS' then
-      FWeb.InternetRadioStation := st
-    else if frame.Id = 'WPAY' then
-      FWeb.Payment := st
-    else if frame.Id = 'WPUB' then
-      FWeb.Publishers := st;
+    for I := 0 to Frame.Size - 2 do
+      St := St + Buf[I];
+    if Frame.Id = 'WCOM' then
+      FWeb.CommercialInfo := St
+    else
+    if Frame.Id = 'WCOP' then
+      FWeb.LegalInfo := St
+    else
+    if Frame.Id = 'WOAF' then
+      FWeb.OfficialAudio := St
+    else
+    if Frame.Id = 'WOAR' then
+      FWeb.OfficialArtist := St
+    else
+    if Frame.Id = 'WOAS' then
+      FWeb.OfficialAudioSource := St
+    else
+    if Frame.Id = 'WORS' then
+      FWeb.InternetRadioStation := St
+    else
+    if Frame.Id = 'WPAY' then
+      FWeb.Payment := St
+    else
+    if Frame.Id = 'WPUB' then
+      FWeb.Publishers := St;
   end;
 end;
-
-{**************************************************}
 
 procedure TJvId3v2.ResetProp;
 begin
   FVersion := 0.0;
-  FUnsynchro := False;
+  FUnsynchronisation := False;
   FExperimental := False;
-  FExtended := False;
+  FExtendedHeader := False;
 
-  FId3Text.ResetFields;
-  FUDText.ResetFields;
+  FTexts.ResetFields;
+  FUserDefinedText.ResetFields;
   FWeb.ResetFields;
-  FUDWeb.ResetFields;
-  FInvolved.ResetFields;
+  FUserDefinedWeb.ResetFields;
+  FInvolvedPeople.ResetFields;
   FImages.ResetFields;
   FOwner.ResetFields;
-  FPopula.ResetFields;
+  FPopularimeter.ResetFields;
 
-  FCounter := 0;
+  FPlayCounter := 0;
   FillChar(MusicCDIdentifier, SizeOf(MusicCDIdentifier), 0);
   MusicCDIdentifierLength := 0;
 end;
-
-{**************************************************}
 
 procedure TJvId3v2.SetFileName(const Value: TFileName);
 begin
@@ -2525,131 +2233,115 @@ begin
   LoadFromFile(Value);
 end;
 
-{**************************************************}
-
-procedure TJvId3v2.SkipFrame(frame: TId3v2Frame; var source: TStream);
+procedure TJvId3v2.SkipFrame(Frame: TId3v2Frame; var Source: TStream);
 begin
-  source.Position := source.Position + frame.Size;
+  Source.Position := Source.Position + Frame.Size;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvId3Text
-///////////////////////////////////////////////////////////
+//=== TJvId3Text =============================================================
 
 constructor TJvId3Text.Create;
 begin
-  inherited;
+  inherited Create;
   FComposer := TStringList.Create;
-  FLyricist := TStringList.Create;
+  FLyricists := TStringList.Create;
   FLanguages := TStringList.Create;
-  FOLyricists := TStringList.Create;
-  FOArtist := TStringList.Create;
+  FOriginalLyricists := TStringList.Create;
+  FOriginalArtists := TStringList.Create;
   FPerformers := TStringList.Create;
+  ResetFields;
 end;
-
-{**************************************************}
 
 destructor TJvId3Text.Destroy;
 begin
   FComposer.Free;
-  FLyricist.Free;
+  FLyricists.Free;
   FLanguages.Free;
-  FOLyricists.Free;
-  FOArtist.Free;
+  FOriginalLyricists.Free;
+  FOriginalArtists.Free;
   FPerformers.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvId3Text.ResetFields;
 begin
   FBPM := 0;
   FAlbum := '';
   FComposer.Clear;
-  FDelay := 0;
+  FPlaylistDelay := 0;
   FCopyright := '';
   FEncodedBy := '';
   FDate := '';
-  FLyricist.Clear;
+  FLyricists.Clear;
   FFileType := ftUNKNOWN;
   FTime := '';
   FInitialKey := '';
-  FContent := '';
+  FContentGroup := '';
   FSubTitle := '';
-  FContentD := '';
+  FContentDescription := '';
   FLanguages.Clear;
   FLength := '';
   FMediaType := mtUNKNOWN;
-  FOriginal := '';
-  FFileName := '';
-  FOLyricists.Clear;
-  FOArtist.Clear;
+  FOriginalTitle := '';
+  FOriginalFileName := '';
+  FOriginalLyricists.Clear;
+  FOriginalArtists.Clear;
   FOwner := '';
-  FOYear := '';
+  FOriginalReleaseYear := '';
   FPerformers.Clear;
   FConductor := '';
-  FModified := '';
+  FModifiedBy := '';
   FBand := '';
-  FPart := '';
+  FPartOf := '';
   FPublisher := '';
   FTrackNumber := '';
-  FRecording := '';
-  FInternet := '';
-  FIOwner := '';
+  FRecordingDate := '';
+  FInternetRadioName := '';
+  FInternetRadioOwner := '';
   FSize := 0;
   FISRC := '';
-  FEncoding := '';
+  FEncodingSoftware := '';
   FYear := '';
   FContent := '';
 end;
 
-///////////////////////////////////////////////////////////
-// TJvId3Web
-///////////////////////////////////////////////////////////
+//=== TJvId3Web ==============================================================
 
 procedure TJvId3Web.ResetFields;
 begin
-  FAudio := '';
-  FStation := '';
+  FOfficialAudio := '';
+  FInternetRadioStation := '';
   FPublishers := '';
-  FASource := '';
+  FOfficialAudioSource := '';
   FPayment := '';
-  FLegal := '';
-  FCommercial := '';
-  FArtist := '';
+  FLegalInfo := '';
+  FCommercialInfo := '';
+  FOfficialArtist := '';
 end;
 
-///////////////////////////////////////////////////////////
-// TJvID3UDText
-///////////////////////////////////////////////////////////
-
-procedure TJvID3UDText.AddItem(desc, Value: string);
-begin
-  FStrings.Add(Value);
-  FDescriptions.Add(desc);
-  SetItem(0);
-  FCount := FStrings.Count;
-end;
-
-{**************************************************}
+//=== TJvID3UDText ===========================================================
 
 constructor TJvID3UDText.Create;
 begin
+  inherited Create;
   FStrings := TStringList.Create;
   FDescriptions := TStringList.Create;
 end;
-
-{**************************************************}
 
 destructor TJvID3UDText.Destroy;
 begin
   FStrings.Free;
   FDescriptions.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvID3UDText.AddItem(Desc, Value: string);
+begin
+  FStrings.Add(Value);
+  FDescriptions.Add(Desc);
+  SetItem(0);
+  FItemCount := FStrings.Count;
+end;
 
 procedure TJvID3UDText.ResetFields;
 begin
@@ -2657,11 +2349,9 @@ begin
   FDescriptions.Clear;
 end;
 
-{**************************************************}
-
 procedure TJvID3UDText.SetItem(const Value: Integer);
 begin
-  FItems := Value;
+  FItemIndex := Value;
   if Value < FStrings.Count then
   begin
     FDescription := FDescriptions[Value];
@@ -2674,285 +2364,226 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvID3UDUrl
-///////////////////////////////////////////////////////////
-
-procedure TJvID3UDUrl.AddItem(desc, Value: string);
-begin
-  FStrings.Add(Value);
-  FDescriptions.Add(desc);
-  SetItem(0);
-  FCount := FStrings.Count;
-end;
-
-{**************************************************}
+//=== TJvID3UDUrl ============================================================
 
 constructor TJvID3UDUrl.Create;
 begin
-  FStrings := TStringList.Create;
+  inherited Create;
+  FURLList := TStringList.Create;
   FDescriptions := TStringList.Create;
 end;
 
-{**************************************************}
-
 destructor TJvID3UDUrl.Destroy;
 begin
-  FStrings.Free;
+  FURLList.Free;
   FDescriptions.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvID3UDUrl.AddItem(Desc, Value: string);
+begin
+  FURLList.Add(Value);
+  FDescriptions.Add(Desc);
+  SetItem(0);
+  FItemCount := FURLList.Count;
+end;
 
 procedure TJvID3UDUrl.ResetFields;
 begin
-  FStrings.Clear;
+  FURLList.Clear;
   FDescriptions.Clear;
 end;
 
-{**************************************************}
-
 procedure TJvID3UDUrl.SetItem(const Value: Integer);
 begin
-  FItems := Value;
-  if Value < FStrings.Count then
+  FItemIndex := Value;
+  if Value < FURLList.Count then
   begin
     FDescription := FDescriptions[Value];
-    FValue := FStrings[Value];
+    FURL := FURLList[Value];
   end
   else
   begin
     FDescription := '';
-    FValue := '';
+    FURL := '';
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvIdPictures
-///////////////////////////////////////////////////////////
+//=== TJvIdPictures ==========================================================
 
 constructor TJvIdPictures.Create;
 begin
+  inherited Create;
   FMedia := TPicture.Create;
   FLyricist := TPicture.Create;
-  FIcon := TPicture.Create;
+  FFileIcon := TPicture.Create;
   FComposer := TPicture.Create;
-  FRLocation := TPicture.Create;
+  FRecordingLocation := TPicture.Create;
   FOther := TPicture.Create;
-  FFish := TPicture.Create;
+  FColouredFish := TPicture.Create;
   FCoverFront := TPicture.Create;
   FBandLogo := TPicture.Create;
   FConductor := TPicture.Create;
   FPublisherLogo := TPicture.Create;
-  FDRecording := TPicture.Create;
+  FDuringRecording := TPicture.Create;
   FArtist := TPicture.Create;
   FLeaflet := TPicture.Create;
   FOther := TPicture.Create;
   FDPerformance := TPicture.Create;
   FIllustration := TPicture.Create;
   FBand := TPicture.Create;
-  FMove := TPicture.Create;
+  FMovieCapture := TPicture.Create;
   FCoverBack := TPicture.Create;
   FOtherIcon := TPicture.Create;
   FLeadArtist := TPicture.Create;
 end;
 
-{**************************************************}
-
 destructor TJvIdPictures.Destroy;
 begin
   FMedia.Free;
   FLyricist.Free;
-  FIcon.Free;
+  FFileIcon.Free;
   FComposer.Free;
-  FRLocation.Free;
+  FRecordingLocation.Free;
   FOther.Free;
-  FFish.Free;
+  FColouredFish.Free;
   FCoverFront.Free;
   FBandLogo.Free;
   FConductor.Free;
   FPublisherLogo.Free;
-  FDRecording.Free;
+  FDuringRecording.Free;
   FArtist.Free;
   FLeaflet.Free;
   FDPerformance.Free;
   FIllustration.Free;
   FBand.Free;
-  FMove.Free;
+  FMovieCapture.Free;
   FCoverBack.Free;
   FOtherIcon.Free;
   FLeadArtist.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetArtist(const Value: TPicture);
 begin
   FArtist.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetBand(const Value: TPicture);
 begin
   FBand.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetBandLogo(const Value: TPicture);
 begin
   FBandLogo.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetComposer(const Value: TPicture);
 begin
   FComposer.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetConductor(const Value: TPicture);
 begin
   FConductor.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetCoverBack(const Value: TPicture);
 begin
   FCoverBack.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetCoverFront(const Value: TPicture);
 begin
   FCoverFront.Assign(Value);
 end;
 
-{**************************************************}
-
-procedure TJvIdPictures.SetDRecording(const Value: TPicture);
+procedure TJvIdPictures.SetDuringRecording(const Value: TPicture);
 begin
-  FDRecording.Assign(Value);
+  FDuringRecording.Assign(Value);
 end;
 
-{**************************************************}
-
-procedure TJvIdPictures.SetFish(const Value: TPicture);
+procedure TJvIdPictures.SetColouredFish(const Value: TPicture);
 begin
-  FFish.Assign(Value);
+  FColouredFish.Assign(Value);
 end;
 
-{**************************************************}
-
-procedure TJvIdPictures.SetIcon(const Value: TPicture);
+procedure TJvIdPictures.SetFileIcon(const Value: TPicture);
 begin
-  FIcon.Assign(Value);
+  FFileIcon.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetIllustration(const Value: TPicture);
 begin
   FIllustration.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetLeadArtist(const Value: TPicture);
 begin
   FLeadArtist.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetLeaflet(const Value: TPicture);
 begin
   FLeaflet.Assign(Value);
 end;
 
-{**************************************************}
-
-procedure TJvIdPictures.SetLocation(const Value: TPicture);
+procedure TJvIdPictures.SetRecordingLocation(const Value: TPicture);
 begin
-  FRLocation.Assign(Value);
+  FRecordingLocation.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetLyricist(const Value: TPicture);
 begin
   FLyricist.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetMedia(const Value: TPicture);
 begin
   FMedia.Assign(Value);
 end;
 
-{**************************************************}
-
-procedure TJvIdPictures.SetMovie(const Value: TPicture);
+procedure TJvIdPictures.SetMovieCapture(const Value: TPicture);
 begin
-  FMove.Assign(Value);
+  FMovieCapture.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetOther(const Value: TPicture);
 begin
   FOther.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetOtherIcon(const Value: TPicture);
 begin
   FOtherIcon.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvIdPictures.SetPerformance(const Value: TPicture);
 begin
   FDPerformance.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvIdPictures.SetPublisherLogo(const Value: TPicture);
 begin
   FPublisherLogo.Assign(Value);
 end;
 
-///////////////////////////////////////////////////////////
-// TJvIdImages
-///////////////////////////////////////////////////////////
+//=== TJvIdImages ============================================================
 
 constructor TJvIdImages.Create;
 begin
+  inherited Create;
   FPictures := TJvIdPictures.Create;
   FInfos := TJvIdPicturesDesc.Create;
 end;
-
-{**************************************************}
 
 destructor TJvIdImages.Destroy;
 begin
   FPictures.Free;
   FInfos.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvIdImages.ResetFields;
 begin
@@ -3000,36 +2631,29 @@ begin
   FInfos.LeadArtist := '';
 end;
 
-///////////////////////////////////////////////////////////
-// TJvIdIpl
-///////////////////////////////////////////////////////////
-
-procedure TJvIdIpl.AddItem(Job, Person: string);
-begin
-  FJobs.Add(Job);
-  FPersons.Add(person);
-  SetItem(0);
-  Inc(FCount);
-end;
-
-{**************************************************}
+//=== TJvIdIpl ===============================================================
 
 constructor TJvIdIpl.Create;
 begin
+  inherited Create;
   FJobs := TStringList.Create;
   FPersons := TStringList.Create;
 end;
-
-{**************************************************}
 
 destructor TJvIdIpl.Destroy;
 begin
   FJobs.Free;
   FPersons.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
+procedure TJvIdIpl.AddItem(Job, Person: string);
+begin
+  FJobs.Add(Job);
+  FPersons.Add(Person);
+  SetItemIndex(0);
+  Inc(FItemCount);
+end;
 
 procedure TJvIdIpl.ResetFields;
 begin
@@ -3037,11 +2661,9 @@ begin
   FPersons.Clear;
 end;
 
-{**************************************************}
-
-procedure TJvIdIpl.SetItem(const Value: Integer);
+procedure TJvIdIpl.SetItemIndex(const Value: Integer);
 begin
-  FItems := Value;
+  FItemIndex := Value;
   if Value < FJobs.Count then
   begin
     FJob := FJobs[Value];
@@ -3054,26 +2676,21 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvId3Owner
-///////////////////////////////////////////////////////////
+//=== TJvId3Owner ============================================================
 
 procedure TJvId3Owner.ResetFields;
 begin
   FSeller := '';
   FPrice := '';
-  FDate := EncodeDate(1900, 1, 1);
+  FDatePurchased := EncodeDate(1900, 1, 1);
 end;
-
-///////////////////////////////////////////////////////////
-// TJvId3Popularimeter
-///////////////////////////////////////////////////////////
 
 procedure TJvId3Popularimeter.ResetFields;
 begin
   FRating := 0;
   FCounter := 0;
-  FEmail := '';
+  FUserEmail := '';
 end;
 
 end.
+

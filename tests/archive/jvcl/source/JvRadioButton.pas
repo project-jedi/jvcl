@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvRadioButton;
 
-
-
 interface
 
 uses
@@ -39,8 +37,9 @@ uses
 type
   TJvRadioButton = class(TRadioButton)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -51,7 +50,6 @@ type
     FFontSave: TFont;
     FOver: Boolean;
     FAutoSave: TJvAutoSave;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetHotFont(const Value: TFont);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -69,8 +67,7 @@ type
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -80,37 +77,37 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvRadioButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
   FOver := False;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FAutoSave := TJvAutoSave.Create(Self);
 end;
 
-{**************************************************}
+destructor TJvRadioButton.Destroy;
+begin
+  FFontSave.Free;
+  FHotFont.Free;
+  FAutoSave.Free;
+  inherited Destroy;
+end;
 
 procedure TJvRadioButton.SetChecked(Value: Boolean);
 begin
-  inherited;
+  inherited SetChecked(Value);
   FAutoSave.SaveValue(Checked);
 end;
-
-{**************************************************}
 
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
 end;
-
-{**************************************************}
 
 procedure TJvRadioButton.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -119,8 +116,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRadioButton.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -128,16 +123,15 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRadioButton.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
@@ -148,8 +142,6 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvRadioButton.CMMouseLeave(var Msg: TMessage);
 begin
@@ -164,36 +156,23 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-destructor TJvRadioButton.Destroy;
-begin
-  FFontSave.Free;
-  FHotFont.Free;
-  FAutoSave.Free;
-  inherited;
-end;
-
-{**************************************************}
-
 procedure TJvRadioButton.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
 end;
 
-{**************************************************}
-
 procedure TJvRadioButton.Loaded;
 var
-  b: Boolean;
+  B: Boolean;
 begin
-  inherited;
-  if FAutoSave.LoadValue(b) then
+  inherited Loaded;
+  if FAutoSave.LoadValue(B) then
   begin
-    Checked := b;
+    Checked := B;
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
 end;
 
 end.
+

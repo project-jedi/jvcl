@@ -27,23 +27,29 @@ Known Issues:
 
 unit JvPictEdit;
 
-
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Forms, Controls, Dialogs, Buttons,
-  {$IFDEF COMPILER6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE} 
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
+  {$IFDEF COMPILER6_UP}
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
+  {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  StdCtrls, ExtCtrls, 
-  {$IFDEF COMPILER3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
+  StdCtrls, ExtCtrls,
+  {$IFDEF COMPILER3}
+  ExtDlgs, ComCtrls,
+  {$ELSE}
+  JvImagPrvw,
+  {$ENDIF}
   JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon, JvComponent;
 
 type
-
-{ TPictureEditDialog }
-
   TPictureEditDialog = class(TForm)
     Load: TButton;
     Save: TButton;
@@ -85,15 +91,15 @@ type
     Pic: TPicture;
     FIconColor: TColor;
     FClipMonitor: TJvClipboardMonitor;
-{$IFDEF COMPILER3}
+    {$IFDEF COMPILER3}
     FProgress: TProgressBar;
     FProgressPos: Integer;
     FileDialog: TOpenPictureDialog;
     SaveDialog: TSavePictureDialog;
-{$ELSE}
+    {$ELSE}
     FileDialog: TOpenDialog;
     SaveDialog: TSaveDialog;
-{$ENDIF}
+    {$ENDIF}
     procedure CheckEnablePaste;
     procedure ValidateImage;
     procedure DecreaseBMPColors;
@@ -104,18 +110,16 @@ type
     procedure UpdateClipboard(Sender: TObject);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
-{$IFDEF COMPILER3}
+    {$IFDEF COMPILER3}
     procedure GraphicProgress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
-{$ENDIF}
+    {$ENDIF}
   protected
     procedure CreateHandle; override;
   public
     property DecreaseColors: Boolean read GetDecreaseColors;
     property GraphicClass: TGraphicClass read FGraphicClass write SetGraphicClass;
   end;
-
-{ TJvPictEditor }
 
   TJvPictEditor = class(TComponent)
   private
@@ -134,10 +138,8 @@ type
     property Picture: TPicture read FPicture write SetPicture;
   end;
 
-{ TJvPictProperty }
-
-{ Property editor the TPicture properties (e.g. the Picture property). Brings
-  up a file open dialog allowing loading a picture file. }
+  { Property editor the TPicture properties (e.g. the Picture property). Brings
+    up a file open dialog allowing loading a picture file. }
 
   TJvPictProperty = class(TPropertyEditor)
   public
@@ -147,8 +149,6 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
-{ TJvGraphicPropertyEditor }
-
   TJvGraphicPropertyEditor = class(TClassProperty)
   public
     procedure Edit; override;
@@ -156,8 +156,6 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
-
-{ TJvGraphicsEditor }
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
@@ -173,22 +171,26 @@ function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
 
 implementation
 
-uses TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp, JvClipIcon, JvGraph,
-  JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil, JvTypes;
+uses
+  TypInfo, SysUtils, Clipbrd, Consts, ShellApi, LibHelp,
+  JvClipIcon, JvGraph, JvVCLUtils, JvAppUtils, JvConst, JvDirFrm, JvFileUtil, JvTypes;
 
 {$B-}
 {$IFDEF WIN32}
- {$D-}
+{$D-}
 {$ENDIF}
 
 {$R *.DFM}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin
-  if Pict.Graphic <> nil then begin
-    if Pict.Graphic is TIcon then CopyIconToClipboard(Pict.Icon, BackColor)
+  if Pict.Graphic <> nil then
+  begin
+    if Pict.Graphic is TIcon then
+      CopyIconToClipboard(Pict.Icon, BackColor)
     { check another specific graphic types here }
-    else Clipboard.Assign(Pict);
+    else
+      Clipboard.Assign(Pict);
   end;
 end;
 
@@ -196,32 +198,42 @@ procedure PastePicture(Pict: TPicture; GraphicClass: TGraphicClass);
 var
   NewGraphic: TGraphic;
 begin
-  if (Pict <> nil) then begin
+  if Pict <> nil then
+  begin
     if Clipboard.HasFormat(CF_ICON) and ((GraphicClass = TIcon) or
       (GraphicClass = TGraphic)) then
     begin
       NewGraphic := CreateIconFromClipboard;
       if NewGraphic <> nil then
-        try
-          Pict.Assign(NewGraphic);
-        finally
-          NewGraphic.Free;
-        end;
+      try
+        Pict.Assign(NewGraphic);
+      finally
+        NewGraphic.Free;
+      end;
     end
     { check another specific graphic types here }
-    else if Clipboard.HasFormat(CF_PICTURE) then
+    else
+    if Clipboard.HasFormat(CF_PICTURE) then
       Pict.Assign(Clipboard);
   end;
 end;
 
 function EnablePaste(Graph: TGraphicClass): Boolean;
 begin
-  if (Graph = TBitmap) then Result := Clipboard.HasFormat(CF_BITMAP)
-  else if (Graph = TMetafile) then Result := Clipboard.HasFormat(CF_METAFILEPICT)
-  else if (Graph = TIcon) then Result := Clipboard.HasFormat(CF_ICON)
+  if Graph = TBitmap then
+    Result := Clipboard.HasFormat(CF_BITMAP)
+  else
+  if Graph = TMetaFile then
+    Result := Clipboard.HasFormat(CF_METAFILEPICT)
+  else
+  if Graph = TIcon then
+    Result := Clipboard.HasFormat(CF_ICON)
   { check another graphic types here }
-  else if (Graph = TGraphic) then Result := Clipboard.HasFormat(CF_PICTURE)
-  else Result := Clipboard.HasFormat(CF_PICTURE);
+  else
+  if Graph = TGraphic then
+    Result := Clipboard.HasFormat(CF_PICTURE)
+  else
+    Result := Clipboard.HasFormat(CF_PICTURE);
 end;
 
 function ValidPicture(Pict: TPicture): Boolean;
@@ -229,7 +241,7 @@ begin
   Result := (Pict.Graphic <> nil) and not Pict.Graphic.Empty;
 end;
 
-{ TJvPictEditor }
+//=== TJvPictEditor ==========================================================
 
 constructor TJvPictEditor.Create(AOwner: TComponent);
 begin
@@ -275,8 +287,10 @@ begin
     SetCurrentDir(CurDir);
   end;
   FDecreaseColors := FPicDlg.DecreaseColors;
-  if Result then begin
-    if FPicDlg.Pic.Graphic <> nil then begin
+  if Result then
+  begin
+    if FPicDlg.Pic.Graphic <> nil then
+    begin
       if (GraphicClass = TBitmap) and (FPicDlg.Pic.Graphic is TIcon) then
       begin
         Bmp := CreateBitmapFromIcon(FPicDlg.Pic.Icon, FPicDlg.FIconColor);
@@ -288,16 +302,19 @@ begin
           Bmp.Free;
         end;
       end
-      else FPicture.Assign(FPicDlg.Pic);
+      else
+        FPicture.Assign(FPicDlg.Pic);
     end
-    else FPicture.Graphic := nil;
+    else
+      FPicture.Graphic := nil;
   end;
 end;
 
 procedure TJvPictEditor.SetGraphicClass(Value: TGraphicClass);
 begin
   FGraphicClass := Value;
-  if FPicDlg <> nil then FPicDlg.GraphicClass := Value;
+  if FPicDlg <> nil then
+    FPicDlg.GraphicClass := Value;
 end;
 
 procedure TJvPictEditor.SetPicture(Value: TPicture);
@@ -313,7 +330,8 @@ var
   PictureEditor: TJvPictEditor;
 begin
   Result := False;
-  if Graphic = nil then Exit;
+  if Graphic = nil then
+    Exit;
   PictureEditor := TJvPictEditor.Create(nil);
   try
     PictureEditor.FPicDlg.Caption := DialogCaption;
@@ -324,15 +342,16 @@ begin
     Result := PictureEditor.Execute;
     if Result then
       if (PictureEditor.Picture.Graphic = nil) or
-         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
+        (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         Graphic.Assign(PictureEditor.Picture.Graphic)
-      else Result := False;
+      else
+        Result := False;
   finally
     PictureEditor.Free;
   end;
 end;
 
-{ TJvPictProperty }
+//=== TJvPictProperty ========================================================
 
 procedure TJvPictProperty.Edit;
 var
@@ -362,16 +381,19 @@ var
   Picture: TPicture;
 begin
   Picture := TPicture(GetOrdValue);
-  if Picture.Graphic = nil then Result := ResStr(srNone)
-  else Result := '(' + Picture.Graphic.ClassName + ')';
+  if Picture.Graphic = nil then
+    Result := ResStr(srNone)
+  else
+    Result := '(' + Picture.Graphic.ClassName + ')';
 end;
 
 procedure TJvPictProperty.SetValue(const Value: string);
 begin
-  if Value = '' then SetOrdValue(0);
+  if Value = '' then
+    SetOrdValue(0);
 end;
 
-{ TJvGraphicPropertyEditor }
+//=== TJvGraphicPropertyEditor ===============================================
 
 procedure TJvGraphicPropertyEditor.Edit;
 var
@@ -383,14 +405,16 @@ begin
     Comp := GetComponent(0);
     if Comp is TComponent then
       PictureEditor.FPicDlg.Caption := TComponent(Comp).Name + '.' + GetName
-    else PictureEditor.FPicDlg.Caption := GetName;
+    else
+      PictureEditor.FPicDlg.Caption := GetName;
     PictureEditor.GraphicClass := TGraphicClass(GetTypeData(GetPropType)^.ClassType);
     PictureEditor.Picture.Graphic := TGraphic(Pointer(GetOrdValue));
     if PictureEditor.Execute then
       if (PictureEditor.Picture.Graphic = nil) or
-         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
+        (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         SetOrdValue(LongInt(PictureEditor.Picture.Graphic))
-      else raise EJVCLException.Create(ResStr(SInvalidPropertyValue));
+      else
+        raise EJVCLException.Create(ResStr(SInvalidPropertyValue));
   finally
     PictureEditor.Free;
   end;
@@ -406,21 +430,24 @@ var
   Graphic: TGraphic;
 begin
   Graphic := TGraphic(GetOrdValue);
-  if (Graphic = nil) or Graphic.Empty then Result := ResStr(srNone)
-  else Result := '(' + Graphic.ClassName + ')';
+  if (Graphic = nil) or Graphic.Empty then
+    Result := ResStr(srNone)
+  else
+    Result := '(' + Graphic.ClassName + ')';
 end;
 
 procedure TJvGraphicPropertyEditor.SetValue(const Value: string);
 begin
-  if Value = '' then SetOrdValue(0);
+  if Value = '' then
+    SetOrdValue(0);
 end;
 
-{ TJvGraphicsEditor }
+//=== TJvGraphicsEditor ======================================================
 
 {$IFDEF COMPILER6_UP}
-procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean); 
+procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 {$ELSE}
-procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); 
+procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean);
 {$ENDIF}
 var
   PropName: string;
@@ -435,7 +462,7 @@ begin
   end;
 end;
 
-{ TPictureEditDialog }
+//=== TPictureEditDialog =====================================================
 
 procedure TPictureEditDialog.SetGraphicClass(Value: TGraphicClass);
 begin
@@ -463,17 +490,22 @@ end;
 procedure TPictureEditDialog.GraphicProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
-  if Stage in [psStarting, psEnding] then begin
+  if Stage in [psStarting, psEnding] then
+  begin
     FProgressPos := 0;
     FProgress.Position := 0;
   end
-  else if Stage = psRunning then begin
-    if PercentDone >= FProgressPos + 10 then begin
+  else
+  if Stage = psRunning then
+  begin
+    if PercentDone >= FProgressPos + 10 then
+    begin
       FProgress.Position := PercentDone;
       FProgressPos := PercentDone;
     end;
   end;
-  if RedrawNow then ImagePaintBox.Update;
+  if RedrawNow then
+    ImagePaintBox.Update;
 end;
 {$ENDIF}
 
@@ -485,35 +517,39 @@ end;
 procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
   Pic := TPicture.Create;
-{$IFDEF COMPILER3}
+  {$IFDEF COMPILER3}
   FileDialog := TOpenPictureDialog.Create(Self);
   SaveDialog := TSavePictureDialog.Create(Self);
   UsePreviewBox.Visible := False;
   FProgress := TProgressBar.Create(Self);
-  with FProgress do begin
+  with FProgress do
+  begin
     SetBounds(UsePreviewBox.Left, UsePreviewBox.Top, UsePreviewBox.Width,
       UsePreviewBox.Height);
     Parent := Self;
-    Min := 0; Max := 100;
+    Min := 0;
+    Max := 100;
     Position := 0;
   end;
   Pic.OnProgress := GraphicProgress;
-{$ELSE}
+  {$ELSE}
   FileDialog := TOpenDialog.Create(Self);
   SaveDialog := TSaveDialog.Create(Self);
-{$ENDIF}
+  {$ENDIF}
   FileDialog.Title := 'Load picture';
   SaveDialog.Title := 'Save picture as';
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Bevel.Visible := False;
   Font.Style := [];
-  with FormStorage do begin
+  with FormStorage do
+  begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-{$ELSE}
-  if NewStyleControls then Font.Style := [];
-{$ENDIF}
+  {$ELSE}
+  if NewStyleControls then
+    Font.Style := [];
+  {$ENDIF}
   PathsMRU.RecentMenu := PathsMenu.Items;
   FIconColor := clBtnFace;
   HelpContext := hcDPictureEditor;
@@ -555,8 +591,9 @@ var
   FileName: string;
 {$ENDIF}
 begin
-{$IFNDEF DELPHI_D3}
-  if UsePreviewBox.Checked then begin
+  {$IFNDEF DELPHI_D3}
+  if UsePreviewBox.Checked then
+  begin
     FileName := '';
     if DirExists(FileDialog.InitialDir) then
       SetCurrentDir(FileDialog.InitialDir);
@@ -567,23 +604,28 @@ begin
       Self.LoadFile(FileName);
     end;
   end
-  else begin
-{$ENDIF}
-    if FileDialog.Execute then begin
+  else
+  begin
+  {$ENDIF}
+    if FileDialog.Execute then
+    begin
       Self.LoadFile(FileDialog.Filename);
     end;
-{$IFNDEF DELPHI_D3}
+  {$IFNDEF DELPHI_D3}
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TPictureEditDialog.SaveClick(Sender: TObject);
 begin
-  if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then begin
-    with SaveDialog do begin
+  if (Pic.Graphic <> nil) and not Pic.Graphic.Empty then
+  begin
+    with SaveDialog do
+    begin
       DefaultExt := GraphicExtension(TGraphicClass(Pic.Graphic.ClassType));
       Filter := GraphicFilter(TGraphicClass(Pic.Graphic.ClassType));
-      if Execute then begin
+      if Execute then
+      begin
         StartWait;
         try
           Pic.SaveToFile(Filename);
@@ -608,7 +650,8 @@ end;
 
 procedure TPictureEditDialog.PasteClick(Sender: TObject);
 begin
-  if (Pic <> nil) then begin
+  if Pic <> nil then
+  begin
     PastePicture(Pic, GraphicClass);
     DecreaseBMPColors;
     ImagePaintBox.Invalidate;
@@ -620,15 +663,17 @@ procedure TPictureEditDialog.ImagePaintBoxPaint(Sender: TObject);
 var
   DrawRect: TRect;
   SNone: string;
-{$IFDEF WIN32}
-  Ico: HIcon;
+  {$IFDEF WIN32}
+  Ico: HICON;
   W, H: Integer;
-{$ENDIF}
+  {$ENDIF}
 begin
-  with TPaintBox(Sender) do begin
+  with TPaintBox(Sender) do
+  begin
     Canvas.Brush.Color := Color;
     DrawRect := ClientRect;
-    if ValidPicture(Pic) then begin
+    if ValidPicture(Pic) then
+    begin
       with DrawRect do
         if (Pic.Width > Right - Left) or (Pic.Height > Bottom - Top) then
         begin
@@ -638,10 +683,13 @@ begin
             Right := Left + MulDiv(Pic.Width, Bottom - Top, Pic.Height);
           Canvas.StretchDraw(DrawRect, Pic.Graphic);
         end
-        else begin
-          with DrawRect do begin
-{$IFDEF WIN32}
-            if Pic.Graphic is TIcon then begin
+        else
+        begin
+          with DrawRect do
+          begin
+            {$IFDEF WIN32}
+            if Pic.Graphic is TIcon then
+            begin
               Ico := CreateRealSizeIcon(Pic.Icon);
               try
                 GetIconSize(Ico, W, H);
@@ -650,15 +698,17 @@ begin
               finally
                 DestroyIcon(Ico);
               end;
-            end else
-{$ENDIF}
-            Canvas.Draw((Right + Left - Pic.Width) div 2,
-              (Bottom + Top - Pic.Height) div 2, Pic.Graphic);
+            end
+            else
+            {$ENDIF}
+              Canvas.Draw((Right + Left - Pic.Width) div 2,
+                (Bottom + Top - Pic.Height) div 2, Pic.Graphic);
           end;
         end;
     end
     else
-      with DrawRect, Canvas do begin
+      with DrawRect, Canvas do
+      begin
         SNone := ResStr(srNone);
         TextOut(Left + (Right - Left - TextWidth(SNone)) div 2, Top + (Bottom -
           Top - TextHeight(SNone)) div 2, SNone);
@@ -680,14 +730,14 @@ end;
 
 procedure TPictureEditDialog.WMDropFiles(var Msg: TWMDropFiles);
 var
-  AFileName: array[0..255] of Char;
+  AFileName: array [0..255] of Char;
   Num: Cardinal;
 begin
   Msg.Result := 0;
   try
-    Num := DragQueryFile(Msg.Drop, {$IFDEF WIN32} $FFFFFFFF {$ELSE}
-      $FFFF {$ENDIF}, nil, 0);
-    if Num > 0 then begin
+    Num := DragQueryFile(Msg.Drop, {$IFDEF WIN32} $FFFFFFFF {$ELSE} $FFFF {$ENDIF}, nil, 0);
+    if Num > 0 then
+    begin
       DragQueryFile(Msg.Drop, 0, PChar(@AFileName), Pred(SizeOf(AFileName)));
       Application.BringToFront;
       Self.LoadFile(StrPas(AFileName));
@@ -701,7 +751,8 @@ procedure TPictureEditDialog.UpdatePathsMenu;
 var
   I: Integer;
 begin
-  for I := 0 to PathsMenu.Items.Count - 1 do begin
+  for I := 0 to PathsMenu.Items.Count - 1 do
+  begin
     PathsMenu.Items[I].Checked := CompareText(PathsMenu.Items[I].Caption,
       FileDialog.InitialDir) = 0;
   end;
@@ -750,13 +801,11 @@ end;
 procedure TPictureEditDialog.PathsMRUClick(Sender: TObject;
   const RecentName, Caption: string; UserData: Longint);
 begin
-  if DirExists(RecentName) then begin
+  if DirExists(RecentName) then
     {SetCurrentDir(RecentName);}
-    FileDialog.InitialDir := RecentName;
-  end
-  else begin
+    FileDialog.InitialDir := RecentName
+  else
     PathsMRU.Remove(RecentName);
-  end;
   UpdatePathsMenu;
 end;
 
@@ -771,3 +820,4 @@ begin
 end;
 
 end.
+

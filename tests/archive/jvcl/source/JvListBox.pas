@@ -37,17 +37,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$I WINDOWSONLY.INC}
 
 unit JvListBox;
-{$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
-
-
 
 interface
 
@@ -58,14 +50,14 @@ uses
 type
   TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object;
   TJvListboxChange = procedure(Sender: TObject; Item: string) of object;
-  TJvScrollEvent = procedure(sender: TObject; const Msg: TWMScroll; var dontScroll: Boolean) of object;
+  TJvScrollEvent = procedure(Sender: TObject; const Msg: TWMScroll; var dontScroll: Boolean) of object;
 
-  TJvCustomListBox = class(TListbox)
+  TJvCustomListBox = class(TListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    fAlignment: TAlignment;
+    FAlignment: TAlignment;
     FHotTrack: Boolean;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
     FMaxWidth: Integer;
@@ -73,7 +65,7 @@ type
     FCount: Integer;
     FScrollBars: TScrollStyle;
     FSorted: Boolean;
-    FHorzExtent: Integer;
+    FHorizontalExtent: Integer;
     FOwnerData: Boolean;
     FOnGetText: TJvListBoxDataEvent;
     FOldStyle: TListBoxStyle;
@@ -82,13 +74,13 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnSelectCancel: TNotifyEvent;
-    FOnDelete: TJvListboxChange;
-    FOnAdd: TJvListboxChange;
+    FOnDeleteString: TJvListboxChange;
+    FOnAddString: TJvListboxChange;
     FOnChange: TNotifyEvent;
-    FOnHScroll: TJvScrollEvent;
-    FOnVScroll: TJvScrollEvent;
+    FOnHorizontalScroll: TJvScrollEvent;
+    FOnVerticalScroll: TJvScrollEvent;
     procedure SetScrollBars(const Value: TScrollStyle);
-    procedure SetHorzExtent(const Value: Integer);
+    procedure SetHorizontalExtent(const Value: Integer);
     procedure SetOwnerData(const Value: Boolean);
     procedure SetCount(const Value: Integer);
     procedure SetItems(const Value: TStrings);
@@ -97,7 +89,6 @@ type
     function GetItems: TStrings;
     procedure SetAlignment(const Value: TAlignment);
   protected
-
     procedure LBAddString(var Msg: TMessage); message LB_ADDSTRING;
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETEstring;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -108,52 +99,48 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure Changed; virtual;
-    { Protected declarations }
     procedure DrawItem(Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
-
     property Count: Integer read FCount write SetCount;
-    property HorzExtent: Integer read FHorzExtent write SetHorzExtent default 0;
+    property HorizontalExtent: Integer read FHorizontalExtent write SetHorizontalExtent default 0;
     property Items: TStrings read GetItems write SetItems;
     property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Sorted: Boolean read FSorted write SetSorted default False;
     property OnGetText: TJvListBoxDataEvent read FOnGetText write FOnGetText;
-    property Alignment: TAlignment read fAlignment write SetAlignment
+    property Alignment: TAlignment read FAlignment write SetAlignment
       default taLeftJustify;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnSelectCancel: TNotifyEvent read FOnSelectCancel write FOnSelectCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnDeleteString: TJvListboxChange read FOnDelete write FOnDelete;
-    property OnAddString: TJvListboxChange read FOnAdd write FOnAdd;
-    property OnVerticalScroll: TJvScrollEvent read FOnVScroll write FOnVScroll;
-    property OnHorizontalScroll: TJvScrollEvent read FOnHScroll write FOnHScroll;
+    property OnDeleteString: TJvListboxChange read FOnDeleteString write FOnDeleteString;
+    property OnAddString: TJvListboxChange read FOnAddString write FOnAddString;
+    property OnVerticalScroll: TJvScrollEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnHorizontalScroll: TJvScrollEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   public
     procedure WndProc(var Msg: TMessage); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure UpdateCount;
-    procedure UpdateHorzExtent;
+    procedure UpdateHorizontalExtent;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll; {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure UnselectAll;
     procedure InvertSelection;
     procedure MoveSelectedUp; virtual;
     procedure MoveSelectedDown; virtual;
-    procedure DeleteSelected; {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure DeleteAllButSelected;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
@@ -161,43 +148,39 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-resourcestring
-  RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';
-
 implementation
+
 uses
   JclBase;
 
-{**************************************************}
+resourcestring
+  RsLBVirtualCantBeSorted = 'ListBox doesn''t allow sorting in virtual mode';
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FMaxWidth := 0;
   FHotTrack := False;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FItemSearchs := TJvItemsSearchs.Create;
 end;
 
-{**************************************************}
-
 destructor TJvCustomListBox.Destroy;
 begin
   FItemSearchs.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvCustomListBox.CreateParams(var Params: TCreateParams);
 const
-  ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
-    WS_HSCROLL or WS_VSCROLL);
-  Sorted: array[Boolean] of DWORD = (0, LBS_SORT);
+  ScrollBar: array [TScrollStyle] of DWORD =
+    (0, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
+  Sorted: array [Boolean] of DWORD =
+    (0, LBS_SORT);
 begin
-  inherited;
+  inherited CreateParams(Params);
   with Params do
   begin
     Style := Style and not (WS_HSCROLL or WS_VSCROLL) or ScrollBar[FScrollBars] or
@@ -213,7 +196,7 @@ end;
 
 procedure TJvCustomListBox.SetHotTrack(const Value: Boolean);
 begin
-  if FhotTrack <> Value then
+  if FHotTrack <> Value then
   begin
     FHotTrack := Value;
     Ctl3d := not FHotTrack;
@@ -223,16 +206,16 @@ end;
 procedure TJvCustomListBox.LBAddString(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FOnAdd) then
-    FOnAdd(Self, StrPas(PChar(Msg.lParam)));
+  if Assigned(FOnAddString) then
+    FOnAddString(Self, StrPas(PChar(Msg.lParam)));
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
 procedure TJvCustomListBox.LBDeleteString(var Msg: TMessage);
 begin
-  if Assigned(FOnDelete) then
-    FOnDelete(Self, Items.Strings[LongInt(Msg.wParam)]);
+  if Assigned(FOnDeleteString) then
+    FOnDeleteString(Self, Items.Strings[LongInt(Msg.wParam)]);
   inherited;
   if Assigned(FOnChange) then
     FOnChange(Self);
@@ -287,8 +270,8 @@ begin
           ItemWidth := Canvas.TextWidth(Items[Msg.wParam] + ' ');
           if ItemWidth = FMaxWidth then
           begin
-            inherited;
-            UpdateHorzExtent;
+            inherited WndProc(Msg);
+            UpdateHorizontalExtent;
             Exit;
           end;
         end;
@@ -296,13 +279,13 @@ begin
         SendMessage(Handle, LB_SETHORIZONTALEXTENT, 0, 0);
       WM_SETFONT:
         begin
-          inherited;
+          inherited WndProc(Msg);
           Canvas.Font.Assign(Font);
-          UpdateHorzExtent;
+          UpdateHorizontalExtent;
           Exit;
         end;
     end;
-  inherited;
+  inherited WndProc(Msg);
 end;
 
 procedure TJvCustomListBox.CMCtl3DChanged(var Msg: TMessage);
@@ -312,8 +295,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -321,16 +302,15 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     if FHotTrack then
       Ctl3d := True;
     FOver := True;
@@ -338,8 +318,6 @@ begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvCustomListBox.CMMouseLeave(var Msg: TMessage);
 begin
@@ -354,15 +332,11 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 function TJvCustomListBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 function TJvCustomListBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean): Integer;
@@ -370,39 +344,33 @@ begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.WMHScroll(var Msg: TWMHScroll);
 var
-  dontScroll: Boolean;
+  DontScroll: Boolean;
 begin
-  if Assigned(FOnHScroll) then
+  if Assigned(FOnHorizontalScroll) then
   begin
-    dontScroll := False;
-    FOnHScroll(self, msg, dontScroll);
-    if dontScroll then
+    DontScroll := False;
+    FOnHorizontalScroll(Self, Msg, DontScroll);
+    if DontScroll then
       Exit;
   end;
   inherited;
 end;
-
-{**************************************************}
 
 procedure TJvCustomListBox.WMVScroll(var Msg: TWMVScroll);
 var
-  dontScroll: Boolean;
+  DontScroll: Boolean;
 begin
-  if Assigned(FOnVScroll) then
+  if Assigned(FOnVerticalScroll) then
   begin
-    dontScroll := False;
-    FOnVScroll(self, msg, dontScroll);
-    if dontScroll then
+    DontScroll := False;
+    FOnVerticalScroll(Self, Msg, DontScroll);
+    if DontScroll then
       Exit;
   end;
   inherited;
 end;
-
-{**************************************************}
 
 procedure TJvCustomListBox.SelectCancel(var Msg: TMessage);
 begin
@@ -410,15 +378,11 @@ begin
     FOnSelectCancel(Self);
 end;
 
-{**************************************************}
-
 function TJvCustomListBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
 end;
-
-{**************************************************}
 
 function TJvCustomListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
@@ -427,79 +391,73 @@ begin
   Changed;
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.SelectAll;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
   begin
     Items.BeginUpdate;
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := True;
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := True;
     Items.EndUpdate;
   end;
 end;
-{**************************************************}
 
 procedure TJvCustomListBox.UnselectAll;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
   begin
     Items.BeginUpdate;
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := False;
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := False;
     Items.EndUpdate;
   end
   else
     ItemIndex := -1;
 end;
-{**************************************************}
 
 procedure TJvCustomListBox.InvertSelection;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
   begin
     Items.BeginUpdate;
-    for i := 0 to Items.Count - 1 do
-      Selected[i] := not (Selected[i]);
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := not Selected[I];
     Items.EndUpdate;
   end;
 end;
-{**************************************************}
 
 procedure TJvCustomListBox.DeleteSelected;
 var
-  i: Integer;
+  I: Integer;
 begin
   if MultiSelect then
   begin
-    for i := Items.Count - 1 downto 0 do
-      if Selected[i] then
-        Items.Delete(i);
+    for I := Items.Count - 1 downto 0 do
+      if Selected[I] then
+        Items.Delete(I);
   end
-  else if ItemIndex <> -1 then
+  else
+  if ItemIndex <> -1 then
   begin
-    i := ItemIndex;
-    Items.Delete(i);
-    if i > 0 then
-      Dec(i);
+    I := ItemIndex;
+    Items.Delete(I);
+    if I > 0 then
+      Dec(I);
     if Items.Count > 0 then
-      ItemIndex := i;
+      ItemIndex := I;
   end;
   Changed;
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.MoveSelectedDown;
 var
-  i: Integer;
+  I: Integer;
 begin
   if not MultiSelect then
   begin
@@ -510,26 +468,24 @@ begin
     end;
     Exit;
   end;
-  if (Items.Count > 0) and (SelCount > 0) and (not (Selected[Items.Count - 1])) then
+  if (Items.Count > 0) and (SelCount > 0) and (not Selected[Items.Count - 1]) then
   begin
-    i := Items.Count - 2;
-    while i >= 0 do
+    I := Items.Count - 2;
+    while I >= 0 do
     begin
-      if Selected[i] then
+      if Selected[I] then
       begin
-        Items.Exchange(i, i + 1);
-        Selected[i + 1] := True;
+        Items.Exchange(I, I + 1);
+        Selected[I + 1] := True;
       end;
-      Dec(i);
+      Dec(I);
     end;
   end;
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.MoveSelectedUp;
 var
-  i: Integer;
+  I: Integer;
 begin
   if not MultiSelect then
   begin
@@ -542,33 +498,31 @@ begin
   end;
   if (Items.Count > 0) and (SelCount > 0) and not Selected[0] then
   begin
-    i := 1;
-    while i < Items.Count do
+    I := 1;
+    while I < Items.Count do
     begin
-      if Selected[i] then
+      if Selected[I] then
       begin
-        Items.Exchange(i, i - 1);
-        Selected[i - 1] := True;
+        Items.Exchange(I, I - 1);
+        Selected[I - 1] := True;
       end;
-      Inc(i);
+      Inc(I);
     end;
   end;
 end;
 
-{**************************************************}
-
 procedure TJvCustomListBox.DeleteAllButSelected;
 var
-  i: Integer;
+  I: Integer;
 begin
   if not MultiSelect then
     Exit;
-  i := 0;
-  while i < Items.Count do
-    if not (Selected[i]) then
-      Items.Delete(i)
+  I := 0;
+  while I < Items.Count do
+    if not Selected[I] then
+      Items.Delete(I)
     else
-      Inc(i);
+      Inc(I);
   Changed;
 end;
 
@@ -579,8 +533,8 @@ end;
 
 procedure TJvCustomListBox.CreateWnd;
 begin
-  inherited;
-  UpdateHorzExtent;
+  inherited CreateWnd;
+  UpdateHorizontalExtent;
   UpdateCount;
 end;
 
@@ -593,12 +547,12 @@ begin
   end;
 end;
 
-procedure TJvCustomListBox.SetHorzExtent(const Value: Integer);
+procedure TJvCustomListBox.SetHorizontalExtent(const Value: Integer);
 begin
-  if FHorzExtent <> Value then
+  if FHorizontalExtent <> Value then
   begin
-    FHorzExtent := Value;
-    UpdateHorzExtent;
+    FHorizontalExtent := Value;
+    UpdateHorizontalExtent;
   end;
 end;
 
@@ -635,7 +589,9 @@ begin
   if FSorted <> Value then
   begin
     if FOwnerData and Value then
+      {$TYPEDADDRESS OFF}
       raise EJclError.CreateResRec(@RsLBVirtualCantBeSorted);
+      {$TYPEDADDRESS ON}
     FSorted := Value;
     RecreateWnd;
   end;
@@ -647,10 +603,10 @@ begin
     Perform(LB_SETCOUNT, FCount, 0);
 end;
 
-procedure TJvCustomListBox.UpdateHorzExtent;
+procedure TJvCustomListBox.UpdateHorizontalExtent;
 begin
   if HandleAllocated and (FScrollBars in [ssHorizontal, ssBoth]) then
-    SendMessage(Handle, LB_SETHORIZONTALEXTENT, FHorzExtent, 0);
+    SendMessage(Handle, LB_SETHORIZONTALEXTENT, FHorizontalExtent, 0);
 end;
 
 function TJvCustomListBox.GetItems: TStrings;
@@ -660,7 +616,7 @@ end;
 
 procedure TJvCustomListBox.SetAlignment(const Value: TAlignment);
 begin
-  if fAlignment <> Value then
+  if FAlignment <> Value then
   begin
     FAlignment := Value;
     if FAlignment <> taLeftJustify then
@@ -677,32 +633,31 @@ end;
 procedure TJvCustomListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 const
-  alignflags: array[TAlignment] of DWORD =
-  (DT_LEFT, DT_RIGHT, DT_CENTER);
+  AlignFlags: array [TAlignment] of DWORD =
+    (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   //  flags: DWORD;
   S: string;
 begin
   if Assigned(OnDrawItem) or (Alignment = taLeftJustify) then
-    inherited
+    inherited DrawItem(Index, Rect, State)
   else
   begin
     Canvas.FillRect(Rect);
-    if index >= 0 then
+    if Index >= 0 then
     begin
-      S := Items[index];
+      S := Items[Index];
       if Length(S) > 0 then
-        DrawText(Canvas.handle, PChar(S), Length(S), Rect,
+        DrawText(Canvas.Handle, PChar(S), Length(S), Rect,
           DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
-          alignflags[FAlignment]);
+          AlignFlags[FAlignment]);
     end;
   end;
 end;
 
-procedure TJvCustomListBox.SetBounds(ALeft, ATop, AWidth,
-  AHeight: Integer);
+procedure TJvCustomListBox.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Alignment <> taLeftJustify then
     Repaint;
 end;

@@ -3,13 +3,14 @@ object JvProxyEditor: TJvProxyEditor
   Top = 114
   Width = 514
   Height = 331
+  BorderIcons = [biSystemMenu]
   Caption = 'Page Proxy Editor'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  Font.Style = []
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
     0000010004000000000000020000000000000000000000000000000000000000
@@ -46,15 +47,19 @@ object JvProxyEditor: TJvProxyEditor
     Left = 409
     Top = 0
     Width = 97
-    Height = 304
+    Height = 301
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      97
+      301)
     object CloseBtn: TButton
       Left = 11
       Top = 12
       Width = 77
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Close'
       TabOrder = 0
       OnClick = CloseBtnClick
@@ -64,6 +69,7 @@ object JvProxyEditor: TJvProxyEditor
       Top = 44
       Width = 77
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Delete'
       TabOrder = 1
       OnClick = DeleteBtnClick
@@ -73,7 +79,7 @@ object JvProxyEditor: TJvProxyEditor
     Left = 0
     Top = 0
     Width = 409
-    Height = 304
+    Height = 301
     Align = alClient
     ColCount = 2
     Ctl3D = True

@@ -26,22 +26,23 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit JvPerfMon95;
-
 {$I JVCL.INC}
-{$IFDEF COMPILER6_UP}
-{$WARN UNIT_PLATFORM OFF}
-{$ENDIF}
-{$IFDEF LINUX}
-This unit is only supported on Windows!
-{$ENDIF}
+{$I WINDOWSONLY.INC}
+
+unit JvPerfMon95;
 
 interface
 
 uses
-  Windows, Classes, SysUtils, {$IFDEF COMPILER5_UP}Contnrs, {$ENDIF}Registry,
-{$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}
-  Dialogs, Forms, JclBase, JvComponent;
+  Windows, Classes, SysUtils,
+  {$IFDEF COMPILER5_UP}
+  Contnrs,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
+  Registry, Forms,
+  JclBase, JvComponent;
 
 type
   EJvPerfStatException = class(EJclError);
@@ -153,7 +154,7 @@ implementation
 
 uses
   Consts,
-  JclSysInfo, JclSysUtils,
+  JclSysInfo,
   JvFunctions;
 
 resourcestring
@@ -174,7 +175,7 @@ var
 
 function MultiByteStringToString(const S: string): string;
 var
-  W: array[0..MAX_PATH] of WideChar;
+  W: array [0..MAX_PATH] of WideChar;
 begin
   OSCheck(MultiByteToWideChar(CP_OEMCP, 0, PChar(S), -1, W, MAX_PATH) <> 0);
   Result := W;
@@ -183,7 +184,7 @@ end;
 function StringToMultiByteString(const S: string): string;
 var
   W: WideString;
-  C: array[0..MAX_PATH] of AnsiChar;
+  C: array [0..MAX_PATH] of AnsiChar;
 begin
   W := S;
   OSCheck(WideCharToMultiByte(CP_OEMCP, 0, PWideChar(W), -1, C, MAX_PATH, nil, nil) <> 0);
@@ -234,7 +235,7 @@ begin
   WrongOSWarningShown := True;
 end;
 
-{ TJvPerfStatActiveItem }
+//=== TJvPerfStatActiveItem ==================================================
 
 constructor TJvPerfStatActiveItem.Create(AOwner: TJvPerfStat95;
   const AKey: string; ACategoryIndex: Integer);
@@ -267,7 +268,7 @@ end;
 function TJvPerfStatActiveItem.GetPerfData: LongWord;
 var
   Size: Integer;
-  Value: LongWord;
+  Value: Longword;
   CurrentTickCount: DWORD;
 begin
   with FOwner.Reg do
@@ -276,7 +277,7 @@ begin
     if OpenKeyReadOnly(StatDataKey) then
     begin
       Size := GetDataSize(FKey);
-      if Size = Sizeof(Value) then
+      if Size = SizeOf(Value) then
         ReadBinaryData(FKey, Value, Size);
       CloseKey;
     end;
@@ -305,7 +306,7 @@ end;
 
 function TJvPerfStatActiveItem.InternalStartStop(Start: Boolean): Boolean;
 const
-  StartStopKeys: array[Boolean] of string = (StopDataKey, StartDataKey);
+  StartStopKeys: array [Boolean] of string = (StopDataKey, StartDataKey);
 var
   Size, Dummy: Integer;
 begin
@@ -331,7 +332,9 @@ begin
   if not NoCheckState and FStarted then
     Exit;
   if not InternalStartStop(True) then
+    {$TYPEDADDRESS OFF}
     raise EJvPerfStatException.CreateResRecFmt(@sCantStart, [Key]);
+    {$TYPEDADDRESS ON}
   FStarted := True;
 end;
 
@@ -340,17 +343,21 @@ begin
   if not NoCheckState and not FStarted then
     Exit;
   if not InternalStartStop(False) then
+    {$TYPEDADDRESS OFF}
     raise EJvPerfStatException.CreateResRecFmt(@sCantStop, [Key]);
+    {$TYPEDADDRESS ON}
   FStarted := False;
 end;
 
-{ TPvPerfStatItem }
+//=== TJvPerfStatItem ========================================================
 
 function TJvPerfStatItem.GetActiveItem: TJvPerfStatActiveItem;
 begin
   Result := FActiveItem;
   if Result = nil then
+    {$TYPEDADDRESS OFF}
     raise EJvPerfStatException.CreateResRecFmt(@sKeyNotExist, [FPerfStatKey]);
+    {$TYPEDADDRESS ON}
   Result.Start;
 end;
 
@@ -375,7 +382,7 @@ begin
   end;
 end;
 
-{ TPvPerfStatItems }
+//=== TJvPerfStatItems =======================================================
 
 function TJvPerfStatItems.Add: TJvPerfStatItem;
 begin
@@ -423,11 +430,11 @@ begin
     BindItem(Item);
 end;
 
-{ TJvPerfStat95 }
+//=== TJvPerfStat95 ==========================================================
 
 constructor TJvPerfStat95.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FItems := TJvPerfStatItems.Create(Self);
   FWarnIfWrongOS := True;
   if not (csDesigning in ComponentState) then
@@ -447,7 +454,7 @@ begin
     FreeAndNil(Reg);
   end;
   FreeAndNil(FItems);
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvPerfStat95.GetActiveObjectCount: Integer;
@@ -463,7 +470,9 @@ end;
 function TJvPerfStat95.GetCategories(Index: Integer): TJvPerfStatCategory;
 begin
   if (Index < 0) or (Index > GetCategoryCount - 1) then
+    {$TYPEDADDRESS OFF}
     raise EJvPerfStatException.CreateResRecFmt(@SListIndexError, [Index]);
+    {$TYPEDADDRESS ON}
   Result := FCategories[Index];
   with Result do
   begin
@@ -494,7 +503,7 @@ end;
 
 procedure TJvPerfStat95.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if FWarnIfWrongOS and not (csDesigning in ComponentState) then
     ShowWrongOSWarning;
 end;
@@ -528,7 +537,9 @@ begin
         end;
     end
     else
+      {$TYPEDADDRESS OFF}
       raise EJvPerfStatException.CreateResRec(@sCantOpenPerfKey);
+      {$TYPEDADDRESS ON}
   finally
     List2.Free;
     List1.Free;
@@ -554,3 +565,4 @@ begin
 end;
 
 end.
+

@@ -12,7 +12,7 @@ The Original Code is: JvPrgrss.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,12 +25,12 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvPrgrss;
 
 interface
 
-uses SysUtils, Classes, Controls;
+uses
+  SysUtils, Classes, Controls;
 
 procedure RegisterProgressControl(AClass: TControlClass; const MaxPropName,
   MinPropName, ProgressPropName: string);
@@ -45,18 +45,24 @@ implementation
 
 {$DEFINE USE_GAUGE}
 {$IFDEF WIN32}
-  {$IFDEF BCB}
-    {$DEFINE USE_PROGRESSBAR}
-  {$ENDIF}
-  {$IFDEF USE_PROGRESSBAR}
-    {$UNDEF USE_GAUGE}
-  {$ENDIF}
+{$IFDEF BCB}
+{$DEFINE USE_PROGRESSBAR}
+{$ENDIF}
+{$IFDEF USE_PROGRESSBAR}
+{$UNDEF USE_GAUGE}
+{$ENDIF}
 {$ENDIF}
 
-uses TypInfo, {$IFDEF WIN32} {$IFDEF USE_GAUGE} Gauges, {$ENDIF} ComCtrls;
-  {$ELSE} Gauges; {$ENDIF}
-
-{ TJvProgressList }
+uses
+  TypInfo,
+  {$IFDEF WIN32}
+  {$IFDEF USE_GAUGE}
+  Gauges,
+  {$ENDIF}
+  ComCtrls;
+  {$ELSE}
+  Gauges;
+  {$ENDIF}
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
@@ -84,19 +90,20 @@ type
 constructor TJvProgressList.Create;
 begin
   inherited Create;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Add(TProgressBar, 'Max', 'Min', 'Position');
-{$ENDIF}
-{$IFDEF USE_GAUGE}
+  {$ENDIF}
+  {$IFDEF USE_GAUGE}
   Add(TGauge, 'MaxValue', 'MinValue', 'Progress');
-{$ENDIF}
+  {$ENDIF}
 end;
 
 destructor TJvProgressList.Destroy;
 var
   I: Integer;
 begin
-  for I := 0 to Count - 1 do Dispose(PProgressData(Items[I]));
+  for I := 0 to Count - 1 do
+    Dispose(PProgressData(Items[I]));
   inherited Destroy;
 end;
 
@@ -106,7 +113,8 @@ var
   NewRec: PProgressData;
 begin
   New(NewRec);
-  with NewRec^ do begin
+  with NewRec^ do
+  begin
     ControlClass := AClass;
     MaxProperty := MaxPropName;
     MinProperty := MinPropName;
@@ -119,9 +127,11 @@ function TJvProgressList.FindClass(AClass: TControlClass): Integer;
 var
   P: PProgressData;
 begin
-  for Result := Count - 1 downto 0 do begin
+  for Result := Count - 1 downto 0 do
+  begin
     P := PProgressData(Items[Result]);
-    if AClass.InheritsFrom(P^.ControlClass) then Exit;
+    if AClass.InheritsFrom(P^.ControlClass) then
+      Exit;
   end;
   Result := -1;
 end;
@@ -131,9 +141,11 @@ var
   I: Integer;
   P: PProgressData;
 begin
-  for I := Count - 1 downto 0 do begin
+  for I := Count - 1 downto 0 do
+  begin
     P := PProgressData(Items[I]);
-    if P^.ControlClass.InheritsFrom(AClass) then begin
+    if P^.ControlClass.InheritsFrom(AClass) then
+    begin
       Dispose(P);
       Delete(I);
     end;
@@ -148,14 +160,18 @@ var
   PropName: string;
 begin
   Result := False;
-  if (Control <> nil) then begin
+  if Control <> nil then
+  begin
     I := FindClass(TControlClass(Control.ClassType));
-    if I >= 0 then begin
+    if I >= 0 then
+    begin
       case Prop of
-        ppMax: PropName := PProgressData(Items[I])^.MaxProperty;
-        ppMin: PropName := PProgressData(Items[I])^.MinProperty;
-        else {ppProgress}
-          PropName := PProgressData(Items[I])^.ProgressProperty;
+        ppMax:
+          PropName := PProgressData(Items[I])^.MaxProperty;
+        ppMin:
+          PropName := PProgressData(Items[I])^.MinProperty;
+      else {ppProgress}
+        PropName := PProgressData(Items[I])^.ProgressProperty;
       end;
       PropInfo := GetPropInfo(Control.ClassInfo, PropName);
       if (PropInfo <> nil) and (PropInfo^.PropType^.Kind in
@@ -168,46 +184,50 @@ begin
   end;
 end;
 
-const
+// (rom) changed to var
+var
   ProgressList: TJvProgressList = nil;
 
-function GetJvProgressList: TJvProgressList;
+function GetProgressList: TJvProgressList;
 begin
-  if ProgressList = nil then ProgressList := TJvProgressList.Create;
+  if ProgressList = nil then
+    ProgressList := TJvProgressList.Create;
   Result := ProgressList;
 end;
 
 function SupportsProgressControl(Control: TControl): Boolean;
 begin
   if Control <> nil then
-    Result := GetJvProgressList.FindClass(TControlClass(Control.ClassType)) >= 0
-  else Result := False;
+    Result := GetProgressList.FindClass(TControlClass(Control.ClassType)) >= 0
+  else
+    Result := False;
 end;
 
-procedure RegisterProgressControl(AClass: TControlClass; const MaxPropName,
-  MinPropName, ProgressPropName: string);
+procedure RegisterProgressControl(AClass: TControlClass;
+  const MaxPropName, MinPropName, ProgressPropName: string);
 begin
-  GetJvProgressList.Add(AClass, MaxPropName, MinPropName, ProgressPropName);
+  GetProgressList.Add(AClass, MaxPropName, MinPropName, ProgressPropName);
 end;
 
 procedure UnRegisterProgressControl(AClass: TControlClass);
 begin
-  if ProgressList <> nil then ProgressList.Remove(AClass);
+  if ProgressList <> nil then
+    ProgressList.Remove(AClass);
 end;
 
 procedure SetProgressMax(Control: TControl; MaxValue: Longint);
 begin
-  GetJvProgressList.SetControlProperty(Control, ppMax, MaxValue);
+  GetProgressList.SetControlProperty(Control, ppMax, MaxValue);
 end;
 
 procedure SetProgressMin(Control: TControl; MinValue: Longint);
 begin
-  GetJvProgressList.SetControlProperty(Control, ppMin, MinValue);
+  GetProgressList.SetControlProperty(Control, ppMin, MinValue);
 end;
 
 procedure SetProgressValue(Control: TControl; ProgressValue: Longint);
 begin
-  GetJvProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
+  GetProgressList.SetControlProperty(Control, ppProgress, ProgressValue);
 end;
 
 {$IFNDEF WIN32}
@@ -224,4 +244,6 @@ finalization
 {$ELSE}
   AddExitProc(Finalize);
 {$ENDIF}
+
 end.
+

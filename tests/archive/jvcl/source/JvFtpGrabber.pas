@@ -24,6 +24,7 @@ located at http://www.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvFtpGrabber;
@@ -31,11 +32,11 @@ unit JvFtpGrabber;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,  WinInet,  JvTypes ,JvComponent;
+  Windows, SysUtils, Classes, WinInet,
+  JvTypes, JvComponent;
 
 type
   TJvDownloadMode = (hmBinary, hmAscii);
-{$EXTERNALSYM TJvDownloadMode}
 
   TJvFtpThread = class(TThread)
   private
@@ -52,7 +53,7 @@ type
     FOnProgress: TOnFtpProgress;
     FMode: TJvDownloadMode;
     FAgent: string;
-    FBytesReaded: Integer;
+    FBytesRead: Integer;
     FErrorText: string;
     FOnStatus: TOnFtpProgress;
     FOnClosed: TNotifyEvent;
@@ -64,8 +65,8 @@ type
     procedure Execute; override;
     procedure Closed;
   public
-    constructor Create(Url, Username, FileName, Password: string;
-      OutPutMode: TJvOutputMode; OnError: TOnError;
+    constructor Create(Url, UserName, FileName, Password: string;
+      OutputMode: TJvOutputMode; OnError: TOnError;
       OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
       OnProgress: TOnFtpProgress; Mode: TJvDownloadMode; Agent: string;
       OnStatus: TOnFtpProgress; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
@@ -106,15 +107,13 @@ type
     procedure Progress(Sender: TObject; Position: Integer; Url: string);
     procedure Status(Sender: TObject; Position: Integer; Url: string);
     procedure Closed(Sender: TObject);
-
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Size: Integer read FSize write FSize; // acp
     property Url: string read FUrl write FUrl;
-    property Username: string read FUserName write FUserName;
+    property UserName: string read FUserName write FUserName;
     property Password: string read FPassword write FPassword;
     property FileName: TFileName read FFileName write FFileName;
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
@@ -145,19 +144,18 @@ implementation
 
 {$IFNDEF COMPILER6_UP}
 const
-  winetdll = 'wininet.dll';
+  WinetDll = 'wininet.dll';
 
-function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall; external winetdll name 'FtpGetFileSize';
-  {$EXTERNALSYM FtpGetFileSize}
+function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
+  external WinetDll name 'FtpGetFileSize';
+{$EXTERNALSYM FtpGetFileSize}
 {$ENDIF}
 
-///////////////////////////////////////////////////////////
-// TJvFtpGrabber
-///////////////////////////////////////////////////////////
+//=== TJvFtpGrabber ==========================================================
 
 constructor TJvFtpGrabber.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FUrl := '';
   FUserName := '';
   FPassword := '';
@@ -166,10 +164,8 @@ begin
   FMode := hmBinary;
   FAgent := 'TJvHttpGrabber Component';
   FThread := nil;
-  FSize :=0;
+  FSize := 0;
 end;
-
-{*************************************************}
 
 destructor TJvFtpGrabber.Destroy;
 begin
@@ -178,18 +174,14 @@ begin
     FThread.FreeOnTerminate := True;
     FThread.Terminate;
   end;
-  inherited;
+  inherited Destroy;
 end;
 
-{*************************************************}
 procedure TJvFtpGrabber.Terminate; // acp
 begin
-  if Assigned (FThread) then
+  if Assigned(FThread) then
     FThread.Terminate;
 end;
-
-
-{*************************************************}
 
 procedure TJvFtpGrabber.DoneFile(Sender: TObject; FileName: string;
   FileSize: Integer; Url: string);
@@ -198,8 +190,6 @@ begin
     FOnDoneFile(Self, FileName, FileSize, Url);
 end;
 
-{*************************************************}
-
 procedure TJvFtpGrabber.DoneStream(Sender: TObject; Stream: TStream;
   StreamSize: Integer; Url: string);
 begin
@@ -207,36 +197,29 @@ begin
     FOnDoneStream(Self, Stream, StreamSize, Url);
 end;
 
-{*************************************************}
-
 procedure TJvFtpGrabber.Error(Sender: TObject; ErrorMsg: string);
 begin
   if Assigned(FOnError) then
     FOnError(Self, ErrorMsg);
 end;
 
-{*************************************************}
-
 procedure TJvFtpGrabber.Closed(Sender: TObject);
 begin
   if Assigned(FOnClosed) then
     FOnClosed(Self);
 end;
-{*************************************************}
 
 procedure TJvFtpGrabber.Execute;
 begin
    //Download it
   if FThread = nil then
   begin
-    FThread := TJvFtpThread.Create(Url, Username, FileName, Password, OutPutMode, Error, DoneFile, DoneStream,
-      Progress, Mode, Agent, Status,Self,Closed);    // acp
+    FThread := TJvFtpThread.Create(Url, UserName, FileName, Password, OutputMode, Error, DoneFile, DoneStream,
+      Progress, Mode, Agent, Status, Self, Closed); // acp
     FThread.OnTerminate := ThreadFinished;
     FThread.Resume;
   end;
 end;
-
-{*************************************************}
 
 procedure TJvFtpGrabber.Progress(Sender: TObject; Position: Integer; Url: string);
 begin
@@ -244,10 +227,7 @@ begin
     FOnProgress(Self, Position, Url);
 end;
 
-{*************************************************}
-
-procedure TJvFtpGrabber.Status(Sender: TObject; Position: Integer;
-  Url: string);
+procedure TJvFtpGrabber.Status(Sender: TObject; Position: Integer; Url: string);
 begin
   case Position of
     INTERNET_STATUS_RESOLVING_NAME:
@@ -292,29 +272,25 @@ begin
   end;
 end;
 
-{*************************************************}
-
 procedure TJvFtpGrabber.ThreadFinished(Sender: TObject);
 begin
   FThread := nil;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvFtpThread
-///////////////////////////////////////////////////////////
+//=== TJvFtpThread ===========================================================
 
-constructor TJvFtpThread.Create(Url, Username, FileName,
-  Password: string; OutPutMode: TJvOutputMode; OnError: TOnError;
+constructor TJvFtpThread.Create(Url, UserName, FileName,
+  Password: string; OutputMode: TJvOutputMode; OnError: TOnError;
   OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
   OnProgress: TOnFtpProgress; Mode: TJvDownloadMode;
-  Agent: string; OnStatus: TOnFtpProgress;Sender: TObject; OnClosedConnection: TNotifyEvent);  // acp
+  Agent: string; OnStatus: TOnFtpProgress; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
 begin
   inherited Create(True);
   FUrl := Url;
-  FUserName := Username;
+  FUserName := UserName;
   FFileName := FileName;
   FPassword := Password;
-  FOutputMode := OutPutMode;
+  FOutputMode := OutputMode;
   FOnError := OnError;
   FOnDoneFile := OnDoneFile;
   FOnDoneStream := OnDoneStream;
@@ -322,17 +298,14 @@ begin
   FOnStatus := OnStatus;
   FMode := Mode;
   FAgent := Agent;
-  FSender:=Sender;  // acp
-  FOnClosed:=OnClosedConnection;
+  FSender := Sender; // acp
+  FOnClosed := OnClosedConnection;
 end;
 
-{*************************************************}
 procedure TJvFtpThread.Closed;
 begin
   FOnClosed(Self);
 end;
-
-{*************************************************}
 
 procedure TJvFtpThread.Ended;
 begin
@@ -346,44 +319,35 @@ begin
   end;
 end;
 
-{*************************************************}
-
 procedure TJvFtpThread.Error;
 begin
   FOnError(Self, FErrorText);
 end;
 
-{**************************************************}
-
 function TJvFtpThread.GetLastErrorMsg: string;
 var
-  msg: array [0..1000] of Char;
+  Msg: array [0..1023] of Char;
 begin
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, msg, 1000, nil);
-  Result := msg;
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil, GetLastError, 0, Msg, SizeOf(Msg), nil);
+  Result := Msg;
 end;
 
-{*************************************************}
-
-procedure FtpDownloadCallBack(Handle: HInternet; Context: DWord;
-  Status: DWord; Info: Pointer; StatLen: DWord); stdcall;
+procedure FtpDownloadCallBack(Handle: HInternet; Context: DWORD;
+  Status: DWORD; Info: Pointer; StatLen: DWORD); stdcall;
 begin
   with TJvFtpThread(Context) do
     FOnStatus(TJvFtpThread(Context), Status, FUrl);
 end;
 
-{*************************************************}
-
 procedure TJvFtpThread.Execute;
 var
   hSession, hHostConnection, hDownload: HINTERNET;
   HostName, FileName: string;
-  username, password: PChar;
-  ReadedBytes, TotalBytes: DWORD;
-  Buf: array [0..1024] of Byte;
-  lpdwFileSizeHigh: LPDWORD;
-
-  buffer: Pointer;
+  UserName, Password: PChar;
+  BytesRead, TotalBytes: DWORD;
+  Buf: array [0..1023] of Byte;
+  dwFileSizeHigh: DWORD;
+  Buffer: Pointer;
   dwBufLen, dwIndex: DWORD;
 
   procedure ParseUrl(Value: string);
@@ -405,7 +369,7 @@ begin
   FErrorText := '';
   ParseUrl(FUrl);
 
-   //Connect to the web
+  //Connect to the web
   hSession := InternetOpen(PChar(FAgent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
   if hSession = nil then
   begin
@@ -414,33 +378,33 @@ begin
     Exit;
   end;
 
-   //Connect to the hostname
+  //Connect to the hostname
   if FUserName = '' then
-    username := nil
+    UserName := nil
   else
-    username := PChar(FUserName);
+    UserName := PChar(FUserName);
   if FPassword = '' then
-    password := nil
+    Password := nil
   else
-    password := PChar(FPassword);
+    Password := PChar(FPassword);
   hHostConnection := InternetConnect(hSession, PChar(HostName), INTERNET_DEFAULT_FTP_PORT,
-    username, password, INTERNET_SERVICE_FTP, 0, 0);
+    UserName, Password, INTERNET_SERVICE_FTP, 0, 0);
   if hHostConnection = nil then
   begin
     dwIndex := 0;
     dwBufLen := 1024;
     GetMem(Buffer, dwBufLen);
-    InternetGetLastResponseInfo(dwIndex, buffer, dwBufLen);
-    FErrorText := StrPas(buffer);
+    InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+    FErrorText := StrPas(Buffer);
     FreeMem(Buffer);
 
     Synchronize(Error);
     Exit;
   end;
 
-  InternetSetStatusCallback(hHostConnection, @FtpDownloadCallBack);
+  InternetSetStatusCallback(hHostConnection, PFNInternetStatusCallback(@FtpDownloadCallBack));
 
-   //Request the file
+  //Request the file
   if FMode = hmBinary then
     hDownload := FtpOpenFile(hHostConnection, PChar(FileName), GENERIC_READ, FTP_TRANSFER_TYPE_BINARY or
       INTERNET_FLAG_DONT_CACHE, 0)
@@ -454,44 +418,44 @@ begin
     Synchronize(Error);
     Exit;
   end;
-  (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload,@lpdwFileSizeHigh); // acp
+  (FSender as TJvFtpGrabber).FSize := FtpGetFileSize(hDownload, @dwFileSizeHigh); // acp
 
   Stream := TMemoryStream.Create;
 
   TotalBytes := 0;
-  ReadedBytes := 1;
-  while (ReadedBytes <> 0) and (not Terminated) do // acp
+  BytesRead := 1;
+  while (BytesRead <> 0) and (not Terminated) do // acp
   begin
-    if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), ReadedBytes) then
-      ReadedBytes := 0
+    if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
+      BytesRead := 0
     else
     begin
-      Inc(TotalBytes, ReadedBytes);
-      FBytesReaded := TotalBytes;
-      Stream.Write(Buf, ReadedBytes);
+      Inc(TotalBytes, BytesRead);
+      FBytesRead := TotalBytes;
+      Stream.Write(Buf, BytesRead);
       Synchronize(Progress);
     end;
   end;
-  if (not Terminated) then // acp
+  if not Terminated then // acp
     Synchronize(Ended);
 
-   //Free all stuff's
+  //Free all stuff's
   Stream.Free;
 
-   //Release all handles
-  if not (InternetCloseHandle(hDownload)) then
+  //Release all handles
+  if not InternetCloseHandle(hDownload) then
   begin
     FErrorText := GetLastErrorMsg;
     Synchronize(Error);
     Exit;
   end;
-  if not (InternetCloseHandle(hHostConnection)) then
+  if not InternetCloseHandle(hHostConnection) then
   begin
     FErrorText := GetLastErrorMsg;
     Synchronize(Error);
     Exit;
   end;
-  if not (InternetCloseHandle(hSession)) then
+  if not InternetCloseHandle(hSession) then
   begin
     FErrorText := GetLastErrorMsg;
     Synchronize(Error);
@@ -500,11 +464,10 @@ begin
   Synchronize(Closed);
 end;
 
-{*************************************************}
-
 procedure TJvFtpThread.Progress;
 begin
-  FOnProgress(Self, FBytesReaded, FUrl);
+  FOnProgress(Self, FBytesRead, FUrl);
 end;
 
 end.
+

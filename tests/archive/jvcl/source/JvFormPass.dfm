@@ -1,10 +1,11 @@
 object PassForm: TPassForm
   Left = 513
   Top = 382
-  ActiveControl = edPassword
-  BorderStyle = bsDialog
+  ActiveControl = EdPassword
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'Enter Password'
-  ClientHeight = 128
+  ClientHeight = 87
   ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,17 +20,24 @@ object PassForm: TPassForm
   TextHeight = 13
   object Label1: TLabel
     Left = 8
-    Top = 17
-    Width = 49
+    Top = 9
+    Width = 59
     Height = 13
     Caption = '&Password:'
-    FocusControl = edPassword
+    FocusControl = EdPassword
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
-  object edPassword: TJvEdit
+  object EdPassword: TJvEdit
     Left = 8
-    Top = 34
+    Top = 26
     Width = 313
     Height = 21
+    GroupIndex = -1
     MaxPixel.Font.Charset = DEFAULT_CHARSET
     MaxPixel.Font.Color = clWindowText
     MaxPixel.Font.Height = -11
@@ -41,25 +49,26 @@ object PassForm: TPassForm
     Anchors = [akLeft, akTop, akRight]
     Ctl3D = True
     ParentCtl3D = False
+    PasswordChar = #0
     ReadOnly = False
     TabOrder = 0
   end
-  object btnOK: TButton
+  object BtnOK: TButton
     Left = 160
-    Top = 91
+    Top = 56
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight]
     Caption = '&OK'
     Default = True
     TabOrder = 1
   end
-  object btnCancel: TButton
-    Left = 240
-    Top = 91
+  object BtnCancel: TButton
+    Left = 248
+    Top = 56
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2

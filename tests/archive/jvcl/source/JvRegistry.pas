@@ -28,30 +28,26 @@ Known Issues:
 
 unit JvRegistry;
 
-
-
 interface
 
 uses
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF}
-  Windows, Registry;
+  {$ENDIF}
+  Registry;
 
 type
   TJvRegistry = class(TRegistry)
   published
-    procedure Write(Field: string; Value: Variant);
-    function Read(Field: string): Variant;
+    procedure Write(const Field: string; const Value: Variant);
+    function Read(const Field: string): Variant;
   end;
 
 implementation
 
-{********************************************************}
-
-procedure TJvRegistry.Write(Field: string; Value: Variant);
+procedure TJvRegistry.Write(const Field: string; const Value: Variant);
 begin
-  case varType(Value) of
+  case VarType(Value) of
     varCurrency:
       WriteCurrency(Field, Value);
     varBoolean:
@@ -67,12 +63,10 @@ begin
   end;
 end;
 
-{********************************************************}
-
-function TJvRegistry.Read(Field: string): Variant;
+function TJvRegistry.Read(const Field: string): Variant;
 begin
   if ValueExists(Field) then
-    case varType(Result) of
+    case VarType(Result) of
       varCurrency:
         Result := ReadCurrency(Field);
       varBoolean:
@@ -89,3 +83,4 @@ begin
 end;
 
 end.
+

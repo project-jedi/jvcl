@@ -12,7 +12,7 @@ The Original Code is: JvGraph.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,19 +25,23 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvGraph;
 
 interface
 
-
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  SysUtils, Classes, Graphics, JvVCLUtils;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  SysUtils, Classes, Graphics,
+  JvVCLUtils;
 
 type
-{$IFNDEF COMPILER3_UP}
+  {$IFNDEF COMPILER3_UP}
   TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf24bit);
-{$ENDIF}
+  {$ENDIF}
   TMappingMethod = (mmHistogram, mmQuantize, mmTrunc784, mmTrunc666,
     mmTripel, mmGrayscale);
 
@@ -60,9 +64,7 @@ procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean): TPoint;
 
 const
-  DefaultMappingMethod: TMappingMethod = mmHistogram;
-
-{ TJvGradient class }
+  DefaultMappingMethod = mmHistogram;
 
 type
   TJvGradient = class(TPersistent)
@@ -85,8 +87,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(Canvas: TCanvas; Rect: TRect);
   published
-    property Direction: TFillDirection read FDirection write SetDirection
-      default fdTopToBottom;
+    property Direction: TFillDirection read FDirection write SetDirection default fdTopToBottom;
     property EndColor: TColor read FEndColor write SetEndColor default clGray;
     property StartColor: TColor read FStartColor write SetStartColor default clSilver;
     property StepCount: Byte read FStepCount write SetStepCount default 64;
@@ -98,7 +99,8 @@ implementation
 
 {$R-}
 
-uses Consts, JvMaxMin;
+uses
+  Consts, JvMaxMin;
 
 procedure InvalidBitmap; near;
 begin
@@ -117,10 +119,14 @@ end;
 function PixelFormatToColors(PixelFormat: TPixelFormat): Integer;
 begin
   case PixelFormat of
-    pf1bit: Result := 2;
-    pf4bit: Result := 16;
-    pf8bit: Result := 256;
-    else Result := 0;
+    pf1bit:
+      Result := 2;
+    pf4bit:
+      Result := 16;
+    pf8bit:
+      Result := 256;
+  else
+    Result := 0;
   end;
 end;
 
@@ -131,11 +137,16 @@ begin
   DC := GetDC(0);
   try
     case (GetDeviceCaps(DC, PLANES) * GetDeviceCaps(DC, BITSPIXEL)) of
-      1: Result := pf1bit;
-      4: Result := pf4bit;
-      8: Result := pf8bit;
-      24: Result := pf24bit;
-      else Result := pfDevice;
+      1:
+        Result := pf1bit;
+      4:
+        Result := pf4bit;
+      8:
+        Result := pf8bit;
+      24:
+        Result := pf24bit;
+    else
+      Result := pfDevice;
     end;
   finally
     ReleaseDC(0, DC);
@@ -148,7 +159,7 @@ begin
 end;
 
 { Quantizing }
-{ Quantizing ptocedures based on free C source code written by
+{ Quantizing procedures based on free C source code written by
   Joe C. Oliphant, CompuServe 71742, 1451, joe_oliphant@csufresno.edu }
 
 const
@@ -157,21 +168,21 @@ const
 type
   PQColor = ^TQColor;
   TQColor = record
-    RGB: array[0..2] of Byte;
+    RGB: array [0..2] of Byte;
     NewColorIndex: Byte;
     Count: Longint;
     PNext: PQColor;
   end;
 
   PQColorArray = ^TQColorArray;
-  TQColorArray = array[0..MAX_COLORS - 1] of TQColor;
+  TQColorArray = array [0..MAX_COLORS - 1] of TQColor;
 
   PQColorList = ^TQColorList;
-  TQColorList = array[0..MaxListSize - 1] of PQColor;
+  TQColorList = array [0..MaxListSize - 1] of PQColor;
 
   PNewColor = ^TNewColor;
   TNewColor = record
-    RGBMin, RGBWidth: array[0..2] of Byte;
+    RGBMin, RGBWidth: array [0..2] of Byte;
     NumEntries: Longint;
     Count: Longint;
     QuantizedColors: PQColor;
@@ -187,13 +198,16 @@ var
   I, J: Integer;
   Temp: PQColor;
 begin
-  for I := 1 to Number - 1 do begin
+  for I := 1 to Number - 1 do
+  begin
     Temp := ColorList^[I];
     J := I - 1;
-    while (J >= 0) do begin
+    while J >= 0 do
+    begin
       Q1 := Temp;
       Q2 := ColorList^[J];
-      if (Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis] > 0) then Break;
+      if Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis] > 0 then
+        Break;
       ColorList^[J + 1] := ColorList^[J];
       Dec(J);
     end;
@@ -208,7 +222,8 @@ var
   I, J, N, Nr: Integer;
   Temp, Part: PQColor;
 begin
-  if Number < 8 then begin
+  if Number < 8 then
+  begin
     PInsert(ColorList, Number, SortRGBAxis);
     Exit;
   end;
@@ -221,24 +236,27 @@ begin
       Q1 := ColorList^[I];
       Q2 := Part;
       N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
-    until (N >= 0);
+    until N >= 0;
     repeat
       Dec(J);
       Q1 := ColorList^[J];
       Q2 := Part;
       N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
-    until (N <= 0);
-    if (I >= J) then Break;
+    until N <= 0;
+    if I >= J then
+      Break;
     Temp := ColorList^[I];
     ColorList^[I] := ColorList^[J];
     ColorList^[J] := Temp;
   until False;
   Nr := Number - I;
-  if (I < Number div 2) then begin
+  if I < Number div 2 then
+  begin
     PSort(ColorList, I, SortRGBAxis);
     PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
   end
-  else begin
+  else
+  begin
     PSort(PQColorList(@ColorList^[I]), Nr, SortRGBAxis);
     PSort(ColorList, I, SortRGBAxis);
   end;
@@ -247,20 +265,24 @@ end;
 function DivideMap(NewColorSubdiv: PNewColorArray; ColorMapSize: Integer;
   var NewColormapSize: Integer; lpStr: Pointer): Integer;
 var
-  I, J: {$IFDEF WIN32} Integer {$ELSE} Cardinal {$ENDIF};
+  I, J: {$IFDEF WIN32} Integer {$ELSE}Cardinal {$ENDIF};
   MaxSize, Index: Integer;
   NumEntries, MinColor,
-  MaxColor: {$IFDEF WIN32} Integer {$ELSE} Cardinal {$ENDIF};
+    MaxColor: {$IFDEF WIN32} Integer {$ELSE} Cardinal {$ENDIF};
   Sum, Count: Longint;
   QuantizedColor: PQColor;
   SortArray: PQColorList;
   SortRGBAxis: Integer;
 begin
-  Index := 0; SortRGBAxis := 0;
-  while (colormapsize > NewColormapSize) do begin
+  Index := 0;
+  SortRGBAxis := 0;
+  while ColorMapSize > NewColormapSize do
+  begin
     MaxSize := -1;
-    for I := 0 to NewColormapSize - 1 do begin
-      for J := 0 to 2 do begin
+    for I := 0 to NewColormapSize - 1 do
+    begin
+      for J := 0 to 2 do
+      begin
         if (NewColorSubdiv^[I].RGBwidth[J] > MaxSize) and
           (NewColorSubdiv^[I].NumEntries > 1) then
         begin
@@ -270,7 +292,8 @@ begin
         end;
       end;
     end;
-    if (MaxSize = -1) then begin
+    if MaxSize = -1 then
+    begin
       Result := 1;
       Exit;
     end;
@@ -311,7 +334,8 @@ begin
     NewColorSubdiv^[NewColormapSize].NumEntries :=
       NewColorSubdiv^[Index].NumEntries - NumEntries;
     NewColorSubdiv^[Index].NumEntries := NumEntries;
-    for J := 0 to 2 do begin
+    for J := 0 to 2 do
+    begin
       NewColorSubdiv^[NewColormapSize].RGBmin[J] :=
         NewColorSubdiv^[Index].RGBmin[J];
       NewColorSubdiv^[NewColormapSize].RGBwidth[J] :=
@@ -362,18 +386,21 @@ begin
         Longint(sizeof(TQColor)) * (MAX_COLORS)));
       LineBuffer := HugeOffset(lpStr, (Longint(sizeof(TQColor)) * (MAX_COLORS)) +
         (Longint(sizeof(TNewColor)) * 256));
-      for I := 0 to MAX_COLORS - 1 do begin
+      for I := 0 to MAX_COLORS - 1 do
+      begin
         ColorArrayEntries^[I].RGB[0] := I shr 8;
         ColorArrayEntries^[I].RGB[1] := (I shr 4) and $0F;
         ColorArrayEntries^[I].RGB[2] := I and $0F;
         ColorArrayEntries^[I].Count := 0;
       end;
       Tmp := Temp;
-      for I := 0 to bmp.biHeight - 1 do begin
+      for I := 0 to bmp.biHeight - 1 do
+      begin
         HMemCpy(LineBuffer, HugeOffset(gptr, (bmp.biHeight - 1 - I) *
           LineWidth), LineWidth);
         P := LineBuffer;
-        for J := 0 to bmp.biWidth - 1 do begin
+        for J := 0 to bmp.biWidth - 1 do
+        begin
           Index := (Longint(P^[2] and $F0) shl 4) +
             Longint(P^[1] and $F0) + (Longint(P^[0] and $F0) shr 4);
           Inc(ColorArrayEntries^[Index].Count);
@@ -382,26 +409,32 @@ begin
           Tmp := HugeOffset(Tmp, 2);
         end;
       end;
-      for I := 0 to 255 do begin
+      for I := 0 to 255 do
+      begin
         NewColorSubdiv^[I].QuantizedColors := nil;
         NewColorSubdiv^[I].Count := 0;
         NewColorSubdiv^[I].NumEntries := 0;
-        for J := 0 to 2 do begin
+        for J := 0 to 2 do
+        begin
           NewColorSubdiv^[I].RGBmin[J] := 0;
           NewColorSubdiv^[I].RGBwidth[J] := 255;
         end;
       end;
       I := 0;
-      while I < MAX_COLORS do begin
-        if ColorArrayEntries^[I].Count > 0 then Break;
+      while I < MAX_COLORS do
+      begin
+        if ColorArrayEntries^[I].Count > 0 then
+          Break;
         Inc(I);
       end;
       QuantizedColor := @ColorArrayEntries^[I];
       NewColorSubdiv^[0].QuantizedColors := @ColorArrayEntries^[I];
       NumOfEntries := 1;
       Inc(I);
-      while I < MAX_COLORS do begin
-        if ColorArrayEntries^[I].Count > 0 then begin
+      while I < MAX_COLORS do
+      begin
+        if ColorArrayEntries^[I].Count > 0 then
+        begin
           QuantizedColor^.pnext := @ColorArrayEntries^[I];
           QuantizedColor := @ColorArrayEntries^[I];
           Inc(NumOfEntries);
@@ -415,25 +448,30 @@ begin
       DivideMap(NewColorSubdiv, ColorCount, NewColormapSize,
         HugeOffset(lpStr, Longint(SizeOf(TQColor)) * (MAX_COLORS) +
         Longint(SizeOf(TNewColor)) * 256 + LineWidth));
-      if (NewColormapSize < ColorCount) then begin
+      if NewColormapSize < ColorCount then
+      begin
         for I := NewColormapSize to ColorCount - 1 do
           FillChar(OutputColormap[I], SizeOf(TRGBQuad), 0);
       end;
-      for I := 0 to NewColormapSize - 1 do begin
+      for I := 0 to NewColormapSize - 1 do
+      begin
         J := NewColorSubdiv^[I].NumEntries;
-        if J > 0 then begin
+        if J > 0 then
+        begin
           QuantizedColor := NewColorSubdiv^[I].QuantizedColors;
           cRed := 0;
           cGreen := 0;
           cBlue := 0;
-          while (QuantizedColor <> nil) do begin
+          while QuantizedColor <> nil do
+          begin
             QuantizedColor^.NewColorIndex := I;
             Inc(cRed, QuantizedColor^.RGB[0]);
             Inc(cGreen, QuantizedColor^.RGB[1]);
             Inc(cBlue, QuantizedColor^.RGB[2]);
             QuantizedColor := QuantizedColor^.pnext;
           end;
-          with OutputColormap[I] do begin
+          with OutputColormap[I] do
+          begin
             rgbRed := (Longint(cRed shl 4) or $0F) div J;
             rgbGreen := (Longint(cGreen shl 4) or $0F) div J;
             rgbBlue := (Longint(cBlue shl 4) or $0F) div J;
@@ -445,11 +483,13 @@ begin
       end;
       TmpLineWidth := Longint(bmp.biWidth) * SizeOf(Word);
       NewLineWidth := WidthBytes(Longint(bmp.biWidth) * 8);
-      ZeroMemory(Data8, NewLineWidth * bmp.biHeight);
-      for I := 0 to bmp.biHeight - 1 do begin
+      FillChar(Data8^, NewLineWidth * bmp.biHeight, #0);
+      for I := 0 to bmp.biHeight - 1 do
+      begin
         LineBuffer := HugeOffset(Temp, (bmp.biHeight - 1 - I) * TmpLineWidth);
         Data := HugeOffset(Data8, I * NewLineWidth);
-        for J := 0 to bmp.biWidth - 1 do begin
+        for J := 0 to bmp.biWidth - 1 do
+        begin
           PByte(Data)^ := ColorArrayEntries^[PWord(LineBuffer)^].NewColorIndex;
           LineBuffer := HugeOffset(LineBuffer, 2);
           Data := HugeOffset(Data, 1);
@@ -480,18 +520,18 @@ type
 { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 const
-  Scale04: array[0..3] of Byte = (0, 85, 170, 255);
-  Scale06: array[0..5] of Byte = (0, 51, 102, 153, 204, 255);
-  Scale07: array[0..6] of Byte = (0, 43, 85, 128, 170, 213, 255);
-  Scale08: array[0..7] of Byte = (0, 36, 73, 109, 146, 182, 219, 255);
+  Scale04: array [0..3] of Byte = (0, 85, 170, 255);
+  Scale06: array [0..5] of Byte = (0, 51, 102, 153, 204, 255);
+  Scale07: array [0..6] of Byte = (0, 43, 85, 128, 170, 213, 255);
+  Scale08: array [0..7] of Byte = (0, 36, 73, 109, 146, 182, 219, 255);
 
 { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 var
-  TruncIndex04: array[Byte] of byte;
-  TruncIndex06: array[Byte] of byte;
-  TruncIndex07: array[Byte] of byte;
-  TruncIndex08: array[Byte] of byte;
+  TruncIndex04: array [Byte] of Byte;
+  TruncIndex06: array [Byte] of Byte;
+  TruncIndex07: array [Byte] of Byte;
+  TruncIndex08: array [Byte] of Byte;
 
 { These functions initialises this module }
 
@@ -505,10 +545,12 @@ procedure InitTruncTables;
     Result := 0;
     B := Bytes[0];
     DiffMin := Abs(Value - B);
-    for I := 1 to High(Bytes) do begin
+    for I := 1 to High(Bytes) do
+    begin
       B := Bytes[I];
       Diff := Abs(Value - B);
-      if Diff < DiffMin then begin
+      if Diff < DiffMin then
+      begin
         DiffMin := Diff;
         Result := I;
       end;
@@ -519,7 +561,8 @@ var
   I: Integer;
 begin
   { For 7 Red X 8 Green X 4 Blue palettes etc. }
-  for I := 0 to 255 do begin
+  for I := 0 to 255 do
+  begin
     TruncIndex04[I] := NearestIndex(Byte(I), Scale04);
     TruncIndex06[I] := NearestIndex(Byte(I), Scale06);
     TruncIndex07[I] := NearestIndex(Byte(I), Scale07);
@@ -544,6 +587,7 @@ end;
   This function makes the palette for the 6 red X 6 green X 6 blue palette.
   216 palette entrys used. Remaining 40 Left blank.
 }
+
 procedure TruncPal6R6G6B(var Colors: TRGBPalette);
 var
   I, R, G, B: Byte;
@@ -552,7 +596,8 @@ begin
   I := 0;
   for R := 0 to 5 do
     for G := 0 to 5 do
-      for B := 0 to 5 do begin
+      for B := 0 to 5 do
+      begin
         Colors[I].rgbRed := Scale06[R];
         Colors[I].rgbGreen := Scale06[G];
         Colors[I].rgbBlue := Scale06[B];
@@ -562,21 +607,27 @@ begin
 end;
 
 { truncate to 6Rx6Gx6B one line }
+
 procedure TruncLine6R6G6B(Src, Dest: Pointer; CX: Integer); far;
 var
   X: Integer;
   R, G, B: Byte;
 begin
-  for X := 0 to CX - 1 do begin
-    B := TruncIndex06[Byte(Src^)]; Src := HugeOffset(Src, 1);
-    G := TruncIndex06[Byte(Src^)]; Src := HugeOffset(Src, 1);
-    R := TruncIndex06[Byte(Src^)]; Src := HugeOffset(Src, 1);
+  for X := 0 to CX - 1 do
+  begin
+    B := TruncIndex06[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
+    G := TruncIndex06[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
+    R := TruncIndex06[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
     PByte(Dest)^ := 6 * (6 * R + G) + B;
     Dest := HugeOffset(Dest, 1);
   end;
 end;
 
 { truncate to 6Rx6Gx6B }
+
 procedure Trunc6R6G6B(const Header: TBitmapInfoHeader;
   const Data24, Data8: Pointer);
 begin
@@ -588,6 +639,7 @@ end;
   224 palette entrys used. Remaining 32 Left blank.
   Colours calculated to match those used by 8514/A PM driver.
 }
+
 procedure TruncPal7R8G4B(var Colors: TRGBPalette);
 var
   I, R, G, B: Byte;
@@ -596,7 +648,8 @@ begin
   I := 0;
   for R := 0 to 6 do
     for G := 0 to 7 do
-      for B := 0 to 3 do begin
+      for B := 0 to 3 do
+      begin
         Colors[I].rgbRed := Scale07[R];
         Colors[I].rgbGreen := Scale08[G];
         Colors[I].rgbBlue := Scale04[B];
@@ -606,21 +659,27 @@ begin
 end;
 
 { truncate to 7Rx8Gx4B one line }
+
 procedure TruncLine7R8G4B(Src, Dest: Pointer; CX: Integer); far;
 var
   X: Integer;
   R, G, B: Byte;
 begin
-  for X := 0 to CX - 1 do begin
-    B := TruncIndex04[Byte(Src^)]; Src := HugeOffset(Src, 1);
-    G := TruncIndex08[Byte(Src^)]; Src := HugeOffset(Src, 1);
-    R := TruncIndex07[Byte(Src^)]; Src := HugeOffset(Src, 1);
+  for X := 0 to CX - 1 do
+  begin
+    B := TruncIndex04[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
+    G := TruncIndex08[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
+    R := TruncIndex07[Byte(Src^)];
+    Src := HugeOffset(Src, 1);
     PByte(Dest)^ := 4 * (8 * R + G) + B;
     Dest := HugeOffset(Dest, 1);
   end;
 end;
 
 { truncate to 7Rx8Gx4B }
+
 procedure Trunc7R8G4B(const Header: TBitmapInfoHeader;
   const Data24, Data8: Pointer);
 begin
@@ -634,7 +693,8 @@ var
   I: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
-  for I := 0 to 255 do FillChar(Colors[I], 3, I);
+  for I := 0 to 255 do
+    FillChar(Colors[I], 3, I);
 end;
 
 procedure Grayscale(const Header: TBitmapInfoHeader; Data24, Data8: Pointer);
@@ -646,13 +706,18 @@ var
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
-  for Y := 0 to Header.biHeight - 1 do begin
+  for Y := 0 to Header.biHeight - 1 do
+  begin
     Src := Data24;
     Dest := Data8;
-    for X := 0 to Header.biWidth - 1 do begin
-      B := Src^; Src := HugeOffset(Src, 1);
-      G := Src^; Src := HugeOffset(Src, 1);
-      R := Src^; Src := HugeOffset(Src, 1);
+    for X := 0 to Header.biWidth - 1 do
+    begin
+      B := Src^;
+      Src := HugeOffset(Src, 1);
+      G := Src^;
+      Src := HugeOffset(Src, 1);
+      R := Src^;
+      Src := HugeOffset(Src, 1);
       Dest^ := Byte(Longint(Word(R) * 77 + Word(G) * 150 + Word(B) * 29) shr 8);
       Dest := HugeOffset(Dest, 1);
     end;
@@ -668,7 +733,8 @@ var
   I: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), 0);
-  for I := 0 to $40 do begin
+  for I := 0 to $40 do
+  begin
     Colors[I].rgbRed := I shl 2;
     Colors[I + $40].rgbGreen := I shl 2;
     Colors[I + $80].rgbBlue := I shl 2;
@@ -684,13 +750,18 @@ var
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
-  for Y := 0 to Header.biHeight - 1 do begin
+  for Y := 0 to Header.biHeight - 1 do
+  begin
     Src := Data24;
     Dest := Data8;
-    for X := 0 to Header.biWidth - 1 do begin
-      B := Src^; Src := HugeOffset(Src, 1);
-      G := Src^; Src := HugeOffset(Src, 1);
-      R := Src^; Src := HugeOffset(Src, 1);
+    for X := 0 to Header.biWidth - 1 do
+    begin
+      B := Src^;
+      Src := HugeOffset(Src, 1);
+      G := Src^;
+      Src := HugeOffset(Src, 1);
+      R := Src^;
+      Src := HugeOffset(Src, 1);
       case ((X + Y) mod 3) of
         0: Dest^ := Byte(R shr 2);
         1: Dest^ := Byte($40 + (G shr 2));
@@ -718,7 +789,9 @@ end;
 type
   PFreqRecord = ^TFreqRecord;
   TFreqRecord = record
-    B, G, R: Byte;
+    B: Byte;
+    G: Byte;
+    R: Byte;
     Frequency: Longint;
     Nearest: Byte;
   end;
@@ -726,16 +799,19 @@ type
   PHist = ^THist;
   THist = record
     ColCount: Longint;
-    Rm, Gm, Bm: Byte;
-    Freqs: array[0..MAX_N_COLS - 1] of TFreqRecord;
-    HashTable: array[0..MAX_N_HASH - 1] of Word;
+    Rm: Byte;
+    Gm: Byte;
+    Bm: Byte;
+    Freqs: array [0..MAX_N_COLS - 1] of TFreqRecord;
+    HashTable: array [0..MAX_N_HASH - 1] of Word;
   end;
 
 function CreateHistogram(R, G, B: Byte): PHist;
 { create empty histogram }
 begin
   GetMem(Result, SizeOf(THist));
-  with Result^ do begin
+  with Result^ do
+  begin
     Rm := R;
     Gm := G;
     Bm := B;
@@ -746,7 +822,8 @@ end;
 
 procedure ClearHistogram(var Hist: PHist; R, G, B: Byte);
 begin
-  with Hist^ do begin
+  with Hist^ do
+  begin
     Rm := R;
     Gm := G;
     Bm := B;
@@ -775,24 +852,33 @@ begin
   Gm := Hist.Gm;
   Bm := Hist.Bm;
   ColCount := Hist.ColCount;
-  for Y := 0 to Header.biHeight - 1 do begin
-    for X := 0 to Header.biWidth - 1 do begin
-      B := Byte(Data24^) and Bm; Data24 := HugeOffset(Data24, 1);
-      G := Byte(Data24^) and Gm; Data24 := HugeOffset(Data24, 1);
-      R := Byte(Data24^) and Rm; Data24 := HugeOffset(Data24, 1);
+  for Y := 0 to Header.biHeight - 1 do
+  begin
+    for X := 0 to Header.biWidth - 1 do
+    begin
+      B := Byte(Data24^) and Bm;
+      Data24 := HugeOffset(Data24, 1);
+      G := Byte(Data24^) and Gm;
+      Data24 := HugeOffset(Data24, 1);
+      R := Byte(Data24^) and Rm;
+      Data24 := HugeOffset(Data24, 1);
       HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
         if (Index = $FFFF) or ((Hist.Freqs[Index].R = R) and
-          (Hist.Freqs[Index].G = G) and (Hist.Freqs[Index].B = B)) then Break;
+          (Hist.Freqs[Index].G = G) and (Hist.Freqs[Index].B = B)) then
+          Break;
         Inc(HashColor);
-        if (HashColor = MAX_N_HASH) then HashColor := 0;
+        if HashColor = MAX_N_HASH then
+          HashColor := 0;
       until False;
       { Note: loop will always be broken out of }
       { We don't allow HashTable to fill up above half full }
-      if (Index = $FFFF) then begin
+      if Index = $FFFF then
+      begin
         { Not found in Hash table }
-        if (ColCount = MAX_N_COLS) then begin
+        if ColCount = MAX_N_COLS then
+        begin
           Result := False;
           Exit;
         end;
@@ -803,7 +889,8 @@ begin
         Hist.HashTable[HashColor] := ColCount;
         Inc(ColCount);
       end
-      else begin
+      else
+      begin
         { Found in Hash table, update index }
         Inc(Hist.Freqs[Index].Frequency);
       end;
@@ -824,17 +911,21 @@ var
   DeltaB, DeltaG, DeltaR: Longint;
   MaxFreq: Longint;
 begin
-  I := 0; MaxJ := 0; MinJ := 0;
+  I := 0;
+  MaxJ := 0;
+  MinJ := 0;
   { Now find the ColorsWanted most frequently used ones }
-  while (I < ColorsWanted) and (I < Hist.ColCount) do begin
+  while (I < ColorsWanted) and (I < Hist.ColCount) do
+  begin
     MaxFreq := 0;
     for J := 0 to Hist.ColCount - 1 do
-      if (Hist.Freqs[J].Frequency > MaxFreq) then begin
+      if Hist.Freqs[J].Frequency > MaxFreq then
+      begin
         MaxJ := J;
         MaxFreq := Hist.Freqs[J].Frequency;
       end;
     Hist.Freqs[MaxJ].Nearest := Byte(I);
-    Hist.Freqs[MaxJ].Frequency := 0;  { Prevent later use of Freqs[MaxJ] }
+    Hist.Freqs[MaxJ].Frequency := 0; { Prevent later use of Freqs[MaxJ] }
     Colors[I].rgbBlue := Hist.Freqs[MaxJ].B;
     Colors[I].rgbGreen := Hist.Freqs[MaxJ].G;
     Colors[I].rgbRed := Hist.Freqs[MaxJ].R;
@@ -842,7 +933,8 @@ begin
     Inc(I);
   end;
   { Unused palette entries will be medium grey }
-  while I <= 255 do begin
+  while I <= 255 do
+  begin
     Colors[I].rgbRed := $80;
     Colors[I].rgbGreen := $80;
     Colors[I].rgbBlue := $80;
@@ -850,16 +942,20 @@ begin
     Inc(I);
   end;
   { For the rest, find the closest one in the first ColorsWanted }
-  for I := 0 to Hist.ColCount - 1 do begin
-    if Hist.Freqs[I].Frequency <> 0 then begin
+  for I := 0 to Hist.ColCount - 1 do
+  begin
+    if Hist.Freqs[I].Frequency <> 0 then
+    begin
       MinDist := 3 * 256 * 256;
-      for J := 0 to ColorsWanted - 1 do begin
+      for J := 0 to ColorsWanted - 1 do
+      begin
         DeltaB := Hist.Freqs[I].B - Colors[J].rgbBlue;
         DeltaG := Hist.Freqs[I].G - Colors[J].rgbGreen;
         DeltaR := Hist.Freqs[I].R - Colors[J].rgbRed;
         Dist := Longint(DeltaR * DeltaR) + Longint(DeltaG * DeltaG) +
           Longint(DeltaB * DeltaB);
-        if (Dist < MinDist) then begin
+        if Dist < MinDist then
+        begin
           MinDist := Dist;
           MinJ := J;
         end;
@@ -884,18 +980,25 @@ begin
   Rm := Hist.Rm;
   Gm := Hist.Gm;
   Bm := Hist.Bm;
-  for Y := 0 to Header.biHeight - 1 do begin
-    for X := 0 to Header.biWidth - 1 do begin
-      B := Byte(Data24^) and Bm; Data24 := HugeOffset(Data24, 1);
-      G := Byte(Data24^) and Gm; Data24 := HugeOffset(Data24, 1);
-      R := Byte(Data24^) and Rm; Data24 := HugeOffset(Data24, 1);
+  for Y := 0 to Header.biHeight - 1 do
+  begin
+    for X := 0 to Header.biWidth - 1 do
+    begin
+      B := Byte(Data24^) and Bm;
+      Data24 := HugeOffset(Data24, 1);
+      G := Byte(Data24^) and Gm;
+      Data24 := HugeOffset(Data24, 1);
+      R := Byte(Data24^) and Rm;
+      Data24 := HugeOffset(Data24, 1);
       HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
         if (Hist.Freqs[Index].R = R) and (Hist.Freqs[Index].G = G) and
-          (Hist.Freqs[Index].B = B) then Break;
+          (Hist.Freqs[Index].B = B) then
+          Break;
         Inc(HashColor);
-        if (HashColor = MAX_N_HASH) then HashColor := 0;
+        if HashColor = MAX_N_HASH then
+          HashColor := 0;
       until False;
       PByte(Data8)^ := Hist.Freqs[Index].Nearest;
       Data8 := HugeOffset(Data8, 1);
@@ -914,11 +1017,17 @@ begin
   Hist := CreateHistogram(Rm, Gm, Bm);
   try
     repeat
-      if AddToHistogram(Hist^, Header, Data24) then Break
-      else begin
-        if (Gm > Rm) then Gm := Gm shl 1
-        else if (Rm > Bm) then Rm := Rm shl 1
-        else Bm := Bm shl 1;
+      if AddToHistogram(Hist^, Header, Data24) then
+        Break
+      else
+      begin
+        if Gm > Rm then
+          Gm := Gm shl 1
+        else
+        if Rm > Bm then
+          Rm := Rm shl 1
+        else
+          Bm := Bm shl 1;
         ClearHistogram(Hist, Rm, Gm, Bm);
       end;
     until False;
@@ -1023,12 +1132,19 @@ var
   PalSize: Integer;
 begin
   Result := pfDevice;
-  if Bitmap.Palette <> 0 then begin
+  if Bitmap.Palette <> 0 then
+  begin
     GetObject(Bitmap.Palette, SizeOf(Integer), @PalSize);
-    if PalSize > 0 then begin
-      if PalSize <= 2 then Result := pf1bit
-      else if PalSize <= 16 then Result := pf4bit
-      else if PalSize <= 256 then Result := pf8bit;
+    if PalSize > 0 then
+    begin
+      if PalSize <= 2 then
+        Result := pf1bit
+      else
+      if PalSize <= 16 then
+        Result := pf4bit
+      else
+      if PalSize <= 256 then
+        Result := pf8bit;
     end;
   end;
 end;
@@ -1039,14 +1155,15 @@ begin
   Result := Bitmap.PixelFormat;
 {$ELSE}
 var
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   BM: Windows.TBitmap;
-{$ELSE}
+  {$ELSE}
   BM: WinTypes.TBitmap;
 {$ENDIF}
 begin
   Result := pfDevice;
-  if Bitmap.Handle <> 0 then begin
+  if Bitmap.Handle <> 0 then
+  begin
     GetObject(Bitmap.Handle, SizeOf(BM), @BM);
     case BM.bmBitsPixel * BM.bmPlanes of
       1: Result := pf1bit;
@@ -1076,13 +1193,17 @@ var
 begin
   DS.dsbmih.biSize := 0;
   Bytes := GetObject(Bitmap, SizeOf(DS), @DS);
-  if Bytes = 0 then InvalidBitmap
-  else if (Bytes >= (SizeOf(DS.dsbm) + SizeOf(DS.dsbmih))) and
+  if Bytes = 0 then
+    InvalidBitmap
+  else
+  if (Bytes >= (SizeOf(DS.dsbm) + SizeOf(DS.dsbmih))) and
     (DS.dsbmih.biSize >= DWORD(SizeOf(DS.dsbmih))) then
     BI := DS.dsbmih
-  else begin
+  else
+  begin
     FillChar(BI, sizeof(BI), 0);
-    with BI, DS.dsbm do begin
+    with BI, DS.dsbm do
+    begin
       biSize := SizeOf(BI);
       biWidth := bmWidth;
       biHeight := bmHeight;
@@ -1093,7 +1214,8 @@ begin
     pf4bit: BI.biBitCount := 4;
     pf8bit: BI.biBitCount := 8;
     pf24bit: BI.biBitCount := 24;
-    else BI.biBitCount := DS.dsbm.bmBitsPixel * DS.dsbm.bmPlanes;
+  else
+    BI.biBitCount := DS.dsbm.bmBitsPixel * DS.dsbm.bmPlanes;
   end;
   BI.biPlanes := 1;
   if BI.biSizeImage = 0 then
@@ -1104,16 +1226,22 @@ var
   BM: WinTypes.TBitmap;
 begin
   GetObject(Bitmap, SizeOf(BM), @BM);
-  with BI do begin
+  with BI do
+  begin
     biSize := SizeOf(BI);
     biWidth := BM.bmWidth;
     biHeight := BM.bmHeight;
     case PixelFormat of
-      pf1bit: biBitCount := 1;
-      pf4bit: biBitCount := 4;
-      pf8bit: biBitCount := 8;
-      pf24bit: biBitCount := 24;
-      else biBitCount := BM.bmBitsPixel * BM.bmPlanes;
+      pf1bit:
+        biBitCount := 1;
+      pf4bit:
+        biBitCount := 4;
+      pf8bit:
+        biBitCount := 8;
+      pf24bit:
+        biBitCount := 24;
+    else
+      biBitCount := BM.bmBitsPixel * BM.bmPlanes;
     end;
     biPlanes := 1;
     biXPelsPerMeter := 0;
@@ -1121,7 +1249,8 @@ begin
     biClrUsed := 0;
     biClrImportant := 0;
     biCompression := BI_RGB;
-    if biBitCount in [9..32] then biBitCount := 24;
+    if biBitCount in [9..32] then
+      biBitCount := 24;
     biSizeImage := (((biWidth * biBitCount + 31) div 32) * 4) * biHeight;
   end;
 end;
@@ -1133,15 +1262,17 @@ var
   BI: TBitmapInfoHeader;
 begin
   InitializeBitmapInfoHeader(Bitmap, BI, BitCount);
-  if BI.biBitCount > 8 then begin
+  if BI.biBitCount > 8 then
+  begin
     InfoHeaderSize := SizeOf(TBitmapInfoHeader);
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     if (BI.biCompression and BI_BITFIELDS) <> 0 then
       Inc(InfoHeaderSize, 12);
-{$ENDIF}
+    {$ENDIF}
   end
-  else InfoHeaderSize := SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) *
-    (1 shl BI.biBitCount);
+  else
+    InfoHeaderSize := SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) *
+      (1 shl BI.biBitCount);
   ImageSize := BI.biSizeImage;
 end;
 
@@ -1152,9 +1283,10 @@ var
   DC: HDC;
 begin
   InitializeBitmapInfoHeader(Bitmap, TBitmapInfoHeader(BitmapInfo), PixelFormat);
-{$IFDEF WIN32}
-  with TBitmapInfoHeader(BitmapInfo) do biHeight := Abs(biHeight);
-{$ENDIF}
+  {$IFDEF WIN32}
+  with TBitmapInfoHeader(BitmapInfo) do
+    biHeight := Abs(biHeight);
+  {$ENDIF}
   OldPal := 0;
   DC := CreateCompatibleDC(0);
   try
@@ -1166,7 +1298,8 @@ begin
     Result := GetDIBits(DC, Bitmap, 0, TBitmapInfoHeader(BitmapInfo).biHeight,
       @Bits, TBitmapInfo(BitmapInfo), DIB_RGB_COLORS) <> 0;
   finally
-    if OldPal <> 0 then SelectPalette(DC, OldPal, False);
+    if OldPal <> 0 then
+      SelectPalette(DC, OldPal, False);
     DeleteDC(DC);
   end;
 end;
@@ -1180,7 +1313,8 @@ var
   BI: PBitmapInfoHeader;
   Bits: Pointer;
 begin
-  if Src = 0 then InvalidBitmap;
+  if Src = 0 then
+    InvalidBitmap;
   InternalGetDIBSizes(Src, HeaderSize, ImageSize, PixelFormat);
   Length := SizeOf(TBitmapFileHeader) + HeaderSize + ImageSize;
   Result := AllocMemo(Length);
@@ -1216,7 +1350,8 @@ var
   P, InitData: Pointer;
   ColorCount: Integer;
 begin
-  if Bitmap.Handle = 0 then InvalidBitmap;
+  if Bitmap.Handle = 0 then
+    InvalidBitmap;
   if (GetBitmapPixelFormat(Bitmap) = PixelFormat) and
     (Method <> mmGrayscale) then
   begin
@@ -1232,7 +1367,9 @@ begin
   end;
   if not (PixelFormat in [pf1bit, pf4bit, pf8bit, pf24bit]) then
     NotImplemented
-  else if (PixelFormat in [pf1bit, pf4Bit]) then begin
+  else
+  if PixelFormat in [pf1bit, pf4Bit] then
+  begin
     P := DIBFromBit(Bitmap.Handle, Bitmap.Palette, PixelFormat, Length);
     try
       Result := TMemoryStream.Create;
@@ -1252,13 +1389,14 @@ begin
   InitData := DIBFromBit(Bitmap.Handle, Bitmap.Palette, pf24bit, Len);
   try
     BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
-    if BI^.biBitCount <> 24 then NotImplemented; {!!!}
+    if BI^.biBitCount <> 24 then
+      NotImplemented; {!!!}
     Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
     InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
     Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;
     P := AllocMemo(Length);
     try
-      ZeroMemory(P, Length);
+      FillChar(P^, Length, #0);
       NewBI := PBitmapInfoHeader(Longint(P) + SizeOf(TBitmapFileHeader));
       NewPalette := PRGBPalette(Longint(NewBI) + SizeOf(TBitmapInfoHeader));
       FileHeader := PBitmapFileHeader(P);
@@ -1298,7 +1436,8 @@ begin
             GrayScale(BI^, Bits, Bits);
           end;
       end;
-      with FileHeader^ do begin
+      with FileHeader^ do
+      begin
         bfType := $4D42;
         bfSize := Length;
         bfOffBits := SizeOf(FileHeader^) + NewHeaderSize;
@@ -1324,10 +1463,16 @@ function BitmapToMemory(Bitmap: TBitmap; Colors: Integer): TStream;
 var
   PixelFormat: TPixelFormat;
 begin
-  if Colors <= 2 then PixelFormat := pf1bit
-  else if Colors <= 16 then PixelFormat := pf4bit
-  else if Colors <= 256 then PixelFormat := pf8bit
-  else PixelFormat := pf24bit;
+  if Colors <= 2 then
+    PixelFormat := pf1bit
+  else
+  if Colors <= 16 then
+    PixelFormat := pf4bit
+  else
+  if Colors <= 256 then
+    PixelFormat := pf8bit
+  else
+    PixelFormat := pf24bit;
   Result := BitmapToMemoryStream(Bitmap, PixelFormat, DefaultMappingMethod);
 end;
 
@@ -1336,7 +1481,8 @@ procedure SaveBitmapToFile(const Filename: string; Bitmap: TBitmap;
 var
   Memory: TStream;
 begin
-  if Bitmap.Monochrome then Colors := 2;
+  if Bitmap.Monochrome then
+    Colors := 2;
   Memory := BitmapToMemory(Bitmap, Colors);
   try
     TMemoryStream(Memory).SaveToFile(Filename);
@@ -1373,18 +1519,22 @@ begin
   if (MaxW <= 0) or (MaxH <= 0) or (ImageW <= 0) or (ImageH <= 0) then
     Exit;
   with Result do
-    if Stretch then begin
+    if Stretch then
+    begin
       Zoom := MaxFloat([ImageW / MaxW, ImageH / MaxH]);
-      if (Zoom > 0) then begin
+      if Zoom > 0 then
+      begin
         X := Round(ImageW * 0.98 / Zoom);
         Y := Round(ImageH * 0.98 / Zoom);
       end
-      else begin
+      else
+      begin
         X := ImageW;
         Y := ImageH;
       end;
     end
-    else begin
+    else
+    begin
       X := MaxW;
       Y := MaxH;
     end;
@@ -1395,7 +1545,8 @@ var
   X, Y: Integer;
   SaveIndex: Integer;
 begin
-  if (Image.Width = 0) or (Image.Height = 0) then Exit;
+  if (Image.Width = 0) or (Image.Height = 0) then
+    Exit;
   SaveIndex := SaveDC(Canvas.Handle);
   try
     with Rect do
@@ -1409,7 +1560,7 @@ begin
   end;
 end;
 
-{ TJvGradient }
+//=== TJvGradient ============================================================
 
 constructor TJvGradient.Create;
 begin
@@ -1422,8 +1573,10 @@ end;
 
 procedure TJvGradient.Assign(Source: TPersistent);
 begin
-  if Source is TJvGradient then begin
-    with TJvGradient(Source) do begin
+  if Source is TJvGradient then
+  begin
+    with TJvGradient(Source) do
+    begin
       Self.FStartColor := StartColor;
       Self.FEndColor := EndColor;
       Self.FStepCount := StepCount;
@@ -1432,12 +1585,14 @@ begin
     end;
     Changed;
   end
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvGradient.Changed;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvGradient.Draw(Canvas: TCanvas; Rect: TRect);
@@ -1448,7 +1603,8 @@ end;
 
 procedure TJvGradient.SetStartColor(Value: TColor);
 begin
-  if Value <> FStartColor then begin
+  if Value <> FStartColor then
+  begin
     FStartColor := Value;
     Changed;
   end;
@@ -1456,7 +1612,8 @@ end;
 
 procedure TJvGradient.SetEndColor(Value: TColor);
 begin
-  if Value <> FEndColor then begin
+  if Value <> FEndColor then
+  begin
     FEndColor := Value;
     Changed;
   end;
@@ -1464,7 +1621,8 @@ end;
 
 procedure TJvGradient.SetDirection(Value: TFillDirection);
 begin
-  if Value <> FDirection then begin
+  if Value <> FDirection then
+  begin
     FDirection := Value;
     Changed;
   end;
@@ -1472,7 +1630,8 @@ end;
 
 procedure TJvGradient.SetStepCount(Value: Byte);
 begin
-  if Value <> FStepCount then begin
+  if Value <> FStepCount then
+  begin
     FStepCount := Value;
     Changed;
   end;
@@ -1480,7 +1639,8 @@ end;
 
 procedure TJvGradient.SetVisible(Value: Boolean);
 begin
-  if FVisible <> Value then begin
+  if FVisible <> Value then
+  begin
     FVisible := Value;
     Changed;
   end;
@@ -1488,4 +1648,6 @@ end;
 
 initialization
   InitTruncTables;
+
 end.
+

@@ -31,8 +31,13 @@ unit JvPatcherEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-   {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
+  SysUtils, Classes, Controls, Forms,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvFormPatch;
 
 type
@@ -47,49 +52,39 @@ type
 
 implementation
 
-{*************************************************}
-
 function TJvPatcherEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
-
-{*************************************************}
 
 function TJvPatcherEditor.GetValue: string;
 begin
   Result := GetStrValue;
 end;
 
-{*************************************************}
-
 procedure TJvPatcherEditor.SetValue(const Value: string);
 begin
   SetStrValue(Value);
 end;
-
-{*************************************************}
 
 procedure TJvPatcherEditor.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue('Click to edit...');
 end;
 
-{*************************************************}
-
 procedure TJvPatcherEditor.Edit;
 var
-  Dlg: TfoPatch;
-  res: TStringList;
+  Dlg: TFoPatch;
+  Res: TStringList;
 begin
-  res := TStringList(GetOrdValue);
-  Dlg := TfoPatch.Create(Application);
-  Dlg.LoadFromStr(res);
+  Res := TStringList(GetOrdValue);
+  Dlg := TFoPatch.Create(Application);
+  Dlg.LoadFromStr(Res);
   try
     if Dlg.ShowModal = mrOk then
     begin
-      res.Assign(Dlg.SetFromStr);
-      SetOrdValue(Integer(res));
+      Res.Assign(Dlg.SetFromStr);
+      SetOrdValue(Integer(Res));
     end;
   finally
     Dlg.Free;
@@ -97,3 +92,4 @@ begin
 end;
 
 end.
+

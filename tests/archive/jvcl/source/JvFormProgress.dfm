@@ -30,16 +30,16 @@ object FormProg: TFormProg
     ParentCtl3D = False
     TabOrder = 0
     object Label1: TLabel
-      Left = 18
+      Left = 16
       Top = 10
       Width = 41
       Height = 13
       Caption = 'Progress'
     end
     object ProgressBar1: TProgressBar
-      Left = 24
+      Left = 16
       Top = 28
-      Width = 271
+      Width = 279
       Height = 15
       Min = 0
       Max = 100

@@ -23,6 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvGroupHeader;
@@ -30,7 +31,7 @@ unit JvGroupHeader;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, extctrls,
+  Windows, Messages, Classes, Graphics, Controls, ExtCtrls,
   JvComponent, JvTypes;
 
 type
@@ -42,13 +43,11 @@ type
     FShape: TShapeType;
     FStyle: TJvBevelStyle;
     FOnChange: TNotifyEvent;
-
     procedure SetBrush(Value: TBrush);
     procedure SetHeight(Value: Integer);
     procedure SetPen(Value: TPen);
     procedure SetStyle(Value: TJvBevelStyle);
     procedure SetShape(Value: TShapeType);
-
     procedure DoChange;
   public
     constructor Create;
@@ -63,29 +62,20 @@ type
 
   TJvGroupHeader = class(TJvGraphicControl)
   private
-    // Internal Variables
     FAlignment: TAlignment;
     FLayout: TJvLayout;
-
     FLabelOptions: TJvGroupHeaderOptions;
     FBevelOptions: TJvGroupHeaderOptions;
     FBevelSpace: Integer;
-
-    // Published properties 'read'
     function GetTransparent: Boolean;
-    // Published properties 'write'
     procedure SetAlignment(Value: TAlignment);
     procedure SetTransparent(Value: Boolean);
     procedure SetLayout(Value: TJvLayout);
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
     procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
-
-    // Implement Messages
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-
-    // Internal rotines
+    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
+    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
@@ -96,7 +86,6 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
   published
-    // Inherited properties
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default
       taLeftJustify;
@@ -117,18 +106,11 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
-    // New properties
-    property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write
-      SetBevelOptions;
-    property BevelSpace: Integer read FBevelSpace write SetBevelSpace default
-      12;
-    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write
-      SetLabelOptions;
-
-    property Transparent: Boolean read GetTransparent write SetTransparent
-      default False;
+    property BevelOptions: TJvGroupHeaderOptions read FBevelOptions write SetBevelOptions;
+    property BevelSpace: Integer read FBevelSpace write SetBevelSpace default 12;
+    property LabelOptions: TJvGroupHeaderOptions read FLabelOptions write SetLabelOptions;
+    property Transparent: Boolean read GetTransparent write SetTransparent default False;
     property Layout: TJvLayout read FLayout write SetLayout default lTop;
-    // Inherited events
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -143,10 +125,9 @@ type
     property OnStartDrag;
   end;
 
-
 implementation
 
-{ TJvBevelOptions }
+//=== TJvGroupHeaderOptions ==================================================
 
 constructor TJvGroupHeaderOptions.Create;
 begin
@@ -205,7 +186,7 @@ begin
     FOnChange(Self);
 end;
 
-{ TJvGroupHeader }
+//=== TJvGroupHeader =========================================================
 
 constructor TJvGroupHeader.Create(AOwner: TComponent);
 begin
@@ -230,7 +211,6 @@ end;
 procedure TJvGroupHeader.DoDrawText(var Rect: TRect; Flags: Longint);
 var
   Text: string;
-
 begin
   Text := GetLabelText;
   Flags := Flags or DT_NOPREFIX;
@@ -250,11 +230,9 @@ begin
 end;
 
 procedure TJvGroupHeader.Paint;
-
 const
-  Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
-
+  Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 var
   // Text
   Rect, CalcRect: TRect;
@@ -263,10 +241,8 @@ var
   Color1, Color2: TColor;
   lbHeight, lbWidth: Integer;
   LX1, LX2, LX3, LX4, LY: Integer;
-
   // Shape Bevel
   X, Y, W, H, S: Integer;
-
 begin
   // D R A W  T E X T
   // ----------------
@@ -295,7 +271,7 @@ begin
         OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
     end;
     DoDrawText(Rect, DrawStyle);
-  end; { with Canvas do }
+  end;
 
   // C A L C U L A T E  P O S I T I O N ' S
   // --------------------------------------
@@ -356,7 +332,7 @@ begin
           end;
       end;
 
-      if (csDesigning in ComponentState) then
+      if csDesigning in ComponentState then
       begin
         Pen.Style := psSolid;
         Pen.Mode := pmCopy;
@@ -375,8 +351,8 @@ begin
         BevelLine(Color1, LX3, LY, LX4);
         BevelLine(Color2, LX3, LY + 1, LX4);
       end;
-    end; { with Canvas do }
-  end { if FBevelStyle <> bsShape then }
+    end;
+  end
   else
     with Canvas do
     begin
@@ -448,13 +424,13 @@ begin
   end;
 end;
 
-procedure TJvGroupHeader.CMTextChanged(var Message: TMessage);
+procedure TJvGroupHeader.CMTextChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
 end;
 
-procedure TJvGroupHeader.CMFontChanged(var Message: TMessage);
+procedure TJvGroupHeader.CMFontChanged(var Msg: TMessage);
 begin
   inherited;
   Invalidate;
@@ -493,7 +469,6 @@ procedure TJvGroupHeader.SetLabelOptions(Value: TJvGroupHeaderOptions);
 begin
   //
 end;
-
 
 end.
 

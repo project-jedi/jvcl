@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvLabel;
 
-
-
 interface
 
 uses
@@ -38,24 +36,24 @@ uses
 type
   TJvLabel = class(TLabel)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FHotTrack: Boolean;
-    FHotFont: TFont;
+    FHotTrackFont: TFont;
     FFontSave: TFont;
     FHintColor: TColor;
     FHintSaved: TColor;
     FOver: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure SetHotFont(const Value: TFont);
+    procedure SetHotTrackFont(const Value: TFont);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
+    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -63,9 +61,8 @@ type
     property Action;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -74,28 +71,23 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvLabel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHotTrack := False;
-  FHotFont := TFont.Create;
+  // (rom) needs better font handling
+  FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
   FHintColor := clInfoBk;
   FOver := False;
 end;
 
-{**************************************************}
-
 destructor TJvLabel.Destroy;
 begin
-  FHotFont.Free;
+  FHotTrackFont.Free;
   FFontSave.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**************************************************}
 
 procedure TJvLabel.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -104,8 +96,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvLabel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -113,20 +103,19 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvLabel.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
-  if not (FOver) then
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
   begin
     FHintSaved := Application.HintColor;
     Application.HintColor := FHintColor;
-    if FHotTrack then
+    if HotTrack then
     begin
       FFontSave.Assign(Font);
-      Font.Assign(FHotFont);
+      Font.Assign(FHotTrackFont);
     end;
     FOver := True;
   end;
@@ -134,16 +123,15 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvLabel.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FHintSaved;
-    if FHotTrack then
+    if HotTrack then
       Font.Assign(FFontSave);
     FOver := False;
   end;
@@ -151,23 +139,21 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvLabel.SetHotFont(const Value: TFont);
+procedure TJvLabel.SetHotTrackFont(const Value: TFont);
 begin
-  FHotFont.Assign(Value);
+  FHotTrackFont.Assign(Value);
 end;
 
-procedure TJvLabel.CMDialogChar(var Message: TCMDialogChar);
+procedure TJvLabel.CMDialogChar(var Msg: TCMDialogChar);
 var
   Form: TCustomForm;
 begin
   inherited;
-  if message.result = 1 then
+  if Msg.Result = 1 then
   begin
-    Form := GetParentForm(self);
-    if Assigned(Form) and Assigned(Form.ActiveControl) and not (Form.ActiveControl.TabStop) then
-      PostMessage(form.handle, WM_NEXTDLGCTL, 0, 0);
+    Form := GetParentForm(Self);
+    if Assigned(Form) and Assigned(Form.ActiveControl) and not Form.ActiveControl.TabStop then
+      PostMessage(Form.Handle, WM_NEXTDLGCTL, 0, 0);
   end;
 end;
 

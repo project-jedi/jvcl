@@ -28,60 +28,54 @@ Known Issues:
 
 unit JvMagnet;
 
-{
- TJvFormMagnet
-}
-
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  JvComponent;
 
 type
   TJvFormMagnet = class(TJvComponent)
   private
     FForm: TForm;
     FActive: Boolean;
-    FScreen: Boolean;
-    FGlue: Boolean;
+    FScreenMagnet: Boolean;
+    FFormGlue: Boolean;
     FArea: Cardinal;
-    FFormMagnet: Boolean;
+    FMainFormMagnet: Boolean;
     FLastRightDock: TDateTime;
     FLastLeftDock: TDateTime;
     FLastTopDock: TDateTime;
     FLastBottomDock: TDateTime;
-    function NewWndProc(var Msg: TMessage):boolean;
+    function NewWndProc(var Msg: TMessage): Boolean;
     procedure MagnetScreen(OldRect: TRect; var FormRect: TRect; ScreenRect: TRect);
     procedure GlueForms(var FormRect: TRect);
     procedure MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
   public
-    procedure MoveTo(var SrcRect,Rect: TRect);
+    procedure MoveTo(var SrcRect, Rect: TRect);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Active: Boolean read FActive write FActive default False;
-    property ScreenMagnet: Boolean read FScreen write FScreen default True;
+    property ScreenMagnet: Boolean read FScreenMagnet write FScreenMagnet default True;
     property Area: Cardinal read FArea write FArea default 15;
-    property FormGlue: Boolean read FGlue write FGlue default True;
-    property MainFormMagnet: Boolean read FFormMagnet write FFormMagnet default False;
+    property FormGlue: Boolean read FFormGlue write FFormGlue default True;
+    property MainFormMagnet: Boolean read FMainFormMagnet write FMainFormMagnet default False;
   end;
 
 implementation
+
 uses
   JvWndProcHook;
 
-{****************************************************}
-
 constructor TJvFormMagnet.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FActive := False;
-  FScreen := True;
+  FScreenMagnet := True;
   FArea := 15;
-  FGlue := True;
-  FFormMagnet := False;
+  FFormGlue := True;
+  FMainFormMagnet := False;
 
   FLastRightDock := 0.0;
   FLastLeftDock := 0.0;
@@ -90,19 +84,15 @@ begin
 
   FForm := TForm(GetParentForm(TControl(AOwner)));
   if not (csDesigning in ComponentState) and (FForm <> nil) then
-    RegisterWndProcHook(FForm,NewWndProc,hoBeforeMsg);
+    RegisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
 end;
-
-{****************************************************}
 
 destructor TJvFormMagnet.Destroy;
 begin
   if not (csDesigning in ComponentState) and (FForm <> nil) then
-    UnregisterWndProcHook(FForm,NewWndProc,hoBeforeMsg);
+    UnregisterWndProcHook(FForm, NewWndProc, hoBeforeMsg);
   inherited;
 end;
-
-{****************************************************}
 
 procedure TJvFormMagnet.MagnetScreen(OldRect: TRect; var FormRect: TRect; ScreenRect: TRect);
 var
@@ -130,7 +120,7 @@ var
 
   function OkayForAll(var Value: TDateTime): Boolean;
   begin
-    if abs(Value - Now) > EncodeTime(0, 0, 0, 250) then
+    if Abs(Value - Now) > EncodeTime(0, 0, 0, 250) then
       Result := True
     else
       Result := False;
@@ -244,61 +234,76 @@ begin
   FormWidth := FormRect.Right - FormRect.Left;
   FormHeight := FormRect.Bottom - FormRect.Top;
 
-  //Magnet/UnMagnet Lleft, Magnet/UnMagnet Right
+  // Magnet/UnMagnet Left, Magnet/UnMagnet Right
   if MovingToLeft then
     if OkayForLeft then
     begin
       if ((FormRect.Left - ScreenRect.Left) in [2..FArea]) or
         (Abs(FormRect.Left - ScreenRect.Left) = 1) then
         DockOnLeft
-      else if Abs(FormRect.Left - ScreenRect.Left) in [2..FArea] then
+      else
+      if Abs(FormRect.Left - ScreenRect.Left) in [2..FArea] then
         UndockOnLeftOutside
-      else if (ScreenRect.Right - FormRect.Right) in [2..FArea] then
+      else
+      if (ScreenRect.Right - FormRect.Right) in [2..FArea] then
         UndockOnRightInside
-      else if Abs(ScreenRect.Right - FormRect.Right) in [1..FArea] then
+      else
+      if Abs(ScreenRect.Right - FormRect.Right) in [1..FArea] then
         DockOnRight;
     end
-    else if Abs(FormRect.Left - ScreenRect.Left) < Integer(FArea) then
+    else
+    if Abs(FormRect.Left - ScreenRect.Left) < Integer(FArea) then
       DockOnLeft
-    else if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
+    else
+    if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
       DockOnRight;
 
-  //Magnet/UnMagnet Lleft, Magnet/UnMagnet Right
+  // Magnet/UnMagnet Left, Magnet/UnMagnet Right
   if MovingToRight then
     if OkayForRight then
     begin
       if ((ScreenRect.Right - FormRect.Right) in [2..FArea]) or
         (Abs(ScreenRect.Right - FormRect.Right) = 1) then
         DockOnRight
-      else if Abs(ScreenRect.Right - FormRect.Right) in [2..FArea] then
+      else
+      if Abs(ScreenRect.Right - FormRect.Right) in [2..FArea] then
         UndockOnRightOutside
-      else if (ScreenRect.Left - FormRect.Left) in [2..FArea] then
+      else
+      if (ScreenRect.Left - FormRect.Left) in [2..FArea] then
         DockOnLeft
-      else if Abs(ScreenRect.Left - FormRect.Left) in [1..FArea] then
+      else
+      if Abs(ScreenRect.Left - FormRect.Left) in [1..FArea] then
         UndockOnLeftInside;
     end
-    else if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
+    else
+    if Abs(ScreenRect.Right - FormRect.Right) < Integer(FArea) then
       DockOnRight
-    else if Abs(ScreenRect.Left - FormRect.Left) < Integer(FArea) then
+    else
+    if Abs(ScreenRect.Left - FormRect.Left) < Integer(FArea) then
       DockOnLeft;
 
-  //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
+  // Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
   if MovingToTop then
     if OkayForTop then
     begin
       if ((FormRect.Top - ScreenRect.Top) in [2..FArea]) or
         (Abs(FormRect.Top - ScreenRect.Top) = 1) then
         DockOnTop
-      else if Abs(FormRect.Top - ScreenRect.Top) in [2..FArea] then
+      else
+      if Abs(FormRect.Top - ScreenRect.Top) in [2..FArea] then
         UndockOnTopOutside
-      else if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
+      else
+      if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
         UndockOnBottomInside
-      else if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
+      else
+      if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
         DockOnBottom;
     end
-    else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+    else
+    if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
       DockOnTop
-    else if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
+    else
+    if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
       DockOnBottom;
 
   //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
@@ -307,30 +312,33 @@ begin
     begin
       if (FormRect.Top - ScreenRect.Top) in [2..FArea] then
         UndockOnTopInside
-      else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+      else
+      if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
         DockOnTop
-      else if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
+      else
+      if (ScreenRect.Bottom - FormRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
+      else
+      if Abs(ScreenRect.Bottom - FormRect.Bottom) in [1..FArea] then
         UndockOnBottomOutside;
     end
-    else if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
+    else
+    if Abs(FormRect.Top - ScreenRect.Top) < Integer(FArea) then
       DockOnTop
-    else if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
+    else
+    if Abs(ScreenRect.Bottom - FormRect.Bottom) < Integer(FArea) then
       UndockOnBottomOutside;
 end;
 
-{****************************************************}
-
 procedure TJvFormMagnet.GlueForms(var FormRect: TRect);
 var
-  i: Integer;
+  I: Integer;
 begin
-  if FForm=nil then
+  if FForm = nil then
     Exit;
-  for i := 0 to Application.ComponentCount - 1 do
-    if Application.Components[i] is TForm then
-      with Application.Components[i] as TForm do
+  for I := 0 to Application.ComponentCount - 1 do
+    if Application.Components[I] is TForm then
+      with Application.Components[I] as TForm do
         if (Left = FForm.Left + FForm.Width) or
           (Top = FForm.Top + FForm.Height) or
           (Left + Width = FForm.Left) or
@@ -340,8 +348,6 @@ begin
           Top := Top + (FormRect.Top - FForm.Top);
         end;
 end;
-
-{****************************************************}
 
 procedure TJvFormMagnet.MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
 var
@@ -482,22 +488,27 @@ begin
   FormWidth := FormRect.Right - FormRect.Left;
   FormHeight := FormRect.Bottom - FormRect.Top;
 
-  //Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
+  // Magnet/UnMagnet Bottom, Magnet/UnMagnet Top
   if MovingToTop and InWidth then
     if OkayForTop then
     begin
       if (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else if - (FormRect.Top - MainRect.Bottom) in [2..FArea] then
+      else
+      if -(FormRect.Top - MainRect.Bottom) in [2..FArea] then
         UndockOnBottomInside
-      else if (FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else
+      if (FormRect.Bottom - MainRect.Top) in [2..FArea] then
         DockOnTop
-      else if - (FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else
+      if -(FormRect.Bottom - MainRect.Top) in [2..FArea] then
         UndockOnTopOutside;
     end
-    else if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
+    else
+    if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
       DockOnBottom
-    else if Abs(FormRect.Bottom - MainRect.Top) < Integer(FArea) then
+    else
+    if Abs(FormRect.Bottom - MainRect.Top) < Integer(FArea) then
       DockOnTop;
 
   if MovingToBottom and InWidth then
@@ -505,16 +516,21 @@ begin
     begin
       if (FormRect.Top - MainRect.Bottom) in [2..FArea] then
         UndockOnBottomOutside
-      else if - (FormRect.Top - MainRect.Bottom) in [2..FArea] then
+      else
+      if -(FormRect.Top - MainRect.Bottom) in [2..FArea] then
         DockOnBottom
-      else if (FormRect.Bottom - MainRect.Top) in [1..FArea] then
+      else
+      if (FormRect.Bottom - MainRect.Top) in [1..FArea] then
         DockOnTop
-      else if Abs(FormRect.Bottom - MainRect.Top) in [2..FArea] then
+      else
+      if Abs(FormRect.Bottom - MainRect.Top) in [2..FArea] then
         UndockOnTopInside;
     end
-    else if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
+    else
+    if Abs(FormRect.Top - MainRect.Bottom) < Integer(FArea) then
       DockOnBottom
-    else if (FormRect.Bottom - MainRect.Top) < Integer(FArea) then
+    else
+    if (FormRect.Bottom - MainRect.Top) < Integer(FArea) then
       DockOnTop;
 
   if MovingToLeft and InHeight then
@@ -522,16 +538,21 @@ begin
     begin
       if (FormRect.Left - MainRect.Right) in [2..FArea] then
         DockOnRight
-      else if Abs(FormRect.Left - MainRect.Right) in [2..FArea] then
+      else
+      if Abs(FormRect.Left - MainRect.Right) in [2..FArea] then
         UndockOnRightInside
-      else if (FormRect.Right - MainRect.Left) in [2..FArea] then
+      else
+      if (FormRect.Right - MainRect.Left) in [2..FArea] then
         DockOnLeft
-      else if Abs(FormRect.Right - MainRect.Left) in [2..FArea] then
+      else
+      if Abs(FormRect.Right - MainRect.Left) in [2..FArea] then
         UndockOnLeftOutside;
     end
-    else if Abs(FormRect.Left - MainRect.Right) < Integer(FArea) then
+    else
+    if Abs(FormRect.Left - MainRect.Right) < Integer(FArea) then
       DockOnRight
-    else if Abs(FormRect.Right - MainRect.Left) < Integer(FArea) then
+    else
+    if Abs(FormRect.Right - MainRect.Left) < Integer(FArea) then
       DockOnLeft;
 
   if MovingToRight and InHeight then
@@ -539,74 +560,72 @@ begin
     begin
       if (MainRect.Left - FormRect.Right) in [2..FArea] then
         DockOnLeft
-      else if Abs(MainRect.Left - FormRect.Right) in [2..FArea] then
+      else
+      if Abs(MainRect.Left - FormRect.Right) in [2..FArea] then
         UndockOnLeftInside
-      else if (MainRect.Right - FormRect.Left) in [2..FArea] then
+      else
+      if (MainRect.Right - FormRect.Left) in [2..FArea] then
         DockOnRight
-      else if Abs(MainRect.Right - FormRect.Left) in [2..FArea] then
+      else
+      if Abs(MainRect.Right - FormRect.Left) in [2..FArea] then
         UndockOnRightOutside;
     end
-    else if Abs(MainRect.Left - FormRect.Right) < Integer(FArea) then
+    else
+    if Abs(MainRect.Left - FormRect.Right) < Integer(FArea) then
       DockOnLeft
-    else if Abs(MainRect.Right - FormRect.Left) < Integer(FArea) then
+    else
+    if Abs(MainRect.Right - FormRect.Left) < Integer(FArea) then
       DockOnRight
 end;
 
-{****************************************************}
-
-function TJvFormMagnet.NewWndProc(var Msg: TMessage):boolean;
+function TJvFormMagnet.NewWndProc(var Msg: TMessage): Boolean;
 var
-  r,r3: TRect;
+  R, R3: TRect;
 begin
-  Result := false;
+  Result := False;
   with Msg do
-  begin
     if FActive then
-    begin
       case Msg of
         WM_MOVING:
           begin
-            r := PRect(lParam)^;
-            r3.Left := FForm.Left;
-            r3.Top := FForm.Top;
-            r3.Right := r3.Left + FForm.Width;
-            r3.Bottom := r3.Top + FForm.Height;
-            MoveTo(r3,r);
-            PRect(lparam)^ := r;
+            R := PRect(LParam)^;
+            R3.Left := FForm.Left;
+            R3.Top := FForm.Top;
+            R3.Right := R3.Left + FForm.Width;
+            R3.Bottom := R3.Top + FForm.Height;
+            MoveTo(R3, R);
+            PRect(LParam)^ := R;
           end;
       end;
-    end;
-  end;
 end;
 
-{****************************************************}
-
-procedure TJvFormMagnet.MoveTo(var SrcRect,Rect: TRect);
+procedure TJvFormMagnet.MoveTo(var SrcRect, Rect: TRect);
 var
-  r2, r3: TRect;
+  R2, R3: TRect;
 begin
-  r3 := SrcRect;
+  R3 := SrcRect;
 
-  //Move to an extremity of the desktop ?
-  if FScreen then
+  // Move to an extremity of the desktop ?
+  if FScreenMagnet then
   begin
-    SystemParametersInfo(SPI_GETWORKAREA, 0, @r2, 0);
-    MagnetScreen(r3, Rect, r2);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, @R2, 0);
+    MagnetScreen(R3, Rect, R2);
   end;
 
-  //Move another form too ?
-  if FGlue then
+  // Move another form too ?
+  if FFormGlue then
     GlueForms(Rect);
 
-  //Magnet to main form ?
-  if FFormMagnet and (Application.MainForm <> nil) then
+  // Magnet to main form ?
+  if FMainFormMagnet and (Application.MainForm <> nil) then
   begin
-    r2.Left := Application.MainForm.Left;
-    r2.Top := Application.MainForm.Top;
-    r2.Right := Application.MainForm.Left + Application.MainForm.Width;
-    r2.Bottom := Application.MainForm.Top + Application.MainForm.Height;
-    MagnetToMain(r3, Rect, r2);
+    R2.Left := Application.MainForm.Left;
+    R2.Top := Application.MainForm.Top;
+    R2.Right := Application.MainForm.Left + Application.MainForm.Width;
+    R2.Bottom := Application.MainForm.Top + Application.MainForm.Height;
+    MagnetToMain(R3, Rect, R2);
   end;
 end;
 
 end.
+

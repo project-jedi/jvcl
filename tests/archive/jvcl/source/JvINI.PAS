@@ -12,7 +12,7 @@ The Original Code is: JvIni.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,8 +29,12 @@ unit JvIni;
 
 interface
 
-
-uses {$IFDEF WIN32} Windows, Registry, {$ELSE} WinTypes, WinProcs, {$ENDIF}
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
   Classes, IniFiles, Graphics;
 
 type
@@ -39,11 +43,9 @@ type
   TWriteObjectEvent = procedure(Sender: TObject; const Section, Item: string;
     Obj: TObject) of object;
 
-{ TJvIniFile }
-
   TJvIniFile = class(TIniFile)
   private
-    FListItemName: String;
+    FListItemName: string;
     FOnReadObject: TReadObjectEvent;
     FOnWriteObject: TWriteObjectEvent;
     function GetItemName: string;
@@ -56,9 +58,9 @@ type
     constructor Create(const FileName: string);
     destructor Destroy; override;
     procedure Flush;
-{$IFNDEF WIN32}
-    procedure DeleteKey(const Section, Ident: String);
-{$ENDIF}
+    {$IFNDEF WIN32}
+    procedure DeleteKey(const Section, Ident: string);
+    {$ENDIF}
     { ini-file read and write methods }
     function ReadClearList(const Section: string; List: TStrings): TStrings;
     function ReadList(const Section: string; List: TStrings): TStrings;
@@ -90,16 +92,21 @@ function DefProfileName: string;
 function DefLocalProfileName: string;
 
 const
-  idnListItem  = 'Item';
+  idnListItem = 'Item';
 
 implementation
 
-Uses SysUtils, Forms, JvStrUtils {$IFNDEF WIN32}, JvStr16 {$ENDIF};
+uses
+  SysUtils, Forms,
+  {$IFNDEF WIN32}
+  JvStr16,
+  {$ENDIF}
+  JvStrUtils;
 
 const
   idnListCount = 'Count';
   idnDefString = #255#255;
-  Lefts  = ['[', '{', '('];
+  Lefts = ['[', '{', '('];
   Rights = [']', '}', ')'];
 
 { Utilities routines }
@@ -117,19 +124,27 @@ end;
 function FontStylesToString(Styles: TFontStyles): string;
 begin
   Result := '';
-  if fsBold in Styles then Result := Result + 'B';
-  if fsItalic in Styles then Result := Result + 'I';
-  if fsUnderline in Styles then Result := Result + 'U';
-  if fsStrikeOut in Styles then Result := Result + 'S';
+  if fsBold in Styles then
+    Result := Result + 'B';
+  if fsItalic in Styles then
+    Result := Result + 'I';
+  if fsUnderline in Styles then
+    Result := Result + 'U';
+  if fsStrikeOut in Styles then
+    Result := Result + 'S';
 end;
 
 function StringToFontStyles(const Styles: string): TFontStyles;
 begin
   Result := [];
-  if Pos('B', UpperCase(Styles)) > 0 then Include(Result, fsBold);
-  if Pos('I', UpperCase(Styles)) > 0 then Include(Result, fsItalic);
-  if Pos('U', UpperCase(Styles)) > 0 then Include(Result, fsUnderline);
-  if Pos('S', UpperCase(Styles)) > 0 then Include(Result, fsStrikeOut);
+  if Pos('B', UpperCase(Styles)) > 0 then
+    Include(Result, fsBold);
+  if Pos('I', UpperCase(Styles)) > 0 then
+    Include(Result, fsItalic);
+  if Pos('U', UpperCase(Styles)) > 0 then
+    Include(Result, fsUnderline);
+  if Pos('S', UpperCase(Styles)) > 0 then
+    Include(Result, fsStrikeOut);
 end;
 
 function FontToString(Font: TFont): string;
@@ -157,18 +172,25 @@ begin
   try
     Pos := 1;
     I := 0;
-    while Pos <= Length(Str) do begin
+    while Pos <= Length(Str) do
+    begin
       Inc(I);
       S := Trim(ExtractSubstr(Str, Pos, Delims));
       case I of
-        1: Font.Name := S;
-        2: Font.Size := StrToIntDef(S, Font.Size);
-        3: Font.Style := StringToFontStyles(S);
-        4: Font.Pitch := TFontPitch(StrToIntDef(S, Ord(Font.Pitch)));
-        5: Font.Color := StringToColor(S);
-{$IFDEF COMPILER3_UP}
-        6: Font.Charset := TFontCharset(StrToIntDef(S, Font.Charset));
-{$ENDIF}
+        1:
+          Font.Name := S;
+        2:
+          Font.Size := StrToIntDef(S, Font.Size);
+        3:
+          Font.Style := StringToFontStyles(S);
+        4:
+          Font.Pitch := TFontPitch(StrToIntDef(S, Ord(Font.Pitch)));
+        5:
+          Font.Color := StringToColor(S);
+        {$IFDEF COMPILER3_UP}
+        6:
+          Font.Charset := TFontCharset(StrToIntDef(S, Font.Charset));
+        {$ENDIF}
       end;
     end;
   finally
@@ -191,21 +213,26 @@ var
 begin
   Result := Def;
   S := Str;
-  if (S[1] in Lefts) and (S[Length(S)] in Rights) then begin
-    Delete(S, 1, 1); SetLength(S, Length(S) - 1);
+  if (S[1] in Lefts) and (S[Length(S)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
   end;
   I := Pos(',', S);
-  if I > 0 then begin
+  if I > 0 then
+  begin
     Temp := Trim(Copy(S, 1, I - 1));
     Result.Left := StrToIntDef(Temp, Def.Left);
     Delete(S, 1, I);
     I := Pos(',', S);
-    if I > 0 then begin
+    if I > 0 then
+    begin
       Temp := Trim(Copy(S, 1, I - 1));
       Result.Top := StrToIntDef(Temp, Def.Top);
       Delete(S, 1, I);
       I := Pos(',', S);
-      if I > 0 then begin
+      if I > 0 then
+      begin
         Temp := Trim(Copy(S, 1, I - 1));
         Result.Right := StrToIntDef(Temp, Def.Right);
         Delete(S, 1, I);
@@ -218,7 +245,8 @@ end;
 
 function PointToStr(P: TPoint): string;
 begin
-  with P do Result := Format('[%d,%d]', [X, Y]);
+  with P do
+    Result := Format('[%d,%d]', [X, Y]);
 end;
 
 function StrToPoint(const Str: string; const Def: TPoint): TPoint;
@@ -229,11 +257,14 @@ var
 begin
   Result := Def;
   S := Str;
-  if (S[1] in Lefts) and (S[Length(Str)] in Rights) then begin
-    Delete(S, 1, 1); SetLength(S, Length(S) - 1);
+  if (S[1] in Lefts) and (S[Length(Str)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
   end;
   I := Pos(',', S);
-  if I > 0 then begin
+  if I > 0 then
+  begin
     Temp := Trim(Copy(S, 1, I - 1));
     Result.X := StrToIntDef(Temp, Def.X);
     Delete(S, 1, I);
@@ -242,12 +273,10 @@ begin
   end;
 end;
 
-{ TJvIniFile }
-
 constructor TJvIniFile.Create(const FileName: string);
 begin
   inherited Create(FileName);
-  FListItemName :=idnListItem;
+  FListItemName := idnListItem;
   FOnReadObject := nil;
   FOnWriteObject := nil;
 end;
@@ -260,30 +289,30 @@ end;
 
 procedure TJvIniFile.Flush;
 var
-{$IFDEF WIN32}
-  CFileName: array[0..MAX_PATH] of WideChar;
-{$ELSE}
-  CFileName: array[0..127] of Char;
-{$ENDIF}
+  {$IFDEF WIN32}
+  CFileName: array [0..MAX_PATH] of WideChar;
+  {$ELSE}
+  CFileName: array [0..255] of Char;
+  {$ENDIF}
 begin
-{$IFDEF WIN32}
-  if (Win32Platform = VER_PLATFORM_WIN32_NT) then 
+  {$IFDEF WIN32}
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
     WritePrivateProfileStringW(nil, nil, nil, StringToWideChar(FileName,
       CFileName, MAX_PATH))
   else
     WritePrivateProfileString(nil, nil, nil, PChar(FileName));
-{$ELSE}
+  {$ELSE}
   WritePrivateProfileString(nil, nil, nil, StrPLCopy(CFileName,
     FileName, SizeOf(CFileName) - 1));
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFNDEF WIN32}
-procedure TJvIniFile.DeleteKey(const Section, Ident: String);
+procedure TJvIniFile.DeleteKey(const Section, Ident: string);
 var
-  CSection: array[0..127] of Char;
-  CIdent: array[0..127] of Char;
-  CFileName: array[0..127] of Char;
+  CSection: array [0..255] of Char;
+  CIdent: array [0..255] of Char;
+  CFileName: array [0..255] of Char;
 begin
   WritePrivateProfileString(StrPLCopy(CSection, Section, SizeOf(CSection) - 1),
     StrPLCopy(CIdent, Ident, SizeOf(CIdent) - 1), nil,
@@ -304,13 +333,15 @@ end;
 procedure TJvIniFile.WriteObject(const Section, Item: string; Index: Integer;
   Obj: TObject);
 begin
-  if Assigned(FOnWriteObject) then FOnWriteObject(Self, Section, Item, Obj);
+  if Assigned(FOnWriteObject) then
+    FOnWriteObject(Self, Section, Item, Obj);
 end;
 
 function TJvIniFile.ReadObject(const Section, Item, Value: string): TObject;
 begin
   Result := nil;
-  if Assigned(FOnReadObject) then Result := FOnReadObject(Self, Section, Item, Value);
+  if Assigned(FOnReadObject) then
+    Result := FOnReadObject(Self, Section, Item, Value);
 end;
 
 procedure TJvIniFile.WriteList(const Section: string; List: TStrings);
@@ -319,7 +350,8 @@ var
 begin
   EraseSection(Section);
   WriteInteger(Section, idnListCount, List.Count);
-  for I := 0 to List.Count - 1 do begin
+  for I := 0 to List.Count - 1 do
+  begin
     WriteString(Section, ListItemName + IntToStr(I), List[I]);
     WriteObject(Section, ListItemName + IntToStr(I), I, List.Objects[I]);
   end;
@@ -333,9 +365,12 @@ var
 begin
   Result := List;
   IniCount := ReadInteger(Section, idnListCount, -1);
-  if IniCount >= 0 then begin
-    if not Append then List.Clear;
-    for I := 0 to IniCount - 1 do begin
+  if IniCount >= 0 then
+  begin
+    if not Append then
+      List.Clear;
+    for I := 0 to IniCount - 1 do
+    begin
       AssString := ReadString(Section, ListItemName + IntToStr(I), idnDefString);
       if AssString <> idnDefString then
         List.AddObject(AssString, ReadObject(Section, ListItemName +
@@ -358,8 +393,7 @@ function TJvIniFile.ReadColor(const Section, Ident: string;
   Default: TColor): TColor;
 begin
   try
-    Result := StringToColor(ReadString(Section, Ident,
-      ColorToString(Default)));
+    Result := StringToColor(ReadString(Section, Ident, ColorToString(Default)));
   except
     Result := Default;
   end;
@@ -406,3 +440,4 @@ begin
 end;
 
 end.
+

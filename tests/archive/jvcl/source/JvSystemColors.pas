@@ -28,20 +28,17 @@ Known Issues:
 
 unit JvSystemColors;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, Graphics,
+  JvTypes, JvComponent;
 
 type
   TJvSystemColors = class(TJvComponent)
   private
     procedure SetColor(Index: Integer; Value: TColor);
     function GetColor(Index: Integer): TColor;
-  protected
-  public
   published
     property _3DHilight: TColor index 0 read GetColor write SetColor stored False;
     property _3DLight: TColor index 1 read GetColor write SetColor stored False;
@@ -74,7 +71,7 @@ type
 implementation
 
 const
-  ColorArray: array[0..25] of Integer = (COLOR_3DHILIGHT, COLOR_3DLIGHT, //0
+  ColorArray: array [0..25] of Integer = (COLOR_3DHILIGHT, COLOR_3DLIGHT, //0
     COLOR_3DSHADOW, COLOR_3DDKSHADOW, COLOR_3DFACE, COLOR_ACTIVEBORDER, //2
     COLOR_ACTIVECAPTION, COLOR_APPWORKSPACE, COLOR_BACKGROUND, //6
     COLOR_BTNFACE, COLOR_BTNTEXT, COLOR_CAPTIONTEXT, COLOR_GRAYTEXT, //9
@@ -83,17 +80,13 @@ const
     COLOR_INFOTEXT, COLOR_MENU, COLOR_MENUTEXT, COLOR_SCROLLBAR, //19
     COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT); //23
 
-  {**************************************************}
-
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var
-  tmp: Integer;
+  Tmp: Integer;
 begin
-  tmp := ColorArray[Index];
-  SetSysColors(1, tmp, Value);
+  Tmp := ColorArray[Index];
+  SetSysColors(1, Tmp, Value);
 end;
-
-{**************************************************}
 
 function TJvSystemColors.GetColor(Index: Integer): TColor;
 begin
@@ -101,3 +94,4 @@ begin
 end;
 
 end.
+

@@ -40,8 +40,8 @@ unit JvSystemPopup;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
+  JvTypes, JvComponent;
 
 type
   TPositionInMenu = (pmTop, pmBottom);
@@ -53,16 +53,15 @@ type
     FIsHooked: Boolean;
     FPosition: TPopupPosition;
     FPositionInMenu: TPositionInMenu;
-
     procedure Hook;
     procedure UnHook;
     procedure ResetSystemMenu(SystemReset: Boolean = True);
-    function HandleWndProc(var Message: TMessage): Boolean;
+    function HandleWndProc(var Msg: TMessage): Boolean;
     procedure SetPopup(const Value: TPopupMenu);
     procedure PopulateMenu;
     procedure SetPosition(const Value: TPopupPosition);
     procedure SetPositionInMenu(const Value: TPositionInMenu);
-    function GetMenu: HMenu;
+    function GetMenu: HMENU;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -84,11 +83,9 @@ uses
 type
   TMenuItemProtectedAccess = class(TMenuItem);
 
-  {**************************************************}
-
 constructor TJvSystemPopup.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FPosition := ppNone;
   FPopup := nil;
   FPositionInMenu := pmTop;
@@ -98,20 +95,15 @@ begin
   FOwnerForm := AOwner as TForm;
 end;
 
-{**************************************************}
-
 destructor TJvSystemPopup.Destroy;
 begin
   Position := ppNone;
-  inherited;
+  inherited Destroy;
 end;
 
-{**************************************************}
-
-function TJvSystemPopup.GetMenu: HMenu;
+function TJvSystemPopup.GetMenu: HMENU;
 begin
   { Return a handle to the copy of the window menu currently in use }
-
   Result := 0;
   case FPosition of
     ppNone:
@@ -124,9 +116,7 @@ begin
   end;
 end;
 
-{**************************************************}
-
-function TJvSystemPopup.HandleWndProc(var Message: TMessage): Boolean;
+function TJvSystemPopup.HandleWndProc(var Msg: TMessage): Boolean;
 
   function Iterate(MenuItem: TMenuItem): Boolean;
   var
@@ -134,12 +124,13 @@ function TJvSystemPopup.HandleWndProc(var Message: TMessage): Boolean;
   begin
     Result := False;
     for I := 0 to MenuItem.Count - 1 do
-      if MenuItem[I].Command = Cardinal(Message.WParam) then
+      if MenuItem[I].Command = Cardinal(Msg.WParam) then
       begin
         Result := True;
         MenuItem[I].Click;
       end
-      else if MenuItem[I].Count > 0 then
+      else
+      if MenuItem[I].Count > 0 then
         Result := Iterate(MenuItem[I]);
   end;
 
@@ -150,23 +141,19 @@ var
   DC: HDC;
 begin
   Result := False;
-  case Message.Msg of
+  case Msg.Msg of
     WM_INITMENU:
-      begin
         // Hack, the original GetSystemMenu( , True) version called by Refresh
         // does not have affect immediately in a WM_INITMENU state/handler
         // (at least on Win Xp surely not)
         Refresh(True);
-      end;
-
     WM_SYSCOMMAND:
       { Catch commands }
       if Assigned(FPopup) then
         Result := Iterate(FPopup.Items);
-
     WM_DRAWITEM:
       { Copied from Forms.pas }
-      with PDrawItemStruct(Message.LParam)^ do
+      with PDrawItemStruct(Msg.LParam)^ do
         if (CtlType = ODT_MENU) and Assigned(FPopup) then
         begin
           MenuItem := FPopup.FindItem(itemID, fkCommand);
@@ -191,10 +178,9 @@ begin
             end;
           end;
         end;
-
     WM_MEASUREITEM:
       { Copied from Forms.pas }
-      with PMeasureItemStruct(Message.LParam)^ do
+      with PMeasureItemStruct(Msg.LParam)^ do
         if (CtlType = ODT_MENU) and Assigned(FPopup) then
         begin
           MenuItem := FPopup.FindItem(itemID, fkCommand);
@@ -227,13 +213,12 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.Hook;
 begin
   { Hook the application's window or the owner window of TJvSystemPopup }
   case FPosition of
-    ppNone: ;
+    ppNone:
+      ;
     ppForm:
       begin
         if not Assigned(FOwnerForm) then
@@ -251,29 +236,27 @@ begin
   end;
 end;
 
-{**************************************************}
-
 const
   RightToLeftMenuFlag = MFT_RIGHTORDER or MFT_RIGHTJUSTIFY;
-  Checks: array[Boolean] of DWORD = (MF_UNCHECKED, MF_CHECKED);
-  Enables: array[Boolean] of DWORD = (MF_DISABLED or MF_GRAYED, MF_ENABLED);
-  Breaks: array[TMenuBreak] of DWORD = (0, MF_MENUBREAK, MF_MENUBARBREAK);
-  Separators: array[Boolean] of DWORD = (MF_STRING, MF_SEPARATOR);
+  Checks: array [Boolean] of DWORD = (MF_UNCHECKED, MF_CHECKED);
+  Enables: array [Boolean] of DWORD = (MF_DISABLED or MF_GRAYED, MF_ENABLED);
+  Breaks: array [TMenuBreak] of DWORD = (0, MF_MENUBREAK, MF_MENUBARBREAK);
+  Separators: array [Boolean] of DWORD = (MF_STRING, MF_SEPARATOR);
 
-  { AppendMenuItemTo is copied from TMenuItem.AppendTo from Menus.pas }
+{ AppendMenuItemTo is copied from TMenuItem.AppendTo from Menus.pas }
 
 function AppendMenuItemTo(Menu: HMENU; AMenuItem: TMenuItem;
   ARightToLeft: Boolean; InsertAt: Integer; var SubMenu: HMENU): Boolean;
 const
-  IBreaks: array[TMenuBreak] of DWORD = (MFT_STRING, MFT_MENUBREAK,
-    MFT_MENUBARBREAK);
-  IChecks: array[Boolean] of DWORD = (MFS_UNCHECKED, MFS_CHECKED);
-  IDefaults: array[Boolean] of DWORD = (0, MFS_DEFAULT);
-  IEnables: array[Boolean] of DWORD = (MFS_DISABLED or MFS_GRAYED, MFS_ENABLED);
-  IRadios: array[Boolean] of DWORD = (MFT_STRING, MFT_RADIOCHECK);
-  ISeparators: array[Boolean] of DWORD = (MFT_STRING, MFT_SEPARATOR);
-  IRTL: array[Boolean] of DWORD = (0, RightToLeftMenuFlag);
-  IOwnerDraw: array[Boolean] of DWORD = (MFT_STRING, MFT_OWNERDRAW);
+  IBreaks: array [TMenuBreak] of DWORD =
+    (MFT_STRING, MFT_MENUBREAK, MFT_MENUBARBREAK);
+  IChecks: array [Boolean] of DWORD = (MFS_UNCHECKED, MFS_CHECKED);
+  IDefaults: array [Boolean] of DWORD = (0, MFS_DEFAULT);
+  IEnables: array [Boolean] of DWORD = (MFS_DISABLED or MFS_GRAYED, MFS_ENABLED);
+  IRadios: array [Boolean] of DWORD = (MFT_STRING, MFT_RADIOCHECK);
+  ISeparators: array [Boolean] of DWORD = (MFT_STRING, MFT_SEPARATOR);
+  IRTL: array [Boolean] of DWORD = (0, RightToLeftMenuFlag);
+  IOwnerDraw: array [Boolean] of DWORD = (MFT_STRING, MFT_OWNERDRAW);
 var
   MenuItemInfo: TMenuItemInfo;
   Caption: string;
@@ -291,9 +274,9 @@ begin
     SubMenu := CreatePopupMenu;
     MenuItemInfo.hSubMenu := SubMenu;
   end
-  else if (AMenuItem.ShortCut <> scNone) and ((AMenuItem.Parent = nil) or
-    (AMenuItem.Parent.Parent <> nil) or not (AMenuItem.Parent.Owner is
-    TMainMenu)) then
+  else
+  if (AMenuItem.ShortCut <> scNone) and ((AMenuItem.Parent = nil) or
+    (AMenuItem.Parent.Parent <> nil) or not (AMenuItem.Parent.Owner is TMainMenu)) then
     Caption := Caption + #9 + ShortCutToText(AMenuItem.ShortCut);
   if Lo(GetVersion) >= 4 then
   begin
@@ -337,13 +320,11 @@ begin
   end;
 end;
 
-{**************************************************}
-
-procedure IterateMenu(AMenu: HMenu; AMenuItem: TMenuItem;
+procedure IterateMenu(AMenu: HMENU; AMenuItem: TMenuItem;
   ARightToLeft: Boolean; InsertAt: Integer);
 var
   I: Integer;
-  SubMenu: HMenu;
+  SubMenu: HMENU;
 begin
   with AMenuItem do
     for I := 0 to Count - 1 do
@@ -357,8 +338,6 @@ begin
     end;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -367,18 +346,16 @@ begin
     Popup := nil;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.PopulateMenu;
 var
-  Menu: HMenu;
+  Menu: HMENU;
   MenuItemInfo: TMenuItemInfo;
   MenuRightToLeft: Boolean;
   InsertAt: Integer;
 begin
   { Add all MenuItems to the systemmenu }
-  if (ComponentState * [csDesigning, csLoading] <> [])
-    or (FPosition = ppNone) or (FPopup = nil) then
+  if (ComponentState * [csDesigning, csLoading] <> []) or
+    (FPosition = ppNone) or (FPopup = nil) then
     Exit;
 
   MenuRightToLeft := FPopup.IsRightToLeft;
@@ -395,7 +372,7 @@ begin
   if FPopup.Items.Count > 0 then
   begin
     { Add a seperator }
-    ZeroMemory(@MenuItemInfo, SizeOf(MenuItemInfo));
+    FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
     MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or MIIM_ID or MIIM_STATE
       or MIIM_SUBMENU or MIIM_TYPE;
@@ -410,24 +387,20 @@ begin
   IterateMenu(Menu, FPopup.Items, MenuRightToLeft, InsertAt);
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.Refresh(SystemReset: Boolean = True);
 begin
   ResetSystemMenu(SystemReset);
   PopulateMenu;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.ResetSystemMenu(SystemReset: Boolean);
 
-// Hack, the original GetSystemMenu( , True) version called by Refresh
-// does not have affect immediately in WM_INITMENU state
-// (at least on Win Xp surely not)
-  procedure RemoveNonDefaultItems(Menu: HMenu);
+  // Hack, the original GetSystemMenu( , True) version called by Refresh
+  // does not have affect immediately in WM_INITMENU state
+  // (at least on Win Xp surely not)
+  procedure RemoveNonDefaultItems(Menu: HMENU);
   var
-    Id: LongWord;
+    Id: Longword;
     C: Integer;
   begin
     if GetMenuItemCount(Menu) > 0 then
@@ -442,7 +415,6 @@ procedure TJvSystemPopup.ResetSystemMenu(SystemReset: Boolean);
           NOTE : SC_SIZE = $F000, seperators seem to have id = 0, although
           SC_SEPARATOR is defined as $F00F.
         }
-
         // non default system command or an item with submenuitems
         if ((Id > 0) and (Id < $F000)) or (Id = $FFFFFFFF) then
         begin
@@ -457,10 +429,8 @@ procedure TJvSystemPopup.ResetSystemMenu(SystemReset: Boolean);
 begin
   { Reset the window menu back to the default state. The previous window
     menu, if any, is destroyed. }
-
   if ComponentState * [csDesigning, csLoading] <> [] then
     Exit;
-
   case FPosition of
     ppNone:
       ;
@@ -478,8 +448,6 @@ begin
   end;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.SetPopup(const Value: TPopupMenu);
 begin
   if Assigned(FPopup) then
@@ -496,8 +464,6 @@ begin
   //if not (csLoading in ComponentState) then
   //  Refresh;
 end;
-
-{**************************************************}
 
 procedure TJvSystemPopup.SetPosition(const Value: TPopupPosition);
 begin
@@ -520,8 +486,6 @@ begin
   //PopulateMenu;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.SetPositionInMenu(const Value: TPositionInMenu);
 begin
   FPositionInMenu := Value;
@@ -529,15 +493,14 @@ begin
   //  Refresh;
 end;
 
-{**************************************************}
-
 procedure TJvSystemPopup.UnHook;
 begin
   if not FIsHooked then
     Exit;
 
   case FPosition of
-    ppNone: ;
+    ppNone:
+      ;
     ppForm:
       begin
         if not Assigned(FOwnerForm) then

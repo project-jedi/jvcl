@@ -29,15 +29,16 @@ Known Issues:
 unit JvHRas32;
 
 {*******************************************************}
-{   This unit is an interface to the RAS (RASAPI32) }
+{   This unit is an interface to the RAS (RASAPI32)     }
 {   imported functions : All w95/98 functions           }
 {*******************************************************}
 
-// (rom) untouched. should be replaced by RAS conversion
+// (rom) cleaned. but should be replaced by RAS conversion
 
 interface
 
-uses WinTypes, WinProcs, Dialogs;
+uses
+  Windows;
 
 const
   UNLEN = 256;
@@ -219,47 +220,47 @@ type
   TRASConn = record
     dwSize: DWORD;
     rasConn: HRASConn;
-    szEntryName: array[0..RAS_MaxEntryName] of Char;
-    szDeviceType: array[0..RAS_MaxDeviceType] of Char;
-    szDeviceName: array[0..RAS_MaxDeviceName] of Char;
-{$IFDEF NT_EXTNS}
-    szPhonebook: array[0..MAX_PATH - 1] of Char;
+    szEntryName: array [0..RAS_MaxEntryName] of Char;
+    szDeviceType: array [0..RAS_MaxDeviceType] of Char;
+    szDeviceName: array [0..RAS_MaxDeviceName] of Char;
+    {$IFDEF NT_EXTNS}
+    szPhonebook: array [0..MAX_PATH - 1] of Char;
     dwSubEntry: Longint;
-{$ENDIF}
+    {$ENDIF}
   end;
 
   PRASConnStatus = ^TRASConnStatus;
   TRASConnStatus = record
-    dwSize: LongInt;
+    dwSize: Longint;
     rasConnstate: Word;
-    dwError: LongInt;
-    szDeviceType: array[0..RAS_MaxDeviceType] of Char;
-    szDeviceName: array[0..RAS_MaxDeviceName] of Char;
+    dwError: Longint;
+    szDeviceType: array [0..RAS_MaxDeviceType] of Char;
+    szDeviceName: array [0..RAS_MaxDeviceName] of Char;
   end;
 
   PRASDIALEXTENSIONS = ^TRASDIALEXTENSIONS;
   TRASDIALEXTENSIONS = record
     dwSize: DWORD;
     dwfOptions: DWORD;
-    hwndParent: HWnd;
+    hwndParent: HWND;
     reserved: DWORD;
   end;
 
   PRASDialParams = ^TRASDialParams;
   TRASDialParams = record
     dwSize: DWORD;
-    szEntryName: array[0..RAS_MaxEntryName] of Char;
-    szPhoneNumber: array[0..RAS_MaxPhoneNumber] of Char;
-    szCallbackNumber: array[0..RAS_MaxCallbackNumber] of Char;
-    szUserName: array[0..UNLEN] of Char;
-    szPassword: array[0..PWLEN] of Char;
-    szDomain: array[0..DNLEN] of Char;
+    szEntryName: array [0..RAS_MaxEntryName] of Char;
+    szPhoneNumber: array [0..RAS_MaxPhoneNumber] of Char;
+    szCallbackNumber: array [0..RAS_MaxCallbackNumber] of Char;
+    szUserName: array [0..UNLEN] of Char;
+    szPassword: array [0..PWLEN] of Char;
+    szDomain: array [0..DNLEN] of Char;
   end;
 
   PRASEntryName = ^TRASEntryName;
   TRASEntryName = record
-    dwSize: LongInt;
-    szEntryName: array[0..RAS_MaxEntryName] of Char;
+    dwSize: Longint;
+    szEntryName: array [0..RAS_MaxEntryName] of Char;
   end;
 
   TRasDial = function(
@@ -271,10 +272,11 @@ type
     var rasConn: HRASConn // Pointer to variable to receive connection Handle
     ): DWORD; stdcall;
 
-  TRasEnumConnections = function(RASConn: PrasConn; // buffer to receive Connections data
-    var BufSize: DWord; // Size in bytes of buffer
-    var Connections: DWord // number of Connections written to buffer
-    ): LongInt; stdcall;
+  TRasEnumConnections = function(
+    RASConn: PrasConn; // buffer to receive Connections data
+    var BufSize: DWORD; // Size in bytes of buffer
+    var Connections: DWORD // number of Connections written to buffer
+    ): Longint; stdcall;
 
   TRasEnumEntries = function(
     reserved: PChar; // reserved, must be NULL
@@ -284,17 +286,20 @@ type
     var lpcEntries: DWORD // number of entries written to buffer
     ): DWORD; stdcall;
 
-  TRasGetConnectStatus = function(RASConn: hrasConn; // Handle to Remote Access Connection of interest
+  TRasGetConnectStatus = function(
+    RASConn: hrasConn; // Handle to Remote Access Connection of interest
     RASConnStatus: PRASConnStatus // buffer to receive status data
-    ): LongInt; stdcall;
+    ): Longint; stdcall;
 
-  TRasGetErrorstring = function(ErrorCode: DWord; // error code to get string for
+  TRasGetErrorstring = function(
+    ErrorCode: DWORD; // error code to get string for
     szErrorstring: PChar; // buffer to hold error string
-    BufSize: DWord // SizeOf buffer
-    ): LongInt; stdcall;
+    BufSize: DWORD // SizeOf buffer
+    ): Longint; stdcall;
 
-  TRasHangUp = function(RASConn: hrasConn // Handle to the Remote Access Connection to hang up }
-    ): LongInt; stdcall;
+  TRasHangUp = function(
+    RASConn: hrasConn // Handle to the Remote Access Connection to hang up }
+    ): Longint; stdcall;
 
   TRasGetEntryDialParams = function(
     lpszPhonebook: PChar; // Pointer to the full path and FileName of the phonebook file
@@ -313,7 +318,7 @@ type
     ): DWORD; stdcall;
 
   TRasEditPhonebookEntry = function(
-    Handle: hwnd; // Handle to the Parent window of the dialog box
+    Handle: HWND; // Handle to the Parent window of the dialog box
     lpszPhonebook: PChar; // Pointer to the full path and FileName of the phone-book file
     lpszEntryName: PChar // Pointer to the phone-book entry name
     ): DWORD; stdcall;

@@ -26,7 +26,6 @@ description : Register db-aware components
 Known Issues:
 -----------------------------------------------------------------------------}
 
-
 {$I JVCL.INC}
 
 unit JvaDBReg;
@@ -75,7 +74,7 @@ implementation
 
 uses
   TypInfo, DB, DBTables,
-  JvDBUtil, JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS;
+  JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS;
 
 {$R ..\resources\radb.dcr}
 
@@ -124,12 +123,14 @@ begin
   {$ENDIF}
 end;
 
-{**************** from Delphi2\Lib\DBReg.pas }
+//=== TJvListFieldProperty ===================================================
 
 function TJvListFieldProperty.GetDataSourcePropName: string;
 begin
   Result := 'ListSource';
 end;
+
+//=== TJvDBStringProperty ====================================================
 
 function TJvDBStringProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -151,6 +152,7 @@ begin
   end;
 end;
 
+//=== TJvDataFieldProperty ===================================================
 
 function TJvDataFieldProperty.GetDataSourcePropName: string;
 begin
@@ -173,12 +175,12 @@ begin
   end;
 end;
 
+//=== TJvDatabaseNameProperty ================================================
+
 procedure TJvDatabaseNameProperty.GetValueList(List: TStrings);
 begin
   Session.GetDatabaseNames(List);
 end;
-
-{################ from Delphi2\Lib\DBReg.pas }
 
 end.
 

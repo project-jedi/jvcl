@@ -32,26 +32,25 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, JvBitBtn, JvLabel;
+  StdCtrls, Buttons, ExtCtrls,
+  JvBitBtn, JvLabel;
 
 type
   TFormListb = class(TForm)
     ListBox1: TListBox;
     ListBox2: TListBox;
     Bevel1: TBevel;
-    lblColumn1: TJvLabel;
-    lblColumn2: TJvLabel;
-    btnLeft: TButton;
-    btnRight: TButton;
-    btnOK: TButton;
-    btnCancel: TButton;
-    procedure btnLeftClick(Sender: TObject);
-    procedure btnRightClick(Sender: TObject);
-  private
-    { Private declarations }
+    LblColumn1: TJvLabel;
+    LblColumn2: TJvLabel;
+    BtnLeft: TButton;
+    BtnRight: TButton;
+    BtnOK: TButton;
+    BtnCancel: TButton;
+    procedure BtnLeftClick(Sender: TObject);
+    procedure BtnRightClick(Sender: TObject);
   public
-    { Public declarations }
-    class function Execute(const ACaption,AColCaption1,AColCaption2:string;List1,List2:TStrings):boolean;
+    class function Execute(const ACaption, AColCaption1, AColCaption2: string;
+      List1, List2: TStrings): Boolean;
   end;
 
 implementation
@@ -60,72 +59,62 @@ implementation
 
 {$IFNDEF COMPILER6_UP}
 
-procedure CopySelected(De,Vers:TListbox);
+procedure CopySelected(De, Vers: TListBox);
 var
-   i:Integer;
+  I: Integer;
 begin
-   i:=0;
-   while i<de.Items.count do
-   begin
-      if de.Selected[i] then
-      begin
-         vers.Items.AddObject(de.items[i],de.items.objects[i]);
-         de.Items.delete(i);
-      end
-      else inc(i);
-   end;
+  for I := 0 to De.Items.Count-1 do
+    if De.Selected[I] then
+      Vers.Items.AddObject(De.Items[I], De.Items.Objects[I]);
+  for I := De.Items.Count-1 downto 0 do
+    if De.Selected[I] then
+      De.Items.Delete(I);
 end;
-
-
 
 {$ENDIF}
 
-
-procedure TFormListb.btnLeftClick(Sender: TObject);
+procedure TFormListb.BtnLeftClick(Sender: TObject);
 begin
-{$IFDEF COMPILER6_UP}
-listbox2.CopySelection(ListBox1);
+  {$IFDEF COMPILER6_UP}
+  ListBox2.CopySelection(ListBox1);
   while ListBox2.SelCount > 0 do
     ListBox2.DeleteSelected;
-
-{$ELSE}
-   CopySelected(self.listbox2,self.listbox1);
- {$ENDIF}
-
-
+  {$ELSE}
+  CopySelected(ListBox2, ListBox1);
+  {$ENDIF}
 end;
 
-procedure TFormListb.btnRightClick(Sender: TObject);
+procedure TFormListb.BtnRightClick(Sender: TObject);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   ListBox1.CopySelection(ListBox2);
   while ListBox1.SelCount > 0 do
     ListBox1.DeleteSelected;
-{$ELSE}
-   CopySelected(self.listbox1,self.listbox2);
- {$ENDIF}
-
+  {$ELSE}
+  CopySelected(ListBox1, ListBox2);
+  {$ENDIF}
 end;
 
-class function TFormListb.Execute(const ACaption,AColCaption1, AColCaption2: string;
-  List1, List2: TStrings): boolean;
-var f:TFormListb;
+class function TFormListb.Execute(const ACaption, AColCaption1, AColCaption2: string;
+  List1, List2: TStrings): Boolean;
+var
+  F: TFormListb;
 begin
-  f := self.Create(Application);
+  F := Self.Create(Application);
   try
-    f.Caption := ACaption;
-    f.lblColumn1.Caption := AColCaption1;
-    f.lblColumn2.Caption := AColCaption2;
-    f.ListBox1.Items.Assign(List1);
-    f.ListBox2.Items.Assign(List2);
-    Result := f.ShowModal = mrOK;
+    F.Caption := ACaption;
+    F.LblColumn1.Caption := AColCaption1;
+    F.LblColumn2.Caption := AColCaption2;
+    F.ListBox1.Items.Assign(List1);
+    F.ListBox2.Items.Assign(List2);
+    Result := F.ShowModal = mrOK;
     if Result then
     begin
-      List1.Assign(f.ListBox1.Items);
-      List2.Assign(f.ListBox2.Items);
+      List1.Assign(F.ListBox1.Items);
+      List2.Assign(F.ListBox2.Items);
     end;
   finally
-    f.Free;
+    F.Free;
   end;
 end;
 

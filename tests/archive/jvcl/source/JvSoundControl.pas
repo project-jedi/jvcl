@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvSoundControl;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, MMSystem, JvTypes, JvComponent;
+  Windows, SysUtils, Classes, MMSystem,
+  JvTypes, JvComponent;
 
 type
   TJvSoundValue = class(TPersistent)
@@ -72,7 +71,6 @@ type
     procedure OnCdUpdate(Sender: TObject);
     procedure OnWaveUpdate(Sender: TObject);
     procedure OnMidiUpdate(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -85,18 +83,16 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvSoundControl
-///////////////////////////////////////////////////////////
+//=== TJvSoundControl ========================================================
 
 constructor TJvSoundControl.Create(AOwner: TComponent);
 var
   AuxCaps: TAuxCaps;
   WaveOutCaps: TWaveOutCaps;
   MidiOutCaps: TMidiOutCaps;
-  i: Integer;
+  I: Integer;
 begin
-  inherited;
+  inherited Create(AOwner);
   FLastError := 0;
 
   FMidi := TJvSoundValue.Create;
@@ -111,7 +107,7 @@ begin
   FWave.OnUpdate := OnWaveUpdate;
   FMidi.OnUpdate := OnMidiUpdate;
 
-  for i := 0 to auxGetNumDevs - 1 do
+  for I := 0 to auxGetNumDevs - 1 do
   begin
     auxGetDevCaps(I, @AuxCaps, SizeOf(AuxCaps));
     if (AuxCaps.dwSupport and AUXCAPS_VOLUME) <> 0 then
@@ -121,7 +117,7 @@ begin
     end;
   end;
 
-  for i := 0 to waveOutGetNumDevs - 1 do
+  for I := 0 to waveOutGetNumDevs - 1 do
   begin
     waveOutGetDevCaps(I, @WaveOutCaps, SizeOf(WaveOutCaps));
     if (WaveOutCaps.dwSupport and WAVECAPS_VOLUME) <> 0 then
@@ -131,7 +127,7 @@ begin
     end;
   end;
 
-  for i := 0 to midiOutGetNumDevs - 1 do
+  for I := 0 to midiOutGetNumDevs - 1 do
   begin
     MidiOutGetDevCaps(I, @MidiOutCaps, SizeOf(MidiOutCaps));
     if (MidiOutCaps.dwSupport and MIDICAPS_VOLUME) <> 0 then
@@ -142,17 +138,13 @@ begin
   end;
 end;
 
-{**********************************************************}
-
 destructor TJvSoundControl.Destroy;
 begin
   FMidi.Free;
   FCd.Free;
   FWave.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{**********************************************************}
 
 procedure TJvSoundControl.OnCdRefresh(Sender: TObject);
 var
@@ -160,13 +152,11 @@ var
 begin
   with Sender as TJvSoundValue do
   begin
-    FLastError := AuxGetVolume(Handle, @Vol.LongVolume);
+    FLastError := auxGetVolume(Handle, PDWORD(@Vol.LongVolume));
     if FLastError = MMSYSERR_NOERROR then
       SetValue(Vol);
   end;
 end;
-
-{**********************************************************}
 
 procedure TJvSoundControl.OnCdUpdate(Sender: TObject);
 var
@@ -175,11 +165,9 @@ begin
   with Sender as TJvSoundValue do
   begin
     Vol := GetValue;
-    FLastError := AuxSetVolume(Handle, Vol.LongVolume);
+    FLastError := auxSetVolume(Handle, Vol.LongVolume);
   end;
 end;
-
-{**********************************************************}
 
 procedure TJvSoundControl.OnMidiRefresh(Sender: TObject);
 var
@@ -187,13 +175,11 @@ var
 begin
   with Sender as TJvSoundValue do
   begin
-    FLastError := MidiOutGetVolume(Handle, @Vol.LongVolume);
+    FLastError := MidiOutGetVolume(Handle, PDWORD(@Vol.LongVolume));
     if FLastError = MMSYSERR_NOERROR then
       SetValue(Vol);
   end;
 end;
-
-{**********************************************************}
 
 procedure TJvSoundControl.OnMidiUpdate(Sender: TObject);
 var
@@ -206,21 +192,17 @@ begin
   end;
 end;
 
-{**********************************************************}
-
 procedure TJvSoundControl.OnWaveRefresh(Sender: TObject);
 var
   Vol: TVolumeRec;
 begin
   with Sender as TJvSoundValue do
   begin
-    FLastError := waveOutGetVolume(Handle, @Vol.LongVolume);
+    FLastError := waveOutGetVolume(Handle, PDWORD(@Vol.LongVolume));
     if FLastError = MMSYSERR_NOERROR then
       SetValue(Vol);
   end;
 end;
-
-{**********************************************************}
 
 procedure TJvSoundControl.OnWaveUpdate(Sender: TObject);
 var
@@ -233,16 +215,13 @@ begin
   end;
 end;
 
-///////////////////////////////////////////////////////////
-// TJvSoundValue
-///////////////////////////////////////////////////////////
+//=== TJvSoundValue ==========================================================
 
 constructor TJvSoundValue.Create;
 begin
+  inherited Create;
   FHandle := -1;
 end;
-
-{**********************************************************}
 
 function TJvSoundValue.GetBalance: TBalance;
 begin
@@ -256,15 +235,11 @@ begin
   end;
 end;
 
-{**********************************************************}
-
 function TJvSoundValue.GetValue: TVolumeRec;
 begin
   Result.LeftVolume := Round(((FVolume * FBalance) / 100)) shl 9;
   Result.RightVolume := Round(((FVolume * (100 - FBalance)) / 100)) shl 9;
 end;
-
-{**********************************************************}
 
 function TJvSoundValue.GetVolume: Byte;
 begin
@@ -278,8 +253,6 @@ begin
   end;
 end;
 
-{**********************************************************}
-
 procedure TJvSoundValue.SetBalance(const Value: TBalance);
 begin
   if Handle <> -1 then
@@ -290,8 +263,6 @@ begin
   end;
 end;
 
-{**********************************************************}
-
 procedure TJvSoundValue.SetValue(Vol: TVolumeRec);
 var
   Total: Double;
@@ -301,8 +272,6 @@ begin
   if Total <> 0 then
     FBalance := Round(Vol.LeftVolume / Total);
 end;
-
-{**********************************************************}
 
 procedure TJvSoundValue.SetVolume(const Value: Byte);
 begin
@@ -315,3 +284,4 @@ begin
 end;
 
 end.
+

@@ -1,7 +1,7 @@
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
+with the License. You may obtain A copy of the License at
 http://www.mozilla.org/MPL/MPL-1.1.html
 
 Software distributed under the License is distributed on an "AS IS" basis,
@@ -30,72 +30,66 @@ unit JvStringGrid;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids, JvTypes, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  JvTypes, JVCLVer;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;
 
 type
-  TGMActivateCell = record
-    msg: Cardinal;
-    aCol, aRow: Integer;
-    result: Integer;
+  // (rom) renamed elements made packed
+  TGMActivateCell = packed record
+    Msg: Cardinal;
+    Column: Integer;
+    Row: Integer;
+    Result: Integer;
   end;
 
-  TJvStringgrid = class;
-  TExitCellEvent = procedure(Sender: TJvStringGrid; aCol, aRow: Integer;
-    const edittext: string) of object;
-  TGetCellAlignmentEvent = procedure(Sender: TJvStringGrid;
-    aCol, aRow: Integer;
-    State: TGridDrawState;
-    var cellAlignment: TAlignment)
-    of object;
-  TCaptionClickEvent = procedure(sender: TJvStringGrid;
-    aCol, aRow: Integer) of object;
+  TJvStringGrid = class;
+  TExitCellEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer;
+    const EditText: string) of object;
+  TGetCellAlignmentEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer;
+    State: TGridDrawState; var CellAlignment: TAlignment) of object;
+  TCaptionClickEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer) of object;
   TJvSortType = (stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
-{$EXTERNALSYM TJvSortType}
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
   TJvStringGrid = class(TStringGrid)
   private
-    FExitCell: TExitCellEvent;
+    FAboutJVCL: TJVCLAboutInfo;
     FAlignment: TAlignment;
     FSetCanvasProperties: TDrawCellEvent;
     FGetCellAlignment: TGetCellAlignmentEvent;
     FCaptionClick: TCaptionClickEvent;
     FCellOnMouseDown: TGridCoord;
-
     FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-    FOnLoad: TProgress;
-    FOnSave: TProgress;
-    FOnHScroll: TNotifyEvent;
-    FOnVScroll: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
-    procedure GMActivateCell(var msg: TGMActivateCell); message GM_ACTIVATECELL;
+    FOnExitCell: TExitCellEvent;
+    FOnLoadProgress: TProgress;
+    FOnSaveProgress: TProgress;
+    FOnHorizontalScroll: TNotifyEvent;
+    FOnVerticalScroll: TNotifyEvent;
+    procedure GMActivateCell(var Msg: TGMActivateCell); message GM_ACTIVATECELL;
     procedure SetAlignment(const Value: TAlignment);
-    procedure WMCommand(var msg: TWMCommand); message WM_COMMAND;
+    procedure WMCommand(var Msg: TWMCommand); message WM_COMMAND;
   protected
     function CreateEditor: TInplaceEdit; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    procedure ExitCell(const edittext: string; aCol, aRow: Integer); virtual;
-    procedure SetCanvasProperties(ACol, ARow: Longint;
+    procedure ExitCell(const EditText: string; AColumn, ARow: Integer); virtual;
+    procedure SetCanvasProperties(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); virtual;
-    procedure DrawCell(ACol, ARow: Longint;
+    procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
-    procedure CaptionClick(aCol, aRow: LongInt); dynamic;
-
+    procedure CaptionClick(AColumn, ARow: LongInt); dynamic;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -104,17 +98,15 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
-
-    function GetCellAlignment(Acol, aRow: Longint;
+    function GetCellAlignment(AColumn, ARow: Longint;
       State: TGridDrawState): TAlignment; virtual;
-    procedure DefaultDrawCell(ACol, ARow: Longint;
+    procedure DefaultDrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); virtual;
-    procedure ActivateCell(aCol, aRow: Integer);
-    procedure InvalidateCell(aCol, aRow: Integer);
-    procedure InvalidateCol(aCol: Integer);
-    procedure InvalidateRow(aRow: Integer);
+    procedure ActivateCell(AColumn, ARow: Integer);
+    procedure InvalidateCell(AColumn, ARow: Integer);
+    procedure InvalidateCol(AColumn: Integer);
+    procedure InvalidateRow(ARow: Integer);
     property InplaceEditor;
-
     procedure SortGrid(Column: Integer; Ascending: Boolean = True; Fixed: Boolean = False;
       SortType: TJvSortType = stClassic; BlankTop: Boolean = True);
     procedure SaveToFile(FileName: string);
@@ -125,41 +117,67 @@ type
     procedure SaveToStream(Stream: TStream);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
-    property OnExitCell: TExitCellEvent read FExitCell write FExitCell;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Alignment: TAlignment read FAlignment write SetAlignment;
-    property OnSetCanvasProperties: TDrawCellEvent
-      read FSetCanvasProperties write FSetCanvasProperties;
-    property OnGetCellAlignment: TGetCellAlignmentEvent
-      read FGetCellAlignment write FGetCellAlignment;
-    property OnCaptionClick: TCaptionClickEvent
-      read FCaptionClick write FCaptionClick;
-
+    property OnExitCell: TExitCellEvent read FOnExitCell write FOnExitCell;
+    property OnSetCanvasProperties: TDrawCellEvent read FSetCanvasProperties write FSetCanvasProperties;
+    property OnGetCellAlignment: TGetCellAlignmentEvent read FGetCellAlignment write FGetCellAlignment;
+    property OnCaptionClick: TCaptionClickEvent read FCaptionClick write FCaptionClick;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnLoadProgress: TProgress read FOnLoad write FOnLoad;
-    property OnSaveProgress: TProgress read FOnSave write FOnSave;
-    property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
-    property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
+    property OnLoadProgress: TProgress read FOnLoadProgress write FOnLoadProgress;
+    property OnSaveProgress: TProgress read FOnSaveProgress write FOnSaveProgress;
+    property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
+    property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
 
 implementation
 
+//=== TExInplaceEdit =========================================================
+
 type
   TExInplaceEdit = class(TInplaceEdit)
   private
-    FLastCol, FLastRow: Integer;
-
-    procedure WMKillFocus(var msg: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
+    FLastCol: Integer;
+    FLastRow: Integer;
+    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   public
-    procedure CreateParams(var params: TCreateParams); override;
+    procedure CreateParams(var Params: TCreateParams); override;
   end;
 
-  {**************************************************}
+procedure TExInplaceEdit.CreateParams(var Params: TCreateParams);
+const
+  Flags: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
+end;
+
+procedure TExInplaceEdit.WMKillFocus(var Msg: TMessage);
+begin
+  TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
+  inherited;
+end;
+
+procedure TExInplaceEdit.WMSetFocus(var Msg: TMessage);
+begin
+  FLastCol := TJvStringGrid(Grid).Col;
+  FLastRow := TJvStringGrid(Grid).Row;
+  inherited;
+end;
+
+//=== TJvStringGrid ==========================================================
+
+constructor TJvStringGrid.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+  ControlStyle := ControlStyle + [csAcceptsControls];
+end;
 
 procedure TJvStringGrid.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -168,8 +186,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvStringGrid.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -177,53 +193,52 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvStringGrid.SortGrid(Column: Integer; Ascending,
   Fixed: Boolean; SortType: TJvSortType; BlankTop: Boolean);
 var
-  st: string;
-  tmpc: Currency;
-  tmpf: Double;
-  tmpd: TDateTime;
-  debut, fin: Integer;
+  St: string;
+  TmpC: Currency;
+  TmpF: Double;
+  TmpD: TDateTime;
+  LStart: Integer;
+  LEnd: Integer;
 
-  procedure ExchangeGridRows(i, j: Integer);
+  procedure ExchangeGridRows(I, J: Integer);
   var
-    k: Integer;
+    K: Integer;
   begin
     if Fixed then
-      for k := 0 to ColCount - 1 do
-        Cols[k].Exchange(i, j)
+      for K := 0 to ColCount - 1 do
+        Cols[K].Exchange(I, J)
     else
-      for k := FixedCols to ColCount - 1 do
-        Cols[k].Exchange(i, j);
+      for K := FixedCols to ColCount - 1 do
+        Cols[K].Exchange(I, J);
   end;
 
   function IsSmaller(First, Second: string): Boolean;
   var
-    i, j: Int64;
-    f1, f2: Double;
-    c1, c2: Currency;
+    I, J: Int64;
+    F1, F2: Double;
+    C1, C2: Currency;
   begin
     try
-      i := StrToInt64(First);
-      j := StrToInt64(Second);
-      Result := i < j;
+      I := StrToInt64(First);
+      J := StrToInt64(Second);
+      Result := I < J;
       Exit;
     except
     end;
     try
-      f1 := StrToFloat(First);
-      f2 := StrToFloat(Second);
-      Result := f1 < f2;
+      F1 := StrToFloat(First);
+      F2 := StrToFloat(Second);
+      Result := F1 < F2;
       Exit;
     except
     end;
     try
-      c1 := StrToCurr(First);
-      c2 := StrToCurr(Second);
-      Result := c1 < c2;
+      C1 := StrToCurr(First);
+      C2 := StrToCurr(Second);
+      Result := C1 < C2;
       Exit;
     except
     end;
@@ -235,292 +250,277 @@ var
     Result := IsSmaller(Second, First);
   end;
 
-  procedure QuickSort(l, r: Integer);
+  // (rom) a HeapSort has no worst case for O(X)
+  // (rom) i donated one a long time ago to JCL
+  procedure QuickSort(L, R: Integer);
   var
-    i, j, m: Integer;
+    I, J, M: Integer;
   begin
     repeat
-      i := l;
-      j := r;
-      m := (l + r) div 2;
-      st := Cells[Column, m];
+      I := L;
+      J := R;
+      M := (L + R) div 2;
+      St := Cells[Column, M];
       repeat
         case SortType of
           stClassic:
             begin
-              while CompareText(Cells[Column, i], st) < 0 do
-                Inc(i);
-              while CompareText(Cells[Column, j], st) > 0 do
-                Dec(j);
+              while CompareText(Cells[Column, I], St) < 0 do
+                Inc(I);
+              while CompareText(Cells[Column, J], St) > 0 do
+                Dec(J);
             end;
           stCaseSensitive:
             begin
-              while CompareStr(Cells[Column, i], st) < 0 do
-                Inc(i);
-              while CompareStr(Cells[Column, j], st) > 0 do
-                Dec(j);
+              while CompareStr(Cells[Column, I], St) < 0 do
+                Inc(I);
+              while CompareStr(Cells[Column, J], St) > 0 do
+                Dec(J);
             end;
           stNumeric:
             begin
-              tmpf := StrToFloat(st);
-              while StrToFloat(Cells[Column, i]) < tmpf do
-                Inc(i);
-              while StrToFloat(Cells[Column, j]) > tmpf do
-                Dec(j);
+              TmpF := StrToFloat(St);
+              while StrToFloat(Cells[Column, I]) < TmpF do
+                Inc(I);
+              while StrToFloat(Cells[Column, J]) > TmpF do
+                Dec(J);
             end;
           stDate:
             begin
-              tmpd := StrToDateTime(st);
-              while StrToDateTime(Cells[Column, i]) < tmpd do
-                Inc(i);
-              while StrToDateTime(Cells[Column, j]) > tmpd do
-                Dec(j);
+              TmpD := StrToDateTime(St);
+              while StrToDateTime(Cells[Column, I]) < TmpD do
+                Inc(I);
+              while StrToDateTime(Cells[Column, J]) > TmpD do
+                Dec(J);
             end;
           stCurrency:
             begin
-              tmpc := StrToCurr(st);
-              while StrToCurr(Cells[Column, i]) < tmpc do
-                Inc(i);
-              while StrToCurr(Cells[Column, j]) > tmpc do
-                Dec(j);
+              TmpC := StrToCurr(St);
+              while StrToCurr(Cells[Column, I]) < TmpC do
+                Inc(I);
+              while StrToCurr(Cells[Column, J]) > TmpC do
+                Dec(J);
             end;
           stAutomatic:
             begin
-              while IsSmaller(Cells[Column, i], st) do
-                Inc(i);
-              while IsBigger(Cells[Column, j], st) do
-                Dec(j);
+              while IsSmaller(Cells[Column, I], St) do
+                Inc(I);
+              while IsBigger(Cells[Column, J], St) do
+                Dec(J);
             end;
         end;
-        if i <= j then
+        if I <= J then
         begin
-          if i <> j then
-            ExchangeGridRows(i, j);
-          Inc(i);
-          Dec(j);
+          if I <> J then
+            ExchangeGridRows(I, J);
+          Inc(I);
+          Dec(J);
         end;
-      until i > j;
-      if l < j then
-        QuickSort(l, j);
-      l := i;
-    until i >= r;
+      until I > J;
+      if L < J then
+        QuickSort(L, J);
+      L := I;
+    until I >= R;
   end;
 
   procedure InvertGrid;
   var
-    i, j: Integer;
+    I, J: Integer;
   begin
-    i := FixedRows;
-    j := RowCount - 1;
-    while i < j do
+    I := FixedRows;
+    J := RowCount - 1;
+    while I < J do
     begin
-      ExchangeGridRows(i, j);
-      Inc(i);
-      Dec(j);
+      ExchangeGridRows(I, J);
+      Inc(I);
+      Dec(J);
     end;
   end;
 
   function MoveBlankTop: Integer;
   var
-    i, j: Integer;
+    I, J: Integer;
   begin
-    i := FixedRows;
-    Result := i;
-    j := RowCount - 1;
-    while i <= j do
+    I := FixedRows;
+    Result := I;
+    J := RowCount - 1;
+    while I <= J do
     begin
-      if Trim(Cells[Column, i]) = '' then
+      if Trim(Cells[Column, I]) = '' then
       begin
-        ExchangeGridRows(Result, i);
+        ExchangeGridRows(Result, I);
         Inc(Result);
       end;
-      Inc(i);
+      Inc(I);
     end;
   end;
 
 begin
   if (Column >= 0) and (Column < ColCount) then
   begin
-    debut := FixedRows;
-    fin := RowCount - 1;
+    LStart := FixedRows;
+    LEnd := RowCount - 1;
     if BlankTop then
-      debut := MoveBlankTop;
+      LStart := MoveBlankTop;
 
-    QuickSort(Debut, Fin);
+    QuickSort(LStart, LEnd);
     if not Ascending then
       InvertGrid;
   end;
 end;
-
-{**************************************************}
-
-constructor TJvStringGrid.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FColor := clInfoBk;
-  FOver := False;
-  ControlStyle := ControlStyle + [csAcceptsControls];
-end;
-
-{**************************************************}
 
 procedure TJvStringGrid.LoadFromFile(FileName: string);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  LoadFromStream(Stream);
-  Stream.Free;
+  // (rom) secured
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.LoadFromCSV(FileName: string; Separator: Char);
 var
-  st, st2: string;
-  i, j, k, l, m, n: Integer;
+  St, st2: string;
+  I, J, K, L, M, N: Integer;
   fich: TextFile;
-  fpos, count: Integer;
+  FilePos, Count: Integer;
   f: file of Byte;
 begin
-  fpos := 0;
+  FilePos := 0;
   AssignFile(f, FileName);
   Reset(f);
-  count := FileSize(f);
+  Count := FileSize(f);
   CloseFile(f);
-  if Assigned(FOnLoad) then
-    FOnLoad(Self, fpos, count);
+  if Assigned(FOnLoadProgress) then
+    FOnLoadProgress(Self, FilePos, Count);
 
   AssignFile(fich, FileName);
   Reset(fich);
-  k := 0;
+  K := 0;
   while not Eof(fich) do
   begin
-    Readln(fich, st);
-    fpos := fpos + Length(st) + 2;
-    if Assigned(FOnLoad) then
-      FOnLoad(Self, fpos, count);
+    Readln(fich, St);
+    FilePos := FilePos + Length(St) + 2;
+    if Assigned(FOnLoadProgress) then
+      FOnLoadProgress(Self, FilePos, Count);
 
-    //Analyse st
-    j := 0;
-    l := 1;
-    for i := 1 to Length(st) do
-      if st[i] = '"' then
-        j := (j + 1) mod 2
-      else if st[i] = Separator then
-        if j = 0 then
-          Inc(l);
-    if ColCount < l then
-      ColCount := l;
-    Inc(k);
-    if RowCount < k then
-      RowCount := k;
+    //Analyse St
+    J := 0;
+    L := 1;
+    for I := 1 to Length(St) do
+      if St[I] = '"' then
+        J := (J + 1) mod 2
+      else
+      if St[I] = Separator then
+        if J = 0 then
+          Inc(L);
+    if ColCount < L then
+      ColCount := L;
+    Inc(K);
+    if RowCount < K then
+      RowCount := K;
 
-    j := 0;
-    m := Pos(Separator, st);
-    n := Pos('"', st);
-    while m <> 0 do
+    J := 0;
+    M := Pos(Separator, St);
+    N := Pos('"', St);
+    while M <> 0 do
     begin
-      if (n = 0) or (n > m) then
+      if (N = 0) or (N > M) then
       begin
-        Cells[j, k - 1] := Copy(st, 1, m - 1);
-        st := Copy(st, m + 1, Length(st));
+        Cells[J, K - 1] := Copy(St, 1, M - 1);
+        St := Copy(St, M + 1, Length(St));
       end
       else
       begin
-        st := Copy(st, n + 1, Length(st));
-        n := Pos('"', st);
-        st2 := Copy(st, 1, n - 1);
-        st := Copy(st, n + 1, Length(st));
-        m := Pos(Separator, st);
-        if m <> 0 then
-          st := Copy(st, m + 1, Length(st))
+        St := Copy(St, N + 1, Length(St));
+        N := Pos('"', St);
+        st2 := Copy(St, 1, N - 1);
+        St := Copy(St, N + 1, Length(St));
+        M := Pos(Separator, St);
+        if M <> 0 then
+          St := Copy(St, M + 1, Length(St))
         else
-          st := '';
-        Cells[j, k - 1] := st2;
+          St := '';
+        Cells[J, K - 1] := st2;
       end;
-      Inc(j);
+      Inc(J);
 
-      m := Pos(Separator, st);
-      n := Pos('"', st);
+      M := Pos(Separator, St);
+      N := Pos('"', St);
     end;
-    if st <> '' then
-      Cells[j, k - 1] := st;
+    if St <> '' then
+      Cells[J, K - 1] := St;
   end;
-  if Assigned(FOnLoad) then
-    FOnLoad(Self, count, count);
+  if Assigned(FOnLoadProgress) then
+    FOnLoadProgress(Self, Count, Count);
   CloseFile(fich);
 end;
 
-{**************************************************}
-
 procedure TJvStringGrid.LoadFromStream(Stream: TStream);
 var
-  col, row, i, count: Integer;
-  buf: array[0..1024] of Byte;
-  st: string;
+  Col, Rom, I, Count: Integer;
+  Buffer: array [0..1024] of Byte;
+  St: string;
 begin
-  col := 0;
-  row := 1;
-  if Assigned(FOnLoad) then
-    FOnLoad(Self, 0, Stream.Size);
+  Col := 0;
+  Rom := 1;
+  if Assigned(FOnLoadProgress) then
+    FOnLoadProgress(Self, 0, Stream.Size);
   while Stream.Position < Stream.Size do
   begin
-    count := Stream.Read(buf, 1024);
-    if Assigned(FOnLoad) then
-      FOnLoad(Self, Stream.Position, Stream.Size);
-    for i := 0 to count - 1 do
-      case buf[i] of
+    Count := Stream.Read(Buffer, 1024);
+    if Assigned(FOnLoadProgress) then
+      FOnLoadProgress(Self, Stream.Position, Stream.Size);
+    for I := 0 to Count - 1 do
+      case Buffer[I] of
         0:
           begin
-            Inc(col);
-            if row > RowCount then
-              RowCount := row;
-            if col > ColCount then
-              ColCount := col;
-            Cells[col - 1, row - 1] := st;
-            st := '';
+            Inc(Col);
+            if Rom > RowCount then
+              RowCount := Rom;
+            if Col > ColCount then
+              ColCount := Col;
+            Cells[Col - 1, Rom - 1] := St;
+            St := '';
           end;
         1:
           begin
-            Inc(col);
-            if col > ColCount then
-              ColCount := col;
-            Cells[col - 1, row - 1] := st;
-            Inc(row);
-            if row > RowCount then
+            Inc(Col);
+            if Col > ColCount then
+              ColCount := Col;
+            Cells[Col - 1, Rom - 1] := St;
+            Inc(Rom);
+            if Rom > RowCount then
               RowCount := Row;
-            col := 0;
-            st := '';
+            Col := 0;
+            St := '';
           end;
       else
-        st := st + Char(buf[i]);
+        St := St + Char(Buffer[I]);
       end;
   end;
   RowCount := RowCount - 1;
-  if Assigned(FOnLoad) then
-    FOnLoad(Self, Stream.Size, Stream.Size);
+  if Assigned(FOnLoadProgress) then
+    FOnLoadProgress(Self, Stream.Size, Stream.Size);
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
-  if Assigned(FOnHScroll) then
-    FOnHScroll(Self);
+  if Assigned(FOnHorizontalScroll) then
+    FOnHorizontalScroll(Self);
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
-  if Assigned(FOnVScroll) then
-    FOnVScroll(Self);
+  if Assigned(FOnVerticalScroll) then
+    FOnVerticalScroll(Self);
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.CMMouseEnter(var Msg: TMessage);
 begin
@@ -528,15 +528,14 @@ begin
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.CMMouseLeave(var Msg: TMessage);
 begin
@@ -549,172 +548,170 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvStringGrid.SaveToFile(FileName: string);
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
-  SaveToStream(Stream);
-  Stream.Free;
+  // (rom) secured
+  try
+    SaveToStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.SaveToCSV(FileName: string; Separator: Char);
 var
-  st: string;
-  i, j: Integer;
+  St: string;
+  I, J: Integer;
   fich: TextFile;
 begin
   AssignFile(fich, FileName);
   Rewrite(fich);
-  if Assigned(FOnSave) then
-    FOnSave(Self, 0, RowCount * ColCount);
-  for i := 0 to RowCount - 1 do
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, 0, RowCount * ColCount);
+  for I := 0 to RowCount - 1 do
   begin
-    st := '';
-    for j := 0 to ColCount - 1 do
+    St := '';
+    for J := 0 to ColCount - 1 do
     begin
-      if Assigned(FOnSave) then
-        FOnSave(Self, i * ColCount + j, RowCount * ColCount);
-      if Pos(Separator, Cells[j, i]) = 0 then
-        st := st + Cells[j, i]
+      if Assigned(FOnSaveProgress) then
+        FOnSaveProgress(Self, I * ColCount + J, RowCount * ColCount);
+      if Pos(Separator, Cells[J, I]) = 0 then
+        St := St + Cells[J, I]
       else
-        st := st + '"' + Cells[j, i] + '"';
-      if j <> ColCount - 1 then
-        st := st + Separator
+        St := St + '"' + Cells[J, I] + '"';
+      if J <> ColCount - 1 then
+        St := St + Separator
     end;
-    Writeln(fich, st);
+    Writeln(fich, St);
   end;
   CloseFile(fich);
-  if Assigned(FOnSave) then
-    FOnSave(Self, RowCount * ColCount, RowCount * ColCount);
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, RowCount * ColCount, RowCount * ColCount);
 end;
-
-{**************************************************}
 
 procedure TJvStringGrid.SaveToStream(Stream: TStream);
 var
-  i, j, k: Integer;
-  st: array[0..1000] of Char;
-  stt: string;
-  a, b: Byte;
+  I, J, K: Integer;
+  St: array [0..1000] of Char;
+  Stt: string;
+  A, B: Byte;
 begin
-  a := 0;
-  b := 1; //a for end of string, b for end of line
-  if Assigned(FOnSave) then
-    FOnSave(Self, 0, RowCount * ColCount);
-  for i := 0 to RowCount - 1 do
+  A := 0;
+  B := 1; //A for end of string, B for end of line
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, 0, RowCount * ColCount);
+  for I := 0 to RowCount - 1 do
   begin
-    for j := 0 to ColCount - 1 do
+    for J := 0 to ColCount - 1 do
     begin
-      if Assigned(FOnSave) then
-        FOnSave(Self, i * ColCount + j, RowCount * ColCount);
-      stt := Cells[j, i];
-      for k := 1 to Length(stt) do
-        st[k - 1] := stt[k];
-      Stream.Write(st, Length(Cells[j, i]));
-      if j <> ColCount - 1 then
-        Stream.Write(a, 1);
+      if Assigned(FOnSaveProgress) then
+        FOnSaveProgress(Self, I * ColCount + J, RowCount * ColCount);
+      Stt := Cells[J, I];
+      for K := 1 to Length(Stt) do
+        St[K - 1] := Stt[K];
+      Stream.Write(St, Length(Cells[J, I]));
+      if J <> ColCount - 1 then
+        Stream.Write(A, 1);
     end;
-    Stream.Write(b, 1);
+    Stream.Write(B, 1);
   end;
-  if Assigned(FOnSave) then
-    FOnSave(Self, RowCount * ColCount, RowCount * ColCount);
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, RowCount * ColCount, RowCount * ColCount);
 end;
 
-procedure TJvStringGrid.ActivateCell(aCol, aRow: Integer);
+procedure TJvStringGrid.ActivateCell(AColumn, ARow: Integer);
 begin
-  PostMessage(handle, GM_ACTIVATECELL, aCol, aRow);
+  PostMessage(Handle, GM_ACTIVATECELL, AColumn, ARow);
 end;
 
-procedure TJvStringGrid.CaptionClick(aCol, aRow: Integer);
+procedure TJvStringGrid.CaptionClick(AColumn, ARow: Integer);
 begin
   if Assigned(FCaptionClick) then
-    FCaptionClick(self, aCol, aRow);
+    FCaptionClick(Self, AColumn, ARow);
 end;
 
 function TJvStringGrid.CreateEditor: TInplaceEdit;
 begin
-  Result := TExInplaceEdit.Create(self);
+  Result := TExInplaceEdit.Create(Self);
 end;
 
-procedure TJvStringGrid.DefaultDrawCell(ACol, ARow: Integer; Rect: TRect;
+procedure TJvStringGrid.DefaultDrawCell(AColumn, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
 const
-  flags: array[TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Flags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   S: string;
 begin
   Canvas.FillRect(Rect);
-  S := Cells[aCol, aRow];
+  S := Cells[AColumn, ARow];
   if Length(S) > 0 then
   begin
     InflateRect(rect, -2, -2);
     DrawText(Canvas.Handle, PChar(S), Length(S), rect,
       DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or
-      flags[GetCellAlignment(acol, arow, state)]);
+      Flags[GetCellAlignment(AColumn, ARow, state)]);
   end;
 end;
 
-procedure TJvStringGrid.DrawCell(ACol, ARow: Integer; Rect: TRect;
+procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
 begin
   if Assigned(OnDrawCell) then
-    inherited
+    inherited DrawCell(AColumn, ARow, Rect, State)
   else
   begin
-    SetCanvasProperties(aCol, aRow, rect, State);
-    DefaultDrawCell(aCol, aRow, rect, State);
+    SetCanvasProperties(AColumn, ARow, Rect, State);
+    DefaultDrawCell(AColumn, ARow, Rect, State);
     Canvas.Font := Font;
     Canvas.Brush := Brush;
   end;
 end;
 
-procedure TJvStringGrid.ExitCell(const edittext: string; aCol,
-  aRow: Integer);
+procedure TJvStringGrid.ExitCell(const EditText: string; AColumn,
+  ARow: Integer);
 begin
-  if Assigned(FExitCell) then
-    FExitCell(self, aCol, aRow, edittext);
+  if Assigned(FOnExitCell) then
+    FOnExitCell(Self, AColumn, ARow, EditText);
 end;
 
-function TJvStringGrid.GetCellAlignment(Acol, aRow: Integer;
+function TJvStringGrid.GetCellAlignment(AColumn, ARow: Integer;
   State: TGridDrawState): TAlignment;
 begin
   Result := FAlignment;
   if Assigned(FGetCellAlignment) then
-    FGetCellAlignment(self, acol, arow, state, result);
+    FGetCellAlignment(Self, AColumn, ARow, State, Result);
 end;
 
-procedure TJvStringGrid.GMActivateCell(var msg: TGMActivateCell);
+procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
-  Col := msg.aCol;
-  Row := msg.aRow;
-  EditorMode := true;
+  Col := Msg.Column;
+  Row := Msg.Row;
+  EditorMode := True;
   InplaceEditor.SelectAll;
 end;
 
-procedure TJvStringGrid.InvalidateCell(aCol, aRow: Integer);
+procedure TJvStringGrid.InvalidateCell(AColumn, ARow: Integer);
 begin
-  inherited InvalidateCell(aCol, aRow);
+  inherited InvalidateCell(AColumn, ARow);
 end;
 
-procedure TJvStringGrid.InvalidateCol(aCol: Integer);
+procedure TJvStringGrid.InvalidateCol(AColumn: Integer);
 begin
-  inherited InvalidateCol(aCol);
+  inherited InvalidateCol(AColumn);
 end;
 
-procedure TJvStringGrid.InvalidateRow(aRow: Integer);
+procedure TJvStringGrid.InvalidateRow(ARow: Integer);
 begin
-  inherited InvalidateRow(aRow);
+  inherited InvalidateRow(ARow);
 end;
 
 procedure TJvStringGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if Button = mbLeft then
     MouseToCell(X, Y, FCellOnMouseDown.X, FCellOnMouseDown.Y)
   else
@@ -724,16 +721,15 @@ end;
 procedure TJvStringGrid.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  cell: TGridCoord;
+  Cell: TGridCoord;
 begin
   if Button = mbLeft then
     MouseToCell(X, Y, Cell.X, Cell.Y);
-  if CompareMem(@Cell, @FCellOnMouseDown, Sizeof(cell))
-    and
+  if CompareMem(@Cell, @FCellOnMouseDown, SizeOf(Cell)) and
     ((Cell.X < FixedCols) or (Cell.Y < FixedRows)) then
     CaptionClick(Cell.X, Cell.Y);
   FCellOnMouseDown := TGridCoord(Point(-1, -1));
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvStringGrid.SetAlignment(const Value: TAlignment);
@@ -747,43 +743,20 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.SetCanvasProperties(ACol, ARow: Integer;
+procedure TJvStringGrid.SetCanvasProperties(AColumn, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 begin
   if Assigned(FSetCanvasProperties) then
-    FSetCanvasProperties(self, aCol, aRow, Rect, State);
+    FSetCanvasProperties(Self, AColumn, ARow, Rect, State);
 end;
 
-{ TExInplaceEdit }
-
-procedure TExInplaceEdit.CreateParams(var params: TCreateParams);
-const
-  flags: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+procedure TJvStringGrid.WMCommand(var Msg: TWMCommand);
 begin
-  inherited;
-  params.Style :=
-    params.Style or flags[TJvStringGrid(grid).Alignment];
-end;
-
-procedure TExInplaceEdit.WMKillFocus(var msg: TMessage);
-begin
-  TJvStringGrid(Grid).ExitCell(Text, FLastCol, FLastRow);
-  inherited;
-end;
-
-procedure TExInplaceEdit.WMSetFocus(var msg: TMessage);
-begin
-  FLastCol := TJvStringGrid(Grid).Col;
-  FLastRow := TJvStringGrid(Grid).Row;
-  inherited;
-end;
-
-procedure TJvStringGrid.WMCommand(var msg: TWMCommand);
-begin
-  if EditorMode and (msg.Ctl = InplaceEditor.Handle) then
+  if EditorMode and (Msg.Ctl = InplaceEditor.Handle) then
     inherited
-  else if msg.Ctl <> 0 then
-    msg.result := SendMessage(msg.ctl, CN_COMMAND,TMessage(msg).wparam,TMessage(msg).lparam);
+  else
+  if Msg.Ctl <> 0 then
+    Msg.Result := SendMessage(Msg.Ctl, CN_COMMAND, TMessage(Msg).WParam, TMessage(Msg).LParam);
 end;
 
 end.

@@ -31,8 +31,13 @@ unit JvFormWallpaperEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-   {$IFDEF COMPILER5} DsgnIntf, {$ENDIF} {$IFDEF COMPILER6_UP} DesignEditors, DesignIntf, {$ENDIF}
+  SysUtils, Classes, Graphics, Controls, Forms,
+  {$IFDEF COMPILER5}
+  DsgnIntf,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ENDIF}
   JvFormWallpaper;
 
 type
@@ -55,14 +60,10 @@ uses
 const
   ClickToEdit = 'Click to edit...';
 
-{******************************************************}
-
 procedure TJvFormWallpaperEditor.ApplyImage(Sender: TObject);
 begin
   TJvFormWallpaper(GetComponent(0)).Image.Bitmap := TBitmap(Sender);
-end
-;
-{******************************************************}
+end;
 
 procedure TJvFormWallpaperEditor.Edit;
 var
@@ -73,7 +74,7 @@ begin
   OldImage := TPicture.Create;
   OldImage.Assign(Image);
 
-  with TfoWallpaperChooser.Create(nil) do
+  with TFoWallpaperChooser.Create(nil) do
   begin
     OnGlyph := ApplyImage;
     if ShowModal = mrOk then
@@ -86,28 +87,20 @@ begin
   OldImage.Free;
 end;
 
-{******************************************************}
-
 function TJvFormWallpaperEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
-
-{******************************************************}
 
 function TJvFormWallpaperEditor.GetValue: string;
 begin
   Result := ClickToEdit;
 end;
 
-{******************************************************}
-
 procedure TJvFormWallpaperEditor.GetValues(Proc: TGetStrProc);
 begin
   SetStrValue(ClickToEdit);
 end;
-
-{******************************************************}
 
 procedure TJvFormWallpaperEditor.SetValue(const Value: string);
 begin

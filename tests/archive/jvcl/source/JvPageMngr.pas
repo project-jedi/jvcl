@@ -12,7 +12,7 @@ The Original Code is: JvPageMngr.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,12 +25,12 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvPageMngr;
 
 interface
 
-uses Classes, Controls, ExtCtrls{, JvComponent};
+uses
+  Classes, Controls, ExtCtrls {, JvComponent};
 
 type
   TPageNotifyEvent = procedure(Next: Boolean) of object;
@@ -87,13 +87,12 @@ type
     procedure DormantPages;
   protected
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      AOperation: TOperation); override;
-{$IFDEF WIN32}
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
+    {$IFDEF WIN32}
     procedure GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP}; Root: TComponent {$ENDIF}); override;
-{$ELSE}
+    {$ELSE}
     procedure WriteComponents(Writer: TWriter); override;
-{$ENDIF WIN32}
+    {$ENDIF WIN32}
     procedure ChangePage(Next: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -112,8 +111,7 @@ type
     property NextEnabled: Boolean read GetNextEnabled;
     property PriorEnabled: Boolean read GetPriorEnabled;
     property PageHistory: TJvPageHistory read FPageHistory;
-    property HistoryCommand: TJvPageHistoryCommand read FHistoryCommand
-      write FHistoryCommand;
+    property HistoryCommand: TJvPageHistoryCommand read FHistoryCommand write FHistoryCommand;
     property OnCheckProxy: TNotifyEvent read FOnCheckProxy write FOnCheckProxy; { for internal use only }
   published
     property PageOwner: TPageOwner read FPageOwner write SetPageOwner;
@@ -125,17 +123,15 @@ type
     property UseHistory: Boolean read FUseHistory write FUseHistory default False;
     property OnGetPriorPage: TPageRequestEvent read FOnGetPriorPage
       write FOnGetPriorPage;
-    property OnGetNextPage: TPageRequestEvent read FOnGetNextPage
-      write FOnGetNextPage;
-    property OnCheckButtons: TNotifyEvent read FOnCheckButtons
-      write FOnCheckButtons;
+    property OnGetNextPage: TPageRequestEvent read FOnGetNextPage write FOnGetNextPage;
+    property OnCheckButtons: TNotifyEvent read FOnCheckButtons write FOnCheckButtons;
     property OnPageChanged: TNotifyEvent read FOnPageChanged write FOnPageChanged;
   end;
 
   TJvPageProxy = class(TComponent)
   private
     FPageManager: TJvPageManager;
-    FPageName: String;
+    FPageName: string;
     FOnEnter: TPageNotifyEvent;
     FOnLeave: TPageNotifyEvent;
     FOnShow: TPageNotifyEvent;
@@ -148,18 +144,18 @@ type
     procedure PageShow(Next: Boolean);
     procedure PageHide(Next: Boolean);
   protected
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     procedure SetParentComponent(Value: TComponent); override;
-{$ELSE}
+    {$ELSE}
     procedure ReadState(Reader: TReader); override;
-{$ENDIF}
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function HasParent: Boolean; override;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function GetParentComponent: TComponent; override;
-{$ENDIF}
+    {$ENDIF}
     property PageManager: TJvPageManager read FPageManager write SeTJvPageManager;
   published
     property PageName: string read GetPageName write SetPageName;
@@ -194,16 +190,23 @@ type
   end;
 
 const
-  pageNull = -1;
+  PageNull = -1;
 
 implementation
 
-uses SysUtils, Forms, StdCtrls {$IFDEF COMPILER4_UP}, ActnList {$ENDIF};
+uses
 
-const
+  {$IFDEF COMPILER4_UP}
+  SysUtils, Forms, StdCtrls, ActnList;
+  {$ELSE}
+  SysUtils, Forms, StdCtrls;
+  {$ENDIF COMPILER4_UP}
+
+// (rom) changed to var
+var
   Registered: Boolean = False;
 
-{ TJvPageProxy }
+//=== TJvPageProxy ===========================================================
 
 constructor TJvPageProxy.Create(AOwner: TComponent);
 begin
@@ -213,7 +216,8 @@ end;
 
 destructor TJvPageProxy.Destroy;
 begin
-  if FPageManager <> nil then FPageManager.RemoveProxy(Self);
+  if FPageManager <> nil then
+    FPageManager.RemoveProxy(Self);
   //if (FPageName <> nil) and (FPageName^ <> '') then Dispose(FPageName);
   inherited Destroy;
 end;
@@ -227,15 +231,21 @@ procedure TJvPageProxy.SetPageName(const Value: string);
 begin
   if (FPageManager <> nil) and (FPageManager.PageOwner <> nil) then
   begin
-    if (FPageManager.PageOwner.Pages.IndexOf(Value) >= 0) then FPageName := Value else FPageName := '';
+    if (FPageManager.PageOwner.Pages.IndexOf(Value) >= 0) then
+      FPageName := Value
+    else
+      FPageName := '';
   end
-  else FPageName := Value;
+  else
+    FPageName := Value;
 end;
 
 procedure TJvPageProxy.SeTJvPageManager(Value: TJvPageManager);
 begin
-  if FPageManager <> nil then FPageManager.RemoveProxy(Self);
-  if Value <> nil then Value.AddProxy(Self);
+  if FPageManager <> nil then
+    FPageManager.RemoveProxy(Self);
+  if Value <> nil then
+    Value.AddProxy(Self);
 end;
 
 function TJvPageProxy.HasParent: Boolean;
@@ -252,7 +262,8 @@ end;
 
 procedure TJvPageProxy.SetParentComponent(Value: TComponent);
 begin
-  if FPageManager <> nil then FPageManager.RemoveProxy(Self);
+  if FPageManager <> nil then
+    FPageManager.RemoveProxy(Self);
   if (Value <> nil) and (Value is TJvPageManager) then
     PageManager := TJvPageManager(Value);
 end;
@@ -262,7 +273,8 @@ end;
 procedure TJvPageProxy.ReadState(Reader: TReader);
 begin
   inherited ReadState(Reader);
-  if Reader.Parent is TJvPageManager then begin
+  if Reader.Parent is TJvPageManager then
+  begin
     PageManager := TJvPageManager(Reader.Parent);
   end;
 end;
@@ -271,25 +283,29 @@ end;
 
 procedure TJvPageProxy.PageEnter(Next: Boolean);
 begin
-  if Assigned(FOnEnter) then FOnEnter(Next);
+  if Assigned(FOnEnter) then
+    FOnEnter(Next);
 end;
 
 procedure TJvPageProxy.PageLeave(Next: Boolean);
 begin
-  if Assigned(FOnLeave) then FOnLeave(Next);
+  if Assigned(FOnLeave) then
+    FOnLeave(Next);
 end;
 
 procedure TJvPageProxy.PageShow(Next: Boolean);
 begin
-  if Assigned(FOnShow) then FOnShow(Next);
+  if Assigned(FOnShow) then
+    FOnShow(Next);
 end;
 
 procedure TJvPageProxy.PageHide(Next: Boolean);
 begin
-  if Assigned(FOnHide) then FOnHide(Next);
+  if Assigned(FOnHide) then
+    FOnHide(Next);
 end;
 
-{ TJvPageManager }
+//=== TJvPageManager =========================================================
 
 constructor TJvPageManager.Create(AOwner: TComponent);
 begin
@@ -300,7 +316,8 @@ begin
   FSetStartPage := True;
   FChangeHelpContext := True;
   FUseHistory := False;
-  if not Registered then begin
+  if not Registered then
+  begin
     RegisterClasses([TJvPageProxy]);
     Registered := True;
   end;
@@ -320,7 +337,8 @@ var
 begin
   Loading := csLoading in ComponentState;
   inherited Loaded;
-  if not (csDesigning in ComponentState) and Loading then begin
+  if not (csDesigning in ComponentState) and Loading then
+  begin
     SyncBtnClick(0, True);
     SyncBtnClick(1, True);
   end;
@@ -333,8 +351,10 @@ begin
       FPageOwner.ActivePage := TJvPageProxy(FPageProxies.Items[0]).PageName;
     end;
   end;
-  if DestroyHandles then DormantPages;
-  if (FPageOwner <> nil) and (FPageHistory.Count = 0) then begin
+  if DestroyHandles then
+    DormantPages;
+  if (FPageOwner <> nil) and (FPageHistory.Count = 0) then
+  begin
     FPageHistory.AddPageIndex(FPageOwner.PageIndex);
   end;
   CheckBtnEnabled;
@@ -343,10 +363,16 @@ end;
 procedure TJvPageManager.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   inherited Notification(AComponent, AOperation);
-  if AOperation = opRemove then begin
-    if AComponent = PageOwner then PageOwner := nil
-    else if AComponent = FButtons[False] then FButtons[False] := nil
-    else if AComponent = FButtons[True] then FButtons[True] := nil;
+  if AOperation = opRemove then
+  begin
+    if AComponent = PageOwner then
+      PageOwner := nil
+    else
+    if AComponent = FButtons[False] then
+      FButtons[False] := nil
+    else
+    if AComponent = FButtons[True] then
+      FButtons[True] := nil;
   end;
 end;
 
@@ -357,24 +383,30 @@ end;
 
 procedure TJvPageManager.SetButton(Index: Integer; Value: TControl);
 begin
-  if GetButton(Index) <> Value then begin
-    if not (csLoading in ComponentState) then  SyncBtnClick(Index, False);
+  if GetButton(Index) <> Value then
+  begin
+    if not (csLoading in ComponentState) then
+      SyncBtnClick(Index, False);
     FButtons[Boolean(Index)] := Value;
-{$IFDEF WIN32}
-    if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
-    if not (csLoading in ComponentState) then  SyncBtnClick(Index, True);
+    {$IFDEF WIN32}
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    {$ENDIF}
+    if not (csLoading in ComponentState) then
+      SyncBtnClick(Index, True);
   end;
 end;
 
 procedure TJvPageManager.SyncBtnClick(Index: Integer; Sync: Boolean);
 begin
   if (GetButton(Index) <> nil) and not (csDesigning in ComponentState) then
-    if Sync then begin
+    if Sync then
+    begin
       FSaveBtnClick[Boolean(Index)] := TButton(GetButton(Index)).OnClick;
       TButton(GetButton(Index)).OnClick := BtnClick;
     end
-    else begin
+    else
+    begin
       TButton(GetButton(Index)).OnClick := FSaveBtnClick[Boolean(Index)];
       FSaveBtnClick[Boolean(Index)] := nil;
     end;
@@ -385,44 +417,53 @@ var
   Next: Boolean;
 begin
   for Next := False to True do
-    if Sender = FButtons[Next] then begin
+    if Sender = FButtons[Next] then
+    begin
       ChangePage(Next);
-      if Assigned(FSaveBtnClick[Next]) then FSaveBtnClick[Next](Sender);
+      if Assigned(FSaveBtnClick[Next]) then
+        FSaveBtnClick[Next](Sender);
     end;
 end;
 
 procedure TJvPageManager.CheckBtnEnabled;
 begin
-  if not (csDesigning in ComponentState) then begin
-{$IFDEF COMPILER4_UP}
-    if GetButton(0) <> nil then begin
+  if not (csDesigning in ComponentState) then
+  begin
+    {$IFDEF COMPILER4_UP}
+    if GetButton(0) <> nil then
+    begin
       if GetButton(0).Action <> nil then
         TAction(GetButton(0).Action).Enabled := PriorEnabled
       else
         GetButton(0).Enabled := PriorEnabled;
     end;
-    if GetButton(1) <> nil then begin
+    if GetButton(1) <> nil then
+    begin
       if GetButton(1).Action <> nil then
         TAction(GetButton(1).Action).Enabled := NextEnabled
       else
         GetButton(1).Enabled := NextEnabled;
     end;
-{$ELSE}
-    if GetButton(0) <> nil then GetButton(0).Enabled := PriorEnabled;
-    if GetButton(1) <> nil then GetButton(1).Enabled := NextEnabled;
-{$ENDIF}
-    if Assigned(FOnCheckButtons) then FOnCheckButtons(Self);
+    {$ELSE}
+    if GetButton(0) <> nil then
+      GetButton(0).Enabled := PriorEnabled;
+    if GetButton(1) <> nil then
+      GetButton(1).Enabled := NextEnabled;
+    {$ENDIF}
+    if Assigned(FOnCheckButtons) then
+      FOnCheckButtons(Self);
   end;
 end;
 
 {$IFDEF WIN32}
-procedure TJvPageManager.GetChildren(Proc: TGetChildProc {$IFDEF COMPILER3_UP};
-  Root: TComponent {$ENDIF});
+procedure TJvPageManager.GetChildren(Proc: TGetChildProc{$IFDEF COMPILER3_UP};
+  Root: TComponent{$ENDIF});
 var
   I: Integer;
 begin
-  inherited GetChildren(Proc{$IFDEF COMPILER3_UP}, Root {$ENDIF});
-  for I := 0 to FPageProxies.Count - 1 do begin
+  inherited GetChildren(Proc {$IFDEF COMPILER3_UP}, Root {$ENDIF});
+  for I := 0 to FPageProxies.Count - 1 do
+  begin
     Proc(TJvPageProxy(FPageProxies.Items[I]));
   end;
 end;
@@ -433,16 +474,19 @@ var
   Proxy: TJvPageProxy;
 begin
   inherited WriteComponents(Writer);
-  for I := 0 to FPageProxies.Count - 1 do begin
+  for I := 0 to FPageProxies.Count - 1 do
+  begin
     Proxy := FPageProxies.Items[I];
-    if Proxy.Owner = Writer.Root then Writer.WriteComponent(Proxy);
+    if Proxy.Owner = Writer.Root then
+      Writer.WriteComponent(Proxy);
   end;
 end;
 {$ENDIF WIN32}
 
 procedure TJvPageManager.SetDestroyHandles(Value: Boolean);
 begin
-  if Value <> FDestroyHandles then begin
+  if Value <> FDestroyHandles then
+  begin
     FDestroyHandles := Value;
     if not (csLoading in ComponentState) and FDestroyHandles then
       DormantPages;
@@ -451,15 +495,20 @@ end;
 
 procedure TJvPageManager.SetPageOwner(Value: TPageOwner);
 begin
-  if FPageOwner <> Value then begin
+  if FPageOwner <> Value then
+  begin
     FPageOwner := Value;
-{$IFDEF WIN32}
-    if Value <> nil then Value.FreeNotification(Self);
-{$ENDIF}
-    if not (csLoading in ComponentState) then begin
+    {$IFDEF WIN32}
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    {$ENDIF}
+    if not (csLoading in ComponentState) then
+    begin
       Resync;
-      if FDestroyHandles then DormantPages;
-      if (FPageOwner <> nil) and (FPageHistory.Count = 0) then begin
+      if FDestroyHandles then
+        DormantPages;
+      if (FPageOwner <> nil) and (FPageHistory.Count = 0) then
+      begin
         FPageHistory.AddPageIndex(FPageOwner.PageIndex);
       end;
     end;
@@ -475,8 +524,10 @@ var
   I: Integer;
 begin
   Result := -1;
-  for I := 0 to FPageProxies.Count - 1 do begin
-    if TJvPageProxy(FPageProxies.Items[I]).PageName = PageName then begin
+  for I := 0 to FPageProxies.Count - 1 do
+  begin
+    if TJvPageProxy(FPageProxies.Items[I]).PageName = PageName then
+    begin
       Result := I;
       Exit;
     end;
@@ -490,31 +541,40 @@ var
   NewCount: Integer;
   NewProxy: TJvPageProxy;
 begin
-  if FPageOwner = nil then Exit;
-  if PageCount > FPageProxies.Count then begin
+  if FPageOwner = nil then
+    Exit;
+  if PageCount > FPageProxies.Count then
+  begin
     NewCount := PageCount - FPageProxies.Count;
-    for I := 1 to NewCount do begin
+    for I := 1 to NewCount do
+    begin
       NewProxy := TJvPageProxy.Create(Owner);
       AddProxy(NewProxy);
-      if Assigned(FOnCheckProxy) then FOnCheckProxy(NewProxy);
+      if Assigned(FOnCheckProxy) then
+        FOnCheckProxy(NewProxy);
       {NewProxy.Name := GetUniqueName(NewProxy);}
       NewProxy.PageName := FindFreePage;
     end;
   end;
-  for I := FPageProxies.Count - 1 downto 0 do begin
-    if FPageProxies.Count > PageCount then begin
+  for I := FPageProxies.Count - 1 downto 0 do
+  begin
+    if FPageProxies.Count > PageCount then
+    begin
       if (TJvPageProxy(FPageProxies.Items[I]).PageName <> '') and
         (FPageOwner.Pages.IndexOf(TJvPageProxy(FPageProxies.Items[I]).PageName) = -1) then
         TJvPageProxy(FPageProxies.Items[I]).Free;
     end
-    else Break;
+    else
+      Break;
   end;
   for I := 0 to FPageProxies.Count - 1 do
     if Assigned(FOnCheckProxy) then
       FOnCheckProxy(TObject(FPageProxies.Items[I]));
-  for I := 0 to PageCount - 1 do begin
+  for I := 0 to PageCount - 1 do
+  begin
     Index := GetProxyIndex(PageNames[I]);
-    if Index <> -1 then begin
+    if Index <> -1 then
+    begin
       FPageProxies.Move(Index, I);
     end;
   end;
@@ -536,7 +596,8 @@ procedure TJvPageManager.DestroyProxies;
 var
   Proxy: TJvPageProxy;
 begin
-  while FPageProxies.Count > 0 do begin
+  while FPageProxies.Count > 0 do
+  begin
     Proxy := FPageProxies.Last;
     RemoveProxy(Proxy);
     Proxy.Free;
@@ -546,7 +607,8 @@ end;
 function TJvPageManager.GetPageCount: Integer;
 begin
   Result := 0;
-  if FPageOwner <> nil then begin
+  if FPageOwner <> nil then
+  begin
     Result := FPageOwner.Pages.Count;
   end;
 end;
@@ -554,7 +616,8 @@ end;
 function TJvPageManager.GetPageName(Index: Integer): string;
 begin
   Result := '';
-  if (FPageOwner <> nil) and (Index < PageCount) then begin
+  if (FPageOwner <> nil) and (Index < PageCount) then
+  begin
     Result := FPageOwner.Pages[Index];
   end;
 end;
@@ -566,7 +629,8 @@ begin
   Result := '';
   if PageOwner <> nil then
     for I := 0 to PageOwner.Pages.Count - 1 do
-      if GetProxyIndex(PageOwner.Pages[I]) = -1 then begin
+      if GetProxyIndex(PageOwner.Pages[I]) = -1 then
+      begin
         Result := PageOwner.Pages[I];
         Exit;
       end;
@@ -574,8 +638,10 @@ end;
 
 function TJvPageManager.GetPageIndex: Integer;
 begin
-  if PageOwner <> nil then Result := PageOwner.PageIndex
-  else Result := pageNull;
+  if PageOwner <> nil then
+    Result := PageOwner.PageIndex
+  else
+    Result := PageNull;
 end;
 
 procedure TJvPageManager.SetPageIndex(Value: Integer);
@@ -583,21 +649,31 @@ var
   Page: TPageItem;
   OldPageIndex: Integer;
 begin
-  if PageOwner <> nil then begin
+  if PageOwner <> nil then
+  begin
     OldPageIndex := PageOwner.PageIndex;
     PageOwner.PageIndex := Value;
-    if DestroyHandles then DormantPages;
-    if OldPageIndex <> PageOwner.PageIndex then begin
-      if not FUseHistory then begin
+    if DestroyHandles then
+      DormantPages;
+    if OldPageIndex <> PageOwner.PageIndex then
+    begin
+      if not FUseHistory then
+      begin
         PageHistory.AddPageIndex(PageOwner.PageIndex);
       end
-      else begin
+      else
+      begin
         case HistoryCommand of
-          hcNone: ;
-          hcAdd: PageHistory.AddPageIndex(PageOwner.PageIndex);
-          hcBack: PageHistory.Current := PageHistory.Current - 1;
-          hcForward: PageHistory.Current := PageHistory.Current + 1;
-          hcGoto: ;
+          hcNone:
+            ;
+          hcAdd:
+            PageHistory.AddPageIndex(PageOwner.PageIndex);
+          hcBack:
+            PageHistory.Current := PageHistory.Current - 1;
+          hcForward:
+            PageHistory.Current := PageHistory.Current + 1;
+          hcGoto:
+            ;
         end;
       end;
     end;
@@ -608,7 +684,8 @@ begin
       ((Owner as TForm).HelpContext = 0) then
     begin
       Page := TPageItem(PageOwner.Pages.Objects[PageIndex]);
-      if Page <> nil then (Owner as TForm).HelpContext := Page.HelpContext;
+      if Page <> nil then
+        (Owner as TForm).HelpContext := Page.HelpContext;
     end;
   end;
 end;
@@ -653,7 +730,8 @@ var
   ProxyIndex: Integer;
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
-  if ProxyIndex <> pageNull then begin
+  if ProxyIndex <> PageNull then
+  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageEnter(Next);
   end;
 end;
@@ -663,7 +741,8 @@ var
   ProxyIndex: Integer;
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
-  if ProxyIndex <> pageNull then begin
+  if ProxyIndex <> PageNull then
+  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageLeave(Next);
   end;
 end;
@@ -673,7 +752,8 @@ var
   ProxyIndex: Integer;
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
-  if ProxyIndex <> pageNull then begin
+  if ProxyIndex <> PageNull then
+  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageShow(Next);
   end;
 end;
@@ -683,60 +763,70 @@ var
   ProxyIndex: Integer;
 begin
   ProxyIndex := GetProxyIndex(PageOwner.Pages.Strings[Page]);
-  if ProxyIndex <> pageNull then begin
+  if ProxyIndex <> PageNull then
+  begin
     TJvPageProxy(FPageProxies.Items[ProxyIndex]).PageHide(Next);
   end;
 end;
 
 procedure TJvPageManager.PageChanged;
 begin
-  if Assigned(FOnPageChanged) then FOnPageChanged(Self);
+  if Assigned(FOnPageChanged) then
+    FOnPageChanged(Self);
 end;
 
 function TJvPageManager.GetPriorPageIndex(Page: Integer): Integer;
 begin
-  if not FUseHistory then begin
+  if not FUseHistory then
+  begin
     if Page < 1 then
-      Result := pageNull
+      Result := PageNull
     else
       Result := Page - 1;
-    end
-  else begin
+  end
+  else
+  begin
     if PageHistory.Current < 1 then
-      Result := pageNull
+      Result := PageNull
     else
       Result := PageHistory.PageIndexes[PageHistory.Current - 1];
   end;
-  if Assigned(FOnGetPriorPage) then FOnGetPriorPage(Page, Result);
+  if Assigned(FOnGetPriorPage) then
+    FOnGetPriorPage(Page, Result);
 end;
 
 function TJvPageManager.GetNextPageIndex(Page: Integer): Integer;
 begin
-  if not FUseHistory then begin
+  if not FUseHistory then
+  begin
     if Page >= PageCount - 1 then
-      Result := pageNull
+      Result := PageNull
     else
       Result := Page + 1;
-    end
-  else begin
+  end
+  else
+  begin
     if PageHistory.Current >= PageHistory.Count - 1 then
-      Result := pageNull
+      Result := PageNull
     else
       Result := PageHistory.PageIndexes[PageHistory.Current + 1];
   end;
-  if Assigned(FOnGetNextPage) then FOnGetNextPage(Page, Result);
+  if Assigned(FOnGetNextPage) then
+    FOnGetNextPage(Page, Result);
 end;
 
 procedure TJvPageManager.SetPage(NewPageIndex: Integer; Next: Boolean);
 var
   OldPageIndex: Integer;
 begin
-  if (NewPageIndex >=0) and (NewPageIndex < PageCount) then begin
+  if (NewPageIndex >= 0) and (NewPageIndex < PageCount) then
+  begin
     OldPageIndex := PageIndex;
     PageLeave(OldPageIndex, Next);
     PageEnter(NewPageIndex, Next);
     SetPageIndex(NewPageIndex);
-    if NewPageIndex = PageIndex then begin
+    if NewPageIndex = PageIndex then
+    begin
       PageHide(OldPageIndex, Next);
       PageShow(NewPageIndex, Next);
       PageChanged;
@@ -748,11 +838,13 @@ procedure TJvPageManager.ChangePage(Next: Boolean);
 var
   NewPageIndex: Integer;
 begin
-  if Next then begin
+  if Next then
+  begin
     NewPageIndex := GetNextPageIndex(PageIndex);
     HistoryCommand := hcForward;
   end
-  else begin
+  else
+  begin
     NewPageIndex := GetPriorPageIndex(PageIndex);
     HistoryCommand := hcBack;
   end;
@@ -767,14 +859,15 @@ var
   I: Integer;
 begin
   if Assigned(FPageOwner) then
-    with PageOwner do begin
+    with PageOwner do
+    begin
       for I := 0 to Pages.Count - 1 do
         if PageIndex <> I then
           TJvHack(Pages.Objects[I]).DestroyHandle;
     end;
 end;
 
-{ TJvPageHistory }
+//=== TJvPageHistory =========================================================
 
 constructor TJvPageHistory.Create;
 begin
@@ -791,8 +884,10 @@ end;
 
 procedure TJvPageHistory.SetCurrent(Value: Integer);
 begin
-  if Value < 0 then Value := -1;
-  if Value > Count - 1 then Value := Count - 1;
+  if Value < 0 then
+    Value := -1;
+  if Value > Count - 1 then
+    Value := Count - 1;
   FCurrent := Value;
 end;
 
@@ -800,8 +895,10 @@ procedure TJvPageHistory.SetHistoryCapacity(Value: Integer);
 var
   I: Integer;
 begin
-  if Value < FHistoryCapacity then begin
-    for I := 0 to Count - Value do begin
+  if Value < FHistoryCapacity then
+  begin
+    for I := 0 to Count - Value do
+    begin
       DeleteHistoryItem(0);
     end;
   end;
@@ -818,13 +915,16 @@ var
   I: Integer;
   Item: TJvPageHistoryItem;
 begin
-  for I := Count - 1 downto Current + 1 do begin
+  for I := Count - 1 downto Current + 1 do
+  begin
     DeleteHistoryItem(I);
   end;
-  for I := 0 to Count - HistoryCapacity do begin
+  for I := 0 to Count - HistoryCapacity do
+  begin
     DeleteHistoryItem(0);
   end;
-  if Count < HistoryCapacity then begin
+  if Count < HistoryCapacity then
+  begin
     Item := TJvPageHistoryItem.Create;
     Item.Index := PageIndex;
     Add(Item);
@@ -836,11 +936,13 @@ procedure TJvPageHistory.DeleteHistoryItem(Index: Integer);
 var
   Item: TJvPageHistoryItem;
 begin
-  if (Index >= 0) and (Index < Count) then begin
+  if (Index >= 0) and (Index < Count) then
+  begin
     Item := TJvPageHistoryItem(Items[Index]);
     Delete(Index);
     Item.Free;
-    if Current > Count - 1 then Current := Count - 1;
+    if Current > Count - 1 then
+      Current := Count - 1;
   end;
 end;
 
@@ -848,9 +950,11 @@ procedure TJvPageHistory.ResetHistory;
 var
   I: Integer;
 begin
-  for I := Count - 1 downto 0 do begin
+  for I := Count - 1 downto 0 do
+  begin
     DeleteHistoryItem(I);
   end;
 end;
 
 end.
+

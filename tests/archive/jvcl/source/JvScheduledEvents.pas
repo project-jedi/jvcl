@@ -25,28 +25,28 @@
  You may retrieve the latest version of this file at the Project JEDI home
  page, located at http://www.delphi-jedi.org
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvScheduledEvents;
 
 interface
 
-{$I jvcl.inc}
-
 uses
-  SysUtils, Windows, Classes, syncobjs, Messages,
-  jclRegistry, jclSchedule;
+  SysUtils, Windows, Classes, SyncObjs, Messages,
+  JclRegistry, JclSchedule;
 
 const
-  CM_ExecEvent = WM_USER + $1000;
+  CM_EXECEVENT = WM_USER + $1000;
 
 type
   TJvCustomScheduledEvents = class;
   TJvEventCollection = class;
   TJvEventCollectionItem = class;
 
-  TScheduledEventState = (sesNotInitialized, sesWaiting, sesTriggered, sesExecuting, sesPaused,
-    sesEnded);
+  TScheduledEventState =
+    (sesNotInitialized, sesWaiting, sesTriggered, sesExecuting, sesPaused, sesEnded);
   TScheduledEventExecute = procedure(Sender: TJvEventCollectionItem; const IsSnoozeEvent: Boolean) of object;
-  TJvStreamEvent = procedure (Sender:TObject; Event:TJvEventCollectionItem;Stream:TStream) of object;
 
   TJvCustomScheduledEvents = class(TComponent)
   private
@@ -57,8 +57,6 @@ type
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
     FWnd: HWND;
-    FOnSaveToStream: TJvStreamEvent;
-    FOnLoadFromStream: TJvStreamEvent;
   protected
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
@@ -70,24 +68,14 @@ type
     procedure SaveEventStates;
     procedure SetSaveTo(Value: string);
     procedure SetEvents(Value: TJvEventCollection);
-    procedure WndProc(var Message: TMessage); virtual;
-
+    procedure WndProc(var Msg: TMessage); virtual;
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
     property SaveTo: string read GetSaveTo write SetSaveTo;
-    procedure DoSaveToStream(Sender:TObject;Event:TJvEventCollectionItem;Stream:TStream);
-    procedure DoLoadFromStream(Sender:TObject;Event:TJvEventCollectionItem;Stream:TStream);
-    property OnSaveToStream:TJvStreamEvent read FOnSaveToStream write FOnSaveToStream;
-    property OnLoadFromStream:TJvStreamEvent read FOnLoadFromStream write FOnLoadFromStream; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SaveToStream(Stream:TStream);
-    procedure LoadFromStream(Stream:TStream);
-    procedure SaveToFile(const Filename:string);
-    procedure LoadFromFile(const Filename:string);
-
     property Handle: HWND read FWnd;
     property Events: TJvEventCollection read GetEvents write SetEvents;
   published
@@ -100,31 +88,16 @@ type
     property Events;
     property OnStartEvent;
     property OnEndEvent;
-    property OnSaveToStream;
-    property OnLoadFromStream;
   end;
 
   TJvEventCollection = class(TOwnedCollection)
-  private
-    FOnSaveToStream: TJvStreamEvent;
-    FOnLoadFromStream: TJvStreamEvent;
-    procedure DoLoadFromStream(Event: TJvEventCollectionItem;
-      Stream: TStream);
-    procedure DoSaveToStream(Event: TJvEventCollectionItem;
-      Stream: TStream);
   protected
     function GetItem(Index: Integer): TJvEventCollectionItem;
     procedure SetItem(Index: Integer; Value: TJvEventCollectionItem);
-    property OnSaveToStream:TJvStreamEvent read FOnSaveToStream write FOnSaveToStream;
-    property OnLoadFromStream:TJvStreamEvent read FOnLoadFromStream write FOnLoadFromStream; 
   public
     constructor Create(AOwner: TPersistent);
-    procedure SaveToStream(Stream:TStream);
-    procedure LoadFromStream(Stream:TStream);
-
     function Add: TJvEventCollectionItem;
     function Insert(Index: Integer): TJvEventCollectionItem;
-
     property Items[Index: Integer]: TJvEventCollectionItem read GetItem write SetItem; default;
   end;
 
@@ -148,11 +121,9 @@ type
     function GetDisplayName: string; override;
     function GetNextFire: TTimeStamp;
     procedure Execute; virtual;
-
     // schedule property readers/writers
     procedure PropDateRead(Reader: TReader; var Stamp: TTimeStamp);
     procedure PropDateWrite(Writer: TWriter; const Stamp: TTimeStamp);
-
     procedure PropDailyEveryWeekDayRead(Reader: TReader);
     procedure PropDailyEveryWeekDayWrite(Writer: TWriter);
     procedure PropDailyIntervalRead(Reader: TReader);
@@ -195,12 +166,10 @@ type
     procedure PropYearlyIntervalWrite(Writer: TWriter);
     procedure PropYearlyMonthRead(Reader: TReader);
     procedure PropYearlyMonthWrite(Writer: TWriter);
-
     procedure SetName(Value: string);
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
-
     procedure LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer;
       const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime); virtual;
     procedure Pause;
@@ -210,11 +179,11 @@ type
       const Hrs: Word = 0; const Days: Word = 0);
     procedure Start;
     procedure Stop;
-
     // Persisting schedules: deprecated as of 2002/11/30
-    procedure LoadFromStreamBin(const S: TStream); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
-    procedure SaveToStreamBin(const S: TStream); {$IFDEF COMPILER6_UP}deprecated;{$ENDIF}
-
+    procedure LoadFromStreamBin(const S: TStream);
+      {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+    procedure SaveToStreamBin(const S: TStream);
+      {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
     property Data: Pointer read FData write FData;
     property LastSnoozeInterval: TSystemTime read FLastSnoozeInterval;
     property NextFire: TTimeStamp read GetNextFire;
@@ -222,44 +191,30 @@ type
     property NextScheduleFire: TTimeStamp read FScheduleFire;
     property RequestedTriggerTime: TTimeStamp read FReqTriggerTime;
     property ActualTriggerTime: TTimeStamp read FActualTriggerTime;
-
   published
     property CountMissedEvents: Boolean read FCountMissedEvents write FCountMissedEvents default False;
     property Name: string read FName write SetName;
     property Schedule: IJclSchedule read FSchedule write FSchedule stored False;
-
     property OnExecute: TScheduledEventExecute read FOnExecute write FOnExecute;
   end;
 
 implementation
 
 uses
-  contnrs, Forms, TypInfo,
+  Contnrs, Forms, TypInfo,
   JclDateTime, JclRTTI,
   JvSchedEvtStore, JvTypes;
 
 { registry constants }
 
 const
-  HKEYNames: array[0..6] of string = (
-    'HKEY_CLASSES_ROOT',
-    'HKEY_CURRENT_USER',
-    'HKEY_LOCAL_MACHINE',
-    'HKEY_USERS',
-    'HKEY_PERFORMANCE_DATA',
-    'HKEY_CURRENT_CONFIG',
-    'HKEY_DYN_DATA'
-  );
+  HKEYNames: array [0..6] of PChar =
+    ('HKEY_CLASSES_ROOT', 'HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE',
+     'HKEY_USERS', 'HKEY_PERFORMANCE_DATA', 'HKEY_CURRENT_CONFIG',
+     'HKEY_DYN_DATA');
 
-  HKEYShortNames: array[0..6] of string = (
-    'HKCR',
-    'HKCU',
-    'HKLM',
-    'HKU',
-    'HKPD',
-    'HKCC',
-    'HKDD'
-  );
+  HKEYShortNames: array[0..6] of PChar =
+    ('HKCR', 'HKCU', 'HKLM', 'HKU', 'HKPD', 'HKCC', 'HKDD');
 
 function HKEYFromStringStart(Value: string): HKEY;
 var
@@ -286,7 +241,7 @@ begin
     Result := HKEYNames[KEY - $80000000];
 end;
 
-{ TScheduleThread }
+//=== TScheduleThread ========================================================
 
 type
   TScheduleThread = class(TThread)
@@ -301,16 +256,25 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
-
     procedure AddEventComponent(const AComp: TJvCustomScheduledEvents);
     procedure RemoveEventComponent(const AComp: TJvCustomScheduledEvents);
     procedure Lock;
     procedure Unlock;
-
     property Ended: Boolean read FEnded;
   end;
 
-{ TScheduleThread }
+constructor TScheduleThread.Create;
+begin
+  inherited Create(True);
+  FCritSect := TCriticalSection.Create;
+  FEventComponents := TComponentList.Create(False);
+end;
+
+destructor TScheduleThread.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FCritSect);
+end;
 
 procedure TScheduleThread.Execute;
 var
@@ -342,7 +306,7 @@ begin
             begin
               TskColl[I].Triggered;
               PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
-                CM_ExecEvent, Integer(TskColl[I]), 0);
+                CM_EXECEVENT, Integer(TskColl[I]), 0);
             end;
             Inc(I);
           end;
@@ -356,19 +320,6 @@ begin
       Sleep(1);
   end;
   FEnded := True;
-end;
-
-constructor TScheduleThread.Create;
-begin
-  inherited Create(True);
-  FCritSect := TCriticalSection.Create;
-  FEventComponents := TComponentList.Create(False);
-end;
-
-destructor TScheduleThread.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FCritSect);
 end;
 
 procedure TScheduleThread.BeforeDestruction;
@@ -435,13 +386,10 @@ begin
   Result := GScheduleThread;
 end;
 
-
-{ TOpenReader }
+//=== TOpenWriter ============================================================
 
 type
   TOpenReader = class(TReader);
-
-{ TOpenWriter }
 
 type
   TOpenWriter = class(TWriter)
@@ -459,22 +407,50 @@ begin
   BaseType := GetTypeData(SetType)^.CompType^;
   WriteValue(vaSet);
   for I := 0 to SizeOf(TIntegerSet) * 8 - 1 do
-    if I in TIntegerSet(Value) then WriteStr(GetEnumName(BaseType, I));
+    if I in TIntegerSet(Value) then
+      WriteStr(GetEnumName(BaseType, I));
   WriteStr('');
 end;
 
-{ TJvCustomScheduledEvents }
+//=== TJvCustomScheduledEvents ===============================================
+
+constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSaveKey := HKEY_CURRENT_USER;
+  FEvents := TJvEventCollection.Create(Self);
+end;
+
+destructor TJvCustomScheduledEvents.Destroy;
+begin
+  if not (csDesigning in ComponentState) then
+  begin
+    ScheduleThread.RemoveEventComponent(Self);
+    if AutoSave then
+      SaveEventStates;
+    if FWnd <> 0 then
+    begin
+      {$IFDEF COMPILER6_UP}
+      Classes.DeallocateHWnd(FWnd);
+      {$ELSE}
+      DeallocateHWnd(FWnd);
+      {$ENDIF COMPILER6_UP}
+    end;
+  end;
+  FEvents.Free;
+  inherited Destroy;
+end;
 
 procedure TJvCustomScheduledEvents.DoEndEvent(const Event: TJvEventCollectionItem);
 begin
-  if @OnEndEvent <> nil then
-    OnEndEvent(Event);
+  if Assigned(FOnEndEvent) then
+    FOnEndEvent(Event);
 end;
 
 procedure TJvCustomScheduledEvents.DoStartEvent(const Event: TJvEventCollectionItem);
 begin
-  if @OnStartEvent <> nil then
-    OnStartEvent(Event);
+  if Assigned(FOnStartEvent) then
+    FOnStartEvent(Event);
 end;
 
 function TJvCustomScheduledEvents.GetSaveTo: string;
@@ -494,20 +470,18 @@ var
   I: Integer;
 begin
   for I := 0 to FEvents.Count - 1 do
-  begin
     if FEvents[I].State = sesNotInitialized then
       FEvents[I].Start;
-  end;
 end;
 
 procedure TJvCustomScheduledEvents.Loaded;
 begin
   if not (csDesigning in ComponentState) then
   begin
-    {$IFNDEF COMPILER6_UP}
-    FWnd := AllocateHWnd(WndProc);
-    {$ELSE}
+    {$IFDEF COMPILER6_UP}
     FWnd := Classes.AllocateHWnd(WndProc);
+    {$ELSE}
+    FWnd := AllocateHWnd(WndProc);
     {$ENDIF COMPILER6_UP}
     if AutoSave then
       LoadEventStates;
@@ -581,7 +555,7 @@ begin
   RegCreateKey(FSaveKey, SubKey, '');
   for I := 0 to FEvents.Count - 1 do
   begin
-    EventKey := SubKey + '\' + IntToStr(I);// + FEvents[I].Name;
+    EventKey := SubKey + '\' + IntToStr(I); // + FEvents[I].Name;
     RegCreateKey(FSaveKey, EventKey, '');
     FEvents[I].SaveState(Stamp, TriggerCount, DayCount, SnoozeStamp, SnoozeInterval);
     StampDate := Stamp.Date;
@@ -625,97 +599,20 @@ begin
   FEvents.Assign(Value);
 end;
 
-procedure TJvCustomScheduledEvents.WndProc(var Message: TMessage);
+procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
 begin
-  if Message.Msg = CM_ExecEvent then
+  if Msg.Msg = CM_EXECEVENT then
   begin
-    DoStartEvent(TJvEventCollectionItem(Message.WParam));
-    TJvEventCollectionItem(Message.WParam).Execute;
-    DoEndEvent(TJvEventCollectionItem(Message.WParam));
-    Message.Result := 1;
+    DoStartEvent(TJvEventCollectionItem(Msg.WParam));
+    TJvEventCollectionItem(Msg.WParam).Execute;
+    DoEndEvent(TJvEventCollectionItem(Msg.WParam));
+    Msg.Result := 1;
   end
   else
     inherited;
 end;
 
-constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FSaveKey := HKEY_CURRENT_USER;
-  FEvents := TJvEventCollection.Create(Self);
-  FEvents.OnSaveToStream := DoSaveToStream;
-  FEvents.OnLoadFromStream := DoLoadFromStream;
-end;
-
-destructor TJvCustomScheduledEvents.Destroy;
-begin
-  if not (csDesigning in ComponentState) then
-  begin
-    ScheduleThread.RemoveEventComponent(Self);
-    if AutoSave then
-      SaveEventStates;
-    if FWnd <> 0 then
-    begin
-      {$IFNDEF COMPILER6_UP}
-      DeallocateHWnd(FWnd);
-      {$ELSE}
-      Classes.DeallocateHWnd(FWnd);
-      {$ENDIF COMPILER6_UP}
-    end;
-  end;
-  FEvents.Free;
-  inherited Destroy;
-end;
-
-procedure TJvCustomScheduledEvents.LoadFromStream(Stream: TStream);
-begin
-  // read magic here?
-  FEvents.LoadFromStream(Stream);
-end;
-
-procedure TJvCustomScheduledEvents.SaveToStream(Stream: TStream);
-begin
-  // write magic here?
-  FEvents.SaveToStream(Stream);
-end;
-
-procedure TJvCustomScheduledEvents.DoLoadFromStream(Sender: TObject;
-  Event: TJvEventCollectionItem; Stream: TStream);
-begin
-  if Assigned(FOnLoadFromStream) then
-    FOnLoadFromStream(self,Event,Stream);
-end;
-
-procedure TJvCustomScheduledEvents.DoSaveToStream(Sender: TObject;
-  Event: TJvEventCollectionItem; Stream: TStream);
-begin
-  if Assigned(FOnSaveToStream) then
-    FOnSaveToStream(self,Event,Stream);
-end;
-
-procedure TJvCustomScheduledEvents.LoadFromFile(const Filename: string);
-var F:TFileStream;
-begin
-  F := TFileStream.Create(Filename,fmOpenRead or fmShareDenyNone);
-  try
-    LoadFromStream(F);
-  finally
-    F.Free;
-  end;
-end;
-
-procedure TJvCustomScheduledEvents.SaveToFile(const Filename: string);
-var F:TFileStream;
-begin
-  F := TFileStream.Create(Filename,fmCreate or fmShareExclusive);
-  try
-    SaveToStream(F);
-  finally
-    F.Free;
-  end;
-end;
-
-{ TJvEventCollection }
+//=== TJvEventCollection =====================================================
 
 function TJvEventCollection.GetItem(Index: Integer): TJvEventCollectionItem;
 begin
@@ -742,45 +639,61 @@ begin
   Result := TJvEventCollectionItem(inherited Insert(Index));
 end;
 
-procedure TJvEventCollection.DoLoadFromStream(Event:TJvEventCollectionItem;Stream:TStream);
-begin
-  if Assigned(FOnLoadFromStream) then
-    FOnLoadFromStream(self, Event,Stream);
-end;
+//=== TJvEventCollectionItem =================================================
 
-procedure TJvEventCollection.LoadFromStream(Stream: TStream);
-var ACount:integer;E:TJvEventCollectionItem;
-begin
-  Clear;
-  Stream.Read(aCount,sizeof(ACount));
-  while ACount > 0 do
+constructor TJvEventCollectionItem.Create(Collection: TCollection);
+var
+  NewName: string;
+  I: Integer;
+  J: Integer;
+
+  function NewNameIsUnique: Boolean;
   begin
-    E := Add;
-    E.LoadFromStreamBin(Stream);
-    DoLoadFromStream(E,Stream);
-    Dec(ACount);
+    with TJvEventCollection(Collection) do
+    begin
+      J := Count - 1;
+      while (J >= 0) and not AnsiSameText(Items[J].Name, NewName + IntToStr(I)) do
+        Dec(J);
+      Result := J < 0;
+    end;
+  end;
+
+  procedure CreateNewName;
+  begin
+    NewName := 'Event';
+    I := 0;
+    repeat
+      Inc(I);
+    until NewNameIsUnique;
+  end;
+
+begin
+  ScheduleThread.Lock;
+  try
+    if csDesigning in TComponent(TJvEventCollection(Collection).GetOwner).ComponentState then
+      CreateNewName
+    else
+      NewName := '';
+    inherited Create(Collection);
+    FSchedule := CreateSchedule;
+    FSnoozeFire := NullStamp;
+    FScheduleFire := NullStamp;
+    if NewName <> '' then
+      Name := NewName + IntToStr(I);
+  finally
+    ScheduleThread.Unlock;
   end;
 end;
 
-procedure TJvEventCollection.DoSaveToStream(Event:TJvEventCollectionItem;Stream:TStream);
+destructor TJvEventCollectionItem.Destroy;
 begin
-  if Assigned(FOnSaveToStream) then
-    FOnSaveToStream(self, Event,Stream);
-end;
-
-procedure TJvEventCollection.SaveToStream(Stream: TStream);
-var ACount:integer;
-begin
-  ACount := Count;
-  Stream.Write(aCount,sizeof(ACount));
-  for ACount := 0 to Count - 1 do
-  begin
-    Items[ACount].SaveToStreamBin(Stream);
-    DoSaveToStream(Items[ACount],Stream);
+  ScheduleThread.Lock;
+  try
+    inherited Destroy;
+  finally
+    ScheduleThread.Unlock;
   end;
 end;
-
-{ TJvEventCollectionItem }
 
 procedure TJvEventCollectionItem.Triggered;
 begin
@@ -844,7 +757,7 @@ begin
   Filer.DefineProperty('Monthly_IndexKind', PropMonthlyIndexKindRead, PropMonthlyIndexKindWrite,
     MonthlySched);
   Filer.DefineProperty('Monthly_IndexValue', PropMonthlyIndexValueRead, PropMonthlyIndexValueWrite,
-    MonthlySched and (MIK in [sikDay .. sikSunday]));
+    MonthlySched and (MIK in [sikDay..sikSunday]));
   Filer.DefineProperty('Monthly_Day', PropMonthlyDayRead, PropMonthlyDayWrite, MonthlySched and
     (MIK in [sikNone]));
   Filer.DefineProperty('Monthly_Interval', PropMonthlyIntervalRead, PropMonthlyIntervalWrite,
@@ -854,7 +767,7 @@ begin
   Filer.DefineProperty('Yearly_IndexKind', PropYearlyIndexKindRead, PropYearlyIndexKindWrite,
     YearlySched);
   Filer.DefineProperty('Yearly_IndexValue', PropYearlyIndexValueRead, PropYearlyIndexValueWrite,
-    YearlySched and (YIK in [sikDay .. sikSunday]));
+    YearlySched and (YIK in [sikDay..sikSunday]));
   Filer.DefineProperty('Yearly_Day', PropYearlyDayRead, PropYearlyDayWrite, YearlySched and
     (YIK in [sikNone, sikDay]));
   Filer.DefineProperty('Yearly_Month', PropYearlyMonthRead, PropYearlyMonthWrite, YearlySched);
@@ -864,8 +777,8 @@ end;
 
 procedure TJvEventCollectionItem.DoExecute(const IsSnoozeFire: Boolean);
 begin
-  if @FOnExecute <> nil then
-    OnExecute(Self, IsSnoozeFire);
+  if Assigned(FOnExecute) then
+    FOnExecute(Self, IsSnoozeFire);
 end;
 
 function TJvEventCollectionItem.GetDisplayName: string;
@@ -885,7 +798,8 @@ procedure TJvEventCollectionItem.Execute;
 var
   IsSnoozeFire: Boolean;
 begin
-  if State <> sesTriggered then Exit; // Ignore this message, something is wrong.
+  if State <> sesTriggered then
+    Exit; // Ignore this message, something is wrong.
   FActualTriggerTime := DateTimeToTimeStamp(Now);
   IsSnoozeFire := CompareTimeStamps(FActualTriggerTime, FSnoozeFire) >= 0;
   if IsSnoozeFire and (CompareTimeStamps(FActualTriggerTime, FScheduleFire) >= 0) then
@@ -944,13 +858,8 @@ begin
   DecodeDate(TmpDate, Y, M, D);
   MSecs := Stamp.Time;
   Writer.WriteString(Format('%.4d/%.2d/%.2d %.2d:%.2d:%.2d.%.3d',
-    [Y,
-     M,
-     D,
-     (MSecs div 3600000) mod 24,
-     (MSecs div 60000) mod 60,
-     (MSecs div 1000) mod 60,
-     MSecs mod 1000]));
+    [Y, M, D, (MSecs div 3600000) mod 24, (MSecs div 60000) mod 60,
+     (MSecs div 1000) mod 60, MSecs mod 1000]));
 end;
 
 procedure TJvEventCollectionItem.PropDailyEveryWeekDayRead(Reader: TReader);
@@ -1191,60 +1100,6 @@ begin
   end;
 end;
 
-constructor TJvEventCollectionItem.Create(Collection: TCollection);
-var
-  NewName: string;
-  I: Integer;
-  J: Integer;
-
-  function NewNameIsUnique: Boolean;
-  begin
-    with TJvEventCollection(Collection) do
-    begin
-      J := Count - 1;
-      while (J >= 0) and not AnsiSameText(Items[J].Name, NewName + IntToStr(I)) do
-        Dec(J);
-      Result := J < 0;
-    end;
-  end;
-
-  procedure CreateNewName;
-  begin
-    NewName := 'Event';
-    I := 0;
-    repeat
-      Inc(I);
-    until NewNameIsUnique;
-  end;
-
-begin
-  ScheduleThread.Lock;
-  try
-    if csDesigning in TComponent(TJvEventCollection(Collection).GetOwner).ComponentState then
-      CreateNewName
-    else
-      NewName := '';
-    inherited Create(Collection);
-    FSchedule := CreateSchedule;
-    FSnoozeFire := NullStamp;
-    FScheduleFire := NullStamp;
-    if NewName <> '' then
-      Name := NewName + IntToStr(I);
-  finally
-    ScheduleThread.Unlock;
-  end;
-end;
-
-destructor TJvEventCollectionItem.Destroy;
-begin
-  ScheduleThread.Lock;
-  try
-    inherited Destroy;
-  finally
-    ScheduleThread.Unlock;
-  end;
-end;
-
 procedure TJvEventCollectionItem.LoadState(const TriggerStamp: TTimeStamp; const TriggerCount,
   DayCount: Integer; const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime);
 begin
@@ -1253,7 +1108,7 @@ begin
   FSnoozeFire := SnoozeStamp;
   FLastSnoozeInterval := ALastSnoozeInterval;
   if IsNullTimeStamp(NextFire) or
-      (CompareTimeStamps(NextFire, DateTimeToTimeStamp(Now)) < 0) then
+    (CompareTimeStamps(NextFire, DateTimeToTimeStamp(Now)) < 0) then
     Schedule.NextEventFromNow(CountMissedEvents);
   if IsNullTimeStamp(NextFire) then
     FState := sesEnded
@@ -1328,7 +1183,7 @@ end;
 procedure TJvEventCollectionItem.Stop;
 begin
   if State <> sesNotInitialized then
-    FState := sesNotInitialized
+    FState := sesNotInitialized;
 end;
 
 procedure TJvEventCollectionItem.LoadFromStreamBin(const S: TStream);
@@ -1350,7 +1205,10 @@ finalization
       ScheduleThread.Resume;
     ScheduleThread.FreeOnTerminate := False;
     ScheduleThread.Terminate;
-    while not ScheduleThread.Ended do Application.ProcessMessages;
+    while not ScheduleThread.Ended do
+      Application.ProcessMessages;
     FreeAndNil(GScheduleThread);
   end;
+
 end.
+

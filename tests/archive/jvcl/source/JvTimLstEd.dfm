@@ -1,14 +1,17 @@
 object JvTimerItemsEditor: TJvTimerItemsEditor
-  Left = 208
-  Top = 102
-  Width = 249
-  Height = 152
+  Left = 352
+  Top = 190
+  Width = 253
+  Height = 155
+  BorderIcons = [biSystemMenu]
   Color = clBtnFace
+  Constraints.MinHeight = 155
+  Constraints.MinWidth = 253
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
-  Font.Style = [fsBold]
+  Font.Style = []
   Icon.Data = {
     0000010001002020100000000000E80200001600000028000000200000004000
     0000010004000000000000020000000000000000000000000000000000000000
@@ -41,7 +44,7 @@ object JvTimerItemsEditor: TJvTimerItemsEditor
   PixelsPerInch = 96
   TextHeight = 13
   object BtnPanel: TPanel
-    Left = 155
+    Left = 159
     Top = 0
     Width = 86
     Height = 125
@@ -97,7 +100,7 @@ object JvTimerItemsEditor: TJvTimerItemsEditor
   object ClientPanel: TPanel
     Left = 0
     Top = 0
-    Width = 155
+    Width = 159
     Height = 125
     Align = alClient
     BevelOuter = bvNone
@@ -106,7 +109,7 @@ object JvTimerItemsEditor: TJvTimerItemsEditor
     object DrawGrid: TDrawGrid
       Left = 2
       Top = 2
-      Width = 151
+      Width = 155
       Height = 121
       Align = alClient
       ColCount = 1
@@ -126,12 +129,12 @@ object JvTimerItemsEditor: TJvTimerItemsEditor
   end
   object FormStorage: TJvFormStorage
     StoredValues = <>
-    Left = 44
-    Top = 44
+    Left = 88
+    Top = 32
   end
   object PopupMenu: TPopupMenu
-    Left = 6
-    Top = 40
+    Left = 24
+    Top = 32
     object CutMenu: TMenuItem
       Caption = '&Cut'
       ShortCut = 8238

@@ -28,20 +28,19 @@ Known Issues:
 
 unit JvRadioGroup;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, JVCLVer,
-  JvPropAutoSave;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  StdCtrls, ExtCtrls,
+  JVCLVer, JvPropAutoSave;
 
 type
   TJvRadioGroup = class(TRadioGroup)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -49,7 +48,6 @@ type
     FOnRestored: TNotifyEvent;
     FOver: Boolean;
     FAutoSave: TJvAutoSave;
-    FAboutJVCL: TJVCLAboutInfo;
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -63,8 +61,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -74,26 +71,20 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
   FAutoSave := TJvAutoSave.Create(Self);
 end;
 
-{***********************************************}
-
 destructor TJvRadioGroup.Destroy;
 begin
   FAutoSave.Free;
-  inherited;
+  inherited Destroy;
 end;
-
-{***********************************************}
 
 procedure TJvRadioGroup.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -102,8 +93,6 @@ begin
     FOnCtl3DChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRadioGroup.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -111,23 +100,20 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRadioGroup.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvRadioGroup.CMMouseLeave(var Msg: TMessage);
 begin
@@ -140,22 +126,18 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
 procedure TJvRadioGroup.Loaded;
 var
-  i: Integer;
+  I: Integer;
 begin
-  inherited;
-  if FAutoSave.LoadValue(i) then
+  inherited Loaded;
+  if FAutoSave.LoadValue(I) then
   begin
-    ItemIndex := i;
+    ItemIndex := I;
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
 end;
-
-{**************************************************}
 
 procedure TJvRadioGroup.CMExit(var Msg: TCMExit);
 begin
@@ -164,3 +146,4 @@ begin
 end;
 
 end.
+

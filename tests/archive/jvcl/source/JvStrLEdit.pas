@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -26,51 +26,60 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ Tstrings property editor originally from the Rx library: duplicated for internal use) }
 unit JvStrLEdit;
+
+{ TStrings property editor originally from the Rx library: duplicated for internal use) }
 
 interface
 
-uses Windows, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
-  StdCtrls, ExtCtrls, {$IFDEF COMPILER6_UP}DesignIntf, DesignEditors
-  {$ELSE}DsgnIntf{$ENDIF};
+uses
+  Windows, Classes, Forms, Controls, Dialogs, StdCtrls,
+  {$IFDEF COMPILER6_UP}
+  DesignIntf, DesignEditors, ExtCtrls;
+  {$ELSE}
+  DsgnIntf;
+  {$ENDIF}
 
 type
   TJvStrEditDlg = class(TForm)
-    Memo:TMemo;
-    LineCount:TLabel;
-    OpenDialog:TOpenDialog;
-    SaveDialog:TSaveDialog;
-    OKBtn:TButton;
-    CancelBtn:TButton;
-    HelpBtn:TButton;
-    LoadBtn:TButton;
-    SaveBtn:TButton;
-    procedure FileOpen(Sender:TObject);
-    procedure FileSave(Sender:TObject);
-    procedure UpdateStatus(Sender:TObject);
-    procedure FormCreate(Sender:TObject);
-    procedure MemoKeyDown(Sender:TObject; var Key:Word;
-      Shift:TShiftState);
-    procedure HelpBtnClick(Sender:TObject);
+    Memo: TMemo;
+    LineCount: TLabel;
+    OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
+    OKBtn: TButton;
+    CancelBtn: TButton;
+    HelpBtn: TButton;
+    LoadBtn: TButton;
+    SaveBtn: TButton;
+    procedure FileOpen(Sender: TObject);
+    procedure FileSave(Sender: TObject);
+    procedure UpdateStatus(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure MemoKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure HelpBtnClick(Sender: TObject);
   private
-    SingleLine:string[15];
-    MultipleLines:string[15];
-    FFilename:string;
+    // (rom) removed string[15] to increase flexibility
+    SingleLine: string;
+    MultipleLines: string;
+    FFilename: string;
   end;
 
 implementation
-uses SysUtils, LibHelp;
+
+uses
+  SysUtils, LibHelp;
 
 {$R *.DFM}
 
 resourcestring
-  STextFilter = 'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
+  STextFilter =
+    'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
     //  STextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
+  // (rom) added for localization
+  SSingleLine = 'Line';
+  SMultipleLines = 'Lines';
 
-  { TStrListEditDlg }
-
-procedure TJvStrEditDlg.FileOpen(Sender:TObject);
+procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin
   with OpenDialog do
   begin
@@ -84,7 +93,7 @@ begin
   end;
 end;
 
-procedure TJvStrEditDlg.FileSave(Sender:TObject);
+procedure TJvStrEditDlg.FileSave(Sender: TObject);
 begin
   if SaveDialog.FileName = '' then
     SaveDialog.FileName := FFilename;
@@ -92,16 +101,14 @@ begin
   begin
     Filter := STextFilter;
     if Execute then
-    begin
-//      FFilename := Filename;
+      // FFilename := Filename;
       Memo.Lines.SaveToFile(FileName);
-    end;
   end;
 end;
 
-procedure TJvStrEditDlg.UpdateStatus(Sender:TObject);
+procedure TJvStrEditDlg.UpdateStatus(Sender: TObject);
 var
-  Count:Integer;
+  Count: Integer;
 begin
   Count := Memo.Lines.Count;
   if Count = 1 then
@@ -110,22 +117,23 @@ begin
     LineCount.Caption := Format('%d %s', [Count, MultipleLines]);
 end;
 
-procedure TJvStrEditDlg.FormCreate(Sender:TObject);
+procedure TJvStrEditDlg.FormCreate(Sender: TObject);
 begin
   HelpContext := hcDStringListEditor;
   OpenDialog.HelpContext := hcDStringListLoad;
   SaveDialog.HelpContext := hcDStringListSave;
-  SingleLine := 'Line';
-  MultipleLines := 'Lines';
+  SingleLine := SSingleLine;
+  MultipleLines := SMultipleLines;
 end;
 
-procedure TJvStrEditDlg.MemoKeyDown(Sender:TObject; var Key:Word;
-  Shift:TShiftState);
+procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then CancelBtn.Click;
+  if Key = VK_ESCAPE then
+    CancelBtn.Click;
 end;
 
-procedure TJvStrEditDlg.HelpBtnClick(Sender:TObject);
+procedure TJvStrEditDlg.HelpBtnClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;

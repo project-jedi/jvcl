@@ -30,21 +30,20 @@ unit JvSplitter;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls, JVCLVer;
+  Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls,
+  JVCLVer;
 
 type
   TJvSplitter = class(TSplitter)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    Fover: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
+    FOver: Boolean;
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -54,8 +53,7 @@ type
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ShowHint;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -63,7 +61,12 @@ type
 
 implementation
 
-{**************************************************}
+constructor TJvSplitter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+end;
 
 procedure TJvSplitter.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -72,17 +75,6 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-constructor TJvSplitter.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FColor := clInfoBk;
-  FOver := False;
-end;
-
-{**************************************************}
-
 procedure TJvSplitter.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
@@ -90,14 +82,13 @@ begin
     FOver := True;
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
-
-{**************************************************}
 
 procedure TJvSplitter.CMMouseLeave(var Msg: TMessage);
 begin
@@ -111,3 +102,4 @@ begin
 end;
 
 end.
+

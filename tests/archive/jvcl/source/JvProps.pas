@@ -12,7 +12,7 @@ The Original Code is: JvProps.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,17 +25,14 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvProps;
 
 interface
 
-uses SysUtils, Classes, Graphics, Controls, Forms, TypInfo, JvVCLUtils;
+uses
+  SysUtils, Classes, Forms, TypInfo;
 
 type
-
-{ TJvPropInfoList }
-
   TJvPropInfoList = class(TObject)
   private
     FList: PPropList;
@@ -52,8 +49,6 @@ type
     property Count: Integer read FCount;
     property Items[Index: Integer]: PPropInfo read Get; default;
   end;
-
-{ TJvPropsStorage }
 
   TReadStrEvent = function(const ASection, Item, Default: string): string of object;
   TWriteStrEvent = procedure(const ASection, Item, Value: string) of object;
@@ -77,18 +72,18 @@ type
     function StoreClassProperty(PropInfo: PPropInfo): string;
     function StoreStringsProperty(PropInfo: PPropInfo): string;
     function StoreComponentProperty(PropInfo: PPropInfo): string;
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     function StoreLStringProperty(PropInfo: PPropInfo): string;
     function StoreWCharProperty(PropInfo: PPropInfo): string;
     function StoreVariantProperty(PropInfo: PPropInfo): string;
     procedure LoadLStringProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadWCharProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadVariantProperty(const S: string; PropInfo: PPropInfo);
-{$ENDIF}
-{$IFDEF COMPILER4_UP}
+    {$ENDIF}
+    {$IFDEF COMPILER4_UP}
     function StoreInt64Property(PropInfo: PPropInfo): string;
     procedure LoadInt64Property(const S: string; PropInfo: PPropInfo);
-{$ENDIF}
+    {$ENDIF}
     procedure LoadIntegerProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadCharProperty(const S: string; PropInfo: PPropInfo);
     procedure LoadEnumProperty(const S: string; PropInfo: PPropInfo);
@@ -128,16 +123,20 @@ function CreateStoredItem(const CompName, PropName: string): string;
 function ParseStoredItem(const Item: string; var CompName, PropName: string): Boolean;
 
 const
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   sPropNameDelimiter: string = '_';
-{$ELSE}
+  {$ELSE}
   sPropNameDelimiter: Char = '_';
-{$ENDIF}
+  {$ENDIF}
 
 implementation
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, JvStr16, {$ENDIF}
-  Consts, JvStrUtils;
+uses
+  {$IFNDEF WIN32}
+  WinTypes, WinProcs,
+  JvStr16,
+  {$ENDIF}
+  JvStrUtils;
 
 const
   sCount = 'Count';
@@ -156,24 +155,27 @@ end;
 
 function GetPropType(PropInfo: PPropInfo): PTypeInfo;
 begin
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   Result := PropInfo^.PropType^;
-{$ELSE}
+  {$ELSE}
   Result := PropInfo^.PropType;
-{$ENDIF}
+  {$ENDIF}
 end;
 
-{ TJvPropInfoList }
+//=== TJvPropInfoList ========================================================
 
 constructor TJvPropInfoList.Create(AObject: TObject; Filter: TTypeKinds);
 begin
-  if AObject <> nil then begin
+  inherited Create;
+  if AObject <> nil then
+  begin
     FCount := GetPropList(AObject.ClassInfo, Filter, nil);
     FSize := FCount * SizeOf(Pointer);
     GetMem(FList, FSize);
     GetPropList(AObject.ClassInfo, Filter, FList);
   end
-  else begin
+  else
+  begin
     FCount := 0;
     FList := nil;
   end;
@@ -181,7 +183,9 @@ end;
 
 destructor TJvPropInfoList.Destroy;
 begin
-  if FList <> nil then FreeMem(FList, FSize);
+  if FList <> nil then
+    FreeMem(FList, FSize);
+  inherited Destroy;
 end;
 
 function TJvPropInfoList.Contains(P: PPropInfo): Boolean;
@@ -204,7 +208,7 @@ var
 begin
   for I := 0 to FCount - 1 do
     with FList^[I]^ do
-      if (CompareText(Name, AName) = 0) then
+      if CompareText(Name, AName) = 0 then
       begin
         Result := FList^[I];
         Exit;
@@ -215,8 +219,8 @@ end;
 procedure TJvPropInfoList.Delete(Index: Integer);
 begin
   Dec(FCount);
-  if Index < FCount then Move(FList^[Index + 1], FList^[Index],
-    (FCount - Index) * SizeOf(Pointer));
+  if Index < FCount then
+    Move(FList^[Index + 1], FList^[Index], (FCount - Index) * SizeOf(Pointer));
 end;
 
 function TJvPropInfoList.Get(Index: Integer): PPropInfo;
@@ -229,7 +233,8 @@ var
   I: Integer;
 begin
   for I := FCount - 1 downto 0 do
-    if not List.Contains(FList^[I]) then Delete(I);
+    if not List.Contains(FList^[I]) then
+      Delete(I);
 end;
 
 { Utility routines }
@@ -246,9 +251,11 @@ var
   I: Integer;
 begin
   Result := False;
-  if Length(Item) = 0 then Exit;
+  if Length(Item) = 0 then
+    Exit;
   I := Pos('.', Item);
-  if I > 0 then begin
+  if I > 0 then
+  begin
     CompName := Trim(Copy(Item, 1, I - 1));
     PropName := Trim(Copy(Item, I + 1, MaxInt));
     Result := (Length(CompName) > 0) and (Length(PropName) > 0);
@@ -270,23 +277,31 @@ var
   Component: TComponent;
   CompName, PropName: string;
 begin
-  if (AStoredList = nil) or (AComponent = nil) then Exit;
-  for I := AStoredList.Count - 1 downto 0 do begin
+  if (AStoredList = nil) or (AComponent = nil) then
+    Exit;
+  for I := AStoredList.Count - 1 downto 0 do
+  begin
     if ParseStoredItem(AStoredList[I], CompName, PropName) then
     begin
-      if FromForm then begin
+      if FromForm then
+      begin
         Component := AComponent.FindComponent(CompName);
-        if Component = nil then AStoredList.Delete(I)
-        else AStoredList.Objects[I] := Component;
+        if Component = nil then
+          AStoredList.Delete(I)
+        else
+          AStoredList.Objects[I] := Component;
       end
-      else begin
+      else
+      begin
         Component := TComponent(AStoredList.Objects[I]);
         if Component <> nil then
           AStoredList[I] := ReplaceComponentName(AStoredList[I], Component.Name)
-        else AStoredList.Delete(I);
+        else
+          AStoredList.Delete(I);
       end;
     end
-    else AStoredList.Delete(I);
+    else
+      AStoredList.Delete(I);
   end;
 end;
 
@@ -295,19 +310,23 @@ function FindGlobalComponent(const Name: string): TComponent;
 var
   I: Integer;
 begin
-  for I := 0 to Screen.FormCount - 1 do begin
+  for I := 0 to Screen.FormCount - 1 do
+  begin
     Result := Screen.Forms[I];
-    if CompareText(Name, Result.Name) = 0 then Exit;
+    if CompareText(Name, Result.Name) = 0 then
+      Exit;
   end;
-  for I := 0 to Screen.DataModuleCount - 1 do begin
+  for I := 0 to Screen.DataModuleCount - 1 do
+  begin
     Result := Screen.DataModules[I];
-    if CompareText(Name, Result.Name) = 0 then Exit;
+    if CompareText(Name, Result.Name) = 0 then
+      Exit;
   end;
   Result := nil;
 end;
 {$ENDIF}
 
-{ TJvPropsStorage }
+//=== TJvPropsStorage ========================================================
 
 function TJvPropsStorage.GetItemName(const APropName: string): string;
 begin
@@ -319,55 +338,82 @@ var
   S, Def: string;
 begin
   try
-    if PropInfo <> nil then begin
+    if PropInfo <> nil then
+    begin
       case PropInfo^.PropType^.Kind of
-        tkInteger: Def := StoreIntegerProperty(PropInfo);
-        tkChar: Def := StoreCharProperty(PropInfo);
-        tkEnumeration: Def := StoreEnumProperty(PropInfo);
-        tkFloat: Def := StoreFloatProperty(PropInfo);
-{$IFDEF WIN32}
-        tkWChar: Def := StoreWCharProperty(PropInfo);
-        tkLString: Def := StoreLStringProperty(PropInfo);
-  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-        tkLWString: Def := StoreLStringProperty(PropInfo);
-  {$ENDIF}
-        tkVariant: Def := StoreVariantProperty(PropInfo);
-{$ENDIF WIN32}
-{$IFDEF COMPILER4_UP}
-        tkInt64: Def := StoreInt64Property(PropInfo);
-{$ENDIF}
-        tkString: Def := StoreStringProperty(PropInfo);
-        tkSet: Def := StoreSetProperty(PropInfo);
-        tkClass: Def := '';
-        else Exit;
+        tkInteger:
+          Def := StoreIntegerProperty(PropInfo);
+        tkChar:
+          Def := StoreCharProperty(PropInfo);
+        tkEnumeration:
+          Def := StoreEnumProperty(PropInfo);
+        tkFloat:
+          Def := StoreFloatProperty(PropInfo);
+        {$IFDEF WIN32}
+        tkWChar:
+          Def := StoreWCharProperty(PropInfo);
+        tkLString:
+          Def := StoreLStringProperty(PropInfo);
+        {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
+        tkLWString:
+          Def := StoreLStringProperty(PropInfo);
+        {$ENDIF}
+        tkVariant:
+          Def := StoreVariantProperty(PropInfo);
+        {$ENDIF WIN32}
+        {$IFDEF COMPILER4_UP}
+        tkInt64:
+          Def := StoreInt64Property(PropInfo);
+        {$ENDIF}
+        tkString:
+          Def := StoreStringProperty(PropInfo);
+        tkSet:
+          Def := StoreSetProperty(PropInfo);
+        tkClass:
+          Def := '';
+      else
+        Exit;
       end;
       if (Def <> '') or (PropInfo^.PropType^.Kind in [tkString, tkClass])
-{$IFDEF WIN32}
-        or (PropInfo^.PropType^.Kind in [tkLString,
-          {$IFNDEF COMPILER3_UP} tkLWString, {$ENDIF} tkWChar])
-{$ENDIF WIN32}
+        {$IFDEF WIN32}
+      or (PropInfo^.PropType^.Kind in [tkLString,
+        {$IFNDEF COMPILER3_UP}tkLWString, {$ENDIF}tkWChar])
+        {$ENDIF WIN32}
       then
         S := Trim(ReadString(Section, GetItemName(PropInfo^.Name), Def))
-      else S := '';
+      else
+        S := '';
       case PropInfo^.PropType^.Kind of
-        tkInteger: LoadIntegerProperty(S, PropInfo);
-        tkChar: LoadCharProperty(S, PropInfo);
-        tkEnumeration: LoadEnumProperty(S, PropInfo);
-        tkFloat: LoadFloatProperty(S, PropInfo);
-{$IFDEF WIN32}
-        tkWChar: LoadWCharProperty(S, PropInfo);
-        tkLString: LoadLStringProperty(S, PropInfo);
-  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-        tkLWString: LoadLStringProperty(S, PropInfo);
-  {$ENDIF}
-        tkVariant: LoadVariantProperty(S, PropInfo);
-{$ENDIF WIN32}
-{$IFDEF COMPILER4_UP}
-        tkInt64: LoadInt64Property(S, PropInfo);
-{$ENDIF}
-        tkString: LoadStringProperty(S, PropInfo);
-        tkSet: LoadSetProperty(S, PropInfo);
-        tkClass: LoadClassProperty(S, PropInfo);
+        tkInteger:
+          LoadIntegerProperty(S, PropInfo);
+        tkChar:
+          LoadCharProperty(S, PropInfo);
+        tkEnumeration:
+          LoadEnumProperty(S, PropInfo);
+        tkFloat:
+          LoadFloatProperty(S, PropInfo);
+        {$IFDEF WIN32}
+        tkWChar:
+          LoadWCharProperty(S, PropInfo);
+        tkLString:
+          LoadLStringProperty(S, PropInfo);
+        {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
+        tkLWString:
+          LoadLStringProperty(S, PropInfo);
+        {$ENDIF}
+        tkVariant:
+          LoadVariantProperty(S, PropInfo);
+        {$ENDIF WIN32}
+        {$IFDEF COMPILER4_UP}
+        tkInt64:
+          LoadInt64Property(S, PropInfo);
+        {$ENDIF}
+        tkString:
+          LoadStringProperty(S, PropInfo);
+        tkSet:
+          LoadSetProperty(S, PropInfo);
+        tkClass:
+          LoadClassProperty(S, PropInfo);
       end;
     end;
   except
@@ -379,27 +425,41 @@ procedure TJvPropsStorage.StoreAnyProperty(PropInfo: PPropInfo);
 var
   S: string;
 begin
-  if PropInfo <> nil then begin
+  if PropInfo <> nil then
+  begin
     case PropInfo^.PropType^.Kind of
-      tkInteger: S := StoreIntegerProperty(PropInfo);
-      tkChar: S := StoreCharProperty(PropInfo);
-      tkEnumeration: S := StoreEnumProperty(PropInfo);
-      tkFloat: S := StoreFloatProperty(PropInfo);
-{$IFDEF WIN32}
-      tkLString: S := StoreLStringProperty(PropInfo);
-  {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
-      tkLWString: S := StoreLStringProperty(PropInfo);
-  {$ENDIF}
-      tkWChar: S := StoreWCharProperty(PropInfo);
-      tkVariant: S := StoreVariantProperty(PropInfo);
-{$ENDIF WIN32}
-{$IFDEF COMPILER4_UP}
-      tkInt64: S := StoreInt64Property(PropInfo);
-{$ENDIF}
-      tkString: S := StoreStringProperty(PropInfo);
-      tkSet: S := StoreSetProperty(PropInfo);
-      tkClass: S := StoreClassProperty(PropInfo);
-      else Exit;
+      tkInteger:
+        S := StoreIntegerProperty(PropInfo);
+      tkChar:
+        S := StoreCharProperty(PropInfo);
+      tkEnumeration:
+        S := StoreEnumProperty(PropInfo);
+      tkFloat:
+        S := StoreFloatProperty(PropInfo);
+      {$IFDEF WIN32}
+      tkLString:
+        S := StoreLStringProperty(PropInfo);
+      {$IFNDEF COMPILER3_UP} { - Delphi 2.0, C++Builder 1.0 }
+      tkLWString:
+        S := StoreLStringProperty(PropInfo);
+      {$ENDIF}
+      tkWChar:
+        S := StoreWCharProperty(PropInfo);
+      tkVariant:
+        S := StoreVariantProperty(PropInfo);
+      {$ENDIF WIN32}
+      {$IFDEF COMPILER4_UP}
+      tkInt64:
+        S := StoreInt64Property(PropInfo);
+      {$ENDIF}
+      tkString:
+        S := StoreStringProperty(PropInfo);
+      tkSet:
+        S := StoreSetProperty(PropInfo);
+      tkClass:
+        S := StoreClassProperty(PropInfo);
+    else
+      Exit;
     end;
     if (S <> '') or (PropInfo^.PropType^.Kind in [tkString
       {$IFDEF WIN32}, tkLString, {$IFNDEF COMPILER3_UP} tkLWString, {$ENDIF}
@@ -425,14 +485,14 @@ end;
 
 function TJvPropsStorage.StoreFloatProperty(PropInfo: PPropInfo): string;
 const
-{$IFDEF WIN32}
-  Precisions: array[TFloatType] of Integer = (7, 15, 18, 18, 19);
-{$ELSE}
-  Precisions: array[TFloatType] of Integer = (7, 15, 18, 18);
-{$ENDIF}
+  {$IFDEF WIN32}
+  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18, 19);
+  {$ELSE}
+  Precisions: array [TFloatType] of Integer = (7, 15, 18, 18);
+  {$ENDIF}
 begin
   Result := ReplaceStr(FloatToStrF(GetFloatProp(FObject, PropInfo), ffGeneral,
-    Precisions[GetTypeData(GetPropType(PropInfo))^.FloatType], 0), 
+    Precisions[GetTypeData(GetPropType(PropInfo))^.FloatType], 0),
     DecimalSeparator, '.');
 end;
 
@@ -442,6 +502,7 @@ begin
 end;
 
 {$IFDEF WIN32}
+
 function TJvPropsStorage.StoreLStringProperty(PropInfo: PPropInfo): string;
 begin
   Result := GetStrProp(FObject, PropInfo);
@@ -456,6 +517,7 @@ function TJvPropsStorage.StoreVariantProperty(PropInfo: PPropInfo): string;
 begin
   Result := GetVariantProp(FObject, PropInfo);
 end;
+
 {$ENDIF}
 
 {$IFDEF COMPILER4_UP}
@@ -475,8 +537,10 @@ begin
   W := GetOrdProp(FObject, PropInfo);
   TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
   for I := 0 to SizeOf(TCardinalSet) * 8 - 1 do
-    if I in TCardinalSet(W) then begin
-      if Length(Result) <> 1 then Result := Result + ',';
+    if I in TCardinalSet(W) then
+    begin
+      if Length(Result) <> 1 then
+        Result := Result + ',';
       Result := Result + GetEnumName(TypeInfo, I);
     end;
   Result := Result + ']';
@@ -492,7 +556,8 @@ begin
   List := TObject(GetOrdProp(Self.FObject, PropInfo));
   SectName := Format('%s.%s', [Section, GetItemName(PropInfo^.Name)]);
   EraseSection(SectName);
-  if (List is TStrings) and (TStrings(List).Count > 0) then begin
+  if (List is TStrings) and (TStrings(List).Count > 0) then
+  begin
     WriteString(SectName, sCount, IntToStr(TStrings(List).Count));
     for I := 0 to TStrings(List).Count - 1 do
       WriteString(SectName, Format(sItem, [I]), TStrings(List)[I]);
@@ -505,11 +570,14 @@ var
   RootName: string;
 begin
   Comp := TComponent(GetOrdProp(FObject, PropInfo));
-  if Comp <> nil then begin
+  if Comp <> nil then
+  begin
     Result := Comp.Name;
-    if (Comp.Owner <> nil) and (Comp.Owner <> FOwner) then begin
+    if (Comp.Owner <> nil) and (Comp.Owner <> FOwner) then
+    begin
       RootName := Comp.Owner.Name;
-      if RootName = '' then begin
+      if RootName = '' then
+      begin
         RootName := Comp.Owner.ClassName;
         if (RootName <> '') and (UpCase(RootName[1]) = 'T') then
           Delete(RootName, 1, 1);
@@ -517,7 +585,8 @@ begin
       Result := Format('%s.%s', [RootName, Result]);
     end;
   end
-  else Result := sNull;
+  else
+    Result := sNull;
 end;
 
 function TJvPropsStorage.StoreClassProperty(PropInfo: PPropInfo): string;
@@ -531,7 +600,8 @@ var
     I: Integer;
     Props: TJvPropInfoList;
   begin
-    with Saver do begin
+    with Saver do
+    begin
       AObject := Obj;
       Prefix := APrefix;
       Section := ASection;
@@ -539,7 +609,8 @@ var
       FOnEraseSection := Self.FOnEraseSection;
       Props := TJvPropInfoList.Create(AObject, tkProperties);
       try
-        for I := 0 to Props.Count - 1 do StoreAnyProperty(Props.Items[I]);
+        for I := 0 to Props.Count - 1 do
+          StoreAnyProperty(Props.Items[I]);
       finally
         Props.Free;
       end;
@@ -549,16 +620,21 @@ var
 begin
   Result := '';
   Obj := TObject(GetOrdProp(Self.FObject, PropInfo));
-  if (Obj <> nil) then begin
-    if Obj is TStrings then StoreStringsProperty(PropInfo)
-{$IFDEF WIN32}
-    else if Obj is TCollection then begin
+  if Obj <> nil then
+  begin
+    if Obj is TStrings then
+      StoreStringsProperty(PropInfo)
+    {$IFDEF WIN32}
+    else
+    if Obj is TCollection then
+    begin
       EraseSection(Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
       Saver := CreateStorage;
       try
         WriteString(Section, Format('%s.%s', [Prefix + PropInfo^.Name, sCount]),
           IntToStr(TCollection(Obj).Count));
-        for I := 0 to TCollection(Obj).Count - 1 do begin
+        for I := 0 to TCollection(Obj).Count - 1 do
+        begin
           StoreObjectProps(TCollection(Obj).Items[I],
             Format(sItem, [I]) + sPropNameDelimiter,
             Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
@@ -567,15 +643,18 @@ begin
         Saver.Free;
       end;
     end
-{$ENDIF}
-    else if Obj is TComponent then begin
+    {$ENDIF}
+    else
+    if Obj is TComponent then
+    begin
       Result := StoreComponentProperty(PropInfo);
       Exit;
     end;
   end;
   Saver := CreateStorage;
   try
-    with Saver do begin
+    with Saver do
+    begin
       StoreObjectProps(Obj, Self.Prefix + PropInfo^.Name, Self.Section);
     end;
   finally
@@ -622,6 +701,7 @@ end;
 {$ENDIF}
 
 {$IFDEF WIN32}
+
 procedure TJvPropsStorage.LoadLStringProperty(const S: string; PropInfo: PPropInfo);
 begin
   SetStrProp(FObject, PropInfo, S);
@@ -636,6 +716,7 @@ procedure TJvPropsStorage.LoadVariantProperty(const S: string; PropInfo: PPropIn
 begin
   SetVariantProp(FObject, PropInfo, S);
 end;
+
 {$ENDIF}
 
 procedure TJvPropsStorage.LoadStringProperty(const S: string; PropInfo: PPropInfo);
@@ -656,11 +737,13 @@ begin
   W := 0;
   TypeInfo := GetTypeData(GetPropType(PropInfo))^.CompType{$IFDEF COMPILER3_UP}^{$ENDIF};
   Count := WordCount(S, Delims);
-  for N := 1 to Count do begin
+  for N := 1 to Count do
+  begin
     EnumName := ExtractWord(N, S, Delims);
     try
       I := GetEnumValue(TypeInfo, EnumName);
-      if I >= 0 then Include(TCardinalSet(W), I);
+      if I >= 0 then
+        Include(TCardinalSet(W), I);
     except
     end;
   end;
@@ -675,10 +758,12 @@ var
   SectName: string;
 begin
   List := TObject(GetOrdProp(Self.FObject, PropInfo));
-  if (List is TStrings) then begin
+  if List is TStrings then
+  begin
     SectName := Format('%s.%s', [Section, GetItemName(PropInfo^.Name)]);
     Cnt := StrToIntDef(Trim(ReadString(SectName, sCount, '0')), 0);
-    if Cnt > 0 then begin
+    if Cnt > 0 then
+    begin
       Temp := TStringList.Create;
       try
         for I := 0 to Cnt - 1 do
@@ -698,33 +783,41 @@ var
   Root: TComponent;
   P: Integer;
 begin
-  if Trim(S) = '' then Exit;
-  if CompareText(SNull, Trim(S)) = 0 then begin
+  if Trim(S) = '' then
+    Exit;
+  if CompareText(SNull, Trim(S)) = 0 then
+  begin
     SetOrdProp(FObject, PropInfo, Longint(nil));
     Exit;
   end;
   P := Pos('.', S);
-  if P > 0 then begin
+  if P > 0 then
+  begin
     RootName := Trim(Copy(S, 1, P - 1));
     Name := Trim(Copy(S, P + 1, MaxInt));
   end
-  else begin
+  else
+  begin
     RootName := '';
     Name := Trim(S);
   end;
-  if RootName <> '' then Root := FindGlobalComponent(RootName)
-  else Root := FOwner;
-  if (Root <> nil) then
+  if RootName <> '' then
+    Root := FindGlobalComponent(RootName)
+  else
+    Root := FOwner;
+  if Root <> nil then
     SetOrdProp(FObject, PropInfo, Longint(Root.FindComponent(Name)));
 end;
 {$ELSE}
 begin
-  if Trim(S) = '' then Exit;
-  if CompareText(SNull, Trim(S)) = 0 then begin
+  if Trim(S) = '' then
+    Exit;
+  if CompareText(SNull, Trim(S)) = 0 then
+  begin
     SetOrdProp(FObject, PropInfo, Longint(nil));
     Exit;
   end;
-  if (FOwner <> nil) then
+  if FOwner <> nil then
     SetOrdProp(FObject, PropInfo, Longint(FOwner.FindComponent(Trim(S))));
 end;
 {$ENDIF}
@@ -733,10 +826,10 @@ procedure TJvPropsStorage.LoadClassProperty(const S: string; PropInfo: PPropInfo
 var
   Loader: TJvPropsStorage;
   I: Integer;
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   Cnt: Integer;
   Recreate: Boolean;
-{$ENDIF}
+  {$ENDIF}
   Obj: TObject;
 
   procedure LoadObjectProps(Obj: TObject; const APrefix, ASection: string);
@@ -744,14 +837,16 @@ var
     I: Integer;
     Props: TJvPropInfoList;
   begin
-    with Loader do begin
+    with Loader do
+    begin
       AObject := Obj;
       Prefix := APrefix;
       Section := ASection;
       FOnReadString := Self.FOnReadString;
       Props := TJvPropInfoList.Create(AObject, tkProperties);
       try
-        for I := 0 to Props.Count - 1 do LoadAnyProperty(Props.Items[I]);
+        for I := 0 to Props.Count - 1 do
+          LoadAnyProperty(Props.Items[I]);
       finally
         Props.Free;
       end;
@@ -760,10 +855,14 @@ var
 
 begin
   Obj := TObject(GetOrdProp(Self.FObject, PropInfo));
-  if (Obj <> nil) then begin
-    if Obj is TStrings then LoadStringsProperty(S, PropInfo)
-{$IFDEF WIN32}
-    else if Obj is TCollection then begin
+  if Obj <> nil then
+  begin
+    if Obj is TStrings then
+      LoadStringsProperty(S, PropInfo)
+    {$IFDEF WIN32}
+    else
+    if Obj is TCollection then
+    begin
       Loader := CreateStorage;
       try
         Cnt := TCollection(Obj).Count;
@@ -772,9 +871,12 @@ begin
         Recreate := TCollection(Obj).Count <> Cnt;
         TCollection(Obj).BeginUpdate;
         try
-          if Recreate then TCollection(Obj).Clear;
-          for I := 0 to Cnt - 1 do begin
-            if Recreate then TCollection(Obj).Add;
+          if Recreate then
+            TCollection(Obj).Clear;
+          for I := 0 to Cnt - 1 do
+          begin
+            if Recreate then
+              TCollection(Obj).Add;
             LoadObjectProps(TCollection(Obj).Items[I],
               Format(sItem, [I]) + sPropNameDelimiter,
               Format('%s.%s', [Section, Prefix + PropInfo^.Name]));
@@ -786,8 +888,10 @@ begin
         Loader.Free;
       end;
     end
-{$ENDIF}
-    else if Obj is TComponent then begin
+    {$ENDIF}
+    else
+    if Obj is TComponent then
+    begin
       LoadComponentProperty(S, PropInfo);
       Exit;
     end;
@@ -838,9 +942,11 @@ begin
   Result := TStringList.Create;
   try
     TStringList(Result).Sorted := True;
-    for I := 0 to StoredList.Count - 1 do begin
+    for I := 0 to StoredList.Count - 1 do
+    begin
       Obj := TComponent(StoredList.Objects[I]);
-      if Result.IndexOf(Obj.Name) < 0 then begin
+      if Result.IndexOf(Obj.Name) < 0 then
+      begin
         Props := TJvPropInfoList.Create(Obj, tkProperties);
         try
           Result.AddObject(Obj.Name, Props);
@@ -860,7 +966,8 @@ procedure TJvPropsStorage.FreeInfoLists(Info: TStrings);
 var
   I: Integer;
 begin
-  for I := Info.Count - 1 downto 0 do Info.Objects[I].Free;
+  for I := Info.Count - 1 downto 0 do
+    Info.Objects[I].Free;
   Info.Free;
 end;
 
@@ -875,15 +982,19 @@ begin
   if Info <> nil then
   try
     FOwner := AComponent;
-    for I := 0 to StoredList.Count - 1 do begin
-      if ParseStoredItem(StoredList[I], CompName, PropName) then begin
+    for I := 0 to StoredList.Count - 1 do
+    begin
+      if ParseStoredItem(StoredList[I], CompName, PropName) then
+      begin
         AObject := StoredList.Objects[I];
         Prefix := TComponent(AObject).Name;
         Idx := Info.IndexOf(Prefix);
-        if Idx >= 0 then begin
+        if Idx >= 0 then
+        begin
           Prefix := Prefix + sPropNameDelimiter;
           Props := TJvPropInfoList(Info.Objects[Idx]);
-          if Props <> nil then LoadAnyProperty(Props.Find(PropName));
+          if Props <> nil then
+            LoadAnyProperty(Props.Find(PropName));
         end;
       end;
     end;
@@ -904,15 +1015,19 @@ begin
   if Info <> nil then
   try
     FOwner := AComponent;
-    for I := 0 to StoredList.Count - 1 do begin
-      if ParseStoredItem(StoredList[I], CompName, PropName) then begin
+    for I := 0 to StoredList.Count - 1 do
+    begin
+      if ParseStoredItem(StoredList[I], CompName, PropName) then
+      begin
         AObject := StoredList.Objects[I];
         Prefix := TComponent(AObject).Name;
         Idx := Info.IndexOf(Prefix);
-        if Idx >= 0 then begin
+        if Idx >= 0 then
+        begin
           Prefix := Prefix + sPropNameDelimiter;
           Props := TJvPropInfoList(Info.Objects[Idx]);
-          if Props <> nil then StoreAnyProperty(Props.Find(PropName));
+          if Props <> nil then
+            StoreAnyProperty(Props.Find(PropName));
         end;
       end;
     end;
@@ -929,18 +1044,23 @@ end;
 
 function TJvPropsStorage.ReadString(const ASection, Item, Default: string): string;
 begin
-  if Assigned(FOnReadString) then Result := FOnReadString(ASection, Item, Default)
-  else Result := '';
+  if Assigned(FOnReadString) then
+    Result := FOnReadString(ASection, Item, Default)
+  else
+    Result := '';
 end;
 
 procedure TJvPropsStorage.WriteString(const ASection, Item, Value: string);
 begin
-  if Assigned(FOnWriteString) then FOnWriteString(ASection, Item, Value);
+  if Assigned(FOnWriteString) then
+    FOnWriteString(ASection, Item, Value);
 end;
 
 procedure TJvPropsStorage.EraseSection(const ASection: string);
 begin
-  if Assigned(FOnEraseSection) then FOnEraseSection(ASection);
+  if Assigned(FOnEraseSection) then
+    FOnEraseSection(ASection);
 end;
 
 end.
+

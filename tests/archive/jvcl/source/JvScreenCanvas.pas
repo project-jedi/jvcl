@@ -28,96 +28,72 @@ Known Issues:
 
 unit JvScreenCanvas;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
+  Windows, SysUtils, Graphics, Forms;
 
 type
   TJvScreenCanvas = class(TObject)
   private
     FCanvas: TCanvas;
     FPainting: Boolean;
-    FBidon: Integer;
+    FDummy: Integer;
     function GetHeight: Integer;
     function GetWidth: Integer;
-    function GetCanvas: TCanvas;
   public
     constructor Create;
-    destructor Destroy;override;
-    property Canvas: TCanvas read GetCanvas;
+    destructor Destroy; override;
+    property Canvas: TCanvas read FCanvas;
   published
-    property Height: Integer read GetHeight write FBidon;
-    property Width: Integer read GetWidth write FBidon;
+    property Height: Integer read GetHeight write FDummy;
+    property Width: Integer read GetWidth write FDummy;
     procedure BeginPaint;
     procedure EndPaint;
   end;
 
 implementation
 
-{************************************************************}
+constructor TJvScreenCanvas.Create;
+begin
+  inherited Create;
+  FPainting := False;
+  FCanvas := nil;
+end;
+
+destructor TJvScreenCanvas.Destroy;
+begin
+  EndPaint;
+  inherited Destroy;
+end;
 
 procedure TJvScreenCanvas.BeginPaint;
-var
-  DC: HDC;
 begin
   if FPainting then
     Exit;
   try
     FCanvas := TCanvas.Create;
-    DC := GetDC(0);
-    FCanvas.Handle := DC;
+    FCanvas.Handle := GetDC(HWND_DESKTOP);
     FPainting := True;
   except
     FPainting := False;
   end;
 end;
 
-{************************************************************}
-
-constructor TJvScreenCanvas.Create;
-begin
-  inherited;
-  FPainting := False;
-end;
-
-{************************************************************}
-
-destructor TJvScreenCanvas.Destroy;
-begin
-  EndPaint;
-  inherited;
-end;
-
 procedure TJvScreenCanvas.EndPaint;
 begin
   if not FPainting then
     Exit;
-  ReleaseDc(0, FCanvas.Handle);
+  ReleaseDC(HWND_DESKTOP, FCanvas.Handle);
   FCanvas.Free;
+  FCanvas := nil;
   FPainting := False;
 end;
-
-{************************************************************}
-
-function TJvScreenCanvas.GetCanvas: TCanvas;
-begin
-  if FPainting then
-    Result := FCanvas
-  else
-    Result := nil;
-end;
-
-{************************************************************}
 
 function TJvScreenCanvas.GetHeight: Integer;
 begin
   Result := Screen.Height;
 end;
-
-{************************************************************}
 
 function TJvScreenCanvas.GetWidth: Integer;
 begin
@@ -125,3 +101,4 @@ begin
 end;
 
 end.
+

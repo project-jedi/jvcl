@@ -22,39 +22,37 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+ Use QueryPerformanceCounter / Frequency instead of GetTickCount (the high resolution timer)
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-{ @abstract(Simple profiler) }
 unit JvProfiler32;
-{ To Do:
- Use QueryPerformanceCounter / Frequency instead of GetTickCount (the high resolution timer)
-}
 
 interface
+
 uses
   Windows, Dialogs, ComCtrls, StdCtrls, Controls, Classes, ExtCtrls, Forms,
-    JvComponent;
+  JvComponent;
 
 const
-  MaxProfEntries = 1024;                { maximum number of "blocks" to profile }
-  MaxStackSize = 1024; { maximum nesting of blocks at any one time }
+  MaxProfEntries = 1024; { maximum number of "blocks" to profile }
+  MaxStackSize = 1024;   { maximum nesting of blocks at any one time }
 
 var
-  OddClick: boolean = true;
+  OddClick: Boolean = True;
 
 type
-  TJvProfileInfo = array[0..MaxProfEntries - 1] of record
-    InOutTime: LongInt;
-    TimeSpent: LongInt;
-    Calls: LongInt;
+  TJvProfileInfo = array [0..MaxProfEntries - 1] of record
+    InOutTime: Longint;
+    TimeSpent: Longint;
+    Calls: Longint;
     StringID: string;
   end;
 
-  TProcStack = array[1..MaxStackSize] of record
-    CallerID: integer;
-    EntryTime: LongInt;
+  TProcStack = array [1..MaxStackSize] of record
+    CallerID: Integer;
+    EntryTime: Longint;
   end;
 
   TProfReport = class(TForm)
@@ -70,9 +68,9 @@ type
     procedure OKBtnClick(Sender: TObject);
     procedure TrimBtnClick(Sender: TObject);
   public
-    StartTime: integer;
-    EndTime: integer;
-    LastProc: integer;
+    StartTime: Integer;
+    EndTime: Integer;
+    LastProc: Integer;
     ProfileInfo: TJvProfileInfo;
   end;
 
@@ -81,18 +79,18 @@ type
     FProfileInfo: TJvProfileInfo;
     FNames: TStrings;
     FStack: TProcStack;
-    FStartTime: LongInt;
-    FEndTime: LongInt;
-    FLastProc: integer;
-    FStackSize: integer;
-    FEnabled: boolean;
-    FStarted: boolean;
-    FSorted: boolean;
+    FStartTime: Longint;
+    FEndTime: Longint;
+    FLastProc: Integer;
+    FStackSize: Integer;
+    FEnabled: Boolean;
+    FStarted: Boolean;
+    FSorted: Boolean;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     procedure SetNames(Value: TStrings);
-    procedure SetEnabled(Value: boolean);
-    procedure SetSorted(Value: boolean);
+    procedure SetEnabled(Value: Boolean);
+    procedure SetSorted(Value: Boolean);
   protected
     procedure DoStart; virtual;
     procedure DoStop; virtual;
@@ -101,23 +99,25 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Start;
-    procedure EnterID(ID: integer);
+    procedure EnterID(ID: Integer);
     procedure EnterName(const Name: string);
     procedure ExitName(const Name: string);
-    procedure ExitID(ID: integer);
+    procedure ExitID(ID: Integer);
     procedure Stop;
     procedure ShowReport;
   published
-    property Enabled: boolean read FEnabled write SetEnabled default false;
+    property Enabled: Boolean read FEnabled write SetEnabled default False;
     property Names: TStrings read FNames write SetNames;
-    property Sorted: boolean read FSorted write SetSorted default false;
+    property Sorted: Boolean read FSorted write SetSorted default False;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
 implementation
+
 uses
-  SysUtils, JvTypes;
+  SysUtils, CommCtrl,
+  JvTypes;
 
 const
   DefCaption = 'Profiler 32 Report';
@@ -131,70 +131,44 @@ const
 type
   PProfType = ^TProfType;
   TProfType = record
-    InOutTime,
-      TimeSpent,
-      Calls: integer;
+    InOutTime: Integer;
+    TimeSpent: Integer;
+    Calls: Integer;
     StringID: string;
   end;
 
   PStackType = ^TStackType;
   TStackType = record
-    CallerID,
-      EntryTime: integer;
+    CallerID: Integer;
+    EntryTime: Integer;
   end;
 
 function GetUserNamePas: string;
-var Buff: array[0..255] of char;
-  i: Cardinal;
+var
+  Buff: array [0..255] of Char;
+  I: Cardinal;
 begin
-  i := 255;
-  GetUserName(Buff, i);
+  I := 255;
+  GetUserName(Buff, I);
   Result := Buff;
 end;
 
 function GetComputerNamePas: string;
-var Buff: array[0..255] of char;
-  i: Cardinal;
+var
+  Buff: array [0..255] of Char;
+  I: Cardinal;
 begin
-  i := 255;
-  GetComputerName(Buff, i);
+  I := 255;
+  GetComputerName(Buff, I);
   Result := Buff;
 end;
 
-{ TJvProfiler }
+//=== TJvProfiler ============================================================
 
 constructor TJvProfiler.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FNames := TStringList.Create;
-end;
-
-procedure TJvProfiler.Initialize;
-var i: integer;
-begin
-  FEnabled := false;
-  FStarted := false;
-  FStartTime := 0;
-  FEndTime := 0;
-  FStackSize := 0;
-  FLastProc := -1;
-  { build ID list }
-  for i := 0 to FNames.Count - 1 do
-  begin
-    if Length(Trim(FNames[i])) < 1 then
-      Continue;                         { skip empty ID's }
-    if FLastProc > MaxProfEntries then
-      raise EJVCLException.CreateFmt('Max number of ID''s exceeded (%d)',
-        [MaxProfEntries - 1]);
-    Inc(FLastProc);
-    with FProfileInfo[FLastProc] do
-    begin
-      TimeSpent := 0;
-      Calls := 0;
-      StringID := FNames[i];
-    end;
-  end;
-
 end;
 
 destructor TJvProfiler.Destroy;
@@ -204,9 +178,37 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvProfiler.EnterID(ID: integer);
+procedure TJvProfiler.Initialize;
 var
-  Snap: integer;
+  I: Integer;
+begin
+  FEnabled := False;
+  FStarted := False;
+  FStartTime := 0;
+  FEndTime := 0;
+  FStackSize := 0;
+  FLastProc := -1;
+  { build ID list }
+  for I := 0 to FNames.Count - 1 do
+  begin
+    if Length(Trim(FNames[I])) < 1 then
+      Continue;                         { skip empty ID's }
+    if FLastProc > MaxProfEntries then
+      raise EJVCLException.CreateFmt('Max number of ID''s exceeded (%d)',
+        [MaxProfEntries - 1]);
+    Inc(FLastProc);
+    with FProfileInfo[FLastProc] do
+    begin
+      TimeSpent := 0;
+      Calls := 0;
+      StringID := FNames[I];
+    end;
+  end;
+end;
+
+procedure TJvProfiler.EnterID(ID: Integer);
+var
+  Snap: Integer;
 begin
   if FEnabled then
   begin
@@ -240,9 +242,9 @@ begin
   ExitID(TStringList(FNames).IndexOf(Name));
 end;
 
-procedure TJvProfiler.ExitID(ID: integer);
+procedure TJvProfiler.ExitID(ID: Integer);
 var
-  Snap, Elapsed: integer;
+  Snap, Elapsed: Integer;
 begin
   if Enabled then
   begin
@@ -279,7 +281,7 @@ begin
     //    Initialize;
     DoStart;
     FStartTime := GetTickCount;
-    FStarted := true;
+    FStarted := True;
   end;
 end;
 
@@ -289,7 +291,7 @@ begin
   begin
     FEndTime := GetTickCount;
     DoStop;
-    FStarted := false;
+    FStarted := False;
   end;
 end;
 
@@ -299,13 +301,13 @@ begin
   Initialize;
 end;
 
-procedure TJvProfiler.SetEnabled(Value: boolean);
+procedure TJvProfiler.SetEnabled(Value: Boolean);
 begin
   if FEnabled <> Value then
     FEnabled := Value;
 end;
 
-procedure TJvProfiler.SetSorted(Value: boolean);
+procedure TJvProfiler.SetSorted(Value: Boolean);
 begin
   if FSorted <> Value then
   begin
@@ -333,13 +335,15 @@ begin
   end;
 end;
 
+//=== TProfReport ============================================================
+
 procedure TProfReport.FormShow(Sender: TObject);
 var
-  ThisProc: integer;
-  TotalSum: integer;
+  ThisProc: Integer;
+  TotalSum: Integer;
   LItem: TListItem;
 begin
-  OddClick := true;
+  OddClick := True;
   TotalSum := (EndTime - StartTime);
   if TotalSum = 0 then
     Exit;
@@ -365,24 +369,23 @@ begin
         LItem.SubItems.Add(EmptyLine);
       end;
     end;
-  Caption := Format('%s -  total elapsed time: %d (ms)', [DefCaption,
-    TotalSum]);
+  Caption := Format('%s -  total elapsed time: %d (ms)', [DefCaption, TotalSum]);
   lvReport.Items.EndUpdate;
 end;
 
-function IsFloat(S: string): boolean;
+function IsFloat(S: string): Boolean;
 begin
-  Result := true;
+  Result := True;
   try
     StrToFloat(S);
   except
-    Result := false;
+    Result := False;
   end;
 end;
 
-function DefSort(lParam1, lParam2: TListItem; lParamSort: integer): integer
-  stdcall;
-var l1, l2: Extended;
+function DefSort(lParam1, lParam2: TListItem; lParamSort: Integer): Integer; stdcall;
+var
+  l1, l2: Extended;
 begin
   if lParamSort = 0 then
     Result := AnsiCompareText(lParam1.Caption, lParam2.Caption)
@@ -402,19 +405,19 @@ begin
     Result := -Result;
 end;
 
-procedure TProfReport.lvReportColumnClick(Sender: TObject;
-  Column: TListColumn);
+procedure TProfReport.lvReportColumnClick(Sender: TObject; Column: TListColumn);
 begin
   //  lvReport.Items.BeginUpdate;
-  lvReport.CustomSort(@DefSort, Column.Index);
+  lvReport.CustomSort(TLVCompare(@DefSort), Column.Index);
   OddClick := not OddClick;
   //  lvReport.Items.EndUpdate;
 end;
 
 procedure TProfReport.SaveBtnClick(Sender: TObject);
-var OutList: TStringList;
+var
+  OutList: TStringList;
   S: string;
-  i, j: integer;
+  I, j: Integer;
 begin
   with TSaveDialog.Create(nil) do
   begin
@@ -426,14 +429,14 @@ begin
         GetComputerNamePas]));
       OutList.Add(DefHeader2);
       S := '';
-      for i := 0 to lvReport.Columns.Count - 1 do
-        S := S + lvReport.Columns[i].Caption + #9;
+      for I := 0 to lvReport.Columns.Count - 1 do
+        S := S + lvReport.Columns[I].Caption + #9;
       OutList.Add(S);
       S := '';
       with lvReport do
-        for i := 0 to Items.Count - 1 do
+        for I := 0 to Items.Count - 1 do
         begin
-          with Items[i] do
+          with Items[I] do
           begin
             S := S + Caption + #9;
             for j := 0 to SubItems.Count - 1 do
@@ -454,14 +457,15 @@ begin
   Close;
 end;
 
-procedure TProfreport.TrimBtnClick(Sender: TObject);
-var i: integer;
+procedure TProfReport.TrimBtnClick(Sender: TObject);
+var
+  I: Integer;
 begin
   lvReport.Items.BeginUpdate;
-  for i := lvReport.Items.Count - 1 downto 0 do
+  for I := lvReport.Items.Count - 1 downto 0 do
     { no calls = not used }
-    if AnsiCompareText(lvReport.Items[i].SubItems[1], '0') = 0 then
-      lvReport.Items.Delete(i);
+    if AnsiCompareText(lvReport.Items[I].SubItems[1], '0') = 0 then
+      lvReport.Items.Delete(I);
   lvReport.Items.EndUpdate;
 end;
 

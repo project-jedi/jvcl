@@ -31,7 +31,7 @@ unit JvItemsSearchs;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
+  SysUtils, Classes;
 
 type
   TJvItemsSearchs = class(TObject)
@@ -45,107 +45,99 @@ type
 
 implementation
 
-{***********************************************}
-
 function TJvItemsSearchs.DeleteExactString(Items: TStrings; Value: string;
   All, CaseSensitive: Boolean): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := 0;
-  i := SearchExactString(Items, Value, CaseSensitive);
-  while i <> -1 do
+  I := SearchExactString(Items, Value, CaseSensitive);
+  while I <> -1 do
   begin
     Inc(Result);
-    Items.Delete(i);
+    Items.Delete(I);
     if All then
-      i := SearchExactString(Items, Value, CaseSensitive)
+      I := SearchExactString(Items, Value, CaseSensitive)
     else
       Exit;
   end;
 end;
 
-{***********************************************}
-
 function TJvItemsSearchs.SearchExactString(Items: TStrings; Value: string;
   CaseSensitive: Boolean): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := -1;
   if CaseSensitive then
   begin
-    for i := 0 to Items.Count - 1 do
-      if AnsiCompareStr(Value, Items[i]) = 0 then
+    for I := 0 to Items.Count - 1 do
+      if AnsiCompareStr(Value, Items[I]) = 0 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end
   else
   begin
-    for i := 0 to Items.Count - 1 do
-      if AnsiCompareText(Value, Items[i]) = 1 then
+    for I := 0 to Items.Count - 1 do
+      if AnsiCompareText(Value, Items[I]) = 1 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end;
 end;
-
-{***********************************************}
 
 function TJvItemsSearchs.SearchPrefix(Items: TStrings; Value: string;
   CaseSensitive: Boolean): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := -1;
   if CaseSensitive then
   begin
-    for i := 0 to Items.Count - 1 do
-      if Pos(Value, Items[i]) = 1 then
+    for I := 0 to Items.Count - 1 do
+      if Pos(Value, Items[I]) = 1 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end
   else
   begin
     Value := AnsiUpperCase(Value);
-    for i := 0 to Items.Count - 1 do
-      if Pos(Value, AnsiUpperCase(Items[i])) = 1 then
+    for I := 0 to Items.Count - 1 do
+      if Pos(Value, AnsiUpperCase(Items[I])) = 1 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end;
 end;
 
-{***********************************************}
-
 function TJvItemsSearchs.SearchSubString(Items: TStrings; Value: string;
   CaseSensitive: Boolean): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := 0;
   if CaseSensitive then
   begin
-    for i := 0 to Items.Count - 1 do
-      if Pos(Value, Items[i]) <> 0 then
+    for I := 0 to Items.Count - 1 do
+      if Pos(Value, Items[I]) <> 0 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end
   else
   begin
     Value := AnsiUpperCase(Value);
-    for i := 0 to Items.Count - 1 do
-      if Pos(Value, AnsiUpperCase(Items[i])) <> 0 then
+    for I := 0 to Items.Count - 1 do
+      if Pos(Value, AnsiUpperCase(Items[I])) <> 0 then
       begin
-        Result := i;
+        Result := I;
         Exit;
       end;
   end;

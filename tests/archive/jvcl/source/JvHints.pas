@@ -12,7 +12,7 @@ The Original Code is: JvHints.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -29,8 +29,14 @@ unit JvHints;
 
 interface
 
-uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF} Messages,
-  Graphics, Classes, Controls, Forms, Dialogs;
+uses
+  {$IFDEF WIN32}
+  Windows,
+  {$ELSE}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  Messages,
+  Graphics, Classes, Controls, Forms;
 
 type
   THintStyle = (hsRectangle, hsRoundRect, hsEllipse);
@@ -46,12 +52,12 @@ type
     FTextRect: TRect;
     FTileSize: TPoint;
     FRoundFactor: Integer;
-    procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
-{$IFDEF COMPILER3_UP}
-    procedure WMNCPaint(var Message: TMessage); message WM_NCPAINT;
-{$ENDIF}
-    function CreateRegion(Shade: Boolean): HRgn;
-    procedure FillRegion(Rgn: HRgn; Shade: Boolean);
+    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
+    {$IFDEF COMPILER3_UP}
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
+    {$ENDIF}
+    function CreateRegion(Shade: Boolean): HRGN;
+    procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
@@ -59,12 +65,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(Rect: TRect; const AHint: string); override;
-{$IFDEF COMPILER3_UP}
+    {$IFDEF COMPILER3_UP}
     procedure ActivateHintData(Rect: TRect; const AHint: string;
       AData: Pointer); override;
-{$ENDIF}
-    function CalcHintRect(MaxWidth: Integer; const AHint: string;
-      AData: Pointer): TRect; {$IFDEF COMPILER3_UP} override; {$ENDIF}
+    {$ENDIF}
+    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
+      {$IFDEF COMPILER3_UP} override; {$ENDIF}
   end;
 
 procedure SetHintStyle(Style: THintStyle; ShadowSize: THintShadowSize;
@@ -75,21 +81,22 @@ function GetHintControl: TControl;
 
 implementation
 
-uses SysUtils, JvVCLUtils, JvAppUtils, JvMaxMin;
+uses
+  SysUtils,
+  JvVCLUtils, JvMaxMin;
 
-const
+var
   HintStyle: THintStyle = hsRectangle;
-  HintShadowSize: THintShadowSize = 0;
+  HintShadowSize: Integer = 0;
   HintTail: Boolean = False;
   HintAlignment: TAlignment = taLeftJustify;
-
-{ Utility routines }
 
 procedure RegisterHintWindow(AClass: THintWindowClass);
 begin
   HintWindowClass := AClass;
   with Application do
-    if ShowHint then begin
+    if ShowHint then
+    begin
       ShowHint := False;
       ShowHint := True;
     end;
@@ -128,20 +135,21 @@ var
   NonClientMetrics: TNonClientMetrics;
 {$ENDIF}
 begin
-{$IFDEF WIN32}
+  {$IFDEF WIN32}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfStatusFont)
-  else begin
+  else
+  begin
     AFont.Name := 'MS Sans Serif';
     AFont.Size := 8;
   end;
   AFont.Color := clInfoText;
-{$ELSE}
+  {$ELSE}
   AFont.Name := 'MS Sans Serif';
   AFont.Size := 8;
   AFont.Color := clWindowText;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF WIN32}
@@ -157,9 +165,9 @@ var
   Bits: Pointer;
   BytesPerScanline, ImageSize: Integer;
 
-    function FindScanline(Source: Pointer; MaxLen: Cardinal;
-      Value: Cardinal): Cardinal; assembler;
-    asm
+  function FindScanline(Source: Pointer; MaxLen: Cardinal;
+    Value: Cardinal): Cardinal; assembler;
+  asm
             PUSH    ECX
             MOV     ECX,EDX
             MOV     EDX,EDI
@@ -168,7 +176,7 @@ var
             REPE    SCASB
             MOV     EAX,ECX
             MOV     EDI,EDX
-    end;
+  end;
 
 begin
   { Default value is entire icon height }
@@ -204,14 +212,14 @@ begin
       FreeMem(Bitmap, BitmapInfoSize + BitmapBitsSize);
     end;
   finally
-    if IconInfo.hbmColor <> 0 then DeleteObject(IconInfo.hbmColor);
-    if IconInfo.hbmMask <> 0 then DeleteObject(IconInfo.hbmMask);
+    if IconInfo.hbmColor <> 0 then
+      DeleteObject(IconInfo.hbmColor);
+    if IconInfo.hbmMask <> 0 then
+      DeleteObject(IconInfo.hbmMask);
   end;
 end;
 {$ENDIF}
 {$ENDIF}
-
-{ TJvHintWindow }
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -235,27 +243,27 @@ begin
 end;
 
 {$IFDEF COMPILER3_UP}
-procedure TJvHintWindow.WMNCPaint(var Message: TMessage);
+procedure TJvHintWindow.WMNCPaint(var Msg: TMessage);
 begin
 end;
 {$ENDIF}
 
-procedure TJvHintWindow.WMEraseBkgnd(var Message: TMessage);
+procedure TJvHintWindow.WMEraseBkgnd(var Msg: TMessage);
 begin
-  Message.Result := 1;
+  Msg.Result := 1;
 end;
 
-function TJvHintWindow.CreateRegion(Shade: Boolean): HRgn;
+function TJvHintWindow.CreateRegion(Shade: Boolean): HRGN;
 var
   R: TRect;
   W, TileOffs: Integer;
-  Tail, Dest: HRgn;
+  Tail, Dest: HRGN;
   P: TPoint;
 
-  function CreatePolyRgn(const Points: array of TPoint): HRgn;
+  function CreatePolyRgn(const Points: array of TPoint): HRGN;
   type
     PPoints = ^TPoints;
-    TPoints = array[0..0] of TPoint;
+    TPoints = array [0..0] of TPoint;
   begin
     Result := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING);
   end;
@@ -263,19 +271,26 @@ var
 begin
   R := FRect;
   Result := 0;
-  if Shade then OffsetRect(R, HintShadowSize, HintShadowSize);
+  if Shade then
+    OffsetRect(R, HintShadowSize, HintShadowSize);
   case HintStyle of
-    hsRoundRect: Result := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom,
-      FRoundFactor, FRoundFactor);
-    hsEllipse: Result := CreateEllipticRgnIndirect(R);
-    hsRectangle: Result := CreateRectRgnIndirect(R);
+    hsRoundRect:
+      Result := CreateRoundRectRgn(R.Left, R.Top, R.Right, R.Bottom,
+        FRoundFactor, FRoundFactor);
+    hsEllipse:
+      Result := CreateEllipticRgnIndirect(R);
+    hsRectangle:
+      Result := CreateRectRgnIndirect(R);
   end;
-  if HintTail then begin
+  if HintTail then
+  begin
     R := FTextRect;
     GetCursorPos(P);
     TileOffs := 0;
-    if FPos in [hpTopLeft, hpBottomLeft] then TileOffs := Width;
-    if Shade then begin
+    if FPos in [hpTopLeft, hpBottomLeft] then
+      TileOffs := Width;
+    if Shade then
+    begin
       OffsetRect(R, HintShadowSize, HintShadowSize);
       Inc(TileOffs, HintShadowSize);
     end;
@@ -290,9 +305,9 @@ begin
       hpBottomRight:
         Tail := CreatePolyRgn([Point(TileOffs, 0),
           Point(R.Left + W div 4, R.Top), Point(R.Left + 2 * W, R.Top)]);
-      else {hpBottomLeft}
-        Tail := CreatePolyRgn([Point(TileOffs, 0),
-          Point(R.Right - W div 4, R.Top), Point(R.Right - 2 * W, R.Top)]);
+    else
+      Tail := CreatePolyRgn([Point(TileOffs, 0),
+        Point(R.Right - W div 4, R.Top), Point(R.Right - 2 * W, R.Top)]);
     end;
     try
       Dest := Result;
@@ -300,7 +315,8 @@ begin
       try
         CombineRgn(Result, Dest, Tail, RGN_OR);
       finally
-        if Dest <> 0 then DeleteObject(Dest);
+        if Dest <> 0 then
+          DeleteObject(Dest);
       end;
     finally
       DeleteObject(Tail);
@@ -308,40 +324,45 @@ begin
   end;
 end;
 
-procedure TJvHintWindow.FillRegion(Rgn: HRgn; Shade: Boolean);
+procedure TJvHintWindow.FillRegion(Rgn: HRGN; Shade: Boolean);
 begin
-  if Shade then begin
+  if Shade then
+  begin
     FImage.Canvas.Brush.Bitmap :=
-{$IFDEF COMPILER4_UP}
+      {$IFDEF COMPILER4_UP}
       AllocPatternBitmap(clBtnFace, clWindowText);
-{$ELSE}
+      {$ELSE}
       CreateTwoColorsBrushPattern(clBtnFace, clWindowText);
-{$ENDIF}
+      {$ENDIF}
     FImage.Canvas.Pen.Style := psClear;
   end
-  else begin
+  else
+  begin
     FImage.Canvas.Pen.Style := psSolid;
     FImage.Canvas.Brush.Color := Color;
   end;
   try
     PaintRgn(FImage.Canvas.Handle, Rgn);
-    if not Shade then begin
+    if not Shade then
+    begin
       FImage.Canvas.Brush.Color := Font.Color;
-{$IFDEF WIN32}
-      if (HintStyle = hsRectangle) and not HintTail then begin
+      {$IFDEF WIN32}
+      if (HintStyle = hsRectangle) and not HintTail then
+      begin
         DrawEdge(FImage.Canvas.Handle, FRect, BDR_RAISEDOUTER, BF_RECT);
       end
       else
-{$ENDIF}
+      {$ENDIF}
         FrameRgn(FImage.Canvas.Handle, Rgn, FImage.Canvas.Brush.Handle, 1, 1);
     end;
   finally
-    if Shade then begin
-{$IFDEF COMPILER4_UP}
+    if Shade then
+    begin
+      {$IFDEF COMPILER4_UP}
       FImage.Canvas.Brush.Bitmap := nil;
-{$ELSE}
+      {$ELSE}
       FImage.Canvas.Brush.Bitmap.Free;
-{$ENDIF}
+      {$ENDIF}
       FImage.Canvas.Pen.Style := psSolid;
     end;
     FImage.Canvas.Brush.Color := Color;
@@ -351,22 +372,22 @@ end;
 procedure TJvHintWindow.Paint;
 var
   R: TRect;
-  FShadeRgn, FRgn: HRgn;
+  FShadeRgn, FRgn: HRGN;
 
   procedure PaintText(R: TRect);
   const
-    Flag: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-{$IFNDEF WIN32}
+    Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  {$IFNDEF WIN32}
   var
-    ACaption: array[0..255] of Char;
-{$ENDIF}
+    ACaption: array [0..255] of Char;
+  {$ENDIF}
   begin
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     DrawText(FImage.Canvas.Handle, PChar(Caption),
-{$ELSE}
+    {$ELSE}
     DrawText(FImage.Canvas.Handle, StrPCopy(ACaption, Caption),
-{$ENDIF}
-      -1, R, DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]
+    {$ENDIF}
+      - 1, R, DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]
       {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
   end;
 
@@ -387,7 +408,8 @@ begin
     DeleteObject(FRgn);
   end;
   R := FTextRect;
-  if HintAlignment = taLeftJustify then Inc(R.Left, 2);
+  if HintAlignment = taLeftJustify then
+    Inc(R.Left, 2);
   PaintText(R);
   Canvas.Draw(0, 0, FImage);
 end;
@@ -402,71 +424,94 @@ begin
   GetCursorPos(P);
   FPos := hpBottomRight;
   R := CalcHintRect(Screen.Width, AHint, nil);
-{$IFDEF COMPILER3_UP}
+  {$IFDEF COMPILER3_UP}
   OffsetRect(R, Rect.Left - R.Left, Rect.Top - R.Top);
-{$ELSE}
- {$IFDEF WIN32}
+  {$ELSE}
+  {$IFDEF WIN32}
   OffsetRect(R, P.X, P.Y + GetCursorHeightMargin);
- {$ELSE}
+  {$ELSE}
   OffsetRect(R, P.X, Rect.Top - R.Top);
- {$ENDIF WIN32}
-{$ENDIF}
+  {$ENDIF WIN32}
+  {$ENDIF}
   Rect := R;
   BoundsRect := Rect;
 
-  if HintTail then begin
+  if HintTail then
+  begin
     Rect.Top := P.Y - Height - 3;
-    if Rect.Top < 0 then Rect.Top := BoundsRect.Top
-    else Rect.Bottom := Rect.Top + HeightOf(BoundsRect);
+    if Rect.Top < 0 then
+      Rect.Top := BoundsRect.Top
+    else
+      Rect.Bottom := Rect.Top + HeightOf(BoundsRect);
 
     Rect.Left := P.X + 1;
-    if Rect.Left < 0 then Rect.Left := BoundsRect.Left
-    else Rect.Right := Rect.Left + WidthOf(BoundsRect);
+    if Rect.Left < 0 then
+      Rect.Left := BoundsRect.Left
+    else
+      Rect.Right := Rect.Left + WidthOf(BoundsRect);
   end;
 
-  if Rect.Top + Height > Screen.Height then begin
+  if Rect.Top + Height > Screen.Height then
+  begin
     Rect.Top := Screen.Height - Height;
-    if Rect.Top <= P.Y then Rect.Top := P.Y - Height - 3;
+    if Rect.Top <= P.Y then
+      Rect.Top := P.Y - Height - 3;
   end;
-  if Rect.Left + Width > Screen.Width then begin
+  if Rect.Left + Width > Screen.Width then
+  begin
     Rect.Left := Screen.Width - Width;
-    if Rect.Left <= P.X then Rect.Left := P.X - Width -3;
+    if Rect.Left <= P.X then
+      Rect.Left := P.X - Width - 3;
   end;
-  if Rect.Left < 0 then begin
+  if Rect.Left < 0 then
+  begin
     Rect.Left := 0;
-    if Rect.Left + Width >= P.X then Rect.Left := P.X - Width - 1;
+    if Rect.Left + Width >= P.X then
+      Rect.Left := P.X - Width - 1;
   end;
-  if Rect.Top < 0 then begin
+  if Rect.Top < 0 then
+  begin
     Rect.Top := 0;
-    if Rect.Top + Height >= P.Y then Rect.Top := P.Y - Height - 1;
+    if Rect.Top + Height >= P.Y then
+      Rect.Top := P.Y - Height - 1;
   end;
 
   if (HintStyle <> hsRectangle) or (HintShadowSize > 0) or HintTail then
   begin
     FPos := hpBottomRight;
-    if (Rect.Top + Height < P.Y) then FPos := hpTopRight;
-    if (Rect.Left + Width < P.X) then begin
-      if FPos = hpBottomRight then FPos := hpBottomLeft
-      else FPos := hpTopLeft;
+    if Rect.Top + Height < P.Y then
+      FPos := hpTopRight;
+    if Rect.Left + Width < P.X then
+    begin
+      if FPos = hpBottomRight then
+        FPos := hpBottomLeft
+      else
+        FPos := hpTopLeft;
     end;
-    if HintTail then begin
-      if (FPos in [hpBottomRight, hpBottomLeft]) then begin
+    if HintTail then
+    begin
+      if FPos in [hpBottomRight, hpBottomLeft] then
+      begin
         OffsetRect(FRect, 0, FTileSize.Y);
         OffsetRect(FTextRect, 0, FTileSize.Y);
       end;
-      if (FPos in [hpBottomRight, hpTopRight]) then begin
+      if FPos in [hpBottomRight, hpTopRight] then
+      begin
         OffsetRect(FRect, FTileSize.X, 0);
         OffsetRect(FTextRect, FTileSize.X, 0);
       end;
     end;
-    if HandleAllocated then begin
+    if HandleAllocated then
+    begin
       SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_HIDEWINDOW or
         SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOMOVE);
-      if Screen.ActiveForm <> nil then UpdateWindow(Screen.ActiveForm.Handle);
+      if Screen.ActiveForm <> nil then
+        UpdateWindow(Screen.ActiveForm.Handle);
     end;
     ScreenDC := GetDC(0);
     try
-      with FSrcImage do begin
+      with FSrcImage do
+      begin
         Width := WidthOf(BoundsRect);
         Height := HeightOf(BoundsRect);
         BitBlt(Canvas.Handle, 0, 0, Width, Height, ScreenDC, Rect.Left,
@@ -483,22 +528,22 @@ end;
 function TJvHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
   AData: Pointer): TRect;
 const
-  Flag: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   A: Integer;
   X, Y, Factor: Double;
-{$IFNDEF WIN32}
-  ACaption: array[0..255] of Char;
-{$ENDIF}
+  {$IFNDEF WIN32}
+  ACaption: array [0..255] of Char;
+  {$ENDIF}
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas.Handle,
-{$IFDEF WIN32}
+    {$IFDEF WIN32}
     PChar(AHint),
-{$ELSE}
+    {$ELSE}
     StrPCopy(ACaption, AHint),
-{$ENDIF}
-    -1, Result, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]
+    {$ENDIF}
+    - 1, Result, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]
     {$IFDEF COMPILER4_UP} or DrawTextBiDiModeFlagsReadingOnly {$ENDIF});
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
@@ -512,10 +557,13 @@ begin
   FRoundFactor := Max(6, Min(WidthOf(Result), HeightOf(Result)) div 4);
   if HintStyle = hsRoundRect then
     InflateRect(FRect, FRoundFactor div 4, FRoundFactor div 4)
-  else if HintStyle = hsEllipse then begin
+  else
+  if HintStyle = hsEllipse then
+  begin
     X := WidthOf(FRect) / 2;
     Y := HeightOf(FRect) / 2;
-    if (X <> 0) and (Y <> 0) then begin
+    if (X <> 0) and (Y <> 0) then
+    begin
       Factor := Round(Y / 3);
       A := Round(Sqrt((Sqr(X) * Sqr(Y + Factor)) / (Sqr(Y + Factor) - Sqr(Y))));
       InflateRect(FRect, A - Round(X), Round(Factor));
@@ -526,7 +574,8 @@ begin
   OffsetRect(FTextRect, -Result.Left, -Result.Top);
   Inc(Result.Right, HintShadowSize);
   Inc(Result.Bottom, HintShadowSize);
-  if HintTail then begin
+  if HintTail then
+  begin
     FTileSize.Y := Max(14, Min(WidthOf(FTextRect), HeightOf(FTextRect)) div 2);
     FTileSize.X := FTileSize.Y - 8;
     Inc(Result.Right, FTileSize.X);
@@ -543,3 +592,4 @@ end;
 {$ENDIF}
 
 end.
+

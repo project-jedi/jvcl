@@ -28,12 +28,10 @@ Known Issues:
 
 unit JvNagScreen;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
+  SysUtils, Classes, Graphics, Controls, ExtCtrls, Forms,
   JvBaseDlg, JvTypes;
 
 type
@@ -41,10 +39,10 @@ type
   private
     FPict: TImage;
     FTimer: TTimer;
-    FTime: Cardinal;
+    FTimeToStay: Cardinal;
     FPicture: TBitmap;
     FForm: TForm;
-    FDisappear: Boolean;
+    FDisappearOnClick: Boolean;
     FOnAfterNag: TNotifyEvent;
     FOnBeforeNag: TNotifyEvent;
     procedure NagCreate(Sender: TObject);
@@ -57,8 +55,8 @@ type
     destructor Destroy; override;
   published
     property Picture: TBitmap read FPicture write SetPicture;
-    property TimeToStay: Cardinal read FTime write FTime default 5000;
-    property DisappearOnClick: Boolean read FDisappear write FDisappear default True;
+    property TimeToStay: Cardinal read FTimeToStay write FTimeToStay default 5000;
+    property DisappearOnClick: Boolean read FDisappearOnClick write FDisappearOnClick default True;
     procedure Execute; override;
     property OnBeforeNag: TNotifyEvent read FOnBeforeNag write FOnBeforeNag;
     property OnAfterNag: TNotifyEvent read FOnAfterNag write FOnAfterNag;
@@ -66,7 +64,19 @@ type
 
 implementation
 
-{**************************************************}
+constructor TJvNagScreen.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPicture := TBitmap.Create;
+  FTimeToStay := 5000;
+  FDisappearOnClick := True;
+end;
+
+destructor TJvNagScreen.Destroy;
+begin
+  FPicture.Free;
+  inherited Destroy;
+end;
 
 procedure TJvNagScreen.DisappearClick(Sender: TObject);
 begin
@@ -79,19 +89,6 @@ begin
   except
   end;
 end;
-
-{**************************************************}
-
-constructor TJvNagScreen.Create(AOwner: TComponent);
-begin
-  inherited;
-
-  FPicture := TBitmap.Create;
-  FTime := 5000;
-  FDisappear := True;
-end;
-
-{**************************************************}
 
 procedure TJvNagScreen.NagCreate(Sender: TObject);
 begin
@@ -115,11 +112,11 @@ begin
     FPict.Top := 0;
     FPict.Visible := True;
 
-    if FDisappear then
+    if FDisappearOnClick then
       FPict.OnClick := DisappearClick;
 
     FTimer := TTimer.Create(Self);
-    FTimer.Interval := FTime;
+    FTimer.Interval := FTimeToStay;
     FTimer.OnTimer := DisappearClick;
     FTimer.Enabled := True;
 
@@ -131,22 +128,10 @@ begin
   end;
 end;
 
-{**************************************************}
-
-destructor TJvNagScreen.Destroy;
-begin
-  FPicture.Free;
-  inherited;
-end;
-
-{**************************************************}
-
 procedure TJvNagScreen.Execute;
 begin
   NagCreate(Self);
 end;
-
-{**************************************************}
 
 procedure TJvNagScreen.Loaded;
 begin
@@ -154,11 +139,10 @@ begin
     Execute;
 end;
 
-{**************************************************}
-
 procedure TJvNagScreen.SetPicture(const Value: TBitmap);
 begin
   FPicture.Assign(Value);
 end;
 
 end.
+

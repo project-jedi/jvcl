@@ -53,7 +53,8 @@ unit JvLinkLabelTextHandler;
 interface
 
 uses
-  Graphics, Classes, Windows, SysUtils, JvLinkLabelTree, JvLinkLabelTools, JvTypes;
+  Graphics, Classes, Windows, SysUtils,
+  JvLinkLabelTree, JvLinkLabelTools, JvTypes;
 
 type
   ETextHandlerError = class(EJVCLException);
@@ -114,6 +115,7 @@ type
 
   TParentTextElement = class
   end;
+
   TStringElement = class(TParentTextElement)
   private
     FNode: TStringNode;
@@ -174,6 +176,8 @@ type
 
 implementation
 
+//=== TWordEnumerator ========================================================
+
 const
   Space = ' ';
 
@@ -208,7 +212,87 @@ type
     procedure Reset;
   end;
 
-  { TTextElementList }
+constructor TWordEnumerator.Create(const Text: string);
+begin
+  inherited Create;
+  Reset;
+  SetText(Text);
+end;
+
+function TWordEnumerator.GetCount: Integer;
+begin
+  Result := FCount;
+end;
+
+function TWordEnumerator.GetNext(const IncrementPos: Boolean): string;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  if not HasNext then
+    raise ETextHandlerError.Create('TWordEnumerator.GetNext: ' +
+      'No more words to return');
+
+  StartPos := FPos;
+  EndPos := FPos;
+  while (EndPos <= Length(FText)) and (FText[EndPos] <> Space) do
+    Inc(EndPos);
+  Inc(EndPos);
+  Result := Copy(FText, StartPos, EndPos - StartPos);
+
+  if IncrementPos then
+  begin
+    FPos := EndPos;
+    Inc(FCount);
+  end;
+end;
+
+function TWordEnumerator.GetText: string;
+begin
+  Result := FText;
+end;
+
+function TWordEnumerator.HasNext: Boolean;
+begin
+  Result := FPos <= Length(FText);
+end;
+
+function TWordEnumerator.PeekNext: string;
+begin
+  Result := GetNext(False);
+end;
+
+function TWordEnumerator.PopNext: string;
+begin
+  Result := GetNext(True);
+end;
+
+procedure TWordEnumerator.Reset;
+begin
+  FPos := 1;
+  FCount := 0;
+end;
+
+procedure TWordEnumerator.SetText(const Text: string);
+begin
+  FText := Text;
+  FCount := 0;
+end;
+
+//=== TTextElementList =======================================================
+
+constructor TTextElementList.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TTextElementList.Destroy;
+begin
+  Clear;
+  FList.Free;
+  inherited Destroy;
+end;
 
 procedure TTextElementList.AddLineBreak;
 begin
@@ -235,19 +319,6 @@ begin
   FList.Clear;
 end;
 
-constructor TTextElementList.Create;
-begin
-  inherited;
-  FList := TList.Create;
-end;
-
-destructor TTextElementList.Destroy;
-begin
-  Clear;
-  FList.Free;
-  inherited;
-end;
-
 function TTextElementList.Get(Index: Integer): TParentTextElement;
 begin
   Result := FList[Index];
@@ -258,20 +329,14 @@ begin
   Result := FList.Count;
 end;
 
-{ TTextHandler }
-
-procedure TTextHandler.AddStartingPosObserver(
-  Observer: IStartingPosObserver; Node: TAreaNode);
-begin
-  FObservers.AddObserver(Observer, Node,
-    Node.GetFirstNodeOfClass(TStringNode) as TStringNode);
-end;
+//=== TTextHandler ===========================================================
 
 constructor TTextHandler.Create(const Rect: TRect; InitialX, InitialY: Integer;
   const Canvas: TCanvas);
 var
   TempFontStyle: TFontStyles;
 const
+  // (rom) i have seen other letter combinations elsewhere
   MaximumHeightString = 'fg';
 begin
   inherited Create;
@@ -300,7 +365,14 @@ destructor TTextHandler.Destroy;
 begin
   FObservers.Free;
   FList.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TTextHandler.AddStartingPosObserver(
+  Observer: IStartingPosObserver; Node: TAreaNode);
+begin
+  FObservers.AddObserver(Observer, Node,
+    Node.GetFirstNodeOfClass(TStringNode) as TStringNode);
 end;
 
 procedure TTextHandler.DoLineBreak;
@@ -436,11 +508,14 @@ begin
     begin
       FPosX := FRect.Left;
       case TActionElement(FList[I]).ActionType of
-        atLineBreak: Inc(FPosY, FLineHeight);
-        atParagraphBreak: Inc(FPosY, FLineHeight * 2);
+        atLineBreak:
+          Inc(FPosY, FLineHeight);
+        atParagraphBreak:
+          Inc(FPosY, FLineHeight * 2);
       end;
     end
-    else if FList[I] is TStringElement then
+    else
+    if FList[I] is TStringElement then
       with FCanvas do
       begin
         Element := TStringElement(FList[I]);
@@ -454,7 +529,7 @@ begin
         Width := 0;
         Element.Node.ClearRects;
 
-        while (Enum.HasNext) do
+        while Enum.HasNext do
         begin
           NextWord := Enum.PopNext;
 
@@ -496,7 +571,8 @@ begin
             Width := NextWordWidth;
             Inc(FPosY, FLineHeight);
           end
-          else if (Element.Node.FirstWordWidthRetrieved) and (Enum.HasNext) and
+          else
+          if (Element.Node.FirstWordWidthRetrieved) and (Enum.HasNext) and
             (Enum.Count = 1) then
             Inc(Width, TextWidth(NextWord));
 
@@ -577,76 +653,7 @@ begin
     EmptyBuffer;
 end;
 
-{ TWordEnumerator }
-
-constructor TWordEnumerator.Create(const Text: string);
-begin
-  inherited Create;
-  Reset;
-  SetText(Text);
-end;
-
-function TWordEnumerator.GetCount: Integer;
-begin
-  Result := FCount;
-end;
-
-function TWordEnumerator.GetNext(const IncrementPos: Boolean): string;
-var
-  StartPos: Integer;
-  EndPos: Integer;
-begin
-  if not HasNext then
-    raise ETextHandlerError.Create('TWordEnumerator.GetNext: ' +
-      'No more words to return');
-
-  StartPos := FPos;
-  EndPos := FPos;
-  while (EndPos <= Length(FText)) and (FText[EndPos] <> Space) do
-    Inc(EndPos);
-  Inc(EndPos);
-  Result := Copy(FText, StartPos, EndPos - StartPos);
-
-  if IncrementPos then
-  begin
-    FPos := EndPos;
-    Inc(FCount);
-  end;
-end;
-
-function TWordEnumerator.GetText: string;
-begin
-  Result := FText;
-end;
-
-function TWordEnumerator.HasNext: Boolean;
-begin
-  Result := FPos <= Length(FText);
-end;
-
-function TWordEnumerator.PeekNext: string;
-begin
-  Result := GetNext(False);
-end;
-
-function TWordEnumerator.PopNext: string;
-begin
-  Result := GetNext(True);
-end;
-
-procedure TWordEnumerator.Reset;
-begin
-  FPos := 1;
-  FCount := 0;
-end;
-
-procedure TWordEnumerator.SetText(const Text: string);
-begin
-  FText := Text;
-  FCount := 0;
-end;
-
-{ TNodeObserverList }
+//=== TNodeObserverList ======================================================
 
 procedure TNodeObserverList.AddObserver(Observer: IStartingPosObserver;
   ParentNode: TAreaNode; FirstStringNode: TStringNode);
@@ -697,12 +704,7 @@ begin
   Dispose(Item);
 end;
 
-{ TStringElement }
-
-function TStringElement.BeginsWithSpace: Boolean;
-begin
-  Result := TStringTools.BeginsWith(FNode.Text);
-end;
+//=== TNodeObserverList ======================================================
 
 constructor TStringElement.Create(const Node: TStringNode;
   Style: TFontStyles; Color: TColor);
@@ -713,12 +715,17 @@ begin
   FColor := Color;
 end;
 
+function TStringElement.BeginsWithSpace: Boolean;
+begin
+  Result := TStringTools.BeginsWith(FNode.Text);
+end;
+
 function TStringElement.EndsWithSpace: Boolean;
 begin
   Result := TStringTools.EndsWith(FNode.Text);
 end;
 
-{ TActionElement }
+//=== TActionElement =========================================================
 
 constructor TActionElement.Create(ActionType: TActionType);
 begin

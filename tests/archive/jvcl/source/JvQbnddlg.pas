@@ -12,7 +12,7 @@ The Original Code is: JvQBndDlg.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -25,15 +25,18 @@ Known Issues:
 
 {$I JVCL.INC}
 
-
 unit JvQBndDlg;
 
 interface
 
 uses
-  SysUtils, {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
-  Messages, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, DB
-  {$IFNDEF COMPILER4_UP}, DBTables {$ENDIF};
+  {$IFNDEF WIN32}
+  WinTypes, WinProcs,
+  {$ENDIF}
+  {$IFNDEF COMPILER4_UP}
+  DBTables,
+  {$ENDIF}
+  SysUtils, Classes, Controls, Forms, StdCtrls, DB;
 
 type
   TJvQueryParamsDialog = class(TForm)
@@ -70,12 +73,17 @@ function EditQueryParams(DataSet: TDataSet; List: TParams;
 
 implementation
 
-uses DbConsts, {$IFDEF COMPILER3_UP} BdeConst, {$ENDIF} JvVCLUtils, JvTypes;
+uses
+  DbConsts,
+  {$IFDEF COMPILER3_UP}
+  BdeConst,
+  {$ENDIF}
+  JvVCLUtils, JvTypes;
 
 {$R *.DFM}
 
 var
-  FieldTypes: array[TFieldType] of String;
+  FieldTypes: array [TFieldType] of string;
 
 procedure FillFieldTypes;
 var
@@ -88,7 +96,8 @@ begin
   ParamString := ResStr(SDataTypes);
   J := Low(TFieldType);
   I := 1;
-  while I <= Length(ParamString) do begin
+  while I <= Length(ParamString) do
+  begin
     FieldTypes[J] := ExtractFieldName(ParamString, I);
     Inc(J);
   end;
@@ -97,7 +106,8 @@ end;
 function GetFieldType(const Value: string): TFieldType;
 begin
   for Result := Low(TFieldType) to High(TFieldType) do
-    if (FieldTypes[Result] <> '') and (FieldTypes[Result] = Value) then Exit;
+    if (FieldTypes[Result] <> '') and (FieldTypes[Result] = Value) then
+      Exit;
   Result := ftUnknown;
 end;
 
@@ -105,10 +115,9 @@ procedure ClearFieldTypes;
 var
   I: TFieldType;
 begin
-  for I := Low(TFieldType) to High(TFieldType) do begin
+  for I := Low(TFieldType) to High(TFieldType) do
     //DisposeStr(FieldTypes[I]);
     FieldTypes[I] := EmptyStr;
-  end;
 end;
 
 procedure DoneQBind; far;
@@ -117,31 +126,32 @@ begin
 end;
 
 function EditQueryParams(DataSet: TDataSet; List: TParams;
-  AHelpContext: THelpContext {$IFDEF COMPILER4_UP} = 0 {$ENDIF}): Boolean;
+  AHelpContext: THelpContext): Boolean;
 begin
   with TJvQueryParamsDialog.Create(Application) do
   try
     HelpContext := AHelpContext;
-    if HelpContext = 0 then begin
+    if HelpContext = 0 then
+    begin
       HelpBtn.Visible := False;
       OkBtn.Left := OkBtn.Left + HelpBtn.Width div 2;
       CancelBtn.Left := CancelBtn.Left + HelpBtn.Width div 2;
     end;
-    if (csDesigning in DataSet.ComponentState) then
+    if csDesigning in DataSet.ComponentState then
       Caption := Format(ResStr(SParamEditor),
-{$IFDEF COMPILER3_UP}
-  {$IFDEF CBUILDER}
+        {$IFDEF COMPILER3_UP}
+        {$IFDEF CBUILDER}
         [DataSet.Owner.Name, '->', DataSet.Name]);
-  {$ELSE}
-    {$IFDEF COMPILER4_UP}
+        {$ELSE}
+        {$IFDEF COMPILER4_UP}
         [DataSet.Owner.Name, '.', DataSet.Name]);
-    {$ELSE}
+        {$ELSE}
         [DataSet.Owner.Name, DataSet.Name]);
-    {$ENDIF}
-  {$ENDIF}
-{$ELSE}
+        {$ENDIF}
+        {$ENDIF}
+        {$ELSE}
         [DataSet.Owner.Name, DataSet.Name]);
-{$ENDIF}
+        {$ENDIF}
     InitList := List;
     Edit;
     Result := PressedOk;
@@ -156,14 +166,17 @@ var
   J: TFieldType;
 begin
   for J := Low(TFieldType) to High(TFieldType) do
-    if (FieldTypes[J] <> '') and (FieldTypes[J] <> '') then TypeList.Items.Add(FieldTypes[J]);
-  if InitList.Count = 0 then begin
+    if (FieldTypes[J] <> '') and (FieldTypes[J] <> '') then
+      TypeList.Items.Add(FieldTypes[J]);
+  if InitList.Count = 0 then
+  begin
     ParamValue.Enabled := False;
     NullValue.Enabled := False;
     TypeList.Enabled := False;
     ParamList.Enabled := False;
   end
-  else begin
+  else
+  begin
     for I := 0 to InitList.Count - 1 do
       if ParamList.Items.IndexOf(InitList[I].Name) = -1 then
         ParamList.Items.Add(InitList[I].Name);
@@ -180,12 +193,17 @@ begin
   try
     with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
     begin
-      if (FieldTypes[DataType] <> '') and (FieldTypes[DataType] <> '') then begin
-        with TypeList do ItemIndex := Items.IndexOf(FieldTypes[DataType]);
-        if Bound then ParamValue.Text := AsString
-        else ParamValue.Text := '';
+      if (FieldTypes[DataType] <> '') and (FieldTypes[DataType] <> '') then
+      begin
+        with TypeList do
+          ItemIndex := Items.IndexOf(FieldTypes[DataType]);
+        if Bound then
+          ParamValue.Text := AsString
+        else
+          ParamValue.Text := '';
       end
-      else begin
+      else
+      begin
         TypeList.ItemIndex := -1;
         ParamValue.Text := '';
       end;
@@ -208,21 +226,27 @@ end;
 
 procedure TJvQueryParamsDialog.ParamValueExit(Sender: TObject);
 begin
-  if InValueExit or (ActiveControl = CancelBtn) then Exit;
+  if InValueExit or (ActiveControl = CancelBtn) then
+    Exit;
   InValueExit := True;
   try
-    if ParamValue.Text <> '' then NullValue.Checked := False;
-    if (TypeList.Text = '') and TypeList.CanFocus then begin
+    if ParamValue.Text <> '' then
+      NullValue.Checked := False;
+    if (TypeList.Text = '') and TypeList.CanFocus then
+    begin
       TypeList.SetFocus;
       raise EJVCLException.Create(ResStr(SInvalidParamFieldType));
     end;
     if ParamValue.Text = '' then
       with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
       begin
-        if NullValue.Checked then Clear
-        else Unbind;
+        if NullValue.Checked then
+          Clear
+        else
+          Unbind;
       end
-    else CheckValue;
+    else
+      CheckValue;
   finally
     InValueExit := False;
   end;
@@ -231,21 +255,28 @@ end;
 procedure TJvQueryParamsDialog.CheckValue;
 begin
   try
-    with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do begin
+    with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
+    begin
       if (DataType in [ftDate, ftTime, ftDateTime]) and
         (CompareText(ParamValue.Text, 'Now') = 0) then
       begin
         case DataType of
-          ftDate: Text := DateToStr(SysUtils.Date);
-          ftTime: Text := TimeToStr(SysUtils.Time);
-          ftDateTime: Text := DateTimeToStr(SysUtils.Now);
+          ftDate:
+            Text := DateToStr(SysUtils.Date);
+          ftTime:
+            Text := TimeToStr(SysUtils.Time);
+          ftDateTime:
+            Text := DateTimeToStr(SysUtils.Now);
         end;
       end
-      else Text := ParamValue.Text;
+      else
+        Text := ParamValue.Text;
     end;
   except
-    with ParamValue do begin
-      if CanFocus then SetFocus;
+    with ParamValue do
+    begin
+      if CanFocus then
+        SetFocus;
       SelectAll;
     end;
     raise;
@@ -264,19 +295,22 @@ end;
 
 procedure TJvQueryParamsDialog.NullValueClick(Sender: TObject);
 begin
-  if InParamChange then Exit;
+  if InParamChange then
+    Exit;
   if NullValue.Checked then
     with InitList.ParamByName(ParamList.Items[ParamList.ItemIndex]) do
     begin
       Clear;
       ParamValue.Text := '';
     end
-  else Unbind;
+  else
+    Unbind;
 end;
 
 procedure TJvQueryParamsDialog.OkBtnClick(Sender: TObject);
 begin
-  if not TypeList.Enabled then Exit;
+  if not TypeList.Enabled then
+    Exit;
   try
     ParamValueExit(Sender);
   except
@@ -292,9 +326,9 @@ end;
 
 procedure TJvQueryParamsDialog.FormCreate(Sender: TObject);
 begin
-{$IFNDEF WIN32}
+  {$IFNDEF WIN32}
   Font.Style := [fsBold];
-{$ENDIF}
+  {$ENDIF}
 end;
 
 initialization
@@ -305,4 +339,6 @@ finalization
 {$ELSE}
   AddExitProc(DoneQBind);
 {$ENDIF}
+
 end.
+

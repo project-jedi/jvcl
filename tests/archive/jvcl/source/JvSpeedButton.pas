@@ -30,47 +30,45 @@ unit JvSpeedButton;
 
 interface
 
-
-
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Buttons, Menus, ComCtrls, JVCLVer;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Buttons, Menus,
+  JVCLVer;
 
 type
   TJvSpeedButton = class(TSpeedButton)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FSaved: TColor;
-    FColor: TColor;
+    FHintColor: TColor;
     FOver: Boolean;
-    FGlyph: TBitmap;
+    FHotGlyph: TBitmap;
     FOldGlyph: TBitmap;
-    FDropDown: TPopupMenu;
+    FDropDownMenu: TPopupMenu;
     FModalResult: TModalResult;
     FHotTrack: Boolean;
-    FHotFont: TFont;
+    FHotTrackFont: TFont;
     FFontSave: TFont;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetGlyph(Value: TBitmap);
-    procedure SetHotFont(const Value: TFont);
+    procedure SetHotTrackFont(const Value: TFont);
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   public
-    procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Click; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotGlyph: TBitmap read FGlyph write SetGlyph;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
-    property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
     property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
-
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -78,53 +76,46 @@ type
 
 implementation
 
-{**************************************************}
-
 constructor TJvSpeedButton.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FHotTrack := False;
-  FHotFont := TFont.Create;
+  FHotTrackFont := TFont.Create;
   FFontSave := TFont.Create;
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   FOver := False;
-  FGlyph := TBitmap.Create;
+  FHotGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
   FModalResult := mrNone;
 end;
 
-{**************************************************}
+destructor TJvSpeedButton.Destroy;
+begin
+  FHotGlyph.Free;
+  FOldGlyph.Free;
+  FHotTrackFont.Free;
+  FFontSave.Free;
+  inherited Destroy;
+end;
 
 procedure TJvSpeedButton.Click;
 var
   Form: TForm;
 begin
-  inherited;
+  inherited Click;
   if FModalResult <> mrNone then
   begin
     Form := TForm(GetParentForm(Self));
     if Form <> nil then
       Form.ModalResult := FModalResult;
   end
-  else if FDropDown <> nil then
+  else
+  if FDropDownMenu <> nil then
   begin
-    FDropDown.Popup(GetClientOrigin.x, GetClientOrigin.y + Height);
+    FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
     Perform(CM_MOUSELEAVE, 0, 0);
   end;
 end;
-
-{**************************************************}
-
-destructor TJvSpeedButton.Destroy;
-begin
-  FGlyph.Free;
-  FOldGlyph.Free;
-  FHotFont.Free;
-  FFontSave.Free;
-  inherited;
-end;
-
-{**************************************************}
 
 procedure TJvSpeedButton.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -133,33 +124,30 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
 begin
-  FGlyph.Assign(Value);
+  FHotGlyph.Assign(Value);
 end;
-
-{**************************************************}
 
 procedure TJvSpeedButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
-    if not FGlyph.Empty then
+    Application.HintColor := FHintColor;
+    if not FHotGlyph.Empty then
     begin
       FOldGlyph.Assign(Glyph);
-      Glyph.Assign(FGlyph);
+      Glyph.Assign(FHotGlyph);
     end;
     if FHotTrack then
     begin
       FFontSave.Assign(Font);
-      Font.Assign(FHotFont);
+      Font.Assign(FHotTrackFont);
     end;
     FOver := True;
   end;
@@ -167,13 +155,12 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 procedure TJvSpeedButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -187,11 +174,10 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{**************************************************}
-
-procedure TJvSpeedButton.SetHotFont(const Value: TFont);
+procedure TJvSpeedButton.SetHotTrackFont(const Value: TFont);
 begin
-  FHotFont.Assign(Value);
+  FHotTrackFont.Assign(Value);
 end;
 
 end.
+
