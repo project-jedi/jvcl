@@ -523,7 +523,7 @@ end;
 
 procedure TJvCustomDomainUpDown.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
   Params.Style := Params.Style and (not UDS_SETBUDDYINT) or UDS_NOTHOUSANDS;
 end;
 

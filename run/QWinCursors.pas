@@ -7,7 +7,7 @@
 { Version 0.6                                                                                     }
 { Supported:     - Traditional cursors                                                            }
 { Not supported: - Multicolor cursors (as soon as QT3 is supported)                               }
-{                - Animated cursors (maybe in feature)                                            }
+{                - Animated cursors (maybe in future)                                            }
 {                                                                                                 }
 { Thanks to Christoph Federer for Beta testing.                                                   }
 {                                                                                                 }
