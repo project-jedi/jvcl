@@ -51,7 +51,7 @@ uses
   JvQCheckListBox, JvQControlBar, JvQCtrls, JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQLabel, JvQRadioButton, JvQRadioGroup, JvQScrollBar, JvQShape,
   JvQStaticText, JvQStatusBar, JvQGrids, JvQStringGrid, JvQBitBtn, JvQPanel, JvQImageList,
-  JvQTransparentPanel, JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
+  JvQCheckedItemsForm, JvQProgressEditor, JvQDsgnEditors,
   JvQCheckedMaskEdit;
 
 {$IFDEF MSWINDOWS}
