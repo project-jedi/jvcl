@@ -304,7 +304,7 @@ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; DefButton: TMsgDlgBtn; HelpContext: Integer;
   Control: TWinControl): Integer;
 
-  
+
 (***** Utility MessageBox based dialogs *)
 // returns true if user clicked Yes
 function MsgYesNo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
@@ -404,6 +404,19 @@ procedure SaveGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorag
 
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
+
+
+// Ini Utilitie Functions
+// Added by RDB
+
+function StringToFontStyles(const Styles: string): TFontStyles;
+function FontStylesToString(Styles: TFontStyles): string;
+function FontToString(Font: TFont): string;
+function StringToFont(const Str: string) : TFont;
+function RectToStr(Rect: TRect): string;
+function StrToRect(const Str: string; const Def: TRect): TRect;
+function PointToStr(P: TPoint): string;
+function StrToPoint(const Str: string; const Def: TPoint): TPoint;
 
 {
 function IniReadString(IniFile: TObject; const Section, Ident,
@@ -6295,6 +6308,160 @@ begin
   except
   end;
 end;
+
+
+const
+  Lefts = ['[', '{', '('];
+  Rights = [']', '}', ')'];
+
+{ Utilities routines }
+
+function FontStylesToString(Styles: TFontStyles): string;
+begin
+  Result := '';
+  if fsBold in Styles then
+    Result := Result + 'B';
+  if fsItalic in Styles then
+    Result := Result + 'I';
+  if fsUnderline in Styles then
+    Result := Result + 'U';
+  if fsStrikeOut in Styles then
+    Result := Result + 'S';
+end;
+
+function StringToFontStyles(const Styles: string): TFontStyles;
+begin
+  Result := [];
+  if Pos('B', UpperCase(Styles)) > 0 then
+    Include(Result, fsBold);
+  if Pos('I', UpperCase(Styles)) > 0 then
+    Include(Result, fsItalic);
+  if Pos('U', UpperCase(Styles)) > 0 then
+    Include(Result, fsUnderline);
+  if Pos('S', UpperCase(Styles)) > 0 then
+    Include(Result, fsStrikeOut);
+end;
+
+function FontToString(Font: TFont): string;
+begin
+  with Font do
+    Result := Format('%s,%d,%s,%d,%s,%d', [Name, Size,
+      FontStylesToString(Style), Ord(Pitch), ColorToString(Color),Charset]);
+end;
+
+
+Function StringToFont(const Str: string): TFont;
+const
+  Delims = [',', ';'];
+var
+  Pos: Integer;
+  I: Byte;
+  S: string;
+begin
+  Result := TFont.Create;
+  try
+    Pos := 1;
+    I := 0;
+    while Pos <= Length(Str) do
+    begin
+      Inc(I);
+      S := Trim(ExtractSubstr(Str, Pos, Delims));
+      case I of
+        1:
+          result.Name := S;
+        2:
+          result.Size := StrToIntDef(S, result.Size);
+        3:
+          result.Style := StringToFontStyles(S);
+        4:
+          result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
+        5:
+          result.Color := StringToColor(S);
+        {$IFDEF COMPILER3_UP}
+        6:
+          result.Charset := TFontCharset(StrToIntDef(S, result.Charset));
+        {$ENDIF}
+      end;
+    end;
+  finally
+  end;
+end;
+
+function RectToStr(Rect: TRect): string;
+begin
+  with Rect do
+    Result := Format('[%d,%d,%d,%d]', [Left, Top, Right, Bottom]);
+end;
+
+function StrToRect(const Str: string; const Def: TRect): TRect;
+var
+  S: string;
+  Temp: string[10];
+  I: Integer;
+begin
+  Result := Def;
+  S := Str;
+  if (S[1] in Lefts) and (S[Length(S)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
+  end;
+  I := Pos(',', S);
+  if I > 0 then
+  begin
+    Temp := Trim(Copy(S, 1, I - 1));
+    Result.Left := StrToIntDef(Temp, Def.Left);
+    Delete(S, 1, I);
+    I := Pos(',', S);
+    if I > 0 then
+    begin
+      Temp := Trim(Copy(S, 1, I - 1));
+      Result.Top := StrToIntDef(Temp, Def.Top);
+      Delete(S, 1, I);
+      I := Pos(',', S);
+      if I > 0 then
+      begin
+        Temp := Trim(Copy(S, 1, I - 1));
+        Result.Right := StrToIntDef(Temp, Def.Right);
+        Delete(S, 1, I);
+        Temp := Trim(S);
+        Result.Bottom := StrToIntDef(Temp, Def.Bottom);
+      end;
+    end;
+  end;
+end;
+
+function PointToStr(P: TPoint): string;
+begin
+  with P do
+    Result := Format('[%d,%d]', [X, Y]);
+end;
+
+function StrToPoint(const Str: string; const Def: TPoint): TPoint;
+var
+  S: string;
+  Temp: string[10];
+  I: Integer;
+begin
+  Result := Def;
+  S := Str;
+  if (S[1] in Lefts) and (S[Length(Str)] in Rights) then
+  begin
+    Delete(S, 1, 1);
+    SetLength(S, Length(S) - 1);
+  end;
+  I := Pos(',', S);
+  if I > 0 then
+  begin
+    Temp := Trim(Copy(S, 1, I - 1));
+    Result.X := StrToIntDef(Temp, Def.X);
+    Delete(S, 1, I);
+    Temp := Trim(S);
+    Result.Y := StrToIntDef(Temp, Def.Y);
+  end;
+end;
+
+
 
 initialization
   InitScreenCursors;
