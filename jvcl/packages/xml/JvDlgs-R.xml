@@ -35,6 +35,7 @@
     <File Name="..\..\run\JvPageSetup.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetupTitled.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvParameterList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvParameterListTools.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvParameterListParameter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressDialog.pas" Targets="all" Formname="" Condition=""/>
