@@ -2,6 +2,7 @@ Changelog for JVCL 3.0
 ======================
 2003-11-02:
 - JvUrlListGrabber is now almost complete, it works if created dynamically // olivier
+- Merged TJvPanel with donated TArrangePanel // andreas
 2003-11-01:
 - Modified the batch files for BCB so that it can now build from the command line // olivier
 - Modified BCB6 and BCB5 packages to allow building from the command line // olivier
