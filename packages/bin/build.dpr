@@ -208,6 +208,12 @@ begin
   end;
 end;
 {******************************************************************************}
+function GetEnvironmentVariable(const Name: string): string;
+begin
+  SetLength(Result, 8 * 1024);
+  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
+end;
+{******************************************************************************}
 function FileExists(const Filename: string): Boolean;
 var
   attr: Cardinal;
@@ -583,6 +589,9 @@ var
   end;
 
   function ResolveMacros(const Dir: string): string;
+  var
+    ps, psEnd: Integer;
+    S: string;
   begin
     if StartsText('$(DELPHI)', Dir) then
       Result := FRootDir + Copy(Dir, 10, MaxInt)
@@ -593,7 +602,23 @@ var
     else if StartsText('$(BDSPROJECTSDIR)', Dir) then
       Result := GetBDSProjectsDir + Copy(Dir, 18, MaxInt)
     else
+    begin
       Result := Dir;
+      ps := Pos('$(', Result);
+      if ps > 0 then
+      begin
+        psEnd := Pos(')', Result);
+        if psEnd > 0 then
+        begin
+          S := Copy(Result, ps + 2, psEnd - ps - 2);
+          if S <> '' then
+          begin
+            Delete(Result, ps, 2 + Length(S) + 1);
+            Insert(GetEnvironmentVariable(S), Result, ps);
+          end
+        end;
+      end;
+    end
   end;
 
 begin
@@ -1019,7 +1044,7 @@ var
   Edition: TEdition;
 begin
   LibraryRootDir := GetLibraryRootDir;
-  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
+//  ClearEnvironment; // remove almost all environment variables for "make.exe long command line"
 
   // set ExtraOptions default values
   for I := 0 to High(ExtraOptions) do
