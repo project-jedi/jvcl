@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Generated
+##Status: Partially documented
 ----------------------------------------------------------------------------------------------------
 @@JvTypes.pas
 Summary
@@ -13,6 +13,16 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+----------------------------------------------------------------------------------------------------
+@@FourDigitYear
+<TITLE FourDigitYear function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@PJvAniTag
 <TITLE PJvAniTag type>
@@ -31,6 +41,56 @@ Description
   You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = 0..100 ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TCharSet
+<TITLE TCharSet type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = TSysCharSet ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TDateOrder
+<TITLE TDateOrder type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+@@TDateOrder.doMDY
+  Description for doMDY
+@@TDateOrder.doDMY
+  Description for doDMY
+@@TDateOrder.doYMD
+  Description for doYMD
+----------------------------------------------------------------------------------------------------
+@@TDayOfWeekName
+<TITLE TDayOfWeekName type>
+Summary
+  Enumerates the days of the week.
+Description
+  Use the TDayOfWeekName type to specify a specific day of the week.
+
+  TDaysOfWeek is a set of TDayOfWeekName values.
+@@TDayOfWeekName.Sun
+  Sunday.
+@@TDayOfWeekName.Mon
+  Monday.
+@@TDayOfWeekName.Tue
+  Tuesday.
+@@TDayOfWeekName.Wed
+  Wednesday.
+@@TDayOfWeekName.Thu
+  Thursday.
+@@TDayOfWeekName.Fri
+  Friday.
+@@TDayOfWeekName.Sat
+  Saturday.
+----------------------------------------------------------------------------------------------------
+@@TDaysOfWeek
+<TITLE TDaysOfWeek type>
+<COMBINE TDayOfWeekName>
 ---------------------------------------------------------------------------------------------------
 @@TJvAniHeader
 <TITLE TJvAniHeader type>
@@ -224,6 +284,30 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+@@TJvDriveType
+<TITLE TJvDriveType type>
+Summary
+  The type of available drives.
+Description
+  TJvDriveType describes all possible drive types on a computer.
+@@TJvDriveType.dtUnknown
+  The type of the drive could not be determined.
+@@TJvDriveType.dtRemovable
+  The drive is a removable drive. This can be a floppy, a tape drive, a zip disk or similar.
+@@TJvDriveType.dtFixed
+  The drive is a fixed drive.
+@@TJvDriveType.dtRemote
+  The drive is a networked drive on a LAN or WAN.
+@@TJvDriveType.dtCDROM
+  The drive is a CD-ROM or DVD or similar.
+@@TJvDriveType.dtRamDisk
+  The drive is a reserved memory space and not a real, persistent drive.
+----------------------------------------------------------------------------------------------------
+@@TJvDriveTypes
+<TITLE TJvDriveTypes type>
+<COMBINE TJvDriveType>
+----------------------------------------------------------------------------------------------------
 @@TJvDropEvent
 <TITLE TJvDropEvent type>
 Summary
@@ -335,6 +419,33 @@ Description
   Description for grPyramid
 @@TJvGradStyle.grMount
   Description for grMount
+----------------------------------------------------------------------------------------------------
+@@TJvImageAlign
+<TITLE TJvImageAlign type>
+Summary
+  Type used to specify the alignment of images in relation to other objects, like text.
+Description
+  Use tJvImageAlign to specify where an image is drawn in a control in relation to other items, like text.
+@@TJvImageAlign.iaLeft
+  Images are aligned to the left of other items.
+@@TJvImageAlign.iaCentered
+  Images are centered in the control and aligned above other items.
+----------------------------------------------------------------------------------------------------
+@@TJvImageSize
+<TITLE TJvImageSize type>
+Summary
+  Type used to set the size of images.
+  Type used to specify the available image sizes for lookout pages and buttons.
+Description
+  TJvImageSize is the type of the TJvDriveCombo.ImageSize and TJvDriveList.ImageSize properties and
+  is used to specify the size of the displayed icons in the list.
+  The TJvImageSize is used as the ImageSize property for TJvLookoutPage and TJvLookOutButton objects.
+@@TJvImageSize.isSmall
+  The images should be small (typically 16x16 px).
+  Display images from the SmallImages list.
+@@TJvImageSize.isLarge
+  The images should be large (typically 32x32 px).
+  Display images from the LargeImages list.
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyFoundEvent
 <TITLE TJvKeyFoundEvent type>
@@ -512,24 +623,32 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvRegKey
 <TITLE TJvRegKey type>
+@@TJvRegKey
 Summary
-  Write here a summary (1 line)
+  Indicates a root key.
 Description
-  Write here a description
+  Use the TJvRegKey type to specify a specific root key.
+
+  TJvRegKeys is a set of TJvRegKey values.
 @@TJvRegKey.hkClassesRoot
-  Description for hkClassesRoot
+  The HKEY_CLASSES_ROOT key, used to define types (or classes) of documents and the properties
+  associated with those types.
 @@TJvRegKey.hkCurrentUser
-  Description for hkCurrentUser
+  The HKEY_CURRENT_USER key, used for preferences of the current user.
 @@TJvRegKey.hkLocalMachine
-  Description for hkLocalMachine
+  The HKEY_LOCAL_MACHINE key, used to define the physical state of the computer,
 @@TJvRegKey.hkUsers
-  Description for hkUsers
+  The HKEY_USERS key, used for defining the default user configuration for new users on the local
+  computer and the user configuration for the current user.
 @@TJvRegKey.hkCurrentConfig
-  Description for hkCurrentConfig
+  The HKEY_CURRENT_CONFIG key, contains information about the current hardware profile of the
+  local computer system.
 @@TJvRegKey.hkPerformanceData
-  Description for hkPerformanceData
+  The HKEY_PERFORMANCE_DATA key, allows you to access performance data.
+  Not supported on Windows Me/98/95.
 @@TJvRegKey.hkDynData
-  Description for hkDynData
+  The HKEY_DYN_DATA key, allows you to collect performance data.
+  Only supported on Windows Me/98/95.
 ----------------------------------------------------------------------------------------------------
 @@TJvRegKeys
 <TITLE TJvRegKeys type>
@@ -635,3 +754,23 @@ Description
   You don't have to document already described items such as sets,
   pointers to records etc.
 (Value = array [ 0.. MaxPixelCount - 1 ] of TRGBTriple ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TSetOfChar
+<TITLE TSetOfChar type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = set of Char ; - for reference)
+----------------------------------------------------------------------------------------------------
+@@TTickCount
+<TITLE TTickCount type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+  You don't have to document already described items such as sets,
+  pointers to records etc.
+(Value = Cardinal ; - for reference)

@@ -11,16 +11,16 @@ Author
 @@ID3_FrameIDToString
 <TITLE ID3_FrameIDToString function>
 Summary
-  Converts a frame identifier to a string.
+  Converts a frame identifier to a frame name.
 Description
   ID3_FrameIDToString converts a frame identifier to a string containing the alphanumerical
   representation of that frame identifier.
 
   For example: ID3_FrameIDToString(fiComment, 4) returns 'COMM'.
-
-  \Returns the alphanumerical representation of that frame identifier.
 Parameters
-  ID   - \Description for this parameter
+  ID   - The frame identifier to convert.
+  Size - Specifies the size of the resulting string. Use 3 for version 2.2.0 frame names and
+         4 for version 2.3.0 and version 2.4.0 frame names.
 See Also
   <LINK ID3_StringToFrameID>
 ----------------------------------------------------------------------------------------------------
@@ -45,9 +45,10 @@ See Also
 Summary
   Converts a string to a genre identifier.
 Description
-  Write here a description
+  Use the ID3_GenreToID function to convert a string to a genre identifier (offset of a genre in
+  a <LINK TJvID3Genre_Table,predefined list>).
 Parameters
-  AGenre           - \Description for this parameter
+  AGenre           - The genre string to convert.
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
 See Also
   <LINK ID3_Genres>, <LINK ID3_IDToGenre>, <LINK ID3_LongGenreToID>
@@ -57,9 +58,10 @@ See Also
 Summary
   Converts a genre identifier to a string.
 Description
-  Write here a description
+  Use the ID3_IDToGenre function to convert a genre identifier (offset of a genre in
+  a <LINK TJvID3Genre_Table,predefined list>) to a string.
 Parameters
-  ID               - \Description for this parameter
+  ID               - The genre identifier to convert.
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
 See Also
   <LINK ID3_Genres>, <LINK ID3_GenreToID>, <LINK ID3_LongGenreToID>
@@ -67,11 +69,24 @@ See Also
 @@ID3_LongGenreToID
 <TITLE ID3_LongGenreToID function>
 Summary
-  Converts a string to a genre identifier.
+  Converts a prefix of a string to a genre identifier.
 Description
-  Write here a description
+  Use the ID3_LongGenreToID function to convert a prefix of a string to a genre identifier
+  (offset of a genre in a <LINK TJvID3Genre_Table,predefined list>).
+
+  For example:
+  <TABLE>
+  Calling                                     Returns   Meaning
+  -------------------------------------       -------   -------
+  ID3_LongGenreToID('Pop or something')       13        Pop
+  ID3_LongGenreToID('Pop/Funk ??')            62        Pop/Funk
+  ID3_LongGenreToID('Pop-Folk alike')         53        Pop-Folk
+  ID3_LongGenreToID('Rock')                   17        Rock
+  ID3_LongGenreToID('Rocks')                  255       ??
+  ID3_LongGenreToID('Rock & Roll')            78        Rock & Roll
+  </TABLE>
 Parameters
-  ALongGenre       - \Description for this parameter
+  ALongGenre       - The genre string to convert.
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
 See Also
   <LINK ID3_Genres>, <LINK ID3_GenreToID>, <LINK ID3_IDToGenre>
@@ -79,11 +94,14 @@ See Also
 @@ID3_StringToFrameID
 <TITLE ID3_StringToFrameID function>
 Summary
-  Converts a string to a frame identifier.
+  Converts a frame name to a frame identifier.
 Description
-  Write here a description
+  ID3_FrameIDToString converts a frame identifier to a string containing the alphanumerical
+  representation of that frame identifier.
+
+  For example: ID3_StringToFrameID('COMM') returns fiComment.
 Parameters
-  S - \Description for this parameter
+  S - Specifies the frame name.
 See Also
   <LINK ID3_FrameIDToString>
 ----------------------------------------------------------------------------------------------------
@@ -217,23 +235,35 @@ Description
   Use the TJvID3FrameHeaderFlag type to
   TJvID3FrameHeaderFlags is a set of TJvID3FrameHeaderFlag values.
 @@TJvID3FrameHeaderFlag.fhfOnTagAlterDiscardFrame
-  Description for fhfOnTagAlterDiscardFrame
+  Tells the tag parser to discard the frame if it is unknown and the tag is altered in any way.
+  This applies to all kinds of alterations, including adding more padding and reordering
+  the frames. If this flag is not included, the frame should be preserved.
 @@TJvID3FrameHeaderFlag.fhfOnFileAlterDiscardFrame
-  Description for fhfOnFileAlterDiscardFrame
+  Tells the tag parser to discard the frame if it is unknown and the file, excluding the tag,
+  is altered. This does not apply when the audio is completely replaced with other audio data.
+  If this flag is not included, the frame should be preserved.
 @@TJvID3FrameHeaderFlag.fhfReadOnly
-  Description for fhfReadOnly
+  Tells the software that the contents of this frame are intended to be read only. Changing
+  the contents might break something, e.g. a signature. If the contents are changed, without
+  knowledge of why the frame was flagged read only and without taking the proper means to
+  compensate, e.g. recalculating the signature, the flag must be removed.
 @@TJvID3FrameHeaderFlag.fhfIsCompressed
-  Description for fhfIsCompressed
-  Not implemented by TJvID3Controller.
+  Indicates that the frame is compressed. fhfDataLengthIndicator must also be included.
+  <b>Compression is not implemented by TJvID3Controller.</b>
 @@TJvID3FrameHeaderFlag.fhfIsEncrypted
-  Description for fhfIsEncrypted
-  Not implemented by TJvID3Controller.
+  Indicates that the frame is encrypted. If set, the <LINK TJvID3Frame.EncryptionID,EncryptionID> property
+  of the frame is valid and indicates with which method it was encrypted. See description of
+  the ENCR frame for more information about encryption method registration.
+  fhfDataLengthIndicator must also be included.
+  <b>Encryption is not implemented by TJvID3Controller.</b>
 @@TJvID3FrameHeaderFlag.fhfContainsGroupInformation
-  Description for fhfContainsGroupInformation
+  Indicates that this frame belongs in a group with other frames. If set, the <LINK TJvID3Frame.GroupID,
+  GroupID> property of the frame is valid; every frame with the same group identifier belongs to the
+  same group.
 @@TJvID3FrameHeaderFlag.fhfUnsynchronisationApplied
-  Description for fhfUnsynchronisationApplied
+  Indicates that unsynchronisation was applied to this frame.
 @@TJvID3FrameHeaderFlag.fhfDataLengthIndicator
-  Description for fhfDataLengthIndicator
+  Indicates that a data length indicator has been added to the frame.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FrameHeaderFlags
 <TITLE TJvID3FrameHeaderFlags type>
@@ -607,9 +637,9 @@ Description
 @@TJvID3ImageEncodingRestriction
 <TITLE TJvID3ImageEncodingRestriction type>
 Summary
-  Write here a summary (1 line)
+  Enumerates image encoding restrictions.
 Description
-  Image encoding restrictions
+  The TJvID3ImageEncodingRestriction type is used to specify a specific image encoding restriction.
 @@TJvID3ImageEncodingRestriction.ierNoRestrictions
   No restrictions
 @@TJvID3ImageEncodingRestriction.ierOnlyPNGorJPEG
@@ -618,9 +648,9 @@ Description
 @@TJvID3ImageSizeRestriction
 <TITLE TJvID3ImageSizeRestriction type>
 Summary
-  Write here a summary (1 line)
+  Enumerates image size restrictions.
 Description
-  Image size restrictions
+  The TJvID3ImageSizeRestriction type is used to specify a specific image size restriction.
 @@TJvID3ImageSizeRestriction.isrNoRestrictions
   No restrictions.
 @@TJvID3ImageSizeRestriction.isrMax256x256
@@ -633,9 +663,9 @@ Description
 @@TJvID3PictureType
 <TITLE TJvID3PictureType type>
 Summary
-  Write here a summary (1 line)
+  Enumerates picture types.
 Description
-  Use the TJvID3PictureType type to
+  Use the TJvID3PictureType type to specify a specific picture type.
 @@TJvID3PictureType.ptOther
   Other
 @@TJvID3PictureType.ptFileIcon
@@ -681,13 +711,12 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Restrictions
 Summary
-  Write here a summary (1 line)
+  Contains tag restrictions.
 Description
   For some applications it might be desired to restrict a tag in more
-  ways than imposed by the ID3v2 specification. Note that the
+  ways than imposed by the ID3 v2 specification. Note that the
   presence of these restrictions does not affect how the tag is
-  decoded, merely how it was restricted before encoding. If this flag
-  is set the tag is restricted as follows:
+  decoded, merely how it was restricted before encoding.
 @@TJvID3Restrictions.RTagSize
   Tag size restrictions
 @@TJvID3Restrictions.RTextEncoding
@@ -701,20 +730,20 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3StringPair
 Summary
-  Write here a summary (1 line)
+  Contains an ANSI and an unicode string.
 Description
-  Use the TJvID3StringPair type to
+  The TJvID3StringPair type is used to store an ANSI and an unicode string together.
 @@TJvID3StringPair.SA
-  Description for SA
+  The ANSI string.
 @@TJvID3StringPair.SW
-  Description for SW
+  The unicode string.
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TagSizeRestriction
 <TITLE TJvID3TagSizeRestriction type>
 Summary
-  Write here a summary (1 line)
+  Enumerates tag size restrictions.
 Description
-  Tag size restrictions
+  The TJvID3TagSizeRestriction type is used to specify a specific tag size restriction.
 @@TJvID3TagSizeRestriction.tsrMax128Frames_1MB
   No more than 128 frames and 1 MB total tag size.
 @@TJvID3TagSizeRestriction.tsrMax64Frames_128KB
@@ -727,9 +756,9 @@ Description
 @@TJvID3TextEncodingRestriction
 <TITLE TJvID3TextEncodingRestriction type>
 Summary
-  Write here a summary (1 line)
+  Enumerates text encoding restrictions.
 Description
-  Text encoding restrictions
+  The TJvID3TextEncodingRestriction type is used to specify a specific text encoding restriction.
 @@TJvID3TextEncodingRestriction.terNoRestrictions
   No restrictions
 @@TJvID3TextEncodingRestriction.terOnlyISO_8859_1orUTF8
@@ -738,9 +767,9 @@ Description
 @@TJvID3TextFieldsSizeRestriction
 <TITLE TJvID3TextFieldsSizeRestriction type>
 Summary
-  Write here a summary (1 line)
+  Enumerates Text fields size restrictions.
 Description
-  Text fields size restrictions
+  The TJvID3TextFieldsSizeRestriction type is used to specify a specific text fields size restriction.
 @@TJvID3TextFieldsSizeRestriction.tfszNoRestrictions
   No restrictions
 @@TJvID3TextFieldsSizeRestriction.tfszMax1024Char

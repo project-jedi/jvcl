@@ -112,8 +112,8 @@ Description
   CaptionClick is called automatically when the user clicks a fixed cell. It triggers the
   OnCaptionClick event.
 Parameters
-  aCol  - Indicates the column index of the cell that is clicked.
-  aRow  - Indicates the row index of the cell that is clicked.
+  AColumn - Indicates the column index of the cell that is clicked.
+  ARow    - Indicates the row index of the cell that is clicked.
 See Also
   OnCaptionClick
 ----------------------------------------------------------------------------------------------------
@@ -200,7 +200,7 @@ Description
   If the OnDrawCell event handler is not assigned, then TJvStringGrid fires the OnSetCanvasProperties
   event and finally calls DefaultDrawCell.
 Parameters
-  ACol    - Indicate the column index of the cell that should be drawn.
+  AColumn - Indicate the column index of the cell that should be drawn.
   ARow    - Indicate the row index of the cell that should be drawn.
   Rect    - Indicates the location of the cell on the canvas.
   State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
@@ -215,9 +215,9 @@ Description
   ExitCell is called automatically when the input focus shifts away from a cell. It triggers the
   OnExitCell event.
 Parameters
-  edittext - The text of the cell that loses the input focus.
-  aCol     - Indicate the column index of the cell that loses the input focus.
-  aRow     - Indicate the row index of the cell that loses the input focus.
+  EditText - The text of the cell that loses the input focus.
+  AColumn  - Indicate the column index of the cell that loses the input focus.
+  ARow     - Indicate the row index of the cell that loses the input focus.
 See Also
   OnExitCell
 ----------------------------------------------------------------------------------------------------
@@ -527,11 +527,11 @@ Description
   Do not call SetCanvasProperties. It is called automatically just before TJvStringGrid calls
   DefaultDrawCell. SetCanvasProperties fires the OnSetCanvasProperties event.
 Parameters
-  ACol  - Indicate the column index of the cell that is about to be drawn.
-  ARow  - Indicate the row index of the cell that is about to be drawn.
-  Rect  - Indicates the location of the cell on the canvas.
-  State - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
-           is a fixed (nonscrolling) cell.
+  AColumn - Indicate the column index of the cell that is about to be drawn.
+  ARow    - Indicate the row index of the cell that is about to be drawn.
+  Rect    - Indicates the location of the cell on the canvas.
+  State   - Indicates whether the cell has input focus, whether the cell is selected, and whether the cell
+             is a fixed (nonscrolling) cell.
 See Also
   DefaultDrawCell, OnSetCanvasProperties
 ----------------------------------------------------------------------------------------------------
