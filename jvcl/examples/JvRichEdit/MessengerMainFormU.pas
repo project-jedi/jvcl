@@ -241,7 +241,7 @@ begin
   Bitmap := TBitmap.Create;
   try
     ImageList1.GetBitmap(AImageIndex, Bitmap);
-    JvRichEdit1.InsertBitmap(Bitmap, False);
+    JvRichEdit1.InsertGraphic(Bitmap, False);
 
     { Move cursor }
     with JvRichEdit1.GetSelection do
