@@ -267,7 +267,7 @@ begin
           if (Day < DaysThisMonth) then Day := Day + 1
           else CalendarDate := CalendarDate + 1;
           Exit;
-        end
+        end;
     end;
   inherited KeyDown(Key, Shift);
 end;
@@ -737,6 +737,8 @@ begin
           if ssCtrl in Shift then FCalendar.PrevYear
           else FCalendar.PrevMonth;
         end;
+      VK_RETURN:
+        Click;
       else TJvLocCalendar(FCalendar).KeyDown(Key, Shift);
     end;
 end;
