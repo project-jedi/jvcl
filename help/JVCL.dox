@@ -2,7 +2,7 @@
 Version=204
 
 [General]
-Title=JEDI-VCL 2.0 (Beta) help system
+Title=JEDI-VCL 2.0 help system
 VersionMajor=2
 VersionMinor=0
 Copyright=Copyright (c) 2002 Project JEDI. All rights reserved.
@@ -250,7 +250,7 @@ NestedClasses-4=1
 
 [Text Variables]
 Count=1
-Var_0=JVCL_VERSION=2.00 (Beta)
+Var_0=JVCL_VERSION=2.00
 
 [Enabled Topics]
 Count=1
@@ -337,9 +337,9 @@ Count=0
 [Autolinking]
 AutolinkText=1
 AutolinkSource=1
-AutolinkDisableForPreview=1
+AutolinkDisableForPreview=0
 AutolinkMinLength=0
-BannedWordsCount=43
+BannedWordsCount=44
 BannedWord_0=a
 BannedWord_1=an
 BannedWord_2=and
@@ -382,7 +382,8 @@ BannedWord_38=whenever
 BannedWord_39=where
 BannedWord_40=while
 BannedWord_41=wont
-BannedWord_42=yes
+BannedWord_42=Write
+BannedWord_43=yes
 
 [Sections]
 SavedValues=1
@@ -473,11 +474,10 @@ DisplayName=Return Value
 EditorName=
 Flags=46
 Description=Used to describe the return value of a global or member function.
-Count=4
+Count=3
 Value0=Returns
 Value1=Return Value
-Value2=Result
-Value3=Output
+Value2=Output
 JavaDocTags=RETURN
 
 [Section\6]

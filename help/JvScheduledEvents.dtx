@@ -9,7 +9,7 @@ Author
 @@TJvScheduledEvents
 ##JVCL:Component
 <GROUP JVCL.System.AlarmsAndTimers.Alarms>
-<TITLEIMG TJvCustomScheduledEvents>
+##<TITLEIMG TJvCustomScheduledEvents>
 Summary
   Allows you to schedule execution of events using a recurring schedule.
 Description
@@ -32,7 +32,7 @@ Description
     <LINK TJvCustomScheduledEvents.Events, events property>, specifying the
     <LINK TJvEventCollectionItem.Schedule, schedule> and the
     <LINK TJvEventCollectionItem.OnExecute, handler>; at run time by using
-    <LINK TJvEventCollection.Add, Events.Add>).
+    Events.Add).
   * Optionally assign handlers to to fire <LINK TJvCustomScheduledEvents.OnStartEvent, before>
     and/or <LINK TJvCustomScheduledEvents.OnEndEvent, after> an event is/has fired.
 ----------------------------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ Description
   LoadState initializes the schedule state to the one specified by the input parameters.
   
   LoadState and SaveState are used by descendant components of TJvCustomScheduledEvent when its
-  <LINK TJvCustomScheduledEvent.AutoSave, AutoSave> property is set to True.
+  AutoSave property is set to True.
 Parameters
   TriggerStamp  -       Timestamp of next event.
   DayCount -            Number of days events have been triggered <B>after</B> the event specified
@@ -260,7 +260,7 @@ Description
   SaveState retrieves the current state of the schedule and stores it in the parameters.
   
   LoadState and SaveState are used by descendant components of TJvCustomScheduledEvent when its
-  <LINK TJvCustomScheduledEvent.AutoSave, AutoSave> property is set to True.
+  AutoSave property is set to True.
 Parameters
   TriggerStamp  -       Timestamp of next event.
   DayCount -            Number of days events have been triggered <B>after</B> the event specified
