@@ -38,7 +38,7 @@ interface
 
 uses
   QWindows, QMessages, Classes, QGraphics, QControls, 
-  QForms, Qt, JvQConsts, 
+  Qt, JvQConsts, 
   JvQComponent;
 
 type
@@ -62,7 +62,11 @@ type
 
 implementation
 
-
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  QForms, QStdCtrls;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}
@@ -126,10 +130,11 @@ procedure TJvEnterAsTab.Paint;
 begin
   if not (csDesigning in ComponentState) then
     Exit;
-  Canvas.Brush.Color := clBtnFace;  
-  FBmp.Transparent := True;
-  FBmp.TransparentColor := clFuchsia;
-  Canvas.StretchDraw(ClientRect, FBmp); 
+  with Canvas do
+  begin
+    Brush.Color := clBtnFace;
+    BrushCopy(Canvas, ClientRect, FBmp, ClientRect, clFuchsia);
+  end;
 end;
 
 procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);

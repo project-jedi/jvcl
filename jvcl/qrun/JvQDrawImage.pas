@@ -3278,10 +3278,10 @@ begin
     clipcm := cmSrcCopy;
     SetClip(clWhite);
     CopyClip;
-    myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);  
-    Clip.Transparent := True;
-    Clip.TransparentColor := RangeTransColor;
-    Canvas.Draw(X,Y, Clip); 
+    myrect := Rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
+    With Canvas do
+      BrushCopy(Canvas, myrect, Clip,
+      Rect(0, 0, Clip.Width, Clip.Height), RangeTransColor);
     myDraw := False;
   end;
   if Shape = 'cube1' then
