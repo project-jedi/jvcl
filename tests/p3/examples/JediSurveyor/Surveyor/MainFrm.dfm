@@ -856,5 +856,56 @@ object frmMain: TfrmMain
       ShortCut = 32883
       OnExecute = acExitExecute
     end
+    object acCheckAll: TAction
+      Category = 'Multiple'
+      Caption = 'Check All'
+      OnExecute = acCheckAllExecute
+    end
+    object acUncheckAll: TAction
+      Category = 'Multiple'
+      Caption = 'Uncheck All'
+      OnExecute = acUncheckAllExecute
+    end
+    object acInvert: TAction
+      Category = 'Multiple'
+      Caption = 'Invert'
+      OnExecute = acInvertExecute
+    end
+    object acCheckFirst: TAction
+      Category = 'Exclusive'
+      Caption = 'Check First'
+      OnExecute = acCheckFirstExecute
+    end
+    object acCheckLast: TAction
+      Category = 'Exclusive'
+      Caption = 'Check Last'
+      OnExecute = acCheckLastExecute
+    end
+  end
+  object popMultiple: TPopupMenu
+    Left = 300
+    Top = 96
+    object CheckAll1: TMenuItem
+      Action = acCheckAll
+    end
+    object UncheckAll1: TMenuItem
+      Action = acUncheckAll
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object InvertSelection1: TMenuItem
+      Action = acInvert
+    end
+  end
+  object popExclusive: TPopupMenu
+    Left = 390
+    Top = 102
+    object Checkfirst1: TMenuItem
+      Action = acCheckFirst
+    end
+    object CheckLast1: TMenuItem
+      Action = acCheckLast
+    end
   end
 end

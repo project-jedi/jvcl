@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, StdActns, ActnList, Menus, ExtCtrls, ComCtrls, JvStatusBar,
-  JvComCtrls, JvSurveyIntf, JvDialogs, StdCtrls, JvListView;
+  JvComCtrls, JvSurveyIntf, JvDialogs, StdCtrls, JvListView, HTTPApp,
+  HTTPProd, JvComponent, JvImageWindow;
 
 type
   TfrmMain = class(TForm)
@@ -13,7 +14,6 @@ type
     Splitter1: TSplitter;
     JvStatusBar1: TJvStatusBar;
     tvItems: TJvTreeView;
-    nbDetails: TNotebook;
     mmMain: TMainMenu;
     File1: TMenuItem;
     Edit7: TMenuItem;
@@ -46,18 +46,26 @@ type
     N4: TMenuItem;
     Help2: TMenuItem;
     Add2: TMenuItem;
-    acPrinterSettings: TAction;
-    acPrint: TAction;
+    acPrintPreview: TAction;
     N5: TMenuItem;
-    PrinterSettings1: TMenuItem;
     Print1: TMenuItem;
     N6: TMenuItem;
     OpenSurveyDialog: TJvOpenDialog;
-    lvGlobalStats: TListView;
-    reFreeForm: TRichEdit;
-    lvItemStats: TJvListView;
     PrinterSetupDialog: TPrinterSetupDialog;
     PrintDialog: TPrintDialog;
+    SaveReportDialog: TJvSaveDialog;
+    acLoadReport: TAction;
+    LoadReport1: TMenuItem;
+    N7: TMenuItem;
+    ppPrintPreview: TPageProducer;
+    Panel2: TPanel;
+    nbDetails: TNotebook;
+    lvGlobalStats: TListView;
+    lvItemStats: TJvListView;
+    reFreeForm: TRichEdit;
+    pnlTop: TPanel;
+    isSurveyType: TJvImageSquare;
+    il24: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acOpenExecute(Sender: TObject);
@@ -67,8 +75,13 @@ type
     procedure tvItemsChange(Sender: TObject; Node: TTreeNode);
     procedure acAddResponseExecute(Sender: TObject);
     procedure acPrinterSettingsExecute(Sender: TObject);
-    procedure acPrintExecute(Sender: TObject);
+    procedure acPrintPreviewExecute(Sender: TObject);
     procedure acAboutExecute(Sender: TObject);
+    procedure acSaveReportExecute(Sender: TObject);
+    procedure acLoadReportExecute(Sender: TObject);
+    procedure ppPrintPreviewHTMLTag(Sender: TObject; Tag: TTag;
+      const TagString: string; TagParams: TStrings;
+      var ReplaceText: string);
   private
     { Private declarations }
     FFilename: string;
@@ -76,12 +89,16 @@ type
     FSurvey: IJvSurvey;
     procedure LoadView;
     procedure LoadData(Node: TTreeNode);
-    function GetResponseValue(item:IJvSurveyItem;Index:integer):integer;
+    function GetResponseValue(item: IJvSurveyItem; Index: integer): integer;
     function AddItem(Parent: TTreeNode; item: IJvSurveyItem): TTreeNode;
     procedure AddResponses(item: IJvSurveyItem; Index: integer);
-    procedure LoadFromFile(const Filename: string);
+    procedure LoadFromFile(const Filename: string; ClearResponses: boolean);
     procedure LoadFromResponse(const Filename: string);
+    procedure SaveReport(const Filename: string);
     property Filename: string read FFilename write FFilename;
+    function GetReportHTMLContent: string;
+    function GetReportHTMLSummary: string;
+    procedure UpdateViews(Node: TTreeNode);
   public
     { Public declarations }
   end;
@@ -91,28 +108,38 @@ var
 
 implementation
 uses
-  JvSurveyUtils, JclStrings, Math;
+  JvSurveyUtils, JclStrings, Math, JvSimpleXML, JvFunctions;
 
 {$R *.DFM}
 
 const
   cSurveyItemImageIndex = 22;
 
-procedure TfrmMain.LoadFromFile(const Filename: string);
-var i:integer;
+
+procedure TfrmMain.LoadFromFile(const Filename: string; ClearResponses: boolean);
+var
+  i: integer;
 begin
-  FResponses.Clear;
   FSurvey.LoadFromFile(Filename);
   self.Filename := Filename;
-  // clear any responses added to survey by mistake
-  for i := 0 to FSurvey.Items.Count - 1 do
-    FSurvey.Items[i].Responses := '';
+  // clear any responses added to survey (but no to report)
+  if ClearResponses then
+  begin
+    FResponses.Clear;
+    for i := 0 to FSurvey.Items.Count - 1 do
+      FSurvey.Items[i].Responses := '';
+  end
+  else
+    // load any previous survey takers already added to the report
+    FResponses.CommaText := FSurvey.SurveyTaker.ID;
   LoadView;
+  SaveReportDialog.Filename := ChangeFileExt(Filename, '.jsr');
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSurvey := CreateSurvey;
+  isSurveyType.Anchors := [akRight, akTop];
   FResponses := TStringlist.Create;
   FResponses.Sorted := true;
   nbDetails.PageIndex := 0;
@@ -153,7 +180,7 @@ begin
   OpenSurveyDialog.Filter := SSurveyFileFilter;
   OpenSurveyDialog.Filename := Filename;
   if OpenSurveyDialog.Execute then
-    LoadFromFile(OpenSurveyDialog.Filename);
+    LoadFromFile(OpenSurveyDialog.Filename, true);
 end;
 
 procedure TfrmMain.acExitExecute(Sender: TObject);
@@ -163,23 +190,29 @@ end;
 
 function TfrmMain.GetResponseValue(item: IJvSurveyItem;
   Index: integer): integer;
-var S:TStringlist;
+var
+  S: TStringlist;
 begin
   Result := 0;
   if item.SurveyType = stFreeForm then Exit;
   S := TStringlist.Create;
   try
-    S.Text := DecodeResponse(item.Responses,item.SurveyType);
+    S.Text := DecodeResponse(item.Responses, item.SurveyType);
     if (Index < 0) or (Index >= S.Count) then Exit;
-    Result := StrToIntDef(S[Index],0);
+    Result := StrToIntDef(S[Index], 0);
   finally
     S.Free;
   end;
 end;
 
 procedure TfrmMain.LoadData(Node: TTreeNode);
-var item:IJvSurveyItem;li:TListItem;S:TStringlist;i:integer;
+var
+  item: IJvSurveyItem;
+  li: TListItem;
+  S: TStringlist;
+  i: integer;
 begin
+//  UpdateViews(Node);
   if (Node = nil) or not FileExists(Filename) then Exit;
   if Node.Parent = nil then // root
   begin
@@ -198,13 +231,13 @@ begin
     begin
       S := TStringlist.Create;
       try
-        S.Text := DecodeChoice(item.Choices,item.SurveyType);
+        S.Text := DecodeChoice(item.Choices, item.SurveyType);
         for i := 0 to S.Count - 1 do
         begin
           if S[i] = '' then Continue;
           li := lvItemStats.Items.Add;
           li.Caption := S[i];
-          li.SubItems.Add(IntToStr(GetResponseValue(item,i)));
+          li.SubItems.Add(IntToStr(GetResponseValue(item, i)));
         end;
       finally
         S.Free;
@@ -225,20 +258,38 @@ begin
   AllowCollapse := false;
 end;
 
+procedure TfrmMain.UpdateViews(Node: TTreeNode);
+begin
+  isSurveyType.ImageIndex := -1;
+  if Node <> nil then
+  begin
+    pnlTop.Caption := '  ' + Node.Text;
+    if Node.Parent <> nil then
+      isSurveyType.ImageIndex := Ord(IJvSurveyItem(Node.Data).SurveyType)
+  end
+  else
+    pnlTop.Caption := '  ' + Application.Title;
+  // TODO: update statusbar (filename , required, surveytype)
+end;
+
 procedure TfrmMain.tvItemsChange(Sender: TObject; Node: TTreeNode);
 begin
   LoadData(Node);
 end;
 
 procedure TfrmMain.acAddResponseExecute(Sender: TObject);
+var i:integer;
 begin
   OpenSurveyDialog.Filter := SResponseFileFilter;
   OpenSurveyDialog.Filename := Filename;
+  OpenSurveyDialog.Options := OpenSurveyDialog.Options + [ofAllowMultiSelect];
   if OpenSurveyDialog.Execute then
   begin
-    LoadFromResponse(OpenSurveyDialog.Filename);
+    for i := 0 to OpenSurveyDialog.Files.Count - 1 do
+      LoadFromResponse(OpenSurveyDialog.Files[i]);
     LoadData(tvItems.Selected);
   end;
+  OpenSurveyDialog.Options := OpenSurveyDialog.Options - [ofAllowMultiSelect];
 end;
 
 procedure TfrmMain.LoadFromResponse(const Filename: string);
@@ -249,17 +300,21 @@ begin
   ASurvey := CreateSurvey;
   ASurvey.LoadFromFile(Filename);
   if ASurvey.ID <> FSurvey.ID then
-    raise Exception.Create('Response file is not compatible with the currently loaded survey: please select another response file.');
+    raise
+      Exception.CreateFmt('The file (%s) is not compatible with the currently loaded survey: please select another response file.',
+        [Filename]);
   if FResponses.IndexOf(ASurvey.SurveyTaker.ID) > -1 then
-    raise Exception.Create('Responses from this user have already been added to this report.');
+    raise Exception.CreateFmt('Responses from this file (%s) or user (%s) has already been added to the report.',[Filename,ASurvey.SurveyTaker.ID]);
   FResponses.Add(ASurvey.SurveyTaker.ID);
   for i := 0 to ASurvey.Items.Count - 1 do
     AddResponses(ASurvey.Items[i], i);
 end;
 
 procedure TfrmMain.AddResponses(item: IJvSurveyItem; Index: integer);
+var
+  S: string;
 
-function Decode(S: WideString): TList;
+  function Decode(S: WideString): TList;
   var
     ST: TStringlist;
     i: integer;
@@ -283,8 +338,8 @@ function Decode(S: WideString): TList;
   begin
     S1 := Decode(item1.Responses);
     S2 := Decode(item2.Responses);
-    S1.Count := Max(S1.Count,S2.Count);
-    S2.Count := Max(S1.Count,S2.Count);
+    S1.Count := Max(S1.Count, S2.Count);
+    S2.Count := Max(S1.Count, S2.Count);
     for i := 0 to S2.Count - 1 do
       S1[i] := Pointer(integer(S1[i]) + integer(S2[i]));
     tmp := '';
@@ -301,7 +356,14 @@ begin
   if (FSurvey.Items[Index].SurveyType <> item.SurveyType) then
     raise Exception.CreateFmt('SurveyTypes does not match (index %d)', [Index]);
   if FSurvey.Items[Index].SurveyType = stFreeForm then
-    FSurvey.Items[Index].Responses := trim(FSurvey.Items[Index].Responses) +  '\n===========================\n' + item.Responses
+  begin
+    S := trim(FSurvey.Items[Index].Responses);
+    if S = '' then
+      S := trim(FSurvey.Items[Index].Responses)
+    else if trim(FSurvey.Items[Index].Responses) <> '' then
+      S := S + '\n===========================\n' + trim(FSurvey.Items[Index].Responses);
+    FSurvey.Items[Index].Responses := S;
+  end
   else
     MergeResponses(FSurvey.Items[Index], item);
 end;
@@ -311,15 +373,164 @@ begin
   PrinterSetupDialog.Execute;
 end;
 
-procedure TfrmMain.acPrintExecute(Sender: TObject);
+procedure TfrmMain.acPrintPreviewExecute(Sender: TObject);
+var
+  S: string;
 begin
-  if PrintDialog.Execute then
-    ShowMessage('TODO: printing not implemented yet!');
+  S := ExtractFilePath(Application.ExeName) + 'SurveyTemplate.htt';
+  if not FileExists(S) then
+    raise Exception.CreateFmt('Unable to find print template (%s)', [S]);
+  ppPrintPreview.HTMLFile := S;
+  // generate and save report HTML file
+  with TStringlist.Create do
+  try
+    Text := ppPrintPreview.Content;
+    S := ChangeFileExt(S, '.htm');
+    SaveToFile(S);
+    // open in browser
+    OpenObject(S);
+  finally
+    Free;
+  end;
+
 end;
 
 procedure TfrmMain.acAboutExecute(Sender: TObject);
 begin
-  MessageBox(GetFocus,PChar('JEDI Surveyor Reporter, version 1.0'),PChar('About...'),MB_OK or MB_ICONINFORMATION); 
+  MessageBox(GetFocus, PChar('JEDI Surveyor Reporter, version 1.0'), PChar('About...'), MB_OK or MB_ICONINFORMATION);
+end;
+
+procedure TfrmMain.acSaveReportExecute(Sender: TObject);
+begin
+  if SaveReportDialog.Execute then
+    SaveReport(SaveReportDialog.Filename);
+end;
+
+procedure TfrmMain.SaveReport(const Filename: string);
+//var
+//  i: integer;
+//  X: TJvSimpleXML;
+//  elem:TJvSimpleXMLElem;
+begin
+  FSurvey.SurveyTaker.UserName := '';
+  FSurvey.SurveyTaker.MailAddress := '';
+  // save all loaded respones as  a comma-separated lsit
+  FSurvey.SurveyTaker.ID := FResponses.CommaText;
+  FSurvey.SaveToFile(Filename);
+  (*  X := TJvSimpleXML.Create(nil);
+    try
+      X.Root.Name := 'JVCLREPORT';
+      elem := X.Root.Items.Add('SURVEY');
+      elem.Properties.Add('ID',FSurvey.ID);
+      elem.Properties.Add('Title',FSurvey.Title);
+      elem.Properties.Add('ReleaseDate',ISODateToStr(FSurvey.ReleaseDate));
+      elem.Properties.Add('ExpiryDate',ISODateToStr(FSurvey.ExpiryDate));
+      elem.Properties.Add('HREF',FSurvey.ResultHRef);
+      elem.Properties.Add('Description',FSurvey.Description);
+
+      elem := X.Root.Items.Add('SURVEYTAKERS');
+      for i := 0 to FResponses.Count - 1 do
+        with elem.Items.Add('SURVEYTAKER') do
+          Properties.Add('ID',FResponses[i]);
+
+      elem := X.Root.Items.Add('ITEMS');
+      for i := 0 to FSurvey.Items.Count - 1 do
+      begin
+        with elem.Items.Add('ITEM') do
+        begin
+          Properties.Add('ID',FSurvey.Items[i].ID);
+          Properties.Add('Title',FSurvey.Items[i].ID);
+
+          Properties.Add('Type',EncodeType(FSurvey.Items[i].SurveyType));
+          Properties.Add('Required',FSurvey.Items[i].Required);
+          Properties.Add('Description',FSurvey.Items[i].Description);
+        end;
+      end;
+      elem := X.Root.Items.Add('RESPONSES');
+      for i := 0 to FSurvey.Items.Count - 1 do
+        elem.Items.Add('RESPONSE',EncodeResponse(FSurvey.Items[i].Responses,FSurvey.Items[i].SurveyType));
+      X.SaveToFile(Filename);
+    finally
+      X.Free;
+    end;
+  *)
+end;
+
+procedure TfrmMain.acLoadReportExecute(Sender: TObject);
+begin
+  OpenSurveyDialog.Filter := SReportFileFilter;
+  OpenSurveyDialog.FileName := SaveReportDialog.Filename;
+  if OpenSurveyDialog.Execute then
+    LoadFromFile(OpenSurveyDialog.Filename, false);
+end;
+
+function TfrmMain.GetReportHTMLSummary: string;
+begin
+  Result := Format(
+    '<table class="TableSurveySummary">' +
+    '<tr class="TRSurveySummary"><th class="THSurveySummary">Title</th><th class="THSurveySummary">ReleaseDate</th>' +
+    '<th class="THSurveySummary">ExpiryDate</th><th class="THSurveySummary">Responses</th><th class="THSurveySummary">Questions</th></tr>' +
+    '<tr class="TRSurveySummary"><td class="TDSurveySummary">%s</td><td class="TDSurveySummary">%s&nbsp;</td>' +
+    '<td class="TDSurveySummary">%s</td><td class="TDSurveySummary">%d</td><td class="TDSurveySummary">%d</td></tr></table>',
+    [FSurvey.Title, DateToStr(FSurvey.ReleaseDate), DateToStr(FSurvey.ExpiryDate),
+    FResponses.Count, FSurvey.Items.Count]);
+end;
+
+function TfrmMain.GetReportHTMLContent: string;
+var
+  i, j: integer;
+  C, R: TStringlist;
+begin
+  if FSurvey.Items.Count = 0 then
+  begin
+    Result := '<h4>There are no items in this survey: nothing to display</h4>';
+    Exit;
+  end;
+  C := TStringlist.Create;
+  R := TStringlist.Create;
+  try
+    for i := 0 to FSurvey.Items.Count - 1 do
+    begin
+      Result := Result + Format(
+        '<h4>Question %d</h4><table class="TableSurveyItemHeader"><tr class="TRSurveyItemHeader">' +
+        '<th class="THSurveyItemHeader">Title</th><th class="THSurveyItemHeader">Description</th>' +
+        '<th class="THSurveyItemHeader">Type</th></tr>' +
+        '<tr class="TRSurveyItemHeader"><td class="TDSurveyItemHeader">%s&nbsp;</td>' +
+        '<td class="TDSurveyItemHeader">%s&nbsp;</td><td class="TDSurveyItemHeader">%s&nbsp;</td></tr></table>',
+        [i + 1, FSurvey.Items[i].Title, FSurvey.Items[i].Description, EncodeType(FSurvey.Items[i].SurveyType)]);
+      C.Text := DecodeChoice(FSurvey.Items[i].Choices, FSurvey.Items[i].SurveyType);
+      R.Text := DecodeResponse(FSurvey.Items[i].Responses, FSurvey.Items[i].SurveyType);
+      if FSurvey.Items[i].SurveyType = stFreeForm then
+        Result := Result + Format('<table class="TableSurveyItemDetail">' +
+          '<tr class="TRSurveyItemDetail"><th  class="THSurveyItemDetail">Responses</th></tr>' +
+          '<tr class="TRSurveyItemDetail"><td class="TDSurveyItemDetail">%s&nbsp;</td></tr></table>', [trim(R.Text)])
+      else
+      begin
+        while C.Count > R.Count do
+          R.Add('&nbsp;');
+        Result := Result + '<table class="TableSurveyItemDetail"><tr class="TRSurveyItemDetail">' +
+          '<th class="THSurveyItemDetail">Choices</th><th class="THSurveyItemDetail">Responses</th></tr>';
+        for j := 0 to C.Count - 1 do
+          Result := Result + Format('<tr  class="TRSurveyItemDetail"><td  class="TDSurveyItemDetail">%s&nbsp;</td>' +
+            '<td  class="TDSurveyItemDetail">%s&nbsp;</td></tr>', [C[j], R[j]]);
+        Result := Result + '</table>';
+      end;
+    end;
+  finally
+    R.Free;
+    C.Free;
+  end;
+end;
+
+procedure TfrmMain.ppPrintPreviewHTMLTag(Sender: TObject; Tag: TTag;
+  const TagString: string; TagParams: TStrings; var ReplaceText: string);
+begin
+  if AnsiSameText(TagString, 'SURVEYTITLE') then
+    ReplaceText := FSurvey.Title
+  else if AnsiSameText(TagString, 'SURVEYSUMMARY') then
+    ReplaceText := GetReportHTMLSummary
+  else if AnsiSameText(TagString, 'SURVEYCONTENT') then
+    ReplaceText := GetReportHTMLContent;
 end;
 
 end.

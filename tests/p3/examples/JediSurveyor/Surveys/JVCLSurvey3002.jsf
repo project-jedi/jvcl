@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <JEDISURVEY Version="1.0">
- <SURVEY ID="3001" Title="JVCL Survey #3001" ReleaseDate="2003-03-12" ExpiryDate="2003-04-30" HREF="http://jvcl.sourceforge.net" Description="This is an initial survey to prepare for discussions regarding JVCL 3.0. Please complete and send back via mail to the JVCL team. Thanks for your participation and support!&lt;br&gt;"/>
+ <SURVEY ID="3002" Title="JVCL Pre 3.0 User Survey" ReleaseDate="2003-03-21" ExpiryDate="2003-04-30" HREF="http://jvcl.sourceforge.net" Description="This is an initial survey to prepare for discussions regarding JVCL 3.0. Please complete and send back via mail to the JVCL team. Thanks for your participation and support!&lt;br&gt;"/>
  <RECIPIENT username="JVCL Survey Administrator" mailto="peter3@peter3.com"/>
- <SURVEYTAKER username="pt" mailto="pt@P3PC.com" id="{2889AE60-DD89-432A-95F0-A77A349D5BCB}"/>
  <ITEMS>
   <ITEM ID="1" Title="Your profile" Type="exclusive" Required="-1" Description="Please tell us what type of programmer you consider yourself to be.
 ">

@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, JvScrollBox, ComCtrls, JvProgressBar,
   JvBevel, Buttons, JvBitBtn, JvFooter, JvComponent, JvSurveyIntf,
   JvDialogs, ImgList, JvImageWindow, ActnList, JvActions, JvLinkLabel,
-  JvRadioButton, JvCheckBox;
+  JvRadioButton, JvCheckBox, Menus;
 
 type
   TfrmMain = class(TForm)
@@ -35,6 +35,19 @@ type
     lblDescription: TJvLinkLabel;
     lblSurveyTitle: TLabel;
     btnOpen: TButton;
+    popMultiple: TPopupMenu;
+    acCheckAll: TAction;
+    acUncheckAll: TAction;
+    acInvert: TAction;
+    CheckAll1: TMenuItem;
+    UncheckAll1: TMenuItem;
+    N1: TMenuItem;
+    InvertSelection1: TMenuItem;
+    acCheckFirst: TAction;
+    acCheckLast: TAction;
+    popExclusive: TPopupMenu;
+    Checkfirst1: TMenuItem;
+    CheckLast1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure acStartPageExecute(Sender: TObject);
@@ -46,9 +59,16 @@ type
     procedure acLoadSurveyExecute(Sender: TObject);
     procedure lblDescriptionLinkClick(Sender: TObject; LinkNumber: Integer;
       LinkText: String);
+    procedure acCheckAllExecute(Sender: TObject);
+    procedure acUncheckAllExecute(Sender: TObject);
+    procedure acInvertExecute(Sender: TObject);
+    procedure acCheckFirstExecute(Sender: TObject);
+    procedure acCheckLastExecute(Sender: TObject);
   private
     FFilename: string;
     FCompletedSurvey:boolean;
+    procedure DoExclusiveClick(Sender: TObject);
+    procedure DoMultipleClick(Sender: TObject);
   private
     { Private declarations }
     FSurvey: IJvSurvey;
@@ -64,6 +84,8 @@ type
     procedure SaveSettings;
     procedure FreeEverything;
     procedure ClearScrollBox;
+    procedure BuildExclusivePopUpMenu;
+    procedure BuildMultiplePopUpMenu;
 
     function CheckPage(Index:integer): boolean;
     procedure StartPage;
@@ -138,6 +160,7 @@ end;
 
 procedure TfrmMain.CreatePage(Index: integer);
 begin
+  PopupMenu := nil;
   if (Index < 0) then
     StartPage
   else if (FSurvey.Items.Count > 0) and (Index >= FSurvey.Items.Count) then
@@ -421,6 +444,8 @@ begin
   finally
     S.Free;
   end;
+  BuildExclusivePopUpMenu;
+  PopupMenu := popExclusive;
 end;
 
 procedure TfrmMain.CreateFreeFormPage(Index:integer);
@@ -478,6 +503,8 @@ begin
   finally
     S.Free;
   end;
+  BuildMultiplePopUpMenu;
+  PopupMenu := popMultiple;
 end;
 
 procedure TfrmMain.acLoadSurveyExecute(Sender: TObject);
@@ -559,6 +586,106 @@ procedure TfrmMain.lblDescriptionLinkClick(Sender: TObject;
   LinkNumber: Integer; LinkText: String);
 begin
   OpenObject(LinkText);
+end;
+
+procedure TfrmMain.acCheckAllExecute(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TCheckBox then
+      TCheckBox(sbSurvey.Controls[i]).Checked := true;
+end;
+
+procedure TfrmMain.acUncheckAllExecute(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TCheckBox then
+      TCheckBox(sbSurvey.Controls[i]).Checked := false;
+end;
+
+procedure TfrmMain.acInvertExecute(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TCheckBox then
+      TCheckBox(sbSurvey.Controls[i]).Checked := not TCheckBox(sbSurvey.Controls[i]).Checked;
+end;
+
+procedure TfrmMain.acCheckFirstExecute(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TRadioButton then
+    begin
+      TCheckBox(sbSurvey.Controls[i]).Checked := true;
+      Exit;
+    end;
+end;
+
+procedure TfrmMain.acCheckLastExecute(Sender: TObject);
+var i:integer;
+begin
+  for i := sbSurvey.ControlCount - 1 downto 0 do
+    if sbSurvey.Controls[i] is TRadioButton then
+    begin
+      TCheckBox(sbSurvey.Controls[i]).Checked := true;
+      Exit;
+    end;
+end;
+
+procedure TfrmMain.DoExclusiveClick(Sender:TObject);
+begin
+  with TRadioButton((Sender as TMenuItem).Tag) do
+    Checked := true;
+end;
+
+procedure TfrmMain.BuildExclusivePopUpMenu;
+var i:integer;m:TMenuItem;R:TRadioButton;
+begin
+  popExclusive.Items.Clear;
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TRadioButton then
+    begin
+      R := TRadioButton(sbSurvey.Controls[i]);
+      m := TMenuItem.Create(popExclusive);
+      m.AutoHotkeys := maManual;
+      m.Checked := R.Checked;
+      m.AutoCheck := true;
+      m.RadioItem := true;
+      m.GroupIndex := 1;
+      m.Caption := R.Caption;
+      m.Tag     := integer(R);
+      m.OnClick := DoExclusiveClick;
+      popExclusive.Items.Add(m);
+      m.ShortCut := ShortCut(Ord('A') + popExclusive.Items.Count - 1,[ssCtrl])
+    end;
+end;
+
+procedure TfrmMain.DoMultipleClick(Sender:TObject);
+begin
+  with TCheckBox((Sender as TMenuItem).Tag) do
+    Checked := not Checked;
+end;
+
+procedure TfrmMain.BuildMultiplePopUpMenu;
+var i:integer;m:TMenuItem;C:TCheckBox;
+begin
+  popMultiple.Items.Clear;
+  for i := 0 to sbSurvey.ControlCount - 1 do
+    if sbSurvey.Controls[i] is TCheckBox then
+    begin
+      C := TCheckBox(sbSurvey.Controls[i]);
+      m := TMenuItem.Create(popMultiple);
+      m.AutoHotkeys := maManual;
+      m.Checked := C.Checked;
+      m.AutoCheck := true;
+      m.Caption := C.Caption;
+      m.Tag     := integer(C);
+      m.OnClick := DoMultipleClick;
+      popMultiple.Items.Add(m);
+      m.ShortCut := ShortCut(Ord('A') + popMultiple.Items.Count - 1,[ssCtrl])
+    end;
 end;
 
 end.

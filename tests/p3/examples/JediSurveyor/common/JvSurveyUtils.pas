@@ -17,6 +17,8 @@ function EncodeType(AType: TJvSurveyType): string;
 
 function YesNo(const ACaption, AText: string): boolean;
 function IsChecked(Item: IJvSurveyItem; Index: integer): boolean;
+function ISODateToStr(const ADate:TDateTime):string;
+function ISOStrToDate(const S:string):TDateTime;
 
 
 function MyAnsiLastChar(const S: string): PChar;
@@ -197,6 +199,17 @@ begin
     Result := #0
   else
     Result := AnsiLastChar(S);
+end;
+
+function ISODateToStr(const ADate:TDateTime):string;
+begin
+  Result := FormatDateTime('yyyy-MM-dd',ADate);
+end;
+
+function ISOStrToDate(const S:string):TDateTime;
+begin
+  Result := EncodeDate(StrToInt(Copy(S,1,4)),
+    StrToInt(Copy(S,6,2)),StrToInt(Copy(S,9,2)));
 end;
 
 end.
