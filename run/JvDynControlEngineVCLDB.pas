@@ -41,6 +41,7 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: String);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -76,6 +77,7 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -130,6 +132,7 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -177,6 +180,7 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -208,6 +212,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -233,6 +238,7 @@ type
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -265,6 +271,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -294,6 +301,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -324,6 +332,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -353,6 +362,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -383,6 +393,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -402,6 +413,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -420,6 +432,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(Value: string);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -472,6 +485,11 @@ end;
 procedure TJvDynControlVCLDBEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBEdit.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBEdit.ControlSetOnEnter(Value: TNotifyEvent);
@@ -589,6 +607,11 @@ end;
 procedure TJvDynControlVCLDBButtonEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBButtonEdit.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBButtonEdit.ControlSetOnEnter(Value: TNotifyEvent);
@@ -812,6 +835,11 @@ begin
   TabOrder := Value;
 end;
 
+procedure TJvDynControlVCLDBFileNameEdit.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
+
 procedure TJvDynControlVCLDBFileNameEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   FEditControl.OnEnter := Value;
@@ -984,6 +1012,11 @@ begin
   TabOrder := Value;
 end;
 
+procedure TJvDynControlVCLDBDirectoryEdit.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
+
 procedure TJvDynControlVCLDBDirectoryEdit.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   FEditControl.OnEnter := Value;
@@ -1075,6 +1108,11 @@ begin
   TabOrder := Value;
 end;
 
+procedure TJvDynControlVCLDBCheckBox.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
+
 procedure TJvDynControlVCLDBCheckBox.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
@@ -1153,6 +1191,10 @@ begin
   TabOrder := Value;
 end;
 
+procedure TJvDynControlVCLDBMemo.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
 
 procedure TJvDynControlVCLDBMemo.ControlSetOnEnter(Value: TNotifyEvent);
 begin
@@ -1259,6 +1301,11 @@ begin
   TabOrder := Value;
 end;
 
+procedure TJvDynControlVCLDBRadioGroup.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
+
 procedure TJvDynControlVCLDBRadioGroup.ControlSetOnEnter(Value: TNotifyEvent);
 begin
   OnEnter := Value;
@@ -1350,6 +1397,11 @@ end;
 procedure TJvDynControlVCLDBListBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBListBox.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBListBox.ControlSetOnEnter(Value: TNotifyEvent);
@@ -1444,6 +1496,11 @@ end;
 procedure TJvDynControlVCLDBComboBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBComboBox.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBComboBox.ControlSetOnEnter(Value: TNotifyEvent);
@@ -1542,6 +1599,11 @@ end;
 procedure TJvDynControlVCLDBImage.ControlSetTabOrder(Value: Integer);
 begin
 //  TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBImage.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBImage.ControlSetOnEnter(Value: TNotifyEvent);
@@ -1648,6 +1710,11 @@ procedure TJvDynControlVCLDBText.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
+procedure TJvDynControlVCLDBText.ControlSetHint(Value: string);
+begin
+  Hint := Value;
+end;
+
 procedure TJvDynControlVCLDBText.ControlSetOnEnter(Value: TNotifyEvent);
 begin
 end;
@@ -1698,6 +1765,11 @@ end;
 procedure TJvDynControlVCLDBGrid.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBGrid.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBGrid.ControlSetOnEnter(Value: TNotifyEvent);
@@ -1751,6 +1823,11 @@ end;
 procedure TJvDynControlVCLDBNavigator.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
+end;
+
+procedure TJvDynControlVCLDBNavigator.ControlSetHint(Value: string);
+begin
+  Hint := Value;
 end;
 
 procedure TJvDynControlVCLDBNavigator.ControlSetOnEnter(Value: TNotifyEvent);
