@@ -155,6 +155,7 @@ const
 resourcestring
   SReadValueFailed = 'TJvAppINIFileStore.ReadValue: Section undefined';
   SWriteValueFailed = 'TJvAppINIFileStore.WriteValue: Section undefined';
+  SDelSubTreeNotImplemented = 'TJvAppINIFileStore.DeleteSubTreeInt has not been implemented yet';
 
 {$IFDEF LINUX}
 function GetTickCount: Cardinal;
@@ -301,7 +302,7 @@ begin
   TopSection := GetAbsPath(Path);
   if TopSection = '' then
     TopSection := DefaultSection;
-  raise EJVCLAppStore.Create('DeleteSubTree has not been implemented yet.');
+  raise EJVCLAppStore.Create(SDelSubTreeNotImplemented);
 end;
 
 function TJvAppIniStore.DoReadInteger(const Path: string; Default: Integer): Integer;
@@ -784,14 +785,14 @@ begin
   end;
 end;
 
-initialization
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+(*initialization
+    This idle thread business is a death-trap at the moment. Commented out for now, maybe
     reimplemented later
   StoresList := TThreadList.Create;
   FIdleThread := TIdleThread.Create;*)
 
-finalization
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
+(*finalization
+    This idle thread business is a death-trap at the moment. Commented out for now, maybe
     reimplemented later
   FIdleThread.Terminate;
   FIdleThread.WaitFor;

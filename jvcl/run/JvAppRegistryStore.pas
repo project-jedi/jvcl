@@ -146,7 +146,7 @@ begin
       try
         I := 0;
         repeat
-          EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, 255);
+          EnumRes := RegEnumKey(TmpHKEY, I, SubKeyName, SizeOf(SubKeyName));
           if (EnumRes = ERROR_SUCCESS) and (not ReportListAsValue or
               not ListStored(Path + '\' + SubKeyName)) then
             Strings.Add(SubKeyName);
@@ -179,7 +179,7 @@ begin
       try
         I := 0;
         repeat
-          NameLen := 511;
+          NameLen := SizeOf(Name);
           EnumRes := RegEnumValue(TmpHKEY, I, Name, NameLen, nil, nil, nil, nil);
           if (EnumRes = ERROR_SUCCESS) and (not PathIsList or (not AnsiSameText(cCount, Name) and
               not NameIsListItem(Name))) then
@@ -212,7 +212,7 @@ begin
         Result := False;
         I := 0;
         repeat
-          NameLen := 511;
+          NameLen := SizeOf(Name);
           EnumRes := RegEnumValue(PathHKEY, I, Name, NameLen, nil, nil, nil, nil);
           Result := (EnumRes = ERROR_SUCCESS) and not AnsiSameText(cCount, Name) and
             not NameIsListItem(Name);
