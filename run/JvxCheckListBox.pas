@@ -1,4 +1,3 @@
-{$I JVCL.INC}
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -31,6 +30,8 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
 
 unit JvxCheckListBox;
 
@@ -473,12 +474,12 @@ var
   ATabWidth: Longint;
   S: string;
 begin
+  Result := 0;
+  if csDestroying in ComponentState then
+    Exit;
   if (Style <> lbStandard) and Assigned(FOnGetItemWidth) and
     Assigned(FOnDrawItem) then
-  begin
-    Result := 0;
-    FOnGetItemWidth(Self, Index, Result);
-  end
+    FOnGetItemWidth(Self, Index, Result)
   else
   begin
     S := Items[Index] + 'x';
@@ -890,8 +891,11 @@ begin
       WM_SETFONT:
         begin
           inherited WndProc(Msg);
-          FCanvas.Font.Assign(Self.Font);
-          ResetHorizontalExtent;
+          if not (csDestroying in ComponentState) then
+          begin
+            FCanvas.Font.Assign(Self.Font);
+            ResetHorizontalExtent;
+          end;
           Exit;
         end;
     end;
@@ -1044,6 +1048,8 @@ procedure TJvxCustomListBox.DefaultDrawText(X, Y: Integer; const S: string);
 var
   ATabWidth: Longint;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   FCanvas.UpdateTextFlags;
   if FTabWidth = 0 then
     FCanvas.TextOut(X, Y, S)
@@ -1057,6 +1063,8 @@ end;
 procedure TJvxCustomListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Assigned(FOnDrawItem) then
     FOnDrawItem(Self, Index, Rect, State)
   else
@@ -1084,6 +1092,8 @@ procedure TJvxCustomListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with Msg.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(LongRec(itemState).Lo);
@@ -1553,6 +1563,8 @@ procedure TJvxCheckListBox.ResetItemHeight;
 var
   H: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (Style = lbStandard) or ((Style = lbOwnerDrawFixed) and
     not Assigned(FOnDrawItem)) then
   begin
@@ -1572,6 +1584,8 @@ var
   R: TRect;
   SaveEvent: TDrawItemEvent;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Index < Items.Count then
   begin
     R := Rect;
@@ -1627,6 +1641,8 @@ var
   DrawRect: TRect;
   SaveColor: TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   DrawRect.Left := R.Left + (R.Right - R.Left - FCheckWidth) div 2;
   DrawRect.Top := R.Top + (R.Bottom - R.Top - FCheckHeight) div 2;
   DrawRect.Right := DrawRect.Left + FCheckWidth;

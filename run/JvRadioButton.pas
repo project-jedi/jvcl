@@ -201,7 +201,7 @@ var
   ASize: TSize;
   R: TRect;
 begin
-  if Parent = nil then
+  if (Parent = nil) or (csDestroying in ComponentState) then
     Exit;
   if AutoSize then
   begin

@@ -502,6 +502,8 @@ procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
 //  DC: HDC;
 //  RC, RW: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   GetCanvas; // make Delphi 5 compiler happy // andreas
   inherited;
 (*
@@ -1042,6 +1044,8 @@ var
   Button: TThemedScrollBar;
   Details: TThemedElementDetails;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if ThemeServices.ThemesEnabled and not Flat then
   begin
     if not Enabled then
@@ -1248,6 +1252,9 @@ var
   LColor: Cardinal;
   {$ENDIF}
 begin
+  Result := -1;
+  if csDestroying in ComponentState then
+    Exit;
   R := GetPageButtonRect(0);
   for I := 0 to Pages.Count - 1 do
   begin
@@ -1315,6 +1322,8 @@ var
   Details: TThemedElementDetails;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (Index < 0) or (Index >= Pages.Count) or (Pages[Index].Buttons = nil) or
     (Pages[Index].Buttons.Count <= 0) then
     Exit;
@@ -1381,6 +1390,8 @@ var
   R: TRect;
   H: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (Index < 0) or (Index >= Pages.Count) or (Pages[Index].Buttons = nil) or
     (Pages[Index].Buttons.Count <= 0) then
   begin
@@ -1410,6 +1421,8 @@ end;
 function TJvCustomOutlookBar.DrawBitmap(R: TRect; Bmp: TBitmap): Boolean;
 begin
   Result := Assigned(Bmp) and not Bmp.Empty;
+  if csDestroying in ComponentState then
+    Exit;
   if Result then
   begin
     Canvas.Brush.Bitmap := Bmp;
@@ -1423,6 +1436,8 @@ var
   R: TRect;
   AColor: TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (PageIndex < 0) or (PageIndex >= Pages.Count) or (Pages[PageIndex].Buttons = nil) then
     Exit;
   R := GetPageRect(PageIndex);
@@ -1455,6 +1470,8 @@ var
   LColor: Cardinal;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   R := GetPageButtonRect(Pages.Count - 1);
   for I := Pages.Count - 1 downto StartIndex do
   begin
@@ -1681,6 +1698,8 @@ var
   R, ClipRect: TRect;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   {$IFDEF JVCLThemesEnabled}
   if ThemedBackground and ThemeServices.ThemesEnabled then
   begin
@@ -1817,6 +1836,8 @@ var
   Details: TThemedElementDetails;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (ButtonIndex < 0) or (PageIndex < 0) or (PageIndex >= Pages.Count) or
     (ButtonIndex < Pages[PageIndex].TopButtonIndex) then
     Exit;

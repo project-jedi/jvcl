@@ -646,6 +646,8 @@ procedure TJvImageComboBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with Msg.DrawItemStruct^ do
   begin
     State := [];
@@ -687,6 +689,8 @@ var
   TmpR, OrigR: TRect;
   SavedColor : TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   SavedColor := FCanvas.Font.Color;
   FCanvas.Font.Assign(Items[Index].Font);
   if State <> [] then
@@ -1015,6 +1019,8 @@ procedure TJvImageListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with Msg.DrawItemStruct^ do
   begin
     State := [];
@@ -1054,6 +1060,8 @@ procedure TJvImageListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDra
 var
   SavedColor : TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   SavedColor := FCanvas.Font.Color;
   FCanvas.Font.Assign(Items[Index].Font);
   if State <> [] then
@@ -1074,6 +1082,8 @@ var
   TmpCol: TColor;
   TmpR, OrigR: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   OrigR := R;
   with FCanvas do
   begin
@@ -1142,6 +1152,8 @@ var
   TmpCol: TColor;
   TmpR, OrigR: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   OrigR := R;
   with FCanvas do
   begin
@@ -1216,6 +1228,8 @@ var
   TmpCol: TColor;
   TmpR, OrigR: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   OrigR := R;
   with FCanvas do
   begin

@@ -87,6 +87,8 @@ var
   R: TRect;
   IHeight, IWidth, SavedIHeight, x_, y_, XOffset, YOffset, SavedYOffset: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if BufferedDraw and (Buffer = nil) then
     Buffer := TBitmap.Create;
 

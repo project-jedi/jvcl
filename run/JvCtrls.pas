@@ -392,6 +392,8 @@ end;
 
 procedure TJvCustomImageButton.CNDrawItem(var Msg: TWMDrawItem);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   FCanvas.Handle := Msg.DrawItemStruct^.hDC;
   try
     FCanvas.Font := Font;
@@ -415,7 +417,7 @@ end;
 
 procedure TJvCustomImageButton.DrawButtonFocusRect(const RectContent: TRect);
 begin
-  if FIsFocused then
+  if FIsFocused and not (csDestroying in ComponentState) then
   begin
     FCanvas.Pen.Color := clWindowFrame;
     FCanvas.Brush.Color := clBtnFace;
@@ -433,6 +435,8 @@ var
   Button: TThemedButton;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with DrawItemStruct do
   begin
     IsEnabled := itemState and ODS_DISABLED = 0;
@@ -506,6 +510,8 @@ end;
 
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with ImageBounds do
     if IsImageVisible then
     begin

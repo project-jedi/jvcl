@@ -252,6 +252,9 @@ end;
 
 procedure TJvgReportScrollBox.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  Msg.Result := 1;
+  if csDestroying in ComponentState then
+    Exit;
   with TCanvas.Create do
     try
       Handle := Msg.DC;
@@ -264,7 +267,6 @@ begin
     finally
       Free;
     end;
-  Msg.Result := 1;
   if Assigned(FOnDraw) then
     FOnDraw(Self);
 end;

@@ -1299,9 +1299,8 @@ procedure TJvPopupMenu.Notification(AComponent: TComponent; Operation: TOperatio
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-  begin
-    if AComponent = FImages then SetImages(nil);
-  end;
+    if AComponent = FImages then
+      SetImages(nil);
 end;
 
 procedure TJvPopupMenu.ImageListChange(Sender: TObject);

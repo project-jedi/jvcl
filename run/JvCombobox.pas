@@ -671,6 +671,8 @@ var
   ItemText: IJvDataItemText;
   DrawState: TProviderDrawStates;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   TControlCanvas(Canvas).UpdateTextFlags;
   if (MeasureStyle = cmsBeforeDraw) and not FIsFixedHeight then
   begin

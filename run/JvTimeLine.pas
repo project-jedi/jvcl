@@ -1547,7 +1547,7 @@ end;
 
 procedure TJvCustomTimeLine.DrawDragLine(X: Integer);
 begin
-  if not DragLine then
+  if not DragLine or (csDestroying in ComponentState) then
     Exit;
   with FCanvas do
   begin
@@ -1591,6 +1591,8 @@ procedure TJvCustomTimeLine.AutoLevels(Complete, ResetLevels: Boolean);
 var
   I, J, K, Count: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   BeginUpdate;
   try
     FList.Clear;
@@ -1630,7 +1632,7 @@ end;
 
 procedure TJvCustomTimeLine.HighLiteItem(Item: TJvTimeItem);
 begin
-  if Assigned(Item) then
+  if Assigned(Item) and not (csDestroying in ComponentState) then
   begin
     Item.Selected := True;
     UpdateItem(Item.Index, FCanvas);
@@ -1663,6 +1665,8 @@ var
   aDay, aStop, aStart: Extended;
   I: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   aDay := FMonthWidth / Days;
   aStop := FMonthWidth;
   aStart := aDay;
@@ -1689,6 +1693,8 @@ var
   DayWidth: Extended;
   sDay: string;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   ACanvas.Font.Size := Font.Size - 2;
   DayWidth := FMonthWidth / Days;
   with ACanvas do
@@ -1708,6 +1714,8 @@ end;
 
 procedure TJvCustomTimeLine.DrawMonth(ACanvas: TCanvas; StartAt, m: Integer);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   ACanvas.Pen.Width := 1;
   if (FYearWidth >= 140) or (m mod 3 = 1) then
     { draw every month only if it fits }
@@ -1724,6 +1732,8 @@ var
   aRect: TRect;
   AName: string;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if FMonthWidth > 120 then
     AName := LongMonthNames[Month]
   else
@@ -1746,6 +1756,8 @@ procedure TJvCustomTimeLine.DrawYear(ACanvas: TCanvas; StartAt: Integer; Yr:
 var
   aRect: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   ACanvas.Font := FYearFont;
   ACanvas.Pen.Width := 1;
   if FYearWidth <= 96 then
@@ -1773,6 +1785,8 @@ var
   I, J: Integer;
   Tmp: TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   UpdateOffset;
   I := 0;
   J := FItemOffset - 4;
@@ -1800,6 +1814,8 @@ procedure TJvCustomTimeLine.DrawVertSupport(ACanvas: TCanvas; StartAt: Integer);
 var
   Tmp: TColor;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   UpdateOffset;
   with ACanvas do
   begin
@@ -1840,6 +1856,8 @@ var
   end;
 
 begin
+  if csDestroying in ComponentState then
+    Exit;
   FYearList.Clear;
   UpdateOffset;
   { draw the top horizontal line }
@@ -1934,6 +1952,8 @@ procedure TJvCustomTimeLine.DrawLeftItemHint(ACanvas: TCanvas);
 var
   R: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if HasItemsToLeft then
   begin
     R := FArrows[scrollLeft].BoundsRect;
@@ -1958,6 +1978,8 @@ procedure TJvCustomTimeLine.DrawRightItemHint(ACanvas: TCanvas);
 var
   R: TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if HasItemsToRight then
   begin
     R := FArrows[scrollRight].BoundsRect;
@@ -1971,6 +1993,8 @@ var
   Tmp: TColor;
   // R:TRect;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with FCanvas do
   begin
     Tmp := Pen.Color;
@@ -1985,7 +2009,7 @@ end;
 
 procedure TJvCustomTimeLine.Paint;
 begin
-  if FUpdate <> 0 then
+  if (FUpdate <> 0) or (csDestroying in ComponentState) then
     Exit;
   DrawTimeLine(FCanvas);
   if Focused then
@@ -2136,6 +2160,8 @@ procedure TJvCustomTimeLine.UpdateItems;
 var
   I: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
     UpdateItem(I, FCanvas);
@@ -2335,6 +2361,8 @@ var
   Details: TThemedElementDetails;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   ACanvas := TCanvas.Create;
   { Get window DC that is clipped to the non-client area }
   DC := GetWindowDC(Handle);

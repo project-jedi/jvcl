@@ -642,7 +642,7 @@ procedure TJvCaptionButton.DrawButton(DC: HDC);
 var
   Canvas: TControlCanvas;
 begin
-  if not Visible or not FHasCaption then
+  if not Visible or not FHasCaption or (csDestroying in ComponentState) then
     Exit;
 
   Canvas := TControlCanvas.Create;
@@ -688,7 +688,7 @@ var
   ClipRect: TRect;
   CaptionRect: TRect;
 begin
-  if not IsThemed then
+  if not IsThemed or (csDestroying in ComponentState) then
     Exit;
 
   { We basically draw the background to display 4 pixels - the corners of the
@@ -710,9 +710,11 @@ end;
 
 procedure TJvCaptionButton.DrawButtonImage(ACanvas: TCanvas; ImageBounds: TRect);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with ImageBounds do
     if IsImageVisible then
-      Images.Draw(ACanvas, Left, Top, ImageIndex, Enabled)
+      Images.Draw(ACanvas, Left, Top, ImageIndex, Enabled);
 end;
 
 procedure TJvCaptionButton.DrawButtonText(ACanvas: TCanvas; TextBounds: TRect);
@@ -752,6 +754,8 @@ var
   DrawRgn: HRGN;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with FButtonRect do
     DrawRect := Rect(0, 0, Right - Left, Bottom - Top);
 
@@ -867,6 +871,8 @@ var
   CaptionButton: TThemedWindow;
   {$ENDIF}
 begin
+  if csDestroying in ComponentState then
+    Exit;
   with FButtonRect do
     DrawRect := Rect(0, 0, Right - Left, Bottom - Top);
 

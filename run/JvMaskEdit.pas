@@ -413,10 +413,9 @@ end;
 
 procedure TJvCustomMaskEdit.WMPaint(var Msg: TWMPaint);
 const
-  AlignmentValues: array[False..True, TAlignment] of TAlignment = (
-    (taLeftJustify, taRightJustify, taCenter),
-    (taRightJustify, taLeftJustify, taCenter)
-  );
+  AlignmentValues: array[False..True, TAlignment] of TAlignment =
+    ((taLeftJustify, taRightJustify, taCenter),
+     (taRightJustify, taLeftJustify, taCenter));
 var
   Canvas: TControlCanvas;
   Style: Integer;
@@ -424,9 +423,11 @@ var
   R: TRect;
   ButtonWidth: Integer;
 begin
-  if Enabled then begin
-    inherited;
-  end else
+  if csDestroying in ComponentState then
+    Exit;
+  if Enabled then
+    inherited
+  else
   begin
     Style := GetWindowLong(Handle, GWL_STYLE);
     if (Style and ES_RIGHT) <> 0 then
@@ -453,6 +454,8 @@ end;
 
 procedure TJvCustomMaskEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Enabled then
     inherited
   else

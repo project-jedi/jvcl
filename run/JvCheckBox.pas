@@ -272,13 +272,15 @@ end;
 
 procedure TJvCheckBox.CalcAutoSize;
 const
-  Flags: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  Flags: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   AWidth, AHeight: integer;
   ASize: TSize;
   R: TRect;
 begin
-  if (Parent = nil) or not AutoSize or (csLoading in ComponentState) then Exit;
+  if (Parent = nil) or not AutoSize or (csDestroying in ComponentState) or
+    (csLoading in ComponentState) then
+    Exit;
   ASize := GetDefaultCheckBoxSize;
     // add some spacing
   Inc(ASize.cy, 4);

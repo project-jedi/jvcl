@@ -1222,6 +1222,8 @@ var
   AAlignment: TAlignment;
   ExStyle: DWORD;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   AAlignment := FAlignment;
   if UseRightToLeftAlignment then ChangeBiDiModeAlignment(AAlignment);
   if ((AAlignment = taLeftJustify) or FFocused) and
@@ -3058,12 +3060,16 @@ procedure TJvDBComboEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (csPaintCopy in ControlState) and (FDataLink.Field <> nil) then
   begin
     S := FDataLink.Field.DisplayText;
     case CharCase of
-      ecUpperCase: S := AnsiUpperCase(S);
-      ecLowerCase: S := AnsiLowerCase(S);
+      ecUpperCase:
+        S := AnsiUpperCase(S);
+      ecLowerCase:
+        S := AnsiLowerCase(S);
     end;
   end
   else
@@ -3340,6 +3346,8 @@ procedure TJvDBDateEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if (csPaintCopy in ControlState) and (FDataLink.Field <> nil) then
   begin
     if FDataLink.Field.IsNull then

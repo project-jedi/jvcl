@@ -399,8 +399,10 @@ var
         FBevel.Bold, 0, true);
     end;
   end;
-begin
 
+begin
+  if csDestroying in ComponentState then
+    Exit;
   try
     if not Assigned(FWallpaper) or (FWallpaper.handle = 0) then
     begin

@@ -55,7 +55,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     property Canvas: TCanvas read GetCanvas;
   published
     property AutoSelect;
@@ -131,8 +131,10 @@ begin
   FCanvas.Free;
 end;
 
-procedure TJvgMaskEdit.Paint(var Msg: TWMPaint);
+procedure TJvgMaskEdit.WMPaint(var Msg: TWMPaint);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   inherited;
   if Assigned(FOnAfterPaint) then
     FOnAfterPaint(Self);
