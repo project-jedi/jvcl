@@ -54,6 +54,7 @@ contains
   JvProviderToolbarFrame in '..\..\design\JvProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame},
   JvDataConsumerItemSelectForm in '..\..\design\JvDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
   JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame},
-  JvColorProviderEditors in '..\..\design\JvColorProviderEditors.pas';
+  JvColorProviderEditors in '..\..\design\JvColorProviderEditors.pas',
+  JvColorProviderDesignerForm in '..\..\design\JvColorProviderDesignerForm.pas';
 
 end.
