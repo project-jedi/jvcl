@@ -13,7 +13,8 @@ const
   CopyrightConst : string = '# Copyright (C)';
   AuthorConst : string = 'FIRST AUTHOR';
   EmailConst : string = 'EMAIL@ADDRESS';
-  LastTranslatorConst : string = '"Last-Translator:'; 
+  DefaultLastTranslatorConst : string = '"Last-Translator: Somebody <your.email@address.com>\n"';
+  LastTranslatorConst : string = '"Last-Translator: \n"';
 
 procedure ApplyHeader(title, copyright, package, version, author, email, poFile : string);
 var
@@ -33,8 +34,8 @@ begin
         Lines[I] := '# ' + title
       else if Copy(Lines[I], 1, Length(CopyrightConst)) = CopyrightConst then
         Lines[I] := CopyrightConst + ' ' + year + ' ' + copyright
-      else if Copy(Lines[I], 1, Length(LastTranslatorConst)) = LastTranslatorConst then
-        Lines[I] := LastTranslatorConst + ' \n"'
+      else if Copy(Lines[I], 1, Length(DefaultLastTranslatorConst)) = DefaultLastTranslatorConst then
+        Lines[I] := LastTranslatorConst
       else
       begin
         curLine := Lines[I];
