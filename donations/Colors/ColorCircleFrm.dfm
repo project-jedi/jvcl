@@ -1,10 +1,10 @@
-object ColorCircleForm: TColorCircleForm
+object JvColorCircleForm: TJvColorCircleForm
   Left = 198
   Top = 103
   BorderStyle = bsDialog
   Caption = 'Color circle configurations'
-  ClientHeight = 643
-  ClientWidth = 1026
+  ClientHeight = 631
+  ClientWidth = 990
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,54 +20,54 @@ object ColorCircleForm: TColorCircleForm
   TextHeight = 13
   object BevelOld: TBevel
     Left = 47
-    Top = 63
+    Top = 55
     Width = 131
     Height = 131
   end
   object LabelOld: TLabel
-    Left = 16
-    Top = 64
+    Left = 48
+    Top = 40
     Width = 19
     Height = 13
     Caption = 'Old:'
   end
   object LabelNew: TLabel
     Left = 200
-    Top = 64
+    Top = 40
     Width = 25
     Height = 13
     Caption = 'New:'
   end
   object LabelColorSpace: TLabel
     Left = 128
-    Top = 10
+    Top = 2
     Width = 61
     Height = 13
     Caption = '&Color Space:'
     FocusControl = ColorSpaceCombo
   end
   object ImageNew: TImage
-    Left = 240
-    Top = 64
+    Left = 200
+    Top = 56
     Width = 129
     Height = 129
   end
   object ImageOld: TImage
     Left = 48
-    Top = 64
+    Top = 56
     Width = 129
     Height = 129
   end
   object BevelNew: TBevel
-    Left = 239
-    Top = 63
+    Left = 199
+    Top = 55
     Width = 131
     Height = 131
   end
   object PanelGraphics: TPanel
     Left = 384
-    Top = 16
-    Width = 633
+    Top = 8
+    Width = 601
     Height = 617
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -79,18 +79,18 @@ object ColorCircleForm: TColorCircleForm
       Width = 63
       Height = 13
       Caption = 'A&xis Settings:'
-      FocusControl = AxisConfigCombo
+      FocusControl = JvColorAxisConfigCombo
     end
-    object ColorCircle: TColorCircle
+    object JvColorCircle: TJvColorCircle
       Left = 96
-      Top = 64
-      Width = 501
+      Top = 80
+      Width = 497
       Height = 501
       FullColor = 16808352
       AxisConfig = acYZX
       TabOrder = 1
-      OnColorChange = ColorCircleColorChange
-      OnColorSpaceChange = ColorCircleColorSpaceChange
+      OnColorChange = JvColorCircleColorChange
+      OnColorSpaceChange = JvColorCircleColorSpaceChange
       RedColor = 32536576
       GreenColor = 32536656
       BlueColor = 32536736
@@ -99,79 +99,79 @@ object ColorCircleForm: TColorCircleForm
       CrossCenter = 3
       CrossStyle.Width = 3
       LineWidth = 0
-      RedTrackBar = ColorTrackBarRed
-      GreenTrackBar = ColorTrackBarGreen
-      BlueTrackBar = ColorTrackBarBlue
-      CommonTrackBar = ColorTrackBarCommon
-      OnRedColorChange = ColorCircleRedColorChange
-      OnGreenColorChange = ColorCircleGreenColorChange
-      OnBlueColorChange = ColorCircleBlueColorChange
+      RedTrackBar = JvFullColorTrackBarRed
+      GreenTrackBar = JvFullColorTrackBarGreen
+      BlueTrackBar = JvFullColorTrackBarBlue
+      CommonTrackBar = JvFullColorTrackBarCommon
+      OnRedColorChange = JvColorCircleRedColorChange
+      OnGreenColorChange = JvColorCircleGreenColorChange
+      OnBlueColorChange = JvColorCircleBlueColorChange
     end
-    object ColorTrackBarCommon: TColorTrackBar
+    object JvFullColorTrackBarCommon: TJvFullColorTrackBar
       Left = 40
-      Top = 48
+      Top = 72
       Width = 20
       Height = 261
       FullColor = 16808352
       AxisConfig = acYZX
-      TabOrder = 0
+      TabOrder = 2
       ArrowColor = clBlack
       ArrowWidth = 10
       ArrowPosition = 0
       ColorOrientation = 1
-      BarOrientation = boVertical
+      Orientation = trVertical
       BarWidth = 10
       FullColorDrawing = True
     end
-    object ColorTrackBarBlue: TColorTrackBar
+    object JvFullColorTrackBarBlue: TJvFullColorTrackBar
       Left = 72
-      Top = 328
+      Top = 352
       Width = 20
       Height = 261
       FullColor = 32536736
       AxisConfig = acYZX
-      TabOrder = 4
+      TabOrder = 5
       ArrowColor = clBlue
       ArrowWidth = 10
       ArrowPosition = 0
       ColorOrientation = 1
-      BarOrientation = boVertical
+      Orientation = trVertical
       BarWidth = 10
       FullColorDrawing = True
     end
-    object ColorTrackBarGreen: TColorTrackBar
+    object JvFullColorTrackBarGreen: TJvFullColorTrackBar
       Left = 40
-      Top = 328
+      Top = 352
       Width = 20
       Height = 261
       FullColor = 32536656
       AxisConfig = acYZX
-      TabOrder = 3
+      TabOrder = 4
       ArrowColor = clLime
       ArrowWidth = 10
       ArrowPosition = 0
       ColorOrientation = 1
-      BarOrientation = boVertical
+      Orientation = trVertical
       BarWidth = 10
       FullColorDrawing = True
     end
-    object ColorTrackBarRed: TColorTrackBar
+    object JvFullColorTrackBarRed: TJvFullColorTrackBar
       Left = 8
-      Top = 328
+      Top = 352
       Width = 20
       Height = 261
       FullColor = 32536576
       AxisConfig = acYZX
-      TabOrder = 2
+      TabOrder = 3
       ArrowColor = clRed
       ArrowWidth = 10
       ArrowPosition = 0
       ColorOrientation = 1
-      BarOrientation = boVertical
+      Orientation = trVertical
       BarWidth = 10
       FullColorDrawing = True
     end
-    object AxisConfigCombo: TAxisConfigCombo
+    object JvColorAxisConfigCombo: TJvColorAxisConfigCombo
       Left = 232
       Top = 32
       Width = 257
@@ -179,13 +179,13 @@ object ColorCircleForm: TColorCircleForm
       Selected = acYZX
       ColorID = 1
       ItemHeight = 13
-      TabOrder = 5
-      OnChange = AxisConfigComboChange
+      TabOrder = 0
+      OnChange = JvColorAxisConfigComboChange
     end
   end
   object PanelCommonSettings: TPanel
     Left = 8
-    Top = 208
+    Top = 200
     Width = 361
     Height = 113
     BevelInner = bvRaised
@@ -290,7 +290,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object PanelAxisSettings: TPanel
     Left = 8
-    Top = 336
+    Top = 328
     Width = 361
     Height = 257
     BevelInner = bvRaised
@@ -545,7 +545,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object RadioButtonCommonSettings: TRadioButton
     Left = 16
-    Top = 200
+    Top = 192
     Width = 113
     Height = 17
     Caption = 'Co&mmon Settings:'
@@ -554,7 +554,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object RadioButtonAxisSettings: TRadioButton
     Left = 16
-    Top = 328
+    Top = 320
     Width = 89
     Height = 17
     Caption = '&Axis Settings:'
@@ -563,7 +563,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object ButtonGraphics: TButton
     Left = 296
-    Top = 608
+    Top = 600
     Width = 73
     Height = 25
     TabOrder = 9
@@ -571,7 +571,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object ButtonCancel: TButton
     Left = 104
-    Top = 608
+    Top = 600
     Width = 75
     Height = 25
     Caption = 'Ca&ncel'
@@ -580,7 +580,7 @@ object ColorCircleForm: TColorCircleForm
   end
   object ButtonOK: TButton
     Left = 8
-    Top = 608
+    Top = 600
     Width = 75
     Height = 25
     Caption = '&OK'
@@ -590,22 +590,22 @@ object ColorCircleForm: TColorCircleForm
   end
   object ButtonApply: TButton
     Left = 200
-    Top = 608
+    Top = 600
     Width = 75
     Height = 25
     Caption = '&Apply'
     TabOrder = 8
     OnClick = ButtonApplyClick
   end
-  object ColorSpaceCombo: TColorSpaceCombo
+  object JvColorSpaceCombo: TJvColorSpaceCombo
     Left = 128
-    Top = 24
+    Top = 16
     Width = 153
     Height = 21
     AllowVariable = False
     ColorSpaceID = 1
     ItemHeight = 13
     TabOrder = 0
-    OnChange = ColorSpaceComboChange
+    OnChange = JvColorSpaceComboChange
   end
 end

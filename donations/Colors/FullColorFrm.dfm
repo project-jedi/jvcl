@@ -1,4 +1,4 @@
-object FullColorForm: TFullColorForm
+object FullColorForm: TJvFullColorForm
   Left = 255
   Top = 232
   BorderIcons = [biSystemMenu]
@@ -25,7 +25,6 @@ object FullColorForm: TFullColorForm
     Width = 101
     Height = 13
     Caption = '&Current Color Space :'
-    FocusControl = ColorSpaceCombo
   end
   object LabelDrawOld: TLabel
     Left = 288
@@ -189,7 +188,7 @@ object FullColorForm: TFullColorForm
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ParentColor = True
-    TabOrder = 3
+    TabOrder = 2
     Visible = False
     object LabelAxis: TLabel
       Left = 20
@@ -198,7 +197,7 @@ object FullColorForm: TFullColorForm
       Height = 13
       Caption = '&Axis:'
     end
-    object ColorPanel: TColorPanel
+    object JvColorPanel: TJvColorPanel
       Left = 8
       Top = 40
       Width = 261
@@ -206,13 +205,13 @@ object FullColorForm: TFullColorForm
       FullColor = 16777376
       AxisConfig = acXZY
       TabOrder = 1
-      OnColorChange = ColorPanelColorChange
+      OnColorChange = JvColorPanelColorChange
       CrossSize = 10
       CrossCenter = 3
       CrossStyle.Width = 3
-      ColorTrackBar = ColorTrackBar
+      ColorTrackBar = JvFullColorTrackBar
     end
-    object ColorTrackBar: TColorTrackBar
+    object JvFullColorTrackBar: TJvFullColorTrackBar
       Left = 8
       Top = 320
       Width = 261
@@ -224,11 +223,11 @@ object FullColorForm: TFullColorForm
       ArrowWidth = 10
       ArrowPosition = 0
       ColorOrientation = 0
-      BarOrientation = boHorizontal
+      Orientation = trHorizontal
       BarWidth = 10
       FullColorDrawing = True
     end
-    object AxisConfigCombo: TAxisConfigCombo
+    object JvColorAxisConfigCombo: TJvColorAxisConfigCombo
       Left = 48
       Top = 16
       Width = 225
@@ -244,7 +243,7 @@ object FullColorForm: TFullColorForm
     Top = 344
     Width = 75
     Height = 25
-    TabOrder = 2
+    TabOrder = 6
     OnClick = ButtonGraphicsClick
   end
   object ButtonOK: TButton
@@ -255,7 +254,7 @@ object FullColorForm: TFullColorForm
     Caption = '&OK'
     Default = True
     ModalResult = 1
-    TabOrder = 4
+    TabOrder = 3
   end
   object ButtonCancel: TButton
     Left = 114
@@ -264,7 +263,7 @@ object FullColorForm: TFullColorForm
     Height = 25
     Caption = 'Ca&ncel'
     ModalResult = 2
-    TabOrder = 5
+    TabOrder = 4
   end
   object ButtonApply: TButton
     Left = 220
@@ -272,10 +271,10 @@ object FullColorForm: TFullColorForm
     Width = 75
     Height = 25
     Caption = '&Apply'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = ButtonApplyClick
   end
-  object ColorSpaceCombo: TColorSpaceCombo
+  object JvColorSpaceCombo: TJvColorSpaceCombo
     Left = 8
     Top = 32
     Width = 153

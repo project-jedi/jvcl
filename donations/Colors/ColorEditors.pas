@@ -31,10 +31,11 @@ interface
 
 uses
   Windows, Classes, Forms, DesignIntf, DesignEditors, VCLEditors, Graphics,
+  ComCtrls,
   ColorCtrls;
 
 type
-  TArrowPositionEditor = class(TPropertyEditor)
+  TJvArrowPositionEditor = class(TPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -42,7 +43,7 @@ type
     function GetValue: string; override;
   end;
 
-  TColorOrientationEditor = class(TPropertyEditor)
+  TJvColorOrientationEditor = class(TPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -50,7 +51,7 @@ type
     function GetValue: string; override;
   end;
 
-  TColorIDEditor = class(TPropertyEditor)
+  TJvColorIDEditor = class(TPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -69,26 +70,26 @@ uses
   TypInfo, Math, GraphUtil, SysUtils,
   ColorSpaces;
 
-//=== { TArrowPositionEditor } ===============================================
+//=== { TJvArrowPositionEditor } =============================================
 
-function TArrowPositionEditor.GetAttributes: TPropertyAttributes;
+function TJvArrowPositionEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paAutoUpdate, paSortList, paRevertable, paNotNestable];
 end;
 
-function TArrowPositionEditor.GetValue: string;
+function TJvArrowPositionEditor.GetValue: string;
 begin
   Result := '';
-  if GetComponent(0) is TColorTrackBar then
-    case (GetComponent(0) as TColorTrackBar).BarOrientation of
-      boHorizontal:
+  if GetComponent(0) is TJvFullColorTrackBar then
+    case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
+      trHorizontal:
         case GetOrdValue of
           0:
             Result := 'apTop';
           1:
             Result := 'apBottom';
         end;
-      boVertical:
+      trVertical:
         case GetOrdValue of
           0:
             Result := 'apLeft';
@@ -98,16 +99,16 @@ begin
     end;
 end;
 
-procedure TArrowPositionEditor.GetValues(Proc: TGetStrProc);
+procedure TJvArrowPositionEditor.GetValues(Proc: TGetStrProc);
 begin
-  if GetComponent(0) is TColorTrackBar then
-    case (GetComponent(0) as TColorTrackBar).BarOrientation of
-      boHorizontal:
+  if GetComponent(0) is TJvFullColorTrackBar then
+    case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
+      trHorizontal:
         begin
           Proc('apTop');
           Proc('apBottom');
         end;
-      boVertical:
+      trVertical:
         begin
           Proc('apLeft');
           Proc('apRight');
@@ -115,7 +116,7 @@ begin
     end;
 end;
 
-procedure TArrowPositionEditor.SetValue(const Value: string);
+procedure TJvArrowPositionEditor.SetValue(const Value: string);
 begin
   if Value = 'apLeft' then
     SetOrdValue(0)
@@ -130,26 +131,26 @@ begin
     SetOrdValue(1);
 end;
 
-//=== { TColorOrientation } ==================================================
+//=== { TJvColorOrientationEditor } ==========================================
 
-function TColorOrientationEditor.GetAttributes: TPropertyAttributes;
+function TJvColorOrientationEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paAutoUpdate, paSortList, paRevertable, paNotNestable];
 end;
 
-function TColorOrientationEditor.GetValue: string;
+function TJvColorOrientationEditor.GetValue: string;
 begin
   Result := '';
-  if GetComponent(0) is TColorTrackBar then
-    case (GetComponent(0) as TColorTrackBar).BarOrientation of
-      boHorizontal:
+  if GetComponent(0) is TJvFullColorTrackBar then
+    case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
+      trHorizontal:
         case GetOrdValue of
           0:
             Result := 'coLeftToRight';
           1:
             Result := 'coRightToLeft';
         end;
-      boVertical:
+      trVertical:
         case GetOrdValue of
           0:
             Result := 'coTopToBottom';
@@ -159,16 +160,16 @@ begin
     end;
 end;
 
-procedure TColorOrientationEditor.GetValues(Proc: TGetStrProc);
+procedure TJvColorOrientationEditor.GetValues(Proc: TGetStrProc);
 begin
-  if GetComponent(0) is TColorTrackBar then
-    case (GetComponent(0) as TColorTrackBar).BarOrientation of
-      boHorizontal:
+  if GetComponent(0) is TJvFullColorTrackBar then
+    case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
+      trHorizontal:
         begin
           Proc('coLeftToRight');
           Proc('coRightToLeft');
         end;
-      boVertical:
+      trVertical:
         begin
           Proc('coTopToBottom');
           Proc('coBottomToTop');
@@ -176,7 +177,7 @@ begin
     end;
 end;
 
-procedure TColorOrientationEditor.SetValue(const Value: string);
+procedure TJvColorOrientationEditor.SetValue(const Value: string);
 begin
   if Value = 'coLeftToRight' then
     SetOrdValue(0)
@@ -191,19 +192,19 @@ begin
     SetOrdValue(1);
 end;
 
-//=== { TColorIDEditor } =====================================================
+//=== { TJvColorIDEditor } ===================================================
 
-function TColorIDEditor.GetAttributes: TPropertyAttributes;
+function TJvColorIDEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paRevertable, paNotNestable];
 end;
 
-function TColorIDEditor.GetValue: string;
+function TJvColorIDEditor.GetValue: string;
 begin
-  Result := ColorSpaceManager.ColorSpace[TColorID(GetOrdValue)].ShortName;
+  Result := ColorSpaceManager.ColorSpace[TJvColorID(GetOrdValue)].ShortName;
 end;
 
-procedure TColorIDEditor.GetValues(Proc: TGetStrProc);
+procedure TJvColorIDEditor.GetValues(Proc: TGetStrProc);
 var
   Index: Integer;
 begin
@@ -212,10 +213,10 @@ begin
       Proc(ColorSpaceIndex[Index].ShortName);
 end;
 
-procedure TColorIDEditor.SetValue(const Value: string);
+procedure TJvColorIDEditor.SetValue(const Value: string);
 var
   Index: Integer;
-  LColorSpace: TColorSpace;
+  LColorSpace: TJvColorSpace;
 begin
   with ColorSpaceManager do
     for Index := 0 to ColorSpaceCount - 1 do
@@ -231,9 +232,9 @@ end;
 
 procedure Register;
 begin
-  RegisterPropertyEditor(TypeInfo(TColorOrientation), nil, '', TColorOrientationEditor);
-  RegisterPropertyEditor(TypeInfo(TArrowPosition), nil, '', TArrowPositionEditor);
-  RegisterPropertyEditor(TypeInfo(TColorID), nil, '', TColorIDEditor);
+  RegisterPropertyEditor(TypeInfo(TJvColorOrientation), nil, '', TJvColorOrientationEditor);
+  RegisterPropertyEditor(TypeInfo(TJvArrowPosition), nil, '', TJvArrowPositionEditor);
+  RegisterPropertyEditor(TypeInfo(TJvColorID), nil, '', TJvColorIDEditor);
 end;
 
 {$IFDEF UNITVERSIONING}

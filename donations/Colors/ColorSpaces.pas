@@ -30,77 +30,78 @@ unit ColorSpaces;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils,
+  JvTypes;
 
 type
   // (rom) What is that for? Better go for TPersistent.
   {$M+}
 
-  TAxisIndex = (axIndex0, axIndex1, axIndex2);
-  TColorID = type Byte;
-  TFullColor = type Cardinal;
-  ShortNameString = string[3];
+  TJvAxisIndex = (axIndex0, axIndex1, axIndex2);
+  TJvColorID = type Byte;
+  TJvFullColor = type Cardinal;
+  TJvShortNameString = string[3];
 
-  TColorSpace = class(TObject)
+  TJvColorSpace = class(TObject)
   private
-    FID: TColorID;
+    FID: TJvColorID;
   protected
-    function GetAxisName(Index: TAxisIndex): string; virtual;
-    function GetAxisMin(Index: TAxisIndex): Byte; virtual;
-    function GetAxisMax(Index: TAxisIndex): Byte; virtual;
+    function GetAxisName(Index: TJvAxisIndex): string; virtual;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; virtual;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; virtual;
     function GetName: string; virtual;
-    function GetShortName: ShortNameString; virtual;
-    function GetAxisDefault(Index: TAxisIndex): Byte; virtual;
+    function GetShortName: TJvShortNameString; virtual;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; virtual;
   public
-    constructor Create(ColorID: TColorID); reintroduce;
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; virtual;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; virtual;
-    property ID: TColorID read FID;
+    constructor Create(ColorID: TJvColorID); reintroduce;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; virtual;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; virtual;
+    property ID: TJvColorID read FID;
     property Name: string read GetName;
-    property ShortName: ShortNameString read GetShortName;
-    property AxisName[Index: TAxisIndex]: string read GetAxisName;
-    property AxisMin[Index: TAxisIndex]: Byte read GetAxisMin;
-    property AxisMax[Index: TAxisIndex]: Byte read GetAxisMax;
-    property AxisDefault[Index: TAxisIndex]: Byte read GetAxisDefault;
+    property ShortName: TJvShortNameString read GetShortName;
+    property AxisName[Index: TJvAxisIndex]: string read GetAxisName;
+    property AxisMin[Index: TJvAxisIndex]: Byte read GetAxisMin;
+    property AxisMax[Index: TJvAxisIndex]: Byte read GetAxisMax;
+    property AxisDefault[Index: TJvAxisIndex]: Byte read GetAxisDefault;
   end;
 
-  TColorSpaceManager = class(TObject)
+  TJvColorSpaceManager = class(TObject)
   private
     FColorSpaceList: TList;
     FPredefinedColors: TStringList;
     function GetColorSpaceCount: Integer;
-    function GetColorSpaceIndex(Index: Integer): TColorSpace;
+    function GetColorSpaceIndex(Index: Integer): TJvColorSpace;
     procedure AddPredefinedColor(const S: string);
     function GetPredefinedColorCount: Integer;
     function GetPredefinedColorIndex(Index: Integer): string;
   protected
-    function GetColorSpace(ID: TColorID): TColorSpace; virtual;
+    function GetColorSpace(ID: TJvColorID): TJvColorSpace; virtual;
   public
-    procedure RegisterColorSpace(NewColorSpace: TColorSpace);
+    procedure RegisterColorSpace(NewColorSpace: TJvColorSpace);
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function ConvertToID(AColor: TFullColor; NewID: TColorID): TFullColor;
-    function GetColorID(AColor: TFullColor): TColorID;
+    function ConvertToID(AColor: TJvFullColor; NewID: TJvColorID): TJvFullColor;
+    function GetColorID(AColor: TJvFullColor): TJvColorID;
 
-    property ColorSpace[ID: TColorID]: TColorSpace read GetColorSpace;
-    property ColorSpaceIndex[Index: Integer]: TColorSpace read GetColorSpaceIndex;
+    property ColorSpace[ID: TJvColorID]: TJvColorSpace read GetColorSpace;
+    property ColorSpaceIndex[Index: Integer]: TJvColorSpace read GetColorSpaceIndex;
     property ColorSpaceCount: Integer read GetColorSpaceCount;
 
     property PredefinedColorIndex[Index: Integer]: string read GetPredefinedColorIndex;
     property PredefinedColorCount: Integer read GetPredefinedColorCount;
   end;
 
-  EColorSpaceError = class(Exception);
+  EJvColorSpaceError = class(EJVCLException);
 
   {$M-}
 
-function ColorSpaceManager: TColorSpaceManager;
-function GetAxisValue(AColor: TFullColor; AAxis: TAxisIndex): Byte;
-function SetAxisValue(AColor: TFullColor; AAxis: TAxisIndex; NewValue: Byte): TFullColor;
+function ColorSpaceManager: TJvColorSpaceManager;
+function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
+function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
 const
-  csRGB = TColorID(0);
-  csPredefined = TColorID(128);
+  csRGB = TJvColorID(0);
+  csPredefined = TJvColorID(128);
 
 implementation
 
@@ -111,7 +112,7 @@ uses
   Windows, Graphics;
 
 var
-  GlobalColorSpaceManager: TColorSpaceManager = nil;
+  GlobalColorSpaceManager: TJvColorSpaceManager = nil;
 
 resourcestring
   RsUnnamedColorAxis = 'Unnamed Color Axis';
@@ -120,15 +121,15 @@ resourcestring
   RsEColorSpaceNotFound = 'Color Space not found: %d';
   RsEColorSpaceAlreadyExists = 'Color Space Already exists [ID: %d, Name: %s]';
 
-function ColorSpaceManager: TColorSpaceManager;
+function ColorSpaceManager: TJvColorSpaceManager;
 begin
   if GlobalColorSpaceManager = nil then
-    GlobalColorSpaceManager := TColorSpaceManager.Create;
+    GlobalColorSpaceManager := TJvColorSpaceManager.Create;
   Result := GlobalColorSpaceManager;
 end;
 
-function SetAxisValue(AColor: TFullColor; AAxis: TAxisIndex;
-  NewValue: Byte): TFullColor;
+function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex;
+  NewValue: Byte): TJvFullColor;
 begin
   case AAxis of
     axIndex0:
@@ -141,7 +142,7 @@ begin
   Result := AColor;
 end;
 
-function GetAxisValue(AColor: TFullColor; AAxis: TAxisIndex): Byte;
+function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 begin
   case AAxis of
     axIndex0:
@@ -155,57 +156,57 @@ begin
   end;
 end;
 
-//=== { TColorSpace } ========================================================
+//=== { TJvColorSpace } ========================================================
 
-function TColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 begin
   Result := (AColor and $00FFFFFF) or (ID shl 24);
 end;
 
-function TColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 begin
   Result := (AColor and $00FFFFFF) or (csRGB shl 24);
 end;
 
-constructor TColorSpace.Create(ColorID: TColorID);
+constructor TJvColorSpace.Create(ColorID: TJvColorID);
 begin
   inherited Create;
   FID := ColorID;
 end;
 
-function TColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := Low(Byte);
 end;
 
-function TColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   Result := High(Byte);
 end;
 
-function TColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := Low(Byte);
 end;
 
-function TColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   Result := RsUnnamedColorAxis;
 end;
 
-function TColorSpace.GetName: string;
+function TJvColorSpace.GetName: string;
 begin
   Result := RsUnnamedColorSpace;
 end;
 
-function TColorSpace.GetShortName: ShortNameString;
+function TJvColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsUCS;
 end;
 
-//=== { TColorSpaceManager } =================================================
+//=== { TJvColorSpaceManager } =================================================
 
-constructor TColorSpaceManager.Create;
+constructor TJvColorSpaceManager.Create;
 begin
   inherited Create;
   FColorSpaceList := TList.Create;
@@ -213,25 +214,25 @@ begin
   GetColorValues(AddPredefinedColor);
 end;
 
-destructor TColorSpaceManager.Destroy;
+destructor TJvColorSpaceManager.Destroy;
 var
   Index: Integer;
 begin
   for Index := 0 to FColorSpaceList.Count - 1 do
-    TColorSpace(FColorSpaceList.Items[Index]).Free;
+    TJvColorSpace(FColorSpaceList.Items[Index]).Free;
   FColorSpaceList.Free;
   FPredefinedColors.Free;
   inherited Destroy;
 end;
 
-procedure TColorSpaceManager.AddPredefinedColor(const S: string);
+procedure TJvColorSpaceManager.AddPredefinedColor(const S: string);
 begin
   FPredefinedColors.Add(S);
 end;
 
-function TColorSpaceManager.ConvertToID(AColor: TFullColor; NewID: TColorID): TFullColor;
+function TJvColorSpaceManager.ConvertToID(AColor: TJvFullColor; NewID: TJvColorID): TJvFullColor;
 var
-  LColorID: TColorID;
+  LColorID: TJvColorID;
 begin
   LColorID := GetColorID(AColor);
   if LColorID = NewID then
@@ -244,66 +245,66 @@ begin
   end;
 end;
 
-function TColorSpaceManager.GetColorID(AColor: TFullColor): TColorID;
+function TJvColorSpaceManager.GetColorID(AColor: TJvFullColor): TJvColorID;
 var
   Index: Integer;
 begin
-  Result := TColorID(AColor shr 24);
+  Result := TJvColorID(AColor shr 24);
   for Index := 0 to ColorSpaceCount - 1 do
     if ColorSpaceIndex[Index].ID = Result then
       Exit;
   Result := csPredefined;
 end;
 
-function TColorSpaceManager.GetColorSpace(ID: TColorID): TColorSpace;
+function TJvColorSpaceManager.GetColorSpace(ID: TJvColorID): TJvColorSpace;
 var
   Index: Integer;
-  LColorSpace: TColorSpace;
+  LColorSpace: TJvColorSpace;
 begin
   for Index := 0 to FColorSpaceList.Count - 1 do
   begin
-    LColorSpace := TColorSpace(FColorSpaceList.Items[Index]);
+    LColorSpace := TJvColorSpace(FColorSpaceList.Items[Index]);
     if LColorSpace.ID = ID then
     begin
       Result := LColorSpace;
       Exit;
     end;
   end;
-  raise EColorSpaceError.CreateFmt(RsEColorSpaceNotFound, [ID]);
+  raise EJvColorSpaceError.CreateFmt(RsEColorSpaceNotFound, [ID]);
 end;
 
-function TColorSpaceManager.GetColorSpaceCount: Integer;
+function TJvColorSpaceManager.GetColorSpaceCount: Integer;
 begin
   Result := FColorSpaceList.Count;
 end;
 
-function TColorSpaceManager.GetColorSpaceIndex(Index: Integer): TColorSpace;
+function TJvColorSpaceManager.GetColorSpaceIndex(Index: Integer): TJvColorSpace;
 begin
-  Result := TColorSpace(FColorSpaceList.Items[Index]);
+  Result := TJvColorSpace(FColorSpaceList.Items[Index]);
 end;
 
-function TColorSpaceManager.GetPredefinedColorCount: Integer;
+function TJvColorSpaceManager.GetPredefinedColorCount: Integer;
 begin
   Result := FPredefinedColors.Count;
 end;
 
-function TColorSpaceManager.GetPredefinedColorIndex(Index: Integer): string;
+function TJvColorSpaceManager.GetPredefinedColorIndex(Index: Integer): string;
 begin
   Result := FPredefinedColors.Strings[Index];
 end;
 
-procedure TColorSpaceManager.RegisterColorSpace(NewColorSpace: TColorSpace);
+procedure TJvColorSpaceManager.RegisterColorSpace(NewColorSpace: TJvColorSpace);
 var
   Index: Integer;
-  LColorSpace: TColorSpace;
+  LColorSpace: TJvColorSpace;
 begin
   for Index := 0 to FColorSpaceList.Count - 1 do
   begin
-    LColorSpace := TColorSpace(FColorSpaceList.Items[Index]);
+    LColorSpace := TJvColorSpace(FColorSpaceList.Items[Index]);
     if LColorSpace.ID = NewColorSpace.ID then
       with LColorSpace do
       begin
-        EColorSpaceError.CreateFmt(RsEColorSpaceAlreadyExists, [ID, Name]);
+        EJvColorSpaceError.CreateFmt(RsEColorSpaceAlreadyExists, [ID, Name]);
         Exit;
       end;
   end;

@@ -30,50 +30,51 @@ unit ColorCtrls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Graphics, StdCtrls, ExtCtrls,
-  ColorSpaces, ColorRotate;
+  Windows, Messages, SysUtils, Classes, Controls, Graphics,
+  ComCtrls, StdCtrls, ExtCtrls,
+  ColorSpaces, ColorRotate,
+  JvTypes;
 
 type
-  TBarOrientation = (boHorizontal, boVertical);
-  TAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
-  TColorOrientation = 0..1;
-  TArrowPosition = 0..1;
+  TJvColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);
+  TJvColorOrientation = 0..1;
+  TJvArrowPosition = 0..1;
 
 const
-  coLeftToRight = TColorOrientation(0);
-  coRightToLeft = TColorOrientation(1);
-  coTopToBottom = TColorOrientation(0);
-  coBottomToTop = TColorOrientation(1);
+  coLeftToRight = TJvColorOrientation(0);
+  coRightToLeft = TJvColorOrientation(1);
+  coTopToBottom = TJvColorOrientation(0);
+  coBottomToTop = TJvColorOrientation(1);
 
-  apLeft = TArrowPosition(0);
-  apRight = TArrowPosition(1);
-  apTop = TArrowPosition(0);
-  apBottom = TArrowPosition(1);
+  apLeft = TJvArrowPosition(0);
+  apRight = TJvArrowPosition(1);
+  apTop = TJvArrowPosition(0);
+  apBottom = TJvArrowPosition(1);
 
 type
   TKeyCode = (kcLeft, kcRight, kcUp, kcDown);
 
-  TMouseColorEvent = procedure(Sender: TObject; ColorX, ColorY: Byte) of object;
-  TColorComponent = class;
-  TColorPanel = class;
-  TColorCircle = class;
-  TColorTrackBar = class;
+  TJvMouseColorEvent = procedure(Sender: TObject; ColorX, ColorY: Byte) of object;
+  TJvColorComponent = class;
+  TJvColorPanel = class;
+  TJvColorCircle = class;
+  TJvFullColorTrackBar = class;
 
-  TColorComponent = class(TCustomControl)
+  TJvColorComponent = class(TCustomControl)
   private
     FAutoMouse: Boolean;
-    FFullColor: TFullColor;
-    FAxisConfig: TAxisConfig;
+    FFullColor: TJvFullColor;
+    FAxisConfig: TJvColorAxisConfig;
     FOnColorChange: TNotifyEvent;
     FOnAxisConfigChange: TNotifyEvent;
     FOnColorSpaceChange: TNotifyEvent;
-    FOnMouseColor: TMouseColorEvent;
+    FOnMouseColor: TJvMouseColorEvent;
     FColorChanging: Boolean;
     FBuffer: TBitmap;
     FCreating: Boolean;
     FWantDrawBuffer: Boolean;
-    function GetColorSpace: TColorSpace;
-    procedure SetAxisConfig(const Value: TAxisConfig);
+    function GetColorSpace: TJvColorSpace;
+    procedure SetAxisConfig(const Value: TJvColorAxisConfig);
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -88,7 +89,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure DrawFocus;
     procedure DrawFrame(X, Y: Integer);
-    procedure SetFullColor(const Value: TFullColor); virtual;
+    procedure SetFullColor(const Value: TJvFullColor); virtual;
     procedure MouseColor(Shift: TShiftState; X, Y: Integer); virtual;
     procedure AxisConfigChange; virtual;
     procedure DrawBuffer; virtual;
@@ -99,11 +100,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ColorSpace: TColorSpace read GetColorSpace;
+    property ColorSpace: TJvColorSpace read GetColorSpace;
   published
     property AutoMouse: Boolean read FAutoMouse write FAutoMouse default True;
-    property FullColor: TFullColor read FFullColor write SetFullColor default TFullColor(clDkGray);
-    property AxisConfig: TAxisConfig read FAxisConfig write SetAxisConfig default acXYZ;
+    property FullColor: TJvFullColor read FFullColor write SetFullColor default TJvFullColor(clDkGray);
+    property AxisConfig: TJvColorAxisConfig read FAxisConfig write SetAxisConfig default acXYZ;
     property OnMouseMove;
     property OnMouseDown;
     property OnMouseUp;
@@ -114,10 +115,10 @@ type
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnAxisConfigChange: TNotifyEvent read FOnAxisConfigChange write FOnAxisConfigChange;
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
-    property OnMouseColor: TMouseColorEvent read FOnMouseColor write FOnMouseColor;
+    property OnMouseColor: TJvMouseColorEvent read FOnMouseColor write FOnMouseColor;
   end;
 
-  TColorComponent2D = class(TColorComponent)
+  TJvColorComponent2D = class(TJvColorComponent)
   private
     FValueZAuto: Boolean;
     FValueZ: Byte;
@@ -138,26 +139,26 @@ type
     property ValueZ: Byte read FValueZ write SetValueZ stored IsValueZStored default 0;
   end;
 
-  TColorPanel = class(TColorComponent2D)
+  TJvColorPanel = class(TJvColorComponent2D)
   private
     FReverseAxisY: Boolean;
     FReverseAxisX: Boolean;
     FCrossSize: Integer;
     FPen: TPen;
     FCrossCenter: Integer;
-    FColorTrackBar: TColorTrackBar;
+    FColorTrackBar: TJvFullColorTrackBar;
     FAxisConfigChanging: Boolean;
     procedure SetReverseAxisX(const Value: Boolean);
     procedure SetReverseAxisY(const Value: Boolean);
     procedure SetCrossSize(Value: Integer);
     procedure SetCrossCenter(Value: Integer);
     procedure SetPen(const Value: TPen);
-    procedure SetColorTrackBar(const Value: TColorTrackBar);
+    procedure SetColorTrackBar(const Value: TJvFullColorTrackBar);
   protected
     procedure PenChange(Sender: TObject);
     procedure MouseColor(Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetFullColor(const Value: TFullColor); override;
+    procedure SetFullColor(const Value: TJvFullColor); override;
     procedure DrawBuffer; override;
     procedure CalcSize; override;
     procedure AxisConfigChange; override;
@@ -172,52 +173,52 @@ type
     property CrossSize: Integer read FCrossSize write SetCrossSize default 5;
     property CrossCenter: Integer read FCrossCenter write SetCrossCenter default 1;
     property CrossStyle: TPen read FPen write SetPen;
-    property ColorTrackBar: TColorTrackBar read FColorTrackBar write SetColorTrackBar;
+    property ColorTrackBar: TJvFullColorTrackBar read FColorTrackBar write SetColorTrackBar;
   end;
 
-  TColorCircleStyle = (crShowLines, crShowCommon, crShowRed, crShowGreen, crShowBlue,
+  TJvColorCircleStyle = (crShowLines, crShowCommon, crShowRed, crShowGreen, crShowBlue,
     cr3ButtonsMouse, cr3ButtonsCommon);
 
-  TColorCircleStyles = set of TColorCircleStyle;
+  TJvColorCircleStyles = set of TJvColorCircleStyle;
 
-  TColorCircle = class(TColorComponent2D)
+  TJvColorCircle = class(TJvColorComponent2D)
   private
-    FStyles: TColorCircleStyles;
-    FGreenColor: TFullColor;
-    FBlueColor: TFullColor;
-    FRedColor: TFullColor;
+    FStyles: TJvColorCircleStyles;
+    FGreenColor: TJvFullColor;
+    FBlueColor: TJvFullColor;
+    FRedColor: TJvFullColor;
     FInvertRotation: Boolean;
     FInvertRadius: Boolean;
     FCrossCenter: Integer;
     FCrossSize: Integer;
     FCrossStyle: TPen;
     FLineWidth: Integer;
-    FDraggingColor: TRotateColor;
+    FDraggingColor: TJvRotateColor;
     FOnRedColorChange: TNotifyEvent;
     FOnBlueColorChange: TNotifyEvent;
     FOnGreenColorChange: TNotifyEvent;
     FOnColorSpaceChange: TNotifyEvent;
-    FBlueColorTrackBar: TColorTrackBar;
-    FGreenColorTrackBar: TColorTrackBar;
-    FRedColorTrackBar: TColorTrackBar;
-    FCommonColorTrackBar: TColorTrackBar;
+    FBlueColorTrackBar: TJvFullColorTrackBar;
+    FGreenColorTrackBar: TJvFullColorTrackBar;
+    FRedColorTrackBar: TJvFullColorTrackBar;
+    FCommonColorTrackBar: TJvFullColorTrackBar;
     FCrossRedColor: TColor;
     FCrossBlueColor: TColor;
     FCrossGreenColor: TColor;
-    procedure SetBlueColor(const Value: TFullColor);
-    procedure SetGreenColor(const Value: TFullColor);
-    procedure SetRedColor(const Value: TFullColor);
-    procedure SetStyles(const Value: TColorCircleStyles);
+    procedure SetBlueColor(const Value: TJvFullColor);
+    procedure SetGreenColor(const Value: TJvFullColor);
+    procedure SetRedColor(const Value: TJvFullColor);
+    procedure SetStyles(const Value: TJvColorCircleStyles);
     procedure SetInvertRadius(const Value: Boolean);
     procedure SetInvertRotation(const Value: Boolean);
     procedure SetCrossCenter(Value: Integer);
     procedure SetCrossSize(Value: Integer);
     procedure SetCrossStyle(const Value: TPen);
     procedure SetLineWidth(Value: Integer);
-    procedure SetBlueColorTrackBar(const Value: TColorTrackBar);
-    procedure SetGreenColorTrackBar(const Value: TColorTrackBar);
-    procedure SetRedColorTrackBar(const Value: TColorTrackBar);
-    procedure SetCommonColorTrackBar(const Value: TColorTrackBar);
+    procedure SetBlueColorTrackBar(const Value: TJvFullColorTrackBar);
+    procedure SetGreenColorTrackBar(const Value: TJvFullColorTrackBar);
+    procedure SetRedColorTrackBar(const Value: TJvFullColorTrackBar);
+    procedure SetCommonColorTrackBar(const Value: TJvFullColorTrackBar);
     procedure SetCrossBlueColor(const Value: TColor);
     procedure SetCrossGreenColor(const Value: TColor);
     procedure SetCrossRedColor(const Value: TColor);
@@ -228,7 +229,7 @@ type
     procedure PenChanged(Sender: TObject);
     procedure DrawBuffer; override;
     procedure CalcSize; override;
-    procedure SetFullColor(const Value: TFullColor); override;
+    procedure SetFullColor(const Value: TJvFullColor); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseColor(Shift: TShiftState;
@@ -238,19 +239,19 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ConvertColorToColorID(NewFullColor: TFullColor);
-    function FullColorToPosition(AFullColor: TFullColor): TPoint;
-    function PositionToFullColor(APoint: TPoint): TFullColor;
+    procedure ConvertColorToColorID(NewFullColor: TJvFullColor);
+    function FullColorToPosition(AFullColor: TJvFullColor): TPoint;
+    function PositionToFullColor(APoint: TPoint): TJvFullColor;
   published
     property Color;
     property ParentColor;
     property InvertRadius: Boolean read FInvertRadius write SetInvertRadius default False;
     property InvertRotation: Boolean read FInvertRotation write SetInvertRotation default False;
-    property RedColor: TFullColor read FRedColor write SetRedColor default TFullColor(clRed);
-    property GreenColor: TFullColor read FGreenColor write SetGreenColor default TFullColor(clLime);
-    property BlueColor: TFullColor read FBlueColor write SetBlueColor default TFullColor(clBlue);
+    property RedColor: TJvFullColor read FRedColor write SetRedColor default TJvFullColor(clRed);
+    property GreenColor: TJvFullColor read FGreenColor write SetGreenColor default TJvFullColor(clLime);
+    property BlueColor: TJvFullColor read FBlueColor write SetBlueColor default TJvFullColor(clBlue);
     // (rom) set default value
-    property Styles: TColorCircleStyles read FStyles write SetStyles;
+    property Styles: TJvColorCircleStyles read FStyles write SetStyles;
     property CrossSize: Integer read FCrossSize write SetCrossSize default 5;
     property CrossCenter: Integer read FCrossCenter write SetCrossCenter default 1;
     property CrossStyle: TPen read FCrossStyle write SetCrossStyle;
@@ -258,21 +259,21 @@ type
     property CrossGreenColor: TColor read FCrossGreenColor write SetCrossGreenColor default clGreen;
     property CrossBlueColor: TColor read FCrossBlueColor write SetCrossBlueColor default clNavy;
     property LineWidth: Integer read FLineWidth write SetLineWidth default 1;
-    property RedTrackBar: TColorTrackBar read FRedColorTrackBar write SetRedColorTrackBar;
-    property GreenTrackBar: TColorTrackBar read FGreenColorTrackBar write SetGreenColorTrackBar;
-    property BlueTrackBar: TColorTrackBar read FBlueColorTrackBar write SetBlueColorTrackBar;
-    property CommonTrackBar: TColorTrackBar read FCommonColorTrackBar write SetCommonColorTrackBar;
+    property RedTrackBar: TJvFullColorTrackBar read FRedColorTrackBar write SetRedColorTrackBar;
+    property GreenTrackBar: TJvFullColorTrackBar read FGreenColorTrackBar write SetGreenColorTrackBar;
+    property BlueTrackBar: TJvFullColorTrackBar read FBlueColorTrackBar write SetBlueColorTrackBar;
+    property CommonTrackBar: TJvFullColorTrackBar read FCommonColorTrackBar write SetCommonColorTrackBar;
     property OnRedColorChange: TNotifyEvent read FOnRedColorChange write FOnRedColorChange;
     property OnGreenColorChange: TNotifyEvent read FOnGreenColorChange write FOnGreenColorChange;
     property OnBlueColorChange: TNotifyEvent read FOnBlueColorChange write FOnBlueColorChange;
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TColorTrackBar = class(TColorComponent)
+  TJvFullColorTrackBar = class(TJvColorComponent)
   private
-    FArrowPosition: TArrowPosition;
-    FColorOrientation: TColorOrientation;
-    FBarOrientation: TBarOrientation;
+    FArrowPosition: TJvArrowPosition;
+    FColorOrientation: TJvColorOrientation;
+    FOrientation: TTrackBarOrientation;
     FBarWidth: Integer;
     FFullColorDrawing: Boolean;
     FArrowWidth: Integer;
@@ -282,9 +283,9 @@ type
     FValueY: Byte;
     FValueX: Byte;
     FLink: TComponent;
-    procedure SetArrowPosition(const Value: TArrowPosition);
-    procedure SetColorOrientation(const Value: TColorOrientation);
-    procedure SetBarOrientation(const Value: TBarOrientation);
+    procedure SetArrowPosition(const Value: TJvArrowPosition);
+    procedure SetColorOrientation(const Value: TJvColorOrientation);
+    procedure SetOrientation(const Value: TTrackBarOrientation);
     procedure SetBarWidth(const Value: Integer);
     procedure SetArrowWidth(const Value: Integer);
     procedure SetArrowColor(const Value: TColor);
@@ -299,7 +300,7 @@ type
     procedure SetFullColorDrawing(const Value: Boolean);
   protected
     procedure MouseColor(Shift: TShiftState; X, Y: Integer); override;
-    procedure SetFullColor(const Value: TFullColor); override;
+    procedure SetFullColor(const Value: TJvFullColor); override;
     procedure CalcSize; override;
     procedure DrawBuffer; override;
     procedure ColorSpaceChange; override;
@@ -317,9 +318,9 @@ type
     // (rom) set default values 
     property ArrowColor: TColor read FArrowColor write SetArrowColor;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth;
-    property ArrowPosition: TArrowPosition read FArrowPosition write SetArrowPosition;
-    property ColorOrientation: TColorOrientation read FColorOrientation write SetColorOrientation;
-    property BarOrientation: TBarOrientation read FBarOrientation write SetBarOrientation;
+    property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition;
+    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
     property BarWidth: Integer read FBarWidth write SetBarWidth;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
     property ValueXAuto: Boolean read FValueXAuto write SetValueXAuto stored False;
@@ -328,9 +329,9 @@ type
     property FullColorDrawing: Boolean read FFullColorDrawing write SetFullColorDrawing;
   end;
 
-  TShapePosition = (spLeft, spRight, spTop, spBottom);
+  TJvShapePosition = (spLeft, spRight, spTop, spBottom);
 
-  TColorLabel = class(TGraphicControl)
+  TJvColorLabel = class(TGraphicControl)
   private
     FBrush: TBrush;
     FFont: TFont;
@@ -339,20 +340,20 @@ type
     FShapeType: TShapeType;
     FShapeWidth: Integer;
     FShapeHeight: Integer;
-    FShapePosition: TShapePosition;
+    FShapePosition: TJvShapePosition;
     FSpacing: Integer;
     FRoundShapeWidth: Integer;
     FRoundShapeHeight: Integer;
-    FLabelColor: TFullColor;
+    FLabelColor: TJvFullColor;
     procedure SetCaption(const Value: TCaption);
     procedure SetShapeType(const Value: TShapeType);
     procedure SetShapeHeight(const Value: Integer);
-    procedure SetShapePosition(const Value: TShapePosition);
+    procedure SetShapePosition(const Value: TJvShapePosition);
     procedure SetShapeWidth(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
     procedure SetRoundShapeHeight(const Value: Integer);
     procedure SetRoundShapeWidth(const Value: Integer);
-    procedure SetLabelColor(const Value: TFullColor);
+    procedure SetLabelColor(const Value: TJvFullColor);
     procedure SetBrush(const Value: TBrush);
     procedure SetFont(const Value: TFont);
     procedure SetPen(const Value: TPen);
@@ -367,7 +368,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property LabelColor: TFullColor read FLabelColor write SetLabelColor default TFullColor(clWindowText);
+    property LabelColor: TJvFullColor read FLabelColor write SetLabelColor default TJvFullColor(clWindowText);
     property AutoSize;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
@@ -376,83 +377,83 @@ type
     property Caption: TCaption read FCaption write SetCaption;
     property ShapeWidth: Integer read FShapeWidth write SetShapeWidth default 16;
     property ShapeHeight: Integer read FShapeHeight write SetShapeHeight default 16;
-    property ShapePosition: TShapePosition read FShapePosition write SetShapePosition default spLeft;
+    property ShapePosition: TJvShapePosition read FShapePosition write SetShapePosition default spLeft;
     property Spacing: Integer read FSpacing write SetSpacing default 5;
     property RoundShapeWidth: Integer read FRoundShapeWidth write SetRoundShapeWidth default 4;
     property RoundShapeHeight: Integer read FRoundShapeHeight write SetRoundShapeHeight default 4;
   end;
 
-  TFullColors = array [0..MaxListSize - 1] of TFullColor;
-  PFullColors = ^TFullColors;
+  TJvFullColors = array [0..MaxListSize - 1] of TJvFullColor;
+  PJvFullColors = ^TJvFullColors;
 
-  TFullColorListEvent = procedure(Sender: TObject; Item: TFullColor; Position: Integer) of object;
+  TJvFullColorListEvent = procedure(Sender: TObject; Item: TJvFullColor; Position: Integer) of object;
 
-  EFullColorListError = class(Exception);
+  EJvFullColorListError = class(EJVCLException);
 
-  TFullColorList = class(TPersistent)
+  TJvFullColorList = class(TPersistent)
   private
     FCapacity: Integer;
     FCount: Integer;
-    FList: PFullColors;
-    FOnChange: TFullColorListEvent;
+    FList: PJvFullColors;
+    FOnChange: TJvFullColorListEvent;
     FUpdateCount: Integer;
     procedure SetCapacity(const Value: Integer);
     procedure SetCount(const Value: Integer);
   protected
     procedure Grow;
-    function GetItem(Index: Integer): TFullColor;
-    procedure SetItem(Index: Integer; const Value: TFullColor);
+    function GetItem(Index: Integer): TJvFullColor;
+    procedure SetItem(Index: Integer; const Value: TJvFullColor);
     procedure DefineProperties(Filer: TFiler); override;
     procedure WriteItems(Writer: TWriter);
     procedure ReadItems(Reader: TReader);
-    procedure Change(AColor: TFullColor; AIndex: Integer);
+    procedure Change(AColor: TJvFullColor; AIndex: Integer);
   public
     destructor Destroy; override;
 
-    function Add(AColor: TFullColor): Integer;
+    function Add(AColor: TJvFullColor): Integer;
     procedure Clear;
-    function Remove(AColor: TFullColor): Integer;
+    function Remove(AColor: TJvFullColor): Integer;
     procedure Delete(Index: Integer);
     procedure Exchange(Index1, Index2: Integer);
-    procedure Insert(Index: Integer; AColor: TFullColor);
-    function IndexOf(AColor: TFullColor): Integer;
+    procedure Insert(Index: Integer; AColor: TJvFullColor);
+    function IndexOf(AColor: TJvFullColor): Integer;
     procedure DeleteRedundant;
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    property Items[Index: Integer]: TFullColor read GetItem write SetItem; default;
-    property List: PFullColors read FList;
+    property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
+    property List: PJvFullColors read FList;
     property Capacity: Integer read FCapacity write SetCapacity;
     property Count: Integer read FCount write SetCount;
     property UpdateCount: Integer read FUpdateCount;
-    property OnChange: TFullColorListEvent read FOnChange write FOnChange;
+    property OnChange: TJvFullColorListEvent read FOnChange write FOnChange;
   end;
 
-  EColorError = class(Exception);
+  EJvColorError = class(EJVCLException);
 
-  TColorSpaceFormat = (cfName, cfShortName, cfBoth);
+  TJvColorSpaceFormat = (cfName, cfShortName, cfBoth);
 
-  TColorSpaceCombo = class(TCustomComboBox)
+  TJvColorSpaceCombo = class(TCustomComboBox)
   private
     FAllowVariable: Boolean;
-    FItemFormat: TColorSpaceFormat;
-    function GetColorSpace: TColorSpace;
+    FItemFormat: TJvColorSpaceFormat;
+    function GetColorSpace: TJvColorSpace;
     procedure SetAllowVariable(const Value: Boolean);
-    procedure SetColorSpace(const Value: TColorSpace);
-    procedure SetColorSpaceID(const Value: TColorID);
-    function GetColorSpaceID: TColorID;
-    procedure SetItemFormat(const Value: TColorSpaceFormat);
+    procedure SetColorSpace(const Value: TJvColorSpace);
+    procedure SetColorSpaceID(const Value: TJvColorID);
+    function GetColorSpaceID: TJvColorID;
+    procedure SetItemFormat(const Value: TJvColorSpaceFormat);
   protected
     procedure MakeList; virtual;
     procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
-    property SelectedSpace: TColorSpace read GetColorSpace write SetColorSpace;
+    property SelectedSpace: TJvColorSpace read GetColorSpace write SetColorSpace;
   published
     property AllowVariable: Boolean read FAllowVariable write SetAllowVariable default True;
     // (rom) set default value
-    property ColorSpaceID: TColorID read GetColorSpaceID write SetColorSpaceID;
-    property ItemFormat: TColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
+    property ColorSpaceID: TJvColorID read GetColorSpaceID write SetColorSpaceID;
+    property ItemFormat: TJvColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
     property AutoDropDown;
     property BevelEdges;
     property BevelInner;
@@ -505,25 +506,25 @@ type
     property OnStartDrag;
   end;
 
-  TAxisConfigFormat = (afShort, afIndent, afComplete);
+  TJvColorAxisConfigFormat = (afShort, afIndent, afComplete);
 
-  TAxisConfigCombo = class(TCustomComboBox)
+  TJvColorAxisConfigCombo = class(TCustomComboBox)
   private
-    FItemFormat: TAxisConfigFormat;
-    FColorID: TColorID;
-    procedure SetItemFormat(const Value: TAxisConfigFormat);
-    procedure SetSelected(const Value: TAxisConfig);
-    procedure SetColorID(const Value: TColorID);
-    function GetSelected: TAxisConfig;
+    FItemFormat: TJvColorAxisConfigFormat;
+    FColorID: TJvColorID;
+    procedure SetItemFormat(const Value: TJvColorAxisConfigFormat);
+    procedure SetSelected(const Value: TJvColorAxisConfig);
+    procedure SetColorID(const Value: TJvColorID);
+    function GetSelected: TJvColorAxisConfig;
   protected
     procedure MakeList; virtual;
     procedure CreateWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property ItemFormat: TAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
-    property Selected: TAxisConfig read GetSelected write SetSelected;
-    property ColorID: TColorID read FColorID write SetColorID default TFullColor(clBlack);
+    property ItemFormat: TJvColorAxisConfigFormat read FItemFormat write SetItemFormat default afComplete;
+    property Selected: TJvColorAxisConfig read GetSelected write SetSelected;
+    property ColorID: TJvColorID read FColorID write SetColorID default TJvFullColor(clBlack);
     property AutoDropDown;
     property BevelEdges;
     property BevelInner;
@@ -576,13 +577,14 @@ type
     property OnStartDrag;
   end;
 
-function GetIndexAxis(AxisConfig: TAxisConfig; AxisID: TAxisIndex): TAxisIndex;
-function GetIndexAxisX(AxisConfig: TAxisConfig): TAxisIndex;
-function GetIndexAxisY(AxisConfig: TAxisConfig): TAxisIndex;
-function GetIndexAxisZ(AxisConfig: TAxisConfig): TAxisIndex;
-function ColorSpaceToString(AColorSpace: TColorSpace; ItemFormat: TColorSpaceFormat): string;
-function AxisConfigToString(AxisConfig: TAxisConfig; ItemFormat: TAxisConfigFormat;
-  AColorSpace: TColorSpace): string;
+function GetIndexAxis(AxisConfig: TJvColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
+function GetIndexAxisX(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisY(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function GetIndexAxisZ(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
+function ColorSpaceToString(AColorSpace: TJvColorSpace;
+  ItemFormat: TJvColorSpaceFormat): string;
+function AxisConfigToString(AxisConfig: TJvColorAxisConfig;
+  ItemFormat: TJvColorAxisConfigFormat; AColorSpace: TJvColorSpace): string;
 
 procedure Register;
 
@@ -596,7 +598,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   Math, TypInfo, GraphUtil,
-  ColorSpacesStd, JvTypes;
+  ColorSpacesStd;
 
 resourcestring
   RsEDuplicateTrackBar = 'TrackBar already used by component "%s"';
@@ -606,14 +608,14 @@ const
   MaxPixelCount = 32767;
 type
   PFullColorArray = ^TFullColorArray;
-  TFullColorArray = array [0..MaxPixelCount] of TFullColor;
+  TFullColorArray = array [0..MaxPixelCount] of TJvFullColor;
 
 
 type
-  TAxisConfigs = array [TAxisIndex] of TAxisIndex;
+  TJvColorAxisConfigs = array [TJvAxisIndex] of TJvAxisIndex;
 
 const
-  TabAxisConfigs: array [TAxisConfig] of TAxisConfigs =
+  TabAxisConfigs: array [TJvColorAxisConfig] of TJvColorAxisConfigs =
    ((axIndex0, axIndex1, axIndex2),
     (axIndex0, axIndex2, axIndex1),
     (axIndex1, axIndex0, axIndex2),
@@ -621,7 +623,7 @@ const
     (axIndex1, axIndex2, axIndex0),
     (axIndex2, axIndex1, axIndex0));
 
-function ColorSpaceToString(AColorSpace: TColorSpace; ItemFormat: TColorSpaceFormat): string;
+function ColorSpaceToString(AColorSpace: TJvColorSpace; ItemFormat: TJvColorSpaceFormat): string;
 begin
   case ItemFormat of
     cfName:
@@ -633,13 +635,13 @@ begin
   end;
 end;
 
-function AxisConfigToString(AxisConfig: TAxisConfig; ItemFormat: TAxisConfigFormat;
-  AColorSpace: TColorSpace): string;
+function AxisConfigToString(AxisConfig: TJvColorAxisConfig; ItemFormat: TJvColorAxisConfigFormat;
+  AColorSpace: TJvColorSpace): string;
 var
   Str: string;
-  AxisConfigs: TAxisConfigs;
+  AxisConfigs: TJvColorAxisConfigs;
 begin
-  Str := GetEnumName(TypeInfo(TAxisConfig), Integer(AxisConfig));
+  Str := GetEnumName(TypeInfo(TJvColorAxisConfig), Integer(AxisConfig));
   case ItemFormat of
     afShort:
       Result := Copy(Str, 3, Length(Str) - 2);
@@ -653,34 +655,34 @@ begin
   end;
 end;
 
-function GetIndexAxis(AxisConfig: TAxisConfig; AxisID: TAxisIndex): TAxisIndex;
+function GetIndexAxis(AxisConfig: TJvColorAxisConfig; AxisID: TJvAxisIndex): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][AxisID];
 end;
 
-function GetIndexAxisX(AxisConfig: TAxisConfig): TAxisIndex;
+function GetIndexAxisX(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex0];
 end;
 
-function GetIndexAxisY(AxisConfig: TAxisConfig): TAxisIndex;
+function GetIndexAxisY(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex1];
 end;
 
-function GetIndexAxisZ(AxisConfig: TAxisConfig): TAxisIndex;
+function GetIndexAxisZ(AxisConfig: TJvColorAxisConfig): TJvAxisIndex;
 begin
   Result := TabAxisConfigs[AxisConfig][axIndex2];
 end;
 
-//=== { TColorComponent } ====================================================
+//=== { TJvColorComponent } ==================================================
 
-constructor TColorComponent.Create(AOwner: TComponent);
+constructor TJvColorComponent.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBuffer := TBitmap.Create;
   FBuffer.PixelFormat := pf32Bit;
-  FFullColor := TFullColor(clDkGray);
+  FFullColor := TJvFullColor(clDkGray);
   FAutoMouse := True;
   FAxisConfig := acXYZ;
 
@@ -689,23 +691,23 @@ begin
   ControlStyle := [csSetCaption, csOpaque];
 end;
 
-destructor TColorComponent.Destroy;
+destructor TJvColorComponent.Destroy;
 begin
   FBuffer.Free;
   inherited Destroy;
 end;
 
-procedure TColorComponent.CalcSize;
+procedure TJvColorComponent.CalcSize;
 begin
   WantDrawBuffer := True;
 end;
 
-procedure TColorComponent.DrawBuffer;
+procedure TJvColorComponent.DrawBuffer;
 begin
   Invalidate;
 end;
 
-procedure TColorComponent.Paint;
+procedure TJvColorComponent.Paint;
 begin
   if WantDrawBuffer then
     DrawBuffer;
@@ -713,7 +715,7 @@ begin
   inherited Paint;
 end;
 
-procedure TColorComponent.DrawFocus;
+procedure TJvColorComponent.DrawFocus;
 begin
   if Focused and not (csDesigning in ComponentState) then
     with Canvas do
@@ -724,7 +726,7 @@ begin
     end;
 end;
 
-procedure TColorComponent.DrawFrame(X, Y: Integer);
+procedure TJvColorComponent.DrawFrame(X, Y: Integer);
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0, 0, Width, Y));
@@ -733,9 +735,9 @@ begin
   Canvas.FillRect(Rect(X+FBuffer.Width, Y, Width, Y+FBuffer.Height));
 end;
 
-procedure TColorComponent.SetFullColor(const Value: TFullColor);
+procedure TJvColorComponent.SetFullColor(const Value: TJvFullColor);
 var
-  CurrentColorID: TColorID;
+  CurrentColorID: TJvColorID;
 begin
   CurrentColorID := ColorSpaceManager.GetColorID(FFullColor);
   FFullColor := Value;
@@ -746,13 +748,13 @@ begin
     FOnColorChange(Self);
 end;
 
-procedure TColorComponent.MouseColor(Shift: TShiftState; X, Y: Integer);
+procedure TJvColorComponent.MouseColor(Shift: TShiftState; X, Y: Integer);
 begin
   if Assigned(FOnMouseColor) then
     FOnMouseColor(Self, X, Y);
 end;
 
-procedure TColorComponent.MouseDown(Button: TMouseButton;
+procedure TJvColorComponent.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   SetFocus;
@@ -765,14 +767,14 @@ begin
   end;
 end;
 
-procedure TColorComponent.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TJvColorComponent.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   if AutoMouse and (Shift * [ssLeft, ssMiddle, ssRight] <> []) then
     MouseColor(Shift, X, Y);
   inherited MouseMove(Shift, X, Y);
 end;
 
-procedure TColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvColorComponent.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   try
     inherited MouseUp(Button, Shift, X, Y);
@@ -781,7 +783,7 @@ begin
   end;
 end;
 
-procedure TColorComponent.SetAxisConfig(const Value: TAxisConfig);
+procedure TJvColorComponent.SetAxisConfig(const Value: TJvColorAxisConfig);
 begin
   if FAxisConfig <> Value then
   begin
@@ -790,57 +792,57 @@ begin
   end;
 end;
 
-procedure TColorComponent.ColorSpaceChange;
+procedure TJvColorComponent.ColorSpaceChange;
 begin
   CalcSize;
   if Assigned(FOnColorSpaceChange) then
     FOnColorSpaceChange(Self);
 end;
 
-function TColorComponent.GetColorSpace: TColorSpace;
+function TJvColorComponent.GetColorSpace: TJvColorSpace;
 begin
   with ColorSpaceManager do
     Result := ColorSpace[GetColorID(FullColor)];
 end;
 
-procedure TColorComponent.AxisConfigChange;
+procedure TJvColorComponent.AxisConfigChange;
 begin
   CalcSize;
   if Assigned(FOnAxisConfigChange) then
     FOnAxisConfigChange(Self);
 end;
 
-procedure TColorComponent.SetWantDrawBuffer(Value: Boolean);
+procedure TJvColorComponent.SetWantDrawBuffer(Value: Boolean);
 begin
   FWantDrawBuffer := Value;
   if Value then
     Invalidate;
 end;
 
-procedure TColorComponent.WMGetDlgCode(var Msg: TWMGetDlgCode);
+procedure TJvColorComponent.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
   inherited;
   Msg.Result := DLGC_WANTARROWS;
 end;
 
-procedure TColorComponent.DoEnter;
+procedure TJvColorComponent.DoEnter;
 begin
   inherited DoEnter;
   Invalidate;
 end;
 
-procedure TColorComponent.DoExit;
+procedure TJvColorComponent.DoExit;
 begin
   inherited DoExit;
   Invalidate;
 end;
 
-procedure TColorComponent.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvColorComponent.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
 begin
   Update;
 end;
 
-procedure TColorComponent.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvColorComponent.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_LEFT:
@@ -854,13 +856,13 @@ begin
   end;
 end;
 
-procedure TColorComponent.CMColorChanged(var Msg: TMessage);
+procedure TJvColorComponent.CMColorChanged(var Msg: TMessage);
 begin
   inherited;
   WantDrawBuffer := True;
 end;
 
-procedure TColorComponent.CMSysColorChange(var Msg: TMessage);
+procedure TJvColorComponent.CMSysColorChange(var Msg: TMessage);
 begin
   inherited;
   WantDrawBuffer := True;
@@ -868,7 +870,7 @@ end;
 
 //=== { TColor2D } ===========================================================
 
-constructor TColorComponent2D.Create(AOwner: TComponent);
+constructor TJvColorComponent2D.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FValueZ := 0;
@@ -876,54 +878,54 @@ begin
   ColorSpaceChange;
 end;
 
-procedure TColorComponent2D.AxisConfigChange;
+procedure TJvColorComponent2D.AxisConfigChange;
 begin
   UpdateDefaultValueZ;
   inherited AxisConfigChange;
 end;
 
-procedure TColorComponent2D.ColorSpaceChange;
+procedure TJvColorComponent2D.ColorSpaceChange;
 begin
   UpdateDefaultValueZ;
   inherited ColorSpaceChange;
 end;
 
-procedure TColorComponent2D.TrackBarAxisConfigChange(Sender: TObject);
+procedure TJvColorComponent2D.TrackBarAxisConfigChange(Sender: TObject);
 begin
   if not FAxisConfigChanging then
   begin
     FAxisConfigChanging := True;
-    AxisConfig := (Sender as TColorTrackBar).AxisConfig;
+    AxisConfig := (Sender as TJvFullColorTrackBar).AxisConfig;
     FAxisConfigChanging := False;
   end;
 end;
 
-procedure TColorComponent2D.TrackBarColorChange(Sender: TObject);
+procedure TJvColorComponent2D.TrackBarColorChange(Sender: TObject);
 begin
   if FColorChanging then
     Exit;
 
   FColorChanging := True;
-  FullColor := (Sender as TColorTrackBar).FullColor;
+  FullColor := (Sender as TJvFullColorTrackBar).FullColor;
   FColorChanging := False;
 
   if Assigned(FOnColorChange) then
     FOnColorChange(Self);
 end;
 
-function TColorComponent2D.IsValueZStored: Boolean;
+function TJvColorComponent2D.IsValueZStored: Boolean;
 begin
   Result := not ValueZAuto;
 end;
 
-procedure TColorComponent2D.SetValueZ(const Value: Byte);
+procedure TJvColorComponent2D.SetValueZ(const Value: Byte);
 begin
   FValueZAuto := False;
   FValueZ := Value;
   WantDrawBuffer := True;
 end;
 
-procedure TColorComponent2D.SetValueZAuto(const Value: Boolean);
+procedure TJvColorComponent2D.SetValueZAuto(const Value: Boolean);
 begin
   FValueZAuto := Value;
   if Value then
@@ -931,14 +933,14 @@ begin
   WantDrawBuffer := True;
 end;
 
-procedure TColorComponent2D.UpdateDefaultValueZ;
+procedure TJvColorComponent2D.UpdateDefaultValueZ;
 begin
   FValueZ := ColorSpace.AxisDefault[GetIndexAxisZ(AxisConfig)];
 end;
 
-//=== { TColorPanel } ========================================================
+//=== { TJvColorPanel } ======================================================
 
-constructor TColorPanel.Create(AOwner: TComponent);
+constructor TJvColorPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCrossSize := 5;
@@ -950,17 +952,17 @@ begin
   FColorChanging := False;
 end;
 
-destructor TColorPanel.Destroy;
+destructor TJvColorPanel.Destroy;
 begin
   ColorTrackBar := nil;
   FPen.Free;
   inherited Destroy;
 end;
 
-procedure TColorPanel.CalcSize;
+procedure TJvColorPanel.CalcSize;
 var
   LWidth, LHeight: Integer;
-  IndexX, IndexY: TAxisIndex;
+  IndexX, IndexY: TJvAxisIndex;
 begin
   IndexX := GetIndexAxisX(AxisConfig);
   IndexY := GetIndexAxisY(AxisConfig);
@@ -979,12 +981,12 @@ begin
   inherited CalcSize;
 end;
 
-procedure TColorPanel.DrawBuffer;
+procedure TJvColorPanel.DrawBuffer;
 var
-  AxisX, AxisY: TAxisIndex;
+  AxisX, AxisY: TJvAxisIndex;
   IndexX, IndexY: Byte;
   MinX, MaxX, MinY, MaxY: Byte;
-  TempColor: TFullColor;
+  TempColor: TJvFullColor;
   Line: PFullColorArray;
   X, Y, I: Integer;
 begin
@@ -1063,10 +1065,10 @@ begin
   inherited DrawBuffer;
 end;
 
-procedure TColorPanel.Paint;
+procedure TJvColorPanel.Paint;
 var
   PosX, PosY: Integer;
-  AxisX, AxisY: TAxisIndex;
+  AxisX, AxisY: TJvAxisIndex;
 begin
   inherited Paint;
 
@@ -1109,12 +1111,12 @@ begin
   DrawFocus;
 end;
 
-procedure TColorPanel.PenChange(Sender: TObject);
+procedure TJvColorPanel.PenChange(Sender: TObject);
 begin
   Update;
 end;
 
-procedure TColorPanel.SetCrossCenter(Value: Integer);
+procedure TJvColorPanel.SetCrossCenter(Value: Integer);
 begin
   if Value >= CrossSize then
     Value := CrossSize - 1;
@@ -1125,7 +1127,7 @@ begin
   end;
 end;
 
-procedure TColorPanel.SetCrossSize(Value: Integer);
+procedure TJvColorPanel.SetCrossSize(Value: Integer);
 begin
   if Value < 1 then
     Value := 1;
@@ -1138,7 +1140,7 @@ begin
   end;
 end;
 
-procedure TColorPanel.SetReverseAxisX(const Value: Boolean);
+procedure TJvColorPanel.SetReverseAxisX(const Value: Boolean);
 begin
   if FReverseAxisX <> Value then
   begin
@@ -1147,7 +1149,7 @@ begin
   end;
 end;
 
-procedure TColorPanel.SetReverseAxisY(const Value: Boolean);
+procedure TJvColorPanel.SetReverseAxisY(const Value: Boolean);
 begin
   if FReverseAxisY <> Value then
   begin
@@ -1156,16 +1158,16 @@ begin
   end;
 end;
 
-procedure TColorPanel.SetPen(const Value: TPen);
+procedure TJvColorPanel.SetPen(const Value: TPen);
 begin
   FPen.Assign(Value);
   Invalidate;
 end;
 
-procedure TColorPanel.SetColorTrackBar(const Value: TColorTrackBar);
+procedure TJvColorPanel.SetColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FColorTrackBar) and Value.Linked then
-    raise EColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FColorTrackBar) then
   begin
@@ -1188,17 +1190,17 @@ begin
   end;
 end;
 
-procedure TColorPanel.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvColorPanel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   if (Operation = opRemove) and (AComponent = ColorTrackBar) then
     ColorTrackBar := nil;
   inherited Notification(AComponent, Operation);
 end;
 
-procedure TColorPanel.SetFullColor(const Value: TFullColor);
+procedure TJvColorPanel.SetFullColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TAxisIndex;
-  OldColor: TFullColor;
+  AxisX, AxisY: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   OldColor := FullColor;
   inherited SetFullColor(Value);
@@ -1218,10 +1220,10 @@ begin
     Update;
 end;
 
-procedure TColorPanel.MouseColor(Shift: TShiftState; X, Y: Integer);
+procedure TJvColorPanel.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
   MinX, MaxX, MinY, MaxY: Byte;
-  AxisX, AxisY: TAxisIndex;
+  AxisX, AxisY: TJvAxisIndex;
   I, PosX, PosY: Integer;
 begin
   if not (ssLeft in Shift) then
@@ -1292,7 +1294,7 @@ begin
   inherited MouseColor(Shift, X, Y);
 end;
 
-procedure TColorPanel.AxisConfigChange;
+procedure TJvColorPanel.AxisConfigChange;
 begin
   if (FColorTrackBar <> nil) and not FAxisConfigChanging then
   begin
@@ -1304,9 +1306,9 @@ begin
   inherited AxisConfigChange;
 end;
 
-procedure TColorPanel.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvColorPanel.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
 var
-  IndexAxisX, IndexAxisY: TAxisIndex;
+  IndexAxisX, IndexAxisY: TJvAxisIndex;
   ValueX, ValueY: Integer;
 begin
   IndexAxisX := GetIndexAxisX(AxisConfig);
@@ -1350,9 +1352,9 @@ begin
   FullColor := SetAxisValue(SetAxisValue(FullColor, IndexAxisX, ValueX), IndexAxisY, ValueY);
 end;
 
-//=== { TColorCircle } =======================================================
+//=== { TJvColorCircle } =====================================================
 
-constructor TColorCircle.Create(AOwner: TComponent);
+constructor TJvColorCircle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCrossStyle := TPen.Create;
@@ -1362,9 +1364,9 @@ begin
   FCrossSize := 5;
   FCrossCenter := 1;
   FLineWidth := 1;
-  FRedColor := TFullColor(clRed);
-  FGreenColor := TFullColor(clLime);
-  FBlueColor := TFullColor(clBlue);
+  FRedColor := TJvFullColor(clRed);
+  FGreenColor := TJvFullColor(clLime);
+  FBlueColor := TJvFullColor(clBlue);
   FDraggingColor := rcCommon;
   FCrossGreenColor := clGreen;
   FCrossRedColor := clMaroon;
@@ -1372,15 +1374,15 @@ begin
   FStyles := [crShowLines, crShowRed, crShowGreen, crShowBlue];
 end;
 
-destructor TColorCircle.Destroy;
+destructor TJvColorCircle.Destroy;
 begin
   FCrossStyle.Free;
   inherited Destroy;
 end;
 
-procedure TColorCircle.CalcSize;
+procedure TJvColorCircle.CalcSize;
 var
-  RadiusIndex: TAxisIndex;
+  RadiusIndex: TJvAxisIndex;
   Diameter: Integer;
 begin
   RadiusIndex := GetIndexAxisX(AxisConfig);
@@ -1395,10 +1397,10 @@ begin
   inherited CalcSize;
 end;
 
-procedure TColorCircle.DrawBuffer;
+procedure TJvColorCircle.DrawBuffer;
 var
   X, Y, Radius, Angle, MaxRadius, MinRadius: Integer;
-  AxisRadius, AxisAngle: TAxisIndex;
+  AxisRadius, AxisAngle: TJvAxisIndex;
   MaxAngle, MinAngle, Radius1, Radius2: Integer;
   SqrYRadius1: Integer;
   AngleUnit, AngleUnitPi, YRadius1: Extended;
@@ -1485,12 +1487,12 @@ begin
   inherited DrawBuffer;
 end;
 
-procedure TColorCircle.Paint;
+procedure TJvColorCircle.Paint;
 var
   Radius1: Integer;
-  RadiusIndex: TAxisIndex;
+  RadiusIndex: TJvAxisIndex;
 
-  procedure DrawCross(AFullColor: TFullColor; ACrossColor: TColor);
+  procedure DrawCross(AFullColor: TJvFullColor; ACrossColor: TColor);
   var
     Point: TPoint;
   begin
@@ -1549,10 +1551,10 @@ begin
   DrawFocus;
 end;
 
-function TColorCircle.FullColorToPosition(AFullColor: TFullColor): TPoint;
+function TJvColorCircle.FullColorToPosition(AFullColor: TJvFullColor): TPoint;
 var
-  ColorID: TColorID;
-  RadiusIndex, AngleIndex: TAxisIndex;
+  ColorID: TJvColorID;
+  RadiusIndex, AngleIndex: TJvAxisIndex;
   Radius, RadiusMax, RadiusMin, Angle, AngleMax, AngleMin: Integer;
   Radius1: Integer;
   FullAngle: Extended;
@@ -1593,9 +1595,9 @@ begin
   Result.Y := Round(Radius * Sin(FullAngle)) + Radius1;
 end;
 
-function TColorCircle.PositionToFullColor(APoint: TPoint): TFullColor;
+function TJvColorCircle.PositionToFullColor(APoint: TPoint): TJvFullColor;
 var
-  RadiusIndex, AngleIndex: TAxisIndex;
+  RadiusIndex, AngleIndex: TJvAxisIndex;
   Radius, RadiusMax, RadiusMin, Angle, AngleMax, AngleMin, Radius1: Integer;
 begin
   with ColorSpace do
@@ -1632,11 +1634,11 @@ begin
       AngleIndex, Angle), RadiusIndex, Radius);
 end;
 
-procedure TColorCircle.MouseColor(Shift: TShiftState; X, Y: Integer);
+procedure TJvColorCircle.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
-  LFullColor: TFullColor;
+  LFullColor: TJvFullColor;
 
-  function MoveColor(var AFullColor: TFullColor): Boolean;
+  function MoveColor(var AFullColor: TJvFullColor): Boolean;
   var
     Distance: Integer;
     Point: TPoint;
@@ -1708,21 +1710,21 @@ begin
   end;
 end;
 
-procedure TColorCircle.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvColorCircle.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   FDraggingColor := rcCommon;
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
-procedure TColorCircle.PenChanged(Sender: TObject);
+procedure TJvColorCircle.PenChanged(Sender: TObject);
 begin
   WantDrawBuffer := True;
 end;
 
-procedure TColorCircle.ConvertColorToColorID(NewFullColor: TFullColor);
+procedure TJvColorCircle.ConvertColorToColorID(NewFullColor: TJvFullColor);
 var
-  ColorID: TColorID;
+  ColorID: TJvColorID;
   Change: Boolean;
 begin
   with ColorSpaceManager do
@@ -1740,10 +1742,10 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetFullColor(const Value: TFullColor);
+procedure TJvColorCircle.SetFullColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TAxisIndex;
-  OldColor: TFullColor;
+  AxisX, AxisY: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   ConvertColorToColorID(Value);
 
@@ -1765,10 +1767,10 @@ begin
     Update;
 end;
 
-procedure TColorCircle.SetBlueColor(const Value: TFullColor);
+procedure TJvColorCircle.SetBlueColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TAxisIndex;
-  OldColor: TFullColor;
+  AxisX, AxisY: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   ConvertColorToColorID(Value);
 
@@ -1793,10 +1795,10 @@ begin
     FOnBlueColorChange(Self);
 end;
 
-procedure TColorCircle.SetGreenColor(const Value: TFullColor);
+procedure TJvColorCircle.SetGreenColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TAxisIndex;
-  OldColor: TFullColor;
+  AxisX, AxisY: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   ConvertColorToColorID(Value);
 
@@ -1821,10 +1823,10 @@ begin
     FOnGreenColorChange(Self);
 end;
 
-procedure TColorCircle.SetRedColor(const Value: TFullColor);
+procedure TJvColorCircle.SetRedColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY: TAxisIndex;
-  OldColor: TFullColor;
+  AxisX, AxisY: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   ConvertColorToColorID(Value);
 
@@ -1849,7 +1851,7 @@ begin
     FOnRedColorChange(Self);
 end;
 
-procedure TColorCircle.SetCrossCenter(Value: Integer);
+procedure TJvColorCircle.SetCrossCenter(Value: Integer);
 begin
   if Value < 0 then
     Value := 0;
@@ -1862,7 +1864,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCrossSize(Value: Integer);
+procedure TJvColorCircle.SetCrossSize(Value: Integer);
 begin
   if Value < 0 then
     Value := 0;
@@ -1873,13 +1875,13 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCrossStyle(const Value: TPen);
+procedure TJvColorCircle.SetCrossStyle(const Value: TPen);
 begin
   FCrossStyle.Assign(Value);
   Invalidate;
 end;
 
-procedure TColorCircle.SetInvertRadius(const Value: Boolean);
+procedure TJvColorCircle.SetInvertRadius(const Value: Boolean);
 begin
   if FInvertRadius <> Value then
   begin
@@ -1888,7 +1890,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetInvertRotation(const Value: Boolean);
+procedure TJvColorCircle.SetInvertRotation(const Value: Boolean);
 begin
   if FInvertRotation <> Value then
   begin
@@ -1897,7 +1899,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetLineWidth(Value: Integer);
+procedure TJvColorCircle.SetLineWidth(Value: Integer);
 begin
   if Value < 0 then
     Value := 0;
@@ -1908,7 +1910,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetStyles(const Value: TColorCircleStyles);
+procedure TJvColorCircle.SetStyles(const Value: TJvColorCircleStyles);
 begin
   if FStyles <> Value then
   begin
@@ -1917,7 +1919,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.Notification(AComponent: TComponent;
+procedure TJvColorCircle.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   if Operation = opRemove then
@@ -1935,10 +1937,10 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-procedure TColorCircle.SetBlueColorTrackBar(const Value: TColorTrackBar);
+procedure TJvColorCircle.SetBlueColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FBlueColorTrackBar) and Value.Linked then
-    raise EColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FBlueColorTrackBar) then
   begin
@@ -1961,10 +1963,10 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetGreenColorTrackBar(const Value: TColorTrackBar);
+procedure TJvColorCircle.SetGreenColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FGreenColorTrackBar) and Value.Linked then
-    raise EColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FGreenColorTrackBar) then
   begin
@@ -1987,10 +1989,10 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetRedColorTrackBar(const Value: TColorTrackBar);
+procedure TJvColorCircle.SetRedColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FRedColorTrackBar) and Value.Linked then
-    raise EColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FRedColorTrackBar) then
   begin
@@ -2013,10 +2015,10 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCommonColorTrackBar(const Value: TColorTrackBar);
+procedure TJvColorCircle.SetCommonColorTrackBar(const Value: TJvFullColorTrackBar);
 begin
   if (Value <> nil) and (Value <> FCommonColorTrackBar) and Value.Linked then
-    raise EColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
+    raise EJvColorError.CreateResFmt(@RsEDuplicateTrackBar, [Value.LinkerName]);
 
   if Assigned(FCommonColorTrackBar) then
   begin
@@ -2039,7 +2041,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCrossBlueColor(const Value: TColor);
+procedure TJvColorCircle.SetCrossBlueColor(const Value: TColor);
 begin
   if FCrossBlueColor <> Value then
   begin
@@ -2048,7 +2050,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCrossGreenColor(const Value: TColor);
+procedure TJvColorCircle.SetCrossGreenColor(const Value: TColor);
 begin
   if FCrossGreenColor <> Value then
   begin
@@ -2057,7 +2059,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.SetCrossRedColor(const Value: TColor);
+procedure TJvColorCircle.SetCrossRedColor(const Value: TColor);
 begin
   if FCrossRedColor <> Value then
   begin
@@ -2066,7 +2068,7 @@ begin
   end;
 end;
 
-procedure TColorCircle.AxisConfigChange;
+procedure TJvColorCircle.AxisConfigChange;
 begin
   if FAxisConfigChanging then
     Exit;
@@ -2106,7 +2108,7 @@ begin
   inherited AxisConfigChange;
 end;
 
-procedure TColorCircle.TrackBarColorChange(Sender: TObject);
+procedure TJvColorCircle.TrackBarColorChange(Sender: TObject);
 begin
   if FColorChanging then
     Exit;
@@ -2114,17 +2116,17 @@ begin
   FColorChanging := True;
 
   if Sender = RedTrackBar then
-    RedColor := (Sender as TColorTrackBar).FullColor
+    RedColor := (Sender as TJvFullColorTrackBar).FullColor
   else
   if Sender = GreenTrackBar then
-    GreenColor := (Sender as TColorTrackBar).FullColor
+    GreenColor := (Sender as TJvFullColorTrackBar).FullColor
   else
   if Sender = BlueTrackBar then
-    BlueColor := (Sender as TColorTrackBar).FullColor
+    BlueColor := (Sender as TJvFullColorTrackBar).FullColor
   else
   if Sender = CommonTrackBar then
   begin
-    FullColor := (Sender as TColorTrackBar).FullColor;
+    FullColor := (Sender as TJvFullColorTrackBar).FullColor;
     if Assigned(FOnColorChange) then
       FOnColorChange(Self);
   end;
@@ -2132,7 +2134,7 @@ begin
   FColorChanging := False;
 end;
 
-procedure TColorCircle.ColorSpaceChange;
+procedure TJvColorCircle.ColorSpaceChange;
 begin
   if CommonTrackBar <> nil then
     CommonTrackBar.FullColor := FullColor;
@@ -2146,13 +2148,13 @@ begin
   inherited ColorSpaceChange;
 end;
 
-//=== { TColorTrackBar } =====================================================
+//=== { TJvFullColorTrackBar } ===============================================
 
-constructor TColorTrackBar.Create(AOwner: TComponent);
+constructor TJvFullColorTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FBarOrientation := boHorizontal;
+  FOrientation := trHorizontal;
   FArrowPosition := apLeft;
   FColorOrientation := coLeftToRight;
 
@@ -2170,31 +2172,31 @@ begin
   ColorSpaceChange;
 end;
 
-procedure TColorTrackBar.AxisConfigChange;
+procedure TJvFullColorTrackBar.AxisConfigChange;
 begin
   UpdateDefaultValueX;
   UpdateDefaultValueY;
   inherited AxisConfigChange;
 end;
 
-procedure TColorTrackBar.CalcSize;
+procedure TJvFullColorTrackBar.CalcSize;
 var
   ColorAmp: Integer;
-  AxisZ: TAxisIndex;
+  AxisZ: TJvAxisIndex;
 begin
   AxisZ := GetIndexAxisZ(AxisConfig);
   with ColorSpace do
     ColorAmp := AxisMax[AxisZ] - AxisMin[AxisZ] + 1;
 
-  case BarOrientation of
-    boHorizontal:
+  case Orientation of
+    trHorizontal:
       begin
         Width := ColorAmp + (2 * ArrowWidth);
         Height := BarWidth + ArrowWidth;
         FBuffer.Width := ColorAmp;
         FBuffer.Height := BarWidth;
       end;
-    boVertical:
+    trVertical:
       begin
         Width := BarWidth + ArrowWidth;
         Height := ColorAmp + (2 * ArrowWidth);
@@ -2205,18 +2207,18 @@ begin
   inherited CalcSize;
 end;
 
-procedure TColorTrackBar.ColorSpaceChange;
+procedure TJvFullColorTrackBar.ColorSpaceChange;
 begin
   UpdateDefaultValueX;
   UpdateDefaultValueY;
   inherited ColorSpaceChange;
 end;
 
-procedure TColorTrackBar.DrawBuffer;
+procedure TJvFullColorTrackBar.DrawBuffer;
 var
-  AxisX, AxisY, AxisZ: TAxisIndex;
+  AxisX, AxisY, AxisZ: TJvAxisIndex;
   MinZ, MaxZ, PosZ, IndexZ: Byte;
-  TempColor: TFullColor;
+  TempColor: TJvFullColor;
 begin
   if FCreating then
     Exit;
@@ -2238,8 +2240,8 @@ begin
     with FBuffer.Canvas do
       for IndexZ := MinZ to MaxZ do
       begin
-        if ((BarOrientation = boHorizontal) and (ColorOrientation = coRightToLeft)) or
-          ((BarOrientation = boVertical) and (ColorOrientation = coBottomToTop)) then
+        if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
+          ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
           PosZ := MaxZ - IndexZ
         else
           PosZ := IndexZ - MinZ;
@@ -2247,13 +2249,13 @@ begin
         TempColor := SetAxisValue(TempColor, AxisZ, IndexZ);
         Pen.Color := ConvertToRGB(TempColor);
 
-        case BarOrientation of
-          boHorizontal:
+        case Orientation of
+          trHorizontal:
             begin
               MoveTo(PosZ, 0);
               LineTo(PosZ, BarWidth);
             end;
-          boVertical:
+          trVertical:
             begin
               MoveTo(0, PosZ);
               LineTo(BarWidth, PosZ);
@@ -2265,9 +2267,9 @@ begin
   inherited DrawBuffer;
 end;
 
-procedure TColorTrackBar.Paint;
+procedure TJvFullColorTrackBar.Paint;
 var
-  AxisZ: TAxisIndex;
+  AxisZ: TJvAxisIndex;
   PosZ: Integer;
   Points: array [0..2] of TPoint;
 begin
@@ -2281,15 +2283,15 @@ begin
     // (rom) This shift is simply not in effect. Seems to be a bug of GetAxisValue.
     // PosZ := PosZ - AxisMin[AxisZ] + ArrowWidth;
     PosZ := PosZ + ArrowWidth;
-    if ((BarOrientation = boHorizontal) and (ColorOrientation = coRightToLeft)) or
-      ((BarOrientation = boVertical) and (ColorOrientation = coBottomToTop)) then
+    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
+      ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
       PosZ := Width - PosZ;
   end;
 
   with Canvas do
   begin
-    case BarOrientation of
-      boHorizontal:
+    case Orientation of
+      trHorizontal:
         begin
           Points[0].X := PosZ - ArrowWidth;
           Points[1].X := PosZ;
@@ -2313,7 +2315,7 @@ begin
               end;
           end;
         end;
-      boVertical:
+      trVertical:
         begin
           Points[0].Y := PosZ - ArrowWidth;
           Points[1].Y := PosZ;
@@ -2345,24 +2347,24 @@ begin
   DrawFocus;
 end;
 
-procedure TColorTrackBar.FreeLink;
+procedure TJvFullColorTrackBar.FreeLink;
 begin
   FLink := nil;
 end;
 
-function TColorTrackBar.IsValueXStored: Boolean;
+function TJvFullColorTrackBar.IsValueXStored: Boolean;
 begin
   Result := not ValueXAuto;
 end;
 
-function TColorTrackBar.IsValueYStored: Boolean;
+function TJvFullColorTrackBar.IsValueYStored: Boolean;
 begin
   Result := not ValueYAuto;
 end;
 
-procedure TColorTrackBar.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
+procedure TJvFullColorTrackBar.KeyMove(KeyCode: TKeyCode; MoveCount: Integer);
 var
-  IndexAxisZ: TAxisIndex;
+  IndexAxisZ: TJvAxisIndex;
   ValueZ: Integer;
 begin
   IndexAxisZ := GetIndexAxisZ(AxisConfig);
@@ -2373,16 +2375,16 @@ begin
 
   case KeyCode of
     kcLeft:
-      if BarOrientation = boHorizontal then
+      if Orientation = trHorizontal then
         ValueZ := ValueZ - MoveCount;
     kcRight:
-      if BarOrientation = boHorizontal then
+      if Orientation = trHorizontal then
         ValueZ := ValueZ + MoveCount;
     kcUp:
-      if BarOrientation = boVertical then
+      if Orientation = trVertical then
         ValueZ := ValueZ - MoveCount;
     kcDown:
-      if BarOrientation = boVertical then
+      if Orientation = trVertical then
         ValueZ := ValueZ + MoveCount;
   end;
 
@@ -2392,29 +2394,29 @@ begin
   FullColor := SetAxisValue(FullColor, IndexAxisZ, ValueZ);
 end;
 
-function TColorTrackBar.Linked: Boolean;
+function TJvFullColorTrackBar.Linked: Boolean;
 begin
   Result := FLink <> nil;
 end;
 
-function TColorTrackBar.LinkerName: TComponentName;
+function TJvFullColorTrackBar.LinkerName: TComponentName;
 begin
   Result := FLink.Name;
 end;
 
-procedure TColorTrackBar.MouseColor(Shift: TShiftState; X, Y: Integer);
+procedure TJvFullColorTrackBar.MouseColor(Shift: TShiftState; X, Y: Integer);
 var
   MinZ, MaxZ: Byte;
-  AxisZ: TAxisIndex;
+  AxisZ: TJvAxisIndex;
   Pos: Integer;
 begin
   if not (ssLeft in Shift) then
     Exit;
 
-  case BarOrientation of
-    boHorizontal:
+  case Orientation of
+    trHorizontal:
       Pos := X - ArrowWidth;
-    boVertical:
+    trVertical:
       Pos := Y - ArrowWidth;
   else
     Pos := 0;
@@ -2427,8 +2429,8 @@ begin
     MaxZ := AxisMax[AxisZ];
 
     Pos := EnsureRange(Pos, 0, MaxZ - MinZ);
-    if ((BarOrientation = boHorizontal) and (ColorOrientation = coRightToLeft)) or
-      ((BarOrientation = boVertical) and (ColorOrientation = coBottomToTop)) then
+    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
+      ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
       Pos := MaxZ - Pos
     else
       Pos := Pos - MinZ;
@@ -2440,7 +2442,7 @@ begin
   inherited MouseColor(Shift, X, Y);
 end;
 
-procedure TColorTrackBar.SetArrowColor(const Value: TColor);
+procedure TJvFullColorTrackBar.SetArrowColor(const Value: TColor);
 begin
   if FArrowColor <> Value then
   begin
@@ -2449,7 +2451,7 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetArrowPosition(const Value: TArrowPosition);
+procedure TJvFullColorTrackBar.SetArrowPosition(const Value: TJvArrowPosition);
 begin
   if FArrowPosition <> Value then
   begin
@@ -2458,7 +2460,7 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetArrowWidth(const Value: Integer);
+procedure TJvFullColorTrackBar.SetArrowWidth(const Value: Integer);
 begin
   if FArrowPosition <> Value then
   begin
@@ -2467,16 +2469,16 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetBarOrientation(const Value: TBarOrientation);
+procedure TJvFullColorTrackBar.SetOrientation(const Value: TTrackBarOrientation);
 begin
-  if FBarOrientation <> Value then
+  if FOrientation <> Value then
   begin
-    FBarOrientation := Value;
+    FOrientation := Value;
     CalcSize;
   end;
 end;
 
-procedure TColorTrackBar.SetBarWidth(const Value: Integer);
+procedure TJvFullColorTrackBar.SetBarWidth(const Value: Integer);
 begin
   if FBarWidth <> Value then
   begin
@@ -2485,7 +2487,7 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetColorOrientation(const Value: TColorOrientation);
+procedure TJvFullColorTrackBar.SetColorOrientation(const Value: TJvColorOrientation);
 begin
   if FColorOrientation <> Value then
   begin
@@ -2494,10 +2496,10 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetFullColor(const Value: TFullColor);
+procedure TJvFullColorTrackBar.SetFullColor(const Value: TJvFullColor);
 var
-  AxisZ: TAxisIndex;
-  OldColor: TFullColor;
+  AxisZ: TJvAxisIndex;
+  OldColor: TJvFullColor;
 begin
   OldColor := FullColor;
   inherited SetFullColor(Value);
@@ -2520,7 +2522,7 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetFullColorDrawing(const Value: Boolean);
+procedure TJvFullColorTrackBar.SetFullColorDrawing(const Value: Boolean);
 begin
   if FFullColorDrawing <> Value then
   begin
@@ -2529,19 +2531,19 @@ begin
   end;
 end;
 
-procedure TColorTrackBar.SetLink(AComponent: TComponent);
+procedure TJvFullColorTrackBar.SetLink(AComponent: TComponent);
 begin
   FLink := AComponent;
 end;
 
-procedure TColorTrackBar.SetValueX(const Value: Byte);
+procedure TJvFullColorTrackBar.SetValueX(const Value: Byte);
 begin
   FValueX := Value;
   FValueXAuto := False;
   WantDrawBuffer := True;
 end;
 
-procedure TColorTrackBar.SetValueXAuto(const Value: Boolean);
+procedure TJvFullColorTrackBar.SetValueXAuto(const Value: Boolean);
 begin
   FValueXAuto := Value;
   if Value then
@@ -2549,14 +2551,14 @@ begin
   WantDrawBuffer := True;
 end;
 
-procedure TColorTrackBar.SetValueY(const Value: Byte);
+procedure TJvFullColorTrackBar.SetValueY(const Value: Byte);
 begin
   FValueY := Value;
   FValueYAuto := False;
   WantDrawBuffer := True;
 end;
 
-procedure TColorTrackBar.SetValueYAuto(const Value: Boolean);
+procedure TJvFullColorTrackBar.SetValueYAuto(const Value: Boolean);
 begin
   FValueYAuto := Value;
   if Value then
@@ -2564,19 +2566,19 @@ begin
   WantDrawBuffer := True;
 end;
 
-procedure TColorTrackBar.UpdateDefaultValueX;
+procedure TJvFullColorTrackBar.UpdateDefaultValueX;
 begin
   FValueX := ColorSpace.AxisDefault[GetIndexAxisX(AxisConfig)];
 end;
 
-procedure TColorTrackBar.UpdateDefaultValueY;
+procedure TJvFullColorTrackBar.UpdateDefaultValueY;
 begin
   FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
 end;
 
-//=== { TColorLabel } ========================================================
+//=== { TJvColorLabel } ========================================================
 
-constructor TColorLabel.Create(AOwner: TComponent);
+constructor TJvColorLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPen := TPen.Create;
@@ -2592,11 +2594,11 @@ begin
   FRoundShapeHeight := 4;
   FShapeWidth := 16;
   FShapeHeight := 16;
-  FLabelColor := TFullColor(clWindowText);
+  FLabelColor := TJvFullColor(clWindowText);
   //AutoSize:=True;
 end;
 
-destructor TColorLabel.Destroy;
+destructor TJvColorLabel.Destroy;
 begin
   FFont.Free;
   FPen.Free;
@@ -2604,7 +2606,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TColorLabel.CalcSize;
+procedure TJvColorLabel.CalcSize;
 begin
   Canvas.Font := Font;
   if AutoSize then
@@ -2625,12 +2627,12 @@ begin
   end;
 end;
 
-procedure TColorLabel.GraphicChange(Sender: TObject);
+procedure TJvColorLabel.GraphicChange(Sender: TObject);
 begin
   CalcSize;
 end;
 
-procedure TColorLabel.Paint;
+procedure TJvColorLabel.Paint;
 var
   ShapeLeft, ShapeTop, TextLeft, TextTop: Integer;
 begin
@@ -2694,19 +2696,19 @@ begin
   end;
 end;
 
-procedure TColorLabel.Resize;
+procedure TJvColorLabel.Resize;
 begin
   inherited Resize;
   //CalcSize;
 end;
 
-procedure TColorLabel.SetAutoSize(Value: Boolean);
+procedure TJvColorLabel.SetAutoSize(Value: Boolean);
 begin
   inherited SetAutoSize(Value);
   CalcSize;
 end;
 
-procedure TColorLabel.SetCaption(const Value: TCaption);
+procedure TJvColorLabel.SetCaption(const Value: TCaption);
 begin
   if FCaption <> Value then
   begin
@@ -2715,7 +2717,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetName(const Value: TComponentName);
+procedure TJvColorLabel.SetName(const Value: TComponentName);
 var
   Equal: Boolean;
 begin
@@ -2725,7 +2727,7 @@ begin
     Caption := Name;
 end;
 
-procedure TColorLabel.SetRoundShapeHeight(const Value: Integer);
+procedure TJvColorLabel.SetRoundShapeHeight(const Value: Integer);
 begin
   if (Value <> FRoundShapeHeight) and (Value < (ShapeHeight div 2)) then
   begin
@@ -2734,7 +2736,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetRoundShapeWidth(const Value: Integer);
+procedure TJvColorLabel.SetRoundShapeWidth(const Value: Integer);
 begin
   if (Value <> FRoundShapeWidth) and (Value < (ShapeWidth div 2)) then
   begin
@@ -2743,7 +2745,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetShapeHeight(const Value: Integer);
+procedure TJvColorLabel.SetShapeHeight(const Value: Integer);
 begin
   if FShapeHeight <> Value then
   begin
@@ -2754,7 +2756,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetShapePosition(const Value: TShapePosition);
+procedure TJvColorLabel.SetShapePosition(const Value: TJvShapePosition);
 begin
   if FShapePosition <> Value then
   begin
@@ -2763,7 +2765,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetShapeType(const Value: TShapeType);
+procedure TJvColorLabel.SetShapeType(const Value: TShapeType);
 begin
   if FShapeType <> Value then
   begin
@@ -2777,7 +2779,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetShapeWidth(const Value: Integer);
+procedure TJvColorLabel.SetShapeWidth(const Value: Integer);
 begin
   if FShapeWidth <> Value then
   begin
@@ -2788,7 +2790,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetSpacing(const Value: Integer);
+procedure TJvColorLabel.SetSpacing(const Value: Integer);
 begin
   if FSpacing <> Value then
   begin
@@ -2797,7 +2799,7 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetLabelColor(const Value: TFullColor);
+procedure TJvColorLabel.SetLabelColor(const Value: TJvFullColor);
 begin
   if FLabelColor <> Value then
   begin
@@ -2807,33 +2809,33 @@ begin
   end;
 end;
 
-procedure TColorLabel.SetBrush(const Value: TBrush);
+procedure TJvColorLabel.SetBrush(const Value: TBrush);
 begin
   FBrush.Assign(Value);
   Invalidate;
 end;
 
-procedure TColorLabel.SetFont(const Value: TFont);
+procedure TJvColorLabel.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
   CalcSize;
 end;
 
-procedure TColorLabel.SetPen(const Value: TPen);
+procedure TJvColorLabel.SetPen(const Value: TPen);
 begin
   FPen.Assign(Value);
   CalcSize;
 end;
 
-//=== { TFullColorList } =====================================================
+//=== { TJvFullColorList } ===================================================
 
-destructor TFullColorList.Destroy;
+destructor TJvFullColorList.Destroy;
 begin
   Clear;
   inherited Destroy;
 end;
 
-function TFullColorList.Add(AColor: TFullColor): Integer;
+function TJvFullColorList.Add(AColor: TJvFullColor): Integer;
 begin
   Result := FCount;
   if Result = Capacity then
@@ -2843,67 +2845,67 @@ begin
   Change(AColor, Result);
 end;
 
-procedure TFullColorList.Change(AColor: TFullColor; AIndex: Integer);
+procedure TJvFullColorList.Change(AColor: TJvFullColor; AIndex: Integer);
 begin
   if (UpdateCount = 0) and Assigned(FOnChange) then
     FOnChange(Self, AColor, AIndex);
 end;
 
-procedure TFullColorList.Clear;
+procedure TJvFullColorList.Clear;
 begin
   Capacity := 0;
 end;
 
-procedure TFullColorList.DefineProperties(Filer: TFiler);
+procedure TJvFullColorList.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('Items', ReadItems, WriteItems, Count > 0);
 end;
 
-procedure TFullColorList.Delete(Index: Integer);
+procedure TJvFullColorList.Delete(Index: Integer);
 var
-  Color: TFullColor;
+  Color: TJvFullColor;
 begin
   if (Index < 0) or (Index >= FCount) then
-    EFullColorListError.CreateFmt(SListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
 
   Color := FList^[Index];
 
   Dec(FCount);
   if Index < Count then
-    Move(FList^[Index + 1], FList^[Index], (Count - Index) * SizeOf(TFullColor));
+    Move(FList^[Index + 1], FList^[Index], (Count - Index) * SizeOf(TJvFullColor));
 
   Change(Color, -1);
 end;
 
-procedure TFullColorList.DeleteRedundant;
+procedure TJvFullColorList.DeleteRedundant;
 begin
 end;
 
-procedure TFullColorList.Exchange(Index1, Index2: Integer);
+procedure TJvFullColorList.Exchange(Index1, Index2: Integer);
 var
-  Tmp: TFullColor;
+  Tmp: TJvFullColor;
 begin
   if (Index1 >= Count) or (Index1 < 0) then
-    raise EFullColorListError.CreateResFmt(@SListIndexError, [Index1]);
+    raise EJvFullColorListError.CreateResFmt(@SListIndexError, [Index1]);
 
   if (Index2 >= Count) or (Index2 < 0) then
-    raise EFullColorListError.CreateResFmt(@SListIndexError, [Index2]);
+    raise EJvFullColorListError.CreateResFmt(@SListIndexError, [Index2]);
 
   Tmp := FList^[Index1];
   FList^[Index1] := FList^[Index2];
   FList^[Index2] := Tmp;
 end;
 
-function TFullColorList.GetItem(Index: Integer): TFullColor;
+function TJvFullColorList.GetItem(Index: Integer): TJvFullColor;
 begin
   if (Index >= Count) or (Index < 0) then
-    raise EFullColorListError.CreateResFmt(@SListIndexError, [Index]);
+    raise EJvFullColorListError.CreateResFmt(@SListIndexError, [Index]);
 
   Result := FList^[Index];
 end;
 
-procedure TFullColorList.Grow;
+procedure TJvFullColorList.Grow;
 begin
   if Capacity = 0 then
     Capacity := 16
@@ -2911,7 +2913,7 @@ begin
     Capacity := 2 * Capacity;
 end;
 
-function TFullColorList.IndexOf(AColor: TFullColor): Integer;
+function TJvFullColorList.IndexOf(AColor: TJvFullColor): Integer;
 begin
   for Result := 0 to Count - 1 do
     if FList^[Result] = AColor then
@@ -2919,16 +2921,16 @@ begin
   Result := -1;
 end;
 
-procedure TFullColorList.Insert(Index: Integer; AColor: TFullColor);
+procedure TJvFullColorList.Insert(Index: Integer; AColor: TJvFullColor);
 begin
   if (Index >= Count) or (Index < 0) then
-    EFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
   if Count = Capacity then
     Grow;
 
   if Index < Count then
-    Move(FList^[Index], FList^[Index + 1], (FCount - Index) * SizeOf(TFullColor));
+    Move(FList^[Index], FList^[Index + 1], (FCount - Index) * SizeOf(TJvFullColor));
 
   FList^[Index] := AColor;
   Inc(FCount);
@@ -2936,12 +2938,12 @@ begin
   Change(AColor, Index);
 end;
 
-procedure TFullColorList.BeginUpdate;
+procedure TJvFullColorList.BeginUpdate;
 begin
   Inc(FUpdateCount);
 end;
 
-procedure TFullColorList.ReadItems(Reader: TReader);
+procedure TJvFullColorList.ReadItems(Reader: TReader);
 begin
   Reader.ReadListBegin;
   BeginUpdate;
@@ -2955,16 +2957,16 @@ begin
   Reader.ReadListEnd;
 end;
 
-function TFullColorList.Remove(AColor: TFullColor): Integer;
+function TJvFullColorList.Remove(AColor: TJvFullColor): Integer;
 begin
   Result := IndexOf(AColor);
   if Result >= 0 then
     Delete(Result);
 end;
 
-procedure TFullColorList.SetCapacity(const Value: Integer);
+procedure TJvFullColorList.SetCapacity(const Value: Integer);
 begin
-  ReallocMem(FList, Value * SizeOf(TFullColor));
+  ReallocMem(FList, Value * SizeOf(TJvFullColor));
   FCapacity := Value;
   if FCount > FCapacity then
   begin
@@ -2974,22 +2976,22 @@ begin
   end;
 end;
 
-procedure TFullColorList.SetCount(const Value: Integer);
+procedure TJvFullColorList.SetCount(const Value: Integer);
 begin
   FCount := Value;
   if FCount > FCapacity then
     Capacity := FCount;
 end;
 
-procedure TFullColorList.SetItem(Index: Integer; const Value: TFullColor);
+procedure TJvFullColorList.SetItem(Index: Integer; const Value: TJvFullColor);
 begin
   if (Index >= Count) or (Index < 0) then
-    EFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
   FList^[Index] := Value;
 end;
 
-procedure TFullColorList.EndUpdate;
+procedure TJvFullColorList.EndUpdate;
 begin
   if FUpdateCount > 0 then
     Dec(FUpdateCount);
@@ -2997,7 +2999,7 @@ begin
   Change(0, -2);
 end;
 
-procedure TFullColorList.WriteItems(Writer: TWriter);
+procedure TJvFullColorList.WriteItems(Writer: TWriter);
 var
   I: Integer;
 begin
@@ -3007,9 +3009,9 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== { TColorSpaceCombo } ===================================================
+//=== { TJvColorSpaceCombo } =================================================
 
-constructor TColorSpaceCombo.Create(AOwner: TComponent);
+constructor TJvColorSpaceCombo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := csDropDownList;
@@ -3017,23 +3019,23 @@ begin
   FItemFormat := cfBoth;
 end;
 
-procedure TColorSpaceCombo.CreateWnd;
+procedure TJvColorSpaceCombo.CreateWnd;
 begin
   inherited CreateWnd;
   MakeList;
 end;
 
-function TColorSpaceCombo.GetColorSpace: TColorSpace;
+function TJvColorSpaceCombo.GetColorSpace: TJvColorSpace;
 begin
   if ItemIndex > -1 then
-    Result := TColorSpace(Self.Items.Objects[ItemIndex])
+    Result := TJvColorSpace(Self.Items.Objects[ItemIndex])
   else
     Result := nil;
 end;
 
-function TColorSpaceCombo.GetColorSpaceID: TColorID;
+function TJvColorSpaceCombo.GetColorSpaceID: TJvColorID;
 var
-  LColorSpace: TColorSpace;
+  LColorSpace: TJvColorSpace;
 begin
   LColorSpace := SelectedSpace;
   if LColorSpace <> nil then
@@ -3042,11 +3044,11 @@ begin
     Result := 0;
 end;
 
-procedure TColorSpaceCombo.MakeList;
+procedure TJvColorSpaceCombo.MakeList;
 var
   Index: Integer;
-  LColorSpace: TColorSpace;
-  OldColorID: TColorID;
+  LColorSpace: TJvColorSpace;
+  OldColorID: TJvColorID;
 begin
   OldColorID := ColorSpaceID;
   with ColorSpaceManager, Items do
@@ -3062,7 +3064,7 @@ begin
   ColorSpaceID := OldColorID;
 end;
 
-procedure TColorSpaceCombo.SetAllowVariable(const Value: Boolean);
+procedure TJvColorSpaceCombo.SetAllowVariable(const Value: Boolean);
 begin
   if FAllowVariable <> Value then
   begin
@@ -3071,27 +3073,27 @@ begin
   end;
 end;
 
-procedure TColorSpaceCombo.SetColorSpace(const Value: TColorSpace);
+procedure TJvColorSpaceCombo.SetColorSpace(const Value: TJvColorSpace);
 var
   Index: Integer;
 begin
   with Items do
     for Index := 0 to Count - 1 do
-      if Value.ID = TColorSpace(Objects[Index]).ID then
+      if Value.ID = TJvColorSpace(Objects[Index]).ID then
       begin
         ItemIndex := Index;
         Exit;
       end;
 end;
 
-procedure TColorSpaceCombo.SetColorSpaceID(const Value: TColorID);
+procedure TJvColorSpaceCombo.SetColorSpaceID(const Value: TJvColorID);
 begin
   SetColorSpace(ColorSpaceManager.ColorSpace[Value]);
   if Assigned(OnChange) then
     OnChange(Self);
 end;
 
-procedure TColorSpaceCombo.SetItemFormat(const Value: TColorSpaceFormat);
+procedure TJvColorSpaceCombo.SetItemFormat(const Value: TJvColorSpaceFormat);
 begin
   if FItemFormat <> Value then
   begin
@@ -3100,31 +3102,31 @@ begin
   end;
 end;
 
-//=== { TAxisConfigCombo } ===================================================
+//=== { TJvColorAxisConfigCombo } ============================================
 
-constructor TAxisConfigCombo.Create(AOwner: TComponent);
+constructor TJvColorAxisConfigCombo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Style := csDropDownList;
-  FColorID := TFullColor(clBlack);
+  FColorID := TJvFullColor(clBlack);
   FItemFormat := afComplete;
 end;
 
-procedure TAxisConfigCombo.CreateWnd;
+procedure TJvColorAxisConfigCombo.CreateWnd;
 begin
   inherited CreateWnd;
   MakeList;
 end;
 
-function TAxisConfigCombo.GetSelected: TAxisConfig;
+function TJvColorAxisConfigCombo.GetSelected: TJvColorAxisConfig;
 begin
-  Result := TAxisConfig(ItemIndex);
+  Result := TJvColorAxisConfig(ItemIndex);
 end;
 
-procedure TAxisConfigCombo.MakeList;
+procedure TJvColorAxisConfigCombo.MakeList;
 var
-  Index: TAxisConfig;
-  LColorSpace: TColorSpace;
+  Index: TJvColorAxisConfig;
+  LColorSpace: TJvColorSpace;
   OldItemIndex: Integer;
 begin
   OldItemIndex := ItemIndex;
@@ -3132,13 +3134,13 @@ begin
   with Items do
   begin
     Clear;
-    for Index := Low(TAxisConfig) to High(TAxisConfig) do
+    for Index := Low(TJvColorAxisConfig) to High(TJvColorAxisConfig) do
       Add(AxisConfigToString(Index, ItemFormat, LColorSpace));
   end;
   ItemIndex := OldItemIndex;
 end;
 
-procedure TAxisConfigCombo.SetColorID(const Value: TColorID);
+procedure TJvColorAxisConfigCombo.SetColorID(const Value: TJvColorID);
 begin
   if FColorID <> Value then
   begin
@@ -3147,7 +3149,7 @@ begin
   end;
 end;
 
-procedure TAxisConfigCombo.SetItemFormat(const Value: TAxisConfigFormat);
+procedure TJvColorAxisConfigCombo.SetItemFormat(const Value: TJvColorAxisConfigFormat);
 begin
   if FItemFormat <> Value then
   begin
@@ -3156,15 +3158,15 @@ begin
   end;
 end;
 
-procedure TAxisConfigCombo.SetSelected(const Value: TAxisConfig);
+procedure TJvColorAxisConfigCombo.SetSelected(const Value: TJvColorAxisConfig);
 begin
   ItemIndex := Integer(Value);
 end;
 
 procedure Register;
 begin
-  RegisterComponents('Colors', [TColorPanel, TColorTrackBar,
-    TColorLabel, TColorCircle, TColorSpaceCombo, TAxisConfigCombo]);
+  RegisterComponents('Colors', [TJvColorPanel, TJvFullColorTrackBar, TJvColorLabel,
+    TJvColorCircle, TJvColorSpaceCombo, TJvColorAxisConfigCombo]);
 end;
 
 {$IFDEF UNITVERSIONING}

@@ -34,30 +34,30 @@ uses
   ColorSpaces;
 
 type
-  TRotateColor = (rcCommon, rcRed, rcGreen, rcBlue);
+  TJvRotateColor = (rcCommon, rcRed, rcGreen, rcBlue);
 
-  TSaturationMethod = (smRange, smLoop);
+  TJvSaturationMethod = (smRange, smLoop);
 
-  TRotateValue = record
+  TJvRotateValue = record
     Value: -255..255;
-    SaturationMethod: TSaturationMethod;
+    SaturationMethod: TJvSaturationMethod;
   end;
 
-  TAxisDelta = array [TAxisIndex] of TRotateValue;
+  TJvAxisDelta = array [TJvAxisIndex] of TJvRotateValue;
 
-  TColorDelta = record
-    ColorID: TColorID;
-    AxisRed: TAxisDelta;
-    AxisGreen: TAxisDelta;
-    AxisBlue: TAxisDelta;
+  TJvColorDelta = record
+    ColorID: TJvColorID;
+    AxisRed: TJvAxisDelta;
+    AxisGreen: TJvAxisDelta;
+    AxisBlue: TJvAxisDelta;
   end;
 
-function ChangeColorDeltaSpace(ColorDelta: TColorDelta;
-  NewID: TColorID): TColorDelta;
-function RotateColor(AColor: TFullColor;
-  AColorDelta: TColorDelta): TFullColor;
+function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
+  NewID: TJvColorID): TJvColorDelta;
+function RotateColor(AColor: TJvFullColor;
+  AColorDelta: TJvColorDelta): TJvFullColor;
 procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
-  AColorDelta: TColorDelta);
+  AColorDelta: TJvColorDelta);
 
 implementation
 
@@ -67,23 +67,23 @@ uses
   {$ENDIF UNITVERSIONING}
   Math;
 
-function ChangeColorDeltaSpace(ColorDelta: TColorDelta;
-  NewID: TColorID): TColorDelta;
+function ChangeColorDeltaSpace(ColorDelta: TJvColorDelta;
+  NewID: TJvColorID): TJvColorDelta;
 var
-  I: TAxisIndex;
-  SourceColorSpace, DestColorSpace: TColorSpace;
+  I: TJvAxisIndex;
+  SourceColorSpace, DestColorSpace: TJvColorSpace;
 
-  function GetAxisDelta(AColor: TColor): TAxisDelta;
+  function GetAxisDelta(AColor: TColor): TJvAxisDelta;
   var
-    I: TAxisIndex;
-    SourceColor, DestColor: TFullColor;
+    I: TJvAxisIndex;
+    SourceColor, DestColor: TJvFullColor;
   begin
-    SourceColor := SourceColorSpace.ConvertFromRGB(TFullColor(AColor));
-    DestColor := DestColorSpace.ConvertFromRGB(TFullColor(AColor));
+    SourceColor := SourceColorSpace.ConvertFromRGB(TJvFullColor(AColor));
+    DestColor := DestColorSpace.ConvertFromRGB(TJvFullColor(AColor));
     SourceColor := RotateColor(SourceColor, ColorDelta);
     SourceColor := SourceColorSpace.ConvertToRGB(SourceColor);
     SourceColor := DestColorSpace.ConvertFromRGB(SourceColor);
-    for I := Low(TAxisIndex) to High(TAxisIndex) do
+    for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       Result[I].Value := Integer(SourceColor and $000000FF) - Integer(DestColor and $000000FF);
       SourceColor := SourceColor shr 8;
@@ -100,7 +100,7 @@ begin
   Result.AxisRed := GetAxisDelta(clRed);
   Result.AxisGreen := GetAxisDelta(clLime);
   Result.AxisBlue := GetAxisDelta(clBlue);
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     Result.AxisRed[I].SaturationMethod := ColorDelta.AxisRed[I].SaturationMethod;
     Result.AxisGreen[I].SaturationMethod := ColorDelta.AxisGreen[I].SaturationMethod;
@@ -109,22 +109,22 @@ begin
 end;
 
 // (rom) reworked for loops
-function RotateColor(AColor: TFullColor; AColorDelta: TColorDelta): TFullColor;
+function RotateColor(AColor: TJvFullColor; AColorDelta: TJvColorDelta): TJvFullColor;
 var
-  I: TAxisIndex;
-  MinAxis: array [TAxisIndex] of Byte;
-  MaxAxis: array [TAxisIndex] of Byte;
-  ValueAxis: array [TAxisIndex] of Integer;
+  I: TJvAxisIndex;
+  MinAxis: array [TJvAxisIndex] of Byte;
+  MaxAxis: array [TJvAxisIndex] of Byte;
+  ValueAxis: array [TJvAxisIndex] of Integer;
   ValueRed, ValueGreen, ValueBlue: Integer;
-  SourceColorSpace, DeltaColorSpace: TColorSpace;
-  LColorID: TColorID;
+  SourceColorSpace, DeltaColorSpace: TJvColorSpace;
+  LColorID: TJvColorID;
 
-  function DoRotate(AValue: Cardinal; AAxisDelta: TAxisDelta): Cardinal;
+  function DoRotate(AValue: Cardinal; AAxisDelta: TJvAxisDelta): Cardinal;
   var
-    I: TAxisIndex;
+    I: TJvAxisIndex;
     Range: Integer;
   begin
-    for I := Low(TAxisIndex) to High(TAxisIndex) do
+    for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       ValueAxis[I] := Integer(AValue and $000000FF) + AAxisDelta[I].Value;
       AValue := AValue shr 8;
@@ -160,7 +160,7 @@ begin
 
     with DeltaColorSpace do
     begin
-      for I := Low(TAxisIndex) to High(TAxisIndex) do
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
         MinAxis[I] := AxisMin[I];
         MaxAxis[I] := AxisMax[I];
@@ -173,7 +173,7 @@ begin
       ValueGreen := ConvertToRGB(DoRotate(ValueGreen, AColorDelta.AxisGreen));
       ValueBlue := ConvertToRGB(DoRotate(ValueBlue, AColorDelta.AxisBlue));
 
-      for I := Low(TAxisIndex) to High(TAxisIndex) do
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
         ValueAxis[I] := (ValueRed and $000000FF) + (ValueGreen and $000000FF) + (ValueBlue and $000000FF);
         // (rom) the test was wrong in the original implementation
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap; AColorDelta: TColorDelta);
+procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap; AColorDelta: TJvColorDelta);
 begin
 end;
 

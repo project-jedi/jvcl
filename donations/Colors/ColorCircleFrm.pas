@@ -35,18 +35,18 @@ uses
   ColorDialogs, ColorCtrls, ColorSpaces, ColorRotate, ColorSpacesStd;
 
 type
-  TColorCircleForm = class(TBaseColorCircleForm)
-    ColorCircle: TColorCircle;
+  TJvColorCircleForm = class(TJvBaseColorCircleForm)
+    JvColorCircle: TJvColorCircle;
     RadioButtonCommonSettings: TRadioButton;
     RadioButtonAxisSettings: TRadioButton;
     PanelAxisSettings: TPanel;
     PanelCommonSettings: TPanel;
     ImageOld: TImage;
     ImageNew: TImage;
-    ColorTrackBarCommon: TColorTrackBar;
-    ColorTrackBarBlue: TColorTrackBar;
-    ColorTrackBarGreen: TColorTrackBar;
-    ColorTrackBarRed: TColorTrackBar;
+    JvFullColorTrackBarCommon: TJvFullColorTrackBar;
+    JvFullColorTrackBarBlue: TJvFullColorTrackBar;
+    JvFullColorTrackBarGreen: TJvFullColorTrackBar;
+    JvFullColorTrackBarRed: TJvFullColorTrackBar;
     SpinEditComAxis0: TSpinEdit;
     SpinEditRedAxis0: TSpinEdit;
     SpinEditGreenAxis0: TSpinEdit;
@@ -92,19 +92,19 @@ type
     CheckBoxBlue2: TCheckBox;
     BevelOld: TBevel;
     BevelNew: TBevel;
-    ColorSpaceCombo: TColorSpaceCombo;
-    AxisConfigCombo: TAxisConfigCombo;
+    JvColorSpaceCombo: TJvColorSpaceCombo;
+    JvColorAxisConfigCombo: TJvColorAxisConfigCombo;
     procedure FormCreate(Sender: TObject);
     procedure ButtonGraphicsClick(Sender: TObject);
     procedure ButtonApplyClick(Sender: TObject);
-    procedure ColorSpaceComboChange(Sender: TObject);
+    procedure JvColorSpaceComboChange(Sender: TObject);
     procedure CheckBoxSettingsClick(Sender: TObject);
-    procedure ColorCircleBlueColorChange(Sender: TObject);
-    procedure ColorCircleColorChange(Sender: TObject);
-    procedure ColorCircleGreenColorChange(Sender: TObject);
-    procedure ColorCircleRedColorChange(Sender: TObject);
-    procedure AxisConfigComboChange(Sender: TObject);
-    procedure ColorCircleColorSpaceChange(Sender: TObject);
+    procedure JvColorCircleBlueColorChange(Sender: TObject);
+    procedure JvColorCircleColorChange(Sender: TObject);
+    procedure JvColorCircleGreenColorChange(Sender: TObject);
+    procedure JvColorCircleRedColorChange(Sender: TObject);
+    procedure JvColorAxisConfigComboChange(Sender: TObject);
+    procedure JvColorCircleColorSpaceChange(Sender: TObject);
     procedure RadioButtonAxisClick(Sender: TObject);
     procedure SpinEditSettingsValueChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -112,34 +112,34 @@ type
     FExpanded: Boolean;
     FUpdating: Boolean;
     FExpandedWidth: Integer;
-    FRedAxis: array [TAxisIndex] of Byte;
-    FGreenAxis: array [TAxisIndex] of Byte;
-    FBlueAxis: array [TAxisIndex] of Byte;
-    FComAxis: array [TAxisIndex] of Byte;
-    FAxisMin: array [TAxisIndex] of Byte;
-    FAxisMax: array [TAxisIndex] of Byte;
-    FSpinEditComAxes: array [TAxisIndex] of TSpinEdit;
-    FSpinEditRedAxes: array [TAxisIndex] of TSpinEdit;
-    FSpinEditGreenAxes: array [TAxisIndex] of TSpinEdit;
-    FSpinEditBlueAxes: array [TAxisIndex] of TSpinEdit;
-    FLabelComAxes: array [TAxisIndex] of TLabel;
-    FLabelAxes: array [TAxisIndex] of TLabel;
-    FCheckBoxCom: array [TAxisIndex] of TCheckBox;
-    FCheckBoxRed: array [TAxisIndex] of TCheckBox;
-    FCheckBoxGreen: array [TAxisIndex] of TCheckBox;
-    FCheckBoxBlue: array [TAxisIndex] of TCheckBox;
+    FRedAxis: array [TJvAxisIndex] of Byte;
+    FGreenAxis: array [TJvAxisIndex] of Byte;
+    FBlueAxis: array [TJvAxisIndex] of Byte;
+    FComAxis: array [TJvAxisIndex] of Byte;
+    FAxisMin: array [TJvAxisIndex] of Byte;
+    FAxisMax: array [TJvAxisIndex] of Byte;
+    FSpinEditComAxes: array [TJvAxisIndex] of TSpinEdit;
+    FSpinEditRedAxes: array [TJvAxisIndex] of TSpinEdit;
+    FSpinEditGreenAxes: array [TJvAxisIndex] of TSpinEdit;
+    FSpinEditBlueAxes: array [TJvAxisIndex] of TSpinEdit;
+    FLabelComAxes: array [TJvAxisIndex] of TLabel;
+    FLabelAxes: array [TJvAxisIndex] of TLabel;
+    FCheckBoxCom: array [TJvAxisIndex] of TCheckBox;
+    FCheckBoxRed: array [TJvAxisIndex] of TCheckBox;
+    FCheckBoxGreen: array [TJvAxisIndex] of TCheckBox;
+    FCheckBoxBlue: array [TJvAxisIndex] of TCheckBox;
     FFilled: Boolean;
     procedure FillInternalArrays;
   protected
     procedure Loaded; override;
-    procedure SetOptions(const Value: TColorCircleDialogOptions); override;
-    procedure SetRedDelta(const Value: TAxisDelta); override;
-    procedure SetGreenDelta(const Value: TAxisDelta); override;
-    procedure SetBlueDelta(const Value: TAxisDelta); override;
-    procedure SetDelta(const Value: TColorDelta); override;
+    procedure SetOptions(const Value: TJvColorCircleDialogOptions); override;
+    procedure SetRedDelta(const Value: TJvAxisDelta); override;
+    procedure SetGreenDelta(const Value: TJvAxisDelta); override;
+    procedure SetBlueDelta(const Value: TJvAxisDelta); override;
+    procedure SetDelta(const Value: TJvColorDelta); override;
   public
     procedure UpdateDeltaValue;
-    procedure CalcDeltaValue(ARotateColor: TRotateColor);
+    procedure CalcDeltaValue(ARotateColor: TJvRotateColor);
     procedure UpdateColorSpace;
     procedure UpdateCheckBoxStates;
     procedure UpdateAxisSettings;
@@ -163,18 +163,18 @@ uses
 var
   GlobalLoop, GlobalRange: string;
 
-function AxisIndexFromTag(ATag: Integer): TAxisIndex;
+function AxisIndexFromTag(ATag: Integer): TJvAxisIndex;
 begin
-  Result := TAxisIndex(ATag and $03);
+  Result := TJvAxisIndex(ATag and $03);
 end;
 
-procedure TColorCircleForm.FormCreate(Sender: TObject);
+procedure TJvColorCircleForm.FormCreate(Sender: TObject);
 begin
-  Options := DefaultColorCircleDialogOptions - [roShowSaturation];
-  AxisConfigCombo.Selected := ColorCircle.AxisConfig;
+  Options := JvDefaultColorCircleDialogOptions - [roShowSaturation];
+  JvColorAxisConfigCombo.Selected := JvColorCircle.AxisConfig;
 end;
 
-procedure TColorCircleForm.FillInternalArrays;
+procedure TJvColorCircleForm.FillInternalArrays;
 begin
   if not FFilled then
   begin
@@ -212,13 +212,13 @@ begin
   end;
 end;
 
-procedure TColorCircleForm.Loaded;
+procedure TJvColorCircleForm.Loaded;
 begin
   inherited Loaded;
   FExpandedWidth := Width;
 end;
 
-procedure TColorCircleForm.Collapse;
+procedure TJvColorCircleForm.Collapse;
 begin
   Width := PanelGraphics.Left - 1;
   PanelGraphics.Visible := False;
@@ -226,7 +226,7 @@ begin
   FExpanded := False;
 end;
 
-procedure TColorCircleForm.Expand;
+procedure TJvColorCircleForm.Expand;
 begin
   Width := FExpandedWidth;
   PanelGraphics.Visible := True;
@@ -234,9 +234,9 @@ begin
   FExpanded := True;
 end;
 
-procedure TColorCircleForm.SetOptions(const Value: TColorCircleDialogOptions);
+procedure TJvColorCircleForm.SetOptions(const Value: TJvColorCircleDialogOptions);
 var
-  I: TAxisIndex;
+  I: TJvAxisIndex;
   EnabledA, EnabledB: Boolean;
   LVisible: Boolean;
 
@@ -266,7 +266,7 @@ begin
 
   EnabledA := roAllowSpaceChange in Options;
   LabelColorSpace.Enabled := EnabledA;
-  ColorSpaceCombo.Enabled := EnabledA;
+  JvColorSpaceCombo.Enabled := EnabledA;
 
   LVisible := roShowOldPreview in Options;
   ImageOld.Visible := LVisible;
@@ -279,7 +279,7 @@ begin
   EnabledA := roShowSaturation in Options;
   EnabledB := roDefaultRange in Options;
 
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     UpdateCheckBox(FCheckBoxCom[I]);
     UpdateCheckBox(FCheckBoxRed[I]);
@@ -295,11 +295,11 @@ begin
   UpdateColorSpace;
 end;
 
-procedure TColorCircleForm.UpdateColorSpace;
+procedure TJvColorCircleForm.UpdateColorSpace;
 var
-  I: TAxisIndex;
+  I: TJvAxisIndex;
   LCaption: string;
-  LColor: TFullColor;
+  LColor: TJvFullColor;
 begin
   if FUpdating then
     Exit;
@@ -307,11 +307,11 @@ begin
 
   FUpdating := True;
 
-  with ColorSpaceCombo.SelectedSpace do
+  with JvColorSpaceCombo.SelectedSpace do
   begin
-    AxisConfigCombo.ColorID := ID;
+    JvColorAxisConfigCombo.ColorID := ID;
 
-    for I := Low(TAxisIndex) to High(TAxisIndex) do
+    for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
       LCaption := AxisName[I];
       FLabelComAxes[I].Caption := LCaption;
@@ -328,20 +328,20 @@ begin
       FSpinEditBlueAxes[I].MaxValue := FAxisMax[I];
       FSpinEditBlueAxes[I].MinValue := -FAxisMax[I];
 
-      LColor := ConvertFromRGB(TFullColor(clRed));
+      LColor := ConvertFromRGB(TJvFullColor(clRed));
       FRedAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TFullColor(clLime));
+      LColor := ConvertFromRGB(TJvFullColor(clLime));
       FGreenAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TFullColor(clBlue));
+      LColor := ConvertFromRGB(TJvFullColor(clBlue));
       FBlueAxis[I] := GetAxisValue(LColor, I);
 
-      LColor := ConvertFromRGB(TFullColor(clDkGray));
+      LColor := ConvertFromRGB(TJvFullColor(clDkGray));
       FComAxis[I] := GetAxisValue(LColor, I);
     end;
 
-    ColorCircle.ConvertColorToColorID(ID shl 24);
+    JvColorCircle.ConvertColorToColorID(ID shl 24);
 
     FUpdating := False;
   end;
@@ -350,11 +350,11 @@ begin
   CalcDeltaValue(rcBlue);
 end;
 
-procedure TColorCircleForm.UpdateDeltaValue;
+procedure TJvColorCircleForm.UpdateDeltaValue;
 var
-  I: TAxisIndex;
-  ComAxis: array [TAxisIndex] of Integer;
-  LColorID: TColorID;
+  I: TJvAxisIndex;
+  ComAxis: array [TJvAxisIndex] of Integer;
+  LColorID: TJvColorID;
 
   function CheckRange(Value: Integer; AMin: Byte; AMax: Byte): Byte;
   begin
@@ -372,7 +372,7 @@ begin
 
   FUpdating := True;
 
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     ComAxis[I] := (RedDelta[I].Value + GreenDelta[I].Value + BlueDelta[I].Value) div 3;
     FSpinEditRedAxes[I].Value := RedDelta[I].Value;
@@ -381,35 +381,35 @@ begin
     FSpinEditComAxes[I].Value := ComAxis[I];
   end;
 
-  LColorID := ColorSpaceCombo.ColorSpaceID;
+  LColorID := JvColorSpaceCombo.ColorSpaceID;
 
-  ColorCircle.RedColor := LColorID shl 24;
-  ColorCircle.GreenColor := LColorID shl 24;
-  ColorCircle.BlueColor := LColorID shl 24;
-  ColorCircle.FullColor := LColorID shl 24;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  JvColorCircle.RedColor := LColorID shl 24;
+  JvColorCircle.GreenColor := LColorID shl 24;
+  JvColorCircle.BlueColor := LColorID shl 24;
+  JvColorCircle.FullColor := LColorID shl 24;
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
-    ColorCircle.RedColor := ColorCircle.RedColor or
+    JvColorCircle.RedColor := JvColorCircle.RedColor or
       (CheckRange(RedDelta[I].Value + FRedAxis[I], FAxisMin[I], FAxisMax[I]) shl (Ord(I)*8));
-    ColorCircle.GreenColor := ColorCircle.GreenColor or
+    JvColorCircle.GreenColor := JvColorCircle.GreenColor or
       (CheckRange(GreenDelta[I].Value + FGreenAxis[I], FAxisMin[I], FAxisMax[I]) shl (Ord(I)*8));
-    ColorCircle.BlueColor := ColorCircle.BlueColor or
+    JvColorCircle.BlueColor := JvColorCircle.BlueColor or
       (CheckRange(BlueDelta[I].Value + FBlueAxis[I], FAxisMin[I], FAxisMax[I]) shl (Ord(I)*8));
-    ColorCircle.FullColor := ColorCircle.FullColor or
+    JvColorCircle.FullColor := JvColorCircle.FullColor or
       (CheckRange(ComAxis[I] + FComAxis[I], FAxisMin[I], FAxisMax[I]) shl (Ord(I)*8));
   end;
 
   FUpdating := False;
 end;
 
-procedure TColorCircleForm.RadioButtonAxisClick(Sender: TObject);
+procedure TJvColorCircleForm.RadioButtonAxisClick(Sender: TObject);
 begin
   UpdateAxisSettings;
 end;
 
-procedure TColorCircleForm.UpdateAxisSettings;
+procedure TJvColorCircleForm.UpdateAxisSettings;
 var
-  I: TAxisIndex;
+  I: TJvAxisIndex;
   LColor: TColor;
   EnabledA, EnabledB: Boolean;
 begin
@@ -427,7 +427,7 @@ begin
     LColor := clWindow
   else
     LColor := clBtnFace;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     FSpinEditComAxes[I].Enabled := EnabledA;
     FSpinEditComAxes[I].Color := LColor;
@@ -435,11 +435,11 @@ begin
     FLabelComAxes[I].Enabled := EnabledA;
   end;
   LabelCommon.Enabled := EnabledA;
-  ColorTrackBarCommon.Visible := EnabledA;
+  JvFullColorTrackBarCommon.Visible := EnabledA;
   if EnabledA then
-    ColorCircle.Styles := ColorCircle.Styles + [crShowCommon]
+    JvColorCircle.Styles := JvColorCircle.Styles + [crShowCommon]
   else
-    ColorCircle.Styles := ColorCircle.Styles - [crShowCommon];
+    JvColorCircle.Styles := JvColorCircle.Styles - [crShowCommon];
 
   EnabledA := (roRed in Options) or (roBlue in Options) or (roGreen in Options);
 
@@ -449,7 +449,7 @@ begin
   RadioButtonAxisSettings.Enabled := EnabledA;
   EnabledA := EnabledA and RadioButtonAxisSettings.Checked;
   PanelAxisSettings.Enabled := EnabledA;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     FLabelAxes[I].Enabled := EnabledA;
 
   EnabledB := EnabledA and (roRed in Options);
@@ -458,13 +458,13 @@ begin
   else
     LColor := clBtnFace;
   LabelRed.Enabled := EnabledB;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     FSpinEditRedAxes[I].Enabled := EnabledB;
     FSpinEditRedAxes[I].Color := LColor;
     FCheckBoxRed[I].Enabled := EnabledB;
   end;
-  ColorTrackBarRed.Visible := EnabledB;
+  JvFullColorTrackBarRed.Visible := EnabledB;
 
   EnabledB := EnabledA and (roGreen in Options);
   if EnabledB then
@@ -472,13 +472,13 @@ begin
   else
     LColor := clBtnFace;
   LabelGreen.Enabled := EnabledB;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     FSpinEditGreenAxes[I].Enabled := EnabledB;
     FSpinEditGreenAxes[I].Color := LColor;
     FCheckBoxGreen[I].Enabled := EnabledB;
   end;
-  ColorTrackBarGreen.Visible := EnabledB;
+  JvFullColorTrackBarGreen.Visible := EnabledB;
 
   EnabledB := EnabledA and (roBlue in Options);
   if EnabledB then
@@ -486,19 +486,19 @@ begin
   else
     LColor := clBtnFace;
   LabelBlue.Enabled := EnabledB;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     FSpinEditBlueAxes[I].Enabled := EnabledB;
     FSpinEditBlueAxes[I].Color := LColor;
     FCheckBoxBlue[I].Enabled := EnabledB;
   end;
-  ColorTrackBarBlue.Visible := EnabledB;
+  JvFullColorTrackBarBlue.Visible := EnabledB;
 end;
 
-procedure TColorCircleForm.CheckBoxSettingsClick(Sender: TObject);
+procedure TJvColorCircleForm.CheckBoxSettingsClick(Sender: TObject);
 var
-  AxisDelta: TAxisDelta;
-  SaturationMethod: TSaturationMethod;
+  AxisDelta: TJvAxisDelta;
+  SaturationMethod: TJvSaturationMethod;
 begin
   if FUpdating then
     Exit;
@@ -553,13 +553,13 @@ begin
   UpdateCheckBoxStates;
 end;
 
-procedure TColorCircleForm.UpdateCheckBoxStates;
+procedure TJvColorCircleForm.UpdateCheckBoxStates;
 var
-  I: TAxisIndex;
+  I: TJvAxisIndex;
 
   procedure UpdateCheckBox(ACheckBox: TCheckBox);
   var
-    SaturationMethod: TSaturationMethod;
+    SaturationMethod: TJvSaturationMethod;
   begin
     SaturationMethod := smRange;
 
@@ -597,7 +597,7 @@ begin
   FillInternalArrays;
 
   FUpdating := True;
-  for I := Low(TAxisIndex) to High(TAxisIndex) do
+  for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
   begin
     UpdateCheckBox(FCheckBoxCom[I]);
     UpdateCheckBox(FCheckBoxRed[I]);
@@ -607,7 +607,7 @@ begin
   FUpdating := False;
 end;
 
-procedure TColorCircleForm.ButtonGraphicsClick(Sender: TObject);
+procedure TJvColorCircleForm.ButtonGraphicsClick(Sender: TObject);
 begin
   if Expanded then
     Collapse
@@ -615,19 +615,19 @@ begin
     Expand;
 end;
 
-procedure TColorCircleForm.ButtonApplyClick(Sender: TObject);
+procedure TJvColorCircleForm.ButtonApplyClick(Sender: TObject);
 begin
   if Assigned(OnApply) then
     OnApply(Self);
 end;
 
-procedure TColorCircleForm.ColorSpaceComboChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorSpaceComboChange(Sender: TObject);
 begin
   if not FUpdating then
     UpdateColorSpace;
 end;
 
-procedure TColorCircleForm.SetBlueDelta(const Value: TAxisDelta);
+procedure TJvColorCircleForm.SetBlueDelta(const Value: TJvAxisDelta);
 begin
   inherited SetBlueDelta(Value);
   if not FUpdating then
@@ -637,7 +637,7 @@ begin
   end;
 end;
 
-procedure TColorCircleForm.SetDelta(const Value: TColorDelta);
+procedure TJvColorCircleForm.SetDelta(const Value: TJvColorDelta);
 begin
   inherited SetDelta(Value);
   if not FUpdating then
@@ -647,7 +647,7 @@ begin
   end;
 end;
 
-procedure TColorCircleForm.SetGreenDelta(const Value: TAxisDelta);
+procedure TJvColorCircleForm.SetGreenDelta(const Value: TJvAxisDelta);
 begin
   inherited SetGreenDelta(Value);
   if not FUpdating then
@@ -657,7 +657,7 @@ begin
   end;
 end;
 
-procedure TColorCircleForm.SetRedDelta(const Value: TAxisDelta);
+procedure TJvColorCircleForm.SetRedDelta(const Value: TJvAxisDelta);
 begin
   inherited SetRedDelta(Value);
   if not FUpdating then
@@ -667,10 +667,10 @@ begin
   end;
 end;
 
-procedure TColorCircleForm.CalcDeltaValue(ARotateColor: TRotateColor);
+procedure TJvColorCircleForm.CalcDeltaValue(ARotateColor: TJvRotateColor);
 var
-  I: TAxisIndex;
-  AxisDelta: TAxisDelta;
+  I: TJvAxisIndex;
+  AxisDelta: TJvAxisDelta;
 
   function GetDelta(OldValue: Integer; ColorAxisValue: Integer;
     InitAxisValue, AxisMin, AxisMax: Byte): Integer;
@@ -701,9 +701,9 @@ begin
 
   if ARotateColor = rcCommon then
   begin
-    for I := Low(TAxisIndex) to High(TAxisIndex) do
+    for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     begin
-      AxisDelta[I].Value := GetDelta(RedDelta[I].Value, GetAxisValue(ColorCircle.FullColor, I),
+      AxisDelta[I].Value := GetDelta(RedDelta[I].Value, GetAxisValue(JvColorCircle.FullColor, I),
         FComAxis[I], FAxisMin[I], FAxisMax[I]);
       AxisDelta[I].SaturationMethod := RedDelta[I].SaturationMethod;
     end;
@@ -715,10 +715,10 @@ begin
   begin
     if ARotateColor = rcRed then
     begin
-      //RedDelta:=GetDelta(RedDelta,ColorCircle.RedColor,FRedAxis0,FRedAxis1,FRedAxis2);
-      for I := Low(TAxisIndex) to High(TAxisIndex) do
+      //RedDelta:=GetDelta(RedDelta,JvColorCircle.RedColor,FRedAxis0,FRedAxis1,FRedAxis2);
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
-        AxisDelta[I].Value := GetDelta(RedDelta[I].Value, GetAxisValue(ColorCircle.RedColor, I),
+        AxisDelta[I].Value := GetDelta(RedDelta[I].Value, GetAxisValue(JvColorCircle.RedColor, I),
           FRedAxis[I], FAxisMin[I], FAxisMax[I]);
         AxisDelta[I].SaturationMethod := RedDelta[I].SaturationMethod;
       end;
@@ -727,10 +727,10 @@ begin
 
     if ARotateColor = rcGreen then
     begin
-      //GreenDelta:=GetDelta(GreenDelta,ColorCircle.GreenColor,FGreenAxis0,FGreenAxis1,FGreenAxis2);
-      for I := Low(TAxisIndex) to High(TAxisIndex) do
+      //GreenDelta:=GetDelta(GreenDelta,JvColorCircle.GreenColor,FGreenAxis0,FGreenAxis1,FGreenAxis2);
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
-        AxisDelta[I].Value := GetDelta(GreenDelta[I].Value, GetAxisValue(ColorCircle.GreenColor, I),
+        AxisDelta[I].Value := GetDelta(GreenDelta[I].Value, GetAxisValue(JvColorCircle.GreenColor, I),
           FGreenAxis[I], FAxisMin[I], FAxisMax[I]);
         AxisDelta[I].SaturationMethod := GreenDelta[I].SaturationMethod;
       end;
@@ -739,10 +739,10 @@ begin
 
     if ARotateColor = rcBlue then
     begin
-      //BlueDelta:=GetDelta(BlueDelta,ColorCircle.BlueColor,FBlueAxis0,FBlueAxis1,FBlueAxis2);
-      for I := Low(TAxisIndex) to High(TAxisIndex) do
+      //BlueDelta:=GetDelta(BlueDelta,JvColorCircle.BlueColor,FBlueAxis0,FBlueAxis1,FBlueAxis2);
+      for I := Low(TJvAxisIndex) to High(TJvAxisIndex) do
       begin
-        AxisDelta[I].Value := GetDelta(BlueDelta[I].Value, GetAxisValue(ColorCircle.BlueColor, I),
+        AxisDelta[I].Value := GetDelta(BlueDelta[I].Value, GetAxisValue(JvColorCircle.BlueColor, I),
           FBlueAxis[I], FAxisMin[I], FAxisMax[I]);
         AxisDelta[I].SaturationMethod := BlueDelta[I].SaturationMethod;
       end;
@@ -755,50 +755,50 @@ begin
   UpdateDeltaValue;
 end;
 
-procedure TColorCircleForm.ColorCircleBlueColorChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorCircleBlueColorChange(Sender: TObject);
 begin
   if not FUpdating then
     CalcDeltaValue(rcBlue);
 end;
 
-procedure TColorCircleForm.ColorCircleColorChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorCircleColorChange(Sender: TObject);
 begin
   if not FUpdating then
     CalcDeltaValue(rcCommon);
 end;
 
-procedure TColorCircleForm.ColorCircleGreenColorChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorCircleGreenColorChange(Sender: TObject);
 begin
   if not FUpdating then
     CalcDeltaValue(rcGreen);
 end;
 
-procedure TColorCircleForm.ColorCircleRedColorChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorCircleRedColorChange(Sender: TObject);
 begin
   if not FUpdating then
     CalcDeltaValue(rcRed);
 end;
 
-procedure TColorCircleForm.AxisConfigComboChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorAxisConfigComboChange(Sender: TObject);
 begin
   if not FUpdating then
   begin
     FUpdating := True;
-    ColorCircle.AxisConfig := (Sender as TAxisConfigCombo).Selected;
+    JvColorCircle.AxisConfig := (Sender as TJvColorAxisConfigCombo).Selected;
     FUpdating := False;
   end;
 end;
 
-procedure TColorCircleForm.ColorCircleColorSpaceChange(Sender: TObject);
+procedure TJvColorCircleForm.JvColorCircleColorSpaceChange(Sender: TObject);
 begin
   CalcDeltaValue(rcRed);
   CalcDeltaValue(rcGreen);
   CalcDeltaValue(rcBlue);
 end;
 
-procedure TColorCircleForm.SpinEditSettingsValueChange(Sender: TObject);
+procedure TJvColorCircleForm.SpinEditSettingsValueChange(Sender: TObject);
 var
-  AxisDelta: TAxisDelta;
+  AxisDelta: TJvAxisDelta;
 begin
   if FUpdating then
     Exit;
@@ -840,7 +840,7 @@ begin
   UpdateDeltaValue;
 end;
 
-procedure TColorCircleForm.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TJvColorCircleForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -855,7 +855,7 @@ var
   LTypInfo: PTypeInfo;
   LString: string;
 begin
-  LTypInfo := TypeInfo(TSaturationMethod);
+  LTypInfo := TypeInfo(TJvSaturationMethod);
   LString := GetEnumName(LTypInfo, Integer(smLoop));
   GlobalLoop := Copy(LString, 3, Length(LString) - 2);
   LString := GetEnumName(LTypInfo, Integer(smRange));
@@ -874,7 +874,7 @@ const
 
 initialization
   InitializeStrings;
-  ColorCircleBaseFormClass := TColorCircleForm;
+  ColorCircleBaseFormClass := TJvColorCircleForm;
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}

@@ -33,92 +33,92 @@ uses
   ColorSpaces;
 
 type
-  // (rom) Should not be needed. TColorSpace is already with RTTI.
+  // (rom) Should not be needed. TJvColorSpace is already with RTTI.
   {$M+}
 
-  TRGBColorSpace = class(TColorSpace)
+  TJvRGBColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
-    function GetAxisMin(Index: TAxisIndex): Byte; override;
-    function GetAxisMax(Index: TAxisIndex): Byte; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
-  THLSColorSpace = class(TColorSpace)
+  TJvHLSColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
-    function GetAxisMin(Index: TAxisIndex): Byte; override;
-    function GetAxisMax(Index: TAxisIndex): Byte; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
-  TCMYColorSpace = class(TColorSpace)
+  TJvCMYColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
-    function GetAxisMin(Index: TAxisIndex): Byte; override;
-    function GetAxisMax(Index: TAxisIndex): Byte; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
-  TYUVColorSpace = class(TColorSpace)
+  TJvYUVColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
-    function GetAxisMin(Index: TAxisIndex): Byte; override;
-    function GetAxisMax(Index: TAxisIndex): Byte; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
-  THSVColorSpace = class(TColorSpace)
+  TJvHSVColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
-    function GetAxisMin(Index: TAxisIndex): Byte; override;
-    function GetAxisMax(Index: TAxisIndex): Byte; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
+    function GetAxisMin(Index: TJvAxisIndex): Byte; override;
+    function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
-  TPredefinedColorSpace = class(TColorSpace)
+  TJvPredefinedColorSpace = class(TJvColorSpace)
   protected
-    function GetAxisName(Index: TAxisIndex): string; override;
+    function GetAxisName(Index: TJvAxisIndex): string; override;
     function GetName: string; override;
-    function GetShortName: ShortNameString; override;
-    function GetAxisDefault(Index: TAxisIndex): Byte; override;
+    function GetShortName: TJvShortNameString; override;
+    function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
-    function ConvertFromRGB(AColor: TFullColor): TFullColor; override;
-    function ConvertToRGB(AColor: TFullColor): TFullColor; override;
+    function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
+    function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; override;
   end;
 
   {$M-}
 
 const
-  csHLS = TColorID(1);
-  csCMY = TColorID(2);
-  csYUV = TColorID(3);
-  csHSV = TColorID(4);
+  csHLS = TJvColorID(1);
+  csCMY = TJvColorID(2);
+  csYUV = TJvColorID(3);
+  csHSV = TJvColorID(4);
 
   RGB_MAX = 255;
   CMY_MAX = 255;
@@ -127,7 +127,7 @@ const
   YUV_MIN = 16;
   YUV_MAX = 235;
 
-function RGBToColor(const Color: TFullColor): TFullColor;
+function RGBToColor(const Color: TJvFullColor): TJvFullColor;
 
 implementation
 
@@ -172,7 +172,7 @@ const
   HLS_MAX_SIXTH = HLS_MAX / 6.0;
   HLS_MAX_TWELVETH = HLS_MAX / 12.0;
 
-function RGBToColor(const Color: TFullColor): TFullColor;
+function RGBToColor(const Color: TJvFullColor): TJvFullColor;
 begin
   Result :=
     ((Color and $000000FF) shl 16) or
@@ -180,34 +180,34 @@ begin
     ((Color and $00FF0000) shr 16);
 end;
 
-//=== { TRGBColorSpace } =====================================================
+//=== { TJvRGBColorSpace } ===================================================
 
-function TRGBColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvRGBColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 begin
   Result := inherited ConvertFromRGB(AColor);
 end;
 
-function TRGBColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvRGBColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 begin
   Result := inherited ConvertToRGB(AColor);
 end;
 
-function TRGBColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvRGBColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function TRGBColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvRGBColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   Result := RGB_MAX;
 end;
 
-function TRGBColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvRGBColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function TRGBColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvRGBColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
@@ -221,19 +221,19 @@ begin
   end;
 end;
 
-function TRGBColorSpace.GetName: string;
+function TJvRGBColorSpace.GetName: string;
 begin
   Result := RsTrueColor;
 end;
 
-function TRGBColorSpace.GetShortName: ShortNameString;
+function TJvRGBColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsRGB;
 end;
 
-//=== { THLSColorSpace } =====================================================
+//=== { TJvHLSColorSpace } ===================================================
 
-function THLSColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvHLSColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Hue, Lightness, Saturation: Double;
   Red, Green, Blue: Cardinal;
@@ -294,7 +294,7 @@ begin
   Result := inherited ConvertFromRGB(AColor);
 end;
 
-function THLSColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvHLSColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Red, Green, Blue: Double;
   Magic1, Magic2: Double;
@@ -360,22 +360,22 @@ begin
     ((RoundColor(Blue) and $000000FF) shl 16));
 end;
 
-function THLSColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvHLSColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := 120;
 end;
 
-function THLSColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvHLSColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   Result := HLS_MAX;
 end;
 
-function THLSColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvHLSColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function THLSColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvHLSColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
@@ -389,19 +389,19 @@ begin
   end;
 end;
 
-function THLSColorSpace.GetName: string;
+function TJvHLSColorSpace.GetName: string;
 begin
   Result := RsChromaticVision;
 end;
 
-function THLSColorSpace.GetShortName: ShortNameString;
+function TJvHLSColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsHLS;
 end;
 
-//=== { TCMYColorSpace } =====================================================
+//=== { TJvCMYColorSpace } ===================================================
 
-function TCMYColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvCMYColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Red, Green, Blue: Integer;
   Cyan, Magenta, Yellow: Integer;
@@ -419,7 +419,7 @@ begin
     ((Yellow and $000000FF) shl 16));
 end;
 
-function TCMYColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvCMYColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Cyan, Magenta, Yellow: Integer;
   Red, Green, Blue: Integer;
@@ -436,22 +436,22 @@ begin
     ((Blue and $000000FF) shl 16));
 end;
 
-function TCMYColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvCMYColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := 255;
 end;
 
-function TCMYColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvCMYColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   Result := CMY_MAX;
 end;
 
-function TCMYColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvCMYColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function TCMYColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvCMYColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
@@ -465,19 +465,19 @@ begin
   end;
 end;
 
-function TCMYColorSpace.GetName: string;
+function TJvCMYColorSpace.GetName: string;
 begin
   Result := RsSubstractiveVision;
 end;
 
-function TCMYColorSpace.GetShortName: ShortNameString;
+function TJvCMYColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsCMY;
 end;
 
-//=== { TYUVColorSpace } =====================================================
+//=== { TJvYUVColorSpace } ===================================================
 
-function TYUVColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvYUVColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Y, U, V: Integer;
   Red, Green, Blue: Integer;
@@ -499,7 +499,7 @@ begin
     ((V and $000000FF) shl 16));
 end;
 
-function TYUVColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvYUVColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Red, Green, Blue: Integer;
   Y, U, V: Integer;
@@ -525,22 +525,22 @@ begin
     ((Blue and $000000FF) shl 16));
 end;
 
-function TYUVColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvYUVColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := 128;
 end;
 
-function TYUVColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvYUVColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   Result := YUV_MAX;
 end;
 
-function TYUVColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvYUVColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := YUV_MIN;
 end;
 
-function TYUVColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvYUVColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
@@ -554,19 +554,19 @@ begin
   end;
 end;
 
-function TYUVColorSpace.GetName: string;
+function TJvYUVColorSpace.GetName: string;
 begin
   Result := RsPCVideo;
 end;
 
-function TYUVColorSpace.GetShortName: ShortNameString;
+function TJvYUVColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsYUV;
 end;
 
-//=== { THSVColorSpace } =====================================================
+//=== { TJvHSVColorSpace } ===================================================
 
-function THSVColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvHSVColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Hue, Saturation, Value: Integer;
   Red, Green, Blue: Byte;
@@ -621,7 +621,7 @@ begin
     ((Value and $000000FF) shl 16));
 end;
 
-function THSVColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvHSVColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Hue, Saturation, Value: Integer;
   Red, Green, Blue: Byte;
@@ -693,7 +693,7 @@ begin
     ((Blue and $000000FF) shl 16));
 end;
 
-function THSVColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvHSVColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   case Index of
     axIndex0:
@@ -705,7 +705,7 @@ begin
   end;
 end;
 
-function THSVColorSpace.GetAxisMax(Index: TAxisIndex): Byte;
+function TJvHSVColorSpace.GetAxisMax(Index: TJvAxisIndex): Byte;
 begin
   case Index of
     axIndex0:
@@ -715,12 +715,12 @@ begin
   end;
 end;
 
-function THSVColorSpace.GetAxisMin(Index: TAxisIndex): Byte;
+function TJvHSVColorSpace.GetAxisMin(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function THSVColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvHSVColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   case Index of
     axIndex0:
@@ -734,19 +734,19 @@ begin
   end;
 end;
 
-function THSVColorSpace.GetName: string;
+function TJvHSVColorSpace.GetName: string;
 begin
   Result := RsRotationVision;
 end;
 
-function THSVColorSpace.GetShortName: ShortNameString;
+function TJvHSVColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsHSV;
 end;
 
-//=== { TVariableColorSpace } ================================================
+//=== { TJvPredefinedColorSpace } ============================================
 
-function TPredefinedColorSpace.ConvertFromRGB(AColor: TFullColor): TFullColor;
+function TJvPredefinedColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
   Index: Integer;
   NewColor: TColor;
@@ -767,27 +767,27 @@ begin
   Result := inherited ConvertFromRGB(NewColor);
 end;
 
-function TPredefinedColorSpace.ConvertToRGB(AColor: TFullColor): TFullColor;
+function TJvPredefinedColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 begin
   Result := inherited ConvertToRGB(ColorToRGB(AColor));
 end;
 
-function TPredefinedColorSpace.GetAxisDefault(Index: TAxisIndex): Byte;
+function TJvPredefinedColorSpace.GetAxisDefault(Index: TJvAxisIndex): Byte;
 begin
   Result := 0;
 end;
 
-function TPredefinedColorSpace.GetAxisName(Index: TAxisIndex): string;
+function TJvPredefinedColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
   Result := RsNoName;
 end;
 
-function TPredefinedColorSpace.GetName: string;
+function TJvPredefinedColorSpace.GetName: string;
 begin
   Result := RsPredefinedColors;
 end;
 
-function TPredefinedColorSpace.GetShortName: ShortNameString;
+function TJvPredefinedColorSpace.GetShortName: TJvShortNameString;
 begin
   Result := RsDEF;
 end;
@@ -803,12 +803,12 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
-  ColorSpaceManager.RegisterColorSpace(TRGBColorSpace.Create(csRGB));
-  ColorSpaceManager.RegisterColorSpace(THLSColorSpace.Create(csHLS));
-  ColorSpaceManager.RegisterColorSpace(TCMYColorSpace.Create(csCMY));
-  ColorSpaceManager.RegisterColorSpace(TYUVColorSpace.Create(csYUV));
-  ColorSpaceManager.RegisterColorSpace(THSVColorSpace.Create(csHSV));
-  ColorSpaceManager.RegisterColorSpace(TPredefinedColorSpace.Create(csPredefined));
+  ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
+  ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
+  ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
+  ColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
+  ColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
+  ColorSpaceManager.RegisterColorSpace(TJvPredefinedColorSpace.Create(csPredefined));
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
