@@ -40,7 +40,6 @@ uses
   FileCtrl, StdCtrls, ShellAPI, ImgList,
   JvComboBox, JvListBox, JVCLVer, JvTypes, JvSearchFiles;
 
-
 const
   dtStandard: TJvDriveTypes = [dtFixed, dtRemote, dtCDROM];
 
@@ -335,7 +334,7 @@ type
     property TabStop;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnDriveChangeError:TJvDriveChangeError read FOnDriveChangeError write FOnDriveChangeError;
+    property OnDriveChangeError: TJvDriveChangeError read FOnDriveChangeError write FOnDriveChangeError;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -386,8 +385,8 @@ end;
 
 function IsValidDriveType(DriveTypes: TJvDriveTypes; DriveType: UINT): Boolean;
 const
-  cDriveMasks: array [TJvDriveType] of UINT =
-    (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
+  cDriveMasks: array[TJvDriveType] of UINT =
+  (DRIVE_UNKNOWN, DRIVE_REMOVABLE, DRIVE_FIXED, DRIVE_REMOTE, DRIVE_CDROM, DRIVE_RAMDISK);
 var
   I: TJvDriveType;
 begin
@@ -440,7 +439,7 @@ var
   Options: Integer;
   Drv: Char;
   LastErrorMode: Cardinal;
-  Tmp: array [0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
+  Tmp: array[0..104] of Char; // 4 chars ('C:\#0') * 26 possible drives + 1 terminating #0 = 105 chars
   P: PChar;
 begin
   Drv := Drive;
@@ -485,8 +484,7 @@ begin
   begin
     if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
       Drive := GetCurrentDir[1]
-    else
-    if FDrives.Count > 0 then
+    else if FDrives.Count > 0 then
       Drive := FDrives[0][1];
   end;
 end;
@@ -562,7 +560,7 @@ begin
   Height := ItemHeight;
 end;
 
-procedure TJvDriveCombo.FontChanged; 
+procedure TJvDriveCombo.FontChanged;
 begin
   inherited FontChanged;
   ResetItemHeight;
@@ -716,7 +714,7 @@ var
   S: string;
   Options: Integer;
   Drv: Char;
-  Tmp: array [0..104] of Char;
+  Tmp: array[0..104] of Char;
   P: PChar;
   LastErrorMode: Cardinal;
 begin
@@ -765,8 +763,7 @@ begin
   if Drive = #0 then
     if FDrives.IndexOf(GetCurrentDir[1]) > 0 then
       Drive := GetCurrentDir[1]
-    else
-    if FDrives.Count > 0 then
+    else if FDrives.Count > 0 then
       Drive := FDrives[0][1];
 end;
 
@@ -882,7 +879,7 @@ begin
   end;
 end;
 
-procedure TJvDriveList.FontChanged; 
+procedure TJvDriveList.FontChanged;
 begin
   inherited FontChanged;
   ResetItemHeight;
@@ -1052,37 +1049,27 @@ end;
 
 procedure TJvDirectoryListBox.DriveChange(NewDrive: Char);
 var
-  OldMode: Cardinal;
   VolFlags, MLength: DWORD;
+  tmpDrive: char;
 begin
   if UpCase(NewDrive) <> UpCase(Drive) then
   begin
     if NewDrive <> #0 then
     begin
-      OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-      try
-        { rb : better use SysUtils.SetCurrentDir?, ie without try..except
-               but don't know if it's available in D5/6 }
-        try
-          ChDir(NewDrive + ':');
-        except
-          if not DoDriveChangeError(NewDrive) then
-            raise
-          else
-          begin
-            { rb : This will be an endless loop if NewDrive isn't changed in the
-                   event handler (maybe make it explicit to retry) }
-            DriveChange(NewDrive);
-            Exit;
-          end;
-        end;
-        GetDir(0, FDirectory); { store correct directory name }
-        GetVolumeInformation(PChar(NewDrive + ':\'), nil, 0, nil, MLength, VolFlags, nil, 0);
-        FPreserveCase := VolFlags and (FS_CASE_IS_PRESERVED or FS_CASE_SENSITIVE) <> 0;
-        FCaseSensitive := (VolFlags and FS_CASE_SENSITIVE) <> 0;
-      finally
-        SetErrorMode(OldMode);
+      if not SetCurrentDir(NewDrive + ':') then
+      begin
+        tmpDrive := NewDrive;
+        if DoDriveChangeError(NewDrive) and (NewDrive <> tmpDrive) then
+        begin
+          DriveChange(NewDrive)
+        end
+        else if tmpDrive <> Drive then
+          DriveChange(Drive); // ...if not, revert
       end;
+      FDirectory := GetCurrentDir; { store correct directory name }
+      GetVolumeInformation(PChar(NewDrive + ':\'), nil, 0, nil, MLength, VolFlags, nil, 0);
+      FPreserveCase := VolFlags and (FS_CASE_IS_PRESERVED or FS_CASE_SENSITIVE) <> 0;
+      FCaseSensitive := (VolFlags and FS_CASE_SENSITIVE) <> 0;
     end;
     if not FInSetDir then
     begin
@@ -1113,18 +1100,11 @@ begin
 end;
 
 procedure TJvDirectoryListBox.SetDir(const NewDirectory: string);
-var
-  OldMode: Cardinal;
 begin
-  OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-  try
-    if DirectoryExists(FDirectory) then
-      ChDir(FDirectory);
-    ChDir(NewDirectory); { exception raised if invalid dir }
-    GetDir(0, FDirectory); { store correct directory name }
-  finally
-    SetErrorMode(OldMode);
-  end;
+  if DirectoryExists(FDirectory) then
+    SetCurrentDir(FDirectory);
+  SetCurrentDir(NewDirectory); { exception raised if invalid dir }
+  FDirectory := GetCurrentDir; { store correct directory name }
   BuildList;
   Change;
 end;
@@ -1408,11 +1388,9 @@ begin
   begin
     if AComponent = FFileList then
       FFileList := nil
-    else
-    if AComponent = FDriveCombo then
+    else if AComponent = FDriveCombo then
       FDriveCombo := nil
-    else
-    if AComponent = FDirLabel then
+    else if AComponent = FDirLabel then
       FDirLabel := nil;
   end;
 end;
@@ -1497,13 +1475,11 @@ const
   SHGFI_OVERLAYINDEX = $00000040;
   {TFileAttr = (ftReadOnly, ftHidden, ftSystem, ftVolumeID, ftDirectory,
     ftArchive, ftNormal);}
-  Attributes: array [TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
+  Attributes: array[TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
     FILE_ATTRIBUTE_SYSTEM, 0 {faVolumeID}, 0 {faDirectory}, FILE_ATTRIBUTE_ARCHIVE,
     FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL {faNormal});
   CAllAttributes = FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_HIDDEN or
     FILE_ATTRIBUTE_SYSTEM or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL;
-var
-  OldMode: Cardinal;
 begin
   AttrWord := 0;
   if HandleAllocated then
@@ -1512,12 +1488,7 @@ begin
     for AttrIndex := Low(TFileAttr) to High(TFileAttr) do
       if AttrIndex in FileType then
         AttrWord := AttrWord or Attributes[AttrIndex];
-    OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-    try
-      ChDir(FDirectory); { go to the directory we want }
-    finally
-      SetErrorMode(OldMode);
-    end;
+    SetCurrentDir(FDirectory); { go to the directory we want }
     Clear; { clear the list }
 
     SaveCursor := Screen.Cursor;
