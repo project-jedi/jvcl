@@ -3021,9 +3021,10 @@ const
     // increment Offsets with the buffer
     for i := 0 to FXSQLDA.sqln - 1 do
     begin
-      inc(Cardinal(FXSQLDA.sqlvar[i].sqldata), Cardinal(FDataBuffer));
+      // I don't use cardinal for FPC compatibility
+      inc(Integer(FXSQLDA.sqlvar[i].sqldata), Integer(FDataBuffer));
       if (FXSQLDA.sqlvar[i].sqlind <> nil) then
-        inc(Cardinal(FXSQLDA.sqlvar[i].sqlind), Cardinal(FDataBuffer));
+        inc(Integer(FXSQLDA.sqlvar[i].sqlind), Integer(FDataBuffer));
     end;
   end;
 
