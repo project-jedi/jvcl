@@ -1205,7 +1205,7 @@ type
       const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
     class function NewByNames(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const NameList: array of string; const ExcludeList: Boolean = False;
-      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances; overload;
+      const TypeKinds: TTypeKinds = tkProperties): TJvInspectorItemInstances;
     class function New(const AParent: TJvCustomInspectorItem; const AInstance: TObject;
       const PropInfos: PPropList; const PropCount: Integer): TJvInspectorItemInstances; overload;
     procedure SetAsSet(const Buf); override;
