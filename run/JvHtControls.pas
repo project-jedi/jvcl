@@ -229,13 +229,12 @@ type
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
   protected
+    procedure CreateWnd; override;
     {$IFDEF VCL}
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
-    procedure CreateWnd; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     function DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState): Boolean; override;
-    procedure CreateWidget; override;
     {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
@@ -1021,20 +1020,11 @@ begin
   Result := ItemHTPlain(Items[Index]);
 end;
 
-{$IFDEF VCL}
 procedure TJvCustomHTComboBox.CreateWnd;
 var
   Tmp: Integer;
 begin
   inherited CreateWnd;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomHTComboBox.CreateWidget;
-var
-  Tmp: Integer;
-begin
-  inherited CreateWidget;
-{$ENDIF VisualCLX}
   if DropWidth = 0 then
     DropWidth := Width
   else

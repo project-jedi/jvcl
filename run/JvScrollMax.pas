@@ -173,12 +173,7 @@ type
     procedure SetParam(Index, Value: Integer);
     procedure SetInclusive(Value: Boolean);
   protected
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
     procedure SetTrackBar;
     procedure Loaded; override;
     procedure Resize; override;
@@ -330,7 +325,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvDsgnIntf, JvJVCLUtils, JvConsts, JvThemes, JvResources;
+  JvDsgnIntf, JvJCLUtils, JvJVCLUtils, JvConsts, JvThemes, JvResources;
 
 { Cursors resources }
 {$IFDEF MSWINDOWS}
@@ -528,21 +523,11 @@ begin
   SetTrackBar;
 end;
 
-{$IFDEF VCL}
 procedure TJvPanelScrollBar.CreateWnd;
 begin
   inherited CreateWnd;
   SetTrackBar;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvPanelScrollBar.CreateWidget;
-begin
-  inherited CreateWidget;
-  SetTrackBar;
-end;
-{$ENDIF VisualCLX}
 
 //=== { TJvBandBtn } =========================================================
 
@@ -1081,24 +1066,12 @@ var
 begin
   if (csDesigning in ComponentState) and
     (ControlCount = 0) and
-    {$IFDEF VCL}
-    (Canvas.Handle <> 0) then
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    (Canvas.Handle <> nil) then
-    {$ENDIF VisualCLX}
+    (Canvas.Handle <> NullHandle) then
   begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
     S1 := RsRightClickAndChooseAddBand;
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(S1),
-      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DrawText(Canvas, S1,
-      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
-    {$ENDIF VisualCLX}
+    DrawText(Canvas.Handle, S1, -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
   end;
 end;
 

@@ -155,12 +155,7 @@ begin
   { Form definitions }
   {Left := 354;
   Top := 338;}
-  {$IFDEF VCL}
-  BorderStyle := bsDialog;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   BorderStyle := fbsDialog;
-  {$ENDIF VisualCLX}
   Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
