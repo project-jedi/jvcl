@@ -1568,7 +1568,8 @@ end;
 procedure TJvCustomLookOutButton.VisibleChanged;
 begin
   inherited VisibleChanged;
-  Invalidate;
+  if not (csCreating in ControlState) then
+    Invalidate;
 end;
 
 //=== TJvExpressButton =======================================================

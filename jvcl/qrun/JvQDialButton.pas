@@ -681,6 +681,7 @@ begin
   P^.Changed := True;
   P^.Color := clBtnText;
   FTicks.Add(P);
+  if not (csCreating in ControlState) then
   if HandleAllocated then
   begin
     DrawTick(FBitmap.Canvas, P^);
@@ -704,6 +705,7 @@ end;
 
 procedure TJvCustomDialButton.Paint;
 begin
+  if csCreating in ControlState then exit;
   Canvas.Brush.Color := Parent.Brush.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
   BitmapNeeded;
