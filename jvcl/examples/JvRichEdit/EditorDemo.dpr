@@ -7,7 +7,8 @@ uses
   JvExceptionForm,
   EditorMainFormU in 'EditorMainFormU.pas' {EditorMainForm},
   ParagraphFormatFormU in 'ParagraphFormatFormU.pas' {ParagraphFormatForm},
-  TabsFormU in 'TabsFormU.pas' {TabsForm};
+  TabsFormU in 'TabsFormU.pas' {TabsForm},
+  XPColorMenuItemPainter in 'XPColorMenuItemPainter.pas';
 
 begin
   Application.Initialize;
