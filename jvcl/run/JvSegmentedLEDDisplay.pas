@@ -164,12 +164,19 @@ type
     property DigitWidth;
     property DotSize;
     property ParentColor;
+    property PopupMenu;
     property SegmentLitColor;
     property SegmentSpacing;
     property SegmentThickness;
     property SegmentUnlitColor;
     property Slant;
     property Text;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
   end;
 
   TJvSegmentedLEDDigits = class(TOwnedCollection)
