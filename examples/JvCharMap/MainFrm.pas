@@ -1,13 +1,17 @@
 unit MainFrm;
 
 interface
-// enable this define (remove the dot) if you have Troy Wolbrink's Tnt Controls installed
+// Enable this define (remove the dot) if you have Troy Wolbrink's Tnt Controls installed
 // (http://home.ccci.org/wolbrink/tnt/delphi_unicode_controls.htm)
 {$DEFINE USETNT}
+// Enable this define if you want to include JclUnicode and the TJvCharMap.CharRange.Filter functionality
+// You must enable this define in JvCharMap as well
+{$DEFINE USEUNICODE}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvCharMap, StdCtrls, ExtCtrls, ComCtrls, JvColorCombo,
-  JvCombobox, Menus
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus,
+  JvColorCombo, JvCharMap, JvCombobox
+  {$IFDEF USEUNICODE}, JclUnicode{$ENDIF}
   {$IFDEF USETNT}, TntStdCtrls{$ENDIF};
 
 type
@@ -32,6 +36,8 @@ type
     PopupMenu1: TPopupMenu;
     Copy1: TMenuItem;
     btnSelect: TButton;
+    lblFilter: TLabel;
+    cbFilter: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure chkZoomPanelClick(Sender: TObject);
@@ -43,21 +49,25 @@ type
     procedure btnSelectClick(Sender: TObject);
     procedure cbColorChange(Sender: TObject);
     procedure cbFontChange(Sender: TObject);
+    procedure cbFilterClick(Sender: TObject);
   private
     { Private declarations }
-    {$IFDEF USETNT}
-    edCharacter:TTntEdit;
-    {$ELSE}
-    edCharacter:TEdit;
-    {$ENDIF}
-    procedure DoJMKeyUp(Sender:TObject; var Key:word;Shift:TShiftState);
+{$IFDEF USETNT}
+    edCharacter: TTntEdit;
+{$ELSE}
+    edCharacter: TEdit;
+{$ENDIF}
+{$IFDEF USEUNICODE}
+    procedure FillFilter;
+{$ENDIF}    
+    procedure DoJMKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure DoJMMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
     procedure DoJMMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure DisplayInfo;
   public
     { Public declarations }
-    JM:TJvCharMap;
+    JM: TJvCharMap;
   end;
 
 var
@@ -65,11 +75,12 @@ var
 
 implementation
 uses
-  {$IFDEF USETNT}
+  TypInfo,
+{$IFDEF USETNT}
   TntClipbrd;
-  {$ELSE}
+{$ELSE}
   ClipBrd;
-  {$ENDIF}
+{$ENDIF}
 
 {$R *.dfm}
 
@@ -99,11 +110,11 @@ begin
   cbColor.OnChange := cbColorChange;
   cbFont.OnChange := cbFontChange;
 
-  {$IFDEF USETNT}
+{$IFDEF USETNT}
   edCharacter := TTntEdit.Create(self);
-  {$ELSE}
+{$ELSE}
   edCharacter := TEdit.Create(self);
-  {$ENDIF}
+{$ENDIF}
   edCharacter.Parent := Panel1;
   edCharacter.Left := 312;
   edCharacter.Top := 16;
@@ -111,6 +122,12 @@ begin
   edCharacter.Height := 22;
   edCharacter.Anchors := [akLeft, akTop, akRight];
   edCharacter.TabOrder := 11;
+  {$IFDEF USEUNICODE}
+  FillFilter;
+  {$ELSE}
+  lblFilter.Visible := false;
+  cbFilter.Visible := false;
+  {$ENDIF}
   ActiveControl := JM;
 end;
 
@@ -129,7 +146,7 @@ begin
   JM.ShowZoomPanel := chkZoomPanel.Checked;
 end;
 
-procedure TForm1.DoJMMouseUp(Sender: TObject; Button:TMouseButton; Shift:TShiftState; X, Y:integer);
+procedure TForm1.DoJMMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   DisplayInfo;
 end;
@@ -156,8 +173,9 @@ begin
   JM.Columns := udColumns.Position;
 end;
 
-function GetTypeString1(AChar:WideChar):WideString;
-var ACharInfo:word;
+function GetTypeString1(AChar: WideChar): WideString;
+var
+  ACharInfo: word;
 begin
   Result := '';
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE1, @AChar, 1, ACharInfo) then
@@ -185,46 +203,48 @@ begin
     Result := Copy(Result, 2, MaxInt);
 end;
 
-function GetTypeString2(AChar:WideChar):WideString;
-var ACharInfo:word;
+function GetTypeString2(AChar: WideChar): WideString;
+var
+  ACharInfo: word;
 begin
   Result := '';
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE2, @AChar, 1, ACharInfo) then
   begin
-    if ACharInfo and C2_LEFTTORIGHT	 = C2_LEFTTORIGHT	 then
+    if ACharInfo and C2_LEFTTORIGHT = C2_LEFTTORIGHT then
       Result := Result + ',C2_LEFTTORIGHT';
-    if ACharInfo and C2_RIGHTTOLEFT		 = C2_RIGHTTOLEFT	 then
+    if ACharInfo and C2_RIGHTTOLEFT = C2_RIGHTTOLEFT then
       Result := Result + ',C2_RIGHTTOLEFT';
-    if ACharInfo and C2_EUROPENUMBER	 = C2_EUROPENUMBER	 then
+    if ACharInfo and C2_EUROPENUMBER = C2_EUROPENUMBER then
       Result := Result + ',C2_EUROPENUMBER';
-    if ACharInfo and C2_EUROPESEPARATOR	 = C2_EUROPESEPARATOR	 then
+    if ACharInfo and C2_EUROPESEPARATOR = C2_EUROPESEPARATOR then
       Result := Result + ',C2_EUROPESEPARATOR';
-    if ACharInfo and C2_EUROPETERMINATOR	 = C2_EUROPETERMINATOR	 then
+    if ACharInfo and C2_EUROPETERMINATOR = C2_EUROPETERMINATOR then
       Result := Result + ',C2_EUROPETERMINATOR';
-    if ACharInfo and C2_ARABICNUMBER	 = C2_ARABICNUMBER	then
+    if ACharInfo and C2_ARABICNUMBER = C2_ARABICNUMBER then
       Result := Result + ',C2_ARABICNUMBER';
-    if ACharInfo and C2_COMMONSEPARATOR	 = C2_COMMONSEPARATOR	 then
+    if ACharInfo and C2_COMMONSEPARATOR = C2_COMMONSEPARATOR then
       Result := Result + ',C2_COMMONSEPARATOR';
-    if ACharInfo and C2_BLOCKSEPARATOR	 = C2_BLOCKSEPARATOR	then
+    if ACharInfo and C2_BLOCKSEPARATOR = C2_BLOCKSEPARATOR then
       Result := Result + ',C2_BLOCKSEPARATOR';
-    if ACharInfo and C2_SEGMENTSEPARATOR	 = C2_SEGMENTSEPARATOR	then
+    if ACharInfo and C2_SEGMENTSEPARATOR = C2_SEGMENTSEPARATOR then
       Result := Result + ',C2_SEGMENTSEPARATOR';
     if ACharInfo and C2_WHITESPACE = C2_WHITESPACE then
       Result := Result + ',C2_WHITESPACE';
-    if ACharInfo and C2_OTHERNEUTRAL		 = C2_OTHERNEUTRAL	 then
+    if ACharInfo and C2_OTHERNEUTRAL = C2_OTHERNEUTRAL then
       Result := Result + ',C2_OTHERNEUTRAL';
   end;
   if Result <> '' then
     Result := Copy(Result, 2, MaxInt);
 end;
 
-function GetTypeString3(AChar:WideChar):WideString;
-var ACharInfo:word;
+function GetTypeString3(AChar: WideChar): WideString;
+var
+  ACharInfo: word;
 begin
   Result := '';
   if GetStringTypeExW(LOCALE_USER_DEFAULT, CT_CTYPE3, @AChar, 1, ACharInfo) then
   begin
-    if ACharInfo and C3_NONSPACING		 = C3_NONSPACING	 then
+    if ACharInfo and C3_NONSPACING = C3_NONSPACING then
       Result := Result + ',C3_NONSPACING';
     if ACharInfo and C3_DIACRITIC = C3_DIACRITIC then
       Result := Result + ',C3_DIACRITIC ';
@@ -257,25 +277,32 @@ begin
   reInfo.Lines.Add('Character Type: ' + GetTypeString1(JM.Character));
   reInfo.Lines.Add('Bidirectional Layout: ' + GetTypeString2(JM.Character));
   reInfo.Lines.Add('Text Processing:' + GetTypeString3(JM.Character));
-  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x',[Ord(JM.Character)]));
+  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x', [Ord(JM.Character)]));
   reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
 procedure TForm1.chkUnicodeClick(Sender: TObject);
 begin
+  lblFilter.Enabled := chkUnicode.Checked;
+  cbFilter.Enabled := chkUnicode.Checked;
   if chkUnicode.Checked then
+  {$IFDEF USEUNICODE}
+    JM.CharRange.Filter := TUnicodeBlock(cbFilter.ItemIndex)
+  {$ELSE}
     JM.CharRange.EndChar := $FEFF
+  {$ENDIF}
   else
     JM.CharRange.EndChar := udEnd.Position;
+
 end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
 begin
-  {$IFDEF USETNT}
+{$IFDEF USETNT}
   TntClipboard.AsWideText := JM.Character;
-  {$ELSE}
+{$ELSE}
   Clipboard.AsText := WideString(JM.Character);
-  {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TForm1.DoJMMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -291,15 +318,40 @@ end;
 
 procedure TForm1.cbColorChange(Sender: TObject);
 begin
- if JM <> nil then
-   JM.Color := cbColor.ColorValue;
+  if JM <> nil then
+    JM.Color := cbColor.ColorValue;
 end;
 
 procedure TForm1.cbFontChange(Sender: TObject);
 begin
- if JM <> nil then
-   JM.Font.Name := cbFont.FontName;
+  if JM <> nil then
+    JM.Font.Name := cbFont.FontName;
 end;
 
+{$IFDEF USEUNICODE}
+procedure TForm1.FillFilter;
+var
+  i: TUnicodeBlock;
+begin
+  cbFilter.Items.BeginUpdate;
+  try
+    cbFilter.Items.Clear;
+    for i := Low(TUnicodeBlock) to High(TUnicodeBlock) do
+      cbFilter.Items.Add(GetEnumName(typeinfo(TUnicodeBlock), Ord(i)));
+  finally
+    cbFilter.Items.EndUpdate;
+  end;
+  cbFilter.ItemIndex := Ord(JM.CharRange.Filter);
+end;
+{$ENDIF}
+
+procedure TForm1.cbFilterClick(Sender: TObject);
+begin
+  {$IFDEF USEUNICODE}
+  if chkUnicode.Checked then
+    JM.CharRange.Filter := TUnicodeBlock(cbFilter.ItemIndex);
+  {$ENDIF}
+end;
 
 end.
+
