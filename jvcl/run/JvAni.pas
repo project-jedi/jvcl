@@ -38,25 +38,21 @@ uses
   {$IFDEF VisualCLX}
   QGraphics, QForms, QExtCtrls, Types,
   {$ENDIF QForms}
-  JvTypes;
+  JvTypes, JvAniFile;
 
 type
   TJvAni = class(TGraphic)
   private
-    FAuthor: string;
-    FTitle: string;
-    FNumberFrames: Cardinal;
-    FHeader: TJvAniHeader;
-    FCurrentIcon: TIcon;
-    FImage: TMemoryStream;
-    FRate: TList;
-    FSequence: TList;
-    FImages: TList;
+    FIconData: TJvAnimatedCursorImage;
     FIndex: Integer;
     FTimer: TTimer;
     procedure Clear;
     procedure SetIndex(const Value: Integer);
     function GetAnimated: Boolean;
+    function GetAuthor: string;
+    function GetTitle: string;
+    function GetFramesCount: Cardinal;
+    function GetCurrentIcon: TIcon;
     procedure SetAnimated(const Value: Boolean);
     procedure CalcDelay;
   protected
@@ -80,10 +76,10 @@ type
     {$ENDIF VCL}
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
 
-    property Author: string read FAuthor;
-    property Title: string read FTitle;
-    property Icon: TIcon read FCurrentIcon;
-    property FramesCount: Cardinal read FNumberFrames default 0;
+    property Author: string read GetAuthor;
+    property Title: string read GetTitle;
+    property Icon: TIcon read GetCurrentIcon;
+    property FramesCount: Cardinal read GetFramesCount default 0;
     property Index: Integer read FIndex write SetIndex default -1;
     property Animated: Boolean read GetAnimated write SetAnimated default False;
   end;
@@ -96,14 +92,7 @@ uses
 constructor TJvAni.Create;
 begin
   inherited Create;
-  FAuthor := '';
-  FTitle := '';
-  FNumberFrames := 0;
-  FImage := TMemoryStream.Create;
-  FRate := TList.Create;
-  FSequence := TList.Create;
-  FImages := TList.Create;
-  FCurrentIcon := TIcon.Create;
+  FIconData := TJvAnimatedCursorImage.Create;
   FIndex := -1;
   FTimer := TTimer.Create(nil);
   FTimer.Interval := 100;
@@ -114,34 +103,15 @@ end;
 destructor TJvAni.Destroy;
 begin
   FTimer.Free;
-  Clear;
-  FImage.Free;
-  FRate.Free;
-  FSequence.Free;
-  FImages.Free;
-  FCurrentIcon.Free;
+  FIconData.Free;
   inherited Destroy;
 end;
 
 procedure TJvAni.Clear;
 begin
-  FImages.Clear;
-  FAuthor := '';
-  FTitle := '';
-  FNumberFrames := 0;
-  FRate.Clear;
-  FSequence.Clear;
-  FImage.Size := 0;
-  {$IFDEF VCL}
-  if FCurrentIcon.Handle <> 0 then
-    DestroyIcon(FCurrentIcon.Handle);
-  FCurrentIcon.Handle := 0;
-  {$ELSE}
-  if not FCurrentIcon.Empty then
-    FCurrentIcon.Assign(nil);
-  {$ENDIF VCL}
+  FIconData.Free;
+  FIconData := TJvAnimatedCursorImage.Create;
   FIndex := -1;
-
   if not (csDestroying in Application.ComponentState) then
     Changed(Self);
 end;
@@ -168,7 +138,7 @@ end;
 
 function TJvAni.GetEmpty: Boolean;
 begin
-  Result := (FNumberFrames = 0);
+  Result := (FramesCount = 0);
 end;
 
 procedure TJvAni.SetHeight(Value: Integer);
@@ -183,12 +153,12 @@ end;
 
 function TJvAni.GetWidth: Integer;
 begin
-  Result := FHeader.dwCX;
+  Result := FIconData.Header.dwCX;
 end;
 
 function TJvAni.GetHeight: Integer;
 begin
-  Result := FHeader.dwCY;
+  Result := FIconData.Header.dwCY;
 end;
 
 {$IFDEF VCL}
@@ -206,220 +176,56 @@ end;
 {$ENDIF VCL}
 
 procedure TJvAni.LoadFromStream(Stream: TStream);
-var
-  dw: Integer;
-  FourCC: TJvFourCC;
-
-  procedure Error;
-  begin
-    raise EInvalidGraphic.Create(RsEInvalidAnimatedIconImage);
-  end;
-
-  function ReadByte: Byte;
-  begin
-    Dec(dw, SizeOf(Byte));
-    if FImage.Read(Result, SizeOf(Result)) = 0 then
-      Result := 0;
-  end;
-
-  function ReadDWord: DWORD;
-  begin
-    Dec(dw, SizeOf(DWORD));
-    if FImage.Read(Result, SizeOf(Result)) < SizeOf(DWORD) then
-      Result := 0;
-  end;
-
-  function ReadFourCC: TJvFourCC;
-  begin
-    Dec(dw, SizeOf(TJvFourCC));
-    if FImage.Read(Result, SizeOf(Result)) < SizeOf(TJvFourCC) then
-      FillChar(Result, 0, SizeOf(TJvFourCC));
-  end;
-
-  function ReadString: string;
-  var
-    p: PChar;
-    l: Integer;
-  begin
-    l := ReadDWord;
-
-    // Check for integrity of the data
-    if (l > 0) and (l < FImage.Size - FImage.Position) then
-    begin
-      Dec(dw, l);
-      GetMem(p, l + 1);
-      FillChar(p^, l + 1, 0);
-      FImage.Read(p^, l);
-      Result := StrPas(p);
-      FreeMem(p);
-      if ReadByte <> $00 then
-        FImage.Position := FImage.Position - 1;
-    end
-    else
-      Result := '';
-  end;
-
-  procedure ReadList(List: TList);
-  var
-    Len: Integer;
-  begin
-    Len := ReadDWord div 4;
-    if Len = FHeader.dwSteps then
-      for Len := 1 to Len do
-        List.Add(Pointer(ReadDWord))
-    else
-      Error;
-  end;
-
-  procedure ReadFrames;
-  var
-    i, j, k: Integer;
-  begin
-    for i := 0 to FHeader.dwFrames - 1 do
-      if ReadFourCC <> FOURCC_icon then
-        Error
-      else
-      begin
-        FImages.Add(Pointer(FImage.Position));
-        k := ReadDWord;
-        Dec(dw, k);
-        j := FImage.Position + k;
-        if (FHeader.dwCX = 0) or (FHeader.dwCY = 0) then
-        begin
-          FImage.Position := FImage.Position + 6;
-          FHeader.dwCX := ReadByte;
-          FHeader.dwCY := ReadByte;
-        end;
-        FImage.Position := j;
-      end;
-  end;
-
 begin
-  Clear;
-  FImage.CopyFrom(Stream, Stream.Size - Stream.Position);
-  FImage.Position := 0;
-  if ReadFourCC <> FOURCC_RIFF then
-    Error;
-  FImage.Size := ReadDWord;
-  if ReadFourCC <> FOURCC_ACON then
-    Error;
-
-  while FImage.Position < FImage.Size do
-  begin
-    FourCC := ReadFourCC;
-    if FourCC = FOURCC_LIST then
-    begin
-      dw := ReadDWord;
-      while dw > 0 do
-      begin
-        FourCC := ReadFourCC;
-        if FourCC = FOURCC_INAM then
-          FTitle := ReadString
-        else
-        if FourCC = FOURCC_IART then
-          FAuthor := ReadString
-        else
-          begin
-            FourCC[3] := 'm';
-            if FourCC = FOURCC_fram then
-              ReadFrames;
-          end;
-      end;
-    end
-    else
-    if FourCC = FOURCC_anih then
-      FImage.Read(FHeader, ReadDWord)
-    else
-    if FourCC = FOURCC_rate then
-      ReadList(FRate)
-    else
-    if FourCC = FOURCC_seq then
-      ReadList(FSequence)
-    else
-      FImage.Position := FImage.Position + Integer(ReadDWord);
-  end;
-
-  FNumberFrames := FHeader.dwFrames;
-  FIndex := -1;
-  SetIndex(0);
+  FIconData.LoadFromStream(Stream);
+  if FIconData.IconCount > 0 then
+    Index := 0;
 end;
 
 procedure TJvAni.SaveToStream(Stream: TStream);
 begin
-  if GetEmpty then
-    raise EInvalidGraphicOperation.Create(SInvalidImage);
-  Stream.Write(FImage.Memory^, FImage.Size)
+  FIconData.SaveToStream(Stream);
 end;
 
 procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
   {$IFDEF VCL}
-  if FCurrentIcon.Handle <> 0 then
-    DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, FCurrentIcon.Handle);
+  if Icon.Handle <> 0 then
+    DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, Icon.Handle);
   {$ELSE}
-  if not FCurrentIcon.Empty then
-    ACanvas.Draw(Rect.Left, Rect.Top, FCurrentIcon);
+  if not Icon.Empty then
+    ACanvas.Draw(Rect.Left, Rect.Top, Icon);
   {$ENDIF VCL}
 end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
-type
-  TIconHeader = packed record
-    AlwaysZero: Word;
-    CursorType: Word;
-    NumIcons: Word;
-  end;
-
-  TIconDirEntry = packed record
-    Width: Byte;
-    Height: Byte;
-    Colors: Byte;
-    Reserved: Byte;
-    dwReserved: LongInt;
-    dwBytesInRes: LongInt;
-    dwImageOffset: LongInt;
-  end;
-var
-  {$IFDEF VCL}
-  P: Integer;
-  {$ELSE}
-  MStream: TMemoryStream;
-  {$ENDIF VCL}
-  Len: Integer;
-  IconHeader: TIconHeader;
 begin
-  if (FImages.Count > 0) and (Value >= 0) and (Value < FHeader.dwFrames) then
-    if FIndex <> Value then
-    begin
-      FIndex := Value;
-      {$IFDEF VisualCLX}
-      if not FCurrentIcon.Empty then
-        FCurrentIcon.Assign(nil);
-      {$ENDIF VisualCLX}
-      {$IFDEF VCL}
-      if FCurrentIcon.Handle <> 0 then
-        DestroyIcon(FCurrentIcon.Handle);
-      P := Integer(FImage.Memory);
-      {$ENDIF VCL}
-      FImage.Position := Integer(FImages[FIndex]);
-      FImage.Read(Len, SizeOf(Len));
-      FImage.Read(IconHeader, SizeOf(IconHeader));
-      FImage.Position := FImage.Position + (SizeOf(TIconDirEntry) * IconHeader.NumIcons);
-      Dec(Len, SizeOf(IconHeader) + (SizeOf(TIconDirEntry) * IconHeader.NumIcons));
-      {$IFDEF VCL}
-      Inc(P, FImage.Position);
-      P := CreateIconFromResource(Pointer(p), Len, True, $30000);
-      FCurrentIcon.Handle := p;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      MStream := TMemoryStream.Create;
-      MStream.CopyFrom(FImage, Len);
-      MStream.Position := 0; // set start 
-      FCurrentIcon.LoadFromStream(MStream);
-      MStream.Free;
-      {$ENDIF VisualCLX}
-      Changed(Self);
-    end;
+  if (FramesCount > 0) and (Value >= 0) and
+    (Cardinal(Value) < FramesCount) and (FIndex <> Value) then
+  begin
+    FIndex := Value;
+    Changed(Self);
+  end;
+end;
+
+function TJvAni.GetAuthor: string;
+begin
+  Result := FIconData.Creator;
+end;
+
+function TJvAni.GetTitle: string;
+begin
+  Result := FIconData.Title;
+end;
+
+function TJvAni.GetFramesCount: Cardinal;
+begin
+  Result := Cardinal(FIconData.IconCount);
+end;
+
+function TJvAni.GetCurrentIcon: TIcon;
+begin
+  Result := FIconData.Icons[Index];
 end;
 
 function TJvAni.GetAnimated: Boolean;
@@ -436,22 +242,19 @@ end;
 procedure TJvAni.Animate(Sender: TObject);
 begin
   FTimer.Enabled := False;
-  if FNumberFrames > 0 then
-    SetIndex((FIndex + 1) mod Integer(FNumberFrames));
+  if FramesCount > 0 then
+    Index := (Index + 1) mod Integer(FramesCount);
   CalcDelay;
   FTimer.Enabled := True;
 end;
 
 procedure TJvAni.CalcDelay;
 begin
-  if FIndex = -1 then
+  if Index = -1 then
     SetAnimated(False)
   else
-  if (FIndex > 0) and (FRate.Count > FIndex) then
-    FTimer.Interval := Cardinal(FRate[FIndex]) * (1000 div 60)
-  else
   begin
-    FTimer.Interval := FHeader.dwJIFRate * (1000 div 60);
+    FTimer.Interval := Cardinal(FIconData.Frames[Index].JiffRate) * (1000 div 60);
     if FTimer.Interval = 0 then
       FTimer.Interval := 100;
   end;
