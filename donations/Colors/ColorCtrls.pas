@@ -49,7 +49,7 @@ type
   TJvColorCircle = class;
   TJvFullColorTrackBar = class;
 
-  EJvColorError = class (EJVCLException);
+  EJvColorError = class(EJVCLException);
 
   TJvColorComponent = class(TCustomControl)
   private
@@ -156,7 +156,7 @@ type
     procedure AxisConfigChange; override;
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
     procedure InvalidateCursor; override;
-    function GetCursorPosition:TPoint;
+    function GetCursorPosition: TPoint;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -263,7 +263,7 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TJvCursorPoints = array [0..2] of TPoint;
+  TJvCursorPoints = array[0..2] of TPoint;
 
   TJvFullColorTrackBar = class(TJvColorComponent)
   private
@@ -304,7 +304,7 @@ type
     procedure KeyMove(KeyCode: TKeyCode; MoveCount: Integer); override;
     procedure InvalidateCursor; override;
     procedure Paint; override;
-    function GetCursorPosition:TJvCursorPoints;
+    function GetCursorPosition: TJvCursorPoints;
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -526,13 +526,13 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array[0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
 
-  TJvFullColorListEvent = procedure(Sender: TObject; Index:Integer;
-                          Operation: TJvFullColorListOperation) of object;
+  TJvFullColorListEvent = procedure(Sender: TObject; Index: Integer;
+    Operation: TJvFullColorListOperation) of object;
 
   EJvFullColorListError = class(Exception);
 
@@ -554,7 +554,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure WriteItems(Writer: TWriter);
     procedure ReadItems(Reader: TReader);
-    procedure Change(AIndex: Integer; AOperation:TJvFullColorListOperation);
+    procedure Change(AIndex: Integer; AOperation: TJvFullColorListOperation);
   public
     constructor Create;
     destructor Destroy; override;
@@ -571,7 +571,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    property AllocBy:Integer read FAllocBy write SetAllocBy;
+    property AllocBy: Integer read FAllocBy write SetAllocBy;
     property Items[Index: Integer]: TJvFullColor read GetItem write SetItem; default;
     property List: PJvFullColorArray read FList;
     property Capacity: Integer read FCapacity write SetCapacity;
@@ -582,7 +582,7 @@ type
 
   TJvFullColorEdge = (feRaised, feLowered, feFlat);
 
-  TJvFullColorGroup = class (TCustomControl)
+  TJvFullColorGroup = class(TCustomControl)
   private
     FItems: TJvFullColorList;
     FColCount: Integer;
@@ -599,37 +599,35 @@ type
     procedure SetMouseEdge(const Value: TJvFullColorEdge);
     procedure SetSelectedEdge(const Value: TJvFullColorEdge);
     procedure SetSquareSize(const Value: Integer);
-    procedure MouseLeave(var Message:TWMMouse); message WM_MOUSELEAVE;
+    procedure MouseLeave(var Msg: TWMMouse); message WM_MOUSELEAVE;
     function GetSelected: TJvFullColor;
     procedure SetSelected(const Value: TJvFullColor);
     procedure SetSelectedIndex(const Value: Integer);
     procedure SetBrush(const Value: TBrush);
   protected
     procedure Paint; override;
-    procedure ItemsChange(Sender: TObject; Index:Integer;
-                          Operation: TJvFullColorListOperation);
+    procedure ItemsChange(Sender: TObject; Index: Integer;
+      Operation: TJvFullColorListOperation);
     procedure BrushChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CalcRects(out XPos, YPos, XInc, YInc:Integer);
-    procedure InvalidateIndex(AIndex:Integer);
+    procedure CalcRects(out XPos, YPos, XInc, YInc: Integer);
+    procedure InvalidateIndex(AIndex: Integer);
   public
-    constructor Create (AOwner:TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property MouseIndex:Integer read FMouseIndex;
-    property SelectedIndex:Integer read FSelectedIndex write SetSelectedIndex;
-    property Selected:TJvFullColor read GetSelected write SetSelected;
+    property MouseIndex: Integer read FMouseIndex;
+    property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex;
+    property Selected: TJvFullColor read GetSelected write SetSelected;
   published
-    property Items:TJvFullColorList read FItems write SetItems;
-    property ColCount:Integer read FColCount write SetColCount default 4;
-    property Edge:TJvFullColorEdge read FEdge write SetEdge default feRaised;
-    property SelectedEdge:TJvFullColorEdge read FSelectedEdge
-      write SetSelectedEdge default feLowered;
-    property MouseEdge:TJvFullColorEdge read FMouseEdge write SetMouseEdge
-      default feRaised;
-    property SquareSize:Integer read FSquareSize write SetSquareSize default 6;
-    property Brush:TBrush read FBrush write SetBrush;
+    property Items: TJvFullColorList read FItems write SetItems;
+    property ColCount: Integer read FColCount write SetColCount default 4;
+    property Edge: TJvFullColorEdge read FEdge write SetEdge default feRaised;
+    property SelectedEdge: TJvFullColorEdge read FSelectedEdge write SetSelectedEdge default feLowered;
+    property MouseEdge: TJvFullColorEdge read FMouseEdge write SetMouseEdge default feRaised;
+    property SquareSize: Integer read FSquareSize write SetSquareSize default 6;
+    property Brush: TBrush read FBrush write SetBrush;
     property Align;
     property Anchors;
     property Color;
@@ -671,14 +669,14 @@ const
   MaxPixelCount = 32767;
 type
   PFullColorArray = ^TFullColorArray;
-  TFullColorArray = array [0..MaxPixelCount] of TJvFullColor;
+  TFullColorArray = array[0..MaxPixelCount] of TJvFullColor;
 
 type
-  TJvColorAxisConfigs = array [TJvAxisIndex] of TJvAxisIndex;
+  TJvColorAxisConfigs = array[TJvAxisIndex] of TJvAxisIndex;
 
 const
-  TabAxisConfigs: array [TJvColorAxisConfig] of TJvColorAxisConfigs =
-   ((axIndex0, axIndex1, axIndex2),
+  TabAxisConfigs: array[TJvColorAxisConfig] of TJvColorAxisConfigs =
+  ((axIndex0, axIndex1, axIndex2),
     (axIndex0, axIndex2, axIndex1),
     (axIndex1, axIndex0, axIndex2),
     (axIndex2, axIndex0, axIndex1),
@@ -703,7 +701,7 @@ var
   Str: string;
   AxisConfigs: TJvColorAxisConfigs;
 begin
-  Str := GetEnumName(TypeInfo(TJvColorAxisConfig), Integer(AxisConfig));
+  Str := GetEnumName(TypeInfo(TJvColorAxisConfig), Ord(AxisConfig));
   case ItemFormat of
     afShort:
       Result := Copy(Str, 3, Length(Str) - 2);
@@ -713,7 +711,7 @@ begin
     AxisConfigs := TabAxisConfigs[AxisConfig];
     Result := Format('[%s] = %s ; [%s] = %s ; [%s] = %s',
       [Str[3], AColorSpace.AxisName[axIndex0], Str[4],
-       AColorSpace.AxisName[axIndex1], Str[5], AColorSpace.AxisName[axIndex2]]);
+      AColorSpace.AxisName[axIndex1], Str[5], AColorSpace.AxisName[axIndex2]]);
   end;
 end;
 
@@ -793,9 +791,9 @@ procedure TJvColorComponent.DrawFrame(X, Y: Integer);
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0, 0, Width, Y));
-  Canvas.FillRect(Rect(0, Y+FBuffer.Height, Width, Height));
-  Canvas.FillRect(Rect(0, Y, X, Y+FBuffer.Height));
-  Canvas.FillRect(Rect(X+FBuffer.Width, Y, Width, Y+FBuffer.Height));
+  Canvas.FillRect(Rect(0, Y + FBuffer.Height, Width, Height));
+  Canvas.FillRect(Rect(0, Y, X, Y + FBuffer.Height));
+  Canvas.FillRect(Rect(X + FBuffer.Width, Y, Width, Y + FBuffer.Height));
 end;
 
 procedure TJvColorComponent.SetFullColor(const Value: TJvFullColor);
@@ -803,13 +801,13 @@ var
   OldColorID: TJvColorSpaceID;
   OldColor: TJvFullColor;
 begin
-  if (Value<>FullColor) then
+  if Value <> FullColor then
   begin
-    OldColor:=FFullColor;
+    OldColor := FFullColor;
     OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
     FFullColor := Value;
-    if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor)
-      then ColorSpaceChange;
+    if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor) then
+      ColorSpaceChange;
 
     if Assigned(FOnColorChange) then
       FOnColorChange(Self);
@@ -1044,7 +1042,7 @@ begin
   FBuffer.Width := LWidth;
   FBuffer.Height := LHeight;
 
-  SetBounds(Left, Top, 2*FCrossSize + LWidth, 2*FCrossSize + LHeight);
+  SetBounds(Left, Top, 2 * FCrossSize + LWidth, 2 * FCrossSize + LHeight);
 
   inherited CalcSize;
 end;
@@ -1072,25 +1070,25 @@ begin
       for I := Low(ColorValues) to High(ColorValues) do
       begin
         Brush.Color := ColorValues[I].Value;
-        Rectangle(PosX, PosY, PosX+16, PosY+16);
-        Inc(PosX, 16+6);
+        Rectangle(PosX, PosY, PosX + 16, PosY + 16);
+        Inc(PosX, 16 + 6);
         if PosX > FBuffer.Width - 8 then
         begin
           PosX := 8;
-          Inc(PosY, 16+6);
+          Inc(PosY, 16 + 6);
         end;
       end;
       PosX := 8;
-      Inc(PosY, 16+6);
+      Inc(PosY, 16 + 6);
       for I := Low(SysColorValues) to High(SysColorValues) do
       begin
         Brush.Color := SysColorValues[I].Value;
-        Rectangle(PosX, PosY, PosX+16, PosY+16);
-        Inc(PosX, 16+6);
+        Rectangle(PosX, PosY, PosX + 16, PosY + 16);
+        Inc(PosX, 16 + 6);
         if PosX > FBuffer.Width - 8 then
         begin
           PosX := 8;
-          Inc(PosY, 16+6);
+          Inc(PosY, 16 + 6);
         end;
       end;
     end
@@ -1131,7 +1129,7 @@ begin
   inherited DrawBuffer;
 end;
 
-function TJvColorPanel.GetCursorPosition:TPoint;
+function TJvColorPanel.GetCursorPosition: TPoint;
 var
   AxisX, AxisY: TJvAxisIndex;
 begin
@@ -1157,16 +1155,16 @@ end;
 
 procedure TJvColorPanel.InvalidateCursor;
 var
-  ARect:TRect;
+  ARect: TRect;
 begin
   with GetCursorPosition do
   begin
-    ARect.Left:=X-1-CrossSize-CrossStyle.Width;
-    ARect.Right:=X+1+CrossSize+CrossStyle.Width;
-    ARect.Top:=Y-1-CrossSize-CrossStyle.Width;
-    ARect.Bottom:=Y+1+CrossSize+CrossStyle.Width;
+    ARect.Left := X - 1 - CrossSize - CrossStyle.Width;
+    ARect.Right := X + 1 + CrossSize + CrossStyle.Width;
+    ARect.Top := Y - 1 - CrossSize - CrossStyle.Width;
+    ARect.Bottom := Y + 1 + CrossSize + CrossStyle.Width;
   end;
-  InvalidateRect(Handle,@ARect,False);
+  InvalidateRect(Handle, @ARect, False);
 end;
 
 procedure TJvColorPanel.Paint;
@@ -1182,10 +1180,10 @@ begin
 
     with GetCursorPosition do
     begin
-      MoveTo(X - CrossSize,   Y);
+      MoveTo(X - CrossSize, Y);
       LineTo(X - CrossCenter, Y);
       MoveTo(X + CrossCenter, Y);
-      LineTo(X + CrossSize,   Y);
+      LineTo(X + CrossSize, Y);
 
       MoveTo(X, Y - CrossSize);
       LineTo(X, Y - CrossCenter);
@@ -1284,9 +1282,9 @@ end;
 
 procedure TJvColorPanel.SetFullColor(const Value: TJvFullColor);
 var
-  AxisX, AxisY : TJvAxisIndex;
+  AxisX, AxisY: TJvAxisIndex;
 begin
-  if (Value<>FullColor) then
+  if Value <> FullColor then
   begin
     if Assigned(FColorTrackBar) and (not FColorChanging) then
     begin
@@ -1297,14 +1295,15 @@ begin
     begin
       AxisX := GetIndexAxisX(AxisConfig);
       AxisY := GetIndexAxisY(AxisConfig);
-      if   (GetAxisValue(Value,AxisX)<>(GetAxisValue(FullColor,AxisX)))
-        or (GetAxisValue(Value,AxisY)<>(GetAxisValue(FullColor,AxisY))) then
+      if (GetAxisValue(Value, AxisX) <> GetAxisValue(FullColor, AxisX)) or
+        (GetAxisValue(Value, AxisY) <> GetAxisValue(FullColor, AxisY)) then
       begin
         InvalidateCursor;
         inherited SetFullColor(Value);
         InvalidateCursor;
       end
-      else inherited SetFullColor(Value);
+      else
+        inherited SetFullColor(Value);
     end;
   end;
 end;
@@ -1326,26 +1325,26 @@ begin
     PosY := 8;
     for I := Low(ColorValues) to High(ColorValues) do
     begin
-      if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
+      if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
         FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(ColorValues[I].Value);
-      Inc(PosX, 16+6);
+      Inc(PosX, 16 + 6);
       if PosX > FBuffer.Width - 8 then
       begin
         PosX := 8;
-        Inc(PosY, 16+6);
+        Inc(PosY, 16 + 6);
       end;
     end;
     PosX := 8;
-    Inc(PosY, 16+6);
+    Inc(PosY, 16 + 6);
     for I := Low(SysColorValues) to High(SysColorValues) do
     begin
-      if (X >= PosX) and (X < PosX+16) and (Y >= PosY) and (Y < PosY+16) then
+      if (X >= PosX) and (X < PosX + 16) and (Y >= PosY) and (Y < PosY + 16) then
         FullColor := ColorSpaceManager.ColorSpace[csDEF].ConvertFromColor(SysColorValues[I].Value);
-      Inc(PosX, 16+6);
+      Inc(PosX, 16 + 6);
       if PosX > FBuffer.Width - 8 then
       begin
         PosX := 8;
-        Inc(PosY, 16+6);
+        Inc(PosY, 16 + 6);
       end;
     end;
   end
@@ -1476,7 +1475,7 @@ begin
   with ColorSpace do
     Diameter := 2 * (AxisMax[RadiusIndex] - AxisMin[RadiusIndex]) + 1;
 
-  SetBounds(Left, Top, Diameter + 2*CrossSize, Diameter + 2*CrossSize);
+  SetBounds(Left, Top, Diameter + 2 * CrossSize, Diameter + 2 * CrossSize);
 
   FBuffer.Width := Diameter;
   FBuffer.Height := Diameter;
@@ -1529,7 +1528,7 @@ begin
 
         if Radius <= MaxRadius then
         begin
-          Angle := Round(ArcTan2(YRadius1, X - Radius1)*AngleUnit + AngleUnitPi) + MinAngle;
+          Angle := Round(ArcTan2(YRadius1, X - Radius1) * AngleUnit + AngleUnitPi) + MinAngle;
           case AxisAngle of
             axIndex0:
               if InvertRotation then
@@ -1600,7 +1599,7 @@ var
       LineTo(Point.X + CrossSize, Point.Y + CrossSize - CrossCenter);
 
       MoveTo(Point.X + CrossSize, Point.Y + CrossSize + CrossCenter);
-      LineTo(Point.X + CrossSize, Point.Y + (2 * CrossSize));
+      LineTo(Point.X + CrossSize, Point.Y + 2 * CrossSize);
 
       Pen.Mode := pmCopy;
       Pen.Style := psSolid;
@@ -1677,7 +1676,7 @@ begin
   else
     Angle := Angle - AngleMin;
 
-  FullAngle := (2 * Pi * Angle / (AngleMax - AngleMin)) - Pi;
+  FullAngle := (2 * Pi * Angle) / (AngleMax - AngleMin) - Pi;
   Result.X := Round(Radius * Cos(FullAngle)) + Radius1;
   Result.Y := Round(Radius * Sin(FullAngle)) + Radius1;
 end;
@@ -1717,8 +1716,8 @@ begin
 
   Result := SetAxisValue(
     SetAxisValue(
-      SetAxisValue(ColorSpace.ID shl 24, GetIndexAxisZ(AxisConfig), ValueZ),
-      AngleIndex, Angle), RadiusIndex, Radius);
+    SetAxisValue(ColorSpace.ID shl 24, GetIndexAxisZ(AxisConfig), ValueZ),
+    AngleIndex, Angle), RadiusIndex, Radius);
 end;
 
 procedure TJvColorCircle.MouseColor(Shift: TShiftState; X, Y: Integer);
@@ -1852,7 +1851,7 @@ begin
   if (GetAxisValue(OldColor, AxisX) <> GetAxisValue(FullColor, AxisX)) or
     (GetAxisValue(OldColor, AxisY) <> GetAxisValue(FullColor, AxisY)) then
     Invalidate;
-  if (ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor)) then
+  if ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor) then
     CalcSize;
 end;
 
@@ -2355,7 +2354,7 @@ begin
   inherited DrawBuffer;
 end;
 
-function TJvFullColorTrackBar.GetCursorPosition:TJvCursorPoints;
+function TJvFullColorTrackBar.GetCursorPosition: TJvCursorPoints;
 var
   AxisZ: TJvAxisIndex;
   PosZ: Integer;
@@ -2422,20 +2421,20 @@ end;
 
 procedure TJvFullColorTrackBar.InvalidateCursor;
 var
-  ARect:TRect;
-  CursorPoints:TJvCursorPoints;
+  ARect: TRect;
+  CursorPoints: TJvCursorPoints;
 begin
-  CursorPoints:=GetCursorPosition;
-  ARect.Left:=  Min(CursorPoints[0].X,Min(CursorPoints[1].X,CursorPoints[2].X));
-  ARect.Top:=   Min(CursorPoints[0].Y,Min(CursorPoints[1].Y,CursorPoints[2].Y));
-  ARect.Right:= Max(CursorPoints[0].X,Max(CursorPoints[1].X,CursorPoints[2].X))+1;
-  ARect.Bottom:=Max(CursorPoints[0].Y,Max(CursorPoints[1].Y,CursorPoints[2].Y))+1;
-  InvalidateRect(Handle,@ARect,False);
+  CursorPoints := GetCursorPosition;
+  ARect.Left := Min(CursorPoints[0].X, Min(CursorPoints[1].X, CursorPoints[2].X));
+  ARect.Top := Min(CursorPoints[0].Y, Min(CursorPoints[1].Y, CursorPoints[2].Y));
+  ARect.Right := Max(CursorPoints[0].X, Max(CursorPoints[1].X, CursorPoints[2].X)) + 1;
+  ARect.Bottom := Max(CursorPoints[0].Y, Max(CursorPoints[1].Y, CursorPoints[2].Y)) + 1;
+  InvalidateRect(Handle, @ARect, False);
 end;
 
 procedure TJvFullColorTrackBar.Paint;
 var
-  CursorPoints:TJvCursorPoints;
+  CursorPoints: TJvCursorPoints;
 begin
   inherited Paint;
 
@@ -2446,8 +2445,8 @@ begin
         case ArrowPosition of
           apNormal:
             begin
-              DrawFrame(ArrowWidth, ArrowWidth+1);
-              Draw(ArrowWidth, ArrowWidth+1, FBuffer);
+              DrawFrame(ArrowWidth, ArrowWidth + 1);
+              Draw(ArrowWidth, ArrowWidth + 1, FBuffer);
             end;
           apOpposite:
             begin
@@ -2459,8 +2458,8 @@ begin
         case ArrowPosition of
           apNormal:
             begin
-              DrawFrame(ArrowWidth+1, ArrowWidth);
-              Draw(ArrowWidth+1, ArrowWidth, FBuffer);
+              DrawFrame(ArrowWidth + 1, ArrowWidth);
+              Draw(ArrowWidth + 1, ArrowWidth, FBuffer);
             end;
           apOpposite:
             begin
@@ -2471,7 +2470,7 @@ begin
     end;
     Brush.Color := ArrowColor;
     Pen.Color := ArrowColor;
-    CursorPoints:=GetCursorPosition;
+    CursorPoints := GetCursorPosition;
     Polygon(CursorPoints);
   end;
   DrawFocus;
@@ -2628,17 +2627,17 @@ end;
 procedure TJvFullColorTrackBar.SetFullColor(const Value: TJvFullColor);
 var
   AxisZ: TJvAxisIndex;
-  OldValueX, OldValueY : Byte;
+  OldValueX, OldValueY: Byte;
 begin
-  if (Value<>FullColor) then
+  if Value <> FullColor then
   begin
-    OldValueX:=ValueX;
-    OldValueY:=ValueY;
+    OldValueX := ValueX;
+    OldValueY := ValueY;
     if ValueXAuto then
       UpdateDefaultValueX;
     if ValueYAuto then
       UpdateDefaultValueY;
-    if FullColorDrawing and ((OldValueX<>ValueX) or (OldValueY<>ValueY)) then
+    if FullColorDrawing and ((OldValueX <> ValueX) or (OldValueY <> ValueY)) then
     begin
       WantDrawBuffer := True;
       inherited SetFullColor(Value);
@@ -2652,7 +2651,8 @@ begin
         inherited SetFullColor(Value);
         InvalidateCursor;
       end
-      else inherited SetFullColor(Value);
+      else
+        inherited SetFullColor(Value);
     end;
   end;
 end;
@@ -2703,16 +2703,18 @@ end;
 
 procedure TJvFullColorTrackBar.UpdateDefaultValueX;
 begin
-  if FullColorDrawing
-    then FValueX := GetAxisValue(FullColor, GetIndexAxisX(AxisConfig))
-    else FValueX := ColorSpace.AxisDefault[GetIndexAxisX(AxisConfig)];
+  if FullColorDrawing then
+    FValueX := GetAxisValue(FullColor, GetIndexAxisX(AxisConfig))
+  else
+    FValueX := ColorSpace.AxisDefault[GetIndexAxisX(AxisConfig)];
 end;
 
 procedure TJvFullColorTrackBar.UpdateDefaultValueY;
 begin
-  if FullColorDrawing
-    then FValueY := GetAxisValue(FullColor, GetIndexAxisY(AxisConfig))
-    else FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
+  if FullColorDrawing then
+    FValueY := GetAxisValue(FullColor, GetIndexAxisY(AxisConfig))
+  else
+    FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
 end;
 
 //=== { TJvColorLabel } ======================================================
@@ -2868,7 +2870,7 @@ end;
 
 procedure TJvColorLabel.SetRoundShapeHeight(const Value: Integer);
 begin
-  if (Value <> FRoundShapeHeight) and (Value < (ShapeHeight div 2)) then
+  if (Value <> FRoundShapeHeight) and (Value < ShapeHeight div 2) then
   begin
     FRoundShapeHeight := Value;
     Invalidate;
@@ -2877,7 +2879,7 @@ end;
 
 procedure TJvColorLabel.SetRoundShapeWidth(const Value: Integer);
 begin
-  if (Value <> FRoundShapeWidth) and (Value < (ShapeWidth div 2)) then
+  if (Value <> FRoundShapeWidth) and (Value < ShapeWidth div 2) then
   begin
     FRoundShapeWidth := Value;
     Invalidate;
@@ -3114,7 +3116,7 @@ end;
 
 procedure TJvColorAxisConfigCombo.SetSelected(const Value: TJvColorAxisConfig);
 begin
-  ItemIndex := Integer(Value);
+  ItemIndex := Ord(Value);
 end;
 
 //=== { TJvFullColorList } ===================================================
@@ -3122,10 +3124,10 @@ end;
 constructor TJvFullColorList.Create;
 begin
   inherited Create;
-  FList:=nil;
-  FCount:=0;
-  FCapacity:=0;
-  FAllocBy:=2;
+  FList := nil;
+  FCount := 0;
+  FCapacity := 0;
+  FAllocBy := 2;
 end;
 
 destructor TJvFullColorList.Destroy;
@@ -3146,23 +3148,24 @@ end;
 
 procedure TJvFullColorList.Assign(Source: TPersistent);
 var
-  Index:Integer;
+  Index: Integer;
 begin
-  if (Source is TJvFullColorList) then
+  if Source is TJvFullColorList then
     with TJvFullColorList(Source) do
-  begin
-    Self.BeginUpdate;
-    Self.Count:=Count;
-    for Index:=0 to Self.Count-1 do
-      Self.Items[Index]:=Items[Index];
-    Self.EndUpdate;
-    Self.Change(-1,foAllChanged);
-  end
-  else inherited Assign(Source);
+    begin
+      Self.BeginUpdate;
+      Self.Count := Count;
+      for Index := 0 to Self.Count - 1 do
+        Self.Items[Index] := Items[Index];
+      Self.EndUpdate;
+      Self.Change(-1, foAllChanged);
+    end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvFullColorList.Change(AIndex: Integer;
-  AOperation:TJvFullColorListOperation);
+  AOperation: TJvFullColorListOperation);
 begin
   if (UpdateCount = 0) and Assigned(FOnChange) then
     FOnChange(Self, AIndex, AOperation);
@@ -3171,7 +3174,7 @@ end;
 procedure TJvFullColorList.Clear;
 begin
   Capacity := 0;
-  Change(-1,foAllChanged);
+  Change(-1, foAllChanged);
 end;
 
 procedure TJvFullColorList.DefineProperties(Filer: TFiler);
@@ -3210,8 +3213,8 @@ begin
   FList^[Index1] := FList^[Index2];
   FList^[Index2] := Tmp;
 
-  Change(Index1,foChanged);
-  Change(Index2,foChanged);
+  Change(Index1, foChanged);
+  Change(Index2, foChanged);
 end;
 
 function TJvFullColorList.GetItem(Index: Integer): TJvFullColor;
@@ -3224,7 +3227,7 @@ end;
 
 procedure TJvFullColorList.Grow;
 begin
-  Capacity:=Capacity+AllocBy;
+  Capacity := Capacity + AllocBy;
 end;
 
 function TJvFullColorList.IndexOf(AColor: TJvFullColor): Integer;
@@ -3240,10 +3243,10 @@ begin
   if (Index > Count) or (Index < 0) then
     EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
-  if (Count = Capacity) then
+  if Count = Capacity then
     Grow;
 
-  if (Index < Count) then
+  if Index < Count then
     Move(FList^[Index], FList^[Index + 1], (FCount - Index) * SizeOf(TJvFullColor));
 
   FList^[Index] := AColor;
@@ -3280,7 +3283,7 @@ end;
 
 procedure TJvFullColorList.SetAllocBy(const Value: Integer);
 begin
-  FAllocBy := Max(Value,1);
+  FAllocBy := Max(Value, 1);
 end;
 
 procedure TJvFullColorList.SetCapacity(const Value: Integer);
@@ -3297,7 +3300,7 @@ end;
 procedure TJvFullColorList.SetCount(const Value: Integer);
 begin
   FCount := Value;
-  if (FCount > FCapacity) then
+  if FCount > FCapacity then
     Capacity := FCount;
   Change(-1, foAllChanged);
 end;
@@ -3308,14 +3311,15 @@ begin
     EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
 
   FList^[Index] := Value;
-  Change(Index,foChanged);
+  Change(Index, foChanged);
 end;
 
 procedure TJvFullColorList.EndUpdate;
 begin
-  if FUpdateCount > 0
-    then Dec(FUpdateCount)
-    else Change(-1,foAllChanged);
+  if FUpdateCount > 0 then
+    Dec(FUpdateCount)
+  else
+    Change(-1, foAllChanged);
 end;
 
 procedure TJvFullColorList.WriteItems(Writer: TWriter);
@@ -3333,18 +3337,18 @@ end;
 constructor TJvFullColorGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle:=ControlStyle+[csOpaque];
-  FItems:=TJvFullColorList.Create;
-  FItems.OnChange:=ItemsChange;
-  FBrush:=TBrush.Create;
-  FBrush.OnChange:=BrushChange;
-  FEdge:=feRaised;
-  FSelectedEdge:=feLowered;
-  FMouseEdge:=feRaised;
-  FColCount:=5;
-  FSquareSize:=6;
-  FSelectedIndex:=-1;
-  FMouseIndex:=-1;
+  ControlStyle := ControlStyle + [csOpaque];
+  FItems := TJvFullColorList.Create;
+  FItems.OnChange := ItemsChange;
+  FBrush := TBrush.Create;
+  FBrush.OnChange := BrushChange;
+  FEdge := feRaised;
+  FSelectedEdge := feLowered;
+  FMouseEdge := feRaised;
+  FColCount := 5;
+  FSquareSize := 6;
+  FSelectedIndex := -1;
+  FMouseIndex := -1;
 end;
 
 destructor TJvFullColorGroup.Destroy;
@@ -3356,41 +3360,42 @@ end;
 
 procedure TJvFullColorGroup.CalcRects(out XPos, YPos, XInc, YInc: Integer);
 var
-   XOffset:Integer;
-   YOffset:Integer;
-   RowCount:Integer;
+  XOffset: Integer;
+  YOffset: Integer;
+  RowCount: Integer;
 begin
-  XOffset:=Width - (FSquareSize*ColCount) - 2;
-  XInc:=XOffset div ColCount;
-  XPos:=((XOffset-(XInc*(ColCount-1))) div 2) + 1;
+  XOffset := Width - (FSquareSize * ColCount) - 2;
+  XInc := XOffset div ColCount;
+  XPos := ((XOffset - XInc * (ColCount - 1)) div 2) + 1;
 
-  RowCount:=(Items.Count div ColCount)+1;
-  YOffset:=Height - (FSquareSize*RowCount) - 2;
-  if (RowCount=1)
-    then YInc:=0
-    else YInc:=YOffset div RowCount;
-  YPos:=YOffset-((YInc*(RowCount+1)) div 2) + 1;
+  RowCount := Items.Count div ColCount + 1;
+  YOffset := Height - FSquareSize * RowCount - 2;
+  if RowCount = 1 then
+    YInc := 0
+  else
+    YInc := YOffset div RowCount;
+  YPos := YOffset - (YInc * (RowCount + 1)) div 2 + 1;
 end;
 
-procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Index:Integer;
-                          Operation: TJvFullColorListOperation);
+procedure TJvFullColorGroup.ItemsChange(Sender: TObject; Index: Integer;
+  Operation: TJvFullColorListOperation);
 begin
   case Operation of
-    foAllChanged :
+    foAllChanged:
       begin
-        FMouseIndex:=-1;
-        FSelectedIndex:=-1;
+        FMouseIndex := -1;
+        FSelectedIndex := -1;
         Invalidate;
       end;
-    foDeleted :
+    foDeleted:
       begin
-        FMouseIndex:=-1;
-        FSelectedIndex:=EnsureRange(FSelectedIndex,-1,Items.Count-1);
+        FMouseIndex := -1;
+        FSelectedIndex := EnsureRange(FSelectedIndex, -1, Items.Count - 1);
         Invalidate;
       end;
-    foAdded :
+    foAdded:
       Invalidate;
-    foChanged :
+    foChanged:
       InvalidateIndex(Index);
   end;
 end;
@@ -3400,145 +3405,147 @@ begin
   Refresh;
 end;
 
-procedure TJvFullColorGroup.InvalidateIndex(AIndex:Integer);
+procedure TJvFullColorGroup.InvalidateIndex(AIndex: Integer);
 var
-  ARect:TRect;
-  ColIndex, RowIndex:Integer;
-  XPos, YPos, XInc, YInc:Integer;
+  ARect: TRect;
+  ColIndex, RowIndex: Integer;
+  XPos, YPos, XInc, YInc: Integer;
 begin
-  if (AIndex<>-1) then
+  if AIndex <> -1 then
   begin
     CalcRects(XPos, YPos, XInc, YInc);
-    ColIndex:=AIndex mod ColCount;
-    RowIndex:=AIndex div ColCount;
-    ARect.Left:=XPos+(ColIndex*(XInc+FSquareSize));
-    ARect.Top:=YPos+(RowIndex*(YInc+FSquareSize));
-    ARect.Right:=ARect.Left+FSquareSize+1;
-    ARect.Bottom:=ARect.Top+FSquareSize+1;
-    InvalidateRect(Handle,@ARect,False);
+    ColIndex := AIndex mod ColCount;
+    RowIndex := AIndex div ColCount;
+    ARect.Left := XPos + ColIndex * (XInc + FSquareSize);
+    ARect.Top := YPos + RowIndex * (YInc + FSquareSize);
+    ARect.Right := ARect.Left + FSquareSize + 1;
+    ARect.Bottom := ARect.Top + FSquareSize + 1;
+    InvalidateRect(Handle, @ARect, False);
   end;
 end;
 
-procedure TJvFullColorGroup.MouseLeave(var Message: TWMMouse);
+procedure TJvFullColorGroup.MouseLeave(var Msg: TWMMouse);
 begin
-  FMouseIndex:=-1;
-  Message.Result:=1;
+  FMouseIndex := -1;
+  Msg.Result := 1;
   Refresh;
 end;
 
 procedure TJvFullColorGroup.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-   Index:Integer;
-   RowCount:Integer;
-   Sum:Integer;
-   XPos, YPos, XInc, YInc:Integer;
-   ColIndex, RowIndex:Integer;
+  Index: Integer;
+  RowCount: Integer;
+  Sum: Integer;
+  XPos, YPos, XInc, YInc: Integer;
+  ColIndex, RowIndex: Integer;
 begin
-  inherited MouseMove(Shift,X,Y);
+  inherited MouseMove(Shift, X, Y);
 
   CalcRects(XPos, YPos, XInc, YInc);
 
-  Sum:=XPos;
-  if (X<XPos) then
+  Sum := XPos;
+  if X < XPos then
   begin
     InvalidateIndex(MouseIndex);
-    FMouseIndex:=-1;
+    FMouseIndex := -1;
     Exit;
   end;
-  ColIndex:=-1;
-  for Index:=0 to ColCount-1 do
+  ColIndex := -1;
+  for Index := 0 to ColCount - 1 do
   begin
-    if (X>=Sum) and (X<(Sum+FSquareSize)) then
+    if (X >= Sum) and (X < Sum + FSquareSize) then
     begin
-      ColIndex:=Index;
+      ColIndex := Index;
       Break;
     end;
-    if (X>=(Sum+FSquareSize)) and (X<(Sum+FSquareSize+XInc))
-      then Break;
-    Inc(Sum,FSquareSize+XInc);
+    if (X >= Sum + FSquareSize) and (X < Sum + FSquareSize + XInc) then
+      Break;
+    Inc(Sum, FSquareSize + XInc);
   end;
 
-  if (ColIndex=-1) then
+  if ColIndex = -1 then
   begin
     InvalidateIndex(MouseIndex);
-    FMouseIndex:=-1;
+    FMouseIndex := -1;
     Exit;
   end;
 
-  RowCount:=(Items.Count div ColCount)+1;
+  RowCount := Items.Count div ColCount + 1;
 
-  Sum:=YPos;
-  if (Y<YPos) then
+  Sum := YPos;
+  if Y < YPos then
   begin
     InvalidateIndex(MouseIndex);
-    FMouseIndex:=-1;
+    FMouseIndex := -1;
     Exit;
   end;
-  RowIndex:=-1;
-  for Index:=0 to RowCount-1 do
+  RowIndex := -1;
+  for Index := 0 to RowCount - 1 do
   begin
-    if (Y>=Sum) and (Y<(Sum+FSquareSize)) then
+    if (Y >= Sum) and (Y < Sum + FSquareSize) then
     begin
-      RowIndex:=Index;
+      RowIndex := Index;
       Break;
     end;
-    if (Y>=(Sum+FSquareSize)) and (Y<(Sum+FSquareSize+YInc))
-      then Break;
-    Inc(Sum,FSquareSize+YInc);
+    if (Y >= Sum + FSquareSize) and (Y < Sum + FSquareSize + YInc) then
+      Break;
+    Inc(Sum, FSquareSize + YInc);
   end;
-  if (RowIndex=-1) then
+  if RowIndex = -1 then
   begin
     InvalidateIndex(MouseIndex);
-    FMouseIndex:=-1;
+    FMouseIndex := -1;
     Exit;
   end;
 
   InvalidateIndex(MouseIndex);
-  FMouseIndex:=(RowIndex*ColCount)+ColIndex;
-  if (MouseIndex>(Items.Count-1))
-    then FMouseIndex:=-1;
+  FMouseIndex := RowIndex * ColCount + ColIndex;
+  if MouseIndex > Items.Count - 1 then
+    FMouseIndex := -1;
   InvalidateIndex(MouseIndex);
 end;
 
 procedure TJvFullColorGroup.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  inherited MouseDown(Button,Shift,X,Y);
+  inherited MouseDown(Button, Shift, X, Y);
   InvalidateIndex(SelectedIndex);
-  SelectedIndex:=MouseIndex;
+  SelectedIndex := MouseIndex;
   InvalidateIndex(SelectedIndex);
 end;
 
 procedure TJvFullColorGroup.Paint;
-  procedure BevelRect(const R: TRect; Style:TJvFullColorEdge;
-    FillStyle:TBrushStyle; FillColor:TColor);
+
+  procedure BevelRect(const R: TRect; Style: TJvFullColorEdge;
+    FillStyle: TBrushStyle; FillColor: TColor);
   var
-    Color1, Color2:TColor;
+    Color1, Color2: TColor;
   begin
-    case Style  of
-         feLowered : begin
-                       Color1 := clBtnShadow;
-                       Color2 := clBtnHighlight;
-                     end;
-         feRaised  : begin
-                       Color1 := clBtnHighlight;
-                       Color2 := clBtnShadow;
-                     end;
-         else        begin
-                       Color1 := clBlack;
-                       Color2 := clBlack;
-                     end;
+    case Style of
+      feLowered:
+        begin
+          Color1 := clBtnShadow;
+          Color2 := clBtnHighlight;
+        end;
+      feRaised:
+        begin
+          Color1 := clBtnHighlight;
+          Color2 := clBtnShadow;
+        end;
+    else
+      Color1 := clBlack;
+      Color2 := clBlack;
     end;
 
     with Canvas do
     begin
-      Brush.Color:=FillColor;
-      Brush.Style:=FillStyle;
-      Pen.Color:=FillColor;
-      Pen.Style:=psClear;
-      Rectangle(R.Left+1,R.Top+1,R.Right+1,R.Bottom+1);
+      Brush.Color := FillColor;
+      Brush.Style := FillStyle;
+      Pen.Color := FillColor;
+      Pen.Style := psClear;
+      Rectangle(R.Left + 1, R.Top + 1, R.Right + 1, R.Bottom + 1);
 
-      Pen.Style:=psSolid;
+      Pen.Style := psSolid;
       Pen.Color := Color1;
       PolyLine([Point(R.Left, R.Bottom), Point(R.Left, R.Top),
         Point(R.Right, R.Top)]);
@@ -3548,60 +3555,64 @@ procedure TJvFullColorGroup.Paint;
     end;
   end;
 var
-  Index, IndexX, IndexY, XMaj:Integer;
-  XOffset, YOffset, XInc, YInc:Integer;
-  X, Y:Integer;
-  AEdge:TJvFullColorEdge;
-  ClipRect:TRect;
+  Index, IndexX, IndexY, XMaj: Integer;
+  XOffset, YOffset, XInc, YInc: Integer;
+  X, Y: Integer;
+  Edge: TJvFullColorEdge;
+  ClipRect: TRect;
 begin
-  CalcRects(XOffset,YOffset,XInc,YInc);
-  BevelRect(Rect(0, 0, Width - 1, Height - 1),FEdge,bsClear, Color);
+  CalcRects(XOffset, YOffset, XInc, YInc);
+  BevelRect(Rect(0, 0, Width - 1, Height - 1), FEdge, bsClear, Color);
 
-  Y:=YOffset;
-  X:=XOffset;
-  ClipRect:=Canvas.ClipRect;
+  Y := YOffset;
+  X := XOffset;
+  ClipRect := Canvas.ClipRect;
 
-  Index:=0;
-  while (Index<Items.Count) do
+  Index := 0;
+  while Index < Items.Count do
   begin
-    if (Index=SelectedIndex)
-      then AEdge:=SelectedEdge
-      else if (Index=MouseIndex)
-             then AEdge:=MouseEdge
-             else AEdge:=feFlat;
+    if Index = SelectedIndex then
+      Edge := SelectedEdge
+    else
+    if Index = MouseIndex then
+      Edge := MouseEdge
+    else
+      Edge := feFlat;
 
-    BevelRect(Rect(X,Y,X+FSquareSize,Y+FSquareSize),AEdge,Brush.Style,
-      ColorSpaceManager.ConvertToID(Items[Index],csRGB));
+    BevelRect(Rect(X, Y, X + FSquareSize, Y + FSquareSize), Edge, Brush.Style,
+      ColorSpaceManager.ConvertToID(Items[Index], csRGB));
     Inc(Index);
-    if ((Index mod ColCount)=0) then
+    if Index mod ColCount = 0 then
     begin
-      X:=XOffset;
-      Inc(Y,YInc+FSquareSize);
+      X := XOffset;
+      Inc(Y, YInc + FSquareSize);
     end
-    else Inc(X,XInc+FSquareSize);
+    else
+      Inc(X, XInc + FSquareSize);
   end;
 
   with Canvas do
   begin
-    Brush.Style:=bsSolid;
-    Brush.Color:=Color;
-    Pen.Color:=Color;
-    Y:=YOffset;
-    for IndexY:=0 to (Items.Count div ColCount)+1 do
+    Brush.Style := bsSolid;
+    Brush.Color := Color;
+    Pen.Color := Color;
+    Y := YOffset;
+    for IndexY := 0 to Items.Count div ColCount + 1 do
     begin
-      Rectangle(Max(ClipRect.Left,1),Max(Y-YInc+1,1),
-                Min(ClipRect.Right,Width-2),Min(Y,Height-2));
-      X:=XOffset;
-      for IndexX:=0 to ColCount do
+      Rectangle(Max(ClipRect.Left, 1), Max(Y - YInc + 1, 1),
+        Min(ClipRect.Right, Width - 2), Min(Y, Height - 2));
+      X := XOffset;
+      for IndexX := 0 to ColCount do
       begin
-        if ((IndexX+(IndexY*ColCount))>=Items.Count)
-          then XMaj:=FSquareSize+1
-          else XMaj:=0;
-        Rectangle(Max(X-XInc+1,1),Min(Max(Y,1),Height-2),
-                  Min(X+XMaj,Width-2),Min(Y+FSquareSize+1,Height-2));
-        Inc(X,XInc+FSquareSize);
+        if IndexX + IndexY * ColCount >= Items.Count then
+          XMaj := FSquareSize + 1
+        else
+          XMaj := 0;
+        Rectangle(Max(X - XInc + 1, 1), Min(Max(Y, 1), Height - 2),
+          Min(X + XMaj, Width - 2), Min(Y + FSquareSize + 1, Height - 2));
+        Inc(X, XInc + FSquareSize);
       end;
-      Inc(Y,YInc+FSquareSize);
+      Inc(Y, YInc + FSquareSize);
     end;
   end;
 end;
@@ -3626,9 +3637,10 @@ end;
 
 procedure TJvFullColorGroup.SetColCount(const Value: Integer);
 begin
-  if (Value<=0)
-    then FColCount := 1
-    else FColCount := Value;
+  if Value <= 0 then
+    FColCount := 1
+  else
+    FColCount := Value;
   Refresh;
 end;
 
@@ -3639,42 +3651,43 @@ end;
 
 procedure TJvFullColorGroup.SetSquareSize(const Value: Integer);
 var
-  TempValue:Integer;
+  TempValue: Integer;
 begin
-  if (FSquareSize<0)
-    then FSquareSize:=-FSquareSize;
+  if FSquareSize < 0 then
+    FSquareSize := -FSquareSize;
 
-  if (FSquareSize=0)
-    then FSquareSize:=1;
+  if FSquareSize = 0 then
+    FSquareSize := 1;
 
   FSquareSize := Value;
 
-  TempValue:=(Width-2) div ColCount;
-  if (TempValue<FSquareSize)
-    then FSquareSize:=TempValue;
+  TempValue := (Width - 2) div ColCount;
+  if TempValue < FSquareSize then
+    FSquareSize := TempValue;
 
-  TempValue:=(Height-2) div ((Items.Count div ColCount)+1);
-  if (TempValue<FSquareSize)
-    then FSquareSize:=TempValue;
+  TempValue := (Height - 2) div (Items.Count div ColCount + 1);
+  if TempValue < FSquareSize then
+    FSquareSize := TempValue;
 
   Refresh;
 end;
 
 function TJvFullColorGroup.GetSelected: TJvFullColor;
 begin
-  if (SelectedIndex>-1)
-    then Result:=Items[SelectedIndex]
-    else Result:=clNone;
+  if SelectedIndex > -1 then
+    Result := Items[SelectedIndex]
+  else
+    Result := clNone;
 end;
 
 procedure TJvFullColorGroup.SetSelected(const Value: TJvFullColor);
 begin
-  SelectedIndex:=Items.IndexOf(Value);
+  SelectedIndex := Items.IndexOf(Value);
 end;
 
 procedure TJvFullColorGroup.SetSelectedIndex(const Value: Integer);
 begin
-  FSelectedIndex := EnsureRange(Value,-1,Items.Count-1);
+  FSelectedIndex := EnsureRange(Value, -1, Items.Count - 1);
 end;
 
 procedure TJvFullColorGroup.SetBrush(const Value: TBrush);
@@ -3695,14 +3708,14 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

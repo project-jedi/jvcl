@@ -230,7 +230,7 @@ var
   ValueAxes: array [TJvAxisIndex] of Byte;
   J: Integer;
   LColorID: TJvColorSpaceID;
-  DefColorSpace:TJvColorSpace;
+  DefColorSpace: TJvColorSpace;
 begin
   if FUpdating then
     Exit;

@@ -272,7 +272,7 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
-function RGBToBGR (Value:Cardinal):Cardinal;
+function RGBToBGR(Value: Cardinal):Cardinal;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
@@ -397,25 +397,27 @@ begin
   end;
 end;
 
-function RGBToBGR (Value:Cardinal):Cardinal;
+function RGBToBGR(Value: Cardinal): Cardinal;
 begin
-  Result:=    ((Value and $00FF0000) shr 16)
-           or  (Value and $0000FF00)
-           or ((Value and $000000FF) shl 16);
+  Result :=
+   ((Value and $00FF0000) shr 16) or
+    (Value and $0000FF00) or
+   ((Value and $000000FF) shl 16);
 end;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 begin
   Part1 :=  AColor         and $000000FF;
-  Part2 := (AColor shr  8) and $000000FF;
+  Part2 := (AColor shr 8)  and $000000FF;
   Part3 := (AColor shr 16) and $000000FF;
 end;
 
 function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
 begin
-  Result :=     (Part1 and $000000FF)
-            or ((Part2 and $000000FF) shl  8)
-            or ((Part3 and $000000FF) shl 16);
+  Result :=
+     (Part1 and $000000FF) or
+    ((Part2 and $000000FF) shl 8) or
+    ((Part3 and $000000FF) shl 16);
 end;
 
 //=== { TJvColorSpace } ======================================================
@@ -1100,7 +1102,7 @@ var
   Y, Cr, Cb: Integer;
   Red, Green, Blue: Integer;
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
   Y  := Round( 0.299*Red + 0.587*Green + 0.114*Blue);
   Cr := Round(-0.150*Red - 0.293*Green + 0.443*Blue) + 128;
@@ -1118,7 +1120,7 @@ var
   Red, Green, Blue: Integer;
   Y, Cr, Cb: Integer;
 begin
-  SplitColorParts(AColor,Y,Cr,Cb);
+  SplitColorParts(AColor, Y, Cr, Cb);
 
   Y  := Y;
   Cr := Cr - 128;
@@ -1181,7 +1183,7 @@ var
   X, Y, Z: Integer;
   Red, Green, Blue: Integer;
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
   X := Round( 0.618*Red + 0.177*Green + 0.205*Blue);
   Y := Round( 0.299*Red + 0.587*Green + 0.114*Blue);
@@ -1199,7 +1201,7 @@ var
   Red, Green, Blue: Integer;
   X, Y, Z: Integer;
 begin
-  SplitColorParts(AColor,X,Y,Z);
+  SplitColorParts(AColor, X, Y, Z);
 
   Red   := Round( 1.876*X - 0.533*Y - 0.343*Z);
   Green := Round(-0.967*X + 1.998*Y - 0.031*Z);
@@ -1258,28 +1260,32 @@ var
   X, Y, Z: Extended;
   L, A, B: Integer;
   Red, Green, Blue: Integer;
-  function f (Value:Extended):Extended;
+
+  function Calc(Value: Extended): Extended;
   begin
-    if (Value>0.008856)
-      then Result := Power(Value,1.0/3.0)
-      else Result := (7.7787*Value) + (16.0/116.0);
+    if Value > 0.008856 then
+      Result := Power(Value, 1.0 / 3.0)
+    else
+      Result := 7.7787 * Value + (16.0 / 116.0);
   end;
+
 begin
-  SplitColorParts(AColor,Red,Green,Blue);
+  SplitColorParts(AColor, Red, Green, Blue);
 
-  X := ( 0.618*Red + 0.177*Green + 0.205*Blue)/XYZ_MAX;
-  Y := ( 0.299*Red + 0.587*Green + 0.114*Blue)/XYZ_MAX;
-  Z := (             0.056*Green + 0.944*Blue)/XYZ_MAX;
+  X := (0.618*Red + 0.177*Green + 0.205*Blue) / XYZ_MAX;
+  Y := (0.299*Red + 0.587*Green + 0.114*Blue) / XYZ_MAX;
+  Z := (            0.056*Green + 0.944*Blue) / XYZ_MAX;
 
-  X := EnsureRange(X,0.0,1.0);
-  Y := EnsureRange(Y,0.0,1.0);
-  Z := EnsureRange(Z,0.0,1.0);
+  X := EnsureRange(X, 0.0, 1.0);
+  Y := EnsureRange(Y, 0.0, 1.0);
+  Z := EnsureRange(Z, 0.0, 1.0);
 
-  if (Y>0.008856)
-    then L := Round(116*Power(Y,1.0/3.0) - 16)
-    else L := Round(903.3*Y);
-  A:=Round(500*(f(X)-f(Y)));
-  B:=Round(200*(f(Y)-f(Z)));
+  if Y > 0.008856 then
+    L := Round(116.0 * Power(Y, 1.0 / 3.0) - 16.0)
+  else
+    L := Round(903.3 * Y);
+  A := Round(500 *(Calc(X) - Calc(Y)));
+  B := Round(200 *(Calc(Y) - Calc(Z)));
 
   L := EnsureRange(L, LAB_MIN, LAB_MAX);
   A := EnsureRange(A, LAB_MIN, LAB_MAX);
@@ -1293,24 +1299,28 @@ var
   Red, Green, Blue: Integer;
   X, Y, Z: Extended;
   L, A, B: Integer;
-  function f (Value:Extended):Extended;
+
+  function Calc(Value: Extended): Extended;
   begin
-    if (Value>0.207)
-      then Result := Power(Value,3.0)
-      else Result := ((116*Value)-16)/903.3;
+    if Value > 0.207 then
+      Result := Power(Value, 3.0)
+    else
+      Result := (116.0 * Value - 16.0) / 903.3;
   end;
+
 begin
-  SplitColorParts(AColor,L,A,B);
+  SplitColorParts(AColor, L, A, B);
 
-  if (L>8)
-    then Y := XYZ_MAX*Power((L+16)/116,3)
-    else Y := XYZ_MAX*L/903.3;
-  X := XYZ_MAX*f((A/500)+((L+16)/116));
-  Z := XYZ_MAX*f(((L+16)/116)-(B/200));
+  if L > 8 then
+    Y := XYZ_MAX * Power((L + 16.0) / 116.0, 3.0)
+  else
+    Y := (XYZ_MAX * L) / 903.3;
+  X := XYZ_MAX * Calc(A / 500.0 + (L + 16.0) / 116.0);
+  Z := XYZ_MAX * Calc((L + 16.0) / 116.0 - B / 200.0);
 
-  X := EnsureRange(X,XYZ_MIN,XYZ_MAX);
-  Y := EnsureRange(Y,XYZ_MIN,XYZ_MAX);
-  Z := EnsureRange(Z,XYZ_MIN,XYZ_MAX);
+  X := EnsureRange(X, XYZ_MIN, XYZ_MAX);
+  Y := EnsureRange(Y, XYZ_MIN, XYZ_MAX);
+  Z := EnsureRange(Z, XYZ_MIN, XYZ_MAX);
 
   Red   := Round( 1.876*X - 0.533*Y - 0.343*Z);
   Green := Round(-0.967*X + 1.998*Y - 0.031*Z);
