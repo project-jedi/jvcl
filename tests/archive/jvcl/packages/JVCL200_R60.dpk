@@ -443,6 +443,7 @@ contains
   Winamp in '..\common\Winamp.pas',
   Ras32 in '..\common\Ras32.pas',
   ObjSel in '..\common\ObjSel.pas',
+  JvID3v2Base in '..\source\JvID3v2Base.pas',
   JvProgressDialog in '..\source\JvProgressDialog.pas',
   JvProgressFrm in '..\source\JvProgressFrm.pas' { frmProgress }, 
   JvValidateEdit in '..\source\JvValidateEdit.pas';
