@@ -37,7 +37,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  Classes,
+  Classes, Consts,
   JvColorProvider, JvDataProviderEditors;
 
 type
@@ -49,6 +49,14 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+  TJvColorProviderAddColorStyleEditor = class(TJvDataConsumerExtPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+  
   TJvColorProviderEditor = class(TDefaultEditor)
   public
     procedure Edit; override;
@@ -108,6 +116,48 @@ begin
     for I := 0 to Get_MappingCount - 1 do
       Proc(Get_Mapping(I).Name);
   end;
+end;
+
+//=== TJvColorProviderAddColorStyleEditor ====================================
+
+function TJvColorProviderAddColorStyleEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paSortList, paRevertable];
+end;
+
+function TJvColorProviderAddColorStyleEditor.GetValue: string;
+var
+  I: Integer;
+begin
+  I := GetOrdValue;
+  if I > -1 then
+    Result := ColorProviderColorAdderRegister.Names(I)
+  else
+    Result := '';
+end;
+
+procedure TJvColorProviderAddColorStyleEditor.SetValue(const Value: string);
+var
+  I: Integer;
+begin
+  if Value = '' then
+    SetOrdValue(-1)
+  else
+  begin
+    I := ColorProviderColorAdderRegister.IndexOf(Value);
+    if I > -1 then
+      SetOrdValue(I)
+    else
+      raise EPropertyError.Create(SInvalidPropertyValue);
+  end;
+end;
+
+procedure TJvColorProviderAddColorStyleEditor.GetValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  for I := 0 to ColorProviderColorAdderRegister.Count - 1 do
+    Proc(ColorProviderColorAdderRegister.Names(I));
 end;
 
 //=== TJvColorProviderEditor =================================================
