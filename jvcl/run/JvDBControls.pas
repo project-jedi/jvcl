@@ -585,6 +585,7 @@ type
     FOnGetDataName: TGetStringEvent;
     FOnGetRecNo: TDataValueEvent;
     FOnGetRecordCount: TDataValueEvent;
+    FLeftMargin, FRightMargin:Integer;
     function GetStatusKind(State: TDataSetState): TDBStatusKind;
     procedure CaptionsChanged(Sender: TObject);
     function GetDataSetName: string;
@@ -600,6 +601,7 @@ type
     procedure SetCaptions(Value: TStrings);
     procedure SetCalcCount(Value: Boolean);
   protected
+
     procedure Loaded; override;
     function GetDefaultFontColor: TColor; override;
     function GetLabelCaption: string; override;
@@ -608,13 +610,17 @@ type
       Operation: TOperation); override;
     procedure Paint; override;
     procedure SetName(const Value: TComponentName); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateData; virtual;
     procedure UpdateStatus; virtual;
+
     property Caption;
     property DatasetState: TDataSetState read GetDatasetState;
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
   published
     property DatasetName: string read GetDataSetName write SetDataSetName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -622,10 +628,8 @@ type
     property Captions: TStrings read GetCaptions write SetCaptions;
     property Style: TDBLabelStyle read FStyle write SetStyle default lsState;
     property CalcRecCount: Boolean read FCalcCount write SetCalcCount default False;
-    property ShowOptions: TDBLabelOptions read FShowOptions write SetShowOptions
-      default doCaption;
-    property GlyphAlign: TGlyphAlign read FGlyphAlign write SetGlyphAlign
-      default glGlyphLeft;
+    property ShowOptions: TDBLabelOptions read FShowOptions write SetShowOptions default doCaption;
+    property GlyphAlign: TGlyphAlign read FGlyphAlign write SetGlyphAlign default glGlyphLeft;
     property Layout default tlCenter;
     property ShadowSize default 0;
     property Align;
@@ -2380,7 +2384,7 @@ begin
     if GlyphAlign = glGlyphLeft then
       GlyphOrigin.X := GlyphSpacing
     else {glGlyphRight}
-      GlyphOrigin.X := Left + ClientWidth - RightMargin + GlyphSpacing;
+      GlyphOrigin.X := ClientWidth - FRightMargin + GlyphSpacing;
     case Layout of
       tlTop:
         GlyphOrigin.Y := 0;
@@ -2438,13 +2442,17 @@ begin
         begin
           if GlyphAlign = glGlyphLeft then
           begin
-            RightMargin := 0;
-            LeftMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
+            if AutoSize then
+              Alignment := taRightJustify;
+            FRightMargin := 0;
+            FLeftMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
           end
           else {glGlyphRight}
           begin
-            LeftMargin := 0;
-            RightMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
+            if AutoSize then
+              Alignment := taLeftJustify;
+            FLeftMargin := 0;
+            FRightMargin := (FGlyph.Width div GlyphColumns) + GlyphSpacing * 2;
           end;
           if FCell = nil then
             FCell := TBitmap.Create;
@@ -2455,15 +2463,15 @@ begin
         begin
           FCell.Free;
           FCell := nil;
-          LeftMargin := 0;
-          RightMargin := 0;
+          FLeftMargin := 0;
+          FRightMargin := 0;
         end;
       lsRecordNo:
         begin
           FCell.Free;
           FCell := nil;
-          LeftMargin := 0;
-          RightMargin := 0;
+          FLeftMargin := 0;
+          FRightMargin := 0;
           FRecordNo := -1;
           if FDataLink.Active then
           begin
@@ -2482,8 +2490,8 @@ begin
         begin
           FCell.Free;
           FCell := nil;
-          LeftMargin := 0;
-          RightMargin := 0;
+          FLeftMargin := 0;
+          FRightMargin := 0;
         end;
     end;
   end
@@ -2586,6 +2594,12 @@ begin
     if not (csLoading in ComponentState) then
       UpdateData;
   end;
+end;
+
+
+procedure TJvDBStatusLabel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth + FLeftMargin + FRightMargin, AHeight);
 end;
 
 end.
