@@ -83,10 +83,10 @@ end;
 procedure TfrmMain.WebBrowser1NavigateComplete2(Sender: TObject;
   const pDisp: IDispatch; var URL: OleVariant);
 begin
-  if string(URL) <> 'about:blank' then
+  if Edit1.Text <> '' then
   begin
-    if JvDomainUpDown1.Items.IndexOf(URL) < 0 then
-      JvDomainUpDown1.Items.Insert(0,URL);
+    if JvDomainUpDown1.Items.IndexOf(Edit1.Text) < 0 then
+      JvDomainUpDown1.Items.Insert(0,Edit1.Text);
   end;
 end;
 
