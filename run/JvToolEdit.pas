@@ -152,7 +152,7 @@ type
     FClickKey: TShortCut;
     FReadOnly: Boolean;
     FDirectInput: Boolean;
-    FAlwaysEnable: Boolean;
+    FAlwaysEnableButton: Boolean;
     FPopupAlign: TPopupAlign;
     FGroupIndex: Integer; // RDB
     FDisabledColor: TColor; // RDB
@@ -303,7 +303,7 @@ type
     {$IFDEF VisualCLX}
     property Alignment;
     {$ENDIF VisualCLX}
-    property AlwaysEnable: Boolean read FAlwaysEnable write FAlwaysEnable default False;
+    property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
     property Button: TJvEditButton read FButton;
     property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
     property ButtonHint: string read GetButtonHint write SetButtonHint;
@@ -353,6 +353,7 @@ type
     property Action;
     property Align;
     property Alignment;
+    property AlwaysEnableButton;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -1906,6 +1907,7 @@ begin
   FButton.Parent := FBtnControl;
   FButton.Align := alClient;
   TJvEditButton(FButton).OnClick := EditButtonClick;
+  FAlwaysEnableButton := False;
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
@@ -2078,7 +2080,7 @@ end;
 
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
 begin
-  if (not FReadOnly) or AlwaysEnable then
+  if (not FReadOnly) or AlwaysEnableButton then
     ButtonClick;
 end;
 
