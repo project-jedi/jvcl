@@ -1560,7 +1560,7 @@ const
     finally
       UnLock;
     end;
-    SetString(Result, STInfo.PlanDesc, STInfo.InfoLen - 1);
+    SetString(Result, PChar(@STInfo.PlanDesc[1]), STInfo.InfoLen - 1);
   end;
 
   function TUIBLibrary.DSQLInfoStatementType(var StmtHandle: IscStmtHandle): TUIBStatementType;
@@ -1838,7 +1838,7 @@ type
       Code: Char;
       Length: Word;
       Value: Cardinal;
-      reserved: byte; // alignement (8)
+      reserved: Word; // alignement (8)
     end;
   begin
     Lock;
