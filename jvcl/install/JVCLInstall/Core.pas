@@ -148,6 +148,10 @@ type
       { Returns the first installer page. From this page the installer will
         browse through all pages. }
 
+    function GetJCLDir: WideString;
+      { Returns the location of the JCL source directory. This is used for
+        the compilation of the JCL DCP file for C++ Builder targets. }
+
     function CanInstall: Boolean;
       { If there is no installation possible the installer should return False.
         The package installer does not display any message box. This is the job
