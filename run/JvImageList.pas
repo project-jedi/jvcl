@@ -60,7 +60,7 @@ type
     function GetImageList: TImageList;
     procedure SetBitmap(ABitmap: TBitmap);
     procedure SetKind(AKind: TJvImageListItemKind);
-    procedure SetResourceName(AResourceName: string);
+    procedure SetResourceName(const AResourceName: string);
     procedure SetTransparentColor(AColor: TColor);
     procedure UpdateImageListItem(AImageList: TImageList; AIndex: Integer);
   protected
@@ -489,7 +489,7 @@ begin
   end;
 end;
 
-procedure TJvImageListItem.SetResourceName(AResourceName: string);
+procedure TJvImageListItem.SetResourceName(const AResourceName: string);
 begin
   if (FKind in [ikResourceBitmap, ikMappedResourceBitmap]) and
     (FResourceName <> AResourceName) then

@@ -55,20 +55,20 @@ procedure SwapInt(var I1, I2: Integer);
 function Spaces(Count: Integer): string;
 function DupStr(const Str: string; Count: Integer): string;
 function DupChar(C: Char; Count: Integer): string;
-procedure Msg(AMsg: string);
+procedure Msg(const AMsg: string);
 function RectW(R: TRect): Integer;
 function RectH(R: TRect): Integer;
 function IncColor(AColor: Longint; AOffset: Byte): Longint;
 function DecColor(AColor: Longint; AOffset: Byte): Longint;
 function IsItAFilledBitmap(Bmp: TBitmap): Boolean;
-procedure DrawTextInRectWithAlign(DC: HDC; R: TRect; Text: string;
+procedure DrawTextInRectWithAlign(DC: HDC; R: TRect; const Text: string;
   HAlign: TglHorAlign; VAlign: TglVertAlign;
   Style: TglTextStyle; Fnt: TFont; Flags: UINT);
 
-procedure DrawTextInRect(DC: HDC; R: TRect; Text: string;
+procedure DrawTextInRect(DC: HDC; R: TRect; const Text: string;
   Style: TglTextStyle; Fnt: TFont; Flags: UINT);
 
-procedure ExtTextOutExt(DC: HDC; X, Y: Integer; R: TRect; Text: string;
+procedure ExtTextOutExt(DC: HDC; X, Y: Integer; R: TRect; const Text: string;
   Style: TglTextStyle; ADelineated, ASupress3D: Boolean;
   FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
   Illumination: TJvgIllumination; Gradient: TJvgGradient; Font: TFont);
@@ -103,7 +103,7 @@ procedure GetWindowImageFrom(Control: TWinControl; X, Y: Integer; ADrawSelf, ADr
 procedure GetWindowImage(Control: TWinControl; ADrawSelf, ADrawChildWindows: Boolean; DC: HDC);
 procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
 function CreateRotatedFont(F: TFont; Escapement: Integer): HFONT;
-function FindMainWindow(AWndClass, AWndTitle: string): HWND;
+function FindMainWindow(const AWndClass, AWndTitle: string): HWND;
 procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
 
 function CalcMathString(AExpression: string): Single;
@@ -112,14 +112,14 @@ function IIF(AExpression: Boolean; IfTrue, IfFalse: Variant): Variant; overload;
 function IIF(AExpression: Boolean; const IfTrue, IfFalse: string): string; overload;
 
 function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
-procedure TypeStringOnKeyboard(S: string);
+procedure TypeStringOnKeyboard(const S: string);
 //function NextStringGridCell( Grid: TStringGrid ): Boolean;
 procedure DrawTextExtAligned(Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: Boolean);
-procedure LoadComponentFromTextFile(Component: TComponent; FileName: string);
-procedure SaveComponentToTextFile(Component: TComponent; FileName: string);
+procedure LoadComponentFromTextFile(Component: TComponent; const FileName: string);
+procedure SaveComponentToTextFile(Component: TComponent; const FileName: string);
 function ComponentToString(Component: TComponent): string;
 procedure StringToComponent(Component: TComponent; const Value: string);
-function PlayWaveResource(ResName: string): Boolean;
+function PlayWaveResource(const ResName: string): Boolean;
 function UserName: string;
 function ComputerName: string;
 function CreateIniFileName: string;
@@ -224,7 +224,7 @@ end;
 
 { Modal window with (i) icon and single OK button }
 
-procedure Msg(AMsg: string);
+procedure Msg(const AMsg: string);
 begin
   MessageBox(GetForegroundWindow, PChar(AMsg), '',
     MB_APPLMODAL or MB_ICONINFORMATION or MB_OK);
@@ -313,7 +313,7 @@ end;
   Flags          - Extra parameters for Windows.DrawText
 }
 
-procedure DrawTextInRectWithAlign(DC: HDC; R: TRect; Text: string;
+procedure DrawTextInRectWithAlign(DC: HDC; R: TRect; const Text: string;
   HAlign: TglHorAlign; VAlign: TglVertAlign;
   Style: TglTextStyle; Fnt: TFont; Flags: UINT);
 begin
@@ -346,7 +346,8 @@ end;
   Flags          - Extra parameters for Windows.DrawText
 }
 
-procedure DrawTextInRect(DC: HDC; R: TRect; Text: string; Style: TglTextStyle; Fnt: TFont; Flags: UINT);
+procedure DrawTextInRect(DC: HDC; R: TRect; const Text: string; Style: TglTextStyle;
+  Fnt: TFont; Flags: UINT);
 var
   OldBkMode: Integer;
   OldFont: Windows.HFONT;
@@ -428,7 +429,7 @@ end;
   Gradient       - Gradient for filling letters of text
 }
 
-procedure ExtTextOutExt(DC: HDC; X, Y: Integer; R: TRect; Text: string;
+procedure ExtTextOutExt(DC: HDC; X, Y: Integer; R: TRect; const Text: string;
   Style: TglTextStyle; ADelineated, ASupress3D: Boolean;
   FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
   Illumination: TJvgIllumination; Gradient: TJvgGradient; Font: TFont);
@@ -1374,12 +1375,11 @@ end;
 
 { Returns main window of application }
 
-function FindMainWindow(AWndClass, AWndTitle: string): HWND;
+function FindMainWindow(const AWndClass, AWndTitle: string): HWND;
 begin
   Result := 0;
-  if (AWndClass = '') and (AWndTitle = '') then
-    Exit;
-  Result := FindWindow(PChar(AWndClass), PChar(AWndTitle));
+  if (AWndClass <> '') or (AWndTitle <> '') then
+    Result := FindWindow(PChar(AWndClass), PChar(AWndTitle));
 end;
 
 { Calculates colors of shadow and lighted border for given base color. }
@@ -1627,7 +1627,7 @@ begin
   end;
 end;
 
-procedure TypeStringOnKeyboard(S: string);
+procedure TypeStringOnKeyboard(const S: string);
 var
   I: Integer;
   VK: Byte;
@@ -1786,7 +1786,7 @@ end;
 
 { Deserialization: loading component from text file }
 
-procedure LoadComponentFromTextFile(Component: TComponent; FileName: string);
+procedure LoadComponentFromTextFile(Component: TComponent; const FileName: string);
 var
   MemStream: TMemoryStream;
   FileStream: TFileStream;
@@ -1826,7 +1826,7 @@ end;
 
 { Serialization: writing component to text file }
 
-procedure SaveComponentToTextFile(Component: TComponent; FileName: string);
+procedure SaveComponentToTextFile(Component: TComponent; const FileName: string);
 var
   MemStream: TMemoryStream;
   FileStream: TFileStream;
@@ -1872,7 +1872,7 @@ end;
 
 { Plays WAV resource }
 
-function PlayWaveResource(ResName: string): Boolean;
+function PlayWaveResource(const ResName: string): Boolean;
 var
   WaveHandle: THandle;
   WavePointer: Pointer;
