@@ -41,7 +41,7 @@ type
   {$ENDIF}
   TCharSet = TSysCharSet;
 
-{ ** Common string handling routines ** }
+  { ** Common string handling routines ** }
 
 function StrToOem(const AnsiStr: string): string;
 { StrToOem translates a string from the Windows character set into the
@@ -192,9 +192,9 @@ implementation
 uses
   {$IFDEF WIN32}
   Windows;
-  {$ELSE}
+{$ELSE}
   WinTypes, WinProcs;
-  {$ENDIF}
+{$ENDIF}
 
 function StrToOem(const AnsiStr: string): string;
 begin
@@ -202,9 +202,9 @@ begin
   if Length(Result) > 0 then
     {$IFDEF WIN32}
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
-    {$ELSE}
+  {$ELSE}
     AnsiToOemBuff(@AnsiStr[1], @Result[1], Length(Result));
-    {$ENDIF}
+  {$ENDIF}
 end;
 
 function OemToAnsiStr(const OemStr: string): string;
@@ -213,9 +213,9 @@ begin
   if Length(Result) > 0 then
     {$IFDEF WIN32}
     OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
-    {$ELSE}
+  {$ELSE}
     OemToAnsiBuff(@OemStr[1], @Result[1], Length(Result));
-    {$ENDIF}
+  {$ENDIF}
 end;
 
 function IsEmptyStr(const S: string; const EmptyChars: TCharSet): Boolean;
@@ -607,7 +607,7 @@ end;
 
 {$IFDEF WIN32}
 {$IFDEF COMPILER3_UP}
-    { C++Builder or Delphi 3.0 }
+{ C++Builder or Delphi 3.0 }
 {$DEFINE MBCS}
 {$ENDIF}
 {$ENDIF}
@@ -616,7 +616,7 @@ function QuotedString(const S: string; Quote: Char): string;
 {$IFDEF MBCS}
 begin
   Result := AnsiQuotedStr(S, Quote);
-{$ELSE}
+  {$ELSE}
 var
   I: Integer;
 begin
@@ -625,12 +625,12 @@ begin
     if Result[I] = Quote then
       Insert(Quote, Result, I);
   Result := Quote + Result + Quote;
-{$ENDIF MBCS}
+  {$ENDIF MBCS}
 end;
 
 function ExtractQuotedString(const S: string; Quote: Char): string;
 var
-{$IFDEF MBCS}
+  {$IFDEF MBCS}
   P: PChar;
 begin
   P := PChar(S);
@@ -638,7 +638,7 @@ begin
     Result := AnsiExtractQuotedStr(P, Quote)
   else
     Result := S;
-{$ELSE}
+  {$ELSE}
   I: Integer;
 begin
   Result := S;
@@ -654,7 +654,7 @@ begin
         Delete(Result, I, 1);
     end;
   end;
-{$ENDIF MBCS}
+  {$ENDIF MBCS}
 end;
 
 function Numb2USA(const S: string): string;
@@ -768,8 +768,8 @@ end;
 function RomanToInt(const S: string): Longint;
 const
   RomanChars = ['C', 'D', 'I', 'L', 'M', 'V', 'X'];
-  RomanValues: array ['C'..'X'] of Word =
-    (100, 500, 0, 0, 0, 0, 1, 0, 0, 50, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 10);
+  RomanValues: array['C'..'X'] of Word =
+  (100, 500, 0, 0, 0, 0, 1, 0, 0, 50, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 10);
 var
   Index, Next: Char;
   I: Integer;
@@ -950,22 +950,29 @@ begin
   end;
   { now move HelpWilds over InputStr }
   for I := 0 to Diff do
+  begin
     for J := 1 to Length(HelpWilds) do
-      if (InputStr[I + J] = HelpWilds[J]) or (HelpWilds[J] = '?') then
+    begin
+      if (InputStr[I + J] = HelpWilds[J]) or
+        (HelpWilds[J] = '?') then
+      begin
         if J = Length(HelpWilds) then
         begin
           Result := I + 1;
           Exit;
-        end
+        end;
+      end
       else
         Break;
+    end;
+  end;
   Result := 0;
 end;
 
 function IsWild(InputStr, Wilds: string; IgnoreCase: Boolean): Boolean;
 
   function SearchNext(var Wilds: string): Integer;
-  { looking for next *, returns position and string until position }
+    { looking for next *, returns position and string until position }
   begin
     Result := Pos('*', Wilds);
     if Result > 0 then
@@ -1108,6 +1115,7 @@ begin
 end;
 
 {$IFNDEF COMPILER4_UP}
+
 function FindCmdLineSwitch(const Switch: string; SwitchChars: TCharSet;
   IgnoreCase: Boolean): Boolean;
 var
@@ -1169,5 +1177,4 @@ begin
 end;
 
 end.
-
 
