@@ -60,34 +60,6 @@ uses
   {$ENDIF VisualCLX}
   JvClxUtils, JvComponent, JvTypes;
 
-resourcestring
-  sJvInspItemHasParent = 'Item already assigned to another parent.';
-  sJvInspItemValueException = 'Exception ';
-  sJvInspItemUnInitialized = '(uninitialized)';
-  sJvInspItemUnassigned = '(unassigned)';
-  sJvInspItemNoValue = '(no value)';
-  sJvInspItemNotAChild = 'Specified Item is not a child of this item.';
-  sJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
-  sJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
-  sJvInspItemInvalidPropValue = 'Invalid property value %s.';
-  sJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
-  sJvInspDataNotInit = 'Data not initialized.';
-  sJvInspDataNotAssigned = 'Data not assigned.';
-  sJvInspDataNoValue = 'Data has no value.';
-  sJvInspDataStrTooLong = 'String too long.';
-  sJvInspRegNoCompare = 'Cannot compare %s to %s.';
-  sJvInspNoGenReg = 'Unable to create generic item registration list.';
-  sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
-  sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
-
-  // (rom) converted assertions
-  sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
-  sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
-  sJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
-  sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
-  sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
-  sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
-
 const
   { Inspector Row Size constants }
   irsNoReSize = $00000000;
@@ -145,8 +117,8 @@ type
   TJvInspectorEventData = class;
   TJvInspectorPropData = class;
 
-{$HPPEMIT 'class TJvCustomInspectorItem;'}
-{$HPPEMIT 'class TJvCustomInspectorData;'}
+  {$HPPEMIT 'class TJvCustomInspectorItem;'}
+  {$HPPEMIT 'class TJvCustomInspectorData;'}
 
   TInspectorItemFlag = (iifReadonly, iifHidden, iifExpanded, iifVisible,
     iifQualifiedNames, iifAutoUpdate, iifMultiLine, iifValueList,
@@ -423,7 +395,7 @@ type
     function FocusedItem: TJvCustomInspectorItem; virtual;
     function VisibleIndex(const AItem: TJvCustomInspectorItem): Integer; virtual;
     procedure RefreshValues;
-    (* some easier to use methods added by WAP *)
+    { some easier to use methods added by WAP }
     procedure AddComponent(const AComponent: TComponent; DisplayName: string; Expanded: Boolean);
     procedure Clear;
   published
@@ -1672,6 +1644,26 @@ type
     property TypeInfo: PTypeInfo read FTypeInfo;
   end;
 
+resourcestring
+  sJvInspItemHasParent = 'Item already assigned to another parent.';
+  sJvInspItemValueException = 'Exception ';
+  sJvInspItemUnInitialized = '(uninitialized)';
+  sJvInspItemUnassigned = '(unassigned)';
+  sJvInspItemNoValue = '(no value)';
+  sJvInspItemNotAChild = 'Specified Item is not a child of this item.';
+  sJvInspItemColNotFound = 'Specified column does not belong to this compound item.';
+  sJvInspItemItemIsNotCol = 'Specified item is not a column of this compound item.';
+  sJvInspItemInvalidPropValue = 'Invalid property value %s.';
+  sJvInspDataNoAccessAs = 'Data cannot be accessed as %s.';
+  sJvInspDataNotInit = 'Data not initialized.';
+  sJvInspDataNotAssigned = 'Data not assigned.';
+  sJvInspDataNoValue = 'Data has no value.';
+  sJvInspDataStrTooLong = 'String too long.';
+  sJvInspRegNoCompare = 'Cannot compare %s to %s.';
+  sJvInspNoGenReg = 'Unable to create generic item registration list.';
+  sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
+  sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
+
 implementation
 
 uses
@@ -1699,6 +1691,15 @@ var
   FGenItemReg: TJvInspectorRegister;
   FVarItemReg: TJvInspectorRegister;
   FPropItemReg: TJvInspectorRegister;
+
+resourcestring
+  // (rom) converted assertions
+  sJvAssertSetTopIndex = 'TJvCustomInspector.SetTopIndex: unexpected MaxIdx <= -1';
+  sJvAssertInspectorPainter = 'TJvInspectorCustomCompoundItem.DivideRect: unexpected Inspector.Painter = nil';
+  sJvAssertDataParent = 'TJvInspectorSetMemberData.New: unexpected ADataParent = nil';
+  sJvAssertParent = 'TJvInspectorSetMemberData.New: unexpected AParent = nil';
+  sJvAssertPropInfo = 'TJvInspectorPropData.New: unexpected PropInfo = nil';
+  sJvAssertINIFile = 'TJvInspectorINIFileData.New: unexpected AINIFile = nil';
 
 //=== TJvPopupListBox ========================================================
 
@@ -3011,7 +3012,8 @@ end;
 procedure TJvCustomInspector.Resize;
 begin
   inherited Resize;
-  if csCreating in ControlState then Exit;
+  if csCreating in ControlState then
+    Exit;
   if not BandSizing then
   begin
     FImageHeight := 0; // Force recalculation of bands
@@ -3246,7 +3248,7 @@ begin
       NewItem := nil;
 
     if not (csDestroying in ComponentState) then
-      // bugfix WAP.  Why repaint the screen when the component is going away anyways.
+      // bugfix WAP.  Why repaint the screen when the component is going away anyway.
       if DoBeforeItemSelect(NewItem) then
       begin
         if Selected <> nil then
@@ -3260,7 +3262,6 @@ begin
         DoItemSelected;
         InvalidateItem;
       end;
-
   end;
 end;
 
@@ -3338,7 +3339,8 @@ var
   BCount: Integer;
   BPerPage: Integer;
 begin
-  if csDestroying in ComponentState then Exit;
+  if csDestroying in ComponentState then
+    Exit;
 
   if not UseBands then
   begin
@@ -4930,7 +4932,8 @@ begin
       Y := ListBox.Canvas.TextWidth(ListBox.Items[I]);
       if TListBox(ListBox).Style <> lbStandard then
         DoMeasureListItemWidth(ListBox, I, Y);
-      if Y > J then J := Y;
+      if Y > J then
+        J := Y;
     end;
     if ListBox.Items.Count > ListCount then
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
@@ -5880,9 +5883,9 @@ end;
 function TJvCustomInspectorItem.GetName: string;
 begin
   if Assigned(FData) then
-    result := Self.FData.Name
+    Result := Self.FData.Name
   else
-    result := '';
+    Result := '';
 end;
 
 constructor TJvCustomInspectorItem.Create(const AParent: TJvCustomInspectorItem;
@@ -6306,8 +6309,10 @@ var
   FirstBand: Integer;
   BandsVisible: Integer;
 begin
-  if not Assigned(Inspector) then exit;
-  if csDestroying in Inspector.ComponentState then exit; // bugfix attempt. WAP.Self
+  if not Assigned(Inspector) then
+    Exit;
+  if csDestroying in Inspector.ComponentState then
+    Exit; // bugfix attempt. WAP.Self
 
   {$IFDEF MSWINDOWS}
   //  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
@@ -6393,7 +6398,7 @@ end;
 
 function TJvInspectorCustomCategoryItem.GetName: string; //override; // NEW: Warren added.
 begin
-  result := FName;
+  Result := FName;
 end;
 
 //=== TJvInspectorCompoundColumn =============================================
@@ -7040,8 +7045,8 @@ var
   IntVal: Integer;
 begin
   IntVal := Ord(Data.AsOrdinal);
-  if (IntVal < 0) then // prevent GetEnumName crash. WAP.
-    result := IntToStr(IntVal)
+  if IntVal < 0 then // prevent GetEnumName crash. WAP.
+    Result := IntToStr(IntVal)
   else
     Result := GetEnumName(Data.TypeInfo, IntVal);
 end;
@@ -7110,7 +7115,7 @@ begin
       end
       else
       begin
-        Result := '0'; // Inspector compononent doesn't handle this exception well, so mask it. workaround. WAP
+        Result := '0'; // Inspector componnent doesn't handle this exception well, so mask it. workaround. WAP
       end;
     end;
   end;
@@ -11256,19 +11261,19 @@ const
     (Value: irsValueHeight; Name: 'irsValueHeight'),
     (Value: irsItemHeight; Name: 'irsItemHeight'));
 
-function irsToInt(const Ident: string; var Int: Longint): Boolean;
+function IrsToInt(const Ident: string; var Int: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, Int, SizingConsts);
 end;
 
-function IntToirs(Int: Longint; var Ident: string): Boolean;
+function IntToIrs(Int: Longint; var Ident: string): Boolean;
 begin
   Result := IntToIdent(Int, Ident, SizingConsts);
 end;
 
 procedure RegisterConsts;
 begin
-  RegisterIntegerConsts(TypeInfo(TItemRowSizing), irsToInt, IntToirs);
+  RegisterIntegerConsts(TypeInfo(TItemRowSizing), IrsToInt, IntToIrs);
 end;
 
 procedure TJvCustomInspector.SetInspectObject(const Value: TObject);
@@ -11279,7 +11284,7 @@ begin
   FInspectObject := Value;
 end;
 
-(* some ease of use improvements:WAP *)
+{ some ease of use improvements:WAP }
 
 procedure TJvCustomInspector.AddComponent(const AComponent: TComponent;
   DisplayName: string; Expanded: Boolean);
@@ -11351,9 +11356,11 @@ procedure TJvCustomInspector.AdjustClientRect(var Rect: TRect);
 begin
   inherited AdjustClientRect(Rect);
   if FHorzScrollBar.Align <> alBottom then
-    if FHorzScrollBar.Visible then Dec(Rect.Bottom, FHorzScrollBar.Height);
+    if FHorzScrollBar.Visible then
+      Dec(Rect.Bottom, FHorzScrollBar.Height);
   if FVertScrollBar.Align <> alRight then
-    if FVertScrollBar.Visible then Dec(Rect.Right, FVertScrollBar.Width);
+    if FVertScrollBar.Visible then
+      Dec(Rect.Right, FVertScrollBar.Width);
 end;
 {$ENDIF VisualCLX}
 
