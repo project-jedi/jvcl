@@ -34,6 +34,10 @@ uses
   Dialogs, Grids, Menus, Clipbrd;
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TYearData = record
     DisPlaytext: string;
     InfoText: string;

@@ -66,6 +66,18 @@ type
     pos: TPoint;
   end;
 
+  TPointX = class(TPersistent)
+  private
+    FX, FY: Integer;
+  public
+    function Point: TPoint;
+    procedure SetPoint(const Pt: TPoint);
+    procedure Assign(Source: TPersistent); override;
+  published
+    property X: Integer read FX write FX;
+    property Y: Integer read FY write FY;
+  end;
+
   TjanConMode = (jcmTL, jcmTR, jcmBR, jcmBL);
   TjanConPos = (jcpTL, jcpTR, jcpBR, jcpBL);
   TjanConShape = (jcsTLBR, jcsTRBL);
@@ -92,14 +104,14 @@ type
     FToLogic: TJvLogic;
     FFromGate: integer;
     FToGate: integer;
-    FFromPoint: TPoint;
-    FToPoint: TPoint;
+    FFromPoint: TPointX;
+    FToPoint: TPointX;
     procedure SetFromLogic(const Value: TJvLogic);
     procedure SetToLogic(const Value: TJvLogic);
     procedure SetFromGate(const Value: integer);
     procedure SetToGate(const Value: integer);
-    procedure SetFromPoint(const Value: TPoint);
-    procedure SetToPoint(const Value: TPoint);
+    procedure SetFromPoint(const Value: TPointX);
+    procedure SetToPoint(const Value: TPointX);
     procedure DisConnectFinal;
   protected
     { Protected declarations }
@@ -109,6 +121,7 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoMouseDown(x, y: integer);
@@ -121,10 +134,10 @@ type
     { Published declarations }
     property FromLogic: TJvLogic read FFromLogic write SetFromLogic;
     property FromGate: integer read FFromGate write SetFromGate;
-    property FromPoint: TPoint read FFromPoint write SetFromPoint;
+    property FromPoint: TPointX read FFromPoint write SetFromPoint;
     property ToLogic: TJvLogic read FToLogic write SetToLogic;
     property ToGate: integer read FToGate write SetToGate;
-    property ToPoint: TPoint read FToPoint write SetToPoint;
+    property ToPoint: TPointX read FToPoint write SetToPoint;
   end;
 
   TJvLogic = class(TGraphicControl)
@@ -326,6 +339,31 @@ implementation
 {$R ../Resources/JvSimImages.res}
 {$ENDIF}
 
+{ TPointX }
+
+procedure TPointX.Assign(Source: TPersistent);
+begin
+  if Source is TPointX then
+  begin
+    FX := TPointX(Source).FX;
+    FY := TPointX(Source).FY;
+  end
+  else
+    inherited;
+end;
+
+function TPointX.Point: TPoint;
+begin
+  Result.X := FX;
+  Result.Y := FY;
+end;
+
+procedure TPointX.SetPoint(const Pt: TPoint);
+begin
+  FX := Pt.X;
+  FY := Pt.Y;
+end;
+
 procedure BinCheck(Acontrol: Tcontrol);
 // general bin procedure
 var
@@ -369,6 +407,8 @@ begin
   conSize := 8;
   conPos := jcpTL;
   Edge := 0.5;
+  FFromPoint := TPointX.Create;
+  FToPoint := TPointX.Create;
 end;
 
 procedure TJvSIMConnector.DoMouseDown(x, y: integer);
@@ -756,14 +796,16 @@ begin
   FToLogic := Value;
 end;
 
-procedure TJvSIMConnector.SetFromPoint(const Value: TPoint);
+procedure TJvSIMConnector.SetFromPoint(const Value: TPointX);
 begin
-  FFromPoint := Value;
+  if Assigned(Value) then
+    FFromPoint.Assign(Value);
 end;
 
-procedure TJvSIMConnector.SetToPoint(const Value: TPoint);
+procedure TJvSIMConnector.SetToPoint(const Value: TPointX);
 begin
-  FToPoint := Value;
+  if Assigned(Value) then
+    FToPoint.Assign(Value);
 end;
 
 procedure TJvSIMConnector.AnchorCorner(logTL: TPoint; ACorner: TjanConMode);
@@ -1364,6 +1406,13 @@ begin
   end;
   // clear logic inputs and lights
   setvo;
+end;
+
+destructor TJvSIMConnector.Destroy;
+begin
+  FFromPoint.Free;
+  FToPoint.Free;
+  inherited Destroy;
 end;
 
 { TJvLogic }
