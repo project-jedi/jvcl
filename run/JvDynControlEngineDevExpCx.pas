@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
-  Buttons, Dialogs, FileCtrl,
+  Buttons, Dialogs, FileCtrl, ActnList, 
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
@@ -607,7 +607,7 @@ type
   end;
 
   TJvDynControlCxButton = class(TcxButton, IUnknown, IJvDynControl, IJvDynControlButton,
-    IJvDynControlDevExpCx)
+    IJvDynControlDevExpCx, IJvDynControlAction)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -623,6 +623,9 @@ type
     procedure ControlSetLayout(Value: TButtonLayout);
     procedure ControlSetDefault(Value: Boolean);
     procedure ControlSetCancel(Value: Boolean);
+
+    // IJvDynControlAction
+    procedure ControlSetAction(Value: TCustomAction);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -2583,6 +2586,11 @@ end;
 procedure TJvDynControlCxButton.ControlSetCancel(Value: Boolean);
 begin
   Cancel := Value;
+end;
+
+procedure TJvDynControlCxButton.ControlSetAction(Value: TCustomAction);
+begin
+  Action := Value;
 end;
 
 
