@@ -155,7 +155,9 @@ type
     property ColorOff;
     property Digits;
     property Kind;
+    property Margin;
     property SlantAngle;
+    property Spacing;
   end;
 
   TJvSegmentLEDDigits = class(TPersistent)
@@ -196,7 +198,7 @@ type
 implementation
 
 uses
-  contnrs, math;
+  Controls, contnrs, math;
 
 const
   MapChToSeg7: string =
@@ -413,6 +415,7 @@ end;
 constructor TJvCustomSegmentLEDDisplay.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque];
   FDigits := TObjectList.Create(True);
   FDigitHeight := 40;
   FDigitWidth := 24;
