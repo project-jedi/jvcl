@@ -298,6 +298,15 @@ function DSAMessageDlgEx(const DlgID: Integer; const Caption, Msg: string; const
   const HelpButton: Integer = -1): Integer; overload;
 
 //--------------------------------------------------------------------------------------------------
+// Generic DSA dialog
+//--------------------------------------------------------------------------------------------------
+function CreateDSAMessageForm(const ACaption, Msg: string; const APicture: TGraphic;
+  const Buttons: array of string; const Results: array of Integer; const HelpCtx: Integer;
+  const CheckCaption: string; const Center: TDlgCenterKind = dckScreen; const ATimeout: Integer = 0;
+  const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
+  HelpButton: Integer = -1): TDSAMessageForm;
+
+//--------------------------------------------------------------------------------------------------
 // DSA registration
 //--------------------------------------------------------------------------------------------------
 
