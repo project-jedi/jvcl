@@ -41,10 +41,7 @@ interface
 
 
 uses
-  QWindows,
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
+  QWindows, 
   Classes, Contnrs, QGraphics, QControls, QImgList,
   JclBase,
   JvQComponent, JvQDataProviderIntf;

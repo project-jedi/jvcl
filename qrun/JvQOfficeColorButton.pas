@@ -13,20 +13,20 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvColorBtn.PAS, released on 2002-05-26.
+The Original Code is: JvOfficeColorButton.PAS, released on 2004-02-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net]
-Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
+The Initial Developer of the Original Code is dejoy [dejoy att ynl dott gov dott cn]
+Portions created by Peter Thörnqvist are Copyright (C) 2004 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-  dejoy(dejoy att ynl dott gov dott cn)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Description:
-  A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4
+  A office color selection button that mimics the one on the 'Display Properties'
+  page in Win95/NT4
 
 Known Issues:
     If the OtherCaption is set to an empty string, the default '&Other..' magically appears.
@@ -264,8 +264,7 @@ begin
     DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
-  if MouseOver and Enabled or (csDesigning in ComponentState) then 
-    QWindows. 
+  if MouseOver and Enabled or (csDesigning in ComponentState) then
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
 

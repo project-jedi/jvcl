@@ -1217,7 +1217,7 @@ begin
     if ((FRollDirection = rdCollapse) and (NewOffset = 0)) or
       ((FRollDirection = rdExpand) and (NewOffset = FWinXPBar.FItemHeight)) then
       Terminate; 
-    WakeUpGUIThread; 
+    Application.ProcessMessages; 
 
     { idle process }
     Sleep(FWinXPBar.FRollDelay);

@@ -801,8 +801,7 @@ begin
   begin
     if (FState in [bsDown, bsExclusive]) or
       (FMouseInControl and (FState <> bsDisabled)) or
-      (csDesigning in ComponentState) then 
-      QWindows. 
+      (csDesigning in ComponentState) then
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Flat] or BF_RECT);
     InflateRect(PaintRect, -1, -1);
@@ -853,8 +852,7 @@ begin
     DrawThemedFrameControl(Self, Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
   end
   else
-  if FMouseInControl and Enabled or (csDesigning in ComponentState) then 
-    QWindows. 
+  if FMouseInControl and Enabled or (csDesigning in ComponentState) then
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
   { find middle pixel }

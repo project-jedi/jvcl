@@ -63,6 +63,8 @@ type
   TBevelKind = JvQExControls.TBevelKind;
   {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+  function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+    Flags: Cardinal): LongBool;
 
 
 type
@@ -103,8 +105,8 @@ type
   private
     FSearchText: string;
     FSearchTickCount: Longint;
-  protected  
-    procedure CreateWidget; override;
+  protected 
+    procedure CreateWnd; override; 
     function WidgetFlags: Integer; override; 
     procedure KeyPress(var Key: Char); override;
   end;
@@ -120,6 +122,20 @@ uses
 const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
+
+
+
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  Result :=  QWindows.ColorToRGB(Color, Instance);
+end;
+
+function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+  Flags: Cardinal): LongBool;
+begin
+  Result := QWindows.DrawEdge(Handle, Rect, Edge, Flags);
+end;
+
 
 //=== { TJvForm } ============================================================
 
@@ -142,18 +158,14 @@ end;
 
 
 
-
-
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+procedure TJvPopupListBox.CreateWnd;
 begin
-  result :=  QWindows.ColorToRGB(Color, Instance);
+  inherited CreateWnd;  
+  QWidget_setFocus(Handle); 
 end;
 
-procedure TJvPopupListBox.CreateWidget;
-begin
-  inherited CreateWidget;
-  QWidget_setFocus(Handle);
-end;
+
+
 
 function TJvPopupListBox.WidgetFlags: Integer;
 begin

@@ -961,8 +961,7 @@ begin
     Canvas.Font := Self.Font;
     PaintRect := Rect(0, 0, Width, Height);
     if not NoBorder then
-    begin 
-      QWindows. 
+    begin
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
         FillStyles[Transparent] or BF_RECT);
       InflateRect(PaintRect, -1, -1);

@@ -174,8 +174,7 @@ begin
  
   FBmpImage.Canvas.Start; 
   GradientFillRect(FBmpImage.Canvas, R, ColorFrom, ColorTo, fdLeftToRight, 255);
-  if BorderStyle = bsSingle then 
-    QWindows. 
+  if BorderStyle = bsSingle then
     DrawEdge(FBmpImage.Canvas.Handle, R, EDGE_SUNKEN, BF_TOP or BF_RIGHT or BF_BOTTOM or BF_LEFT); 
   FBmpImage.Canvas.Stop; 
 end;

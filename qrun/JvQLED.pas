@@ -177,9 +177,9 @@ begin
   Canvas.CopyMode := cmSrcAnd;
   with Canvas do
   begin
-    CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect);
+    CopyRect(DestRect, FImgMask.Canvas, SrcRect);
     CopyMode := cmSrcPaint;
-    CopyRect(Canvas,DestRect, FImgPict.Canvas, SrcRect);
+    CopyRect(DestRect, FImgPict.Canvas, SrcRect);
   end;
 end;
 

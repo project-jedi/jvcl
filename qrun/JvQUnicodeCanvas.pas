@@ -136,10 +136,10 @@ end;
 
 function TJvUnicodeCanvas.ExtTextOut(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: string; lpDx: Pointer): Boolean;
-begin  
-  Start;
+begin 
+  Start; 
   Result := QWindows.ExtTextOut(Handle, X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PChar(Text), Length(Text), lpDx);
+    Rect, PChar(Text), Length(Text), lpDx); 
   Stop; 
 end;
 
