@@ -21,13 +21,6 @@ uses
   jvAddPrinter,
   jvWinDialogs;
 
-type
-  TAppletFileProperty = class(TStringProperty)
-  public
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-  end;
-
 
 procedure Register;
 
@@ -64,33 +57,5 @@ begin
    RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
    RegisterComponentEditor(TJvCommonDialogP,TJvBaseDlgEditor);
 end;
-
-
-
-{property editor for TJvAppletDialog component}
-procedure TAppletFileProperty.Edit;
-var
-  APFileOpen: TOpenDialog;
-begin
-  APFileOpen := TOpenDialog.Create(Application);
-  APFileOpen.Filename := GetValue;
-  APFileOpen.Filter := 'Applet File (*.cpl)|*.cpl';
-  APFileOpen.Options := APFileOpen.Options + [ofPathMustExist,
-    ofFileMustExist];
-  try
-    if APFileOpen.Execute then SetValue(APFileOpen.Filename);
-  finally
-    APFileOpen.Free;
-  end;
-end;
-
-function TAppletFileProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paDialog];
-end;
-
-
-
-
 
 end.
