@@ -7,28 +7,15 @@ Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
 @@TAnimateEvent
-Summary
-  Occurs when TJvTrayIcon changes the tray icon.
-Description
-  Write an OnAnimate event handler to take specific action whenever TJvTrayIcon changes the tray icon
-  in response to animate events. When Animated is set to True, TJvTrayIcon iterates through the icons
-  in the image list specified by Icons and displays each icon in that list - one at a time - in the
-  notification area. Property Delay specifies the amount of time each icon is shown in the tray.
-  Each time the specified time passes, TJvTrayIcon changes the tray icon to the next icon in the image
-  list, and an OnAnimate event occurs.
-Parameters
-  Sender     - The TJvTrayIcon component that has sent this event.
-  ImageIndex - The new index of the icon in the image list specified by Icons.
-See Also
-  TJvTrayIcon.Animated, TJvTrayIcon.Delay, TJvTrayIcon.IconIndex, TJvTrayIcon.Icons
+<TITLE TAnimateEvent type>
 ----------------------------------------------------------------------------------------------------
 @@TBalloonType
+<TITLE TBalloonType type>
 Summary
   TBalloonType defines values describing the type of a balloon ToolTip. 
 Description
   The TBalloonType type defines the values describing the type of a balloon ToolTip. TBalloonType can 
   have any of the following values:
-  
 @@TBalloonType.btNone
   A balloon Tooltip containing no icon.
 @@TBalloonType.btError
@@ -192,7 +179,7 @@ Parameters
   Value       - Contains the text for the balloon ToolTip. It can have a maximum of 255 characters.
                 The text can be either single-line or multiline.
   BalloonType - Flags that can be set to add an icon to the balloon ToolTip. It is placed to the left
-                of the title. If Title is an empty string, the icon is not shown. 
+                of the title. If Title is an empty \string, the icon is not shown. 
   Delay       - The timeout value, in milliseconds, for a balloon ToolTip. The system enforces minimum 
                 and maximum timeout values. \Delay values that are too large are set to the maximum
                 value and values that are too small default to the minimum value. The system minimum
@@ -307,10 +294,10 @@ Description
   Call ShowApplication to restore the minimized application and show the application button on the
   taskbar.
 
-  Include tvAutoHide in Visibility to automatically remove the application button on the taskbar if
+  \Include tvAutoHide in Visibility to automatically remove the application button on the taskbar if
   the user minimizes the application.
   
-  Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the application 
+  \Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the application 
   and the visibility of the application button when the user clicks the tray icon with the left button,
   or double-clicks the tray icon, respectively.
 See Also
@@ -318,9 +305,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Hint
 Summary
-  Contains the text string that can appear when the user moves the mouse over the tray icon.
+  Contains the text \string that can appear when the user moves the mouse over the tray icon.
 Description
-  Use the Hint property to provide a string as the standard ToolTip for the tray icon. Hint can have 
+  Use the Hint property to provide a \string as the standard ToolTip for the tray icon. Hint can have 
   a maximum of 64 characters. For version 5.0 and later, Hint can have a maximum of 128 characters.
 See Also
   AcceptBalloons, BalloonHint
@@ -364,6 +351,20 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnAnimate
 <COMBINEWITH TAnimateEvent>
+Summary
+  Occurs when TJvTrayIcon changes the tray icon.
+Description
+  Write an OnAnimate event handler to take specific action whenever TJvTrayIcon changes the tray icon
+  in response to animate events. When Animated is set to True, TJvTrayIcon iterates through the icons
+  in the image list specified by Icons and displays each icon in that list - one at a time - in the
+  notification area. Property Delay specifies the amount of time each icon is shown in the tray.
+  Each time the specified time passes, TJvTrayIcon changes the tray icon to the next icon in the image
+  list, and an OnAnimate event occurs.
+Parameters
+  Sender     - The TJvTrayIcon component that has sent this event.
+  ImageIndex - The new index of the icon in the image list specified by Icons.
+See Also
+  TJvTrayIcon.Animated, TJvTrayIcon.Delay, TJvTrayIcon.IconIndex, TJvTrayIcon.Icons
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnBalloonClick
 Summary
@@ -401,7 +402,7 @@ Description
   Typically, clicking a tray icon causes the application to display a window with additional information;
   right-clicking displays a shortcut menu.
   
-  Include tvRestoreClick in Visibility to automatically restore the application and the visibility of 
+  \Include tvRestoreClick in Visibility to automatically restore the application and the visibility of 
   the application button when the user clicks the tray icon with the left button.
 See Also
   OnDblClick, OnMouseDown, OnMouseUp, Visibility
@@ -415,7 +416,7 @@ Description
   Typically, double-clicking a tray icon causes the application to executes the default shortcut menu
   command.
   
-  Include tvRestoreDbClick in Visibility to automatically restore the application and the visibility
+  \Include tvRestoreDbClick in Visibility to automatically restore the application and the visibility
   of the application button when the user double-clicks the tray icon.
 Note
   Assigning an OnDblClick event handler, overrides the tvRestoreDbClick flag in Visibility. Thus the
@@ -441,8 +442,6 @@ See Also
 Summary
   Occurs when the user moves the mouse pointer while the mouse pointer is over the tray icon. 
 Description
-  the system displays the ToolTip text that was specified in NOTIFYICONDATA.
-  
   Use the OnMouseMove event handler to respond when the mouse pointer moves after the control has 
   captured the mouse.
 
@@ -485,17 +484,44 @@ Description
   on the taskbar. Call HideApplication to minimize the application and remove the application button 
   on the taskbar.
 
-  Include tvAutoHide in Visibility to automatically remove the application button on the taskbar if
+  \Include tvAutoHide in Visibility to automatically remove the application button on the taskbar if
   the user minimizes the application.
   
-  Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the minimized 
+  \Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the minimized 
   application and the visibility of the application button when the user clicks the tray icon with 
   the left button, or double-clicks the tray icon, respectively.
 See Also
   HideApplication, Visibility
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Visibility
-<COMBINEWITH TTrayVisibility>
+<AUTOLINK OFF>
+Summary
+  Specifies options and default appearance for the tray icon.
+Description
+<AUTOLINK ON>
+  Use the Visibility property to customize the appearance and functionality of the tray icon. The 
+  possible values of Visibility are
+  <TABLE>
+  Value                Meaning
+  -----                -------
+  tvVisibleTaskBar     If this flag is set, the application is visible and the application button appears
+                        on the taskbar. If this flag is not set, TJvTrayIcon hides the application and
+                        removes the application button on the taskbar.
+  tvVisibleTaskList    (Windows 95, 98 and me.) Shows the application in the windows task manager
+                        application. This is default behaviour. If this flag is not set, TJvTrayIcon
+                        removes the application from the task manager; the application prevent itself
+                        from being closed when the user logs off. The application close only when the
+                        system is shut down.
+  tvAutoHide           Automatically removes the application button on the taskbar if the user minimizes
+                        the application.
+  tvVisibleDesign      Shows the tray icon in the traybar notification area at design-time.
+  tvRestoreClick       Automatically restores the application and the visibility of the application
+                        button on the taskbar, when the user clicks the tray icon with the left button.
+  tvRestoreDbClick     Automatically restores the application and the visibility of the application
+                        button on the taskbar, when the user double-clicks the tray icon. Assigning
+                        an OnDblClick event handler overrides this behaviour.
+  </TABLE>
+<AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.VisibleInTaskList
 Summary
@@ -521,6 +547,7 @@ Parameters
   Mesg - Represents the Windows message.
 ----------------------------------------------------------------------------------------------------
 @@TNotifyIconDataXP
+<TITLE TNotifyIconDataXP type>
 Summary
   Delphi implementation of the windows NOTIFYICONDATA structure.
 Description
@@ -555,6 +582,7 @@ Description
   Flags that can be set to add an icon to a balloon ToolTip.
 ----------------------------------------------------------------------------------------------------
 @@TRegisterServiceProcess
+<TITLE TRegisterServiceProcess type>
 Summary
   Registers or unregisters a service process. 
 Description
@@ -570,33 +598,11 @@ Parameters
                 a service process.
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibilities
-<COMBINEWITH TTrayVisibility>
+<TITLE TTrayVisibilities type>
+<AUTOLINK OFF>
+<COMBINE TJvTrayIcon.Visibility>
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibility
-Summary
-  Specifies options and default appearance for the tray icon.
-Description
-  Use the Visibility property to customize the appearance and functionality of the tray icon. The 
-  possible values of Visibility are
-@@TTrayVisibility.tvVisibleTaskBar
-  If this flag is set, the application is visible and the application button appears on the taskbar. If
-  this flag is not set, TJvTrayIcon hides the application and removes the application button on the 
-  taskbar.
-@@TTrayVisibility.tvVisibleTaskList
-  (Windows 95, 98 and me.) Shows the application in the windows task manager application. This is
-  default behaviour. If this flag is not set, TJvTrayIcon removes the application from the task manager;
-  the application prevent itself from being closed when the user logs off. The application close only 
-  when the system is shut down.
-@@TTrayVisibility.tvAutoHide
-  Automatically removes the application button on the taskbar if the user minimizes the application.
-@@TTrayVisibility.tvVisibleDesign
-  Shows the tray icon in the traybar notification area at design-time.
-@@TTrayVisibility.tvRestoreClick
-  Automatically restores the application and the visibility of the application button on the taskbar,
-  when the user clicks the tray icon with the left button. 
-@@TTrayVisibility.tvRestoreDbClick
-  Automatically restores the application and the visibility of the application button on the taskbar,
-  when the user double-clicks the tray icon. Assigning an OnDblClick event handler overrides this 
-  behaviour.
-
-  
+<TITLE TTrayVisibility type>
+<AUTOLINK OFF>
+<COMBINE TJvTrayIcon.Visibility>

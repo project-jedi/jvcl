@@ -1,7 +1,7 @@
 @@JvSHFileOp.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvSHFileOp component.
+  Contains the TJvSHFileOperation component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -19,6 +19,9 @@ Description
   on files, while displaying a dialog box with an animation and an animated progress bar that
   indicates the progress of the operation.  
 ----------------------------------------------------------------------------------------------------
+@@TJvShFileMappingEvent
+<TITLE TJvShFileMappingEvent type>
+----------------------------------------------------------------------------------------------------
 @@TJvSHFileOperation.DestFiles
 Summary
   Contains the name of the destination file or directory.
@@ -28,11 +31,11 @@ Description
   DestFiles must meet the following specifications: 
 
   * Wildcard characters are not supported. 
-  * Copy and move operations can specify destination directories that do not exist and the system will 
+  * \Copy and move operations can specify destination directories that do not exist and the system will 
     attempt to create them. The system normally displays a dialog box to ask the user if they want to
     create the new directory. To suppress this dialog box and have the directories created silently,
     include fofNoConfirmMkDir in Options. 
-  * For Copy and move operations, DestFiles can contain multiple destination file names if 
+  * For copy and move operations, DestFiles can contain multiple destination file names if 
     fofMultiDestFiles is included in Options.
 
   Each file and directory name is translated to a file name with a fully qualified path. So if you
@@ -55,7 +58,7 @@ See Also
 Summary
   Occurs after the file operation when any files were renamed.
 Description
-  Write an OnFileMapping event handler to respond after the file operation when any files were renamed.
+  \Write an OnFileMapping event handler to respond after the file operation when any files were renamed.
   
   Only when you include fofRenameOnCollision in Options then the system will give a file a new name in a 
   move, copy, or rename operation if a file with the target name already exists. Otherwise, the system
@@ -70,10 +73,11 @@ See Also
   Options
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOperation.Operation
+<COMBINEWITH TJvSHFileOpType>
 Summary
   Indicates the file operation to perform. 
 Description
-  Set Operation to indicate what kind of file operation the TJvSHFileOperation must perform.
+  Set Operation to indicate what kind of file operation the TJvSHFileOperation component must perform.
   
   The possible values of Operation are:
   <TABLE>
@@ -90,7 +94,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOperation.Options
 Summary
-  Controls the file operation.
+  \Controls the file operation.
 Description
   Use Options to
 
@@ -108,16 +112,16 @@ Description
   wildcard characters (* and ?). The asterisk (*) is a wildcard which matches any number of arbitrary 
   characters. The question mark (?) is a wildcard which matches a single arbitrary character.
 
-  Use SourceFiles to add, insert, delete and move source file names. Use properties and methods for string
+  Use SourceFiles to add, insert, delete and move source file names. Use properties and methods for \string
   lists to manipulate the items in the list. 
 
   Each file name is translated to a file name with a fully qualified path. So if you don't specify
   a path, the name of the current drive and directory will be merged with the specified file name to 
   determine the full path and file name of the specified file. 
   
-  Include fofFilesOnly in Options to perform the operation as specified by Operation on files only,
+  \Include fofFilesOnly in Options to perform the operation as specified by Operation on files only,
   if a wildcard file name is specified. 
-  Include fofNoRecursion in Options to operate only in the local directory. Thus the operation will not 
+  \Include fofNoRecursion in Options to operate only in the local directory. Thus the operation will not 
   operate recursively into subdirectories, if this flag is included in Options.  
 See Also
   DestFiles
@@ -133,8 +137,10 @@ See Also
   Options
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption
+<TITLE TJvSHFileOption type>
+<COMBINEWITH TJvSHFileOptions>
 Summary
-  Controls the file operation of a TJvSHFileOperation component.
+  \Controls the file operation of a TJvSHFileOperation component.
 Description
   TJvSHFileOption values control the behaviour of the file operation of a TJvSHFileOperation component.
 
@@ -162,7 +168,7 @@ Note
   Does not ask for confirmation before creating a new directory if the operation requires one to be
   created. 
 @@TJvSHFileOption.fofNoCopySecurityAttributes
-  Version 4.71. Do not copy the security attributes of the file.
+  Version 4.71. Does not copy the security attributes of the file.
 @@TJvSHFileOption.fofNoRecursion
   Only operates in the local directory. Does not operate recursively into subdirectories.
 @@TJvSHFileOption.fofNoConnectedElements
@@ -187,22 +193,7 @@ Note
   recycled. This flag partially overrides fofNoConfirmation.
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOptions
-<COMBINEWITH TJvSHFileOption>
+<TITLE TJvSHFileOptions type>
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOpType
-Summary
-  Represents the types of operations a TJvSHFileOperation can perform.
-Description
-  TJvSHFileOpType represents the types of operations a TJvSHFileOperation can perform. The following
-  table gives the possible values:
-@@TJvSHFileOpType.foCopy
-  Copies the files specified by property <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the
-  location specified by <LINK TJvSHFileOperation.DestFiles,DestFiles>. 
-@@TJvSHFileOpType.foDelete
-  Deletes the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. 
-@@TJvSHFileOpType.foMove
-  Moves the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the location specified
-  by <LINK TJvSHFileOperation.DestFiles,DestFiles>. 
-@@TJvSHFileOpType.foRename
-  Renames the file specified by <LINK TJvSHFileOperation.SourceFiles, SourceFiles>. This operation
-  cannot rename multiple files with a single function call. Use foMove instead. 
+<TITLE TJvSHFileOpType type>
