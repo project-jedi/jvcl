@@ -126,6 +126,7 @@ begin
   end;
   JvDisplayMemo2.Lines.BeginUpdate;
   try
+    JvDisplayMemo2.Clear;
     JvHtmlParser1.AnalyseFile;
     ShowStatus(Now() - FStartTime);
     JvDisplayMemo2.Text := ReplaceSpecials(FText);
@@ -150,7 +151,7 @@ begin
   end;
   JvDisplayMemo3.Lines.BeginUpdate;
   try
-    JvDisplayMemo2.Clear;
+    JvDisplayMemo3.Clear;
     JvHtmlParser1.AnalyseFile;
     ShowStatus(Now() - FStartTime);
   finally
@@ -222,8 +223,8 @@ var
 begin
   DecodeTime(t, h, m, s, ms);
   JvStatusBar1.SimpleText :=
-    Format('%d tags are processed for period: %0.2d:%0.2d:%0.2d.%0.3d', [Self.Tag,
-    h, m, s, ms]);
+    Format('%d tags are processed for period: %0.2d:%0.2d:%0.2d.%0.3d',
+     [Self.Tag, h, m, s, ms]);
 end;
 
 function TJvHTMLParserMainForm.ReplaceSpecials(Str: string): string;
@@ -239,14 +240,15 @@ begin
 end;
 
 procedure TJvHTMLParserMainForm.btnOpenClick(Sender: TObject);
-var i:integer;
+var
+  I: Integer;
 begin
   if OpenDialog1.Execute then
   begin
-    JvHtmlParser1.Filename := OpenDialog1.Filename;
-    for i := 0 to ComponentCount - 1 do
-      if (Components[i] <> btnOpen) and (Components[i] is TButton) then
-        TButton(Components[i]).Click;
+    JvHtmlParser1.FileName := OpenDialog1.FileName;
+    for I := 0 to ComponentCount - 1 do
+      if (Components[I] <> btnOpen) and (Components[I] is TButton) then
+        TButton(Components[I]).Click;
   end;
 end;
 

@@ -1,10 +1,13 @@
 object JvID3v2MainForm: TJvID3v2MainForm
   Left = 442
   Top = 277
-  Width = 542
+  Width = 573
   Height = 431
-  Caption = 'JvID3v2MainForm'
+  Caption = 'JvID3v2 example'
   Color = clBtnFace
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 200
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -22,28 +25,29 @@ object JvID3v2MainForm: TJvID3v2MainForm
     0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
-  Position = poDefault
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 185
     Top = 0
     Width = 3
-    Height = 404
+    Height = 401
     Cursor = crHSplit
   end
   object ListView1: TListView
     Left = 188
     Top = 0
-    Width = 346
-    Height = 404
+    Width = 377
+    Height = 401
     Align = alClient
     Columns = <
       item
         Caption = 'Type'
       end
       item
-        Caption = 'Filename'
+        Caption = 'File name'
         Width = 300
       end>
     RowSelect = True
@@ -55,7 +59,7 @@ object JvID3v2MainForm: TJvID3v2MainForm
     Left = 0
     Top = 0
     Width = 185
-    Height = 404
+    Height = 401
     Align = alLeft
     TabOrder = 1
     object JvDriveCombo1: TJvDriveCombo
@@ -74,7 +78,7 @@ object JvID3v2MainForm: TJvID3v2MainForm
       Left = 1
       Top = 23
       Width = 183
-      Height = 380
+      Height = 377
       Align = alClient
       Directory = 'C:\'
       DriveCombo = JvDriveCombo1

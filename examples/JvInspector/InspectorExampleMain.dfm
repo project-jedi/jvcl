@@ -1,19 +1,24 @@
 object frmInspector: TfrmInspector
   Left = 409
-  Top = 114
+  Top = 115
   Width = 254
-  Height = 708
+  Height = 707
   ActiveControl = JvInspector1
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'JvInspector'
   Color = clBtnFace
+  Constraints.MinHeight = 150
+  Constraints.MinWidth = 200
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
+  Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,7 +27,7 @@ object frmInspector: TfrmInspector
     Left = 0
     Top = 0
     Width = 246
-    Height = 678
+    Height = 677
     Align = alClient
     BandWidth = 150
     BevelKind = bkTile
@@ -37,20 +42,20 @@ object frmInspector: TfrmInspector
     AfterItemCreate = JvInspector1AfterItemCreate
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
-    Left = 130
-    Top = 50
+    Left = 104
+    Top = 16
   end
   object JvInspectorDotNETPainter1: TJvInspectorDotNETPainter
     SelectedColor = clNavy
     SelectedTextColor = clWhite
-    Left = 130
-    Top = 135
+    Left = 104
+    Top = 64
   end
   object TestImageList: TImageList
     Height = 24
     Width = 24
-    Left = 135
-    Top = 195
+    Left = 104
+    Top = 112
     Bitmap = {
       494C01015A005E00040018001800FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000004002000001002000000000000060

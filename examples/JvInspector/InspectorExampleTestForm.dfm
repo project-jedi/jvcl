@@ -6,6 +6,8 @@ object frmTest: TfrmTest
   ClientHeight = 536
   ClientWidth = 615
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 150
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

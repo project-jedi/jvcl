@@ -5,25 +5,30 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   Height = 441
   Caption = 'JvHtmlParser  DEMO'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object JvPageControl1: TJvPageControl
     Left = 0
     Top = 0
     Width = 526
-    Height = 395
+    Height = 392
     ActivePage = TabSheet1
     Align = alClient
     HotTrack = True
     ParentShowHint = False
     ShowHint = True
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Hint = 'Table Demo'
@@ -52,20 +57,21 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         Left = 0
         Top = 156
         Width = 518
-        Height = 177
+        Height = 174
         AutoSize = False
         ClipboardCommands = []
         MaxLines = 0
         HideCaret = False
         Align = alClient
         BorderStyle = bsNone
+        ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 1
         WordWrap = False
       end
       object JvPanel1: TJvPanel
         Left = 0
-        Top = 333
+        Top = 330
         Width = 518
         Height = 34
         MultiLine = False
@@ -104,6 +110,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         HideCaret = False
         Align = alClient
         BorderStyle = bsNone
+        ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
       end
@@ -148,6 +155,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         HideCaret = False
         Align = alClient
         BorderStyle = bsNone
+        ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
       end
@@ -192,6 +200,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
         HideCaret = False
         Align = alClient
         BorderStyle = bsNone
+        ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
       end
@@ -224,7 +233,7 @@ object JvHTMLParserMainForm: TJvHTMLParserMainForm
   end
   object JvStatusBar1: TJvStatusBar
     Left = 0
-    Top = 395
+    Top = 392
     Width = 526
     Height = 19
     Panels = <>

@@ -1,12 +1,13 @@
 object JvID3v1MainForm: TJvID3v1MainForm
   Left = 405
   Top = 240
-  BorderIcons = []
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'TJvId3v1 example'
   ClientHeight = 228
   ClientWidth = 279
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -14,7 +15,8 @@ object JvID3v1MainForm: TJvID3v1MainForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesktopCenter
+  Scaled = False
   ShowHint = True
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -90,7 +92,6 @@ object JvID3v1MainForm: TJvID3v1MainForm
     OnAfterDialog = JvFilenameEdit1AfterDialog
     AddQuotes = False
     ButtonFlat = False
-    NumGlyphs = 1
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
