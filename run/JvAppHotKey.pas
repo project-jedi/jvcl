@@ -30,7 +30,8 @@ Description:
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvAppHotKey;
 

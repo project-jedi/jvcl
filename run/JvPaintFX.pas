@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove@slcdug.org].
 
-Last Modified: 2000-06-15
+Last Modified: 2004-01-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvPaintFX;
 
@@ -33,7 +33,13 @@ interface
 {$DEFINE USE_SCANLINE}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QGraphics, QControls, QForms,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes;
 
 type
   // Type of a filter for use with Stretch()
@@ -166,6 +172,14 @@ uses
 
 resourcestring
   RsSourceBitmapTooSmall = 'Source bitmap too small';
+
+const
+{$IFDEF VisualCLX}
+  pf24bit = pf32bit; // VisualCLX does not support pf24bit
+  bpp = 4;
+{$ELSE}
+  bpp = 3;
+{$ENDIF VisualCLX}
 
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
@@ -1077,26 +1091,26 @@ begin
     for X := 0 to Dst.Width - 1 do
     begin
       t := xP shr 15;
-      Col1r := Read[t * 3];
-      Col1g := Read[t * 3 + 1];
-      Col1b := Read[t * 3 + 2];
-      Col2r := Read2[t * 3];
-      Col2g := Read2[t * 3 + 1];
-      Col2b := Read2[t * 3 + 2];
+      Col1r := Read[t * bpp];
+      Col1g := Read[t * bpp + 1];
+      Col1b := Read[t * bpp + 2];
+      Col2r := Read2[t * bpp];
+      Col2g := Read2[t * bpp + 1];
+      Col2b := Read2[t * bpp + 2];
       z := xP and $7FFF;
       w2 := (z * iz2) shr 15;
       w1 := iz2 - w2;
       w4 := (z * z2) shr 15;
       w3 := z2 - w4;
-      pc[X * 3 + 2] :=
-        (Col1b * w1 + Read[(t + 1) * 3 + 2] * w2 +
-        Col2b * w3 + Read2[(t + 1) * 3 + 2] * w4) shr 15;
-      pc[X * 3 + 1] :=
-        (Col1g * w1 + Read[(t + 1) * 3 + 1] * w2 +
-        Col2g * w3 + Read2[(t + 1) * 3 + 1] * w4) shr 15;
-      pc[X * 3] :=
-        (Col1r * w1 + Read2[(t + 1) * 3] * w2 +
-        Col2r * w3 + Read2[(t + 1) * 3] * w4) shr 15;
+      pc[X * bpp + 2] :=
+        (Col1b * w1 + Read[(t + 1) * bpp + 2] * w2 +
+        Col2b * w3 + Read2[(t + 1) * bpp + 2] * w4) shr 15;
+      pc[X * bpp + 1] :=
+        (Col1g * w1 + Read[(t + 1) * bpp + 1] * w2 +
+        Col2g * w3 + Read2[(t + 1) * bpp + 1] * w4) shr 15;
+      pc[X * bpp] :=
+        (Col1r * w1 + Read2[(t + 1) * bpp] * w2 +
+        Col2r * w3 + Read2[(t + 1) * bpp] * w4) shr 15;
       Inc(xP, xP2);
     end;
     Inc(yP, yP2);
@@ -1106,7 +1120,8 @@ end;
 class procedure TJvPaintFX.SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
   Angle: Single);
 type
-  TFColor = record B, G, R: Byte
+  TFColor = record
+    B, G, R: Byte
   end;
 var
   Top,
@@ -1154,30 +1169,30 @@ begin
         ix := TrimInt(ifx + 1, 0, Src.Width - 1);
         P1 := Src.ScanLine[ify];
         P2 := Src.ScanLine[iy];
-        nw.R := P1[ifx * 3];
-        nw.G := P1[ifx * 3 + 1];
-        nw.B := P1[ifx * 3 + 2];
-        ne.R := P1[ix * 3];
-        ne.G := P1[ix * 3 + 1];
-        ne.B := P1[ix * 3 + 2];
-        sw.R := P2[ifx * 3];
-        sw.G := P2[ifx * 3 + 1];
-        sw.B := P2[ifx * 3 + 2];
-        se.R := P2[ix * 3];
-        se.G := P2[ix * 3 + 1];
-        se.B := P2[ix * 3 + 2];
+        nw.R := P1[ifx * bpp];
+        nw.G := P1[ifx * bpp + 1];
+        nw.B := P1[ifx * bpp + 2];
+        ne.R := P1[ix * bpp];
+        ne.G := P1[ix * bpp + 1];
+        ne.B := P1[ix * bpp + 2];
+        sw.R := P2[ifx * bpp];
+        sw.G := P2[ifx * bpp + 1];
+        sw.B := P2[ifx * bpp + 2];
+        se.R := P2[ix * bpp];
+        se.G := P2[ix * bpp + 1];
+        se.B := P2[ix * bpp + 2];
 
         Top := nw.B + eww * (ne.B - nw.B);
         Bottom := sw.B + eww * (se.B - sw.B);
-        P3[X * 3 + 2] := IntToByte(Round(Top + nsw * (Bottom - Top)));
+        P3[X * bpp + 2] := IntToByte(Round(Top + nsw * (Bottom - Top)));
 
         Top := nw.G + eww * (ne.G - nw.G);
         Bottom := sw.G + eww * (se.G - sw.G);
-        P3[X * 3 + 1] := IntToByte(Round(Top + nsw * (Bottom - Top)));
+        P3[X * bpp + 1] := IntToByte(Round(Top + nsw * (Bottom - Top)));
 
         Top := nw.R + eww * (ne.R - nw.R);
         Bottom := sw.R + eww * (se.R - sw.R);
-        P3[X * 3] := IntToByte(Round(Top + nsw * (Bottom - Top)));
+        P3[X * bpp] := IntToByte(Round(Top + nsw * (Bottom - Top)));
       end;
     end;
   end;
@@ -1209,25 +1224,25 @@ begin
         CX := X
       else {X-Amount>0}
         CX := X - Amount;
-      Buf[0, 0] := p1[CX * 3];
-      Buf[0, 1] := p1[CX * 3 + 1];
-      Buf[0, 2] := p1[CX * 3 + 2];
-      Buf[1, 0] := p2[CX * 3];
-      Buf[1, 1] := p2[CX * 3 + 1];
-      Buf[1, 2] := p2[CX * 3 + 2];
+      Buf[0, 0] := p1[CX * bpp];
+      Buf[0, 1] := p1[CX * bpp + 1];
+      Buf[0, 2] := p1[CX * bpp + 2];
+      Buf[1, 0] := p2[CX * bpp];
+      Buf[1, 1] := p2[CX * bpp + 1];
+      Buf[1, 2] := p2[CX * bpp + 2];
       if X + Amount < Dst.Width then
         CX := X + Amount
       else {X+Amount>=Width}
         CX := Dst.Width - X;
-      Buf[2, 0] := p1[CX * 3];
-      Buf[2, 1] := p1[CX * 3 + 1];
-      Buf[2, 2] := p1[CX * 3 + 2];
-      Buf[3, 0] := p2[CX * 3];
-      Buf[3, 1] := p2[CX * 3 + 1];
-      Buf[3, 2] := p2[CX * 3 + 2];
-      p0[X * 3] := (Buf[0, 0] + Buf[1, 0] + Buf[2, 0] + Buf[3, 0]) shr 2;
-      p0[X * 3 + 1] := (Buf[0, 1] + Buf[1, 1] + Buf[2, 1] + Buf[3, 1]) shr 2;
-      p0[X * 3 + 2] := (Buf[0, 2] + Buf[1, 2] + Buf[2, 2] + Buf[3, 2]) shr 2;
+      Buf[2, 0] := p1[CX * bpp];
+      Buf[2, 1] := p1[CX * bpp + 1];
+      Buf[2, 2] := p1[CX * bpp + 2];
+      Buf[3, 0] := p2[CX * bpp];
+      Buf[3, 1] := p2[CX * bpp + 1];
+      Buf[3, 2] := p2[CX * bpp + 2];
+      p0[X * bpp] := (Buf[0, 0] + Buf[1, 0] + Buf[2, 0] + Buf[3, 0]) shr 2;
+      p0[X * bpp + 1] := (Buf[0, 1] + Buf[1, 1] + Buf[2, 1] + Buf[3, 1]) shr 2;
+      p0[X * bpp + 2] := (Buf[0, 2] + Buf[1, 2] + Buf[2, 2] + Buf[3, 2]) shr 2;
     end;
   end;
 end;
@@ -1400,15 +1415,15 @@ begin
             sli := Bmp.ScanLine[Bmp.Height - ify - iy];
           if ifx + ix < Bmp.Width then
           begin
-            new_red := sli[(ifx + ix) * 3];
-            new_green := sli[(ifx + ix) * 3 + 1];
-            new_blue := sli[(ifx + ix) * 3 + 2];
+            new_red := sli[(ifx + ix) * bpp];
+            new_green := sli[(ifx + ix) * bpp + 1];
+            new_blue := sli[(ifx + ix) * bpp + 2];
           end
           else
           begin
-            new_red := sli[(Bmp.Width - ifx - ix) * 3];
-            new_green := sli[(Bmp.Width - ifx - ix) * 3 + 1];
-            new_blue := sli[(Bmp.Width - ifx - ix) * 3 + 2];
+            new_red := sli[(Bmp.Width - ifx - ix) * bpp];
+            new_green := sli[(Bmp.Width - ifx - ix) * bpp + 1];
+            new_blue := sli[(Bmp.Width - ifx - ix) * bpp + 2];
           end;
           weight := weight_x[ix] * weight_y[iy];
           total_red := total_red + new_red * weight;
@@ -1417,9 +1432,9 @@ begin
         end;
       end;
       slo := Dst.ScanLine[ty];
-      slo[tx * 3] := Round(total_red);
-      slo[tx * 3 + 1] := Round(total_green);
-      slo[tx * 3 + 2] := Round(total_blue);
+      slo[tx * bpp] := Round(total_red);
+      slo[tx * bpp + 1] := Round(total_green);
+      slo[tx * bpp + 2] := Round(total_blue);
     end;
   end;
 end;
@@ -1444,9 +1459,9 @@ begin
     for X := 0 to Bitmap.Width - 1 do
     begin
       P2 := Dst.ScanLine[Y + Amount + B];
-      P2[X * 3] := P1[X * 3];
-      P2[X * 3 + 1] := P1[X * 3 + 1];
-      P2[X * 3 + 2] := P1[X * 3 + 2];
+      P2[X * bpp] := P1[X * bpp];
+      P2[X * bpp + 1] := P1[X * bpp + 1];
+      P2[X * bpp + 2] := P1[X * bpp + 2];
       case wavex of
         0:
           B := Amount * Variant(Sin(Angle * X));
@@ -1474,9 +1489,9 @@ begin
   p2 := Dst.ScanLine[H - 1];
   for i := 0 to W - 1 do
   begin
-    p1[i * 3] := p2[i * 3];
-    p1[i * 3 + 1] := p2[i * 3 + 1];
-    p1[i * 3 + 2] := p2[i * 3 + 2];
+    p1[i * bpp] := p2[i * bpp];
+    p1[i * bpp + 1] := p2[i * bpp + 1];
+    p1[i * bpp + 2] := p2[i * bpp + 2];
   end;
   p0 := Dst.ScanLine[0];
   p2 := Dst.ScanLine[sv];
@@ -1485,28 +1500,28 @@ begin
     p1 := Dst.ScanLine[j];
     for i := 0 to W - 1 do
     begin
-      f0 := (p2[i * 3] - p0[i * 3]) / sv * j + p0[i * 3];
-      p1[i * 3] := Round(f0);
-      f1 := (p2[i * 3 + 1] - p0[i * 3 + 1]) / sv * j + p0[i * 3 + 1];
-      p1[i * 3 + 1] := Round(f1);
-      f2 := (p2[i * 3 + 2] - p0[i * 3 + 2]) / sv * j + p0[i * 3 + 2];
-      p1[i * 3 + 2] := Round(f2);
+      f0 := (p2[i * bpp] - p0[i * bpp]) / sv * j + p0[i * bpp];
+      p1[i * bpp] := Round(f0);
+      f1 := (p2[i * bpp + 1] - p0[i * bpp + 1]) / sv * j + p0[i * bpp + 1];
+      p1[i * bpp + 1] := Round(f1);
+      f2 := (p2[i * bpp + 2] - p0[i * bpp + 2]) / sv * j + p0[i * bpp + 2];
+      p1[i * bpp + 2] := Round(f2);
     end;
   end;
   for j := 0 to H - 1 do
   begin
     p1 := Dst.ScanLine[j];
-    p1[(W - 1) * 3] := p1[0];
-    p1[(W - 1) * 3 + 1] := p1[1];
-    p1[(W - 1) * 3 + 2] := p1[2];
+    p1[(W - 1) * bpp] := p1[0];
+    p1[(W - 1) * bpp + 1] := p1[1];
+    p1[(W - 1) * bpp + 2] := p1[2];
     for i := 1 to sh - 1 do
     begin
-      f0 := (p1[(W - sh) * 3] - p1[(W - 1) * 3]) / sh * i + p1[(W - 1) * 3];
-      p1[(W - 1 - i) * 3] := Round(f0);
-      f1 := (p1[(W - sh) * 3 + 1] - p1[(W - 1) * 3 + 1]) / sh * i + p1[(W - 1) * 3 + 1];
-      p1[(W - 1 - i) * 3 + 1] := Round(f1);
-      f2 := (p1[(W - sh) * 3 + 2] - p1[(W - 1) * 3 + 2]) / sh * i + p1[(W - 1) * 3 + 2];
-      p1[(W - 1 - i) * 3 + 2] := Round(f2);
+      f0 := (p1[(W - sh) * bpp] - p1[(W - 1) * bpp]) / sh * i + p1[(W - 1) * bpp];
+      p1[(W - 1 - i) * bpp] := Round(f0);
+      f1 := (p1[(W - sh) * bpp + 1] - p1[(W - 1) * bpp + 1]) / sh * i + p1[(W - 1) * bpp + 1];
+      p1[(W - 1 - i) * bpp + 1] := Round(f1);
+      f2 := (p1[(W - sh) * bpp + 2] - p1[(W - 1) * bpp + 2]) / sh * i + p1[(W - 1) * bpp + 2];
+      p1[(W - 1 - i) * bpp + 2] := Round(f2);
     end;
   end;
 end;
@@ -1559,7 +1574,7 @@ begin
     p1 := Src.ScanLine[Y];
     for X := 0 to Src.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       p0[c] := p1[c];
       p0[c + 1] := p1[c + 1];
       p0[c + 2] := p1[c + 2];
@@ -2067,9 +2082,9 @@ begin
     ps := Dst.ScanLine[H - 1 - Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * 3] := ps[X * 3];
-      pd[X * 3 + 1] := ps[X * 3 + 1];
-      pd[X * 3 + 2] := ps[X * 3 + 2];
+      pd[X * bpp] := ps[X * bpp];
+      pd[X * bpp + 1] := ps[X * bpp + 1];
+      pd[X * bpp + 2] := ps[X * bpp + 2];
     end;
   end;
   Dst.Assign(Bmp);
@@ -2095,9 +2110,9 @@ begin
     ps := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * 3] := ps[(W - 1 - X) * 3];
-      pd[X * 3 + 1] := ps[(W - 1 - X) * 3 + 1];
-      pd[X * 3 + 2] := ps[(W - 1 - X) * 3 + 2];
+      pd[X * bpp] := ps[(W - 1 - X) * bpp];
+      pd[X * bpp + 1] := ps[(W - 1 - X) * bpp + 1];
+      pd[X * bpp + 2] := ps[(W - 1 - X) * bpp + 2];
     end;
   end;
   Dst.Assign(dest);
@@ -2137,23 +2152,23 @@ begin
           begin
             tb := p1[X + 1];
             hasb := True;
-            p3[X * 3] := TraceB;
-            p3[X * 3 + 1] := TraceB;
-            p3[X * 3 + 2] := TraceB;
+            p3[X * bpp] := TraceB;
+            p3[X * bpp + 1] := TraceB;
+            p3[X * bpp + 2] := TraceB;
           end
           else
           begin
             if p1[X] <> tb then
             begin
-              p3[X * 3] := TraceB;
-              p3[X * 3 + 1] := TraceB;
-              p3[X * 3 + 2] := TraceB;
+              p3[X * bpp] := TraceB;
+              p3[X * bpp + 1] := TraceB;
+              p3[X * bpp + 2] := TraceB;
             end
             else
             begin
-              p3[(X + 1) * 3] := TraceB;
-              p3[(X + 1) * 3 + 1] := TraceB;
-              p3[(X + 1) * 3 + 1] := TraceB;
+              p3[(X + 1) * bpp] := TraceB;
+              p3[(X + 1) * bpp + 1] := TraceB;
+              p3[(X + 1) * bpp + 1] := TraceB;
             end;
           end;
         end;
@@ -2163,23 +2178,23 @@ begin
           begin
             tb := p2[X];
             hasb := True;
-            p3[X * 3] := TraceB;
-            p3[X * 3 + 1] := TraceB;
-            p3[X * 3 + 2] := TraceB;
+            p3[X * bpp] := TraceB;
+            p3[X * bpp + 1] := TraceB;
+            p3[X * bpp + 2] := TraceB;
           end
           else
           begin
             if p1[X] <> tb then
             begin
-              p3[X * 3] := TraceB;
-              p3[X * 3 + 1] := TraceB;
-              p3[X * 3 + 2] := TraceB;
+              p3[X * bpp] := TraceB;
+              p3[X * bpp + 1] := TraceB;
+              p3[X * bpp + 2] := TraceB;
             end
             else
             begin
-              p4[X * 3] := TraceB;
-              p4[X * 3 + 1] := TraceB;
-              p4[X * 3 + 2] := TraceB;
+              p4[X * bpp] := TraceB;
+              p4[X * bpp + 1] := TraceB;
+              p4[X * bpp + 2] := TraceB;
             end;
           end;
         end;
@@ -2203,23 +2218,23 @@ begin
             begin
               tb := p1[X - 1];
               hasb := True;
-              p3[X * 3] := TraceB;
-              p3[X * 3 + 1] := TraceB;
-              p3[X * 3 + 2] := TraceB;
+              p3[X * bpp] := TraceB;
+              p3[X * bpp + 1] := TraceB;
+              p3[X * bpp + 2] := TraceB;
             end
             else
             begin
               if p1[X] <> tb then
               begin
-                p3[X * 3] := TraceB;
-                p3[X * 3 + 1] := TraceB;
-                p3[X * 3 + 2] := TraceB;
+                p3[X * bpp] := TraceB;
+                p3[X * bpp + 1] := TraceB;
+                p3[X * bpp + 2] := TraceB;
               end
               else
               begin
-                p3[(X - 1) * 3] := TraceB;
-                p3[(X - 1) * 3 + 1] := TraceB;
-                p3[(X - 1) * 3 + 2] := TraceB;
+                p3[(X - 1) * bpp] := TraceB;
+                p3[(X - 1) * bpp + 1] := TraceB;
+                p3[(X - 1) * bpp + 2] := TraceB;
               end;
             end;
           end;
@@ -2229,23 +2244,23 @@ begin
             begin
               tb := p2[X];
               hasb := True;
-              p3[X * 3] := TraceB;
-              p3[X * 3 + 1] := TraceB;
-              p3[X * 3 + 2] := TraceB;
+              p3[X * bpp] := TraceB;
+              p3[X * bpp + 1] := TraceB;
+              p3[X * bpp + 2] := TraceB;
             end
             else
             begin
               if p1[X] <> tb then
               begin
-                p3[X * 3] := TraceB;
-                p3[X * 3 + 1] := TraceB;
-                p3[X * 3 + 2] := TraceB;
+                p3[X * bpp] := TraceB;
+                p3[X * bpp + 1] := TraceB;
+                p3[X * bpp + 2] := TraceB;
               end
               else
               begin
-                p4[X * 3] := TraceB;
-                p4[X * 3 + 1] := TraceB;
-                p4[X * 3 + 2] := TraceB;
+                p4[X * bpp] := TraceB;
+                p4[X * bpp + 1] := TraceB;
+                p4[X * bpp + 2] := TraceB;
               end;
             end;
           end;
@@ -2272,11 +2287,11 @@ begin
     P1 := Bitmap.ScanLine[Y];
     P2 := Bitmap.ScanLine[Y + 4];
     for X := 0 to Bitmap.Width - 5 do
-      if P1[X * 3] > P2[(X + 4) * 3] then
+      if P1[X * bpp] > P2[(X + 4) * bpp] then
       begin
-        P1[X * 3] := P2[(X + 4) * 3] + 1;
-        P1[X * 3 + 1] := P2[(X + 4) * 3 + 1] + 1;
-        P1[X * 3 + 2] := P2[(X + 4) * 3 + 2] + 1;
+        P1[X * bpp] := P2[(X + 4) * bpp] + 1;
+        P1[X * bpp + 1] := P2[(X + 4) * bpp + 1] + 1;
+        P1[X * bpp + 2] := P2[(X + 4) * bpp + 2] + 1;
       end;
   end;
   Dst.Assign(Bitmap);
@@ -2299,11 +2314,11 @@ begin
     P1 := Bitmap.ScanLine[Y];
     P2 := Bitmap.ScanLine[Y + 4];
     for X := Bitmap.Width - 1 downto 4 do
-      if P1[X * 3] > P2[(X - 4) * 3] then
+      if P1[X * bpp] > P2[(X - 4) * bpp] then
       begin
-        P1[X * 3] := P2[(X - 4) * 3] + 1;
-        P1[X * 3 + 1] := P2[(X - 4) * 3 + 1] + 1;
-        P1[X * 3 + 2] := P2[(X - 4) * 3 + 2] + 1;
+        P1[X * bpp] := P2[(X - 4) * bpp] + 1;
+        P1[X * bpp + 1] := P2[(X - 4) * bpp + 1] + 1;
+        P1[X * bpp + 2] := P2[(X - 4) * bpp + 2] + 1;
       end;
   end;
   Dst.Assign(Bitmap);
@@ -2326,11 +2341,11 @@ begin
     P1 := Bitmap.ScanLine[Y];
     P2 := Bitmap.ScanLine[Y - 4];
     for X := 0 to Bitmap.Width - 5 do
-      if P1[X * 3] > P2[(X + 4) * 3] then
+      if P1[X * bpp] > P2[(X + 4) * bpp] then
       begin
-        P1[X * 3] := P2[(X + 4) * 3] + 1;
-        P1[X * 3 + 1] := P2[(X + 4) * 3 + 1] + 1;
-        P1[X * 3 + 2] := P2[(X + 4) * 3 + 2] + 1;
+        P1[X * bpp] := P2[(X + 4) * bpp] + 1;
+        P1[X * bpp + 1] := P2[(X + 4) * bpp + 1] + 1;
+        P1[X * bpp + 2] := P2[(X + 4) * bpp + 2] + 1;
       end;
   end;
   Dst.Assign(Bitmap);
@@ -2353,11 +2368,11 @@ begin
     P1 := Bitmap.ScanLine[Y];
     P2 := Bitmap.ScanLine[Y - 4];
     for X := Bitmap.Width - 1 downto 4 do
-      if P1[X * 3] > P2[(X - 4) * 3] then
+      if P1[X * bpp] > P2[(X - 4) * bpp] then
       begin
-        P1[X * 3] := P2[(X - 4) * 3] + 1;
-        P1[X * 3 + 1] := P2[(X - 4) * 3 + 1] + 1;
-        P1[X * 3 + 2] := P2[(X - 4) * 3 + 2] + 1;
+        P1[X * bpp] := P2[(X - 4) * bpp] + 1;
+        P1[X * bpp + 1] := P2[(X - 4) * bpp + 1] + 1;
+        P1[X * bpp + 2] := P2[(X - 4) * bpp + 2] + 1;
       end;
   end;
   Dst.Assign(Bitmap);
@@ -2383,9 +2398,9 @@ begin
       for X := 0 to B.Width - 1 do
         if (X mod 2) = 0 then
         begin
-          p[X * 3] := $FF;
-          p[X * 3 + 1] := $FF;
-          p[X * 3 + 2] := $FF;
+          p[X * bpp] := $FF;
+          p[X * bpp + 1] := $FF;
+          p[X * bpp + 2] := $FF;
         end;
     end
     else
@@ -2393,9 +2408,9 @@ begin
       for X := 0 to B.Width - 1 do
         if ((X + 1) mod 2) = 0 then
         begin
-          p[X * 3] := $FF;
-          p[X * 3 + 1] := $FF;
-          p[X * 3 + 2] := $FF;
+          p[X * bpp] := $FF;
+          p[X * bpp + 1] := $FF;
+          p[X * bpp + 2] := $FF;
         end;
     end;
   end;
@@ -2425,18 +2440,18 @@ begin
       for X := 0 to B.Width - 1 do
         if (X mod 2) = 0 then
         begin
-          p[X * 3] := $FF;
-          p[X * 3 + 1] := $FF;
-          p[X * 3 + 2] := $FF;
+          p[X * bpp] := $FF;
+          p[X * bpp + 1] := $FF;
+          p[X * bpp + 2] := $FF;
         end;
     end
     else
     begin
       for X := 0 to B.Width - 1 do
       begin
-        p[X * 3] := $FF;
-        p[X * 3 + 1] := $FF;
-        p[X * 3 + 2] := $FF;
+        p[X * bpp] := $FF;
+        p[X * bpp + 1] := $FF;
+        p[X * bpp + 2] := $FF;
       end;
 
     end;
@@ -2470,20 +2485,20 @@ begin
       xf0 := xf + (xf - X);
       if xf0 < W then
       begin
-        pd[xf0 * 3] := ps1[X * 3];
-        pd[xf0 * 3 + 1] := ps1[X * 3 + 1];
-        pd[xf0 * 3 + 2] := ps1[X * 3 + 2];
-        pd[X * 3] := ps2[X * 3];
-        pd[X * 3 + 1] := ps2[X * 3 + 1];
-        pd[X * 3 + 2] := ps2[X * 3 + 2];
+        pd[xf0 * bpp] := ps1[X * bpp];
+        pd[xf0 * bpp + 1] := ps1[X * bpp + 1];
+        pd[xf0 * bpp + 2] := ps1[X * bpp + 2];
+        pd[X * bpp] := ps2[X * bpp];
+        pd[X * bpp + 1] := ps2[X * bpp + 1];
+        pd[X * bpp + 2] := ps2[X * bpp + 2];
       end;
     end;
     if (2 * xf) < W - 1 then
       for X := 2 * xf + 1 to W - 1 do
       begin
-        pd[X * 3] := ps1[X * 3];
-        pd[X * 3 + 1] := ps1[X * 3 + 1];
-        pd[X * 3 + 2] := ps1[X * 3 + 2];
+        pd[X * bpp] := ps1[X * bpp];
+        pd[X * bpp + 1] := ps1[X * bpp + 1];
+        pd[X * bpp + 2] := ps1[X * bpp + 2];
       end;
   end;
 end;
@@ -2503,7 +2518,6 @@ var
   function IsMandel(CA, CBi: Extended): Integer;
   const
     MAX_ITERATION = 64;
-
   var
     OLD_A: Extended; {just a variable to keep 'a' from being destroyed}
     A, B: Extended; {function Z divided in real and imaginary parts}
@@ -2512,12 +2526,9 @@ var
   begin
     A := 0; {initialize Z(0) = 0}
     B := 0;
-
     ITERATION := 0; {initialize iteration}
-
     repeat
       OLD_A := A; {saves the 'a'  (Will be destroyed in next line}
-
       A := A * A - B * B + CA;
       B := 2 * OLD_A * B + CBi;
       ITERATION := ITERATION + 1;
@@ -2542,9 +2553,9 @@ begin
         color := $FF
       else
         color := $00;
-      Line[X * 3] := color;
-      Line[X * 3 + 1] := color;
-      Line[X * 3 + 2] := color;
+      Line[X * bpp] := color;
+      Line[X * bpp + 1] := color;
+      Line[X * bpp + 2] := color;
     end;
   end;
 end;
@@ -2576,9 +2587,9 @@ begin
     Line := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      Line[X * 3] := Round(Factor * Line[X * 3]);
-      Line[X * 3 + 1] := 0;
-      Line[X * 3 + 2] := 0;
+      Line[X * bpp] := Round(Factor * Line[X * bpp]);
+      Line[X * bpp + 1] := 0;
+      Line[X * bpp + 2] := 0;
     end;
   end;
 end;
@@ -2596,9 +2607,9 @@ begin
     Line := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      Line[X * 3 + 1] := Round(Factor * Line[X * 3 + 1]);
-      Line[X * 3] := 0;
-      Line[X * 3 + 2] := 0;
+      Line[X * bpp + 1] := Round(Factor * Line[X * bpp + 1]);
+      Line[X * bpp] := 0;
+      Line[X * bpp + 2] := 0;
     end;
   end;
 end;
@@ -2616,9 +2627,9 @@ begin
     Line := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      Line[X * 3 + 2] := Round(Factor * Line[X * 3 + 2]);
-      Line[X * 3 + 1] := 0;
-      Line[X * 3] := 0;
+      Line[X * bpp + 2] := Round(Factor * Line[X * bpp + 2]);
+      Line[X * bpp + 1] := 0;
+      Line[X * bpp] := 0;
     end;
   end;
 end;
@@ -2644,16 +2655,16 @@ begin
     if (Y mod 2) = 0 then
       for X := dx to W - 1 do
       begin
-        p[(X - dx) * 3] := p[X * 3];
-        p[(X - dx) * 3 + 1] := p[X * 3 + 1];
-        p[(X - dx) * 3 + 2] := p[X * 3 + 2];
+        p[(X - dx) * bpp] := p[X * bpp];
+        p[(X - dx) * bpp + 1] := p[X * bpp + 1];
+        p[(X - dx) * bpp + 2] := p[X * bpp + 2];
       end
     else
       for X := W - 1 downto dx do
       begin
-        p[X * 3] := p[(X - dx) * 3];
-        p[X * 3 + 1] := p[(X - dx) * 3 + 1];
-        p[X * 3 + 2] := p[(X - dx) * 3 + 2];
+        p[X * bpp] := p[(X - dx) * bpp];
+        p[X * bpp + 1] := p[(X - dx) * bpp + 1];
+        p[X * bpp + 2] := p[(X - dx) * bpp + 2];
       end;
   end;
 
@@ -2681,9 +2692,9 @@ begin
     for X := 0 to W - 1 do
       if (X mod 2) = 0 then
       begin
-        p2[X * 3] := p[X * 3];
-        p2[X * 3 + 1] := p[X * 3 + 1];
-        p2[X * 3 + 2] := p[X * 3 + 2];
+        p2[X * bpp] := p[X * bpp];
+        p2[X * bpp + 1] := p[X * bpp + 1];
+        p2[X * bpp + 2] := p[X * bpp + 2];
       end;
   end;
   for Y := H - 1 - dy downto 0 do
@@ -2693,9 +2704,9 @@ begin
     for X := 0 to W - 1 do
       if (X mod 2) <> 0 then
       begin
-        p3[X * 3] := p[X * 3];
-        p3[X * 3 + 1] := p[X * 3 + 1];
-        p3[X * 3 + 2] := p[X * 3 + 2];
+        p3[X * bpp] := p[X * bpp];
+        p3[X * bpp + 1] := p[X * bpp + 1];
+        p3[X * bpp + 2] := p[X * bpp + 2];
       end;
   end;
 end;
@@ -2725,14 +2736,14 @@ begin
     ps2 := Src2.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      XX := X + sval[ps2[X * 3]];
-      YY := Y + cval[ps2[X * 3]];
+      XX := X + sval[ps2[X * bpp]];
+      YY := Y + cval[ps2[X * bpp]];
       if (XX >= 0) and (XX < W) and (YY >= 0) and (YY < H) then
       begin
         ps1 := Src1.ScanLine[YY];
-        pd[X * 3] := ps1[XX * 3];
-        pd[X * 3 + 1] := ps1[XX * 3 + 1];
-        pd[X * 3 + 2] := ps1[XX * 3 + 2];
+        pd[X * bpp] := ps1[XX * bpp];
+        pd[X * bpp + 1] := ps1[XX * bpp + 1];
+        pd[X * bpp + 2] := ps1[XX * bpp + 2];
       end;
     end;
   end;
@@ -2771,8 +2782,8 @@ begin
     p1 := Src.ScanLine[Y];
     for X := 0 to CX - 1 do
     begin
-      c := X * 3;
-      c00 := (CX + X) * 3;
+      c := X * bpp;
+      c00 := (CX + X) * bpp;
       p0[c] := p1[c];
       p0[c + 1] := p1[c + 1];
       p0[c + 2] := p1[c + 2];
@@ -2806,9 +2817,9 @@ begin
     p2 := bmp.ScanLine[Y + 1];
     for X := 0 to Bmp.Width - 4 do
     begin
-      p1[X * 3] := (p1[X * 3] + (p2[(X + 3) * 3] xor $FF)) shr 1;
-      p1[X * 3 + 1] := (p1[X * 3 + 1] + (p2[(X + 3) * 3 + 1] xor $FF)) shr 1;
-      p1[X * 3 + 2] := (p1[X * 3 + 2] + (p2[(X + 3) * 3 + 2] xor $FF)) shr 1;
+      p1[X * bpp] := (p1[X * bpp] + (p2[(X + bpp) * bpp] xor $FF)) shr 1;
+      p1[X * bpp + 1] := (p1[X * bpp + 1] + (p2[(X + bpp) * bpp + 1] xor $FF)) shr 1;
+      p1[X * bpp + 2] := (p1[X * bpp + 2] + (p2[(X + bpp) * bpp + 2] xor $FF)) shr 1;
     end;
   end;
 
@@ -2824,7 +2835,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c + 2] > Min) and (p1[c + 2] < Max) then
         p1[c + 2] := $FF
       else
@@ -2845,7 +2856,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c + 1] > Min) and (p1[c + 1] < Max) then
         p1[c + 1] := $FF
       else
@@ -2866,7 +2877,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c] > Min) and (p1[c] < Max) then
         p1[c] := $FF
       else
@@ -2887,7 +2898,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c + 2] > Min) and (p1[c + 2] < Max) then
         p1[c + 2] := $FF
       else
@@ -2906,7 +2917,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c + 1] > Min) and (p1[c + 1] < Max) then
         p1[c + 1] := $FF
       else
@@ -2925,7 +2936,7 @@ begin
     p1 := Dst.ScanLine[Y];
     for X := 0 to Dst.Width - 1 do
     begin
-      c := X * 3;
+      c := X * bpp;
       if (p1[c] > Min) and (p1[c] < Max) then
         p1[c] := $FF
       else
@@ -3025,9 +3036,9 @@ begin
     p := Src.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      p[X * 3] := not p[X * 3];
-      p[X * 3 + 1] := not p[X * 3 + 1];
-      p[X * 3 + 2] := not p[X * 3 + 2];
+      p[X * bpp] := not p[X * bpp];
+      p[X * bpp + 1] := not p[X * bpp + 1];
+      p[X * bpp + 2] := not p[X * bpp + 2];
     end;
   end;
 end;
@@ -3045,9 +3056,9 @@ begin
     p := Src.ScanLine[Y];
     for X := 0 to W div 2 do
     begin
-      p[(W - 1 - X) * 3] := p[X * 3];
-      p[(W - 1 - X) * 3 + 1] := p[X * 3 + 1];
-      p[(W - 1 - X) * 3 + 2] := p[X * 3 + 2];
+      p[(W - 1 - X) * bpp] := p[X * bpp];
+      p[(W - 1 - X) * bpp + 1] := p[X * bpp + 1];
+      p[(W - 1 - X) * bpp + 2] := p[X * bpp + 2];
     end;
   end;
 end;
@@ -3066,9 +3077,9 @@ begin
     p2 := Src.ScanLine[H - 1 - Y];
     for X := 0 to W - 1 do
     begin
-      p2[X * 3] := p1[X * 3];
-      p2[X * 3 + 1] := p1[X * 3 + 1];
-      p2[X * 3 + 2] := p1[X * 3 + 2];
+      p2[X * bpp] := p1[X * bpp];
+      p2[X * bpp + 1] := p1[X * bpp + 1];
+      p2[X * bpp + 2] := p1[X * bpp + 2];
     end;
   end;
 end;
@@ -3108,19 +3119,19 @@ begin
     begin
       if (X mod tb) = 0 then
       begin
-        t.R := ps[X * 3];
-        t.G := ps[X * 3 + 1];
-        t.B := ps[X * 3 + 2];
+        t.R := ps[X * bpp];
+        t.G := ps[X * bpp + 1];
+        t.B := ps[X * bpp + 2];
       end;
       if ((X mod te) = 1) and (tb <> 0) then
       begin
-        t.R := ps[X * 3];
-        t.G := ps[X * 3 + 1];
-        t.B := ps[X * 3 + 2];
+        t.R := ps[X * bpp];
+        t.G := ps[X * bpp + 1];
+        t.B := ps[X * bpp + 2];
       end;
-      ps[X * 3] := t.R;
-      ps[X * 3 + 1] := t.G;
-      ps[X * 3 + 2] := t.B;
+      ps[X * bpp] := t.R;
+      ps[X * bpp + 1] := t.G;
+      ps[X * bpp + 2] := t.B;
     end;
   end;
 end;
@@ -3140,9 +3151,9 @@ begin
     for X := 0 to Dst.Width - 1 do
     begin
       P2 := Dst.ScanLine[Y + B];
-      P2[X * 3] := P1[X * 3];
-      P2[X * 3 + 1] := P1[X * 3 + 1];
-      P2[X * 3 + 2] := P1[X * 3 + 2];
+      P2[X * bpp] := P1[X * bpp];
+      P2[X * bpp + 1] := P1[X * bpp + 1];
+      P2[X * bpp + 2] := P1[X * bpp + 2];
       Inc(B);
       if B > Amount then
         B := 0;
@@ -3166,9 +3177,9 @@ begin
     for X := 0 to Dst.Width - 1 do
     begin
       P2 := Dst.ScanLine[Y + B];
-      P2[X * 3] := P1[X * 3];
-      P2[X * 3 + 1] := P1[X * 3 + 1];
-      P2[X * 3 + 2] := P1[X * 3 + 2];
+      P2[X * bpp] := P1[X * bpp];
+      P2[X * bpp + 1] := P1[X * bpp + 1];
+      P2[X * bpp + 2] := P1[X * bpp + 2];
       if doinc then
       begin
         Inc(B);
@@ -3207,9 +3218,9 @@ begin
     for X := 0 to Dst.Width - 1 do
     begin
       P2 := Dst.ScanLine[Y + B];
-      P2[X * 3] := P1[X * 3];
-      P2[X * 3 + 1] := P1[X * 3 + 1];
-      P2[X * 3 + 2] := P1[X * 3 + 2];
+      P2[X * bpp] := P1[X * bpp];
+      P2[X * bpp + 1] := P1[X * bpp + 1];
+      P2[X * bpp + 2] := P1[X * bpp + 2];
       B := Random(Amount);
     end;
   end;
@@ -3290,13 +3301,13 @@ begin
     pb := bm.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      c := Round((pb[X * 3] + pb[X * 3 + 1] + pb[X * 3 + 2]) / 3 / 255 * Amount);
+      c := Round((pb[X * bpp] + pb[X * bpp + 1] + pb[X * bpp + 2]) / 3 / 255 * Amount);
       if (Y - c) >= 0 then
       begin
         ps := Dst.ScanLine[Y - c];
-        ps[X * 3] := pb[X * 3];
-        ps[X * 3 + 1] := pb[X * 3 + 1];
-        ps[X * 3 + 2] := pb[X * 3 + 2];
+        ps[X * bpp] := pb[X * bpp];
+        ps[X * bpp + 1] := pb[X * bpp + 1];
+        ps[X * bpp + 2] := pb[X * bpp + 2];
       end;
     end;
   end;
@@ -3320,9 +3331,9 @@ begin
     for X := 0 to W - 1 do
     begin
       pd := Dst.ScanLine[W - 1 - X];
-      pd[Y * 3] := ps[X * 3];
-      pd[Y * 3 + 1] := ps[X * 3 + 1];
-      pd[Y * 3 + 2] := ps[X * 3 + 2];
+      pd[Y * bpp] := ps[X * bpp];
+      pd[Y * bpp + 1] := ps[X * bpp + 1];
+      pd[Y * bpp + 2] := ps[X * bpp + 2];
     end;
   end;
 end;
@@ -3344,9 +3355,9 @@ begin
     for X := 0 to W - 1 do
     begin
       pd := Dst.ScanLine[X];
-      pd[(H - 1 - Y) * 3] := ps[X * 3];
-      pd[(H - 1 - Y) * 3 + 1] := ps[X * 3 + 1];
-      pd[(H - 1 - Y) * 3 + 2] := ps[X * 3 + 2];
+      pd[(H - 1 - Y) * bpp] := ps[X * bpp];
+      pd[(H - 1 - Y) * bpp + 1] := ps[X * bpp + 1];
+      pd[(H - 1 - Y) * bpp + 2] := ps[X * bpp + 2];
     end;
   end;
 end;
@@ -3416,9 +3427,9 @@ begin
     pd := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
     begin
-      pd[X * 3] := Round((1 - Amount) * ps1[X * 3] + Amount * ps2[X * 3]);
-      pd[X * 3 + 1] := Round((1 - Amount) * ps1[X * 3 + 1] + Amount * ps2[X * 3 + 1]);
-      pd[X * 3 + 2] := Round((1 - Amount) * ps1[X * 3 + 2] + Amount * ps2[X * 3 + 2]);
+      pd[X * bpp] := Round((1 - Amount) * ps1[X * bpp] + Amount * ps2[X * bpp]);
+      pd[X * bpp + 1] := Round((1 - Amount) * ps1[X * bpp + 1] + Amount * ps2[X * bpp + 1]);
+      pd[X * bpp + 2] := Round((1 - Amount) * ps1[X * bpp + 2] + Amount * ps2[X * bpp + 2]);
     end;
   end;
 end;
@@ -3441,17 +3452,17 @@ begin
     Ps2 := Src2.ScanLine[Y];
     Pd := Dst.ScanLine[Y];
     for X := 0 to W - 1 do
-      if ((Ps2[X * 3] = $FF) and (Ps2[X * 3 + 1] = $FF) and (Ps2[X * 3 + 2] = $FF)) then
+      if ((Ps2[X * bpp] = $FF) and (Ps2[X * bpp + 1] = $FF) and (Ps2[X * bpp + 2] = $FF)) then
       begin
-        Pd[X * 3] := $FF;
-        Pd[X * 3 + 2] := $FF;
-        Pd[X * 3 + 2] := $FF;
+        Pd[X * bpp] := $FF;
+        Pd[X * bpp + 2] := $FF;
+        Pd[X * bpp + 2] := $FF;
       end
       else
       begin
-        Pd[X * 3] := Round((1 - Amount) * Ps1[X * 3] + Amount * Ps2[X * 3]);
-        Pd[X * 3 + 1] := Round((1 - Amount) * Ps1[X * 3 + 1] + Amount * Ps2[X * 3 + 1]);
-        Pd[X * 3 + 2] := Round((1 - Amount) * Ps1[X * 3 + 2] + Amount * Ps2[X * 3 + 2]);
+        Pd[X * bpp] := Round((1 - Amount) * Ps1[X * bpp] + Amount * Ps2[X * bpp]);
+        Pd[X * bpp + 1] := Round((1 - Amount) * Ps1[X * bpp + 1] + Amount * Ps2[X * bpp + 1]);
+        Pd[X * bpp + 2] := Round((1 - Amount) * Ps1[X * bpp + 2] + Amount * Ps2[X * bpp + 2]);
       end;
   end;
 end;

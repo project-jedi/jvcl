@@ -88,7 +88,9 @@ type
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
+    {$IFDEF VCL}
     FOnSettingsChanged: TNotifyEvent;
+    {$ENDIF VCL}
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     procedure UpdateAppProps;
@@ -450,7 +452,7 @@ begin
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
+function TJvAppEventList.DoHelp(HelpType: THelpType; HelpContext: THelpContext;
   const HelpKeyword: String; const HelpFile: String;
   var Handled: Boolean): Boolean;
 var
@@ -461,12 +463,12 @@ begin
   begin
     if Assigned(TJvAppEvents(FAppEvents[I]).FOnHelp) then
       Result := TJvAppEvents(FAppEvents[I]).FOnHelp(HelpType, HelpContext,
-        HelpKeyword, HelpFie, Handled);
+        HelpKeyword, HelpFile, Handled);
     if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
       Exit;
   end;
   if Assigned(FOnHelp) then
-    Result := FOnHelp(HelpType, HelpContext, HelpKeyword, HelpFie, Handled);
+    Result := FOnHelp(HelpType, HelpContext, HelpKeyword, HelpFile, Handled);
 end;
 {$ENDIF VisualCLX}
 
@@ -509,7 +511,7 @@ var
 begin
   for I := FAppEvents.Count - 1 downto 0 do
   begin
-    if Assigned(TJvAppEvents(FAppEvents[I]).FOnMessage) then
+    if Assigned(TJvAppEvents(FAppEvents[I]).FOnEvent) then
       TJvAppEvents(FAppEvents[I]).FOnEvent(Sender, Event, Handled);
     if not TJvAppEvents(FAppEvents[I]).Chained or Handled then
       Exit;
