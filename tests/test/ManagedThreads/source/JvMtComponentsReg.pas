@@ -27,7 +27,7 @@ unit JvMtComponentsReg;
 interface
 
 Uses
-  Classes, JvMtComponents, MTThreading, MTSync, MTSyncMon, MTData, MTConst;
+  Classes, JvMtComponents;
 
 procedure Register;
 
