@@ -108,6 +108,7 @@ begin
   AddCtrl(InspCat, frmTest);
   AddCtrl(InspCat, frmTest.PanelForLabel);
   AddCtrl(InspCat, frmTest.lblTest);
+  AddCtrl(InspCat, frmTest.ListBox1);
   InspCat.Expanded := True;
 end;
 
