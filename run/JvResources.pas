@@ -160,7 +160,8 @@ resourcestring
   RsNotConnected = 'Not connected';
   RsErrorMessagePrefix = 'Error #';
 
-  RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d';
+  RsEInvalidDriverIndex = '%d is an invalid driver index. The maximum value is %d'#13#10+
+                          'This may also happen if the device could not be initialized properly.';
 
 //=== JvBackgrounds.pas ======================================================
 resourcestring
