@@ -31,12 +31,19 @@ unit JvSimPID;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls,
+  {$ENDIF VisualCLX}
+  JvComponent;
 
 type
   TJvSymFunc = (sfPid, sfAdd, sfCompare, sfRamp, sfMul);
 
-  TJvSimPID = class(TGraphicControl)
+  TJvSimPID = class(TJvGraphicControl)
   private
     FMV: Extended;
     FMVColor: TColor;
