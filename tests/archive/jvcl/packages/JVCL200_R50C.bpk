@@ -114,22 +114,21 @@
       ..\lib5\JvSpin.obj ..\lib5\JvRichEd.obj ..\lib5\JvSwitch.obj 
       ..\lib5\JvDice.obj ..\lib5\JvVCLUtils.obj ..\lib5\JvAniFile.obj 
       ..\lib5\JvIcoList.obj ..\lib5\JvObjStr.obj ..\lib5\JvPickDate.obj 
-      ..\lib5\JvMaxMin.obj ..\lib5\JvConst.obj ..\lib5\JvCConst.obj 
+      ..\lib5\JvMaxMin.obj ..\lib5\JvConst.obj ..\lib5\JvxConst.obj 
       ..\lib5\JvAppUtils.obj ..\lib5\JvStrUtils.obj ..\lib5\JvFileUtil.obj 
       ..\lib5\JvTimer.obj ..\lib5\JvHook.obj ..\lib5\JvPlacemnt.obj 
       ..\lib5\JvProps.obj ..\lib5\JvPrgrss.obj ..\lib5\JvHints.obj 
       ..\lib5\JvCalc.obj ..\lib5\JvBoxProcs.obj ..\lib5\JvClipIcon.obj 
       ..\lib5\JvClipMon.obj ..\lib5\JvParsing.obj ..\lib5\JvGraph.obj 
-      ..\lib5\JvGConst.obj ..\lib5\JvGIF.obj ..\lib5\JvGIFCtrl.obj 
-      ..\lib5\JvPicClip.obj ..\lib5\JvDualList.obj ..\lib5\JvFDualLst.obj 
-      ..\lib5\JvClipView.obj ..\lib5\JvSpeedbar.obj ..\lib5\JvSbSetup.obj 
-      ..\lib5\JvPageMngr.obj ..\lib5\JvMrgMngr.obj ..\lib5\JvStrHlder.obj 
-      ..\lib5\JvAppEvent.obj ..\lib5\JvTimerLst.obj ..\lib5\JvMRUList.obj 
-      ..\lib5\JvIni.obj ..\lib5\JvMenus.obj ..\lib5\JvNotify.obj 
-      ..\lib5\JvGrdCpt.obj ..\lib5\JvSplshWnd.obj ..\lib5\JvDataConv.obj 
-      ..\lib5\JvTConst.obj ..\lib5\JvOle2Auto.obj ..\lib5\JvVerInf.obj 
-      ..\lib5\JvDBCtrl.obj ..\lib5\JvLookup.obj ..\lib5\JvxLogin.obj 
-      ..\lib5\JvDConst.obj ..\lib5\JvDBUtils.obj ..\lib5\JvDBComb.obj 
+      ..\lib5\JvGIF.obj ..\lib5\JvGIFCtrl.obj ..\lib5\JvPicClip.obj 
+      ..\lib5\JvDualList.obj ..\lib5\JvFDualLst.obj ..\lib5\JvClipView.obj 
+      ..\lib5\JvSpeedbar.obj ..\lib5\JvSbSetup.obj ..\lib5\JvPageMngr.obj 
+      ..\lib5\JvMrgMngr.obj ..\lib5\JvStrHlder.obj ..\lib5\JvAppEvent.obj 
+      ..\lib5\JvTimerLst.obj ..\lib5\JvMRUList.obj ..\lib5\JvIni.obj 
+      ..\lib5\JvMenus.obj ..\lib5\JvNotify.obj ..\lib5\JvGrdCpt.obj 
+      ..\lib5\JvSplshWnd.obj ..\lib5\JvDataConv.obj ..\lib5\JvOle2Auto.obj 
+      ..\lib5\JvVerInf.obj ..\lib5\JvDBCtrl.obj ..\lib5\JvLookup.obj 
+      ..\lib5\JvxLogin.obj ..\lib5\JvDBUtils.obj ..\lib5\JvDBComb.obj 
       ..\lib5\JvDBRichEd.obj ..\lib5\JvMemDS.obj ..\lib5\JvDBQBE.obj 
       ..\lib5\JvDBFilter.obj ..\lib5\JvDBLists.obj ..\lib5\JvDBIndex.obj 
       ..\lib5\JvDBPrgrss.obj ..\lib5\JvxLoginDlg.obj ..\lib5\JvDBSecur.obj 
@@ -182,9 +181,9 @@
     <LIBFILES value=""/>
     <LIBRARIES value="wininet.lib"/>
     <SPARELIBS value="wininet.lib Vcl50.lib Vcldb50.lib VCLBDE50.lib Vclx50.lib vcljpg50.lib 
-      CJCL50.lib Inet50.lib Qrpt50.lib"/>
+      CJCL50.lib"/>
     <PACKAGES value="vcl50.bpi CJCL50.bpi vclx50.bpi vclsmp50.bpi vcldb50.bpi vcljpg50.bpi 
-      vclbde50.bpi Qrpt50.bpi Inet50.bpi"/>
+      vclbde50.bpi Qrpt50.bpi Inet50.bpi dclstd50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\source"/>
     <PATHRC value=".;"/>
@@ -193,26 +192,25 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="tlink32"/>
     <USERDEFINES value=""/>
-    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R50C.cpp"/>
-    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu;..\lib5"/>
-    <LIBPATH value="..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jvcl\lib5"/>
+    <INCLUDEPATH value="..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu;..\..\JCL\source"/>
+    <LIBPATH value="..\..\..\..\CBuilder5\Lib;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -I..\common 
-      -I$(BCB)\jcl\dcu -I..\lib5 -src_suffix cpp -boa"/>
-    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <IDLCFLAGS value="-I..\source -I..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I..\..\JCL\dcu -I..\..\JCL\source -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -u- -X- -a8 -b -k- -vi"/>
     <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\lib5 -D&quot;Runtime support package for JEDI VCL&quot; -aa -Tpp -Gpr -x -Gn 
-      -Gl -Gi"/>
+    <LFLAGS value="-I..\lib5 -D&quot;Runtime package for JEDI VCL&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
   <IDEOPTIONS>
 [Version Info]
@@ -227,7 +225,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1033
+Locale=1053
 CodePage=1252
 
 [Version Info Keys]
@@ -242,18 +240,32 @@ ProductName=
 ProductVersion=1.0.0.0
 
 [HistoryLists\hlIncludePath]
-Count=5
-Item0=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu;..\lib5
-Item1=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu
-Item2=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\source
-Item3=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\source;$(BCB)\jvcl\source
-Item4=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
+Count=10
+Item0=..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu;..\..\JCL\source
+Item1=..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu;..\..\JCL\source;D:\Borland\Add\JEDI200\JCL\source
+Item2=..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu;D:\Borland\Add\JEDI200\JCL\source
+Item3=..\source;..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\JCL\dcu
+Item4=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;..\..\..\Jcl\dcu;..\..\..\Jcl\source
+Item5=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;..\..\Jcl\dcu;..\Jcl\source
+Item6=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;..\..\Jcl\dcu;..\..\Jcl\source
+Item7=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;..\..\Jcl\dcu
+Item8=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
+Item9=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
 
 [HistoryLists\hlLibraryPath]
-Count=3
-Item0=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jvcl\lib5
-Item1=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu
-Item2=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\dcu\
+Count=12
+Item0=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;..\..\JCL\source
+Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu;D:\Borland\Add\JEDI200\JCL\source
+Item2=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\common;..\source;..\dcu;..\lib5;..\..\JCL\dcu
+Item3=$(BCB)\Projects\Lib;..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5
+Item4=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
+Item5=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;..\lib5;
+Item6=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;..\..\Jcl\dcu;
+Item7=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
+Item8=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\dcu;
+Item9=..\common;..\source;$(BCB)\lib\obj;$(BCB)\lib;
+Item10=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;
+Item11=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
 
 [HistoryLists\hlDebugSourcePath]
 Count=1

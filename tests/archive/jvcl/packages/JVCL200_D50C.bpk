@@ -45,8 +45,7 @@
       ..\source\ScheduleEditor.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib vcljpg50.lib dclstd50.lib VCLBDE50.lib VCLDB50.lib dsnide50.lib 
-      Vclx50.lib JVCL200_R50C.lib"/>
+    <SPARELIBS value="Vcl50.lib vcljpg50.lib dclstd50.lib"/>
     <PACKAGES value="vcl50.bpi vcldb50.bpi JVCL200_R50C.bpi dclstd50.bpi vclx50.bpi 
       vclbde50.bpi vcljpg50.bpi dsnide50.bpi"/>
     <PATHCPP value=".;"/>
@@ -57,24 +56,25 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="tlink32"/>
     <USERDEFINES value=""/>
-    <SYSDEFINES value="NO_STRICT;_RTLDLL;USEPACKAGES"/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_D50C.cpp"/>
-    <INCLUDEPATH value="..\Source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\jcl\source"/>
-    <LIBPATH value="$(BCB)\Lib;..\..\Lib;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\jcl\dcu;$(BCB)\jcl\source;$(BCB)\jvcl\lib5"/>
+    <INCLUDEPATH value="..\Source;$(BCB)\include;$(BCB)\include\vcl;..\Common"/>
+    <LIBPATH value="j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib5"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\Source -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
-    <CFLAG1 value="-O2 -Q -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
+    <IDLCFLAGS value="-I..\Source -I$(BCB)\include -I$(BCB)\include\vcl -I..\Common -src_suffix 
+      cpp -boa"/>
+    <CFLAG1 value="-O2 -H=j:\source\vcl\pre.csm -Hc -Vx -Ve -X- -a8 -6 -b- -k- -vi -c -tWM"/>
     <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50 -LUdclstd50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zn"/>
-    <LFLAGS value="-I..\lib5 -D&quot;JEDI-VCL Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
+    <LFLAGS value="-I..\lib5 -D&quot;Designtime package for JEDI VCL&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
   </LINKER>
   <IDEOPTIONS>
 [Version Info]
@@ -89,8 +89,8 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1033
-CodePage=1252
+Locale=2052
+CodePage=936
 
 [Version Info Keys]
 CompanyName=
@@ -102,35 +102,39 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
+Comments=
 
 [HistoryLists\hlIncludePath]
 Count=3
-Item0=..\Source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\jcl\source
+Item0=..\Source;$(BCB)\include;$(BCB)\include\vcl;..\Common
 Item1=..\Source;$(BCB)\include;$(BCB)\include\vcl
 Item2=$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=9
-Item0=..\..\Lib;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\jcl\dcu;$(BCB)\jcl\source;$(BCB)\jvcl\lib5
-Item1=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jcl\source;$(BCB)\jvcl\lib5
-Item2=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jcl\source
-Item3=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB5)\jcl\dcu;$(BCB5)\jcl\source
-Item4=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB5)\jcl\dcu\;$(BCB5)\jcl\source
-Item5=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\dcu\
-Item6=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\dcu
-Item7=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib
-Item8=$(BCB)\lib\obj;$(BCB)\lib
+Count=11
+Item0=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib5
+Item1=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\ib5
+Item2=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\lib5
+Item3=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
+Item4=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item5=j:\lib\;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item6=j:\lib;$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item7=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item8=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item9=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib
+Item10=$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
+Count=2
+Item0=$(BCB)\source\vcl;
+Item1=$(BCB)\source\vcl
 
 [HistoryLists\hlIntOutputDir]
 Count=1
 Item0=..\lib5
 
 [Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
+DebugSourceDirs=$(BCB)\source\vcl;
 
 [Parameters]
 RunParams=
@@ -144,9 +148,9 @@ ShowInfoMsgs=0
 LinkDebugVcl=0
 LinkCGLIB=0
 
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
   </IDEOPTIONS>
 </PROJECT>

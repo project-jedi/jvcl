@@ -285,7 +285,7 @@ USEUNIT("..\source\JvObjStr.pas");
 USEUNIT("..\source\JvPickDate.pas");
 USEUNIT("..\source\JvMaxMin.pas");
 USEUNIT("..\source\JvConst.pas");
-USEUNIT("..\source\JvCConst.pas");
+USEUNIT("..\source\JvxConst.pas");
 USEUNIT("..\source\JvAppUtils.pas");
 USEUNIT("..\source\JvStrUtils.pas");
 USEUNIT("..\source\JvFileUtil.pas");
@@ -301,7 +301,6 @@ USEUNIT("..\source\JvClipIcon.pas");
 USEUNIT("..\source\JvClipMon.pas");
 USEUNIT("..\source\JvParsing.pas");
 USEUNIT("..\source\JvGraph.pas");
-USEUNIT("..\source\JvGConst.pas");
 USEUNIT("..\source\JvGIF.pas");
 USEUNIT("..\source\JvGIFCtrl.pas");
 USEUNIT("..\source\JvPicClip.pas");
@@ -322,13 +321,11 @@ USEUNIT("..\source\JvNotify.pas");
 USEUNIT("..\source\JvGrdCpt.pas");
 USEUNIT("..\source\JvSplshWnd.pas");
 USEUNIT("..\source\JvDataConv.pas");
-USEUNIT("..\source\JvTConst.pas");
 USEUNIT("..\source\JvOle2Auto.pas");
 USEUNIT("..\source\JvVerInf.pas");
 USEUNIT("..\source\JvDBCtrl.pas");
 USEUNIT("..\source\JvLookup.pas");
 USEFORMNS("..\source\JvxLogin.pas", Jvxlogin, JvLoginForm);
-USEUNIT("..\source\JvDConst.pas");
 USEUNIT("..\source\JvDBUtils.pas");
 USEUNIT("..\source\JvDBComb.pas");
 USEUNIT("..\source\JvDBRichEd.pas");
@@ -426,6 +423,7 @@ USEUNIT("..\source\JvUtils.pas");
 USEUNIT("..\source\JvWndProcHook.pas");
 USEPACKAGE("Qrpt50.bpi");
 USEPACKAGE("Inet50.bpi");
+USEPACKAGE("dclstd50.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
