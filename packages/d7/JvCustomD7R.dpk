@@ -29,7 +29,9 @@ package JvCustomD7R;
 requires
   JvCoreD7R,
   JvSystemD7R,
-  JvStdCtrlsD7R;
+  JvStdCtrlsD7R,
+  vcl,
+  rtl;
 
 contains
   JvTrayIcon in '..\..\run\JvTrayIcon.pas',
@@ -60,6 +62,7 @@ contains
   JvHLParser in '..\..\run\JvHLParser.pas',
   JvValidateEdit in '..\..\run\JvValidateEdit.pas',
   JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm},
-  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas';
+  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas',
+  JvChart in '..\..\run\JvChart.pas';
 
 end.
