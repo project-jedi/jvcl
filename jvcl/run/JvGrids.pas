@@ -29,9 +29,9 @@ unit JvGrids;
 interface
 
 uses
-  Classes, Controls, Windows, Messages, Graphics, StdCtrls, Forms, Grids, // Windows after Controls
+  Classes, Windows, Messages, Controls, Graphics, StdCtrls, Forms, Grids,
   {$IFDEF VisualCLX}
-  Qt, QTypes,
+  Qt,
   {$ENDIF VisualCLX}
   JvConsts, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
 
@@ -407,17 +407,12 @@ begin
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
     FListVisible := True;
     Invalidate;
-    {$IFDEF VCL}
     Windows.SetFocus(Handle);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    QWindows.SetFocus(Handle);
-    {$ENDIF VisualCLX}
   end;
 end;
 
 type
-  TWinControlCracker = class(TWinControl);
+  THackedWinControl = class(TWinControl);
 
 procedure TJvInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -462,11 +457,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-{$IFDEF VisualCLX}
-type
-  TWidgetControlAccessProtected = class(TWidgetControl);
-{$ENDIF VisualCLX}
-
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   ListPos: TPoint;
@@ -486,7 +476,7 @@ begin
         SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
-        TWidgetControlAccessProtected(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
+        THackedWinControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
         {$ENDIF VisualCLX}
         Exit;
       end;
@@ -547,7 +537,7 @@ begin
     begin { esEllipsis }
       if FPressed then
         Flags := BF_FLAT;
-      DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
+      Windows.DrawEdge(DC, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or Flags);
       W := 2;
       G := (FButtonWidth - LeftOffs * 2 - 3 * W) div 2;
       if G <= 0 then
@@ -1256,6 +1246,9 @@ begin
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = ACol) and (FCellDown.Y = ARow) then
         Style := Style or DFCS_PUSHED;
+      {$IFDEF VisualCLX}
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+      {$ENDIF VisualCLX}
       DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
@@ -1337,8 +1330,11 @@ begin
       if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
-      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
-      DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
+      {$IFDEF VisualCLX}
+      RequiredState(Canvas, [csHandleValid, csPenValid, csBrushValid]);
+      {$ENDIF VisualCLX}
+      Windows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
+      Windows.DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
     end;
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and
