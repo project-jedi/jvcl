@@ -746,11 +746,13 @@ type
     FTheme: TJvNavPanelTheme;
     FClients: TList;
     FFonts: TJvNavPanelFonts;
+    FOnThemeChange: TNotifyEvent;
     procedure SetColors(const Value: TJvNavPanelColors);
     procedure SetTheme(const Value: TJvNavPanelTheme);
     procedure DoThemeChange(Sender: TObject);
     procedure SetFonts(const Value: TJvNavPanelFonts);
   protected
+    procedure Change;virtual;
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -762,6 +764,7 @@ type
     property Theme: TJvNavPanelTheme read FTheme write SetTheme default nptStandard;
     property Colors: TJvNavPanelColors read FColors write SetColors;
     property Fonts: TJvNavPanelFonts read FFonts write SetFonts;
+    property OnThemeChange:TNotifyEvent read FOnThemeChange write FOnThemeChange;
   end;
 
 implementation
@@ -2689,6 +2692,12 @@ begin
     DestFonts.Assign(Fonts);
 end;
 
+procedure TJvNavPaneStyleManager.Change;
+begin
+  if Assigned(FOnThemeChange) then
+    FOnThemeChange(Self);
+end;
+
 constructor TJvNavPaneStyleManager.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2814,6 +2823,7 @@ begin
         end;
     end;
     FTheme := Value;
+    Change;
   end;
 end;
 
