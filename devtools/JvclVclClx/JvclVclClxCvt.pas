@@ -33,6 +33,8 @@ uses
 
 type
   TJVCLConverter = class(TVCLConverter)
+  private
+    FModel: TPackageModel;
   protected
     procedure InitUnitReplaceList; override;
     function ChangeFileName(const Name: String): String; override;
@@ -41,8 +43,7 @@ type
     procedure TranslateResource(var AName: String); override;
     procedure BeforeSave(const Filename: string; Lines: TStrings); override;
   public
-    constructor Create(const AIniDirectory: string);
-    destructor Destroy; override;
+    constructor Create(const AIniDirectory: string; AModel: TPackageModel);
   end;
 
   TProgressEvent = procedure(Sender: TObject; const Text: string;
@@ -51,7 +52,7 @@ type
   TConverter = class(TObject)
   private
     FPackageModels: TPackageModelList;
-    FModel: TPackageModel; 
+    FModel: TPackageModel;
     FJVCLDir: string;
     FCvt: TJVCLConverter;
     FOnProgress: TProgressEvent;
@@ -64,6 +65,7 @@ type
 
     function CreateClxFiles: Integer;
     property PackageModels: TPackageModelList read FPackageModels;
+    property Model: TPackageModel read FModel;
     property JVCLDir: string read FJVCLDir;
     property Cvt: TJVCLConverter read FCvt;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
@@ -89,19 +91,14 @@ end;
 
 { TJVCLConverter }
 
-constructor TJVCLConverter.Create(const AIniDirectory: string);
+constructor TJVCLConverter.Create(const AIniDirectory: string; AModel: TPackageModel);
 begin
+  FModel := AModel; // must be set before inherited Create
   inherited Create(AIniDirectory);
   //ReduceConditions := False;
   KeepLines := False;
   ConditionVCL := 'VCL';
   ConditionCLX := 'VisualCLX';
-end;
-
-destructor TJVCLConverter.Destroy;
-begin
-
-  inherited Destroy;
 end;
 
 procedure TJVCLConverter.InitUnitReplaceList;
@@ -118,6 +115,8 @@ begin
     for i := 0 to Lines.Count - 1 do
       if not IsEmptyStr(Lines[i]) then
         RemoveConditions.Add(Trim(Lines[i]));
+    for i := 0 to FModel.IgnoredClxReplacements.Count - 1 do
+      IgnoreUnits.Add(ChangeFileExt(FModel.IgnoredClxReplacements[i], ''));
   finally
     Lines.Free;
   end;
@@ -180,7 +179,7 @@ begin
     Fail;
   ExpandPackageTargetsObj := FModel.ExpandTargets;
 
-  FCvt := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData');
+  FCvt := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData', FModel);
 end;
 
 destructor TConverter.Destroy;

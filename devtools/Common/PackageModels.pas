@@ -106,6 +106,7 @@ type
     FTargets: TObjectList;
     FAliases: TObjectList;
     FClxReplacements: TObjectList;
+    FIgnoredClxReplacements: TStringList;
 
     function GeClxReplacementCount: Integer;
     function GetAliasCount: Integer;
@@ -135,6 +136,7 @@ type
     property Aliases[Index: Integer]: TModelAlias read GetAliases;
     property ClxReplacementCount: Integer read GeClxReplacementCount;
     property ClxReplacements[Index: Integer]: TClxReplacement read GetClxReplacements;
+    property IgnoredClxReplacements: TStringList read FIgnoredClxReplacements;
 
     property Owner: TPackageModelList read FOwner;
   end;
@@ -245,6 +247,9 @@ begin
   FTargets := TObjectList.Create;
   FAliases := TObjectList.Create;
   FClxReplacements := TObjectList.Create;
+  FIgnoredClxReplacements := TStringList.Create;
+  FIgnoredClxReplacements.Sorted := True;
+  FIgnoredClxReplacements.Duplicates := dupIgnore;
 
   FName := AnsiLowerCase(XmlNode.Properties.ItemNamed['name'].Value);
   FPrefix := XmlNode.Properties.Value('prefix');
@@ -268,8 +273,16 @@ begin
   Node := XmlNode.Items.ItemNamed['ClxReplacements'];
   if Node <> nil then
     for i := 0 to Node.Items.Count - 1 do
-      if Node.Items[i].Properties.ItemNamed['original'] <> nil then
-        FClxReplacements.Add(TClxReplacement.Create(Self, Node.Items[i]));
+    begin
+      if CompareText(Node.Items[i].Name, 'replacement') = 0 then
+      begin
+        if Node.Items[i].Properties.ItemNamed['original'] <> nil then
+          FClxReplacements.Add(TClxReplacement.Create(Self, Node.Items[i]));
+      end
+      else
+      if CompareText(Node.Items[i].Name, 'ignoredFile') = 0 then
+        FIgnoredClxReplacements.Add(Node.Items[i].Properties.Value('filename'));
+    end;
 
   if FindTarget('all') = nil then
   begin
@@ -286,6 +299,7 @@ begin
   FTargets.Free;
   FAliases.Free;
   FClxReplacements.Free;
+  FIgnoredClxReplacements.Free;
   inherited Destroy;
 end;
 
@@ -376,21 +390,24 @@ var
 begin
   if Path <> '' then
   begin
-    {$IFDEF MSWINDOWS}
-    CmpPath := LowerCase(Path);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    CmpPath := Path;
-    {$ENDIF LINUX}
-    for i := 0 to ClxReplacementCount - 1 do
+    if not IgnoredClxReplacements.Find(ExtractFileName(Path), i) then
     begin
-      Ps := Pos(ClxReplacements[i].Original, CmpPath);
-      if Ps > 0 then
+      {$IFDEF MSWINDOWS}
+      CmpPath := LowerCase(Path);
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      CmpPath := Path;
+      {$ENDIF LINUX}
+      for i := 0 to ClxReplacementCount - 1 do
       begin
-        Result := Copy(Path, 1, Ps - 1) +
-                  ClxReplacements[i].Replacement +
-                  Copy(Path, Ps + Length(ClxReplacements[i].Original), MaxInt);
-        Exit;
+        Ps := Pos(ClxReplacements[i].Original, CmpPath);
+        if Ps > 0 then
+        begin
+          Result := Copy(Path, 1, Ps - 1) +
+                    ClxReplacements[i].Replacement +
+                    Copy(Path, Ps + Length(ClxReplacements[i].Original), MaxInt);
+          Exit;
+        end;
       end;
     end;
   end;
