@@ -234,16 +234,19 @@ begin
     HintStr := Hint; // set default
     if Items.Count > 0 then
     begin
-      AHeight := ClientHeight div (Items.Count div Columns);
-      AWidth  := ClientWidth div Columns;
+      VertCount := (Items.Count div Columns) + Ord(Items.Count mod Columns <> 0);
+      AHeight := Height div VertCount;
+      AWidth  := Width div Columns;
       if (AHeight > 0) then
       begin
-        VertCount := Items.Count div Columns;
         AItemX := CursorPos.X div AWidth;
         AItemY := CursorPos.Y div AHeight;
-        GetItemHint(AItemY + AItemX * VertCount, TCaption(HintStr));
-        ARect := Rect(AItemX * AWidth, AHeight * AItemY,
-          AItemX * AWidth + AWidth, AHeight * AItemY + AHeight);
+        if AItemY + AItemX * VertCount< Items.Count then
+        begin
+          GetItemHint(AItemY + AItemX * VertCount, TCaption(HintStr));
+          ARect := Rect(AItemX * AWidth, AHeight * AItemY,
+            AItemX * AWidth + AWidth, AHeight * AItemY + AHeight);
+        end;
       end;
       CursorRect := ARect;
     end;
