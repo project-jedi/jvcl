@@ -255,6 +255,10 @@ Description
 
   A plugin is not required to have a command (a host may just send messages to the plugin), but
   usually it has at least one.
+Note
+  Due to an unresolved bug, you should make sure that TJvPluginManager is created <B>before</B>
+  the main menu if you add plug-ins to the main menu. TJvPluginManager should be available when the
+  main menu is destroyed.
 ----------------------------------------------------------------------------------------------------
 @@TJvPluginCommand.Bitmap
 Summary
