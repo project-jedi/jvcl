@@ -905,6 +905,10 @@ begin
 end;
 
 initialization
+  DefFontData.Height := 11;
   Screen.IconFont.Name := 'Tahoma';
+  Screen.IconFont.Height := 11;
+  Screen.HintFont.Height := 11;
+  Screen.MenuFont.Height := 11;
 
 end.
