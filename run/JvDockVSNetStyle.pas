@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, Graphics, ComCtrls, ExtCtrls,
-  ImgList, Forms,
+  ImgList, Forms, Dialogs,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle;
 
 const
@@ -214,6 +214,7 @@ type
 
   TJvDockVSNetStyle = class(TJvDockVIDStyle)
   private
+    FMouseleaved:Boolean;
     FTimer: TTimer;
     FDockServerList: TList;
     FCurrentTimer: Integer;
@@ -470,6 +471,7 @@ type
     procedure OnCustomTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
     procedure HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
@@ -489,7 +491,7 @@ var
   GlobalPopupPanelAnimate: TPopupPanelAnimate = nil;
   // (ahuser) not used:
   // GlobalApplicationEvents: TJvDockAppEvents = nil;
-  GlobalPopupPanelAnimateInterval: Integer = 16;
+  GlobalPopupPanelAnimateInterval: Integer = 20;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
   GlobalPopupPanelStartAnimateInterval: Integer  = 400;
 
@@ -563,6 +565,7 @@ end;
 constructor TJvDockVSNetStyle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FMouseleaved := True;
   DockPanelClass := TJvDockVSNETPanel;
   DockSplitterClass := TJvDockVSNETSplitter;
   ConjoinPanelClass := TJvDockVSNETConjoinPanel;
@@ -626,36 +629,60 @@ begin
   Option := TJvDockVSNETTabServerOption.Create(Self);
 end;
 
+procedure DragControl(WinControl: TWinControl);
+const
+  SM = $F012;
+begin
+  ReleaseCapture;
+  WinControl.Perform(WM_SYSCOMMAND, SM, 0);
+end;
+
 function TJvDockVSNetStyle.DockClientWindowProc(DockClient: TJvDockClient;
   var Msg: TMessage): Boolean;
 var
   Channel: TJvDockVSChannel;
+  FormRect:TRect;
+  MPosTp: TPoint;
 begin
   Result := inherited DockClientWindowProc(DockClient, Msg);
-  if (Msg.Msg = CM_ENTER) or (Msg.Msg = CM_EXIT) then
-  begin
-    Channel := nil;
-    if DockClient.ParentForm.HostDockSite is TJvDockVSPopupPanel then
-      Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite).VSChannel
-    else
-    if DockClient.ParentForm.HostDockSite <> nil then
-    begin
-      if DockClient.ParentForm.HostDockSite.Parent is TJvDockVSPopupPanel then
-        Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite.Parent).VSChannel
-      else
-      if (DockClient.ParentForm.HostDockSite.Parent <> nil) and
-        (DockClient.ParentForm.HostDockSite.Parent.Parent is TJvDockVSPopupPanel) then
-        Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite.Parent.Parent).VSChannel;
-    end;
-    if Msg.Msg = CM_EXIT then
-    begin
-      if Channel <> nil then
-        Channel.HidePopupPanelWithAnimate;
-    end
-    else
-    if Msg.Msg = CM_ENTER then
-      HideAllPopupPanel(Channel);
+  case Msg.Msg of
+    CM_MOUSEENTER:
+      begin
+        FMouseleaved := False;
+      end;
+    CM_MOUSELEAVE:  //Fix bug on AutoHide --Dejoy.
+      begin
+        GetCursorPos(MPosTp);
+        GetWindowRect(DockClient.ParentForm.Handle,FormRect);
+        if not PtInRect(FormRect,MPosTp) then
+          FMouseleaved := True;
+      end;
+   CM_ENTER,CM_EXIT:
+      begin
+        Channel := nil;
+        if DockClient.ParentForm.HostDockSite is TJvDockVSPopupPanel then
+          Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite).VSChannel
+        else
+        if DockClient.ParentForm.HostDockSite <> nil then
+        begin
+          if DockClient.ParentForm.HostDockSite.Parent is TJvDockVSPopupPanel then
+            Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite.Parent).VSChannel
+          else
+          if (DockClient.ParentForm.HostDockSite.Parent <> nil) and
+            (DockClient.ParentForm.HostDockSite.Parent.Parent is TJvDockVSPopupPanel) then
+            Channel := TJvDockVSPopupPanel(DockClient.ParentForm.HostDockSite.Parent.Parent).VSChannel;
+        end;
+        if Msg.Msg = CM_EXIT then
+        begin
+          if Channel <> nil then
+            Channel.HidePopupPanelWithAnimate;
+        end
+        else
+        if Msg.Msg = CM_ENTER then
+          HideAllPopupPanel(Channel);
+      end;
   end;
+
 end;
 
 function TJvDockVSNetStyle.DockServerWindowProc(DockServer: TJvDockServer;
@@ -860,7 +887,7 @@ begin
     end;
     P := P.Parent;
   end;
-  if P = nil then
+  if (P = nil) and (FMouseleaved) then
   begin
     Dec(FCurrentTimer, 100);
     if (FCurrentTimer > 0) or (FCurrentTimer < -100) then
@@ -1478,6 +1505,7 @@ begin
   Color := VSNETPageInactiveSheetColor;
   ParentFont := True;
   ActivePaneSize := MaxActivePaneWidth;
+  FActiveDockForm := nil;
 end;
 
 destructor TJvDockVSChannel.Destroy;
@@ -1703,7 +1731,6 @@ end;
 procedure TJvDockVSChannel.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-
   // Create the timer object if not existing
   if FAnimationStartTimer = nil then begin
     FAnimationStartTimer := TTimer.Create(nil);
@@ -2810,6 +2837,11 @@ begin
   FState := asPopup;
 end;
 
+destructor TPopupPanelAnimate.Destroy;
+begin
+  inherited Destroy;
+end;
+
 procedure TPopupPanelAnimate.HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
 begin
   if FVSChannel <> nil then
@@ -2826,7 +2858,7 @@ end;
 
 procedure TPopupPanelAnimate.OnCustomTimer(Sender: TObject);
 begin
-  // we need an event handler or the timer loop won't be restarted (see TTimer.UpdateTimer in ExtCtrls.pas)
+  // ??? no handler?
 end;
 
 procedure TPopupPanelAnimate.PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
@@ -3171,7 +3203,6 @@ begin
     FAnimationStartTimer := nil;
   end;
 end;
-
 initialization
 
 finalization
