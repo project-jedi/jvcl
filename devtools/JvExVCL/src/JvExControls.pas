@@ -233,6 +233,8 @@ procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 
 function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
+
+procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
@@ -709,6 +711,11 @@ begin
     Result := nil
   else
     Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
+
+  Canvas.Brush.Color := Instance.Color;
+  QPainter_setFont(Canvas.Handle, Instance.Font.Handle);
+  QPainter_setPen(Canvas.Handle, Instance.Font.FontPen);
+  Canvas.Font.Assign(Instance.Font);
 end;
 
 procedure WidgetControl_PaintBackground(Instance: TWidgetControl; Canvas: TCanvas);
@@ -808,6 +815,36 @@ begin
       Result := ((Shift * [ssCtrl, ssAlt] = []) and
                 ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
                 not (IsTabKey or IsArrowKey);
+  end;
+end;
+
+procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
+var
+  Bmp: TBitmap;
+  TC: QColorH;
+begin
+  with Instance do
+  begin
+    HandleNeeded;
+    if Bitmap.Empty then
+    begin
+      Palette.Color := Color;
+      Brush.Color := Color;
+      TC := QColor(Color);
+      QWidget_setBackgroundColor(TC);
+      QColor_destroy(TC);
+    end;
+
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Assign(Bitmap);
+      Bitmap.Width := 0;
+      Bitmap.Height := 0;
+      inherited ColorChanged;
+    finally
+      Bitmap.Assign(Bmp);
+      Bmp.Free;
+    end;
   end;
 end;
 

@@ -112,6 +112,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -252,6 +253,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -393,6 +395,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -540,6 +543,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -842,6 +846,11 @@ procedure TJvExCustomComboEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomComboEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomComboEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1202,6 +1211,11 @@ procedure TJvExComboEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExComboEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1570,6 +1584,11 @@ procedure TJvExCustomComboMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomComboMaskEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomComboMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -1944,6 +1963,11 @@ procedure TJvExComboMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboMaskEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExComboMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);

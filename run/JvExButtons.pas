@@ -197,6 +197,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -641,6 +642,11 @@ procedure TJvExBitBtn.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExBitBtn.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);

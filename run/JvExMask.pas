@@ -113,6 +113,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -260,6 +261,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -565,6 +567,11 @@ procedure TJvExCustomMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomMaskEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -939,6 +946,11 @@ procedure TJvExMaskEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExMaskEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExMaskEdit.CMFocusChanged(var Msg: TCMFocusChanged);

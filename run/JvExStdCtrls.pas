@@ -113,6 +113,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -233,6 +234,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -525,6 +527,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -645,6 +648,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -767,6 +771,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -907,6 +912,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1047,6 +1053,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1187,6 +1194,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1329,6 +1337,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1451,6 +1460,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1571,6 +1581,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1691,6 +1702,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1811,6 +1823,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -1931,6 +1944,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2051,6 +2065,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2171,6 +2186,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2291,6 +2307,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2411,6 +2428,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2531,6 +2549,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2652,6 +2671,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -2772,6 +2792,7 @@ type
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     function GetDoubleBuffered: Boolean;
+    procedure ColorChanged; override;
   public
     property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
   {$ENDIF VisualCLX}
@@ -3045,6 +3066,11 @@ procedure TJvExCustomGroupBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomGroupBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomGroupBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3328,6 +3354,11 @@ procedure TJvExGroupBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExGroupBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExGroupBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -3960,6 +3991,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomLabel.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomLabel.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -4242,6 +4278,11 @@ procedure TJvExLabel.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExLabel.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExLabel.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -4532,6 +4573,11 @@ procedure TJvExCustomEdit.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomEdit.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -4893,6 +4939,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExEdit.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExEdit.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -5253,6 +5304,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomMemo.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomMemo.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -5612,6 +5668,11 @@ procedure TJvExMemo.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExMemo.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExMemo.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -5978,6 +6039,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomCombo.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomCombo.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -6263,6 +6329,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomComboBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomComboBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -6545,6 +6616,11 @@ procedure TJvExComboBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExComboBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExComboBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -6829,6 +6905,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExButtonControl.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExButtonControl.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -7111,6 +7192,11 @@ procedure TJvExButton.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExButton.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExButton.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -7395,6 +7481,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomCheckBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomCheckBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -7677,6 +7768,11 @@ procedure TJvExCheckBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCheckBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCheckBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -7961,6 +8057,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExRadioButton.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExRadioButton.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -8243,6 +8344,11 @@ procedure TJvExCustomListBox.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExCustomListBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomListBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -8527,6 +8633,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExListBox.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExListBox.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -8809,6 +8920,11 @@ procedure TJvExScrollBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExScrollBar.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExScrollBar.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -9094,6 +9210,11 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
+
+procedure TJvExCustomStaticText.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
+end;
 {$ENDIF VisualCLX}
 procedure TJvExCustomStaticText.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
@@ -9376,6 +9497,11 @@ procedure TJvExStaticText.BoundsChanged;
 begin
   inherited BoundsChanged;
   DoBoundsChanged;
+end;
+
+procedure TJvExStaticText.ColorChanged;
+begin
+  TWidgetControl_ColorChanged(Self);
 end;
 {$ENDIF VisualCLX}
 procedure TJvExStaticText.CMFocusChanged(var Msg: TCMFocusChanged);
