@@ -461,6 +461,8 @@ end;
 procedure TJvTrayIcon.SetVisible(Value: Boolean);
 begin
   FVisible := Value;
+  if (csLoading in ComponentState) and not (csDesigning in ComponentState) then
+    Application.ShowMainForm := FVisible;
   if not (csDesigning in ComponentState) then
     if Value then
       ShowApplication
