@@ -84,7 +84,6 @@ begin
     TJvItemsPanel, TJvMovableBevel, TJvRollOut, TJvFooter, TJvGroupHeader,
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel,
-
     TJvHTLabel, TJvWinampLabel]);
   RegisterComponents(RsPaletteListComboTree, [TJvHTListBox, TJvHTComboBox]);
   RegisterComponents(RsPaletteScrollerTracker, [TJvaScrollText,
@@ -113,7 +112,7 @@ begin
 //  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
 //  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
 //  RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-//    RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
+//  RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
 //  RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
 //  RegisterClass(TJvScrollMaxBand);

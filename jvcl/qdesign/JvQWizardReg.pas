@@ -59,7 +59,7 @@ uses
   {$ELSE}
   JvQWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardEditorForm;
+  JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps{, JvQWizardEditorForm};
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
@@ -82,6 +82,7 @@ begin
     TJvWizardRouteMapNodes]);
   RegisterClasses([TJvWizardCustomPage, TJvWizardWelcomePage,
     TJvWizardInteriorPage]);
+  {$IFDEF LINUX}
   RegisterComponentEditor(TJvWizard, TJvWizardComponentEditor);
   RegisterComponentEditor(TJvWizardCustomPage, TJvWizardComponentEditor);
   RegisterComponentEditor(TJvWizardWelcomePage, TJvWizardComponentEditor);
@@ -100,6 +101,7 @@ begin
   // JvWizard Page List Editor
   RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
     TJvWizardPageListProperty);
+  {$ENDIF LINUX}
 end;
 
 end.
