@@ -200,10 +200,16 @@ Merged JvComponentFunctions into JvFunctions
 Moved JvComponentFunctions to \archive
 Changed a couple of references from JvComponentFunctions to JvFunctions
 
+Merging of TJvStringGrid:
+-------------------------
+Merged TJvScrollEvStringGrid,TJvControlStringgrid, TJvExStringgrid into TJvStringGrid
+Moved JvScrollEvStringGrid, JvControlStringgrid, JvExStringgrid to \archive
+
 Others:
 -------
 * Moved JvLineEdit (w. TJvLineEdit and TJvLineCombo) to \archive:
   functionality can easily be simulated with the BevelXXXX properties in D6 (were these in D5?)
+  If not in D5, better to add the BevelXXX properties implementation to the D5 code?
 * Moved JvMessageBeep to \archive - call standard MessageBeep function instead
 * Moved JvMessageBox to \archive - call standard MessageBox function instead
 * Moved JvCreatedWith to \archive
@@ -255,20 +261,15 @@ Others:
 * Changed JvClock slightly: removed the predefined border  - set your own border using a panel or bevel or similar
 * Renamed TJvImageBox2 to TJvImageSquare and changed icon name in JvP3Reg.dcr
 * Moved TAppletFileProperty from jvDialogsReg to new unit JvAppletProperty
-* Added JvObjPickerDialog and JvObjSel from Marcel van Brakel
-
-Merging of TJvStringGrid:
--------------------------
-Merged TJvScrollEvStringGrid,TJvControlStringgrid, TJvExStringgrid into TJvStringGrid
-Moved JvScrollEvStringGrid, JvControlStringgrid, JvExStringgrid to \archive
+* Added TJvObjPickerDialog and JvObjSel from Marcel van Brakel
+* Replaced thread classes in JvImageRotate, JvAppearingLabel, JvGradientCaption, JvScrolltext and JvStarField with
+  thread code in a new unit, JvImageDrawThread.pas
 
 TODO:
 ----
 * buttons
 * "format" edits (i.e. FloatEdit et al) - NOTE: might be new libs that have these too?
 * file searchers (TJvFileTreeScan, TJvSearchFile,TJvSearchFiles)
-* Move components to more appropriate tabs (in XXXXReg.pas units) - see newtabs.txt for a suggestion
-* Text scrollers (TJvScrollText,TJvContentScroller) - don't merge; one scrolls text, the other anything placed on it
 
 Other notes:
 ============
