@@ -27,7 +27,7 @@
     <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi dbrtl.bpi bdertl.bpi qrpt.bpi CJCL60.bpi inet.bpi 
       vcldb.bpi vclx.bpi JvSystemC6R.bpi JvCtrlsC6R.bpi JvCustomC6R.bpi 
       JvStdCtrlsC6R.bpi"/>

@@ -48,7 +48,7 @@
       ..\..\run\JvgQPrintSetupForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi CJCL60.bpi dbrtl.bpi vcldb.bpi vclx.bpi qrpt.bpi vclie.bpi 
       bdertl.bpi JvStdCtrlsC6R.bpi JvSystemC6R.bpi"/>
     <PATHCPP value=".;"/>

@@ -20,7 +20,7 @@
     <RESDEPEN value="$(RESFILES) ..\..\run\JvDBQueryParamsForm.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="rtl.lib"/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi vcl.bpi dbrtl.bpi vcldb.bpi CJCL60.bpi vclx.bpi JvStdCtrlsC6R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run;..\..\common"/>

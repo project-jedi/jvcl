@@ -12,17 +12,8 @@
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\..\design\JvPluginParamsForm.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="JvCryptC6R.lib JvBandsC6R.lib bcb2kaxserver.lib indy.lib dbxcds.lib 
-      dclocx.lib soaprtl.lib bcbie.lib nmfast.lib dbexpress.lib inetdbxpress.lib 
-      inetdbbde.lib bcbsmp.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib 
-      teeqr.lib dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib cds.lib 
-      ibxpress.lib vcldbx.lib bdertl.lib adortl.lib vcldb.lib"/>
-    <SPARELIBS value="rtl.lib vcldb.lib adortl.lib bdertl.lib vcldbx.lib ibxpress.lib cds.lib 
-      bdecds.lib qrpt.lib teeui.lib teedb.lib tee.lib dss.lib teeqr.lib 
-      visualdbclx.lib dsnapcrba.lib dsnapcon.lib bcbsmp.lib inetdbbde.lib 
-      inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
-      dbxcds.lib indy.lib bcb2kaxserver.lib JvBandsC6R.lib JvCoreC6R.lib 
-      CJCL60.lib JvCryptC6R.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi vclx.bpi JvPluginC6R.bpi CJCL60.bpi 
       JvCoreC6R.bpi"/>
     <PATHCPP value=".;"/>
@@ -35,8 +26,8 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvPluginC6D.cpp"/>
-    <INCLUDEPATH value="..\..\design;$(BCB)\include;$(BCB)\include\vcl;..\..\common"/>
-    <LIBPATH value="C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\dcu;..\..\resources"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
