@@ -122,11 +122,11 @@ type
     procedure DoClearText;
   end;
 
-{$IDEF VCL}
+{$IFDEF VCL}
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
 {$ENDIF VCL}
-{$IDEF }
+{$IFDEF VisualCLX}
 const
   CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
 {$ENDIF VisualCLX}
@@ -717,7 +717,7 @@ constructor TFreeNotificationHelper.Create(AInstance: TComponent; AIntfPtr: PInt
 begin
   inherited Create(nil);
   FIntfPtr := AIntfPtr;
-  if csDestroying in AInstance.CompnentState then
+  if csDestroying in AInstance.ComponentState then
     FInstance := nil
   else
   begin
