@@ -1005,7 +1005,7 @@ var
   F: TField;
 begin
   Result := inherited CanEditShow;
-{  F := nil;
+{ F := nil;
   if Result and (DataLink <> nil) and DataLink.Active and (FieldCount > 0) and
     (SelectedIndex < FieldCount) and (SelectedIndex >= 0) and
     (FieldCount <= DataSource.DataSet.FieldCount) then
@@ -1015,10 +1015,14 @@ begin
       Result := GetImageIndex(F) < 0;
   end;
   }
-  F := Fields[SelectedIndex];
-  if Result and Assigned(FOnShowEditor) then
-    FOnShowEditor(Self, F, Result);
+  if Result and Assigned(FOnShowEditor) and (DataLink <> nil) and DataLink.Active and (FieldCount > 0)
+    and (SelectedIndex < FieldCount) and (SelectedIndex >= 0) and (FieldCount <= DataSource.DataSet.FieldCount) then
+  begin 
+     F := Fields[SelectedIndex];
+     FOnShowEditor(Self, F, Result);
+  end;
 end;
+
 type
   THackDataset = class(TDataset);
 
