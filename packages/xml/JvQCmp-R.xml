@@ -10,6 +10,7 @@
   </Requires>
   <Contains>
     <File Name="..\..\qrun\JvQMouseGesture.pas" Targets="" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPageManager.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQPatchFile.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQPrint.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQProfilerForm.pas" Targets="allclx" Formname="ProfReport" Condition=""/>
