@@ -468,7 +468,7 @@ begin
   try
     // ensure uniqueness in expanded list
     expandedTargets.Sorted := True;
-    expandedTargets.CaseSensitive := False;
+//    expandedTargets.CaseSensitive := False;
     expandedTargets.Duplicates := dupIgnore;
 
     for i := 0 to targets.Count - 1 do
@@ -513,7 +513,7 @@ begin
     StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                  ',', targets);
     ExpandTargets(targets);
-    targets.CaseSensitive := False;
+//    targets.CaseSensitive := False;
     Result := (targets.IndexOf(target) > -1);
   finally
     targets.Free;
