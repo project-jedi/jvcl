@@ -34,7 +34,7 @@ procedure Register;
 implementation
 
 uses
-  Classes,
+  Classes, ComCtrls,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
