@@ -286,7 +286,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Top = 278
       Width = 121
       Height = 18
-      Caption = 'Copyright '#169' Project JEDI'
+      Caption = 'Copyright (c) Project JEDI'
     end
     object lblRights: TLabel
       Left = 7
