@@ -42,7 +42,7 @@ uses
   Graphics, Controls, Mask, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QMask, QForms,
+  Types, QGraphics, QControls, QMask, QForms, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JVCLVer, JvCaret, JvToolEdit, JvExMask;
 
@@ -77,11 +77,11 @@ type
     procedure SetText(const Value: string);
   protected
     procedure CaretChanged(Sender: TObject); dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
@@ -451,38 +451,10 @@ begin
 end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-procedure TJvCustomMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
-var
-  ACanvas: TCanvas;
-begin
-  if csDestroying in ComponentState then
-    Exit;
-
-  TControlCanvas(Canvas).StartPaint;
-  try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
-    Paint;
-  finally
-    TControlCanvas(Canvas).StopPaint;
-  end;
-end;
-
 procedure TJvCustomMaskEdit.Paint;
-var
-  BrushRecall: TBrushRecall;
 begin
   with Canvas do
   begin
-    // PaintBackground
-    BrushRecall := TBrushRecall.Create(Brush);
-    try
-      Brush.Color := FDisabledColor;
-      Brush.Style := bsSolid;
-      FillRect(ClientRect);
-    finally
-      BrushRecall.Free;
-    end;
-
    // Paint
     if Enabled then
       inherited
@@ -498,31 +470,26 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
+  Result := False;
   if csDestroying in ComponentState then
     Exit;
   if Enabled then
-    inherited
+    Result := inherited DoPaintBackground(Canvas, Param)
   else
-    with TCanvas.Create do
-      try
-        Handle := Msg.DC;
-        SaveDC(Msg.DC);
-        try
-          Brush.Color := FDisabledColor;
-          Brush.Style := bsSolid;
-          FillRect(ClientRect);
-          Msg.Result := 1;
-        finally
-          RestoreDC(Msg.DC, -1);
-        end;
-      finally
-        Free;
-      end;
+  begin
+    SaveDC(Canvas.Handle);
+    try
+      Canvas.Brush.Color := FDisabledColor;
+      Canvas.Brush.Style := bsSolid;
+      Canvas.FillRect(ClientRect);
+      Result := True;
+    finally
+      RestoreDC(Canvas.Handle, -1);
+    end;
+  end;
 end;
-{$ENDIF VCL}
 
 {$IFDEF VCL}
 procedure TJvCustomMaskEdit.WMSetFocus(var Msg: TMessage);

@@ -50,7 +50,7 @@ type
     procedure ParentShowHintChanged;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean;
-    function HintShow(var HintInfo : THintInfo): Boolean;
+    function HintShow(var HintInfo: THintInfo): Boolean;
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
@@ -81,7 +81,6 @@ type
   end;
 
 type
-  
   TJvExControl = class(TControl, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -207,8 +206,8 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
-
   
+
   TJvExGraphicControl = class(TGraphicControl, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -394,6 +393,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
 
 {$IFDEF VCL}
 
@@ -890,6 +890,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 
 {$IFDEF VCL}
@@ -1198,6 +1199,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExHintWindow.VisibleChanged;
@@ -1383,6 +1385,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFNDEF COMPILER6_UP}
 var

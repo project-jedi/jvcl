@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExCustomGroupBox = class(TCustomGroupBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -186,8 +185,8 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
-  {$DEFINE HASAUTOSIZE}
   
+  {$DEFINE HASAUTOSIZE}
   TJvExCustomLabel = class(TCustomLabel, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -291,8 +290,8 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
-  {$UNDEF HASAUTOSIZE}
   
+  {$UNDEF HASAUTOSIZE}
   TJvExCustomEdit = class(TCustomEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -588,9 +587,9 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
-  
   TJvExCustomCombo = class(TCustomCombo, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -664,9 +663,9 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
  {$ENDIF VCL}
 {$ENDIF}
-  
   TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1406,8 +1405,8 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
-{$IFDEF VCL}
   
+{$IFDEF VCL}
   TJvExCustomStaticText = class(TCustomStaticText, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1555,6 +1554,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 {$ENDIF VCL}
 
 implementation
@@ -1772,6 +1772,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExGroupBox.VisibleChanged;
@@ -1985,6 +1986,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$DEFINE HASAUTOSIZE}
 
 {$IFDEF VCL}
@@ -2444,6 +2446,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExEdit.VisibleChanged;
@@ -2657,6 +2660,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomMemo.VisibleChanged;
@@ -2870,6 +2874,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExMemo.VisibleChanged;
@@ -3083,6 +3088,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
 
@@ -3298,6 +3304,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$ENDIF VCL}
 {$ENDIF}
 
@@ -3513,6 +3520,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExComboBox.VisibleChanged;
@@ -3726,6 +3734,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExButtonControl.VisibleChanged;
@@ -3939,6 +3948,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExButton.VisibleChanged;
@@ -4152,6 +4162,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomCheckBox.VisibleChanged;
@@ -4365,6 +4376,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCheckBox.VisibleChanged;
@@ -4578,6 +4590,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExRadioButton.VisibleChanged;
@@ -4791,6 +4804,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomListBox.VisibleChanged;
@@ -5004,6 +5018,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExListBox.VisibleChanged;
@@ -5217,6 +5232,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExScrollBar.VisibleChanged;
@@ -5430,6 +5446,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$IFDEF VCL}
 
 {$IFDEF VCL}
@@ -5644,6 +5661,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExStaticText.VisibleChanged;
@@ -5857,6 +5875,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$ENDIF VCL}
 
 end.

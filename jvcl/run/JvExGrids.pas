@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -179,9 +178,9 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
-  
   TJvExCustomDrawGrid = class(TCustomDrawGrid, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -322,9 +321,9 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
-  
   TJvExDrawGrid = class(TDrawGrid, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -458,6 +457,7 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
 
 implementation
 
@@ -674,6 +674,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomGrid.VisibleChanged;
@@ -859,6 +860,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$IFDEF COMPILER6_UP}
  {$IFDEF VCL}
 
@@ -1046,6 +1048,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExInplaceEditList.VisibleChanged;
@@ -1259,6 +1262,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
@@ -1446,6 +1450,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExStringGrid.VisibleChanged;
@@ -1631,5 +1636,6 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 end.

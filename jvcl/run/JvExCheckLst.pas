@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -112,6 +111,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 
 implementation
 
@@ -328,5 +328,6 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 end.

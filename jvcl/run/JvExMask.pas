@@ -38,7 +38,6 @@ uses
   JvThemes, JvExControls;
 
 type
-  
   TJvExCustomMaskEdit = class(TCustomMaskEdit, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -186,6 +185,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 
 implementation
 
@@ -402,6 +402,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExMaskEdit.VisibleChanged;
@@ -615,5 +616,6 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 end.

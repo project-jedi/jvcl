@@ -50,7 +50,7 @@ type
     procedure ParentShowHintChanged;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean;
-    function HintShow(var HintInfo : THintInfo): Boolean;
+    function HintShow(var HintInfo: THintInfo): Boolean;
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);

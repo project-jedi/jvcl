@@ -54,7 +54,6 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
     procedure SetShowFocus(Value: Boolean);
@@ -62,6 +61,7 @@ type
     procedure TimerFires(Sender: TObject);
     procedure NewRandomValue;
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetAutoSize(Value: Boolean); override;
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
@@ -207,9 +207,9 @@ begin
   inherited;
 end;
 
-procedure TJvDice.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvDice.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  Msg.Result := 1; // Paint clears the background
+  Result := True; // Paint clears the background
 end;
 
 procedure TJvDice.AdjustSize;

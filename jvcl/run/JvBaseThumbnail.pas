@@ -32,7 +32,8 @@ unit JvBaseThumbnail;
 interface
 
 uses
-  Classes, Controls, ExtCtrls, Windows, SysUtils, Messages, Forms;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  JvExForms, JvExExtCtrls;
 
 // (rom) TFileName is already declared in SysUtils
 
@@ -90,11 +91,10 @@ type
   { The Following classes are declared here so I can handle interaction of the mouse
     between the three components.
   }
-  TJvThumbTitle = class(TPanel)
-  private
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+  TJvThumbTitle = class(TJvExPanel)
   protected
-    procedure Click; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+     procedure Click; override;
     procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -112,12 +112,12 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TJvBaseThumbImage = class(TImage)
+  TJvBaseThumbImage = class(TJvExImage)
   private
     FIgnoreMouse: Boolean;
-    procedure CMHitTest(var Msg: TCMHitTest); message CM_HITTEST;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
+    function HitTest(X, Y: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -131,10 +131,9 @@ type
     property IgnoreMouse: Boolean read FIgnoreMouse write FIgnoreMouse;
   end;
 
-  TJvBaseThumbnail = class(TPanel)
-  private
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+  TJvBaseThumbnail = class(TJvExPanel)
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -154,9 +153,9 @@ type
   published
   end;
 
-  TJvBaseThumbView = class(TScrollBox)
-  private
-    //    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
+  TJvBaseThumbView = class(TJvExScrollBox)
+  protected
+    // function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -305,10 +304,10 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
-procedure TJvThumbTitle.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvThumbTitle.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  Msg.Result := 1;
+  inherited DoPaintBackground(Canvas, Param);
+  Result := True;
 end;
 
 procedure TJvThumbTitle.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -417,10 +416,10 @@ begin
   FIgnoreMouse := False;
 end;
 
-procedure TJvBaseThumbImage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvBaseThumbImage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  Msg.Result := 1;
+  inherited DoPaintBackground(Canvas, Param);
+  Result := True;
 end;
 
 procedure TJvBaseThumbImage.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -465,13 +464,15 @@ begin
     inherited DblClick;
 end;
 
-procedure TJvBaseThumbImage.CMHitTest(var Msg: TCMHitTest);
-const
-  Hits: array [Boolean] of Longint = (HTCLIENT, HTNOWHERE);
+function TJvBaseThumbImage.HitTest(X, Y: Integer): Boolean;
+{const
+  Hits: array [Boolean] of Longint = (HTCLIENT, HTNOWHERE);}
 begin
   if csDesigning in ComponentState then
-    inherited;
-  Msg.Result := Hits[IgnoreMouse];
+    Result := inherited HitTest(X, Y)
+  else
+    Result := not IgnoreMouse;
+    //Msg.Result := Hits[IgnoreMouse];
 end;
 
 //=== TJvBaseThumbnail =======================================================
@@ -495,10 +496,10 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvBaseThumbnail.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvBaseThumbnail.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  Msg.Result := 1;
+  inherited DoPaintBackground(Canvas, Param);
+  Result := True;
 end;
 
 procedure TJvBaseThumbnail.MouseMove(Shift: TShiftState; X, Y: Integer);

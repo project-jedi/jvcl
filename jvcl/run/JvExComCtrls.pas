@@ -46,7 +46,6 @@ uses
 
 type
 {$IFDEF VCL}
-  
   TJvExProgressBar = class(TProgressBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -616,8 +615,8 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
-{$ELSE}
   
+{$ELSE}
   TJvExProgressBar = class(TProgressBar, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1212,9 +1211,9 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
 {$ENDIF VCL}
 {$IFDEF COMPILER6_UP}
-  
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1288,8 +1287,8 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
- {$IFDEF VCL}
   
+ {$IFDEF VCL}
   TJvExCustomStatusBar = class(TCustomStatusBar, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1363,9 +1362,9 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
-  
   TJvExHeaderControl = class(THeaderControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1735,9 +1734,9 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
 {$IFDEF ANIMATE}
   {$IFDEF VCL}
-  
   TJvExAnimate = class(TAnimate, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1811,8 +1810,8 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
-  {$ELSE}
   
+  {$ELSE}
   TJvExAnimate = class(TAnimate, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -1879,10 +1878,10 @@ type
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
   {$ENDIF VisualCLX}
   end;
+  
   {$ENDIF VCL}
 {$ENDIF ANIMATE}
 {$IFDEF VCL}
-  
   TJvExCustomHotKey = class(TCustomHotKey, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -2548,8 +2547,82 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
- {$IFDEF COMPILER6_UP}
   
+  TJvExTrackBar = class(TTrackBar, IJvWinControlEvents, IJvControlEvents)
+  {$IFDEF VCL}
+  protected
+  { IJvControlEvents }
+    procedure VisibleChanged; dynamic;
+    procedure EnabledChanged; dynamic;
+    procedure TextChanged; dynamic;
+    procedure FontChanged; dynamic;
+    procedure ColorChanged; dynamic;
+    procedure ParentFontChanged; dynamic;
+    procedure ParentColorChanged; dynamic;
+    procedure ParentShowHintChanged; dynamic;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; virtual;
+    function HintShow(var HintInfo : THintInfo): Boolean; dynamic;
+    function HitTest(X, Y: Integer): Boolean; dynamic;
+    procedure MouseEnter(Control: TControl); dynamic;
+    procedure MouseLeave(Control: TControl); dynamic;
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
+  { IJvWinControlEvents }
+    procedure CursorChanged; dynamic;
+    procedure ShowingChanged; dynamic;
+    procedure ShowHintChanged; dynamic;
+    procedure ControlsListChanging(Control: TControl; Inserting: Boolean); dynamic;
+    procedure ControlsListChanged(Control: TControl; Inserting: Boolean); dynamic;
+  {$IFDEF JVCLThemesEnabledD56}
+  private
+    function GetParentBackground: Boolean;
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
+    property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
+  {$ENDIF JVCLThemesEnabledD56}
+  public
+    procedure Dispatch(var Msg); override;
+  private
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+  protected
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+  {$ENDIF VCL}
+  protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
+   {$IF not declared(PatchedVCLX)}
+  private
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+  protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+   {$IFEND}
+  private
+    FCanvas: TCanvas;
+  protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  {$ENDIF VisualCLX}
+  end;
+  
+ {$IFDEF COMPILER6_UP}
   TJvExCustomComboBoxEx = class(TCustomComboBoxEx, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
@@ -2697,6 +2770,7 @@ type
     destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
+  
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
@@ -2916,6 +2990,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomTabControl.VisibleChanged;
@@ -3129,6 +3204,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExTabControl.VisibleChanged;
@@ -3342,6 +3418,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExTabSheet.VisibleChanged;
@@ -3555,6 +3632,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExPageControl.VisibleChanged;
@@ -3768,6 +3846,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExStatusBar.VisibleChanged;
@@ -3981,6 +4060,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExToolBar.VisibleChanged;
@@ -4194,6 +4274,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExToolButton.VisibleChanged;
@@ -4624,6 +4705,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExTabControl.VisibleChanged;
@@ -4809,6 +4891,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExTabSheet.VisibleChanged;
@@ -4994,6 +5077,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExPageControl.VisibleChanged;
@@ -5179,6 +5263,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExStatusBar.VisibleChanged;
@@ -5364,6 +5449,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomViewControl.VisibleChanged;
@@ -5577,6 +5663,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExToolBar.VisibleChanged;
@@ -5762,6 +5849,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExToolButton.VisibleChanged;
@@ -5947,6 +6035,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$ENDIF VCL}
 {$IFDEF COMPILER6_UP}
 
@@ -6162,6 +6251,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$IFDEF VCL}
 
 {$IFDEF VCL}
@@ -6376,6 +6466,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
@@ -6591,6 +6682,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomTreeView.VisibleChanged;
@@ -6804,6 +6896,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExTreeView.VisibleChanged;
@@ -7017,6 +7110,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomListView.VisibleChanged;
@@ -7230,6 +7324,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExListView.VisibleChanged;
@@ -7443,6 +7538,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 {$IFDEF ANIMATE}
   {$IFDEF VCL}
 
@@ -7658,6 +7754,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
   {$ELSE}
 
 {$IFDEF VCL}
@@ -7844,6 +7941,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
   {$ENDIF VCL}
 {$ENDIF ANIMATE}
 {$IFDEF VCL}
@@ -8060,6 +8158,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExHotKey.VisibleChanged;
@@ -8273,6 +8372,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCustomUpDown.VisibleChanged;
@@ -8486,6 +8586,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExUpDown.VisibleChanged;
@@ -8699,6 +8800,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCoolBar.VisibleChanged;
@@ -8912,6 +9014,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExCommonCalendar.VisibleChanged;
@@ -9125,6 +9228,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExMonthCalendar.VisibleChanged;
@@ -9338,6 +9442,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExDateTimePicker.VisibleChanged;
@@ -9551,6 +9656,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExPageScroller.VisibleChanged;
@@ -9764,6 +9870,221 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
+
+{$IFDEF VCL}
+procedure TJvExTrackBar.VisibleChanged;
+begin
+  InheritMsg(Self, CM_VISIBLECHANGED);
+end;
+
+procedure TJvExTrackBar.EnabledChanged;
+begin
+  InheritMsg(Self, CM_ENABLEDCHANGED);
+end;
+
+procedure TJvExTrackBar.TextChanged;
+begin
+  InheritMsg(Self, CM_TEXTCHANGED);
+end;
+
+procedure TJvExTrackBar.FontChanged;
+begin
+  InheritMsg(Self, CM_FONTCHANGED);
+end;
+
+procedure TJvExTrackBar.ColorChanged;
+begin
+  InheritMsg(Self, CM_COLORCHANGED);
+end;
+
+procedure TJvExTrackBar.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+end;
+
+procedure TJvExTrackBar.ParentFontChanged;
+begin
+  InheritMsg(Self, CM_PARENTFONTCHANGED);
+end;
+
+procedure TJvExTrackBar.ParentShowHintChanged;
+begin
+  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+end;
+
+function TJvExTrackBar.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+end;
+
+function TJvExTrackBar.HintShow(var HintInfo: THintInfo): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+function TJvExTrackBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+end;
+
+procedure TJvExTrackBar.MouseEnter(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExTrackBar.MouseLeave(Control: TControl);
+begin
+  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExTrackBar.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
+{$ENDIF VCL}
+
+function TJvExTrackBar.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ELSE}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VCL}
+end;
+
+{$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExTrackBar.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
+ {$IF not declared(PatchedVCLX)}
+procedure TJvExTrackBar.MouseEnter(Control: TControl);
+begin
+  inherited MouseEnter(Control);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvExTrackBar.MouseLeave(Control: TControl);
+begin
+  inherited MouseLeave(Control);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+ {$IFEND}
+{$ENDIF VisualCLX}
+{$IFDEF VisualCLX}
+procedure TJvExTrackBar.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(Canvas).StartPaint;
+      try
+        QPainter_setClipRegion(Canvas.Handle, EventRegion);
+        DoPaintBackground(Canvas, 0);
+        Paint;
+      finally
+        TControlCanvas(Canvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExTrackBar.CursorChanged;
+begin
+  InheritMsg(Self, CM_CURSORCHANGED);
+end;
+
+procedure TJvExTrackBar.ShowHintChanged;
+begin
+  InheritMsg(Self, CM_SHOWHINTCHANGED);
+end;
+
+procedure TJvExTrackBar.ShowingChanged;
+begin
+  InheritMsg(Self, CM_SHOWINGCHANGED);
+end;
+
+procedure TJvExTrackBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
+begin
+  if Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+procedure TJvExTrackBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
+begin
+  if not Inserting then
+    InheritMsg(Self, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+{$IFDEF JVCLThemesEnabledD56}
+function TJvExTrackBar.GetParentBackground: Boolean;
+begin
+  Result := JvThemes.GetParentBackground(Self);
+end;
+
+procedure TJvExTrackBar.SetParentBackground(Value: Boolean);
+begin
+  JvThemes.SetParentBackground(Self, Value);
+end;
+{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExTrackBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+end;
+
+destructor TJvExTrackBar.Destroy;
+begin
+  FCanvas.Free;
+  inherited Destroy;
+end;
+
+procedure TJvExTrackBar.Paint;
+var
+  Event: QPaintEventH;
+begin
+  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
+  try
+    QObject_event(Handle, Event);
+  finally
+    QPaintEvent_destroy(Event);
+  end;
+end;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExTrackBar.Dispatch(var Msg);
+begin
+  DispatchMsg(Self, Msg);
+end;
+{$ENDIF VCL}
+  
  {$IFDEF COMPILER6_UP}
 
 {$IFDEF VCL}
@@ -9978,6 +10299,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
 
 {$IFDEF VCL}
 procedure TJvExComboBoxEx.VisibleChanged;
@@ -10191,6 +10513,7 @@ begin
   DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
+  
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 

@@ -46,7 +46,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, ComCtrls, CommCtrl, StdActns,
   Contnrs,
-  JclBase, JVCLVer;
+  JclBase, JVCLVer, JvComponent, JvExControls, JvExComCtrls;
 
 const
   JvDefPageControlBorder = 4;
@@ -116,7 +116,7 @@ type
     property Value4: Byte index 3 read GetValues write SetValues;
   end;
 
-  TJvIPAddress = class(TWinControl)
+  TJvIPAddress = class(TJvWinControl)
   private
     {    FEditControls: array [0..3] of HWND;
         FEditControlCount: Integer;}
@@ -128,21 +128,20 @@ type
     FOnFieldChange: TJvIpAddrFieldChangeEvent;
     LocalFont: HFONT;
     FOnChange: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     //    procedure ClearEditControls;
     procedure DestroyLocalFont;
     procedure SetAddress(const Value: LongWord);
-    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
-    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     procedure SetAddressValues(const Value: TJvIPAddressValues);
   protected
+    procedure ColorChanged; override;
+    procedure FontChanged; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure AdjustHeight;
     procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -160,7 +159,6 @@ type
     function IsBlank: Boolean;
     property Text;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Address: LongWord read FAddress write SetAddress default 0;
     property AddressValues: TJvIPAddressValues read FAddressValues write SetAddressValues;
     property Anchors;
@@ -208,7 +206,7 @@ type
     hsPreferChildren // use subitems hints unless empty then use main control hint
    );
 
-  TJvPageControl = class(TPageControl)
+  TJvPageControl = class(TJvExPageControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FClientBorderWidth: TBorderWidth;
@@ -224,17 +222,19 @@ type
     FReduceMemoryUse: Boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
-    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
     procedure SetReduceMemoryUse(const Value: Boolean);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
+    function HintShow(var HintInfo: THintInfo): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
     procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
@@ -262,7 +262,7 @@ type
   TJvTrackToolTipSide = (tsLeft, tsTop, tsRight, tsBottom);
   TJvTrackToolTipEvent = procedure(Sender: TObject; var ToolTipText: string) of object;
 
-  TJvTrackBar = class(TTrackBar)
+  TJvTrackBar = class(TJvExTrackBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FToolTips: Boolean;
@@ -276,9 +276,6 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FShowRange: Boolean;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetToolTips(const Value: Boolean);
     procedure SetToolTipSide(const Value: TJvTrackToolTipSide);
     procedure WMNotify(var Msg: TWMNotify); message WM_NOTIFY;
@@ -286,6 +283,9 @@ type
     procedure CNVScroll(var Msg: TWMVScroll); message CN_VSCROLL;
     procedure SetShowRange(const Value: Boolean);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -330,7 +330,7 @@ type
   TJvTreeViewComparePageEvent = procedure(Sender: TObject; Page: TTabSheet;
     Node: TTreeNode; var Matches: Boolean) of object;
 
-  TJvTreeView = class(TTreeView)
+  TJvTreeView = class(TJvExTreeView)
   private
     FAutoDragScroll: Boolean;
     FClearBeforeSelect: Boolean;
@@ -366,9 +366,6 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure SetCheckBoxes(const Value: Boolean);
     function GetItemHeight: Integer;
     procedure SetItemHeight(Value: Integer);
@@ -381,6 +378,9 @@ type
     function GetUseUnicode: Boolean;
     procedure SetUseUnicode(const Value: Boolean);
   protected
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    procedure ParentColorChanged; override;
     function DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean; virtual;
     function CreateNode: TTreeNode; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -643,15 +643,15 @@ begin
   FEditControlCount := 0;
 end;}
 
-procedure TJvIPAddress.CMColorChanged(var Msg: TMessage);
+procedure TJvIPAddress.ColorChanged;
 begin
-  inherited;
+  inherited ColorChanged;
   Invalidate;
 end;
 
-procedure TJvIPAddress.CMFontChanged(var Msg: TMessage);
+procedure TJvIPAddress.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   AdjustHeight;
   Invalidate;
 end;
@@ -741,9 +741,9 @@ begin
   inherited;
 end;
 
-procedure TJvIPAddress.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
+function TJvIPAddress.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  Msg.Result := 1;
+  Result := True;
 end;
 
 procedure TJvIPAddress.WMGetDlgCode(var Msg: TWMGetDlgCode);
@@ -808,12 +808,14 @@ begin
     Result := False;
 end;
 
-procedure TJvPageControl.CMDialogKey(var Msg: TWMKey);
+function TJvPageControl.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 var
   thistab, tab: TTabSheet;
   forwrd: Boolean;
 begin
-  if HandleGlobalTab and not FormKeyPreview and (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
+  Result := False;
+  if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
     thistab := ActivePage;
     forwrd := GetKeyState(VK_SHIFT) >= 0;
@@ -826,18 +828,18 @@ begin
       if CanChange then
       begin
         ActivePage := tab;
-        Msg.Result := 1;
+        Result := True;
         Change;
       end;
       Exit;
     end;
   end;
-  inherited;
+  Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
-procedure TJvPageControl.CMParentColorChanged(var Msg: TMessage);
+procedure TJvPageControl.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -925,22 +927,21 @@ begin
   HideAllTabs := FHideAllTabs;
 end;
 
-procedure TJvPageControl.CMMouseEnter(var Msg: TMessage);
+procedure TJvPageControl.MouseEnter(Control: TControl);
 begin
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
+  FSaved := Application.HintColor;
   Application.HintColor := FColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvPageControl.CMMouseLeave(var Msg: TMessage);
+procedure TJvPageControl.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSaved;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvPageControl.SetClientBorderWidth(const Value: TBorderWidth);
@@ -1031,9 +1032,9 @@ begin
   FShowRange := True;
 end;
 
-procedure TJvTrackBar.CMParentColorChanged(var Msg: TMessage);
+procedure TJvTrackBar.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -1078,22 +1079,21 @@ begin
     SendMessage(Handle, TBM_SETTIPSIDE, ToolTipSides[FToolTipSide], 0);
 end;
 
-procedure TJvTrackBar.CMMouseEnter(var Msg: TMessage);
+procedure TJvTrackBar.MouseEnter(Control: TControl);
 begin
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
+  FSaved := Application.HintColor;
   Application.HintColor := FColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
 
-procedure TJvTrackBar.CMMouseLeave(var Msg: TMessage);
+procedure TJvTrackBar.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FSaved;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1290,9 +1290,9 @@ begin
     InvalidateNode(NeedInvalidate[I]);
 end;
 
-procedure TJvTreeView.CMParentColorChanged(var Msg: TMessage);
+procedure TJvTreeView.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -1503,24 +1503,27 @@ begin
     inherited KeyPress(Key);
 end;
 
-procedure TJvTreeView.CMMouseEnter(var Msg: TMessage);
+procedure TJvTreeView.MouseEnter(Control: TControl);
 begin
-  FOver := True;
-  FSaved := Application.HintColor;
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
-  Application.HintColor := FColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  if not FOver then
+  begin
+    FOver := True;
+    FSaved := Application.HintColor;
+    Application.HintColor := FColor;
+    inherited MouseEnter(Control);
+  end;
 end;
 
-procedure TJvTreeView.CMMouseLeave(var Msg: TMessage);
+procedure TJvTreeView.MouseLeave(Control: TControl);
 begin
-  Application.HintColor := FSaved;
-  FOver := False;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+    inherited MouseLeave(Control);
+  end;
 end;
 
 procedure TJvTreeView.ResetPostOperationFlags;
@@ -1867,17 +1870,17 @@ begin
     SendMessage(Handle, TVM_SETUNICODEFORMAT, Integer(Value), 0);
 end;
 
-procedure TJvPageControl.CMHintShow(var Msg: TMessage);
+function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
   TabNo: Integer;
   Tab: TTabsheet;
 begin
-  inherited;
+  Result := inherited HintShow(HintInfo);
 
   if FHintSource = hsDefault then
     Exit;
 
-  if TCMHintShow(Msg).Result = 1 then
+  if Result then
     Exit;
 (*
     hsDefault,    // use default hint behaviour (i.e as regular control)
@@ -1888,24 +1891,21 @@ begin
     );
 *)
 
-  with TCMHintShow(Msg) do
-  begin
-    if (Result = 1) or (Self <> HintInfo^.HintControl) then
-      Exit; // strange, hint requested by other component. Why should we deal with it?
-    with HintInfo^.CursorPos do
-      TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
+  if Result or (Self <> HintInfo.HintControl) then
+    Exit; // strange, hint requested by other component. Why should we deal with it?
+  with HintInfo.CursorPos do
+    TabNo := IndexOfTabAt(X, Y); // X&Y are expected in Client coordinates
 
-    if (TabNo >= 0) and (TabNo < PageCount) then
-      Tab := Pages[TabNo]
-    else
-      Tab := nil;
-    if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
-      HintInfo^.HintStr := GetShortHint(Hint)
-    else
-    if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
-      (GetShortHint(Tab.Hint) <> ''))) then
-      HintInfo^.HintStr := GetShortHint(Tab.Hint)
-  end;
+  if (TabNo >= 0) and (TabNo < PageCount) then
+    Tab := Pages[TabNo]
+  else
+    Tab := nil;
+  if (FHintSource = hsForceMain) or ((FHintSource = hsPreferMain) and (GetShortHint(Hint) <> '')) then
+    HintInfo.HintStr := GetShortHint(Hint)
+  else
+  if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and
+    (GetShortHint(Tab.Hint) <> ''))) then
+    HintInfo.HintStr := GetShortHint(Tab.Hint)
 end;
 
 type

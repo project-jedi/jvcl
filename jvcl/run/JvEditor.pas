@@ -210,7 +210,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup,
-  JvUnicodeCanvas;
+  JvUnicodeCanvas, JvComponent;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -444,7 +444,7 @@ type
     amInsert, amDelete, amDeleteLine, amLineConcat, amLineBreak
   );
 
-  TJvCustomEditor = class(TCustomControl, IFixedPopupIntf)
+  TJvCustomEditor = class(TJvCustomControl, IFixedPopupIntf)
   private
     { internal objects }
     FLines: TJvEditorStrings;
@@ -553,7 +553,6 @@ type
     FUseFixedPopup: boolean;
 
     { internal message processing }
-    procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TWMSetFocus); message WM_KILLFOCUS;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
@@ -561,7 +560,6 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
     procedure WMCopy(var Msg: TMessage); message WM_COPY;
     procedure WMCut(var Msg: TMessage); message WM_CUT;
@@ -652,8 +650,9 @@ type
     procedure DoCut; dynamic;
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure CursorChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
-    procedure FontChanged; {$IFDEF VisualCLX} override; {$ELSE} dynamic; {$ENDIF}
+    procedure CursorChanged; override;
+    procedure FontChanged; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
 
     procedure DrawRightMargin;
     procedure PaintSelection;
@@ -1915,15 +1914,9 @@ begin
   end;
 end;
 
-procedure TJvCustomEditor.CMFontChanged(var Msg: TMessage);
+function TJvCustomEditor.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  inherited;
-  FontChanged;
-end;
-
-procedure TJvCustomEditor.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-begin
-  Msg.Result := 0; // no background erase
+  Result := False; // no background erase
 end;
 
 procedure TJvCustomEditor.WMSetCursor(var Msg: TWMSetCursor);
@@ -2017,9 +2010,7 @@ procedure TJvCustomEditor.CursorChanged;
 var
   P: TPoint;
 begin
-  {$IFDEF VisualCLX}
   inherited CursorChanged;
-  {$ENDIF VisualCLX}
   GetCursorPos(P);
   P := ScreenToClient(P);
   if (P.X < GutterWidth) and (Cursor = crIBeam) then
