@@ -67,9 +67,16 @@ unit JvButtons;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, CommCtrl, StdCtrls, Menus, Buttons,
-  JvWndProcHook, JvComponent, JVCLVer;
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls, CommCtrl, StdCtrls,
+  Menus, Buttons, JvWndProcHook,
+  {$ENDIF VCL}
+  SysUtils, Classes,
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QExtCtrls, QStdCtrls, QMenus, QButtons,
+  QImgList,
+  {$ENDIF VisualCLX}
+  JvComponent, JVCLVer;
 
 type
   { VCL Buttons unit does not publish TJvButtonGlyph  class,
@@ -82,10 +89,12 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FColor: TColor;
+    {$IFDEF VCL}
     FBiDiMode: TBiDiMode; {o}
     FParentBiDiMode: Boolean;
     procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetParentBiDiMode(Value: Boolean);
+    {$ENDIF VCL}
     procedure GlyphChanged(Sender: TObject);
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
@@ -116,8 +125,10 @@ type
     function DrawExternal(AGlyph: TBitmap; ANumGlyphs: TNumGlyphs; AColor: TColor; IgnoreOld: Boolean;
       Canvas: TCanvas; const Client: TRect; const Offset: TPoint; const Caption: string;
       Layout: TButtonLayout; Margin, Spacing: Integer; State: TButtonState; Transparent: Boolean): TRect;
+    {$IFDEF VCL}
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode;
+    {$ENDIF VCL}
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Color: TColor read FColor write SetColor;
@@ -146,12 +157,16 @@ type
     FOnClick: TNotifyEvent;
     FBPos: Integer;
     FWidth: Integer;
+    {$IFDEF VCL}
     WHook: TJvWindowHook;
+    {$ENDIF VCL}
     FActive: Boolean;
     FFont: TFont;
     FVisible: Boolean;
+    {$IFDEF VCL}
     procedure DoBeforeMsg(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
     procedure DoAfterMsg(Sender: TObject; var Msg: TMessage; var Handled: Boolean);
+    {$ENDIF VCL}
 //    procedure HookWndProc(var Msg: TMessage);
     procedure Draw;
     function MouseOnButton(X, Y: Integer): Boolean;
@@ -214,7 +229,9 @@ type
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
   protected
     IsFocused: Boolean;
+    {$IFDEF VCL}
     procedure SetButtonStyle(ADefault: Boolean); override;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -449,6 +466,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 {O}
 
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
@@ -469,6 +487,7 @@ begin
     Invalidate;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
 var

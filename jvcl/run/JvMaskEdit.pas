@@ -97,6 +97,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure Paint; virtual;
     {$ENDIF VisualCLX}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetCaret(const Value: TJvCaret);
@@ -452,7 +453,6 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvCustomMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
 var
-  BrushRecall: TBrushRecall;
   ACanvas: TCanvas;
 begin
   if csDestroying in ComponentState then
@@ -461,34 +461,39 @@ begin
   TControlCanvas(Canvas).StartPaint;
   try
     QPainter_setClipRegion(Canvas.Handle, EventRegion);
-
-    with Canvas do
-    begin
-      // PaintBackground
-      BrushRecall := TBrushRecall.Create(Brush);
-      try
-        Brush.Color := FDisabledColor;
-        Brush.Style := bsSolid;
-        FillRect(ClientRect);
-      finally
-        BrushRecall.Free;
-      end;
-
-     // Paint
-      if Enabled then
-        inherited
-      else
-      begin
-        ACanvas := nil;
-        if not PaintEdit(Self, Text, taLeftJustify, False, {0,} FDisabledTextColor,
-           Focused, ACanvas) then
-          inherited;
-        ACanvas.Free;
-      end;
-    end;
-
+    Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
+  end;
+end;
+
+procedure TJvCustomMaskEdit.Paint;
+var
+  BrushRecall: TBrushRecall;
+begin
+  with Canvas do
+  begin
+    // PaintBackground
+    BrushRecall := TBrushRecall.Create(Brush);
+    try
+      Brush.Color := FDisabledColor;
+      Brush.Style := bsSolid;
+      FillRect(ClientRect);
+    finally
+      BrushRecall.Free;
+    end;
+
+   // Paint
+    if Enabled then
+      inherited
+    else
+    begin
+      ACanvas := nil;
+      if not PaintEdit(Self, Text, taLeftJustify, False, {0,} FDisabledTextColor,
+         Focused, ACanvas) then
+        inherited;
+      ACanvas.Free;
+    end;
   end;
 end;
 {$ENDIF VisualCLX}
