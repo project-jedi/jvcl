@@ -24,7 +24,6 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-
 {$I jvcl.inc}
 
 // (ahuser) No dependency on JCL units. Required functions are emulated.
@@ -973,14 +972,77 @@ function IsTrueType(const FontName: string): Boolean;
 function TextToValText(const AValue: string): string;
 
 {$IFDEF VCL}
+// VisualCLX compatibility functions
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 {$IFDEF COMPILER6_UP}
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 {$ENDIF COMPILER6_UP}
 
 function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
+function DrawTextExW(Canvas:TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+function DrawTextExW(Canvas:TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+
+type
+  {$IFDEF COMPILER6_UP}
+  RasterOp = (
+    RasterOp_CopyROP,
+    RasterOp_OrROP,
+    RasterOp_XorROP,
+    RasterOp_NotAndROP,
+    RasterOp_EraseROP = 3,
+    RasterOp_NotCopyROP,
+    RasterOp_NotOrROP,
+    RasterOp_NotXorROP,
+    RasterOp_AndROP,
+    RasterOp_NotEraseROP = 7,
+    RasterOp_NotROP,
+    RasterOp_ClearROP,
+    RasterOp_SetROP,
+    RasterOp_NopROP,
+    RasterOp_AndNotROP,
+    RasterOp_OrNotROP,
+    RasterOp_NandROP,
+    RasterOp_NorROP,
+    RasterOp_LastROP = 15);
+  {$ELSE}
+  // Delphi 5 and below doesn't support values in enums
+  RasterOp = Integer;
+const  
+  RasterOp_CopyROP = 0;
+  RasterOp_OrROP = 1;
+  RasterOp_XorROP = 2;
+  RasterOp_NotAndROP = 3;
+  RasterOp_EraseROP = 3;
+  RasterOp_NotCopyROP = 4;
+  RasterOp_NotOrROP = 5;
+  RasterOp_NotXorROP = 6;
+  RasterOp_AndROP = 7;
+  RasterOp_NotEraseROP = 7;
+  RasterOp_NotROP = 8;
+  RasterOp_ClearROP = 9;
+  RasterOp_SetROP = 10;
+  RasterOp_NopROP = 11;
+  RasterOp_AndNotROP = 12;
+  RasterOp_OrNotROP = 13;
+  RasterOp_NandROP = 14;
+  RasterOp_NorROP = 15;
+  RasterOp_LastROP = 15;
+  {$ENDIF}
+
+function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = True): LongBool;overload;
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean): LongBool; overload;
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool; overload;
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; overload;
+
 {$ENDIF}
 
 implementation
@@ -8327,13 +8389,28 @@ begin
   Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags);
 end;
 
+function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+begin
+  Result := Windows.DrawTextEx(Canvas.Handle, lpchText, cchText, p4, dwDTFormat, DTParams);
+end;
+
+function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+begin
+  Result := Windows.DrawTextEx(Canvas.Handle, PChar(Text), cchText, p4, dwDTFormat, DTParams);
+end;
+
 {$IFDEF COMPILER6_UP}
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawTextW(Canvas, Text, Len, R, WinFlags);
 end;
 
+function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
+begin
+  Result := DrawTextExW(Canvas, Text, cchText, p4, dwDTFormat, DTParams);
+end;
 {$ENDIF COMPILER6_UP}
+
 function DrawTextW(Canvas :TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawTextW(Canvas, PWideChar(Text), Len, R, WinFlags);
@@ -8344,6 +8421,84 @@ begin
   Result := Windows.DrawTextW(Canvas.Handle, Text, Len, R, WinFlags);
 end;
 
+function DrawTextExW(Canvas:TCanvas; lpchText: PWideChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+begin
+  Result := Windows.DrawTextExW(Canvas.Handle, lpchText, cchText, p4, dwDTFormat, DTParams);
+end;
+
+function DrawTextExW(Canvas:TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer;
+begin
+  Result := Windows.DrawTextExW(Canvas.Handle, PWideChar(Text), cchText, p4, dwDTFormat, DTParams);
+end;
+
+const
+  // (p3) move to interface?
+  ROP_DSna    = $00220326;   // RasterOp_NotAndROP
+  {$EXTERNALSYM ROP_DSna}
+  ROP_DSno    = MERGEPAINT;
+  {$EXTERNALSYM ROP_DSno}
+  ROP_DPSnoo  = PATPAINT;
+  {$EXTERNALSYM ROP_DPSnoo}
+  ROP_D       = $00AA0029;   // RasterOp_NopROP
+  {$EXTERNALSYM ROP_D}
+  ROP_Dn      = DSTINVERT;   // DSTINVERT
+  {$EXTERNALSYM ROP_Dn}
+  ROP_SDna    = SRCERASE;    // SRCERASE
+  {$EXTERNALSYM ROP_SDna}
+  ROP_SDno    = $00DD0228;   // RasterOp_OrNotROP
+  {$EXTERNALSYM ROP_SDno}
+  ROP_DSan    = $007700E6;   // RasterOp_NandROP
+  {$EXTERNALSYM ROP_DSan}
+  ROP_DSon    = $001100A6;   // NOTSRCERASE
+  {$EXTERNALSYM ROP_DSon}
+
+function RasterOpToWinRop(Rop: RasterOp): cardinal;
+begin
+  case Rop of
+    RasterOp_ClearROP   : Result := BLACKNESS;
+    RasterOp_NotROP     : Result := DSTINVERT;
+    RasterOp_NotOrRop   : Result := MERGEPAINT;
+    RasterOp_NotCopyROP : Result := NOTSRCCOPY;
+    RasterOp_NorROP     : Result := NOTSRCERASE;
+    RasterOp_AndROP     : Result := SRCAND;
+    RasterOp_CopyROP    : Result := SRCCOPY;
+    RasterOp_AndNotROP  : Result := SRCERASE;
+    RasterOp_XorROP     : Result := SRCINVERT;
+    RasterOp_OrROP      : Result := SRCPAINT;
+    RasterOp_SetROP     : Result := WHITENESS;
+    RasterOp_NotAndROP  : Result := ROP_DSna;
+    RasterOp_NopROP     : Result := ROP_D;
+    RasterOp_OrNotROP   : Result := ROP_SDno;
+    RasterOp_NandROP    : Result := ROP_DSan;
+  else
+    Result := 0;   // to satisfy compiler
+  end;
+end;
+
+function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = True): LongBool;
+begin
+  // NB! IgnoreMask is not supported in VCL!
+  Result := Windows.BitBlt(DestCanvas.Handle, X, Y, Width, Height, SrcCanvas.Handle,
+    XSrc, YSrc, WinRop);
+end;
+
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean): LongBool;
+begin
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, RasterOpToWinRop(Rop));
+end;
+
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean): LongBool;
+begin
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, WinRop);
+end;
+
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; WinRop: Cardinal): LongBool; 
+begin
+  Result := Windows.BitBlt(DestDC, X, Y, Width, Height, DestDC, XSrc, YSrc, WinRop);
+end;
 {$ENDIF}
 
 end.

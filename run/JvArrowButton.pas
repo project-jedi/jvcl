@@ -218,7 +218,7 @@ end;
 
 // (rom) best move to JCL
 
-procedure GrayedBitmap(Bmp: TBitmap);
+procedure GrayBitmap(Bmp: TBitmap);
 var
   I, J, W, H: Integer;
   ColT: TColor;
@@ -531,7 +531,7 @@ begin
               with MonoBmp do
               begin
                 Assign(FOriginal);
-                GrayedBitmap(MonoBmp);
+                GrayBitmap(MonoBmp);
                 {$IFDEF VCL}
                 HandleType := bmDDB;
                 {$ENDIF VCL}
