@@ -48,7 +48,8 @@ uses
   JvSystemColors, JvThread, JvThreadTimer, JvTimerList, JvChangeNotify,
   JvSimpleXml, JvXMLDatabase, JvWndProcHook, JvFormPlacement, JvTimer,
   JvSearchFiles, JvPerfMon95, JvChangeNotifyEditor, JvMinMaxForm,
-  JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors;
+  JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
+  JvAppXmlStore;
 
 {$R ..\resources\JvSystemReg.dcr}
 
@@ -64,7 +65,7 @@ begin
     TJvRas32, TJvCommStatus]);
   RegisterComponents(SPaletteNonVisual, [TJvFormStorage, TJvSearchFiles,
       TJvMRUList, TJvMRUManager, TJvShellHook, TJvWindowHook,
-      TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
+      TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList, TJvAppXmlStore]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
