@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-09:
+- added TJvImageList component ("Images and Animations" palette) // andreas
+2003-10-08:
+- added TJvAppInstances component (JclAppInstances wrapper) // andreas
 2003-10-07: 
 - added new control, TJvComboListBox, that displays a combobox on the selected item. // peter3
 2003-10-06:
