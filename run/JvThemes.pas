@@ -29,15 +29,16 @@ unit JvThemes;
 
 interface
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs,
-{$IFDEF JVCLThemesEnabled}
- {$IFDEF COMPILER7_UP}
-  Themes,
- {$ELSE}
-  ThemeSrv, ThemeMgr,
- {$ENDIF}
+{$IFDEF MSWINDOWS}
+  Windows, Messages,
 {$ENDIF}
-  Controls;
+{$IFDEF JVCLThemesEnabled}
+  SysUtils, Classes,
+ {$IFDEF COMPILER7_UP}Themes,{$ELSE}ThemeSrv, ThemeMgr,{$ENDIF}
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}Controls,{$ENDIF}{$IFDEF COMPLIB_CLX}QControls,{$ENDIF}
+  Contnrs;
+
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -686,11 +687,21 @@ const
   twFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twFrameBottomSizingTemplate;
   twSmallFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameBottomSizingTemplate;
 
-function ThemeServices: TThemeServices;
+type
+{$IFDEF COMPILER7_UP}
+  TThemeServicesEx = TThemeServices;
+{$ELSE}
+  TThemeServicesEx = class(TThemeServices)
+  public
+    procedure ApplyThemeChange;
+  end;
+{$ENDIF}  
 
-{$ENDIF}
+function ThemeServices: TThemeServicesEx;
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC);
+
+{$ENDIF}
 
 type
 {$IFDEF COMPILER7_UP}
@@ -716,11 +727,19 @@ function GetThemeStyle(Control: TControl): TThemeStyle;
 implementation
 
 {$IFDEF JVCLThemesEnabled}
-function ThemeServices: TThemeServices;
+procedure TThemeServicesEx.ApplyThemeChange;
 begin
-  Result := {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices;
+  ThemeServices.UpdateThemes;
+  ThemeServices.DoOnThemeChange;
 end;
-{$ENDIF}
+
+
+function ThemeServices: TThemeServicesEx;
+begin
+  Result := TThemeServicesEx(
+    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices
+  );
+end;
 
 procedure PerformEraseBackground(Control: TControl; DC: HDC);
 { Mike Lischke is the original author of this code. }
@@ -733,7 +752,6 @@ begin
   SetWindowOrgEx(DC, WindowOrg.X, WindowOrg.Y, nil);
 end;
 
-{$IFDEF JVCLThemesEnabled}
 
 {$IFDEF COMPILER7_UP}
 
@@ -947,7 +965,8 @@ end;
 procedure TThemeHook.ThemedPaint(var Msg: TWMPaint; var Handled: Boolean);
 begin
   if csParentBackground in ThemeStyle then
-    PerformEraseBackground(Control, Msg.DC);
+    if Control is TGraphicControl then
+      PerformEraseBackground(Control, Msg.DC);
 end;
 
 procedure TThemeHook.ThemedNCPaint(var Msg: TWMNCPaint; var Handled: Boolean);
