@@ -3007,13 +3007,16 @@ begin
         begin
           Brush.Color := GetSysColor(COLOR_MENUBAR);
           Brush.Style := bsSolid;
+          Pen.Style := psSolid;
+          Pen.Color := Brush.Color;
           FillRect(ARect);
         end
         else
         begin
           Brush.Color := clBtnFace;
           Brush.Style := bsSolid;
-          Pen.Style := psClear;
+          Pen.Style := psSolid;
+          Pen.Color := Brush.Color;
           Rectangle(ARect);
         end;
     end;
