@@ -769,6 +769,7 @@ type
     procedure SetDescriptionW(const Value: WideString);
     procedure SetMIMEType(const Value: string);
     procedure SetURL(const Value: string);
+    function GetHasOnlyURL: Boolean;
   protected
     procedure ReadFrame; override;
     procedure WriteFrame; override;
@@ -779,6 +780,12 @@ type
     function SameUniqueIDAs(const Frame: TJvID3Frame): Boolean; override;
 
     procedure AssignTo(Dest: TPersistent); override;
+
+    { There is the possibility to put only a link to the image file by using the 'MIME
+      type' "-->" and having a complete URL [URL] instead of picture data.
+      The use of linked files should however be used sparingly since there
+      is the risk of separation of files: }
+    property HasOnlyURL: Boolean read GetHasOnlyURL;
   public
     class function CanAddFrame(AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean; override;
     function CheckFrame(const HandleError: TJvID3HandleError): Boolean; override;
@@ -829,9 +836,13 @@ type
     function GetSeparatorW: WideChar;
     function GetFixedStringLength: Integer;
     procedure ListChanged(Sender: TObject);
+    function GetIsNullSeparator: Boolean;
   protected
     procedure GetText(var AText: TJvID3StringPair); override;
     procedure NewText(const ANewText: TJvID3StringPair); override;
+
+    procedure ReadFrame; override;
+    procedure WriteFrame; override;
 
     function GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal; override;
   public
@@ -845,6 +856,7 @@ type
     property FixedStringLength: Integer read GetFixedStringLength;
     property Separator: Char read GetSeparator;
     property SeparatorW: WideChar read GetSeparatorW;
+    property IsNullSeparator: Boolean read GetIsNullSeparator;
   published
     property List: TStrings read GetList write SetList;
     property ListW: TWideStrings read GetListW write SetListW;
@@ -1160,7 +1172,7 @@ type
 
     function CopyToID3v1(const DoOverwrite: Boolean = True): Boolean;
     procedure CopyToID3v1Ctrl(AID3v1: TJvID3v1; const DoOverwrite: Boolean = True);
-    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean; 
+    function CopyFromID3v1(const DoOverwrite: Boolean = True): Boolean;
     procedure CopyFromID3v1Ctrl(AID3v1: TJvID3v1; const DoOverwrite: Boolean = True);
 
     procedure EnsureExists(const FrameIDs: TJvID3FrameIDs);
@@ -1292,7 +1304,7 @@ var
     TJvID3TextFrame, { fiAlbum }
     TJvID3NumberFrame, { fiBPM }
     TJvID3SimpleListFrame, { fiComposer }
-    TJvID3TextFrame, { fiContentType }
+    TJvID3SimpleListFrame, { fiContentType }
     TJvID3TextFrame, { fiCopyright }
     TJvID3TextFrame, { fiDate (deprecated as of 2.4) }
     TJvID3TimestampFrame, { fiEncodingTime (new in 2.4) }
@@ -4688,6 +4700,16 @@ begin
   end;
 end;
 
+function TJvID3DoubleListFrame.GetList: TStrings;
+begin
+  Result := FList;
+end;
+
+function TJvID3DoubleListFrame.GetListW: TWideStrings;
+begin
+  Result := FListW;
+end;
+
 function TJvID3DoubleListFrame.GetNameA(Index: Integer): string;
 begin
   Result := List.Names[Index];
@@ -4751,20 +4773,10 @@ begin
   Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
-function TJvID3DoubleListFrame.GetList: TStrings;
-begin
-  Result := FList;
-end;
-
 procedure TJvID3DoubleListFrame.SetList(const Value: TStrings);
 begin
   FList.Assign(Value);
   Changed;
-end;
-
-function TJvID3DoubleListFrame.GetListW: TWideStrings;
-begin
-  Result := FListW;
 end;
 
 procedure TJvID3DoubleListFrame.SetListW(const Value: TWideStrings);
@@ -7294,9 +7306,19 @@ begin
     Description:      <text string according to encoding> $00 (00)
     Picture data:     <binary data>
   }
-  Result := 1 + Cardinal(Length(MIMEType)) + 1 + 1 +
-    LengthEnc(FDescription, Encoding, ToEncoding) +
-    LengthTerminatorEnc(ToEncoding) + DataSize;
+  if HasOnlyURL then
+    Result := 1 + Length(cURLArrow) + 1 + 1 +
+      LengthEnc(FDescription, Encoding, ToEncoding) +
+      LengthTerminatorEnc(ToEncoding) + Cardinal(Length(URL))
+  else
+    Result := 1 + Cardinal(Length(MIMEType)) + 1 + 1 +
+      LengthEnc(FDescription, Encoding, ToEncoding) +
+      LengthTerminatorEnc(ToEncoding) + DataSize;
+end;
+
+function TJvID3PictureFrame.GetHasOnlyURL: Boolean;
+begin
+  Result := (DataSize = 0) and (URL > '');
 end;
 
 function TJvID3PictureFrame.GetIsEmpty: Boolean;
@@ -7399,8 +7421,6 @@ begin
 end;
 
 procedure TJvID3PictureFrame.WriteFrame;
-var
-  DoWriteURL: Boolean;
 begin
   {  Text encoding      $xx
      MIME type          <text string> $00
@@ -7411,12 +7431,10 @@ begin
      There is the possibility to put only a link to the image file by using
      the 'MIME type' "-->" and having a complete URL instead of picture data. }
 
-  DoWriteURL := (DataSize = 0) and (URL > '');
-
   with Stream do
   begin
     WriteEncoding;
-    if DoWriteURL then
+    if HasOnlyURL then
       WriteStringA(cURLArrow)
     else
       WriteStringA(MIMEType);
@@ -7426,7 +7444,7 @@ begin
 
     WriteStringEnc(FDescription);
     WriteTerminatorEnc;
-    if DoWriteURL then
+    if HasOnlyURL then
       WriteStringA(URL)
     else
       WriteData;
@@ -7813,7 +7831,8 @@ begin
             Inc(Result, Length(List[I]) + 1);
           { Set one separator less, the last line does not have a trailing
             separator }
-          Dec(Result);
+          if not IsNullSeparator then
+            Dec(Result);
         end;
         case ToEncoding of
           ienISO_8859_1:
@@ -7839,7 +7858,8 @@ begin
 
           { Set one separator less, the last line does not have a trailing
             separator }
-          Dec(Result, 2);
+          if not IsNullSeparator then
+            Dec(Result, 2);
         end;
 
         case ToEncoding of
@@ -7859,12 +7879,27 @@ begin
   end;
 end;
 
+function TJvID3SimpleListFrame.GetIsNullSeparator: Boolean;
+begin
+  Result := (FixedStringLength < 0) and (Separator = #0);
+end;
+
+function TJvID3SimpleListFrame.GetList: TStrings;
+begin
+  Result := FList;
+end;
+
+function TJvID3SimpleListFrame.GetListW: TWideStrings;
+begin
+  Result := FListW;
+end;
+
 function TJvID3SimpleListFrame.GetSeparator: Char;
 begin
   case FrameID of
     fiLyricist, fiComposer, fiOrigLyricist, fiOrigArtist, fiLeadArtist:
       Result := '/';
-    fiLanguage:
+    fiLanguage, fiContentType:
       Result := #0;
   else
     { ?? Unknown }
@@ -7877,7 +7912,7 @@ begin
   case FrameID of
     fiLyricist, fiComposer, fiOrigLyricist, fiOrigArtist, fiLeadArtist:
       Result := WideChar('/');
-    fiLanguage:
+    fiLanguage, fiContentType:
       Result := WideNull;
   else
     { ?? Unknown }
@@ -7927,14 +7962,34 @@ begin
   end;
 end;
 
-function TJvID3SimpleListFrame.GetList: TStrings;
+procedure TJvID3SimpleListFrame.ReadFrame;
+const
+  cMinBytes: array [TJvID3Encoding] of Byte = (2, 4, 4, 2);
+var
+  SP: TJvID3StringPair;
 begin
-  Result := FList;
-end;
+  if IsNullSeparator then
+  begin
+    with Stream do
+    begin
+      ReadEncoding;
+      while BytesTillEndOfFrame > cMinBytes[Encoding] do
+      begin
+        ReadStringEnc(SP);
 
-function TJvID3SimpleListFrame.GetListW: TWideStrings;
-begin
-  Result := FListW;
+        case Encoding of
+          ienISO_8859_1:
+            List.Add(SP.SA);
+          ienUTF_16, ienUTF_16BE, ienUTF_8:
+            List.Add(SP.SW);
+        else
+          Error(RsEID3UnknownEncoding);
+        end;
+      end;
+    end;
+  end
+  else
+    inherited ReadFrame;
 end;
 
 procedure TJvID3SimpleListFrame.SetList(const Value: TStrings);
@@ -7945,6 +8000,44 @@ end;
 procedure TJvID3SimpleListFrame.SetListW(const Value: TWideStrings);
 begin
   FListW.Assign(Value);
+end;
+
+procedure TJvID3SimpleListFrame.WriteFrame;
+var
+  I: Integer;
+  Item: TJvID3StringPair;
+  SW: WideString;
+begin
+  if IsNullSeparator then
+  begin
+    Item.SA := '';
+    Item.SW := '';
+
+    with Stream do
+    begin
+      WriteEncoding;
+      case Encoding of
+        ienISO_8859_1:
+          for I := 0 to List.Count - 1 do
+          begin
+            Item.SA := List[I];
+            WriteStringEnc(Item);
+            WriteTerminatorEnc;
+          end;
+        ienUTF_16, ienUTF_16BE, ienUTF_8:
+          for I := 0 to ListW.Count - 1 do
+          begin
+            Item.SW := SW;
+            WriteStringEnc(Item);
+            WriteTerminatorEnc;
+          end;
+      else
+        Error(RsEID3UnknownEncoding);
+      end;
+    end;
+  end
+  else
+    inherited WriteFrame;
 end;
 
 //=== { TJvID3SkipFrame } ====================================================

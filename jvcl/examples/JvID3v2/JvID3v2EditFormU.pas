@@ -374,7 +374,7 @@ end;
 
 procedure TJvID3v2EditForm.CtrlsToTag;
 
-  function SetFirstOfList(Strings: TStrings; const S: string): string;
+  procedure SetFirstOfList(Strings: TStrings; const S: string);
   begin
     if Strings.Count > 0 then
       Strings[0] := S
@@ -394,7 +394,7 @@ begin
     JvID3v21.Texts.RecordingTime := ChangeYear(JvID3v21.Texts.RecordingTime, StrToIntDef(edtYear.Text, 0))
   else
     JvID3v21.Texts.Year := StrToIntDef(edtYear.Text, 0);
-  JvID3v21.Texts.ContentType := NiceGenreToGenre(cmbGenre.Text);
+  SetFirstOfList(JvID3v21.Texts.ContentType, NiceGenreToGenre(cmbGenre.Text));
   { Note that WinAmp doesn't care about other properties than Text of TJvID3ContentFrame }
   TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment).Text := memComment.Lines.Text;
   SetFirstOfList(JvID3v21.Texts.Composer, edtComposer.Text);
@@ -450,7 +450,7 @@ begin
     edtYear.Text := IntToStr(YearOf(JvID3v21.Texts.RecordingTime))
   else
     edtYear.Text := IntToStr(JvID3v21.Texts.Year);
-  cmbGenre.Text := GenreToNiceGenre(JvID3v21.Texts.ContentType);
+  cmbGenre.Text := GenreToNiceGenre(GetFirstOfList(JvID3v21.Texts.ContentType));
   { Note that WinAmp doesn't care about other properties than Text of TJvID3ContentFrame }
   memComment.Lines.Text := TJvID3ContentFrame.FindOrCreate(JvID3v21, fiComment).Text;
   edtComposer.Text := GetFirstOfList(JvID3v21.Texts.Composer);
