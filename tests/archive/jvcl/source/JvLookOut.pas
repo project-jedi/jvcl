@@ -32,7 +32,6 @@ unit JvLookOut;
 
 interface
 
-
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, CommCtrl, Menus, ImgList, JvComponent;
@@ -143,6 +142,7 @@ type
     procedure CMParentImageSizeChanged(var Message: TMessage); message CM_IMAGESIZECHANGED;
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     procedure WMEraseBkgnd(var M: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure CmVisibleChanged(var M: TMessage); message CM_VISIBLECHANGED;
     function ParentVisible: boolean;
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -926,7 +926,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-    end;                                { case }
+    end; { case }
   if Modify then
     FCaption := aCaption;
 end;
@@ -1261,19 +1261,26 @@ begin
   begin
     Canvas.Brush.Color := clBlack;
     Canvas.FrameRect(R);
+    Canvas.Brush.Color := Color;
   end;
 
   if not Enabled then
     Exit;
   if (FInsideButton or (csDesigning in ComponentState)) then
   begin
-    if (FFillColor = clNone) then
+    if (csDesigning in ComponentState) and not Visible then
+    begin
+      Canvas.Brush.Style := bsBDiagonal;
+      Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      Canvas.Brush.Style := bsSolid;
+    end
+    else if (FFillColor = clNone) then
     begin
       R := FImageRect;
       InflateRect(R, Spacing, Spacing);
     end
     else
-    begin                               { fill it up! }
+    begin { fill it up! }
       Canvas.Brush.Color := FFillColor;
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
     end;
@@ -1507,6 +1514,12 @@ begin
   Result := TJvLookOutButtonActionLink;
 end;
 
+procedure TJvCustomLookOutButton.CmVisibleChanged(var M: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
 { TJvExpressButton }
 
 constructor TJvExpressButton.Create(AOwner: TComponent);
@@ -1533,7 +1546,7 @@ begin
   FShowPressed := False;
   Width := 92;
   Height := 100;
-//  SetBounds(0, 0, 92, 100);
+  //  SetBounds(0, 0, 92, 100);
   FInsideButton := False;
   FHiFont := TFont.Create;
   FHiFont.Assign(Font);
@@ -1693,7 +1706,7 @@ begin
           FEdit := nil;
           Screen.Cursor := crDefault;
         end;
-    end;                                { case }
+    end; { case }
   if Modify then
     FCaption := aCaption;
 end;
@@ -1804,7 +1817,7 @@ end;
 
 procedure TJvLookOutPage.ScrollChildren(Start: word);
 var R: TRect;
-  i, x, aCount: integer;                {AList:TList;}
+  i, x, aCount: integer; {AList:TList;}
   aControl: TControl;
 begin
   if FScrolling <> 0 then
@@ -1834,7 +1847,7 @@ begin
   for i := 0 to aCount - 1 do
   begin
     aControl := FButtons[i];
-    if not aControl.Visible then
+    if not aControl.Visible and not (csDesigning in ComponentState) then
       Continue;
     if aControl.Align <> alNone then
       aControl.Align := alNone;
@@ -2481,11 +2494,11 @@ begin
     if (C = Sender) then
       done := true;
 
-    if (C = Sender) or (i = 0) then     { first or caller }
+    if (C = Sender) or (i = 0) then { first or caller }
       SmoothScroll(C, (i - ofs) * bh, cSpeed, FScroll)
     else if done and (C <> Sender) then { place at bottom }
       SmoothScroll(C, ht - (vis - i + ofs) * bh - flt + 1, cSpeed, FScroll)
-    else                                { place at top }
+    else { place at top }
       SmoothScroll(C, (i - ofs) * bh, cSpeed, FScroll);
   end;
 end;
@@ -2723,7 +2736,7 @@ begin
   if FButtonHeight <> Value then
   begin
     FButtonHeight := Value;
-    for i := 0 to ButtonCount - 1 do    // Iterate
+    for i := 0 to ButtonCount - 1 do // Iterate
       Buttons[i].Height := FButtonHeight;
   end;
 end;
@@ -2804,7 +2817,6 @@ begin
   inherited AssignClient(AClient);
   FClient := AClient as TJvCustomLookoutButton;
 end;
-
 
 function TJvLookOutButtonActionLink.IsCheckedLinked: Boolean;
 begin
