@@ -45,6 +45,7 @@ begin
     List1 := TStringList.Create;
     List2 := TStringList.Create;
     List1.LoadFromFile(OpenDialog1.FileName);
+    List1.Sorted := True;
     List2.Add('0' + List1[0]);
     for I := 1 to List1.Count-1 do
     begin
