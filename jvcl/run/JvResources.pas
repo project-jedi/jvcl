@@ -35,15 +35,20 @@ interface
 
 //=== used in several files ==================================================
 resourcestring
+  RsButtonOKCaption = '&OK';
+  RsButtonCancelCaption = 'Cancel';
+  RsDateDlgCaption = 'Select a Date';
+  RC_EmptyItem = '<Empty>';
+  RsDatabaseName = 'Database name: %s';
+  RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
+
   RsEErrorSetupDll = 'Unable to find SetupApi.dll';
   RsEInternalError = 'internal error';
-  RC_EmptyItem = '<Empty>';
-  sUnterminatedStringNears = 'unterminated string near %s';
-  sStackOverflow = 'stack overflow';
-  sStackUnderflow = 'stack underflow';
-  sReturnStackUnderflow = 'return stack underflow';
-  sNotImplemented = 'not implemented';
-  RsDateDlgCaption = 'Select a Date';
+  RsEUnterminatedStringNears = 'unterminated string near %s';
+  RsEStackOverflow = 'stack overflow';
+  RsEStackUnderflow = 'stack underflow';
+  RsEReturnStackUnderflow = 'return stack underflow';
+  RsENotImplemented = 'not implemented';
   RsEDelSubTreeNotImplemented = 'DeleteSubTreeInt has not been implemented yet';
   { Polaris patch }
   RsEDateOutOfRange = '%s - Enter a date between "%s" and "%s"';
@@ -51,8 +56,7 @@ resourcestring
   RsEDateOutOfMax = '%s - Enter a date before "%s"';
 
   RsEID3NoController = 'No controller specified.';
-  RsDatabaseName = 'Database name: %s';
-  RsDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
+  RsEReturnStackOverflow = 'return stack overflow';
 
 //=== JvAni.pas ==============================================================
 resourcestring
@@ -498,49 +502,48 @@ resourcestring
 
 //=== JvForth.pas ============================================================
 resourcestring
-  sInvalidNumbers = 'invalid number %s';
-  sUnrecognizedDataTypeInSetOperation = 'unrecognized data type in set operation';
-  sUnterminatedBlockNear = 'unterminated block near ';
-  sParserTimedOutAfterdSecondsYouMayHa = 'parser timed out after %d seconds; you may have circular includes';
-  sUnterminatedIncludeNears = 'unterminated include near %s';
-  sIllegalSpaceCharacterInTheIncludeFi = 'illegal space character in the include file: %s';
-  sCanNotFindIncludeFiles = 'Can not find include file: %s';
-  sOnIncludeHandlerNotAssignedCanNotHa = 'OnInclude handler not assigned, can not handle include file: %s';
-  sMissingCommentTerminatorNears = 'missing "}" comment terminator near %s';
-  sMissingXmlMethodSpecifierNears = 'missing XML method specifier near %s';
-  sMissingDataSourceMethodSpecifierNea = 'missing data source method specifier near %s';
-  sMissingSystemMethodSpecifierNears = 'missing system method specifier near %s';
-  sMissingExternalVariableMethodSpecif = 'missing external variable method specifier near %s';
-  sMissingInternalVariableMethodSpecif = 'missing internal variable method specifier near %s';
-  sUndefinedWordsNears = 'undefined word "%s" near %s';
-  sScriptTimedOutAfterdSeconds = 'Script timed out after %d seconds';
-  sCanNotAssignVariables = 'can not assign variable %s';
-  sVariablesNotDefined = 'Variable %s not defined';
-  sReturnStackOverflow = 'return stack overflow';
-  sProceduresNotDefined = 'procedure %s not defined';
-  sVariablesNotDefined_ = 'variable %s not defined';
-  sSystemsNotDefined = 'System %s not defined';
-  sCanNotAssignSystems = 'can not assign System %s';
-  sUnrecognizeExternalVariableMethodss = 'unrecognize external variable method %s.%s';
-  sUnrecognizeInternalVariableMethodss = 'unrecognize internal variable method %s.%s';
-  sUnrecognizeSystemMethodss = 'unrecognize system method %s.%s';
-  sFilesDoesNotExist = 'File %s does not exist';
-  sCanNotSaveToFiles = 'Can not save to file %s';
-  sXMLSelectionIsEmpty = 'XML selection is empty';
-  sNoXMLSelectionSelected = 'no XML selection selected';
-  sXMLSelectionOutOfRange = 'XML selection out of range';
-  sInvalidXmlMethodSpecifiers = 'invalid XML method specifier %s';
-  sIncrementIndexExpectedIns = 'Increment Index: "[" expected in %s';
-  sIncrementIndexExpectedIns_ = 'Increment Index: "]" expected in %s';
-  sIncrementIndexExpectedIntegerBetwee = 'Increment Index: expected integer between "[..]" in %s';
-  sDSOIndexOutOfRanged = 'DSO index out of range %d';
-  sDSOUnknownKeys = 'DSO unknown key %s';
+  RsEInvalidNumbers = 'invalid number %s';
+  RsEUnrecognizedDataTypeInSetOperation = 'unrecognized data type in set operation';
+  RsEUnterminatedBlockNear = 'unterminated block near ';
+  RsEParserTimedOutAfterdSecondsYouMayHa = 'parser timed out after %d seconds; you may have circular includes';
+  RsEUnterminatedIncludeNears = 'unterminated include near %s';
+  RsEIllegalSpaceCharacterInTheIncludeFi = 'illegal space character in the include file: %s';
+  RsECanNotFindIncludeFiles = 'Can not find include file: %s';
+  RsEOnIncludeHandlerNotAssignedCanNotHa = 'OnInclude handler not assigned, can not handle include file: %s';
+  RsEMissingCommentTerminatorNears = 'missing "}" comment terminator near %s';
+  RsEMissingXmlMethodSpecifierNears = 'missing XML method specifier near %s';
+  RsEMissingDataSourceMethodSpecifierNea = 'missing data source method specifier near %s';
+  RsEMissingSystemMethodSpecifierNears = 'missing system method specifier near %s';
+  RsEMissingExternalVariableMethodSpecif = 'missing external variable method specifier near %s';
+  RsEMissingInternalVariableMethodSpecif = 'missing internal variable method specifier near %s';
+  RsEUndefinedWordsNears = 'undefined word "%s" near %s';
+  RsEScriptTimedOutAfterdSeconds = 'Script timed out after %d seconds';
+  RsECanNotAssignVariables = 'can not assign variable %s';
+  RsEVariablesNotDefined = 'Variable %s not defined';
+  RsEProceduresNotDefined = 'procedure %s not defined';
+  RsEVariablesNotDefined_ = 'variable %s not defined';
+  RsESystemsNotDefined = 'System %s not defined';
+  RsECanNotAssignSystems = 'can not assign System %s';
+  RsEUnrecognizeExternalVariableMethodss = 'unrecognize external variable method %s.%s';
+  RsEUnrecognizeInternalVariableMethodss = 'unrecognize internal variable method %s.%s';
+  RsEUnrecognizeSystemMethodss = 'unrecognize system method %s.%s';
+  RsEFilesDoesNotExist = 'File %s does not exist';
+  RsECanNotSaveToFiles = 'Can not save to file %s';
+  RsEXMLSelectionIsEmpty = 'XML selection is empty';
+  RsENoXMLSelectionSelected = 'no XML selection selected';
+  RsEXMLSelectionOutOfRange = 'XML selection out of range';
+  RsEInvalidXmlMethodSpecifiers = 'invalid XML method specifier %s';
+  RsEIncrementIndexExpectedIns = 'Increment Index: "[" expected in %s';
+  RsEIncrementIndexExpectedIns_ = 'Increment Index: "]" expected in %s';
+  RsEIncrementIndexExpectedIntegerBetwee = 'Increment Index: expected integer between "[..]" in %s';
+  RsEDSOIndexOutOfRanged = 'DSO index out of range %d';
+  RsEDSOUnknownKeys = 'DSO unknown key %s';
 
 //=== Jvg3DColors.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-  {$ENDIF USEJVCL}
+  RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
+{$ENDIF USEJVCL}
 
 //=== JvGammaPanel.pas =======================================================
 resourcestring
@@ -558,32 +561,32 @@ resourcestring
   RC_DefaultR = 'R : ---';
 
 //=== JvgAskListBox.pas ======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sYes = 'yes';
   sNo = 'no';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgButton.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgCaption.pas =========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgCheckVersionInfoForm.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgConstSysRequirements.pas ============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
 (* RUSSIAN
   ERR_VideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
@@ -600,40 +603,53 @@ resourcestring
     'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
   ERR_SystemFont = 'In system the small font should be established. Change to small fonts in Monitor Control Panel.';
   ERR_OSPlatform = 'The program requires %s or better.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGenetic.pas ==========================================================
 resourcestring
-  RC_NoTest = 'TJvGenetic: OnTestMember must be assigned';
+  RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
 
 //=== JvgExportComponents.pas ================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sDataSetIsUnassigned = 'DataSet is unassigned';
-  sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
-  {$ENDIF USEJVCL}
+  RsEDataSetIsUnassigned = 'DataSet is unassigned';
+  RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
+{$ENDIF USEJVCL}
 
 //=== JvgHelpPanel.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   SHelp = ' help ';
   SOpenContextMenuToLoadRTFTextControl = 'Open context menu to load RTF text. Control shows text at runtime only.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgHint.pas ============================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-  {$ENDIF USEJVCL}
+  RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
+{$ENDIF USEJVCL}
 
 //=== JvgHTTPVersionInfo.pas =================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-  {$ENDIF USEJVCL}
+  RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
+{$ENDIF USEJVCL}
+
+//=== JvGIF.pas ==============================================================
+resourcestring
+  RsGIFImage = 'CompuServe GIF Image';
+
+  RsEChangeGIFSize = 'Cannot change the Size of a GIF image';
+  RsENoGIFData = 'No GIF Data to write';
+  RsEUnrecognizedGIFExt = 'Unrecognized extension block: %.2x';
+  RsEWrongGIFColors = 'Wrong number of colors; must be a power of 2';
+  RsEBadGIFCodeSize = 'GIF code size not in range 2 to 9';
+  RsEGIFDecodeError = 'GIF encoded data is corrupt';
+  RsEGIFEncodeError = 'GIF image encoding error';
+  RsEGIFVersion = 'Unknown GIF version';
 
 //=== JvgLogics.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sEqualTo = 'equal to';
   sStartingWith = 'starting with';
@@ -643,39 +659,39 @@ resourcestring
   sNotEmpty = 'not empty';
   sStep = 'Step ';
   sComments = 'Comments';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgMailSlots.pas =======================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sTJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
-  sTJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
-  sTJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
-  {$ENDIF USEJVCL}
+  RsETJvgMailSlotServerErrorCreatingChan = 'TJvgMailSlotServer: Error creating channel!';
+  RsETJvgMailSlotServerErrorGatheringInf = 'TJvgMailSlotServer: Error gathering information!';
+  RsETJvgMailSlotServerErrorReadingMessa = 'TJvgMailSlotServer: Error reading message!';
+{$ENDIF USEJVCL}
 
 //=== JvgProgress.pas ========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sProgressd = 'progress...[%d%%]';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgQPrintPreviewForm.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sPagedOfd = 'Page %d of %d';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGradientHeaderPanel.pas ==============================================
 resourcestring
   RC_YourTextHere = 'Put your text here ...';
 
 //=== JvgReport.pas ==========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sOLELinkedObjectNotFound = 'OLE: Linked object not found.';
   sError = 'Error';
   sErrorReadingComponent = 'Error reading component.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvGridPreviewForm.pas ==================================================
 resourcestring
@@ -690,33 +706,32 @@ resourcestring
   SPrintOptionsTimeFormat = 'h:nn am/pm';
 
 //=== JvgSingleInstance.pas ==================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sOneInstanceOfThisProgramIsAlreadyRu =
+  RsOneInstanceOfThisProgramIsAlreadyRu =
     'One instance of this program is already running. A second instance launch is not allowed.';
-  sSecondInstanceLaunchOfs = 'Second instance launch of %s';
-  {$ENDIF USEJVCL}
+  RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
+{$ENDIF USEJVCL}
 
 //=== JvgSmallFontsDefense.pas ===============================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
-  sRightBracketsNotFound = 'Right brackets not found';
-  sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
-  sDivideBy = 'Divide by 0';
-  sDuplicateSignsPos = 'Duplicate signs. Pos:';
-  sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
-  sExpressionStringIsEmpty = 'Expression string is empty.';
-  sObjectMemoryLeak = 'object memory leak';
-  {$ENDIF USEJVCL}
+  RsERightBracketsNotFound = 'Right brackets not found';
+  RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
+  RsEDivideBy = 'Divide by 0';
+  RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
+  RsEExpressionStringIsEmpty = 'Expression string is empty.';
+  RsEObjectMemoryLeak = 'object memory leak';
+{$ENDIF USEJVCL}
 
 //=== JvgXMLSerializer.pas ===================================================
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
 resourcestring
   (*
   ERR_OpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
@@ -726,7 +741,7 @@ resourcestring
   ERR_OpenXMLTagNotFound = 'Open tag not found: <%s>';
   ERR_CloseXMLTagNotFound = 'Close tag not found: </%s>';
   ERR_UnknownProperty = 'Unknown property: %s';
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
 //=== JvHint.pas =============================================================
 resourcestring
@@ -734,7 +749,38 @@ resourcestring
 
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring
-  sGridCellNotFound = 'Grid cell not found';
+  RsHLEdPropDlg_Caption = 'Editor Properties';
+  RsHLEdPropDlg_tsEditor = 'Editor';
+  RsHLEdPropDlg_tsColors = 'Colors';
+  RsHLEdPropDlg_lblEditorSpeedSettings = 'Editor SpeedSettings';
+  RsHLEdPropDlg_cbKeyboardLayoutDefault = 'Default keymapping';
+  RsHLEdPropDlg_gbEditor = 'Editor options:';
+  RsHLEdPropDlg_cbAutoIndent = '&Auto indent mode';
+  RsHLEdPropDlg_cbSmartTab = 'S&mart tab';
+  RsHLEdPropDlg_cbBackspaceUnindents = 'Backspace &unindents';
+  RsHLEdPropDlg_cbGroupUndo = '&Group undo';
+  RsHLEdPropDlg_cbCursorBeyondEOF = 'Cursor beyond &EOF';
+  RsHLEdPropDlg_cbUndoAfterSave = '&Undo after sa&ve';
+  RsHLEdPropDlg_cbKeepTrailingBlanks = '&Keep trailing blanks';
+  RsHLEdPropDlg_cbDoubleClickLine = '&Double click line';
+  RsHLEdPropDlg_cbSytaxHighlighting = 'Use &syntax highlight';
+  RsHLEdPropDlg_lblTabStops = '&Tab stops:';
+  RsHLEdPropDlg_lblColorSpeedSettingsFor = 'Color SpeedSettings for';
+  RsHLEdPropDlg_lblElement = '&Element:';
+  RsHLEdPropDlg_lblColor = '&Color:';
+  RsHLEdPropDlg_gbTextAttributes = 'Text attributes:';
+  RsHLEdPropDlg_gbUseDefaultsFor = 'Use defaults for:';
+  RsHLEdPropDlg_cbBold = '&Bold';
+  RsHLEdPropDlg_cbItalic = '&Italic';
+  RsHLEdPropDlg_cbUnderline = '&Underline';
+  RsHLEdPropDlg_cbDefForeground = '&Foreground';
+  RsHLEdPropDlg_cbDefBackground = '&Background';
+  RsHLEdPropDlg_OptionCantBeChanged = 'This option cannot be changed. Sorry.';
+
+  RsEHLEdPropDlg_RAHLEditorNotAssigned = 'JvHLEditor property is not assigned';
+  RsEHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
+
+  RsEHLEdPropDlg_GridCellNotFound = 'Grid cell not found';
 
 //=== JvId3v1.pas ============================================================
 resourcestring
@@ -844,8 +890,6 @@ resourcestring
   RsJvInspItemNoValue = '(no value)';
 
   RsStringListEditorCaption = 'String list editor';
-  RsButtonOKCaption = '&OK';
-  RsButtonCancelCaption = 'Cancel';
   RsXLinesCaption = ' lines';
   RsOneLineCaption = '1 line';
 
@@ -1406,6 +1450,8 @@ resourcestring
   sTokenExpected = 'token expected';
   ssDoesNotExist = '%s does not exist';
   sDivisionByZeroNotAllowedInIn = 'division by zero not allowed in in-';
+  RsStackOverflow = 'stack overflow';
+  RsStackUnderflow = 'stack underflow';
 
 //=== JvValidators.pas =======================================================
 resourcestring

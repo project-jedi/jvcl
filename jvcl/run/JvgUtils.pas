@@ -167,13 +167,12 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sRightBracketsNotFound = 'Right brackets not found';
-  sRightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
-  sDivideBy = 'Divide by 0';
-  sDuplicateSignsPos = 'Duplicate signs. Pos:';
-  sDuplicateSignsAtPos = 'Duplicate signs at. Pos:';
-  sExpressionStringIsEmpty = 'Expression string is empty.';
-  sObjectMemoryLeak = 'object memory leak';
+  RsERightBracketsNotFound = 'Right brackets not found';
+  RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
+  RsEDivideBy = 'Divide by 0';
+  RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
+  RsEExpressionStringIsEmpty = 'Expression string is empty.';
+  RsEObjectMemoryLeak = 'object memory leak';
 {$ENDIF USEJVCL}
 
 { debug func }
@@ -182,7 +181,7 @@ function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 begin
   Result := Windows.DeleteObject(p1);
   if Result = false then
-    raise Exception.Create(sObjectMemoryLeak);
+    raise Exception.Create(RsEObjectMemoryLeak);
 end;
 {$ENDIF}
 
@@ -1626,7 +1625,7 @@ var
               NextChar;
             if cCurrChar <> ')' then
             begin
-              raise Exception.Create(sRightBracketsNotFound);
+              raise Exception.Create(RsERightBracketsNotFound);
               fCalcResult := false;
               Result := 0;
             end
@@ -1641,7 +1640,7 @@ var
     begin
       dec(BracketsCount);
       if BracketsCount < 0 then
-        raise Exception.Create(Format(sRightBracketHavntALeftOnePosd, [ExpressionPtr - 1]));
+        raise Exception.CreateFmt(RsERightBracketHavntALeftOnePosd, [ExpressionPtr - 1]);
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1669,7 +1668,7 @@ var
             else
             begin
               fCalcResult := false;
-              raise Exception.Create(sDivideBy);
+              raise Exception.Create(RsEDivideBy);
             end;
           end;
       else //case else
@@ -1690,14 +1689,14 @@ var
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.Create(sDuplicateSignsPos + IntToStr(ExpressionPtr - 1));
+              raise Exception.CreateFmt(RsEDuplicateSignsAtPos , [ExpressionPtr - 1]);
             Result := Result + TestFor_MulDiv;
           end;
         '-':
           begin
             NextChar;
             if cCurrChar in ['+', '-', '/', '*'] then
-              raise Exception.Create(sDuplicateSignsAtPos + IntToStr(ExpressionPtr - 1));
+              raise Exception.CreateFmt(RsEDuplicateSignsAtPos, [ExpressionPtr - 1]);
             Result := Result - TestFor_MulDiv;
           end;
       else
@@ -1713,7 +1712,8 @@ begin //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
   sExpression := trim(sExpression);
 
   ExpressionLength := Length(sExpression);
-  if ExpressionLength = 0 then Exception.Create(sExpressionStringIsEmpty);
+  if ExpressionLength = 0 then
+    raise Exception.Create(RsEExpressionStringIsEmpty);
   fCalcResult := true;
   NextChar;
   Result := Expression;

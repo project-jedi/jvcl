@@ -55,8 +55,8 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
-  sSecondInstanceLaunchOfs = 'Second instance launch of %s';
+  RsOneInstanceOfThisProgramIsAlreadyRu = 'One instance of this program is already running. A second instance launch is not allowed.';
+  RsSecondInstanceLaunchOfs = 'Second instance launch of %s';
 {$ENDIF USEJVCL}
 
 { semaphore
@@ -113,8 +113,8 @@ begin
   FCheckEvent := TEvent.Create(nil, False, True, ParamStr(0));
   if FCheckEvent.WaitFor(10) <> wrSignaled then
   begin
-    S1 := sOneInstanceOfThisProgramIsAlreadyRu;
-    S2 := Format(sSecondInstanceLaunchOfs, [ExtractFileName(ParamStr(0))]);
+    S1 := RsOneInstanceOfThisProgramIsAlreadyRu;
+    S2 := Format(RsSecondInstanceLaunchOfs, [ExtractFileName(ParamStr(0))]);
     Application.MessageBox(PChar(S1), PChar(S2), MB_ICONSTOP or MB_OK);
     Halt;
   end;

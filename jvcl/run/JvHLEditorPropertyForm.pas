@@ -185,7 +185,7 @@ implementation
 
 uses
   Math,
-  JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvResources;
 
 {$R *.dfm}
 
@@ -302,7 +302,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(SHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     S := AddSlash2(FStorageSection) + cParams;
     with Storage do
     begin
@@ -329,7 +329,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(SHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     S := AddSlash2(StorageSection) + cParams;
     with Storage do
     begin
@@ -361,7 +361,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(SHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     Section := AddSlash2(StorageSection) + HighLighters[AHighLighter];
     Storage.StoredValue[Section + 'BackColor'] := ColorToString(AJvHLEditor.Color);
     Storage.StoredValue[Section + 'FontName'] := AJvHLEditor.Font.Name;
@@ -413,7 +413,7 @@ var
 begin
   if Storage <> nil then
   begin
-//    raise Exception.Create(SHLEdPropDlg_RegAutoNotAssigned);
+//    raise Exception.Create(RsEHLEdPropDlg_RegAutoNotAssigned);
     Section := AddSlash2(StorageSection) + HighLighters[AHighLighter];
     LoadColor(AJvHLEditor.Colors.Number, clNavy, clWindow, [], 'Number');
     LoadColor(AJvHLEditor.Colors.Strings, clMaroon, clWindow, [], 'Strings');
@@ -450,7 +450,7 @@ var
   Form: TJvHLEditorParamsForm;
 begin
   if FJvHLEditor = nil then
-    raise Exception.Create(SHLEdPropDlg_RAHLEditorNotAssigned);
+    raise Exception.Create(RsEHLEdPropDlg_RAHLEditorNotAssigned);
   Form := TJvHLEditorParamsForm.Create(Application);
   Form.ColorSamples.Assign(FColorSamples);
   with Form do
@@ -593,7 +593,7 @@ end;
 procedure TJvHLEditorParamsForm.NotImplemented(Sender: TObject);
 begin
   //(Sender as TCheckBox).Checked := True;
-  //raise Exception.Create(SHLEdPropDlg_OptionCantBeChanged);
+  //raise Exception.Create(RsEHLEdPropDlg_OptionCantBeChanged);
 end;
 
 { Color tab }
@@ -604,7 +604,7 @@ function TJvHLEditorParamsForm.GetCell(const Index: integer): TPanel;
 begin
   Result := FindComponent('Cell' + IntToStr(Index)) as TPanel;
   if Result = nil then
-    raise Exception.Create(sGridCellNotFound);
+    raise Exception.Create(RsEHLEdPropDlg_GridCellNotFound);
 end;
 
 function TJvHLEditorParamsForm.ColorToIndex(const AColor: TColor): integer;
@@ -905,34 +905,34 @@ end;
 
 procedure TJvHLEditorParamsForm.LoadLocale;
 begin
-  Caption := SHLEdPropDlg_Caption;
-  tsEditor.Caption := SHLEdPropDlg_tsEditor;
-  tsColors.Caption := SHLEdPropDlg_tsColors;
-  lblEditorSpeedSettings.Caption := SHLEdPropDlg_lblEditorSpeedSettings;
-  cbKeyboardLayout.Items[0] := SHLEdPropDlg_cbKeyboardLayoutDefault;
-  gbEditor.Caption := SHLEdPropDlg_gbEditor;
-  cbAutoIndent.Caption := SHLEdPropDlg_cbAutoIndent;
-  cbSmartTab.Caption := SHLEdPropDlg_cbSmartTab;
-  cbBackspaceUnindents.Caption := SHLEdPropDlg_cbBackspaceUnindents;
-  cbGroupUndo.Caption := SHLEdPropDlg_cbGroupUndo;
-  cbCursorBeyondEOF.Caption := SHLEdPropDlg_cbCursorBeyondEOF;
-  cbUndoAfterSave.Caption := SHLEdPropDlg_cbUndoAfterSave;
-  cbKeepTrailingBlanks.Caption := SHLEdPropDlg_cbKeepTrailingBlanks;
-  cbDoubleClickLine.Caption := SHLEdPropDlg_cbDoubleClickLine;
-  cbSytaxHighlighting.Caption := SHLEdPropDlg_cbSytaxHighlighting;
-  lblTabStops.Caption := SHLEdPropDlg_lblTabStops;
-  lblColorSpeedSettingsFor.Caption := SHLEdPropDlg_lblColorSpeedSettingsFor;
-  lblElement.Caption := SHLEdPropDlg_lblElement;
-  lblColor.Caption := SHLEdPropDlg_lblColor;
-  gbTextAttributes.Caption := SHLEdPropDlg_gbTextAttributes;
-  gbUseDefaultsFor.Caption := SHLEdPropDlg_gbUseDefaultsFor;
-  cbBold.Caption := SHLEdPropDlg_cbBold;
-  cbItalic.Caption := SHLEdPropDlg_cbItalic;
-  cbUnderline.Caption := SHLEdPropDlg_cbUnderline;
-  cbDefForeground.Caption := SHLEdPropDlg_cbDefForeground;
-  cbDefBackground.Caption := SHLEdPropDlg_cbDefBackground;
-  bOK.Caption := SOk;
-  bCancel.Caption := SCancel;
+  Caption := RsHLEdPropDlg_Caption;
+  tsEditor.Caption := RsHLEdPropDlg_tsEditor;
+  tsColors.Caption := RsHLEdPropDlg_tsColors;
+  lblEditorSpeedSettings.Caption := RsHLEdPropDlg_lblEditorSpeedSettings;
+  cbKeyboardLayout.Items[0] := RsHLEdPropDlg_cbKeyboardLayoutDefault;
+  gbEditor.Caption := RsHLEdPropDlg_gbEditor;
+  cbAutoIndent.Caption := RsHLEdPropDlg_cbAutoIndent;
+  cbSmartTab.Caption := RsHLEdPropDlg_cbSmartTab;
+  cbBackspaceUnindents.Caption := RsHLEdPropDlg_cbBackspaceUnindents;
+  cbGroupUndo.Caption := RsHLEdPropDlg_cbGroupUndo;
+  cbCursorBeyondEOF.Caption := RsHLEdPropDlg_cbCursorBeyondEOF;
+  cbUndoAfterSave.Caption := RsHLEdPropDlg_cbUndoAfterSave;
+  cbKeepTrailingBlanks.Caption := RsHLEdPropDlg_cbKeepTrailingBlanks;
+  cbDoubleClickLine.Caption := RsHLEdPropDlg_cbDoubleClickLine;
+  cbSytaxHighlighting.Caption := RsHLEdPropDlg_cbSytaxHighlighting;
+  lblTabStops.Caption := RsHLEdPropDlg_lblTabStops;
+  lblColorSpeedSettingsFor.Caption := RsHLEdPropDlg_lblColorSpeedSettingsFor;
+  lblElement.Caption := RsHLEdPropDlg_lblElement;
+  lblColor.Caption := RsHLEdPropDlg_lblColor;
+  gbTextAttributes.Caption := RsHLEdPropDlg_gbTextAttributes;
+  gbUseDefaultsFor.Caption := RsHLEdPropDlg_gbUseDefaultsFor;
+  cbBold.Caption := RsHLEdPropDlg_cbBold;
+  cbItalic.Caption := RsHLEdPropDlg_cbItalic;
+  cbUnderline.Caption := RsHLEdPropDlg_cbUnderline;
+  cbDefForeground.Caption := RsHLEdPropDlg_cbDefForeground;
+  cbDefBackground.Caption := RsHLEdPropDlg_cbDefBackground;
+  bOK.Caption := RsButtonOKCaption;
+  bCancel.Caption := RsButtonCancelCaption;
 end;
 
 function GetHardCodedExamples: string;

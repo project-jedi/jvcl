@@ -245,8 +245,8 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sDataSetIsUnassigned = 'DataSet is unassigned';
-  sSaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
+  RsEDataSetIsUnassigned = 'DataSet is unassigned';
+  RsESaveToFileNamePropertyIsEmpty = 'SaveToFileName property is empty';
 {$ENDIF USEJVCL}
 
 { TJvgCommonExport }
@@ -254,7 +254,7 @@ resourcestring
 procedure TJvgCommonExport.Execute;
 begin
   if not Assigned(DataSet) then
-    raise EJvgExportException.Create(sDataSetIsUnassigned);
+    raise EJvgExportException.Create(RsEDataSetIsUnassigned);
   DataSet.Active := true;
   if SaveToFileName <> '' then
     ForceDirectories(ExtractFilePath(SaveToFileName));
@@ -588,7 +588,7 @@ begin
   inherited;
 
   if SaveToFileName = '' then
-    raise EJvgExportException.Create(sSaveToFileNamePropertyIsEmpty);
+    raise EJvgExportException.Create(RsESaveToFileNamePropertyIsEmpty);
 
   Table := TTable.Create(nil);
 

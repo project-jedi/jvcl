@@ -49,10 +49,6 @@ const
   RAIIdFirstSymbols = StIdFirstSymbols;
   {$ENDIF RAINTER}
 
-  { JvDlg }
-  SOk = 'OK';
-  SCancel = 'Cancel';
-
   { Menu Designer }
   { (rom) disabled unused
   SMDMenuDesigner       = 'Menu &Designer';
@@ -65,39 +61,6 @@ const
   // (rom) now in JvJCLUtils.pas
 
   { RALib 1.55 }
-
-resourcestring
-  { JvHLEdPropDlg }
-  SHLEdPropDlg_Caption = 'Editor Properties';
-  SHLEdPropDlg_tsEditor = 'Editor';
-  SHLEdPropDlg_tsColors = 'Colors';
-  SHLEdPropDlg_lblEditorSpeedSettings = 'Editor SpeedSettings';
-  SHLEdPropDlg_cbKeyboardLayoutDefault = 'Default keymapping';
-  SHLEdPropDlg_gbEditor = 'Editor options:';
-  SHLEdPropDlg_cbAutoIndent = '&Auto indent mode';
-  SHLEdPropDlg_cbSmartTab = 'S&mart tab';
-  SHLEdPropDlg_cbBackspaceUnindents = 'Backspace &unindents';
-  SHLEdPropDlg_cbGroupUndo = '&Group undo';
-  SHLEdPropDlg_cbCursorBeyondEOF = 'Cursor beyond &EOF';
-  SHLEdPropDlg_cbUndoAfterSave = '&Undo after sa&ve';
-  SHLEdPropDlg_cbKeepTrailingBlanks = '&Keep trailing blanks';
-  SHLEdPropDlg_cbDoubleClickLine = '&Double click line';
-  SHLEdPropDlg_cbSytaxHighlighting = 'Use &syntax highlight';
-  SHLEdPropDlg_lblTabStops = '&Tab stops:';
-  SHLEdPropDlg_lblColorSpeedSettingsFor = 'Color SpeedSettings for';
-  SHLEdPropDlg_lblElement = '&Element:';
-  SHLEdPropDlg_lblColor = '&Color:';
-  SHLEdPropDlg_gbTextAttributes = 'Text attributes:';
-  SHLEdPropDlg_gbUseDefaultsFor = 'Use defaults for:';
-  SHLEdPropDlg_cbBold = '&Bold';
-  SHLEdPropDlg_cbItalic = '&Italic';
-  SHLEdPropDlg_cbUnderline = '&Underline';
-  SHLEdPropDlg_cbDefForeground = '&Foreground';
-  SHLEdPropDlg_cbDefBackground = '&Background';
-  SHLEdPropDlg_OptionCantBeChanged = 'This option cannot be changed. Sorry.';
-
-  SHLEdPropDlg_RAHLEditorNotAssigned = 'JvHLEditor property is not assigned';
-  SHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
 
 const
   {$IFDEF DELPHI2}
@@ -175,17 +138,6 @@ resourcestring
   SParseSqrError              = 'Invalid floating operation';
   SParseLogError              = 'Invalid floating operation';
   SParseInvalidFloatOperation = 'Invalid floating operation';
-
-  // JvGConst
-  SGIFImage            = 'CompuServe GIF Image';
-  SChangeGIFSize       = 'Cannot change the Size of a GIF image';
-  SNoGIFData           = 'No GIF Data to write';
-  SUnrecognizedGIFExt  = 'Unrecognized extension block: %.2x';
-  SWrongGIFColors      = 'Wrong number of colors; must be a power of 2';
-  SBadGIFCodeSize      = 'GIF code size not in range 2 to 9';
-  SGIFDecodeError      = 'GIF encoded data is corrupt';
-  SGIFEncodeError      = 'GIF image encoding error';
-  SGIFVersion          = 'Unknown GIF version';
 
   // JvDConst
   { JvDBLists }

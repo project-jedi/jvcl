@@ -109,7 +109,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
+  RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
 {$ENDIF USEJVCL}
 
 constructor TJvgHint.Create(AOwner: TComponent);
@@ -142,7 +142,7 @@ end;
 procedure TJvgHint.Notification(Component: TComponent; Operation: TOperation);
 begin
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvgHint) then
-    raise Exception.Create(sOnlyOneInstanceOfTJvgHint);
+    raise Exception.Create(RsEOnlyOneInstanceOfTJvgHint);
 end;
 
 procedure TJvgHint.InitHint;

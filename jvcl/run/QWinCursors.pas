@@ -52,7 +52,6 @@ type
       Bits: array of Byte;
       Mask: array of Byte;
     end;
-
   protected
     procedure ConvertDIB(Stream: TStream);
     procedure CreateCursor;
@@ -66,7 +65,6 @@ type
     procedure SetHeight(Value: Integer); override;
     procedure SetHotspot(const Value: TPoint); virtual;
     procedure SetWidth(Value: Integer); override;
-
   public
     property Handle: QCursorH read FHandle;
     property Height: Integer read FHeight;
@@ -147,8 +145,7 @@ type
      Reserved: Int64;
   end;
 
-
-{ TWinCursor }
+//=== TWinCursor =============================================================
 
 constructor TWinCursor.Create;
 begin
@@ -162,8 +159,6 @@ begin
   FInvMode := InvTransparent;
 end;
 
-//------------------------------------------------------------------------------
-
 constructor TWinCursor.Create(AHandle: QCursorH);
 begin
   inherited Create;
@@ -171,8 +166,6 @@ begin
   FHandle := AHandle;
   FOwnsHandle := False;
 end;
-
-//------------------------------------------------------------------------------
 
 destructor TWinCursor.Destroy;
 begin
@@ -182,8 +175,6 @@ begin
   inherited Destroy;
 end;
 
-//------------------------------------------------------------------------------
-
 procedure TWinCursor.LoadFromResourceName(Instance: Cardinal; ResourceName: String);
 var
   ResourceStream: TResourceStream;
@@ -191,17 +182,16 @@ var
   ResDir: TResCursorDir;
   BmpInfo: TBITMAPINFOHEADER;
   localHeader: tagLocalHeader;
-
 begin
   ResourceStream := TResourceStream.Create(Instance, ResourceName, PChar(12));
 
   try
-    ResourceStream.ReadBuffer(CursorDir, sizeof(TCursorDir));
+    ResourceStream.ReadBuffer(CursorDir, SizeOf(TCursorDir));
 
     if (CursorDir.cdReserved <> 0) or (CursorDir.cdType <> 2) or (CursorDir.cdCount <> 1) then
       raise EWinCursor.Create(RsUnsupported);
 
-    ResourceStream.ReadBuffer(ResDir, sizeof(TResCursorDir));
+    ResourceStream.ReadBuffer(ResDir, SizeOf(TResCursorDir));
 
     FWidth := ResDir.Width;
     FHeight := ResDir.Height div 2;
@@ -212,14 +202,14 @@ begin
   ResourceStream := TResourceStream.CreateFromID(HInstance, ResDir.IconCursorId, PChar(1));
   try
     ResourceStream.Position := 0;
-    ResourceStream.Read(LocalHeader, sizeof(tagLocalHeader));
+    ResourceStream.Read(LocalHeader, SizeOf(tagLocalHeader));
 
     FBytesPerRow := FWidth div 8;
 
     if (FWidth mod 8) <> 0 then
       Inc(FBytesPerRow);
 
-    ResourceStream.Read(BmpInfo, sizeof(BmpInfo)); // Ingore BmpInfo
+    ResourceStream.Read(BmpInfo, SizeOf(BmpInfo)); // Ignore BmpInfo
     SetLength(FCustomCursor.Bits, FBytesPerRow * FHeight);
     SetLength(FCustomCursor.Mask, FBytesPerRow * FHeight);
 
@@ -232,23 +222,20 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.LoadFromStream(Stream: TStream);
 var
   CURSORDIR: TCURSORDIR;
   Entry: TCURSORDIRENTRY;
   BitmapInfo: TBITMAPINFOHEADER;
-
 begin
-  Stream.ReadBuffer(CursorDir, sizeof(TCursorDir));
+  Stream.ReadBuffer(CursorDir, SizeOf(TCursorDir));
 
   if (CursorDir.cdReserved <> 0) or (CursorDir.cdType <> 2) or (CursorDir.cdCount <> 1) then
     raise EWinCursor.Create(RsUnsupported);
 
-  Stream.Read(Entry, sizeof(TCURSORDIRENTRY));
+  Stream.Read(Entry, SizeOf(TCURSORDIRENTRY));
   Stream.Seek(Entry.dwImageOffset, soFromBeginning);
-  Stream.Read(BitmapInfo, sizeof(TBITMAPINFOHEADER));
+  Stream.Read(BitmapInfo, SizeOf(TBITMAPINFOHEADER));
 
   with Entry do
   begin
@@ -298,10 +285,9 @@ end;
 procedure TWinCursor.ConvertDIB(Stream: TStream);
 var
   TempCursor: TCustomCursor;
-  AndByte, XOrByte: Byte;
-  i: Integer;
-  t: Integer;
-
+  AndByte, XorByte: Byte;
+  I: Integer;
+  T: Integer;
 begin
   SetLength(TempCursor.Bits, FBytesPerRow * FHeight);
   SetLength(TempCursor.Mask, FBytesPerRow * FHeight);
@@ -309,40 +295,38 @@ begin
   Stream.ReadBuffer(TempCursor.Mask[0], FHeight*FBytesPerRow);
   Stream.ReadBuffer(TempCursor.Bits[0], FHeight*FBytesPerRow);
 
-  for i := 0 to FHeight - 1 do
+  for I := 0 to FHeight - 1 do
   begin
-    for t := 0 to FBytesPerRow - 1 do
+    for T := 0 to FBytesPerRow - 1 do
     begin
-      AndByte := TempCursor.Bits[i*FBytesPerRow+t];
-      XorByte := TempCursor.Mask[i*FBytesPerRow+t];
+      AndByte := TempCursor.Bits[I*FBytesPerRow+T];
+      XorByte := TempCursor.Mask[I*FBytesPerRow+T];
 
       case FInvMode of
-      invBlack: begin
-          FCustomCursor.Bits[(FHeight-1-i) * FBytesPerRow + t] := not(XorByte xor AndByte);
-          FCustomCursor.Mask[(FHeight-1-i) * FBytesPerRow + t] := not AndByte or XorByte;
-      end;
-
-      invWhite: begin
-          FCustomCursor.Bits[(FHeight-1-i) * FBytesPerRow + t] := not(XorByte or AndByte);
-          FCustomCursor.Mask[(FHeight-1-i) * FBytesPerRow + t] := not((XorByte xor AndByte) and AndByte);
-      end;
-
-      invTransparent: begin
-        FCustomCursor.Bits[(FHeight-1-i) * FBytesPerRow + t] := not(XorByte or AndByte);
-        FCustomCursor.Mask[(FHeight-1-i) * FBytesPerRow + t] := not(AndByte);
-      end;
+      invBlack:
+        begin
+          FCustomCursor.Bits[(FHeight-1-I) * FBytesPerRow + T] := not(XorByte xor AndByte);
+          FCustomCursor.Mask[(FHeight-1-I) * FBytesPerRow + T] := not AndByte or XorByte;
+        end;
+      invWhite:
+        begin
+          FCustomCursor.Bits[(FHeight-1-I) * FBytesPerRow + T] := not(XorByte or AndByte);
+          FCustomCursor.Mask[(FHeight-1-I) * FBytesPerRow + T] := not((XorByte xor AndByte) and AndByte);
+        end;
+      invTransparent:
+        begin
+          FCustomCursor.Bits[(FHeight-1-I) * FBytesPerRow + T] := not(XorByte or AndByte);
+          FCustomCursor.Mask[(FHeight-1-I) * FBytesPerRow + T] := not(AndByte);
+        end;
       end;
     end;
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.CreateCursor;
 var
   Bitmap: QBitmapH;
   Mask: QBitmapH;
-
 begin
   if Assigned(FHandle) and FOwnsHandle then
     QCursor_destroy(FHandle);
@@ -361,17 +345,13 @@ begin
   QBitmap_Destroy(Bitmap);
   QBitmap_Destroy(Mask);
 
-  Changed(self);
+  Changed(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWinCursor.OwnHandle;
 begin
   FOwnsHandle := True;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWinCursor.ReleaseHandle: QCursorH;
 begin
@@ -379,8 +359,6 @@ begin
   FHandle := nil;
   Changed(Self);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWinCursor.HandleNeeded;
 begin
@@ -391,22 +369,17 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWinCursor.GetHotSpot: TPoint;
 begin
-  Result := Point(0,0);
+  Result := Point(0, 0);
 
   if Assigned(FHandle) then
     QCursor_hotSpot(FHandle, @Result);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.SetHotspot(const Value: TPoint);
 var
   TempHandle: QCursorH;
-
 begin
   if Assigned(FHandle) then
   begin
@@ -419,8 +392,6 @@ begin
     OwnHandle;
   end;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWinCursor.FreeCursor;
 begin
@@ -438,8 +409,6 @@ begin
   end;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.Assign(Source: TPersistent);
 begin
   if FOwnsHandle then
@@ -454,63 +423,45 @@ begin
     inherited Assign(Source);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.LoadFromMimeSource(MimeSource: TMimeSource);
 begin
   raise EInvalidGraphicOperation.Create(RsInvalidOperation);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 procedure TWinCursor.SaveToMimeSource(MimeSource: TClxMimeSource);
 begin
   raise EInvalidGraphicOperation.Create(RsInvalidOperation);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.SaveToStream(Stream: TStream);
 begin
   raise EInvalidGraphicOperation.Create(RsInvalidOperation);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWinCursor.GetEmpty: Boolean;
 begin
   Result := not Assigned(FHandle);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 function TWinCursor.GetHeight: Integer;
 begin
   Result := FHeight;
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 function TWinCursor.GetWidth: Integer;
 begin
   Result := FWidth;
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.SetHeight(Value: Integer);
 begin
   raise EInvalidGraphicOperation.Create(RsInvalidOperation);
 end;
 
-//--------------------------------------------------------------------------------------------------
-
 procedure TWinCursor.SetWidth(Value: Integer);
 begin
   raise EInvalidGraphicOperation.Create(RsInvalidOperation);
 end;
-
-//--------------------------------------------------------------------------------------------------
 
 type
   TCrackBitmap = class(TBitmap);
@@ -519,7 +470,6 @@ procedure TWinCursor.Draw(ACanvas: TCanvas; const Rect: TRect);
 var
   Bitmap: TCrackBitmap;
   Pixmap: QPixmapH;
-
 begin
   if not Empty then
   begin
@@ -545,13 +495,12 @@ end;
 { ==========================                                                   }
 {                                                                              }
 { If you are using this function with D6/CLX please be aware that it might     }
-{ collidate with the Windows LoadCursor function. In such cases reference it   }
+{ collide with the Windows LoadCursor function. In such cases reference it     }
 { directly using QWinCursors.LoadCursor                                        }
 
 function LoadCursor(Instance: Cardinal; CursorName: string): QCursorH;
 var
   WinCursor: TWinCursor;
-
 begin
   WinCursor := TWinCursor.Create;
   try
@@ -561,7 +510,6 @@ begin
     WinCursor.Free;
   end;
 end;
-
 
 function LoadCursorFromFile(CursorFileName: string): QCursorH;
 var

@@ -72,7 +72,7 @@ uses
 
 {$IFNDEF USEJVCL}
 resourcestring
-  sUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
+  RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
 {$ENDIF USEJVCL}
 
 constructor TJvgHTTPVersionInfo.Create(AOwner: TComponent);
@@ -110,7 +110,7 @@ end;
 function TJvgHTTPVersionInfo.GetVersionInfo(WinControl: TWinControl): Boolean;
 begin
   if Trim(VersionDataURL) = '' then
-    raise Exception.Create(sUnknownURLPropertyVersionDataURLIs);
+    raise Exception.Create(RsEUnknownURLPropertyVersionDataURLIs);
 
   FWebBrowser := TWebBrowser.Create(nil);
   FWebBrowser.Visible := False;

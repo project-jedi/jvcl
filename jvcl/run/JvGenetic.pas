@@ -202,7 +202,7 @@ begin
         Inc(P);
       end;
       if not Assigned(FOnTestMember) then
-        raise EJVCLException.Create(RC_NoTest);
+        raise EJVCLException.Create(RsENoTest);
       Member.Points := FOnTestMember(Self, I, Member.Data);
       FMembers.AddObject('', TObject(Member));
     end;
@@ -256,7 +256,7 @@ begin
       if Assigned(FOnTestMember) then
         Member.Points := FOnTestMember(Self, I, Member.Data)
       else
-        raise EJVCLException.Create(RC_NoTest);
+        raise EJVCLException.Create(RsENoTest);
 
       //Add new element to FGenerat
       FGenerat.AddObject('', TObject(Member));

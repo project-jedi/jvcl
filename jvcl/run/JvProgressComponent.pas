@@ -79,7 +79,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  JvResources;
 
 type
   TJvProgressForm = class(TForm)
@@ -186,7 +186,7 @@ begin
     with TButton.Create(FForm) do
     begin
       Parent := FForm;
-      Caption := SCancel;
+      Caption := RsButtonCancelCaption;
       SetBounds(116, 67, 75, 23);
       OnClick := FormOnCancel;
     end;
