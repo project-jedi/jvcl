@@ -87,7 +87,8 @@ begin
   FForm.Visible := True;
   for I := 0 to N do
   begin
-    SetWindowRgn(FForm.Handle, FRegions[I], True);
+    if SetWindowRgn(FForm.Handle, FRegions[I], True) <> 0 then
+      FRegions[I] := 0;
     FForm.Repaint;
     Sleep(10);
   end;
@@ -112,7 +113,8 @@ begin
   FForm.Visible := True;
   for I := N downto 0 do
   begin
-    SetWindowRgn(FForm.Handle, FRegions[I], True);
+    if SetWindowRgn(FForm.Handle, FRegions[I], True) <> 0 then
+      FRegions[I] := 0;
     FForm.Repaint;
     Sleep(10);
   end;
@@ -131,7 +133,8 @@ var
   I: Integer;
 begin
   for I := Low(FRegions) to High(FRegions) do
-    DeleteObject(FRegions[I]);
+    if FRegions[I] <> 0 then
+      DeleteObject(FRegions[I]);
   SetLength(FRegions, 0);
 end;
 
