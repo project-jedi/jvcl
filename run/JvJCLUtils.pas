@@ -1,9 +1,46 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvJCLUtils.PAS, released on 2002-07-04.
+
+The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
+Copyright (c) 1999, 2002 Andrei Prygounkov
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2002-09-20
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+
+-----------------------------------------------------------------------------}
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
 unit JvJCLUtils;
 // (p3) note: this unit should only contain JCL compatible routines ( no Forms etc)
 
+{ history:
+3.0:
+  2003-09-19: (changes by Andreas Hausladen)
+    - GetXYByPos tests for #13. This does not work under Linux. Now it uses #10.
+    - faster Spaces and AddSpaces
+    - added FillWideChar, MoveWideChar, WideChangeCase, TrimW, TrimLeftW,
+      TrimRightW
+    - add unicode function for: GetWordOnPos, HasChar, CharInSet,
+      Spaces, AddSpaces, GetXYByPos, MakeStr, FindNotBlankCharPos,
+      GetWordOnPosEx, SubStr, ReplaceString, Cmp
+}
 
 interface
 
@@ -15,16 +52,20 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF}
-  TypInfo;
+  TypInfo,
+  JclUnicode;
 
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
+function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
 { GetWordOnPosEx working like GetWordOnPos function, but
   also returns Word position in iBeg, iEnd variables }
 function GetWordOnPosEx(const S: string; const P: Integer; var iBeg, iEnd: Integer): string;
+function GetWordOnPosExW(const S: WideString; const P: Integer; var iBeg, iEnd: Integer): WideString;
 { SubStr returns substring from string, S, separated with Separator string}
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
+function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString; 
 { SubStrEnd same to previous function but Index numerated from the end of string }
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { SubWord returns next Word from string, P, and offsets Pointer to the end of Word, P2 }
@@ -38,9 +79,11 @@ function NumberByWord(const N: Longint): string;
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 { GetXYByPos is same to previous function, but returns X position in line too}
 procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
+procedure GetXYByPosW(const S: WideString; const Pos: Integer; var X, Y: Integer);
 { ReplaceString searches for all substrings, OldPattern,
   in a string, S, and replaces them with NewPattern }
 function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
+function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
 { ConcatSep concatenate S and S2 strings with Separator.
   if S = '', separator don't included }
 function ConcatSep(const S, S2, Separator: string): string;
@@ -58,10 +101,18 @@ procedure Win2Dos(var S: string);
 function Dos2WinRes(const S: string): string;
 function Win2DosRes(const S: string): string;
 function Win2Koi(const S: string): string;
+
+{ FillWideChar fills Buffer with Count WideChars (2 Bytes) }
+procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
+{ MoveWideChar copies Count WideChars from Source to Dest }
+procedure MoveWideChar(const Source; var Dest; Count: Integer);
+
 { Spaces returns string consists on N space chars }
 function Spaces(const N: Integer): string;
+function SpacesW(const N: Integer): WideString;
 { AddSpaces add spaces to string, S, if it Length is smaller than N }
 function AddSpaces(const S: string; const N: Integer): string;
+function AddSpacesW(const S: WideString; const N: Integer): WideString;
 { function LastDate for russian users only }
 //  { returns date relative to current date: 'два дня назад' }
 function LastDate(const Dat: TDateTime): string;
@@ -70,15 +121,23 @@ function CurrencyToStr(const Cur: currency): string;
 { Cmp compares two strings and returns True if they
   are equal. Case-insensitive.}
 function Cmp(const S1, S2: string): Boolean;
+function CmpW(const S1, S2: WideString): Boolean;
 { StringCat add S2 string to S1 and returns this string }
 function StringCat(var S1: string; S2: string): string;
 { HasChar returns True, if Char, Ch, contains in string, S }
 function HasChar(const Ch: Char; const S: string): Boolean;
+function HasCharW(const Ch: WideChar; const S: WideString): Boolean;
 function HasAnyChar(const Chars: string; const S: string): Boolean;
 function CharInSet(const Ch: Char; const SetOfChar: TSetOfChar): Boolean;
+function CharInSetW(const Ch: WideChar; const SetOfChar: TSetOfChar): Boolean;
 function CountOfChar(const Ch: Char; const S: string): Integer;
 function DefStr(const S: string; Default: string): string;
 
+{ StrLICompW2 is a faster replacement for JclUnicode.StrLICompW }
+function StrLICompW2(P1, P2: PWideChar; MaxLen: Integer): Integer;
+function TrimW(const S: WideString): WideString;
+function TrimLeftW(const S: WideString): WideString;
+function TrimRightW(const S: WideString): WideString;
 {**** files routines}
 
 { GetWinDir returns Windows folder name }
@@ -378,7 +437,8 @@ function Tab2Space(const S: string; Numb: Byte): string;
   Numb spaces characters. }
 function NPos(const C: string; S: string; N: Integer): Integer;
 { NPos searches for a N-th position of substring C in a given string. }
-function MakeStr(C: Char; N: Integer): string;
+function MakeStr(C: Char; N: Integer): string; overload;
+function MakeStr(C: WideChar; N: Integer): WideString; overload;
 function MS(C: Char; N: Integer): string;
 { MakeStr return a string of length N filled with character C. }
 function AddChar(C: Char; const S: string; N: Integer): string;
@@ -483,7 +543,9 @@ function RomanToInt(const S: string): Longint;
   doesn't contain a valid roman numeric value, the 0 value is returned. }
 
 function FindNotBlankCharPos(const S: string): Integer;
-function AnsiChangeCase(const S: string): string;
+function FindNotBlankCharPosW(const S: WideString): Integer;
+function AnsiChangeCase(const S: string): string; 
+function WideChangeCase(const S: string): string;
 function StringEndsWith(const Str, SubStr: string): Boolean;
 function ExtractFilePath2(const FileName: string): string;
 {end JvStrUtils}
@@ -551,7 +613,7 @@ begin
     Y := 0;
     while I <= Pos do
     begin
-      if S[I] = #13 then
+      if S[I] = #10 then
       begin
         Inc(Y);
         iB := I + 1;
@@ -562,7 +624,31 @@ begin
   end;
 end;
 
-function GetWordOnPos(const S: string; const P: Integer): string;
+procedure GetXYByPosW(const S: WideString; const Pos: Integer; var X, Y: Integer);
+var
+  I, iB: Integer;
+begin
+  X := -1;
+  Y := -1;
+  iB := 0;
+  if (Length(S) >= Pos) and (Pos >= 0) then
+  begin
+    I := 1;
+    Y := 0;
+    while I <= Pos do
+    begin
+      if S[I] = #10 then
+      begin
+        Inc(Y);
+        iB := I + 1;
+      end;
+      Inc(I);
+    end;
+    X := Pos - iB;
+  end;
+end;
+
+function GetWordOnPos(const S: string; const P: Integer): string; 
 var
   I, Beg: Integer;
 begin
@@ -575,6 +661,26 @@ begin
   Beg := I + 1;
   for I := P to Length(S) do
     if S[I] in Separators then
+      Break;
+  if I > Beg then
+    Result := Copy(S, Beg, I - Beg)
+  else
+    Result := S[P];
+end;
+
+function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
+var
+  I, Beg: Integer;
+begin
+  Result := '';
+  if (P > Length(S)) or (P < 1) then
+    Exit;
+  for I := P downto 1 do
+    if CharInSetW(S[I], Separators) then
+      Break;
+  Beg := I + 1;
+  for I := P to Length(S) do
+    if CharInSetW(S[I], Separators) then
       Break;
   if I > Beg then
     Result := Copy(S, Beg, I - Beg)
@@ -604,6 +710,37 @@ begin
   iEnd := P;
   while iEnd <= Length(S) do
     if S[iEnd] in Separators then
+      Break
+    else
+      Inc(iEnd);
+  if iEnd > iBeg then
+    Result := Copy(S, iBeg, iEnd - iBeg)
+  else
+    Result := S[P];
+end;
+
+function GetWordOnPosExW(const S: WideString; const P: Integer; var iBeg, iEnd: Integer): WideString;
+begin
+  Result := '';
+  if (P > Length(S)) or (P < 1) then
+    Exit;
+  iBeg := P;
+  if P > 1 then
+    if CharInSetW(S[P], Separators) then
+      if (P < 1) or ((P - 1 > 0) and CharInSetW(S[P - 1], Separators)) then
+        Inc(iBeg)
+      else
+      if not ((P - 1 > 0) and CharInSetW(S[P - 1], Separators)) then
+        Dec(iBeg);
+  while iBeg >= 1 do
+    if CharInSetW(S[iBeg], Separators) then
+      Break
+    else
+      Dec(iBeg);
+  Inc(iBeg);
+  iEnd := P;
+  while iEnd <= Length(S) do
+    if CharInSetW(S[iEnd], Separators) then
       Break
     else
       Inc(iEnd);
@@ -1049,6 +1186,33 @@ begin
     SetString(Result, pB, pE - pB);
 end;
 
+function SubStrW(const S: WideString; const Index: Integer; const Separator: WideString): WideString; 
+{ Returns a substring. Substrings are divided by Sep character [translated] }
+var
+  I: Integer;
+  pB, pE: PWideChar;
+begin
+  Result := '';
+  if ((Index < 0) or ((Index = 0) and (Length(S) > 0) and (S[1] = Separator))) or
+    (Length(S) = 0) then
+    Exit;
+  pB := PWideChar(S);
+  for I := 1 to Index do
+  begin
+    pB := StrPosW(pB, PWideChar(Separator));
+    if pB = nil then
+      Exit;
+    pB := pB + Length(Separator);
+    if pB[0] = #0 then
+      Exit;
+  end;
+  pE := StrPosW(pB + 1, PWideChar(Separator));
+  if pE = nil then
+    pE := PWideChar(S) + Length(S);
+  if not (StrLICompW2(pB, PWideChar(Separator), Length(Separator)) = 0) then
+    SetString(Result, pB, pE - pB);
+end;
+
 function SubStrEnd(const S: string; const Index: Integer; const Separator: string): string;
 { The same as SubStr, but substrings are numbered from the end [translated]}
 var
@@ -1149,7 +1313,7 @@ begin
   P2 := P + I;
 end;
 
-function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
+function ReplaceString(S: string; const OldPattern, NewPattern: string): string; 
 var
   LW: Integer;
   P: PChar;
@@ -1162,6 +1326,23 @@ begin
     Sm := P - PChar(S);
     S := Copy(S, 1, Sm) + NewPattern + Copy(S, Sm + LW + 1, Length(S));
     P := StrPos(PChar(S) + Sm + Length(NewPattern), PChar(OldPattern));
+  end;
+  Result := S;
+end;
+
+function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
+var
+  LW: Integer;
+  P: PWideChar;
+  Sm: Integer;
+begin
+  LW := Length(OldPattern);
+  P := StrPosW(PWideChar(S), PWideChar(OldPattern));
+  while P <> nil do
+  begin
+    Sm := P - PWideChar(S);
+    S := Copy(S, 1, Sm) + NewPattern + Copy(S, Sm + LW + 1, Length(S));
+    P := StrPosW(PWideChar(S) + Sm + Length(NewPattern), PWideChar(OldPattern));
   end;
   Result := S;
 end;
@@ -1327,18 +1508,81 @@ begin
   end;
 end;
 
+procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
+var
+  P: PLongint;
+  Value2: Cardinal;
+  CopyWord: Boolean;
+begin
+  Value2 := (Cardinal(Value) shl 16) or Cardinal(Value);
+  CopyWord := Count and $1 <> 0;
+  Count := Count div 2;
+  P := @Buffer;
+  while Count > 0 do
+  begin
+    P^ := Value2;
+    Inc(P);
+    Dec(Count);
+  end;
+  if CopyWord then
+    PWideChar(P)^ := Value;
+end;
+
+procedure MoveWideChar(const Source; var Dest; Count: Integer);
+begin
+  Move(Source, Dest, Count * SizeOf(WideChar));
+end;
+
 function Spaces(const N: Integer): string;
 begin
-  // (rom) reimplemented
-  Result := AddSpaces('', N);
+  if N > 0 then
+  begin
+    SetLength(Result, N);
+    FillChar(Result[1], N, ' ');
+  end
+  else
+    Result := '';
+end;
+
+function SpacesW(const N: Integer): WideString;
+begin
+  if N > 0 then
+  begin
+    SetLength(Result, N);
+    FillWideChar(Result[1], N, ' ');
+  end
+  else
+    Result := '';
 end;
 
 function AddSpaces(const S: string; const N: Integer): string;
+var
+  Len: Integer;
 begin
-  // (rom) SLOOOOW implementation
-  Result := S;
-  while Length(Result) < N do
-    Result := Result + ' ';
+  Len := Length(S);
+  if (Len < N) and (N > 0) then
+  begin
+    SetLength(Result, N);
+    Move(S[1], Result[1], Len * SizeOf(Char));
+    FillChar(Result[Len + 1], N - Len, ' ');
+  end
+  else
+    Result := S;
+end;
+
+function AddSpacesW(const S: WideString; const N: Integer): WideString;
+var
+  Len: Integer;
+begin
+  Len := Length(S);
+  if (Len < N) and (N > 0) then
+  begin
+    SetLength(Result, N);
+    MoveWideChar(S[1], Result[1], Len);
+    FillWideChar(Result[Len + 1], N - Len, ' ');
+  end
+  else
+    Result := S;
 end;
 
 function KeyPressed(VK: Integer): Boolean;
@@ -1479,10 +1723,15 @@ begin
   Result := CurrToStrF(Cur, ffCurrency, CurrencyDecimals)
 end;
 
-function Cmp(const S1, S2: string): Boolean;
+function Cmp(const S1, S2: string): Boolean; 
 begin
   //Result := AnsiCompareText(S1, S2) = 0;
   Result := AnsiStrIComp(PChar(S1), PChar(S2)) = 0;
+end;
+
+function CmpW(const S1, S2: WideString): Boolean;
+begin
+  Result := StrICompW(PWideChar(S1), PWideChar(S2)) = 0;
 end;
 
 function StringCat(var S1: string; S2: string): string;
@@ -1491,7 +1740,12 @@ begin
   Result := S1;
 end;
 
-function HasChar(const Ch: Char; const S: string): Boolean;
+function HasChar(const Ch: Char; const S: string): Boolean; 
+begin
+  Result := Pos(Ch, S) > 0;
+end;
+
+function HasCharW(const Ch: WideChar; const S: WideString): Boolean;
 begin
   Result := Pos(Ch, S) > 0;
 end;
@@ -1593,6 +1847,14 @@ begin
   {$IFDEF CBUILDER}
   Result := Pos(Ch, SetOfChar) > 0;
   {$ENDIF CBUILDER}
+end;
+
+function CharInSetW(const Ch: WideChar; const SetOfChar: TSetOfChar): Boolean;
+begin
+  if Word(Ch) > 255 then
+    Result := False
+  else
+    Result := CharInSet(Char(Ch), SetOfChar);
 end;
 
 function IntPower(Base, Exponent: Integer): Integer;
@@ -1743,6 +2005,73 @@ begin
   else
     Result := Default;
 end;
+
+function StrLICompW2(P1, P2: PWideChar; MaxLen: Integer): Integer;
+ // faster than the JclUnicode.StrLICompW function
+var
+  S1, S2: WideString;
+begin
+  SetString(S1, P1, Min(MaxLen, StrLenW(P1)));
+  SetString(S2, P2, Min(MaxLen, StrLenW(P2)));
+{$IFDEF COMPILER6_UP}
+  Result := SysUtils.WideCompareText(S1, S2);
+{$ELSE}
+  Result := WideCompareText(S1, S2, LOCALE_USER_DEFAULT);
+{$ENDIF}
+end;
+
+function TrimW(const S: WideString): WideString;
+{$IFDEF COMPILER6_UP}
+begin
+  Result := Trim(S);
+end;
+{$ELSE}
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  if I > L then
+    Result := ''
+  else
+  begin
+    while S[L] <= ' ' do Dec(L);
+    Result := Copy(S, I, L - I + 1);
+  end;
+end;
+{$ENDIF}
+
+function TrimLeftW(const S: WideString): WideString;
+{$IFDEF COMPILER6_UP}
+begin
+  Result := TrimLeft(S);
+end;
+{$ELSE}
+var
+  I, L: Integer;
+begin
+  L := Length(S);
+  I := 1;
+  while (I <= L) and (S[I] <= ' ') do Inc(I);
+  Result := Copy(S, I, Maxint);
+end;
+{$ENDIF}
+
+function TrimRightW(const S: WideString): WideString;
+{$IFDEF COMPILER6_UP}
+begin
+  Result := TrimRight(S);
+end;
+{$ELSE}
+var
+  I: Integer;
+begin
+  I := Length(S);
+  while (I > 0) and (S[I] <= ' ') do Dec(I);
+  Result := Copy(S, 1, I);
+end;
+{$ENDIF}
 
 function GetComputerName: string;
 var
@@ -3973,6 +4302,17 @@ begin
   end;
 end;
 
+function MakeStr(C: WideChar; N: Integer): WideString;
+begin
+  if N < 1 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, N);
+    FillWideChar(Result[1], Length(Result), C);
+  end;
+end;
+
 function MS(C: Char; N: Integer): string;
 begin
   Result := MakeStr(C, N);
@@ -4715,7 +5055,15 @@ begin
 end;
 
 { begin JvStrUtil }
-function FindNotBlankCharPos(const S: string): Integer;
+function FindNotBlankCharPos(const S: string): Integer; overload;
+begin
+  for Result := 1 to Length(S) do
+    if S[Result] <> ' ' then
+      Exit;
+  Result := Length(S) + 1;
+end;
+
+function FindNotBlankCharPosW(const S: WideString): Integer;
 begin
   for Result := 1 to Length(S) do
     if S[Result] <> ' ' then
@@ -4734,6 +5082,22 @@ begin
   Result := S;
   Up := AnsiUpperCase(S);
   Down := AnsiLowerCase(S);
+  for I := 1 to Length(Result) do
+    if Result[I] = Up[I] then
+      Result[I] := Down[I]
+    else
+      Result[I] := Up[I];
+end;
+
+function WideChangeCase(const S: string): string; 
+var
+  I: Integer;
+  Up: string;
+  Down: string;
+begin
+  Result := S;
+  Up := WideUpperCase(S);
+  Down := WideLowerCase(S);
   for I := 1 to Length(Result) do
     if Result[I] = Up[I] then
       Result[I] := Down[I]

@@ -95,3 +95,7 @@ Known Issues:
 
 // Used by JvTimeFrameWork, see JvTFDays.pas for more info on time blocks:
 {$DEFINE TIMEBLOCKS}
+
+// Used by JvEditor
+{$DEFINE HL_NOT_QUITE_C}
+

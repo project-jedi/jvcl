@@ -257,7 +257,7 @@ end;
 { procedure EndCompound; }
 
 procedure TRACustomEditor_EndCompound(var Value: Variant; Args: TJvInterpreterArgs);
-begin
+begin                                               
   TJvCustomEditor(Args.Obj).EndCompound;
 end;
 
@@ -265,7 +265,8 @@ end;
 
 procedure TRACustomEditor_GetText(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TJvCustomEditor(Args.Obj).GetText(Args.Values[0], PChar(string(Args.Values[1])), Args.Values[2]);
+  // (p3) NB! The TJvEditor.GetText method has changed to WideString!
+  Value := TJvCustomEditor(Args.Obj).GetText(Args.Values[0], PWideChar(string(Args.Values[1])), Args.Values[2] div 2);
 end;
 
 { property Read LeftCol: integer }
