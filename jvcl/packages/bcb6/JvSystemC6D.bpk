@@ -26,7 +26,7 @@
       inetdbxpress.lib dbexpress.lib nmfast.lib bcbie.lib soaprtl.lib dclocx.lib 
       dbxcds.lib indy.lib bcb2kaxserver.lib VclSmp.lib"/>
     <PACKAGES value="rtl.bpi designide.bpi vcl.bpi dclstd.bpi JvSystemC6R.bpi vclx.bpi 
-      CJCL60.bpi JvCoreC6R.bpi"/>
+      CJCL60.bpi JvCoreC6D.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -76,7 +76,7 @@
       <FILE FILENAME="JvSystemC6R.bpi" FORMNAME="" UNITNAME="JvSystemC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
