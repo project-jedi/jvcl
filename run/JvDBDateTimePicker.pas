@@ -163,7 +163,8 @@ begin
         DateTime := Frac(FDataLink.Field.AsDateTime);
     end;
   end
-  else if csDesigning in ComponentState then
+  else
+  if csDesigning in ComponentState then
   begin
     DateTime := Now;
   end;
@@ -364,8 +365,9 @@ begin
   if Kind = dtkDate then
   begin
     if Trunc(NullDate) = Trunc(DateTime) then
-      FDataLink.Field.Value := NULL
-    else if IsDateAndTimeField then
+      FDataLink.Field.Value := Null
+    else
+    if IsDateAndTimeField then
       FDataLink.Field.AsDateTime := DateTime
     else
       FDataLink.Field.AsDateTime := Trunc(DateTime);
@@ -373,8 +375,9 @@ begin
   else
   begin
     if Frac(NullDate) = Frac(DateTime) then
-      FDataLink.Field.Value := NULL
-    else if IsDateAndTimeField then
+      FDataLink.Field.Value := Null
+    else
+    if IsDateAndTimeField then
       FDataLink.Field.AsDateTime := DateTime
     else
       FDataLink.Field.AsDateTime := Frac(DateTime);

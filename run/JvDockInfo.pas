@@ -178,11 +178,14 @@ begin
       begin
         if Pos('TopDockPanel', ControlName) > Index then
           Result := TopDockPanel
-        else if Pos('LeftDockPanel', ControlName) > Index then
+        else
+        if Pos('LeftDockPanel', ControlName) > Index then
           Result := LeftDockPanel
-        else if Pos('BottomDockPanel', ControlName) > Index then
+        else
+        if Pos('BottomDockPanel', ControlName) > Index then
           Result := BottomDockPanel
-        else if Pos('RightDockPanel', ControlName) > Index then
+        else
+        if Pos('RightDockPanel', ControlName) > Index then
           Result := RightDockPanel;
         if (Result <> nil) and (Pos('PopupPanel', ControlName) > 20) then
           Result := TJvDockVSNETPanel(Result).VSChannel.VSPopupPanel;
@@ -246,7 +249,8 @@ procedure TJvDockInfoZone.SetDockInfoFromDockControlToNode(DockControl: TJvDockB
     begin
       if AControl.Parent is TJvDockableForm then
         Result := AControl.Parent.Name
-      else if AControl is TJvDockPanel then
+      else
+      if AControl is TJvDockPanel then
         Result := AControl.Parent.Name + RsDockJvDockInfoSplitter + AControl.Name;
     end;
   end;
@@ -400,9 +404,11 @@ begin
     FDataStream.Clear;
     if Control is TJvDockTabHostForm then
       TJvDockTabHostForm(Control).PageControl.SaveToStream(FDataStream)
-    else if Control is TJvDockConjoinHostForm then
+    else
+    if Control is TJvDockConjoinHostForm then
       TJvDockConjoinHostForm(Control).Panel.DockManager.SaveToStream(FDataStream)
-    else if Control is TJvDockPanel then
+    else
+    if Control is TJvDockPanel then
       TJvDockPanel(Control).DockManager.SaveToStream(FDataStream);
     DockClientData := JvDockStreamDataToString(FDataStream);
     DockBaseControl := FindDockBaseControl(Control);
@@ -411,7 +417,8 @@ begin
       SetDockInfoFromDockControlToNode(DockBaseControl);
       if Control is TJvDockTabHostForm then
         DockFormStyle := dsTab
-      else if Control is TJvDockConjoinHostForm then
+      else
+      if Control is TJvDockConjoinHostForm then
         DockFormStyle := dsConjoin
       else
         DockFormStyle := dsNormal;
@@ -824,7 +831,8 @@ begin
         DockControl := FindDockForm(DockFormName);
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else if FJvDockInfoStyle = isJVCLWriteInfo then
+  else
+  if FJvDockInfoStyle = isJVCLWriteInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
@@ -881,7 +889,8 @@ begin
         DockControl := FindDockForm(DockFormName);
     SetDockControlInfo(TJvDockInfoZone(TreeZone));
   end
-  else if FJvDockInfoStyle = isWriteFileInfo then
+  else
+  if FJvDockInfoStyle = isWriteFileInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), DockInfoIni do
@@ -913,7 +922,8 @@ begin
         WriteString(DockFormName, 'DockClientData', DockClientData);
       end;
   end
-  else if FJvDockInfoStyle = isWriteRegInfo then
+  else
+  if FJvDockInfoStyle = isWriteRegInfo then
   begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), DockInfoReg do
@@ -1017,7 +1027,8 @@ begin
           end;
         end;
       end
-      else if Host is TJvDockConjoinHostForm then
+      else
+      if Host is TJvDockConjoinHostForm then
       begin
         with TJvDockConjoinHostForm(Host).Panel do
         begin
@@ -1029,7 +1040,8 @@ begin
           end;
         end;
       end
-      else if Host is TJvDockPanel then
+      else
+      if Host is TJvDockPanel then
       begin
         with TJvDockPanel(Host) do
         begin

@@ -1768,7 +1768,8 @@ begin
     TextMargin := TJvPopupMenu(Source).TextMargin;
     TextVAlignment := TJvPopupMenu(Source).TextVAlignment;
   end
-  else if Source is TJvMainMenu then
+  else
+  if Source is TJvMainMenu then
   begin
     AutoHotKeys := TJvMainMenu(Source).AutoHotkeys;
     AutoLineReduction := TJvMainMenu(Source).AutoLineReduction;

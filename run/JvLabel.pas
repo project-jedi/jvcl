@@ -668,9 +668,11 @@ begin
         TextX := TextX + Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
         TextY := TextY + Trunc(Canvas.TextWidth(Text) * Sin(Phi) + Canvas.TextHeight(Text) * Cos(Phi) / 2);
       end
-      else if Angle >= 270 then
+      else
+      if Angle >= 270 then
         TextX := 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2)
-      else if Angle <= 180 then
+      else
+      if Angle <= 180 then
       begin
         TextX := ClientWidth - 3 - Trunc(Canvas.TextHeight(Text) * Sin(Phi) / 2);
         TextY := ClientHeight - 3 + Ceil(Canvas.TextHeight(Text) * Cos(Phi));
@@ -731,7 +733,8 @@ begin
     Canvas.Brush.Style := bsSolid;
     if not Transparent and ((RoundedFrame = 0) or (FrameColor = clNone)) then
       DrawThemedBackground(Self, Canvas, ClientRect)
-    else if Transparent then
+    else
+    if Transparent then
       Canvas.Brush.Style := bsClear;
     if FrameColor <> clNone then
     begin
