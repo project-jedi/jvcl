@@ -30,7 +30,7 @@ msgstr ""
 #: JvLoginForm.xfm:139 JvSLDMappingEditorDialog.dfm:137
 #: JvgCheckVersionInfoForm.dfm:115
 msgid "OK"
-msgstr ""
+msgstr "Ok"
 
 #. JvChPswdForm..CancelBtn..Caption
 #. JvQueryParamsDialog..CancelBtn..Caption
@@ -52,53 +52,53 @@ msgstr ""
 #: JvProgressForm.dfm:55 JvProgressForm.xfm:55 JvResources.pas:42
 #: JvSpellerForm.dfm:84 JvSpellerForm.xfm:86 JvgAlignForm.dfm:69
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #. Programmer's name for it: RsDataSetIsUnassigned
 #: JvDBGridExport.pas:252
 msgid "Dataset or DataSource unassigned"
-msgstr ""
+msgstr "Dataset oder DataSource nicht zugewiesen"
 
 #. Programmer's name for it: RsGridIsUnassigned
 #: JvDBGridExport.pas:253
 msgid "No grid assigned"
-msgstr ""
+msgstr "Kein Grid zugewiesen"
 
 #. Programmer's name for it: RsHTMLExportDocTitle
 #: JvDBGridExport.pas:254
 msgid "Grid to HTML Export"
-msgstr ""
+msgstr "Grid nach HTML Export"
 
 #. Programmer's name for it: RsExportWord
 #: JvDBGridExport.pas:255
 msgid "Exporting to MS Word..."
-msgstr ""
+msgstr "Export nach MS Word..."
 
 #. Programmer's name for it: RsExportExcel
 #: JvDBGridExport.pas:256
 msgid "Exporting to MS Excel..."
-msgstr ""
+msgstr "Export nach MS Excel..."
 
 #. Programmer's name for it: RsExportHTML
 #: JvDBGridExport.pas:257
 msgid "Exporting to HTML..."
-msgstr ""
+msgstr "Export nach HTML..."
 
 #. Programmer's name for it: RsExportFile
 #: JvDBGridExport.pas:258
 msgid "Exporting to CSV/Text..."
-msgstr ""
+msgstr "Export nach CSV/Text..."
 
 #. Programmer's name for it: RsExportClipboard
 #: JvDBGridExport.pas:259
 msgid "Exporting to Clipboard..."
-msgstr ""
+msgstr "Export in die Zwischenablage..."
 
 #. frmSelectColumn..Caption
 #. Programmer's name for it: RES_JvDBGridSelectTitle
 #: JvDBGridSelectColumnForm.dfm:9 JvDBGridSelectColumnForm.pas:37
 msgid "Select columns"
-msgstr ""
+msgstr "Spalten ausw‰hlen"
 
 #. frmSelectColumn..Panel1..ButtonOK..Caption
 #. FormParsers..OkBtn..Caption
@@ -112,72 +112,72 @@ msgstr ""
 #: JvParserForm.dfm:170 JvParserForm.xfm:173 JvResources.pas:41
 #: JvWallpaperEditForm.dfm:26 JvWallpaperEditForm.xfm:38
 msgid "&OK"
-msgstr ""
+msgstr "&Ok"
 
 #. Programmer's name for it: RES_JvDBGridSelectWarning
 #: JvDBGridSelectColumnForm.pas:38
 msgid "At least one column must be visible!"
-msgstr ""
+msgstr "Mindestens eine Spalte muss sichtbar sein!"
 
 #. JvQueryParamsDialog..Caption
 #: JvDBQueryParamsForm.dfm:8
 msgid "Query parameters"
-msgstr ""
+msgstr "Abfrage-Parameter"
 
 #. JvQueryParamsDialog..GroupBox1..Caption
 #: JvDBQueryParamsForm.dfm:36
 msgid "Define Parameters"
-msgstr ""
+msgstr "Parameter definieren"
 
 #. JvQueryParamsDialog..GroupBox1..Label1..Caption
 #: JvDBQueryParamsForm.dfm:43
 msgid "&Parameter name:"
-msgstr ""
+msgstr "&Parametername:"
 
 #. JvQueryParamsDialog..GroupBox1..Label2..Caption
 #: JvDBQueryParamsForm.dfm:52
 msgid "&Value:"
-msgstr ""
+msgstr "&Wert:"
 
 #. JvQueryParamsDialog..GroupBox1..Label3..Caption
 #: JvDBQueryParamsForm.dfm:61
 msgid "&Data type:"
-msgstr ""
+msgstr "&Datentyp:"
 
 #. JvQueryParamsDialog..GroupBox1..NullValue..Caption
 #: JvDBQueryParamsForm.dfm:79
 msgid "&Null Value"
-msgstr ""
+msgstr "&Null-Wert:"
 
 #. JvQueryParamsDialog..HelpBtn..Caption
 #: JvDBQueryParamsForm.dfm:136
 msgid "&Help"
-msgstr ""
+msgstr "&Hilfe"
 
 #. Programmer's name for it: RsPaletteDocking
 #: JvDockGlobals.pas:39
 msgid "Jv Docking"
-msgstr ""
+msgstr "Jv Docking"
 
 #. Programmer's name for it: RsDockServerName
 #: JvDockGlobals.pas:40
 msgid "JVCL Dock Server Component"
-msgstr ""
+msgstr "JVCL Dock Server-Komponente"
 
 #. Programmer's name for it: RsDockClientName
 #: JvDockGlobals.pas:41
 msgid "JVCL Dock Client Component"
-msgstr ""
+msgstr "JVCL Dock Client-Komponente"
 
 #. Programmer's name for it: RsDockStyleName
 #: JvDockGlobals.pas:42
 msgid "JVCL Dock Style Component"
-msgstr ""
+msgstr "JVCL Dock Style-Komponente"
 
 #. Programmer's name for it: RsDockAbout
 #: JvDockGlobals.pas:57
 msgid "About"
-msgstr ""
+msgstr "‹ber"
 
 #. Programmer's name for it: RsDockManagerAbout
 #. Programmer's name for it: RsDockStyleAbout
@@ -192,27 +192,27 @@ msgstr ""
 #. Programmer's name for it: RsDockJvDockTreeCloseBtnHint
 #: JvDockGlobals.pas:71
 msgid "Close"
-msgstr ""
+msgstr "Schlieﬂen"
 
 #. Programmer's name for it: RsDockVCDockTreeExpandBtnHint
 #: JvDockGlobals.pas:72
 msgid "Expand"
-msgstr ""
+msgstr "Expandieren"
 
 #. Programmer's name for it: RsDockVSNETDockTreeAutoHideBtnHint
 #: JvDockGlobals.pas:73
 msgid "AutoHide"
-msgstr ""
+msgstr "AutoHide"
 
 #. Programmer's name for it: RsDockJvDockTreeVSplitterHint
 #: JvDockGlobals.pas:74
 msgid "Vertical Splitter"
-msgstr ""
+msgstr "Vertikaler Splitter"
 
 #. Programmer's name for it: RsDockJvDockTreeHSplitterHint
 #: JvDockGlobals.pas:75
 msgid "Horizontal Splitter"
-msgstr ""
+msgstr "Horizontaler Splitter"
 
 #. Programmer's name for it: RsDockTableIndexError
 #: JvDockGlobals.pas:77
@@ -222,17 +222,17 @@ msgstr ""
 #. Programmer's name for it: RsDockNodeExistedError
 #: JvDockGlobals.pas:78
 msgid "Node already exist"
-msgstr ""
+msgstr "Knoten existiert bereits"
 
 #. Programmer's name for it: RsDockComProcError
 #: JvDockGlobals.pas:79
 msgid "The function address is nil"
-msgstr ""
+msgstr "Die Adresse der Funktion ist nil"
 
 #. Programmer's name for it: RsDockControlCannotIsNil
 #: JvDockGlobals.pas:81
 msgid "Parameter Control can not be nil"
-msgstr ""
+msgstr "Der Parameter Control darf nicht nil sein"
 
 #. Programmer's name for it: RsDockCannotGetValueWithNoOrient
 #: JvDockGlobals.pas:82
@@ -247,7 +247,7 @@ msgstr ""
 #. Programmer's name for it: RsDockCannotChangeDockStyleProperty
 #: JvDockGlobals.pas:85
 msgid "Changing DockStyle at runtime is not supported"
-msgstr ""
+msgstr "DockStyle kann nicht zur Laufzeit ver‰ndert werden"
 
 #. Programmer's name for it: RsDockCannotLayAnother
 #: JvDockGlobals.pas:86
