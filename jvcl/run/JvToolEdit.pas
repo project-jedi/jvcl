@@ -200,6 +200,8 @@ type
   {$ENDIF VisualCLX}
   private
     FOnButtonClick: TNotifyEvent;
+    FOnPopupShown: TNotifyEvent;
+    FOnPopupHidden: TNotifyEvent;
     FClickKey: TShortCut;
     FReadOnly: Boolean;
     FDirectInput: Boolean;
@@ -398,6 +400,8 @@ type
     property SettingCursor: Boolean read GetSettingCursor;
     property ShowButton: Boolean read GetShowButton write SetShowButton default True;
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
+    property OnPopupShown: TNotifyEvent read FOnPopupShown write FOnPopupShown;
+    property OnPopupHidden: TNotifyEvent read FOnPopupHidden write FOnPopupHidden;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2481,7 +2485,11 @@ end;
 procedure TJvCustomComboEdit.HidePopup;
 begin
   if FPopup is TJvPopupWindow then
+  begin
     TJvPopupWindow(FPopup).Hide;
+    if Assigned(FOnPopupHidden) then
+      FOnPopupHidden(Self);
+  end;
 end;
 
 function TJvCustomComboEdit.IsCustomGlyph: Boolean;
@@ -3166,7 +3174,11 @@ end;
 procedure TJvCustomComboEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvPopupWindow then
+  begin
     TJvPopupWindow(FPopup).Show(Origin);
+    if Assigned(FOnPopupShown) then
+      FOnPopupShown(Self);
+  end;
 end;
 
 {$IFDEF VCL}
