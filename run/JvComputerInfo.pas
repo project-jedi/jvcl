@@ -62,9 +62,9 @@ uses
 type
   TJvComputerInfo = class(TObject)
   private
-    function GetCompany: string;
+    function GetRegisteredOrganization: string;
     function GetComputerName: string;
-    function GetUsername: string;
+    function GetRegisteredOwner: string;
     function GetComment: string;
     function GetWorkGroup: string;
     function GetDVDRegion: Integer;
@@ -73,8 +73,8 @@ type
     function GetProductName: string;
     function GetVersion: string;
     function GetVersionNumber: string;
-    function GetDay: Integer;
-    function GetTime: TTime;
+    function GetDayRunning: Integer;
+    function GetTimeRunning: TTime;
     procedure WriteReg(Base: HKEY; KeyName, ValueName, Value: string);
     function ReadReg(Base: HKEY; KeyName, ValueName: string): string;
     function GetLoggedOnUser: string;
@@ -98,8 +98,8 @@ type
 
     // This is the same as RealComputerName if you are running on NT
     property ComputerName: string read GetComputerName;
-    property RegisteredOwner: string read GetUsername;
-    property RegisteredOrganization: string read GetCompany;
+    property RegisteredOwner: string read GetRegisteredOwner;
+    property RegisteredOrganization: string read GetRegisteredOrganization;
 
     property Comment: string read GetComment;
     property WorkGroup: string read GetWorkGroup;
@@ -109,8 +109,8 @@ type
     property DVDRegion: Integer read GetDVDRegion;
     property VersionNumber: string read GetVersionNumber;
     property Version: string read GetVersion;
-    property TimeRunning: TTime read GetTime;
-    property DayRunning: Integer read GetDay;
+    property TimeRunning: TTime read GetTimeRunning;
+    property DayRunning: Integer read GetDayRunning;
   end;
 
 implementation
@@ -121,9 +121,20 @@ const
   RC_CurrentKey = 'Software\Microsoft\Windows\CurrentVersion';
   RC_CurrentKeyNT = 'Software\Microsoft\Windows NT\CurrentVersion';
 
-const
   cOSCurrentKey: array [Boolean] of string =
   (RC_CurrentKey, RC_CurrentKeyNT);
+
+  cComment = 'Comment';
+  cRegisteredOrganization = 'RegisteredOrganization';
+  cComputerName = 'ComputerName';
+  cDVD_Region = 'DVD_Region';
+  cProductID = 'ProductID';
+  cProductKey = 'ProductKey';
+  cProductName = 'ProductName';
+  cRegisteredOwner = 'RegisteredOwner';
+  cVersion = 'Version';
+  cVersionNumber =  'VersionNumber';
+  cWorkgroup =  'Workgroup';
 
 function IsNT: Boolean;
 begin
@@ -132,12 +143,12 @@ end;
 
 function TJvComputerInfo.GetComment: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Comment');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cComment);
 end;
 
-function TJvComputerInfo.GetCompany: string;
+function TJvComputerInfo.GetRegisteredOrganization: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], 'RegisteredOrganization');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[isNT], cRegisteredOrganization);
 end;
 
 function TJvComputerInfo.GetComputerName: string;
@@ -152,10 +163,10 @@ begin
     Result := Buf;
   end
   else
-    Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'ComputerName');
+    Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cComputerName);
 end;
 
-function TJvComputerInfo.GetDay: Integer;
+function TJvComputerInfo.GetDayRunning: Integer;
 begin
   Result := (((timeGetTime div 1000) div 60) div 60) div 24;
 end;
@@ -167,8 +178,8 @@ begin
     RootKey := HKEY_LOCAL_MACHINE;
     OpenKey(cOSCurrentKey[IsNT], False);
     try
-      if ValueExists('DVD_Region') then
-        Result := ReadInteger('DVD_Region')
+      if ValueExists(cDVD_Region) then
+        Result := ReadInteger(cDVD_Region)
       else
         Result := -1;
     except
@@ -180,20 +191,20 @@ end;
 
 function TJvComputerInfo.GetProductID: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductID');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductID);
 end;
 
 function TJvComputerInfo.GetProductKey: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductKey');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductKey);
 end;
 
 function TJvComputerInfo.GetProductName: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductName');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductName);
 end;
 
-function TJvComputerInfo.GetTime: TTime;
+function TJvComputerInfo.GetTimeRunning: TTime;
 var
   h, m, s, mi: Integer;
   d: DWord;
@@ -213,24 +224,24 @@ begin
   Result := EncodeTime(h, m, s, mi);
 end;
 
-function TJvComputerInfo.GetUsername: string;
+function TJvComputerInfo.GetRegisteredOwner: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'RegisteredOwner');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cRegisteredOwner);
 end;
 
 function TJvComputerInfo.GetVersion: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'Version');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cVersion);
 end;
 
 function TJvComputerInfo.GetVersionNumber: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'VersionNumber');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cVersionNumber);
 end;
 
 function TJvComputerInfo.GetWorkGroup: string;
 begin
-  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Workgroup');
+  Result := ReadReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cWorkgroup);
 end;
 
 function TJvComputerInfo.ReadReg(Base: HKEY; KeyName, ValueName: string): string;
@@ -254,18 +265,18 @@ end;
 procedure TJvComputerInfo.SetComment(const Value: string);
 begin
   if not IsNT then
-    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Comment', Value);
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cComment, Value);
 end;
 
 procedure TJvComputerInfo.SetCompany(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'RegisteredOrganization', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cRegisteredOrganization, Value);
 end;
 
 procedure TJvComputerInfo.SetComputerName(const Value: string);
 begin
   if not IsNT then
-    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'ComputerName', Value);
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cComputerName, Value);
 end;
 
 procedure TJvComputerInfo.SetDVDRegion(const Value: Integer);
@@ -274,39 +285,39 @@ begin
   begin
     RootKey := HKEY_LOCAL_MACHINE;
     if OpenKey(cOSCurrentKey[IsNT], False) then
-      WriteInteger('DVD_Region', Value);
+      WriteInteger(cDVD_Region, Value);
     Free;
   end;
 end;
 
 procedure TJvComputerInfo.SetProductID(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductId', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductId, Value);
 end;
 
 procedure TJvComputerInfo.SetProductKey(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductKey', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductKey, Value);
 end;
 
 procedure TJvComputerInfo.SetProductName(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'ProductName', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cProductName, Value);
 end;
 
 procedure TJvComputerInfo.SetUsername(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'RegisteredOwner', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cRegisteredOwner, Value);
 end;
 
 procedure TJvComputerInfo.SetVersion(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'Version', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cVersion, Value);
 end;
 
 procedure TJvComputerInfo.SetVersionNumber(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], 'VersionNumber', Value);
+  WriteReg(HKEY_LOCAL_MACHINE, cOSCurrentKey[IsNT], cVersionNumber, Value);
 end;
 
 procedure TJvComputerInfo.WriteReg(Base: HKEY; KeyName, ValueName, Value: string);
@@ -323,7 +334,7 @@ end;
 procedure TJvComputerInfo.SetWorkGroup(const Value: string);
 begin
   if not IsNT then
-    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Workgroup', Value);
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, cWorkgroup, Value);
 end;
 
 function TJvComputerInfo.GetLoggedOnUser: string;

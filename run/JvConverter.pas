@@ -31,7 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  JvTypes {, JvComponent};
+  JvTypes, JvComponent;
 
 type
 
@@ -79,7 +79,7 @@ type
     property LeadingZero: Boolean read FLeadingZero write FLeadingZero default False;
   end;
 
-  TJvConverter = class(TComponent)
+  TJvConverter = class(TJvComponent)
   private
     FData: string;
     FTextValues: array [Boolean] of string;
@@ -144,6 +144,9 @@ type
   end;
 
 implementation
+
+uses
+  JvConsts, JvResources;
 
 //=== TJvDateTimeFormat ======================================================
 
@@ -299,8 +302,8 @@ begin
   FPrecision := 15;
   FDigits := 2;
   FDateTimeFormat := TJvDateTimeFormat.Create;
-  FTextValues[False] := 'False';
-  FTextValues[True] := 'True';
+  FTextValues[False] := RsFalse;
+  FTextValues[True] := RsTrue;
   FRaiseOnError := False;
 end;
 
@@ -399,9 +402,9 @@ begin
     dtString:
       Result := True;
     dtInteger:
-      Result := Ch in ['+', '-', '0'..'9'];
+      Result := Ch in DigitSymbols + SignSymbols;
     dtFloat:
-      Result := Ch in [DecimalSeparator, '+', '-', '0'..'9', 'E', 'e'];
+      Result := Ch in DigitSymbols + SignSymbols + [DecimalSeparator, 'E', 'e'];
     dtDateTime, dtDate, dtTime:
       Result := True;
     dtBoolean:

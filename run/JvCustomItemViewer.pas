@@ -946,8 +946,8 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.DrawItem(Index: integer; State: TCustomDrawState; Canvas: TCanvas; ItemRect, TextRect:
-  TRect);
+procedure TJvCustomItemViewer.DrawItem(Index: integer; State: TCustomDrawState;
+  Canvas: TCanvas; ItemRect, TextRect: TRect);
 begin
   if Assigned(FOnDrawItem) then
     FOnDrawItem(Self, Index, State, Canvas, ItemRect, TextRect);
