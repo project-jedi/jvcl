@@ -1926,7 +1926,7 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom + Pages[PageIndex].Font.Height - 2;
+        Result.Top := Result.Bottom - abs(Pages[PageIndex].Font.Height) - 2;
         OffsetRect(Result, 0, -4);
       end;
     olbsSmall:
@@ -1934,7 +1934,7 @@ begin
       begin
         Result.Left := SmallImages.Width + 10;
         Result.Top := Result.Top + (GetButtonHeight(PageIndex) + Pages[PageIndex].Font.Height) div 2;
-        Result.Bottom := Result.Top - Pages[PageIndex].Font.Height + 2;
+        Result.Bottom := Result.Top + abs(Pages[PageIndex].Font.Height) + 2;
         Result.Right := Result.Left + Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption) + 4;
         OffsetRect(Result, 0, -(H - (Result.Bottom - Result.Top)) div 4);
       end;
@@ -2028,12 +2028,7 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RecreateWidget;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2321,12 +2316,12 @@ begin
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
         if LargeImages <> nil then
-          Result := Max(Result, LargeImages.Height - Pages[PageIndex].Font.Height + cLargeOffset)
+          Result := Max(Result, LargeImages.Height + abs(Pages[PageIndex].Font.Height) + cLargeOffset)
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
         if SmallImages <> nil then
-          Result := Max(SmallImages.Height, -Pages[PageIndex].Font.Height) + cSmallOffset
+          Result := Max(SmallImages.Height, abs(Pages[PageIndex].Font.Height)) + cSmallOffset
         else
           Result := Abs(Pages[PageIndex].Font.Height) + cSmallOffset;
     end;
