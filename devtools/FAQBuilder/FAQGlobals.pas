@@ -171,8 +171,9 @@ begin
   Header.Add('  allvisible = !allvisible;');
   Header.Add('}');
   Header.Add('');
-  Header.Add('function ToggleVisible(obj) {');
+  Header.Add('function ToggleVisible(objID) {');
   Header.Add('');
+  Header.Add('  var obj = document.getElementById(objId);');
   Header.Add('  if (obj == null) return;');
   Header.Add('  if ((lastobj) && (lastobj != obj)) {');
   Header.Add('    lastobj.style.display = "none";');
@@ -188,7 +189,7 @@ begin
   Header.Add('<a style="text-decoration:none;" href="javascript:void(1)" onClick="ToggleAll()">');
   Header.Add('<div style="font-family: Verdana; font-size:90%;text-decoration:none;font-weight:bold;" align=right>Expand/Collapse</div></a>');
 
-  Item.Add('<img src="<#Q_IMAGE>" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(FAQ<#FAQINDEX>);"><#Q_ITEM></a><br>');
+  Item.Add('<img src="<#Q_IMAGE>" border=0>&nbsp;<a href="javascript:void(1)" onClick="ToggleVisible(''FAQ<#FAQINDEX>'');"><#Q_ITEM></a><br>');
   Item.Add('<div id="FAQ<#FAQINDEX>" style="color: #334499;display:none;margin-left:25px; margin-top: 5px; margin-bottom:10px;">');
   Item.Add('<img src="<#A_IMAGE>" border=0>&nbsp;<#A_ITEM></div>');
 
