@@ -116,3 +116,8 @@ Known Issues:
 { This define controls whether JvHLEditor supports a highlighter for NQC. }
 {$DEFINE HL_NOT_QUITE_C}
 
+
+{$IFDEF QUnit}
+ {$UNDEF VCL}
+ {$DEFINE VisualCLX}
+{$ENDIF}
