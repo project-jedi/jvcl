@@ -190,13 +190,13 @@ begin
         begin
           // (p3) ShFileOp returns widechars on NT platforms 
           {$WARNINGS OFF}
-          S := WideCharToString(PWideChar(S));
-          D := WideCharToString(PWideChar(D));
+          S := WideCharToString(PWideChar(S + #0));
+          D := WideCharToString(PWideChar(D + #0));
           {$WARNINGS ON}
         end;
         DoFileMapping(S,D);
       end;
-      Inc(PNameMapping,sizeof(TSHNameMapping));
+      Inc(PNameMapping);
       Dec(PNameCount);
     end;
     ShFreeNameMappings(Cardinal(SFOS.hNameMappings));
