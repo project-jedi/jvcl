@@ -264,6 +264,9 @@ type
     property OnEndDock;
     property OnStartDock;
     property OnResize;
+  {$IFDEF JVCLThemesEnabled}
+    property ParentBackground;
+  {$ENDIF}
   end;
 
   TJvSpeedItem = class(TComponent)
@@ -1469,7 +1472,7 @@ begin
   FEditWin := 0;
   FOptions := [sbAllowDrag, sbGrayedBtns];
   ControlStyle := ControlStyle - [csSetCaption, csReplicatable];
-  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+  IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
   ParentShowHint := False;
   ShowHint := True;
   SetFontDefault;
@@ -2028,6 +2031,13 @@ begin
       Inc(BevelSize, BevelWidth);
     InflateRect(Rect, -BevelSize, -BevelSize);
     inherited Paint;
+{$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled and ParentBackground then
+    begin
+      Canvas.Brush.Color := Parent.Brush.Color;
+      DrawThemedBackground(Self, Canvas, Rect);
+    end;
+{$ENDIF}    
     if (FWallpaper.Graphic <> nil) and (FWallpaper.Width > 0) and
       (FWallpaper.Height > 0) then
     begin
