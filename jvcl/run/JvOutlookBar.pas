@@ -1933,7 +1933,7 @@ begin
       if SmallImages <> nil then
       begin
         Result.Left := SmallImages.Width + 10;
-        Result.Top := Result.Top + (GetButtonHeight(PageIndex) + Pages[PageIndex].Font.Height) div 2;
+        Result.Top := Result.Top + (GetButtonHeight(PageIndex) - abs(Pages[PageIndex].Font.Height)) div 2;
         Result.Bottom := Result.Top + abs(Pages[PageIndex].Font.Height) + 2;
         Result.Right := Result.Left + Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption) + 4;
         OffsetRect(Result, 0, -(H - (Result.Bottom - Result.Top)) div 4);
