@@ -1604,7 +1604,7 @@ begin
       YDivisionStr := FormatFloat('0.00', YDivision );
 
     Options.PrimaryYAxis.YLegends.Add( YDivisionStr );
-    OutputDebugSTring(PChar('YDivisionStr='+YDivisionStr));
+    
   end;
 
 end;
@@ -1641,7 +1641,7 @@ begin
         V := FData.Value[J, I];
 
         if IsNan(V) then begin
-             OutputDebugString('gap');
+
              continue;
         end;
         if nYMin > V then
@@ -1814,7 +1814,7 @@ begin
    if (Y2>Height) then begin
       // I suspect that the value of YPixelGap is too large in some cases.
       Options.PrimaryYAxis.Normalize;
-      OutputDebugString( PChar('Y2 is bogus. pyvc='+IntToStr(pyvc)) );
+      //OutputDebugString( PChar('Y2 is bogus. pyvc='+IntToStr(pyvc)) );
    end;
   MyRectangle(  X1, Y1, X2, Y2 );
 
@@ -2164,8 +2164,8 @@ var
             Assert(Y<Height);
             Assert(Y>0);
             Assert(X>0);
-            if (X>=Width) then
-                OutputDebugString('foo!');
+            //if (X>=Width) then
+            //    OutputDebugString('foo!');
             Assert(X<Width);
 
             X2 := BarXPosition(N+1)-3;
@@ -2903,7 +2903,7 @@ end;
 
 procedure TJvChart.CalcYEnd;
 begin
- OutputDebugString(PChar('CalcYEnd Height='+IntToStr(Height) ) );
+// OutputDebugString(PChar('CalcYEnd Height='+IntToStr(Height) ) );
  if not Assigned(FBitmap) then
     Options.YEnd := 0
  else
