@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.co
 Portions created by Peter Thörnqvist are Copyright © 1997-2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -32,6 +32,11 @@ Known Issues:
 unit JvCaptionPanel;
 
 interface
+// Define JVCAPTIONPANEL_STD_BEHAVE to not use the previous undocumented WM_SYSCOMMAND with SC_DRAGMOVE but instead handle
+// the dargging "manually" within the control. Defining this means that you actually get the Mouse events
+// and the OnEndAutoDrag event. Additionally, the form displays scrollbars as expected when the component is dragged
+// The downside is that the control "flashes" more when it's dragged
+{$DEFINE JVCAPTIONPANEL_STD_BEHAVE}
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
@@ -41,7 +46,8 @@ type
   TJvCapBtnStyle=(capClose,capMax,capMin,capRestore,capHelp);
   TJvCapBtnStyles = set of TJvCapBtnStyle;
   TJvDrawPosition=(dpLeft,dpTop,dpRight,dpBottom);
-  TJvCapBtnEvent=procedure(Sender:TObject;Button:TJvCapBtnStyle) of object;
+  TJvCapBtnEvent = procedure(Sender:TObject;Button:TJvCapBtnStyle) of object;
+  TJvAutoDragStartEvent = procedure(Sender:TObject;var AllowDrag:boolean) of object;
   { internal class }
 
   TJvCapBtn=class(TGraphicControl)
@@ -89,6 +95,10 @@ type
     FDragging:boolean;
     FEndDrag:TNotifyEvent;
     FFont:TFont;
+    FOnStartAutoDrag: TJvAutoDragStartEvent;
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    FAnchorPos:TPoint;
+    {$ENDIF}
     procedure SetFont(Value:TFont);
     procedure SetCaptionColor(Value:TColor);
     procedure SetFlat(Value:boolean);
@@ -97,18 +107,21 @@ type
     procedure SeTJvDrawPosition(Value:TJvDrawPosition);
     procedure DrawRotatedText(Rotation:integer);
     procedure DrawButtons;
-    procedure WMNCHitTest(var Message:TWMNCHitTest); message WM_NCHITTEST;
     procedure WMSize(var Message:TWMNoParams);message WM_SIZE;
   protected
     { Protected declarations }
     procedure Paint;override;
+
     procedure AlignControls(AControl: TControl; var Rect: TRect);override;
     procedure CreateParams(var Params:TCreateParams);override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);override;
     procedure MouseMove(Shift:TShiftState;X,Y:integer);override;
     procedure ClickButton(Button:TJvCapBtnStyle);virtual;
+    function CanStartDrag:boolean;virtual;
     procedure DoLeaveDrag;virtual;
+    procedure WMNCLButtonUp(var Message: TWMNCLButtonUp);
+      message WM_NCLBUTTONUP;
   public
     { Public declarations }
     constructor Create(AOwner:TComponent);override;
@@ -147,6 +160,7 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnStartAutoDrag:TJvAutoDragStartEvent read FOnStartAutoDrag write FOnStartAutoDrag;
     property OnEndAutoDrag:TNotifyEvent read FEndDrag write FEndDrag;
     property OnEnter;
     property OnExit;
@@ -318,6 +332,7 @@ constructor TJvCaptionPanel.Create(AOwner:TComponent);
 var i:TJvCapBtnStyle;
 begin
   inherited Create(AOwner);
+  DoubleBuffered := true;
   FFont := TFont.Create;
   FFont.Name := 'Arial';
   FFont.Size := 10;
@@ -613,32 +628,42 @@ procedure TJvCaptionPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y
 begin
   inherited MouseUp(Button,Shift,X,Y);
   if FDragging then
-  begin
-    FDragging := false;
     DoLeaveDrag;
-  end;
+  FDragging := false;
 end;
 
 procedure TJvCaptionPanel.MouseMove(Shift:TShiftState;X,Y:integer);
 begin
   inherited MouseMove(Shift,X,Y);
+  {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+  if FDragging then
+  begin
+    Left := Left + X - FAnchorPos.X;
+    Top := Top + Y - FAnchorPos.Y;
+  end;
+  {$ENDIF}
 end;
 
 procedure TJvCaptionPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 const
-  SC_DragMove = $F012;
+  SC_DRAGMOVE = $F012;
 begin
   inherited MouseDown(Button,Shift,X,Y);
 
   FMouseDown := true;
   if not PtInRect(FCaptionRect,Point(X,Y)) then Exit;
 
-  if FAutoDrag then
+  if FAutoDrag and CanStartDrag then
   begin
     SetZOrder(true);
     FDragging := true;
     ReleaseCapture;
-    Perform(WM_SysCommand, SC_DragMove, 0);
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    SetCapture(Handle);
+    FAnchorPos := Point(X,Y);
+    {$ELSE}
+    Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
+    {$ENDIF}
   end;
 end;
 
@@ -648,10 +673,17 @@ begin
   Repaint;
 end;
 
-procedure TJvCaptionPanel.WMNCHitTest(var Message:TWMNCHitTest);
+function TJvCaptionPanel.CanStartDrag: boolean;
 begin
-  inherited;
+  Result := true;
+  if Assigned(FOnStartAutoDrag) then FOnStartAutoDrag(self,Result);
 end;
 
+procedure TJvCaptionPanel.WMNCLButtonUp(var Message: TWMNCLButtonUp);
+begin
+  inherited;
+  if FDragging then
+    MouseUp(mbLeft,[],Message.XCursor,Message.YCursor);
+end;
 
 end.
