@@ -47,6 +47,7 @@ uses
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
   JvQLabel,
+  JvQGauges, JvQTimeEdit,
   JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
@@ -67,11 +68,11 @@ begin
     TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
+  RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvTransparentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar]);
   RegisterComponents(RsPaletteListComboTree, [TJvDrawGrid, TJvStringGrid]);
 
@@ -88,7 +89,7 @@ begin
 //  RegisterPropertyEditor(TypeInfo(Boolean), TJvMainMenu, cOwnerDraw, nil);
 //  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+//  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
 
 end;
 
