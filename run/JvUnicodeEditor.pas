@@ -515,8 +515,8 @@ type
     procedure DblClick; override;
 
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
 
     procedure DoPaste; dynamic;
     procedure DoCopy; dynamic;
@@ -1807,16 +1807,16 @@ begin
     inherited;
 end;
 
-procedure TJvCustomWideEditor.DoSetFocus(FocusedControl: TWinControl);
+procedure TJvCustomWideEditor.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
   CreateCaret(Handle, 0, 2, CellRect.Height - 2);
   PaintCaret(True);
 end;
 
-procedure TJvCustomWideEditor.DoKillFocus(FocusedControl: TWinControl);;
+procedure TJvCustomWideEditor.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
   if FCompletion.FVisible then
     FCompletion.CloseUp(False);
   DestroyCaret;

@@ -72,7 +72,6 @@ type
     procedure SetColWidth(Value: Integer);
     procedure SetColorValue(Value: TColor);
     procedure ResetItemHeight;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure SetPrefix(const Value: string);
     function GetColorNameMap: TStrings;
@@ -81,6 +80,7 @@ type
     function GetDropDownWidth: Integer;
     procedure SetDropDownWidth(const Value: Integer);
   protected
+    procedure FontChanged; override;
     procedure DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState); override;
     procedure Click; override;
 
@@ -198,8 +198,8 @@ type
     procedure SetOptions(Value: TJvFontComboOptions);
     procedure ResetItemHeight;
     procedure Reset;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure WMFontChange(var Msg: TMessage); message WM_FONTCHANGE;
+      // (ahuser) why both WM_FONTCHANGE and CM_FONTCHANGED ?
+    //procedure WMFontChange(var Msg: TMessage); message WM_FONTCHANGE;
     function GetFontName: string;
     procedure SetFontName(const Value: string);
     function GetSorted: Boolean;
@@ -207,6 +207,7 @@ type
     function GetDropDownWidth: Integer;
     procedure SetDropDownWidth(const Value: Integer);
   protected
+    procedure FontChanged; override;
     procedure Loaded; override;
     procedure GetFonts; virtual;
     procedure Click; override;
@@ -624,9 +625,9 @@ begin
   FExecutingDialog := False;
 end;
 
-procedure TJvColorComboBox.CMFontChanged(var Msg: TMessage);
+procedure TJvColorComboBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;
@@ -943,15 +944,15 @@ begin
   end;
 end;
 
-procedure TJvFontComboBox.WMFontChange(var Msg: TMessage);
+{procedure TJvFontComboBox.WMFontChange(var Msg: TMessage);
 begin
   inherited;
   Reset;
-end;
+end;}
 
-procedure TJvFontComboBox.CMFontChanged(var Msg: TMessage);
+procedure TJvFontComboBox.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResetItemHeight;
   RecreateWnd;
 end;

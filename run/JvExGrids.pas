@@ -114,8 +114,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -193,8 +193,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
   
@@ -268,8 +268,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
   
@@ -341,8 +341,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -422,8 +422,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
   
@@ -495,8 +495,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
   
@@ -678,11 +678,11 @@ procedure TJvExInplaceEdit.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExInplaceEdit.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExInplaceEdit.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExInplaceEdit.DoKillFocus(NextControl: TWinControl);
+procedure TJvExInplaceEdit.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -895,11 +895,11 @@ procedure TJvExCustomGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomGrid.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExCustomGrid.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExCustomGrid.DoKillFocus(NextControl: TWinControl);
+procedure TJvExCustomGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -1091,11 +1091,11 @@ procedure TJvExCustomDrawGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomDrawGrid.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExCustomDrawGrid.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExCustomDrawGrid.DoKillFocus(NextControl: TWinControl);
+procedure TJvExCustomDrawGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -1285,11 +1285,11 @@ procedure TJvExInplaceEditList.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExInplaceEditList.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExInplaceEditList.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExInplaceEditList.DoKillFocus(NextControl: TWinControl);
+procedure TJvExInplaceEditList.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -1504,11 +1504,11 @@ procedure TJvExDrawGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExDrawGrid.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExDrawGrid.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExDrawGrid.DoKillFocus(NextControl: TWinControl);
+procedure TJvExDrawGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -1698,11 +1698,11 @@ procedure TJvExStringGrid.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExStringGrid.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExStringGrid.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExStringGrid.DoKillFocus(NextControl: TWinControl);
+procedure TJvExStringGrid.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 

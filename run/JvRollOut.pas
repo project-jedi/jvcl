@@ -93,7 +93,7 @@ type
 
   TJvRollOutImageOptions = class(TPersistent)
   private
-    FOffset: integer;
+    FOffset: Integer;
     FImages: TCustomImageList;
     FIndexCollapsed: TImageIndex;
     FIndexExpanded: TImageIndex;
@@ -103,7 +103,7 @@ type
     procedure SetImages(const Value: TCustomImageList);
     procedure SetIndexCollapsed(const Value: TImageIndex);
     procedure SetIndexExpanded(const Value: TImageIndex);
-    procedure SetOffset(const Value: integer);
+    procedure SetOffset(const Value: Integer);
   protected
     procedure Change;
     procedure DoChangeLink(Sender: TObject);
@@ -114,7 +114,7 @@ type
     property IndexCollapsed: TImageIndex read FIndexCollapsed write SetIndexCollapsed default 1;
     property IndexExpanded: TImageIndex read FIndexExpanded write SetIndexExpanded default 0;
     property Images: TCustomImageList read FImages write SetImages;
-    property Offset: integer read FOffset write SetOffset default 5;
+    property Offset: Integer read FOffset write SetOffset default 5;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -162,15 +162,15 @@ type
     procedure SetShowFocus(const Value: Boolean);
   protected
     // Sets or gets the TabStop value of child controls depending on the value of Collapsed.
-    // When Collapsed is true, calls GetChildTabStops.
-    // When Collapsed is false, calls SetChildTabStops.
+    // When Collapsed is True, calls GetChildTabStops.
+    // When Collapsed is False, calls SetChildTabStops.
     procedure CheckChildTabStops;
     // Checks the TabStop value of all child controls and adds the control to
-    // an internal list if TabStop is true. TabStop is then set to false.
+    // an internal list if TabStop is True. TabStop is then set to False.
     // This is done to disable tabbing into the child control when the rollout
     // is collapsed. Normally, you don't need to call this method.
     procedure GetChildTabStops;
-    // Resets the TabStop value of child controls to true if they where added to
+    // Resets the TabStop value of child controls to True if they where added to
     // an internal list with a previous call to GetTabStops.
     // Does nothing if GetChildTabStops hasn't been called.
     // Normally, you don't need to call this method.
@@ -180,8 +180,8 @@ type
     // Normally, you don't need to call this method.
     procedure ClearChildTabStops;
 
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -207,8 +207,8 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property ImageOptions: TJvRollOutImageOptions read FImageOptions write FImageOptions;
     property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
-    property ShowFocus: Boolean read FShowFocus write SetShowFocus default true;
-    property ToggleAnywhere: Boolean read FToggleAnywhere write FToggleAnywhere default true;
+    property ShowFocus: Boolean read FShowFocus write SetShowFocus default True;
+    property ToggleAnywhere: Boolean read FToggleAnywhere write FToggleAnywhere default True;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
@@ -412,7 +412,7 @@ begin
   end;
 end;
 
-procedure TJvRollOutImageOptions.SetOffset(const Value: integer);
+procedure TJvRollOutImageOptions.SetOffset(const Value: Integer);
 begin
   if FOffset <> Value then
   begin
@@ -516,7 +516,7 @@ begin
 
   FColors := TJvRollOutColors.Create;
   FColors.OnChange := DoColorsChange;
-  FToggleAnywhere := true;
+  FToggleAnywhere := True;
   FGroupIndex := 0;
   FCollapsed := False;
   FMouseDown := False;
@@ -529,7 +529,7 @@ begin
   FAHeight := 170;
   FCWidth := 22;
   FCHeight := 22;
-  FShowFocus := true;
+  FShowFocus := True;
 end;
 
 destructor TJvCustomRollOut.Destroy;
@@ -689,7 +689,7 @@ end;
 
 procedure TJvCustomRollOut.ChangeWidth(NewWidth: Integer);
 var
-  OldWidth: integer;
+  OldWidth: Integer;
 begin
   Parent.DisableAlign;
   DisableAlign;
@@ -1030,12 +1030,12 @@ end;
 
 procedure TJvCustomRollOut.DoColorsChange(Sender: TObject);
 begin
-  RedrawControl(true);
+  RedrawControl(True);
 end;
 
 procedure TJvCustomRollOut.DoImageOptionsChange(Sender: TObject);
 begin
-  RedrawControl(true);
+  RedrawControl(True);
 end;
 
 procedure TJvCustomRollOut.Notification(AComponent: TComponent;
@@ -1065,17 +1065,17 @@ begin
   Result := PtInRect(R, P);
 end;
 
-procedure TJvCustomRollOut.DoKillFocus(FocusedControl: TWinControl);
+procedure TJvCustomRollOut.DoKillFocus(FocusedWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
   Invalidate;
 end;
 
-procedure TJvCustomRollOut.DoSetFocus(FocusedControl: TWinControl); 
+procedure TJvCustomRollOut.DoSetFocus(FocusedWnd: HWND);
 begin
   CheckChildTabStops;
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
   Invalidate;
 end;
 
@@ -1100,29 +1100,29 @@ end;
 
 procedure TJvCustomRollOut.GetChildTabStops;
 var
-  i: integer;
+  i: Integer;
 begin
   if FTabStops = nil then
   begin
     FTabStops := TStringList.Create;
-    FTabStops.Sorted := true;
+    FTabStops.Sorted := True;
   end;
   for i := 0 to ControlCount - 1 do
     if (Controls[i] is TWinControl) and (TWinControl(Controls[i]).TabStop) then
     begin
       FTabStops.AddObject(Controls[i].Name, Controls[i]);
-      TWinControl(Controls[i]).TabStop := false;
+      TWinControl(Controls[i]).TabStop := False;
     end;
 end;
 
 procedure TJvCustomRollOut.SetChildTabStops;
-var i: integer;
+var i: Integer;
 begin
   if FTabStops <> nil then
   begin
     for i := 0 to FTabStops.Count - 1 do
       if FindChildControl(FTabStops[i]) <> nil then
-        TWinControl(FTabStops.Objects[i]).TabStop := true;
+        TWinControl(FTabStops.Objects[i]).TabStop := True;
     FreeAndNil(FTabStops);
   end;
 end;

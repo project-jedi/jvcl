@@ -114,8 +114,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -200,8 +200,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -401,11 +401,11 @@ procedure TJvExCustomMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExCustomMaskEdit.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExCustomMaskEdit.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExCustomMaskEdit.DoKillFocus(NextControl: TWinControl);
+procedure TJvExCustomMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 
@@ -631,11 +631,11 @@ procedure TJvExMaskEdit.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExMaskEdit.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExMaskEdit.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExMaskEdit.DoKillFocus(NextControl: TWinControl);
+procedure TJvExMaskEdit.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 

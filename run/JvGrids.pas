@@ -113,8 +113,8 @@ type
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
-    procedure DoKillFocus(FocusedControl: TWinControl); override;
-    procedure DoSetFocus(FocusedControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
 
     function CanEditAcceptKey(Key: Char): Boolean; override;
     function CanEditShow: Boolean; override;
@@ -217,7 +217,7 @@ type
 type
   TJvPopupListBox = class;
 
-  TJvInplaceEdit = class(TInplaceEdit)
+  TJvInplaceEdit = class(TJvExInplaceEdit)
   private
     FAlignment: TAlignment;
     FButtonWidth: Integer;
@@ -235,11 +235,11 @@ type
     procedure TrackButton(X, Y: Integer);
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
   protected
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure BoundsChanged; override;
     procedure CloseUp(Accept: Boolean);
@@ -643,16 +643,16 @@ begin
   inherited;
 end;
 
-procedure TJvInplaceEdit.WMKillFocus(var Msg: TMessage);
+procedure TJvInplaceEdit.DoKillFocus(FocusedWnd: HWND);
 begin
   if not SysLocale.FarEast then
-    inherited
+    inherited DoKillFocus(FocusedWnd)
   else
   begin
     ImeName := Screen.DefaultIme;
     ImeMode := imDontCare;
-    inherited;
-    if THandle(Msg.WParam) <> TJvDrawGrid(Grid).Handle then
+    inherited DoKillFocus(FocusedWnd);
+    if FocusedWnd <> TJvDrawGrid(Grid).Handle then
       ActivateKeyboardLayout(Screen.DefaultKbLayout, KLF_ACTIVATE);
   end;
   CloseUp(False);
@@ -700,7 +700,7 @@ begin
           end;
         end;
   end;
-  inherited;
+  inherited WndProc(Message);
 end;
 
   //=== TJvDrawGrid ===========================================================
@@ -1329,16 +1329,16 @@ begin
   inherited;
 end;
 
-procedure TJvDrawGrid.DoKillFocus(FocusedControl: TWinControl);
+procedure TJvDrawGrid.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited DoKillFocus(FocusedControl);
+  inherited DoKillFocus(FocusedWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;
 
-procedure TJvDrawGrid.DoSetFocus(FocusedControl: TWinControl);
+procedure TJvDrawGrid.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(FocusedControl);
+  inherited DoSetFocus(FocusedWnd);
   if Assigned(FOnChangeFocus) then
     FOnChangeFocus(Self);
 end;

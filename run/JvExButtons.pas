@@ -165,8 +165,8 @@ type
     destructor Destroy; override;
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
-    procedure DoSetFocus(PreviousControl: TWinControl); dynamic;
-    procedure DoKillFocus(NextControl: TWinControl); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -486,11 +486,11 @@ procedure TJvExBitBtn.DoGetDlgCode(var Code: TDlgCodes);
 begin
 end;
 
-procedure TJvExBitBtn.DoSetFocus(PreviousControl: TWinControl);
+procedure TJvExBitBtn.DoSetFocus(FocusedWnd: HWND);
 begin
 end;
 
-procedure TJvExBitBtn.DoKillFocus(NextControl: TWinControl);
+procedure TJvExBitBtn.DoKillFocus(FocusedWnd: HWND);
 begin
 end;
 

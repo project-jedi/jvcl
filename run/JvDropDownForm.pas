@@ -37,7 +37,13 @@ unit JvDropDownForm;
 interface
 
 uses
-  Classes, Windows, Messages, Controls, StdCtrls, Forms,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, StdCtrls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvTypes, JvExForms;
 
 type
@@ -50,8 +56,8 @@ type
     FOnSetFocus: TJvFocusChangeEvent;
   protected
     function GetEdit: TCustomEdit;
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
-    procedure DoKillFocus(ANextControl: TWinControl); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); dynamic;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); dynamic;
     procedure DoClose(var Action: TCloseAction); override;
@@ -143,17 +149,16 @@ begin
   Result := TCustomEdit(Owner);
 end;
 
-procedure TJvCustomDropDownForm.DoKillFocus(ANextControl: TWinControl);
+procedure TJvCustomDropDownForm.DoKillFocus(FocusedWnd: HWND);
 begin
-  if ContainsControl(ANextControl) then
-  //if (ANextControl <> nil) and IsChildWindow(ANextControl.Handle, Self.Handle) then
-    inherited DoKillFocus(ANextControl)
+  if IsChildWindow(FocusedWnd, Self.Handle) then
+    inherited DoKillFocus(FocusedWnd)
   else
   begin
     FLeaving := True;
     try
-      inherited DoKillFocus(ANextControl);
-      DoKillFocusEvent(ANextControl);
+      inherited DoKillFocus(FocusedWnd);
+      DoKillFocusEvent(FindControl(FocusedWnd));
     finally
       FLeaving := False;
     end;
@@ -168,17 +173,16 @@ begin
     Close;
 end;
 
-procedure TJvCustomDropDownForm.DoSetFocus(APreviousControl: TWinControl);
+procedure TJvCustomDropDownForm.DoSetFocus(FocusedWnd: HWND);
 begin
-  if ContainsControl(APreviousControl) then
-  //if (APreviousControl <> nil) and IsChildWindow(APreviousControl.Handle, Self.Handle) then
-    inherited DoSetFocus(APreviousControl)
+  if IsChildWindow(FocusedWnd, Self.Handle) then
+    inherited DoSetFocus(FocusedWnd)
   else
   begin
     FEntering := True;
     try
-      inherited DoSetFocus(APreviousControl);
-      DoSetFocusEvent(APreviousControl);
+      inherited DoSetFocus(FocusedWnd);
+      DoSetFocusEvent(FindControl(FocusedWnd));
     finally
       FEntering := False;
     end;

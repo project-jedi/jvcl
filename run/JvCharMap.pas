@@ -383,7 +383,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure VisibleChanged; override;
     procedure FontChanged; override;
@@ -1190,9 +1190,9 @@ begin
   Msg.Result := HTTRANSPARENT;
 end;
 
-procedure TCharZoomPanel.DoSetFocus(APreviousControl: TWinControl);
+procedure TCharZoomPanel.DoSetFocus(FocusedWnd: HWND);
 begin
-  inherited DoSetFocus(APreviousControl);
+  inherited DoSetFocus(FocusedWnd);
   if not (csDestroying in ComponentState) and Parent.CanFocus then
     Parent.SetFocus;
 end;

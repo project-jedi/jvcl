@@ -173,8 +173,8 @@ type
     procedure DoDateSelect(StartDate, EndDate: TDateTime); virtual;
     procedure DoDateSelChange(StartDate, EndDate: TDateTime); virtual;
     procedure DoGetDayState(var DayState: TNMDayState; var StateArray: TMonthDayStateArray); virtual;
-    procedure DoKillFocus(ANextControl: TWinControl); override;
-    procedure DoSetFocus(APreviousControl: TWinControl); override;
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
 
     procedure DoSetFocusEvent(const APreviousControl: TWinControl); virtual;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); virtual;
@@ -1248,23 +1248,23 @@ begin
   Result := FAppearance.FirstDayOfWeek;
 end;
 
-procedure TJvCustomMonthCalendar.DoKillFocus(ANextControl: TWinControl);
+procedure TJvCustomMonthCalendar.DoKillFocus(FocusedWnd: HWND);
 begin
   FLeaving := True;
   try
-    inherited DoKillFocus(ANextControl);
-    DoKillFocusEvent(ANextControl);
+    inherited DoKillFocus(FocusedWnd);
+    DoKillFocusEvent(FindControl(FocusedWnd));
   finally
     FLeaving := False;
   end;
 end;
 
-procedure TJvCustomMonthCalendar.DoSetFocus(APreviousControl: TWinControl);
+procedure TJvCustomMonthCalendar.DoSetFocus(FocusedWnd: HWND);
 begin
   FEntering := True;
   try
-    inherited DoSetFocus(APreviousControl);
-    DoSetFocusEvent(APreviousControl);
+    inherited DoSetFocus(FocusedWnd);
+    DoSetFocusEvent(FindControl(FocusedWnd));
   finally
     FEntering := False;
   end;
