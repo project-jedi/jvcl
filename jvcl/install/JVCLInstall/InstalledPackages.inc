@@ -17,7 +17,8 @@ end;
 { Internet Components }
 function Opt_InternetComponents(Target: TCompileTarget): Boolean;
 begin
-  Result := FileExists(Target.RootDir + Target.VersionedPackage('\lib\vclie.dcp'));
+  Result := FileExists(Target.RootDir + Target.VersionedPackage('\lib\vclie.dcp')) and
+            FileExists(Target.RootDir + Target.VersionedPackage('\lib\inet.dcp'));
 end;
 
 {------------------------------------------------------------------------------}
