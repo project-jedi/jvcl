@@ -80,7 +80,6 @@ type
     property OnNewMessage: TOnNewMessage read FOnNewMessage write FOnNewMessage;
   end;
 
-
 implementation
 
 uses

@@ -34,9 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls, CommCtrl,
-  {$ELSE}
-  QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QComCtrls,
+  {$ENDIF VisualCLX}
   JVCLVer;
 
 type
@@ -75,7 +76,7 @@ type
     property FillColor: TColor read FFillColor write SetFillColor default clHighlight;
     {$ELSE}
     property FillColor;
-    {$ENDIF}
+    {$ENDIF VCL}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -165,7 +166,6 @@ begin
 end;
 
 {$IFDEF VCL}
-
 procedure TJvProgressBar.SetFillColor(const Value: TColor);
 begin
   if FFillColor <> Value then
@@ -176,7 +176,6 @@ begin
     Repaint;
   end;
 end;
-
 {$ENDIF}
 
 end.

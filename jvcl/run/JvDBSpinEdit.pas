@@ -46,7 +46,7 @@ type
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
     procedure SetDataSource(NewSource: TDataSource); { Assigns new data source. }
     procedure CMExit(var Msg: TCMExit); message CM_EXIT; { called to update data }
-    procedure CMGetDataLink(var Msg: TMessage); message CM_GetDataLink;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnlyField: Boolean;
     procedure SetReadOnlyField(Value: Boolean);
     procedure SetOnChange(const Value: TNotifyEvent);
@@ -90,8 +90,8 @@ procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   KeyDownEventHandler: TKeyEvent;
 begin
-  if ((not ReadOnlyField) and FFieldDataLink.Edit) or (Key in [VK_UP, VK_DOWN, VK_LEFT,
-    VK_RIGHT, VK_END, VK_HOME, VK_PRIOR, VK_NEXT]) then
+  if ((not ReadOnlyField) and FFieldDataLink.Edit) or
+    (Key in [VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_END, VK_HOME, VK_PRIOR, VK_NEXT]) then
     inherited KeyDown(Key, Shift)
   else
   begin { Our responsibility to call OnKeyDown if it's assigned, as we're skipping inherited method. }

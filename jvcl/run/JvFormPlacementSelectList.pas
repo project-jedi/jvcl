@@ -93,7 +93,7 @@ end;
 
 function TJvFormStorageSelectList.RestoreFormStorage(ACaption: string = '') : Boolean;
 var
-  OldPath : string;
+  OldPath: string;
 begin
   if Assigned(FormStorage) then
   begin
@@ -105,12 +105,12 @@ begin
     FormStorage.AppStoragePath := OldPath;
   end
   else
-    Result := false;
+    Result := False;
 end;
 
 function TJvFormStorageSelectList.SaveFormStorage(ACaption: string = '') : Boolean;
 var
-  OldPath : string;
+  OldPath: string;
 begin
   if Assigned(FormStorage) then
   begin
@@ -122,7 +122,7 @@ begin
     FormStorage.AppStoragePath := OldPath;
   end
   else
-    Result := false;
+    Result := False;
 end;
 
 end.
