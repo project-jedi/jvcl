@@ -1055,7 +1055,8 @@ end;
 procedure TJvParameterList.SetPath(Value: string);
 begin
   FParameterListPropertyStore.Path := Value;
-  FParameterListSelectList.SelectPath := Value + PathDelimiter + SHistorySelectPath;
+  if Assigned(AppStore) then
+    FParameterListSelectList.SelectPath := AppStore.ConcatPaths([Value,SHistorySelectPath])
 end;
 
 function TJvParameterList.GetPath: string;
@@ -1071,6 +1072,8 @@ end;
 procedure TJvParameterList.SetAppStore(Value: TJvCustomAppStore);
 begin
   FParameterListPropertyStore.AppStore := Value;
+  if Assigned(Value) then
+    FParameterListSelectList.SelectPath := Value.ConcatPaths([FParameterListPropertyStore.Path,SHistorySelectPath])
 end;
 
 procedure TJvParameterList.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1550,9 +1553,9 @@ begin
           if ReloadValueFromRegistry then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                ItemIndex := AppStore.ReadInteger(Path + PathDelimiter + SearchName, ItemIndex)
+                ItemIndex := AppStore.ReadInteger(AppStore.ConcatPaths([Path,SearchName]), ItemIndex)
             else
-              AsString := AppStore.ReadString(Path + PathDelimiter + SearchName, AsString);
+              AsString := AppStore.ReadString(AppStore.ConcatPaths([Path,SearchName]), AsString);
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -1566,9 +1569,9 @@ begin
           if ReloadValueFromRegistry then
             if Parameters[I] is TJvListParameter then
               with TJvListParameter(Parameters[I]) do
-                AppStore.WriteInteger(Path + PathDelimiter + SearchName, ItemIndex)
+                AppStore.WriteInteger(AppStore.ConcatPaths([Path,SearchName]), ItemIndex)
             else
-              AppStore.WriteString(Path + PathDelimiter + SearchName, AsString);
+              AppStore.WriteString(AppStore.ConcatPaths([Path,SearchName]), AsString);
 end;
 
 //=== TJvParameterListPropertyStore ==========================================
