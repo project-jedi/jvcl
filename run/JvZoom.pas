@@ -32,12 +32,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -175,7 +170,7 @@ begin
   PaintWindow(Canvas.Handle);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Repaint;
+  PaintRequest;
   {$ENDIF VisualCLX}
 end;
 
