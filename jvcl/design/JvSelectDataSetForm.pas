@@ -34,10 +34,11 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, DB, StdCtrls,
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors;
+  RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
-  DsgnIntf;
+  DsgnIntf,
   {$ENDIF}
+  JvDsgnTypes;
 
 type
   TJvSelectDataSetForm = class(TForm)
@@ -54,11 +55,7 @@ type
     procedure AddDataSet(const S: string);
   end;
 
-{$IFDEF COMPILER6_UP}
-function SelectDataSet(ADesigner: IDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
-{$ELSE}
-function SelectDataSet(ADesigner: IFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
-{$ENDIF}
+function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 
 {$ENDIF DelphiPersonalEdition}
 
@@ -74,11 +71,7 @@ uses
 
 {$R *.DFM}
 
-{$IFDEF COMPILER6_UP}
-function SelectDataSet(ADesigner: IDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
-{$ELSE}
-function SelectDataSet(ADesigner: IFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
-{$ENDIF}
+function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 begin
   Result := nil;
   with TJvSelectDataSetForm.Create(Application) do

@@ -170,21 +170,11 @@ implementation
 
 uses
   TypInfo, Math,
-  JvConsts, JvPropsStorage;
+  JvConsts, JvPropsStorage, JvDsgnTypes;
 
 {$R *.DFM}
 
 {$D-}
-
-{$IFDEF COMPILER6_UP}
-type
-  TDesigner = DesignIntf.IDesigner;
-  TFormDesigner = DesignIntf.IDesigner;
-{$ELSE}
-type
-  TDesigner = IDesigner;
-  TFormDesigner = IFormDesigner;
-{$ENDIF}
 
 { Utility routines }
 
@@ -206,7 +196,7 @@ begin
   end;
 end;
 
-procedure ShowSpeedbarDesigner(Designer: TDesigner; JvSpeedBar: TJvSpeedBar);
+procedure ShowSpeedbarDesigner(Designer: IJvDesigner; JvSpeedBar: TJvSpeedBar);
 var
   Editor: TJvSpeedbarEditor;
 begin
@@ -223,7 +213,7 @@ begin
   begin
     Editor := TJvSpeedbarEditor.Create(Application);
     try
-      Editor.Designer := TFormDesigner(Designer);
+      Editor.Designer := IJvFormDesigner(Designer);
       Editor.JvSpeedBar := JvSpeedBar;
       Editor.Show;
     except
@@ -926,12 +916,12 @@ begin
       if CompareText(PropInfo^.Name, 'OnClick') = 0 then
       begin
         Method := GetMethodProp(Btn, PropInfo);
-        MethodName := TFormDesigner(Designer).GetMethodName(Method);
+        MethodName := IJvFormDesigner(Designer).GetMethodName(Method);
         if MethodName = '' then
         begin
           MethodName := Btn.Name + 'Click';
           Num := 0;
-          while TFormDesigner(Designer).MethodExists(MethodName) do
+          while IJvFormDesigner(Designer).MethodExists(MethodName) do
           begin
             MethodName := Btn.Name + 'Click' + IntToStr(Num);
             Inc(Num);
@@ -950,7 +940,7 @@ begin
               Move(sObject[1], ParamNameAndType[Length(sSender) + 2],
                 Length(sObject));
             end;
-            Method := TFormDesigner(Designer).CreateMethod(MethodName, TypeData);
+            Method := IJvFormDesigner(Designer).CreateMethod(MethodName, TypeData);
             Method.Data := OwnerForm;
           finally
             FreeMem(TypeData, SizeOf(TTypeData));
@@ -958,8 +948,8 @@ begin
           Btn.OnClick := TNotifyEvent(Method);
           Designer.Modified;
         end;
-        if (MethodName <> '') and TFormDesigner(Designer).MethodExists(MethodName) then
-          TFormDesigner(Designer).ShowMethod(MethodName);
+        if (MethodName <> '') and IJvFormDesigner(Designer).MethodExists(MethodName) then
+          IJvFormDesigner(Designer).ShowMethod(MethodName);
         Break;
       end;
     end;

@@ -35,12 +35,9 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ImgList, Menus, ActnList,
   {$IFNDEF COMPILER6_UP} DsgnIntf, {$ELSE} DesignIntf, DesignEditors, {$ENDIF}
-  JvDataProvider, JvProviderTreeListFrame;
+  JvDataProvider, JvProviderTreeListFrame, JvDsgnTypes;
 
 type
-  {$IFDEF COMPILER6_UP}
-  IFormDesigner = IDesigner;
-  {$ENDIF}
   TDsgFmeBeforeNewItem = procedure(Sender: TObject; Kind: Integer; var Allow: Boolean) of object;
   TDsgFmeAfterNewItem = procedure(Sender: TObject; Item: IJvDataItem) of object;
   
@@ -75,15 +72,13 @@ type
       var S: String);
     procedure aiRenameExecute(Sender: TObject);
   private
-    { Private declarations }
     FBeforeNewItem: TDsgFmeBeforeNewItem;
     FAfterNewItem: TDsgFmeAfterNewItem;
   protected
     function DoBeforeNew(Kind: Integer): Boolean;
     procedure DoAfterNew(Item: IJvDataItem);
   public
-    { Public declarations }
-    Designer: IFormDesigner;
+    Designer: IJvFormDesigner;
     procedure UpdateActionStates; virtual;
 
     property BeforeNewItem: TDsgFmeBeforeNewItem read FBeforeNewItem write FBeforeNewItem;

@@ -77,7 +77,7 @@ type
     procedure FormResize(Sender: TObject);
   private
     FTreeView:TCustomTreeView;
-    procedure CreatePopUpItem(Index: Integer);
+    function CreatePopUpItem(Index: Integer): TMenuItem;
     procedure DoPopClick(Sender: TObject);
     procedure AssignComponents(TreeView: TCustomTreeView; const PageList: IPageList);
     procedure AssignToComponents(TreeView: TCustomTreeView; const PageList: IPageList);
@@ -147,20 +147,17 @@ begin
   end;
 end;
 
-procedure TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: Integer);
-var
-  m: TMenuItem;
+function TfrmJvTreeViewLinksEditor.CreatePopUpItem(Index: Integer): TMenuItem;
 begin
-  m := TMenuItem.Create(popTree);
-  m.Caption := Format(SCreateLinkToPaged, [Index]);
-  m.Tag := Index;
+  Result := TMenuItem.Create(popTree);
+  Result.Caption := Format(SCreateLinkToPaged, [Index]);
+  Result.Tag := Index;
   if Index < 10 then
-    m.ShortCut := ShortCut(Ord('0') + Index, [ssCtrl])
+    Result.ShortCut := ShortCut(Ord('0') + Index, [ssCtrl])
   else
   if (Index >= 10) and (Index < 36) then
-    m.ShortCut := ShortCut(Ord('A') + Index - 10, [ssCtrl]);
-  m.OnClick := DoPopClick;
-  popTree.Items.Add(m);
+    Result.ShortCut := ShortCut(Ord('A') + Index - 10, [ssCtrl]);
+  Result.OnClick := DoPopClick;
 end;
 
 procedure TfrmJvTreeViewLinksEditor.AssignComponents(TreeView: TCustomTreeView;
@@ -196,7 +193,7 @@ begin
     for I := 0 to PageList.GetPageCount - 1 do
     begin
       lbPages.Items.Add(Format('%s (%d)', [PageList.GetPageCaption(I), I]));
-      CreatePopUpItem(I);
+      popTree.Items.Add(CreatePopUpItem(I));
     end;
 
   if tvItems.Items.Count > 0 then
@@ -278,6 +275,7 @@ end;
 class function TfrmJvTreeViewLinksEditor.Edit(TreeView: TCustomTreeView;
   const PageList: IPageList): Boolean;
 begin
+  // keep in mind that Self is a class here not an object
   with Self.Create(Application) do
   try
     AssignComponents(TreeView, PageList);

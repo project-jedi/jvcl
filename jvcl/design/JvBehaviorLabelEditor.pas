@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-  JvBehaviorLabel;
+  JvBehaviorLabel, JvDsgnTypes;
 
 function TJvLabelBehaviorProperty.AutoFill: Boolean;
 begin
@@ -83,18 +83,14 @@ end;
 procedure TJvLabelBehaviorProperty.SetValue(const Value: string);
 var
   List: IDesignerSelections;
-  {$IFDEF COMPILER6_UP}
-  ADesigner: IDesigner;
-  {$ELSE}
-  ADesigner: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
+  LDesigner: IJvFormDesigner;
 begin
   inherited SetValue(Value);
   List := CreateSelectionList;
   Designer.GetSelections(List);
-  ADesigner := Designer;  // keep Designer alive
-  ADesigner.SetSelections(nil);
-  ADesigner.SetSelections(List);
+  LDesigner := Designer;  // keep Designer alive
+  LDesigner.SetSelections(nil);
+  LDesigner.SetSelections(List);
   //Designer.Modified;
 end;
 

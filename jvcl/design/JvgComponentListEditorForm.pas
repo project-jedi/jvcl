@@ -86,29 +86,16 @@ type
     Component: TJvgPropertyCenter;
   end;
 
-{$IFDEF COMPILER6_UP}
-type
-  TDesigner = DesignIntf.IDesigner;
-  TFormDesigner = DesignIntf.IDesigner;
-{$ELSE}
-type
-  TDesigner = IDesigner;
-  TFormDesigner = IFormDesigner;
-{$ENDIF COMPILER6_UP}
-
-var
-  glCompListEditor: TJvgCompListEditor;
-
 implementation
 
 uses
-  JvDsgnConsts;
+  JvDsgnConsts, JvDsgnTypes;
 
 {$R *.DFM}
 
 //=== common proc ============================================================
 
-procedure ShowCompListEditor(Designer: TDesigner; glPropertyCenter:
+procedure ShowCompListEditor(Designer: IJvDesigner; glPropertyCenter:
   TJvgPropertyCenter);
 var
   Dialog: TJvgCompListEditor;

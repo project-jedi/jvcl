@@ -37,7 +37,6 @@ uses
 
 procedure RegisterZoom;
 
-
 implementation
 
 uses

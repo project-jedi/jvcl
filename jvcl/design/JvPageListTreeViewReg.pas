@@ -32,13 +32,13 @@ unit JvPageListTreeViewReg;
 interface
 
 uses
-  Windows, Classes, JvPageListTreeView, JvDsgnEditors,
+  Windows, Classes, ImgList, Graphics,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf, Menus,
   {$ENDIF COMPILER6_UP}
-  ImgList, Graphics;
+  JvPageListTreeView, JvDsgnEditors;
 
 type
   { a property editor for the ActivePage property of TJvPageList }
@@ -125,8 +125,8 @@ const
   cPageList = 'PageList';
   cActivePage = 'ActivePage';
 begin
-  RegisterComponents(SPaletteListComboTree,
-    [TJvSettingsTreeView, TJvPageListTreeView, TJvPageList]);
+  RegisterComponents(SPaletteListComboTree, [TJvSettingsTreeView,
+    TJvPageListTreeView, TJvPageList]);
 
   RegisterPropertyEditor(TypeInfo(TTreeNodes), TCustomTreeView, cItems, TJvTreeItemsProperty);
   RegisterPropertyEditor(TypeInfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);

@@ -38,8 +38,8 @@ uses
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
-  {$ENDIF}
-  JvID3v2Base, JvID3v2Types;
+  {$ENDIF COMPILER6_UP}
+  JvID3v2Base, JvID3v2Types, JvDsgnTypes;
 
 type
   TSelectionProc = function(AFrame: TJvID3Frame): Boolean of object;
@@ -68,7 +68,8 @@ type
     FFSDesigner: TFSDesigner;
     FController: TJvID3Controller;
     FFocusRectItem: Integer;
-    FMinWidth, FMinHeight: Integer;
+    FMinWidth: Integer;
+    FMinHeight: Integer;
     procedure MoveFrames(MoveOffset: Integer);
     procedure RemoveFrames;
     procedure SelectAll;
@@ -88,7 +89,6 @@ type
   public
     function ForEachSelection(Proc: TSelectionProc): Boolean;
     function DoNewFrame: TJvID3Frame;
-
     {$IFDEF COMPILER6_UP}
     function EditAction(Action: TEditAction): Boolean; override;
     procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
@@ -100,7 +100,6 @@ type
     procedure ComponentDeleted(Component: IPersistent); override;
     procedure FormModified; override;
     {$ENDIF COMPILER6_UP}
-
     property Controller: TJvID3Controller read FController write SetController;
   end;
 
@@ -131,22 +130,10 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-procedure ShowFramesEditor(
-  {$IFDEF COMPILER6_UP}
-  Designer: IDesigner;
-  {$ELSE}
-  Designer: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
-  AController: TJvID3Controller);
-function CreateFramesEditor(
-  {$IFDEF COMPILER6_UP}
-  Designer: IDesigner;
-  {$ELSE}
-  Designer: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
+procedure ShowFramesEditor(Designer: IJvFormDesigner; AController: TJvID3Controller);
+function CreateFramesEditor(Designer: IJvFormDesigner;
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 procedure ShowFileInfo(AController: TJvID3Controller);
-
 
 implementation
 
@@ -261,13 +248,7 @@ const
     'Compressed meta frame' {fiMetaCompression}
     );
 
-procedure ShowFramesEditor(
-  {$IFDEF COMPILER6_UP}
-  Designer: IDesigner;
-  {$ELSE}
-  Designer: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
-  AController: TJvID3Controller);
+procedure ShowFramesEditor(Designer: IJvFormDesigner; AController: TJvID3Controller);
 var
   FramesEditor: TJvID3FramesEditor;
   VShared: Boolean;
@@ -277,12 +258,7 @@ begin
     FramesEditor.Show;
 end;
 
-function CreateFramesEditor(
-  {$IFDEF COMPILER6_UP}
-  Designer: IDesigner;
-  {$ELSE}
-  Designer: IFormDesigner;
-  {$ENDIF COMPILER6_UP}
+function CreateFramesEditor(Designer: IJvFormDesigner;
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
 begin
   Shared := True;
@@ -354,10 +330,10 @@ begin
         end;
 
         Msg := Format(cFileInfo, [FileSize, HeaderFoundAt, LengthInSec,
-            cVersion[Version], cLayer[Layer], Bitrate, cVbr[IsVbr], FrameCount,
-            SamplingRateFrequency, cChannelMode[ChannelMode],
-            cBool[mbProtection in Bits], cBool[mbCopyrighted in Bits],
-            cBool[mbOriginal in Bits], cEmphasis[Emphasis]]);
+          cVersion[Version], cLayer[Layer], Bitrate, cVbr[IsVbr], FrameCount,
+          SamplingRateFrequency, cChannelMode[ChannelMode],
+          cBool[mbProtection in Bits], cBool[mbCopyrighted in Bits],
+          cBool[mbOriginal in Bits], cEmphasis[Emphasis]]);
       end;
     end;
 

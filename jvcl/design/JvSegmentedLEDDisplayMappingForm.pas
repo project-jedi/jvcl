@@ -38,12 +38,9 @@ uses
   DsgnIntf,
   {$ENDIF}
   JVBaseDsgnForm, JvSegmentedLEDDisplayMapperFrame, JvSegmentedLEDDisplay,
-  JvBaseDsgnFrame;
+  JvBaseDsgnFrame, JvDsgnTypes;
 
 type
-  {$IFDEF COMPILER6_UP}
-  IFormDesigner = IDesigner;
-  {$ENDIF COMPILER6_UP}
   TfrmJvSLDMappingEditor = class(TJvBaseDesign)
     fmeMapper: TfmeJvSegmentedLEDDisplayMapper;
     lblDigitClassCaption: TLabel;
@@ -59,10 +56,10 @@ type
     btnOK: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
-    FDesigner: IFormDesigner;
+    FDesigner: IJvFormDesigner;
     function GetDisplay: TJvCustomSegmentedLEDDisplay;
     procedure SetDisplay(Value: TJvCustomSegmentedLEDDisplay);
-    procedure SetDesigner(Value: IFormDesigner);
+    procedure SetDesigner(Value: IJvFormDesigner);
   protected
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
@@ -73,11 +70,11 @@ type
     procedure MappingChanged(Sender: TObject);
   public
     procedure Loaded; override;
-    property Designer: IFormDesigner read FDesigner write SetDesigner;
+    property Designer: IJvFormDesigner read FDesigner write SetDesigner;
     property Display: TJvCustomSegmentedLEDDisplay read GetDisplay write SetDisplay;
   end;
 
-procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IFormDesigner);
+procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IJvFormDesigner);
 
 implementation
 
@@ -100,7 +97,7 @@ begin
         (Pointer(Designer) = Args[1].VInterface);
 end;
 
-procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IFormDesigner);
+procedure EditSLDMapping(ADisplay: TJvCustomSegmentedLEDDisplay; ADesigner: IJvFormDesigner);
 var
   Form: TfrmJvSLDMappingEditor;
 begin
@@ -133,7 +130,7 @@ begin
     fmeMapper.Display := Value;
 end;
 
-procedure TfrmJvSLDMappingEditor.SetDesigner(Value: IFormDesigner);
+procedure TfrmJvSLDMappingEditor.SetDesigner(Value: IJvFormDesigner);
 begin
   if Value <> FDesigner then
     FDesigner := Value;

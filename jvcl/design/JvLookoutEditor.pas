@@ -39,16 +39,12 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvTypes, JvLookOut, JvDsgnEditors;
+  JvTypes, JvLookOut, JvDsgnEditors, JvDsgnTypes;
 
 type
   TJvLookOutPageEditor = class(TComponentEditor)
   public
-    {$IFDEF COMPILER6_UP}
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
-    {$ELSE}
-    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF COMPILER6_UP}
+    constructor Create(AComponent: TComponent; ADesigner: IJvFormDesigner); override;
     procedure AddButton; virtual;
     procedure AddPage; virtual;
     procedure SetActive; virtual;
@@ -62,11 +58,7 @@ type
 
   TJvLookOutEditor = class(TComponentEditor)
   public
-    {$IFDEF COMPILER6_UP}
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
-    {$ELSE}
-    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF COMPILER6_UP}
+    constructor Create(AComponent: TComponent; ADesigner: IJvFormDesigner); override;
     procedure AddPage; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -78,11 +70,7 @@ type
 
   TJvExpressEditor = class(TComponentEditor)
   public
-    {$IFDEF COMPILER6_UP}
-    constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
-    {$ELSE}
-    constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
-    {$ENDIF COMPILER6_UP}
+    constructor Create(AComponent: TComponent; ADesigner: IJvFormDesigner); override;
     procedure AddButton; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -110,17 +98,10 @@ const
 
 //=== TJvLookOutPageEditor =====================================================
 
-{$IFDEF COMPILER6_UP}
-constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IJvFormDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
-{$ELSE}
-constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
-begin
-  inherited Create(AComponent, ADesigner);
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvLookOutPageEditor.Edit;
 begin
@@ -214,17 +195,10 @@ end;
 
 //=== TJvLookOutEditor =======================================================
 
-{$IFDEF COMPILER6_UP}
-constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IJvFormDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
-{$ELSE}
-constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
-begin
-  inherited Create(AComponent, ADesigner);
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvLookOutEditor.Edit;
 begin
@@ -301,17 +275,10 @@ end;
 
 //=== TJvExpressEditor =========================================================
 
-{$IFDEF COMPILER6_UP}
-constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IJvFormDesigner);
 begin
-  inherited Create(Acomponent, ADesigner);
+  inherited Create(AComponent, ADesigner);
 end;
-{$ELSE}
-constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
-begin
-  inherited Create(Acomponent, ADesigner);
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvExpressEditor.AddButton;
 var

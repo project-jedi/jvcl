@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Erwin Molendijk.
 Portions created by Erwin Molendijk are Copyright (C) 2002 Erwin Molendijk.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s):
 
 Last Modified: 2002-09-25
 
@@ -26,20 +26,20 @@ unit JvManagedThreadsReg;
 interface
 
 uses
-  Classes, JvMtComponents, JvConsts;
+  Classes,
+  JvMtComponents, JvConsts;
 
 procedure Register;
 
 implementation
+
 {$R ..\Resources\JvManagedThreadsReg.dcr}
 
 procedure Register;
-const
-  MTThreadsPage = 'Jv Threading';
 begin
-  RegisterComponents(SPaletteMTThreads,
-    [TJvMtManager, TJvMtThread, TJvMtThreadToVCL, TJvMtVCLToThread,
-    TJvMtThreadToThread, TJvMtSection, TJvMtCountingSection, TJvMtMonitorSection]);
+  RegisterComponents(SPaletteMTThreads, [TJvMtManager, TJvMtThread,
+    TJvMtThreadToVCL, TJvMtVCLToThread, TJvMtThreadToThread, TJvMtSection,
+    TJvMtCountingSection, TJvMtMonitorSection]);
 end;
 
 end.

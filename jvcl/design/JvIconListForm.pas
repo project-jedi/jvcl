@@ -30,15 +30,14 @@ unit JvIconListForm;
 interface
 
 uses
-  Windows,
-  Messages, Classes, Graphics, Forms, Controls, Dialogs,
+  Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs,
+  StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
   {$ELSE}
   LibIntf, DsgnIntf,
-  {$ENDIF}
-  StdCtrls, ExtCtrls, ExtDlgs,
-  JvIconList, ImgList, ComCtrls, ToolWin, JvComponent;
+  {$ENDIF COMPILER6_UP}
+  JvIconList, JvComponent;
 
 type
   TIconListDialog = class(TJvForm)
@@ -85,7 +84,7 @@ type
     FIcons: TJvIconList;
     FTopIndex: Integer;
     FSelected: Integer;
-    FileDialog: TOpenPictureDialog;
+    FFileDialog: TOpenPictureDialog;
     procedure SetSelectedIndex(Index: Integer; Force: Boolean);
     procedure ListChanged(Sender: TObject);
     function GetSelectedIcon: TIcon;
@@ -114,10 +113,11 @@ uses
   SysUtils, Clipbrd, Consts, Math,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvAniFile;
 
+{$R *.DFM}
+
+// (rom) needs explanation
 {$B-}
 {$D-}
-
-{$R *.DFM}
 
 const
   sSlot = 'Slot%d';
@@ -307,14 +307,14 @@ var
   I: Integer;
   Image: TComponent;
 begin
-  FileDialog := TOpenPictureDialog.Create(Self);
+  FFileDialog := TOpenPictureDialog.Create(Self);
   for I := 0 to 4 do
   begin
     Image := FindComponent(Format(sImage, [I]));
     if Image <> nil then
       TImage(Image).Transparent := True;
   end;
-  with FileDialog do
+  with FFileDialog do
   begin
     Title := srLoadIcon;
     Options := [ofHideReadOnly, ofFileMustExist];
@@ -347,11 +347,11 @@ var
   Ico: TIcon;
   I: Integer;
 begin
-  if FileDialog.Execute then
+  if FFileDialog.Execute then
   begin
     Ico := TIcon.Create;
     try
-      Ico.LoadFromFile(FileDialog.Filename);
+      Ico.LoadFromFile(FFileDialog.Filename);
       I := Min(FSelected + 1, FIcons.Count);
       FIcons.Insert(I, Ico);
       SetSelectedIndex(I, True);

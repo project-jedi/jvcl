@@ -45,7 +45,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvDsgnIntf;
+  JvDsgnIntf, JvDsgnTypes;
 
 implementation
 
@@ -108,41 +108,22 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure DesignerSelectComponent(ASelf: TComponent);
 var
   Designer: IDesignerNotify;
-  Designer1: IDesigner;
+  Designer1: IJvFormDesigner;
 begin
   if csDesigning in ASelf.ComponentState then
   begin
     GetDesigner(ASelf, Designer);
-    if (Designer <> nil) then
+    if Designer <> nil then
     begin
-      Designer.QueryInterface(IDesigner, Designer1);
+      Designer.QueryInterface(IJvFormDesigner, Designer1);
       if Designer1 <> nil then
         Designer1.SelectComponent(ASelf);
     end;
   end;
 end;
-{$ELSE}
-procedure DesignerSelectComponent(ASelf: TComponent);
-var
-  Designer: IDesignerNotify;
-  Designer1: IFormDesigner;
-begin
-  if csDesigning in ASelf.ComponentState then
-  begin
-    GetDesigner(ASelf, Designer);
-    if (Designer <> nil) then
-    begin
-      Designer.QueryInterface(IFormDesigner, Designer1);
-      if Designer1 <> nil then
-        Designer1.SelectComponent(ASelf);
-    end;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 initialization
   DrawDesignFrameProc := DrawDesignFrame;
