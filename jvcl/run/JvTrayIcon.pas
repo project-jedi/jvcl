@@ -64,7 +64,7 @@ type
   TTrayVisibilities = set of TTrayVisibility;
 
   TJvTrayIcon = class(TJvComponent)
-  private
+  protected
     FActive: Boolean;
     FIcon: TIcon;
     FIc: TNotifyIconDataXP;
@@ -90,7 +90,6 @@ type
     FOnBalloonHide: TNotifyEvent;
     FOnBalloonShow: TNotifyEvent;
     FOnBalloonClick: TNotifyEvent;
-    FOnHint : TNotifyEvent;
     FTime: TDateTime;
     FTimeDelay: Integer;
     FOldTray: HWND;
@@ -114,7 +113,6 @@ type
     procedure SetTask(const Value: Boolean);
     procedure SetNumber(const Value: Integer);
     procedure SetVisibility(const Value: TTrayVisibilities);
-  protected
     procedure Hook;
     procedure UnHook;
     procedure WndProc(var Mesg: TMessage);
@@ -158,7 +156,6 @@ type
     property OnBalloonShow: TNotifyEvent read FOnBalloonShow write FOnBalloonShow;
     property OnBalloonHide: TNotifyEvent read FOnBalloonHide write FOnBalloonHide;
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
-    property OnHint : TNotifyEvent read FOnHint write FOnHint;
   end;
 
 implementation
@@ -290,74 +287,76 @@ var
 begin
   try
     with Mesg do
-      if Msg = WM_CALLBACKMESSAGE then
-      begin
-        GetCursorPos(Pt);
-        ShState := [];
-        if GetKeyState(VK_SHIFT) < 0 then
-          Include(ShState, ssShift);
-        if GetKeyState(VK_CONTROL) < 0 then
-          Include(ShState, ssCtrl);
-        if GetKeyState(VK_LBUTTON) < 0 then
-          Include(ShState, ssLeft);
-        if GetKeyState(VK_RBUTTON) < 0 then
-          Include(ShState, ssRight);
-        if GetKeyState(VK_MBUTTON) < 0 then
-          Include(ShState, ssMiddle);
-        if GetKeyState(VK_MENU) < 0 then
-          Include(ShState, ssAlt);
-        case LParam of
-          WM_MOUSEMOVE:
-            DoMouseMove(shState, Pt.X, Pt.Y);
-          WM_LBUTTONDOWN:
-            DoMouseDown(mbLeft, ShState, Pt.X, Pt.Y);
-          WM_RBUTTONDOWN:
-            DoMouseDown(mbRight, ShState, Pt.X, Pt.Y);
-          WM_MBUTTONDOWN:
-            DoMouseDown(mbMiddle, ShState, Pt.X, Pt.Y);
-          WM_LBUTTONUP:
-            DoMouseUp(mbLeft, ShState, Pt.X, Pt.Y);
-          WM_MBUTTONUP:
-            DoMouseUp(mbMiddle, ShState, Pt.X, Pt.Y);
-          WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
-            DoMouseUp(mbRight, ShState, Pt.X, Pt.Y);
-          WM_LBUTTONDBLCLK:
-            DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
-          WM_RBUTTONDBLCLK:
-            DoDoubleClick(mbRight, ShState, Pt.X, Pt.Y);
-          WM_MBUTTONDBLCLK:
-            DoDoubleClick(mbMiddle, ShState, Pt.X, Pt.Y);
-          NIN_BALLOONHIDE: //sb
-            begin
-              try
-                if Assigned(FOnBalloonHide) then
-                  FOnBalloonHide(self);
-              except
-              end;
-              Result := Integer(True);
+      case Msg of
+        WM_CALLBACKMESSAGE :
+          begin
+            GetCursorPos(Pt);
+            ShState := [];
+            if GetKeyState(VK_SHIFT) < 0 then
+              Include(ShState, ssShift);
+            if GetKeyState(VK_CONTROL) < 0 then
+              Include(ShState, ssCtrl);
+            if GetKeyState(VK_LBUTTON) < 0 then
+              Include(ShState, ssLeft);
+            if GetKeyState(VK_RBUTTON) < 0 then
+              Include(ShState, ssRight);
+            if GetKeyState(VK_MBUTTON) < 0 then
+              Include(ShState, ssMiddle);
+            if GetKeyState(VK_MENU) < 0 then
+              Include(ShState, ssAlt);
+            case LParam of
+              WM_MOUSEMOVE:
+                DoMouseMove(shState, Pt.X, Pt.Y);
+              WM_LBUTTONDOWN:
+                DoMouseDown(mbLeft, ShState, Pt.X, Pt.Y);
+              WM_RBUTTONDOWN:
+                DoMouseDown(mbRight, ShState, Pt.X, Pt.Y);
+              WM_MBUTTONDOWN:
+                DoMouseDown(mbMiddle, ShState, Pt.X, Pt.Y);
+              WM_LBUTTONUP:
+                DoMouseUp(mbLeft, ShState, Pt.X, Pt.Y);
+              WM_MBUTTONUP:
+                DoMouseUp(mbMiddle, ShState, Pt.X, Pt.Y);
+              WM_RBUTTONUP, NIN_KEYSELECT: //Mimics previous versions of shell32.dll
+                DoMouseUp(mbRight, ShState, Pt.X, Pt.Y);
+              WM_LBUTTONDBLCLK:
+                DoDoubleClick(mbLeft, ShState, Pt.X, Pt.Y);
+              WM_RBUTTONDBLCLK:
+                DoDoubleClick(mbRight, ShState, Pt.X, Pt.Y);
+              WM_MBUTTONDBLCLK:
+                DoDoubleClick(mbMiddle, ShState, Pt.X, Pt.Y);
+              NIN_BALLOONHIDE: //sb
+                begin
+                  try
+                    if Assigned(FOnBalloonHide) then
+                      FOnBalloonHide(self);
+                  except
+                  end;
+                  Result := Integer(True);
+                end;
+              NIN_BALLOONTIMEOUT: //sb
+                begin
+                  I := SecondsBetween(Now, FTime);
+                  if I > FTimeDelay then
+                    BalloonHint('', '');
+                  Result := Integer(True);
+                end;
+              NIN_BALLOONUSERCLICK: //sb
+                begin
+                  try
+                    if Assigned(FOnBalloonClick) then
+                      FOnBalloonClick(self);
+                  except
+                  end;
+                  Result := Integer(True);
+                  //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+                  BalloonHint('', '');
+                end;
             end;
-          NIN_BALLOONTIMEOUT: //sb
-            begin
-              I := SecondsBetween(Now, FTime);
-              if I > FTimeDelay then
-                BalloonHint('', '');
-              Result := Integer(True);
-            end;
-          NIN_BALLOONUSERCLICK: //sb
-            begin
-              try
-                if Assigned(FOnBalloonClick) then
-                  FOnBalloonClick(self);
-              except
-              end;
-              Result := Integer(True);
-              //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
-              BalloonHint('', '');
-            end;
-        end;
-      end
-      else
-        Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+          end;
+        else
+          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+      end;
   except
     Application.HandleException(Self);
   end;
@@ -431,6 +430,7 @@ begin
     Shell_NotifyIcon(NIM_ADD, PNotifyIconData(@FIc));
     if AcceptBalloons then
       Shell_NotifyIcon(NIM_SETVERSION, PNotifyIconData(@FIc));
+
   end
   else
     Shell_NotifyIcon(NIM_DELETE, PNotifyIconData(@FIc));
@@ -627,8 +627,6 @@ begin
   end;
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self, Shift, X, Y);
-  if Assigned(FOnHint) then
-    FOnHint(Self);
 end;
 
 procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
