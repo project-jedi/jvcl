@@ -1,0 +1,49 @@
+Change capitalization of the following units (when moved back to /jvcl):
+
+JVDBEditors.pas       -> JvDBEditors.pas
+JVHLEditEditor.pas    -> JvHLEditEditor.pas
+JvCalc.Res            -> JvCalc.res
+JvConst.Res           -> JvConst.res
+JvCurrEdit.Res        -> JvCurrEdit.res
+JvDBCtrl.Res          -> JvDBCtrl.res
+JvDice.Res            -> JvDice.res
+JvId3v1.pas           -> JvID3v1.pas
+JvId3v2.pas           -> JvID3v2.pas
+JvId3v2Types.pas      -> JvID3v2Types.pas
+JvOUTLOOKBARRES.RES   -> JvOLBar.res
+JvPickDate.Res        -> JvPickDate.res
+JvSpin.Res            -> JvSpin.res
+JvSwitch.Res          -> JvSwitch.res
+JvTIMELINEBITMAPS.RES -> JvTimeLine.res
+Jvgrdcpt.pas          -> JvGrdCpt.pas/JvGradientCaption.pas
+Jvgrids.pas           -> JvGrids.pas
+JvxCtrls.Res          -> JvxCtrls.res
+JvxSlider.Res         -> JvxSlider.res
+jvThumbNails.pas      -> JvThumbnails.pas
+
+Note:
+
+JvCOMBOBOX.RES        -> Not used?
+RES_FontBox.RES       -> Not used anymore (JvFontBox.pas->Archive)
+RES_Outlook.RES       -> Not used anymore (JvOutlookPanel.pas->Archive)
+
+* The Jvx, Jva prefix.
+JvaCtlReg.pas
+JvaDBReg.pas
+JvaDsgn.pas
+JvaScrollText.pas
+
+JvxAnimate.pas
+JvxClock.pas
+JvxCtrls.pas
+JvxDConst.pas
+JvxLogin.pas
+JvxLoginDlg.pas
+JvXorCipher.pas
+JvxRConst.pas
+JvxSlider.pas
+
+
+* Consistently postfix forms/designers/property editors.
+* Change short form names to longer names, i.e Jvgrdcpt.pas
+  

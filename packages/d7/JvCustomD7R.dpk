@@ -50,7 +50,7 @@ contains
   JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
   JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
   JvThumbImage in '..\..\run\JvThumbImage.pas',
-  JvThumbnails in '..\..\run\jvThumbNails.pas',
+  JvThumbnails in '..\..\run\JvThumbNails.pas',
   JvThumbviews in '..\..\run\JvThumbviews.pas',
   JvTimeLine in '..\..\run\JvTimeLine.pas',
   JvTMTL in '..\..\run\JvTMTL.pas',
