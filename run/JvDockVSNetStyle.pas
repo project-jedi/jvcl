@@ -76,7 +76,7 @@ type
   published
     property ActivePaneSize: Integer read FActivePaneSize write SetActivePaneSize;
     property ShowImage: Boolean read FShowImage write SetShowImage;
-    property MouseleaveHide: Boolean read FMouseleaveHide write SetMouseleaveHide;
+    property MouseleaveHide: Boolean read FMouseleaveHide write SetMouseleaveHide default True;
     property HideHoldTime: Integer read FHideHoldTime write SetHideHoldTime;
     property TabColor:TColor read FTabColor write FTabColor default clBtnFace;
   end;
@@ -241,6 +241,7 @@ type
     procedure RestoreClient(DockClient: TJvDockClient); override;
     class procedure SetAnimationInterval(const Value: Integer);
     class function GetAnimationInterval: Integer;
+    class function GetAnimationStartInterval:integer;
     class procedure SetAnimationMoveWidth(const Value: Integer);
     class function GetAnimationMoveWidth: Integer;
   published
@@ -467,7 +468,6 @@ type
     procedure OnCustomTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
     procedure HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
@@ -489,6 +489,7 @@ var
   // GlobalApplicationEvents: TJvDockAppEvents = nil;
   GlobalPopupPanelAnimateInterval: Integer = 20;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
+  GlobalPopupPanelStartAnimateInterval: Integer  = 400;
 
 // (p3) not used:
 //  AnimateSleepTime: Integer = 500;
@@ -2785,16 +2786,12 @@ begin
   FState := asPopup;
 end;
 
-destructor TPopupPanelAnimate.Destroy;
-begin
-  inherited Destroy;
-end;
-
 procedure TPopupPanelAnimate.HideForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
 begin
   if FVSChannel <> nil then
     Exit;
   FVSChannel := VSChannel;
+  Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
   Enabled := (FVSChannel <> nil) and (FVSChannel.ActiveDockForm <> nil);
   if FVSChannel <> nil then
   begin
@@ -2806,7 +2803,7 @@ end;
 
 procedure TPopupPanelAnimate.OnCustomTimer(Sender: TObject);
 begin
-  // ??? no handler?
+  // we need an event handler or the timer loop won't be restarted (see TTimer.UpdateTimer in ExtCtrls.pas)
 end;
 
 procedure TPopupPanelAnimate.PopupForm(VSChannel: TJvDockVSChannel; MaxWidth: Integer);
@@ -2814,6 +2811,7 @@ begin
   if (FCurrentWidth > 0) and (FVSChannel <> nil) then
     FVSChannel.Parent.EnableAlign;
   FVSChannel := VSChannel;
+  Interval := TJvDockVSNetStyle.GetAnimationStartInterval;
   Enabled := FVSChannel <> nil;
   if FVSChannel <> nil then
   begin
@@ -2841,6 +2839,7 @@ var
 
 begin
   inherited Timer;
+  Interval := TJvDockVSNetStyle.GetAnimationInterval;
   if FVSChannel <> nil then
   begin
     SuitableWidth := min(FCurrentWidth, FMaxwidth);
@@ -2972,7 +2971,7 @@ begin
   inherited Create(ADockStyle);
   FActivePaneSize := 100;
   FShowImage := True;
-  FMouseleaveHide := False;
+  FMouseleaveHide := True;
   FHideHoldTime := 1000;
   FTabColor := clBtnFace;
 end;
@@ -3128,6 +3127,11 @@ begin
       end;
 end;
 }
+
+class function TJvDockVSNetStyle.GetAnimationStartInterval: integer;
+begin
+  Result := GlobalPopupPanelStartAnimateInterval;
+end;
 
 initialization
 
