@@ -57,6 +57,17 @@ type
   {$M-}
   {$ENDIF COMPILER6_UP}
 
+  // Base class for persistent properties that can show events.
+  // By default, Delhpi and BCB don't show the events of a class
+  // derived from TPersistent unless it also derives from
+  // TComponent. However, up until version 5, you couldn't have
+  // a Component as a Sub Component of another one, thus preventing
+  // from having events for a sub property.
+  // The design time editor associated with TJvPersistent will display
+  // the events, thus mimicking a Sub Component.
+  TJvPersistent = class(TPersistent)
+  end;
+
   TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers,
     hkPerformanceData, hkCurrentConfig, hkDynData);
   TJvRegKeys = set of TJvRegKey;
