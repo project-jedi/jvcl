@@ -3,12 +3,13 @@ object FoWallpaperChooser: TFoWallpaperChooser
   Top = 330
   Width = 317
   Height = 231
-  HorzScrollBar.Range = 313
   VertScrollBar.Range = 223
+  HorzScrollBar.Range = 313
+  ActiveControl = DirectoryBox1
   Caption = 'Wallpaper Chooser'
   Color = clButton
   Font.Color = clText
-  Font.Height = 13
+  Font.Height = 11
   Font.Name = 'adobe-helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
@@ -29,7 +30,7 @@ object FoWallpaperChooser: TFoWallpaperChooser
   Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 113
+  PixelsPerInch = 96
   object Button1: TButton
     Left = 6
     Top = 197
@@ -66,21 +67,18 @@ object FoWallpaperChooser: TFoWallpaperChooser
     object Label1: TLabel
       Left = 5
       Top = 11
-      Width = 51
-      Height = 15
+      Width = 42
+      Height = 13
       Caption = 'Directory'
     end
     object DirectoryBox1: TJvDirectoryEdit
       Left = 58
       Top = 7
       Width = 243
-      Height = 24
+      Height = 21
       OnAfterDialog = DirectoryBox1AfterDialog
-      AutoSelect = True
       ButtonFlat = False
-      BorderStyle = bsSunken3d
       ClickKey = 20501
-      NumGlyphs = 1
       TabOrder = 0
     end
   end
