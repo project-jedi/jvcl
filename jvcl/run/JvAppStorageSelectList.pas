@@ -317,6 +317,8 @@ end;
 function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSelectListOperation;
   ACaption: string = ''): string;
 begin
+  if not Assigned(AppStorage) then
+    raise EJVCLException.Create(RsEDynAppStorageNotDefined);
   try
     LoadSelectList;
     CreateDialog(AOperation, ACaption);
