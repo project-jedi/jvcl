@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
-  GenerateUtils, PackageUtils, Intf, PackageInformation;
+  GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser;
 
 type
   TProgressKind = (
@@ -1237,16 +1237,52 @@ begin
             IsCondition(RequiredPackage.Condition);
 end;
 
+type
+  { TListConditionParser searches for the idents in the List. If an ident is in
+    the list the ident is returned as True. }
+  TListConditionParser = class(TConditionParser)
+  private
+    FData: TJVCLData;
+  protected
+    procedure MissingRightParenthesis; override;
+    function GetIdentValue(const Ident: String): Boolean; override;
+  public
+    constructor Create(AData: TJVCLData);
+  end;
+
+
 function TJVCLCompiler.IsCondition(const Condition: string): Boolean;
+var
+  Parser: TListConditionParser;
 begin
   Result := True;
   if Condition <> '' then
   begin
-    if Condition[1] = '!' then
-      Result := not Data.JVCLConfig.Enabled[Copy(Condition, 2, MaxInt)]
-    else
-      Result := Data.JVCLConfig.Enabled[Condition];
+    Parser := TListConditionParser.Create(Data);
+    try
+      Result := Parser.Parse(Condition);
+    finally
+      Parser.Free;
+    end;
   end;
+end;
+
+{ TListConditionParser }
+
+constructor TListConditionParser.Create(AData: TJVCLData);
+begin
+  inherited Create;
+  FData := AData;
+end;
+
+function TListConditionParser.GetIdentValue(const Ident: String): Boolean;
+begin
+  Result := FData.JVCLConfig.Enabled[Ident];
+end;
+
+procedure TListConditionParser.MissingRightParenthesis;
+begin
+  raise Exception.Create('Missing ")" in conditional expression');
 end;
 
 end.
