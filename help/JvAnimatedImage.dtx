@@ -48,7 +48,8 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  A component that animates a glyph
+  A component that takes a glyph, cuts it along one direction to create frames to be
+  displayed as an animation.
 Description
   The Glyph property is cut according to the NumGlyph property and each subglyph is considered as a
   frame for the animation to be performed
@@ -57,7 +58,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.Active
 Summary
-  If true, the animation is performed.
+  If true, the animation is being performed.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -129,13 +130,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnFrameChanged
 Summary
-  Even triggered when a frame has been changed
+  Even triggered when the current frame has been changed
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnStart
 Summary
-  Even triggered when the animation starts
+  Even triggered when the animation starts (by setting Active to True)
 See Also
   OnStop
 
@@ -143,7 +144,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnStop
 Summary
-  Event triggered when the animation stops
+  Event triggered when the animation stops (by setting Active to False)
 See Also
   OnStart
 
@@ -180,6 +181,6 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvImageControl
 Summary
-  An image that can do buffered painting
+  This is a control that displays an image using buffered painting
 
 

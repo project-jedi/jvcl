@@ -53,11 +53,14 @@ JVCLInfo
   GROUP=JVCL.Internet and Network
   FLAG=Component
 Summary
-  This component will grab a list of URLs in the background
+  This component will grab a list of \URLs in the background
 Description
   This component allows the user to specify a list of URLs to be grabbed and then start grabbing. All
   the grab operations will be done in parallel in the background, leaving the user's application free
-  to continue its operations
+  to continue its operations.
+  Basically, enter \URLs in the URLs property then call Start. The component will create as many
+  grabbers as required. At the time of writing, HTTP, FTP and LocalFile \URLs are supported through
+  the use of TJvHttpUrlGrabber, TJvFtpUrlGrabber and TJvLocalFileUrlGrabber.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -77,8 +80,9 @@ See Also
 Summary
   This is the cleanup threshold
 Description
-  When the difference between Urls.Count and the internal Grabber count is greater than this value
-  the process of cleaning if launched. This can take some time and this is why it's done every time
+  When the difference between URLs.Count and the internal Grabbers.Count is greater than this value
+  Cleanup is called, deleting any unused grabber in the Grabbers list. This can take some time and 
+  this is why it is not done every time
 See Also
   Cleanup
 
@@ -88,8 +92,13 @@ See Also
 Summary
   The index of the default grabber to use, if any
 Description
-  If this value is -1, then no default grabber will be used when no registered grabber claims it can
-  handle a given URL
+  When a URL is given to the component, it creates a grabber for it. In order to find the correct 
+  grabber, it asks all the registered grabber classes until it find ones that claims it can handle
+  the URL. If no registered class claims it can handle the URL, then the value of DefaultGrabberIndex
+  is read and used as an index in the list returned by JvUrlGrabberClassList. The class retrieved 
+  using this index is then created and told to handle the URL.
+  However, if DefaultGrabberIndex is -1, no grabber is created and ENoGrabberForUrl is raised to
+  indicate that no grabber could be found for the given URL.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -204,7 +213,7 @@ See Also
 Summary
   Starts the grabbing operations for all grabbers.
 Description
-  If you want to start only one grabbing operation,use the Grabbers property instead
+  If you want to start only one grabbing operation, use the Grabbers property instead
 See Also
   StopAll, URLs, TJvCustomUrlGrabber.Start
 
@@ -275,7 +284,7 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.EditorTrick
 Summary
-  The editor trick used to display meaningful information at design tim
+  The editor trick used to display meaningful information at design time
 
 
 ----------------------------------------------------------------------------------------------------
@@ -296,10 +305,11 @@ Summary
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberDefaultProperties.SupportedURLName
 Summary
-  Returns the name of the supported URL for the associated grabber class
+  Returns the name of the supported URL for the associated grabber class. This is not the protocol
+  part of a URL, but a user displayable string.
 Description
   The descendents of this class must implement this function and usually do so by calling the
-  GetSupportedUrlName function in the associated grabber class
+  GetSupportedUrlName function in the associated grabber class.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -325,7 +335,11 @@ Description
   This class is the ancestor of all the Url Grabbers and declares the required methods that a grabber
   must provide.
   Do not instanciate a TJvUrlGrabber directly, simply use one of its descendants. This family of
-  classes is used by TJvUrlListGrabber to allow downloading a list of URLs
+  classes is used by TJvUrlListGrabber to allow downloading a list of URLs.
+  When deriving a new class from this one, please remember that you have to provide implementations
+  for GetDefaultPropertiesClass and GetSupportedURLName. Further, unless you intentionnaly want to
+  do blocking grabbing, you must create a new class derived from TJvCustomUrlGrabberThread that will
+  handle the grabbing in a separate background thread.
 
 
 ----------------------------------------------------------------------------------------------------
@@ -376,7 +390,8 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.GetSupportedURLName
 Summary
-  This function returns the name of the URL supported by the grabber
+  This function returns the name of the URL supported by the grabber. This is not the protocol
+  part of a URL, but a user displayable string.
 Description
   This function returns a user displayable name that indicates the type of URL supported by the
   class. For instance, a HTTP grabber class would return 'HTTP'
@@ -698,6 +713,8 @@ Summary
 Description
   This is the ancestor of all the grabber threads, and there should be as many descendants as there
   are TJvCustomUrlGrabber descendants.
+  Basically, a thread is created to handle the connection and grabbing of the file thus allowing the
+  main application to continue to run. All events will be triggered in a call to Synchronize.
 
 
 ----------------------------------------------------------------------------------------------------

@@ -13,7 +13,9 @@ Author
 @@TJvFtpDownloadMode
 <TITLE TJvFtpDownloadMode type>
 Summary
-  The mode in which to do the FTP transfers
+  The mode in which to do the FTP transfers. For more details on what Mode means in the FTP context,
+  please refer to this website:
+  http://slacksite.com/other/ftp.html
 Description
   Either ASCII or Binary
 See Also
@@ -105,7 +107,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread
 Summary
-  The thread used to grad FTP URLs
+  The thread used to grab FTP URLs
 
 
 ----------------------------------------------------------------------------------------------------
@@ -167,12 +169,15 @@ Summary
   This a grabber for Local File URLs
 Description
   This grabber handles Local File URLs, that is URLs that start with 'file://', '?:\' or '\\'
+  Local is in opposition to Internet and refers to files on a computer as well as to files on
+  the local network.
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.PreserveAttributes
 Summary
-  If True, the attributes of the source file will be copied to the destination file
+  If True, the attributes of the source file will be copied to the destination file. Attributes are
+  the date, the read-only and hidden properties.
 
 
 ----------------------------------------------------------------------------------------------------

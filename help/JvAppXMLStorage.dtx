@@ -16,16 +16,22 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Storage component based on a XML file.
 Description
-  Write here a description
+  TJvAppXMLFileStorage is a data storage backend that stores the data in an XML file.
+  
+  As a descendant of TJvCustomAppXMLStorage it provides the standard interface for storing data (such
+  as settings, form positions and sizes, etc) in a XML file format. This data will be stored in an
+  actual file, represented in memory through the use of a TJvSimpleXML object.
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppXMLFileStorage.AutoFlush
 Summary
-  If set to True, the Flush method will be called whenever a modification is made to the in memory
-  file
+  If set to True, the Flush method will be called whenever a modification has been made to the in
+  memory file.
+  If set to False, the disk file will only be updated when you call Flush or when the component is
+  destroyed.
 See Also
   Flush
 
@@ -70,68 +76,12 @@ Description
 Summary
   Creates the indicated node and sets FCurrentNode
 Description
-  Reads the \ separated Key string and sets FCurrentNode to the last one, having created all the
+  Reads the separated Key string and sets FCurrentNode to the last one, having created all the
   required XML nodes including the last one
 Parameters
   Key - The key to create
 See Also
   FCurrentNode
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DeleteSubTreeInt
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DeleteValueInt
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoReadBinary
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoReadBoolean
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoReadFloat
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoReadInteger
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoReadString
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoWriteBinary
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoWriteBoolean
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoWriteFloat
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoWriteInteger
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.DoWriteString
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.EnumFolders
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.EnumValues
 
 
 ----------------------------------------------------------------------------------------------------
@@ -187,14 +137,6 @@ See Also
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.IsFolderInt
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.PathExistsInt
-
-
-----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.RootNodeName
 Summary
   The name of the root node in the XML file
@@ -220,14 +162,6 @@ Parameters
   Value - The new value for RootNodeName
 See Also
   RootNodeName
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.SplitKeyPath
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.ValueStoredInt
 
 
 ----------------------------------------------------------------------------------------------------
