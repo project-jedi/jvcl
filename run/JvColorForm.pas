@@ -348,14 +348,19 @@ end;
 
 procedure TJvColorForm.UpdateSize;
 begin
+  Height := OtherBtn.Top + OtherBtn.Height + 8;
   {$IFDEF VCL}
   ClientWidth := FCS.Left + FCS.Width;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   // workaround a VisualCLX bug: ClientWidth does not allow values smaller than 100
   Width := FCS.Left + FCS.Width + 2;
+
+  Constraints.MaxWidth := Width;
+  Constraints.MaxHeight := Height;
+  Constraints.MinWidth := Constraints.MaxWidth;
+  Constraints.MinHeight := Constraints.MaxHeight;
   {$ENDIF VisualCLX}
-  Height := OtherBtn.Top + OtherBtn.Height + 8;
 end;
 
 procedure TJvColorForm.SetButtonSize(const Value: Integer);
