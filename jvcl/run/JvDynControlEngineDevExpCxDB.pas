@@ -40,7 +40,7 @@ uses
 type
   TJvDynControlCxDBEdit = class(TcxDBTextEdit, IUnknown,
     IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
-    IJvDynControlDatabase)
+    IJvDynControlDatabase)                  
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -280,7 +280,11 @@ type
   TJvDynControlCxDBRadioGroup = class(TcxDBRadioGroup, IUnknown,
     IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
     IJvDynControlRadioGroup, IJvDynControlDatabase)
+  private
+    FItems : TStrings;
   public
+    constructor create(AOwner : TComponent); override;
+    destructor destroy; override;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -454,6 +458,99 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
+  TJvDynControlCxDBDateTimeEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    // IJvDynControlDate
+    procedure ControlSetMinDate(Value: TDateTime);
+    procedure ControlSetMaxDate(Value: TDateTime);
+    procedure ControlSetFormat(const Value: string);
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+  end;
+
+  TJvDynControlCxDBDateEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    // IJvDynControlDate
+    procedure ControlSetMinDate(Value: TDateTime);
+    procedure ControlSetMaxDate(Value: TDateTime);
+    procedure ControlSetFormat(const Value: string);
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+  end;
+
+  TJvDynControlCxDBTimeEdit = class (TcxDBTimeEdit, IUnknown, IJvDynControl,
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime, IJvDynControlReadOnly,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: variant);
+    function ControlGetValue: variant;
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    procedure ControlSetFormat(const Value: string);
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+  end;
+
+
+
 function DynControlEngineCxDB: TJvDynControlEngineDB;
 procedure SetDefaultDynControlEngineDBDevExp;
 
@@ -473,7 +570,7 @@ uses
   SysUtils,
   JvDynControlEngineTools, JvConsts, JvJCLUtils,
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
-  cxEdit, cxDBLookupComboBox,
+  cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
   cxGridTableView,cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions;
 
@@ -1247,6 +1344,18 @@ end;
 
 //=== { TJvDynControlCxDBRadioGroup } =======================================
 
+constructor TJvDynControlCxDBRadioGroup.create(AOwner : TComponent);
+begin
+  inherited create (AOwner);
+  FItems := TStrings.Create;
+end;
+
+destructor TJvDynControlCxDBRadioGroup.destroy;
+begin
+  FItems.Free;
+  inherited destroy;
+end;
+
 procedure TJvDynControlCxDBRadioGroup.ControlSetDefaultProperties;
 begin
 end;
@@ -1318,6 +1427,7 @@ var
   I:    integer;
   Item: TcxRadioGroupItem;
 begin
+  FItems.Assign (Value);
   Properties.Items.Clear;
   for I := 0 to Value.Count - 1 do
   begin
@@ -1328,7 +1438,7 @@ end;
 
 function TJvDynControlCxDBRadioGroup.ControlGetItems: TStrings;
 begin
-  Result := Nil;
+  Result := FItems;
 end;
 
 procedure TJvDynControlCxDBRadioGroup.ControlSetColumns(Value: Integer);
@@ -1793,6 +1903,303 @@ begin
   //Style.StyleController := Value.StyleController;
 end;
 
+//=== TJvDynControlCxDBDateTimeEdit ============================================
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetDefaultProperties;
+begin
+  Properties.ShowTime  := true;
+  Properties.SaveTime  := false;
+//  Properties.InputKind := ikStandard;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBDateTimeEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+// IJvDynControlDate
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetMinDate(Value: TDateTime);
+begin
+  Properties.MinDate := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetMaxDate(Value: TDateTime);
+begin
+  Properties.MaxDate := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetFormat(const Value: string);
+begin
+//  Format := Value;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBDateTimeEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBDateTimeEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+
+//=== TJvDynControlCxDBDateEdit ============================================
+
+procedure TJvDynControlCxDBDateEdit.ControlSetDefaultProperties;
+begin
+  Properties.ShowTime  := false;
+  Properties.SaveTime  := false;
+//  Properties.InputKind := ikStandard;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
+procedure TJvDynControlCxDBDateEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBDateEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+// IJvDynControlDate
+procedure TJvDynControlCxDBDateEdit.ControlSetMinDate(Value: TDateTime);
+begin
+  Properties.MinDate := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetMaxDate(Value: TDateTime);
+begin
+  Properties.MaxDate := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetFormat(const Value: string);
+begin
+//  Format := Value;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBDateEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBDateEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBDateEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+
+//=== TJvDynControlCxDBTimeEdit ============================================
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetDefaultProperties;
+begin
+  Properties.ShowDate := false;
+  Properties.UseCtrlIncrement := true;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetReadOnly(Value: boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetTabOrder(Value: integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetValue(Value: variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBTimeEdit.ControlGetValue: variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetFormat(const Value: string);
+begin
+//  Properties.Format := Value;
+  Properties.Use24HourFormat := (Pos('H', Value) > 0);
+  if (Pos('s', Value) > 0) then
+    Properties.TimeFormat := tfHourMinSec
+  else if (Pos('m', Value) > 0) then
+    Properties.TimeFormat := tfHourMin
+  else
+    Properties.TimeFormat := tfHour;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBTimeEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBTimeEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBTimeEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
 
 //=== { TJvDynControlEngineDevExpCxDB } ===========================================
 
@@ -1869,9 +2276,9 @@ begin
   RegisterControlType(jctDBComboBox, TJvDynControlCxDBComboBox);
   RegisterControlType(jctDBListBox, TJvDynControlCxDBListBox);
   RegisterControlType(jctDBRadioGroup, TJvDynControlCxDBRadioGroup);
-  RegisterControlType(jctDBDateTimeEdit, TJvDynControlCxDBEdit);
-  RegisterControlType(jctDBTimeEdit, TJvDynControlCxDBEdit);
-  RegisterControlType(jctDBDateEdit, TJvDynControlCxDBEdit);
+  RegisterControlType(jctDBDateTimeEdit, TJvDynControlCxDBDateTimeEdit);
+  RegisterControlType(jctDBTimeEdit, TJvDynControlCxDBTimeEdit);
+  RegisterControlType(jctDBDateEdit, TJvDynControlCxDBDateEdit);
 ////  RegisterControlType(jctDBCalculateEdit, TJvDynControlCxDBEdit);
 ////  RegisterControlType(jctDBSpinEdit, TJvDynControlCxDBEdit);
   RegisterControlType(jctDBDirectoryEdit, TJvDynControlCxDBDirectoryEdit);
@@ -1932,6 +2339,7 @@ Var
   Control: TWinControl;
   LabelControl: TWinControl;
   GridDataBinding : TcxGridItemDBDataBinding;
+  ControlType : TJvDynControlType;
 begin
   if not (aGridItem IS TcxGridColumn) or
      not (aGridItem.DataBinding IS TcxGridItemDBDataBinding) then
@@ -1941,11 +2349,16 @@ begin
     Exit;
   with AOptions do
   begin
-    if TcxGridColumn(aGridItem).ActuallyVisible or
+    if TcxGridColumn(aGridItem).Visible or
        (TcxGridColumn(aGridItem).GroupIndex >= 0) or
        ShowInvisibleFields then
     begin
-      Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', aDataSource);
+      if aGridItem.PropertiesClass = TcxMemoProperties then
+        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
+      else if aGridItem.PropertiesClass = TcxCheckBoxProperties then
+        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
+      else
+        Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', aDataSource);
       if FieldDefaultWidth > 0 then
         Control.Width := FieldDefaultWidth
       else
@@ -1957,6 +2370,10 @@ begin
         else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
           Control.Width := FieldMinWidth
       end;
+      if Supports(Control, IJvDynControlReadOnly) then
+        with Control as IJvDynControlReadOnly do
+          ControlSetReadOnly(TcxGridColumn(aGridItem).Properties.ReadOnly);
+
       if Control is TcxCustomEdit then
       begin
 //        TAccesscxCustomEdit(Control).Properties.ReadOnly :=TcxGridColumn(aGridItem).Properties.ReadOnly;
