@@ -4,7 +4,7 @@
   <property name="version.major"    value="3"/>
   <property name="version.minor"    value="0"/>
   <property name="version.release"  value="0"/>
-  <property name="version.build"    value="(Alpha)"/>
+  <property name="version.build"    value="BETA1"/>
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
@@ -21,14 +21,15 @@
   <property name="wizzip"      value="JvWizard${shortversion}.zip" />
 
   <target name="help">
-  <echo message="Usage: want [target]" />
-  <echo message="Available targets:" />
-  <echo message="  jvcl_export - gets latest JVCL from CVS" />
-  <echo message="  jcl_export - gets latest JCL from CVS" />
-  <echo message="  dist - builds JVCL zip files" />
-  <echo message="  standalone - builds standalone zip files" />
-  <echo message="  separate - builds separate zip files" />
-  <echo message="  all - build all zip files" />
+    <echo message="Usage: want [target]" />
+    <echo message="Available targets:" />
+    <echo message="  jvcl_export - gets latest JVCL from CVS" />
+    <echo message="  jcl_export - gets latest JCL from CVS" />
+    <echo message="  dist - builds JVCL zip files" />
+    <echo message="  standalone - builds standalone zip files" />
+    <echo message="  separate - builds separate zip files" />
+    <echo message="  all - build all zip files" />
+    <echo message="  release - get all from CVS and build all zip files" />
   </target>
 
   <target name="jcl_export" description="Get latest jcl from CVS">
@@ -61,43 +62,43 @@
     <delete file="${srczip}" />
     <zip zipfile="${fullzip}">
       <fileset>
-          <exclude name=".cvsignore" />
-          <include name="./jcl/**" />
-          <include name="./jvcl/**" />
+        <exclude name=".cvsignore" />
+        <include name="./jcl/**" />
+        <include name="./jvcl/**" />
       </fileset>
     </zip>
     <zip zipfile="${srcexzip}">
       <fileset>
-          <exclude name=".cvsignore" />
-          <include name="./jvcl/bin/**" />
-          <include name="./jvcl/common/**" />
-          <include name="./jvcl/dcu/**" />
-          <include name="./jvcl/design/**" />
-          <include name="./jvcl/Dict/**" />
-          <include name="./jvcl/examples/**" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/install/**" />
-          <include name="./jvcl/lib5/**" />
-          <include name="./jvcl/lib6/**" />
-          <include name="./jvcl/lib7/**" />
-          <include name="./jvcl/packages/**" />
-          <include name="./jvcl/Resources/**" />
-          <include name="./jvcl/run/**" />
+        <exclude name=".cvsignore" />
+        <include name="./jvcl/bin/**" />
+        <include name="./jvcl/common/**" />
+        <include name="./jvcl/dcu/**" />
+        <include name="./jvcl/design/**" />
+        <include name="./jvcl/Dict/**" />
+        <include name="./jvcl/examples/**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/install/**" />
+        <include name="./jvcl/lib5/**" />
+        <include name="./jvcl/lib6/**" />
+        <include name="./jvcl/lib7/**" />
+        <include name="./jvcl/packages/**" />
+        <include name="./jvcl/Resources/**" />
+        <include name="./jvcl/run/**" />
       </fileset>
     </zip>
     <zip zipfile="${srczip}">
       <fileset>
-          <exclude name=".cvsignore" />
-          <include name="./jvcl/common/**" />
-          <include name="./jvcl/design/**" />
-          <include name="./jvcl/install/**" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/lib5/**" />
-          <include name="./jvcl/lib6/**" />
-          <include name="./jvcl/lib7/**" />
-          <include name="./jvcl/packages/**" />
-          <include name="./jvcl/Resources/**" />
-          <include name="./jvcl/run/**" />
+        <exclude name=".cvsignore" />
+        <include name="./jvcl/common/**" />
+        <include name="./jvcl/design/**" />
+        <include name="./jvcl/install/**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/lib5/**" />
+        <include name="./jvcl/lib6/**" />
+        <include name="./jvcl/lib7/**" />
+        <include name="./jvcl/packages/**" />
+        <include name="./jvcl/Resources/**" />
+        <include name="./jvcl/run/**" />
       </fileset>
     </zip>
   </target>
@@ -198,8 +199,13 @@
       </fileset>
     </zip>
   </target>
-  <!-- !!!insert "separate" target here!!! -->
+  <target name="separate" description="Build separate zip files">
+  <!-- !!!insert "separate" targets here!!! -->
+  </target>
   <target name="all" description="Build all zip files" depends="separate, standalone, dist">
     <!-- builds everything -->
+  </target>
+  <target name="release" description="Get all from CVS and build all zip files" depends="jvcl_export, jcl_export, all">
+    <!-- exports from CVS and builds everything -->
   </target>
 </project>
