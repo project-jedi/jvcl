@@ -14,7 +14,11 @@ The Initial Developer of the Original Code is Robert Rossmair [Robert dott Rossm
 Portions created by Robert Rossmair are Copyright (C) 2003 Robert Rossmair.
 All Rights Reserved.
 
-Contributor(s):
+Contributors:
+  Andreas Hausladen (ahuser)
+  Peter Thornqvist (peter3)
+  Robert Marquardt (marquardt)
+  Robert Rossmair (rrossmair)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -25,21 +29,19 @@ Known Issues:
 
 unit JvBackgrounds;
 
-// (rom) this needs to get untangled. jvcl.inc is required!
-{$I jedi.inc}
+{$I jvcl.inc}
 {$I windowsonly.inc}
 
 interface
 
 {***************** Conditional Compiler Symbols ************************
 
- JVCL           JEDI VCL installed (http://sourceforge.net/projects/jvcl/)
+ USEJVCL        JEDI VCL installed (http://sourceforge.net/projects/jvcl/)
 
  USE_JvGIF      use TGIFImage class from JVCL
 
  USE_AM_GIF     use GIFImage library by Anders Melander et alii
-                (download address:
-                 http://www.melander.dk/delphi/gifimage/index.html).
+                (download address: http://finn.mobilixnet.dk/delphi/).
 
  NO_DESIGNHOOK  Disables visual feedback in design mode.
                 $DEFINE this if you experience problems in design mode.
@@ -48,21 +50,13 @@ interface
                 procedure.
  *********************************************************************** }
 
-{.$DEFINE JVCL}
+{$DEFINE USEJVCL}
 {.$DEFINE USE_AM_GIF}
+{.$DEFINE USE_JvGIF}
 
-{$IFDEF USEJVCL}
-{$DEFINE USE_JvGIF}
-{$ENDIF USEJVCL}
-
-{$IFDEF RECOGNIZE_GIF}
-{$DEFINE USE_AM_GIF}
-{$UNDEF RECOGNIZE_GIF}
-{$ENDIF RECOGNIZE_GIF}
-
-{$IFDEF USE_AM_GIF}
-{$UNDEF USE_JvGIF}
-{$ENDIF USE_AM_GIF}
+{$IFDEF USE_JvGIF}
+{$UNDEF USE_AM_GIF}
+{$ENDIF USE_JvGIF}
 
 uses
   {$IFDEF USEJVCL}
@@ -203,6 +197,7 @@ type
   private
     FBackground: TJvBackground;
     FLinks: TObjectList;
+    FFixups: TStringList;
     function GetClient(Index: Integer): TWinControl;
     procedure Invalidate;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
@@ -266,11 +261,11 @@ uses
   StdCtrls, CommCtrl, ComCtrls, Dialogs,
   {$IFDEF USE_AM_GIF}
   GIFImage,
-  {$DEFINE RECOGNIZE_GIF}
+  {$DEFINE HANDLES_GIF}
   {$ENDIF USE_AM_GIF}
   {$IFDEF USE_JvGIF}
   JvGIF,
-  {$DEFINE RECOGNIZE_GIF}
+  {$DEFINE HANDLES_GIF}
   {$ENDIF USE_JvGIF}
   JvConsts, JvResources;
 
@@ -362,7 +357,7 @@ begin
     with Dest do
     begin
       if ((Source is TBitmap) and (TBitmap(Source).PixelFormat in [pf1bit..pf8bit]))
-        {$IFDEF RECOGNIZE_GIF} or (Source is TGIFImage) {$ENDIF} then
+        {$IFDEF HANDLES_GIF} or (Source is TGIFImage) {$ENDIF} then
         Assign(Source)
       else
       begin
@@ -394,16 +389,6 @@ begin
     if Offset < 0 then
       Dec(Offset, (Offset div TileDim) * TileDim);
   Result := Offset;
-end;
-
-function GetClientHandle(AClient: TWinControl): HWND;
-begin
-  Result := 0;
-  if AClient is TCustomForm then
-    Result := TForm(AClient).ClientHandle;
-  if Result = 0 then
-    if AClient.HandleAllocated then
-      Result := AClient.Handle;
 end;
 
 function GetClientRect(AClient: TControl): TRect;
@@ -574,12 +559,8 @@ begin
       OldBitmap := SelectObject(MemDC, MemBitmap);
       try
         DC := BeginPaint(AClient.Handle, PS);
-        //AClient.Perform(WM_ERASEBKGND, MemDC, MemDC);
         DoEraseBackground(AClient, MemDC);
         Msg.Result := AClient.Perform(WM_PAINT, MemDC, 0);
-      {TWMPaint(Msg).DC := MemDC;
-      AClient.Dispatch(Msg); // (ahuser) bad idea because JvExVCL does not want this
-      TWMPaint(Msg).DC := 0;}
         BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
         EndPaint(AClient.Handle, PS);
       finally
@@ -862,11 +843,11 @@ var
 begin
   Bmp := nil;
   if FTransparentColor = clDefault then
-    {$IFDEF RECOGNIZE_GIF}
+    {$IFDEF HANDLES_GIF}
     if FPicture.Graphic is TGIFImage then
       Bmp := TGIFImage(FPicture.Graphic).Bitmap
     else
-    {$ENDIF RECOGNIZE_GIF}
+    {$ENDIF HANDLES_GIF}
     if FPicture.Graphic is TBitmap then
       Bmp := TBitmap(FPicture.Graphic);
   if Assigned(Bmp) then
@@ -1120,7 +1101,7 @@ begin
       end;
       IsBitmap := (Graphic is TBitmap)
         // GIF goes as bitmap here
-        {$IFDEF RECOGNIZE_GIF} or (Graphic is TGIFImage) {$ENDIF};
+        {$IFDEF HANDLES_GIF} or (Graphic is TGIFImage) {$ENDIF};
       IsIcon := Graphic is TIcon;
       IsTranspGraphic := IsIcon or (Graphic is TMetafile);
       // if Graphic is transparent
@@ -1414,7 +1395,7 @@ begin
   if ClientHandle <> 0 then
     with FBackground.FImage, Message do
     begin
-      if FClientIsMDIForm then
+      if ClientIsMDIForm then
       begin
         if Msg = WM_ERASEBKGND then
           if FEnabled and DoEraseBackground(FClient, TWMEraseBkgnd(Message).DC) then
@@ -1423,7 +1404,7 @@ begin
             Exit;
           end;
       end
-      else // not FClientIsMDIForm
+      else // not ClientIsMDIForm
       begin
         if FEnabled then
           case Msg of
@@ -1450,7 +1431,7 @@ begin
             InvalidateBackground;
         WM_HSCROLL:
           begin
-            if FClientIsMDIForm then
+            if ClientIsMDIForm then
               Inc(FHorzOffset, GetMDIClientScrollDelta(ClientHandle,
                 SB_HORZ, TWMScroll(Message)));
             if FMode <> bmTile then
@@ -1458,14 +1439,14 @@ begin
           end;
         WM_VSCROLL:
           begin
-            if FClientIsMDIForm then
+            if ClientIsMDIForm then
               Inc(FVertOffset, GetMDIClientScrollDelta(ClientHandle,
                 SB_VERT, TWMScroll(Message)));
             if FMode <> bmTile then
               InvalidateBackground;
           end;
       end;
-      if FClientIsMDIForm then
+      if ClientIsMDIForm then
         Result := CallWindowProc(FPrevWndProc, ClientHandle, Msg, wParam, lParam);
     end;
 end;
@@ -1563,15 +1544,12 @@ end;
 
 function TJvBackgroundClientLink.GetClientHandle: HWND;
 begin
-  Result := JvBackgrounds.GetClientHandle(FClient);
-  {
   Result := 0;
-  if FClientIsMDIForm then
-    Result := TForm(FClient).ClientHandle
-  else
-  if FClient.HandleAllocated then
-    Result := FClient.Handle;
-  }
+  if FClient is TCustomForm then
+    Result := TForm(FClient).ClientHandle;
+  if Result = 0 then
+    if FClient.HandleAllocated then
+      Result := FClient.Handle;
 end;
 
 procedure TJvBackgroundClientLink.SetClient(Value: TWinControl);
@@ -1593,10 +1571,12 @@ begin
   FBackground := ABackground;
   FLinks := TObjectList.Create;
   FLinks.OwnsObjects := False;
+  FFixups := TStringList.Create;
 end;
 
 destructor TJvBackgroundClients.Destroy;
 begin
+  FFixups.Free;
   FLinks.Clear;
   FLinks.Free;
   inherited Destroy;
@@ -1654,7 +1634,6 @@ var
   I: Integer;
   Client: TWinControl;
 begin
-  // (rom) no inherited call?
   if Operation = opRemove then
     for I := 0 to FLinks.Count - 1 do
     begin
@@ -1696,13 +1675,9 @@ end;
 
 procedure TJvBackgroundClients.ReadData(Reader: TReader);
 begin
-  FLinks.Free;
-  FLinks := nil;
-  // (rom) TObjectList and TStringList are incompatible. This is probably a BUG!
-  TStringList(FLinks) := TStringList.Create;
   Reader.ReadListBegin;
   while not Reader.EndOfList do
-    TStringList(FLinks).Add(Reader.ReadString);
+    FFixups.Add(Reader.ReadString);
   Reader.ReadListEnd;
 end;
 
@@ -1720,15 +1695,11 @@ procedure TJvBackgroundClients.FixupReferences(Root: TComponent);
 var
   I: Integer;
   S: string;
-  ItemNames: TStringList;
   NextItem: TComponent;
 begin
-  ItemNames := TStringList(FLinks);
-  FLinks := nil;
-  with ItemNames do
-  try
-    FLinks := TObjectList.Create;
-    FLinks.OwnsObjects := False;
+  FLinks.Clear;
+  with FFixups do
+  begin
     FLinks.Capacity := Capacity;
     for I := 0 to Count - 1 do
     begin
@@ -1742,8 +1713,6 @@ begin
       if NextItem is TWinControl then
         Self.Add(TWinControl(NextItem));
     end;
-  finally
-    Free;
   end;
 end;
 
