@@ -45,7 +45,6 @@ JvHtmlParserEditor
 JvIColEdit
 JvID3v2Editor
 JvImageForm
-JvImageTransform
 JvInterpreter_all
 JvInterpreter_Classes
 JvInterpreter_ComCtrls
@@ -99,6 +98,7 @@ JvQbnddlg
 JvQtKeySelectionFrame
 JvQuickPreviewForm
 JvRegAutoEditor
+JvResources
 JvSbEdit
 JvSchedEvntReg
 JvScheduleEditor

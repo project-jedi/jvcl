@@ -10,6 +10,7 @@ JvArrowButton
 JvAVICapture
 JvBalloonHint
 JvBaseDlg
+JvBaseEdits
 JvBehaviorLabel
 JvBevel
 JvBitBtn
@@ -43,7 +44,6 @@ JvDockDelphiStyle
 JvDockGlobals
 JvDotNetControls
 JvDotNetUtils
-JvDragDrop
 JvDriveCtrls
 JvEdit
 JvEnterTab
@@ -55,15 +55,16 @@ JvFixedEditPopUp
 JvFormAutoSize
 JvFormWallpaper
 JvId3v1
+JvId3v2
 JvID3v2Base
 JvId3v2Types
+JvImageList
 JvImageListViewer
 JvImageSquare
 JvImagesViewer
 JvImageWindow
 JvInstallLabel
 JvItemsPanel
-JvLabel
 JvLED
 JvListComb
 JvLookOut
@@ -94,6 +95,7 @@ JvSoundControl
 JvSpacer
 JvSpecialProgress
 JvSpeedButton
+JvSpin
 JvSplitter
 JvStarfield
 JvStaticText
@@ -110,7 +112,6 @@ JvTimerList
 JvTipOfDay
 JvTMTimeLine
 JvToolBar
-JvToolEdit
 JvTranslator
 JvTransLED
 JvTransparentButton

@@ -1,6 +1,7 @@
 JvActions
 JvAirBrush
 JvAni
+JvAniFile
 JvAnimatedImage
 JvAppEvent
 JvAppInst
@@ -10,7 +11,6 @@ JvArrayButton
 JvaScrollText
 JvBandForms
 JvBandObject
-JvBaseEdits
 JvBaseThumbnail
 JvBDEFilter
 JvBDEIndex
@@ -59,6 +59,9 @@ JvDBCombobox
 JvDBControls
 JvDBDatePickerEdit
 JvDBDateTimePicker
+JvDBGrid
+JvDBGridExport
+JvDBHTLabel
 JvDBLookupComboEdit
 JvDBLookupTreeView
 JvDBProgressBar
@@ -73,7 +76,6 @@ JvDiagramShape
 JvDialogs
 JvDice
 JvDirectories
-JvDockControlForm
 JvDockHashTable
 JvDockInfo
 JvDockSupportClass
@@ -89,6 +91,7 @@ JvDynControlEngineJVCL
 JvDynControlEngineVCL
 JvEasterEgg
 JvEditor
+JvEditorCommon
 JvFavoritesButton
 JvFooter
 JvFormAnimatedIcon
@@ -199,8 +202,8 @@ JvIconList
 JvImage
 JvImageDlg
 JvImageDrawThread
-JvImageList
 JvImageRotate
+JvImageTransform
 JvInspDB
 JvInspExtraEditors
 JvInspXVCL
@@ -213,6 +216,7 @@ JvJCLUtils
 JvJoystick
 JvJVCLUtils
 JvKeyboardStates
+JvLinkedControls
 JvLinkLabel
 JvLinkLabelDebug
 JvLinkLabelParser
@@ -270,7 +274,6 @@ JvRadioGroup
 JvRas32
 JvRecentMenuButton
 JvResample
-JvResources
 JvRgbToHtml
 JvRichEditToHtml
 JvSAL
@@ -289,7 +292,6 @@ JvSimPIDLinker
 JvSimpleXml
 JvSimScope
 JvSpeedbar
-JvSpin
 JvSplashWindow
 JvSplit
 JvStartMenuButton
@@ -342,7 +344,6 @@ JvxClock
 JvxCtrls
 JvXmlTree
 JvXorCipher
-JvXPButtons
 JvXPCore
 JvxSlider
 JvYearGrid

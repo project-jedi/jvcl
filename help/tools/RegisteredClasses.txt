@@ -20,6 +20,7 @@ TJvArrowButton
 TJvaScrollText
 TJvAVICapture
 TJvBalloonHint
+TJvBDEItems
 TJvBDEMemoryTable
 TJvBDESQLScript
 TJvBehaviorLabel
@@ -87,7 +88,10 @@ TJvDBGridCSVExport
 TJvDBGridExcelExport
 TJvDBGridHTMLExport
 TJvDBGridWordExport
+TJvDBGridXMLExport
+TJvDBHTLabel
 TJvDBIndexCombo
+TJvDBListDataSet
 TJvDBLookupCombo
 TJvDBLookupComboEdit
 TJvDBLookupEdit
@@ -471,6 +475,8 @@ TJvVigenereCipher
 TJvWaitingGradient
 TJvWaitingProgress
 TJvWavePlayer
+TJvWideEditor
+TJvWideHLEditor
 TJvWinampLabel
 TJvWindowHook
 TJvWinHelp
