@@ -43,19 +43,17 @@ type
   EJvExportDBGridException = class(EJVCLException);
 
 { avoid Office TLB imports }
-  TOleEnum = type integer;
-
 const
   wdDoNotSaveChanges = 0;
 
-  wdTableFormatGrid1 = 10;
-  wdTableFormatGrid2 = 11;
-  wdTableFormatGrid3 = 12;
-  wdTableFormatGrid4 = 13;
-  wdTableFormatGrid5 = 14;
-  wdTableFormatGrid6 = 15;
-  wdTableFormatGrid7 = 16;
-  wdTableFormatGrid8 = 17;
+  wdTableFormatGrid1 = $10;
+  wdTableFormatGrid2 = $11;
+  wdTableFormatGrid3 = $12;
+  wdTableFormatGrid4 = $13;
+  wdTableFormatGrid5 = $14;
+  wdTableFormatGrid6 = $15;
+  wdTableFormatGrid7 = $16;
+  wdTableFormatGrid8 = $17;
 
   xlPortrait = $01;
   xlLandscape = $02;
@@ -66,7 +64,7 @@ type
   private
     FGrid: TDBGrid;
     FCaption: string;
-    FFilename: string;
+    FFilename: TFilename;
     FOnProgress: TJvExportProgressEvent;
     FLastExceptionMessage: string;
     FSilent: boolean;
@@ -84,7 +82,7 @@ type
     property LastExceptionMessage: string read FLastExceptionMessage;
   published
     property Caption: string read FCaption write FCaption;
-    property Filename: string read FFilename write FFilename;
+    property Filename: TFilename read FFilename write FFilename;
     property Grid: TDBGrid read FGrid write FGrid;
     property Silent: boolean read FSilent write FSilent default true;
     property OnProgress: TJvExportProgressEvent read FOnProgress write FOnProgress;

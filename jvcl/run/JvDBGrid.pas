@@ -998,7 +998,7 @@ begin
   end;
   // Fin Lionel
 end;
-
+             
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
 var
   IndexDefs: TIndexDefs;
