@@ -78,7 +78,6 @@ type
     procedure SetButton(ALeft, ATop, AWidth, AHeight: Integer);
     procedure DoAntiAlias(Bmp:TBitmap);
     procedure SetAntiAlias(const Value: Boolean);
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
     procedure SetRegionOctagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionTriangleDown(ALeft, ATop, AWidth, AHeight: Integer);
@@ -95,6 +94,7 @@ type
     procedure SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRing(ALeft, ATop, AWidth, AHeight: Integer);
 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
     procedure MouseLeave(Control: TControl); override;
     procedure MouseEnter(Control: TControl); override;
     procedure FontChanged; override;
@@ -2662,10 +2662,10 @@ begin
   end;
 end;
 
-procedure TJvShapedButton.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvShapedButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  DrawThemedBackground(Self, Msg.DC, ClientRect, Parent.Brush.Handle, False);
-  Msg.Result := 1;
+  DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle, False);
+  Result := True;
 end;
 
 end.

@@ -659,9 +659,9 @@ type
     procedure SetEnabledButtons(Value: TJvWizardButtonSet);
     procedure SetVisibleButtons(Value: TJvWizardButtonSet);
     procedure ImageChanged(Sender: TObject);
-    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
 
     // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
+    procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;

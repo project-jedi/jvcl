@@ -62,8 +62,8 @@ type
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
@@ -302,9 +302,9 @@ begin
     SetFocus;
 end;
 
-procedure TJvSwitch.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+function TJvSwitch.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  Msg.Result := 1; // the component paints the background in Paint
+  Result := True; // the component paints the background in Paint
 end;
 
 procedure TJvSwitch.MouseDown(Button: TMouseButton;

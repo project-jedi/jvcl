@@ -158,13 +158,13 @@ type
     procedure DrawButtonFrame;
     procedure UpdateGroup;
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
-    procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
-    procedure WmSetFocus(var Msg:TMessage); message WM_SETFOCUS;
-    procedure WmKillFocus(var Msg:TMessage);  message WM_KILLFOCUS;
+    procedure WMSetFocus(var Msg:TMessage); message WM_SETFOCUS;
+    procedure WMKillFocus(var Msg:TMessage);  message WM_KILLFOCUS;
     procedure ChangeHeight(NewHeight: Integer);
     procedure ChangeWidth(NewWidth: Integer);
     procedure SetShowFocus(const Value: boolean);
   protected
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -753,10 +753,10 @@ begin
   RedrawControl(False);
 end;
 
-procedure TJvCustomRollOut.WMEraseBkgnd(var Msg: TMessage);
+function TJvCustomRollOut.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited;
-  Msg.Result := 0;
+  //  inherited DoPaintBackground(Canvas, Param);
+  Result := False;
 end;
 
 procedure TJvCustomRollOut.DrawButtonFrame;

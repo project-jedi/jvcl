@@ -298,15 +298,15 @@ type
   TJvTFDaysState = (agsNormal, agsSizeCol, agsSizeRow, agsSizeColHdr,
     agsSizeRowHdr, agsMoveCol, agsSizeAppt, agsMoveAppt);
 
- {$IFDEF TIMEBLOCKS}
+  {$IFDEF TIMEBLOCKS}
  // ok
   TJvTFColTitleStyle = (ctsSingleClip, ctsSingleEllipsis, ctsMultiClip,
     ctsMultiEllipsis, ctsHide, ctsRotated);
- {$ELSE}
+  {$ELSE}
  // remove
  //TJvTFColTitleStyle = (ctsSingleClip, ctsSingleEllipsis, ctsMultiClip,
    //             ctsMultiEllipsis, ctsHide);
- {$ENDIF TIMEBLOCKS}
+  {$ENDIF TIMEBLOCKS}
 
   TJvTFDaysThresholds = class(TPersistent)
   private
@@ -335,20 +335,15 @@ type
     constructor Create(AOwner: TJvTFDays);
     procedure Assign(Source: TPersistent); override;
   published
-    property DetailHeight: Integer read FDetailHeight write SetDetailHeight
-       default 10;
-    property DetailWidth: Integer read FDetailWidth write SetDetailWidth
-       default 10;
+    property DetailHeight: Integer read FDetailHeight write SetDetailHeight default 10;
+    property DetailWidth: Integer read FDetailWidth write SetDetailWidth default 10;
     property EditHeight: Integer read FEditHeight write SetEditHeight default 1;
     property EditWidth: Integer read FEditWidth write SetEditWidth default 10;
     property TextHeight: Integer read FTextHeight write SetTextHeight default 1;
     property TextWidth: Integer read FTextWidth write SetTextWidth default 10;
-    property DropTextFirst: Boolean read FDropTextFirst write SetDropTextFirst
-       default True;
-    property PicsAllOrNone: Boolean read FPicsAllOrNone write SetPicsAllOrNone
-       default False;
-    property WholePicsOnly: Boolean read FWholePicsOnly write SetWholePicsOnly
-       default True;
+    property DropTextFirst: Boolean read FDropTextFirst write SetDropTextFirst default True;
+    property PicsAllOrNone: Boolean read FPicsAllOrNone write SetPicsAllOrNone default False;
+    property WholePicsOnly: Boolean read FWholePicsOnly write SetWholePicsOnly default True;
   end;
 
   TJvTFDaysScrollBar = class(TScrollBar)
