@@ -37,10 +37,15 @@ uses Windows, Graphics, Controls, Classes, ExtCtrls, JvgTypes, ComCtrls, JvgComm
 
 const
   TCS_SCROLLOPPOSITE = $0001; //вкладка с несколькими страницами; multipage tab [translated]
+{$EXTERNALSYM TCS_SCROLLOPPOSITE}
   TCS_BOTTOM = $0002;
+{$EXTERNALSYM TCS_BOTTOM}
   TCS_RIGHT = $0002; //используется с TCS_VERTICAL; used with TCS_VERTICAL [translated]
+{$EXTERNALSYM TCS_RIGHT}
   TCS_HOTTRACK = $0040;
+{$EXTERNALSYM TCS_HOTTRACK}
   TCS_VERTICAL = $0080; //только для режима с несколькими строками; Only for multi-line mode [translated]
+{$EXTERNALSYM TCS_VERTICAL}
 
 type
   TglOnGetGradientColors = procedure(Sender: TObject; Index: integer; var Gradient: TJvgGradient) of object;
