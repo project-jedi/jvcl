@@ -323,7 +323,9 @@ begin
   with JvInterpreterAdapter do
   begin
     { TSpeedButtonActionLink }
+    {$IFDEF COMPILER7_UP}
     AddClass(cButtons, TSpeedButtonActionLink, 'TSpeedButtonActionLink');
+    {$ENDIF COMPILER7_UP}
     { TSpeedButton }
     AddClass(cButtons, TSpeedButton, 'TSpeedButton');
     AddGet(TSpeedButton, 'Create', TSpeedButton_Create, 1, [varEmpty], varObject);
