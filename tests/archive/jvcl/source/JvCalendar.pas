@@ -495,9 +495,11 @@ type
     function GetBoldDays(Y, M: Word): string; virtual;
   public
     constructor Create;
+    { (RB) This is the same as the TStrings.AddString implementation ??? }
     procedure AddStrings(Strings: TStrings); override;
     function AddObject(const S: string; AObject: TObject): Integer; override;
-    function Add(const S: string): Integer; override;
+    { (RB) no need to override Add, TStringList.Add just calls AddObject }
+    //function Add(const S: string): Integer; override;
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
@@ -529,7 +531,7 @@ end;
   This must be fully qualified, i.e. '199801=1,2,3,4,5' or '000012=25,31' etc
 }
 
-function TMonthCalStrings.Add(const S: string): Integer;
+(*function TMonthCalStrings.Add(const S: string): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
     raise EMonthCalError.CreateFmt(sInvalidDateStr, [S]);
@@ -545,7 +547,7 @@ begin
     Result := inherited Add(S);
   if (Calendar <> nil) and Calendar.HandleAllocated then
     Calendar.DoBoldDays;
-end;
+end;*)
 
 function TMonthCalStrings.IsBold(Year, Month, Day: Word): Boolean;
 var
@@ -593,7 +595,20 @@ end;
 
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
-  Result := Add(S);
+  if AnsiPos('=', S) <> 7 then
+    raise EMonthCalError.CreateFmt(sInvalidDateStr, [S]);
+
+  Result := IndexOfName(Copy(S, 1, 6));
+  if Result > -1 then
+  begin
+    Sorted := False;
+    Strings[Result] := S;
+    Sorted := True;
+  end
+  else
+    Result := inherited AddObject(S, AObject);
+  if (Calendar <> nil) and Calendar.HandleAllocated then
+    Calendar.DoBoldDays;
 end;
 
 function TMonthCalStrings.GetDateIndex(Year, Month: Word): Integer;
