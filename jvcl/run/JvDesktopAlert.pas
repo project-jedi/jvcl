@@ -510,7 +510,8 @@ var
   end;
 begin
   Assert(FDesktopForm <> nil);
-  if FDesktopForm.Visible then FDesktopForm.Close;
+  if FDesktopForm.Visible then
+    FDesktopForm.Close;
   SystemParametersInfo(SPI_GETWORKAREA, 0, @ARect, 0);
   if (Location.Width <> 0) then
     FDesktopForm.Width := Location.Width
@@ -557,9 +558,10 @@ begin
       else if (Location.Position = dapMainFormCenter) and (Application <> nil) and (Application.MainForm <> nil) then
         CenterForm(FDesktopForm, Application.MainForm.BoundsRect)
       else if (Location.Position = dapOwnerFormCenter) and (Owner is TCustomForm) then
-        CenterForm(FDesktopForm, TCustomForm(OWner).BoundsRect);
+        CenterForm(FDesktopForm, TCustomForm(Owner).BoundsRect);
     end;
   end;
+
   FDesktopForm.OnShow := InternalOnShow;
   FDesktopForm.OnClose := InternalOnClose;
   FDesktopForm.OnMouseEnter := InternalMouseEnter;
@@ -573,7 +575,7 @@ begin
   if not Assigned(FDesktopForm.tbClose.OnClick) then
     FDesktopForm.tbClose.OnClick := FDesktopForm.acCloseExecute;
 
-  if not (daoCanFade in Options) or (csDesigning in ComponentState) then
+  if not (daoCanFade in Options) then
   begin
     FDesktopForm.FadeInTime := 0;
     FDesktopForm.FadeOutTime := 0;

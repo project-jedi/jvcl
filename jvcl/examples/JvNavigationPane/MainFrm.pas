@@ -5,9 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvExControls, JvComponent, JvXPBar, JvNavigationPane,
-  ComCtrls, ExtCtrls, Menus, ImgList, StdCtrls, JvPageList, JvButton,
-  CheckLst, StdActns, ActnList, JvDialogActns, JvRollOut, JvActions;
+  Dialogs, StdCtrls, ComCtrls, CheckLst, JvComponent, JvNavigationPane, ImgList, Menus;
 
 type
   TForm1 = class(TForm)
