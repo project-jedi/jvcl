@@ -708,7 +708,8 @@ begin
     ADC := ACanvas.Handle;
     if Control is TWinControl then
       TWinControl(Control).PaintTo(ADC, 0, 0)
-    else if Control <> nil then
+    else
+    if Control <> nil then
     begin
       SaveIndex := SaveDC(ADC);
       try
@@ -888,7 +889,8 @@ begin
     ToPage := TJvPreviewPrinter(Source).ToPage;
     Title := TJvPreviewPrinter(Source).Title;
   end
-  else if Source is TPrintDialog then
+  else
+  if Source is TPrintDialog then
   begin
     Collate := TPrintDialog(Source).Collate;
     Copies := TPrintDialog(Source).Copies;

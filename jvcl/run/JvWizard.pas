@@ -625,7 +625,12 @@ type
     property BorderWidth: Integer read FBorderWidth write SetBorderWidth default 1;
     property Image: TJvWizardImage read FImage write FImage;
     property Width: Integer read FWidth write SetWidth default 164;
-    property Color default {$IFDEF VCL}clActiveCaption{$ENDIF}{$IFDEF VisualCLX}clActiveHighlight{$ENDIF};
+    {$IFDEF VCL}
+    property Color default clActiveCaption;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property Color default clActiveHighlight;
+    {$ENDIF VisualCLX}
     property Visible;
   end;
 
@@ -1024,7 +1029,7 @@ type
     procedure Click; override;
   end;
 
-{ TJvWizardButtonControl }
+//=== TJvWizardButtonControl =================================================
 
 constructor TJvWizardButtonControl.Create(AOwner: TComponent);
 begin
@@ -1057,19 +1062,24 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvWizardButtonControl.VisibleChanged;
-{$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvWizardButtonControl.CMVisibleChanged(var Msg: TMessage);
-{$ENDIF VCL}
 begin
   inherited;
   if Assigned(FWizard) then
     FWizard.RepositionButtons;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvWizardButtonControl.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if Assigned(FWizard) then
+    FWizard.RepositionButtons;
+end;
+{$ENDIF VisualCLX}
 
-{ TJvWizardBaseButton }
+//=== TJvWizardBaseButton ====================================================
 
 procedure TJvWizardBaseButton.Click;
 var
@@ -1102,7 +1112,7 @@ begin
   // do nothing (make Delphi 5 compiler happy)
 end;
 
-{ TJvWizardStartButton }
+//=== TJvWizardStartButton ===================================================
 
 constructor TJvWizardStartButton.Create(AOwner: TComponent);
 begin
@@ -1131,7 +1141,7 @@ begin
   Result := Caption <> RsFirstButtonCaption;
 end;
 
-{ TJvWizardLastButton }
+//=== TJvWizardLastButton ====================================================
 
 constructor TJvWizardLastButton.Create(AOwner: TComponent);
 begin
@@ -1159,7 +1169,7 @@ begin
   Result := Caption <> RsLastButtonCaption;
 end;
 
-{ TJvWizardBackButton }
+//=== TJvWizardBackButton ====================================================
 
 constructor TJvWizardBackButton.Create(AOwner: TComponent);
 begin
@@ -1187,7 +1197,7 @@ begin
   Result := Caption <> RsBackButtonCaption;
 end;
 
-{ TJvWizardNextButton }
+//=== TJvWizardNextButton ====================================================
 
 constructor TJvWizardNextButton.Create(AOwner: TComponent);
 begin
@@ -1215,7 +1225,7 @@ begin
   Result := Caption <> RsNextButtonCaption;
 end;
 
-{ TJvWizardFinishButton }
+//=== TJvWizardFinishButton ==================================================
 
 constructor TJvWizardFinishButton.Create(AOwner: TComponent);
 begin
@@ -1237,7 +1247,7 @@ begin
   Result := Caption <> RsFinishButtonCaption;
 end;
 
-{ TJvWizardCancelButton }
+//=== TJvWizardCancelButton ==================================================
 
 constructor TJvWizardCancelButton.Create(AOwner: TComponent);
 begin
@@ -1261,7 +1271,7 @@ begin
   Result := Caption <> SCancelButton;
 end;
 
-{ TJvWizardHelpButton }
+//=== TJvWizardHelpButton ====================================================
 
 constructor TJvWizardHelpButton.Create(AOwner: TComponent); // Added by Theodore
 begin
@@ -1314,7 +1324,7 @@ begin
   Result := Caption <> SHelpButton;
 end;
 
-{ TJvWizardNavigateButton }
+//=== TJvWizardNavigateButton ================================================
 
 function TJvWizardNavigateButton.GetCaption: string;
 begin
@@ -1411,7 +1421,7 @@ begin
   Result := not Assigned(FControl) or FControl.StoreCaption;
 end;
 
-{ TJvWizardRouteMapControl }
+//=== TJvWizardRouteMapControl ===============================================
 
 constructor TJvWizardRouteMapControl.Create(AOwner: TComponent);
 begin
@@ -1451,14 +1461,14 @@ end;
 
 procedure TJvWizardRouteMapControl.DoDeletePage(const APage: TJvWizardCustomPage);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Assigned(FWizard) then
   begin
     if Assigned(APage) then
     begin
-      i := FPages.Remove(APage);
-      if FPageIndex = i then
+      I := FPages.Remove(APage);
+      if FPageIndex = I then
         FPageIndex := -1;
     end;
     WizardPageDeleted(APage);
@@ -1570,7 +1580,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvWizardRouteMapControl.SetParent(const ParentA: TWidgetControl);
 var
-  i: Integer;
+  I: Integer;
   AParent: TWidgetControl;
 begin
   AParent:= ParentA;
@@ -1578,7 +1588,7 @@ begin
 {$IFDEF VCL}
 procedure TJvWizardRouteMapControl.SetParent(AParent: TWinControl);
 var
-  i: Integer;
+  I: Integer;
 begin
 {$ENDIF VCL}
   if Assigned(AParent) then
@@ -1594,8 +1604,8 @@ begin
     FWizard := TJvWizard(AParent);
     FWizard.FRouteMap := Self;
     FPages.Clear;
-    for i := 0 to FWizard.PageCount - 1 do
-      FPages.Add(FWizard.FPages[i]);
+    for I := 0 to FWizard.PageCount - 1 do
+      FPages.Add(FWizard.FPages[I]);
 
     if Assigned(FWizard.FActivePage) then
       FPageIndex := FWizard.FActivePage.PageIndex
@@ -1647,7 +1657,7 @@ begin
     FOnDisplaying(Self, APage, Result);
 end;
 
-{ TJvWizardImage }
+//=== TJvWizardImage =========================================================
 
 constructor TJvWizardImage.Create;
 begin
@@ -1718,7 +1728,7 @@ begin
   AGraphic := FPicture.Graphic;
   FTransparent := Value;
   if Assigned(AGraphic) and not
-     ({$IFDEF VCL}(AGraphic is TMetaFile) or{$ENDIF VCL} (AGraphic is TIcon)) then
+     ({$IFDEF VCL}(AGraphic is TMetaFile) or {$ENDIF VCL} (AGraphic is TIcon)) then
   begin
     AGraphic.Transparent := Value;
   end;
@@ -1729,7 +1739,7 @@ begin
   DoChange;
 end;
 
-{ TJvWizardGraphicObject }
+//=== TJvWizardGraphicObject =================================================
 
 constructor TJvWizardGraphicObject.Create;
 begin
@@ -1765,7 +1775,7 @@ begin
   DoChange;
 end;
 
-{ TJvWizardPageTitle }
+//=== TJvWizardPageTitle =====================================================
 
 constructor TJvWizardPageTitle.Create;
 begin
@@ -1938,14 +1948,12 @@ begin
   DoChange;
 end;
 
-{ TJvWizardPageObject }
+//=== TJvWizardPageObject ====================================================
 
 procedure TJvWizardPageObject.DoChange;
 begin
   if Assigned(FWizardPage) then
-  begin
     FWizardPage.Invalidate;
-  end;
 end;
 
 procedure TJvWizardPageObject.Initialize;
@@ -1958,7 +1966,7 @@ begin
   Initialize;
 end;
 
-{ TJvWizardPageHeader }
+//=== TJvWizardPageHeader ====================================================
 
 constructor TJvWizardPageHeader.Create;
 begin
@@ -2141,13 +2149,18 @@ begin
     WizardPage.Realign;
 end;
 
-{ TJvWizardWaterMark }
+//=== TJvWizardWaterMark =====================================================
 
 constructor TJvWizardWaterMark.Create;
 begin
   inherited Create;
   FAlign := alLeft;
-  Color := {$IFDEF VCL}clActiveCaption{$ENDIF}{$IFDEF VisualCLX}clActiveHighlight{$ENDIF};
+  {$IFDEF VCL}
+  Color := clActiveCaption;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Color := clActiveHighlight;
+  {$ENDIF VisualCLX}
   FWidth := 164;
   FBorderWidth := 1;
   FImage := TJvWizardImage.Create;
@@ -2232,7 +2245,7 @@ begin
     WizardPage.Realign;
 end;
 
-{ TJvWizardPagePanel }
+//=== TJvWizardPagePanel =====================================================
 
 constructor TJvWizardPagePanel.Create;
 begin
@@ -2270,7 +2283,7 @@ begin
   end;
 end;
 
-{ TJvWizardCustomPage }
+//=== TJvWizardCustomPage ====================================================
 
 constructor TJvWizardCustomPage.Create(AOwner: TComponent);
 begin
@@ -2379,14 +2392,18 @@ end;
 
 {$IFDEF VisualCLX}
 procedure TJvWizardCustomPage.FontChanged;
+begin
+  FHeader.AdjustTitleFont;
+  inherited FontChanged;
+end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
 procedure TJvWizardCustomPage.CMFontChanged(var Msg: TMessage);
-{$ENDIF VCL}
 begin
   FHeader.AdjustTitleFont;
   inherited;
 end;
+{$ENDIF VCL}
 
 procedure TJvWizardCustomPage.SetWizard(AWizard: TJvWizard);
 begin
@@ -2565,7 +2582,7 @@ begin
   Header.Title := Value;
 end;
 
-{ TJvWizardWelcomePage }
+//=== TJvWizardWelcomePage ===================================================
 
 constructor TJvWizardWelcomePage.Create(AOwner: TComponent);
 begin
@@ -2602,14 +2619,14 @@ begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-{ TJvWizardInteriorPage }
+//=== TJvWizardInteriorPage ==================================================
 
 procedure TJvWizardInteriorPage.DrawPage(ACanvas: TCanvas; var ARect: TRect);
 begin
   FHeader.PaintTo(ACanvas, ARect);
 end;
 
-{ TJvWizardPageList }
+//=== TJvWizardPageList ======================================================
 
 destructor TJvWizardPageList.Destroy;
 begin
@@ -2632,7 +2649,7 @@ begin
   end;
 end;
 
-{ TJvWizard }
+//=== TJvWizard ==============================================================
 
 constructor TJvWizard.Create(AOwner: TComponent);
 begin
@@ -2656,15 +2673,15 @@ end;
 
 destructor TJvWizard.Destroy;
 var
-  i: Integer;
+  I: Integer;
 begin
   DestroyNavigateButtons;
   { !!! YW - Reset wizard property value of all wizard pages FIRST,
     so that when the actual wizard page control is freed, the page won't
     call Wizard.RemovePage, otherwise it will cause AV, because at that
     time FPages has already been destroyed. }
-  for i := 0 to FPages.Count - 1 do
-    TJvWizardCustomPage(FPages[i]).FWizard := nil;
+  for I := 0 to FPages.Count - 1 do
+    TJvWizardCustomPage(FPages[I]).FWizard := nil;
   FImageChangeLink.Free;
   FPages.Free;
   inherited Destroy;
@@ -2679,8 +2696,7 @@ begin
     SelectFirstPage;
 end;
 
-function TJvWizard.GetButtonControlClass(
-  AKind: TJvWizardButtonKind): TJvWizardButtonControlClass;
+function TJvWizard.GetButtonControlClass(AKind: TJvWizardButtonKind): TJvWizardButtonControlClass;
 begin
   case AKind of
     bkStart:
@@ -3208,17 +3224,17 @@ end;
 
 procedure TJvWizard.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
-  i: Integer;
+  I: Integer;
   Control: TControl;
 begin
   { YW - Force the wizard to load its pages in page order. }
-  for i := 0 to FPages.Count - 1 do
-    Proc(TComponent(FPages[i]));
+  for I := 0 to FPages.Count - 1 do
+    Proc(TComponent(FPages[I]));
   { YW - Load other controls, otherwise, those controls won't show up in
      the wizard. }
-  for i := 0 to ControlCount - 1 do
+  for I := 0 to ControlCount - 1 do
   begin
-    Control := Controls[i];
+    Control := Controls[I];
     { YW - Because all the pages are already loaded, so here we do NOT need to
        load them again, otherwise it will cause 'duplicate component nam'
        error. }

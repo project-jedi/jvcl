@@ -29,15 +29,14 @@ unit JvGradientCaption;
 interface
 
 uses
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Classes, Graphics, Controls, Forms, Menus,
   JvWndProcHook, JvJCLUtils, JvJVCLUtils;
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QClasses, QGraphics, QControls, QForms, QMenus,
   JvQJCLUtils, JvQWndProcHook;
-{$ENDIF VisualCLX}
-
+  {$ENDIF VisualCLX}
 
 type
   THideDirection = (hdLeftToRight, hdRightToLeft);

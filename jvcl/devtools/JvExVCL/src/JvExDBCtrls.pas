@@ -29,13 +29,15 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExDBCtrls;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, DBCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QButtons, QDBCtrls, Types, QWindows,
+  Types, Qt, QGraphics, QControls, QForms, QButtons, QDBCtrls, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls, JvExButtons;
@@ -63,9 +65,9 @@ type
   JV_CUSTOMCONTROL_EVENTS(DBLookupListBox)
   JV_CUSTOMCONTROL_EVENTS(PopupDataList)
   JV_CUSTOMCONTROL_EVENTS(DBLookupComboBox)
-{$IFDEF VCL}
+  {$IFDEF VCL}
   JV_WINCONTROL_EVENTS(DBRichEdit)
-{$ENDIF VCL}
+  {$ENDIF VCL}
   JV_CONTROL_EVENTS_BEGIN(NavButton)
 
 implementation

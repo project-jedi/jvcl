@@ -29,7 +29,9 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExButtons;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,

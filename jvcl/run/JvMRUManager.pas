@@ -440,7 +440,8 @@ begin
     begin
       if (FSeparateSize > 0) and (I > 0) and (I mod FSeparateSize = 0) then
         AddMenuItem(NewLine)
-      else if (I = 0) and (MenuLocation = mruSibling) and (FRecentMenu.Count = 0) then
+      else
+      if (I = 0) and (MenuLocation = mruSibling) and (FRecentMenu.Count = 0) then
         AddMenuItem(NewLine);
       S := Strings[I];
       ShortCut := scNone;
@@ -453,7 +454,8 @@ begin
         L := Cardinal(I) + FStartAccel;
         if L < 10 then
           C := '&' + Char(Ord('0') + L)
-        else if L <= (Ord('Z') + 10) then
+        else
+        if L <= (Ord('Z') + 10) then
           C := '&' + Char(L + Ord('A') - 10)
         else
           C := ' ';
@@ -803,7 +805,8 @@ begin
         QPainter_handle(GetCanvas.Handle),
         {$ENDIF VisualCLX}
         S, GetCanvas.TextWidth('n') * MaxLength, cpCenter)
-    else if Length(S) > MaxLength then
+    else
+    if Length(S) > MaxLength then
       Result := '...' + Copy(S, Length(S) - MaxLength + 1, MaxInt);
   end;
   if (Result = '...') or (Result = '') then

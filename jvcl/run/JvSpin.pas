@@ -672,7 +672,8 @@ begin
     begin
       if NewValue < FMinValue then
         Result := FMinValue
-      else if NewValue > FMaxValue then
+      else
+      if NewValue > FMaxValue then
         Result := FMaxValue;
     end;
   }

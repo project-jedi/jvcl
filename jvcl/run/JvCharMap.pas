@@ -275,9 +275,9 @@ type
 
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     function DoMouseWheelDown(Shift: TShiftState;
-      {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState;
-      {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     function InGridRange(ACol, ARow:Integer):Boolean;virtual;
     function InCharRange(AChar:WideChar):Boolean;virtual;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
@@ -455,7 +455,7 @@ type
     {$IFDEF VisualCLX}
     procedure BoundsChanged; override;
     {$ENDIF VisualCLX}
-    procedure SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -677,7 +677,7 @@ end;
 {$ENDIF VisualCLX}
 
 function TJvCustomCharMap.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   // ignore the return value, because inherited always returns True
   inherited DoMouseWheelDown(Shift, MousePos);
@@ -688,7 +688,7 @@ begin
 end;
 
 function TJvCustomCharMap.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   // ignore the return value, because inherited always returns True
   inherited DoMouseWheelUp(Shift, MousePos);
@@ -1406,7 +1406,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-procedure TCharZoomPanel.SetParent({$IFDEF VisualCLX}const{$ENDIF} AParent: TWinControl);
+procedure TCharZoomPanel.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if not (csDestroying in ComponentState) then

@@ -1853,7 +1853,7 @@ begin
             TCustomImageListEx(Images).Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
-              ImageIndex, {$IFDEF VisualCLX}itImage, {$ENDIF}Enabled);
+              ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
         end;
       nibDropArrow:
         begin

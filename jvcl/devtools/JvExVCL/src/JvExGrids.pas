@@ -29,7 +29,9 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExGrids;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Grids,
@@ -56,20 +58,20 @@ type
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
-{$IFNDEF HAS_GRID_EDITSTYLE}
- // Compiler 5 and VisualCLX do not have TEditStyle
+  {$IFNDEF HAS_GRID_EDITSTYLE}
+  // Compiler 5 and VisualCLX do not have TEditStyle
   TEditStyle = (esSimple, esEllipsis, esPickList);
-{$ENDIF HAS_GRID_EDITSTYLE}
+  {$ENDIF HAS_GRID_EDITSTYLE}
 
 
   JV_WINCONTROL_EVENTS(InplaceEdit)
   JV_CUSTOMCONTROL_EVENTS(CustomGrid)
-{$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER6_UP}
   JV_CUSTOMCONTROL_EVENTS(CustomDrawGrid)
   JV_WINCONTROL_EVENTS(InplaceEditList)
- {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
 
   JV_CUSTOMCONTROL_EVENTS_BEGIN(DrawGrid)
   JV_CONSTRUCTOR
@@ -92,10 +94,10 @@ implementation
 JV_WINCONTROL_EVENTS_IMPL(InplaceEdit)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomGrid)
 {$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDrawGrid)
 JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
 JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(DrawGrid)

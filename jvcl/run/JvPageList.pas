@@ -29,13 +29,14 @@ Known Issues:
 unit JvPageList;
 
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGraphics, QControls, Types, Qt, QWindows,
+  Types, QGraphics, QControls, Qt, QWindows,
   {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
@@ -478,7 +479,8 @@ begin
       Application.HandleException(Self);
     end;
   end
-  else if not Showing then
+  else
+  if not Showing then
   begin
     try
       DoHide;
@@ -728,7 +730,8 @@ procedure TJvCustomPageList.NextPage;
 begin
   if (ActivePageIndex < PageCount - 1) and (PageCount > 1) then
     ActivePageIndex := ActivePageIndex + 1
-  else if PageCOunt > 0 then
+  else
+  if PageCount > 0 then
     ActivePageIndex := 0
   else
     ActivePageIndex := -1;
@@ -736,7 +739,7 @@ end;
 
 procedure TJvCustomPageList.PrevPage;
 begin
-  if (ActivePageIndex > 0) then
+  if ActivePageIndex > 0 then
     ActivePageIndex := ActivePageIndex - 1
   else
     ActivePageIndex := PageCount - 1;

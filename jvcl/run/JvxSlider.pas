@@ -118,7 +118,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     { TODO -cVisuaCLX : implement message handler substitutions }
     {$ENDIF VisualCLX}

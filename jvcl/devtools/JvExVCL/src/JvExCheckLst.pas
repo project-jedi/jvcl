@@ -29,13 +29,15 @@ Known Issues:
 WARNINGHEADER
 
 unit JvExCheckLst;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, CheckLst,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QCheckLst, Types, QWindows,
+  Types, Qt, QGraphics, QControls, QForms, QCheckLst, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer, JvExControls;

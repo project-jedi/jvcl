@@ -432,7 +432,7 @@ type
     {$ENDIF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1221,7 +1221,7 @@ begin
     if csDesigning in ComponentState then
     begin
       Brush.Color := clBlack;
-      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
+      FrameRect({$IFDEF VisualCLX} Canvas, {$ENDIF} R);
     end;
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
