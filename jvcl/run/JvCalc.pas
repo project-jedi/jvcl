@@ -153,12 +153,7 @@ type
     FKind: TCalcBtnKind;
     FFontChanging: Boolean;
   protected
-    {$IFDEF VCL}
-    procedure CMParentFontChanged(var Msg: TMessage); message CM_PARENTFONTCHANGED;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     procedure ParentFontChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor CreateKind(AOwner: TComponent; AKind: TCalcBtnKind);
     property Kind: TCalcBtnKind read FKind;
@@ -302,7 +297,7 @@ begin
   {$IFDEF VisualCLX}
   with AFont do
   begin
-    Color := clWindowText;
+    Color := clText;
     Name := 'Helvetica';
     Height := 11;
   end;
@@ -432,12 +427,7 @@ begin
     Tag := -1;
 end;
 
-{$IFDEF VisualCLX}
 procedure TJvCalcButton.ParentFontChanged;
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-procedure TJvCalcButton.CMParentFontChanged(var Msg: TMessage);
-{$ENDIF VCL}
 
   function BtnColor(Kind: TCalcBtnKind): TColor;
   begin

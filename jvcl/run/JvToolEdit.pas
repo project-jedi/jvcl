@@ -48,10 +48,7 @@ uses
   {$IFDEF VisualCLX}
   Qt, QComboEdits, JvQExComboEdits, QWindows,
   {$ENDIF VisualCLX}
-  {$IFDEF VCL}
-  JvExControls,
-  {$ENDIF VCL}
-  JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
+  JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -172,12 +169,7 @@ type
 
   TJvCustomComboEdit = class;
 
-  {$IFDEF VCL}
   TJvCustomComboEditActionLink = class(TWinControlActionLink)
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  TJvCustomComboEditActionLink = class(TWidgetControlActionLink)
-  {$ENDIF VisualCLX}
   protected
     function IsCaptionLinked: Boolean; override;
     function IsHintLinked: Boolean; override;
@@ -1094,9 +1086,6 @@ uses
   {$IFDEF VCL}
   JvBrowseFolder,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvExControls,
-  {$ENDIF VisualCLX}
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JvConsts, JvFinalize;
 

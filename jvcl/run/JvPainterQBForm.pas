@@ -97,12 +97,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvConsts, JvResources, JvTypes;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 type
   TColorProc = function(OutLoop, InLoop: Integer): Integer;

@@ -492,12 +492,7 @@ begin
   if FCaptionPosition <> Value then
   begin
     FCaptionPosition := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RecreateWidget;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -724,6 +719,7 @@ begin
       DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
+      // ToDo: replace with DrawText(Canvas, .... , Rotation)
       TextOutAngle(Canvas, Rotation, X, Y, Caption);
       {$ENDIF VisualCLX}
     end;

@@ -39,12 +39,10 @@ unit JvListComb;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages,
-  {$ENDIF VCL}
   SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
   {$IFDEF VisualCLX}
-  Qt, QWindows, 
+  Qt,
   {$ENDIF VisualCLX}
   {$IFDEF VCL}
   JvJCLUtils, JvComboBox,

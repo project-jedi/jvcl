@@ -44,13 +44,12 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF VCL}
-  Graphics, Controls, Dialogs,
-  JvInterpreter_Windows;
+  JvInterpreter_Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Variants, Qt, QGraphics, QControls, QDialogs,
-  JvInterpreter_Types;
+  Variants, Qt, JvQInterpreter_Types,
   {$ENDIF VisualCLX}
+  Graphics, Controls, Dialogs;
 
 {$IFDEF VisualCLX}
 type

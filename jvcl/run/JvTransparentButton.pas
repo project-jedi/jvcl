@@ -34,7 +34,7 @@ uses
   Windows, Messages, Graphics, Controls,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
   {$IFDEF VCL}
-  CommCtrl,
+  CommCtrl, JvJCLUtils,
   {$ENDIF VCL}
   JvComponent, JvButton;
 
@@ -257,11 +257,6 @@ uses
   {$ENDIF UNITVERSIONING}
   JvConsts;
 
-{$IFDEF VisualCLX}
-const
-  clBtnHighlight = clNormalLight;
-  clBtnShadow = clNormalDark;
-{$ENDIF VisualCLX}
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }
@@ -737,23 +732,17 @@ end;
 
 { just like DrawText, but draws disabled instead }
 
-{$IFDEF VCL}
-function DrawDisabledText(DC: HDC; lpString: PChar;
+function DrawDisabledText(DC: HDC; Caption: TCaption;
   nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function DrawDisabledText(DC: HDC; lpString: PWideChar;
-  nCount: Integer; var lpRect: TRect; uFormat: Integer): Integer;
-{$ENDIF VisualCLX}
 var
   OldCol: Integer;
 begin
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-  DrawText(DC, lpString, nCount, lpRect, uFormat);
+  DrawText(DC, Caption, nCount, lpRect, uFormat);
   OffsetRect(lpRect, -1, -1);
   SetTextColor(DC, ColorToRGB(clBtnShadow));
-  Result := DrawText(DC, lpString, nCount, lpRect, uFormat);
+  Result := DrawText(DC, Caption, nCount, lpRect, uFormat);
   SetTextColor(DC, OldCol);
 end;
 
@@ -779,18 +768,13 @@ begin
   TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
-  {$IFDEF VCL}
-  DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  DrawText(Canvas, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  DrawText(DC, Caption, Length(Caption), TmpRect, Flags or DT_CALCRECT);
 {
   if FWordWrap then
     Canvas.TextExtent(Caption, TmpRect, WordBreak)
   else
     Canvas.TextExtent(Caption, TmpRect, 0);
 }
-  {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
   Flags := DT_CENTER;
@@ -823,31 +807,17 @@ begin
   if ((bsMouseDown in MouseStates) or Down) and FShowPressed then
     OffsetRect(TmpRect, FOffset, FOffset);
 
-  {$IFDEF VCL}
   SetBkMode(DC, Windows.TRANSPARENT);
   if not Enabled then
-    DrawDisabledText(DC, PChar(Caption), -1, TmpRect, Flags)
+    DrawDisabledText(DC, Caption, -1, TmpRect, Flags)
   else
   begin
     if (bsMouseInside in MouseStates) and HotTrack then
       SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawText(DC, PChar(Caption), -1, TmpRect, Flags);
+    DrawText(DC, Caption, -1, TmpRect, Flags);
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if not Enabled then
-    DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
-  else
-  begin
-    if (bsMouseInside in MouseStates) and HotTrack then
-      SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
-    else
-      SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
-  end;
-  {$ENDIF VisualCLX}
 end;
 
 procedure TJvTransparentButton.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
@@ -1085,6 +1055,7 @@ begin
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FActiveList.GetBitmap(FActiveIndex, Bmp);
+      GrayBitmap(Bmp, 11, 59, 30);
       FImList.AddMasked(Bmp, Bmp.TransparentColor);
       {$ENDIF VisualCLX}
     end;

@@ -32,10 +32,7 @@ interface
 
 uses
   TypInfo, Classes,
-  Windows, Controls, Graphics, StdCtrls,
-  {$IFDEF VisualCLX}
-  QExtCtrls,
-  {$ENDIF VisualCLX}
+  Windows, Controls, Graphics, StdCtrls, ExtCtrls,
   JvJCLUtils, JvXPCore, JvXPCoreUtils;
 
 type

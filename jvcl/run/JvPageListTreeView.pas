@@ -842,7 +842,7 @@ begin
       N.ImageIndex := FNodeImages.SelectedIndex;
       N.SelectedIndex := FNodeImages.SelectedIndex;
       R := N.DisplayRect{$IFDEF VCL}(False){$ENDIF};
-      {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+      Windows.InvalidateRect(Handle, @R, True);
       SetPreviousNode(N);
     end;
   end;
@@ -899,7 +899,7 @@ begin
     FLastSelected.ImageIndex := FNodeImages.ImageIndex;
     FLastSelected.SelectedIndex := FNodeImages.ImageIndex;
     R := FLastSelected.DisplayRect{$IFDEF VCL}(False){$ENDIF};
-    {$IFDEF VisualCLX} QWindows.{$ENDIF}InvalidateRect(Handle, @R, True);
+    Windows.InvalidateRect(Handle, @R, True);
   end;
 end;
 

@@ -47,7 +47,7 @@ interface
 uses
   Windows, Messages,
   {$IFDEF VisualCLX}
-  qt, QTypes,
+  Qt,
   {$ENDIF VisualCLX}
   Classes, Graphics, Controls, Menus,
   JvCaret, JvMaxPixel, JvTypes, JvExStdCtrls;

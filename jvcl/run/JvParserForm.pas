@@ -74,12 +74,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Dialogs, JvHTMLParser, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure TJvHTMLParserForm.edKeywordChange(Sender: TObject);
 begin

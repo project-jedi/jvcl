@@ -498,12 +498,7 @@ begin
     end;
     if Y < MarginTop then
       Y := MarginTop;
-    {$IFDEF VCL}
-    Images.Draw(Canvas, X, Y, ImageIndex, Enabled);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    Images.Draw(Canvas, X, Y, ImageIndex, itImage, Enabled);
-    {$ENDIF VisualCLX}
+    Images.Draw(Canvas, X, Y, ImageIndex,{$IFDEF VisualCLX}itImage,{$ENDIF} Enabled);
   end;
 end;
 

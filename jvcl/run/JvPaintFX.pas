@@ -380,12 +380,7 @@ end;
 
 class procedure TJvPaintFX.AntiAlias(const Dst: TBitmap);
 begin
-  {$IFDEF VCL}
   JvJCLUtils.AntiAlias(Dst);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  JvQJCLUtils.AntiAlias(Dst);
-  {$ENDIF VisualCLX}
 end;
 
 class procedure TJvPaintFX.AntiAliasRect(const Dst: TBitmap;

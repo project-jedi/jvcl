@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Windows, Messages, Graphics, Controls, ExtCtrls,
-  JvComponent, JvTypes;
+  JvJCLUtils, JvComponent, JvTypes;
 
 type
   TJvGroupHeaderOptions = class(TPersistent)
@@ -74,20 +74,14 @@ type
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
     procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
-    {$IFDEF VCL}
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$ENDIF VCL}
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
     function GetLabelText: string;
   protected
     procedure Paint; override;
-    {$IFDEF VisualCLX}
     procedure TextChanged; override;
     procedure FontChanged; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -256,26 +250,13 @@ begin
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
-    OffsetRect(Rect, -1, -1);
-    Canvas.Font.Color := clBtnShadow;
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, Text, Length(Text), Rect, Flags);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
     DrawText(Canvas, Text, Length(Text), Rect, Flags);
-    {$ENDIF VisualCLX}
   end
   else
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(Text), Length(Text), Rect, Flags);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, Text, Length(Text), Rect, Flags);
-    {$ENDIF VisualCLX}
 end;
 
 procedure TJvGroupHeader.Paint;
@@ -473,36 +454,17 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-
-procedure TJvGroupHeader.CMTextChanged(var Msg: TMessage);
-begin
-  inherited;
-  Invalidate;
-end;
-
-procedure TJvGroupHeader.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  Invalidate;
-end;
-
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-
 procedure TJvGroupHeader.TextChanged;
 begin
   inherited TextChanged;
   Invalidate;
 end;
+
 procedure TJvGroupHeader.FontChanged;
 begin
   inherited FontChanged;
   Invalidate;
 end;
-
-{$ENDIF VisualCLX}
 
 procedure TJvGroupHeader.SetBevelSpace(Value: Integer);
 begin

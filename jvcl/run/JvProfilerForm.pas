@@ -125,12 +125,7 @@ uses
   {$ENDIF VCL}
   JvConsts, JvTypes, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 const
   EmptyLine = '0.00';

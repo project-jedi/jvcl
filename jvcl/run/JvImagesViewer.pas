@@ -352,12 +352,7 @@ constructor TJvImagesViewer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   //  FDirectory := GetCurrentDir;
-  {$IFDEF VCL}
   FFileMask := Graphics.GraphicFileMask(TGraphic);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FFileMask := QGraphics.GraphicFileMask(TGraphic);
-  {$ENDIF VisualCLX}
   Color := clWindow;
 end;
 

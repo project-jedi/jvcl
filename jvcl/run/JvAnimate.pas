@@ -36,12 +36,6 @@ uses
   Classes, Controls,
   JvThemes, JvExComCtrls;
 
-{$IFDEF VisualCLX}
- {$IF not declared(TJvExAnimate)}
-  {$MESSAGE Fatal 'This unit needs at least Delphi 7 or Kylix 3.'}
- {$IFEND}
-{$ENDIF VisualCLX}
-
 type
   TJvAnimate = class(TJvExAnimate)
   public

@@ -75,12 +75,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Forms, Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QForms, QConsts,
-  {$ENDIF VisualCLX}
   JvJVCLUtils;
 
 //=== { TJvTimerThread } =====================================================

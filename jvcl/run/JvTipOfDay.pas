@@ -163,13 +163,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,
+  SysUtils, Windows, ExtCtrls, Dialogs,
   {$IFDEF VCL}
-  Windows, ExtCtrls, Dialogs,  JvWndProcHook,
+  JvWndProcHook,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QExtCtrls, QDialogs,
-  {$ENDIF VisualCLX}
   JvButton, JvResources;
 
 {$IFDEF MSWINDOWS}

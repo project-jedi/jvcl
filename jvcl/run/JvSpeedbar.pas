@@ -30,14 +30,8 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  Menus, Buttons, Controls,
+  Windows, Messages, Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}

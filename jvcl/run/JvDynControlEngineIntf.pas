@@ -30,15 +30,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Graphics, Buttons, Dialogs,
-  {$IFDEF VCL}
-  FileCtrl,  
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  {$IFDEF COMPILER7_UP}
-  QFileCtrls,
-  {$ENDIF COMPILER7_UP}
-  {$ENDIF VisualCLX}
-  SysUtils;
+  FileCtrl, SysUtils;
 
 type
   IJvDynControl = interface

@@ -44,11 +44,12 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes,
   {$IFDEF VCL}
-  Windows, Graphics, JvInterpreter_Windows;
+   JvInterpreter_Windows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QGraphics, JvInterpreter_Types;
+  JvQInterpreter_Types,
   {$ENDIF VisualCLX}
+  Windows, Graphics;
 
 { TFont }
 
