@@ -23,8 +23,10 @@
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
+
 {$I JVCL.INC}
 {$I JvUIB.inc}
+
 unit JvUIBConst;
 
 interface
@@ -34,23 +36,18 @@ interface
 const
   S_OK    = $00000000;
   S_FALSE = $00000001;
-{$ENDIF}
-{$ENDIF}
+{$ENDIF BCB}
+{$ENDIF DELPHI6_UP}
 
 
 type
   // JvUIB Server Commands
-  TServerCommand = (
-    scGetClassObject,
-    scInvokeMethod
-  );
+  TServerCommand = (scGetClassObject, scInvokeMethod);
 
-ResourceString
-
-{$IFDEF UIBLANG_EN}
-
-  sUIBTrue             = 'True';
-  sUIBFalse            = 'False';
+resourceString
+  {$IFDEF UIBLANG_EN}
+  sUIBTrue  = 'True';
+  sUIBFalse = 'False';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Incorrect Database Server version, check compiler options.';
@@ -74,11 +71,11 @@ ResourceString
   EJvUIB_CantConnect   = 'Can''t connect to server.';
   EJvUIB_ClassNotFound = 'Class not found.';
   EJvUIB_DataType      = 'Data type error.';
-{$ENDIF}
+  {$ENDIF UIBLANG_EN}
 
-{$IFDEF UIBLANG_FR}
-  sUIBTrue             = 'Vrai';
-  sUIBFalse            = 'Faux';
+  {$IFDEF UIBLANG_FR}
+  sUIBTrue  = 'Vrai';
+  sUIBFalse = 'Faux';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Version de base de données incorrecte, vérifiez les options de compilation.';
@@ -102,11 +99,11 @@ ResourceString
   EJvUIB_CantConnect   = 'Impossible de se connecter au serveur.';
   EJvUIB_ClassNotFound = 'La Classe n''a pas été trouvée.';
   EJvUIB_DataType      = 'Erreur de type de donnée.';
-{$ENDIF}
+  {$ENDIF UIBLANG_FR}
 
-{$IFDEF UIBLANG_CZ}
-  sUIBTrue             = 'Ano';
-  sUIBFalse            = 'Ne';
+  {$IFDEF UIBLANG_CZ}
+  sUIBTrue  = 'Ano';
+  sUIBFalse = 'Ne';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Nekorektní verze databázového serveru, zkontrolujte nastavení kompileru.';
@@ -130,12 +127,11 @@ ResourceString
   EJvUIB_CantConnect   = 'Nelze pøipojit server.';
   EJvUIB_ClassNotFound = 'Tøída neexistuje.';
   EJvUIB_DataType      = 'Chybný typ dat.';
-{$ENDIF}
+  {$ENDIF UIBLANG_CZ}
 
-{$IFDEF UIBLANG_DE}
-
-  sUIBTrue             = 'Wahr';
-  sUIBFalse            = 'Falsch';
+  {$IFDEF UIBLANG_DE}
+  sUIBTrue  = 'Wahr';
+  sUIBFalse = 'Falsch';
 
   // UIB Errors
   EUIB_INVALIDEIBVERSION   = 'Falsche Datenbankserverversion. Bitte ueberpruefen sie die Compiler Optionen.';
@@ -159,7 +155,7 @@ ResourceString
   EJvUIB_CantConnect   = 'Verbindung zum Server kann nicht aufgebaut werden.';
   EJvUIB_ClassNotFound = 'Klasse nicht gefunden.';
   EJvUIB_DataType      = 'Datentypfehler.';
-{$ENDIF}
+  {$ENDIF UIBLANG_DE}
 
 implementation
 
