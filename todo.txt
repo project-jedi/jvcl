@@ -22,7 +22,6 @@ TODO for JVCL 3.0
 - JvAVICapture.pas has some strange boolean expressions which should be fixed // (rom)
 
 - JvAirBrush.pas has a timing mechanism for spray which has to be reanimated or deleted // (rom)
-- JvAniFile.pas implement write of animated icon // (rom)
 - JvAnimatedImage.pas TJvImageControl.DoPaintControl is not yet CLX compatible // (rom)
 - JvAnimateTitle.pas TJvAnimTitle.AnimateTitle implementation of blinking title is problematic. // (rom)
   Better try to manipulate the WM_GETTEXT and WM_SETTEXT to the Form window. // (rom)

@@ -250,7 +250,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJCLUtils, JvJVCLUtils, JvAniFile, JvConsts, JvResources, JvTypes;
+  JvJCLUtils, JvJVCLUtils, JvAni, JvConsts, JvResources, JvTypes;
 
 {$R-}
 
@@ -1962,17 +1962,19 @@ begin
     Changed(Self);
   end
   else
-  if Source is TJvAnimatedCursorImage then
+  if Source is TJvAni then
   begin
     NewImage;
     FBackgroundColor := clWindow;
-    with TJvAnimatedCursorImage(Source) do
+    with TJvAni(Source) do
     begin
-      for I := 0 to IconCount - 1 do
+      for I := 0 to FrameCount - 1 do
       begin
         AddFrame(TIcon(Icons[I]));
-        Self.Frames[FrameIndex].FAnimateInterval :=
-          Longint(Rates[I] * 100) div 6;
+        Self.Frames[I].FAnimateInterval :=
+          Longint(Frames[I].Rate * 100) div 6;
+        if Frames[I].Rate = 0 then
+          Self.Frames[I].FAnimateInterval := 100;
       end;
     end;
     Changed(Self);

@@ -120,12 +120,14 @@ procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);
 var
   AniCursor: TJvAni;
 begin
-  AniCursor := LoadJvAnimatedCursorImageDialog;
+  AniCursor := LoadJvAniDialog;
   if AniCursor <> nil then
     try
       AniCursor.AssignToBitmap(Image.Glyph, clFuchsia, True,
         Image.Orientation = goVertical);
-      Image.Interval := AniCursor.DefaultRate;
+      Image.Interval := (AniCursor.Header.dwJIFRate * 100) div 6;
+      if Image.Interval = 0 then
+        Image.Interval := 100;
       Image.TransparentColor := clFuchsia;
       Designer.Modified;
     finally
