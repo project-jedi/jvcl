@@ -29,9 +29,7 @@ unit JvBDEProgress;
 interface
 
 uses
-  Classes,
-  Bde,
-  Controls, DB, DBTables,
+  Windows, Classes, Controls, DB, DBTables, Bde,
   JvTimer, JvComponent;
 
 type
@@ -126,7 +124,7 @@ type
 implementation
 
 uses
-  Windows, Forms, SysUtils, StdCtrls, Math,
+  SysUtils, Math, Forms, StdCtrls, 
   JvProgressUtils;
 
 const

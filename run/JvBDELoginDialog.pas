@@ -32,9 +32,8 @@ unit JvBDELoginDialog;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  DB, DBTables,
-  JvBDELists, JvLoginForm, JvAppStorage;
+  Windows, Classes, DBTables,
+  JvLoginForm, JvAppStorage;
 
 type
   TCheckUserNameEvent = function(UsersTable: TTable;
@@ -115,9 +114,9 @@ function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
 implementation
 
 uses
-  Windows, BDE,
-  IniFiles, Graphics,
-  JvJVCLUtils, JvConsts, JvResources;
+  SysUtils, Graphics, Controls, Forms, DB, BDE,
+  JvBDELists, 
+  JvConsts, JvResources;
 
 constructor TJvDBLoginDialog.Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);
 begin

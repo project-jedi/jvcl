@@ -313,6 +313,9 @@ implementation
 uses
   Menus, SysUtils,
   JclStrings, JclGraphUtils,
+  {$IFDEF COMPILER5}
+  JvJCLUtils, // StrToXxxDef
+  {$ENDIF COMPILER5}
   JvResources;
 
 const

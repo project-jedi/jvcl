@@ -44,10 +44,9 @@ unit JvComCtrls;
 interface
 
 uses
-  Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Contnrs, Graphics, Controls, Forms,
   Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
-  Menus, ComCtrls, CommCtrl, StdActns, ImgList, Buttons,
-  JclBase,
+  Menus, ComCtrls, CommCtrl, ImgList, Buttons,
   JvJVCLUtils, JvComponent, JvExControls, JvExComCtrls;
 
 const
@@ -61,6 +60,7 @@ const
 
   JvDefaultInactiveColorFrom = TColor($D7D7D7);
   JvDefaultInactiveColorTo= TColor($ADADAD);
+
 type
   TJvIPAddress = class;
 
@@ -583,9 +583,9 @@ type
 implementation
 
 uses
-  Math,
-  JclSysUtils, JclStrings,
-  JvJCLUtils, JvTypes;
+  SysUtils,
+  JclStrings,
+  JvJCLUtils;
 
 const
   TVIS_CHECKED = $2000;
@@ -2744,7 +2744,6 @@ begin
     Change;
   end;
 end;
-
 
 
 end.
