@@ -210,6 +210,7 @@ type
     FJVCLConfig: TJVCLConfig;
     FJVCLDir: string;
     FDeleteFilesOnUninstall: Boolean;
+    FCompileJclDcp: Boolean;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -249,6 +250,7 @@ type
     property CompileOnly: Integer read GetCompileOnly write SetCompileOnly;
 
     property DeleteFilesOnUninstall: Boolean read FDeleteFilesOnUninstall write FDeleteFilesOnUninstall;
+    property CompileJclDcp: Boolean read FCompileJclDcp write FCompileJclDcp;
 
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
@@ -302,6 +304,7 @@ var
   ErrMsg: string;
 begin
   inherited Create;
+  FCompileJclDcp := True; 
   FJVCLConfig := TJVCLConfig.Create;
   FJVCLConfig.LoadFromFile(JvclIncFilename);
 

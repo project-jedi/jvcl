@@ -49,11 +49,16 @@ type
   private
     FOnChange: TDirEditChangeEvent;
     FUserData: TObject;
+    FAllowEmpty: Boolean;
+    procedure DoCustomize(Sender: TObject; Handle: HWND);
+    procedure DoCommand(Sender: TObject; var Msg: TWMCommand; var Handled: Boolean);
+    function BrowseDirectory(var AFolderName: string): Boolean;
   public
     class function Build(const Caption, Dir: string; OnChange: TDirEditChangeEvent;
       UserData: TObject; Client: TWinControl): TFrameDirEditBrowse;
   published
     property OnChange: TDirEditChangeEvent read FOnChange write FOnChange;
+    property AllowEmpty: Boolean read FAllowEmpty write FAllowEmpty;
   end;
 
 implementation
@@ -64,6 +69,9 @@ uses
 {$R *.dfm}
 
 { TFrameDirEditBrowse }
+
+const
+  NoDirectoryButtonId = $FFFF;
 
 class function TFrameDirEditBrowse.Build(const Caption, Dir: string;
   OnChange: TDirEditChangeEvent; UserData: TObject;
@@ -79,18 +87,71 @@ begin
   Result.EditDirectory.Text := Dir;
 end;
 
-
 procedure TFrameDirEditBrowse.BtnJCLDirBrowseClick(Sender: TObject);
 var
   Dir: string;
 begin
   Dir := EditDirectory.Text;
-  if BrowseDirectory(Dir, RsSelectJCLDir, 0) then
+  if BrowseDirectory(Dir) then
   begin
     if Assigned(FOnChange) then
       FOnChange(Self, FUserData, Dir);
-    if Dir <> '' then
+    if (Dir <> '') or AllowEmpty then
       EditDirectory.Text := Dir;
+  end;
+end;
+
+function TFrameDirEditBrowse.BrowseDirectory(var AFolderName: string): Boolean;
+begin
+  with TBrowseFolderDialog.Create(Application) do
+  try
+    DialogText := RsSelectJCLDir;
+    FolderName := AFolderName;
+    OnCustomize := DoCustomize;
+    OnCommand := DoCommand;
+    Result := Execute;
+    if Result then AFolderName := FolderName;
+  finally
+    Free;
+  end;
+end;
+
+procedure TFrameDirEditBrowse.DoCustomize(Sender: TObject; Handle: HWND);
+const
+  SBtn = 'BUTTON';
+var
+  BtnHandle, HelpBtn, BtnFont: THandle;
+  BtnSize: TRect;
+begin
+  if AllowEmpty then
+  begin
+    BtnHandle := FindWindowEx(Handle, 0, SBtn, nil);
+    if (BtnHandle <> 0) then
+    begin
+      GetWindowRect(BtnHandle, BtnSize);
+      Windows.ScreenToClient(Handle, BtnSize.TopLeft);
+      Windows.ScreenToClient(Handle, BtnSize.BottomRight);
+      BtnFont := SendMessage(Handle, WM_GETFONT, 0, 0);
+      HelpBtn := CreateWindow(SBtn, PChar(RsNoDirectoryButton),
+        WS_CHILD or WS_CLIPSIBLINGS or WS_VISIBLE or BS_PUSHBUTTON or WS_TABSTOP,
+        12, BtnSize.Top, BtnSize.Right - BtnSize.Left, BtnSize.Bottom - BtnSize.Top,
+        Handle, NoDirectoryButtonId, HInstance, nil);
+      if BtnFont <> 0 then
+        SendMessage(HelpBtn, WM_SETFONT, BtnFont, MakeLParam(1, 0));
+      UpdateWindow(Handle);
+    end;
+  end;
+end;
+
+procedure TFrameDirEditBrowse.DoCommand(Sender: TObject;
+  var Msg: TWMCommand; var Handled: Boolean);
+begin
+  if (Msg.ItemID = NoDirectoryButtonId) and
+     (Msg.NotifyCode = BN_CLICKED) and AllowEmpty then
+  begin
+    EditDirectory.Text := '';
+    Handled := True;
+    PostMessage(TBrowseFolderDialog(Sender).Handle, WM_CLOSE, 0, 0);
   end;
 end;
 

@@ -54,10 +54,7 @@ Bpg2Make.exe:
 pg.exe: Templates
 	@echo [Compiling: pg.exe]
 	cd $(DEVTOOLS)
-	-SET C5PFLAGS=
-	if $(VERSION)==5 SET C5PFLAGS=-LUvcl50
 	$(MAKE) -f makefile.mak -s pg.exe
-	-SET C5PFLAGS=
 	cd $(DEVTOOLS_BACK)
 	#
 	@echo [Generating: Delphi Packages]
@@ -65,7 +62,7 @@ pg.exe: Templates
 
 Templates:
 	@echo [Copying: Templates]
-	if NOT EXIST "$(PACKAGEDIR)\template.dpk"  copy /D /Y jcldcpdpk$(VERSION).tpl "$(PACKAGEDIR)\template.dpk" >NUL
+	if NOT EXIST "$(PACKAGEDIR)\template.dpk"  copy /D /Y jcldcpdpk$(VERSION).tpl "$(PACKAGEDIR)\template.dpk"
 	# create template.cfg
 	@echo -I"..\..\source;..\..\source\common" > $(PACKAGEDIR)\template.cfg
 	@echo -U"..\..\source\common;..\..\source\windows" >> $(PACKAGEDIR)\template.cfg
@@ -84,10 +81,10 @@ Compile: ChangeDirPackageDir
 
 Clean:
 	@echo [Cleaning...]
-	-del /f /q C*.dcp 2>NUL
-	-del /f /q C*.bpl 2>NUL
-	-del /f /q *.lsp 2>NUL
-	-del /f /q *.dpk 2>NUL
-	-del /f /q *.dcu 2>NUL
-	-del /f /q *.cfg 2>NUL
-	-del /f /q *.log 2>NUL
+	-del /q C*.dcp 2>NUL
+	-del /q C*.bpl 2>NUL
+	-del /q *.lsp 2>NUL
+	-del /q *.dpk 2>NUL
+	-del /q *.dcu 2>NUL
+	-del /q *.cfg 2>NUL
+	-del /q *.log 2>NUL

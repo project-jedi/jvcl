@@ -74,6 +74,9 @@ type
     FOnResourceProgress: TResourceProgressEvent;
     FOnProjectProgress: TProjectProgressEvent;
     FOnProgress: TProgressEvent;
+    FAbortReason: string;
+    function Make(TargetConfig: ITargetConfig; const Args: string;
+      CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
 
   protected
     procedure CaptureLine(const Line: string; var Aborted: Boolean); virtual;
@@ -106,6 +109,7 @@ type
 
     procedure Abort; // abort compile process
 
+    property AbortReason: string read FAbortReason write FAbortReason;
     property Data: TJVCLData read FData;
     property Output: TStrings read FOutput;
 
@@ -136,6 +140,17 @@ resourcestring
   RsFinished = 'Finished.';
   RsCompilingJCL = 'Compiling JCL dcp files...';
   RsGeneratePackages = '[Generating: Packages]';
+
+  RsAbortedByUser = 'Aborted by User';
+  RsErrorLoadingPackageGeneratorConfigFile = 'Error loading devtools\bin\pgEdit.xml';
+  RsErrorGeneratingPackages = 'Error while generating packages for %s';
+  RsErrorGeneratingTemplates = 'Error while generating templates.';
+  RsErrorCompilingJclDcpFiles = 'Error while compiling .dcp files for JCL.';
+  RsErrorCompilingResources = 'Error while compiling resources.';
+  RsErrorGeneratingTemplatesForDir = 'Error generating templates for the %s directory.';
+  RsErrorCompilingPackages = 'An error occured while compiling the packages.'; // this must not be the doubt of the installer
+
+  RsCommandNotFound = 'Command could not be executed.'#10#10#10'Cmdline: %s'#10#0'Start directory: %s';
 
 const
   CommonDependencyFiles: array[0..3] of string = (
@@ -262,6 +277,25 @@ begin
 end;
 
 /// <summary>
+/// Make calls the make.exe of the given TargetConfig. If the StartDir is empty
+/// the JVCLPackageDir\bin directory is used. If the command could not be
+/// executed a message dialog is shown with the complete command line.
+/// </summary>
+function TJVCLCompiler.Make(TargetConfig: ITargetConfig; const Args: string;
+  CaptureLine: TCaptureLine; StartDir: string): Integer;
+begin
+  if StartDir = '' then
+    StartDir := Data.JVCLPackagesDir + '\bin';
+  Result := CaptureExecute('"' + TargetConfig.Target.Make + '"', Args,
+                           StartDir, CaptureLine);
+  if Result < 0 then // command not found
+    MessageBox(0, PChar(Format(RsCommandNotFound,
+                      ['"' + TargetConfig.Target.Make + '"' + Args, StartDir])),
+               'JVCL Installer', MB_OK or MB_ICONERROR);
+end;
+
+
+/// <summary>
 /// GeneratePackages generates the packages in
 /// PackagesPath for the Group (JVCL, JCL) for the Targets (comma separated
 /// pg.exe target list).
@@ -276,12 +310,24 @@ begin
   FAborted := False;
   CaptureLine(RsGeneratePackages, FAborted);
   if FAborted then
-    Exit;
-
-  if not LoadConfig(Data.JVCLDir + '\' + PackageGeneratorFile, Group, ErrMsg) then
   begin
-    CaptureLine(ErrMsg, FAborted);
+    AbortReason := RsAbortedByUser;
     Exit;
+  end;
+
+  try
+    if not LoadConfig(Data.JVCLDir + '\' + PackageGeneratorFile, Group, ErrMsg) then
+    begin
+      CaptureLine(ErrMsg, FAborted);
+      AbortReason := RsErrorLoadingPackageGeneratorConfigFile;
+      Exit;
+    end;
+  except
+    on E: Exception do
+    begin
+      AbortReason := RsErrorLoadingPackageGeneratorConfigFile + #10#10 + E.Message;
+      Exit;
+    end;
   end;
 
   List := TStringList.Create;
@@ -294,6 +340,7 @@ begin
                     Group, ErrMsg, False, PackagesPath, '', '', Data.JVCLConfig.Filename) then
     begin
       CaptureLine(ErrMsg, FAborted);
+      AbortReason := Format(RsErrorGeneratingPackages, [TargetList.CommaText]);
       Exit;
     end;
   finally
@@ -345,7 +392,7 @@ begin
         DeleteFile(Format('%s\CJclVcl%s.dcp', [BplDir, S]));
         DeleteFile(Format('%s\CJclVClx%s.dcp', [BplDir, S]));
 
-       // sometimes the files are in the wrong directory 
+       // sometimes the files are in the wrong directory
         DeleteFile(Format('%s\CJcl%s.dcp', [DcpDir, S]));
         DeleteFile(Format('%s\CJclVcl%s.dcp', [DcpDir, S]));
         DeleteFile(Format('%s\CJclVClx%s.dcp', [DcpDir, S]));
@@ -360,9 +407,11 @@ begin
 
       try
        // copy template for PackageGenerator
-        if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Templates',
-                          Data.JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
+        if Make(Data.TargetConfig[i], Args + ' -s Templates', CaptureLine) <> 0 then
+        begin
+          AbortReason := RsErrorGeneratingTemplates;
           Exit;
+        end;
         DoPackageProgress(nil, RsCompilingJCL, 1, 3);
 
        // generate packages
@@ -371,8 +420,7 @@ begin
         DoPackageProgress(nil, RsCompilingJCL, 2, 3);
 
        // compile dcp files
-        if CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s Compile',
-                          Data.JVCLPackagesDir + '\bin', CaptureLine, True) <> 0 then
+        if Make(Data.TargetConfig[i], Args + ' -s Compile', CaptureLine) <> 0 then
         begin
           if FileExists(ErrorFileName) then
           begin
@@ -385,12 +433,12 @@ begin
               ErrorLines.Free;
             end;
           end;
+          AbortReason := RsErrorCompilingJclDcpFiles;
           Exit;
         end;
       finally
        // clean
-        CaptureExecute('"' + Data.Targets[i].Make + '"', Args + ' -s CleanJcl',
-                       Data.JVCLPackagesDir + '\bin', CaptureLine);
+        Make(Data.TargetConfig[i], Args + ' -s CleanJcl', CaptureLine);
 
         DeleteFile(ErrorFileName);
       end;
@@ -416,9 +464,12 @@ var
   Count: Integer;
   TargetConfigs: array of TTargetConfig;
 begin
-  Result := PrepareJCL(Force);
+  Result := True;
+  AbortReason := '';
+  if Data.CompileJclDcp then
+    Result := PrepareJCL(Force);
   if not Result then
-    Exit;
+    Exit; // AbortReason was set in PrepareJCL
 
  // read target configs that should be compiled
   Count := 0;
@@ -487,8 +538,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
 
     if Result or not CmdOptions.KeepFiles then
-      CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
-                      Data.JVCLPackagesDir + '\bin', CaptureLine);
+      Make(TargetConfig, '-s Clean', CaptureLine);
     if Result then
       CaptureLine('[Finished JVCL for VCL installation]', Aborted);
   end;
@@ -507,8 +557,7 @@ begin
         TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkClx], False);
 
     if Result or not CmdOptions.KeepFiles then
-      CaptureExecute('"' + TargetConfig.Target.Make + '"', '-s Clean',
-                      Data.JVCLPackagesDir + '\bin', CaptureLine);
+      Make(TargetConfig, '-s Clean', CaptureLine);
     if Result then
       CaptureLine('[Finished JVCL for CLX installation]', Aborted);
   end;
@@ -523,9 +572,11 @@ begin
 
  // get number of resources to compile
   FCount := 0;
-  if CaptureExecute('"' + TargetConfig.Target.Make + '"', '-n',
-                    TargetConfig.JVCLDir + '\images', CaptureLineGetCompileCount) <> 0 then
+  if Make(TargetConfig, '-n', CaptureLineGetCompileCount, TargetConfig.JVCLDir + '\images') <> 0 then
+  begin
+    AbortReason := RsErrorCompilingResources;
     Exit;
+  end;
  // update FResCount with the number of resources that MAKE will compile
   FResCount := FCount;
 
@@ -534,9 +585,11 @@ begin
   begin
     DoResourceProgress('', 0, FResCount);
    // generate .res and .dcr files
-    if CaptureExecute('"' + TargetConfig.Target.Make + '"', '',
-                      TargetConfig.JVCLDir + '\images', CaptureLineResourceCompilation, True) <> 0 then
+    if Make(TargetConfig, '', CaptureLineResourceCompilation, TargetConfig.JVCLDir + '\images') <> 0 then
+    begin
+      AbortReason := RsErrorCompilingResources;
       Exit;
+    end;
     DoResourceProgress('', FResCount, FResCount);
   end;
   Result := True;
@@ -554,6 +607,7 @@ var
   Args: string;
   Edition, PkgDir, JVCLPackagesDir: string;
   AutoDepend: Boolean;
+  TargetConfig: ITargetConfig;
 
   function GetProjectIndex: Integer;
   begin
@@ -566,15 +620,16 @@ begin
   Result := False;
   FCurrentProjectGroup := ProjectGroup;
   try
-    AutoDepend := ProjectGroup.TargetConfig.AutoDependencies;
+    TargetConfig := ProjectGroup.TargetConfig;
+    AutoDepend := TargetConfig.AutoDependencies;
     // obtain information for progress bar
     FPkgCount := 0;
     for i := 0 to ProjectGroup.Count - 1 do
       if ProjectGroup.Packages[i].Compile then
         Inc(FPkgCount);
 
-    Edition := ProjectGroup.TargetConfig.TargetSymbol;
-    JVCLPackagesDir := ProjectGroup.TargetConfig.JVCLPackagesDir;
+    Edition := TargetConfig.TargetSymbol;
+    JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
     Args := '-f Makefile.mak';
 
     PkgDir := Edition;
@@ -587,7 +642,7 @@ begin
     end;
 
    // setup environment variables
-    if ProjectGroup.TargetConfig.Build then
+    if TargetConfig.Build then
       SetEnvironmentVariable('DCCOPT', '-Q -M -B')
     else
       SetEnvironmentVariable('DCCOPT', '-Q -M');
@@ -595,21 +650,24 @@ begin
     SetEnvironmentVariable('TARGETS', nil); // we create our own makefile so do not allow a user defined TARGETS envvar
     SetEnvironmentVariable('MASTEREDITION', nil);
 
-    SetEnvironmentVariable('ROOT', Pointer(ProjectGroup.TargetConfig.Target.RootDir));
-    SetEnvironmentVariable('JCLROOT', Pointer(ProjectGroup.TargetConfig.JCLDir));
-    SetEnvironmentVariable('JVCLROOT', Pointer(ProjectGroup.TargetConfig.JVCLDir));
-    SetEnvironmentVariable('VERSION', Pointer(IntToStr(ProjectGroup.TargetConfig.Target.Version)));
+    SetEnvironmentVariable('ROOT', Pointer(TargetConfig.Target.RootDir));
+    SetEnvironmentVariable('JCLROOT', Pointer(TargetConfig.JCLDir));
+    SetEnvironmentVariable('JVCLROOT', Pointer(TargetConfig.JVCLDir));
+    SetEnvironmentVariable('VERSION', Pointer(IntToStr(TargetConfig.Target.Version)));
     if DebugUnits then
-      SetEnvironmentVariable('UNITOUTDIR', Pointer(ProjectGroup.TargetConfig.UnitOutDir + '\debug'))
+      SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir + '\debug'))
     else
-      SetEnvironmentVariable('UNITOUTDIR', Pointer(ProjectGroup.TargetConfig.UnitOutDir));
-    SetEnvironmentVariable('BPLDIR', Pointer(ProjectGroup.TargetConfig.BplDir));
-    SetEnvironmentVariable('DCPDIR', Pointer(ProjectGroup.TargetConfig.DcpDir));
-    SetEnvironmentVariable('LIBDIR', Pointer(ProjectGroup.TargetConfig.DcpDir));
-    SetEnvironmentVariable('HPPDIR', Pointer(ProjectGroup.TargetConfig.HPPDir));
+      SetEnvironmentVariable('UNITOUTDIR', Pointer(TargetConfig.UnitOutDir));
+    SetEnvironmentVariable('BPLDIR', Pointer(TargetConfig.BplDir));
+    SetEnvironmentVariable('DCPDIR', Pointer(TargetConfig.DcpDir));
+    SetEnvironmentVariable('LIBDIR', Pointer(TargetConfig.DcpDir));
+    SetEnvironmentVariable('HPPDIR', Pointer(TargetConfig.HPPDir));
 
    // add dxgettext unit directory
-    SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(ProjectGroup.TargetConfig.DxgettextDir));
+    if Data.JVCLConfig.Enabled['USE_DXGETTEXT'] then
+      SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(TargetConfig.DxgettextDir))
+    else
+      SetEnvironmentVariable('EXTRAUNITDIRS', nil);
     SetEnvironmentVariable('EXTRAINCLUDEDIRS', nil);
     SetEnvironmentVariable('EXTRARESDIRS', nil);
 
@@ -621,35 +679,39 @@ begin
       SetEnvironmentVariable('EDITION', PChar(Copy(Edition, 1, 2)));
       SetEnvironmentVariable('PKGDIR', PChar(Copy(PkgDir, 1, 2)));
       SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(Copy(PkgDir, 1, 2)));
-      if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' Templates',
-                        JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
+      if Make(TargetConfig, Args + ' Templates', CaptureLine) <> 0 then
+      begin
+        AbortReason := Format(RsErrorGeneratingTemplatesForDir, [Copy(PkgDir, 1, 2)]);
         Exit;
+      end;
     end;
 
    // generate temnplate.cfg file for PkgDir
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
     SetEnvironmentVariable('PKGDIR_MASTEREDITION', PChar(PkgDir));
-    if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' Templates',
-                      JVCLPackagesDir + '\bin', CaptureLine) <> 0 then
+    if Make(TargetConfig, Args + ' Templates', CaptureLine) <> 0 then
+    begin
+      AbortReason := Format(RsErrorGeneratingTemplatesForDir, [PkgDir]);
       Exit;
+    end;
 
 {**}DoProjectProgress(RsGeneratingPackages, GetProjectIndex, ProjectMax);
     if ProjectGroup.Target.IsPersonal then
     begin
      // generate the packages and .cfg files for the "master" PkgDir
       if not GeneratePackages('JVCL', Copy(Edition, 1, 2),
-                              ProjectGroup.TargetConfig.JVCLPackagesDir) then
-        Exit;
+                              TargetConfig.JVCLPackagesDir) then
+        Exit; // AbortReason is set in GeneratePackages
     end;
 
    // generate the packages and .cfg files for PkgDir
-    if not GeneratePackages('JVCL', Edition, ProjectGroup.TargetConfig.JVCLPackagesDir) then
-      Exit;
+    if not GeneratePackages('JVCL', Edition, TargetConfig.JVCLPackagesDir) then
+      Exit; // AbortReason is set in GeneratePackages
 
 {**}DoProjectProgress(RsGeneratingResources, GetProjectIndex, ProjectMax);
-    if not GenerateResources(ProjectGroup.TargetConfig) then
-      Exit;
+    if not GenerateResources(TargetConfig) then
+      Exit; // AbortReason is set in GenerateResources
 
 {**}DoProjectProgress(RsCompilingPackages, GetProjectIndex, ProjectMax);
     FPkgIndex := 0;
@@ -669,10 +731,11 @@ begin
         SetEnvironmentVariable('MAKEOPTIONS', '-n');
           // get number of packages that will be compiled
         FCount := 0;
-        if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' CompilePackages',
-                          ProjectGroup.TargetConfig.JVCLPackagesDir + '\bin',
-                          CaptureLineGetCompileCount) <> 0 then
+        if Make(TargetConfig, Args + ' CompilePackages', CaptureLineGetCompileCount) <> 0 then
+        begin
+          AbortReason := RsErrorCompilingPackages;
           Exit;
+        end;
        // update FPkgCount with the number of packages that MAKE will compile
         FPkgCount := FCount;
       end;
@@ -682,10 +745,11 @@ begin
       begin
         DoPackageProgress(nil, '', 0, FPkgCount);
         // compile packages
-        if CaptureExecute('"' + ProjectGroup.Target.Make + '"', Args + ' CompilePackages',
-                          ProjectGroup.TargetConfig.JVCLPackagesDir + '\bin',
-                          CaptureLinePackageCompilation, True) <> 0 then
+        if Make(TargetConfig, Args + ' CompilePackages', CaptureLinePackageCompilation) <> 0 then
+        begin
+          AbortReason := RsErrorCompilingPackages;
           Exit;
+        end;
         DoPackageProgress(nil, '', FPkgCount, FPkgCount);
       end;
     end;
@@ -695,7 +759,7 @@ begin
   end;
   Result := True;
   DeleteFile(ChangeFileExt(ProjectGroup.Filename, '.mak'));
-  DeleteFile(ProjectGroup.TargetConfig.JVCLPackagesDir + '\tmp.bat');
+  DeleteFile(TargetConfig.JVCLPackagesDir + '\tmp.bat');
 end;
 
 /// <summary>
