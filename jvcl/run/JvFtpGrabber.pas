@@ -69,10 +69,10 @@ type
     procedure Closed;
   public
     constructor Create(Url, UserName, FileName, Password: string;
-      OutputMode: TJvOutputMode; PassiveFTP: Boolean; OnError: TJvErrorEvent;
-      OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-      OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
-      OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
+      OutputMode: TJvOutputMode; PassiveFTP: Boolean; AOnError: TJvErrorEvent;
+      AOnDoneFile: TJvDoneFileEvent; AOnDoneStream: TJvDoneStreamEvent;
+      AOnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
+      AOnStatus: TJvFTPProgressEvent; Sender: TObject; AOnClosedConnection: TNotifyEvent); // acp
   end;
 
   TJvFTPGrabber = class(TJvComponent)
@@ -285,10 +285,10 @@ end;
 //=== TJvFtpThread ===========================================================
 
 constructor TJvFtpThread.Create(Url, UserName, FileName,
-  Password: string; OutputMode: TJvOutputMode; PassiveFTP: Boolean; OnError: TJvErrorEvent;
-  OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-  OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
-  OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
+  Password: string; OutputMode: TJvOutputMode; PassiveFTP: Boolean; AOnError: TJvErrorEvent;
+  AOnDoneFile: TJvDoneFileEvent; AOnDoneStream: TJvDoneStreamEvent;
+  AOnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
+  AOnStatus: TJvFTPProgressEvent; Sender: TObject; AOnClosedConnection: TNotifyEvent); // acp
 begin
   inherited Create(True);
   FUrl := Url;
@@ -297,37 +297,43 @@ begin
   FPassword := Password;
   FOutputMode := OutputMode;
   FPassiveFTP := PassiveFTP; 
-  FOnError := OnError;
-  FOnDoneFile := OnDoneFile;
-  FOnDoneStream := OnDoneStream;
-  FOnProgress := OnProgress;
-  FOnStatus := OnStatus;
+  FOnError := AOnError;
+  FOnDoneFile := AOnDoneFile;
+  FOnDoneStream := AOnDoneStream;
+  FOnProgress := AOnProgress;
+  FOnStatus := AOnStatus;
   FMode := Mode;
   FAgent := Agent;
   FSender := Sender; // acp
-  FOnClosed := OnClosedConnection;
+  FOnClosed := AOnClosedConnection;
 end;
 
 procedure TJvFtpThread.Closed;
 begin
-  FOnClosed(Self);
+  if Assigned(FOnClosed) then
+    FOnClosed(Self);
 end;
 
 procedure TJvFtpThread.Ended;
 begin
   FStream.Position := 0;
   if FOutputMode = omStream then
-    FOnDoneStream(Self, FStream, FStream.Size, FUrl)
+  begin
+    if Assigned(FOnDoneStream) then
+      FOnDoneStream(Self, FStream, FStream.Size, FUrl);
+  end
   else
   begin
     FStream.SaveToFile(FFileName);
-    FOnDoneFile(Self, FFileName, FStream.Size, FUrl);
+    if Assigned(FOnDoneFile) then
+      FOnDoneFile(Self, FFileName, FStream.Size, FUrl);
   end;
 end;
 
 procedure TJvFtpThread.Error;
 begin
-  FOnError(Self, FErrorText);
+  if Assigned(FOnError) then
+    FOnError(Self, FErrorText);
 end;
 
 function TJvFtpThread.GetLastErrorMsg: string;
@@ -342,7 +348,8 @@ procedure FtpDownloadCallBack(Handle: HInternet; Context: DWORD;
   Status: DWORD; Info: Pointer; StatLen: DWORD); stdcall;
 begin
   with TJvFtpThread(Context) do
-    FOnStatus(TJvFtpThread(Context), Status, FUrl);
+    if Assigned(FOnStatus) then
+      FOnStatus(TJvFtpThread(Context), Status, FUrl);
 end;
 
 procedure TJvFtpThread.Execute;
@@ -483,7 +490,8 @@ end;
 
 procedure TJvFtpThread.Progress;
 begin
-  FOnProgress(Self, FBytesRead, FUrl);
+  if Assigned(FOnProgress) then
+    FOnProgress(Self, FBytesRead, FUrl);
 end;
 
 end.

@@ -176,7 +176,7 @@ constructor TJvMultiHTTPGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOutputMode := omStream;
-  FAgent := RsAgent;
+  FAgent := RsMultiAgent;
   FCount := 0;
 end;
 

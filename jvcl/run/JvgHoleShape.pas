@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, JvgTypes, JvgUtils, JVComponent, JvgCommClasses;
+  Dialogs, ExtCtrls,
+  JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
 
 type
   TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);

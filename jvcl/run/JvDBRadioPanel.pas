@@ -35,7 +35,8 @@ unit JvDBRadioPanel;
 interface
 
 uses
-  Forms, Windows, Classes, Controls, ExtCtrls, StdCtrls, Messages, DBCtrls, DB,
+  Windows, Messages, Classes, Controls, ExtCtrls, StdCtrls, Forms,
+  DBCtrls, DB,
   JvComponent;
 
 type
@@ -86,21 +87,19 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    property DataLink: TFieldDataLink read FDataLink;
-
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
     function CanModify: Boolean; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    property DataLink: TFieldDataLink read FDataLink;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure FlipChildren(AllLevels: Boolean); override;
-    property Buttons[Index: Integer]: TRadioButton read GetButtons;
-
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
+    property Buttons[Index: Integer]: TRadioButton read GetButtons;
     property Field: TField read GetField;
     property ItemIndex: Integer read FItemIndex write SetItemIndex default -1;
     property Value: string read FValue write SetValue;
@@ -148,7 +147,7 @@ type
 
 implementation
 
-{ TGroupButton }
+//=== TGroupButton ===========================================================
 
 type
   TGroupButton = class(TRadioButton)
@@ -214,7 +213,38 @@ begin
   TJvDBRadioPanel(Parent).KeyDown(Key, Shift);
 end;
 
-{ TDBRadioPanel }
+//=== TDBRadioPanel ==========================================================
+
+constructor TJvDBRadioPanel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+//  ControlStyle := [csSetCaption, csDoubleClicks, csParentBackground];
+  ControlStyle := [csDoubleClicks {$IFDEF COMPILER7_UP}, csParentBackground {$ENDIF}];
+  FButtons := TList.Create;
+  FItems := TStringList.Create;
+  FItems.OnChange := ItemsChange;
+  FItemIndex := -1;
+  FColumns := 1;
+
+  FDataLink := TFieldDataLink.Create;
+  FDataLink.Control := Self;
+  FDataLink.OnDataChange := DataChange;
+  FDataLink.OnUpdateData := UpdateData;
+  FValues := TStringList.Create;
+end;
+
+destructor TJvDBRadioPanel.Destroy;
+begin
+  FDataLink.Free;
+  FDataLink := nil;
+  FValues.Free;
+
+  SetButtonCount(0);
+  FItems.OnChange := nil;
+  FItems.Free;
+  FButtons.Free;
+  inherited Destroy;
+end;
 
 procedure TJvDBRadioPanel.ArrangeButtons;
 var
@@ -326,43 +356,12 @@ begin
   Msg.Result := Integer(FDataLink);
 end;
 
-constructor TJvDBRadioPanel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-//  ControlStyle := [csSetCaption, csDoubleClicks, csParentBackground];
-  ControlStyle := [csDoubleClicks {$IFDEF COMPILER7_UP}, csParentBackground {$ENDIF}];
-  FButtons := TList.Create;
-  FItems := TStringList.Create;
-  FItems.OnChange := ItemsChange;
-  FItemIndex := -1;
-  FColumns := 1;
-
-  FDataLink := TFieldDataLink.Create;
-  FDataLink.Control := Self;
-  FDataLink.OnDataChange := DataChange;
-  FDataLink.OnUpdateData := UpdateData;
-  FValues := TStringList.Create;
-end;
-
 procedure TJvDBRadioPanel.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
     Value := FDataLink.Field.Text
   else
     Value := '';
-end;
-
-destructor TJvDBRadioPanel.Destroy;
-begin
-  FDataLink.Free;
-  FDataLink := nil;
-  FValues.Free;
-
-  SetButtonCount(0);
-  FItems.OnChange := nil;
-  FItems.Free;
-  FButtons.Free;
-  inherited Destroy;
 end;
 
 function TJvDBRadioPanel.ExecuteAction(Action: TBasicAction): Boolean;
@@ -430,9 +429,10 @@ procedure TJvDBRadioPanel.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   case Key of
-    #8,
-      ' ': FDataLink.Edit;
-    #27: FDataLink.Reset;
+    #8, ' ':
+      FDataLink.Edit;
+    #27:
+      FDataLink.Reset;
   end;
 end;
 
@@ -446,9 +446,7 @@ procedure TJvDBRadioPanel.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and
-    (FDataLink <> nil) and
-    (AComponent = DataSource) then
+  if (Operation = opRemove) and  (FDataLink <> nil) and (AComponent = DataSource) then
     DataSource := nil;
 end;
 

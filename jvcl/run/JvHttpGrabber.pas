@@ -35,7 +35,8 @@ unit JvHTTPGrabber;
 interface
 
 uses
-  Windows, SysUtils, Classes, WinInet,SyncObjs,JvTypes, JvComponent;
+  Windows, SysUtils, Classes, WinInet, SyncObjs,
+  JvTypes, JvComponent;
 
 type
   TJvHttpThread = class(TThread)
@@ -52,7 +53,7 @@ type
     FOnDoneStream: TJvDoneStreamEvent;
     FOnProgress: TJvHTTPProgressEvent;
     FAgent: string;
-    FBytesReaded: Integer;
+    FBytesRead: Integer;
     FTotalBytes: Integer;
     FErrorText: string;
     FOnStatus: TJvFTPProgressEvent;
@@ -66,10 +67,10 @@ type
     procedure Execute; override;
   public
     constructor Create(Url, Referer, Username, FileName, Password: string;
-      OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
-      OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-      OnProgress: TJvHTTPProgressEvent; Agent: string;
-      OnStatus: TJvFTPProgressEvent);
+      OutPutMode: TJvOutputMode; AOnError: TJvErrorEvent;
+      AOnDoneFile: TJvDoneFileEvent; AOnDoneStream: TJvDoneStreamEvent;
+      AOnProgress: TJvHTTPProgressEvent; Agent: string;
+      AOnStatus: TJvFTPProgressEvent);
     destructor Destroy; override;
   end;
 
@@ -112,6 +113,7 @@ type
     destructor Destroy; override;
     procedure Execute;
     procedure Abort;
+    property Working: Boolean read GetWorking;
   published
     property Url: string read FUrl write FUrl;
     property Username: string read FUsername write FUsername;
@@ -137,10 +139,12 @@ type
     property OnRequestComplete: TNotifyEvent read FOnRequest write FOnRequest;
     property OnRedirect: TNotifyEvent read FOnRedirect write FOnRedirect;
     property OnStateChange: TNotifyEvent read FOnStateChange write FOnStateChange;
-    property Working: Boolean read GetWorking;
   end;
 
 implementation
+
+uses
+  JvResources;
 
 //=== TJvHTTPGrabber =========================================================
 
@@ -153,7 +157,7 @@ begin
   FReferer := '';
   FFileName := '';
   FOutputMode := omStream;
-  FAgent := 'TJvHTTPGrabber Component';
+  FAgent := RsAgent;
   FThread := nil;
 end;
 
@@ -284,9 +288,9 @@ end;
 //=== TJvHttpThread ==========================================================
 
 constructor TJvHttpThread.Create(Url, Referer, Username, FileName,
-  Password: string; OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
-  OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
-  OnProgress: TJvHTTPProgressEvent; Agent: string; OnStatus: TJvFTPProgressEvent);
+  Password: string; OutPutMode: TJvOutputMode; AOnError: TJvErrorEvent;
+  AOnDoneFile: TJvDoneFileEvent; AOnDoneStream: TJvDoneStreamEvent;
+  AOnProgress: TJvHTTPProgressEvent; Agent: string; AOnStatus: TJvFTPProgressEvent);
 begin
   inherited Create(True);
   FUrl := Url;
@@ -295,12 +299,12 @@ begin
   FFileName := FileName;
   FPassword := Password;
   FOutputMode := OutPutMode;
-  FOnError := OnError;
-  FOnDoneFile := OnDoneFile;
-  FOnDoneStream := OnDoneStream;
-  FOnProgress := OnProgress;
+  FOnError := AOnError;
+  FOnDoneFile := AOnDoneFile;
+  FOnDoneStream := AOnDoneStream;
+  FOnProgress := AOnProgress;
   FAgent := Agent;
-  FOnStatus := OnStatus;
+  FOnStatus := AOnStatus;
   FContinue := True;
   FCriticalSection := TCriticalSection.Create;
 end;
@@ -308,6 +312,8 @@ end;
 destructor TJvHttpThread.Destroy;
 begin
   FCriticalSection.Destroy;
+  // (rom) added inherited Destroy 
+  inherited Destroy;
 end;
 
 procedure TJvHttpThread.Ended;
@@ -463,7 +469,7 @@ begin
           else
           begin
             Inc(dwTotalBytes, dwBytesRead);
-            FBytesReaded := dwTotalBytes;
+            FBytesRead := dwTotalBytes;
             FStream.Write(Buf, dwBytesRead);
             Progress;
           end;
@@ -508,7 +514,7 @@ procedure TJvHttpThread.Progress;
 begin
   FCriticalSection.Enter;
   if Assigned(FOnProgress) then
-    FOnProgress(Self, 0, FBytesReaded, FTotalBytes, FUrl, FContinue);
+    FOnProgress(Self, 0, FBytesRead, FTotalBytes, FUrl, FContinue);
   FCriticalSection.Leave;
 end;
 

@@ -99,13 +99,13 @@ type
     procedure Change; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetCurrentLine: Integer;
-    procedure SetCurrentLine(iNewLine: Integer);
+    procedure SetCurrentLine(NewLine: Integer);
     procedure SetTransparent(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     { these wrap the windows messages }
-    procedure LineScroll(ix, iy: Integer);
+    procedure LineScroll(X, Y: Integer);
     function CharOfLine(iLine: Integer): Integer;
     property CurrentLine: Integer read GetCurrentLine write SetCurrentLine;
   protected
@@ -211,7 +211,7 @@ begin
   FHotTrack := False;
   FOver := False;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  FCaret := TJvCaret.Create(self);
+  FCaret := TJvCaret.Create(Self);
   FCaret.OnChanged := CaretChanged;
   FClipboardCommands := [caCopy..caUndo];
   FTransparent := False;
@@ -318,7 +318,6 @@ procedure TJvCustomMemo.KeyPress(var Key: Char);
 begin
   { only process if maxlines is set }
   if MaxLines > 0 then
-  begin
     if Lines.Count >= MaxLines then
     begin
       { take steps to halt the overflow }
@@ -331,35 +330,34 @@ begin
       if (CurrentLine >= MaxLines) and not (Key = AnsiBackSpace) then
         Key := #0;
     end;
-  end;
 
-  inherited;
+  inherited KeyPress(Key);
 end;
 
-procedure TJvCustomMemo.LineScroll(ix, iy: Integer);
+procedure TJvCustomMemo.LineScroll(X, Y: Integer);
 begin
-  Perform(EM_LINESCROLL, ix, iy);
+  Perform(EM_LINESCROLL, X, Y);
 end;
 
-procedure TJvCustomMemo.SetCurrentLine(iNewLine: Integer);
+procedure TJvCustomMemo.SetCurrentLine(NewLine: Integer);
 var
-  iDelta: Integer;
+  Delta: Integer;
 begin
   { truncate the range }
-  if iNewLine >= Lines.Count then
-    iNewLine := Lines.Count - 1;
-  if iNewLine < 0 then
-    iNewLine := 0;
+  if NewLine >= Lines.Count then
+    NewLine := Lines.Count - 1;
+  if NewLine < 0 then
+    NewLine := 0;
 
-  iDelta := iNewLine - CurrentLine;
+  Delta := NewLine - CurrentLine;
   { e.g want to be at line 10, currently on line 8, delta = 2
    on want to be on line 5, currently line 15, delta = -10 }
-  if iDelta <> 0 then
+  if Delta <> 0 then
   begin
     { scroll into view }
-    LineScroll(0, iDelta);
+    LineScroll(0, Delta);
     { move caret }
-    SelStart := CharOfLine(iNewLine);
+    SelStart := CharOfLine(NewLine);
   end;
 end;
 
@@ -446,8 +444,8 @@ begin
   if FHideCaret and not (csDesigning in ComponentState) then
   begin
     case Msg.Msg of
-      WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MOUSEMOVE, WM_LBUTTONDBLCLK,
-        WM_CHAR, WM_KEYUP:
+      WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MOUSEMOVE,
+      WM_LBUTTONDBLCLK, WM_CHAR, WM_KEYUP:
         begin
           Msg.Result := 0;
           if Msg.Msg = WM_LBUTTONDOWN then
@@ -539,8 +537,7 @@ begin
     FClipboardCommands := [caCopy];
 end;
 
-procedure TJvCustomMemo.SetClipboardCommands(
-  const Value: TJvClipboardCommands);
+procedure TJvCustomMemo.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
   if FClipboardCommands <> Value then
   begin

@@ -30,9 +30,7 @@ unit JvGIFCtrl;
 interface
 
 uses
-  Messages,
-  Windows,
-  SysUtils, Classes, Graphics, Controls, Forms, Menus,
+  Messages, Windows, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   JvAnimatedImage, JvGIF, JvTimer;
 
 type
@@ -165,10 +163,8 @@ end;
 procedure TJvGIFAnimator.AdjustSize;
 begin
   if not (csReading in ComponentState) then
-  begin
     if AutoSize and Assigned(FImage) and not FImage.Empty then
       SetBounds(Left, Top, FImage.ScreenWidth, FImage.ScreenHeight);
-  end;
 end;
 
 function TJvGIFAnimator.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;

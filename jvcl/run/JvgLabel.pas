@@ -33,8 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, JvgTypes, JVComponent, JvgCommClasses,
-  JvgUtils;
+  Dialogs, StdCtrls, ExtCtrls,
+  JvgTypes, JvComponent, JvgCommClasses, JvgUtils;
 
 const
   FTextAlign = DT_LEFT or DT_SINGLELINE;

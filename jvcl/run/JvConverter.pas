@@ -35,8 +35,8 @@ uses
 
 type
 
-  TDataType = (dtString, dtInteger, dtFloat, dtDateTime, dtDate,
-    dtTime, dtBoolean);
+  TDataType =
+    (dtString, dtInteger, dtFloat, dtDateTime, dtDate, dtTime, dtBoolean);
 
   TTimeFormat = (tfHHMMSS, tfHMMSS, tfHHMM, tfHMM);
 

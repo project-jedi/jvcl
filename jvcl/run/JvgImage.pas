@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, JvgTypes, JvgUtils, JVComponent, JvgCommClasses;
+  Dialogs, ExtCtrls,
+  JvComponent, JvgTypes, JvgUtils, JvgCommClasses;
 
 type
   TJvgBitmapImage = class(TJvGraphicControl)
@@ -50,17 +51,18 @@ type
     FDisabledMaskColor: TColor;
     FBitmap: TBitmap;
     FImage: TImage;
-    FAutoTrColor: TglAutoTransparentColor;
+    FAutoTransparentColor: TglAutoTransparentColor;
     FFastDraw: Boolean;
-    Bmp: TBitmap;
-    fChanged: Boolean;
-    OldClientRect: TRect;
-    OldWidth, OldHeight: Integer;
+    FBmp: TBitmap;
+    FChanged: Boolean;
+    FOnChangeParams: TNotifyEvent;
+    // FOldClientRect: TRect;
+    FOldWidth: Integer;
+    FOldHeight: Integer;
     procedure CreateResBitmap;
     procedure Changed;
     procedure SmthChanged(Sender: TObject);
     function CalcAlignOffset: TPoint;
-
     function GetBitmap: TBitmap;
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
@@ -72,14 +74,13 @@ type
     procedure SetMaskedColor(Value: TColor);
     procedure SetMaskedToColor(Value: TColor);
     procedure SetDisabledMaskColor(Value: TColor);
-    procedure SetAutoTrColor(Value: TglAutoTransparentColor);
+    procedure SetAutoTransparentColor(Value: TglAutoTransparentColor);
     procedure SetFastDraw(Value: Boolean);
   protected
     procedure SetAutoSize(Value: Boolean); override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    OnChangeParams: TNotifyEvent;
     FResBitmap: TBitmap; //...you can use it!
     //    procedure PaintTo(Canvas: TCanvas);
     procedure Paint; override;
@@ -87,8 +88,23 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure RemakeBackground; //...for users
-    //    procedure RepaintBackground;//...for users
+    //    procedure RepaintBackground; //...for users
   published
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    property Bitmap: TBitmap read GetBitmap write SetBitmap;
+    property Image: TImage read FImage write SetImage;
+    property ImageAlign: TJvg2DAlign read FImageAlign write FImageAlign;
+    property BitmapOption: TglWallpaperOption read FBitmapOption  write SetBitmapOption default fwoNone;
+    property DrawState: TglDrawState read FDrawState write SetDrawState default fdsDefault;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor default clOlive;
+    property Masked: Boolean read FMasked write SetMasked default False;
+    property MaskedColor: TColor read FMaskedColor write SetMaskedColor default clOlive;
+    property MaskedToColor: TColor read FMaskedToColor write SetMaskedToColor default clBtnFace;
+    property DisabledMaskColor: TColor read FDisabledMaskColor write SetDisabledMaskColor default clBlack;
+    property AutoTransparentColor: TglAutoTransparentColor read FAutoTransparentColor
+      write SetAutoTransparentColor default ftcLeftBottomPixel;
+    property FastDraw: Boolean read FFastDraw write SetFastDraw default False;
     property Anchors;
     property Align;
     property Color;
@@ -111,52 +127,22 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    property Bitmap: TBitmap read GetBitmap write SetBitmap;
-    property Image: TImage read FImage write SetImage;
-    property ImageAlign: TJvg2DAlign read FImageAlign write FImageAlign;
-    property BitmapOption: TglWallpaperOption read FBitmapOption
-      write SetBitmapOption default fwoNone;
-    property DrawState: TglDrawState read FDrawState write SetDrawState default fdsDefault;
-    property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property TransparentColor: TColor read FTransparentColor
-      write SetTransparentColor default clOlive;
-    property Masked: Boolean read FMasked write SetMasked default False;
-    property MaskedColor: TColor read FMaskedColor write SetMaskedColor default clOlive;
-    property MaskedToColor: TColor read FMaskedToColor write SetMaskedToColor default clBtnFace;
-    property DisabledMaskColor: TColor read FDisabledMaskColor
-      write SetDisabledMaskColor default clBlack;
-    property AutoTransparentColor: TglAutoTransparentColor
-      read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
-    property FastDraw: Boolean read FFastDraw write SetFastDraw default False;
-
+    property OnChangeParams: TNotifyEvent read FOnChangeParams write FOnChangeParams;
   end;
-
-procedure Register;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-//*****************************************_____________LowLevel METHODS
-//________________________________________________________
-
 constructor TJvgBitmapImage.Create(AOwner: TComponent);
 begin
-
   inherited Create(AOwner);
-  //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
-    {inherited } Width := 105;
-  {inherited } Height := 105;
+  Width := 105;
+  Height := 105;
 
-  FResBitmap := TBitmap.create;
-  FImageAlign := TJvg2DAlign.create;
+  FResBitmap := TBitmap.Create;
+  FImageAlign := TJvg2DAlign.Create;
   FImageAlign.OnChanged := SmthChanged;
-  fChanged := true;
-  OldClientRect := Rect(left, top, left + Width, top + Height);
+  FChanged := True;
+  // FOldClientRect := Rect(left, top, left + Width, top + Height);
   //...defaults
   FAutoSize := False;
   FBitmapOption := fwoNone;
@@ -167,76 +153,73 @@ begin
   FMaskedColor := clOlive;
   FMaskedToColor := clBtnFace;
   FDisabledMaskColor := clBlack;
-  FAutoTrColor := ftcLeftBottomPixel;
+  FAutoTransparentColor := ftcLeftBottomPixel;
   FFastDraw := False;
   OnChangeParams := nil;
 end;
-//________________________________________________________
 
 destructor TJvgBitmapImage.Destroy;
 begin
-  FResBitmap.free;
-  if Assigned(FBitmap) then
-    FBitmap.Free;
+  FResBitmap.Free;
+  FBitmap.Free;
   FImageAlign.Free;
-  inherited;
+  inherited Destroy;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.Loaded;
 begin
-  inherited;
-  if Assigned(FBitmap) and (not FBitmap.Empty) then
-    Bmp := FBitmap;
-  SetAutoTrColor(FAutoTrColor);
+  inherited Loaded;
+  if Assigned(FBitmap) and not FBitmap.Empty then
+    FBmp := FBitmap;
+  SetAutoTransparentColor(FAutoTransparentColor);
 end;
-//________________________________________________________
 
-procedure TJvgBitmapImage.Notification(AComponent: TComponent; Operation:
-  TOperation);
+procedure TJvgBitmapImage.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = Image) and (Operation = opRemove) then
     Image := nil;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.Paint;
-var //R,IntersectR: TRect;
-  pt: TPoint;
+var
+  //R, IntersectR: TRect;
+  Pt: TPoint;
 begin
   if Assigned(Bitmap) then
-    bmp := Bitmap;
+    FBmp := Bitmap;
   if Assigned(Image) then
-    bmp := Image.Picture.Bitmap;
+    FBmp := Image.Picture.Bitmap;
 
-  if Assigned(Bmp) and (Bmp.handle <> 0) then
+  if Assigned(FBmp) and (FBmp.Handle <> 0) then
   begin
-    if (OldWidth <> Width) or (OldHeight <> Height) then
+    if (FOldWidth <> Width) or (FOldHeight <> Height) then
     begin
-      fChanged := true;
+      FChanged := True;
       {if (OldLeft=Left)and(OldTop=Top) then
       begin
         R:=Rect( left, top, left+Width, top+Height );
-        IntersectRect( IntersectR, OldClientRect, R );
+        IntersectRect( IntersectR, FOldClientRect, R );
         InvalidateRect( Parent.Handle, @R, False );
         ValidateRect( Parent.Handle, @IntersectR );
-        OldClientRect := R;
+        FOldClientRect := R;
        end;}
-    end; //OldLeft := Left; OldTop := Top;
-    OldWidth := Width;
-    OldHeight := Height;
+    end;
+    //OldLeft := Left; OldTop := Top;
+    FOldWidth := Width;
+    FOldHeight := Height;
 
-    if fChanged or not FFastDraw then
+    if FChanged or not FFastDraw then
     begin
       CreateResBitmap;
-      fChanged := False;
+      FChanged := False;
     end;
-    pt := CalcAlignOffset;
-    BitBlt(Canvas.Handle, pt.x, pt.y, FResBitmap.Width, FResBitmap.Height,
+    Pt := CalcAlignOffset;
+    BitBlt(Canvas.Handle, Pt.X, Pt.Y, FResBitmap.Width, FResBitmap.Height,
       FResBitmap.canvas.Handle, 0, 0, SRCCOPY);
   end;
-  if (csDesigning in ComponentState) and (tag <> 9999) then
+  if (csDesigning in ComponentState) and (Tag <> 9999) then
     with Canvas do
     begin
       Pen.Color := clBlack;
@@ -244,15 +227,14 @@ begin
       Brush.Style := bsClear;
       Rectangle(0, 0, Width, Height);
     end;
-
 end;
 
 procedure TJvgBitmapImage.RemakeBackground;
 begin
-  fChanged := true;
+  FChanged := True;
   Repaint;
 end;
-//________________________________________________________
+
 //procedure TJvgBitmapImage.WMSize(var Message: TWMSize);
 //var R,IntersectR: TRect;
 //begin
@@ -262,18 +244,17 @@ end;
   if not FTransparent then
   begin
     R:=Rect( left, top, left+Width, top+Height );
-    IntersectRect( IntersectR, OldClientRect, R );
+    IntersectRect( IntersectR, FOldClientRect, R );
     InvalidateRect( Parent.Handle, @R, False );
     ValidateRect( Parent.Handle, @IntersectR );
-    OldClientRect := R;
+    FOldClientRect := R;
   end else Invalidate;
   Changed;}
 //end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.CreateResBitmap;
 var
-  pt: TPoint;
+  Pt: TPoint;
   //  BmpInfo: Windows.TBitmap;
 begin
   if (FBitmapOption = fwoStretch) or (FBitmapOption = fwoPropStretch) or
@@ -284,8 +265,8 @@ begin
   end
   else
   begin
-    FResBitmap.Width := Bmp.Width;
-    FResBitmap.Height := Bmp.Height;
+    FResBitmap.Width := FBmp.Width;
+    FResBitmap.Height := FBmp.Height;
   end;
 
   with FResBitmap do
@@ -296,15 +277,15 @@ begin
     Canvas.FillRect(Bounds(0, 0, Width, Height));
   end;
 
-  pt := CalcAlignOffset;
+  Pt := CalcAlignOffset;
   if FTransparent then
-    GetParentImageRect(self, Bounds(Left + pt.x, Top + pt.y, FResBitmap.Width,
+    GetParentImageRect(Self, Bounds(Left + Pt.X, Top + Pt.Y, FResBitmap.Width,
       FResBitmap.Height),
       FResBitmap.Canvas.Handle);
   //BringParentWindowToTop(parent);
 //    BitBlt( FResBitmap.Canvas.Handle, 0,0, Width, Height, canvas.Handle, 0, 0, SRCCOPY);
 
-  CreateBitmapExt(FResBitmap.Canvas.Handle, Bmp, ClientRect, 0, 0,
+  CreateBitmapExt(FResBitmap.Canvas.Handle, FBmp, ClientRect, 0, 0,
     FBitmapOption, FDrawState,
     FTransparent, FTransparentColor, FDisabledMaskColor);
 
@@ -322,17 +303,14 @@ begin
    Byte(bmBits^):=1;
         end;
     end;}
-
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.Changed;
 begin
-  fChanged := true;
+  FChanged := True;
   if Assigned(OnChangeParams) then
-    OnChangeParams(self);
+    OnChangeParams(Self);
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SmthChanged(Sender: TObject);
 begin
@@ -342,52 +320,54 @@ end;
 
 function TJvgBitmapImage.CalcAlignOffset: TPoint;
 var
-  D, D_: double;
-  bmp_: TPoint;
+  D, D1: Double;
+  Pt: TPoint;
 begin
-  Result.x := 0;
-  Result.y := 0;
+  Result.X := 0;
+  Result.Y := 0;
   if (FBitmapOption = fwoNone) or (FBitmapOption = fwoPropStretch) then
   begin
-    bmp_.x := Bmp.Width;
-    bmp_.y := Bmp.Height;
+    Pt.X := FBmp.Width;
+    Pt.Y := FBmp.Height;
     if FBitmapOption = fwoPropStretch then
     begin
-      D_ := Width / bmp_.x;
-      D := Height / bmp_.y;
-      if D > D_ then
-        D := D_; //...D == min
-      bmp_.x := trunc(bmp_.x * D);
-      bmp_.y := trunc(bmp_.y * D);
+      D1 := Width / Pt.X;
+      D := Height / Pt.Y;
+      if D > D1 then
+        D := D1; //...D == Min
+      Pt.X := Trunc(Pt.X * D);
+      Pt.Y := Trunc(Pt.Y * D);
     end;
     case ImageAlign.Horizontal of
-      fhaCenter: Result.x := max(0, (Width - bmp_.x) div 2);
-      fhaRight: Result.x := max(0, Width - bmp_.x);
+      fhaCenter:
+        Result.X := Max(0, (Width - Pt.X) div 2);
+      fhaRight:
+        Result.X := Max(0, Width - Pt.X);
     end;
     case ImageAlign.Vertical of
-      fvaCenter: Result.y := max(0, (Height - bmp_.y) div 2);
-      fvaBottom: Result.y := max(0, Height - bmp_.y);
+      fvaCenter:
+        Result.Y := Max(0, (Height - Pt.Y) div 2);
+      fvaBottom:
+        Result.Y := Max(0, Height - Pt.Y);
     end;
   end;
 end;
-//*****************************************_____________PROPERTY METHODS
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetAutoSize(Value: Boolean);
 begin
-  if (FAutoSize = Value) or not Assigned(Bmp) then
+  if (FAutoSize = Value) or not Assigned(FBmp) then
     Exit;
   FAutoSize := Value;
-  if FAutoSize and (FBitmapOption = fwoNone)
-    and ((Bmp.Width and Bmp.Height) <> 0) then
+  if FAutoSize and (FBitmapOption = fwoNone) and
+    // (rom) strange  this evaluates to FBmp.Width <> FBmp.Height
+    ((FBmp.Width and FBmp.Height) <> 0) then
   begin
-    Width := Bmp.Width;
-    Height := Bmp.Height;
+    Width := FBmp.Width;
+    Height := FBmp.Height;
     Changed;
     Invalidate;
   end;
 end;
-//________________________________________________________
 
 function TJvgBitmapImage.GetBitmap: TBitmap;
 begin
@@ -395,154 +375,152 @@ begin
     FBitmap := TBitmap.Create;
   Result := FBitmap;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetBitmap(Value: TBitmap);
 begin
-  if Assigned(FBitmap) then
-    FBitmap.Free;
+  FBitmap.Free;
   FBitmap := TBitmap.Create;
   FBitmap.Assign(Value);
   if Assigned(Value) then
-    Bmp := FBitmap
-  else if Assigned(FImage) and Assigned(FImage.Picture) and
-    Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
+    FBmp := FBitmap
   else
-    Bmp := nil;
-  SetAutoTrColor(FAutoTrColor);
+  if Assigned(FImage) and Assigned(FImage.Picture) and
+    Assigned(FImage.Picture.Bitmap) then
+    FBmp := FImage.Picture.Bitmap
+  else
+    FBmp := nil;
+  SetAutoTransparentColor(FAutoTransparentColor);
   Changed;
   Invalidate;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetImage(Value: TImage);
 begin
   FImage := Value;
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
-  else if Assigned(FBitmap) then
-    Bmp := FBitmap
+    FBmp := FImage.Picture.Bitmap
   else
-    Bmp := nil;
-  SetAutoTrColor(FAutoTrColor);
+  if Assigned(FBitmap) then
+    FBmp := FBitmap
+  else
+    FBmp := nil;
+  SetAutoTransparentColor(FAutoTransparentColor);
   Changed;
   Invalidate;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetBitmapOption(Value: TglWallpaperOption);
 begin
-  if FBitmapOption = Value then
-    Exit;
-  FBitmapOption := Value;
-  Changed;
-  Invalidate;
+  if FBitmapOption <> Value then
+  begin
+    FBitmapOption := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetDrawState(Value: TglDrawState);
 begin
-  if FDrawState = Value then
-    Exit;
-  FDrawState := Value;
-  Changed;
-  Invalidate;
+  if FDrawState <> Value then
+  begin
+    FDrawState := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetTransparent(Value: Boolean);
 begin
-  if FTransparent = Value then
-    Exit;
-  FTransparent := Value;
-  Changed;
-  Invalidate;
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetTransparentColor(Value: TColor);
 begin
-  if (FAutoTrColor <> ftcUser) or (FTransparentColor = Value) then
+  if (FAutoTransparentColor <> ftcUser) or (FTransparentColor = Value) then
     Exit;
   FTransparentColor := Value;
   Changed;
   Invalidate;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetMasked(Value: Boolean);
 begin
-  if FMasked = Value then
-    Exit;
-  FMasked := Value;
-  Changed;
-  Invalidate;
+  if FMasked <> Value then
+  begin
+    FMasked := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetMaskedColor(Value: TColor);
 begin
-  if FMaskedColor = Value then
-    Exit;
-  FMaskedColor := Value;
-  Changed;
-  Invalidate;
+  if FMaskedColor <> Value then
+  begin
+    FMaskedColor := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgBitmapImage.SetMaskedToColor(Value: TColor);
 begin
-  if FMaskedToColor = Value then
-    Exit;
-  FMaskedToColor := Value;
-  Changed;
-  Invalidate;
+  if FMaskedToColor <> Value then
+  begin
+    FMaskedToColor := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgBitmapImage.SetDisabledMaskColor(Value: TColor);
 begin
-  if FDisabledMaskColor = Value then
-    Exit;
-  FDisabledMaskColor := Value;
-  Changed;
-  Invalidate;
+  if FDisabledMaskColor <> Value then
+  begin
+    FDisabledMaskColor := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
 
-//________________________________________________________
-
-procedure TJvgBitmapImage.SetAutoTrColor(Value: TglAutoTransparentColor);
+procedure TJvgBitmapImage.SetAutoTransparentColor(Value: TglAutoTransparentColor);
 begin
-  FAutoTrColor := Value;
-  if not Assigned(bmp) then
+  FAutoTransparentColor := Value;
+  if not Assigned(FBmp) then
     Exit;
   if Value <> ftcUser then
-    FTransparentColor := GetTransparentColor(bmp, Value);
+    FTransparentColor := GetTransparentColor(FBmp, Value);
   Changed;
   Invalidate;
 end;
-//________________________________________________________
 
 procedure TJvgBitmapImage.SetFastDraw(Value: Boolean);
 begin
-  if FFastDraw = Value then
-    Exit;
-  FFastDraw := Value;
-  Changed;
-  Invalidate;
+  if FFastDraw <> Value then
+  begin
+    FFastDraw := Value;
+    Changed;
+    Invalidate;
+  end;
 end;
-//________________________________________________________
+
 {procedure TJvgBitmapImage.SetWidth(Value: Integer);
 begin
   if FWidth = Value then Exit;
   FWidth := Value; Invalidate;
 end;
-//________________________________________________________
+
 procedure TJvgBitmapImage.SetHeight(Value: Integer);
 begin
   if FHeight = Value then Exit;
   FHeight := Value; Invalidate;
 end;}
-//________________________________________________________
+
 end.
 

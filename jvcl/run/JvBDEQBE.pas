@@ -46,7 +46,7 @@ type
   TJvQBEQuery = class(TDBDataSet)
   private
     FStmtHandle: HDBIStmt;
-    FQBE: TStrings;
+    FQBE: TStringList;
     FPrepared: Boolean;
     FParams: TParams;
     FStartParam: Char;
@@ -62,12 +62,13 @@ type
     procedure ReplaceParams(QBEText: TStrings);
     procedure CreateParams(List: TParams; const Value: PChar);
     procedure FreeStatement;
+    function GetQBE: TStrings;
     function GetQueryCursor(GenHandle: Boolean): HDBICur;
     procedure GetStatementHandle(QBEText: PChar);
     procedure PrepareQBE(Value: PChar);
     procedure QueryChanged(Sender: TObject);
-    procedure SetQuery(Value: TStrings);
-    procedure SetParamsList(Value: TParams);
+    procedure SetQBE(Value: TStrings);
+    procedure SetParams(Value: TParams);
     procedure SetPrepared(Value: Boolean);
     procedure SetPrepare(Value: Boolean);
     procedure SetStartParam(Value: Char);
@@ -106,10 +107,10 @@ type
     property ParamCheck: Boolean read FParamCheck write FParamCheck default True;
     property StartParam: Char read FStartParam write SetStartParam default DefQBEStartParam;
     { Ensure StartParam is declared before QBE }
-    property QBE: TStrings read FQBE write SetQuery;
+    property QBE: TStrings read GetQBE write SetQBE;
     { Ensure QBE is declared before Params }
     property BlankAsZero: Boolean read FBlankAsZero write FBlankAsZero default False;
-    property Params: TParams read FParams write SetParamsList stored False;
+    property Params: TParams read FParams write SetParams stored False;
     property RequestLive: Boolean read FRequestLive write FRequestLive default False;
     property UpdateMode;
     property UpdateObject;
@@ -128,7 +129,7 @@ constructor TJvQBEQuery.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FQBE := TStringList.Create;
-  TStringList(QBE).OnChange := QueryChanged;
+  FQBE.OnChange := QueryChanged;
   FParams := TParams.Create(Self);
   FStartParam := DefQBEStartParam;
   FParamCheck := True;
@@ -141,7 +142,7 @@ destructor TJvQBEQuery.Destroy;
 begin
   Destroying;
   Disconnect;
-  QBE.Free;
+  FQBE.Free;
   FParams.Free;
   inherited Destroy;
 end;
@@ -201,14 +202,19 @@ begin
   end;
 end;
 
-procedure TJvQBEQuery.SetQuery(Value: TStrings);
+function TJvQBEQuery.GetQBE: TStrings;
 begin
-  if QBE.Text <> Value.Text then
+  Result := FQBE;
+end;
+
+procedure TJvQBEQuery.SetQBE(Value: TStrings);
+begin
+  if FQBE.Text <> Value.Text then
   begin
     Disconnect;
-    TStringList(QBE).OnChange := nil;
-    QBE.Assign(Value);
-    TStringList(QBE).OnChange := QueryChanged;
+    FQBE.OnChange := nil;
+    FQBE.Assign(Value);
+    FQBE.OnChange := QueryChanged;
     QueryChanged(nil);
   end;
 end;
@@ -243,7 +249,7 @@ begin
   end;
 end;
 
-procedure TJvQBEQuery.SetParamsList(Value: TParams);
+procedure TJvQBEQuery.SetParams(Value: TParams);
 begin
   FParams.AssignValues(Value);
 end;
