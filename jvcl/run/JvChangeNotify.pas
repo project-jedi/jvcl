@@ -56,8 +56,8 @@ type
     FSubTrees: Boolean;
     FDir: string;
     FOnChange: TNotifyEvent;
-    procedure SetSubTrees(Value: Boolean);
-    procedure SetDir(Value: string);
+    procedure SetSubTrees(const Value: Boolean);
+    procedure SetDir(const Value: string);
   protected
     function GetDisplayName: string; override;
     procedure Change; virtual;
@@ -108,11 +108,11 @@ type
     FCollection: TJvChangeItems;
     FNotify: TJvNotifyEvent;
     FNotifyArray: TJvNotifyArray;
-    procedure SetCollection(Value: TJvChangeItems);
-    procedure SetInterval(Value: Integer);
-    procedure SetActive(Value: Boolean);
-    procedure CheckActive(Name: string);
-    function NotifyError(Msg: string): string;
+    procedure SetCollection(const Value: TJvChangeItems);
+    procedure SetInterval(const Value: Integer);
+    procedure SetActive(const Value: Boolean);
+    procedure CheckActive(const Name: string);
+    function NotifyError(const Msg: string): string;
     procedure DoThreadChangeNotify(Sender: TObject; Index: Integer);
   protected
     procedure Change(Item: TJvChangeItem); virtual;
@@ -129,10 +129,9 @@ type
 function ActionsToString(Actions: TJvChangeActions): string;
 
 implementation
-
 uses
   {$IFNDEF COMPILER6_UP}
-  FileCtrl,
+  JvJCLUtils, // DirectoryExists
   {$ENDIF}
   JvTypes;
 
@@ -143,6 +142,10 @@ resourcestring
   sSizeChange = 'Size Change';
   sWriteChange = 'Write Change';
   sSecurityChange = 'Security Change';
+  sFmtCannotChangeName = 'Cannot change %s when active';
+  sFmtInvalidPath = 'Invalid or empty path (%s)';
+  sFmtMaxCountExceeded = 'Maximum of %d items allowed';
+  SFmtInvalidPathAtIndex = 'Invalid or empty path ("%s") at index %d';
 
 function ActionsToString(Actions: TJvChangeActions): string;
 const
@@ -188,7 +191,7 @@ begin
   inherited Assign(Source);
 end;
 
-procedure TJvChangeItem.SetSubTrees(Value: Boolean);
+procedure TJvChangeItem.SetSubTrees(const Value: Boolean);
 begin
   if FSubTrees <> Value then
   begin
@@ -202,10 +205,10 @@ begin
   end;
 end;
 
-procedure TJvChangeItem.SetDir(Value: string);
+procedure TJvChangeItem.SetDir(const Value: string);
 begin
   if (Length(Value) = 0) or not DirectoryExists(Value) then
-    raise EJVCLException.CreateFmt('Invalid or empty path [%s]', [Value]);
+    raise EJVCLException.CreateFmt(sFmtInvalidPath, [Value]);
   FDir := Value;
 end;
 
@@ -236,7 +239,7 @@ begin
   if Count < MAXIMUM_WAIT_OBJECTS then
     Result := TJvChangeItem(inherited Add)
   else
-    raise EJVCLException.CreateFmt('Maximum of %d items allowed', [MAXIMUM_WAIT_OBJECTS]);
+    raise EJVCLException.CreateFmt(sFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
 end;
 
 function TJvChangeItems.GetItem(Index: Integer): TJvChangeItem;
@@ -284,13 +287,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvChangeNotify.CheckActive(Name: string);
+procedure TJvChangeNotify.CheckActive(const Name: string);
 begin
   if Active then
-    raise EJVCLException.Create('Cannot change ' + Name + ' when active');
+    raise EJVCLException.CreateFmt(SFmtCannotChangeName,[Name]);
 end;
 
-procedure TJvChangeNotify.SetCollection(Value: TJvChangeItems);
+procedure TJvChangeNotify.SetCollection(const Value: TJvChangeItems);
 begin
   FCollection.Assign(Value);
 end;
@@ -298,14 +301,14 @@ end;
 procedure TJvChangeNotify.Change(Item: TJvChangeItem);
 begin
   if Assigned(Item) then
-    Item.Change
-  else
-    Exit;
-  if Assigned(FNotify) then
-    FNotify(Self, Item.Directory, Item.Actions);
+  begin
+    Item.Change;
+    if Assigned(FNotify) then
+      FNotify(Self, Item.Directory, Item.Actions);
+  end;
 end;
 
-procedure TJvChangeNotify.SetInterval(Value: Integer);
+procedure TJvChangeNotify.SetInterval(const Value: Integer);
 begin
   CheckActive('Interval');
   if Value <= 0 then
@@ -314,22 +317,21 @@ begin
     FInterval := Value;
 end;
 
-function TJvChangeNotify.NotifyError(Msg: string): string;
+function TJvChangeNotify.NotifyError(const Msg: string): string;
 begin
   SetLength(Result, 256);
   SetLength(Result, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(Result), Length(Result), nil));
   raise
-    EJVCLException.CreateFmt('%s [%s]', [Result, Msg]);
+    EJVCLException.CreateFmt('%s:'#13#10'%s', [Result, Msg]);
 end;
 
 procedure TJvChangeNotify.DoThreadChangeNotify(Sender: TObject; Index: Integer);
 begin
-  if Assigned(FNotify) then
-    FNotify(Self, Notifications[Index].Directory, Notifications[Index].Actions);
+  Change(Notifications[Index]);
 end;
 
-procedure TJvChangeNotify.SetActive(Value: Boolean);
+procedure TJvChangeNotify.SetActive(const Value: Boolean);
 const
   cActions: array [TJvChangeAction] of Cardinal =
     (FILE_NOTIFY_CHANGE_FILE_NAME, FILE_NOTIFY_CHANGE_DIR_NAME,
@@ -357,7 +359,7 @@ begin
           Flags := Flags or (cActions[cA]);
       S := FCollection[I].Directory;
       if (Length(S) = 0) or not DirectoryExists(S) then
-        raise EJVCLException.CreateFmt('Invalid or empty path ("%s") at index %d', [S, I]);
+        raise EJVCLException.CreateFmt(SFmtInvalidPathAtIndex, [S, I]);
       FNotifyArray[I] := FindFirstChangeNotification(PChar(S),
         longbool(FCollection[I].IncludeSubTrees), Flags);
       if FNotifyArray[I] = INVALID_HANDLE_VALUE then
