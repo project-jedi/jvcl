@@ -131,7 +131,6 @@ USEUNIT("..\source\JvSlider.pas");
 USEUNIT("..\source\JvSoundControl.pas");
 USEUNIT("..\source\JvSpecialImage.pas");
 USEUNIT("..\source\JvSpecialProgress.pas");
-USEUNIT("..\source\JvSpeedButton.pas");
 USEUNIT("..\source\JvSplitter.pas");
 USEUNIT("..\source\JvStarfield.pas");
 USEUNIT("..\source\JvStartMenuBtn.pas");

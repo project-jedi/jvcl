@@ -159,7 +159,6 @@ contains
   JvSoundControl in '..\source\JvSoundControl.pas',
   JvSpecialImage in '..\source\JvSpecialImage.pas',
   JvSpecialProgress in '..\source\JvSpecialProgress.pas',
-  JvSpeedButton in '..\source\JvSpeedButton.pas',
   JvSplitter in '..\source\JvSplitter.pas',
   JvStarfield in '..\source\JvStarfield.pas',
   JvStartMenuBtn in '..\source\JvStartMenuBtn.pas',

@@ -58,8 +58,7 @@
       ..\lib5\JvSelectDirectory.obj ..\lib5\JvSerialDlg.obj 
       ..\lib5\JvSerialMaker.obj ..\lib5\JvShape.obj ..\lib5\JvSlider.obj 
       ..\lib5\JvSoundControl.obj ..\lib5\JvSpecialImage.obj 
-      ..\lib5\JvSpecialProgress.obj
-      ..\lib5\JvSpeedButton.obj ..\lib5\JvSplitter.obj ..\lib5\JvStarfield.obj 
+      ..\lib5\JvSpecialProgress.obj ..\lib5\JvSplitter.obj ..\lib5\JvStarfield.obj
       ..\lib5\JvStartMenuBtn.obj ..\lib5\JvStaticText.obj 
       ..\lib5\JvStatusBar.obj ..\lib5\JvStringGrid.obj 
       ..\lib5\JvStringListToHtml.obj ..\lib5\JvStrToHtml.obj 

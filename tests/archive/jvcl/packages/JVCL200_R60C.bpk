@@ -59,8 +59,7 @@
       ..\lib6\JvSelectDirectory.obj ..\lib6\JvSerialDlg.obj 
       ..\lib6\JvSerialMaker.obj ..\lib6\JvShape.obj ..\lib6\JvSlider.obj 
       ..\lib6\JvSoundControl.obj ..\lib6\JvSpecialImage.obj 
-      ..\lib6\JvSpecialProgress.obj
-      ..\lib6\JvSpeedButton.obj ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj 
+      ..\lib6\JvSpecialProgress.obj ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj
       ..\lib6\JvStartMenuBtn.obj ..\lib6\JvStaticText.obj 
       ..\lib6\JvStatusBar.obj ..\lib6\JvStringGrid.obj 
       ..\lib6\JvStringListToHtml.obj ..\lib6\JvStrToHtml.obj 
@@ -350,7 +349,6 @@
       <FILE FILENAME="..\source\JvSoundControl.pas" FORMNAME="" UNITNAME="JvSoundControl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpecialImage.pas" FORMNAME="" UNITNAME="JvSpecialImage" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpecialProgress.pas" FORMNAME="" UNITNAME="JvSpecialProgress" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvSpeedButton.pas" FORMNAME="" UNITNAME="JvSpeedButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSplitter.pas" FORMNAME="" UNITNAME="JvSplitter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvStarfield.pas" FORMNAME="" UNITNAME="JvStarfield" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvStartMenuBtn.pas" FORMNAME="" UNITNAME="JvStartMenuBtn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
