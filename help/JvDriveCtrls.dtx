@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Completed (II) (peter3)
+##Status: Completed,Checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvDriveCtrls.pas
 Summary
@@ -95,7 +95,7 @@ Description
   Use GetItemPath to get the path of a directory by specifying the directory’s index value. The first
   directory in the list has an index of 0.
 Parameters
-  Index - index of the directory in the list.
+  Index - Index of the directory in the list.
 Return value
   The path to the selected item or an empty string if Index is out of bounds.
 See Also
@@ -165,7 +165,7 @@ Summary
   A combobox that displays the available drives on the system.
 Description
   Use TJvDriveCombo to display a list of available drives on the system. TJvDriveCombo derives from
-  TJvCustomComboBox, exposes many of it's properties and adds functionality to also display local
+  TJvCustomComboBox, exposes many of its properties and adds functionality to also display local
   as well as networked drives along with an icon representing the drive type.
 See Also
   TJvDirectoryListBox, TJvDriveList, TJvFileListBox
@@ -234,7 +234,7 @@ Summary
   A listbox that displays a list of drives available on the system.
 Description
   Use TJvDriveList to display a list of available drives on the system. TJvDriveList derives from
-  TJvCustomListBox, exposes many of it's properties and adds functionality to also display local
+  TJvCustomListBox, exposes many of its properties and adds functionality to also display local
   as well as networked drives along with an icon representing the drive type.
 See Also
   TJvDirectoryListBox, TJvDriveCombo, TJvFileListBox
@@ -293,7 +293,7 @@ Description
 Summary
   Updates the list of drives.
 Description
-  Call Refresh to update the display in the list. When you call Refresh, the combobox clears the list, scans
+  Call Refresh to update the display in the list. When you call Refresh, the listbox clears the list, scans
   the system for drives and fills the Items array again, finally resetting the selected item to be the
   previously selected item.
 ----------------------------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ JVCLInfo
   GROUP=JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
-  TJvFileListBox is a specialized list box that lists all the files in a specified directory.
+  A specialized list box that lists all the files in a specified directory.
 Description
   Add TJvFileListBox to a form to allow users to select a file. Use TJvFileListBox along
   with TJvDriveCombo and TJvDirectoryListBox to add full file selection capabilities to a form.

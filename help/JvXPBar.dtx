@@ -1,9 +1,15 @@
 ##Package: XPCtrls
-##Status: Completed (peter3), Review
-##Skip: TJvXPFadeThread
+##Status: Completed,Checked (peter3)
+##Skip: TJvXPBarColors.Change
+##Skip: TJvXPBarColors.OnChange
+##Skip: TJvXPBarItem.ActionLink
+##Skip: TJvXPBarItem.Name
+##Skip: TJvXPBarItem.WinXPBar
+##Skip: TJvXPBarItemActionLink
+##Skip: TJvXPBarItemActionLinkClass
 ##Skip: TJvXPBarItems
-##Skip: TJvXPBarRollDirection
-##Skip: TJvXPBarOptions
+##Skip: TJvXPCustomWinXPBar.Font
+##Skip: TJvXPFadeThread
 ----------------------------------------------------------------------------------------------------
 @@JvXPBar.pas
 Summary
@@ -64,7 +70,7 @@ Description
 Summary
   Specifies the return values possible from the GetHitTestAt function of TJvXPCustomWinXPBar.
 Description
-  TJvXPBarHitTest is the type of the return value from TJvXPBar.GetHitTestAt.
+  TJvXPBarHitTest is the type of the return value from <LINK TJvXPCustomWinXPBar.GetHitTestAt,TJvXPBar.GetHitTestAt>.
 See Also
   TJvXPCustomWinXPBar, TJvXPBar
 @@TJvXPBarHitTest.htNone
@@ -159,16 +165,17 @@ Summary
   Returns one of three possible image lists.
 Description
   Images is used internally to return the image list that is to be used by the item. An item can get
-  it's image list from three different sources: from it's own ImageList property, from the Images property
-  of the associated Actin or from the Images property of the owning TJvXPCustomWinXPBar.
+  its image list from three different sources: from its own ImageList property, from the Images property
+  of the associated Action or from the <LINK TJvXPCustomWinXPBar.ImageList,ImageList> property of the
+  owning TJvXPCustomWinXPBar.
 
   The different image lists are checked in this order:
 
-    ImageList, Action.ActionList.Images and TJvXPBar.Images
+    ImageList, Action.ActionList.Images and TJvXPBar.ImageList
 
   The first non-nil image list found is returned.
 See Also
-  ImageList, Action, TJvXPCustomWinXPBar.Images, TJvXPBar
+  ImageList, Action, TJvXPCustomWinXPBar.ImageList, TJvXPBar
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem.OnClick
 Summary
@@ -240,14 +247,11 @@ Description
 Summary
   Indicates the direction of a roll event.
 Description
-  TJvXPBarRollDirection
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The TJvXPBarRollDirection type is used to specify a direction of a roll event.
 @@TJvXPBarRollDirection.rdExpand
-  Description for rdExpand
+  Expands.
 @@TJvXPBarRollDirection.rdCollapse
-  Description for rdCollapse
+  Collapses.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollMode
 <TITLE TJvXPBarRollMode type>
@@ -258,7 +262,7 @@ Description
 @@TJvXPBarRollMode.rmFixed
   The control is resized using a fixed value.
 @@TJvXPBarRollMode.rmShrink
-  The control is resized proportional to it's current size.
+  The control is resized proportional to its current size.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollStep
 <TITLE TJvXPBarRollStep type>
@@ -288,7 +292,15 @@ Summary
 Description
   Use Items to access the items in the collection by index. Valid indices are between 0 and Count - 1.
   Items is the default property of TJvXPBarVisibleItems, which means you can call it either using
-  JvXPBar1.Items.Items[Index] or JvXPBar1.Items[Index].
+  <AUTOLINK OFF>
+  <CODE>
+  JvXPBar1.Items.Items[Index]
+  </CODE>
+  or
+  <CODE>
+  JvXPBar1.Items[Index]
+  </CODE>
+  <AUTOLINK ON>
 Parameters
   Index - The 0-based index of the item.
 See Also
@@ -300,7 +312,7 @@ Summary
 Description
   Use TJvXPCustomWinXPBar as a base class when creating controls that should mimick the look and feel
   of the navigation bar used in Windows XP. TJvXPCustomWinXPBar handles the basic tasks of creating and
-  managing the items that are displayed on it's client area as well as the expanding and collapsing of
+  managing the items that are displayed on its client area as well as the expanding and collapsing of
   the control.
 
   Do not create instances of TJvXPCustomWinXPBar. Instead, use a derived control, like TJvXPBar.
@@ -332,13 +344,13 @@ Description
 Summary
   Specifies the colors used in the control.
 Description
-  Use Colors and itäs subproperties to set the various colors used by the control
+  Use Colors and its subproperties to set the various colors used by the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.GetHitTestAt
 Summary
   Returns hit test info for a specific point in the control.
 Description
-  Call GetHitTestAt to obtian information about where a specific point lies in the control.
+  Call GetHitTestAt to obtain information about where a specific point lies in the control.
 Parameters
   X - The horizontal location in client coordinates.
   Y - The vertical location in client coordinates.
@@ -349,7 +361,7 @@ Return value
 Summary
   Indicates the font to use for the header of the control.
 Description
-  Use HeaderFont to specify the font attributes to use for the header portio of the control.
+  Use HeaderFont to specify the font attributes to use for the header portion of the control.
 See Also
   Font
 ----------------------------------------------------------------------------------------------------
@@ -366,7 +378,7 @@ See Also
 Summary
   Indicates the color to use when an item is highlighted.
 Description
-  Use HotrackColor to set the text color to use for items when the mouse hovers over them. HotTrackColor
+  Use HotTrackColor to set the text color to use for items when the mouse hovers over them. HotTrackColor
   is not used unless HotTrack is true.
 See Also
   HotTrack
@@ -377,13 +389,13 @@ Summary
 Description
    Point Icon to a TIcon object to display an icon at the top of the control.
 See Also
-  ImageList   
+  ImageList
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ImageList
 Summary
-  Spcifies the image list to use for the items in the control.
+  Specifies the image list to use for the items in the control.
 Description
-  Set ImageList to an exisitng TImageList on your form to display an image next to each item in the
+  Set ImageList to an existing TImageList on your form to display an image next to each item in the
   control. The items must also have their ItemIndex set to a value between 0 and ImageList.Count - 1.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.ItemHeight
@@ -397,7 +409,7 @@ Summary
   Provides indexed access to the items in the control.
 Description
   Use Items to access the items in the control using an index. Valid indices are between 0 and
-  Count - 1. Items contans all the items in the list. To iterate only the visible onces, use VisibleItems
+  Count - 1. Items contains all the items in the list. To iterate only the visible onces, use VisibleItems
   instead.
 See Also
   VisibleItems, Count
@@ -424,7 +436,7 @@ See Also
 Summary
   Occurs when an item needs to be drawn.
 Description
-  Write a handler for this event to mdofiy the way items are drawn in the control.
+  Write a handler for this event to modifiy the way items are drawn in the control.
 Parameters
   Sender  - The control that triggered the event.
   ACanvas - The canvas to draw on.
@@ -446,10 +458,10 @@ Parameters
 Summary
   Indicates the delay between each roll step when collapsing or expanding.
 Description
-  Use RollDelay to specify the amount of time that elapses between each RollStep when the Colapsed state
+  Use RollDelay to specify the amount of time that elapses between each RollStep when the Collapsed state
   of the control changes, i.e it is being expanded or collapsed.
 See Also
-  Colapsed, Rolling, RollStep, RollMode, RollOffset
+  Collapsed, Rolling, RollStep, RollMode, RollOffset
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.Rolling
 Summary
@@ -458,11 +470,11 @@ Description
   Read Rolling to determine if the control is currently in the transition from expanded to collapsed state
   or the other way around. Rolling is used mainly to avoid re-entrancy problems and infinite loops in code.
 See Also
-  Collapsed  
+  Collapsed
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollMode
 Summary
-  Spcifies how expanding and collapsing the control is performed.
+  Specifies how expanding and collapsing the control is performed.
 Description
   Use RollMode to control how the control is expanded and collapsed when the Collapsed property changes
   or the user clicks the RollButton. If RollMode is rmFixed, the control is expanded and collapsed
@@ -486,7 +498,7 @@ Summary
   Indicates the number of discreet steps used to collapse and expand the control.
 Description
   Set RollStep to specify how smooth the transition from the expanded to the collapsed state is. A higher value
-  of RollSteps makes the transition appear smooth but will also take longer. 
+  of RollSteps makes the transition appear smooth but will also take longer.
 See Also
   RollOffset, RollMode
 ----------------------------------------------------------------------------------------------------
@@ -515,5 +527,4 @@ Description
   Use VisibleItems to access the visible items in the control by index. Valid indices are from
   0 to VisibleItems.Count - 1.
 See Also
-  Items, VisibleItems.Count
-
+  Items, TJvXPBarVisibleItems.Count

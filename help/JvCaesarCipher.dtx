@@ -1,5 +1,5 @@
 ##Package: Crypt
-##Status: Completed (I)
+##Status: Completed,Checked
 ----------------------------------------------------------------------------------------------------
 @@JvCaesarCipher.pas
 Summary
@@ -26,14 +26,14 @@ Description
   When used with strings it may result in strings that do not even look like strings
   anymore.
 
-  Caesar Cipher is not a very save method to cipher text. When used with strings it is
+  Caesar Cipher is not a safe method to cipher text. When used with strings it is
   easy to crack.
 
   The component accepts a \string, a list of strings (a TString object) or a stream for
   (de)ciphering.
 
   To use a TJvCaesarCipher component you should:
-  * drop a TJvCaesarCipher on a form.
+  * Drop a TJvCaesarCipher on a form.
   * Set the property N to a value between 0 and 255, indicating the number of
     characters the characterset should be shifted. When used with strings a high value of N may 
     lead to a strings that are difficult to recognize as \string.
@@ -47,13 +47,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Decode
 Summary
-  A method to cipher all strings in a TString object.
+  A method to decipher all strings in a TString object.
 Description
-  Use Decode to cipher the strings in a TString object. After the method is called
-  the strings will be ciphered.
+  Use Decode to decipher the strings in a TString object. After the method is called
+  the strings will be deciphered.
 Parameters
-  It - a TStrings object from which all strings will be ciphered.
-See Also
+  It - A TStrings object from which all strings will be deciphered.
+See also
   <LINK Encode>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Decoded
@@ -67,44 +67,44 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.DecodeStream
 Summary
-  A method to cipher all bytes in a TStream object.
+  A method to decipher all bytes in a TStream object.
 Description
-  Use DecodeStream to cipher all bytes in a TStream object. After the method is called
-  the stream will be ciphered.
+  Use DecodeStream to decipher all bytes in a TStream object. After the method is called
+  the stream will be deciphered.
 Parameters
-  Value - a TStream object which will be ciphered.
-See Also
+  Value - A TStream object which will be deciphered.
+See also
   <LINK EncodeStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Encode
 Summary
-  A method to decipher all strings in a TString object.
+  A method to cipher all strings in a TString object.
 Description
-  Use Encode to decipher the strings in a TString object. After the method is called
-  the strings will be deciphered.
+  Use Encode to cipher the strings in a TString object. After the method is called
+  the strings will be ciphered.
 Parameters
-  It - a TStrings object from which all strings will be deciphered.
-See also
+  It -  A TStrings object from which all strings will be ciphered.
+See Also
   <LINK Decode>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.Encoded
 Summary
   A property that specifies a ciphered \string.
 Description
-  Assign a ciphered \string to this property and read the decipherd \string from
+  Assign a ciphered \string to this property and read the deciphered \string from
   the property Decoded.
 See also
   Decoded
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.EncodeStream
 Summary
-  A method to decipher all bytes in a TStream object.
+  A method to cipher all bytes in a TStream object.
 Description
-  Use EncodeStream to decipher all bytes in a TStream object. After the method is called
-  the stream will be deciphered.
+  Use EncodeStream to cipher all bytes in a TStream object. After the method is called
+  the stream will be ciphered.
 Parameters
-  Value - a TStream object which will be deciphered.
-See also
+  Value - A TStream object which will be ciphered.
+See Also
   <LINK DecodeStream>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaesarCipher.N
@@ -114,7 +114,7 @@ Summary
 Description
   Assign a value to N to indicate how many characters the component should shift
   each character or byte for (de)ciphering. N=0 results in no ciphering, N=1 will
-  change an A into a B, a C into a D etcetera. N=3 will change a B into a \E, a K into
+  change an A into a B, a C into a D etcetera. N=3 will change a B into an \E, a K into
   a N etcetera.
 
   TJvCaesarCipher uses the whole characterset (256 characters) for shifting. When used with

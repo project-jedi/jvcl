@@ -1,5 +1,12 @@
 ##Package: Wizard
-##Status: Completed (peter3), Review
+##Status: Completed,Checked (peter3)
+##Skip: TJvWizard.About
+##Skip: TJvWizardAboutInfoForm
+##Skip: TJvWizardAlign
+##Skip: TJvWizardImage.OnChange
+##Skip: TJvWizardLeftRight
+##Skip: TJvWizardNavigateButton.Width
+##Skip: TJvWizardPageHeader.ParentFont
 ##Skip: TJvWizardPageList
 ----------------------------------------------------------------------------------------------------
 @@JvWizard.pas
@@ -218,7 +225,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnLastButtonClick, OnLastButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnNextButtonClick
 Summary
@@ -229,7 +236,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnNextButtonClick, OnNextButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectFirstPage
 Summary
@@ -288,7 +295,7 @@ Summary
   Provides indexed access to the wizard's pages.
 Description
   Use Pages to access the pages in the wizard using an index. To access the first page of the wizard, use
-  Pages[0]. TO access the last page, use Pages[PageCount-1].
+  Pages[0]. To access the last page, use Pages[PageCount-1].
 See Also
   PageCount
 ----------------------------------------------------------------------------------------------------
@@ -304,7 +311,7 @@ See Also
 Summary
   Moves to the last page.
 Description
-  Write here a description
+  Call SelectLastPage to move directly to the last page in the wizard.
 See Also
   SelectFirstPage, SelectNextPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
@@ -312,17 +319,17 @@ See Also
 Summary
   Moves to the next page.
 Description
-  Write here a description
+  Call SelectNextPage to move directly to the next page in the wizard.
 See Also
-  SelectFirstPage, SelectLastPage, SelectNextPage, SelectPriorPage
+  SelectFirstPage, SelectLastPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectPriorPage
 Summary
   Moves to the previous page.
 Description
-  Write here a description
+  Call SelectPriorPage to move directly to the previous page in the wizard.
 See Also
-  SelectFirstPage, SelectLastPage, SelectNextPage, SelectPriorPage
+  SelectFirstPage, SelectLastPage, SelectNextPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ShowDivider
 Summary
@@ -337,11 +344,10 @@ Summary
 Description
   Use ShowRouteMap to conditionally hide and show the assigned route map component. If no route map is assigned, this property
   does nothing.
-
 Note
   The route map is automatically assigned when dropped on the form.
-See Also
-  RouteMap
+##See Also
+##  RouteMap
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControl
 Summary
@@ -407,25 +413,25 @@ Description
 Parameters
   Sender - The wizard that called the event.
   Page   - The current or next page depending on the event. If it is an OnExitPage event, Page is the
-           page that is recieving focus. If it is an OnEnterPage event, Page is the page lossing focus.
+           page that is receiving focus. If it is an OnEnterPage event, Page is the page losing focus.
            Note that Page can be nil.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage
 Summary
   Base class for wizard pages.
 Description
-  TJvWizardCustomPage is the bsae class for pages that can be displayed in a TJvWizard. Currently,
-  TJvWizard only defines two differnt page types derived from TJvCustomPage: TJvWizardWelcomePage
+  TJvWizardCustomPage is the base class for pages that can be displayed in a TJvWizard. Currently,
+  TJvWizard only defines two different page types derived from TJvCustomPage: TJvWizardWelcomePage
   and TJvWizardInteriorPage.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.EnableButton
 Summary
-  Enables or disables a set of buttons.
+  Enables or disables a button.
 Description
-  Call EnableButton to enable or disable a set of buttons all at once.
+  Call EnableButton to enable or disable a button.
 Parameters
-  AButton  - The buttons to modify.
-  AEnabled - Set to true to enable the buttons, to False to disable them.
+  AButton  - The button to modify.
+  AEnabled - Set to true to enable the button, to False to disable it.
 See Also
   EnabledButtons
 ----------------------------------------------------------------------------------------------------
@@ -443,8 +449,8 @@ Summary
 Description
   Set EnableJumpToPage to true (the default) to allow the user to move to any other page. This property
   is mostly used with route maps.
-See Also
-  TJvCustomRouteMapControl
+##See Also
+##  TJvCustomRouteMapControl
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Header
 Summary
@@ -484,15 +490,15 @@ See Also
 Summary
   Occurs when the page gains focus.
 Description
-  Write a handler for this event to be notified when the page recieves focus.
+  Write a handler for this event to be notified when the page receives focus.
 See Also
   OnExitPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnExitPage
 Summary
-  Occurs when the page looses focus.
+  Occurs when the page loses focus.
 Description
-  Write a handler for this event to be notified when the page looses focus.
+  Write a handler for this event to be notified when the page loses focus.
 See Also
   OnEnterPage
 ----------------------------------------------------------------------------------------------------
@@ -503,7 +509,7 @@ Description
   Write a handler for the OnFinishButtonClick if you want to be notified when the finish button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnLastButtonClick
 Summary
@@ -536,7 +542,7 @@ Description
   Write a handler for this event to custom draw the page.
 Parameters
   Sender  - The page that needs painting.
-  ACanvas - The cavas to draw on.
+  ACanvas - The canvas to draw on.
   ARect   - The rect area to draw within.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnStartButtonClick
@@ -557,7 +563,7 @@ Description
   a value of 0, the second has a value of 1, and so on. PageIndex values are reassigned if pages are
   deleted or moved.
 See Also
-  Pages, Wizard
+  TJvWizard.Pages, Wizard
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Panel
 Summary
@@ -662,7 +668,7 @@ Summary
   Indicates whether the background of the image is visible or not.
 Description
   Use Transparent to indicate whether the background can be seen through the image or not. The color used
-  as the transparent color is taken from the lower left pixel of th eimage and all pixels with the same
+  as the transparent color is taken from the lower left pixel of the image and all pixels with the same
   color are drawn transparently.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardInteriorPage
@@ -718,7 +724,7 @@ Description
   Set Layout to specify how the text of the button is placed within the ClientRect of the control.
   Layout is the vertical analog to the Alignment property.
 See Also
-  Alignment
+  TJvWizardButtonControl.Alignment
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardNavigateButton.ModalResult
 Summary
@@ -740,7 +746,7 @@ See Also
 @@TJvWizardPageClickEvent
 <TITLE TJvWizardPageClickEvent type>
 Summary
-  Event type used by events that are triggered by clicking on the buttons of a wizard control. 
+  Event type used by events that are triggered by clicking on the buttons of a wizard control.
 Description
   TJvWizardPageClickEvent is the event type of the navigation events of a TJvWizard, like
   <LINK TJvWizardCustomPage.OnBackButtonClick, OnBackButtonClick> and <LINK TJvWizardCustomPage.OnNextButtonClick, OnNextButtonClick> among others.
@@ -761,7 +767,6 @@ Summary
   Indicates the height in pixels of the header.
 Description
   Use Height to specify the height of the header area in pixels.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.ImageAlignment
 Summary
@@ -816,22 +821,20 @@ See Also
 Summary
   Base class for various objects created and maintained by a TJvWizard or a TJvWizardCustomPage or descendant.
 Description
-  Write here a description
+  The TJvWizardPageObject class is a base class for various objects created and maintained by a
+  TJvWizard or a TJvWizardCustomPage or descendant.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageObject.WizardPage
 Summary
   Reference to the wizard where this object appears.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Reference to the wizard where this object appears.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPagePanel
 Summary
-  Class that manages the settings for a bacground panel area on a wizard page.
+  Class that manages the settings for a background panel area on a wizard page.
 Description
-  TJvWizardPagePanel is the type used for the panel property of a wizard page. Note the although the name
+  TJvWizardPagePanel is the type used for the panel property of a wizard page. Note that although the name
   suggests that it derives from TWinControl it is actually not a real control. TJvWizardPagePanel
   is derived from TObject and only draws a panel like rectangle on the page background.
 ----------------------------------------------------------------------------------------------------
@@ -839,79 +842,55 @@ Description
 Summary
   Specifies the border around the panel.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use BorderWidth to specify the border width around the panel.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle
 Summary
   Class that manages the settings of the wizard title area.
 Description
-  Write here a description
+  Class that manages the settings of the wizard title area.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.Alignment
 Summary
   Indicates the text justification of the title.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Indicates the text justification of the title.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.AnchorPlacement
 Summary
   Indicates the offset of the title.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Indicates the offset of the title.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.Anchors
 Summary
   Specifies how the title is anchored to its parent.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Anchors to specify how the title is anchored to its parent.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.Font
 Summary
   Indicates the font to use for the title.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Indicates the font to use for the title.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.Indent
 Summary
   Specifies the text indentation in the title.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Indent to specify the text indentation in the title.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.Text
 Summary
   Specifies the text to display in the title.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Specifies the text to display in the title.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageTitle.WizardPageHeader
 Summary
   Defines the settings for the title header.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Defines the settings for the title header.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPaintPageEvent
 <TITLE TJvWizardPaintPageEvent type>
@@ -922,7 +901,7 @@ Summary
   Base class to derive route map controls from.
 Description
   Route maps are a type of control that is designed to give additional visual feedback when the user
-  moves through the pages of the wizard. For example, a route map can display a list of all avaliable
+  moves through the pages of the wizard. For example, a route map can display a list of all available
   pages in the wizard or display the previous, current and next page.
 
   TJvWizardRouteMapControl defines the basic functionality of a route map control. Derive a new component
@@ -951,6 +930,7 @@ Parameters
   AllowDisplay - Set to True to allow the page change, False otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.PageCount
+Summary
   Returns the total number of pages in the wizard.
 Description
   \Read PageCount to determine the total number of pages in the Pages array. To iterate the Pages array,
@@ -1025,7 +1005,7 @@ Description
 Summary
   Indicates the image used for the watermark.
 Description
-  Use the properties of Image to set the image to display as the watermark and how th eimage is displayed.
+  Use the properties of Image to set the image to display as the watermark and how the image is displayed.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardWaterMark.Width
 Summary
