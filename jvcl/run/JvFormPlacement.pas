@@ -275,13 +275,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Consts,
+  JclStrings,
   JvJCLUtils, JvPropertyStorage;
 
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
   siVersion = 'FormVersion'; // do not localize
-//  siStoredValues = 'StoredValues'; // do not localize
-//  siStoredProps = 'StoredProps'; // do not localize
+  cFormNameMask = '%FORM_NAME%';  // do not localize
 
 //=== { TJvFormPlacement } ===================================================
 
@@ -302,6 +302,7 @@ begin
   FLinks := TList.Create;
   FVersion := 0;
   FVersionCheck := fpvcCheckGreaterEqual;
+  FAppStoragePath := cFormNameMask;
 end;
 
 destructor TJvFormPlacement.Destroy;
@@ -376,6 +377,13 @@ begin
     FAppStoragePath := Value + '\'
   else
     FAppStoragePath := Value;
+  if not (csDesigning in ComponentState) then
+  begin
+    if (StrFind( cFormNameMask, FAppStoragePath) <> 0) and
+       Assigned(Owner) and
+       (Owner is TCustomForm) THEN
+      StrReplace( FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase]);
+  end;
 end;
 
 procedure TJvFormPlacement.SetEvents;
