@@ -200,6 +200,8 @@ type
      VectorContext : TJvVectorFrame;
   end;
 
+  PJvContext = ^TJvContext;
+
 type
   TBitDescription = record
     BitCount: 0..2;
@@ -249,7 +251,7 @@ function FormatValue(Value:TJvSIMDValue; Format: TJvSIMDFormat):string;
 function ParseValue(const StringValue: string; var Value:TJvSIMDValue; Format: TJvSIMDFormat):Boolean;
 
 const
-  CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $20;
+  CONTEXT_EXTENDED_REGISTERS = CONTEXT_i386 or $00000020;
 
 // return the processor frame for the specified thread, this thread must be suspended
 function GetThreadContext(hThread: THandle;
@@ -534,27 +536,41 @@ function SetThreadContext(hThread: THandle;
 
 function GetVectorContext(hThread: THandle; out VectorContext:TJvVectorFrame): Boolean;
 var
-  JvContext:TJvContext;
+  ContextMemory: Pointer;
+  JvContext: PJvContext;
 begin
-  JvContext.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-  Result :=    GetThreadContext(hThread,JvContext)
-           and ((JvContext.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
-  VectorContext := JvContext.VectorContext;
+  GetMem(ContextMemory,sizeof(TJvContext)+15);
+  if ((Cardinal(ContextMemory) and 15)<>0) then
+    JvContext := PJvContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+  else JvContext := ContextMemory;
+  JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+  Result :=    GetThreadContext(hThread,JvContext^)
+           and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+  if (Result) then
+    VectorContext := JvContext^.VectorContext
+  else FillChar(VectorContext,sizeof(VectorContext),0);
+  FreeMem(ContextMemory);
 end;
 
 function SetVectorContext(hThread: THandle; const VectorContext:TJvVectorFrame): Boolean;
 var
-  JvContext:TJvContext;
+  ContextMemory: Pointer;
+  JvContext:PJvContext;
 begin
-  JvContext.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-  Result :=    GetThreadContext(hThread,JvContext)
-           and ((JvContext.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
+  GetMem(ContextMemory,sizeof(TJvContext)+15);
+  if ((Cardinal(ContextMemory) and 15)<>0) then
+    JvContext := PJvContext((Cardinal(ContextMemory)+16) and $FFFFFFF0)
+  else JvContext := ContextMemory;
+  JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+  Result :=    GetThreadContext(hThread,JvContext^)
+           and ((JvContext^.ScalarContext.ContextFlags and CONTEXT_EXTENDED_REGISTERS)<>0);
   if (Result) then
   begin
-    JvContext.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
-    JvContext.VectorContext := VectorContext;
-    Result := SetThreadContext(hThread,JvContext);
+    JvContext^.ScalarContext.ContextFlags := CONTEXT_EXTENDED_REGISTERS;
+    JvContext^.VectorContext := VectorContext;
+    Result := SetThreadContext(hThread,JvContext^);
   end;
+  FreeMem(ContextMemory);
 end;
 
 {$IFDEF UNITVERSIONING}
