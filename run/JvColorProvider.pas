@@ -32,42 +32,77 @@ unit JvColorProvider;
 interface
 
 uses
-  Classes, Windows,
+  Classes, Graphics, Windows,
+  JclBase,
   JvDataProvider, JvDataProviderImpl;
 
 type
+  TColorItem = record
+    Value: TColor;
+//    Names: TDynStringArray;
+  end;
+  TColorItems = array of TColorItem;
+
   TJvColorProvider = class(TJvCustomDataProvider)
+  private
+    FStdColors: TColorItems;
+    FSysColors: TColorItems;
+    FCstColors: TColorItems;
+  private
+    procedure AddColorStr(const S: string);
   protected
+    procedure AddColor(var List: TColorItems; Color: TColor);
+    procedure DeleteColor(var List: TColorItems; Index: Integer);
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
+
+    property StdColors: TColorItems read FStdColors write FStdColors;
+    property SysColors: TColorItems read FSysColors write FSysColors;
+    property CstColors: TColorItems read FCstColors write FCstColors;
   public
-    procedure AfterConstruction; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
-  TJvColorProviderColorBoxSettings = class(TPersistent)
+  TJvColorProviderAddItemLocation = (ailUseHeader, ailTop, ailBottom);
+  TJvColorProviderAddColorStyle = (aisBorland, aisEvent);
+  TColorGroupHeaderAlign = (ghaLeft, ghaCenter, ghaColorText);
+  TColorGroupHeaderStyle = (ghsBoldFont, ghsSingleCenterLine, ghsDoubleCenterLine);
+  TColorGroupHeaderStyles = set of TColorGroupHeaderStyle;
+
+  TJvColorProviderSubSettings = class(TPersistent)
   private
     FActive: Boolean;
+    FConsumerServiceExt: TJvDataConsumerAggregatedObject;
+  protected
+    procedure Changed; virtual;
+    procedure ViewChanged; virtual;
+    procedure SetActive(Value: Boolean); virtual;
+    property Active: Boolean read FActive write SetActive;
+    property ConsumerServiceExt: TJvDataConsumerAggregatedObject read FConsumerServiceExt;
+  public
+    constructor Create(AConsumerService: TJvDataConsumerAggregatedObject);
+  end;
+
+  TJvColorProviderColorBoxSettings = class(TJvColorProviderSubSettings)
+  private
     FHeight: Integer;
     FMargin: Integer;
     FShadowed: Boolean;
     FShadowSize: Integer;
     FSpacing: Integer;
     FWidth: Integer;
-    FConsumerServiceExt: TJvDataConsumerAggregatedObject;
   protected
-    procedure Changed; virtual;
-    procedure SetActive(Value: Boolean); virtual;
     procedure SetHeight(Value: Integer); virtual;
     procedure SetMargin(Value: Integer); virtual;
     procedure SetShadowed(Value: Boolean); virtual;
     procedure SetShadowSize(Value: Integer); virtual;
     procedure SetSpacing(Value: Integer); virtual;
     procedure SetWidth(Value: Integer); virtual;
-    property ConsumerServiceExt: TJvDataConsumerAggregatedObject read FConsumerServiceExt;
   public
     constructor Create(AConsumerService: TJvDataConsumerAggregatedObject);
   published
-    property Active: Boolean read FActive write SetActive default True;
+    property Active default True;
     property Height: Integer read FHeight write SetHeight default 13;
     property Margin: Integer read FMargin write SetMargin default 2;
     property Shadowed: Boolean read FShadowed write SetShadowed default True;
@@ -76,35 +111,107 @@ type
     property Width: Integer read FWidth write SetWidth default 21;
   end;
 
-  TJvColorProviderTextSettings = class(TPersistent)
+  TJvColorProviderTextSettings = class(TJvColorProviderSubSettings)
   private
-    FActive: Boolean;
     FShowHex: Boolean;
     FShowName: Boolean;
     FShowRGB: Boolean;
-    FConsumerServiceExt: TJvDataConsumerAggregatedObject;
   protected
-    procedure Changed; virtual;
-    procedure SetActive(Value: Boolean); virtual;
     procedure SetShowHex(Value: Boolean); virtual;
     procedure SetShowName(Value: Boolean); virtual;
-    procedure SetShowRGB(Value: Boolean); virtual; 
-    property ConsumerServiceExt: TJvDataConsumerAggregatedObject read FConsumerServiceExt;
+    procedure SetShowRGB(Value: Boolean); virtual;
   public
     constructor Create(AConsumerService: TJvDataConsumerAggregatedObject);
   published
-    property Active: Boolean read FActive write SetActive default True;
+    property Active default True;
     property ShowHex: Boolean read FShowHex write SetShowHex;
     property ShowName: Boolean read FShowName write SetShowName default True;
     property ShowRGB: Boolean read FShowRGB write SetShowRGB;
   end;
 
+  TJvColorProviderGroupingSettings = class(TJvColorProviderSubSettings)
+  private
+    FFlatList: Boolean;
+    FHeaderAlign: TColorGroupHeaderAlign;
+    FHeaderStyle: TColorGroupHeaderStyles;
+  protected
+    procedure SetActive(Value: Boolean); override;
+    procedure SetFlatList(Value: Boolean); virtual;
+    procedure SetHeaderAlign(Value: TColorGroupHeaderAlign); virtual;
+    procedure SetHeaderStyle(Value: TColorGroupHeaderStyles); virtual;
+  public
+    constructor Create(AConsumerService: TJvDataConsumerAggregatedObject);
+  published
+    property Active default True;
+    property FlatList: Boolean read FFlatList write SetFlatList default True;
+    property HeaderAlign: TColorGroupHeaderAlign read FHeaderAlign write SetHeaderAlign
+      default ghaLeft;
+    property HeaderStyle: TColorGroupHeaderStyles read FHeaderStyle write SetHeaderStyle
+      default [ghsBoldFont, ghsSingleCenterLine];
+  end;
+
+  TJvColorProviderColorGroupSettings = class(TJvColorProviderSubSettings)
+  private
+    FCaption: string;
+    FShowHeader: Boolean;
+  protected
+    procedure SetCaption(Value: string); virtual;
+    procedure SetShowHeader(Value: Boolean); virtual;
+  public
+    constructor Create(AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+  published
+    property Active default True;
+    property Caption: string read FCaption write SetCaption;
+    property ShowHeader: Boolean read FShowHeader write SetShowHeader default False;
+  end;
+
+  TJvColorProviderAddColorSettings = class(TJvColorProviderSubSettings)
+  private
+    FLocation: TJvColorProviderAddItemLocation;
+    FCaption: string;
+    FStyle: TJvColorProviderAddColorStyle;
+  protected
+    procedure SetLocation(Value: TJvColorProviderAddItemLocation); virtual;
+    procedure SetCaption(Value: string); virtual;
+    procedure SetStyle(Value: TJvColorProviderAddColorStyle); virtual;
+  public
+    constructor Create(AConsumerService: TJvDataConsumerAggregatedObject);
+  published
+    property Location: TJvColorProviderAddItemLocation read FLocation write SetLocation
+      default ailBottom;
+    property Caption: string read FCaption write SetCaption;
+    property Style: TJvColorProviderAddColorStyle read FStyle write SetStyle default aisBorland;
+  end;
+
+  TJvColorProviderCustomColorGroupSettings = class(TJvColorProviderColorGroupSettings)
+  private
+    FAddColorSettings: TJvColorProviderAddColorSettings;
+  protected
+    procedure SetAddColorSettings(Value: TJvColorProviderAddColorSettings); virtual;
+  public
+    constructor Create(AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+    destructor Destroy; override;
+  published
+    property AddColorSettings: TJvColorProviderAddColorSettings read FAddColorSettings
+      write SetAddColorSettings;
+  end;
+
   IJvColorProviderSettings = interface
     ['{5381D2E0-D8EA-46E7-A3C6-42B5353B896B}']
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
+    function Get_CustomColorSettings: TJvColorProviderCustomColorGroupSettings;
+    function Get_GroupingSettings: TJvColorProviderGroupingSettings;
+    function Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
+    function Get_SystemColorSettings: TJvColorProviderColorGroupSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
 
     property ColorBoxSettings: TJvColorProviderColorBoxSettings read Get_ColorBoxSettings;
+    property CustomColorSettings: TJvColorProviderCustomColorGroupSettings
+      read Get_CustomColorSettings;
+    property GroupingSettings: TJvColorProviderGroupingSettings read Get_GroupingSettings;
+    property StandardColorSettings: TJvColorProviderColorGroupSettings
+      read Get_StandardColorSettings;
+    property SystemColorSettings: TJvColorProviderColorGroupSettings read Get_SystemColorSettings;
     property TextSettings: TJvColorProviderTextSettings read Get_TextSettings;
   end;
 
@@ -113,7 +220,7 @@ procedure Register;
 implementation
 
 uses
-  Controls, Graphics, SysUtils,
+  Controls, SysUtils,
   JclRTTI,
   JvConsts;
 
@@ -130,15 +237,43 @@ end;
 type
   TJvColorItems = class(TJvBaseDataItems)
   private
-    FColors: TStrings;
+    FProviderComp: TJvColorProvider;
   protected
-    procedure AddStdColor(const S: string); virtual;
+    function GetColorSettings: IJvColorProviderSettings;
     function GetCount: Integer; override;
     function GetItem(I: Integer): IJvDataItem; override;
     procedure InitImplementers; override;
+
+    property ProviderComp: TJvColorProvider read FProviderComp write FProviderComp;
   public
-    constructor Create; override;
-    destructor Destroy; override;
+    procedure AfterConstruction; override;
+  end;
+
+  TJvColorItem = class(TJvBaseDataItem, IJvDataItemText)
+  private
+    FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
+    FListIndex: Integer;  // Index in color list
+  protected
+    function GetCaption: string;
+    procedure SetCaption(const Value: string); 
+    procedure InitID; override;
+    function List: TColorItems;
+    property ListNumber: Integer read FListNumber;
+    property ListIndex: Integer read FListIndex;
+  public
+    constructor Create(AOwner: IJvDataItems; AListNumber, AListIndex: Integer);
+  end;
+
+  TJvColorHeaderItem = class(TJvBaseDataItem, IJvDataItemText)
+  private
+    FListNumber: Integer; // 0 = StdColors, 1 = SysColors, 2 = CstColors
+  protected
+    function GetCaption: string;
+    procedure SetCaption(const Value: string); 
+    procedure InitID; override;
+    property ListNumber: Integer read FListNumber;
+  public
+    constructor Create(AOwner: IJvDataItems; AListNumber: Integer);
   end;
 
   TJvColorItemText = class(TJvBaseDataItemTextImpl)
@@ -146,8 +281,6 @@ type
     function GetCaption: string; override;
     procedure SetCaption(const Value: string); override;
   end;
-
-  TOpenBaseDataItem = class(TJvBaseDataItem);
 
   TJvColorItemsRenderer = class(TJvCustomDataItemsRenderer)
   protected
@@ -161,6 +294,7 @@ type
     function GetRenderText: string;
     procedure RenderColorBox;
     procedure RenderColorText;
+    procedure RenderGroupHeader;
     procedure MeasureColorBox(var Size: TSize);
     procedure MeasureColorText(var Size: TSize);
     procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem;
@@ -175,11 +309,23 @@ type
   TJvColorProviderSettings = class(TJvDataConsumerAggregatedObject, IJvColorProviderSettings)
   private
     FColorBoxSettings: TJvColorProviderColorBoxSettings;
+    FCustomColorSettings: TJvColorProviderCustomColorGroupSettings;
+    FGroupingSettings: TJvColorProviderGroupingSettings;
+    FStandardColorSettings: TJvColorProviderColorGroupSettings;
+    FSystemColorSettings: TJvColorProviderColorGroupSettings;
     FTextSettings: TJvColorProviderTextSettings;
   protected
     function Get_ColorBoxSettings: TJvColorProviderColorBoxSettings;
+    function Get_CustomColorSettings: TJvColorProviderCustomColorGroupSettings;
+    function Get_GroupingSettings: TJvColorProviderGroupingSettings;
+    function Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
+    function Get_SystemColorSettings: TJvColorProviderColorGroupSettings;
     function Get_TextSettings: TJvColorProviderTextSettings;
     procedure Set_ColorBoxSettings(Value: TJvColorProviderColorBoxSettings);
+    procedure Set_CustomColorSettings(Value: TJvColorProviderCustomColorGroupSettings);
+    procedure Set_GroupingSettings(Value: TJvColorProviderGroupingSettings);
+    procedure Set_StandardColorSettings(Value: TJvColorProviderColorGroupSettings);
+    procedure Set_SystemColorSettings(Value: TJvColorProviderColorGroupSettings);
     procedure Set_TextSettings(Value: TJvColorProviderTextSettings);
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
@@ -187,18 +333,31 @@ type
   published
     property ColorBoxSettings: TJvColorProviderColorBoxSettings read Get_ColorBoxSettings
       write Set_ColorBoxSettings;
+    property CustomColorSettings: TJvColorProviderCustomColorGroupSettings
+      read Get_CustomColorSettings write Set_CustomColorSettings;
     property TextSettings: TJvColorProviderTextSettings read Get_TextSettings
       write Set_TextSettings;
+    property StandardColorSettings: TJvColorProviderColorGroupSettings
+      read Get_StandardColorSettings write Set_StandardColorSettings;
+    property SystemColorSettings: TJvColorProviderColorGroupSettings read Get_SystemColorSettings
+      write Set_SystemColorSettings;
+    property GroupingSettings: TJvColorProviderGroupingSettings read Get_GroupingSettings
+      write Set_GroupingSettings;
   end;
 
-//===TJvColorProviderColorBoxSettings===============================================================
+//===TJvColorProviderSubSettings====================================================================
 
-procedure TJvColorProviderColorBoxSettings.Changed;
+procedure TJvColorProviderSubSettings.Changed;
 begin
-  TOpenConsumerServiceExt(ConsumerServiceExt).Changed;
+  TOpenConsumerServiceExt(ConsumerServiceExt).Changed(ccrOther);
 end;
 
-procedure TJvColorProviderColorBoxSettings.SetActive(Value: Boolean);
+procedure TJvColorProviderSubSettings.ViewChanged;
+begin
+  TOpenConsumerServiceExt(ConsumerServiceExt).ViewChanged(ConsumerServiceExt);
+end;
+
+procedure TJvColorProviderSubSettings.SetActive(Value: Boolean);
 begin
   if Value <> Active then
   begin
@@ -206,6 +365,14 @@ begin
     Changed;
   end;
 end;
+
+constructor TJvColorProviderSubSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
+begin
+  inherited Create;
+  FConsumerServiceExt := AConsumerService;
+end;
+
+//===TJvColorProviderColorBoxSettings===============================================================
 
 procedure TJvColorProviderColorBoxSettings.SetHeight(Value: Integer);
 begin
@@ -261,10 +428,10 @@ begin
   end;
 end;
 
-constructor TJvColorProviderColorBoxSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
+constructor TJvColorProviderColorBoxSettings.Create(
+  AConsumerService: TJvDataConsumerAggregatedObject);
 begin
-  inherited Create;
-  FConsumerServiceExt := AConsumerService;
+  inherited Create(AConsumerService);
   FActive := True;
   FHeight := 13;
   FMargin := 2;
@@ -275,20 +442,6 @@ begin
 end;
 
 //===TJvColorProviderTextSettings===================================================================
-
-procedure TJvColorProviderTextSettings.Changed;
-begin
-  TOpenConsumerServiceExt(ConsumerServiceExt).Changed;
-end;
-
-procedure TJvColorProviderTextSettings.SetActive(Value: Boolean);
-begin
-  if Value <> Active then
-  begin
-    FActive := Value;
-    Changed;
-  end;
-end;
 
 procedure TJvColorProviderTextSettings.SetShowHex(Value: Boolean);
 begin
@@ -319,30 +472,215 @@ end;
 
 constructor TJvColorProviderTextSettings.Create(AConsumerService: TJvDataConsumerAggregatedObject);
 begin
-  inherited Create;
-  FConsumerServiceExt := AConsumerService;
+  inherited Create(AConsumerService);
   FActive := True;
   FShowName := True;
 end;
 
+//===TJvColorProviderGroupingSettings===============================================================
+
+procedure TJvColorProviderGroupingSettings.SetActive(Value: Boolean);
+begin
+  if Value <> Active then
+  begin
+    inherited SetActive(Value);
+    ViewChanged;
+  end;
+end;
+
+procedure TJvColorProviderGroupingSettings.SetFlatList(Value: Boolean);
+begin
+  if Value <> FlatList then
+  begin
+    FFlatList := Value;
+    Changed;
+    ViewChanged;
+  end;
+end;
+
+procedure TJvColorProviderGroupingSettings.SetHeaderAlign(Value: TColorGroupHeaderAlign);
+begin
+  if Value <> HeaderAlign then
+  begin
+    FHeaderAlign := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvColorProviderGroupingSettings.SetHeaderStyle(Value: TColorGroupHeaderStyles);
+begin
+  if (ghsSingleCenterLine in Value) and not (ghsSingleCenterLine in HeaderStyle) then
+    Exclude(Value, ghsDoubleCenterLine)
+  else
+  if (ghsDoubleCenterLine in Value) and not (ghsDoubleCenterLine in HeaderStyle) then
+    Exclude(Value, ghsSingleCenterLine);
+  if Value <> HeaderStyle then
+  begin
+    FHeaderStyle := Value;
+    Changed;
+  end;
+end;
+
+constructor TJvColorProviderGroupingSettings.Create(
+  AConsumerService: TJvDataConsumerAggregatedObject);
+begin
+  inherited Create(AConsumerService);
+  FActive := True;
+  FFlatList := True;
+  FHeaderAlign := ghaLeft;
+  FHeaderStyle := [ghsBoldFont, ghsSingleCenterLine];
+end;
+
+//===TJvColorProviderColorGroupSettings=============================================================
+
+procedure TJvColorProviderColorGroupSettings.SetCaption(Value: string);
+begin
+  if Value <> Caption then
+  begin
+    FCaption := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvColorProviderColorGroupSettings.SetShowHeader(Value: Boolean);
+begin
+  if Value <> ShowHeader then
+  begin
+    FShowHeader := Value;
+    Changed;
+    ViewChanged;
+  end;
+end;
+
+constructor TJvColorProviderColorGroupSettings.Create(
+  AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+begin
+  inherited Create(AConsumerService);
+  FActive := True;
+  FCaption := ACaption;
+end;
+
+//===TJvColorProviderAddColorSettings===============================================================
+
+procedure TJvColorProviderAddColorSettings.SetLocation(Value: TJvColorProviderAddItemLocation);
+begin
+  if Value <> Location then
+  begin
+    FLocation := Value;
+    Changed;
+    ViewChanged;
+  end;
+end;
+
+procedure TJvColorProviderAddColorSettings.SetCaption(Value: string);
+begin
+  if Value <> Caption then
+  begin
+    FCaption := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvColorProviderAddColorSettings.SetStyle(Value: TJvColorProviderAddColorStyle);
+begin
+  if Value <> Style then
+  begin
+    FStyle := Value;
+    Changed;
+  end;
+end;
+
+constructor TJvColorProviderAddColorSettings.Create(
+  AConsumerService: TJvDataConsumerAggregatedObject);
+begin
+  inherited Create(AConsumerService);
+  FLocation := ailBottom;
+  FStyle := aisBorland;
+end;
+
+//===TJvColorProviderCustomColorGroupSettings=======================================================
+
+procedure TJvColorProviderCustomColorGroupSettings.SetAddColorSettings(
+  Value: TJvColorProviderAddColorSettings);
+begin
+end;
+
+constructor TJvColorProviderCustomColorGroupSettings.Create(
+  AConsumerService: TJvDataConsumerAggregatedObject; ACaption: string);
+begin
+  inherited Create(AConsumerService, ACaption);
+  FAddColorSettings := TJvColorProviderAddColorSettings.Create(AConsumerService);
+end;
+
+destructor TJvColorProviderCustomColorGroupSettings.Destroy;
+begin
+  FreeAndNil(FAddColorSettings);
+  inherited Destroy;
+end;
+
 //===TJvColorItems==================================================================================
 
-procedure TJvColorItems.AddStdColor(const S: string);
+function TJvColorItems.GetColorSettings: IJvColorProviderSettings;
 begin
-  FColors.AddObject(S, TObject(JclStrToTypedInt(S, TypeInfo(TColor))));
+  if GetProvider = nil then
+    Result := nil
+  else
+    Supports(GetProvider.SelectedConsumer, IJvColorProviderSettings, Result);
 end;
 
 function TJvColorItems.GetCount: Integer;
+var
+  Settings: IJvColorProviderSettings;
 begin
-  Result := FColors.Count;
+  Settings := GetColorSettings;
+  Result := 0;
+  if Settings = nil then
+    Exit;
+  if Settings.StandardColorSettings.Active then
+    Inc(Result, Length(ProviderComp.StdColors) +
+      Ord(Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active));
+  if Settings.SystemColorSettings.Active then
+    Inc(Result, Length(ProviderComp.SysColors) +
+      Ord(Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active));
 end;
 
 function TJvColorItems.GetItem(I: Integer): IJvDataItem;
+var
+  OrgIdx: Integer;
+  Settings: IJvColorProviderSettings;
+  ListNum: Integer;
 begin
-  Result := TJvBaseDataItem.Create(Self);
-  TOpenBaseDataItem(Result.GetImplementer).SetID('TCOLOR=' +
-    IntToHex(Integer(FColors.Objects[I]), 8));
-  TJvColorItemText.Create(TJvBaseDataItem(Result.GetImplementer));
+  if I < 0 then
+    TList.Error('Index', I);
+  OrgIdx := I;
+  Settings := GetColorSettings;
+  if Settings = nil then
+    Exit;
+  ListNum := -1;
+  if Settings.StandardColorSettings.Active then
+  begin
+    if Settings.StandardColorSettings.ShowHeader and Settings.GroupingSettings.Active then
+      Dec(I);
+    if I < Length(ProviderComp.StdColors) then
+      ListNum := 0
+    else
+      Dec(I, Length(ProviderComp.StdColors));
+  end;
+  if (ListNum < 0) and Settings.SystemColorSettings.Active then
+  begin
+    if Settings.SystemColorSettings.ShowHeader and Settings.GroupingSettings.Active then
+      Dec(I);
+    if I < Length(ProviderComp.SysColors) then
+      ListNum := 1
+    else
+      Dec(I, Length(ProviderComp.SysColors));
+  end;
+  if ListNum < 0 then
+    TList.Error('Index', OrgIdx);
+  if I < 0 then
+    Result := TJvColorHeaderItem.Create(Self, ListNum)
+  else
+    Result := TJvColorItem.Create(Self, ListNum, I);
 end;
 
 procedure TJvColorItems.InitImplementers;
@@ -351,28 +689,99 @@ begin
   TJvColorItemsRenderer.Create(Self);
 end;
 
-constructor TJvColorItems.Create;
+procedure TJvColorItems.AfterConstruction;
+var
+  ICR: IInterfaceComponentReference;
 begin
-  inherited Create;
-  FColors := TStringList.Create;
-  GetColorValues(AddStdColor);
+  inherited AfterConstruction;
+  if Supports(GetProvider, IInterfaceComponentReference, ICR) then
+    FProviderComp := ICR.GetComponent as TJvColorProvider;
 end;
 
-destructor TJvColorItems.Destroy;
+//===TJvColorItem===================================================================================
+
+function TJvColorItem.GetCaption: string;
 begin
-  FreeAndNil(FColors);
-  inherited Destroy;
+  Result := ID;
+end;
+
+procedure TJvColorItem.SetCaption(const Value: string);
+begin
+end;
+
+procedure TJvColorItem.InitID;
+begin
+  SetID('TCOLOR=' + IntToHex(List[ListIndex].Value, 8));
+end;
+
+function TJvColorItem.List: TColorItems;
+begin
+  with (GetItems.GetImplementer as TJvColorItems).ProviderComp do
+  begin
+    case ListNumber of
+      0:
+        Result := StdColors;
+      1:
+        Result := SysColors;
+      2:
+        Result := CstColors;
+      else
+        Result := nil;
+    end;
+  end;
+end;
+
+constructor TJvColorItem.Create(AOwner: IJvDataItems; AListNumber, AListIndex: Integer);
+begin
+  inherited Create(AOwner);
+  FListNumber := AListNumber;
+  FListIndex := AListIndex;
+end;
+
+//===TJvColorHeaderItem=============================================================================
+
+function TJvColorHeaderItem.GetCaption: string;
+var
+  Settings: IJvColorProviderSettings;
+begin
+  Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings);
+  if Settings = nil then
+    Result := '(no settings)'
+  else
+    case ListNumber of
+      0:
+        Result := Settings.StandardColorSettings.Caption;
+      1:
+        Result := Settings.SystemColorSettings.Caption;
+      2:
+        Result := Settings.CustomColorSettings.Caption;
+    end;
+end;
+
+procedure TJvColorHeaderItem.SetCaption(const Value: string);
+begin
+end;
+
+procedure TJvColorHeaderItem.InitID;
+begin
+  SetID('ColorGroupHeader_' + IntToStr(ListNumber));
+end;
+
+constructor TJvColorHeaderItem.Create(AOwner: IJvDataItems; AListNumber: Integer);
+begin
+  inherited Create(AOwner);
+  FListNumber := AListNumber;
 end;
 
 //===TJvColorItemText===============================================================================
 
 function TJvColorItemText.GetCaption: string;
-var
+(*var
   ColorValue: TColor;
   ItemsImpl: TJvColorItems;
-  ColorIdx: Integer;
+  ColorIdx: Integer;*)
 begin
-  if GetItemColorValue(Item, ColorValue) then
+(*  if GetItemColorValue(Item, ColorValue) then
   begin
     ItemsImpl := TJvColorItems(Item.GetItems.GetImplementer);
     ColorIdx := ItemsImpl.FColors.IndexOfObject(TObject(ColorValue));
@@ -382,7 +791,7 @@ begin
       Result := '$' + IntToHex(ColorValue, 8);
   end
   else
-    Result := 'Invalid ID:' + Item.GetID;
+    Result := 'Invalid ID:' + Item.GetID;*)
 end;
 
 procedure TJvColorItemText.SetCaption(const Value: string);
@@ -390,6 +799,35 @@ begin
 end;
 
 //===TJvColorProvider===============================================================================
+
+procedure TJvColorProvider.AddColorStr(const S: string);
+var
+  Col: TColor;
+begin
+  if IdentToColor(S, Integer(Col)) then
+  begin
+    if (Col >= 0) and (Col < clNone) then
+      AddColor(FStdColors, Col)
+    else
+      AddColor(FSysColors, Col);
+  end;
+end;
+
+procedure TJvColorProvider.AddColor(var List: TColorItems; Color: TColor);
+begin
+  SetLength(List, Length(List) + 1);
+  List[High(List)].Value := Color;
+end;
+
+procedure TJvColorProvider.DeleteColor(var List: TColorItems; Index: Integer);
+begin
+  if (Index < High(List)) then
+  begin
+    Move(List[Index + 1], List[Index], SizeOf(List[0]) * (High(List) - Index));
+    FillChar(List[High(List)], 0, SizeOf(List[0]));
+  end;
+  SetLength(List, High(List));
+end;
 
 class function TJvColorProvider.ItemsClass: TJvDataItemsClass;
 begin
@@ -402,18 +840,16 @@ begin
   AddToArray(Result, TJvColorProviderSettings);
 end;
 
-procedure TJvColorProvider.AfterConstruction;
-var
-  CtxMan: IJvDataContextsManager;
+constructor TJvColorProvider.Create(AOwner: TComponent);
 begin
-  inherited AfterConstruction;
-  if GetInterface(IJvDataContextsManager, CtxMan) then
-  begin
-    with CtxMan.New do
-    begin
+  inherited Create(AOwner);
+  GetColorValues(AddColorStr);
+end;
 
-    end;
-  end;
+destructor TJvColorProvider.Destroy;
+begin
+//  TJvColorItems(DataItemsImpl).ProviderComp := nil;
+  inherited Destroy;
 end;
 
 //===TJvColorItemsRenderer==========================================================================
@@ -537,6 +973,103 @@ begin
   end;
 end;
 
+procedure TJvColorItemsRenderer.RenderGroupHeader;
+var
+  S: string;
+  OldFont: TFont;
+  R: TRect;
+  RWidth: Integer;
+  RVCenter: Integer;
+  OldBkMode: Integer;
+begin
+  S := GetRenderText;
+  OldFont := TFont.Create;
+  try
+    OldFont.Assign(CurrentCanvas.Font);
+    try
+      if ghsBoldFont in CurrentSettings.GroupingSettings.HeaderStyle then
+        CurrentCanvas.Font.Style := CurrentCanvas.Font.Style + [fsBold];
+      R := CurrentRect;
+      Dec(R.Right, 2);
+      case CurrentSettings.GroupingSettings.HeaderAlign of
+        ghaLeft:
+          Inc(R.Left, 2);
+        ghaColorText:
+          begin
+            if not CurrentSettings.TextSettings.Active or not CurrentSettings.ColorBoxSettings.Active then
+              Inc(R.Left, 2)
+            else
+              with CurrentSettings.ColorBoxSettings do
+                Inc(R.Left, Margin + Width + Spacing);
+          end;
+        ghaCenter:
+          begin
+            R.Left := 0;
+            DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_NOPREFIX or
+              DT_CALCRECT);
+            RWidth := R.Right;
+            R := CurrentRect;
+            Inc(R.Left, 2);
+            Dec(R.Right, 2);
+            if RWidth < (R.Right - R.Left) then
+            begin
+              R.Left := R.Left + ((R.Right - R.Left - RWidth) div 2);
+              R.Right := R.Left + RWidth;
+            end;
+          end;
+      end;
+      OldBkMode := SetBkMode(CurrentCanvas.Handle, TRANSPARENT);
+      try
+        DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_END_ELLIPSIS or
+          DT_VCENTER or DT_NOPREFIX);
+      finally
+        SetBkMode(CurrentCanvas.Handle, OldBkMode);
+      end;
+      with CurrentSettings.GroupingSettings do
+        if ([ghsSingleCenterLine, ghsDoubleCenterLine] * HeaderStyle) <> [] then
+        begin
+          RVCenter := CurrentRect.Top + (CurrentRect.Bottom - CurrentRect.Top) div 2;
+          if R.Left > (CurrentRect.Left + 6) then
+          begin
+            if ghsSingleCenterLine in HeaderStyle then
+            begin
+              CurrentCanvas.MoveTo(CurrentRect.Left + 2, RVCenter);
+              CurrentCanvas.LineTo(R.Left - 1, RVCenter);
+            end
+            else
+            begin
+              CurrentCanvas.MoveTo(CurrentRect.Left + 2, RVCenter - 1);
+              CurrentCanvas.LineTo(R.Left - 1, RVCenter - 1);
+              CurrentCanvas.MoveTo(CurrentRect.Left + 2, RVCenter + 1);
+              CurrentCanvas.LineTo(R.Left - 1, RVCenter + 1);
+            end
+          end;
+          DrawText(CurrentCanvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_CALCRECT or
+            DT_NOPREFIX);
+          if R.Right < (CurrentRect.Right - 6) then
+          begin
+            if ghsSingleCenterLine in HeaderStyle then
+            begin
+              CurrentCanvas.MoveTo(R.Right + 2, RVCenter);
+              CurrentCanvas.LineTo(CurrentRect.Right - 1, RVCenter);
+            end
+            else
+            begin
+              CurrentCanvas.MoveTo(R.Right + 2, RVCenter - 1);
+              CurrentCanvas.LineTo(CurrentRect.Right - 1, RVCenter - 1);
+              CurrentCanvas.MoveTo(R.Right + 2, RVCenter + 1);
+              CurrentCanvas.LineTo(CurrentRect.Right - 1, RVCenter + 1);
+            end;
+          end;
+        end;
+    finally
+      CurrentCanvas.Font.Assign(OldFont);
+    end;
+  finally
+    OldFont.Free;
+  end;
+end;
+
 procedure TJvColorItemsRenderer.MeasureColorBox(var Size: TSize);
 var
   Margin: Integer;
@@ -593,12 +1126,25 @@ begin
   CurrentCanvas := ACanvas;
   CurrentRect := ARect;
   CurrentItem := Item;
-  CurrentState := State;
-  CurrentSettings := GetConsumerSettings;
-  CurrentItemIsColorItem := GetItemColorValue(Item, CurrentColorValue);
-  // render the color box and/or text
-  RenderColorBox;
-  RenderColorText;
+  try
+    CurrentState := State;
+    CurrentSettings := GetConsumerSettings;
+    try
+      CurrentItemIsColorItem := GetItemColorValue(Item, CurrentColorValue);
+      if CurrentItemIsColorItem then
+      begin
+        // render the color box and/or text
+        RenderColorBox;
+        RenderColorText;
+      end
+      else
+        RenderGroupHeader;
+    finally
+      CurrentSettings := nil;
+    end;
+  finally
+    CurrentItem := nil;
+  end;
 end;
 
 function TJvColorItemsRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
@@ -606,12 +1152,20 @@ begin
   // setup protected fields
   CurrentCanvas := ACanvas;
   CurrentItem := Item;
-  CurrentSettings := GetConsumerSettings;
-  CurrentItemIsColorItem := GetItemColorValue(Item, CurrentColorValue);
-  Result.cx := 0;
-  Result.cy := 0;
-  MeasureColorBox(Result);
-  MeasureColorText(Result);
+  try
+    CurrentSettings := GetConsumerSettings;
+    try
+      CurrentItemIsColorItem := GetItemColorValue(Item, CurrentColorValue);
+      Result.cx := 0;
+      Result.cy := 0;
+      MeasureColorBox(Result);
+      MeasureColorText(Result);
+    finally
+      CurrentSettings := nil;
+    end;
+  finally
+    CurrentItem := nil;
+  end;
 end;
 
 type
@@ -623,31 +1177,35 @@ var
   ChWdth: Integer;
 begin
   CurrentSettings := GetConsumerSettings;
-  Result.cx := 0;
-  Result.cy := 0;
-  MeasureColorBox(Result);
-  if CurrentSettings.TextSettings.Active then
-  begin
-    Comp := Items.GetProvider.SelectedConsumer.VCLComponent;
-    if (Comp <> nil) and (Comp is TControl) then
+  try
+    Result.cx := 0;
+    Result.cy := 0;
+    MeasureColorBox(Result);
+    if CurrentSettings.TextSettings.Active then
     begin
-      with TOpenControl(Comp) do
+      Comp := Items.GetProvider.SelectedConsumer.VCLComponent;
+      if (Comp <> nil) and (Comp is TControl) then
       begin
-        if (Abs(Font.Height) + 2) > Result.cy then
-          Result.cy := Abs(Font.Height) + 2;
-        ChWdth := Abs(Font.Height) div 3;
+        with TOpenControl(Comp) do
+        begin
+          if (Abs(Font.Height) + 2) > Result.cy then
+            Result.cy := Abs(Font.Height) + 2;
+          ChWdth := Abs(Font.Height) div 3;
+        end;
+      end
+      else
+      begin
+        if Result.cy < 15 then
+          Result.cy := 15;
+        ChWdth := 4;
       end;
-    end
-    else
-    begin
-      if Result.cy < 15 then
-        Result.cy := 15;
-      ChWdth := 4;
+      if CurrentSettings.ColorBoxSettings.Active then
+        Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
+      else
+        Result.cx := 10 * ChWdth;
     end;
-    if CurrentSettings.ColorBoxSettings.Active then
-      Result.cx := Result.cx + CurrentSettings.ColorBoxSettings.Spacing + (10 * ChWdth)
-    else
-      Result.cx := 10 * ChWdth;
+  finally
+    CurrentSettings := nil;
   end;
 end;
 
@@ -663,12 +1221,51 @@ begin
   Result := FColorBoxSettings;
 end;
 
+function TJvColorProviderSettings.Get_CustomColorSettings: TJvColorProviderCustomColorGroupSettings;
+begin
+  Result := FCustomColorSettings;
+end;
+
+function TJvColorProviderSettings.Get_GroupingSettings: TJvColorProviderGroupingSettings;
+begin
+  Result := FGroupingSettings;
+end;
+
+function TJvColorProviderSettings.Get_StandardColorSettings: TJvColorProviderColorGroupSettings;
+begin
+  Result := FStandardColorSettings;
+end;
+
+function TJvColorProviderSettings.Get_SystemColorSettings: TJvColorProviderColorGroupSettings;
+begin
+  Result := FSystemColorSettings;
+end;
+
 function TJvColorProviderSettings.Get_TextSettings: TJvColorProviderTextSettings;
 begin
   Result := FTextSettings;
 end;
 
 procedure TJvColorProviderSettings.Set_ColorBoxSettings(Value: TJvColorProviderColorBoxSettings);
+begin
+end;
+
+procedure TJvColorProviderSettings.Set_CustomColorSettings(
+  Value: TJvColorProviderCustomColorGroupSettings);
+begin
+end;
+
+procedure TJvColorProviderSettings.Set_GroupingSettings(Value: TJvColorProviderGroupingSettings);
+begin
+end;
+
+procedure TJvColorProviderSettings.Set_StandardColorSettings(
+  Value: TJvColorProviderColorGroupSettings);
+begin
+end;
+
+procedure TJvColorProviderSettings.Set_SystemColorSettings(
+  Value: TJvColorProviderColorGroupSettings);
 begin
 end;
 
@@ -680,13 +1277,21 @@ constructor TJvColorProviderSettings.Create(AOwner: TExtensibleInterfacedPersist
 begin
   inherited Create(AOwner);
   FColorBoxSettings := TJvColorProviderColorBoxSettings.Create(Self);
+  FCustomColorSettings := TJvColorProviderCustomColorGroupSettings.Create(Self, 'Custom colors');
+  FGroupingSettings := TJvColorProviderGroupingSettings.Create(Self);
   FTextSettings := TJvColorProviderTextSettings.Create(Self);
+  FStandardColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'Standard colors');
+  FSystemColorSettings := TJvColorProviderColorGroupSettings.Create(Self, 'System colors');
 end;
 
 destructor TJvColorProviderSettings.Destroy;
 begin
   FreeAndNil(FColorBoxSettings);
+  FreeAndNil(FCustomColorSettings);
+  FreeAndNil(FGroupingSettings);
   FreeAndNil(FTextSettings);
+  FreeAndNil(FStandardColorSettings);
+  FreeAndNil(FSystemColorSettings);
   inherited Destroy;
 end;
 
