@@ -55,7 +55,6 @@ type
     FCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
     FWordWrap: boolean;
-    FReadOnly: boolean;
     FAlignment: TAlignment;
     FLayout: TTextLayout;
     FRightButton: boolean;
@@ -68,6 +67,7 @@ type
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: boolean);
     procedure SetRightButton(const Value: boolean);
+    function GetReadOnly: boolean;
   protected
     procedure SetAutoSize(Value: boolean);
 {$IFDEF COMPILER6_UP} override;
@@ -96,7 +96,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Alignment:TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Layout:TTextLayout read FLayout write SetLayout default tlTop;
-    property ReadOnly:boolean read FReadOnly write SetReadOnly default false;
+    property ReadOnly:boolean read GetReadOnly write SetReadOnly default false;
     // show button on right side of control
     property RightButton:boolean read FRightButton write SetRightButton;
     property Associated: TControl read FAssociated write SetAssociated;
@@ -135,7 +135,6 @@ begin
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := True;
   FWordWrap := False;
-  FReadOnly := False;
   FAlignment := taLeftJustify;
   FRightButton := false;
   FLayout := tlTop;
@@ -373,8 +372,8 @@ end;
 
 procedure TJvCheckBox.SetReadOnly(const Value: boolean);
 begin
-  if FReadOnly <> Value then
-    FReadOnly := Value;
+  if ClicksDisabled <> Value then
+    ClicksDisabled := Value;
 end;
 
 procedure TJvCheckBox.SetRightButton(const Value: boolean);
@@ -384,6 +383,11 @@ begin
     FRightButton := Value;
     RecreateWnd;
   end;
+end;
+
+function TJvCheckBox.GetReadOnly: boolean;
+begin
+  Result := ClicksDisabled;
 end;
 
 end.
