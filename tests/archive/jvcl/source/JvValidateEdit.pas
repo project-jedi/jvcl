@@ -538,9 +538,9 @@ end;
 function TJvCustomValidateEdit.GetValue: Variant;
 begin
   case FDisplayFormat of
-    dfCurrency: Result := StrToCurr(FEditText);
-    dfFloat, dfPercent, dfScientific: StrToFloat(FEditText);
-    dfInteger, dfYear: Result := StrToInt(Text);
+    dfCurrency: Result := StrToCurrDef(FEditText,0);
+    dfFloat, dfPercent, dfScientific: StrToFloatDef(FEditText,0);
+    dfInteger, dfYear: Result := StrToIntDef(Text,0);
     else
       Result := inherited Text;
   end;
@@ -692,16 +692,14 @@ begin
   FEditText := MakeValid(NewValue);
   if (FDisplayFormat = dfYear) and ((not FHasMaxValue) or
     (FHasMaxValue and (FMaxValue > 2000+TwoDigitYearCenturyWindow)))
-    and ((MaxLength = 0) or (MaxLength > 3))
-  then
-    FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0),
-      TwoDigitYearCenturyWindow));
+    and ((MaxLength = 0) or (MaxLength > 3)) then
+      FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
   if FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger,
     dfOctal, dfPercent, dfScientific, dfYear] then
-    begin
-      EnForceMaxValue;
-      EnforceMinValue;
-    end;
+  begin
+    EnForceMaxValue;
+    EnforceMinValue;
+  end;
   ChangeText(FEditText);
   DisplayText;
 end;
@@ -732,16 +730,14 @@ procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
   if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger,
-    dfOctal, dfPercent, dfScientific, dfYear]) and (AsFloat = 0) and FZeroEmpty
-  then
-    ChangeText('')
+    dfOctal, dfPercent, dfScientific, dfYear]) and (AsFloat = 0) and FZeroEmpty then
+      ChangeText('')
   else
   begin
     if (FCriticalPoints.CheckPoints <> cpNone) and (FDisplayFormat in
       [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent,
-      dfScientific, dfYear])
-    then
-      SetFontColor;
+      dfScientific, dfYear]) then
+        SetFontColor;
     case FDisplayFormat of
       dfCurrency: ChangeText(Format('%.' + IntToStr(FDecimalPlaces) + 'm', [AsCurrency]));
       dfInteger: ChangeText(Format('%d', [AsInteger]));
