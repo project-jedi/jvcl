@@ -277,7 +277,10 @@ end;
 
 procedure TJvID3FramesEditor.Activated;
 begin
+  { (rb) Don't know equivalent in D5 }
+  {$IFDEF COMPILER6_UP}
   Designer.Activate;
+  {$ENDIF}
   try
     UpdateSelection;
   except
@@ -293,9 +296,10 @@ begin
   P := ExtractPersistent(Component);
   if P = Controller then
     Controller := nil
-  else
-  if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
-    UpdateDisplay;
+  { (rb) Doesn't work in D5? }
+  //else
+  //if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
+  //  UpdateDisplay;
 end;
 {$ENDIF}
 
@@ -567,12 +571,12 @@ end;
 
 procedure TJvID3FramesEditor.UpdateCaption;
 const
-  SDatasetEditor = '%s%s%s';
+  SFrameEditor = '%s%s%s';
 var
   NewCaption: string;
 begin
   if (Controller <> nil) and (Controller.Owner <> nil) then
-    NewCaption := Format(SDatasetEditor, [Controller.Owner.Name, '.',
+    NewCaption := Format(SFrameEditor, [Controller.Owner.Name, '.',
       Controller.Name]);
   if Caption <> NewCaption then
     Caption := NewCaption;
@@ -623,16 +627,25 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER6_UP}
+type
+  TDesignerSelectionList = IDesignerSelections;
+{$ENDIF}
+
 procedure TJvID3FramesEditor.UpdateSelection;
 var
   I: Integer;
   Frame: TJvID3Frame;
-  ComponentList: IDesignerSelections;
+  ComponentList: TDesignerSelectionList; // = Interface for D6 up
 begin
   if Active then
   begin
+    {$IFDEF COMPILER6_UP}
     ComponentList := TDesignerSelections.Create;
+    {$ELSE}
+    ComponentList := TDesignerSelectionList.Create;
     try
+    {$ENDIF}
       with FrameListBox do
         for I := 0 to Items.Count - 1 do
           if Selected[I] then
@@ -643,11 +656,12 @@ begin
           end;
       if ComponentList.Count = 0 then
         ComponentList.Add(Controller);
-    except
-      { ??? Free ComponentList? }
-      raise;
+      Designer.SetSelections(ComponentList);
+    {$IFNDEF COMPILER6_UP}
+    finally
+      ComponentList.Free;
     end;
-    Designer.SetSelections(ComponentList);
+    {$ENDIF}
   end;
 end;
 

@@ -130,7 +130,7 @@ type
     function WriteLanguage(const Language: string): Longint;
     function WriteNumber(AValue: Cardinal): Longint;
     function WriteEnc: Longint;
-    function WritePadding(const Count: Cardinal): Longint;
+    function WritePadding(const Count: Longint): Longint;
     function WriteStringEnc(const S: TJvID3StringPair): Longint;
     function WriteUserString(const S1, S2: TJvID3StringPair): Longint;
     function WriteTerminatorEnc: Longint;
@@ -2865,7 +2865,7 @@ begin
   Result := Write(AValue, 4);
 end;
 
-function TJvID3Stream.WritePadding(const Count: Cardinal): Longint;
+function TJvID3Stream.WritePadding(const Count: Longint): Longint;
 var
   Pos: Longint;
 begin
@@ -3207,13 +3207,7 @@ begin
     else
       raise;
     {$ELSE}
-    if csDesigning in ComponentState then
-      if Assigned(Application.HandleException) then
-        Application.HandleException(ExceptObject)
-      else
-        ShowException(ExceptObject, ExceptAddr)
-    else
-      raise;
+    Application.HandleException(ExceptObject)
     {$ENDIF}
   end;
 end;
@@ -3533,13 +3527,7 @@ begin
     else
       raise;
     {$ELSE}
-    if csDesigning in ComponentState then
-      if Assigned(Application.HandleException) then
-        Application.HandleException(ExceptObject)
-      else
-        ShowException(ExceptObject, ExceptAddr)
-    else
-      raise;
+    Application.HandleException(ExceptObject)
     {$ENDIF}
   end;
 end;
@@ -3692,7 +3680,7 @@ begin
       OldTagSizeInclHeader := GetTagSizeInclHeader(FileStream);
 
       { FStream.Size = size of new tag including header excluding padding }
-      PaddingSize := OldTagSizeInclHeader - FStream.Size;
+      PaddingSize := OldTagSizeInclHeader - Cardinal(FStream.Size);
 
       { We always want to have padding (because of possible
         unsynchronisation possibly needs padding), thus if PaddingSize = 0, then
