@@ -182,9 +182,9 @@ type
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
-    function DoClearText: Boolean; override;
-    function DoClipboardCut: Boolean; override;
-    function DoClipboardPaste: Boolean; override;
+    procedure DoClearText; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
     procedure Resize; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -2104,21 +2104,20 @@ begin
   FPopupVisible := (FPopup <> nil) and FPopup.Visible;
 end;
 
-function TJvCustomComboEdit.DoClearText: Boolean;
+procedure TJvCustomComboEdit.DoClearText;
 begin
   Text := '';
-  Result := False; // the job is already done
 end;
 
-function TJvCustomComboEdit.DoClipboardCut: Boolean;
+procedure TJvCustomComboEdit.DoClipboardCut;
 begin
-  Result := FDirectInput and not ReadOnly and
+  if FDirectInput and not ReadOnly then
     inherited DoClipboardCut;
 end;
 
-function TJvCustomComboEdit.DoClipboardPaste: Boolean;
+procedure TJvCustomComboEdit.DoClipboardPaste;
 begin
-  Result := FDirectInput and not ReadOnly and
+  if FDirectInput and not ReadOnly then
     inherited DoClipboardPaste;
   UpdateEdit;
 end;

@@ -34,11 +34,15 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   {$IFDEF VCL}
   Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, QGraphics, QControls, QForms, Types, QWindows, 
+  Qt, QTypes, QGraphics, QControls, QForms, QStdCtrls, QMask, QClipbrd,
+  Types, QWindows, 
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
@@ -109,11 +113,11 @@ type
 
   IJvEditControlEvents = interface
     ['{C1AE5EF8-F6C4-4BD4-879E-17946FD0FBAB}']
-    function DoClipboardPaste: Boolean;
-    function DoClipboardCopy: Boolean;
-    function DoClipboardCut: Boolean;
-    function DoUndo: Boolean;
-    function DoClearText: Boolean;
+    procedure DoClipboardPaste;
+    procedure DoClipboardCopy;
+    procedure DoClipboardCut;
+    procedure DoUndo;
+    procedure DoClearText;
   end;
 
 const
@@ -194,7 +198,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  
+
   end;
   
   TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvControlEvents)
@@ -528,6 +532,11 @@ function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 {$ENDIF VisualCLX}
 
+procedure TCustomEdit_Undo(Instance: TWinControl);
+procedure TCustomEdit_Copy(Instance: TWinControl);
+procedure TCustomEdit_Paste(Instance: TWinControl);
+procedure TCustomEdit_Cut(Instance: TWinControl);
+
 implementation
 
 {$IFDEF VCL}
@@ -695,18 +704,18 @@ begin
               end;
             end;
 
-            WM_SETFOCUS:
-              begin
-                with PMsg^ do
-                  Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoSetFocus(HWND(PMsg^.WParam));
-              end;
-            WM_KILLFOCUS:
-              begin
-                with PMsg^ do
-                  Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoKillFocus(HWND(PMsg^.WParam));
-              end;
+          WM_SETFOCUS:
+            begin
+              with PMsg^ do
+                Result := InheritMsg(Instance, Msg, WParam, LParam);
+              DoSetFocus(HWND(PMsg^.WParam));
+            end;
+          WM_KILLFOCUS:
+            begin
+              with PMsg^ do
+                Result := InheritMsg(Instance, Msg, WParam, LParam);
+              DoKillFocus(HWND(PMsg^.WParam));
+            end;
         else
           CallInherited := True;
         end;
@@ -721,20 +730,15 @@ begin
       with IntfEditControl do
         case PMsg^.Msg of
           WM_PASTE:
-            if DoClipboardPaste then
-              CallInherited := True;
+            DoClipboardPaste;
           WM_COPY:
-            if DoClipboardCopy then
-              CallInherited := True;
+            DoClipboardCopy;
           WM_CUT:
-            if DoClipboardCut then
-              CallInherited := True;
-          WM_UNDO, EM_UNDO:
-            if DoUndo then
-              CallInherited := True;
+            DoClipboardCut;
+          WM_UNDO:
+            DoUndo;
           WM_CLEAR:
-            if DoClearText then
-              CallInherited := True;
+            DoClearText;
         else
           CallInherited := True;
         end;
@@ -746,8 +750,8 @@ begin
       Result := InheritMsg(Instance, Msg, WParam, LParam);
 end;
 
-{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order that
-  the CLX methods are used. So we must correct it by evaluating "Inserting". } 
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order than
+  the CLX methods are used. So we must correct it by evaluating "Inserting". }
 procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
   Inserting: Boolean);
 begin
@@ -772,6 +776,8 @@ end;
 
 type
   TOpenWidgetControl = class(TWidgetControl);
+  TOpenCustomEdit = class(TCustomEdit);
+  TOpenCustomMaskEdit = class(TCustomMaskEdit);
 
   TWidgetControlPainting = class(TInterfacedObject)
   private
@@ -888,7 +894,124 @@ begin
   end;
 end;
 
+{$IFDEF COMPILER6}
+// redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
+{$IF not declared(PatchedVCLX)}
+type
+  QClxLineEditH = QLineEditH;
+
+procedure QClxLineEdit_copy(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_copy';
+procedure QClxLineEdit_cut(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_cut';
+procedure QClxLineEdit_insert(handle: QLineEditH; p1: PWideString); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_insert';
+
+procedure QClxLineEdit_undo(handle: QLineEditH);
+var
+  W: WideString;
+  Event: QKeyEventH;
+begin
+  W := 'Z';
+  Event := QKeyEvent_create(QEventType_KeyPress, KEY_Z, Ord('Z'),
+    Integer(ButtonState_ControlButton), @W, False, 1);
+  try
+    QApplication_sendEvent(handle, Event);
+  finally
+    QKeyEvent_destroy(Event);
+  end;
+end;
+{$IFEND}
+
+{$ENDIF COMPILER6}
+
 {$ENDIF VisualCLX}
+
+procedure TCustomEdit_Undo(Instance: TWinControl);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Instance, WM_UNDO, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Instance is TCustomMemo then
+    QMultiLineEdit_undo(QMultiLineEditH(Instance.Handle))
+  else
+  if Instance is TCustomEdit then
+    QClxLineEdit_undo(QClxLineEditH(Instance.Handle));
+  {$ENDIF VisualCLX}
+end;
+
+procedure TCustomEdit_Copy(Instance: TWinControl);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Instance, WM_COPY, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Instance is TCustomMemo then
+    QMultiLineEdit_copy(QMultiLineEditH(Instance.Handle))
+  else
+  if Instance is TCustomEdit then
+    QClxLineEdit_copy(QClxLineEditH(Instance.Handle));
+  {$ENDIF VisualCLX}
+end;
+
+procedure TCustomEdit_Cut(Instance: TWinControl);
+begin
+  {$IFDEF VCL}
+  InheritMsg(Instance, WM_CUT, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Instance is TCustomMemo then
+    QMultiLineEdit_cut(QMultiLineEditH(Instance.Handle))
+  else
+  if Instance is TCustomMaskEdit then
+  begin
+    if not (TCustomMaskEdit(Instance).IsMasked) then  // CutToClipboard would call "inherited"
+      QClxLineEdit_cut(QClxLineEditH(Instance.Handle))
+    else
+      TCustomMaskEdit(Instance).CutToClipboard;
+  end
+  else
+  if Instance is TCustomEdit then
+    QClxLineEdit_cut(QClxLineEditH(Instance.Handle));
+  {$ENDIF VisualCLX}
+end;
+
+procedure TCustomEdit_Paste(Instance: TWinControl);
+{$IFDEF VisualCLX}
+  procedure LineEditPaste;
+  var
+    WValue: WideString;
+  begin
+    WValue := Clipboard.AsText;
+    case TOpenCustomEdit(Instance).CharCase of
+      ecUpperCase:
+        WValue := WideUpperCase(WValue);
+      ecLowerCase:
+        WValue := WideLowerCase(WValue);
+    end;
+    QClxLineEdit_insert(QClxLineEditH(Instance.Handle), PWideString(@WValue));
+    QClxLineEdit_resetSelection(QClxLineEditH(Instance.Handle));
+  end;
+{$ENDIF VisualCLX}
+begin
+  {$IFDEF VCL}
+  InheritMsg(Instance, WM_PASTE, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if Instance is TCustomMemo then
+    QMultiLineEdit_paste(QMultiLineEditH(Instance.Handle))
+  else
+  if Instance is TCustomMaskEdit then
+  begin
+    if not TCustomMaskEdit(Instance).IsMasked or
+       TOpenCustomMaskEdit(Instance).ReadOnly then  // PasteFromClipboard would call "inherited"
+      QClxLineEdit_cut(QClxLineEditH(Instance.Handle))
+    else
+      TCustomMaskEdit(Instance).CutToClipboard;
+  end
+  else
+  if Instance is TCustomEdit then
+    LineEditPaste;
+  {$ENDIF VisualCLX}
+end;
 
 // *****************************************************************************
 
@@ -2096,15 +2219,87 @@ begin
   end;
 end;
 
+procedure CutToClipboardHook(Instance: TWidgetControl);
+var
+  Intf: IJvEditControlEvents;
+begin
+  if Supports(Instance, IJvEditControlEvents, Intf) then
+    Intf.DoClipboardCut
+  else
+    TCustomEdit_Cut(Instance);
+end;
+
+procedure CopyToClipboardHook(Instance: TWidgetControl);
+var
+  Intf: IJvEditControlEvents;
+begin
+  if Supports(Instance, IJvEditControlEvents, Intf) then
+    Intf.DoClipboardCopy
+  else
+    TCustomEdit_Copy(Instance);
+end;
+
+procedure PasteFromClipboardHook(Instance: TWidgetControl);
+var
+  Intf: IJvEditControlEvents;
+begin
+  if Supports(Instance, IJvEditControlEvents, Intf) then
+    Intf.DoClipboardPaste
+  else
+    TCustomEdit_Paste(Instance);
+end;
+
+procedure UndoHook(Instance: TWidgetControl);
+var
+  Intf: IJvEditControlEvents;
+begin
+  if Supports(Instance, IJvEditControlEvents, Intf) then
+    Intf.DoUndo
+  else
+    TCustomEdit_Undo(Instance);
+end;
+
+var
+  CallCutToClipboard, CallPasteFromClipboard,
+    CallCopyToClipboard, CallUndo: TOrgCallCode;
+
 initialization
   InstallAppEventFilterHook;
   InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
                   @CallSetFocusedControl);
 
+  InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
+                  @CallCutToClipboard);
+  InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
+                  @CallCopyToClipboard);
+  InstallProcHook(@TCustomEdit.PasteFromClipboard, @PasteFromClipboardHook,
+                  @CallPasteFromClipboard);
+  {$IFDEF COMPILER7}
+  InstallProcHook(@TCustomEdit.Undo, @UndoHook,
+                  @CallUndo);
+  {$ELSE}
+   {$IF declared(PatchedVCLX)}
+  InstallProcHook(@TCustomEdit.Undo, @UndoHook,
+                  @CallUndo);
+   {$IFEND}
+  {$ENDIF COMPILER7}
+
 finalization
+  UninstallProcHook(@CallCutToClipboard);
+  UninstallProcHook(@CallCopyToClipboard);
+  UninstallProcHook(@CallPasteFromClipboard);
+  {$IFDEF COMPILER7}
+  UninstallProcHook(@CallUndo);
+  {$ELSE}
+   {$IF declared(PatchedVCLX)}
+  UninstallProcHook(@CallUndo);
+   {$IFEND}
+  {$ENDIF COMPILER7}
+
   UninstallProcHook(@CallSetFocusedControl);
   UninstallAppEventFilterHook;
 
 {$ENDIF VisualCLX}
 
 end.
+

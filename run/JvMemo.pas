@@ -79,10 +79,10 @@ type
     procedure SetHideCaret(const Value: Boolean);
   protected
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
-    function DoClipboardCut: Boolean; override;
-    function DoClipboardPaste: Boolean; override;
-    function DoClearText: Boolean; override;
-    function DoUndo: Boolean; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
+    procedure DoClearText; override;
+    procedure DoUndo; override;
     procedure CaretChange(Sender: TObject); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
@@ -501,24 +501,28 @@ begin
   end;
 end;
 
-function TJvCustomMemo.DoClearText: Boolean;
+procedure TJvCustomMemo.DoClearText;
 begin
-  Result := not ReadOnly and inherited DoClearText;
+  if not ReadOnly then
+    inherited DoClearText;
 end;
 
-function TJvCustomMemo.DoUndo: Boolean;
+procedure TJvCustomMemo.DoUndo;
 begin
-  Result := not ReadOnly and inherited DoUndo;
+  if not ReadOnly then
+    inherited DoUndo;
 end;
 
-function TJvCustomMemo.DoClipboardCut: Boolean;
+procedure TJvCustomMemo.DoClipboardCut;
 begin
-  Result := not ReadOnly and inherited DoClipboardCut;
+  if not ReadOnly then
+    inherited DoClipboardCut;
 end;
 
-function TJvCustomMemo.DoClipboardPaste: Boolean;
+procedure TJvCustomMemo.DoClipboardPaste;
 begin
-  Result := not ReadOnly and inherited DoClipboardPaste;
+  if not ReadOnly then
+    inherited DoClipboardPaste;
 end;
 
 end.

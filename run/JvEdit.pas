@@ -100,10 +100,10 @@ type
     procedure SetGroupIndex(const Value: Integer);
     function GetFlat: Boolean;
   protected
-    function DoClipboardCut: Boolean; override;
-    function DoClipboardPaste: Boolean; override;
-    function DoClearText: Boolean; override;
-    function DoUndo: Boolean; override;
+    procedure DoClipboardCut; override;
+    procedure DoClipboardPaste; override;
+    procedure DoClearText; override;
+    procedure DoUndo; override;
 
     procedure UpdateEdit;
     procedure SetClipboardCommands(const Value: TJvClipboardCommands); override;
@@ -623,24 +623,28 @@ begin
   Invalidate;
 end;
 
-function TJvCustomEdit.DoClearText: Boolean;
+procedure TJvCustomEdit.DoClearText;
 begin
-  Result := not ReadOnly and inherited DoClearText;
+  if not ReadOnly then
+    inherited DoClearText;
 end;
 
-function TJvCustomEdit.DoUndo: Boolean;
+procedure TJvCustomEdit.DoUndo;
 begin
-  Result := not ReadOnly and inherited DoUndo;
+  if not ReadOnly then
+    inherited DoUndo;
 end;
 
-function TJvCustomEdit.DoClipboardCut: Boolean;
+procedure TJvCustomEdit.DoClipboardCut;
 begin
-  Result := not ReadOnly and inherited DoClipboardCut;
+  if not ReadOnly then
+    inherited DoClipboardCut;
 end;
 
-function TJvCustomEdit.DoClipboardPaste: Boolean;
+procedure TJvCustomEdit.DoClipboardPaste;
 begin
-  Result := not ReadOnly and inherited DoClipboardPaste;
+  if not ReadOnly then
+    inherited DoClipboardPaste;
   UpdateEdit;
 end;
 

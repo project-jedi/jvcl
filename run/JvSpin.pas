@@ -232,8 +232,8 @@ type
   protected
     //Polaris up to protected
     FButtonKind: TSpinButtonKind;
-    function DoClipboardPaste: Boolean; override;
-    function DoClipboardCut: Boolean; override;
+    procedure DoClipboardPaste; override;
+    procedure DoClipboardCut; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
@@ -2161,9 +2161,9 @@ begin
   Result := True;
 end;
 
-function TJvCustomSpinEdit.DoClipboardPaste: Boolean;
+procedure TJvCustomSpinEdit.DoClipboardPaste;
 begin
-  Result := (FEditorEnabled and not ReadOnly) and
+  if FEditorEnabled and not ReadOnly then
     inherited DoClipboardPaste;
 
   { Polaris code:
@@ -2179,9 +2179,9 @@ begin
   }
 end;
 
-function TJvCustomSpinEdit.DoClipboardCut: Boolean;
+procedure TJvCustomSpinEdit.DoClipboardCut;
 begin
-  Result := (FEditorEnabled and not ReadOnly) and
+  if FEditorEnabled and not ReadOnly then
     inherited DoClipboardCut;
 end;
 
