@@ -449,7 +449,7 @@ type
     property ShowItemFrame: Boolean read FShowItemFrame write FShowItemFrame;
     property RoundedItemFrame: Integer read FRoundedItemFrame write FRoundedItemFrame default 1; //DS
     property TopSpace: Integer read FTopSpace write SetTopSpace default 5;
-
+    // (rom) this name is not acceptable. Prefix with "On"
     property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write
       FAfterCollapsedChange;
     property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write
@@ -600,6 +600,8 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsUntitled = 'untitled';
+  RsUntitledFmt = '(%s %d)";
+  RsHintShortcutFmt = '%s (%s)';
 {$ENDIF USEJVCL}
 
 const
@@ -683,7 +685,8 @@ end;
 {$IFDEF COMPILER6_UP}
 procedure TJvXPBarItemActionLink.SetAutoCheck(Value: Boolean);
 begin
-  if IsAutoCheckLinked then Client.AutoCheck := Value;
+  if IsAutoCheckLinked then
+    Client.AutoCheck := Value;
 end;
 {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
@@ -783,6 +786,7 @@ begin
     Action := nil;
   if AComponent = FImageList then
     FImageList := nil;
+  // (rom) no inherited called?
 end;
 
 function TJvXPBarItem.GetDisplayName: string;
@@ -848,14 +852,14 @@ procedure TJvXPBarItem.DrawItem(AWinXPBar: TJvXPCustomWinXPBar; ACanvas: TCanvas
 var
   ItemCaption: TCaption;
   HasImages: Boolean;
-  lBar: TJvXPCustomWinXPBar;
+  LBar: TJvXPCustomWinXPBar;
 begin
-  lBar := (AWinXPBar as TJvXPCustomWinXPBar);
+  LBar := (AWinXPBar as TJvXPCustomWinXPBar);
   HasImages := Self.Images <> nil;
   with ACanvas do
   begin
-    Font.Assign(lBar.Font);
-    Brush.Color := lBar.Colors.BodyColor;
+    Font.Assign(LBar.Font);
+    Brush.Color := LBar.Colors.BodyColor;
     if not ShowItemFrame then
       FillRect(Rect);
     if not Self.Enabled then
@@ -864,21 +868,21 @@ begin
     begin
       if dsFocused in State then
       begin
-        if lBar.HotTrack then
+        if LBar.HotTrack then
         begin
-          if lBar.FHotTrackColor <> clNone then
-            Font.Color := lBar.FHotTrackColor;
+          if LBar.FHotTrackColor <> clNone then
+            Font.Color := LBar.FHotTrackColor;
           Font.Style := Font.Style + [fsUnderline];
         end;
         if ShowItemFrame then
         begin
-          Brush.Color := lBar.Colors.FocusedColor;
-          if lBar.RoundedItemFrame > 0 then
-            RoundedFrame(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.RoundedItemFrame)
+          Brush.Color := LBar.Colors.FocusedColor;
+          if LBar.RoundedItemFrame > 0 then
+            RoundedFrame(ACanvas, Rect, LBar.Colors.FocusedFrameColor, LBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, lBar.Colors.FocusedFrameColor, lBar.Colors.FocusedFrameColor);
+            JvXPFrame3D(ACanvas, Rect, LBar.Colors.FocusedFrameColor, LBar.Colors.FocusedFrameColor);
           end;
         end;
       end
@@ -887,13 +891,13 @@ begin
       begin
         if ShowItemFrame then
         begin
-          Brush.Color := lBar.Colors.CheckedColor;
-          if lBar.RoundedItemFrame > 0 then
-            RoundedFrame(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.RoundedItemFrame)
+          Brush.Color := LBar.Colors.CheckedColor;
+          if LBar.RoundedItemFrame > 0 then
+            RoundedFrame(ACanvas, Rect, LBar.Colors.CheckedFrameColor, LBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            JvXPFrame3D(ACanvas, Rect, lBar.Colors.CheckedFrameColor, lBar.Colors.CheckedFrameColor);
+            JvXPFrame3D(ACanvas, Rect, LBar.Colors.CheckedFrameColor, LBar.Colors.CheckedFrameColor);
           end;
         end;
       end
@@ -901,18 +905,18 @@ begin
         FillRect(Rect);
     end;
     if HasImages then
-      Draw(Rect.Left, Rect.Top + (lBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
+      Draw(Rect.Left, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
     ItemCaption := Self.Caption;
-    if (ItemCaption = '') and ((csDesigning in lBar.ComponentState) or (lBar.ControlCount = 0)) then
-      ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
+    if (ItemCaption = '') and ((csDesigning in LBar.ComponentState) or (LBar.ControlCount = 0)) then
+      ItemCaption := Format(RsUntitledFmt, [RsUntitled, Index]);
     Inc(Rect.Left, 20);
     SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
     {$IFDEF USEJVCL}
-    DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS);
+    DrawText(ACanvas, ItemCaption, -1, Rect,
+      DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS);
     {$ELSE}
-    DrawText(ACanvas.Handle, PAnsiChar(ItemCaption), -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS);
+    DrawText(ACanvas.Handle, PAnsiChar(ItemCaption), -1, Rect,
+      DT_SINGLELINE or DT_VCENTER or DT_END_ELLIPSIS);
     {$ENDIF USEJVCL}
   end;
 end;
@@ -1120,7 +1124,7 @@ end;
 
 constructor TJvXPBarItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
-  inherited Create(GetItemClass());
+  inherited Create(GetItemClass);
   FWinXPBar := WinXPBar;
 end;
 
@@ -1355,6 +1359,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   inherited Create;
+  // (rom) needs local color constants
   FBodyColor := TColor($00F7DFD6);
   FBorderColor := clWhite;
   FGradientFrom := clWhite;
@@ -1594,7 +1599,7 @@ procedure TJvXPCustomWinXPBar.ResizeToMaxHeight;
 var
   NewHeight: Integer;
 begin
-{ TODO: Check this!!! }
+  { TODO: Check this!!! }
   if IsLocked then
     Exit;
   NewHeight := FC_HEADER_MARGIN + HeaderHeight + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
@@ -1620,9 +1625,11 @@ begin
   Result.Left := 3;
   Result.Right := Width - 3;
   if FRollMode = rmShrink then
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset - 4 + FTopSpace
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 +
+      Index * FRollOffset - 4 + FTopSpace
   else
-    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight - 4 + FTopSpace;
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 +
+      Index * FItemHeight - 4 + FTopSpace;
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
@@ -1686,18 +1693,21 @@ end;
 procedure TJvXPCustomWinXPBar.HookMouseEnter;
 begin
   inherited HookMouseEnter;
-  if (FHoverIndex <> -1) then
+  if FHoverIndex <> -1 then
     DoDrawItem(FHoverIndex, [dsFocused]);
 end;
 
 procedure TJvXPCustomWinXPBar.HookMouseLeave;
 begin
   inherited HookMouseLeave;
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (not FVisibleItems[FHoverIndex].Checked) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and
+    (not FVisibleItems[FHoverIndex].Checked) then
     DoDrawItem(FHoverIndex, []);
 end;
 
 procedure TJvXPCustomWinXPBar.HookMouseMove(X, Y: Integer);
+const
+  cPipe = '|';
 var
   Rect: TRect;
   OldHitTest: TJvXPBarHitTest;
@@ -1710,12 +1720,10 @@ begin
     Rect := Bounds(0, 5, Width, FHeaderHeight); // header
     Windows.InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
-    begin
       if FHitTest <> htNone then
         Cursor := crHandPoint
       else
         Cursor := crDefault;
-    end;
   end;
 
   Header := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN;
@@ -1725,7 +1733,7 @@ begin
     NewIndex := (Y - Header) div ((Height - Header + 4 - FTopSpace) div FVisibleItems.Count);
   if (NewIndex >= 0) and (NewIndex < VisibleItems.Count) then
   begin
-    if FStoredHint = '|' then
+    if FStoredHint = cPipe then
       FStoredHint := Hint;
     if Action is TCustomAction then
       inherited Hint := TCustomAction(Action).Hint
@@ -1734,9 +1742,9 @@ begin
   end
   else
   begin
-    if FStoredHint <> '|' then
+    if FStoredHint <> cPipe then
       inherited Hint := FStoredHint;
-    FStoredHint := '|';
+    FStoredHint := cPipe;
   end;
 
   if NewIndex <> FHoverIndex then
@@ -1747,7 +1755,8 @@ begin
       else
         DoDrawItem(FHoverIndex, []);
     FHoverIndex := NewIndex;
-    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
+    if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and
+      (FVisibleItems[FHoverIndex].Enabled) then
     begin
       DoDrawItem(FHoverIndex, [dsFocused]);
       if FShowLinkCursor then
@@ -1935,13 +1944,14 @@ procedure TJvXPCustomWinXPBar.Click;
 var
   AllowChange, CallInherited: Boolean;
   {$IFDEF VCL}
-  lItem: TJvXPBarItem;
+  LItem: TJvXPBarItem;
   {$ENDIF VCL}
 begin
   CallInherited := True;
-  if (FShowRollButton) and (FHitTest <> htNone) then
+  if FShowRollButton and (FHitTest <> htNone) then
     Collapsed := not Collapsed;
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and
+    FVisibleItems[FHoverIndex].Enabled then
   begin
     AllowChange := True;
     if Assigned(FOnCanChange) then
@@ -1951,8 +1961,8 @@ begin
 
     //dejoy add
     {$IFDEF VCL}
-    lItem := FVisibleItems[FHoverIndex];
-    with lItem do
+    LItem := FVisibleItems[FHoverIndex];
+    with LItem do
     begin
       {$IFDEF COMPILER6_UP}
       if (not Assigned(ActionLink) and AutoCheck) or
@@ -1960,7 +1970,7 @@ begin
       {$ELSE}
       if AutoCheck then
       {$ENDIF COMPILER6_UP}
-        lItem.Checked := not lItem.Checked;
+        LItem.Checked := not LItem.Checked;
     end;
     {$ENDIF VCL}
     if FVisibleItems[FHoverIndex].Checked then
@@ -2028,6 +2038,8 @@ var
   Bitmap: TBitmap;
   Index, I: Integer;
   OwnColor: TColor;
+
+  // (rom) Do as prefix for a local function is not ideal
   procedure DoDrawBackground(ACanvas: TCanvas; var R: TRect);
   begin
     {$IFDEF VisualCLX}
@@ -2165,11 +2177,11 @@ var
     ARect.Bottom := ARect.Top + FHeaderHeight;
     Dec(ARect.Right, 3);
     {$IFDEF USEJVCL}
-    DrawText(ACanvas, Caption, -1, ARect, DT_SINGLELINE or DT_LEFT or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+    DrawText(ACanvas, Caption, -1, ARect,
+      DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ELSE}
-    DrawText(ACanvas.Handle, PChar(Caption), -1, ARect, DT_SINGLELINE or DT_LEFT or DT_VCENTER or
-      DT_END_ELLIPSIS or DT_NOPREFIX);
+    DrawText(ACanvas.Handle, PChar(Caption), -1, ARect,
+      DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ENDIF USEJVCL}
   end;
 begin
@@ -2229,7 +2241,7 @@ begin
   if Parent <> nil then
   begin
     Msg.Msg := WM_XPBARAFTEREXPAND;
-    Msg.WParam := Integer(Self);
+    Msg.WParam := WPARAM(Self);
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -2314,7 +2326,7 @@ begin
     Result := TCustomAction(Action).DoHint(HintStr);
     if Result and Application.HintShortCuts and (TCustomAction(Action).ShortCut <> scNone) then
       if HintStr <> '' then
-        HintStr := Format('%s (%s)', [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
+        HintStr := Format(RsHintShortcutFmt, [HintStr, ShortCutToText(TCustomAction(Action).ShortCut)]);
   end;
 end;
 
@@ -2394,13 +2406,14 @@ end;
 
 procedure TJvXPCustomWinXPBar.DblClick;
 var
-  lItem: TJvXPBarItem;
+  LItem: TJvXPBarItem;
 begin
-  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and (FVisibleItems[FHoverIndex].Enabled) then
+  if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and
+    FVisibleItems[FHoverIndex].Enabled then
   begin
-    lItem := FVisibleItems[FHoverIndex];
-    if Assigned(lItem.FOnDblClick) then
-      lItem.FOnDblClick(lItem);
+    LItem := FVisibleItems[FHoverIndex];
+    if Assigned(LItem.FOnDblClick) then
+      LItem.FOnDblClick(LItem);
   end;
   inherited DblClick;
 end;
@@ -2447,6 +2460,7 @@ begin
     InternalRedraw;
   end;
 end;
+
 procedure TJvXPCustomWinXPBar.SetOwnerDraw(const Value: Boolean);
 begin
   if FOwnerDraw <> Value then

@@ -210,19 +210,19 @@ var
 
   procedure DrawLine(AdditSpace: Integer);
   var
-    i, DrawPos1, DrawPos2: Integer;
+    I, DrawPos1, DrawPos2: Integer;
     Lexem: string;
     Size: TSize;
-    X, X_: Single;
+    X, X2: Single;
   begin
     DrawPos1 := DrawPos;
     DrawPos2 := DrawPos;
     X := 0.0;
-    X_ := 0.0;
+    X2 := 0.0;
     LineWidth := 0;
-    for i := 1 to LexemCount do
+    for I := 1 to LexemCount do
     begin
-      Lexem := GetNextLexem(DrawPos1, DrawPos2, i = 1);
+      Lexem := GetNextLexem(DrawPos1, DrawPos2, I = 1);
       //      if LexemCount=1 then Lexem:=Lexem+' ';
       GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), Length(Lexem), Size);
       Inc(LineWidth, Trunc(X));
@@ -231,24 +231,24 @@ var
         Exit;
       if LexemCount > 1 then
         X := X + AdditSpace / (LexemCount - 1);
-      TextOut(Canvas.Handle, Trunc(X_), LineNo * TextHeight, PChar(Lexem),
+      TextOut(Canvas.Handle, Trunc(X2), LineNo * TextHeight, PChar(Lexem),
         Length(Lexem));
-      X_ := X;
+      X2 := X;
       DrawPos1 := DrawPos2;
     end;
   end;
 
   procedure DrawLineLeftAligned;
   var
-    i, DrawPos1, DrawPos2: Integer;
+    I, DrawPos1, DrawPos2: Integer;
     Lexem: string;
   begin
     DrawPos1 := DrawPos;
     DrawPos2 := DrawPos;
     LineWidth := 0;
-    for i := 1 to LexemCount do
+    for I := 1 to LexemCount do
     begin
-      Lexem := Lexem + GetNextLexem(DrawPos1, DrawPos2, i = 1);
+      Lexem := Lexem + GetNextLexem(DrawPos1, DrawPos2, I = 1);
       DrawPos1 := DrawPos2;
     end;
     TextOut(Canvas.Handle, 0, LineNo * TextHeight, PChar(Lexem), Length(Lexem));
