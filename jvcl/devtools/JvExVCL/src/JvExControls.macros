@@ -427,12 +427,7 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-function TWidgetControl.NeedKey(Key: Integer; Shift: TShiftState;
+function TJvEx##ClassName.NeedKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
   Result := TWidgetControl_NeedKey(Self, Key, Shift, KeyText,
@@ -483,6 +478,11 @@ begin
   DESTRUCTOR_CODE
   FCanvas.Free;
   inherited Destroy;
+end;
+
+procedure TJvEx##ClassName.Paint;
+begin
+  WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
 *)

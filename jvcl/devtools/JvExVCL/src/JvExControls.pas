@@ -382,21 +382,37 @@ end;
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 var
   Event: QPaintEventH;
+  PaintDevice: QPaintDeviceH;
+  IsActive: Boolean;
 begin
   if not (csDestroying in Instance.ComponentState) and
-     (not Supports(Instance, IJvCustomControlEvents) then
+     (not Supports(Instance, IJvCustomControlEvents)) then
        { TCustomControls do not have a default paint method. }
   begin
-    Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+   // Canvas.StopPaint uses a counter, but we must garantee the Stop.
+    PaintDevice := nil;
+    IsActive := QPainter_isActive(Canvas.Handle);
+    if IsActive then
+    begin
+      PaintDevice := QPainter_device(Canvas.Handle);
+      QPainter_end(Canvas.Handle);
+    end;
     try
-      Instance.ControlState := Instance.ControlState + [csWidgetPainting];
+      Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
       try
-        QObject_event(Instance.Handle, Event);
+        Instance.ControlState := Instance.ControlState + [csWidgetPainting];
+        try
+          QObject_event(Instance.Handle, Event);
+        finally
+          Instance.ControlState := Instance.ControlState - [csWidgetPainting];
+        end;
       finally
-        Instance.ControlState := Instance.ControlState - [csWidgetPainting];
+        QPaintEvent_destroy(Event);
       end;
     finally
-      QPaintEvent_destroy(Event);
+      // restore
+      if IsActive then
+        QPainter_begin(Canvas.Handle, PaintDevice); // restart
     end;
   end;
 end;
@@ -406,14 +422,14 @@ function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
 
   function IsTabKey: Boolean;
   begin
-    Result := (Key = Key_Tab) or (Key = Tab_BackTab);
+    Result := (Key = Key_Tab) or (Key = Key_BackTab);
   end;
 
   function IsArrowKey: Boolean;
   begin
     Result := (Key = Key_Left) or (Key = Key_Right) or
               (Key = Key_Down) or (Key = Key_Up);
-  end
+  end;
 
 var
   DlgCodes: TDlgCodes;
@@ -432,7 +448,7 @@ begin
   if ikChars in Value then
     Include(DlgCodes, dcWantChars);
 
-  DoGetDlgCode(DlgCodes);
+  (Instance as IJvWinControlEvents).DoGetDlgCode(DlgCodes);
 
   if not (dcNative in DlgCodes) then
   begin
@@ -445,7 +461,7 @@ begin
       Result := IsArrowKey;
     if (not Result) and (dcWantChars in DlgCodes) then
       Result := ((Shift * [ssCtrl, ssAlt] = []) and
-                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0)) and
+                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0))) and
                 not (IsTabKey or IsArrowKey);
   end;
 end;
