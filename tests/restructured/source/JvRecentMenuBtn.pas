@@ -52,6 +52,7 @@ type
     FOnUrl: TOnLinkClick;
     FOnPopup: TNotifyEvent;
     procedure UrlClick(Sender: TObject);
+    procedure InternalFileFind(const Path, FileMask: string; Strings: TStringList);
   protected
     procedure CreatePopup(Sender: TObject);
     procedure DynBuild(Item: TMenuItem; Directory: string);
@@ -69,6 +70,8 @@ implementation
 
 resourcestring
   RC_EmptyItem = '<Empty>';
+const
+  cMaxItems = 15;
 
   {*******************************************************}
 
@@ -136,8 +139,8 @@ end;
 
 function GetAssociatedIcon(const Filename: string; SmallIcon: boolean): HICON;
 const
-  cSmall:array[boolean] of Cardinal = (SHGFI_LARGEICON,SHGFI_SMALLICON);
-var pfsi: TShFileInfo; hLarge: HICON;dwAttributes:Cardinal;w:word;
+  cSmall: array[boolean] of Cardinal = (SHGFI_LARGEICON, SHGFI_SMALLICON);
+var pfsi: TShFileInfo; hLarge: HICON; w: word;
 begin
   FillChar(pfsi, sizeof(pfsi), 0);
   ShGetFileInfo(PChar(Filename), 0, pfsi, sizeof(pfsi),
@@ -151,50 +154,93 @@ begin
     ExtractAssociatedIcon(GetFocus, PChar(Filename), w);
 end;
 
+function SortByName(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := AnsiCompareText(ExtractFileName(List[Index2]),ExtractFileName(List[Index2]));
+end;  
+
+function SortByObject(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  // note: higher values sorted at the top
+  Result := integer(List.Objects[Index2]) - integer(List.Objects[Index1]);
+end;
+
+function RemoveLnk(const S: string): string;
+var i: integer;
+begin
+  Result := trim(StringReplace(S, '.lnk', '', [rfReplaceAll, rfIgnoreCase]));
+    // now strip any extras from the end (like " (2)"):
+  for i := Length(Result) downto 1 do
+    if Result[i] = ' ' then
+    begin
+      SetLength(Result, i - 1);
+      Exit;
+    end;
+end;
+
+procedure TJvRecentMenuBtn.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
+var H: THandle; sr: TSearchRec; tmp:string;
+begin
+  Strings.BeginUpdate;
+  try
+    Strings.Clear;
+    H := FindFirst(Path + FileMask, faAnyFile, sr);
+    try
+      while H = 0 do
+      begin
+        // (p3) kludge to get past the '.lnk' extension to discover folders...
+        tmp := RemoveLnk(sr.Name);
+        if (sr.FindData.cFilename[0] <> '.') and (ExtractFileExt(tmp) <> '') then
+          Strings.AddObject(tmp, TObject(sr.Time));
+        H := FindNext(sr);
+      end;
+    finally
+      FindClose(sr);
+    end;
+    Strings.CustomSort(SortByObject);
+    while Strings.Count > cMaxItems do // delete any older files  
+      Strings.Delete(Strings.Count-1);
+    Strings.Sort; // CustomSort(SortByName); // sort by name instead
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+
+function Min(Val1,Val2:integer):integer;
+begin
+  Result := Val1;
+  if Val2 < Val1 then
+    Result := Val2;
+end;  
+
 procedure TJvRecentMenuBtn.DynBuild(Item: TMenuItem; Directory: string);
 var
-  res: Integer;
-  SearchRec: TSearchRec;
   it: TMenuItem;
   bmp: TBitmap;
-  function RemoveLnk(const S:String):string;
-  var i:integer;
-  begin
-    Result := trim(StringReplace(S,'.lnk','',[rfReplaceAll,rfIgnoreCase]));
-    // now strip any extras from the end (like " (2)"):
-    for i := Length(Result) downto 1 do
-      if Result[i] = ' ' then
-    begin
-      SetLength(Result,i-1);
-      Exit;
-    end;  
-  end;  
+  S: TStringlist;
+  i:integer;
 begin
   DeleteItem(Item, True);
   if (Directory <> '') and (Directory[Length(Directory)] <> '\') then
     Directory := Directory + '\';
-  res := FindFirst(Directory + '*.*', faAnyFile, SearchRec);
-  Item.Items[0].Visible := Item.Count = 1;
-  while res = 0 do
-  begin
-    if (SearchRec.FindData.cFilename[0] <> '.') 
-      // (p3) kludge to get past the '.lnk' extension to discover folders...
-      and (ExtractFileExt(RemoveLnk(SearchRec.FindData.cFilename)) <> '')
-      and (FileDateToDateTime(SearchRec.Time) >= (Now - 2)) then
+  S := TStringlist.Create;
+  try
+    InternalFileFind(Directory, '*.*', S);
+    for i := 0 to Min(S.Count-1,cMaxItems - 1) do
     begin
-      Item.Items[0].Visible := (Item.Count = 1);
       it := TMenuItem.Create(Item);
-      it.Caption := RemoveLnk(SearchRec.Name); 
+      it.Caption := S[i];
       it.OnClick := UrlClick;
-      it.Hint := Directory + it.Caption;
-      bmp := IconToBitmap2(GetAssociatedIcon(Directory + it.Caption, true),16,clMenu);
+      it.Hint := Directory + S[i];
+      bmp := IconToBitmap2(GetAssociatedIcon(S[i], true), 16, clMenu);
       it.Bitmap.Assign(bmp);
       bmp.Free;
       Item.Add(it);
     end;
-    res := FindNext(SearchRec);
+  finally
+    S.Free;
   end;
-  FindClose(SearchRec);
+  Item.Items[0].Visible := (Item.Count = 1);
 end;
 
 {*******************************************************}
