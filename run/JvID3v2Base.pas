@@ -2537,6 +2537,8 @@ var
     GoState0;
   end;
 
+var
+  P: PChar;
 begin
   Result := '';
   State := 0;
@@ -2603,7 +2605,13 @@ begin
   end;
 
   if Start <= Length(AGenre) then
-    AddString(Copy(AGenre, Start, MaxInt));
+  begin
+    { Workaround for a bug in some taggers }
+    P := PChar(AGenre) + Start - 1;
+    while P^ = ' ' do Inc(P);
+    if StrIComp(P, PChar(Result)) <> 0 then
+      AddString(Copy(AGenre, Start, MaxInt));
+  end;
 end;
 
 procedure GetID3v2Version(const AFileName: string; var HasTag: Boolean;
@@ -2699,7 +2707,7 @@ var
 begin
   Result := '';
   S := ANiceGenre;
-  while True do
+  while S > '' do
   begin
     GenreID := ID3_LongGenreToID(S);
     if GenreID <> 255 then
@@ -9104,6 +9112,8 @@ begin
   S := Copy(S, 1, 19);
 
   FillChar(TimeArray, SizeOf(TimeArray), #0);
+  TimeArray[tkMonth] := 1;
+  TimeArray[tkDay] := 1;
 
   I := 1;
   BusyWith := tkYear;
