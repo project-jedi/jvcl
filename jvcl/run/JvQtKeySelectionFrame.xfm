@@ -3,12 +3,19 @@ object JvQtKeySelectionFrame: TJvQtKeySelectionFrame
   Top = 0
   Width = 213
   Height = 50
-  VertScrollBar.Range = 49
   HorzScrollBar.Range = 213
+  VertScrollBar.Range = 47
+  Font.Color = clBlack
+  Font.Height = 13
+  Font.Name = 'Helvetica'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 0
+  ParentFont = False
   TabOrder = 0
   object lblVirtualKey: TLabel
     Left = 0
-    Top = 4
+    Top = 7
     Width = 69
     Height = 13
     Alignment = taRightJustify
@@ -17,7 +24,7 @@ object JvQtKeySelectionFrame: TJvQtKeySelectionFrame
   end
   object lblModifiers: TLabel
     Left = 0
-    Top = 32
+    Top = 30
     Width = 69
     Height = 13
     Alignment = taRightJustify
@@ -26,16 +33,16 @@ object JvQtKeySelectionFrame: TJvQtKeySelectionFrame
   end
   object cmbVirtualKey: TComboBox
     Left = 80
-    Top = 0
+    Top = 3
     Width = 133
-    Height = 21
-    ItemHeight = 15
+    Height = 23
+    ItemHeight = 17
     Sorted = True
     TabOrder = 0
   end
   object chkShift: TCheckBox
     Left = 88
-    Top = 32
+    Top = 30
     Width = 57
     Height = 17
     Caption = 'Shift'
@@ -43,7 +50,7 @@ object JvQtKeySelectionFrame: TJvQtKeySelectionFrame
   end
   object chkCtrl: TCheckBox
     Left = 156
-    Top = 32
+    Top = 30
     Width = 57
     Height = 17
     Caption = 'Ctrl'
