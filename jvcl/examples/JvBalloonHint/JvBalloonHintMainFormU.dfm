@@ -1,9 +1,9 @@
 object JvBalloonHintMainForm: TJvBalloonHintMainForm
   Left = 237
   Top = 147
-  Width = 672
-  Height = 529
-  Caption = 'JvBalloonHintMainForm'
+  Width = 673
+  Height = 539
+  Caption = 'JVCL TJvBalloonHint Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,7 +11,9 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   ShowHint = True
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -125,6 +127,24 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       ShowHint = True
       TabOrder = 3
       OnClick = rgrDefaultBalloonPositionClick
+    end
+    object sttDefaultValues: TStaticText
+      Left = 1
+      Top = 1
+      Width = 359
+      Height = 36
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Default Values'
+      Color = clTeal
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -27
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 4
     end
   end
   object pnlBalloon: TPanel
@@ -330,6 +350,24 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       Height = 81
       TabOrder = 5
     end
+    object sttBalloon: TStaticText
+      Left = 1
+      Top = 1
+      Width = 647
+      Height = 36
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Balloon'
+      Color = clTeal
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -27
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 7
+    end
   end
   object pnlApplicationHint: TPanel
     Left = 376
@@ -386,6 +424,24 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
       ShowHint = True
       TabOrder = 3
       OnClick = chbUseBalloonAsApplicationHintClick
+    end
+    object sttApplicationHint: TStaticText
+      Left = 1
+      Top = 1
+      Width = 279
+      Height = 36
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Application Hint'
+      Color = clTeal
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -27
+      Font.Name = 'Verdana'
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 4
     end
   end
   object ImageList2: TImageList
