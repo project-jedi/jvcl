@@ -1,0 +1,119 @@
+object FormMain: TFormMain
+  Left = 294
+  Top = 250
+  Width = 377
+  Height = 133
+  VertScrollBar.Range = 129
+  HorzScrollBar.Range = 371
+  ActiveControl = EditDirectory
+  BorderStyle = fbsDialog
+  Caption = 'dxgettext to Resourcestring'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Position = poScreenCenter
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  object ProgressBar: TProgressBar
+    Left = 8
+    Top = 56
+    Width = 361
+    Height = 17
+  end
+  object LblStatus: TLabel
+    Left = 8
+    Top = 40
+    Width = 44
+    Height = 13
+    Caption = 'LblStatus'
+  end
+  object LblDir: TLabel
+    Left = 8
+    Top = 12
+    Width = 45
+    Height = 13
+    Caption = '&Directory:'
+  end
+  object BtnParse: TButton
+    Left = 8
+    Top = 104
+    Width = 75
+    Height = 25
+    Caption = 'Parse'
+    TabOrder = 6
+    OnClick = BtnParseClick
+  end
+  object CheckBoxSingleResFile: TCheckBox
+    Left = 8
+    Top = 80
+    Width = 161
+    Height = 17
+    Caption = 'Single Resourcestring file'
+    TabOrder = 3
+  end
+  object BtnQuit: TButton
+    Left = 296
+    Top = 104
+    Width = 75
+    Height = 25
+    Caption = '&Quit'
+    TabOrder = 7
+    OnClick = BtnQuitClick
+  end
+  object EditDirectory: TEdit
+    Left = 64
+    Top = 8
+    Width = 281
+    Height = 21
+    TabOrder = 1
+  end
+  object BtnBrowse: TButton
+    Left = 344
+    Top = 8
+    Width = 21
+    Height = 21
+    Hint = 'Browse...'
+    Caption = '...'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    OnClick = BtnBrowseClick
+  end
+  object CheckBoxSilent: TCheckBox
+    Left = 176
+    Top = 80
+    Width = 73
+    Height = 17
+    Caption = 'Silent'
+    Checked = True
+    State = cbChecked
+    TabOrder = 4
+  end
+  object CheckBoxSubDirs: TCheckBox
+    Left = 264
+    Top = 80
+    Width = 97
+    Height = 17
+    Caption = 'Sub directories'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
+  end
+end
