@@ -1,0 +1,68 @@
+object Form1: TForm1
+  Left = 271
+  Top = 227
+  Width = 268
+  Height = 78
+  VertScrollBar.Range = 73
+  HorzScrollBar.Range = 201
+  ActiveControl = Compress
+  BorderStyle = fbsSingle
+  Caption = 'Compress dictionaries'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Scaled = False
+  PixelsPerInch = 96
+  object Compress: TButton
+    Left = 88
+    Top = 8
+    Width = 113
+    Height = 25
+    Caption = 'Compress'
+    TabOrder = 0
+    OnClick = CompressClick
+  end
+  object Uncompress: TButton
+    Left = 88
+    Top = 48
+    Width = 113
+    Height = 25
+    Caption = 'Uncompress'
+    TabOrder = 1
+    OnClick = UncompressClick
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = 'dic'
+    FilterIndex = 0
+    Height = 0
+    Width = 0
+    Left = 24
+    Top = 16
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'dic'
+    FilterIndex = 0
+    Options = [ofOverwritePrompt, ofEnableSizing, ofHideReadOnly]
+    Height = 0
+    Title = 'Save'
+    Width = 0
+    Left = 224
+    Top = 16
+  end
+end
