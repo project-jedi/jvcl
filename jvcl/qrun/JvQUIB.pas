@@ -31,7 +31,7 @@
 unit JvQUIB;
 
 {$I jvcl.inc}
-{$I JvUIB.inc}
+{$I jvuib.inc}
 
 (*------------------------------------------------------------------------------
   This is a cascading programming style.

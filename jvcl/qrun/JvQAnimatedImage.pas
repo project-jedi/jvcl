@@ -37,6 +37,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   
   
   Qt, Types, QGraphics, QControls, QForms,

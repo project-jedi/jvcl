@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -395,6 +395,16 @@ resourcestring
 //=== JvCsvParse.pas =========================================================
 resourcestring
   RsEInvalidHexLiteral = 'HexStrToInt: Invalid hex literal';
+
+//=== JvCursor.pas ===========================================================
+resourcestring
+  RsCurExtension = 'cur';
+  RsCurDescription = 'Cursor files';
+
+  RsECursorLoadFromClipboardFormat = 'LoadFromClipboardFormat not supported';
+  RsECursorLoadFromStream = 'LoadFromStream not supported';
+  RsECursorSaveToClipboardFormat = 'SaveToClipboardFormat not supported';
+  RsECursorSaveToStream = 'SaveToStream not supported';
 
 //=== JvDataProvider.pas =====================================================
 resourcestring
@@ -1869,6 +1879,12 @@ resourcestring
   RsEUnknownInstruction = 'Unknown Instruction %s';
   RsEUnexpectedEndOfQuery = 'Unexpected end of query';
   RsEUnexpectedStatement = 'Unexpected statement %s';
+
+//=== JvXPBar.pas ============================================================
+{$IFDEF USEJVCL}
+resourcestring
+  RsUntitled = 'untitled';
+{$ENDIF USEJVCL}
 
 //=== JvYearGrid.pas =========================================================
 resourcestring
