@@ -498,8 +498,13 @@ begin
     Exit;
   if AppStoragePath = '' then
     Exit;
-  if AppStorage.ValueStored(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime])) then
-    Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]));
+  try
+    if AppStorage.ValueStored(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime])) then
+      Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]));
+  except
+    on e:Exception do
+      Result := 0;
+  end;
 end;
 
 procedure TJvCustomPropertyStore.LoadProperties;
