@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="JvGlobusC6D.bpl"/>
+    <OBJFILES value="..\..\dcu\JvGlobusC6D.obj ..\..\dcu\JvgShadowEditor.obj 
+      ..\..\dcu\JvCompEditorTemplateForm.obj ..\..\dcu\JvgCompDescription.obj 
+      ..\..\dcu\JvgComponentListEditorForm.obj ..\..\dcu\JvgHelpPanelEditor.obj 
+      ..\..\dcu\JvgLabelEditorForm.obj ..\..\dcu\JvgLogicItemEditorForm.obj 
+      ..\..\dcu\JvgLogicsEditorForm.obj ..\..\dcu\JvgMultiResourceEditorForm.obj 
+      ..\..\dcu\JvgMultiResources.obj ..\..\dcu\JvgPropertyCenter.obj 
+      ..\..\dcu\JvgReportEditorForm.obj ..\..\dcu\JvgReportParamEditorForm.obj 
+      ..\..\dcu\JvgReportParamsForm.obj ..\..\dcu\JvgRTFPreviewForm.obj 
+      ..\..\dcu\JvgRegLibDelphi.obj"/>
+    <RESFILES value="JvGlobusC6D.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) ..\..\design\JvCompEditorTemplateForm.dfm 
+      ..\..\design\JvgComponentListEditorForm.dfm 
+      ..\..\design\JvgLabelEditorForm.dfm 
+      ..\..\design\JvgLogicItemEditorForm.dfm ..\..\design\JvgLogicsEditorForm.dfm 
+      ..\..\design\JvgMultiResourceEditorForm.dfm 
+      ..\..\design\JvgReportEditorForm.dfm 
+      ..\..\design\JvgReportParamEditorForm.dfm 
+      ..\..\design\JvgReportParamsForm.dfm ..\..\design\JvgRTFPreviewForm.dfm"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi CJCL60.bpi JvGlobusC6R.bpi vclx.bpi 
+      vclsmp.bpi JvStdCtrlsC6R.bpi JvCoreC6D.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\..\design"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JvGlobusC6D.cpp"/>
+    <INCLUDEPATH value="..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\..\design -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+      -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+      -tWM"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zd"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Globus Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="JvGlobusC6D.res" FORMNAME="" UNITNAME="JvGlobusC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvGlobusC6D.cpp" FORMNAME="" UNITNAME="JvGlobusC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgShadowEditor.pas" FORMNAME="" UNITNAME="JvgShadowEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvCompEditorTemplateForm.pas" FORMNAME="JvgCompEditorTemplate" UNITNAME="JvCompEditorTemplateForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgCompDescription.pas" FORMNAME="" UNITNAME="JvgCompDescription" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgComponentListEditorForm.pas" FORMNAME="JvgCompListEditor" UNITNAME="JvgComponentListEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgHelpPanelEditor.pas" FORMNAME="" UNITNAME="JvgHelpPanelEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgLabelEditorForm.pas" FORMNAME="JvgLabelEditorDlg" UNITNAME="JvgLabelEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgLogicItemEditorForm.pas" FORMNAME="JvgLogicItemEditor" UNITNAME="JvgLogicItemEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgLogicsEditorForm.pas" FORMNAME="JvgLogicsEditor" UNITNAME="JvgLogicsEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgMultiResourceEditorForm.pas" FORMNAME="JvgMultipleResourceEdit" UNITNAME="JvgMultiResourceEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgMultiResources.pas" FORMNAME="" UNITNAME="JvgMultiResources" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgPropertyCenter.pas" FORMNAME="" UNITNAME="JvgPropertyCenter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgReportEditorForm.pas" FORMNAME="JvgReportEditorForm" UNITNAME="JvgReportEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgReportParamEditorForm.pas" FORMNAME="JvgReportParamEditor" UNITNAME="JvgReportParamEditorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgReportParamsForm.pas" FORMNAME="JvgReportParamsForm" UNITNAME="JvgReportParamsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgRTFPreviewForm.pas" FORMNAME="JvgRTFPreview" UNITNAME="JvgRTFPreviewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvgRegLibDelphi.pas" FORMNAME="" UNITNAME="JvgRegLibDelphi" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvGlobusC6R.bpi" FORMNAME="" UNITNAME="JvGlobusC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclsmp.bpi" FORMNAME="" UNITNAME="vclsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvStdCtrlsC6R.bpi" FORMNAME="" UNITNAME="JvStdCtrlsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6D.bpi" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1036
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=2
+Item0=..\..\design;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=2
+Item0=..\..\design;..\..\dcu;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\..\design;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\dcu
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>
