@@ -51,7 +51,8 @@ type
     function GetAnimated: Boolean;
     function GetAuthor: string;
     function GetTitle: string;
-    function GetFramesCount: Cardinal;
+    function GetIconCount: Cardinal;
+    function GetFrameCount: Cardinal;
     function GetCurrentIcon: TIcon;
     procedure SetAnimated(const Value: Boolean);
     procedure CalcDelay;
@@ -79,13 +80,13 @@ type
       DecreaseColors, Vertical: Boolean);
     {$ENDIF VCL}
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
-
     property Author: string read GetAuthor;
     property Title: string read GetTitle;
     property Icon: TIcon read GetCurrentIcon;
-    property FramesCount: Cardinal read GetFramesCount default 0;
-    property Index: Integer read FIndex write SetIndex default -1;
-    property Animated: Boolean read GetAnimated write SetAnimated default False;
+    property FrameCount: Cardinal read GetFrameCount;
+    property IconCount: Cardinal read GetIconCount;
+    property Index: Integer read FIndex write SetIndex;
+    property Animated: Boolean read GetAnimated write SetAnimated;
     property DefaultRate: Longint read GetDefaultRate;
   end;
 
@@ -150,7 +151,7 @@ end;
 
 function TJvAni.GetEmpty: Boolean;
 begin
-  Result := (FramesCount = 0);
+  Result := (FrameCount = 0);
 end;
 
 procedure TJvAni.SetHeight(Value: Integer);
@@ -196,7 +197,7 @@ end;
 procedure TJvAni.LoadFromStream(Stream: TStream);
 begin
   FIconData.LoadFromStream(Stream);
-  if FIconData.IconCount > 0 then
+  if FIconData.FrameCount > 0 then
     Index := 0;
 end;
 
@@ -212,8 +213,8 @@ end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
 begin
-  if (FramesCount > 0) and (Value >= 0) and
-    (Cardinal(Value) < FramesCount) and (FIndex <> Value) then
+  if (FrameCount > 0) and (Value >= 0) and
+    (Cardinal(Value) < FrameCount) and (FIndex <> Value) then
   begin
     FIndex := Value;
     FIconData.Index := Value;
@@ -231,14 +232,19 @@ begin
   Result := FIconData.Title;
 end;
 
-function TJvAni.GetFramesCount: Cardinal;
+function TJvAni.GetIconCount: Cardinal;
 begin
   Result := Cardinal(FIconData.IconCount);
 end;
 
+function TJvAni.GetFrameCount: Cardinal;
+begin
+  Result := Cardinal(FIconData.FrameCount);
+end;
+
 function TJvAni.GetCurrentIcon: TIcon;
 begin
-  Result := FIconData.Icons[Index];
+  Result := FIconData.Frames[Index].Icon;
 end;
 
 function TJvAni.GetAnimated: Boolean;
@@ -260,8 +266,8 @@ end;
 procedure TJvAni.Animate(Sender: TObject);
 begin
   FTimer.Enabled := False;
-  if FramesCount > 0 then
-    Index := (Index + 1) mod Integer(FramesCount);
+  if FrameCount > 0 then
+    Index := (Index + 1) mod Integer(FrameCount);
   CalcDelay;
   FTimer.Enabled := True;
 end;
