@@ -724,7 +724,7 @@ function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 
 procedure UpdateTrackFont(TrackFont,Font:TFont;TrackOptions:TJvTrackFontOptions);
 // Returns the size of the image
-// used for checkboxes and readiobuttons
+// used for checkboxes and radiobuttons.
 // Originally from Mike Lischke
 function GetDefaultCheckBoxSize:TSize;
 

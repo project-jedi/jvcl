@@ -18,7 +18,8 @@ uses
   JvConsts, 
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView, JvDBProgressBar, JvDBRichEdit,
   JvDBSpinEdit, JvDBTreeView, JvDBLookup, JvCsvData, JvDBCombobox, JvDBControls, JvDBRadioPanel,
-  JvDBEditors, JvDBMemDatasetEditor
+  JvDBEditors, JvDBMemDatasetEditor, JvDBLookupComboEdit
+
 
   {$IFDEF JV_MIDAS},JvDBRemoteLogin {$ENDIF};
 
@@ -41,7 +42,8 @@ begin
     TJvDBDatePickerEdit, TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,
-    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel
+    TJvDBGrid, TJvDBComboEdit, TJvDBDateEdit, TJvDBCalcEdit, TJvDBStatusLabel,
+    TJvDBLookupComboEdit
     ]);
 
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);

@@ -31,7 +31,7 @@ begin
 //    TJvDBListDataSet, TJvDatabaseList, TJvLangDrivList, TJvTableList,
 //    TJvStoredProcList, TJvFieldList,  TJvIndexList,
     TJvDBMove, TJvDBProgress, TJvQBEQuery, TJvDBSecurity,
-    TJvBDEMemoryTable, TJvQuery, TJvBDESQLScript  
+    TJvBDEMemoryTable, TJvQuery, TJvBDESQLScript, TJvSQLScript  
     ]);
 
   RegisterPropertyEditor(TypeInfo(TFileName), TJvCustomTableItems, 'TableName',

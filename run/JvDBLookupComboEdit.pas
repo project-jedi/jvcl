@@ -49,7 +49,6 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetReadOnly: Boolean;
     function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
@@ -65,6 +64,7 @@ type
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
   protected
+    function GetReadOnly: Boolean;{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure Change; override;
     function EditCanModify: Boolean; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
