@@ -103,6 +103,7 @@ procedure TJvPasswordForm.OnCancelClick(Sender: TObject);
 begin
   if Assigned(FOnCancel) then
     FOnCancel(Self);
+  FPass.btnCancel.OnClick := nil;
 end;
 
 procedure TJvPasswordForm.Execute;
