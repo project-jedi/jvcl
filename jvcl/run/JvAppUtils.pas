@@ -34,7 +34,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, { Variants, }
   {$ENDIF}
-  JvVCLUtils; {, JvComponent}
+  JvJVCLUtils; {, JvComponent}
 
 function GetDefaultSection(Component: TComponent): string;
 {$IFDEF WIN32}
@@ -134,7 +134,7 @@ implementation
 
 uses
   SysUtils, Messages, Consts,
-  JvTypes, JvStrUtils, JvFileUtil, JvFormPlacement;
+  JvTypes, JvJCLUtils, JvFormPlacement;
 
 function GetDefaultSection(Component: TComponent): string;
 var

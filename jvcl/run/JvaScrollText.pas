@@ -90,7 +90,7 @@ type
 implementation
 
 uses
-  JvStrUtil, JvDsgnIntf;
+  JvJCLUtils, JvDsgnIntf;
 
 {$IFNDEF COMPILER4_UP}
 type

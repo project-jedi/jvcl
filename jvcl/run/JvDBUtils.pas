@@ -36,6 +36,14 @@ uses
   Registry, Classes, SysUtils, DB, IniFiles;
 
 type
+  TCommit = (ctNone, ctStep, ctAll);
+  TJvDBProgressEvent = procedure(UserData: Integer; var Cancel: Boolean; Line: Integer) of object;
+
+  EJvScriptError = class(Exception)
+    ErrPos: Integer;
+    constructor Create2(AMessage: string; AErrPos: Integer);
+  end;
+
   TJvLocateObject = class(TObject)
   private
     FDataSet: TDataSet;
@@ -154,7 +162,7 @@ uses
   Variants,
   {$ENDIF}
   Forms, Controls, Dialogs, DBConsts, Math,
-  JvxRConst, JvVCLUtils, JvAppUtils, JvStrUtils, JvDateUtil;
+  JvConsts, JvJVCLUtils, JvJCLUtils;
 
 { Utility routines }
 
@@ -163,12 +171,18 @@ begin
   DatabaseError(Msg);
 end;
 
+constructor EJvScriptError.Create2(AMessage: string; AErrPos: Integer);
+begin
+  inherited Create(AMessage);
+  ErrPos := AErrPos;
+end;
+
 // (rom) better use Windows dialogs which are localized
 
 function ConfirmDelete: Boolean;
 begin
   Screen.Cursor := crDefault;
-  Result := MessageDlg(ResStr(SDeleteRecordQuestion), mtConfirmation,
+  Result := MessageDlg(SDeleteRecordQuestion, mtConfirmation,
     [mbYes, mbNo], 0) = mrYes;
 end;
 

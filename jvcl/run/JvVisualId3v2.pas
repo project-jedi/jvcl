@@ -462,7 +462,7 @@ type
 implementation
 
 uses
-  JvID3v2Types, JvxRConst;
+  JvID3v2Types, JvConsts;
 
 //=== TJvVisualId3v2 =========================================================
 

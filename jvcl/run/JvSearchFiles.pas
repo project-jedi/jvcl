@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, Windows,
-  JvComponent, JvFunctions;
+  JvComponent, JvJVCLUtils;
 
 const
   { Taken from WinNT.h }

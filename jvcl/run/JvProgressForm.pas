@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  JvCtlConst;
+  JvConsts;
 
 {$IFNDEF BCB3}
 

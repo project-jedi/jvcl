@@ -36,7 +36,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Menus,
-  JvTypes, JvButton, JvDirectories, JvFunctions;
+  JvTypes, JvButton, JvDirectories, JvJVCLUtils;
 
 type
   TJvControlPanelButton = class(TJvCustomButton)

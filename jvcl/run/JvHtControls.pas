@@ -309,7 +309,7 @@ function ItemHtPlain(const Text: string): string;
 implementation
 
 uses
-  JvStrUtil;
+  JvJCLUtils;
 
 function Max(X, Y: Integer): Integer;
 begin

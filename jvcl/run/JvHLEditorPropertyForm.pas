@@ -183,7 +183,7 @@ implementation
 
 uses
   Math,
-  JvCtlConst, JvUtils, JvStrUtil;
+  JvConsts, JvJVCLUtils, JvJCLUtils;
 
 {$R *.DFM}
 

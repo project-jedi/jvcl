@@ -163,7 +163,7 @@ implementation
 
 uses
   Registry, Consts, IniFiles,
-  JvAppUtils, JvxRConst, JvVCLUtils, JvConst;
+  JvConsts, JvJVCLUtils;
 
 {$R *.DFM}
 

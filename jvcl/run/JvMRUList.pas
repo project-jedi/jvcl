@@ -170,7 +170,7 @@ implementation
 
 uses
   Registry,
-  JvFunctions;
+  JvJVCLUtils;
 
 resourcestring
   RC_ErrorMRU_Creating = 'Unable to create MRU';

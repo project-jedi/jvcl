@@ -131,7 +131,7 @@ type
 
 implementation
 uses
-  JvFunctions;
+  JvJVCLUtils;
 
 constructor TJvLabel.Create(AOwner: TComponent);
 begin

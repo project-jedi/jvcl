@@ -179,7 +179,7 @@ uses
   {$IFDEF COMPILER3_UP}
   Consts,
   {$ENDIF}
-  JvStrUtils, JvTypes;
+  JvJCLUtils, JvTypes;
 
 const
   XorVersion = 1;

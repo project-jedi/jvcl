@@ -156,7 +156,7 @@ implementation
 
 uses
   Math,
-  JvVCLUtils;
+  JvJVCLUtils;
 
 const
   { Maximum delay (10 sec) guarantees that a very long and slow

@@ -281,6 +281,9 @@ type
 
   {$ENDIF COMPILER3_UP}
 
+procedure GetDefaultIniData(Control: TControl; var IniFileName,
+  Section: string; UseRegistry: Boolean);
+
 implementation
 
 uses
@@ -288,7 +291,7 @@ uses
   {$IFDEF COMPILER3_UP}
   Consts,
   {$ENDIF COMPILER3_UP}
-  JvAppUtils, JvStrUtils, JvPropsStorage;
+  JvJVCLUtils, JvJCLUtils, JvPropsStorage;
 
 const
   { The following string should not be localized }
@@ -296,6 +299,32 @@ const
   siVisible = 'Visible';
   siVersion = 'FormVersion';
 
+procedure GetDefaultIniData(Control: TControl; var IniFileName,
+  Section: string; UseRegistry: Boolean);
+var
+  I: Integer;
+begin
+  IniFileName := '';
+  with Control do
+    if Owner is TCustomForm then
+      for I := 0 to Owner.ComponentCount - 1 do
+        if Owner.Components[I] is TJvFormPlacement then
+        begin
+          IniFileName := TJvFormPlacement(Owner.Components[I]).IniFileName;
+          Break;
+        end;
+  Section := GetDefaultSection(Control);
+  if IniFileName = '' then
+    {$IFDEF WIN32}
+    if UseRegistry then
+      IniFileName := GetDefaultIniRegKey
+    else
+      IniFileName := GetDefaultIniName;
+    {$ELSE}
+    IniFileName := GetDefaultIniName;
+    {$ENDIF}
+end;
+  
 //=== TJvFormPlacement =======================================================
 
 constructor TJvFormPlacement.Create(AOwner: TComponent);

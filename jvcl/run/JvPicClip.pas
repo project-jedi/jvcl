@@ -92,7 +92,7 @@ implementation
 
 uses
   SysUtils, Consts,
-  JvVCLUtils, JvConst;
+  JvJVCLUtils, JvConsts;
 
 constructor TJvPicClip.Create(AOwner: TComponent);
 begin

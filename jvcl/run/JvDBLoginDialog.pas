@@ -102,13 +102,9 @@ function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
 implementation
 
 uses
-  {$IFDEF WIN32}
   Windows, Registry, BDE,
-  {$ELSE}
-  WinTypes, WinProcs, DbiTypes,
-  {$ENDIF}
   IniFiles, Graphics,
-  JvAppUtils, JvxRConst, JvConst;
+  JvJVCLUtils, JvConsts;
 
 const
   keyLastLoginUserName = 'LastUser';

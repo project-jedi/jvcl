@@ -38,7 +38,7 @@ uses
   Variants,
   {$ENDIF}
   Controls, SysUtils, Graphics,
-  JvDateUtil;
+  JvJCLUtils;
 
 { Calendar dialog }
 
@@ -78,7 +78,7 @@ uses
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF}
-  JvxCtrls, JvxRConst, JvToolEdit, JvVCLUtils, JvStrUtils;
+  JvxCtrls, JvConsts, JvToolEdit, JvJVCLUtils;
 
 {$R ..\resources\JvPickDate.res}
 

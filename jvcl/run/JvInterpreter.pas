@@ -1035,7 +1035,7 @@ uses
   OleAuto,
 {$ENDIF COMPILER3_UP}
 {$ENDIF JvInterpreter_OLEAUTO}
-  JvInterpreterConst, JvUtils, JvStrUtil;
+  JvInterpreterConst, JvJVCLUtils, JvJCLUtils;
 
 {$R ..\resources\JvInterpreter.res} { error messages }
 

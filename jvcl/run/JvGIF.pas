@@ -290,10 +290,7 @@ implementation
 
 uses
   Consts, Math,
-  {$IFNDEF WIN32}
-  JvStr16,
-  {$ENDIF}
-  JvVCLUtils, JvAniFile, JvxRConst, JvTypes;
+  JvJVCLUtils, JvAniFile, JvConsts, JvTypes;
 
 {$R-}
 

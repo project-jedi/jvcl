@@ -35,9 +35,7 @@ uses
   RTLConsts,
   {$ENDIF}
   SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
-  {$IFDEF COMPILER4_UP}
   ImgList, ActnList,
-  {$ENDIF}
   ExtCtrls, Grids, IniFiles,
   JvTypes, JvxCtrls, JvFormPlacement, JvComponent;
 
@@ -542,7 +540,7 @@ implementation
 
 uses
   Consts, Math,
-  JvVCLUtils, JvAppUtils, JvStrUtils, JvConst, JvSpeedbarSetupForm;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvSpeedbarSetupForm;
 
 {$IFDEF COMPILER3_UP}
 resourcestring

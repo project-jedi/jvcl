@@ -45,7 +45,7 @@ uses
   {$IFNDEF COMPILER6_UP}
   FileCtrl,
   {$ENDIF}
-  JvUtils, JvStrUtil, JvInterpreter_Windows;
+  JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }
 
@@ -109,7 +109,7 @@ end;
 
 procedure JvInterpreter_Execute(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Execute(Args.Values[0], Args.Values[1]);
+  Value := Execute(Args.Values[0],Args.Values[1]);
 end;
 
 { function IniReadSection(const IniFileName: TFileName; const Section: string; Ss: TStrings): boolean; }
@@ -217,7 +217,7 @@ end;
 
 procedure JvInterpreter_DefineCursor(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := DefineCursor(PChar(string(Args.Values[0])));
+  Value := DefineCursor2(PChar(string(Args.Values[0])));
 end;
 
 { function FindFormByClassName(FormClassName: string): TForm; }

@@ -42,7 +42,7 @@ uses
   {$IFNDEF COMPILER3_UP}
   DBTables,
   {$ENDIF}
-  JvToolEdit, JvFormPlacement, JvDateUtil, DBCtrls, JvxCtrls, JvBaseEdits;
+  JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls, JvBaseEdits;
 
 { TJvDBGrid }
 
@@ -864,11 +864,11 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math,
-  JvStrUtils, JvAppUtils, JvVCLUtils, JvDBUtils,
+  JvJVCLUtils, JvDBUtils,
   {$IFNDEF COMPILER3_UP}
   JvBdeUtils,
   {$ENDIF}
-  JvCalc, JvxRConst;
+  JvCalc, JvConsts;
 
 {$R ..\resources\JvDBCtrl.res}
 

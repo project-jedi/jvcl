@@ -36,7 +36,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ShellAPI, ShlObj, ActiveX,
-  JvBaseDlg, JvFunctions;
+  JvBaseDlg, JvJVCLUtils;
 
 const
   { Interfaces from ShObjIdl.h }

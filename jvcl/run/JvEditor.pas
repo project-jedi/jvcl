@@ -204,7 +204,7 @@ unit JvEditor;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  ExtCtrls, StdCtrls, Clipbrd, JvStrUtils;
+  ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils;
 
 const
   Max_X = 1024; {max symbols per row}
@@ -1083,7 +1083,7 @@ implementation
 
 uses
   Consts, Math,
-  JvCtlConst, JvStrUtil, JvTypes;
+  JvConsts, JvTypes;
 
 type
   TJvCaretUndo = class(TUndo)

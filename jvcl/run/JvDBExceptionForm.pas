@@ -35,9 +35,7 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER3_UP}
   DBTables,
-  {$ENDIF}
   JvxCtrls, JvLabel, JvComponent;
 
 type
@@ -96,13 +94,8 @@ implementation
 
 uses
   Consts,
-  {$IFDEF WIN32}
   Windows, BDE,
-  {$ELSE}
-  WinProcs, WinTypes, DbiErrs,
-  JvStr16,
-  {$ENDIF}
-  JvxRConst;
+  JvConsts;
 
 {$R *.DFM}
 

@@ -147,7 +147,7 @@ type
 implementation
 
 uses
-  JvVCLUtils;
+  JvJVCLUtils;
 
 {$R ..\resources\JvSwitch.res}
 

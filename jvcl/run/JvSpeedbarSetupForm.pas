@@ -37,7 +37,7 @@ uses
   {$ENDIF WIN32}
   SysUtils, Messages, Classes, Graphics, Controls, Forms,
   StdCtrls, Grids, ExtCtrls,
-  JvxCtrls, JvSpeedBar, JvConst;
+  JvxCtrls, JvSpeedBar, JvConsts;
 
 type
   TJvSpeedbarSetupWindow = class(TForm)
@@ -95,7 +95,7 @@ implementation
 
 uses
   Consts, Math,
-  JvVCLUtils, JvxRConst;
+  JvJVCLUtils;
 
 {$R *.DFM}
 

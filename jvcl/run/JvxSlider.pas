@@ -287,7 +287,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvVCLUtils, JvConst, JvTypes;
+  JvJVCLUtils, JvConsts, JvTypes;
 
 {$R ..\resources\JvxSlider.res}
 

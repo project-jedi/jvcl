@@ -123,7 +123,7 @@ type
 implementation
 
 uses
-  JvDBUtil;
+  JvDBUtils, JvJCLUtils;
 
 type
   TFieldRef = class(TObject)

@@ -146,7 +146,7 @@ implementation
 
 uses
   Consts, Forms, SysUtils, Math,
-  JvVCLUtils;
+  JvJVCLUtils;
 
 const
   MinInterval = 100; { 0.1 sec }

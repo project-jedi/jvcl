@@ -98,7 +98,7 @@ procedure ParseString(const S: string; Ss: TStrings);
 implementation
 
 uses
-  JvCtlConst;
+  JvConsts;
 
 {$IFDEF Delphi}
 type

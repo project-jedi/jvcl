@@ -47,11 +47,7 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 implementation
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   Graphics;
 
 function BoxItems(List: TWinControl): TStrings;

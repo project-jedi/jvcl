@@ -30,11 +30,8 @@ unit JvConverter;
 interface
 
 uses
-  {$IFNDEF WIN32}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes,
-  JvDateUtil {, JvComponent};
+  JvJCLUtils {, JvComponent};
 
 type
 

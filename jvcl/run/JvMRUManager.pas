@@ -175,7 +175,7 @@ implementation
 
 uses
   Controls, Math,
-  JvAppUtils;
+  JvJVCLUtils;
 
 const
   siRecentItem = 'Item_%d';
