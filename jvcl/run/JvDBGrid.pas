@@ -1358,7 +1358,7 @@ begin
       //-----------------------------------------------------------------------
       // FBC: do not move column if RowSelect = true
       //-----------------------------------------------------------------------
-      if dgRowSelect in Options then
+      if (dgRowSelect in Options) and (Columns.State <> csCustomized) then
         inherited MouseDown(Button, Shift, 1, Y)
       else
         inherited MouseDown(Button, Shift, X, Y)
