@@ -97,6 +97,8 @@ type
     procedure InternalInitFieldDefs; override;
     function GetCanModify: Boolean; override;
 
+    procedure InternalRefresh; override;
+
     {$IFNDEF FPC}
     procedure SetActive(Value: Boolean); override;
     {$ENDIF}
@@ -285,9 +287,12 @@ end;
 function TJvUIBCustomDataSet.GetRecord(Buffer: PChar;
   GetMode: TGetMode; DoCheck: Boolean): TGetResult;
 begin
+  if (FCurrentRecord <> -1) and FStatement.CachedFetch and
+   (FCurrentRecord < FStatement.Fields.RecordCount) then
+      FStatement.Fields.CurrentRecord := FCurrentRecord;
+
   Result := grOK;
-  if (FCurrentRecord <> -1) and FStatement.CachedFetch then
-    FStatement.Fields.CurrentRecord := FCurrentRecord;
+
   case GetMode of
     gmNext:
       begin
@@ -327,7 +332,8 @@ begin
       end;
     gmCurrent:
       begin
-        // nothing to do ...
+        if (FCurrentRecord >= FStatement.Fields.RecordCount) then
+          result := grError 
       end;
   end;
 
@@ -839,4 +845,19 @@ begin
   Result := FStatement.RowsAffected;
 end;
 
-end.
+procedure TJvUIBCustomDataSet.InternalRefresh;
+var RecCount: Integer;
+begin
+  if FStatement.Fields <> nil then
+    RecCount := FStatement.Fields.RecordCount else
+    RecCount := 0;
+  FStatement.Open;
+  While (RecCount > 1) and not FStatement.Eof do
+  begin
+    FStatement.Next;
+    dec(RecCount);
+  end;
+
+end;
+
+end.       
