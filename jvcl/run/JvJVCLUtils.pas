@@ -682,6 +682,10 @@ function IsPositiveResult(Value: TModalResult): Boolean;
 function IsNegativeResult(Value: TModalResult): Boolean;
 function IsAbortResult(const Value: TModalResult): Boolean;
 function StripAllFromResult(const Value: TModalResult): TModalResult;
+// returns either BrightColor or DarkColor depending on the luminance of AColor
+// This function gives the same result (AFAIK) as the function used in Windows to
+// calculate the desktop icon text color based on the desktop background color
+function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
 
 implementation
 
@@ -6947,6 +6951,16 @@ end;
 procedure TJvRect.SetWidth(Value: Integer);
 begin
   FBottomRight.X := FTopLeft.X + Value;
+end;
+
+function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
+var ACol:Longint;
+begin
+  ACol := ColorToRGB(AColor) and $00FFFFFF;
+  if ((2.99 * GetRValue(ACol) + 5.87 * GetGValue(ACol) + 1.14 * GetBValue(ACol)) > $400) then
+    Result := DarkColor
+  else
+    Result := BrightColor;
 end;
 
 initialization
