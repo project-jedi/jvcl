@@ -112,7 +112,7 @@ object EditorMainForm: TEditorMainForm
     Left = 0
     Top = 88
     Width = 546
-    Height = 121
+    Height = 129
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -133,7 +133,7 @@ object EditorMainForm: TEditorMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 209
+    Top = 217
     Width = 546
     Height = 19
     Panels = <
@@ -306,7 +306,7 @@ object EditorMainForm: TEditorMainForm
       Width = 175
       Height = 22
       DroppedDownWidth = 175
-      FontName = '@Arial Unicode MS'
+      FontName = 'Arial'
       Device = fdBoth
       ItemIndex = 0
       Options = [foWysiWyg]
@@ -487,13 +487,14 @@ object EditorMainForm: TEditorMainForm
   end
   object MainMenu: TJvMainMenu
     Images = ToolbarImages
+    Style = msXP
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msXP
+
     OnGetImageIndex = MainMenuGetImageIndex
     Left = 8
     Top = 128
@@ -743,27 +744,29 @@ object EditorMainForm: TEditorMainForm
   end
   object ColorMenu: TJvPopupMenu
     OnPopup = ColorMenuPopup
+    Style = msOwnerDraw
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 16
     ImageSize.Width = 16
-    Style = msOwnerDraw
-    OnDrawItem = ColorMenuDrawItem
-    OnMeasureItem = ColorMenuMeasureItem
+
+
+
     Left = 92
     Top = 128
   end
   object EditPopupMenu: TJvPopupMenu
     Images = ToolbarImages
+    Style = msXP
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msXP
+
     OnGetImageIndex = EditPopupMenuGetImageIndex
     Left = 36
     Top = 128
@@ -791,15 +794,16 @@ object EditorMainForm: TEditorMainForm
   end
   object BackgroundMenu: TJvPopupMenu
     OnPopup = BackgroundMenuPopup
+    Style = msOwnerDraw
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 16
     ImageSize.Width = 16
-    Style = msOwnerDraw
-    OnDrawItem = ColorMenuDrawItem
-    OnMeasureItem = ColorMenuMeasureItem
+
+
+
     Left = 64
     Top = 128
   end

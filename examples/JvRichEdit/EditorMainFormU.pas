@@ -33,7 +33,7 @@ uses
   ImgList, Controls, Menus, JvMenus, ComCtrls, ExtCtrls, Classes,
   JvComponent, JvAppEvent, JvMaskEdit, JvSpin, JvCombobox, JvColorCombo,
   JvSpeedBar, JvRichEdit, JvClipboardMonitor, JvExMask, JvExStdCtrls,
-  JvExExtCtrls;
+  JvExExtCtrls, XPColorMenuItemPainter;
 
 type
   TEditorMainForm = class(TForm)
@@ -169,8 +169,6 @@ type
     procedure MainMenuGetImageIndex(Sender: TMenu; Item: TMenuItem;
       State: TMenuOwnerDrawState; var ImageIndex: Integer);
     procedure ColorMenuPopup(Sender: TObject);
-    procedure ColorMenuDrawItem(Sender: TMenu; Item: TMenuItem;
-      Rect: TRect; State: TMenuOwnerDrawState);
     procedure SubscriptClick(Sender: TObject);
     procedure EditPasteSpecialClick(Sender: TObject);
     procedure EditObjPropsItemClick(Sender: TObject);
@@ -186,13 +184,8 @@ type
     procedure EditorTextNotFound(Sender: TObject; const FindText: string);
     procedure EditSelectAll(Sender: TObject);
     procedure FileSaveSelected(Sender: TObject);
-    procedure ColorMenuMeasureItem(Sender: TMenu; Item: TMenuItem;
-      var Width, Height: Integer);
     procedure FormatParaTabs(Sender: TObject);
   private
-    FXpColorItemPainter: TJvXPMenuItemPainter;
-    FXpBackColorItemPainter: TJvXPMenuItemPainter;
-
     FFileName: string;
     FUpdating: Boolean;
     FDragOfs: Integer;
@@ -358,39 +351,6 @@ begin
     Checked := True;
     CurrText.Color := Tag;
   end;
-end;
-
-procedure TEditorMainForm.ColorMenuDrawItem(Sender: TMenu; Item: TMenuItem;
-  Rect: TRect; State: TMenuOwnerDrawState);
-begin
-  // make xp painter paint the item
-  if Sender = ColorMenu then
-    FXpColorItemPainter.Paint(Item, Rect, State)
-  else
-    FXpBackColorItemPainter.Paint(Item, Rect, State);
-
-  // add our colored square
-  Rect.Left := Rect.Left + 5;
-  Rect.Right := Rect.Left + 12;
-  Rect.Top := Rect.Top + 6;
-  Rect.Bottom := Rect.Top + 13;
-  with TJvPopupMenu(Sender).Canvas do
-  begin
-    Brush.Color := clMenuText;
-    FrameRect(Rect);
-    InflateRect(Rect, -1, -1);
-    Brush.Color := Item.Tag;
-    FillRect(Rect);
-  end;
-end;
-
-procedure TEditorMainForm.ColorMenuMeasureItem(Sender: TMenu;
-  Item: TMenuItem; var Width, Height: Integer);
-begin
-  if Sender = ColorMenu then
-    FXpColorItemPainter.Measure(Item, Width, Height)
-  else
-    FXpBackColorItemPainter.Measure(Item, Width, Height);
 end;
 
 procedure TEditorMainForm.ColorMenuPopup(Sender: TObject);
@@ -680,8 +640,12 @@ var
 const
   SPictureFilter = '%s|%s|%s|%s';
 begin
-  FXpColorItemPainter := TJvXPMenuItemPainter.Create(ColorMenu);
-  FXpBackColorItemPainter := TJvXPMenuItemPainter.Create(BackgroundMenu);
+  // The TComponent destructor should handle the destruction of the
+  // painters because we indicate the form (self) as the owner of
+  // the objects. But we are extra careful and destroy them ourselves
+  // in FormDestroy anyway.
+  ColorMenu.ItemPainter := TJvXPColorMenuItemPainter.Create(Self);
+  BackgroundMenu.ItemPainter := TJvXPColorMenuItemPainter.Create(Self);
 
   Editor.RegisterMSTextConverters;
   OpenDialog.InitialDir := ExtractFilePath(ParamStr(0));
@@ -739,8 +703,10 @@ end;
 
 procedure TEditorMainForm.FormDestroy(Sender: TObject);
 begin
-  FXpColorItemPainter.Free;
-  FXpBackColorItemPainter.Free;
+  ColorMenu.ItemPainter.Free;
+  ColorMenu.ItemPainter := nil;
+  BackgroundMenu.ItemPainter.Free;
+  BackgroundMenu.ItemPainter := nil;
   { remove ourselves from the viewer chain }
   FClipboardMonitor.Free;
 end;
