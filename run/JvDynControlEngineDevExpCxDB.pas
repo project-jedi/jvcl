@@ -1,0 +1,2049 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Initial Developer of the Original Code is Jens Fudickar [jens dott fudickar att oratool dott de]
+All Rights Reserved.
+
+Contributor(s):
+Jens Fudickar [jens dott fudickar att oratool dott de]
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+unit JvDynControlEngineDevExpCxDB;
+
+{$I jvcl.inc}
+
+interface
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+
+uses
+  Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
+  Forms, DBCtrls, DB, DBGrids, StdCtrls,
+  cxDBEdit, cxDBNavigator,
+  JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
+  JvDynControlEngineDevExpCx,
+  JvDynControlEngineDBIntf;
+
+type
+  TJvDynControlCxDBEdit = class(TcxDBTextEdit, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(const Value: string);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBButtonEdit = class(TcxDBButtonEdit, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlReadOnly, IJvDynControlEdit,
+    IJvDynControlButtonEdit, IJvDynControlButton, IJvDynControlDatabase)
+  private
+    FIntOnButtonClick: TNotifyEvent;
+  protected
+    procedure IntOnButtonClick(Sender: TObject; AButtonIndex: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    //IJvDynControlEdit
+    procedure ControlSetPasswordChar(Value: Char);
+    procedure ControlSetEditMask(const Value: string);
+
+    //IJvDynControlButtonEdit
+    procedure ControlSetOnButtonClick(Value: TNotifyEvent);
+    procedure ControlSetButtonCaption(const Value: string);
+
+    //IJvDynControlButton
+    procedure ControlSetGlyph(Value: TBitmap);
+    procedure ControlSetNumGlyphs(Value: Integer);
+    procedure ControlSetLayout(Value: TButtonLayout);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBFileNameEdit = class(TcxDBButtonEdit, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlFileName,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
+  private
+    FInitialDir: string;
+    FFilterIndex: Integer;
+    FFilter: string;
+    FDialogOptions: TOpenOptions;
+    FDialogKind: TJvDynControlFileNameDialogKind;
+    FDialogTitle: string;
+    FDefaultExt: string;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure DefaultOnButtonClick(Sender: TObject);
+
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    // IJvDynControlFileName
+    procedure ControlSetInitialDir(const Value: string);
+    procedure ControlSetDefaultExt(const Value: string);
+    procedure ControlSetDialogTitle(const Value: string);
+    procedure ControlSetDialogOptions(Value: TOpenOptions);
+    procedure ControlSetFilter(const Value: string);
+    procedure ControlSetFilterIndex(Value: Integer);
+    procedure ControlSetDialogKind(Value: TJvDynControlFileNameDialogKind);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBDirectoryEdit = class(TcxDBButtonEdit, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDirectory,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
+  private
+    FInitialDir: string;
+    {$IFDEF VCL}
+    FDialogOptions: TSelectDirOpts;
+    {$ENDIF VCL}
+    FDialogTitle: string;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure DefaultOnButtonClick(Sender: TObject);
+
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    // IJvDynControlDirectory
+    procedure ControlSetInitialDir(const Value: string);
+    procedure ControlSetDialogTitle(const Value: string);
+    {$IFDEF VCL}
+    procedure ControlSetDialogOptions(Value: TSelectDirOpts);
+    {$ENDIF VCL}
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBCheckBox = class(TcxDBCheckBox, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBMemo = class(TcxDBMemo, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
+    procedure ControlSetScrollBars(Value: TScrollStyle);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBRadioGroup = class(TcxDBRadioGroup, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+    IJvDynControlRadioGroup, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetColumns(Value: Integer);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBListBox = class(TcxDBListBox, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBComboBox = class(TcxDBComboBox, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox,
+    IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetNewEntriesAllowed(Value: Boolean);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBImage = class(TcxDBImage, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlImage, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    procedure ControlSetAutoSize(Value: Boolean);
+    procedure ControlSetIncrementalDisplay(Value: Boolean);
+    procedure ControlSetCenter(Value: Boolean);
+    {$IFDEF VCL}
+    procedure ControlSetProportional(Value: Boolean);
+    {$ENDIF VCL}
+    procedure ControlSetStretch(Value: Boolean);
+    procedure ControlSetTransparent(Value: Boolean);
+    procedure ControlSetPicture(Value: TPicture);
+    procedure ControlSetGraphic(Value: TGraphic);
+    function ControlGetPicture: TPicture;
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBText = class(TcxDBTextEdit, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+  TJvDynControlCxDBNavigator = class(TcxDBNavigator, IUnknown,
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlDatabase)
+  public
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetCaption(const Value: string);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+
+    //IJvDynControlDatabase
+    procedure ControlSetDataSource(Value: TDataSource);
+    function ControlGetDataSource: TDataSource;
+    procedure ControlSetDataField(const Value: string);
+    function ControlGetDataField: string;
+
+    //IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+  end;
+
+function DynControlEngineCxDB: TJvDynControlEngineDB;
+procedure SetDefaultDynControlEngineDBDevExp;
+
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+
+implementation
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_VARIANTS}
+  Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils,
+  JvDynControlEngineTools, JvConsts, JvJCLUtils,
+  cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
+  cxEdit, cxDBLookupComboBox,
+  cxGridTableView,cxGridCustomView,
+  cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions;
+
+var
+  IntDynControlEngineCxDB: TJvDynControlEngineDB = nil;
+
+//=== { TJvDynControlCxDBEdit } =============================================
+
+procedure TJvDynControlCxDBEdit.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;                                                                    
+
+procedure TJvDynControlCxDBEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetPasswordChar(Value: Char);
+begin
+  if Value <> #0 then
+    Properties.EchoMode := eemPassword
+  else
+    Properties.EchoMode := eemNormal;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetEditMask(const Value: string);
+begin
+  //EditMask := Value;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+//=== { TJvDynControlCxDBButtonEdit } =======================================
+
+constructor TJvDynControlCxDBButtonEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TJvDynControlCxDBButtonEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.IntOnButtonClick(Sender: TObject;
+  AButtonIndex: Integer);
+begin
+  if Assigned(FIntOnButtonClick) then
+    FIntOnButtonClick(Sender);
+end;
+
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetDefaultProperties;
+begin
+  Properties.OnButtonClick := IntOnButtonClick;
+  Properties.MaskKind := emkStandard;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBButtonEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetPasswordChar(Value: Char);
+begin
+  if Value <> #0 then
+    Properties.EchoMode := eemPassword
+  else
+    Properties.EchoMode := eemNormal;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetEditMask(const Value: string);
+begin
+  //FEditControl.EditMask := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
+begin
+  FIntOnButtonClick:= Value;;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetButtonCaption(const Value: string);
+begin
+  Properties.Buttons[0].Caption := Value;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetGlyph(Value: TBitmap);
+begin
+  Properties.Buttons[0].Glyph.Assign(Value);
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetNumGlyphs(Value: Integer);
+begin
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetLayout(Value: TButtonLayout);
+begin
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBButtonEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBButtonEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBButtonEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBFileNameEdit } =====================================
+
+constructor TJvDynControlCxDBFileNameEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TJvDynControlCxDBFileNameEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.DefaultOnButtonClick(Sender: TObject);
+begin
+  case FDialogKind of
+    jdkOpen:
+      with TOpenDialog.Create(Self) do
+        try
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
+          FilterIndex := FFilterIndex;
+          InitialDir := FInitialDir;
+          DefaultExt := FDefaultExt;
+          FileName := ControlGetValue;
+          if Execute then
+            ControlSetValue(FileName);
+        finally
+          Free;
+        end;
+    jdkOpenPicture:
+      with TOpenPictureDialog.Create(Self) do
+        try
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
+          FilterIndex := FFilterIndex;
+          InitialDir := FInitialDir;
+          DefaultExt := FDefaultExt;
+          FileName := ControlGetValue;
+          if Execute then
+            ControlSetValue(FileName);
+        finally
+          Free;
+        end;
+    jdkSave:
+      with TSaveDialog.Create(Self) do
+        try
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
+          FilterIndex := FFilterIndex;
+          InitialDir := FInitialDir;
+          DefaultExt := FDefaultExt;
+          FileName := ControlGetValue;
+          if Execute then
+            ControlSetValue(FileName);
+        finally
+          Free;
+        end;
+    jdkSavePicture:
+      with TSavePictureDialog.Create(Self) do
+        try
+          Options := FDialogOptions;
+          Title := FDialogTitle;
+          Filter := FFilter;
+          FilterIndex := FFilterIndex;
+          InitialDir := FInitialDir;
+          DefaultExt := FDefaultExt;
+          FileName := ControlGetValue;
+          if Execute then
+            ControlSetValue(FileName);
+        finally
+          Free;
+        end;
+  end;
+  if CanFocus then
+    SetFocus;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDefaultProperties;
+begin
+  Caption := ' ';
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBFileNameEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+// IJvDynControlFileName
+procedure TJvDynControlCxDBFileNameEdit.ControlSetInitialDir(const Value: string);
+begin
+  FInitialDir := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDefaultExt(const Value: string);
+begin
+  FDefaultExt := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDialogTitle(const Value: string);
+begin
+  FDialogTitle := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDialogOptions(Value: TOpenOptions);
+begin
+  FDialogOptions := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetFilter(const Value: string);
+begin
+  FFilter := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetFilterIndex(Value: Integer);
+begin
+  FFilterIndex := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDialogKind(Value: TJvDynControlFileNameDialogKind);
+begin
+  FDialogKind := Value;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBFileNameEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBFileNameEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBFileNameEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+
+//=== { TJvDynControlCxDBDirectoryEdit } ====================================
+
+constructor TJvDynControlCxDBDirectoryEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TJvDynControlCxDBDirectoryEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.DefaultOnButtonClick(Sender: TObject);
+var
+  {$IFDEF VCL}
+  Opt: TSelectDirOpts;
+  Dir: string;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Dir: WideString;
+  {$ENDIF VisualCLX}
+begin
+  Dir := ControlGetValue;
+  if Dir = '' then
+    if FInitialDir <> '' then
+      Dir := FInitialDir
+    else
+      Dir := PathDelim;
+  if not DirectoryExists(Dir) then
+    Dir := PathDelim;
+  {$IFDEF VCL}
+  if SelectDirectory(Dir, Opt, HelpContext) then
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  {$IFDEF MSWINDOWS}
+  if SelectDirectory('', '', Dir) then
+  {$ENDIF MSWINDOWS}
+  {$IFDEF UNIX}
+  if SelectDirectory('', '/', Dir, False) then
+  {$ENDIF UNIX}
+  {$ENDIF VisualCLX}
+    ControlSetValue(Dir);
+  if CanFocus then
+    SetFocus;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetDefaultProperties;
+begin
+  Self.Caption := ' ';
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBDirectoryEdit.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetInitialDir(const Value: string);
+begin
+  FInitialDir := Value;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetDialogTitle(const Value: string);
+begin
+  FDialogTitle := Value;
+end;
+
+{$IFDEF VCL}
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetDialogOptions(Value: TSelectDirOpts);
+begin
+  FDialogOptions := Value;
+end;
+{$ENDIF VCL}
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBDirectoryEdit.ControlGetDataSource: TDataSource;
+begin
+  Result := Databinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBDirectoryEdit.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBDirectoryEdit.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBCheckBox } =========================================
+
+procedure TJvDynControlCxDBCheckBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetValue(Value: Variant);
+begin
+  Checked := JvDynControlVariantToBoolean(Value);
+end;
+
+function TJvDynControlCxDBCheckBox.ControlGetValue: Variant;
+begin
+  Result := Checked;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBCheckBox.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBCheckBox.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBCheckBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBMemo } =============================================
+
+procedure TJvDynControlCxDBMemo.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBMemo.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetSorted(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetItems(Value: TStrings);
+begin
+  Lines.Assign(Value);
+end;
+
+function TJvDynControlCxDBMemo.ControlGetItems: TStrings;
+begin
+  Result := Lines;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetWantTabs(Value: Boolean);
+begin
+  Properties.WantTabs := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetWantReturns(Value: Boolean);
+begin
+  Properties.WantReturns := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetWordWrap(Value: Boolean);
+begin
+  Properties.WordWrap := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetScrollBars(Value: TScrollStyle);
+begin
+  ScrollBars := Value;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBMemo.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBMemo.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBRadioGroup } =======================================
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetValue(Value: Variant);
+var
+  I:    integer;
+begin
+  if VarIsInt(Value) then
+    ItemIndex := Value
+  else
+  begin
+    ItemIndex := -1;
+    for I := 0 to Properties.Items.Count - 1 do
+      if TcxRadioGroupItem(Properties.Items[I]).Caption = Value then
+      begin
+        ItemIndex := I;
+        break;
+      end;
+  end;
+end;
+
+function TJvDynControlCxDBRadioGroup.ControlGetValue: Variant;
+begin
+  Result := ItemIndex;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetSorted(Value: Boolean);
+begin
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetItems(Value: TStrings);
+var
+  I:    integer;
+  Item: TcxRadioGroupItem;
+begin
+  Properties.Items.Clear;
+  for I := 0 to Value.Count - 1 do
+  begin
+    Item := TcxRadioGroupItem(Properties.Items.Add);
+    Item.Caption := Value[I];
+  end;
+end;
+
+function TJvDynControlCxDBRadioGroup.ControlGetItems: TStrings;
+begin
+  Result := Nil;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetColumns(Value: Integer);
+begin
+  Properties.Columns := Value;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBRadioGroup.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBRadioGroup.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBRadioGroup.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBListBox } ==========================================
+
+procedure TJvDynControlCxDBListBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+//  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetValue(Value: Variant);
+begin
+  if VarIsInt(Value) then
+    ItemIndex := Value
+  else
+    ItemIndex := Items.IndexOf(Value);
+end;
+
+function TJvDynControlCxDBListBox.ControlGetValue: Variant;
+begin
+  Result := ItemIndex;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetSorted(Value: Boolean);
+begin
+  Sorted := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetItems(Value: TStrings);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlCxDBListBox.ControlGetItems: TStrings;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBListBox.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBListBox.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBListBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBComboBox } =========================================
+
+procedure TJvDynControlCxDBComboBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlCxDBComboBox.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetSorted(Value: Boolean);
+begin
+  Properties.Sorted := Value;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetItems(Value: TStrings);
+begin
+  Properties.Items.Assign(Value);
+end;
+
+function TJvDynControlCxDBComboBox.ControlGetItems: TStrings;
+begin
+  Result := Properties.Items;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
+begin
+  if Value then
+    Properties.DropDownListStyle := lsEditList
+  else
+    Properties.DropDownListStyle := lsEditFixedList;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBComboBox.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBComboBox.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBComboBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBImage } ============================================
+
+procedure TJvDynControlCxDBImage.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetCaption(const Value: string);
+begin
+  Caption := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetTabOrder(Value: Integer);
+begin
+//  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+//  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetOnExit(Value: TNotifyEvent);
+begin
+//  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetAutoSize(Value: Boolean);
+begin
+  AutoSize := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetIncrementalDisplay(Value: Boolean);
+begin
+//  IncrementalDisplay := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetCenter(Value: Boolean);
+begin
+  Properties.Center := Value;
+end;
+
+{$IFDEF VCL}
+procedure TJvDynControlCxDBImage.ControlSetProportional(Value: Boolean);
+begin
+  {$IFDEF COMPILER6_UP}
+//  Proportional := Value;
+  {$ENDIF COMPILER6_UP}
+end;
+{$ENDIF VCL}
+
+procedure TJvDynControlCxDBImage.ControlSetStretch(Value: Boolean);
+begin
+  Properties.Stretch := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetTransparent(Value: Boolean);
+begin
+//  Transparent := Value;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetPicture(Value: TPicture);
+begin
+  Picture.Assign(Value);
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetGraphic(Value: TGraphic);
+begin
+  Picture.Assign(Value);
+end;
+
+function TJvDynControlCxDBImage.ControlGetPicture: TPicture;
+begin
+  Result := Picture;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBImage.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBImage.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBImage.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlCxDBText } =============================================
+
+procedure TJvDynControlCxDBText.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBText.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBText.ControlSetTabOrder(Value: Integer);
+begin
+end;
+
+procedure TJvDynControlCxDBText.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBText.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBText.ControlSetOnExit(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBText.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+    
+procedure TJvDynControlCxDBText.ControlSetDataSource(Value: TDataSource);
+begin
+  Databinding.DataSource := Value;
+end;
+
+function TJvDynControlCxDBText.ControlGetDataSource: TDataSource;
+begin
+  Result := DataBinding.DataSource;
+end;
+
+procedure TJvDynControlCxDBText.ControlSetDataField(const Value: string);
+begin
+  Databinding.DataField := Value;
+end;
+
+function TJvDynControlCxDBText.ControlGetDataField: string;
+begin
+  Result := Databinding.DataField;
+end;
+
+procedure TJvDynControlCxDBText.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+
+
+//=== { TJvDynControlCxDBNavigator } ========================================
+
+procedure TJvDynControlCxDBNavigator.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetCaption(const Value: string);
+begin
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetOnClick(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetDataSource(Value: TDataSource);
+begin
+  DataSource := Value;
+end;
+
+function TJvDynControlCxDBNavigator.ControlGetDataSource: TDataSource;
+begin
+  Result := DataSource;
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetDataField(const Value: string);
+begin
+end;
+
+function TJvDynControlCxDBNavigator.ControlGetDataField: string;
+begin
+  Result := '';
+end;
+
+procedure TJvDynControlCxDBNavigator.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  LookAndFeel.Assign(Value.LookAndFeel);
+  //Style.StyleController := Value.StyleController;
+end;
+
+
+//=== { TJvDynControlEngineDevExpCxDB } ===========================================
+
+function DynControlEngineCxDB: TJvDynControlEngineDB;
+begin
+  Result := IntDynControlEngineCxDB;
+end;
+
+procedure SetDefaultDynControlEngineDBDevExp;
+begin
+  SetDefaultDynControlEngineDB (DynControlEngineCxDB);
+end;
+
+type
+  TJvDynControlEngineDevExpCxDB = class(TJvDynControlEngineDB)
+  private
+    FCxProperties: TCxDynControlWrapper;
+  protected
+    procedure SetcxProperties(Value: TCxDynControlWrapper);
+    procedure RegisterControls; override;
+    procedure TransferGridItemToControl(
+                                        aGridItem : TcxCustomGridTableItem;
+                                        aDataSource : TDatasource;
+                                        aControl : TWinControl;
+                                        aOptions: TJvCreateDBFieldsOnControlOptions);
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl; override;
+    function CreateControlsFromCxGridViewOnControl(AGridView : TcxCustomGridTableView;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+    function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; override;
+    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; override;
+  published
+    property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
+  end;
+
+constructor TJvDynControlEngineDevExpCxDB.Create;
+begin
+  inherited Create;
+  FCxProperties := TCxDynControlWrapper.Create;
+end;
+
+destructor TJvDynControlEngineDevExpCxDB.Destroy;
+begin
+  FreeAndNil(FCxProperties);
+  inherited Destroy;
+end;
+
+procedure TJvDynControlEngineDevExpCxDB.SetcxProperties(Value: TCxDynControlWrapper);
+begin
+  if Value is TCxDynControlWrapper then
+    FCxProperties.LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+function TJvDynControlEngineDevExpCxDB.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
+var
+  C: TControl;
+begin
+  C := inherited CreateControlClass(AControlClass, AOwner, AParentControl, AControlName);
+  if Supports(C, IJvDynControlDevExpCx) then
+    with C as IJvDynControlDevExpCx do
+      ControlSetCxProperties(cxProperties);
+  Result := C;
+end;
+
+procedure TJvDynControlEngineDevExpCxDB.RegisterControls;
+begin
+  RegisterControlType(jctDBText, TJvDynControlCxDBText);
+  RegisterControlType(jctDBEdit, TJvDynControlCxDBEdit);
+  RegisterControlType(jctDBImage, TJvDynControlCxDBImage);
+  RegisterControlType(jctDBCheckBox, TJvDynControlCxDBCheckBox);
+  RegisterControlType(jctDBComboBox, TJvDynControlCxDBComboBox);
+  RegisterControlType(jctDBListBox, TJvDynControlCxDBListBox);
+  RegisterControlType(jctDBRadioGroup, TJvDynControlCxDBRadioGroup);
+  RegisterControlType(jctDBDateTimeEdit, TJvDynControlCxDBEdit);
+  RegisterControlType(jctDBTimeEdit, TJvDynControlCxDBEdit);
+  RegisterControlType(jctDBDateEdit, TJvDynControlCxDBEdit);
+////  RegisterControlType(jctDBCalculateEdit, TJvDynControlCxDBEdit);
+////  RegisterControlType(jctDBSpinEdit, TJvDynControlCxDBEdit);
+  RegisterControlType(jctDBDirectoryEdit, TJvDynControlCxDBDirectoryEdit);
+  RegisterControlType(jctDBFileNameEdit, TJvDynControlCxDBFileNameEdit);
+  RegisterControlType(jctDBMemo, TJvDynControlCxDBMemo);
+  RegisterControlType(jctDBButtonEdit, TJvDynControlCxDBButtonEdit);
+//  RegisterControlType(jctDBGrid, TJvDynControlCxDBGrid);
+  RegisterControlType(jctDBNavigator, TJvDynControlCxDBNavigator);
+end;
+
+function TJvDynControlEngineDevExpCxDB.GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource;
+begin
+  if not Assigned(ADatacomponent) then
+    Result := nil
+  else if ADatacomponent is TcxCustomGridTableView then
+    if TcxCustomGridTableView(ADatacomponent).DataController IS TcxGridDBDataController THEN
+      Result := TcxGridDBDataController(TcxCustomGridTableView(ADatacomponent).DataController).Datasource
+    else
+      Result := nil
+  else if (ADatacomponent is TcxCustomGrid) and
+     (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+    if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController IS TcxGridDBDataController THEN
+      Result := TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).Datasource
+    else
+      Result := nil
+  else if ADatacomponent is TcxDBTextEdit then
+    Result := TcxDBTextEdit(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBNavigator then
+    Result := TcxDBNavigator(ADataComponent).Datasource
+  else if ADatacomponent is TcxDBListbox then
+    Result := TcxDBListbox(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBLookupComboBox then
+    Result := TcxDBLookupComboBox(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBImage then
+    Result := TcxDBImage   (ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBMemo then
+    Result := TcxDBMemo(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBRadioGroup then
+    Result := TcxDBRadioGroup(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBRichEdit then
+    Result := TcxDBRichEdit(ADataComponent).Databinding.Datasource
+  else if ADatacomponent is TcxDBCheckBox then
+    Result := TcxDBCheckBox(ADataComponent).Databinding.Datasource
+  else
+    Result := Inherited GetDatasourceFromDataComponent (ADataComponent);
+end;
+
+type TAccesscxCustomGridTableItem = class(TcxCustomGridTableItem);
+     TAccesscxCustomEdit = Class(TcxCustomEdit);
+
+procedure TJvDynControlEngineDevExpCxDB.TransferGridItemToControl(
+                                        aGridItem : TcxCustomGridTableItem;
+                                        aDataSource : TDatasource;
+                                        aControl : TWinControl;
+                                        aOptions: TJvCreateDBFieldsOnControlOptions);
+Var
+  j : Integer;
+  Control: TWinControl;
+  LabelControl: TWinControl;
+  GridDataBinding : TcxGridItemDBDataBinding;
+begin
+  if not (aGridItem IS TcxGridColumn) or
+     not (aGridItem.DataBinding IS TcxGridItemDBDataBinding) then
+    Exit;
+  GridDataBinding := TcxGridItemDBDataBinding(aGridItem.DataBinding);
+  if not Assigned(GridDataBinding.Field) then
+    Exit;
+  with AOptions do
+  begin
+    if TcxGridColumn(aGridItem).ActuallyVisible or
+       (TcxGridColumn(aGridItem).GroupIndex >= 0) or
+       ShowInvisibleFields then
+    begin
+      Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', aDataSource);
+      if FieldDefaultWidth > 0 then
+        Control.Width := FieldDefaultWidth
+      else
+      begin
+        if TAccesscxCustomGridTableItem(aGridItem).Width > 0 then
+          Control.Width := TAccesscxCustomGridTableItem(aGridItem).Width;
+        if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
+          Control.Width := FieldMaxWidth
+        else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+          Control.Width := FieldMinWidth
+      end;
+      if Control is TcxCustomEdit then
+      begin
+//        TAccesscxCustomEdit(Control).Properties.ReadOnly :=TcxGridColumn(aGridItem).Properties.ReadOnly;
+//        TAccesscxCustomEdit(Control).Properties := TcxGridColumn(aGridItem).Properties;
+      end;
+      LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
+        '', '&' + aGridItem.Caption, Control, LabelOnTop, LabelDefaultWidth);
+      if FieldWidthStep > 0 then
+        if (LabelControl.Width mod FieldWidthStep) <> 0 then
+          LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
+    end;
+  end;
+end;
+
+function TJvDynControlEngineDevExpCxDB.CreateControlsFromCxGridViewOnControl(AGridView : TcxCustomGridTableView;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+var
+  I: Integer;
+  CreateOptions : TJvCreateDBFieldsOnControlOptions;
+  GridDataController : TcxGridDBDataController;
+begin
+  Result := False;
+  if not Assigned(AOptions) then
+    CreateOptions:= TJvCreateDBFieldsOnControlOptions.Create
+  else
+    CreateOptions := AOptions;
+  try
+    IF tcxCustomGridView(aGridView).DataController IS TcxGridDBDataController THEN
+      GridDataController := TcxGridDBDataController(aGridView.DataController)
+    else
+      Exit;
+    for i := 0 to AGridView.GroupedItemCount - 1 do
+      TransferGridItemToControl (aGridView.GroupedItems[i], GridDataController.Datasource, AControl, CreateOptions);
+    for i := 0 to AGridView.VisibleItemCount - 1 do
+      TransferGridItemToControl (aGridView.VisibleItems[i], GridDataController.Datasource, AControl, CreateOptions);
+  finally
+    if not Assigned(AOptions) then
+      CreateOptions.Free;
+  end;
+  Result := True;
+end;
+
+function TJvDynControlEngineDevExpCxDB.CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+var
+  I: Integer;
+  Control: TWinControl;
+  LabelControl: TWinControl;
+  CreateOptions : TJvCreateDBFieldsOnControlOptions;
+begin
+  if Assigned(ADataComponent) then
+    if (ADataComponent is TcxGrid) and
+       (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+      Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView), AControl, AOptions)
+    else if ADataComponent is TcxCustomGridTableView then
+      Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(ADataComponent), AControl, AOptions)
+    else
+      Result := inherited CreateControlsFromDataComponentOnControl(ADataComponent, AControl, AOptions)
+  else
+    Result := False;
+end;
+
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+  IntDynControlEngineCxDB := TJvDynControlEngineDevExpCxDB.Create;
+  SetDefaultDynControlEngineDB(IntDynControlEngineCxDB);
+
+finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  FreeAndNil(IntDynControlEngineCxDB);
+
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+
+end.
