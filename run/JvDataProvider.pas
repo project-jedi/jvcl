@@ -37,9 +37,11 @@ interface
 
 uses
   Windows,
+  {$IFDEF VCL}
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
+  {$ENDIF VCL}
   Classes, Contnrs, Graphics, Controls, ImgList,
   JclBase,
   JvComponent, JvDataProviderIntf;

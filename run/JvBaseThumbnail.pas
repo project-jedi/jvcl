@@ -32,19 +32,13 @@ unit JvBaseThumbnail;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, // TWin32FindData
-  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
   {$IFDEF HAS_UNIT_LIBC}
   Libc, // stat()
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF VCL}
-  Messages,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types,
-  {$ENDIF VisualCLX}
-  Classes, Graphics, Controls, Forms, ExtCtrls,
+  Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvExForms, JvExExtCtrls;
 
 // (rom) TFileName is already declared in SysUtils

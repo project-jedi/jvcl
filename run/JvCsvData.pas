@@ -149,13 +149,7 @@ unit JvCsvData;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
-  Classes, DB;
+  Windows, Classes, DB;
 
 const
   MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
@@ -4191,12 +4185,7 @@ begin
   // extension number to use.
   if FileExists(RemoveFile) then
     DeleteFile(RemoveFile);
-  {$IFDEF MSWINDOWS}  
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}  
-  QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
-  {$ENDIF UNIX}
   Result := True;
 end;
 

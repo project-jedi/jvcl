@@ -63,6 +63,8 @@ type
   TBevelKind = JvQExControls.TBevelKind;
   {$NODEFINE TBevelKind}
   function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+  function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+    Flags: Cardinal): LongBool;
 {$ENDIF VisualCLX}
 
 type
@@ -111,10 +113,9 @@ type
   protected
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
     {$ENDIF VCL}
+    procedure CreateWnd; override;
     {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
     procedure KeyPress(var Key: Char); override;
@@ -131,6 +132,20 @@ uses
 const
   cDomainName = 'jvcl';
 {$ENDIF USE_DXGETTEXT}
+
+
+{$IFDEF VisualCLX}
+function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
+begin
+  Result :=  QWindows.ColorToRGB(Color, Instance);
+end;
+
+function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
+  Flags: Cardinal): LongBool;
+begin
+  Result := QWindows.DrawEdge(Handle, Rect, Edge, Flags);
+end;
+{$ENDIF VisualCLX}
 
 //=== { TJvForm } ============================================================
 
@@ -164,28 +179,22 @@ begin
     WindowClass.Style := CS_SAVEBITS;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvPopupListBox.CreateWnd;
 begin
   inherited CreateWnd;
+  {$IFDEF VCL}
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWidget_setFocus(Handle);
+  {$ENDIF VisualCLX}
 end;
 
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
-function ColorToRGB(Color: TColor; Instance: TWidgetControl = nil): TColor;
-begin
-  result :=  QWindows.ColorToRGB(Color, Instance);
-end;
-
-procedure TJvPopupListBox.CreateWidget;
-begin
-  inherited CreateWidget;
-  QWidget_setFocus(Handle);
-end;
 
 function TJvPopupListBox.WidgetFlags: Integer;
 begin
