@@ -64,7 +64,7 @@ uses
   JvScrollText, JvRecentMenuBtn, {$IFNDEF DelphiPersonalEdition}JvControlPanel,{$ENDIF}
   JvGradientCaption,
   JvZoom, JvWaitingGradient, JvSpecialProgress, JvWaitingProgress,
-  JvGammaPanel, JvSlider, JvSpinEdit,
+  JvGammaPanel, JvSlider, JvSpin,
 
   //Mp3
   JvBreatheSkin, JvId3v2, JvVisualId3v2, JvWinampApi, JvId3v1, JvVisualId3v1,
@@ -211,7 +211,7 @@ begin
   RegisterPropertyEditor(typeinfo(integer), TJvCustomOutlookBar, 'ActivePageIndex', TOLBarActivePageEditor);
     {Thumbview.filter editor}
   RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
-  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
+//  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
   RegisterPropertyEditor(typeinfo(TShortCut),TJvComponent,'',TShortCutProperty);
 
 //JvPlugin
@@ -310,6 +310,7 @@ begin
     TJvMaskEdit,
       TJvCommandEdit,
       TJvSpinEdit,
+      TJvSpinButton,
       TJvCoupler,
 
     TJvInstallLabel,
