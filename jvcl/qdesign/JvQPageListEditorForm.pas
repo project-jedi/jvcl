@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,22 +34,15 @@ unit JvQPageListEditorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
-  
-  
-  DesignIntf, DesignEditors, ClxDesignWindows,
-  
-  JvQPageList, QExtCtrls;
+  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,  
+  DesignIntf, DesignEditors,  
+  ClxDesignWindows,  
+  JvQPageList;
 
-type
-  
-  TfrmPageListEditor = class(TClxDesignWindow)
-  
-  
+type 
+  TfrmPageListEditor = class(TClxDesignWindow)  
     ToolBar1: TToolBar;
     btnAdd: TToolButton;
     btnDelete: TToolButton;
@@ -63,6 +57,12 @@ type
     acMoveDown: TAction;
     ilButtons: TImageList;
     StatusBar1: TStatusBar;
+    popEditor: TPopupMenu;
+    Add1: TMenuItem;
+    Delete1: TMenuItem;
+    N1: TMenuItem;
+    MoveUp1: TMenuItem;
+    MoveDown1: TMenuItem;
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure acMoveUpExecute(Sender: TObject);
@@ -80,21 +80,19 @@ type
     procedure Add(Page: TJvCustomPage);
   public
     property PageList:TJvCustomPageList read FPageList write SetPageList;
-    procedure Activated; override;
-    
+    procedure Activated; override; 
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    
-    function UniqueName(Component: TComponent): string; override;
-    
-    
+    procedure ItemsModified(const Designer: IDesigner); override; 
+    function UniqueName(Component: TComponent): string; override;  
     function GetEditState: TEditState; override;
   end;
 
 procedure ShowPageListEditor(Designer: IDesigner; APageList: TJvCustomPageList);
 
 implementation
+uses
+  JvQDsgnConsts;
 
 
 
@@ -124,10 +122,8 @@ begin
   else
   begin
     APageListEditor := TfrmPageListEditor.Create(Application);
-    try
-      
-      APageListEditor.Designer := Designer;
-      
+    try 
+      APageListEditor.Designer := Designer; 
       APageListEditor.PageList := APageList;
       APageListEditor.Show;
     except
@@ -135,6 +131,8 @@ begin
       raise;
     end;
   end;
+  if APageListEditor <> nil then
+    APageListEditor.Caption := Format(RsFmtCaption,[APageList.Name]);
 end;
 
 type
@@ -156,14 +154,23 @@ begin
 end;
 
 procedure TfrmPageListEditor.acDeleteExecute(Sender: TObject);
+var I:Integer;
 begin
   if Assigned(PageList.ActivePage) then
   begin
+    I := lbPages.ItemIndex;
     if lbPages.ItemIndex >= 0 then
       lbPages.Items.Delete(TJvCustomPageAccess(PageList.ActivePage).PageIndex);
     Designer.SelectComponent(PageList);
     PageList.ActivePage.Free;
-    Designer.Modified;
+    if I >= lbPages.Items.Count then Dec(i);
+    if (I >= 0) and (I < lbPages.Items.Count) then
+    begin
+      lbPages.ItemIndex := I;
+      SelectPage(I);
+    end
+    else
+      Designer.Modified;
   end;
 end;
 
@@ -265,13 +272,13 @@ procedure TfrmPageListEditor.SelectPage(const Index: Integer);
 var
   Page: TJvCustomPageAccess;
 begin
-  if Assigned(FPageList) {and Active} then
+  if Assigned(FPageList) and Active then
   begin
     Page := nil;
     if (Index >= 0) and (Index < FPageList.PageCount) then
       Page := TJvCustomPageAccess(FPageList.Pages[Index]);
-    PageList.ActivePage := Page;
     Designer.SelectComponent(Page);
+    PageList.ActivePage := Page;
     Designer.Modified;
   end;
 end;
@@ -332,6 +339,7 @@ begin
     ActivateInspector(Key);
     Key := #0;
   end;
+
 end;
 
 end.

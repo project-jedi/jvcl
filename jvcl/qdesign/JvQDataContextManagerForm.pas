@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,13 +22,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,18 +36,13 @@ unit JvQDataContextManagerForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QDialogs, Types,
-  
-  
-  DesignIntf, DesignEditors,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QDialogs, Types,  
+  DesignIntf, DesignEditors, 
   JvQDataProviderDesignerForm, QMenus, QActnList,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,
   JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDataProviderIntf,
-  JvQDsgnTypes, QTypes;
+  JvQDsgnTypes;
 
 type
   TfrmJvDataContextManager = class(TfrmDataProviderDesigner)
@@ -62,7 +57,6 @@ type
 
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
   ADesigner: IJvFormDesigner; PropName: string);
-
 
 implementation
 
@@ -102,8 +96,11 @@ begin
       raise;
     end;
   end;
-  Form.Show;
-  Form.BringToFront;
+  Form.Show; 
+  // If you leave this code under BCB5, you will get this error when
+  // you link the package:
+  // Fatal: Type index 2147479547 is bad in module ..\..\design\JvDataContextManagerForm.pas
+  Form.BringToFront; 
 end;
 
 //=== TJvContextRootItem =====================================================
@@ -137,10 +134,8 @@ var
 begin
   if Supports(InternalProvider, IInterfaceComponentReference, ICR) then
   begin
-    CtxProv := TJvContextProvider(ICR.GetComponent);
-    
-    Result := CtxProv.Provider;
-    
+    CtxProv := TJvContextProvider(ICR.GetComponent); 
+    Result := CtxProv.Provider; 
   end;
 end;
 
@@ -160,10 +155,8 @@ begin
     begin
       if Value <> nil then
         FRootItem := TJvContextRootItem.Create(InternalProvider as IJvDataItems);
-      CtxProv := TJvContextProvider(ICR.GetComponent);
-      
-      CtxProv.Provider := Value;
-      
+      CtxProv := TJvContextProvider(ICR.GetComponent); 
+      CtxProv.Provider := Value; 
     end;
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;

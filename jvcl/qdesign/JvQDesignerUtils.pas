@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,8 +21,6 @@ All Rights Reserved.
 
 Contributor(s): 
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -29,6 +28,7 @@ description : routines for design-time
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,15 +36,10 @@ unit JvQDesignerUtils;
 
 interface
 
-uses
-  
-  
-  Types, QGraphics,
-  
-  SysUtils, Classes,
-  
-  DesignIntf,
-  
+uses  
+  Types, QGraphics, 
+  SysUtils, Classes, 
+  DesignIntf, 
   JvQDsgnIntf, JvQDsgnTypes;
 
 implementation

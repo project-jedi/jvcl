@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,14 +41,13 @@ implementation
 uses
   Classes,
   JvQInspector,
-  JvQDsgnConsts
-  ;
+  JvQDsgnConsts;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCustomReg.dcr}
+{$R ..\Resources\JvInspectorReg.dcr}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvCustomReg.dcr}
+{$R ../Resources/JvInspectorReg.dcr}
 {$ENDIF LINUX}
 
 procedure Register;

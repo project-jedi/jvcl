@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,20 +38,12 @@ unit JvQDsgnEditors;
 
 interface
 
-uses
-  
-  
-  QWindows, QForms, QControls, QGraphics, QExtCtrls, QDialogs,
-  QExtDlgs, QMenus, QStdCtrls, QImgList, Types,
-  
-  DsnConst,
-  
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
-  
-  
-  ClxEditors, ClxImgEdit,
-  
-  
+uses  
+  QWindows, QForms, QControls, QGraphics, QExtCtrls, Tabs, QDialogs,
+  QExtDlgs, QMenus, QStdCtrls, QImgList, Types, 
+  DsnConst, 
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus,  
+  ClxEditors, ClxImgEdit,  
   Classes, SysUtils;
 
 
@@ -119,8 +112,7 @@ type
 
 type
   // Special TClassProperty, that show events along with all other properties
-  // This is only useful with version 5 and before
-  
+  // This is only useful with version 5 and before 
 
   TJvHintProperty = class(TStringProperty)
   public
@@ -158,18 +150,15 @@ type
   end;
 
   TJvStringsEditor = class(TDefaultEditor)
-  protected
-    
-    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    
+  protected 
+    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override; 
     function GetStringsName: string; virtual;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-
-  
+ 
 
   TJvShortCutProperty = class(TIntegerProperty)
   public
@@ -178,8 +167,7 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
-
-  
+ 
   TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -198,28 +186,8 @@ type
       ASelected: Boolean);
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
-  end;
-  
-
-  {$IFDEF COMPILER5}
-  TJvDefaultImageIndexProperty = class(TIntegerProperty)
-  protected
-    function ImageList: TCustomImageList; virtual;
-  public
-    function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-    function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); override;
-    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); override;
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean); override;
-  end;
-  {$ENDIF COMPILER5}
+  end; 
+ 
 
   TJvNosortEnumProperty = class(TEnumProperty)
   public
@@ -273,11 +241,8 @@ implementation
 
 
 uses
-  TypInfo, Math,
-  
-  
-  QFileCtrls, QConsts, JvQRegistryIniFile,
-  
+  TypInfo, Math,  
+  QFileCtrls, QConsts, JvQRegistryIniFile, 
   JvQTypes, JvQStringsForm, JvQDsgnConsts;
 
 function ValueName(E: Extended): string;
@@ -625,103 +590,7 @@ end;
 
 
 
-{$IFDEF COMPILER5}
 
-function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
-const
-  cImageList = 'ImageList';
-  cImages = 'Images';
-begin
-  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
-  else
-  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
-  else
-    Result := nil;
-end;
-
-function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paValueList, paMultiSelect, paRevertable];
-end;
-
-function TJvDefaultImageIndexProperty.GetValue: string;
-begin
-  Result := IntToStr(GetOrdValue);
-end;
-
-procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
-var
-  XValue: Integer;
-begin
-  try
-    XValue := StrToInt(Value);
-    SetOrdValue(XValue);
-  except
-    inherited SetValue(Value);
-  end;
-end;
-
-procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
-var
-  Tmp: TCustomImageList;
-  I: Integer;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    for I := 0 to Tmp.Count - 1 do
-      Proc(IntToStr(I));
-end;
-
-procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
-  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-var
-  Tmp: TCustomImageList;
-  R: TRect;
-begin
-  inherited ListDrawValue(Value, ACanvas, ARect, ASelected);
-  Tmp := ImageList;
-  if Tmp <> nil then
-  begin
-    R := ARect;
-    ACanvas.FillRect(ARect);
-    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
-    OffsetRect(R, Tmp.Width + 2, 0);
-    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
-  end;
-end;
-
-procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
-  ACanvas: TCanvas; var AHeight: Integer);
-var
-  Tmp: TCustomImageList;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
-end;
-
-procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
-  ACanvas: TCanvas; var AWidth: Integer);
-var
-  Tmp: TCustomImageList;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
-end;
-
-procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
-  const ARect: TRect; ASelected: Boolean);
-begin
-//  if GetVisualValue <> '' then
-//    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
-//  else
-  inherited PropDrawValue(ACanvas, ARect, ASelected);
-end;
-
-{$ENDIF COMPILER5}
 
 //=== TJvShortCutProperty ======================================================
 
@@ -805,8 +674,7 @@ begin
 end;
 
 procedure TJvFilenameProperty.OnDialogShow(Sender: TObject);
-begin
-  
+begin 
 end;
 
 //=== TJvExeNameProperty =====================================================
@@ -886,11 +754,8 @@ begin
               Canvas.Brush.Color := clWindow;
             Canvas.FillRect(Bounds(0, 0, Width, Height));
             for I := 0 to ImageList.Count - 1 do
-              ImageList.Draw(Canvas, ImageList.Width * I, 0, I);
-            
-            
-            if PixelFormat = pf16bit then
-            
+              ImageList.Draw(Canvas, ImageList.Width * I, 0, I);  
+            if PixelFormat = pf16bit then 
             try
               PixelFormat := pf24bit;
             except

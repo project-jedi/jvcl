@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,14 +39,9 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
-  QControls,
-  
-  
-  DesignEditors, DesignIntf,
-  
+  Classes,  
+  QControls,  
+  DesignEditors, DesignIntf, 
   JvQDsgnConsts,
   {$IFDEF MSWINDOWS}
   JvQCreateProcess, JvQWinHelp,
@@ -64,11 +60,9 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin
-  
+begin 
   GroupDescendentsWith(TJvDataEmbedded, TControl);
-  GroupDescendentsWith(TJvStrHolder, TControl);
-  
+  GroupDescendentsWith(TJvStrHolder, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvAlarms, TJvConverter,
     TJvDataEmbedded,

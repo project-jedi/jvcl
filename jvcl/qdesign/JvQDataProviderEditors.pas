@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -22,13 +23,12 @@ All Rights Reserved.
 Contributor(s):
   Peter Thörnqvist
 
-Last Modified: 2003-07-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,16 +37,12 @@ unit JvQDataProviderEditors;
 interface
 
 uses
-  Classes,
-  
-  DesignIntf, DesignEditors, DesignMenus,
-  
+  Classes, 
+  DesignIntf, DesignEditors, DesignMenus, 
   JvQDataProvider, JvQDataProviderIntf;
 
-type
-  
-  TGetPropEditProc = TGetPropProc;
-  
+type 
+  TGetPropEditProc = TGetPropProc; 
 
   TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
   protected
@@ -62,10 +58,8 @@ type
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
-    function GetVerbCount: Integer; override;
-    
-    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    
+    function GetVerbCount: Integer; override; 
+    procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
   TJvDataConsumerProperty = class(TEnumProperty)
@@ -125,10 +119,8 @@ type
 implementation
 
 uses
-  SysUtils, TypInfo,
-  
-  RTLConsts,
-  
+  SysUtils, TypInfo, 
+  RTLConsts, 
   JvQDataConsumerContextSelectForm, JvQDataConsumerItemSelectForm,
   JvQDataProviderDesignerForm, JvQDataContextManagerForm, JvQDsgnConsts;
 
@@ -189,15 +181,12 @@ end;
 
 procedure TJvDataConsumerProperty.SetProviderIntfAt(Index: Integer; Value: IJvDataProvider);
 var
-  Svc: TJvDataConsumer;
-  
+  Svc: TJvDataConsumer; 
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
-  begin
-    
-    Svc.Provider := Value;
-    
+  begin 
+    Svc.Provider := Value; 
     Modified;
   end;
 end;
@@ -229,11 +218,9 @@ procedure TJvDataConsumerProperty.GetExtensionProperties(
 var
   Components: IDesignerSelections;
 begin
-  Components := CreateSelectionList;
-  
+  Components := CreateSelectionList; 
   Components.Add(ConsumerSvcExt);
-  GetComponentProperties(Components, tkAny, Designer, Proc);
-  
+  GetComponentProperties(Components, tkAny, Designer, Proc); 
 end;
 
 function TJvDataConsumerProperty.AllEqual: Boolean;
@@ -243,8 +230,7 @@ end;
 
 function TJvDataConsumerProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSubProperties, paSortList
-    , paVolatileSubproperties ];
+  Result := [paValueList, paSubProperties, paSortList , paVolatileSubproperties ];
 end;
 
 procedure TJvDataConsumerProperty.GetProperties(Proc: TGetPropEditProc);
@@ -262,17 +248,15 @@ begin
   if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create(RsESpecifiedProviderIsNotATComponentDe);
+    raise EPropertyError.CreateRes(@RsESpecifiedProviderIsNotATComponentDe);
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
 var
   Comp: TComponent;
   ProvIntf: IJvDataProvider;
-  Ref: IUnknown;
-  
-begin
-  
+  Ref: IUnknown; 
+begin 
   if Value = '' then
     Comp := nil
   else
@@ -282,12 +266,11 @@ begin
   begin
     with Comp do
       if not GetInterface(IInterfaceComponentReference, Ref) or not GetInterface(IJvDataProvider, ProvIntf) then
-        raise EPropertyError.Create(SInvalidPropertyValue);
+        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
   end
   else
     ProvIntf := nil;
-  SetProviderIntf(ProvIntf);
-  
+  SetProviderIntf(ProvIntf); 
 end;
 
 procedure TJvDataConsumerProperty.GetValues(Proc: TGetStrProc);

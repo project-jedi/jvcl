@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,13 +34,10 @@ unit JvQOutlookBarEditors;
 
 interface
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QWindows, QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
-  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
-  
+  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows, 
   JvQDsgnEditors, JvQOutlookBar;
 
 type
@@ -115,10 +113,8 @@ begin
   else
   begin
     AEditor := TFrmOLBEditor.Create(Application);
-    try
-      
-      AEditor.Designer := Designer;
-      
+    try 
+      AEditor.Designer := Designer; 
       AEditor.OutlookBar := OutlookBar;
       AEditor.Show;
     except

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-07-13
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,18 +37,14 @@ unit JvQTimerListEditor;
 interface
 
 uses
-  SysUtils,
-  
-  DesignEditors, DesignIntf;
-  
+  SysUtils, 
+  DesignEditors, DesignIntf; 
 
 type
   TJvTimerListDefaultEditor = class(TDefaultEditor)
   public
-    procedure ExecuteVerb(Index: Integer); override;
-    
-    procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override;
-    
+    procedure ExecuteVerb(Index: Integer); override; 
+    procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override; 
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;

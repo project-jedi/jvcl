@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,13 +22,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-02-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,11 +36,8 @@ unit JvQProviderTreeListFrame;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Qt, QGraphics, QControls, QForms, QDialogs, QComCtrls, Types, QWindows,
-  
+  SysUtils, Classes,  
+  Qt, QGraphics, QControls, QForms, QDialogs, QComCtrls, Types, QWindows, 
   JvQDataProvider, JvQDataProviderIntf;
 
 type
@@ -113,8 +110,7 @@ type
 
 implementation
 
-uses
-  
+uses 
   JvQDsgnConsts, JvQConsts;
 
 
@@ -123,22 +119,16 @@ uses
 
 
 function GetItemIndexAt(LV: TListView; X, Y: Integer): Integer;
-var
-  
-  
-  Item: TListItem;
-  
+var  
+  Item: TListItem; 
 begin
   if LV.HandleAllocated then
-  begin
-    
-    
+  begin  
     Item := LV.GetItemAt(X, Y);
     if Item <> nil then
       Result := Item.Index
     else
-      Result := -1;
-    
+      Result := -1; 
   end
   else
     Result := -1;
@@ -350,12 +340,9 @@ begin
     GenerateVirtualRoot;
   if Reason in [ccrProviderSelect, ccrViewChange] then
     UpdateViewList;
-  if (lvProvider.Items.Count > 0) and (Reason = ccrViewChange) then
-    
-    
+  if (lvProvider.Items.Count > 0) and (Reason = ccrViewChange) then  
     with lvProvider do
-      UpdateItems(TopItem.Index, TopItem.Index + GetVisibleRowCount(lvProvider));
-    
+      UpdateItems(TopItem.Index, TopItem.Index + GetVisibleRowCount(lvProvider)); 
   lvProvider.Invalidate;
 end;
 
@@ -403,14 +390,11 @@ begin
     I := -1
   else
     I := LocateID(ID);
-  if I > -1 then
-  
-  
+  if I > -1 then  
   begin
     lvProvider.Items[I].Selected := True;
     lvProvider.Items[I].Focused := True;
-  end
-  
+  end 
   else
     lvProvider.Selected := nil;
   UpdateSelectedItem;
@@ -426,8 +410,7 @@ end;
 
 procedure TfmeJvProviderTreeList.UpdateViewList;
 
-begin
-  
+begin 
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderCustomDrawItem(
@@ -438,17 +421,14 @@ var
   ARect: TRect;
   BtnWdth: Integer;
   MidX, MidY: Integer;
-begin
-  
-  
+begin  
   ARect := Item.DisplayRect;
   ARect.Right := Sender.ClientRect.Right;
 
   ACanvas := TControlCanvas.Create;
   TControlCanvas(ACanvas).Control := Sender;
   try
-  ACanvas.Start;
-  
+  ACanvas.Start; 
   DefaultDraw := False;
   if Item.Selected then
   begin
@@ -464,11 +444,8 @@ begin
     ACanvas.Font.Color := clWindowText;
     ACanvas.FillRect(ARect);
   end;
-  BtnWdth := Succ(ARect.Bottom - ARect.Top) + 2;
-  
-  
-  ARect.Left := ARect.Left + (BtnWdth * 1);
-  
+  BtnWdth := Succ(ARect.Bottom - ARect.Top) + 2;  
+  ARect.Left := ARect.Left + (BtnWdth * 1); 
   if (UsingVirtualRoot and (Item.Index = 0)) or
     GetViewList.ItemHasChildren(Item.Index - Ord(UsingVirtualRoot)) then
   begin
@@ -496,16 +473,13 @@ begin
       end;
     end;
   end;
-  ARect.Left := ARect.Left + BtnWdth;
-  
-  
+  ARect.Left := ARect.Left + BtnWdth;  
     DrawTextW(ACanvas.Handle, PWideChar(Item.Caption), Length(Item.Caption), ARect,
       DT_SINGLELINE + DT_LEFT + DT_END_ELLIPSIS);
     ACanvas.Stop;
   finally
     ACanvas.Free;
-  end;
-  
+  end; 
 end;
 
 procedure TfmeJvProviderTreeList.lvProviderData(Sender: TObject;
@@ -521,13 +495,11 @@ begin
   try
     if UsingVirtualRoot and (Item.Index = 0) then
     begin
-      DataItem := FVirtualRoot;
-      
+      DataItem := FVirtualRoot; 
     end
     else
     begin
-      DataItem := GetViewList.Item(Item.Index - Ord(UsingVirtualRoot));
-      
+      DataItem := GetViewList.Item(Item.Index - Ord(UsingVirtualRoot)); 
     end;
     if DataItem <> nil then
     begin
@@ -573,11 +545,8 @@ begin
       if UsingVirtualRoot and (Item = 0) then
         ItemLevel := 0
       else
-        ItemLevel := GetViewList.ItemLevel(Item - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);
-      
-      
-      TmpRect := lvProvider.Items[Item].DisplayRect;
-      
+        ItemLevel := GetViewList.ItemLevel(Item - Ord(UsingVirtualRoot)) + Ord(UsingVirtualRoot);  
+      TmpRect := lvProvider.Items[Item].DisplayRect; 
       TmpRect.Right := TmpRect.Left + (Succ((TmpRect.Bottom - TmpRect.Top) + 2) * Succ(ItemLevel));
       if (X < TmpRect.Right) and (X > TmpRect.Right - ((TmpRect.Bottom - TmpRect.Top) + 2)) then
         if Item >= Ord(UsingVirtualRoot) then

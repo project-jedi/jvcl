@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,8 +21,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-01-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -31,6 +30,7 @@ Changes:
   Drawing of State images differs from normal images since they are 1-based:
   the 0-th item for the state imagelist isn't drawn to alert the user to this fact
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,15 +39,10 @@ unit JvQTreeItemsEditorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls,
-  QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,
-  
-  
-  DesignEditors, DesignIntf;
-
+  QActnList, QComCtrls, QMenus, QStdActns, QWindows, Types, QTypes,  
+  DesignEditors, DesignIntf; 
 
 type
   TJvTreeItemsProperty = class(TClassProperty)
@@ -118,7 +113,7 @@ type
     procedure acDeleteExecute(Sender: TObject);
     procedure acItemsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure cbImageIndexDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+      Rect: TRect; State: TOwnerDrawState);
     procedure cbStateDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure acNodeMoveUpExecute(Sender: TObject);
@@ -138,32 +133,26 @@ type
   public
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
-
-  
-
-  
+ 
+ 
   TGroupBox = class(QStdCtrls.TGroupBox)
   private
     FPropagateEnabled: Boolean;
   protected
-//    procedure EnabledChanged; override;
+    procedure EnabledChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property PropagateEnabled: Boolean read FPropagateEnabled write FPropagateEnabled default True;
-  end;
-
+  end; 
 
 
 procedure ShowTreeNodeEditor(TreeView:TCustomTreeView);
 
 implementation
 
-uses
-  
-  
-  QImgList,
-  
+uses  
+  QImgList, 
   JvQPageListTreeView, JvQPageLinkEditorForm, JvQDsgnConsts;
 
 
@@ -187,14 +176,12 @@ begin
   PropagateEnabled := True;
 end;
 
-(*)
 procedure TGroupBox.CMEnabledChanged(var Msg: TMessage);
 begin
   inherited;
   if PropagateEnabled then
     Broadcast(Msg);
 end;
-(*)
 
 //=== TfrmTreeViewItems ======================================================
 
@@ -207,8 +194,8 @@ begin
       tvItems.Selected.ImageIndex);
     tvItems.Selected.SelectedIndex := StrToIntDef(cbSelected.Text,
       tvItems.Selected.SelectedIndex);
-//    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
-//      tvItems.Selected.StateIndex);
+    tvItems.Selected.StateIndex := StrToIntDef(cbState.Text,
+      tvItems.Selected.StateIndex);
   end;
 end;
 
@@ -269,7 +256,7 @@ begin
     edNodeText.Text := Node.Text;
     cbImage.ItemIndex := AddCB(cbImage, Node.ImageIndex);
     cbSelected.ItemIndex := AddCB(cbSelected, Node.SelectedIndex);
-//    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
+    cbState.ItemIndex := AddCB(cbState, Node.StateIndex);
     edNodeText.OnChange := edNodeTextChange;
   end;
   gbProperties.Enabled := tvItems.Selected <> nil;
@@ -355,8 +342,7 @@ begin
       f.cbImage.Tag := Integer(il);
       f.cbSelected.Tag := Integer(il);
     end;
-//    il := THackTreeView(Treeview).StateImages;
-    il := nil;
+    il := THackTreeView(Treeview).StateImages;
     if il <> nil then
     begin
       f.cbState.Style := csOwnerDrawFixed;
@@ -381,7 +367,7 @@ begin
 end;
 
 procedure TfrmTreeViewItems.cbImageIndexDrawItem(Control: TWinControl;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+  Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   DrawOffset, DrawIndex: Integer;
   il: TImageList;
@@ -400,7 +386,6 @@ begin
   Rect.Left := Rect.Left + DrawOffset;
   DrawText(CB.Canvas.Handle, PChar(Format('%d', [DrawIndex])), -1, Rect,
     DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-  Handled := true;
 end;
 
 procedure TfrmTreeViewItems.cbStateDrawItem(Control: TWinControl;

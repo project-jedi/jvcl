@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,19 +35,11 @@ unit JvQValidatorsEditorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
-  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,
-  
-  
-  DesignEditors, DesignIntf,
-  
-  
-  QDesignWindows,
-  
-  
+  QToolWin, QStdCtrls, QMenus, QActnList, QImgList, ClxDesignWindows,  
+  DesignEditors, DesignIntf,  
+  QDesignWindows,  
   JvQValidators;
 
 type
@@ -91,12 +84,10 @@ type
     procedure DoAddNewValidator(Sender: TObject);
     procedure AddValidatorClasses;
   public
-    procedure Activated; override;
-    
+    procedure Activated; override; 
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    
+    procedure ItemsModified(const Designer: IDesigner); override; 
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -119,8 +110,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-
-  
+ 
 
 implementation
 
@@ -158,10 +148,8 @@ begin
   else
   begin
     AEditor := TfrmValidatorsEditor.Create(Application);
-    try
-      
-      AEditor.Designer := Designer;
-      
+    try 
+      AEditor.Designer := Designer; 
       AEditor.Validator := AValidator;
       AEditor.Show;
     except
@@ -431,14 +419,12 @@ begin
     M := TMenuItem.Create(popNew);
     M.Action := A;
     if I = 0 then
-    begin
-      
+    begin 
       btnNew.Action := A;
     end;
     popNew.Items.Add(M);
     M := TMenuItem.Create(popForm);
-    M.Action := A;
-    
+    M.Action := A; 
     popForm.Items.Insert(I,M);
   end;
   if J < 2 then

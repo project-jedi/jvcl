@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,18 +34,10 @@ unit JvQPageManagerForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QGrids, Types, QWindows,
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
-  
-  ClxEditors, QDesignWindows,
-  
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QGrids, Types, QWindows,  
+  RTLConsts, DesignIntf, DesignEditors,  
+  ClxEditors, QDesignWindows,  
   JvQSpeedButton, JvQPageManager, JvQJVCLUtils, JvQComponent;
 
 type
@@ -75,15 +68,11 @@ type
     function UniqueName(Component: TComponent): string; override;
     procedure Activated; override;
   public
-    procedure NameProxy(Sender: TObject);
-    
+    procedure NameProxy(Sender: TObject); 
     procedure ItemsModified(const Designer: IDesigner); override;
-    procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
-    
-    function GetEditState: TEditState; override;
-    
-    procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
-    
+    procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override; 
+    function GetEditState: TEditState; override; 
+    procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override; 
     property PageManager: TJvPageManager read FPageManager write SetPageManager;
     property OwnerForm: TCustomForm read GetForm;
   end;
@@ -111,11 +100,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts, QButtons,
-  
+uses  
+  QConsts, QButtons, 
   JvQDsgnConsts, JvQDsgnTypes;
 
 
@@ -193,14 +179,10 @@ procedure TJvPageBtnProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   Component: TComponent;
-begin
-  
-  for I := 0 to Designer.Root.ComponentCount - 1 do
-  
-  begin
-    
-    Component := Designer.Root.Components[I];
-    
+begin 
+  for I := 0 to Designer.Root.ComponentCount - 1 do 
+  begin 
+    Component := Designer.Root.Components[I]; 
 
     if (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
@@ -295,10 +277,8 @@ end;
 
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 
-begin
-  
-  if ADesigner.Root = OwnerForm then
-  
+begin 
+  if ADesigner.Root = OwnerForm then 
     Free;
 end;
 
@@ -348,10 +328,8 @@ begin
 end;
 
 function TJvProxyEditor.GetForm: TCustomForm;
-begin
-  
-  Result := TCustomForm(Designer.Root); { GetParentForm(FBar) }
-  
+begin 
+  Result := TCustomForm(Designer.Root); { GetParentForm(FBar) } 
 end;
 
 procedure TJvProxyEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -371,10 +349,8 @@ end;
 
 function TJvProxyEditor.CheckPageManager: Boolean;
 begin
-  Result := (FPageManager <> nil) and (FPageManager.Owner <> nil) and
-    
-    (Designer.Root <> nil);
-    
+  Result := (FPageManager <> nil) and (FPageManager.Owner <> nil) and 
+    (Designer.Root <> nil); 
 end;
 
 
@@ -387,10 +363,8 @@ var
   FComponents: TDesignerSelectionList;
 begin
   if CheckPageManager and Active then
-  begin
-    
-    FComponents := TDesignerSelections.Create;
-    
+  begin 
+    FComponents := TDesignerSelections.Create; 
     if Proxy <> nil then
       FComponents.Add(Proxy)
     else
@@ -458,11 +432,8 @@ var
 begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then
-  begin
-    
-    
-    TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');
-    
+  begin  
+    TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, ''); 
     FDeleting := True;
     try
       Proxy.Free;

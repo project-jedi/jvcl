@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {******************************************************************************}
 {                        UNIFIED INTERBASE (UIB)                               }
@@ -28,9 +29,9 @@
 {                                                                              }
 {******************************************************************************}
 
-{$IFNDEF BCB}
+
 {$I jvcl.inc}
-{$ENDIF BCB}
+
 {$I jvuib.inc}
 
 unit JvQUIBReg;
@@ -46,7 +47,7 @@ implementation
 {$IFNDEF UIBNOCOMPONENT}
 
 uses
-  Classes, Controls,
+  Classes, QControls,
   {$IFDEF USEJVCL}
   JvQDsgnConsts,
   {$ENDIF USEJVCL}
@@ -68,11 +69,9 @@ resourcestring
 {$ENDIF USEJVCL}
 
 procedure Register;
-begin
-  
+begin 
   GroupDescendentsWith(TJvUIBDataSet, TControl);
-  GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
-  
+  GroupDescendentsWith(TJvUIBCustomDataSet, TControl); 
 
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}

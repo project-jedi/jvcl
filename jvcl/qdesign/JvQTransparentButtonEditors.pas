@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,14 +35,9 @@ unit JvQTransparentButtonEditors;
 interface
 
 uses
-  SysUtils,
-  
-  DesignIntf, DesignEditors, DesignMenus, ClxEditors,
-  
-  
-  
-  QImgList,
-  
+  SysUtils, 
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors,   
+  QImgList, 
   JvQDsgnEditors, JvQTransparentButton;
 
 type

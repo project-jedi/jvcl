@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,12 +39,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls, Types,
-  
+  QComCtrls, QExtCtrls, Types, 
   JvQBaseDsgnFrame;
 
 type
@@ -169,13 +167,10 @@ var
   CurItem: TControl;
 begin
   LastVisibleSep := -1;
-  ButtonSinceLastSep := False;
-  
-  
+  ButtonSinceLastSep := False;  
   for I := 0 to tbrToolbar.ControlCount - 1 do
   begin
-    CurItem := TControl(tbrToolbar.Controls[I]);
-  
+    CurItem := TControl(tbrToolbar.Controls[I]); 
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -189,12 +184,9 @@ begin
     else
     if not (CurItem is TToolButton) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
-  end;
-  
-  
+  end;  
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.Controls[LastVisibleSep].Visible := False;
-  
+    tbrToolbar.Controls[LastVisibleSep].Visible := False; 
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }
@@ -259,11 +251,8 @@ end;
 
 procedure TfmeJvBaseToolbarDesign.spToolbarCanResize(Sender: TObject;
   var NewSize: Integer; var Accept: Boolean);
-begin
-  
-  
-  Accept := GetToolBarRowCount(tbrToolbar) = 1;
-  
+begin  
+  Accept := GetToolBarRowCount(tbrToolbar) = 1; 
   if Accept then
   begin
     if NewSize > 36 then

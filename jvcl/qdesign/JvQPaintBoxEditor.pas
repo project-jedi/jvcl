@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,24 +34,15 @@ unit JvQPaintBoxEditor;
 
 interface
 uses
-  SysUtils, Classes,
-  
-  
-  QForms, QGraphics, QImgList, QDialogs, QControls, Types,
-  {ClxEditors,}
-  
-  
-  
-  DesignIntf, DesignEditors{, DesignMenus};
-  
+  SysUtils, Classes,  
+  QForms, QGraphics, QImgList, QDialogs, QControls, Types,   
+  DesignIntf, DesignEditors, DesignMenus; 
 
 type
   TJvPaintBoxEditor = class(TDefaultEditor)
-  public
-    
+  public 
     procedure EditProperty(const PropertyEditor: IProperty;
-      var Continue: Boolean); override;
-    
+      var Continue: Boolean); override; 
   end;
 
 implementation

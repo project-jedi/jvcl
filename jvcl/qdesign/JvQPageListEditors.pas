@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,15 +34,9 @@ unit JvQPageListEditors;
 
 interface
 uses
-  Classes, SysUtils,
-  
-  
-  QImgList, QGraphics,
-  
-  
-  DesignEditors, DesignIntf, DesignMenus,
-  
-  
+  Classes, SysUtils,  
+  QImgList, QGraphics,  
+  DesignEditors, DesignIntf, DesignMenus,  
   JvQPageList, JvQDsgnEditors;
 
 type
@@ -75,8 +70,7 @@ type
   protected
     function ImageList: TCustomImageList; override;
   end;
-
-  
+ 
 
 implementation
 uses

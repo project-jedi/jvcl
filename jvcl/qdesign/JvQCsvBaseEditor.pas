@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,29 +21,23 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove att slcdug dott org].
 
-Last Modified: 2002-11-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQCsvBaseEditor;
+unit JvQCSVBaseEditor;
 
 interface
 
 uses
-  Classes,
-  
-  DesignIntf, DesignEditors,
-  
-  
-
-  
-  
+  Classes, 
+  DesignIntf, DesignEditors,  
+  ClxEditors,  
   JvQCSVBaseControls;
 
 type
@@ -60,11 +55,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QForms, QDialogs;
-  
+uses  
+  QForms, QDialogs; 
 
 //=== TCSVFileNameProperty ===================================================
 

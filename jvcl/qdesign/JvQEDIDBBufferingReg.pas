@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -26,20 +27,21 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
+
 unit JvQEDIDBBufferingReg;
 
 interface
-
-uses
-  Classes;
 
 procedure Register;
 
 implementation
 
-uses 
-  JvQEDIDBBuffering{, JvEDITCPServer, JvEDITCPClient};
-
+uses
+  Classes,
+  JvQDsgnConsts,
+  JvQEDIDBBuffering {, JvEDITCPServer, JvEDITCPClient};
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEDIDBBufferingReg.dcr}
@@ -48,17 +50,11 @@ uses
 {$R ../Resources/JvEDIDBBufferingReg.dcr}
 {$ENDIF LINUX}
 
-
 procedure Register;
 begin
-{ Register Components }
-
- RegisterComponents('Jv EDI', [TJvEDIDBSpecProfiler,
-                              TJvEDIDBSEFProfiler,
-                              TJvEDIDBBuffer{TJvEDITCPServer,TJvEDITCPClient}]);
-
-
-end; { Register }
+ RegisterComponents(RsPaletteEDI, [TJvEDIDBSpecProfiler,
+   TJvEDIDBSEFProfiler, TJvEDIDBBuffer {TJvEDITCPServer, TJvEDITCPClient}]);
+end;
 
 end.
 

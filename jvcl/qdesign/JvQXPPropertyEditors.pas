@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,13 +22,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,24 +36,15 @@ unit JvQXPPropertyEditors;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  DesignIntf, DesignEditors,
-  
-  
-  
-  
-  QForms, QImgList, QActnList, QGraphics, Types,
-  
+  Classes, SysUtils, 
+  DesignIntf, DesignEditors,    
+  QForms, QImgList, QActnList, QGraphics, Types, 
   TypInfo;
 
-type
-  
-  TDesignerSelectionList = IDesignerSelections;
-  
+type 
+  TDesignerSelectionList = IDesignerSelections; 
 
-  TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty
-    {, ICustomPropertyListDrawing} )
+  TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty , ICustomPropertyListDrawing )
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -74,10 +65,8 @@ type
   end;
 
   TJvXPBarItemEditor = class(TDefaultEditor)
-  protected
-    
-    procedure RunPropertyEditor(const Prop: IProperty);
-    
+  protected 
+    procedure RunPropertyEditor(const Prop: IProperty); 
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -186,17 +175,15 @@ end;
 procedure TJvXPBarItemEditor.Edit;
 var
   Components: TDesignerSelectionList;
-begin
-  
-  Components := CreateSelectionList;
-  
+begin 
+  Components := CreateSelectionList; 
   Components.Add(Component);
   GetComponentProperties(Components, [tkClass], Designer, RunPropertyEditor);
 end;
 
 procedure TJvXPBarItemEditor.ExecuteVerb(Index: Integer);
 const
- cFontColor = $00E75100;
+ cFontColor = $00840000;
  cHotTrackColor = $00FF7C35;
 begin
   case Index of
@@ -209,14 +196,14 @@ begin
         HeaderFont.Color := cFontColor;
         HotTrackColor := cHotTrackColor;
         if csDesigning in ComponentState then
-          TCustomForm(Owner).DesignerHook.Modified;
+          TCustomForm(Owner).Designer.Modified;
       end;
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
         ParentFont := True;
         if csDesigning in ComponentState then
-          TCustomForm(Owner).DesignerHook.Modified;
+          TCustomForm(Owner).Designer.Modified;
       end;
   end;
 end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,18 +36,10 @@ unit JvQColorEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, Types,
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
-  
-  ClxEditors,
-  
-  
+  SysUtils, Classes,  
+  QGraphics, Types,  
+  RTLConsts, DesignIntf, DesignEditors,  
+  ClxEditors,  
   JvQConsts, JvQJVCLUtils;
 
 type
@@ -56,8 +49,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean);
-      {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
+      const ARect: TRect; ASelected: Boolean);  virtual ;
   end;
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;

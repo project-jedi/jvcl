@@ -1,3 +1,8 @@
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -17,23 +22,20 @@ All Rights Reserved.
 Contributor(s):
 Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 
-Last Modified: 2002-01-24
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-{*****************************************************************************
-  Purpose:   Jv Wizard Component Editor
+Description:
+  Jv Wizard Component Editor
 
-  History:
-  ---------------------------------------------------------------------------
+History:
   Date(mm/dd/yy)   Comments
-  ---------------------------------------------------------------------------
   01/24/2002       First Create
   01/25/2002       TJvWizardAboutDialogProperty, Added by <Steve Forbes>
-******************************************************************************}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -46,19 +48,15 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  DesignIntf, DesignEditors,
-
+  Classes, 
+  DesignIntf, DesignEditors, 
   {$IFDEF USEJVCL}
   JvQDsgnConsts,
   {$ELSE}
   JvQWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-
   JvQWizard, JvQWizardRouteMapNodes, JvQWizardRouteMapSteps, JvQWizardRouteMapList,
-  JvQWizardEditorForm
-  ;
+  JvQWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}

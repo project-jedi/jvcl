@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,15 +35,9 @@ unit JvQFormPropertiesForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types, 
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
-  
+  SysUtils, Classes,  
+  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,  
+  RTLConsts, DesignIntf, DesignEditors,  
   JvQJVCLUtils, JvQFormPlacement, JvQPropertyStorage, JvQComponent;
 
 { TODO -oJVCL -cREIMPLEMENT :
@@ -59,7 +54,7 @@ type
     DownBtn: TSpeedButton;
     FormBox: TGroupBox;
     ActiveCtrlBox: TCheckBox;
-    PositionBox: TCheckBox;
+    SizeBox: TCheckBox;
     StateBox: TCheckBox;
     AddButton: TButton;
     DeleteButton: TButton;
@@ -69,6 +64,7 @@ type
     ComponentsList: TListBox;
     PropertiesList: TListBox;
     StoredList: TListBox;
+    LocationBox: TCheckBox;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);
@@ -203,7 +199,8 @@ begin
       UpdateStoredList(ACompOwner, AStoredList, False);
       SetStoredList(AStoredList);
       ActiveCtrlBox.Checked := fpActiveControl in Options;
-      PositionBox.Checked := fpLocation in Options;
+      SizeBox.Checked := fpSize in Options;
+      LocationBox.Checked := fpLocation in Options;
       StateBox.Checked := fpState in Options;
     finally
       Screen.Cursor := crDefault;
@@ -215,7 +212,9 @@ begin
       Options := [];
       if ActiveCtrlBox.Checked then
         Include(Options, fpActiveControl);
-      if PositionBox.Checked then
+      if SizeBox.Checked then
+        Include(Options, fpSize);
+      if LocationBox.Checked then
         Include(Options, fpLocation);
       if StateBox.Checked then
         Include(Options, fpState);
