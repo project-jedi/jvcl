@@ -21,8 +21,8 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvUIBD7R.bpl JvUIBD7D.bpl JvWizardD7R.bpl JvWizardD7D.bpl \
   JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl \
   JvHMID7R.bpl JvHMID7D.bpl JvManagedThreadsD7R.bpl
-  JvManagedThreadsD7D.bpl JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl \
-  JvDockingD6R.bpl JvDockingD6D.bpl
+  JvManagedThreadsD7D.bpl JvXPCtrlsD7R.bpl JvXPCtrlsD7D.bpl \
+  JvDockingD7R.bpl JvDockingD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
