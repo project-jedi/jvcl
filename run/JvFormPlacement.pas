@@ -620,7 +620,7 @@ begin
   if Assigned(AppStorage) then
     Result := AppStorage.ReadString(AppStorage.ConcatPaths([Ident]), Default)
   else
-    Result := '';
+    Result := Default;
 end;
 
 procedure TJvFormPlacement.WriteString(const Ident, Value: string);
