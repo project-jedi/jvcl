@@ -76,6 +76,7 @@ type
     FClipBoardCommands, FOldCommands: TJvClipboardCommands;
     FGroupIndex: Integer;
     FOnKeyDown: TKeyEvent;
+    FProtectPassword: boolean;
     procedure SetCaret(const Value: TJvCaret);
     procedure CaretChanged(sender: TObject); dynamic;
     procedure WMSetFocus(var msg: TMessage); message WM_SETFOCUS;
@@ -102,10 +103,15 @@ type
     procedure LocalKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SetClipBoardCommands(const Value: TJvClipboardCommands);
+    function GetText: string;
+    procedure SetText(const Value: string);
+    procedure SetPasswordChar(Value: char);
+    function GetPasswordChar: char;
   protected
     procedure Change; override;
     procedure MaxPixelChanged(Sender: TObject);
   public
+    procedure DefaultHandler(var Msg);override;
     function IsEmpty: Boolean;
     procedure Loaded; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -119,6 +125,10 @@ type
     property ClipBoardCommands: TJvClipboardCommands read FClipBoardCommands write SetClipBoardCommands default [caCopy..caUndo];
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
     property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow;
+    property Text:string read GetText write SetText;
+    property PasswordChar:char read GetPasswordChar write SetPasswordChar;
+    // set to true to disable read/write of PasswordChar and read of Text
+    property ProtectPassword:boolean read FProtectPassword write FProtectPassword default false;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -149,6 +159,7 @@ type
     property ClipBoardCommands;
     property DisabledTextColor;
     property DisabledColor;
+    property ProtectPassword;
     property HintColor;
     property HotTrack;
     property GroupIndex;
@@ -369,7 +380,7 @@ end;
 
 function TJvCustomEdit.IsEmpty: Boolean;
 begin
-  Result := Length(Caption) = 0;
+  Result := Length(Text) = 0;
 end;
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
@@ -570,8 +581,7 @@ begin
         and
         ((Self.Owner.Components[i] as TJvCustomEdit).GroupIndex <> -1)
         and
-        ((Self.Owner.Components[i] as TJvCustomEdit).fGroupIndex = Self.fGroupIndex)
-        )
+        ((Self.Owner.Components[i] as TJvCustomEdit).fGroupIndex = Self.FGroupIndex))
         then
         (Self.Owner.Components[i] as TJvCustomEdit).Caption := '';
     end;
@@ -586,6 +596,43 @@ begin
     FClipBoardCommands := Value;
     FOldCommands := Value;
   end;
+end;
+
+procedure TJvCustomEdit.SetText(const Value: string);
+begin
+  inherited Text := Value;
+end;
+
+function TJvCustomEdit.GetText:string;
+begin
+  if not ProtectPassword then
+    Result := inherited Text
+  else
+    Result := '';
+end;
+
+procedure TJvCustomEdit.SetPasswordChar(Value:char);
+begin
+  if not ProtectPassword then
+    inherited PasswordChar := Value;
+end;
+
+procedure TJvCustomEdit.DefaultHandler(var Msg);
+begin
+  case TMessage(Msg).Msg of
+    WM_CUT,WM_PASTE,EM_SETPASSWORDCHAR,WM_GETTEXT,WM_GETTEXTLENGTH:
+      if not ProtectPassword then inherited;
+  else
+    inherited;
+  end;
+end;
+
+function TJvCustomEdit.GetPasswordChar: char;
+begin
+  if not ProtectPassword then
+    Result := inherited PasswordChar
+  else
+    Result := #0;
 end;
 
 end.
