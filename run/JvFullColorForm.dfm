@@ -278,6 +278,6 @@ object JvFullColorFrm: TJvFullColorFrm
     Height = 21
     ItemHeight = 13
     TabOrder = 0
-    OnSelect = JvComboBoxColorSpaceSelect
+    OnClick = JvComboBoxColorSpaceSelect
   end
 end
