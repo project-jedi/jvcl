@@ -670,46 +670,37 @@ begin
 end;
 
 procedure TShortCutProperty.GetValues(Proc: TGetStrProc);
-var SC:TShortCut;Key:word;Shift:TShiftState;
+var Key:word;Shift:TShiftState;
 begin
   Proc('(None)');
 
   Shift := [ssCtrl];
   for Key := Ord('A') to Ord('Z') do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
   Shift := [ssAlt,ssCtrl];
   for Key := Ord('A') to Ord('Z') do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
   Shift := [];
   for Key := VK_F1 to VK_F10 do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
   Shift := [ssCtrl];
   for Key := VK_F1 to VK_F10 do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
   Shift := [ssShift];
   for Key := VK_F1 to VK_F10 do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
   Shift := [ssShift,ssCtrl];
   for Key := VK_F1 to VK_F10 do
-  begin
-    SC := ShortCut(Key,Shift);
-    Proc(ShortCutToText(SC));
-  end;
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
+
+  Shift := [ssShift,ssAlt,ssCtrl];
+  for Key := VK_F1 to VK_F10 do
+    Proc(ShortCutToText(ShortCut(Key,Shift)));
 
   Proc(ShortCutToText(ShortCut(VK_INSERT,[])));
   Proc(ShortCutToText(ShortCut(VK_INSERT,[ssShift])));
