@@ -107,7 +107,12 @@ begin
       targetList := 'all';
 
     if xmlconfig = '' then
-      xmlconfig := 'pgEdit.xml';
+    begin
+      if FileExists('pg.xml') then
+        xmlconfig := 'pg.xml'
+      else
+        xmlconfig := 'pgEdit.xml';
+    end;
 
     if modelName = '' then
       modelName := 'JVCL';
