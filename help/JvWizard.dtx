@@ -56,6 +56,16 @@ Description
 See Also
   ActivePage, Pages
 ----------------------------------------------------------------------------------------------------
+@@TJvWizard.AutoSizeButtonBar
+Summary
+  Specifies whether the panel containing the buttons is hidden automatically.
+Description
+  Use AutoSizeButtonBar to indicate whether the panel holding the buttons is automatically hidden when there
+  are no buttons displayed. If AutoSizeButtonBar is false, the panel retains its size even if all buttons are
+  hidden.
+See Also
+  ButtonBarHeight
+----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonBack
 Summary
   Contains the properties for the back button.
@@ -66,9 +76,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonBarHeight
 Summary
-  Specifies the height of the button bar at the bottom.
+  Specifies the height of the button bar at the bottom of the wizard.
 Description
-  Use ButtonBarHeight to set the height of the panel where the navigation buttons are located.
+  Use ButtonBarHeight to set the height of the panel where the navigation buttons are located. If
+  AutoSizeButtonBar is true, the height of the button bar is adjusted automatically. To control the
+  height manually, set AutoSizeButtonBar to false.
+See Also
+  AutoSizeButtonBar
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonCancel
 Summary
@@ -192,7 +206,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnBackButtonClick, OnBackButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnCancelButtonClick
 Summary
@@ -203,7 +217,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnCancelButtonClick, OnCancelButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnFinishButtonClick
 Summary
@@ -214,7 +228,18 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnFinishButtonClick, OnFinishButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick
+----------------------------------------------------------------------------------------------------
+@@TJvWizard.OnHelpButtonClick
+Summary
+  Occurs when the help button is clicked.
+Description
+  Write a handler for the OnHelpButtonClick if you want to be notified when the hrlp button is clicked.
+  OnHelpButtonClick is a general handler for help button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnHelpButtonClick, OnHelpButtonClick> of TJvCustomPage
+  instead.
+See Also
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnLastButtonClick
 Summary
@@ -225,7 +250,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnLastButtonClick, OnLastButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnNextButtonClick
 Summary
@@ -236,7 +261,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnNextButtonClick, OnNextButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectFirstPage
 Summary
@@ -279,7 +304,7 @@ Description
   specific page only, use <LINK TJvWizardCustomPage.OnStartButtonClick, OnStartButtonClick> of TJvCustomPage
   instead.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.PageCount
 Summary
@@ -297,7 +322,7 @@ Description
   Use Pages to access the pages in the wizard using an index. To access the first page of the wizard, use
   Pages[0]. To access the last page, use Pages[PageCount-1].
 See Also
-  PageCount
+  PageCount, WizardPages
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectFirstPage
 Summary
@@ -346,8 +371,16 @@ Description
   does nothing.
 Note
   The route map is automatically assigned when dropped on the form.
-##See Also
-##  RouteMap
+----------------------------------------------------------------------------------------------------
+@@TJvWizard.WizardPages
+  Provides indexed access to the wizard's pages.
+Description
+  Use WizardPages to access the pages in the wizard using an index. To access the first page of the
+  wizard, use WizardPages[0]. To access the last page, use WizardPages[PageCount-1]. WizardPages is
+  similar to Pages but the return value is of type TJvWizardCustomPage, removing the necessity to
+  typecast the returned value.
+See Also
+  Pages, PageCount
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControl
 Summary
@@ -475,7 +508,7 @@ Description
   Write a handler for the OnBackButtonClick if you want to be notified when the back button is clicked
   on the current page.
 See Also
-  OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick, OnHelpButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnCancelButtonClick
 Summary
@@ -484,7 +517,7 @@ Description
   Write a handler for the OnCancelButtonClick if you want to be notified when the cancel button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick, OnHelpButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnEnterPage
 Summary
@@ -509,7 +542,16 @@ Description
   Write a handler for the OnFinishButtonClick if you want to be notified when the finish button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
+----------------------------------------------------------------------------------------------------
+@@TJvWizardCustomPage.OnHelpButtonClick
+Summary
+  Occurs when the help button is clicked.
+Description
+  Write a handler for the OnHelpButtonClick if you want to be notified when the help button is clicked
+  on the current page.
+See Also
+  OnBackButtonClick, OnCancelButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnLastButtonClick
 Summary
@@ -518,7 +560,7 @@ Description
   Write a handler for the OnLastButtonClick if you want to be notified when the last button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnNextButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnNextButtonClick
 Summary
@@ -527,7 +569,7 @@ Description
   Write a handler for the OnNextButtonClick if you want to be notified when the next button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnStartButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnPage
 Summary
@@ -552,7 +594,7 @@ Description
   Write a handler for the OnStartButtonClick if you want to be notified when the start button is clicked
   on the current page.
 See Also
-  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnHelpButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.PageIndex
 Summary
