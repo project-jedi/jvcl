@@ -25,7 +25,7 @@ peter3
 
 Peter Korf (created JvBlinkingLED from JvTransLED)
 
-Last Modified: 2003-07-
+Last Modified: 2003-10-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,14 +33,21 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBlinkingLED;
 
 interface
 
 uses
-  Windows, Classes, Graphics, ExtCtrls, JvComponent, JvTransLED;
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Windows, Controls, Graphics, ExtCtrls,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QControls, QGraphics, QExtCtrls,
+  {$ENDIF}
+  JvComponent, JvTransLED;
 
 type
   TJvBlinkingLED = class(TJvTransLED)
@@ -64,6 +71,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    {$IFDEF COMPLIB_VCL}
+    property DragCursor;
+    property DragKind;
+    property OnStartDock;
+    property OnEndDock;
+    {$ENDIF}
     property Align;
     property Anchors;
     property AutoSize;
@@ -73,8 +86,6 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property Active: Boolean read GetActive write SetActive default false;
     property Constraints;
-    property DragCursor;
-    property DragKind;
     property DragMode;
     property Height default 17;
     property ParentShowHint;
@@ -87,19 +98,16 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
 implementation
-uses
-  SysUtils, Controls;
+
 type
   TBlinkEvent = procedure(Sender: TObject; BlinkOn: boolean) of object;
   TBlinkThread = class(TThread)
