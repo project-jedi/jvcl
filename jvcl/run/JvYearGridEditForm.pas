@@ -46,7 +46,7 @@ type
     Panel1: TPanel;
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
-    Memo1: TMemo;
+    MemoText: TMemo;
     BtnLoad: TButton;
     BtnSave: TButton;
     OpenDialog1: TOpenDialog;
@@ -70,19 +70,19 @@ procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
     Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
-  Memo1.SetFocus;
+  MemoText.SetFocus;
 end;
 
 procedure TYearGridEditForm.BtnSaveClick(Sender: TObject);
 begin
   if SaveDialog1.Execute then
-    Memo1.Lines.SaveToFile(SaveDialog1.FileName);
-  Memo1.SetFocus;
+    MemoText.Lines.SaveToFile(SaveDialog1.FileName);
+  MemoText.SetFocus;
 end;
 
 procedure TYearGridEditForm.FormShow(Sender: TObject);
 begin
-  Memo1.SetFocus;
+  MemoText.SetFocus;
 end;
 
 end.
