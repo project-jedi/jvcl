@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-19:
+- updated bcb6 packages in CVS to reflect the xml sources. // obones
+- updated the build status page for BCB6 (all ok). // obones
 2003-11-18:
 - improved JvTurtle, some small API changes (method Interpret) // (rom)
 - JvAnalogClock, changed all name suffixes Hr to proper Hour (dtx updated)
