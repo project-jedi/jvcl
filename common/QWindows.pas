@@ -1421,67 +1421,46 @@ end;
 {---------------------------------------}
 
 // used internally
-procedure MapPainterLPwh(Handle: QPainterH; var Width, Height: Integer); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-
-    Matrix := QWMatrix_create(QWMatrix_m11(Matrix), QWMatrix_m12(Matrix),
-      QWMatrix_m21(Matrix), QWMatrix_m22(Matrix), 0, 0);
-    try
-      QWMatrix_map(Matrix, Width, Height, @Width, @Height);
-    finally
-      QWMatrix_destroy(Matrix);
-    end;
-  end;
-end;
-
 procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
 var
-  Matrix: QWMatrixH;
+  Pt: TPoint;
 begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, x, y, @x, @y);
-  end;
+  Pt := Point(x, y);
+  QPainter_xForm(Handle, PPoint(@Pt), PPoint(@Pt));
+  x := Pt.x;
+  y := Pt.y;
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
+begin
+  QPainter_xForm(Handle, PPoint(@Pt), PPoint(@Pt));
+end;
+
+procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
+begin
+  QPainter_xForm(Handle, PRect(@R), PRect(@R));
 end;
 
 procedure MapPainterLP(Handle: QPainterH; var x0, y0, x1, y1: Integer); overload;
 var
-  Matrix: QWMatrixH;
+  R: TRect;
 begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, x0, y0, @x0, @y0);
-    QWMatrix_map(Matrix, x1, y1, @x1, @y1);
-  end;
+  R := Rect(x0, y0, x1, y1);
+  QPainter_xForm(Handle, PRect(@R), PRect(@R));
+  x0 := R.Left;
+  y0 := R.Top;
+  x1 := R.Right;
+  y1 := R.Bottom;
 end;
 
-procedure MapPainterLP(Handle: QPainterH; var R: TRect); overload;
+procedure MapPainterLPwh(Handle: QPainterH; var Width, Height: Integer); overload;
 var
-  Matrix: QWMatrixH;
+  R: TRect;
 begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, PRect(@R), PRect(@R));
-  end;
-end;
-
-procedure MapPainterLP(Handle: QPainterH; var Pt: TPoint); overload;
-var
-  Matrix: QWMatrixH;
-begin
-  if QPainter_hasWorldXForm(Handle) then
-  begin
-    Matrix := QPainter_worldMatrix(Handle);
-    QWMatrix_map(Matrix, PPoint(@Pt), PPoint(@Pt));
-  end;
+  R := Rect(0, 0, Width, Height);
+  QPainter_xForm(Handle, PRect(@R), PRect(@R));
+  Width := R.Right - R.Left;
+  Height := R.Bottom - R.Top;
 end;
 
 function CreateMappedRegion(Handle: QPainterH; Region: QRegionH): QRegionH;
@@ -1493,59 +1472,56 @@ var
   Brush: QBrushH;
 begin
   Result := QRegion_create(Region);
-  if QPainter_hasWorldXForm(Handle) then
+  Matrix := QPainter_worldMatrix(Handle);
+
+  if (QWMatrix_m11(Matrix) = 1) and (QWMatrix_m12(Matrix) = 0) and
+     (QWMatrix_m21(Matrix) = 0) and (QWMatrix_m22(Matrix) = 1) then
   begin
-    Matrix := QPainter_worldMatrix(Handle);
+    if (QWMatrix_dx(Matrix) <> 0) or (QWMatrix_dy(Matrix) <> 0) then
+      QRegion_translate(Result, Round(QWMatrix_dx(Matrix)), Round(QWMatrix_dy(Matrix)));
+  end
+  else
+  begin
+    RelativeMatrix := QWMatrix_create(
+      QWMatrix_m11(Matrix), QWMatrix_m12(Matrix),
+      QWMatrix_m21(Matrix), QWMatrix_m22(Matrix),
+      0, 0
+    );
+    QRegion_boundingRect(Result, @R);
+    QRegion_translate(Result, -R.Left, -R.Top);
 
-    if (QWMatrix_m11(Matrix) = 1) and (QWMatrix_m12(Matrix) = 0) and
-       (QWMatrix_m21(Matrix) = 0) and (QWMatrix_m22(Matrix) = 1) then
-    begin
-      if (QWMatrix_dx(Matrix) <> 0) or (QWMatrix_dy(Matrix) <> 0) then
-        QRegion_translate(Result, Round(QWMatrix_dx(Matrix)), Round(QWMatrix_dy(Matrix)));
-    end
-    else
-    begin
-      RelativeMatrix := QWMatrix_create(
-        QWMatrix_m11(Matrix), QWMatrix_m12(Matrix),
-        QWMatrix_m21(Matrix), QWMatrix_m22(Matrix),
-        0, 0
-      );
-      QRegion_boundingRect(Result, @R);
-      QRegion_translate(Result, -R.Left, -R.Top);
+    Bmp1 := QBitmap_create(Abs(R.Right - R.Left), Abs(R.Bottom - R.Top), True,
+      QPixmapOptimization_DefaultOptim);
+    try
+      FillR := R;
+      OffsetRect(FillR, -R.Left, -R.Top);
 
-      Bmp1 := QBitmap_create(Abs(R.Right - R.Left), Abs(R.Bottom - R.Top), True,
+      Painter := QPainter_create(Bmp1);
+      try
+        QPainter_setClipRegion(Painter, Result);
+        QPainter_setClipping(Painter, True);
+
+        Brush := GetStockObject(BLACK_BRUSH);
+        QPainter_fillRect(Painter, @FillR, Brush);
+        DeleteObject(Brush);
+      finally
+        QPainter_destroy(Painter);
+      end;
+      QRegion_destroy(Result);
+
+      QWMatrix_map(RelativeMatrix, PRect(@R), PRect(@R));
+
+      Bmp2 := QBitmap_create(Abs(R.Right - R.Left), Abs(R.Bottom - R.Top), False,
         QPixmapOptimization_DefaultOptim);
       try
-        FillR := R;
-        OffsetRect(FillR, -R.Left, -R.Top);
-
-        Painter := QPainter_create(Bmp1);
-        try
-          QPainter_setClipRegion(Painter, Result);
-          QPainter_setClipping(Painter, True);
-
-          Brush := GetStockObject(BLACK_BRUSH);
-          QPainter_fillRect(Painter, @FillR, Brush);
-          DeleteObject(Brush);
-        finally
-          QPainter_destroy(Painter);
-        end;
-        QRegion_destroy(Result);
-
-        QWMatrix_map(RelativeMatrix, PRect(@R), PRect(@R));
-
-        Bmp2 := QBitmap_create(Abs(R.Right - R.Left), Abs(R.Bottom - R.Top), False,
-          QPixmapOptimization_DefaultOptim);
-        try
-          QPixmap_xForm(Bmp1, Bmp2, RelativeMatrix);
-          Result := QRegion_create(Bmp2);
-        finally
-          QBitmap_destroy(Bmp2);
-        end;
-
+        QPixmap_xForm(Bmp1, Bmp2, RelativeMatrix);
+        Result := QRegion_create(Bmp2);
       finally
-        QBitmap_destroy(Bmp1);
+        QBitmap_destroy(Bmp2);
       end;
+
+    finally
+      QBitmap_destroy(Bmp1);
     end;
   end;
 end;
@@ -3485,21 +3461,16 @@ end;
 
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 var
-  Matrix: QWMatrixH;
   P: PPoint;
 begin
   Result := True;
   try
-    if QPainter_hasWorldXForm(Handle) then
+    P := @Points;
+    while Count > 0 do
     begin
-      Matrix := QPainter_worldMatrix(Handle);
-      P := @Points;
-      while Count > 0 do
-      begin
-        Dec(Count);
-        QWMatrix_map(Matrix, P, P);
-        Inc(P);
-      end;
+      Dec(Count);
+      QPainter_xForm(Handle, P, P);
+      Inc(P);
     end;
   except
     Result := False;
@@ -3508,32 +3479,16 @@ end;
 
 function DPtoLP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 var
-  Matrix, InvertedMatrix: QWMatrixH;
   P: PPoint;
-  Invertable: Boolean;
 begin
   Result := True;
   try
-    if QPainter_hasWorldXForm(Handle) then
+    P := @Points;
+    while Count > 0 do
     begin
-      Matrix := QPainter_worldMatrix(Handle);
-      InvertedMatrix := QWMatrix_create;
-      try
-        Invertable := False;
-        QWMatrix_invert(Matrix, InvertedMatrix, @Invertable);
-        if Invertable then
-        begin
-          P := @Points;
-          while Count > 0 do
-          begin
-            Dec(Count);
-            QWMatrix_map(InvertedMatrix, P, P);
-            Inc(P);
-          end;
-        end;
-      finally
-        QWMatrix_destroy(InvertedMatrix);
-      end;
+      Dec(Count);
+      QPainter_xFormDev(Handle, P, P);
+      Inc(P);
     end;
   except
     Result := False;
