@@ -155,7 +155,8 @@ resourcestring
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
   RsEPathDoesntExists = 'Path ''%s'' does not exists';
-  RsENotABooleanValue = '''%s'' is not a valid boolean value'; 
+  RsENotABooleanValue = '''%s'' is not a valid boolean value';
+  RsENodeNameCannotContainSpaces = 'XML Node names cannot contain white space and the WhiteSpaceReplacement property is empty. Please set the WhiteSpaceReplacementProperty to a non empty value.';
 
 //=== JvAVICapture.pas =======================================================
 resourcestring

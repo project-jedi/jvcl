@@ -48,12 +48,16 @@ type
   // database field, if anyone is willing to write such
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
+  private
+    FWhiteSpaceReplacement: string;
   protected
     FXml: TJvSimpleXml;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
     function DefaultExtension : string; override;
+
+    function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
@@ -87,6 +91,7 @@ type
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
+    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write FWhiteSpaceReplacement;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -109,6 +114,7 @@ type
     property RootNodeName;
     property SubStorages;
     property OnGetFileName;
+    property WhiteSpaceReplacement;
   end;
 
 implementation
@@ -163,13 +169,14 @@ begin
   end;
 end;
 
-//=== { TJvAppXMLStorage } ===================================================
+//=== { TJvCustomAppXMLStorage } ===================================================
 
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
+  WhiteSpaceReplacement := '_';
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
@@ -180,14 +187,60 @@ begin
   FXml.Free;
 end;
 
+function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(
+  NodeName: string): string;
+var
+  J, K: Integer;
+  WSRLength: Integer;
+  InsertIndex: Integer;
+  WhiteSpaceCount: Integer;
+  FixedNodeName: string;
+begin
+  if StrContainsChars(NodeName, AnsiWhiteSpace, False) then
+  begin
+    WSRLength := Length(WhiteSpaceReplacement);
+    case WSRLength of
+      0:
+        raise EJVCLException.CreateRes(@RsENodeNameCannotContainSpaces);
+      1:
+        NodeName := StrReplaceChars(NodeName, AnsiWhiteSpace, WhiteSpaceReplacement[1]);
+      else
+        begin
+          WhiteSpaceCount := StrCharsCount(NodeName, AnsiWhiteSpace);
+          SetLength(FixedNodeName, Length(NodeName)+WhiteSpaceCount*(WSRLength - 1));
+          InsertIndex := 1;
+          for J := 1 to Length(NodeName) do
+          begin
+            if NodeName[J] in AnsiWhiteSpace then
+            begin
+              // if we have a white space then we replace it with the WSR string
+              for K := 1 to WSRLength do
+              begin
+                FixedNodeName[InsertIndex] := WhiteSpaceReplacement[K];
+                Inc(InsertIndex);
+              end;
+            end
+            else
+            begin
+              // else we simply copy the character
+              FixedNodeName[InsertIndex] := NodeName[J];
+              Inc(InsertIndex);
+            end;
+          end;
+          NodeName := FixedNodeName;
+        end;
+    end;
+  end;
+  Result := NodeName;
+end;
+
 procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
     raise EPropertyError.CreateRes(@RsENodeCannotBeEmpty)
   else
   begin
-    StringReplace(Value, ' ', '_', [rfReplaceAll]);
-    Xml.Root.Name := Value;
+    Xml.Root.Name := EnsureNoWhiteSpaceInNodeName(Value);
     Root := Value;
   end;
 end;
@@ -195,6 +248,7 @@ end;
 procedure TJvCustomAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
+  ValueName := EnsureNoWhiteSpaceInNodeName(ValueName);
   if Key = '' then
     Key := Path;
 end;
@@ -539,6 +593,7 @@ var
   NodeList: TStringList;
   I: Integer;
   Node: TJvSimpleXmlElem;
+  NodeName: string;
 begin
   Result := nil;
 
@@ -555,10 +610,20 @@ begin
       StrToStrings(Path, '\', NodeList, False);
       for I := 0 to NodeList.Count - 1 do
       begin
-        if Assigned(Node.Items.ItemNamed[NodeList[I]]) then
-          Node := Node.Items.ItemNamed[NodeList[I]]
-        else
-          Exit;
+        // Node names cannot have spaces in them so we replace
+        // those spaces by the replacement string. If there is
+        // no such string, we trigger an exception as the XML
+        // standard doesn't allow spaces in node names
+        NodeName := EnsureNoWhiteSpaceInNodeName(NodeList[I]);
+
+        // If the name is the same as the root AND the first in 
+        if not ((I = 0) and (NodeName = Xml.Root.Name)) then
+        begin
+          if Assigned(Node.Items.ItemNamed[NodeName]) then
+            Node := Node.Items.ItemNamed[NodeName]
+          else
+            Exit;
+        end;
       end;
     finally
       NodeList.Free;
