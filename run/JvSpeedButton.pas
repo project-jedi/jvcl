@@ -974,9 +974,10 @@ begin
         called until the window is closed, thus: }
       {$IFDEF VCL}
       Perform(CM_MOUSELEAVE, 0, 0);
-      {$ELSE}
-      MouseLeave(Self);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      MouseLeave(Self);
+      {$ENDIF VisualCLX}
       { Even if the mouse is not in the control (DoClick=False) we must redraw
         the image, because it must change from hot -> normal }
       //if not DoClick then

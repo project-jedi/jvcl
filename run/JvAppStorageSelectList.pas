@@ -219,9 +219,10 @@ begin
     {$IFDEF VCL}
     DefaultMonitor := dmActiveForm;
     BorderStyle := bsDialog;
-    {$ELSE}
-    BorderStyle := fbsDialog;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsDialog;
+    {$ENDIF VisualCLX}
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnDestroy := SelectFormDestroying;

@@ -400,10 +400,11 @@ begin
     FAlignment := Value;
     {$IFDEF VCL}
     RecreateWnd;
-    {$ELSE}
-    inherited Alignment := FAlignment;
-    Invalidate; // (ahuser) clx draws the edit control itself
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    inherited Alignment := FAlignment;
+    Invalidate;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -721,13 +722,14 @@ begin
     FFlat := Value;
     {$IFDEF VCL}
     Ctl3D := FFlat;
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     if FFlat then
       BorderStyle := bsNone
     else
       BorderStyle := bsSingle;
     Invalidate;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
   end;
 end;
 

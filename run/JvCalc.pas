@@ -1183,11 +1183,7 @@ var
   Popup: TPopupMenu;
   Items: array [0..1] of TMenuItem;
 begin
-  {$IFDEF BCB}
-  inherited CreateNew(AOwner, 0);
-  {$ELSE}
-  inherited CreateNew(AOwner);
-  {$ENDIF BCB}
+  inherited CreateNew(AOwner, 0); // for BCB
   BorderIcons := [biSystemMenu];
   {$IFDEF VCL}
   BorderStyle := bsDialog;

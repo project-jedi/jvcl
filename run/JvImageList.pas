@@ -335,10 +335,11 @@ begin
       {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-      {$ELSE}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      {$ENDIF VCL}
+      {$ENDIF VisualCLX}
 
       TempImageList.AddMasked(Bmp, MaskColor);
     end;
@@ -388,10 +389,11 @@ begin
       {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-      {$ELSE}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      {$ENDIF VCL}
+      {$ENDIF VisualCLX}
 
       MaskBmp.Width := 0; // clear bitmap
       MaskBmp.Width := Width;
@@ -399,10 +401,11 @@ begin
       {$IFDEF VCL}
       BitBlt(MaskBmp.Canvas.Handle, 0, 0, Width, Height,
         MaskBitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-      {$ELSE}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       MaskBmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
         MaskBitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
-      {$ENDIF VCL}
+      {$ENDIF VisualCLX}
 
       TempImageList.Add(Bmp, MaskBmp);
     end;

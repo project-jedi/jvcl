@@ -782,9 +782,10 @@ begin
     if (Frames[Index] <> nil) and not Frames[Index].Icon.Empty then
       {$IFDEF VCL}
       DrawRealSizeIcon(ACanvas, Frames[Index].Icon, ARect.Left, ARect.Top);
-      {$ELSE}
-      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      ACanvas.Draw(ARect.Left, ARect.Top, Frames[Index].Icon);
+      {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}

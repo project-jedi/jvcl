@@ -174,10 +174,11 @@ resourcestring
   RsSourceBitmapTooSmall = 'Source bitmap too small';
 
 const
+  {$IFDEF VCL}
+  bpp = 3;
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   bpp = 4;
-  {$ELSE}
-  bpp = 3;
   {$ENDIF VisualCLX}
 
 function TrimInt(N, Min, Max: Integer): Integer;

@@ -401,10 +401,11 @@ begin
     with Canvas do
     begin
       Brush.Color := clBlack;
+      {$IFDEF VCL}
+      FrameRect(GetClientRect);
+      {$ENDIF VCL}
       {$IFDEF VisualCLX}
       FrameRect(Canvas, GetClientRect);
-      {$ELSE}
-      FrameRect(GetClientRect);
       {$ENDIF VisualCLX}
     end;
 end;

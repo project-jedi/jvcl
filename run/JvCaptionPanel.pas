@@ -400,9 +400,10 @@ begin
   FAutoDrag := True;
   {$IFDEF VCL}
   FCaptionColor := clActiveCaption;
-  {$ELSE}
-  FCaptionColor := clActiveHighlight;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FCaptionColor := clActiveHighlight;
+  {$ENDIF VisualCLX}
   FFlat := False;
   for I := Low(FButtonArray) to High(FButtonArray) do //Iterate
   begin
@@ -479,9 +480,10 @@ begin
     FDrawPosition := Value;
     {$IFDEF VCL}
     RecreateWnd;
-    {$ELSE}
-    RecreateWidget;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    RecreateWidget;
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -827,16 +829,17 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     {$IFDEF VCL}
     SetCapture(Handle);
-    {$ELSE}
-    SetMouseGrabControl(Self);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    SetMouseGrabControl(Self);
+    {$ENDIF VisualCLX}
     FAnchorPos := Point(X, Y);
-    {$ELSE}
+   {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 

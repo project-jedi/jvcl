@@ -59,12 +59,13 @@ const
 type
   {$IFDEF VCL}
   TCMDenySubClassing = TMessage;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TCMDenySubClassing = record
     Msg: Integer;
     Result: Integer;
   end;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 
   TWinControlThemeInfo = class(TWinControl)
   public
@@ -743,9 +744,10 @@ type
   {$IFDEF COMPILER7_UP}
    {$IFDEF VCL}
   TThemeStyle = TControlStyle;
-   {$ELSE}
-  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
    {$ENDIF VCL}
+   {$IFDEF VisualCLX}
+  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
+   {$ENDIF VisualCLX}
   {$ELSE}
   TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
   {$ENDIF COMPILER7_UP}

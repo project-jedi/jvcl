@@ -143,10 +143,11 @@ begin
   begin
     {$IFDEF VCL}
     Txt := PChar(Text);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Txt := Text;
     Start;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     LastBkMode := GetBkMode(Handle);
     try
       Font := Self.Font;
@@ -154,10 +155,8 @@ begin
       R := Rect(0, H div 2 - 1, Width, Height);
       {$IFDEF VCL}
       if Ctl3D then
-      {$ELSE}
-      if True then
-      {$ENDIF VCL}
       begin
+      {$ENDIF VCL}
         Inc(R.Left);
         Inc(R.Top);
         Brush.Color := clBtnHighlight;
@@ -168,14 +167,15 @@ begin
         {$ENDIF VCL}
         OffsetRect(R, -1, -1);
         Brush.Color := clBtnShadow;
+      {$IFDEF VCL}
       end
       else
         Brush.Color := clWindowFrame;
-      {$IFDEF VCL}
       FrameRect(R);
-      {$ELSE}
-      QWindows.FrameRect(Canvas, R);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      QWindows.FrameRect(Canvas, R);
+      {$ENDIF VisualCLX}
       if Text <> '' then
       begin
         if not UseRightToLeftAlignment then

@@ -1970,9 +1970,10 @@ begin
       FillRect(Rect(0, 0, Images.Width, Images.Height));
       {$IFDEF VCL}
       ImageList_Draw(Images.Handle, Index, Handle, 0, 0, ILD_MASK);
-      {$ELSE}
-      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Images.Draw(Bmp.Canvas, 0, 0, Index, itMask);
+      {$ENDIF VisualCLX}
     end;
     Bmp.Monochrome := True;
     if DrawHighlight then
@@ -3354,9 +3355,10 @@ var
 begin
   {$IFDEF VCL}
   wnd := HWND;
-  {$ELSE}
-  wnd := QWidget_winId(HWND);
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  wnd := QWidget_winId(HWND);
+  {$ENDIF VisualCLX}
   Pointer(psl) := nil;
   Pointer(ppf) := nil;
   Result := CoInitialize(nil);
@@ -5990,10 +5992,11 @@ begin
   finally
     Free;
   end;
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   Result.cx := 12;
   Result.cy := 12;
-  {$ENDIF VCL}
+  {$ENDIF VisualCLX}
 end;
 
 function CanvasMaxTextHeight(Canvas: TCanvas): Integer;

@@ -807,6 +807,7 @@ begin
 end;
 
 {$IFDEF USEJVCL}
+
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
@@ -863,7 +864,9 @@ begin
   end;
   inherited ScanTreeZone(TreeZone);
 end;
+
 {$ELSE}
+
 procedure TJvDockInfoTree.ScanTreeZone(TreeZone: TJvDockBaseZone);
 var
   I: Integer;
@@ -949,6 +952,7 @@ begin
   end;
   inherited ScanTreeZone(TreeZone);
 end;
+
 {$ENDIF USEJVCL}
 
 function TJvDockInfoTree.FindDockForm(FormName: string): TCustomForm;

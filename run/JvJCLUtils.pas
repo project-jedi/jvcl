@@ -1007,9 +1007,10 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Consts, 
-  {$ELSE}
-  QConsts,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QConsts,
+  {$ENDIF VisualCLX}
   JclStrings, JclSysInfo;
 
 const
@@ -3232,11 +3233,7 @@ begin
   try
     Canvas.Handle := DC;
     Result := Canvas.TextHeight(AStr);
-    {$IFDEF VCL}
-    Canvas.Handle := 0;
-    {$ELSE}
-    Canvas.Handle := nil;
-    {$ENDIF VCL}
+    Canvas.Handle := NullHandle;
   finally
     ReleaseDC(HWND_DESKTOP, DC);
     Canvas.Free;
@@ -3254,11 +3251,7 @@ begin
   try
     Canvas.Handle := DC;
     Result := Canvas.TextWidth(AStr);
-    {$IFDEF VCL}
-    Canvas.Handle := 0;
-    {$ELSE}
-    Canvas.Handle := nil;
-    {$ENDIF VCL}
+    Canvas.Handle := NullHandle;
   finally
     ReleaseDC(HWND_DESKTOP, DC);
     Canvas.Free;

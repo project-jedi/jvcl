@@ -185,7 +185,8 @@ type
   // foDisableVerify: if True, allows you to insert a font name that doesn't exist (by assigning to FontName)
   TJvFontComboOptions = set of TJvFontComboOption;
   TJvDrawPreviewEvent = procedure (Sender:TObject;const AFontName: string; var APreviewText: string;
-      ATextWidth: integer; var DrawPreview:boolean) of object;
+      ATextWidth: Integer; var DrawPreview:Boolean) of object;
+
   TJvFontComboBox = class(TJvCustomComboBox)
   private
     FTrueTypeBmp: TBitmap;
@@ -196,10 +197,10 @@ type
     FHiliteText: TColor;
     FUseImages: Boolean;
     FOptions: TJvFontComboOptions;
-    FMRUCount: integer;
-    FWasMouse: boolean;
-    FShowMRU: boolean;
-    FMaxMRUCount: integer;
+    FMRUCount: Integer;
+    FWasMouse: Boolean;
+    FShowMRU: Boolean;
+    FMaxMRUCount: Integer;
     FOnDrawPreviewEvent: TJvDrawPreviewEvent;
     procedure SetUseImages(Value: Boolean);
     procedure SetDevice(Value: TFontDialogDevice);
@@ -214,8 +215,8 @@ type
     procedure SetSorted(const Value: Boolean);
     function GetDropDownWidth: Integer;
     procedure SetDropDownWidth(const Value: Integer);
-    procedure SetShowMRU(const Value: boolean);
-    procedure SetMaxMRUCount(const Value: integer);
+    procedure SetShowMRU(const Value: Boolean);
+    procedure SetMaxMRUCount(const Value: Integer);
   protected
     procedure FontChanged; override;
     procedure Loaded; override;
@@ -230,16 +231,16 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     function DoDrawPreview(const AFontName: string; var APreviewText: string;
-      ATextWidth: integer): boolean;virtual;
+      ATextWidth: Integer): Boolean;virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function AddToMRU: integer;
+    function AddToMRU: Integer;
     procedure ClearMRU;
     procedure Click; override;
     function FontSubstitute(const AFontName: string): string;
     property Text;
-    property MRUCount: integer read FMRUCount;
+    property MRUCount: Integer read FMRUCount;
   published
     property Anchors;
     property AutoComplete default False;
@@ -254,7 +255,7 @@ type
     property Constraints;
     property Color;
     property DroppedDownWidth: Integer read GetDropDownWidth write SetDropDownWidth;
-    property MaxMRUCount: integer read FMaxMRUCount write SetMaxMRUCount;
+    property MaxMRUCount: Integer read FMaxMRUCount write SetMaxMRUCount;
     property FontName: string read GetFontName write SetFontName;
     property Device: TFontDialogDevice read FDevice write SetDevice default fdScreen;
     property DragMode;
@@ -857,7 +858,7 @@ procedure TJvFontComboBox.GetFonts;
 var
   DC: HDC;
   MRUItems: TStringlist;
-  i: integer;
+  i: Integer;
 begin
   HandleNeeded;
   if not HandleAllocated then
@@ -944,7 +945,7 @@ begin
   end;
 end;
 
-function TJvFontComboBox.DoDrawPreview(const AFontName:string; var APreviewText:string; ATextWidth:integer):boolean;
+function TJvFontComboBox.DoDrawPreview(const AFontName:string; var APreviewText:string; ATextWidth:Integer):Boolean;
 begin
   Result := ATextWidth < ClientWidth;
   if Assigned(FOnDrawPreviewEvent) then FOnDrawPreviewEvent(self, AFontName, APreviewText, ATextWidth, Result);
@@ -1169,7 +1170,7 @@ begin
   SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
 end;
 
-procedure TJvFontComboBox.SetShowMRU(const Value: boolean);
+procedure TJvFontComboBox.SetShowMRU(const Value: Boolean);
 begin
   if FShowMRU <> Value then
   begin
@@ -1181,7 +1182,7 @@ begin
   end;
 end;
 
-function TJvFontComboBox.AddToMRU: integer;
+function TJvFontComboBox.AddToMRU: Integer;
 var
   I: Integer;
 begin
@@ -1226,7 +1227,7 @@ end;
 
 procedure TJvFontComboBox.CloseUp;
 begin
-  inherited;
+  inherited CloseUp;
   if FShowMRU then
   begin
     AddToMRU;
@@ -1251,7 +1252,7 @@ begin
   inherited;
 end;
 
-procedure TJvFontComboBox.SetMaxMRUCount(const Value: integer);
+procedure TJvFontComboBox.SetMaxMRUCount(const Value: Integer);
 var
   S: string;
 begin

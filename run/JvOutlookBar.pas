@@ -603,8 +603,10 @@ var
   OBPage: TJvOutlookBarPage;
   OB: TJvOutlookBar;
 begin
-  OBPage := TJvOutlookBarPage(TJvOutlookBarButtons(Self.Collection).Owner);
-  OB := TJvOutlookBar(TJvOutlookBarPages(OBPage.Collection).Owner);
+ // (ahuser) GetOwner is Delphi 5 compilable. When we remove D5 code we can
+ //          use .Owner
+  OBPage := TJvOutlookBarPage(TJvOutlookBarButtons(Self.Collection).GetOwner);
+  OB := TJvOutlookBar(TJvOutlookBarPages(OBPage.Collection).GetOwner);
   if Assigned(OB) then
   begin
     if OB.FPressedButtonIndex = Index then

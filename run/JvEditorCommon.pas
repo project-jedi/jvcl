@@ -213,9 +213,10 @@ const
 
   {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
-  {$ELSE}
-  WM_EDITCOMMAND = CM_BASE + $101;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  WM_EDITCOMMAND = CM_BASE + $101;
+  {$ENDIF VisualCLX}
 
 type
   EJvEditorError = class(Exception);

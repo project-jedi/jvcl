@@ -220,11 +220,11 @@ type
   TJvDockBasicConjoinServerOptionClass = class of TJvDockBasicConjoinServerOption;
   TJvDockBasicTabServerOptionClass = class of TJvDockBasicTabServerOption;
 
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   TJvDockBasicStyle = class(TJvComponent)
-{$ELSE}
+  {$ELSE}
   TJvDockBasicStyle = class(TComponent)
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   private
     FDockPanelClass: TJvDockPanelClass;
     FDockSplitterClass: TJvDockSplitterClass;
@@ -352,11 +352,11 @@ type
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
   end;
 
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   TJvDockBaseControl = class(TJvComponent)
-{$ELSE}
+  {$ELSE}
   TJvDockBaseControl = class(TComponent)
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   private
     FEnableDock: Boolean;
     FLeftDock: Boolean;

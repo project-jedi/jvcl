@@ -34,9 +34,10 @@ uses
   SysUtils, Classes, Contnrs,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls, CommCtrl, StdActns,
-  {$ELSE}
-  QGraphics, QControls, QForms, QComCtrls, QStdActns,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QComCtrls, QStdActns,
+  {$ENDIF VisualCLX}
   JVCLVer, JvExComCtrls;
 
 type

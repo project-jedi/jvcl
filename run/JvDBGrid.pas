@@ -35,13 +35,12 @@ interface
 
 uses
   Windows,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
-  Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
-  StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
-  JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
-  JvJCLUtils, JvMaskEdit, JvBaseEdits, JvDBLookup, JvExDBGrids;
+  {$ENDIF COMPILER6_UP}
+  Messages, Classes, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
+  ExtCtrls, DB, DBGrids,
+  JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids;
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
@@ -131,7 +130,7 @@ type
     FPostOnEnter: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
-    FTitlePopUp: TPopUpMenu;
+    FTitlePopUp: TPopupMenu;
     FOnTitleHintEvent: TTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
     // End Lionel
@@ -239,9 +238,9 @@ type
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     // End Lionel
-{$IFNDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-{$ENDIF !COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
     procedure DoMaxColWidth; virtual;
@@ -326,7 +325,7 @@ type
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
     property TitleArrow: Boolean read FTitleArrow write SetTitleArrow default False;
-    property TitlePopup: TPopUpMenu read FTitlePopup write FTitlePopup;
+    property TitlePopup: TPopupMenu read FTitlePopup write FTitlePopup;
     property OnTitleHintEvent: TTitleHintEvent read FOnTitleHintEvent write FOnTitleHintEvent;
     property OnTitleArrowMenuEvent: TNotifyEvent read FOnTitleArrowMenuEvent write FOnTitleArrowMenuEvent;
     // End Lionel
@@ -342,8 +341,8 @@ implementation
 
 uses
   SysUtils, Dialogs, DbConsts, Math, TypInfo,
-  JvDBUtils, JvJVCLUtils, JvConsts, JvResources, JvTypes,
-  JvDBGridSelectColumnForm;
+  JvConsts, JvResources, JvTypes,
+  JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
 
 {$R ..\Resources\JvDBGrid.res}
 
@@ -364,7 +363,7 @@ const
 // (rom) changed to var
 var
   GridBitmaps: array[TGridPicture] of TBitmap =
-  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
 function GetGridBitmap(BmpType: TGridPicture): TBitmap;
 begin
@@ -394,7 +393,7 @@ end;
 
 {$IFDEF COMPILER6_UP}
 type
-  TMyInplaceEdit = class(TInplaceEditList)
+  TInternalInplaceEdit = class(TInplaceEditList)
   private
     FDataList: TJvDBLookupList; //  TDBLookupListBox
     FUseDataList: Boolean;
@@ -633,14 +632,14 @@ end;
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
   // Lionel
-{$IFDEF COMPILER6_UP}
-  Result := TMyInplaceEdit.Create(Self);
+  {$IFDEF COMPILER6_UP}
+  Result := TInternalInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-{$ELSE}
+  {$ELSE}
   Result := inherited CreateEditor;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -1125,7 +1124,7 @@ begin
       case self.SortMarker of
         smUp:   self.SortMarker := smDown;
         smDown: self.SortMarker := smUp;
-      end;  
+      end;
     end
     else
     begin
@@ -2249,6 +2248,7 @@ begin
   InvalidateEditor;
   Click;
 end;
+
 {$ENDIF !COMPILER6_UP}
 
 procedure TJvDBGrid.EditButtonClick;
@@ -2439,18 +2439,18 @@ begin
 end;
 
 // ***********************************************************************
-// TMyInplaceEdit
+// TInternalInplaceEdit
 // ***********************************************************************
 
 {$IFDEF COMPILER6_UP}
 
-constructor TMyInplaceEdit.Create(Owner: TComponent);
+constructor TInternalInplaceEdit.Create(Owner: TComponent);
 begin
   inherited Create(Owner);
   FLookupSource := TDataSource.Create(Self);
 end;
 
-procedure TMyInplaceEdit.CloseUp(Accept: Boolean);
+procedure TInternalInplaceEdit.CloseUp(Accept: Boolean);
 var
   MasterField: TField;
   ListValue: Variant;
@@ -2484,12 +2484,12 @@ begin
   end;
 end;
 
-procedure TMyInplaceEdit.DoEditButtonClick;
+procedure TInternalInplaceEdit.DoEditButtonClick;
 begin
   TJvDBGrid(Grid).EditButtonClick; //   TCustomDBGrid
 end;
 
-procedure TMyInplaceEdit.DropDown;
+procedure TInternalInplaceEdit.DropDown;
 var
   Column: TColumn;
 begin
@@ -2518,7 +2518,7 @@ begin
   inherited DropDown;
 end;
 
-procedure TMyInplaceEdit.UpdateContents;
+procedure TInternalInplaceEdit.UpdateContents;
 var
   Column: TColumn;
 begin
@@ -2548,7 +2548,7 @@ type
     EndPos: Integer;
   end;
 
-procedure TMyInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 
   procedure SendToParent;
   begin
@@ -2614,7 +2614,7 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
-function TMyInplaceEdit.DoMouseWheel(Shift: TShiftState;
+function TInternalInplaceEdit.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
   // Do not validate a record by error

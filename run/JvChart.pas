@@ -1858,9 +1858,10 @@ begin
     exit;
   {$IFDEF VCL}
   MyGraphVertFont; // Select Vertical Font Output.
-  {$ELSE}
-  MyAxisFont;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  MyAxisFont;
+  {$ENDIF VisuaLCLX}
   if Options.XStartOffset > 10 then
   begin
       {ht := MyTextHeight(strText); }// not used (ahuser)
@@ -1874,9 +1875,10 @@ begin
       // NOTE: Because of the logical font selected, this time TextOut goes vertical.
       // If this doesn't go vertical, it may be because the font selection above failed.
     MyLeftTextOut(horiz, vert, strText);
-    {$ELSE}
-    TextOutAngle(ChartCanvas, 90, horiz, vert, strText);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TextOutAngle(ChartCanvas, 90, horiz, vert, strText);
+    {$ENDIF VisualCLX}
   end;
   MyAxisFont;
 //   Self.MyLeftTextOut(horiz,vert+50,'*');

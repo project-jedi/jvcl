@@ -38,9 +38,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Controls, Forms, StdCtrls, ComCtrls,
-  {$ELSE}
-  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QTypes, QControls, QForms, QStdCtrls, QComCtrls,
+  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent;
 
@@ -120,13 +121,8 @@ end;
 
 procedure TJvProgressComponent.Execute;
 begin
-  {$IFDEF BCB}
   if not Assigned(FForm) then
-    FForm := TJvProgressForm.CreateNew(Self, 1);
-  {$ELSE}
-  if not Assigned(FForm) then
-    FForm := TJvProgressForm.CreateNew(Self);
-  {$ENDIF BCB}
+    FForm := TJvProgressForm.CreateNew(Self, 1); // BCB compatible
   try
     FForm.Caption := Caption;
     with FForm do
@@ -135,9 +131,10 @@ begin
       ClientHeight := 98;
       {$IFDEF VCL}
       BorderStyle := bsDialog;
-      {$ELSE}
-      BorderStyle := fbsDialog;
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      BorderStyle := fbsDialog;
+      {$ENDIF VisualCLX}
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
       Scaled := false;

@@ -48,12 +48,11 @@ type
     FDataSource: TDataSource;
     FJvDBGrid: TJvDBGrid;
     FSelectColumn: TSelectColumn;
-    FColumnUpdate: boolean;
-    FCanHide: boolean;
+    FColumnUpdate: Boolean;
+    FCanHide: Boolean;
     FNoSelectionWarning: string;
     procedure ResizeForm;
     function GetColumn(aField: TField): TColumn;
-    { Déclarations privées }
   public
     property DataSource: TDataSource read FDataSource write FDataSource;
     property Grid: TJvDBGrid read FJvDBGrid write FJvDBGrid;

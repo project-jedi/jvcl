@@ -589,9 +589,10 @@ begin
     FDropDownMenu.Popup(GetClientOrigin.X, GetClientOrigin.Y + Height);
     {$IFDEF VCL}
     Perform(CM_MOUSELEAVE, 0, 0);
-    {$ELSE}
-    MouseLeave(Self);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    MouseLeave(Self);
+    {$ENDIF VisualCLX}
   end;
 end;
 
