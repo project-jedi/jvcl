@@ -36,7 +36,7 @@
   <target name="jcl_export" description="Get latest jcl from CVS">
 <!--  <delete dir="jcl" /> -->
   <cvs
-    command="export -D jcl"
+    command="export -d jcl"
     cvsroot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jcl"
     dest="."
     package="jcl"
@@ -47,7 +47,7 @@
   <target name="jvcl_export" description="Get latest jvcl from CVS">
 <!--  <delete dir="jvcl" /> -->
   <cvs
-    command="export -D jvcl"
+    command="export -d jvcl"
     cvsroot=":pserver:anonymous@cvs.jvcl.sourceforge.net:/cvsroot/jvcl"
     dest="."
     package="dev/JVCL3"
@@ -60,6 +60,11 @@
     <zip zipfile="${fullzip}">
       <fileset>
         <exclude name=".cvsignore" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
         <include name="./jcl/**" />
         <include name="./jvcl/**" />
       </fileset>
@@ -69,6 +74,11 @@
       <fileset>
         <exclude name=".cvsignore" />
         <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/bin/**" />
         <include name="./jvcl/common/**" />
         <include name="./jvcl/dcu/**" />
@@ -87,6 +97,11 @@
     <zip zipfile="${srczip}">
       <fileset>
         <exclude name=".cvsignore" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
         <include name="./jvcl/common/**" />
         <include name="./jvcl/design/**" />
         <include name="./jvcl/install/JVCL3Install/**" />
@@ -104,95 +119,130 @@
     <delete file="${uibzip}" />
     <zip zipfile="${uibzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvUIB*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/Includes/**" />
-          <include name="./jvcl/examples/JvUIB/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvUIB*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/Includes/**" />
+        <include name="./jvcl/examples/JvUIB/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${tfzip}" />
     <zip zipfile="${tfzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvTF*" />
-          <include name="./jvcl/**/JvTimeFramework*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/examples/JvTimeFrameWork/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvTF*" />
+        <include name="./jvcl/**/JvTimeFramework*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvTimeFrameWork/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${mtzip}" />
     <zip zipfile="${mtzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvMT*" />
-          <include name="./jvcl/**/JvManagedThreads*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/examples/JvManagedThreads/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvMT*" />
+        <include name="./jvcl/**/JvManagedThreads*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvManagedThreads/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${dotnetzip}" />
     <zip zipfile="${dotnetzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvDotNet*" />
-          <include name="./jvcl/**/JvDBDotNet*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/examples/JvDotNetCtrls/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvDotNet*" />
+        <include name="./jvcl/**/JvDBDotNet*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvDotNetCtrls/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${dockzip}" />
     <zip zipfile="${dockzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvDock**" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/examples/JvDocking/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvDock**" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvDocking/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${xpzip}" />
     <zip zipfile="${xpzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvXP*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/examples/JvXPControls/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvXP*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/examples/JvXPControls/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
     <delete file="${wizzip}" />
     <zip zipfile="${wizzip}">
       <fileset>
-          <exclude name="./jvcl/archive/**" />
-          <exclude name="./jvcl/images/**" />
-          <exclude name="./jvcl/packages/xml/**" />
-          <include name="./jvcl/*" />
-          <include name="./jvcl/**/JvWizard*" />
-          <include name="./jvcl/help/**" />
-          <include name="./jvcl/install/JVCL3Install/**" />
+        <exclude name="./jvcl/archive/**" />
+        <exclude name="./jvcl/images/**" />
+        <exclude name="./jvcl/packages/xml/**" />
+        <exclude name="./jvcl/JvQ*/**" />
+        <exclude name="./jvcl/Q*/**" />
+        <exclude name="./jvcl/qcommon/**" />
+        <exclude name="./jvcl/qdesign/**" />
+        <exclude name="./jvcl/qrun/**" />
+        <include name="./jvcl/*" />
+        <include name="./jvcl/**/JvWizard*" />
+        <include name="./jvcl/help/**" />
+        <include name="./jvcl/install/JVCL3Install/**" />
       </fileset>
     </zip>
   </target>
