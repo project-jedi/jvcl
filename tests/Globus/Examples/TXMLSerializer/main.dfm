@@ -21,7 +21,7 @@ object fglXMLSerializerDemo: TfglXMLSerializerDemo
     Top = 132
     Width = 82
     Height = 13
-    Caption = 'Тестовый файл:'
+    Caption = 'Test File:'
   end
   object bLoadXML: TButton
     Left = 312
@@ -48,14 +48,13 @@ object fglXMLSerializerDemo: TfglXMLSerializerDemo
     Height = 89
     BorderStyle = bsNone
     Color = clBtnFace
-    Lines.Strings = (
-      'Пример демонстрирует сохранение '
-      'класса в XML и загрузку данных из '
-      'XML.'
-      ''
-      'Перед сохранением класс '
-      'инициализируется тестовыми '
-      'данными.')
+    Lines.Strings = (   
+'this example demonstrates saving'
+'a class in XML and load of data from '
+' XML.'
+' Before saving the class will be ' 
+' initialized with test data ')       
+      
     ReadOnly = True
     TabOrder = 2
   end
@@ -87,3 +86,4 @@ object fglXMLSerializerDemo: TfglXMLSerializerDemo
     Top = 8
   end
 end
+

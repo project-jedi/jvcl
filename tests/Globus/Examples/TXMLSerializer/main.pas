@@ -1,9 +1,6 @@
 unit main;
-{
-Пример демонстрирует сохранение класса в XML и загрузку данных из XML.
-
-Перед сохранением класс инициализируется тестовыми данными.
-
+{ the Example shows saving/loading of a class into/from XML.
+Before saving, the class is initialized by the test data.
 
 coded by Xelby, 09.2001
 }
@@ -11,7 +8,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvgXMLSerializer;
+  StdCtrls, JvgXMLSerializer, JvComponent;
 
 type
   TfglXMLSerializerDemo = class(TForm)
@@ -30,7 +27,7 @@ type
     procedure glXMLSerializerGetXMLHeader(Sender: TObject;
       var Value: String);
   private
-    sTestFileName: string; // файл лдя сохранения XML
+    sTestFileName: string; // File to be saved to XML
   public
     { Public declarations }
   end;
@@ -43,17 +40,18 @@ uses testClasses, ShellApi;
 {$R *.DFM}
 
 var
-    Catalogue: TCatalogue; // класс, который будем сохранять и загружать
+    Catalogue: TCatalogue; // the class, which we will preserve and load
 
 procedure TfglXMLSerializerDemo.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
-  { будем использовать локальный файл test.xml }
+  {  we will use the local file  test.xml}
   sTestFileName := ExtractFilePath(ParamStr(0)) + 'test.xml';
   eTestFileName.Text := sTestFileName;
 
-  { TCatalogue - класс, на котором будем тренироваться }
+  { TCatalogue - class which we will test}
+
   Catalogue := TCatalogue.Create(self);
 end;
 
@@ -65,16 +63,16 @@ end;
 
 
 
-{ Сохранени объекта в XML }
+{ Save object into XML }
 procedure TfglXMLSerializerDemo.bSaveXMLClick(Sender: TObject);
 var
   fs: TFileStream;
   i: integer;
 begin
 
-  { Наполняем объект произвольными данными }
+  //We fill object with the any data
 
-  Catalogue.Header := 'Каталог описаний книжных новинок';
+  Catalogue.Header := 'Catalog of descriptions of book news';
   for i := 1 to 30 do
   with Catalogue.Documents.Add do
   begin
@@ -83,7 +81,7 @@ begin
     Author := 'Author ' + IntToStr(i);
     PublicDate :=DateTimeToStr(now);
   end;
-  Catalogue.Footer := 'Создано ' + DateToStr(date);
+  Catalogue.Footer := 'Created ' + DateToStr(date);
 
   { сохраняем }
   try
@@ -93,12 +91,12 @@ begin
     fs.Free;
   end;
 
-  ShowMessage('Объект сохранен в файл');
+  ShowMessage('Object is saved to the file ');
 end;
 
 
 
-{ Инициализация объекта из XML }
+{ Initialization of object from XML }
 procedure TfglXMLSerializerDemo.bLoadXMLClick(Sender: TObject);
 var
   fs: TFileStream;
@@ -110,17 +108,17 @@ begin
   finally
     fs.Free;
   end;
-  ShowMessage('Объект загружен. Запией: ' + IntToStr(Catalogue.Documents.Count));
+  ShowMessage('Object is loaded. Запией: ' + IntToStr(Catalogue.Documents.Count));
 end;
 
-{ Открытие в браузере }
+{ Open in browser}
 procedure TfglXMLSerializerDemo.bViewXMLClick(Sender: TObject);
 begin
   ShellExecute(0, 'open', PChar(sTestFileName), 0, 0, SW_SHOW);
 end;
 
 
-{ Стандартный заголовок с указанием кодировки для русских букв }
+{ Standard title with the indication of coding for the Russian letters}
 procedure TfglXMLSerializerDemo.glXMLSerializerGetXMLHeader(Sender: TObject; var Value: String);
 begin
   Value := '<?xml version="1.0" encoding="windows-1251"?>';
