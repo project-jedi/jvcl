@@ -263,7 +263,7 @@ begin
         AssignFile(dfm, ChangeFileExt(Name, '.dfm'));
         Reset(dfm);
         ReadLn(dfm, line);
-        row[8] := Copy(line, Pos(' ', line)+1, Pos(':', line)-Pos(' ', line)-1);
+        row[12] := Copy(line, Pos(' ', line)+1, Pos(':', line)-Pos(' ', line)-1);
         CloseFile(dfm);
       end;
     end;
@@ -342,7 +342,7 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     FileName := jdePackagesLocation.Text
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix('\', GetCurrentDir) + jdePackagesLocation.Text);
+    FileName := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
   FileName := FileName + '\xml\' + ledName.Text;
   if rbtDesign.Checked then
     FileName := FileName + '-D.xml'
@@ -433,7 +433,7 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     xmlFileName := jdePackagesLocation.Text
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix('\', GetCurrentDir) + jdePackagesLocation.Text);
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
   xmlFileName := xmlFileName + '\xml\';
   if rbtDesign.Checked then
     xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml'
@@ -508,7 +508,7 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     path := jdePackagesLocation.Text
   else
-    path := PathNoInsideRelative(StrEnsureSuffix('\', GetCurrentDir) + jdePackagesLocation.Text);
+    path := PathNoInsideRelative(StrEnsureSuffix('\', ExtractFilePath(Application.ExeName)) + jdePackagesLocation.Text);
 
   frmTargets.Path := path;
   if frmTargets.ShowModal = mrOk then
