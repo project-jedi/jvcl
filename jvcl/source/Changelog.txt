@@ -1,0 +1,4 @@
+Changelog for JVCL 3.0
+======================
+2003-06-12:
+- Created new dev subfolder on SF for the files (jvcl/dev/JVCL3)
