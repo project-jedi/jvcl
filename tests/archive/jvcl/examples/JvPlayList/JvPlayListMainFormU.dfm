@@ -36,12 +36,16 @@ object JvPlayListMainForm: TJvPlayListMainForm
     Width = 411
     Height = 221
     ItemHeight = 13
+    Background.FillMode = bfmTile
+    Background.Visible = False
     MultiSelect = True
+    ScrollBars = ssNone
     TabOrder = 0
     OnClick = JvPlaylist1Click
-    ScrollBars = ssNone
+    ShowDrive = True
   end
   object OpenDialog1: TOpenDialog
+    InitialDir = '.'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Left = 184
     Top = 46
@@ -74,6 +78,11 @@ object JvPlayListMainForm: TJvPlayListMainForm
       object ShowExtensions1: TMenuItem
         Caption = 'Show Extensions'
         OnClick = ShowExtensions1Click
+      end
+      object ShowDrives1: TMenuItem
+        Caption = 'Show Drive Letters'
+        Checked = True
+        OnClick = ShowDrives1Click
       end
     end
     object Operations1: TMenuItem

@@ -54,6 +54,7 @@ type
     MoveDown: TAction;
     MoveSelectedUp1: TMenuItem;
     MoveSelectedDown1: TMenuItem;
+    ShowDrives1: TMenuItem;
     procedure JvPlaylist1Click(Sender: TObject);
     procedure OpenExecute(Sender: TObject);
     procedure ExitExecute(Sender: TObject);
@@ -73,6 +74,7 @@ type
     procedure InvSelectExecute(Sender: TObject);
     procedure MoveUpExecute(Sender: TObject);
     procedure MoveDownExecute(Sender: TObject);
+    procedure ShowDrives1Click(Sender: TObject);
   end;
 
 var
@@ -187,6 +189,15 @@ end;
 procedure TJvPlayListMainForm.MoveDownExecute(Sender: TObject);
 begin
   JvPlayList1.MoveSelectedDown;
+end;
+
+procedure TJvPlayListMainForm.ShowDrives1Click(Sender: TObject);
+begin
+  with Sender as TMenuItem do
+  begin
+    Checked := not Checked;
+    JvPlayList1.ShowDrive := Checked;
+  end;
 end;
 
 end.
