@@ -2,6 +2,7 @@
 <Package Name="JvMM" Design="0">
   <Description>JVCL Multimedia and Image Components Runtime Package</Description>
   <ClxDescription>JVCLX Multimedia and Image Components Runtime Package</ClxDescription>
+  <GUID>{934525BD-4F63-48DA-AA9E-027E6E6BC560}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

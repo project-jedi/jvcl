@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvTimeFramework" Design="0">
   <Description>JVCL Time Framework</Description>
+  <GUID>{32959537-3463-4102-A7B2-50543739F2AA}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -12,9 +13,9 @@
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>

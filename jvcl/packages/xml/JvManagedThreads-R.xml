@@ -2,6 +2,7 @@
 <Package Name="JvManagedThreads" Design="0">
   <Description>JVCL Managed Threads - runtime package</Description>
   <ClxDescription>JVCLX Managed Threads - runtime package</ClxDescription>
+  <GUID>{B20F7784-CED8-4792-9E5F-A304AC4711F4}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>
@@ -11,8 +12,8 @@
     <Package Name="CJCL50" Targets="C5,C5s" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx,d9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>

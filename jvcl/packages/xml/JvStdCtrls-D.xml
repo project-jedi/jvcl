@@ -2,6 +2,7 @@
 <Package Name="JvStdCtrls" Design="-1">
   <Description>JVCL Standard Controls</Description>
   <ClxDescription>JVCLX Standard Controls</ClxDescription>
+  <GUID>{2022FFED-CBA4-4663-8E1E-7C0855769930}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUdclstd.dcp -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

@@ -2,14 +2,15 @@
 <Package Name="JvCore" Design="-1">
   <Description>JVCL Core Components</Description>
   <ClxDescription>JVCLX Core Components</ClxDescription>
+  <GUID>{F38F1718-D90B-4E0A-AACD-D34077DBBF15}</GUID>
   <C5PFlags>-LUvcl50 -LUdsnide50 -LUdclstd50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p,allclx" Condition=""/>
-    <Package Name="dclstd" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
+    <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p,allclx,D9" Condition=""/>
+    <Package Name="dclstd" Targets="D6,D6p,D7,D7p,C6,C6p,D9" Condition=""/>
     <Package Name="dclstd50" Targets="D5,D5s,C5,C5s" Condition=""/>
     <Package Name="dsnide50" Targets="C5,C5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>

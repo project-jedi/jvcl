@@ -2,6 +2,7 @@
 <Package Name="JvAppFrm" Design="-1">
   <Description>JVCL Application and Form Components</Description>
   <ClxDescription>JVCLX Application and Form Components</ClxDescription>
+  <GUID>{9617AB3F-D9AD-4B56-B59F-5322F5B751ED}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

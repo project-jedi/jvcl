@@ -2,6 +2,7 @@
 <Package Name="JvCmp" Design="-1">
   <Description>JVCL Non-Visual Components</Description>
   <ClxDescription>JVCLX Non-Visual Components</ClxDescription>
+  <GUID>{B2603E49-5F7D-4817-8484-71DD7B1EA69C}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -9,6 +10,7 @@
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCmp-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="D9" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>

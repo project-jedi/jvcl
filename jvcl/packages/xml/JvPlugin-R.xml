@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvPlugin" Design="0">
   <Description>JVCL Plugin Components Runtime Package</Description>
+  <GUID>{91E3DA9C-373A-4815-A9AA-86F461D83AA7}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

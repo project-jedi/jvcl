@@ -2,6 +2,7 @@
 <Package Name="JvJans" Design="0">
   <Description>JVCL Jans Components</Description>
   <ClxDescription>JVCLX Jans Components</ClxDescription>
+  <GUID>{EB0CF9B5-CDAB-44C6-857C-0447D6CAC391}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -15,8 +16,8 @@
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
     <Package Name="vclx50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="vclsmp" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>

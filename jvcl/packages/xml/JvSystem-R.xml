@@ -2,6 +2,7 @@
 <Package Name="JvSystem" Design="0">
   <Description>JVCL System Runtime Package</Description>
   <ClxDescription>JVCLX System Runtime Package</ClxDescription>
+  <GUID>{5AA7A634-CDB2-46E6-B265-F973C14FFB4B}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs>wininet.lib</C5Libs>
@@ -15,10 +16,10 @@
     <Package Name="vcljpg50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
-    <Package Name="vcljpg" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
+    <Package Name="vcljpg" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>

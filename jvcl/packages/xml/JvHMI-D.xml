@@ -2,6 +2,7 @@
 <Package Name="JvHMI" Design="-1">
   <Description>JVCL HMI Controls design time unit</Description>
   <ClxDescription>JVCLX HMI Controls design time unit</ClxDescription>
+  <GUID>{4ECD29BC-EBB0-4601-B1B2-3F9CA4614E96}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

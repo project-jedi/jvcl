@@ -2,6 +2,7 @@
 <Package Name="JvCrypt" Design="0">
   <Description>JVCL Encryption and Compression Runtime Package</Description>
   <ClxDescription>JVCLX Encryption and Compression Runtime Package</ClxDescription>
+  <GUID>{B20B4140-780B-4ABF-B260-6BDF60F83EB3}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>

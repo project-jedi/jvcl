@@ -2,6 +2,7 @@
 <Package Name="JvCore" Design="0">
   <Description>JVCL Core Runtime Package</Description>
   <ClxDescription>JVCLX Core Runtime Package</ClxDescription>
+  <GUID>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</GUID>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

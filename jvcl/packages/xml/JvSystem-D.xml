@@ -2,6 +2,7 @@
 <Package Name="JvSystem" Design="-1">
   <Description>JVCL System Components</Description>
   <ClxDescription>JVCLX System Components</ClxDescription>
+  <GUID>{07B1C96C-1DED-4F54-B6B5-8CCF7AA7D986}</GUID>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -14,7 +15,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
     <Package Name="dclstd50" Targets="C5,C5s,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p,D7,D7p,D9" Condition=""/>
     <Package Name="vcljpg" Targets="D7,D7p,D9" Condition=""/>
