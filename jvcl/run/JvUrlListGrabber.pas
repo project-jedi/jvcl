@@ -41,7 +41,6 @@ type
   TJvUrlGrabberList = class;
   TJvUrlGrabberDefaultPropertiesList = class;
 
-
   // A Grabber index, defined as a new type to allow to give it
   // a specific property editor 
   TJvUrlGrabberIndex = type Integer;
@@ -169,10 +168,8 @@ type
     FFileName: TFileName;
     // output mode (stream or file)
     FOutputMode: TJvOutputMode;
-
     // The user-friendly name of the supported URL type
     function GetSupportedURLName: string; virtual; abstract;
-
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
     // the user name and password to use for authentication
@@ -332,7 +329,6 @@ type
   public
     constructor Create(Grabber: TJvUrlGrabber); virtual;
     procedure DoProgress;
-
     property Status: DWORD read FStatus write FStatus;
   end;
 
@@ -345,8 +341,8 @@ type
     function GetItem(Index: Integer): TJvUrlGrabber;
     procedure SetItem(Index: Integer; const AGrabber: TJvUrlGrabber);
   public
-    function Add(AGrabber: TJvUrlGrabber): integer;
-    procedure Insert(Index: integer; AGrabber: TJvUrlGrabber);
+    function Add(AGrabber: TJvUrlGrabber): Integer;
+    procedure Insert(Index: Integer; AGrabber: TJvUrlGrabber);
     property Items[Index: Integer]: TJvUrlGrabber read GetItem write SetItem; default;
   end;
 
@@ -364,12 +360,11 @@ type
     procedure SetItem(Index: Integer; const AGrabberClass: TJvUrlGrabberClass);
   public
     procedure Populate(DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
-    function Add(AGrabberClass: TJvUrlGrabberClass): integer;
-    procedure Insert(Index: integer; AGrabberClass: TJvUrlGrabberClass);
+    function Add(AGrabberClass: TJvUrlGrabberClass): Integer;
+    procedure Insert(Index: Integer; AGrabberClass: TJvUrlGrabberClass);
     function CreateFor(Url: string; DefaultPropertiesCollection: TJvUrlGrabberDefaultPropertiesList): TJvUrlGrabber;
     property Items[Index: Integer]: TJvUrlGrabberClass read GetItem write SetItem; default;
   end;
-
 
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 
@@ -393,10 +388,11 @@ begin
     // create the object
     GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
     AddFinalizeObjectNil(sUnitName, TObject(GJvUrlGrabberClassList));
-
   end;
   Result := GJvUrlGrabberClassList;
 end;
+
+//=== TJvUrlListGrabber ======================================================
 
 constructor TJvUrlListGrabber.Create(AOwner: TComponent);
 begin
@@ -404,7 +400,7 @@ begin
   FDefaultGrabbersProperties := TJvUrlGrabberDefaultPropertiesList.Create(Self);
   FGrabbers := TJvUrlGrabberList.Create(True);
   FURLs := TStringList.Create;
-  TStringList(FURLs).OnChange := URLsChange;
+  FURLs.OnChange := URLsChange;
   FDefaultGrabberIndex := -1;
   FCleanupThreshold := 10;
 end;
@@ -540,7 +536,7 @@ begin
   if FOutputMode = omStream then
   begin
     if Assigned(FOnDoneStream) then
-      FOnDoneStream(Self, FStream, FStream.Size, FUrl)
+      FOnDoneStream(Self, FStream, FStream.Size, FUrl);
   end
   else
   begin
@@ -553,13 +549,13 @@ end;
 procedure TJvUrlGrabber.DoError(ErrorMsg: string);
 begin
   if Assigned(FOnError) then
-    FOnError(self, ErrorMsg);
+    FOnError(Self, ErrorMsg);
 end;
 
 procedure TJvUrlGrabber.DoProgress(Status: DWORD);
 begin
   if Assigned(FOnProgress) then
-    FOnProgress(self, Status, FUrl);
+    FOnProgress(Self, Status, FUrl);
 end;
 
 class function TJvUrlGrabber.GetDefaultPropertiesClass: TJvUrlGrabberDefaultPropertiesClass;
@@ -581,7 +577,7 @@ end;
 
 //=== TJvUrlGrabberList ======================================================
 
-function TJvUrlGrabberList.Add(AGrabber: TJvUrlGrabber): integer;
+function TJvUrlGrabberList.Add(AGrabber: TJvUrlGrabber): Integer;
 begin
   Result := inherited Add(AGrabber);
 end;
@@ -603,7 +599,7 @@ end;
 
 //=== TJvUrlGrabberClassList =================================================
 
-function TJvUrlGrabberClassList.Add(AGrabberClass: TJvUrlGrabberClass): integer;
+function TJvUrlGrabberClassList.Add(AGrabberClass: TJvUrlGrabberClass): Integer;
 begin
   Result := inherited Add(AGrabberClass);
 end;
@@ -634,8 +630,7 @@ begin
   inherited Insert(Index, AGrabberClass);
 end;
 
-procedure TJvUrlGrabberClassList.Populate(
-  DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
+procedure TJvUrlGrabberClassList.Populate(DefaultPropertiesList: TJvUrlGrabberDefaultPropertiesList);
 var
   I: Integer;
 begin
@@ -729,8 +724,7 @@ begin
   Result := FItems.Count;
 end;
 
-function TJvUrlGrabberDefaultPropertiesList.GetItems(
-  Index: Integer): TJvUrlGrabberDefaultProperties;
+function TJvUrlGrabberDefaultPropertiesList.GetItems(Index: Integer): TJvUrlGrabberDefaultProperties;
 begin
   Result := TJvUrlGrabberDefaultProperties(FItems[Index]);
 end;
@@ -741,8 +735,7 @@ begin
   FItems[Index] := Value;
 end;
 
-function TJvUrlGrabberDefaultPropertiesList.GetItemsNamed(
-  Name: string): TJvUrlGrabberDefaultProperties;
+function TJvUrlGrabberDefaultPropertiesList.GetItemsNamed(Name: string): TJvUrlGrabberDefaultProperties;
 var
   I: Integer;
 begin
@@ -758,8 +751,7 @@ end;
 
 //=== TJvUrlGrabberDefPropEdTrick ============================================
 
-constructor TJvUrlGrabberDefPropEdTrick.Create(
-  GrabberDefaults: TJvUrlGrabberDefaultProperties);
+constructor TJvUrlGrabberDefPropEdTrick.Create(GrabberDefaults: TJvUrlGrabberDefaultProperties);
 begin
   FDefaultProperties := GrabberDefaults;
 end;
@@ -773,8 +765,9 @@ begin
   Name := GetSupportedUrlName;
   {$ELSE}
   inherited Create;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FEditorTrick := TJvUrlGrabberDefPropEdTrick.Create(Self);
+  // (rom) needs to be a resourcestring (and a better name)
   FFileName := 'output.txt';
   FAgent := 'JEDI-VCL';
 end;
