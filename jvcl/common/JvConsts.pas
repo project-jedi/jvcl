@@ -37,6 +37,7 @@ const
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
+  clSystemColor = TColor($FF000000);
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
