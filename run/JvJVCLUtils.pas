@@ -2324,7 +2324,6 @@ end;
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
   Canvas: TJvDeskTopCanvas;
-  I: Integer;
   R: TRect;
 begin
   Canvas := TJvDeskTopCanvas.Create;
