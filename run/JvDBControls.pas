@@ -421,7 +421,7 @@ type
   published
     //Polaris
     property Align;
-
+    property Action;
     property AutoSelect;
     property BorderStyle;
     property ButtonHint;
@@ -435,9 +435,9 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property GlyphKind;
-    { Ensure GlyphKind is published before Glyph and ButtonWidth }
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -448,7 +448,6 @@ type
     property ImeMode;
     property ImeName;
     property MaxLength;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -538,6 +537,7 @@ type
     property MaxDate;
     property Align;
     // Polaris
+    property Action;
     property CalendarHints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -556,9 +556,9 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property GlyphKind;
-    { Ensure GlyphKind is declared before Glyph and ButtonWidth }
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -569,7 +569,6 @@ type
     property ImeMode;
     property ImeName;
     property MaxLength;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -675,6 +674,7 @@ type
     property Align;
     property DecimalPlaceRound;
 
+    property Action;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DefaultParams: Boolean read FDefaultParams write SetDefaultParams default False;
@@ -695,9 +695,9 @@ type
     property Enabled;
     property Font;
     property FormatOnEditing;
-    property GlyphKind;
-    { Ensure GlyphKind is declared before Glyph and ButtonWidth }
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -710,7 +710,6 @@ type
     property MaxLength;
     property MaxValue;
     property MinValue;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;

@@ -143,9 +143,8 @@ object GradCaptionsEditor: TGradCaptionsEditor
       Width = 133
       Height = 21
       ButtonFlat = False
-      GlyphKind = gkEllipsis
       ButtonWidth = 17
-      NumGlyphs = 1
+      ImageKind = ikEllipsis
       TabOrder = 2
       OnButtonClick = CaptionFontButtonClick
     end

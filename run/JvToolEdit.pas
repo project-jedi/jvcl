@@ -37,7 +37,7 @@ interface
 
 uses
   Windows, Classes, StdCtrls, Controls, Messages, SysUtils, Forms, Graphics,
-  Menus, Buttons, Dialogs, FileCtrl, Mask,
+  Menus, Buttons, Dialogs, FileCtrl, Mask, ImgList, ActnList,
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
@@ -74,29 +74,49 @@ type
     property OnCloseUp: TCloseUpEvent read FCloseUp write FCloseUp;
   end;
 
-  TJvEditButton = class(TJvSpeedButton)
+  TJvEditButton = class(TJvImageSpeedButton)
   private
     FNoAction: Boolean;
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure Paint; override;
-  public
-    // (rom) renamed from FStandart
-    FStandard: Boolean; // Polaris
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
-    {$ENDIF JVCLThemesEnabled}
+    {$ENDIF}
+    FStandard: Boolean; // Polaris
+    FDrawGlyph: Boolean;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
+      AState: TJvButtonState; DrawMark: Boolean); override;
+    procedure Paint; override;
+  public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
 
   TGlyphKind = (gkCustom, gkDefault, gkDropDown, gkEllipsis);
+  TJvImageKind = (ikCustom, ikDefault, ikDropDown, ikEllipsis);
+
+  TJvCustomComboEdit = class;
+
+  TJvCustomComboEditActionLink = class(TWinControlActionLink)
+  protected
+    function IsCaptionLinked: Boolean; override;
+    function IsHintLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    function IsOnExecuteLinked: Boolean; override;
+    function IsShortCutLinked: Boolean; override;
+
+    procedure SetHint(const Value: string); override;
+    procedure SetImageIndex(Value: Integer); override;
+    procedure SetOnExecute(Value: TNotifyEvent); override;
+    procedure SetShortCut(Value: TShortCut); override;
+  end;
+
+  TJvCustomComboEditActionLinkClass = class of TJvCustomComboEditActionLink;
 
   TJvCustomComboEdit = class(TJvExCustomMaskEdit)
   private
-    //    FButton: TJvEditButton; // Polaris
     FBtnControl: TWinControl;
     FOnButtonClick: TNotifyEvent;
     FClickKey: TShortCut;
@@ -104,28 +124,34 @@ type
     FDirectInput: Boolean;
     FAlwaysEnable: Boolean;
     FAlignment: TAlignment;
-    //    FPopupVisible: Boolean; // Polaris
-    //    FFocused: Boolean; // Polaris
     FPopupAlign: TPopupAlign;
-    FGlyphKind: TGlyphKind;
-    (* ++ RDB ++ *)
-    FClipboardCommands: TJvClipboardCommands;
-    FGroupIndex: Integer;
-    FDisabledColor: TColor;
-    FDisabledTextColor: TColor;
-    FOnKeyDown: TKeyEvent;
-    (* -- RDB -- *)
-    //    procedure SetDirectInput(Value: Boolean);  // Polaris
-    //    procedure SetShowCaret; // Polaris
+    { (rb) Only used for backwards compatibility; eventually remove: }
+    FGlyph: TBitmap;
+    FClipboardCommands: TJvClipboardCommands; // RDB
+    FGroupIndex: Integer; // RDB
+    FDisabledColor: TColor; // RDB
+    FDisabledTextColor: TColor; // RDB
+    FOnKeyDown: TKeyEvent; // RDB
+    FImages: TCustomImageList;
+    FImageIndex: TImageIndex;
+    FImageKind: TJvImageKind;
+    FStreamedButtonWidth: Integer;
+    function BtnWidthStored: Boolean;
     function GetButtonFlat: Boolean;
     function GetButtonHint: string;
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
     function GetGlyph: TBitmap;
+    function GetGlyphKind: TGlyphKind;
     function GetMinHeight: Integer;
     function GetNumGlyphs: TNumGlyphs;
     function GetPopupVisible: Boolean;
     function GetTextHeight: Integer;
+    function IsImageIndexStored: Boolean;
+    procedure EditButtonClick(Sender: TObject);
+    procedure ReadGlyphKind(Reader: TReader);
+    procedure ReadNumGlyphs(Reader: TReader);
+    procedure RecreateGlyph;
     procedure SetAlignment(Value: TAlignment);
     procedure SetButtonFlat(const Value: Boolean);
     procedure SetButtonHint(const Value: string);
@@ -133,13 +159,12 @@ type
     procedure SetEditRect;
     procedure SetGlyph(Value: TBitmap);
     procedure SetGlyphKind(Value: TGlyphKind);
+    procedure SetImageIndex(const Value: TImageIndex);
+    procedure SetImageKind(const Value: TJvImageKind);
+    procedure SetImages(const Value: TCustomImageList);
     procedure SetNumGlyphs(Value: TNumGlyphs);
-
     procedure UpdateBtnBounds;
-    function IsCustomGlyph: Boolean;
-    procedure EditButtonClick(Sender: TObject);
-    procedure RecreateGlyph;
-    function BtnWidthStored: Boolean;
+    procedure UpdateEdit; // RDB
 
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
@@ -151,91 +176,89 @@ type
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMClear(var Msg: TWMClear); message WM_CLEAR;
+    procedure WMCopy(var Msg: TWMCopy); message WM_COPY; // RDB
+    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO; // RDB
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT; // RDB
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND; // RDB
     {$IFDEF JVCLThemesEnabled}
     procedure WMNCPaint(var Msg: TWMNCPaint); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
-    (* ++ RDB ++ *)
-    procedure UpdateEdit;
-    (* -- RDB -- *)
   protected
     FButton: TJvEditButton; // Polaris
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
-    FDefNumGlyphs: TNumGlyphs;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure DoEnter; override;
-    procedure AdjustHeight;
-    function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; virtual;
-    procedure PopupDropDown(DisableEdit: Boolean); virtual;
-    procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual; //virtual Polaris
-    procedure ShowPopup(Origin: TPoint); virtual;
-    procedure HidePopup; virtual;
-    procedure UpdatePopupVisible;
-    procedure DoChange; virtual; //virtual Polaris
-    procedure SetShowCaret; // Polaris
-    procedure SetDirectInput(Value: Boolean); // Polaris
+    class function DefaultImageIndex: TImageIndex; virtual;
+    class function DefaultImages: TCustomImageList; virtual;
     function AcceptPopup(var Value: Variant): Boolean; virtual;
-    procedure AcceptValue(const Value: Variant); virtual;
-    procedure SetPopupValue(const Value: Variant); virtual;
+    function EditCanModify: Boolean; override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
     function GetPopupValue: Variant; virtual;
+    function GetReadOnly: Boolean; virtual;
+    procedure AcceptValue(const Value: Variant); virtual;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    procedure AdjustHeight;
+    procedure ButtonClick; dynamic;
     procedure Change; override;
-    procedure PopupChange; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    function EditCanModify: Boolean; override;
-    function GetReadOnly: Boolean; virtual;
-    procedure SetReadOnly(Value: Boolean); virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure DoChange; virtual; //virtual Polaris
+    procedure HidePopup; virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure ButtonClick; dynamic;
-    (* ++ RDB ++ *)
-    procedure WMCopy(var Msg: TWMCopy); message WM_COPY;
-    procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
-    procedure LocalKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure SetDisabledColor(const Value: TColor); virtual;
-    procedure SetDisabledTextColor(const Value: TColor); virtual;
-    procedure SetClipboardCommands(const Value: TJvClipboardCommands);
-    procedure SetGroupIndex(const Value: Integer);
-    (* -- RDB -- *)
+    procedure Loaded; override;
+    procedure LocalKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); // RDB
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure PopupChange; virtual;
+    procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual; //virtual Polaris
+    procedure PopupDropDown(DisableEdit: Boolean); virtual;
+    procedure SetClipboardCommands(const Value: TJvClipboardCommands); // RDB
+    procedure SetDirectInput(Value: Boolean); // Polaris
+    procedure SetDisabledColor(const Value: TColor); virtual; // RDB
+    procedure SetDisabledTextColor(const Value: TColor); virtual; // RDB
+    procedure SetGroupIndex(const Value: Integer); // RDB
+    procedure SetPopupValue(const Value: Variant); virtual;
+    procedure SetReadOnly(Value: Boolean); virtual;
+    procedure SetShowCaret; // Polaris
+    procedure ShowPopup(Origin: TPoint); virtual;
+    procedure UpdatePopupVisible;
+
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AlwaysEnable: Boolean read FAlwaysEnable write FAlwaysEnable default False;
     property Button: TJvEditButton read FButton;
-    property ClickKey: TShortCut read FClickKey write FClickKey default scAltDown;
-    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
-    property GlyphKind: TGlyphKind read FGlyphKind write SetGlyphKind default gkCustom;
-    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored BtnWidthStored;
-    property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
+    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
     property ButtonHint: string read GetButtonHint write SetButtonHint;
+    property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth stored BtnWidthStored;
+    property ClickKey: TShortCut read FClickKey write FClickKey default scAltDown;
+    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands write SetClipboardCommands default [caCopy..caUndo]; // RDB
     property DirectInput: Boolean read GetDirectInput write SetDirectInput default True;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property DisabledColor: TColor read FDisabledColor write SetDisabledColor default clWindow; // RDB
+    property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText; // RDB
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
+    property ImageKind: TJvImageKind read FImageKind write SetImageKind default ikCustom;
+    property Images: TCustomImageList read FImages write SetImages;
+    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property PopupAlign: TPopupAlign read FPopupAlign write FPopupAlign default epaRight;
     property PopupVisible: Boolean read GetPopupVisible;
-    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
-    property ButtonFlat: Boolean read GetButtonFlat write SetButtonFlat;
-    (* ++ RDB ++ *)
-    property ClipboardCommands: TJvClipboardCommands read FClipboardCommands
-      write SetClipboardCommands default [caCopy..caUndo];
-    property DisabledTextColor: TColor read FDisabledTextColor write
-      SetDisabledTextColor default clGrayText;
-    property DisabledColor: TColor read FDisabledColor write SetDisabledColor
-      default clWindow;
-    (*      property GroupIndex: Integer read FGroupIndex write SetGroupIndex; *)
-    property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
-    (* -- RDB -- *)
-    procedure Loaded; override;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
     procedure SelectAll;
+    { Backwards compatibility; moved to public&published; eventually remove }
+    property GlyphKind: TGlyphKind read GetGlyphKind write SetGlyphKind;
+    property NumGlyphs: TNumGlyphs read GetNumGlyphs write SetNumGlyphs;
+  published
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored False;
   end;
 
   TJvComboEdit = class(TJvCustomComboEdit)
@@ -243,36 +266,40 @@ type
     property Button;
   published
     //Polaris
+    property Action;
     property Align;
     property Alignment;
+    property Anchors;
     property AutoSelect;
     property AutoSize;
+    property BiDiMode;
     property BorderStyle;
-    property ButtonHint;
     property ButtonFlat;
+    property ButtonHint;
+    property ButtonWidth;
     property CharCase;
     property ClickKey;
+    property ClipboardCommands; // RDB
     property Color;
+    property Constraints;
     property DirectInput;
+    property DisabledColor; // RDB
+    property DisabledTextColor; // RDB
     property DragCursor;
+    property DragKind;
     property DragMode;
     property EditMask;
     property Enabled;
     property Font;
-    property GlyphKind;
-    property Glyph;
-    property ButtonWidth;
     property HideSelection;
-    property Anchors;
-    property BiDiMode;
-    property Constraints;
-    property DragKind;
-    property ParentBiDiMode;
+    property ImageIndex;
+    property ImageKind;
+    property Images;
     property ImeMode;
     property ImeName;
     property MaxLength;
-    property NumGlyphs;
     property OEMConvert;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -286,28 +313,22 @@ type
     property OnButtonClick;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnKeyDown; // RDB
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDrag;
-    property OnContextPopup;
-    property OnEndDock;
     property OnStartDock;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (*      property GroupIndex; *)
-    property OnKeyDown;
-    (* -- RDB -- *)
+    property OnStartDrag;
   end;
 
   { TJvFileDirEdit }
@@ -332,7 +353,6 @@ type
   protected
     procedure CreateHandle; override;
     procedure DestroyWindowHandle; override;
-    function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
     function GetLongName: string; virtual; abstract;
     function GetShortName: string; virtual; abstract;
     procedure DoAfterDialog(var FileName: string; var Action: Boolean); dynamic;
@@ -341,7 +361,8 @@ type
     procedure ClearFileList; virtual;
     procedure DisableSysErrors;
     procedure EnableSysErrors;
-    property GlyphKind default gkDefault;
+    class function DefaultImageIndex: TImageIndex; override;
+    property ImageKind default ikDefault;
     property MaxLength;
   public
     constructor Create(AOwner: TComponent); override;
@@ -356,13 +377,10 @@ type
       write FOnAfterDialog;
     property OnDropFiles: TNotifyEvent read FOnDropFiles write FOnDropFiles;
     property OnButtonClick;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (*      property GroupIndex; *)
-    property OnKeyDown;
-    (* -- RDB -- *)
+    property ClipboardCommands; // RDB
+    property DisabledTextColor; // RDB
+    property DisabledColor; // RDB
+    property OnKeyDown; // RDB
   end;
 
   TFileDialogKind =
@@ -372,7 +390,7 @@ type
   private
     FDialog: TOpenDialog;
     FDialogKind: TFileDialogKind;
-    FAddQuotes: boolean;
+    FAddQuotes: Boolean;
     procedure CreateEditDialog;
     function GetFileName: TFileName;
     function GetDefaultExt: TFileExt;
@@ -408,9 +426,10 @@ type
     property DialogFiles: TStrings read GetDialogFiles;
   published
     //Polaris
+    property Action;
     property Align;
     property AutoSize;
-    property AddQuotes: boolean read FAddQuotes write FAddQuotes default true;
+    property AddQuotes: Boolean read FAddQuotes write FAddQuotes default True;
     property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
@@ -439,8 +458,9 @@ type
     property EditMask;
     property Enabled;
     property Font;
-    property GlyphKind;
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -450,7 +470,6 @@ type
     property ParentBiDiMode;
     property ImeMode;
     property ImeName;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -499,6 +518,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     //Polaris
+    property Action;
     property Align;
     property AutoSize;
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
@@ -519,9 +539,9 @@ type
     property EditMask;
     property Enabled;
     property Font;
-    property GlyphKind;
-    property Glyph;
-    property NumGlyphs;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -639,7 +659,7 @@ type
     procedure SetPopupValue(const Value: Variant); override;
     function GetDateFormat: string;
     procedure ApplyDate(Value: TDateTime); virtual;
-    function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; override;
+    class function DefaultImageIndex: TImageIndex; override;
     procedure UpdateFormat;
     procedure UpdatePopup;
     procedure ButtonClick; override;
@@ -652,7 +672,7 @@ type
       stored IsCustomTitle;
     property EditMask stored False;
     property Formatting: Boolean read FFormatting;
-    property GlyphKind default gkDefault;
+    property ImageKind default ikDefault;
     property PopupColor: TColor read GetPopupColor write SetPopupColor
       default clMenu;
     property CalendarStyle: TCalendarStyle read GetCalendarStyle
@@ -689,12 +709,11 @@ type
     constructor Create(AOwner: TComponent); override;
     property EditMask;
   published
-    // Polaris
-    property DateAutoBetween;
-    property MinDate;
-    property MaxDate;
-    property Align;
-    // Polaris
+    property DateAutoBetween; // Polaris
+    property MinDate; // Polaris
+    property MaxDate; // Polaris
+    property Align; // Polaris
+    property Action;
     property AutoSelect;
     property AutoSize;
     property BlanksChar;
@@ -712,8 +731,9 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property GlyphKind;
-    property Glyph;
+    property ImageIndex;
+    property Images;
+    property ImageKind;
     property ButtonWidth;
     property HideSelection;
     property Anchors;
@@ -724,7 +744,6 @@ type
     property ImeMode;
     property ImeName;
     property MaxLength;
-    property NumGlyphs;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -761,18 +780,15 @@ type
     property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
-    (* ++ RDB ++ *)
-    property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
-    (*      property GroupIndex; *)
-    property OnKeyDown;
-    (* -- RDB -- *)
+    property ClipboardCommands; // RDB
+    property DisabledTextColor; // RDB
+    property DisabledColor; // RDB
+    property OnKeyDown; // RDB
   end;
 
   EComboEditError = class(EJVCLException);
 
-  { Utility routines }
+{ Utility routines }
 
 procedure DateFormatChanged;
 
@@ -814,23 +830,23 @@ type
   protected
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure Hook;
-    procedure Unhook;
+    procedure UnHook;
   public
     procedure Add;
     procedure Delete;
   end;
 
 const
-  sFileBmp = 'JV_FEDITBMP'; { Filename and directory editor button glyph }
-  sDateBmp = 'JV_DEDITBMP'; { Date editor button glyph }
+  sFileBmp = 'JV_FEDITBMP';  { Filename and directory editor button glyph }
+  sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
 var
-  // (rom) changed to var
-  DateBitmap: TBitmap = nil;
-  FileBitmap: TBitmap = nil;
   GDateHook: TDateHook;
+  GDateImageIndex: TImageIndex = -1;
+  GDefaultComboEditImagesList: TImageList;
+  GFileImageIndex: TImageIndex = -1;
 
-  //=== Local procedures =======================================================
+//=== Local procedures =======================================================
 
 function DateHook: TDateHook;
 begin
@@ -845,6 +861,9 @@ var
 begin
   if FileExists(FileName) then
     Result := FileName
+  else
+  if DirectoryExists(FileName) then
+    Result := IncludeTrailingPathDelimiter(FileName)
   else
     SplitCommandLine(FileName, Result, Params);
 end;
@@ -869,10 +888,8 @@ procedure DestroyLocals;
 begin
   GDateHook.Free;
   GDateHook := nil;
-  FileBitmap.Free;
-  FileBitmap := nil;
-  DateBitmap.Free;
-  DateBitmap := nil;
+  GDefaultComboEditImagesList.Free;
+  GDefaultComboEditImagesList := nil;
 end;
 
 //=== Global procedures ======================================================
@@ -908,33 +925,33 @@ var
   I: Integer;
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
-  Ed: TOpenCustomEdit;
+  ed: TOpenCustomEdit;
 begin
-  Ed := TOpenCustomEdit(Editor);
+  ed := TOpenCustomEdit(Editor);
   if NewStyleControls then
   begin
-    if Ed.BorderStyle = bsNone then
+    if ed.BorderStyle = bsNone then
       I := 0
     else
-    if Ed.Ctl3D then
+    if ed.Ctl3D then
       I := 1
     else
       I := 2;
-    if GetWindowLong(Ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
-      Result.X := (SendMessage(Ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+    if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+      Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
     else
       Result.X := I;
     Result.Y := I;
   end
   else
   begin
-    if Ed.BorderStyle = bsNone then
+    if ed.BorderStyle = bsNone then
       I := 0
     else
     begin
       DC := GetDC(0);
       GetTextMetrics(DC, SysMetrics);
-      SaveFont := SelectObject(DC, Ed.Font.Handle);
+      SaveFont := SelectObject(DC, ed.Font.Handle);
       GetTextMetrics(DC, Metrics);
       SelectObject(DC, SaveFont);
       ReleaseDC(0, DC);
@@ -972,32 +989,32 @@ var
   PS: TPaintStruct;
   S: string;
   ExStyle: DWORD;
-  Ed: TOpenCustomEdit;
+  ed: TOpenCustomEdit;
 const
   AlignStyle: array [Boolean, TAlignment] of DWORD =
     ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  Ed := TOpenCustomEdit(Editor);
-  if Ed.UseRightToLeftAlignment then
+  ed := TOpenCustomEdit(Editor);
+  if ed.UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(AAlignment);
-  if StandardPaint and not (csPaintCopy in Ed.ControlState) then
+  if StandardPaint and not (csPaintCopy in ed.ControlState) then
   begin
-    if SysLocale.MiddleEast and Ed.HandleAllocated and (Ed.IsRightToLeft) then
+    if SysLocale.MiddleEast and ed.HandleAllocated and (ed.IsRightToLeft) then
     begin { This keeps the right aligned text, right aligned }
-      ExStyle := DWORD(GetWindowLong(Ed.Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
+      ExStyle := DWORD(GetWindowLong(ed.Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
         (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
-      if Ed.UseRightToLeftReading then
+      if ed.UseRightToLeftReading then
         ExStyle := ExStyle or WS_EX_RTLREADING;
-      if Ed.UseRightToLeftScrollBar then
+      if ed.UseRightToLeftScrollBar then
         ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
       ExStyle := ExStyle or
-        AlignStyle[Ed.UseRightToLeftAlignment, AAlignment];
-      if DWORD(GetWindowLong(Ed.Handle, GWL_EXSTYLE)) <> ExStyle then
-        SetWindowLong(Ed.Handle, GWL_EXSTYLE, ExStyle);
+        AlignStyle[ed.UseRightToLeftAlignment, AAlignment];
+      if DWORD(GetWindowLong(ed.Handle, GWL_EXSTYLE)) <> ExStyle then
+        SetWindowLong(ed.Handle, GWL_EXSTYLE, ExStyle);
     end;
     Result := False;
     { return false if we need to use standard paint handler }
@@ -1013,17 +1030,17 @@ begin
   end;
   DC := Msg.DC;
   if DC = 0 then
-    DC := BeginPaint(Ed.Handle, PS);
+    DC := BeginPaint(ed.Handle, PS);
   ACanvas.Handle := DC;
   try
-    ACanvas.Font := Ed.Font;
+    ACanvas.Font := ed.Font;
     with ACanvas do
     begin
       SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-      if not (NewStyleControls and Ed.Ctl3D) and (Ed.BorderStyle = bsSingle) then
+      if not (NewStyleControls and ed.Ctl3D) and (ed.BorderStyle = bsSingle) then
       begin
         Brush.Color := clWindowFrame;
-        FrameRect(Ed.ClientRect);
+        FrameRect(ed.ClientRect);
       end;
       S := AText;
       LTextWidth := TextWidth(S);
@@ -1042,10 +1059,10 @@ begin
       end;
       if SysLocale.MiddleEast then
         UpdateTextFlags;
-      if not Ed.Enabled then
+      if not ed.Enabled then
       begin
         // if PS.fErase then // (p3) fErase is not set to true when control is disabled
-        Ed.Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
+        ed.Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
 
         SaveDC(ACanvas.Handle);
         try
@@ -1058,14 +1075,14 @@ begin
       end
       else
       begin
-        Brush.Color := Ed.Color;
+        Brush.Color := ed.Color;
         ACanvas.TextRect(EditRect, X, EditRect.Top, S);
       end;
     end;
   finally
     ACanvas.Handle := 0;
     if Msg.DC = 0 then
-      EndPaint(Ed.Handle, PS);
+      EndPaint(ed.Handle, PS);
   end;
 end;
 
@@ -1083,7 +1100,7 @@ begin
   if FCount > 0 then
     Dec(FCount);
   if FCount = 0 then
-    Unhook;
+    UnHook;
 end;
 
 function TDateHook.FormatSettingsChange(var Msg: TMessage): Boolean;
@@ -1113,7 +1130,7 @@ begin
   FHooked := True;
 end;
 
-procedure TDateHook.Unhook;
+procedure TDateHook.UnHook;
 begin
   if not FHooked then
     Exit;
@@ -1138,6 +1155,31 @@ begin
     UpdatePopupVisible;
     DoChange;
   end;
+end;
+
+procedure TJvCustomComboEdit.ActionChange(Sender: TObject;
+  CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if not CheckDefaults or not Assigned(Self.Images) then
+        Self.Images := ActionList.Images;
+      if not CheckDefaults or (Self.Enabled = True) then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.HelpContext = 0) then
+        Self.HelpContext := HelpContext;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.ButtonHint := Hint;
+      if not CheckDefaults or (Self.ImageIndex = -1) then
+        Self.ImageIndex := ImageIndex;
+      if not CheckDefaults or (Self.ClickKey = scNone) then
+        Self.ClickKey := ShortCut;
+      if not CheckDefaults or (Self.Visible = True) then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnButtonClick) then
+        Self.OnButtonClick := OnExecute;
+    end;
 end;
 
 procedure TJvCustomComboEdit.AdjustHeight;
@@ -1174,11 +1216,10 @@ end;
 
 function TJvCustomComboEdit.BtnWidthStored: Boolean;
 begin
-  if (FGlyphKind = gkDefault) and (Glyph <> nil) then
-    Result := ButtonWidth <> Max(Glyph.Width div FButton.NumGlyphs + 6,
-      DefEditBtnWidth)
+  if (FImageKind = ikDefault) and (DefaultImages <> nil) and (DefaultImageIndex >= 0) then
+    Result := ButtonWidth <> Max(DefaultImages.Width + 6, DefEditBtnWidth)
   else
-  if FGlyphKind = gkDropDown then
+  if FImageKind = ikDropDown then
     Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL)
   else
     Result := ButtonWidth <> DefEditBtnWidth;
@@ -1226,27 +1267,6 @@ begin
   UpdateBtnBounds;
 end;
 
-procedure TJvCustomComboEdit.EnabledChanged;
-begin
-  inherited EnabledChanged;
-  Invalidate;
-  FButton.Enabled := Enabled;
-end;
-
-procedure TJvCustomComboEdit.DoEnter;
-begin
-  if AutoSelect and not (csLButtonDown in ControlState) then
-    SelectAll;
-  inherited DoEnter;
-end;
-
-procedure TJvCustomComboEdit.FontChanged;
-begin
-  inherited FontChanged;
-  if HandleAllocated then
-    SetEditRect;
-end;
-
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
 var
   TextColor: Longint;
@@ -1282,20 +1302,22 @@ begin
   FButton.Parent := FBtnControl;
   TJvEditButton(FButton).OnClick := EditButtonClick;
   Height := 21;
-  FDefNumGlyphs := 1;
-  FGlyphKind := gkCustom;
   (* ++ RDB ++ *)
   FDisabledColor := clWindow;
   FDisabledTextColor := clGrayText;
   FClipboardCommands := [caCopy..caUndo];
   FGroupIndex := -1;
+  FGlyph := TBitmap.Create;
+  FStreamedButtonWidth := -1;
+  FImageKind := ikCustom;
+  FImageIndex := -1;
   inherited OnKeyDown := LocalKeyDown;
   (* -- RDB -- *)
 end;
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array [TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
@@ -1308,9 +1330,29 @@ begin
   SetEditRect;
 end;
 
+class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
+begin
+  Result := -1;
+end;
+
+class function TJvCustomComboEdit.DefaultImages: TCustomImageList;
+begin
+  if GDefaultComboEditImagesList = nil then
+    GDefaultComboEditImagesList := TImageList.CreateSize(14, 12);
+  Result := GDefaultComboEditImagesList;
+end;
+
+procedure TJvCustomComboEdit.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('NumGlyphs', ReadNumGlyphs, nil, False);
+  Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
+end;
+
 destructor TJvCustomComboEdit.Destroy;
 begin
   FButton.OnClick := nil;
+  FGlyph.Free;
   inherited Destroy;
 end;
 
@@ -1324,6 +1366,13 @@ begin
   EditButtonClick(Self);
 end;
 
+procedure TJvCustomComboEdit.DoEnter;
+begin
+  if AutoSelect and not (csLButtonDown in ControlState) then
+    SelectAll;
+  inherited DoEnter;
+end;
+
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
 begin
   if (not FReadOnly) or AlwaysEnable then
@@ -1333,6 +1382,25 @@ end;
 function TJvCustomComboEdit.EditCanModify: Boolean;
 begin
   Result := not FReadOnly;
+end;
+
+procedure TJvCustomComboEdit.EnabledChanged;
+begin
+  inherited EnabledChanged;
+  Invalidate;
+  FButton.Enabled := Enabled;
+end;
+
+procedure TJvCustomComboEdit.FontChanged;
+begin
+  inherited FontChanged;
+  if HandleAllocated then
+    SetEditRect;
+end;
+
+function TJvCustomComboEdit.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TJvCustomComboEditActionLink;
 end;
 
 function TJvCustomComboEdit.GetButtonFlat: Boolean;
@@ -1350,11 +1418,6 @@ begin
   Result := FButton.Width;
 end;
 
-function TJvCustomComboEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
-begin
-  Result := nil;
-end;
-
 function TJvCustomComboEdit.GetDirectInput: Boolean;
 begin
   Result := FDirectInput and not ReadOnly;
@@ -1362,7 +1425,12 @@ end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
 begin
-  Result := FButton.Glyph;
+  Result := FGlyph;
+end;
+
+function TJvCustomComboEdit.GetGlyphKind: TGlyphKind;
+begin
+  Result := TGlyphKind(FImageKind);
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
@@ -1377,7 +1445,7 @@ end;
 
 function TJvCustomComboEdit.GetNumGlyphs: TNumGlyphs;
 begin
-  Result := FButton.NumGlyphs;
+  Result := 1;
 end;
 
 function TJvCustomComboEdit.GetPopupValue: Variant;
@@ -1422,9 +1490,11 @@ begin
   TJvPopupWindow(FPopup).Hide;
 end;
 
-function TJvCustomComboEdit.IsCustomGlyph: Boolean;
+function TJvCustomComboEdit.IsImageIndexStored: Boolean;
 begin
-  Result := FGlyphKind = gkCustom;
+  Result :=
+    not (ActionLink is TJvCustomComboEditActionLink) or
+    not (ActionLink as TJvCustomComboEditActionLink).IsImageIndexLinked;
 end;
 
 procedure TJvCustomComboEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -1497,21 +1567,10 @@ begin
 end;
 
 procedure TJvCustomComboEdit.Loaded;
-var
-  StreamedGlyphKind: TGlyphKind;
-  StreamedButtonWidth: Integer;
 begin
   inherited Loaded;
-  if FGlyphKind <> gkCustom then
-  begin
-    StreamedGlyphKind := FGlyphKind;
-    StreamedButtonWidth := GetButtonWidth;
-
-    FGlyphKind := gkCustom;
-    GlyphKind := StreamedGlyphKind;
-
-    ButtonWidth := StreamedButtonWidth;
-  end;
+  if FStreamedButtonWidth >= 0 then
+    SetButtonWidth(FStreamedButtonWidth);
 end;
 
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
@@ -1537,6 +1596,14 @@ begin
       PopupDropDown(True);}
   end;
   inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TJvCustomComboEdit.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FImages) then
+    Images := nil;
 end;
 
 procedure TJvCustomComboEdit.PopupChange;
@@ -1623,14 +1690,36 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.ReadGlyphKind(Reader: TReader);
+const
+  sEnumValues: array [TGlyphKind] of string =
+    ('gkCustom', 'gkDefault', 'gkDropDown', 'gkEllipsis');
+var
+  S: string;
+  GlyphKind: TGlyphKind;
+begin
+  { No need to drag in TypInfo.pas }
+  S := Reader.ReadIdent;
+  for GlyphKind := Low(TGlyphKind) to High(TGlyphKind) do
+    if SameText(S, sEnumValues[GlyphKind]) then
+    begin
+      ImageKind := TJvImageKind(GlyphKind);
+      Break;
+    end;
+end;
+
+procedure TJvCustomComboEdit.ReadNumGlyphs(Reader: TReader);
+begin
+  Reader.SkipValue;
+end;
+
 procedure TJvCustomComboEdit.RecreateGlyph;
 var
   NewGlyph: TBitmap;
-  DestroyNeeded: Boolean;
 
   function CreateEllipsisGlyph: TBitmap;
   var
-    W, G, I: Integer;
+    W, g, I: Integer;
   begin
     Result := TBitmap.Create;
     with Result do
@@ -1639,15 +1728,15 @@ var
       Width := Max(1, FButton.Width - 6);
       Height := 4;
       W := 2;
-      G := (Result.Width - 3 * W) div 2;
-      if G <= 0 then
-        G := 1;
-      if G > 3 then
-        G := 3;
-      I := (Width - 3 * W - 2 * G) div 2;
+      g := (Result.Width - 3 * W) div 2;
+      if g <= 0 then
+        g := 1;
+      if g > 3 then
+        g := 3;
+      I := (Width - 3 * W - 2 * g) div 2;
       PatBlt(Canvas.Handle, I, 1, W, W, BLACKNESS);
-      PatBlt(Canvas.Handle, I + G + W, 1, W, W, BLACKNESS);
-      PatBlt(Canvas.Handle, I + 2 * G + 2 * W, 1, W, W, BLACKNESS);
+      PatBlt(Canvas.Handle, I + g + W, 1, W, W, BLACKNESS);
+      PatBlt(Canvas.Handle, I + 2 * g + 2 * W, 1, W, W, BLACKNESS);
     except
       Free;
       raise;
@@ -1655,46 +1744,43 @@ var
   end;
 
 begin
-  {$IFDEF JVCLThemesEnabled}
-  { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
-    the glyph is the default themed dropdown button. When ButtonFlat = True, we
-    can't use that default dropdown button (because we then use toolbar buttons,
-    and there is no themed dropdown toolbar button) }
-  if ThemeServices.ThemesEnabled then
-    FButton.FDrawThemedDropDownBtn := (FGlyphKind = gkDropDown) and not ButtonFlat;
-  {$ENDIF}
+  FButton.FDrawGlyph := FImageKind in [ikDropDown, ikEllipsis];
 
-  case FGlyphKind of
-    gkDefault:
+  case FImageKind of
+    ikDropDown:
       begin
-        DestroyNeeded := False;
-        NewGlyph := GetDefaultBitmap(DestroyNeeded);
-        try
-          FButton.Glyph.Assign(NewGlyph);
-          NumGlyphs := FDefNumGlyphs;
-        finally
-          if DestroyNeeded then
-            NewGlyph.Destroy;
+        {$IFDEF JVCLThemesEnabled}
+        { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
+          the glyph is the default themed dropdown button. When ButtonFlat = True, we
+          can't use that default dropdown button (because we then use toolbar buttons,
+          and there is no themed dropdown toolbar button) }
+        FButton.FDrawThemedDropDownBtn :=
+          ThemeServices.ThemesEnabled and not ButtonFlat;
+        if FButton.FDrawThemedDropDownBtn then
+        begin
+          TJvxButtonGlyph(FButton.ButtonGlyph).Glyph := nil;
+          FButton.Invalidate;
+        end
+        else
+        {$ENDIF}
+        begin
+          TJvxButtonGlyph(FButton.ButtonGlyph).Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
+          FButton.Invalidate;
         end;
       end;
-    gkDropDown:
-      {$IFDEF JVCLThemesEnabled}
-      if ButtonFlat or not ThemeServices.ThemesEnabled then
-      {$ENDIF}
-      begin
-        FButton.Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
-        NumGlyphs := 1;
-      end;
-    gkEllipsis:
+    ikEllipsis:
       begin
         NewGlyph := CreateEllipsisGlyph;
         try
-          FButton.Glyph := NewGlyph;
-          NumGlyphs := 1;
+          TJvxButtonGlyph(FButton.ButtonGlyph).Glyph := NewGlyph;
+          FButton.Invalidate;
         finally
           NewGlyph.Destroy;
         end;
       end;
+  else
+    TJvxButtonGlyph(FButton.ButtonGlyph).Glyph := nil;
+    FButton.Invalidate;
   end;
 end;
 
@@ -1721,7 +1807,7 @@ begin
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button, so we have to recreate the glyph
     in this special case }
-  if ThemeServices.ThemesEnabled and (GlyphKind = gkDropDown) then
+  if ThemeServices.ThemesEnabled and (ImageKind = ikDropDown) then
     RecreateGlyph;
   {$ENDIF}
 end;
@@ -1733,6 +1819,9 @@ end;
 
 procedure TJvCustomComboEdit.SetButtonWidth(Value: Integer);
 begin
+  if csLoading in ComponentState then
+    FStreamedButtonWidth := Value
+  else
   if ButtonWidth <> Value then
   begin
     FBtnControl.Visible := Value > 1;
@@ -1847,37 +1936,13 @@ end;
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
-  if Value <> FButton.Glyph then
-  begin
-    FButton.Glyph := Value;
-    FGlyphKind := gkCustom;
-  end;
+  {FButton.Glyph := Value;}
+  ImageKind := ikCustom;
 end;
 
 procedure TJvCustomComboEdit.SetGlyphKind(Value: TGlyphKind);
 begin
-  if csLoading in ComponentState then
-  begin
-    FGlyphKind := Value;
-    Exit;
-  end;
-
-  if FGlyphKind <> Value then
-  begin
-    FGlyphKind := Value;
-    if (FGlyphKind = gkCustom) and (csReading in ComponentState) then
-      Glyph := nil;
-    RecreateGlyph;
-    if (FGlyphKind = gkDefault) and (Glyph <> nil) then
-      ButtonWidth := Max(Glyph.Width div FButton.NumGlyphs + 6, FButton.Width)
-    else
-    if FGlyphKind = gkDropDown then
-    begin
-      ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
-      with FButton do
-        ControlStyle := ControlStyle + [csFixedWidth];
-    end;
-  end;
+  ImageKind := TJvImageKind(Value);
 end;
 
 procedure TJvCustomComboEdit.SetGroupIndex(const Value: Integer);
@@ -1886,15 +1951,65 @@ begin
   UpdateEdit;
 end;
 
+procedure TJvCustomComboEdit.SetImageIndex(const Value: TImageIndex);
+begin
+  if FImageIndex <> Value then
+  begin
+    FImageIndex := Value;
+    if FImageKind = ikCustom then
+      FButton.ImageIndex := FImageIndex;
+  end;
+end;
+
+procedure TJvCustomComboEdit.SetImageKind(const Value: TJvImageKind);
+begin
+  if FImageKind <> Value then
+  begin
+    FImageKind := Value;
+    RecreateGlyph;
+    case FImageKind of
+      ikCustom:
+        begin
+          FButton.Images := FImages;
+          FButton.ImageIndex := FImageIndex;
+        end;
+      ikDefault:
+        begin
+          FButton.Images := DefaultImages;
+          FButton.ImageIndex := DefaultImageIndex;
+          { Default glyphs have a default width }
+          if Assigned(FButton.Images) and (FButton.ImageIndex >= 0) then
+            ButtonWidth := Max(FButton.Images.Width + 6, FButton.Width)
+        end;
+      ikDropDown:
+        begin
+          { Dropdown has a default width }
+          ButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
+          with FButton do
+            ControlStyle := ControlStyle + [csFixedWidth];
+        end;
+      ikEllipsis: ;
+    end;
+  end;
+end;
+
+procedure TJvCustomComboEdit.SetImages(const Value: TCustomImageList);
+begin
+  FImages := Value;
+  if FImages <> nil then
+    FImages.FreeNotification(Self)
+  else
+    SetImageIndex(-1);
+  if ImageKind = ikCustom then
+  begin
+    FButton.Images := FImages;
+    FButton.ImageIndex := FImageIndex;
+  end;
+end;
+
 procedure TJvCustomComboEdit.SetNumGlyphs(Value: TNumGlyphs);
 begin
-  if FGlyphKind in [gkDropDown, gkEllipsis] then
-    FButton.NumGlyphs := 1
-  else
-  if FGlyphKind = gkDefault then
-    FButton.NumGlyphs := FDefNumGlyphs
-  else
-    FButton.NumGlyphs := Value;
+  { Nothing }
 end;
 
 procedure TJvCustomComboEdit.SetPopupValue(const Value: Variant);
@@ -2006,7 +2121,7 @@ begin
   inherited;
 end;
 
-procedure TJvCustomComboEdit.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
+procedure TJvCustomComboEdit.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2150,29 +2265,84 @@ begin
     inherited;
 end;
 
+//=== TJvCustomComboEditActionLink ===========================================
+
+function TJvCustomComboEditActionLink.IsCaptionLinked: Boolean;
+begin
+  Result := False;
+end;
+
+function TJvCustomComboEditActionLink.IsHintLinked: Boolean;
+begin
+  Result := (Action is TCustomAction) and (FClient is TJvCustomComboEdit) and
+    ((FClient as TJvCustomComboEdit).ButtonHint = (Action as TCustomAction).Hint);
+end;
+
+function TJvCustomComboEditActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and (FClient is TJvCustomComboEdit) and
+    ((FClient as TJvCustomComboEdit).ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
+function TJvCustomComboEditActionLink.IsOnExecuteLinked: Boolean;
+begin
+  Result := (Action is TCustomAction) and (FClient is TJvCustomComboEdit) and
+    (@(FClient as TJvCustomComboEdit).OnButtonClick = @Action.OnExecute);
+end;
+
+function TJvCustomComboEditActionLink.IsShortCutLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and (FClient is TJvCustomComboEdit) and
+    ((FClient as TJvCustomComboEdit).ClickKey = (Action as TCustomAction).ShortCut);
+end;
+
+procedure TJvCustomComboEditActionLink.SetHint(const Value: string);
+begin
+  if IsHintLinked then
+    (FClient as TJvCustomComboEdit).ButtonHint := Value;
+end;
+
+procedure TJvCustomComboEditActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then
+    (FClient as TJvCustomComboEdit).ImageIndex := Value;
+end;
+
+procedure TJvCustomComboEditActionLink.SetOnExecute(Value: TNotifyEvent);
+begin
+  if IsOnExecuteLinked then
+    (FClient as TJvCustomComboEdit).OnButtonClick := Value;
+end;
+
+procedure TJvCustomComboEditActionLink.SetShortCut(Value: TShortCut);
+begin
+  if IsShortCutLinked then
+    (FClient as TJvCustomComboEdit).ClickKey := Value;
+end;
+
 //=== TJvCustomDateEdit ======================================================
 
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
-  D: TDateTime;
+  d: TDateTime;
 begin
   Result := True;
   if Assigned(FOnAcceptDate) then
   begin
     if VarIsNull(Value) or VarIsEmpty(Value) then
-      D := NullDate
+      d := NullDate
     else
     try
-      D := VarToDateTime(Value);
+      d := VarToDateTime(Value);
     except
       if DefaultToday then
-        D := SysUtils.Date
+        d := SysUtils.Date
       else
-        D := NullDate;
+        d := NullDate;
     end;
-    FOnAcceptDate(Self, D, Result);
+    FOnAcceptDate(Self, d, Result);
     if Result then
-      Value := VarFromDateTime(D);
+      Value := VarFromDateTime(d);
   end;
 end;
 
@@ -2192,14 +2362,14 @@ end;
 
 procedure TJvCustomDateEdit.ButtonClick;
 var
-  D: TDateTime;
+  d: TDateTime;
   Action: Boolean;
 begin
   inherited ButtonClick;
   if CalendarStyle = csDialog then
   begin
-    D := Self.Date;
-    Action := SelectDate(Self, D, DialogTitle, FStartOfWeek, FWeekends, // Polaris (Self added)
+    d := Self.Date;
+    Action := SelectDate(Self, d, DialogTitle, FStartOfWeek, FWeekends, // Polaris (Self added)
       FWeekendColor, FCalendarHints,
       FMinDate, FMaxDate); // Polaris
     if CanFocus then
@@ -2207,10 +2377,10 @@ begin
     if Action then
     begin
       if Assigned(FOnAcceptDate) then
-        FOnAcceptDate(Self, D, Action);
+        FOnAcceptDate(Self, d, Action);
       if Action then
       begin
-        Self.Date := D;
+        Self.Date := d;
         if FFocused then
           inherited SelectAll;
       end;
@@ -2256,13 +2426,6 @@ begin
   end;
 end;
 
-procedure TJvCustomDateEdit.DoExit;
-begin
-  if not (csDesigning in ComponentState) and CheckOnExit then
-    CheckValidDate;
-  inherited DoExit;
-end;
-
 constructor TJvCustomDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2274,15 +2437,16 @@ begin
   FBlanksChar := ' ';
   FTitle := RsDateDlgCaption;
   FPopupColor := clMenu;
-  FDefNumGlyphs := 2;
+  //  FDefNumGlyphs := 2;
   FStartOfWeek := Mon;
   FWeekends := [Sun];
   FWeekendColor := clRed;
   FYearDigits := dyDefault;
   FCalendarHints := TStringList.Create;
   TStringList(FCalendarHints).OnChange := CalendarHintsChanged;
-  ControlState := ControlState + [csCreating];
   DateHook.Add;
+
+  ControlState := ControlState + [csCreating];
   try
     UpdateFormat;
     {$IFDEF DEFAULT_POPUP_CALENDAR}
@@ -2292,7 +2456,7 @@ begin
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     TJvPopupWindow(FPopup).Color := FPopupColor;
     {$ENDIF DEFAULT_POPUP_CALENDAR}
-    GlyphKind := gkDefault; { force update }
+    ImageKind := ikDefault; { force update }
   finally
     ControlState := ControlState - [csCreating];
   end;
@@ -2303,6 +2467,24 @@ begin
   inherited CreateWindowHandle(Params);
   if Handle <> 0 then
     UpdateMask;
+end;
+
+class function TJvCustomDateEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
+begin
+  if GDateImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Handle := LoadBitmap(HInstance, sDateBmp);
+      GDateImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+
+  Result := GDateImageIndex;
 end;
 
 destructor TJvCustomDateEdit.Destroy;
@@ -2317,6 +2499,13 @@ begin
   FCalendarHints.Free;
   FCalendarHints := nil;
   inherited Destroy;
+end;
+
+procedure TJvCustomDateEdit.DoExit;
+begin
+  if not (csDesigning in ComponentState) and CheckOnExit then
+    CheckValidDate;
+  inherited DoExit;
 end;
 
 function TJvCustomDateEdit.FourDigitYear: Boolean;
@@ -2350,17 +2539,6 @@ end;
 function TJvCustomDateEdit.GetDateMask: string;
 begin
   Result := DefDateMask(FBlanksChar, FourDigitYear);
-end;
-
-function TJvCustomDateEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
-begin
-  DestroyNeeded := False;
-  if DateBitmap = nil then
-  begin
-    DateBitmap := TBitmap.Create;
-    DateBitmap.Handle := LoadBitmap(HInstance, sDateBmp);
-  end;
-  Result := DateBitmap;
 end;
 
 function TJvCustomDateEdit.GetDialogTitle: string;
@@ -2473,7 +2651,7 @@ end;
 
 procedure TJvCustomDateEdit.SetDate(Value: TDateTime);
 var
-  D: TDateTime;
+  d: TDateTime;
 begin
   if not ValidDate(Value) or (Value = NullDate) then
   begin
@@ -2482,28 +2660,28 @@ begin
     else
       Value := NullDate;
   end;
-  D := self.Date;
+  d := Self.Date;
   TestDateBetween(Value); // Polaris
   if Value = NullDate then
     Text := ''
   else
     Text := FormatDateTime(FDateFormat, Value);
-  Modified := D <> self.Date;
+  Modified := d <> Self.Date;
 end;
 
 procedure TJvCustomDateEdit.SetDateAutoBetween(Value: Boolean);
 var
-  D: TDateTime;
+  d: TDateTime;
 begin
   if Value <> FDateAutoBetween then
   begin
     FDateAutoBetween := Value;
     if Value then
     begin
-      D := Date;
-      TestDateBetween(D);
-      if D <> Date then
-        Date := D;
+      d := Date;
+      TestDateBetween(d);
+      if d <> Date then
+        Date := d;
     end;
     Invalidate;
   end;
@@ -2897,6 +3075,16 @@ begin
   end;
 end;
 
+procedure TJvEditButton.PaintImage(Canvas: TCanvas; ARect: TRect;
+  const Offset: TPoint; AState: TJvButtonState; DrawMark: Boolean);
+begin
+  if FDrawGlyph then
+    TJvxButtonGlyph(ButtonGlyph).Draw(Canvas, ARect, Offset, '', Layout,
+      Margin, Spacing, False, AState, 0)
+  else
+    inherited PaintImage(Canvas, ARect, Offset, AState, DrawMark);
+end;
+
 procedure TJvEditButton.WMContextMenu(var Msg: TWMContextMenu);
 begin
   { (rb) Without this, we get 2 context menu's (1 from the form, another from
@@ -2918,7 +3106,7 @@ begin
   FAcceptFiles := True;
   ControlState := ControlState + [csCreating];
   try
-    GlyphKind := gkDefault; { force update }
+    ImageKind := ikDefault; { force update }
   finally
     ControlState := ControlState - [csCreating];
   end;
@@ -2929,6 +3117,24 @@ begin
   inherited CreateHandle;
   if FAcceptFiles then
     SetDragAccept(True);
+end;
+
+class function TJvFileDirEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
+begin
+  if GFileImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
+      GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+
+  Result := GFileImageIndex;
 end;
 
 procedure TJvFileDirEdit.DestroyWindowHandle;
@@ -2960,17 +3166,6 @@ procedure TJvFileDirEdit.EnableSysErrors;
 begin
   SetErrorMode(FErrMode);
   FErrMode := 0;
-end;
-
-function TJvFileDirEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
-begin
-  DestroyNeeded := False;
-  if FileBitmap = nil then
-  begin
-    FileBitmap := TBitmap.Create;
-    FileBitmap.Handle := LoadBitmap(HInstance, sFileBmp);
-  end;
-  Result := FileBitmap;
 end;
 
 procedure TJvFileDirEdit.SetAcceptFiles(Value: Boolean);
@@ -3355,4 +3550,3 @@ initialization
 finalization
   DestroyLocals;
 end.
-
