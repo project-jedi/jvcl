@@ -4,7 +4,7 @@ object WelcomeForm: TWelcomeForm
   Width = 539
   Height = 435
   HelpContext = 1
-  Caption = 'welcome '
+  Caption = 'Welcome'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -407,7 +407,7 @@ object WelcomeForm: TWelcomeForm
   end
   object JvHotLink2: TJvLabel
     Left = 0
-    Top = 310
+    Top = 173
     Width = 531
     Height = 24
     Cursor = crHandPoint
@@ -434,7 +434,7 @@ object WelcomeForm: TWelcomeForm
   end
   object JvHotLink3: TJvLabel
     Left = 0
-    Top = 334
+    Top = 197
     Width = 531
     Height = 24
     Cursor = crHandPoint
@@ -463,9 +463,9 @@ object WelcomeForm: TWelcomeForm
     URL = ' '
   end
   object frmh_st: TJvScrollText
-    Left = 0
-    Top = 173
-    Width = 531
+    Left = 8
+    Top = 221
+    Width = 521
     Height = 137
     Alignment = taLeftJustify
     Items.Strings = (
@@ -478,14 +478,13 @@ object WelcomeForm: TWelcomeForm
       'Ralf Grenzing '
       'Uwe Rupprecht'
       ''
-      'of cource using the existing demos ...')
+      'of course using the existing demos ...')
     BackgroundColor = clBtnFace
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    Align = alTop
   end
   object JvJVCLAboutComponent1: TJvJVCLAboutComponent
     Left = 425

@@ -1,7 +1,8 @@
 object JvClipboardViewerMainForm: TJvClipboardViewerMainForm
-  Left = 493
-  Top = 225
-  BorderStyle = bsDialog
+  Left = 301
+  Top = 190
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvClipboardViewer Demo'
   ClientHeight = 453
   ClientWidth = 705

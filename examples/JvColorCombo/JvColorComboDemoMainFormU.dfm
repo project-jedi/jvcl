@@ -5,6 +5,8 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
   Height = 454
   Caption = 'JvColorCombo Demo'
   Color = clBtnFace
+  Constraints.MinHeight = 250
+  Constraints.MinWidth = 476
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -23,7 +25,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Caption = 'Colors:'
   end
   object Label2: TLabel
-    Left = 168
+    Left = 172
     Top = 8
     Width = 99
     Height = 13
@@ -40,7 +42,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Left = 16
     Top = 24
     Width = 145
-    Height = 22
+    Height = 20
     ColorNameMap.Strings = (
       'clBlack=Black'
       'clMaroon=Maroon'
@@ -105,16 +107,16 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     OnChange = JvColorComboBox1Change
   end
   object memInfo: TMemo
-    Left = 24
+    Left = 16
     Top = 96
-    Width = 420
+    Width = 433
     Height = 321
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssVertical
     TabOrder = 1
   end
   object btnColorNames: TButton
-    Left = 24
+    Left = 16
     Top = 64
     Width = 90
     Height = 25
@@ -123,7 +125,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     OnClick = btnColorNamesClick
   end
   object edNameTemplate: TEdit
-    Left = 168
+    Left = 172
     Top = 24
     Width = 121
     Height = 21
@@ -131,9 +133,9 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     Text = 'Custom Color %d'
   end
   object chkAllowCustom: TCheckBox
-    Left = 168
+    Left = 176
     Top = 64
-    Width = 121
+    Width = 113
     Height = 17
     Caption = 'Display Color Dialog'
     Checked = True
@@ -142,7 +144,7 @@ object JvColorComboDemoMainForm: TJvColorComboDemoMainForm
     OnClick = cbDisplayStyleChange
   end
   object btnCustColors: TButton
-    Left = 352
+    Left = 360
     Top = 64
     Width = 89
     Height = 25

@@ -2,12 +2,12 @@ program ColorButtonDemo;
 
 uses
   Forms,
-  Main in 'Main.pas' {Form2};
+  Main in 'Main.pas' {ColorDemoMainForm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TColorDemoMainForm, ColorDemoMainForm);
   Application.Run;
 end.
