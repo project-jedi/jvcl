@@ -100,7 +100,6 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
-	Preprocess \
 	BuildJCLdcpFiles \
 	Resources \
 	pg.exe \
@@ -206,7 +205,7 @@ Templates:
 	@IF NOT $(MASTEREDITION)! == ! @copy "$(CFGFILE)" "$(PKGDIR_MASTEREDITION)\$(CONFIGFILENAME)"
 
 ################################################################################
-Compile: Preprocess Bpg2Make.exe CompilePackages
+Compile: Bpg2Make.exe CompilePackages
 
 ################################################################################
 CompilePackages:
@@ -232,7 +231,7 @@ MOs:
 	cd ..\packages\bin
 
 ################################################################################
-Installer: Preprocess MOs Installer_nomo
+Installer: MOs Installer_nomo
 
 ################################################################################
 Installer_nomo:
@@ -253,7 +252,3 @@ Installer_nomo:
 
 
 ################################################################################
-Preprocess:
-	@echo [Preprocessing JVCL]
-	$(MAKE) $(QUIET) -f Preprocess.mak
-
