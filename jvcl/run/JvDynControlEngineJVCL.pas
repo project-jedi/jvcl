@@ -597,7 +597,7 @@ type
     function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLTreeView= class(TJvTreeView, IUnknown,
+  TJvDynControlJVCLTreeView = class(TJvTreeView, IUnknown,
     IJvDynControl, IJvDynControlTreeView)
   public
     procedure ControlSetDefaultProperties;
@@ -620,7 +620,6 @@ type
     function ControlGetItems: TTreeNodes;
     procedure ControlSetImages(Value: TCustomImageList);
     procedure ControlSetStateImages(Value: TCustomImageList);
-
   end;
 
 function DynControlEngineJVCL: TJvDynControlEngine;
