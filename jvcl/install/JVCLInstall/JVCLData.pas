@@ -630,7 +630,8 @@ begin
   begin
     FCompiledJCL := True;
 
-    if FJCLDir = '' then // replace JCL directory
+    { (ahuser) Removed because some files require JCL source }
+    {if FJCLDir = '' then // replace JCL directory
       FJCLDir := BplDir;
 
     if Target.IsBCB then
@@ -641,7 +642,7 @@ begin
       if FileExists(Format('%s\DJcl%s.bpl', [BplDir, S])) and
          FileExists(Format('%s\DJclVcl%s.bpl', [BplDir, S])) then
         FMissingJCL := False;
-    end;
+    end;}
   end;
 end;
 
