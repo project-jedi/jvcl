@@ -91,8 +91,8 @@ Description
   To display a balloon attached to a control, call ActivateHint. You can specify the header, message,
   icon that should be displayed in the balloon and the amount of time the balloon should be visible.
 
-  Alternatively, use <LINK ActivateHintPos> or <LINK ActivateHintRect> to display a balloon at a specific position on the
-  desktop or form.
+  Alternatively, use ActivateHintPos or ActivateHintRect to display a balloon at a specific position
+  on the desktop or form.
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHint@TControl@string@string@Integer
 Summary
@@ -108,7 +108,7 @@ Description
   hiding the hint message. Set VisibleTime to 0 to disable the automatic deactivation.
 
   To hide a balloon window that is activated directly by calling ActivateHint,
-  <LINK ActivateHintPos> or <LINK ActivateHintRect>, use the CancelHint method.
+  ActivateHintPos or ActivateHintRect, use the CancelHint method.
 
   Use Options to specify that the component must use default values as specified by DefaultHeader,
   DefaultImageIndex and DefaultIcon, instead of the values of the parameters that may be given.
@@ -122,7 +122,7 @@ Parameters
   AImageIndex - Indicates which image to draw in the balloon from the image list Images.
   AIconKind   - The icon to be displayed in the balloon.
 See Also
-  <LINK ActivateHintPos>, <LINK ActivateHintRect>, CancelHint
+  ActivateHintPos, ActivateHintRect, CancelHint
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHint@TControl@string@TImageIndex@string@Integer
 <COMBINE TJvBalloonHint.ActivateHint@TControl@string@string@Integer>
@@ -143,7 +143,7 @@ Description
   specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the automatic deactivation.
 
   To hide a balloon window that is activated directly by calling ActivateHint, ActivateHintPos and
-  <LINK ActivateHintRect>, use the CancelHint method.
+  ActivateHintRect, use the CancelHint method.
 
   You may set parameter AAnchorWindow to nil, then AAnchorPosition is a position on the desk-top.
 
@@ -160,7 +160,7 @@ Parameters
   AIconKind       - The icon to be displayed in the balloon.
   AImageIndex     - Indicates which image to draw in the balloon from the image list Images.
 See Also
-  ActivateHint, <LINK ActivateHintRect>, CancelHint
+  ActivateHint, ActivateHintRect, CancelHint
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ActivateHintRect
 Summary
@@ -174,7 +174,7 @@ Description
   After the component displays a balloon window, it automatically deactivates it after a time period -
   specified by the VisibleTime parameter - has elapsed. Set VisibleTime to 0 to disable the automatic deactivation.
 
-  To hide a balloon window that is activated directly by calling ActivateHint, <LINK ActivateHintPos> and
+  To hide a balloon window that is activated directly by calling ActivateHint, ActivateHintPos and
   ActivateHintRect, use the CancelHint method.
 
   Use Options to specify that the component must use default values as specified by DefaultHeader,
@@ -187,7 +187,7 @@ Parameters
   AIconKind   - The icon to be displayed in the balloon.
   AImageIndex - Indicates which image to draw in the balloon from the image list Images.
 See Also
-  ActivateHint, <LINK ActivateHintPos>, CancelHint
+  ActivateHint, ActivateHintPos, CancelHint
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.ApplicationHintOptions
 Summary
@@ -209,12 +209,12 @@ Summary
   Cancels the display of a balloon window.
 Description
   Call CancelHint to cancel the display of a balloon window that was activated by a call to
-  ActivateHint, <LINK ActivateHintPos> or <LINK ActivateHintRect>.
+  ActivateHint, ActivateHintPos or ActivateHintRect.
 
   The component calls CancelHint internally if the specified visible time elapsed or when it receives
   a message that requires hiding the hint message.
 See Also
-  ActivateHint, <LINK ActivateHintPos>, <LINK ActivateHintRect>
+  ActivateHint, ActivateHintPos, ActivateHintRect
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.CustomAnimationStyle
 Summary
@@ -310,7 +310,7 @@ Description
   to respond when the user clicks the close button.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnCloseBtnClick, OnDblClick
 ----------------------------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ Description
   Use OnClose to perform special processing when the balloon closes.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnCloseBtnClick
 ----------------------------------------------------------------------------------------------------
@@ -336,7 +336,7 @@ Description
   Include boShowCloseBtn in Options, otherwise no close button is shown.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnBalloonClick, OnClose, Options
 ----------------------------------------------------------------------------------------------------
@@ -349,7 +349,7 @@ Description
   to respond when the user clicks the close button.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnBalloonClick, OnCloseBtnClick
 ----------------------------------------------------------------------------------------------------
@@ -365,7 +365,7 @@ Description
   the pixel coordinates of the mouse pointer in the client area of the Sender.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnBalloonClick, OnMouseUp
 ----------------------------------------------------------------------------------------------------
@@ -382,7 +382,7 @@ Description
   area of the Sender.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnMouseDown, OnMouseUp
 ----------------------------------------------------------------------------------------------------
@@ -399,17 +399,17 @@ Description
   are the pixel coordinates of the mouse pointer in the client area of the Sender.
 Note
   This event does <i>not</i> occur for application hint windows, only for balloon hints launched with a call
-  to ActivateHint, <LINK ActivateHintRect> etc.
+  to ActivateHint, ActivateHintRect etc.
 See Also
   OnMouseDown, OnBalloonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvBalloonHint.Options
 Summary
   Determines the appearance and behavior of balloon windows displayed by calling
-  ActivateHint, <LINK ActivateHintPos> or <LINK ActivateHintRect>.
+  ActivateHint, ActivateHintPos or ActivateHintRect.
 Description
   Use the Options property to customize the appearance and functionality of balloon windows displayed
-  by calling ActivateHint, <LINK ActivateHintPos> or <LINK ActivateHintRect>. Use these flags to
+  by calling ActivateHint, ActivateHintPos or ActivateHintRect. Use these flags to
 
   * Specify whether to use the default values as specified by DefaultHeader, DefaultIcon
     and DefaultImageIndex.
@@ -435,12 +435,12 @@ See Also
 <TITLE TJvBalloonOption type>
 Summary
   Defines values that determines the behavior of balloon windows displayed by
-  calling <LINK TJvBalloonHint.ActivateHint,ActivateHint>, <LINK TJvBalloonHint.ActivateHintPos,
-  ActivateHintPos> or <LINK TJvBalloonHint.ActivateHintRect,ActivateHintRect>.
+  calling ActivateHint, ActivateHintPos or ActivateHintRect.
 Description
   The \TJvBalloonOption values determine the behavior of balloon windows displayed by
-  calling <LINK TJvBalloonHint.ActivateHint,ActivateHint>, <LINK TJvBalloonHint.ActivateHintPos,
-  ActivateHintPos> or <LINK TJvBalloonHint.ActivateHintRect,ActivateHintRect>.
+  calling <LINK TJvBalloonHint.ActivateHint, ActivateHint>,
+  <LINK TJvBalloonHint.ActivateHintPos, ActivateHintPos> or
+  <LINK TJvBalloonHint.ActivateHintRect, ActivateHintRect>.
 
   \TJvBalloonOptions is a set of \TJvBalloonOption.
 @@TJvBalloonOption.boUseDefaultHeader
