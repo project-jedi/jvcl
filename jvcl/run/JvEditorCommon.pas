@@ -3084,6 +3084,11 @@ begin
     SetUnSelected;
   end;
   SetFocus;
+  {$IFDEF MSWINDOWS}
+  // in MDIChilds the focus meight not be set correctly ("ActiveControl <> Control" in TCustomForm.SetActiveControl)
+  Windows.SetFocus(Handle);
+  {$ENDIF MSWINDOWS}
+
   {--- UNDO ---}
   if Button = mbLeft then
     TJvBeginCompoundUndo.Create(Self);
