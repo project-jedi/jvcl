@@ -172,7 +172,7 @@ object JvFullColorFrm: TJvFullColorFrm
       NewColorText = 'Custom'
       Options = [coText, coSysColors]
       TabOrder = 6
-      OnClick = JvComboBoxColorSpaceSelect
+      OnClick = ComboBoxPredefinedSelect
     end
   end
   object JvFullColorGroup: TJvFullColorGroup
