@@ -604,7 +604,7 @@ begin
       if not Assigned(FBandForm) then
         Exit;
       ShowDW(False);
-      //FBandForm.Release;  //XXX
+      FBandForm.Free;  
       if FHook<>0 then
       begin
         UnhookWindowsHookEx(FHook);
@@ -1106,11 +1106,12 @@ begin
       if lOk then
         if IsDialogMessage(FBandForm.Handle,PMsg(Pointer(lParam))^) then
           PMsg(lParam)^.message := WM_NULL;
-    end;
+    end;    
   except
   end;
   result := CallNextHookEx(FHook, nCode, wParam, lParam);
 end;
 
 end.
+
 
