@@ -44,6 +44,10 @@ uses
   JVCLVer;
 
 type
+{$IFDEF BCB}
+  TDate = TDateTime;
+{$ENDIF}
+
   TJvDateTimePicker = class(TDateTimePicker)
   private
     FAboutJVCL: TJVCLAboutInfo;
