@@ -33,7 +33,6 @@ USEUNIT("..\source\JvHintProp.pas");
 USEUNIT("..\source\JvColors.pas");
 USEUNIT("..\source\JvDsgn.pas");
 USEUNIT("..\source\JvCtlReg.pas");
-USEUNIT("..\source\JvTooReg.pas");
 USEUNIT("..\source\JvDBReg.pas");
 USEUNIT("..\source\JvBDEReg.pas");
 USEFORMNS("..\source\JvImagPrvw.pas", Jvimagprvw, ImageForm);
@@ -57,6 +56,22 @@ USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("vclx50.bpi");
 USEPACKAGE("vclbde50.bpi");
 USEPACKAGE("vcljpg50.bpi");
+USEUNIT("..\source\JvActions.pas");
+USEFORMNS("..\source\JvActnRes.pas", Jvactnres, JvStandardActions); /* TDataModule: File Type */
+USEFORMNS("..\source\JvBandObjectDLLWizardForm.pas", Jvbandobjectdllwizardform, zWizardForm);
+USEUNIT("..\source\JvBandObjectDLLWizard.pas");
+USEFORMNS("..\source\JvhtHintEditor.pas", Jvhthinteditor, JvHintEditor);
+USEUNIT("..\source\JvIDEZoom.pas");
+USEUNIT("..\source\JvIReg.pas");
+USEFORMNS("..\source\JvPluginParams.pas", Jvpluginparams, frmPluginParams);
+USEUNIT("..\source\JvPluginWizard.pas");
+USEFORMNS("..\source\JvRegAutoEditor.pas", Jvregautoeditor, JvRegEditor);
+USEUNIT("..\source\JvSchedEvntReg.pas");
+USEUNIT("..\source\JvTipOfDayProp.pas");
+USEFORMNS("..\source\ScheduleEditor.pas", Scheduleeditor, frmScheduleEditor);
+USEUNIT("..\source\JvToolReg.pas");
+USEPACKAGE("dsnide50.bpi");
+//---------------------------------------------------------------------------
 #//---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

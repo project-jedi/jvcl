@@ -29,7 +29,7 @@
       ..\lib5\JvFormAnimatedIcon.obj ..\lib5\JvFormAnimation.obj 
       ..\lib5\JvFormImage.obj ..\lib5\JvFormLogin.obj ..\lib5\JvFormParser.obj 
       ..\lib5\JvFormPass.obj ..\lib5\JvFormPatch.obj ..\lib5\JvFormPlace.obj 
-      ..\lib5\JvFormSerial.obj ..\lib5\JvFormTips.obj ..\lib5\JvFormToHtml.obj 
+      ..\lib5\JvFormSerial.obj ..\lib5\JvFormToHtml.obj 
       ..\lib5\JvFormWallpaper.obj ..\lib5\JvFormWallpaperEdit.obj 
       ..\lib5\JvFtpGrabber.obj ..\lib5\JvFunctions.obj ..\lib5\JvGammaPanel.obj 
       ..\lib5\JvGenetic.obj ..\lib5\JvGradient.obj ..\lib5\JvGradientCaption.obj 
@@ -57,9 +57,9 @@
       ..\lib5\JvScreenResolution.obj ..\lib5\JvScreenSaver.obj 
       ..\lib5\JvScrollBar.obj ..\lib5\JvScrollBox.obj 
       ..\lib5\JvScrollingLabel.obj ..\lib5\JvScrollText.obj 
-      ..\lib5\JvSearchFile.obj ..\lib5\JvSelectDirectory.obj 
-      ..\lib5\JvSerialDlg.obj ..\lib5\JvSerialMaker.obj ..\lib5\JvShape.obj 
-      ..\lib5\JvSlider.obj ..\lib5\JvSoundControl.obj ..\lib5\JvSpecialImage.obj 
+      ..\lib5\JvSelectDirectory.obj ..\lib5\JvSerialDlg.obj 
+      ..\lib5\JvSerialMaker.obj ..\lib5\JvShape.obj ..\lib5\JvSlider.obj 
+      ..\lib5\JvSoundControl.obj ..\lib5\JvSpecialImage.obj 
       ..\lib5\JvSpecialLabel.obj ..\lib5\JvSpecialProgress.obj 
       ..\lib5\JvSpeedButton.obj ..\lib5\JvSplitter.obj ..\lib5\JvStarfield.obj 
       ..\lib5\JvStartMenuBtn.obj ..\lib5\JvStaticText.obj 
@@ -67,7 +67,7 @@
       ..\lib5\JvStringListToHtml.obj ..\lib5\JvStrToHtml.obj 
       ..\lib5\JvSystemColors.obj ..\lib5\JvSystemPopup.obj 
       ..\lib5\JvTabControl.obj ..\lib5\JvThread.obj ..\lib5\JvThreadTimer.obj 
-      ..\lib5\JvTimeLimit.obj ..\lib5\JvTipsOfDay.obj ..\lib5\JvToolBar.obj 
+      ..\lib5\JvTimeLimit.obj ..\lib5\JvToolBar.obj 
       ..\lib5\JvTransparentForm.obj ..\lib5\JvTrayIcon.obj ..\lib5\JvTypes.obj 
       ..\lib5\JvUpDown.obj ..\lib5\JvVigenereCipher.obj 
       ..\lib5\JvVisualId3v1.obj ..\lib5\JvVisualId3v2.obj 
@@ -80,33 +80,32 @@
       ..\lib5\JvOneSizeFitsAllButton.obj ..\lib5\JvGroupBox.obj 
       ..\lib5\JvReorderListBox.obj ..\lib5\JvSyncSplitter.obj 
       ..\lib5\JvPopupMemo.obj ..\lib5\JvSizeablePanel.obj ..\lib5\JvSpacer.obj 
-      ..\lib5\JvTextcontainer.obj ..\lib5\JvTransparentPanel.obj 
-      ..\lib5\JvMousePanel.obj ..\lib5\JvObserverLabel.obj 
-      ..\lib5\JvObservibleCheckBox.obj ..\lib5\JvMouseTimerU.obj 
-      ..\lib5\JvObserverMessages.obj ..\lib5\JvSysComp.obj ..\lib5\JvCtrls.obj 
-      ..\lib5\JvDdeCmd.obj ..\lib5\JvDialogs.obj ..\lib5\JvPerfMon95.obj 
-      ..\lib5\JvComCtrls.obj ..\lib5\JvMail.obj ..\lib5\JvPageSetupTitled.obj 
-      ..\lib5\JvPageSetup.obj ..\lib5\JVCLVer.obj ..\lib5\JvComponent.obj 
-      ..\lib5\JvLinkLabel.obj ..\lib5\JvLinkLabelTree.obj 
-      ..\lib5\JvLinkLabelParser.obj ..\lib5\JvLinkLabelRenderer.obj 
-      ..\lib5\JvLinkLabelTextHandler.obj ..\lib5\JvLinkLabelTools.obj 
-      ..\lib5\JvDiagramShape.obj ..\lib5\JvWinDialogs.obj ..\lib5\JvArrowBtn.obj 
-      ..\lib5\JvBmpAnim.obj ..\lib5\JvCaptionButton.obj 
-      ..\lib5\JvCaptionPanel.obj ..\lib5\JvColorBox.obj ..\lib5\JvColorBtn.obj 
-      ..\lib5\JvColorCombo.obj ..\lib5\JvAppInfo.obj ..\lib5\JvCalendar.obj 
-      ..\lib5\JvChangeNotify.obj ..\lib5\JvCntScr.obj ..\lib5\JvCmdEdit.obj 
-      ..\lib5\JvEnterTab.obj ..\lib5\JvFileInfo.obj ..\lib5\JvFindFiles.obj 
-      ..\lib5\JvAppHotKey.obj ..\lib5\JvSHFmt.obj ..\lib5\JvUCB.obj 
-      ..\lib5\JvFindReplace.obj ..\lib5\JvImageWindow.obj 
-      ..\lib5\JvInstallLabel.obj ..\lib5\JvItemsPanel.obj ..\lib5\JvListComb.obj 
-      ..\lib5\JvLookOut.obj ..\lib5\JvProfiler32.obj ..\lib5\JvRegTV.obj 
-      ..\lib5\JvRollOut.obj ..\lib5\JvScrollPanel.obj ..\lib5\JvSearchFiles.obj 
-      ..\lib5\JvSHFileOp.obj ..\lib5\JvTimeLine.obj ..\lib5\JvTipWin.obj 
-      ..\lib5\JvTransBtn.obj ..\lib5\JvTransBtn2.obj ..\lib5\JvDriveCtrls.obj 
-      ..\lib5\JvTipsDlg.obj ..\lib5\JvOLBar.obj ..\lib5\JvTMTL.obj 
+      ..\lib5\JvTransparentPanel.obj ..\lib5\JvMousePanel.obj 
+      ..\lib5\JvObserverLabel.obj ..\lib5\JvObservibleCheckBox.obj 
+      ..\lib5\JvMouseTimerU.obj ..\lib5\JvObserverMessages.obj 
+      ..\lib5\JvSysComp.obj ..\lib5\JvCtrls.obj ..\lib5\JvDdeCmd.obj 
+      ..\lib5\JvDialogs.obj ..\lib5\JvPerfMon95.obj ..\lib5\JvComCtrls.obj 
+      ..\lib5\JvMail.obj ..\lib5\JvPageSetupTitled.obj ..\lib5\JvPageSetup.obj 
+      ..\lib5\JVCLVer.obj ..\lib5\JvComponent.obj ..\lib5\JvLinkLabel.obj 
+      ..\lib5\JvLinkLabelTree.obj ..\lib5\JvLinkLabelParser.obj 
+      ..\lib5\JvLinkLabelRenderer.obj ..\lib5\JvLinkLabelTextHandler.obj 
+      ..\lib5\JvLinkLabelTools.obj ..\lib5\JvDiagramShape.obj 
+      ..\lib5\JvWinDialogs.obj ..\lib5\JvArrowBtn.obj ..\lib5\JvBmpAnim.obj 
+      ..\lib5\JvCaptionButton.obj ..\lib5\JvCaptionPanel.obj 
+      ..\lib5\JvColorBox.obj ..\lib5\JvColorBtn.obj ..\lib5\JvColorCombo.obj 
+      ..\lib5\JvAppInfo.obj ..\lib5\JvCalendar.obj ..\lib5\JvChangeNotify.obj 
+      ..\lib5\JvCntScr.obj ..\lib5\JvCmdEdit.obj ..\lib5\JvEnterTab.obj 
+      ..\lib5\JvFileInfo.obj ..\lib5\JvFindFiles.obj ..\lib5\JvAppHotKey.obj 
+      ..\lib5\JvSHFmt.obj ..\lib5\JvUCB.obj ..\lib5\JvFindReplace.obj 
+      ..\lib5\JvImageWindow.obj ..\lib5\JvInstallLabel.obj 
+      ..\lib5\JvItemsPanel.obj ..\lib5\JvListComb.obj ..\lib5\JvLookOut.obj 
+      ..\lib5\JvProfiler32.obj ..\lib5\JvRegTV.obj ..\lib5\JvRollOut.obj 
+      ..\lib5\JvScrollPanel.obj ..\lib5\JvSearchFiles.obj ..\lib5\JvSHFileOp.obj 
+      ..\lib5\JvTimeLine.obj ..\lib5\JvTransBtn.obj ..\lib5\JvTransBtn2.obj 
+      ..\lib5\JvDriveCtrls.obj ..\lib5\JvOLBar.obj ..\lib5\JvTMTL.obj 
       ..\lib5\JvColorForm.obj ..\lib5\JvArrow.obj ..\lib5\JvTypedEdit.obj 
-      ..\lib5\JvSpinEdit.obj ..\lib5\JvTranslator.obj ..\lib5\JvSimpleXml.obj 
-      ..\lib5\JvHotkeyEx.obj ..\lib5\JvObjSel.obj ..\lib5\JvObjPickerComp.obj 
+      ..\lib5\JvTranslator.obj ..\lib5\JvSimpleXml.obj ..\lib5\JvHotkeyEx.obj 
+      ..\lib5\JvObjSel.obj ..\lib5\JvObjPickerComp.obj 
       ..\lib5\JvImageDrawThread.obj ..\lib5\JvInspector.obj ..\lib5\JvInspDB.obj 
       ..\lib5\JvHidControllerClass.obj ..\lib5\JvAnalogClock.obj 
       ..\lib5\JvxCtrls.obj ..\lib5\JvGrids.obj ..\lib5\JvCurrEdit.obj 
@@ -137,9 +136,36 @@
       ..\lib5\JvRemLog.obj ..\lib5\JvChPswDlg.obj ..\lib5\JvBdeUtils.obj 
       ..\lib5\JvQuery.obj ..\lib5\JvMemTable.obj ..\lib5\JvDBExcpt.obj 
       ..\lib5\JvFormProgress.obj ..\lib5\JvRadioCtl.obj ..\lib5\JvExcptDlg.obj 
-      ..\lib5\SetupApi.obj ..\lib5\ModuleLoader.obj ..\lib5\JvThumbImage.obj 
-      ..\lib5\JvBaseThumbnail.obj ..\lib5\JvThumbviews.obj 
-      ..\lib5\jvThumbNails.obj ..\lib5\JvMovableBevel.obj ..\lib5\JVCL200_R50C.obj"/>
+      ..\lib5\JvThumbImage.obj ..\lib5\JvBaseThumbnail.obj 
+      ..\lib5\JvThumbviews.obj ..\lib5\jvThumbNails.obj 
+      ..\lib5\JvMovableBevel.obj ..\lib5\JvaScrollText.obj 
+      ..\lib5\JvBandWindows.obj ..\lib5\JvBandForms.obj ..\lib5\JvBandObject.obj 
+      ..\lib5\JvBandUtils.obj ..\lib5\JvButtons.obj 
+      ..\lib5\JvCheckedMaskEdit.obj ..\lib5\JvComponentPanel.obj 
+      ..\lib5\JvCtlConst.obj ..\lib5\JvDatePickerEdit.obj ..\lib5\JvDBUtil.obj 
+      ..\lib5\JvDBTreeView.obj ..\lib5\JvDlg.obj ..\lib5\JvDsgnIntf.obj 
+      ..\lib5\JvDropDownForm.obj ..\lib5\JvDSADialogs.obj ..\lib5\JvEditor.obj 
+      ..\lib5\JvFooter.obj ..\lib5\JvGroupHeader.obj ..\lib5\JvHtControls.obj 
+      ..\lib5\JvHint.obj ..\lib5\JvHLEditor.obj ..\lib5\JvHLEdPropDlg.obj 
+      ..\lib5\JvHLParser.obj ..\lib5\JvInterpreterParser.obj 
+      ..\lib5\JvInterpreter.obj ..\lib5\JvInterpreter_all.obj 
+      ..\lib5\JvInterpreter_Classes.obj ..\lib5\JvInterpreter_ComCtrls.obj 
+      ..\lib5\JvInterpreter_Contnrs.obj ..\lib5\JvInterpreter_Controls.obj 
+      ..\lib5\JvInterpreter_Db.obj ..\lib5\JvInterpreter_DbCtrls.obj 
+      ..\lib5\JvInterpreter_DbGrids.obj ..\lib5\JvInterpreter_DBTables.obj 
+      ..\lib5\JvInterpreter_Dialogs.obj ..\lib5\JvInterpreter_ExtCtrls.obj 
+      ..\lib5\JvInterpreter_Forms.obj ..\lib5\JvInterpreter_Graphics.obj 
+      ..\lib5\JvInterpreter_Grids.obj ..\lib5\JvInterpreter_httpapp.obj 
+      ..\lib5\JvInterpreter_JvEditor.obj ..\lib5\JvInterpreter_JvInterpreter.obj 
+      ..\lib5\JvInterpreter_JvRegAuto.obj ..\lib5\JvInterpreter_JvUtils.obj 
+      ..\lib5\JvInterpreter_Menus.obj ..\lib5\JvInterpreter_Quickrpt.obj 
+      ..\lib5\JvInterpreter_StdCtrls.obj ..\lib5\JvInterpreter_System.obj 
+      ..\lib5\JvInterpreter_SysUtils.obj ..\lib5\JvInterpreter_Windows.obj 
+      ..\lib5\JvInterpreterConst.obj ..\lib5\JvInterpreterFm.obj 
+      ..\lib5\JvNTEventLog.obj ..\lib5\JvPluginMan.obj ..\lib5\JvPlugCommon.obj 
+      ..\lib5\JvPlugin.obj ..\lib5\JvRegAuto.obj ..\lib5\JvScrollMax.obj 
+      ..\lib5\JvSQLS.obj ..\lib5\JvStrUtil.obj ..\lib5\JvTipOfDay.obj 
+      ..\lib5\JvUtils.obj ..\lib5\JvWndProcHook.obj ..\lib5\JVCL200_R50C.obj"/>
     <RESFILES value="JVCL200_R50C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -147,19 +173,20 @@
     <RESDEPEN value="$(RESFILES) ..\source\JvFormAlarms.dfm ..\source\JvFormImage.dfm 
       ..\source\JvFormLogin.dfm ..\source\JvFormParser.dfm 
       ..\source\JvFormPass.dfm ..\source\JvFormPatch.dfm 
-      ..\source\JvFormSerial.dfm ..\source\JvFormTips.dfm 
-      ..\source\JvFormWallpaperEdit.dfm ..\source\JvProfiler32.dfm 
-      ..\source\JvTipsDlg.dfm ..\source\JvColorForm.dfm ..\source\JvFDualLst.dfm 
-      ..\source\JvSbSetup.dfm ..\source\JvxLogin.dfm ..\source\JvChPswDlg.dfm 
-      ..\source\JvDBExcpt.dfm ..\source\JvFormProgress.dfm 
-      ..\source\JvExcptDlg.dfm"/>
+      ..\source\JvFormSerial.dfm ..\source\JvFormWallpaperEdit.dfm 
+      ..\source\JvProfiler32.dfm ..\source\JvColorForm.dfm 
+      ..\source\JvFDualLst.dfm ..\source\JvSbSetup.dfm ..\source\JvxLogin.dfm 
+      ..\source\JvChPswDlg.dfm ..\source\JvDBExcpt.dfm 
+      ..\source\JvFormProgress.dfm ..\source\JvExcptDlg.dfm 
+      ..\source\JvHLEdPropDlg.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value="wininet.lib"/>
-    <SPARELIBS value="wininet.lib Vcl50.lib Vcldb50.lib VCLBDE50.lib Vclx50.lib vcljpg50.lib"/>
+    <SPARELIBS value="wininet.lib Vcl50.lib Vcldb50.lib VCLBDE50.lib Vclx50.lib vcljpg50.lib 
+      CJCL50.lib Inet50.lib Qrpt50.lib"/>
     <PACKAGES value="vcl50.bpi CJCL50.bpi vclx50.bpi vclsmp50.bpi vcldb50.bpi vcljpg50.bpi 
-      vclbde50.bpi"/>
+      vclbde50.bpi Qrpt50.bpi Inet50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\source;..\common"/>
+    <PATHPAS value=".;..\source"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -168,13 +195,13 @@
     <USERDEFINES value=""/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JVCL200_R50C.cpp"/>
-    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl;..\common"/>
-    <LIBPATH value="..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;&quot;V:\code library\dcu\&quot;"/>
+    <INCLUDEPATH value="..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu;..\lib5"/>
+    <LIBPATH value="..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jvcl\lib5"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -I..\common -src_suffix 
-      cpp -boa"/>
+    <IDLCFLAGS value="-I..\source -I$(BCB)\include -I$(BCB)\include\vcl -I..\common 
+      -I$(BCB)\jcl\dcu -I..\lib5 -src_suffix cpp -boa"/>
     <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -c -tWM"/>
     <PFLAGS value="-N2..\lib5 -N0..\lib5 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl50"/>
     <RFLAGS value=""/>
@@ -200,8 +227,8 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=2052
-CodePage=936
+Locale=1033
+CodePage=1252
 
 [Version Info Keys]
 CompanyName=
@@ -213,24 +240,28 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
-Comments=
-
-[Excluded Packages]
 
 [HistoryLists\hlIncludePath]
-Count=0
+Count=5
+Item0=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu;..\lib5
+Item1=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\dcu
+Item2=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\source
+Item3=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common;$(BCB)\jcl\source;$(BCB)\jvcl\source
+Item4=..\source;$(BCB)\include;$(BCB)\include\vcl;..\common
 
 [HistoryLists\hlLibraryPath]
-Count=0
+Count=3
+Item0=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu;$(BCB)\jvcl\lib5
+Item1=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\jcl\dcu
+Item2=..\common;$(BCB)\projects\lib;..\source;$(BCB)\lib\obj;$(BCB)\lib;V:\code library\dcu\
 
 [HistoryLists\hlDebugSourcePath]
-Count=0
-
-[HistoryLists\hlConditionals]
-Count=0
+Count=1
+Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlIntOutputDir]
-Count=0
+Count=1
+Item0=..\lib5
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
