@@ -67,7 +67,7 @@ begin
   Width := 100;
   FMask := TBitmap.Create;
   FMaskBuff := TBitmap.Create;
-  fIgnorePaint := false;
+  FIgnorePaint := False;
 end;
 
 destructor TJvgWinMask.Destroy;

@@ -37,10 +37,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Controls, Classes, Graphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QControls, QClasses, QGraphics,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -116,12 +116,12 @@ implementation
 uses
   SysUtils;
 
-{$IFDEF WINDOWS}
-{$R ..\resources\JvLED.res}
-{$ENDIF}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvLED.res}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvLED.res}
-{$ENDIF}
+{$ENDIF LINUX}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';

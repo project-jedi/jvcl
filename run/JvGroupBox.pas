@@ -153,9 +153,9 @@ var
   {$IFDEF JVCLThemesEnabledD56}
   Details: TThemedElementDetails;
   CaptionRect: TRect;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabledD56}
   LastBkMode: Integer;
-  pText: {$IFDEF VCL}PChar;{$ELSE}WideString;{$ENDIF}
+  PText: {$IFDEF VCL} PChar; {$ELSE} WideString; {$ENDIF}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
@@ -184,9 +184,9 @@ begin
   with Canvas do
   begin
     {$IFDEF VCL}
-    pText := PChar(Text);
+    PText := PChar(Text);
     {$ELSE}
-    pText := Text;
+    PText := Text;
     Start;
     {$ENDIF VCL}
     LastBkMode := GetBkMode(Handle);
@@ -194,7 +194,7 @@ begin
       Font := Self.Font;
       H := TextHeight('0');
       R := Rect(0, H div 2 - 1, Width, Height);
-      {$IFDEF VCl}
+      {$IFDEF VCL}
       if Ctl3D then
       {$ELSE}
       if True then
@@ -227,20 +227,20 @@ begin
         Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
         // calculate text rect
         SetBkMode(Handle, OPAQUE);
-        DrawText(Handle, pText, Length(Text), R, Flags or DT_CALCRECT);
+        DrawText(Handle, PText, Length(Text), R, Flags or DT_CALCRECT);
         Brush.Color := Color;
         if not Enabled then
         begin
           OffsetRect(R, 1, 1);
           Font.Color := clBtnHighlight;
-          DrawText(Handle, pText, Length(Text), R, Flags);
+          DrawText(Handle, PText, Length(Text), R, Flags);
           OffsetRect(R, -1, -1);
           Font.Color := clBtnShadow;
           SetBkMode(Handle, TRANSPARENT);
-          DrawText(Handle, pText, Length(Text), R, Flags);
+          DrawText(Handle, PText, Length(Text), R, Flags);
         end
         else
-          DrawText(Handle, pText, Length(Text), R, Flags);
+          DrawText(Handle, PText, Length(Text), R, Flags);
       end;
     finally
       SetBkMode(Handle, LastBkMode);

@@ -77,7 +77,8 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
+    procedure SetAutoSize(Value: Boolean);
+      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override; {$ENDIF}{$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Toggle; override;
@@ -350,7 +351,7 @@ begin
     FWordWrap := Value;
     if Value then
       AutoSize := False;
-    {$IFDEF VCl}
+    {$IFDEF VCL}
     RecreateWnd;
     {$ELSE}
     RecreateWidget;
@@ -363,7 +364,7 @@ begin
   if FAlignment <> Value then
   begin
     FAlignment := Value;
-    {$IFDEF VCl}
+    {$IFDEF VCL}
     RecreateWnd;
     {$ELSE}
     RecreateWidget;
@@ -376,7 +377,7 @@ begin
   if FLayout <> Value then
   begin
     FLayout := Value;
-    {$IFDEF VCl}
+    {$IFDEF VCL}
     RecreateWnd;
     {$ELSE}
     RecreateWidget;
@@ -394,7 +395,7 @@ begin
   if FLeftText <> Value then
   begin
     FLeftText := Value;
-    {$IFDEF VCl}
+    {$IFDEF VCL}
     RecreateWnd;
     {$ELSE}
     RecreateWidget;

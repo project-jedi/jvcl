@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JVCLVer;
 
 type
@@ -101,7 +101,7 @@ procedure TJvGradient.Paint;
 var
   I: Integer;
   J, K: Real;
-  Deltas: array [0..2] of Real; //R,G,B
+  Deltas: array [0..2] of Real; // R,G,B
   R: TRect;
   LStartRGB, LEndRGB: TColor;
   LSteps: Word;
