@@ -300,7 +300,7 @@ type
 implementation
 
 uses
-  JvBandUtils, JvBandWindows;
+  JvUtils;
 
 constructor TJvBandForm.Create(AOwner: TComponent);
 begin

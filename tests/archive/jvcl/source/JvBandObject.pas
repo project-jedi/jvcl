@@ -167,9 +167,9 @@ implementation
 uses
   // (rom) debugging deactivated
   {$IFDEF Debug}
-  //zTrace,
+  //zTrace, JclStrings,
   {$ENDIF}
-  Registry, SysUtils, Math, JvBandUtils;
+  Registry, SysUtils, Math, JvUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';
@@ -578,7 +578,7 @@ function TzCustomBandObject.ShowDW(AShow: BOOL): HRESULT;
 begin
   {$IFDEF Debug}
   //zTraceLog(ClassName + '.ShowDW()');
-  //zTraceLog('  Show=' + BooleanAsString(Show));
+  //zTraceLog('  Show=' + BooleanToStr(Show));
   {$ENDIF}
   Result := NOERROR;
   if not Assigned(FBandForm) then
@@ -789,7 +789,7 @@ function TzCustomBandObject.UIActivateIO(Activate: BOOL;
 begin
   {$IFDEF Debug}
   //zTraceLog(ClassName + '.UIActivateIO()');
-  //zTraceLog('  Activate=' + BooleanAsString(Activate));
+  //zTraceLog('  Activate=' + BooleanToStr(Activate));
   {$ENDIF}
   Result := S_OK;
   FHasFocus := Activate;

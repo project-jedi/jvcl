@@ -48,12 +48,11 @@ uses
 
 {$IFNDEF COMPILER4_UP}
 type
-  longword = integer;
+  LongWord = Integer;
 {$ENDIF}
 
 type
-  TTickCount = cardinal;
-
+  TTickCount = Cardinal;
 
  {**** string handling routines}
 
@@ -64,7 +63,7 @@ const
 
 {$IFDEF Delphi}
 type
-  TSetOfChar = set of char;
+  TSetOfChar = set of Char;
 {$ENDIF Delphi}
 {$IFDEF BCB}   
 type
@@ -639,13 +638,17 @@ type
 
 const
   NoHelp = 0; { for MsgDlg2 }
-  MsgDlgCharSet : Integer = DEFAULT_CHARSET;
+  MsgDlgCharSet: Integer = DEFAULT_CHARSET;
+
+// (rom) from JvBandWindows to make it obsolete
+function PointL(const x, y: Longint): TPointL;
+// (rom) from JvBandUtils to make it obsolete
+function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 
 implementation
 
 uses
   JvCtlConst, JvMaxMin;
-
 
 function GetLineByPos(const S : string; const Pos : integer) : integer;
 var
@@ -3017,6 +3020,55 @@ begin
     else
       inc(i);
   end;
+end;
+
+{:Creates a TPointL structure from a pair of coordinates.
+Call PointL to create a TPointL structure that represents the specified
+coordinates. Use PointL to construct parameters for functions
+that require a TPointL, rather than setting up local variables
+for each parameter.
+@param  x    The X coordinate.
+@param  y    The Y coordinate.
+@return      A TPointL structure for coordinates X and Y.
+@example        <code>
+var
+  p: TPointL;
+begin
+  p := PointL(100, 100);
+end;
+</code>
+}
+
+function PointL(const x, y: Longint): TPointL;
+begin
+  Result.x := x;
+  Result.y := y;
+end;
+
+{:Conditional assignment.
+Returns the value in True or False depending on the condition Test.
+@param  Test    The test condition.
+@param  True    Returns this value if Test is True.
+@param  False   Returns this value if Test is False.
+@return         Value in True or False depending on Test.
+@example        <code>
+bar := iif(foo, 1, 0);
+</code>
+<br>has the same effects as:<br>
+<code>
+if foo then
+  bar := 1
+else
+  bar := 0;
+</code>
+}
+
+function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
+begin
+  if Test then
+    Result := ATrue
+  else
+    Result := AFalse;
 end;
 
 end.
