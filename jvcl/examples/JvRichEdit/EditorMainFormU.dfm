@@ -1,7 +1,7 @@
 object EditorMainForm: TEditorMainForm
   Left = 324
   Top = 105
-  Width = 528
+  Width = 554
   Height = 282
   ActiveControl = FontName
   Caption = 'Rich Edit 2.0 Demo'
@@ -27,7 +27,7 @@ object EditorMainForm: TEditorMainForm
   object Ruler: TPanel
     Left = 0
     Top = 62
-    Width = 520
+    Width = 546
     Height = 26
     Align = alTop
     Alignment = taLeftJustify
@@ -107,8 +107,8 @@ object EditorMainForm: TEditorMainForm
   object Editor: TJvRichEdit
     Left = 0
     Top = 88
-    Width = 520
-    Height = 129
+    Width = 546
+    Height = 121
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -120,6 +120,7 @@ object EditorMainForm: TEditorMainForm
     PopupMenu = EditPopupMenu
     TabOrder = 3
     WantTabs = True
+    Zoom = 100
     OnChange = RichEditChange
     OnProtectChange = EditorProtectChange
     OnSelectionChange = SelectionChange
@@ -128,8 +129,8 @@ object EditorMainForm: TEditorMainForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 217
-    Width = 520
+    Top = 209
+    Width = 546
     Height = 19
     Panels = <
       item
@@ -147,7 +148,7 @@ object EditorMainForm: TEditorMainForm
   object SpeedBar: TJvSpeedBar
     Left = 0
     Top = 0
-    Width = 520
+    Width = 546
     Height = 31
     ParentFont = True
     BoundLines = [blTop]
@@ -281,7 +282,7 @@ object EditorMainForm: TEditorMainForm
   object FormatBar: TJvSpeedBar
     Left = 0
     Top = 31
-    Width = 520
+    Width = 546
     Height = 31
     ParentFont = True
     BoundLines = [blTop]
@@ -426,6 +427,19 @@ object EditorMainForm: TEditorMainForm
       OnClick = AlignButtonClick
       SectionName = 'Format'
     end
+    object JustifyBtn: TJvSpeedItem
+      Tag = 3
+      Caption = 'Justify'
+      GroupIndex = 2
+      Hint = 'Justify'
+      ImageIndex = 23
+      Spacing = 1
+      Left = 428
+      Top = 5
+      Visible = True
+      OnClick = AlignButtonClick
+      SectionName = 'Format'
+    end
     object SuperscriptBtn: TJvSpeedItem
       AllowAllUp = True
       Caption = 'Superscript'
@@ -433,7 +447,7 @@ object EditorMainForm: TEditorMainForm
       Hint = 'Superscript'
       ImageIndex = 21
       Spacing = 1
-      Left = 468
+      Left = 492
       Top = 5
       Visible = True
       OnClick = SubscriptClick
@@ -446,7 +460,7 @@ object EditorMainForm: TEditorMainForm
       Hint = 'Subscript'
       ImageIndex = 22
       Spacing = 1
-      Left = 492
+      Left = 516
       Top = 5
       Visible = True
       OnClick = SubscriptClick
@@ -459,7 +473,7 @@ object EditorMainForm: TEditorMainForm
       Hint = 'Bullets|Enter bullet mode'
       ImageIndex = 20
       Spacing = 1
-      Left = 436
+      Left = 460
       Top = 5
       Visible = True
       OnClick = BulletsButtonClick
@@ -657,6 +671,11 @@ object EditorMainForm: TEditorMainForm
         Tag = 25
         Caption = '&Paragraph...'
         OnClick = FormatParaAttributes
+      end
+      object FormatTabsItem: TMenuItem
+        Tag = -1
+        Caption = '&Tabs...'
+        OnClick = FormatParaTabs
       end
       object N6: TMenuItem
         Tag = -1
