@@ -59,7 +59,7 @@ type
     FCurLoop: Integer;
 //    FScrollStart: Integer;
     procedure SetActive(Value: Boolean);
-    procedure SeTJvScrollAmount(Value: TJvScrollAmount);
+    procedure SetJvScrollAmount(Value: TJvScrollAmount);
     procedure SetScrollIntervall(Value: TJvScrollAmount);
     procedure SetMediaFile(Value: TMediaFilename);
     procedure DoTimer(Sender: TObject);
@@ -67,23 +67,21 @@ type
     procedure FreeTimer;
     procedure SetLoopMedia(Value: Boolean);
     procedure SetScrollLength(Value: TJvScrollAmount);
-    procedure SeTJvScrollDirection(Value: TJvScrollDirection);
+    procedure SetJvScrollDirection(Value: TJvScrollDirection);
     procedure SetLoopCount(Value: Integer);
 //    procedure SetScrollStart(const Value: Integer);
-    { Private declarations }
   protected
-    { Protected declarations }
     procedure Paint; override;
     procedure DoBeforeScroll; virtual;
     procedure DoAfterScroll; virtual;
     procedure CreateWnd; override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Pause;
+    procedure Resume;
     procedure ScrollContent(Amount: TJvScrollAmount);
   published
-    { Published declarations }
     property Action;
     property Anchors;
     property BiDiMode;
@@ -141,10 +139,10 @@ type
     property OnStartDrag;
     { new properties }
     property Active: Boolean read FActive write SetActive;
-    property ScrollAmount: TJvScrollAmount read FScrollAmount write SeTJvScrollAmount default 10;
+    property ScrollAmount: TJvScrollAmount read FScrollAmount write SetJvScrollAmount default 10;
     property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
     property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
-    property ScrollDirection: TJvScrollDirection read FScrollDirection write SeTJvScrollDirection default sdUp;
+    property ScrollDirection: TJvScrollDirection read FScrollDirection write SetJvScrollDirection default sdUp;
 //    property ScrollStart:Integer read FScrollStart write SetScrollStart;
     property MediaFile: TMediaFilename read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
@@ -305,7 +303,7 @@ begin
   end;
 end;
 
-procedure TJvContentScroller.SeTJvScrollAmount(Value: TJvScrollAmount);
+procedure TJvContentScroller.SetJvScrollAmount(Value: TJvScrollAmount);
 begin
   if FScrollAmount <> Value then
     FScrollAmount := Value;
@@ -335,7 +333,7 @@ begin
     FScrollLength := Value;
 end;
 
-procedure TJvContentScroller.SeTJvScrollDirection(Value: TJvScrollDirection);
+procedure TJvContentScroller.SetJvScrollDirection(Value: TJvScrollDirection);
 begin
   if (FScrollDirection <> Value) and not FActive then
     FScrollDirection := Value;
@@ -375,6 +373,22 @@ begin
       Brush.Style := bsClear;
       Rectangle(0, 0, Width, Height);
     end;
+end;
+
+procedure TJvContentScroller.Pause;
+begin
+  if FTimer <> nil then
+    FTimer.Enabled := false;
+  FActive := false;
+end;
+
+procedure TJvContentScroller.Resume;
+begin
+  if FTimer <> nil then
+  begin
+    FTimer.Enabled := true;
+    FActive := true;
+  end;
 end;
 
 end.
