@@ -41,7 +41,7 @@ var
 begin
   if clbBuilds.Items.Count = 0 then
   begin
-    EnumerateTargets(Path, clbBuilds.Items);
+    EnumerateTargets(clbBuilds.Items);
     for i := 0 to clbBuilds.Items.Count - 1 do
       clbBuilds.Checked[i] := True;
   end;

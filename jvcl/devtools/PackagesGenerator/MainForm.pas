@@ -8,7 +8,7 @@ uses
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStore,
-  JvAppIniStore, JvStringGrid;
+  JvAppIniStore, JvStringGrid, JvAppXmlStore;
 
 type
   TfrmMain = class(TForm)
@@ -43,7 +43,6 @@ type
     mnuNextPackage: TMenuItem;
     jbfFolder: TJvBrowseForFolderDialog;
     pnlEdit: TPanel;
-    pnlPackagesLocation: TPanel;
     jdePackagesLocation: TJvDirectoryEdit;
     lblPackagesLocation: TLabel;
     aevEvents: TApplicationEvents;
@@ -66,10 +65,8 @@ type
     jpmDepPopup: TJvPopupMenu;
     mnuView: TMenuItem;
     actMainToolbar: TAction;
-    actLocation: TAction;
     actKnown: TAction;
     mnuMainToolbar: TMenuItem;
-    mnuLocationBar: TMenuItem;
     mnuUpD: TMenuItem;
     mnuDownD: TMenuItem;
     pnlDepAndFiles: TPanel;
@@ -88,13 +85,11 @@ type
     N3: TMenuItem;
     mnuExit: TMenuItem;
     btnAdvancedBCB: TButton;
-    pnlParameters: TPanel;
-    shHideParameters: TShape;
     lblPrefix: TLabel;
     cmbPrefix: TComboBox;
     lblFormat: TLabel;
     cmbFormat: TComboBox;
-    actParameters: TAction;
+    actOptions: TAction;
     mnuParameters: TMenuItem;
     jpmFilesPopup: TJvPopupMenu;
     actUp: TAction;
@@ -104,7 +99,13 @@ type
     mnuAddFilesP: TMenuItem;
     actDelete: TAction;
     jpmList: TJvPopupMenu;
-    Deletepackage1: TMenuItem;
+    mnuDeletePackageP: TMenuItem;
+    jaxStore: TJvAppXmlStore;
+    pnlOptions: TPanel;
+    shHideOptions: TShape;
+    lblIncFile: TLabel;
+    jfeIncFile: TJvFilenameEdit;
+    mnuDeletePackage: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -133,9 +134,7 @@ type
     procedure actPrevPackageExecute(Sender: TObject);
     procedure actNextPackageExecute(Sender: TObject);
     procedure actMainToolbarUpdate(Sender: TObject);
-    procedure actLocationUpdate(Sender: TObject);
     procedure actMainToolbarExecute(Sender: TObject);
-    procedure actLocationExecute(Sender: TObject);
     procedure actKnownExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure jlbListMouseDown(Sender: TObject; Button: TMouseButton;
@@ -146,8 +145,6 @@ type
       var Value: String);
     procedure btnAdvancedBCBClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure actParametersExecute(Sender: TObject);
-    procedure actParametersUpdate(Sender: TObject);
     procedure actUpExecute(Sender: TObject);
     procedure actDownExecute(Sender: TObject);
     procedure actUpUpdate(Sender: TObject);
@@ -156,6 +153,8 @@ type
     procedure jlbListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure actDeleteExecute(Sender: TObject);
+    procedure actOptionsExecute(Sender: TObject);
+    procedure actOptionsUpdate(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -201,9 +200,16 @@ begin
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
+var
+  IncFileName : string;
 begin
   inherited;
-  jaiIniStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.ini';
+
+  jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
+  IncFileName := jfeIncFile.FileName;
+  if not PathIsAbsolute(IncFileName) then
+    IncFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+IncFileName);
+  LoadConfig(jaxStore.FileName, IncFileName);
 
   with jsgDependencies do
   begin
@@ -664,19 +670,9 @@ begin
   actMainToolbar.Checked := jtbTools.Visible;
 end;
 
-procedure TfrmMain.actLocationUpdate(Sender: TObject);
-begin
-  actLocation.Checked := pnlPackagesLocation.Visible;
-end;
-
 procedure TfrmMain.actMainToolbarExecute(Sender: TObject);
 begin
   jtbTools.Visible := actMainToolbar.Checked;
-end;
-
-procedure TfrmMain.actLocationExecute(Sender: TObject);
-begin
-  pnlPackagesLocation.Visible := actLocation.Checked;
 end;
 
 procedure TfrmMain.actKnownExecute(Sender: TObject);
@@ -758,16 +754,6 @@ procedure TfrmMain.FormShow(Sender: TObject);
 begin
   // Load the list of packages
   LoadPackagesList;
-end;
-
-procedure TfrmMain.actParametersExecute(Sender: TObject);
-begin
-  pnlParameters.Visible := actParameters.Checked;
-end;
-
-procedure TfrmMain.actParametersUpdate(Sender: TObject);
-begin
-  actParameters.Checked := pnlParameters.Visible;
 end;
 
 procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
@@ -884,6 +870,16 @@ begin
                              MB_ICONERROR);
     LoadPackagesList;
   end;
+end;
+
+procedure TfrmMain.actOptionsExecute(Sender: TObject);
+begin
+  pnlOptions.Visible := actOptions.Checked;
+end;
+
+procedure TfrmMain.actOptionsUpdate(Sender: TObject);
+begin
+  actOptions.Checked := pnlOptions.Visible;
 end;
 
 end.
