@@ -22,7 +22,7 @@ Known Issues:
 
 //********************** Added by Claudio F. Zwitkovits (CFZ) **************************
  Property Dataset <== Attach any bi-directional Dataset (TTable,TQuery,etc)
- Property KeyFieldNames <== String with the names of the fields from the primary key
+ Property KeyFieldNames <== String with the names of the fields from the primary key / Index key
  Property ApplyMode <== The mode do Apply the changes in original Dataset
           amNone = Not Apply
           amAppend = Allow ONLY insert records, and edit/delete this records inserted
@@ -32,18 +32,18 @@ Known Issues:
  Property LoadStructure <== If True, is NOT needed define the fields in design time
           the JvMemoryData load the fields from the original dataset
  Property LoadRecords <== TRUE/FALSE  Auto-load records from the original dataset.
- Events   BeforeApply, AfterApply <== in the calling to the ApplyChanges method.
-          BeforeApplyRecord, AfterApplyRecord <== in the calling to the UpdateRec,
-          InsertRec, and DeleteRec internal methods.
+ Property SaveLoadState <== Return if loading or saving from/to other dataset.
+ Events   BeforeApply, AfterApply <== in the calling to the ApplyChanges public method.
+          BeforeApplyRecord, AfterApplyRecord <== in the calling to the SaveChanges internal methods.
  Methods  (Public) ApplyChanges and CancelChanges <== Save / Discard the changes into
           the original Dataset.
  Methods  (Public) IsLoading <== True/False. If the JvMemData is loading data from external dataset
           (LoadFromDataset or CopyFromDataset)
  Methods  (Public) IsSaving <== True/False If the JvMemData is saving data to external dataset
-          (SaveToDataset or ApplyChanges)          
+          (SaveToDataset or ApplyChanges)
  Methods  (Public) IsInserted, IsUpdated, IsOriginal, IsDeleted
           return the status from the current record
- Methods  (Public) GetKeyValues <== Obtain the values from the Primary Key Fields
+ Methods  (Public) GetValues <== Obtain the values from list of Fields or Key Fields
  IMPORTANT : This component, add a hidden field, in the last position ( in FieldDefs
              And Fields Lists ) and save the STATUS of the current record
              (rsOriginal, rsInserted, rsUpdated), in the hidden field.
@@ -51,7 +51,8 @@ Known Issues:
              from the Deleted records (rsDeleted).
 
 Implementation : 2004/03/03
-1st.Revision : 2004/09/19
+Revisions : 1st = 2004/09/19
+            2nd = 2004/10/23
 
 Comments and Bugs : cfzwit@yahoo.com.ar
 //***************************************************************************************
@@ -146,7 +147,6 @@ type
     procedure CheckStructure(UseAutoIncAsInteger: Boolean = False);
     procedure AddStatusField;
     procedure HideStatusField;
-    function GetKeyValues: Variant;
     function CopyFromDataset: Integer;
     procedure ClearChanges;
     procedure DoBeforeApply;
@@ -223,6 +223,7 @@ type
     property SaveLoadState: TSaveLoadState read FSaveLoadState;
     //-------------------- Added by CFZ ---------------------------------
     procedure Open; reintroduce;
+    function GetValues(FldNames: string = ''): Variant;
     function FindDeleted(KeyValues: Variant): Integer;
     function IsDeleted(out Index: Integer): Boolean;
     function IsInserted: Boolean;
@@ -278,7 +279,7 @@ type
     property BeforeApply: TDatasetNotifyEvent read FBeforeApply write FBeforeApply;
     property AfterApply: TDatasetNotifyEvent read FAfterApply write FAfterApply;
     property BeforeApplyRecord: TApplyRecordEvent read FBeforeApplyRecord write FBeforeApplyRecord;
-    property AfterApplyRecord: TApplyRecordEvent read FAfterApplyRecord write FAfterApplyRecord;   
+    property AfterApplyRecord: TApplyRecordEvent read FAfterApplyRecord write FAfterApplyRecord;
     //------------------------------------------------------------------
   end;
 
@@ -326,9 +327,9 @@ type
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Forms, Dialogs, DbConsts, Math,
   JvResources;
 
@@ -357,52 +358,52 @@ begin
   if not (FieldType in ftSupported) then
     Result := 0
   else
-  if FieldType in ftBlobTypes then
-    Result := SizeOf(Longint)
-  else
-  begin
-    Result := Size;
-    case FieldType of
-      ftString:
-        Inc(Result);
-      ftSmallint:
-        Result := SizeOf(SmallInt);
-      ftInteger:
-        Result := SizeOf(Longint);
-      ftWord:
-        Result := SizeOf(Word);
-      ftBoolean:
-        Result := SizeOf(WordBool);
-      ftFloat:
-        Result := SizeOf(Double);
-      ftCurrency:
-        Result := SizeOf(Double);
-      ftBCD:
-        Result := 34;
-      ftDate, ftTime:
-        Result := SizeOf(Longint);
-      ftDateTime:
-        Result := SizeOf(TDateTime);
-      ftBytes:
-        Result := Size;
-      ftVarBytes:
-        Result := Size + 2;
-      ftAutoInc:
-        Result := SizeOf(Longint);
-      ftADT:
-        Result := 0;
-      ftFixedChar:
-        Inc(Result);
-      ftWideString:
-        Result := (Result + 1) * 2;
-      ftLargeint:
-        Result := SizeOf(Int64);
-      ftVariant:
-        Result := SizeOf(Variant);
-      ftGuid:
-        Result := GuidSize + 1;
+    if FieldType in ftBlobTypes then
+      Result := SizeOf(Longint)
+    else
+    begin
+      Result := Size;
+      case FieldType of
+        ftString:
+          Inc(Result);
+        ftSmallint:
+          Result := SizeOf(SmallInt);
+        ftInteger:
+          Result := SizeOf(Longint);
+        ftWord:
+          Result := SizeOf(Word);
+        ftBoolean:
+          Result := SizeOf(WordBool);
+        ftFloat:
+          Result := SizeOf(Double);
+        ftCurrency:
+          Result := SizeOf(Double);
+        ftBCD:
+          Result := 34;
+        ftDate, ftTime:
+          Result := SizeOf(Longint);
+        ftDateTime:
+          Result := SizeOf(TDateTime);
+        ftBytes:
+          Result := Size;
+        ftVarBytes:
+          Result := Size + 2;
+        ftAutoInc:
+          Result := SizeOf(Longint);
+        ftADT:
+          Result := 0;
+        ftFixedChar:
+          Inc(Result);
+        ftWideString:
+          Result := (Result + 1) * 2;
+        ftLargeint:
+          Result := SizeOf(Int64);
+        ftVariant:
+          Result := SizeOf(Variant);
+        ftGuid:
+          Result := GuidSize + 1;
+      end;
     end;
-  end;
 end;
 
 procedure CalcDataSize(FieldDef: TFieldDef; var DataSize: Integer);
@@ -531,21 +532,21 @@ begin
 end;
 
 destructor TJvMemoryData.Destroy;
-Var
-   I: Integer;
-   PFValues: TPVariant;
+var
+  I: Integer;
+  PFValues: TPVariant;
 begin
   //------- Added by CFZ ------------------
-  If Assigned(FDeletedValues) Then
-  Begin
-    If FDeletedValues.Count > 0 Then
-      For I := 0 To (FDeletedValues.Count-1) Do
-      Begin
+  if Assigned(FDeletedValues) then
+  begin
+    if FDeletedValues.Count > 0 then
+      for I := 0 to (FDeletedValues.Count - 1) do
+      begin
         PFValues := FDeletedValues[I];
         Dispose(PFValues);
-      End; 
+      end;
     FreeAndNil(FDeletedValues);
-  End;
+  end;
   //---------------------------------------
   FreeIndexList;
   ClearRecords;
@@ -568,38 +569,38 @@ begin
       if SmallInt(Data1^) > SmallInt(Data2^) then
         Result := 1
       else
-      if SmallInt(Data1^) < SmallInt(Data2^) then
-        Result := -1;
+        if SmallInt(Data1^) < SmallInt(Data2^) then
+          Result := -1;
     ftInteger, ftDate, ftTime, ftAutoInc:
       if Longint(Data1^) > Longint(Data2^) then
         Result := 1
       else
-      if Longint(Data1^) < Longint(Data2^) then
-        Result := -1;
+        if Longint(Data1^) < Longint(Data2^) then
+          Result := -1;
     ftWord:
       if Word(Data1^) > Word(Data2^) then
         Result := 1
       else
-      if Word(Data1^) < Word(Data2^) then
-        Result := -1;
+        if Word(Data1^) < Word(Data2^) then
+          Result := -1;
     ftBoolean:
       if WordBool(Data1^) and not WordBool(Data2^) then
         Result := 1
       else
-      if not WordBool(Data1^) and WordBool(Data2^) then
-        Result := -1;
+        if not WordBool(Data1^) and WordBool(Data2^) then
+          Result := -1;
     ftFloat, ftCurrency:
       if Double(Data1^) > Double(Data2^) then
         Result := 1
       else
-      if Double(Data1^) < Double(Data2^) then
-        Result := -1;
+        if Double(Data1^) < Double(Data2^) then
+          Result := -1;
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
         Result := 1
       else
-      if TDateTime(Data1^) < TDateTime(Data2^) then
-        Result := -1;
+        if TDateTime(Data1^) < TDateTime(Data2^) then
+          Result := -1;
     ftFixedChar:
       if CaseInsensitive then
         Result := AnsiCompareText(PChar(Data1), PChar(Data2))
@@ -616,8 +617,8 @@ begin
       if Int64(Data1^) > Int64(Data2^) then
         Result := 1
       else
-      if Int64(Data1^) < Int64(Data2^) then
-        Result := -1;
+        if Int64(Data1^) < Int64(Data2^) then
+          Result := -1;
     ftVariant:
       Result := 0;
     ftGuid:
@@ -841,9 +842,9 @@ begin
       if (FRecordPos < 0) or (FRecordPos >= RecordCount) then
         Result := grError
       else
-      if Filtered then
-        if not RecordFilter then
-          Result := grError;
+        if Filtered then
+          if not RecordFilter then
+            Result := grError;
     gmNext:
       if FRecordPos >= RecordCount - 1 then
         Result := grEOF
@@ -864,8 +865,8 @@ begin
   if Result = grOk then
     RecordToBuffer(Records[FRecordPos], Buffer)
   else
-  if (Result = grError) and DoCheck then
-    Error(RsEMemNoRecords);
+    if (Result = grError) and DoCheck then
+      Error(RsEMemNoRecords);
 end;
 
 function TJvMemoryData.GetRecordSize: Word;
@@ -924,13 +925,13 @@ begin
     end;
   end
   else
-  if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
-  begin
-    Inc(RecBuf, FRecordSize + Field.Offset);
-    Result := RecBuf[0] <> #0;
-    if Result and (Buffer <> nil) then
-      Move(RecBuf[1], Buffer^, Field.DataSize);
-  end;
+    if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
+    begin
+      Inc(RecBuf, FRecordSize + Field.Offset);
+      Result := RecBuf[0] <> #0;
+      if Result and (Buffer <> nil) then
+        Move(RecBuf[1], Buffer^, Field.DataSize);
+    end;
 end;
 
 procedure TJvMemoryData.SetFieldData(Field: TField; Buffer: Pointer);
@@ -1091,8 +1092,8 @@ begin
   if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
   else
-  if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
-    Result := 1
+    if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+      Result := 1
   else
   if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
     Result := -1
@@ -1249,26 +1250,26 @@ var
   //---------------------------------
 begin
   //---------------------- Added by CFZ ---------------------------------
-         // Disable warnings
+  // Disable warnings
   Status := rsOriginal;
-  PFValues := NIL;
-  If FApplyMode <> amNone Then
+  PFValues := nil;
+  if FApplyMode <> amNone then
   begin
     Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
-    If Status <> rsInserted Then
+    if Status <> rsInserted then
     begin
-      If FApplyMode = amAppend Then
+      if FApplyMode = amAppend then
       begin
         Cancel;
         Exit;
-      End
-      Else
+      end
+      else
       begin
         New(PFValues);
-        PFValues^ := GetKeyValues;
-      End;
-    End;
-  End;
+        PFValues^ := GetValues;
+      end;
+    end;
+  end;
   //----------------------------------------------------------------------
 
   Records[FRecordPos].Free;
@@ -1308,40 +1309,40 @@ var
 begin
  //------------------------ Added by CFZ -----------------------------------
   NewChange := False;
-  If (FApplyMode <> amNone) And Not IsLoading Then
+  if (FApplyMode <> amNone) and not IsLoading then
   begin
     Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
     (* If (State = dsEdit) And (Status In [rsInserted,rsUpdated]) Then NewChange := False; *)
-    If (State = dsEdit) And (Status = rsOriginal) Then
+    if (State = dsEdit) and (Status = rsOriginal) then
     begin
-      If FApplyMode = amAppend Then
+      if FApplyMode = amAppend then
       begin
-	      Cancel;
-	      Exit;
-      End
-      Else
+        Cancel;
+        Exit;
+      end
+      else
       begin
         NewChange := True;
         FieldByName(FStatusName).AsInteger := Integer(rsUpdated);
-      End;
-    End;
-    If State = dsInsert Then
+      end;
+    end;
+    if State = dsInsert then
     begin
-      If IsDeleted(Index) Then
+      if IsDeleted(Index) then
       begin
         FDeletedValues.Delete(Index);
-        If FApplyMode = amAppend Then
+        if FApplyMode = amAppend then
           FieldByName(FStatusName).AsInteger := Integer(rsInserted)
-        Else
+        else
           FieldByName(FStatusName).AsInteger := Integer(rsUpdated);
-      End
-      Else
+      end
+      else
       begin
         NewChange := True;
         FieldByName(FStatusName).AsInteger := Integer(rsInserted);
-      End;
-    End;
-  End;
+      end;
+    end;
+  end;
   //---------------------------------------------------------------------------
 
   if State = dsEdit then
@@ -1373,6 +1374,7 @@ begin
 end;
 
 //----------------- Added by CFZ -------------------------------
+
 procedure TJvMemoryData.Open;
 begin
   try
@@ -1383,7 +1385,7 @@ begin
       else
       begin
         AddStatusField;
-        CheckStructure(FAutoIncAsInteger);
+        (* CheckStructure(FAutoIncAsInteger); // Removed 2004/10/19 *)
         HideStatusField;
       end;
     end;
@@ -1398,8 +1400,8 @@ begin
     if not FDataSet.Active then
       FDataSet.Open;
     FRowsOriginal := CopyFromDataset;
-    if FRowsOriginal > 0 Then
-    Begin
+    if FRowsOriginal > 0 then
+    begin
       if FKeyFieldNames <> '' then
         SortOnFields(KeyFieldNames);
       if FApplyMode = amAppend then
@@ -1407,7 +1409,7 @@ begin
       else
         First;
     end;
-    if FDataset.Active Then
+    if FDataset.Active then
       FDataset.Close;
   end;
 end;
@@ -1517,7 +1519,9 @@ end;
 
 procedure TJvMemoryData.AddStatusField;
 begin
-  FieldDefs.Add(FStatusName, ftSmallint);
+  // Check if FieldStatus already exists  ADDED 2004/10/19
+  if (FieldDefs.Count > 0) and not (FieldDefs[FieldDefs.Count - 1].Name = FStatusName) then
+    FieldDefs.Add(FStatusName, ftSmallint);
 end;
 
 procedure TJvMemoryData.HideStatusField;
@@ -1887,11 +1891,11 @@ begin
               FCaseInsensitiveSort);
           end
           else
-          if Data1[0] <> #0 then
-            Result := 1
-          else
-          if Data2[0] <> #0 then
-            Result := -1;
+            if Data1[0] <> #0 then
+              Result := 1
+            else
+              if Data2[0] <> #0 then
+                Result := -1;
           if FDescendingSort then
             Result := -Result;
         end;
@@ -1905,8 +1909,8 @@ begin
     if Item1.ID > Item2.ID then
       Result := 1
     else
-    if Item1.ID < Item2.ID then
-      Result := -1;
+      if Item1.ID < Item2.ID then
+        Result := -1;
     if FDescendingSort then
       Result := -Result;
   end;
@@ -1948,20 +1952,21 @@ begin
 end;
 
 //------------------------ Added by CFZ -------------------------------------
+// changed 2004/10/19 (CFZ)
 
-function TJvMemoryData.GetKeyValues: Variant;
+function TJvMemoryData.GetValues(FldNames: string = ''): Variant;
 var
   I: Integer;
   List: TStrings;
 
-  function FldNamesToStrList: TStrings;
+  function FldNamesToStrList(Flds: string): TStrings;
   var
     InStr, SubStr: string;
     I, Len: Integer;
   begin
     Result := TStringList.Create;
-    Len := Length(FKeyFieldNames);
-    InStr := FKeyFieldNames;
+    Len := Length(Flds);
+    InStr := Flds;
     SubStr := '';
     I := 1;
     while (I <= Len) do
@@ -1981,7 +1986,10 @@ var
 
 begin
   Result := Null;
-  List := FldNamesToStrList;
+  if FldNames = '' then // Changed 2004/10/19 (CFZ)
+    List := FldNamesToStrList(FKeyFieldNames)
+  else
+    List := FldNamesToStrList(FldNames);
   try
     I := List.Count;
     Result := VarArrayCreate([0, I], varVariant);
@@ -2070,36 +2078,36 @@ end;
 procedure TJvMemoryData.DoBeforeApplyRecord(ADataset: TDataset; RS: TRecordStatus; Found: Boolean);
 begin
   if Assigned(FBeforeApplyRecord) then
-    FBeforeApplyRecord(ADataset,RS,Found);
+    FBeforeApplyRecord(ADataset, RS, Found);
 end;
 
 procedure TJvMemoryData.DoAfterApplyRecord(ADataset: TDataset; RS: TRecordStatus; Apply: Boolean);
 begin
   if Assigned(FAfterApplyRecord) then
-    FAfterApplyRecord(ADataset,RS,Apply);
+    FAfterApplyRecord(ADataset, RS, Apply);
 end;
 
 procedure TJvMemoryData.ClearChanges;
-Var
+var
   I: Integer;
   PFValues: TPVariant;
 begin
-  If FDeletedValues.Count > 0 Then
-  Begin
-    For I := 0 To (FDeletedValues.Count-1) Do
-    Begin
+  if FDeletedValues.Count > 0 then
+  begin
+    for I := 0 to (FDeletedValues.Count - 1) do
+    begin
       PFValues := FDeletedValues[I];
       Dispose(PFValues);
-    End;
+    end;
     FDeletedValues.Clear;
-  End;
+  end;
 
   EmptyTable;
 
   if FLoadRecords then
   begin
     FRowsOriginal := CopyFromDataset;
-    if FRowsOriginal > 0 Then
+    if FRowsOriginal > 0 then
     begin
       if FKeyFieldNames <> '' then
         SortOnFields(KeyFieldNames);
@@ -2124,262 +2132,262 @@ begin
 end;
 
 function TJvMemoryData.ApplyChanges: Boolean;
-Var
-  xKey : Variant;
-  PxKey : TPVariant;
-  Len,Row : Integer;
-  Status : TRecordStatus;
-  bFound,bApply: Boolean;
-  FOriginal,FClient: TField;
+var
+  xKey: Variant;
+  PxKey: TPVariant;
+  Len, Row: Integer;
+  Status: TRecordStatus;
+  bFound, bApply: Boolean;
+  FOriginal, FClient: TField;
 
   function WriteFields: Boolean;
-  Var J : Integer;
-  Begin
-    Try
-      For J := 0 To Len Do
+  var J: Integer;
+  begin
+    try
+      for J := 0 to Len do
       begin
-        If ( Fields[J].FieldKind = fkData ) Then
+        if (Fields[J].FieldKind = fkData) then
         begin
           FClient := Fields[J];
           FOriginal := FDataset.FindField(FClient.FieldName);
-          If (FOriginal <> NIL) And (FClient <> NIL) Then
+          if (FOriginal <> nil) and (FClient <> nil) then
           begin
-            If FClient.IsNull Then
+            if FClient.IsNull then
               FOriginal.Clear
-            Else
+            else
               FDataset.FieldByName(FOriginal.FieldName).Value := FClient.Value;
-          End;
-        End;
-      End;
+          end;
+        end;
+      end;
       Result := True;
-    Except
+    except
       Result := False;
-    End;
-  End;
+    end;
+  end;
 
-  Function InsertRec: Boolean;
-  Begin
-    Try
+  function InsertRec: Boolean;
+  begin
+    try
       FDataset.Append;
       WriteFields;
       FDataset.Post;
       Result := True;
-    Except
+    except
       Result := False;
-    End;
-  End;
+    end;
+  end;
 
-  Function UpdateRec: Boolean;
-  Begin
-    Try
+  function UpdateRec: Boolean;
+  begin
+    try
       FDataset.Edit;
       WriteFields;
       FDataset.Post;
       Result := True;
-    Except
+    except
       Result := False;
-    End;
-  End;
+    end;
+  end;
 
-  Function DeleteRec: Boolean;
-  Begin
-    Try
+  function DeleteRec: Boolean;
+  begin
+    try
       FDataset.Delete;
       Result := True;
-    Except
+    except
       Result := False;
-    End;
-  End;
+    end;
+  end;
 
   function SaveChanges: Integer;
-  Var
-    I : Integer;
-  Begin
+  var
+    I: Integer;
+  begin
     Result := 0;
     FDataset.DisableControls;
     DisableControls;
     Row := RecNo;
     FSaveLoadState := slsSaving;
-    Try
+    try
       First;
-      While Not EOF Do
+      while not EOF do
       begin
         Status := TRecordStatus(FieldByName(FStatusName).AsInteger);
-        If (Status <> rsOriginal) Then
+        if (Status <> rsOriginal) then
         begin
-          xKey := GetKeyValues;
-          bFound := FDataset.Locate(FKeyFieldNames,xKey,[]);
-          DoBeforeApplyRecord(FDataset,Status,bFound);
+          xKey := GetValues;
+          bFound := FDataset.Locate(FKeyFieldNames, xKey, []);
+          DoBeforeApplyRecord(FDataset, Status, bFound);
           bApply := False;
           (********************* New Record ***********************)
-          If IsInserted Then
+          if IsInserted then
           begin
-            If Not bFound Then // Not Exists in Original
+            if not bFound then // Not Exists in Original
             begin
-              If InsertRec Then
+              if InsertRec then
               begin
                 Inc(Result);
                 bApply := True;
-              End
-              Else If FExactApply Then
+              end
+              else if FExactApply then
               begin
                 Error(RsEInsertError);
                 Break;
-              End
-              Else
+              end
+              else
               begin
                 SysUtils.Abort;
-                If (FDataset.State In dsEditModes) Then
+                if (FDataset.State in dsEditModes) then
                   FDataset.Cancel;
-              End;
-            End
-            Else If FExactApply Then // Exists in Original
+              end;
+            end
+            else if FExactApply then // Exists in Original
             begin
               Error(RsERecordDuplicate);
               Break;
-            End
-            Else If (FApplyMode = amMerge) Then
+            end
+            else if (FApplyMode = amMerge) then
             begin
-              If UpdateRec Then
+              if UpdateRec then
               begin
                 Inc(Result);
                 bApply := True;
-              End
-              Else
+              end
+              else
               begin
                 SysUtils.Abort;
-                If (FDataset.State In dsEditModes) Then
+                if (FDataset.State in dsEditModes) then
                   FDataset.Cancel;
-              End;
-            End
-          End;
+              end;
+            end
+          end;
           (*********************** Modified Record ************************)
-          If IsUpdated Then
+          if IsUpdated then
           begin
-            If bFound Then // Exists in Original
+            if bFound then // Exists in Original
             begin
-              If UpdateRec Then
+              if UpdateRec then
               begin
                 Inc(Result);
                 bApply := True;
-              End
-              Else If FExactApply Then
+              end
+              else if FExactApply then
               begin
                 Error(RsEUpdateError);
                 Break;
-              End
-              Else
+              end
+              else
               begin
                 SysUtils.Abort;
-                If (FDataset.State In dsEditModes) Then
+                if (FDataset.State in dsEditModes) then
                   FDataset.Cancel;
-              End;
-            End
-            Else If FExactApply Then // Not exists in Original
+              end;
+            end
+            else if FExactApply then // Not exists in Original
             begin
               Error(RsERecordInexistent);
               Break;
-            End
-            Else If (FApplyMode = amMerge) Then
+            end
+            else if (FApplyMode = amMerge) then
             begin
-              If InsertRec Then begin
+              if InsertRec then begin
                 Inc(Result);
                 bApply := True;
-              End
-              Else
+              end
+              else
               begin
                 SysUtils.Abort;
-                If (FDataset.State In dsEditModes) Then
+                if (FDataset.State in dsEditModes) then
                   FDataset.Cancel;
-              End;
-            End;
-          End;
-          DoAfterApplyRecord(FDataset,Status,bApply);
-        End;
+              end;
+            end;
+          end;
+          DoAfterApplyRecord(FDataset, Status, bApply);
+        end;
         Next;
-      End;
+      end;
       (*********************** Deleted Records **************************)
-      If (FApplyMode = amMerge) Then
+      if (FApplyMode = amMerge) then
       begin
-        For I := 0 To FDeletedValues.Count-1 Do
+        for I := 0 to FDeletedValues.Count - 1 do
         begin
           Status := rsDeleted;
           PxKey := FDeletedValues[I];
           xKey := PxKey^;
-          bFound := FDataset.Locate(FKeyFieldNames,xKey,[]);
-          DoBeforeApplyRecord(Self,Status,bFound);
+          bFound := FDataset.Locate(FKeyFieldNames, xKey, []);
+          DoBeforeApplyRecord(FDataset, Status, bFound);
           bApply := False;
-          If bFound Then // Exists in Original
+          if bFound then // Exists in Original
           begin
-            If DeleteRec Then
+            if DeleteRec then
             begin
               Inc(Result);
               bApply := True;
-            End
-            Else If FExactApply Then
+            end
+            else if FExactApply then
             begin
               Error(RsEDeleteError);
               Break;
-            End
-            Else
+            end
+            else
               SysUtils.Abort;
-          End
-          Else If FExactApply Then // Not exists in Original
+          end
+          else if FExactApply then // Not exists in Original
           begin
             Error(RsERecordInexistent);
             Break;
-          End
-          Else
+          end
+          else
           begin
             Inc(Result);
             bApply := True;
-          End;
-          DoAfterApplyRecord(Self,Status,bApply);
-        End;
-      End;
-    Finally
+          end;
+          DoAfterApplyRecord(FDataset, Status, bApply);
+        end;
+      end;
+    finally
       FSaveLoadState := slsNone;
       RecNo := Row;
       EnableControls;
       FDataset.EnableControls;
-    End;
-  End;
+    end;
+  end;
 
 begin
   Result := False;
 
-  If (FDataset = NIL) Or (FApplyMode = amNone) Then
+  if (FDataset = nil) or (FApplyMode = amNone) then
     Exit;
-  If (FApplyMode <> amNone) And (FKeyFieldNames = '') Then
+  if (FApplyMode <> amNone) and (FKeyFieldNames = '') then
     Exit;
-  Len := FieldDefs.Count-2;
-  If ( Len < 1)  Then
+  Len := FieldDefs.Count - 2;
+  if (Len < 1) then
     Exit;
-  Try
-    If Not FDataset.Active Then
+  try
+    if not FDataset.Active then
       FDataset.Open;
-  Except
+  except
     Exit;
-  End;
+  end;
 
   CheckBrowseMode;
   DoBeforeApply;
 
   FSaveLoadState := slsSaving;
-  If (FRowsChanged < 1) Or (IsEmpty And (FDeletedValues.Count < 1)) Then
+  if (FRowsChanged < 1) or (IsEmpty and (FDeletedValues.Count < 1)) then
   begin
     FRowsAffected := 0;
     Result := (FRowsAffected = FRowsChanged);
-  End
-  Else
-  Begin
+  end
+  else
+  begin
     FRowsAffected := SaveChanges;
-    Result := (FRowsAffected = FRowsChanged) Or
-              ( (FRowsAffected > 0) And (FRowsAffected <= FRowsChanged) And Not FExactApply );
-  End;
+    Result := (FRowsAffected = FRowsChanged) or
+      ((FRowsAffected > 0) and (FRowsAffected < FRowsChanged) and not FExactApply);
+  end;
   FSaveLoadState := slsNone;
 
-  If Result Then
+  if Result then
     ClearChanges;
   DoAfterApply;
 
@@ -2387,7 +2395,7 @@ begin
   FRowsChanged := 0;
 
   if FDataset.Active then
-     FDataset.Close;
+    FDataset.Close;
 end;
 
 function TJvMemoryData.FindDeleted(KeyValues: Variant): Integer;
@@ -2436,7 +2444,7 @@ end;
 
 function TJvMemoryData.IsDeleted(out Index: Integer): Boolean;
 begin
-  Index := FindDeleted(GetKeyValues);
+  Index := FindDeleted(GetValues);
   Result := Index > -1;
 end;
 
@@ -2456,14 +2464,14 @@ begin
 end;
 
 function TJvMemoryData.IsLoading: Boolean;
-Begin
+begin
   Result := FSaveLoadState = slsLoading;
-End;
+end;
 
 function TJvMemoryData.IsSaving: Boolean;
-Begin
+begin
   Result := FSaveLoadState = slsSaving;
-End;
+end;
 
 //=== { TJvMemBlobStream } ===================================================
 
@@ -2496,11 +2504,11 @@ begin
   if FOpened and FModified then
     FField.Modified := True;
   if FModified then
-    try
-      FDataSet.DataEvent(deFieldChange, Longint(FField));
-    except
-      Application.HandleException(Self);
-    end;
+  try
+    FDataSet.DataEvent(deFieldChange, Longint(FField));
+  except
+    Application.HandleException(Self);
+  end;
   // (rom) added inherited Destroy;
   inherited Destroy;
 end;
@@ -2515,8 +2523,8 @@ begin
   if (Pos < 0) and (FDataSet.RecordCount > 0) then
     Pos := 0
   else
-  if Pos >= FDataSet.RecordCount then
-    Pos := FDataSet.RecordCount - 1;
+    if Pos >= FDataSet.RecordCount then
+      Pos := FDataSet.RecordCount - 1;
   if (Pos >= 0) and (Pos < FDataSet.RecordCount) then
   begin
     Rec := FDataSet.Records[Pos];
@@ -2608,7 +2616,7 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
