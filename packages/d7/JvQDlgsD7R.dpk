@@ -32,7 +32,7 @@ requires
   JvQSystemD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl70;
 
 contains
   JvQDualListForm in '..\..\qrun\JvQDualListForm.pas' {JvDualListForm},

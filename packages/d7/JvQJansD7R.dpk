@@ -30,7 +30,7 @@ requires
   visualclx,
   JvQCoreD7R,
   JvQStdCtrlsD7R,
-  DJcl;
+  DJcl70;
 
 contains
   JvQMarkupCommon in '..\..\qrun\JvQMarkupCommon.pas',

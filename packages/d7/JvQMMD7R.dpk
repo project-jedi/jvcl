@@ -32,7 +32,7 @@ requires
   JvQSystemD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl70;
 
 contains
   JvQBmpAnimator in '..\..\qrun\JvQBmpAnimator.pas',
@@ -51,7 +51,6 @@ contains
   JvQSpecialProgress in '..\..\qrun\JvQSpecialProgress.pas',
   JvQSplashWindow in '..\..\qrun\JvQSplashWindow.pas',
   JvQStarfield in '..\..\qrun\JvQStarfield.pas',
-  JvQQtKeySelectionFrame in '..\..\qrun\JvQQtKeySelectionFrame.pas' {JvVirtualKeySelectionFrame: TFrame},
   JvQWaitingGradient in '..\..\qrun\JvQWaitingGradient.pas',
   JvQWaitingProgress in '..\..\qrun\JvQWaitingProgress.pas',
   JvQWavePlayer in '..\..\qrun\JvQWavePlayer.pas',

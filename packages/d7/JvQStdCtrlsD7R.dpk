@@ -31,7 +31,7 @@ requires
   JvQCoreD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl70;
 
 contains
   JvQItemsSearchs in '..\..\qrun\JvQItemsSearchs.pas',

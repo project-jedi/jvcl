@@ -33,7 +33,7 @@ requires
   rtl,
   visualclx,
   JvQCoreD7R,
-  DJcl;
+  DJcl70;
 
 contains
   JvQDlgsReg in '..\..\qdesign\JvQDlgsReg.pas';

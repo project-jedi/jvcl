@@ -32,7 +32,7 @@ requires
   JvQSystemD7R,
   rtl,
   visualclx,
-  DJcl;
+  DJcl70;
 
 contains
   JvQClock in '..\..\qrun\JvQClock.pas',
