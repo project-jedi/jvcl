@@ -47,7 +47,7 @@ object frmUnitStatus: TfrmUnitStatus
     Width = 185
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Update settings'
+    Caption = 'Update state files'
     TabOrder = 1
     OnClick = Button1Click
   end

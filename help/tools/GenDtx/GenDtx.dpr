@@ -2,7 +2,7 @@ program GenDtx;
 
 uses
   Forms,
-  MainDlg in 'MainDlg.pas' {Form1},
+  MainDlg in 'MainDlg.pas' {frmMain},
   DelphiParser in 'DelphiParser.pas',
   Settings in 'Settings.pas',
   SettingsDlg in 'SettingsDlg.pas' {frmSettings},
@@ -10,12 +10,13 @@ uses
   MainCtrl in 'MainCtrl.pas',
   InputDlg in 'InputDlg.pas' {frmInput},
   EditNiceNameDlg in 'EditNiceNameDlg.pas' {frmEditNiceName},
-  UnitStatusDlg in 'UnitStatusDlg.pas' {frmUnitStatus};
+  UnitStatusDlg in 'UnitStatusDlg.pas' {frmUnitStatus},
+  DirectoriesDlg in 'DirectoriesDlg.pas' {frmDirectories};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
 end.

@@ -7,11 +7,13 @@ uses
   Dialogs, StdCtrls, ActnList,
 
   ParserTypes, MainCtrl, Settings, JvComponent, JvProgressComponent,
-  ComCtrls, ToolWin, ExtCtrls;
+  ComCtrls, ToolWin, ExtCtrls, Menus;
+
+const
+  CM_CheckDirectories = WM_APP + 1;
 
 type
-  TForm1 = class(TForm)
-    lsbMessages: TListBox;
+  TfrmMain = class(TForm)
     ActionList1: TActionList;
     actIncludeAll: TAction;
     actExcludeAll: TAction;
@@ -19,9 +21,7 @@ type
     actExclude: TAction;
     actSettings: TAction;
     actGenerateDtxFiles: TAction;
-    actSave: TAction;
     actAddToIgnoreList: TAction;
-    OpenDialog1: TOpenDialog;
     actAddToCompletedList: TAction;
     actUnitStatus: TAction;
     Panel1: TPanel;
@@ -31,15 +31,6 @@ type
     btnExclude: TButton;
     btnExcludeAll: TButton;
     lsbDest: TListBox;
-    ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    Panel2: TPanel;
-    lblInDirDesc: TLabel;
-    lblPasDir: TLabel;
-    lblOutDirDesc: TLabel;
-    lblGeneratedDtxDir: TLabel;
     Button2: TButton;
     Button3: TButton;
     ToolBar2: TToolBar;
@@ -52,80 +43,114 @@ type
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     actRefresh: TAction;
-    Label1: TLabel;
-    lblRealDtxDir: TLabel;
     ToolButton9: TToolButton;
     actShowGenerated: TAction;
-    ToolButton10: TToolButton;
     actCheckDtxFiles: TAction;
-    Button1: TButton;
     actClearGeneratedDtxDir: TAction;
-    Panel3: TPanel;
-    Button4: TButton;
-    Button5: TButton;
     actClearMessages: TAction;
     actSaveMessages: TAction;
-    ToolButton11: TToolButton;
     actGeneratePackageList: TAction;
-    ToolButton12: TToolButton;
     actGenerateRegisteredClasses: TAction;
-    { Form }
-    procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    { Actions }
-    procedure actIncludeExecute(Sender: TObject);
-    procedure actIncludeAllExecute(Sender: TObject);
-    procedure actExcludeExecute(Sender: TObject);
-    procedure actExcludeAllExecute(Sender: TObject);
-    procedure actIncludeAllUpdate(Sender: TObject);
-    procedure actExcludeAllUpdate(Sender: TObject);
-    procedure actIncludeUpdate(Sender: TObject);
-    procedure actExcludeUpdate(Sender: TObject);
-    procedure actSettingsExecute(Sender: TObject);
-    procedure actGenerateDtxFilesExecute(Sender: TObject);
-    procedure ProcessFilesAvailable(Sender: TObject);
-    procedure actSaveExecute(Sender: TObject);
-    procedure actAddToIgnoreListExecute(Sender: TObject);
+    actCheckPasFiles: TAction;
+    actCheckCasePasFiles: TAction;
+    MainMenu1: TMainMenu;
+    View1: TMenuItem;
+    ShowCompleted1: TMenuItem;
+    ShowIgnored1: TMenuItem;
+    ShowGenerated1: TMenuItem;
+    ShowOther1: TMenuItem;
+    N1: TMenuItem;
+    Refresh1: TMenuItem;
+    Check: TMenuItem;
+    CheckDtxfiles1: TMenuItem;
+    Checkpasfiles1: TMenuItem;
+    Checkcasepasfiles1: TMenuItem;
+    Generate1: TMenuItem;
+    GenerateDtxfiles1: TMenuItem;
+    GeneratePackage1: TMenuItem;
+    GenerateRegisteredClasses1: TMenuItem;
+    Options1: TMenuItem;
+    Settings1: TMenuItem;
+    Label1: TLabel;
+    Label2: TLabel;
+    Panel2: TPanel;
+    lsbMessages: TListBox;
+    Button4: TButton;
+    Button5: TButton;
+    Label3: TLabel;
+    actDirectories: TAction;
+    Directories1: TMenuItem;
+    N2: TMenuItem;
+    UnitStatus1: TMenuItem;
+    N3: TMenuItem;
+    ClearGenerateddtxDir1: TMenuItem;
+    actCheckCasePasFilesAll: TAction;
+    CheckCasinginPasFilesAll1: TMenuItem;
     procedure actAddToCompletedListExecute(Sender: TObject);
-    procedure actUnitStatusExecute(Sender: TObject);
-    procedure actShowCompletedExecute(Sender: TObject);
-    procedure actShowIgnoredExecute(Sender: TObject);
-    procedure actShowOtherExecute(Sender: TObject);
-    procedure actShowCompletedUpdate(Sender: TObject);
-    procedure actShowIgnoredUpdate(Sender: TObject);
-    procedure actShowOtherUpdate(Sender: TObject);
-    procedure actRefreshExecute(Sender: TObject);
-    procedure actShowGeneratedExecute(Sender: TObject);
-    procedure actShowGeneratedUpdate(Sender: TObject);
+    procedure actAddToIgnoreListExecute(Sender: TObject);
+    procedure actCheckCasePasFilesExecute(Sender: TObject);
+    procedure actCheckCasePasFilesUpdate(Sender: TObject);
     procedure actCheckDtxFilesExecute(Sender: TObject);
+    procedure actCheckDtxFilesUpdate(Sender: TObject);
+    procedure actCheckPasFilesExecute(Sender: TObject);
+    procedure actCheckPasFilesUpdate(Sender: TObject);
     procedure actClearGeneratedDtxDirExecute(Sender: TObject);
     procedure actClearMessagesExecute(Sender: TObject);
-    procedure actSaveMessagesExecute(Sender: TObject);
+    procedure actDirectoriesExecute(Sender: TObject);
+    procedure actExcludeAllExecute(Sender: TObject);
+    procedure actExcludeAllUpdate(Sender: TObject);
+    procedure actExcludeExecute(Sender: TObject);
+    procedure actExcludeUpdate(Sender: TObject);
+    procedure actGenerateDtxFilesExecute(Sender: TObject);
+    procedure actGenerateDtxFilesUpdate(Sender: TObject);
     procedure actGeneratePackageListExecute(Sender: TObject);
+    procedure actGeneratePackageListUpdate(Sender: TObject);
     procedure actGenerateRegisteredClassesExecute(Sender: TObject);
+    procedure actGenerateRegisteredClassesUpdate(Sender: TObject);
+    procedure actIncludeAllExecute(Sender: TObject);
+    procedure actIncludeAllUpdate(Sender: TObject);
+    procedure actIncludeExecute(Sender: TObject);
+    procedure actIncludeUpdate(Sender: TObject);
+    procedure actRefreshExecute(Sender: TObject);
+    procedure actSaveMessagesExecute(Sender: TObject);
+    procedure actSettingsExecute(Sender: TObject);
+    procedure actShowCompletedExecute(Sender: TObject);
+    procedure actShowCompletedUpdate(Sender: TObject);
+    procedure actShowGeneratedExecute(Sender: TObject);
+    procedure actShowGeneratedUpdate(Sender: TObject);
+    procedure actShowIgnoredExecute(Sender: TObject);
+    procedure actShowIgnoredUpdate(Sender: TObject);
+    procedure actShowOtherExecute(Sender: TObject);
+    procedure actShowOtherUpdate(Sender: TObject);
+    procedure actUnitStatusExecute(Sender: TObject);
+
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure SelectedProcessFilesAvailable(Sender: TObject);
+    procedure actCheckCasePasFilesAllExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
+    function ProcessFilesAvailable: Boolean;
   protected
     procedure MoveSelected(List: TCustomListBox; Items: TStrings);
     procedure MoveSelectedToCompletedList(List: TCustomListBox);
     procedure MoveSelectedToIgnoredList(List: TCustomListBox);
     procedure SetItem(List: TListBox; Index: Integer);
     function GetFirstSelection(List: TCustomListBox): Integer;
-
-    procedure SettingsChanged(Sender: TObject; ChangeType: TSettingsChangeType);
-    procedure UpdateLabels;
+    procedure CMCheckDirectories(var Msg: TMessage); message CM_CheckDirectories;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
 uses
-  JclFileUtils, SettingsDlg, DelphiParser, UnitStatusDlg;
+  JclFileUtils, JvDSADialogs,
+  SettingsDlg, DirectoriesDlg, DelphiParser, UnitStatusDlg;
 
 {$R *.dfm}
 
@@ -138,6 +163,14 @@ uses
 { DONE: Record fields met , ook herkennen }
 { DONE: Param fields met , ook herkennen }
 { TODO: Set -> Enumeration; Set zelf toevoegen }
+
+const
+  CGenerateDtxFilesID = 1;
+  CGeneratePackageListID = 2;
+  CRegisteredClassesID = 3;
+  CCheckDtxFilesID = 4;
+  CCheckPasFilesID = 5;
+  CCheckCasingInPasFilesID = 6;
 
 function DelTreeEx(const Path: string): Boolean;
 var
@@ -182,7 +215,7 @@ begin
   end;
 end;
 
-procedure TForm1.actIncludeExecute(Sender: TObject);
+procedure TfrmMain.actIncludeExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -191,7 +224,7 @@ begin
   SetItem(lsbSource, Index);
 end;
 
-procedure TForm1.actIncludeAllExecute(Sender: TObject);
+procedure TfrmMain.actIncludeAllExecute(Sender: TObject);
 var
   I: Integer;
 begin
@@ -207,7 +240,7 @@ begin
   SetItem(lsbSource, 0);
 end;
 
-procedure TForm1.actExcludeExecute(Sender: TObject);
+procedure TfrmMain.actExcludeExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -216,7 +249,7 @@ begin
   SetItem(lsbDest, Index);
 end;
 
-procedure TForm1.actExcludeAllExecute(Sender: TObject);
+procedure TfrmMain.actExcludeAllExecute(Sender: TObject);
 var
   I: Integer;
 begin
@@ -226,7 +259,7 @@ begin
   SetItem(lsbDest, 0);
 end;
 
-function TForm1.GetFirstSelection(List: TCustomListBox): Integer;
+function TfrmMain.GetFirstSelection(List: TCustomListBox): Integer;
 begin
   for Result := 0 to List.Items.Count - 1 do
     if List.Selected[Result] then
@@ -234,7 +267,7 @@ begin
   Result := LB_ERR;
 end;
 
-procedure TForm1.MoveSelected(List: TCustomListBox; Items: TStrings);
+procedure TfrmMain.MoveSelected(List: TCustomListBox; Items: TStrings);
 var
   I: Integer;
 begin
@@ -256,7 +289,7 @@ begin
   end;
 end;
 
-procedure TForm1.SetItem(List: TListBox; Index: Integer);
+procedure TfrmMain.SetItem(List: TListBox; Index: Integer);
 var
   MaxIndex: Integer;
 begin
@@ -273,89 +306,46 @@ begin
   end;
 end;
 
-procedure TForm1.actIncludeAllUpdate(Sender: TObject);
+procedure TfrmMain.actIncludeAllUpdate(Sender: TObject);
 begin
   actIncludeAll.Enabled := lsbSource.Items.Count > 0;
 end;
 
-procedure TForm1.actExcludeAllUpdate(Sender: TObject);
+procedure TfrmMain.actExcludeAllUpdate(Sender: TObject);
 begin
   actExcludeAll.Enabled := lsbDest.Items.Count > 0;
 end;
 
-procedure TForm1.actIncludeUpdate(Sender: TObject);
+procedure TfrmMain.actIncludeUpdate(Sender: TObject);
 begin
   actInclude.Enabled := lsbSource.SelCount > 0;
 end;
 
-procedure TForm1.actExcludeUpdate(Sender: TObject);
+procedure TfrmMain.actExcludeUpdate(Sender: TObject);
 begin
   actExclude.Enabled := lsbDest.SelCount > 0;
 end;
 
-procedure TForm1.UpdateLabels;
-begin
-  with TSettings.Instance do
-  begin
-    lblPasDir.Caption := RunTimePasDir;
-    lblGeneratedDtxDir.Caption := GeneratedDtxDir;
-    lblRealDtxDir.Caption := RealDtxDir;
-  end;
-end;
-
-procedure TForm1.FormShow(Sender: TObject);
-begin
-  UpdateLabels;
-end;
-
-procedure TForm1.actSettingsExecute(Sender: TObject);
+procedure TfrmMain.actSettingsExecute(Sender: TObject);
 begin
   TfrmSettings.Execute;
 end;
 
-procedure TForm1.actGenerateDtxFilesExecute(Sender: TObject);
+procedure TfrmMain.actGenerateDtxFilesExecute(Sender: TObject);
 begin
   FMainCtrl.GenerateDtxFiles;
 end;
 
-procedure TForm1.ProcessFilesAvailable(Sender: TObject);
-begin
-  if Sender is TAction then
-    TAction(Sender).Enabled := lsbDest.Items.Count > 0;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FMainCtrl.SkipList := lsbSource.Items;
   FMainCtrl.ProcessList := lsbDest.Items;
   FMainCtrl.MessagesList := lsbMessages.Items;
 
   FMainCtrl.RefreshFiles;
-
-  TSettings.Instance.RegisterObserver(Self, SettingsChanged);
 end;
 
-procedure TForm1.SettingsChanged(Sender: TObject;
-  ChangeType: TSettingsChangeType);
-begin
-  case ChangeType of
-    ctDirectory:
-      UpdateLabels;
-  end;
-end;
-
-procedure TForm1.actSaveExecute(Sender: TObject);
-begin
-  with TSaveDialog.Create(Application) do
-  try
-    if Execute then
-      lsbDest.Items.SaveToFile(FileName);
-  finally
-    Free;
-  end;
-end;
-
-procedure TForm1.actAddToIgnoreListExecute(Sender: TObject);
+procedure TfrmMain.actAddToIgnoreListExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -364,7 +354,7 @@ begin
   SetItem(lsbDest, Index);
 end;
 
-procedure TForm1.actAddToCompletedListExecute(Sender: TObject);
+procedure TfrmMain.actAddToCompletedListExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -373,64 +363,63 @@ begin
   SetItem(lsbDest, Index);
 end;
 
-procedure TForm1.actUnitStatusExecute(Sender: TObject);
+procedure TfrmMain.actUnitStatusExecute(Sender: TObject);
 begin
   TfrmUnitStatus.Execute(FMainCtrl);
 end;
 
-procedure TForm1.actShowCompletedExecute(Sender: TObject);
+procedure TfrmMain.actShowCompletedExecute(Sender: TObject);
 begin
   FMainCtrl.ShowCompletedFiles := not FMainCtrl.ShowCompletedFiles;
 end;
 
-procedure TForm1.actShowIgnoredExecute(Sender: TObject);
+procedure TfrmMain.actShowIgnoredExecute(Sender: TObject);
 begin
   FMainCtrl.ShowIgnoredFiles := not FMainCtrl.ShowIgnoredFiles;
 end;
 
-procedure TForm1.actShowOtherExecute(Sender: TObject);
+procedure TfrmMain.actShowOtherExecute(Sender: TObject);
 begin
   FMainCtrl.ShowOtherFiles := not FMainCtrl.ShowOtherFiles;
 end;
 
-procedure TForm1.actShowCompletedUpdate(Sender: TObject);
+procedure TfrmMain.actShowCompletedUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Checked := FMainCtrl.ShowCompletedFiles;
 end;
 
-procedure TForm1.actShowIgnoredUpdate(Sender: TObject);
+procedure TfrmMain.actShowIgnoredUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Checked := FMainCtrl.ShowIgnoredFiles;
 end;
 
-procedure TForm1.actShowOtherUpdate(Sender: TObject);
+procedure TfrmMain.actShowOtherUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Checked := FMainCtrl.ShowOtherFiles
 end;
 
-constructor TForm1.Create(AOwner: TComponent);
+constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FMainCtrl := TMainCtrl.Create;
 end;
 
-destructor TForm1.Destroy;
+destructor TfrmMain.Destroy;
 begin
-  TSettings.Instance.UnRegisterObserver(Self);
   FMainCtrl.Free;
 
   inherited Destroy;
 end;
 
-procedure TForm1.actRefreshExecute(Sender: TObject);
+procedure TfrmMain.actRefreshExecute(Sender: TObject);
 begin
   FMainCtrl.RefreshFiles;
 end;
 
-procedure TForm1.MoveSelectedToCompletedList(List: TCustomListBox);
+procedure TfrmMain.MoveSelectedToCompletedList(List: TCustomListBox);
 var
   I: Integer;
 begin
@@ -449,7 +438,7 @@ begin
   TSettings.Instance.SaveUnitStatus(usCompleted);
 end;
 
-procedure TForm1.MoveSelectedToIgnoredList(List: TCustomListBox);
+procedure TfrmMain.MoveSelectedToIgnoredList(List: TCustomListBox);
 var
   I: Integer;
 begin
@@ -468,23 +457,23 @@ begin
   TSettings.Instance.SaveUnitStatus(usIgnored);
 end;
 
-procedure TForm1.actShowGeneratedExecute(Sender: TObject);
+procedure TfrmMain.actShowGeneratedExecute(Sender: TObject);
 begin
   FMainCtrl.ShowGeneratedFiles := not FMainCtrl.ShowGeneratedFiles;
 end;
 
-procedure TForm1.actShowGeneratedUpdate(Sender: TObject);
+procedure TfrmMain.actShowGeneratedUpdate(Sender: TObject);
 begin
   if Sender is TAction then
     TAction(Sender).Checked := FMainCtrl.ShowGeneratedFiles;
 end;
 
-procedure TForm1.actCheckDtxFilesExecute(Sender: TObject);
+procedure TfrmMain.actCheckDtxFilesExecute(Sender: TObject);
 begin
   FMainCtrl.CheckDtxFiles;
 end;
 
-procedure TForm1.actClearGeneratedDtxDirExecute(Sender: TObject);
+procedure TfrmMain.actClearGeneratedDtxDirExecute(Sender: TObject);
 var
   Cursor: TCursor;
 begin
@@ -498,12 +487,12 @@ begin
   end;
 end;
 
-procedure TForm1.actClearMessagesExecute(Sender: TObject);
+procedure TfrmMain.actClearMessagesExecute(Sender: TObject);
 begin
   lsbMessages.Clear;
 end;
 
-procedure TForm1.actSaveMessagesExecute(Sender: TObject);
+procedure TfrmMain.actSaveMessagesExecute(Sender: TObject);
 begin
   with TSaveDialog.Create(Application) do
   try
@@ -517,14 +506,103 @@ begin
   end;
 end;
 
-procedure TForm1.actGeneratePackageListExecute(Sender: TObject);
+procedure TfrmMain.actGeneratePackageListExecute(Sender: TObject);
 begin
   FMainCtrl.GeneratePackageList;
 end;
 
-procedure TForm1.actGenerateRegisteredClassesExecute(Sender: TObject);
+procedure TfrmMain.actGenerateRegisteredClassesExecute(Sender: TObject);
 begin
   FMainCtrl.GenerateRegisteredClassesList;
+end;
+
+procedure TfrmMain.actCheckPasFilesExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckPasFiles;
+end;
+
+procedure TfrmMain.actCheckCasePasFilesExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckCasingPasFiles(False);
+end;
+
+procedure TfrmMain.SelectedProcessFilesAvailable(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Enabled := lsbDest.SelCount > 0;
+end;
+
+procedure TfrmMain.actDirectoriesExecute(Sender: TObject);
+begin
+  TfrmDirectories.Execute;
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+begin
+  PostMessage(Handle, CM_CheckDirectories, 0, 0);
+end;
+
+procedure TfrmMain.CMCheckDirectories(var Msg: TMessage);
+begin
+  with TSettings.Instance do
+    if (RunTimePasDir = '') or (DesignTimePasDir = '') or
+      (PackageDir = '') or (RealDtxDir = '') or (GeneratedDtxDir = '') then
+
+      actDirectories.Execute;
+end;
+
+procedure TfrmMain.actCheckCasePasFilesUpdate(Sender: TObject);
+begin
+  { RunTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and (TSettings.Instance.RunTimePasDir > '');
+end;
+
+procedure TfrmMain.actCheckPasFilesUpdate(Sender: TObject);
+begin
+  { RunTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and (TSettings.Instance.RunTimePasDir > '');
+end;
+
+procedure TfrmMain.actGenerateRegisteredClassesUpdate(Sender: TObject);
+begin
+  { DesignTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := TSettings.Instance.DesignTimePasDir > '';
+end;
+
+procedure TfrmMain.actGeneratePackageListUpdate(Sender: TObject);
+begin
+  { PackageDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := TSettings.Instance.PackageDir > '';
+end;
+
+procedure TfrmMain.actCheckDtxFilesUpdate(Sender: TObject);
+begin
+  { RunTimePasDir, RealDtxDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and
+      (TSettings.Instance.RunTimePasDir > '') and (TSettings.Instance.RealDtxDir > '');
+end;
+
+procedure TfrmMain.actGenerateDtxFilesUpdate(Sender: TObject);
+begin
+  { GeneratedDtxDir, RunTimePasDir }
+  if Sender is TAction then
+    TAction(Sender).Enabled := ProcessFilesAvailable and
+      (TSettings.Instance.GeneratedDtxDir > '') and (TSettings.Instance.RunTimePasDir > '');
+end;
+
+function TfrmMain.ProcessFilesAvailable: Boolean;
+begin
+  Result := lsbDest.Count > 0;
+end;
+
+procedure TfrmMain.actCheckCasePasFilesAllExecute(Sender: TObject);
+begin
+  FMainCtrl.CheckCasingPasFiles(True);
 end;
 
 end.

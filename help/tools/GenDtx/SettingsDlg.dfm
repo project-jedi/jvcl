@@ -22,148 +22,9 @@ object frmSettings: TfrmSettings
     Top = 8
     Width = 534
     Height = 277
-    ActivePage = tshFiles
+    ActivePage = tshRegisteredClasses
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
-    object tshFiles: TTabSheet
-      Caption = 'Files'
-      DesignSize = (
-        526
-        249)
-      object lblRunTimePasDirDesc: TLabel
-        Left = 8
-        Top = 8
-        Width = 70
-        Height = 13
-        Caption = '*.pas directory:'
-      end
-      object lblOutDirDesc: TLabel
-        Left = 8
-        Top = 88
-        Width = 120
-        Height = 13
-        Caption = 'Generated *.dtx directory:'
-      end
-      object Label1: TLabel
-        Left = 8
-        Top = 128
-        Width = 92
-        Height = 13
-        Caption = 'Real *.dtx directory:'
-      end
-      object Label2: TLabel
-        Left = 8
-        Top = 168
-        Width = 57
-        Height = 13
-        Caption = 'Package dir'
-      end
-      object lblDesignTimePasDir: TLabel
-        Left = 8
-        Top = 48
-        Width = 70
-        Height = 13
-        Caption = '*.pas directory:'
-      end
-      object edtRunTimePasDir: TEdit
-        Left = 8
-        Top = 24
-        Width = 470
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 0
-        Text = 'edtRunTimePasDir'
-      end
-      object edtGeneratedDtxDir: TEdit
-        Left = 8
-        Top = 104
-        Width = 470
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 1
-        Text = 'edtGeneratedDtxDir'
-      end
-      object btnRunTimePasDir: TButton
-        Left = 477
-        Top = 24
-        Width = 25
-        Height = 21
-        Action = actSelectRunTimePasDir
-        Anchors = [akTop, akRight]
-        TabOrder = 2
-      end
-      object btnGeneratedDtxDir: TButton
-        Left = 477
-        Top = 104
-        Width = 25
-        Height = 21
-        Action = actSelectGeneratedDtxDir
-        Anchors = [akTop, akRight]
-        TabOrder = 3
-      end
-      object chbOverwriteExisting: TCheckBox
-        Left = 8
-        Top = 224
-        Width = 113
-        Height = 17
-        Caption = 'Overwrite Existing'
-        TabOrder = 4
-      end
-      object edtRealDtxDir: TEdit
-        Left = 8
-        Top = 144
-        Width = 470
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 5
-        Text = 'edtOutDir'
-      end
-      object btnRealDtxDir: TButton
-        Left = 477
-        Top = 144
-        Width = 25
-        Height = 21
-        Action = actSelectGeneratedDtxDir
-        Anchors = [akTop, akRight]
-        TabOrder = 6
-      end
-      object edtPackageDir: TEdit
-        Left = 8
-        Top = 184
-        Width = 470
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 7
-        Text = 'edtOutDir'
-      end
-      object btnPackageDir: TButton
-        Left = 477
-        Top = 184
-        Width = 25
-        Height = 21
-        Action = actSelectPackageDir
-        Anchors = [akTop, akRight]
-        TabOrder = 8
-      end
-      object edtDesignTimePasDir: TEdit
-        Left = 8
-        Top = 64
-        Width = 470
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 9
-        Text = 'edtPasDir'
-      end
-      object btnDesignTimePasDir: TButton
-        Left = 477
-        Top = 64
-        Width = 25
-        Height = 21
-        Action = actSelectDesignTimePasDir
-        Anchors = [akTop, akRight]
-        TabOrder = 10
-      end
-    end
     object tshOutput: TTabSheet
       Caption = 'Output'
       ImageIndex = 1
@@ -513,26 +374,6 @@ object frmSettings: TfrmSettings
       Caption = '&Apply'
       OnExecute = actApplyExecute
     end
-    object actSelectRunTimePasDir: TAction
-      Category = 'Files'
-      Caption = '...'
-      OnExecute = actSelectRunTimePasDirExecute
-    end
-    object actSelectGeneratedDtxDir: TAction
-      Category = 'Files'
-      Caption = '...'
-      OnExecute = actSelectGeneratedDtxDirExecute
-    end
-    object actSelectRealDtxDir: TAction
-      Category = 'Files'
-      Caption = '...'
-      OnExecute = actSelectRealDtxDirExecute
-    end
-    object actSelectPackageDir: TAction
-      Category = 'Files'
-      Caption = '...'
-      OnExecute = actSelectPackageDirExecute
-    end
     object actAdd: TAction
       Caption = '&Add'
       OnExecute = actAddExecute
@@ -609,11 +450,6 @@ object frmSettings: TfrmSettings
     object actDocumentedUnits_Load: TAction
       Category = 'DocumentedUnits'
       Caption = 'Load'
-    end
-    object actSelectDesignTimePasDir: TAction
-      Category = 'Files'
-      Caption = '...'
-      OnExecute = actSelectDesignTimePasDirExecute
     end
   end
   object JvBrowseForFolderDialog1: TJvBrowseForFolderDialog

@@ -40,6 +40,7 @@ type
     procedure SetShowOtherFiles(const Value: Boolean);
     procedure SetShowGeneratedFiles(const Value: Boolean);
   protected
+    procedure CheckDir(const ADir: string);
     procedure DoMessage(const Msg: string); overload;
     procedure DoMessage(Strings: TStrings); overload;
     procedure WriteDtx(ATypeList: TTypeList);
@@ -60,6 +61,13 @@ type
 
     procedure CheckDtxFile(const AFileName: string);
     procedure CheckDtxFiles;
+
+    procedure CheckPasFile(const AFileName: string);
+    procedure CheckPasFiles;
+
+    procedure CheckCasingPasFile(const AFileName: string; AllTokens: TStrings;
+      const AID: Integer; const CheckAllSymbols: Boolean);
+    procedure CheckCasingPasFiles(const CheckAllSymbols: Boolean);
 
     procedure GenerateListInPackage(const AFileName: string; List, AllList: TStrings);
     procedure GeneratePackageList;
@@ -85,7 +93,7 @@ type
 implementation
 
 uses
-  SysUtils,
+  Windows, SysUtils,
   JclFileUtils, JvProgressDialog, JvSearchFiles,
   DelphiParser;
 
@@ -102,10 +110,17 @@ const
     otInterface, otFunction, otProcedure, otProcedure, otProcedureType,
     otProperty, otRecord, otResourcestring, otSet, otType, otVar);
 
-  { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled, efNoStatusTag }
-  CErrorNice: array[TErrorFlag] of string =
-  ('JVCLINFO: GROUP', 'JVCLINFO: FLAG', 'No ##Package tag',
-    '##Package tag not filled', 'No ##Status tag');
+  { efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled,
+    efNoStatusTag, efEmptySeeAlso, efNoAuthor }
+  CDtxErrorNice: array[TDtxCompareErrorFlag] of string = (
+    'JVCLINFO: GROUP', 'JVCLINFO: FLAG', 'No ##Package tag',
+    '##Package tag not filled', 'No ##Status tag',
+    'Has empty ''See Also'' section(s)', 'No author specified');
+
+  { pefNoLicense, pefUnitCase }
+  CPasErrorNice: array[TPasCheckErrorFlag] of string = (
+    'No license', 'Case differs, filename: %s - unitname: %s'
+    );
 
   { dtWriteSummary, dtWriteDescription, dtListProperties }
   CDefaultTextNice: array[TDefaultText] of string =
@@ -118,7 +133,54 @@ const
     'If it does the same as the inherited method',
     'Description for');
 
-procedure DiffLists(Source1, Source2, InBoth, NotInSource1, NotInSource2: TStrings);
+  (*function CSCompare(const S1, S2: string): Integer;
+  var
+    P1, P2: PChar;
+  begin
+    P1 := PChar(S1);
+    P2 := PChar(S2);
+    Result := 0;
+    while (P1^ <> #0) and (P2^ <> #0) and (Result = 0) do
+    begin
+      Result := Ord(P1^) - Ord(P2^);
+      Inc(P1);
+      Inc(P2);
+    end;
+    if Result = 0 then
+    begin
+      if (P1^ = #0) and (P2^ <> #0) then
+        Result := -1
+      else
+        if (P1^ <> #0) and (P2^ = #0) then
+        Result := 1;
+    end;
+  end;*)
+
+function GetRealFileName(const ADir, AFileName: string): string;
+var
+  FindData: TWin32FindData;
+  Handle: THandle;
+  LFileName: string;
+begin
+  LFileName := IncludeTrailingPathDelimiter(ADir) + AFileName;
+
+  Handle := FindFirstFile(PChar(LFileName), FindData);
+  if Handle <> INVALID_HANDLE_VALUE then
+  begin
+    Windows.FindClose(Handle);
+    Result := ExtractFileName(FindData.cFileName);
+  end
+  else
+    Result := AFileName;
+end;
+
+function CaseSensitiveSort(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := CompareStr(List[Index1], List[Index2]);
+end;
+
+procedure DiffLists(Source1, Source2, InBoth, NotInSource1, NotInSource2: TStrings; const CaseSensitive: Boolean =
+  False);
 var
   Index1, Index2: Integer;
   C: Integer;
@@ -135,7 +197,10 @@ begin
   Index2 := 0;
   while (Index1 < Source1.Count) and (Index2 < Source2.Count) do
   begin
-    C := AnsiCompareText(Source1[Index1], Source2[Index2]);
+    if CaseSensitive then
+      C := CompareStr(Source1[Index1], Source2[Index2])
+    else
+      C := AnsiCompareText(Source1[Index1], Source2[Index2]);
     if C = 0 then
     begin
       if Assigned(InBoth) then
@@ -173,7 +238,7 @@ begin
     end;
 end;
 
-procedure ExcludeList(Source, RemoveList: TStrings);
+procedure ExcludeList(Source, RemoveList: TStrings; const CaseSensitive: Boolean = False);
 var
   SourceIndex, RemoveIndex: Integer;
   C: Integer;
@@ -187,7 +252,10 @@ begin
   RemoveIndex := 0;
   while (SourceIndex < Source.Count) and (RemoveIndex < RemoveList.Count) do
   begin
-    C := AnsiCompareText(Source[SourceIndex], RemoveList[RemoveIndex]);
+    if CaseSensitive then
+      C := CompareStr(Source[SourceIndex], RemoveList[RemoveIndex])
+    else
+      C := AnsiCompareText(Source[SourceIndex], RemoveList[RemoveIndex]);
     if C = 0 then
     begin
       Source.Delete(SourceIndex);
@@ -407,6 +475,10 @@ var
   Dir: string;
   ProgressDlg: TJvProgressDialog;
 begin
+  { Uses GeneratedDtxDir + RunTimePasDir }
+  CheckDir(TSettings.Instance.RunTimePasDir);
+  CheckDir(TSettings.Instance.GeneratedDtxDir);
+
   if not Assigned(ProcessList) then
     Exit;
   Dir := IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir);
@@ -709,17 +781,19 @@ begin
 end;
 
 procedure TMainCtrl.CheckDtxFile(const AFileName: string);
+const
+  CCaseRelatied: array[Boolean] of string = ('', ' <casing differs>');
 var
   DelphiParser: TDelphiParser;
-  DtxParser: TCompareParser;
+  DtxParser: TDtxCompareParser;
   NotInDtx, NotInPas: TStringList;
   I: Integer;
   FileStatus: string;
-  Error: TErrorFlag;
+  Error: TDtxCompareErrorFlag;
   DefaultText: TDefaultText;
 begin
   DelphiParser := TDelphiParser.Create;
-  DtxParser := TCompareParser.Create;
+  DtxParser := TDtxCompareParser.Create;
   NotInDtx := TStringList.Create;
   NotInPas := TStringList.Create;
   try
@@ -770,9 +844,9 @@ begin
     if DtxParser.Errors <> [] then
     begin
       DoMessage('--   Errors');
-      for Error := Low(TErrorFlag) to High(TErrorFlag) do
+      for Error := Low(TDtxCompareErrorFlag) to High(TDtxCompareErrorFlag) do
         if Error in DtxParser.Errors then
-          DoMessage(CErrorNice[Error]);
+          DoMessage(CDtxErrorNice[Error]);
     end;
     if DtxParser.DefaultTexts <> [] then
     begin
@@ -785,7 +859,8 @@ begin
     begin
       DoMessage('--   Not in dtx file');
       for I := 0 to NotInDtx.Count - 1 do
-        DoMessage(NotInDtx[I]);
+        DoMessage(NotInDtx[I] +
+          CCaseRelatied[DtxParser.List.IndexOf(NotInDtx[I]) >= 0]);
     end;
     if NotInPas.Count > 0 then
     begin
@@ -813,6 +888,9 @@ var
   NotInRealDtxDir: TStringList;
   CheckableList: TStringList;
 begin
+  CheckDir(TSettings.Instance.RunTimePasDir);
+  CheckDir(TSettings.Instance.RealDtxDir);
+
   if not Assigned(ProcessList) then
     Exit;
 
@@ -944,22 +1022,43 @@ procedure TMainCtrl.CompareDtxFile(
 var
   Optional: TStringList;
   NotOptional: TStringList;
+  LDtxHeaders, LNotInPas, LNotInDtx: TStringList;
 begin
   Optional := TStringList.Create;
   NotOptional := TStringList.Create;
+  LDtxHeaders := TStringList.Create;
+  LNotInPas := TStringList.Create;
+  LNotInDtx := TStringList.Create;
   try
-    Optional.Sorted := True;
-    NotOptional.Sorted := True;
-
     FillWithHeaders(ATypeList, Optional, NotOptional);
-    NotOptional.Add('@@' + ChangeFileExt(AFileName, '.pas'));
-    NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
-    DtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
 
-    DiffLists(DtxHeaders, NotOptional, nil, NotInDtx, NotInPas);
-    ExcludeList(NotInPas, Optional);
-    ExcludeList(NotInDtx, Optional);
+    NotOptional.Add('@@' + GetRealFileName(
+      TSettings.Instance.RunTimePasDir,
+      ChangeFileExt(AFileName, '.pas')));
+    LDtxHeaders.Assign(DtxHeaders);
+
+    NotOptional.CustomSort(CaseSensitiveSort);
+    Optional.CustomSort(CaseSensitiveSort);
+    LDtxHeaders.CustomSort(CaseSensitiveSort);
+
+    //Optional.SaveToFile('C:\Temp\Optional.txt');
+    //NotOptional.SaveToFile('C:\Temp\NotOptional.txt');
+    //LDtxHeaders.SaveToFile('C:\Temp\DtxHeaders.txt');
+
+    DiffLists(LDtxHeaders, NotOptional, nil, LNotInDtx, LNotInPas, True);
+
+    LNotInDtx.CustomSort(CaseSensitiveSort);
+    LNotInPas.CustomSort(CaseSensitiveSort);
+
+    ExcludeList(LNotInPas, Optional, True);
+    ExcludeList(LNotInDtx, Optional, True);
+
+    NotInPas.Assign(LNotInPas);
+    NotInDtx.Assign(LNotInDtx);
   finally
+    LDtxHeaders.Free;
+    LNotInPas.Free;
+    LNotInDtx.Free;
     Optional.Free;
     NotOptional.Free;
   end;
@@ -1044,7 +1143,10 @@ var
   LFilesInPackages, LAllFilesInPackages: TStringList;
   LNotInPasDir, LNotInDpk: TStringList;
   I: Integer;
+  Added, Removed: TStringList;
 begin
+  CheckDir(TSettings.Instance.PackageDir);
+
   RunTimeDpkFiles := TStringList.Create;
   LFilesInPackages := TStringList.Create;
   LAllFilesInPackages := TStringList.Create;
@@ -1055,12 +1157,6 @@ begin
 
     with TSettings.Instance do
     begin
-      if PackageDir = '' then
-        raise Exception.Create('No package dir specified in settings');
-
-      if not DirectoryExists(PackageDir) then
-        raise Exception.CreateFmt('Dir ''%s'' does not exists', [PackageDir]);
-
       GetAllFilesFrom(PackageDir, '*r.dpk', RunTimeDpkFiles);
 
       for I := 0 to RunTimeDpkFiles.Count - 1 do
@@ -1078,15 +1174,44 @@ begin
         begin
           DoMessage('-- Files in .dpk''s, but not in .pas dir');
           DoMessage(LNotInPasDir);
+          DoMessage('--');
         end;
         if LNotInDpk.Count > 0 then
         begin
           DoMessage('-- Files in .pas dir, but not in any .dpk file');
           DoMessage(LNotInDpk);
+          DoMessage('--');
         end;
       finally
         LNotInDpk.Free;
         LNotInPasDir.Free;
+      end;
+
+      Added := TStringList.Create;
+      Removed := TStringList.Create;
+      try
+        Added.Sorted := True;
+        Removed.Sorted := True;
+
+        DiffLists(FilesInPackages, LFilesInPackages, nil, Added, Removed);
+        if (Added.Count = 0) and (Removed.Count = 0) then
+          DoMessage('Nothing changed');
+        if Removed.Count > 0 then
+        begin
+          DoMessage('-- Removed:');
+          DoMessage('------');
+          DoMessage(Removed);
+          DoMessage('--');
+        end;
+        if Added.Count > 0 then
+        begin
+          DoMessage('-- Added:');
+          DoMessage(Added);
+          DoMessage('--');
+        end;
+      finally
+        Added.Free;
+        Removed.Free;
       end;
 
       FilesInPackages := LFilesInPackages;
@@ -1138,8 +1263,11 @@ procedure TMainCtrl.GenerateRegisteredClassesList;
 var
   DesignTimePasFiles: TStringList;
   LRegisteredClasses: TStringList;
+  Added, Removed: TStringList;
   I: Integer;
 begin
+  CheckDir(TSettings.Instance.DesignTimePasDir);
+
   DesignTimePasFiles := TStringList.Create;
   LRegisteredClasses := TStringList.Create;
   try
@@ -1148,18 +1276,39 @@ begin
 
     with TSettings.Instance do
     begin
-      if DesignTimePasDir = '' then
-        raise Exception.Create('No design-time *.pas dir specified in settings');
-
-      if not DirectoryExists(DesignTimePasDir) then
-        raise Exception.CreateFmt('Dir ''%s'' does not exists', [PackageDir]);
-
       GetAllFilesFrom(DesignTimePasDir, '*.pas', DesignTimePasFiles);
 
       for I := 0 to DesignTimePasFiles.Count - 1 do
         GenerateRegisteredClassesListInFile(
           DesignTimePasDir + '\' + ChangeFileExt(DesignTimePasFiles[I], '.pas'),
           LRegisteredClasses);
+
+      Added := TStringList.Create;
+      Removed := TStringList.Create;
+      try
+        Added.Sorted := True;
+        Removed.Sorted := True;
+
+        DiffLists(RegisteredClasses, LRegisteredClasses, nil, Added, Removed);
+        if (Added.Count = 0) and (Removed.Count = 0) then
+          DoMessage('Nothing changed');
+        if Removed.Count > 0 then
+        begin
+          DoMessage('-- Removed:');
+          DoMessage('------');
+          DoMessage(Removed);
+          DoMessage('--');
+        end;
+        if Added.Count > 0 then
+        begin
+          DoMessage('-- Added:');
+          DoMessage(Added);
+          DoMessage('--');
+        end;
+      finally
+        Added.Free;
+        Removed.Free;
+      end;
 
       RegisteredClasses := LRegisteredClasses;
       SaveRegisteredClasses;
@@ -1183,6 +1332,184 @@ begin
   finally
     RegisteredClassesParser.Free;
   end;
+end;
+
+procedure TMainCtrl.CheckPasFile(const AFileName: string);
+var
+  PasParser: TPasCheckParser;
+  Error: TPasCheckErrorFlag;
+begin
+  PasParser := TPasCheckParser.Create;
+  try
+    PasParser.AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+    //PasParser.AcceptVisibilities := [inProtected, inPublic, inPublished];
+
+    if not PasParser.Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir) +
+      ChangeFileExt(AFileName, '.pas')) then
+    begin
+      Inc(FParsedError);
+      DoMessage(Format('[Error] %s - %s', [AFileName, PasParser.ErrorMsg]));
+      Exit;
+    end;
+
+    if PasParser.Errors <> [] then
+    begin
+      DoMessage(Format('%s--   Errors', [AFileName]));
+      for Error := Low(TPasCheckErrorFlag) to High(TPasCheckErrorFlag) do
+        if Error in PasParser.Errors then
+          if Error = pefUnitCase then
+            DoMessage(Format(CPasErrorNice[Error], [PasParser.FileName, PasParser.UnitName]))
+          else
+            DoMessage(CPasErrorNice[Error]);
+    end;
+
+    Inc(FParsedOK);
+  finally
+    PasParser.Free;
+  end;
+end;
+
+procedure TMainCtrl.CheckPasFiles;
+var
+  I: Integer;
+  ProgressDlg: TJvProgressDialog;
+begin
+  CheckDir(TSettings.Instance.RunTimePasDir);
+
+  if not Assigned(ProcessList) then
+    Exit;
+
+  FParsedOK := 0;
+  FParsedError := 0;
+  ProgressDlg := TJvProgressDialog.Create(nil);
+  try
+    ProgressDlg.Min := 0;
+    ProgressDlg.Max := ProcessList.Count;
+    ProgressDlg.Caption := 'Progress';
+    ProgressDlg.Show;
+
+    for I := 0 to ProcessList.Count - 1 do
+    begin
+      ProgressDlg.Text := ProcessList[I];
+      ProgressDlg.Position := I;
+      CheckPasFile(ProcessList[I]);
+    end;
+    DoMessage('Done');
+    DoMessage('--');
+    DoMessage(Format('Errors %d OK %d Total %d',
+      [FParsedError, FParsedOK, FParsedError + FParsedOK]));
+  finally
+    ProgressDlg.Hide;
+    ProgressDlg.Free;
+  end;
+end;
+
+procedure TMainCtrl.CheckCasingPasFile(const AFileName: string;
+  AllTokens: TStrings; const AID: Integer; const CheckAllSymbols: Boolean);
+begin
+  with TPasCasingParser.Create do
+  try
+    AcceptCompilerDirectives := TSettings.Instance.AcceptCompilerDirectives;
+    AcceptVisibilities := [inProtected, inPublic, inPublished];
+    ID := AID;
+    AllSymbols := CheckAllSymbols;
+
+    if Execute(IncludeTrailingPathDelimiter(TSettings.Instance.RunTimePasDir)
+      + ChangeFileExt(AFileName, '.pas')) then
+    begin
+      Inc(FParsedOK);
+      AllTokens.AddStrings(List);
+    end
+    else
+    begin
+      Inc(FParsedError);
+      DoMessage(Format('[Error] %s - %s', [AFileName, ErrorMsg]));
+    end;
+  finally
+    Free;
+  end;
+end;
+
+procedure TMainCtrl.CheckCasingPasFiles(const CheckAllSymbols: Boolean);
+var
+  I: Integer;
+  ProgressDlg: TJvProgressDialog;
+  AllTokens: TStringList;
+begin
+  CheckDir(TSettings.Instance.RunTimePasDir);
+
+  if not Assigned(ProcessList) then
+    Exit;
+
+  FParsedOK := 0;
+  FParsedError := 0;
+  ProgressDlg := TJvProgressDialog.Create(nil);
+  try
+    ProgressDlg.Min := 0;
+    ProgressDlg.Max := ProcessList.Count;
+    ProgressDlg.Caption := 'Progress';
+    ProgressDlg.Show;
+
+    AllTokens := TStringList.Create;
+    try
+      AllTokens.Duplicates := dupIgnore;
+      AllTokens.Sorted := True;
+      AllTokens.CaseSensitive := True;
+
+      for I := 0 to ProcessList.Count - 1 do
+      begin
+        ProgressDlg.Text := ProcessList[I];
+        ProgressDlg.Position := I;
+        CheckCasingPasFile(ProcessList[I], AllTokens, I, CheckAllSymbols);
+      end;
+
+      AllTokens.Sorted := False;
+      AllTokens.CaseSensitive := False;
+      AllTokens.Sorted := True;
+
+      I := AllTokens.Count - 2;
+      while I >= 1 do
+      begin
+        if SameText(AllTokens[I - 1], AllTokens[I]) then
+          Dec(I, 2)
+        else
+          if SameText(AllTokens[I], AllTokens[I + 1]) then
+          Dec(I)
+        else
+        begin
+          AllTokens.Delete(I);
+          Dec(I);
+        end;
+      end;
+
+      if AllTokens.Count > 1 then
+        if not SameText(AllTokens[0], AllTokens[1]) then
+          AllTokens.Delete(0);
+      if AllTokens.Count > 1 then
+        if not SameText(AllTokens[AllTokens.Count - 1], AllTokens[AllTokens.Count - 2]) then
+          AllTokens.Delete(AllTokens.Count - 1);
+      if AllTokens.Count = 1 then
+        AllTokens.Delete(0);
+
+      for I := 0 to AllTokens.Count - 1 do
+        DoMessage(Format('%s       -- %s', [AllTokens[I], ProcessList[Integer(AllTokens.Objects[I])]]));
+      DoMessage('Done');
+      DoMessage('--');
+      DoMessage(Format('Errors %d OK %d Total %d',
+        [FParsedError, FParsedOK, FParsedError + FParsedOK]));
+    finally
+      AllTokens.Free;
+    end;
+  finally
+    ProgressDlg.Hide;
+    ProgressDlg.Free;
+  end;
+end;
+
+procedure TMainCtrl.CheckDir(const ADir: string);
+begin
+  if not DirectoryExists(ADir) then
+    raise Exception.CreateFmt('Dir ''%s'' does not exists', [ADir]);
 end;
 
 end.

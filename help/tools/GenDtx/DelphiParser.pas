@@ -146,8 +146,12 @@ type
     property ErrorMsg: string read FErrorMsg;
   end;
 
-  TErrorFlag = (efJVCLInfoGroup, efJVCLInfoFlag, efNoPackageTag, efPackageTagNotFilled, efNoStatusTag);
-  TErrorFlags = set of TErrorFlag;
+  TDtxCompareErrorFlag = (defJVCLInfoGroup, defJVCLInfoFlag, defNoPackageTag,
+    defPackageTagNotFilled, defNoStatusTag, defEmptySeeAlso, defNoAuthor);
+  TDtxCompareErrorFlags = set of TDtxCompareErrorFlag;
+
+  TPasCheckErrorFlag = (pefNoLicense, pefUnitCase);
+  TPasCheckErrorFlags = set of TPasCheckErrorFlag;
 
   TDefaultText = (dtWriteSummary, dtWriteDescription, dtTypeUsedBy,
     dtListProperties, dtRemoveSeeAlso, dtDescribeReturns, dtOverridenMethod,
@@ -155,26 +159,35 @@ type
 
   TDefaultTexts = set of TDefaultText;
 
-  TCompareTokenType = (ctHelpTag, ctText, ctParseTag, ctSeperator);
+  TDtxCompareTokenType = (ctHelpTag, ctText, ctParseTag, ctSeperator);
 
-  TCompareParser = class(TBasicParser)
+  TDtxCompareParser = class(TBasicParser)
   private
     FList: TStrings;
-    FErrors: TErrorFlags;
+    FErrors: TDtxCompareErrorFlags;
     FDefaultTexts: TDefaultTexts;
-    function GetCompareTokenType: TCompareTokenType;
+    function GeTDtxCompareTokenType: TDtxCompareTokenType;
   protected
-    function Parse: Boolean;
     function ReadNextToken: Char; override;
 
-    property CompareTokenType: TCompareTokenType read GetCompareTokenType;
+    //function Parse: Boolean;
+    function Parse: Boolean;
+    procedure ReadPackage;
+    procedure ReadAuthor;
+    procedure ReadStatus;
+    procedure ReadJVCLINFO;
+    procedure ReadStartBlock;
+    procedure ReadSeeAlso;
+    procedure ReadRest;
+
+    property CompareTokenType: TDtxCompareTokenType read GeTDtxCompareTokenType;
   public
     constructor Create; override;
     destructor Destroy; override;
 
     function Execute(const AFileName: string): Boolean;
     property List: TStrings read FList;
-    property Errors: TErrorFlags read FErrors;
+    property Errors: TDtxCompareErrorFlags read FErrors;
     property DefaultTexts: TDefaultTexts read FDefaultTexts;
   end;
 
@@ -209,6 +222,53 @@ type
     property List: TStrings read FList;
   end;
 
+  (*TPasCasingParser = class(TDelphiParser)
+  private
+    FList: TStrings;
+  protected
+    function Parse: Boolean; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    function Execute(const AFileName: string): Boolean; override;
+    property List: TStrings read FList;
+  end;*)
+
+  TPasCasingParser = class(TDelphiParser)
+  private
+    FList: TStrings;
+    FID: Integer;
+    FAllSymbols: Boolean;
+  protected
+    function Parse: Boolean; override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+
+    function Execute(const AFileName: string): Boolean; override;
+    property List: TStrings read FList;
+    property ID: Integer read FID write FID;
+    property AllSymbols: Boolean read FAllSymbols write FAllSymbols;
+  end;
+
+  TPasCheckParser = class(TDelphiParser)
+  private
+    FErrors: TPasCheckErrorFlags;
+    FFileName: string;
+    FUnitName: string;
+  protected
+    procedure ReadCommentBlock;
+    procedure ReadUnitName;
+    function Parse: Boolean; override;
+  public
+    function Execute(const AFileName: string): Boolean; override;
+    property Errors: TPasCheckErrorFlags read FErrors;
+
+    property FileName: string read FFileName;
+    property UnitName: string read FUnitName;
+  end;
+
   TFunctionParser = class(TDelphiParser)
   private
     FFunctions: TStrings;
@@ -233,7 +293,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs;
+  SysUtils, Dialogs, Windows;
 
 const
   SParseError = '%s on line %d';
@@ -2115,22 +2175,22 @@ begin
   end;
 end;
 
-{ TCompareParser }
+{ TDtxCompareParser }
 
-constructor TCompareParser.Create;
+constructor TDtxCompareParser.Create;
 begin
   inherited;
   FList := TStringList.Create;
   TStringList(FList).Sorted := True;
 end;
 
-destructor TCompareParser.Destroy;
+destructor TDtxCompareParser.Destroy;
 begin
   FList.Free;
   inherited;
 end;
 
-function TCompareParser.Execute(const AFileName: string): Boolean;
+function TDtxCompareParser.Execute(const AFileName: string): Boolean;
 begin
   FErrors := [];
   FDefaultTexts := [];
@@ -2149,9 +2209,6 @@ begin
   end;
 end;
 
-type
-  TCompareState = (csNone, csParseTag, csJVCLInfoGroup, csJVCLInfoFlag);
-
 const
   CDefaultText: array[TDefaultText] of PChar = (
     'write here a summary (1 line)',
@@ -2165,7 +2222,7 @@ const
     'description for'
     );
 
-function TCompareParser.GetCompareTokenType: TCompareTokenType;
+function TDtxCompareParser.GeTDtxCompareTokenType: TDtxCompareTokenType;
 var
   S: string;
 begin
@@ -2187,13 +2244,13 @@ begin
     Result := ctText;
 end;
 
-type
+(*type
   TParseTagType = (ptStatus, ptPackage);
 
-function TCompareParser.Parse: Boolean;
+function TDtxCompareParser.Parse: Boolean;
 var
   S: string;
-  State: TCompareState;
+  State: TDtxCompareState;
 
   procedure CheckDefaultText(var ACheck: string);
   var
@@ -2214,7 +2271,7 @@ var
 
 var
   Check: string;
-  LTokenType: TCompareTokenType;
+  LTokenType: TDtxCompareTokenType;
   ParseTagType: TParseTagType;
 begin
   Result := True;
@@ -2304,8 +2361,49 @@ begin
     ReadNextToken;
   end;
 end;
+*)
 
-function TCompareParser.ReadNextToken: Char;
+function TDtxCompareParser.Parse: Boolean;
+begin
+  FErrors := [defNoPackageTag, defNoStatusTag, defNoAuthor];
+
+  ReadStartBlock;
+  ReadRest;
+  Result := True;
+end;
+
+procedure TDtxCompareParser.ReadAuthor;
+begin
+  NextToken;
+  if CompareTokenType = ctText then
+    Exclude(FErrors, defNoAuthor);
+end;
+
+procedure TDtxCompareParser.ReadJVCLINFO;
+begin
+  NextToken;
+
+  { first expect 'GROUP=', abort if not found }
+
+  if StrLComp(PChar(TokenString), 'GROUP=', 6) <> 0 then
+  begin
+    Include(FErrors, defJVCLInfoFlag);
+    Include(FErrors, defJVCLInfoGroup);
+    Exit;
+  end;
+
+  { Search until 'FLAG=' found }
+  repeat
+    if Pos('?', TokenString) > 0 then
+      Include(FErrors, defJVCLInfoGroup);
+    NextToken;
+  until (Token = toEof) or (StrLComp(PChar(TokenString), 'FLAG=', 5) = 0);
+
+  if Pos('?', TokenString) > 0 then
+    Include(FErrors, defJVCLInfoFlag);
+end;
+
+function TDtxCompareParser.ReadNextToken: Char;
 var
   P: PChar;
 
@@ -2334,6 +2432,166 @@ begin
   end;
   FSourcePtr := P;
   FToken := Result;
+end;
+
+procedure TDtxCompareParser.ReadPackage;
+begin
+  Exclude(FErrors, defNoPackageTag);
+
+  NextToken;
+  while (Token <> toEof) and (CompareTokenType = ctText) do
+  begin
+    if Pos('?', TokenString) > 0 then
+      Include(FErrors, defPackageTagNotFilled);
+
+    NextToken;
+  end;
+end;
+
+procedure TDtxCompareParser.ReadRest;
+type
+  TState = (stNone, stSee);
+
+  procedure CheckDefaultText(var ACheck: string);
+  var
+    DefaultText: TDefaultText;
+  begin
+    for DefaultText := Low(TDefaultText) to High(TDefaultText) do
+      if StrLIComp(PChar(ACheck), CDefaultText[DefaultText], Length(ACheck)) = 0 then
+      begin
+        if Length(ACheck) = Length(CDefaultText[DefaultText]) then
+        begin
+          ACheck := '';
+          Include(FDefaultTexts, DefaultText);
+        end;
+        Exit;
+      end;
+    ACheck := '';
+  end;
+
+var
+  Check: string;
+  S: string;
+  State: TState;
+begin
+  Check := '';
+  State := stNone;
+
+  while Token <> toEof do
+  begin
+    S := TokenString;
+    case CompareTokenType of
+      ctHelpTag:
+        begin
+          FList.Add(S);
+          Check := '';
+        end;
+      ctText:
+        begin
+          { check defaults }
+          if Check = '' then
+            Check := S
+          else
+            Check := Check + ' ' + S;
+          CheckDefaultText(Check);
+          if Check = '' then
+            Check := S;
+          if (State = stNone) and TokenSymbolIsExact('See') then
+            State := stSee
+          else
+            if (State = stSee) and TokenSymbolIsExact('Also') then
+          begin
+            ReadSeeAlso;
+            State := stNone;
+          end
+          else
+            State := stNone;
+          if TokenSymbolIsExact('JVCLInfo') then
+          begin
+            ReadJVCLINFO;
+            State := stNone;
+          end;
+        end
+    else
+      Check := '';
+    end;
+
+    ReadNextToken;
+  end;
+end;
+
+procedure TDtxCompareParser.ReadSeeAlso;
+begin
+  NextToken;
+  if CompareTokenType <> ctText then
+    Include(FErrors, defEmptySeeAlso);
+end;
+
+procedure TDtxCompareParser.ReadStartBlock;
+type
+  TState = (stNone, stPasTagRead, stSummaryRead, stAuthorRead);
+var
+  LState: TState;
+begin
+  LState := stNone;
+  {
+
+  ##Package: SomePackage
+  ##Status: SomeComment
+  ----------------------------------------------------------------------------------------------------
+  @@Somefile.pas
+  Summary
+    SomeSummary
+  <INCLUDE JVCL.UnitText.dtx>
+  Author
+    SomeAuthor
+  ----------------------------------------------------------------------------------------------------
+  }
+  { Assume first @@Somefile.pas then Summary then Author }
+
+  while (Token <> toEof) and (LState <> stAuthorRead) do
+    case CompareTokenType of
+      ctHelpTag:
+        begin
+          FList.Add(TokenString);
+          if (LState = stNone) and
+            SameText(Copy(TokenString, Length(TokenString) - 3, 4), '.pas') then
+            LState := stPasTagRead;
+          NextToken;
+        end;
+      ctParseTag:
+        if TokenSymbolIs('##package:') then
+          ReadPackage
+        else
+          if TokenSymbolIs('##status:') then
+          ReadStatus
+        else
+          NextToken;
+      ctText:
+        if (LState = stPasTagRead) and TokenSymbolIs('summary') then
+        begin
+          LState := stSummaryRead;
+          NextToken;
+        end
+        else
+          if (LState = stSummaryRead) and TokenSymbolIs('author') then
+        begin
+          LState := stAuthorRead;
+          ReadAuthor;
+        end
+        else
+          NextToken;
+      ctSeperator:
+        NextToken;
+    else
+      NextToken;
+    end;
+end;
+
+procedure TDtxCompareParser.ReadStatus;
+begin
+  Exclude(FErrors, defNoStatusTag);
+  NextToken;
 end;
 
 { TFunctionParser }
@@ -2616,6 +2874,207 @@ end;
 function TBasicParser.TokenSymbolIsExact(const S: string): Boolean;
 begin
   Result := (Token = toSymbol) and (CompareStr(S, TokenString) = 0);
+end;
+
+{ TPasCheckParser }
+
+function TPasCheckParser.Execute(const AFileName: string): Boolean;
+var
+  FindData: TWin32FindData;
+  Handle: THandle;
+begin
+  FErrors := [pefNoLicense];
+
+  Result := FileExists(AFileName);
+  if not Result then
+    Exit;
+
+  Handle := FindFirstFile(PChar(AFileName), FindData);
+  Result := Handle <> INVALID_HANDLE_VALUE;
+  if not Result then
+    Exit;
+
+  Windows.FindClose(Handle);
+  FFileName := ChangeFileExt(FindData.cFileName, '');
+
+  FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    Init;
+    Result := Parse;
+  finally
+    FreeAndNil(FStream);
+  end;
+end;
+
+function TPasCheckParser.Parse: Boolean;
+begin
+  Result := False;
+  try
+    ReadCommentBlock;
+    ReadUnitName;
+
+    Result := True;
+  except
+    on E: Exception do
+      FErrorMsg := E.Message;
+  end;
+end;
+
+procedure TPasCheckParser.ReadCommentBlock;
+const
+  CLicenseText = 'The contents of this file are subject to the';
+var
+  LicenseFound: Boolean;
+begin
+  LicenseFound := False;
+  while Token = toComment do
+  begin
+    LicenseFound := LicenseFound or
+      (Pos(CLicenseText, TokenString) > 0);
+    NextToken(False);
+  end;
+  if LicenseFound then
+    Exclude(FErrors, pefNoLicense);
+end;
+
+procedure TPasCheckParser.ReadUnitName;
+begin
+  while (Token <> toEof) and not TokenSymbolIs('unit') do
+    NextToken;
+  NextToken;
+  CheckToken(toSymbol);
+  FUnitName := TokenString;
+  if CompareStr(FUnitName, FFileName) <> 0 then
+    Include(FErrors, pefUnitCase);
+end;
+
+(*
+{ TPasCasingParser }
+
+constructor TPasCasingParser.Create;
+begin
+  inherited Create;
+  FList := TStringList.Create;
+  with FList as TStringList do
+  begin
+    Duplicates := dupIgnore;
+    CaseSensitive := True;
+    Sorted := True;
+  end;
+end;
+
+destructor TPasCasingParser.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TPasCasingParser.Execute(const AFileName: string): Boolean;
+begin
+  Result := FileExists(AFileName);
+  if not Result then
+    Exit;
+
+  FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    Init;
+    Result := Parse;
+  finally
+    FreeAndNil(FStream);
+  end;
+end;
+
+function TPasCasingParser.Parse: Boolean;
+begin
+  Result := False;
+  try
+    while Token <> toEof do
+    begin
+      if Token = toSymbol then
+        FList.Add(TokenString);
+      NextToken;
+    end;
+
+    Result := True;
+  except
+    on E: Exception do
+      FErrorMsg := E.Message;
+  end;
+end;
+*)
+
+{ TPasCasingParser }
+
+constructor TPasCasingParser.Create;
+begin
+  inherited Create;
+  FList := TStringList.Create;
+  with FList as TStringList do
+  begin
+    Duplicates := dupIgnore;
+    CaseSensitive := True;
+    Sorted := True;
+  end;
+end;
+
+destructor TPasCasingParser.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+function TPasCasingParser.Execute(const AFileName: string): Boolean;
+begin
+  Result := FileExists(AFileName);
+  if not Result then
+    Exit;
+
+  FStream := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    Init;
+    Result := Parse;
+  finally
+    FreeAndNil(FStream);
+  end;
+end;
+
+function TPasCasingParser.Parse: Boolean;
+var
+  I: Integer;
+  Item: TAbstractItem;
+begin
+  if AllSymbols then
+  begin
+    Result := False;
+    try
+      while Token <> toEof do
+      begin
+        if Token = toSymbol then
+          FList.AddObject(TokenString, TObject(ID));
+        NextToken;
+      end;
+
+      Result := True;
+    except
+      on E: Exception do
+        FErrorMsg := E.Message;
+    end
+  end
+  else
+  begin
+    Result := inherited Parse;
+    if not Result then
+      Exit;
+
+    for I := 0 to FTypeList.Count - 1 do
+    begin
+      Item := TAbstractItem(FTypeList[I]);
+      FList.AddObject(Item.SimpleName, TObject(ID));
+
+      if Item is TMethodProp then
+        FList.AddObject(TMethodProp(Item).TypeStr, TObject(ID));
+    end;
+  end;
 end;
 
 end.

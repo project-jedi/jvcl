@@ -55,6 +55,8 @@ type
     FPackageDir: string;
     FDesignTimePasDir: string;
     FRunTimePasDir: string;
+    FRootDir: string;
+    FUseRootDir: Boolean;
 
     function GetFileName: string;
     function GetNiceName(const AClassName: string): string;
@@ -73,8 +75,10 @@ type
     procedure SetPackageDir(const Value: string);
     procedure SetRealDtxDir(const Value: string);
     procedure SetRegisteredClasses(const Value: TStrings);
+    procedure SetRootDir(const Value: string);
     procedure SetRunTimePasDir(const Value: string);
     procedure SetUnitsStatus(const AUnitStatus: TUnitStatus; const Value: TStrings);
+    procedure SetUseRootDir(const Value: Boolean);
   protected
     procedure DoEvent(ChangeType: TSettingsChangeType);
     procedure Changed;
@@ -121,9 +125,10 @@ type
     property PackageDir: string read FPackageDir write SetPackageDir;
     property GeneratedDtxDir: string read FGeneratedDtxDir write SetGeneratedDtxDir;
     property RealDtxDir: string read FRealDtxDir write SetRealDtxDir;
+    property RootDir: string read FRootDir write SetRootDir;
 
-    property OverwriteExisting: Boolean read FOverwriteExisting write
-      SetOverwriteExisting;
+    property OverwriteExisting: Boolean read FOverwriteExisting write SetOverwriteExisting;
+    property UseRootDir: Boolean read FUseRootDir write SetUseRootDir;
     property OutputTypeDefaults[const OutputType: TOutputType]: string read
     GetOutputTypeDefaults write SetOutputTypeDefaults;
     property OutputTypeDesc[const OutputType: TOutputType]: TStringList read
@@ -206,8 +211,10 @@ begin
       GeneratedDtxDir := TSettings(Source).GeneratedDtxDir;
       RealDtxDir := TSettings(Source).RealDtxDir;
       PackageDir := TSettings(Source).PackageDir;
+      RootDir := TSettings(Source).RootDir;
 
       OverwriteExisting := TSettings(Source).OverwriteExisting;
+      UseRootDir := TSEttings(Source).UseRootDir;
       for OutputType := Low(TOutputType) to High(TOutputType) do
       begin
         OutputTypeDefaults[OutputType] :=
@@ -390,6 +397,9 @@ begin
     GeneratedDtxDir := IniFile.ReadString('Directories', 'GeneratedDtxDir', '');
     RealDtxDir := IniFile.ReadString('Directories', 'RealDtxDir', '');
     PackageDir := IniFile.ReadString('Directories', 'PackageDir', '');
+    RootDir := IniFile.ReadString('Directories', 'RootDir', '');
+
+    UseRootDir := IniFile.ReadBool('Directories', 'UseRootDir', UseRootDir);
 
     OverwriteExisting := IniFile.ReadBool('Options', 'OverwriteExisting', OverwriteExisting);
     DefaultNiceName := IniFile.ReadString('Options', 'DefaultNiceName', DefaultNiceName);
@@ -565,6 +575,8 @@ begin
     FGeneratedDtxDir := '';
     FRealDtxDir := '';
     FPackageDir := '';
+    FUseRootDir := True;
+    FRootDir := '';
 
     FOverwriteExisting := False;
     for OutputType := Low(TOutputType) to High(TOutputType) do
@@ -651,6 +663,8 @@ begin
     IniFile.WriteString('Directories', 'GeneratedDtxDir', GeneratedDtxDir);
     IniFile.WriteString('Directories', 'RealDtxDir', RealDtxDir);
     IniFile.WriteString('Directories', 'PackageDir', PackageDir);
+    IniFile.WriteString('Directories', 'RootDir', RootDir);
+    IniFile.WriteBool('Directories', 'UseRootDir', UseRootDir);
 
     IniFile.WriteBool('Options', 'OverwriteExisting', OverwriteExisting);
     IniFile.WriteString('Options', 'DefaultNiceName', DefaultNiceName);
@@ -758,6 +772,15 @@ begin
   FRegisteredClasses.Assign(Value);
 end;
 
+procedure TSettings.SetRootDir(const Value: string);
+begin
+  if Value <> FRootDir then
+  begin
+    FRootDir := Value;
+    DoEvent(ctDirectory);
+  end;
+end;
+
 procedure TSettings.SetRunTimePasDir(const Value: string);
 begin
   if Value <> FRunTimePasDir then
@@ -771,6 +794,11 @@ procedure TSettings.SetUnitsStatus(const AUnitStatus: TUnitStatus;
   const Value: TStrings);
 begin
   FUnitsStatus[AUnitStatus].Assign(Value);
+end;
+
+procedure TSettings.SetUseRootDir(const Value: Boolean);
+begin
+  FUseRootDir := Value;
 end;
 
 procedure TSettings.UnRegisterObserver(Observer: TObject);

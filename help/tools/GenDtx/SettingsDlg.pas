@@ -19,16 +19,6 @@ type
     actOK: TAction;
     actCancel: TAction;
     actApply: TAction;
-    tshFiles: TTabSheet;
-    lblRunTimePasDirDesc: TLabel;
-    lblOutDirDesc: TLabel;
-    edtRunTimePasDir: TEdit;
-    edtGeneratedDtxDir: TEdit;
-    btnRunTimePasDir: TButton;
-    btnGeneratedDtxDir: TButton;
-    actSelectRunTimePasDir: TAction;
-    actSelectGeneratedDtxDir: TAction;
-    chbOverwriteExisting: TCheckBox;
     tshOutput: TTabSheet;
     tbcOutputTypes: TTabControl;
     memOutput: TMemo;
@@ -80,46 +70,28 @@ type
     actDocumentedUnits_Add: TAction;
     actDocumentedUnits_Delete: TAction;
     actDocumentedUnits_Load: TAction;
-    Label1: TLabel;
-    edtRealDtxDir: TEdit;
-    btnRealDtxDir: TButton;
-    actSelectRealDtxDir: TAction;
-    Label2: TLabel;
-    edtPackageDir: TEdit;
-    btnPackageDir: TButton;
-    actSelectPackageDir: TAction;
-    lblDesignTimePasDir: TLabel;
-    edtDesignTimePasDir: TEdit;
-    btnDesignTimePasDir: TButton;
-    actSelectDesignTimePasDir: TAction;
-    procedure actOKExecute(Sender: TObject);
-    procedure actCancelExecute(Sender: TObject);
-    procedure actApplyExecute(Sender: TObject);
-    procedure actSelectRunTimePasDirExecute(Sender: TObject);
-    procedure actSelectGeneratedDtxDirExecute(Sender: TObject);
-    procedure actAddExecute(Sender: TObject);
-    procedure actDeleteExecute(Sender: TObject);
-    procedure actDeleteUpdate(Sender: TObject);
-    procedure actAddUpdate(Sender: TObject);
-
-    procedure tbcOutputTypesChange(Sender: TObject);
-    procedure lsbForClick(Sender: TObject);
-    procedure actAddNiceNameExecute(Sender: TObject);
-    procedure actDeleteNiceNameExecute(Sender: TObject);
-    procedure actEditNiceNameExecute(Sender: TObject);
     procedure actAddDirectiveExecute(Sender: TObject);
+    procedure actAddDirectiveUpdate(Sender: TObject);
+    procedure actAddExecute(Sender: TObject);
+    procedure actAddNiceNameExecute(Sender: TObject);
+    procedure actAddUpdate(Sender: TObject);
+    procedure actApplyExecute(Sender: TObject);
+    procedure actCancelExecute(Sender: TObject);
     procedure actDeleteDirectiveExecute(Sender: TObject);
     procedure actDeleteDirectiveUpdate(Sender: TObject);
-    procedure actAddDirectiveUpdate(Sender: TObject);
-    procedure actRegisteredClasses_AddExecute(Sender: TObject);
-    procedure actRegisteredClasses_DeleteExecute(Sender: TObject);
+    procedure actDeleteExecute(Sender: TObject);
+    procedure actDeleteNiceNameExecute(Sender: TObject);
+    procedure actDeleteUpdate(Sender: TObject);
+    procedure actEditNiceNameExecute(Sender: TObject);
     procedure actIgnoredUnits_AddExecute(Sender: TObject);
     procedure actIgnoredUnits_DeleteExecute(Sender: TObject);
     procedure actIgnoredUnits_LoadExecute(Sender: TObject);
+    procedure actOKExecute(Sender: TObject);
+    procedure actRegisteredClasses_AddExecute(Sender: TObject);
+    procedure actRegisteredClasses_DeleteExecute(Sender: TObject);
     procedure actRegisteredClasses_LoadExecute(Sender: TObject);
-    procedure actSelectRealDtxDirExecute(Sender: TObject);
-    procedure actSelectPackageDirExecute(Sender: TObject);
-    procedure actSelectDesignTimePasDirExecute(Sender: TObject);
+    procedure lsbForClick(Sender: TObject);
+    procedure tbcOutputTypesChange(Sender: TObject);
   private
     FSettings: TSettings;
     FCurrentTab: Integer;
@@ -131,7 +103,6 @@ type
 
     procedure SaveEnabled;
     procedure SaveOutput;
-    procedure SaveFiles;
     procedure SaveDefaultNiceName;
     procedure SaveDirectives;
     procedure SaveIgnoredUnits;
@@ -184,7 +155,7 @@ begin
   FSettings := TSettings.Create;
   FSettings.Assign(TSettings.Instance);
 
-  with FSettings do
+  (*with FSettings do
   begin
     edtRunTimePasDir.Text := RunTimePasDir;
     edtDesignTimePasDir.Text := DesignTimePasDir;
@@ -192,8 +163,8 @@ begin
     edtRealDtxDir.Text := RealDtxDir;
     edtPackageDir.Text := PackageDir;
     chbOverwriteExisting.Checked := OverwriteExisting;
-  end;
-  pgcSettings.ActivePage := tshFiles;
+  end;*)
+  pgcSettings.ActivePage := tshOutput;
   tbcOutputTypes.TabIndex := 0;
   FCurrentTab := 0;
   FCurrentFor := CDefault;
@@ -212,7 +183,6 @@ end;
 
 procedure TfrmSettings.Uitvoeren;
 begin
-  SaveFiles;
   SaveOutput;
   SaveEnabled;
   SaveDefaultNiceName;
@@ -243,26 +213,6 @@ end;
 procedure TfrmSettings.actApplyExecute(Sender: TObject);
 begin
   Uitvoeren;
-end;
-
-procedure TfrmSettings.actSelectRunTimePasDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtRunTimePasDir.Text;
-    if Execute then
-      edtRunTimePasDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmSettings.actSelectGeneratedDtxDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtGeneratedDtxDir.Text;
-    if Execute then
-      edtGeneratedDtxDir.Text := Directory;
-  end;
 end;
 
 procedure TfrmSettings.tbcOutputTypesChange(Sender: TObject);
@@ -398,19 +348,6 @@ begin
   with lsbFor do
     ItemIndex := Items.IndexOf(CDefault);
   FCurrentFor := CDefault;
-end;
-
-procedure TfrmSettings.SaveFiles;
-begin
-  with FSettings do
-  begin
-    RunTimePasDir := edtRunTimePasDir.Text;
-    DesignTimePasDir := edtDesignTimePasDir.Text;
-    GeneratedDtxDir := edtGeneratedDtxDir.Text;
-    RealDtxDir := edtRealDtxDir.Text;
-    PackageDir := edtPackageDir.Text;
-    OverwriteExisting := chbOverwriteExisting.Checked;
-  end;
 end;
 
 procedure TfrmSettings.actAddUpdate(Sender: TObject);
@@ -671,36 +608,6 @@ end;
 procedure TfrmSettings.SaveRegisteredClasses;
 begin
   FSettings.RegisteredClasses.Assign(lsbRegisteredClasses.Items);
-end;
-
-procedure TfrmSettings.actSelectRealDtxDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtRealDtxDir.Text;
-    if Execute then
-      edtRealDtxDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmSettings.actSelectPackageDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtPackageDir.Text;
-    if Execute then
-      edtPackageDir.Text := Directory;
-  end;
-end;
-
-procedure TfrmSettings.actSelectDesignTimePasDirExecute(Sender: TObject);
-begin
-  with JvBrowseForFolderDialog1 do
-  begin
-    Directory := edtDesignTimePasDir.Text;
-    if Execute then
-      edtDesignTimePasDir.Text := Directory;
-  end;
 end;
 
 end.
