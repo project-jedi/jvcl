@@ -25,13 +25,20 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvWinHelp;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, Menus,
+  SysUtils, Classes, Windows,
+  {$IFDEF VCL}
+  Controls, Forms, Menus,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  Qt, QControls, QForms, QMenus,
+  {$ENDIF}
   JvTypes, JvComponent;
 
 type
@@ -98,18 +105,35 @@ function TJvWinHelp.GetOwnerHandle: THandle;
 begin
   Result := 0;
   if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
+  {$IFDEF VCL}
     Result := TWinControl(FOwner).Handle
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+    Result := QWidget_winID(FOwner.Handle);
+  {$ENDIF}
   else
   if Application <> nil then
   begin
     if (Screen <> nil) and (Screen.ActiveForm <> nil) then
+      {$IFDEF VCL}
       Result := Screen.ActiveForm.Handle
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Result := QWidget_winID(Screen.ActiveForm.Handle)
+      {$ENDIF VisualCLX}
     else
     if Application.MainForm <> nil then
+      {$IFDEF VCL}
       Result := Application.MainForm.Handle
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Result := QWidget_winID(Application.MainForm.Handle)
+      {$ENDIF VisualCLX}
+    {$IFDEF VCL}
     else
     if not (csDestroying in Application.ComponentState) then
       Result := Application.Handle;
+    {$ENDIF VCL}
   end;
 end;
 
