@@ -30,21 +30,30 @@ unit JvXPCtrlsReg;
 
 interface
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvXPCtrlsReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvXPCtrlsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
 
 procedure Register;
 
 implementation
 
 uses
-  Classes, ImgList,
+  Classes,
+  {$IFDEF VCL}
+  ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QImgList,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors, VCLEditors,
+  DesignIntf, DesignEditors,
+  {$IFDEF VCL}
+  VCLEditors,
+  {$ENDIF VCL}
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
