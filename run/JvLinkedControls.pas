@@ -30,49 +30,57 @@ unit JvLinkedControls;
 
 interface
 uses
-  SysUtils, Classes, Controls;
+  SysUtils,
+  {$IFDEF VCL}
+  Controls
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls,
+  {$ENDIF VisualCLX}
+  Classes;
 
 type
   TJvLinkedControlsOption = (loLinkChecked, loLinkEnabled);
   TJvLinkedControlsOptions = set of TJvLinkedControlsOption;
+
   TJvLinkedControl = class(TCollectionItem)
   private
     FOwnerControl, FControl:TControl;
     FOptions: TJvLinkedControlsOptions;
-    FOriginalEnabled:boolean;
+    FOriginalEnabled: Boolean;
     procedure SetControl(const Value: TControl);
     procedure SetOptions(const Value: TJvLinkedControlsOptions);
   protected
     function GetDisplayName: string; override;
   public
-    procedure Assign(Source:TPersistent);override;
+    procedure Assign(Source: TPersistent);override;
     constructor Create(Collection: TCollection); override;
-    destructor Destroy;override;
+    destructor Destroy; override;
   published
-    property Control:TControl read FControl write SetControl;
-    property Options:TJvLinkedControlsOptions read FOptions write SetOptions default [loLinkChecked, loLinkEnabled];
+    property Control: TControl read FControl write SetControl;
+    property Options: TJvLinkedControlsOptions read FOptions write SetOptions default [loLinkChecked, loLinkEnabled];
   end;
 
   TJvLinkedControls = class(TOwnedCollection)
   private
     FControl:TControl;
     FOnChange: TNotifyEvent;
-    FRestoreEnabled: boolean;
-    function GetItems(Index: integer): TJvLinkedControl;
-    procedure SetItems(Index: integer; const Value: TJvLinkedControl);
+    FRestoreEnabled: Boolean;
+    function GetItems(Index: Integer): TJvLinkedControl;
+    procedure SetItems(Index: Integer; const Value: TJvLinkedControl);
   protected
     procedure Update(Item: TCollectionItem); override;
   public
-    procedure Notification(AComponent:TComponent;Operation:TOperation);virtual;
-    constructor Create(AControl:TControl);
-    function Add:TJvLinkedControl;
-    procedure Assign(Source:TPersistent);override;
-    // If RestoreEnabled is true, TJvLinkedControls will try to restore the Enabled state
+    procedure Notification(AComponent: TComponent; Operation: TOperation); virtual;
+    constructor Create(AControl: TControl);
+    function Add: TJvLinkedControl;
+    procedure Assign(Source: TPersistent);override;
+    // If RestoreEnabled is True, TJvLinkedControls will try to restore the Enabled state
     // of linked controls when an item is changed or removed
-    property Items[Index:integer]:TJvLinkedControl read GetItems write SetItems;default;
-    property OnChange:TNotifyEvent read FOnChange write FOnChange;
+    property Items[Index: Integer]: TJvLinkedControl read GetItems write SetItems; default;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property RestoreEnabled:boolean read FRestoreEnabled write FRestoreEnabled default true;
+    property RestoreEnabled: Boolean read FRestoreEnabled write FRestoreEnabled default True;
   end;
 
 implementation
@@ -85,10 +93,10 @@ begin
   begin
     Control := TJvLinkedControl(Source).Control;
     Options := TJvLinkedControl(Source).Options;
-    Changed(false);
-    Exit;
-  end;
-  inherited;
+    Changed(False);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 constructor TJvLinkedControl.Create(Collection: TCollection);
@@ -104,7 +112,7 @@ begin
   if (FControl <> nil) and not (csDestroying in FControl.ComponentState) and
     (Collection is TJvLinkedControls) and TJvLinkedControls(Collection).RestoreEnabled then
        FControl.Enabled := FOriginalEnabled;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvLinkedControl.GetDisplayName: string;
@@ -140,7 +148,7 @@ begin
       if Assigned(FOwnerControl) then
         FControl.FreeNotification(FOwnerControl);
     end;
-    Changed(false);
+    Changed(False);
   end;
 end;
 
@@ -149,7 +157,7 @@ begin
   if FOptions <> Value then
   begin
     FOptions := Value;
-    Changed(false);
+    Changed(False);
   end;
 end;
 
@@ -162,7 +170,7 @@ begin
 end;
 
 procedure TJvLinkedControls.Assign(Source: TPersistent);
-var i:integer;
+var i:Integer;
 begin
   if (Source <> Self) and (Source is TJvLinkedControls) then
   begin
@@ -175,25 +183,25 @@ begin
     finally
       EndUpdate;
     end;
-    Exit;
-  end;
-  inherited;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 constructor TJvLinkedControls.Create(AControl: TControl);
 begin
   inherited Create(AControl, TJvLinkedControl);
   FControl := AControl;
-  FRestoreEnabled := true;
+  FRestoreEnabled := True;
 end;
 
-function TJvLinkedControls.GetItems(Index: integer): TJvLinkedControl;
+function TJvLinkedControls.GetItems(Index: Integer): TJvLinkedControl;
 begin
   Result := TJvLinkedControl(inherited Items[Index]);
 end;
 
 procedure TJvLinkedControls.Notification(AComponent: TComponent; Operation: TOperation);
-var i:integer;
+var i:Integer;
 begin
   if Assigned(FControl) and (csDestroying in FControl.ComponentState) then
     Exit;
@@ -208,7 +216,7 @@ begin
   end;
 end;
 
-procedure TJvLinkedControls.SetItems(Index: integer;
+procedure TJvLinkedControls.SetItems(Index: Integer;
   const Value: TJvLinkedControl);
 begin
   inherited Items[Index] := Value;
@@ -216,7 +224,7 @@ end;
 
 procedure TJvLinkedControls.Update(Item: TCollectionItem);
 begin
-  inherited;
+  inherited Update(Item);
   if Item <> nil then
     TJvLinkedControl(Item).FOwnerControl := FControl;
   if Assigned(FOnChange) then FOnChange(Self);
