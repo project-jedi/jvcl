@@ -143,12 +143,12 @@ const
   Additional constanst for Qt text alignments
   used by DrawText
   }
-  QtAlignMask   = $FFF;
-  CalcRect      = $1000;
-  ClipPath      = $2000;
-  ClipName      = $4000;
-  ClipToWord    = $10000;
-  ModifyString  = $20000;
+  QtAlignMask   = $FFFF;
+  CalcRect      = $10000;
+  ClipPath      = $20000;
+  ClipName      = $40000;
+  ClipToWord    = $100000;
+  ModifyString  = $200000;
 
   TA_LEFT = Integer(AlignmentFlags_AlignLeft);
   TA_RIGHT = Integer(AlignmentFlags_AlignRight);
@@ -248,6 +248,18 @@ type
   end;
   TTextMetric = tagTEXTMETRICA;
 
+  PtagBITMAP = ^tagBITMAP;
+  tagBITMAP = packed record
+    //bmType: Longint;
+    bmWidth: Longint;
+    bmHeight: Longint;
+    //bmWidthBytes: Longint;
+    //bmPlanes: Word;
+    bmBitsPixel: Word;
+    //bmBits: Pointer;
+  end;
+
+
 { brushes }
 function CreateSolidBrush(crColor: TColorRef): QBrushH;
 function CreateHatchBrush(bStyle: BrushStyle; crColor: TColorRef): QBrushH;
@@ -301,20 +313,22 @@ function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer;
   src: QPainterH; sx, sy, sw, sh: Integer; winrop: Cardinal): LongBool; overload;
 function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer; src: QPainterH;
   sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool; overload;
-(*)
-function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool; overload;
-function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; WinRop: Cardinal): LongBool; overload;
-{$IF not declared(PatchedVCLX)}
-// introduced in QGraphics.pas by VisualCLX patch version 3.1
-procedure stretchBlt(dst: QPaintDeviceH; dx, dy, dw, dh: Integer;
-  src: QPaintDeviceH; sx, sy, sw, sh: Integer;
-  rop: RasterOp; IgnoreMask: Boolean); overload;
-procedure stretchBlt(dst: QPaintDeviceH; dr: PRect; src: QPaintDeviceH; sr: PRect;
-  rop: RasterOp; IgnoreMask: Boolean = False); overload;
-{$IFEND}
-(*)
+
+function GetStretchBltMode(DC: QPainterH): Integer;
+function SetStretchBltMode(DC: QPainterH; StretchMode: Integer): Integer;
+
+const
+  { StretchBlt() Modes }
+  BLACKONWHITE = 1;
+  WHITEONBLACK = 2;
+  COLORONCOLOR = 3;
+  HALFTONE = 4;
+  MAXSTRETCHBLTMODE = 4;
+  STRETCH_ANDSCANS = BLACKONWHITE;
+  STRETCH_ORSCANS = WHITEONBLACK;
+  STRETCH_DELETESCANS = COLORONCOLOR;
+  STRETCH_HALFTONE = HALFTONE;
+
 const
   { BitBlt:  windows dwRop values
     asn: limited implementation, possible to extend }
@@ -384,6 +398,9 @@ function SetPenColor(Handle: QPainterH; Color: TColor): TColor;
 
 function CreateCompatibleDC(Handle: QPainterH; Width: Integer = 1; Height: Integer = 1): QPainterH;
 function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPixmapH;
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: Pointer): QPixmapH;
+function GetObject(Handle: QPixmapH; Size: Cardinal; Data: PtagBITMAP): Boolean;
+
 // DeleteObject is intended to destroy the Handle returned by CreateCompatibleBitmap
 // (it destroys the Painter AND PaintDevice) 
 function DeleteObject(Handle: QPainterH): LongBool; overload;
@@ -862,6 +879,7 @@ type
     Painter: QPainterH;
     IsCompatibleDC: Boolean;
     TextAlignment: Cardinal;
+    StetchBltMode: Integer;
   end;
 
 var
@@ -1270,8 +1288,7 @@ var
   TempDC: QPainterH;
   Rop: RasterOp;
 begin
-  if WinRopToRasterOp(WinRop, Rop)  // directly maps ?
-  then
+  if WinRopToRasterOp(WinRop, Rop) then  // directly maps ?
     Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop)
   else // no
   begin
@@ -1342,7 +1359,9 @@ begin
     dp.Y := Y;
     sr := Bounds(XSrc, YSrc, Width, Height);
     try
-      Qt.bitBlt(QPainter_device(DestDC), @dp, QPainter_device(SrcDC), @sr, Rop);
+      Qt.bitBlt(QPainter_device(DestDC), dp.X, dp.Y, QPainter_device(SrcDC),
+        sr.Left, sr.Top, sr.Right - sr.Left, sr.Bottom - sr.Top, Rop,
+        True); // ignore the Mask because Windows's BitBlt does not use Masks
     except
       Result := False;
     end;
@@ -1365,10 +1384,13 @@ begin
   // - supports same winrop as bitblt(..., winrop)
   // - destination and source don't have to be compatible with one and another
   try
-    bmp1:= CreateCompatibleBitmap(src, sw, sh);
+    bmp1 := nil;
+    bmp2 := nil;
     try
-      bmp2:= CreateCompatibleBitmap(dst, dw, dh);
-      Qt.BitBlt(bmp1, 0, 0, QPainter_device(Src), sx, sy, sw, sh, RasterOp_CopyROP, false);
+      bmp1 := CreateCompatibleBitmap(src, sw, sh);
+      bmp2 := CreateCompatibleBitmap(dst, dw, dh);
+      Qt.bitBlt(bmp1, 0, 0, QPainter_device(Src), sx, sy, sw, sh,
+        RasterOp_CopyROP, True);
       painter := QPainter_create(bmp2);
       QPainter_save(painter);
       QPainter_scale(painter, dw/sw, dh/sh);
@@ -1376,13 +1398,14 @@ begin
       QPainter_restore(painter);
       Result := BitBlt(dst, dx, dy, dw, dh, Painter, 0, 0, winrop);
       QPainter_destroy(Painter);
-      QPixmap_destroy(bmp2);
-    except
-      Result := false;
+    finally
+      if Assigned(bmp1) then
+        QPixmap_destroy(bmp1);
+      if Assigned(bmp2) then
+        QPixmap_destroy(bmp2);
     end;
-    QPixmap_destroy(bmp1);
   except
-    Result := false;
+    Result := False;
   end;
 end;
 
@@ -1390,125 +1413,35 @@ function StretchBlt(dst: QPainterH; dx, dy, dw, dh: Integer; src: QPainterH;
   sx, sy, sw, sh: Integer; Rop: RasterOp): LongBool;
 begin
   Result := StretchBlt(dst, dx, dy, dw, dh,
-                       src,  sx, sy, sw, sh,
+                       src, sx, sy, sw, sh,
                        RasterOpToWinRop(Rop));
 end;
 
-
-(*)
-// the stretchBlt functions are introduced by VisualCLX patch version 3.1
-procedure stretchBlt(dst: QPaintDeviceH; dx, dy, dw, dh: Integer;
-  src: QPaintDeviceH; sx, sy, sw, sh: Integer;
-  rop: RasterOp; IgnoreMask: Boolean); overload;
-{ written by Andreas Hausladen }
+function GetStretchBltMode(DC: QPainterH): Integer;
 var
-  StretchMatrix: QWMatrixH;
-  Depth: Integer;
-  Mask: QBitmapH;
-  SrcPixmap, DstPixmap, FromPixmap: QPixmapH;
+  P: PPainterInfo;
 begin
-  if (dw = 0) or (dh = 0) or (dx + dw < 0) or (dy + dh < 0) or
-     (sw = 0) or (sh = 0) or (sx + sw < 0) or (sy + sh < 0) then
-    Exit;
-  if (dw <> sw) or (dh <> sh) then
+  if DC <> nil then
   begin
-    FromPixmap := nil;
-    if QPaintDevice_devType(src) = Integer(QInternalPaintDeviceFlags_Pixmap) then
-      FromPixmap := QPixmapH(src);
-
-    DstPixmap := nil;
-    Depth := -1;
-    if FromPixmap <> nil then
-      Depth := QPixmap_depth(FromPixmap);
-
-    SrcPixmap := QPixmap_create(sw, sh, Depth, QPixmapOptimization_BestOptim);
-    try
-      Qt.bitBlt(SrcPixmap, 0, 0, src, sx, sy, sw, sh, RasterOp_CopyROP, True);
-      if (not IgnoreMask) and
-         (FromPixmap <> nil) and (QPixmap_mask(FromPixmap) <> nil) then
-      begin
-       // copy mask
-        Mask := QBitmap_create(sw, sh, False, QPixmapOptimization_BestOptim);
-        try
-          Qt.bitBlt(Mask, 0, 0, QPixmap_mask(FromPixmap), sx, sy, sw, sh,
-            RasterOp_CopyROP, True);
-          QPixmap_setMask(SrcPixmap, Mask);
-        finally
-          QBitmap_destroy(Mask);
-        end;
-      end;
-
-     // stretch
-      DstPixmap := QPixmap_create(dw, dh, Depth, QPixmapOptimization_BestOptim);
-
-      StretchMatrix := QWMatrix_create(dw / sw, 0, 0, dh / sh, 0, 0);
-      try
-        QPixmap_xForm(SrcPixmap, DstPixmap, StretchMatrix);
-      finally
-        QWMatrix_destroy(StretchMatrix);
-      end;
-
-     // output
-      Qt.bitBlt(dst, dx, dy, DstPixmap, 0, 0, dw, dh, rop, IgnoreMask);
-    finally
-      if Assigned(DstPixmap) then
-        QPixmap_destroy(DstPixmap);
-      QPixmap_destroy(SrcPixmap);
-    end;
+    if GetPainterInfo(DC, P) then
+      Result := P.StetchBltMode
+    else
+      Result := STRETCH_DELETESCANS;
   end
   else
-    Qt.bitBlt(dst, dx, dy, src, sx, sy, sw, sh, rop, IgnoreMask);
+    Result := 0;
 end;
 
-procedure stretchBlt(dst: QPaintDeviceH; dr: PRect; src: QPaintDeviceH; sr: PRect;
-  rop: RasterOp; IgnoreMask: Boolean = False); overload;
+function SetStretchBltMode(DC: QPainterH; StretchMode: Integer): Integer;
 begin
-  stretchBlt(dst, dr^.Left, dr^.Top, dr^.Right - dr^.Left, dr^.Bottom - dr^.Top,
-    src, sr^.Left, sr^.Top, sr^.Right - sr^.Left, sr^.Bottom - sr^.Top,
-    rop, IgnoreMask);
-end;
-
-function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: RasterOp): LongBool; overload;
-begin
-  Result := False;
-  if (DestDC = nil) or (SrcDC = nil) then
-    Exit;
   try
-    stretchBlt(QPainter_device(DestDC), X, Y, Width, Height,
-      QPainter_device(SrcDC), XSrc, YSrc, SrcWidth, SrcHeight, Rop,
-      True); // Windows.StretchBlt does not use a mask
-    Result := True;
+    Result := GetStretchBltMode(DC);
+    SetPainterInfo(DC).StetchBltMode := StretchMode;
   except
-    Result := False;
+    Result := 0;
   end;
 end;
 
-function StretchBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
-  XSrc, YSrc, SrcWidth, SrcHeight: Integer; WinRop: Cardinal): LongBool; overload;
-var
-  Rop: RasterOp;
-begin
-  if not WinRopToRasterOp(WinRop, Rop) then
-  begin
-    case WinRop of
-      PATPAINT:
-        begin  // DPSnoo   = PDSnoo
-          Result := StretchBlt(DestDC, X, Y, Width, Height,
-            SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, RasterOp_NotOrRop); // DSno
-          if Result then
-            Result := PatternPaint(DestDC, X, Y, Width, Height, RasterOp_XOrROP);
-        end;
-    else
-     // unkown WinROPs are handled by BitBlt
-      Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, WinRop);
-    end;
-  end
-  else
-    Result := StretchBlt(DestDC, X, Y, Width, Height,
-      SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
-end;
-(*)
 
 function SetROP2(Handle: QPainterH; Rop: Integer): Integer;
 var
@@ -1909,62 +1842,6 @@ begin
   QBitmap_destroy(bmp);
   QRegion_translate(Result, x1, y1);
 end;
-
-
-(*)
-// asn: erroneous
-function CreateRoundRectRgn(x1, y1, x2, y2, WidthEllipse, HeightEllipse: Integer): QRegionH;
-var
-  Ellipse, R: QRegionH;
-begin
-  Result := CreateRectRgn(x1 + WidthEllipse div 2, y1 + HeightEllipse div 2,
-                          x2 - WidthEllipse div 2, y2 - HeightEllipse div 2);
-  try
-    // left/top corner
-    Ellipse := CreateEllipticRgn(x1, y1, x1 + WidthEllipse, y1 + HeightEllipse);
-    CombineRgn(Result, Result, Ellipse, RGN_OR);
-    DeleteObject(Ellipse);
-
-    // right/top corner
-    Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y1, x2, y1 + HeightEllipse);
-    CombineRgn(Result, Result, Ellipse, RGN_OR);
-    DeleteObject(Ellipse);
-
-    // left/bottom corner
-    Ellipse := CreateEllipticRgn(x1, y2 - HeightEllipse, x1 + WidthEllipse, y2);
-    CombineRgn(Result, Result, Ellipse, RGN_OR);
-    DeleteObject(Ellipse);
-
-    // right/bottom corner
-    Ellipse := CreateEllipticRgn(x2 - WidthEllipse, y2 - HeightEllipse, x2, y2);
-    CombineRgn(Result, Result, Ellipse, RGN_OR);
-    DeleteObject(Ellipse);
-
-    // top rect
-    R := CreateRectRgn(x1 - WidthEllipse, y1, x2 - WidthEllipse, y1 + HeightEllipse);
-    CombineRgn(Result, Result, R, RGN_OR);
-    DeleteObject(R);
-
-    // bottom rect
-    R := CreateRectRgn(x1 - WidthEllipse, y2 - HeightEllipse, x2 - WidthEllipse, y2);
-    CombineRgn(Result, Result, R, RGN_OR);
-    DeleteObject(R);
-
-    // left rect
-    R := CreateRectRgn(x1, y1 + HeightEllipse, x1 + WidthEllipse, y2 - HeightEllipse);
-    CombineRgn(Result, Result, R, RGN_OR);
-    DeleteObject(R);
-
-    // right rect
-    R := CreateRectRgn(x2 - WidthEllipse, y1 + HeightEllipse, x2, y2 - HeightEllipse);
-    CombineRgn(Result, Result, R, RGN_OR);
-    DeleteObject(R);
-  except
-    DeleteObject(Result);
-    Result := nil;
-  end;
-end;
-(*)
 
 function CreatePolygonRgn(const Points; Count, FillMode: Integer): QRegionH;
 var
@@ -2893,7 +2770,7 @@ begin
     Flags := Flags and not ShowPrefix;
     Caption := HidePrefix(Text);
   end;
-  if Flags and Calcrect = 0 then
+  if Flags and CalcRect = 0 then
   begin
     if ClipName and Flags <> 0 then
       Caption := NameEllipsis(Text, Handle, R.Right - R.Left)
@@ -2910,8 +2787,8 @@ begin
   end
   else
   begin
-    QPainter_boundingRect(Handle, @R, @R, Flags, PWideString(@Text), -1, nil);
-    Result := R.bottom - R.Top;
+    QPainter_boundingRect(Handle, @R, @R, Flags and not $3F{Alignment}, PWideString(@Text), -1, nil);
+    Result := R.Bottom - R.Top;
   end;
   if WinFlags and DT_INTERNAL <> 0 then
     QPainter_setFont(Handle, FontSaved);
@@ -3328,42 +3205,46 @@ begin
         QPixmapOptimization_DefaultOptim);
       QPaintDeviceMetrics_destroy(pdm);
     except
-      Result := nil ;
+      Result := nil;
     end;
   end;
 end;
 
-(*)
-function CreateCompatibleBitmap(Handle: QPainterH; Width, Height: Integer): QPainterH;
-var
-  depth: Integer;
-  Pixmap: QPixmapH;
-  pdm: QPaintDeviceMetricsH;
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; Bits: Pointer): QPixmapH;
 begin
-  pdm := QPaintDeviceMetrics_create(QPainter_device(Handle));
-  try
-    depth := QPaintDeviceMetrics_depth(pdm);
-    Pixmap := QPixmap_create(Width, Height, depth,
-                             QPixmapOptimization_DefaultOptim);
+  if (Width <= 0) or (Height <= 0) or (Planes <= 0) or (BitCount <= 0) then
+    Result := nil
+  else
+  begin
     try
-      Result := QPainter_create(Pixmap);
-      try
-        QObject_setName(QObjectH(Result), 'CompatibleDC');
-        QPainter_setPen(Result, QPainter_pen(Handle));
-        QPainter_setBackgroundColor(Result, QPainter_BackgroundColor(Handle));
-        QPainter_setFont(Result, QPainter_Font(Handle));
-        QPainter_begin(Result, QPainter_device(Result));
-      except
-        QPainter_destroy(Result);
+      Result := QPixmap_create(Width, Height, BitCount, QPixmapOptimization_DefaultOptim);
+      if (Result <> nil) and (Bits <> nil) then
+      begin
+        QPixmap_loadFromData(Result, Bits, (Width * Height * BitCount) div 8,
+          'XBM', // (ahuser) is this correct?
+          QPixmapColorMode_Auto);
       end;
     except
-      QPixmap_destroy(Pixmap);
       Result := nil;
     end;
-  finally
-    QPaintDeviceMetrics_destroy(pdm);
   end;
-end;*)
+end;
+
+function GetObject(Handle: QPixmapH; Size: Cardinal; Data: PtagBITMAP): Boolean;
+begin
+  Result := False;
+  if (Handle <> nil) and (Size > 0) and (Data <> nil) then
+  begin
+    try
+      Data.bmWidth := QPixmap_width(Handle);
+      Data.bmHeight := QPixmap_height(Handle);
+      Data.bmBitsPixel := QPixmap_depth(Handle);
+      Result := True;
+    except
+      Result := False;
+    end;
+  end;
+end;
 
 function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
 var
@@ -3525,17 +3406,14 @@ begin
   else
     Result := Result or AlignLeft; // default
   // vertical alignment
-  if Flags and DT_BOTTOM <> 0
-  then
+  if Flags and DT_BOTTOM <> 0 then
     Result := Result or AlignTop
-  else if Flags and DT_VCENTER <> 0
-  then
+  else if Flags and DT_VCENTER <> 0 then
     Result := Result or AlignVCenter
   else
     Result := Result or AlignTop;  // default
   // extended Qt alignments
-  if Flags and DT_CALCRECT <> 0
-  then
+  if Flags and DT_CALCRECT <> 0 then
     Result := Result or CalcRect
   else
   begin                            //
