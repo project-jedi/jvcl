@@ -392,8 +392,8 @@ end;
 
 
 procedure TJvChartDemoForm.ButtonLineMarkerClick(Sender: TObject);
-var
-  I:Integer;
+//var
+//  I:Integer;
 begin
 
   Chart.Options.ChartKind := ckChartLine;
@@ -427,6 +427,9 @@ procedure TJvChartDemoForm.ButtonBarAveClick(Sender: TObject);
 begin
   //Chart.ShowAsBarWithAve;
   Chart.Options.ChartKind := ckChartBarAverage;
+
+  NewValues;
+  //Chart.Plo
 end;
 
 procedure TJvChartDemoForm.ButtonPieClick(Sender: TObject);
