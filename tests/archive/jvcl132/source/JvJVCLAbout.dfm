@@ -68,7 +68,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Left = 160
       Top = 169
       Width = 188
-      Height = 15
+      Height = 13
       Caption = 'Support for JEDI-VCL in the newsgroup:'
     end
     object Bevel1: TBevel
@@ -81,10 +81,10 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object JvHotLink1: TJvHotLink
       Left = 173
       Top = 87
-      Width = 129
-      Height = 16
+      Width = 127
+      Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl/sourceforge.net '
+      Caption = 'http://jvcl.sourceforge.net '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -97,7 +97,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = [fsUnderline]
-      Url = 'http://delphi-jedi.org'
+      Url = 'http://jvcl.sourceforge.net '
     end
     object JvHotLink4: TJvHotLink
       Left = 161
@@ -192,10 +192,10 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblBugsURL: TJvHotLink
       Left = 177
       Top = 228
-      Width = 171
+      Width = 127
       Height = 13
       Cursor = crHandPoint
-      Caption = 'http://jvcl/sourceforge.net/mantis'
+      Caption = 'http://jvcl.sourceforge.net '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -208,7 +208,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = [fsUnderline]
-      Url = 'news://forums.talkto.net/jedi.vcl'
+      Url = 'http://jvcl.sourceforge.net '
     end
     object pnlImage: TPanel
       Left = 6
