@@ -37,12 +37,13 @@ uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, 
+  Qt,
   {$ENDIF VisualCLX}
   JvThemes, JvComponent, JvExControls, JvJCLUtils;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
+  TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize : Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
 
   TJvPanel = class;
@@ -102,6 +103,8 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
+    FOnChangedWidth: TJvPanelChangedSizeEvent;
+    FOnChangedHeight: TJvPanelChangedSizeEvent;
     FOnPaint: TNotifyEvent;
     FMovable: Boolean;
     FWasMoved: Boolean;
@@ -188,6 +191,9 @@ type
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
+    property OnChangedWidth: TJvPanelChangedSizeEvent read FOnChangedWidth write FOnChangedWidth;
+    property OnChangedHeight: TJvPanelChangedSizeEvent read FOnChangedHeight write FOnChangedHeight;
+
     property Align;
     property Alignment;
     property Anchors;
@@ -1126,11 +1132,15 @@ begin
   Changed := inherited Width <> Value;
   inherited Width := Value;
   if Changed then
+  begin
+    if Assigned(FOnChangedWidth) then
+      FOnChangedWidth (Self, Value);
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
     if Parent is TJvPanel then
       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  end;
 end;
 
 function TJvPanel.GetWidth: Integer;
@@ -1145,11 +1155,15 @@ begin
   Changed := inherited Height <> Value;
   inherited Height := Value;
   if Changed then
+  begin
+    if Assigned(FOnChangedHeight) then
+      FOnChangedHeight (Self, Value);
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
     if Parent is TJvPanel then
       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  end;
 end;
 
 function TJvPanel.GetHeight: Integer;
