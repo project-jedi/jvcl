@@ -66,7 +66,6 @@ type
 function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
 
 function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
-function ExtractShortPathName(const Path: string): string;
 {$ENDIF COMPILER5}
 
 procedure ClearEnvironment;
@@ -410,12 +409,6 @@ begin
   else
     Attr := Attr and not FILE_ATTRIBUTE_READONLY;
   SetFileAttributes(PChar(FileName), Attr);
-end;
-
-function ExtractShortPathName(const Path: string): string;
-begin
-  SetLength(Result, MAX_PATH);
-  SetLength(Result, GetShortPathName(PChar(Path), PChar(Result), Length(Result)));
 end;
 {$ENDIF COMPILER5}
 

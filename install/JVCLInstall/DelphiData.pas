@@ -195,7 +195,6 @@ uses
   CmdLineUtils,
   JvConsts;
 
-
 {$IFDEF COMPILER5}
 function AnsiStartsText(const SubStr, Text: string): Boolean;
 begin
@@ -208,6 +207,12 @@ begin
     Result := Copy(Path, 1, Length(Path) - 1)
   else
     Result := Path;
+end;
+
+function GetEnvironmentVariable(const Name: string): string;
+begin
+  SetLength(Result, 8 * 1024);
+  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
 end;
 {$ENDIF COMPIELR5}
 

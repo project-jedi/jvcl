@@ -550,6 +550,16 @@ begin
   begin
     if Data.TargetConfig[i].InstallJVCL then
     begin
+      with Data.TargetConfig[i] do
+      begin
+        if not Target.IsBCB then
+        begin
+          // Delphi requires .bpl files
+          if not FileExists(Format('%s\DJcl%d0.bpl', [BplDir, Target.Version])) and
+             not FileExists(Format('%s\DJcl%d0.bpl', [Target.BplDir, Target.Version])) then
+            Continue; // do not install JVCL when no JCL is installed
+        end;
+      end;
       TargetConfigs[Count] := Data.TargetConfig[i];
       Inc(Count);
       if pkVCL in Data.TargetConfig[i].InstallMode then
