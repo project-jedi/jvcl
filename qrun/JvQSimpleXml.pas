@@ -39,7 +39,8 @@ uses
   
   Variants,
   
-  IniFiles;
+  IniFiles,
+  JvQFinalize;
 
 type
   
@@ -405,16 +406,45 @@ uses
   JvQConsts, JvQResources;
 
 const
+  sUnitName = 'JvSimpleXml';
+
+const
   cBufferSize = 8192;
   DefaultTrueBoolStr = 'True'; // DO NOT LOCALIZE
   DefaultFalseBoolStr = 'False'; // DO NOT LOCALIZE
 
 var
+  GlobalSorts: TList = nil;
+
   
-  XmlVariant: TXmlVariant = nil;
+  GlobalXmlVariant: TXmlVariant = nil;
   
-  GSorts: TList = nil;
+
   
+
+function GSorts: TList;
+begin
+  if not Assigned(GlobalSorts) then
+  begin
+    GlobalSorts := TList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalSorts));
+  end;
+  Result := GlobalSorts;
+end;
+
+
+
+function XmlVariant: TXmlVariant;
+begin
+  if not Assigned(GlobalXmlVariant) then
+  begin
+    GlobalXmlVariant := TXmlVariant.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(GlobalXmlVariant));
+  end;
+  Result := GlobalXmlVariant;
+end;
+
+
 
 
 
@@ -2932,16 +2962,9 @@ begin
 end;
 
 initialization
-  
-  XmlVariant := TXmlVariant.Create;
-  
-  GSorts := TList.Create;
 
 finalization
-  
-  FreeAndNil(XmlVariant);
-  
-  FreeAndNil(GSorts);
+  FinalizeUnit(sUnitName);
 
 end.
 

@@ -64,7 +64,7 @@ type
     FMargin: Integer;
     FFlat: Boolean;
     FMouseInControl: Boolean;
-    FPopUp: TPopUpMenu;
+    FPopup: TPopupMenu;
     FOnDrop: TNotifyEvent;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
@@ -111,7 +111,7 @@ type
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Down: Boolean read FDown write SetDown default False;
-    property DropDown: TPopUpMenu read FPopUp write FPopUp;
+    property DropDown: TPopupMenu read FPopup write FPopup;
     property Caption;
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -962,15 +962,15 @@ begin
     Repaint; // Invalidate;
   end;
 
-  if Assigned(FPopUp) and FArrowClick then
+  if Assigned(FPopup) and FArrowClick then
   begin
     Pnt := ClientToScreen(Point(0, Height));
-    FPopUp.Popup(Pnt.X, Pnt.Y);
+    FPopup.Popup(Pnt.X, Pnt.Y);
     
     
     repeat
       Application.ProcessMessages
-    until IsWindowVisible(FPopup.Handle) = false  ;
+    until IsWindowVisible(FPopup.Handle) = False;
     
   end;
 

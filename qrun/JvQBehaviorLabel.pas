@@ -53,7 +53,7 @@ uses
   
   QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types,
   
-  JvQExStdCtrls;
+  JvQExStdCtrls, JvQFinalize;
 
 type
   TJvCustomBehaviorLabel = class;
@@ -402,7 +402,7 @@ uses
   JvQTypes, JvQResources;
 
 const
-  cNoneCaption = '(none)';
+  sUnitName = 'JvBehaviorLabel';
 
 var
   AllBehaviorOptions: TStringList = nil;
@@ -445,6 +445,7 @@ begin
   if AllBehaviorOptions = nil then
   begin
     AllBehaviorOptions := TStringList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(AllBehaviorOptions));
     AllBehaviorOptions.Sorted := True;
   end;
   if AllBehaviorOptions.IndexOf(Name) >= 0 then
@@ -517,8 +518,21 @@ end;
 
 constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
+ // registration
+  if not Assigned(AllBehaviorOptions) then
+  begin
+    RegisterLabelBehaviorOptions(RsNoneCaption, TJvLabelNone);
+    RegisterLabelBehaviorOptions('Blinking', TJvLabelBlink);
+    RegisterLabelBehaviorOptions('Bouncing', TJvLabelBounce);
+    RegisterLabelBehaviorOptions('Scrolling', TJvLabelScroll);
+    RegisterLabelBehaviorOptions('Typing', TJvLabelTyping);
+    RegisterLabelBehaviorOptions('Appearing', TJvLabelAppear);
+    RegisterLabelBehaviorOptions('Special', TJvLabelSpecial);
+    RegisterLabelBehaviorOptions('CodeBreaker', TJvLabelCodeBreaker);
+  end;
+
   inherited Create(AComponent);
-  FBehavior := cNoneCaption;
+  FBehavior := RsNoneCaption;
   FUseEffectText := False;
   FEffectText := '';
 end;
@@ -561,7 +575,7 @@ end;
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
 begin
-  Result := FBehavior <> cNoneCaption;
+  Result := FBehavior <> RsNoneCaption;
 end;
 
 function TJvCustomBehaviorLabel.GetOptions: TJvLabelBehavior;
@@ -1273,17 +1287,10 @@ begin
 end;
 
 initialization
-  RegisterLabelBehaviorOptions(cNoneCaption, TJvLabelNone);
-  RegisterLabelBehaviorOptions('Blinking', TJvLabelBlink);
-  RegisterLabelBehaviorOptions('Bouncing', TJvLabelBounce);
-  RegisterLabelBehaviorOptions('Scrolling', TJvLabelScroll);
-  RegisterLabelBehaviorOptions('Typing', TJvLabelTyping);
-  RegisterLabelBehaviorOptions('Appearing', TJvLabelAppear);
-  RegisterLabelBehaviorOptions('Special', TJvLabelSpecial);
-  RegisterLabelBehaviorOptions('CodeBreaker', TJvLabelCodeBreaker);
+ // (ahuser) registration is done in the constructor the first time it is called
 
 finalization
-  FreeAndNil(AllBehaviorOptions);
+  FinalizeUnit(sUnitName);
 
 end.
 

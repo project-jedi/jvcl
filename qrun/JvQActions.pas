@@ -116,9 +116,6 @@ type
 
 implementation
 
-uses
-  JvQJVCLUtils, JvQJCLUtils;
-
 {$IFDEF MSWINDOWS}
 
 //=== TJvSendMailAction ======================================================
@@ -251,7 +248,7 @@ end;
 
 function TJvWebAction.Execute: Boolean;
 begin
-  Result := OpenObject(Url);
+  Result := ShellExecute(0, 'open', PChar(Url), nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
 
 function TJvWebAction.HandlesTarget(Target: TObject): Boolean;
@@ -261,7 +258,8 @@ end;
 
 procedure TJvWebAction.UpdateTarget(Target: TObject);
 begin
-  Enabled := (Url <> '');
+  Enabled := Url <> '';
 end;
 
 end.
+

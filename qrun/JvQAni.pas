@@ -48,7 +48,7 @@ uses
   
   
   
-  QWindows, QGraphics, QExtCtrls, QDialogs, Types,
+  QGraphics, QExtCtrls, QDialogs, Types, QWindows, 
   
   JvQTypes;
 

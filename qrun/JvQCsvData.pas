@@ -439,6 +439,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function BookmarkValid(Bookmark: TBookmark): Boolean;override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
@@ -1109,7 +1110,10 @@ begin
   inherited Destroy;
 end;
 
-
+function TJvCustomCsvDataSet.BookmarkValid(Bookmark: TBookmark): Boolean;
+begin
+  Result := (Bookmark <> nil) and (PInteger(Bookmark)^ >= 0) and (PInteger(Bookmark)^ < FData.Count);
+end;
 
 function TJvCustomCsvDataSet.AllocRecordBuffer: PChar;
 var

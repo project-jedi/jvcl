@@ -66,7 +66,7 @@ xx) why keep UnicodeAvailable in every component? I wish Delphi could map
 
 uses
   Windows, SysUtils, Classes,
-  JvQComponent, JvQTypes;
+  JvQComponent, JvQTypes, JvQFinalize;
 
 type
   TJvDataType = (dtString, dtBinary);
@@ -177,7 +177,10 @@ implementation
 
 uses
   Registry,
-  JvQJCLUtils, JvQResources;
+  JvQResources;
+
+const
+  sUnitName = 'JvMRUList';  
 
 var
   hComCtlDll: HMODULE = 0;
@@ -190,6 +193,7 @@ type
   MruCompareData = function(lpData1, lpData2: Pointer; cbData: DWORD): Integer;
   MruCompareStringW = function(lpszString1, lpszString2: PWideChar): Integer;
 
+  PMruRec = ^TMruRec;
   TMruRec = packed record
     cbSize: DWORD;
     nMaxItems: DWORD;
@@ -208,7 +212,6 @@ type
         lpszSubKeyW: PWideChar;
         lpfnCompareStringW: MruCompareStringW; );
   end;
-  PMruRec = ^TMruRec;
 
 const
   MRUF_STRING_LIST = 0;
@@ -247,8 +250,12 @@ var
   FindMruStringW: TFindMruStringW;
   EnumMruListW: TEnumMruList;
 
+procedure InitializeDLL; forward;
+
 constructor TJvMRUList.Create(AOwner: TComponent);
 begin
+  InitializeDLL;
+
   inherited Create(AOwner);
   FList := 0;
   FMax := 10;
@@ -707,40 +714,6 @@ begin
   Result := FItemData.Ws;
 end;
 
-procedure InitializeDLL;
-begin
-  hComCtlDll := LoadLibrary(DllComCtlName);
-  if hComCtlDll > 0 then
-  begin
-    // (rom) can we get them by name?
-    CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
-    FreeMruList := GetProcAddress(hComCtlDll, PChar(152));
-    AddMruString := GetProcAddress(hComCtlDll, PChar(153));
-    AddMruData := GetProcAddress(hComCtlDll, PChar(167));
-    DelMruString := GetProcAddress(hComCtlDll, PChar(156));
-    EnumMruList := GetProcAddress(hComCtlDll, PChar(154));
-    FindMruString := GetProcAddress(hComCtlDll, PChar(155));
-    FindMruData := GetProcAddress(hComCtlDll, PChar(169));
-
-    if Win32Platform = VER_PLATFORM_Win32_NT then
-    begin
-      CreateMRUListW := GetProcAddress(hComCtlDll, PChar(400));
-      AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
-      FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
-      EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
-    end;
-    (* else  Since TurboPascal 7.0 all the global vars are filled with Zero'es at the start, yes?
-    begin
-      CreateMRUListW := nil;
-      AddMRUStringW := nil;
-      FindMRUStringW := nil;
-      EnumMRUListW := nil;
-    end;   *)
-  end
-  else
-    PError('MRU');
-end;
-
 procedure FinalizeDLL;
 begin
   if hComCtlDll > 0 then
@@ -750,11 +723,44 @@ begin
   end;
 end;
 
+procedure InitializeDLL;
+begin
+  if hComCtlDll = 0 then
+  begin
+    hComCtlDll := LoadLibrary(DllComCtlName);
+    if hComCtlDll > 0 then
+    begin
+      // (rom) can we get them by name?
+      CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
+      FreeMruList := GetProcAddress(hComCtlDll, PChar(152));
+      AddMruString := GetProcAddress(hComCtlDll, PChar(153));
+      AddMruData := GetProcAddress(hComCtlDll, PChar(167));
+      DelMruString := GetProcAddress(hComCtlDll, PChar(156));
+      EnumMruList := GetProcAddress(hComCtlDll, PChar(154));
+      FindMruString := GetProcAddress(hComCtlDll, PChar(155));
+      FindMruData := GetProcAddress(hComCtlDll, PChar(169));
+
+      if Win32Platform = VER_PLATFORM_Win32_NT then
+      begin
+        CreateMRUListW := GetProcAddress(hComCtlDll, PChar(400));
+        AddMRUStringW := GetProcAddress(hComCtlDll, PChar(401));
+        FindMRUStringW := GetProcAddress(hComCtlDll, PChar(402));
+        EnumMRUListW := GetProcAddress(hComCtlDll, PChar(403));
+      end;
+    end
+    else
+      
+      RaiseLastOSError;
+      
+    if hComCtlDll > 0 then
+      AddFinalizeProc(sUnitName, FinalizeDLL);
+  end;
+end;
+
 initialization
-  InitializeDLL;
 
 finalization
-  FinalizeDLL;
+  FinalizeUnit(sUnitName);
 
 end.
 

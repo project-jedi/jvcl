@@ -35,11 +35,11 @@ unit JvQBaseDlg;
 interface
 
 uses
-  
-  
-  QGraphics, QControls, QForms, QDialogs,
-  
   SysUtils, Classes,
+  
+  
+  QDialogs,
+  
   JVQCLVer, JvQComponent;
 
 type

@@ -38,7 +38,8 @@ uses
   
   QControls, QComCtrls,
   
-  SysUtils, Classes;
+  SysUtils, Classes,
+  JvQFinalize;
 
 
 type
@@ -58,6 +59,9 @@ implementation
 
 uses
   TypInfo;
+
+const
+  sUnitName = 'JvProgressUtils';
 
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
@@ -181,7 +185,10 @@ var
 function GetProgressList: TJvProgressList;
 begin
   if ProgressList = nil then
+  begin
     ProgressList := TJvProgressList.Create;
+    AddFinalizeObjectNil(sUnitName, TObject(ProgressList));
+  end;
   Result := ProgressList;
 end;
 
@@ -222,7 +229,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(ProgressList);
+  FinalizeUnit(sUnitName);
 
 end.
 

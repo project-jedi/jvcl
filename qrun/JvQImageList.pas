@@ -42,7 +42,7 @@ uses
   
   QGraphics, QControls, QImgList,
   
-  SysUtils, Classes; 
+  SysUtils, Classes, JvQFinalize; 
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds);
@@ -141,6 +141,9 @@ uses
   QConsts,
   
   JvQJVCLUtils;
+
+const
+  sUnitName = 'JvImageList';
 
 {$IFDEF LINUX}
 const
