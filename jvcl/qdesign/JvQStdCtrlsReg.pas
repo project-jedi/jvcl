@@ -41,7 +41,7 @@ implementation
 uses
   Classes, QControls,
   QImgList, QTypes,
-  
+
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts, JvQTypes,
@@ -67,18 +67,17 @@ const
   cText = 'Text';
   cOwnerDraw = 'OwnerDraw';
 begin
-  RegisterComponents(RsPaletteVisual, [TJvShape]);
-  RegisterComponents(RsPaletteNonVisual, [ TJvCalculator]);
+  RegisterComponents(RsPaletteVisual, [TJvShape, TJvCalendar]);
+  RegisterComponents(RsPaletteNonVisual, [TJvCalculator]);
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
-  RegisterComponents(RsPaletteListComboTree, [TJvCalendar]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvTabControl, TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel,
-    TJvBevel {TJvTransparentPanel}]);
+    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel
+    {TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
