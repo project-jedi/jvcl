@@ -30,6 +30,11 @@ Known Issues:
 
 {$I jvcl.inc}
 
+{$IFDEF COMPILER6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
+
 unit JvToolEdit;
 
 interface
@@ -39,14 +44,12 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  {$WARN UNIT_PLATFORM OFF}
   Messages, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus, Buttons,
   FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
-  QMask, QImgList, QActnList,
-  QExtDlgs, QComboEdits, QWindows, Types,
+  QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
