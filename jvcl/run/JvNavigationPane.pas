@@ -851,6 +851,9 @@ type
 
 implementation
 uses
+  {$IFDEF COMPILER5}
+  CommCtrl,
+  {$ENDIF COMPILER5}
   {$IFDEF VCL}
   Forms, ActnList,
   {$ENDIF VCL}
@@ -858,6 +861,31 @@ uses
   QForms, QActnList,
   {$ENDIF VisualCLX}
   JvJVCLUtils, JvJCLUtils;
+
+{$IFDEF COMPILER5}
+type
+  TCustomImageListEx = class(TCustomImageList)
+  public
+    procedure Draw(Canvas: TCanvas; X, Y, Index: Integer;
+      ADrawingStyle: TDrawingStyle; AImageType: TImageType;
+      Enabled: Boolean); overload;
+  end;
+
+procedure TCustomImageListEx.Draw(Canvas: TCanvas; X, Y, Index: Integer;
+  ADrawingStyle: TDrawingStyle; AImageType: TImageType; Enabled: Boolean);
+const
+  DrawingStyles: array[TDrawingStyle] of Longint = (ILD_FOCUS,
+    ILD_SELECTED, ILD_NORMAL, ILD_TRANSPARENT);
+  Images: array[TImageType] of Longint = (0, ILD_MASK);
+begin
+  if HandleAllocated then
+    DoDraw(Index, Canvas, X, Y, DrawingStyles[ADrawingStyle] or
+      Images[AImageType], Enabled);
+end;
+{$ELSE}
+type
+  TCustomImageListEx = TCustomImageList;
+{$ENDIF COMPILER5}
 
 type
   TObjectList = class(TList)
@@ -1556,7 +1584,7 @@ begin
         begin
           if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
             // draw image only
-            Images.Draw(Canvas,
+            TCustomImageListEx(Images).Draw(Canvas,
               (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
               (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
               ImageIndex, {$IFDEF VisualCLX} itImage, {$ENDIF} Enabled);
@@ -2608,7 +2636,7 @@ begin
   end;
   if (Images <> nil) and (ImageIndex >= 0) and (ImageIndex < Images.Count) then
   begin
-    Images.Draw(Canvas,
+    TCustomImageListEx(Images).Draw(Canvas,
       ClientWidth - Images.Width - (Height - Images.Height) div 2,
       (Height - Images.Height) div 2, ImageIndex,
       {$IFDEF VisualCLX} itImage, {$ENDIF} True);
@@ -3637,11 +3665,13 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
     if Assigned(Images) then // draw image to the right
-      Images.Draw(Canvas, Width - Images.Width - 4, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
+      TCustomImageListEx(Images).Draw(Canvas, Width - Images.Width - 4, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
   end
   else}
   if Assigned(Images) then
-    Images.Draw(Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2, ImageIndex, dsTransparent, itImage, Enabled);
+    TCustomImageListEx(Images).Draw(
+      Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
+      ImageIndex, dsTransparent, itImage, Enabled);
 end;
 
 procedure TJvNavPanelToolButton.SetButtonType(const Value: TJvNavIconButtonType);
