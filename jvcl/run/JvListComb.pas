@@ -67,6 +67,7 @@ type
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
+    function GetWinControl:TWinControl;
     procedure Change;
     function GetText: string;
     function GetOwnerStrings: TStrings;
@@ -308,6 +309,8 @@ implementation
 
 uses
   Math;
+type
+  TWinControlAccess = class(TWinControl);
 
 { utility }
 
@@ -383,8 +386,8 @@ var
 begin
   S := GetOwnerStrings;
   // PRY 2002.06.04
-  //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetOwner).ComponentState) then
-  if (S <> nil) and not (csDestroying in TComponent(TJvImageItems(FOwner).GetOwner).ComponentState) then
+  //if (S <> nil) and not (csDestroying in TComponent(FOwner.GetWinControl).ComponentState) then
+  if (S <> nil) and not (csDestroying in GetWinControl.ComponentState) then
     S.Delete(Index);
 
   FFont.Free;
@@ -532,19 +535,8 @@ end;
 procedure TJvImageItems.Update(Item: TCollectionItem);
 begin
   inherited Update(Item);
-  // PRY 2002.06.04
-  //if (Item = nil) and (Owner <> nil) and (Owner is TWinControl) then
-  //  TWinControl(Owner).Invalidate;
-  if {(Item = nil) and }(GetOwner <> nil) and (GetOwner is TWinControl) then
+  if (GetOwner <> nil) and (GetOwner is TWinControl) then
     TWinControl(GetOwner).Invalidate;
-  // PRY END
-  {  if (FStrings <> nil) and (FStrings.Count <> Count) then
-    begin
-      while FStrings.Count > Count do
-        FStrings.Delete(FStrings.Count - 1);
-      while FStrings.Count < Count do
-        FStrings.Add('');
-    end; }
 end;
 
 //=== TJvImageComboBox =======================================================
@@ -744,8 +736,8 @@ begin
       Inc(R.Right,2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
-        or DT_VCENTER);
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+        DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1093,8 +1085,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
-          TmpR);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
       InflateRect(R, 1, -4);
     end
@@ -1113,8 +1104,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left + Tmp - 2, R.Top + 2, R.Left + Tmp + FImageList.Width + 2, R.Top + FImageList.Height + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)),
-          TmpR);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp2 in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       InflateRect(R, 1, -4);
     end;
@@ -1163,8 +1153,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
-          TmpR);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
 
       Inc(R.Left, GetImageWidth(Index) + 8);
@@ -1185,8 +1174,7 @@ begin
       if FButtonFrame then
       begin
         TmpR := Rect(R.Left, R.Top, R.Left + FImageList.Width + 4, R.Top + FImageList.Height + 4);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
-          TmpR);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Inc(R.Left, GetImageWidth(Index) + 8);
       OrigR.Left := R.Left;
@@ -1199,8 +1187,8 @@ begin
       Inc(R.Right, 2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
-        or DT_VCENTER);
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+        DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1238,10 +1226,8 @@ begin
 
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height
-          + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State),
-          TmpR);
+        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not (odSelected in State), TmpR);
       end;
 
       Dec(R.Right, FImageList.Width + 4);
@@ -1262,10 +1248,8 @@ begin
       // PRY END
       if FButtonFrame then
       begin
-        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height
-          + 2);
-        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)),
-          TmpR);
+        TmpR := Rect(R.Right - (FImageList.Width + 2) - 2, R.Top + Offset - 2, R.Right - 2, R.Top + Offset + FImageList.Height + 2);
+        DrawBtnFrame(FCanvas, FButtonStyle, Color, not ((Tmp in [0..FImageList.Count - 1]) and (odSelected in State)), TmpR);
       end;
       Dec(R.Right, FImageList.Width + 4);
       OrigR.Right := R.Right;
@@ -1278,8 +1262,8 @@ begin
     begin
       Dec(R.Right, 2);
       FillRect(R);
-      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
-        or DT_VCENTER or DT_RIGHT);
+      DrawText(FCanvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
+        DT_SINGLELINE or DT_NOPREFIX or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1380,14 +1364,16 @@ end;
 function TJvImageItem.GetFont: TFont;
 begin
   if puFont in FListPropertiesUsed then
-    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).Font
+  begin
+    Result := TWinControlAccess(GetWinControl).Font
+  end
   else
   begin
     if not Assigned(FFont) then
     begin
       FFont := TFont.Create;
       FFont.OnChange := FontChange;
-      FFont.Assign((TJvImageItems(Collection).GetOwner as TJvImageListBox).Font);
+      FFont.Assign(TWinControlAccess(GetWinControl).Font);
     end;
     Result := FFont;
   end;
@@ -1401,13 +1387,13 @@ end;
 procedure TJvImageItem.SetGlyph(const Value: TBitmap);
 begin
   FGlyph.Assign(Value);
-  (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
+  GetWinControl.Invalidate;
 end;
 
 procedure TJvImageItem.FontChange(Sender: TObject);
 begin
   if not (puFont in FListPropertiesUsed) then
-    (TJvImageItems(Collection).GetOwner as TJvImageListBox).Invalidate;
+    GetWinControl.Invalidate;
 end;
 
 function TJvImageItems.GetObjects(Index: Integer): TObject;
@@ -1420,10 +1406,20 @@ begin
   Items[Index].LinkedObject := Value;
 end;
 
+function TJvImageItem.GetWinControl: TWinControl;
+begin
+  Result := TWinControl(TJvImageItems(Collection).GetOwner);
+end;
+
 function TJvImageItem.GetColorHighlight: TColor;
 begin
   if (puColorHighlight in FListPropertiesUsed) then
-    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlight
+  begin
+    if GetWinControl is TJvImageListBox then
+      Result := TJvImageListBox(GetWinControl).ColorHighlight
+    else
+      Result := TJvImageComboBox(GetWinControl).ColorHighlight;
+  end
   else
     Result := FColorHighlight;
 end;
@@ -1431,7 +1427,12 @@ end;
 function TJvImageItem.GetColorHighlightText: TColor;
 begin
   if (puColorHighlightText in FListPropertiesUsed) then
-    Result := (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlightText
+  begin
+    if GetWinControl is TJvImageListBox then
+      Result := TJvImageListBox(GetWinControl).ColorHighlightText
+    else
+      Result := TJvImageComboBox(GetWinControl).ColorHighlightText;
+  end
   else
     Result := FColorHighlightText;
 end;
@@ -1439,7 +1440,12 @@ end;
 procedure TJvImageItem.SetColorHighlight(const Value: TColor);
 begin
   if (puColorHighlight in FListPropertiesUsed) then
-    (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlight := Value
+  begin
+    if GetWinControl is TJvImageListBox then
+      TJvImageListBox(GetWinControl).ColorHighlight := Value
+    else
+      TJvImageComboBox(GetWinControl).ColorHighlight := Value;
+  end
   else
     FColorHighlight := Value;
 end;
@@ -1447,7 +1453,12 @@ end;
 procedure TJvImageItem.SetColorHighlightText(const Value: TColor);
 begin
   if (puColorHighlightText in FListPropertiesUsed) then
-    (TJvImageItems(Collection).GetOwner as TJvImageListBox).ColorHighlightText := Value
+  begin
+    if GetWinControl is TJvImageListBox then
+      TJvImageListBox(GetWinControl).ColorHighlightText := Value
+    else
+      TJvImageComboBox(GetWinControl).ColorHighlightText := Value
+  end
   else
     FColorHighlightText := Value;
 end;
