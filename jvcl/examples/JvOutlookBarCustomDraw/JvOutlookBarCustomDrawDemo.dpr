@@ -2,12 +2,12 @@ program JvOutlookBarCustomDrawDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1};
+  JvOutlookBarCustomDrawDemoMainForm in 'JvOutlookBarCustomDrawDemoMainForm.pas' {JvOutlookBarCustomDrawDemoMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvOutlookBarCustomDrawDemoMainFrm, JvOutlookBarCustomDrawDemoMainFrm);
   Application.Run;
 end.
