@@ -56,7 +56,7 @@ CFGFILE=..\$(PKGDIR)\$(CONFIGFILENAME)
 PERSONALEDITION_OPTION = -DDUMMYDUMMY
 !endif
 
-!ifdef EXTRAUNITDIRS
+!ifdef DXGETTEXTDIR
 DXGETTEXT=-DUSE_DXGETTEXT
 !else
 DXGETTEXT=
@@ -103,8 +103,7 @@ default: \
 
 ################################################################################
 BuildJCLdcpFiles:
-	# for C++ targets compile JCL .dcp files
-	IF EXIST "$(ROOT)\bin\bcc32.exe" IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) $(QUIET) -f MakeJCLDcp4BCB.mak
+	IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) $(QUIET) BuildJCLdcpFilesForce
 
 ################################################################################
 BuildJCLdcpFilesForce:
@@ -131,7 +130,7 @@ GenerateAllPackages:
 	@cd $(DEVTOOLS)
 	$(MAKE) $(QUIET) -f makefile.mak pg.exe
 	@cd $(DEVTOOLS_BACK)
-	echo [Generating: JVCL Packages]
+	@echo [Generating: JVCL Packages]
 	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -x=$(DEVTOOLS)\bin\pgEdit.xml
 
 ################################################################################
@@ -140,7 +139,7 @@ GeneratePackages:
 	@cd $(DEVTOOLS)
 	$(MAKE) $(QUIET) -f makefile.mak pg.exe
 	@cd $(DEVTOOLS_BACK)
-	echo [Generating: JVCL Packages]
+	@echo [Generating: JVCL Packages]
 	$(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(EDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 	@IF NOT $(MASTEREDITION)! == ! $(DEVTOOLS)\bin\pg.exe -m=JVCL -p="$(JVCLPACKAGEDIR)" -t=$(MASTEREDITION) -x=$(DEVTOOLS)\bin\pgEdit.xml
 
@@ -234,3 +233,4 @@ Installer_nomo:
 	#
 	$(DCC) -B $(DXGETTEXT) -DNO_JCL JVCLInstall.dpr
 	start ..\..\bin\JVCLInstall.exe $(INSTALLOPTIONS)
+

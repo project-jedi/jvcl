@@ -44,6 +44,8 @@ var
   JVCLRoot: string;
   PkgDir: string;
   UnitOutDir: string;
+  DxgettextDir: string = '';
+  ExtraUnitDirs: string = '';
   MakeOptions: string = '';
   Verbose: Boolean = False;
   Force: Boolean = False; // force even if the target is not installed
@@ -53,7 +55,6 @@ var
 
   Editions: array of string = nil;
   Targets: array of TTarget = nil;
-
 
 function ExtractFileDir(const S: string): string;
 var
@@ -117,7 +118,7 @@ var
 begin
   StartupInfo.cb := SizeOf(StartupInfo);
   GetStartupInfo(StartupInfo);
-  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, 
+  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil,
     PChar(ExtractFileDir(ParamStr(0))), StartupInfo, ProcessInfo) then
   begin
     CloseHandle(ProcessInfo.hThread);
@@ -129,28 +130,16 @@ begin
     Result := -1;
 end;
 
-function GetRootDirOf(const Edition: string): string;
-var
-  KeyName: string;
-  reg: HKEY;
-  len: Longint;
-  RegTyp: LongWord;
-  Version: string;
+function GetWindowsDir: string;
 begin
-  Version := Edition[2];
-  Result := '';
-  if UpCase(Edition[1]) = 'D' then
-    KeyName := 'Software\Borland\Delphi\' + Version + '.0'
-  else
-    KeyName := 'Software\Borland\C++Builder\' + Version + '.0';
-
-  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
-    Exit;
   SetLength(Result, MAX_PATH);
-  len := MAX_PATH;
-  RegQueryValueEx(reg, 'RootDir', nil, @RegTyp, PByte(Result), @len);
-  SetLength(Result, StrLen(PChar(Result)));
-  RegCloseKey(reg);
+  SetLength(Result, GetWindowsDirectory(PChar(Result), Length(Result)));
+end;
+
+function GetSystemDir: string;
+begin
+  SetLength(Result, MAX_PATH);
+  SetLength(Result, GetSystemDirectory(PChar(Result), Length(Result)));
 end;
 
 type
@@ -414,6 +403,65 @@ begin
   Result := -1;
 end;
 
+function GetRootDirOf(const Edition: string): string;
+var
+  KeyName: string;
+  reg: HKEY;
+  len: Longint;
+  RegTyp: LongWord;
+  Version: string;
+begin
+  Version := Edition[2];
+  Result := '';
+  if UpCase(Edition[1]) = 'D' then
+    KeyName := 'Software\Borland\Delphi\' + Version + '.0'
+  else
+    KeyName := 'Software\Borland\C++Builder\' + Version + '.0';
+
+  if RegOpenKeyEx(HKEY_LOCAL_MACHINE, PChar(KeyName), 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
+    Exit;
+  SetLength(Result, MAX_PATH);
+  len := MAX_PATH;
+  RegQueryValueEx(reg, 'RootDir', nil, @RegTyp, PByte(Result), @len);
+  SetLength(Result, StrLen(PChar(Result)));
+  RegCloseKey(reg);
+end;
+
+procedure FindDxgettext(const Version: string);
+var
+  reg: HKEY;
+  len: Longint;
+  RegTyp: LongWord;
+  i: Integer;
+  S: string;
+begin
+ // dxgettext detection
+  if RegOpenKeyEx(HKEY_CLASSES_ROOT, 'bplfile\Shell\Extract strings\Command', 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
+    Exit;
+  SetLength(S, MAX_PATH);
+  len := MAX_PATH;
+  RegQueryValueEx(reg, '', nil, @RegTyp, PByte(S), @len);
+  SetLength(S, StrLen(PChar(S)));
+  RegCloseKey(reg);
+
+  if S <> '' then
+  begin
+    if S[1] = '"' then
+    begin
+      Delete(S, 1, 1);
+      i := 1;
+      while (i <= Length(S)) and (S[i] <> '"') do
+        Inc(i);
+      SetLength(S, i - 1);
+    end;
+    S := ExtractFileDir(S);
+    DxgettextDir := S;
+    if Version = '5' then
+      S := S + '\delphi5';
+    ExtraUnitDirs := ExtraUnitDirs + ';' + S;
+  end;
+end;
+
 procedure AddEdition(const ed: string);
 var
   i: Integer;
@@ -487,20 +535,23 @@ begin
   WriteLn('  OPTIONS:');
   WriteLn('    --make=X        X will be added to the make command line.');
   WriteLn('    --dcc-opt=X     sets the DCCOPT environment variable to X.');
-  WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
   WriteLn('    --bpl-path=X    sets the BPLDIR and DCPDIR environment variable to X.');
   WriteLn('    --lib-path=X    sets the LIBDIR environment variable to X (BCB only).');
   WriteLn('    --hpp-path=X    sets the HPPDIR environment variable to X (BCB only).');
   WriteLn('                      Defaults to $(ROOT)\Include\Vcl');
   WriteLn('                      Set this to an empty string if you want the hpp files to');
   WriteLn('                      be left in the same directory as their source pas file.');
-  WriteLn('    --build         forces the Delphi compiler to build the targets.');
+
+  WriteLn('    --jcl-path=X    sets the JCLROOT environment variable to X.');
+
   WriteLn('    --targets=X     sets the TARGETS environment variable to X. Only these .bpl');
   WriteLn('                    files will be compiled.');
   WriteLn('                    (Example:');
   WriteLn('                      buildtarget "--targets=JvCoreD7R.bpl JvCoreD7R.bpl" )');
-  WriteLn('    --verbose       Show all commands that are executed.');
+  WriteLn;
+  WriteLn('    --build         forces the Delphi compiler to build the targets.');
   WriteLn('    --force         Compile/Generate even if the target is not installed.');
+  WriteLn('    --verbose       Show all commands that are executed.');
   WriteLn;
 end;
 
@@ -551,22 +602,22 @@ begin
         SetEnvironmentVariable('HPPDIR', Pointer(S));
         HppPathSet := True;
       end
-      else if SameText(S, '--build') then
-      begin
-        DccOpt := DccOpt + ' -B';
-      end
       else if StartsText('--targets=', S) then
       begin
         Delete(S, 1, 10);
         SetEnvironmentVariable('TARGETS', Pointer(S));
       end
-      else if SameText('--verbose', S) then
+      else if SameText(S, '--build') then
       begin
-        Verbose := True;
+        DccOpt := DccOpt + ' -B';
       end
       else if SameText('--force', S) then
       begin
         Force := True;
+      end
+      else if SameText('--verbose', S) then
+      begin
+        Verbose := True;
       end;
     end
     else
@@ -593,41 +644,6 @@ begin
     SetEnvironmentVariable('HPPDIR', '$(ROOT)\Include\Vcl');
 end;
 
-procedure FindDxgettext(const Version: string);
-var
-  reg: HKEY;
-  len: Longint;
-  RegTyp: LongWord;
-  i: Integer;
-  S: string;
-begin
-  SetEnvironmentVariable('EXTRAUNITDIRS', nil);
- // dxgettext detection
-  if RegOpenKeyEx(HKEY_CLASSES_ROOT, 'bplfile\Shell\Extract strings\Command', 0, KEY_QUERY_VALUE or KEY_READ, reg) <> ERROR_SUCCESS then
-    Exit;
-  SetLength(S, MAX_PATH);
-  len := MAX_PATH;
-  RegQueryValueEx(reg, '', nil, @RegTyp, PByte(S), @len);
-  SetLength(S, StrLen(PChar(S)));
-  RegCloseKey(reg);
-
-  if S <> '' then
-  begin
-    if S[1] = '"' then
-    begin
-      Delete(S, 1, 1);
-      i := 1;
-      while (i <= Length(S)) and (S[i] <> '"') do
-        Inc(i);
-      SetLength(S, i - 1);
-    end;
-    S := ExtractFileDir(S);
-    if Version = '5' then
-      S := S + '\delphi5';
-    SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(S));
-  end;
-end;
-
 var
   i: Integer;
   Path: string;
@@ -637,6 +653,7 @@ begin
   JVCLRoot := ExtractFileDir(JVCLRoot); // $(JVCL)
 
   SetEnvironmentVariable('JCLROOT', '..\..\..\jcl'); // meight be changed by command line option
+  SetEnvironmentVariable('JVCLROOT', PChar(JVCLRoot));
 
   BplDir := '';
   DcpDir := '';
@@ -660,6 +677,8 @@ begin
 
   for i := 0 to High(Editions) do
   begin
+    ExtraUnitDirs := '';
+
     Edition := Editions[i];
     if Length(Editions) > 1 then
       WriteLn('################################ ' + Edition + ' #########################################');
@@ -692,10 +711,6 @@ begin
         PkgDir := Copy(PkgDir, 1, 2) + 'per';
 
     UnitOutDir := JVCLRoot + '\lib\' + Copy(Edition, 1, 2);
-
-    FindDxgettext(Version);
-
-
     if DcpDir = '' then
     begin
       BplDir := Root + '\Projects\Bpl';
@@ -703,29 +718,22 @@ begin
       LibDir := Root + '\Projects\Lib';
     end;
 
-   // setup environment and execute build.bat
-    SetLength(Path, 4096);
-    GetEnvironmentVariable('PATH', PChar(Path), Length(Path));
-    if not StartsText(Root + ';' + BplDir + ';' + LibDir + ';', Path) then
-    begin
-      if LibDir <> BplDir then
-        Path := Root + ';' + BplDir + ';' + LibDir + ';' + Path
-      else
-        Path := Root + ';' + BplDir + ';' + Path;
-     // Some systems have problems with really large paths. So we limit the path
-     // environment variable.
-      if Length(Path) > 440 then
-        SetLength(Path, 440); // 5 1/2 console lines
+    FindDxgettext(Version);
 
-      SetEnvironmentVariable('PATH', PChar(Path));
-    end;
+   // setup environment and execute build.bat
+    Path := GetWindowsDir + ';' + GetSystemDir + ';' + GetWindowsDir + '\Command';
+    if LibDir <> BplDir then
+      Path := Root + ';' + BplDir + ';' + LibDir + ';' + Path
+    else
+      Path := Root + ';' + BplDir + ';' + Path;
+    SetEnvironmentVariable('PATH', Pointer(Path));
+
     SetEnvironmentVariable('BPLDIR', Pointer(BplDir));
     SetEnvironmentVariable('DCPDIR', Pointer(DcpDir));
     SetEnvironmentVariable('LIBDIR', Pointer(LibDir));
     SetEnvironmentVariable('BPILIBDIR', Pointer(LibDir));
     SetEnvironmentVariable('PERSONALEDITION_OPTION', nil);
     SetEnvironmentVariable('ROOT', PChar(Root));
-    SetEnvironmentVariable('JVCLROOT', PChar(JVCLRoot));
     SetEnvironmentVariable('VERSION', PChar(Version));
     SetEnvironmentVariable('UNITOUTDIR', PChar(UnitOutDir));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
@@ -740,10 +748,16 @@ begin
         Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak pg.exe')
       else
         Execute('"' + Root + '\bin\make.exe" -l+ -s -f makefile.mak pg.exe');
-      end;
+    end;
 
     SetEnvironmentVariable('EDITION', PChar(Edition));
     SetEnvironmentVariable('PKGDIR', PChar(PkgDir));
+
+    if (ExtraUnitDirs <> '') and (ExtraUnitDirs[1] = ';') then
+      Delete(ExtraUnitDirs, 1, 1);
+    SetEnvironmentVariable('EXTRAUNITDIRS', Pointer(ExtraUnitDirs));
+    SetEnvironmentVariable('DXGETTEXTDIR', Pointer(DxgettextDir));
+
 
     ExitCode := Execute('"' + Root + '\bin\make.exe" -l+ -f makefile.mak' + MakeOptions);
     if ExitCode <> 0 then
@@ -753,5 +767,7 @@ begin
       WriteLn('Press ENTER to continue');
       ReadLn;
     end;
+
   end;
+
 end.
