@@ -49,7 +49,7 @@ uses
   JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl, JvHotKey,
   JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids,
-  JvStringGrid, JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn,
+  JvStringGrid, JvSystemPopup, JvToolBar, JvUpDown, JvBitBtn,
   JvPanel, JvMonthCalendar, JvControlPanelButton, JvStartMenuButton,
   JvRecentMenuButton, JvFavoritesButton, JvImageList, JvListBox, JvBrowseFolder,
   JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, 
@@ -83,8 +83,9 @@ begin
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvDatePickerEdit,
     TJvSpinEdit, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [TJvPageControl,  TJvProgressBar,
-    TJvStatusBar, TJvTabControl, TJvToolBar, TJvControlBar, TJvCoolBar,
+  RegisterComponents(RsPaletteBarPanel, [
+    TJvPageControl,  TJvTabDefaultPainter, TJvTabOutlookPainter,
+    TJvProgressBar, TJvStatusBar, TJvTabControl, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel, TJvStaticText]);

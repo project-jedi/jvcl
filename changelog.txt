@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-04-04
+- Removed JvTabControl and moved TJvTabControl into JvComCtrls.pas // peter3
+- Added TabPainter property to JvPageControl and JvTabControl // peter3
+- Added TJvTabDefaultPainter and TJvTabOutlookPainter to JvComCtrls // peter3
 2004-04-02
 - Added style manager to NavPane components // peter3
 2004-04-01

@@ -50,7 +50,6 @@
     <File Name="..\..\run\JvStatusBar.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringGrid.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSystemPopup.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTabControl.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvTextListBox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvToolBar.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvToolEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
