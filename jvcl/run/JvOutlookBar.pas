@@ -58,6 +58,7 @@ const
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
+  TJvCustomOutlookBar = class;
   TJvOutlookBarButton = class;
 
   TJvOutlookBarButtonActionLink = class(TActionLink)
@@ -98,6 +99,7 @@ type
     procedure Change;
     procedure SetEnabled(const Value: Boolean);
     procedure SetAction(Value: TBasicAction);
+    function GetOutlookBar:TJvCustomOutlookBar;
   protected
     function GetDisplayName: string; override;
     function GetActionLinkClass: TJvOutlookBarButtonActionLinkClass; dynamic;
@@ -118,7 +120,7 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
-    property OnClick:TNotifyEvent read FOnClick write FOnClick; 
+    property OnClick:TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -177,6 +179,7 @@ type
   protected
     procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
+    function GetOutlookBar:TJvCustomOutlookBar;
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
@@ -912,13 +915,19 @@ begin
     FActionLink.Action := Value;
     FActionLink.OnChange := DoActionChange;
     ActionChange(Value, csLoading in Value.ComponentState);
-    {$IFDEF COMPILER6_UP}
-    Value.FreeNotification(Collection.Owner as TJvCustomOutlookBar); // delegates notification to owner!
-    {$ELSE}
-    Value.FreeNotification(THackOwnedCollection(Collection).GetOwner as TJvCustomOutlookBar); 
-    {$ENDIF COMPILER6_UP}
+    if GetOutlookBar <> nil then
+      Value.FreeNotification(GetOutlookBar); // delegates notification to owner!
   end;
 end;
+
+function TJvOutlookBarButton.GetOutlookBar: TJvCustomOutlookBar;
+begin
+  if Collection.Owner is TJvOutlookBarPage then
+    Result := TJvOutlookBarPage(Collection.Owner).GetOutlookBar
+  else
+    Result := nil;
+end;
+
 
 //=== { TJvOutlookBarButtons } ===============================================
 
@@ -986,7 +995,6 @@ end;
 constructor TJvOutlookBarPage.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  FButtons := TJvOutlookBarButtons.Create(Self);
   FFont := TFont.Create;
   FFont.OnChange := DoFontChange;
   FDownFont := TFont.Create;
@@ -997,6 +1005,7 @@ begin
   FAlignment := taCenter;
   FImageIndex := -1;
   FEnabled := True;
+  FButtons := TJvOutlookBarButtons.Create(Self);
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).Owner <> nil) then
   begin
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).Owner).ButtonSize;
@@ -1163,6 +1172,14 @@ begin
     Result := Caption
   else
     Result := inherited GetDisplayName;
+end;
+
+function TJvOutlookBarPage.GetOutlookBar: TJvCustomOutlookBar;
+begin
+  if Collection.Owner is TJvCustomOutlookBar then
+    Result := TJvCustomOutlookBar(Collection.Owner)
+  else
+    Result := nil;
 end;
 
 procedure TJvOutlookBarPage.SetImageIndex(const Value: TImageIndex);
@@ -2774,6 +2791,9 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
+
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
