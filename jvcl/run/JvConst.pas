@@ -92,7 +92,7 @@ uses
   Windows,
   Forms;
 
-{$R *.Res}
+{$R ..\resources\JvConst.res}
 
 initialization
   Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');

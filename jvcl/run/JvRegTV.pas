@@ -151,7 +151,7 @@ resourcestring
 
 implementation
 
-{$R JvRegTree.res }
+{$R ..\resources\JvRegTV.res }
 
 const
   imMyPC = 0;

@@ -83,7 +83,7 @@ implementation
 uses
   Controls;
 
-{$R JvTransLED.res}
+{$R ..\resources\JvTransLED.res}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';

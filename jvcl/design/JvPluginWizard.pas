@@ -129,7 +129,7 @@ uses
   Controls, SysUtils,
   JvPlugin, JvPluginParams, JvTypes;
 
-{$R JvPluginWiz.res}
+{$R ..\resources\JvPluginWiz.res}
 
 const
   cJediPuginWizard = 'JEDI Plugin Wizard';

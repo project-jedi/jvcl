@@ -438,11 +438,7 @@ uses
   {$ENDIF}
   JvStrUtils;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvSpin.res}
 
 const
   sSpinUpBtn = 'JVSPINUP';

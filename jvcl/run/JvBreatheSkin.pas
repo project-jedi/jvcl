@@ -446,7 +446,7 @@ implementation
 uses
   JvFunctions;
 
-{$R JvBreatheSkin.res}
+{$R ..\resources\JvBreatheSkin.res}
 
 resourcestring
   RC_AboutCaption = 'About';

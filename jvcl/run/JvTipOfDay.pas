@@ -150,7 +150,7 @@ uses
   Windows, ExtCtrls, JvxCtrls, JvButton, Dialogs, SysUtils, Registry,
   JvWndProcHook;
 
-{$R JvTipOfDay.res}
+{$R ..\resources\JvTipOfDay.res}
 
 resourcestring
   // (rom) Jedi registry keys need rework

@@ -289,11 +289,7 @@ uses
   Consts, Forms, SysUtils, Math,
   JvVCLUtils, JvConst, JvTypes;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvxSlider.res}
 
 //=== TJvCustomSlider ========================================================
 

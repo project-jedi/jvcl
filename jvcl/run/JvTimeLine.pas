@@ -488,7 +488,7 @@ uses
   {$ENDIF COMPILER6_UP}
   Math;
 
-{$R JvTimeLine.res}
+{$R ..\resources\JvTimeLine.res}
 
 const
   FDayLineLength = 4;

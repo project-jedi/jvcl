@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvTMTL;
+unit JvTMTimeLine;
 
 { A component that mimicks the time line in MS Team Manager }
 
@@ -322,7 +322,7 @@ implementation
 uses
   Consts;
 
-{$R JvTMTimeLine.res}
+{$R ..\resources\JvTMTimeLine.res}
 
 const
   cMagic = 'Jv.TMTIMELINE1';

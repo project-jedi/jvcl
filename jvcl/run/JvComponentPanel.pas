@@ -112,7 +112,7 @@ type
 
 implementation
 
-{$R JvComponentPanel.res}
+{$R ..\resources\JvComponentPanel.res}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin

@@ -144,11 +144,7 @@ type
 
 implementation
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvDice.res}
 
 const
   ResName: array [TJvDiceValue] of PChar =

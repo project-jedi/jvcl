@@ -870,11 +870,7 @@ uses
   {$ENDIF}
   JvCalc, JvxRConst;
 
-{$IFDEF WIN32}
-{$R *.Res}
-{$ELSE}
-{$R *.R16}
-{$ENDIF}
+{$R ..\resources\JvDBCtrl.res}
 
 type
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
