@@ -187,9 +187,9 @@ begin
   Result := nil;
   Options := TStringList.Create;
   try
-    Width := Parent.ClientWidth div 2 - 4;
+    Width := Parent.ClientWidth - 16;
 
-   // RadioButtons
+    // RadioButtons
     HorzOrientation := hoDefault;
     Inst.Options(Options, HorzOrientation);
     case LockedHorzOrientation of
@@ -210,7 +210,7 @@ begin
     else if HorzOrientation = hoCenter then
       X := (Parent.ClientWidth - Width) div 2
     else
-      X := Parent.ClientWidth div 2 + 4;
+      X := Parent.ClientWidth - 8 - Width;
 
     if Options.Count > 0 then
     begin
@@ -230,7 +230,7 @@ begin
           RadioButton.Name := 'piOption_' + IntToStr(i); // do not localize
           RadioButton.Left := X;
           RadioButton.Top := Y;
-          RadioButton.Width := Parent.ClientWidth div 2;
+          RadioButton.Width := Width;
           RadioButton.Caption := Copy(S, 1, ps - 1);
           RadioButton.Hint := Copy(S, ps + 1, MaxInt);
           RadioButton.ShowHint := RadioButton.Hint <> '';
@@ -271,7 +271,7 @@ begin
   Result := nil;
   CheckBoxes := TStringList.Create;
   try
-    Width := Parent.ClientWidth div 2 - 4;
+    Width := Parent.ClientWidth - 16;
 
     HorzOrientation := hoDefault;
     Inst.CheckBoxes(CheckBoxes, HorzOrientation);
@@ -293,7 +293,7 @@ begin
     else if HorzOrientation = hoCenter then
       X := (Parent.ClientWidth - Width) div 2
     else
-      X := Parent.ClientWidth div 2 + 4;
+      X := Parent.ClientWidth - 8 - Width;
 
     if CheckBoxes.Count > 0 then
     begin
@@ -312,7 +312,7 @@ begin
           CheckBox.Name := 'piCheckBox_' + IntToStr(i);
           CheckBox.Left := X;
           CheckBox.Top := Y;
-          CheckBox.Width := Parent.ClientWidth div 2;
+          CheckBox.Width := Width;
           CheckBox.Caption := Copy(S, 1, ps - 1);
           CheckBox.Hint := Copy(S, ps + 1, MaxInt);
           CheckBox.ShowHint := CheckBox.Hint <> '';
