@@ -85,8 +85,9 @@ type
     procedure Loaded; override;
     procedure GetColors; virtual;
 
-    procedure InsertColor(AIndex: integer; AColor: TColor; const DisplayName: string);
     procedure AddColor(AColor: TColor; const DisplayName: string);
+    procedure ChangeColor(AIndex: integer; AColor: TColor; const DisplayName: string);
+    procedure InsertColor(AIndex: integer; AColor: TColor; const DisplayName: string);
     property Text;
     property CustomColorCount: integer read FCustCnt;
   published
@@ -252,7 +253,7 @@ type
 
 resourcestring
   SOtherCaption = '(Other...)';
-  SNewColorPrefix = 'New Color ';
+  SNewColorPrefix = 'Custom';
 
 implementation
 {$R *.RES}
@@ -353,7 +354,7 @@ begin
   FColorValue := clBlack;
   FColWidth := 21;
   FPrefix := SNewColorPrefix;
-  FOther := SOtherCaption;
+//  FOther := SOtherCaption;
   FOptions := [coText];
   FHiLiteColor := clHighLight;
   FHiLiteText := clHighLightText;
@@ -414,9 +415,18 @@ begin
 end;
 
 procedure TJvColorComboBox.SetOther(Value: string);
+var i:integer;
 begin
-  FOther := Value;
-  GetColors;
+  if FOther <> Value then
+  begin
+    i := Items.IndexOf(FOther);
+    while i > -1 do
+    begin
+      Items[i] := Value;
+      i := Items.IndexOf(FOther);
+    end;
+    FOther := Value;
+  end;
 end;
 
 procedure TJvColorComboBox.SetColWidth(Value: integer);
@@ -431,24 +441,20 @@ end;
 procedure TJvColorComboBox.SetColorValue(Value: TColor);
 var
   i: Integer;
-  aColor: TColor;
 begin
   if (ItemIndex < 0) or (Value <> FColorValue) then
   begin
-    for i := 0 to Items.Count - 1 do
+    i := Items.IndexOfObject(TObject(Value));
+    if i >= 0 then
     begin
-      aColor := TColor(Items.Objects[i]);
-      if aColor = Value then
-      begin
-        FColorValue := Value;
-        if ItemIndex <> i then
-          ItemIndex := i;
-        Change;
-        Exit;
-      end;
-    end;
-    if (coCustomColors in Options) then
-      InsertColor(Items.Count, Value, Format(FPrefix, [FCustCnt]))
+      FColorValue := Value;
+      if ItemIndex <> i then
+        ItemIndex := i;
+      Change;
+      Exit;
+    end
+    else if (coCustomColors in Options) then
+      InsertColor(Items.Count-1, Value, Format(FPrefix, [FCustCnt]))
         //      Items.InsertObject(Items.Count, FPrefix + IntToStr(FCustCnt), TObject(Value))
     else
       AddColor(Value, Format(FPrefix, [FCustCnt]));
@@ -765,6 +771,17 @@ begin
     FOnBeforeCustom(self);
 end;
 
+procedure TJvColorComboBox.ChangeColor(AIndex: integer; AColor: TColor;
+  const DisplayName: string);
+begin
+  // raise Exception ?
+  if (AIndex >= 0) and (AIndex < Items.Count-Ord(coCustomColors in Options)) then
+  begin
+    Items[AIndex] := DisplayName;
+    Items.Objects[AIndex] := TObject(AColor);
+  end;
+end;
+
 { TJvFontComboBox }
 
 constructor TJvFontComboBox.Create(AOwner: TComponent);
@@ -778,7 +795,6 @@ begin
   FDevice := fdScreen;
   FUseImages := true;
   Style := csOwnerDrawFixed;
-  //  Sorted := True;
   ResetItemHeight;
 end;
 
