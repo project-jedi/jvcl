@@ -62,7 +62,7 @@ void __fastcall TfrmMain::LoadSettings()
           ini->ReadSectionValues("Color Names", JvColorComboBox1->ColorNameMap);
           ini->ReadSection("Custom Colors", SL);
           for (i = 0; i< SL->Count; i++)
-            JvColorComboBox1->AddColor(StringToColor((*SL)[i]),"");
+            JvColorComboBox1->AddColor(StringToColor(SL->Strings[i]),"");
         }
         __finally
         {
@@ -100,7 +100,7 @@ void __fastcall TfrmMain::SaveSettings()
         JvColorComboBox1->GetCustomColors(AList);
         ini->EraseSection("Custom Colors");
         for (i = 0; i < AList->Count; i++)
-          ini->WriteString("Custom Colors", ColorToString(reinterpret_cast<TColor>((*AList)[i])), "");
+          ini->WriteString("Custom Colors", ColorToString(reinterpret_cast<TColor>(AList->Items[i])), "");
       }
       __finally
       {
@@ -175,7 +175,7 @@ void __fastcall TfrmMain::btnCustColorsClick(TObject *Sender)
     // the returned TList contains a list of TColor items
     JvColorComboBox1->GetCustomColors(AList);
     for (i = 0; i < AList->Count; i++)
-      memInfo->Lines->Add(ColorToString(reinterpret_cast<TColor>((*AList)[i])));
+      memInfo->Lines->Add(ColorToString(reinterpret_cast<TColor>(AList->Items[i])));
   }
   __finally
   {

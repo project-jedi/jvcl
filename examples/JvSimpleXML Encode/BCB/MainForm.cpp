@@ -79,7 +79,7 @@ void __fastcall TfrmMain::WMDropFiles(TWMDropFiles& Message)
         {
           reSource->Lines->Clear();
           for (int i = 0; i < FileList->Count; i++)
-            reSource->Lines->Add(StringFromFile((*FileList)[i]));
+            reSource->Lines->Add(StringFromFile(FileList->Strings[i]));
         }
         __finally
         {
@@ -101,7 +101,7 @@ void __fastcall TfrmMain::DisplayTime(int MS)
   int kB = reSource->GetTextLen() / 1024;
   if (kB == 0) return;
   if (MS == 0) MS = 1;
-  (*StatusBar1->Panels)[0]->Text = Format("Conversion of %dkB took %d msecs -> %f kB/sec", ARRAYOFCONST((kB, MS, kB / MS * 1000.0)));
+  StatusBar1->Panels->Items[0]->Text = Format("Conversion of %dkB took %d msecs -> %f kB/sec", ARRAYOFCONST((kB, MS, kB / MS * 1000.0)));
 }
 
 //---------------------------------------------------------------------------

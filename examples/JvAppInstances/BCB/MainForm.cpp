@@ -40,7 +40,7 @@ __fastcall TfrmMain::TfrmMain(TComponent* Owner)
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::FormCreate(TObject *Sender)
 {
-  Caption = "Pid: " + IntToStr(GetCurrentProcessId);
+  Caption = "Pid: " + IntToStr(GetCurrentProcessId());
   CheckBoxActive->Checked = JvAppInstances->Active;
   MaxInstances->Caption = Format("%d", ARRAYOFCONST(((int)(JvAppInstances->MaxInstances))));
   RunningInstances->Caption = Format("%d", ARRAYOFCONST(((int)(JvAppInstances->AppInstances->InstanceCount))));
@@ -80,7 +80,7 @@ void __fastcall TfrmMain::JvAppInstancesInstanceDestroyed(TObject *Sender,
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::JvAppInstancesRejected(TObject *Sender)
 {
-  ShowMessage("I was rejected (Pid: " + IntToStr(GetCurrentProcessId) + ").\n" +
+  ShowMessage("I was rejected (Pid: " + IntToStr(GetCurrentProcessId()) + ").\n" +
     "Now I call UserNotify(100)");
   JvAppInstances->UserNotify(100);
   MaxInstances->Caption = Format("%d", ARRAYOFCONST(((int)(JvAppInstances->MaxInstances))));

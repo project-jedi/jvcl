@@ -44,6 +44,7 @@
 #pragma link "JvMaskEdit"
 #pragma link "JvMemo"
 #pragma link "JvScrollBox"
+#pragma link "JvToolEdit"
 #pragma resource "*.dfm"
 TfrmMain *frmMain;
 //---------------------------------------------------------------------------

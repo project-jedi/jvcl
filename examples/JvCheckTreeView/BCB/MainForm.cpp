@@ -182,7 +182,7 @@ void __fastcall TfrmMain::btnRandomClick(TObject *Sender)
       if (aIndex < JvCheckTreeView1->Items->Count % 2)
         N = JvCheckTreeView1->Items->AddChild(NULL, edText->Text);
       else
-        N = JvCheckTreeView1->Items->AddChild((*(JvCheckTreeView1->Items))[aIndex], edText->Text);
+        N = JvCheckTreeView1->Items->AddChild(JvCheckTreeView1->Items->Item[aIndex], edText->Text);
     }
     N->ImageIndex = random(ilStandard->Count - 1);
     N->SelectedIndex = N->ImageIndex;
@@ -210,7 +210,7 @@ void __fastcall TfrmMain::cbStyleChange(TObject *Sender)
   switch (JvCheckTreeView1->CheckBoxOptions->Style)
   {
     case cbsNative:
-    case cbsNone:
+    case Jvchecktreeview::cbsNone:
       JvCheckTreeView1->StateImages = NULL;
       break;
     case cbsJVCL:
@@ -283,12 +283,12 @@ void __fastcall TfrmMain::JvCheckTreeView1ContextPopup(TObject *Sender,
 void __fastcall TfrmMain::JvCheckTreeView1Toggling(TObject *Sender,
       TTreeNode *Node, bool &AllowChange)
 {
-  (*StatusBar1->Panels)[0]->Text = Format("Node %s about to be toggled %s", ARRAYOFCONST((Node->Text, cOnOff[!JvCheckTreeView1->Checked[Node]])));
+  StatusBar1->Panels->Items[0]->Text = Format("Node %s about to be toggled %s", ARRAYOFCONST((Node->Text, cOnOff[!JvCheckTreeView1->Checked[Node]])));
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::JvCheckTreeView1Toggled(TObject *Sender,
       TTreeNode *Node)
 {
-  (*StatusBar1->Panels)[0]->Text = Format("Node %s toggled %s", ARRAYOFCONST((Node->Text, cOnOff[JvCheckTreeView1->Checked[Node]])));
+  StatusBar1->Panels->Items[0]->Text = Format("Node %s toggled %s", ARRAYOFCONST((Node->Text, cOnOff[JvCheckTreeView1->Checked[Node]])));
 }
 //---------------------------------------------------------------------------

@@ -12,9 +12,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  DesignSize = (
-    456
-    330)
   PixelsPerInch = 96
   TextHeight = 13
   object reXML: TRichEdit
@@ -67,9 +64,6 @@ object frmMain: TfrmMain
     BevelOuter = bvLowered
     Color = clWindow
     TabOrder = 3
-    DesignSize = (
-      456
-      65)
     object Label1: TLabel
       Left = 18
       Top = 22

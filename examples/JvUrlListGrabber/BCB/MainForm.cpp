@@ -104,8 +104,8 @@ void __fastcall TfrmMain::btnGoDesignClick(TObject *Sender)
     julGrabber->URLs->Clear();
     julGrabber->Cleanup();
     for (i = 0; i < memUrls->Lines->Count; i++)
-      if (memUrls->Lines->operator [](i) != "")
-        julGrabber->URLs->Add((*memUrls->Lines)[i]);
+      if (memUrls->Lines->Strings[i] != "")
+        julGrabber->URLs->Add(memUrls->Lines->Strings[i]);
     for (i = 0; i < julGrabber->URLs->Count; i++)
     {
       TJvCustomUrlGrabber* urlGrabber = julGrabber->Grabbers[i];

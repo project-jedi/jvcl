@@ -122,10 +122,10 @@ void __fastcall TfrmMain::EditItem(TListItem* li)
     {
       li->Caption = ADirectory;
       if (AIncludeSubDirs && (Win32Platform == VER_PLATFORM_WIN32_NT))
-        (*(li->SubItems))[0] = "Yes";
+        li->SubItems->Strings[0] = "Yes";
       else
-        (*(li->SubItems))[0] = "No";
-      (*(li->SubItems))[1]= OptionsToStr(AOptions);
+        li->SubItems->Strings[0] = "No";
+      li->SubItems->Strings[1]= OptionsToStr(AOptions);
     }
     if (li->Data == NULL)
       li->Data = JvChangeNotify1->Notifications->Add();

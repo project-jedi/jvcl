@@ -17,6 +17,9 @@ object frmMain: TfrmMain
   Position = poDesktopCenter
   Scaled = False
   OnCreate = FormCreate
+  DesignSize = (
+    456
+    191)
   PixelsPerInch = 96
   TextHeight = 13
   object cntHeader: TJvXPContainer
@@ -32,6 +35,7 @@ object frmMain: TfrmMain
       Left = 0
       Top = 0
       Align = alLeft
+      ImageIndex = 0
       OnClick = btnCloseClick
     end
   end
@@ -164,6 +168,7 @@ object frmMain: TfrmMain
         Top = 0
         ToolType = ttArrowLeft
         Align = alLeft
+        ImageIndex = 0
         StyleManager = styleOffice
       end
       object btnRight: TJvXPToolButton
@@ -171,6 +176,7 @@ object frmMain: TfrmMain
         Top = 0
         ToolType = ttArrowRight
         Align = alLeft
+        ImageIndex = 0
         StyleManager = styleOffice
       end
     end
@@ -267,30 +273,35 @@ object frmMain: TfrmMain
   object dxToolButton1: TJvXPToolButton
     Left = 300
     Top = 129
+    ImageIndex = 0
     StyleManager = styleOffice
   end
   object dxToolButton2: TJvXPToolButton
     Left = 316
     Top = 129
     ToolType = ttMaximize
+    ImageIndex = 0
     StyleManager = styleOffice
   end
   object dxToolButton3: TJvXPToolButton
     Left = 332
     Top = 129
     ToolType = ttMinimize
+    ImageIndex = 0
     StyleManager = styleOffice
   end
   object dxToolButton4: TJvXPToolButton
     Left = 364
     Top = 129
     ToolType = ttPopup
+    ImageIndex = 0
     StyleManager = styleOffice
   end
   object dxToolButton5: TJvXPToolButton
     Left = 348
     Top = 129
     ToolType = ttRestore
+    ImageIndex = 0
     StyleManager = styleOffice
   end
   object styleOffice: TJvXPStyleManager

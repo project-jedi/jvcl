@@ -62,16 +62,16 @@ void __fastcall TfrmSpeedTest::Test(bool Decode)
 {
   WaitCursor();
   for (int i = 0; i < memFiles->Lines->Count; i++)
-    if (FileExists((*memFiles->Lines)[i]))
+    if (FileExists(memFiles->Lines->Strings[i]))
     {
       __int64 FStringLength;
-      AnsiString S = StringFromFile((*memFiles->Lines)[i], FStringLength);
+      AnsiString S = StringFromFile(memFiles->Lines->Strings[i], FStringLength);
       Cardinal FStartTime = GetTickCount();
       if (Decode)
         SimpleXMLDecode(S, false);
       else
         SimpleXMLEncode(S);
-      AddInfo((*memFiles->Lines)[i], Decode, FStringLength, GetTickCount() - FStartTime, sgResults->Cells[0][1] != "");
+      AddInfo(memFiles->Lines->Strings[i], Decode, FStringLength, GetTickCount() - FStartTime, sgResults->Cells[0][1] != "");
     }
 }
 
@@ -166,7 +166,8 @@ void __fastcall TfrmSpeedTest::sgResultsCaptionClick(TJvStringGrid *Sender,
 {
   const TJvSortType SortType[6] = {stClassic, stNumeric, stClassic, stNumeric, stNumeric, stNumeric};
 
-  sgResults->SortGrid(AColumn, FDescending, false, SortType[AColumn]);
+  // The last argument is required for BCB5 (and is the default value for BCB6)
+  sgResults->SortGrid(AColumn, FDescending, false, SortType[AColumn], true);
   FDescending = !FDescending;
 }
 //---------------------------------------------------------------------------

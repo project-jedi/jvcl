@@ -24,9 +24,6 @@ object frmMain: TfrmMain
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      437
-      230)
     object Label2: TLabel
       Left = 6
       Top = 8
@@ -89,9 +86,6 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      437
-      266)
     object Label1: TLabel
       Left = 6
       Top = 12

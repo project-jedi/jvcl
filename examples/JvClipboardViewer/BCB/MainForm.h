@@ -34,6 +34,8 @@
 #include "JvExForms.hpp"
 #include <ExtCtrls.hpp>
 
+#define TBitmap Graphics::TBitmap
+
 //---------------------------------------------------------------------------
 class TfrmMain : public TForm
 {

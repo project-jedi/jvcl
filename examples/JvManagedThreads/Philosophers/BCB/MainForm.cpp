@@ -146,7 +146,7 @@ void __fastcall TfrmMain::Test(int Nr)
     (FState[(Nr+1) % 5] != psEating))
   {
     FState[Nr] = psEating;
-    (*MonitorSection)[Nr]->Signal();
+    MonitorSection->Condition[Nr]->Signal();
   }
 }
 
@@ -158,7 +158,7 @@ void __fastcall TfrmMain::PickupChopsticks(int Nr)
     FState[Nr] = psHungry;
     Test(Nr);
     if (FState[Nr] != psEating)
-      (*MonitorSection)[Nr]->Wait();
+      MonitorSection->Condition[Nr]->Wait();
   }
   __finally
   {

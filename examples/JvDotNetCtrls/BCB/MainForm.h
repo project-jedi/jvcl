@@ -51,6 +51,7 @@
 #include <ExtCtrls.hpp>
 #include <Graphics.hpp>
 #include <Mask.hpp>
+#include "JvToolEdit.hpp"
 //---------------------------------------------------------------------------
 class TfrmMain : public TForm
 {

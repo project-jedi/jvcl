@@ -25,14 +25,14 @@
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="JvXPBarDemo.cpp"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)"/>
-    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)"/>
+    <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH);..\..\..\..\Resources"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp 
       -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+    <CFLAG1 value="-Od -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tW -tWM"/>
     <PFLAGS value="-N2..\..\..\..\bin -N0..\..\..\..\bin -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>

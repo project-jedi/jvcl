@@ -75,10 +75,10 @@ void __fastcall TfrmMain::ParseIntoTreeView(TJvSimpleXMLElem* AnXMLNode, TTreeNo
       S = AnXMLNode->Name;
     AnsiString T = "";
     for (int j = 0; j < AnXMLNode->Properties->Count; j++)
-      T = T + " " + (*AnXMLNode->Properties)[j]->Name + "=\"" + (*AnXMLNode->Properties)[j]->Value + "\"";
+      T = T + " " + AnXMLNode->Properties->Item[j]->Name + "=\"" + AnXMLNode->Properties->Item[j]->Value + "\"";
     ATreeNode = JvTreeView1->Items->AddChild(ATreeNode, S + " (" + Trim(T) + ")");
     for (int i = 0; i < AnXMLNode->Items->Count; i++)
-      ParseIntoTreeView((*AnXMLNode->Items)[i], ATreeNode);
+      ParseIntoTreeView(AnXMLNode->Items->Item[i], ATreeNode);
   }
 }
 

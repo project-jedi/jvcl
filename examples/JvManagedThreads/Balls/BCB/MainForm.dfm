@@ -14,9 +14,6 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnClose = FormClose
   OnDestroy = FormDestroy
-  DesignSize = (
-    492
-    491)
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton

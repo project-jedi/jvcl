@@ -117,8 +117,9 @@ void __fastcall TfrmMain::AddInspectorSettings()
 
   InspCat = new TJvInspectorCustomCategoryItem(JvInspector1->Root, NULL);
   InspCat->DisplayName = "JvInspector Settings";
+  // The last argument to GetPropInfo is required by BCB5 and set to the same default value as found in BCB6
   for (I = 0; I < 3; I++)
-    TJvInspectorPropData::New(__classid(TJvInspectorPropData), InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I][0]))->DisplayName = PropArray[I][1];
+    TJvInspectorPropData::New(__classid(TJvInspectorPropData), InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I][0], System::Set<Typinfo::TTypeKind, tkUnknown, tkDynArray>()))->DisplayName = PropArray[I][1];
 
   TJvInspectorVarData::New(__classid(TJvInspectorVarData), InspCat, "AboutJVCL", TypeInfo(AnsiString), &VerInfoStr)->DisplayName = "About JVCL";
   InspCat->Expanded = True;
@@ -204,7 +205,8 @@ void __fastcall TfrmMain::AddCtrl(TJvCustomInspectorItem* Parent, TControl* Ctrl
     tmi->AddMethod(tmpMethod, "Edit1Change2");
   }
   else
-    TJvInspectorPropData::New(__classid(TJvInspectorPropData), InspCat, Ctrl);
+    // The last argument is required by BCB5 but is not by BCB6
+    TJvInspectorPropData::New(__classid(TJvInspectorPropData), InspCat, Ctrl, System::Set<Typinfo::TTypeKind, tkUnknown, tkDynArray> ());
 }
 
 void __fastcall TfrmMain::AddINIFile()
@@ -250,7 +252,7 @@ void __fastcall TfrmMain::ChangeChkState(TJvCustomInspectorItem* Item)
   if (dynamic_cast<TJvInspectorBooleanItem*>(Item))
     dynamic_cast<TJvInspectorBooleanItem*>(Item)->ShowAsCheckbox = BoolsAsChecks;
   for(int I = 0; I < Item->Count; I++)
-    ChangeChkState((*Item)[I]); // Do not use Item[I], as Item is a pointer itself
+    ChangeChkState(Item->Items[I]); // Do not use Item[I], as Item is a pointer itself
 }
 
 void __fastcall TfrmMain::Edit1Change2(TObject* Sender)
