@@ -66,6 +66,23 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 0
     end
+    object sb: TScrollBox
+      Left = 0
+      Top = 21
+      Width = 391
+      Height = 347
+      HorzScrollBar.Smooth = True
+      HorzScrollBar.Tracking = True
+      VertScrollBar.Smooth = True
+      VertScrollBar.Tracking = True
+      Align = alClient
+      BorderStyle = bsNone
+      Color = clWindow
+      ParentColor = False
+      TabOrder = 1
+      TabStop = True
+      OnMouseWheel = SbMouseWheel
+    end
   end
   object pnlSkipList: TPanel
     Left = 396
@@ -830,6 +847,9 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
+      DesignSize = (
+        185
+        21)
       object SpeedButton1: TSpeedButton
         Left = 166
         Top = 2
