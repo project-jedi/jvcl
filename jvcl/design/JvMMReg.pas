@@ -53,7 +53,7 @@ uses
   JvPictureEditors, JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm,
   JvIconListForm, JvAVICaptureEditors;
 
-{$R ..\Resources\JvMMReg.dcr}
+{$R ../Resources/JvMMReg.dcr}
 
 procedure Register;
 begin

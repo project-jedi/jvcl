@@ -346,7 +346,7 @@ implementation
 uses
   JvXPCoreUtils;
 
-{$R ..\Resources\JvXPCore.res}
+{$R ../Resources/JvXPCore.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -52,7 +52,7 @@ uses
   JvFormPropertiesForm, JvPerfStatEditor, JvTimerListEditor, JvDsgnEditors,
   JvAppXMLStorage, JvFormPlacementSelectList;
 
-{$R ..\resources\JvSystemReg.dcr}
+{$R ../Resources/JvSystemReg.dcr}
 
 procedure Register;
 begin

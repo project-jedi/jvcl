@@ -53,7 +53,7 @@ uses
   JvProgressDialog, JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor,
   JvCommonDialogDEditor, JvTipOfDayEditor;
 
-{$R ..\resources\JvDlgsReg.dcr}
+{$R ../Resources/JvDlgsReg.dcr}
 
 procedure Register;
 const

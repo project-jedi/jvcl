@@ -39,7 +39,6 @@ uses
   ImgList,
   JvDsgnEditors;
 
-
 type
   TJvTBImagesProperty = class(TJvDefaultImageIndexProperty)
   protected

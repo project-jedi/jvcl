@@ -56,7 +56,7 @@ uses
   JvTransparentPanel, JvCheckedItemsForm, JvColorCombo, JvProgressEditor,
   JvDsgnEditors;
 
-{$R ..\resources\JvStdCtrlsReg.dcr}
+{$R ../Resources/JvStdCtrlsReg.dcr}
 
 procedure Register;
 const

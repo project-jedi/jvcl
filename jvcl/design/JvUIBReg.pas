@@ -51,7 +51,7 @@ uses
   {$ENDIF DelphiPersonalEdition}
   JvUIB;
 
-{$R ..\Resources\JvUIBReg.dcr}
+{$R ../Resources/JvUIBReg.dcr}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -167,12 +167,7 @@ implementation
 uses
   JvThemes, JvResources;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCSVBase.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvCSVBase.res}
-{$ENDIF LINUX}
 
 { TJvCSVBase }
 

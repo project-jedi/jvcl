@@ -31,7 +31,7 @@ unit JvXPCtrlsReg;
 
 interface
 
-{$R ..\Resources\JvXPCtrlsReg.dcr}
+{$R ../Resources/JvXPCtrlsReg.dcr}
 
 procedure Register;
 

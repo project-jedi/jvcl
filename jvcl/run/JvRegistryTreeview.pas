@@ -146,7 +146,7 @@ implementation
 uses
   JvResources;
 
-{$R ..\resources\JvRegistryTreeView.res }
+{$R ../Resources/JvRegistryTreeView.res}
 
 const
   imMyPC = 0;

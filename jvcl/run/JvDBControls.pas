@@ -674,10 +674,11 @@ uses
   SysUtils, Dialogs, DbConsts, Math,
   JvDBUtils, JvJVCLUtils, JvCalc, JvConsts, JvResources, JvTypes;
 
-{$R ..\Resources\JvDBControls.res}
+{$R ../Resources/JvDBControls.res}
 
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================
+
 procedure TJvDBMaskEdit.ResetMaxLength;
 var
   F: TField;

@@ -37,12 +37,6 @@ unit JvTimeFrameworkReg;
 
 interface
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTimeFrameworkReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvTimeFrameworkReg.dcr}
-{$ENDIF LINUX}
 uses
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
@@ -50,6 +44,8 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ColnEdit;
+
+{$R ../Resources/JvTimeFrameworkReg.dcr}
 
 type
   {$IFDEF COMPILER5}

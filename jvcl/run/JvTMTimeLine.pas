@@ -322,19 +322,13 @@ type
     {$ENDIF VCL}
   end;
 
-
 implementation
 
 uses
   Consts,
   JvJVCLUtils, JvThemes;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvTMTimeLine.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
 {$R ../Resources/JvTMTimeLine.res}
-{$ENDIF LINUX}
 
 const
   cMagic = 'Jv.TMTIMELINE1';

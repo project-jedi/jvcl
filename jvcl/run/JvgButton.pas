@@ -209,7 +209,7 @@ uses
   {$ENDIF USEJVCL}
   JvConsts, JvJCLUtils, JvThemes;
 
-{$R ..\Resources\JvgButton.res}
+{$R ../Resources/JvgButton.res}
 
 {$IFNDEF USEJVCL}
 resourcestring

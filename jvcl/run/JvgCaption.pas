@@ -131,7 +131,7 @@ uses
   JvConsts, JvJVCLUtils;
 
 {$IFDEF GL_CAPT_BUTTONS}
-{$R ..\Resources\JvgCaption.res}
+{$R ../Resources/JvgCaption.res}
 {$ENDIF GL_CAPT_BUTTONS}
 
 {$IFNDEF USEJVCL}

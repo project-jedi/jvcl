@@ -23,7 +23,7 @@ procedure Register;
 
 implementation
 
-{$R ..\Resources\JvJansReg.dcr}
+{$R ../Resources/JvJansReg.dcr}
 
 procedure Register;
 const

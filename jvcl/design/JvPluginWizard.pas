@@ -153,7 +153,7 @@ uses
   JclFileUtils,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
-{$R ..\Resources\JvPluginWiz.res}
+{$R ../Resources/JvPluginWiz.res}
 
 const
   CrLf = sLineBreak;

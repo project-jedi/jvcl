@@ -57,7 +57,7 @@ uses
   JvTimeLineEditor, JvHLEditEditor, JvScheduleEditors,
   JvOutlookBarEditors, JvLookoutEditor, JvChart;
 
-{$R ..\resources\JvCustomReg.dcr}
+{$R ../resources/JvCustomReg.dcr}
 
 procedure Register;
 const

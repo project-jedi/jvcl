@@ -123,9 +123,10 @@ uses
   SysUtils,
   {$IFDEF VCL}
   Clipbrd, Consts,
-  {$ELSE}
-  QClipbrd, QConsts,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QClipbrd, QConsts,
+  {$ENDIF VisualCLX}
   Math,
   JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAni;
 

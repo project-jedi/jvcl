@@ -144,9 +144,16 @@ var
 begin
   LastVisibleSep := -1;
   ButtonSinceLastSep := False;
-  for I := 0 to tbrToolbar.{$IFDEF VLC}ButtonCount{$ELSE}ControlCount{$ENDIF} - 1 do
+  {$IFDEF VCL}
+  for I := 0 to tbrToolbar.ButtonCount - 1 do
   begin
-    CurItem := TControl(tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[I]);
+    CurItem := TControl(tbrToolbar.Buttons[I]);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  for I := 0 to tbrToolbar.ControlCount - 1 do
+  begin
+    CurItem := TControl(tbrToolbar.Controls[I]);
+  {$ENDIF VisualCLX}
     if (CurItem is TToolButton) and (TToolButton(CurItem).Style = tbsSeparator) then
     begin
       CurItem.Visible := ButtonSinceLastSep;
@@ -161,8 +168,14 @@ begin
     if not (CurItem is TToolButton) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
+  {$IFDEF VCL}
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
-    tbrToolbar.{$IFDEF VLC}Buttons{$ELSE}Controls{$ENDIF}[LastVisibleSep].Visible := False;
+    tbrToolbar.Buttons[LastVisibleSep].Visible := False;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if (LastVisibleSep >= 0) and not ButtonSinceLastSep then
+    tbrToolbar.Controls[LastVisibleSep].Visible := False;
+  {$ENDIF VisualCLX}
   { For some reason a divider may be drawn while it's invisible. Calling Invalidate didn't help but
     changing the ButtonWidth seems to work. Look into this issue; may have a different cause,
     possibly in this method. }

@@ -60,7 +60,7 @@ implementation
 uses
   Forms, StdCtrls;
   
-{$R ..\Resources\JvEnterTab.res}
+{$R ../Resources/JvEnterTab.res}
 
 constructor TJvEnterAsTab.Create(AOwner: TComponent);
 begin

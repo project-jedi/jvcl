@@ -60,9 +60,8 @@ type
     procedure SetValue(const Value: string); override;
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
       const ARect: TRect; ASelected: Boolean);
-    {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
+      {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
   end;
-
 
 function JvIdentToColor(const Ident: string; var Color: Longint): Boolean;
 function JvColorToString(Color: TColor): string;

@@ -135,19 +135,13 @@ implementation
 uses
   JvTypes, JvResources;
 
+{$R ../Resources/JvWinampLabel.res}
+
 const
   // (p3) fixed as suggested by Remko Bonte
   Row1: string[31] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ"@ ';
   Row2: string[31] = '0123456789._:()-''!_+\/[]^&%.=$#';
   Row3: string[31] = 'ÂÖÄ?* ';
-
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvWinampLabel.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-{$R ../Resources/JvWinampLabel.res}
-{$ENDIF LINUX}
-
 
 //=== TJvWinampThread ========================================================
 

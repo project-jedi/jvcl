@@ -47,7 +47,7 @@ uses
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
   JvDataProviderIntf, JvAppStorage, JvAppStorageSelectList;
 
-{$R ..\resources\JvCoreReg.dcr}
+{$R ../Resources/JvCoreReg.dcr}
 
 procedure Register;
 const

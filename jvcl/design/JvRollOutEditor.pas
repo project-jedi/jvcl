@@ -26,7 +26,9 @@ Known Issues:
 {$I jvcl.inc}
 
 unit JvRollOutEditor;
+
 interface
+
 uses
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,   
@@ -42,24 +44,26 @@ uses
   JvDsgnEditors;
 
 type
-// property editor for IndexCollapsed and IndexExpanded on a TJvRollOut to
-// display the images from the imagelist and allow multiselect
+  // property editor for IndexCollapsed and IndexExpanded on a TJvRollOut to
+  // display the images from the imagelist and allow multiselect
   TJvRollOutOptionsImagesProperty = class(TJvDefaultImageIndexProperty)
   protected
     function ImageList: TCustomImageList; override;
   public
     function GetAttributes: TPropertyAttributes; override;
   end;
+
   TJvRollOutDefaultEditor = class(TDefaultEditor)
   public
     procedure Edit; override;
   end;
 
 implementation
+
 uses
   JvRollOut;
 
-{ TJvRollOutOptionsImagesProperty }
+//=== TJvRollOutOptionsImagesProperty ========================================
 
 function TJvRollOutOptionsImagesProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -71,13 +75,14 @@ begin
   Result := TJvRollOutImageOptions(GetComponent(0)).Images;
 end;
 
-{ TJvRollOutDefaultEditor }
+//=== TJvRollOutDefaultEditor ================================================
 
 procedure TJvRollOutDefaultEditor.Edit;
-var R:TJvRollOut;
+var
+  R: TJvRollOut;
 begin
   {$IFDEF COMPILER6_UP}
-  if (GetComponent is TJvRollOut) then
+  if GetComponent is TJvRollOut then
   begin
     R := TJvRollOut(GetComponent);
     if R.MouseIsOnButton then
@@ -87,7 +92,7 @@ begin
     end;
   end;
   {$ELSE}
-  if (Component is TJvRollOut) then
+  if Component is TJvRollOut then
   begin
     R := TJvRollOut(Component);
     if R.MouseIsOnButton then
@@ -97,7 +102,6 @@ begin
     end;
   end;
   {$ENDIF COMPILER6_UP}
-
 end;
 
 end.

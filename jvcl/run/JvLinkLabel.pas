@@ -195,7 +195,7 @@ uses
   JvThemes, JvResources;
 
 // Bianconi - Use property LinkCursor
-//{.$R ..\resources\JvLinkLabel.res}
+//{.$R ../resources/JvLinkLabel.res}
 
 const
   crNewLinkHand = 1;
