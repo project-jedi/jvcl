@@ -904,11 +904,15 @@ begin
         FillRect(Rect);
     end;
     if HasImages then
+    begin
       Draw(Rect.Left + 1, Rect.Top + (LBar.FItemHeight - Bitmap.Height) div 2, Bitmap);
+      Inc(Rect.Left, Self.Images.Width + 4);
+    end
+    else
+      Inc(Rect.Left, 4);
     ItemCaption := Self.Caption;
     if (ItemCaption = '') and ((csDesigning in LBar.ComponentState) or (LBar.ControlCount = 0)) then
       ItemCaption := Format(RsUntitledFmt, [RsUntitled, Index]);
-    Inc(Rect.Left, 20);
     SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
     {$IFDEF USEJVCL}
     DrawText(ACanvas, ItemCaption, -1, Rect,
