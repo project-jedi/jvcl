@@ -18,7 +18,7 @@ Contributor(s):
 Steve Magruder
 Remko Bonte
 
-Last Modified: 2003-03-01
+Last Modified: 2003-07-14
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -54,6 +54,23 @@ Description:
   use resourcestrings and supply your own translations, call FixedDefaultEditPopUseResourceString(true);
   (yes, the name is that long on purpose) *before the first call* to FixedDefaultEditPopUp.
 
+  UPDATE 2003-07-14:
+    Rewritten to handle any TWinControl descendant. To make a TWinControl
+    component compatible it should implement the following messages and styles:
+      * If the control is readonly, it should set ES_READONLY in GWL_STYLE
+        (this can be done using the EM_SETREADONLY message for edit descendants)
+      * If text can be selected, the control should implement the EM_GETSEL message
+      * If the control has undo capability, it should implement the EM_CANUNDO message
+
+    The control should also react to the following messages:
+      * Undo: WM_UNDO
+      * Cut: WM_CUT
+      * Copy: WM_COPY
+      * Paste: WM_PASTE
+      * Clear: WM_CLEAR
+      * Select All: EM_SETSEL with wParam=0 and lParam=-1
+
+
 
 -----------------------------------------------------------------------------}
 
@@ -61,14 +78,19 @@ unit JvFixedEditPopUp;
 
 interface
 uses
-  StdCtrls, Menus;
+  Controls, Menus;
 
-function FixedDefaultEditPopUp(AEdit:TCustomEdit):TPopUpMenu;
+// Returns a popup menu with the standard actions associated with edit controls (Undo, Cut, Copy, Paste, Delete, Select All).
+// The actions are handled autmatically by sending messages (WM_COPY, WM_CUT etc) to the control
+function FixedDefaultEditPopUp(AEdit:TWinControl):TPopUpMenu;
+// Call with Value set to true to use the internal resourcestrings instead of those
+// provided by Windows. These strings can subsequently be translated using the ITE.
+// By default, the Windows provided strings are used.
 procedure FixedDefaultEditPopUseResourceString(Value:boolean);
 
 implementation
 uses
-  Windows, Classes, Messages, JvComponent, TypInfo;
+  Windows, SysUtils, Classes, Messages, JvComponent, TypInfo;
 
 resourcestring
   SDefaultPopUpUndo = '&Undo';
@@ -90,10 +112,9 @@ resourcestring
   --add other languages here--
 }
 type
-  THackEdit = class(TCustomEdit);
   THiddenPopupObject = class(TComponent)
   private
-    FEdit: TCustomEdit;
+    FEdit: TWinControl;
     FPopUpMenu:TPopUpMenu;
     procedure GetDefaultMenuCaptions;
     procedure DoSelectAll(Sender:TObject);
@@ -102,12 +123,15 @@ type
     procedure DoPaste(Sender:TObject);
     procedure DoCut(Sender:TObject);
     procedure DoCopy(Sender:TObject);
+    function CanUndo:boolean;
+    function ReadOnly:boolean;
+    function GetTextLen:integer;
+    function SelLength:integer;
     function GetPopUpMenu: TPopUpMenu;
-    procedure SetEdit(const Value: TCustomEdit);
+    procedure SetEdit(const Value: TWinControl);
     function GetClipboardCommands:TJvClipboardCommands;
   public
-    destructor Destroy;override;
-    property Edit:TCustomEdit read FEdit write SetEdit;
+    property Edit:TWinControl read FEdit write SetEdit;
     property PopUpMenu:TPopUpMenu read GetPopUpMenu;
   end;
 
@@ -115,7 +139,7 @@ var
   FHiddenPopup:THiddenPopupObject = nil;
   FUseResourceStrings:boolean = false;
 
-function FixedDefaultEditPopUp(AEdit:TCustomEdit):TPopUpMenu;
+function FixedDefaultEditPopUp(AEdit:TWinControl):TPopUpMenu;
 begin
   if FHiddenPopup = nil then
     FHiddenPopup := THiddenPopupObject.Create(nil);
@@ -130,9 +154,12 @@ end;
 
 { THiddenPopupObject }
 
-destructor THiddenPopupObject.Destroy;
+function THiddenPopupObject.CanUndo: boolean;
 begin
-  inherited;
+  if (Edit <> nil) and Edit.HandleAllocated then
+    Result := SendMessage(Edit.Handle, EM_CANUNDO, 0, 0) <> 0
+  else
+    Result := false;
 end;
 
 procedure THiddenPopupObject.DoCopy(Sender: TObject);
@@ -172,7 +199,7 @@ begin
 end;
 
 type
-  TIntegerSet = set of 0..sizeOf(integer) * 8 - 1;
+  TIntegerSet = set of 0..sizeof(integer) * 8 - 1;
   
 function THiddenPopupObject.GetClipboardCommands: TJvClipboardCommands;
 var Value:TIntegerSet;i:integer;
@@ -286,23 +313,62 @@ begin
 
     FPopUpMenu.PopupComponent := Edit;
     // undo
-    FPopUpMenu.Items[0].Enabled := Edit.CanUndo and (caUndo in cc);
+    FPopUpMenu.Items[0].Enabled := CanUndo and (caUndo in cc);
     // cut
-    FPopUpMenu.Items[2].Enabled := (Edit.SelLength > 0) and not THackEdit(Edit).ReadOnly and (caCut in cc);
+    FPopUpMenu.Items[2].Enabled := (SelLength > 0) and not ReadOnly and (caCut in cc);
     // copy
-    FPopUpMenu.Items[3].Enabled := (Edit.SelLength > 0) and (caCopy in cc);
+    FPopUpMenu.Items[3].Enabled := (SelLength > 0) and (caCopy in cc);
     // paste
-    FPopUpMenu.Items[4].Enabled := not THackEdit(Edit).ReadOnly and (caPaste in cc);
+    FPopUpMenu.Items[4].Enabled := not ReadOnly and (caPaste in cc);
     // delete
-    FPopUpMenu.Items[5].Enabled := (Edit.SelLength > 0) and not THackEdit(Edit).ReadOnly { and (caCut in cc)};
+    FPopUpMenu.Items[5].Enabled := (SelLength > 0) and not ReadOnly { and (caCut in cc)};
     // select all
-    FPopUpMenu.Items[7].Enabled := (Edit.GetTextLen > 0) and (Edit.SelLength <> Edit.GetTextLen);
+    FPopUpMenu.Items[7].Enabled := (GetTextLen > 0) and (SelLength <> GetTextLen);
   end;
 
   Result := FPopUpMenu;
 end;
 
-procedure THiddenPopupObject.SetEdit(const Value: TCustomEdit);
+function THiddenPopupObject.GetTextLen: integer;
+begin
+  if (Edit <> nil) and Edit.HandleAllocated then
+    Result := Edit.GetTextLen
+  else
+    Result := 0;
+end;
+
+function THiddenPopupObject.ReadOnly: boolean;
+begin
+  if (Edit <> nil) and Edit.HandleAllocated then
+    Result := GetWindowLong(Edit.Handle, GWL_STYLE) and ES_READONLY = ES_READONLY
+  else
+    Result := false;
+end;
+
+type
+  TSelection = record
+    StartPos, EndPos: Integer;
+  end;
+
+function THiddenPopupObject.SelLength: integer;
+var
+  Selection: TSelection;
+  MsgResult:Longint;
+begin
+  Result := 0;
+  if (Edit <> nil) and Edit.HandleAllocated then
+  begin
+    Selection.StartPos := 0;
+    Selection.EndPos := 0;
+    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, Longint(@Selection.StartPos), Longint(@Selection.EndPos));
+//    MsgResult := SendMessage(Edit.Handle, EM_GETSEL, 0, 0); // (p3) for testing only
+    Result := Selection.EndPos - Selection.StartPos;
+    if (Result <= 0) and (MsgResult > 0) then
+      Result := LongRec(MsgResult).Hi - LongRec(MsgResult).Lo;
+  end;
+end;
+
+procedure THiddenPopupObject.SetEdit(const Value: TWinControl);
 begin
   if FEdit <> Value then
   begin
